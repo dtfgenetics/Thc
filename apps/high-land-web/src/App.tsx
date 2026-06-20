@@ -2,8 +2,9 @@ import { useMemo, useState } from 'react';
 import { PhaserBoard } from './ui/PhaserBoard';
 import { createInitialGame, restartGame, rollCurrentTurn } from './game/systems/gameEngine';
 import { isMuted, playCardSound, playRollSound, playWinSound, setMuted as setAudioMuted } from './game/systems/audioSystem';
+import { clearSavedGameState, loadGameState, saveGameState } from './game/systems/storageSystem';
 
-const playerOptions = [2, 3, 4];
+const playerOptions = [2, 3, 4, 5, 6, 8, 10];
 
 export default function App() {
   const [playerCount, setPlayerCount] = useState(2);
@@ -22,7 +23,7 @@ export default function App() {
   }
 
   function roll(): void {
-    if (gameState.phase === 'game_over') return;
+    if (gameState.phase === 'game_over' || gameState.phase === 'moving' || gameState.phase === 'resolving_card') return;
     playRollSound();
     const next = rollCurrentTurn(gameState);
     if (next.lastCard) playCardSound();
@@ -31,7 +32,20 @@ export default function App() {
   }
 
   function restart(): void {
-    setGameState(restartGame(playerCount));
+    const next = restartGame(playerCount);
+    setGameState(next);
+    clearSavedGameState();
+  }
+
+  function save(): void {
+    saveGameState(gameState);
+  }
+
+  function load(): void {
+    const saved = loadGameState();
+    if (!saved) return;
+    setPlayerCount(saved.players.length);
+    setGameState(saved);
   }
 
   function toggleMute(): void {
@@ -46,7 +60,7 @@ export default function App() {
         <div className="title-card">
           <p className="eyebrow">Browser Board Game Prototype</p>
           <h1>High Land: The Sweet Escape</h1>
-          <p className="subtitle">Roll, move, draw action cards, dodge skips, and race to the finish.</p>
+          <p className="subtitle">Roll, move, draw action cards, dodge skips, and race to the finish with up to 10 players.</p>
         </div>
 
         <div className="controls-card">
@@ -63,7 +77,7 @@ export default function App() {
             ))}
           </div>
 
-          <div className="turn-box">
+          <div className="turn-box" style={{ borderColor: currentPlayer?.color ?? 'transparent' }}>
             <span>Current Turn</span>
             <strong>{currentPlayer?.name ?? 'None'}</strong>
           </div>
@@ -78,6 +92,8 @@ export default function App() {
               Roll Dice
             </button>
             <button onClick={restart} type="button">Restart</button>
+            <button onClick={save} type="button">Save</button>
+            <button onClick={load} type="button">Load</button>
             <button onClick={toggleMute} type="button">{muted ? 'Unmute' : 'Mute'}</button>
           </div>
         </div>
@@ -96,11 +112,19 @@ export default function App() {
 
         <div className="players-card">
           {gameState.players.map((player) => (
-            <article className="player-chip" key={player.id} style={{ borderColor: player.color }}>
+            <article
+              className={`player-chip ${player.id === currentPlayer?.id ? 'active' : ''}`}
+              key={player.id}
+              style={{ borderColor: player.color }}
+            >
               <span className="token-dot" style={{ background: player.color }} />
               <div>
                 <strong>{player.name}</strong>
-                <p>Space {player.positionIndex} {player.skipTurns > 0 ? `• Skip x${player.skipTurns}` : ''}</p>
+                <p>
+                  Space {player.positionIndex}
+                  {player.skipTurns > 0 ? ` • Skip x${player.skipTurns}` : ''}
+                  {player.protectedFromBackward > 0 ? ` • Protected x${player.protectedFromBackward}` : ''}
+                </p>
               </div>
             </article>
           ))}
