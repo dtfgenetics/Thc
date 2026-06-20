@@ -1,4 +1,4 @@
-import type { Player } from '../types/gameTypes';
+import type { Player, TurnDirection } from '../types/gameTypes';
 
 export function getCurrentPlayer(players: Player[], currentPlayerIndex: number): Player {
   const player = players[currentPlayerIndex];
@@ -6,9 +6,9 @@ export function getCurrentPlayer(players: Player[], currentPlayerIndex: number):
   return player;
 }
 
-export function nextPlayerIndex(players: Player[], currentPlayerIndex: number): number {
+export function nextPlayerIndex(players: Player[], currentPlayerIndex: number, direction: TurnDirection = 1): number {
   if (players.length === 0) return 0;
-  return (currentPlayerIndex + 1) % players.length;
+  return (currentPlayerIndex + direction + players.length) % players.length;
 }
 
 export function shouldSkipTurn(player: Player): boolean {
