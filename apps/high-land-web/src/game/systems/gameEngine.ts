@@ -32,6 +32,7 @@ export function rollCurrentTurn(state: GameState, random: () => number = Math.ra
     const directionState = reduceReverseTurnCounter(state);
 
     return {
+      ...state,
       ...directionState,
       players,
       phase: 'ready',
@@ -69,6 +70,7 @@ export function rollCurrentTurn(state: GameState, random: () => number = Math.ra
     const directionState = reduceReverseTurnCounter(state);
 
     return {
+      ...state,
       ...directionState,
       players,
       phase: 'ready',
@@ -128,6 +130,7 @@ export function rollCurrentTurn(state: GameState, random: () => number = Math.ra
 
   const directionState = reduceReverseTurnCounter(state);
   return {
+    ...state,
     ...directionState,
     players,
     phase: 'ready',
