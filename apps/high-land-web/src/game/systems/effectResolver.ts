@@ -22,15 +22,14 @@ export function resolveActionCard(state: GameState, card: ActionCard): GameState
   if (!currentPlayer) return state;
 
   const resolution = applyEffect(state, currentPlayer, card.effect);
-  const updatedCurrentPlayer = resolution.state.players.find((player) => player.id === currentPlayer.id);
-  const winnerId = updatedCurrentPlayer && updatedCurrentPlayer.positionIndex >= finishIndex ? updatedCurrentPlayer.id : resolution.state.winnerId;
+  const winner = findWinner(resolution.state.players);
 
   return {
     ...resolution.state,
     lastCard: card,
-    phase: winnerId ? 'game_over' : 'ready',
-    winnerId: winnerId ?? null,
-    currentPlayerIndex: winnerId || resolution.keepTurn || resolution.drawAgain
+    phase: winner ? 'game_over' : 'ready',
+    winnerId: winner?.id ?? null,
+    currentPlayerIndex: winner || resolution.keepTurn || resolution.drawAgain
       ? state.currentPlayerIndex
       : nextPlayerIndex(resolution.state.players, state.currentPlayerIndex, resolution.state.turnDirection),
     message: `${currentPlayer.name}: ${card.title}. ${card.text}`
@@ -135,13 +134,18 @@ function swapWithTarget(state: GameState, currentPlayer: Player, target: 'leader
   if (target === 'random') targetPlayer = state.players.find((player) => player.id !== currentPlayer.id) ?? null;
 
   if (!targetPlayer || targetPlayer.id === currentPlayer.id) return state;
+  const swapTarget = targetPlayer;
 
   return {
     ...state,
     players: state.players.map((player) => {
-      if (player.id === currentPlayer.id) return { ...player, positionIndex: targetPlayer.positionIndex };
-      if (player.id === targetPlayer.id) return { ...player, positionIndex: currentPlayer.positionIndex };
+      if (player.id === currentPlayer.id) return { ...player, positionIndex: swapTarget.positionIndex };
+      if (player.id === swapTarget.id) return { ...player, positionIndex: currentPlayer.positionIndex };
       return player;
     })
   };
+}
+
+function findWinner(players: Player[]): Player | null {
+  return players.find((player) => player.positionIndex >= finishIndex) ?? null;
 }
