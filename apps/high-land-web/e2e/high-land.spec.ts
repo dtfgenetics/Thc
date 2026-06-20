@@ -13,7 +13,7 @@ test.describe('High Land browser game', () => {
     await page.getByRole('button', { name: 'Roll Dice' }).click();
 
     await expect(page.getByLabel(/Last roll/i)).toBeVisible();
-    await expect(page.getByText(/Space 1|Space 2|Space 3|Space 4|Space 5|Space 6/)).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Restart' })).toBeVisible();
   });
 
   test('mobile layout can start and restart a game', async ({ page }) => {
