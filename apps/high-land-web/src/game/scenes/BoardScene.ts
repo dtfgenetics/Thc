@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { boardPath } from '../data/boardPath';
 import type { GameState, Player } from '../types/gameTypes';
+import { getMoveDuration, getTokenOffset, getTokenRadius } from '../systems/tokenLayoutSystem';
 
 const colorMap: Record<string, number> = {
   red: 0xef4444,
@@ -16,19 +17,36 @@ export class BoardScene extends Phaser.Scene {
   private tokenLabels = new Map<string, Phaser.GameObjects.Text>();
   private lastPositions = new Map<string, number>();
   private messageText?: Phaser.GameObjects.Text;
+  private hasBoardArt = false;
 
   constructor() {
     super('BoardScene');
   }
 
+  preload(): void {
+    this.load.image('board-background', '/assets/images/board/high-land-board.png');
+    this.load.once(Phaser.Loader.Events.FILE_LOAD_ERROR, () => {
+      this.hasBoardArt = false;
+    });
+  }
+
   create(): void {
     this.cameras.main.setBackgroundColor('#141020');
-    this.drawBackgroundZones();
+
+    if (this.textures.exists('board-background')) {
+      this.hasBoardArt = true;
+      this.add.image(400, 450, 'board-background').setDisplaySize(800, 900).setDepth(0);
+    } else {
+      this.drawBackgroundZones();
+    }
+
     this.drawPath();
     this.messageText = this.add.text(24, 18, 'Ready', {
       fontFamily: 'Arial',
       fontSize: '18px',
-      color: '#ffffff'
+      color: '#ffffff',
+      stroke: '#000000',
+      strokeThickness: 4
     }).setDepth(20);
 
     window.addEventListener('game-state-update', this.handleStateUpdate as EventListener);
@@ -69,7 +87,7 @@ export class BoardScene extends Phaser.Scene {
 
   private drawPath(): void {
     const graphics = this.add.graphics();
-    graphics.lineStyle(24, 0xffffff, 0.92);
+    graphics.lineStyle(24, 0xffffff, this.hasBoardArt ? 0.55 : 0.92);
 
     for (let index = 0; index < boardPath.length - 1; index += 1) {
       const current = boardPath[index];
@@ -80,8 +98,8 @@ export class BoardScene extends Phaser.Scene {
     boardPath.forEach((space) => {
       const fill = colorMap[space.color];
       const radius = space.type === 'start' || space.type === 'finish' ? 24 : space.type === 'action' || space.type === 'skip' ? 21 : 17;
-      this.add.circle(space.x, space.y, radius + 4, 0xffffff, 1).setDepth(5);
-      this.add.circle(space.x, space.y, radius, fill, 1).setDepth(6);
+      this.add.circle(space.x, space.y, radius + 4, 0xffffff, this.hasBoardArt ? 0.72 : 1).setDepth(5);
+      this.add.circle(space.x, space.y, radius, fill, this.hasBoardArt ? 0.86 : 1).setDepth(6);
 
       if (space.label) {
         this.add.text(space.x, space.y - 8, space.label, {
@@ -99,34 +117,36 @@ export class BoardScene extends Phaser.Scene {
       this.messageText.setText(state.message);
     }
 
-    state.players.forEach((player, playerIndex) => this.renderPlayer(player, playerIndex));
+    state.players.forEach((player, playerIndex) => this.renderPlayer(player, playerIndex, state.players.length));
   }
 
-  private renderPlayer(player: Player, playerIndex: number): void {
+  private renderPlayer(player: Player, playerIndex: number, playerCount: number): void {
     const currentSpace = boardPath[player.positionIndex] ?? boardPath[0];
-    const offsetX = (playerIndex % 2) * 16 - 8;
-    const offsetY = Math.floor(playerIndex / 2) * 16 - 8;
-    const targetX = currentSpace.x + offsetX;
-    const targetY = currentSpace.y + offsetY;
+    const offset = getTokenOffset(playerIndex, playerCount);
+    const tokenRadius = getTokenRadius(playerCount);
+    const targetX = currentSpace.x + offset.x;
+    const targetY = currentSpace.y + offset.y;
 
     let token = this.tokenSprites.get(player.id);
-    let label = this.tokenLabels.get(player.id);
+    const label = this.tokenLabels.get(player.id);
 
     if (!token) {
-      token = this.add.circle(targetX, targetY, 12, Phaser.Display.Color.HexStringToColor(player.color).color, 1)
+      token = this.add.circle(targetX, targetY, tokenRadius, Phaser.Display.Color.HexStringToColor(player.color).color, 1)
         .setStrokeStyle(3, 0xffffff)
         .setDepth(12);
-      label = this.add.text(targetX, targetY, String(playerIndex + 1), {
+      const newLabel = this.add.text(targetX, targetY, String(playerIndex + 1), {
         fontFamily: 'Arial',
-        fontSize: '12px',
+        fontSize: playerCount > 8 ? '10px' : '12px',
         color: '#ffffff',
         fontStyle: 'bold'
       }).setOrigin(0.5).setDepth(13);
       this.tokenSprites.set(player.id, token);
-      this.tokenLabels.set(player.id, label);
+      this.tokenLabels.set(player.id, newLabel);
       this.lastPositions.set(player.id, player.positionIndex);
       return;
     }
+
+    token.setRadius(tokenRadius);
 
     const fromIndex = this.lastPositions.get(player.id) ?? player.positionIndex;
     this.lastPositions.set(player.id, player.positionIndex);
@@ -134,7 +154,7 @@ export class BoardScene extends Phaser.Scene {
     const pathIndexes = buildPathIndexes(fromIndex, player.positionIndex);
     const targets = pathIndexes.map((index) => {
       const space = boardPath[index] ?? currentSpace;
-      return { x: space.x + offsetX, y: space.y + offsetY };
+      return { x: space.x + offset.x, y: space.y + offset.y };
     });
 
     if (targets.length <= 1) {
@@ -148,8 +168,13 @@ export class BoardScene extends Phaser.Scene {
 
     const timeline = this.tweens.createTimeline();
     targets.forEach((target) => {
-      timeline.add({ targets: token, x: target.x, y: target.y, duration: 120, ease: 'Sine.easeInOut' });
-      if (label) timeline.add({ targets: label, x: target.x, y: target.y, duration: 120, ease: 'Sine.easeInOut' }, 0);
+      timeline.add({
+        targets: label ? [token, label] : token,
+        x: target.x,
+        y: target.y,
+        duration: getMoveDuration(playerCount),
+        ease: 'Sine.easeInOut'
+      });
     });
     timeline.play();
   }
