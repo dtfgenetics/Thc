@@ -156,7 +156,9 @@ describe('game engine', () => {
     const reversed = applyActionCard(state, reverseCard);
     expect(reversed.turnDirection).toBe(-1);
     expect(reversed.reverseTurnsRemaining).toBe(2);
+    expect(reversed.currentPlayerIndex).toBe(2);
     const next = rollCurrentTurn(reversed, () => 0);
-    expect(next.currentPlayerIndex).toBe(2);
+    expect(next.currentPlayerIndex).toBe(1);
+    expect(next.reverseTurnsRemaining).toBe(1);
   });
 });

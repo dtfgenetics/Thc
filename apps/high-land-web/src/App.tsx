@@ -8,7 +8,7 @@ import { createInitialGame, restartGame, rollCurrentTurn } from './game/systems/
 import { isMuted, playCardSound, playRollSound, playWinSound, setMuted as setAudioMuted } from './game/systems/audioSystem';
 import { clearSavedGameState, loadGameState, saveGameState } from './game/systems/storageSystem';
 
-const playerOptions = [2, 3, 4, 5, 6, 8, 10];
+const playerOptions = [2, 3, 4, 5, 6, 7, 8, 9, 10];
 
 export default function App() {
   const [playerCount, setPlayerCount] = useState(2);
@@ -62,7 +62,7 @@ export default function App() {
     <main className="app-shell">
       <section className="game-panel">
         <div className="title-card">
-          <p className="eyebrow">Browser Board Game Prototype</p>
+          <p className="eyebrow">21+ Fantasy Board Game</p>
           <h1>High Land: The Sweet Escape</h1>
           <p className="subtitle">Roll, move, draw action cards, dodge skips, and race to the finish with up to 10 players.</p>
         </div>
@@ -112,6 +112,7 @@ export default function App() {
           {gameState.players.map((player) => (
             <article
               className={`player-chip ${player.id === currentPlayer?.id ? 'active' : ''}`}
+              data-player-id={player.id}
               key={player.id}
               style={{ borderColor: player.color }}
             >

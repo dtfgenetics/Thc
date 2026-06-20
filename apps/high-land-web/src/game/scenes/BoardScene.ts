@@ -1,7 +1,6 @@
 import Phaser from 'phaser';
 import { boardPath } from '../data/boardPath';
 import type { GameState, Player } from '../types/gameTypes';
-import { gameAssetPath } from '../systems/assetPath';
 import { getMoveDuration, getTokenOffset, getTokenRadius } from '../systems/tokenLayoutSystem';
 
 const colorMap: Record<string, number> = {
@@ -17,7 +16,6 @@ export class BoardScene extends Phaser.Scene {
   private tokenSprites = new Map<string, Phaser.GameObjects.Arc>();
   private tokenLabels = new Map<string, Phaser.GameObjects.Text>();
   private lastPositions = new Map<string, number>();
-  private messageText?: Phaser.GameObjects.Text;
   private hasBoardArt = false;
 
   constructor() {
@@ -25,10 +23,13 @@ export class BoardScene extends Phaser.Scene {
   }
 
   preload(): void {
-    this.load.image('board-background', gameAssetPath('assets/images/board/high-land-board.png'));
-    this.load.once(Phaser.Loader.Events.FILE_LOAD_ERROR, () => {
-      this.hasBoardArt = false;
-    });
+    const boardImageUrl = this.registry.get('board-image-url') as string | null;
+    if (boardImageUrl) {
+      this.load.image('board-background', boardImageUrl);
+      this.load.once(Phaser.Loader.Events.FILE_LOAD_ERROR, () => {
+        this.hasBoardArt = false;
+      });
+    }
   }
 
   create(): void {
@@ -42,15 +43,9 @@ export class BoardScene extends Phaser.Scene {
     }
 
     this.drawPath();
-    this.messageText = this.add.text(24, 18, 'Ready', {
-      fontFamily: 'Arial',
-      fontSize: '18px',
-      color: '#ffffff',
-      stroke: '#000000',
-      strokeThickness: 4
-    }).setDepth(20);
-
     window.addEventListener('game-state-update', this.handleStateUpdate as EventListener);
+    const initialState = this.registry.get('initial-game-state') as GameState | undefined;
+    if (initialState) this.renderGameState(initialState);
   }
 
   shutdown(): void {
@@ -114,10 +109,6 @@ export class BoardScene extends Phaser.Scene {
   }
 
   private renderGameState(state: GameState): void {
-    if (this.messageText) {
-      this.messageText.setText(state.message);
-    }
-
     state.players.forEach((player, playerIndex) => this.renderPlayer(player, playerIndex, state.players.length));
   }
 
@@ -167,17 +158,15 @@ export class BoardScene extends Phaser.Scene {
     this.tweens.killTweensOf(token);
     if (label) this.tweens.killTweensOf(label);
 
-    const timeline = this.tweens.createTimeline();
-    targets.forEach((target) => {
-      timeline.add({
-        targets: label ? [token, label] : token,
+    this.tweens.chain({
+      targets: label ? [token, label] : token,
+      tweens: targets.map((target) => ({
         x: target.x,
         y: target.y,
         duration: getMoveDuration(playerCount),
         ease: 'Sine.easeInOut'
-      });
+      }))
     });
-    timeline.play();
   }
 }
 
