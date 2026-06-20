@@ -2,6 +2,8 @@ import { useMemo, useState } from 'react';
 import { PhaserBoard } from './ui/PhaserBoard';
 import { DiceDisplay } from './ui/DiceDisplay';
 import { CardRevealModal } from './ui/CardRevealModal';
+import { GameRulesPanel } from './ui/GameRulesPanel';
+import { DevPanel } from './ui/DevPanel';
 import { createInitialGame, restartGame, rollCurrentTurn } from './game/systems/gameEngine';
 import { isMuted, playCardSound, playRollSound, playWinSound, setMuted as setAudioMuted } from './game/systems/audioSystem';
 import { clearSavedGameState, loadGameState, saveGameState } from './game/systems/storageSystem';
@@ -103,6 +105,8 @@ export default function App() {
         </div>
 
         <CardRevealModal card={gameState.lastCard} />
+        <GameRulesPanel />
+        <DevPanel state={gameState} />
 
         <div className="players-card">
           {gameState.players.map((player) => (
