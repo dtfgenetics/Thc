@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { boardPath } from '../data/boardPath';
 import type { GameState, Player } from '../types/gameTypes';
+import { gameAssetPath } from '../systems/assetPath';
 import { getMoveDuration, getTokenOffset, getTokenRadius } from '../systems/tokenLayoutSystem';
 
 const colorMap: Record<string, number> = {
@@ -24,7 +25,7 @@ export class BoardScene extends Phaser.Scene {
   }
 
   preload(): void {
-    this.load.image('board-background', '/assets/images/board/high-land-board.png');
+    this.load.image('board-background', gameAssetPath('assets/images/board/high-land-board.png'));
     this.load.once(Phaser.Loader.Events.FILE_LOAD_ERROR, () => {
       this.hasBoardArt = false;
     });
