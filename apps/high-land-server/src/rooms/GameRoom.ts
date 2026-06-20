@@ -1,7 +1,7 @@
 import { Client, Room } from 'colyseus';
 import { PlayerState, ServerGameState, LogEntry } from '../schema/GameState.js';
 
-const maxPlayers = 4;
+const maxPlayers = 10;
 const finishIndex = 71;
 
 type JoinOptions = {
@@ -96,5 +96,16 @@ export class GameRoom extends Room<ServerGameState> {
 }
 
 function defaultColor(index: number): string {
-  return ['#f43f5e', '#22c55e', '#3b82f6', '#eab308'][index] || '#ffffff';
+  return [
+    '#f43f5e',
+    '#22c55e',
+    '#3b82f6',
+    '#eab308',
+    '#a855f7',
+    '#14b8a6',
+    '#f97316',
+    '#ec4899',
+    '#84cc16',
+    '#38bdf8'
+  ][index] || '#ffffff';
 }
