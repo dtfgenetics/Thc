@@ -1,0 +1,105 @@
+import { boardPath, finishIndex } from '../data/boardPath';
+import type { GameState } from '../types/gameTypes';
+import { drawActionCard, applyActionCard } from './cardSystem';
+import { rollDie } from './diceSystem';
+import { calculateMove } from './movementSystem';
+import { createPlayers } from './playerSystem';
+import { getCurrentPlayer, nextPlayerIndex, shouldSkipTurn } from './turnSystem';
+
+export function createInitialGame(playerCount: number): GameState {
+  return {
+    players: createPlayers(playerCount),
+    currentPlayerIndex: 0,
+    phase: 'ready',
+    lastRoll: null,
+    lastCard: null,
+    message: 'Game ready. Roll to begin.',
+    winnerId: null,
+    cardCursor: 0
+  };
+}
+
+export function rollCurrentTurn(state: GameState, random: () => number = Math.random): GameState {
+  if (state.phase === 'game_over') return state;
+  const currentPlayer = getCurrentPlayer(state.players, state.currentPlayerIndex);
+
+  if (shouldSkipTurn(currentPlayer)) {
+    const players = state.players.map((player) =>
+      player.id === currentPlayer.id ? { ...player, skipTurns: player.skipTurns - 1 } : player
+    );
+
+    return {
+      ...state,
+      players,
+      phase: 'ready',
+      currentPlayerIndex: nextPlayerIndex(players, state.currentPlayerIndex),
+      message: `${currentPlayer.name} skipped this turn.`,
+      lastRoll: null,
+      lastCard: null
+    };
+  }
+
+  const result = rollDie(random);
+  const move = calculateMove(currentPlayer.positionIndex, result, finishIndex);
+  const landedSpace = boardPath[move.toIndex];
+
+  let players = state.players.map((player) =>
+    player.id === currentPlayer.id ? { ...player, positionIndex: move.toIndex } : player
+  );
+
+  if (move.toIndex >= finishIndex) {
+    return {
+      ...state,
+      players,
+      phase: 'game_over',
+      lastRoll: result,
+      lastCard: null,
+      winnerId: currentPlayer.id,
+      message: `${currentPlayer.name} rolled ${result} and reached the finish.`
+    };
+  }
+
+  if (landedSpace.type === 'skip') {
+    players = players.map((player) =>
+      player.id === currentPlayer.id ? { ...player, skipTurns: player.skipTurns + 1 } : player
+    );
+
+    return {
+      ...state,
+      players,
+      phase: 'ready',
+      lastRoll: result,
+      lastCard: null,
+      currentPlayerIndex: nextPlayerIndex(players, state.currentPlayerIndex),
+      message: `${currentPlayer.name} rolled ${result}, landed on SKIP, and will skip the next turn.`
+    };
+  }
+
+  if (landedSpace.type === 'action') {
+    const draw = drawActionCard(state.cardCursor);
+    const stateAfterLanding: GameState = {
+      ...state,
+      players,
+      phase: 'resolving_card',
+      lastRoll: result,
+      lastCard: draw.card,
+      cardCursor: draw.nextCursor,
+      message: `${currentPlayer.name} rolled ${result} and drew ${draw.card.title}.`
+    };
+    return applyActionCard(stateAfterLanding, draw.card);
+  }
+
+  return {
+    ...state,
+    players,
+    phase: 'ready',
+    lastRoll: result,
+    lastCard: null,
+    currentPlayerIndex: nextPlayerIndex(players, state.currentPlayerIndex),
+    message: `${currentPlayer.name} rolled ${result} and moved to space ${move.toIndex}.`
+  };
+}
+
+export function restartGame(playerCount: number): GameState {
+  return createInitialGame(playerCount);
+}
