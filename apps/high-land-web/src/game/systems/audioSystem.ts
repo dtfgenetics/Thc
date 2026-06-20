@@ -1,10 +1,16 @@
 let context: AudioContext | null = null;
 let muted = false;
 
+type WindowWithWebkitAudio = Window & typeof globalThis & {
+  webkitAudioContext?: typeof AudioContext;
+};
+
 function getContext(): AudioContext | null {
   if (muted) return null;
   if (!context) {
-    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    const audioWindow = window as WindowWithWebkitAudio;
+    const AudioContextClass = window.AudioContext || audioWindow.webkitAudioContext;
+    if (!AudioContextClass) return null;
     context = new AudioContextClass();
   }
   return context;
