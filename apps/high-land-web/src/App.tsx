@@ -1,5 +1,7 @@
 import { useMemo, useState } from 'react';
 import { PhaserBoard } from './ui/PhaserBoard';
+import { DiceDisplay } from './ui/DiceDisplay';
+import { CardRevealModal } from './ui/CardRevealModal';
 import { createInitialGame, restartGame, rollCurrentTurn } from './game/systems/gameEngine';
 import { isMuted, playCardSound, playRollSound, playWinSound, setMuted as setAudioMuted } from './game/systems/audioSystem';
 import { clearSavedGameState, loadGameState, saveGameState } from './game/systems/storageSystem';
@@ -82,10 +84,7 @@ export default function App() {
             <strong>{currentPlayer?.name ?? 'None'}</strong>
           </div>
 
-          <div className="dice-box">
-            <span>Last Roll</span>
-            <strong>{gameState.lastRoll ?? '-'}</strong>
-          </div>
+          <DiceDisplay value={gameState.lastRoll} />
 
           <div className="button-row">
             <button className="primary" disabled={gameState.phase === 'game_over'} onClick={roll} type="button">
@@ -101,14 +100,9 @@ export default function App() {
         <div className="message-card">
           <strong>Status</strong>
           <p>{winner ? `${winner.name} wins!` : gameState.message}</p>
-          {gameState.lastCard && (
-            <div className="card-readout">
-              <span>Last Card</span>
-              <strong>{gameState.lastCard.title}</strong>
-              <p>{gameState.lastCard.text}</p>
-            </div>
-          )}
         </div>
+
+        <CardRevealModal card={gameState.lastCard} />
 
         <div className="players-card">
           {gameState.players.map((player) => (
