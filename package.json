@@ -1,0 +1,13 @@
+{
+  "name": "thc-games-workspace",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev:high-land": "npm --workspace apps/high-land-web run dev",
+    "build:high-land": "npm --workspace apps/high-land-web run build",
+    "test:high-land": "npm --workspace apps/high-land-web run test"
+  }
+}
