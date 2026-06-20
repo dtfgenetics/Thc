@@ -45,9 +45,15 @@ describe('board path', () => {
 });
 
 describe('game engine', () => {
-  it('creates 2 to 4 player games', () => {
+  it('creates 2 to 10 player games', () => {
     expect(createInitialGame(2).players).toHaveLength(2);
     expect(createInitialGame(4).players).toHaveLength(4);
+    expect(createInitialGame(10).players).toHaveLength(10);
+  });
+
+  it('rejects invalid player counts', () => {
+    expect(() => createInitialGame(1)).toThrow();
+    expect(() => createInitialGame(11)).toThrow();
   });
 
   it('rolls, moves, and advances turns', () => {
@@ -101,5 +107,56 @@ describe('game engine', () => {
     };
     const next = applyActionCard(state, skipCard);
     expect(next.players[0].skipTurns).toBe(1);
+  });
+
+  it('protects from backward movement once', () => {
+    const state = createInitialGame(2);
+    const protectCard: ActionCard = {
+      id: 'test-protect',
+      title: 'Protect',
+      text: 'Block backward movement.',
+      effect: { type: 'protect_from_backward', uses: 1 }
+    };
+    const backwardCard: ActionCard = {
+      id: 'test-backward-protected',
+      title: 'Backward',
+      text: 'Move back.',
+      effect: { type: 'move', amount: -3 }
+    };
+    const advanced = {
+      ...state,
+      players: state.players.map((player, index) => index === 0 ? { ...player, positionIndex: 8 } : player)
+    };
+    const protectedState = applyActionCard(advanced, protectCard);
+    const afterBackward = applyActionCard({ ...protectedState, currentPlayerIndex: 0 }, backwardCard);
+    expect(afterBackward.players[0].positionIndex).toBe(8);
+    expect(afterBackward.players[0].protectedFromBackward).toBe(0);
+  });
+
+  it('supports moving to the next matching color', () => {
+    const state = createInitialGame(2);
+    const colorCard: ActionCard = {
+      id: 'test-color',
+      title: 'Color Move',
+      text: 'Move to next green.',
+      effect: { type: 'move_to_color', color: 'green', direction: 'next' }
+    };
+    const next = applyActionCard(state, colorCard);
+    expect(boardPath[next.players[0].positionIndex].color).toBe('green');
+  });
+
+  it('supports reverse turn order', () => {
+    const state = createInitialGame(3);
+    const reverseCard: ActionCard = {
+      id: 'test-reverse',
+      title: 'Reverse',
+      text: 'Reverse turns.',
+      effect: { type: 'reverse_turn_order', turns: 2 }
+    };
+    const reversed = applyActionCard(state, reverseCard);
+    expect(reversed.turnDirection).toBe(-1);
+    expect(reversed.reverseTurnsRemaining).toBe(2);
+    const next = rollCurrentTurn(reversed, () => 0);
+    expect(next.currentPlayerIndex).toBe(2);
   });
 });
