@@ -22,5 +22,7 @@ export class ServerGameState extends Schema {
   @type('number') lastRoll = 0;
   @type('number') cardCursor = 0;
   @type('string') winnerId = '';
+  @type('string') roomCode = '';
+  @type('string') message = 'Waiting for players.';
   @type([LogEntry]) log = new ArraySchema<LogEntry>();
 }
