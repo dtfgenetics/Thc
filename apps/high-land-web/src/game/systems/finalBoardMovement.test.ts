@@ -6,6 +6,9 @@ import {
   assertValidBoardMap,
   buildTokenSlots,
   calculateFinalBoardMove,
+  getBoardAnchor,
+  getTokenOffsetsForOccupancy,
+  getTokenRadiusForOccupancy,
   isValidDiceRoll,
   normalizePlayerName,
   type BoardPoint
@@ -38,6 +41,12 @@ describe('final High Land board movement contract', () => {
     expect(move.traversedPositions).toEqual([109, 110]);
   });
 
+  it('does not mark an already-finished player as newly crossing finish on a backward move', () => {
+    const move = calculateFinalBoardMove(WIN_POSITION, -2, 'hit_card');
+    expect(move.toPosition).toBe(108);
+    expect(move.crossedFinish).toBe(false);
+  });
+
   it('moves backward from HIT cards without going below the invisible start box', () => {
     const move = calculateFinalBoardMove(3, -8, 'hit_card');
     expect(move.toPosition).toBe(0);
@@ -57,6 +66,10 @@ describe('final High Land board movement contract', () => {
     expect(normalizePlayerName('   ', 'Player 1')).toBe('Player 1');
   });
 
+  it('uses the playable finish square as the board anchor for position 110', () => {
+    expect(getBoardAnchor(WIN_POSITION, boardPoints, { x: 10, y: 10 })).toEqual({ x: boardPoints[109].x, y: boardPoints[109].y });
+  });
+
   it('keeps four players on the same square in small slots inside that square', () => {
     const slots = buildTokenSlots(
       [
@@ -66,8 +79,7 @@ describe('final High Land board movement contract', () => {
         { id: 'p4', name: 'D', position: 6 }
       ],
       boardPoints,
-      { x: 10, y: 10 },
-      { x: 999, y: 999 }
+      { x: 10, y: 10 }
     );
 
     expect(slots).toHaveLength(4);
@@ -76,5 +88,16 @@ describe('final High Land board movement contract', () => {
       expect(Math.abs(slot.x - boardPoints[5].x)).toBeLessThanOrEqual(7);
       expect(Math.abs(slot.y - boardPoints[5].y)).toBeLessThanOrEqual(7);
     });
+  });
+
+  it('supports crowded same-space token slots without stacking every extra player on one point', () => {
+    const offsets = getTokenOffsetsForOccupancy(10);
+    expect(offsets).toHaveLength(10);
+    expect(new Set(offsets.map((offset) => `${offset.x},${offset.y}`)).size).toBe(10);
+    offsets.forEach((offset) => {
+      expect(Math.abs(offset.x)).toBeLessThanOrEqual(14);
+      expect(Math.abs(offset.y)).toBeLessThanOrEqual(7);
+    });
+    expect(getTokenRadiusForOccupancy(10)).toBeLessThanOrEqual(3.8);
   });
 });
