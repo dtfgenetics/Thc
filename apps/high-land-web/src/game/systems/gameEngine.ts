@@ -6,9 +6,9 @@ import { calculateMove } from './movementSystem';
 import { createPlayers } from './playerSystem';
 import { getCurrentPlayer, nextPlayerIndex, shouldSkipTurn } from './turnSystem';
 
-export function createInitialGame(playerCount: number): GameState {
+export function createInitialGame(playerCount: number, playerNames: string[] = []): GameState {
   return {
-    players: createPlayers(playerCount),
+    players: createPlayers(playerCount, playerNames),
     currentPlayerIndex: 0,
     phase: 'ready',
     turnDirection: 1,
@@ -59,7 +59,7 @@ export function rollCurrentTurn(state: GameState, random: () => number = Math.ra
       lastRoll: result,
       lastCard: null,
       winnerId: currentPlayer.id,
-      message: `${currentPlayer.name} rolled ${result} and reached the finish.`
+      message: `${currentPlayer.name} rolled ${result} and crossed the finish line.`
     };
   }
 
@@ -110,7 +110,7 @@ export function rollCurrentTurn(state: GameState, random: () => number = Math.ra
       lastRoll: result,
       lastCard: null,
       winnerId: currentPlayer.id,
-      message: `${currentPlayer.name} rolled ${result} and reached the finish.`
+      message: `${currentPlayer.name} rolled ${result} and crossed the finish line.`
     };
   }
 
@@ -141,8 +141,8 @@ export function rollCurrentTurn(state: GameState, random: () => number = Math.ra
   };
 }
 
-export function restartGame(playerCount: number): GameState {
-  return createInitialGame(playerCount);
+export function restartGame(playerCount: number, playerNames: string[] = []): GameState {
+  return createInitialGame(playerCount, playerNames);
 }
 
 function reduceReverseTurnCounter(state: GameState): Pick<GameState, 'turnDirection' | 'reverseTurnsRemaining'> {
