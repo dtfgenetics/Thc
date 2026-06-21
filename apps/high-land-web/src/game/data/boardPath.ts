@@ -1,54 +1,121 @@
-import type { BoardSpace, SpaceColor } from '../types/gameTypes';
-
-const colors: SpaceColor[] = ['red', 'yellow', 'green', 'blue', 'purple'];
-
-const points = [
-  [84, 548], [137, 518], [191, 493], [245, 469], [304, 448], [367, 428], [429, 411], [488, 390],
-  [542, 361], [587, 323], [611, 278], [600, 233], [557, 203], [499, 192], [436, 202], [382, 231],
-  [346, 274], [340, 323], [365, 369], [416, 401], [478, 415], [543, 430], [604, 455], [650, 495],
-  [666, 543], [647, 589], [600, 621], [535, 637], [467, 641], [397, 632], [330, 616], [270, 596],
-  [214, 575], [162, 553], [112, 526], [78, 486], [74, 438], [104, 395], [158, 365], [221, 343],
-  [285, 322], [347, 297], [407, 267], [466, 238], [527, 216], [589, 209], [648, 229], [690, 269],
-  [707, 320], [698, 373], [666, 423], [620, 466], [566, 502], [506, 532], [441, 556], [376, 576],
-  [309, 594], [242, 613], [178, 638], [124, 676], [92, 728], [104, 781], [153, 812], [220, 818],
-  [291, 803], [362, 781], [432, 756], [503, 735], [573, 722], [640, 726], [696, 755], [728, 806]
+import type { BoardSpace } from '../types/gameTypes';
+// Final High Land board path generated from the provided 1536x1152 skeleton board.
+// index 0 is an invisible start staging box near Rosin Rail Station.
+// indexes 1-110 are playable board spaces. Reaching or passing index 110 wins.
+export const boardPath: BoardSpace[] = [
+  { index: 0, x: 390, y: 1000, color: 'special', type: 'start', zone: 'Rosin Rail Station', label: 'START' },
+  { index: 1, x: 272, y: 1089, color: 'purple', type: 'normal', zone: 'Rolling Hills' },
+  { index: 2, x: 327, y: 1088, color: 'red', type: 'normal', zone: 'Rolling Hills' },
+  { index: 3, x: 389, y: 1073, color: 'red', type: 'normal', zone: 'Rolling Hills' },
+  { index: 4, x: 448, y: 1041, color: 'yellow', type: 'normal', zone: 'Rolling Hills' },
+  { index: 5, x: 496, y: 992, color: 'blue', type: 'normal', zone: 'Rolling Hills' },
+  { index: 6, x: 544, y: 941, color: 'green', type: 'normal', zone: 'Rolling Hills' },
+  { index: 7, x: 608, y: 912, color: 'red', type: 'normal', zone: 'Rolling Hills' },
+  { index: 8, x: 673, y: 913, color: 'purple', type: 'normal', zone: 'Rolling Hills' },
+  { index: 9, x: 733, y: 939, color: 'blue', type: 'normal', zone: 'Rolling Hills' },
+  { index: 10, x: 786, y: 982, color: 'yellow', type: 'normal', zone: 'Rolling Hills' },
+  { index: 11, x: 839, y: 1033, color: 'red', type: 'normal', zone: 'Rolling Hills' },
+  { index: 12, x: 904, y: 1069, color: 'purple', type: 'normal', zone: 'Rolling Hills' },
+  { index: 13, x: 970, y: 1084, color: 'purple', type: 'normal', zone: 'Rolling Hills' },
+  { index: 14, x: 1040, y: 1085, color: 'yellow', type: 'normal', zone: 'Rolling Hills' },
+  { index: 15, x: 1102, y: 1080, color: 'red', type: 'normal', zone: 'Rolling Hills' },
+  { index: 16, x: 1164, y: 1069, color: 'green', type: 'normal', zone: 'Rolling Hills' },
+  { index: 17, x: 1224, y: 1016, color: 'green', type: 'normal', zone: 'Dankwood Forest' },
+  { index: 18, x: 1252, y: 949, color: 'yellow', type: 'normal', zone: 'Dankwood Forest' },
+  { index: 19, x: 1205, y: 878, color: 'green', type: 'normal', zone: 'Dankwood Forest' },
+  { index: 20, x: 1135, y: 852, color: 'special', type: 'action', zone: 'Dankwood Forest', label: 'HIT' },
+  { index: 21, x: 1047, y: 902, color: 'purple', type: 'normal', zone: 'Dankwood Forest' },
+  { index: 22, x: 948, y: 903, color: 'blue', type: 'normal', zone: 'Dankwood Forest' },
+  { index: 23, x: 844, y: 902, color: 'blue', type: 'normal', zone: 'Dankwood Forest' },
+  { index: 24, x: 779, y: 895, color: 'green', type: 'normal', zone: 'Dankwood Forest' },
+  { index: 25, x: 718, y: 875, color: 'yellow', type: 'normal', zone: 'Dankwood Forest' },
+  { index: 26, x: 668, y: 822, color: 'purple', type: 'normal', zone: 'Dankwood Forest' },
+  { index: 27, x: 608, y: 791, color: 'red', type: 'normal', zone: 'Dankwood Forest' },
+  { index: 28, x: 862, y: 793, color: 'green', type: 'normal', zone: 'Dankwood Forest' },
+  { index: 29, x: 933, y: 795, color: 'blue', type: 'normal', zone: 'Dankwood Forest' },
+  { index: 30, x: 999, y: 815, color: 'yellow', type: 'normal', zone: 'Dankwood Forest' },
+  { index: 31, x: 1060, y: 839, color: 'purple', type: 'normal', zone: 'Dankwood Forest' },
+  { index: 32, x: 1307, y: 787, color: 'yellow', type: 'normal', zone: 'Dankwood Forest' },
+  { index: 33, x: 1383, y: 727, color: 'red', type: 'normal', zone: 'Rosin Rail Station' },
+  { index: 34, x: 1344, y: 657, color: 'blue', type: 'normal', zone: 'Rosin Rail Station' },
+  { index: 35, x: 1286, y: 658, color: 'red', type: 'normal', zone: 'Rosin Rail Station' },
+  { index: 36, x: 1222, y: 646, color: 'blue', type: 'normal', zone: 'Rosin Rail Station' },
+  { index: 37, x: 1144, y: 657, color: 'purple', type: 'normal', zone: 'Rosin Rail Station' },
+  { index: 38, x: 1071, y: 697, color: 'yellow', type: 'normal', zone: 'Rosin Rail Station' },
+  { index: 39, x: 1036, y: 571, color: 'yellow', type: 'normal', zone: 'Rosin Rail Station' },
+  { index: 40, x: 971, y: 572, color: 'purple', type: 'normal', zone: 'Rosin Rail Station' },
+  { index: 41, x: 908, y: 590, color: 'red', type: 'normal', zone: 'Rosin Rail Station' },
+  { index: 42, x: 851, y: 635, color: 'green', type: 'normal', zone: 'Rosin Rail Station' },
+  { index: 43, x: 791, y: 618, color: 'blue', type: 'normal', zone: 'Rosin Rail Station' },
+  { index: 44, x: 735, y: 601, color: 'yellow', type: 'normal', zone: 'Rosin Rail Station' },
+  { index: 45, x: 677, y: 594, color: 'red', type: 'normal', zone: 'Rosin Rail Station' },
+  { index: 46, x: 611, y: 601, color: 'purple', type: 'normal', zone: 'Rosin Rail Station' },
+  { index: 47, x: 545, y: 643, color: 'red', type: 'normal', zone: 'Rosin Rail Station' },
+  { index: 48, x: 503, y: 701, color: 'yellow', type: 'normal', zone: 'Munchie Mountain' },
+  { index: 49, x: 503, y: 773, color: 'blue', type: 'normal', zone: 'Munchie Mountain' },
+  { index: 50, x: 438, y: 833, color: 'red', type: 'normal', zone: 'Munchie Mountain' },
+  { index: 51, x: 383, y: 866, color: 'purple', type: 'normal', zone: 'Munchie Mountain' },
+  { index: 52, x: 300, y: 896, color: 'green', type: 'normal', zone: 'Munchie Mountain' },
+  { index: 53, x: 251, y: 899, color: 'blue', type: 'normal', zone: 'Munchie Mountain' },
+  { index: 54, x: 195, y: 897, color: 'blue', type: 'normal', zone: 'Munchie Mountain' },
+  { index: 55, x: 133, y: 868, color: 'yellow', type: 'normal', zone: 'Munchie Mountain' },
+  { index: 56, x: 91, y: 805, color: 'red', type: 'normal', zone: 'Munchie Mountain' },
+  { index: 57, x: 79, y: 737, color: 'green', type: 'normal', zone: 'Munchie Mountain' },
+  { index: 58, x: 140, y: 675, color: 'purple', type: 'normal', zone: 'Munchie Mountain' },
+  { index: 59, x: 194, y: 652, color: 'red', type: 'normal', zone: 'Munchie Mountain' },
+  { index: 60, x: 267, y: 655, color: 'blue', type: 'normal', zone: 'Munchie Mountain' },
+  { index: 61, x: 337, y: 689, color: 'red', type: 'normal', zone: 'Munchie Mountain' },
+  { index: 62, x: 418, y: 649, color: 'green', type: 'normal', zone: 'Munchie Mountain' },
+  { index: 63, x: 437, y: 610, color: 'blue', type: 'normal', zone: 'Munchie Mountain' },
+  { index: 64, x: 393, y: 550, color: 'green', type: 'normal', zone: 'Munchie Mountain' },
+  { index: 65, x: 331, y: 500, color: 'yellow', type: 'normal', zone: 'Kief Caves' },
+  { index: 66, x: 302, y: 475, color: 'red', type: 'normal', zone: 'Kief Caves' },
+  { index: 67, x: 334, y: 402, color: 'green', type: 'normal', zone: 'Kief Caves' },
+  { index: 68, x: 397, y: 387, color: 'blue', type: 'normal', zone: 'Kief Caves' },
+  { index: 69, x: 480, y: 390, color: 'yellow', type: 'normal', zone: 'Kief Caves' },
+  { index: 70, x: 553, y: 410, color: 'purple', type: 'normal', zone: 'Kief Caves' },
+  { index: 71, x: 629, y: 449, color: 'red', type: 'normal', zone: 'Kief Caves' },
+  { index: 72, x: 707, y: 489, color: 'special', type: 'action', zone: 'Kief Caves', label: 'HIT' },
+  { index: 73, x: 792, y: 487, color: 'blue', type: 'normal', zone: 'Kief Caves' },
+  { index: 74, x: 881, y: 513, color: 'red', type: 'normal', zone: 'Kief Caves' },
+  { index: 75, x: 959, y: 527, color: 'purple', type: 'normal', zone: 'Kief Caves' },
+  { index: 76, x: 1038, y: 538, color: 'yellow', type: 'normal', zone: 'Kief Caves' },
+  { index: 77, x: 1112, y: 545, color: 'blue', type: 'normal', zone: 'Kief Caves' },
+  { index: 78, x: 1285, y: 510, color: 'yellow', type: 'normal', zone: 'Kief Caves' },
+  { index: 79, x: 1350, y: 462, color: 'blue', type: 'normal', zone: 'Kief Caves' },
+  { index: 80, x: 1362, y: 412, color: 'purple', type: 'normal', zone: 'Kief Caves' },
+  { index: 81, x: 1317, y: 353, color: 'red', type: 'normal', zone: 'Trichome Towers' },
+  { index: 82, x: 1274, y: 288, color: 'blue', type: 'normal', zone: 'Trichome Towers' },
+  { index: 83, x: 1203, y: 248, color: 'special', type: 'action', zone: 'Trichome Towers', label: 'HIT' },
+  { index: 84, x: 1128, y: 195, color: 'red', type: 'normal', zone: 'Trichome Towers' },
+  { index: 85, x: 1040, y: 203, color: 'purple', type: 'normal', zone: 'Trichome Towers' },
+  { index: 86, x: 995, y: 249, color: 'yellow', type: 'normal', zone: 'Trichome Towers' },
+  { index: 87, x: 966, y: 335, color: 'blue', type: 'normal', zone: 'Trichome Towers' },
+  { index: 88, x: 937, y: 389, color: 'green', type: 'normal', zone: 'Trichome Towers' },
+  { index: 89, x: 899, y: 424, color: 'red', type: 'normal', zone: 'Trichome Towers' },
+  { index: 90, x: 841, y: 430, color: 'purple', type: 'normal', zone: 'Trichome Towers' },
+  { index: 91, x: 781, y: 419, color: 'yellow', type: 'normal', zone: 'Trichome Towers' },
+  { index: 92, x: 724, y: 382, color: 'blue', type: 'normal', zone: 'Trichome Towers' },
+  { index: 93, x: 670, y: 364, color: 'blue', type: 'normal', zone: 'Trichome Towers' },
+  { index: 94, x: 609, y: 332, color: 'green', type: 'normal', zone: 'Trichome Towers' },
+  { index: 95, x: 551, y: 305, color: 'red', type: 'normal', zone: 'Trichome Towers' },
+  { index: 96, x: 479, y: 304, color: 'purple', type: 'normal', zone: 'Trichome Towers' },
+  { index: 97, x: 436, y: 313, color: 'special', type: 'action', zone: 'Cloud 9 Citadel', label: 'HIT' },
+  { index: 98, x: 332, y: 321, color: 'blue', type: 'normal', zone: 'Cloud 9 Citadel' },
+  { index: 99, x: 265, y: 331, color: 'green', type: 'normal', zone: 'Cloud 9 Citadel' },
+  { index: 100, x: 199, y: 331, color: 'yellow', type: 'normal', zone: 'Cloud 9 Citadel' },
+  { index: 101, x: 144, y: 268, color: 'purple', type: 'normal', zone: 'Cloud 9 Citadel' },
+  { index: 102, x: 122, y: 189, color: 'red', type: 'normal', zone: 'Cloud 9 Citadel' },
+  { index: 103, x: 159, y: 108, color: 'green', type: 'normal', zone: 'Cloud 9 Citadel' },
+  { index: 104, x: 242, y: 67, color: 'red', type: 'normal', zone: 'Cloud 9 Citadel' },
+  { index: 105, x: 327, y: 68, color: 'purple', type: 'normal', zone: 'Cloud 9 Citadel' },
+  { index: 106, x: 397, y: 95, color: 'yellow', type: 'normal', zone: 'Cloud 9 Citadel' },
+  { index: 107, x: 461, y: 136, color: 'blue', type: 'normal', zone: 'Cloud 9 Citadel' },
+  { index: 108, x: 525, y: 174, color: 'red', type: 'normal', zone: 'Cloud 9 Citadel' },
+  { index: 109, x: 589, y: 204, color: 'green', type: 'normal', zone: 'Cloud 9 Citadel' },
+  { index: 110, x: 651, y: 226, color: 'special', type: 'finish', zone: 'Cloud 9 Citadel', label: 'FINISH' },
 ];
 
-const actionIndexes = new Set([6, 13, 21, 28, 35, 42, 50, 58, 65]);
-const skipIndexes = new Set([17, 47]);
-
-function zoneForIndex(index: number): string {
-  if (index < 10) return 'Rolling Hills';
-  if (index < 20) return 'Dankwood Forest';
-  if (index < 30) return 'Rosin Rail Station';
-  if (index < 42) return 'Munchie Mountain';
-  if (index < 53) return 'Kief Caves';
-  if (index < 65) return 'Trichome Towers';
-  return 'Cloud 9 Citadel';
-}
-
-export const boardPath: BoardSpace[] = points.map(([x, y], index) => {
-  const isStart = index === 0;
-  const isFinish = index === points.length - 1;
-  const type = isStart
-    ? 'start'
-    : isFinish
-      ? 'finish'
-      : actionIndexes.has(index)
-        ? 'action'
-        : skipIndexes.has(index)
-          ? 'skip'
-          : 'normal';
-
-  return {
-    index,
-    x,
-    y,
-    color: isStart || isFinish || type === 'action' || type === 'skip' ? 'special' : colors[index % colors.length],
-    type,
-    zone: zoneForIndex(index),
-    label: isStart ? 'START' : isFinish ? 'FINISH' : type === 'action' ? 'CARD' : type === 'skip' ? 'SKIP' : undefined
-  };
-});
-
-export const finishIndex = boardPath.length - 1;
+export const startIndex = 0;
+export const firstPlayableIndex = 1;
+export const finishIndex = 110;
