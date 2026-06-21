@@ -6,13 +6,18 @@ import { GameRulesPanel } from './ui/GameRulesPanel';
 import { DevPanel } from './ui/DevPanel';
 import { createInitialGame, restartGame, rollCurrentTurn } from './game/systems/gameEngine';
 import { isMuted, playCardSound, playRollSound, playWinSound, setMuted as setAudioMuted } from './game/systems/audioSystem';
-import { clearSavedGameState, loadGameState, saveGameState } from './game/systems/storageSystem';
+import { normalizePlayerName } from './game/systems/finalBoardMovement';
 
-const playerOptions = [2, 3, 4, 5, 6, 8, 10];
+const playerOptions = [2, 3, 4];
+
+function defaultNames(count: number): string[] {
+  return Array.from({ length: count }, (_, index) => `Player ${index + 1}`);
+}
 
 export default function App() {
   const [playerCount, setPlayerCount] = useState(2);
-  const [gameState, setGameState] = useState(() => createInitialGame(2));
+  const [playerNames, setPlayerNames] = useState(() => defaultNames(2));
+  const [gameState, setGameState] = useState(() => createInitialGame(2, defaultNames(2)));
   const [muted, setMuted] = useState(isMuted());
 
   const currentPlayer = gameState.players[gameState.currentPlayerIndex];
@@ -21,9 +26,21 @@ export default function App() {
     [gameState.players, gameState.winnerId]
   );
 
-  function startGame(count: number): void {
+  function setCount(count: number): void {
     setPlayerCount(count);
-    setGameState(createInitialGame(count));
+    setPlayerNames((names) => Array.from({ length: count }, (_, index) => names[index] ?? `Player ${index + 1}`));
+  }
+
+  function setName(index: number, value: string): void {
+    setPlayerNames((names) => names.map((name, nameIndex) => (nameIndex === index ? value : name)));
+  }
+
+  function normalizedNames(): string[] {
+    return playerNames.map((name, index) => normalizePlayerName(name, `Player ${index + 1}`));
+  }
+
+  function startGame(): void {
+    setGameState(createInitialGame(playerCount, normalizedNames()));
   }
 
   function roll(): void {
@@ -36,20 +53,7 @@ export default function App() {
   }
 
   function restart(): void {
-    const next = restartGame(playerCount);
-    setGameState(next);
-    clearSavedGameState();
-  }
-
-  function save(): void {
-    saveGameState(gameState);
-  }
-
-  function load(): void {
-    const saved = loadGameState();
-    if (!saved) return;
-    setPlayerCount(saved.players.length);
-    setGameState(saved);
+    setGameState(restartGame(playerCount, normalizedNames()));
   }
 
   function toggleMute(): void {
@@ -64,7 +68,7 @@ export default function App() {
         <div className="title-card">
           <p className="eyebrow">Browser Board Game Prototype</p>
           <h1>High Land: The Sweet Escape</h1>
-          <p className="subtitle">Roll, move, draw action cards, dodge skips, and race to the finish with up to 10 players.</p>
+          <p className="subtitle">Roll, move, draw HIT cards, and race across the finish line with 2-4 named players.</p>
         </div>
 
         <div className="controls-card">
@@ -73,11 +77,26 @@ export default function App() {
               <button
                 className={count === playerCount ? 'selected' : ''}
                 key={count}
-                onClick={() => startGame(count)}
+                onClick={() => setCount(count)}
                 type="button"
               >
                 {count} Players
               </button>
+            ))}
+          </div>
+
+          <div className="name-grid" aria-label="Player names">
+            {playerNames.map((name, index) => (
+              <label key={`player-name-${index + 1}`}>
+                <span>Player {index + 1}</span>
+                <input
+                  maxLength={18}
+                  onChange={(event) => setName(index, event.target.value)}
+                  placeholder={`Player ${index + 1}`}
+                  type="text"
+                  value={name}
+                />
+              </label>
             ))}
           </div>
 
@@ -92,12 +111,18 @@ export default function App() {
             <button className="primary" disabled={gameState.phase === 'game_over'} onClick={roll} type="button">
               Roll Dice
             </button>
+            <button onClick={startGame} type="button">Start Named Game</button>
             <button onClick={restart} type="button">Restart</button>
-            <button onClick={save} type="button">Save</button>
-            <button onClick={load} type="button">Load</button>
             <button onClick={toggleMute} type="button">{muted ? 'Unmute' : 'Mute'}</button>
           </div>
         </div>
+
+        {winner ? (
+          <div className="winner-modal" role="status" aria-live="polite">
+            <strong>{winner.name} wins!</strong>
+            <p>{winner.name} crossed the finish line.</p>
+          </div>
+        ) : null}
 
         <div className="message-card">
           <strong>Status</strong>
