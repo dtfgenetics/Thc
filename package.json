@@ -8,6 +8,14 @@
   "scripts": {
     "dev:high-land": "npm --workspace apps/high-land-web run dev",
     "build:high-land": "npm --workspace apps/high-land-web run build",
-    "test:high-land": "npm --workspace apps/high-land-web run test"
+    "test:high-land": "npm --workspace apps/high-land-web run test",
+    "supabase": "supabase",
+    "supabase:start": "supabase start",
+    "supabase:stop": "supabase stop",
+    "supabase:status": "supabase status",
+    "supabase:link": "supabase link"
+  },
+  "devDependencies": {
+    "supabase": "latest"
   }
 }
