@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react';
 import type Phaser from 'phaser';
-import { createHighLandGame } from '../game/HighLandGame';
 import { gameAssetPath } from '../game/systems/assetPath';
 import type { GameState } from '../game/types/gameTypes';
 
@@ -18,15 +17,18 @@ export function PhaserBoard({ state }: PhaserBoardProps) {
     if (!containerRef.current || gameRef.current) return;
 
     let cancelled = false;
+    const gameModule = import('../game/HighLandGame');
     const boardImageUrl = gameAssetPath('assets/images/board/high-land-board.jpg');
     const boardImage = new Image();
-    const startGame = (imageUrl?: string) => {
+    const startGame = async (imageUrl?: string) => {
+      if (cancelled || !containerRef.current || gameRef.current) return;
+      const { createHighLandGame } = await gameModule;
       if (cancelled || !containerRef.current || gameRef.current) return;
       gameRef.current = createHighLandGame(containerRef.current, imageUrl, stateRef.current);
     };
 
-    boardImage.onload = () => startGame(boardImageUrl);
-    boardImage.onerror = () => startGame();
+    boardImage.onload = () => void startGame(boardImageUrl);
+    boardImage.onerror = () => void startGame();
     boardImage.src = boardImageUrl;
 
     return () => {
