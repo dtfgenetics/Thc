@@ -126,12 +126,6 @@ if ($action === 'inspect') {
         ]);
     }
 
-    $now = time();
-    if ($now - (int) ($room['lastSeen'][$playerId] ?? 0) >= 5) {
-        $room['lastSeen'][$playerId] = $now;
-        $dirty = true;
-    }
-
     if ($action === 'sync') {
         $payload = ['room' => publicRoom($room)];
     } elseif ($action === 'start') {
@@ -281,10 +275,8 @@ function createGameState(array $players): array
 
 function publicRoom(array $room): array
 {
-    $now = time();
-    $players = array_map(static function (array $player) use ($room, $now): array {
-        $lastSeen = (int) ($room['lastSeen'][$player['id']] ?? 0);
-        $player['connected'] = $now - $lastSeen < 15;
+    $players = array_map(static function (array $player): array {
+        $player['connected'] = true;
         return $player;
     }, $room['players']);
     return [

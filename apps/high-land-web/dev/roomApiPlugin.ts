@@ -226,14 +226,13 @@ function createGameState(players: LobbyPlayer[]): Record<string, unknown> {
 }
 
 function publicRoom(room: InternalRoom) {
-  const now = Date.now();
   return {
     gameId: room.gameId,
     status: room.status,
     hostPlayerId: room.hostPlayerId,
     players: room.players.map((player) => ({
       ...player,
-      connected: now - (room.lastSeen[player.id] ?? 0) < 15_000
+      connected: true
     })),
     gameState: room.gameState,
     version: room.version,
