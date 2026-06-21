@@ -40,7 +40,7 @@ describe('board path', () => {
   });
 
   it('is one ordered route with no disconnected spaces', () => {
-    expect(boardPath).toHaveLength(83);
+    expect(boardPath).toHaveLength(111);
     for (let index = 1; index < boardPath.length; index += 1) {
       const previous = boardPath[index - 1];
       const current = boardPath[index];
@@ -48,6 +48,10 @@ describe('board path', () => {
       expect(distance).toBeGreaterThan(0);
       expect(distance).toBeLessThan(100);
     }
+  });
+
+  it('maps the four printed HIT spaces exactly', () => {
+    expect(boardPath.filter((space) => space.type === 'action').map((space) => space.index)).toEqual([27, 70, 83, 96]);
   });
 
   it('keeps all seven approved locations in order', () => {
@@ -70,15 +74,21 @@ describe('board path', () => {
 });
 
 describe('game engine', () => {
-  it('creates 2 to 10 player games', () => {
+  it('creates 1 to 10 player games', () => {
+    expect(createInitialGame(1).players).toHaveLength(1);
     expect(createInitialGame(2).players).toHaveLength(2);
     expect(createInitialGame(4).players).toHaveLength(4);
     expect(createInitialGame(10).players).toHaveLength(10);
   });
 
   it('rejects invalid player counts', () => {
-    expect(() => createInitialGame(1)).toThrow();
+    expect(() => createInitialGame(0)).toThrow();
     expect(() => createInitialGame(11)).toThrow();
+  });
+
+  it('uses entered names and numbered fallbacks', () => {
+    const state = createInitialGame(3, ['GreenBean', '', '  Mango Mike  ']);
+    expect(state.players.map((player) => player.name)).toEqual(['GreenBean', 'Player 2', 'Mango Mike']);
   });
 
   it('rolls, moves, and advances turns', () => {

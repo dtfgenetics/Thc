@@ -13,8 +13,10 @@ const colorMap: Record<string, number> = {
 };
 
 export class BoardScene extends Phaser.Scene {
+  private tokenContainers = new Map<string, Phaser.GameObjects.Container>();
   private tokenSprites = new Map<string, Phaser.GameObjects.Arc>();
   private tokenLabels = new Map<string, Phaser.GameObjects.Text>();
+  private tokenNameLabels = new Map<string, Phaser.GameObjects.Text>();
   private lastPositions = new Map<string, number>();
   private hasBoardArt = false;
 
@@ -46,15 +48,24 @@ export class BoardScene extends Phaser.Scene {
     }
 
     window.addEventListener('game-state-update', this.handleStateUpdate as EventListener);
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, this.cleanup, this);
+    this.events.once(Phaser.Scenes.Events.DESTROY, this.cleanup, this);
     const initialState = this.registry.get('initial-game-state') as GameState | undefined;
     if (initialState) this.renderGameState(initialState);
   }
 
-  shutdown(): void {
+  private cleanup(): void {
     window.removeEventListener('game-state-update', this.handleStateUpdate as EventListener);
+    this.tweens.killAll();
+    this.tokenContainers.clear();
+    this.tokenSprites.clear();
+    this.tokenLabels.clear();
+    this.tokenNameLabels.clear();
+    this.lastPositions.clear();
   }
 
   private handleStateUpdate = (event: CustomEvent<GameState>): void => {
+    if (!this.sys.isActive()) return;
     this.renderGameState(event.detail);
   };
 
@@ -126,21 +137,32 @@ export class BoardScene extends Phaser.Scene {
     const targetX = currentSpace.x + offset.x;
     const targetY = currentSpace.y + offset.y;
 
-    let token = this.tokenSprites.get(player.id);
+    let container = this.tokenContainers.get(player.id);
+    const token = this.tokenSprites.get(player.id);
     const label = this.tokenLabels.get(player.id);
+    const nameLabel = this.tokenNameLabels.get(player.id);
 
-    if (!token) {
-      token = this.add.circle(targetX, targetY, tokenRadius, Phaser.Display.Color.HexStringToColor(player.color).color, 1)
-        .setStrokeStyle(isCurrentPlayer ? 6 : 3, isCurrentPlayer ? 0xffd86a : 0xffffff)
-        .setDepth(12);
-      const newLabel = this.add.text(targetX, targetY, String(playerIndex + 1), {
+    if (!container || !token) {
+      const newToken = this.add.circle(0, 0, tokenRadius, Phaser.Display.Color.HexStringToColor(player.color).color, 1)
+        .setStrokeStyle(isCurrentPlayer ? 6 : 3, isCurrentPlayer ? 0xffd86a : 0xffffff);
+      const newLabel = this.add.text(0, 0, String(playerIndex + 1), {
         fontFamily: 'Arial',
         fontSize: playerCount > 8 ? '10px' : '12px',
         color: '#ffffff',
         fontStyle: 'bold'
-      }).setOrigin(0.5).setDepth(13);
-      this.tokenSprites.set(player.id, token);
+      }).setOrigin(0.5);
+      const newNameLabel = this.add.text(0, tokenRadius + 12, player.name, {
+        fontFamily: 'Arial',
+        fontSize: playerCount > 6 ? '9px' : '11px',
+        color: '#ffffff',
+        backgroundColor: 'rgba(8, 10, 9, 0.82)',
+        padding: { x: 4, y: 2 }
+      }).setOrigin(0.5, 0);
+      container = this.add.container(targetX, targetY, [newToken, newLabel, newNameLabel]).setDepth(12);
+      this.tokenContainers.set(player.id, container);
+      this.tokenSprites.set(player.id, newToken);
       this.tokenLabels.set(player.id, newLabel);
+      this.tokenNameLabels.set(player.id, newNameLabel);
       this.lastPositions.set(player.id, player.positionIndex);
       return;
     }
@@ -148,6 +170,8 @@ export class BoardScene extends Phaser.Scene {
     token.setRadius(tokenRadius);
     token.setStrokeStyle(isCurrentPlayer ? 6 : 3, isCurrentPlayer ? 0xffd86a : 0xffffff);
     token.setScale(isCurrentPlayer ? 1.12 : 1);
+    label?.setText(String(playerIndex + 1));
+    nameLabel?.setText(player.name).setPosition(0, tokenRadius + 12);
 
     const fromIndex = this.lastPositions.get(player.id) ?? player.positionIndex;
     this.lastPositions.set(player.id, player.positionIndex);
@@ -159,16 +183,14 @@ export class BoardScene extends Phaser.Scene {
     });
 
     if (targets.length <= 1) {
-      token.setPosition(targetX, targetY);
-      label?.setPosition(targetX, targetY);
+      container.setPosition(targetX, targetY);
       return;
     }
 
-    this.tweens.killTweensOf(token);
-    if (label) this.tweens.killTweensOf(label);
+    this.tweens.killTweensOf(container);
 
     this.tweens.chain({
-      targets: label ? [token, label] : token,
+      targets: container,
       tweens: targets.map((target) => ({
         x: target.x,
         y: target.y,

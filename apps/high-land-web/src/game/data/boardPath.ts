@@ -3,54 +3,73 @@ import type { BoardSpace, SpaceColor } from '../types/gameTypes';
 export const boardWidth = 1280;
 export const boardHeight = 960;
 
-const colors: SpaceColor[] = ['red', 'yellow', 'green', 'blue', 'purple'];
+type TilePoint = readonly [x: number, y: number, color: Exclude<SpaceColor, 'special'> | 'hit'];
 
-// Percent coordinates follow the single printed route from START to FINISH.
-const pathPercentCoordinates = [
-  [35.6, 77.8], [39.7, 74.9], [44.2, 73.1], [49.2, 74.1], [53.7, 78.1],
-  [58.1, 82.0], [63.2, 84.0], [68.7, 83.9], [74.1, 82.3], [78.0, 78.8],
-  [78.0, 74.7], [73.0, 73.6], [67.5, 73.6], [61.8, 73.7], [56.1, 72.0],
-  [52.4, 68.2], [52.4, 63.7], [56.9, 61.8], [62.1, 62.2], [67.7, 63.2],
-  [73.4, 63.2], [79.3, 61.0], [84.0, 56.8], [84.5, 51.3], [80.6, 48.4],
-  [74.9, 48.8], [68.9, 50.1], [63.2, 50.3], [57.4, 48.7], [51.7, 46.8],
-  [46.0, 46.0], [41.0, 47.8], [37.5, 52.3], [34.8, 58.2], [31.1, 63.8],
-  [26.1, 67.0], [20.4, 67.0], [14.8, 65.3], [9.9, 61.6], [8.4, 56.1],
-  [10.9, 51.6], [16.4, 50.2], [22.2, 51.3], [27.5, 49.4], [30.2, 44.4],
-  [28.0, 40.7], [23.7, 38.9], [21.6, 35.2], [24.9, 31.7], [30.7, 30.5],
-  [36.6, 31.0], [42.4, 33.0], [48.2, 35.5], [54.0, 37.6], [60.0, 38.4],
-  [65.9, 38.4], [71.8, 37.6], [78.0, 35.6], [83.2, 31.7], [84.2, 26.6],
-  [80.6, 22.6], [75.2, 21.7], [70.5, 24.7], [67.4, 29.5], [62.4, 32.2],
-  [56.6, 32.1], [50.8, 30.4], [45.0, 28.1], [39.4, 25.8], [33.7, 24.4],
-  [27.8, 23.6], [21.7, 23.5], [16.0, 22.0], [11.9, 18.4], [12.6, 13.1],
-  [17.2, 9.7], [23.1, 9.6], [28.7, 11.3], [34.3, 13.8], [40.0, 16.2],
-  [40.1, 13.4], [40.2, 10.5], [40.3, 7.8]
+// Centers extracted from the authored 1280x960 path, ordered from START to FINISH.
+const tilePoints: TilePoint[] = [
+  [237.6, 907.9, 'purple'], [304.1, 900.8, 'red'], [366.2, 871.1, 'yellow'],
+  [415.2, 824.6, 'blue'], [462.7, 777.1, 'green'], [521.8, 757.3, 'red'],
+  [578.1, 766.0, 'purple'], [628.7, 794.5, 'blue'], [674.0, 835.1, 'yellow'],
+  [722.6, 874.6, 'red'], [778.8, 907.8, 'purple'], [842.8, 907.8, 'purple'],
+  [903.3, 917.8, 'yellow'], [964.9, 913.9, 'red'], [1016.3, 884.7, 'green'],
+  [1023.9, 834.0, 'yellow'], [978.8, 801.4, 'purple'], [917.8, 796.0, 'red'],
+  [856.8, 796.6, 'blue'], [797.6, 793.7, 'green'], [737.8, 777.5, 'yellow'],
+  [686.7, 744.0, 'purple'], [672.2, 691.6, 'red'], [715.9, 657.6, 'green'],
+  [776.1, 666.7, 'blue'], [834.6, 684.6, 'yellow'], [893.6, 703.3, 'purple'],
+  [948.6, 726.0, 'hit'], [1013.5, 734.4, 'blue'], [1071.6, 735.0, 'green'],
+  [1123.2, 711.5, 'yellow'], [1154.2, 660.6, 'red'], [1150.4, 599.0, 'blue'],
+  [1112.6, 558.6, 'green'], [1057.2, 547.9, 'red'], [995.3, 563.3, 'purple'],
+  [925.3, 581.6, 'yellow'], [858.9, 585.7, 'purple'], [801.4, 561.5, 'red'],
+  [747.5, 530.0, 'green'], [693.3, 507.4, 'blue'], [636.1, 495.9, 'yellow'],
+  [578.5, 500.1, 'red'], [525.0, 515.6, 'purple'], [481.1, 549.6, 'red'],
+  [447.4, 597.2, 'yellow'], [413.9, 646.7, 'blue'], [371.3, 690.0, 'red'],
+  [315.6, 722.6, 'purple'], [251.7, 737.9, 'green'], [189.2, 736.8, 'blue'],
+  [130.5, 716.5, 'yellow'], [83.3, 676.1, 'red'], [67.0, 617.5, 'green'],
+  [87.9, 569.0, 'purple'], [131.3, 544.1, 'red'], [184.2, 540.7, 'yellow'],
+  [238.1, 557.4, 'blue'], [301.7, 572.9, 'red'], [360.9, 546.4, 'green'],
+  [357.2, 490.0, 'blue'], [308.5, 459.9, 'green'], [262.4, 426.6, 'yellow'],
+  [257.2, 373.3, 'red'], [299.9, 333.8, 'green'], [358.6, 320.5, 'blue'],
+  [416.7, 325.4, 'yellow'], [472.1, 344.9, 'purple'], [523.9, 371.3, 'red'],
+  [577.7, 399.2, 'green'], [635.3, 432.0, 'hit'], [696.1, 443.2, 'blue'],
+  [754.9, 458.3, 'red'], [814.0, 468.7, 'purple'], [873.1, 476.2, 'yellow'],
+  [933.0, 481.9, 'blue'], [997.7, 477.8, 'red'], [1061.9, 456.2, 'yellow'],
+  [1115.9, 419.7, 'blue'], [1137.1, 365.4, 'purple'], [1116.8, 310.5, 'red'],
+  [1066.2, 277.8, 'blue'], [1014.2, 243.3, 'yellow'], [976.2, 190.1, 'hit'],
+  [925.1, 157.1, 'red'], [872.6, 168.6, 'purple'], [835.3, 210.1, 'yellow'],
+  [813.5, 264.2, 'blue'], [788.5, 315.7, 'green'], [746.0, 357.3, 'red'],
+  [688.1, 365.3, 'purple'], [632.6, 347.7, 'yellow'], [583.3, 317.7, 'blue'],
+  [534.1, 285.7, 'green'], [479.2, 261.9, 'red'], [420.8, 251.5, 'purple'],
+  [366.0, 260.9, 'hit'], [300.3, 268.0, 'blue'], [240.6, 275.0, 'green'],
+  [180.4, 263.8, 'yellow'], [128.0, 233.1, 'purple'], [101.1, 179.9, 'red'],
+  [108.3, 121.7, 'yellow'], [145.6, 78.6, 'green'], [202.3, 54.9, 'red'],
+  [261.1, 55.2, 'purple'], [318.2, 72.7, 'yellow'], [369.4, 103.0, 'blue'],
+  [419.2, 134.1, 'red'], [475.1, 163.6, 'green'], [536.9, 187.3, 'blue']
 ];
 
-export const actionSpaceIndexes = [4, 10, 15, 22, 28, 34, 41, 47, 53, 60, 66, 72, 78];
-const actionIndexes = new Set(actionSpaceIndexes);
+export const actionSpaceIndexes = tilePoints
+  .map(([, , color], index) => color === 'hit' ? index : -1)
+  .filter((index) => index >= 0);
 
 function zoneForIndex(index: number): string {
-  if (index < 12) return 'Rolling Hills';
-  if (index < 24) return 'Dankwood Forest';
-  if (index < 36) return 'Rosin Rail Station';
-  if (index < 48) return 'Munchie Mountain';
-  if (index < 60) return 'Kief Caves';
-  if (index < 76) return 'Trichome Towers';
+  if (index < 16) return 'Rolling Hills';
+  if (index < 32) return 'Dankwood Forest';
+  if (index < 48) return 'Rosin Rail Station';
+  if (index < 64) return 'Munchie Mountain';
+  if (index < 80) return 'Kief Caves';
+  if (index < 96) return 'Trichome Towers';
   return 'Cloud 9 Citadel';
 }
 
-export const boardPath: BoardSpace[] = pathPercentCoordinates.map(([xPercent, yPercent], index) => {
+export const boardPath: BoardSpace[] = tilePoints.map(([x, y, printedColor], index) => {
   const isStart = index === 0;
-  const isFinish = index === pathPercentCoordinates.length - 1;
-  const isAction = actionIndexes.has(index);
-  const type = isStart ? 'start' : isFinish ? 'finish' : isAction ? 'action' : 'normal';
-
+  const isFinish = index === tilePoints.length - 1;
+  const isAction = printedColor === 'hit';
   return {
     index,
-    x: (xPercent / 100) * boardWidth,
-    y: (yPercent / 100) * boardHeight,
-    color: isStart || isFinish || isAction ? 'special' : colors[index % colors.length],
-    type,
+    x,
+    y,
+    color: isStart || isFinish || isAction ? 'special' : printedColor,
+    type: isStart ? 'start' : isFinish ? 'finish' : isAction ? 'action' : 'normal',
     zone: zoneForIndex(index),
     label: isStart ? 'START' : isFinish ? 'FINISH' : isAction ? 'HIT' : undefined
   };

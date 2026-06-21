@@ -6,6 +6,7 @@ type CardRevealModalProps = {
   card: ActionCard | null;
   choicePlayers?: Player[];
   choiceRequired?: boolean;
+  waitingForChoice?: boolean;
   onChoosePlayer?: (playerId: string) => void;
   onDismiss?: () => void;
 };
@@ -14,6 +15,7 @@ export function CardRevealModal({
   card,
   choicePlayers = [],
   choiceRequired = false,
+  waitingForChoice = false,
   onChoosePlayer,
   onDismiss
 }: CardRevealModalProps) {
@@ -65,6 +67,8 @@ export function CardRevealModal({
                 ))}
               </div>
             </div>
+          ) : waitingForChoice ? (
+            <div className="waiting-message">Waiting for the active player to choose.</div>
           ) : (
             <button className="primary card-continue" onClick={onDismiss} type="button">
               Continue

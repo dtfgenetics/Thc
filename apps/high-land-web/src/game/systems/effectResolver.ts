@@ -34,7 +34,7 @@ export function resolveActionCard(state: GameState, card: ActionCard): GameState
     currentPlayerIndex: winner || isChoosingPlayer || resolution.keepTurn || resolution.drawAgain
       ? state.currentPlayerIndex
       : nextPlayerIndex(resolution.state.players, state.currentPlayerIndex, resolution.state.turnDirection),
-    message: `${currentPlayer.name}: ${card.title}. ${card.text}`
+    message: `${currentPlayer.name} drew HIT card: ${card.title}. ${card.text}`
   };
 }
 
@@ -58,7 +58,7 @@ export function resolvePendingPlayerChoice(state: GameState, targetPlayerId: str
       ? state.currentPlayerIndex
       : nextPlayerIndex(movedState.players, state.currentPlayerIndex, movedState.turnDirection),
     message: winner
-      ? `${winner.name} reached Cloud 9 Citadel.`
+      ? `${winner.name} reached Cloud 9 Citadel and wins!`
       : `${sourcePlayer.name} boosted ${targetPlayer.name} forward ${choice.targetAmount}.`
   };
 }

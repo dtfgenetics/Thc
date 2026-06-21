@@ -39,7 +39,7 @@ function sweepForWinner(state: GameState): GameState {
     ...state,
     phase: 'game_over',
     winnerId: winner.id,
-    message: `${winner.name} reached the finish.`
+    message: `${winner.name} reached Cloud 9 Citadel and wins!`
   };
 }
 
