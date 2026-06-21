@@ -8,6 +8,9 @@
   "scripts": {
     "dev:high-land": "npm --workspace apps/high-land-web run dev",
     "build:high-land": "npm --workspace apps/high-land-web run build",
-    "test:high-land": "npm --workspace apps/high-land-web run test"
+    "test:high-land": "npm --workspace apps/high-land-web run test",
+    "dev:high-land-server": "npm --workspace apps/high-land-server run dev",
+    "build:high-land-server": "npm --workspace apps/high-land-server run build",
+    "test:high-land-server": "npm --workspace apps/high-land-server run test"
   }
 }
