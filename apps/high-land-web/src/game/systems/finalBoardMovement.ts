@@ -86,7 +86,7 @@ export function clampBoardPosition(position: number): number {
  * Core High Land movement rule.
  * Players begin at position 0 in the invisible start staging box.
  * A roll of 6 from START traverses [1,2,3,4,5,6] and lands on 6.
- * Winning does not require a perfect roll. Any move that reaches or passes 110 wins.
+ * Winning does not require a perfect roll. Any forward move that reaches or passes 110 wins.
  */
 export function calculateFinalBoardMove(fromPosition: number, amount: number, reason: MoveReason = 'dice'): BoardMove {
   const cleanFrom = clampBoardPosition(fromPosition);
@@ -95,7 +95,7 @@ export function calculateFinalBoardMove(fromPosition: number, amount: number, re
   }
 
   const rawTarget = cleanFrom + amount;
-  const crossedFinish = rawTarget >= WIN_POSITION;
+  const crossedFinish = amount > 0 && cleanFrom < WIN_POSITION && rawTarget >= WIN_POSITION;
   const toPosition = clampBoardPosition(rawTarget);
   const direction = toPosition >= cleanFrom ? 1 : -1;
   const traversedPositions: number[] = [];
@@ -116,16 +116,10 @@ export function calculateFinalBoardMove(fromPosition: number, amount: number, re
   };
 }
 
-export function getBoardAnchor(
-  position: number,
-  boardPoints: readonly BoardPoint[],
-  startAnchor: AnchorPoint,
-  finishAnchor?: AnchorPoint
-): AnchorPoint {
+export function getBoardAnchor(position: number, boardPoints: readonly BoardPoint[], startAnchor: AnchorPoint): AnchorPoint {
   if (position <= START_POSITION) return startAnchor;
-  if (position >= WIN_POSITION && finishAnchor) return finishAnchor;
-  const point = boardPoints[position - 1];
-  if (!point) return finishAnchor ?? boardPoints[boardPoints.length - 1] ?? startAnchor;
+  const point = boardPoints[position - 1] ?? boardPoints[boardPoints.length - 1];
+  if (!point) return startAnchor;
   return { x: point.x, y: point.y };
 }
 
@@ -136,15 +130,43 @@ const slotOffsetTable: Record<number, readonly AnchorPoint[]> = {
   4: [{ x: -7, y: -7 }, { x: 7, y: -7 }, { x: -7, y: 7 }, { x: 7, y: 7 }]
 };
 
+function buildCompactGridOffsets(count: number): AnchorPoint[] {
+  const columns = count > 8 ? 5 : 4;
+  const rows = Math.ceil(count / columns);
+  const xSpacing = count > 8 ? 7 : 8;
+  const ySpacing = rows > 2 ? 7 : 8;
+
+  return Array.from({ length: count }, (_, index) => {
+    const row = Math.floor(index / columns);
+    const itemsInThisRow = Math.min(columns, count - row * columns);
+    const column = index % columns;
+    const x = Math.round((column - (itemsInThisRow - 1) / 2) * xSpacing);
+    const y = Math.round((row - (rows - 1) / 2) * ySpacing);
+    return { x, y };
+  });
+}
+
+export function getTokenOffsetsForOccupancy(count: number): AnchorPoint[] {
+  if (!Number.isInteger(count) || count < 1) return [{ x: 0, y: 0 }];
+  if (count <= 4) return [...(slotOffsetTable[count] ?? slotOffsetTable[1])];
+  return buildCompactGridOffsets(count);
+}
+
+export function getTokenRadiusForOccupancy(count: number): number {
+  if (count <= 1) return 8;
+  if (count <= 4) return 6;
+  if (count <= 8) return 4.5;
+  return 3.8;
+}
+
 /**
  * Keeps pieces inside the current square instead of floating beside the board.
- * For more than four players on one square, use a smaller token radius before increasing offsets.
+ * This supports a crowded same-square stack up to the current app maximum of 10 players.
  */
 export function buildTokenSlots(
   players: readonly NamedPlayerInput[],
   boardPoints: readonly BoardPoint[],
-  startAnchor: AnchorPoint,
-  finishAnchor?: AnchorPoint
+  startAnchor: AnchorPoint
 ): TokenSlot[] {
   const grouped = new Map<number, NamedPlayerInput[]>();
   players.forEach((player) => {
@@ -157,12 +179,11 @@ export function buildTokenSlots(
   const slots: TokenSlot[] = [];
   grouped.forEach((group, position) => {
     const sorted = [...group].sort((a, b) => a.id.localeCompare(b.id));
-    const slotCount = Math.min(sorted.length, 4);
-    const offsets = slotOffsetTable[slotCount] ?? slotOffsetTable[4];
-    const anchor = getBoardAnchor(position, boardPoints, startAnchor, finishAnchor);
+    const offsets = getTokenOffsetsForOccupancy(sorted.length);
+    const anchor = getBoardAnchor(position, boardPoints, startAnchor);
 
     sorted.forEach((player, index) => {
-      const offset = offsets[Math.min(index, offsets.length - 1)];
+      const offset = offsets[index] ?? { x: 0, y: 0 };
       slots.push({
         playerId: player.id,
         position,
