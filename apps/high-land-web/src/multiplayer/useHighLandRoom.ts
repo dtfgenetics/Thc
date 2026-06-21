@@ -14,6 +14,7 @@ import {
   startRoom
 } from './roomClient';
 import type { ConnectionStatus, InviteStatus, RoomCredentials, RoomSnapshot } from './roomTypes';
+import { mergeRoomSnapshot } from './roomSync';
 
 const pollIntervalMs = 1_000;
 
@@ -34,9 +35,7 @@ export function useHighLandRoom() {
   roomRef.current = room;
 
   const acceptResponse = useCallback((nextRoom: RoomSnapshot, nextCredentials?: RoomCredentials) => {
-    setRoom((current) => current?.version === nextRoom.version
-      ? { ...nextRoom, gameState: current.gameState }
-      : nextRoom);
+    setRoom((current) => mergeRoomSnapshot(current, nextRoom));
     setConnectionStatus('connected');
     setInviteStatus(nextRoom.players.length >= nextRoom.maxPlayers ? 'full' : 'joinable');
     setError(null);
