@@ -36,7 +36,7 @@ export class BoardScene extends Phaser.Scene {
 
     if (this.textures.exists('board-background')) {
       this.hasBoardArt = true;
-      this.add.image(400, 450, 'board-background').setDisplaySize(800, 900).setDepth(0);
+      this.add.image(768, 576, 'board-background').setDisplaySize(1536, 1152).setDepth(0);
     } else {
       this.drawBackgroundZones();
     }
@@ -44,10 +44,10 @@ export class BoardScene extends Phaser.Scene {
     this.drawPath();
     this.messageText = this.add.text(24, 18, 'Ready', {
       fontFamily: 'Arial',
-      fontSize: '18px',
+      fontSize: '24px',
       color: '#ffffff',
       stroke: '#000000',
-      strokeThickness: 4
+      strokeThickness: 5
     }).setDepth(20);
 
     window.addEventListener('game-state-update', this.handleStateUpdate as EventListener);
@@ -64,13 +64,13 @@ export class BoardScene extends Phaser.Scene {
   private drawBackgroundZones(): void {
     const graphics = this.add.graphics();
     const zones = [
-      { x: 0, y: 0, w: 240, h: 300, color: 0x284d3a, label: 'Rolling Hills' },
-      { x: 240, y: 0, w: 260, h: 300, color: 0x17331f, label: 'Dankwood Forest' },
-      { x: 500, y: 0, w: 300, h: 300, color: 0x6d3f18, label: 'Rosin Rail Station' },
-      { x: 0, y: 300, w: 300, h: 300, color: 0x6b2f64, label: 'Munchie Mountain' },
-      { x: 300, y: 300, w: 250, h: 300, color: 0x33323a, label: 'Kief Caves' },
-      { x: 550, y: 300, w: 250, h: 300, color: 0x24506a, label: 'Trichome Towers' },
-      { x: 0, y: 600, w: 800, h: 300, color: 0x3d4f8f, label: 'Cloud 9 Citadel' }
+      { x: 0, y: 0, w: 420, h: 330, color: 0x284d3a, label: 'Cloud 9 Citadel' },
+      { x: 420, y: 0, w: 380, h: 330, color: 0x17331f, label: 'Trichome Towers' },
+      { x: 800, y: 0, w: 736, h: 330, color: 0x33323a, label: 'Kief Caves' },
+      { x: 0, y: 330, w: 430, h: 390, color: 0x24506a, label: 'Dankwood Forest' },
+      { x: 430, y: 330, w: 470, h: 390, color: 0x6b2f64, label: 'Munchie Mountain' },
+      { x: 900, y: 330, w: 636, h: 390, color: 0x6d3f18, label: 'Rosin Rail Station' },
+      { x: 0, y: 720, w: 1536, h: 432, color: 0x3d4f8f, label: 'Rolling Hills' }
     ];
 
     zones.forEach((zone) => {
@@ -78,17 +78,17 @@ export class BoardScene extends Phaser.Scene {
       graphics.fillRoundedRect(zone.x, zone.y, zone.w, zone.h, 28);
       this.add.text(zone.x + 18, zone.y + 18, zone.label, {
         fontFamily: 'Arial',
-        fontSize: '19px',
+        fontSize: '24px',
         color: '#ffffff',
         stroke: '#000000',
-        strokeThickness: 3
+        strokeThickness: 4
       }).setDepth(2);
     });
   }
 
   private drawPath(): void {
     const graphics = this.add.graphics();
-    graphics.lineStyle(24, 0xffffff, this.hasBoardArt ? 0.55 : 0.92);
+    graphics.lineStyle(24, 0xffffff, this.hasBoardArt ? 0.26 : 0.92);
 
     for (let index = 0; index < boardPath.length - 1; index += 1) {
       const current = boardPath[index];
@@ -99,8 +99,8 @@ export class BoardScene extends Phaser.Scene {
     boardPath.forEach((space) => {
       const fill = colorMap[space.color];
       const radius = space.type === 'start' || space.type === 'finish' ? 24 : space.type === 'action' || space.type === 'skip' ? 21 : 17;
-      this.add.circle(space.x, space.y, radius + 4, 0xffffff, this.hasBoardArt ? 0.72 : 1).setDepth(5);
-      this.add.circle(space.x, space.y, radius, fill, this.hasBoardArt ? 0.86 : 1).setDepth(6);
+      this.add.circle(space.x, space.y, radius + 4, 0xffffff, this.hasBoardArt ? 0.18 : 1).setDepth(5);
+      this.add.circle(space.x, space.y, radius, fill, this.hasBoardArt ? 0.28 : 1).setDepth(6);
 
       if (space.label) {
         this.add.text(space.x, space.y - 8, space.label, {
@@ -133,11 +133,11 @@ export class BoardScene extends Phaser.Scene {
 
     if (!token) {
       token = this.add.circle(targetX, targetY, tokenRadius, Phaser.Display.Color.HexStringToColor(player.color).color, 1)
-        .setStrokeStyle(3, 0xffffff)
+        .setStrokeStyle(2, 0xffffff)
         .setDepth(12);
       const newLabel = this.add.text(targetX, targetY, String(playerIndex + 1), {
         fontFamily: 'Arial',
-        fontSize: playerCount > 8 ? '10px' : '12px',
+        fontSize: '8px',
         color: '#ffffff',
         fontStyle: 'bold'
       }).setOrigin(0.5).setDepth(13);
