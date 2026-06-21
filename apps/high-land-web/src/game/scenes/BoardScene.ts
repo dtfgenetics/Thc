@@ -1,7 +1,6 @@
 import Phaser from 'phaser';
-import { boardPath } from '../data/boardPath';
+import { boardHeight, boardPath, boardWidth } from '../data/boardPath';
 import type { GameState, Player } from '../types/gameTypes';
-import { gameAssetPath } from '../systems/assetPath';
 import { getMoveDuration, getTokenOffset, getTokenRadius } from '../systems/tokenLayoutSystem';
 
 const colorMap: Record<string, number> = {
@@ -14,10 +13,11 @@ const colorMap: Record<string, number> = {
 };
 
 export class BoardScene extends Phaser.Scene {
+  private tokenContainers = new Map<string, Phaser.GameObjects.Container>();
   private tokenSprites = new Map<string, Phaser.GameObjects.Arc>();
   private tokenLabels = new Map<string, Phaser.GameObjects.Text>();
+  private tokenNameLabels = new Map<string, Phaser.GameObjects.Text>();
   private lastPositions = new Map<string, number>();
-  private messageText?: Phaser.GameObjects.Text;
   private hasBoardArt = false;
 
   constructor() {
@@ -25,10 +25,13 @@ export class BoardScene extends Phaser.Scene {
   }
 
   preload(): void {
-    this.load.image('board-background', gameAssetPath('assets/images/board/high-land-board.png'));
-    this.load.once(Phaser.Loader.Events.FILE_LOAD_ERROR, () => {
-      this.hasBoardArt = false;
-    });
+    const boardImageUrl = this.registry.get('board-image-url') as string | null;
+    if (boardImageUrl) {
+      this.load.image('board-background', boardImageUrl);
+      this.load.once(Phaser.Loader.Events.FILE_LOAD_ERROR, () => {
+        this.hasBoardArt = false;
+      });
+    }
   }
 
   create(): void {
@@ -36,49 +39,54 @@ export class BoardScene extends Phaser.Scene {
 
     if (this.textures.exists('board-background')) {
       this.hasBoardArt = true;
-      this.add.image(400, 450, 'board-background').setDisplaySize(800, 900).setDepth(0);
+      this.add.image(boardWidth / 2, boardHeight / 2, 'board-background')
+        .setDisplaySize(boardWidth, boardHeight)
+        .setDepth(0);
     } else {
       this.drawBackgroundZones();
+      this.drawPath();
     }
 
-    this.drawPath();
-    this.messageText = this.add.text(24, 18, 'Ready', {
-      fontFamily: 'Arial',
-      fontSize: '18px',
-      color: '#ffffff',
-      stroke: '#000000',
-      strokeThickness: 4
-    }).setDepth(20);
-
     window.addEventListener('game-state-update', this.handleStateUpdate as EventListener);
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, this.cleanup, this);
+    this.events.once(Phaser.Scenes.Events.DESTROY, this.cleanup, this);
+    const initialState = this.registry.get('initial-game-state') as GameState | undefined;
+    if (initialState) this.renderGameState(initialState);
   }
 
-  shutdown(): void {
+  private cleanup(): void {
     window.removeEventListener('game-state-update', this.handleStateUpdate as EventListener);
+    this.tweens.killAll();
+    this.tokenContainers.clear();
+    this.tokenSprites.clear();
+    this.tokenLabels.clear();
+    this.tokenNameLabels.clear();
+    this.lastPositions.clear();
   }
 
   private handleStateUpdate = (event: CustomEvent<GameState>): void => {
+    if (!this.sys.isActive()) return;
     this.renderGameState(event.detail);
   };
 
   private drawBackgroundZones(): void {
     const graphics = this.add.graphics();
     const zones = [
-      { x: 0, y: 0, w: 240, h: 300, color: 0x284d3a, label: 'Rolling Hills' },
-      { x: 240, y: 0, w: 260, h: 300, color: 0x17331f, label: 'Dankwood Forest' },
-      { x: 500, y: 0, w: 300, h: 300, color: 0x6d3f18, label: 'Rosin Rail Station' },
-      { x: 0, y: 300, w: 300, h: 300, color: 0x6b2f64, label: 'Munchie Mountain' },
-      { x: 300, y: 300, w: 250, h: 300, color: 0x33323a, label: 'Kief Caves' },
-      { x: 550, y: 300, w: 250, h: 300, color: 0x24506a, label: 'Trichome Towers' },
-      { x: 0, y: 600, w: 800, h: 300, color: 0x3d4f8f, label: 'Cloud 9 Citadel' }
+      { x: 0, y: 0, w: 384, h: 320, color: 0x284d3a, label: 'Rolling Hills' },
+      { x: 384, y: 0, w: 416, h: 320, color: 0x17331f, label: 'Dankwood Forest' },
+      { x: 800, y: 0, w: 480, h: 320, color: 0x6d3f18, label: 'Rosin Rail Station' },
+      { x: 0, y: 320, w: 480, h: 320, color: 0x6b2f64, label: 'Munchie Mountain' },
+      { x: 480, y: 320, w: 400, h: 320, color: 0x33323a, label: 'Kief Caves' },
+      { x: 880, y: 320, w: 400, h: 320, color: 0x24506a, label: 'Trichome Towers' },
+      { x: 0, y: 640, w: 1280, h: 320, color: 0x3d4f8f, label: 'Cloud 9 Citadel' }
     ];
 
     zones.forEach((zone) => {
       graphics.fillStyle(zone.color, 0.56);
-      graphics.fillRoundedRect(zone.x, zone.y, zone.w, zone.h, 28);
-      this.add.text(zone.x + 18, zone.y + 18, zone.label, {
+      graphics.fillRoundedRect(zone.x, zone.y, zone.w, zone.h, 32);
+      this.add.text(zone.x + 24, zone.y + 24, zone.label, {
         fontFamily: 'Arial',
-        fontSize: '19px',
+        fontSize: '24px',
         color: '#ffffff',
         stroke: '#000000',
         strokeThickness: 3
@@ -88,7 +96,7 @@ export class BoardScene extends Phaser.Scene {
 
   private drawPath(): void {
     const graphics = this.add.graphics();
-    graphics.lineStyle(24, 0xffffff, this.hasBoardArt ? 0.55 : 0.92);
+    graphics.lineStyle(36, 0xffffff, 0.92);
 
     for (let index = 0; index < boardPath.length - 1; index += 1) {
       const current = boardPath[index];
@@ -98,14 +106,14 @@ export class BoardScene extends Phaser.Scene {
 
     boardPath.forEach((space) => {
       const fill = colorMap[space.color];
-      const radius = space.type === 'start' || space.type === 'finish' ? 24 : space.type === 'action' || space.type === 'skip' ? 21 : 17;
-      this.add.circle(space.x, space.y, radius + 4, 0xffffff, this.hasBoardArt ? 0.72 : 1).setDepth(5);
-      this.add.circle(space.x, space.y, radius, fill, this.hasBoardArt ? 0.86 : 1).setDepth(6);
+      const radius = space.type === 'start' || space.type === 'finish' ? 32 : space.type === 'action' ? 28 : 22;
+      this.add.circle(space.x, space.y, radius + 5, 0xffffff, 1).setDepth(5);
+      this.add.circle(space.x, space.y, radius, fill, 1).setDepth(6);
 
       if (space.label) {
         this.add.text(space.x, space.y - 8, space.label, {
           fontFamily: 'Arial',
-          fontSize: space.label.length > 5 ? '10px' : '12px',
+          fontSize: space.label.length > 5 ? '14px' : '16px',
           color: '#111111',
           fontStyle: 'bold'
         }).setOrigin(0.5).setDepth(7);
@@ -114,40 +122,56 @@ export class BoardScene extends Phaser.Scene {
   }
 
   private renderGameState(state: GameState): void {
-    if (this.messageText) {
-      this.messageText.setText(state.message);
-    }
-
-    state.players.forEach((player, playerIndex) => this.renderPlayer(player, playerIndex, state.players.length));
+    state.players.forEach((player, playerIndex) => this.renderPlayer(
+      player,
+      playerIndex,
+      state.players.length,
+      playerIndex === state.currentPlayerIndex && state.phase !== 'game_over'
+    ));
   }
 
-  private renderPlayer(player: Player, playerIndex: number, playerCount: number): void {
+  private renderPlayer(player: Player, playerIndex: number, playerCount: number, isCurrentPlayer: boolean): void {
     const currentSpace = boardPath[player.positionIndex] ?? boardPath[0];
     const offset = getTokenOffset(playerIndex, playerCount);
     const tokenRadius = getTokenRadius(playerCount);
     const targetX = currentSpace.x + offset.x;
     const targetY = currentSpace.y + offset.y;
 
-    let token = this.tokenSprites.get(player.id);
+    let container = this.tokenContainers.get(player.id);
+    const token = this.tokenSprites.get(player.id);
     const label = this.tokenLabels.get(player.id);
+    const nameLabel = this.tokenNameLabels.get(player.id);
 
-    if (!token) {
-      token = this.add.circle(targetX, targetY, tokenRadius, Phaser.Display.Color.HexStringToColor(player.color).color, 1)
-        .setStrokeStyle(3, 0xffffff)
-        .setDepth(12);
-      const newLabel = this.add.text(targetX, targetY, String(playerIndex + 1), {
+    if (!container || !token) {
+      const newToken = this.add.circle(0, 0, tokenRadius, Phaser.Display.Color.HexStringToColor(player.color).color, 1)
+        .setStrokeStyle(isCurrentPlayer ? 6 : 3, isCurrentPlayer ? 0xffd86a : 0xffffff);
+      const newLabel = this.add.text(0, 0, String(playerIndex + 1), {
         fontFamily: 'Arial',
         fontSize: playerCount > 8 ? '10px' : '12px',
         color: '#ffffff',
         fontStyle: 'bold'
-      }).setOrigin(0.5).setDepth(13);
-      this.tokenSprites.set(player.id, token);
+      }).setOrigin(0.5);
+      const newNameLabel = this.add.text(0, tokenRadius + 12, player.name, {
+        fontFamily: 'Arial',
+        fontSize: playerCount > 6 ? '9px' : '11px',
+        color: '#ffffff',
+        backgroundColor: 'rgba(8, 10, 9, 0.82)',
+        padding: { x: 4, y: 2 }
+      }).setOrigin(0.5, 0);
+      container = this.add.container(targetX, targetY, [newToken, newLabel, newNameLabel]).setDepth(12);
+      this.tokenContainers.set(player.id, container);
+      this.tokenSprites.set(player.id, newToken);
       this.tokenLabels.set(player.id, newLabel);
+      this.tokenNameLabels.set(player.id, newNameLabel);
       this.lastPositions.set(player.id, player.positionIndex);
       return;
     }
 
     token.setRadius(tokenRadius);
+    token.setStrokeStyle(isCurrentPlayer ? 6 : 3, isCurrentPlayer ? 0xffd86a : 0xffffff);
+    token.setScale(isCurrentPlayer ? 1.12 : 1);
+    label?.setText(String(playerIndex + 1));
+    nameLabel?.setText(player.name).setPosition(0, tokenRadius + 12);
 
     const fromIndex = this.lastPositions.get(player.id) ?? player.positionIndex;
     this.lastPositions.set(player.id, player.positionIndex);
@@ -159,25 +183,21 @@ export class BoardScene extends Phaser.Scene {
     });
 
     if (targets.length <= 1) {
-      token.setPosition(targetX, targetY);
-      label?.setPosition(targetX, targetY);
+      container.setPosition(targetX, targetY);
       return;
     }
 
-    this.tweens.killTweensOf(token);
-    if (label) this.tweens.killTweensOf(label);
+    this.tweens.killTweensOf(container);
 
-    const timeline = this.tweens.createTimeline();
-    targets.forEach((target) => {
-      timeline.add({
-        targets: label ? [token, label] : token,
+    this.tweens.chain({
+      targets: container,
+      tweens: targets.map((target) => ({
         x: target.x,
         y: target.y,
         duration: getMoveDuration(playerCount),
         ease: 'Sine.easeInOut'
-      });
+      }))
     });
-    timeline.play();
   }
 }
 

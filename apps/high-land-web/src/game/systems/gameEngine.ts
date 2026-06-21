@@ -6,9 +6,9 @@ import { calculateMove } from './movementSystem';
 import { createPlayers } from './playerSystem';
 import { getCurrentPlayer, nextPlayerIndex, shouldSkipTurn } from './turnSystem';
 
-export function createInitialGame(playerCount: number): GameState {
+export function createInitialGame(playerCount: number, playerNames: string[] = []): GameState {
   return {
-    players: createPlayers(playerCount),
+    players: createPlayers(playerCount, playerNames),
     currentPlayerIndex: 0,
     phase: 'ready',
     turnDirection: 1,
@@ -17,12 +17,13 @@ export function createInitialGame(playerCount: number): GameState {
     lastCard: null,
     message: 'Game ready. Roll to begin.',
     winnerId: null,
-    cardCursor: 0
+    cardCursor: 0,
+    pendingChoice: null
   };
 }
 
 export function rollCurrentTurn(state: GameState, random: () => number = Math.random): GameState {
-  if (state.phase === 'game_over') return state;
+  if (state.phase === 'game_over' || state.phase === 'choosing_player') return state;
   const currentPlayer = getCurrentPlayer(state.players, state.currentPlayerIndex);
 
   if (shouldSkipTurn(currentPlayer)) {
@@ -59,7 +60,7 @@ export function rollCurrentTurn(state: GameState, random: () => number = Math.ra
       lastRoll: result,
       lastCard: null,
       winnerId: currentPlayer.id,
-      message: `${currentPlayer.name} rolled ${result} and reached the finish.`
+      message: `${currentPlayer.name} reached Cloud 9 Citadel and wins!`
     };
   }
 
@@ -110,7 +111,7 @@ export function rollCurrentTurn(state: GameState, random: () => number = Math.ra
       lastRoll: result,
       lastCard: null,
       winnerId: currentPlayer.id,
-      message: `${currentPlayer.name} rolled ${result} and reached the finish.`
+      message: `${currentPlayer.name} reached Cloud 9 Citadel and wins!`
     };
   }
 

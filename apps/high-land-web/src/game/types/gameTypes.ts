@@ -43,19 +43,34 @@ export type ActionCardEffect =
   | { type: 'move_to_color'; color: SpaceColor; direction: 'next' | 'previous' }
   | { type: 'move_all'; amount: number; filter: 'everyone' | 'except_current' | 'ahead' | 'behind' }
   | { type: 'move_leader'; amount: number }
-  | { type: 'reverse_turn_order'; turns: number }
+  | { type: 'reverse_turn_order'; turns: number | 'round' }
   | { type: 'protect_from_backward'; uses: number }
   | { type: 'draw_again' }
-  | { type: 'move_and_roll_again'; amount: number };
+  | { type: 'move_and_roll_again'; amount: number }
+  | { type: 'move_and_draw_again'; amount: number }
+  | { type: 'skip_others'; amount: number }
+  | { type: 'choose_player_move'; currentAmount: number; targetAmount: number };
+
+export type ActionCardArt = {
+  sheet: 1 | 2 | 3 | 4 | 5;
+  column: 0 | 1 | 2 | 3;
+  row: 0 | 1;
+};
 
 export type ActionCard = {
   id: string;
   title: string;
   text: string;
   effect: ActionCardEffect;
+  art?: ActionCardArt;
 };
 
-export type GamePhase = 'setup' | 'ready' | 'rolling' | 'moving' | 'resolving_card' | 'game_over';
+export type PendingPlayerChoice = {
+  sourcePlayerId: string;
+  targetAmount: number;
+};
+
+export type GamePhase = 'setup' | 'ready' | 'rolling' | 'moving' | 'resolving_card' | 'choosing_player' | 'game_over';
 
 export type TurnDirection = 1 | -1;
 
@@ -70,6 +85,7 @@ export type GameState = {
   message: string;
   winnerId: string | null;
   cardCursor: number;
+  pendingChoice: PendingPlayerChoice | null;
 };
 
 export type MoveResult = {

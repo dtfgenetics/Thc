@@ -23,16 +23,43 @@ export function resolveActionCard(state: GameState, card: ActionCard): GameState
 
   const resolution = applyEffect(state, currentPlayer, card.effect);
   const winner = findWinner(resolution.state.players);
+  const isChoosingPlayer = Boolean(resolution.state.pendingChoice) && !winner;
 
   return {
     ...resolution.state,
     lastCard: card,
-    phase: winner ? 'game_over' : 'ready',
+    phase: winner ? 'game_over' : isChoosingPlayer ? 'choosing_player' : 'ready',
     winnerId: winner?.id ?? null,
-    currentPlayerIndex: winner || resolution.keepTurn || resolution.drawAgain
+    pendingChoice: winner ? null : resolution.state.pendingChoice,
+    currentPlayerIndex: winner || isChoosingPlayer || resolution.keepTurn || resolution.drawAgain
       ? state.currentPlayerIndex
       : nextPlayerIndex(resolution.state.players, state.currentPlayerIndex, resolution.state.turnDirection),
-    message: `${currentPlayer.name}: ${card.title}. ${card.text}`
+    message: `${currentPlayer.name} drew HIT card: ${card.title}. ${card.text}`
+  };
+}
+
+export function resolvePendingPlayerChoice(state: GameState, targetPlayerId: string): GameState {
+  const choice = state.pendingChoice;
+  if (!choice || state.phase !== 'choosing_player' || targetPlayerId === choice.sourcePlayerId) return state;
+
+  const sourcePlayer = state.players.find((player) => player.id === choice.sourcePlayerId);
+  const targetPlayer = state.players.find((player) => player.id === targetPlayerId);
+  if (!sourcePlayer || !targetPlayer) return state;
+
+  const movedState = movePlayer(state, targetPlayerId, choice.targetAmount);
+  const winner = findWinner(movedState.players);
+
+  return {
+    ...movedState,
+    phase: winner ? 'game_over' : 'ready',
+    winnerId: winner?.id ?? null,
+    pendingChoice: null,
+    currentPlayerIndex: winner
+      ? state.currentPlayerIndex
+      : nextPlayerIndex(movedState.players, state.currentPlayerIndex, movedState.turnDirection),
+    message: winner
+      ? `${winner.name} reached Cloud 9 Citadel and wins!`
+      : `${sourcePlayer.name} boosted ${targetPlayer.name} forward ${choice.targetAmount}.`
   };
 }
 
@@ -78,7 +105,8 @@ function applyEffect(state: GameState, currentPlayer: Player, effect: ActionCard
     }
     case 'reverse_turn_order': {
       const nextDirection: TurnDirection = nextState.turnDirection === 1 ? -1 : 1;
-      nextState = { ...nextState, turnDirection: nextDirection, reverseTurnsRemaining: effect.turns };
+      const reverseTurns = effect.turns === 'round' ? nextState.players.length : effect.turns;
+      nextState = { ...nextState, turnDirection: nextDirection, reverseTurnsRemaining: reverseTurns };
       break;
     }
     case 'protect_from_backward':
@@ -93,6 +121,30 @@ function applyEffect(state: GameState, currentPlayer: Player, effect: ActionCard
     case 'move_and_roll_again':
       nextState = movePlayer(nextState, currentPlayer.id, effect.amount);
       keepTurn = true;
+      break;
+    case 'move_and_draw_again':
+      nextState = movePlayer(nextState, currentPlayer.id, effect.amount);
+      drawAgain = true;
+      break;
+    case 'skip_others':
+      nextState = {
+        ...nextState,
+        players: nextState.players.map((player) =>
+          player.id === currentPlayer.id
+            ? player
+            : { ...player, skipTurns: player.skipTurns + effect.amount }
+        )
+      };
+      break;
+    case 'choose_player_move':
+      nextState = movePlayer(nextState, currentPlayer.id, effect.currentAmount);
+      nextState = {
+        ...nextState,
+        pendingChoice: {
+          sourcePlayerId: currentPlayer.id,
+          targetAmount: effect.targetAmount
+        }
+      };
       break;
   }
 

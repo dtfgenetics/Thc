@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import type Phaser from 'phaser';
-import { createHighLandGame } from '../game/HighLandGame';
+import { gameAssetPath } from '../game/systems/assetPath';
 import type { GameState } from '../game/types/gameTypes';
 
 type PhaserBoardProps = {
@@ -10,12 +10,31 @@ type PhaserBoardProps = {
 export function PhaserBoard({ state }: PhaserBoardProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const gameRef = useRef<Phaser.Game | null>(null);
+  const stateRef = useRef(state);
+  stateRef.current = state;
 
   useEffect(() => {
     if (!containerRef.current || gameRef.current) return;
-    gameRef.current = createHighLandGame(containerRef.current);
+
+    let cancelled = false;
+    const gameModule = import('../game/HighLandGame');
+    const boardImageUrl = gameAssetPath('assets/images/board/high-land-board.jpg');
+    const boardImage = new Image();
+    const startGame = async (imageUrl?: string) => {
+      if (cancelled || !containerRef.current || gameRef.current) return;
+      const { createHighLandGame } = await gameModule;
+      if (cancelled || !containerRef.current || gameRef.current) return;
+      gameRef.current = createHighLandGame(containerRef.current, imageUrl, stateRef.current);
+    };
+
+    boardImage.onload = () => void startGame(boardImageUrl);
+    boardImage.onerror = () => void startGame();
+    boardImage.src = boardImageUrl;
 
     return () => {
+      cancelled = true;
+      boardImage.onload = null;
+      boardImage.onerror = null;
       gameRef.current?.destroy(true);
       gameRef.current = null;
     };
