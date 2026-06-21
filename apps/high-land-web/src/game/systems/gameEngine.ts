@@ -17,12 +17,13 @@ export function createInitialGame(playerCount: number): GameState {
     lastCard: null,
     message: 'Game ready. Roll to begin.',
     winnerId: null,
-    cardCursor: 0
+    cardCursor: 0,
+    pendingChoice: null
   };
 }
 
 export function rollCurrentTurn(state: GameState, random: () => number = Math.random): GameState {
-  if (state.phase === 'game_over') return state;
+  if (state.phase === 'game_over' || state.phase === 'choosing_player') return state;
   const currentPlayer = getCurrentPlayer(state.players, state.currentPlayerIndex);
 
   if (shouldSkipTurn(currentPlayer)) {

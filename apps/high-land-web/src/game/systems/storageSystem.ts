@@ -41,7 +41,8 @@ function hydrateGameState(raw: Partial<GameState>): GameState | null {
     lastCard: raw.lastCard ?? null,
     message: raw.message ?? 'Saved game loaded.',
     winnerId: raw.winnerId ?? null,
-    cardCursor: raw.cardCursor ?? 0
+    cardCursor: raw.cardCursor ?? 0,
+    pendingChoice: raw.pendingChoice ?? null
   };
 }
 

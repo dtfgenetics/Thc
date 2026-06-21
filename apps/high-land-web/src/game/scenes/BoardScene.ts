@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { boardPath } from '../data/boardPath';
+import { boardHeight, boardPath, boardWidth } from '../data/boardPath';
 import type { GameState, Player } from '../types/gameTypes';
 import { getMoveDuration, getTokenOffset, getTokenRadius } from '../systems/tokenLayoutSystem';
 
@@ -37,12 +37,14 @@ export class BoardScene extends Phaser.Scene {
 
     if (this.textures.exists('board-background')) {
       this.hasBoardArt = true;
-      this.add.image(400, 450, 'board-background').setDisplaySize(800, 900).setDepth(0);
+      this.add.image(boardWidth / 2, boardHeight / 2, 'board-background')
+        .setDisplaySize(boardWidth, boardHeight)
+        .setDepth(0);
     } else {
       this.drawBackgroundZones();
+      this.drawPath();
     }
 
-    this.drawPath();
     window.addEventListener('game-state-update', this.handleStateUpdate as EventListener);
     const initialState = this.registry.get('initial-game-state') as GameState | undefined;
     if (initialState) this.renderGameState(initialState);
@@ -59,21 +61,21 @@ export class BoardScene extends Phaser.Scene {
   private drawBackgroundZones(): void {
     const graphics = this.add.graphics();
     const zones = [
-      { x: 0, y: 0, w: 240, h: 300, color: 0x284d3a, label: 'Rolling Hills' },
-      { x: 240, y: 0, w: 260, h: 300, color: 0x17331f, label: 'Dankwood Forest' },
-      { x: 500, y: 0, w: 300, h: 300, color: 0x6d3f18, label: 'Rosin Rail Station' },
-      { x: 0, y: 300, w: 300, h: 300, color: 0x6b2f64, label: 'Munchie Mountain' },
-      { x: 300, y: 300, w: 250, h: 300, color: 0x33323a, label: 'Kief Caves' },
-      { x: 550, y: 300, w: 250, h: 300, color: 0x24506a, label: 'Trichome Towers' },
-      { x: 0, y: 600, w: 800, h: 300, color: 0x3d4f8f, label: 'Cloud 9 Citadel' }
+      { x: 0, y: 0, w: 384, h: 320, color: 0x284d3a, label: 'Rolling Hills' },
+      { x: 384, y: 0, w: 416, h: 320, color: 0x17331f, label: 'Dankwood Forest' },
+      { x: 800, y: 0, w: 480, h: 320, color: 0x6d3f18, label: 'Rosin Rail Station' },
+      { x: 0, y: 320, w: 480, h: 320, color: 0x6b2f64, label: 'Munchie Mountain' },
+      { x: 480, y: 320, w: 400, h: 320, color: 0x33323a, label: 'Kief Caves' },
+      { x: 880, y: 320, w: 400, h: 320, color: 0x24506a, label: 'Trichome Towers' },
+      { x: 0, y: 640, w: 1280, h: 320, color: 0x3d4f8f, label: 'Cloud 9 Citadel' }
     ];
 
     zones.forEach((zone) => {
       graphics.fillStyle(zone.color, 0.56);
-      graphics.fillRoundedRect(zone.x, zone.y, zone.w, zone.h, 28);
-      this.add.text(zone.x + 18, zone.y + 18, zone.label, {
+      graphics.fillRoundedRect(zone.x, zone.y, zone.w, zone.h, 32);
+      this.add.text(zone.x + 24, zone.y + 24, zone.label, {
         fontFamily: 'Arial',
-        fontSize: '19px',
+        fontSize: '24px',
         color: '#ffffff',
         stroke: '#000000',
         strokeThickness: 3
@@ -83,7 +85,7 @@ export class BoardScene extends Phaser.Scene {
 
   private drawPath(): void {
     const graphics = this.add.graphics();
-    graphics.lineStyle(24, 0xffffff, this.hasBoardArt ? 0.55 : 0.92);
+    graphics.lineStyle(36, 0xffffff, 0.92);
 
     for (let index = 0; index < boardPath.length - 1; index += 1) {
       const current = boardPath[index];
@@ -93,14 +95,14 @@ export class BoardScene extends Phaser.Scene {
 
     boardPath.forEach((space) => {
       const fill = colorMap[space.color];
-      const radius = space.type === 'start' || space.type === 'finish' ? 24 : space.type === 'action' || space.type === 'skip' ? 21 : 17;
-      this.add.circle(space.x, space.y, radius + 4, 0xffffff, this.hasBoardArt ? 0.72 : 1).setDepth(5);
-      this.add.circle(space.x, space.y, radius, fill, this.hasBoardArt ? 0.86 : 1).setDepth(6);
+      const radius = space.type === 'start' || space.type === 'finish' ? 32 : space.type === 'action' ? 28 : 22;
+      this.add.circle(space.x, space.y, radius + 5, 0xffffff, 1).setDepth(5);
+      this.add.circle(space.x, space.y, radius, fill, 1).setDepth(6);
 
       if (space.label) {
         this.add.text(space.x, space.y - 8, space.label, {
           fontFamily: 'Arial',
-          fontSize: space.label.length > 5 ? '10px' : '12px',
+          fontSize: space.label.length > 5 ? '14px' : '16px',
           color: '#111111',
           fontStyle: 'bold'
         }).setOrigin(0.5).setDepth(7);
@@ -109,10 +111,15 @@ export class BoardScene extends Phaser.Scene {
   }
 
   private renderGameState(state: GameState): void {
-    state.players.forEach((player, playerIndex) => this.renderPlayer(player, playerIndex, state.players.length));
+    state.players.forEach((player, playerIndex) => this.renderPlayer(
+      player,
+      playerIndex,
+      state.players.length,
+      playerIndex === state.currentPlayerIndex && state.phase !== 'game_over'
+    ));
   }
 
-  private renderPlayer(player: Player, playerIndex: number, playerCount: number): void {
+  private renderPlayer(player: Player, playerIndex: number, playerCount: number, isCurrentPlayer: boolean): void {
     const currentSpace = boardPath[player.positionIndex] ?? boardPath[0];
     const offset = getTokenOffset(playerIndex, playerCount);
     const tokenRadius = getTokenRadius(playerCount);
@@ -124,7 +131,7 @@ export class BoardScene extends Phaser.Scene {
 
     if (!token) {
       token = this.add.circle(targetX, targetY, tokenRadius, Phaser.Display.Color.HexStringToColor(player.color).color, 1)
-        .setStrokeStyle(3, 0xffffff)
+        .setStrokeStyle(isCurrentPlayer ? 6 : 3, isCurrentPlayer ? 0xffd86a : 0xffffff)
         .setDepth(12);
       const newLabel = this.add.text(targetX, targetY, String(playerIndex + 1), {
         fontFamily: 'Arial',
@@ -139,6 +146,8 @@ export class BoardScene extends Phaser.Scene {
     }
 
     token.setRadius(tokenRadius);
+    token.setStrokeStyle(isCurrentPlayer ? 6 : 3, isCurrentPlayer ? 0xffd86a : 0xffffff);
+    token.setScale(isCurrentPlayer ? 1.12 : 1);
 
     const fromIndex = this.lastPositions.get(player.id) ?? player.positionIndex;
     this.lastPositions.set(player.id, player.positionIndex);

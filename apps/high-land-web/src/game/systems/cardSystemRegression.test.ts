@@ -20,6 +20,22 @@ describe('card system regression checks', () => {
     expect(next.cardCursor).toBe(1);
   });
 
+  it('moves before chaining a move-and-draw-again card', () => {
+    const state = createInitialGame(2);
+    const card: ActionCard = {
+      id: 'test-move-draw-again',
+      title: 'Move and Draw Again',
+      text: 'Move then draw.',
+      effect: { type: 'move_and_draw_again', amount: 2 }
+    };
+
+    const next = applyActionCard(state, card);
+
+    expect(next.players[0].positionIndex).toBe(5);
+    expect(next.cardCursor).toBe(1);
+    expect(next.lastCard?.id).toBe('perfect-roll');
+  });
+
   it('finds a winner after group movement', () => {
     const state = createInitialGame(2);
     const card: ActionCard = {

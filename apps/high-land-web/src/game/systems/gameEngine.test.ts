@@ -5,6 +5,7 @@ import { rollDie, isValidDieRoll } from './diceSystem';
 import { calculateMove } from './movementSystem';
 import { applyActionCard } from './cardSystem';
 import type { ActionCard } from '../types/gameTypes';
+import { resolvePendingPlayerChoice } from './effectResolver';
 
 describe('dice system', () => {
   it('rolls from 1 to 6', () => {
@@ -36,6 +37,30 @@ describe('board path', () => {
       expect(Number.isFinite(space.x)).toBe(true);
       expect(Number.isFinite(space.y)).toBe(true);
     });
+  });
+
+  it('is one ordered route with no disconnected spaces', () => {
+    expect(boardPath).toHaveLength(83);
+    for (let index = 1; index < boardPath.length; index += 1) {
+      const previous = boardPath[index - 1];
+      const current = boardPath[index];
+      const distance = Math.hypot(current.x - previous.x, current.y - previous.y);
+      expect(distance).toBeGreaterThan(0);
+      expect(distance).toBeLessThan(100);
+    }
+  });
+
+  it('keeps all seven approved locations in order', () => {
+    const zones = boardPath.map((space) => space.zone).filter((zone, index, all) => zone !== all[index - 1]);
+    expect(zones).toEqual([
+      'Rolling Hills',
+      'Dankwood Forest',
+      'Rosin Rail Station',
+      'Munchie Mountain',
+      'Kief Caves',
+      'Trichome Towers',
+      'Cloud 9 Citadel'
+    ]);
   });
 
   it('has start and finish spaces', () => {
@@ -160,5 +185,38 @@ describe('game engine', () => {
     const next = rollCurrentTurn(reversed, () => 0);
     expect(next.currentPlayerIndex).toBe(1);
     expect(next.reverseTurnsRemaining).toBe(1);
+  });
+
+  it('makes every other player skip after Hot Box', () => {
+    const state = createInitialGame(4);
+    const card: ActionCard = {
+      id: 'test-hot-box',
+      title: 'Hot Box',
+      text: 'Other players skip.',
+      effect: { type: 'skip_others', amount: 1 }
+    };
+
+    const next = applyActionCard(state, card);
+    expect(next.players.map((player) => player.skipTurns)).toEqual([0, 1, 1, 1]);
+  });
+
+  it('pauses for a chosen player and then advances the turn', () => {
+    const state = createInitialGame(3);
+    const card: ActionCard = {
+      id: 'test-friend-boost',
+      title: 'Friend Boost',
+      text: 'Move together.',
+      effect: { type: 'choose_player_move', currentAmount: 2, targetAmount: 2 }
+    };
+
+    const choosing = applyActionCard(state, card);
+    expect(choosing.phase).toBe('choosing_player');
+    expect(choosing.players[0].positionIndex).toBe(2);
+    expect(choosing.currentPlayerIndex).toBe(0);
+
+    const resolved = resolvePendingPlayerChoice(choosing, 'player-3');
+    expect(resolved.phase).toBe('ready');
+    expect(resolved.players[2].positionIndex).toBe(2);
+    expect(resolved.currentPlayerIndex).toBe(1);
   });
 });

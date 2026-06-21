@@ -1,34 +1,45 @@
-import type { ActionCard } from '../types/gameTypes';
+import type { ActionCard, ActionCardArt } from '../types/gameTypes';
+
+const art = (sheet: ActionCardArt['sheet'], column: ActionCardArt['column'], row: ActionCardArt['row']): ActionCardArt => ({
+  sheet,
+  column,
+  row
+});
 
 export const starterActionCards: ActionCard[] = [
-  { id: 'card-001', title: 'Cloud Boost', text: 'Float ahead 3 spaces.', effect: { type: 'move', amount: 3 } },
-  { id: 'card-002', title: 'Snack Detour', text: 'Move back 2 spaces.', effect: { type: 'move', amount: -2 } },
-  { id: 'card-003', title: 'Rolling Momentum', text: 'Roll again.', effect: { type: 'roll_again' } },
-  { id: 'card-004', title: 'Sticky Trap', text: 'Skip your next turn.', effect: { type: 'skip_turns', amount: 1 } },
-  { id: 'card-005', title: 'Shortcut', text: 'Jump ahead 5 spaces.', effect: { type: 'move', amount: 5 } },
-  { id: 'card-006', title: 'Crash Landing', text: 'Move back 4 spaces.', effect: { type: 'move', amount: -4 } },
-  { id: 'card-007', title: 'Catch Up', text: 'Move ahead 2 spaces.', effect: { type: 'move', amount: 2 } },
-  { id: 'card-008', title: 'Wrong Turn', text: 'Move back 3 spaces.', effect: { type: 'move', amount: -3 } },
-  { id: 'card-009', title: 'Big Leap', text: 'Move ahead 6 spaces.', effect: { type: 'move', amount: 6 } },
-  { id: 'card-010', title: 'Pause', text: 'Skip your next turn.', effect: { type: 'skip_turns', amount: 1 } },
-  { id: 'card-011', title: 'Find The Green', text: 'Move to the next green space.', effect: { type: 'move_to_color', color: 'green', direction: 'next' } },
-  { id: 'card-012', title: 'Back To Blue', text: 'Move back to the previous blue space.', effect: { type: 'move_to_color', color: 'blue', direction: 'previous' } },
-  { id: 'card-013', title: 'Purple Pull', text: 'Move to the next purple space.', effect: { type: 'move_to_color', color: 'purple', direction: 'next' } },
-  { id: 'card-014', title: 'Yellow Reset', text: 'Move back to the previous yellow space.', effect: { type: 'move_to_color', color: 'yellow', direction: 'previous' } },
-  { id: 'card-015', title: 'Everybody Float', text: 'Everyone moves ahead 1 space.', effect: { type: 'move_all', amount: 1, filter: 'everyone' } },
-  { id: 'card-016', title: 'Group Drift', text: 'Everyone except you moves back 1 space.', effect: { type: 'move_all', amount: -1, filter: 'except_current' } },
-  { id: 'card-017', title: 'Leader Slip', text: 'The leader moves back 3 spaces.', effect: { type: 'move_leader', amount: -3 } },
-  { id: 'card-018', title: 'Swap With Leader', text: 'Swap spaces with the leader.', effect: { type: 'swap_position', target: 'leader' } },
-  { id: 'card-019', title: 'Pull From Behind', text: 'Swap with the nearest player behind you.', effect: { type: 'swap_position', target: 'behind' } },
-  { id: 'card-020', title: 'Last Place Boost', text: 'Swap with the player in last place.', effect: { type: 'swap_position', target: 'last_place' } },
-  { id: 'card-021', title: 'Reverse Rotation', text: 'Reverse turn order for 3 turns.', effect: { type: 'reverse_turn_order', turns: 3 } },
-  { id: 'card-022', title: 'Free Pass', text: 'Block the next backward movement against you.', effect: { type: 'protect_from_backward', uses: 1 } },
-  { id: 'card-023', title: 'Double Hit', text: 'Draw another card.', effect: { type: 'draw_again' } },
-  { id: 'card-024', title: 'Boost And Roll', text: 'Move ahead 2 spaces, then roll again.', effect: { type: 'move_and_roll_again', amount: 2 } },
-  { id: 'card-025', title: 'Back Of The Pack', text: 'Players ahead of you move back 1 space.', effect: { type: 'move_all', amount: -1, filter: 'ahead' } },
-  { id: 'card-026', title: 'Help The Back', text: 'Players behind you move ahead 1 space.', effect: { type: 'move_all', amount: 1, filter: 'behind' } },
-  { id: 'card-027', title: 'Red Rush', text: 'Move to the next red space.', effect: { type: 'move_to_color', color: 'red', direction: 'next' } },
-  { id: 'card-028', title: 'Red Rewind', text: 'Move back to the previous red space.', effect: { type: 'move_to_color', color: 'red', direction: 'previous' } },
-  { id: 'card-029', title: 'Hard Pause', text: 'Skip your next 2 turns.', effect: { type: 'skip_turns', amount: 2 } },
-  { id: 'card-030', title: 'Final Push', text: 'Move ahead 8 spaces.', effect: { type: 'move', amount: 8 } }
+  { id: 'perfect-roll', title: 'Perfect Roll', text: 'Move forward 3 spaces.', effect: { type: 'move', amount: 3 }, art: art(1, 0, 0) },
+  { id: 'cough-lock', title: 'Cough Lock', text: 'Lose your next turn.', effect: { type: 'skip_turns', amount: 1 }, art: art(1, 1, 0) },
+  { id: 'rosin-rush', title: 'Rosin Rush', text: 'Move forward 3 spaces and draw again.', effect: { type: 'move_and_draw_again', amount: 3 }, art: art(1, 2, 0) },
+  { id: 'lost-in-dankwood', title: 'Lost in Dankwood', text: 'Move back to the previous green space.', effect: { type: 'move_to_color', color: 'green', direction: 'previous' }, art: art(1, 3, 0) },
+  { id: 'munchie-motivation', title: 'Munchie Motivation', text: 'Move forward 2 spaces.', effect: { type: 'move', amount: 2 }, art: art(1, 0, 1) },
+  { id: 'kief-avalanche', title: 'Kief Avalanche', text: 'Move back 5 spaces.', effect: { type: 'move', amount: -5 }, art: art(1, 1, 1) },
+  { id: 'trichome-boost', title: 'Trichome Boost', text: 'Move to the next purple space.', effect: { type: 'move_to_color', color: 'purple', direction: 'next' }, art: art(1, 2, 1) },
+  { id: 'cloud-9-drift', title: 'Cloud 9 Drift', text: 'Move forward 5 spaces.', effect: { type: 'move', amount: 5 }, art: art(1, 3, 1) },
+
+  { id: 'good-vibes-only', title: 'Good Vibes Only', text: 'Move forward 4 spaces.', effect: { type: 'move', amount: 4 }, art: art(2, 0, 0) },
+  { id: 'rosin-spill', title: 'Rosin Spill', text: 'Move back 3 spaces.', effect: { type: 'move', amount: -3 }, art: art(2, 1, 0) },
+  { id: 'pass-the-pack', title: 'Pass the Pack', text: 'Switch places with the player behind you.', effect: { type: 'swap_position', target: 'behind' }, art: art(2, 2, 0) },
+  { id: 'hot-box', title: 'Hot Box', text: 'Every other player skips their next turn.', effect: { type: 'skip_others', amount: 1 }, art: art(2, 3, 0) },
+  { id: 'snack-tax', title: 'Snack Tax', text: 'Every player ahead of you moves back 1 space.', effect: { type: 'move_all', amount: -1, filter: 'ahead' }, art: art(2, 0, 1) },
+  { id: 'bogart-alert', title: 'Bogart Alert', text: 'The player in first place moves back 3 spaces.', effect: { type: 'move_leader', amount: -3 }, art: art(2, 1, 1) },
+  { id: 'free-pass', title: 'Free Pass', text: 'Ignore the next card that moves you backward.', effect: { type: 'protect_from_backward', uses: 1 }, art: art(2, 2, 1) },
+  { id: 'high-roller', title: 'High Roller', text: 'Roll again and move that many extra spaces.', effect: { type: 'roll_again' }, art: art(2, 3, 1) },
+
+  { id: 'rotation-rule', title: 'Rotation Rule', text: 'Everyone moves forward 1 space.', effect: { type: 'move_all', amount: 1, filter: 'everyone' }, art: art(3, 1, 0) },
+  { id: 'puff-puff-pass', title: 'Puff Puff Pass', text: 'Move forward 2, then choose a player to move forward 1.', effect: { type: 'choose_player_move', currentAmount: 2, targetAmount: 1 }, art: art(3, 3, 0) },
+  { id: 'reverse-rotation', title: 'Reverse Rotation', text: 'Turn order reverses for one round.', effect: { type: 'reverse_turn_order', turns: 'round' }, art: art(3, 2, 1) },
+  { id: 'friend-boost', title: 'Friend Boost', text: 'Choose a player. You both move forward 2 spaces.', effect: { type: 'choose_player_move', currentAmount: 2, targetAmount: 2 }, art: art(3, 3, 1) },
+
+  { id: 'smooth-cruise', title: 'Smooth Cruise', text: 'Move forward 2 spaces.', effect: { type: 'move', amount: 2 }, art: art(4, 0, 0) },
+  { id: 'lucky-lighter', title: 'Lucky Lighter', text: 'Move forward to the next yellow space.', effect: { type: 'move_to_color', color: 'yellow', direction: 'next' }, art: art(4, 1, 0) },
+  { id: 'rolling-hills-shortcut', title: 'Rolling Hills Shortcut', text: 'Move forward 5 spaces.', effect: { type: 'move', amount: 5 }, art: art(4, 2, 0) },
+  { id: 'dankwood-trail', title: 'Dankwood Trail', text: 'Move forward to the next green space.', effect: { type: 'move_to_color', color: 'green', direction: 'next' }, art: art(4, 3, 0) },
+  { id: 'dropped-the-lighter', title: 'Dropped the Lighter', text: 'Move back 2 spaces.', effect: { type: 'move', amount: -2 }, art: art(4, 0, 1) },
+  { id: 'burnt-snack-run', title: 'Burnt Snack Run', text: 'Move back 4 spaces.', effect: { type: 'move', amount: -4 }, art: art(4, 1, 1) },
+  { id: 'sticky-fingers', title: 'Sticky Fingers', text: 'Move back to the previous yellow space.', effect: { type: 'move_to_color', color: 'yellow', direction: 'previous' }, art: art(4, 2, 1) },
+  { id: 'couch-locked', title: 'Couch Locked', text: 'Stay here until your next turn.', effect: { type: 'skip_turns', amount: 1 }, art: art(4, 3, 1) },
+
+  { id: 'rosin-rail-ride', title: 'Rosin Rail Ride', text: 'Move forward 6 spaces.', effect: { type: 'move', amount: 6 }, art: art(5, 1, 0) },
+  { id: 'munchie-mountain', title: 'Munchie Mountain', text: 'Move forward 3 spaces.', effect: { type: 'move', amount: 3 }, art: art(5, 2, 0) },
+  { id: 'kief-cave-slip', title: 'Kief Cave Slip', text: 'Move back 3 spaces and draw again.', effect: { type: 'move_and_draw_again', amount: -3 }, art: art(5, 3, 0) }
 ];

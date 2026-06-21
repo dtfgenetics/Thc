@@ -18,7 +18,7 @@ export function PhaserBoard({ state }: PhaserBoardProps) {
     if (!containerRef.current || gameRef.current) return;
 
     let cancelled = false;
-    const boardImageUrl = gameAssetPath('assets/images/board/high-land-board.png');
+    const boardImageUrl = gameAssetPath('assets/images/board/high-land-board.jpg');
     const boardImage = new Image();
     const startGame = (imageUrl?: string) => {
       if (cancelled || !containerRef.current || gameRef.current) return;

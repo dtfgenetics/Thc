@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { boardHeight, boardWidth } from './data/boardPath';
 import { BoardScene } from './scenes/BoardScene';
 import type { GameState } from './types/gameTypes';
 
@@ -10,8 +11,8 @@ export function createHighLandGame(
   return new Phaser.Game({
     type: Phaser.CANVAS,
     parent,
-    width: 800,
-    height: 900,
+    width: boardWidth,
+    height: boardHeight,
     backgroundColor: '#141020',
     fps: {
       target: 30,

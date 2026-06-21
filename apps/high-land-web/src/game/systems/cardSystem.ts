@@ -12,7 +12,9 @@ export function drawActionCard(cardCursor: number, deck: ActionCard[] = starterA
 export function applyActionCard(state: GameState, card: ActionCard, chainDepth = 0): GameState {
   const resolved = sweepForWinner(resolveActionCard(state, card));
 
-  if (card.effect.type === 'draw_again' && !resolved.winnerId && chainDepth < 2) {
+  const drawsAgain = card.effect.type === 'draw_again' || card.effect.type === 'move_and_draw_again';
+
+  if (drawsAgain && !resolved.winnerId && chainDepth < 2) {
     const draw = drawActionCard(resolved.cardCursor);
     return applyActionCard(
       {

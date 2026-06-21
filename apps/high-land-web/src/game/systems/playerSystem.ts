@@ -18,8 +18,8 @@ export const tokenOrder: PlayerToken[] = [
 
 export const tokenColors = [
   '#f43f5e',
-  '#22c55e',
   '#3b82f6',
+  '#22c55e',
   '#eab308',
   '#a855f7',
   '#14b8a6',
@@ -29,6 +29,19 @@ export const tokenColors = [
   '#38bdf8'
 ];
 
+export const playerNames = [
+  'Ruby Rider',
+  'Blue Dreamer',
+  'Green Genie',
+  'Golden Glow',
+  'Purple Haze',
+  'Teal Traveler',
+  'Orange Orbit',
+  'Pink Puff',
+  'Lime Lighter',
+  'Sky High'
+];
+
 export function createPlayers(count: number): Player[] {
   if (!Number.isInteger(count) || count < minPlayers || count > maxPlayers) {
     throw new Error(`Player count must be between ${minPlayers} and ${maxPlayers}.`);
@@ -36,7 +49,7 @@ export function createPlayers(count: number): Player[] {
 
   return Array.from({ length: count }, (_, index) => ({
     id: `player-${index + 1}`,
-    name: `Player ${index + 1}`,
+    name: playerNames[index],
     token: tokenOrder[index],
     color: tokenColors[index],
     positionIndex: 0,
