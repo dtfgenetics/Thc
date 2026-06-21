@@ -141,6 +141,7 @@ if ($action === 'inspect') {
                 $room['status'] = 'playing';
                 $room['version'] = (int) $room['version'] + 1;
                 $room['updatedAt'] = time() * 1000;
+                $dirty = true;
             }
             $payload = ['room' => publicRoom($room)];
         }
@@ -168,6 +169,7 @@ if ($action === 'inspect') {
                 $room['status'] = !empty($room['gameState']['winnerId']) ? 'finished' : 'playing';
                 $room['version'] = (int) $room['version'] + 1;
                 $room['updatedAt'] = time() * 1000;
+                $dirty = true;
                 $payload = ['room' => publicRoom($room)];
             }
         }
@@ -317,3 +319,4 @@ function cleanupOldRooms(string $storageDir): void
         if (is_file($path) && filemtime($path) < $cutoff) @unlink($path);
     }
 }
+
