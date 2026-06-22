@@ -63,6 +63,6 @@ describe('supabase room mapper', () => {
 
     expect(insert.session_id).toBe('session-1');
     expect(insert.event_name).toBe('room_created');
-    expect(insert.payload.roomCode).toBe('ABCD23');
+    expect(insert.payload).toMatchObject({ roomCode: 'ABCD23' });
   });
 });
