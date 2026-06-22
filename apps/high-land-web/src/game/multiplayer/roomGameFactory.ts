@@ -5,15 +5,26 @@ import type { HighLandRoomState } from './roomState';
 export function createGameFromRoom(room: HighLandRoomState): GameState {
   const playerCount = Math.max(2, room.players.length);
   const game = createInitialGame(playerCount);
-  const roomPlayerNames = room.players.map((player) => normalizeDisplayName(player.name));
-  const leadName = roomPlayerNames[0] ?? 'Player 1';
+  const roomPlayers = room.players.map((player) => ({
+    ...player,
+    name: normalizeDisplayName(player.name) ?? player.name
+  }));
+  const leadName = roomPlayers[0]?.name ?? 'Player 1';
 
   return {
     ...game,
-    players: game.players.map((player, index) => ({
-      ...player,
-      name: roomPlayerNames[index] ?? player.name
-    })),
+    players: game.players.map((player, index) => {
+      const roomPlayer = roomPlayers[index];
+      if (!roomPlayer) return player;
+
+      return {
+        ...player,
+        id: roomPlayer.id,
+        name: roomPlayer.name,
+        token: roomPlayer.token,
+        color: roomPlayer.color
+      };
+    }),
     message: `${leadName}, roll to begin.`
   };
 }
