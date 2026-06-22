@@ -1,4 +1,5 @@
 import type { GameState, Player } from '../types/gameTypes';
+import { maxPlayers } from '../systems/playerSystem';
 
 export type HighLandRoomStatus = 'waiting' | 'playing' | 'complete' | 'abandoned';
 
@@ -31,6 +32,10 @@ export function canPlayerRoll(room: HighLandRoomState, requestingPlayerId: strin
 
 export function upsertRoomPlayer(room: HighLandRoomState, player: HighLandRoomPlayer): HighLandRoomState {
   const exists = room.players.some((existingPlayer) => existingPlayer.id === player.id);
+  if (!exists && room.players.length >= maxPlayers) {
+    throw new Error(`High Land supports up to ${maxPlayers} players.`);
+  }
+
   const players = exists
     ? room.players.map((existingPlayer) => (existingPlayer.id === player.id ? player : existingPlayer))
     : [...room.players, player];
