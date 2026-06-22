@@ -1,0 +1,76 @@
+import { createGameEvent, type DiceRolledEvent, type GameStartedEvent, type HighLandGameEvent, type WinnerDeclaredEvent } from '../events/gameEvents';
+import { finishIndex } from '../data/boardPath';
+import { rollCurrentTurn } from '../systems/gameEngine';
+import type { HighLandRoomState } from './roomState';
+import { createGameFromRoom } from './roomGameFactory';
+
+export type RoomActionResult = {
+  room: HighLandRoomState;
+  events: HighLandGameEvent[];
+};
+
+export function startRoomGameplay(room: HighLandRoomState): RoomActionResult {
+  const gameState = createGameFromRoom(room);
+  const updatedRoom: HighLandRoomState = {
+    ...room,
+    status: 'playing',
+    gameState,
+    updatedAt: new Date().toISOString()
+  };
+
+  const event = createGameEvent<GameStartedEvent>({
+    name: 'game_started',
+    roomCode: room.code,
+    playerId: room.hostPlayerId,
+    payload: { playerCount: gameState.players.length }
+  });
+
+  return { room: updatedRoom, events: [event] };
+}
+
+export function rollRoomGameplay(room: HighLandRoomState, random: () => number = Math.random): RoomActionResult {
+  if (room.status !== 'playing' || !room.gameState) {
+    throw new Error('Room is not currently playing.');
+  }
+
+  const currentPlayer = room.gameState.players[room.gameState.currentPlayerIndex];
+  const fromIndex = currentPlayer?.positionIndex ?? 0;
+  const nextGameState = rollCurrentTurn(room.gameState, random);
+  const updatedPlayer = currentPlayer ? nextGameState.players.find((player) => player.id === currentPlayer.id) : null;
+  const toIndex = updatedPlayer?.positionIndex ?? fromIndex;
+  const updatedRoom: HighLandRoomState = {
+    ...room,
+    status: nextGameState.winnerId ? 'complete' : 'playing',
+    gameState: nextGameState,
+    updatedAt: new Date().toISOString()
+  };
+
+  const events: HighLandGameEvent[] = [
+    createGameEvent<DiceRolledEvent>({
+      name: 'dice_rolled',
+      roomCode: room.code,
+      playerId: currentPlayer?.id ?? null,
+      payload: {
+        roll: nextGameState.lastRoll ?? 0,
+        fromIndex,
+        toIndex
+      }
+    })
+  ];
+
+  if (nextGameState.winnerId) {
+    events.push(
+      createGameEvent<WinnerDeclaredEvent>({
+        name: 'winner_declared',
+        roomCode: room.code,
+        playerId: nextGameState.winnerId,
+        payload: {
+          winnerId: nextGameState.winnerId,
+          finishIndex
+        }
+      })
+    );
+  }
+
+  return { room: updatedRoom, events };
+}
