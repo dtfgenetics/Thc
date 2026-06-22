@@ -44,6 +44,27 @@ Open the forwarded port for the dev server. The production preview route is:
 /games/high-land/
 ```
 
+## Gitpod backup
+
+Gitpod is another Codex-like browser coding environment that can open the GitHub repo, install dependencies, run commands, and show a forwarded preview.
+
+The repo now has `.gitpod.yml`.
+
+Recommended flow:
+
+1. Open Gitpod.
+2. Import/open GitHub repo `dtfgenetics/Thc`.
+3. Let the workspace run `npm install`.
+4. It should start `npm run dev:high-land`.
+5. Use the forwarded `5173` preview for the dev server.
+
+Manual checks:
+
+```bash
+npm run test:high-land
+npm run build:high-land
+```
+
 ## GitHub Actions manual run
 
 The workflow `.github/workflows/high-land-ci.yml` now has `workflow_dispatch`, so it can be manually run.
@@ -64,7 +85,7 @@ npm run build:high-land
 
 ## Replit backup
 
-Replit is useful if you want a browser IDE with a Run button and AI help. It can import a GitHub repo, run Node/TypeScript apps, and provide a preview. Use it as a second backup after Codespaces.
+Replit is useful if you want a browser IDE with a Run button and AI help. It can import a GitHub repo, run Node/TypeScript apps, and provide a preview. Use it as a second backup after Codespaces/Gitpod.
 
 Recommended setup:
 
@@ -107,7 +128,7 @@ Open dtfgenetics/Thc. Focus on apps/high-land-web. Run npm install, npm run test
 ## Current priority
 
 ```txt
-1. Get tests/build running in Codespaces or GitHub Actions.
+1. Get tests/build running in Codespaces, Gitpod, or GitHub Actions.
 2. Fix any actual output errors.
 3. Only then continue Supabase live multiplayer.
 ```
