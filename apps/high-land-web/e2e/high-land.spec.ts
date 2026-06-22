@@ -14,7 +14,7 @@ test.describe('High Land browser game', () => {
     await page.getByLabel('Players').selectOption('10');
     await page.getByRole('button', { name: 'Start Game' }).click();
 
-    await expect(page.getByText('Blaze Runner')).toBeVisible();
+    await expect(page.getByText('Blaze Runner').first()).toBeVisible();
     await expect(page.getByText('Player 10')).toBeVisible();
     await expect(page.getByText('Current Turn')).toBeVisible();
 
@@ -32,7 +32,7 @@ test.describe('High Land browser game', () => {
     await page.getByRole('button', { name: 'Create Room' }).click();
 
     await expect(page.getByLabel('High Land room lobby')).toBeVisible();
-    await expect(page.getByText('Room Host')).toBeVisible();
+    await expect(page.getByText('Room Host').first()).toBeVisible();
     await expect(page.getByRole('button', { name: 'Copy Invite' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Start Game' })).toBeDisabled();
 
@@ -67,7 +67,7 @@ test.describe('High Land browser game', () => {
     await page.getByRole('button', { name: 'Join Room' }).click();
 
     await expect(page.getByLabel('High Land room lobby')).toBeVisible();
-    await expect(page.getByText('Invite Guest')).toBeVisible();
+    await expect(page.getByText('Invite Guest').first()).toBeVisible();
   });
 
   test('mobile layout can start and restart a named game', async ({ page }) => {
