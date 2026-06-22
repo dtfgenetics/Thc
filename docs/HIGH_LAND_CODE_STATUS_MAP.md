@@ -41,15 +41,16 @@ apps/high-land-web/src/game/multiplayer/roomSessionController.ts
 
 Status: local fallback systems are built. App can create a local room, show invite link, add a local test player, and start from lobby.
 
-## Room gameplay actions
+## Room gameplay runtime
 
 ```txt
+apps/high-land-web/src/app/highLandRoomRuntime.ts
 apps/high-land-web/src/game/multiplayer/roomGameFactory.ts
 apps/high-land-web/src/game/multiplayer/roomGameActions.ts
 apps/high-land-web/src/game/multiplayer/roomActionExecutor.ts
 ```
 
-Status: built and tested as pure game-room helpers. App still rolls normal local game state directly; transport-backed room roll wiring remains future work.
+Status: built and wired into App for room start, restart, and roll. Room-mode gameplay now uses the transport-backed runtime path.
 
 ## Multiplayer transport boundary
 
@@ -69,7 +70,7 @@ apps/high-land-web/src/game/events/gameEvents.ts
 apps/high-land-web/src/game/multiplayer/localRoomEvents.ts
 ```
 
-Status: local event log is built. Supabase event table mapping is ready.
+Status: local event log is built and room-mode actions append local events through the transport path. Supabase event table mapping is ready.
 
 ## Supabase mapping and schema planning
 
@@ -88,6 +89,7 @@ Status: schema draft and row mappers exist. Live Supabase writes are not impleme
 ```txt
 apps/high-land-web/src/app/highLandAppFlow.test.ts
 apps/high-land-web/src/app/highLandRoomModeService.test.ts
+apps/high-land-web/src/app/highLandRoomRuntime.test.ts
 apps/high-land-web/src/game/multiplayer/localRoomRepository.test.ts
 apps/high-land-web/src/game/multiplayer/localRoomFlow.test.ts
 apps/high-land-web/src/game/multiplayer/roomGameFactory.test.ts
@@ -111,10 +113,9 @@ Status: tests exist, but must be run locally/CI.
 1. Run npm run test:high-land.
 2. Run npm run build:high-land.
 3. Fix any TypeScript/test/build failures.
-4. Wire room-mode rolling through roomActionExecutor when room mode is active.
-5. Convert Supabase schema draft into a reviewed migration.
-6. Implement Supabase room transport after migration approval.
-7. Deploy and check https://dtfseeds.com/games/high-land/.
+4. Convert Supabase schema draft into a reviewed migration.
+5. Implement Supabase room transport after migration approval.
+6. Deploy and check https://dtfseeds.com/games/high-land/.
 ```
 
 ## Do not claim done until
