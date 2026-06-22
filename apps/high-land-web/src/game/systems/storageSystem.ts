@@ -54,10 +54,10 @@ function hydrateGameState(raw: Partial<GameState>): GameState | null {
   };
 }
 
-function hydratePlayer(player: Partial<Player>): Player {
+function hydratePlayer(player: Partial<Player>, index: number): Player {
   return {
-    id: player.id ?? 'player-restored',
-    name: player.name ?? 'Player',
+    id: player.id ?? `player-restored-${index + 1}`,
+    name: player.name ?? `Player ${index + 1}`,
     token: player.token ?? 'tokenA',
     color: player.color ?? '#ffffff',
     positionIndex: player.positionIndex ?? 0,
