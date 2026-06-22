@@ -21,6 +21,7 @@ export function createLocalRoomTransport(storage: Storage = window.localStorage)
 
       const updatedRoom: HighLandRoomState = {
         ...room,
+        status: gameState.winnerId ? 'complete' : 'playing',
         gameState,
         updatedAt: new Date().toISOString()
       };
