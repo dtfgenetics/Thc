@@ -24,7 +24,7 @@ test.describe('High Land browser game', () => {
     await expect(page.getByRole('button', { name: 'Restart' })).toBeVisible();
   });
 
-  test('can create a local fallback room lobby', async ({ page }) => {
+  test('can create a local fallback room lobby, add test player, and start', async ({ page }) => {
     await page.goto('/games/high-land/');
 
     await page.getByRole('button', { name: 'Create Room' }).click();
@@ -35,6 +35,14 @@ test.describe('High Land browser game', () => {
     await expect(page.getByText('Room Host')).toBeVisible();
     await expect(page.getByRole('button', { name: 'Copy Invite' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Start Game' })).toBeDisabled();
+
+    await page.getByRole('button', { name: 'Add Test Player' }).click();
+    await expect(page.getByText('Player 2')).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Start Game' })).toBeEnabled();
+
+    await page.getByRole('button', { name: 'Start Game' }).click();
+    await expect(page.getByText('Current Turn')).toBeVisible();
+    await expect(page.getByText('Room Host, roll to begin.')).toBeVisible();
   });
 
   test('mobile layout can start and restart a named game', async ({ page }) => {
