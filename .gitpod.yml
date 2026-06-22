@@ -1,0 +1,20 @@
+image: gitpod/workspace-node:latest
+
+tasks:
+  - name: Install dependencies
+    init: npm install
+    command: npm run dev:high-land
+
+ports:
+  - port: 5173
+    onOpen: open-preview
+    visibility: public
+  - port: 4173
+    onOpen: notify
+    visibility: public
+
+vscode:
+  extensions:
+    - GitHub.copilot
+    - GitHub.copilot-chat
+    - ms-playwright.playwright
