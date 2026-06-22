@@ -1,5 +1,6 @@
 import { addLocalTestPlayerToRoom, createLocalTestPlayer } from '../game/multiplayer/localRoomFlow';
 import { createLocalRoom, joinLocalRoom } from '../game/multiplayer/localRoomRepository';
+import { getLocalRoom } from '../game/multiplayer/localRoomStorage';
 import { createInviteLink } from '../game/multiplayer/inviteLinks';
 import { startRoomSession } from '../game/multiplayer/roomSessionController';
 import type { HighLandRoomState } from '../game/multiplayer/roomState';
@@ -27,7 +28,8 @@ export function createLocalRoomMode(playerName: string, playerCount: number, sto
 }
 
 export function joinLocalRoomMode(roomCode: string, playerName: string, storage?: Storage): RoomModeResult {
-  const joiningPlayer = createNamedLocalPlayer(playerName, 1);
+  const existingRoom = getLocalRoom(roomCode.trim().toUpperCase(), storage);
+  const joiningPlayer = createNamedLocalPlayer(playerName, existingRoom?.players.length ?? 1);
   const room = joinLocalRoom(roomCode, joiningPlayer, storage);
   return createRoomModeResult(room, joiningPlayer.id, joiningPlayer.name, Math.max(2, room.players.length));
 }
