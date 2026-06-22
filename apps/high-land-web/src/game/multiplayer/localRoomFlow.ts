@@ -1,6 +1,6 @@
 import { joinLocalRoom, type LocalRoomPlayerInput } from './localRoomRepository';
 import type { HighLandRoomState } from './roomState';
-import { tokenColors, tokenOrder } from '../systems/playerSystem';
+import { maxPlayers, tokenColors, tokenOrder } from '../systems/playerSystem';
 
 export function createLocalTestPlayer(index: number): LocalRoomPlayerInput {
   const safeIndex = Math.max(0, Math.min(index, tokenOrder.length - 1));
@@ -14,6 +14,10 @@ export function createLocalTestPlayer(index: number): LocalRoomPlayerInput {
 }
 
 export function addLocalTestPlayerToRoom(room: HighLandRoomState, storage?: Storage): HighLandRoomState {
+  if (room.players.length >= maxPlayers) {
+    throw new Error(`High Land supports up to ${maxPlayers} players.`);
+  }
+
   const nextPlayer = createLocalTestPlayer(room.players.length);
   return joinLocalRoom(room.code, nextPlayer, storage);
 }
