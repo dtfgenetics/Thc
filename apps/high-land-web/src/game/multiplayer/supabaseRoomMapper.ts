@@ -6,12 +6,15 @@ export function mapSessionAndPlayersToRoom(
   session: SupabaseGameSessionRow,
   players: SupabaseGamePlayerRow[]
 ): HighLandRoomState {
+  const roomPlayers = players.map(mapPlayerRowToRoomPlayer);
+  const hostPlayerId = session.host_player_id ?? roomPlayers.find((player) => player.host)?.id ?? roomPlayers[0]?.id ?? '';
+
   return {
     id: session.id,
     code: session.room_code,
     status: session.status,
-    hostPlayerId: session.host_player_id,
-    players: players.map(mapPlayerRowToRoomPlayer),
+    hostPlayerId,
+    players: roomPlayers,
     gameState: session.game_state,
     createdAt: session.created_at,
     updatedAt: session.updated_at
