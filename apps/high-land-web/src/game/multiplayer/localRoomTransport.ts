@@ -5,7 +5,7 @@ import type { HighLandRoomPlayer, HighLandRoomState } from './roomState';
 import type { RoomTransport, RoomTransportSnapshot } from './roomTransport';
 import type { GameState } from '../types/gameTypes';
 
-export function createLocalRoomTransport(storage: Storage = window.localStorage): RoomTransport {
+export function createLocalRoomTransport(storage?: Storage): RoomTransport {
   return {
     async createRoom(hostPlayer) {
       return createLocalRoom(toLocalRoomPlayerInput(hostPlayer), storage);
@@ -40,7 +40,7 @@ export function createLocalRoomTransport(storage: Storage = window.localStorage)
   };
 }
 
-export function createLocalRoomSnapshot(roomCode: string, storage: Storage = window.localStorage): RoomTransportSnapshot {
+export function createLocalRoomSnapshot(roomCode: string, storage?: Storage): RoomTransportSnapshot {
   const room = getLocalRoom(roomCode, storage);
   if (!room) {
     return {
