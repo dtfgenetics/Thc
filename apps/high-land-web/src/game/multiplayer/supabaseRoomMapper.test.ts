@@ -43,6 +43,12 @@ describe('supabase room mapper', () => {
     expect(room.players[0].name).toBe('Blaze Runner');
   });
 
+  it('uses host player row when session host id is temporarily null', () => {
+    const room = mapSessionAndPlayersToRoom({ ...sessionRow, host_player_id: null }, [playerRow]);
+
+    expect(room.hostPlayerId).toBe('player-1');
+  });
+
   it('maps game events to event inserts', () => {
     const event: RoomCreatedEvent = {
       id: 'event-1',
