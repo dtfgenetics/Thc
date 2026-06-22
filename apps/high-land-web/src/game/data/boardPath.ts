@@ -47,7 +47,7 @@ export const boardPath: BoardSpace[] = points.map(([x, y], index) => {
     color: isStart || isFinish || type === 'action' || type === 'skip' ? 'special' : colors[index % colors.length],
     type,
     zone: zoneForIndex(index),
-    label: isStart ? 'START' : isFinish ? 'FINISH' : type === 'action' ? 'CARD' : type === 'skip' ? 'SKIP' : undefined
+    label: isStart ? 'START' : isFinish ? 'FINISH' : type === 'action' ? 'HIT' : type === 'skip' ? 'SKIP' : undefined
   };
 });
 
