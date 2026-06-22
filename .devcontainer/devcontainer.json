@@ -1,0 +1,25 @@
+{
+  "name": "THC Games Workspace",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:20",
+  "postCreateCommand": "npm install",
+  "forwardPorts": [4173, 5173],
+  "portsAttributes": {
+    "4173": {
+      "label": "High Land Preview",
+      "onAutoForward": "notify"
+    },
+    "5173": {
+      "label": "High Land Dev Server",
+      "onAutoForward": "notify"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "GitHub.copilot",
+        "GitHub.copilot-chat",
+        "ms-playwright.playwright"
+      ]
+    }
+  }
+}
