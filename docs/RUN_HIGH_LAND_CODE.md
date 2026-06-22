@@ -21,6 +21,7 @@ From the Codespaces terminal:
 ```bash
 npm run test:high-land
 npm run build:high-land
+npm run test:e2e:high-land
 ```
 
 For the app package directly:
@@ -29,6 +30,13 @@ For the app package directly:
 cd apps/high-land-web
 npm run test
 npm run build
+npm run test:e2e
+```
+
+If Playwright browsers are missing, install Chromium first:
+
+```bash
+npm --workspace apps/high-land-web exec -- playwright install --with-deps chromium
 ```
 
 ### Run the game preview
@@ -63,6 +71,8 @@ Manual checks:
 ```bash
 npm run test:high-land
 npm run build:high-land
+npm --workspace apps/high-land-web exec -- playwright install --with-deps chromium
+npm run test:e2e:high-land
 ```
 
 ## GitHub Actions manual run
@@ -81,6 +91,8 @@ The workflow runs:
 npm install
 npm run test:high-land
 npm run build:high-land
+npm --workspace apps/high-land-web exec -- playwright install --with-deps chromium
+npm run test:e2e:high-land
 ```
 
 ## Replit backup
@@ -115,6 +127,8 @@ cd Thc
 npm install
 npm run test:high-land
 npm run build:high-land
+npm --workspace apps/high-land-web exec -- playwright install --with-deps chromium
+npm run test:e2e:high-land
 ```
 
 ## What to send any coding app
@@ -122,13 +136,13 @@ npm run build:high-land
 Use this prompt:
 
 ```txt
-Open dtfgenetics/Thc. Focus on apps/high-land-web. Run npm install, npm run test:high-land, and npm run build:high-land from the repo root. Fix TypeScript, Vitest, and Vite build errors only. Do not add new gameplay features until tests and build pass. Preserve the current High Land room flow: local play, create room, invite link, add test player, start lobby, roll through room runtime, restart room runtime. Do not commit secrets. After fixing, summarize every changed file and the test/build output.
+Open dtfgenetics/Thc. Focus on apps/high-land-web. Run npm install, npm run test:high-land, npm run build:high-land, install Playwright Chromium if needed, and run npm run test:e2e:high-land from the repo root. Fix TypeScript, Vitest, Playwright, and Vite build errors only. Do not add new gameplay features until tests and build pass. Preserve the current High Land room flow: local play, create room, invite link, add test player, start lobby, roll through room runtime, restart room runtime. Do not commit secrets. After fixing, summarize every changed file and the test/build output.
 ```
 
 ## Current priority
 
 ```txt
-1. Get tests/build running in Codespaces, Gitpod, or GitHub Actions.
+1. Get unit tests, build, and browser smoke tests running in Codespaces, Gitpod, or GitHub Actions.
 2. Fix any actual output errors.
 3. Only then continue Supabase live multiplayer.
 ```
