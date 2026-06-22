@@ -6,14 +6,17 @@ import { GameRulesPanel } from './ui/GameRulesPanel';
 import { DevPanel } from './ui/DevPanel';
 import { PlayerSetupForm, type PlayerSetupMode, type PlayerSetupSubmit } from './ui/PlayerSetupForm';
 import { RoomLobby } from './ui/RoomLobby';
-import { createInitialGame, rollCurrentTurn } from './game/systems/gameEngine';
-import { tokenColors, tokenOrder } from './game/systems/playerSystem';
+import {
+  addLocalTestPlayerMode,
+  createLocalRoomMode,
+  joinLocalRoomMode,
+  startLocalRoomMode
+} from './app/highLandRoomModeService';
+import { rollCurrentTurn } from './game/systems/gameEngine';
+import { createNamedLocalGame } from './game/multiplayer/roomGameFactory';
 import { isMuted, playCardSound, playRollSound, playWinSound, setMuted as setAudioMuted } from './game/systems/audioSystem';
 import { clearSavedGameState, loadGameState, saveGameState } from './game/systems/storageSystem';
-import { createInviteLink } from './game/multiplayer/inviteLinks';
-import { createLocalRoom, joinLocalRoom, type LocalRoomPlayerInput } from './game/multiplayer/localRoomRepository';
 import type { HighLandRoomState } from './game/multiplayer/roomState';
-import type { GameState } from './game/types/gameTypes';
 
 const playerOptions = [2, 3, 4, 5, 6, 8, 10];
 type ScreenMode = 'landing' | PlayerSetupMode | 'lobby' | 'playing';
@@ -24,7 +27,8 @@ export default function App() {
   const [localPlayerId, setLocalPlayerId] = useState<string>('local-player-1');
   const [screenMode, setScreenMode] = useState<ScreenMode>('landing');
   const [room, setRoom] = useState<HighLandRoomState | null>(null);
-  const [gameState, setGameState] = useState(() => createNamedGame(2, 'Player 1'));
+  const [inviteUrl, setInviteUrl] = useState('');
+  const [gameState, setGameState] = useState(() => createNamedLocalGame(2, 'Player 1'));
   const [muted, setMuted] = useState(isMuted());
   const [statusMessage, setStatusMessage] = useState('Choose local play, create a room, or join a room.');
 
@@ -34,7 +38,6 @@ export default function App() {
     () => gameState.players.find((player) => player.id === gameState.winnerId),
     [gameState.players, gameState.winnerId]
   );
-  const inviteUrl = room ? createInviteLink(room.code).url : '';
 
   function handleSetupSubmit(setup: PlayerSetupSubmit): void {
     if (setup.mode === 'local') {
@@ -43,28 +46,17 @@ export default function App() {
     }
 
     if (setup.mode === 'create_room') {
-      const hostPlayer = createRoomPlayer(setup.playerName, 0);
-      const nextRoom = createLocalRoom(hostPlayer);
-      setRoom(nextRoom);
-      setLocalPlayerId(hostPlayer.id);
-      setLocalPlayerName(setup.playerName);
-      setPlayerCount(setup.playerCount);
-      setScreenMode('lobby');
-      setStatusMessage(`Room ${nextRoom.code} created locally. Share the invite when Supabase sync is wired.`);
+      const result = createLocalRoomMode(setup.playerName, setup.playerCount);
+      setRoomMode(result.room, result.localPlayerId, result.localPlayerName, result.inviteUrl, result.playerCount);
+      setStatusMessage(`Room ${result.room.code} created locally. Share the invite when Supabase sync is wired.`);
       return;
     }
 
     if (setup.mode === 'join_room') {
       try {
-        const code = setup.roomCode ?? '';
-        const joinedPlayer = createRoomPlayer(setup.playerName, 1);
-        const nextRoom = joinLocalRoom(code, joinedPlayer);
-        setRoom(nextRoom);
-        setLocalPlayerId(joinedPlayer.id);
-        setLocalPlayerName(setup.playerName);
-        setPlayerCount(Math.max(2, nextRoom.players.length));
-        setScreenMode('lobby');
-        setStatusMessage(`Joined local room ${nextRoom.code}.`);
+        const result = joinLocalRoomMode(setup.roomCode ?? '', setup.playerName);
+        setRoomMode(result.room, result.localPlayerId, result.localPlayerName, result.inviteUrl, result.playerCount);
+        setStatusMessage(`Joined local room ${result.room.code}.`);
       } catch (error) {
         setStatusMessage(error instanceof Error ? error.message : 'Could not join that room.');
       }
@@ -75,7 +67,8 @@ export default function App() {
     setPlayerCount(count);
     setLocalPlayerName(playerName);
     setRoom(null);
-    setGameState(createNamedGame(count, playerName));
+    setInviteUrl('');
+    setGameState(createNamedLocalGame(count, playerName));
     setScreenMode('playing');
     setStatusMessage(`${playerName}, roll to begin.`);
     clearSavedGameState();
@@ -83,17 +76,34 @@ export default function App() {
 
   function startRoomGame(): void {
     if (!room) return;
-    const leadName = room.players[0]?.name ?? localPlayerName ?? 'Player 1';
-    const count = Math.max(2, room.players.length);
-    setPlayerCount(count);
-    setGameState(createNamedGame(count, leadName, room.players.map((player) => player.name)));
+    const result = startLocalRoomMode(room);
+    setPlayerCount(result.playerCount);
+    setLocalPlayerName(result.leadPlayerName);
+    setGameState(result.gameState);
     setScreenMode('playing');
-    setStatusMessage(`${leadName}, roll to begin.`);
+    setStatusMessage(result.message);
     clearSavedGameState();
+  }
+
+  function addLocalTestPlayer(): void {
+    if (!room) return;
+    const result = addLocalTestPlayerMode(room);
+    setRoomMode(result.room, result.localPlayerId, result.localPlayerName, result.inviteUrl, result.playerCount);
+    setStatusMessage(`Added a local test player to room ${result.room.code}.`);
+  }
+
+  function setRoomMode(nextRoom: HighLandRoomState, playerId: string, playerName: string, nextInviteUrl: string, count: number): void {
+    setRoom(nextRoom);
+    setLocalPlayerId(playerId);
+    setLocalPlayerName(playerName);
+    setInviteUrl(nextInviteUrl);
+    setPlayerCount(count);
+    setScreenMode('lobby');
   }
 
   function leaveRoom(): void {
     setRoom(null);
+    setInviteUrl('');
     setScreenMode('landing');
     setStatusMessage('Left the room. Choose a play mode.');
   }
@@ -101,7 +111,7 @@ export default function App() {
   function startGame(count: number): void {
     const leadName = localPlayerName ?? 'Player 1';
     setPlayerCount(count);
-    setGameState(createNamedGame(count, leadName));
+    setGameState(createNamedLocalGame(count, leadName));
     setScreenMode('playing');
   }
 
@@ -115,7 +125,7 @@ export default function App() {
   }
 
   function restart(): void {
-    const next = createNamedGame(playerCount, localPlayerName ?? 'Player 1');
+    const next = createNamedLocalGame(playerCount, localPlayerName ?? 'Player 1');
     setGameState(next);
     clearSavedGameState();
   }
@@ -168,7 +178,14 @@ export default function App() {
         ) : null}
 
         {screenMode === 'lobby' && room ? (
-          <RoomLobby room={room} localPlayerId={localPlayerId} inviteUrl={inviteUrl} onLeave={leaveRoom} onStartGame={startRoomGame} />
+          <RoomLobby
+            room={room}
+            localPlayerId={localPlayerId}
+            inviteUrl={inviteUrl}
+            onAddLocalGuest={addLocalTestPlayer}
+            onLeave={leaveRoom}
+            onStartGame={startRoomGame}
+          />
         ) : null}
 
         {screenMode === 'playing' ? (
@@ -240,27 +257,4 @@ export default function App() {
       </section>
     </main>
   );
-}
-
-function createNamedGame(playerCount: number, playerName: string, playerNames: string[] = []): GameState {
-  const game = createInitialGame(playerCount);
-  const leadName = playerName.trim().replace(/\s+/g, ' ') || 'Player 1';
-  const names = playerNames.length > 0 ? playerNames : [leadName];
-
-  return {
-    ...game,
-    players: game.players.map((player, index) => ({ ...player, name: names[index] ?? player.name })),
-    message: `${leadName}, roll to begin.`
-  };
-}
-
-function createRoomPlayer(playerName: string, index: number): LocalRoomPlayerInput {
-  const tokenIndex = Math.max(0, Math.min(index, tokenOrder.length - 1));
-
-  return {
-    id: `local-player-${tokenIndex + 1}`,
-    name: playerName.trim().replace(/\s+/g, ' ') || `Player ${tokenIndex + 1}`,
-    token: tokenOrder[tokenIndex],
-    color: tokenColors[tokenIndex]
-  };
 }
