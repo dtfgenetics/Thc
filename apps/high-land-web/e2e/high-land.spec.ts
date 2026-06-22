@@ -24,7 +24,7 @@ test.describe('High Land browser game', () => {
     await expect(page.getByRole('button', { name: 'Restart' })).toBeVisible();
   });
 
-  test('can create a local fallback room lobby, add test player, and start', async ({ page }) => {
+  test('can create a local fallback room lobby, add test player, start, and roll', async ({ page }) => {
     await page.goto('/games/high-land/');
 
     await page.getByRole('button', { name: 'Create Room' }).click();
@@ -43,6 +43,9 @@ test.describe('High Land browser game', () => {
     await page.getByRole('button', { name: 'Start Game' }).click();
     await expect(page.getByText('Current Turn')).toBeVisible();
     await expect(page.getByText('Room Host, roll to begin.')).toBeVisible();
+
+    await page.getByRole('button', { name: 'Roll Dice' }).click();
+    await expect(page.getByLabel(/Last roll/i)).toBeVisible();
   });
 
   test('mobile layout can start and restart a named game', async ({ page }) => {
