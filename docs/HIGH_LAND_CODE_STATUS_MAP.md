@@ -2,6 +2,17 @@
 
 This map shows what has been built, what is safe, and what still needs wiring.
 
+## Latest CI failure repaired
+
+```txt
+Run failed in: Run High Land unit tests
+Failures shown:
+- Vitest imported e2e/high-land.spec.ts and crashed on Playwright test.describe.
+- gameEngine reverse turn order test expected currentPlayerIndex 2 after the next roll, but actual game logic moved from player 3 back to player 2, index 1.
+```
+
+Status: repaired. Vitest now only includes `src/**/*.test.ts` and `src/**/*.test.tsx`, excluding `e2e/**`. The reverse-turn unit test now asserts the correct flow: reverse card changes direction, sets player index to 2, then the next reverse-direction roll advances to index 1.
+
 ## Working local gameplay
 
 ```txt
@@ -72,6 +83,15 @@ apps/high-land-web/src/game/multiplayer/roomTransportFactory.ts
 
 Status: local transport works, Supabase transport is a safe stub. Local storage helpers now fail with clear messages outside the browser instead of touching `window.localStorage` in default parameters.
 
+## Saved game storage
+
+```txt
+apps/high-land-web/src/game/systems/storageSystem.ts
+apps/high-land-web/src/game/systems/storageSystem.test.ts
+```
+
+Status: saved-game storage is now safe outside the browser and has a regression test so Node-based unit tests do not crash when `window.localStorage` is missing.
+
 ## Event logging
 
 ```txt
@@ -102,7 +122,7 @@ Status: schema draft and row mappers exist. Live Supabase writes are not impleme
 docs/RUN_HIGH_LAND_CODE.md
 ```
 
-Status: GitHub Actions has a manual trigger and now runs unit tests, build, Playwright Chromium install, and browser smoke tests. Codespaces and Gitpod configs exist. Runner instructions exist for Codespaces, Gitpod, GitHub Actions, Replit, Cursor, and Windsurf.
+Status: GitHub Actions has a manual trigger and now runs unit tests, build, Playwright Chromium install, browser smoke tests, and uploads Playwright artifacts on failure. Codespaces and Gitpod configs exist. Runner instructions exist for Codespaces, Gitpod, GitHub Actions, Replit, Cursor, and Windsurf.
 
 ## Tests added
 
@@ -122,6 +142,7 @@ apps/high-land-web/src/game/multiplayer/localRoomEvents.test.ts
 apps/high-land-web/src/game/multiplayer/supabaseRoomMapper.test.ts
 apps/high-land-web/src/game/multiplayer/roomGameActions.test.ts
 apps/high-land-web/src/game/multiplayer/roomActionExecutor.test.ts
+apps/high-land-web/src/game/systems/storageSystem.test.ts
 apps/high-land-web/e2e/high-land.spec.ts
 ```
 
@@ -130,11 +151,11 @@ Status: tests exist, and browser smoke tests now cover local play, room start/ro
 ## Immediate next wiring tasks
 
 ```txt
-1. Open GitHub Codespaces, Gitpod, or manually run High Land CI.
-2. Run npm run test:high-land.
-3. Run npm run build:high-land.
-4. Run npm run test:e2e:high-land.
-5. Fix any actual TypeScript/test/build/Playwright failures.
+1. Manually run High Land CI again.
+2. Confirm npm run test:high-land passes.
+3. Confirm npm run build:high-land passes.
+4. Confirm npm run test:e2e:high-land passes.
+5. If any new failure appears, fix that exact failure.
 6. Convert Supabase schema draft into a reviewed migration.
 7. Implement Supabase room transport after migration approval.
 8. Deploy and check https://dtfseeds.com/games/high-land/.
