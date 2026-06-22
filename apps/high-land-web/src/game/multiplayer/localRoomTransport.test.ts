@@ -64,6 +64,7 @@ describe('local room transport', () => {
     const snapshot = createLocalRoomSnapshot(room.code, storage);
 
     expect(joinedRoom.players).toHaveLength(2);
+    expect(updatedRoom.status).toBe('playing');
     expect(updatedRoom.gameState?.players).toHaveLength(2);
     expect(snapshot.status).toBe('connected');
     expect(snapshot.room?.code).toBe(room.code);
