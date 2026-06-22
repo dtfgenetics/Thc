@@ -118,7 +118,27 @@ export class BoardScene extends Phaser.Scene {
       this.messageText.setText(state.message);
     }
 
+    this.removeStalePlayers(state.players);
     state.players.forEach((player, playerIndex) => this.renderPlayer(player, playerIndex, state.players.length));
+  }
+
+  private removeStalePlayers(players: Player[]): void {
+    const activePlayerIds = new Set(players.map((player) => player.id));
+
+    this.tokenSprites.forEach((token, playerId) => {
+      if (activePlayerIds.has(playerId)) return;
+      this.tweens.killTweensOf(token);
+      token.destroy();
+      this.tokenSprites.delete(playerId);
+      this.lastPositions.delete(playerId);
+    });
+
+    this.tokenLabels.forEach((label, playerId) => {
+      if (activePlayerIds.has(playerId)) return;
+      this.tweens.killTweensOf(label);
+      label.destroy();
+      this.tokenLabels.delete(playerId);
+    });
   }
 
   private renderPlayer(player: Player, playerIndex: number, playerCount: number): void {
@@ -129,25 +149,28 @@ export class BoardScene extends Phaser.Scene {
     const targetY = currentSpace.y + offset.y;
 
     let token = this.tokenSprites.get(player.id);
-    const label = this.tokenLabels.get(player.id);
+    let label = this.tokenLabels.get(player.id);
 
     if (!token) {
       token = this.add.circle(targetX, targetY, tokenRadius, Phaser.Display.Color.HexStringToColor(player.color).color, 1)
         .setStrokeStyle(3, 0xffffff)
         .setDepth(12);
-      const newLabel = this.add.text(targetX, targetY, String(playerIndex + 1), {
+      label = this.add.text(targetX, targetY, String(playerIndex + 1), {
         fontFamily: 'Arial',
         fontSize: playerCount > 8 ? '10px' : '12px',
         color: '#ffffff',
         fontStyle: 'bold'
       }).setOrigin(0.5).setDepth(13);
       this.tokenSprites.set(player.id, token);
-      this.tokenLabels.set(player.id, newLabel);
+      this.tokenLabels.set(player.id, label);
       this.lastPositions.set(player.id, player.positionIndex);
       return;
     }
 
     token.setRadius(tokenRadius);
+    token.setFillStyle(Phaser.Display.Color.HexStringToColor(player.color).color, 1);
+    label?.setText(String(playerIndex + 1));
+    label?.setFontSize(playerCount > 8 ? '10px' : '12px');
 
     const fromIndex = this.lastPositions.get(player.id) ?? player.positionIndex;
     this.lastPositions.set(player.id, player.positionIndex);
