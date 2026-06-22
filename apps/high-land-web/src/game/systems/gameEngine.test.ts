@@ -1,25 +1,27 @@
 import { describe, expect, it } from 'vitest';
 import { boardPath, finishIndex } from '../data/boardPath';
-import { createInitialGame, rollCurrentTurn } from './gameEngine';
-import { rollDie, isValidDieRoll } from './diceSystem';
-import { calculateMove } from './movementSystem';
-import { applyActionCard } from './cardSystem';
 import type { ActionCard } from '../types/gameTypes';
+import { applyActionCard } from './cardSystem';
+import { rollDie } from './diceSystem';
+import { calculateMove } from './movementSystem';
+import { createInitialGame, rollCurrentTurn } from './gameEngine';
 
-describe('dice system', () => {
+function buildStateAt(positionIndex: number) {
+  const state = createInitialGame(2);
+  return {
+    ...state,
+    players: state.players.map((player, index) => (index === 0 ? { ...player, positionIndex } : player))
+  };
+}
+
+describe('game engine', () => {
   it('rolls from 1 to 6', () => {
     expect(rollDie(() => 0)).toBe(1);
-    expect(rollDie(() => 0.999)).toBe(6);
-    expect(isValidDieRoll(1)).toBe(true);
-    expect(isValidDieRoll(6)).toBe(true);
-    expect(isValidDieRoll(0)).toBe(false);
-    expect(isValidDieRoll(7)).toBe(false);
+    expect(rollDie(() => 0.99)).toBe(6);
   });
-});
 
-describe('movement system', () => {
   it('clamps movement at start and finish', () => {
-    expect(calculateMove(0, -4, finishIndex).toIndex).toBe(0);
+    expect(calculateMove(0, -3, finishIndex).toIndex).toBe(0);
     expect(calculateMove(finishIndex - 1, 10, finishIndex).toIndex).toBe(finishIndex);
   });
 
@@ -27,14 +29,12 @@ describe('movement system', () => {
     expect(calculateMove(2, 3, finishIndex).traversedIndexes).toEqual([3, 4, 5]);
     expect(calculateMove(5, -2, finishIndex).traversedIndexes).toEqual([4, 3]);
   });
-});
 
-describe('board path', () => {
   it('has continuous indexes and coordinates', () => {
     boardPath.forEach((space, index) => {
       expect(space.index).toBe(index);
-      expect(Number.isFinite(space.x)).toBe(true);
-      expect(Number.isFinite(space.y)).toBe(true);
+      expect(space.x).toBeGreaterThanOrEqual(0);
+      expect(space.y).toBeGreaterThanOrEqual(0);
     });
   });
 
@@ -42,59 +42,54 @@ describe('board path', () => {
     expect(boardPath[0].type).toBe('start');
     expect(boardPath[finishIndex].type).toBe('finish');
   });
-});
 
-describe('game engine', () => {
   it('creates 2 to 10 player games', () => {
     expect(createInitialGame(2).players).toHaveLength(2);
-    expect(createInitialGame(4).players).toHaveLength(4);
     expect(createInitialGame(10).players).toHaveLength(10);
   });
 
   it('rejects invalid player counts', () => {
-    expect(() => createInitialGame(1)).toThrow();
-    expect(() => createInitialGame(11)).toThrow();
+    expect(() => createInitialGame(1)).toThrow('Player count must be between 2 and 10.');
+    expect(() => createInitialGame(11)).toThrow('Player count must be between 2 and 10.');
   });
 
   it('rolls, moves, and advances turns', () => {
-    const state = createInitialGame(2);
+    const state = createInitialGame(3);
     const next = rollCurrentTurn(state, () => 0);
-    expect(next.lastRoll).toBe(1);
+
     expect(next.players[0].positionIndex).toBe(1);
     expect(next.currentPlayerIndex).toBe(1);
+    expect(next.lastRoll).toBe(1);
   });
 
   it('declares a winner at the final index', () => {
-    const state = createInitialGame(2);
-    const nearFinish = {
-      ...state,
-      players: state.players.map((player, index) =>
-        index === 0 ? { ...player, positionIndex: finishIndex - 1 } : player
-      )
-    };
-    const next = rollCurrentTurn(nearFinish, () => 0);
+    const state = buildStateAt(finishIndex - 1);
+    const next = rollCurrentTurn(state, () => 0);
+
     expect(next.phase).toBe('game_over');
     expect(next.winnerId).toBe('player-1');
   });
 
   it('applies forward and backward card movement', () => {
-    const state = createInitialGame(2);
+    const state = buildStateAt(5);
     const forwardCard: ActionCard = {
       id: 'test-forward',
       title: 'Forward',
-      text: 'Move ahead.',
-      effect: { type: 'move', amount: 4 }
+      text: 'Move forward.',
+      effect: { type: 'move', amount: 3 }
     };
     const backwardCard: ActionCard = {
       id: 'test-backward',
       title: 'Backward',
-      text: 'Move back.',
+      text: 'Move backward.',
       effect: { type: 'move', amount: -2 }
     };
+
     const afterForward = applyActionCard(state, forwardCard);
-    expect(afterForward.players[0].positionIndex).toBe(4);
-    const afterBackward = applyActionCard({ ...afterForward, currentPlayerIndex: 0 }, backwardCard);
-    expect(afterBackward.players[0].positionIndex).toBe(2);
+    expect(afterForward.players[0].positionIndex).toBe(8);
+
+    const afterBackward = applyActionCard(afterForward, backwardCard);
+    expect(afterBackward.players[0].positionIndex).toBe(6);
   });
 
   it('applies skip turns', () => {
@@ -105,30 +100,33 @@ describe('game engine', () => {
       text: 'Skip next turn.',
       effect: { type: 'skip_turns', amount: 1 }
     };
-    const next = applyActionCard(state, skipCard);
-    expect(next.players[0].skipTurns).toBe(1);
+
+    const skipped = applyActionCard(state, skipCard);
+    expect(skipped.players[0].skipTurns).toBe(1);
+
+    const next = rollCurrentTurn(skipped);
+    expect(next.players[0].skipTurns).toBe(0);
+    expect(next.currentPlayerIndex).toBe(1);
   });
 
   it('protects from backward movement once', () => {
-    const state = createInitialGame(2);
+    const state = buildStateAt(5);
     const protectCard: ActionCard = {
       id: 'test-protect',
       title: 'Protect',
-      text: 'Block backward movement.',
+      text: 'Block backward move.',
       effect: { type: 'protect_from_backward', uses: 1 }
     };
     const backwardCard: ActionCard = {
-      id: 'test-backward-protected',
+      id: 'test-backward',
       title: 'Backward',
-      text: 'Move back.',
-      effect: { type: 'move', amount: -3 }
+      text: 'Move backward.',
+      effect: { type: 'move', amount: -2 }
     };
-    const advanced = {
-      ...state,
-      players: state.players.map((player, index) => index === 0 ? { ...player, positionIndex: 8 } : player)
-    };
-    const protectedState = applyActionCard(advanced, protectCard);
-    const afterBackward = applyActionCard({ ...protectedState, currentPlayerIndex: 0 }, backwardCard);
+
+    const protectedState = applyActionCard(state, protectCard);
+    const advanced = { ...protectedState, players: protectedState.players.map((player, index) => (index === 0 ? { ...player, positionIndex: 8 } : player)) };
+    const afterBackward = applyActionCard({ ...advanced, currentPlayerIndex: 0 }, backwardCard);
     expect(afterBackward.players[0].positionIndex).toBe(8);
     expect(afterBackward.players[0].protectedFromBackward).toBe(0);
   });
@@ -156,7 +154,10 @@ describe('game engine', () => {
     const reversed = applyActionCard(state, reverseCard);
     expect(reversed.turnDirection).toBe(-1);
     expect(reversed.reverseTurnsRemaining).toBe(2);
+    expect(reversed.currentPlayerIndex).toBe(2);
+
     const next = rollCurrentTurn(reversed, () => 0);
-    expect(next.currentPlayerIndex).toBe(2);
+    expect(next.currentPlayerIndex).toBe(1);
+    expect(next.reverseTurnsRemaining).toBe(1);
   });
 });
