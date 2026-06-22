@@ -88,9 +88,13 @@ export default function App() {
 
   function addLocalTestPlayer(): void {
     if (!room) return;
-    const result = addLocalTestPlayerMode(room);
-    setRoomMode(result.room, result.localPlayerId, result.localPlayerName, result.inviteUrl, result.playerCount);
-    setStatusMessage(`Added a local test player to room ${result.room.code}.`);
+    try {
+      const result = addLocalTestPlayerMode(room);
+      setRoomMode(result.room, result.localPlayerId, result.localPlayerName, result.inviteUrl, result.playerCount);
+      setStatusMessage(`Added a local test player to room ${result.room.code}.`);
+    } catch (error) {
+      setStatusMessage(error instanceof Error ? error.message : 'Could not add another local test player.');
+    }
   }
 
   function setRoomMode(nextRoom: HighLandRoomState, playerId: string, playerName: string, nextInviteUrl: string, count: number): void {
