@@ -27,19 +27,30 @@ apps/high-land-web/dist
 
 Read these first:
 
+- `docs/HIGH_LAND_CODEX_NOW.md` — current Codex execution plan and acceptance criteria
+- `docs/SYSTEMS_READINESS.md`
+- `docs/TOOL_CONNECTIONS.md`
 - `docs/CODEX_HIGH_LAND_GAME_BUILD.md`
 - `docs/GITHUB_CODE_TO_USE.md`
 
 ## Current phase
 
-Phase 1 is the local pass-and-play prototype:
+Current target is the playable High Land browser build for:
 
-- 2-4 local players
-- dice roll
-- turn order
-- animated board movement
-- action cards
+```txt
+https://dtfseeds.com/games/high-land/
+```
+
+The app must support:
+
+- player naming
+- invite-link / room-code multiplayer
+- dice roll movement that exactly matches spaces moved
+- tokens positioned directly on board path coordinates
+- continuous board path data
+- HIT/action cards
 - skip turns
-- win condition
-- simple placeholder board
-- tests for core rules
+- win condition at/crossing finish
+- background audio with mute/unmute
+- mobile-friendly layout
+- tests for rules, board path integrity, and room/session behavior
