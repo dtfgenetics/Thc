@@ -21,9 +21,10 @@ Status: playable local prototype.
 apps/high-land-web/src/ui/PlayerSetupForm.tsx
 apps/high-land-web/src/game/players/playerIdentity.ts
 apps/high-land-web/src/app/highLandAppFlow.ts
+apps/high-land-web/src/app/highLandRoomModeService.ts
 ```
 
-Status: built. App currently has named-player flow; reducer exists for cleaner future wiring.
+Status: built. App has named-player flow and uses the room-mode service for local room actions.
 
 ## Room and lobby fallback
 
@@ -38,7 +39,7 @@ apps/high-land-web/src/game/multiplayer/localRoomFlow.ts
 apps/high-land-web/src/game/multiplayer/roomSessionController.ts
 ```
 
-Status: local fallback systems are built. App has room/lobby path, but local test-player wiring should be finished in `App.tsx`.
+Status: local fallback systems are built. App can create a local room, show invite link, add a local test player, and start from lobby.
 
 ## Room gameplay actions
 
@@ -48,7 +49,7 @@ apps/high-land-web/src/game/multiplayer/roomGameActions.ts
 apps/high-land-web/src/game/multiplayer/roomActionExecutor.ts
 ```
 
-Status: built and tested as pure game-room helpers.
+Status: built and tested as pure game-room helpers. App still rolls normal local game state directly; transport-backed room roll wiring remains future work.
 
 ## Multiplayer transport boundary
 
@@ -86,6 +87,7 @@ Status: schema draft and row mappers exist. Live Supabase writes are not impleme
 
 ```txt
 apps/high-land-web/src/app/highLandAppFlow.test.ts
+apps/high-land-web/src/app/highLandRoomModeService.test.ts
 apps/high-land-web/src/game/multiplayer/localRoomRepository.test.ts
 apps/high-land-web/src/game/multiplayer/localRoomFlow.test.ts
 apps/high-land-web/src/game/multiplayer/roomGameFactory.test.ts
@@ -106,14 +108,13 @@ Status: tests exist, but must be run locally/CI.
 ## Immediate next wiring tasks
 
 ```txt
-1. Refactor App.tsx to use highLandAppFlow reducer.
-2. Refactor App.tsx to use createNamedLocalGame from roomGameFactory.
-3. Refactor App.tsx to use createGameFromRoom/startRoomSession instead of inline helpers.
-4. Wire RoomLobby onAddLocalGuest using localRoomFlow/addLocalTestPlayerToRoom.
-5. Wire room start/roll through roomActionExecutor when room mode is active.
-6. Run npm run test:high-land.
-7. Run npm run build:high-land.
-8. Deploy and check https://dtfseeds.com/games/high-land/.
+1. Run npm run test:high-land.
+2. Run npm run build:high-land.
+3. Fix any TypeScript/test/build failures.
+4. Wire room-mode rolling through roomActionExecutor when room mode is active.
+5. Convert Supabase schema draft into a reviewed migration.
+6. Implement Supabase room transport after migration approval.
+7. Deploy and check https://dtfseeds.com/games/high-land/.
 ```
 
 ## Do not claim done until
