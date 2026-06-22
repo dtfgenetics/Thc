@@ -13,9 +13,9 @@ export function createLocalTestPlayer(index: number): LocalRoomPlayerInput {
   };
 }
 
-export function addLocalTestPlayerToRoom(room: HighLandRoomState): HighLandRoomState {
+export function addLocalTestPlayerToRoom(room: HighLandRoomState, storage?: Storage): HighLandRoomState {
   const nextPlayer = createLocalTestPlayer(room.players.length);
-  return joinLocalRoom(room.code, nextPlayer);
+  return joinLocalRoom(room.code, nextPlayer, storage);
 }
 
 export function getRoomPlayerNames(room: HighLandRoomState): string[] {
