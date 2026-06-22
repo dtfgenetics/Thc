@@ -4,11 +4,11 @@ test.describe('High Land browser game', () => {
   test('loads mode chooser, starts 10-player local game, and rolls', async ({ page }) => {
     await page.goto('/games/high-land/');
 
-    await expect(page.getByRole('heading', { name: /High Land/i })).toBeVisible();
-    await expect(page.getByRole('heading', { name: /Start High Land/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'High Land: The Sweet Escape' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Start High Land' })).toBeVisible();
 
     await page.getByRole('button', { name: 'Local Play' }).click();
-    await expect(page.getByRole('heading', { name: /Start local High Land/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Start local High Land' })).toBeVisible();
 
     await page.getByPlaceholder('Enter your player name').fill('Blaze Runner');
     await page.getByLabel('Players').selectOption('10');
@@ -60,7 +60,7 @@ test.describe('High Land browser game', () => {
     expect(roomCode).toBeTruthy();
 
     await page.goto(inviteUrl);
-    await expect(page.getByRole('heading', { name: /Join a High Land room/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Join a High Land room' })).toBeVisible();
     await expect(page.getByPlaceholder('Room code')).toHaveValue(roomCode ?? '');
 
     await page.getByPlaceholder('Enter your player name').fill('Invite Guest');
