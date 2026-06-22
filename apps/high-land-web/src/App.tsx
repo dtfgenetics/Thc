@@ -9,9 +9,9 @@ import { RoomLobby } from './ui/RoomLobby';
 import {
   addLocalTestPlayerMode,
   createLocalRoomMode,
-  joinLocalRoomMode,
-  startLocalRoomMode
+  joinLocalRoomMode
 } from './app/highLandRoomModeService';
+import { rollRoomRuntime, startRoomRuntime } from './app/highLandRoomRuntime';
 import { rollCurrentTurn } from './game/systems/gameEngine';
 import { createNamedLocalGame } from './game/multiplayer/roomGameFactory';
 import { isMuted, playCardSound, playRollSound, playWinSound, setMuted as setAudioMuted } from './game/systems/audioSystem';
@@ -74,12 +74,13 @@ export default function App() {
     clearSavedGameState();
   }
 
-  function startRoomGame(): void {
+  async function startRoomGame(): Promise<void> {
     if (!room) return;
-    const result = startLocalRoomMode(room);
+    const result = await startRoomRuntime(room);
+    setRoom(result.room);
     setPlayerCount(result.playerCount);
     setLocalPlayerName(result.leadPlayerName);
-    setGameState(result.gameState);
+    if (result.room.gameState) setGameState(result.room.gameState);
     setScreenMode('playing');
     setStatusMessage(result.message);
     clearSavedGameState();
@@ -111,20 +112,49 @@ export default function App() {
   function startGame(count: number): void {
     const leadName = localPlayerName ?? 'Player 1';
     setPlayerCount(count);
+    setRoom(null);
+    setInviteUrl('');
     setGameState(createNamedLocalGame(count, leadName));
     setScreenMode('playing');
   }
 
-  function roll(): void {
+  async function roll(): Promise<void> {
     if (!gameStarted || gameState.phase === 'game_over' || gameState.phase === 'moving' || gameState.phase === 'resolving_card') return;
     playRollSound();
+
+    if (room && room.status === 'playing') {
+      const result = await rollRoomRuntime(room);
+      const nextGameState = result.room.gameState;
+      if (!nextGameState) return;
+      if (nextGameState.lastCard) playCardSound();
+      if (nextGameState.winnerId) playWinSound();
+      setRoom(result.room);
+      setPlayerCount(result.playerCount);
+      setLocalPlayerName(result.leadPlayerName);
+      setGameState(nextGameState);
+      setStatusMessage(result.message);
+      return;
+    }
+
     const next = rollCurrentTurn(gameState);
     if (next.lastCard) playCardSound();
     if (next.winnerId) playWinSound();
     setGameState(next);
   }
 
-  function restart(): void {
+  async function restart(): Promise<void> {
+    if (room) {
+      const restartableRoom: HighLandRoomState = { ...room, status: 'waiting', gameState: null };
+      const result = await startRoomRuntime(restartableRoom);
+      setRoom(result.room);
+      setPlayerCount(result.playerCount);
+      setLocalPlayerName(result.leadPlayerName);
+      if (result.room.gameState) setGameState(result.room.gameState);
+      setStatusMessage(result.message);
+      clearSavedGameState();
+      return;
+    }
+
     const next = createNamedLocalGame(playerCount, localPlayerName ?? 'Player 1');
     setGameState(next);
     clearSavedGameState();
@@ -137,6 +167,8 @@ export default function App() {
   function load(): void {
     const saved = loadGameState();
     if (!saved) return;
+    setRoom(null);
+    setInviteUrl('');
     setPlayerCount(saved.players.length);
     setLocalPlayerName(saved.players[0]?.name ?? null);
     setGameState(saved);
