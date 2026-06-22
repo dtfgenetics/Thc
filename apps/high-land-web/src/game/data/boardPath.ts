@@ -46,9 +46,18 @@ const tilePoints: TilePoint[] = [
   [419.2, 134.1, 'red'], [475.1, 163.6, 'green'], [536.9, 187.3, 'blue']
 ];
 
-export const actionSpaceIndexes = tilePoints
-  .map(([, , color], index) => color === 'hit' ? index : -1)
-  .filter((index) => index >= 0);
+// Gameplay HIT spaces. These are the board indexes that trigger a HIT card draw.
+// The authored board path currently has 111 spaces; this intentionally marks about 25
+// HIT triggers across the whole route instead of only the four visually extracted HIT labels.
+export const actionSpaceIndexes = [
+  4, 8, 13, 18, 22,
+  27, 31, 35, 39, 44,
+  48, 52, 56, 61, 65,
+  70, 74, 79, 83, 87,
+  91, 96, 100, 104, 108
+] as const;
+
+const actionSpaceIndexSet = new Set<number>(actionSpaceIndexes);
 
 function zoneForIndex(index: number): string {
   if (index < 16) return 'Rolling Hills';
@@ -63,7 +72,7 @@ function zoneForIndex(index: number): string {
 export const boardPath: BoardSpace[] = tilePoints.map(([x, y, printedColor], index) => {
   const isStart = index === 0;
   const isFinish = index === tilePoints.length - 1;
-  const isAction = printedColor === 'hit';
+  const isAction = actionSpaceIndexSet.has(index) || printedColor === 'hit';
   return {
     index,
     x,
