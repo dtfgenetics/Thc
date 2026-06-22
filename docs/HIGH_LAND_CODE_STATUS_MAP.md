@@ -13,7 +13,7 @@ apps/high-land-web/src/ui/DiceDisplay.tsx
 apps/high-land-web/src/ui/CardRevealModal.tsx
 ```
 
-Status: playable local prototype.
+Status: playable local prototype. Phaser board now removes stale player tokens when player lists change.
 
 ## Named player setup
 
@@ -39,7 +39,7 @@ apps/high-land-web/src/game/multiplayer/localRoomFlow.ts
 apps/high-land-web/src/game/multiplayer/roomSessionController.ts
 ```
 
-Status: local fallback systems are built. App can create a local room, show invite link, add a local test player, and start from lobby. Local test players are capped at the game max.
+Status: local fallback systems are built. App can create a local room, show invite link, add a local test player, and start from lobby. Local test players are capped at the game max. Opening an invite URL with `?room=CODE` now opens the join-room flow with the code prefilled.
 
 ## Room gameplay runtime
 
@@ -51,6 +51,15 @@ apps/high-land-web/src/game/multiplayer/roomActionExecutor.ts
 ```
 
 Status: built and wired into App for room start, restart, and roll. Room-mode gameplay now uses the transport-backed runtime path, and room player IDs/tokens/colors are preserved in game state.
+
+## Board labels and HIT cards
+
+```txt
+apps/high-land-web/src/game/data/boardPath.ts
+apps/high-land-web/src/ui/CardRevealModal.tsx
+```
+
+Status: action spaces use the High Land `HIT` label instead of generic `CARD`. HIT card reveal UI already uses `HIT CARD`.
 
 ## Multiplayer transport boundary
 
@@ -89,10 +98,11 @@ Status: schema draft and row mappers exist. Live Supabase writes are not impleme
 ```txt
 .github/workflows/high-land-ci.yml
 .devcontainer/devcontainer.json
+.gitpod.yml
 docs/RUN_HIGH_LAND_CODE.md
 ```
 
-Status: GitHub Actions has a manual trigger. Codespaces has a dev container. Runner instructions exist for Codespaces, GitHub Actions, Replit, Cursor, and Windsurf.
+Status: GitHub Actions has a manual trigger and now runs unit tests, build, Playwright Chromium install, and browser smoke tests. Codespaces and Gitpod configs exist. Runner instructions exist for Codespaces, Gitpod, GitHub Actions, Replit, Cursor, and Windsurf.
 
 ## Tests added
 
@@ -115,28 +125,30 @@ apps/high-land-web/src/game/multiplayer/roomActionExecutor.test.ts
 apps/high-land-web/e2e/high-land.spec.ts
 ```
 
-Status: tests exist, but must be run locally/CI.
+Status: tests exist, and browser smoke tests now cover local play, room start/roll, invite-link prefill, and mobile restart. They still must be run in a real runner.
 
 ## Immediate next wiring tasks
 
 ```txt
-1. Open GitHub Codespaces or manually run High Land CI.
+1. Open GitHub Codespaces, Gitpod, or manually run High Land CI.
 2. Run npm run test:high-land.
 3. Run npm run build:high-land.
-4. Fix any actual TypeScript/test/build failures.
-5. Convert Supabase schema draft into a reviewed migration.
-6. Implement Supabase room transport after migration approval.
-7. Deploy and check https://dtfseeds.com/games/high-land/.
+4. Run npm run test:e2e:high-land.
+5. Fix any actual TypeScript/test/build/Playwright failures.
+6. Convert Supabase schema draft into a reviewed migration.
+7. Implement Supabase room transport after migration approval.
+8. Deploy and check https://dtfseeds.com/games/high-land/.
 ```
 
 ## Do not claim done until
 
 ```txt
-- Tests pass.
+- Unit tests pass.
 - Build passes.
+- Browser smoke tests pass.
 - Live route loads with no console errors.
 - Player names work.
-- Invite link is visible.
+- Invite link is visible and opens join flow.
 - Room lobby works locally.
 - Supabase live multiplayer works in two browsers.
 ```
