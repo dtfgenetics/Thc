@@ -87,8 +87,10 @@ describe('game engine', () => {
 
     const afterForward = applyActionCard(state, forwardCard);
     expect(afterForward.players[0].positionIndex).toBe(8);
+    expect(afterForward.currentPlayerIndex).toBe(1);
 
-    const afterBackward = applyActionCard(afterForward, backwardCard);
+    const samePlayerTurn = { ...afterForward, currentPlayerIndex: 0 };
+    const afterBackward = applyActionCard(samePlayerTurn, backwardCard);
     expect(afterBackward.players[0].positionIndex).toBe(6);
   });
 
@@ -103,8 +105,10 @@ describe('game engine', () => {
 
     const skipped = applyActionCard(state, skipCard);
     expect(skipped.players[0].skipTurns).toBe(1);
+    expect(skipped.currentPlayerIndex).toBe(1);
 
-    const next = rollCurrentTurn(skipped);
+    const skippedPlayerTurn = { ...skipped, currentPlayerIndex: 0 };
+    const next = rollCurrentTurn(skippedPlayerTurn);
     expect(next.players[0].skipTurns).toBe(0);
     expect(next.currentPlayerIndex).toBe(1);
   });
