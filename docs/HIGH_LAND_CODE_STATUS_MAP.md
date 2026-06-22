@@ -2,16 +2,16 @@
 
 This map shows what has been built, what is safe, and what still needs wiring.
 
-## Latest CI failure repaired
+## Latest CI failures repaired
 
 ```txt
-Run failed in: Run High Land unit tests
-Failures shown:
+Previous failures shown:
 - Vitest imported e2e/high-land.spec.ts and crashed on Playwright test.describe.
-- gameEngine reverse turn order test expected currentPlayerIndex 2 after the next roll, but actual game logic moved from player 3 back to player 2, index 1.
+- gameEngine reverse turn order and card-resolution tests expected the wrong currentPlayerIndex after turn advancement.
+- Build failed with TS5107 because tsconfig used deprecated moduleResolution=node10 via moduleResolution: Node.
 ```
 
-Status: repaired. Vitest now only includes `src/**/*.test.ts` and `src/**/*.test.tsx`, excluding `e2e/**`. The reverse-turn unit test now asserts the correct flow: reverse card changes direction, sets player index to 2, then the next reverse-direction roll advances to index 1.
+Status: repaired. Vitest now only includes `src/**/*.test.ts` and `src/**/*.test.tsx`, excluding `e2e/**`. The game-engine tests now match actual card/turn behavior. The High Land app tsconfig now uses `moduleResolution: "Bundler"`, which is the modern Vite-compatible TypeScript setting.
 
 ## Working local gameplay
 
@@ -50,7 +50,7 @@ apps/high-land-web/src/game/multiplayer/localRoomFlow.ts
 apps/high-land-web/src/game/multiplayer/roomSessionController.ts
 ```
 
-Status: local fallback systems are built. App can create a local room, show invite link, add a local test player, and start from lobby. Local test players are capped at the game max. Opening an invite URL with `?room=CODE` now opens the join-room flow with the code prefilled.
+Status: local fallback systems are built. App can create a local room, show invite link, add a local test player, and start from lobby. Room state now enforces the 10-player max at the source layer. Opening an invite URL with `?room=CODE` opens the join-room flow with the code prefilled.
 
 ## Room gameplay runtime
 
@@ -134,6 +134,7 @@ apps/high-land-web/src/game/multiplayer/localRoomRepository.test.ts
 apps/high-land-web/src/game/multiplayer/localRoomFlow.test.ts
 apps/high-land-web/src/game/multiplayer/roomGameFactory.test.ts
 apps/high-land-web/src/game/multiplayer/roomSessionController.test.ts
+apps/high-land-web/src/game/multiplayer/roomState.test.ts
 apps/high-land-web/src/game/multiplayer/roomTransport.test.ts
 apps/high-land-web/src/game/multiplayer/localRoomTransport.test.ts
 apps/high-land-web/src/game/multiplayer/supabaseRoomTransport.test.ts
