@@ -49,6 +49,28 @@ button.selected {
   color: #111827;
 }
 
+input,
+select {
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 16px;
+  padding: 0.78rem 0.9rem;
+  color: #f8fafc;
+  background: rgba(15, 23, 42, 0.78);
+  font: inherit;
+  font-weight: 700;
+}
+
+input:focus,
+select:focus {
+  outline: 2px solid rgba(250, 204, 21, 0.72);
+  outline-offset: 2px;
+}
+
+select option {
+  color: #0f172a;
+}
+
 .app-shell {
   display: grid;
   grid-template-columns: minmax(320px, 420px) minmax(360px, 1fr);
@@ -89,6 +111,12 @@ h1 {
   margin: 0;
   font-size: clamp(2rem, 4vw, 3rem);
   line-height: 0.95;
+}
+
+h2 {
+  margin: 0;
+  font-size: clamp(1.35rem, 3vw, 2rem);
+  line-height: 1;
 }
 
 .subtitle {
@@ -142,6 +170,47 @@ h1 {
   padding: 0.9rem;
   border-radius: 18px;
   background: rgba(250, 204, 21, 0.12);
+}
+
+.player-setup-form,
+.room-lobby {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.setup-field {
+  display: grid;
+  gap: 0.42rem;
+}
+
+.setup-field span {
+  color: #94a3b8;
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.form-error,
+.form-note {
+  margin: 0;
+  padding: 0.72rem 0.85rem;
+  border-radius: 14px;
+  line-height: 1.35;
+}
+
+.form-error {
+  color: #fecdd3;
+  background: rgba(244, 63, 94, 0.16);
+}
+
+.form-note {
+  color: #fde68a;
+  background: rgba(250, 204, 21, 0.12);
+}
+
+.room-player-list {
+  max-height: 30vh;
 }
 
 .players-card {
