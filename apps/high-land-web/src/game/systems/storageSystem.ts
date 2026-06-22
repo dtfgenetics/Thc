@@ -3,16 +3,22 @@ import type { GameState, Player } from '../types/gameTypes';
 const storageKey = 'high-land-save-v1';
 
 export function saveGameState(state: GameState): void {
+  const storage = getBrowserStorage();
+  if (!storage) return;
+
   try {
-    window.localStorage.setItem(storageKey, JSON.stringify(state));
+    storage.setItem(storageKey, JSON.stringify(state));
   } catch {
     // Storage can fail in private mode or embedded contexts. The game should still run.
   }
 }
 
 export function loadGameState(): GameState | null {
+  const storage = getBrowserStorage();
+  if (!storage) return null;
+
   try {
-    const raw = window.localStorage.getItem(storageKey);
+    const raw = storage.getItem(storageKey);
     if (!raw) return null;
     return hydrateGameState(JSON.parse(raw) as Partial<GameState>);
   } catch {
@@ -21,8 +27,11 @@ export function loadGameState(): GameState | null {
 }
 
 export function clearSavedGameState(): void {
+  const storage = getBrowserStorage();
+  if (!storage) return;
+
   try {
-    window.localStorage.removeItem(storageKey);
+    storage.removeItem(storageKey);
   } catch {
     // Ignore storage errors.
   }
@@ -47,7 +56,7 @@ function hydrateGameState(raw: Partial<GameState>): GameState | null {
 
 function hydratePlayer(player: Partial<Player>): Player {
   return {
-    id: player.id ?? crypto.randomUUID(),
+    id: player.id ?? 'player-restored',
     name: player.name ?? 'Player',
     token: player.token ?? 'tokenA',
     color: player.color ?? '#ffffff',
@@ -55,4 +64,14 @@ function hydratePlayer(player: Partial<Player>): Player {
     skipTurns: player.skipTurns ?? 0,
     protectedFromBackward: player.protectedFromBackward ?? 0
   };
+}
+
+function getBrowserStorage(): Storage | null {
+  if (typeof window === 'undefined') return null;
+
+  try {
+    return window.localStorage ?? null;
+  } catch {
+    return null;
+  }
 }
