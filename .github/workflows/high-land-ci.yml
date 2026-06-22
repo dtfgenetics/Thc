@@ -36,3 +36,13 @@ jobs:
 
       - name: Run High Land browser smoke tests
         run: npm run test:e2e:high-land
+
+      - name: Upload High Land Playwright artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: high-land-playwright-artifacts
+          path: |
+            apps/high-land-web/test-results
+            apps/high-land-web/playwright-report
+          if-no-files-found: ignore
