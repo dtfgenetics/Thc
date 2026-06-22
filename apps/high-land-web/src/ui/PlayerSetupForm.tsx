@@ -1,4 +1,5 @@
-import { FormEvent, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
+import type { FormEvent } from 'react';
 import { validatePlayerName } from '../game/players/playerIdentity';
 import { maxPlayers, minPlayers } from '../game/systems/playerSystem';
 
