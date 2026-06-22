@@ -32,7 +32,7 @@ jobs:
         run: npm run build:high-land
 
       - name: Install Playwright Chromium
-        run: npm --workspace apps/high-land-web exec playwright install --with-deps chromium
+        run: npm --workspace apps/high-land-web exec -- playwright install --with-deps chromium
 
       - name: Run High Land browser smoke tests
         run: npm run test:e2e:high-land
