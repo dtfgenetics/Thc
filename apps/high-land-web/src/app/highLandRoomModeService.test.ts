@@ -1,9 +1,38 @@
 import { describe, expect, it } from 'vitest';
-import { createLocalRoomMode, startLocalRoomMode } from './highLandRoomModeService';
+import { addLocalTestPlayerMode, createLocalRoomMode, joinLocalRoomMode, startLocalRoomMode } from './highLandRoomModeService';
+
+class MemoryStorage implements Storage {
+  private values = new Map<string, string>();
+
+  get length(): number {
+    return this.values.size;
+  }
+
+  clear(): void {
+    this.values.clear();
+  }
+
+  getItem(key: string): string | null {
+    return this.values.get(key) ?? null;
+  }
+
+  key(index: number): string | null {
+    return [...this.values.keys()][index] ?? null;
+  }
+
+  removeItem(key: string): void {
+    this.values.delete(key);
+  }
+
+  setItem(key: string, value: string): void {
+    this.values.set(key, value);
+  }
+}
 
 describe('High Land room mode service', () => {
   it('creates a local room mode result', () => {
-    const result = createLocalRoomMode('Room Host', 4);
+    const storage = new MemoryStorage();
+    const result = createLocalRoomMode('Room Host', 4, storage);
 
     expect(result.room.players[0].name).toBe('Room Host');
     expect(result.localPlayerName).toBe('Room Host');
@@ -11,23 +40,29 @@ describe('High Land room mode service', () => {
     expect(result.playerCount).toBe(4);
   });
 
+  it('joins an existing local room mode', () => {
+    const storage = new MemoryStorage();
+    const host = createLocalRoomMode('Room Host', 2, storage);
+    const guest = joinLocalRoomMode(host.room.code, 'Guest Player', storage);
+
+    expect(guest.room.players).toHaveLength(2);
+    expect(guest.localPlayerName).toBe('Guest Player');
+  });
+
+  it('adds a local test player to a room', () => {
+    const storage = new MemoryStorage();
+    const host = createLocalRoomMode('Room Host', 2, storage);
+    const updated = addLocalTestPlayerMode(host.room, storage);
+
+    expect(updated.room.players).toHaveLength(2);
+    expect(updated.room.players[1].name).toBe('Player 2');
+  });
+
   it('starts a room mode game from room players', () => {
-    const roomResult = createLocalRoomMode('Room Host', 2);
-    const startResult = startLocalRoomMode({
-      ...roomResult.room,
-      players: [
-        ...roomResult.room.players,
-        {
-          id: 'player-2',
-          name: 'Guest Player',
-          token: 'tokenB',
-          color: '#22c55e',
-          joinedAt: 'now',
-          connected: true,
-          host: false
-        }
-      ]
-    });
+    const storage = new MemoryStorage();
+    const roomResult = createLocalRoomMode('Room Host', 2, storage);
+    const joinedRoom = joinLocalRoomMode(roomResult.room.code, 'Guest Player', storage);
+    const startResult = startLocalRoomMode(joinedRoom.room);
 
     expect(startResult.playerCount).toBe(2);
     expect(startResult.gameState.players[0].name).toBe('Room Host');
