@@ -20,20 +20,20 @@ export type StartRoomModeResult = {
   message: string;
 };
 
-export function createLocalRoomMode(playerName: string, playerCount: number): RoomModeResult {
+export function createLocalRoomMode(playerName: string, playerCount: number, storage?: Storage): RoomModeResult {
   const hostPlayer = createNamedLocalPlayer(playerName, 0);
-  const room = createLocalRoom(hostPlayer);
+  const room = createLocalRoom(hostPlayer, storage);
   return createRoomModeResult(room, hostPlayer.id, hostPlayer.name, playerCount);
 }
 
-export function joinLocalRoomMode(roomCode: string, playerName: string): RoomModeResult {
+export function joinLocalRoomMode(roomCode: string, playerName: string, storage?: Storage): RoomModeResult {
   const joiningPlayer = createNamedLocalPlayer(playerName, 1);
-  const room = joinLocalRoom(roomCode, joiningPlayer);
+  const room = joinLocalRoom(roomCode, joiningPlayer, storage);
   return createRoomModeResult(room, joiningPlayer.id, joiningPlayer.name, Math.max(2, room.players.length));
 }
 
-export function addLocalTestPlayerMode(room: HighLandRoomState): RoomModeResult {
-  const updatedRoom = addLocalTestPlayerToRoom(room);
+export function addLocalTestPlayerMode(room: HighLandRoomState, storage?: Storage): RoomModeResult {
+  const updatedRoom = addLocalTestPlayerToRoom(room, storage);
   const host = updatedRoom.players.find((player) => player.host) ?? updatedRoom.players[0];
   return createRoomModeResult(updatedRoom, host?.id ?? '', host?.name ?? 'Player 1', Math.max(2, updatedRoom.players.length));
 }
