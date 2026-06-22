@@ -1,5 +1,6 @@
 import { createLocalRoom, joinLocalRoom, type LocalRoomPlayerInput } from './localRoomRepository';
 import { getLocalRoom, saveLocalRoom } from './localRoomStorage';
+import { appendLocalRoomEvent } from './localRoomEvents';
 import type { HighLandRoomPlayer, HighLandRoomState } from './roomState';
 import type { RoomTransport, RoomTransportSnapshot } from './roomTransport';
 import type { GameState } from '../types/gameTypes';
@@ -27,8 +28,8 @@ export function createLocalRoomTransport(storage: Storage = window.localStorage)
       return updatedRoom;
     },
 
-    async appendEvent() {
-      return undefined;
+    async appendEvent(roomCode, event) {
+      appendLocalRoomEvent(roomCode, event, storage);
     },
 
     subscribe(roomCode, onSnapshot) {
