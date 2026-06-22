@@ -9,6 +9,7 @@
     "dev:high-land": "npm --workspace apps/high-land-web run dev",
     "build:high-land": "npm --workspace apps/high-land-web run build",
     "test:high-land": "npm --workspace apps/high-land-web run test",
+    "test:e2e:high-land": "npm --workspace apps/high-land-web run test:e2e",
     "supabase": "supabase",
     "supabase:start": "supabase start",
     "supabase:stop": "supabase stop",
