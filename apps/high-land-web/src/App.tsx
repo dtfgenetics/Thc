@@ -4,15 +4,19 @@ import { DiceDisplay } from './ui/DiceDisplay';
 import { CardRevealModal } from './ui/CardRevealModal';
 import { GameRulesPanel } from './ui/GameRulesPanel';
 import { DevPanel } from './ui/DevPanel';
+import { PlayerSetupForm, type PlayerSetupSubmit } from './ui/PlayerSetupForm';
 import { createInitialGame, restartGame, rollCurrentTurn } from './game/systems/gameEngine';
 import { isMuted, playCardSound, playRollSound, playWinSound, setMuted as setAudioMuted } from './game/systems/audioSystem';
 import { clearSavedGameState, loadGameState, saveGameState } from './game/systems/storageSystem';
+import type { GameState } from './game/types/gameTypes';
 
 const playerOptions = [2, 3, 4, 5, 6, 8, 10];
 
 export default function App() {
   const [playerCount, setPlayerCount] = useState(2);
-  const [gameState, setGameState] = useState(() => createInitialGame(2));
+  const [localPlayerName, setLocalPlayerName] = useState<string | null>(null);
+  const [gameStarted, setGameStarted] = useState(false);
+  const [gameState, setGameState] = useState(() => createNamedGame(2, 'Player 1'));
   const [muted, setMuted] = useState(isMuted());
 
   const currentPlayer = gameState.players[gameState.currentPlayerIndex];
@@ -21,13 +25,23 @@ export default function App() {
     [gameState.players, gameState.winnerId]
   );
 
+  function handleSetupSubmit(setup: PlayerSetupSubmit): void {
+    setPlayerCount(setup.playerCount);
+    setLocalPlayerName(setup.playerName);
+    setGameState(createNamedGame(setup.playerCount, setup.playerName));
+    setGameStarted(true);
+    clearSavedGameState();
+  }
+
   function startGame(count: number): void {
+    const leadName = localPlayerName ?? 'Player 1';
     setPlayerCount(count);
-    setGameState(createInitialGame(count));
+    setGameState(createNamedGame(count, leadName));
+    setGameStarted(true);
   }
 
   function roll(): void {
-    if (gameState.phase === 'game_over' || gameState.phase === 'moving' || gameState.phase === 'resolving_card') return;
+    if (!gameStarted || gameState.phase === 'game_over' || gameState.phase === 'moving' || gameState.phase === 'resolving_card') return;
     playRollSound();
     const next = rollCurrentTurn(gameState);
     if (next.lastCard) playCardSound();
@@ -36,7 +50,7 @@ export default function App() {
   }
 
   function restart(): void {
-    const next = restartGame(playerCount);
+    const next = createNamedGame(playerCount, localPlayerName ?? 'Player 1');
     setGameState(next);
     clearSavedGameState();
   }
@@ -49,7 +63,9 @@ export default function App() {
     const saved = loadGameState();
     if (!saved) return;
     setPlayerCount(saved.players.length);
+    setLocalPlayerName(saved.players[0]?.name ?? null);
     setGameState(saved);
+    setGameStarted(true);
   }
 
   function toggleMute(): void {
@@ -67,41 +83,45 @@ export default function App() {
           <p className="subtitle">Roll, move, draw action cards, dodge skips, and race to the finish with up to 10 players.</p>
         </div>
 
-        <div className="controls-card">
-          <div className="player-select" aria-label="Player count">
-            {playerOptions.map((count) => (
-              <button
-                className={count === playerCount ? 'selected' : ''}
-                key={count}
-                onClick={() => startGame(count)}
-                type="button"
-              >
-                {count} Players
+        {!gameStarted ? (
+          <PlayerSetupForm mode="local" defaultPlayerCount={playerCount} onSubmit={handleSetupSubmit} />
+        ) : (
+          <div className="controls-card">
+            <div className="player-select" aria-label="Player count">
+              {playerOptions.map((count) => (
+                <button
+                  className={count === playerCount ? 'selected' : ''}
+                  key={count}
+                  onClick={() => startGame(count)}
+                  type="button"
+                >
+                  {count} Players
+                </button>
+              ))}
+            </div>
+
+            <div className="turn-box" style={{ borderColor: currentPlayer?.color ?? 'transparent' }}>
+              <span>Current Turn</span>
+              <strong>{currentPlayer?.name ?? 'None'}</strong>
+            </div>
+
+            <DiceDisplay value={gameState.lastRoll} />
+
+            <div className="button-row">
+              <button className="primary" disabled={gameState.phase === 'game_over'} onClick={roll} type="button">
+                Roll Dice
               </button>
-            ))}
+              <button onClick={restart} type="button">Restart</button>
+              <button onClick={save} type="button">Save</button>
+              <button onClick={load} type="button">Load</button>
+              <button onClick={toggleMute} type="button">{muted ? 'Unmute' : 'Mute'}</button>
+            </div>
           </div>
-
-          <div className="turn-box" style={{ borderColor: currentPlayer?.color ?? 'transparent' }}>
-            <span>Current Turn</span>
-            <strong>{currentPlayer?.name ?? 'None'}</strong>
-          </div>
-
-          <DiceDisplay value={gameState.lastRoll} />
-
-          <div className="button-row">
-            <button className="primary" disabled={gameState.phase === 'game_over'} onClick={roll} type="button">
-              Roll Dice
-            </button>
-            <button onClick={restart} type="button">Restart</button>
-            <button onClick={save} type="button">Save</button>
-            <button onClick={load} type="button">Load</button>
-            <button onClick={toggleMute} type="button">{muted ? 'Unmute' : 'Mute'}</button>
-          </div>
-        </div>
+        )}
 
         <div className="message-card">
           <strong>Status</strong>
-          <p>{winner ? `${winner.name} wins!` : gameState.message}</p>
+          <p>{winner ? `${winner.name} wins!` : gameStarted ? gameState.message : 'Enter a player name to start.'}</p>
         </div>
 
         <CardRevealModal card={gameState.lastCard} />
@@ -134,4 +154,15 @@ export default function App() {
       </section>
     </main>
   );
+}
+
+function createNamedGame(playerCount: number, playerName: string): GameState {
+  const game = createInitialGame(playerCount);
+  const leadName = playerName.trim().replace(/\s+/g, ' ') || 'Player 1';
+
+  return {
+    ...game,
+    players: game.players.map((player, index) => (index === 0 ? { ...player, name: leadName } : player)),
+    message: `${leadName}, roll to begin.`
+  };
 }
