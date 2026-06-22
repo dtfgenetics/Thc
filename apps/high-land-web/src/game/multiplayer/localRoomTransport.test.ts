@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { createInitialGame } from '../systems/gameEngine';
 import { createLocalTestPlayer } from './localRoomFlow';
+import { getLocalRoomEvents } from './localRoomEvents';
 import { createLocalRoomTransport, createLocalRoomSnapshot } from './localRoomTransport';
+import type { RoomCreatedEvent } from '../events/gameEvents';
 
 class MemoryStorage implements Storage {
   private values = new Map<string, string>();
@@ -40,6 +42,17 @@ function makeTransportPlayer(index: number, host = false) {
   };
 }
 
+function makeRoomCreatedEvent(roomCode: string): RoomCreatedEvent {
+  return {
+    id: 'event-1',
+    name: 'room_created',
+    roomCode,
+    playerId: 'local-player-1',
+    createdAt: 'now',
+    payload: { roomCode, hostPlayerId: 'local-player-1' }
+  };
+}
+
 describe('local room transport', () => {
   it('creates, joins, updates, and snapshots a room', async () => {
     const storage = new MemoryStorage();
@@ -54,6 +67,16 @@ describe('local room transport', () => {
     expect(updatedRoom.gameState?.players).toHaveLength(2);
     expect(snapshot.status).toBe('connected');
     expect(snapshot.room?.code).toBe(room.code);
+  });
+
+  it('stores room events', async () => {
+    const storage = new MemoryStorage();
+    const transport = createLocalRoomTransport(storage);
+    const room = await transport.createRoom(makeTransportPlayer(0, true));
+
+    await transport.appendEvent(room.code, makeRoomCreatedEvent(room.code));
+
+    expect(getLocalRoomEvents(room.code, storage)).toHaveLength(1);
   });
 
   it('subscribes with an immediate snapshot', async () => {
