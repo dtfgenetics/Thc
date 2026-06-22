@@ -14,6 +14,7 @@ import {
 import { rollRoomRuntime, startRoomRuntime } from './app/highLandRoomRuntime';
 import { rollCurrentTurn } from './game/systems/gameEngine';
 import { createNamedLocalGame } from './game/multiplayer/roomGameFactory';
+import { parseInviteLink } from './game/multiplayer/inviteLinks';
 import { isMuted, playCardSound, playRollSound, playWinSound, setMuted as setAudioMuted } from './game/systems/audioSystem';
 import { clearSavedGameState, loadGameState, saveGameState } from './game/systems/storageSystem';
 import type { HighLandRoomState } from './game/multiplayer/roomState';
@@ -22,15 +23,18 @@ const playerOptions = [2, 3, 4, 5, 6, 8, 10];
 type ScreenMode = 'landing' | PlayerSetupMode | 'lobby' | 'playing';
 
 export default function App() {
+  const [initialInviteRoomCode] = useState(() => getInitialInviteRoomCode());
   const [playerCount, setPlayerCount] = useState(2);
   const [localPlayerName, setLocalPlayerName] = useState<string | null>(null);
   const [localPlayerId, setLocalPlayerId] = useState<string>('local-player-1');
-  const [screenMode, setScreenMode] = useState<ScreenMode>('landing');
+  const [screenMode, setScreenMode] = useState<ScreenMode>(() => (initialInviteRoomCode ? 'join_room' : 'landing'));
   const [room, setRoom] = useState<HighLandRoomState | null>(null);
   const [inviteUrl, setInviteUrl] = useState('');
   const [gameState, setGameState] = useState(() => createNamedLocalGame(2, 'Player 1'));
   const [muted, setMuted] = useState(isMuted());
-  const [statusMessage, setStatusMessage] = useState('Choose local play, create a room, or join a room.');
+  const [statusMessage, setStatusMessage] = useState(() =>
+    initialInviteRoomCode ? `Invite detected for room ${initialInviteRoomCode}. Enter your player name to join.` : 'Choose local play, create a room, or join a room.'
+  );
 
   const gameStarted = screenMode === 'playing';
   const currentPlayer = gameState.players[gameState.currentPlayerIndex];
@@ -210,7 +214,13 @@ export default function App() {
         ) : null}
 
         {screenMode === 'local' || screenMode === 'create_room' || screenMode === 'join_room' ? (
-          <PlayerSetupForm mode={screenMode} defaultPlayerCount={playerCount} onCancel={() => setScreenMode('landing')} onSubmit={handleSetupSubmit} />
+          <PlayerSetupForm
+            mode={screenMode}
+            initialRoomCode={screenMode === 'join_room' ? initialInviteRoomCode : null}
+            defaultPlayerCount={playerCount}
+            onCancel={() => setScreenMode('landing')}
+            onSubmit={handleSetupSubmit}
+          />
         ) : null}
 
         {screenMode === 'lobby' && room ? (
@@ -293,4 +303,14 @@ export default function App() {
       </section>
     </main>
   );
+}
+
+function getInitialInviteRoomCode(): string | null {
+  if (typeof window === 'undefined') return null;
+
+  try {
+    return parseInviteLink(window.location.href);
+  } catch {
+    return null;
+  }
 }
