@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { boardPath, finishIndex } from '../data/boardPath';
+import { actionSpaceIndexes, boardPath, finishIndex } from '../data/boardPath';
 import { createInitialGame, rollCurrentTurn } from './gameEngine';
 import { rollDie, isValidDieRoll } from './diceSystem';
 import { calculateMove } from './movementSystem';
@@ -50,8 +50,11 @@ describe('board path', () => {
     }
   });
 
-  it('maps the four printed HIT spaces exactly', () => {
-    expect(boardPath.filter((space) => space.type === 'action').map((space) => space.index)).toEqual([27, 70, 83, 96]);
+  it('maps the gameplay HIT spaces across the full route', () => {
+    const hitIndexes = boardPath.filter((space) => space.type === 'action').map((space) => space.index);
+    expect(hitIndexes).toEqual([...actionSpaceIndexes]);
+    expect(hitIndexes).toHaveLength(25);
+    expect(hitIndexes).toEqual(expect.arrayContaining([27, 70, 83, 96]));
   });
 
   it('keeps all seven approved locations in order', () => {
