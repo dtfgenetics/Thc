@@ -48,6 +48,28 @@ test.describe('High Land browser game', () => {
     await expect(page.getByLabel(/Last roll/i)).toBeVisible();
   });
 
+  test('opens invite links into prefilled join room flow', async ({ page }) => {
+    await page.goto('/games/high-land/');
+
+    await page.getByRole('button', { name: 'Create Room' }).click();
+    await page.getByPlaceholder('Enter your player name').fill('Room Host');
+    await page.getByRole('button', { name: 'Create Room' }).click();
+
+    const inviteUrl = await page.getByLabel('Invite link').inputValue();
+    const roomCode = new URL(inviteUrl).searchParams.get('room');
+    expect(roomCode).toBeTruthy();
+
+    await page.goto(inviteUrl);
+    await expect(page.getByRole('heading', { name: /Join a High Land room/i })).toBeVisible();
+    await expect(page.getByPlaceholder('Room code')).toHaveValue(roomCode ?? '');
+
+    await page.getByPlaceholder('Enter your player name').fill('Invite Guest');
+    await page.getByRole('button', { name: 'Join Room' }).click();
+
+    await expect(page.getByLabel('High Land room lobby')).toBeVisible();
+    await expect(page.getByText('Invite Guest')).toBeVisible();
+  });
+
   test('mobile layout can start and restart a named game', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/games/high-land/');
