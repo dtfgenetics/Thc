@@ -1,10 +1,13 @@
 import { expect, test } from '@playwright/test';
 
 test.describe('High Land browser game', () => {
-  test('loads named setup, starts 10-player mode, and rolls', async ({ page }) => {
+  test('loads mode chooser, starts 10-player local game, and rolls', async ({ page }) => {
     await page.goto('/games/high-land/');
 
     await expect(page.getByRole('heading', { name: /High Land/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Start High Land/i })).toBeVisible();
+
+    await page.getByRole('button', { name: 'Local Play' }).click();
     await expect(page.getByRole('heading', { name: /Start local High Land/i })).toBeVisible();
 
     await page.getByPlaceholder('Enter your player name').fill('Blaze Runner');
@@ -21,10 +24,24 @@ test.describe('High Land browser game', () => {
     await expect(page.getByRole('button', { name: 'Restart' })).toBeVisible();
   });
 
+  test('can create a local fallback room lobby', async ({ page }) => {
+    await page.goto('/games/high-land/');
+
+    await page.getByRole('button', { name: 'Create Room' }).click();
+    await page.getByPlaceholder('Enter your player name').fill('Room Host');
+    await page.getByRole('button', { name: 'Create Room' }).click();
+
+    await expect(page.getByLabel('High Land room lobby')).toBeVisible();
+    await expect(page.getByText('Room Host')).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Copy Invite' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Start Game' })).toBeDisabled();
+  });
+
   test('mobile layout can start and restart a named game', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/games/high-land/');
 
+    await page.getByRole('button', { name: 'Local Play' }).click();
     await page.getByPlaceholder('Enter your player name').fill('Mobile Player');
     await page.getByLabel('Players').selectOption('4');
     await page.getByRole('button', { name: 'Start Game' }).click();
