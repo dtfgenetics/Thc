@@ -28,11 +28,11 @@ describe('room game factory', () => {
     expect(game.message).toBe('Blaze Runner, roll to begin.');
   });
 
-  it('creates a game from room players', () => {
+  it('creates a game from room players and preserves identity', () => {
     const game = createGameFromRoom(makeRoom());
 
     expect(game.players).toHaveLength(2);
-    expect(game.players[0].name).toBe('Player 1');
-    expect(game.players[1].name).toBe('Player 2');
+    expect(game.players[0]).toMatchObject({ id: 'local-player-1', name: 'Player 1', token: 'tokenA' });
+    expect(game.players[1]).toMatchObject({ id: 'local-player-2', name: 'Player 2', token: 'tokenB' });
   });
 });
