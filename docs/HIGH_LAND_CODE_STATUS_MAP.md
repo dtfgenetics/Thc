@@ -24,7 +24,7 @@ apps/high-land-web/src/app/highLandAppFlow.ts
 apps/high-land-web/src/app/highLandRoomModeService.ts
 ```
 
-Status: built. App has named-player flow and uses the room-mode service for local room actions.
+Status: built. App has named-player flow and uses the room-mode service for local room actions. React type-only imports have been cleaned up.
 
 ## Room and lobby fallback
 
@@ -39,7 +39,7 @@ apps/high-land-web/src/game/multiplayer/localRoomFlow.ts
 apps/high-land-web/src/game/multiplayer/roomSessionController.ts
 ```
 
-Status: local fallback systems are built. App can create a local room, show invite link, add a local test player, and start from lobby.
+Status: local fallback systems are built. App can create a local room, show invite link, add a local test player, and start from lobby. Local test players are capped at the game max.
 
 ## Room gameplay runtime
 
@@ -50,7 +50,7 @@ apps/high-land-web/src/game/multiplayer/roomGameActions.ts
 apps/high-land-web/src/game/multiplayer/roomActionExecutor.ts
 ```
 
-Status: built and wired into App for room start, restart, and roll. Room-mode gameplay now uses the transport-backed runtime path.
+Status: built and wired into App for room start, restart, and roll. Room-mode gameplay now uses the transport-backed runtime path, and room player IDs/tokens/colors are preserved in game state.
 
 ## Multiplayer transport boundary
 
@@ -61,7 +61,7 @@ apps/high-land-web/src/game/multiplayer/supabaseRoomTransport.ts
 apps/high-land-web/src/game/multiplayer/roomTransportFactory.ts
 ```
 
-Status: local transport works, Supabase transport is a safe stub.
+Status: local transport works, Supabase transport is a safe stub. Local storage helpers now fail with clear messages outside the browser instead of touching `window.localStorage` in default parameters.
 
 ## Event logging
 
@@ -83,6 +83,16 @@ docs/HIGH_LAND_MULTIPLAYER_TRANSPORTS.md
 ```
 
 Status: schema draft and row mappers exist. Live Supabase writes are not implemented yet.
+
+## Runner setup
+
+```txt
+.github/workflows/high-land-ci.yml
+.devcontainer/devcontainer.json
+docs/RUN_HIGH_LAND_CODE.md
+```
+
+Status: GitHub Actions has a manual trigger. Codespaces has a dev container. Runner instructions exist for Codespaces, GitHub Actions, Replit, Cursor, and Windsurf.
 
 ## Tests added
 
@@ -110,12 +120,13 @@ Status: tests exist, but must be run locally/CI.
 ## Immediate next wiring tasks
 
 ```txt
-1. Run npm run test:high-land.
-2. Run npm run build:high-land.
-3. Fix any TypeScript/test/build failures.
-4. Convert Supabase schema draft into a reviewed migration.
-5. Implement Supabase room transport after migration approval.
-6. Deploy and check https://dtfseeds.com/games/high-land/.
+1. Open GitHub Codespaces or manually run High Land CI.
+2. Run npm run test:high-land.
+3. Run npm run build:high-land.
+4. Fix any actual TypeScript/test/build failures.
+5. Convert Supabase schema draft into a reviewed migration.
+6. Implement Supabase room transport after migration approval.
+7. Deploy and check https://dtfseeds.com/games/high-land/.
 ```
 
 ## Do not claim done until
