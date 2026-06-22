@@ -33,11 +33,12 @@ export async function rollRoomRuntime(
   const updatedRoom = await rollRoomWithTransport(room, transport, random);
   const currentPlayer = updatedRoom.gameState?.players[updatedRoom.gameState.currentPlayerIndex];
   const leadPlayerName = updatedRoom.gameState?.players[0]?.name ?? 'Player 1';
+  const winner = updatedRoom.gameState?.players.find((player) => player.id === updatedRoom.gameState?.winnerId) ?? null;
 
   return {
     room: updatedRoom,
     playerCount: updatedRoom.gameState?.players.length ?? Math.max(2, updatedRoom.players.length),
     leadPlayerName,
-    message: updatedRoom.gameState?.winnerId ? `${leadPlayerName} wins!` : updatedRoom.gameState?.message ?? `${currentPlayer?.name ?? leadPlayerName}, roll to begin.`
+    message: winner ? `${winner.name} wins!` : updatedRoom.gameState?.message ?? `${currentPlayer?.name ?? leadPlayerName}, roll to begin.`
   };
 }
