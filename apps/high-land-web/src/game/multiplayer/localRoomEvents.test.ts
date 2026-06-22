@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { appendLocalRoomEvent, clearLocalRoomEvents, getLocalRoomEvents } from './localRoomEvents';
-import type { HighLandGameEvent } from '../events/gameEvents';
+import type { HighLandGameEvent, HighLandGameEventName } from '../events/gameEvents';
 
 class MemoryStorage implements Storage {
   private values = new Map<string, string>();
@@ -30,14 +30,21 @@ class MemoryStorage implements Storage {
   }
 }
 
-function makeEvent(name: string): HighLandGameEvent {
+function makeEvent(name: HighLandGameEventName): HighLandGameEvent {
   return {
     id: `event-${name}`,
-    type: name as HighLandGameEvent['type'],
+    name,
+    roomCode: 'ABCD23',
     playerId: null,
-    payload: {},
+    payload: makePayload(name),
     createdAt: 'now'
-  };
+  } as HighLandGameEvent;
+}
+
+function makePayload(name: HighLandGameEventName): Record<string, unknown> {
+  if (name === 'room_created') return { roomCode: 'ABCD23', hostPlayerId: 'host-1' };
+  if (name === 'player_joined') return { playerId: 'player-2', playerName: 'Player 2' };
+  return {};
 }
 
 describe('local room events', () => {
