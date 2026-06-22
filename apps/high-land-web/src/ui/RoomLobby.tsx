@@ -7,9 +7,10 @@ type RoomLobbyProps = {
   onStartGame: () => void;
   onLeave: () => void;
   onCopyInvite?: (inviteUrl: string) => void;
+  onAddLocalGuest?: () => void;
 };
 
-export function RoomLobby({ room, localPlayerId, inviteUrl, onStartGame, onLeave, onCopyInvite }: RoomLobbyProps) {
+export function RoomLobby({ room, localPlayerId, inviteUrl, onStartGame, onLeave, onCopyInvite, onAddLocalGuest }: RoomLobbyProps) {
   const startAllowed = canStartRoom(room, localPlayerId);
   const localPlayer = room.players.find((player) => player.id === localPlayerId) ?? null;
 
@@ -29,7 +30,7 @@ export function RoomLobby({ room, localPlayerId, inviteUrl, onStartGame, onLeave
       <p className="eyebrow">Room Lobby</p>
       <h2>High Land Room {room.code}</h2>
       <p className="subtitle">
-        Share the invite link, wait for players to join, then start when everyone is ready.
+        Share the invite link, wait for players to join, then start when everyone is ready. Add a local test player until Supabase sync is connected.
       </p>
 
       <div className="turn-box">
@@ -44,6 +45,7 @@ export function RoomLobby({ room, localPlayerId, inviteUrl, onStartGame, onLeave
 
       <div className="button-row">
         <button onClick={copyInvite} type="button">Copy Invite</button>
+        {onAddLocalGuest ? <button onClick={onAddLocalGuest} type="button">Add Test Player</button> : null}
         <button className="primary" disabled={!startAllowed} onClick={onStartGame} type="button">Start Game</button>
         <button onClick={onLeave} type="button">Leave</button>
       </div>
