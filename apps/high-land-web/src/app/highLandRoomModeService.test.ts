@@ -47,6 +47,18 @@ describe('High Land room mode service', () => {
 
     expect(guest.room.players).toHaveLength(2);
     expect(guest.localPlayerName).toBe('Guest Player');
+    expect(guest.localPlayerId).toBe('local-player-2');
+  });
+
+  it('assigns unique IDs to multiple local joiners', () => {
+    const storage = new MemoryStorage();
+    const host = createLocalRoomMode('Room Host', 3, storage);
+    const guestOne = joinLocalRoomMode(host.room.code, 'Guest One', storage);
+    const guestTwo = joinLocalRoomMode(host.room.code, 'Guest Two', storage);
+
+    expect(guestOne.localPlayerId).toBe('local-player-2');
+    expect(guestTwo.localPlayerId).toBe('local-player-3');
+    expect(guestTwo.room.players.map((player) => player.id)).toEqual(['local-player-1', 'local-player-2', 'local-player-3']);
   });
 
   it('adds a local test player to a room', () => {
