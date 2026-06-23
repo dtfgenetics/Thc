@@ -1,8 +1,16 @@
 import { rollRoomGameplay, startRoomGameplay } from './roomGameActions';
-import { canPlayerRoll, type HighLandRoomState } from './roomState';
+import { canPlayerRoll, canStartRoom, type HighLandRoomState } from './roomState';
 import type { RoomTransport } from './roomTransport';
 
-export async function startRoomWithTransport(room: HighLandRoomState, transport: RoomTransport): Promise<HighLandRoomState> {
+export async function startRoomWithTransport(
+  room: HighLandRoomState,
+  transport: RoomTransport,
+  requestingPlayerId: string
+): Promise<HighLandRoomState> {
+  if (!canStartRoom(room, requestingPlayerId)) {
+    throw new Error('Only the room host can start once at least 2 players have joined.');
+  }
+
   const result = startRoomGameplay(room);
   const updatedRoom = await transport.updateGameState(room.code, result.room.gameState!);
 
