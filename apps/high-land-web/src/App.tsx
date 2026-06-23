@@ -236,21 +236,23 @@ export default function App() {
 
         {screenMode === 'playing' ? (
           <div className="controls-card">
-            <div className="player-select" aria-label="Player count">
-              {playerOptions.map((count) => (
-                <button
-                  className={count === playerCount ? 'selected' : ''}
-                  key={count}
-                  onClick={() => startGame(count)}
-                  type="button"
-                >
-                  {count} Players
-                </button>
-              ))}
-            </div>
+            {!room ? (
+              <div className="player-select" aria-label="Player count">
+                {playerOptions.map((count) => (
+                  <button
+                    className={count === playerCount ? 'selected' : ''}
+                    key={count}
+                    onClick={() => startGame(count)}
+                    type="button"
+                  >
+                    {count} Players
+                  </button>
+                ))}
+              </div>
+            ) : null}
 
             <div className="turn-box" style={{ borderColor: currentPlayer?.color ?? 'transparent' }}>
-              <span>Current Turn</span>
+              <span>{room ? `Room ${room.code}` : 'Current Turn'}</span>
               <strong>{currentPlayer?.name ?? 'None'}</strong>
             </div>
 
