@@ -1,4 +1,4 @@
-import { normalizeRoomCode, requireValidRoomCode } from './roomCodes';
+import { isValidRoomCode, normalizeRoomCode, requireValidRoomCode } from './roomCodes';
 
 const ROOM_QUERY_KEY = 'room';
 
@@ -29,7 +29,7 @@ export function parseInviteLink(urlLike: string | URL): string | null {
   if (!rawRoomCode) return null;
 
   const normalized = normalizeRoomCode(rawRoomCode);
-  return normalized || null;
+  return isValidRoomCode(normalized) ? normalized : null;
 }
 
 function getBrowserOrigin(): string {
