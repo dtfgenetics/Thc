@@ -180,6 +180,25 @@ describe('game engine', () => {
     expect(boardPath[next.players[0].positionIndex].color).toBe('green');
   });
 
+  it('uses controlled randomness for random swap cards', () => {
+    const state = createInitialGame(3);
+    const positioned = {
+      ...state,
+      players: state.players.map((player, index) => ({ ...player, positionIndex: index * 10 }))
+    };
+    const randomSwapCard: ActionCard = {
+      id: 'test-random-swap',
+      title: 'Random Swap',
+      text: 'Swap with a random player.',
+      effect: { type: 'swap_position', target: 'random' }
+    };
+
+    const next = applyActionCard(positioned, randomSwapCard, 0, () => 0.999);
+
+    expect(next.players[0].positionIndex).toBe(20);
+    expect(next.players[2].positionIndex).toBe(0);
+  });
+
   it('supports reverse turn order', () => {
     const state = createInitialGame(3);
     const reverseCard: ActionCard = {
