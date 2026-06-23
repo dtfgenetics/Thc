@@ -8,8 +8,8 @@ export function createLocalTestPlayer(index: number): LocalRoomPlayerInput {
   return {
     id: `local-player-${safeIndex + 1}`,
     name: `Player ${safeIndex + 1}`,
-    token: tokenOrder[safeIndex],
-    color: tokenColors[safeIndex]
+    token: tokenOrder[safeIndex] ?? tokenOrder[0],
+    color: tokenColors[safeIndex] ?? tokenColors[0]
   };
 }
 
