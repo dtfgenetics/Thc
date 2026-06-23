@@ -1,6 +1,7 @@
 import type { HighLandRoomPlayer, HighLandRoomState } from './roomState';
 import type { SupabaseGamePlayerRow, SupabaseGameSessionRow, SupabaseHighLandEventRow } from './supabaseRoomTypes';
 import type { HighLandGameEvent } from '../events/gameEvents';
+import { tokenColors, tokenOrder } from '../systems/playerSystem';
 
 export function mapSessionAndPlayersToRoom(
   session: SupabaseGameSessionRow,
@@ -21,12 +22,12 @@ export function mapSessionAndPlayersToRoom(
   };
 }
 
-export function mapPlayerRowToRoomPlayer(row: SupabaseGamePlayerRow): HighLandRoomPlayer {
+export function mapPlayerRowToRoomPlayer(row: SupabaseGamePlayerRow, index = 0): HighLandRoomPlayer {
   return {
     id: row.id,
     name: row.display_name,
-    token: row.token as HighLandRoomPlayer['token'],
-    color: row.color,
+    token: tokenOrder.includes(row.token as HighLandRoomPlayer['token']) ? row.token as HighLandRoomPlayer['token'] : tokenOrder[index % tokenOrder.length],
+    color: row.color || tokenColors[index % tokenColors.length],
     joinedAt: row.joined_at,
     connected: row.connected,
     host: row.is_host
