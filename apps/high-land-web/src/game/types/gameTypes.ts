@@ -1,6 +1,6 @@
 export type SpaceColor = 'red' | 'yellow' | 'green' | 'blue' | 'purple' | 'special';
 
-export type BoardSpaceType = 'normal' | 'action' | 'skip' | 'boost' | 'trap' | 'safe' | 'start' | 'finish';
+export type BoardSpaceType = 'normal' | 'action' | 'start' | 'finish';
 
 export type BoardSpace = {
   index: number;
