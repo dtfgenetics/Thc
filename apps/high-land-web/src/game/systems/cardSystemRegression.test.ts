@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { starterActionCards } from '../data/actionCards';
-import { finishIndex } from '../data/boardPath';
+import { actionSpaceIndexes, finishIndex } from '../data/boardPath';
 import type { ActionCard } from '../types/gameTypes';
 import { applyActionCard } from './cardSystem';
-import { createInitialGame } from './gameEngine';
+import { createInitialGame, rollCurrentTurn } from './gameEngine';
 
 describe('card system regression checks', () => {
   it('keeps the authored 31-card HIT deck intact', () => {
@@ -17,6 +17,21 @@ describe('card system regression checks', () => {
     const rollAgainCards = starterActionCards.filter((card) => card.effect.type === 'roll_again');
     expect(rollAgainCards).toHaveLength(1);
     expect(rollAgainCards[0].text).toBe('Take another roll before the turn passes.');
+  });
+
+  it('draws a HIT card from every gameplay HIT trigger index', () => {
+    for (const hitIndex of actionSpaceIndexes) {
+      const state = createInitialGame(2);
+      const staged = {
+        ...state,
+        players: state.players.map((player, index) =>
+          index === 0 ? { ...player, positionIndex: hitIndex - 1 } : player
+        )
+      };
+      const next = rollCurrentTurn(staged, () => 0);
+      expect(next.lastRoll).toBe(1);
+      expect(next.lastCard).not.toBeNull();
+    }
   });
 
   it('chains a draw-again card into the next deck card', () => {
