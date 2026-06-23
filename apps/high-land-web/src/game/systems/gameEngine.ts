@@ -47,7 +47,7 @@ export function rollCurrentTurn(state: GameState, random: () => number = Math.ra
   const move = calculateMove(currentPlayer.positionIndex, result, finishIndex);
   const landedSpace = boardPath[move.toIndex];
 
-  let players = state.players.map((player) =>
+  const players = state.players.map((player) =>
     player.id === currentPlayer.id ? { ...player, positionIndex: move.toIndex } : player
   );
 
@@ -63,59 +63,8 @@ export function rollCurrentTurn(state: GameState, random: () => number = Math.ra
     };
   }
 
-  if (landedSpace.type === 'skip') {
-    players = players.map((player) =>
-      player.id === currentPlayer.id ? { ...player, skipTurns: player.skipTurns + 1 } : player
-    );
-    const directionState = reduceReverseTurnCounter(state);
-
-    return {
-      ...state,
-      ...directionState,
-      players,
-      phase: 'ready',
-      lastRoll: result,
-      lastCard: null,
-      currentPlayerIndex: nextPlayerIndex(players, state.currentPlayerIndex, directionState.turnDirection),
-      message: `${currentPlayer.name} rolled ${result}, landed on SKIP, and will skip the next turn.`
-    };
-  }
-
-  if (landedSpace.type === 'boost') {
-    players = players.map((player) =>
-      player.id === currentPlayer.id ? { ...player, positionIndex: calculateMove(player.positionIndex, 2, finishIndex).toIndex } : player
-    );
-  }
-
-  if (landedSpace.type === 'trap') {
-    players = players.map((player) => {
-      if (player.id !== currentPlayer.id) return player;
-      if (player.protectedFromBackward > 0) return { ...player, protectedFromBackward: player.protectedFromBackward - 1 };
-      return { ...player, positionIndex: calculateMove(player.positionIndex, -2, finishIndex).toIndex };
-    });
-  }
-
-  if (landedSpace.type === 'safe') {
-    players = players.map((player) =>
-      player.id === currentPlayer.id ? { ...player, protectedFromBackward: player.protectedFromBackward + 1 } : player
-    );
-  }
-
-  const updatedCurrentPlayer = players.find((player) => player.id === currentPlayer.id) ?? currentPlayer;
-  if (updatedCurrentPlayer.positionIndex >= finishIndex) {
-    return {
-      ...state,
-      players,
-      phase: 'game_over',
-      lastRoll: result,
-      lastCard: null,
-      winnerId: currentPlayer.id,
-      message: `${currentPlayer.name} rolled ${result} and reached the finish.`
-    };
-  }
-
   if (landedSpace.type === 'action') {
-    const draw = drawActionCard(state.cardCursor);
+    const draw = drawActionCard(state.cardCursor, undefined, random);
     const stateAfterLanding: GameState = {
       ...state,
       players,
@@ -123,12 +72,13 @@ export function rollCurrentTurn(state: GameState, random: () => number = Math.ra
       lastRoll: result,
       lastCard: draw.card,
       cardCursor: draw.nextCursor,
-      message: `${currentPlayer.name} rolled ${result} and drew ${draw.card.title}.`
+      message: `${currentPlayer.name} rolled ${result}, landed on HIT, and drew ${draw.card.title}.`
     };
-    return applyActionCard(stateAfterLanding, draw.card);
+    return applyActionCard(stateAfterLanding, draw.card, 0, random);
   }
 
   const directionState = reduceReverseTurnCounter(state);
+  const updatedCurrentPlayer = players.find((player) => player.id === currentPlayer.id) ?? currentPlayer;
   return {
     ...state,
     ...directionState,
