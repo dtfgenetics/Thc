@@ -100,7 +100,7 @@ export class BoardScene extends Phaser.Scene {
 
     boardPath.forEach((space) => {
       const fill = colorMap[space.color];
-      const radius = space.type === 'start' || space.type === 'finish' ? 24 : space.type === 'action' || space.type === 'skip' ? 21 : 17;
+      const radius = space.type === 'start' || space.type === 'finish' ? 24 : space.type === 'action' ? 21 : 17;
       this.add.circle(space.x, space.y, radius + 4, 0xffffff, this.hasBoardArt ? 0.72 : 1).setDepth(5);
       this.add.circle(space.x, space.y, radius, fill, this.hasBoardArt ? 0.86 : 1).setDepth(6);
 
