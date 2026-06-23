@@ -1,4 +1,5 @@
-import type { GameState, Player } from '../types/gameTypes';
+import type { GameState, Player, PlayerToken, TurnDirection } from '../types/gameTypes';
+import { tokenColors, tokenOrder } from './playerSystem';
 
 const storageKey = 'high-land-save-v1';
 
@@ -40,17 +41,19 @@ export function clearSavedGameState(): void {
 function hydrateGameState(raw: Partial<GameState>): GameState | null {
   if (!raw.players || raw.players.length < 2) return null;
 
+  const players = raw.players.map(hydratePlayer);
+
   return {
-    players: raw.players.map(hydratePlayer),
-    currentPlayerIndex: raw.currentPlayerIndex ?? 0,
+    players,
+    currentPlayerIndex: clampIndex(raw.currentPlayerIndex, players.length),
     phase: raw.phase ?? 'ready',
-    turnDirection: raw.turnDirection ?? 1,
-    reverseTurnsRemaining: raw.reverseTurnsRemaining ?? 0,
+    turnDirection: hydrateTurnDirection(raw.turnDirection),
+    reverseTurnsRemaining: Math.max(0, raw.reverseTurnsRemaining ?? 0),
     lastRoll: raw.lastRoll ?? null,
     lastCard: raw.lastCard ?? null,
     message: raw.message ?? 'Saved game loaded.',
     winnerId: raw.winnerId ?? null,
-    cardCursor: raw.cardCursor ?? 0
+    cardCursor: Math.max(0, raw.cardCursor ?? 0)
   };
 }
 
@@ -58,11 +61,11 @@ function hydratePlayer(player: Partial<Player>, index: number): Player {
   return {
     id: player.id ?? `player-restored-${index + 1}`,
     name: player.name ?? `Player ${index + 1}`,
-    token: player.token ?? 'tokenA',
-    color: player.color ?? '#ffffff',
-    positionIndex: player.positionIndex ?? 0,
-    skipTurns: player.skipTurns ?? 0,
-    protectedFromBackward: player.protectedFromBackward ?? 0
+    token: hydrateToken(player.token, index),
+    color: player.color ?? tokenColors[index % tokenColors.length],
+    positionIndex: Math.max(0, player.positionIndex ?? 0),
+    skipTurns: Math.max(0, player.skipTurns ?? 0),
+    protectedFromBackward: Math.max(0, player.protectedFromBackward ?? 0)
   };
 }
 
@@ -74,4 +77,18 @@ function getBrowserStorage(): Storage | null {
   } catch {
     return null;
   }
+}
+
+function hydrateToken(token: PlayerToken | undefined, index: number): PlayerToken {
+  if (token && tokenOrder.includes(token)) return token;
+  return tokenOrder[index % tokenOrder.length];
+}
+
+function hydrateTurnDirection(direction: TurnDirection | undefined): TurnDirection {
+  return direction === -1 ? -1 : 1;
+}
+
+function clampIndex(index: number | undefined, length: number): number {
+  if (!Number.isInteger(index)) return 0;
+  return Math.max(0, Math.min(index ?? 0, length - 1));
 }
