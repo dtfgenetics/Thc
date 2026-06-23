@@ -31,13 +31,14 @@ test.describe('High Land browser game', () => {
     await page.getByPlaceholder('Enter your player name').fill('Room Host');
     await page.getByRole('button', { name: 'Create Room' }).click();
 
-    await expect(page.getByLabel('High Land room lobby')).toBeVisible();
-    await expect(page.getByText('Room Host').first()).toBeVisible();
+    const roomLobby = page.getByLabel('High Land room lobby');
+    await expect(roomLobby).toBeVisible();
+    await expect(roomLobby.getByText('Room Host')).toBeVisible();
     await expect(page.getByRole('button', { name: 'Copy Invite' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Start Game' })).toBeDisabled();
 
     await page.getByRole('button', { name: 'Add Test Player' }).click();
-    await expect(page.getByText('Player 2')).toBeVisible();
+    await expect(roomLobby.getByText('Player 2')).toBeVisible();
     await expect(page.getByRole('button', { name: 'Start Game' })).toBeEnabled();
 
     await page.getByRole('button', { name: 'Start Game' }).click();
