@@ -1,4 +1,4 @@
-import { createGameEvent, type DiceRolledEvent, type GameStartedEvent, type HighLandGameEvent, type HitCardDrawnEvent, type WinnerDeclaredEvent } from '../events/gameEvents';
+import { createGameEvent, type DiceRolledEvent, type GameStartedEvent, type HighLandGameEvent, type HitCardDrawnEvent, type SkipTurnAppliedEvent, type WinnerDeclaredEvent } from '../events/gameEvents';
 import { finishIndex } from '../data/boardPath';
 import { rollCurrentTurn } from '../systems/gameEngine';
 import type { HighLandRoomState } from './roomState';
@@ -45,18 +45,34 @@ export function rollRoomGameplay(room: HighLandRoomState, random: () => number =
     updatedAt: new Date().toISOString()
   };
 
-  const events: HighLandGameEvent[] = [
-    createGameEvent<DiceRolledEvent>({
-      name: 'dice_rolled',
-      roomCode: room.code,
-      playerId: currentPlayer?.id ?? null,
-      payload: {
-        roll: nextGameState.lastRoll ?? 0,
-        fromIndex,
-        toIndex
-      }
-    })
-  ];
+  const events: HighLandGameEvent[] = [];
+
+  if (nextGameState.lastRoll === null && currentPlayer) {
+    events.push(
+      createGameEvent<SkipTurnAppliedEvent>({
+        name: 'skip_turn_applied',
+        roomCode: room.code,
+        playerId: currentPlayer.id,
+        payload: {
+          skippedPlayerId: currentPlayer.id,
+          skipTurns: updatedPlayer?.skipTurns ?? 0
+        }
+      })
+    );
+  } else {
+    events.push(
+      createGameEvent<DiceRolledEvent>({
+        name: 'dice_rolled',
+        roomCode: room.code,
+        playerId: currentPlayer?.id ?? null,
+        payload: {
+          roll: nextGameState.lastRoll ?? 0,
+          fromIndex,
+          toIndex
+        }
+      })
+    );
+  }
 
   if (nextGameState.lastCard) {
     events.push(
