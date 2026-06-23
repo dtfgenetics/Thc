@@ -1,4 +1,4 @@
-import { createGameEvent, type DiceRolledEvent, type GameStartedEvent, type HighLandGameEvent, type WinnerDeclaredEvent } from '../events/gameEvents';
+import { createGameEvent, type DiceRolledEvent, type GameStartedEvent, type HighLandGameEvent, type HitCardDrawnEvent, type WinnerDeclaredEvent } from '../events/gameEvents';
 import { finishIndex } from '../data/boardPath';
 import { rollCurrentTurn } from '../systems/gameEngine';
 import type { HighLandRoomState } from './roomState';
@@ -57,6 +57,19 @@ export function rollRoomGameplay(room: HighLandRoomState, random: () => number =
       }
     })
   ];
+
+  if (nextGameState.lastCard) {
+    events.push(
+      createGameEvent<HitCardDrawnEvent>({
+        name: 'hit_card_drawn',
+        roomCode: room.code,
+        playerId: currentPlayer?.id ?? null,
+        payload: {
+          card: nextGameState.lastCard
+        }
+      })
+    );
+  }
 
   if (nextGameState.winnerId) {
     events.push(
