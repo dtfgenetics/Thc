@@ -37,8 +37,8 @@ export function createPlayers(count: number): Player[] {
   return Array.from({ length: count }, (_, index) => ({
     id: `player-${index + 1}`,
     name: `Player ${index + 1}`,
-    token: tokenOrder[index],
-    color: tokenColors[index],
+    token: getPlayerToken(index),
+    color: getPlayerColor(index),
     positionIndex: 0,
     skipTurns: 0,
     protectedFromBackward: 0
@@ -47,4 +47,12 @@ export function createPlayers(count: number): Player[] {
 
 export function updatePlayer(players: Player[], playerId: string, updater: (player: Player) => Player): Player[] {
   return players.map((player) => (player.id === playerId ? updater(player) : player));
+}
+
+function getPlayerToken(index: number): PlayerToken {
+  return tokenOrder[index] ?? tokenOrder[0];
+}
+
+function getPlayerColor(index: number): string {
+  return tokenColors[index] ?? tokenColors[0];
 }
