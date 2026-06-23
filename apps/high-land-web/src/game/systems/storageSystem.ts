@@ -1,3 +1,4 @@
+import { finishIndex } from '../data/boardPath';
 import type { GameState, Player, PlayerToken, TurnDirection } from '../types/gameTypes';
 import { tokenColors, tokenOrder } from './playerSystem';
 
@@ -63,7 +64,7 @@ function hydratePlayer(player: Partial<Player>, index: number): Player {
     name: player.name ?? `Player ${index + 1}`,
     token: hydrateToken(player.token, index),
     color: player.color ?? tokenColors[index % tokenColors.length],
-    positionIndex: Math.max(0, player.positionIndex ?? 0),
+    positionIndex: clampBoardIndex(player.positionIndex),
     skipTurns: Math.max(0, player.skipTurns ?? 0),
     protectedFromBackward: Math.max(0, player.protectedFromBackward ?? 0)
   };
@@ -91,4 +92,9 @@ function hydrateTurnDirection(direction: TurnDirection | undefined): TurnDirecti
 function clampIndex(index: number | undefined, length: number): number {
   if (!Number.isInteger(index)) return 0;
   return Math.max(0, Math.min(index ?? 0, length - 1));
+}
+
+function clampBoardIndex(index: number | undefined): number {
+  if (!Number.isInteger(index)) return 0;
+  return Math.max(0, Math.min(index ?? 0, finishIndex));
 }
