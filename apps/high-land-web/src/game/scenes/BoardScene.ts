@@ -12,6 +12,11 @@ const colorMap: Record<SpaceColor, number> = {
   purple: 0xa855f7
 };
 
+type TokenTarget = {
+  x: number;
+  y: number;
+};
+
 export class BoardScene extends Phaser.Scene {
   private tokenSprites = new Map<string, Phaser.GameObjects.Arc>();
   private tokenLabels = new Map<string, Phaser.GameObjects.Text>();
@@ -194,18 +199,21 @@ export class BoardScene extends Phaser.Scene {
 
     this.tweens.killTweensOf(token);
     if (label) this.tweens.killTweensOf(label);
+    this.animateTokenTargets(label ? [token, label] : [token], targets, getMoveDuration(playerCount));
+  }
 
-    const timeline = this.tweens.createTimeline();
-    targets.forEach((target) => {
-      timeline.add({
-        targets: label ? [token, label] : token,
-        x: target.x,
-        y: target.y,
-        duration: getMoveDuration(playerCount),
-        ease: 'Sine.easeInOut'
-      });
+  private animateTokenTargets(targets: Phaser.GameObjects.GameObject[], positions: TokenTarget[], duration: number, index = 0): void {
+    const position = positions[index];
+    if (!position) return;
+
+    this.tweens.add({
+      targets,
+      x: position.x,
+      y: position.y,
+      duration,
+      ease: 'Sine.easeInOut',
+      onComplete: () => this.animateTokenTargets(targets, positions, duration, index + 1)
     });
-    timeline.play();
   }
 }
 
