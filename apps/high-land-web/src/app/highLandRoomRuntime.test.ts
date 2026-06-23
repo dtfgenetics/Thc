@@ -48,7 +48,7 @@ describe('High Land room runtime', () => {
     const room = await transport.createRoom(makeTransportPlayer(0, true));
     const joinedRoom = await transport.joinRoom(room.code, makeTransportPlayer(1));
 
-    const started = await startRoomRuntime(joinedRoom, transport);
+    const started = await startRoomRuntime(joinedRoom, 'local-player-1', transport);
     const rolled = await rollRoomRuntime(started.room, 'local-player-1', transport, () => 0);
 
     expect(started.room.status).toBe('playing');
@@ -56,12 +56,21 @@ describe('High Land room runtime', () => {
     expect(getLocalRoomEvents(room.code, storage).map((event) => event.name)).toEqual(['game_started', 'dice_rolled']);
   });
 
+  it('rejects room starts from non-host players', async () => {
+    const storage = new MemoryStorage();
+    const transport = createLocalRoomTransport(storage);
+    const room = await transport.createRoom(makeTransportPlayer(0, true));
+    const joinedRoom = await transport.joinRoom(room.code, makeTransportPlayer(1));
+
+    await expect(startRoomRuntime(joinedRoom, 'local-player-2', transport)).rejects.toThrow('Only the room host');
+  });
+
   it('rejects room rolls from a player who does not have the current turn', async () => {
     const storage = new MemoryStorage();
     const transport = createLocalRoomTransport(storage);
     const room = await transport.createRoom(makeTransportPlayer(0, true));
     const joinedRoom = await transport.joinRoom(room.code, makeTransportPlayer(1));
-    const started = await startRoomRuntime(joinedRoom, transport);
+    const started = await startRoomRuntime(joinedRoom, 'local-player-1', transport);
 
     await expect(rollRoomRuntime(started.room, 'local-player-2', transport, () => 0)).rejects.toThrow('not this player');
   });
