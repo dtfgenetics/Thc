@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import type { FormEvent } from 'react';
+import { isValidRoomCode, normalizeRoomCode } from '../game/multiplayer/roomCodes';
 import { validatePlayerName } from '../game/players/playerIdentity';
 import { maxPlayers, minPlayers } from '../game/systems/playerSystem';
 
@@ -31,12 +32,12 @@ export function PlayerSetupForm({
 }: PlayerSetupFormProps) {
   const [playerName, setPlayerName] = useState('');
   const [playerCount, setPlayerCount] = useState(defaultPlayerCount);
-  const [roomCode, setRoomCode] = useState(initialRoomCode ?? '');
+  const [roomCode, setRoomCode] = useState(initialRoomCode ? normalizeRoomCode(initialRoomCode) : '');
   const [submitted, setSubmitted] = useState(false);
 
   const nameValidation = useMemo(() => validatePlayerName(playerName), [playerName]);
   const roomCodeRequired = mode === 'join_room';
-  const roomCodeValid = !roomCodeRequired || roomCode.trim().length >= 4;
+  const roomCodeValid = !roomCodeRequired || isValidRoomCode(roomCode);
   const canSubmit = nameValidation.valid && roomCodeValid;
 
   function submit(event: FormEvent<HTMLFormElement>): void {
@@ -49,7 +50,7 @@ export function PlayerSetupForm({
       mode,
       playerName: nameValidation.value,
       playerCount,
-      roomCode: roomCode.trim() || null
+      roomCode: roomCode ? normalizeRoomCode(roomCode) : null
     });
   }
 
@@ -88,14 +89,14 @@ export function PlayerSetupForm({
           <span>Room code</span>
           <input
             maxLength={8}
-            onChange={(event) => setRoomCode(event.target.value.toUpperCase())}
+            onChange={(event) => setRoomCode(normalizeRoomCode(event.target.value))}
             placeholder="Room code"
             type="text"
             value={roomCode}
           />
         </label>
       ) : null}
-      {submitted && !roomCodeValid ? <p className="form-error">Room code is required to join.</p> : null}
+      {submitted && !roomCodeValid ? <p className="form-error">Enter a valid 4-8 character room code.</p> : null}
 
       <div className="button-row">
         <button className="primary" type="submit">{getSubmitLabel(mode)}</button>
