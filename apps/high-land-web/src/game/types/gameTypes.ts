@@ -1,4 +1,4 @@
-export type SpaceColor = 'red' | 'yellow' | 'green' | 'blue' | 'purple' | 'special';
+export type SpaceColor = 'red' | 'yellow' | 'green' | 'blue' | 'purple';
 
 export type BoardSpaceType = 'normal' | 'action' | 'start' | 'finish';
 
