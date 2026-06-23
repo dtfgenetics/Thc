@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { approvedBoardSpaceCount, approvedHitSpaceCount, approvedNonHitRoadSpaceCount, boardPath, finishIndex } from '../data/boardPath';
-import type { ActionCard } from '../types/gameTypes';
+import type { ActionCard, SpaceColor } from '../types/gameTypes';
 import { applyActionCard } from './cardSystem';
 import { rollDie } from './diceSystem';
 import { calculateMove } from './movementSystem';
@@ -54,13 +54,14 @@ describe('game engine', () => {
     const hitSpaces = boardPath.filter((space) => space.type === 'action');
     const nonHitRoadSpaces = boardPath.filter((space) => space.type !== 'action');
     const allowedTypes = new Set(['normal', 'action', 'start', 'finish']);
+    const approvedColors = new Set<SpaceColor>(['red', 'yellow', 'green', 'blue', 'purple']);
 
     expect(boardPath).toHaveLength(approvedBoardSpaceCount);
     expect(hitSpaces).toHaveLength(approvedHitSpaceCount);
     expect(nonHitRoadSpaces).toHaveLength(approvedNonHitRoadSpaceCount);
     expect(boardPath.every((space) => allowedTypes.has(space.type))).toBe(true);
+    expect(boardPath.every((space) => approvedColors.has(space.color))).toBe(true);
     expect(hitSpaces.every((space) => space.label === 'HIT')).toBe(true);
-    expect(hitSpaces.every((space) => space.color !== 'special')).toBe(true);
   });
 
   it('draws a random card action when landing on HIT', () => {
