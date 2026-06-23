@@ -1,0 +1,55 @@
+name: build
+
+on:
+  pull_request:
+    paths:
+      - 'apps/high-land-web/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/build.yml'
+  push:
+    branches:
+      - main
+      - codex/high-land-browser-repair
+    paths:
+      - 'apps/high-land-web/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/build.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  high-land:
+    name: High Land compile and unit tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run High Land unit tests
+        run: npm run test:high-land
+
+      - name: Compile High Land production build
+        run: npm run build:high-land
+
+      - name: Lint PHP room API if PHP is available
+        run: |
+          if command -v php >/dev/null 2>&1; then
+            php -l apps/high-land-web/public/api/index.php
+          else
+            echo "PHP is not installed on this runner; skipping PHP lint."
+          fi
