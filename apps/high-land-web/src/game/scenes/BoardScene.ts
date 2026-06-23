@@ -133,7 +133,7 @@ export class BoardScene extends Phaser.Scene {
           fontFamily: 'Arial',
           fontSize: '14px',
           color: '#111111',
-          fontStyle: '900',
+          fontStyle: 'bold',
           stroke: '#ffffff',
           strokeThickness: 2
         }).setOrigin(0.5).setDepth(7);
