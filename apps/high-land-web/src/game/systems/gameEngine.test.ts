@@ -50,6 +50,11 @@ describe('board path', () => {
     }
   });
 
+  it('uses only the real High Land board space types', () => {
+    const actualTypes = new Set(boardPath.map((space) => space.type));
+    expect(actualTypes).toEqual(new Set(['start', 'normal', 'action', 'finish']));
+  });
+
   it('maps the gameplay HIT spaces across the full route', () => {
     const hitIndexes = boardPath.filter((space) => space.type === 'action').map((space) => space.index);
     expect(hitIndexes).toEqual([...actionSpaceIndexes]);
@@ -133,6 +138,36 @@ describe('game engine', () => {
     expect(afterForward.players[0].positionIndex).toBe(4);
     const afterBackward = applyActionCard({ ...afterForward, currentPlayerIndex: 0 }, backwardCard);
     expect(afterBackward.players[0].positionIndex).toBe(2);
+  });
+
+  it('keeps the same player active after a roll-again card', () => {
+    const state = createInitialGame(3);
+    const card: ActionCard = {
+      id: 'test-roll-again',
+      title: 'Roll Again',
+      text: 'Roll again.',
+      effect: { type: 'roll_again' }
+    };
+
+    const next = applyActionCard(state, card);
+    expect(next.currentPlayerIndex).toBe(0);
+    expect(next.players[0].positionIndex).toBe(0);
+    expect(next.phase).toBe('ready');
+  });
+
+  it('moves and keeps the same player active after a move-and-roll-again card', () => {
+    const state = createInitialGame(3);
+    const card: ActionCard = {
+      id: 'test-move-roll-again',
+      title: 'Move and Roll Again',
+      text: 'Move, then roll again.',
+      effect: { type: 'move_and_roll_again', amount: 2 }
+    };
+
+    const next = applyActionCard(state, card);
+    expect(next.currentPlayerIndex).toBe(0);
+    expect(next.players[0].positionIndex).toBe(2);
+    expect(next.phase).toBe('ready');
   });
 
   it('applies skip turns', () => {
