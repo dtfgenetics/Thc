@@ -23,7 +23,7 @@ export const starterActionCards: ActionCard[] = [
   { id: 'snack-tax', title: 'Snack Tax', text: 'Every player ahead of you moves back 1 space.', effect: { type: 'move_all', amount: -1, filter: 'ahead' }, art: art(2, 0, 1) },
   { id: 'bogart-alert', title: 'Bogart Alert', text: 'The player in first place moves back 3 spaces.', effect: { type: 'move_leader', amount: -3 }, art: art(2, 1, 1) },
   { id: 'free-pass', title: 'Free Pass', text: 'Ignore the next card that moves you backward.', effect: { type: 'protect_from_backward', uses: 1 }, art: art(2, 2, 1) },
-  { id: 'high-roller', title: 'High Roller', text: 'Roll again and move that many extra spaces.', effect: { type: 'roll_again' }, art: art(2, 3, 1) },
+  { id: 'high-roller', title: 'High Roller', text: 'Take another roll before the turn passes.', effect: { type: 'roll_again' }, art: art(2, 3, 1) },
 
   { id: 'rotation-rule', title: 'Rotation Rule', text: 'Everyone moves forward 1 space.', effect: { type: 'move_all', amount: 1, filter: 'everyone' }, art: art(3, 1, 0) },
   { id: 'puff-puff-pass', title: 'Puff Puff Pass', text: 'Move forward 2, then choose a player to move forward 1.', effect: { type: 'choose_player_move', currentAmount: 2, targetAmount: 1 }, art: art(3, 3, 0) },
