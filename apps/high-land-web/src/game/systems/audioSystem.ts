@@ -6,7 +6,7 @@ type WindowWithWebkitAudio = Window & typeof globalThis & {
 };
 
 function getContext(): AudioContext | null {
-  if (muted) return null;
+  if (muted || typeof window === 'undefined') return null;
   if (!context) {
     const audioWindow = window as WindowWithWebkitAudio;
     const AudioContextClass = window.AudioContext || audioWindow.webkitAudioContext;
@@ -41,6 +41,7 @@ export function playTone(frequency = 440, durationMs = 90): void {
 
 export function playRollSound(): void {
   playTone(220, 70);
+  if (typeof window === 'undefined') return;
   window.setTimeout(() => playTone(330, 70), 75);
   window.setTimeout(() => playTone(440, 70), 150);
 }
@@ -51,6 +52,7 @@ export function playCardSound(): void {
 
 export function playWinSound(): void {
   playTone(523, 120);
+  if (typeof window === 'undefined') return;
   window.setTimeout(() => playTone(659, 120), 130);
   window.setTimeout(() => playTone(784, 180), 260);
 }
