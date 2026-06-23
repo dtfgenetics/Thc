@@ -2,6 +2,10 @@
 
 This map shows what has been built, what is safe, and what still needs wiring.
 
+## Approved front page
+
+The current High Land game page front is approved and should be preserved. Continue fixing code, tests, build, runtime, deployment, and multiplayer wiring, but do not redesign the public front-page look unless a future task explicitly asks for a redesign.
+
 ## Latest CI failures repaired
 
 ```txt
