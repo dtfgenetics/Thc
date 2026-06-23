@@ -18,9 +18,10 @@ import { createNamedLocalGame } from './game/multiplayer/roomGameFactory';
 import { parseInviteLink } from './game/multiplayer/inviteLinks';
 import { isMuted, playCardSound, playRollSound, playWinSound, setMuted as setAudioMuted } from './game/systems/audioSystem';
 import { clearSavedGameState, loadGameState, saveGameState } from './game/systems/storageSystem';
+import { maxPlayers, minPlayers } from './game/systems/playerSystem';
 import type { HighLandRoomState } from './game/multiplayer/roomState';
 
-const playerOptions = [2, 3, 4, 5, 6, 8, 10];
+const playerOptions = Array.from({ length: maxPlayers - minPlayers + 1 }, (_, index) => minPlayers + index);
 type ScreenMode = 'landing' | PlayerSetupMode | 'lobby' | 'playing';
 
 export default function App() {
@@ -95,7 +96,10 @@ export default function App() {
     if (!room) return;
     try {
       const result = addLocalTestPlayerMode(room);
-      setRoomMode(result.room, result.localPlayerId, result.localPlayerName, result.inviteUrl, result.playerCount);
+      setRoom(result.room);
+      setInviteUrl(result.inviteUrl);
+      setPlayerCount(result.playerCount);
+      setScreenMode('lobby');
       setStatusMessage(`Added a local test player to room ${result.room.code}.`);
     } catch (error) {
       setStatusMessage(error instanceof Error ? error.message : 'Could not add another local test player.');
