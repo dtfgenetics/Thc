@@ -169,10 +169,12 @@ export default function App() {
   }
 
   function save(): void {
+    if (room) return;
     saveGameState(gameState);
   }
 
   function load(): void {
+    if (room) return;
     const saved = loadGameState();
     if (!saved) return;
     setRoom(null);
@@ -263,8 +265,8 @@ export default function App() {
                 Roll Dice
               </button>
               <button onClick={restart} type="button">Restart</button>
-              <button onClick={save} type="button">Save</button>
-              <button onClick={load} type="button">Load</button>
+              {!room ? <button onClick={save} type="button">Save</button> : null}
+              {!room ? <button onClick={load} type="button">Load</button> : null}
               <button onClick={toggleMute} type="button">{muted ? 'Unmute' : 'Mute'}</button>
             </div>
           </div>
