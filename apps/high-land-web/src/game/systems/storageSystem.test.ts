@@ -56,7 +56,7 @@ describe('storage system', () => {
 
     expect(loaded?.players.map((player) => player.id)).toEqual(['player-restored-1', 'player-restored-2']);
     expect(loaded?.players.map((player) => player.token)).toEqual(['tokenA', 'tokenB']);
-    expect(loaded?.players.map((player) => player.color)).toEqual(['#ef4444', '#facc15']);
+    expect(loaded?.players.map((player) => player.color)).toEqual(['#f43f5e', '#22c55e']);
     expect(loaded?.currentPlayerIndex).toBe(1);
     expect(loaded?.turnDirection).toBe(1);
     expect(loaded?.reverseTurnsRemaining).toBe(0);
