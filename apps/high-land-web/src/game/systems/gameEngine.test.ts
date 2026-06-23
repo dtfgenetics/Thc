@@ -14,6 +14,11 @@ function buildStateAt(positionIndex: number) {
   };
 }
 
+function sequenceRandom(values: number[]): () => number {
+  let index = 0;
+  return () => values[index++] ?? values[values.length - 1] ?? 0;
+}
+
 describe('game engine', () => {
   it('rolls from 1 to 6', () => {
     expect(rollDie(() => 0)).toBe(1);
@@ -51,6 +56,18 @@ describe('game engine', () => {
     expect(hitSpaces).toHaveLength(approvedHitSpaceCount);
     expect(nonHitRoadSpaces).toHaveLength(approvedNonHitRoadSpaceCount);
     expect(boardPath.some((space) => space.type === 'skip')).toBe(false);
+  });
+
+  it('draws a random card action when landing on HIT', () => {
+    const state = buildStateAt(4);
+    const next = rollCurrentTurn(state, sequenceRandom([0, 0.999]));
+
+    expect(boardPath[5].type).toBe('action');
+    expect(next.lastRoll).toBe(1);
+    expect(next.lastCard?.id).toBe('card-030');
+    expect(next.players[0].positionIndex).toBe(13);
+    expect(next.cardCursor).toBe(1);
+    expect(next.currentPlayerIndex).toBe(1);
   });
 
   it('creates 2 to 10 player games', () => {
@@ -104,7 +121,7 @@ describe('game engine', () => {
     expect(afterBackward.players[0].positionIndex).toBe(6);
   });
 
-  it('applies skip turns', () => {
+  it('applies skip turns from cards', () => {
     const state = createInitialGame(2);
     const skipCard: ActionCard = {
       id: 'test-skip',
