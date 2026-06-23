@@ -48,12 +48,22 @@ describe('room action executor', () => {
 
     const room = await transport.createRoom(makeTransportPlayer(0, true));
     const joinedRoom = await transport.joinRoom(room.code, makeTransportPlayer(1));
-    const startedRoom = await startRoomWithTransport(joinedRoom, transport);
+    const startedRoom = await startRoomWithTransport(joinedRoom, transport, 'local-player-1');
     const rolledRoom = await rollRoomWithTransport(startedRoom, transport, 'local-player-1', () => 0);
 
     expect(startedRoom.status).toBe('playing');
     expect(rolledRoom.gameState?.lastRoll).toBe(1);
     expect(getLocalRoomEvents(room.code, storage).map((event) => event.name)).toEqual(['game_started', 'dice_rolled']);
+  });
+
+  it('rejects starts from non-host players', async () => {
+    const storage = new MemoryStorage();
+    const transport = createLocalRoomTransport(storage);
+
+    const room = await transport.createRoom(makeTransportPlayer(0, true));
+    const joinedRoom = await transport.joinRoom(room.code, makeTransportPlayer(1));
+
+    await expect(startRoomWithTransport(joinedRoom, transport, 'local-player-2')).rejects.toThrow('Only the room host');
   });
 
   it('rejects rolls from non-current players', async () => {
@@ -62,7 +72,7 @@ describe('room action executor', () => {
 
     const room = await transport.createRoom(makeTransportPlayer(0, true));
     const joinedRoom = await transport.joinRoom(room.code, makeTransportPlayer(1));
-    const startedRoom = await startRoomWithTransport(joinedRoom, transport);
+    const startedRoom = await startRoomWithTransport(joinedRoom, transport, 'local-player-1');
 
     await expect(rollRoomWithTransport(startedRoom, transport, 'local-player-2', () => 0)).rejects.toThrow('not this player');
   });
