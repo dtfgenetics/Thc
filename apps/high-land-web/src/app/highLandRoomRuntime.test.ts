@@ -49,10 +49,20 @@ describe('High Land room runtime', () => {
     const joinedRoom = await transport.joinRoom(room.code, makeTransportPlayer(1));
 
     const started = await startRoomRuntime(joinedRoom, transport);
-    const rolled = await rollRoomRuntime(started.room, transport, () => 0);
+    const rolled = await rollRoomRuntime(started.room, 'local-player-1', transport, () => 0);
 
     expect(started.room.status).toBe('playing');
     expect(rolled.room.gameState?.lastRoll).toBe(1);
     expect(getLocalRoomEvents(room.code, storage).map((event) => event.name)).toEqual(['game_started', 'dice_rolled']);
+  });
+
+  it('rejects room rolls from a player who does not have the current turn', async () => {
+    const storage = new MemoryStorage();
+    const transport = createLocalRoomTransport(storage);
+    const room = await transport.createRoom(makeTransportPlayer(0, true));
+    const joinedRoom = await transport.joinRoom(room.code, makeTransportPlayer(1));
+    const started = await startRoomRuntime(joinedRoom, transport);
+
+    await expect(rollRoomRuntime(started.room, 'local-player-2', transport, () => 0)).rejects.toThrow('not this player');
   });
 });
