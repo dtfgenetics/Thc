@@ -19,6 +19,11 @@ function makeRoom(): HighLandRoomState {
   };
 }
 
+function sequenceRandom(values: number[]): () => number {
+  let index = 0;
+  return () => values[index++] ?? values[values.length - 1] ?? 0;
+}
+
 describe('room game actions', () => {
   it('starts room gameplay and creates an event', () => {
     const result = startRoomGameplay(makeRoom());
@@ -35,5 +40,23 @@ describe('room game actions', () => {
     expect(result.room.gameState?.lastRoll).toBe(1);
     expect(result.events[0].name).toBe('dice_rolled');
     expect(result.events[0].payload).toMatchObject({ roll: 1 });
+  });
+
+  it('creates a HIT card event when a room player lands on HIT', () => {
+    const started = startRoomGameplay(makeRoom());
+    const gameState = started.room.gameState;
+    if (!gameState) throw new Error('Expected room game state.');
+    const roomAtHitApproach: HighLandRoomState = {
+      ...started.room,
+      gameState: {
+        ...gameState,
+        players: gameState.players.map((player, index) => (index === 0 ? { ...player, positionIndex: 4 } : player))
+      }
+    };
+
+    const result = rollRoomGameplay(roomAtHitApproach, sequenceRandom([0, 0.999]));
+
+    expect(result.events.map((event) => event.name)).toEqual(['dice_rolled', 'hit_card_drawn']);
+    expect(result.events[1].payload).toMatchObject({ card: { id: 'card-030' } });
   });
 });
