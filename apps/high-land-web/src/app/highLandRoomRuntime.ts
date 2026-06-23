@@ -12,9 +12,10 @@ export type RoomRuntimeResult = {
 
 export async function startRoomRuntime(
   room: HighLandRoomState,
+  requestingPlayerId: string,
   transport: RoomTransport = createLocalRoomTransport()
 ): Promise<RoomRuntimeResult> {
-  const updatedRoom = await startRoomWithTransport(room, transport);
+  const updatedRoom = await startRoomWithTransport(room, transport, requestingPlayerId);
   const leadPlayerName = updatedRoom.gameState?.players[0]?.name ?? 'Player 1';
 
   return {
