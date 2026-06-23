@@ -49,10 +49,21 @@ describe('room action executor', () => {
     const room = await transport.createRoom(makeTransportPlayer(0, true));
     const joinedRoom = await transport.joinRoom(room.code, makeTransportPlayer(1));
     const startedRoom = await startRoomWithTransport(joinedRoom, transport);
-    const rolledRoom = await rollRoomWithTransport(startedRoom, transport, () => 0);
+    const rolledRoom = await rollRoomWithTransport(startedRoom, transport, 'local-player-1', () => 0);
 
     expect(startedRoom.status).toBe('playing');
     expect(rolledRoom.gameState?.lastRoll).toBe(1);
     expect(getLocalRoomEvents(room.code, storage).map((event) => event.name)).toEqual(['game_started', 'dice_rolled']);
+  });
+
+  it('rejects rolls from non-current players', async () => {
+    const storage = new MemoryStorage();
+    const transport = createLocalRoomTransport(storage);
+
+    const room = await transport.createRoom(makeTransportPlayer(0, true));
+    const joinedRoom = await transport.joinRoom(room.code, makeTransportPlayer(1));
+    const startedRoom = await startRoomWithTransport(joinedRoom, transport);
+
+    await expect(rollRoomWithTransport(startedRoom, transport, 'local-player-2', () => 0)).rejects.toThrow('not this player');
   });
 });
