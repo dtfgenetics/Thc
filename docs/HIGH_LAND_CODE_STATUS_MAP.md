@@ -11,7 +11,7 @@ Previous failures shown:
 - Build failed with TS5107 because tsconfig used deprecated moduleResolution=node10 via moduleResolution: Node.
 ```
 
-Status: repaired. Vitest now only includes `src/**/*.test.ts` and `src/**/*.test.tsx`, excluding `e2e/**`. The game-engine tests now match actual card/turn behavior. The High Land app tsconfig now uses `moduleResolution: "Bundler"`, which is the modern Vite-compatible TypeScript setting.
+Status: repaired. Vitest now only includes `src/**/*.test.ts` and `src/**/*.test.tsx`, excluding `e2e/**`. The game-engine tests now match actual card/turn behavior. The High Land app tsconfig now uses `moduleResolution: "Bundler"`, which is the modern Vite-compatible TypeScript setting. Production TypeScript build excludes unit/e2e files so `tsc && vite build` checks app/runtime code, not the test harness.
 
 ## Working local gameplay
 
@@ -24,7 +24,7 @@ apps/high-land-web/src/ui/DiceDisplay.tsx
 apps/high-land-web/src/ui/CardRevealModal.tsx
 ```
 
-Status: playable local prototype. Phaser board now removes stale player tokens when player lists change.
+Status: playable local prototype. Phaser board removes stale player tokens when player lists change and now binds global game-state listener cleanup to Phaser shutdown/destroy lifecycle events.
 
 ## Named player setup
 
@@ -61,7 +61,7 @@ apps/high-land-web/src/game/multiplayer/roomGameActions.ts
 apps/high-land-web/src/game/multiplayer/roomActionExecutor.ts
 ```
 
-Status: built and wired into App for room start, restart, and roll. Room-mode gameplay now uses the transport-backed runtime path, and room player IDs/tokens/colors are preserved in game state.
+Status: built and wired into App for room start, restart, and roll. Room-mode gameplay now uses the transport-backed runtime path, and room player IDs/tokens/colors are preserved in game state. Local player-count buttons are hidden during room games so a user cannot accidentally leave room mode mid-game.
 
 ## Board labels and HIT cards
 
@@ -90,7 +90,7 @@ apps/high-land-web/src/game/systems/storageSystem.ts
 apps/high-land-web/src/game/systems/storageSystem.test.ts
 ```
 
-Status: saved-game storage is now safe outside the browser and has a regression test so Node-based unit tests do not crash when `window.localStorage` is missing.
+Status: saved-game storage is safe outside the browser and has regression tests so Node-based unit tests do not crash when `window.localStorage` is missing. Old save hydration now restores unique fallback IDs, token/color fallbacks, clamps currentPlayerIndex, clamps negative counters, and normalizes turn direction.
 
 ## Event logging
 
@@ -111,7 +111,7 @@ docs/HIGH_LAND_SUPABASE_SCHEMA_DRAFT.md
 docs/HIGH_LAND_MULTIPLAYER_TRANSPORTS.md
 ```
 
-Status: schema draft and row mappers exist. Live Supabase writes are not implemented yet.
+Status: schema draft and row mappers exist. Supabase player-row mapping now validates token/color fallbacks instead of blindly trusting database strings. Live Supabase writes are not implemented yet.
 
 ## Runner setup
 
