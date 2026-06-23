@@ -5,7 +5,7 @@ import { applyActionCard } from './cardSystem';
 import { createInitialGame } from './gameEngine';
 
 describe('card system regression checks', () => {
-  it('chains a draw-again card into the next deck card', () => {
+  it('chains a draw-again card into a random deck card', () => {
     const state = createInitialGame(2);
     const card: ActionCard = {
       id: 'test-draw-again',
@@ -14,9 +14,10 @@ describe('card system regression checks', () => {
       effect: { type: 'draw_again' }
     };
 
-    const next = applyActionCard(state, card);
+    const next = applyActionCard(state, card, 0, () => 0);
 
     expect(next.players[0].positionIndex).toBe(3);
+    expect(next.lastCard?.id).toBe('card-001');
     expect(next.cardCursor).toBe(1);
   });
 
