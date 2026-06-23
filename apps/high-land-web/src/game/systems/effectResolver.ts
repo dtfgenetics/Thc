@@ -17,11 +17,11 @@ export type EffectResolution = {
   drawAgain: boolean;
 };
 
-export function resolveActionCard(state: GameState, card: ActionCard): GameState {
+export function resolveActionCard(state: GameState, card: ActionCard, random: () => number = Math.random): GameState {
   const currentPlayer = state.players[state.currentPlayerIndex];
   if (!currentPlayer) return state;
 
-  const resolution = applyEffect(state, currentPlayer, card.effect);
+  const resolution = applyEffect(state, currentPlayer, card.effect, random);
   const winner = findWinner(resolution.state.players);
 
   return {
@@ -36,7 +36,7 @@ export function resolveActionCard(state: GameState, card: ActionCard): GameState
   };
 }
 
-function applyEffect(state: GameState, currentPlayer: Player, effect: ActionCardEffect): EffectResolution {
+function applyEffect(state: GameState, currentPlayer: Player, effect: ActionCardEffect, random: () => number): EffectResolution {
   let nextState = state;
   let keepTurn = false;
   let drawAgain = false;
@@ -52,7 +52,7 @@ function applyEffect(state: GameState, currentPlayer: Player, effect: ActionCard
       nextState = setPlayerPosition(nextState, currentPlayer.id, effect.index);
       break;
     case 'swap_position':
-      nextState = swapWithTarget(nextState, currentPlayer, effect.target);
+      nextState = swapWithTarget(nextState, currentPlayer, effect.target, random);
       break;
     case 'roll_again':
       keepTurn = true;
@@ -125,13 +125,13 @@ function updatePlayer(state: GameState, playerId: string, updater: (player: Play
   };
 }
 
-function swapWithTarget(state: GameState, currentPlayer: Player, target: 'leader' | 'random' | 'behind' | 'last_place'): GameState {
+function swapWithTarget(state: GameState, currentPlayer: Player, target: 'leader' | 'random' | 'behind' | 'last_place', random: () => number): GameState {
   let targetPlayer: Player | null = null;
 
   if (target === 'leader') targetPlayer = findLeader(state.players);
   if (target === 'last_place') targetPlayer = findLastPlace(state.players);
   if (target === 'behind') targetPlayer = findPlayerBehind(state.players, currentPlayer);
-  if (target === 'random') targetPlayer = state.players.find((player) => player.id !== currentPlayer.id) ?? null;
+  if (target === 'random') targetPlayer = pickRandomOtherPlayer(state.players, currentPlayer.id, random);
 
   if (!targetPlayer || targetPlayer.id === currentPlayer.id) return state;
   const swapTarget = targetPlayer;
@@ -144,6 +144,13 @@ function swapWithTarget(state: GameState, currentPlayer: Player, target: 'leader
       return player;
     })
   };
+}
+
+function pickRandomOtherPlayer(players: Player[], currentPlayerId: string, random: () => number): Player | null {
+  const candidates = players.filter((player) => player.id !== currentPlayerId);
+  if (candidates.length === 0) return null;
+  const randomValue = Math.max(0, Math.min(0.999999, random()));
+  return candidates[Math.floor(randomValue * candidates.length)] ?? candidates[0];
 }
 
 function findWinner(players: Player[]): Player | null {
