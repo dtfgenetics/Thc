@@ -43,6 +43,8 @@ test.describe('High Land browser game', () => {
     await page.getByRole('button', { name: 'Start Game' }).click();
     await expect(page.getByText(/Room [A-Z0-9]{4,8}/).first()).toBeVisible();
     await expect(page.getByText('Room Host, roll to begin.')).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Save' })).toHaveCount(0);
+    await expect(page.getByRole('button', { name: 'Load' })).toHaveCount(0);
 
     await page.getByRole('button', { name: 'Roll Dice' }).click();
     await expect(page.getByLabel(/Last roll/i)).toBeVisible();
