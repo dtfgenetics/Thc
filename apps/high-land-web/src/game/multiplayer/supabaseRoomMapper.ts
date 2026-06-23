@@ -26,8 +26,8 @@ export function mapPlayerRowToRoomPlayer(row: SupabaseGamePlayerRow, index = 0):
   return {
     id: row.id,
     name: row.display_name,
-    token: tokenOrder.includes(row.token as HighLandRoomPlayer['token']) ? row.token as HighLandRoomPlayer['token'] : tokenOrder[index % tokenOrder.length],
-    color: row.color || tokenColors[index % tokenColors.length],
+    token: normalizeToken(row.token, index),
+    color: row.color || getFallbackColor(index),
     joinedAt: row.joined_at,
     connected: row.connected,
     host: row.is_host
@@ -55,4 +55,14 @@ export function mapGameEventToEventInsert(event: HighLandGameEvent, sessionId: s
     payload: event.payload,
     created_at: event.createdAt
   };
+}
+
+function normalizeToken(token: string, index: number): HighLandRoomPlayer['token'] {
+  return tokenOrder.includes(token as HighLandRoomPlayer['token'])
+    ? token as HighLandRoomPlayer['token']
+    : tokenOrder[index % tokenOrder.length] ?? tokenOrder[0];
+}
+
+function getFallbackColor(index: number): string {
+  return tokenColors[index % tokenColors.length] ?? tokenColors[0];
 }
