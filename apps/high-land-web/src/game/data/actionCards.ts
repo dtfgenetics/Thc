@@ -1,10 +1,10 @@
 import type { ActionCard } from '../types/gameTypes';
 
 export const starterActionCards: ActionCard[] = [
-  { id: 'card-001', title: 'Cloud Boost', text: 'Float ahead 3 spaces.', effect: { type: 'move', amount: 3 } },
+  { id: 'card-001', title: 'Cloud Drift', text: 'Float ahead 3 spaces.', effect: { type: 'move', amount: 3 } },
   { id: 'card-002', title: 'Snack Detour', text: 'Move back 2 spaces.', effect: { type: 'move', amount: -2 } },
   { id: 'card-003', title: 'Rolling Momentum', text: 'Roll again.', effect: { type: 'roll_again' } },
-  { id: 'card-004', title: 'Sticky Trap', text: 'Skip your next turn.', effect: { type: 'skip_turns', amount: 1 } },
+  { id: 'card-004', title: 'Sticky Pause', text: 'Skip your next turn.', effect: { type: 'skip_turns', amount: 1 } },
   { id: 'card-005', title: 'Shortcut', text: 'Jump ahead 5 spaces.', effect: { type: 'move', amount: 5 } },
   { id: 'card-006', title: 'Crash Landing', text: 'Move back 4 spaces.', effect: { type: 'move', amount: -4 } },
   { id: 'card-007', title: 'Catch Up', text: 'Move ahead 2 spaces.', effect: { type: 'move', amount: 2 } },
@@ -20,11 +20,11 @@ export const starterActionCards: ActionCard[] = [
   { id: 'card-017', title: 'Leader Slip', text: 'The leader moves back 3 spaces.', effect: { type: 'move_leader', amount: -3 } },
   { id: 'card-018', title: 'Swap With Leader', text: 'Swap spaces with the leader.', effect: { type: 'swap_position', target: 'leader' } },
   { id: 'card-019', title: 'Pull From Behind', text: 'Swap with the nearest player behind you.', effect: { type: 'swap_position', target: 'behind' } },
-  { id: 'card-020', title: 'Last Place Boost', text: 'Swap with the player in last place.', effect: { type: 'swap_position', target: 'last_place' } },
+  { id: 'card-020', title: 'Last Place Lift', text: 'Swap with the player in last place.', effect: { type: 'swap_position', target: 'last_place' } },
   { id: 'card-021', title: 'Reverse Rotation', text: 'Reverse turn order for 3 turns.', effect: { type: 'reverse_turn_order', turns: 3 } },
   { id: 'card-022', title: 'Free Pass', text: 'Block the next backward movement against you.', effect: { type: 'protect_from_backward', uses: 1 } },
   { id: 'card-023', title: 'Double Hit', text: 'Draw another card.', effect: { type: 'draw_again' } },
-  { id: 'card-024', title: 'Boost And Roll', text: 'Move ahead 2 spaces, then roll again.', effect: { type: 'move_and_roll_again', amount: 2 } },
+  { id: 'card-024', title: 'Move And Roll', text: 'Move ahead 2 spaces, then roll again.', effect: { type: 'move_and_roll_again', amount: 2 } },
   { id: 'card-025', title: 'Back Of The Pack', text: 'Players ahead of you move back 1 space.', effect: { type: 'move_all', amount: -1, filter: 'ahead' } },
   { id: 'card-026', title: 'Help The Back', text: 'Players behind you move ahead 1 space.', effect: { type: 'move_all', amount: 1, filter: 'behind' } },
   { id: 'card-027', title: 'Red Rush', text: 'Move to the next red space.', effect: { type: 'move_to_color', color: 'red', direction: 'next' } },
