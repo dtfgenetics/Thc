@@ -12,6 +12,12 @@ describe('room codes', () => {
     expect(isValidRoomCode(code)).toBe(true);
   });
 
+  it('clamps random edge values while creating room codes', () => {
+    expect(createRoomCode(() => 1, 4)).toHaveLength(4);
+    expect(isValidRoomCode(createRoomCode(() => 1, 4))).toBe(true);
+    expect(isValidRoomCode(createRoomCode(() => -1, 4))).toBe(true);
+  });
+
   it('rejects unsupported room codes', () => {
     expect(isValidRoomCode('O0I1')).toBe(false);
     expect(() => requireValidRoomCode('bad!')).toThrow();
