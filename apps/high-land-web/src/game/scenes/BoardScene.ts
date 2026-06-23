@@ -42,6 +42,7 @@ export class BoardScene extends Phaser.Scene {
       this.add.image(boardWidth / 2, boardHeight / 2, 'board-background')
         .setDisplaySize(boardWidth, boardHeight)
         .setDepth(0);
+      this.drawHitOverlay();
     } else {
       this.drawBackgroundZones();
       this.drawPath();
@@ -119,6 +120,24 @@ export class BoardScene extends Phaser.Scene {
         }).setOrigin(0.5).setDepth(7);
       }
     });
+  }
+
+  private drawHitOverlay(): void {
+    boardPath
+      .filter((space) => space.type === 'action')
+      .forEach((space) => {
+        this.add.circle(space.x, space.y, 25, 0xffffff, 0.92)
+          .setStrokeStyle(4, 0x111111, 0.95)
+          .setDepth(6);
+        this.add.text(space.x, space.y, 'HIT', {
+          fontFamily: 'Arial',
+          fontSize: '14px',
+          color: '#111111',
+          fontStyle: '900',
+          stroke: '#ffffff',
+          strokeThickness: 2
+        }).setOrigin(0.5).setDepth(7);
+      });
   }
 
   private renderGameState(state: GameState): void {
