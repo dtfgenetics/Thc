@@ -87,7 +87,7 @@ export function rollCurrentTurn(state: GameState, random: () => number = Math.ra
     lastRoll: result,
     lastCard: null,
     currentPlayerIndex: nextPlayerIndex(players, state.currentPlayerIndex, directionState.turnDirection),
-    message: `${currentPlayer.name} rolled ${result} and moved to space ${updatedCurrentPlayer.positionIndex}.`
+    message: `${currentPlayer.name} rolled ${result} and moved to space ${updatedCurrentPlayer.positionIndex + 1}.`
   };
 }
 
