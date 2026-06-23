@@ -59,4 +59,23 @@ describe('room game actions', () => {
     expect(result.events.map((event) => event.name)).toEqual(['dice_rolled', 'hit_card_drawn']);
     expect(result.events[1].payload).toMatchObject({ card: { id: 'card-030' } });
   });
+
+  it('creates a skip event instead of a dice event when a room player loses a turn', () => {
+    const started = startRoomGameplay(makeRoom());
+    const gameState = started.room.gameState;
+    if (!gameState) throw new Error('Expected room game state.');
+    const roomWithSkippedPlayer: HighLandRoomState = {
+      ...started.room,
+      gameState: {
+        ...gameState,
+        players: gameState.players.map((player, index) => (index === 0 ? { ...player, skipTurns: 1 } : player))
+      }
+    };
+
+    const result = rollRoomGameplay(roomWithSkippedPlayer);
+
+    expect(result.events.map((event) => event.name)).toEqual(['skip_turn_applied']);
+    expect(result.events[0].payload).toMatchObject({ skippedPlayerId: 'local-player-1', skipTurns: 0 });
+    expect(result.room.gameState?.lastRoll).toBeNull();
+  });
 });
