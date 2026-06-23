@@ -1,5 +1,5 @@
 import { rollRoomGameplay, startRoomGameplay } from './roomGameActions';
-import type { HighLandRoomState } from './roomState';
+import { canPlayerRoll, type HighLandRoomState } from './roomState';
 import type { RoomTransport } from './roomTransport';
 
 export async function startRoomWithTransport(room: HighLandRoomState, transport: RoomTransport): Promise<HighLandRoomState> {
@@ -20,8 +20,13 @@ export async function startRoomWithTransport(room: HighLandRoomState, transport:
 export async function rollRoomWithTransport(
   room: HighLandRoomState,
   transport: RoomTransport,
+  requestingPlayerId: string,
   random: () => number = Math.random
 ): Promise<HighLandRoomState> {
+  if (!canPlayerRoll(room, requestingPlayerId)) {
+    throw new Error('It is not this player’s turn.');
+  }
+
   const result = rollRoomGameplay(room, random);
   const updatedRoom = await transport.updateGameState(room.code, result.room.gameState!);
 
