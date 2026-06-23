@@ -138,7 +138,7 @@ export default function App() {
     playRollSound();
 
     if (room && room.status === 'playing') {
-      const result = await rollRoomRuntime(room);
+      const result = await rollRoomRuntime(room, localPlayerId);
       const nextGameState = result.room.gameState;
       if (!nextGameState) return;
       if (nextGameState.lastCard) playCardSound();
