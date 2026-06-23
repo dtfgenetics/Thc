@@ -6,7 +6,8 @@ export function createRoomCode(random: () => number = Math.random, length = DEFA
   let code = '';
 
   for (let index = 0; index < safeLength; index += 1) {
-    const alphabetIndex = Math.floor(random() * ROOM_CODE_ALPHABET.length);
+    const randomValue = Math.max(0, Math.min(0.999999, random()));
+    const alphabetIndex = Math.floor(randomValue * ROOM_CODE_ALPHABET.length);
     code += ROOM_CODE_ALPHABET[alphabetIndex];
   }
 
