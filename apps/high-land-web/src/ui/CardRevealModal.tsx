@@ -28,7 +28,7 @@ function describeEffect(card: ActionCard): string {
     case 'skip_turns':
       return `Skip ${effect.amount}`;
     case 'go_to_space':
-      return `Go to space ${effect.index}`;
+      return `Go to space ${effect.index + 1}`;
     case 'swap_position':
       return `Swap with ${effect.target.replace('_', ' ')}`;
     case 'roll_again':
