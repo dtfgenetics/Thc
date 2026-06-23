@@ -19,6 +19,7 @@ import { parseInviteLink } from './game/multiplayer/inviteLinks';
 import { isMuted, playCardSound, playRollSound, playWinSound, setMuted as setAudioMuted } from './game/systems/audioSystem';
 import { clearSavedGameState, loadGameState, saveGameState } from './game/systems/storageSystem';
 import { maxPlayers, minPlayers } from './game/systems/playerSystem';
+import { canPlayerRoll } from './game/multiplayer/roomState';
 import type { HighLandRoomState } from './game/multiplayer/roomState';
 
 const playerOptions = Array.from({ length: maxPlayers - minPlayers + 1 }, (_, index) => minPlayers + index);
@@ -44,6 +45,7 @@ export default function App() {
     () => gameState.players.find((player) => player.id === gameState.winnerId),
     [gameState.players, gameState.winnerId]
   );
+  const canRollNow = !room || canPlayerRoll(room, localPlayerId);
 
   function handleSetupSubmit(setup: PlayerSetupSubmit): void {
     if (setup.mode === 'local') {
@@ -132,7 +134,7 @@ export default function App() {
   }
 
   async function roll(): Promise<void> {
-    if (!gameStarted || gameState.phase === 'game_over' || gameState.phase === 'moving' || gameState.phase === 'resolving_card') return;
+    if (!gameStarted || !canRollNow || gameState.phase === 'game_over' || gameState.phase === 'moving' || gameState.phase === 'resolving_card') return;
     playRollSound();
 
     if (room && room.status === 'playing') {
@@ -266,7 +268,7 @@ export default function App() {
             <DiceDisplay value={gameState.lastRoll} />
 
             <div className="button-row">
-              <button className="primary" disabled={gameState.phase === 'game_over'} onClick={roll} type="button">
+              <button className="primary" disabled={!canRollNow || gameState.phase === 'game_over'} onClick={roll} type="button">
                 Roll Dice
               </button>
               <button onClick={restart} type="button">Restart</button>
