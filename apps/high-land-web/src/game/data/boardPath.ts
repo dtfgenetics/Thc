@@ -17,6 +17,8 @@ const colors: SpaceColor[] = ['red', 'yellow', 'green', 'blue', 'purple'];
  * START / FINISH plaques and the side TAKE A HIT card art are not counted as
  * road spaces. Index 0 and index 108 represent the first and last playable
  * road spaces on the path so movement still has a start and finish target.
+ * HIT spaces are colored road spaces with HIT labels; the HIT label controls
+ * the card draw, not a separate board color.
  */
 const points = [
   [84, 548], [119, 528], [156, 509], [193, 492], [230, 476], [268, 461],
@@ -64,7 +66,7 @@ export const boardPath: BoardSpace[] = points.map(([x, y], index) => {
     index,
     x,
     y,
-    color: isAction ? 'special' : colors[index % colors.length],
+    color: colors[index % colors.length],
     type,
     zone: zoneForIndex(index),
     label: isAction ? 'HIT' : undefined
