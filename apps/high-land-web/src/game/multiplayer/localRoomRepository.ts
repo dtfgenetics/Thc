@@ -40,11 +40,12 @@ export function joinLocalRoom(roomCode: string, player: LocalRoomPlayerInput, st
     throw new Error(`Room ${code} was not found in local storage.`);
   }
 
+  const existingPlayer = room.players.find((roomPlayer) => roomPlayer.id === player.id);
   const joinedPlayer: HighLandRoomPlayer = {
     ...player,
-    joinedAt: new Date().toISOString(),
+    joinedAt: existingPlayer?.joinedAt ?? new Date().toISOString(),
     connected: true,
-    host: false
+    host: existingPlayer?.host ?? false
   };
 
   const updatedRoom = upsertRoomPlayer(room, joinedPlayer);
