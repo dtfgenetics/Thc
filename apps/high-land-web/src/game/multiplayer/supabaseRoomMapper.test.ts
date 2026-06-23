@@ -35,6 +35,13 @@ describe('supabase room mapper', () => {
     expect(player.token).toBe('tokenA');
   });
 
+  it('falls back when Supabase rows contain invalid token data', () => {
+    const player = mapPlayerRowToRoomPlayer({ ...playerRow, token: 'bad-token', color: '' }, 1);
+
+    expect(player.token).toBe('tokenB');
+    expect(player.color).toBe('#22c55e');
+  });
+
   it('maps session and player rows to room state', () => {
     const room = mapSessionAndPlayersToRoom(sessionRow, [playerRow]);
 
