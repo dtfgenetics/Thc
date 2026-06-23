@@ -22,6 +22,7 @@ export function PhaserBoard({ state }: PhaserBoardProps) {
   }, []);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
     const frame = window.requestAnimationFrame(() => {
       window.dispatchEvent(new CustomEvent('game-state-update', { detail: state }));
     });
