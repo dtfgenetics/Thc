@@ -18,25 +18,28 @@ jobs:
   build:
     name: Run Datadog Synthetic tests
     runs-on: ubuntu-latest
-    if: ${{ secrets.DD_API_KEY != '' && secrets.DD_APP_KEY != '' }}
 
     steps:
       - uses: actions/checkout@v4
 
+      - name: Check Datadog secrets
+        id: datadog-secrets
+        env:
+          DD_API_KEY: ${{ secrets.DD_API_KEY }}
+          DD_APP_KEY: ${{ secrets.DD_APP_KEY }}
+        run: |
+          if [ -n "$DD_API_KEY" ] && [ -n "$DD_APP_KEY" ]; then
+            echo "has_keys=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_keys=false" >> "$GITHUB_OUTPUT"
+            echo "Skipping Datadog Synthetic tests because DD_API_KEY and/or DD_APP_KEY are not configured."
+            echo "This is not a code compile failure. Add repository secrets to enable Datadog synthetic checks."
+          fi
+
       - name: Run Datadog Synthetic tests
+        if: steps.datadog-secrets.outputs.has_keys == 'true'
         uses: DataDog/synthetics-ci-github-action@87b505388a22005bb8013481e3f73a367b9a53eb # v1.4.0
         with:
           api_key: ${{ secrets.DD_API_KEY }}
           app_key: ${{ secrets.DD_APP_KEY }}
           test_search_query: 'tag:e2e-tests'
-
-  skipped:
-    name: Skip Datadog Synthetic tests
-    runs-on: ubuntu-latest
-    if: ${{ secrets.DD_API_KEY == '' || secrets.DD_APP_KEY == '' }}
-
-    steps:
-      - name: Datadog secrets not configured
-        run: |
-          echo "Skipping Datadog Synthetic tests because DD_API_KEY and/or DD_APP_KEY are not configured."
-          echo "This is not a code compile failure. Add repository secrets to enable Datadog synthetic checks."
