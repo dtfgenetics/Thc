@@ -1,5 +1,6 @@
 export function rollDie(random: () => number = Math.random): number {
-  return Math.floor(random() * 6) + 1;
+  const value = Math.max(0, Math.min(0.999999, random()));
+  return Math.floor(value * 6) + 1;
 }
 
 export function isValidDieRoll(value: number): boolean {
