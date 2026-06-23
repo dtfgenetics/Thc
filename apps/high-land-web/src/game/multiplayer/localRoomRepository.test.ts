@@ -53,6 +53,13 @@ describe('local room repository', () => {
     expect(room.players[0].host).toBe(true);
   });
 
+  it('rejects duplicate explicit room codes instead of overwriting rooms', () => {
+    const storage = new MemoryStorage();
+    createLocalRoom(hostPlayer, storage, 'ABCD23');
+
+    expect(() => createLocalRoom({ ...hostPlayer, id: 'host-2' }, storage, 'ABCD23')).toThrow('Room ABCD23 already exists');
+  });
+
   it('joins an existing local room', () => {
     const storage = new MemoryStorage();
     createLocalRoom(hostPlayer, storage, 'ABCD23');
