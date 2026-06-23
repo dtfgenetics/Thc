@@ -70,4 +70,15 @@ describe('local room repository', () => {
     expect(room.players[1].name).toBe('Guest Player');
     expect(room.players[1].host).toBe(false);
   });
+
+  it('preserves the host flag when an existing host rejoins', () => {
+    const storage = new MemoryStorage();
+    createLocalRoom(hostPlayer, storage, 'ABCD23');
+
+    const room = joinLocalRoom('ABCD23', { ...hostPlayer, name: 'Host Player Updated' }, storage);
+
+    expect(room.players).toHaveLength(1);
+    expect(room.players[0].name).toBe('Host Player Updated');
+    expect(room.players[0].host).toBe(true);
+  });
 });
