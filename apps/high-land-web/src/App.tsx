@@ -12,6 +12,7 @@ import {
   joinLocalRoomMode
 } from './app/highLandRoomModeService';
 import { rollRoomRuntime, startRoomRuntime } from './app/highLandRoomRuntime';
+import { approvedBoardSpaceCount } from './game/data/boardPath';
 import { rollCurrentTurn } from './game/systems/gameEngine';
 import { createNamedLocalGame } from './game/multiplayer/roomGameFactory';
 import { parseInviteLink } from './game/multiplayer/inviteLinks';
@@ -196,9 +197,9 @@ export default function App() {
     <main className="app-shell">
       <section className="game-panel">
         <div className="title-card">
-          <p className="eyebrow">Browser Board Game Prototype</p>
+          <p className="eyebrow">Browser Board Game</p>
           <h1>High Land: The Sweet Escape</h1>
-          <p className="subtitle">Roll, move, draw action cards, dodge skips, and race to the finish with up to 10 players.</p>
+          <p className="subtitle">Roll, move, draw HIT cards, handle card effects, and race to the finish with up to 10 players.</p>
         </div>
 
         {screenMode === 'landing' ? (
@@ -292,7 +293,7 @@ export default function App() {
               <div>
                 <strong>{player.name}</strong>
                 <p>
-                  Space {player.positionIndex}
+                  Space {player.positionIndex + 1} of {approvedBoardSpaceCount}
                   {player.skipTurns > 0 ? ` • Skip x${player.skipTurns}` : ''}
                   {player.protectedFromBackward > 0 ? ` • Protected x${player.protectedFromBackward}` : ''}
                 </p>
