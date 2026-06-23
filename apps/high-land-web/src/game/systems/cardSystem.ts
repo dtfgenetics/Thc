@@ -15,7 +15,7 @@ export function drawActionCard(
 }
 
 export function applyActionCard(state: GameState, card: ActionCard, chainDepth = 0, random: () => number = Math.random): GameState {
-  const resolved = sweepForWinner(resolveActionCard(state, card));
+  const resolved = sweepForWinner(resolveActionCard(state, card, random));
 
   if (card.effect.type === 'draw_again' && !resolved.winnerId && chainDepth < 2) {
     const draw = drawActionCard(resolved.cardCursor, starterActionCards, random);
