@@ -49,13 +49,17 @@ export class BoardScene extends Phaser.Scene {
       strokeThickness: 4
     }).setDepth(20);
 
-    window.addEventListener('game-state-update', this.handleStateUpdate as EventListener);
-    this.events.once(Phaser.Scenes.Events.SHUTDOWN, this.removeGameStateListener);
-    this.events.once(Phaser.Scenes.Events.DESTROY, this.removeGameStateListener);
+    if (typeof window !== 'undefined') {
+      window.addEventListener('game-state-update', this.handleStateUpdate as EventListener);
+      this.events.once(Phaser.Scenes.Events.SHUTDOWN, this.removeGameStateListener);
+      this.events.once(Phaser.Scenes.Events.DESTROY, this.removeGameStateListener);
+    }
   }
 
   private removeGameStateListener = (): void => {
-    window.removeEventListener('game-state-update', this.handleStateUpdate as EventListener);
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('game-state-update', this.handleStateUpdate as EventListener);
+    }
   };
 
   private handleStateUpdate = (event: CustomEvent<GameState>): void => {
