@@ -25,7 +25,7 @@ export function findLastPlace(players: Player[]): Player | null {
 
 export function findPlayerBehind(players: Player[], currentPlayer: Player): Player | null {
   return [...players]
-    .filter((player) => player.id !== currentPlayer.id && player.positionIndex <= currentPlayer.positionIndex)
+    .filter((player) => player.id !== currentPlayer.id && player.positionIndex < currentPlayer.positionIndex)
     .sort((a, b) => b.positionIndex - a.positionIndex)[0] ?? null;
 }
 
