@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { createInitialGame } from '../systems/gameEngine';
 import { maxPlayers, tokenColors, tokenOrder } from '../systems/playerSystem';
+import { createGameFromRoom } from './roomGameFactory';
 import type { HighLandRoomPlayer, HighLandRoomState } from './roomState';
 import { canPlayerRoll, canStartRoom, upsertRoomPlayer } from './roomState';
 
@@ -38,15 +38,16 @@ describe('room state', () => {
   });
 
   it('allows only the current room player to roll', () => {
+    const waitingRoom = makeRoom(2);
     const room: HighLandRoomState = {
-      ...makeRoom(2),
+      ...waitingRoom,
       status: 'playing',
-      gameState: createInitialGame(2)
+      gameState: createGameFromRoom(waitingRoom)
     };
 
-    expect(canPlayerRoll(room, 'player-1')).toBe(true);
-    expect(canPlayerRoll(room, 'player-2')).toBe(false);
-    expect(canPlayerRoll({ ...room, status: 'waiting' }, 'player-1')).toBe(false);
+    expect(canPlayerRoll(room, 'local-player-1')).toBe(true);
+    expect(canPlayerRoll(room, 'local-player-2')).toBe(false);
+    expect(canPlayerRoll({ ...room, status: 'waiting' }, 'local-player-1')).toBe(false);
   });
 
   it('upserts an existing player without changing room size', () => {
