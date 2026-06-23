@@ -1,6 +1,7 @@
 import { createGameEvent, type DiceRolledEvent, type GameStartedEvent, type HighLandGameEvent, type HitCardDrawnEvent, type SkipTurnAppliedEvent, type WinnerDeclaredEvent } from '../events/gameEvents';
 import { finishIndex } from '../data/boardPath';
 import { rollCurrentTurn } from '../systems/gameEngine';
+import { calculateMove } from '../systems/movementSystem';
 import type { HighLandRoomState } from './roomState';
 import { createGameFromRoom } from './roomGameFactory';
 
@@ -37,7 +38,9 @@ export function rollRoomGameplay(room: HighLandRoomState, random: () => number =
   const fromIndex = currentPlayer?.positionIndex ?? 0;
   const nextGameState = rollCurrentTurn(room.gameState, random);
   const updatedPlayer = currentPlayer ? nextGameState.players.find((player) => player.id === currentPlayer.id) : null;
-  const toIndex = updatedPlayer?.positionIndex ?? fromIndex;
+  const diceLandingIndex = nextGameState.lastRoll === null
+    ? fromIndex
+    : calculateMove(fromIndex, nextGameState.lastRoll, finishIndex).toIndex;
   const updatedRoom: HighLandRoomState = {
     ...room,
     status: nextGameState.winnerId ? 'complete' : 'playing',
@@ -68,7 +71,7 @@ export function rollRoomGameplay(room: HighLandRoomState, random: () => number =
         payload: {
           roll: nextGameState.lastRoll ?? 0,
           fromIndex,
-          toIndex
+          toIndex: diceLandingIndex
         }
       })
     );
