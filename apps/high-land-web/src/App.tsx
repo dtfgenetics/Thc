@@ -84,7 +84,7 @@ export default function App() {
 
   async function startRoomGame(): Promise<void> {
     if (!room) return;
-    const result = await startRoomRuntime(room);
+    const result = await startRoomRuntime(room, localPlayerId);
     setRoom(result.room);
     setPlayerCount(result.playerCount);
     setLocalPlayerName(result.leadPlayerName);
@@ -160,7 +160,7 @@ export default function App() {
   async function restart(): Promise<void> {
     if (room) {
       const restartableRoom: HighLandRoomState = { ...room, status: 'waiting', gameState: null };
-      const result = await startRoomRuntime(restartableRoom);
+      const result = await startRoomRuntime(restartableRoom, localPlayerId);
       setRoom(result.room);
       setPlayerCount(result.playerCount);
       setLocalPlayerName(result.leadPlayerName);
