@@ -1,4 +1,5 @@
 import { canStartRoom, type HighLandRoomState } from '../game/multiplayer/roomState';
+import { maxPlayers } from '../game/systems/playerSystem';
 
 type RoomLobbyProps = {
   room: HighLandRoomState;
@@ -13,6 +14,7 @@ type RoomLobbyProps = {
 export function RoomLobby({ room, localPlayerId, inviteUrl, onStartGame, onLeave, onCopyInvite, onAddLocalGuest }: RoomLobbyProps) {
   const startAllowed = canStartRoom(room, localPlayerId);
   const localPlayer = room.players.find((player) => player.id === localPlayerId) ?? null;
+  const roomIsFull = room.players.length >= maxPlayers;
 
   function copyInvite(): void {
     if (onCopyInvite) {
@@ -45,10 +47,12 @@ export function RoomLobby({ room, localPlayerId, inviteUrl, onStartGame, onLeave
 
       <div className="button-row">
         <button onClick={copyInvite} type="button">Copy Invite</button>
-        {onAddLocalGuest ? <button onClick={onAddLocalGuest} type="button">Add Test Player</button> : null}
+        {onAddLocalGuest ? <button disabled={roomIsFull} onClick={onAddLocalGuest} type="button">Add Test Player</button> : null}
         <button className="primary" disabled={!startAllowed} onClick={onStartGame} type="button">Start Game</button>
         <button onClick={onLeave} type="button">Leave</button>
       </div>
+
+      {roomIsFull ? <p className="form-note">Room is full at {maxPlayers} players.</p> : null}
 
       {!startAllowed ? (
         <p className="form-note">
