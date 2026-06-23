@@ -23,6 +23,8 @@ describe('game engine', () => {
   it('rolls from 1 to 6', () => {
     expect(rollDie(() => 0)).toBe(1);
     expect(rollDie(() => 0.99)).toBe(6);
+    expect(rollDie(() => 1)).toBe(6);
+    expect(rollDie(() => -1)).toBe(1);
   });
 
   it('clamps movement at start and finish', () => {
