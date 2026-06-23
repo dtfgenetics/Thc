@@ -39,7 +39,7 @@ describe('room game actions', () => {
 
     expect(result.room.gameState?.lastRoll).toBe(1);
     expect(result.events[0].name).toBe('dice_rolled');
-    expect(result.events[0].payload).toMatchObject({ roll: 1 });
+    expect(result.events[0].payload).toMatchObject({ roll: 1, fromIndex: 0, toIndex: 1 });
   });
 
   it('creates a HIT card event when a room player lands on HIT', () => {
@@ -57,7 +57,9 @@ describe('room game actions', () => {
     const result = rollRoomGameplay(roomAtHitApproach, sequenceRandom([0, 0.999]));
 
     expect(result.events.map((event) => event.name)).toEqual(['dice_rolled', 'hit_card_drawn']);
+    expect(result.events[0].payload).toMatchObject({ roll: 1, fromIndex: 4, toIndex: 5 });
     expect(result.events[1].payload).toMatchObject({ card: { id: 'card-030' } });
+    expect(result.room.gameState?.players[0].positionIndex).toBe(13);
   });
 
   it('creates a skip event instead of a dice event when a room player loses a turn', () => {
