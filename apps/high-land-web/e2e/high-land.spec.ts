@@ -41,7 +41,7 @@ test.describe('High Land browser game', () => {
     await expect(page.getByRole('button', { name: 'Start Game' })).toBeEnabled();
 
     await page.getByRole('button', { name: 'Start Game' }).click();
-    await expect(page.getByText('Current Turn')).toBeVisible();
+    await expect(page.getByText(/Room [A-Z0-9]{4,8}/).first()).toBeVisible();
     await expect(page.getByText('Room Host, roll to begin.')).toBeVisible();
 
     await page.getByRole('button', { name: 'Roll Dice' }).click();
