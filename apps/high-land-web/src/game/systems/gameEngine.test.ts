@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { boardPath, finishIndex } from '../data/boardPath';
+import { approvedBoardSpaceCount, approvedHitSpaceCount, approvedNonHitRoadSpaceCount, boardPath, finishIndex } from '../data/boardPath';
 import type { ActionCard } from '../types/gameTypes';
 import { applyActionCard } from './cardSystem';
 import { rollDie } from './diceSystem';
@@ -41,6 +41,16 @@ describe('game engine', () => {
   it('has start and finish spaces', () => {
     expect(boardPath[0].type).toBe('start');
     expect(boardPath[finishIndex].type).toBe('finish');
+  });
+
+  it('matches the approved board image counts', () => {
+    const hitSpaces = boardPath.filter((space) => space.type === 'action');
+    const nonHitRoadSpaces = boardPath.filter((space) => space.type !== 'action');
+
+    expect(boardPath).toHaveLength(approvedBoardSpaceCount);
+    expect(hitSpaces).toHaveLength(approvedHitSpaceCount);
+    expect(nonHitRoadSpaces).toHaveLength(approvedNonHitRoadSpaceCount);
+    expect(boardPath.some((space) => space.type === 'skip')).toBe(false);
   });
 
   it('creates 2 to 10 player games', () => {
