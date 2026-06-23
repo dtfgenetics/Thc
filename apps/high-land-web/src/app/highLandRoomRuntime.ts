@@ -27,10 +27,11 @@ export async function startRoomRuntime(
 
 export async function rollRoomRuntime(
   room: HighLandRoomState,
+  requestingPlayerId: string,
   transport: RoomTransport = createLocalRoomTransport(),
   random: () => number = Math.random
 ): Promise<RoomRuntimeResult> {
-  const updatedRoom = await rollRoomWithTransport(room, transport, random);
+  const updatedRoom = await rollRoomWithTransport(room, transport, requestingPlayerId, random);
   const currentPlayer = updatedRoom.gameState?.players[updatedRoom.gameState.currentPlayerIndex];
   const leadPlayerName = updatedRoom.gameState?.players[0]?.name ?? 'Player 1';
   const winner = updatedRoom.gameState?.players.find((player) => player.id === updatedRoom.gameState?.winnerId) ?? null;
