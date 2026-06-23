@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { finishIndex } from '../data/boardPath';
 import { createInitialGame } from './gameEngine';
 import { clearSavedGameState, loadGameState, saveGameState } from './storageSystem';
 
@@ -41,11 +42,11 @@ describe('storage system', () => {
     expect(loadGameState()).toBeNull();
   });
 
-  it('hydrates old saved players with unique fallback identity and tokens', () => {
+  it('hydrates old saved players with safe fallback values', () => {
     const storage = new MemoryStorage();
     vi.stubGlobal('window', { localStorage: storage });
     storage.setItem('high-land-save-v1', JSON.stringify({
-      players: [{ name: 'Old One' }, { name: 'Old Two' }],
+      players: [{ name: 'Old One', positionIndex: -10 }, { name: 'Old Two', positionIndex: 9999 }],
       currentPlayerIndex: 99,
       turnDirection: 0,
       reverseTurnsRemaining: -3,
@@ -57,6 +58,7 @@ describe('storage system', () => {
     expect(loaded?.players.map((player) => player.id)).toEqual(['player-restored-1', 'player-restored-2']);
     expect(loaded?.players.map((player) => player.token)).toEqual(['tokenA', 'tokenB']);
     expect(loaded?.players.map((player) => player.color)).toEqual(['#f43f5e', '#22c55e']);
+    expect(loaded?.players.map((player) => player.positionIndex)).toEqual([0, finishIndex]);
     expect(loaded?.currentPlayerIndex).toBe(1);
     expect(loaded?.turnDirection).toBe(1);
     expect(loaded?.reverseTurnsRemaining).toBe(0);
