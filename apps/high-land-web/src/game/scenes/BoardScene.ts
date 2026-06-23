@@ -1,16 +1,15 @@
 import Phaser from 'phaser';
 import { boardPath } from '../data/boardPath';
-import type { GameState, Player } from '../types/gameTypes';
+import type { GameState, Player, SpaceColor } from '../types/gameTypes';
 import { gameAssetPath } from '../systems/assetPath';
 import { getMoveDuration, getTokenOffset, getTokenRadius } from '../systems/tokenLayoutSystem';
 
-const colorMap: Record<string, number> = {
+const colorMap: Record<SpaceColor, number> = {
   red: 0xef4444,
   yellow: 0xfacc15,
   green: 0x22c55e,
   blue: 0x3b82f6,
-  purple: 0xa855f7,
-  special: 0xffffff
+  purple: 0xa855f7
 };
 
 export class BoardScene extends Phaser.Scene {
