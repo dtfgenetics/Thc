@@ -4,8 +4,12 @@ import { upsertRoomPlayer, type HighLandRoomPlayer, type HighLandRoomState } fro
 
 export type LocalRoomPlayerInput = Omit<HighLandRoomPlayer, 'joinedAt' | 'connected' | 'host'>;
 
-export function createLocalRoom(hostPlayer: LocalRoomPlayerInput, storage?: Storage, roomCode = createRoomCode()): HighLandRoomState {
-  const code = requireValidRoomCode(roomCode);
+export function createLocalRoom(hostPlayer: LocalRoomPlayerInput, storage?: Storage, roomCode?: string): HighLandRoomState {
+  const code = roomCode ? requireValidRoomCode(roomCode) : createUniqueRoomCode(storage);
+  if (getLocalRoom(code, storage)) {
+    throw new Error(`Room ${code} already exists in local storage.`);
+  }
+
   const now = new Date().toISOString();
   const roomHost: HighLandRoomPlayer = {
     ...hostPlayer,
@@ -46,4 +50,13 @@ export function joinLocalRoom(roomCode: string, player: LocalRoomPlayerInput, st
   const updatedRoom = upsertRoomPlayer(room, joinedPlayer);
   saveLocalRoom(updatedRoom, storage);
   return updatedRoom;
+}
+
+function createUniqueRoomCode(storage?: Storage): string {
+  for (let attempt = 0; attempt < 25; attempt += 1) {
+    const code = createRoomCode();
+    if (!getLocalRoom(code, storage)) return code;
+  }
+
+  throw new Error('Could not create a unique local room code.');
 }
