@@ -3,17 +3,22 @@ import { finishIndex } from '../data/boardPath';
 import type { ActionCard, GameState, Player } from '../types/gameTypes';
 import { resolveActionCard } from './effectResolver';
 
-export function drawActionCard(cardCursor: number, deck: ActionCard[] = starterActionCards): { card: ActionCard; nextCursor: number } {
+export function drawActionCard(
+  cardCursor: number,
+  deck: ActionCard[] = starterActionCards,
+  random: () => number = Math.random
+): { card: ActionCard; nextCursor: number } {
   if (deck.length === 0) throw new Error('Action card deck is empty.');
-  const card = deck[cardCursor % deck.length];
+  const randomValue = Math.max(0, Math.min(0.999999, random()));
+  const card = deck[Math.floor(randomValue * deck.length)];
   return { card, nextCursor: cardCursor + 1 };
 }
 
-export function applyActionCard(state: GameState, card: ActionCard, chainDepth = 0): GameState {
+export function applyActionCard(state: GameState, card: ActionCard, chainDepth = 0, random: () => number = Math.random): GameState {
   const resolved = sweepForWinner(resolveActionCard(state, card));
 
   if (card.effect.type === 'draw_again' && !resolved.winnerId && chainDepth < 2) {
-    const draw = drawActionCard(resolved.cardCursor);
+    const draw = drawActionCard(resolved.cardCursor, starterActionCards, random);
     return applyActionCard(
       {
         ...resolved,
@@ -22,7 +27,8 @@ export function applyActionCard(state: GameState, card: ActionCard, chainDepth =
         phase: 'resolving_card'
       },
       draw.card,
-      chainDepth + 1
+      chainDepth + 1,
+      random
     );
   }
 
