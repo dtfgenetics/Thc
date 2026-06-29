@@ -12,18 +12,42 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
+      - name: Set up Node.js 22
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
+          cache: npm
+
+      - name: Verify required High Land control files
+        shell: bash
+        run: |
+          set -euo pipefail
+          required_files=(
+            AGENTS.md
+            CLAUDE.md
+            README.md
+            .agents/skills/high-land-game/SKILL.md
+            docs/HIGH_LAND_CODEX_NOW.md
+            docs/CODEX_HIGH_LAND_GAME_BUILD.md
+            docs/SYSTEMS_READINESS.md
+            docs/TOOL_CONNECTIONS.md
+            docs/high-land-spec.md
+            docs/high-land-acceptance-checklist.md
+            docs/deployment-hostinger.md
+            .github/pull_request_template.md
+          )
+          for file in "${required_files[@]}"; do
+            test -s "$file" || { echo "Missing or empty required file: $file"; exit 1; }
+          done
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Run High Land unit tests
         run: npm run test:high-land
@@ -36,6 +60,19 @@ jobs:
 
       - name: Run High Land browser smoke tests
         run: npm run test:e2e:high-land
+
+      - name: Lint PHP room API files
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -d '' php_files < <(find apps/high-land-web -type f -name '*.php' -print0)
+          if ((${#php_files[@]} == 0)); then
+            echo "No PHP files found; lint not applicable."
+            exit 0
+          fi
+          for file in "${php_files[@]}"; do
+            php -l "$file"
+          done
 
       - name: Upload High Land Playwright artifacts
         if: failure()
