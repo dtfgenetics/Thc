@@ -2,14 +2,30 @@ export type SpaceColor = 'red' | 'yellow' | 'green' | 'blue' | 'purple';
 
 export type BoardSpaceType = 'normal' | 'action' | 'start' | 'finish';
 
-export type BoardSpace = {
-  index: number;
+export type BoardSpaceAction = 'draw_hit_card' | null;
+
+export type BoardSpaceLabel = 'START' | 'HIT' | 'FINISH';
+
+export type BoardSpaceBounds = {
   x: number;
   y: number;
+  width: number;
+  height: number;
+};
+
+export type BoardSpace = {
+  index: number;
+  /** Center point where player tokens move. */
+  x: number;
+  y: number;
+  /** Actual playable square boundary on the 800x900 board canvas. */
+  bounds: BoardSpaceBounds;
   color: SpaceColor;
   type: BoardSpaceType;
-  label?: string;
+  label?: BoardSpaceLabel;
   zone?: string;
+  /** Explicit action trigger so visual labels do not drive gameplay rules. */
+  action: BoardSpaceAction;
 };
 
 export type PlayerToken =
