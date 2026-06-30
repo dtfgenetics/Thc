@@ -22,7 +22,7 @@ export class BoardScene extends Phaser.Scene {
 
   create(): void {
     this.cameras.main.setBackgroundColor('#141020');
-    this.add.image(400, 450, 'board-background').setDisplaySize(800, 900).setDepth(0);
+    this.drawBoardUnderlay();
 
     if (showDebugSpaces()) this.drawSpaceMarkers();
 
@@ -46,6 +46,29 @@ export class BoardScene extends Phaser.Scene {
   };
 
   private handleStateUpdate = (event: CustomEvent<GameState>): void => this.renderGameState(event.detail);
+
+  private drawBoardUnderlay(): void {
+    if (!this.textures.exists('board-background')) {
+      this.add.rectangle(400, 450, 800, 900, 0x141020, 1).setDepth(0);
+      this.add.text(400, 430, 'Board image missing', {
+        fontFamily: 'Arial',
+        fontSize: '26px',
+        color: '#ffffff',
+        backgroundColor: '#7f1d1d',
+        padding: { x: 16, y: 12 }
+      }).setOrigin(0.5).setDepth(30);
+      this.add.text(400, 485, 'Add public/assets/images/board/high-land-board.png', {
+        fontFamily: 'Arial',
+        fontSize: '16px',
+        color: '#ffffff',
+        stroke: '#000000',
+        strokeThickness: 3
+      }).setOrigin(0.5).setDepth(30);
+      return;
+    }
+
+    this.add.image(400, 450, 'board-background').setDisplaySize(800, 900).setDepth(0);
+  }
 
   private drawSpaceMarkers(): void {
     const graphics = this.add.graphics().setDepth(5);
