@@ -6,6 +6,10 @@
     "apps/*"
   ],
   "scripts": {
+    "dev": "npm run dev:high-land",
+    "build": "npm run build:high-land",
+    "test": "npm run test:high-land",
+    "test:e2e": "npm run test:e2e:high-land",
     "dev:high-land": "npm --workspace apps/high-land-web run dev",
     "build:high-land": "npm --workspace apps/high-land-web run build",
     "test:high-land": "npm --workspace apps/high-land-web run test",
