@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { approvedBoardSpaceCount, approvedHitSpaceCount, approvedNonHitRoadSpaceCount, boardPath, finishIndex } from '../data/boardPath';
+import {
+  actionSpaceIndexes,
+  approvedBoardSpaceCount,
+  approvedHitSpaceCount,
+  approvedNonHitRoadSpaceCount,
+  boardPath,
+  finishIndex
+} from '../data/boardPath';
 import type { ActionCard, SpaceColor } from '../types/gameTypes';
 import { applyActionCard } from './cardSystem';
 import { rollDie } from './diceSystem';
@@ -62,18 +69,36 @@ describe('game engine', () => {
     expect(boardPath.every((space) => allowedTypes.has(space.type))).toBe(true);
     expect(boardPath.every((space) => approvedColors.has(space.color))).toBe(true);
     expect(hitSpaces.every((space) => space.label === 'HIT')).toBe(true);
+    expect(actionSpaceIndexes).toHaveLength(approvedHitSpaceCount);
+    expect(actionSpaceIndexes.every((index) => boardPath[index]?.type === 'action')).toBe(true);
   });
 
   it('draws a random card action when landing on HIT', () => {
-    const state = buildStateAt(4);
+    const hitIndex = actionSpaceIndexes[0];
+    const state = buildStateAt(hitIndex - 1);
     const next = rollCurrentTurn(state, sequenceRandom([0, 0.999]));
 
-    expect(boardPath[5].type).toBe('action');
+    expect(boardPath[hitIndex].type).toBe('action');
     expect(next.lastRoll).toBe(1);
     expect(next.lastCard?.id).toBe('card-030');
-    expect(next.players[0].positionIndex).toBe(13);
+    expect(next.players[0].positionIndex).toBe(hitIndex + 8);
     expect(next.cardCursor).toBe(1);
     expect(next.currentPlayerIndex).toBe(1);
+  });
+
+  it('draws a card on every approved HIT trigger and nowhere else', () => {
+    const hitIndexes = new Set<number>(actionSpaceIndexes);
+
+    actionSpaceIndexes.forEach((hitIndex) => {
+      const next = rollCurrentTurn(buildStateAt(hitIndex - 1), sequenceRandom([0, 0]));
+      expect(next.lastCard, `expected a card at board index ${hitIndex}`).not.toBeNull();
+    });
+
+    boardPath.slice(1, -1).forEach((space) => {
+      if (hitIndexes.has(space.index)) return;
+      const next = rollCurrentTurn(buildStateAt(space.index - 1), sequenceRandom([0, 0]));
+      expect(next.lastCard, `unexpected card at board index ${space.index}`).toBeNull();
+    });
   });
 
   it('creates 2 to 10 player games', () => {

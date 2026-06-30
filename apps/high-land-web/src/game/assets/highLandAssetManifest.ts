@@ -46,35 +46,35 @@ export const highLandAssetManifest: HighLandAssetManifestItem[] = [
     kind: 'audio',
     path: 'assets/high-land/audio/background-loop.mp3',
     required: true,
-    placeholderAllowed: true
+    placeholderAllowed: false
   },
   {
     id: 'dice-roll-sound',
     kind: 'audio',
     path: 'assets/high-land/audio/dice-roll.mp3',
     required: true,
-    placeholderAllowed: true
+    placeholderAllowed: false
   },
   {
     id: 'card-draw-sound',
     kind: 'audio',
     path: 'assets/high-land/audio/card-draw.mp3',
     required: true,
-    placeholderAllowed: true
+    placeholderAllowed: false
   },
   {
     id: 'move-tick-sound',
     kind: 'audio',
     path: 'assets/high-land/audio/move-tick.mp3',
-    required: false,
-    placeholderAllowed: true
+    required: true,
+    placeholderAllowed: false
   },
   {
     id: 'win-sound',
     kind: 'audio',
     path: 'assets/high-land/audio/win.mp3',
     required: true,
-    placeholderAllowed: true
+    placeholderAllowed: false
   }
 ];
 

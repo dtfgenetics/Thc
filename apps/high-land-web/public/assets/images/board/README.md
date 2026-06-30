@@ -1,6 +1,6 @@
 # Board Assets
 
-Place the final board image here.
+The final approved production board image lives here.
 
 Required file:
 
@@ -13,4 +13,5 @@ Rules:
 - Use the final approved High Land board art.
 - Keep the path visible.
 - Do not use placeholder or unrelated game art.
-- After adding the image, calibrate `src/game/data/boardPath.ts` so token centers match the spaces.
+- Render it at 1280 x 960 and keep `src/game/data/boardPath.ts` calibrated to
+  the visible space centers.

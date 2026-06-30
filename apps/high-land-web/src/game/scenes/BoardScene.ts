@@ -1,8 +1,9 @@
 import Phaser from 'phaser';
-import { boardPath } from '../data/boardPath';
-import type { BoardSpace, GameState, Player } from '../types/gameTypes';
+import { boardHeight, boardPath, boardWidth } from '../data/boardPath';
 import { gameAssetPath } from '../systems/assetPath';
+import { playMoveTickSound } from '../systems/audioSystem';
 import { getMoveDuration, getTokenOffset, getTokenRadius } from '../systems/tokenLayoutSystem';
+import type { BoardSpace, GameState, Player } from '../types/gameTypes';
 
 type Point = { x: number; y: number };
 
@@ -10,7 +11,6 @@ export class BoardScene extends Phaser.Scene {
   private pieces = new Map<string, Phaser.GameObjects.Arc>();
   private labels = new Map<string, Phaser.GameObjects.Text>();
   private lastPositions = new Map<string, number>();
-  private messageText?: Phaser.GameObjects.Text;
 
   constructor() {
     super('BoardScene');
@@ -21,54 +21,45 @@ export class BoardScene extends Phaser.Scene {
   }
 
   create(): void {
-    this.cameras.main.setBackgroundColor('#141020');
-    this.drawBoardUnderlay();
+    this.cameras.main.setBackgroundColor('#080b09');
+
+    if (this.textures.exists('board-background')) {
+      this.add.image(boardWidth / 2, boardHeight / 2, 'board-background')
+        .setDisplaySize(boardWidth, boardHeight)
+        .setDepth(0);
+    } else {
+      this.add.text(boardWidth / 2, boardHeight / 2, 'The High Land board art could not be loaded.', {
+        fontFamily: 'Arial',
+        fontSize: '30px',
+        color: '#ffffff',
+        backgroundColor: '#521a2f',
+        padding: { x: 24, y: 18 }
+      }).setOrigin(0.5).setDepth(1);
+    }
 
     if (showDebugSpaces()) this.drawSpaceMarkers();
-
-    this.messageText = this.add.text(24, 18, 'Ready', {
-      fontFamily: 'Arial',
-      fontSize: '18px',
-      color: '#ffffff',
-      stroke: '#000000',
-      strokeThickness: 4
-    }).setDepth(30);
 
     if (typeof window !== 'undefined') {
       window.addEventListener('game-state-update', this.handleStateUpdate as EventListener);
       this.events.once(Phaser.Scenes.Events.SHUTDOWN, this.removeGameStateListener);
       this.events.once(Phaser.Scenes.Events.DESTROY, this.removeGameStateListener);
     }
+
+    const initialState = this.registry.get('initial-game-state') as GameState | undefined;
+    if (initialState) this.renderGameState(initialState);
   }
 
   private removeGameStateListener = (): void => {
-    if (typeof window !== 'undefined') window.removeEventListener('game-state-update', this.handleStateUpdate as EventListener);
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('game-state-update', this.handleStateUpdate as EventListener);
+    }
+    this.tweens.killAll();
   };
 
-  private handleStateUpdate = (event: CustomEvent<GameState>): void => this.renderGameState(event.detail);
-
-  private drawBoardUnderlay(): void {
-    if (!this.textures.exists('board-background')) {
-      this.add.rectangle(400, 450, 800, 900, 0x141020, 1).setDepth(0);
-      this.add.text(400, 430, 'Board image missing', {
-        fontFamily: 'Arial',
-        fontSize: '26px',
-        color: '#ffffff',
-        backgroundColor: '#7f1d1d',
-        padding: { x: 16, y: 12 }
-      }).setOrigin(0.5).setDepth(30);
-      this.add.text(400, 485, 'Add public/assets/images/board/high-land-board.png', {
-        fontFamily: 'Arial',
-        fontSize: '16px',
-        color: '#ffffff',
-        stroke: '#000000',
-        strokeThickness: 3
-      }).setOrigin(0.5).setDepth(30);
-      return;
-    }
-
-    this.add.image(400, 450, 'board-background').setDisplaySize(800, 900).setDepth(0);
-  }
+  private handleStateUpdate = (event: CustomEvent<GameState>): void => {
+    if (!this.sys.isActive()) return;
+    this.renderGameState(event.detail);
+  };
 
   private drawSpaceMarkers(): void {
     const graphics = this.add.graphics().setDepth(5);
@@ -88,7 +79,6 @@ export class BoardScene extends Phaser.Scene {
   }
 
   private renderGameState(state: GameState): void {
-    this.messageText?.setText(state.message);
     this.removeStalePlayers(state.players);
     state.players.forEach((player, index) => this.renderPlayer(player, index, state.players.length));
   }
@@ -97,12 +87,14 @@ export class BoardScene extends Phaser.Scene {
     const activePlayerIds = new Set(players.map((player) => player.id));
     this.pieces.forEach((piece, playerId) => {
       if (activePlayerIds.has(playerId)) return;
+      this.tweens.killTweensOf(piece);
       piece.destroy();
       this.pieces.delete(playerId);
       this.lastPositions.delete(playerId);
     });
     this.labels.forEach((label, playerId) => {
       if (activePlayerIds.has(playerId)) return;
+      this.tweens.killTweensOf(label);
       label.destroy();
       this.labels.delete(playerId);
     });
@@ -112,13 +104,22 @@ export class BoardScene extends Phaser.Scene {
     const currentSpace = boardPath[player.positionIndex] ?? boardPath[0];
     const offset = getTokenOffset(playerIndex, playerCount);
     const radius = getTokenRadius(playerCount);
-    const target = getTokenTarget(currentSpace, offset.x, offset.y);
+    const target = getTokenTarget(currentSpace, offset.x, offset.y, radius);
     let piece = this.pieces.get(player.id);
     let label = this.labels.get(player.id);
 
     if (!piece) {
-      piece = this.add.circle(target.x, target.y, radius, Phaser.Display.Color.HexStringToColor(player.color).color, 1).setStrokeStyle(3, 0xffffff).setDepth(20);
-      label = this.add.text(target.x, target.y, String(playerIndex + 1), { fontFamily: 'Arial', fontSize: playerCount > 8 ? '10px' : '12px', color: '#ffffff', fontStyle: 'bold' }).setOrigin(0.5).setDepth(21);
+      piece = this.add.circle(target.x, target.y, radius, Phaser.Display.Color.HexStringToColor(player.color).color, 1)
+        .setStrokeStyle(2, 0xffffff)
+        .setDepth(20);
+      label = this.add.text(target.x, target.y, String(playerIndex + 1), {
+        fontFamily: 'Arial',
+        fontSize: playerCount > 8 ? '8px' : '10px',
+        color: '#ffffff',
+        fontStyle: 'bold',
+        stroke: '#111111',
+        strokeThickness: 2
+      }).setOrigin(0.5).setDepth(21);
       this.pieces.set(player.id, piece);
       this.labels.set(player.id, label);
       this.lastPositions.set(player.id, player.positionIndex);
@@ -128,25 +129,40 @@ export class BoardScene extends Phaser.Scene {
     piece.setRadius(radius);
     piece.setFillStyle(Phaser.Display.Color.HexStringToColor(player.color).color, 1);
     label?.setText(String(playerIndex + 1));
-    label?.setFontSize(playerCount > 8 ? '10px' : '12px');
+    label?.setFontSize(playerCount > 8 ? '8px' : '10px');
 
     const fromIndex = this.lastPositions.get(player.id) ?? player.positionIndex;
     this.lastPositions.set(player.id, player.positionIndex);
-    const targets = buildPathIndexes(fromIndex, player.positionIndex).map((index) => getTokenTarget(boardPath[index] ?? currentSpace, offset.x, offset.y));
+    const targets = buildPathIndexes(fromIndex, player.positionIndex).map((index) => {
+      const space = boardPath[index] ?? currentSpace;
+      return getTokenTarget(space, offset.x, offset.y, radius);
+    });
 
-    if (targets.length <= 1) {
+    if (targets.length === 0) {
       piece.setPosition(target.x, target.y);
       label?.setPosition(target.x, target.y);
       return;
     }
 
+    this.tweens.killTweensOf(piece);
+    if (label) this.tweens.killTweensOf(label);
     this.animateTargets(label ? [piece, label] : [piece], targets, getMoveDuration(playerCount));
   }
 
   private animateTargets(targets: Phaser.GameObjects.GameObject[], positions: Point[], duration: number, index = 0): void {
     const position = positions[index];
     if (!position) return;
-    this.tweens.add({ targets, x: position.x, y: position.y, duration, ease: 'Sine.easeInOut', onComplete: () => this.animateTargets(targets, positions, duration, index + 1) });
+    this.tweens.add({
+      targets,
+      x: position.x,
+      y: position.y,
+      duration,
+      ease: 'Sine.easeInOut',
+      onComplete: () => {
+        playMoveTickSound();
+        this.animateTargets(targets, positions, duration, index + 1);
+      }
+    });
   }
 }
 
@@ -154,8 +170,8 @@ function showDebugSpaces(): boolean {
   return typeof window !== 'undefined' && (import.meta.env.DEV || new URLSearchParams(window.location.search).has('debugPath'));
 }
 
-function getTokenTarget(space: BoardSpace, offsetX: number, offsetY: number): Point {
-  const padding = 6;
+function getTokenTarget(space: BoardSpace, offsetX: number, offsetY: number, radius: number): Point {
+  const padding = radius + 1;
   return {
     x: Phaser.Math.Clamp(space.x + offsetX, space.bounds.x + padding, space.bounds.x + space.bounds.width - padding),
     y: Phaser.Math.Clamp(space.y + offsetY, space.bounds.y + padding, space.bounds.y + space.bounds.height - padding)
@@ -163,9 +179,11 @@ function getTokenTarget(space: BoardSpace, offsetX: number, offsetY: number): Po
 }
 
 function buildPathIndexes(fromIndex: number, toIndex: number): number[] {
-  if (fromIndex === toIndex) return [toIndex];
+  if (fromIndex === toIndex) return [];
   const step = toIndex > fromIndex ? 1 : -1;
   const indexes: number[] = [];
-  for (let index = fromIndex + step; step > 0 ? index <= toIndex : index >= toIndex; index += step) indexes.push(index);
+  for (let index = fromIndex + step; step > 0 ? index <= toIndex : index >= toIndex; index += step) {
+    indexes.push(index);
+  }
   return indexes;
 }

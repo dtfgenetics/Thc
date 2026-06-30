@@ -1,73 +1,97 @@
 import type { BoardSpace, BoardSpaceLabel, BoardSpaceType, SpaceColor } from '../types/gameTypes';
 
+export const boardWidth = 1280;
+export const boardHeight = 960;
 export const approvedBoardSpaceCount = 109;
 export const approvedHitSpaceCount = 22;
 export const approvedNonHitRoadSpaceCount = approvedBoardSpaceCount - approvedHitSpaceCount;
 
 const defaultSpaceSize = 34;
-const colors: SpaceColor[] = ['red', 'yellow', 'green', 'blue', 'purple'];
+type TilePoint = readonly [x: number, y: number, color: SpaceColor, size?: number];
 
-type BoardPoint = {
-  x: number;
-  y: number;
-  size?: number;
-};
-
-const points: BoardPoint[] = [
-  { x: 84, y: 548 }, { x: 119, y: 528 }, { x: 156, y: 509 }, { x: 193, y: 492 }, { x: 230, y: 476 }, { x: 268, y: 461 },
-  { x: 306, y: 447 }, { x: 345, y: 435 }, { x: 384, y: 423 }, { x: 423, y: 413 }, { x: 462, y: 399 }, { x: 499, y: 384 },
-  { x: 535, y: 365 }, { x: 567, y: 340 }, { x: 594, y: 310 }, { x: 610, y: 273 }, { x: 600, y: 234 }, { x: 567, y: 210 },
-  { x: 529, y: 198 }, { x: 489, y: 194 }, { x: 449, y: 200 }, { x: 412, y: 215 }, { x: 378, y: 236 }, { x: 351, y: 268 },
-  { x: 342, y: 306 }, { x: 351, y: 344 }, { x: 375, y: 375 }, { x: 410, y: 397 }, { x: 448, y: 408 }, { x: 488, y: 417 },
-  { x: 528, y: 427 }, { x: 566, y: 440 }, { x: 604, y: 455 }, { x: 635, y: 482 }, { x: 656, y: 514 }, { x: 662, y: 553 },
-  { x: 646, y: 590 }, { x: 612, y: 613 }, { x: 575, y: 627 }, { x: 535, y: 637 }, { x: 494, y: 639 }, { x: 453, y: 639 },
-  { x: 412, y: 634 }, { x: 372, y: 626 }, { x: 333, y: 617 }, { x: 294, y: 604 }, { x: 256, y: 591 }, { x: 220, y: 577 },
-  { x: 184, y: 562 }, { x: 149, y: 546 }, { x: 113, y: 526 }, { x: 85, y: 498 }, { x: 74, y: 461 }, { x: 84, y: 424 },
-  { x: 107, y: 393 }, { x: 141, y: 374 }, { x: 179, y: 358 }, { x: 217, y: 344 }, { x: 256, y: 332 }, { x: 295, y: 318 },
-  { x: 333, y: 303 }, { x: 370, y: 286 }, { x: 406, y: 267 }, { x: 443, y: 248 }, { x: 481, y: 233 }, { x: 519, y: 219 },
-  { x: 559, y: 213 }, { x: 599, y: 212 }, { x: 636, y: 224 }, { x: 670, y: 248 }, { x: 695, y: 279 }, { x: 705, y: 318 },
-  { x: 700, y: 359 }, { x: 682, y: 396 }, { x: 655, y: 428 }, { x: 626, y: 461 }, { x: 594, y: 484 }, { x: 558, y: 506 },
-  { x: 522, y: 525 }, { x: 484, y: 540 }, { x: 446, y: 555 }, { x: 407, y: 566 }, { x: 368, y: 578 }, { x: 329, y: 589 },
-  { x: 289, y: 600 }, { x: 250, y: 611 }, { x: 212, y: 624 }, { x: 176, y: 639 }, { x: 143, y: 662 }, { x: 114, y: 690 },
-  { x: 94, y: 725 }, { x: 97, y: 765 }, { x: 122, y: 796 }, { x: 160, y: 813 }, { x: 202, y: 817 }, { x: 243, y: 813 },
-  { x: 284, y: 804 }, { x: 324, y: 793 }, { x: 364, y: 780 }, { x: 403, y: 766 }, { x: 441, y: 753 }, { x: 480, y: 741 },
-  { x: 520, y: 732 }, { x: 560, y: 724 }, { x: 600, y: 724 }, { x: 641, y: 726 }, { x: 677, y: 745 }, { x: 706, y: 771 },
-  { x: 728, y: 806 }
+/**
+ * Centers calibrated against high-land-board.png at its 1280 x 960 Phaser
+ * display size. The approved art has two long, uninterrupted painted spaces
+ * that had previously been double-counted; each is represented once here so
+ * the gameplay contract remains 109 spaces and 22 printed HIT spaces.
+ */
+const tilePoints: TilePoint[] = [
+  [376, 800, 'red'], [421, 776, 'yellow'], [461, 736, 'purple'],
+  [497, 697, 'green'], [546, 684, 'red'], [590, 692, 'purple'],
+  [633, 716, 'blue'], [674, 754, 'yellow'], [720, 786, 'purple'],
+  [770, 810, 'purple'], [822, 824, 'purple'], [879, 828, 'yellow'],
+  [933, 822, 'red'], [976, 794, 'green'], [990, 746, 'yellow'],
+  [967, 710, 'purple'], [890, 718, 'purple'], [829, 717, 'blue'],
+  [777, 714, 'green'], [726, 699, 'yellow'], [684, 668, 'purple'],
+  [672, 626, 'red'], [708, 597, 'green'], [758, 602, 'blue'],
+  [810, 620, 'purple'], [865, 640, 'purple'], [916, 650, 'purple'],
+  [964, 656, 'blue'], [1018, 654, 'green'], [1060, 630, 'yellow'],
+  [1079, 584, 'purple'], [1074, 535, 'blue'], [1043, 504, 'green'],
+  [999, 494, 'red'], [953, 500, 'purple'], [900, 520, 'yellow'],
+  [850, 520, 'yellow'], [801, 512, 'purple'], [750, 485, 'green'],
+  [727, 470, 'green'], [682, 450, 'blue'], [633, 442, 'purple'],
+  [586, 442, 'red'], [543, 454, 'purple'], [508, 483, 'red'],
+  [482, 522, 'yellow'], [456, 565, 'blue'], [420, 607, 'purple'],
+  [370, 635, 'purple'], [305, 652, 'green'], [240, 653, 'purple'],
+  [184, 632, 'yellow'], [140, 599, 'red'], [127, 550, 'green'],
+  [144, 506, 'purple'], [182, 483, 'red'], [230, 481, 'purple'],
+  [279, 489, 'blue'], [337, 504, 'red'], [389, 482, 'green'],
+  [387, 434, 'blue'], [347, 404, 'purple'], [305, 378, 'yellow'],
+  [301, 336, 'red'], [334, 304, 'green'], [382, 293, 'blue'],
+  [431, 298, 'yellow'], [478, 315, 'purple'], [523, 333, 'red'],
+  [571, 355, 'green'], [625, 378, 'purple'], [675, 392, 'blue'],
+  [726, 406, 'red'], [775, 416, 'purple'], [827, 422, 'yellow'],
+  [887, 428, 'purple'], [949, 423, 'red'], [1008, 409, 'yellow'],
+  [1050, 376, 'blue'], [1063, 331, 'purple'], [1045, 291, 'red'],
+  [1002, 268, 'purple'], [958, 244, 'yellow'], [927, 193, 'purple'],
+  [888, 171, 'red'], [838, 191, 'purple'], [800, 250, 'blue'],
+  [785, 289, 'green'], [742, 318, 'red'], [687, 320, 'purple'],
+  [631, 306, 'yellow'], [584, 284, 'purple'], [539, 254, 'green'],
+  [489, 237, 'red'], [415, 232, 'purple'], [330, 243, 'blue'],
+  [278, 249, 'green'], [227, 240, 'yellow'], [182, 213, 'purple'],
+  [161, 171, 'red'], [166, 124, 'yellow'], [194, 87, 'green'],
+  [240, 69, 'red'], [287, 69, 'purple'], [335, 82, 'yellow'],
+  [379, 106, 'blue'], [423, 133, 'purple'], [471, 156, 'green'],
+  [520, 174, 'blue']
 ];
 
-const actionIndexes = new Set([
-  5, 9, 14, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 84, 88, 92, 97, 102, 106
-]);
+/** Printed HIT spaces in the approved board art, in gameplay path order. */
+export const actionSpaceIndexes = [
+  2, 8, 10, 16, 24, 26, 30, 37, 41, 47, 50,
+  56, 61, 67, 70, 75, 81, 85, 91, 94, 103, 106
+] as const;
+
+const actionSpaceIndexSet = new Set<number>(actionSpaceIndexes);
 
 function zoneForIndex(index: number): string {
-  if (index < 15) return 'Rolling Hills';
+  if (index < 16) return 'Rolling Hills';
   if (index < 31) return 'Dankwood Forest';
-  if (index < 46) return 'Rosin Rail Station';
+  if (index < 47) return 'Rosin Rail Station';
   if (index < 62) return 'Munchie Mountain';
   if (index < 78) return 'Kief Caves';
   if (index < 94) return 'Trichome Towers';
   return 'Cloud 9 Citadel';
 }
 
-function makeBoardSpace(point: BoardPoint, index: number): BoardSpace {
+function makeBoardSpace([x, y, color, customSize]: TilePoint, index: number): BoardSpace {
   const isStart = index === 0;
-  const isFinish = index === points.length - 1;
-  const isAction = actionIndexes.has(index);
-  const size = point.size ?? defaultSpaceSize;
+  const isFinish = index === tilePoints.length - 1;
+  const isAction = actionSpaceIndexSet.has(index);
+  const size = customSize ?? defaultSpaceSize;
   const type: BoardSpaceType = isStart ? 'start' : isFinish ? 'finish' : isAction ? 'action' : 'normal';
   const label: BoardSpaceLabel | undefined = isStart ? 'START' : isFinish ? 'FINISH' : isAction ? 'HIT' : undefined;
 
   return {
     index,
-    x: point.x,
-    y: point.y,
+    x,
+    y,
     bounds: {
-      x: point.x - size / 2,
-      y: point.y - size / 2,
+      x: x - size / 2,
+      y: y - size / 2,
       width: size,
       height: size
     },
-    color: colors[index % colors.length],
+    color,
     type,
     zone: zoneForIndex(index),
     label,
@@ -75,6 +99,5 @@ function makeBoardSpace(point: BoardPoint, index: number): BoardSpace {
   };
 }
 
-export const boardPath: BoardSpace[] = points.map(makeBoardSpace);
-
+export const boardPath: BoardSpace[] = tilePoints.map(makeBoardSpace);
 export const finishIndex = boardPath.length - 1;

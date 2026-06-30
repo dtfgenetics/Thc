@@ -32,11 +32,12 @@ The continuous route visits these locations in this order:
 
 - `apps/high-land-web/src/game/data/boardPath.ts` is the source of truth for
   ordered spaces and token coordinates.
-- The target board contains exactly 111 continuous indexes, `0` through `110`.
-- Index `0` is START and index `110` is FINISH at Cloud 9 Citadel.
+- The approved production board contains exactly 109 continuous indexes, `0`
+  through `108`. Two long uninterrupted painted spaces are each counted once.
+- Index `0` is START and index `108` is FINISH at Cloud 9 Citadel.
 - There is one route, no branches, and every index connects to the next.
 - Allowed space types are only `start`, `normal`, `action`, and `finish`.
-- `actionSpaceIndexes` is the source of truth for exactly 25 gameplay HIT spaces.
+- `actionSpaceIndexes` is the source of truth for exactly 22 gameplay HIT spaces.
 - Every gameplay HIT space must be visibly identifiable on the rendered board.
 - Use authored High Land board/card assets when they exist. A fallback must remain
   a polished fantasy cannabis board, never a flat placeholder.
@@ -54,7 +55,7 @@ The continuous route visits these locations in this order:
 
 ## HIT spaces and cards
 
-- Landing on any of the 25 HIT indexes draws a HIT card; old four-space-only
+- Landing on any of the 22 HIT indexes draws a HIT card; old four-space-only
   behavior is invalid.
 - Apply card effects immediately and synchronize the resulting state.
 - Card text must exactly describe the coded effect.

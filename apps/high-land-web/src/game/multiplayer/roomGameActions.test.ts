@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { actionSpaceIndexes } from '../data/boardPath';
 import { createLocalTestPlayer } from './localRoomFlow';
 import { rollRoomGameplay, startRoomGameplay } from './roomGameActions';
 import type { HighLandRoomState } from './roomState';
@@ -46,20 +47,23 @@ describe('room game actions', () => {
     const started = startRoomGameplay(makeRoom());
     const gameState = started.room.gameState;
     if (!gameState) throw new Error('Expected room game state.');
+    const hitIndex = actionSpaceIndexes[0];
     const roomAtHitApproach: HighLandRoomState = {
       ...started.room,
       gameState: {
         ...gameState,
-        players: gameState.players.map((player, index) => (index === 0 ? { ...player, positionIndex: 4 } : player))
+        players: gameState.players.map((player, index) => (
+          index === 0 ? { ...player, positionIndex: hitIndex - 1 } : player
+        ))
       }
     };
 
     const result = rollRoomGameplay(roomAtHitApproach, sequenceRandom([0, 0.999]));
 
     expect(result.events.map((event) => event.name)).toEqual(['dice_rolled', 'hit_card_drawn']);
-    expect(result.events[0].payload).toMatchObject({ roll: 1, fromIndex: 4, toIndex: 5 });
+    expect(result.events[0].payload).toMatchObject({ roll: 1, fromIndex: hitIndex - 1, toIndex: hitIndex });
     expect(result.events[1].payload).toMatchObject({ card: { id: 'card-030' } });
-    expect(result.room.gameState?.players[0].positionIndex).toBe(13);
+    expect(result.room.gameState?.players[0].positionIndex).toBe(hitIndex + 8);
   });
 
   it('creates a skip event instead of a dice event when a room player loses a turn', () => {

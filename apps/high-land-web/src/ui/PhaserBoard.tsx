@@ -13,13 +13,13 @@ export function PhaserBoard({ state }: PhaserBoardProps) {
 
   useEffect(() => {
     if (!containerRef.current || gameRef.current) return;
-    gameRef.current = createHighLandGame(containerRef.current);
+    gameRef.current = createHighLandGame(containerRef.current, state);
 
     return () => {
       gameRef.current?.destroy(true);
       gameRef.current = null;
     };
-  }, []);
+  }, []); // The scene receives later state through game-state-update.
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
