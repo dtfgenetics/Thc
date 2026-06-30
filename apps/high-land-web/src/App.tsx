@@ -243,40 +243,65 @@ export default function App() {
           />
         ) : null}
 
-        {screenMode === 'playing' ? (
-          <div className="controls-card">
-            {!room ? (
-              <div className="player-select" aria-label="Player count">
-                {playerOptions.map((count) => (
-                  <button
-                    className={count === playerCount ? 'selected' : ''}
-                    key={count}
-                    onClick={() => startGame(count)}
-                    type="button"
-                  >
-                    {count} Players
-                  </button>
-                ))}
+        {gameStarted ? (
+          <>
+            <div className="controls-card">
+              {!room ? (
+                <div className="player-select" aria-label="Player count">
+                  {playerOptions.map((count) => (
+                    <button
+                      className={count === playerCount ? 'selected' : ''}
+                      key={count}
+                      onClick={() => startGame(count)}
+                      type="button"
+                    >
+                      {count} Players
+                    </button>
+                  ))}
+                </div>
+              ) : null}
+
+              <div className="turn-box" style={{ borderColor: currentPlayer?.color ?? 'transparent' }}>
+                <span>{room ? `Room ${room.code}` : 'Current Turn'}</span>
+                <strong>{currentPlayer?.name ?? 'None'}</strong>
               </div>
-            ) : null}
 
-            <div className="turn-box" style={{ borderColor: currentPlayer?.color ?? 'transparent' }}>
-              <span>{room ? `Room ${room.code}` : 'Current Turn'}</span>
-              <strong>{currentPlayer?.name ?? 'None'}</strong>
+              <DiceDisplay value={gameState.lastRoll} />
+
+              <div className="button-row">
+                <button className="primary" disabled={!canRollNow || gameState.phase === 'game_over'} onClick={roll} type="button">
+                  Roll Dice
+                </button>
+                <button onClick={restart} type="button">Restart</button>
+                {!room ? <button onClick={save} type="button">Save</button> : null}
+                {!room ? <button onClick={load} type="button">Load</button> : null}
+                <button onClick={toggleMute} type="button">{muted ? 'Unmute' : 'Mute'}</button>
+              </div>
             </div>
 
-            <DiceDisplay value={gameState.lastRoll} />
+            <CardRevealModal card={gameState.lastCard} />
+            <DevPanel state={gameState} />
 
-            <div className="button-row">
-              <button className="primary" disabled={!canRollNow || gameState.phase === 'game_over'} onClick={roll} type="button">
-                Roll Dice
-              </button>
-              <button onClick={restart} type="button">Restart</button>
-              {!room ? <button onClick={save} type="button">Save</button> : null}
-              {!room ? <button onClick={load} type="button">Load</button> : null}
-              <button onClick={toggleMute} type="button">{muted ? 'Unmute' : 'Mute'}</button>
+            <div className="players-card">
+              {gameState.players.map((player) => (
+                <article
+                  className={`player-chip ${player.id === currentPlayer?.id ? 'active' : ''}`}
+                  key={player.id}
+                  style={{ borderColor: player.color }}
+                >
+                  <span className="token-dot" style={{ background: player.color }} />
+                  <div>
+                    <strong>{player.name}</strong>
+                    <p>
+                      Space {player.positionIndex + 1} of {approvedBoardSpaceCount}
+                      {player.skipTurns > 0 ? ` • Skip x${player.skipTurns}` : ''}
+                      {player.protectedFromBackward > 0 ? ` • Protected x${player.protectedFromBackward}` : ''}
+                    </p>
+                  </div>
+                </article>
+              ))}
             </div>
-          </div>
+          </>
         ) : null}
 
         <div className="message-card">
@@ -284,34 +309,14 @@ export default function App() {
           <p>{winner ? `${winner.name} wins!` : gameStarted ? gameState.message : statusMessage}</p>
         </div>
 
-        <CardRevealModal card={gameState.lastCard} />
         <GameRulesPanel />
-        <DevPanel state={gameState} />
-
-        <div className="players-card">
-          {gameState.players.map((player) => (
-            <article
-              className={`player-chip ${player.id === currentPlayer?.id ? 'active' : ''}`}
-              key={player.id}
-              style={{ borderColor: player.color }}
-            >
-              <span className="token-dot" style={{ background: player.color }} />
-              <div>
-                <strong>{player.name}</strong>
-                <p>
-                  Space {player.positionIndex + 1} of {approvedBoardSpaceCount}
-                  {player.skipTurns > 0 ? ` • Skip x${player.skipTurns}` : ''}
-                  {player.protectedFromBackward > 0 ? ` • Protected x${player.protectedFromBackward}` : ''}
-                </p>
-              </div>
-            </article>
-          ))}
-        </div>
       </section>
 
-      <section className="board-wrap" aria-label="Game board">
-        <PhaserBoard state={gameState} />
-      </section>
+      {gameStarted ? (
+        <section className="board-wrap" aria-label="Game board">
+          <PhaserBoard state={gameState} />
+        </section>
+      ) : null}
     </main>
   );
 }
