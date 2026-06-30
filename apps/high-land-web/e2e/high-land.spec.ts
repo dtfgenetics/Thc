@@ -1,7 +1,14 @@
 import { expect, test } from '@playwright/test';
 
+async function useSafeDiceRoll(page: Parameters<Parameters<typeof test>[1]>[0]['page']): Promise<void> {
+  await page.addInitScript(() => {
+    Math.random = () => 0;
+  });
+}
+
 test.describe('High Land browser game', () => {
   test('loads mode chooser, starts 10-player local game, and rolls', async ({ page }) => {
+    await useSafeDiceRoll(page);
     await page.goto('/games/high-land/');
 
     await expect(page.getByRole('heading', { name: 'High Land: The Sweet Escape' })).toBeVisible();
@@ -25,6 +32,7 @@ test.describe('High Land browser game', () => {
   });
 
   test('can create a local fallback room lobby, add test player, start, and roll', async ({ page }) => {
+    await useSafeDiceRoll(page);
     await page.goto('/games/high-land/');
 
     await page.getByRole('button', { name: 'Create Room' }).click();
@@ -74,9 +82,7 @@ test.describe('High Land browser game', () => {
   });
 
   test('mobile layout can start and restart a named game', async ({ page }) => {
-    await page.addInitScript(() => {
-      Math.random = () => 0;
-    });
+    await useSafeDiceRoll(page);
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/games/high-land/');
 
