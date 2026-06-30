@@ -74,6 +74,9 @@ test.describe('High Land browser game', () => {
   });
 
   test('mobile layout can start and restart a named game', async ({ page }) => {
+    await page.addInitScript(() => {
+      Math.random = () => 0;
+    });
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/games/high-land/');
 
@@ -82,6 +85,7 @@ test.describe('High Land browser game', () => {
     await page.getByLabel('Players').selectOption('4');
     await page.getByRole('button', { name: 'Start Game' }).click();
     await page.getByRole('button', { name: 'Roll Dice' }).click();
+    await expect(page.getByLabel(/Last roll/i)).toBeVisible();
     await page.getByRole('button', { name: 'Restart' }).click();
 
     await expect(page.getByText('Mobile Player, roll to begin.')).toBeVisible();
