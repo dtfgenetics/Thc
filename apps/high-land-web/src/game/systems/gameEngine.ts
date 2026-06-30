@@ -63,7 +63,7 @@ export function rollCurrentTurn(state: GameState, random: () => number = Math.ra
     };
   }
 
-  if (landedSpace.type === 'action') {
+  if (landedSpace.action === 'draw_hit_card') {
     const draw = drawActionCard(state.cardCursor, undefined, random);
     const stateAfterLanding: GameState = {
       ...state,
