@@ -6,33 +6,36 @@ type CardRevealModalProps = {
   onDismiss?: () => void;
 };
 
+const genericFallbackHitCard = 'assets/images/cards/hit/fallback-hit-card.svg';
+
 export function CardRevealModal({ card, onDismiss }: CardRevealModalProps) {
-  const [imageFailed, setImageFailed] = useState(false);
+  const [imageMode, setImageMode] = useState<'primary' | 'fallback' | 'missing'>('primary');
 
   useEffect(() => {
-    setImageFailed(false);
+    setImageMode('primary');
   }, [card?.id]);
 
   if (!card) return null;
 
-  const showMissingImageWarning = !card.imageSrc || imageFailed;
+  const imageSrc = imageMode === 'primary' ? card.imageSrc : imageMode === 'fallback' ? card.fallbackImageSrc ?? genericFallbackHitCard : null;
+  const approvedImageMissing = imageMode !== 'primary';
 
   return (
     <section className="card-reveal" aria-label="HIT card drawn" aria-modal="true" role="dialog">
       <div className="hit-card" role="document">
         <span className="hit-label">HIT CARD</span>
-        {card.imageSrc && !imageFailed ? (
+        {imageSrc ? (
           <img
             className="hit-card-art"
-            src={card.imageSrc}
+            src={imageSrc}
             alt={card.imageAlt ?? `${card.title} HIT card artwork`}
-            onError={() => setImageFailed(true)}
+            onError={() => setImageMode(imageMode === 'primary' ? 'fallback' : 'missing')}
           />
         ) : null}
-        {showMissingImageWarning ? (
+        {approvedImageMissing ? (
           <div className="hit-card-missing-art" role="note">
-            <strong>Card image missing</strong>
-            <span>{card.imageSrc ?? 'No image path set'}</span>
+            <strong>{imageMode === 'missing' ? 'Card image missing' : 'Showing fallback art'}</strong>
+            <span>{card.imageSrc ?? 'No approved image path set'}</span>
           </div>
         ) : null}
         <h2>{card.title}</h2>
