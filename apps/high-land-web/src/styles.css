@@ -305,6 +305,7 @@ h2 {
   padding: 1.2rem;
   background: rgba(2, 6, 23, 0.72);
   backdrop-filter: blur(8px);
+  animation: hitOverlayIn 180ms ease-out both;
 }
 
 .hit-card {
@@ -318,6 +319,8 @@ h2 {
     linear-gradient(135deg, #facc15, #fb7185 52%, #a855f7);
   box-shadow: 0 28px 110px rgba(0, 0, 0, 0.65);
   text-align: center;
+  transform-origin: center;
+  animation: hitCardPop 420ms cubic-bezier(0.18, 1.35, 0.32, 1) both, hitCardGlow 1300ms ease-in-out infinite alternate;
 }
 
 .hit-label {
@@ -360,6 +363,29 @@ h2 {
   margin-top: 1rem;
   color: #f8fafc;
   background: #111827;
+}
+
+@keyframes hitOverlayIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes hitCardPop {
+  0% { opacity: 0; transform: translateY(18px) scale(0.82) rotate(-2deg); }
+  70% { opacity: 1; transform: translateY(-4px) scale(1.04) rotate(1deg); }
+  100% { opacity: 1; transform: translateY(0) scale(1) rotate(0); }
+}
+
+@keyframes hitCardGlow {
+  from { box-shadow: 0 28px 110px rgba(0, 0, 0, 0.65), 0 0 0 rgba(250, 204, 21, 0); }
+  to { box-shadow: 0 28px 110px rgba(0, 0, 0, 0.65), 0 0 36px rgba(250, 204, 21, 0.62); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-reveal,
+  .hit-card {
+    animation: none;
+  }
 }
 
 @media (max-width: 900px) {
