@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { ActionCard } from '../game/types/gameTypes';
 
 type CardRevealModalProps = {
@@ -9,7 +9,13 @@ type CardRevealModalProps = {
 export function CardRevealModal({ card, onDismiss }: CardRevealModalProps) {
   const [imageFailed, setImageFailed] = useState(false);
 
+  useEffect(() => {
+    setImageFailed(false);
+  }, [card?.id]);
+
   if (!card) return null;
+
+  const showMissingImageWarning = !card.imageSrc || imageFailed;
 
   return (
     <section className="card-reveal" aria-label="HIT card drawn" aria-modal="true" role="dialog">
@@ -22,6 +28,12 @@ export function CardRevealModal({ card, onDismiss }: CardRevealModalProps) {
             alt={card.imageAlt ?? `${card.title} HIT card artwork`}
             onError={() => setImageFailed(true)}
           />
+        ) : null}
+        {showMissingImageWarning ? (
+          <div className="hit-card-missing-art" role="note">
+            <strong>Card image missing</strong>
+            <span>{card.imageSrc ?? 'No image path set'}</span>
+          </div>
         ) : null}
         <h2>{card.title}</h2>
         <p>{card.text}</p>
