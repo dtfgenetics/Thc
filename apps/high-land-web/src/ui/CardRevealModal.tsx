@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import type { ActionCard } from '../game/types/gameTypes';
 
 type CardRevealModalProps = {
@@ -6,12 +7,22 @@ type CardRevealModalProps = {
 };
 
 export function CardRevealModal({ card, onDismiss }: CardRevealModalProps) {
+  const [imageFailed, setImageFailed] = useState(false);
+
   if (!card) return null;
 
   return (
     <section className="card-reveal" aria-label="HIT card drawn" aria-modal="true" role="dialog">
       <div className="hit-card" role="document">
         <span className="hit-label">HIT CARD</span>
+        {card.imageSrc && !imageFailed ? (
+          <img
+            className="hit-card-art"
+            src={card.imageSrc}
+            alt={card.imageAlt ?? `${card.title} HIT card artwork`}
+            onError={() => setImageFailed(true)}
+          />
+        ) : null}
         <h2>{card.title}</h2>
         <p>{card.text}</p>
         <small>{describeEffect(card)}</small>
