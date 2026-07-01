@@ -24,7 +24,6 @@ import {
   setMuted as setAudioMuted,
   startBackgroundMusic
 } from './game/systems/audioSystem';
-import { clearSavedGameState, loadGameState, saveGameState } from './game/systems/storageSystem';
 import { maxPlayers, minPlayers } from './game/systems/playerSystem';
 import { canPlayerRoll } from './game/multiplayer/roomState';
 import type { HighLandRoomState } from './game/multiplayer/roomState';
@@ -42,6 +41,7 @@ export default function App() {
   const [inviteUrl, setInviteUrl] = useState('');
   const [gameState, setGameState] = useState(() => createNamedLocalGame(2, 'Player 1'));
   const [muted, setMuted] = useState(isMuted());
+  const [dismissedCardId, setDismissedCardId] = useState<string | null>(null);
   const [statusMessage, setStatusMessage] = useState(() =>
     initialInviteRoomCode ? `Invite detected for room ${initialInviteRoomCode}. Enter your player name to join.` : 'Choose local play, create a room, or join a room.'
   );
@@ -52,10 +52,12 @@ export default function App() {
     () => gameState.players.find((player) => player.id === gameState.winnerId),
     [gameState.players, gameState.winnerId]
   );
+  const visibleHitCard = gameState.lastCard && gameState.lastCard.id !== dismissedCardId ? gameState.lastCard : null;
   const canRollNow = !room || canPlayerRoll(room, localPlayerId);
 
   function handleSetupSubmit(setup: PlayerSetupSubmit): void {
     startBackgroundMusic();
+    setDismissedCardId(null);
 
     if (setup.mode === 'local') {
       beginLocalGame(setup.playerCount, setup.playerName);
@@ -65,7 +67,7 @@ export default function App() {
     if (setup.mode === 'create_room') {
       const result = createLocalRoomMode(setup.playerName, setup.playerCount);
       setRoomMode(result.room, result.localPlayerId, result.localPlayerName, result.inviteUrl, result.playerCount);
-      setStatusMessage(`Room ${result.room.code} created locally. Share the invite when Supabase sync is wired.`);
+      setStatusMessage(`Room ${result.room.code} created locally. Website-hosted rooms are being wired next.`);
       return;
     }
 
@@ -85,15 +87,16 @@ export default function App() {
     setLocalPlayerName(playerName);
     setRoom(null);
     setInviteUrl('');
+    setDismissedCardId(null);
     setGameState(createNamedLocalGame(count, playerName));
     setScreenMode('playing');
     setStatusMessage(`${playerName}, roll to begin.`);
-    clearSavedGameState();
   }
 
   async function startRoomGame(): Promise<void> {
     if (!room) return;
     startBackgroundMusic();
+    setDismissedCardId(null);
     const result = await startRoomRuntime(room, localPlayerId);
     setRoom(result.room);
     setPlayerCount(result.playerCount);
@@ -101,7 +104,6 @@ export default function App() {
     if (result.room.gameState) setGameState(result.room.gameState);
     setScreenMode('playing');
     setStatusMessage(result.message);
-    clearSavedGameState();
   }
 
   function addLocalTestPlayer(): void {
@@ -136,6 +138,7 @@ export default function App() {
 
   function startGame(count: number): void {
     startBackgroundMusic();
+    setDismissedCardId(null);
     const leadName = localPlayerName ?? 'Player 1';
     setPlayerCount(count);
     setRoom(null);
@@ -146,6 +149,7 @@ export default function App() {
 
   async function roll(): Promise<void> {
     if (!gameStarted || !canRollNow || gameState.phase === 'game_over' || gameState.phase === 'moving' || gameState.phase === 'resolving_card') return;
+    setDismissedCardId(null);
     playRollSound();
 
     if (room && room.status === 'playing') {
@@ -169,6 +173,7 @@ export default function App() {
   }
 
   async function restart(): Promise<void> {
+    setDismissedCardId(null);
     if (room) {
       const restartableRoom: HighLandRoomState = { ...room, status: 'waiting', gameState: null };
       const result = await startRoomRuntime(restartableRoom, localPlayerId);
@@ -177,31 +182,11 @@ export default function App() {
       setLocalPlayerName(result.leadPlayerName);
       if (result.room.gameState) setGameState(result.room.gameState);
       setStatusMessage(result.message);
-      clearSavedGameState();
       return;
     }
 
     const next = createNamedLocalGame(playerCount, localPlayerName ?? 'Player 1');
     setGameState(next);
-    clearSavedGameState();
-  }
-
-  function save(): void {
-    if (room) return;
-    saveGameState(gameState);
-  }
-
-  function load(): void {
-    if (room) return;
-    const saved = loadGameState();
-    if (!saved) return;
-    setRoom(null);
-    setInviteUrl('');
-    setPlayerCount(saved.players.length);
-    setLocalPlayerName(saved.players[0]?.name ?? null);
-    setGameState(saved);
-    setScreenMode('playing');
-    setStatusMessage('Saved game loaded.');
   }
 
   function toggleMute(): void {
@@ -224,12 +209,11 @@ export default function App() {
           <div className="controls-card">
             <p className="eyebrow">Choose Mode</p>
             <h2>Start High Land</h2>
-            <p className="subtitle">Local play works now. Room flow is a local fallback until Supabase sync is connected.</p>
+            <p className="subtitle">Local play works now. Website-hosted invite rooms are being wired as the free backend.</p>
             <div className="button-row">
               <button className="primary" onClick={() => setScreenMode('local')} type="button">Local Play</button>
               <button onClick={() => setScreenMode('create_room')} type="button">Create Room</button>
               <button onClick={() => setScreenMode('join_room')} type="button">Join Room</button>
-              <button onClick={load} type="button">Load Saved</button>
             </div>
           </div>
         ) : null}
@@ -255,78 +239,76 @@ export default function App() {
           />
         ) : null}
 
-        {gameStarted ? (
-          <>
-            <div className="controls-card">
-              {!room ? (
-                <div className="player-select" aria-label="Player count">
-                  {playerOptions.map((count) => (
-                    <button
-                      className={count === playerCount ? 'selected' : ''}
-                      key={count}
-                      onClick={() => startGame(count)}
-                      type="button"
-                    >
-                      {count} Players
-                    </button>
-                  ))}
-                </div>
-              ) : null}
-
-              <div className="turn-box" style={{ borderColor: currentPlayer?.color ?? 'transparent' }}>
-                <span>{room ? `Room ${room.code}` : 'Current Turn'}</span>
-                <strong>{currentPlayer?.name ?? 'None'}</strong>
-              </div>
-
-              <DiceDisplay value={gameState.lastRoll} />
-
-              <div className="button-row">
-                <button className="primary" disabled={!canRollNow || gameState.phase === 'game_over'} onClick={roll} type="button">
-                  Roll Dice
-                </button>
-                <button onClick={restart} type="button">Restart</button>
-                {!room ? <button onClick={save} type="button">Save</button> : null}
-                {!room ? <button onClick={load} type="button">Load</button> : null}
-                <button onClick={toggleMute} type="button">{muted ? 'Unmute' : 'Mute'}</button>
-              </div>
-            </div>
-
-            <CardRevealModal card={gameState.lastCard} />
-            <DevPanel state={gameState} />
-
-            <div className="players-card">
-              {gameState.players.map((player) => (
-                <article
-                  className={`player-chip ${player.id === currentPlayer?.id ? 'active' : ''}`}
-                  key={player.id}
-                  style={{ borderColor: player.color }}
-                >
-                  <span className="token-dot" style={{ background: player.color }} />
-                  <div>
-                    <strong>{player.name}</strong>
-                    <p>
-                      Space {player.positionIndex + 1} of {approvedBoardSpaceCount}
-                      {player.skipTurns > 0 ? ` • Skip x${player.skipTurns}` : ''}
-                      {player.protectedFromBackward > 0 ? ` • Protected x${player.protectedFromBackward}` : ''}
-                    </p>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </>
-        ) : null}
-
         <div className="message-card">
           <strong>Status</strong>
           <p>{winner ? `${winner.name} wins!` : gameStarted ? gameState.message : statusMessage}</p>
         </div>
 
+        {gameStarted ? (
+          <div className="players-card">
+            {gameState.players.map((player) => (
+              <article
+                className={`player-chip ${player.id === currentPlayer?.id ? 'active' : ''}`}
+                key={player.id}
+                style={{ borderColor: player.color }}
+              >
+                <span className="token-dot" style={{ background: player.color }} />
+                <div>
+                  <strong>{player.name}</strong>
+                  <p>
+                    Space {player.positionIndex + 1} of {approvedBoardSpaceCount}
+                    {player.skipTurns > 0 ? ` • Skip x${player.skipTurns}` : ''}
+                    {player.protectedFromBackward > 0 ? ` • Protected x${player.protectedFromBackward}` : ''}
+                  </p>
+                </div>
+              </article>
+            ))}
+          </div>
+        ) : null}
+
         <GameRulesPanel />
+        {gameStarted ? <DevPanel state={gameState} /> : null}
       </section>
 
       {gameStarted ? (
-        <section className="board-wrap" aria-label="Game board">
-          <PhaserBoard state={gameState} />
+        <section className="game-stage" aria-label="High Land game board and controls">
+          <div className="board-wrap" aria-label="Game board">
+            <PhaserBoard state={gameState} />
+          </div>
+
+          <div className="board-controls-card">
+            {!room ? (
+              <div className="player-select" aria-label="Player count">
+                {playerOptions.map((count) => (
+                  <button
+                    className={count === playerCount ? 'selected' : ''}
+                    key={count}
+                    onClick={() => startGame(count)}
+                    type="button"
+                  >
+                    {count} Players
+                  </button>
+                ))}
+              </div>
+            ) : null}
+
+            <div className="turn-box" style={{ borderColor: currentPlayer?.color ?? 'transparent' }}>
+              <span>{room ? `Room ${room.code}` : 'Current Turn'}</span>
+              <strong>{currentPlayer?.name ?? 'None'}</strong>
+            </div>
+
+            <DiceDisplay value={gameState.lastRoll} />
+
+            <div className="button-row board-button-row">
+              <button className="primary roll-button" disabled={!canRollNow || gameState.phase === 'game_over'} onClick={roll} type="button">
+                Roll Dice
+              </button>
+              <button onClick={restart} type="button">Restart</button>
+              <button onClick={toggleMute} type="button">{muted ? 'Unmute' : 'Mute'}</button>
+            </div>
+          </div>
+
+          <CardRevealModal card={visibleHitCard} onDismiss={() => setDismissedCardId(gameState.lastCard?.id ?? null)} />
         </section>
       ) : null}
     </main>
