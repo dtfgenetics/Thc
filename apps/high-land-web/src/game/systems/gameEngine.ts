@@ -14,6 +14,7 @@ export function createInitialGame(playerCount: number): GameState {
     turnDirection: 1,
     reverseTurnsRemaining: 0,
     lastRoll: null,
+    lastMove: null,
     lastCard: null,
     message: 'Game ready. Roll to begin.',
     winnerId: null,
@@ -39,12 +40,14 @@ export function rollCurrentTurn(state: GameState, random: () => number = Math.ra
       currentPlayerIndex: nextPlayerIndex(players, state.currentPlayerIndex, directionState.turnDirection),
       message: `${currentPlayer.name} skipped this turn.`,
       lastRoll: null,
+      lastMove: null,
       lastCard: null
     };
   }
 
   const result = rollDie(random);
   const move = calculateMove(currentPlayer.positionIndex, result, finishIndex);
+  const lastMove = { ...move, playerId: currentPlayer.id };
   const landedSpace = boardPath[move.toIndex];
 
   const players = state.players.map((player) =>
@@ -57,6 +60,7 @@ export function rollCurrentTurn(state: GameState, random: () => number = Math.ra
       players,
       phase: 'game_over',
       lastRoll: result,
+      lastMove,
       lastCard: null,
       winnerId: currentPlayer.id,
       message: `${currentPlayer.name} rolled ${result} and reached the finish.`
@@ -70,6 +74,7 @@ export function rollCurrentTurn(state: GameState, random: () => number = Math.ra
       players,
       phase: 'resolving_card',
       lastRoll: result,
+      lastMove,
       lastCard: draw.card,
       cardCursor: draw.nextCursor,
       message: `${currentPlayer.name} rolled ${result}, landed on HIT, and drew ${draw.card.title}.`
@@ -85,6 +90,7 @@ export function rollCurrentTurn(state: GameState, random: () => number = Math.ra
     players,
     phase: 'ready',
     lastRoll: result,
+    lastMove,
     lastCard: null,
     currentPlayerIndex: nextPlayerIndex(players, state.currentPlayerIndex, directionState.turnDirection),
     message: `${currentPlayer.name} rolled ${result} and moved to space ${updatedCurrentPlayer.positionIndex + 1}.`
