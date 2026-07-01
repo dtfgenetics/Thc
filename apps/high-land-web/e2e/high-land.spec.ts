@@ -9,9 +9,17 @@ function collectPageErrors(page: Page): string[] {
   return errors;
 }
 
+async function forceDiceRoll(page: Page, roll: 1 | 2 | 3 | 4 | 5 | 6): Promise<void> {
+  const randomValue = (roll - 1) / 6 + 0.01;
+  await page.addInitScript((value) => {
+    Math.random = () => value;
+  }, randomValue);
+}
+
 test.describe('High Land browser game', () => {
-  test('loads the approved board, starts 10-player local play, and rolls', async ({ page }) => {
+  test('loads the approved board, starts 10-player local play, and rolls from board controls', async ({ page }) => {
     const pageErrors = collectPageErrors(page);
+    await forceDiceRoll(page, 1);
     await page.goto('/games/high-land/');
 
     const boardResponse = await page.request.get('/games/high-land/assets/images/board/high-land-board.png');
@@ -33,18 +41,44 @@ test.describe('High Land browser game', () => {
     await expect(page.getByText('Current Turn')).toBeVisible();
     await expect(page.locator('.phaser-board canvas')).toBeVisible();
 
-    await page.getByRole('button', { name: 'Roll Dice' }).click();
+    const boardControls = page.locator('.board-controls-card');
+    await expect(boardControls.getByRole('button', { name: 'Roll Dice' })).toBeVisible();
+    await expect(page.locator('.game-stage .board-controls-card')).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Save' })).toHaveCount(0);
+    await expect(page.getByRole('button', { name: 'Load' })).toHaveCount(0);
+
+    await boardControls.getByRole('button', { name: 'Roll Dice' }).click();
 
     await expect(page.getByLabel(/Last roll/i)).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Restart' })).toBeVisible();
-    await page.getByRole('button', { name: 'Mute' }).click();
-    await expect(page.getByRole('button', { name: 'Unmute' })).toBeVisible();
-    await page.getByRole('button', { name: 'Unmute' }).click();
-    await expect(page.getByRole('button', { name: 'Mute' })).toBeVisible();
+    await expect(boardControls.getByRole('button', { name: 'Restart' })).toBeVisible();
+    await boardControls.getByRole('button', { name: 'Mute' }).click();
+    await expect(boardControls.getByRole('button', { name: 'Unmute' })).toBeVisible();
+    await boardControls.getByRole('button', { name: 'Unmute' }).click();
+    await expect(boardControls.getByRole('button', { name: 'Mute' })).toBeVisible();
     expect(pageErrors).toEqual([]);
   });
 
+  test('shows an animated HIT card popup when landing on a HIT space', async ({ page }) => {
+    await forceDiceRoll(page, 5);
+    await page.goto('/games/high-land/');
+
+    await page.getByRole('button', { name: 'Local Play' }).click();
+    await page.getByPlaceholder('Enter your player name').fill('Hit Tester');
+    await page.getByLabel('Players').selectOption('2');
+    await page.getByRole('button', { name: 'Start Game' }).click();
+
+    await page.locator('.board-controls-card').getByRole('button', { name: 'Roll Dice' }).click();
+
+    const hitDialog = page.getByRole('dialog', { name: 'HIT card drawn' });
+    await expect(hitDialog).toBeVisible();
+    await expect(hitDialog.getByText('HIT CARD')).toBeVisible();
+    await expect(hitDialog.getByRole('button', { name: 'Continue' })).toBeVisible();
+    await hitDialog.getByRole('button', { name: 'Continue' }).click();
+    await expect(hitDialog).toHaveCount(0);
+  });
+
   test('can create a local fallback room lobby, add test player, start, and roll', async ({ page }) => {
+    await forceDiceRoll(page, 1);
     await page.goto('/games/high-land/');
 
     await page.getByRole('button', { name: 'Create Room' }).click();
@@ -67,7 +101,7 @@ test.describe('High Land browser game', () => {
     await expect(page.getByRole('button', { name: 'Save' })).toHaveCount(0);
     await expect(page.getByRole('button', { name: 'Load' })).toHaveCount(0);
 
-    await page.getByRole('button', { name: 'Roll Dice' }).click();
+    await page.locator('.board-controls-card').getByRole('button', { name: 'Roll Dice' }).click();
     await expect(page.getByLabel(/Last roll/i)).toBeVisible();
   });
 
@@ -95,6 +129,7 @@ test.describe('High Land browser game', () => {
 
   test('mobile layout can start and restart a named game without overflow', async ({ page }) => {
     const pageErrors = collectPageErrors(page);
+    await forceDiceRoll(page, 1);
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/games/high-land/');
 
@@ -102,9 +137,9 @@ test.describe('High Land browser game', () => {
     await page.getByPlaceholder('Enter your player name').fill('Mobile Player');
     await page.getByLabel('Players').selectOption('4');
     await page.getByRole('button', { name: 'Start Game' }).click();
-    await page.getByRole('button', { name: 'Roll Dice' }).click();
+    await page.locator('.board-controls-card').getByRole('button', { name: 'Roll Dice' }).click();
     await expect(page.getByLabel(/Last roll/i)).toBeVisible();
-    await page.getByRole('button', { name: 'Restart' }).click();
+    await page.locator('.board-controls-card').getByRole('button', { name: 'Restart' }).click();
 
     await expect(page.getByText('Mobile Player, roll to begin.')).toBeVisible();
     const layout = await page.evaluate(() => ({
