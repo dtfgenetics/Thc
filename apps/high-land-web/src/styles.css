@@ -427,6 +427,25 @@ h2 {
   box-shadow: 0 16px 34px rgba(0, 0, 0, 0.25);
 }
 
+.hit-card-missing-art {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0 auto 0.8rem;
+  border: 3px dashed rgba(17, 24, 39, 0.78);
+  border-radius: 18px;
+  padding: 1rem;
+  color: #111827;
+  background: rgba(254, 226, 226, 0.9);
+  font-weight: 900;
+}
+
+.hit-card-missing-art span {
+  color: #7f1d1d;
+  font-family: monospace;
+  font-size: 0.82rem;
+  word-break: break-all;
+}
+
 .hit-card h2 {
   font-size: clamp(1.55rem, 5vw, 2.55rem);
   color: #111827;
