@@ -13,7 +13,7 @@ const THC_GAME_ROOM_CODE_LENGTH = 6;
 const THC_GAME_MAX_PLAYERS_DEFAULT = 10;
 const THC_GAME_ROOM_TTL_SECONDS = 86400;
 
-function api_send_json(array $payload, int $statusCode = 200): never
+function api_send_json(array $payload, int $statusCode = 200): void
 {
     http_response_code($statusCode);
     header('Content-Type: application/json; charset=utf-8');
@@ -40,7 +40,10 @@ function api_read_json_body(): array
     return $decoded;
 }
 
-function api_clean_string(mixed $value, int $maxLength = 80): string
+/**
+ * @param mixed $value
+ */
+function api_clean_string($value, int $maxLength = 80): string
 {
     $text = is_string($value) ? $value : '';
     $text = trim(preg_replace('/\s+/', ' ', $text) ?? '');
@@ -51,7 +54,10 @@ function api_clean_string(mixed $value, int $maxLength = 80): string
     return substr($text, 0, $maxLength);
 }
 
-function api_clean_slug(mixed $value, string $fallback = 'high-land'): string
+/**
+ * @param mixed $value
+ */
+function api_clean_slug($value, string $fallback = 'high-land'): string
 {
     $text = strtolower(api_clean_string($value, 60));
     $text = preg_replace('/[^a-z0-9-]/', '-', $text) ?? '';
@@ -59,7 +65,10 @@ function api_clean_slug(mixed $value, string $fallback = 'high-land'): string
     return $text !== '' ? $text : $fallback;
 }
 
-function api_clean_room_code(mixed $value): string
+/**
+ * @param mixed $value
+ */
+function api_clean_room_code($value): string
 {
     $text = strtoupper(api_clean_string($value, 16));
     return preg_replace('/[^A-Z0-9]/', '', $text) ?? '';
@@ -124,6 +133,7 @@ function api_new_player(array $data, int $index): array
         'token' => api_clean_string($data['token'] ?? 'token' . strtoupper(chr(65 + min($index, 25))), 20),
         'color' => api_clean_string($data['color'] ?? api_default_player_color($index), 20),
         'host' => (bool)($data['host'] ?? false),
+        'connected' => true,
         'joinedAt' => api_now()
     ];
 }
@@ -199,10 +209,9 @@ function api_create_room(array $data): array
         $path = api_room_path($code);
     } while (is_file($path));
 
-    $host = api_new_player([
-        ...$data,
-        'host' => true
-    ], 0);
+    $hostData = $data;
+    $hostData['host'] = true;
+    $host = api_new_player($hostData, 0);
 
     return api_write_room([
         'apiVersion' => THC_GAME_API_VERSION,
