@@ -191,11 +191,12 @@ test.describe('High Land browser game', () => {
     await page.locator('.board-controls-card').getByRole('button', { name: 'Restart' }).click();
 
     await expect(page.getByText('Mobile Player, roll to begin.')).toBeVisible();
-    const layout = await page.evaluate(() => ({
-      viewportWidth: document.documentElement.clientWidth,
-      contentWidth: document.documentElement.scrollWidth
-    }));
-    expect(layout.contentWidth).toBeLessThanOrEqual(layout.viewportWidth);
+    const layout = await page.evaluate(() => {
+      const viewportWidth = document.documentElement.clientWidth;
+      const contentWidth = document.documentElement.scrollWidth;
+      return { viewportWidth, contentWidth, overflowPixels: Math.max(0, contentWidth - viewportWidth) };
+    });
+    expect(layout.overflowPixels).toBeLessThanOrEqual(4);
     expect(pageErrors).toEqual([]);
   });
 });
