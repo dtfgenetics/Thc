@@ -21,7 +21,7 @@ const supportedEffectTypes = new Set<ActionCard['effect']['type']>([
 ]);
 
 describe('High Land HIT card deck', () => {
-  it('has unique cards with complete visible content', () => {
+  it('has unique cards with complete visible content and artwork paths', () => {
     expect(starterActionCards.length).toBeGreaterThanOrEqual(30);
 
     const ids = new Set<string>();
@@ -31,6 +31,8 @@ describe('High Land HIT card deck', () => {
       expect(card.id).toMatch(/^card-\d{3}$/);
       expect(card.title.trim().length).toBeGreaterThan(2);
       expect(card.text.trim().length).toBeGreaterThan(6);
+      expect(card.imageSrc).toBe(`assets/images/cards/hit/${card.id}.png`);
+      expect(card.imageAlt).toContain(card.title);
       expect(ids.has(card.id)).toBe(false);
       expect(titles.has(card.title)).toBe(false);
       ids.add(card.id);
