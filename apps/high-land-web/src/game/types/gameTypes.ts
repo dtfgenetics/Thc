@@ -18,7 +18,7 @@ export type BoardSpace = {
   /** Center point where player tokens move. */
   x: number;
   y: number;
-  /** Actual playable square boundary on the 800x900 board canvas. */
+  /** Actual playable square boundary on the 1280x960 board canvas. */
   bounds: BoardSpaceBounds;
   color: SpaceColor;
   type: BoardSpaceType;

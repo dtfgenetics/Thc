@@ -16,7 +16,14 @@ import { approvedBoardSpaceCount } from './game/data/boardPath';
 import { rollCurrentTurn } from './game/systems/gameEngine';
 import { createNamedLocalGame } from './game/multiplayer/roomGameFactory';
 import { parseInviteLink } from './game/multiplayer/inviteLinks';
-import { isMuted, playCardSound, playRollSound, playWinSound, setMuted as setAudioMuted } from './game/systems/audioSystem';
+import {
+  isMuted,
+  playCardSound,
+  playRollSound,
+  playWinSound,
+  setMuted as setAudioMuted,
+  startBackgroundMusic
+} from './game/systems/audioSystem';
 import { clearSavedGameState, loadGameState, saveGameState } from './game/systems/storageSystem';
 import { maxPlayers, minPlayers } from './game/systems/playerSystem';
 import { canPlayerRoll } from './game/multiplayer/roomState';
@@ -48,6 +55,8 @@ export default function App() {
   const canRollNow = !room || canPlayerRoll(room, localPlayerId);
 
   function handleSetupSubmit(setup: PlayerSetupSubmit): void {
+    startBackgroundMusic();
+
     if (setup.mode === 'local') {
       beginLocalGame(setup.playerCount, setup.playerName);
       return;
@@ -84,6 +93,7 @@ export default function App() {
 
   async function startRoomGame(): Promise<void> {
     if (!room) return;
+    startBackgroundMusic();
     const result = await startRoomRuntime(room, localPlayerId);
     setRoom(result.room);
     setPlayerCount(result.playerCount);
@@ -125,6 +135,7 @@ export default function App() {
   }
 
   function startGame(count: number): void {
+    startBackgroundMusic();
     const leadName = localPlayerName ?? 'Player 1';
     setPlayerCount(count);
     setRoom(null);
@@ -197,6 +208,7 @@ export default function App() {
     const nextMuted = !muted;
     setAudioMuted(nextMuted);
     setMuted(nextMuted);
+    if (!nextMuted) startBackgroundMusic();
   }
 
   return (

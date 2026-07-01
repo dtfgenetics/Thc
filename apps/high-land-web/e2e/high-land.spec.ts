@@ -1,15 +1,22 @@
 import { expect, test, type Page } from '@playwright/test';
 
-async function useSafeDiceRoll(page: Page): Promise<void> {
-  await page.addInitScript(() => {
-    Math.random = () => 0;
+function collectPageErrors(page: Page): string[] {
+  const errors: string[] = [];
+  page.on('pageerror', (error) => errors.push(error.message));
+  page.on('console', (message) => {
+    if (message.type() === 'error') errors.push(message.text());
   });
+  return errors;
 }
 
 test.describe('High Land browser game', () => {
-  test('loads mode chooser, starts 10-player local game, and rolls', async ({ page }) => {
-    await useSafeDiceRoll(page);
+  test('loads the approved board, starts 10-player local play, and rolls', async ({ page }) => {
+    const pageErrors = collectPageErrors(page);
     await page.goto('/games/high-land/');
+
+    const boardResponse = await page.request.get('/games/high-land/assets/images/board/high-land-board.png');
+    expect(boardResponse.ok()).toBe(true);
+    expect(boardResponse.headers()['content-type']).toContain('image/png');
 
     await expect(page.getByRole('heading', { name: 'High Land: The Sweet Escape' })).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Start High Land' })).toBeVisible();
@@ -24,15 +31,20 @@ test.describe('High Land browser game', () => {
     await expect(page.getByText('Blaze Runner').first()).toBeVisible();
     await expect(page.getByText('Player 10')).toBeVisible();
     await expect(page.getByText('Current Turn')).toBeVisible();
+    await expect(page.locator('.phaser-board canvas')).toBeVisible();
 
     await page.getByRole('button', { name: 'Roll Dice' }).click();
 
     await expect(page.getByLabel(/Last roll/i)).toBeVisible();
     await expect(page.getByRole('button', { name: 'Restart' })).toBeVisible();
+    await page.getByRole('button', { name: 'Mute' }).click();
+    await expect(page.getByRole('button', { name: 'Unmute' })).toBeVisible();
+    await page.getByRole('button', { name: 'Unmute' }).click();
+    await expect(page.getByRole('button', { name: 'Mute' })).toBeVisible();
+    expect(pageErrors).toEqual([]);
   });
 
   test('can create a local fallback room lobby, add test player, start, and roll', async ({ page }) => {
-    await useSafeDiceRoll(page);
     await page.goto('/games/high-land/');
 
     await page.getByRole('button', { name: 'Create Room' }).click();
@@ -81,8 +93,8 @@ test.describe('High Land browser game', () => {
     await expect(page.getByText('Invite Guest').first()).toBeVisible();
   });
 
-  test('mobile layout can start and restart a named game', async ({ page }) => {
-    await useSafeDiceRoll(page);
+  test('mobile layout can start and restart a named game without overflow', async ({ page }) => {
+    const pageErrors = collectPageErrors(page);
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/games/high-land/');
 
@@ -95,5 +107,11 @@ test.describe('High Land browser game', () => {
     await page.getByRole('button', { name: 'Restart' }).click();
 
     await expect(page.getByText('Mobile Player, roll to begin.')).toBeVisible();
+    const layout = await page.evaluate(() => ({
+      viewportWidth: document.documentElement.clientWidth,
+      contentWidth: document.documentElement.scrollWidth
+    }));
+    expect(layout.contentWidth).toBeLessThanOrEqual(layout.viewportWidth);
+    expect(pageErrors).toEqual([]);
   });
 });

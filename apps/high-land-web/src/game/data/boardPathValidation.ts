@@ -1,8 +1,8 @@
 import type { BoardSpace } from '../types/gameTypes';
-import { approvedBoardSpaceCount, approvedHitSpaceCount } from './boardPath';
+import { approvedBoardSpaceCount, approvedHitSpaceCount, boardHeight, boardWidth } from './boardPath';
 
-export const boardCanvasWidth = 800;
-export const boardCanvasHeight = 900;
+export const boardCanvasWidth = boardWidth;
+export const boardCanvasHeight = boardHeight;
 
 export function validateBoardPath(path: BoardSpace[]): string[] {
   const errors: string[] = [];
