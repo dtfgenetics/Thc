@@ -70,6 +70,8 @@ export type ActionCard = {
   text: string;
   /** Public asset path for the approved visual HIT card image. */
   imageSrc?: string;
+  /** Public asset path used only when the approved image is not uploaded yet. */
+  fallbackImageSrc?: string;
   imageAlt?: string;
   effect: ActionCardEffect;
 };
