@@ -2,18 +2,24 @@ import type { ActionCard } from '../game/types/gameTypes';
 
 type CardRevealModalProps = {
   card: ActionCard | null;
+  onDismiss?: () => void;
 };
 
-export function CardRevealModal({ card }: CardRevealModalProps) {
+export function CardRevealModal({ card, onDismiss }: CardRevealModalProps) {
   if (!card) return null;
 
   return (
-    <section className="card-reveal" aria-live="polite">
-      <div className="hit-card">
+    <section className="card-reveal" aria-label="HIT card drawn" aria-modal="true" role="dialog">
+      <div className="hit-card" role="document">
         <span className="hit-label">HIT CARD</span>
         <h2>{card.title}</h2>
         <p>{card.text}</p>
         <small>{describeEffect(card)}</small>
+        {onDismiss ? (
+          <button className="hit-card-close" onClick={onDismiss} type="button">
+            Continue
+          </button>
+        ) : null}
       </div>
     </section>
   );
