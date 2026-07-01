@@ -68,6 +68,9 @@ export type ActionCard = {
   id: string;
   title: string;
   text: string;
+  /** Public asset path for the approved visual HIT card image. */
+  imageSrc?: string;
+  imageAlt?: string;
   effect: ActionCardEffect;
 };
 
