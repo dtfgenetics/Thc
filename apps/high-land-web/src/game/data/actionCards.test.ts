@@ -32,6 +32,7 @@ describe('High Land HIT card deck', () => {
       expect(card.title.trim().length).toBeGreaterThan(2);
       expect(card.text.trim().length).toBeGreaterThan(6);
       expect(card.imageSrc).toBe(`assets/images/cards/hit/${card.id}.png`);
+      expect(card.fallbackImageSrc).toBe('assets/images/cards/hit/fallback-hit-card.svg');
       expect(card.imageAlt).toContain(card.title);
       expect(ids.has(card.id)).toBe(false);
       expect(titles.has(card.title)).toBe(false);
