@@ -39,6 +39,14 @@ test.describe('High Land browser game', () => {
     const boardResponse = await page.request.get('/games/high-land/assets/images/board/high-land-board.png');
     expect(boardResponse.ok()).toBe(true);
     expect(boardResponse.headers()['content-type']).toContain('image/png');
+    const boardImageStatus = await page.evaluate(async () => {
+      const image = new Image();
+      image.src = '/games/high-land/assets/images/board/high-land-board.png';
+      await image.decode();
+      return { width: image.naturalWidth, height: image.naturalHeight };
+    });
+    expect(boardImageStatus.width).toBeGreaterThan(0);
+    expect(boardImageStatus.height).toBeGreaterThan(0);
 
     await expect(page.getByRole('heading', { name: 'High Land: The Sweet Escape' })).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Start High Land' })).toBeVisible();
