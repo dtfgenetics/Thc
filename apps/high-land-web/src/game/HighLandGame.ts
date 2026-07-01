@@ -4,7 +4,7 @@ import type { GameState } from './types/gameTypes';
 
 export function createHighLandGame(parent: HTMLElement, initialState: GameState): Phaser.Game {
   return new Phaser.Game({
-    type: Phaser.AUTO,
+    type: window.matchMedia('(max-width: 720px)').matches ? Phaser.CANVAS : Phaser.AUTO,
     parent,
     width: 1280,
     height: 960,
