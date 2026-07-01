@@ -5,15 +5,15 @@ export type TokenOffset = {
 
 const offsetsByPlayerCount: Record<number, TokenOffset[]> = {
   1: [{ x: 0, y: 0 }],
-  2: [{ x: -8, y: 0 }, { x: 8, y: 0 }],
-  3: [{ x: 0, y: -7 }, { x: -8, y: 6 }, { x: 8, y: 6 }],
-  4: [{ x: -7, y: -6 }, { x: 7, y: -6 }, { x: -7, y: 6 }, { x: 7, y: 6 }],
-  5: [{ x: -9, y: -6 }, { x: 0, y: -6 }, { x: 9, y: -6 }, { x: -5, y: 6 }, { x: 5, y: 6 }],
-  6: [{ x: -9, y: -6 }, { x: 0, y: -6 }, { x: 9, y: -6 }, { x: -9, y: 6 }, { x: 0, y: 6 }, { x: 9, y: 6 }],
-  7: [{ x: -12, y: -6 }, { x: -6, y: -6 }, { x: 0, y: -6 }, { x: 6, y: -6 }, { x: 12, y: -6 }, { x: -4, y: 6 }, { x: 4, y: 6 }],
-  8: [{ x: -12, y: -6 }, { x: -4, y: -6 }, { x: 4, y: -6 }, { x: 12, y: -6 }, { x: -12, y: 6 }, { x: -4, y: 6 }, { x: 4, y: 6 }, { x: 12, y: 6 }],
-  9: [{ x: -12, y: -6 }, { x: -6, y: -6 }, { x: 0, y: -6 }, { x: 6, y: -6 }, { x: 12, y: -6 }, { x: -9, y: 6 }, { x: -3, y: 6 }, { x: 3, y: 6 }, { x: 9, y: 6 }],
-  10: [{ x: -12, y: -6 }, { x: -6, y: -6 }, { x: 0, y: -6 }, { x: 6, y: -6 }, { x: 12, y: -6 }, { x: -12, y: 6 }, { x: -6, y: 6 }, { x: 0, y: 6 }, { x: 6, y: 6 }, { x: 12, y: 6 }]
+  2: [{ x: -6, y: 0 }, { x: 6, y: 0 }],
+  3: [{ x: 0, y: -5 }, { x: -6, y: 5 }, { x: 6, y: 5 }],
+  4: [{ x: -5, y: -5 }, { x: 5, y: -5 }, { x: -5, y: 5 }, { x: 5, y: 5 }],
+  5: [{ x: -7, y: -5 }, { x: 0, y: -5 }, { x: 7, y: -5 }, { x: -4, y: 5 }, { x: 4, y: 5 }],
+  6: [{ x: -7, y: -5 }, { x: 0, y: -5 }, { x: 7, y: -5 }, { x: -7, y: 5 }, { x: 0, y: 5 }, { x: 7, y: 5 }],
+  7: [{ x: -9, y: -5 }, { x: -4, y: -5 }, { x: 0, y: -5 }, { x: 4, y: -5 }, { x: 9, y: -5 }, { x: -3, y: 5 }, { x: 3, y: 5 }],
+  8: [{ x: -9, y: -5 }, { x: -3, y: -5 }, { x: 3, y: -5 }, { x: 9, y: -5 }, { x: -9, y: 5 }, { x: -3, y: 5 }, { x: 3, y: 5 }, { x: 9, y: 5 }],
+  9: [{ x: -9, y: -5 }, { x: -4, y: -5 }, { x: 0, y: -5 }, { x: 4, y: -5 }, { x: 9, y: -5 }, { x: -6, y: 5 }, { x: 0, y: 5 }, { x: 6, y: 5 }, { x: 10, y: 5 }],
+  10: [{ x: -9, y: -5 }, { x: -4, y: -5 }, { x: 0, y: -5 }, { x: 4, y: -5 }, { x: 9, y: -5 }, { x: -9, y: 5 }, { x: -4, y: 5 }, { x: 0, y: 5 }, { x: 4, y: 5 }, { x: 9, y: 5 }]
 };
 
 export function getTokenOffset(playerIndex: number, playerCount: number): TokenOffset {
@@ -23,10 +23,10 @@ export function getTokenOffset(playerIndex: number, playerCount: number): TokenO
 }
 
 export function getTokenRadius(playerCount: number): number {
-  if (playerCount <= 2) return 8;
-  if (playerCount <= 4) return 7;
-  if (playerCount <= 6) return 6;
-  return 5;
+  if (playerCount <= 2) return 7;
+  if (playerCount <= 4) return 6;
+  if (playerCount <= 6) return 5;
+  return 4;
 }
 
 export function getMoveDuration(playerCount: number): number {
