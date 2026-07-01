@@ -102,7 +102,7 @@ export class BoardScene extends Phaser.Scene {
 
   private renderGameState(state: GameState): void {
     this.removeStalePlayers(state.players);
-    state.players.forEach((player, index) => this.renderPlayer(player, index, state.players.length));
+    state.players.forEach((player, index) => this.renderPlayer(player, index, state.players.length, state));
   }
 
   private removeStalePlayers(players: Player[]): void {
@@ -122,7 +122,7 @@ export class BoardScene extends Phaser.Scene {
     });
   }
 
-  private renderPlayer(player: Player, playerIndex: number, playerCount: number): void {
+  private renderPlayer(player: Player, playerIndex: number, playerCount: number, state: GameState): void {
     const currentSpace = boardPath[player.positionIndex] ?? boardPath[0];
     const offset = getTokenOffset(playerIndex, playerCount);
     const radius = getTokenRadius(playerCount);
@@ -155,7 +155,7 @@ export class BoardScene extends Phaser.Scene {
 
     const fromIndex = this.lastPositions.get(player.id) ?? player.positionIndex;
     this.lastPositions.set(player.id, player.positionIndex);
-    const targets = buildPathIndexes(fromIndex, player.positionIndex).map((index) => {
+    const targets = buildAnimationPath(player.id, fromIndex, player.positionIndex, state).map((index) => {
       const space = boardPath[index] ?? currentSpace;
       return getTokenTarget(space, offset.x, offset.y, radius);
     });
@@ -197,11 +197,22 @@ function showCalibrationMode(): boolean {
 }
 
 function getTokenTarget(space: BoardSpace, offsetX: number, offsetY: number, radius: number): Point {
-  const padding = radius + 1;
+  const padding = radius + 2;
   return {
     x: Phaser.Math.Clamp(space.x + offsetX, space.bounds.x + padding, space.bounds.x + space.bounds.width - padding),
     y: Phaser.Math.Clamp(space.y + offsetY, space.bounds.y + padding, space.bounds.y + space.bounds.height - padding)
   };
+}
+
+function buildAnimationPath(playerId: string, fromIndex: number, finalIndex: number, state: GameState): number[] {
+  const lastMove = state.lastMove;
+  if (lastMove?.playerId !== playerId || lastMove.fromIndex !== fromIndex) {
+    return buildPathIndexes(fromIndex, finalIndex);
+  }
+
+  const dicePath = lastMove.traversedIndexes;
+  if (lastMove.toIndex === finalIndex) return dicePath;
+  return [...dicePath, ...buildPathIndexes(lastMove.toIndex, finalIndex)];
 }
 
 function buildPathIndexes(fromIndex: number, toIndex: number): number[] {
