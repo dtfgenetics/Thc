@@ -12,6 +12,7 @@ import {
   joinLocalRoomMode
 } from './app/highLandRoomModeService';
 import { rollRoomRuntime, startRoomRuntime } from './app/highLandRoomRuntime';
+import { starterActionCards } from './game/data/actionCards';
 import { approvedBoardSpaceCount } from './game/data/boardPath';
 import { rollCurrentTurn } from './game/systems/gameEngine';
 import { createNamedLocalGame } from './game/multiplayer/roomGameFactory';
@@ -42,6 +43,8 @@ export default function App() {
   const [gameState, setGameState] = useState(() => createNamedLocalGame(2, 'Player 1'));
   const [muted, setMuted] = useState(isMuted());
   const [dismissedCardId, setDismissedCardId] = useState<string | null>(null);
+  const [previewCardIndex, setPreviewCardIndex] = useState<number | null>(null);
+  const [cardAnimationNonce, setCardAnimationNonce] = useState(0);
   const [statusMessage, setStatusMessage] = useState(() =>
     initialInviteRoomCode ? `Invite detected for room ${initialInviteRoomCode}. Enter your player name to join.` : 'Choose local play, create a room, or join a room.'
   );
@@ -52,12 +55,15 @@ export default function App() {
     () => gameState.players.find((player) => player.id === gameState.winnerId),
     [gameState.players, gameState.winnerId]
   );
-  const visibleHitCard = gameState.lastCard && gameState.lastCard.id !== dismissedCardId ? gameState.lastCard : null;
+  const previewHitCard = previewCardIndex === null ? null : starterActionCards[previewCardIndex] ?? null;
+  const liveHitCard = gameState.lastCard && gameState.lastCard.id !== dismissedCardId ? gameState.lastCard : null;
+  const visibleHitCard = previewHitCard ?? liveHitCard;
   const canRollNow = !room || canPlayerRoll(room, localPlayerId);
 
   function handleSetupSubmit(setup: PlayerSetupSubmit): void {
     startBackgroundMusic();
     setDismissedCardId(null);
+    setPreviewCardIndex(null);
 
     if (setup.mode === 'local') {
       beginLocalGame(setup.playerCount, setup.playerName);
@@ -88,6 +94,7 @@ export default function App() {
     setRoom(null);
     setInviteUrl('');
     setDismissedCardId(null);
+    setPreviewCardIndex(null);
     setGameState(createNamedLocalGame(count, playerName));
     setScreenMode('playing');
     setStatusMessage(`${playerName}, roll to begin.`);
@@ -97,6 +104,7 @@ export default function App() {
     if (!room) return;
     startBackgroundMusic();
     setDismissedCardId(null);
+    setPreviewCardIndex(null);
     const result = await startRoomRuntime(room, localPlayerId);
     setRoom(result.room);
     setPlayerCount(result.playerCount);
@@ -139,6 +147,7 @@ export default function App() {
   function startGame(count: number): void {
     startBackgroundMusic();
     setDismissedCardId(null);
+    setPreviewCardIndex(null);
     const leadName = localPlayerName ?? 'Player 1';
     setPlayerCount(count);
     setRoom(null);
@@ -150,6 +159,7 @@ export default function App() {
   async function roll(): Promise<void> {
     if (!gameStarted || !canRollNow || gameState.phase === 'game_over' || gameState.phase === 'moving' || gameState.phase === 'resolving_card') return;
     setDismissedCardId(null);
+    setPreviewCardIndex(null);
     playRollSound();
 
     if (room && room.status === 'playing') {
@@ -174,6 +184,7 @@ export default function App() {
 
   async function restart(): Promise<void> {
     setDismissedCardId(null);
+    setPreviewCardIndex(null);
     if (room) {
       const restartableRoom: HighLandRoomState = { ...room, status: 'waiting', gameState: null };
       const result = await startRoomRuntime(restartableRoom, localPlayerId);
@@ -187,6 +198,22 @@ export default function App() {
 
     const next = createNamedLocalGame(playerCount, localPlayerName ?? 'Player 1');
     setGameState(next);
+  }
+
+  function previewHitAnimation(): void {
+    const nextIndex = previewCardIndex === null ? 0 : (previewCardIndex + 1) % starterActionCards.length;
+    setDismissedCardId(null);
+    setPreviewCardIndex(nextIndex);
+    setCardAnimationNonce((value) => value + 1);
+    playCardSound();
+  }
+
+  function dismissHitCard(): void {
+    if (previewCardIndex !== null) {
+      setPreviewCardIndex(null);
+      return;
+    }
+    setDismissedCardId(gameState.lastCard?.id ?? null);
   }
 
   function toggleMute(): void {
@@ -214,6 +241,7 @@ export default function App() {
               <button className="primary" onClick={() => setScreenMode('local')} type="button">Local Play</button>
               <button onClick={() => setScreenMode('create_room')} type="button">Create Room</button>
               <button onClick={() => setScreenMode('join_room')} type="button">Join Room</button>
+              <button onClick={previewHitAnimation} type="button">Preview HIT Animation</button>
             </div>
           </div>
         ) : null}
@@ -303,14 +331,19 @@ export default function App() {
               <button className="primary roll-button" disabled={!canRollNow || gameState.phase === 'game_over'} onClick={roll} type="button">
                 Roll Dice
               </button>
+              <button onClick={previewHitAnimation} type="button">Preview HIT Animation</button>
               <button onClick={restart} type="button">Restart</button>
               <button onClick={toggleMute} type="button">{muted ? 'Unmute' : 'Mute'}</button>
             </div>
           </div>
-
-          <CardRevealModal card={visibleHitCard} onDismiss={() => setDismissedCardId(gameState.lastCard?.id ?? null)} />
         </section>
       ) : null}
+
+      <CardRevealModal
+        key={visibleHitCard ? `${visibleHitCard.id}-${cardAnimationNonce}` : 'no-hit-card'}
+        card={visibleHitCard}
+        onDismiss={dismissHitCard}
+      />
     </main>
   );
 }
