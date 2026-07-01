@@ -11,6 +11,7 @@ export class BoardScene extends Phaser.Scene {
   private pieces = new Map<string, Phaser.GameObjects.Arc>();
   private labels = new Map<string, Phaser.GameObjects.Text>();
   private lastPositions = new Map<string, number>();
+  private calibrationText?: Phaser.GameObjects.Text;
 
   constructor() {
     super('BoardScene');
@@ -38,6 +39,7 @@ export class BoardScene extends Phaser.Scene {
     }
 
     if (showDebugSpaces()) this.drawSpaceMarkers();
+    if (showCalibrationMode()) this.enableCalibrationMode();
 
     if (typeof window !== 'undefined') {
       window.addEventListener('game-state-update', this.handleStateUpdate as EventListener);
@@ -66,15 +68,35 @@ export class BoardScene extends Phaser.Scene {
     boardPath.forEach((space) => {
       graphics.lineStyle(space.type === 'action' ? 3 : 1, 0xffffff, space.type === 'action' ? 0.9 : 0.45);
       graphics.strokeRect(space.bounds.x, space.bounds.y, space.bounds.width, space.bounds.height);
-      if (space.label) {
-        this.add.text(space.x, space.y, space.label, {
-          fontFamily: 'Arial',
-          fontSize: space.type === 'action' ? '10px' : '9px',
-          color: '#ffffff',
-          stroke: '#000000',
-          strokeThickness: 3
-        }).setOrigin(0.5).setDepth(6);
+      this.add.text(space.x, space.y, space.label ?? String(space.index + 1), {
+        fontFamily: 'Arial',
+        fontSize: space.type === 'action' ? '10px' : '8px',
+        color: space.type === 'action' ? '#facc15' : '#ffffff',
+        stroke: '#000000',
+        strokeThickness: 3
+      }).setOrigin(0.5).setDepth(6);
+    });
+  }
+
+  private enableCalibrationMode(): void {
+    this.calibrationText = this.add.text(12, boardHeight - 48, 'calibratePath: click a board square to copy x/y', {
+      fontFamily: 'monospace',
+      fontSize: '14px',
+      color: '#ffffff',
+      backgroundColor: '#111827',
+      padding: { x: 10, y: 8 }
+    }).setDepth(50);
+
+    this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+      const x = Math.round(pointer.worldX);
+      const y = Math.round(pointer.worldY);
+      const nearest = nearestBoardSpace(x, y);
+      const text = `{ x: ${x}, y: ${y} } nearest space ${nearest.index + 1} (${Math.round(nearest.distance)}px)`;
+      this.calibrationText?.setText(text);
+      if (typeof navigator !== 'undefined' && navigator.clipboard) {
+        navigator.clipboard.writeText(`{ x: ${x}, y: ${y} }`).catch(() => undefined);
       }
+      if (typeof console !== 'undefined') console.info(`[High Land calibration] ${text}`);
     });
   }
 
@@ -170,6 +192,10 @@ function showDebugSpaces(): boolean {
   return typeof window !== 'undefined' && (import.meta.env.DEV || new URLSearchParams(window.location.search).has('debugPath'));
 }
 
+function showCalibrationMode(): boolean {
+  return typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('calibratePath');
+}
+
 function getTokenTarget(space: BoardSpace, offsetX: number, offsetY: number, radius: number): Point {
   const padding = radius + 1;
   return {
@@ -186,4 +212,14 @@ function buildPathIndexes(fromIndex: number, toIndex: number): number[] {
     indexes.push(index);
   }
   return indexes;
+}
+
+function nearestBoardSpace(x: number, y: number): { index: number; distance: number } {
+  return boardPath.reduce(
+    (nearest, space) => {
+      const distance = Math.hypot(space.x - x, space.y - y);
+      return distance < nearest.distance ? { index: space.index, distance } : nearest;
+    },
+    { index: 0, distance: Number.POSITIVE_INFINITY }
+  );
 }
