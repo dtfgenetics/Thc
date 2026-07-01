@@ -279,9 +279,9 @@ h2 {
 }
 
 .phaser-board {
-  width: min(100%, 82vh);
-  max-width: 900px;
-  aspect-ratio: 8 / 9;
+  width: min(100%, 109vh);
+  max-width: 1280px;
+  aspect-ratio: 4 / 3;
   display: grid;
   place-items: center;
 }
@@ -398,7 +398,7 @@ h2 {
   }
 
   .phaser-board {
-    width: min(100%, 72vh);
+    width: min(100%, 96vw);
   }
 
   .players-card {
