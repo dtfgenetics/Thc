@@ -13,7 +13,7 @@ import {
 } from './app/highLandRoomModeService';
 import { rollRoomRuntime, startRoomRuntime } from './app/highLandRoomRuntime';
 import { starterActionCards } from './game/data/actionCards';
-import { approvedBoardSpaceCount } from './game/data/boardPath';
+import { approvedBoardSpaceCount, boardPath } from './game/data/boardPath';
 import { rollCurrentTurn } from './game/systems/gameEngine';
 import { createNamedLocalGame } from './game/multiplayer/roomGameFactory';
 import { parseInviteLink } from './game/multiplayer/inviteLinks';
@@ -54,6 +54,7 @@ export default function App() {
 
   const gameStarted = screenMode === 'playing';
   const currentPlayer = gameState.players[gameState.currentPlayerIndex];
+  const currentSpace = currentPlayer ? boardPath[currentPlayer.positionIndex] : null;
   const winner = useMemo(
     () => gameState.players.find((player) => player.id === gameState.winnerId),
     [gameState.players, gameState.winnerId]
@@ -337,6 +338,17 @@ export default function App() {
               <span>{room ? `Room ${room.code}` : 'Current Turn'}</span>
               <strong>{currentPlayer?.name ?? 'None'}</strong>
             </div>
+
+            {currentSpace ? (
+              <div className="turn-box" aria-label="Current board space" style={{ borderColor: currentPlayer?.color ?? 'transparent' }}>
+                <span>Current Space</span>
+                <strong>
+                  #{currentSpace.index + 1} • {currentSpace.color.toUpperCase()}
+                  {currentSpace.label ? ` • ${currentSpace.label}` : ''}
+                </strong>
+                <p>{currentSpace.zone}</p>
+              </div>
+            ) : null}
 
             <DiceDisplay value={gameState.lastRoll} isRolling={diceAnimating} moveLabel={moveAnnouncement} />
 
