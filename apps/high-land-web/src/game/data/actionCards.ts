@@ -1,9 +1,10 @@
 import type { ActionCard } from '../types/gameTypes';
 
-function withHitImage(card: Omit<ActionCard, 'imageSrc' | 'imageAlt'>): ActionCard {
+function withHitImage(card: Omit<ActionCard, 'imageSrc' | 'fallbackImageSrc' | 'imageAlt'>): ActionCard {
   return {
     ...card,
     imageSrc: `assets/images/cards/hit/${card.id}.png`,
+    fallbackImageSrc: 'assets/images/cards/hit/fallback-hit-card.svg',
     imageAlt: `${card.title} HIT card artwork`
   };
 }
