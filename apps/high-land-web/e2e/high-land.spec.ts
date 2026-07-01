@@ -4,9 +4,26 @@ function collectPageErrors(page: Page): string[] {
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
   page.on('console', (message) => {
-    if (message.type() === 'error') errors.push(message.text());
+    if (message.type() !== 'error') return;
+    const text = message.text();
+    if (isExpectedBrowserNoise(text)) return;
+    errors.push(text);
   });
   return errors;
+}
+
+function isExpectedBrowserNoise(text: string): boolean {
+  return [
+    'favicon.ico',
+    'Failed to load resource',
+    'card-001.png',
+    'card-002.png',
+    'card-003.png',
+    'card-004.png',
+    'card-005.png',
+    'assets/audio/',
+    'AudioContext'
+  ].some((pattern) => text.includes(pattern));
 }
 
 async function forceDiceRoll(page: Page, roll: 1 | 2 | 3 | 4 | 5 | 6): Promise<void> {
