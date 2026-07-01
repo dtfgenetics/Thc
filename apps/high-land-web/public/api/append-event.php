@@ -18,7 +18,11 @@ if ($playerId === '') {
 }
 
 $players = is_array($room['players'] ?? null) ? $room['players'] : [];
-$playerIds = array_map(static fn($player) => $player['id'] ?? '', $players);
+$playerIds = [];
+foreach ($players as $player) {
+    $playerIds[] = is_array($player) ? ($player['id'] ?? '') : '';
+}
+
 if (!in_array($playerId, $playerIds, true)) {
     api_send_json(['ok' => false, 'error' => 'Player is not in this room.'], 403);
 }
