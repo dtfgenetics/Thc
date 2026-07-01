@@ -28,6 +28,7 @@ import {
 import { maxPlayers, minPlayers } from './game/systems/playerSystem';
 import { canPlayerRoll } from './game/multiplayer/roomState';
 import type { HighLandRoomState } from './game/multiplayer/roomState';
+import type { GameState } from './game/types/gameTypes';
 
 const playerOptions = Array.from({ length: maxPlayers - minPlayers + 1 }, (_, index) => minPlayers + index);
 type ScreenMode = 'landing' | PlayerSetupMode | 'lobby' | 'playing';
@@ -45,6 +46,8 @@ export default function App() {
   const [dismissedCardId, setDismissedCardId] = useState<string | null>(null);
   const [previewCardIndex, setPreviewCardIndex] = useState<number | null>(null);
   const [cardAnimationNonce, setCardAnimationNonce] = useState(0);
+  const [diceAnimating, setDiceAnimating] = useState(false);
+  const [moveAnnouncement, setMoveAnnouncement] = useState<string | null>(null);
   const [statusMessage, setStatusMessage] = useState(() =>
     initialInviteRoomCode ? `Invite detected for room ${initialInviteRoomCode}. Enter your player name to join.` : 'Choose local play, create a room, or join a room.'
   );
@@ -60,10 +63,16 @@ export default function App() {
   const visibleHitCard = previewHitCard ?? liveHitCard;
   const canRollNow = !room || canPlayerRoll(room, localPlayerId);
 
-  function handleSetupSubmit(setup: PlayerSetupSubmit): void {
-    startBackgroundMusic();
+  function resetTransientFeedback(): void {
     setDismissedCardId(null);
     setPreviewCardIndex(null);
+    setMoveAnnouncement(null);
+    setDiceAnimating(false);
+  }
+
+  function handleSetupSubmit(setup: PlayerSetupSubmit): void {
+    startBackgroundMusic();
+    resetTransientFeedback();
 
     if (setup.mode === 'local') {
       beginLocalGame(setup.playerCount, setup.playerName);
@@ -93,8 +102,7 @@ export default function App() {
     setLocalPlayerName(playerName);
     setRoom(null);
     setInviteUrl('');
-    setDismissedCardId(null);
-    setPreviewCardIndex(null);
+    resetTransientFeedback();
     setGameState(createNamedLocalGame(count, playerName));
     setScreenMode('playing');
     setStatusMessage(`${playerName}, roll to begin.`);
@@ -103,8 +111,7 @@ export default function App() {
   async function startRoomGame(): Promise<void> {
     if (!room) return;
     startBackgroundMusic();
-    setDismissedCardId(null);
-    setPreviewCardIndex(null);
+    resetTransientFeedback();
     const result = await startRoomRuntime(room, localPlayerId);
     setRoom(result.room);
     setPlayerCount(result.playerCount);
@@ -140,14 +147,14 @@ export default function App() {
   function leaveRoom(): void {
     setRoom(null);
     setInviteUrl('');
+    resetTransientFeedback();
     setScreenMode('landing');
     setStatusMessage('Left the room. Choose a play mode.');
   }
 
   function startGame(count: number): void {
     startBackgroundMusic();
-    setDismissedCardId(null);
-    setPreviewCardIndex(null);
+    resetTransientFeedback();
     const leadName = localPlayerName ?? 'Player 1';
     setPlayerCount(count);
     setRoom(null);
@@ -157,15 +164,20 @@ export default function App() {
   }
 
   async function roll(): Promise<void> {
-    if (!gameStarted || !canRollNow || gameState.phase === 'game_over' || gameState.phase === 'moving' || gameState.phase === 'resolving_card') return;
+    if (!gameStarted || !canRollNow || diceAnimating || gameState.phase === 'game_over' || gameState.phase === 'moving' || gameState.phase === 'resolving_card') return;
     setDismissedCardId(null);
     setPreviewCardIndex(null);
+    setMoveAnnouncement('Rolling the dice...');
+    setDiceAnimating(true);
+    window.setTimeout(() => setDiceAnimating(false), 700);
     playRollSound();
 
     if (room && room.status === 'playing') {
+      const activeName = currentPlayer?.name ?? localPlayerName ?? 'Player';
       const result = await rollRoomRuntime(room, localPlayerId);
       const nextGameState = result.room.gameState;
       if (!nextGameState) return;
+      setMoveAnnouncement(describeDiceMove(activeName, nextGameState));
       if (nextGameState.lastCard) playCardSound();
       if (nextGameState.winnerId) playWinSound();
       setRoom(result.room);
@@ -176,15 +188,16 @@ export default function App() {
       return;
     }
 
+    const activeName = currentPlayer?.name ?? localPlayerName ?? 'Player';
     const next = rollCurrentTurn(gameState);
+    setMoveAnnouncement(describeDiceMove(activeName, next));
     if (next.lastCard) playCardSound();
     if (next.winnerId) playWinSound();
     setGameState(next);
   }
 
   async function restart(): Promise<void> {
-    setDismissedCardId(null);
-    setPreviewCardIndex(null);
+    resetTransientFeedback();
     if (room) {
       const restartableRoom: HighLandRoomState = { ...room, status: 'waiting', gameState: null };
       const result = await startRoomRuntime(restartableRoom, localPlayerId);
@@ -325,10 +338,10 @@ export default function App() {
               <strong>{currentPlayer?.name ?? 'None'}</strong>
             </div>
 
-            <DiceDisplay value={gameState.lastRoll} />
+            <DiceDisplay value={gameState.lastRoll} isRolling={diceAnimating} moveLabel={moveAnnouncement} />
 
             <div className="button-row board-button-row">
-              <button className="primary roll-button" disabled={!canRollNow || gameState.phase === 'game_over'} onClick={roll} type="button">
+              <button className="primary roll-button" disabled={!canRollNow || diceAnimating || gameState.phase === 'game_over'} onClick={roll} type="button">
                 Roll Dice
               </button>
               <button onClick={previewHitAnimation} type="button">Preview HIT Animation</button>
@@ -346,6 +359,13 @@ export default function App() {
       />
     </main>
   );
+}
+
+function describeDiceMove(playerName: string, state: GameState): string {
+  const roll = state.lastRoll;
+  if (!roll) return 'No movement this turn.';
+  const hitText = state.lastCard ? ' Landed on HIT — card effect applies.' : '';
+  return `${playerName} rolled ${roll}. Move ${roll} space${roll === 1 ? '' : 's'}.${hitText}`;
 }
 
 function getInitialInviteRoomCode(): string | null {
