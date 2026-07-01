@@ -75,6 +75,16 @@ export type GamePhase = 'setup' | 'ready' | 'rolling' | 'moving' | 'resolving_ca
 
 export type TurnDirection = 1 | -1;
 
+export type MoveResult = {
+  fromIndex: number;
+  toIndex: number;
+  traversedIndexes: number[];
+};
+
+export type PlayerMoveResult = MoveResult & {
+  playerId: string;
+};
+
 export type GameState = {
   players: Player[];
   currentPlayerIndex: number;
@@ -82,14 +92,9 @@ export type GameState = {
   turnDirection: TurnDirection;
   reverseTurnsRemaining: number;
   lastRoll: number | null;
+  lastMove: PlayerMoveResult | null;
   lastCard: ActionCard | null;
   message: string;
   winnerId: string | null;
   cardCursor: number;
-};
-
-export type MoveResult = {
-  fromIndex: number;
-  toIndex: number;
-  traversedIndexes: number[];
 };
