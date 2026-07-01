@@ -25,6 +25,7 @@ test.describe('High Land browser game', () => {
     const hitDialog = page.getByRole('dialog', { name: 'HIT card drawn' });
     await expect(hitDialog).toBeVisible();
     await expect(hitDialog.getByText('HIT CARD')).toBeVisible();
+    await expect(hitDialog.locator('.hit-card-art')).toBeVisible();
     await expect(hitDialog.getByText('Cloud Drift')).toBeVisible();
     await hitDialog.getByRole('button', { name: 'Continue' }).click();
     await expect(hitDialog).toHaveCount(0);
@@ -52,6 +53,8 @@ test.describe('High Land browser game', () => {
     await expect(page.getByText('Blaze Runner').first()).toBeVisible();
     await expect(page.getByText('Player 10')).toBeVisible();
     await expect(page.getByText('Current Turn')).toBeVisible();
+    await expect(page.getByLabel('Current board space')).toBeVisible();
+    await expect(page.getByText('#1 • RED')).toBeVisible();
     await expect(page.locator('.phaser-board canvas')).toBeVisible();
 
     const boardControls = page.locator('.board-controls-card');
@@ -65,6 +68,7 @@ test.describe('High Land browser game', () => {
 
     await expect(page.getByLabel(/Last roll/i)).toBeVisible();
     await expect(page.getByText('Blaze Runner rolled 1. Move 1 space.')).toBeVisible();
+    await expect(page.getByLabel('Current board space')).toBeVisible();
     await expect(boardControls.getByRole('button', { name: 'Restart' })).toBeVisible();
     await boardControls.getByRole('button', { name: 'Mute' }).click();
     await expect(boardControls.getByRole('button', { name: 'Unmute' })).toBeVisible();
@@ -88,6 +92,7 @@ test.describe('High Land browser game', () => {
     const hitDialog = page.getByRole('dialog', { name: 'HIT card drawn' });
     await expect(hitDialog).toBeVisible();
     await expect(hitDialog.getByText('HIT CARD')).toBeVisible();
+    await expect(hitDialog.locator('.hit-card-art')).toBeVisible();
     await expect(hitDialog.getByRole('button', { name: 'Continue' })).toBeVisible();
     await hitDialog.getByRole('button', { name: 'Continue' }).click();
     await expect(hitDialog).toHaveCount(0);
@@ -157,6 +162,7 @@ test.describe('High Land browser game', () => {
     await page.locator('.board-controls-card').getByRole('button', { name: 'Roll Dice' }).click();
     await expect(page.getByLabel(/Last roll/i)).toBeVisible();
     await expect(page.getByText('Mobile Player rolled 1. Move 1 space.')).toBeVisible();
+    await expect(page.getByLabel('Current board space')).toBeVisible();
     await page.locator('.board-controls-card').getByRole('button', { name: 'Restart' }).click();
 
     await expect(page.getByText('Mobile Player, roll to begin.')).toBeVisible();
