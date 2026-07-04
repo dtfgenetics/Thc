@@ -1,4 +1,4 @@
-import { createLocalRoomTransport } from '../game/multiplayer/localRoomTransport';
+import { createRoomTransport } from '../game/multiplayer/roomTransportFactory';
 import { rollRoomWithTransport, startRoomWithTransport } from '../game/multiplayer/roomActionExecutor';
 import type { HighLandRoomState } from '../game/multiplayer/roomState';
 import type { RoomTransport } from '../game/multiplayer/roomTransport';
@@ -13,7 +13,7 @@ export type RoomRuntimeResult = {
 export async function startRoomRuntime(
   room: HighLandRoomState,
   requestingPlayerId: string,
-  transport: RoomTransport = createLocalRoomTransport()
+  transport: RoomTransport = createRoomTransport()
 ): Promise<RoomRuntimeResult> {
   const updatedRoom = await startRoomWithTransport(room, transport, requestingPlayerId);
   const leadPlayerName = updatedRoom.gameState?.players[0]?.name ?? 'Player 1';
@@ -29,7 +29,7 @@ export async function startRoomRuntime(
 export async function rollRoomRuntime(
   room: HighLandRoomState,
   requestingPlayerId: string,
-  transport: RoomTransport = createLocalRoomTransport(),
+  transport: RoomTransport = createRoomTransport(),
   random: () => number = Math.random
 ): Promise<RoomRuntimeResult> {
   const updatedRoom = await rollRoomWithTransport(room, transport, requestingPlayerId, random);
