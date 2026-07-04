@@ -18,7 +18,12 @@ type WebsiteRoomResponse = {
 
 export function defaultWebsiteRoomApiBase(): string {
   if (typeof window === 'undefined') return '/api/';
-  return new URL('api/', window.location.href).toString();
+  const url = new URL(window.location.href);
+  const pathname = url.pathname.endsWith('/') ? url.pathname : `${url.pathname}/`;
+  if (pathname.startsWith('/games/high-land/')) {
+    return `${url.origin}/games/high-land/api/`;
+  }
+  return new URL('api/', `${url.origin}${pathname}`).toString();
 }
 
 export async function postWebsiteRoomApi(apiBase: string, endpoint: string, body: unknown): Promise<HighLandRoomState> {
