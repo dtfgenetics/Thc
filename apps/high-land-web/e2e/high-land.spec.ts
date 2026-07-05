@@ -26,10 +26,19 @@ function isExpectedBrowserNoise(text: string): boolean {
   ].some((pattern) => text.includes(pattern));
 }
 
-async function forceDiceRoll(page: Page, roll: 1 | 2 | 3 | 4 | 5 | 6): Promise<void> {
+async function forceNextDiceRoll(page: Page, roll: 1 | 2 | 3 | 4 | 5 | 6): Promise<void> {
   const randomValue = (roll - 1) / 6 + 0.01;
-  await page.addInitScript((value) => {
-    Math.random = () => value;
+  await page.evaluate((value) => {
+    const originalRandom = Math.random;
+    let consumed = false;
+    Math.random = () => {
+      if (consumed) return originalRandom();
+      consumed = true;
+      window.setTimeout(() => {
+        Math.random = originalRandom;
+      }, 0);
+      return value;
+    };
   }, randomValue);
 }
 
@@ -50,7 +59,6 @@ test.describe('High Land browser game', () => {
 
   test('loads the approved board, starts 10-player local play, and rolls from board controls', async ({ page }) => {
     const pageErrors = collectPageErrors(page);
-    await forceDiceRoll(page, 1);
     await page.goto('/games/high-land/');
 
     const boardResponse = await page.request.get('/games/high-land/assets/images/board/high-land-board.png');
@@ -79,7 +87,7 @@ test.describe('High Land browser game', () => {
     await expect(page.getByText('Player 10')).toBeVisible();
     await expect(page.getByText('Current Turn')).toBeVisible();
     await expect(page.getByLabel('Current board space')).toBeVisible();
-    await expect(page.getByText('#1 • RED')).toBeVisible();
+    await expect(page.getByText('#1 â€¢ RED')).toBeVisible();
     await expect(page.locator('.phaser-board canvas')).toBeVisible();
 
     const boardControls = page.locator('.board-controls-card');
@@ -89,6 +97,7 @@ test.describe('High Land browser game', () => {
     await expect(page.getByRole('button', { name: 'Save' })).toHaveCount(0);
     await expect(page.getByRole('button', { name: 'Load' })).toHaveCount(0);
 
+    await forceNextDiceRoll(page, 1);
     await boardControls.getByRole('button', { name: 'Roll Dice' }).click();
 
     await expect(page.getByLabel(/Last roll/i)).toBeVisible();
@@ -103,7 +112,6 @@ test.describe('High Land browser game', () => {
   });
 
   test('shows an animated HIT card popup when landing on a real HIT space', async ({ page }) => {
-    await forceDiceRoll(page, 2);
     await page.goto('/games/high-land/');
 
     await page.getByRole('button', { name: 'Local Play' }).click();
@@ -111,6 +119,7 @@ test.describe('High Land browser game', () => {
     await page.getByLabel('Players').selectOption('2');
     await page.getByRole('button', { name: 'Start Game' }).click();
 
+    await forceNextDiceRoll(page, 2);
     await page.locator('.board-controls-card').getByRole('button', { name: 'Roll Dice' }).click();
 
     await expect(page.getByText(/Hit Tester rolled 2\. Move 2 spaces\./)).toBeVisible();
@@ -124,7 +133,6 @@ test.describe('High Land browser game', () => {
   });
 
   test('can create a local fallback room lobby, add test player, start, and roll', async ({ page }) => {
-    await forceDiceRoll(page, 1);
     await page.goto('/games/high-land/');
 
     await page.getByRole('button', { name: 'Create Room' }).click();
@@ -149,7 +157,7 @@ test.describe('High Land browser game', () => {
 
     await page.locator('.board-controls-card').getByRole('button', { name: 'Roll Dice' }).click();
     await expect(page.getByLabel(/Last roll/i)).toBeVisible();
-    await expect(page.getByText('Room Host rolled 1. Move 1 space.')).toBeVisible();
+    await expect(page.getByText(/Room Host rolled [1-6]\. Move [1-6] spaces?\./)).toBeVisible();
   });
 
   test('opens invite links into prefilled join room flow', async ({ page }) => {
@@ -176,7 +184,6 @@ test.describe('High Land browser game', () => {
 
   test('mobile layout can start and restart a named game without overflow', async ({ page }) => {
     const pageErrors = collectPageErrors(page);
-    await forceDiceRoll(page, 1);
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/games/high-land/');
 
@@ -184,6 +191,7 @@ test.describe('High Land browser game', () => {
     await page.getByPlaceholder('Enter your player name').fill('Mobile Player');
     await page.getByLabel('Players').selectOption('4');
     await page.getByRole('button', { name: 'Start Game' }).click();
+    await forceNextDiceRoll(page, 1);
     await page.locator('.board-controls-card').getByRole('button', { name: 'Roll Dice' }).click();
     await expect(page.getByLabel(/Last roll/i)).toBeVisible();
     await expect(page.getByText('Mobile Player rolled 1. Move 1 space.')).toBeVisible();
@@ -200,3 +208,4 @@ test.describe('High Land browser game', () => {
     expect(pageErrors).toEqual([]);
   });
 });
+

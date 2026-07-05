@@ -17,8 +17,8 @@ type WebsiteRoomResponse = {
 };
 
 export function defaultWebsiteRoomApiBase(): string {
-  if (typeof window === 'undefined') return '/api/';
-  const url = new URL(window.location.href);
+  if (typeof location === 'undefined') return '/api/';
+  const url = new URL(location.href);
   const pathname = url.pathname.endsWith('/') ? url.pathname : `${url.pathname}/`;
   if (pathname.startsWith('/games/high-land/')) {
     return `${url.origin}/games/high-land/api/`;
@@ -77,3 +77,4 @@ function normalizeWebsitePlayer(player: HighLandRoomPlayer): HighLandRoomPlayer 
     joinedAt: player.joinedAt ?? new Date().toISOString()
   };
 }
+
