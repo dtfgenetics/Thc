@@ -87,7 +87,9 @@ test.describe('High Land browser game', () => {
     await expect(page.getByText('Player 10')).toBeVisible();
     await expect(page.getByText('Current Turn')).toBeVisible();
     await expect(page.getByLabel('Current board space')).toBeVisible();
-    await expect(page.getByText('#1 â€¢ RED')).toBeVisible();
+    const currentBoardSpace = page.getByLabel('Current board space');
+    await expect(currentBoardSpace).toContainText('#1');
+    await expect(currentBoardSpace).toContainText('RED');
     await expect(page.locator('.phaser-board canvas')).toBeVisible();
 
     const boardControls = page.locator('.board-controls-card');
@@ -208,4 +210,3 @@ test.describe('High Land browser game', () => {
     expect(pageErrors).toEqual([]);
   });
 });
-
