@@ -1,3 +1,5 @@
+import type { SupabaseClient } from '@supabase/supabase-js';
+
 export type SupabaseBrowserConfig = {
   url: string;
   publishableKey: string;
@@ -46,6 +48,21 @@ export function isLikelySupabaseUrl(value: string): boolean {
   }
 }
 
-export function getSupabaseInstallNote(): string {
-  return 'When Codex is ready to wire live multiplayer, install @supabase/supabase-js and create the browser client from this guarded config. Do not expose service-role or secret keys.';
+export async function createSupabaseBrowserClient(env: ImportMetaEnv = import.meta.env): Promise<SupabaseClient | null> {
+  const status = getSupabaseBrowserConfig(env);
+  if (!status.connected) return null;
+
+  const { createClient } = await import('@supabase/supabase-js');
+  return createClient(status.config.url, status.config.publishableKey, {
+    auth: {
+      autoRefreshToken: true,
+      persistSession: true,
+      detectSessionInUrl: false
+    }
+  });
 }
+
+export function getSupabaseInstallNote(): string {
+  return 'The guarded Supabase browser client is installed. Live room transport still requires the approved schema and RLS policies.';
+}
+
