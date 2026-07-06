@@ -120,12 +120,12 @@ export const starterActionCards: ActionCard[] = [
   withApprovedHitImage({ id: 'card-030', fileName: 'card-030-munchie-mountain.png', title: 'Munchie Mountain', text: 'Move forward 3 spaces, then stop.', effect: { type: 'move', amount: 3 }, sheetArt: sheet(5, 2, 0) }),
   withApprovedHitImage({ id: 'card-031', fileName: 'card-031-kief-cave-slip.png', title: 'Kief Cave Slip', text: 'Move back 3 spaces and draw again.', effect: { type: 'move_and_draw_again', amount: -3 }, sheetArt: sheet(5, 3, 0) }),
 
-  withApprovedHitImage({ id: 'card-032', fileName: 'card-032-rolling-breeze.png', title: 'Rolling Breeze', text: 'Move forward 1 space.', effect: { type: 'move', amount: 1 } }),
-  withApprovedHitImage({ id: 'card-033', fileName: 'card-033-dankwood-fog.png', title: 'Dankwood Fog', text: 'Lose your next turn.', effect: { type: 'skip_turns', amount: 1 } }),
-  withApprovedHitImage({ id: 'card-034', fileName: 'card-034-golden-track.png', title: 'Golden Track', text: 'Move forward 4 spaces.', effect: { type: 'move', amount: 4 } }),
-  withApprovedHitImage({ id: 'card-035', fileName: 'card-035-sugar-crash.png', title: 'Sugar Crash', text: 'Move back 2 spaces.', effect: { type: 'move', amount: -2 } }),
-  withApprovedHitImage({ id: 'card-036', fileName: 'card-036-crystal-tunnel.png', title: 'Crystal Tunnel', text: 'Move forward 3 spaces.', effect: { type: 'move', amount: 3 } }),
-  withApprovedHitImage({ id: 'card-037', fileName: 'card-037-trichome-slide.png', title: 'Trichome Slide', text: 'Move back 5 spaces.', effect: { type: 'move', amount: -5 } }),
-  withApprovedHitImage({ id: 'card-038', fileName: 'card-038-cloud-lift.png', title: 'Cloud Lift', text: 'Move forward 4 spaces.', effect: { type: 'move', amount: 4 } }),
-  withApprovedHitImage({ id: 'card-039', fileName: 'card-039-second-hit.png', title: 'Second Hit', text: 'Draw another Hit Card.', effect: { type: 'draw_again' } })
+  withApprovedHitImage({ id: 'card-032', fileName: 'card-032-rolling-breeze.svg', title: 'Rolling Breeze', text: 'Move forward 1 space.', effect: { type: 'move', amount: 1 } }),
+  withApprovedHitImage({ id: 'card-033', fileName: 'card-033-dankwood-fog.svg', title: 'Dankwood Fog', text: 'Lose your next turn.', effect: { type: 'skip_turns', amount: 1 } }),
+  withApprovedHitImage({ id: 'card-034', fileName: 'card-034-golden-track.svg', title: 'Golden Track', text: 'Move forward 4 spaces.', effect: { type: 'move', amount: 4 } }),
+  withApprovedHitImage({ id: 'card-035', fileName: 'card-035-sugar-crash.svg', title: 'Sugar Crash', text: 'Move back 2 spaces.', effect: { type: 'move', amount: -2 } }),
+  withApprovedHitImage({ id: 'card-036', fileName: 'card-036-crystal-tunnel.svg', title: 'Crystal Tunnel', text: 'Move forward 3 spaces.', effect: { type: 'move', amount: 3 } }),
+  withApprovedHitImage({ id: 'card-037', fileName: 'card-037-trichome-slide.svg', title: 'Trichome Slide', text: 'Move back 5 spaces.', effect: { type: 'move', amount: -5 } }),
+  withApprovedHitImage({ id: 'card-038', fileName: 'card-038-cloud-lift.svg', title: 'Cloud Lift', text: 'Move forward 4 spaces.', effect: { type: 'move', amount: 4 } }),
+  withApprovedHitImage({ id: 'card-039', fileName: 'card-039-second-hit.svg', title: 'Second Hit', text: 'Draw another Hit Card.', effect: { type: 'draw_again' } })
 ];
