@@ -94,6 +94,24 @@ function applyEffect(state: GameState, currentPlayer: Player, effect: ActionCard
       nextState = movePlayer(nextState, currentPlayer.id, effect.amount);
       keepTurn = true;
       break;
+    case 'move_and_draw_again':
+      nextState = movePlayer(nextState, currentPlayer.id, effect.amount);
+      drawAgain = true;
+      break;
+    case 'skip_others':
+      nextState = {
+        ...nextState,
+        players: nextState.players.map((player) =>
+          player.id === currentPlayer.id ? player : { ...player, skipTurns: player.skipTurns + effect.amount }
+        )
+      };
+      break;
+    case 'choose_player_move': {
+      nextState = movePlayer(nextState, currentPlayer.id, effect.currentAmount);
+      const target = findPlayerBehind(nextState.players, currentPlayer) ?? pickRandomOtherPlayer(nextState.players, currentPlayer.id, random);
+      if (target) nextState = movePlayer(nextState, target.id, effect.targetAmount);
+      break;
+    }
   }
 
   return { state: nextState, keepTurn, drawAgain };
