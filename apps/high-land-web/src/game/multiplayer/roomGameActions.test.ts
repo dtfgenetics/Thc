@@ -58,12 +58,12 @@ describe('room game actions', () => {
       }
     };
 
-    const result = rollRoomGameplay(roomAtHitApproach, sequenceRandom([0, 0.999]));
+    const result = rollRoomGameplay(roomAtHitApproach, sequenceRandom([0, 0.75]));
 
     expect(result.events.map((event) => event.name)).toEqual(['dice_rolled', 'hit_card_drawn']);
     expect(result.events[0].payload).toMatchObject({ roll: 1, fromIndex: hitIndex - 1, toIndex: hitIndex });
     expect(result.events[1].payload).toMatchObject({ card: { id: 'card-030' } });
-    expect(result.room.gameState?.players[0].positionIndex).toBe(hitIndex + 8);
+    expect(result.room.gameState?.players[0].positionIndex).toBe(hitIndex + 3);
   });
 
   it('creates a skip event instead of a dice event when a room player loses a turn', () => {
