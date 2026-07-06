@@ -7,12 +7,10 @@ type ApprovedHitCard = Omit<ActionCard, 'imageSrc' | 'fallbackImageSrc' | 'image
 const HIT_CARD_MASTER_PATH = 'assets/images/cards/hit/master';
 const HIT_CARD_FALLBACK = 'assets/images/cards/hit/fallback-hit-card.svg';
 
-// Pinned to the existing Codex-approved sheet artwork commit so the live game can render
-// approved art immediately even before the individual master PNG package is committed.
-// The individual master PNG path remains the primary approved path and will take over
-// automatically as soon as those files exist in the deployed build.
-const APPROVED_SHEET_BASE =
-  'https://raw.githubusercontent.com/dtfgenetics/Thc/25950a635b03b8ca82285cc89e1ac9a8671b5530/apps/high-land-web/public/assets/images/cards';
+// Approved card-sheet artwork is stored locally in public/assets/images/cards/.
+// The individual master PNG path remains primary and will take over automatically
+// when the full cropped master package is committed.
+const APPROVED_SHEET_BASE = 'assets/images/cards';
 
 const sheet = (sheetNumber: 1 | 2 | 3 | 4 | 5, column: 0 | 1 | 2 | 3, row: 0 | 1): ActionCardSheetArt => ({
   src: `${APPROVED_SHEET_BASE}/hit-card-sheet-0${sheetNumber}.jpg`,
