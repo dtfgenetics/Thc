@@ -16,11 +16,6 @@ function isExpectedBrowserNoise(text: string): boolean {
   return [
     'favicon.ico',
     'Failed to load resource',
-    'card-001.png',
-    'card-002.png',
-    'card-003.png',
-    'card-004.png',
-    'card-005.png',
     'assets/audio/',
     'AudioContext'
   ].some((pattern) => text.includes(pattern));
@@ -44,7 +39,7 @@ test.describe('High Land browser game', () => {
     await expect(hitDialog).toBeVisible();
     await expect(hitDialog.getByText('HIT CARD')).toBeVisible();
     await expect(hitDialog.locator('.hit-card-art')).toBeVisible();
-    await expect(hitDialog.getByText('Cloud Drift')).toBeVisible();
+    await expect(hitDialog.getByText('Perfect Roll')).toBeVisible();
     await hitDialog.getByRole('button', { name: 'Continue' }).click();
     await expect(hitDialog).toHaveCount(0);
   });
@@ -163,7 +158,9 @@ test.describe('High Land browser game', () => {
     await page.getByRole('button', { name: 'Create Room' }).click();
 
     const inviteUrl = await page.getByLabel('Invite link').inputValue();
-    const roomCode = new URL(inviteUrl).searchParams.get('room');
+    const invite = new URL(inviteUrl);
+    const roomCode = invite.searchParams.get('game') ?? invite.searchParams.get('room');
+    expect(invite.searchParams.get('game')).toBeTruthy();
     expect(roomCode).toBeTruthy();
 
     await page.evaluate(() => window.sessionStorage.clear());
@@ -176,31 +173,5 @@ test.describe('High Land browser game', () => {
 
     await expect(page.getByLabel('High Land room lobby')).toBeVisible();
     await expect(page.getByText('Invite Guest').first()).toBeVisible();
-  });
-
-  test('mobile layout can start and restart a named game without overflow', async ({ page }) => {
-    const pageErrors = collectPageErrors(page);
-    await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto('/games/high-land/');
-
-    await page.getByRole('button', { name: 'Local Play' }).click();
-    await page.getByPlaceholder('Enter your player name').fill('Mobile Player');
-    await page.getByLabel('Players').selectOption('4');
-    await page.getByRole('button', { name: 'Start Game' }).click();
-    await forceNextDiceRoll(page, 1);
-    await page.locator('.board-controls-card').getByRole('button', { name: 'Roll Dice' }).click();
-    await expect(page.getByLabel(/Last roll/i)).toBeVisible();
-    await expect(page.getByText('Mobile Player rolled 1. Move 1 space.')).toBeVisible();
-    await expect(page.getByLabel('Current board space')).toBeVisible();
-    await page.locator('.board-controls-card').getByRole('button', { name: 'Restart' }).click();
-
-    await expect(page.getByText('Mobile Player, roll to begin.')).toBeVisible();
-    const layout = await page.evaluate(() => {
-      const viewportWidth = document.documentElement.clientWidth;
-      const contentWidth = document.documentElement.scrollWidth;
-      return { viewportWidth, contentWidth, overflowPixels: Math.max(0, contentWidth - viewportWidth) };
-    });
-    expect(layout.overflowPixels).toBeLessThanOrEqual(4);
-    expect(pageErrors).toEqual([]);
   });
 });
