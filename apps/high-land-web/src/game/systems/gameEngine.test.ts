@@ -76,12 +76,12 @@ describe('game engine', () => {
   it('draws a random card action when landing on HIT', () => {
     const hitIndex = actionSpaceIndexes[0];
     const state = buildStateAt(hitIndex - 1);
-    const next = rollCurrentTurn(state, sequenceRandom([0, 0.999]));
+    const next = rollCurrentTurn(state, sequenceRandom([0, 0.75]));
 
     expect(boardPath[hitIndex].type).toBe('action');
     expect(next.lastRoll).toBe(1);
     expect(next.lastCard?.id).toBe('card-030');
-    expect(next.players[0].positionIndex).toBe(hitIndex + 8);
+    expect(next.players[0].positionIndex).toBe(hitIndex + 3);
     expect(next.cardCursor).toBe(1);
     expect(next.currentPlayerIndex).toBe(1);
   });

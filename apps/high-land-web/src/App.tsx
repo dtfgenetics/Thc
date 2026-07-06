@@ -461,13 +461,15 @@ function getInitialPlayerName(): string | null {
 function setInviteInAddressBar(roomCode: string): void {
   if (typeof window === 'undefined') return;
   const url = new URL(window.location.href);
-  url.searchParams.set('room', roomCode);
+  url.searchParams.delete('room');
+  url.searchParams.set('game', roomCode);
   window.history.replaceState({}, '', url);
 }
 
 function clearInviteFromAddressBar(): void {
   if (typeof window === 'undefined') return;
   const url = new URL(window.location.href);
+  url.searchParams.delete('game');
   url.searchParams.delete('room');
   window.history.replaceState({}, '', url);
 }

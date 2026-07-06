@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { starterActionCards } from '../src/game/data/actionCards';
 
 function collectPageErrors(page: Page): string[] {
   const errors: string[] = [];
@@ -44,7 +45,7 @@ test.describe('High Land browser game', () => {
     await expect(hitDialog).toBeVisible();
     await expect(hitDialog.getByText('HIT CARD')).toBeVisible();
     await expect(hitDialog.locator('.hit-card-art')).toBeVisible();
-    await expect(hitDialog.getByText('Cloud Drift')).toBeVisible();
+    await expect(hitDialog.getByRole('heading', { name: starterActionCards[0].title })).toBeVisible();
     await hitDialog.getByRole('button', { name: 'Continue' }).click();
     await expect(hitDialog).toHaveCount(0);
   });
@@ -163,7 +164,7 @@ test.describe('High Land browser game', () => {
     await page.getByRole('button', { name: 'Create Room' }).click();
 
     const inviteUrl = await page.getByLabel('Invite link').inputValue();
-    const roomCode = new URL(inviteUrl).searchParams.get('room');
+    const roomCode = new URL(inviteUrl).searchParams.get('game') ?? new URL(inviteUrl).searchParams.get('room');
     expect(roomCode).toBeTruthy();
 
     await page.evaluate(() => window.sessionStorage.clear());
