@@ -196,6 +196,63 @@ function api_write_room(array $room): array
     return $room;
 }
 
+function api_mutate_room(string $roomCode, callable $mutator): array
+{
+    $path = api_room_path($roomCode);
+    if (!is_file($path)) {
+        api_send_json([
+            'ok' => false,
+            'error' => 'Room not found.'
+        ], 404);
+    }
+
+    $lockPath = $path . '.lock';
+    $lock = fopen($lockPath, 'c');
+    if ($lock === false) {
+        api_send_json([
+            'ok' => false,
+            'error' => 'Could not open room lock.'
+        ], 500);
+    }
+
+    flock($lock, LOCK_EX);
+    $contents = file_get_contents($path);
+    $room = $contents === false ? null : json_decode($contents, true);
+    if (!is_array($room)) {
+        flock($lock, LOCK_UN);
+        fclose($lock);
+        api_send_json([
+            'ok' => false,
+            'error' => 'Room state is damaged.'
+        ], 500);
+    }
+
+    $room = $mutator($room);
+    if (!is_array($room)) {
+        flock($lock, LOCK_UN);
+        fclose($lock);
+        api_send_json([
+            'ok' => false,
+            'error' => 'Room mutation failed.'
+        ], 500);
+    }
+
+    $room['updatedAt'] = api_now();
+    $encoded = json_encode($room, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+    if ($encoded === false || file_put_contents($path, $encoded) === false) {
+        flock($lock, LOCK_UN);
+        fclose($lock);
+        api_send_json([
+            'ok' => false,
+            'error' => 'Could not save room state.'
+        ], 500);
+    }
+
+    flock($lock, LOCK_UN);
+    fclose($lock);
+    return $room;
+}
+
 function api_create_room(array $data): array
 {
     api_cleanup_old_rooms();
