@@ -27,19 +27,11 @@ function isExpectedBrowserNoise(text: string): boolean {
 }
 
 async function forceNextDiceRoll(page: Page, roll: 1 | 2 | 3 | 4 | 5 | 6): Promise<void> {
-  const randomValue = (roll - 1) / 6 + 0.01;
   await page.evaluate((value) => {
-    const originalRandom = Math.random;
-    let consumed = false;
-    Math.random = () => {
-      if (consumed) return originalRandom();
-      consumed = true;
-      window.setTimeout(() => {
-        Math.random = originalRandom;
-      }, 0);
-      return value;
-    };
-  }, randomValue);
+    const url = new URL(window.location.href);
+    url.searchParams.set('hlTestRoll', String(value));
+    window.history.replaceState({}, '', url);
+  }, roll);
 }
 
 test.describe('High Land browser game', () => {
@@ -111,6 +103,7 @@ test.describe('High Land browser game', () => {
     await boardControls.getByRole('button', { name: 'Unmute' }).click();
     await expect(boardControls.getByRole('button', { name: 'Mute' })).toBeVisible();
     expect(pageErrors).toEqual([]);
+    await page.goto('about:blank');
   });
 
   test('shows an animated HIT card popup when landing on a real HIT space', async ({ page }) => {
@@ -173,6 +166,7 @@ test.describe('High Land browser game', () => {
     const roomCode = new URL(inviteUrl).searchParams.get('room');
     expect(roomCode).toBeTruthy();
 
+    await page.evaluate(() => window.sessionStorage.clear());
     await page.goto(inviteUrl);
     await expect(page.getByRole('heading', { name: 'Join a High Land room' })).toBeVisible();
     await expect(page.getByPlaceholder('Room code')).toHaveValue(roomCode ?? '');

@@ -14,6 +14,7 @@ export type LocalPlayerIdentity = {
 };
 
 const LOCAL_PLAYER_ID_KEY = 'high-land-local-player-id';
+const LOCAL_PLAYER_NAME_KEY = 'high-land-local-player-name';
 const MIN_PLAYER_NAME_LENGTH = 2;
 const MAX_PLAYER_NAME_LENGTH = 24;
 
@@ -87,12 +88,19 @@ export function createLocalPlayerIdentity(name: string, slotIndex: number, stora
 
   const tokenIndex = Math.max(0, slotIndex) % tokenOrder.length;
 
-  return {
+  const identity = {
     id: storage ? getOrCreateLocalPlayerId(storage) : createGuestPlayerId(),
     name: validation.value,
     token: tokenOrder[tokenIndex],
     color: tokenColors[tokenIndex]
   };
+
+  storage?.setItem(LOCAL_PLAYER_NAME_KEY, identity.name);
+  return identity;
+}
+
+export function getSavedLocalPlayerName(storage?: Storage): string {
+  return storage?.getItem(LOCAL_PLAYER_NAME_KEY) ?? '';
 }
 
 export function applyIdentityToPlayer(player: Player, identity: LocalPlayerIdentity): Player {

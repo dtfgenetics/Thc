@@ -12,7 +12,7 @@ export async function startRoomWithTransport(
   }
 
   const result = startRoomGameplay(room);
-  const updatedRoom = await transport.updateGameState(room.code, result.room.gameState!);
+  const updatedRoom = await transport.updateGameState(room.code, result.room.gameState!, requestingPlayerId);
 
   for (const event of result.events) {
     await transport.appendEvent(room.code, event);
@@ -36,7 +36,7 @@ export async function rollRoomWithTransport(
   }
 
   const result = rollRoomGameplay(room, random);
-  const updatedRoom = await transport.updateGameState(room.code, result.room.gameState!);
+  const updatedRoom = await transport.updateGameState(room.code, result.room.gameState!, requestingPlayerId);
 
   for (const event of result.events) {
     await transport.appendEvent(room.code, event);

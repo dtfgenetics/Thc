@@ -27,12 +27,28 @@ if (!in_array($playerId, $playerIds, true)) {
     api_send_json(['ok' => false, 'error' => 'Player is not in this room.'], 403);
 }
 
+$incomingStatus = isset($data['status']) ? api_clean_string($data['status'], 20) : null;
+$storedStatus = api_clean_string($room['status'] ?? 'waiting', 20);
+$hostPlayerId = api_clean_string($room['players'][0]['id'] ?? '', 80);
+$storedState = is_array($room['state'] ?? null) ? $room['state'] : null;
+$currentPlayerIndex = is_array($storedState) ? (int)($storedState['currentPlayerIndex'] ?? 0) : 0;
+$storedGamePlayers = is_array($storedState['players'] ?? null) ? $storedState['players'] : [];
+$activePlayerId = api_clean_string($storedGamePlayers[$currentPlayerIndex]['id'] ?? '', 80);
+
+if (($storedStatus === 'waiting' || $storedStatus === 'complete') && $incomingStatus === 'playing' && $playerId !== $hostPlayerId) {
+    api_send_json(['ok' => false, 'error' => 'Only the room host can start or restart the game.'], 403);
+}
+
+if ($storedStatus === 'playing' && array_key_exists('state', $data) && $activePlayerId !== '' && $playerId !== $activePlayerId) {
+    api_send_json(['ok' => false, 'error' => 'It is not this player\'s turn.'], 409);
+}
+
 if (array_key_exists('state', $data)) {
     $room['state'] = $data['state'];
 }
 
-if (isset($data['status'])) {
-    $status = api_clean_string($data['status'], 20);
+if ($incomingStatus !== null) {
+    $status = $incomingStatus;
     if (!in_array($status, ['waiting', 'playing', 'complete'], true)) {
         api_send_json(['ok' => false, 'error' => 'Invalid room status.'], 400);
     }

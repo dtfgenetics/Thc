@@ -15,10 +15,11 @@ describe('Supabase browser client', () => {
   });
 
   it('creates a browser client from public Supabase configuration', async () => {
+    const fakeClient = { supabaseUrl: 'https://example.supabase.co' };
     const client = await createSupabaseBrowserClient(env({
       VITE_SUPABASE_URL: 'https://example.supabase.co',
       VITE_SUPABASE_PUBLISHABLE_KEY: 'sb_publishable_example'
-    }));
+    }), (() => fakeClient) as never);
 
     expect(client).not.toBeNull();
     expect(client?.supabaseUrl).toBe('https://example.supabase.co');

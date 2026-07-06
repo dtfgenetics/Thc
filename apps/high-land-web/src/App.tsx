@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { PhaserBoard } from './ui/PhaserBoard';
 import { DiceDisplay } from './ui/DiceDisplay';
 import { CardRevealModal } from './ui/CardRevealModal';
@@ -8,8 +8,8 @@ import { PlayerSetupForm, type PlayerSetupMode, type PlayerSetupSubmit } from '.
 import { RoomLobby } from './ui/RoomLobby';
 import {
   addLocalTestPlayerMode,
-  createLocalRoomMode,
-  joinLocalRoomMode
+  createTransportRoomMode,
+  joinTransportRoomMode
 } from './app/highLandRoomModeService';
 import { rollRoomRuntime, startRoomRuntime } from './app/highLandRoomRuntime';
 import { starterActionCards } from './game/data/actionCards';
@@ -27,6 +27,8 @@ import {
 } from './game/systems/audioSystem';
 import { maxPlayers, minPlayers } from './game/systems/playerSystem';
 import { canPlayerRoll } from './game/multiplayer/roomState';
+import { createRoomTransport, resolveDefaultRoomTransportMode } from './game/multiplayer/roomTransportFactory';
+import { getSavedLocalPlayerName } from './game/players/playerIdentity';
 import type { HighLandRoomState } from './game/multiplayer/roomState';
 import type { GameState } from './game/types/gameTypes';
 
@@ -36,7 +38,7 @@ type ScreenMode = 'landing' | PlayerSetupMode | 'lobby' | 'playing';
 export default function App() {
   const [initialInviteRoomCode] = useState(() => getInitialInviteRoomCode());
   const [playerCount, setPlayerCount] = useState(2);
-  const [localPlayerName, setLocalPlayerName] = useState<string | null>(null);
+  const [localPlayerName, setLocalPlayerName] = useState<string | null>(() => getInitialPlayerName());
   const [localPlayerId, setLocalPlayerId] = useState<string>('local-player-1');
   const [screenMode, setScreenMode] = useState<ScreenMode>(() => (initialInviteRoomCode ? 'join_room' : 'landing'));
   const [room, setRoom] = useState<HighLandRoomState | null>(null);
@@ -51,6 +53,8 @@ export default function App() {
   const [statusMessage, setStatusMessage] = useState(() =>
     initialInviteRoomCode ? `Invite detected for room ${initialInviteRoomCode}. Enter your player name to join.` : 'Choose local play, create a room, or join a room.'
   );
+  const roomTransport = useMemo(() => createRoomTransport(), []);
+  const roomTransportMode = useMemo(() => resolveDefaultRoomTransportMode(), []);
 
   const gameStarted = screenMode === 'playing';
   const currentPlayer = gameState.players[gameState.currentPlayerIndex];
@@ -63,6 +67,47 @@ export default function App() {
   const liveHitCard = gameState.lastCard && gameState.lastCard.id !== dismissedCardId ? gameState.lastCard : null;
   const visibleHitCard = previewHitCard ?? liveHitCard;
   const canRollNow = !room || canPlayerRoll(room, localPlayerId);
+  const canRestartNow = !room || room.hostPlayerId === localPlayerId;
+
+  useEffect(() => {
+    if (!initialInviteRoomCode || !localPlayerName || screenMode !== 'join_room') return;
+    let active = true;
+
+    void joinTransportRoomMode(initialInviteRoomCode, localPlayerName, roomTransport)
+      .then((result) => {
+        if (!active) return;
+        setRoomMode(result.room, result.localPlayerId, result.localPlayerName, result.inviteUrl, result.playerCount);
+        setStatusMessage(`Reconnected to room ${result.room.code}.`);
+      })
+      .catch((error) => {
+        if (!active) return;
+        setStatusMessage(getRoomErrorMessage(error));
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [initialInviteRoomCode, localPlayerName, roomTransport, screenMode]);
+
+  useEffect(() => {
+    if (!room?.code) return;
+
+    return roomTransport.subscribe(room.code, (snapshot) => {
+      if (snapshot.status === 'error') {
+        setStatusMessage(snapshot.error ?? 'The room connection was interrupted.');
+        return;
+      }
+      if (!snapshot.room) return;
+
+      const nextRoom = snapshot.room;
+      setRoom(nextRoom);
+      setPlayerCount(Math.max(2, nextRoom.players.length));
+      if (nextRoom.gameState) {
+        setGameState(nextRoom.gameState);
+        if (nextRoom.status === 'playing' || nextRoom.status === 'complete') setScreenMode('playing');
+      }
+    });
+  }, [room?.code, roomTransport]);
 
   function resetTransientFeedback(): void {
     setDismissedCardId(null);
@@ -71,7 +116,7 @@ export default function App() {
     setDiceAnimating(false);
   }
 
-  function handleSetupSubmit(setup: PlayerSetupSubmit): void {
+  async function handleSetupSubmit(setup: PlayerSetupSubmit): Promise<void> {
     startBackgroundMusic();
     resetTransientFeedback();
 
@@ -81,19 +126,25 @@ export default function App() {
     }
 
     if (setup.mode === 'create_room') {
-      const result = createLocalRoomMode(setup.playerName, setup.playerCount);
-      setRoomMode(result.room, result.localPlayerId, result.localPlayerName, result.inviteUrl, result.playerCount);
-      setStatusMessage(`Room ${result.room.code} created locally. Website-hosted rooms are being wired next.`);
+      try {
+        const result = await createTransportRoomMode(setup.playerName, setup.playerCount, roomTransport);
+        setRoomMode(result.room, result.localPlayerId, result.localPlayerName, result.inviteUrl, result.playerCount);
+        setInviteInAddressBar(result.room.code);
+        setStatusMessage(roomTransportMode === 'website' ? `Room ${result.room.code} is online and ready for players.` : `Room ${result.room.code} created for local testing.`);
+      } catch (error) {
+        setStatusMessage(error instanceof Error ? error.message : 'Could not create a High Land room. Local Play is still available.');
+      }
       return;
     }
 
     if (setup.mode === 'join_room') {
       try {
-        const result = joinLocalRoomMode(setup.roomCode ?? '', setup.playerName);
+        const result = await joinTransportRoomMode(setup.roomCode ?? '', setup.playerName, roomTransport);
         setRoomMode(result.room, result.localPlayerId, result.localPlayerName, result.inviteUrl, result.playerCount);
-        setStatusMessage(`Joined local room ${result.room.code}.`);
+        setInviteInAddressBar(result.room.code);
+        setStatusMessage(`Joined room ${result.room.code}. Waiting for the host to start.`);
       } catch (error) {
-        setStatusMessage(error instanceof Error ? error.message : 'Could not join that room.');
+        setStatusMessage(getRoomErrorMessage(error));
       }
     }
   }
@@ -113,13 +164,16 @@ export default function App() {
     if (!room) return;
     startBackgroundMusic();
     resetTransientFeedback();
-    const result = await startRoomRuntime(room, localPlayerId);
-    setRoom(result.room);
-    setPlayerCount(result.playerCount);
-    setLocalPlayerName(result.leadPlayerName);
-    if (result.room.gameState) setGameState(result.room.gameState);
-    setScreenMode('playing');
-    setStatusMessage(result.message);
+    try {
+      const result = await startRoomRuntime(room, localPlayerId, roomTransport);
+      setRoom(result.room);
+      setPlayerCount(result.playerCount);
+      if (result.room.gameState) setGameState(result.room.gameState);
+      setScreenMode('playing');
+      setStatusMessage(result.message);
+    } catch (error) {
+      setStatusMessage(error instanceof Error ? error.message : 'Could not start this room.');
+    }
   }
 
   function addLocalTestPlayer(): void {
@@ -150,6 +204,7 @@ export default function App() {
     setInviteUrl('');
     resetTransientFeedback();
     setScreenMode('landing');
+    clearInviteFromAddressBar();
     setStatusMessage('Left the room. Choose a play mode.');
   }
 
@@ -175,22 +230,26 @@ export default function App() {
 
     if (room && room.status === 'playing') {
       const activeName = currentPlayer?.name ?? localPlayerName ?? 'Player';
-      const result = await rollRoomRuntime(room, localPlayerId);
-      const nextGameState = result.room.gameState;
-      if (!nextGameState) return;
-      setMoveAnnouncement(describeDiceMove(activeName, nextGameState));
-      if (nextGameState.lastCard) playCardSound();
-      if (nextGameState.winnerId) playWinSound();
-      setRoom(result.room);
-      setPlayerCount(result.playerCount);
-      setLocalPlayerName(result.leadPlayerName);
-      setGameState(nextGameState);
-      setStatusMessage(result.message);
+      try {
+        const result = await rollRoomRuntime(room, localPlayerId, roomTransport, getTestAwareRandom());
+        const nextGameState = result.room.gameState;
+        if (!nextGameState) return;
+        setMoveAnnouncement(describeDiceMove(activeName, nextGameState));
+        if (nextGameState.lastCard) playCardSound();
+        if (nextGameState.winnerId) playWinSound();
+        setRoom(result.room);
+        setPlayerCount(result.playerCount);
+        setGameState(nextGameState);
+        setStatusMessage(result.message);
+      } catch (error) {
+        setMoveAnnouncement(null);
+        setStatusMessage(error instanceof Error ? error.message : 'The roll could not be synchronized.');
+      }
       return;
     }
 
     const activeName = currentPlayer?.name ?? localPlayerName ?? 'Player';
-    const next = rollCurrentTurn(gameState);
+    const next = rollCurrentTurn(gameState, getTestAwareRandom());
     setMoveAnnouncement(describeDiceMove(activeName, next));
     if (next.lastCard) playCardSound();
     if (next.winnerId) playWinSound();
@@ -200,13 +259,16 @@ export default function App() {
   async function restart(): Promise<void> {
     resetTransientFeedback();
     if (room) {
-      const restartableRoom: HighLandRoomState = { ...room, status: 'waiting', gameState: null };
-      const result = await startRoomRuntime(restartableRoom, localPlayerId);
-      setRoom(result.room);
-      setPlayerCount(result.playerCount);
-      setLocalPlayerName(result.leadPlayerName);
-      if (result.room.gameState) setGameState(result.room.gameState);
-      setStatusMessage(result.message);
+      try {
+        const restartableRoom: HighLandRoomState = { ...room, status: 'waiting', gameState: null };
+        const result = await startRoomRuntime(restartableRoom, localPlayerId, roomTransport);
+        setRoom(result.room);
+        setPlayerCount(result.playerCount);
+        if (result.room.gameState) setGameState(result.room.gameState);
+        setStatusMessage(result.message);
+      } catch (error) {
+        setStatusMessage(error instanceof Error ? error.message : 'The room could not be restarted.');
+      }
       return;
     }
 
@@ -250,7 +312,7 @@ export default function App() {
           <div className="controls-card">
             <p className="eyebrow">Choose Mode</p>
             <h2>Start High Land</h2>
-            <p className="subtitle">Local play works now. Website-hosted invite rooms are being wired as the free backend.</p>
+            <p className="subtitle">Play together on one device or create an online invite room for friends.</p>
             <div className="button-row">
               <button className="primary" onClick={() => setScreenMode('local')} type="button">Local Play</button>
               <button onClick={() => setScreenMode('create_room')} type="button">Create Room</button>
@@ -264,6 +326,7 @@ export default function App() {
           <PlayerSetupForm
             mode={screenMode}
             initialRoomCode={screenMode === 'join_room' ? initialInviteRoomCode : null}
+            initialPlayerName={localPlayerName ?? ''}
             defaultPlayerCount={playerCount}
             onCancel={() => setScreenMode('landing')}
             onSubmit={handleSetupSubmit}
@@ -275,7 +338,7 @@ export default function App() {
             room={room}
             localPlayerId={localPlayerId}
             inviteUrl={inviteUrl}
-            onAddLocalGuest={addLocalTestPlayer}
+            onAddLocalGuest={roomTransportMode === 'local' ? addLocalTestPlayer : undefined}
             onLeave={leaveRoom}
             onStartGame={startRoomGame}
           />
@@ -357,7 +420,7 @@ export default function App() {
                 Roll Dice
               </button>
               <button onClick={previewHitAnimation} type="button">Preview HIT Animation</button>
-              <button onClick={restart} type="button">Restart</button>
+              <button disabled={!canRestartNow} onClick={restart} type="button">Restart</button>
               <button onClick={toggleMute} type="button">{muted ? 'Unmute' : 'Mute'}</button>
             </div>
           </div>
@@ -388,4 +451,38 @@ function getInitialInviteRoomCode(): string | null {
   } catch {
     return null;
   }
+}
+
+function getInitialPlayerName(): string | null {
+  if (typeof window === 'undefined') return null;
+  return getSavedLocalPlayerName(window.sessionStorage) || null;
+}
+
+function setInviteInAddressBar(roomCode: string): void {
+  if (typeof window === 'undefined') return;
+  const url = new URL(window.location.href);
+  url.searchParams.set('room', roomCode);
+  window.history.replaceState({}, '', url);
+}
+
+function clearInviteFromAddressBar(): void {
+  if (typeof window === 'undefined') return;
+  const url = new URL(window.location.href);
+  url.searchParams.delete('room');
+  window.history.replaceState({}, '', url);
+}
+
+function getRoomErrorMessage(error: unknown): string {
+  const message = error instanceof Error ? error.message : 'Could not join that room.';
+  if (message.toLowerCase().includes('not found')) return 'This game invite could not be found. Create a new High Land game.';
+  if (message.toLowerCase().includes('full')) return 'This High Land game is full.';
+  return message;
+}
+
+function getTestAwareRandom(): () => number {
+  if (typeof window === 'undefined') return Math.random;
+  if (window.location.hostname !== '127.0.0.1' && window.location.hostname !== 'localhost') return Math.random;
+  const forcedRoll = Number(new URLSearchParams(window.location.search).get('hlTestRoll'));
+  if (!Number.isInteger(forcedRoll) || forcedRoll < 1 || forcedRoll > 6) return Math.random;
+  return () => (forcedRoll - 1) / 6 + 0.01;
 }

@@ -13,7 +13,7 @@ export type RoomTransportSnapshot = {
 export type RoomTransport = {
   createRoom(hostPlayer: HighLandRoomPlayer): Promise<HighLandRoomState>;
   joinRoom(roomCode: string, player: HighLandRoomPlayer): Promise<HighLandRoomState>;
-  updateGameState(roomCode: string, gameState: GameState): Promise<HighLandRoomState>;
+  updateGameState(roomCode: string, gameState: GameState, requestingPlayerId: string): Promise<HighLandRoomState>;
   appendEvent(roomCode: string, event: HighLandGameEvent): Promise<void>;
   subscribe(roomCode: string, onSnapshot: (snapshot: RoomTransportSnapshot) => void): () => void;
 };
