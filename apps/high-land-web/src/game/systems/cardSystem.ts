@@ -17,7 +17,7 @@ export function drawActionCard(
 export function applyActionCard(state: GameState, card: ActionCard, chainDepth = 0, random: () => number = Math.random): GameState {
   const resolved = sweepForWinner(resolveActionCard(state, card, random));
 
-  if (card.effect.type === 'draw_again' && !resolved.winnerId && chainDepth < 2) {
+  if (shouldDrawAnotherCard(card) && !resolved.winnerId && chainDepth < 2) {
     const draw = drawActionCard(resolved.cardCursor, starterActionCards, random);
     return applyActionCard(
       {
@@ -33,6 +33,10 @@ export function applyActionCard(state: GameState, card: ActionCard, chainDepth =
   }
 
   return resolved;
+}
+
+function shouldDrawAnotherCard(card: ActionCard): boolean {
+  return card.effect.type === 'draw_again' || card.effect.type === 'move_and_draw_again';
 }
 
 function sweepForWinner(state: GameState): GameState {
