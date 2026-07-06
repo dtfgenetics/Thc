@@ -10,12 +10,16 @@ const genericFallbackHitCard = 'assets/images/cards/hit/fallback-hit-card.svg';
 
 type CardArtMode = 'primary' | 'sheet' | 'fallback' | 'missing';
 
+function startingArtMode(card: ActionCard | null): CardArtMode {
+  return card?.sheetArt ? 'sheet' : 'primary';
+}
+
 export function CardRevealModal({ card, onDismiss }: CardRevealModalProps) {
-  const [imageMode, setImageMode] = useState<CardArtMode>('primary');
+  const [imageMode, setImageMode] = useState<CardArtMode>(() => startingArtMode(card));
 
   useEffect(() => {
-    setImageMode('primary');
-  }, [card?.id]);
+    setImageMode(startingArtMode(card));
+  }, [card?.id, card?.sheetArt]);
 
   const sheetStyle = useMemo<CSSProperties | undefined>(() => {
     if (!card?.sheetArt) return undefined;
@@ -37,13 +41,14 @@ export function CardRevealModal({ card, onDismiss }: CardRevealModalProps) {
       ? card.fallbackImageSrc ?? genericFallbackHitCard
       : null;
   const showingSheet = imageMode === 'sheet' && Boolean(card.sheetArt);
+  const showingEmergencyArt = imageMode === 'fallback' || imageMode === 'missing';
 
   function handleImageError(): void {
-    if (imageMode === 'primary' && card?.sheetArt) {
-      setImageMode('sheet');
+    if (imageMode === 'sheet' && card?.imageSrc) {
+      setImageMode('primary');
       return;
     }
-    if (imageMode === 'primary' || imageMode === 'sheet') {
+    if (imageMode === 'primary') {
       setImageMode('fallback');
       return;
     }
@@ -70,10 +75,10 @@ export function CardRevealModal({ card, onDismiss }: CardRevealModalProps) {
             style={sheetStyle}
           />
         ) : null}
-        {imageMode !== 'primary' ? (
+        {showingEmergencyArt ? (
           <div className="hit-card-missing-art" role="note">
-            <strong>{showingSheet ? 'Approved artwork loaded from sheet' : imageMode === 'missing' ? 'Card image missing' : 'Showing fallback art'}</strong>
-            <span>{showingSheet ? card.title : card.imageSrc ?? 'No approved image path set'}</span>
+            <strong>{imageMode === 'missing' ? 'Card image missing' : 'Showing fallback art'}</strong>
+            <span>{card.imageSrc ?? 'No approved image path set'}</span>
           </div>
         ) : null}
         <h2>{card.title}</h2>
