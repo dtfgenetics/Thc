@@ -60,7 +60,7 @@ export function PlayerSetupForm({
     <form className="controls-card player-setup-form" onSubmit={submit}>
       <p className="eyebrow">Player Setup</p>
       <h2>{getSetupTitle(mode)}</h2>
-      <p className="subtitle">Name yourself before starting so tokens, turns, rooms, and invites can track the real player.</p>
+      <p className="subtitle">{getSetupSubtitle(mode)}</p>
 
       <label className="setup-field">
         <span>Player name</span>
@@ -75,7 +75,7 @@ export function PlayerSetupForm({
       </label>
       {submitted && !nameValidation.valid ? <p className="form-error">{nameValidation.error}</p> : null}
 
-      {mode !== 'join_room' ? (
+      {mode === 'local' ? (
         <label className="setup-field">
           <span>Players</span>
           <select onChange={(event) => setPlayerCount(Number(event.target.value))} value={playerCount}>
@@ -112,6 +112,12 @@ function getSetupTitle(mode: PlayerSetupMode): string {
   if (mode === 'create_room') return 'Create a High Land room';
   if (mode === 'join_room') return 'Join a High Land room';
   return 'Start local High Land';
+}
+
+function getSetupSubtitle(mode: PlayerSetupMode): string {
+  if (mode === 'create_room') return `Name yourself, create an invite room, then share the link. Online rooms support up to ${maxPlayers} players.`;
+  if (mode === 'join_room') return 'Name yourself and enter the invite code so this device joins the same room.';
+  return 'Name yourself before starting so tokens and turns track the real player.';
 }
 
 function getSubmitLabel(mode: PlayerSetupMode): string {
