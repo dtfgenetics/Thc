@@ -44,7 +44,7 @@ describe('High Land room mode service', () => {
 
     expect(result.room.players[0].name).toBe('Room Host');
     expect(result.localPlayerName).toBe('Room Host');
-    expect(result.inviteUrl).toContain(`room=${result.room.code}`);
+    expect(result.inviteUrl).toContain(`game=${result.room.code}`);
     expect(result.playerCount).toBe(4);
   });
 
@@ -101,6 +101,6 @@ describe('High Land room mode service', () => {
 
     expect(guest.room.players.map((player) => player.name)).toEqual(['Online Host', 'Online Guest']);
     expect(guest.localPlayerId).not.toBe(host.localPlayerId);
-    expect(guest.inviteUrl).toContain(`room=${host.room.code}`);
+    expect(guest.inviteUrl).toContain(`game=${host.room.code}`);
   });
 });

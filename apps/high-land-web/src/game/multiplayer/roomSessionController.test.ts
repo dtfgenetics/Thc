@@ -26,7 +26,7 @@ describe('room session controller', () => {
     const session = formatRoomSession(makeRoom());
 
     expect(session.room.code).toBe('ABCD23');
-    expect(session.inviteUrl).toContain('room=ABCD23');
+    expect(session.inviteUrl).toContain('game=ABCD23');
   });
 
   it('only allows host to start with at least two players', () => {

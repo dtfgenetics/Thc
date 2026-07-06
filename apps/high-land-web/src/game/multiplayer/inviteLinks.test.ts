@@ -6,10 +6,11 @@ describe('invite links', () => {
     const invite = createInviteLink('ABCD23', { origin: 'https://dtfseeds.com' });
 
     expect(invite.roomCode).toBe('ABCD23');
-    expect(invite.url).toBe('https://dtfseeds.com/games/high-land/?room=ABCD23');
+    expect(invite.url).toBe('https://dtfseeds.com/games/high-land/?game=ABCD23');
   });
 
   it('parses and normalizes valid invite room codes', () => {
+    expect(parseInviteLink('https://dtfseeds.com/games/high-land/?game=abcd23')).toBe('ABCD23');
     expect(parseInviteLink('https://dtfseeds.com/games/high-land/?room=abcd23')).toBe('ABCD23');
   });
 
