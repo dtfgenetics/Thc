@@ -62,15 +62,29 @@ export type ActionCardEffect =
   | { type: 'reverse_turn_order'; turns: number }
   | { type: 'protect_from_backward'; uses: number }
   | { type: 'draw_again' }
-  | { type: 'move_and_roll_again'; amount: number };
+  | { type: 'move_and_roll_again'; amount: number }
+  | { type: 'move_and_draw_again'; amount: number }
+  | { type: 'skip_others'; amount: number }
+  | { type: 'choose_player_move'; currentAmount: number; targetAmount: number };
+
+export type ActionCardSheetArt = {
+  /** Full URL or public asset path for the source sheet. */
+  src: string;
+  /** Four columns per approved sheet. */
+  column: 0 | 1 | 2 | 3;
+  /** Two rows per approved sheet. */
+  row: 0 | 1;
+};
 
 export type ActionCard = {
   id: string;
   title: string;
   text: string;
-  /** Public asset path for the approved visual HIT card image. */
+  /** Public asset path for the approved individual HIT card image. */
   imageSrc?: string;
-  /** Public asset path used only when the approved image is not uploaded yet. */
+  /** Temporary approved-sheet crop used while the individual master PNG package is missing from the deployed repo. */
+  sheetArt?: ActionCardSheetArt;
+  /** Public asset path used only as a final error state when neither approved art source can load. */
   fallbackImageSrc?: string;
   imageAlt?: string;
   effect: ActionCardEffect;
