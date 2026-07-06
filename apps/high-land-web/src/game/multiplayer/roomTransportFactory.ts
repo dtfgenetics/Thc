@@ -1,14 +1,12 @@
 import { createLocalRoomTransport } from './localRoomTransport';
 import { createOfflineRoomTransport, type RoomTransport } from './roomTransport';
-import { createSupabaseRoomTransport } from './supabaseRoomTransport';
 import { createWebsiteRoomTransport } from './websiteRoomTransport';
 
-export type RoomTransportMode = 'local' | 'website' | 'supabase' | 'offline';
+export type RoomTransportMode = 'local' | 'website' | 'offline';
 
 export function createRoomTransport(mode: RoomTransportMode = resolveDefaultRoomTransportMode()): RoomTransport {
   if (mode === 'local') return createLocalRoomTransport();
   if (mode === 'website') return createWebsiteRoomTransport();
-  if (mode === 'supabase') return createSupabaseRoomTransport();
   return createOfflineRoomTransport();
 }
 
@@ -25,6 +23,5 @@ export function resolveDefaultRoomTransportMode(): RoomTransportMode {
 }
 
 export function isRoomTransportMode(value: string | null): value is RoomTransportMode {
-  return value === 'local' || value === 'website' || value === 'supabase' || value === 'offline';
+  return value === 'local' || value === 'website' || value === 'offline';
 }
-
