@@ -60,7 +60,7 @@ describe('local room transport', () => {
 
     const room = await transport.createRoom(makeTransportPlayer(0, true));
     const joinedRoom = await transport.joinRoom(room.code, makeTransportPlayer(1));
-    const updatedRoom = await transport.updateGameState(room.code, createInitialGame(2));
+    const updatedRoom = await transport.updateGameState(room.code, createInitialGame(2), 'local-player-1');
     const snapshot = createLocalRoomSnapshot(room.code, storage);
 
     expect(joinedRoom.players).toHaveLength(2);

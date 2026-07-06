@@ -1,4 +1,3 @@
-import type { HighLandRoomPlayer } from './roomState';
 import type { RoomTransport, RoomTransportSnapshot } from './roomTransport';
 import type { HighLandGameEvent } from '../events/gameEvents';
 import { defaultWebsiteRoomApiBase, getWebsiteRoomApi, postWebsiteRoomApi } from './websiteRoomApi';
@@ -37,11 +36,10 @@ export function createWebsiteRoomTransport(options: WebsiteRoomTransportOptions 
       });
     },
 
-    updateGameState(roomCode, gameState) {
-      const playerId = activePlayerId(gameState.players, gameState.currentPlayerIndex);
+    updateGameState(roomCode, gameState, requestingPlayerId) {
       return postWebsiteRoomApi(apiBaseUrl, 'update-room.php', {
         roomCode,
-        playerId,
+        playerId: requestingPlayerId,
         status: gameState.winnerId ? 'complete' : 'playing',
         state: gameState
       });
@@ -77,10 +75,6 @@ export function createWebsiteRoomTransport(options: WebsiteRoomTransportOptions 
       };
     }
   };
-}
-
-function activePlayerId(players: HighLandRoomPlayer[] | { id: string }[], currentPlayerIndex: number): string {
-  return players[currentPlayerIndex]?.id ?? players[0]?.id ?? 'system-event';
 }
 
 export function snapshotFromWebsiteRoom(snapshot: RoomTransportSnapshot): RoomTransportSnapshot {

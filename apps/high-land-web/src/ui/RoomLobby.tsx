@@ -32,7 +32,7 @@ export function RoomLobby({ room, localPlayerId, inviteUrl, onStartGame, onLeave
       <p className="eyebrow">Room Lobby</p>
       <h2>High Land Room {room.code}</h2>
       <p className="subtitle">
-        Share the invite link, wait for players to join, then start when everyone is ready. Add a local test player until Supabase sync is connected.
+        Share the invite link, wait for players to join, then start when everyone is ready. The lobby updates automatically.
       </p>
 
       <div className="turn-box">

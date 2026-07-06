@@ -202,7 +202,7 @@ function api_create_room(array $data): array
 
     $game = api_clean_slug($data['game'] ?? 'high-land');
     $maxPlayers = (int)($data['maxPlayers'] ?? THC_GAME_MAX_PLAYERS_DEFAULT);
-    $maxPlayers = max(2, min(20, $maxPlayers));
+    $maxPlayers = max(2, min(THC_GAME_MAX_PLAYERS_DEFAULT, $maxPlayers));
 
     do {
         $code = api_generate_room_code();

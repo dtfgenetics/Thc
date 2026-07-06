@@ -217,7 +217,7 @@ export class BoardScene extends Phaser.Scene {
 }
 
 function showDebugSpaces(): boolean {
-  return typeof window !== 'undefined' && (import.meta.env.DEV || new URLSearchParams(window.location.search).has('debugPath'));
+  return typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('debugPath');
 }
 
 function showCalibrationMode(): boolean {

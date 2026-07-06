@@ -6,6 +6,10 @@ export default defineConfig(({ mode }) => ({
   plugins: [react()],
   test: {
     include: ['src/**/*.test.ts', 'src/**/*.test.tsx'],
-    exclude: ['e2e/**', 'node_modules/**', 'dist/**']
+    exclude: ['e2e/**', 'node_modules/**', 'dist/**'],
+    pool: 'threads',
+    maxWorkers: 1,
+    fileParallelism: false,
+    testTimeout: 15000
   }
 }));

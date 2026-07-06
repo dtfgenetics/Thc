@@ -12,17 +12,7 @@ $data = api_read_json_body();
 $roomCode = api_clean_room_code($data['roomCode'] ?? $data['room'] ?? '');
 $room = api_require_room($roomCode);
 
-if (($room['status'] ?? 'waiting') !== 'waiting') {
-    api_send_json(['ok' => false, 'error' => 'Room already started.'], 409);
-}
-
 $players = is_array($room['players'] ?? null) ? $room['players'] : [];
-$maxPlayers = (int)($room['maxPlayers'] ?? THC_GAME_MAX_PLAYERS_DEFAULT);
-
-if (count($players) >= $maxPlayers) {
-    api_send_json(['ok' => false, 'error' => 'Room is full.'], 409);
-}
-
 $incomingPlayerId = api_clean_string($data['playerId'] ?? '', 80);
 if ($incomingPlayerId !== '') {
     foreach ($players as $player) {
@@ -30,6 +20,15 @@ if ($incomingPlayerId !== '') {
             api_send_json(['ok' => true, 'room' => $room]);
         }
     }
+}
+
+if (($room['status'] ?? 'waiting') !== 'waiting') {
+    api_send_json(['ok' => false, 'error' => 'Room already started.'], 409);
+}
+
+$maxPlayers = (int)($room['maxPlayers'] ?? THC_GAME_MAX_PLAYERS_DEFAULT);
+if (count($players) >= $maxPlayers) {
+    api_send_json(['ok' => false, 'error' => 'Room is full.'], 409);
 }
 
 $player = api_new_player($data, count($players));

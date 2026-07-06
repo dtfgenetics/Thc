@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { createLocalPlayerIdentity, validatePlayerName } from './playerIdentity';
+import { createLocalPlayerIdentity, getSavedLocalPlayerName, validatePlayerName } from './playerIdentity';
 
 class MemoryStorage implements Storage {
   private values = new Map<string, string>();
@@ -43,5 +43,6 @@ describe('player identity', () => {
     expect(first.id).toBe(second.id);
     expect(first.token).toBe('tokenA');
     expect(second.token).toBe('tokenB');
+    expect(getSavedLocalPlayerName(storage)).toBe('Player One');
   });
 });

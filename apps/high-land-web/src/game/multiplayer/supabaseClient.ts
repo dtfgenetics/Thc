@@ -1,5 +1,11 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 
+type SupabaseClientFactory = (
+  url: string,
+  publishableKey: string,
+  options: { auth: { autoRefreshToken: boolean; persistSession: boolean; detectSessionInUrl: boolean } }
+) => SupabaseClient;
+
 export type SupabaseBrowserConfig = {
   url: string;
   publishableKey: string;
@@ -48,11 +54,14 @@ export function isLikelySupabaseUrl(value: string): boolean {
   }
 }
 
-export async function createSupabaseBrowserClient(env: ImportMetaEnv = import.meta.env): Promise<SupabaseClient | null> {
+export async function createSupabaseBrowserClient(
+  env: ImportMetaEnv = import.meta.env,
+  clientFactory?: SupabaseClientFactory
+): Promise<SupabaseClient | null> {
   const status = getSupabaseBrowserConfig(env);
   if (!status.connected) return null;
 
-  const { createClient } = await import('@supabase/supabase-js');
+  const createClient = clientFactory ?? (await import('@supabase/supabase-js')).createClient;
   return createClient(status.config.url, status.config.publishableKey, {
     auth: {
       autoRefreshToken: true,

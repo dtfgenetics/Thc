@@ -1,5 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import { addLocalTestPlayerMode, createLocalRoomMode, joinLocalRoomMode, startLocalRoomMode } from './highLandRoomModeService';
+import {
+  addLocalTestPlayerMode,
+  createLocalRoomMode,
+  createTransportRoomMode,
+  joinLocalRoomMode,
+  joinTransportRoomMode,
+  startLocalRoomMode
+} from './highLandRoomModeService';
+import { createLocalRoomTransport } from '../game/multiplayer/localRoomTransport';
 
 class MemoryStorage implements Storage {
   private values = new Map<string, string>();
@@ -80,5 +88,19 @@ describe('High Land room mode service', () => {
     expect(startResult.gameState.players[0].name).toBe('Room Host');
     expect(startResult.gameState.players[1].name).toBe('Guest Player');
     expect(startResult.message).toBe('Room Host, roll to begin.');
+  });
+
+  it('creates and joins through a shared room transport with separate session identities', async () => {
+    const roomStorage = new MemoryStorage();
+    const hostSession = new MemoryStorage();
+    const guestSession = new MemoryStorage();
+    const transport = createLocalRoomTransport(roomStorage);
+
+    const host = await createTransportRoomMode('Online Host', 2, transport, hostSession);
+    const guest = await joinTransportRoomMode(host.room.code, 'Online Guest', transport, guestSession);
+
+    expect(guest.room.players.map((player) => player.name)).toEqual(['Online Host', 'Online Guest']);
+    expect(guest.localPlayerId).not.toBe(host.localPlayerId);
+    expect(guest.inviteUrl).toContain(`room=${host.room.code}`);
   });
 });

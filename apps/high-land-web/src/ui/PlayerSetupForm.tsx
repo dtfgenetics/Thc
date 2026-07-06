@@ -16,6 +16,7 @@ export type PlayerSetupSubmit = {
 type PlayerSetupFormProps = {
   mode: PlayerSetupMode;
   initialRoomCode?: string | null;
+  initialPlayerName?: string;
   defaultPlayerCount?: number;
   onSubmit: (value: PlayerSetupSubmit) => void;
   onCancel?: () => void;
@@ -26,11 +27,12 @@ const playerCountOptions = Array.from({ length: maxPlayers - minPlayers + 1 }, (
 export function PlayerSetupForm({
   mode,
   initialRoomCode = null,
+  initialPlayerName = '',
   defaultPlayerCount = 2,
   onSubmit,
   onCancel
 }: PlayerSetupFormProps) {
-  const [playerName, setPlayerName] = useState('');
+  const [playerName, setPlayerName] = useState(initialPlayerName);
   const [playerCount, setPlayerCount] = useState(defaultPlayerCount);
   const [roomCode, setRoomCode] = useState(initialRoomCode ? normalizeRoomCode(initialRoomCode) : '');
   const [submitted, setSubmitted] = useState(false);
