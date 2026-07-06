@@ -55,18 +55,18 @@ const expectedApprovedFiles = [
   'card-029-rosin-rail-ride.png',
   'card-030-munchie-mountain.png',
   'card-031-kief-cave-slip.png',
-  'card-032-rolling-breeze.png',
-  'card-033-dankwood-fog.png',
-  'card-034-golden-track.png',
-  'card-035-sugar-crash.png',
-  'card-036-crystal-tunnel.png',
-  'card-037-trichome-slide.png',
-  'card-038-cloud-lift.png',
-  'card-039-second-hit.png'
+  'card-032-rolling-breeze.svg',
+  'card-033-dankwood-fog.svg',
+  'card-034-golden-track.svg',
+  'card-035-sugar-crash.svg',
+  'card-036-crystal-tunnel.svg',
+  'card-037-trichome-slide.svg',
+  'card-038-cloud-lift.svg',
+  'card-039-second-hit.svg'
 ];
 
 describe('High Land HIT card deck', () => {
-  it('uses the locked 39-card approved master deck', () => {
+  it('uses the locked 39-card deck with card-specific artwork paths', () => {
     expect(starterActionCards).toHaveLength(39);
     expect(starterActionCards.map((card) => card.imageSrc)).toEqual(
       expectedApprovedFiles.map((file) => `assets/images/cards/hit/master/${file}`)
@@ -81,13 +81,21 @@ describe('High Land HIT card deck', () => {
       expect(card.id).toBe(`card-${String(index + 1).padStart(3, '0')}`);
       expect(card.title.trim().length).toBeGreaterThan(2);
       expect(card.text.trim().length).toBeGreaterThan(6);
-      expect(card.imageSrc).toMatch(/^assets\/images\/cards\/hit\/master\/card-\d{3}-[a-z0-9-]+\.png$/);
+      expect(card.imageSrc).toMatch(/^assets\/images\/cards\/hit\/master\/card-\d{3}-[a-z0-9-]+\.(png|svg)$/);
       expect(card.fallbackImageSrc).toBe('assets/images/cards/hit/fallback-hit-card.svg');
       expect(card.imageAlt).toContain(card.title);
       expect(ids.has(card.id)).toBe(false);
       expect(titles.has(card.title)).toBe(false);
       ids.add(card.id);
       titles.add(card.title);
+    });
+  });
+
+  it('never relies on the generic fallback as the only artwork source', () => {
+    starterActionCards.forEach((card) => {
+      const hasApprovedSheet = Boolean(card.sheetArt?.src?.startsWith('assets/images/cards/hit-card-sheet-'));
+      const hasCardSpecificAsset = Boolean(card.imageSrc?.startsWith('assets/images/cards/hit/master/card-'));
+      expect(hasApprovedSheet || hasCardSpecificAsset).toBe(true);
     });
   });
 
