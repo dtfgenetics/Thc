@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { starterActionCards } from '../src/game/data/actionCards';
 
 function collectPageErrors(page: Page): string[] {
   const errors: string[] = [];
@@ -30,6 +31,29 @@ async function forceNextDiceRoll(page: Page, roll: 1 | 2 | 3 | 4 | 5 | 6): Promi
 }
 
 test.describe('High Land browser game', () => {
+  test('decodes every approved HIT card master asset', async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== 'chromium', 'The master asset package only needs one browser decode pass.');
+    await page.goto('/games/high-land/');
+
+    const assetPaths = starterActionCards.map((card) => card.imageSrc).filter((path): path is string => Boolean(path));
+    const decodeFailures = await page.evaluate(async (paths) => {
+      const results = await Promise.all(paths.map(async (path) => {
+        const image = new Image();
+        image.src = path;
+        try {
+          await image.decode();
+          return image.naturalWidth > 0 && image.naturalHeight > 0 ? null : `${path}: empty image`;
+        } catch {
+          return `${path}: decode failed`;
+        }
+      }));
+      return results.filter((result): result is string => Boolean(result));
+    }, assetPaths);
+
+    expect(assetPaths).toHaveLength(39);
+    expect(decodeFailures).toEqual([]);
+  });
+
   test('can preview the HIT card animation from the landing screen', async ({ page }) => {
     await page.goto('/games/high-land/');
 
@@ -45,6 +69,7 @@ test.describe('High Land browser game', () => {
   });
 
   test('loads the approved board, starts 10-player local play, and rolls from board controls', async ({ page }) => {
+    test.slow();
     const pageErrors = collectPageErrors(page);
     await page.goto('/games/high-land/');
 
@@ -116,7 +141,15 @@ test.describe('High Land browser game', () => {
     const hitDialog = page.getByRole('dialog', { name: 'HIT card drawn' });
     await expect(hitDialog).toBeVisible();
     await expect(hitDialog.getByText('HIT CARD')).toBeVisible();
-    await expect(hitDialog.locator('.hit-card-art')).toBeVisible();
+    await expect(hitDialog.getByText('Trichome Boost')).toBeVisible();
+    await expect(hitDialog.getByText('Move to the next purple space.')).toBeVisible();
+    await expect(hitDialog.getByText('Effect applied to the game')).toBeVisible();
+    const approvedCardArt = hitDialog.locator('img[data-card-art="card-007"][data-art-source="approved-master"]');
+    await expect(approvedCardArt).toBeVisible();
+    await expect(approvedCardArt).toHaveAttribute('src', /card-007-trichome-boost\.png$/);
+    expect(await approvedCardArt.evaluate((image: HTMLImageElement) => image.naturalWidth)).toBeGreaterThan(0);
+    const hitTester = page.locator('.player-chip').filter({ hasText: 'Hit Tester' });
+    await expect(hitTester).toContainText('Space 6 of 109');
     await expect(hitDialog.getByRole('button', { name: 'Continue' })).toBeVisible();
     await hitDialog.getByRole('button', { name: 'Continue' }).click();
     await expect(hitDialog).toHaveCount(0);

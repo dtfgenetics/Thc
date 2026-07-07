@@ -427,6 +427,33 @@ h2 {
   box-shadow: 0 16px 34px rgba(0, 0, 0, 0.25);
 }
 
+.hit-card-sheet-preload {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.hit-effect-status {
+  display: inline-flex;
+  align-self: center;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  padding: 0.35rem 0.7rem;
+  color: #e2e8f0;
+  background: rgba(15, 23, 42, 0.78);
+  font-size: 0.75rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.hit-effect-status.applied {
+  border-color: rgba(74, 222, 128, 0.65);
+  color: #bbf7d0;
+  background: rgba(20, 83, 45, 0.78);
+}
+
 .hit-card-missing-art {
   display: grid;
   gap: 0.35rem;

@@ -7,9 +7,8 @@ type ApprovedHitCard = Omit<ActionCard, 'imageSrc' | 'fallbackImageSrc' | 'image
 const HIT_CARD_MASTER_PATH = 'assets/images/cards/hit/master';
 const HIT_CARD_FALLBACK = 'assets/images/cards/hit/fallback-hit-card.svg';
 
-// Approved card-sheet artwork is stored locally in public/assets/images/cards/.
-// The individual master PNG path remains primary and will take over automatically
-// when the full cropped master package is committed.
+// Approved card-sheet artwork is retained as the source/fallback package.
+// The card reveal loads the committed individual master file first.
 const APPROVED_SHEET_BASE = 'assets/images/cards';
 
 const sheet = (sheetNumber: 1 | 2 | 3 | 4 | 5, column: 0 | 1 | 2 | 3, row: 0 | 1): ActionCardSheetArt => ({

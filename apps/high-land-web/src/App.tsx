@@ -15,6 +15,7 @@ import { rollRoomRuntime, startRoomRuntime } from './app/highLandRoomRuntime';
 import { starterActionCards } from './game/data/actionCards';
 import { approvedBoardSpaceCount, boardPath } from './game/data/boardPath';
 import { rollCurrentTurn } from './game/systems/gameEngine';
+import { describeSynchronizedTurn, getHitCardRevealKey } from './game/systems/hitCardReveal';
 import { createNamedLocalGame } from './game/multiplayer/roomGameFactory';
 import { parseInviteLink } from './game/multiplayer/inviteLinks';
 import {
@@ -45,7 +46,7 @@ export default function App() {
   const [inviteUrl, setInviteUrl] = useState('');
   const [gameState, setGameState] = useState(() => createNamedLocalGame(2, 'Player 1'));
   const [muted, setMuted] = useState(isMuted());
-  const [dismissedCardId, setDismissedCardId] = useState<string | null>(null);
+  const [dismissedCardRevealKey, setDismissedCardRevealKey] = useState<string | null>(null);
   const [previewCardIndex, setPreviewCardIndex] = useState<number | null>(null);
   const [cardAnimationNonce, setCardAnimationNonce] = useState(0);
   const [diceAnimating, setDiceAnimating] = useState(false);
@@ -64,8 +65,14 @@ export default function App() {
     [gameState.players, gameState.winnerId]
   );
   const previewHitCard = previewCardIndex === null ? null : starterActionCards[previewCardIndex] ?? null;
-  const liveHitCard = gameState.lastCard && gameState.lastCard.id !== dismissedCardId ? gameState.lastCard : null;
+  const liveHitCardRevealKey = getHitCardRevealKey(gameState);
+  const liveHitCard = gameState.lastCard && liveHitCardRevealKey !== dismissedCardRevealKey ? gameState.lastCard : null;
   const visibleHitCard = previewHitCard ?? liveHitCard;
+  const visibleHitCardKey = previewHitCard
+    ? `preview-${previewHitCard.id}-${cardAnimationNonce}`
+    : liveHitCardRevealKey
+      ? `live-${liveHitCardRevealKey}`
+      : 'no-hit-card';
   const canRollNow = !room || canPlayerRoll(room, localPlayerId);
   const canRestartNow = !room || room.hostPlayerId === localPlayerId;
 
@@ -104,13 +111,14 @@ export default function App() {
       setPlayerCount(Math.max(2, nextRoom.players.length));
       if (nextRoom.gameState) {
         setGameState(nextRoom.gameState);
+        setMoveAnnouncement(describeSynchronizedTurn(nextRoom.gameState));
         if (nextRoom.status === 'playing' || nextRoom.status === 'complete') setScreenMode('playing');
       }
     });
   }, [room?.code, roomTransport]);
 
   function resetTransientFeedback(): void {
-    setDismissedCardId(null);
+    setDismissedCardRevealKey(null);
     setPreviewCardIndex(null);
     setMoveAnnouncement(null);
     setDiceAnimating(false);
@@ -221,7 +229,7 @@ export default function App() {
 
   async function roll(): Promise<void> {
     if (!gameStarted || !canRollNow || diceAnimating || gameState.phase === 'game_over' || gameState.phase === 'moving' || gameState.phase === 'resolving_card') return;
-    setDismissedCardId(null);
+    setDismissedCardRevealKey(null);
     setPreviewCardIndex(null);
     setMoveAnnouncement('Rolling the dice...');
     setDiceAnimating(true);
@@ -278,7 +286,7 @@ export default function App() {
 
   function previewHitAnimation(): void {
     const nextIndex = previewCardIndex === null ? 0 : (previewCardIndex + 1) % starterActionCards.length;
-    setDismissedCardId(null);
+    setDismissedCardRevealKey(null);
     setPreviewCardIndex(nextIndex);
     setCardAnimationNonce((value) => value + 1);
     playCardSound();
@@ -289,7 +297,7 @@ export default function App() {
       setPreviewCardIndex(null);
       return;
     }
-    setDismissedCardId(gameState.lastCard?.id ?? null);
+    setDismissedCardRevealKey(getHitCardRevealKey(gameState));
   }
 
   function toggleMute(): void {
@@ -428,8 +436,9 @@ export default function App() {
       ) : null}
 
       <CardRevealModal
-        key={visibleHitCard ? `${visibleHitCard.id}-${cardAnimationNonce}` : 'no-hit-card'}
+        key={visibleHitCardKey}
         card={visibleHitCard}
+        effectApplied={previewHitCard === null && liveHitCard !== null}
         onDismiss={dismissHitCard}
       />
     </main>

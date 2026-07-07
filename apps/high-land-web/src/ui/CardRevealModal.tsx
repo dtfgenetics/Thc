@@ -3,6 +3,7 @@ import type { ActionCard } from '../game/types/gameTypes';
 
 type CardRevealModalProps = {
   card: ActionCard | null;
+  effectApplied?: boolean;
   onDismiss?: () => void;
 };
 
@@ -11,10 +12,12 @@ const genericFallbackHitCard = 'assets/images/cards/hit/fallback-hit-card.svg';
 type CardArtMode = 'primary' | 'sheet' | 'fallback' | 'missing';
 
 function startingArtMode(card: ActionCard | null): CardArtMode {
-  return card?.sheetArt ? 'sheet' : 'primary';
+  if (card?.imageSrc) return 'primary';
+  if (card?.sheetArt) return 'sheet';
+  return 'fallback';
 }
 
-export function CardRevealModal({ card, onDismiss }: CardRevealModalProps) {
+export function CardRevealModal({ card, effectApplied = false, onDismiss }: CardRevealModalProps) {
   const [imageMode, setImageMode] = useState<CardArtMode>(() => startingArtMode(card));
 
   useEffect(() => {
@@ -44,11 +47,11 @@ export function CardRevealModal({ card, onDismiss }: CardRevealModalProps) {
   const showingEmergencyArt = imageMode === 'fallback' || imageMode === 'missing';
 
   function handleImageError(): void {
-    if (imageMode === 'sheet' && card?.imageSrc) {
-      setImageMode('primary');
+    if (imageMode === 'primary' && card?.sheetArt) {
+      setImageMode('sheet');
       return;
     }
-    if (imageMode === 'primary') {
+    if (imageMode === 'primary' || imageMode === 'sheet') {
       setImageMode('fallback');
       return;
     }
@@ -64,16 +67,28 @@ export function CardRevealModal({ card, onDismiss }: CardRevealModalProps) {
             className="hit-card-art"
             src={imageSrc}
             alt={card.imageAlt ?? `${card.title} HIT card artwork`}
+            data-art-source={imageMode === 'primary' ? 'approved-master' : 'fallback'}
+            data-card-art={card.id}
             onError={handleImageError}
           />
         ) : showingSheet ? (
-          <div
-            className="hit-card-art"
-            data-card-art={card.id}
-            role="img"
-            aria-label={card.imageAlt ?? `${card.title} HIT card artwork`}
-            style={sheetStyle}
-          />
+          <>
+            <img
+              className="hit-card-sheet-preload"
+              src={card.sheetArt?.src}
+              alt=""
+              aria-hidden="true"
+              onError={handleImageError}
+            />
+            <div
+              className="hit-card-art"
+              data-art-source="approved-sheet"
+              data-card-art={card.id}
+              role="img"
+              aria-label={card.imageAlt ?? `${card.title} HIT card artwork`}
+              style={sheetStyle}
+            />
+          </>
         ) : null}
         {showingEmergencyArt ? (
           <div className="hit-card-missing-art" role="note">
@@ -83,6 +98,9 @@ export function CardRevealModal({ card, onDismiss }: CardRevealModalProps) {
         ) : null}
         <h2>{card.title}</h2>
         <p>{card.text}</p>
+        <span className={`hit-effect-status ${effectApplied ? 'applied' : 'preview'}`}>
+          {effectApplied ? 'Effect applied to the game' : 'Preview only'}
+        </span>
         <small>{describeEffect(card)}</small>
         {onDismiss ? (
           <button className="hit-card-close" onClick={onDismiss} type="button">

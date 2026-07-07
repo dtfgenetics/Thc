@@ -17,10 +17,10 @@ live-ready claim.
 
 | Check | Status | Evidence |
 | --- | --- | --- |
-| `boardPath` has continuous indexes `0` through `110` | NOT TESTED | |
+| `boardPath` has continuous indexes `0` through `108` | NOT TESTED | |
 | The route is single, connected, and visits the seven locations in locked order | NOT TESTED | |
 | Space types are limited to start, normal, action, and finish | NOT TESTED | |
-| Exactly 25 indexes are gameplay HIT/action triggers | NOT TESTED | |
+| Exactly 22 indexes are gameplay HIT/action triggers | NOT TESTED | |
 | Die results are integers from 1 through 6 | NOT TESTED | |
 | Normal movement equals the rolled number and clamps at START/FINISH | NOT TESTED | |
 | Movement animates through every traversed index | NOT TESTED | |

@@ -9,6 +9,19 @@ export type HighLandAssetManifestItem = {
   notes?: string;
 };
 
+const approvedHitCardArtAssets: HighLandAssetManifestItem[] = Array.from(new Set(
+  starterActionCards
+    .map((card) => card.imageSrc ?? card.sheetArt?.src)
+    .filter((path): path is string => Boolean(path))
+)).map((path, index) => ({
+  id: `approved-hit-card-art-${index + 1}`,
+  kind: 'image',
+  path,
+  required: true,
+  placeholderAllowed: false,
+  notes: 'Approved individual HIT card artwork displayed in the card reveal.'
+}));
+
 export const highLandAssetManifest: HighLandAssetManifestItem[] = [
   {
     id: 'board-background',
@@ -27,11 +40,12 @@ export const highLandAssetManifest: HighLandAssetManifestItem[] = [
     notes: 'Optional transparent path overlay if board art is separated from path geometry.'
   },
   {
-    id: 'hit-card-back',
+    id: 'hit-card-fallback',
     kind: 'image',
-    path: 'assets/high-land/cards/hit-card-back.png',
+    path: 'assets/images/cards/hit/fallback-hit-card.svg',
     required: true,
-    placeholderAllowed: true
+    placeholderAllowed: true,
+    notes: 'Emergency fallback only; approved card art remains the normal reveal source.'
   },
   {
     id: 'player-token-set',
@@ -75,7 +89,8 @@ export const highLandAssetManifest: HighLandAssetManifestItem[] = [
     path: 'assets/high-land/audio/win.mp3',
     required: true,
     placeholderAllowed: false
-  }
+  },
+  ...approvedHitCardArtAssets
 ];
 
 export function getRequiredHighLandAssets(): HighLandAssetManifestItem[] {
@@ -85,3 +100,4 @@ export function getRequiredHighLandAssets(): HighLandAssetManifestItem[] {
 export function getPlaceholderAllowedAssets(): HighLandAssetManifestItem[] {
   return highLandAssetManifest.filter((asset) => asset.placeholderAllowed);
 }
+import { starterActionCards } from '../data/actionCards';

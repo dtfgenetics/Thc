@@ -7,7 +7,9 @@ export default defineConfig(({ mode }) => ({
   test: {
     include: ['src/**/*.test.ts', 'src/**/*.test.tsx'],
     exclude: ['e2e/**', 'node_modules/**', 'dist/**'],
-    pool: 'threads',
+    // Forks are slower to start but avoid intermittent Windows worker-thread
+    // startup timeouts in clean worktrees and constrained CI runners.
+    pool: 'forks',
     maxWorkers: 1,
     fileParallelism: false,
     testTimeout: 15000
