@@ -1,10 +1,11 @@
 import Phaser from 'phaser';
 import { BoardScene } from './scenes/BoardScene';
+import { shouldUseHighLandCanvasRenderer } from './rendererSelection';
 import type { GameState } from './types/gameTypes';
 
 export function createHighLandGame(parent: HTMLElement, initialState: GameState): Phaser.Game {
   return new Phaser.Game({
-    type: Phaser.AUTO,
+    type: shouldUseHighLandCanvasRenderer() ? Phaser.CANVAS : Phaser.AUTO,
     parent,
     width: 1280,
     height: 960,
