@@ -1,3 +1,5 @@
+import { starterActionCards } from '../data/actionCards';
+
 export type HighLandAssetKind = 'image' | 'audio' | 'data';
 
 export type HighLandAssetManifestItem = {
@@ -100,4 +102,7 @@ export function getRequiredHighLandAssets(): HighLandAssetManifestItem[] {
 export function getPlaceholderAllowedAssets(): HighLandAssetManifestItem[] {
   return highLandAssetManifest.filter((asset) => asset.placeholderAllowed);
 }
-import { starterActionCards } from '../data/actionCards';
+
+export function getDeploymentCriticalHighLandAssets(): HighLandAssetManifestItem[] {
+  return getRequiredHighLandAssets().filter((asset) => !asset.placeholderAllowed);
+}
