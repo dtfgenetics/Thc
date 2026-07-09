@@ -1,10 +1,11 @@
 import Phaser from 'phaser';
 import { BoardScene } from './scenes/BoardScene';
+import { shouldUseHighLandCanvasRenderer } from './rendererSelection';
 import type { GameState } from './types/gameTypes';
 
 export function createHighLandGame(parent: HTMLElement, initialState: GameState): Phaser.Game {
   return new Phaser.Game({
-    type: getHighLandRendererType(),
+    type: shouldUseHighLandCanvasRenderer() ? Phaser.CANVAS : Phaser.AUTO,
     parent,
     width: 1280,
     height: 960,
@@ -18,8 +19,4 @@ export function createHighLandGame(parent: HTMLElement, initialState: GameState)
     },
     scene: [BoardScene]
   });
-}
-
-export function getHighLandRendererType(matchMedia: typeof window.matchMedia = window.matchMedia): typeof Phaser.AUTO | typeof Phaser.CANVAS {
-  return matchMedia('(max-width: 720px)').matches ? Phaser.CANVAS : Phaser.AUTO;
 }
