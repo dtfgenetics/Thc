@@ -7,6 +7,9 @@ export type HighLandRoomPlayer = Pick<Player, 'id' | 'name' | 'token' | 'color'>
   joinedAt: string;
   connected: boolean;
   host: boolean;
+  /** Server-backed rooms set this explicitly. Missing means ready for legacy local/PHP rooms. */
+  ready?: boolean;
+  lastSeenAt?: string;
 };
 
 export type HighLandRoomState = {
@@ -21,7 +24,11 @@ export type HighLandRoomState = {
 };
 
 export function canStartRoom(room: HighLandRoomState, requestingPlayerId: string): boolean {
-  return room.status === 'waiting' && room.hostPlayerId === requestingPlayerId && room.players.length >= 2;
+  const everyPlayerReady = room.players.every((player) => player.ready !== false);
+  return room.status === 'waiting'
+    && room.hostPlayerId === requestingPlayerId
+    && room.players.length >= 2
+    && everyPlayerReady;
 }
 
 export function canPlayerRoll(room: HighLandRoomState, requestingPlayerId: string): boolean {
