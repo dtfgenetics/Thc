@@ -13,6 +13,10 @@
     "dev:high-land": "npm --workspace apps/high-land-web run dev",
     "build:high-land": "npm --workspace apps/high-land-web run build",
     "test:high-land": "npm --workspace apps/high-land-web run test",
-    "test:e2e:high-land": "npm --workspace apps/high-land-web run test:e2e"
+    "test:e2e:high-land": "npm --workspace apps/high-land-web run test:e2e",
+    "dev:server": "npm --workspace apps/high-land-server run dev",
+    "build:server": "npm --workspace apps/high-land-server run build",
+    "test:server": "npm --workspace apps/high-land-server run test",
+    "verify": "npm run test:high-land && npm run build:high-land && npm run test:server"
   }
 }
