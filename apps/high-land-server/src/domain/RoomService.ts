@@ -1,7 +1,7 @@
 import { createHash, randomBytes, randomInt, randomUUID, timingSafeEqual } from 'node:crypto';
 import type { RoomStore } from '../storage/RoomStore.js';
+import { rollHighLandTurn } from './highLandRules.js';
 import {
-  HIGH_LAND_FINISH_INDEX,
   HIGH_LAND_MAX_PLAYERS,
   HIGH_LAND_MIN_PLAYERS,
   type AuthoritativeGameState,
@@ -55,7 +55,7 @@ export type JoinRoomInput = {
 export class RoomService {
   constructor(
     private readonly store: RoomStore,
-    private readonly random: () => number = Math.random,
+    private readonly random: () => number = secureUnitRandom,
     private readonly now: () => Date = () => new Date()
   ) {}
 
@@ -140,41 +140,13 @@ export class RoomService {
     this.assertVersion(room, context.expectedVersion);
     if (room.status !== 'playing' || !room.gameState) throw new RoomServiceError('ROOM_NOT_PLAYING', 'Room is not currently playing.', 409);
 
-    const state = room.gameState;
-    const currentPlayer = state.players[state.currentPlayerIndex];
+    const currentPlayer = room.gameState.players[room.gameState.currentPlayerIndex];
     if (!currentPlayer || currentPlayer.id !== context.playerId) {
       throw new RoomServiceError('OUT_OF_TURN', 'It is not this player\'s turn.', 409);
     }
 
-    if (currentPlayer.skipTurns > 0) {
-      currentPlayer.skipTurns -= 1;
-      state.lastRoll = null;
-      state.lastMove = null;
-      state.message = `${currentPlayer.name} misses this turn.`;
-      advanceTurn(state);
-    } else {
-      const roll = this.secureRoll();
-      const fromIndex = currentPlayer.positionIndex;
-      const toIndex = Math.min(fromIndex + roll, HIGH_LAND_FINISH_INDEX);
-      currentPlayer.positionIndex = toIndex;
-      state.lastRoll = roll;
-      state.lastMove = {
-        playerId: currentPlayer.id,
-        fromIndex,
-        toIndex,
-        traversedIndexes: createTraversedIndexes(fromIndex, toIndex)
-      };
-      state.lastCard = null;
-
-      if (toIndex >= HIGH_LAND_FINISH_INDEX) {
-        state.winnerId = currentPlayer.id;
-        state.phase = 'game_over';
-        state.message = `${currentPlayer.name} wins!`;
-        room.status = 'complete';
-      } else {
-        advanceTurn(state);
-      }
-    }
+    room.gameState = rollHighLandTurn(room.gameState, this.random);
+    if (room.gameState.winnerId) room.status = 'complete';
 
     room.processedActionIds.push(context.actionId);
     if (room.processedActionIds.length > MAX_PROCESSED_ACTIONS) {
@@ -244,7 +216,13 @@ export class RoomService {
     }
   }
 
-  private createPlayer(name: string, token: string | undefined, color: string | undefined, index: number, host: boolean): { player: RoomPlayer; rawToken: string } {
+  private createPlayer(
+    name: string,
+    token: string | undefined,
+    color: string | undefined,
+    index: number,
+    host: boolean
+  ): { player: RoomPlayer; rawToken: string } {
     const rawToken = randomBytes(32).toString('base64url');
     const now = this.now().toISOString();
     return {
@@ -271,11 +249,6 @@ export class RoomService {
       if (!this.store.get(code)) return code;
     }
     throw new RoomServiceError('ROOM_CODE_EXHAUSTED', 'Could not allocate a room code.', 503);
-  }
-
-  private secureRoll(): number {
-    const value = Math.min(0.999999999999, Math.max(0, this.random()));
-    return Math.floor(value * 6) + 1;
   }
 
   private touch(room: StoredRoom): void {
@@ -310,25 +283,12 @@ function createInitialGameState(players: RoomPlayer[]): AuthoritativeGameState {
   };
 }
 
-function advanceTurn(state: AuthoritativeGameState): void {
-  if (state.players.length === 0) return;
-  state.currentPlayerIndex = (state.currentPlayerIndex + state.turnDirection + state.players.length) % state.players.length;
-  const nextPlayer = state.players[state.currentPlayerIndex];
-  state.message = `${nextPlayer?.name ?? 'Next player'}, roll the dice.`;
-}
-
-function createTraversedIndexes(fromIndex: number, toIndex: number): number[] {
-  const indexes: number[] = [];
-  for (let index = fromIndex + 1; index <= toIndex; index += 1) indexes.push(index);
-  return indexes;
-}
-
 function sanitizeName(value: string, index: number): string {
   const cleaned = String(value ?? '')
     .replace(/<[^>]*>/g, '')
     .replace(/\s+/g, ' ')
     .trim()
-    .slice(0, 40);
+    .slice(0, 24);
   return cleaned || `Player ${index + 1}`;
 }
 
@@ -362,6 +322,10 @@ function hashesMatch(left: string, right: string): boolean {
 function clampInteger(value: number, minimum: number, maximum: number): number {
   const integer = Number.isFinite(value) ? Math.trunc(value) : maximum;
   return Math.max(minimum, Math.min(maximum, integer));
+}
+
+function secureUnitRandom(): number {
+  return randomInt(0, 1_000_000) / 1_000_000;
 }
 
 function toPublicRoom(room: StoredRoom): PublicRoom {
