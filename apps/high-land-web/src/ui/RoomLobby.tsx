@@ -15,6 +15,7 @@ export function RoomLobby({ room, localPlayerId, inviteUrl, onStartGame, onLeave
   const startAllowed = canStartRoom(room, localPlayerId);
   const localPlayer = room.players.find((player) => player.id === localPlayerId) ?? null;
   const roomIsFull = room.players.length >= maxPlayers;
+  const waitingOnReady = room.players.filter((player) => player.ready === false);
 
   function copyInvite(): void {
     if (onCopyInvite) {
@@ -56,7 +57,13 @@ export function RoomLobby({ room, localPlayerId, inviteUrl, onStartGame, onLeave
 
       {!startAllowed ? (
         <p className="form-note">
-          {localPlayer?.host ? 'Need at least 2 players before the host can start.' : 'Only the host can start the room.'}
+          {!localPlayer?.host
+            ? 'Only the host can start the room.'
+            : room.players.length < 2
+              ? 'Need at least 2 players before the host can start.'
+              : waitingOnReady.length > 0
+                ? `Waiting for ${waitingOnReady.map((player) => player.name).join(', ')} to be ready.`
+                : 'The room is not ready to start yet.'}
         </p>
       ) : null}
 
@@ -67,7 +74,7 @@ export function RoomLobby({ room, localPlayerId, inviteUrl, onStartGame, onLeave
             <div>
               <strong>{player.name}</strong>
               <p>
-                {player.host ? 'Host' : 'Player'} • {player.connected ? 'Connected' : 'Disconnected'}
+                {player.host ? 'Host' : 'Player'} • {player.connected ? 'Connected' : 'Disconnected'} • {player.ready === false ? 'Not Ready' : 'Ready'}
               </p>
             </div>
           </article>
