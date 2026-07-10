@@ -32,7 +32,16 @@ jobs:
         shell: bash
         run: |
           set -o pipefail
-          npm run test:server 2>&1 | tee server-test.log
+          {
+            echo "Node: $(node --version)"
+            echo "TypeScript: $(npx tsc --version)"
+            node -e "console.log('colyseus:', require('colyseus/package.json').version)"
+            node -e "console.log('@colyseus/schema:', require('@colyseus/schema/package.json').version)"
+            echo "--- Colyseus setState declarations ---"
+            grep -R "setState" node_modules/colyseus node_modules/@colyseus 2>/dev/null | head -40 || true
+            echo "--- server verification ---"
+            npm run test:server
+          } 2>&1 | tee server-test.log
 
       - name: Upload server verification log
         if: always()
