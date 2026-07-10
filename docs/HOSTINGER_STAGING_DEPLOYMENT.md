@@ -23,7 +23,7 @@ In hPanel:
 
 1. Open **Websites**.
 2. Select **Add website**.
-3. Select **Deploy Web App**.
+3. Select **Deploy Web App** or **Node.js Web App**, depending on the label shown in hPanel.
 4. Import the GitHub repository `dtfgenetics/Thc`.
 5. Select the staging branch.
 6. If Hostinger does not detect the monorepo correctly, select framework type **Other**.
@@ -66,7 +66,7 @@ Expected response includes:
 
 ## App 2 — High Land web client
 
-Create another **Deploy Web App** website from the same repository and branch.
+Create another **Deploy Web App** or **Node.js Web App** website from the same repository and branch.
 
 Use:
 
@@ -96,12 +96,13 @@ Use two genuinely separate browser contexts, preferably two devices or a normal 
 - [ ] Browser A creates a room.
 - [ ] Browser A receives a six-character room code.
 - [ ] Browser B joins with that code.
-- [ ] Both browsers display both players.
+- [ ] Both browsers display both players and ready state.
 - [ ] The host can start after both players are ready.
 - [ ] A non-host cannot start.
 - [ ] Only the current player can roll.
 - [ ] The server, not browser input, determines the die result.
 - [ ] Both browsers show the same movement and next turn.
+- [ ] HIT-card draws and effects match on both browsers.
 - [ ] Refreshing Browser A reconnects the same player.
 - [ ] Refreshing Browser B reconnects the same player.
 - [ ] Rapidly double-clicking Roll does not produce two moves.
@@ -110,11 +111,11 @@ Use two genuinely separate browser contexts, preferably two devices or a normal 
 - [ ] Phone layout remains usable.
 - [ ] A complete game can reach the actual final board index, 108.
 
-## Known blocker before public production
+## Known blockers before public production
 
-The current authoritative server covers room security, ready/start, dice, basic movement, turns and winning. The complete HIT-card effects still need to move into the authoritative rule layer. Until that is done, do not advertise online High Land as feature-complete.
+The approved 109-space board, all 39 HIT-card definitions, server-side card resolution, movement, turns and winning are now in the authoritative service. They still require a clean repository-wide CI run and a real two-device staging game before public release.
 
-The JSON snapshot adapter is also not a production database. Before public release, add a durable database repository and verify atomic version updates there.
+The JSON snapshot adapter is not a production database. Before public release, add a durable database repository and verify atomic version updates there.
 
 ## Domain cutover
 
