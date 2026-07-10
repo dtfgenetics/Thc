@@ -16,9 +16,15 @@ export type RoomTransport = {
   updateGameState(roomCode: string, gameState: GameState, requestingPlayerId: string): Promise<HighLandRoomState>;
   appendEvent(roomCode: string, event: HighLandGameEvent): Promise<void>;
   subscribe(roomCode: string, onSnapshot: (snapshot: RoomTransportSnapshot) => void): () => void;
+  /** Present when the backend, rather than the browser, owns game-state transitions. */
+  startGame?(roomCode: string, requestingPlayerId: string): Promise<HighLandRoomState>;
+  /** Present when the backend, rather than the browser, generates dice and movement. */
+  rollDice?(roomCode: string, requestingPlayerId: string): Promise<HighLandRoomState>;
+  /** Returns the authenticated player id stored for this browser and room. */
+  getLocalPlayerId?(roomCode: string): string | null;
 };
 
-export function createOfflineRoomTransport(reason = 'Supabase multiplayer is not connected yet.'): RoomTransport {
+export function createOfflineRoomTransport(reason = 'Online multiplayer is not connected yet.'): RoomTransport {
   return {
     async createRoom() {
       throw new Error(reason);
