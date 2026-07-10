@@ -235,12 +235,13 @@ function swapWithTarget(
   if (targetType === 'behind') target = findPlayerBehind(state.players, currentPlayer);
   if (targetType === 'random') target = pickRandomOtherPlayer(state.players, currentPlayer.id, random);
   if (!target || target.id === currentPlayer.id) return state;
+  const swapTarget = target;
 
   return {
     ...state,
     players: state.players.map((player) => {
-      if (player.id === currentPlayer.id) return { ...player, positionIndex: target.positionIndex };
-      if (player.id === target.id) return { ...player, positionIndex: currentPlayer.positionIndex };
+      if (player.id === currentPlayer.id) return { ...player, positionIndex: swapTarget.positionIndex };
+      if (player.id === swapTarget.id) return { ...player, positionIndex: currentPlayer.positionIndex };
       return player;
     })
   };
