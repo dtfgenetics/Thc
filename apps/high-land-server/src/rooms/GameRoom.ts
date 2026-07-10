@@ -1,8 +1,9 @@
 import { Client, Room } from 'colyseus';
+import { HIGH_LAND_FINISH_INDEX, HIGH_LAND_MAX_PLAYERS } from '../domain/roomTypes.js';
 import { PlayerState, ServerGameState, LogEntry } from '../schema/GameState.js';
 
-const maxPlayers = 10;
-const finishIndex = 71;
+const maxPlayers = HIGH_LAND_MAX_PLAYERS;
+const finishIndex = HIGH_LAND_FINISH_INDEX;
 
 type JoinOptions = {
   name?: string;
