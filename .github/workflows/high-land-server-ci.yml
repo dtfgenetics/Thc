@@ -35,8 +35,8 @@ jobs:
           {
             echo "Node: $(node --version)"
             echo "TypeScript: $(npx tsc --version)"
-            node -e "console.log('colyseus:', require('colyseus/package.json').version)"
-            node -e "console.log('@colyseus/schema:', require('@colyseus/schema/package.json').version)"
+            node -e "const fs=require('node:fs'); console.log('colyseus:', JSON.parse(fs.readFileSync('node_modules/colyseus/package.json','utf8')).version)"
+            node -e "const fs=require('node:fs'); console.log('@colyseus/schema:', JSON.parse(fs.readFileSync('node_modules/@colyseus/schema/package.json','utf8')).version)"
             echo "--- Colyseus setState declarations ---"
             grep -R "setState" node_modules/colyseus node_modules/@colyseus 2>/dev/null | head -40 || true
             echo "--- server verification ---"
