@@ -37,9 +37,9 @@ export function createServerRoomTransport(options: ServerRoomTransportOptions = 
       }
     });
     const session = requireSessionResponse(response);
-    saveSession(response.room.code, session, storage);
-    versions.set(response.room.code, response.room.version);
-    return markReady(response.room.code, true);
+    saveSession(session.room.code, session, storage);
+    versions.set(session.room.code, session.room.version);
+    return markReady(session.room.code, true);
   }
 
   async function joinRoom(roomCode: string, player: HighLandRoomPlayer): Promise<HighLandRoomState> {
@@ -69,7 +69,7 @@ export function createServerRoomTransport(options: ServerRoomTransportOptions = 
     });
     const session = requireSessionResponse(response);
     saveSession(code, session, storage);
-    versions.set(code, response.room.version);
+    versions.set(code, session.room.version);
     return markReady(code, true);
   }
 
@@ -85,7 +85,7 @@ export function createServerRoomTransport(options: ServerRoomTransportOptions = 
     return room;
   }
 
-  async function startGame(roomCode: string): Promise<HighLandRoomState> {
+  async function startAuthoritativeGame(roomCode: string): Promise<HighLandRoomState> {
     const code = normalizeRoomCode(roomCode);
     const room = requireRoom(
       await authenticatedRequest(apiBaseUrl, code, storage, `/rooms/${code}/start`, {
@@ -97,7 +97,7 @@ export function createServerRoomTransport(options: ServerRoomTransportOptions = 
     return room;
   }
 
-  async function rollDice(roomCode: string): Promise<HighLandRoomState> {
+  async function rollAuthoritativeDice(roomCode: string): Promise<HighLandRoomState> {
     const code = normalizeRoomCode(roomCode);
     const room = requireRoom(
       await authenticatedRequest(apiBaseUrl, code, storage, `/rooms/${code}/actions`, {
@@ -123,10 +123,10 @@ export function createServerRoomTransport(options: ServerRoomTransportOptions = 
       // Authoritative server actions own the event history. Client event uploads are intentionally disabled.
     },
     startGame(roomCode) {
-      return startGame(roomCode);
+      return startAuthoritativeGame(roomCode);
     },
     rollDice(roomCode) {
-      return rollDice(roomCode);
+      return rollAuthoritativeDice(roomCode);
     },
     getLocalPlayerId(roomCode) {
       return loadSession(normalizeRoomCode(roomCode), storage)?.playerId ?? null;
@@ -225,7 +225,10 @@ function requireVersion(roomCode: string, versions: Map<string, number>): number
 }
 
 function saveSession(roomCode: string, session: StoredRoomSession, storage: Storage | undefined): void {
-  storage?.setItem(`${SESSION_KEY_PREFIX}${roomCode}`, JSON.stringify(session));
+  storage?.setItem(`${SESSION_KEY_PREFIX}${roomCode}`, JSON.stringify({
+    playerId: session.playerId,
+    reconnectToken: session.reconnectToken
+  }));
 }
 
 function loadSession(roomCode: string, storage: Storage | undefined): StoredRoomSession | null {
