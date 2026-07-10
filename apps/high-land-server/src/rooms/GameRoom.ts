@@ -10,7 +10,11 @@ type JoinOptions = {
   color?: string;
 };
 
-export class GameRoom extends Room<ServerGameState> {
+type GameRoomOptions = {
+  state: ServerGameState;
+};
+
+export class GameRoom extends Room<GameRoomOptions> {
   maxClients = maxPlayers;
 
   onCreate(): void {
