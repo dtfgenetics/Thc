@@ -12,11 +12,15 @@
 - Added memory and JSON snapshot storage adapters.
 - Added server tests and CI coverage.
 - Added safe environment and deployment documentation.
+- Added a browser REST transport with room-session persistence, polling and reconnect support.
+- Updated online start and roll flows so an authoritative transport owns state changes.
+- Preserved the existing local and shared-hosting transports for rollback and comparison.
+- Ran the authoritative room service tests locally through Node; the create, join, ready, start, roll and stale-version paths passed.
 
 ## In progress
 
-- Connect the High Land browser transport to the authoritative REST API.
-- Add two-browser Playwright tests against the API.
+- Add two-browser Playwright tests that launch both the API and browser app.
+- Resolve any repository-wide CI failures once GitHub Actions reports a run for this branch.
 
 ## Required before public production
 
