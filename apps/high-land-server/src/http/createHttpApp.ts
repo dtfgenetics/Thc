@@ -12,11 +12,7 @@ export function createHttpApp(roomService: RoomService): Express {
       ok: true,
       service: 'high-land-multiplayer',
       apiVersion: '1.0.0',
-      persistence: process.env.SUPABASE_URL
-        ? 'supabase'
-        : process.env.ROOM_DATA_FILE
-          ? 'json-file'
-          : 'memory'
+      persistence: process.env.ROOM_DATA_FILE ? 'json-file' : 'memory'
     });
   });
 
