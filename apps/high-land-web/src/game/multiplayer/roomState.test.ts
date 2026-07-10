@@ -30,11 +30,15 @@ function makeRoom(playerCount: number): HighLandRoomState {
 }
 
 describe('room state', () => {
-  it('allows only the host to start a waiting room with at least two players', () => {
+  it('allows only the host to start a waiting room with at least two ready players', () => {
     expect(canStartRoom(makeRoom(2), 'local-player-1')).toBe(true);
     expect(canStartRoom(makeRoom(2), 'local-player-2')).toBe(false);
     expect(canStartRoom(makeRoom(1), 'local-player-1')).toBe(false);
     expect(canStartRoom({ ...makeRoom(2), status: 'playing' }, 'local-player-1')).toBe(false);
+
+    const waitingOnGuest = makeRoom(2);
+    waitingOnGuest.players[1] = { ...waitingOnGuest.players[1], ready: false };
+    expect(canStartRoom(waitingOnGuest, 'local-player-1')).toBe(false);
   });
 
   it('allows only the current room player to roll', () => {
