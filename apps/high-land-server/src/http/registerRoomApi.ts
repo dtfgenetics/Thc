@@ -7,10 +7,10 @@ export function registerRoomApi(app: Express, service: RoomService): void {
   app.post('/api/v1/rooms', (request, response) => {
     handle(response, () => {
       const result = service.createRoom({
-        playerName: request.body?.playerName,
-        token: request.body?.token,
-        color: request.body?.color,
-        maxPlayers: request.body?.maxPlayers
+        playerName: readPlayerName(request.body?.playerName),
+        token: readOptionalString(request.body?.token, 32),
+        color: readOptionalString(request.body?.color, 16),
+        maxPlayers: readOptionalInteger(request.body?.maxPlayers)
       });
       response.status(201).json({ ok: true, ...result });
     });
@@ -20,9 +20,9 @@ export function registerRoomApi(app: Express, service: RoomService): void {
     handle(response, () => {
       const result = service.joinRoom({
         roomCode: request.params.code,
-        playerName: request.body?.playerName,
-        token: request.body?.token,
-        color: request.body?.color
+        playerName: readPlayerName(request.body?.playerName),
+        token: readOptionalString(request.body?.token, 32),
+        color: readOptionalString(request.body?.color, 16)
       });
       response.status(201).json({ ok: true, ...result });
     });
@@ -39,9 +39,9 @@ export function registerRoomApi(app: Express, service: RoomService): void {
   app.post('/api/v1/rooms/:code/ready', (request, response) => {
     handle(response, () => {
       const auth = readAuth(request);
-      const room = service.setReady(request.params.code, Boolean(request.body?.ready), {
+      const room = service.setReady(request.params.code, readBoolean(request.body?.ready, 'ready'), {
         ...auth,
-        expectedVersion: request.body?.expectedVersion
+        expectedVersion: readExpectedVersion(request.body?.expectedVersion)
       });
       response.json({ ok: true, room });
     });
@@ -52,7 +52,7 @@ export function registerRoomApi(app: Express, service: RoomService): void {
       const auth = readAuth(request);
       const room = service.startGame(request.params.code, {
         ...auth,
-        expectedVersion: request.body?.expectedVersion
+        expectedVersion: readExpectedVersion(request.body?.expectedVersion)
       });
       response.json({ ok: true, room });
     });
@@ -67,8 +67,8 @@ export function registerRoomApi(app: Express, service: RoomService): void {
       }
       const room = service.rollDice(request.params.code, {
         ...auth,
-        actionId: request.body?.actionId,
-        expectedVersion: request.body?.expectedVersion
+        actionId: readActionId(request.body?.actionId),
+        expectedVersion: readExpectedVersion(request.body?.expectedVersion)
       });
       response.json({ ok: true, room });
     });
@@ -76,10 +76,10 @@ export function registerRoomApi(app: Express, service: RoomService): void {
 
   app.post('/api/v1/rooms/:code/reconnect', (request, response) => {
     handle(response, () => {
-      const playerId = String(request.body?.playerId ?? '');
-      const reconnectToken = String(request.body?.reconnectToken ?? '');
+      const playerId = readRequiredString(request.body?.playerId, 'playerId', 128);
+      const reconnectToken = readRequiredString(request.body?.reconnectToken, 'reconnectToken', 256);
       const room = service.reconnect(request.params.code, playerId, reconnectToken);
-      response.json({ ok: true, room, playerId, reconnectToken });
+      response.json({ ok: true, room, playerId });
     });
   });
 
@@ -88,7 +88,7 @@ export function registerRoomApi(app: Express, service: RoomService): void {
       const auth = readAuth(request);
       const room = service.leaveRoom(request.params.code, {
         ...auth,
-        expectedVersion: request.body?.expectedVersion
+        expectedVersion: readExpectedVersion(request.body?.expectedVersion)
       });
       response.json({ ok: true, room });
     });
@@ -96,12 +96,58 @@ export function registerRoomApi(app: Express, service: RoomService): void {
 }
 
 function readAuth(request: Request): { playerId: string; reconnectToken: string } {
-  const playerId = String(request.header('x-player-id') ?? '');
-  const reconnectToken = String(request.header('x-session-token') ?? '');
-  if (!playerId || !reconnectToken) {
-    throw new RoomServiceError('SESSION_REQUIRED', 'x-player-id and x-session-token headers are required.', 401);
-  }
+  const playerId = readRequiredString(request.header('x-player-id'), 'x-player-id', 128);
+  const reconnectToken = readRequiredString(request.header('x-session-token'), 'x-session-token', 256);
   return { playerId, reconnectToken };
+}
+
+function readPlayerName(value: unknown): string {
+  const name = readRequiredString(value, 'playerName', 80).replace(/\s+/g, ' ').trim();
+  if (!name) throw new RoomServiceError('INVALID_PLAYER_NAME', 'playerName cannot be empty.', 400);
+  return name;
+}
+
+function readExpectedVersion(value: unknown): number {
+  if (!Number.isInteger(value) || Number(value) < 1) {
+    throw new RoomServiceError('INVALID_VERSION', 'expectedVersion must be a positive integer.', 400);
+  }
+  return Number(value);
+}
+
+function readActionId(value: unknown): string {
+  const actionId = readRequiredString(value, 'actionId', 128).trim();
+  if (!/^[A-Za-z0-9._:-]+$/.test(actionId)) {
+    throw new RoomServiceError('INVALID_ACTION_ID', 'actionId contains unsupported characters.', 400);
+  }
+  return actionId;
+}
+
+function readBoolean(value: unknown, fieldName: string): boolean {
+  if (typeof value !== 'boolean') {
+    throw new RoomServiceError('INVALID_INPUT', `${fieldName} must be a boolean.`, 400);
+  }
+  return value;
+}
+
+function readOptionalInteger(value: unknown): number | undefined {
+  if (value === undefined || value === null || value === '') return undefined;
+  if (!Number.isInteger(value)) throw new RoomServiceError('INVALID_INPUT', 'maxPlayers must be an integer.', 400);
+  return Number(value);
+}
+
+function readOptionalString(value: unknown, maxLength: number): string | undefined {
+  if (value === undefined || value === null || value === '') return undefined;
+  return readRequiredString(value, 'value', maxLength);
+}
+
+function readRequiredString(value: unknown, fieldName: string, maxLength: number): string {
+  if (typeof value !== 'string') {
+    throw new RoomServiceError('INVALID_INPUT', `${fieldName} must be a string.`, 400);
+  }
+  if (value.length === 0 || value.length > maxLength) {
+    throw new RoomServiceError('INVALID_INPUT', `${fieldName} must contain between 1 and ${maxLength} characters.`, 400);
+  }
+  return value;
 }
 
 function handle(response: Response, operation: () => void): void {
@@ -124,8 +170,13 @@ function handle(response: Response, operation: () => void): void {
 }
 
 function corsGuard() {
+  const configuredOrigins = process.env.ALLOWED_ORIGINS?.trim();
+  if (process.env.NODE_ENV === 'production' && !configuredOrigins) {
+    throw new Error('ALLOWED_ORIGINS is required when NODE_ENV=production.');
+  }
+
   const allowedOrigins = new Set(
-    (process.env.ALLOWED_ORIGINS ?? 'http://localhost:5173,http://127.0.0.1:5173,https://dtfseeds.com,https://www.dtfseeds.com,https://dtf420.com,https://www.dtf420.com')
+    (configuredOrigins ?? 'http://localhost:5173,http://127.0.0.1:5173')
       .split(',')
       .map((origin) => origin.trim())
       .filter(Boolean)
@@ -151,8 +202,18 @@ function corsGuard() {
 
 function rateLimit(maxRequests: number, windowMs: number) {
   const buckets = new Map<string, { count: number; resetAt: number }>();
+  let requestsSinceCleanup = 0;
+
   return (request: Request, response: Response, next: NextFunction): void => {
     const now = Date.now();
+    requestsSinceCleanup += 1;
+    if (requestsSinceCleanup >= 500) {
+      for (const [key, bucket] of buckets) {
+        if (bucket.resetAt <= now) buckets.delete(key);
+      }
+      requestsSinceCleanup = 0;
+    }
+
     const key = request.ip || request.socket.remoteAddress || 'unknown';
     const existing = buckets.get(key);
     const bucket = !existing || existing.resetAt <= now ? { count: 0, resetAt: now + windowMs } : existing;
