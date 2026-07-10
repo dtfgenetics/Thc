@@ -50,6 +50,13 @@ test('two independent clients can create, join, ready, start, roll, retry and re
   };
   assert.equal((joined.body.room.players as unknown[]).length, 2);
 
+  const invalidReady = await authenticatedRequest(baseUrl, roomCode, host, `/rooms/${roomCode}/ready`, {
+    ready: 'false',
+    expectedVersion: Number(joined.body.room.version)
+  });
+  assert.equal(invalidReady.status, 400);
+  assert.equal(invalidReady.body.error.code, 'INVALID_INPUT');
+
   const hostReady = await authenticatedRequest(baseUrl, roomCode, host, `/rooms/${roomCode}/ready`, {
     ready: true,
     expectedVersion: Number(joined.body.room.version)
@@ -110,6 +117,30 @@ test('two independent clients can create, join, ready, start, roll, retry and re
   assert.equal(reconnected.status, 200);
   assert.equal(reconnected.body.playerId, guest.playerId);
   assert.equal(reconnected.body.room.status, 'playing');
+  assert.equal('reconnectToken' in reconnected.body, false);
+});
+
+test('create room rejects missing display names and invalid player limits', async (context) => {
+  const service = new RoomService(new MemoryRoomStore());
+  const server = createHttpApp(service).listen(0, '127.0.0.1');
+  context.after(() => new Promise<void>((resolve, reject) => {
+    server.close((error) => (error ? reject(error) : resolve()));
+  }));
+  await new Promise<void>((resolve) => server.once('listening', resolve));
+  const address = server.address() as AddressInfo;
+  const baseUrl = `http://127.0.0.1:${address.port}/api/v1`;
+
+  const missingName = await request(baseUrl, '/rooms', {
+    method: 'POST',
+    body: { playerName: '' }
+  });
+  assert.equal(missingName.status, 400);
+
+  const invalidLimit = await request(baseUrl, '/rooms', {
+    method: 'POST',
+    body: { playerName: 'Host', maxPlayers: '10' }
+  });
+  assert.equal(invalidLimit.status, 400);
 });
 
 async function authenticatedRequest(
