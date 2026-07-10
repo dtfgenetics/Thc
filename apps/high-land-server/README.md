@@ -17,6 +17,8 @@ The default address is `http://localhost:2567`.
 npm run test:server
 ```
 
+The server test suite covers room creation, joining, readiness, host-only start, active turns, duplicate actions, reconnect sessions, the 109-space board, all 39 HIT-card definitions, representative card effects, reverse turns and finish detection.
+
 ## Environment
 
 Copy `.env.example` values into the deployment environment. Do not commit production secrets.
@@ -105,7 +107,7 @@ Only the host can start, at least two players must be present, and every player 
 }
 ```
 
-The server creates the dice result, movement, next turn and winner. Repeating the same `actionId` is idempotent.
+The server creates the dice result, movement, HIT-card draw/effect, next turn and winner. Repeating the same `actionId` is idempotent.
 
 ### Reconnect
 
@@ -130,6 +132,6 @@ The server creates the dice result, movement, next turn and winner. Repeating th
 
 Authentication headers are required.
 
-## Current limitation
+## Production boundary
 
-This milestone makes room membership, sessions, start permissions, dice, basic movement, turns, winner detection, versions and duplicate-action handling authoritative. The complete HIT-card rule set still needs to be moved from the browser game into the authoritative shared rule layer before online multiplayer is considered complete.
+The current High Land rules, including the approved 109-space board and 39-card HIT deck, now run in the authoritative service. Public production is still blocked on three things: a durable database adapter, a clean repository-wide CI run, and a two-device staging game on Hostinger. The JSON snapshot adapter is staging-only.
