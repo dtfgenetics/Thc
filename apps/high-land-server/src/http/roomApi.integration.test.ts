@@ -12,6 +12,36 @@ type Session = {
 
 type JsonObject = Record<string, unknown>;
 
+test('health check identifies the deployed release and prevents stale caching', async (context) => {
+  const previousReleaseSha = process.env.RELEASE_SHA;
+  process.env.RELEASE_SHA = 'release-test-sha';
+  context.after(() => {
+    if (previousReleaseSha === undefined) {
+      delete process.env.RELEASE_SHA;
+    } else {
+      process.env.RELEASE_SHA = previousReleaseSha;
+    }
+  });
+
+  const service = new RoomService(new MemoryRoomStore());
+  const server = createHttpApp(service).listen(0, '127.0.0.1');
+  context.after(() => new Promise<void>((resolve, reject) => {
+    server.close((error) => (error ? reject(error) : resolve()));
+  }));
+  await new Promise<void>((resolve) => server.once('listening', resolve));
+  const address = server.address() as AddressInfo;
+
+  const response = await fetch(`http://127.0.0.1:${address.port}/health`);
+  const body = await response.json();
+
+  assert.equal(response.status, 200);
+  assert.equal(response.headers.get('cache-control'), 'no-store');
+  assert.equal(body.ok, true);
+  assert.equal(body.service, 'high-land-multiplayer');
+  assert.equal(body.release, 'release-test-sha');
+  assert.match(body.checkedAt, /^\d{4}-\d{2}-\d{2}T/);
+});
+
 test('two independent clients can create, join, ready, start, roll, retry and reconnect', async (context) => {
   const values = [0.2, 0];
   const service = new RoomService(
