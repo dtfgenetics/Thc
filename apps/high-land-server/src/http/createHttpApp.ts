@@ -8,11 +8,14 @@ export function createHttpApp(roomService: RoomService): Express {
   app.use(express.json({ limit: '32kb' }));
 
   app.get('/health', (_request, response) => {
+    response.setHeader('Cache-Control', 'no-store');
     response.json({
       ok: true,
       service: 'high-land-multiplayer',
       apiVersion: '1.0.0',
-      persistence: process.env.ROOM_DATA_FILE ? 'json-file' : 'memory'
+      persistence: process.env.ROOM_DATA_FILE ? 'json-file' : 'memory',
+      release: process.env.RELEASE_SHA || process.env.GITHUB_SHA || 'development',
+      checkedAt: new Date().toISOString()
     });
   });
 
