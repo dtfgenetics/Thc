@@ -173,9 +173,22 @@ export class RoomService {
     const room = this.requireMutableRoom(roomCode);
     const player = this.authenticate(room, context.playerId, context.reconnectToken);
     this.assertVersion(room, context.expectedVersion);
-    player.connected = false;
-    player.lastSeenAt = this.now().toISOString();
-    if (room.players.every((candidate) => !candidate.connected)) room.status = 'abandoned';
+
+    if (room.status === 'waiting') {
+      room.players = room.players.filter((candidate) => candidate.id !== player.id);
+      if (room.players.length === 0) {
+        room.status = 'abandoned';
+      } else if (room.hostPlayerId === player.id) {
+        const nextHost = room.players[0];
+        room.hostPlayerId = nextHost.id;
+        for (const candidate of room.players) candidate.host = candidate.id === nextHost.id;
+      }
+    } else {
+      player.connected = false;
+      player.lastSeenAt = this.now().toISOString();
+      if (room.status === 'playing' && room.players.every((candidate) => !candidate.connected)) room.status = 'abandoned';
+    }
+
     this.touch(room);
     this.store.set(room);
     return toPublicRoom(room);
