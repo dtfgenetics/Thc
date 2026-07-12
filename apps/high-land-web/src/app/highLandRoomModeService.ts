@@ -5,7 +5,7 @@ import { createInviteLink } from '../game/multiplayer/inviteLinks';
 import { startRoomSession } from '../game/multiplayer/roomSessionController';
 import { createRoomTransport } from '../game/multiplayer/roomTransportFactory';
 import type { RoomTransport } from '../game/multiplayer/roomTransport';
-import { createLocalPlayerIdentity } from '../game/players/playerIdentity';
+import { createLocalPlayerIdentity, validatePlayerName } from '../game/players/playerIdentity';
 import type { HighLandRoomState } from '../game/multiplayer/roomState';
 import type { GameState } from '../game/types/gameTypes';
 
@@ -45,10 +45,7 @@ export function addLocalTestPlayerMode(room: HighLandRoomState, storage?: Storag
 
 export function startLocalRoomMode(room: HighLandRoomState): StartRoomModeResult {
   const result = startRoomSession(room);
-  return {
-    ...result,
-    message: `${result.leadPlayerName}, roll to begin.`
-  };
+  return { ...result, message: `${result.leadPlayerName}, roll to begin.` };
 }
 
 export async function createTransportRoomMode(
@@ -58,10 +55,9 @@ export async function createTransportRoomMode(
   identityStorage: Storage | undefined = browserSessionStorage()
 ): Promise<RoomModeResult> {
   const identity = createLocalPlayerIdentity(playerName, 0, identityStorage);
-  const now = new Date().toISOString();
   const room = await transport.createRoom({
     ...identity,
-    joinedAt: now,
+    joinedAt: new Date().toISOString(),
     connected: true,
     host: true
   });
@@ -85,9 +81,10 @@ export async function joinTransportRoomMode(
 }
 
 function createNamedLocalPlayer(playerName: string, index: number) {
-  const player = createLocalTestPlayer(index);
-  const name = playerName.trim().replace(/\s+/g, ' ') || player.name;
-  return { ...player, name };
+  const validation = validatePlayerName(playerName);
+  if (!validation.valid) throw new Error(validation.error ?? 'Invalid player name.');
+
+  return { ...createLocalTestPlayer(index), name: validation.value };
 }
 
 function createRoomModeResult(

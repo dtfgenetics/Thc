@@ -48,6 +48,12 @@ describe('High Land room mode service', () => {
     expect(result.playerCount).toBe(4);
   });
 
+  it('rejects blank names when creating a local room', () => {
+    expect(() => createLocalRoomMode('   ', 2, new MemoryStorage())).toThrow(
+      'Player name must be at least 2 characters.'
+    );
+  });
+
   it('joins an existing local room mode', () => {
     const storage = new MemoryStorage();
     const host = createLocalRoomMode('Room Host', 2, storage);
@@ -56,6 +62,23 @@ describe('High Land room mode service', () => {
     expect(guest.room.players).toHaveLength(2);
     expect(guest.localPlayerName).toBe('Guest Player');
     expect(guest.localPlayerId).toBe('local-player-2');
+  });
+
+  it('rejects blank names when joining a local room', () => {
+    const storage = new MemoryStorage();
+    const host = createLocalRoomMode('Room Host', 2, storage);
+
+    expect(() => joinLocalRoomMode(host.room.code, ' ', storage)).toThrow(
+      'Player name must be at least 2 characters.'
+    );
+  });
+
+  it('normalizes extra whitespace in local player names', () => {
+    const storage = new MemoryStorage();
+    const result = createLocalRoomMode('  Room   Host  ', 2, storage);
+
+    expect(result.localPlayerName).toBe('Room Host');
+    expect(result.room.players[0].name).toBe('Room Host');
   });
 
   it('assigns unique IDs to multiple local joiners', () => {
