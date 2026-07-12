@@ -326,6 +326,18 @@ function hashesMatch(left: string, right: string): boolean {
   return leftBuffer.length === rightBuffer.length && timingSafeEqual(leftBuffer, rightBuffer);
 }
 
+function toPublicRoom(room: StoredRoom): PublicRoom {
+  const { processedActionIds, players, ...publicRoom } = room;
+  void processedActionIds;
+  return {
+    ...publicRoom,
+    players: players.map(({ reconnectTokenHash, ...player }) => {
+      void reconnectTokenHash;
+      return player;
+    })
+  };
+}
+
 function clampInteger(value: number, min: number, max: number): number {
   if (!Number.isFinite(value)) return max;
   return Math.min(max, Math.max(min, Math.floor(value)));
