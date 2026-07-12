@@ -45,6 +45,35 @@ test('host and guest can ready, start, and roll through authoritative state', ()
   assert.equal(room.gameState?.currentPlayerIndex, 1);
 });
 
+test('authoritative rooms reject blank or too-short player names', () => {
+  const service = createService();
+
+  assert.throws(
+    () => service.createRoom({ playerName: '   ' }),
+    (error: unknown) => error instanceof RoomServiceError && error.code === 'PLAYER_NAME_REQUIRED' && error.status === 400
+  );
+
+  assert.throws(
+    () => service.createRoom({ playerName: 'A' }),
+    (error: unknown) => error instanceof RoomServiceError && error.code === 'PLAYER_NAME_REQUIRED' && error.status === 400
+  );
+
+  const host = service.createRoom({ playerName: 'Host' });
+  assert.throws(
+    () => service.joinRoom({ roomCode: host.room.code, playerName: '' }),
+    (error: unknown) => error instanceof RoomServiceError && error.code === 'PLAYER_NAME_REQUIRED' && error.status === 400
+  );
+});
+
+test('authoritative rooms normalize player name whitespace and strip simple markup', () => {
+  const service = createService();
+  const host = service.createRoom({ playerName: '  <b>Mango</b>    Mike  ' });
+  const guest = service.joinRoom({ roomCode: host.room.code, playerName: '  Blue    Dreamer  ' });
+
+  assert.equal(host.room.players[0]?.name, 'Mango Mike');
+  assert.equal(guest.room.players[1]?.name, 'Blue Dreamer');
+});
+
 test('duplicate action IDs are idempotent even when the caller retries an old version', () => {
   const service = createService(() => 0);
   const host = service.createRoom({ playerName: 'Host' });
