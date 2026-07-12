@@ -12,6 +12,10 @@ export async function startRoomWithTransport(
     throw new Error('Only the room host can start once at least 2 players have joined.');
   }
 
+  if (transport.startGame) {
+    return transport.startGame(room.code, requestingPlayerId);
+  }
+
   const result = startRoomGameplay(room);
   const updatedRoom = await transport.updateGameState(room.code, result.room.gameState!, requestingPlayerId);
   await appendEventsBestEffort(room.code, result.events, transport);
@@ -31,6 +35,10 @@ export async function rollRoomWithTransport(
 ): Promise<HighLandRoomState> {
   if (!canPlayerRoll(room, requestingPlayerId)) {
     throw new Error('It is not this player’s turn.');
+  }
+
+  if (transport.rollDice) {
+    return transport.rollDice(room.code, requestingPlayerId);
   }
 
   const result = rollRoomGameplay(room, random);

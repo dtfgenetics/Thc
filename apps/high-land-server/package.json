@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "start": "node dist/index.js",
-    "build": "tsc"
+    "build": "tsc",
+    "test": "npm run build && node --test dist/domain/*.test.js dist/http/*.test.js"
   },
   "dependencies": {
     "@colyseus/schema": "latest",

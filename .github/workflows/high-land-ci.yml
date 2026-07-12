@@ -8,6 +8,8 @@ on:
   push:
     branches:
       - main
+      - 'feat/**'
+      - 'fix/**'
 
 jobs:
   build-and-test:
@@ -32,6 +34,9 @@ jobs:
 
       - name: Build High Land
         run: npm run build
+
+      - name: Build and test multiplayer server
+        run: npm run test:server
 
       - name: Install Playwright Chromium
         run: npm --workspace apps/high-land-web exec -- playwright install --with-deps chromium

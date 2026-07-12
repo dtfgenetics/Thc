@@ -61,7 +61,8 @@ export async function createTransportRoomMode(
     connected: true,
     host: true
   });
-  return createRoomModeResult(room, identity.id, identity.name, playerCount);
+  const localPlayerId = transport.getLocalPlayerId?.(room.code) ?? identity.id;
+  return createRoomModeResult(room, localPlayerId, identity.name, playerCount);
 }
 
 export async function joinTransportRoomMode(
@@ -77,7 +78,8 @@ export async function joinTransportRoomMode(
     connected: true,
     host: false
   });
-  return createRoomModeResult(room, identity.id, identity.name, Math.max(2, room.players.length));
+  const localPlayerId = transport.getLocalPlayerId?.(room.code) ?? identity.id;
+  return createRoomModeResult(room, localPlayerId, identity.name, Math.max(2, room.players.length));
 }
 
 function createNamedLocalPlayer(playerName: string, index: number) {
