@@ -74,6 +74,41 @@ test('authoritative rooms normalize player name whitespace and strip simple mark
   assert.equal(guest.room.players[1]?.name, 'Blue Dreamer');
 });
 
+test('a guest who leaves the lobby is removed instead of becoming a ghost player', () => {
+  const service = createService();
+  const host = service.createRoom({ playerName: 'Host' });
+  const guest = service.joinRoom({ roomCode: host.room.code, playerName: 'Guest' });
+
+  const room = service.leaveRoom(host.room.code, {
+    playerId: guest.playerId,
+    reconnectToken: guest.reconnectToken,
+    expectedVersion: guest.room.version
+  });
+
+  assert.equal(room.status, 'waiting');
+  assert.equal(room.players.length, 1);
+  assert.equal(room.players[0]?.id, host.playerId);
+  assert.equal(room.hostPlayerId, host.playerId);
+});
+
+test('host ownership transfers when the host leaves a waiting lobby', () => {
+  const service = createService();
+  const host = service.createRoom({ playerName: 'Host' });
+  const guest = service.joinRoom({ roomCode: host.room.code, playerName: 'Guest' });
+
+  const room = service.leaveRoom(host.room.code, {
+    playerId: host.playerId,
+    reconnectToken: host.reconnectToken,
+    expectedVersion: guest.room.version
+  });
+
+  assert.equal(room.status, 'waiting');
+  assert.equal(room.players.length, 1);
+  assert.equal(room.players[0]?.id, guest.playerId);
+  assert.equal(room.players[0]?.host, true);
+  assert.equal(room.hostPlayerId, guest.playerId);
+});
+
 test('duplicate action IDs are idempotent even when the caller retries an old version', () => {
   const service = createService(() => 0);
   const host = service.createRoom({ playerName: 'Host' });
