@@ -15,6 +15,8 @@ import {
 const ROOM_CODE_ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
 const ROOM_TTL_MS = 24 * 60 * 60 * 1000;
 const MAX_PROCESSED_ACTIONS = 200;
+const MIN_PLAYER_NAME_LENGTH = 2;
+const MAX_PLAYER_NAME_LENGTH = 24;
 const DEFAULT_COLORS = [
   '#ef4444',
   '#f97316',
@@ -229,7 +231,7 @@ export class RoomService {
       rawToken,
       player: {
         id: randomUUID(),
-        name: sanitizeName(name, index),
+        name: sanitizeName(name),
         token: normalizePlayerToken(token, index),
         color: normalizeColor(color, index),
         host,
@@ -283,13 +285,18 @@ function createInitialGameState(players: RoomPlayer[]): AuthoritativeGameState {
   };
 }
 
-function sanitizeName(value: string, index: number): string {
+function sanitizeName(value: string): string {
   const cleaned = String(value ?? '')
     .replace(/<[^>]*>/g, '')
     .replace(/\s+/g, ' ')
     .trim()
-    .slice(0, 24);
-  return cleaned || `Player ${index + 1}`;
+    .slice(0, MAX_PLAYER_NAME_LENGTH);
+
+  if (cleaned.length < MIN_PLAYER_NAME_LENGTH) {
+    throw new RoomServiceError('PLAYER_NAME_REQUIRED', 'Player name must be at least 2 characters.', 400);
+  }
+
+  return cleaned;
 }
 
 function normalizePlayerToken(value: string | undefined, index: number): string {
@@ -319,19 +326,12 @@ function hashesMatch(left: string, right: string): boolean {
   return leftBuffer.length === rightBuffer.length && timingSafeEqual(leftBuffer, rightBuffer);
 }
 
-function clampInteger(value: number, minimum: number, maximum: number): number {
-  const integer = Number.isFinite(value) ? Math.trunc(value) : maximum;
-  return Math.max(minimum, Math.min(maximum, integer));
+function clampInteger(value: number, min: number, max: number): number {
+  if (!Number.isFinite(value)) return max;
+  return Math.min(max, Math.max(min, Math.floor(value)));
 }
 
 function secureUnitRandom(): number {
-  return randomInt(0, 1_000_000) / 1_000_000;
-}
-
-function toPublicRoom(room: StoredRoom): PublicRoom {
-  const { processedActionIds: _processedActionIds, players, ...publicRoom } = structuredClone(room);
-  return {
-    ...publicRoom,
-    players: players.map(({ reconnectTokenHash: _reconnectTokenHash, ...player }) => player)
-  };
+  const value = randomInt(0, Number.MAX_SAFE_INTEGER);
+  return value / Number.MAX_SAFE_INTEGER;
 }
