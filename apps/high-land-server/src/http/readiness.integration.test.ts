@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import type { Server } from 'node:http';
 import { type AddressInfo } from 'node:net';
 import test from 'node:test';
 import { RoomService } from '../domain/RoomService.js';
@@ -55,7 +56,7 @@ async function startServer() {
   return { server, baseUrl: `http://127.0.0.1:${address.port}` };
 }
 
-function closeServer(server: ReturnType<ReturnType<typeof createHttpApp>['listen']>) {
+function closeServer(server: Server) {
   return new Promise<void>((resolve, reject) => {
     server.close((error) => (error ? reject(error) : resolve()));
   });
