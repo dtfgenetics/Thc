@@ -39,6 +39,7 @@ jobs:
         run: npm run test:growlens
 
       - name: Build GrowLens
+        id: build
         shell: bash
         run: |
           set -o pipefail
@@ -61,19 +62,30 @@ jobs:
           test -f apps/growlens-web/dist/sw.js
           test -f apps/growlens-web/dist/icon.svg
 
-      - name: Install Playwright Chromium
-        run: npx playwright install --with-deps chromium
-
-      - name: Run GrowLens browser smoke tests
-        run: npm run test:e2e:growlens
-
       - name: Upload GrowLens build artifact
-        if: success()
+        if: steps.build.outcome == 'success'
         uses: actions/upload-artifact@v4
         with:
           name: growlens-dist
           path: apps/growlens-web/dist
           if-no-files-found: error
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run GrowLens browser smoke tests
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run test:e2e:growlens 2>&1 | tee growlens-e2e.log
+
+      - name: Upload GrowLens browser diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: growlens-e2e-diagnostics
+          path: growlens-e2e.log
+          if-no-files-found: ignore
 
       - name: Upload GrowLens browser artifacts
         if: failure()
