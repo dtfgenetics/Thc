@@ -63,7 +63,10 @@ export function completeOrAdvanceTask(
   completedAt = new Date().toISOString(),
 ): GrowTask {
   const recurrence = normalizeTaskRecurrence(task.recurrence);
-  const completionCount = Math.max(0, Number.isFinite(task.completionCount) ? Number(task.completionCount) : 0) + 1;
+  const previousCompletionCount = typeof task.completionCount === 'number' && Number.isFinite(task.completionCount)
+    ? Math.max(0, task.completionCount)
+    : 0;
+  const completionCount = previousCompletionCount + 1;
 
   if (recurrence === 'none') {
     return {
