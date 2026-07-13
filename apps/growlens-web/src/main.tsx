@@ -6,6 +6,7 @@ import CameraObservationWidget from './CameraObservationWidget';
 import CompleteBackupWidget from './CompleteBackupWidget';
 import ErrorBoundary from './ErrorBoundary';
 import ExternalStateBridge from './ExternalStateBridge';
+import PhotoComparisonWidget from './PhotoComparisonWidget';
 import ReportsHistoryWidget from './ReportsHistoryWidget';
 import TaskRoutineWidget from './TaskRoutineWidget';
 import './styles.css';
@@ -14,6 +15,7 @@ import './camera.css';
 import './reports.css';
 import './backup.css';
 import './routines.css';
+import './photo-comparison.css';
 import './accessibility.css';
 
 createRoot(document.getElementById('root')!).render(
@@ -24,6 +26,7 @@ createRoot(document.getElementById('root')!).render(
       <CompleteBackupWidget />
       <ReportsHistoryWidget />
       <CameraObservationWidget />
+      <PhotoComparisonWidget />
       <AccountSyncWidget />
       <ExternalStateBridge />
     </ErrorBoundary>
