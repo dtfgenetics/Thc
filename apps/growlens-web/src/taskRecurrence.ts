@@ -1,6 +1,5 @@
+import { isValidDateInput, localDateInput } from './dateOnly';
 import type { GrowTask, TaskRecurrence } from './types';
-
-const dateOnlyPattern = /^\d{4}-\d{2}-\d{2}$/;
 
 export const taskRecurrenceLabels: Record<TaskRecurrence, string> = {
   none: 'One time',
@@ -14,14 +13,9 @@ export function normalizeTaskRecurrence(value: unknown): TaskRecurrence {
 }
 
 function parseDateOnly(value: string): Date | null {
-  if (!dateOnlyPattern.test(value)) return null;
+  if (!isValidDateInput(value)) return null;
   const [year, month, day] = value.split('-').map(Number);
-  const date = new Date(Date.UTC(year, month - 1, day));
-  return date.getUTCFullYear() === year
-    && date.getUTCMonth() === month - 1
-    && date.getUTCDate() === day
-    ? date
-    : null;
+  return new Date(Date.UTC(year, month - 1, day));
 }
 
 function formatDateOnly(value: Date): string {
@@ -38,7 +32,7 @@ function addMonthsClamped(value: Date, months: number): Date {
 export function nextRecurringDueDate(
   dueDate: string,
   recurrenceValue: unknown,
-  today = new Date().toISOString().slice(0, 10),
+  today = localDateInput(),
 ): string {
   const recurrence = normalizeTaskRecurrence(recurrenceValue);
   if (recurrence === 'none') return dueDate;
@@ -78,11 +72,13 @@ export function completeOrAdvanceTask(
     };
   }
 
+  const completedDate = new Date(completedAt);
+  const completionDate = localDateInput(completedDate) || completedAt.slice(0, 10);
   return {
     ...task,
     completed: false,
     recurrence,
-    dueDate: nextRecurringDueDate(task.dueDate, recurrence, completedAt.slice(0, 10)),
+    dueDate: nextRecurringDueDate(task.dueDate, recurrence, completionDate),
     lastCompletedAt: completedAt,
     completionCount,
   };
