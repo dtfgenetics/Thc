@@ -148,10 +148,20 @@ test('uploads a processed observation privately with session CSRF protection', a
   await expect(page.getByAltText('Prepared plant observation')).toBeVisible();
   await page.getByRole('button', { name: 'Save photo observation' }).click();
 
-  await expect(page.getByText('Observation saved locally and uploaded privately.')).toBeVisible();
+  await expect.poll(async () => ({
+    messages: await page.locator('.camera-panel .account-message').allTextContents(),
+    uploadHeader,
+    uploadContentType,
+  }), {
+    message: 'Expected private image upload, CSRF header, multipart body, and uploaded status message.',
+    timeout: 7_000,
+  }).toMatchObject({
+    messages: expect.arrayContaining(['Observation saved locally and uploaded privately.']),
+    uploadHeader: 'csrf-photo-test',
+    uploadContentType: expect.stringContaining('multipart/form-data'),
+  });
+
   await expect(page.getByText('Private copy uploaded')).toBeVisible();
-  expect(uploadHeader).toBe('csrf-photo-test');
-  expect(uploadContentType).toContain('multipart/form-data');
 });
 
 test('camera observation panel fits the mobile viewport', async ({ page, isMobile }) => {
