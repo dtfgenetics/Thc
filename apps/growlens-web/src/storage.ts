@@ -3,6 +3,12 @@ import type { GrowLensState } from './types';
 export const STORAGE_KEY = 'thc-growlens-state-v1';
 export const STATE_SAVED_EVENT = 'growlens:state-saved';
 
+export type StateSavedSource = 'app' | 'external';
+export type StateSavedDetail = {
+  source: StateSavedSource;
+  savedAt: string;
+};
+
 export const emptyState: GrowLensState = {
   schemaVersion: 1,
   spaces: [],
@@ -47,12 +53,27 @@ export function loadState(storage: Pick<Storage, 'getItem'> = window.localStorag
   }
 }
 
-export function saveState(state: GrowLensState, storage: Pick<Storage, 'setItem'> = window.localStorage): void {
+function inferStateSource(): StateSavedSource {
+  if (typeof document === 'undefined') return 'app';
+  return document.querySelector('.camera-panel, .account-panel, .reports-panel')
+    ? 'external'
+    : 'app';
+}
+
+export function saveState(
+  state: GrowLensState,
+  storage: Pick<Storage, 'setItem'> = window.localStorage,
+  source?: StateSavedSource,
+): void {
   storage.setItem(STORAGE_KEY, JSON.stringify(state));
   if (typeof window !== 'undefined') {
     try {
       if (storage === window.localStorage) {
-        window.dispatchEvent(new CustomEvent(STATE_SAVED_EVENT));
+        const detail: StateSavedDetail = {
+          source: source ?? inferStateSource(),
+          savedAt: new Date().toISOString(),
+        };
+        window.dispatchEvent(new CustomEvent<StateSavedDetail>(STATE_SAVED_EVENT, { detail }));
       }
     } catch {
       // State was saved; notification support is optional in restricted browsers.
