@@ -20,8 +20,8 @@ The private backup directory must be outside `public_html`. The GrowLens account
 2. Install locked npm dependencies.
 3. Lint every GrowLens PHP file.
 4. Run backend and private-image smoke tests.
-5. Run GrowLens unit tests.
-6. Build the production PWA.
+5. Run GrowLens unit tests and acceptance-client self-tests.
+6. Build the production PWA without publishing JavaScript source maps.
 7. Verify all required frontend and PHP API files, including hidden `api/.htaccess`.
 8. Run the complete desktop/mobile Playwright suite.
 9. Add `deploy.json` containing the exact Git commit and build timestamp.
@@ -31,8 +31,9 @@ The private backup directory must be outside `public_html`. The GrowLens account
 13. Move the current public release aside and atomically move staging into place.
 14. Verify the exact live commit through `deploy.json`.
 15. Verify `api/health.php` returns `ok: true`, `service: growlens-api`, and `storageReady: true`.
-16. Roll back automatically when activation or live verification fails.
-17. Move the previous public release into a private backup directory and keep the five newest release backups.
+16. Confirm direct requests to private API helper files return HTTP 403 or 404.
+17. Roll back automatically when activation or live verification fails.
+18. Move the previous public release into a private backup directory and keep the five newest release backups.
 
 ## Required GitHub environment
 
@@ -44,7 +45,7 @@ growlens-production
 
 Recommended environment protection:
 
-- Require manual approval before the deploy job can access production secrets.
+- Require manual approval before deployment or live acceptance can access production secrets.
 - Restrict deployments to the `main` branch.
 - Do not expose these secrets to pull requests or untrusted branches.
 
@@ -61,6 +62,7 @@ Add these as environment secrets under `growlens-production`:
 | `HOSTINGER_SSH_KNOWN_HOSTS` | Trusted `known_hosts` entry captured independently from Hostinger. The workflow does not trust first connection automatically. |
 | `HOSTINGER_GROWLENS_PATH` | Absolute deployment path ending in `/public_html/growlens`. |
 | `HOSTINGER_GROWLENS_BACKUP_DIR` | Absolute private release-backup path outside `public_html`. |
+| `GROWLENS_ACCEPTANCE_PASSWORD_SEED` | Stable random seed of at least 32 characters used to derive recoverable disposable live-acceptance passwords without logging them. |
 
 Example path shapes only—use the real paths shown by the Hostinger account:
 
@@ -88,7 +90,7 @@ Before the first live release:
 
 ## First safe run
 
-Run the workflow once with:
+Run the deployment workflow once with:
 
 ```txt
 deploy: false
@@ -103,22 +105,32 @@ deploy: true
 confirmation: DEPLOY-GROWLENS
 ```
 
-The deployment is successful only when both the live commit marker and the private-storage health endpoint pass.
+The deployment is successful only when the live commit marker, private-storage health endpoint, and private-helper denial checks pass.
 
 ## Post-deployment acceptance checks
 
-Automated deployment verifies the public release and storage health. The first production release still requires the full account-isolation acceptance test:
+After deployment, run the separate **GrowLens Live Acceptance** workflow from `main` with:
 
-1. Register test account A.
-2. Create records, synchronize, and upload a private image.
-3. Sign in from a second device and confirm the same records and image are available.
-4. Force a stale revision and confirm the server returns HTTP 409 without overwriting either device silently.
-5. Register test account B and confirm it cannot list, fetch, change, or delete account A's records or images.
-6. Export account A's data and create a complete local backup.
-7. Delete account A and confirm its old session, records, and images no longer work.
-8. Restore a separate test copy of the private data directory and repeat health, login, sync, and image-stream checks.
+```txt
+base_url: https://dtfseeds.com/growlens
+confirmation: RUN-DESTRUCTIVE-ACCEPTANCE
+test_email_domain: example.com
+```
 
-Do not call the backend production-ready until those live isolation and restore checks pass.
+The protected workflow automates:
+
+1. Registration of disposable accounts A and B.
+2. Account A record synchronization from device one.
+3. Account A login from a second independent session.
+4. Revision advancement and stale-write HTTP 409 protection.
+5. Account B record and image isolation.
+6. Private image upload, listing, streaming, cache-header checks, and deletion.
+7. Account export and authentication-secret exclusion.
+8. Account deletion, session revocation, credential rejection, and cleanup.
+
+Detailed behavior, rate-limit guidance, and orphaned-run recovery are documented in `docs/GROWLENS_LIVE_ACCEPTANCE.md`.
+
+A separate restored-copy disaster-recovery test of the private data directory is still required. Do not call the backend production-ready until both the automated live acceptance suite and a private-data restore test pass.
 
 ## Rollback boundary
 
