@@ -15,7 +15,11 @@ import {
   putPhoto,
   type LocalPhotoAsset,
 } from './photoStore';
-import { growLensRemoteStore, type AuthenticatedSession } from './remoteStore';
+import {
+  growLensRemoteStore,
+  GrowLensApiError,
+  type AuthenticatedSession,
+} from './remoteStore';
 import { createId, loadState, saveState } from './storage';
 
 function readableError(error: unknown): string {
@@ -225,19 +229,34 @@ export default function CameraObservationWidget() {
   }
 
   async function removePhoto(photoId: string): Promise<void> {
-    if (!window.confirm('Delete this photo from this device and remove its observation link?')) return;
+    if (!window.confirm('Delete this photo from this device, its private account copy, and its observation link?')) return;
     clearMessages();
     setBusy(true);
     try {
       const local = assets.find((asset) => asset.id === photoId);
-      if (local?.uploaded && session) {
+      const mayHavePrivateCopy = !local || local.uploaded;
+      let activeSession = session;
+
+      if (mayHavePrivateCopy && !activeSession) {
+        const current = await growLensRemoteStore.getSession();
+        if (!current.authenticated) {
+          throw new Error('Sign in before deleting a photo that may have a private account copy.');
+        }
+        activeSession = current;
+        setSession(current);
+      }
+
+      if (mayHavePrivateCopy && activeSession) {
         try {
-          await growLensPhotoApi.remove(photoId, session.csrfToken);
+          await growLensPhotoApi.remove(photoId, activeSession.csrfToken);
         } catch (error) {
-          setErrorMessage(`Local copy removed, but server deletion failed: ${readableError(error)}`);
+          if (!(error instanceof GrowLensApiError && error.status === 404)) {
+            throw error;
+          }
         }
       }
-      await deletePhoto(photoId);
+
+      if (local) await deletePhoto(photoId);
       const current = loadState();
       saveState({
         ...current,
@@ -247,7 +266,9 @@ export default function CameraObservationWidget() {
         })),
       });
       setAssets(await listPhotos());
-      setMessage('Photo removed from this device.');
+      setMessage(mayHavePrivateCopy
+        ? 'Photo removed from this device and the private account store.'
+        : 'Photo removed from this device.');
     } catch (error) {
       setErrorMessage(readableError(error));
     } finally {
