@@ -1,0 +1,116 @@
+name: Deploy High Land to Hostinger
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Protected GitHub environment to deploy
+        required: true
+        default: staging
+        type: choice
+        options:
+          - staging
+          - production
+
+permissions:
+  contents: read
+
+concurrency:
+  group: high-land-hostinger-${{ inputs.environment }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run verify:connections
+      - run: npm run test:high-land
+      - run: npm run build:high-land
+      - name: Verify deployable output
+        run: test -f apps/high-land-web/dist/index.html
+      - name: Upload validated build
+        uses: actions/upload-artifact@v4
+        with:
+          name: high-land-${{ github.sha }}
+          path: apps/high-land-web/dist
+          if-no-files-found: error
+          retention-days: 14
+
+  deploy:
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: ${{ inputs.environment }}
+    env:
+      SSH_HOST: ${{ secrets.HOSTINGER_HOST }}
+      SSH_USER: ${{ secrets.HOSTINGER_USER }}
+      SSH_PORT: ${{ secrets.HOSTINGER_PORT }}
+      SSH_PRIVATE_KEY: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY }}
+      SSH_KNOWN_HOSTS: ${{ secrets.HOSTINGER_KNOWN_HOSTS }}
+      REMOTE_PATH: ${{ vars.HOSTINGER_HIGH_LAND_PATH }}
+    steps:
+      - name: Download validated build
+        uses: actions/download-artifact@v4
+        with:
+          name: high-land-${{ github.sha }}
+          path: dist
+
+      - name: Validate protected deployment settings
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${SSH_HOST:?Missing HOSTINGER_HOST}"
+          : "${SSH_USER:?Missing HOSTINGER_USER}"
+          : "${SSH_PRIVATE_KEY:?Missing HOSTINGER_SSH_PRIVATE_KEY}"
+          : "${SSH_KNOWN_HOSTS:?Missing HOSTINGER_KNOWN_HOSTS}"
+          : "${REMOTE_PATH:?Missing HOSTINGER_HIGH_LAND_PATH environment variable}"
+          SSH_PORT="${SSH_PORT:-22}"
+          [[ "$SSH_PORT" =~ ^[0-9]+$ ]]
+          [[ "$REMOTE_PATH" =~ ^[A-Za-z0-9_./-]+$ ]]
+          [[ "$REMOTE_PATH" != *".."* ]]
+          [[ "$REMOTE_PATH" != "/" ]]
+
+      - name: Configure SSH
+        shell: bash
+        run: |
+          set -euo pipefail
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+
+      - name: Back up current remote build
+        shell: bash
+        run: |
+          set -euo pipefail
+          SSH_PORT="${SSH_PORT:-22}"
+          stamp="$(date -u +%Y%m%dT%H%M%SZ)"
+          ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" \
+            "test ! -d '$REMOTE_PATH' || cp -a '$REMOTE_PATH' '${REMOTE_PATH}.backup-${stamp}'"
+
+      - name: Upload build without deleting the backup
+        shell: bash
+        run: |
+          set -euo pipefail
+          SSH_PORT="${SSH_PORT:-22}"
+          ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" "mkdir -p '$REMOTE_PATH'"
+          rsync -az --checksum -e "ssh -p $SSH_PORT" dist/ "$SSH_USER@$SSH_HOST:$REMOTE_PATH/"
+
+      - name: Verify live route
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --location \
+            --retry 3 --retry-delay 5 \
+            https://dtfseeds.com/games/high-land/ > /dev/null
+
+      - name: Record deployed revision
+        run: echo "Deployed $GITHUB_SHA to ${{ inputs.environment }}" >> "$GITHUB_STEP_SUMMARY"
