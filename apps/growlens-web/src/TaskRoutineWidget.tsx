@@ -4,6 +4,7 @@ import {
   useState,
   type FormEvent,
 } from 'react';
+import { localDateInput } from './dateOnly';
 import {
   completeOrAdvanceTask,
   normalizeTaskRecurrence,
@@ -25,10 +26,6 @@ import type {
 const REMINDERS_ENABLED_KEY = 'growlens-task-reminders-enabled-v1';
 const LAST_REMINDER_KEY = 'growlens-task-reminders-last-date-v1';
 const recurrenceOptions: TaskRecurrence[] = ['none', 'daily', 'weekly', 'monthly'];
-
-function todayInput(): string {
-  return new Date().toISOString().slice(0, 10);
-}
 
 function formatDate(value: string): string {
   if (!value) return 'No date';
@@ -65,7 +62,7 @@ export default function TaskRoutineWidget() {
   const [open, setOpen] = useState(false);
   const [state, setState] = useState<GrowLensState>(() => loadState());
   const [title, setTitle] = useState('');
-  const [dueDate, setDueDate] = useState(todayInput());
+  const [dueDate, setDueDate] = useState(localDateInput());
   const [plantId, setPlantId] = useState('');
   const [recurrence, setRecurrence] = useState<TaskRecurrence>('weekly');
   const [message, setMessage] = useState('');
@@ -105,14 +102,14 @@ export default function TaskRoutineWidget() {
     [state.tasks],
   );
   const openTasks = sortedTasks.filter((task) => !task.completed);
-  const overdueTasks = openTasks.filter((task) => task.dueDate && task.dueDate < todayInput());
+  const overdueTasks = openTasks.filter((task) => task.dueDate && task.dueDate < localDateInput());
   const recurringTasks = openTasks.filter((task) => normalizeTaskRecurrence(task.recurrence) !== 'none');
 
   useEffect(() => {
     if (!remindersEnabled || !('Notification' in window) || Notification.permission !== 'granted') return undefined;
 
     const notifyDueTasks = () => {
-      const today = todayInput();
+      const today = localDateInput();
       if (window.localStorage.getItem(LAST_REMINDER_KEY) === today) return;
       const due = state.tasks.filter((task) => !task.completed && task.dueDate && task.dueDate <= today);
       if (due.length === 0) return;
@@ -210,7 +207,7 @@ export default function TaskRoutineWidget() {
         <div className="routines-stats"><article><span>Open</span><strong>{openTasks.length}</strong></article><article><span>Overdue</span><strong>{overdueTasks.length}</strong></article><article><span>Recurring</span><strong>{recurringTasks.length}</strong></article><article><span>Reminders</span><strong>{remindersEnabled ? 'On' : 'Off'}</strong></article></div>
         <div className="routines-layout">
           <section className="routines-card"><h3>Add task or routine</h3><form className="stack-form" onSubmit={addRoutine}><label>Task<input value={title} onChange={(event) => setTitle(event.target.value)} placeholder="Inspect leaf undersides" required /></label><label>Due date<input type="date" value={dueDate} onChange={(event) => setDueDate(event.target.value)} required /></label><label>Repeat<select value={recurrence} onChange={(event) => setRecurrence(event.target.value as TaskRecurrence)}>{recurrenceOptions.map((option) => <option key={option} value={option}>{taskRecurrenceLabels[option]}</option>)}</select></label><label>Plant<select value={plantId} onChange={(event) => setPlantId(event.target.value)}><option value="">Whole grow</option>{state.plants.map((plant) => <option key={plant.id} value={plant.id}>{plant.name} · {plant.strain}</option>)}</select></label><button className="primary-button" type="submit">Add {recurrence === 'none' ? 'task' : 'routine'}</button></form><div className="routines-reminder-box"><strong>Browser reminders</strong><p>GrowLens can notify you about due tasks while the installed PWA or browser page is open. This is not a closed-app background alarm.</p>{remindersEnabled ? <button className="secondary-button" type="button" onClick={disableReminders}>Disable reminders</button> : <button className="secondary-button" type="button" onClick={enableReminders}>Enable due reminders</button>}</div></section>
-          <section className="routines-card"><div className="routines-list-heading"><div><h3>Task schedule</h3><p>{openTasks.length} open · {overdueTasks.length} overdue</p></div></div>{sortedTasks.length ? <div className="routines-list">{sortedTasks.map((task) => { const plant = state.plants.find((candidate) => candidate.id === task.plantId); const normalizedRecurrence = normalizeTaskRecurrence(task.recurrence); return <article className={`routine-row ${task.completed ? 'completed' : ''}`} key={task.id}><button className="routine-check" type="button" onClick={() => toggleTask(task)} aria-label={task.completed ? `Reopen ${task.title}` : `Complete ${task.title}`}>{task.completed ? '✓' : ''}</button><div><div className="routine-title-line"><strong>{task.title}</strong>{normalizedRecurrence !== 'none' ? <span>{taskRecurrenceLabels[normalizedRecurrence]}</span> : null}</div><small className={!task.completed && task.dueDate < todayInput() ? 'danger-text' : ''}>{formatDate(task.dueDate)}{plant ? ` · ${plant.name}` : ''}</small>{(task.completionCount ?? 0) > 0 ? <small>{task.completionCount} completion{task.completionCount === 1 ? '' : 's'} · last {formatDateTime(task.lastCompletedAt)}</small> : null}</div><button className="routine-delete" type="button" onClick={() => deleteTask(task)} aria-label={`Delete ${task.title}`}>×</button></article>; })}</div> : <div className="empty-state"><strong>No tasks yet</strong><span>Add a one-time action or repeatable cultivation routine.</span></div>}</section>
+          <section className="routines-card"><div className="routines-list-heading"><div><h3>Task schedule</h3><p>{openTasks.length} open · {overdueTasks.length} overdue</p></div></div>{sortedTasks.length ? <div className="routines-list">{sortedTasks.map((task) => { const plant = state.plants.find((candidate) => candidate.id === task.plantId); const normalizedRecurrence = normalizeTaskRecurrence(task.recurrence); return <article className={`routine-row ${task.completed ? 'completed' : ''}`} key={task.id}><button className="routine-check" type="button" onClick={() => toggleTask(task)} aria-label={task.completed ? `Reopen ${task.title}` : `Complete ${task.title}`}>{task.completed ? '✓' : ''}</button><div><div className="routine-title-line"><strong>{task.title}</strong>{normalizedRecurrence !== 'none' ? <span>{taskRecurrenceLabels[normalizedRecurrence]}</span> : null}</div><small className={!task.completed && task.dueDate < localDateInput() ? 'danger-text' : ''}>{formatDate(task.dueDate)}{plant ? ` · ${plant.name}` : ''}</small>{(task.completionCount ?? 0) > 0 ? <small>{task.completionCount} completion{task.completionCount === 1 ? '' : 's'} · last {formatDateTime(task.lastCompletedAt)}</small> : null}</div><button className="routine-delete" type="button" onClick={() => deleteTask(task)} aria-label={`Delete ${task.title}`}>×</button></article>; })}</div> : <div className="empty-state"><strong>No tasks yet</strong><span>Add a one-time action or repeatable cultivation routine.</span></div>}</section>
         </div>
       </section>
     </div> : null}
