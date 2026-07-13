@@ -56,6 +56,7 @@ describe('High Land app flow', () => {
 
     expect(state.screenMode).toBe('lobby');
     expect(state.room?.code).toBe('ABCD23');
+    expect(state.statusMessage).toBe('Room ABCD23 is live. Share the invite link with the other players.');
   });
 
   it('returns to landing after leaving a room', () => {
