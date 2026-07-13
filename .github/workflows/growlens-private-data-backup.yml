@@ -1,0 +1,351 @@
+name: GrowLens Private Data Backup
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: Type BACKUP-AND-RESTORE-AUDIT
+        required: true
+        type: string
+      retention:
+        description: Number of verified private archives to retain
+        required: true
+        type: number
+        default: 7
+      max_gigabytes:
+        description: Maximum uncompressed private-data size for this run
+        required: true
+        type: number
+        default: 5
+
+permissions:
+  contents: read
+
+concurrency:
+  group: growlens-private-data-backup
+  cancel-in-progress: false
+
+jobs:
+  backup-and-audit:
+    name: Snapshot, archive, extract, and audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: growlens-production
+
+    env:
+      SSH_HOST: ${{ secrets.HOSTINGER_SSH_HOST }}
+      SSH_PORT: ${{ secrets.HOSTINGER_SSH_PORT }}
+      SSH_USER: ${{ secrets.HOSTINGER_SSH_USER }}
+      SSH_PRIVATE_KEY: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY }}
+      SSH_KNOWN_HOSTS: ${{ secrets.HOSTINGER_SSH_KNOWN_HOSTS }}
+      DATA_ROOT: ${{ secrets.HOSTINGER_GROWLENS_DATA_DIR }}
+      BACKUP_ROOT: ${{ secrets.HOSTINGER_GROWLENS_DATA_BACKUP_DIR }}
+      BACKUP_CONFIRMATION: ${{ inputs.confirmation }}
+      RETENTION: ${{ inputs.retention }}
+      MAX_GIGABYTES: ${{ inputs.max_gigabytes }}
+
+    steps:
+      - name: Require main and exact destructive confirmation
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "$GITHUB_REF" != "refs/heads/main" ]]; then
+            echo "Private-data backup audits must run from main." >&2
+            exit 1
+          fi
+          if [[ "$BACKUP_CONFIRMATION" != "BACKUP-AND-RESTORE-AUDIT" ]]; then
+            echo "Confirmation did not match BACKUP-AND-RESTORE-AUDIT." >&2
+            exit 1
+          fi
+
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate local backup tooling
+        shell: bash
+        run: |
+          set -euo pipefail
+          php -l scripts/growlens-private-data-common.php
+          php -l scripts/growlens-private-data-snapshot.php
+          php -l scripts/growlens-private-data-audit.php
+          php -l apps/growlens-web/public/api/_operations.php
+          php apps/growlens-web/tests/php-private-data-tools-smoke.php
+
+      - name: Validate secrets and private paths
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${SSH_HOST:?HOSTINGER_SSH_HOST is required}"
+          : "${SSH_USER:?HOSTINGER_SSH_USER is required}"
+          : "${SSH_PRIVATE_KEY:?HOSTINGER_SSH_PRIVATE_KEY is required}"
+          : "${SSH_KNOWN_HOSTS:?HOSTINGER_SSH_KNOWN_HOSTS is required}"
+          : "${DATA_ROOT:?HOSTINGER_GROWLENS_DATA_DIR is required}"
+          : "${BACKUP_ROOT:?HOSTINGER_GROWLENS_DATA_BACKUP_DIR is required}"
+          SSH_PORT="${SSH_PORT:-22}"
+
+          if ! [[ "$SSH_HOST" =~ ^[A-Za-z0-9.-]+$ ]]; then
+            echo "HOSTINGER_SSH_HOST contains unsupported characters." >&2
+            exit 1
+          fi
+          if ! [[ "$SSH_USER" =~ ^[A-Za-z0-9._-]+$ ]]; then
+            echo "HOSTINGER_SSH_USER contains unsupported characters." >&2
+            exit 1
+          fi
+          if ! [[ "$SSH_PORT" =~ ^[0-9]+$ ]] || ((SSH_PORT < 1 || SSH_PORT > 65535)); then
+            echo "HOSTINGER_SSH_PORT must be a valid TCP port." >&2
+            exit 1
+          fi
+          if ! [[ "$RETENTION" =~ ^[0-9]+$ ]] || ((RETENTION < 2 || RETENTION > 30)); then
+            echo "Retention must be between 2 and 30 archives." >&2
+            exit 1
+          fi
+          if ! [[ "$MAX_GIGABYTES" =~ ^[0-9]+$ ]] || ((MAX_GIGABYTES < 1 || MAX_GIGABYTES > 50)); then
+            echo "Maximum size must be between 1 and 50 GB." >&2
+            exit 1
+          fi
+
+          data="${DATA_ROOT%/}"
+          backup="${BACKUP_ROOT%/}"
+          for path in "$data" "$backup"; do
+            if ! [[ "$path" =~ ^/[A-Za-z0-9._/-]+$ ]] || [[ "$path" == *".."* || "$path" == *"/public_html"* ]]; then
+              echo "GrowLens private paths must be absolute safe paths outside public_html." >&2
+              exit 1
+            fi
+          done
+          if [[ "$data" == "$backup" || "$data" == "$backup"/* || "$backup" == "$data"/* ]]; then
+            echo "Private live data and backup roots must not contain one another." >&2
+            exit 1
+          fi
+
+          run_stamp="$(date -u +%Y%m%dT%H%M%SZ)"
+          archive_name="growlens-private-${run_stamp}-${GITHUB_SHA::12}.tar.gz"
+          remote_work="${backup}/.work-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          max_bytes="$((MAX_GIGABYTES * 1024 * 1024 * 1024))"
+
+          echo "SSH_PORT=${SSH_PORT}" >> "$GITHUB_ENV"
+          echo "DATA_ROOT=${data}" >> "$GITHUB_ENV"
+          echo "BACKUP_ROOT=${backup}" >> "$GITHUB_ENV"
+          echo "ARCHIVE_NAME=${archive_name}" >> "$GITHUB_ENV"
+          echo "REMOTE_WORK=${remote_work}" >> "$GITHUB_ENV"
+          echo "MAX_BYTES=${max_bytes}" >> "$GITHUB_ENV"
+
+      - name: Configure strict SSH trust
+        shell: bash
+        run: |
+          set -euo pipefail
+          install -d -m 700 "$HOME/.ssh"
+          printf '%s\n' "$SSH_PRIVATE_KEY" | tr -d '\r' > "$HOME/.ssh/growlens_backup_key"
+          chmod 600 "$HOME/.ssh/growlens_backup_key"
+          printf '%s\n' "$SSH_KNOWN_HOSTS" | tr -d '\r' > "$HOME/.ssh/known_hosts"
+          chmod 600 "$HOME/.ssh/known_hosts"
+          ssh -i "$HOME/.ssh/growlens_backup_key" \
+            -p "$SSH_PORT" \
+            -o BatchMode=yes \
+            -o IdentitiesOnly=yes \
+            -o StrictHostKeyChecking=yes \
+            "$SSH_USER@$SSH_HOST" 'printf "Hostinger SSH connection verified.\n"'
+
+      - name: Verify remote backup prerequisites
+        shell: bash
+        run: |
+          set -euo pipefail
+          ssh -i "$HOME/.ssh/growlens_backup_key" -p "$SSH_PORT" \
+            -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
+            "$SSH_USER@$SSH_HOST" \
+            "set -eu; command -v bash >/dev/null; command -v php >/dev/null; command -v tar >/dev/null; command -v sha256sum >/dev/null; test -d '$DATA_ROOT'; test -r '$DATA_ROOT'; mkdir -p '$BACKUP_ROOT'; chmod 700 '$BACKUP_ROOT'; test -w '$BACKUP_ROOT'; for required in users email-index sessions data; do test -d '$DATA_ROOT'/\"\$required\"; done; php -r 'exit(PHP_VERSION_ID >= 80100 ? 0 : 1);'; php -m | grep -qi '^fileinfo$'; df -Pk '$DATA_ROOT' '$BACKUP_ROOT'"
+
+      - name: Upload private backup tools
+        shell: bash
+        run: |
+          set -euo pipefail
+          ssh -i "$HOME/.ssh/growlens_backup_key" -p "$SSH_PORT" \
+            -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
+            "$SSH_USER@$SSH_HOST" \
+            "set -eu; rm -rf '$REMOTE_WORK'; mkdir -p '$REMOTE_WORK/tools'; chmod 700 '$REMOTE_WORK' '$REMOTE_WORK/tools'"
+          scp -i "$HOME/.ssh/growlens_backup_key" -P "$SSH_PORT" \
+            -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
+            scripts/growlens-private-data-common.php \
+            scripts/growlens-private-data-snapshot.php \
+            scripts/growlens-private-data-audit.php \
+            "$SSH_USER@$SSH_HOST:$REMOTE_WORK/tools/"
+          ssh -i "$HOME/.ssh/growlens_backup_key" -p "$SSH_PORT" \
+            -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
+            "$SSH_USER@$SSH_HOST" \
+            "set -eu; chmod 600 '$REMOTE_WORK'/tools/*.php; php -l '$REMOTE_WORK/tools/growlens-private-data-common.php'; php -l '$REMOTE_WORK/tools/growlens-private-data-snapshot.php'; php -l '$REMOTE_WORK/tools/growlens-private-data-audit.php'"
+
+      - name: Create archive and audit an extracted restored copy
+        shell: bash
+        run: |
+          set -euo pipefail
+          ssh -i "$HOME/.ssh/growlens_backup_key" -p "$SSH_PORT" \
+            -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
+            "$SSH_USER@$SSH_HOST" \
+            bash -s -- "$DATA_ROOT" "$BACKUP_ROOT" "$REMOTE_WORK" "$ARCHIVE_NAME" "$GITHUB_SHA" "$MAX_BYTES" "$RETENTION" <<'REMOTE_SCRIPT'
+          set -euo pipefail
+          data_root="$1"
+          backup_root="$2"
+          work="$3"
+          archive_name="$4"
+          commit="$5"
+          max_bytes="$6"
+          retention="$7"
+          tools="$work/tools"
+          snapshot="$work/snapshot"
+          restored="$work/restored"
+          reports="$work/reports"
+          archive="$backup_root/$archive_name"
+          archive_tmp="$archive.tmp"
+          summary="$backup_root/$archive_name.summary.json"
+          checksum="$backup_root/$archive_name.sha256"
+          snapshot_audit="$reports/snapshot-audit.json"
+          restore_audit="$reports/restored-copy-audit.json"
+
+          cleanup() {
+            rm -rf -- "$work"
+            rm -f -- "$archive_tmp"
+          }
+          trap cleanup EXIT
+
+          mkdir -p "$reports"
+          chmod 700 "$reports"
+          php "$tools/growlens-private-data-snapshot.php" \
+            --source="$data_root" \
+            --destination="$snapshot" \
+            --commit="$commit" \
+            --max-bytes="$max_bytes" \
+            --lock-wait-seconds=120 > "$reports/snapshot-result.json"
+          chmod 600 "$reports/snapshot-result.json"
+
+          php "$tools/growlens-private-data-audit.php" \
+            --root="$snapshot" \
+            --strict-permissions=true \
+            --output="$snapshot_audit" > /dev/null
+
+          tar -C "$snapshot" -czf "$archive_tmp" .
+          chmod 600 "$archive_tmp"
+          mv "$archive_tmp" "$archive"
+          (
+            cd "$backup_root"
+            sha256sum "$archive_name" > "$archive_name.sha256"
+          )
+          chmod 600 "$checksum"
+
+          mkdir -p "$restored"
+          chmod 700 "$restored"
+          tar -C "$restored" -xzf "$archive" --no-same-owner
+          chmod 700 "$restored"
+          php "$tools/growlens-private-data-audit.php" \
+            --root="$restored" \
+            --strict-permissions=true \
+            --output="$restore_audit" > /dev/null
+
+          php -r '
+            [$snapshotPath, $restorePath] = array_slice($argv, 1);
+            $snapshot = json_decode(file_get_contents($snapshotPath), true, 512, JSON_THROW_ON_ERROR);
+            $restore = json_decode(file_get_contents($restorePath), true, 512, JSON_THROW_ON_ERROR);
+            foreach (["entriesDigest", "manifestSha256", "commit"] as $field) {
+                if (!isset($snapshot[$field], $restore[$field]) || !hash_equals((string)$snapshot[$field], (string)$restore[$field])) {
+                    fwrite(STDERR, "Snapshot and restored-copy audit differ for {$field}.\n");
+                    exit(1);
+                }
+            }
+            if (($snapshot["ok"] ?? false) !== true || ($restore["ok"] ?? false) !== true) {
+                fwrite(STDERR, "Snapshot or restored-copy audit did not pass.\n");
+                exit(1);
+            }
+          ' "$snapshot_audit" "$restore_audit"
+
+          cp "$snapshot_audit" "$backup_root/$archive_name.snapshot-audit.json"
+          cp "$restore_audit" "$backup_root/$archive_name.restored-copy-audit.json"
+          chmod 600 "$backup_root/$archive_name.snapshot-audit.json" "$backup_root/$archive_name.restored-copy-audit.json"
+
+          php -r '
+            [$archiveName, $checksumPath, $snapshotPath, $restorePath, $outputPath] = array_slice($argv, 1);
+            $snapshot = json_decode(file_get_contents($snapshotPath), true, 512, JSON_THROW_ON_ERROR);
+            $restore = json_decode(file_get_contents($restorePath), true, 512, JSON_THROW_ON_ERROR);
+            $checksum = trim((string)file_get_contents($checksumPath));
+            $summary = [
+                "ok" => true,
+                "app" => "THC GrowLens",
+                "archive" => $archiveName,
+                "createdAt" => gmdate("c"),
+                "commit" => $snapshot["commit"] ?? "",
+                "entriesDigest" => $snapshot["entriesDigest"] ?? "",
+                "manifestSha256" => $snapshot["manifestSha256"] ?? "",
+                "archiveSha256" => strtok($checksum, " "),
+                "counts" => $restore["counts"] ?? []
+            ];
+            file_put_contents($outputPath, json_encode($summary, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . PHP_EOL, LOCK_EX);
+            chmod($outputPath, 0600);
+          ' "$archive_name" "$checksum" "$snapshot_audit" "$restore_audit" "$summary"
+
+          mapfile -t archives < <(find "$backup_root" -maxdepth 1 -type f -name 'growlens-private-*.tar.gz' -printf '%T@ %f\n' | sort -nr | awk '{print $2}')
+          if ((${#archives[@]} > retention)); then
+            for old in "${archives[@]:retention}"; do
+              rm -f -- \
+                "$backup_root/$old" \
+                "$backup_root/$old.sha256" \
+                "$backup_root/$old.summary.json" \
+                "$backup_root/$old.snapshot-audit.json" \
+                "$backup_root/$old.restored-copy-audit.json"
+            done
+          fi
+          REMOTE_SCRIPT
+
+      - name: Download non-sensitive verification reports
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p backup-verification
+          chmod 700 backup-verification
+          for suffix in \
+            sha256 \
+            summary.json \
+            snapshot-audit.json \
+            restored-copy-audit.json; do
+            scp -i "$HOME/.ssh/growlens_backup_key" -P "$SSH_PORT" \
+              -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
+              "$SSH_USER@$SSH_HOST:$BACKUP_ROOT/$ARCHIVE_NAME.$suffix" \
+              "backup-verification/$ARCHIVE_NAME.$suffix"
+          done
+          chmod 600 backup-verification/*
+
+      - name: Upload verification reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: growlens-private-backup-verification-${{ github.run_id }}
+          path: backup-verification
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Publish verified backup summary
+        shell: bash
+        run: |
+          set -euo pipefail
+          SUMMARY_PATH="backup-verification/$ARCHIVE_NAME.summary.json" node <<'NODE' >> "$GITHUB_STEP_SUMMARY"
+          const fs = require('node:fs');
+          const summary = JSON.parse(fs.readFileSync(process.env.SUMMARY_PATH, 'utf8'));
+          const counts = summary.counts ?? {};
+          console.log('## GrowLens private-data backup verified');
+          console.log('');
+          console.log(`- Archive: \`${summary.archive}\``);
+          console.log(`- Commit: \`${summary.commit}\``);
+          console.log(`- Manifest digest: \`${summary.entriesDigest}\``);
+          console.log(`- Archive checksum: \`${summary.archiveSha256}\``);
+          console.log(`- Users: ${counts.users ?? 0}`);
+          console.log(`- State records: ${counts.stateRecords ?? 0}`);
+          console.log(`- Private images: ${counts.images ?? 0}`);
+          console.log('- Snapshot audit: passed');
+          console.log('- Extracted restored-copy audit: passed');
+          console.log('- Live data was not replaced or modified.');
+          NODE
+
+      - name: Remove remote work directory after an interrupted step
+        if: always()
+        shell: bash
+        run: |
+          if [[ -f "$HOME/.ssh/growlens_backup_key" ]] && [[ -n "${REMOTE_WORK:-}" ]]; then
+            ssh -i "$HOME/.ssh/growlens_backup_key" -p "${SSH_PORT:-22}" \
+              -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
+              "$SSH_USER@$SSH_HOST" "rm -rf -- '$REMOTE_WORK'" || true
+          fi
