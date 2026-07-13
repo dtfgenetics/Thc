@@ -22,10 +22,22 @@ function formatDateOnly(value: Date): string {
   return value.toISOString().slice(0, 10);
 }
 
-function addMonthsClamped(value: Date, months: number): Date {
+function validAnchorDay(value: unknown): number | null {
+  return typeof value === 'number' && Number.isInteger(value) && value >= 1 && value <= 31
+    ? value
+    : null;
+}
+
+export function recurrenceAnchorDay(dueDate: string, recurrenceValue: unknown): number | null {
+  if (normalizeTaskRecurrence(recurrenceValue) !== 'monthly') return null;
+  const parsed = parseDateOnly(dueDate);
+  return parsed ? parsed.getUTCDate() : null;
+}
+
+function addMonthsClamped(value: Date, months: number, preferredDay: number): Date {
   const targetMonth = new Date(Date.UTC(value.getUTCFullYear(), value.getUTCMonth() + months, 1));
   const lastDay = new Date(Date.UTC(targetMonth.getUTCFullYear(), targetMonth.getUTCMonth() + 1, 0)).getUTCDate();
-  targetMonth.setUTCDate(Math.min(value.getUTCDate(), lastDay));
+  targetMonth.setUTCDate(Math.min(preferredDay, lastDay));
   return targetMonth;
 }
 
@@ -33,6 +45,7 @@ export function nextRecurringDueDate(
   dueDate: string,
   recurrenceValue: unknown,
   today = localDateInput(),
+  monthlyAnchorDay?: number | null,
 ): string {
   const recurrence = normalizeTaskRecurrence(recurrenceValue);
   if (recurrence === 'none') return dueDate;
@@ -46,7 +59,8 @@ export function nextRecurringDueDate(
   } else if (recurrence === 'weekly') {
     anchor.setUTCDate(anchor.getUTCDate() + 7);
   } else {
-    return formatDateOnly(addMonthsClamped(anchor, 1));
+    const preferredDay = validAnchorDay(monthlyAnchorDay) ?? parsedDueDate.getUTCDate();
+    return formatDateOnly(addMonthsClamped(anchor, 1, preferredDay));
   }
 
   return formatDateOnly(anchor);
@@ -67,6 +81,7 @@ export function completeOrAdvanceTask(
       ...task,
       completed: true,
       recurrence,
+      recurrenceAnchorDay: null,
       lastCompletedAt: completedAt,
       completionCount,
     };
@@ -74,11 +89,15 @@ export function completeOrAdvanceTask(
 
   const completedDate = new Date(completedAt);
   const completionDate = localDateInput(completedDate) || completedAt.slice(0, 10);
+  const monthlyAnchorDay = recurrence === 'monthly'
+    ? validAnchorDay(task.recurrenceAnchorDay) ?? recurrenceAnchorDay(task.dueDate, recurrence)
+    : null;
   return {
     ...task,
     completed: false,
     recurrence,
-    dueDate: nextRecurringDueDate(task.dueDate, recurrence, completionDate),
+    recurrenceAnchorDay: monthlyAnchorDay,
+    dueDate: nextRecurringDueDate(task.dueDate, recurrence, completionDate, monthlyAnchorDay),
     lastCompletedAt: completedAt,
     completionCount,
   };
