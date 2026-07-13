@@ -5,15 +5,18 @@ import App from './App';
 import CameraObservationWidget from './CameraObservationWidget';
 import ErrorBoundary from './ErrorBoundary';
 import ExternalStateBridge from './ExternalStateBridge';
+import ReportsHistoryWidget from './ReportsHistoryWidget';
 import './styles.css';
 import './account.css';
 import './camera.css';
+import './reports.css';
 import './accessibility.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ErrorBoundary>
       <App />
+      <ReportsHistoryWidget />
       <CameraObservationWidget />
       <AccountSyncWidget />
       <ExternalStateBridge />
