@@ -6,23 +6,28 @@ GrowLens is a mobile-first, local-first cultivation management PWA. It is intent
 
 - Responsive dashboard and mobile navigation
 - Grow spaces, cycles, and plant records
-- Searchable diary
-- Tasks and due dates
-- Environment readings
+- Searchable diary and unified plant timelines
+- One-time and recurring tasks with completion history
+- Honest active-page browser reminders
+- Environment readings and trend reports
 - VPD and DLI calculators
-- Lux-to-PPFD estimates with saved calibration profiles
+- Lux-to-PPFD estimates with saved and reference-meter-derived calibration profiles
 - 3 × 3 canopy mapping and uniformity calculation
 - Structured plant observation and transparent diagnostic rules
 - Camera/file photo observations
 - Browser-side photo resizing, JPEG re-encoding, and original metadata removal
 - Offline photo blobs in IndexedDB
 - Optional authenticated private photo upload on Hostinger
-- JSON backup and restore for grow records
+- Plant-filtered photo history and chronological side-by-side comparison
+- Printable reports and CSV exports
+- JSON record backup and restore
+- Complete backup and atomic restore for records plus local IndexedDB photos
 - Versioned browser storage
 - PWA manifest, privacy-safe service worker, and offline shell
 - Optional Hostinger accounts and cross-device synchronization
 - Explicit local/server conflict resolution: keep device, keep account, or merge
 - Account export, logout, and password-confirmed deletion
+- Guarded Hostinger deployment, private-data snapshots, and recovery-audit tooling
 - PHP, unit, and Playwright browser tests
 
 ## Local-first behavior
@@ -56,14 +61,17 @@ Private images are streamed only through an authenticated endpoint with `Cache-C
 
 Deleting a server account also deletes its private image directory. Deleting an individual photo removes its local blob, observation link, and private server copy when one exists. GrowLens blocks the local deletion when it cannot authenticate deletion of a possible private copy.
 
+The photo-history module reads local blobs through temporary object URLs and private images through the existing authenticated endpoint. It does not copy image bytes into localStorage or synchronized JSON.
+
 ## Important limitations
 
 - Cross-device sync and private images require the PHP API to be deployed and configured with private storage outside `public_html`.
-- JSON account sync carries photo IDs and observations, but the image bytes use separate authenticated endpoints.
-- A JSON-only backup does not contain IndexedDB photo blobs. Private account images require a separate server directory backup until a packaged media-export feature is added.
-- Lux-to-PPFD and phone-camera readings are estimates that require fixture/device-specific calibration.
-- Diagnostic results are possible causes, not confirmed diagnoses.
-- Browser notifications and automatic background synchronization are not active yet.
+- JSON account sync carries photo IDs and observations, while image bytes use separate authenticated endpoints.
+- Complete local backups include local IndexedDB photo bytes. Private server images still require the server-side private-data backup process.
+- Lux-to-PPFD and phone-camera-derived readings are estimates that require fixture/device-specific calibration.
+- Diagnostic results are possible causes, not confirmed deficiencies, diseases, or pests.
+- Browser reminders currently depend on the app being open; closed-app push delivery is not active.
+- Synchronization is user-controlled. Conflict-safe automatic background synchronization is not active.
 
 ## Commands
 
@@ -83,6 +91,7 @@ Backend smoke tests:
 ```bash
 php apps/growlens-web/tests/php-backend-smoke.php
 php apps/growlens-web/tests/php-image-storage-smoke.php
+php apps/growlens-web/tests/php-private-data-tools-smoke.php
 ```
 
 Development URL:
@@ -132,13 +141,16 @@ docs/GROWLENS_HOSTINGER_BACKEND.md
 
 The Vite build uses relative asset paths so the app can run below a subdirectory. The service worker excludes all `/api/` traffic and respects `Cache-Control: no-store`; authenticated records and images must never enter the offline shell cache.
 
+Production deployment is intentionally manual and guarded. Run the `Deploy GrowLens to Hostinger` workflow from `main`, enable the deployment input, and supply the required confirmation phrase only after the release checks pass.
+
 ## Remaining production gates
 
-- Packaged export/import for local IndexedDB photo blobs
-- Server-media backup monitoring and restore drill
-- Conflict-safe automatic background synchronization
-- Two-account and two-device live isolation tests
-- Larger photo galleries, comparison views, and time-series reports
-- Browser notifications and recurring task reminders
+- Run the guarded production deployment and complete a live desktop/mobile smoke test
+- Run the protected two-account/two-device live isolation acceptance workflow
+- Confirm scheduled private-media backups on Hostinger and perform a documented live restore drill
+- Add conflict-safe automatic background synchronization without silent overwrites
+- Add closed-app reminder delivery only if it can be implemented without weakening privacy or adding unnecessary recurring costs
+- Expand structured irrigation, feeding, harvest, and observation-outcome records
+- Validate light-estimation calibration on real supported devices and publish an honest compatibility list
 
 Never put server secrets, password hashes, raw session tokens, private images, or private storage paths into browser code or public files.
