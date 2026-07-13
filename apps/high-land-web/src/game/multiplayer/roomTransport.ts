@@ -18,7 +18,7 @@ export type RoomTransport = {
   subscribe(roomCode: string, onSnapshot: (snapshot: RoomTransportSnapshot) => void): () => void;
 };
 
-export function createOfflineRoomTransport(reason = 'Supabase multiplayer is not connected yet.'): RoomTransport {
+export function createOfflineRoomTransport(reason = 'Online room service is unavailable. Local play can still be used.'): RoomTransport {
   return {
     async createRoom() {
       throw new Error(reason);
