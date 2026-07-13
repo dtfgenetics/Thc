@@ -17,7 +17,7 @@ apps/high-land-web/src/game/multiplayer/inviteLinks.ts
 apps/high-land-web/src/game/multiplayer/roomState.ts
 apps/high-land-web/src/game/multiplayer/localRoomStorage.ts
 apps/high-land-web/src/game/multiplayer/localRoomRepository.ts
-apps/high-land-web/src/game/multiplayer/supabaseClient.ts
+apps/high-land-web/src/game/multiplayer/websiteRoomTransport.ts
 apps/high-land-web/src/game/events/gameEvents.ts
 apps/high-land-web/src/game/events/eventReducer.ts
 apps/high-land-web/src/game/board/boardCalibration.ts
@@ -84,23 +84,24 @@ Acceptance:
 - Host can start after at least 2 players.
 ```
 
-This is still same-device/local fallback until Supabase is connected.
+Local mode remains a same-device fallback. The live route uses website transport.
 
-### Step 4 — Prepare live Supabase multiplayer
+### Step 4 — Verify live Hostinger multiplayer
 
 Use:
 
 ```txt
-docs/HIGH_LAND_SUPABASE_SCHEMA_DRAFT.md
-supabaseClient.ts
+docs/BACKEND_DECISION.md
+websiteRoomApi.ts
+websiteRoomTransport.ts
 ```
 
 Acceptance:
 
 ```txt
-- Missing Supabase env vars do not crash local play.
-- Real Supabase client is added only after env vars and schema are approved.
-- No service-role key is used in browser code.
+- Missing/unavailable website API does not crash local play.
+- Same-origin production API is selected automatically.
+- No server credential is used in browser code.
 ```
 
 ### Step 5 — Production runtime verification
@@ -142,7 +143,7 @@ Tests run:
 Build status:
 What works:
 What is still local-only:
-What needs Supabase dashboard setup:
+What needs Hostinger room API verification:
 What needs Hostinger/WordPress verification:
 Next recommended issue:
 ```
