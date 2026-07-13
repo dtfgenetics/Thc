@@ -1,4 +1,8 @@
-# High Land Supabase Schema Draft
+# High Land Supabase Schema Draft — Legacy, Not Selected
+
+> Historical planning only. The locked backend is the Hostinger PHP Website
+> Room API defined in `docs/BACKEND_DECISION.md`. Do not implement this schema
+> unless the user explicitly replaces that decision.
 
 This is a design draft, not an executable migration. Keep `.mcp.json` read-only until this is reviewed.
 

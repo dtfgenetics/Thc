@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { createOfflineRoomTransport } from './roomTransport';
 
 describe('room transport', () => {
-  it('reports offline snapshots when Supabase is not connected', () => {
+  it('reports offline snapshots when the online room service is unavailable', () => {
     const transport = createOfflineRoomTransport('offline test');
     const snapshots: string[] = [];
 

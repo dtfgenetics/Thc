@@ -1,79 +1,48 @@
 # High Land Multiplayer Transports
 
-High Land now has a transport boundary so the app can move from local fallback to live Supabase multiplayer without a rewrite.
+The room transport boundary supports offline/local development and the selected
+Hostinger Website Room API without changing game rules.
 
 ## Current files
 
 ```txt
 apps/high-land-web/src/game/multiplayer/roomTransport.ts
 apps/high-land-web/src/game/multiplayer/localRoomTransport.ts
-apps/high-land-web/src/game/multiplayer/supabaseRoomTransport.ts
+apps/high-land-web/src/game/multiplayer/websiteRoomApi.ts
+apps/high-land-web/src/game/multiplayer/websiteRoomTransport.ts
+apps/high-land-web/src/game/multiplayer/roomTransportFactory.ts
 ```
 
 ## Transport roles
 
-### roomTransport.ts
+### Local transport
 
-Shared contract.
+Used for offline development, automated tests, pass-and-play, and recovery when
+the online room service is unavailable.
 
-Defines:
+### Website transport
 
-```txt
-createRoom
-joinRoom
-updateGameState
-appendEvent
-subscribe
-```
+Selected automatically on `dtfseeds.com/games/high-land/`. It calls the PHP API
+under the same route and polls room snapshots every two seconds.
 
-Also provides `createOfflineRoomTransport()` so unfinished network transports fail safely.
+Required behavior:
 
-### localRoomTransport.ts
+- create a room and identify its host;
+- join by room code;
+- update authoritative game state;
+- append auditable game events;
+- poll snapshots and report connection errors;
+- preserve invite codes across refresh/reconnect.
 
-Works now.
+## Production rule
 
-Uses local storage so development can test room creation, joining, game-state updates, and snapshot reads without Supabase.
+The locked backend is defined in `docs/BACKEND_DECISION.md`. Do not reconnect
+Supabase or introduce a parallel room authority. A replacement requires an
+explicit decision, migration, cost review, security review, and rollback plan.
 
-Use this for:
+## Completion evidence
 
-```txt
-local fallback
-UI development
-room and lobby testing
-non-production multiplayer simulation
-```
-
-### supabaseRoomTransport.ts
-
-Safe stub.
-
-Checks whether Supabase frontend env vars exist. It does not claim live sync is complete. It returns an offline transport until real Supabase room sync is implemented.
-
-Use this later for:
-
-```txt
-production multiplayer
-schema-backed rooms
-realtime sync
-multi-browser sessions
-```
-
-## Do not do
-
-```txt
-Do not commit service-role keys.
-Do not put database passwords in VITE env vars.
-Do not claim multiplayer is done while supabaseRoomTransport is still a stub.
-Do not remove read_only=true from .mcp.json until schema/migration work is approved.
-```
-
-## Next implementation order
-
-```txt
-1. Use localRoomTransport in App for the lobby fallback.
-2. Convert the schema draft into a reviewed Supabase migration.
-3. Implement createRoom and joinRoom against Supabase tables.
-4. Implement subscribe with Supabase Realtime.
-5. Test two browsers joining one room.
-6. Only then call multiplayer production-ready.
-```
+Repository tests and API guard responses are necessary but insufficient. Online
+multiplayer is production-ready only after a host and a separate browser/device
+complete room creation, join, start, dice movement, HIT-card resolution, turn
+order, refresh/reconnect, and winner synchronization.

@@ -113,7 +113,7 @@ When room/lobby work is wired:
 - Host start is disabled until at least 2 players.
 ```
 
-## 7. Real multiplayer check after Supabase wiring
+## 7. Real multiplayer check through the Hostinger Website Room API
 
 Do not claim this is done until:
 

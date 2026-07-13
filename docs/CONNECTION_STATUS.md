@@ -17,7 +17,7 @@ and check the relevant provider before changing a status.
 | Local Codex checkout | Connected | Git-backed checkout of `dtfgenetics/Thc` |
 | Public DTF site | Reachable | `https://dtfseeds.com/` |
 | WordPress MCP server | Reachable, authentication required | `/wp-json/mcp/mcp-adapter-default-server` returns an authentication boundary |
-| Supabase MCP server | Reachable, authentication required | Project-scoped read-only URL in `.mcp.json` |
+| Multiplayer backend | Connected and live | Hostinger PHP Website Room API under `/games/high-land/api/` |
 | GitHub CI definitions | Present | `.github/workflows/high-land-ci.yml` and `high-land-web.yml` |
 
 ## Prepared but not yet authorized
@@ -26,8 +26,7 @@ and check the relevant provider before changing a status.
 | --- | --- | --- |
 | Hostinger SSH deployment | Workflow prepared | Add protected GitHub environments and Hostinger SSH secrets/target paths |
 | WordPress management tools | Read-only WP-CLI workflow prepared | Add the protected Hostinger SSH connection and WordPress path |
-| Supabase project tools | Read-only endpoint configured, tools not exposed in this session | Complete Supabase OAuth in a compatible Codex/MCP client |
-| Supabase database changes | Deliberately disabled | Approve schema and RLS plan before enabling writes |
+| Full multiplayer acceptance | API connected; end-to-end evidence still required | Run a complete two-device room, turn, reconnect, and winner test |
 | Discord application | Not connected | Create app only after browser multiplayer passes |
 | Analytics/Search Console | Not verified | Choose one analytics owner and verify domain properties after core flows work |
 
@@ -73,5 +72,5 @@ exist.
 - Never paste secrets into issues, pull requests, source files, chat, or build logs.
 - Never deploy directly from an untested working tree.
 - Never use a passing local build as proof that production changed.
-- Never give WordPress, Supabase, or Discord write access before the minimum
+- Never give WordPress, a replacement backend, or Discord write access before the minimum
   required capability is identified and a rollback exists.

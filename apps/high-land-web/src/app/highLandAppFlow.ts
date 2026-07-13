@@ -60,7 +60,7 @@ export function reduceHighLandAppFlow(
         localPlayerId: action.playerId,
         localPlayerName: action.playerName,
         room: action.room,
-        statusMessage: `Room ${action.room.code} created locally. Share the invite when Supabase sync is wired.`
+        statusMessage: `Room ${action.room.code} is live. Share the invite link with the other players.`
       };
     case 'room_joined':
       return {
@@ -70,7 +70,7 @@ export function reduceHighLandAppFlow(
         localPlayerId: action.playerId,
         localPlayerName: action.playerName,
         room: action.room,
-        statusMessage: `Joined local room ${action.room.code}.`
+        statusMessage: `Joined room ${action.room.code}. Waiting for the host to start.`
       };
     case 'room_left':
       return {

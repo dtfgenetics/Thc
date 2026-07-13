@@ -114,14 +114,8 @@ Minimum multiplayer behavior:
 - Dice result, deck order, turn order, and positions are shared game state.
 - Refresh should not immediately destroy the room.
 
-Use Supabase for the first multiplayer implementation unless the repo already contains a better approved server implementation.
-
-Use browser-safe public env variables only in Vite:
-
-```txt
-VITE_SUPABASE_URL
-VITE_SUPABASE_PUBLISHABLE_KEY
-```
+Use the locked Hostinger PHP Website Room API in `docs/BACKEND_DECISION.md`.
+Production uses the same-origin API and requires no browser credential.
 
 Never commit service-role keys, database passwords, Hostinger private keys, Discord tokens, OpenAI keys, or GitHub tokens.
 
@@ -141,7 +135,8 @@ game/rules/turns.ts
 game/rules/hitCards.ts
 game/rules/winCondition.ts
 game/multiplayer/rooms.ts
-game/multiplayer/supabaseClient.ts
+game/multiplayer/websiteRoomApi.ts
+game/multiplayer/websiteRoomTransport.ts
 ```
 
 Exact paths may differ if the app already has a clean structure, but the responsibilities must be separated.
@@ -306,7 +301,7 @@ Implement or verify:
 1. Player naming before start.
 2. Host room creation with invite code/shareable link.
 3. Join room with player name.
-4. Shared room state using Supabase/browser-safe env variables unless a better approved implementation already exists.
+4. Shared room state using the Hostinger PHP Website Room API.
 5. Dice roll moves exactly the rolled number of board spaces.
 6. Tokens render on the board path coordinates, not in a side panel.
 7. Continuous `boardPath` coordinate file with valid indexes and x/y values.
@@ -325,7 +320,7 @@ Report back with:
 - files changed,
 - what works,
 - what is still placeholder,
-- what manual setup is still needed in Supabase/Hostinger,
+- what manual setup is still needed in Hostinger,
 - and the exact production deployment path.
 
 Do not commit secrets.

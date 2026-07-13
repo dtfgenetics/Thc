@@ -144,5 +144,5 @@ Open dtfgenetics/Thc. Focus on apps/high-land-web. Run npm install, npm run test
 ```txt
 1. Get unit tests, build, and browser smoke tests running in Codespaces, Gitpod, or GitHub Actions.
 2. Fix any actual output errors.
-3. Only then continue Supabase live multiplayer.
+3. Only then continue the Hostinger Website Room API live multiplayer checks.
 ```

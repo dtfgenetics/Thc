@@ -12,10 +12,11 @@ Read these files in order before editing:
 4. `docs/CODEX_HIGH_LAND_GAME_BUILD.md` - detailed game build context.
 5. `docs/SYSTEMS_READINESS.md` - repository and integration readiness.
 6. `docs/TOOL_CONNECTIONS.md` - external system boundaries and credentials rules.
-7. `docs/high-land-spec.md` - locked High Land product and gameplay contract.
-8. `docs/high-land-acceptance-checklist.md` - required evidence and status format.
-9. `.agents/skills/high-land-game/SKILL.md` - exact High Land work sequence.
-10. `docs/deployment-hostinger.md` when deployment or live behavior is in scope.
+7. `docs/BACKEND_DECISION.md` - locked multiplayer backend decision.
+8. `docs/high-land-spec.md` - locked High Land product and gameplay contract.
+9. `docs/high-land-acceptance-checklist.md` - required evidence and status format.
+10. `.agents/skills/high-land-game/SKILL.md` - exact High Land work sequence.
+11. `docs/deployment-hostinger.md` when deployment or live behavior is in scope.
 
 Keep `CLAUDE.md`. Its repository-wide safety rules remain authoritative. When an
 older gameplay note conflicts with `docs/high-land-spec.md` or
@@ -30,6 +31,9 @@ conflict rather than silently changing the product.
 - Do not edit gameplay while performing a documentation, workflow, or repository-control task.
 - Preserve unrelated and user-authored working-tree changes.
 - Never commit secrets, credentials, tokens, `.env` files, or private room data.
+- The active multiplayer backend is the Hostinger PHP Website Room API. Do not
+  reconnect Supabase, Firebase, or another backend unless the user explicitly
+  replaces the locked decision in `docs/BACKEND_DECISION.md`.
 
 ## Change protocol
 
