@@ -8,9 +8,10 @@ This reschedule-on-completion design avoids generating duplicate future task rec
 
 ## Date behavior
 
+- GrowLens uses the device's local calendar date for routine due checks and reminders instead of deriving the day from UTC.
 - Overdue daily and weekly routines advance from the completion date so they do not remain overdue.
 - Future routines remain anchored to their scheduled due date.
-- Monthly routines clamp to the final valid day of shorter months. For example, January 31 advances to February 28 or 29.
+- Monthly routines clamp to the final valid day of shorter months while preserving their original day-of-month anchor. A January 31 routine advances to February 28 or 29, then returns to March 31.
 - Legacy tasks without recurrence metadata remain one-time tasks.
 
 ## Existing task-screen compatibility
@@ -25,4 +26,4 @@ This is not a guaranteed closed-app background alarm. Reliable background delive
 
 ## Data portability
 
-Recurrence, completion count, and last-completed timestamps are part of the GrowLens task record. They are included in JSON backups, complete local backups, task CSV exports, plant timelines, and printable grow reports.
+Recurrence, completion count, and last-completed timestamps are part of the GrowLens task record. They are included in JSON backups, complete local backups, task CSV exports, plant timelines, and printable grow reports. The monthly anchor is preserved in the underlying task record and complete backups.
