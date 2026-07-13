@@ -12,6 +12,7 @@ import {
   normalizeBaseUrl,
   redactPayload,
   tinyPngBytes,
+  validatePasswordSeed,
 } from './growlens-live-acceptance-lib.mjs';
 
 const baseUrl = normalizeBaseUrl('https://dtfseeds.com/growlens/');
@@ -25,10 +26,16 @@ assert.equal(
 
 const runId = createRunId(new Date('2026-07-13T20:30:00.000Z'), 'ABC_123');
 assert.equal(runId, '20260713203000-abc123');
-const credentials = createDisposableCredentials(runId, 'A', 'example.com');
+const seed = validatePasswordSeed('self-test-seed-that-is-at-least-thirty-two-characters');
+const credentials = createDisposableCredentials(runId, 'A', 'example.com', seed);
+const repeatedCredentials = createDisposableCredentials(runId, 'A', 'example.com', seed);
+const secondAccountCredentials = createDisposableCredentials(runId, 'B', 'example.com', seed);
 assert.equal(credentials.email, 'growlens-accept-a-20260713203000-abc123@example.com');
 assert(credentials.password.length >= 40);
+assert.equal(credentials.password, repeatedCredentials.password);
+assert.notEqual(credentials.password, secondAccountCredentials.password);
 assert(!credentials.password.includes(credentials.email));
+assert.throws(() => validatePasswordSeed('too-short'), /32 to 1000/);
 
 assert.equal(
   extractSessionCookie('growlens_session=abc_DEF-123; expires=Wed, 12 Aug 2026 20:30:00 GMT; path=/growlens/; HttpOnly'),
