@@ -1,0 +1,334 @@
+name: Deploy GrowLens to Hostinger
+
+on:
+  workflow_dispatch:
+    inputs:
+      deploy:
+        description: Deploy the verified build to production
+        required: true
+        type: boolean
+        default: false
+      confirmation:
+        description: Type DEPLOY-GROWLENS when deploy is enabled
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: growlens-production-deploy
+  cancel-in-progress: false
+
+env:
+  PRODUCTION_URL: https://dtfseeds.com/growlens
+
+jobs:
+  build:
+    name: Verify and package
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+
+    steps:
+      - name: Require the main branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "${GITHUB_REF}" != "refs/heads/main" ]]; then
+            echo "GrowLens production releases must run from main." >&2
+            exit 1
+          fi
+
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint GrowLens PHP API
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -d '' php_files < <(find apps/growlens-web -type f -name '*.php' -print0)
+          if ((${#php_files[@]} == 0)); then
+            echo "No GrowLens PHP files found." >&2
+            exit 1
+          fi
+          for file in "${php_files[@]}"; do
+            php -l "$file"
+          done
+
+      - name: Run GrowLens PHP backend smoke test
+        run: php apps/growlens-web/tests/php-backend-smoke.php
+
+      - name: Run GrowLens private image storage smoke test
+        run: php apps/growlens-web/tests/php-image-storage-smoke.php
+
+      - name: Run GrowLens unit tests
+        run: npm run test:growlens
+
+      - name: Build GrowLens
+        run: npm run build:growlens
+
+      - name: Verify required production files
+        shell: bash
+        run: |
+          set -euo pipefail
+          required=(
+            index.html
+            manifest.webmanifest
+            sw.js
+            icon.svg
+            api/health.php
+            api/register.php
+            api/login.php
+            api/session.php
+            api/sync.php
+            api/export.php
+            api/logout.php
+            api/delete-account.php
+            api/upload-image.php
+            api/list-images.php
+            api/image.php
+            api/delete-image.php
+            api/_shared.php
+            api/_images.php
+            api/.htaccess
+          )
+          for path in "${required[@]}"; do
+            test -f "apps/growlens-web/dist/${path}" || {
+              echo "Missing production file: ${path}" >&2
+              exit 1
+            }
+          done
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run GrowLens browser acceptance tests
+        run: npm run test:e2e:growlens
+
+      - name: Add immutable deployment marker
+        shell: bash
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const fs = require('node:fs');
+          const marker = {
+            app: 'THC GrowLens',
+            commit: process.env.GITHUB_SHA,
+            builtAt: new Date().toISOString(),
+          };
+          fs.writeFileSync('apps/growlens-web/dist/deploy.json', `${JSON.stringify(marker, null, 2)}\n`);
+          NODE
+
+      - name: Upload verified GrowLens release
+        uses: actions/upload-artifact@v4
+        with:
+          name: growlens-production-${{ github.sha }}
+          path: apps/growlens-web/dist
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 30
+
+  deploy:
+    name: Deploy and verify production
+    needs: build
+    if: inputs.deploy == true
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: growlens-production
+
+    env:
+      SSH_HOST: ${{ secrets.HOSTINGER_SSH_HOST }}
+      SSH_PORT: ${{ secrets.HOSTINGER_SSH_PORT }}
+      SSH_USER: ${{ secrets.HOSTINGER_SSH_USER }}
+      SSH_PRIVATE_KEY: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY }}
+      SSH_KNOWN_HOSTS: ${{ secrets.HOSTINGER_SSH_KNOWN_HOSTS }}
+      DEPLOY_TARGET: ${{ secrets.HOSTINGER_GROWLENS_PATH }}
+      BACKUP_ROOT: ${{ secrets.HOSTINGER_GROWLENS_BACKUP_DIR }}
+
+    steps:
+      - name: Confirm production deployment
+        shell: bash
+        env:
+          DEPLOY_CONFIRMATION: ${{ inputs.confirmation }}
+        run: |
+          set -euo pipefail
+          if [[ "$DEPLOY_CONFIRMATION" != "DEPLOY-GROWLENS" ]]; then
+            echo "Production confirmation did not match DEPLOY-GROWLENS." >&2
+            exit 1
+          fi
+
+      - name: Validate deployment secrets and paths
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${SSH_HOST:?HOSTINGER_SSH_HOST is required}"
+          : "${SSH_USER:?HOSTINGER_SSH_USER is required}"
+          : "${SSH_PRIVATE_KEY:?HOSTINGER_SSH_PRIVATE_KEY is required}"
+          : "${SSH_KNOWN_HOSTS:?HOSTINGER_SSH_KNOWN_HOSTS is required}"
+          : "${DEPLOY_TARGET:?HOSTINGER_GROWLENS_PATH is required}"
+          : "${BACKUP_ROOT:?HOSTINGER_GROWLENS_BACKUP_DIR is required}"
+          SSH_PORT="${SSH_PORT:-22}"
+
+          if ! [[ "$SSH_HOST" =~ ^[A-Za-z0-9.-]+$ ]]; then
+            echo "HOSTINGER_SSH_HOST contains unsupported characters." >&2
+            exit 1
+          fi
+          if ! [[ "$SSH_USER" =~ ^[A-Za-z0-9._-]+$ ]]; then
+            echo "HOSTINGER_SSH_USER contains unsupported characters." >&2
+            exit 1
+          fi
+          if ! [[ "$SSH_PORT" =~ ^[0-9]+$ ]] || ((SSH_PORT < 1 || SSH_PORT > 65535)); then
+            echo "HOSTINGER_SSH_PORT must be a valid TCP port." >&2
+            exit 1
+          fi
+
+          target="${DEPLOY_TARGET%/}"
+          backup="${BACKUP_ROOT%/}"
+          if ! [[ "$target" =~ ^/[A-Za-z0-9._/-]+$ ]] || [[ "$target" == *".."* || "$target" != */public_html/growlens ]]; then
+            echo "Deployment target must be an absolute safe path ending in /public_html/growlens." >&2
+            exit 1
+          fi
+          if ! [[ "$backup" =~ ^/[A-Za-z0-9._/-]+$ ]] || [[ "$backup" == *".."* || "$backup" == *"/public_html"* || "$backup" == "$target"* ]]; then
+            echo "Backup directory must be an absolute safe path outside public_html." >&2
+            exit 1
+          fi
+
+          echo "SSH_PORT=${SSH_PORT}" >> "$GITHUB_ENV"
+          echo "DEPLOY_TARGET=${target}" >> "$GITHUB_ENV"
+          echo "BACKUP_ROOT=${backup}" >> "$GITHUB_ENV"
+          echo "STAGE_TARGET=${target}.next-${GITHUB_SHA::12}" >> "$GITHUB_ENV"
+          echo "PREVIOUS_TARGET=${target}.previous-${GITHUB_SHA::12}" >> "$GITHUB_ENV"
+          echo "BACKUP_TARGET=${backup}/$(date -u +%Y%m%dT%H%M%SZ)-${GITHUB_SHA::12}" >> "$GITHUB_ENV"
+
+      - name: Download verified release
+        uses: actions/download-artifact@v4
+        with:
+          name: growlens-production-${{ github.sha }}
+          path: release
+
+      - name: Configure strict SSH trust
+        shell: bash
+        run: |
+          set -euo pipefail
+          install -d -m 700 "$HOME/.ssh"
+          printf '%s\n' "$SSH_PRIVATE_KEY" | tr -d '\r' > "$HOME/.ssh/growlens_deploy_key"
+          chmod 600 "$HOME/.ssh/growlens_deploy_key"
+          printf '%s\n' "$SSH_KNOWN_HOSTS" | tr -d '\r' > "$HOME/.ssh/known_hosts"
+          chmod 600 "$HOME/.ssh/known_hosts"
+          ssh -i "$HOME/.ssh/growlens_deploy_key" \
+            -p "$SSH_PORT" \
+            -o BatchMode=yes \
+            -o IdentitiesOnly=yes \
+            -o StrictHostKeyChecking=yes \
+            "$SSH_USER@$SSH_HOST" 'printf "Hostinger SSH connection verified.\n"'
+
+      - name: Verify remote release prerequisites
+        shell: bash
+        run: |
+          set -euo pipefail
+          ssh -i "$HOME/.ssh/growlens_deploy_key" -p "$SSH_PORT" \
+            -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
+            "$SSH_USER@$SSH_HOST" \
+            "set -eu; command -v rsync >/dev/null; command -v mv >/dev/null; command -v find >/dev/null; mkdir -p '$BACKUP_ROOT'; test -w '$BACKUP_ROOT'; parent=\$(dirname '$DEPLOY_TARGET'); test -d \"\$parent\"; test -w \"\$parent\"; df -Pk \"\$parent\" '$BACKUP_ROOT'"
+
+      - name: Upload release to isolated staging directory
+        shell: bash
+        run: |
+          set -euo pipefail
+          ssh_cmd="ssh -i $HOME/.ssh/growlens_deploy_key -p $SSH_PORT -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes"
+          ssh -i "$HOME/.ssh/growlens_deploy_key" -p "$SSH_PORT" \
+            -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
+            "$SSH_USER@$SSH_HOST" \
+            "set -eu; rm -rf '$STAGE_TARGET'; mkdir -p '$STAGE_TARGET'"
+          rsync -az --delete --checksum --human-readable \
+            -e "$ssh_cmd" \
+            release/ "$SSH_USER@$SSH_HOST:$STAGE_TARGET/"
+          ssh -i "$HOME/.ssh/growlens_deploy_key" -p "$SSH_PORT" \
+            -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
+            "$SSH_USER@$SSH_HOST" \
+            "set -eu; test -f '$STAGE_TARGET/index.html'; test -f '$STAGE_TARGET/deploy.json'; test -f '$STAGE_TARGET/api/health.php'; test -f '$STAGE_TARGET/api/.htaccess'"
+
+      - name: Atomically activate staged release
+        id: activate
+        shell: bash
+        run: |
+          set -euo pipefail
+          ssh -i "$HOME/.ssh/growlens_deploy_key" -p "$SSH_PORT" \
+            -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
+            "$SSH_USER@$SSH_HOST" \
+            "set -eu; rm -rf '$PREVIOUS_TARGET'; if [ -e '$DEPLOY_TARGET' ]; then mv '$DEPLOY_TARGET' '$PREVIOUS_TARGET'; fi; mv '$STAGE_TARGET' '$DEPLOY_TARGET'"
+
+      - name: Verify live commit and private-storage health
+        id: verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          marker="$(curl --fail --silent --show-error --location --retry 4 --retry-delay 3 --connect-timeout 15 --max-time 30 "$PRODUCTION_URL/deploy.json?commit=$GITHUB_SHA")"
+          MARKER="$marker" node <<'NODE'
+          const marker = JSON.parse(process.env.MARKER ?? '{}');
+          if (marker.app !== 'THC GrowLens') throw new Error('Unexpected deployment marker app.');
+          if (marker.commit !== process.env.GITHUB_SHA) throw new Error(`Live commit ${marker.commit ?? 'missing'} does not match ${process.env.GITHUB_SHA}.`);
+          NODE
+
+          health="$(curl --fail --silent --show-error --location --retry 4 --retry-delay 3 --connect-timeout 15 --max-time 30 "$PRODUCTION_URL/api/health.php?commit=$GITHUB_SHA")"
+          HEALTH="$health" node <<'NODE'
+          const health = JSON.parse(process.env.HEALTH ?? '{}');
+          if (health.ok !== true || health.service !== 'growlens-api' || health.storageReady !== true) {
+            throw new Error(`GrowLens health check failed: ${JSON.stringify(health)}`);
+          }
+          NODE
+
+          for helper in _shared.php _images.php; do
+            status="$(curl --silent --show-error --location --connect-timeout 15 --max-time 30 --output /dev/null --write-out '%{http_code}' "$PRODUCTION_URL/api/$helper?commit=$GITHUB_SHA")"
+            case "$status" in
+              403|404) ;;
+              *)
+                echo "Private API helper $helper returned HTTP $status instead of 403 or 404." >&2
+                exit 1
+                ;;
+            esac
+          done
+
+      - name: Roll back failed activation
+        if: failure() && steps.activate.outcome != 'skipped'
+        shell: bash
+        run: |
+          set -euo pipefail
+          ssh -i "$HOME/.ssh/growlens_deploy_key" -p "$SSH_PORT" \
+            -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
+            "$SSH_USER@$SSH_HOST" \
+            "set -eu; rm -rf '$DEPLOY_TARGET'; if [ -e '$PREVIOUS_TARGET' ]; then mv '$PREVIOUS_TARGET' '$DEPLOY_TARGET'; fi; rm -rf '$STAGE_TARGET'"
+          echo "The failed release was rolled back." >&2
+
+      - name: Archive previous release and prune old backups
+        if: success()
+        shell: bash
+        run: |
+          set -euo pipefail
+          ssh -i "$HOME/.ssh/growlens_deploy_key" -p "$SSH_PORT" \
+            -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
+            "$SSH_USER@$SSH_HOST" \
+            "set -eu; if [ -e '$PREVIOUS_TARGET' ]; then mv '$PREVIOUS_TARGET' '$BACKUP_TARGET'; fi; ls -1dt '$BACKUP_ROOT'/* 2>/dev/null | tail -n +6 | xargs -r rm -rf --"
+
+      - name: Publish deployment summary
+        if: success()
+        shell: bash
+        run: |
+          {
+            echo "## GrowLens production deployment"
+            echo
+            echo "- Commit: \`$GITHUB_SHA\`"
+            echo "- URL: $PRODUCTION_URL/"
+            echo "- API health: passed"
+            echo "- Private API helpers: denied"
+            echo "- Previous release: archived outside public_html"
+          } >> "$GITHUB_STEP_SUMMARY"
