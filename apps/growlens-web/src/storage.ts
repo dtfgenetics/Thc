@@ -1,6 +1,7 @@
 import type { GrowLensState } from './types';
 
 export const STORAGE_KEY = 'thc-growlens-state-v1';
+export const STATE_SAVED_EVENT = 'growlens:state-saved';
 
 export const emptyState: GrowLensState = {
   schemaVersion: 1,
@@ -48,6 +49,15 @@ export function loadState(storage: Pick<Storage, 'getItem'> = window.localStorag
 
 export function saveState(state: GrowLensState, storage: Pick<Storage, 'setItem'> = window.localStorage): void {
   storage.setItem(STORAGE_KEY, JSON.stringify(state));
+  if (typeof window !== 'undefined') {
+    try {
+      if (storage === window.localStorage) {
+        window.dispatchEvent(new CustomEvent(STATE_SAVED_EVENT));
+      }
+    } catch {
+      // State was saved; notification support is optional in restricted browsers.
+    }
+  }
 }
 
 export function serializeBackup(state: GrowLensState): string {
