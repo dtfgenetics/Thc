@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/_operations.php';
+require_once __DIR__ . '/_state-v2.php';
 
 growlens_require_method('GET');
 growlens_begin_storage_access();
@@ -15,7 +16,7 @@ if (!is_array($context)) {
     ]);
 }
 
-$data = growlens_load_user_data((string)$context['user']['id']);
+$data = growlens_v2_load_user_data((string)$context['user']['id']);
 
 growlens_send_json([
     'ok' => true,
