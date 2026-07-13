@@ -1,9 +1,11 @@
 import { access } from "node:fs/promises";
 
 const requiredFiles = [
-  ".mcp.json",
-  "supabase/config.toml",
+  "docs/BACKEND_DECISION.md",
   "apps/high-land-web/package.json",
+  "apps/high-land-web/public/api/create-room.php",
+  "apps/high-land-web/public/api/get-room.php",
+  "apps/high-land-web/src/game/multiplayer/websiteRoomTransport.ts",
   ".github/workflows/high-land-ci.yml",
   ".github/workflows/hostinger-high-land-deploy.yml",
   ".github/workflows/wordpress-readonly-audit.yml",
@@ -26,9 +28,19 @@ const endpointChecks = [
     expected: [401, 403],
   },
   {
-    name: "Supabase MCP authentication boundary",
-    url: "https://mcp.supabase.com/mcp",
-    expected: [401, 403, 405],
+    name: "High Land room API index guard",
+    url: "https://dtfseeds.com/games/high-land/api/",
+    expected: [404],
+  },
+  {
+    name: "High Land create-room method guard",
+    url: "https://dtfseeds.com/games/high-land/api/create-room.php",
+    expected: [405],
+  },
+  {
+    name: "High Land get-room validation guard",
+    url: "https://dtfseeds.com/games/high-land/api/get-room.php",
+    expected: [400],
   },
 ];
 
