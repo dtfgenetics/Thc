@@ -52,10 +52,10 @@ test('compares two offline observation photos in chronological order', async ({ 
   const dialog = page.getByRole('dialog', { name: 'Photo history and comparison' });
   await expect(dialog).toBeVisible();
 
-  const photoButtons = dialog.getByRole('button', { name: /Select photo from .* for comparison/ });
-  await expect(photoButtons).toHaveCount(2);
-  await photoButtons.nth(0).click();
-  await photoButtons.nth(1).click();
+  const photoCards = dialog.locator('.photo-history-card');
+  await expect(photoCards).toHaveCount(2);
+  await photoCards.nth(0).click();
+  await photoCards.nth(1).click();
 
   await expect(dialog.getByAltText(/Earlier observation for/)).toBeVisible();
   await expect(dialog.getByAltText(/Later observation for/)).toBeVisible();
