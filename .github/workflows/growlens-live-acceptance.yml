@@ -1,0 +1,91 @@
+name: GrowLens Live Acceptance
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: Deployed GrowLens URL ending in /growlens
+        required: true
+        type: string
+        default: https://dtfseeds.com/growlens
+      confirmation:
+        description: Type RUN-DESTRUCTIVE-ACCEPTANCE
+        required: true
+        type: string
+      test_email_domain:
+        description: Domain for disposable test accounts
+        required: true
+        type: string
+        default: example.com
+
+permissions:
+  contents: read
+
+concurrency:
+  group: growlens-live-acceptance
+  cancel-in-progress: false
+
+jobs:
+  live-acceptance:
+    name: Two-account production acceptance
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    environment: growlens-production
+
+    env:
+      GROWLENS_BASE_URL: ${{ inputs.base_url }}
+      GROWLENS_ACCEPTANCE_CONFIRM: ${{ inputs.confirmation }}
+      GROWLENS_TEST_EMAIL_DOMAIN: ${{ inputs.test_email_domain }}
+
+    steps:
+      - name: Require the main branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "$GITHUB_REF" != "refs/heads/main" ]]; then
+            echo "Live GrowLens acceptance must run from main." >&2
+            exit 1
+          fi
+
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Test acceptance client without network access
+        run: npm run test:growlens:live-client
+
+      - name: Run destructive live acceptance with cleanup
+        id: acceptance
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run test:live:growlens 2>&1 | tee growlens-live-acceptance.log
+
+      - name: Upload acceptance log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: growlens-live-acceptance-${{ github.run_id }}
+          path: growlens-live-acceptance.log
+          if-no-files-found: ignore
+          retention-days: 30
+
+      - name: Publish acceptance summary
+        if: success()
+        shell: bash
+        run: |
+          {
+            echo "## GrowLens live acceptance passed"
+            echo
+            echo "- Commit: \`$GITHUB_SHA\`"
+            echo "- Target: $GROWLENS_BASE_URL"
+            echo "- Verified: health, same-origin and CSRF controls, two accounts, two sessions, revision conflicts, state isolation, private images, export, deletion, session revocation, and cleanup"
+          } >> "$GITHUB_STEP_SUMMARY"
