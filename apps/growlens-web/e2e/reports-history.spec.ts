@@ -68,29 +68,31 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('shows grow summary, environment trends, and a combined plant timeline', async ({ page }) => {
-  await expect(page.getByText('Active plants')).toBeVisible();
-  await expect(page.locator('.reports-stat').filter({ hasText: 'Active plants' })).toContainText('1');
-  await expect(page.getByText('Measured irrigation')).toBeVisible();
+  const reports = page.getByRole('dialog', { name: 'Reports & calibration' });
+  await expect(reports.getByText('Active plants')).toBeVisible();
+  await expect(reports.locator('.reports-stat').filter({ hasText: 'Active plants' })).toContainText('1');
+  await expect(reports.getByText('Measured irrigation')).toBeVisible();
 
-  await page.getByRole('button', { name: 'Environment' }).click();
-  await expect(page.getByRole('img', { name: 'Temperature trend' })).toBeVisible();
-  await expect(page.getByRole('img', { name: 'VPD trend' })).toBeVisible();
-  await expect(page.getByText('3 readings')).toBeVisible();
+  await reports.getByRole('button', { name: 'Environment' }).click();
+  await expect(reports.getByRole('img', { name: 'Temperature trend' })).toBeVisible();
+  await expect(reports.getByRole('img', { name: 'VPD trend' })).toBeVisible();
+  await expect(reports.getByText('3 readings')).toBeVisible();
 
-  await page.getByRole('button', { name: 'Plant timeline' }).click();
-  await expect(page.getByText('Possible pest pressure')).toBeVisible();
-  await expect(page.getByText('Inspect leaf undersides')).toBeVisible();
-  await expect(page.getByText('Measured irrigation')).toBeVisible();
+  await reports.getByRole('button', { name: 'Plant timeline' }).click();
+  await expect(reports.getByText('Possible pest pressure')).toBeVisible();
+  await expect(reports.getByText('Inspect leaf undersides')).toBeVisible();
+  await expect(reports.getByText('Measured irrigation')).toBeVisible();
 });
 
 test('saves a median reference-meter calibration without losing grow data', async ({ page, isMobile }) => {
   test.skip(isMobile, 'Calibration persistence is covered once on desktop.');
-  await page.getByRole('button', { name: 'Calibration' }).click();
-  await expect(page.getByText('Recommended factor')).toBeVisible();
-  await page.getByLabel('Profile name', { exact: true }).fill('Tent A reference');
-  await page.getByLabel('Fixture or spectrum', { exact: true }).fill('Full spectrum fixture at 24 inches');
-  await page.getByRole('button', { name: 'Save calibration profile' }).click();
-  await expect(page.getByText(/Calibration “Tent A reference” saved/)).toBeVisible();
+  const reports = page.getByRole('dialog', { name: 'Reports & calibration' });
+  await reports.getByRole('button', { name: 'Calibration' }).click();
+  await expect(reports.getByText('Recommended factor')).toBeVisible();
+  await reports.getByLabel('Profile name', { exact: true }).fill('Tent A reference');
+  await reports.getByLabel('Fixture or spectrum', { exact: true }).fill('Full spectrum fixture at 24 inches');
+  await reports.getByRole('button', { name: 'Save calibration profile' }).click();
+  await expect(reports.getByText(/Calibration “Tent A reference” saved/)).toBeVisible();
 
   await expect.poll(() => page.evaluate(() => {
     const state = JSON.parse(localStorage.getItem('thc-growlens-state-v1') ?? '{}');
@@ -110,17 +112,19 @@ test('saves a median reference-meter calibration without losing grow data', asyn
 
 test('downloads a readings CSV with derived VPD', async ({ page, isMobile }) => {
   test.skip(isMobile, 'Download contract is covered once on desktop.');
-  await page.getByRole('button', { name: 'Exports' }).click();
+  const reports = page.getByRole('dialog', { name: 'Reports & calibration' });
+  await reports.getByRole('button', { name: 'Exports' }).click();
   const downloadPromise = page.waitForEvent('download');
-  await page.getByRole('button', { name: 'Download readings.csv' }).click();
+  await reports.getByRole('button', { name: 'Download readings.csv' }).click();
   const download = await downloadPromise;
   expect(download.suggestedFilename()).toMatch(/^growlens-readings-\d{4}-\d{2}-\d{2}\.csv$/);
 });
 
 test('reports panel fits the mobile viewport', async ({ page, isMobile }) => {
   test.skip(!isMobile, 'Mobile-only report layout assertion.');
+  const reports = page.getByRole('dialog', { name: 'Reports & calibration' });
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
   expect(overflow).toBe(false);
-  await page.getByRole('button', { name: 'Environment' }).click();
-  await expect(page.getByRole('img', { name: 'Temperature trend' })).toBeVisible();
+  await reports.getByRole('button', { name: 'Environment' }).click();
+  await expect(reports.getByRole('img', { name: 'Temperature trend' })).toBeVisible();
 });
