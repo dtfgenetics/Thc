@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/_shared.php';
+require_once __DIR__ . '/_operations.php';
 
 growlens_require_method('GET');
+growlens_begin_storage_access();
 $root = growlens_private_root();
 $probePath = $root . DIRECTORY_SEPARATOR . '.health-probe';
 $probe = bin2hex(random_bytes(12));
