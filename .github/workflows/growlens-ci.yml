@@ -20,7 +20,7 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 30
 
     steps:
       - name: Check out repository
@@ -50,6 +50,9 @@ jobs:
 
       - name: Run GrowLens PHP backend smoke test
         run: php apps/growlens-web/tests/php-backend-smoke.php
+
+      - name: Run GrowLens private image storage smoke test
+        run: php apps/growlens-web/tests/php-image-storage-smoke.php
 
       - name: Run GrowLens unit tests
         run: npm run test:growlens
@@ -85,7 +88,12 @@ jobs:
           test -f apps/growlens-web/dist/api/export.php
           test -f apps/growlens-web/dist/api/logout.php
           test -f apps/growlens-web/dist/api/delete-account.php
+          test -f apps/growlens-web/dist/api/upload-image.php
+          test -f apps/growlens-web/dist/api/list-images.php
+          test -f apps/growlens-web/dist/api/image.php
+          test -f apps/growlens-web/dist/api/delete-image.php
           test -f apps/growlens-web/dist/api/_shared.php
+          test -f apps/growlens-web/dist/api/_images.php
           test -f apps/growlens-web/dist/api/.htaccess
 
       - name: Upload GrowLens build artifact
