@@ -157,9 +157,11 @@ jobs:
     steps:
       - name: Confirm production deployment
         shell: bash
+        env:
+          DEPLOY_CONFIRMATION: ${{ inputs.confirmation }}
         run: |
           set -euo pipefail
-          if [[ "${{ inputs.confirmation }}" != "DEPLOY-GROWLENS" ]]; then
+          if [[ "$DEPLOY_CONFIRMATION" != "DEPLOY-GROWLENS" ]]; then
             echo "Production confirmation did not match DEPLOY-GROWLENS." >&2
             exit 1
           fi
@@ -285,6 +287,17 @@ jobs:
           }
           NODE
 
+          for helper in _shared.php _images.php; do
+            status="$(curl --silent --show-error --location --connect-timeout 15 --max-time 30 --output /dev/null --write-out '%{http_code}' "$PRODUCTION_URL/api/$helper?commit=$GITHUB_SHA")"
+            case "$status" in
+              403|404) ;;
+              *)
+                echo "Private API helper $helper returned HTTP $status instead of 403 or 404." >&2
+                exit 1
+                ;;
+            esac
+          done
+
       - name: Roll back failed activation
         if: failure() && steps.activate.outcome != 'skipped'
         shell: bash
@@ -316,5 +329,6 @@ jobs:
             echo "- Commit: \`$GITHUB_SHA\`"
             echo "- URL: $PRODUCTION_URL/"
             echo "- API health: passed"
+            echo "- Private API helpers: denied"
             echo "- Previous release: archived outside public_html"
           } >> "$GITHUB_STEP_SUMMARY"
