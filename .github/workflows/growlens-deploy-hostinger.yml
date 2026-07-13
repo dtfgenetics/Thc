@@ -175,16 +175,13 @@ jobs:
           : "${DEPLOY_TARGET:?HOSTINGER_GROWLENS_PATH is required}"
           : "${BACKUP_ROOT:?HOSTINGER_GROWLENS_BACKUP_DIR is required}"
           SSH_PORT="${SSH_PORT:-22}"
-          echo "SSH_PORT=${SSH_PORT}" >> "$GITHUB_ENV"
 
-          target="${DEPLOY_TARGET%/}"
-          backup="${BACKUP_ROOT%/}"
-          if [[ "$target" != /* || "$target" == *".."* || "$target" != */public_html/growlens ]]; then
-            echo "Deployment target must be an absolute path ending in /public_html/growlens." >&2
+          if ! [[ "$SSH_HOST" =~ ^[A-Za-z0-9.-]+$ ]]; then
+            echo "HOSTINGER_SSH_HOST contains unsupported characters." >&2
             exit 1
           fi
-          if [[ "$backup" != /* || "$backup" == *".."* || "$backup" == *"/public_html"* || "$backup" == "$target"* ]]; then
-            echo "Backup directory must be an absolute private path outside public_html." >&2
+          if ! [[ "$SSH_USER" =~ ^[A-Za-z0-9._-]+$ ]]; then
+            echo "HOSTINGER_SSH_USER contains unsupported characters." >&2
             exit 1
           fi
           if ! [[ "$SSH_PORT" =~ ^[0-9]+$ ]] || ((SSH_PORT < 1 || SSH_PORT > 65535)); then
@@ -192,6 +189,18 @@ jobs:
             exit 1
           fi
 
+          target="${DEPLOY_TARGET%/}"
+          backup="${BACKUP_ROOT%/}"
+          if ! [[ "$target" =~ ^/[A-Za-z0-9._/-]+$ ]] || [[ "$target" == *".."* || "$target" != */public_html/growlens ]]; then
+            echo "Deployment target must be an absolute safe path ending in /public_html/growlens." >&2
+            exit 1
+          fi
+          if ! [[ "$backup" =~ ^/[A-Za-z0-9._/-]+$ ]] || [[ "$backup" == *".."* || "$backup" == *"/public_html"* || "$backup" == "$target"* ]]; then
+            echo "Backup directory must be an absolute safe path outside public_html." >&2
+            exit 1
+          fi
+
+          echo "SSH_PORT=${SSH_PORT}" >> "$GITHUB_ENV"
           echo "DEPLOY_TARGET=${target}" >> "$GITHUB_ENV"
           echo "BACKUP_ROOT=${backup}" >> "$GITHUB_ENV"
           echo "STAGE_TARGET=${target}.next-${GITHUB_SHA::12}" >> "$GITHUB_ENV"
@@ -209,9 +218,9 @@ jobs:
         run: |
           set -euo pipefail
           install -d -m 700 "$HOME/.ssh"
-          printf '%s\n' "$SSH_PRIVATE_KEY" > "$HOME/.ssh/growlens_deploy_key"
+          printf '%s\n' "$SSH_PRIVATE_KEY" | tr -d '\r' > "$HOME/.ssh/growlens_deploy_key"
           chmod 600 "$HOME/.ssh/growlens_deploy_key"
-          printf '%s\n' "$SSH_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+          printf '%s\n' "$SSH_KNOWN_HOSTS" | tr -d '\r' > "$HOME/.ssh/known_hosts"
           chmod 600 "$HOME/.ssh/known_hosts"
           ssh -i "$HOME/.ssh/growlens_deploy_key" \
             -p "$SSH_PORT" \
@@ -219,6 +228,15 @@ jobs:
             -o IdentitiesOnly=yes \
             -o StrictHostKeyChecking=yes \
             "$SSH_USER@$SSH_HOST" 'printf "Hostinger SSH connection verified.\n"'
+
+      - name: Verify remote release prerequisites
+        shell: bash
+        run: |
+          set -euo pipefail
+          ssh -i "$HOME/.ssh/growlens_deploy_key" -p "$SSH_PORT" \
+            -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
+            "$SSH_USER@$SSH_HOST" \
+            "set -eu; command -v rsync >/dev/null; command -v mv >/dev/null; command -v find >/dev/null; mkdir -p '$BACKUP_ROOT'; test -w '$BACKUP_ROOT'; parent=\$(dirname '$DEPLOY_TARGET'); test -d \"\$parent\"; test -w \"\$parent\"; df -Pk \"\$parent\" '$BACKUP_ROOT'"
 
       - name: Upload release to isolated staging directory
         shell: bash
@@ -228,7 +246,7 @@ jobs:
           ssh -i "$HOME/.ssh/growlens_deploy_key" -p "$SSH_PORT" \
             -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
             "$SSH_USER@$SSH_HOST" \
-            "set -eu; rm -rf '$STAGE_TARGET'; mkdir -p '$STAGE_TARGET' '$BACKUP_ROOT'"
+            "set -eu; rm -rf '$STAGE_TARGET'; mkdir -p '$STAGE_TARGET'"
           rsync -az --delete --checksum --human-readable \
             -e "$ssh_cmd" \
             release/ "$SSH_USER@$SSH_HOST:$STAGE_TARGET/"
@@ -238,13 +256,14 @@ jobs:
             "set -eu; test -f '$STAGE_TARGET/index.html'; test -f '$STAGE_TARGET/deploy.json'; test -f '$STAGE_TARGET/api/health.php'; test -f '$STAGE_TARGET/api/.htaccess'"
 
       - name: Atomically activate staged release
+        id: activate
         shell: bash
         run: |
           set -euo pipefail
           ssh -i "$HOME/.ssh/growlens_deploy_key" -p "$SSH_PORT" \
             -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
             "$SSH_USER@$SSH_HOST" \
-            "set -eu; rm -rf '$PREVIOUS_TARGET'; if [ -d '$DEPLOY_TARGET' ]; then mv '$DEPLOY_TARGET' '$PREVIOUS_TARGET'; fi; mv '$STAGE_TARGET' '$DEPLOY_TARGET'"
+            "set -eu; rm -rf '$PREVIOUS_TARGET'; if [ -e '$DEPLOY_TARGET' ]; then mv '$DEPLOY_TARGET' '$PREVIOUS_TARGET'; fi; mv '$STAGE_TARGET' '$DEPLOY_TARGET'"
 
       - name: Verify live commit and private-storage health
         id: verify
@@ -267,14 +286,14 @@ jobs:
           NODE
 
       - name: Roll back failed activation
-        if: failure() && steps.verify.outcome == 'failure'
+        if: failure() && steps.activate.outcome != 'skipped'
         shell: bash
         run: |
           set -euo pipefail
           ssh -i "$HOME/.ssh/growlens_deploy_key" -p "$SSH_PORT" \
             -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
             "$SSH_USER@$SSH_HOST" \
-            "set -eu; rm -rf '$DEPLOY_TARGET'; if [ -d '$PREVIOUS_TARGET' ]; then mv '$PREVIOUS_TARGET' '$DEPLOY_TARGET'; fi; rm -rf '$STAGE_TARGET'"
+            "set -eu; rm -rf '$DEPLOY_TARGET'; if [ -e '$PREVIOUS_TARGET' ]; then mv '$PREVIOUS_TARGET' '$DEPLOY_TARGET'; fi; rm -rf '$STAGE_TARGET'"
           echo "The failed release was rolled back." >&2
 
       - name: Archive previous release and prune old backups
@@ -285,7 +304,7 @@ jobs:
           ssh -i "$HOME/.ssh/growlens_deploy_key" -p "$SSH_PORT" \
             -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
             "$SSH_USER@$SSH_HOST" \
-            "set -eu; if [ -d '$PREVIOUS_TARGET' ]; then mv '$PREVIOUS_TARGET' '$BACKUP_TARGET'; fi; find '$BACKUP_ROOT' -mindepth 1 -maxdepth 1 -type d -printf '%T@ %p\n' | sort -nr | awk 'NR > 5 {sub(/^[^ ]+ /, \"\"); print}' | while IFS= read -r old; do rm -rf -- \"\$old\"; done"
+            "set -eu; if [ -e '$PREVIOUS_TARGET' ]; then mv '$PREVIOUS_TARGET' '$BACKUP_TARGET'; fi; ls -1dt '$BACKUP_ROOT'/* 2>/dev/null | tail -n +6 | xargs -r rm -rf --"
 
       - name: Publish deployment summary
         if: success()
