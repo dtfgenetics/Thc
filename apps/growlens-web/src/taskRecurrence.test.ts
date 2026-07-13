@@ -3,6 +3,7 @@ import {
   completeOrAdvanceTask,
   nextRecurringDueDate,
   normalizeTaskRecurrence,
+  recurrenceAnchorDay,
   reopenTask,
 } from './taskRecurrence';
 import type { GrowTask } from './types';
@@ -15,6 +16,7 @@ function task(overrides: Partial<GrowTask> = {}): GrowTask {
     plantId: null,
     completed: false,
     recurrence: 'none',
+    recurrenceAnchorDay: null,
     lastCompletedAt: null,
     completionCount: 0,
     createdAt: '2026-07-12T12:00:00.000Z',
@@ -43,11 +45,26 @@ describe('GrowLens recurring tasks', () => {
     expect(nextRecurringDueDate('2027-01-31', 'monthly', '2027-01-01')).toBe('2027-02-28');
   });
 
+  it('preserves the original monthly anchor after a shorter month', () => {
+    const february = completeOrAdvanceTask(task({
+      dueDate: '2028-01-31',
+      recurrence: 'monthly',
+    }), '2028-01-31T16:30:00.000Z');
+    expect(february.dueDate).toBe('2028-02-29');
+    expect(february.recurrenceAnchorDay).toBe(31);
+
+    const march = completeOrAdvanceTask(february, '2028-02-29T16:30:00.000Z');
+    expect(march.dueDate).toBe('2028-03-31');
+    expect(march.recurrenceAnchorDay).toBe(31);
+    expect(recurrenceAnchorDay('2028-03-31', 'monthly')).toBe(31);
+  });
+
   it('completes a one-time task and records completion history', () => {
     const completed = completeOrAdvanceTask(task(), '2026-07-13T16:30:00.000Z');
     expect(completed.completed).toBe(true);
     expect(completed.lastCompletedAt).toBe('2026-07-13T16:30:00.000Z');
     expect(completed.completionCount).toBe(1);
+    expect(completed.recurrenceAnchorDay).toBeNull();
   });
 
   it('reschedules a recurring task without producing duplicate task records', () => {
