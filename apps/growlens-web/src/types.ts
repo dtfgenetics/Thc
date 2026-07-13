@@ -1,6 +1,7 @@
 export type PlantStage = 'seedling' | 'vegetative' | 'flowering' | 'drying' | 'curing' | 'complete';
 export type PlantStatus = 'active' | 'paused' | 'harvested' | 'archived';
 export type EntryType = 'note' | 'watering' | 'feeding' | 'training' | 'transplant' | 'pest-check' | 'photo' | 'harvest';
+export type TaskRecurrence = 'none' | 'daily' | 'weekly' | 'monthly';
 
 export type GrowSpace = {
   id: string;
@@ -48,6 +49,9 @@ export type GrowTask = {
   dueDate: string;
   plantId: string | null;
   completed: boolean;
+  recurrence?: TaskRecurrence;
+  lastCompletedAt?: string | null;
+  completionCount?: number;
   createdAt: string;
 };
 
