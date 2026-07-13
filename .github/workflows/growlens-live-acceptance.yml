@@ -36,6 +36,7 @@ jobs:
       GROWLENS_BASE_URL: ${{ inputs.base_url }}
       GROWLENS_ACCEPTANCE_CONFIRM: ${{ inputs.confirmation }}
       GROWLENS_TEST_EMAIL_DOMAIN: ${{ inputs.test_email_domain }}
+      GROWLENS_ACCEPTANCE_PASSWORD_SEED: ${{ secrets.GROWLENS_ACCEPTANCE_PASSWORD_SEED }}
 
     steps:
       - name: Require the main branch
