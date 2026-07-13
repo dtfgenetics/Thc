@@ -18,6 +18,7 @@
     "dev:growlens": "vite --config apps/growlens-web/vite.config.ts",
     "build:growlens": "tsc -p apps/growlens-web/tsconfig.json && vite build --config apps/growlens-web/vite.config.ts",
     "test:growlens": "vitest run --config apps/growlens-web/vitest.config.ts",
-    "verify:growlens": "npm run test:growlens && npm run build:growlens"
+    "test:e2e:growlens": "playwright test --config apps/growlens-web/playwright.config.ts",
+    "verify:growlens": "npm run test:growlens && npm run build:growlens && npm run test:e2e:growlens"
   }
 }
