@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import AccountSyncWidget from './AccountSyncWidget';
 import App from './App';
 import CameraObservationWidget from './CameraObservationWidget';
+import CompleteBackupWidget from './CompleteBackupWidget';
 import ErrorBoundary from './ErrorBoundary';
 import ExternalStateBridge from './ExternalStateBridge';
 import ReportsHistoryWidget from './ReportsHistoryWidget';
@@ -10,12 +11,14 @@ import './styles.css';
 import './account.css';
 import './camera.css';
 import './reports.css';
+import './backup.css';
 import './accessibility.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ErrorBoundary>
       <App />
+      <CompleteBackupWidget />
       <ReportsHistoryWidget />
       <CameraObservationWidget />
       <AccountSyncWidget />
