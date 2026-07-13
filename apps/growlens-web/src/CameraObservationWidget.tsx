@@ -104,6 +104,18 @@ export default function CameraObservationWidget() {
       : [...current, code]);
   }
 
+  async function resolveAuthenticatedSession(): Promise<AuthenticatedSession | null> {
+    if (session) return session;
+    try {
+      const current = await growLensRemoteStore.getSession();
+      if (!current.authenticated) return null;
+      setSession(current);
+      return current;
+    } catch {
+      return null;
+    }
+  }
+
   async function handleFile(event: ChangeEvent<HTMLInputElement>): Promise<void> {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -184,9 +196,10 @@ export default function CameraObservationWidget() {
       saveState(next);
 
       let uploaded = false;
-      if (session) {
+      const activeSession = await resolveAuthenticatedSession();
+      if (activeSession) {
         try {
-          await uploadAsset(asset, session);
+          await uploadAsset(asset, activeSession);
           uploaded = true;
         } catch {
           uploaded = false;
@@ -215,10 +228,9 @@ export default function CameraObservationWidget() {
     clearMessages();
     setBusy(true);
     try {
-      const current = session ?? await growLensRemoteStore.getSession();
-      if (!current.authenticated) throw new Error('Sign in to upload this photo privately.');
-      setSession(current);
-      await uploadAsset(asset, current);
+      const activeSession = await resolveAuthenticatedSession();
+      if (!activeSession) throw new Error('Sign in to upload this photo privately.');
+      await uploadAsset(asset, activeSession);
       setAssets(await listPhotos());
       setMessage('Pending photo uploaded privately.');
     } catch (error) {
@@ -235,15 +247,10 @@ export default function CameraObservationWidget() {
     try {
       const local = assets.find((asset) => asset.id === photoId);
       const mayHavePrivateCopy = !local || local.uploaded;
-      let activeSession = session;
+      const activeSession = mayHavePrivateCopy ? await resolveAuthenticatedSession() : null;
 
       if (mayHavePrivateCopy && !activeSession) {
-        const current = await growLensRemoteStore.getSession();
-        if (!current.authenticated) {
-          throw new Error('Sign in before deleting a photo that may have a private account copy.');
-        }
-        activeSession = current;
-        setSession(current);
+        throw new Error('Sign in before deleting a photo that may have a private account copy.');
       }
 
       if (mayHavePrivateCopy && activeSession) {
