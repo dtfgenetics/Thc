@@ -23,17 +23,18 @@ This repo is the code source of truth for the browser game project. Google Drive
 6. **Discord app/bot** should only connect after the website invite flow works.
 7. **Analytics/Search Console** should be added after the game works reliably.
 
-## Current backend recommendation
+## Locked backend
 
-Use Supabase first unless the project already has another backend committed.
+Use the Hostinger PHP Website Room API already committed and deployed with the
+High Land build. `docs/BACKEND_DECISION.md` is authoritative.
 
-Required runtime values should be configured through environment variables, never hard-coded:
+- Source: `apps/high-land-web/public/api/`
+- Client: `websiteRoomTransport.ts`
+- Live API: `https://dtfseeds.com/games/high-land/api/`
+- Production mode: `website`
+- Local/offline mode: `local`
 
-- `VITE_SUPABASE_URL`
-- `VITE_SUPABASE_ANON_KEY`
-- server-only service role key if needed by backend/server functions
-
-Never expose a service role key in browser code.
+Do not reconnect Supabase. The older Supabase material is historical planning.
 
 ## High Land required features
 
@@ -63,5 +64,5 @@ Before changing game code, Codex should:
 1. Read this file.
 2. Read `docs/HIGH_LAND_ACCEPTANCE_CHECKLIST.md`.
 3. Inspect `apps/high-land-web`.
-4. Confirm whether Supabase setup docs already exist.
+4. Verify the Hostinger room API guard endpoints and website transport tests.
 5. Avoid replacing the approved High Land game with placeholder or unrelated game code.
