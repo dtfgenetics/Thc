@@ -18,7 +18,10 @@
     "dev:growlens": "vite --config apps/growlens-web/vite.config.ts",
     "build:growlens": "tsc -p apps/growlens-web/tsconfig.json && vite build --config apps/growlens-web/vite.config.ts",
     "test:growlens": "vitest run --config apps/growlens-web/vitest.config.ts",
+    "test:growlens:live-client": "node scripts/growlens-live-acceptance-selftest.mjs",
+    "test:live:growlens": "node scripts/growlens-live-acceptance.mjs",
+    "recover:growlens:acceptance": "node scripts/growlens-live-acceptance-recover.mjs",
     "test:e2e:growlens": "playwright test --config apps/growlens-web/playwright.config.ts",
-    "verify:growlens": "npm run test:growlens && npm run build:growlens && npm run test:e2e:growlens"
+    "verify:growlens": "npm run test:growlens && npm run test:growlens:live-client && npm run build:growlens && npm run test:e2e:growlens"
   }
 }
