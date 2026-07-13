@@ -20,7 +20,7 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
 
     steps:
       - name: Check out repository
@@ -50,6 +50,12 @@ jobs:
           test -f apps/growlens-web/dist/sw.js
           test -f apps/growlens-web/dist/icon.svg
 
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run GrowLens browser smoke tests
+        run: npm run test:e2e:growlens
+
       - name: Upload GrowLens build artifact
         if: success()
         uses: actions/upload-artifact@v4
@@ -57,3 +63,13 @@ jobs:
           name: growlens-dist
           path: apps/growlens-web/dist
           if-no-files-found: error
+
+      - name: Upload GrowLens browser artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: growlens-playwright-artifacts
+          path: |
+            apps/growlens-web/test-results
+            apps/growlens-web/playwright-report
+          if-no-files-found: ignore
