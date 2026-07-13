@@ -59,6 +59,34 @@ export async function putPhoto(asset: LocalPhotoAsset): Promise<void> {
   }
 }
 
+export async function putPhotos(assets: LocalPhotoAsset[]): Promise<void> {
+  if (assets.length === 0) return;
+  const database = await openPhotoDatabase();
+  try {
+    const transaction = database.transaction(PHOTO_STORE, 'readwrite');
+    const completed = transactionDone(transaction);
+    const store = transaction.objectStore(PHOTO_STORE);
+    for (const asset of assets) store.put(asset);
+    await completed;
+  } finally {
+    database.close();
+  }
+}
+
+export async function replacePhotos(assets: LocalPhotoAsset[]): Promise<void> {
+  const database = await openPhotoDatabase();
+  try {
+    const transaction = database.transaction(PHOTO_STORE, 'readwrite');
+    const completed = transactionDone(transaction);
+    const store = transaction.objectStore(PHOTO_STORE);
+    store.clear();
+    for (const asset of assets) store.put(asset);
+    await completed;
+  } finally {
+    database.close();
+  }
+}
+
 export async function getPhoto(photoId: string): Promise<LocalPhotoAsset | null> {
   const database = await openPhotoDatabase();
   try {
@@ -95,6 +123,10 @@ export async function deletePhoto(photoId: string): Promise<void> {
   } finally {
     database.close();
   }
+}
+
+export async function clearPhotos(): Promise<void> {
+  await replacePhotos([]);
 }
 
 export async function markPhotoUploaded(photoId: string, uploaded = true): Promise<LocalPhotoAsset | null> {
