@@ -16,7 +16,7 @@ export function reduceHighLandEvent(state: GameState, event: HighLandGameEvent):
       return {
         state,
         warnings: [
-          `${event.name} is recorded for multiplayer sync/debugging. Wire this to gameEngine once Supabase room state is approved.`
+          `${event.name} is recorded for multiplayer sync/debugging. Apply it through the authoritative room game engine before replay.`
         ]
       };
     case 'room_created':
