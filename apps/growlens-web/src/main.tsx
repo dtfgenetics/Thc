@@ -4,6 +4,7 @@ import AccountSyncWidget from './AccountSyncWidget';
 import App from './App';
 import CameraObservationWidget from './CameraObservationWidget';
 import ErrorBoundary from './ErrorBoundary';
+import ExternalStateBridge from './ExternalStateBridge';
 import './styles.css';
 import './account.css';
 import './camera.css';
@@ -15,6 +16,7 @@ createRoot(document.getElementById('root')!).render(
       <App />
       <CameraObservationWidget />
       <AccountSyncWidget />
+      <ExternalStateBridge />
     </ErrorBoundary>
   </StrictMode>,
 );
