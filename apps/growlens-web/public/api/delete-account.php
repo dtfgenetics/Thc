@@ -8,7 +8,8 @@ growlens_require_method('POST');
 growlens_require_same_origin();
 $context = growlens_current_session(true);
 growlens_require_csrf($context);
-growlens_rate_limit('delete-account-' . (string)$context['user']['id'], 5, 3600);
+$userId = (string)$context['user']['id'];
+growlens_rate_limit('delete-account-' . $userId, 5, 3600);
 
 $body = growlens_read_json_body(32768);
 $password = is_string($body['password'] ?? null) ? (string)$body['password'] : '';
@@ -21,7 +22,22 @@ if ($password === '' || $passwordHash === '' || !password_verify($password, $pas
     ], 401);
 }
 
+$accountLockPath = growlens_path('data', $userId . '.account.lock');
+$accountLock = fopen($accountLockPath, 'c');
+if ($accountLock === false || !flock($accountLock, LOCK_EX)) {
+    if (is_resource($accountLock)) {
+        fclose($accountLock);
+    }
+    growlens_send_json([
+        'ok' => false,
+        'error' => 'Could not lock the account for deletion.'
+    ], 500);
+}
+
 growlens_delete_account_data($context['user']);
+flock($accountLock, LOCK_UN);
+fclose($accountLock);
+@unlink($accountLockPath);
 
 growlens_send_json([
     'ok' => true,
