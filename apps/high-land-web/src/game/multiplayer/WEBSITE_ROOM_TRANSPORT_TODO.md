@@ -1,4 +1,8 @@
-# Website Room Transport TODO
+# Website Room Transport Status
+
+Status: implemented and selected automatically on the live DTF Seeds High Land
+route. This file now records the deployed contract and remaining verification,
+not an unimplemented adapter.
 
 The free website backend now exists under:
 
@@ -22,9 +26,9 @@ https://dtfseeds.com/games/high-land/api/update-room.php
 https://dtfseeds.com/games/high-land/api/append-event.php
 ```
 
-## Next code adapter
+## Implemented adapter
 
-Add a `websiteRoomTransport.ts` file beside `localRoomTransport.ts` that implements the existing `RoomTransport` interface.
+`websiteRoomTransport.ts` implements the existing `RoomTransport` interface.
 
 Required methods:
 
@@ -44,7 +48,7 @@ Implementation rules:
 - Poll `get-room.php` every 1-3 seconds inside `subscribe`.
 - Keep `localRoomTransport` as the default for tests and offline dev.
 - Only enable website transport when deployed to dtfseeds.com or when an explicit config flag is set.
-- Do not require Supabase.
+- Do not require or reconnect Supabase.
 
 ## Payload mapping
 
