@@ -75,6 +75,7 @@ export type Observation = {
   symptoms: string[];
   notes: string;
   possibleCauses: string[];
+  photoIds?: string[];
   createdAt: string;
 };
 
