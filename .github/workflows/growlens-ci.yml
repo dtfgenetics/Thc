@@ -7,17 +7,21 @@ on:
       - main
     paths:
       - 'apps/growlens-web/**'
+      - 'scripts/growlens-live-acceptance*.mjs'
       - 'package.json'
       - '.github/workflows/growlens-ci.yml'
       - '.github/workflows/growlens-deploy-hostinger.yml'
+      - '.github/workflows/growlens-live-acceptance.yml'
   push:
     branches:
       - main
     paths:
       - 'apps/growlens-web/**'
+      - 'scripts/growlens-live-acceptance*.mjs'
       - 'package.json'
       - '.github/workflows/growlens-ci.yml'
       - '.github/workflows/growlens-deploy-hostinger.yml'
+      - '.github/workflows/growlens-live-acceptance.yml'
 
 jobs:
   build-and-test:
@@ -58,6 +62,9 @@ jobs:
 
       - name: Run GrowLens unit tests
         run: npm run test:growlens
+
+      - name: Test GrowLens live acceptance client without network access
+        run: npm run test:growlens:live-client
 
       - name: Build GrowLens
         id: build
