@@ -25,17 +25,17 @@ export default class ErrorBoundary extends Component<Props, State> {
     if (!this.state.hasError) return this.props.children;
 
     return (
-      <main className="fatal-error" role="alert">
-        <div>
+      <main className="main-content" role="alert" style={{ margin: '0 auto', maxWidth: 760, paddingTop: '10vh' }}>
+        <section className="section-block">
           <span className="brand-mark">GL</span>
           <h1>GrowLens hit an unexpected error.</h1>
           <p>Your locally saved grow records were not intentionally deleted. Reload the app first; use your latest exported backup if browser storage was damaged.</p>
-          <details>
+          <details style={{ marginBottom: 20 }}>
             <summary>Technical detail</summary>
             <code>{this.state.message}</code>
           </details>
           <button className="primary-button" onClick={this.reload}>Reload GrowLens</button>
-        </div>
+        </section>
       </main>
     );
   }
