@@ -1,0 +1,101 @@
+name: WordPress Read-only Audit
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Protected GitHub environment containing Hostinger access
+        required: true
+        default: production
+        type: choice
+        options:
+          - staging
+          - production
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: ${{ inputs.environment }}
+    env:
+      SSH_HOST: ${{ secrets.HOSTINGER_HOST }}
+      SSH_USER: ${{ secrets.HOSTINGER_USER }}
+      SSH_PORT: ${{ secrets.HOSTINGER_PORT }}
+      SSH_PRIVATE_KEY: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY }}
+      SSH_KNOWN_HOSTS: ${{ secrets.HOSTINGER_KNOWN_HOSTS }}
+      WORDPRESS_PATH: ${{ vars.HOSTINGER_WORDPRESS_PATH }}
+    steps:
+      - name: Validate protected audit settings
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${SSH_HOST:?Missing HOSTINGER_HOST}"
+          : "${SSH_USER:?Missing HOSTINGER_USER}"
+          : "${SSH_PRIVATE_KEY:?Missing HOSTINGER_SSH_PRIVATE_KEY}"
+          : "${SSH_KNOWN_HOSTS:?Missing HOSTINGER_KNOWN_HOSTS}"
+          : "${WORDPRESS_PATH:?Missing HOSTINGER_WORDPRESS_PATH environment variable}"
+          SSH_PORT="${SSH_PORT:-22}"
+          [[ "$SSH_PORT" =~ ^[0-9]+$ ]]
+          [[ "$WORDPRESS_PATH" =~ ^[A-Za-z0-9_./-]+$ ]]
+          [[ "$WORDPRESS_PATH" != *".."* ]]
+          [[ "$WORDPRESS_PATH" != "/" ]]
+
+      - name: Configure SSH
+        shell: bash
+        run: |
+          set -euo pipefail
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+
+      - name: Collect read-only WordPress inventory
+        shell: bash
+        run: |
+          set -euo pipefail
+          SSH_PORT="${SSH_PORT:-22}"
+          ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" \
+            "WORDPRESS_PATH='$WORDPRESS_PATH' bash -s" > wordpress-audit.txt <<'REMOTE'
+          set -euo pipefail
+          command -v wp >/dev/null
+          test -f "$WORDPRESS_PATH/wp-config.php"
+          echo "Audit timestamp: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          echo "WordPress path: $WORDPRESS_PATH"
+          echo
+          echo "## Core"
+          wp --path="$WORDPRESS_PATH" core version
+          wp --path="$WORDPRESS_PATH" core check-update --format=table || true
+          echo
+          echo "## Site URLs"
+          printf 'home: '
+          wp --path="$WORDPRESS_PATH" option get home
+          printf 'siteurl: '
+          wp --path="$WORDPRESS_PATH" option get siteurl
+          echo
+          echo "## Plugins"
+          wp --path="$WORDPRESS_PATH" plugin list --fields=name,status,update,version,update_version,auto_update --format=table
+          echo
+          echo "## Themes"
+          wp --path="$WORDPRESS_PATH" theme list --fields=name,status,update,version,update_version,auto_update --format=table
+          echo
+          echo "## Database"
+          wp --path="$WORDPRESS_PATH" db check
+          echo
+          echo "## Cron summary"
+          wp --path="$WORDPRESS_PATH" cron event list --fields=hook,next_run_relative,recurrence --format=table
+          REMOTE
+
+      - name: Upload private audit report
+        uses: actions/upload-artifact@v4
+        with:
+          name: wordpress-readonly-audit-${{ github.run_id }}
+          path: wordpress-audit.txt
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Record audit result
+        run: echo "Read-only WordPress audit completed for ${{ inputs.environment }}." >> "$GITHUB_STEP_SUMMARY"
