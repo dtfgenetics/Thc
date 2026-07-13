@@ -51,8 +51,9 @@ export async function putPhoto(asset: LocalPhotoAsset): Promise<void> {
   const database = await openPhotoDatabase();
   try {
     const transaction = database.transaction(PHOTO_STORE, 'readwrite');
+    const completed = transactionDone(transaction);
     transaction.objectStore(PHOTO_STORE).put(asset);
-    await transactionDone(transaction);
+    await completed;
   } finally {
     database.close();
   }
@@ -62,8 +63,9 @@ export async function getPhoto(photoId: string): Promise<LocalPhotoAsset | null>
   const database = await openPhotoDatabase();
   try {
     const transaction = database.transaction(PHOTO_STORE, 'readonly');
+    const completed = transactionDone(transaction);
     const result = await requestResult(transaction.objectStore(PHOTO_STORE).get(photoId));
-    await transactionDone(transaction);
+    await completed;
     return result ?? null;
   } finally {
     database.close();
@@ -74,8 +76,9 @@ export async function listPhotos(): Promise<LocalPhotoAsset[]> {
   const database = await openPhotoDatabase();
   try {
     const transaction = database.transaction(PHOTO_STORE, 'readonly');
+    const completed = transactionDone(transaction);
     const results = await requestResult(transaction.objectStore(PHOTO_STORE).getAll());
-    await transactionDone(transaction);
+    await completed;
     return results.sort((first, second) => second.capturedAt.localeCompare(first.capturedAt));
   } finally {
     database.close();
@@ -86,8 +89,9 @@ export async function deletePhoto(photoId: string): Promise<void> {
   const database = await openPhotoDatabase();
   try {
     const transaction = database.transaction(PHOTO_STORE, 'readwrite');
+    const completed = transactionDone(transaction);
     transaction.objectStore(PHOTO_STORE).delete(photoId);
-    await transactionDone(transaction);
+    await completed;
   } finally {
     database.close();
   }
