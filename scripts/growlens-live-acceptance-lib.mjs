@@ -6,14 +6,12 @@ export const SESSION_COOKIE_NAME = 'growlens_session';
 export function normalizeBaseUrl(value, allowHttpLocal = false) {
   const raw = String(value ?? '').trim();
   if (!raw) throw new Error('GROWLENS_BASE_URL is required.');
-
   let url;
   try {
     url = new URL(raw);
   } catch {
     throw new Error('GROWLENS_BASE_URL must be a valid absolute URL.');
   }
-
   const localHost = ['localhost', '127.0.0.1', '::1'].includes(url.hostname);
   if (url.protocol !== 'https:' && !(allowHttpLocal && localHost && url.protocol === 'http:')) {
     throw new Error('GrowLens live acceptance requires HTTPS. HTTP is allowed only for an explicitly enabled localhost run.');
@@ -21,11 +19,8 @@ export function normalizeBaseUrl(value, allowHttpLocal = false) {
   if (url.username || url.password || url.search || url.hash) {
     throw new Error('GROWLENS_BASE_URL must not contain credentials, a query string, or a fragment.');
   }
-
   url.pathname = url.pathname.replace(/\/+$/, '');
-  if (!url.pathname.endsWith('/growlens')) {
-    throw new Error('GROWLENS_BASE_URL must end in /growlens.');
-  }
+  if (!url.pathname.endsWith('/growlens')) throw new Error('GROWLENS_BASE_URL must end in /growlens.');
   return url;
 }
 
@@ -73,7 +68,7 @@ export function extractSessionCookie(setCookieHeaders) {
 
 export function emptyGrowLensState() {
   return {
-    schemaVersion: 1,
+    schemaVersion: 2,
     spaces: [],
     cycles: [],
     plants: [],
@@ -82,32 +77,26 @@ export function emptyGrowLensState() {
     readings: [],
     calibrationProfiles: [],
     observations: [],
+    irrigationRecords: [],
+    feedingRecords: [],
+    reservoirRecords: [],
+    harvestRecords: [],
+    observationOutcomes: [],
   };
 }
 
 export function buildDeviceOneState(runId, photoId) {
   const createdAt = new Date().toISOString();
+  const date = createdAt.slice(0, 10);
   const spaceId = `space-accept-${runId}`;
   const cycleId = `cycle-accept-${runId}`;
   const plantId = `plant-accept-${runId}`;
   const observationId = `observation-accept-${runId}`;
+  const reservoirId = `reservoir-accept-${runId}`;
   return {
     ...emptyGrowLensState(),
-    spaces: [{
-      id: spaceId,
-      name: `Acceptance space ${runId}`,
-      environment: 'indoor',
-      lightHours: 18,
-      createdAt,
-    }],
-    cycles: [{
-      id: cycleId,
-      name: `Acceptance cycle ${runId}`,
-      spaceId,
-      startDate: createdAt.slice(0, 10),
-      stage: 'vegetative',
-      status: 'active',
-    }],
+    spaces: [{ id: spaceId, name: `Acceptance space ${runId}`, environment: 'indoor', lightHours: 18, createdAt }],
+    cycles: [{ id: cycleId, name: `Acceptance cycle ${runId}`, spaceId, startDate: date, stage: 'vegetative', status: 'active' }],
     plants: [{
       id: plantId,
       name: `Acceptance plant ${runId}`,
@@ -116,23 +105,15 @@ export function buildDeviceOneState(runId, photoId) {
       status: 'active',
       spaceId,
       cycleId,
-      startDate: createdAt.slice(0, 10),
+      startDate: date,
       notes: 'Disposable live acceptance record.',
       createdAt,
     }],
-    diary: [{
-      id: `entry-device-one-${runId}`,
-      plantId,
-      cycleId,
-      type: 'note',
-      title: 'Device one marker',
-      notes: `Acceptance run ${runId}`,
-      createdAt,
-    }],
+    diary: [{ id: `entry-device-one-${runId}`, plantId, cycleId, type: 'note', title: 'Device one marker', notes: `Acceptance run ${runId}`, createdAt }],
     tasks: [{
       id: `task-accept-${runId}`,
       title: 'Acceptance recurring task',
-      dueDate: createdAt.slice(0, 10),
+      dueDate: date,
       plantId,
       completed: false,
       recurrence: 'weekly',
@@ -141,14 +122,7 @@ export function buildDeviceOneState(runId, photoId) {
       completionCount: 0,
       createdAt,
     }],
-    readings: [{
-      id: `reading-accept-${runId}`,
-      spaceId,
-      temperatureC: 24,
-      humidity: 58,
-      ppfd: 450,
-      createdAt,
-    }],
+    readings: [{ id: `reading-accept-${runId}`, spaceId, temperatureC: 24, humidity: 58, ppfd: 450, createdAt }],
     calibrationProfiles: [{
       id: `calibration-accept-${runId}`,
       name: 'Acceptance calibration',
@@ -165,6 +139,92 @@ export function buildDeviceOneState(runId, photoId) {
       possibleCauses: ['Acceptance test only'],
       photoIds: [photoId],
       createdAt,
+    }],
+    reservoirRecords: [{
+      id: reservoirId,
+      spaceId,
+      name: 'Acceptance reservoir',
+      sourceWater: 'Acceptance source',
+      capacityLiters: 20,
+      currentVolumeLiters: 15,
+      ph: 6.1,
+      ecMsCm: 1.7,
+      temperatureC: 20,
+      mixedAt: createdAt,
+      notes: 'Disposable reservoir record.',
+      createdAt,
+      updatedAt: createdAt,
+    }],
+    feedingRecords: [{
+      id: `feeding-accept-${runId}`,
+      plantId,
+      cycleId,
+      reservoirId,
+      waterVolumeMl: 4000,
+      sourceWater: 'Acceptance source',
+      startingEcMsCm: 0.4,
+      finalEcMsCm: 1.7,
+      finalPh: 6.1,
+      ppm: 850,
+      ppmScale: 500,
+      products: [{ name: 'Acceptance nutrient', amount: 8, unit: 'mL' }],
+      additives: [],
+      mixingNotes: 'Disposable feed record.',
+      createdAt,
+      updatedAt: createdAt,
+    }],
+    irrigationRecords: [{
+      id: `irrigation-accept-${runId}`,
+      plantId,
+      cycleId,
+      spaceId,
+      sourceWater: 'Acceptance source',
+      volumeAppliedMl: 1500,
+      runoffVolumeMl: 225,
+      inputPh: 6.1,
+      inputEcMsCm: 1.7,
+      runoffPh: 6.3,
+      runoffEcMsCm: 1.9,
+      substrateMoisturePercent: 55,
+      drybackPercent: 18,
+      irrigationTimeMinutes: 3,
+      reservoirId,
+      recipeNotes: 'Disposable irrigation record.',
+      productsUsed: ['Acceptance nutrient'],
+      createdAt,
+      updatedAt: createdAt,
+    }],
+    harvestRecords: [{
+      id: `harvest-accept-${runId}`,
+      plantId,
+      cycleId,
+      lotId: `acceptance-lot-${runId}`,
+      harvestDate: date,
+      wetWeightG: 1000,
+      dryWeightG: 240,
+      trimmedWeightG: 210,
+      wasteWeightG: 30,
+      dryingTemperatureC: 18,
+      dryingHumidity: 60,
+      dryingDays: 10,
+      cureStartedAt: createdAt,
+      cureCheckpoints: ['Acceptance checkpoint'],
+      finalPhotoIds: [photoId],
+      notes: 'Disposable harvest record.',
+      createdAt,
+      updatedAt: createdAt,
+    }],
+    observationOutcomes: [{
+      id: `outcome-accept-${runId}`,
+      observationId,
+      plantId,
+      status: 'monitoring',
+      verifiedCause: 'Acceptance verification only',
+      actionTaken: 'No production action.',
+      outcomeNotes: 'Disposable outcome record.',
+      resolvedAt: null,
+      createdAt,
+      updatedAt: createdAt,
     }],
   };
 }
@@ -210,30 +270,20 @@ export class GrowLensApiClient {
   }
 
   endpoint(path) {
-    const relative = String(path).replace(/^\/+/, '');
-    return new URL(`api/${relative}`, `${this.baseUrl.href}/`);
+    return new URL(`api/${String(path).replace(/^\/+/, '')}`, `${this.baseUrl.href}/`);
   }
 
   captureCookie(headers) {
-    const values = typeof headers.getSetCookie === 'function'
-      ? headers.getSetCookie()
-      : [headers.get('set-cookie')];
+    const values = typeof headers.getSetCookie === 'function' ? headers.getSetCookie() : [headers.get('set-cookie')];
     const cookie = extractSessionCookie(values);
     if (cookie !== undefined) this.sessionCookie = cookie;
   }
 
   async request(path, options = {}) {
     const {
-      method = 'GET',
-      json,
-      body,
-      csrf = false,
-      origin = this.baseUrl.origin,
-      expectedStatuses = [200],
-      parse = 'auto',
-      timeoutMs = 30_000,
+      method = 'GET', json, body, csrf = false, origin = this.baseUrl.origin,
+      expectedStatuses = [200], parse = 'auto', timeoutMs = 30_000,
     } = options;
-
     const headers = new Headers({
       Accept: parse === 'bytes' ? '*/*' : 'application/json',
       'X-GrowLens-Acceptance': this.label,
@@ -244,78 +294,49 @@ export class GrowLensApiClient {
       if (!this.csrfToken) throw new Error(`${this.label} has no CSRF token.`);
       headers.set('X-CSRF-Token', this.csrfToken);
     }
-
     let requestBody = body;
     if (json !== undefined) {
       headers.set('Content-Type', 'application/json');
       requestBody = JSON.stringify(json);
     }
-
     const response = await fetch(this.endpoint(path), {
-      method,
-      headers,
-      body: requestBody,
-      redirect: 'manual',
-      cache: 'no-store',
-      signal: AbortSignal.timeout(timeoutMs),
+      method, headers, body: requestBody, redirect: 'manual', cache: 'no-store', signal: AbortSignal.timeout(timeoutMs),
     });
     this.captureCookie(response.headers);
-
     if (response.status >= 300 && response.status < 400) {
       throw new Error(`${this.label} ${method} ${path} unexpectedly redirected with HTTP ${response.status}.`);
     }
-
     const contentType = response.headers.get('content-type') ?? '';
     let payload;
-    if (parse === 'bytes') {
-      payload = new Uint8Array(await response.arrayBuffer());
-    } else if (parse === 'text') {
-      payload = await response.text();
-    } else if (contentType.includes('application/json')) {
+    if (parse === 'bytes') payload = new Uint8Array(await response.arrayBuffer());
+    else if (parse === 'text') payload = await response.text();
+    else if (contentType.includes('application/json')) {
       const text = await response.text();
-      try {
-        payload = text ? JSON.parse(text) : null;
-      } catch {
-        throw new Error(`${this.label} ${method} ${path} returned malformed JSON.`);
-      }
-    } else {
-      payload = await response.text();
-    }
-
+      try { payload = text ? JSON.parse(text) : null; }
+      catch { throw new Error(`${this.label} ${method} ${path} returned malformed JSON.`); }
+    } else payload = await response.text();
     if (!expectedStatuses.includes(response.status)) {
       const safePayload = JSON.stringify(redactPayload(payload));
       throw new Error(`${this.label} ${method} ${path} returned HTTP ${response.status}; expected ${expectedStatuses.join(', ')}. Payload: ${safePayload.slice(0, 1000)}`);
     }
-
     return { response, payload };
   }
 
   async register(credentials) {
-    const result = await this.request('register.php', {
-      method: 'POST',
-      json: credentials,
-      expectedStatuses: [201],
-    });
+    const result = await this.request('register.php', { method: 'POST', json: credentials, expectedStatuses: [201] });
     this.csrfToken = result.payload?.csrfToken ?? null;
     return result;
   }
 
   async login(credentials, expectedStatuses = [200]) {
-    const result = await this.request('login.php', {
-      method: 'POST',
-      json: credentials,
-      expectedStatuses,
-    });
+    const result = await this.request('login.php', { method: 'POST', json: credentials, expectedStatuses });
     if (result.response.status === 200) this.csrfToken = result.payload?.csrfToken ?? null;
     return result;
   }
 
   async deleteAccount(password, expectedStatuses = [200]) {
     const result = await this.request('delete-account.php', {
-      method: 'POST',
-      json: { password },
-      csrf: true,
-      expectedStatuses,
+      method: 'POST', json: { password }, csrf: true, expectedStatuses,
     });
     if (result.response.status === 200) {
       this.sessionCookie = null;
