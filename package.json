@@ -6,6 +6,7 @@
     "apps/*"
   ],
   "scripts": {
+    "verify:connections": "node scripts/verify-connections.mjs",
     "dev": "npm run dev:high-land",
     "build": "npm run build:high-land",
     "test": "npm run test:high-land",
