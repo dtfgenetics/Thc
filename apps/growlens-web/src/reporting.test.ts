@@ -21,7 +21,7 @@ const state = {
     spaceId: 'space-1',
     cycleId: 'cycle-1',
     startDate: '2026-07-01',
-    notes: '<script>alert(1)</script>',
+    notes: 'Selected phenotype',
     createdAt: '2026-07-01T00:00:00Z',
   }],
   diary: [{
@@ -103,8 +103,12 @@ describe('GrowLens reporting', () => {
     expect(exports.observations).toContain('photo-1');
   });
 
-  it('escapes user text in printable HTML', () => {
-    const report = createPrintableReport(state);
+  it('escapes rendered user text in printable HTML', () => {
+    const maliciousState = {
+      ...state,
+      diary: [{ ...state.diary[0], notes: '<script>alert(1)</script>' }],
+    };
+    const report = createPrintableReport(maliciousState);
     expect(report).toContain('THC GrowLens report');
     expect(report).not.toContain('<script>alert(1)</script>');
     expect(report).toContain('&lt;script&gt;alert(1)&lt;/script&gt;');
