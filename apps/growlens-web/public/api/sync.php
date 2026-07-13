@@ -49,7 +49,31 @@ if ($expectedRevision < 0) {
 }
 
 $state = growlens_validate_state($body['state'] ?? null);
+$accountLockPath = growlens_path('data', $userId . '.account.lock');
+$accountLock = fopen($accountLockPath, 'c');
+if ($accountLock === false || !flock($accountLock, LOCK_EX)) {
+    if (is_resource($accountLock)) {
+        fclose($accountLock);
+    }
+    growlens_send_json([
+        'ok' => false,
+        'error' => 'Could not lock the account for synchronization.'
+    ], 500);
+}
+
+$currentUser = growlens_find_user_by_id($userId);
+if (!is_array($currentUser)) {
+    flock($accountLock, LOCK_UN);
+    fclose($accountLock);
+    growlens_send_json([
+        'ok' => false,
+        'error' => 'Account no longer exists.'
+    ], 401);
+}
+
 $saved = growlens_save_user_data($userId, $state, $expectedRevision);
+flock($accountLock, LOCK_UN);
+fclose($accountLock);
 
 growlens_send_json([
     'ok' => true,
