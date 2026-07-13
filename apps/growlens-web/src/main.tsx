@@ -4,6 +4,7 @@ import AccountSyncWidget from './AccountSyncWidget';
 import App from './App';
 import CameraObservationWidget from './CameraObservationWidget';
 import CompleteBackupWidget from './CompleteBackupWidget';
+import CultivationRecordsWidget from './CultivationRecordsWidget';
 import ErrorBoundary from './ErrorBoundary';
 import ExternalStateBridge from './ExternalStateBridge';
 import PhotoComparisonWidget from './PhotoComparisonWidget';
@@ -16,12 +17,14 @@ import './reports.css';
 import './backup.css';
 import './routines.css';
 import './photo-comparison.css';
+import './cultivation-records.css';
 import './accessibility.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ErrorBoundary>
       <App />
+      <CultivationRecordsWidget />
       <TaskRoutineWidget />
       <CompleteBackupWidget />
       <ReportsHistoryWidget />
