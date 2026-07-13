@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/_shared.php';
+require_once __DIR__ . '/_images.php';
 
 growlens_require_method('POST');
 growlens_require_same_origin();
@@ -34,6 +34,7 @@ if ($accountLock === false || !flock($accountLock, LOCK_EX)) {
     ], 500);
 }
 
+growlens_delete_user_images($userId);
 growlens_delete_account_data($context['user']);
 flock($accountLock, LOCK_UN);
 fclose($accountLock);
