@@ -74,7 +74,7 @@ Acceptance:
 
 ### 3. Room / Invite System
 
-Purpose: prepare for Supabase room multiplayer.
+Purpose: support Hostinger Website Room API multiplayer.
 
 Files:
 
@@ -82,20 +82,17 @@ Files:
 apps/high-land-web/src/game/multiplayer/roomCodes.ts
 apps/high-land-web/src/game/multiplayer/inviteLinks.ts
 apps/high-land-web/src/game/multiplayer/roomState.ts
-apps/high-land-web/src/game/multiplayer/supabaseClient.ts
+apps/high-land-web/src/game/multiplayer/websiteRoomTransport.ts
 ```
 
 Acceptance:
 
 - Host can generate a short room code.
 - Invite URLs can be created and parsed.
-- Missing Supabase env variables produce a safe disconnected state, not a crash.
+- Missing/unavailable website API produces a safe disconnected state, not a crash.
 - Browser-safe env variables only:
 
-```txt
-VITE_SUPABASE_URL
-VITE_SUPABASE_PUBLISHABLE_KEY
-```
+No browser API credential is required because the room API is same-origin.
 
 Never commit service-role keys, database passwords, Hostinger keys, Discord tokens, OpenAI keys, or GitHub tokens.
 
@@ -127,7 +124,7 @@ Acceptance:
 
 - Every multiplayer state change can be described by an event.
 - Events include enough payload data to debug what happened.
-- Events are serializable for Supabase storage.
+- Events are serializable for Website Room API storage.
 
 ### 5. Board Calibration System
 
@@ -177,7 +174,7 @@ Acceptance:
 - The app can report missing placeholders without crashing.
 - No fake checkerboard transparency assets.
 
-### 7. Supabase Schema System
+### 7. Website Room Storage System
 
 Purpose: prepare persistent multiplayer sessions.
 
@@ -220,8 +217,8 @@ Codex must check:
 2. Add tests for pure systems first.
 3. Wire player naming into setup.
 4. Add room code and invite parsing.
-5. Add Supabase client with missing-env fallback.
-6. Add Supabase schema plan/migrations only after approval.
+5. Add Website Room API client with offline fallback.
+6. Verify room storage authorization, locking, cleanup, and privacy.
 7. Wire shared room state.
 8. Test two-browser multiplayer.
 9. Verify production route.
