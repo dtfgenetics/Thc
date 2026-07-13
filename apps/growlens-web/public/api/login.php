@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/_operations.php';
+require_once __DIR__ . '/_state-v2.php';
 
 growlens_require_method('POST');
 growlens_require_same_origin();
@@ -29,7 +30,7 @@ if (password_needs_rehash((string)$user['passwordHash'], PASSWORD_DEFAULT)) {
 }
 
 $createdSession = growlens_create_session($user);
-$data = growlens_load_user_data((string)$user['id']);
+$data = growlens_v2_load_user_data((string)$user['id']);
 
 growlens_send_json([
     'ok' => true,
