@@ -1,5 +1,6 @@
 import { calculateVpdKpa, round } from './calculations';
 import { normalizeState } from './storage';
+import { normalizeTaskRecurrence, taskRecurrenceLabels } from './taskRecurrence';
 import type { EnvironmentReading, GrowLensState } from './types';
 
 export type ReportSummary = {
@@ -135,11 +136,16 @@ export function buildPlantTimeline(stateValue: unknown, plantId: string): PlantT
 
   for (const task of state.tasks) {
     if (task.plantId !== plantId) continue;
+    const recurrence = normalizeTaskRecurrence(task.recurrence);
+    const schedule = recurrence === 'none' ? 'task' : `${taskRecurrenceLabels[recurrence].toLowerCase()} routine`;
+    const completionDetail = (task.completionCount ?? 0) > 0
+      ? ` · ${task.completionCount} completion${task.completionCount === 1 ? '' : 's'}`
+      : '';
     events.push({
       id: task.id,
       kind: 'task',
       title: task.title,
-      detail: task.completed ? 'Completed task' : 'Open task',
+      detail: `${task.completed ? 'Completed' : 'Open'} ${schedule}${completionDetail}`,
       timestamp: task.dueDate || task.createdAt,
     });
   }
@@ -170,8 +176,18 @@ export function createGrowLensCsvExports(stateValue: unknown): Record<string, st
       state.diary.map((entry) => [entry.id, entry.plantId, entry.cycleId, entry.type, entry.title, entry.notes, entry.createdAt]),
     ),
     tasks: createCsv(
-      ['id', 'title', 'dueDate', 'plantId', 'completed', 'createdAt'],
-      state.tasks.map((task) => [task.id, task.title, task.dueDate, task.plantId, task.completed, task.createdAt]),
+      ['id', 'title', 'dueDate', 'plantId', 'completed', 'recurrence', 'completionCount', 'lastCompletedAt', 'createdAt'],
+      state.tasks.map((task) => [
+        task.id,
+        task.title,
+        task.dueDate,
+        task.plantId,
+        task.completed,
+        normalizeTaskRecurrence(task.recurrence),
+        task.completionCount ?? 0,
+        task.lastCompletedAt ?? '',
+        task.createdAt,
+      ]),
     ),
     readings: createCsv(
       ['id', 'spaceId', 'temperatureC', 'humidity', 'ppfd', 'vpdKpa', 'createdAt'],
@@ -198,6 +214,12 @@ function statText(stats: NumericStats | null, suffix: string): string {
   return `${round(stats.average, 1)}${suffix} average · ${round(stats.minimum, 1)}–${round(stats.maximum, 1)}${suffix}`;
 }
 
+function reportDateTime(value: string | null | undefined): string {
+  if (!value) return 'Never';
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? value : date.toLocaleString();
+}
+
 export function createPrintableReport(stateValue: unknown): string {
   const state: GrowLensState = normalizeState(stateValue);
   const summary = summarizeReport(state);
@@ -211,6 +233,22 @@ export function createPrintableReport(stateValue: unknown): string {
       <td>${escapeHtml(plant.status)}</td>
       <td>${escapeHtml(plant.startDate)}</td>
     </tr>`).join('');
+  const tasks = [...state.tasks]
+    .sort((first, second) => Number(first.completed) - Number(second.completed) || first.dueDate.localeCompare(second.dueDate))
+    .map((task) => {
+      const plant = state.plants.find((candidate) => candidate.id === task.plantId);
+      const recurrence = normalizeTaskRecurrence(task.recurrence);
+      return `
+    <tr>
+      <td>${escapeHtml(task.title)}</td>
+      <td>${escapeHtml(task.dueDate || 'No date')}</td>
+      <td>${escapeHtml(plant?.name ?? 'Whole grow')}</td>
+      <td>${escapeHtml(taskRecurrenceLabels[recurrence])}</td>
+      <td>${escapeHtml(task.completed ? 'Completed' : 'Open')}</td>
+      <td>${escapeHtml(task.completionCount ?? 0)}</td>
+      <td>${escapeHtml(reportDateTime(task.lastCompletedAt))}</td>
+    </tr>`;
+    }).join('');
   const diary = [...state.diary]
     .sort((first, second) => second.createdAt.localeCompare(first.createdAt))
     .slice(0, 25)
@@ -244,6 +282,8 @@ body{font-family:Arial,sans-serif;color:#18352a;margin:36px;line-height:1.45}h1,
 <p>${escapeHtml(statText(environment.vpdKpa, ' kPa VPD'))}</p>
 <h2>Plants</h2>
 <table><thead><tr><th>Name</th><th>Cultivar</th><th>Stage</th><th>Status</th><th>Start date</th></tr></thead><tbody>${plants}</tbody></table>
+<h2>Tasks and routines</h2>
+<table><thead><tr><th>Task</th><th>Due</th><th>Plant</th><th>Schedule</th><th>Status</th><th>Completions</th><th>Last completed</th></tr></thead><tbody>${tasks || '<tr><td colspan="7">No tasks recorded.</td></tr>'}</tbody></table>
 <h2>Recent diary</h2>
 <ul>${diary || '<li>No diary entries recorded.</li>'}</ul>
 </body>

@@ -7,17 +7,20 @@ import CompleteBackupWidget from './CompleteBackupWidget';
 import ErrorBoundary from './ErrorBoundary';
 import ExternalStateBridge from './ExternalStateBridge';
 import ReportsHistoryWidget from './ReportsHistoryWidget';
+import TaskRoutineWidget from './TaskRoutineWidget';
 import './styles.css';
 import './account.css';
 import './camera.css';
 import './reports.css';
 import './backup.css';
+import './routines.css';
 import './accessibility.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ErrorBoundary>
       <App />
+      <TaskRoutineWidget />
       <CompleteBackupWidget />
       <ReportsHistoryWidget />
       <CameraObservationWidget />
