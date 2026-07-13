@@ -39,6 +39,9 @@ const state = {
     dueDate: '2026-07-14',
     plantId: 'plant-1',
     completed: false,
+    recurrence: 'weekly' as const,
+    completionCount: 3,
+    lastCompletedAt: '2026-07-13T09:00:00Z',
     createdAt: '2026-07-13T00:00:00Z',
   }],
   readings: [
@@ -88,6 +91,8 @@ describe('GrowLens reporting', () => {
   it('builds a descending plant timeline across record types', () => {
     const timeline = buildPlantTimeline(state, 'plant-1');
     expect(timeline.map((event) => event.kind)).toEqual(['task', 'observation', 'diary']);
+    expect(timeline[0].detail).toContain('weekly routine');
+    expect(timeline[0].detail).toContain('3 completions');
   });
 
   it('escapes commas, quotes, and line breaks in CSV', () => {
@@ -95,21 +100,26 @@ describe('GrowLens reporting', () => {
       .toBe('name,notes\r\nBM-01,"one, ""two""\nthree"');
   });
 
-  it('creates separate downloadable CSV datasets', () => {
+  it('creates separate downloadable CSV datasets with routine history', () => {
     const exports = createGrowLensCsvExports(state);
     expect(exports.plants).toContain('Blue Mango F3');
     expect(exports.diary).toContain('"500 mL, ""even runoff"""');
+    expect(exports.tasks).toContain('recurrence,completionCount,lastCompletedAt');
+    expect(exports.tasks).toContain('weekly,3,2026-07-13T09:00:00Z');
     expect(exports.readings).toContain('vpdKpa');
     expect(exports.observations).toContain('photo-1');
   });
 
-  it('escapes rendered user text in printable HTML', () => {
+  it('escapes rendered user text and includes task schedules in printable HTML', () => {
     const maliciousState = {
       ...state,
       diary: [{ ...state.diary[0], notes: '<script>alert(1)</script>' }],
     };
     const report = createPrintableReport(maliciousState);
     expect(report).toContain('THC GrowLens report');
+    expect(report).toContain('Tasks and routines');
+    expect(report).toContain('Weekly');
+    expect(report).toContain('Inspect leaves');
     expect(report).not.toContain('<script>alert(1)</script>');
     expect(report).toContain('&lt;script&gt;alert(1)&lt;/script&gt;');
   });
