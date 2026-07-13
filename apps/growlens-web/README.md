@@ -2,7 +2,7 @@
 
 GrowLens is a mobile-first, local-first cultivation management PWA. It is intentionally isolated from the High Land game under `apps/growlens-web`.
 
-## Included in this foundation
+## Included
 
 - Responsive dashboard and mobile navigation
 - Grow spaces, cycles, and plant records
@@ -15,16 +15,32 @@ GrowLens is a mobile-first, local-first cultivation management PWA. It is intent
 - Structured plant observation and transparent diagnostic rules
 - JSON backup and restore
 - Versioned browser storage
-- PWA manifest, service worker, and offline shell
-- Unit tests and Playwright browser smoke tests
+- PWA manifest, privacy-safe service worker, and offline shell
+- Optional Hostinger accounts and cross-device synchronization
+- Explicit local/server conflict resolution: keep device, keep account, or merge
+- Account export, logout, and password-confirmed deletion
+- PHP, unit, and Playwright browser tests
+
+## Local-first behavior
+
+GrowLens continues saving to this browser whether an account is connected or not. Account sync is optional.
+
+The account panel never silently overwrites different copies. When this device and the account disagree, the user can:
+
+1. download a local backup;
+2. use the account copy;
+3. keep this device copy; or
+4. merge both copies by record ID.
+
+Merging retains every unique record ID. When the same ID differs, the device version is retained and the merged result is uploaded as a new server revision.
 
 ## Important limitations
 
-- Records currently live in the browser that created them.
-- Account authentication and Hostinger synchronization are not active yet.
+- Cross-device sync requires the PHP API to be deployed and configured with private storage outside `public_html`.
 - Observation photos are previewed in memory but are not stored in this release.
 - Lux-to-PPFD and phone-camera readings are estimates that require fixture/device-specific calibration.
 - Diagnostic results are possible causes, not confirmed diagnoses.
+- Browser notifications and background synchronization are not active yet.
 
 ## Commands
 
@@ -37,6 +53,12 @@ npm run test:growlens
 npm run build:growlens
 npm run test:e2e:growlens
 npm run verify:growlens
+```
+
+Backend smoke test:
+
+```bash
+php apps/growlens-web/tests/php-backend-smoke.php
 ```
 
 Development URL:
@@ -53,36 +75,43 @@ apps/growlens-web/dist
 
 ## Data model
 
-The root record is `GrowLensState` with `schemaVersion: 1`. Records are stored under:
+The root record is `GrowLensState` with `schemaVersion: 1`. Local records are stored under:
 
 ```txt
 thc-growlens-state-v1
 ```
 
-The schema separates spaces, cycles, plants, diary entries, tasks, environment readings, calibration profiles, and observations so a later backend can synchronize individual record types without rewriting the UI.
+The schema separates spaces, cycles, plants, diary entries, tasks, environment readings, calibration profiles, and observations. Server snapshots wrap that state with a revision and update timestamp.
 
 ## Deployment target
 
-Deploy the contents of `apps/growlens-web/dist` to a dedicated path such as:
+Deploy the complete contents of `apps/growlens-web/dist` to:
 
 ```txt
 https://dtfseeds.com/growlens/
 ```
 
-The Vite build uses relative asset paths so the app can run below a subdirectory. Verify service-worker scope and cache behavior on the final URL before calling the deployment complete.
+Do not omit hidden files. The API `.htaccess` file is part of the security boundary.
 
-## Security boundary for the next phase
+Configure the private backend according to:
 
-Do not activate multi-user sync until the Hostinger persistence layer has:
+```txt
+docs/GROWLENS_HOSTINGER_BACKEND.md
+```
 
-- Password hashing and secure session handling
-- User-level record authorization on every request
-- CSRF and origin controls for browser writes
-- Rate limiting and abuse controls
-- Private file storage outside public browsing
-- File type, size, and content validation
-- Export and account deletion endpoints
-- Backup, migration, and rollback procedures
-- Two-account isolation tests
+The Vite build uses relative asset paths so the app can run below a subdirectory. The service worker excludes all `/api/` traffic and respects `Cache-Control: no-store`; authenticated API responses must never enter the offline cache.
 
-Never put server secrets or storage paths into browser code.
+## Remaining production gates
+
+Before storing photos or adding automated background sync, implement and verify:
+
+- Private image storage outside public browsing
+- File signature, MIME type, dimension, and size validation
+- Metadata stripping and image compression
+- Per-user image authorization
+- Image deletion with account deletion
+- Backup and migration handling for images
+- Conflict-safe background synchronization
+- Two-account and two-device live isolation tests
+
+Never put server secrets, password hashes, raw session tokens, or private storage paths into browser code.
