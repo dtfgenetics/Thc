@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">GrowLens</title>
+  <desc id="desc">A green rounded square with a gold leaf and the letters GL.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#102c20"/>
+      <stop offset="1" stop-color="#2d6749"/>
+    </linearGradient>
+    <linearGradient id="leaf" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#9acb83"/>
+      <stop offset="1" stop-color="#d7a84a"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <circle cx="256" cy="218" r="132" fill="#ffffff" opacity="0.08"/>
+  <path d="M257 88c73 39 121 91 122 155 0 64-48 105-123 117-75-12-123-53-123-117 1-64 49-116 124-155Z" fill="url(#leaf)"/>
+  <path d="M256 125v198M256 190c-35-17-62-40-82-72M256 225c39-17 69-42 92-78" fill="none" stroke="#173c2b" stroke-width="18" stroke-linecap="round"/>
+  <text x="256" y="438" text-anchor="middle" font-family="Arial, sans-serif" font-size="74" font-weight="800" fill="#ffffff">GL</text>
+</svg>

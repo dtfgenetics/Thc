@@ -14,6 +14,11 @@
     "dev:high-land": "npm --workspace apps/high-land-web run dev",
     "build:high-land": "npm --workspace apps/high-land-web run build",
     "test:high-land": "npm --workspace apps/high-land-web run test",
-    "test:e2e:high-land": "npm --workspace apps/high-land-web run test:e2e"
+    "test:e2e:high-land": "npm --workspace apps/high-land-web run test:e2e",
+    "dev:growlens": "vite --config apps/growlens-web/vite.config.ts",
+    "build:growlens": "tsc -p apps/growlens-web/tsconfig.json && vite build --config apps/growlens-web/vite.config.ts",
+    "test:growlens": "vitest run --config apps/growlens-web/vitest.config.ts",
+    "test:e2e:growlens": "playwright test --config apps/growlens-web/playwright.config.ts",
+    "verify:growlens": "npm run test:growlens && npm run build:growlens && npm run test:e2e:growlens"
   }
 }
