@@ -35,6 +35,22 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Lint GrowLens PHP API
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -d '' php_files < <(find apps/growlens-web -type f -name '*.php' -print0)
+          if ((${#php_files[@]} == 0)); then
+            echo "No GrowLens PHP files found."
+            exit 1
+          fi
+          for file in "${php_files[@]}"; do
+            php -l "$file"
+          done
+
+      - name: Run GrowLens PHP backend smoke test
+        run: php apps/growlens-web/tests/php-backend-smoke.php
+
       - name: Run GrowLens unit tests
         run: npm run test:growlens
 
@@ -61,6 +77,16 @@ jobs:
           test -f apps/growlens-web/dist/manifest.webmanifest
           test -f apps/growlens-web/dist/sw.js
           test -f apps/growlens-web/dist/icon.svg
+          test -f apps/growlens-web/dist/api/health.php
+          test -f apps/growlens-web/dist/api/register.php
+          test -f apps/growlens-web/dist/api/login.php
+          test -f apps/growlens-web/dist/api/session.php
+          test -f apps/growlens-web/dist/api/sync.php
+          test -f apps/growlens-web/dist/api/export.php
+          test -f apps/growlens-web/dist/api/logout.php
+          test -f apps/growlens-web/dist/api/delete-account.php
+          test -f apps/growlens-web/dist/api/_shared.php
+          test -f apps/growlens-web/dist/api/.htaccess
 
       - name: Upload GrowLens build artifact
         if: steps.build.outcome == 'success'
@@ -68,6 +94,7 @@ jobs:
         with:
           name: growlens-dist
           path: apps/growlens-web/dist
+          include-hidden-files: true
           if-no-files-found: error
 
       - name: Install Playwright Chromium
