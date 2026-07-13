@@ -14,6 +14,7 @@ import {
   hasRecord,
   normalizeBaseUrl,
   tinyPngBytes,
+  validatePasswordSeed,
 } from './growlens-live-acceptance-lib.mjs';
 
 const confirmation = process.env.GROWLENS_ACCEPTANCE_CONFIRM ?? '';
@@ -61,9 +62,10 @@ async function cleanupAccount({ registered, deleted, credentials, clients, baseU
 async function run() {
   requireConfirmation();
   const baseUrl = normalizeBaseUrl(process.env.GROWLENS_BASE_URL, allowHttpLocal);
+  const passwordSeed = validatePasswordSeed(process.env.GROWLENS_ACCEPTANCE_PASSWORD_SEED);
   const runId = createRunId();
-  const accountA = createDisposableCredentials(runId, 'a', accountDomain);
-  const accountB = createDisposableCredentials(runId, 'b', accountDomain);
+  const accountA = createDisposableCredentials(runId, 'a', accountDomain, passwordSeed);
+  const accountB = createDisposableCredentials(runId, 'b', accountDomain, passwordSeed);
   const photoOneId = `photo-accept-${runId}`;
   const photoTwoId = `photo-delete-${runId}`;
   const pngBytes = tinyPngBytes();
@@ -79,6 +81,10 @@ async function run() {
   let accountBDeleted = false;
   let primaryFailure = null;
   const startedAt = Date.now();
+
+  process.stdout.write(`GrowLens acceptance run: ${runId}\n`);
+  process.stdout.write(`Disposable accounts: ${accountA.email}, ${accountB.email}\n`);
+  process.stdout.write('Passwords are derived from the protected recovery seed and are never printed.\n');
 
   try {
     logStep('Verify the deployed API and storage health');
