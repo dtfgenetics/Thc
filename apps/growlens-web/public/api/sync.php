@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/_shared.php';
+require_once __DIR__ . '/_operations.php';
 
 $method = strtoupper((string)($_SERVER['REQUEST_METHOD'] ?? 'GET'));
 if (!in_array($method, ['GET', 'POST'], true)) {
@@ -13,6 +13,7 @@ if (!in_array($method, ['GET', 'POST'], true)) {
     ], 405);
 }
 
+growlens_begin_storage_access();
 $context = growlens_current_session(true);
 $userId = (string)$context['user']['id'];
 

@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/_shared.php';
+require_once __DIR__ . '/_operations.php';
 
 growlens_require_method('POST');
 growlens_require_same_origin();
+growlens_begin_storage_access();
 growlens_rate_limit('login', 10, 900);
 
 $body = growlens_read_json_body(32768);

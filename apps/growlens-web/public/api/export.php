@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/_shared.php';
+require_once __DIR__ . '/_operations.php';
 
 growlens_require_method('GET');
+growlens_begin_storage_access();
 $context = growlens_current_session(true);
 $data = growlens_load_user_data((string)$context['user']['id']);
 $filename = 'growlens-account-export-' . gmdate('Y-m-d') . '.json';
