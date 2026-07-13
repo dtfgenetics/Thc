@@ -39,7 +39,18 @@ jobs:
         run: npm run test:growlens
 
       - name: Build GrowLens
-        run: npm run build:growlens
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run build:growlens 2>&1 | tee growlens-build.log
+
+      - name: Upload GrowLens build diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: growlens-build-diagnostics
+          path: growlens-build.log
+          if-no-files-found: ignore
 
       - name: Verify required production files
         shell: bash
