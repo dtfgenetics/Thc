@@ -107,7 +107,7 @@ function growlens_cli_snapshot_excludes(string $relativePath, bool $directory): 
     if (str_ends_with($basename, '.lock') || str_contains($basename, '.tmp-')) {
         return true;
     }
-    if ($basename === GROWLENS_SNAPSHOT_MANIFEST) {
+    if ($normalized === GROWLENS_SNAPSHOT_MANIFEST) {
         return true;
     }
     return false;
