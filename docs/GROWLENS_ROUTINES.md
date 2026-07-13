@@ -25,4 +25,4 @@ This is not a guaranteed closed-app background alarm. Reliable background delive
 
 ## Data portability
 
-Recurrence, completion count, and last-completed timestamps are part of the GrowLens task record and are included in JSON and complete local backups. Task CSV and printable-report columns should be expanded in the next reporting pass.
+Recurrence, completion count, and last-completed timestamps are part of the GrowLens task record. They are included in JSON backups, complete local backups, task CSV exports, plant timelines, and printable grow reports.
