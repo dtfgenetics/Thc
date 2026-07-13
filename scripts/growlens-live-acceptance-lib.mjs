@@ -1,4 +1,4 @@
-import { randomBytes } from 'node:crypto';
+import { createHmac, randomBytes } from 'node:crypto';
 
 export const ACCEPTANCE_CONFIRMATION = 'RUN-DESTRUCTIVE-ACCEPTANCE';
 export const SESSION_COOKIE_NAME = 'growlens_session';
@@ -36,16 +36,28 @@ export function createRunId(now = new Date(), random = randomBytes(6).toString('
   return `${stamp}-${safeRandom}`.toLowerCase();
 }
 
-export function createDisposableCredentials(runId, label, domain = 'example.com') {
+export function validatePasswordSeed(value) {
+  const seed = String(value ?? '');
+  if (seed.length < 32 || seed.length > 1000) {
+    throw new Error('GROWLENS_ACCEPTANCE_PASSWORD_SEED must contain 32 to 1000 characters.');
+  }
+  return seed;
+}
+
+export function createDisposableCredentials(runId, label, domain = 'example.com', passwordSeed) {
   const safeRunId = String(runId).toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 48);
   const safeLabel = String(label).toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 12);
   const safeDomain = String(domain).toLowerCase().trim();
   if (!safeRunId || !safeLabel || !/^[a-z0-9.-]+\.[a-z]{2,}$/i.test(safeDomain)) {
     throw new Error('Disposable credential inputs are invalid.');
   }
+  const seed = validatePasswordSeed(passwordSeed);
+  const digest = createHmac('sha256', seed)
+    .update(`growlens-live-acceptance:${safeRunId}:${safeLabel}`)
+    .digest('base64url');
   return {
     email: `growlens-accept-${safeLabel}-${safeRunId}@${safeDomain}`,
-    password: `Acceptance-${randomBytes(24).toString('base64url')}!9`,
+    password: `Acceptance-${digest}!9`,
   };
 }
 
