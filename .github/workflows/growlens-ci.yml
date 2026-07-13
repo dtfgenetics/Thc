@@ -1,0 +1,59 @@
+name: GrowLens CI
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'apps/growlens-web/**'
+      - 'package.json'
+      - '.github/workflows/growlens-ci.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'apps/growlens-web/**'
+      - 'package.json'
+      - '.github/workflows/growlens-ci.yml'
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run GrowLens unit tests
+        run: npm run test:growlens
+
+      - name: Build GrowLens
+        run: npm run build:growlens
+
+      - name: Verify required production files
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f apps/growlens-web/dist/index.html
+          test -f apps/growlens-web/dist/manifest.webmanifest
+          test -f apps/growlens-web/dist/sw.js
+          test -f apps/growlens-web/dist/icon.svg
+
+      - name: Upload GrowLens build artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: growlens-dist
+          path: apps/growlens-web/dist
+          if-no-files-found: error
