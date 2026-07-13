@@ -1,3 +1,10 @@
+import {
+  normalizeFeedingRecords,
+  normalizeHarvestRecords,
+  normalizeIrrigationRecords,
+  normalizeObservationOutcomes,
+  normalizeReservoirRecords,
+} from './cultivationRecords';
 import type { GrowLensState } from './types';
 
 export const STORAGE_KEY = 'thc-growlens-state-v1';
@@ -10,7 +17,7 @@ export type StateSavedDetail = {
 };
 
 export const emptyState: GrowLensState = {
-  schemaVersion: 1,
+  schemaVersion: 2,
   spaces: [],
   cycles: [],
   plants: [],
@@ -19,6 +26,11 @@ export const emptyState: GrowLensState = {
   readings: [],
   calibrationProfiles: [],
   observations: [],
+  irrigationRecords: [],
+  feedingRecords: [],
+  reservoirRecords: [],
+  harvestRecords: [],
+  observationOutcomes: [],
 };
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -29,7 +41,7 @@ export function normalizeState(value: unknown): GrowLensState {
   if (!isRecord(value)) return structuredClone(emptyState);
 
   return {
-    schemaVersion: 1,
+    schemaVersion: 2,
     spaces: Array.isArray(value.spaces) ? value.spaces as GrowLensState['spaces'] : [],
     cycles: Array.isArray(value.cycles) ? value.cycles as GrowLensState['cycles'] : [],
     plants: Array.isArray(value.plants) ? value.plants as GrowLensState['plants'] : [],
@@ -40,6 +52,11 @@ export function normalizeState(value: unknown): GrowLensState {
       ? value.calibrationProfiles as GrowLensState['calibrationProfiles']
       : [],
     observations: Array.isArray(value.observations) ? value.observations as GrowLensState['observations'] : [],
+    irrigationRecords: normalizeIrrigationRecords(value.irrigationRecords),
+    feedingRecords: normalizeFeedingRecords(value.feedingRecords),
+    reservoirRecords: normalizeReservoirRecords(value.reservoirRecords),
+    harvestRecords: normalizeHarvestRecords(value.harvestRecords),
+    observationOutcomes: normalizeObservationOutcomes(value.observationOutcomes),
   };
 }
 
@@ -55,7 +72,7 @@ export function loadState(storage: Pick<Storage, 'getItem'> = window.localStorag
 
 function inferStateSource(): StateSavedSource {
   if (typeof document === 'undefined') return 'app';
-  return document.querySelector('.camera-panel, .account-panel, .reports-panel')
+  return document.querySelector('.camera-panel, .account-panel, .reports-panel, .cultivation-panel')
     ? 'external'
     : 'app';
 }
@@ -65,7 +82,8 @@ export function saveState(
   storage: Pick<Storage, 'setItem'> = window.localStorage,
   source?: StateSavedSource,
 ): void {
-  storage.setItem(STORAGE_KEY, JSON.stringify(state));
+  const normalized = normalizeState(state);
+  storage.setItem(STORAGE_KEY, JSON.stringify(normalized));
   if (typeof window !== 'undefined') {
     try {
       if (storage === window.localStorage) {
@@ -82,7 +100,7 @@ export function saveState(
 }
 
 export function serializeBackup(state: GrowLensState): string {
-  return JSON.stringify({ exportedAt: new Date().toISOString(), app: 'THC GrowLens', state }, null, 2);
+  return JSON.stringify({ exportedAt: new Date().toISOString(), app: 'THC GrowLens', state: normalizeState(state) }, null, 2);
 }
 
 export function parseBackup(raw: string): GrowLensState {

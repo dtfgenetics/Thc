@@ -57,6 +57,9 @@ jobs:
       - name: Run GrowLens PHP backend smoke test
         run: php apps/growlens-web/tests/php-backend-smoke.php
 
+      - name: Run GrowLens schema-v2 persistence smoke test
+        run: php apps/growlens-web/tests/php-state-v2-smoke.php
+
       - name: Run GrowLens private image storage smoke test
         run: php apps/growlens-web/tests/php-image-storage-smoke.php
 
@@ -102,6 +105,7 @@ jobs:
           test -f apps/growlens-web/dist/api/image.php
           test -f apps/growlens-web/dist/api/delete-image.php
           test -f apps/growlens-web/dist/api/_shared.php
+          test -f apps/growlens-web/dist/api/_state-v2.php
           test -f apps/growlens-web/dist/api/_images.php
           test -f apps/growlens-web/dist/api/.htaccess
 

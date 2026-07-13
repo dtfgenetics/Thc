@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/_operations.php';
+require_once __DIR__ . '/_state-v2.php';
 
 $method = strtoupper((string)($_SERVER['REQUEST_METHOD'] ?? 'GET'));
 if (!in_array($method, ['GET', 'POST'], true)) {
@@ -18,7 +19,7 @@ $context = growlens_current_session(true);
 $userId = (string)$context['user']['id'];
 
 if ($method === 'GET') {
-    $data = growlens_load_user_data($userId);
+    $data = growlens_v2_load_user_data($userId);
     growlens_send_json([
         'ok' => true,
         'user' => growlens_public_user($context['user']),
@@ -49,7 +50,7 @@ if ($expectedRevision < 0) {
     ], 400);
 }
 
-$state = growlens_validate_state($body['state'] ?? null);
+$state = growlens_v2_validate_state($body['state'] ?? null);
 $accountLockPath = growlens_path('data', $userId . '.account.lock');
 $accountLock = fopen($accountLockPath, 'c');
 if ($accountLock === false || !flock($accountLock, LOCK_EX)) {
@@ -72,7 +73,7 @@ if (!is_array($currentUser)) {
     ], 401);
 }
 
-$saved = growlens_save_user_data($userId, $state, $expectedRevision);
+$saved = growlens_v2_save_user_data($userId, $state, $expectedRevision);
 flock($accountLock, LOCK_UN);
 fclose($accountLock);
 

@@ -67,6 +67,9 @@ jobs:
       - name: Run GrowLens PHP backend smoke test
         run: php apps/growlens-web/tests/php-backend-smoke.php
 
+      - name: Run GrowLens schema-v2 persistence smoke test
+        run: php apps/growlens-web/tests/php-state-v2-smoke.php
+
       - name: Run GrowLens private image storage smoke test
         run: php apps/growlens-web/tests/php-image-storage-smoke.php
 
@@ -98,6 +101,7 @@ jobs:
             api/image.php
             api/delete-image.php
             api/_shared.php
+            api/_state-v2.php
             api/_images.php
             api/.htaccess
           )
@@ -255,7 +259,7 @@ jobs:
           ssh -i "$HOME/.ssh/growlens_deploy_key" -p "$SSH_PORT" \
             -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
             "$SSH_USER@$SSH_HOST" \
-            "set -eu; test -f '$STAGE_TARGET/index.html'; test -f '$STAGE_TARGET/deploy.json'; test -f '$STAGE_TARGET/api/health.php'; test -f '$STAGE_TARGET/api/.htaccess'"
+            "set -eu; test -f '$STAGE_TARGET/index.html'; test -f '$STAGE_TARGET/deploy.json'; test -f '$STAGE_TARGET/api/health.php'; test -f '$STAGE_TARGET/api/_state-v2.php'; test -f '$STAGE_TARGET/api/.htaccess'"
 
       - name: Atomically activate staged release
         id: activate
@@ -287,7 +291,7 @@ jobs:
           }
           NODE
 
-          for helper in _shared.php _images.php; do
+          for helper in _shared.php _state-v2.php _images.php; do
             status="$(curl --silent --show-error --location --connect-timeout 15 --max-time 30 --output /dev/null --write-out '%{http_code}' "$PRODUCTION_URL/api/$helper?commit=$GITHUB_SHA")"
             case "$status" in
               403|404) ;;
@@ -329,6 +333,7 @@ jobs:
             echo "- Commit: \`$GITHUB_SHA\`"
             echo "- URL: $PRODUCTION_URL/"
             echo "- API health: passed"
+            echo "- Schema-v2 adapter: packaged and private"
             echo "- Private API helpers: denied"
             echo "- Previous release: archived outside public_html"
           } >> "$GITHUB_STEP_SUMMARY"

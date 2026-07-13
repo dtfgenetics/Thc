@@ -119,7 +119,12 @@ function countStateRecords(state: GrowLensState): number {
     + state.tasks.length
     + state.readings.length
     + state.calibrationProfiles.length
-    + state.observations.length;
+    + state.observations.length
+    + state.irrigationRecords.length
+    + state.feedingRecords.length
+    + state.reservoirRecords.length
+    + state.harvestRecords.length
+    + state.observationOutcomes.length;
 }
 
 export async function serializeCompleteBackup(

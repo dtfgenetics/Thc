@@ -18,7 +18,7 @@ export function mergeGrowLensStates(localValue: unknown, remoteValue: unknown): 
   const local = normalizeState(localValue);
   const remote = normalizeState(remoteValue);
   return {
-    schemaVersion: 1,
+    schemaVersion: 2,
     spaces: mergeRecords(local.spaces, remote.spaces),
     cycles: mergeRecords(local.cycles, remote.cycles),
     plants: mergeRecords(local.plants, remote.plants),
@@ -27,6 +27,11 @@ export function mergeGrowLensStates(localValue: unknown, remoteValue: unknown): 
     readings: mergeRecords(local.readings, remote.readings),
     calibrationProfiles: mergeRecords(local.calibrationProfiles, remote.calibrationProfiles),
     observations: mergeRecords(local.observations, remote.observations),
+    irrigationRecords: mergeRecords(local.irrigationRecords, remote.irrigationRecords),
+    feedingRecords: mergeRecords(local.feedingRecords, remote.feedingRecords),
+    reservoirRecords: mergeRecords(local.reservoirRecords, remote.reservoirRecords),
+    harvestRecords: mergeRecords(local.harvestRecords, remote.harvestRecords),
+    observationOutcomes: mergeRecords(local.observationOutcomes, remote.observationOutcomes),
   };
 }
 
@@ -47,7 +52,12 @@ export function hasGrowLensRecords(value: unknown): boolean {
     || state.tasks.length > 0
     || state.readings.length > 0
     || state.calibrationProfiles.length > 0
-    || state.observations.length > 0;
+    || state.observations.length > 0
+    || state.irrigationRecords.length > 0
+    || state.feedingRecords.length > 0
+    || state.reservoirRecords.length > 0
+    || state.harvestRecords.length > 0
+    || state.observationOutcomes.length > 0;
 }
 
 export function summarizeGrowLensState(value: unknown): { records: number; plants: number; diary: number; tasks: number } {
@@ -60,7 +70,12 @@ export function summarizeGrowLensState(value: unknown): { records: number; plant
       + state.tasks.length
       + state.readings.length
       + state.calibrationProfiles.length
-      + state.observations.length,
+      + state.observations.length
+      + state.irrigationRecords.length
+      + state.feedingRecords.length
+      + state.reservoirRecords.length
+      + state.harvestRecords.length
+      + state.observationOutcomes.length,
     plants: state.plants.length,
     diary: state.diary.length,
     tasks: state.tasks.length,

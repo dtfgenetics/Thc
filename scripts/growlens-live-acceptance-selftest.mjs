@@ -7,6 +7,7 @@ import {
   buildDeviceTwoState,
   createDisposableCredentials,
   createRunId,
+  emptyGrowLensState,
   extractSessionCookie,
   hasRecord,
   normalizeBaseUrl,
@@ -47,15 +48,27 @@ assert.equal(
 );
 assert.equal(extractSessionCookie(undefined), undefined);
 
+const emptyState = emptyGrowLensState();
+assert.equal(emptyState.schemaVersion, 2);
+for (const collection of ['irrigationRecords', 'feedingRecords', 'reservoirRecords', 'harvestRecords', 'observationOutcomes']) {
+  assert.deepEqual(emptyState[collection], []);
+}
+
 const photoId = `photo-accept-${runId}`;
 const firstState = buildDeviceOneState(runId, photoId);
 assert(hasRecord(firstState, 'plants', `plant-accept-${runId}`));
 assert.equal(firstState.observations[0].photoIds[0], photoId);
 assert.equal(firstState.tasks[0].recurrence, 'weekly');
+assert(hasRecord(firstState, 'irrigationRecords', `irrigation-accept-${runId}`));
+assert(hasRecord(firstState, 'feedingRecords', `feeding-accept-${runId}`));
+assert(hasRecord(firstState, 'reservoirRecords', `reservoir-accept-${runId}`));
+assert(hasRecord(firstState, 'harvestRecords', `harvest-accept-${runId}`));
+assert(hasRecord(firstState, 'observationOutcomes', `outcome-accept-${runId}`));
 const secondState = buildDeviceTwoState(firstState, runId);
 assert.equal(firstState.diary.length, 1);
 assert.equal(secondState.diary.length, 2);
 assert(hasRecord(secondState, 'diary', `entry-device-two-${runId}`));
+assert.equal(secondState.irrigationRecords.length, 1);
 
 const redacted = redactPayload({
   password: 'secret',
