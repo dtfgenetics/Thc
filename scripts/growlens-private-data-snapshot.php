@@ -26,6 +26,7 @@ $lockWaitSeconds = (int)($options['lock-wait-seconds'] ?? 60);
 $allowPublicPaths = growlens_cli_parse_boolean_option($options['allow-public-paths'] ?? false);
 
 $destinationCreated = false;
+$destination = null;
 $lock = null;
 
 try {
@@ -194,9 +195,9 @@ try {
         @flock($lock, LOCK_UN);
         @fclose($lock);
     }
-    if ($destinationCreated) {
+    if ($destinationCreated && is_string($destination)) {
         try {
-            growlens_cli_remove_tree($destinationInput);
+            growlens_cli_remove_tree($destination);
         } catch (Throwable) {
             // The original error remains more useful than cleanup details.
         }
