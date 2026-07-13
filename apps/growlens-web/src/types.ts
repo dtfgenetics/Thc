@@ -50,6 +50,7 @@ export type GrowTask = {
   plantId: string | null;
   completed: boolean;
   recurrence?: TaskRecurrence;
+  recurrenceAnchorDay?: number | null;
   lastCompletedAt?: string | null;
   completionCount?: number;
   createdAt: string;
