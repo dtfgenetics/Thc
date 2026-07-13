@@ -7,7 +7,7 @@ This repository is the working codebase for the DTF / THC browser games and webs
 1. Keep the live game code stable.
 2. Do not overwrite existing game logic without inspecting the current implementation and tests first.
 3. Treat `main` as the production branch.
-4. Keep Supabase configuration under `/supabase` at the repository root.
+4. Use the Hostinger PHP Website Room API for shared multiplayer rooms.
 5. Keep High Land web app code under `/apps/high-land-web`.
 6. Never commit secrets, service role keys, database passwords, bot tokens, or `.env` files.
 
@@ -20,11 +20,7 @@ This repository is the working codebase for the DTF / THC browser games and webs
       package.json
       src/
   docs/
-  supabase/
-    config.toml
-    seed.sql
-    migrations/
-    functions/
+  supabase/                 # legacy planning only; not the active backend
   package.json
   .gitignore
 ```
@@ -52,28 +48,23 @@ npm run build:high-land
 
 If tests fail, inspect the failure before changing unrelated code.
 
-## Supabase notes
+## Multiplayer backend notes
 
-Supabase GitHub integration should use:
+The approved backend is the existing Hostinger PHP Website Room API:
 
 ```txt
-Working directory: .
-Production branch name: main
+apps/high-land-web/public/api/
+https://dtfseeds.com/games/high-land/api/
 ```
 
-Supabase files live in `/supabase`.
+The browser selects `websiteRoomTransport` on the live High Land route and polls
+room snapshots every two seconds. Local transport remains available for offline
+development and tests. Do not add Supabase, Firebase, or a second room authority
+without an explicit replacement decision and migration plan.
 
-Use migrations for schema changes. Do not make undocumented production database changes. New tables exposed to the public API must have Row Level Security enabled and reviewed.
-
-Expected future Supabase tables:
-
-- game_sessions
-- game_players
-- game_invites
-- high_land_turns
-- high_land_events
-
-Do not expose service role keys in frontend code. Browser code may only use publishable or anon keys.
+Room JSON storage must remain outside public browsing, room codes must be
+validated, writes must be host/player authorized, and no credentials may enter
+browser code.
 
 ## Deployment notes
 
@@ -94,7 +85,7 @@ apps/high-land-web/dist
 - Read `README.md`, this file, and relevant docs before making changes.
 - Prefer small pull requests with clear titles.
 - Run available tests and builds before claiming success.
-- Add or update tests when changing game rules, movement, multiplayer, auth, or Supabase schemas.
+- Add or update tests when changing game rules, movement, multiplayer, room API authorization, or storage.
 - Do not rename projects, games, domains, routes, or brand terms unless explicitly requested.
 - Do not replace the existing High Land game with a generic demo.
 - Preserve the existing DTF / THC branding and game direction.
@@ -103,7 +94,8 @@ apps/high-land-web/dist
 
 - GitHub repo: `dtfgenetics/Thc`
 - Production branch: `main`
-- Supabase working directory: `.`
-- Supabase folder: `/supabase`
+- Multiplayer backend: Hostinger PHP Website Room API
+- API source: `/apps/high-land-web/public/api`
+- Live API: `https://dtfseeds.com/games/high-land/api/`
 - Website/game app: `/apps/high-land-web`
 - Target domains: `dtfseeds.com`, `dtf420.com`
