@@ -10,6 +10,7 @@ import ErrorBoundary from './ErrorBoundary';
 import ExternalStateBridge from './ExternalStateBridge';
 import PhotoComparisonWidget from './PhotoComparisonWidget';
 import ReportsHistoryWidget from './ReportsHistoryWidget';
+import SafeSyncWidget from './SafeSyncWidget';
 import TaskRoutineWidget from './TaskRoutineWidget';
 import './styles.css';
 import './account.css';
@@ -20,12 +21,14 @@ import './routines.css';
 import './photo-comparison.css';
 import './cultivation-records.css';
 import './cultivation-analytics.css';
+import './safe-sync.css';
 import './accessibility.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ErrorBoundary>
       <App />
+      <SafeSyncWidget />
       <CultivationAnalyticsWidget />
       <CultivationRecordsWidget />
       <TaskRoutineWidget />
