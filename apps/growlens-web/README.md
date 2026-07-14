@@ -24,11 +24,13 @@ GrowLens is a mobile-first, local-first cultivation management PWA. It is isolat
 - Structured feeding and nutrient-mix records
 - Reservoir/tank records
 - Harvest, drying, cure, lot, and yield records
+- Descriptive analytics by plant, cultivar, cycle, and grow space
 - Printable reports and CSV exports for all record families
 - JSON record backup and restore
 - Complete backup and atomic restore for records plus local IndexedDB photos
 - Optional Hostinger accounts with revision-aware synchronization
 - Explicit keep-device, keep-account, and merge conflict controls
+- Optional conflict-safe active-page auto-sync with an IndexedDB intent queue
 - Account export, logout, and password-confirmed deletion
 - Guarded Hostinger deployment, private-data snapshots, and recovery-audit tooling
 - PHP, unit, and Playwright desktop/mobile tests
@@ -40,6 +42,21 @@ GrowLens saves records and compressed observation photos on the current device w
 Grow records use localStorage. Compressed image blobs use IndexedDB so photo bytes do not inflate or corrupt the core state record.
 
 The account panel never silently overwrites different copies. When device and account data disagree, the user can download a backup and then keep the device copy, keep the account copy, or merge by stable record ID. Matching IDs retain the current-device version during a manual merge.
+
+## Safe active-page auto-sync
+
+Safe auto-sync is optional and disabled by default. When enabled, GrowLens creates a small IndexedDB intent containing only the account ID, reconciled revision/hash, current local hash, retry status, and timestamps. It never stores a password, session cookie, CSRF token, private storage path, image byte, or obsolete request body.
+
+Before every automatic upload GrowLens:
+
+1. acquires a same-origin Web Lock where supported;
+2. reads the latest local state;
+3. fetches a fresh authenticated session and CSRF token;
+4. pulls the current server revision and normalized state;
+5. uploads only when the server still matches the last reconciled baseline; and
+6. stops for manual review on authentication changes, revision conflicts, or differing remote state.
+
+Status changes are shared with other open tabs through BroadcastChannel. Attempts run on app start, local changes, reconnect, focus, and visibility while GrowLens is open. This is not closed-app background synchronization.
 
 ## Schema version 2
 
@@ -61,7 +78,7 @@ harvestRecords
 observationOutcomes
 ```
 
-The same collections are included in account sync, conflict merges, JSON exports, complete local backups, printable reports, plant timelines, and CSV datasets.
+The same collections are included in account sync, conflict merges, JSON exports, complete local backups, printable reports, plant timelines, analytics, and CSV datasets.
 
 ## Structured record units
 
@@ -134,17 +151,18 @@ Configure private storage according to `docs/GROWLENS_HOSTINGER_BACKEND.md`. Pro
 
 - Lux-to-PPFD and phone-camera-derived readings are estimates requiring fixture/device-specific calibration.
 - Diagnostic results are possible causes, not confirmed deficiencies, diseases, or pests.
+- Analytics are descriptive and do not prove that a cultivar, environment, feeding, irrigation event, or treatment caused an outcome.
 - PPM values are not meaningful without the recorded conversion scale.
 - Browser reminders require the app to be open or active; closed-app push delivery is not active.
-- Synchronization is user-controlled; conflict-safe automatic background sync is not active.
+- Safe auto-sync requires an open/active GrowLens page and never silently resolves different copies.
 - Never put server secrets, password hashes, raw session tokens, private images, or private storage paths into browser code or public files.
 
 ## Remaining production gates
 
 - Run the guarded production deployment and complete a live desktop/mobile smoke test
 - Run protected two-account/two-device live isolation against schema version 2
+- Validate safe auto-sync against real concurrent devices and forced offline/reconnect conditions
 - Confirm scheduled private-media backups and perform a documented restore drill
 - Validate camera capture, IndexedDB durability, PWA installation, and light calibration on real devices
-- Add conflict-safe background synchronization without silent overwrites
 - Add closed-app reminders only after privacy and Hostinger capability review
-- Expand cultivar, cycle, environment, irrigation, and yield analytics
+- Add matched-angle photo guidance, annotations, and multi-date comparison sets
