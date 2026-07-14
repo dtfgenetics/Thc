@@ -158,12 +158,38 @@ function notify(intent: SyncIntent | null, message: string): void {
   }
 }
 
-export async function queueCurrentStateForSync(): Promise<SyncIntent | null> {
-  const metadata = loadSyncMetadata();
-  if (!metadata) {
-    notify(null, 'Connect and reconcile a GrowLens account before enabling safe auto-sync.');
+export async function ensureSyncBaseline(
+  remoteStore: SyncRemoteStore = growLensRemoteStore,
+): Promise<SyncMetadata | null> {
+  const existing = loadSyncMetadata();
+  if (existing) return existing;
+
+  try {
+    const session = await remoteStore.getSession();
+    if (!session.authenticated) {
+      notify(null, 'Sign in and reconcile this device before enabling safe auto-sync.');
+      return null;
+    }
+    const remote = await remoteStore.pull();
+    const local = loadState();
+    if (stateHash(local) !== stateHash(remote.state)) {
+      notify(null, 'Device and account copies differ. Use the account controls to choose, merge, or upload before enabling auto-sync.');
+      return null;
+    }
+    const metadata = saveSyncMetadata(session.user.id, remote.revision, remote.state, remote.updatedAt);
+    notify(null, `Safe auto-sync baseline established at revision ${remote.revision}.`);
+    return metadata;
+  } catch (error) {
+    notify(null, readableError(error));
     return null;
   }
+}
+
+export async function queueCurrentStateForSync(
+  remoteStore: SyncRemoteStore = growLensRemoteStore,
+): Promise<SyncIntent | null> {
+  const metadata = await ensureSyncBaseline(remoteStore);
+  if (!metadata) return null;
   const intent = await queueSyncIntent(metadata, loadState());
   notify(intent, 'Local changes queued for safe automatic synchronization.');
   return intent;
