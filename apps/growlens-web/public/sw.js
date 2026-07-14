@@ -1,5 +1,6 @@
-const CACHE_NAME = 'growlens-shell-v2';
+const CACHE_NAME = 'growlens-shell-v3';
 const APP_SHELL = ['./', './index.html', './manifest.webmanifest', './icon.svg'];
+const SYNC_WAKE_TAG = 'growlens-sync-intent-v1';
 
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_SHELL)));
@@ -49,5 +50,16 @@ self.addEventListener('fetch', (event) => {
         if (event.request.mode === 'navigate') return caches.match('./index.html');
         return new Response('Offline', { status: 503, statusText: 'Offline' });
       }),
+  );
+});
+
+self.addEventListener('sync', (event) => {
+  if (event.tag !== SYNC_WAKE_TAG) return;
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clients) => {
+      for (const client of clients) {
+        client.postMessage({ type: 'growlens-sync-requested' });
+      }
+    }),
   );
 });
