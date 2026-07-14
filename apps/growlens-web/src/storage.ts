@@ -10,7 +10,7 @@ import type { GrowLensState } from './types';
 export const STORAGE_KEY = 'thc-growlens-state-v1';
 export const STATE_SAVED_EVENT = 'growlens:state-saved';
 
-export type StateSavedSource = 'app' | 'external';
+export type StateSavedSource = 'app' | 'external' | 'sync';
 export type StateSavedDetail = {
   source: StateSavedSource;
   savedAt: string;
