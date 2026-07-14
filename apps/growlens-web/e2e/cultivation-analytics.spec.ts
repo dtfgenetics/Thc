@@ -49,9 +49,10 @@ test.beforeEach(async ({ page }) => {
 test('shows measured overview and grouped comparisons', async ({ page, isMobile }) => {
   test.skip(isMobile, 'Full analytics flow is covered once on desktop.');
   const dialog = page.getByRole('dialog', { name: 'Cultivation analytics' });
-  await expect(dialog.getByText('4 L', { exact: true })).toBeVisible();
-  await expect(dialog.getByText('17.5%', { exact: true })).toBeVisible();
-  await expect(dialog.getByText('210 g', { exact: true }).first()).toBeVisible();
+  const metrics = dialog.locator('.analytics-metrics');
+  await expect(metrics.getByText('4 L', { exact: true })).toBeVisible();
+  await expect(metrics.getByText('17.5%', { exact: true })).toBeVisible();
+  await expect(metrics.getByText('210 g', { exact: true })).toBeVisible();
   await expect(dialog.getByText(/do not prove that a treatment/i)).toBeVisible();
   await expect(dialog.getByText('Blue Mango F3', { exact: true })).toBeVisible();
 
