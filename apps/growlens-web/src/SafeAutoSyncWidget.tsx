@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
 import {
   clearQueuedSync,
+  forgetSyncBaseline,
   getQueuedSync,
   queueCurrentStateForSync,
   runQueuedSync,
 } from './backgroundSyncCoordinator';
 import { loadSyncMetadata } from './syncMetadata';
 import type { SyncIntent } from './syncIntentStore';
-import { AUTO_SYNC_CHANNEL, AUTO_SYNC_STATUS_EVENT, OPEN_ACCOUNT_EVENT } from './syncEvents';
+import { AUTO_SYNC_CHANNEL, AUTO_SYNC_STATUS_EVENT } from './syncEvents';
 import { STATE_SAVED_EVENT } from './storage';
 
 const AUTO_SYNC_SETTING_KEY = 'growlens-safe-auto-sync-enabled-v1';
@@ -55,10 +56,7 @@ export default function SafeAutoSyncWidget() {
     setBusy(true);
     try {
       const queued = await queueCurrentStateForSync();
-      if (!queued) {
-        setMessage('Connect and reconcile the GrowLens account first.');
-        return;
-      }
+      if (!queued) return;
       const result = await runQueuedSync();
       if (result) setMessage(result.message);
     } finally {
@@ -120,12 +118,20 @@ export default function SafeAutoSyncWidget() {
     setMessage(next
       ? 'Safe auto-sync enabled for this browser while GrowLens is open.'
       : 'Safe auto-sync disabled. Manual account controls remain available.');
-    if (next) {
-      window.setTimeout(() => { void queueAndRun(); }, 0);
-    } else {
+    if (!next) {
       await clearQueuedSync('Safe auto-sync disabled and its pending intent was cleared.');
       await refresh();
     }
+  }
+
+  async function resetBaseline(): Promise<void> {
+    forgetSyncBaseline();
+    await clearQueuedSync('Saved sync baseline cleared. Reconcile the account copy before automatic sync resumes.');
+    await refresh();
+  }
+
+  function openAccountControls(): void {
+    document.querySelector<HTMLButtonElement>('.account-launcher')?.click();
   }
 
   const status = statusText(intent, enabled);
@@ -166,7 +172,8 @@ export default function SafeAutoSyncWidget() {
 
             <div className="safe-sync-actions">
               <button className="primary-button" type="button" disabled={!enabled || busy} onClick={() => void queueAndRun()}>{busy ? 'Checking…' : 'Sync safely now'}</button>
-              <button className="secondary-button" type="button" onClick={() => window.dispatchEvent(new CustomEvent(OPEN_ACCOUNT_EVENT))}>Open account controls</button>
+              <button className="secondary-button" type="button" onClick={openAccountControls}>Open account controls</button>
+              <button className="text-button" type="button" onClick={() => void resetBaseline()}>Reset saved baseline</button>
             </div>
 
             <div className="warning-note"><strong>No silent overwrite</strong><span>GrowLens uploads automatically only when the server still matches the last reconciled revision. Authentication changes and revision conflicts stop the queue for manual review.</span></div>
