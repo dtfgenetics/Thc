@@ -17,7 +17,14 @@ import {
   saveState,
   serializeBackup,
   STATE_SAVED_EVENT,
+  type StateSavedDetail,
 } from './storage';
+import {
+  clearSyncBaseline,
+  clearSyncIntent,
+  SYNC_STATUS_EVENT,
+  writeSyncBaseline,
+} from './syncIntentQueue';
 import {
   hasGrowLensRecords,
   mergeGrowLensStates,
@@ -38,6 +45,11 @@ type Props = {
   remoteStore?: GrowLensRemoteStore;
 };
 
+type AutomaticSyncStatus = {
+  status?: string;
+  revision?: number;
+};
+
 function downloadJson(filename: string, contents: string): void {
   const blob = new Blob([contents], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
@@ -56,6 +68,16 @@ function readableError(error: unknown): string {
   if (error instanceof GrowLensApiError) return error.message;
   if (error instanceof Error) return error.message;
   return 'The account request failed.';
+}
+
+async function recordTrustedSync(
+  userId: string,
+  state: GrowLensState,
+  revision: number,
+  updatedAt: string,
+): Promise<void> {
+  writeSyncBaseline(userId, revision, state, updatedAt);
+  await clearSyncIntent();
 }
 
 export default function AccountSyncWidget({ remoteStore = growLensRemoteStore }: Props) {
@@ -100,7 +122,12 @@ export default function AccountSyncWidget({ remoteStore = growLensRemoteStore }:
           revision: remote.revision,
           updatedAt: remote.updatedAt,
         } : value);
-        setDirty(!statesEqual(local, remote.state));
+        if (statesEqual(local, remote.state)) {
+          await recordTrustedSync(current.user.id, remote.state, remote.revision, remote.updatedAt);
+          setDirty(false);
+        } else {
+          setDirty(true);
+        }
       } catch (error) {
         if (cancelled) return;
         if (error instanceof GrowLensApiError && [404, 405, 502, 503].includes(error.status)) {
@@ -112,21 +139,44 @@ export default function AccountSyncWidget({ remoteStore = growLensRemoteStore }:
       }
     }
 
-    initialize();
+    void initialize();
     return () => {
       cancelled = true;
     };
   }, [remoteStore]);
 
   useEffect(() => {
-    const markDirty = () => {
+    const markDirty = (event: Event) => {
+      const detail = (event as CustomEvent<StateSavedDetail>).detail;
+      if (detail?.source === 'sync') {
+        setDirty(false);
+        return;
+      }
       if (session) setDirty(true);
+    };
+    const openAccount = () => setOpen(true);
+    const handleAutomaticSync = (event: Event) => {
+      const detail = (event as CustomEvent<AutomaticSyncStatus>).detail;
+      if (detail?.status === 'conflict') {
+        setDirty(true);
+        return;
+      }
+      if (['synced', 'uploaded', 'downloaded'].includes(detail?.status ?? '')) {
+        setDirty(false);
+        if (typeof detail.revision === 'number') {
+          setSession((current) => current ? { ...current, revision: detail.revision as number } : current);
+        }
+      }
     };
     window.addEventListener(STATE_SAVED_EVENT, markDirty);
     window.addEventListener('storage', markDirty);
+    window.addEventListener('growlens:open-account', openAccount);
+    window.addEventListener(SYNC_STATUS_EVENT, handleAutomaticSync);
     return () => {
       window.removeEventListener(STATE_SAVED_EVENT, markDirty);
       window.removeEventListener('storage', markDirty);
+      window.removeEventListener('growlens:open-account', openAccount);
+      window.removeEventListener(SYNC_STATUS_EVENT, handleAutomaticSync);
     };
   }, [session]);
 
@@ -173,11 +223,14 @@ export default function AccountSyncWidget({ remoteStore = growLensRemoteStore }:
 
       const local = loadState();
       if (statesEqual(local, result.state)) {
+        await recordTrustedSync(result.user.id, result.state, result.revision, result.updatedAt);
         setDirty(false);
         setMessage('Account connected. This device matches the server copy.');
       } else if (!hasGrowLensRecords(local)) {
+        await recordTrustedSync(result.user.id, result.state, result.revision, result.updatedAt);
         replaceLocalState(result.state, 'Account connected. Server data loaded on this device.');
       } else {
+        clearSyncBaseline();
         setDirty(true);
         setResolution({ local, remote: result, reason: 'connected' });
         setMessage('Account connected. Choose how to reconcile this device with the account copy.');
@@ -196,6 +249,7 @@ export default function AccountSyncWidget({ remoteStore = growLensRemoteStore }:
     try {
       const local = loadState();
       const saved = await remoteStore.push(local, session.revision, session.csrfToken);
+      await recordTrustedSync(session.user.id, saved.state, saved.revision, saved.updatedAt);
       updateSessionRevision(saved.revision, saved.updatedAt);
       setDirty(false);
       setResolution(null);
@@ -228,10 +282,12 @@ export default function AccountSyncWidget({ remoteStore = growLensRemoteStore }:
       updateSessionRevision(remote.revision, remote.updatedAt);
       const local = loadState();
       if (statesEqual(local, remote.state)) {
+        await recordTrustedSync(session.user.id, remote.state, remote.revision, remote.updatedAt);
         setDirty(false);
         setResolution(null);
         setMessage('This device already matches the account copy.');
       } else if (!hasGrowLensRecords(local)) {
+        await recordTrustedSync(session.user.id, remote.state, remote.revision, remote.updatedAt);
         replaceLocalState(remote.state, 'Account data loaded on this device.');
       } else {
         setResolution({ local, remote, reason: 'pull' });
@@ -255,6 +311,7 @@ export default function AccountSyncWidget({ remoteStore = growLensRemoteStore }:
         resolution.remote.revision,
         session.csrfToken,
       );
+      await recordTrustedSync(session.user.id, saved.state, saved.revision, saved.updatedAt);
       updateSessionRevision(saved.revision, saved.updatedAt);
       setDirty(false);
       setResolution(null);
@@ -277,6 +334,7 @@ export default function AccountSyncWidget({ remoteStore = growLensRemoteStore }:
         resolution.remote.revision,
         session.csrfToken,
       );
+      await recordTrustedSync(session.user.id, saved.state, saved.revision, saved.updatedAt);
       updateSessionRevision(saved.revision, saved.updatedAt);
       saveState(merged);
       setDirty(false);
@@ -290,8 +348,9 @@ export default function AccountSyncWidget({ remoteStore = growLensRemoteStore }:
     }
   }
 
-  function useServerCopy(): void {
-    if (!resolution) return;
+  async function useServerCopy(): Promise<void> {
+    if (!session || !resolution) return;
+    await recordTrustedSync(session.user.id, resolution.remote.state, resolution.remote.revision, resolution.remote.updatedAt);
     updateSessionRevision(resolution.remote.revision, resolution.remote.updatedAt);
     replaceLocalState(
       resolution.remote.state,
@@ -305,6 +364,8 @@ export default function AccountSyncWidget({ remoteStore = growLensRemoteStore }:
     setBusy(true);
     try {
       await remoteStore.logout(session.csrfToken);
+      clearSyncBaseline();
+      await clearSyncIntent();
       setSession(null);
       setResolution(null);
       setDirty(false);
@@ -328,6 +389,8 @@ export default function AccountSyncWidget({ remoteStore = growLensRemoteStore }:
     setBusy(true);
     try {
       await remoteStore.deleteAccount(deletePassword, session.csrfToken);
+      clearSyncBaseline();
+      await clearSyncIntent();
       setSession(null);
       setResolution(null);
       setDirty(false);
@@ -434,7 +497,7 @@ export default function AccountSyncWidget({ remoteStore = growLensRemoteStore }:
                     </div>
                     <div className="resolution-actions">
                       <button className="secondary-button" type="button" onClick={backupLocal}>1. Back up this device</button>
-                      <button className="secondary-button" type="button" onClick={useServerCopy} disabled={busy}>Use account copy</button>
+                      <button className="secondary-button" type="button" onClick={() => void useServerCopy()} disabled={busy}>Use account copy</button>
                       <button className="secondary-button" type="button" onClick={keepDeviceCopy} disabled={busy}>Keep this device</button>
                       <button className="primary-button" type="button" onClick={mergeCopies} disabled={busy}>Merge both copies</button>
                     </div>
