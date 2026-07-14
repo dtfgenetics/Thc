@@ -101,7 +101,7 @@ export default function CultivationAnalyticsWidget() {
         <MetricCard label="Wet / dry" value={`${formatNumber(overall.totalWetWeightG, ' g')} / ${formatNumber(overall.totalDryWeightG, ' g')}`} />
         <MetricCard label="Waste/loss" value={formatNumber(overall.totalWasteWeightG, ' g')} />
         <MetricCard label="Active / harvested" value={`${overall.activePlants} / ${overall.harvestedPlants}`} />
-        <MetricCard label="Outcomes resolved" value={formatNumber(overall.observationResolutionPercent, '%')} detail={`${overall.resolvedObservationCount} of ${analytics.overall.observationCount} observations`} />
+        <MetricCard label="Outcomes resolved" value={formatNumber(overall.observationResolutionPercent, '%')} detail={`${overall.resolvedObservationCount} resolved outcome record${overall.resolvedObservationCount === 1 ? '' : 's'}`} />
       </div>
       <AnalyticsSection title="Cultivar comparison" detail="Grouped measured history. Differences may reflect age, phenotype, environment, treatment, or sample size—not cultivar alone.">
         <GroupTable records={analytics.cultivars.slice(0, 8)} emptyLabel="No cultivar analytics yet" />
