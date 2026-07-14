@@ -111,6 +111,16 @@ export default function SafeAutoSyncWidget() {
     };
   }, [enabled]);
 
+  useEffect(() => {
+    if (!enabled || intent?.status !== 'failed') return;
+    const dueAt = new Date(intent.nextAttemptAt).getTime();
+    const delay = Math.max(0, dueAt - Date.now());
+    const timer = window.setTimeout(() => {
+      void runQueuedSync().then(() => refresh());
+    }, delay);
+    return () => window.clearTimeout(timer);
+  }, [enabled, intent?.status, intent?.nextAttemptAt]);
+
   async function toggleEnabled(): Promise<void> {
     const next = !enabled;
     setEnabled(next);
@@ -166,7 +176,7 @@ export default function SafeAutoSyncWidget() {
             </div>
 
             <label className="safe-sync-toggle">
-              <span><strong>Automatically sync this browser</strong><small>Runs on app start, local changes, reconnect, focus, and visibility while GrowLens is open.</small></span>
+              <span><strong>Automatically sync this browser</strong><small>Runs on app start, local changes, scheduled retry, reconnect, focus, and visibility while GrowLens is open.</small></span>
               <input type="checkbox" checked={enabled} onChange={() => void toggleEnabled()} />
             </label>
 
