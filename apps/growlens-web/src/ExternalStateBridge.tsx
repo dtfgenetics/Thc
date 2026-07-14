@@ -18,7 +18,7 @@ export default function ExternalStateBridge() {
 
     const handleSaved = (event: Event) => {
       const detail = (event as CustomEvent<StateSavedDetail>).detail;
-      if (detail?.source === 'external') scheduleRefresh();
+      if (detail?.source === 'external' || detail?.source === 'sync') scheduleRefresh();
     };
 
     const handleStorage = (event: StorageEvent) => {
