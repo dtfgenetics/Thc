@@ -2,7 +2,7 @@
 
 ## Current release candidate
 
-GrowLens is a functional local-first PWA with an optional Hostinger account layer. The current release candidate includes core grow management, structured cultivation records, offline/private photos, complete backups, reports, routines, revision-aware synchronization, and guarded deployment.
+GrowLens is a functional local-first PWA with an optional Hostinger account layer. The current release candidate includes core grow management, structured cultivation records, descriptive analytics, offline/private photos, complete backups, reports, routines, revision-aware synchronization, optional conflict-safe active-page auto-sync, and guarded deployment.
 
 The controlled production pilot target is:
 
@@ -15,8 +15,10 @@ Product claims must remain accurate:
 - GrowLens is a cultivation management and observation tool.
 - Diagnostic rules provide possible causes, not confirmed diagnoses.
 - Light calculations and phone-derived estimates are not quantum-sensor measurements.
-- Account sync is optional and user-controlled.
-- Closed-app push notifications and automatic background sync are not active.
+- Analytics are descriptive and do not establish causation.
+- Account sync and safe auto-sync are optional.
+- Safe auto-sync requires GrowLens to be open or active and never silently resolves different copies.
+- Closed-app push notifications are not active.
 
 ## Implemented release scope
 
@@ -41,6 +43,15 @@ Product claims must remain accurate:
 - Observation outcomes: monitoring, confirmed, ruled out, and resolved
 - Historical edit/delete controls
 - Schema-version 1 to schema-version 2 migration
+
+### Cultivation analytics
+
+- Overall applied water, measured runoff, feeding, harvest, yield, and outcome summaries
+- Plant-level input/runoff pH and EC summaries
+- Latest feed strength and measured yield summaries
+- Descriptive comparisons by plant, cultivar, cycle, and grow space
+- Plant search and analytics CSV export
+- Explicit language that recorded differences do not prove a treatment, cultivar, or environment caused the outcome
 
 ### Measurement tools
 
@@ -68,8 +79,14 @@ Product claims must remain accurate:
 
 - Local-first operation without an account
 - Secure Hostinger registration, login, session, CSRF, and per-user authorization boundaries
-- Revision-aware record synchronization
+- Revision-aware manual record synchronization
 - Explicit keep-device, keep-account, and merge controls
+- Optional safe active-page auto-sync
+- IndexedDB sync-intent storage containing revision/hash metadata without credentials or private image bytes
+- Fresh session, CSRF, remote revision, and normalized-state checks before automatic upload
+- Web Locks coordination and BroadcastChannel status sharing across open tabs
+- Authentication and revision conflicts blocked for manual review
+- Bounded retries for temporary failures while GrowLens remains open
 - Account export and password-confirmed deletion
 - JSON record backups
 - Complete local backups containing records and local photo bytes
@@ -112,13 +129,13 @@ php apps/growlens-web/tests/php-private-data-tools-smoke.php
 Verification is incomplete unless all of the following pass:
 
 1. TypeScript compilation and production build
-2. Unit tests
+2. Unit tests, including safe-sync conflict decisions and bounded retries
 3. PHP syntax checks
 4. Account/backend smoke tests
 5. Schema-v1 to schema-v2 migration and round-trip persistence
 6. Private-image storage smoke tests
 7. Complete-backup and restore tests
-8. Desktop browser tests
+8. Desktop browser tests, including automatic sync and zero-POST conflict blocking
 9. Mobile browser tests
 10. Required production-file checks
 
@@ -152,6 +169,7 @@ Do not bypass target-path checks, SSH host verification, staged activation, priv
 - Create a grow space, cycle, and plant
 - Add diary, task, and environment records
 - Add irrigation, feeding, reservoir, harvest, and observation-outcome records
+- Review plant, cultivar, cycle, and grow-space analytics
 - Refresh and confirm schema-version 2 persistence
 - Capture two observation photos
 - Open photo history and compare the images
@@ -159,13 +177,18 @@ Do not bypass target-path checks, SSH host verification, staged activation, priv
 - Clear local data and restore the complete backup
 - Confirm all structured records and photo blobs return
 
-### Account boundary
+### Account and safe-sync boundary
 
 - Register two disposable accounts
 - Confirm each account sees only its own records and images
 - Push and pull all schema-version 2 collections
 - Exercise keep-device, keep-account, and merge choices
-- Confirm stale revisions are rejected
+- Establish safe auto-sync only after device and account copies match
+- Confirm a local change uploads with the current revision and a fresh CSRF token
+- Simulate a second-device revision and confirm automatic sync performs no POST
+- Confirm authentication changes block the queue
+- Confirm temporary failures retry only while GrowLens is open or active
+- Confirm stale revisions are rejected by the server
 - Confirm CSRF and origin protections reject invalid writes
 - Export one account and verify structured records are present
 - Delete one disposable account and verify its private images are removed
@@ -184,28 +207,31 @@ Do not bypass target-path checks, SSH host verification, staged activation, priv
 ### Highest priority
 
 - Production deployment and live pilot acceptance
+- Real two-account/two-device validation of schema-v2 records and safe auto-sync
 - Real-device validation for camera capture, IndexedDB durability, PWA installation, and light-estimation calibration
-- Better analytics by plant, cycle, cultivar, environment, irrigation, and yield
 
 ### Next priority
 
-- Conflict-safe background synchronization with no silent overwrites
 - Better comparison workflows: matched-angle guidance, annotations, and multi-date progress sets
+- Observation verification workflows and richer treatment/outcome evidence
 - Closed-app reminders only through a privacy-reviewed, low-cost implementation
 
-### Later native layer
+### Later native and AI layer
 
 - Native camera controls and device-specific light-meter calibration
 - Deeper sensor access where supported
+- Labeled image dataset, evaluation pipeline, and model card before any diagnostic classifier is enabled
 - App-store packaging after the web/PWA product proves stable
 
 ## Accuracy rules
 
 - Never label a phone-camera estimate as a calibrated quantum-sensor reading.
 - Never label a diagnostic possibility as a confirmed deficiency, disease, or pest.
+- Never present descriptive analytics as proof of causation.
 - Always show conflicting evidence and verification steps where available.
 - Store measurement units with values and validate ranges before saving.
 - Always store the PPM conversion scale when recording PPM.
 - Preserve original timestamps and update timestamps during synchronization.
 - Never silently overwrite a different device or server revision.
+- Never store passwords, session cookies, CSRF tokens, private paths, or image bytes in the sync intent queue.
 - Never cache authenticated API responses or private images in the service worker.
