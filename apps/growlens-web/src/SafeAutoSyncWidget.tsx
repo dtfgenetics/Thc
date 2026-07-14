@@ -145,6 +145,9 @@ export default function SafeAutoSyncWidget() {
   }
 
   const status = statusText(intent, enabled);
+  const messageIsError = intent?.status === 'blocked-conflict'
+    || intent?.status === 'blocked-auth'
+    || intent?.status === 'failed';
 
   return (
     <>
@@ -168,7 +171,7 @@ export default function SafeAutoSyncWidget() {
               <button className="account-close" type="button" onClick={() => setOpen(false)} aria-label="Close safe auto-sync settings">×</button>
             </header>
 
-            {message ? <div className="account-message success" role="status">{message}</div> : null}
+            {message ? <div className={`account-message ${messageIsError ? 'error' : 'success'}`} role={messageIsError ? 'alert' : 'status'}>{message}</div> : null}
 
             <div className={`safe-sync-status ${status.tone}`}>
               <span aria-hidden="true">{status.tone === 'danger' ? '!' : status.tone === 'ready' ? '✓' : '↻'}</span>
