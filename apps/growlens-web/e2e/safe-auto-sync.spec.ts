@@ -140,8 +140,9 @@ test('blocks automatic upload when another device changed the account revision',
   await expect(page.locator('.safe-sync-launcher strong')).toHaveText('Sync conflict', { timeout: 10_000 });
   expect(postCount).toBe(0);
   await page.getByRole('button', { name: 'Open safe auto-sync settings' }).click();
-  await expect(page.getByText(/Automatic sync stopped before overwriting anything/i)).toBeVisible();
-  await expect(page.getByText(/No silent overwrite/i)).toBeVisible();
+  const dialog = page.getByRole('dialog', { name: 'Safe auto-sync' });
+  await expect(dialog.getByRole('alert')).toContainText(/Automatic sync stopped before overwriting anything/i);
+  await expect(dialog.getByText(/No silent overwrite/i)).toBeVisible();
 });
 
 test('safe auto-sync panel fits the mobile viewport', async ({ page, isMobile }) => {
