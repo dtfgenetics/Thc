@@ -20,4 +20,11 @@ describe('GrowLens service worker privacy boundary', () => {
   it('refuses to cache private or no-store responses', () => {
     expect(serviceWorkerSource).toContain('/no-store|private/i.test(cacheControl)');
   });
+
+  it('uses Background Sync only to wake open clients', () => {
+    expect(serviceWorkerSource).toContain("event.tag !== SYNC_WAKE_TAG");
+    expect(serviceWorkerSource).toContain("client.postMessage({ type: 'growlens-sync-requested' })");
+    expect(serviceWorkerSource).not.toMatch(/sync[^]*fetch\([^)]*sync\.php/i);
+    expect(serviceWorkerSource).not.toContain('X-CSRF-Token');
+  });
 });
