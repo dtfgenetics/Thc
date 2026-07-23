@@ -1,0 +1,123 @@
+name: DTFSeeds Public Content Cleanup
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Protected environment containing Hostinger access
+        required: true
+        default: production
+        type: choice
+        options:
+          - staging
+          - production
+  push:
+    branches:
+      - automation/site-public-cleanup
+    paths:
+      - site/wordpress/pages/**
+      - scripts/apply-wordpress-public-content.sh
+      - .github/workflows/wordpress-public-content-cleanup.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dtfseeds-wordpress-public-content
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Backup and replace public staging copy
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'production' }}
+    env:
+      SSH_HOST: ${{ secrets.HOSTINGER_HOST }}
+      SSH_USER: ${{ secrets.HOSTINGER_USER }}
+      SSH_PORT: ${{ secrets.HOSTINGER_PORT }}
+      SSH_PRIVATE_KEY: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY }}
+      SSH_KNOWN_HOSTS: ${{ secrets.HOSTINGER_KNOWN_HOSTS }}
+      WORDPRESS_PATH: ${{ vars.HOSTINGER_WORDPRESS_PATH }}
+    steps:
+      - name: Check out approved content
+        uses: actions/checkout@v4
+
+      - name: Validate local content package
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash -n scripts/apply-wordpress-public-content.sh
+          for slug in home seeds learn community shop gallery about contact; do
+            test -s "site/wordpress/pages/$slug.html"
+          done
+          ! grep -RFiq "being rebuilt" site/wordpress/pages
+          ! grep -RFiq "Reserved strain card" site/wordpress/pages
+          ! grep -RFiq "Needed from owner" site/wordpress/pages
+          ! grep -RFiq "Tool-ready rebuild" site/wordpress/pages
+
+      - name: Validate protected deployment settings
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${SSH_HOST:?Missing HOSTINGER_HOST}"
+          : "${SSH_USER:?Missing HOSTINGER_USER}"
+          : "${SSH_PRIVATE_KEY:?Missing HOSTINGER_SSH_PRIVATE_KEY}"
+          : "${SSH_KNOWN_HOSTS:?Missing HOSTINGER_KNOWN_HOSTS}"
+          : "${WORDPRESS_PATH:?Missing HOSTINGER_WORDPRESS_PATH environment variable}"
+          SSH_PORT="${SSH_PORT:-22}"
+          [[ "$SSH_PORT" =~ ^[0-9]+$ ]]
+          [[ "$WORDPRESS_PATH" =~ ^[A-Za-z0-9_./-]+$ ]]
+          [[ "$WORDPRESS_PATH" != *".."* ]]
+          [[ "$WORDPRESS_PATH" != "/" ]]
+
+      - name: Configure SSH
+        shell: bash
+        run: |
+          set -euo pipefail
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+
+      - name: Upload isolated deployment package
+        shell: bash
+        run: |
+          set -euo pipefail
+          SSH_PORT="${SSH_PORT:-22}"
+          REMOTE_DIR="/tmp/dtf-public-content-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          printf '%s' "$REMOTE_DIR" > remote-dir.txt
+          ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" "mkdir -p '$REMOTE_DIR'"
+          tar -czf - site/wordpress/pages scripts/apply-wordpress-public-content.sh | \
+            ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" "tar -xzf - -C '$REMOTE_DIR'"
+
+      - name: Create backup and apply exact page replacements
+        shell: bash
+        run: |
+          set -euo pipefail
+          SSH_PORT="${SSH_PORT:-22}"
+          REMOTE_DIR="$(cat remote-dir.txt)"
+          ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" \
+            "WORDPRESS_PATH='$WORDPRESS_PATH' CONTENT_DIR='$REMOTE_DIR/site/wordpress/pages' BACKUP_ROOT=\"\$HOME/dtfseeds-wordpress-backups\" bash '$REMOTE_DIR/scripts/apply-wordpress-public-content.sh'"
+
+      - name: Remove temporary deployment package
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          SSH_PORT="${SSH_PORT:-22}"
+          if [[ -f remote-dir.txt ]]; then
+            REMOTE_DIR="$(cat remote-dir.txt)"
+            ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" "rm -rf '$REMOTE_DIR'" || true
+          fi
+
+      - name: Record deployment scope
+        run: |
+          {
+            echo "## DTFSeeds public-content cleanup"
+            echo
+            echo "Targeted slugs: home, seeds, learn, community, shop, gallery, about, contact."
+            echo "The remote script created a database export and page-level JSON backups before mutation."
+            echo "Game directories, plugins, themes, users, products, orders, and media were outside this deployment scope."
+          } >> "$GITHUB_STEP_SUMMARY"
