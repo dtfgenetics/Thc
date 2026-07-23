@@ -1,0 +1,66 @@
+name: Validate DTFSeeds WordPress Content
+
+on:
+  pull_request:
+    paths:
+      - site/wordpress/pages/**
+      - scripts/apply-wordpress-public-content.sh
+      - .github/workflows/wordpress-public-content-*.yml
+  push:
+    branches:
+      - automation/site-public-cleanup
+    paths:
+      - site/wordpress/pages/**
+      - scripts/apply-wordpress-public-content.sh
+      - .github/workflows/wordpress-public-content-*.yml
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate shell syntax
+        run: bash -n scripts/apply-wordpress-public-content.sh
+
+      - name: Validate required page files
+        shell: bash
+        run: |
+          set -euo pipefail
+          for slug in home seeds learn community shop gallery about contact; do
+            file="site/wordpress/pages/$slug.html"
+            test -s "$file"
+            grep -Fq '<h1' "$file"
+          done
+
+      - name: Reject internal staging language
+        shell: bash
+        run: |
+          set -euo pipefail
+          forbidden=(
+            "being rebuilt"
+            "Reserved strain card"
+            "Needed from owner"
+            "Tool-ready rebuild"
+            "Use this page for"
+            "staged for verified"
+            "before launch promotion"
+          )
+          for phrase in "${forbidden[@]}"; do
+            if grep -RFiq -- "$phrase" site/wordpress/pages; then
+              echo "Forbidden public staging phrase: $phrase"
+              exit 1
+            fi
+          done
+
+      - name: Confirm deployment scope remains narrow
+        shell: bash
+        run: |
+          set -euo pipefail
+          ! grep -Eq 'wp (plugin|theme|user|media|wc|product|shop_order) (delete|update|install|activate|deactivate)' scripts/apply-wordpress-public-content.sh
+          grep -Fq 'db export' scripts/apply-wordpress-public-content.sh
+          grep -Fq 'Expected exactly one published page' scripts/apply-wordpress-public-content.sh
