@@ -5,6 +5,7 @@ on:
     paths:
       - site/wordpress/pages/**
       - scripts/apply-wordpress-public-content.sh
+      - scripts/apply-wordpress-public-content-rest.mjs
       - .github/workflows/wordpress-public-content-*.yml
   push:
     branches:
@@ -12,6 +13,7 @@ on:
     paths:
       - site/wordpress/pages/**
       - scripts/apply-wordpress-public-content.sh
+      - scripts/apply-wordpress-public-content-rest.mjs
       - .github/workflows/wordpress-public-content-*.yml
 
 permissions:
@@ -24,8 +26,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Validate shell syntax
-        run: bash -n scripts/apply-wordpress-public-content.sh
+      - name: Validate deployment script syntax
+        run: |
+          bash -n scripts/apply-wordpress-public-content.sh
+          node --check scripts/apply-wordpress-public-content-rest.mjs
 
       - name: Validate required page files
         shell: bash
@@ -62,5 +66,8 @@ jobs:
         run: |
           set -euo pipefail
           ! grep -Eq 'wp (plugin|theme|user|media|wc|product|shop_order) (delete|update|install|activate|deactivate)' scripts/apply-wordpress-public-content.sh
+          ! grep -Eq '/wp-json/wp/v2/(users/[0-9]+|media|plugins|themes|products|orders)' scripts/apply-wordpress-public-content-rest.mjs
           grep -Fq 'db export' scripts/apply-wordpress-public-content.sh
           grep -Fq 'Expected exactly one published page' scripts/apply-wordpress-public-content.sh
+          grep -Fq 'Expected exactly one published WordPress page' scripts/apply-wordpress-public-content-rest.mjs
+          grep -Fq 'wordpress-rest-content-' scripts/apply-wordpress-public-content-rest.mjs
