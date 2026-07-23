@@ -24,7 +24,7 @@ command -v "$WP_BIN" >/dev/null
 [[ -f "$WORDPRESS_PATH/wp-config.php" ]]
 [[ -d "$CONTENT_DIR" ]]
 
-required_files=(home seeds learn community shop gallery about contact)
+required_files=(home games seeds learn community shop gallery about contact)
 for slug in "${required_files[@]}"; do
   file="$CONTENT_DIR/$slug.html"
   [[ -s "$file" ]] || { echo "Missing or empty content file: $file"; exit 1; }
@@ -66,9 +66,10 @@ resolve_page_id() {
   printf '%s' "$ids"
 }
 
-page_slugs=(home seeds learn community shop gallery about contact)
+page_slugs=(home games seeds learn community shop gallery about contact)
 page_titles=(
   "DTF Genetics | Dream the Future"
+  "DTF Game Hub | Original Cannabis Games"
   "Seeds / Genetics"
   "Teaching Healthy Cultivation"
   "Community"
