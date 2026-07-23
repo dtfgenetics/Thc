@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: Protected environment containing Hostinger access
+        description: Protected environment containing deployment access
         required: true
         default: production
         type: choice
@@ -17,6 +17,7 @@ on:
     paths:
       - site/wordpress/pages/**
       - scripts/apply-wordpress-public-content.sh
+      - scripts/apply-wordpress-public-content-rest.mjs
       - .github/workflows/wordpress-public-content-cleanup.yml
 
 permissions:
@@ -31,15 +32,19 @@ jobs:
   deploy:
     name: Backup and replace public staging copy
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     environment: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'production' }}
     env:
-      SSH_HOST: ${{ secrets.HOSTINGER_HOST }}
-      SSH_USER: ${{ secrets.HOSTINGER_USER }}
-      SSH_PORT: ${{ secrets.HOSTINGER_PORT }}
-      SSH_PRIVATE_KEY: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY }}
-      SSH_KNOWN_HOSTS: ${{ secrets.HOSTINGER_KNOWN_HOSTS }}
-      WORDPRESS_PATH: ${{ vars.HOSTINGER_WORDPRESS_PATH }}
+      SSH_HOST: ${{ secrets.HOSTINGER_HOST || secrets.SSH_HOST || secrets.SFTP_HOST }}
+      SSH_USER: ${{ secrets.HOSTINGER_USER || secrets.HOSTINGER_SSH_USER || secrets.SSH_USER || secrets.SFTP_USER }}
+      SSH_PORT: ${{ secrets.HOSTINGER_PORT || secrets.SSH_PORT || secrets.SFTP_PORT }}
+      SSH_PRIVATE_KEY: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY || secrets.HOSTINGER_SSH_KEY || secrets.SSH_PRIVATE_KEY || secrets.DEPLOY_KEY }}
+      SSH_KNOWN_HOSTS: ${{ secrets.HOSTINGER_KNOWN_HOSTS || secrets.SSH_KNOWN_HOSTS }}
+      WORDPRESS_PATH: ${{ vars.HOSTINGER_WORDPRESS_PATH || vars.WORDPRESS_PATH || vars.WP_PATH }}
+
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME || secrets.WORDPRESS_USERNAME || secrets.WP_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD || secrets.WORDPRESS_APP_PASSWORD || secrets.WP_APPLICATION_PASSWORD }}
     steps:
       - name: Check out approved content
         id: checkout
@@ -51,6 +56,7 @@ jobs:
         run: |
           set -euo pipefail
           bash -n scripts/apply-wordpress-public-content.sh
+          node --check scripts/apply-wordpress-public-content-rest.mjs
           for slug in home games high-iq seeds learn community shop gallery about contact; do
             test -s "site/wordpress/pages/$slug.html"
           done
@@ -59,65 +65,160 @@ jobs:
           ! grep -RFiq "Needed from owner" site/wordpress/pages
           ! grep -RFiq "Tool-ready rebuild" site/wordpress/pages
 
-      - name: Validate protected deployment settings
+      - name: Select the safest available deployment transport
         id: settings
         shell: bash
         run: |
           set -euo pipefail
-          : "${SSH_HOST:?Missing HOSTINGER_HOST}"
-          : "${SSH_USER:?Missing HOSTINGER_USER}"
-          : "${SSH_PRIVATE_KEY:?Missing HOSTINGER_SSH_PRIVATE_KEY}"
-          : "${SSH_KNOWN_HOSTS:?Missing HOSTINGER_KNOWN_HOSTS}"
-          : "${WORDPRESS_PATH:?Missing HOSTINGER_WORDPRESS_PATH environment variable}"
-          SSH_PORT="${SSH_PORT:-22}"
-          [[ "$SSH_PORT" =~ ^[0-9]+$ ]]
-          [[ "$WORDPRESS_PATH" =~ ^[A-Za-z0-9_./-]+$ ]]
-          [[ "$WORDPRESS_PATH" != *".."* ]]
-          [[ "$WORDPRESS_PATH" != "/" ]]
 
-      - name: Configure SSH
+          # The current public A record is not a credential and is safe as a fallback.
+          SSH_HOST="${SSH_HOST:-147.93.42.1}"
+          SSH_PORT="${SSH_PORT:-22}"
+          echo "ssh_host=$SSH_HOST" >> "$GITHUB_OUTPUT"
+          echo "ssh_port=$SSH_PORT" >> "$GITHUB_OUTPUT"
+
+          if [[ -n "${SSH_USER:-}" && -n "${SSH_PRIVATE_KEY:-}" ]]; then
+            echo "mode=ssh" >> "$GITHUB_OUTPUT"
+            echo "Using SSH/WP-CLI deployment with database backup."
+          elif [[ -n "${WP_API_USERNAME:-}" && -n "${WP_API_PASSWORD:-}" ]]; then
+            echo "mode=rest" >> "$GITHUB_OUTPUT"
+            echo "Using WordPress Application Password deployment with page-level backups."
+          else
+            echo "No usable credential pair was found." >&2
+            echo "Provide either an SSH user plus private key, or a WordPress username plus application password." >&2
+            exit 1
+          fi
+
+          [[ "$SSH_PORT" =~ ^[0-9]+$ ]]
+          if [[ -n "${WORDPRESS_PATH:-}" ]]; then
+            [[ "$WORDPRESS_PATH" =~ ^[A-Za-z0-9_./-]+$ ]]
+            [[ "$WORDPRESS_PATH" != *".."* ]]
+            [[ "$WORDPRESS_PATH" != "/" ]]
+          fi
+
+      - name: Configure SSH with generated host verification
         id: ssh_config
+        if: steps.settings.outputs.mode == 'ssh'
         shell: bash
+        env:
+          EFFECTIVE_SSH_HOST: ${{ steps.settings.outputs.ssh_host }}
+          EFFECTIVE_SSH_PORT: ${{ steps.settings.outputs.ssh_port }}
         run: |
           set -euo pipefail
           install -d -m 700 ~/.ssh
           printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
-          printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+
+          if [[ -n "${SSH_KNOWN_HOSTS:-}" ]]; then
+            printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          else
+            ssh-keyscan -p "$EFFECTIVE_SSH_PORT" -H "$EFFECTIVE_SSH_HOST" > ~/.ssh/known_hosts
+          fi
+          test -s ~/.ssh/known_hosts
           chmod 600 ~/.ssh/known_hosts
 
-      - name: Upload isolated deployment package
-        id: upload
+      - name: Discover and verify the live WordPress installation
+        id: wordpress_path
+        if: steps.settings.outputs.mode == 'ssh'
         shell: bash
+        env:
+          EFFECTIVE_SSH_HOST: ${{ steps.settings.outputs.ssh_host }}
+          EFFECTIVE_SSH_PORT: ${{ steps.settings.outputs.ssh_port }}
         run: |
           set -euo pipefail
-          SSH_PORT="${SSH_PORT:-22}"
+
+          if [[ -n "${WORDPRESS_PATH:-}" ]]; then
+            candidate="$WORDPRESS_PATH"
+          else
+            candidate="$(ssh -p "$EFFECTIVE_SSH_PORT" "$SSH_USER@$EFFECTIVE_SSH_HOST" 'bash -s' <<'REMOTE'
+          set -euo pipefail
+          while IFS= read -r config; do
+            directory="$(dirname "$config")"
+            home_url="$(wp --path="$directory" option get home --skip-plugins --skip-themes 2>/dev/null || true)"
+            normalized="${home_url%/}"
+            if [[ "$normalized" == "https://dtfseeds.com" || "$normalized" == "http://dtfseeds.com" || "$normalized" == "https://www.dtfseeds.com" || "$normalized" == "http://www.dtfseeds.com" ]]; then
+              printf '%s\n' "$directory"
+              exit 0
+            fi
+          done < <(find "$HOME" -maxdepth 8 -type f -name wp-config.php -print 2>/dev/null)
+          exit 1
+          REMOTE
+          )"
+          fi
+
+          [[ -n "$candidate" ]]
+          remote_home="$(ssh -p "$EFFECTIVE_SSH_PORT" "$SSH_USER@$EFFECTIVE_SSH_HOST" \
+            "wp --path='$candidate' option get home --skip-plugins --skip-themes")"
+          normalized="${remote_home%/}"
+          case "$normalized" in
+            https://dtfseeds.com|http://dtfseeds.com|https://www.dtfseeds.com|http://www.dtfseeds.com) ;;
+            *) echo "Discovered WordPress path belongs to unexpected site: $normalized" >&2; exit 1 ;;
+          esac
+          echo "path=$candidate" >> "$GITHUB_OUTPUT"
+
+      - name: Upload isolated SSH deployment package
+        id: upload
+        if: steps.settings.outputs.mode == 'ssh'
+        shell: bash
+        env:
+          EFFECTIVE_SSH_HOST: ${{ steps.settings.outputs.ssh_host }}
+          EFFECTIVE_SSH_PORT: ${{ steps.settings.outputs.ssh_port }}
+        run: |
+          set -euo pipefail
           REMOTE_DIR="/tmp/dtf-public-content-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
           printf '%s' "$REMOTE_DIR" > remote-dir.txt
-          ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" "mkdir -p '$REMOTE_DIR'"
+          ssh -p "$EFFECTIVE_SSH_PORT" "$SSH_USER@$EFFECTIVE_SSH_HOST" "mkdir -p '$REMOTE_DIR'"
           tar -czf - site/wordpress/pages scripts/apply-wordpress-public-content.sh | \
-            ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" "tar -xzf - -C '$REMOTE_DIR'"
+            ssh -p "$EFFECTIVE_SSH_PORT" "$SSH_USER@$EFFECTIVE_SSH_HOST" "tar -xzf - -C '$REMOTE_DIR'"
 
-      - name: Create backup and apply exact page replacements
-        id: apply
+      - name: Create database backup and update pages through WP-CLI
+        id: apply_ssh
+        if: steps.settings.outputs.mode == 'ssh'
         shell: bash
+        env:
+          EFFECTIVE_SSH_HOST: ${{ steps.settings.outputs.ssh_host }}
+          EFFECTIVE_SSH_PORT: ${{ steps.settings.outputs.ssh_port }}
+          EFFECTIVE_WORDPRESS_PATH: ${{ steps.wordpress_path.outputs.path }}
         run: |
           set -euo pipefail
-          SSH_PORT="${SSH_PORT:-22}"
           REMOTE_DIR="$(cat remote-dir.txt)"
-          ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" \
-            "WORDPRESS_PATH='$WORDPRESS_PATH' CONTENT_DIR='$REMOTE_DIR/site/wordpress/pages' BACKUP_ROOT=\"\$HOME/dtfseeds-wordpress-backups\" bash '$REMOTE_DIR/scripts/apply-wordpress-public-content.sh'"
+          ssh -p "$EFFECTIVE_SSH_PORT" "$SSH_USER@$EFFECTIVE_SSH_HOST" \
+            "WORDPRESS_PATH='$EFFECTIVE_WORDPRESS_PATH' CONTENT_DIR='$REMOTE_DIR/site/wordpress/pages' BACKUP_ROOT=\"\$HOME/dtfseeds-wordpress-backups\" bash '$REMOTE_DIR/scripts/apply-wordpress-public-content.sh'"
 
-      - name: Remove temporary deployment package
-        id: cleanup
-        if: always()
+      - name: Back up and update pages through WordPress REST
+        id: apply_rest
+        if: steps.settings.outputs.mode == 'rest'
         shell: bash
+        env:
+          CONTENT_DIR: ${{ github.workspace }}/site/wordpress/pages
+          BACKUP_ROOT: ${{ runner.temp }}/wordpress-rest-backups
         run: |
           set -euo pipefail
-          SSH_PORT="${SSH_PORT:-22}"
-          if [[ -f remote-dir.txt ]] && [[ -n "${SSH_HOST:-}" ]] && [[ -n "${SSH_USER:-}" ]]; then
+          mkdir -p "$BACKUP_ROOT"
+          node scripts/apply-wordpress-public-content-rest.mjs
+
+      - name: Upload REST rollback package
+        id: backup_artifact
+        if: always() && steps.settings.outputs.mode == 'rest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: dtfseeds-wordpress-rest-backup-${{ github.run_id }}
+          path: ${{ runner.temp }}/wordpress-rest-backups
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Remove temporary SSH package
+        id: cleanup
+        if: always() && steps.settings.outputs.mode == 'ssh'
+        shell: bash
+        env:
+          EFFECTIVE_SSH_HOST: ${{ steps.settings.outputs.ssh_host }}
+          EFFECTIVE_SSH_PORT: ${{ steps.settings.outputs.ssh_port }}
+        run: |
+          set -euo pipefail
+          if [[ -f remote-dir.txt ]] && [[ -n "${SSH_USER:-}" ]]; then
             REMOTE_DIR="$(cat remote-dir.txt)"
-            ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" "rm -rf '$REMOTE_DIR'" || true
+            ssh -p "$EFFECTIVE_SSH_PORT" "$SSH_USER@$EFFECTIVE_SSH_HOST" "rm -rf '$REMOTE_DIR'" || true
           fi
 
       - name: Report deployment outcome to issue 46
@@ -131,15 +232,19 @@ jobs:
               `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
               `Commit: \`${context.sha}\``,
               `Overall job status: **${{ job.status }}**`,
+              `Selected transport: **${{ steps.settings.outputs.mode || 'none' }}**`,
               '',
               '| Stage | Outcome |',
               '|---|---|',
               '| Checkout | ${{ steps.checkout.outcome }} |',
               '| Content validation | ${{ steps.content.outcome }} |',
-              '| Protected settings | ${{ steps.settings.outcome }} |',
+              '| Credential/transport selection | ${{ steps.settings.outcome }} |',
               '| SSH configuration | ${{ steps.ssh_config.outcome }} |',
-              '| Package upload / SSH connection | ${{ steps.upload.outcome }} |',
-              '| WordPress backup and page update | ${{ steps.apply.outcome }} |',
+              '| WordPress path discovery | ${{ steps.wordpress_path.outcome }} |',
+              '| SSH package upload | ${{ steps.upload.outcome }} |',
+              '| WP-CLI database backup and update | ${{ steps.apply_ssh.outcome }} |',
+              '| REST page backup and update | ${{ steps.apply_rest.outcome }} |',
+              '| REST rollback artifact | ${{ steps.backup_artifact.outcome }} |',
               '| Temporary-file cleanup | ${{ steps.cleanup.outcome }} |',
               '',
               'No credential values are included in this report.'
@@ -158,7 +263,9 @@ jobs:
             echo "## DTFSeeds public-content cleanup"
             echo
             echo "Production source: main branch."
+            echo "Transport: ${{ steps.settings.outputs.mode || 'none' }}."
             echo "Targeted slugs: home, games, high-iq, seeds, learn, community, shop, gallery, about, contact."
-            echo "The remote script creates a database export and page-level JSON backups before mutation."
-            echo "Game directories, plugins, themes, users, products, orders, and media are outside this deployment scope."
+            echo "SSH mode creates a complete database export and page-level JSON backups."
+            echo "REST mode creates authenticated page-level JSON backups and retains them as a private workflow artifact."
+            echo "Game directories, plugins, themes, users, products, orders, and media remain outside this deployment scope."
           } >> "$GITHUB_STEP_SUMMARY"
