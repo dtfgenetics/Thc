@@ -1,0 +1,133 @@
+name: Deployment Access Diagnostic
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/deployment-access-diagnostic.yml
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment: production
+    env:
+      HOSTINGER_HOST: ${{ secrets.HOSTINGER_HOST }}
+      SSH_HOST: ${{ secrets.SSH_HOST }}
+      SFTP_HOST: ${{ secrets.SFTP_HOST }}
+
+      HOSTINGER_USER: ${{ secrets.HOSTINGER_USER }}
+      HOSTINGER_SSH_USER: ${{ secrets.HOSTINGER_SSH_USER }}
+      SSH_USER: ${{ secrets.SSH_USER }}
+      SFTP_USER: ${{ secrets.SFTP_USER }}
+
+      HOSTINGER_SSH_PRIVATE_KEY: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY }}
+      HOSTINGER_SSH_KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
+
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WORDPRESS_USERNAME: ${{ secrets.WORDPRESS_USERNAME }}
+      WP_USERNAME: ${{ secrets.WP_USERNAME }}
+
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      WORDPRESS_APP_PASSWORD: ${{ secrets.WORDPRESS_APP_PASSWORD }}
+      WP_APPLICATION_PASSWORD: ${{ secrets.WP_APPLICATION_PASSWORD }}
+
+      HOSTINGER_WORDPRESS_PATH: ${{ vars.HOSTINGER_WORDPRESS_PATH }}
+      WORDPRESS_PATH: ${{ vars.WORDPRESS_PATH }}
+      WP_PATH: ${{ vars.WP_PATH }}
+    steps:
+      - name: Test public WordPress and MCP endpoints
+        id: endpoints
+        shell: bash
+        run: |
+          set -euo pipefail
+          homepage_status="$(curl -L -sS -o /dev/null -w '%{http_code}' --max-time 15 https://dtfseeds.com/)"
+          mcp_status="$(curl -sS -o /dev/null -w '%{http_code}' --max-time 15 -X POST \
+            -H 'Content-Type: application/json' \
+            --data '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' \
+            https://dtfseeds.com/wp-json/mcp/mcp-adapter-default-server)"
+          echo "homepage_status=$homepage_status" >> "$GITHUB_OUTPUT"
+          echo "mcp_status=$mcp_status" >> "$GITHUB_OUTPUT"
+
+      - name: Record credential-name presence without exposing values
+        id: aliases
+        shell: bash
+        run: |
+          set -euo pipefail
+          report_file="credential-presence.md"
+          : > "$report_file"
+
+          check_group() {
+            local heading="$1"
+            shift
+            echo "### $heading" >> "$report_file"
+            echo >> "$report_file"
+            local found=0
+            for name in "$@"; do
+              if [[ -n "${!name:-}" ]]; then
+                echo "- \`$name\`: present" >> "$report_file"
+                found=1
+              else
+                echo "- \`$name\`: absent" >> "$report_file"
+              fi
+            done
+            echo >> "$report_file"
+            echo "$found"
+          }
+
+          host_found="$(check_group 'Host aliases' HOSTINGER_HOST SSH_HOST SFTP_HOST)"
+          user_found="$(check_group 'SSH/SFTP user aliases' HOSTINGER_USER HOSTINGER_SSH_USER SSH_USER SFTP_USER)"
+          key_found="$(check_group 'Private-key aliases' HOSTINGER_SSH_PRIVATE_KEY HOSTINGER_SSH_KEY SSH_PRIVATE_KEY DEPLOY_KEY)"
+          wp_user_found="$(check_group 'WordPress user aliases' WP_API_USERNAME WORDPRESS_USERNAME WP_USERNAME)"
+          wp_password_found="$(check_group 'WordPress application-password aliases' WP_API_PASSWORD WORDPRESS_APP_PASSWORD WP_APPLICATION_PASSWORD)"
+          path_found="$(check_group 'WordPress path variable aliases' HOSTINGER_WORDPRESS_PATH WORDPRESS_PATH WP_PATH)"
+
+          echo "host_found=$host_found" >> "$GITHUB_OUTPUT"
+          echo "user_found=$user_found" >> "$GITHUB_OUTPUT"
+          echo "key_found=$key_found" >> "$GITHUB_OUTPUT"
+          echo "wp_user_found=$wp_user_found" >> "$GITHUB_OUTPUT"
+          echo "wp_password_found=$wp_password_found" >> "$GITHUB_OUTPUT"
+          echo "path_found=$path_found" >> "$GITHUB_OUTPUT"
+
+      - name: Report diagnostic to issue 46
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          HOMEPAGE_STATUS: ${{ steps.endpoints.outputs.homepage_status }}
+          MCP_STATUS: ${{ steps.endpoints.outputs.mcp_status }}
+        with:
+          script: |
+            const fs = require('fs');
+            const presence = fs.existsSync('credential-presence.md')
+              ? fs.readFileSync('credential-presence.md', 'utf8')
+              : 'Credential-presence file was not created.';
+            const body = [
+              '## Deployment access diagnostic',
+              '',
+              `Homepage HTTP status: **${process.env.HOMEPAGE_STATUS || 'unknown'}**`,
+              `WordPress MCP unauthenticated status: **${process.env.MCP_STATUS || 'unknown'}**`,
+              '',
+              presence,
+              '### Automatic values now available',
+              '',
+              '- Host fallback: `147.93.42.1` (current dtfseeds.com A record)',
+              '- SSH port fallback: `22`',
+              '- Known-host entry: can be generated with `ssh-keyscan` at deployment time',
+              '- WordPress path: can be discovered after SSH login and verified with `wp option get home`',
+              '',
+              'No secret values were printed or written to the repository.'
+            ].join('\n');
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 46,
+              body
+            });
