@@ -21,6 +21,7 @@ on:
 
 permissions:
   contents: read
+  issues: write
 
 concurrency:
   group: dtfseeds-wordpress-public-content
@@ -41,9 +42,11 @@ jobs:
       WORDPRESS_PATH: ${{ vars.HOSTINGER_WORDPRESS_PATH }}
     steps:
       - name: Check out approved content
+        id: checkout
         uses: actions/checkout@v4
 
       - name: Validate local content package
+        id: content
         shell: bash
         run: |
           set -euo pipefail
@@ -57,6 +60,7 @@ jobs:
           ! grep -RFiq "Tool-ready rebuild" site/wordpress/pages
 
       - name: Validate protected deployment settings
+        id: settings
         shell: bash
         run: |
           set -euo pipefail
@@ -72,6 +76,7 @@ jobs:
           [[ "$WORDPRESS_PATH" != "/" ]]
 
       - name: Configure SSH
+        id: ssh_config
         shell: bash
         run: |
           set -euo pipefail
@@ -82,6 +87,7 @@ jobs:
           chmod 600 ~/.ssh/known_hosts
 
       - name: Upload isolated deployment package
+        id: upload
         shell: bash
         run: |
           set -euo pipefail
@@ -93,6 +99,7 @@ jobs:
             ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" "tar -xzf - -C '$REMOTE_DIR'"
 
       - name: Create backup and apply exact page replacements
+        id: apply
         shell: bash
         run: |
           set -euo pipefail
@@ -102,23 +109,56 @@ jobs:
             "WORDPRESS_PATH='$WORDPRESS_PATH' CONTENT_DIR='$REMOTE_DIR/site/wordpress/pages' BACKUP_ROOT=\"\$HOME/dtfseeds-wordpress-backups\" bash '$REMOTE_DIR/scripts/apply-wordpress-public-content.sh'"
 
       - name: Remove temporary deployment package
+        id: cleanup
         if: always()
         shell: bash
         run: |
           set -euo pipefail
           SSH_PORT="${SSH_PORT:-22}"
-          if [[ -f remote-dir.txt ]]; then
+          if [[ -f remote-dir.txt ]] && [[ -n "${SSH_HOST:-}" ]] && [[ -n "${SSH_USER:-}" ]]; then
             REMOTE_DIR="$(cat remote-dir.txt)"
             ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" "rm -rf '$REMOTE_DIR'" || true
           fi
 
+      - name: Report deployment outcome to issue 46
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const lines = [
+              '## Automated WordPress deployment report',
+              '',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Commit: \`${context.sha}\``,
+              `Overall job status: **${{ job.status }}**`,
+              '',
+              '| Stage | Outcome |',
+              '|---|---|',
+              '| Checkout | ${{ steps.checkout.outcome }} |',
+              '| Content validation | ${{ steps.content.outcome }} |',
+              '| Protected settings | ${{ steps.settings.outcome }} |',
+              '| SSH configuration | ${{ steps.ssh_config.outcome }} |',
+              '| Package upload / SSH connection | ${{ steps.upload.outcome }} |',
+              '| WordPress backup and page update | ${{ steps.apply.outcome }} |',
+              '| Temporary-file cleanup | ${{ steps.cleanup.outcome }} |',
+              '',
+              'No credential values are included in this report.'
+            ];
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 46,
+              body: lines.join('\n')
+            });
+
       - name: Record deployment scope
+        if: always()
         run: |
           {
             echo "## DTFSeeds public-content cleanup"
             echo
             echo "Production source: main branch."
             echo "Targeted slugs: home, seeds, learn, community, shop, gallery, about, contact."
-            echo "The remote script created a database export and page-level JSON backups before mutation."
-            echo "Game directories, plugins, themes, users, products, orders, and media were outside this deployment scope."
+            echo "The remote script creates a database export and page-level JSON backups before mutation."
+            echo "Game directories, plugins, themes, users, products, orders, and media are outside this deployment scope."
           } >> "$GITHUB_STEP_SUMMARY"
