@@ -31,7 +31,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for slug in home games seeds learn community shop gallery about contact; do
+          for slug in home games high-iq seeds learn community shop gallery about contact; do
             file="site/wordpress/pages/$slug.html"
             test -s "$file"
             grep -Fq '<h1' "$file"
