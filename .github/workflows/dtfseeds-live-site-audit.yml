@@ -6,7 +6,7 @@ on:
     - cron: '17 8 * * *'
   push:
     branches:
-      - automation/live-site-quality-gate
+      - main
     paths:
       - scripts/audit-dtfseeds-live.mjs
       - .github/workflows/dtfseeds-live-site-audit.yml
