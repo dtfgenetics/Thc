@@ -1,0 +1,60 @@
+name: DTFSeeds Live-Site Audit
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 8 * * *'
+  push:
+    branches:
+      - automation/live-site-quality-gate
+    paths:
+      - scripts/audit-dtfseeds-live.mjs
+      - .github/workflows/dtfseeds-live-site-audit.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dtfseeds-live-site-audit
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Audit public routes and metadata
+        id: audit
+        shell: bash
+        run: |
+          set +e
+          node scripts/audit-dtfseeds-live.mjs
+          status=$?
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Publish audit summary
+        if: always()
+        shell: bash
+        run: cat live-site-audit.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload machine-readable and human-readable reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dtfseeds-live-site-audit-${{ github.run_id }}
+          path: |
+            live-site-audit.json
+            live-site-audit.md
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Fail when the live site does not meet the production gate
+        if: steps.audit.outputs.status != '0'
+        run: exit 1
