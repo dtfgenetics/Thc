@@ -8,7 +8,7 @@ on:
       - .github/workflows/wordpress-public-content-*.yml
   push:
     branches:
-      - automation/site-public-cleanup
+      - main
     paths:
       - site/wordpress/pages/**
       - scripts/apply-wordpress-public-content.sh
@@ -31,7 +31,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for slug in home seeds learn community shop gallery about contact; do
+          for slug in home games seeds learn community shop gallery about contact; do
             file="site/wordpress/pages/$slug.html"
             test -s "$file"
             grep -Fq '<h1' "$file"

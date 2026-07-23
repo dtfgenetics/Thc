@@ -51,7 +51,7 @@ jobs:
         run: |
           set -euo pipefail
           bash -n scripts/apply-wordpress-public-content.sh
-          for slug in home seeds learn community shop gallery about contact; do
+          for slug in home games seeds learn community shop gallery about contact; do
             test -s "site/wordpress/pages/$slug.html"
           done
           ! grep -RFiq "being rebuilt" site/wordpress/pages
@@ -158,7 +158,7 @@ jobs:
             echo "## DTFSeeds public-content cleanup"
             echo
             echo "Production source: main branch."
-            echo "Targeted slugs: home, seeds, learn, community, shop, gallery, about, contact."
+            echo "Targeted slugs: home, games, seeds, learn, community, shop, gallery, about, contact."
             echo "The remote script creates a database export and page-level JSON backups before mutation."
             echo "Game directories, plugins, themes, users, products, orders, and media are outside this deployment scope."
           } >> "$GITHUB_STEP_SUMMARY"
