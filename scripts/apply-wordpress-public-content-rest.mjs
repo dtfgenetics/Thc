@@ -18,7 +18,7 @@ const headers = {
   Authorization: authHeader,
   'Content-Type': 'application/json',
   Accept: 'application/json',
-  'User-Agent': 'DTFSeeds-Content-Deployment/1.0'
+  'User-Agent': 'DTFSeeds-Content-Deployment/1.1'
 };
 
 const pageDefinitions = [
@@ -32,6 +32,11 @@ const pageDefinitions = [
   ['gallery', 'Gallery'],
   ['about', 'About DTF Genetics'],
   ['contact', 'Contact DTF Genetics']
+];
+
+const legacyPostTitles = [
+  'Exploring DTF Genetics: A Hub for Cannabis Art and Gardening Tools',
+  'Explore DTF Genetics: Your Destination for Cannabis-themed Apparel and Art'
 ];
 
 const forbiddenPhrases = [
@@ -69,11 +74,7 @@ async function request(path, options = {}) {
 }
 
 async function getPublishedPageBySlug(slug) {
-  const params = new URLSearchParams({
-    slug,
-    context: 'edit',
-    per_page: '100'
-  });
+  const params = new URLSearchParams({ slug, context: 'edit', per_page: '100' });
   const { body } = await request(`/wp-json/wp/v2/pages?${params}`);
   if (!Array.isArray(body)) throw new Error(`Unexpected page response for ${slug}`);
   if (body.length !== 1) {
@@ -85,14 +86,28 @@ async function getPublishedPageBySlug(slug) {
 async function updatePage(page, title, content) {
   const { body } = await request(`/wp-json/wp/v2/pages/${page.id}`, {
     method: 'POST',
-    body: JSON.stringify({
-      title,
-      content,
-      status: 'publish'
-    })
+    body: JSON.stringify({ title, content, status: 'publish' })
   });
   if (!body?.id || body.id !== page.id) throw new Error(`WordPress did not confirm page ${page.id}`);
   return body;
+}
+
+async function draftExactLegacyPost(title) {
+  const params = new URLSearchParams({ search: title, context: 'edit', per_page: '100' });
+  const { body } = await request(`/wp-json/wp/v2/posts?${params}`);
+  if (!Array.isArray(body)) throw new Error(`Unexpected post response while searching for '${title}'`);
+
+  for (const post of body) {
+    const renderedTitle = post?.title?.raw || post?.title?.rendered || '';
+    if (renderedTitle !== title) continue;
+
+    await writeFile(join(backupDir, `legacy-post-${post.id}.json`), `${JSON.stringify(post, null, 2)}\n`, 'utf8');
+    await request(`/wp-json/wp/v2/posts/${post.id}`, {
+      method: 'POST',
+      body: JSON.stringify({ status: 'draft' })
+    });
+    console.log(`Drafted obsolete generated post: ${title} (post ID ${post.id})`);
+  }
 }
 
 await mkdir(join(backupDir, 'pages'), { recursive: true });
@@ -147,8 +162,8 @@ for (const item of prepared) {
   console.log(`Updated /${item.slug}/ (page ID ${updated.id})`);
 }
 
-// Handle the obsolete blog only when the settings endpoint confirms it is the
-// configured posts page and the matching page slug is exactly "blog".
+// Remove the obsolete posts page only when WordPress confirms that it is the
+// configured posts page and its slug is exactly "blog".
 try {
   const settings = await request('/wp-json/wp/v2/settings');
   await writeFile(join(backupDir, 'settings-before.json'), `${JSON.stringify(settings.body, null, 2)}\n`, 'utf8');
@@ -169,7 +184,18 @@ try {
     }
   }
 } catch (error) {
-  console.warn(`Legacy blog cleanup skipped safely: ${error.message}`);
+  console.warn(`Legacy blog-page cleanup skipped safely: ${error.message}`);
+}
+
+// The legacy public blog currently exposes generated placeholder copy and fake
+// contact data. Draft only the two exact known generated posts, with a JSON
+// backup for each, so REST deployment matches the safer WP-CLI cleanup path.
+for (const title of legacyPostTitles) {
+  try {
+    await draftExactLegacyPost(title);
+  } catch (error) {
+    console.warn(`Legacy post cleanup skipped safely for '${title}': ${error.message}`);
+  }
 }
 
 await writeFile(join(backupDir, 'deployment-results.json'), `${JSON.stringify(results, null, 2)}\n`, 'utf8');
