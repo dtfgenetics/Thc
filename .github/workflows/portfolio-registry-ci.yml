@@ -1,0 +1,34 @@
+name: Portfolio Registry CI
+
+on:
+  push:
+    paths:
+      - 'data/project-registry.json'
+      - 'data/site-registry.json'
+      - 'data/asset-manifest.json'
+      - 'data/asset-manifest.schema.json'
+      - 'docs/**SOURCE_OF_TRUTH.md'
+      - 'docs/PORTFOLIO_RELEASE_CRITERIA.md'
+      - 'scripts/validate-portfolio-registry.mjs'
+      - '.github/workflows/portfolio-registry-ci.yml'
+  pull_request:
+    paths:
+      - 'data/project-registry.json'
+      - 'data/site-registry.json'
+      - 'data/asset-manifest.json'
+      - 'data/asset-manifest.schema.json'
+      - 'docs/**SOURCE_OF_TRUTH.md'
+      - 'docs/PORTFOLIO_RELEASE_CRITERIA.md'
+      - 'scripts/validate-portfolio-registry.mjs'
+      - '.github/workflows/portfolio-registry-ci.yml'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Validate project, site, and asset registries
+        run: node scripts/validate-portfolio-registry.mjs
