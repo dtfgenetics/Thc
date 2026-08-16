@@ -12,13 +12,14 @@
       "build": "mixed WordPress/public-content integration; see repository workflows and docs",
       "deployment": "Hostinger/WordPress production surface",
       "drive_control": "07 Websites & Apps/DTFSeeds Platform/01 Production Site",
-      "verification": "live-check-required"
+      "verification": "verified-live-2026-08-15",
+      "verification_evidence": "Web fetch returned the DTF Genetics production homepage and current navigation."
     },
     {
       "id": "high-land-web",
       "name": "High Land browser game",
       "url": "https://dtfseeds.com/games/high-land/",
-      "status": "production-target",
+      "status": "production",
       "repo": "dtfgenetics/Thc",
       "branch": "main",
       "app_path": "apps/high-land-web",
@@ -26,56 +27,87 @@
       "output": "apps/high-land-web/dist",
       "deployment": "Hostinger path /games/high-land/ via repository workflow",
       "drive_control": "04 Games/High Land/08 Digital",
-      "verification": "live-check-required"
+      "verification": "verified-live-route-2026-08-15",
+      "verification_evidence": "Production homepage links the route and web fetch resolved HIGH LAND: The Sweet Escape."
+    },
+    {
+      "id": "weedopolis-web",
+      "name": "Weedopolis browser route",
+      "url": "https://dtfseeds.com/games/weedopolis/",
+      "status": "production-route",
+      "repo": "dtfgenetics/Weedopolis-strain-Edition",
+      "branch": "main",
+      "build": "repository-defined digital implementation; production adapter must remain consistent with canonical repo data",
+      "deployment": "DTFSeeds game route",
+      "drive_control": "04 Games/Weedopolis/05 Digital",
+      "verification": "verified-live-route-2026-08-15",
+      "verification_evidence": "Production homepage links Weedopolis and web fetch resolved the route."
     },
     {
       "id": "plant-diagnostic",
       "name": "THC Grow Doc plant diagnostic",
       "url": "https://dtfseeds.com/thc-grow-doc/",
-      "status": "production",
+      "status": "production-configured",
       "repo": "dtfgenetics/Thc-dataset",
       "branch": "main",
       "build": "npm run build",
       "output": "dist",
       "deployment": "WordPress path /thc-grow-doc/ preserving assets/",
       "drive_control": "07 Websites & Apps/DTFSeeds Platform/04 Plant Diagnostic App",
-      "verification": "live-check-required"
+      "verification": "configured-not-independently-fetched-2026-08-15",
+      "verification_evidence": "Repo and deployment contract map this production path; public web search did not return an independently fetchable result during this audit."
     },
     {
       "id": "thc-u-know",
       "name": "THC U Know browser game",
       "url": "https://dtfseeds.com/games/thc-u-know/",
-      "status": "production-target",
+      "status": "production-linked",
       "repo": "dtfgenetics/thc-u-know-card-game-",
       "branch": "main",
       "build": "pnpm -r build && pnpm test",
       "deployment": "same-origin web + Socket.IO server; subdirectory Socket.IO path /games/thc-u-know/socket.io",
       "drive_control": "04 Games/THC U Know/05 Digital",
-      "verification": "live-check-required"
+      "verification": "linked-on-production-homepage-fetch-unverified-2026-08-15",
+      "verification_evidence": "DTFSeeds production homepage currently links THC U Know; direct web fetch returned a cache miss, so runtime health is not claimed."
+    },
+    {
+      "id": "thc-chess-wordpress-route",
+      "name": "Kush Kings Chess DTFSeeds route",
+      "url": "https://dtfseeds.com/games/kush-kings-chess/",
+      "status": "production-linked",
+      "repo": "dtfgenetics/Thc-chess-git",
+      "branch": "main",
+      "build": "pnpm check:rebrand && pnpm --filter client lint && pnpm build:client && pnpm build:server",
+      "deployment": "DTFSeeds game route pointing to/hosting the chess experience",
+      "drive_control": "04 Games/THC Chess/05 Digital",
+      "verification": "linked-on-production-homepage-fetch-unverified-2026-08-15",
+      "verification_evidence": "DTFSeeds production homepage currently links this route; direct web fetch returned a cache miss."
     },
     {
       "id": "thc-chess-web",
-      "name": "Kush Kings Chess frontend",
+      "name": "Kush Kings Chess frontend domain",
       "url": "https://chess.dtfseeds.com/",
-      "status": "production-target",
+      "status": "production-target-documented",
       "repo": "dtfgenetics/Thc-chess-git",
       "branch": "main",
       "build": "pnpm check:rebrand && pnpm --filter client lint && pnpm build:client && pnpm build:server",
       "deployment": "containerized frontend + server; see repo deployment docs",
       "drive_control": "04 Games/THC Chess/05 Digital",
-      "verification": "live-check-required"
+      "verification": "target-documented-not-web-verified-2026-08-15",
+      "verification_evidence": "Canonical repo documents this target; independent web verification was unavailable during this audit."
     },
     {
       "id": "thc-chess-api",
       "name": "Kush Kings Chess API",
       "url": "https://chess-api.dtfseeds.com/",
-      "status": "production-target",
+      "status": "production-target-documented",
       "repo": "dtfgenetics/Thc-chess-git",
       "branch": "main",
       "build": "pnpm build:server",
       "deployment": "Express + Socket.IO + PostgreSQL server",
       "drive_control": "04 Games/THC Chess/05 Digital",
-      "verification": "live-check-required"
+      "verification": "target-documented-not-web-verified-2026-08-15",
+      "verification_evidence": "Canonical repo documents this target; independent web verification was unavailable during this audit."
     },
     {
       "id": "thc-plant-science-site",
@@ -87,7 +119,8 @@
       "build": "repository content/runtime validation before release; deployment adapter still requires canonical mapping",
       "deployment": "education web surface",
       "drive_control": "07 Websites & Apps/DTFSeeds Platform/03 THC Education Site",
-      "verification": "live-check-required"
+      "verification": "not-web-verified-2026-08-15",
+      "verification_evidence": "No indexed/fetchable public result was available during this audit; do not claim this surface healthy until a later live smoke test succeeds."
     }
   ]
 }
