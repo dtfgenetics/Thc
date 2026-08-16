@@ -1,0 +1,93 @@
+{
+  "schema_version": "1.0.0",
+  "updated": "2026-08-15",
+  "sites": [
+    {
+      "id": "dtfseeds-main",
+      "name": "DTFSeeds production site",
+      "url": "https://dtfseeds.com/",
+      "status": "production",
+      "repo": "dtfgenetics/Thc",
+      "branch": "main",
+      "build": "mixed WordPress/public-content integration; see repository workflows and docs",
+      "deployment": "Hostinger/WordPress production surface",
+      "drive_control": "07 Websites & Apps/DTFSeeds Platform/01 Production Site",
+      "verification": "live-check-required"
+    },
+    {
+      "id": "high-land-web",
+      "name": "High Land browser game",
+      "url": "https://dtfseeds.com/games/high-land/",
+      "status": "production-target",
+      "repo": "dtfgenetics/Thc",
+      "branch": "main",
+      "app_path": "apps/high-land-web",
+      "build": "npm run build:high-land",
+      "output": "apps/high-land-web/dist",
+      "deployment": "Hostinger path /games/high-land/ via repository workflow",
+      "drive_control": "04 Games/High Land/08 Digital",
+      "verification": "live-check-required"
+    },
+    {
+      "id": "plant-diagnostic",
+      "name": "THC Grow Doc plant diagnostic",
+      "url": "https://dtfseeds.com/thc-grow-doc/",
+      "status": "production",
+      "repo": "dtfgenetics/Thc-dataset",
+      "branch": "main",
+      "build": "npm run build",
+      "output": "dist",
+      "deployment": "WordPress path /thc-grow-doc/ preserving assets/",
+      "drive_control": "07 Websites & Apps/DTFSeeds Platform/04 Plant Diagnostic App",
+      "verification": "live-check-required"
+    },
+    {
+      "id": "thc-u-know",
+      "name": "THC U Know browser game",
+      "url": "https://dtfseeds.com/games/thc-u-know/",
+      "status": "production-target",
+      "repo": "dtfgenetics/thc-u-know-card-game-",
+      "branch": "main",
+      "build": "pnpm -r build && pnpm test",
+      "deployment": "same-origin web + Socket.IO server; subdirectory Socket.IO path /games/thc-u-know/socket.io",
+      "drive_control": "04 Games/THC U Know/05 Digital",
+      "verification": "live-check-required"
+    },
+    {
+      "id": "thc-chess-web",
+      "name": "Kush Kings Chess frontend",
+      "url": "https://chess.dtfseeds.com/",
+      "status": "production-target",
+      "repo": "dtfgenetics/Thc-chess-git",
+      "branch": "main",
+      "build": "pnpm check:rebrand && pnpm --filter client lint && pnpm build:client && pnpm build:server",
+      "deployment": "containerized frontend + server; see repo deployment docs",
+      "drive_control": "04 Games/THC Chess/05 Digital",
+      "verification": "live-check-required"
+    },
+    {
+      "id": "thc-chess-api",
+      "name": "Kush Kings Chess API",
+      "url": "https://chess-api.dtfseeds.com/",
+      "status": "production-target",
+      "repo": "dtfgenetics/Thc-chess-git",
+      "branch": "main",
+      "build": "pnpm build:server",
+      "deployment": "Express + Socket.IO + PostgreSQL server",
+      "drive_control": "04 Games/THC Chess/05 Digital",
+      "verification": "live-check-required"
+    },
+    {
+      "id": "thc-plant-science-site",
+      "name": "THC Plant Science education site",
+      "url": "https://thc-plant-science.dtfgenetics.chatgpt.site/",
+      "status": "site-surface-under-consolidation",
+      "repo": "dtfgenetics/thc-grow-hub",
+      "branch": "main",
+      "build": "repository content/runtime validation before release; deployment adapter still requires canonical mapping",
+      "deployment": "education web surface",
+      "drive_control": "07 Websites & Apps/DTFSeeds Platform/03 THC Education Site",
+      "verification": "live-check-required"
+    }
+  ]
+}
