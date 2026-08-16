@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "updated": "2026-08-15",
+  "updated": "2026-08-16",
   "sites": [
     {
       "id": "dtfseeds-main",
@@ -12,8 +12,8 @@
       "build": "mixed WordPress/public-content integration; see repository workflows and docs",
       "deployment": "Hostinger/WordPress production surface",
       "drive_control": "07 Websites & Apps/DTFSeeds Platform/01 Production Site",
-      "verification": "verified-live-2026-08-15",
-      "verification_evidence": "Web fetch returned the DTF Genetics production homepage and current navigation."
+      "verification": "live-site-responds-source-newer-than-production-deploy-blocked-2026-08-16",
+      "verification_evidence": "Public homepage responds, but /seeds/ and /learn/ still expose older staging copy. WordPress source validation passed for commits 365abf11 and 32ba7733; production cleanup runs 31928470623 and 31928479795 failed at deployment-transport selection because no SSH credential pair or WordPress Application Password pair is configured."
     },
     {
       "id": "high-land-web",
