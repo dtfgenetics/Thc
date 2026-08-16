@@ -1,0 +1,258 @@
+name: Repair DTFSeeds Public Routes
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Protected GitHub environment to deploy
+        required: true
+        default: production
+        type: choice
+        options:
+          - staging
+          - production
+  push:
+    branches:
+      - main
+    paths:
+      - site/public-route-patch/**
+      - .github/workflows/dtfseeds-public-route-repair.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dtfseeds-public-route-repair
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build and validate repaired routes
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Build and test High Land
+        run: |
+          set -euo pipefail
+          npm ci
+          npm run test:high-land
+          npm run build:high-land
+          test -s apps/high-land-web/dist/index.html
+
+      - name: Build and validate Weedopolis
+        shell: bash
+        run: |
+          set -euo pipefail
+          WEEDOPOLIS="$RUNNER_TEMP/weedopolis"
+          git clone --depth=1 https://github.com/dtfgenetics/Weedopolis-strain-Edition.git "$WEEDOPOLIS"
+          cd "$WEEDOPOLIS"
+          npm install --ignore-scripts
+          npm run validate
+          npm run check:preview
+          npm run build:preview
+          test -s dist/weedopolis/index.html
+
+      - name: Assemble targeted public release
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf release
+          mkdir -p release
+          cp -a site/public-route-patch/. release/
+          mkdir -p release/games/high-land release/games/weedopolis
+          cp -a apps/high-land-web/dist/. release/games/high-land/
+          cp -a "$RUNNER_TEMP/weedopolis/dist/weedopolis/." release/games/weedopolis/
+
+      - name: Verify crawlable route shells
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s release/games/index.html
+          test -s release/games/high-iq/index.html
+          test -s release/games/high-land/index.html
+          test -s release/games/weedopolis/index.html
+          test -s release/blog/index.html
+          for file in release/games/index.html release/games/high-iq/index.html release/games/high-land/index.html release/games/weedopolis/index.html; do
+            grep -Eqi '<h1([ >])' "$file"
+            grep -Eqi '<title>[^<]+' "$file"
+            grep -Eqi 'rel=["'"']canonical["'"']' "$file"
+            grep -Eqi 'name=["'"']description["'"']' "$file"
+          done
+          ! grep -RFiq 'email@email.com' release
+          ! grep -RFiq '+123456789' release
+          ! grep -RFiq 'Needed from owner' release
+          ! grep -RFiq 'Reserved strain card' release
+
+      - name: Upload validated route repair
+        uses: actions/upload-artifact@v4
+        with:
+          name: dtfseeds-public-route-repair-${{ github.sha }}
+          path: release
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 30
+
+  deploy:
+    name: Back up and publish repaired routes
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'production' }}
+    env:
+      SSH_HOST: ${{ secrets.HOSTINGER_HOST || secrets.SSH_HOST || secrets.SFTP_HOST }}
+      SSH_USER: ${{ secrets.HOSTINGER_USER || secrets.HOSTINGER_SSH_USER || secrets.SSH_USER || secrets.SFTP_USER }}
+      SSH_PORT: ${{ secrets.HOSTINGER_PORT || secrets.SSH_PORT || secrets.SFTP_PORT }}
+      SSH_PRIVATE_KEY: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY || secrets.HOSTINGER_SSH_KEY || secrets.SSH_PRIVATE_KEY || secrets.DEPLOY_KEY }}
+      SSH_KNOWN_HOSTS: ${{ secrets.HOSTINGER_KNOWN_HOSTS || secrets.SSH_KNOWN_HOSTS }}
+      SITE_ROOT: ${{ vars.HOSTINGER_WORDPRESS_PATH || vars.WORDPRESS_PATH || vars.WP_PATH }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download validated route repair
+        uses: actions/download-artifact@v4
+        with:
+          name: dtfseeds-public-route-repair-${{ github.sha }}
+          path: release
+
+      - name: Validate deployment access
+        shell: bash
+        run: |
+          set -euo pipefail
+          SSH_HOST="${SSH_HOST:-147.93.42.1}"
+          SSH_PORT="${SSH_PORT:-22}"
+          : "${SSH_USER:?Missing Hostinger SSH user}"
+          : "${SSH_PRIVATE_KEY:?Missing Hostinger SSH private key}"
+          [[ "$SSH_PORT" =~ ^[0-9]+$ ]]
+          echo "SSH_HOST=$SSH_HOST" >> "$GITHUB_ENV"
+          echo "SSH_PORT=$SSH_PORT" >> "$GITHUB_ENV"
+
+      - name: Configure verified SSH connection
+        shell: bash
+        run: |
+          set -euo pipefail
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          if [[ -n "${SSH_KNOWN_HOSTS:-}" ]]; then
+            printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          else
+            ssh-keyscan -p "$SSH_PORT" -H "$SSH_HOST" > ~/.ssh/known_hosts
+          fi
+          test -s ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+
+      - name: Locate dtfseeds.com document root
+        id: root
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -n "${SITE_ROOT:-}" ]]; then
+            root="$SITE_ROOT"
+          else
+            root="$(ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" 'bash -s' <<'REMOTE'
+          set -euo pipefail
+          while IFS= read -r config; do
+            directory="$(dirname "$config")"
+            if command -v wp >/dev/null 2>&1; then
+              home_url="$(wp --path="$directory" option get home --skip-plugins --skip-themes 2>/dev/null || true)"
+              case "${home_url%/}" in
+                https://dtfseeds.com|http://dtfseeds.com|https://www.dtfseeds.com|http://www.dtfseeds.com)
+                  printf '%s\n' "$directory"
+                  exit 0
+                  ;;
+              esac
+            fi
+          done < <(find "$HOME" -maxdepth 8 -type f -name wp-config.php -print 2>/dev/null)
+          exit 1
+          REMOTE
+          )"
+          fi
+          [[ -n "$root" ]]
+          [[ "$root" =~ ^[A-Za-z0-9_./-]+$ ]]
+          [[ "$root" != "/" ]]
+          [[ "$root" != *".."* ]]
+          echo "path=$root" >> "$GITHUB_OUTPUT"
+
+      - name: Back up only affected public routes
+        shell: bash
+        env:
+          ROOT: ${{ steps.root.outputs.path }}
+        run: |
+          set -euo pipefail
+          stamp="$(date -u +%Y%m%dT%H%M%SZ)"
+          BACKUP="$HOME/dtfseeds-route-backups/$stamp"
+          ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" "ROOT='$ROOT' BACKUP='$BACKUP' bash -s" <<'REMOTE'
+          set -euo pipefail
+          paths=(
+            games/index.html
+            games/dtf-route.css
+            games/high-land
+            games/high-iq
+            games/weedopolis
+            blog
+            exploring-dtf-genetics-a-hub-for-cannabis-art-and-gardening-tools
+            explore-dtf-genetics-your-destination-for-cannabis-themed-apparel-and-art
+          )
+          mkdir -p "$BACKUP"
+          for rel in "${paths[@]}"; do
+            src="$ROOT/$rel"
+            [[ -e "$src" ]] || continue
+            mkdir -p "$BACKUP/$(dirname "$rel")"
+            cp -a "$src" "$BACKUP/$rel"
+          done
+          printf '%s\n' "$BACKUP" > "$BACKUP/backup-location.txt"
+          REMOTE
+          echo "Backup created before route replacement."
+
+      - name: Publish Game Hub and playable routes
+        shell: bash
+        env:
+          ROOT: ${{ steps.root.outputs.path }}
+        run: |
+          set -euo pipefail
+          ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" "mkdir -p '$ROOT/games' '$ROOT/blog' '$ROOT/exploring-dtf-genetics-a-hub-for-cannabis-art-and-gardening-tools' '$ROOT/explore-dtf-genetics-your-destination-for-cannabis-themed-apparel-and-art'"
+          rsync -az --checksum -e "ssh -p $SSH_PORT" release/games/ "$SSH_USER@$SSH_HOST:$ROOT/games/"
+          rsync -az --checksum -e "ssh -p $SSH_PORT" release/blog/ "$SSH_USER@$SSH_HOST:$ROOT/blog/"
+          rsync -az --checksum -e "ssh -p $SSH_PORT" release/exploring-dtf-genetics-a-hub-for-cannabis-art-and-gardening-tools/ "$SSH_USER@$SSH_HOST:$ROOT/exploring-dtf-genetics-a-hub-for-cannabis-art-and-gardening-tools/"
+          rsync -az --checksum -e "ssh -p $SSH_PORT" release/explore-dtf-genetics-your-destination-for-cannabis-themed-apparel-and-art/ "$SSH_USER@$SSH_HOST:$ROOT/explore-dtf-genetics-your-destination-for-cannabis-themed-apparel-and-art/"
+
+      - name: Verify repaired public routes
+        shell: bash
+        run: |
+          set -euo pipefail
+          sleep 2
+          for url in \
+            https://dtfseeds.com/games/ \
+            https://dtfseeds.com/games/high-land/ \
+            https://dtfseeds.com/games/high-iq/ \
+            https://dtfseeds.com/games/weedopolis/; do
+            html="$(curl --fail --silent --show-error --location --retry 3 --retry-delay 2 "$url")"
+            grep -Eqi '<h1([ >])' <<<"$html"
+            grep -Eqi 'rel=["'"']canonical["'"']' <<<"$html"
+          done
+          for url in \
+            https://dtfseeds.com/blog/ \
+            https://dtfseeds.com/exploring-dtf-genetics-a-hub-for-cannabis-art-and-gardening-tools/ \
+            https://dtfseeds.com/explore-dtf-genetics-your-destination-for-cannabis-themed-apparel-and-art/; do
+            html="$(curl --fail --silent --show-error --location --retry 3 --retry-delay 2 "$url")"
+            ! grep -Fqi 'email@email.com' <<<"$html"
+            ! grep -Fqi '+123456789' <<<"$html"
+          done
+
+      - name: Run full live-site production gate
+        run: node scripts/audit-dtfseeds-live.mjs
+
+      - name: Record repair revision
+        if: always()
+        run: |
+          echo "## DTFSeeds public-route repair" >> "$GITHUB_STEP_SUMMARY"
+          echo "Revision: $GITHUB_SHA" >> "$GITHUB_STEP_SUMMARY"
+          echo "Routes: /games/, /games/high-land/, /games/high-iq/, /games/weedopolis/, /blog/, and two retired generated article URLs." >> "$GITHUB_STEP_SUMMARY"
+          echo "Other WordPress pages and unrelated game directories are not deleted by this workflow." >> "$GITHUB_STEP_SUMMARY"
