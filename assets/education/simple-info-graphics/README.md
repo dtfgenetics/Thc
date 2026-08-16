@@ -5,15 +5,16 @@ This directory is the repository mirror for the **Simple info graphics / THC Vis
 ## Source of truth
 
 - Google Drive keeps the full-resolution originals, native Google files, review candidates, superseded variants, and quarantine records.
-- This repository keeps the machine-readable asset manifest and project source material so Codex/site tooling can locate the canonical assets.
+- This repository keeps the machine-readable asset manifest, exact Drive-ID index, and project source material so Codex/site tooling can locate the canonical assets without fuzzy searches.
 - Never treat a file marked `quarantine-invalid-binary`, `superseded`, `legacy`, or `QA-REQUIRED` as an approved publication master.
 
 ## Current recovery snapshot
 
 - Asset records: **54**
 - Valid recovered visuals: **48**
-- Invalid/corrupt binary records: **6**
+- Invalid/corrupt binary records: **6**, plus preserved duplicate quarantine copies
 - Manifest: `manifest.json`
+- Exact Drive index: `drive-index.json`
 - Source terminology: `source/Grower Terminology Guide.txt`
 
 ## Canonical Drive roots
@@ -25,4 +26,4 @@ This directory is the repository mirror for the **Simple info graphics / THC Vis
 
 ## Consumption rule
 
-Use `manifest.json` first. Pull full-resolution production art from the canonical Drive location after status/QA verification. Drive is authoritative for image binaries; this repo is the tool-facing index and source mirror.
+Use `drive-index.json` for exact known Drive IDs and `manifest.json` for the broader recovery inventory. Pull full-resolution production art from the canonical Drive location after status/QA verification. Drive is authoritative for image binaries; this repo is the tool-facing index and source mirror.
