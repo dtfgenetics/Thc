@@ -82,8 +82,8 @@ jobs:
           for file in release/games/index.html release/games/high-iq/index.html release/games/high-land/index.html release/games/weedopolis/index.html; do
             grep -Eqi '<h1([ >])' "$file"
             grep -Eqi '<title>[^<]+' "$file"
-            grep -Eqi 'rel=["'"']canonical["'"']' "$file"
-            grep -Eqi 'name=["'"']description["'"']' "$file"
+            grep -Fqi 'rel="canonical"' "$file"
+            grep -Fqi 'name="description"' "$file"
           done
           ! grep -RFiq 'email@email.com' release
           ! grep -RFiq '+123456789' release
@@ -235,7 +235,7 @@ jobs:
             https://dtfseeds.com/games/weedopolis/; do
             html="$(curl --fail --silent --show-error --location --retry 3 --retry-delay 2 "$url")"
             grep -Eqi '<h1([ >])' <<<"$html"
-            grep -Eqi 'rel=["'"']canonical["'"']' <<<"$html"
+            grep -Fqi 'rel="canonical"' <<<"$html"
           done
           for url in \
             https://dtfseeds.com/blog/ \
