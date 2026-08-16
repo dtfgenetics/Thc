@@ -1,0 +1,30 @@
+name: DTFSeeds Retired Content Audit
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '27 8 * * *'
+  push:
+    branches:
+      - main
+    paths:
+      - scripts/audit-dtfseeds-retired-content.mjs
+      - site/public-route-patch/blog/**
+      - site/public-route-patch/exploring-dtf-genetics-a-hub-for-cannabis-art-and-gardening-tools/**
+      - site/public-route-patch/explore-dtf-genetics-your-destination-for-cannabis-themed-apparel-and-art/**
+      - .github/workflows/dtfseeds-retired-content-audit.yml
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify retired routes stay clean
+        run: node scripts/audit-dtfseeds-retired-content.mjs
