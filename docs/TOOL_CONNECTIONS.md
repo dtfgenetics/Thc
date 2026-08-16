@@ -2,6 +2,12 @@
 
 This document keeps the DTF / THC games workspace aligned across GitHub, Codex, Hostinger, WordPress, Google Drive, and future Discord work.
 
+## Portfolio source of truth
+
+Before changing project structure, storage, or cross-tool ownership, read [`docs/PROJECT_SOURCE_OF_TRUTH.md`](PROJECT_SOURCE_OF_TRUTH.md).
+
+The Google Drive folder `DTF Project Asset Library - MASTER SOURCE` is the canonical human/source system. GitHub repositories are the canonical code and machine-readable data systems. ChatGPT Library, Figma, Base44, hosted builders, and image-generation tools are working/production surfaces rather than the only archive.
+
 ## Source of truth
 
 | System | Status | Connection |
@@ -12,6 +18,7 @@ This document keeps the DTF / THC games workspace aligned across GitHub, Codex, 
 | Multiplayer backend | Connected/live | Hostinger PHP Website Room API |
 | CI | Configured | `.github/workflows/high-land-ci.yml` |
 | Deployment target | Manual verification required | Hostinger / WordPress / `dtfseeds.com` |
+| Google Drive human source | Connected | `DTF Project Asset Library - MASTER SOURCE` |
 | Discord | Not connected yet | Add after browser multiplayer works |
 
 ## Multiplayer backend
@@ -65,5 +72,5 @@ Manual checks still required in Hostinger:
 ## Codex verification prompt
 
 ```txt
-Work in `dtfgenetics/Thc`. Read `CLAUDE.md`, `README.md`, `docs/SYSTEMS_READINESS.md`, `docs/TOOL_CONNECTIONS.md`, and `docs/BACKEND_DECISION.md` first. The locked multiplayer backend is the Hostinger PHP Website Room API; do not reconnect Supabase. Verify High Land with `npm run verify:connections`, `npm run test:high-land`, and `npm run build:high-land`. Do not commit secrets. Report local, API, and live multiplayer validation separately.
+Work in `dtfgenetics/Thc`. Read `CLAUDE.md`, `README.md`, `docs/PROJECT_SOURCE_OF_TRUTH.md`, `docs/SYSTEMS_READINESS.md`, `docs/TOOL_CONNECTIONS.md`, and `docs/BACKEND_DECISION.md` first. The Google Drive `DTF Project Asset Library - MASTER SOURCE` is the canonical human/source system. GitHub is canonical for code and machine-readable data. The locked multiplayer backend is the Hostinger PHP Website Room API; do not reconnect Supabase. Verify High Land with `npm run verify:connections`, `npm run test:high-land`, and `npm run build:high-land`. Do not commit secrets. Report local, API, and live multiplayer validation separately.
 ```
