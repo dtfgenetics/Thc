@@ -51,6 +51,8 @@ echo "Creating database backup before any mutation..."
 "$WP_BIN" --path="$WORDPRESS_PATH" db export "$BACKUP_DIR/database.sql" --add-drop-table
 "$WP_BIN" --path="$WORDPRESS_PATH" option get home > "$BACKUP_DIR/home-url.txt"
 "$WP_BIN" --path="$WORDPRESS_PATH" option get siteurl > "$BACKUP_DIR/site-url.txt"
+"$WP_BIN" --path="$WORDPRESS_PATH" option get show_on_front > "$BACKUP_DIR/show-on-front.txt" || true
+"$WP_BIN" --path="$WORDPRESS_PATH" option get page_on_front > "$BACKUP_DIR/page-on-front.txt" || true
 "$WP_BIN" --path="$WORDPRESS_PATH" option get page_for_posts > "$BACKUP_DIR/page-for-posts.txt" || true
 "$WP_BIN" --path="$WORDPRESS_PATH" post list --post_type=page --fields=ID,post_name,post_title,post_status,post_modified_gmt --format=json > "$BACKUP_DIR/pages-index.json"
 "$WP_BIN" --path="$WORDPRESS_PATH" post list --post_type=post --fields=ID,post_name,post_title,post_status,post_modified_gmt --format=json > "$BACKUP_DIR/posts-index.json"
@@ -99,6 +101,23 @@ for i in "${!page_slugs[@]}"; do
   echo "Updated /$slug/ (post ID $id)"
 done
 
+# The canonical `home` page must also be the page WordPress serves at `/`.
+current_show_on_front="$("$WP_BIN" --path="$WORDPRESS_PATH" option get show_on_front 2>/dev/null || true)"
+current_page_on_front="$("$WP_BIN" --path="$WORDPRESS_PATH" option get page_on_front 2>/dev/null || echo 0)"
+expected_page_on_front="${PAGE_IDS[home]}"
+if [[ "$current_show_on_front" != "page" || "$current_page_on_front" != "$expected_page_on_front" ]]; then
+  "$WP_BIN" --path="$WORDPRESS_PATH" option update show_on_front page
+  "$WP_BIN" --path="$WORDPRESS_PATH" option update page_on_front "$expected_page_on_front"
+
+  confirmed_show_on_front="$("$WP_BIN" --path="$WORDPRESS_PATH" option get show_on_front)"
+  confirmed_page_on_front="$("$WP_BIN" --path="$WORDPRESS_PATH" option get page_on_front)"
+  [[ "$confirmed_show_on_front" == "page" ]]
+  [[ "$confirmed_page_on_front" == "$expected_page_on_front" ]]
+  echo "Set canonical /home/ page ID $expected_page_on_front as the WordPress front page."
+else
+  echo "WordPress front page already points to canonical /home/ page ID $expected_page_on_front."
+fi
+
 # Remove the obsolete public blog only when WordPress confirms that the configured
 # posts page is the known /blog/ page. This avoids changing an unrelated archive.
 page_for_posts="$("$WP_BIN" --path="$WORDPRESS_PATH" option get page_for_posts 2>/dev/null || echo 0)"
@@ -139,4 +158,5 @@ echo
 echo "Content cleanup completed."
 echo "Rollback source: $BACKUP_DIR/database.sql"
 echo "Page-level JSON backups: $BACKUP_DIR/pages"
+echo "Front-page setting backups: $BACKUP_DIR/show-on-front.txt and $BACKUP_DIR/page-on-front.txt"
 echo "No game directories, plugins, themes, users, products, orders, or media files were changed."
