@@ -1,6 +1,7 @@
 name: Reconcile DTFSeeds WordPress Pages On Command
 
 on:
+  workflow_dispatch:
   issue_comment:
     types: [created]
 
@@ -15,9 +16,10 @@ concurrency:
 jobs:
   reconcile:
     if: >-
-      github.event.issue.number == 46 &&
-      github.event.comment.body == '/reconcile-wordpress' &&
-      github.event.comment.user.login == github.repository_owner
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.issue.number == 46 &&
+       github.event.comment.body == '/reconcile-wordpress' &&
+       github.event.comment.user.login == github.repository_owner)
     runs-on: ubuntu-latest
     timeout-minutes: 15
     environment: production
@@ -125,8 +127,9 @@ jobs:
         with:
           script: |
             const body = [
-              '## Owner-triggered canonical WordPress reconciliation',
+              '## Canonical WordPress reconciliation',
               '',
+              `Trigger: **${context.eventName}**`,
               `Status: **${process.env.JOB_STATUS}**`,
               `Mutations: **${process.env.MUTATIONS || 'not-run'}**`,
               `Pages changed: **${process.env.CHANGED_PAGES || 'not-run'}**`,
