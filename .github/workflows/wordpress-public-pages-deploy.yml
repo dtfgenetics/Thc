@@ -59,6 +59,10 @@ jobs:
             exit 1
           fi
 
+          grep -Fq "show_on_front: 'page'" scripts/apply-wordpress-public-content-rest.mjs
+          grep -Fq 'page_on_front: expectedFrontPageId' scripts/apply-wordpress-public-content-rest.mjs
+          grep -Fq 'front-page-settings-before.json' scripts/apply-wordpress-public-content-rest.mjs
+
           test -s site/public-route-patch/games/index.html
           test -s site/public-route-patch/games/high-iq/index.html
 
@@ -137,7 +141,7 @@ jobs:
           echo "changed_pages=$changed_pages" >> "$GITHUB_OUTPUT"
           echo "WordPress reconciliation mutations: $mutations; changed pages: $changed_pages"
 
-      - name: Verify key live pages replaced stale public content
+      - name: Verify canonical public pages on production
         shell: bash
         run: |
           set -euo pipefail
@@ -174,6 +178,7 @@ jobs:
             done
           }
 
+          verify_page '/' 'Genetics, cultivation education, practical tools, and original cannabis games.'
           verify_page '/seeds/' 'Genetics built through selection, observation, and documentation.'
           verify_page '/learn/' 'Read the yellow-leaves diagnostic guide'
           verify_page '/community/' 'Join the official DTF / Teaching Healthy Cultivation Discord'
@@ -208,8 +213,9 @@ jobs:
               `Pages changed: **${process.env.CHANGED_PAGES || 'unknown'}**`,
               '',
               'Scope: Home, Seeds, Learn, Community, Shop, Gallery, About, and Contact.',
+              'The canonical `home` page is also enforced as the WordPress front page served at `/`.',
               'Static `/games/` and `/games/high-iq/` routes are intentionally absent from WordPress source ownership.',
-              'Verified live targets: Seeds, Learn gateway, Community, Contact.',
+              'Verified live targets: Home, Seeds, Learn gateway, Community, Contact.',
               'No credential values are included in this report.'
             ].join('\n');
             await github.rest.issues.createComment({
