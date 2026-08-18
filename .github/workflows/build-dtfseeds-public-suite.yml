@@ -76,8 +76,9 @@ jobs:
           npm install --ignore-scripts
           npm test
           npm run verify
-          npm run build -- --base=/games/crossword/
+          npm run build
           test -s dist/index.html
+          test -d dist/puzzles
           echo "CROSSWORD_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
 
       - name: Build Who Took It
@@ -90,7 +91,7 @@ jobs:
           npm install --ignore-scripts
           npm run validate
           npm run smoke
-          npm run build -- --base=/games/who-took-it/
+          npm run build
           test -s dist/index.html
           cd "$repo"
           echo "WHO_TOOK_IT_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
@@ -126,8 +127,9 @@ jobs:
           mkdir -p release/games/weedopolis
           cp -a "$RUNNER_TEMP/weedopolis/dist/weedopolis/." release/games/weedopolis/
 
-          mkdir -p release/games/crossword
+          mkdir -p release/games/crossword release/puzzles
           cp -a "$RUNNER_TEMP/crossword/dist/." release/games/crossword/
+          cp -a "$RUNNER_TEMP/crossword/dist/puzzles/." release/puzzles/
 
           mkdir -p release/games/who-took-it
           cp -a "$RUNNER_TEMP/who-took-it/03_digital-game/dist/." release/games/who-took-it/
@@ -163,6 +165,9 @@ jobs:
             release/games/who-took-it/index.html
             release/growlens/index.html
             release/thc-grow-doc/index.html
+            release/tools/index.html
+            release/projects/index.html
+            release/puzzles/current.json
           )
           for file in "${required[@]}"; do test -s "$file"; done
 
@@ -190,6 +195,9 @@ jobs:
             echo '- /games/who-took-it/'
             echo '- /growlens/'
             echo '- /thc-grow-doc/'
+            echo '- /tools/'
+            echo '- /projects/'
+            echo '- /puzzles/current.json'
             echo ''
             echo 'Source revisions are stored in release/dtf-build.json.'
           } >> "$GITHUB_STEP_SUMMARY"
