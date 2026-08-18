@@ -8,6 +8,7 @@ on:
       - scripts/apply-wordpress-public-content-rest.mjs
       - .github/workflows/wordpress-public-content-*.yml
       - .github/workflows/wordpress-public-pages-deploy.yml
+      - .github/workflows/wordpress-reconcile-command.yml
   push:
     branches:
       - main
@@ -17,6 +18,7 @@ on:
       - scripts/apply-wordpress-public-content-rest.mjs
       - .github/workflows/wordpress-public-content-*.yml
       - .github/workflows/wordpress-public-pages-deploy.yml
+      - .github/workflows/wordpress-reconcile-command.yml
 
 permissions:
   contents: read
@@ -48,16 +50,25 @@ jobs:
         run: |
           set -euo pipefail
 
-          # Editorial/root WordPress pages must remain explicitly managed.
           for slug in home seeds learn community shop gallery about contact; do
             grep -Eq "['\"]$slug['\"]" scripts/apply-wordpress-public-content-rest.mjs
           done
 
-          # Game routes are static application routes. Requiring these slugs in
-          # either WordPress publisher recreates the production failure where
-          # WordPress correctly returns zero matching pages.
           ! grep -Eq "\['games',[[:space:]]*'|\['high-iq',[[:space:]]*'" scripts/apply-wordpress-public-content-rest.mjs
           ! grep -Eq 'page_slugs=.*\b(games|high-iq)\b|required_files=.*\b(games|high-iq)\b' scripts/apply-wordpress-public-content.sh
+
+      - name: Validate owner-only reconciliation command guard
+        shell: bash
+        run: |
+          set -euo pipefail
+          file='.github/workflows/wordpress-reconcile-command.yml'
+          test -s "$file"
+          grep -Fq 'github.event.issue.number == 46' "$file"
+          grep -Fq "github.event.comment.body == '/reconcile-wordpress'" "$file"
+          grep -Fq 'github.actor == github.repository_owner' "$file"
+          grep -Fq 'environment: production' "$file"
+          grep -Fq 'scripts/apply-wordpress-public-content-rest.mjs' "$file"
+          grep -Fq "verify_page '/contact/'" "$file"
 
       - name: Reject internal staging language
         shell: bash
