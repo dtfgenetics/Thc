@@ -1,12 +1,16 @@
 name: Portfolio Registry CI
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - 'data/project-registry.json'
       - 'data/site-registry.json'
       - 'data/asset-manifest.json'
       - 'data/asset-manifest.schema.json'
+      - 'site/deployment/public-apps.json'
+      - 'games/high-iq/**'
+      - 'site/public-route-patch/games/high-iq/**'
       - 'docs/**SOURCE_OF_TRUTH.md'
       - 'docs/PORTFOLIO_RELEASE_CRITERIA.md'
       - 'scripts/validate-portfolio-registry.mjs'
@@ -17,18 +21,42 @@ on:
       - 'data/site-registry.json'
       - 'data/asset-manifest.json'
       - 'data/asset-manifest.schema.json'
+      - 'site/deployment/public-apps.json'
+      - 'games/high-iq/**'
+      - 'site/public-route-patch/games/high-iq/**'
       - 'docs/**SOURCE_OF_TRUTH.md'
       - 'docs/PORTFOLIO_RELEASE_CRITERIA.md'
       - 'scripts/validate-portfolio-registry.mjs'
       - '.github/workflows/portfolio-registry-ci.yml'
 
+permissions:
+  contents: read
+
+concurrency:
+  group: portfolio-registry-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   validate:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
+
       - name: Validate project, site, and asset registries
         run: node scripts/validate-portfolio-registry.mjs
+
+      - name: Validate High IQ canonical and deployable state
+        shell: bash
+        run: |
+          set -euo pipefail
+          node games/high-iq/scripts/validate-data.mjs
+          node -e "const p=require('./data/project-registry.json').projects.find(x=>x.id==='high-iq'); if(!p||p.status!=='canonical') throw new Error('High IQ must be canonical in project registry')"
+          node -e "const a=require('./site/deployment/public-apps.json').apps.find(x=>x.id==='high-iq'); if(!a||a.runtime!=='static'||a.status!=='ready-to-package') throw new Error('High IQ deployment manifest must be static and ready-to-package')"
+          grep -Fq 'The older Base44 build is retained only as a legacy fallback link' docs/HIGH_IQ_SOURCE_OF_TRUTH.md
+          test -s site/public-route-patch/games/high-iq/index.html
+          test -s site/public-route-patch/games/high-iq/app.js
+          test -s site/public-route-patch/games/high-iq/high-iq.css
