@@ -2,8 +2,6 @@ name: Deploy DTFSeeds WordPress Pages
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '*/30 * * * *'
   push:
     branches:
       - main
@@ -38,15 +36,12 @@ jobs:
           set -euo pipefail
           node --check scripts/apply-wordpress-public-content-rest.mjs
 
-          # These eight slugs are WordPress-owned editorial pages.
           for slug in home seeds learn community shop gallery about contact; do
             file="site/wordpress/pages/$slug.html"
             test -s "$file"
             grep -Fq '<h1' "$file"
           done
 
-          # These source files remain validated for compatibility, but their
-          # public routes are owned by the static game/application deployment.
           for slug in games high-iq; do
             file="site/wordpress/pages/$slug.html"
             test -s "$file"
@@ -172,8 +167,8 @@ jobs:
           verify_page '/learn/' 'Understand the plant. Build the environment. Make better decisions.'
           verify_page '/community/' 'Join the official DTF / Teaching Healthy Cultivation Discord'
 
-      - name: Upload page-level rollback package when a mutation occurred
-        if: always() && (github.event_name != 'schedule' || steps.publish.outputs.mutations != '0' || steps.publish.outcome != 'success')
+      - name: Upload page-level rollback package
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: wordpress-public-pages-backup-${{ github.run_id }}
@@ -181,8 +176,8 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
-      - name: Report requested runs and scheduled failures to issue 46
-        if: always() && (github.event_name != 'schedule' || job.status != 'success')
+      - name: Report production page deployment to issue 46
+        if: always()
         uses: actions/github-script@v7
         with:
           script: |
@@ -197,8 +192,7 @@ jobs:
               '',
               'Scope: Home, Seeds, Learn, Community, Shop, Gallery, About, and Contact.',
               'Static `/games/` routes are intentionally excluded from WordPress ownership.',
-              'The workflow reconciles GitHub source to WordPress, creates rollback data before mutation, and verifies Seeds, Learn, and Community on the live site.',
-              '',
+              'Scheduled autonomous reconciliation is handled by the established THC WordPress publishing workflow.',
               'No credential values are included in this report.'
             ].join('\n');
             await github.rest.issues.createComment({
