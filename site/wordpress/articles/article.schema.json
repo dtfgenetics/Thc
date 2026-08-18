@@ -27,6 +27,24 @@
       "items": { "type": "string", "format": "uri", "pattern": "^https://" },
       "uniqueItems": true
     },
+    "images": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "url", "alt"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+          "url": { "type": "string", "format": "uri", "pattern": "^https://" },
+          "alt": { "type": "string", "minLength": 5 },
+          "caption": { "type": "string" },
+          "credit": { "type": "string" },
+          "role": {
+            "enum": ["hero", "diagnostic", "diagram", "infographic", "comparison", "supporting"]
+          }
+        }
+      }
+    },
     "require_discord_cta": { "type": "boolean", "default": true }
   }
 }
