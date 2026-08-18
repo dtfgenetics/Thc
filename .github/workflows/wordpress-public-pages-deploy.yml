@@ -30,29 +30,37 @@ jobs:
         with:
           node-version: 22
 
-      - name: Validate publisher syntax and source ownership
+      - name: Validate publisher syntax and exact source ownership
         shell: bash
         run: |
           set -euo pipefail
           node --check scripts/apply-wordpress-public-content-rest.mjs
 
-          for slug in home seeds learn community shop gallery about contact; do
+          expected=(home seeds learn community shop gallery about contact)
+          for slug in "${expected[@]}"; do
             file="site/wordpress/pages/$slug.html"
             test -s "$file"
             grep -Fq '<h1' "$file"
           done
 
-          for slug in games high-iq; do
-            file="site/wordpress/pages/$slug.html"
-            test -s "$file"
-            grep -Fq '<h1' "$file"
-          done
+          test ! -e site/wordpress/pages/games.html
+          test ! -e site/wordpress/pages/high-iq.html
+
+          actual="$(find site/wordpress/pages -maxdepth 1 -type f -name '*.html' -printf '%f\n' | sed 's/\.html$//' | sort | paste -sd, -)"
+          expected_sorted="$(printf '%s\n' "${expected[@]}" | sort | paste -sd, -)"
+          [[ "$actual" == "$expected_sorted" ]] || {
+            echo "Unexpected WordPress page ownership. Expected: $expected_sorted; actual: $actual" >&2
+            exit 1
+          }
 
           if grep -Fq "['games'," scripts/apply-wordpress-public-content-rest.mjs || \
              grep -Fq "['high-iq'," scripts/apply-wordpress-public-content-rest.mjs; then
             echo 'Static game routes must not be required as WordPress pages.' >&2
             exit 1
           fi
+
+          test -s site/public-route-patch/games/index.html
+          test -s site/public-route-patch/games/high-iq/index.html
 
       - name: Reject public staging and fake-data language
         shell: bash
@@ -76,12 +84,15 @@ jobs:
             fi
           done
 
-      - name: Verify community invitation is present
+      - name: Verify canonical community and education links
         shell: bash
         run: |
           set -euo pipefail
           grep -Fq 'https://discord.gg/xJbUeHFPMt' site/wordpress/pages/home.html
           grep -Fq 'https://discord.gg/xJbUeHFPMt' site/wordpress/pages/community.html
+          grep -Fq '/yellow-leaves/' site/wordpress/pages/learn.html
+          grep -Fq '/thc-grow-doc/' site/wordpress/pages/learn.html
+          grep -Fq '/growlens/' site/wordpress/pages/learn.html
 
   deploy:
     name: Back up and publish public pages
@@ -164,8 +175,9 @@ jobs:
           }
 
           verify_page '/seeds/' 'Genetics built through selection, observation, and documentation.'
-          verify_page '/learn/' 'Understand the plant. Build the environment. Make better decisions.'
+          verify_page '/learn/' 'Read the yellow-leaves diagnostic guide'
           verify_page '/community/' 'Join the official DTF / Teaching Healthy Cultivation Discord'
+          verify_page '/contact/' 'Join the official DTF / Teaching Healthy Cultivation Discord'
 
       - name: Upload page-level rollback package
         if: always()
@@ -179,6 +191,10 @@ jobs:
       - name: Report production page deployment to issue 46
         if: always()
         uses: actions/github-script@v7
+        env:
+          MUTATIONS: ${{ steps.publish.outputs.mutations }}
+          CHANGED_PAGES: ${{ steps.publish.outputs.changed_pages }}
+          JOB_STATUS: ${{ job.status }}
         with:
           script: |
             const body = [
@@ -187,12 +203,13 @@ jobs:
               `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
               `Commit: \`${context.sha}\``,
               `Event: **${context.eventName}**`,
-              `Result: **${{ job.status }}**`,
-              `Page mutations: **${{ steps.publish.outputs.mutations || 'unknown' }}**`,
+              `Result: **${process.env.JOB_STATUS}**`,
+              `Page mutations: **${process.env.MUTATIONS || 'unknown'}**`,
+              `Pages changed: **${process.env.CHANGED_PAGES || 'unknown'}**`,
               '',
               'Scope: Home, Seeds, Learn, Community, Shop, Gallery, About, and Contact.',
-              'Static `/games/` routes are intentionally excluded from WordPress ownership.',
-              'Scheduled autonomous reconciliation is handled by the established THC WordPress publishing workflow.',
+              'Static `/games/` and `/games/high-iq/` routes are intentionally absent from WordPress source ownership.',
+              'Verified live targets: Seeds, Learn gateway, Community, Contact.',
               'No credential values are included in this report.'
             ].join('\n');
             await github.rest.issues.createComment({
