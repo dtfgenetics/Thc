@@ -4,11 +4,11 @@ on:
   push:
     branches:
       - main
-      - diagnose-hostinger-network
   workflow_dispatch:
 
 permissions:
   contents: read
+  issues: write
 
 jobs:
   probe:
@@ -20,53 +20,73 @@ jobs:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 10
     steps:
-      - name: Show runner and DNS information
+      - name: Probe network and WordPress REST API
         shell: bash
         run: |
           set +e
-          echo "Runner: $RUNNER_OS"
-          echo -n "Public egress IP: "
-          curl -4fsS --connect-timeout 5 --max-time 10 https://api.ipify.org || true
-          echo
-          echo "DNS results:"
+          : > probe.txt
+          log() { echo "$@" | tee -a probe.txt; }
+
+          log "Runner: $RUNNER_OS"
+          EGRESS=$(curl -4fsS --connect-timeout 5 --max-time 10 https://api.ipify.org 2>/dev/null)
+          log "Public egress IPv4: ${EGRESS:-unavailable}"
+
+          log "DNS results:"
           if command -v dig >/dev/null 2>&1; then
-            dig +short A dtfseeds.com
-            dig +short AAAA dtfseeds.com
+            dig +short A dtfseeds.com | tee -a probe.txt
+            dig +short AAAA dtfseeds.com | tee -a probe.txt
           else
-            nslookup dtfseeds.com || true
+            nslookup dtfseeds.com 2>&1 | tee -a probe.txt || true
           fi
 
-      - name: Probe DTFSeeds homepage and WordPress REST API
-        shell: bash
-        run: |
-          set +e
           probe() {
             label="$1"
             url="$2"
-            echo
-            echo "===== $label ====="
-            curl -4 -sS -o /tmp/body -D /tmp/headers \
+            log ""
+            log "===== $label ====="
+            result=$(curl -4 -sS -o /tmp/body -D /tmp/headers \
               --connect-timeout 8 --max-time 20 \
-              -w 'http=%{http_code} remote_ip=%{remote_ip} connect=%{time_connect}s tls=%{time_appconnect}s total=%{time_total}s\n' \
-              "$url"
+              -w 'http=%{http_code} remote_ip=%{remote_ip} connect=%{time_connect}s tls=%{time_appconnect}s total=%{time_total}s' \
+              "$url" 2>&1)
             rc=$?
-            echo "curl_exit=$rc"
-            head -n 20 /tmp/headers 2>/dev/null || true
-            head -c 300 /tmp/body 2>/dev/null || true
-            echo
+            log "$result"
+            log "curl_exit=$rc"
+            grep -Ei '^(HTTP/|server:|location:|content-type:)' /tmp/headers 2>/dev/null | head -n 8 | tee -a probe.txt || true
           }
 
           probe "HTTPS homepage" "https://dtfseeds.com/"
           probe "REST API root" "https://dtfseeds.com/wp-json/"
           probe "REST API alternate route" "https://dtfseeds.com/?rest_route=/"
-          probe "WordPress users/me unauthenticated" "https://dtfseeds.com/wp-json/wp/v2/users/me"
+          probe "users/me unauthenticated" "https://dtfseeds.com/wp-json/wp/v2/users/me"
 
-      - name: Probe IPv6 separately
-        shell: bash
-        run: |
-          set +e
-          curl -6 -sS -o /dev/null \
-            --connect-timeout 5 --max-time 10 \
-            -w 'ipv6_http=%{http_code} remote_ip=%{remote_ip} total=%{time_total}s\n' \
-            https://dtfseeds.com/
-          echo "ipv6_curl_exit=$?"
+          log ""
+          log "===== IPv6 homepage ====="
+          v6=$(curl -6 -sS -o /dev/null --connect-timeout 5 --max-time 10 \
+            -w 'http=%{http_code} remote_ip=%{remote_ip} total=%{time_total}s' \
+            https://dtfseeds.com/ 2>&1)
+          v6rc=$?
+          log "$v6"
+          log "ipv6_curl_exit=$v6rc"
+
+      - name: Report diagnostic to issue 46
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const text = fs.existsSync('probe.txt') ? fs.readFileSync('probe.txt', 'utf8') : 'probe.txt was not created';
+            const body = [
+              `## Hostinger network diagnostic — ${process.env.RUNNER_OS}`,
+              '',
+              '```text',
+              text.slice(0, 12000),
+              '```',
+              '',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`
+            ].join('\n');
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 46,
+              body
+            });
