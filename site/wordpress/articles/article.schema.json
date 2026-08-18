@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dtfseeds.com/schemas/thc-wordpress-article.schema.json",
+  "title": "THC WordPress Article",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["title", "slug", "excerpt", "content", "status", "categories"],
+  "properties": {
+    "title": { "type": "string", "minLength": 10 },
+    "slug": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+    "excerpt": { "type": "string", "minLength": 40 },
+    "content": { "type": "string", "minLength": 500 },
+    "status": { "enum": ["draft", "publish", "pending", "private"] },
+    "categories": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    },
+    "references": {
+      "type": "array",
+      "items": { "type": "string", "format": "uri", "pattern": "^https://" },
+      "uniqueItems": true
+    },
+    "require_discord_cta": { "type": "boolean", "default": true }
+  }
+}
