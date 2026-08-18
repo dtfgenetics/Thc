@@ -3,6 +3,7 @@ name: Hostinger Network Diagnostic
 on:
   push:
     branches:
+      - main
       - diagnose-hostinger-network
   workflow_dispatch:
 
