@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "id": "seed-man-platformer",
+  "title": "Seed Man Platformer",
+  "type": "browser-platformer",
+  "status": "concept-to-prototype",
+  "targetRuntime": "html5-browser",
+  "input": ["keyboard", "touch"],
+  "playerStates": ["idle", "run", "jump", "fall", "land", "hurt", "checkpoint", "finish"],
+  "implementationPrinciples": [
+    "fixed-timestep-or-delta-safe-physics",
+    "data-driven-levels",
+    "separate-simulation-and-rendering",
+    "touch-friendly-controls",
+    "original-gameplay-assets",
+    "seed-man-character-contract"
+  ],
+  "releaseGates": [
+    "movement-prototype",
+    "collision-tests",
+    "first-complete-level",
+    "mobile-playtest",
+    "sprite-consistency-review",
+    "original-audio-and-art-cleared"
+  ]
+}

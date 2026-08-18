@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "id": "strain-showdown",
+  "title": "Strain Showdown",
+  "type": "trading-card-battle-game",
+  "status": "canonical-preproduction",
+  "stats": ["vigor", "power"],
+  "families": ["kush", "haze", "skunk", "gas", "cookies", "fruit", "purple", "frost"],
+  "tiers": {
+    "1": {"label": "Base", "countPerFamily": 6},
+    "2": {"label": "Select", "countPerFamily": 4},
+    "3": {"label": "Elite", "countPerFamily": 2}
+  },
+  "coreRosterCount": 96,
+  "releaseGates": [
+    "complete-card-schema",
+    "roster-filled",
+    "effect-validation",
+    "balance-simulation",
+    "rules-playtest",
+    "art-rights-cleared",
+    "print-proof-approved"
+  ]
+}

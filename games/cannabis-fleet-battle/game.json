@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "cannabis-fleet-battle",
+  "title": "Cannabis Fleet Battle",
+  "type": "multiplayer-hidden-fleet-strategy",
+  "status": "canonical-preproduction",
+  "board": {"rows": 15, "columns": 15},
+  "players": {"minimum": 2, "maximum": 2},
+  "phases": ["lobby", "placement", "battle", "complete"],
+  "networkAuthority": "server",
+  "requiredEvents": [
+    "room-created",
+    "room-joined",
+    "player-ready",
+    "fleet-locked",
+    "attack-submitted",
+    "attack-result",
+    "turn-changed",
+    "ship-sunk",
+    "player-disconnected",
+    "player-reconnected",
+    "game-complete"
+  ],
+  "releaseGates": [
+    "fleet-schema-locked",
+    "placement-validation-tested",
+    "turn-engine-tested",
+    "multiplayer-e2e-tested",
+    "reconnect-tested",
+    "mobile-qa",
+    "original-art-cleared"
+  ]
+}

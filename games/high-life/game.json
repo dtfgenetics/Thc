@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "id": "high-life",
+  "title": "High Life: From Bagseed to Legacy",
+  "type": "branching-life-path-board-game",
+  "status": "canonical-preproduction",
+  "eras": ["underground", "medical", "legal"],
+  "coreSystems": [
+    "branching-path-movement",
+    "reputation",
+    "assets",
+    "harvest-income",
+    "opportunity",
+    "risk",
+    "era-events",
+    "legacy-scoring"
+  ],
+  "components": [
+    "branching-board",
+    "player-pawns",
+    "salary-harvest-tokens",
+    "risk-tickets",
+    "era-event-decks",
+    "challenge-deck",
+    "opportunity-spaces",
+    "score-sheet"
+  ],
+  "releaseGates": [
+    "rules-engine-tested",
+    "economy-simulated",
+    "browser-prototype-tested",
+    "print-layout-reviewed",
+    "original-art-cleared",
+    "accessibility-reviewed"
+  ]
+}

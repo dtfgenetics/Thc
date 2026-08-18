@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "id": "grower-conversations",
+  "title": "Grower Conversations",
+  "type": "conversation-card-deck",
+  "status": "canonical-preproduction",
+  "modes": ["physical-deck", "browser-deck", "discord-prompt"],
+  "requiredCardFields": ["id", "category", "prompt", "promptType", "reviewStatus"],
+  "releaseGates": [
+    "prompt-bank-complete",
+    "duplicate-check",
+    "science-review-where-applicable",
+    "safety-review",
+    "editorial-review",
+    "print-proof",
+    "digital-sync-check"
+  ]
+}

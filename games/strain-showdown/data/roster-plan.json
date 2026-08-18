@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "families": 8,
+  "cardsPerFamily": 12,
+  "totalStrainCards": 96,
+  "distributionPerFamily": [
+    {"tier": 1, "label": "Base", "count": 6, "role": "primary entry and setup cards"},
+    {"tier": 2, "label": "Select", "count": 4, "role": "mid-game specialization and synergy"},
+    {"tier": 3, "label": "Elite", "count": 2, "role": "high-impact finishers that require advancement cost"}
+  ],
+  "requiredCardFields": [
+    "id",
+    "name",
+    "family",
+    "tier",
+    "vigor",
+    "power",
+    "summonCost",
+    "effectId",
+    "effectText",
+    "flavorText",
+    "artStatus",
+    "balanceStatus"
+  ],
+  "validationRules": [
+    "exactly-12-strains-per-family",
+    "exact-tier-distribution-per-family",
+    "unique-card-id",
+    "nonnegative-stats",
+    "effect-id-must-resolve",
+    "tier-2-and-tier-3-require-advancement-cost",
+    "no-unreviewed-art-in-release"
+  ]
+}
