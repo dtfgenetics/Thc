@@ -1,4 +1,4 @@
-name: Watch DTFSeeds Production
+name: Watch DTFSeeds Public Suite
 
 on:
   workflow_dispatch:
@@ -7,8 +7,6 @@ on:
       - main
     paths:
       - scripts/audit-dtfseeds-public-suite.mjs
-      - scripts/apply-wordpress-public-content-rest.mjs
-      - site/wordpress/pages/**
       - .github/workflows/dtfseeds-public-route-repair.yml
       - .github/workflows/dtfseeds-public-suite-watch.yml
   schedule:
@@ -20,180 +18,12 @@ permissions:
   issues: write
 
 concurrency:
-  group: dtfseeds-production-watch
+  group: dtfseeds-public-suite-watch
   cancel-in-progress: true
 
 jobs:
-  wordpress:
-    name: Reconcile canonical WordPress pages
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    environment: production
-    env:
-      NODE_OPTIONS: --dns-result-order=ipv4first
-      WP_SITE_URL: https://dtfseeds.com
-      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME || secrets.WORDPRESS_USERNAME || secrets.WP_USERNAME }}
-      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD || secrets.WORDPRESS_APP_PASSWORD || secrets.WP_APPLICATION_PASSWORD }}
-      CONTENT_DIR: ${{ github.workspace }}/site/wordpress/pages
-      BACKUP_ROOT: ${{ runner.temp }}/wordpress-production-watch-backups
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-
-      - name: Validate canonical WordPress package
-        shell: bash
-        run: |
-          set -euo pipefail
-          node --check scripts/apply-wordpress-public-content-rest.mjs
-
-          expected=(home seeds learn community shop gallery about contact)
-          for slug in "${expected[@]}"; do
-            file="site/wordpress/pages/$slug.html"
-            test -s "$file"
-            grep -Fq '<h1' "$file"
-          done
-
-          test ! -e site/wordpress/pages/games.html
-          test ! -e site/wordpress/pages/high-iq.html
-          grep -Fq "show_on_front: 'page'" scripts/apply-wordpress-public-content-rest.mjs
-          grep -Fq 'page_on_front: expectedFrontPageId' scripts/apply-wordpress-public-content-rest.mjs
-          grep -Fq 'https://discord.gg/xJbUeHFPMt' site/wordpress/pages/community.html
-          grep -Fq '/yellow-leaves/' site/wordpress/pages/learn.html
-
-      - name: Check protected WordPress REST credentials
-        id: wp_access
-        shell: bash
-        run: |
-          set -euo pipefail
-          [[ -n "${WP_API_USERNAME:-}" ]] && user_present=true || user_present=false
-          [[ -n "${WP_API_PASSWORD:-}" ]] && password_present=true || password_present=false
-          echo "user_present=$user_present" >> "$GITHUB_OUTPUT"
-          echo "password_present=$password_present" >> "$GITHUB_OUTPUT"
-          if [[ "$user_present" == true && "$password_present" == true ]]; then
-            echo "available=true" >> "$GITHUB_OUTPUT"
-            echo "Protected WordPress REST credentials are available."
-          else
-            echo "available=false" >> "$GITHUB_OUTPUT"
-            echo "Protected WordPress REST credentials are unavailable."
-          fi
-
-      - name: Reconcile WordPress pages and front page
-        id: wp_publish
-        if: steps.wp_access.outputs.available == 'true'
-        shell: bash
-        run: |
-          set -euo pipefail
-          node scripts/apply-wordpress-public-content-rest.mjs
-          backup_dir="$(cat "$BACKUP_ROOT/wordpress-rest-backup-path.txt")"
-          summary="$backup_dir/deployment-summary.json"
-          mutations="$(node -p "require(process.argv[1]).mutationCount" "$summary")"
-          changed_pages="$(node -p "require(process.argv[1]).changedPages" "$summary")"
-          echo "mutations=$mutations" >> "$GITHUB_OUTPUT"
-          echo "changed_pages=$changed_pages" >> "$GITHUB_OUTPUT"
-          echo "WordPress reconciliation mutations: $mutations; changed pages: $changed_pages"
-
-      - name: Verify canonical WordPress production pages
-        id: wp_verify
-        if: steps.wp_access.outputs.available == 'true' && steps.wp_publish.outcome == 'success'
-        shell: bash
-        run: |
-          set -euo pipefail
-          verify_page() {
-            local path="$1"
-            local required="$2"
-            local body="$RUNNER_TEMP/wp-watch-$(echo "$path" | tr '/?' '__').html"
-            local ok=0
-            for attempt in 1 2 3 4 5 6; do
-              curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
-                --header 'Cache-Control: no-cache' \
-                "https://dtfseeds.com${path}?dtf_wp_watch=${GITHUB_RUN_ID}-${attempt}" \
-                --output "$body"
-              if grep -Fqi -- "$required" "$body"; then
-                ok=1
-                break
-              fi
-              sleep 10
-            done
-            if [[ "$ok" -ne 1 ]]; then
-              echo "Canonical production text not found on $path: $required" >&2
-              exit 1
-            fi
-            for forbidden in \
-              'Reserved strain card' \
-              'staged for verified' \
-              'being rebuilt' \
-              'Needed from owner' \
-              'email@email.com' \
-              '+123456789'; do
-              if grep -Fqi -- "$forbidden" "$body"; then
-                echo "Forbidden live phrase remains on $path: $forbidden" >&2
-                exit 1
-              fi
-            done
-          }
-
-          verify_page '/' 'Genetics, cultivation education, practical tools, and original cannabis games.'
-          verify_page '/seeds/' 'Genetics built through selection, observation, and documentation.'
-          verify_page '/learn/' 'Read the yellow-leaves diagnostic guide'
-          verify_page '/community/' 'Join the official DTF / Teaching Healthy Cultivation Discord'
-          verify_page '/contact/' 'Join the official DTF / Teaching Healthy Cultivation Discord'
-
-      - name: Upload WordPress rollback package
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: wordpress-production-watch-backup-${{ github.run_id }}
-          path: ${{ runner.temp }}/wordpress-production-watch-backups
-          if-no-files-found: warn
-          retention-days: 30
-
-      - name: Report WordPress reconciliation result
-        if: always() && github.event_name != 'schedule'
-        uses: actions/github-script@v7
-        env:
-          ACCESS_AVAILABLE: ${{ steps.wp_access.outputs.available }}
-          USER_PRESENT: ${{ steps.wp_access.outputs.user_present }}
-          PASSWORD_PRESENT: ${{ steps.wp_access.outputs.password_present }}
-          PUBLISH_OUTCOME: ${{ steps.wp_publish.outcome }}
-          VERIFY_OUTCOME: ${{ steps.wp_verify.outcome }}
-          MUTATIONS: ${{ steps.wp_publish.outputs.mutations }}
-          CHANGED_PAGES: ${{ steps.wp_publish.outputs.changed_pages }}
-        with:
-          script: |
-            const access = process.env.ACCESS_AVAILABLE === 'true';
-            const body = [
-              '## Reliable WordPress production reconciliation',
-              '',
-              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-              `Commit: \`${context.sha}\``,
-              `Event: **${context.eventName}**`,
-              '',
-              `WordPress username configured: **${process.env.USER_PRESENT || 'false'}**`,
-              `WordPress application password configured: **${process.env.PASSWORD_PRESENT || 'false'}**`,
-              `REST publish outcome: **${process.env.PUBLISH_OUTCOME || 'not-run'}**`,
-              `Live verification outcome: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
-              `Mutations: **${process.env.MUTATIONS || 'not-run'}**`,
-              `Pages changed: **${process.env.CHANGED_PAGES || 'not-run'}**`,
-              '',
-              access
-                ? 'The proven production watchdog executed the canonical WordPress REST reconciliation path with rollback metadata.'
-                : 'The proven production watchdog could not access the protected WordPress REST credential pair; no WordPress mutation was attempted.',
-              '',
-              'Canonical scope: Home, Seeds, Learn, Community, Shop, Gallery, About, Contact. The canonical Home page is enforced at `/`. Static game routes are not modified.',
-              'No credential values are included in this report.'
-            ].join('\n');
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: 46,
-              body
-            });
-
-  static_suite:
-    name: Audit and dispatch static-suite repair when needed
+  watch:
+    name: Audit and dispatch repair when needed
     runs-on: ubuntu-latest
     timeout-minutes: 10
     environment: production
