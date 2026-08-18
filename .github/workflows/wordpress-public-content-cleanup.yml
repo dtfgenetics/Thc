@@ -1,4 +1,4 @@
-name: Publish THC WordPress Articles
+name: Publish THC Content and Reconcile DTFSeeds Pages
 
 on:
   workflow_dispatch:
@@ -13,7 +13,9 @@ on:
       - main
     paths:
       - site/wordpress/articles/**
+      - site/wordpress/pages/**
       - scripts/publish-wordpress-articles-rest.mjs
+      - scripts/apply-wordpress-public-content-rest.mjs
       - .github/workflows/wordpress-public-content-cleanup.yml
   schedule:
     - cron: '7,37 * * * *'
