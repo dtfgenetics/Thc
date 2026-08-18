@@ -58,8 +58,13 @@ jobs:
             test -s "site/wordpress/pages/$slug.html"
             grep -Fq '<h1' "site/wordpress/pages/$slug.html"
           done
+          test ! -e site/wordpress/pages/games.html
+          test ! -e site/wordpress/pages/high-iq.html
           ! grep -Fq "['games'," scripts/apply-wordpress-public-content-rest.mjs
           ! grep -Fq "['high-iq'," scripts/apply-wordpress-public-content-rest.mjs
+          grep -Fq 'front-page-settings-before.json' scripts/apply-wordpress-public-content-rest.mjs
+          grep -Fq "show_on_front: 'page'" scripts/apply-wordpress-public-content-rest.mjs
+          grep -Fq 'page_on_front: expectedFrontPageId' scripts/apply-wordpress-public-content-rest.mjs
 
       - name: Require WordPress Application Password credentials
         shell: bash
@@ -159,7 +164,7 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
-      - name: Reconcile canonical WordPress pages
+      - name: Reconcile canonical WordPress pages and front page
         id: pages
         shell: bash
         env:
@@ -174,7 +179,7 @@ jobs:
           changed_pages="$(node -p "require(process.argv[1]).changedPages" "$summary")"
           echo "mutations=$mutations" >> "$GITHUB_OUTPUT"
           echo "changed_pages=$changed_pages" >> "$GITHUB_OUTPUT"
-          echo "Canonical page mutations: $mutations; changed pages: $changed_pages"
+          echo "Canonical page/front-page mutations: $mutations; changed pages: $changed_pages"
 
       - name: Verify canonical pages on production
         shell: bash
@@ -207,9 +212,11 @@ jobs:
             done
           }
 
+          verify_page '/' 'Genetics, cultivation education, practical tools, and original cannabis games.'
           verify_page '/seeds/' 'Genetics built through selection, observation, and documentation.'
-          verify_page '/learn/' 'Understand the plant. Build the environment. Make better decisions.'
+          verify_page '/learn/' 'Read the yellow-leaves diagnostic guide'
           verify_page '/community/' 'Join the official DTF / Teaching Healthy Cultivation Discord'
+          verify_page '/contact/' 'Join the official DTF / Teaching Healthy Cultivation Discord'
 
       - name: Upload canonical-page rollback metadata when needed
         if: always() && (steps.pages.outputs.mutations != '0' || steps.pages.outcome != 'success')
@@ -237,11 +244,12 @@ jobs:
               `Status: **${process.env.JOB_STATUS}**`,
               `Article mode: \`${process.env.MODE || 'unknown'}\``,
               `Articles: \`${process.env.SLUGS || 'unknown'}\``,
-              `Canonical page mutations: **${process.env.PAGE_MUTATIONS || 'not-run'}**`,
+              `Canonical page/front-page mutations: **${process.env.PAGE_MUTATIONS || 'not-run'}**`,
               `Canonical pages changed: **${process.env.PAGE_CHANGED || 'not-run'}**`,
               `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
               '',
               'Canonical WordPress scope: Home, Seeds, Learn, Community, Shop, Gallery, About, Contact.',
+              'The canonical Home page is enforced as the WordPress front page served at `/`.',
               'Static game routes remain outside WordPress ownership.',
               'No credential values are included in this report.'
             ].join('\n');
