@@ -1,0 +1,135 @@
+name: Watch DTFSeeds Public Suite
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '13,43 * * * *'
+
+permissions:
+  actions: write
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-public-suite-watch
+  cancel-in-progress: true
+
+jobs:
+  watch:
+    name: Audit and dispatch repair when needed
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: production
+    env:
+      SSH_USER: ${{ secrets.HOSTINGER_USER || secrets.HOSTINGER_SSH_USER || secrets.SSH_USER || secrets.SFTP_USER }}
+      SSH_PRIVATE_KEY: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY || secrets.HOSTINGER_SSH_KEY || secrets.SSH_PRIVATE_KEY || secrets.DEPLOY_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Audit live public application suite
+        id: audit
+        shell: bash
+        run: |
+          set +e
+          node scripts/audit-dtfseeds-public-suite.mjs
+          status=$?
+          set -e
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          if [[ "$status" -eq 0 ]]; then
+            echo "Live public suite passes the permanent audit."
+          else
+            echo "Live public suite requires reconciliation."
+          fi
+
+      - name: Check protected Hostinger filesystem access
+        id: access
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -n "${SSH_USER:-}" && -n "${SSH_PRIVATE_KEY:-}" ]]; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+            echo "Protected Hostinger SSH credentials are available."
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            echo "Protected Hostinger SSH credentials are not available; no deployment will be attempted."
+          fi
+
+      - name: Check for an active public-suite deployment
+        id: active
+        if: steps.audit.outputs.status != '0' && steps.access.outputs.available == 'true'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          response="$(curl --fail --silent --show-error \
+            --header "Authorization: Bearer $GH_TOKEN" \
+            --header 'Accept: application/vnd.github+json' \
+            --header 'X-GitHub-Api-Version: 2022-11-28' \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/workflows/dtfseeds-public-route-repair.yml/runs?per_page=20")"
+          count="$(jq '[.workflow_runs[] | select(.status == "queued" or .status == "in_progress" or .status == "waiting" or .status == "pending")] | length' <<<"$response")"
+          if [[ "$count" -gt 0 ]]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+            echo "A public-suite deployment is already active; no duplicate dispatch will be created."
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Dispatch validated public-suite deployment
+        id: dispatch
+        if: steps.audit.outputs.status != '0' && steps.access.outputs.available == 'true' && steps.active.outputs.present != 'true'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error \
+            --request POST \
+            --header "Authorization: Bearer $GH_TOKEN" \
+            --header 'Accept: application/vnd.github+json' \
+            --header 'X-GitHub-Api-Version: 2022-11-28' \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/workflows/dtfseeds-public-route-repair.yml/dispatches" \
+            --data '{"ref":"main","inputs":{"environment":"production"}}'
+          echo "dispatched=true" >> "$GITHUB_OUTPUT"
+          echo "Dispatched the validated DTFSeeds public-suite production workflow."
+
+      - name: Record repair dispatch on static-suite issue
+        if: steps.dispatch.outputs.dispatched == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 63,
+              body: [
+                '## Public-suite watchdog dispatched production repair',
+                '',
+                `Watch run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                `Source commit: \`${context.sha}\``,
+                '',
+                'The live public-suite audit failed, protected Hostinger SSH access was available, and no other public-suite deployment was active. The validated production deployment workflow was dispatched automatically.'
+              ].join('\n')
+            });
+
+      - name: Report manual blocked check
+        if: github.event_name == 'workflow_dispatch' && steps.audit.outputs.status != '0' && steps.access.outputs.available != 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 63,
+              body: [
+                '## Public-suite watchdog found a deployment boundary',
+                '',
+                `Watch run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                '',
+                'The live public-suite audit failed, but no protected Hostinger SSH user/private-key pair was available. No unsafe deployment attempt was made.'
+              ].join('\n')
+            });
