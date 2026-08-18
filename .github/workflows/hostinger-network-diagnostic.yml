@@ -1,0 +1,72 @@
+name: Hostinger Network Diagnostic
+
+on:
+  push:
+    branches:
+      - main
+      - diagnose-hostinger-network
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    name: Probe Hostinger from ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    steps:
+      - name: Show runner and DNS information
+        shell: bash
+        run: |
+          set +e
+          echo "Runner: $RUNNER_OS"
+          echo -n "Public egress IP: "
+          curl -4fsS --connect-timeout 5 --max-time 10 https://api.ipify.org || true
+          echo
+          echo "DNS results:"
+          if command -v dig >/dev/null 2>&1; then
+            dig +short A dtfseeds.com
+            dig +short AAAA dtfseeds.com
+          else
+            nslookup dtfseeds.com || true
+          fi
+
+      - name: Probe DTFSeeds homepage and WordPress REST API
+        shell: bash
+        run: |
+          set +e
+          probe() {
+            label="$1"
+            url="$2"
+            echo
+            echo "===== $label ====="
+            curl -4 -sS -o /tmp/body -D /tmp/headers \
+              --connect-timeout 8 --max-time 20 \
+              -w 'http=%{http_code} remote_ip=%{remote_ip} connect=%{time_connect}s tls=%{time_appconnect}s total=%{time_total}s\n' \
+              "$url"
+            rc=$?
+            echo "curl_exit=$rc"
+            head -n 20 /tmp/headers 2>/dev/null || true
+            head -c 300 /tmp/body 2>/dev/null || true
+            echo
+          }
+
+          probe "HTTPS homepage" "https://dtfseeds.com/"
+          probe "REST API root" "https://dtfseeds.com/wp-json/"
+          probe "REST API alternate route" "https://dtfseeds.com/?rest_route=/"
+          probe "WordPress users/me unauthenticated" "https://dtfseeds.com/wp-json/wp/v2/users/me"
+
+      - name: Probe IPv6 separately
+        shell: bash
+        run: |
+          set +e
+          curl -6 -sS -o /dev/null \
+            --connect-timeout 5 --max-time 10 \
+            -w 'ipv6_http=%{http_code} remote_ip=%{remote_ip} total=%{time_total}s\n' \
+            https://dtfseeds.com/
+          echo "ipv6_curl_exit=$?"
