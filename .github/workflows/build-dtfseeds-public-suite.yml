@@ -104,10 +104,15 @@ jobs:
           git clone --depth=1 https://github.com/dtfgenetics/Thc-dataset.git "$repo"
           cd "$repo"
           npm ci
+          npm run validate:sources
+          npm run validate:acquisition
+          npm run validate:transfer
           npm run check
           npm test
+          php -l public/api/visual-observations.php
           npm run build
           test -s dist/index.html
+          test -f dist/api/visual-observations.php
           echo "THC_GROW_DOC_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
 
       - name: Assemble one public release tree
@@ -165,6 +170,7 @@ jobs:
             release/games/who-took-it/index.html
             release/growlens/index.html
             release/thc-grow-doc/index.html
+            release/thc-grow-doc/api/visual-observations.php
             release/tools/index.html
             release/projects/index.html
             release/puzzles/current.json
