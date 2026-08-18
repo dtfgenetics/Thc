@@ -10,6 +10,7 @@ on:
     paths:
       - apps/high-land-web/**
       - apps/growlens-web/**
+      - games/high-iq/**
       - site/public-route-patch/**
       - site/deployment/public-apps.json
       - .github/workflows/build-dtfseeds-public-suite.yml
@@ -36,6 +37,17 @@ jobs:
 
       - name: Install master workspace
         run: npm ci
+
+      - name: Validate self-hosted High IQ
+        run: |
+          set -euo pipefail
+          node games/high-iq/scripts/validate-data.mjs
+          test -s site/public-route-patch/games/high-iq/index.html
+          test -s site/public-route-patch/games/high-iq/app.js
+          test -s site/public-route-patch/games/high-iq/high-iq.css
+          test -s site/public-route-patch/games/high-iq/data/manifest.json
+          grep -Fq 'High IQ — Test Higher Cognition' site/public-route-patch/games/high-iq/index.html
+          grep -Fq 'https://dtfseeds.com/games/high-iq/' site/public-route-patch/games/high-iq/index.html
 
       - name: Test and build High Land
         run: |
@@ -147,6 +159,7 @@ jobs:
             "generatedAt": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
             "master": "$GITHUB_SHA",
             "sources": {
+              "highIq": "$GITHUB_SHA",
               "highLand": "$GITHUB_SHA",
               "growLens": "$GITHUB_SHA",
               "weedopolis": "$WEEDOPOLIS_SHA",
@@ -165,6 +178,9 @@ jobs:
             release/games/index.html
             release/games/high-land/index.html
             release/games/high-iq/index.html
+            release/games/high-iq/app.js
+            release/games/high-iq/high-iq.css
+            release/games/high-iq/data/manifest.json
             release/games/weedopolis/index.html
             release/games/crossword/index.html
             release/games/who-took-it/index.html
@@ -177,6 +193,7 @@ jobs:
           )
           for file in "${required[@]}"; do test -s "$file"; done
 
+          grep -Fq '/games/high-iq/' release/games/high-iq/index.html
           grep -Fq '/games/high-land/' release/games/high-land/index.html
           grep -Fq '/games/weedopolis/' release/games/weedopolis/index.html
           grep -Fq '/games/crossword/' release/games/crossword/index.html
@@ -194,8 +211,8 @@ jobs:
           {
             echo '## DTFSeeds public suite'
             echo ''
+            echo '- /games/high-iq/ (self-hosted validated browser game)'
             echo '- /games/high-land/'
-            echo '- /games/high-iq/ (landing route)'
             echo '- /games/weedopolis/'
             echo '- /games/crossword/'
             echo '- /games/who-took-it/'
