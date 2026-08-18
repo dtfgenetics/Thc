@@ -9,6 +9,7 @@ on:
       - main
     paths:
       - scripts/audit-dtfseeds-live.mjs
+      - scripts/audit-dtfseeds-public-suite.mjs
       - .github/workflows/dtfseeds-live-site-audit.yml
 
 permissions:
@@ -29,8 +30,8 @@ jobs:
         with:
           node-version: 22
 
-      - name: Audit public routes and metadata
-        id: audit
+      - name: Audit core public routes and metadata
+        id: core
         shell: bash
         run: |
           set +e
@@ -39,10 +40,29 @@ jobs:
           echo "status=$status" >> "$GITHUB_OUTPUT"
           exit 0
 
-      - name: Publish audit summary
+      - name: Audit expanded public application suite
+        id: suite
+        shell: bash
+        run: |
+          set +e
+          node scripts/audit-dtfseeds-public-suite.mjs
+          status=$?
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Publish core audit summary
         if: always()
         shell: bash
         run: cat live-site-audit.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Add suite audit status
+        if: always()
+        shell: bash
+        run: |
+          echo '' >> "$GITHUB_STEP_SUMMARY"
+          echo '## Expanded public-suite audit' >> "$GITHUB_STEP_SUMMARY"
+          echo "Status: ${{ steps.suite.outputs.status == '0' && 'PASS' || 'FAIL' }}" >> "$GITHUB_STEP_SUMMARY"
+          echo 'Checks: Crossword, Who Took It, GrowLens, Grow Doc, Tools, Projects, and current crossword puzzle data.' >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload machine-readable and human-readable reports
         if: always()
@@ -56,5 +76,5 @@ jobs:
           retention-days: 30
 
       - name: Fail when the live site does not meet the production gate
-        if: steps.audit.outputs.status != '0'
+        if: steps.core.outputs.status != '0' || steps.suite.outputs.status != '0'
         run: exit 1
