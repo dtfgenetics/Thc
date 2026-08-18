@@ -1,0 +1,204 @@
+name: Build DTFSeeds Public Suite
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '43 7 * * *'
+  push:
+    branches:
+      - main
+    paths:
+      - apps/high-land-web/**
+      - apps/growlens-web/**
+      - site/public-route-patch/**
+      - site/deployment/public-apps.json
+      - .github/workflows/build-dtfseeds-public-suite.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dtfseeds-public-suite
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build deployable DTFSeeds public applications
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install master workspace
+        run: npm ci
+
+      - name: Test and build High Land
+        run: |
+          set -euo pipefail
+          npm run test:high-land
+          npm run build:high-land
+          test -s apps/high-land-web/dist/index.html
+
+      - name: Test and build GrowLens
+        run: |
+          set -euo pipefail
+          npm run test:growlens
+          npm run build:growlens
+          test -s apps/growlens-web/dist/index.html
+          test -d apps/growlens-web/dist/api
+
+      - name: Build Weedopolis
+        shell: bash
+        run: |
+          set -euo pipefail
+          repo="$RUNNER_TEMP/weedopolis"
+          git clone --depth=1 https://github.com/dtfgenetics/Weedopolis-strain-Edition.git "$repo"
+          cd "$repo"
+          npm install --ignore-scripts
+          npm run validate
+          npm run check:preview
+          npm run build:preview
+          test -s dist/weedopolis/index.html
+          echo "WEEDOPOLIS_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+
+      - name: Build THC Crossword
+        shell: bash
+        run: |
+          set -euo pipefail
+          repo="$RUNNER_TEMP/crossword"
+          git clone --depth=1 https://github.com/dtfgenetics/Thc-crossword-.git "$repo"
+          cd "$repo"
+          npm install --ignore-scripts
+          npm test
+          npm run verify
+          npm run build -- --base=/games/crossword/
+          test -s dist/index.html
+          echo "CROSSWORD_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+
+      - name: Build Who Took It
+        shell: bash
+        run: |
+          set -euo pipefail
+          repo="$RUNNER_TEMP/who-took-it"
+          git clone --depth=1 https://github.com/dtfgenetics/Thc-guess-who.git "$repo"
+          cd "$repo/03_digital-game"
+          npm install --ignore-scripts
+          npm run validate
+          npm run smoke
+          npm run build -- --base=/games/who-took-it/
+          test -s dist/index.html
+          cd "$repo"
+          echo "WHO_TOOK_IT_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+
+      - name: Build THC Grow Doc
+        shell: bash
+        run: |
+          set -euo pipefail
+          repo="$RUNNER_TEMP/thc-grow-doc"
+          git clone --depth=1 https://github.com/dtfgenetics/Thc-dataset.git "$repo"
+          cd "$repo"
+          npm ci
+          npm run check
+          npm test
+          npm run build
+          test -s dist/index.html
+          echo "THC_GROW_DOC_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+
+      - name: Assemble one public release tree
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf release
+          mkdir -p release
+          cp -a site/public-route-patch/. release/
+
+          mkdir -p release/games/high-land
+          cp -a apps/high-land-web/dist/. release/games/high-land/
+
+          mkdir -p release/growlens
+          cp -a apps/growlens-web/dist/. release/growlens/
+
+          mkdir -p release/games/weedopolis
+          cp -a "$RUNNER_TEMP/weedopolis/dist/weedopolis/." release/games/weedopolis/
+
+          mkdir -p release/games/crossword
+          cp -a "$RUNNER_TEMP/crossword/dist/." release/games/crossword/
+
+          mkdir -p release/games/who-took-it
+          cp -a "$RUNNER_TEMP/who-took-it/03_digital-game/dist/." release/games/who-took-it/
+
+          mkdir -p release/thc-grow-doc
+          cp -a "$RUNNER_TEMP/thc-grow-doc/dist/." release/thc-grow-doc/
+
+          cat > release/dtf-build.json <<JSON
+          {
+            "generatedAt": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "master": "$GITHUB_SHA",
+            "sources": {
+              "highLand": "$GITHUB_SHA",
+              "growLens": "$GITHUB_SHA",
+              "weedopolis": "$WEEDOPOLIS_SHA",
+              "crossword": "$CROSSWORD_SHA",
+              "whoTookIt": "$WHO_TOOK_IT_SHA",
+              "thcGrowDoc": "$THC_GROW_DOC_SHA"
+            }
+          }
+          JSON
+
+      - name: Verify release routes and base paths
+        shell: bash
+        run: |
+          set -euo pipefail
+          required=(
+            release/games/index.html
+            release/games/high-land/index.html
+            release/games/high-iq/index.html
+            release/games/weedopolis/index.html
+            release/games/crossword/index.html
+            release/games/who-took-it/index.html
+            release/growlens/index.html
+            release/thc-grow-doc/index.html
+          )
+          for file in "${required[@]}"; do test -s "$file"; done
+
+          grep -Fq '/games/high-land/' release/games/high-land/index.html
+          grep -Fq '/games/weedopolis/' release/games/weedopolis/index.html
+          grep -Fq '/games/crossword/' release/games/crossword/index.html
+          grep -Fq '/games/who-took-it/' release/games/who-took-it/index.html
+          grep -Fq '/thc-grow-doc/' release/thc-grow-doc/index.html
+
+          ! grep -RFiq 'email@email.com' release
+          ! grep -RFiq '+123456789' release
+          ! grep -RFiq 'Needed from owner' release
+          ! grep -RFiq 'Reserved strain card' release
+
+      - name: Report packaged applications
+        shell: bash
+        run: |
+          {
+            echo '## DTFSeeds public suite'
+            echo ''
+            echo '- /games/high-land/'
+            echo '- /games/high-iq/ (landing route)'
+            echo '- /games/weedopolis/'
+            echo '- /games/crossword/'
+            echo '- /games/who-took-it/'
+            echo '- /growlens/'
+            echo '- /thc-grow-doc/'
+            echo ''
+            echo 'Source revisions are stored in release/dtf-build.json.'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload public suite artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dtfseeds-public-suite-${{ github.sha }}
+          path: release
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 30

@@ -1,0 +1,178 @@
+{
+  "schemaVersion": 1,
+  "site": "https://dtfseeds.com",
+  "sourceOfTruth": "dtfgenetics/Thc",
+  "updated": "2026-08-18",
+  "apps": [
+    {
+      "id": "high-land",
+      "title": "High Land: The Sweet Escape",
+      "repository": "dtfgenetics/Thc",
+      "sourcePath": "apps/high-land-web",
+      "route": "/games/high-land/",
+      "runtime": "static",
+      "status": "ready-to-package",
+      "build": "npm run test:high-land && npm run build:high-land"
+    },
+    {
+      "id": "growlens",
+      "title": "THC GrowLens",
+      "repository": "dtfgenetics/Thc",
+      "sourcePath": "apps/growlens-web",
+      "route": "/growlens/",
+      "runtime": "static-php",
+      "status": "ready-to-package",
+      "build": "npm run test:growlens && npm run build:growlens",
+      "notes": "Deploy hidden files and PHP API files with the Vite output. Private-storage backend still requires Hostinger production configuration."
+    },
+    {
+      "id": "weedopolis",
+      "title": "Weedopolis: Strain City Edition",
+      "repository": "dtfgenetics/Weedopolis-strain-Edition",
+      "route": "/games/weedopolis/",
+      "runtime": "static",
+      "status": "ready-to-package",
+      "build": "npm run validate && npm run check:preview && npm run build:preview"
+    },
+    {
+      "id": "crossword",
+      "title": "THC Crossword",
+      "repository": "dtfgenetics/Thc-crossword-",
+      "route": "/games/crossword/",
+      "runtime": "static",
+      "status": "ready-to-package",
+      "build": "npm test && npm run verify && npm run build -- --base=/games/crossword/"
+    },
+    {
+      "id": "who-took-it",
+      "title": "Who Took It?",
+      "repository": "dtfgenetics/Thc-guess-who",
+      "sourcePath": "03_digital-game",
+      "route": "/games/who-took-it/",
+      "runtime": "static",
+      "status": "ready-to-package",
+      "build": "npm run validate && npm run smoke && npm run build -- --base=/games/who-took-it/"
+    },
+    {
+      "id": "thc-grow-doc",
+      "title": "THC Grow Doc",
+      "repository": "dtfgenetics/Thc-dataset",
+      "route": "/thc-grow-doc/",
+      "runtime": "static",
+      "status": "ready-to-package",
+      "build": "npm run check && npm test && npm run build",
+      "notes": "Plant-health evidence and diagnostic-reference application; current differential ranking is structured/rule-based rather than a validated pixel classifier."
+    },
+    {
+      "id": "high-iq",
+      "title": "High IQ — Test Higher Cognition",
+      "repository": "dtfgenetics/Thc",
+      "sourcePath": "games/high-iq",
+      "route": "/games/high-iq/",
+      "runtime": "landing-external-build",
+      "status": "public-landing",
+      "notes": "DTF landing route is packaged; current playable browser build is externally hosted until a self-hosted implementation is committed."
+    },
+    {
+      "id": "thc-u-know",
+      "title": "THC U Know",
+      "repository": "dtfgenetics/thc-u-know-card-game-",
+      "route": "/games/thc-u-know/",
+      "runtime": "node-full-stack",
+      "status": "runtime-integration",
+      "build": "pnpm -r build",
+      "notes": "Web, multiplayer server, shared package, and Discord bot exist. Preserve server-authoritative multiplayer instead of publishing a static-only shell."
+    },
+    {
+      "id": "kush-kings",
+      "title": "Kush Kings Chess",
+      "repository": "dtfgenetics/Thc-chess-git",
+      "route": "/games/kush-kings-chess/",
+      "runtime": "node-full-stack",
+      "status": "runtime-integration",
+      "notes": "Next.js client plus multiplayer server. Requires a managed Node/VPS topology before production activation."
+    },
+    {
+      "id": "thc-grow-hub",
+      "title": "Teaching Healthy Cultivation Grow Hub",
+      "repository": "dtfgenetics/thc-grow-hub",
+      "route": "/learn/",
+      "runtime": "private-source-static-publication",
+      "status": "public-artifact-integration",
+      "notes": "Private source contains the public academy/encyclopedia platform, reader, sources library, SOPs, downloads, diagnostic center, glossary, and production-readiness checks. Publish only generated public artifacts; never expose admin/private source."
+    },
+    {
+      "id": "bud-or-bluff",
+      "title": "Bud or Bluff",
+      "repository": "dtfgenetics/Thc",
+      "sourcePath": "games/bud-or-bluff",
+      "runtime": "content-data",
+      "status": "in-development"
+    },
+    {
+      "id": "terpocalypse",
+      "title": "Terpocalypse: Grow Room From Hell",
+      "repository": "dtfgenetics/Terpocalapse",
+      "runtime": "preproduction",
+      "status": "in-development"
+    },
+    {
+      "id": "phenoquest",
+      "title": "PhenoQuest: The Living Seed Vault",
+      "repository": "dtfgenetics/Catching-phenos",
+      "runtime": "preproduction",
+      "status": "in-development"
+    },
+    {
+      "id": "thc-rpg",
+      "title": "THC RPG",
+      "repository": "dtfgenetics/Thc-rpg",
+      "runtime": "concept",
+      "status": "not-deployable"
+    },
+    {
+      "id": "happy-seed-stories",
+      "title": "Happy Seed Stories",
+      "repository": "dtfgenetics/Happy-seed-story-s-",
+      "runtime": "content-source",
+      "status": "education-integration",
+      "notes": "Story and plant-science content source; integrate through the public learning library rather than exposing repository structure."
+    },
+    {
+      "id": "creator-engine",
+      "title": "Creator Engine",
+      "repository": "dtfgenetics/Video-photo-editing-and-communications-posting-",
+      "runtime": "internal-tool",
+      "status": "private-operations-only",
+      "notes": "Pre-alpha local production scaffold. Do not expose publicly without authentication and a production web surface."
+    },
+    {
+      "id": "ganjumanji",
+      "title": "Ganjumanji",
+      "repository": "dtfgenetics/GANJUMANJI-The-Lost-Grower-s-Temple",
+      "runtime": "empty-repository",
+      "status": "not-deployable"
+    },
+    {
+      "id": "all-in-one-grow",
+      "title": "All-in-One THC Grow",
+      "repository": "dtfgenetics/all-in-one-thc-grow-",
+      "runtime": "empty-repository",
+      "status": "not-deployable"
+    },
+    {
+      "id": "discord-music-bot-a",
+      "title": "THC Discord Music Bot",
+      "repository": "dtfgenetics/thc-discord-bot-for-music-",
+      "runtime": "empty-repository",
+      "status": "not-deployable"
+    },
+    {
+      "id": "discord-music-bot-b",
+      "title": "THC Music Bot for Discord",
+      "repository": "dtfgenetics/thc-music-bot-for-discod",
+      "runtime": "empty-repository",
+      "status": "not-deployable"
+    }
+  ]
+}
