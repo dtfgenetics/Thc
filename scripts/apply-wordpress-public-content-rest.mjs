@@ -18,13 +18,15 @@ const headers = {
   Authorization: authHeader,
   'Content-Type': 'application/json',
   Accept: 'application/json',
-  'User-Agent': 'DTFSeeds-Content-Deployment/1.1'
+  'User-Agent': 'DTFSeeds-Content-Deployment/1.2'
 };
 
+// WordPress owns the editorial/root pages below. /games/ and /games/high-iq/
+// are owned by the static public application suite and must never be required
+// to exist as WordPress pages. Keeping this ownership boundary explicit avoids
+// blocking editorial deployment when static routes are correctly absent from WP.
 const pageDefinitions = [
   ['home', 'DTF Genetics | Dream the Future'],
-  ['games', 'DTF Game Hub | Original Cannabis Games'],
-  ['high-iq', 'High IQ | Cannabis Knowledge Challenge'],
   ['seeds', 'Seeds / Genetics'],
   ['learn', 'Teaching Healthy Cultivation'],
   ['community', 'Community'],
