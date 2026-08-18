@@ -1,0 +1,113 @@
+name: Publish THC WordPress Articles
+
+on:
+  pull_request:
+    paths:
+      - site/wordpress/articles/**
+      - scripts/publish-wordpress-articles-rest.mjs
+      - .github/workflows/wordpress-thc-articles.yml
+  push:
+    branches:
+      - main
+    paths:
+      - site/wordpress/articles/**
+      - scripts/publish-wordpress-articles-rest.mjs
+      - .github/workflows/wordpress-thc-articles.yml
+  workflow_dispatch:
+    inputs:
+      article_slug:
+        description: Article slug to publish, or "all"
+        required: true
+        default: all
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dtfseeds-wordpress-thc-articles
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: Validate publication packages
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate publisher syntax
+        run: node --check scripts/publish-wordpress-articles-rest.mjs
+
+      - name: Validate article packages without network access
+        env:
+          VALIDATE_ONLY: "1"
+          ARTICLE_DIR: ${{ github.workspace }}/site/wordpress/articles
+        run: node scripts/publish-wordpress-articles-rest.mjs
+
+  deploy:
+    name: Publish to dtfseeds.com WordPress
+    needs: validate
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'push' && vars.WORDPRESS_ARTICLE_AUTO_PUBLISH == 'true')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: production
+    env:
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME || secrets.WORDPRESS_USERNAME || secrets.WP_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD || secrets.WORDPRESS_APP_PASSWORD || secrets.WP_APPLICATION_PASSWORD }}
+      ARTICLE_DIR: ${{ github.workspace }}/site/wordpress/articles
+      BACKUP_ROOT: ${{ runner.temp }}/wordpress-thc-article-backups
+      REQUESTED_SLUG: ${{ github.event_name == 'workflow_dispatch' && inputs.article_slug || 'all' }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Require WordPress Application Password credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -z "${WP_API_USERNAME:-}" || -z "${WP_API_PASSWORD:-}" ]]; then
+            echo "WordPress credentials are not configured in the production environment." >&2
+            echo "Add WP_API_USERNAME and WP_API_PASSWORD as GitHub Environment secrets." >&2
+            exit 1
+          fi
+
+      - name: Select publication scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$BACKUP_ROOT"
+          if [[ "$REQUESTED_SLUG" != "all" ]]; then
+            [[ "$REQUESTED_SLUG" =~ ^[a-z0-9]+(-[a-z0-9]+)*$ ]]
+            target="$ARTICLE_DIR/$REQUESTED_SLUG.json"
+            test -s "$target"
+            echo "ARTICLE_FILE=$target" >> "$GITHUB_ENV"
+          fi
+
+      - name: Publish or update WordPress article by slug
+        run: node scripts/publish-wordpress-articles-rest.mjs
+
+      - name: Upload rollback metadata
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: wordpress-thc-article-backup-${{ github.run_id }}
+          path: ${{ runner.temp }}/wordpress-thc-article-backups
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Record publication result
+        if: always()
+        run: |
+          {
+            echo "## THC WordPress publication"
+            echo
+            echo "Site: https://dtfseeds.com"
+            echo "Requested slug: $REQUESTED_SLUG"
+            echo "Publisher is idempotent by WordPress post slug: an existing article is updated; a missing article is created."
+            echo "Rollback metadata is retained as a private workflow artifact when a live request runs."
+          } >> "$GITHUB_STEP_SUMMARY"
