@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "project": "High IQ — Test Higher Cognition",
+  "datasetVersion": "2.2",
+  "sourceWorkbook": {
+    "name": "High_IQ_Master_Production_Workbook_v2_2.xlsx",
+    "driveId": "1fERIAH253LT__Jy8AWzjfZTOhhckWLOH",
+    "role": "approved human production workbook and migration provenance"
+  },
+  "questionCount": 80,
+  "sourceCount": 50,
+  "questionChunks": [
+    "questions-001-010.v2.2.json",
+    "questions-011-020.v2.2.json",
+    "questions-021-030.v2.2.json",
+    "questions-031-040.v2.2.json",
+    "questions-041-050.v2.2.json",
+    "questions-051-060.v2.2.json",
+    "questions-061-070.v2.2.json",
+    "questions-071-080.v2.2.json"
+  ],
+  "sourceChunks": [
+    "sources-001-025.v2.2.json",
+    "sources-026-050.v2.2.json"
+  ],
+  "requiredStatus": "Approved",
+  "requiredAudit": "PASS",
+  "allowedDifficulties": ["Easy", "Medium", "Hard", "Expert"],
+  "difficultyCounts": {
+    "Easy": 8,
+    "Medium": 24,
+    "Hard": 32,
+    "Expert": 16
+  },
+  "categoryCounts": {
+    "Nutrition & pH": 12,
+    "Environment & Climate": 10,
+    "Root Zone & Irrigation": 10,
+    "Plant Biology": 8,
+    "Diagnostics": 8,
+    "Photobiology": 8,
+    "Plant Physiology": 8,
+    "Integrated Pest Management": 6,
+    "Genetics & Breeding": 6,
+    "Harvest & Postharvest": 4
+  },
+  "migrationChecked": "2026-08-18",
+  "notes": "Every migrated question was Approved and PASS in workbook v2.2; correct-letter mappings and referenced source IDs were validated before commit."
+}

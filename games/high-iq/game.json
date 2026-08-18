@@ -2,16 +2,27 @@
   "id": "high-iq",
   "title": "High IQ — Test Higher Cognition",
   "category": "knowledge-game",
-  "status": "playable-external-build",
+  "status": "playable-external-build-with-github-data",
   "provider": "Base44",
   "public_url": "https://inescapable-grow-smart-lab.base44.app/",
   "website_route": "/games/high-iq/",
-  "source_access": "not-connected",
+  "source_access": "runtime-source-not-connected",
   "self_hosted": false,
   "recorded_date": "2026-08-15",
+  "machineData": {
+    "owner": "dtfgenetics/Thc",
+    "path": "games/high-iq/data",
+    "version": "2.2",
+    "questions": 80,
+    "sources": 50,
+    "validation": "node games/high-iq/scripts/validate-data.mjs",
+    "provenance": "High_IQ_Master_Production_Workbook_v2_2.xlsx"
+  },
   "integration": {
     "mode": "external-launch",
     "preferred_future_mode": "self-hosted",
-    "target_app_directory": "apps/high-iq-web"
+    "target_app_directory": "apps/high-iq-web",
+    "runtime_data_ready": true,
+    "runtime_source_ready": false
   }
 }

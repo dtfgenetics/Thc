@@ -1,0 +1,29 @@
+name: Validate High IQ Data
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'games/high-iq/**'
+      - '.github/workflows/high-iq-data-ci.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'games/high-iq/**'
+      - '.github/workflows/high-iq-data-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate production question and source data
+        run: node games/high-iq/scripts/validate-data.mjs
