@@ -1,0 +1,152 @@
+name: Deploy DTFSeeds WordPress Pages
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - site/wordpress/pages/**
+      - scripts/apply-wordpress-public-content-rest.mjs
+      - .github/workflows/wordpress-public-pages-deploy.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dtfseeds-wordpress-public-pages-production
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: Validate public page package
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate publisher syntax and required pages
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/apply-wordpress-public-content-rest.mjs
+          for slug in home games high-iq seeds learn community shop gallery about contact; do
+            file="site/wordpress/pages/$slug.html"
+            test -s "$file"
+            grep -Fq '<h1' "$file"
+          done
+
+      - name: Reject public staging and fake-data language
+        shell: bash
+        run: |
+          set -euo pipefail
+          forbidden=(
+            "being rebuilt"
+            "Reserved strain card"
+            "Needed from owner"
+            "Tool-ready rebuild"
+            "Use this page for"
+            "staged for verified"
+            "before launch promotion"
+            "email@email.com"
+            "+123456789"
+          )
+          for phrase in "${forbidden[@]}"; do
+            if grep -RFiq -- "$phrase" site/wordpress/pages; then
+              echo "Forbidden public phrase: $phrase" >&2
+              exit 1
+            fi
+          done
+
+      - name: Verify community invitation is present
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -Fq 'https://discord.gg/xJbUeHFPMt' site/wordpress/pages/home.html
+          grep -Fq 'https://discord.gg/xJbUeHFPMt' site/wordpress/pages/community.html
+
+  deploy:
+    name: Back up and publish public pages
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: production
+    env:
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME || secrets.WORDPRESS_USERNAME || secrets.WP_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD || secrets.WORDPRESS_APP_PASSWORD || secrets.WP_APPLICATION_PASSWORD }}
+      CONTENT_DIR: ${{ github.workspace }}/site/wordpress/pages
+      BACKUP_ROOT: ${{ runner.temp }}/wordpress-public-page-backups
+      NODE_OPTIONS: --dns-result-order=ipv4first
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Require WordPress Application Password credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -z "${WP_API_USERNAME:-}" || -z "${WP_API_PASSWORD:-}" ]]; then
+            echo "WordPress production credentials are not configured." >&2
+            exit 1
+          fi
+
+      - name: Publish canonical public pages with rollback backups
+        run: node scripts/apply-wordpress-public-content-rest.mjs
+
+      - name: Verify key live pages replaced stale public content
+        shell: bash
+        run: |
+          set -euo pipefail
+          verify_page() {
+            local path="$1"
+            local required="$2"
+            local body="$RUNNER_TEMP/$(echo "$path" | tr '/?' '__').html"
+            local ok=0
+            for attempt in 1 2 3 4 5 6; do
+              curl --fail --silent --show-error --location \
+                --header 'Cache-Control: no-cache' \
+                "https://dtfseeds.com${path}?dtf_verify=${GITHUB_SHA}-${attempt}" \
+                --output "$body"
+              if grep -Fqi -- "$required" "$body"; then
+                ok=1
+                break
+              fi
+              sleep 10
+            done
+            if [[ "$ok" -ne 1 ]]; then
+              echo "Live verification did not find required content on $path: $required" >&2
+              exit 1
+            fi
+            for forbidden in \
+              'Reserved strain card' \
+              'staged for verified' \
+              'being rebuilt' \
+              'email@email.com' \
+              '+123456789'; do
+              if grep -Fqi -- "$forbidden" "$body"; then
+                echo "Forbidden live phrase remains on $path: $forbidden" >&2
+                exit 1
+              fi
+            done
+          }
+
+          verify_page '/seeds/' 'Genetics built through selection, observation, and documentation.'
+          verify_page '/learn/' 'Understand the plant. Build the environment. Make better decisions.'
+          verify_page '/community/' 'Join the official DTF / Teaching Healthy Cultivation Discord'
+
+      - name: Upload page-level rollback package
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: wordpress-public-pages-backup-${{ github.run_id }}
+          path: ${{ runner.temp }}/wordpress-public-page-backups
+          if-no-files-found: warn
+          retention-days: 30
