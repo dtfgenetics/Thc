@@ -23,6 +23,7 @@ on:
 
 permissions:
   contents: read
+  issues: write
 
 concurrency:
   group: dtfseeds-wordpress-thc-articles
@@ -51,7 +52,7 @@ jobs:
     needs: validate
     if: >-
       github.event_name == 'workflow_dispatch' ||
-      (github.event_name == 'push' && vars.WORDPRESS_ARTICLE_AUTO_PUBLISH == 'true')
+      github.event_name == 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     environment: production
@@ -61,7 +62,7 @@ jobs:
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD || secrets.WORDPRESS_APP_PASSWORD || secrets.WP_APPLICATION_PASSWORD }}
       ARTICLE_DIR: ${{ github.workspace }}/site/wordpress/articles
       BACKUP_ROOT: ${{ runner.temp }}/wordpress-thc-article-backups
-      REQUESTED_SLUG: ${{ github.event_name == 'workflow_dispatch' && inputs.article_slug || 'all' }}
+      REQUESTED_SLUG: ${{ github.event_name == 'workflow_dispatch' && inputs.article_slug || 'yellow-leaves' }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -71,8 +72,7 @@ jobs:
         run: |
           set -euo pipefail
           if [[ -z "${WP_API_USERNAME:-}" || -z "${WP_API_PASSWORD:-}" ]]; then
-            echo "WordPress credentials are not configured in the production environment." >&2
-            echo "Add WP_API_USERNAME and WP_API_PASSWORD as GitHub Environment secrets." >&2
+            echo "WordPress credentials are not configured." >&2
             exit 1
           fi
 
@@ -102,12 +102,23 @@ jobs:
 
       - name: Record publication result
         if: always()
-        run: |
-          {
-            echo "## THC WordPress publication"
-            echo
-            echo "Site: https://dtfseeds.com"
-            echo "Requested slug: $REQUESTED_SLUG"
-            echo "Publisher is idempotent by WordPress post slug: an existing article is updated; a missing article is created."
-            echo "Rollback metadata is retained as a private workflow artifact when a live request runs."
-          } >> "$GITHUB_STEP_SUMMARY"
+        env:
+          JOB_STATUS: ${{ job.status }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = [
+              '## THC WordPress article publication test',
+              '',
+              `Status: **${process.env.JOB_STATUS}**`,
+              `Requested slug: \`${process.env.REQUESTED_SLUG}\``,
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              '',
+              'No credential values are included in this report.'
+            ].join('\n');
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 46,
+              body
+            });
