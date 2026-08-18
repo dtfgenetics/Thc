@@ -1,4 +1,7 @@
+import { setDefaultResultOrder } from 'node:dns';
 import process from 'node:process';
+
+setDefaultResultOrder('ipv4first');
 
 const BASE_URL = 'https://dtfseeds.com';
 const routes = [
@@ -112,6 +115,19 @@ function descriptionFromHtml(html) {
   return '';
 }
 
+function describeError(error) {
+  if (!(error instanceof Error)) return String(error);
+  const cause = error.cause;
+  if (!cause) return error.message;
+  if (cause instanceof Error) return `${error.message}: ${cause.message}`;
+  if (typeof cause === 'object') {
+    const code = cause.code ? ` ${cause.code}` : '';
+    const message = cause.message ? `: ${cause.message}` : '';
+    return `${error.message}${code}${message}`;
+  }
+  return `${error.message}: ${String(cause)}`;
+}
+
 let failed = 0;
 const seenTitles = new Map();
 
@@ -123,7 +139,7 @@ for (const route of routes) {
       redirect: 'follow',
       signal: AbortSignal.timeout(15_000),
       headers: {
-        'user-agent': 'DTFSeeds-Public-Suite-QA/1.1',
+        'user-agent': 'DTFSeeds-Public-Suite-QA/1.2',
         'cache-control': 'no-cache'
       }
     });
@@ -158,7 +174,7 @@ for (const route of routes) {
     if (seenTitles.has(title)) problems.push(`duplicate title also used by ${seenTitles.get(title)}`);
     else if (title) seenTitles.set(title, route.path);
   } catch (error) {
-    problems.push(error instanceof Error ? error.message : String(error));
+    problems.push(describeError(error));
   }
 
   if (problems.length) {
@@ -174,7 +190,7 @@ try {
   const puzzle = await fetch(new URL('/puzzles/current.json', BASE_URL), {
     signal: AbortSignal.timeout(15_000),
     headers: {
-      'user-agent': 'DTFSeeds-Public-Suite-QA/1.1',
+      'user-agent': 'DTFSeeds-Public-Suite-QA/1.2',
       'cache-control': 'no-cache'
     }
   });
@@ -185,7 +201,7 @@ try {
   console.log('PASS /puzzles/current.json');
 } catch (error) {
   failed += 1;
-  console.error(`FAIL /puzzles/current.json: ${error instanceof Error ? error.message : String(error)}`);
+  console.error(`FAIL /puzzles/current.json: ${describeError(error)}`);
 }
 
 if (failed) {

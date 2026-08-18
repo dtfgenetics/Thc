@@ -1,5 +1,8 @@
+import { setDefaultResultOrder } from 'node:dns';
 import { writeFile } from 'node:fs/promises';
 import process from 'node:process';
+
+setDefaultResultOrder('ipv4first');
 
 const BASE_URL = 'https://dtfseeds.com';
 const JSON_REPORT = 'live-site-audit.json';
@@ -188,6 +191,19 @@ function isNoIndex(html, headers) {
   return metaRobots.includes('noindex') || headerRobots.includes('noindex');
 }
 
+function describeError(error) {
+  if (!(error instanceof Error)) return String(error);
+  const cause = error.cause;
+  if (!cause) return error.message;
+  if (cause instanceof Error) return `${error.message}: ${cause.message}`;
+  if (typeof cause === 'object') {
+    const code = cause.code ? ` ${cause.code}` : '';
+    const message = cause.message ? `: ${cause.message}` : '';
+    return `${error.message}${code}${message}`;
+  }
+  return `${error.message}: ${String(cause)}`;
+}
+
 async function fetchRoute(route) {
   const requestedUrl = new URL(route.path, BASE_URL).href;
   const startedAt = Date.now();
@@ -196,7 +212,7 @@ async function fetchRoute(route) {
       redirect: 'follow',
       signal: AbortSignal.timeout(15_000),
       headers: {
-        'user-agent': 'DTFSeeds-Live-QA/1.1 (+https://dtfseeds.com/)',
+        'user-agent': 'DTFSeeds-Live-QA/1.2 (+https://dtfseeds.com/)',
         'cache-control': 'no-cache'
       }
     });
@@ -222,7 +238,7 @@ async function fetchRoute(route) {
       durationMs: Date.now() - startedAt,
       html: '',
       headers: new Headers(),
-      fetchError: error instanceof Error ? error.message : String(error)
+      fetchError: describeError(error)
     };
   }
 }
