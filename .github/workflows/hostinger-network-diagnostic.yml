@@ -1,6 +1,6 @@
 name: Hostinger WordPress Publish Verification
 
-# Registered workflow trigger for one-time production verification.
+# One-time production verification; triggered through a merged PR.
 on:
   push:
     branches:
