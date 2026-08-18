@@ -65,7 +65,7 @@ jobs:
           test -s "$file"
           grep -Fq 'github.event.issue.number == 46' "$file"
           grep -Fq "github.event.comment.body == '/reconcile-wordpress'" "$file"
-          grep -Fq 'github.actor == github.repository_owner' "$file"
+          grep -Fq 'github.event.comment.user.login == github.repository_owner' "$file"
           grep -Fq 'environment: production' "$file"
           grep -Fq 'scripts/apply-wordpress-public-content-rest.mjs' "$file"
           grep -Fq "verify_page '/contact/'" "$file"
