@@ -71,9 +71,15 @@
       "repository": "dtfgenetics/Thc",
       "sourcePath": "games/high-iq",
       "route": "/games/high-iq/",
-      "runtime": "landing-external-build",
-      "status": "public-landing",
-      "notes": "DTF landing route and runtime metadata are GitHub-controlled; approved trivia content remains controlled in Drive. Current playable browser build is externally hosted until self-hosted source is exported and validated."
+      "runtime": "landing-external-build-with-github-data",
+      "status": "runtime-data-ready",
+      "machineData": {
+        "version": "2.2",
+        "questions": 80,
+        "sources": 50,
+        "validator": "node games/high-iq/scripts/validate-data.mjs"
+      },
+      "notes": "GitHub owns the validated machine-readable v2.2 question/source bank and website metadata. The current playable browser runtime remains externally hosted until the actual Base44 application source is exported and validated for self-hosting."
     },
     {
       "id": "thc-u-know",
@@ -105,7 +111,7 @@
       "route": "/learn/",
       "runtime": "private-source-controlled-publication",
       "status": "preview-artifact-integration",
-      "notes": "Private source contains the academy/encyclopedia platform, reader, sources library, SOPs, downloads, diagnostic center, glossary, and production-readiness checks. A controlled preview-artifact workflow now exists. Do not bypass production/readiness.json; publicReleaseAllowed remains the controlling gate."
+      "notes": "Private source contains the academy/encyclopedia platform, reader, sources library, SOPs, downloads, diagnostic center, glossary, and production-readiness checks. A controlled preview-artifact workflow exists. Do not bypass production/readiness.json; publicReleaseAllowed remains the controlling gate."
     },
     {
       "id": "bud-or-bluff",
@@ -115,6 +121,51 @@
       "runtime": "content-data",
       "status": "in-development",
       "notes": "Application-ready real-name groups live in GitHub; editable research and approved BUD/BLUFF decisions remain controlled in the project Sheet/Drive."
+    },
+    {
+      "id": "high-life",
+      "title": "High Life: From Bagseed to Legacy",
+      "repository": "dtfgenetics/Thc",
+      "sourcePath": "games/high-life",
+      "runtime": "preproduction-data-contract",
+      "status": "canonical-preproduction",
+      "notes": "Three-era branching life-path game now has source-controlled mechanics, era data, core-system contract, and release gates."
+    },
+    {
+      "id": "strain-showdown",
+      "title": "Strain Showdown",
+      "repository": "dtfgenetics/Thc",
+      "sourcePath": "games/strain-showdown",
+      "runtime": "preproduction-data-contract",
+      "status": "canonical-preproduction",
+      "notes": "Eight-family TCG roster architecture, 96-card distribution, family identities, and required card fields are source controlled."
+    },
+    {
+      "id": "grower-conversations",
+      "title": "Grower Conversations",
+      "repository": "dtfgenetics/Thc",
+      "sourcePath": "games/grower-conversations",
+      "runtime": "preproduction-data-contract",
+      "status": "canonical-preproduction",
+      "notes": "Conversation-deck category architecture, modes, schema, and release gates are source controlled."
+    },
+    {
+      "id": "cannabis-fleet-battle",
+      "title": "Cannabis Fleet Battle",
+      "repository": "dtfgenetics/Thc",
+      "sourcePath": "games/cannabis-fleet-battle",
+      "runtime": "multiplayer-preproduction-contract",
+      "status": "canonical-preproduction",
+      "notes": "15x15 server-authoritative two-player lobby, placement, battle, reconnect, security, and testing contract is source controlled."
+    },
+    {
+      "id": "seed-man-platformer",
+      "title": "Seed Man Platformer",
+      "repository": "dtfgenetics/Thc",
+      "sourcePath": "games/seed-man-platformer",
+      "runtime": "browser-platformer-preproduction",
+      "status": "concept-to-prototype",
+      "notes": "Seed Man character contract, browser runtime target, player states, input modes, and implementation gates are source controlled."
     },
     {
       "id": "terpocalypse",
@@ -135,7 +186,8 @@
       "title": "THC RPG",
       "repository": "dtfgenetics/Thc-rpg",
       "runtime": "concept-placeholder",
-      "status": "not-deployable"
+      "status": "not-deployable",
+      "notes": "Drive contains the project folder structure but no canonical Rules or Game Data records were available to migrate during the 2026-08-18 source-control sweep."
     },
     {
       "id": "happy-seed-stories",
@@ -157,8 +209,9 @@
       "id": "ganjumanji",
       "title": "Ganjumanji",
       "repository": "dtfgenetics/GANJUMANJI-The-Lost-Grower-s-Temple",
-      "runtime": "preproduction-placeholder",
-      "status": "not-deployable"
+      "runtime": "controlled-placeholder",
+      "status": "not-deployable",
+      "notes": "The canonical tracker explicitly keeps this repository empty until approved code exists; do not fabricate implementation from unapproved concept art."
     },
     {
       "id": "all-in-one-grow",
@@ -172,15 +225,18 @@
       "id": "discord-music-bot-a",
       "title": "THC Discord Music Bot",
       "repository": "dtfgenetics/thc-discord-bot-for-music-",
-      "runtime": "placeholder-repository",
-      "status": "not-deployable"
+      "runtime": "node-discord-voice",
+      "status": "implementation-alpha",
+      "build": "npm run check && npm test",
+      "notes": "Canonical Discord music-bot repo now contains slash commands, per-server queue, voice playback, SSRF-resistant public URL policy, tests, environment template, and CI. Live runtime still requires Discord application credentials and persistent Node hosting."
     },
     {
       "id": "discord-music-bot-b",
       "title": "THC Music Bot for Discord",
       "repository": "dtfgenetics/thc-music-bot-for-discod",
-      "runtime": "duplicate-placeholder-repository",
-      "status": "not-deployable"
+      "runtime": "duplicate-archive-pointer",
+      "status": "do-not-develop",
+      "notes": "Compatibility/archive pointer only. Canonical implementation is dtfgenetics/thc-discord-bot-for-music-."
     }
   ]
 }
