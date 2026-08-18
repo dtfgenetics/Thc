@@ -1,4 +1,4 @@
-name: Repair DTFSeeds Public Routes
+name: Deploy DTFSeeds Public Suite
 
 on:
   workflow_dispatch:
@@ -15,21 +15,24 @@ on:
     branches:
       - main
     paths:
+      - apps/high-land-web/**
+      - apps/growlens-web/**
       - site/public-route-patch/**
+      - site/deployment/public-apps.json
       - .github/workflows/dtfseeds-public-route-repair.yml
 
 permissions:
   contents: read
 
 concurrency:
-  group: dtfseeds-public-route-repair
+  group: dtfseeds-public-suite-deploy
   cancel-in-progress: false
 
 jobs:
   build:
-    name: Build and validate repaired routes
+    name: Build and validate DTFSeeds public suite
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
 
@@ -38,72 +41,186 @@ jobs:
           node-version: 22
           cache: npm
 
+      - name: Install master workspace
+        run: npm ci
+
       - name: Build and test High Land
         run: |
           set -euo pipefail
-          npm ci
           npm run test:high-land
           npm run build:high-land
           test -s apps/high-land-web/dist/index.html
+
+      - name: Build and test GrowLens
+        run: |
+          set -euo pipefail
+          npm run test:growlens
+          npm run build:growlens
+          test -s apps/growlens-web/dist/index.html
+          test -d apps/growlens-web/dist/api
 
       - name: Build and validate Weedopolis
         shell: bash
         run: |
           set -euo pipefail
-          WEEDOPOLIS="$RUNNER_TEMP/weedopolis"
-          git clone --depth=1 https://github.com/dtfgenetics/Weedopolis-strain-Edition.git "$WEEDOPOLIS"
-          cd "$WEEDOPOLIS"
+          repo="$RUNNER_TEMP/weedopolis"
+          git clone --depth=1 https://github.com/dtfgenetics/Weedopolis-strain-Edition.git "$repo"
+          cd "$repo"
           npm install --ignore-scripts
           npm run validate
           npm run check:preview
           npm run build:preview
           test -s dist/weedopolis/index.html
+          echo "WEEDOPOLIS_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
 
-      - name: Assemble targeted public release
+      - name: Build and validate THC Crossword
+        shell: bash
+        run: |
+          set -euo pipefail
+          repo="$RUNNER_TEMP/crossword"
+          git clone --depth=1 https://github.com/dtfgenetics/Thc-crossword-.git "$repo"
+          cd "$repo"
+          npm install --ignore-scripts
+          npm test
+          npm run verify
+          npm run build
+          test -s dist/index.html
+          test -d dist/puzzles
+          echo "CROSSWORD_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+
+      - name: Build and validate Who Took It
+        shell: bash
+        run: |
+          set -euo pipefail
+          repo="$RUNNER_TEMP/who-took-it"
+          git clone --depth=1 https://github.com/dtfgenetics/Thc-guess-who.git "$repo"
+          cd "$repo/03_digital-game"
+          npm install --ignore-scripts
+          npm run validate
+          npm run smoke
+          npm run build
+          test -s dist/index.html
+          cd "$repo"
+          echo "WHO_TOOK_IT_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+
+      - name: Build and validate THC Grow Doc
+        shell: bash
+        run: |
+          set -euo pipefail
+          repo="$RUNNER_TEMP/thc-grow-doc"
+          git clone --depth=1 https://github.com/dtfgenetics/Thc-dataset.git "$repo"
+          cd "$repo"
+          npm ci
+          npm run check
+          npm test
+          npm run build
+          test -s dist/index.html
+          echo "THC_GROW_DOC_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+
+      - name: Assemble public release
         shell: bash
         run: |
           set -euo pipefail
           rm -rf release
           mkdir -p release
           cp -a site/public-route-patch/. release/
-          mkdir -p release/games/high-land release/games/weedopolis
+
+          mkdir -p release/games/high-land
           cp -a apps/high-land-web/dist/. release/games/high-land/
+
+          mkdir -p release/growlens
+          cp -a apps/growlens-web/dist/. release/growlens/
+
+          mkdir -p release/games/weedopolis
           cp -a "$RUNNER_TEMP/weedopolis/dist/weedopolis/." release/games/weedopolis/
 
-      - name: Verify crawlable route shells
+          mkdir -p release/games/crossword release/puzzles
+          cp -a "$RUNNER_TEMP/crossword/dist/." release/games/crossword/
+          cp -a "$RUNNER_TEMP/crossword/dist/puzzles/." release/puzzles/
+
+          mkdir -p release/games/who-took-it
+          cp -a "$RUNNER_TEMP/who-took-it/03_digital-game/dist/." release/games/who-took-it/
+
+          mkdir -p release/thc-grow-doc
+          cp -a "$RUNNER_TEMP/thc-grow-doc/dist/." release/thc-grow-doc/
+
+          cat > release/dtf-build.json <<JSON
+          {
+            "generatedAt": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "master": "$GITHUB_SHA",
+            "sources": {
+              "highLand": "$GITHUB_SHA",
+              "growLens": "$GITHUB_SHA",
+              "weedopolis": "$WEEDOPOLIS_SHA",
+              "crossword": "$CROSSWORD_SHA",
+              "whoTookIt": "$WHO_TOOK_IT_SHA",
+              "thcGrowDoc": "$THC_GROW_DOC_SHA"
+            }
+          }
+          JSON
+
+      - name: Verify public release
         shell: bash
         run: |
           set -euo pipefail
-          test -s release/games/index.html
-          test -s release/games/high-iq/index.html
-          test -s release/games/high-land/index.html
-          test -s release/games/weedopolis/index.html
-          test -s release/blog/index.html
-          for file in release/games/index.html release/games/high-iq/index.html release/games/high-land/index.html release/games/weedopolis/index.html; do
+          required=(
+            release/games/index.html
+            release/games/high-land/index.html
+            release/games/high-iq/index.html
+            release/games/weedopolis/index.html
+            release/games/crossword/index.html
+            release/games/who-took-it/index.html
+            release/growlens/index.html
+            release/thc-grow-doc/index.html
+            release/tools/index.html
+            release/projects/index.html
+            release/blog/index.html
+          )
+          for file in "${required[@]}"; do test -s "$file"; done
+
+          for file in \
+            release/games/index.html \
+            release/games/high-land/index.html \
+            release/games/high-iq/index.html \
+            release/games/weedopolis/index.html \
+            release/games/crossword/index.html \
+            release/games/who-took-it/index.html \
+            release/growlens/index.html \
+            release/thc-grow-doc/index.html \
+            release/tools/index.html \
+            release/projects/index.html; do
             grep -Eqi '<h1([ >])' "$file"
             grep -Eqi '<title>[^<]+' "$file"
             grep -Fqi 'rel="canonical"' "$file"
             grep -Fqi 'name="description"' "$file"
           done
+
+          grep -Fq '/games/high-land/' release/games/high-land/index.html
+          grep -Fq '/games/weedopolis/' release/games/weedopolis/index.html
+          grep -Fq '/games/crossword/' release/games/crossword/index.html
+          grep -Fq '/games/who-took-it/' release/games/who-took-it/index.html
+          grep -Fq '/thc-grow-doc/' release/thc-grow-doc/index.html
+          test -s release/puzzles/current.json
+
           ! grep -RFiq 'email@email.com' release
           ! grep -RFiq '+123456789' release
           ! grep -RFiq 'Needed from owner' release
           ! grep -RFiq 'Reserved strain card' release
 
-      - name: Upload validated route repair
+      - name: Upload validated public suite
         uses: actions/upload-artifact@v4
         with:
-          name: dtfseeds-public-route-repair-${{ github.sha }}
+          name: dtfseeds-public-suite-${{ github.sha }}
           path: release
           include-hidden-files: true
           if-no-files-found: error
           retention-days: 30
 
   deploy:
-    name: Back up and publish repaired routes
+    name: Back up and publish DTFSeeds public suite
     needs: build
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     environment: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'production' }}
     env:
       SSH_HOST: ${{ secrets.HOSTINGER_HOST || secrets.SSH_HOST || secrets.SFTP_HOST }}
@@ -115,10 +232,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Download validated route repair
+      - name: Download validated public suite
         uses: actions/download-artifact@v4
         with:
-          name: dtfseeds-public-route-repair-${{ github.sha }}
+          name: dtfseeds-public-suite-${{ github.sha }}
           path: release
 
       - name: Validate deployment access
@@ -180,14 +297,14 @@ jobs:
           [[ "$root" != *".."* ]]
           echo "path=$root" >> "$GITHUB_OUTPUT"
 
-      - name: Back up only affected public routes
+      - name: Back up affected public routes
         shell: bash
         env:
           ROOT: ${{ steps.root.outputs.path }}
         run: |
           set -euo pipefail
           stamp="$(date -u +%Y%m%dT%H%M%SZ)"
-          BACKUP="$HOME/dtfseeds-route-backups/$stamp"
+          BACKUP="$HOME/dtfseeds-suite-backups/$stamp"
           ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" "ROOT='$ROOT' BACKUP='$BACKUP' bash -s" <<'REMOTE'
           set -euo pipefail
           paths=(
@@ -196,6 +313,13 @@ jobs:
             games/high-land
             games/high-iq
             games/weedopolis
+            games/crossword
+            games/who-took-it
+            growlens
+            thc-grow-doc
+            tools
+            projects
+            puzzles
             blog
             exploring-dtf-genetics-a-hub-for-cannabis-art-and-gardening-tools
             explore-dtf-genetics-your-destination-for-cannabis-themed-apparel-and-art
@@ -209,21 +333,32 @@ jobs:
           done
           printf '%s\n' "$BACKUP" > "$BACKUP/backup-location.txt"
           REMOTE
-          echo "Backup created before route replacement."
 
-      - name: Publish Game Hub and playable routes
+      - name: Publish public suite without deleting unrelated routes
         shell: bash
         env:
           ROOT: ${{ steps.root.outputs.path }}
         run: |
           set -euo pipefail
-          ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" "mkdir -p '$ROOT/games' '$ROOT/blog' '$ROOT/exploring-dtf-genetics-a-hub-for-cannabis-art-and-gardening-tools' '$ROOT/explore-dtf-genetics-your-destination-for-cannabis-themed-apparel-and-art'"
-          rsync -az --checksum -e "ssh -p $SSH_PORT" release/games/ "$SSH_USER@$SSH_HOST:$ROOT/games/"
-          rsync -az --checksum -e "ssh -p $SSH_PORT" release/blog/ "$SSH_USER@$SSH_HOST:$ROOT/blog/"
-          rsync -az --checksum -e "ssh -p $SSH_PORT" release/exploring-dtf-genetics-a-hub-for-cannabis-art-and-gardening-tools/ "$SSH_USER@$SSH_HOST:$ROOT/exploring-dtf-genetics-a-hub-for-cannabis-art-and-gardening-tools/"
-          rsync -az --checksum -e "ssh -p $SSH_PORT" release/explore-dtf-genetics-your-destination-for-cannabis-themed-apparel-and-art/ "$SSH_USER@$SSH_HOST:$ROOT/explore-dtf-genetics-your-destination-for-cannabis-themed-apparel-and-art/"
+          ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" "mkdir -p '$ROOT/games' '$ROOT/growlens' '$ROOT/thc-grow-doc' '$ROOT/tools' '$ROOT/projects' '$ROOT/puzzles' '$ROOT/blog' '$ROOT/exploring-dtf-genetics-a-hub-for-cannabis-art-and-gardening-tools' '$ROOT/explore-dtf-genetics-your-destination-for-cannabis-themed-apparel-and-art'"
 
-      - name: Verify repaired public routes
+          rsync -az --checksum -e "ssh -p $SSH_PORT" release/games/index.html "$SSH_USER@$SSH_HOST:$ROOT/games/index.html"
+          rsync -az --checksum -e "ssh -p $SSH_PORT" release/games/dtf-route.css "$SSH_USER@$SSH_HOST:$ROOT/games/dtf-route.css"
+
+          for route in high-land high-iq weedopolis crossword who-took-it; do
+            ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" "mkdir -p '$ROOT/games/$route'"
+            rsync -az --delete --checksum -e "ssh -p $SSH_PORT" "release/games/$route/" "$SSH_USER@$SSH_HOST:$ROOT/games/$route/"
+          done
+
+          for route in growlens thc-grow-doc tools projects puzzles; do
+            rsync -az --delete --checksum -e "ssh -p $SSH_PORT" "release/$route/" "$SSH_USER@$SSH_HOST:$ROOT/$route/"
+          done
+
+          rsync -az --delete --checksum -e "ssh -p $SSH_PORT" release/blog/ "$SSH_USER@$SSH_HOST:$ROOT/blog/"
+          rsync -az --delete --checksum -e "ssh -p $SSH_PORT" release/exploring-dtf-genetics-a-hub-for-cannabis-art-and-gardening-tools/ "$SSH_USER@$SSH_HOST:$ROOT/exploring-dtf-genetics-a-hub-for-cannabis-art-and-gardening-tools/"
+          rsync -az --delete --checksum -e "ssh -p $SSH_PORT" release/explore-dtf-genetics-your-destination-for-cannabis-themed-apparel-and-art/ "$SSH_USER@$SSH_HOST:$ROOT/explore-dtf-genetics-your-destination-for-cannabis-themed-apparel-and-art/"
+
+      - name: Verify published public suite
         shell: bash
         run: |
           set -euo pipefail
@@ -232,11 +367,20 @@ jobs:
             https://dtfseeds.com/games/ \
             https://dtfseeds.com/games/high-land/ \
             https://dtfseeds.com/games/high-iq/ \
-            https://dtfseeds.com/games/weedopolis/; do
+            https://dtfseeds.com/games/weedopolis/ \
+            https://dtfseeds.com/games/crossword/ \
+            https://dtfseeds.com/games/who-took-it/ \
+            https://dtfseeds.com/growlens/ \
+            https://dtfseeds.com/thc-grow-doc/ \
+            https://dtfseeds.com/tools/ \
+            https://dtfseeds.com/projects/; do
             html="$(curl --fail --silent --show-error --location --retry 3 --retry-delay 2 "$url")"
             grep -Eqi '<h1([ >])' <<<"$html"
             grep -Fqi 'rel="canonical"' <<<"$html"
           done
+
+          curl --fail --silent --show-error --location --retry 3 --retry-delay 2 https://dtfseeds.com/puzzles/current.json >/dev/null
+
           for url in \
             https://dtfseeds.com/blog/ \
             https://dtfseeds.com/exploring-dtf-genetics-a-hub-for-cannabis-art-and-gardening-tools/ \
@@ -249,10 +393,10 @@ jobs:
       - name: Run full live-site production gate
         run: node scripts/audit-dtfseeds-live.mjs
 
-      - name: Record repair revision
+      - name: Record suite revision
         if: always()
         run: |
-          echo "## DTFSeeds public-route repair" >> "$GITHUB_STEP_SUMMARY"
+          echo "## DTFSeeds public-suite deployment" >> "$GITHUB_STEP_SUMMARY"
           echo "Revision: $GITHUB_SHA" >> "$GITHUB_STEP_SUMMARY"
-          echo "Routes: /games/, /games/high-land/, /games/high-iq/, /games/weedopolis/, /blog/, and two retired generated article URLs." >> "$GITHUB_STEP_SUMMARY"
-          echo "Other WordPress pages and unrelated game directories are not deleted by this workflow." >> "$GITHUB_STEP_SUMMARY"
+          echo "Packaged routes: Game Hub, High Land, High IQ, Weedopolis, Crossword, Who Took It, GrowLens, Grow Doc, Tools, Projects, Blog retirement routes." >> "$GITHUB_STEP_SUMMARY"
+          echo "Unrelated WordPress pages and unrelated game directories are preserved." >> "$GITHUB_STEP_SUMMARY"
