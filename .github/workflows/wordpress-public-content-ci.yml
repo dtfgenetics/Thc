@@ -35,15 +35,26 @@ jobs:
           bash -n scripts/apply-wordpress-public-content.sh
           node --check scripts/apply-wordpress-public-content-rest.mjs
 
-      - name: Validate maintained page source files
+      - name: Validate maintained WordPress page sources
         shell: bash
         run: |
           set -euo pipefail
-          for slug in home games high-iq seeds learn community shop gallery about contact; do
+          expected=(home seeds learn community shop gallery about contact)
+          for slug in "${expected[@]}"; do
             file="site/wordpress/pages/$slug.html"
             test -s "$file"
             grep -Fq '<h1' "$file"
           done
+
+          test ! -e site/wordpress/pages/games.html
+          test ! -e site/wordpress/pages/high-iq.html
+
+          actual="$(find site/wordpress/pages -maxdepth 1 -type f -name '*.html' -printf '%f\n' | sed 's/\.html$//' | sort | paste -sd, -)"
+          expected_sorted="$(printf '%s\n' "${expected[@]}" | sort | paste -sd, -)"
+          [[ "$actual" == "$expected_sorted" ]] || {
+            echo "Unexpected WordPress page ownership. Expected: $expected_sorted; actual: $actual" >&2
+            exit 1
+          }
 
       - name: Enforce WordPress and static route ownership
         shell: bash
@@ -56,6 +67,11 @@ jobs:
 
           ! grep -Eq "\['games',[[:space:]]*'|\['high-iq',[[:space:]]*'" scripts/apply-wordpress-public-content-rest.mjs
           ! grep -Eq 'page_slugs=.*\b(games|high-iq)\b|required_files=.*\b(games|high-iq)\b' scripts/apply-wordpress-public-content.sh
+
+          test -s site/public-route-patch/games/index.html
+          test -s site/public-route-patch/games/high-iq/index.html
+          grep -Fq 'https://dtfseeds.com/games/' site/public-route-patch/games/index.html
+          grep -Fq 'https://dtfseeds.com/games/high-iq/' site/public-route-patch/games/high-iq/index.html
 
       - name: Validate owner-only reconciliation command guard
         shell: bash
