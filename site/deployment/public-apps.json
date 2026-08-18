@@ -36,12 +36,14 @@
     },
     {
       "id": "crossword",
-      "title": "THC Crossword",
+      "title": "THC Weekly Crossword",
       "repository": "dtfgenetics/Thc-crossword-",
       "route": "/games/crossword/",
+      "dataRoute": "/puzzles/",
       "runtime": "static",
       "status": "ready-to-package",
-      "build": "npm test && npm run verify && npm run build -- --base=/games/crossword/"
+      "build": "npm test && npm run verify && npm run build",
+      "notes": "Production Vite base is /games/crossword/. The tested puzzle-data contract remains /puzzles/... and is published at the site root by the DTFSeeds suite deployer."
     },
     {
       "id": "who-took-it",
@@ -51,17 +53,17 @@
       "route": "/games/who-took-it/",
       "runtime": "static",
       "status": "ready-to-package",
-      "build": "npm run validate && npm run smoke && npm run build -- --base=/games/who-took-it/"
+      "build": "npm run validate && npm run smoke && npm run build"
     },
     {
       "id": "thc-grow-doc",
       "title": "THC Grow Doc",
       "repository": "dtfgenetics/Thc-dataset",
       "route": "/thc-grow-doc/",
-      "runtime": "static",
+      "runtime": "static-php",
       "status": "ready-to-package",
-      "build": "npm run check && npm test && npm run build",
-      "notes": "Plant-health evidence and diagnostic-reference application; current differential ranking is structured/rule-based rather than a validated pixel classifier."
+      "build": "npm run validate:sources && npm run validate:acquisition && npm run validate:transfer && npm run check && npm test && npm run build",
+      "notes": "Plant-health evidence and diagnostic-reference application; current differential ranking is structured/rule-based rather than a validated pixel classifier. Preserve its PHP proxy in the production bundle."
     },
     {
       "id": "high-iq",
@@ -71,35 +73,39 @@
       "route": "/games/high-iq/",
       "runtime": "landing-external-build",
       "status": "public-landing",
-      "notes": "DTF landing route is packaged; current playable browser build is externally hosted until a self-hosted implementation is committed."
+      "notes": "DTF landing route and runtime metadata are GitHub-controlled; approved trivia content remains controlled in Drive. Current playable browser build is externally hosted until self-hosted source is exported and validated."
     },
     {
       "id": "thc-u-know",
       "title": "THC U Know",
       "repository": "dtfgenetics/thc-u-know-card-game-",
       "route": "/games/thc-u-know/",
+      "apiTarget": "https://api.dtfseeds.com",
       "runtime": "node-full-stack",
       "status": "runtime-integration",
-      "build": "pnpm -r build",
-      "notes": "Web, multiplayer server, shared package, and Discord bot exist. Preserve server-authoritative multiplayer instead of publishing a static-only shell."
+      "build": "pnpm -r lint && pnpm -r build && pnpm test",
+      "notes": "Web, multiplayer server, shared package, Discord bot, deployment docs, and end-to-end tests exist. Preserve server-authoritative multiplayer instead of publishing a static-only shell."
     },
     {
       "id": "kush-kings",
       "title": "Kush Kings Chess",
       "repository": "dtfgenetics/Thc-chess-git",
       "route": "/games/kush-kings-chess/",
-      "runtime": "node-full-stack",
+      "appTarget": "https://chess.dtfseeds.com",
+      "apiTarget": "https://chess-api.dtfseeds.com",
+      "runtime": "node-full-stack-postgres",
       "status": "runtime-integration",
-      "notes": "Next.js client plus multiplayer server. Requires a managed Node/VPS topology before production activation."
+      "build": "pnpm check:rebrand && pnpm build:client && pnpm build:server",
+      "notes": "Next.js client, multiplayer server, PostgreSQL/session production contract, Nginx and systemd deployment assets already exist. Activate through the full-stack runtime rather than static-file deployment."
     },
     {
       "id": "thc-grow-hub",
       "title": "Teaching Healthy Cultivation Grow Hub",
       "repository": "dtfgenetics/thc-grow-hub",
       "route": "/learn/",
-      "runtime": "private-source-static-publication",
-      "status": "public-artifact-integration",
-      "notes": "Private source contains the public academy/encyclopedia platform, reader, sources library, SOPs, downloads, diagnostic center, glossary, and production-readiness checks. Publish only generated public artifacts; never expose admin/private source."
+      "runtime": "private-source-controlled-publication",
+      "status": "preview-artifact-integration",
+      "notes": "Private source contains the academy/encyclopedia platform, reader, sources library, SOPs, downloads, diagnostic center, glossary, and production-readiness checks. A controlled preview-artifact workflow now exists. Do not bypass production/readiness.json; publicReleaseAllowed remains the controlling gate."
     },
     {
       "id": "bud-or-bluff",
@@ -107,7 +113,8 @@
       "repository": "dtfgenetics/Thc",
       "sourcePath": "games/bud-or-bluff",
       "runtime": "content-data",
-      "status": "in-development"
+      "status": "in-development",
+      "notes": "Application-ready real-name groups live in GitHub; editable research and approved BUD/BLUFF decisions remain controlled in the project Sheet/Drive."
     },
     {
       "id": "terpocalypse",
@@ -127,16 +134,16 @@
       "id": "thc-rpg",
       "title": "THC RPG",
       "repository": "dtfgenetics/Thc-rpg",
-      "runtime": "concept",
+      "runtime": "concept-placeholder",
       "status": "not-deployable"
     },
     {
       "id": "happy-seed-stories",
       "title": "Happy Seed Stories",
       "repository": "dtfgenetics/Happy-seed-story-s-",
-      "runtime": "content-source",
-      "status": "education-integration",
-      "notes": "Story and plant-science content source; integrate through the public learning library rather than exposing repository structure."
+      "runtime": "controlled-publishing-source",
+      "status": "release-gated-content",
+      "notes": "Story/science production source only. Book 1 remains controlled until manuscript, science, art, proof, accessibility and release gates are explicitly locked; do not publish working drafts as finished books."
     },
     {
       "id": "creator-engine",
@@ -144,34 +151,35 @@
       "repository": "dtfgenetics/Video-photo-editing-and-communications-posting-",
       "runtime": "internal-tool",
       "status": "private-operations-only",
-      "notes": "Pre-alpha local production scaffold. Do not expose publicly without authentication and a production web surface."
+      "notes": "Pre-alpha local production scaffold with CI. Do not expose publicly without authentication and a production web surface."
     },
     {
       "id": "ganjumanji",
       "title": "Ganjumanji",
       "repository": "dtfgenetics/GANJUMANJI-The-Lost-Grower-s-Temple",
-      "runtime": "empty-repository",
+      "runtime": "preproduction-placeholder",
       "status": "not-deployable"
     },
     {
       "id": "all-in-one-grow",
       "title": "All-in-One THC Grow",
       "repository": "dtfgenetics/all-in-one-thc-grow-",
-      "runtime": "empty-repository",
-      "status": "not-deployable"
+      "runtime": "legacy-merge-placeholder",
+      "status": "not-deployable",
+      "notes": "Functionality is consolidated into GrowLens, THC Grow Hub, and THC Grow Doc unless a distinct product is approved."
     },
     {
       "id": "discord-music-bot-a",
       "title": "THC Discord Music Bot",
       "repository": "dtfgenetics/thc-discord-bot-for-music-",
-      "runtime": "empty-repository",
+      "runtime": "placeholder-repository",
       "status": "not-deployable"
     },
     {
       "id": "discord-music-bot-b",
       "title": "THC Music Bot for Discord",
       "repository": "dtfgenetics/thc-music-bot-for-discod",
-      "runtime": "empty-repository",
+      "runtime": "duplicate-placeholder-repository",
       "status": "not-deployable"
     }
   ]
