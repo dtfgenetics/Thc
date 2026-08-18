@@ -73,6 +73,24 @@ jobs:
           grep -Fq 'https://dtfseeds.com/games/' site/public-route-patch/games/index.html
           grep -Fq 'https://dtfseeds.com/games/high-iq/' site/public-route-patch/games/high-iq/index.html
 
+      - name: Enforce canonical WordPress front-page routing
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          grep -Fq 'front-page-settings-before.json' scripts/apply-wordpress-public-content-rest.mjs
+          grep -Fq "show_on_front: 'page'" scripts/apply-wordpress-public-content-rest.mjs
+          grep -Fq 'page_on_front: expectedFrontPageId' scripts/apply-wordpress-public-content-rest.mjs
+          grep -Fq 'Front-page reconciliation failed' scripts/apply-wordpress-public-content-rest.mjs
+
+          grep -Fq 'show-on-front.txt' scripts/apply-wordpress-public-content.sh
+          grep -Fq 'page-on-front.txt' scripts/apply-wordpress-public-content.sh
+          grep -Fq 'option update show_on_front page' scripts/apply-wordpress-public-content.sh
+          grep -Fq 'option update page_on_front' scripts/apply-wordpress-public-content.sh
+
+          grep -Fq "verify_page '/' 'Genetics, cultivation education, practical tools, and original cannabis games.'" .github/workflows/wordpress-public-pages-deploy.yml
+          grep -Fq "verify_page '/' 'Genetics, cultivation education, practical tools, and original cannabis games.'" .github/workflows/wordpress-public-content-cleanup.yml
+
       - name: Validate owner-only reconciliation command guard
         shell: bash
         run: |
