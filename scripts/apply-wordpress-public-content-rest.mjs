@@ -18,7 +18,7 @@ const headers = {
   Authorization: authHeader,
   'Content-Type': 'application/json',
   Accept: 'application/json',
-  'User-Agent': 'DTFSeeds-Content-Deployment/1.4'
+  'User-Agent': 'DTFSeeds-Content-Deployment/1.5'
 };
 
 // WordPress owns the editorial/root pages below. /games/ and /games/high-iq/
@@ -206,6 +206,49 @@ for (const item of prepared) {
     changed: true
   });
   console.log(`Updated /${item.slug}/ (page ID ${updated.id})`);
+}
+
+// The canonical `home` page must also be the page WordPress serves at `/`.
+// Back up the Reading settings before changing them so this routing mutation is
+// independently reversible from the page-content backups above.
+try {
+  const homeItem = prepared.find((item) => item.slug === 'home');
+  if (!homeItem?.page?.id) throw new Error('Canonical home page ID is unavailable');
+
+  const settings = await request('/wp-json/wp/v2/settings');
+  await writeFile(
+    join(backupDir, 'front-page-settings-before.json'),
+    `${JSON.stringify(settings.body, null, 2)}\n`,
+    'utf8'
+  );
+
+  const expectedFrontPageId = Number(homeItem.page.id);
+  const currentFrontPageId = Number(settings.body?.page_on_front || 0);
+  const currentMode = String(settings.body?.show_on_front || '');
+
+  if (currentMode !== 'page' || currentFrontPageId !== expectedFrontPageId) {
+    const updatedSettings = await request('/wp-json/wp/v2/settings', {
+      method: 'POST',
+      body: JSON.stringify({
+        show_on_front: 'page',
+        page_on_front: expectedFrontPageId
+      })
+    });
+
+    if (
+      String(updatedSettings.body?.show_on_front || '') !== 'page' ||
+      Number(updatedSettings.body?.page_on_front || 0) !== expectedFrontPageId
+    ) {
+      throw new Error('WordPress did not confirm the canonical home page as the front page');
+    }
+
+    auxiliaryMutations += 1;
+    console.log(`Set canonical /home/ page ID ${expectedFrontPageId} as the WordPress front page.`);
+  } else {
+    console.log(`WordPress front page already points to canonical /home/ page ID ${expectedFrontPageId}.`);
+  }
+} catch (error) {
+  throw new Error(`Front-page reconciliation failed: ${error.message}`);
 }
 
 // Remove the obsolete posts page only when WordPress confirms that it is the
