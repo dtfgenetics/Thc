@@ -1,0 +1,143 @@
+name: Reconcile DTFSeeds WordPress Pages On Command
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-wordpress-reconcile-command
+  cancel-in-progress: false
+
+jobs:
+  reconcile:
+    if: >-
+      github.event.issue.number == 46 &&
+      github.event.comment.body == '/reconcile-wordpress' &&
+      github.actor == github.repository_owner
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: production
+    env:
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME || secrets.WORDPRESS_USERNAME || secrets.WP_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD || secrets.WORDPRESS_APP_PASSWORD || secrets.WP_APPLICATION_PASSWORD }}
+      CONTENT_DIR: ${{ github.workspace }}/site/wordpress/pages
+      BACKUP_ROOT: ${{ runner.temp }}/wordpress-public-page-backups
+      NODE_OPTIONS: --dns-result-order=ipv4first
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate reconciliation package
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/apply-wordpress-public-content-rest.mjs
+          for slug in home seeds learn community shop gallery about contact; do
+            test -s "site/wordpress/pages/$slug.html"
+            grep -Fq '<h1' "site/wordpress/pages/$slug.html"
+          done
+          ! grep -Fq "['games'," scripts/apply-wordpress-public-content-rest.mjs
+          ! grep -Fq "['high-iq'," scripts/apply-wordpress-public-content-rest.mjs
+          grep -Fq 'https://discord.gg/xJbUeHFPMt' site/wordpress/pages/community.html
+
+      - name: Require WordPress credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ -n "${WP_API_USERNAME:-}" ]]
+          [[ -n "${WP_API_PASSWORD:-}" ]]
+
+      - name: Reconcile canonical pages
+        id: pages
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/apply-wordpress-public-content-rest.mjs
+          backup_dir="$(cat "$BACKUP_ROOT/wordpress-rest-backup-path.txt")"
+          summary="$backup_dir/deployment-summary.json"
+          mutations="$(node -p "require(process.argv[1]).mutationCount" "$summary")"
+          changed_pages="$(node -p "require(process.argv[1]).changedPages" "$summary")"
+          echo "mutations=$mutations" >> "$GITHUB_OUTPUT"
+          echo "changed_pages=$changed_pages" >> "$GITHUB_OUTPUT"
+
+      - name: Verify live canonical pages
+        shell: bash
+        run: |
+          set -euo pipefail
+          verify_page() {
+            local path="$1"
+            local required="$2"
+            local body="$RUNNER_TEMP/$(echo "$path" | tr '/?' '__').html"
+            local ok=0
+            for attempt in 1 2 3 4 5 6; do
+              curl --fail --silent --show-error --location \
+                --header 'Cache-Control: no-cache' \
+                "https://dtfseeds.com${path}?dtf_command=${GITHUB_RUN_ID}-${attempt}" \
+                --output "$body"
+              if grep -Fqi -- "$required" "$body"; then
+                ok=1
+                break
+              fi
+              sleep 10
+            done
+            [[ "$ok" -eq 1 ]]
+            for forbidden in \
+              'Reserved strain card' \
+              'staged for verified' \
+              'being rebuilt' \
+              'email@email.com' \
+              '+123456789'; do
+              ! grep -Fqi -- "$forbidden" "$body"
+            done
+          }
+
+          verify_page '/seeds/' 'Genetics built through selection, observation, and documentation.'
+          verify_page '/learn/' 'Understand the plant. Build the environment. Make better decisions.'
+          verify_page '/community/' 'Join the official DTF / Teaching Healthy Cultivation Discord'
+          verify_page '/contact/' 'Join the official DTF / Teaching Healthy Cultivation Discord'
+
+      - name: Upload rollback package
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: wordpress-reconcile-command-backup-${{ github.run_id }}
+          path: ${{ runner.temp }}/wordpress-public-page-backups
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report command result
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          JOB_STATUS: ${{ job.status }}
+          MUTATIONS: ${{ steps.pages.outputs.mutations }}
+          CHANGED_PAGES: ${{ steps.pages.outputs.changed_pages }}
+        with:
+          script: |
+            const body = [
+              '## Owner-triggered canonical WordPress reconciliation',
+              '',
+              `Status: **${process.env.JOB_STATUS}**`,
+              `Mutations: **${process.env.MUTATIONS || 'not-run'}**`,
+              `Pages changed: **${process.env.CHANGED_PAGES || 'not-run'}**`,
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              '',
+              'Verified targets: Seeds, Learn, Community, Contact.',
+              'Static game/application routes were not modified.'
+            ].join('\n');
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 46,
+              body
+            });
