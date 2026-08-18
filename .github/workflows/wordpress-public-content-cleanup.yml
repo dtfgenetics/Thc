@@ -28,9 +28,9 @@ concurrency:
 
 jobs:
   publish:
-    name: Publish THC articles to dtfseeds.com
+    name: Publish THC articles and reconcile canonical pages
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     environment: production
     env:
       WP_SITE_URL: https://dtfseeds.com
@@ -45,12 +45,19 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Validate publisher and article packages
+      - name: Validate publishers and content packages
         shell: bash
         run: |
           set -euo pipefail
           node --check scripts/publish-wordpress-articles-rest.mjs
+          node --check scripts/apply-wordpress-public-content-rest.mjs
           VALIDATE_ONLY=1 node scripts/publish-wordpress-articles-rest.mjs
+          for slug in home seeds learn community shop gallery about contact; do
+            test -s "site/wordpress/pages/$slug.html"
+            grep -Fq '<h1' "site/wordpress/pages/$slug.html"
+          done
+          ! grep -Fq "['games'," scripts/apply-wordpress-public-content-rest.mjs
+          ! grep -Fq "['high-iq'," scripts/apply-wordpress-public-content-rest.mjs
 
       - name: Require WordPress Application Password credentials
         shell: bash
@@ -141,7 +148,7 @@ jobs:
             ARTICLE_FILE="$GITHUB_WORKSPACE/$relative_path" node scripts/publish-wordpress-articles-rest.mjs
           done < "$CHANGED_ARTICLE_FILE"
 
-      - name: Upload rollback metadata
+      - name: Upload article rollback metadata
         if: always() && steps.scope.outputs.mode != 'none'
         uses: actions/upload-artifact@v4
         with:
@@ -150,23 +157,90 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
-      - name: Report publication outcome to issue 46
+      - name: Reconcile canonical WordPress pages
+        id: pages
+        shell: bash
+        env:
+          CONTENT_DIR: ${{ github.workspace }}/site/wordpress/pages
+          BACKUP_ROOT: ${{ runner.temp }}/wordpress-public-page-backups
+        run: |
+          set -euo pipefail
+          node scripts/apply-wordpress-public-content-rest.mjs
+          backup_dir="$(cat "$BACKUP_ROOT/wordpress-rest-backup-path.txt")"
+          summary="$backup_dir/deployment-summary.json"
+          mutations="$(node -p "require(process.argv[1]).mutationCount" "$summary")"
+          changed_pages="$(node -p "require(process.argv[1]).changedPages" "$summary")"
+          echo "mutations=$mutations" >> "$GITHUB_OUTPUT"
+          echo "changed_pages=$changed_pages" >> "$GITHUB_OUTPUT"
+          echo "Canonical page mutations: $mutations; changed pages: $changed_pages"
+
+      - name: Verify canonical pages on production
+        shell: bash
+        run: |
+          set -euo pipefail
+          verify_page() {
+            local path="$1"
+            local required="$2"
+            local body="$RUNNER_TEMP/canonical-$(echo "$path" | tr '/?' '__').html"
+            local ok=0
+            for attempt in 1 2 3 4 5 6; do
+              curl --fail --silent --show-error --location \
+                --header 'Cache-Control: no-cache' \
+                "https://dtfseeds.com${path}?dtf_reconcile=${GITHUB_SHA}-${attempt}" \
+                --output "$body"
+              if grep -Fqi -- "$required" "$body"; then
+                ok=1
+                break
+              fi
+              sleep 10
+            done
+            [[ "$ok" -eq 1 ]]
+            for forbidden in \
+              'Reserved strain card' \
+              'staged for verified' \
+              'being rebuilt' \
+              'email@email.com' \
+              '+123456789'; do
+              ! grep -Fqi -- "$forbidden" "$body"
+            done
+          }
+
+          verify_page '/seeds/' 'Genetics built through selection, observation, and documentation.'
+          verify_page '/learn/' 'Understand the plant. Build the environment. Make better decisions.'
+          verify_page '/community/' 'Join the official DTF / Teaching Healthy Cultivation Discord'
+
+      - name: Upload canonical-page rollback metadata when needed
+        if: always() && (steps.pages.outputs.mutations != '0' || steps.pages.outcome != 'success')
+        uses: actions/upload-artifact@v4
+        with:
+          name: wordpress-public-pages-backup-${{ github.run_id }}
+          path: ${{ runner.temp }}/wordpress-public-page-backups
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report publication and page reconciliation outcome to issue 46
         if: always()
         uses: actions/github-script@v7
         env:
           MODE: ${{ steps.scope.outputs.mode }}
           SLUGS: ${{ steps.scope.outputs.slugs }}
+          PAGE_MUTATIONS: ${{ steps.pages.outputs.mutations }}
+          PAGE_CHANGED: ${{ steps.pages.outputs.changed_pages }}
           JOB_STATUS: ${{ job.status }}
         with:
           script: |
             const body = [
-              '## THC WordPress article publication',
+              '## THC WordPress publication and canonical-page reconciliation',
               '',
               `Status: **${process.env.JOB_STATUS}**`,
-              `Mode: \`${process.env.MODE || 'unknown'}\``,
+              `Article mode: \`${process.env.MODE || 'unknown'}\``,
               `Articles: \`${process.env.SLUGS || 'unknown'}\``,
+              `Canonical page mutations: **${process.env.PAGE_MUTATIONS || 'not-run'}**`,
+              `Canonical pages changed: **${process.env.PAGE_CHANGED || 'not-run'}**`,
               `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
               '',
+              'Canonical WordPress scope: Home, Seeds, Learn, Community, Shop, Gallery, About, Contact.',
+              'Static game routes remain outside WordPress ownership.',
               'No credential values are included in this report.'
             ].join('\n');
             await github.rest.issues.createComment({
