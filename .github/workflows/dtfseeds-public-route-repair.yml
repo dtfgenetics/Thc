@@ -111,10 +111,15 @@ jobs:
           git clone --depth=1 https://github.com/dtfgenetics/Thc-dataset.git "$repo"
           cd "$repo"
           npm ci
+          npm run validate:sources
+          npm run validate:acquisition
+          npm run validate:transfer
           npm run check
           npm test
+          php -l public/api/visual-observations.php
           npm run build
           test -s dist/index.html
+          test -f dist/api/visual-observations.php
           echo "THC_GROW_DOC_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
 
       - name: Assemble public release
@@ -172,9 +177,11 @@ jobs:
             release/games/who-took-it/index.html
             release/growlens/index.html
             release/thc-grow-doc/index.html
+            release/thc-grow-doc/api/visual-observations.php
             release/tools/index.html
             release/projects/index.html
             release/blog/index.html
+            release/puzzles/current.json
           )
           for file in "${required[@]}"; do test -s "$file"; done
 
@@ -200,7 +207,6 @@ jobs:
           grep -Fq '/games/crossword/' release/games/crossword/index.html
           grep -Fq '/games/who-took-it/' release/games/who-took-it/index.html
           grep -Fq '/thc-grow-doc/' release/thc-grow-doc/index.html
-          test -s release/puzzles/current.json
 
           ! grep -RFiq 'email@email.com' release
           ! grep -RFiq '+123456789' release
@@ -390,8 +396,10 @@ jobs:
             ! grep -Fqi '+123456789' <<<"$html"
           done
 
-      - name: Run full live-site production gate
-        run: node scripts/audit-dtfseeds-live.mjs
+      - name: Run full live-site production gates
+        run: |
+          node scripts/audit-dtfseeds-live.mjs
+          node scripts/audit-dtfseeds-public-suite.mjs
 
       - name: Record suite revision
         if: always()
