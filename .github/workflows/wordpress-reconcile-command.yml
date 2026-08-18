@@ -48,8 +48,13 @@ jobs:
             test -s "site/wordpress/pages/$slug.html"
             grep -Fq '<h1' "site/wordpress/pages/$slug.html"
           done
+          test ! -e site/wordpress/pages/games.html
+          test ! -e site/wordpress/pages/high-iq.html
           ! grep -Fq "['games'," scripts/apply-wordpress-public-content-rest.mjs
           ! grep -Fq "['high-iq'," scripts/apply-wordpress-public-content-rest.mjs
+          grep -Fq 'front-page-settings-before.json' scripts/apply-wordpress-public-content-rest.mjs
+          grep -Fq "show_on_front: 'page'" scripts/apply-wordpress-public-content-rest.mjs
+          grep -Fq 'page_on_front: expectedFrontPageId' scripts/apply-wordpress-public-content-rest.mjs
           grep -Fq 'https://discord.gg/xJbUeHFPMt' site/wordpress/pages/community.html
 
       - name: Require WordPress credentials
@@ -59,7 +64,7 @@ jobs:
           [[ -n "${WP_API_USERNAME:-}" ]]
           [[ -n "${WP_API_PASSWORD:-}" ]]
 
-      - name: Reconcile canonical pages
+      - name: Reconcile canonical pages and front page
         id: pages
         shell: bash
         run: |
@@ -103,8 +108,9 @@ jobs:
             done
           }
 
+          verify_page '/' 'Genetics, cultivation education, practical tools, and original cannabis games.'
           verify_page '/seeds/' 'Genetics built through selection, observation, and documentation.'
-          verify_page '/learn/' 'Understand the plant. Build the environment. Make better decisions.'
+          verify_page '/learn/' 'Read the yellow-leaves diagnostic guide'
           verify_page '/community/' 'Join the official DTF / Teaching Healthy Cultivation Discord'
           verify_page '/contact/' 'Join the official DTF / Teaching Healthy Cultivation Discord'
 
@@ -135,7 +141,8 @@ jobs:
               `Pages changed: **${process.env.CHANGED_PAGES || 'not-run'}**`,
               `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
               '',
-              'Verified targets: Seeds, Learn, Community, Contact.',
+              'Verified targets: Home, Seeds, Learn, Community, Contact.',
+              'The canonical Home page is enforced as the WordPress front page served at `/`.',
               'Static game/application routes were not modified.'
             ].join('\n');
             await github.rest.issues.createComment({
