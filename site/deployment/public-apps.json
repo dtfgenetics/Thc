@@ -69,17 +69,19 @@
       "id": "high-iq",
       "title": "High IQ — Test Higher Cognition",
       "repository": "dtfgenetics/Thc",
-      "sourcePath": "games/high-iq",
+      "sourcePath": "site/public-route-patch/games/high-iq",
+      "canonicalDataPath": "games/high-iq/data",
       "route": "/games/high-iq/",
-      "runtime": "landing-external-build-with-github-data",
-      "status": "runtime-data-ready",
+      "runtime": "static",
+      "status": "ready-to-package",
+      "build": "node games/high-iq/scripts/validate-data.mjs",
       "machineData": {
         "version": "2.2",
         "questions": 80,
         "sources": 50,
         "validator": "node games/high-iq/scripts/validate-data.mjs"
       },
-      "notes": "GitHub owns the validated machine-readable v2.2 question/source bank and website metadata. The current playable browser runtime remains externally hosted until the actual Base44 application source is exported and validated for self-hosting."
+      "notes": "Self-hosted HTML/CSS/JavaScript runtime is packaged directly into the public suite. The validator checks the canonical v2.2 question/source bank and confirms the deployable public data copies match byte-for-byte. The older Base44 build is legacy fallback only, not the canonical runtime."
     },
     {
       "id": "thc-u-know",

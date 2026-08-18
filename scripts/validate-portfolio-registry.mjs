@@ -21,6 +21,13 @@ function requiredString(obj, key, label) {
   }
 }
 
+function optionalStringOrNull(obj, key, label) {
+  const value = obj?.[key];
+  if (value !== null && value !== undefined && (typeof value !== 'string' || value.trim() === '')) {
+    errors.push(`${label}: ${key} must be a non-empty string or null`);
+  }
+}
+
 function unique(items, key, label) {
   const seen = new Set();
   for (const item of items) {
@@ -60,16 +67,31 @@ unique(assets, 'asset_id', 'asset-manifest');
 const projectIds = new Set();
 for (const project of projects) {
   const label = `project ${project?.id ?? '<unknown>'}`;
-  for (const key of ['id', 'name', 'type', 'status', 'drive_path', 'source_of_truth_doc']) {
+  for (const key of ['id', 'name', 'type', 'status', 'source_of_truth_doc']) {
     requiredString(project, key, label);
   }
+  optionalStringOrNull(project, 'drive_path', label);
+  optionalStringOrNull(project, 'library_path', label);
+  optionalStringOrNull(project, 'release_path', label);
+  optionalStringOrNull(project, 'repo', label);
+
   if (project?.id) projectIds.add(project.id);
   if (!allowedProjectStatuses.has(project?.status)) {
     errors.push(`${label}: invalid status '${project?.status}'`);
   }
-  if (['canonical', 'canonical-preproduction', 'supporting', 'prototype'].includes(project?.status) && project?.repo === null) {
-    errors.push(`${label}: ${project.status} project must identify a repository`);
+
+  if (['canonical', 'canonical-preproduction', 'supporting', 'prototype'].includes(project?.status)) {
+    requiredString(project, 'repo', label);
   }
+
+  if (project?.status === 'drive-only') {
+    requiredString(project, 'drive_path', label);
+  }
+
+  if (project?.status === 'placeholder' && project?.repo === null && project?.drive_path === null) {
+    errors.push(`${label}: placeholder must have at least a repository or Drive control location`);
+  }
+
   const doc = project?.source_of_truth_doc;
   if (typeof doc === 'string' && doc.startsWith('docs/')) {
     if (!fs.existsSync(path.join(root, doc))) errors.push(`${label}: local source-of-truth file missing: ${doc}`);
