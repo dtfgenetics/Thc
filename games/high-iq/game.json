@@ -2,13 +2,13 @@
   "id": "high-iq",
   "title": "High IQ — Test Higher Cognition",
   "category": "knowledge-game",
-  "status": "playable-external-build-with-github-data",
-  "provider": "Base44",
-  "public_url": "https://inescapable-grow-smart-lab.base44.app/",
+  "status": "self-hosted-browser-build",
+  "provider": "DTF Genetics / GitHub",
+  "public_url": "https://dtfseeds.com/games/high-iq/",
   "website_route": "/games/high-iq/",
-  "source_access": "runtime-source-not-connected",
-  "self_hosted": false,
-  "recorded_date": "2026-08-15",
+  "source_access": "self-hosted-browser-source-available",
+  "self_hosted": true,
+  "legacy_external_url": "https://inescapable-grow-smart-lab.base44.app/",
   "machineData": {
     "owner": "dtfgenetics/Thc",
     "path": "games/high-iq/data",
@@ -18,11 +18,28 @@
     "validation": "node games/high-iq/scripts/validate-data.mjs",
     "provenance": "High_IQ_Master_Production_Workbook_v2_2.xlsx"
   },
+  "browserSource": {
+    "html": "site/public-route-patch/games/high-iq/index.html",
+    "script": "site/public-route-patch/games/high-iq/app.js",
+    "styles": "site/public-route-patch/games/high-iq/high-iq.css",
+    "runtime": "static-es-module",
+    "features": [
+      "category-filter",
+      "difficulty-filter",
+      "variable-session-length",
+      "randomized-question-order",
+      "difficulty-weighted-scoring",
+      "answer-explanations",
+      "context-notes",
+      "source-links",
+      "keyboard-answer-selection"
+    ]
+  },
   "integration": {
-    "mode": "external-launch",
-    "preferred_future_mode": "self-hosted",
-    "target_app_directory": "apps/high-iq-web",
+    "mode": "self-hosted-static",
+    "legacy_mode": "external-rollback-only",
     "runtime_data_ready": true,
-    "runtime_source_ready": false
+    "runtime_source_ready": true,
+    "production_route_verified": false
   }
 }

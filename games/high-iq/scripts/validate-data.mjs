@@ -4,9 +4,14 @@ import { fileURLToPath } from 'node:url';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const dataDir = path.resolve(here, '../data');
+const publicDataDir = path.resolve(here, '../../../site/public-route-patch/games/high-iq/data');
+
+async function readText(directory, filename) {
+  return readFile(path.join(directory, filename), 'utf8');
+}
 
 async function readJson(filename) {
-  return JSON.parse(await readFile(path.join(dataDir, filename), 'utf8'));
+  return JSON.parse(await readText(dataDir, filename));
 }
 
 function fail(message) {
@@ -85,4 +90,15 @@ if (sortedIds[0] !== 'HIQ-S1-001' || sortedIds.at(-1) !== 'HIQ-S1-080') {
   fail(`unexpected question ID range ${sortedIds[0]}..${sortedIds.at(-1)}`);
 }
 
-console.log(`High IQ dataset ${manifest.datasetVersion}: ${questions.length} Approved/PASS questions and ${sources.length} sources validated.`);
+for (const filename of ['manifest.json', ...manifest.questionChunks, ...manifest.sourceChunks]) {
+  const canonical = await readText(dataDir, filename);
+  let publicCopy;
+  try {
+    publicCopy = await readText(publicDataDir, filename);
+  } catch {
+    fail(`public runtime copy is missing ${filename}`);
+  }
+  if (canonical !== publicCopy) fail(`public runtime copy drifted from canonical data: ${filename}`);
+}
+
+console.log(`High IQ dataset ${manifest.datasetVersion}: ${questions.length} Approved/PASS questions and ${sources.length} sources validated; public runtime copies match byte-for-byte.`);

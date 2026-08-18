@@ -4,15 +4,16 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>High IQ | Cannabis Knowledge Challenge | DTF Genetics</title>
-  <meta name="description" content="Play High IQ, DTF Genetics' cannabis knowledge challenge covering plant science, cultivation, genetics, history, terminology, and post-harvest knowledge." />
+  <meta name="description" content="Play High IQ, DTF Genetics' self-hosted cannabis knowledge challenge with 80 validated questions, weighted difficulty, explanations, and source references." />
   <meta name="robots" content="index,follow,max-image-preview:large" />
   <meta name="theme-color" content="#10291d" />
   <link rel="canonical" href="https://dtfseeds.com/games/high-iq/" />
   <link rel="stylesheet" href="/games/dtf-route.css" />
+  <link rel="stylesheet" href="./high-iq.css" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="DTF Genetics" />
   <meta property="og:title" content="High IQ — Test Higher Cognition" />
-  <meta property="og:description" content="A structured cannabis knowledge challenge from DTF Genetics." />
+  <meta property="og:description" content="A self-hosted cannabis plant-science knowledge challenge with verified answers, explanations, and sources." />
   <meta property="og:url" content="https://dtfseeds.com/games/high-iq/" />
 </head>
 <body>
@@ -22,49 +23,126 @@
       <a href="/">Home</a>
       <a href="/seeds/">Genetics</a>
       <a href="/learn/">Learn</a>
-      <a href="/games/">Games</a>
+      <a href="/games/" aria-current="page">Games</a>
       <a href="/community/">Community</a>
     </nav>
   </header>
 
-  <main>
+  <main class="high-iq-shell">
     <section class="hero">
-      <p class="eyebrow">DTF Game Hub · Playable development build</p>
+      <p class="eyebrow">DTF Game Hub · Self-hosted knowledge game</p>
       <h1>High IQ — Test Higher Cognition</h1>
-      <p class="lede">High IQ is DTF Genetics' cannabis knowledge challenge, designed around clear questions, believable answer choices, verified best answers, and explanations that teach instead of simply scoring a guess.</p>
+      <p class="lede">Test cultivation and plant-science knowledge with clear A/B/C/D questions, believable distractors, difficulty-weighted scoring, explanations, and the source records used to verify each answer.</p>
       <div class="actions">
-        <a class="button primary" href="https://inescapable-grow-smart-lab.base44.app/" target="_blank" rel="noopener noreferrer">Launch High IQ</a>
         <a class="button" href="/games/">Back to Game Hub</a>
+        <a class="button" href="/learn/">Study in THC Learn</a>
       </div>
-      <p class="note">The current playable build is hosted externally on Base44 while the DTF-hosted version is prepared.</p>
     </section>
 
-    <section aria-labelledby="format-title">
-      <div class="section-heading"><p class="eyebrow">How it plays</p><h2 id="format-title">A four-level cannabis trivia challenge</h2></div>
+    <section class="quiz-console" aria-labelledby="challenge-title">
+      <div class="quiz-console-header">
+        <div>
+          <p class="eyebrow">Production question bank</p>
+          <h2 id="challenge-title">Build your challenge</h2>
+        </div>
+        <p id="loading-status" class="dataset-status">Loading verified question data…</p>
+      </div>
+
+      <div id="quiz-setup" class="quiz-section" hidden>
+        <p>Choose a category, difficulty, and session length. Questions are randomized from the filtered production bank.</p>
+        <div class="quiz-setup-grid">
+          <div class="field">
+            <label for="category-filter">Category</label>
+            <select id="category-filter"></select>
+          </div>
+          <div class="field">
+            <label for="difficulty-filter">Difficulty</label>
+            <select id="difficulty-filter"></select>
+          </div>
+          <div class="field">
+            <label for="question-count">Session length</label>
+            <select id="question-count"></select>
+          </div>
+        </div>
+        <div class="quiz-actions">
+          <button id="start-quiz" class="quiz-action primary" type="button">Start challenge</button>
+          <span class="note">Keyboard: A–D or 1–4 selects an answer.</span>
+        </div>
+      </div>
+
+      <div id="quiz-panel" class="quiz-section" hidden>
+        <div class="quiz-progress-row">
+          <p id="progress-text">Question 1</p>
+          <span class="note">Lock each answer to reveal the explanation and sources.</span>
+        </div>
+        <progress id="quiz-progress" class="quiz-progress" value="0" max="10">0%</progress>
+        <div class="question-meta" aria-label="Question metadata">
+          <span id="question-category" class="quiz-chip"></span>
+          <span id="question-difficulty" class="quiz-chip"></span>
+          <span id="question-points" class="quiz-chip"></span>
+        </div>
+        <h2 id="question-text" class="question-heading" tabindex="-1"></h2>
+        <div id="answer-options" class="answer-grid" role="group" aria-label="Answer choices"></div>
+        <div class="quiz-controls">
+          <button id="lock-answer" class="quiz-action primary" type="button" disabled>Lock answer</button>
+          <button id="next-question" class="quiz-action primary" type="button" hidden>Next question</button>
+        </div>
+
+        <section id="answer-feedback" class="answer-feedback" aria-labelledby="feedback-title" hidden>
+          <h3 id="feedback-title"></h3>
+          <p id="answer-explanation"></p>
+          <p><strong>Context:</strong> <span id="answer-context"></span></p>
+          <details>
+            <summary>Verification sources</summary>
+            <ul id="answer-sources" class="source-list"></ul>
+          </details>
+        </section>
+      </div>
+
+      <div id="results-panel" class="quiz-section" hidden>
+        <p class="eyebrow">Challenge complete</p>
+        <h2>Your High IQ score</h2>
+        <p id="result-score" class="result-score"></p>
+        <p id="result-detail"></p>
+        <div class="quiz-actions">
+          <button id="restart-quiz" class="quiz-action primary" type="button">Build another challenge</button>
+          <a class="button" href="/learn/">Study another topic</a>
+        </div>
+      </div>
+
+      <p id="quiz-live" class="quiz-live" aria-live="polite"></p>
+      <div id="legacy-fallback" class="legacy-fallback" hidden>
+        <p>The self-hosted question data did not load. You can use the previous external development build while the route is checked.</p>
+        <a class="button" href="https://inescapable-grow-smart-lab.base44.app/" target="_blank" rel="noopener noreferrer">Open legacy development build</a>
+      </div>
+
+      <noscript>
+        <div class="quiz-section">
+          <p>High IQ requires JavaScript for interactive play. The educational page and source-controlled question bank remain available through DTF Genetics.</p>
+        </div>
+      </noscript>
+    </section>
+
+    <section aria-labelledby="quality-title">
+      <div class="section-heading"><p class="eyebrow">Quality model</p><h2 id="quality-title">Questions that teach after the guess</h2></div>
       <div class="card-grid compact">
-        <article class="card"><h3>Easy</h3><p>Foundational terminology, plant parts, basic environmental concepts, and common cultivation knowledge.</p></article>
-        <article class="card"><h3>Medium</h3><p>Applied cultivation reasoning, plant responses, nutrition, water, lighting, and crop-management concepts.</p></article>
-        <article class="card"><h3>Hard</h3><p>More technical genetics, physiology, diagnostics, breeding, environmental control, and post-harvest topics.</p></article>
-        <article class="card"><h3>Expert</h3><p>Questions that require precise context, stronger scientific understanding, and careful distinction between similar answers.</p></article>
+        <article class="card"><h3>80 validated questions</h3><p>The v2.2 bank spans plant biology, physiology, photobiology, environment, nutrition, irrigation, diagnostics, IPM, genetics, breeding, harvest, and post-harvest topics.</p></article>
+        <article class="card"><h3>Difficulty-weighted score</h3><p>Easy questions are worth 1 point, Medium 2, Hard 3, and Expert 4. A session score therefore reflects both accuracy and technical difficulty.</p></article>
+        <article class="card"><h3>Explanation-first feedback</h3><p>Every production question includes an explanation and context note so a wrong answer becomes a short learning step instead of a dead end.</p></article>
+        <article class="card"><h3>Visible verification</h3><p>Source records are attached to each question and shown after the answer is locked. Sources support the factual claim; they do not replace crop-specific professional judgment.</p></article>
       </div>
     </section>
 
-    <section aria-labelledby="topics-title">
-      <div class="section-heading"><p class="eyebrow">Knowledge areas</p><h2 id="topics-title">What High IQ covers</h2></div>
-      <p>Question pools can cover plant biology, photosynthesis, respiration, hormones, roots, water movement, lighting, PPFD, DLI, pH, EC, nutrition, media, irrigation, integrated pest management, harvest, drying, curing, genetics, breeding, history, terminology, and responsible adult-use culture.</p>
-      <p>Each production question should ask one clear thing, have one best answer, use believable distractors, and include an explanation that teaches why the answer is correct.</p>
-    </section>
-
-    <section class="notice" aria-labelledby="quality-title">
-      <h2 id="quality-title">Development status</h2>
-      <p>The browser game is playable, but question balance, difficulty calibration, explanations, interface behavior, scoring, and the self-hosted DTF deployment are still being reviewed. A playable development build is not labeled as a final commercial release.</p>
+    <section class="notice" aria-labelledby="disclaimer-title">
+      <h2 id="disclaimer-title">Educational use</h2>
+      <p>High IQ is an adult educational game. Cultivation and plant-health questions teach general principles and diagnostic reasoning; they do not replace legal, medical, electrical, pesticide-label, laboratory, or workplace-safety guidance.</p>
     </section>
   </main>
 
   <footer>
     <p><strong>DTF Genetics</strong> · Dream the Future</p>
-    <p>Adults only. Trivia content is educational and does not replace legal, medical, electrical, pesticide-label, laboratory, or workplace-safety guidance.</p>
     <p><a href="/learn/">Teaching Healthy Cultivation</a> · <a href="/contact/">Report a question</a></p>
   </footer>
+  <script type="module" src="./app.js"></script>
 </body>
 </html>

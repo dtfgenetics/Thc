@@ -5,11 +5,13 @@ on:
     branches: [main]
     paths:
       - 'games/high-iq/**'
+      - 'site/public-route-patch/games/high-iq/**'
       - '.github/workflows/high-iq-data-ci.yml'
   pull_request:
     branches: [main]
     paths:
       - 'games/high-iq/**'
+      - 'site/public-route-patch/games/high-iq/**'
       - '.github/workflows/high-iq-data-ci.yml'
   workflow_dispatch:
 
@@ -27,3 +29,15 @@ jobs:
           node-version: 22
       - name: Validate production question and source data
         run: node games/high-iq/scripts/validate-data.mjs
+      - name: Check self-hosted browser source syntax
+        run: node --check site/public-route-patch/games/high-iq/app.js
+      - name: Verify crawlable production shell
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s site/public-route-patch/games/high-iq/index.html
+          test -s site/public-route-patch/games/high-iq/high-iq.css
+          grep -Eqi '<h1([ >])' site/public-route-patch/games/high-iq/index.html
+          grep -Fqi 'rel="canonical"' site/public-route-patch/games/high-iq/index.html
+          grep -Fqi 'name="description"' site/public-route-patch/games/high-iq/index.html
+          grep -Fq './app.js' site/public-route-patch/games/high-iq/index.html
