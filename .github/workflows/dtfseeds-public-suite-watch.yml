@@ -30,6 +30,8 @@ jobs:
     env:
       SSH_USER: ${{ secrets.HOSTINGER_USER || secrets.HOSTINGER_SSH_USER || secrets.SSH_USER || secrets.SFTP_USER }}
       SSH_PRIVATE_KEY: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY || secrets.HOSTINGER_SSH_KEY || secrets.SSH_PRIVATE_KEY || secrets.DEPLOY_KEY }}
+      SSH_HOST: ${{ secrets.HOSTINGER_HOST || secrets.SSH_HOST || secrets.SFTP_HOST }}
+      SSH_PORT: ${{ secrets.HOSTINGER_PORT || secrets.SSH_PORT || secrets.SFTP_PORT }}
     steps:
       - uses: actions/checkout@v4
 
@@ -57,13 +59,22 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if [[ -n "${SSH_USER:-}" && -n "${SSH_PRIVATE_KEY:-}" ]]; then
+          [[ -n "${SSH_USER:-}" ]] && user_present=true || user_present=false
+          [[ -n "${SSH_PRIVATE_KEY:-}" ]] && key_present=true || key_present=false
+          [[ -n "${SSH_HOST:-}" ]] && host_present=true || host_present=false
+          [[ -n "${SSH_PORT:-}" ]] && port_present=true || port_present=false
+          echo "user_present=$user_present" >> "$GITHUB_OUTPUT"
+          echo "key_present=$key_present" >> "$GITHUB_OUTPUT"
+          echo "host_present=$host_present" >> "$GITHUB_OUTPUT"
+          echo "port_present=$port_present" >> "$GITHUB_OUTPUT"
+          if [[ "$user_present" == true && "$key_present" == true ]]; then
             echo "available=true" >> "$GITHUB_OUTPUT"
-            echo "Protected Hostinger SSH credentials are available."
+            echo "Protected Hostinger SSH user/private-key credentials are available."
           else
             echo "available=false" >> "$GITHUB_OUTPUT"
-            echo "Protected Hostinger SSH credentials are not available; no deployment will be attempted."
+            echo "Protected Hostinger SSH user/private-key credentials are not available; no deployment will be attempted."
           fi
+          echo "Host configured: $host_present; custom port configured: $port_present. Secret values are never printed."
 
       - name: Check for an active public-suite deployment
         id: active
@@ -126,6 +137,11 @@ jobs:
       - name: Report explicit blocked check
         if: github.event_name != 'schedule' && steps.audit.outputs.status != '0' && steps.access.outputs.available != 'true'
         uses: actions/github-script@v7
+        env:
+          USER_PRESENT: ${{ steps.access.outputs.user_present }}
+          KEY_PRESENT: ${{ steps.access.outputs.key_present }}
+          HOST_PRESENT: ${{ steps.access.outputs.host_present }}
+          PORT_PRESENT: ${{ steps.access.outputs.port_present }}
         with:
           script: |
             await github.rest.issues.createComment({
@@ -138,6 +154,11 @@ jobs:
                 `Watch run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
                 `Event: **${context.eventName}**`,
                 '',
-                'The live public-suite audit failed, but no protected Hostinger SSH user/private-key pair was available. No unsafe deployment attempt was made.'
+                `SSH user configured: **${process.env.USER_PRESENT}**`,
+                `SSH private key configured: **${process.env.KEY_PRESENT}**`,
+                `Host override configured: **${process.env.HOST_PRESENT}**`,
+                `Port override configured: **${process.env.PORT_PRESENT}**`,
+                '',
+                'No credential values are exposed. A host/port override is optional when the deployment fallback is correct; the SSH user and private key are required.'
               ].join('\n')
             });
