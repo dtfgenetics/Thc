@@ -18,15 +18,74 @@ const bannedPublicPhrases = [
 ];
 
 const routes = [
-  { key: 'home', path: '/', minimumText: 500, requireDescription: true },
-  { key: 'games', path: '/games/', minimumText: 500, requireDescription: true },
-  { key: 'seeds', path: '/seeds/', minimumText: 400, requireDescription: true },
-  { key: 'learn', path: '/learn/', minimumText: 500, requireDescription: true },
-  { key: 'community', path: '/community/', minimumText: 300, requireDescription: true },
+  {
+    key: 'home',
+    path: '/',
+    minimumText: 500,
+    requireDescription: true,
+    requiredText: [
+      'Genetics, cultivation education, practical tools, and original cannabis games.',
+      'THC GrowLens',
+      'THC Grow Doc',
+      'DTF Game Hub'
+    ]
+  },
+  {
+    key: 'games',
+    path: '/games/',
+    minimumText: 500,
+    requireDescription: true,
+    requiredText: ['High IQ', 'High Land', 'THC Weekly Crossword', 'Who Took It?']
+  },
+  {
+    key: 'seeds',
+    path: '/seeds/',
+    minimumText: 400,
+    requireDescription: true,
+    requiredText: [
+      'Genetics built through selection, observation, and documentation.',
+      'Blue Mango',
+      'Mango Bubbles'
+    ]
+  },
+  {
+    key: 'learn',
+    path: '/learn/',
+    minimumText: 700,
+    requireDescription: true,
+    requiredText: [
+      'Understand the plant. Build the environment. Make better decisions.',
+      'Read the yellow-leaves diagnostic guide',
+      'A better way to diagnose plant problems'
+    ]
+  },
+  {
+    key: 'yellow-leaves',
+    path: '/yellow-leaves/',
+    minimumText: 1200,
+    requireDescription: true,
+    requiredText: ['Yellow leaves are a symptom, not a diagnosis']
+  },
+  {
+    key: 'community',
+    path: '/community/',
+    minimumText: 300,
+    requireDescription: true,
+    requiredText: [
+      'Join the official DTF / Teaching Healthy Cultivation Discord',
+      'https://discord.gg/xJbUeHFPMt'
+    ]
+  },
   { key: 'shop', path: '/shop/', minimumText: 250, requireDescription: true },
   { key: 'gallery', path: '/gallery/', minimumText: 250, requireDescription: true },
   { key: 'about', path: '/about/', minimumText: 300, requireDescription: true },
-  { key: 'contact', path: '/contact/', minimumText: 250, requireDescription: true },
+  {
+    key: 'contact',
+    path: '/contact/',
+    minimumText: 250,
+    requireDescription: true,
+    requiredText: ['Join the official DTF / Teaching Healthy Cultivation Discord']
+  },
   {
     key: 'high-land',
     path: '/games/high-land/',
@@ -46,10 +105,16 @@ const routes = [
   {
     key: 'high-iq',
     path: '/games/high-iq/',
-    minimumText: 100,
+    minimumText: 900,
     requireDescription: true,
     requireCanonical: true,
-    titleMustInclude: 'High IQ'
+    titleMustInclude: 'High IQ',
+    requiredText: [
+      'High IQ — Test Higher Cognition',
+      'Production question bank',
+      '80 validated questions',
+      'Verification sources'
+    ]
   },
   {
     key: 'legacy-blog',
@@ -131,7 +196,8 @@ async function fetchRoute(route) {
       redirect: 'follow',
       signal: AbortSignal.timeout(15_000),
       headers: {
-        'user-agent': 'DTFSeeds-Live-QA/1.0 (+https://dtfseeds.com/)'
+        'user-agent': 'DTFSeeds-Live-QA/1.1 (+https://dtfseeds.com/)',
+        'cache-control': 'no-cache'
       }
     });
     const html = await response.text();
@@ -165,6 +231,7 @@ function evaluate(result) {
   const { route, html, headers } = result;
   const text = stripHtml(html);
   const textLower = text.toLowerCase();
+  const htmlLower = html.toLowerCase();
   const title = extractTitle(html);
   const description = extractMeta(html, 'name', 'description');
   const canonical = extractCanonical(html);
@@ -202,10 +269,17 @@ function evaluate(result) {
       issues.push(`Only ${text.length} crawlable text characters; expected at least ${route.minimumText}`);
     }
     if (isNoIndex(html, headers)) issues.push('Page is marked noindex');
+
+    for (const required of route.requiredText || []) {
+      const normalized = required.toLowerCase();
+      if (!htmlLower.includes(normalized) && !textLower.includes(normalized)) {
+        issues.push(`Required production text is missing: “${required}”`);
+      }
+    }
   }
 
   for (const phrase of bannedPublicPhrases) {
-    if (html.toLowerCase().includes(phrase) || textLower.includes(phrase)) {
+    if (htmlLower.includes(phrase) || textLower.includes(phrase)) {
       issues.push(`Public staging or fake-data phrase found: “${phrase}”`);
     }
   }
