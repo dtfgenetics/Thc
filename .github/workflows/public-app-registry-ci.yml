@@ -1,0 +1,37 @@
+name: Validate DTF Public App Registry
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - site/deployment/public-apps.json
+      - data/project-registry.json
+      - scripts/validate-public-app-registry.mjs
+      - scripts/validate-portfolio-registry.mjs
+      - .github/workflows/public-app-registry-ci.yml
+  pull_request:
+    branches: [main]
+    paths:
+      - site/deployment/public-apps.json
+      - data/project-registry.json
+      - scripts/validate-public-app-registry.mjs
+      - scripts/validate-portfolio-registry.mjs
+      - .github/workflows/public-app-registry-ci.yml
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate canonical project registry
+        run: node scripts/validate-portfolio-registry.mjs
+      - name: Validate complete GitHub app inventory
+        run: node scripts/validate-public-app-registry.mjs
