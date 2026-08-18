@@ -15,6 +15,8 @@ on:
       - site/wordpress/articles/**
       - scripts/publish-wordpress-articles-rest.mjs
       - .github/workflows/wordpress-public-content-cleanup.yml
+  schedule:
+    - cron: '7,37 * * * *'
 
 permissions:
   contents: read
@@ -86,16 +88,27 @@ jobs:
             exit 0
           fi
 
-          if [[ -z "$BEFORE_SHA" || "$BEFORE_SHA" =~ ^0+$ ]]; then
-            BEFORE_SHA="${CURRENT_SHA}^"
-          fi
-
           changed_file="$RUNNER_TEMP/changed-thc-articles.txt"
-          git diff --diff-filter=AM --name-only "$BEFORE_SHA" "$CURRENT_SHA" -- 'site/wordpress/articles/*.json' \
-            | grep -v '/article.schema.json$' \
-            | while IFS= read -r path; do
-                [[ -f "$path" ]] && printf '%s\n' "$path"
-              done > "$changed_file" || true
+
+          if [[ "${{ github.event_name }}" == "schedule" ]]; then
+            git log --since='90 minutes ago' --name-only --pretty=format: -- 'site/wordpress/articles/*.json' \
+              | grep '^site/wordpress/articles/.*\.json$' \
+              | grep -v '/article.schema.json$' \
+              | sort -u \
+              | while IFS= read -r path; do
+                  [[ -f "$path" ]] && printf '%s\n' "$path"
+                done > "$changed_file" || true
+          else
+            if [[ -z "$BEFORE_SHA" || "$BEFORE_SHA" =~ ^0+$ ]]; then
+              BEFORE_SHA="${CURRENT_SHA}^"
+            fi
+
+            git diff --diff-filter=AM --name-only "$BEFORE_SHA" "$CURRENT_SHA" -- 'site/wordpress/articles/*.json' \
+              | grep -v '/article.schema.json$' \
+              | while IFS= read -r path; do
+                  [[ -f "$path" ]] && printf '%s\n' "$path"
+                done > "$changed_file" || true
+          fi
 
           if [[ ! -s "$changed_file" ]]; then
             echo "mode=none" >> "$GITHUB_OUTPUT"
