@@ -98,6 +98,34 @@ jobs:
           grep -Fq '/thc-grow-doc/' site/wordpress/pages/learn.html
           grep -Fq '/growlens/' site/wordpress/pages/learn.html
 
+      - name: Report validation stage to issue 46
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          VALIDATION_STATUS: ${{ job.status }}
+        with:
+          script: |
+            const body = [
+              '## WordPress page-package validation',
+              '',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Commit: \`${context.sha}\``,
+              `Event: **${context.eventName}**`,
+              `Validation result: **${process.env.VALIDATION_STATUS}**`,
+              '',
+              process.env.VALIDATION_STATUS === 'success'
+                ? 'The canonical eight-page WordPress package passed pre-deployment validation. The protected production deployment job may now proceed.'
+                : 'The canonical WordPress package failed before the protected deployment stage. Inspect this run; no production WordPress mutation was attempted by the deploy job.',
+              '',
+              'No credential values are included in this report.'
+            ].join('\n');
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 46,
+              body
+            });
+
   deploy:
     name: Back up and publish public pages
     needs: validate
