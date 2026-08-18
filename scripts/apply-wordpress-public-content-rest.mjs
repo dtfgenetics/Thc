@@ -18,7 +18,7 @@ const headers = {
   Authorization: authHeader,
   'Content-Type': 'application/json',
   Accept: 'application/json',
-  'User-Agent': 'DTFSeeds-Content-Deployment/1.3'
+  'User-Agent': 'DTFSeeds-Content-Deployment/1.4'
 };
 
 // WordPress owns the editorial/root pages below. /games/ and /games/high-iq/
@@ -111,6 +111,7 @@ async function draftExactLegacyPost(title) {
   const { body } = await request(`/wp-json/wp/v2/posts?${params}`);
   if (!Array.isArray(body)) throw new Error(`Unexpected post response while searching for '${title}'`);
 
+  let drafted = 0;
   for (const post of body) {
     const renderedTitle = post?.title?.raw || post?.title?.rendered || '';
     if (renderedTitle !== title || post?.status === 'draft') continue;
@@ -120,8 +121,10 @@ async function draftExactLegacyPost(title) {
       method: 'POST',
       body: JSON.stringify({ status: 'draft' })
     });
+    drafted += 1;
     console.log(`Drafted obsolete generated post: ${title} (post ID ${post.id})`);
   }
+  return drafted;
 }
 
 await mkdir(join(backupDir, 'pages'), { recursive: true });
@@ -177,6 +180,7 @@ await writeFile(
 
 const results = [];
 let changedPages = 0;
+let auxiliaryMutations = 0;
 for (const item of prepared) {
   if (!item.needsUpdate) {
     results.push({
@@ -222,6 +226,7 @@ try {
         method: 'POST',
         body: JSON.stringify({ status: 'draft' })
       });
+      auxiliaryMutations += 1;
       console.log(`Disabled obsolete /blog/ posts page (page ID ${postsPageId})`);
     }
   }
@@ -234,14 +239,23 @@ try {
 // backup for each, so REST deployment matches the safer WP-CLI cleanup path.
 for (const title of legacyPostTitles) {
   try {
-    await draftExactLegacyPost(title);
+    auxiliaryMutations += await draftExactLegacyPost(title);
   } catch (error) {
     console.warn(`Legacy post cleanup skipped safely for '${title}': ${error.message}`);
   }
 }
 
+const summary = {
+  checkedPages: results.length,
+  changedPages,
+  auxiliaryMutations,
+  mutationCount: changedPages + auxiliaryMutations,
+  backupDir
+};
+
 await writeFile(join(backupDir, 'deployment-results.json'), `${JSON.stringify(results, null, 2)}\n`, 'utf8');
+await writeFile(join(backupDir, 'deployment-summary.json'), `${JSON.stringify(summary, null, 2)}\n`, 'utf8');
 await writeFile(join(backupRoot, 'wordpress-rest-backup-path.txt'), `${backupDir}\n`, 'utf8');
 
-console.log(`REST content reconciliation checked ${results.length} pages; updated ${changedPages}.`);
+console.log(`REST content reconciliation checked ${results.length} pages; updated ${changedPages}; auxiliary mutations ${auxiliaryMutations}.`);
 console.log(`Page-level rollback data: ${backupDir}`);
