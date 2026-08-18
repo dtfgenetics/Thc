@@ -13,6 +13,7 @@ const timestamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d{3}
 const backupDir = join(backupRoot, `wordpress-article-backup-${timestamp}`);
 
 const allowedStatuses = new Set(['draft', 'publish', 'pending', 'private']);
+const allowedImageRoles = new Set(['hero', 'diagnostic', 'diagram', 'infographic', 'comparison', 'supporting']);
 const forbiddenPhrases = [
   '[ARTICLE URL]',
   'TODO',
@@ -25,6 +26,58 @@ const forbiddenPhrases = [
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
+}
+
+function validateImage(image, articleLabel, seenIds) {
+  assert(image && typeof image === 'object' && !Array.isArray(image), `${articleLabel}: every image must be an object`);
+  assert(typeof image.id === 'string' && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(image.id), `${articleLabel}: image id must be lowercase kebab-case`);
+  assert(!seenIds.has(image.id), `${articleLabel}: duplicate image id '${image.id}'`);
+  seenIds.add(image.id);
+  assert(typeof image.url === 'string' && /^https:\/\//.test(image.url), `${articleLabel}: image '${image.id}' must use an HTTPS URL`);
+  assert(typeof image.alt === 'string' && image.alt.trim().length >= 5, `${articleLabel}: image '${image.id}' requires descriptive alt text`);
+  if (image.caption !== undefined) assert(typeof image.caption === 'string', `${articleLabel}: image '${image.id}' caption must be a string`);
+  if (image.credit !== undefined) assert(typeof image.credit === 'string', `${articleLabel}: image '${image.id}' credit must be a string`);
+  if (image.role !== undefined) assert(allowedImageRoles.has(image.role), `${articleLabel}: image '${image.id}' has unsupported role '${image.role}'`);
+
+  return {
+    id: image.id,
+    url: image.url,
+    alt: image.alt.trim(),
+    caption: (image.caption || '').trim(),
+    credit: (image.credit || '').trim(),
+    role: image.role || 'supporting'
+  };
+}
+
+function renderImageFigure(image) {
+  const captionParts = [];
+  if (image.caption) captionParts.push(escapeHtml(image.caption));
+  if (image.credit) captionParts.push(`<span class="thc-image-credit">${escapeHtml(image.credit)}</span>`);
+  const figcaption = captionParts.length ? `<figcaption>${captionParts.join(' ')}</figcaption>` : '';
+  return `<figure class="thc-article-image thc-image-${escapeHtml(image.role)}"><img src="${escapeHtml(image.url)}" alt="${escapeHtml(image.alt)}" loading="lazy" decoding="async">${figcaption}</figure>`;
+}
+
+function renderArticleContent(content, images, label) {
+  let rendered = content;
+  for (const image of images) {
+    const marker = `{{image:${image.id}}}`;
+    const occurrences = rendered.split(marker).length - 1;
+    assert(occurrences === 1, `${label}: image marker '${marker}' must appear exactly once in content; found ${occurrences}`);
+    rendered = rendered.replace(marker, renderImageFigure(image));
+  }
+
+  const unresolved = rendered.match(/\{\{image:[a-z0-9-]+\}\}/g) || [];
+  assert(unresolved.length === 0, `${label}: unresolved image marker(s): ${unresolved.join(', ')}`);
+  return rendered;
 }
 
 function validateArticle(article, sourcePath) {
@@ -53,15 +106,20 @@ function validateArticle(article, sourcePath) {
     assert(article.references.every((ref) => typeof ref === 'string' && /^https:\/\//.test(ref)), `${label}: every reference must be an HTTPS URL`);
   }
 
+  const seenImageIds = new Set();
+  const images = (article.images || []).map((image) => validateImage(image, label, seenImageIds));
+  const renderedContent = renderArticleContent(article.content.trim(), images, label);
+
   return {
     title: article.title.trim(),
     slug: article.slug,
-    content: article.content.trim(),
+    content: renderedContent,
     excerpt: article.excerpt.trim(),
     status: article.status || 'draft',
     categories: article.categories.map((value) => value.trim()),
     tags: (article.tags || []).map((value) => value.trim()),
-    references: article.references || []
+    references: article.references || [],
+    images
   };
 }
 
@@ -94,7 +152,7 @@ async function loadArticles() {
 
 const articles = await loadArticles();
 console.log(`Validated ${articles.length} WordPress article package(s).`);
-for (const article of articles) console.log(`- ${article.slug}: ${article.status}`);
+for (const article of articles) console.log(`- ${article.slug}: ${article.status} (${article.images.length} image(s))`);
 
 if (validateOnly) {
   console.log('Validation-only mode complete. No network requests were made.');
@@ -107,7 +165,7 @@ const headers = {
   Authorization: authHeader,
   'Content-Type': 'application/json',
   Accept: 'application/json',
-  'User-Agent': 'DTF-THC-Article-Publisher/1.0'
+  'User-Agent': 'DTF-THC-Article-Publisher/1.1'
 };
 
 async function request(path, options = {}) {
@@ -197,10 +255,11 @@ for (const article of articles) {
     slug: saved.slug,
     status: saved.status,
     link: saved.link,
-    modified_gmt: saved.modified_gmt
+    modified_gmt: saved.modified_gmt,
+    image_count: article.images.length
   };
   results.push(result);
-  console.log(`${result.action.toUpperCase()}: ${article.slug} -> ${saved.link}`);
+  console.log(`${result.action.toUpperCase()}: ${article.slug} -> ${saved.link} (${result.image_count} image(s))`);
 }
 
 await writeFile(join(backupDir, 'deployment-results.json'), `${JSON.stringify(results, null, 2)}\n`, 'utf8');
