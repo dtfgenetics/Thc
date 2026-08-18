@@ -1,0 +1,33 @@
+name: Validate DTF Genetics Catalog
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'data/genetics/**'
+      - 'scripts/validate-genetics-catalog.mjs'
+      - 'site/wordpress/pages/seeds.html'
+      - '.github/workflows/genetics-catalog-ci.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'data/genetics/**'
+      - 'scripts/validate-genetics-catalog.mjs'
+      - 'site/wordpress/pages/seeds.html'
+      - '.github/workflows/genetics-catalog-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate catalog and public page synchronization
+        run: node scripts/validate-genetics-catalog.mjs

@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "brand": "DTF Genetics",
+  "updated": "2026-08-18",
+  "lines": [
+    {
+      "id": "blue-mango",
+      "name": "Blue Mango",
+      "status": "flagship-breeding-line",
+      "lineage": "Somango XXL × Blueberry Butcher",
+      "parents": [
+        { "role": "seed-parent", "name": "Somango XXL", "catalogId": null },
+        { "role": "pollen-parent", "name": "Blueberry Butcher", "catalogId": "blueberry-butcher" }
+      ],
+      "floweringWindowWeeks": {
+        "minimum": 8,
+        "maximum": 10,
+        "qualifier": "Observed planning range under suitable conditions; phenotype and environment can change actual finish time."
+      },
+      "breedingDirection": [
+        "vigorous plants",
+        "strong branching",
+        "heavy resin production",
+        "substantial flower structure",
+        "candy-blueberry and ripe-mango aromatic direction"
+      ],
+      "publicDescription": "A flagship DTF Genetics project developed through multiple filial generations.",
+      "claimsPolicy": {
+        "phenotypeGuarantee": false,
+        "yieldGuarantee": false,
+        "potencyGuarantee": false,
+        "finishDateGuarantee": false
+      },
+      "releaseNotes": "Exact generation, seed type, inventory, and release details belong to the specific release/listing rather than this stable lineage record."
+    },
+    {
+      "id": "mango-bubbles",
+      "name": "Mango Bubbles",
+      "status": "active-breeding-line",
+      "lineage": "Blue Mango × Blue Bubblegum",
+      "parents": [
+        { "role": "seed-parent", "name": "Blue Mango", "catalogId": "blue-mango" },
+        { "role": "pollen-parent", "name": "Blue Bubblegum", "catalogId": "blue-bubblegum" }
+      ],
+      "floweringWindowWeeks": null,
+      "breedingDirection": [
+        "fruit-forward mango and blueberry character",
+        "sweet bubblegum influence"
+      ],
+      "publicDescription": "An active DTF Genetics line combining Blue Mango with Blue Bubblegum.",
+      "claimsPolicy": {
+        "phenotypeGuarantee": false,
+        "yieldGuarantee": false,
+        "potencyGuarantee": false,
+        "finishDateGuarantee": false
+      },
+      "releaseNotes": "Formal release details must identify the exact generation and seed type."
+    },
+    {
+      "id": "blue-bubblegum",
+      "name": "Blue Bubblegum",
+      "status": "active-breeding-line",
+      "lineage": "Bubblegum Kush × Blueberry Butcher",
+      "parents": [
+        { "role": "seed-parent", "name": "Bubblegum Kush", "catalogId": null },
+        { "role": "pollen-parent", "name": "Blueberry Butcher", "catalogId": "blueberry-butcher" }
+      ],
+      "floweringWindowWeeks": null,
+      "breedingDirection": [
+        "sweet fruit direction",
+        "bubblegum aromatic direction"
+      ],
+      "publicDescription": "A DTF breeding line and parent used in Mango Bubbles.",
+      "claimsPolicy": {
+        "phenotypeGuarantee": false,
+        "yieldGuarantee": false,
+        "potencyGuarantee": false,
+        "finishDateGuarantee": false
+      },
+      "releaseNotes": "Generation and seed type are release-specific."
+    },
+    {
+      "id": "blueberry-butcher",
+      "name": "Blueberry Butcher",
+      "status": "parent-line",
+      "lineage": "Blueberry Muffin × Jack Herer",
+      "parents": [
+        { "role": "seed-parent", "name": "Blueberry Muffin", "catalogId": null },
+        { "role": "pollen-parent", "name": "Jack Herer", "catalogId": null }
+      ],
+      "floweringWindowWeeks": null,
+      "breedingDirection": null,
+      "publicDescription": "An important DTF parent contributing to both Blue Mango and Blue Bubblegum.",
+      "claimsPolicy": {
+        "phenotypeGuarantee": false,
+        "yieldGuarantee": false,
+        "potencyGuarantee": false,
+        "finishDateGuarantee": false
+      },
+      "releaseNotes": "This catalog record describes documented parentage and role; availability is not implied."
+    }
+  ]
+}
