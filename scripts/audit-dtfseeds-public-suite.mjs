@@ -2,15 +2,80 @@ import process from 'node:process';
 
 const BASE_URL = 'https://dtfseeds.com';
 const routes = [
-  { path: '/games/crossword/', title: 'Crossword', canonical: '/games/crossword/', minText: 100 },
-  { path: '/games/who-took-it/', title: 'Who Took It', canonical: '/games/who-took-it/', minText: 100 },
-  { path: '/growlens/', title: 'GrowLens', canonical: '/growlens/', minText: 120 },
-  { path: '/thc-grow-doc/', title: 'Grow Doc', canonical: '/thc-grow-doc/', minText: 120 },
-  { path: '/tools/', title: 'Tools', canonical: '/tools/', minText: 500 },
-  { path: '/projects/', title: 'Projects', canonical: '/projects/', minText: 700 },
+  {
+    path: '/games/',
+    title: 'Game Hub',
+    canonical: '/games/',
+    minText: 700,
+    requiredText: ['High IQ', 'High Land', 'THC Weekly Crossword', 'Who Took It?']
+  },
+  {
+    path: '/games/high-iq/',
+    title: 'High IQ',
+    canonical: '/games/high-iq/',
+    minText: 900,
+    requiredText: ['High IQ — Test Higher Cognition', 'Production question bank', '80 validated questions', 'Verification sources']
+  },
+  {
+    path: '/games/high-land/',
+    title: 'High Land',
+    canonical: '/games/high-land/',
+    minText: 80
+  },
+  {
+    path: '/games/weedopolis/',
+    title: 'Weedopolis',
+    canonical: '/games/weedopolis/',
+    minText: 100
+  },
+  {
+    path: '/games/crossword/',
+    title: 'Crossword',
+    canonical: '/games/crossword/',
+    minText: 100
+  },
+  {
+    path: '/games/who-took-it/',
+    title: 'Who Took It',
+    canonical: '/games/who-took-it/',
+    minText: 100
+  },
+  {
+    path: '/growlens/',
+    title: 'GrowLens',
+    canonical: '/growlens/',
+    minText: 120
+  },
+  {
+    path: '/thc-grow-doc/',
+    title: 'Grow Doc',
+    canonical: '/thc-grow-doc/',
+    minText: 120
+  },
+  {
+    path: '/tools/',
+    title: 'Tools',
+    canonical: '/tools/',
+    minText: 500,
+    requiredText: ['THC GrowLens', 'THC Grow Doc']
+  },
+  {
+    path: '/projects/',
+    title: 'Projects',
+    canonical: '/projects/',
+    minText: 700,
+    requiredText: ['High IQ', 'High Life', 'Strain Showdown', 'Cannabis Fleet Battle']
+  }
 ];
 
-const banned = ['email@email.com', '+123456789', 'Needed from owner', 'Reserved strain card'];
+const banned = [
+  'email@email.com',
+  '+123456789',
+  'Needed from owner',
+  'Reserved strain card',
+  'staged for verified',
+  'being rebuilt'
+];
 
 function textFromHtml(html) {
   return html
@@ -57,10 +122,15 @@ for (const route of routes) {
     const response = await fetch(url, {
       redirect: 'follow',
       signal: AbortSignal.timeout(15_000),
-      headers: { 'user-agent': 'DTFSeeds-Public-Suite-QA/1.0' },
+      headers: {
+        'user-agent': 'DTFSeeds-Public-Suite-QA/1.1',
+        'cache-control': 'no-cache'
+      }
     });
     const html = await response.text();
+    const htmlLower = html.toLowerCase();
     const text = textFromHtml(html);
+    const textLower = text.toLowerCase();
     const title = titleFromHtml(html);
     const canonical = canonicalFromHtml(html);
     const description = descriptionFromHtml(html);
@@ -71,7 +141,19 @@ for (const route of routes) {
     if (!description.trim()) problems.push('missing meta description');
     if (canonical !== new URL(route.canonical, BASE_URL).href) problems.push(`canonical mismatch: ${canonical || '<missing>'}`);
     if (text.length < route.minText) problems.push(`only ${text.length} crawlable characters; expected ${route.minText}+`);
-    for (const phrase of banned) if (html.toLowerCase().includes(phrase.toLowerCase())) problems.push(`banned public phrase: ${phrase}`);
+
+    for (const required of route.requiredText || []) {
+      const normalized = required.toLowerCase();
+      if (!htmlLower.includes(normalized) && !textLower.includes(normalized)) {
+        problems.push(`required production text missing: ${required}`);
+      }
+    }
+
+    for (const phrase of banned) {
+      if (htmlLower.includes(phrase.toLowerCase()) || textLower.includes(phrase.toLowerCase())) {
+        problems.push(`banned public phrase: ${phrase}`);
+      }
+    }
 
     if (seenTitles.has(title)) problems.push(`duplicate title also used by ${seenTitles.get(title)}`);
     else if (title) seenTitles.set(title, route.path);
@@ -91,7 +173,10 @@ for (const route of routes) {
 try {
   const puzzle = await fetch(new URL('/puzzles/current.json', BASE_URL), {
     signal: AbortSignal.timeout(15_000),
-    headers: { 'user-agent': 'DTFSeeds-Public-Suite-QA/1.0' },
+    headers: {
+      'user-agent': 'DTFSeeds-Public-Suite-QA/1.1',
+      'cache-control': 'no-cache'
+    }
   });
   if (!puzzle.ok) throw new Error(`HTTP ${puzzle.status}`);
   const data = await puzzle.json();
