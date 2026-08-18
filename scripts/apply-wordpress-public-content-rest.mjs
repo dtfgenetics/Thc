@@ -18,7 +18,7 @@ const headers = {
   Authorization: authHeader,
   'Content-Type': 'application/json',
   Accept: 'application/json',
-  'User-Agent': 'DTFSeeds-Content-Deployment/1.2'
+  'User-Agent': 'DTFSeeds-Content-Deployment/1.3'
 };
 
 // WordPress owns the editorial/root pages below. /games/ and /games/high-iq/
@@ -50,6 +50,18 @@ const forbiddenPhrases = [
   'Use this page for',
   'staged for'
 ];
+
+function normalizeText(value = '') {
+  return String(value).replace(/\r\n/g, '\n').trim();
+}
+
+function editableTitle(page) {
+  return normalizeText(page?.title?.raw || page?.title?.rendered || '');
+}
+
+function editableContent(page) {
+  return normalizeText(page?.content?.raw || page?.content?.rendered || '');
+}
 
 async function request(path, options = {}) {
   const response = await fetch(`${siteUrl}${path}`, {
@@ -101,7 +113,7 @@ async function draftExactLegacyPost(title) {
 
   for (const post of body) {
     const renderedTitle = post?.title?.raw || post?.title?.rendered || '';
-    if (renderedTitle !== title) continue;
+    if (renderedTitle !== title || post?.status === 'draft') continue;
 
     await writeFile(join(backupDir, `legacy-post-${post.id}.json`), `${JSON.stringify(post, null, 2)}\n`, 'utf8');
     await request(`/wp-json/wp/v2/posts/${post.id}`, {
@@ -140,26 +152,54 @@ for (const [slug, title] of pageDefinitions) {
       throw new Error(`Forbidden staging phrase found in ${slug}.html: ${phrase}`);
     }
   }
+
   const page = await getPublishedPageBySlug(slug);
+  const needsUpdate =
+    editableTitle(page) !== normalizeText(title) ||
+    editableContent(page) !== normalizeText(content) ||
+    page?.status !== 'publish';
+
   await writeFile(join(backupDir, 'pages', `${slug}.json`), `${JSON.stringify(page, null, 2)}\n`, 'utf8');
-  prepared.push({ slug, title, content, page });
+  prepared.push({ slug, title, content, page, needsUpdate });
 }
 
 await writeFile(
   join(backupDir, 'deployment-plan.json'),
-  `${JSON.stringify(prepared.map(({ slug, title, page }) => ({ slug, title, pageId: page.id, previousStatus: page.status })), null, 2)}\n`,
+  `${JSON.stringify(prepared.map(({ slug, title, page, needsUpdate }) => ({
+    slug,
+    title,
+    pageId: page.id,
+    previousStatus: page.status,
+    needsUpdate
+  })), null, 2)}\n`,
   'utf8'
 );
 
 const results = [];
+let changedPages = 0;
 for (const item of prepared) {
+  if (!item.needsUpdate) {
+    results.push({
+      slug: item.slug,
+      pageId: item.page.id,
+      status: item.page.status,
+      modifiedGmt: item.page.modified_gmt,
+      link: item.page.link,
+      changed: false
+    });
+    console.log(`Already synchronized /${item.slug}/ (page ID ${item.page.id})`);
+    continue;
+  }
+
   const updated = await updatePage(item.page, item.title, item.content);
+  changedPages += 1;
   results.push({
     slug: item.slug,
     pageId: updated.id,
     status: updated.status,
     modifiedGmt: updated.modified_gmt,
-    link: updated.link
+    link: updated.link,
+    changed: true
   });
   console.log(`Updated /${item.slug}/ (page ID ${updated.id})`);
 }
@@ -203,5 +243,5 @@ for (const title of legacyPostTitles) {
 await writeFile(join(backupDir, 'deployment-results.json'), `${JSON.stringify(results, null, 2)}\n`, 'utf8');
 await writeFile(join(backupRoot, 'wordpress-rest-backup-path.txt'), `${backupDir}\n`, 'utf8');
 
-console.log(`REST content deployment completed for ${results.length} pages.`);
+console.log(`REST content reconciliation checked ${results.length} pages; updated ${changedPages}.`);
 console.log(`Page-level rollback data: ${backupDir}`);
