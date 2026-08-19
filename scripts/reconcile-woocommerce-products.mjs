@@ -72,7 +72,7 @@ async function fetchWithRetries(url, options = {}, attempts = 4) {
         signal: AbortSignal.timeout(20_000),
         headers: {
           Accept: 'application/json',
-          'User-Agent': 'DTFSeeds-WooCommerce-Reconciler/1.1',
+          'User-Agent': 'DTFSeeds-WooCommerce-Reconciler/1.2',
           ...(options.headers || {})
         }
       });
@@ -220,11 +220,11 @@ if (applyChanges && authMode === 'none') {
 }
 
 await mkdir(backupDir, { recursive: true });
+if (applyChanges) {
+  await writeFile(join(backupRoot, 'woocommerce-backup-path.txt'), `${backupDir}\n`, 'utf8');
+}
 
-const results = [];
-let seedCategory = null;
-if (applyChanges) seedCategory = await ensureSeedCategory();
-
+const prepared = [];
 for (const spec of plan.products) {
   const publicMatches = await publicStoreProductsBySlug(spec.slug);
   if (publicMatches.length !== 1) {
@@ -233,10 +233,9 @@ for (const spec of plan.products) {
 
   const publicProduct = publicMatches[0];
   assertExpectedProductId(spec, publicProduct.id, 'public Store API');
+
   let current = publicProduct;
   let categories = publicCategories(publicProduct);
-  let productId = publicProduct.id;
-
   if (applyChanges) {
     const privateMatches = await authenticatedProductBySlug(spec.slug);
     if (privateMatches.length !== 1) {
@@ -245,22 +244,55 @@ for (const spec of plan.products) {
     current = privateMatches[0];
     assertExpectedProductId(spec, current.id, 'authenticated wc/v3 API');
     categories = authenticatedCategories(current);
-    productId = current.id;
     await writeFile(join(backupDir, `${spec.registryId}-before.json`), `${JSON.stringify(current, null, 2)}\n`, 'utf8');
   }
 
-  const changes = buildChanges(spec, current, categories);
-  const result = {
-    registryId: spec.registryId,
-    slug: spec.slug,
-    expectedProductId: spec.expectedProductId,
-    productId,
-    currentName: current?.name || '',
-    preserveCurrentName: Boolean(spec.preserveCurrentName),
-    changes,
-    changed: false,
-    verified: false
-  };
+  prepared.push({
+    spec,
+    current,
+    productId: current.id,
+    categories,
+    changes: buildChanges(spec, current, categories)
+  });
+}
+
+if (applyChanges) {
+  await writeFile(
+    join(backupDir, 'backup-manifest.json'),
+    `${JSON.stringify({
+      generatedAt: new Date().toISOString(),
+      siteUrl,
+      products: prepared.map(({ spec, productId }) => ({
+        registryId: spec.registryId,
+        slug: spec.slug,
+        expectedProductId: spec.expectedProductId,
+        productId
+      }))
+    }, null, 2)}\n`,
+    'utf8'
+  );
+}
+
+const results = prepared.map(({ spec, current, productId, changes }) => ({
+  registryId: spec.registryId,
+  slug: spec.slug,
+  expectedProductId: spec.expectedProductId,
+  productId,
+  currentName: current?.name || '',
+  preserveCurrentName: Boolean(spec.preserveCurrentName),
+  changes,
+  changed: false,
+  verified: false
+}));
+
+let seedCategory = null;
+if (applyChanges && results.some((result) => result.changes.length > 0)) {
+  seedCategory = await ensureSeedCategory();
+}
+
+for (let index = 0; index < prepared.length; index += 1) {
+  const { spec, current, productId, changes } = prepared[index];
+  const result = results[index];
 
   if (applyChanges && changes.length > 0) {
     const payload = desiredPayload(spec, current, seedCategory);
@@ -276,8 +308,6 @@ for (const spec of plan.products) {
   } else if (applyChanges) {
     result.verified = true;
   }
-
-  results.push(result);
 }
 
 const report = {
@@ -308,6 +338,7 @@ const markdown = [
   ...results.map((result) => `| ${result.registryId} | ${result.expectedProductId ?? ''} | ${result.productId ?? ''} | ${result.changes.map((change) => change.field).join(', ') || 'none'} | ${result.changed ? 'yes' : 'no'} | ${result.verified ? 'yes' : 'no'} |`),
   '',
   'Protected transaction fields are never included in update payloads. Price, stock, SKU, slug, images, tags, attributes, shipping, and tax fields remain controlled by WooCommerce.',
+  'All authenticated product snapshots are written before any product update occurs.',
   'Pinned product IDs must match both the public Store API and authenticated wc/v3 response before a write is permitted.',
   applyChanges ? `Rollback snapshots: ${backupDir}` : 'No writes were performed.'
 ].join('\n') + '\n';
