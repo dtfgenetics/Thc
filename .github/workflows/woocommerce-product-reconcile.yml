@@ -27,7 +27,7 @@ permissions:
 
 concurrency:
   group: dtfseeds-woocommerce-product-reconcile
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   plan:
