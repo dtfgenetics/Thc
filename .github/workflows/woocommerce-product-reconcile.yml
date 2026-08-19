@@ -79,6 +79,44 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
+      - name: Report WooCommerce dry-run to issue 46
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          PLAN_STATUS: ${{ job.status }}
+        with:
+          script: |
+            const fs = require('fs');
+            let detail = 'No machine-readable report was produced.';
+            if (fs.existsSync('woocommerce-reconciliation-report.json')) {
+              const report = JSON.parse(fs.readFileSync('woocommerce-reconciliation-report.json', 'utf8'));
+              const rows = (report.results || []).map((item) => {
+                const changes = (item.changes || []).map((change) => change.field).join(', ') || 'none';
+                return `- ${item.registryId}: product ID ${item.productId ?? 'unknown'}; planned fields: ${changes}`;
+              });
+              detail = [
+                `Products checked: **${report.productCount ?? 0}**`,
+                `Products needing changes: **${report.productsNeedingChanges ?? 0}**`,
+                ...rows
+              ].join('\n');
+            }
+            const body = [
+              '## WooCommerce reconciliation dry-run',
+              '',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Dry-run result: **${process.env.PLAN_STATUS}**`,
+              '',
+              detail,
+              '',
+              'This run is read-only. It cannot change product copy, categories, prices, stock, or any other WooCommerce data.'
+            ].join('\n');
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 46,
+              body
+            });
+
   apply:
     name: Back up, update, and verify WooCommerce products
     if: github.event_name == 'workflow_dispatch' && inputs.mode == 'apply' && needs.plan.result == 'success'
