@@ -1,0 +1,39 @@
+name: Strain Showdown Roster CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'games/strain-showdown/**'
+      - 'data/genetics/catalog.json'
+      - '.github/workflows/strain-showdown-ci.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'games/strain-showdown/**'
+      - 'data/genetics/catalog.json'
+      - '.github/workflows/strain-showdown-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate 96-card roster architecture and family identities
+        run: node games/strain-showdown/scripts/validate-roster.mjs
+      - name: Confirm roster files are machine-readable JSON
+        shell: bash
+        run: |
+          set -euo pipefail
+          node -e "JSON.parse(require('node:fs').readFileSync('games/strain-showdown/data/roster-manifest.json','utf8'))"
+          for file in games/strain-showdown/data/roster/*.json; do
+            node -e "JSON.parse(require('node:fs').readFileSync(process.argv[1],'utf8'))" "$file"
+          done
