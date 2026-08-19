@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Seed Man: Sprout Run | DTF Genetics</title>
+  <meta name="description" content="Play Seed Man: Sprout Run, an original DTF Genetics browser platformer vertical slice with keyboard and touch controls.">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <meta name="theme-color" content="#10291d">
+  <link rel="canonical" href="https://dtfseeds.com/games/seed-man-platformer/">
+  <link rel="stylesheet" href="./seed-man.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="/">DTF Genetics <span>Dream the Future</span></a>
+    <nav aria-label="Primary"><a href="/games/">Games</a><a href="/learn/">Learn</a><a href="/community/">Community</a></nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <p class="eyebrow">Seed Man · Original browser vertical slice</p>
+      <h1>Sprout Run</h1>
+      <p class="lede">Guide Seed Man across an original greenhouse-inspired obstacle course, collect eight sprouts, activate the checkpoint, and reach the Dream the Future flag.</p>
+      <p id="load-status" class="status">Loading level…</p>
+    </section>
+
+    <section class="game-shell" aria-label="Seed Man platformer">
+      <div class="hud" aria-live="polite">
+        <span>Sprouts <strong id="sprout-count">0 / 8</strong></span>
+        <span>Falls <strong id="death-count">0</strong></span>
+        <span>Time <strong id="time-count">0.0s</strong></span>
+        <button id="restart" type="button">Restart</button>
+      </div>
+      <canvas id="game" width="960" height="540" tabindex="0" aria-label="Seed Man game canvas. Use left and right arrows or A and D to move, and Space, W, or Up Arrow to jump."></canvas>
+      <div class="touch-controls" aria-label="Touch controls">
+        <button type="button" data-control="left" aria-label="Move left">◀</button>
+        <button type="button" data-control="right" aria-label="Move right">▶</button>
+        <button type="button" data-control="jump" class="jump" aria-label="Jump">JUMP</button>
+      </div>
+      <p class="controls">Keyboard: A/D or ←/→ to move · Space/W/↑ to jump. Touch controls appear below the game.</p>
+    </section>
+
+    <section class="panel" id="finish-panel" hidden>
+      <p class="eyebrow">Level complete</p>
+      <h2>Dream the Future reached.</h2>
+      <p id="finish-summary"></p>
+      <button id="play-again" class="primary" type="button">Run it again</button>
+    </section>
+
+    <section class="panel">
+      <h2>Vertical-slice status</h2>
+      <p>This prototype proves the original movement, collision, checkpoint, hazard, collectible, camera, keyboard, and touch-control systems. The current Seed Man is drawn with simple Canvas2D primitives so gameplay remains independent from unfinished production sprite art.</p>
+    </section>
+  </main>
+
+  <footer><p><strong>DTF Genetics</strong> · Dream the Future</p><p>Original DTF game prototype. No third-party level layouts or character assets are used.</p></footer>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
