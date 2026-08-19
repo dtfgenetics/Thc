@@ -1,0 +1,53 @@
+name: Cannabis Fleet Battle Engine CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'games/cannabis-fleet-battle/**'
+      - '.github/workflows/cannabis-fleet-battle-ci.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'games/cannabis-fleet-battle/**'
+      - '.github/workflows/cannabis-fleet-battle-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate engine syntax
+        run: node --check games/cannabis-fleet-battle/src/engine.mjs
+      - name: Run placement, authority, anti-cheat and win tests
+        run: node games/cannabis-fleet-battle/test/engine.test.mjs
+      - name: Validate canonical fleet contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const fleet = JSON.parse(fs.readFileSync('games/cannabis-fleet-battle/data/fleet.json', 'utf8'));
+          if (fleet.length !== 6) throw new Error('Expected six canonical fleet pieces');
+          if (new Set(fleet.map((ship) => ship.id)).size !== fleet.length) throw new Error('Fleet IDs must be unique');
+          const total = fleet.reduce((sum, ship) => sum + ship.length, 0);
+          if (total !== 21) throw new Error(`Expected 21 occupied fleet cells, found ${total}`);
+          for (const ship of fleet) {
+            if (!Number.isInteger(ship.length) || ship.length < 2 || ship.length > 5) throw new Error(`Invalid ship length for ${ship.id}`);
+          }
+          NODE
+      - name: Confirm protocol preserves server authority
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -Fq 'Clients send intents' games/cannabis-fleet-battle/docs/NETWORK_PROTOCOL.md
+          grep -Fq 'does not change turn ownership' games/cannabis-fleet-battle/docs/NETWORK_PROTOCOL.md
+          grep -Fq 'does **not** receive unhit opponent ship cells' games/cannabis-fleet-battle/docs/NETWORK_PROTOCOL.md
