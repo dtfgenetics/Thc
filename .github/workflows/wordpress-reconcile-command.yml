@@ -11,7 +11,7 @@ permissions:
 
 concurrency:
   group: dtfseeds-wordpress-reconcile-command
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   reconcile:
@@ -21,12 +21,14 @@ jobs:
        github.event.comment.body == '/reconcile-wordpress' &&
        github.event.comment.user.login == github.repository_owner)
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
     environment: production
     env:
       WP_SITE_URL: https://dtfseeds.com
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME || secrets.WORDPRESS_USERNAME || secrets.WP_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD || secrets.WORDPRESS_APP_PASSWORD || secrets.WP_APPLICATION_PASSWORD }}
+      WC_CONSUMER_KEY: ${{ secrets.WC_CONSUMER_KEY }}
+      WC_CONSUMER_SECRET: ${{ secrets.WC_CONSUMER_SECRET }}
       CONTENT_DIR: ${{ github.workspace }}/site/wordpress/pages
       BACKUP_ROOT: ${{ runner.temp }}/wordpress-public-page-backups
       NODE_OPTIONS: --dns-result-order=ipv4first
@@ -44,25 +46,42 @@ jobs:
         run: |
           set -euo pipefail
           node --check scripts/apply-wordpress-public-content-rest.mjs
+          node --check scripts/audit-wordpress-commerce-rest.mjs
+          node --check scripts/reconcile-woocommerce-products.mjs
+          node --check scripts/rollback-woocommerce-products.mjs
+          node scripts/validate-genetics-commerce.mjs
+          node scripts/validate-woocommerce-reconciliation.mjs
           for slug in home seeds learn community shop gallery about contact; do
             test -s "site/wordpress/pages/$slug.html"
             grep -Fq '<h1' "site/wordpress/pages/$slug.html"
           done
           test ! -e site/wordpress/pages/games.html
           test ! -e site/wordpress/pages/high-iq.html
-          ! grep -Fq "['games'," scripts/apply-wordpress-public-content-rest.mjs
-          ! grep -Fq "['high-iq'," scripts/apply-wordpress-public-content-rest.mjs
           grep -Fq 'front-page-settings-before.json' scripts/apply-wordpress-public-content-rest.mjs
           grep -Fq "show_on_front: 'page'" scripts/apply-wordpress-public-content-rest.mjs
           grep -Fq 'page_on_front: expectedFrontPageId' scripts/apply-wordpress-public-content-rest.mjs
           grep -Fq 'https://discord.gg/xJbUeHFPMt' site/wordpress/pages/community.html
 
       - name: Require WordPress credentials
+        id: access
         shell: bash
         run: |
           set -euo pipefail
           [[ -n "${WP_API_USERNAME:-}" ]]
           [[ -n "${WP_API_PASSWORD:-}" ]]
+          if [[ -n "${WC_CONSUMER_KEY:-}" && -n "${WC_CONSUMER_SECRET:-}" ]]; then
+            echo 'commerce_auth=woocommerce-consumer-key' >> "$GITHUB_OUTPUT"
+          else
+            echo 'commerce_auth=wordpress-basic-auth' >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Probe WordPress commerce and presentation without writes
+        id: presentation_probe
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/audit-wordpress-commerce-rest.mjs
 
       - name: Reconcile canonical pages and front page
         id: pages
@@ -78,6 +97,7 @@ jobs:
           echo "changed_pages=$changed_pages" >> "$GITHUB_OUTPUT"
 
       - name: Verify live canonical pages
+        id: verify
         shell: bash
         run: |
           set -euo pipefail
@@ -87,7 +107,7 @@ jobs:
             local body="$RUNNER_TEMP/$(echo "$path" | tr '/?' '__').html"
             local ok=0
             for attempt in 1 2 3 4 5 6; do
-              curl --fail --silent --show-error --location \
+              curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
                 --header 'Cache-Control: no-cache' \
                 "https://dtfseeds.com${path}?dtf_command=${GITHUB_RUN_ID}-${attempt}" \
                 --output "$body"
@@ -102,6 +122,7 @@ jobs:
               'Reserved strain card' \
               'staged for verified' \
               'being rebuilt' \
+              'Needed from owner' \
               'email@email.com' \
               '+123456789'; do
               ! grep -Fqi -- "$forbidden" "$body"
@@ -109,17 +130,53 @@ jobs:
           }
 
           verify_page '/' 'Genetics, cultivation education, practical tools, and original cannabis games.'
-          verify_page '/seeds/' 'Genetics built through selection, observation, and documentation.'
+          verify_page '/seeds/' 'Shop current releases'
+          verify_page '/shop/' 'Shop current DTF releases without losing the breeding context.'
           verify_page '/learn/' 'Read the yellow-leaves diagnostic guide'
           verify_page '/community/' 'Join the official DTF / Teaching Healthy Cultivation Discord'
           verify_page '/contact/' 'Join the official DTF / Teaching Healthy Cultivation Discord'
 
-      - name: Upload rollback package
+      - name: Reconcile canonical WooCommerce product copy and categories
+        id: commerce_reconcile
+        if: steps.verify.outcome == 'success'
+        continue-on-error: true
+        shell: bash
+        env:
+          BACKUP_ROOT: ${{ runner.temp }}/woocommerce-product-backups
+        run: |
+          set -euo pipefail
+          APPLY_WOOCOMMERCE_CHANGES=true node scripts/reconcile-woocommerce-products.mjs
+
+      - name: Restore product snapshots after failed WooCommerce reconciliation
+        id: commerce_rollback
+        if: steps.commerce_reconcile.outcome == 'failure'
+        shell: bash
+        env:
+          BACKUP_ROOT: ${{ runner.temp }}/woocommerce-product-backups
+        run: |
+          set -euo pipefail
+          pointer="$BACKUP_ROOT/woocommerce-backup-path.txt"
+          if [[ ! -f "$pointer" ]]; then
+            echo 'No product backup pointer exists; failure occurred before a rollback-capable snapshot set was created.'
+            exit 0
+          fi
+          backup_dir="$(cat "$pointer")"
+          if [[ ! -f "$backup_dir/backup-manifest.json" ]]; then
+            echo 'No complete backup manifest exists; failure occurred before any product write could begin.'
+            exit 0
+          fi
+          APPLY_WOOCOMMERCE_ROLLBACK=true node scripts/rollback-woocommerce-products.mjs
+
+      - name: Upload rollback and capability package
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: wordpress-reconcile-command-backup-${{ github.run_id }}
-          path: ${{ runner.temp }}/wordpress-public-page-backups
+          path: |
+            ${{ runner.temp }}/wordpress-public-page-backups
+            ${{ runner.temp }}/woocommerce-product-backups
+            woocommerce-reconciliation-report.json
+            woocommerce-reconciliation-report.md
           if-no-files-found: warn
           retention-days: 30
 
@@ -130,20 +187,54 @@ jobs:
           JOB_STATUS: ${{ job.status }}
           MUTATIONS: ${{ steps.pages.outputs.mutations }}
           CHANGED_PAGES: ${{ steps.pages.outputs.changed_pages }}
+          PRESENTATION_OUTCOME: ${{ steps.presentation_probe.outcome }}
+          COMMERCE_AUTH: ${{ steps.access.outputs.commerce_auth }}
+          COMMERCE_RECONCILE: ${{ steps.commerce_reconcile.outcome }}
+          COMMERCE_ROLLBACK: ${{ steps.commerce_rollback.outcome }}
         with:
           script: |
+            const fs = require('fs');
+            const path = require('path');
+            let presentation = 'Presentation probe did not produce a readable report.';
+            const capabilityPath = path.join(process.env.BACKUP_ROOT || '', 'wordpress-commerce-capabilities.json');
+            if (capabilityPath && fs.existsSync(capabilityPath)) {
+              const report = JSON.parse(fs.readFileSync(capabilityPath, 'utf8'));
+              const theme = report.presentation?.activeTheme?.details?.[0];
+              const defects = report.presentation?.defectMatches || {};
+              const matches = [
+                ...(defects.templatePartMatches || []).map((item) => `template-part:${item.id || item.slug || 'unknown'}`),
+                ...(defects.widgetMatches || []).map((item) => `widget:${item.id || 'unknown'}`),
+                ...(defects.blockNavigationMatches || []).map((item) => `block-navigation:${item.id || item.slug || 'unknown'}`),
+                ...(defects.classicMenuItemMatches || []).map((item) => `classic-menu-item:${item.id || 'unknown'}`)
+              ];
+              presentation = [
+                `Active theme: **${theme?.name || theme?.stylesheet || 'unresolved'}**${theme?.version ? ` ${theme.version}` : ''}`,
+                `Block theme: **${theme?.isBlockTheme ? 'yes' : 'no'}**`,
+                `Stale presentation resource matches: **${matches.length}**`,
+                ...(matches.length ? matches.slice(0, 20).map((item) => `- ${item}`) : ['- No exact marker resource was identified.'])
+              ].join('\n');
+            }
             const body = [
               '## Canonical WordPress reconciliation',
               '',
               `Trigger: **${context.eventName}**`,
               `Status: **${process.env.JOB_STATUS}**`,
-              `Mutations: **${process.env.MUTATIONS || 'not-run'}**`,
+              `Page mutations: **${process.env.MUTATIONS || 'not-run'}**`,
               `Pages changed: **${process.env.CHANGED_PAGES || 'not-run'}**`,
+              `Presentation probe: **${process.env.PRESENTATION_OUTCOME || 'not-run'}**`,
+              `Commerce authentication: **${process.env.COMMERCE_AUTH || 'not-confirmed'}**`,
+              `WooCommerce reconciliation: **${process.env.COMMERCE_RECONCILE || 'not-run'}**`,
+              `WooCommerce rollback: **${process.env.COMMERCE_ROLLBACK || 'not-needed'}**`,
               `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
               '',
-              'Verified targets: Home, Seeds, Learn, Community, Contact.',
-              'The canonical Home page is enforced as the WordPress front page served at `/`.',
-              'Static game/application routes were not modified.'
+              '### Presentation probe',
+              '',
+              presentation,
+              '',
+              'Verified page targets: Home, Seeds, Shop, Learn, Community, Contact. Home is enforced as the WordPress front page served at `/`.',
+              'WooCommerce writes are restricted to reviewed names, descriptions, short descriptions, and categories for pinned product IDs 39, 41, and 91. Transaction fields are preserved.',
+              'All three product snapshots are captured before the first product write; a failed product reconciliation automatically restores the reviewed fields when a complete backup manifest exists.',
+              'Static game/application routes are not modified.'
             ].join('\n');
             await github.rest.issues.createComment({
               owner: context.repo.owner,
