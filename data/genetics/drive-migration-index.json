@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-08-18",
+  "driveMasterFolder": {
+    "title": "DTF Project Asset Library - MASTER SOURCE",
+    "id": "1ODG0SqCqnMpRzanuZz4zsCwRZk7ksgvu"
+  },
+  "driveTracker": {
+    "title": "DTF Master Project Tracker",
+    "id": "1MLhwAmhrJjDT7kGKsIrlv3AD5G8qBkURGyhhJpUozqI"
+  },
+  "navigationSource": {
+    "title": "START HERE - DTF Navigation Map",
+    "id": "1rMj-5MtjZwFx6jFvzdZHXKsQ3k9c4C2vUWNRMyJmvO4",
+    "repoMirror": "data/genetics/sources/drive-navigation-genetics-map.md"
+  },
+  "migratedRecords": [
+    {
+      "name": "Blue Mango",
+      "driveFolderId": "1AqGDeWtt_eXHmH0OQGtwK2NaKuCj8hYH",
+      "driveFileId": "1aIPA7fQJr_xzwnfDPfB1nZWnITMVahPYQzd8eS78g6g",
+      "repoMirror": "data/genetics/sources/blue-mango-line-sheet.md",
+      "catalogId": "blue-mango",
+      "status": "migrated-and-promoted"
+    },
+    {
+      "name": "Mango Bubbles",
+      "driveFolderId": "1zlSZo5AoG0ooIH2SK_CgGFsC4FBtiWnK",
+      "driveFileId": "10C9hE4u45V8sw16gvDu2PgwfgICvZAwm7UcYWDRfwnU",
+      "repoMirror": "data/genetics/sources/mango-bubbles-line-sheet.md",
+      "catalogId": "mango-bubbles",
+      "status": "migrated-and-promoted"
+    }
+  ],
+  "driveFolderChecks": [
+    {
+      "name": "Somango XXL",
+      "driveFolderId": "1hTM6ZNfsK-upMo58BDlGC5wZ5MqomTwJ",
+      "filesFound": 0,
+      "status": "empty-folder-no-record-to-migrate"
+    },
+    {
+      "name": "White Widow",
+      "driveFolderId": "1bv9HaFGW6TtJtt-nG0OPgAjY2DoBLzJX",
+      "filesFound": 0,
+      "status": "empty-folder-no-record-to-migrate"
+    },
+    {
+      "name": "Cali Orange",
+      "driveFolderId": "1oYYvhgkuWFsKCqrUV0nr1ME5KlrwJnX4",
+      "filesFound": 0,
+      "status": "empty-folder-no-record-to-migrate"
+    }
+  ],
+  "namingReview": [
+    {
+      "driveNavigationName": "Blueberry Bubblegum",
+      "catalogName": "Blue Bubblegum",
+      "status": "requires-source-reconciliation",
+      "reason": "The Drive navigation map lists Blueberry Bubblegum, while the controlled Mango Bubbles line sheet and current catalog use Blue Bubblegum. No standalone Drive line sheet was found for either name during this migration pass."
+    }
+  ],
+  "policy": "Promote only facts supported by an identified Drive source record or an already controlled GitHub record. Empty folders and naming conflicts remain tracked but are not converted into canonical lineage claims."
+}
