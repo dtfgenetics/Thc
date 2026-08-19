@@ -1,0 +1,20 @@
+[
+  {"id":"u-privacy","era":"underground","title":"Keep It Quiet","text":"A privacy scare forces you to slow down and tighten routines.","effects":{"cash":-1,"reputation":-1},"mitigation":{"resource":"operations","minimum":3,"label":"Strong routines limited the damage.","effects":{"reputation":1}}},
+  {"id":"u-mentor","era":"underground","title":"Old-Head Advice","text":"A trusted mentor shares hard-earned lessons.","effects":{"knowledge":2,"reputation":1}},
+  {"id":"u-scarcity","era":"underground","title":"Supply Run","text":"Scarce equipment costs more than expected.","effects":{"cash":-2},"mitigation":{"resource":"assets","minimum":2,"label":"Your existing gear softened the shortage.","effects":{"cash":1}}},
+  {"id":"u-genetics","era":"underground","title":"Keeper Found","text":"A standout plant earns attention and a place in your notes.","effects":{"genetics":2,"reputation":1}},
+  {"id":"u-community","era":"underground","title":"Community Favor","text":"You help another grower and the relationship comes back around.","effects":{"reputation":2,"cash":1}},
+  {"id":"u-improvise","era":"underground","title":"Make It Work","text":"Improvisation keeps the project moving, but it costs time.","effects":{"operations":1,"cash":-1},"mitigation":{"resource":"knowledge","minimum":4,"label":"Knowledge turned the workaround into a clean solution.","effects":{"cash":1}}},
+  {"id":"m-patient","era":"medical","title":"Patient Referral","text":"Reliable results bring a patient-focused referral.","effects":{"reputation":2,"cash":2}},
+  {"id":"m-paperwork","era":"medical","title":"Paper Trail","text":"New documentation expectations expose weak record keeping.","effects":{"cash":-1,"compliance":-1},"mitigation":{"resource":"compliance","minimum":4,"label":"Your records were already organized.","effects":{"compliance":2,"cash":1}}},
+  {"id":"m-testing","era":"medical","title":"Testing Day","text":"Testing gives you useful feedback on consistency.","effects":{"knowledge":2,"compliance":1}},
+  {"id":"m-coop","era":"medical","title":"Co-op Opportunity","text":"A small collaboration opens access to better tools.","effects":{"assets":1,"reputation":1},"mitigation":{"resource":"reputation","minimum":8,"label":"Your reputation improves the deal.","effects":{"cash":2}}},
+  {"id":"m-change","era":"medical","title":"Rules Shift","text":"A fast policy change creates extra work.","effects":{"operations":-1,"cash":-1},"mitigation":{"resource":"compliance","minimum":5,"label":"Compliance readiness keeps the change manageable.","effects":{"operations":1,"cash":1}}},
+  {"id":"m-training","era":"medical","title":"Training Session","text":"A formal workshop upgrades your process.","effects":{"knowledge":1,"operations":2,"cash":-1}},
+  {"id":"l-partner","era":"legal","title":"Brand Partnership","text":"A compatible partner expands your reach.","effects":{"brand":2,"cash":2},"mitigation":{"resource":"reputation","minimum":10,"label":"Strong reputation makes the partnership more valuable.","effects":{"brand":1}}},
+  {"id":"l-market","era":"legal","title":"Market Compression","text":"Crowded shelves pressure margins.","effects":{"cash":-2,"brand":-1},"mitigation":{"resource":"brand","minimum":5,"label":"A recognizable brand protects part of your demand.","effects":{"cash":2,"brand":1}}},
+  {"id":"l-audit","era":"legal","title":"Compliance Review","text":"A routine review tests how professional the operation has become.","effects":{"cash":-1},"mitigation":{"resource":"compliance","minimum":6,"label":"Clean records turn the review into a confidence boost.","effects":{"reputation":2,"cash":1}}},
+  {"id":"l-scale","era":"legal","title":"Scale Decision","text":"A measured expansion creates more productive capacity.","effects":{"assets":2,"operations":1,"cash":-2}},
+  {"id":"l-award","era":"legal","title":"Community Recognition","text":"Years of documented work earn public recognition.","effects":{"reputation":3,"brand":1}},
+  {"id":"l-legacy","era":"legal","title":"Teach the Next Grower","text":"Sharing what you learned strengthens the legacy beyond your own operation.","effects":{"reputation":2,"knowledge":1,"brand":1}}
+]
