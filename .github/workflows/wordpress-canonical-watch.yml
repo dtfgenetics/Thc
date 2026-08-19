@@ -32,8 +32,10 @@ jobs:
         run: |
           set -euo pipefail
           node --check scripts/apply-wordpress-public-content-rest.mjs
+          node --check scripts/audit-wordpress-commerce-rest.mjs
           node --check scripts/validate-genetics-commerce.mjs
           node --check scripts/reconcile-woocommerce-products.mjs
+          node --check scripts/rollback-woocommerce-products.mjs
           node --check scripts/validate-woocommerce-reconciliation.mjs
           node scripts/validate-genetics-commerce.mjs
           node scripts/validate-woocommerce-reconciliation.mjs
@@ -76,7 +78,7 @@ jobs:
               const report = JSON.parse(fs.readFileSync('woocommerce-reconciliation-report.json', 'utf8'));
               const rows = (report.results || []).map((item) => {
                 const fields = (item.changes || []).map((change) => change.field).join(', ') || 'none';
-                return `- ${item.registryId}: product ID ${item.productId ?? 'unknown'}; planned fields: ${fields}`;
+                return `- ${item.registryId}: pinned/live product ID ${item.expectedProductId ?? 'unknown'}/${item.productId ?? 'unknown'}; planned fields: ${fields}`;
               });
               commerceDetail = [
                 `Live products checked: **${report.productCount ?? 0}**`,
@@ -95,7 +97,7 @@ jobs:
               '',
               commerceDetail,
               '',
-              'This workflow intentionally accesses no production credentials and performs no WooCommerce writes. It validates the trusted `main` WordPress package, genetics-to-store route consistency, and the backup-first WooCommerce reconciliation plan. A separate protected workflow owns production publishing and any future WooCommerce apply action.'
+              'This workflow intentionally accesses no production credentials and performs no WooCommerce writes. It validates the trusted `main` WordPress package, the authenticated presentation probe syntax, genetics-to-store route consistency, pinned product identities, and the backup/rollback WooCommerce reconciliation package. The protected production workflow owns all writes.'
             ].join('\n');
             await github.rest.issues.createComment({
               owner: context.repo.owner,
