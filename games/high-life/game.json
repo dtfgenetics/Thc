@@ -3,18 +3,40 @@
   "id": "high-life",
   "title": "High Life: From Bagseed to Legacy",
   "type": "branching-life-path-board-game",
-  "status": "canonical-preproduction",
+  "status": "browser-prototype",
+  "route": "/games/high-life/",
   "eras": ["underground", "medical", "legal"],
+  "turnsPerEra": 6,
+  "totalTurns": 18,
   "coreSystems": [
-    "branching-path-movement",
+    "branching-career-decisions",
+    "seeded-event-resolution",
     "reputation",
     "assets",
-    "harvest-income",
-    "opportunity",
-    "risk",
-    "era-events",
+    "cash",
+    "knowledge",
+    "compliance",
+    "brand",
+    "operations",
+    "genetics",
+    "era-transition-gates",
     "legacy-scoring"
   ],
+  "implementation": {
+    "engine": "games/high-life/src/engine.mjs",
+    "events": "games/high-life/data/events.json",
+    "tests": "games/high-life/test/engine.test.mjs",
+    "publicRoute": "site/public-route-patch/games/high-life",
+    "deterministic": true,
+    "simulationSeedsPerStrategy": 120,
+    "balanceSpreadCeiling": 38
+  },
+  "prototypeValidation": {
+    "strategies": ["knowledge", "builder", "genetics", "balanced"],
+    "observedAverageSpreadAtImplementation": 9.0834,
+    "browserRouteBuilt": true,
+    "canonicalPublicCopyCheck": true
+  },
   "components": [
     "branching-board",
     "player-pawns",
@@ -25,12 +47,12 @@
     "opportunity-spaces",
     "score-sheet"
   ],
-  "releaseGates": [
-    "rules-engine-tested",
-    "economy-simulated",
-    "browser-prototype-tested",
-    "print-layout-reviewed",
-    "original-art-cleared",
-    "accessibility-reviewed"
-  ]
+  "releaseGates": {
+    "rules-engine-tested": true,
+    "economy-simulated": true,
+    "browser-prototype-tested": "ci-and-human-playtest-pending",
+    "print-layout-reviewed": false,
+    "original-art-cleared": false,
+    "accessibility-reviewed": false
+  }
 }
