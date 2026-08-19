@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "game": "Strain Showdown",
+  "rosterVersion": "0.1.0",
+  "cardCount": 96,
+  "families": ["kush", "haze", "skunk", "gas", "cookies", "fruit", "purple", "frost"],
+  "files": [
+    "roster/kush.json",
+    "roster/haze.json",
+    "roster/skunk.json",
+    "roster/gas.json",
+    "roster/cookies.json",
+    "roster/fruit.json",
+    "roster/purple.json",
+    "roster/frost.json"
+  ],
+  "tierCountsPerFamily": {"1": 6, "2": 4, "3": 2},
+  "tierLabels": {"1": "Base", "2": "Select", "3": "Elite"},
+  "stageSummonRules": {
+    "1": "play-normally",
+    "2": "sacrifice-one-same-family-stage-1",
+    "3": "sacrifice-one-same-family-stage-2"
+  },
+  "effectStatus": "mechanic-role-only",
+  "artStatus": "not-assigned",
+  "releaseStatus": "roster-data-draft",
+  "notes": "Names, IDs, family, tier/stage, Vigor/Power, and role tags are machine-controlled. Full effect text, art, and final balance are later gates."
+}
