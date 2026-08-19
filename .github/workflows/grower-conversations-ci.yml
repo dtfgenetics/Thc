@@ -5,11 +5,13 @@ on:
     branches: [main]
     paths:
       - 'games/grower-conversations/**'
+      - 'site/public-route-patch/games/grower-conversations/**'
       - '.github/workflows/grower-conversations-ci.yml'
   pull_request:
     branches: [main]
     paths:
       - 'games/grower-conversations/**'
+      - 'site/public-route-patch/games/grower-conversations/**'
       - '.github/workflows/grower-conversations-ci.yml'
   workflow_dispatch:
 
@@ -31,3 +33,17 @@ jobs:
         run: |
           node -e "JSON.parse(require('node:fs').readFileSync('games/grower-conversations/data/categories.json','utf8'))"
           node -e "JSON.parse(require('node:fs').readFileSync('games/grower-conversations/data/prompt-bank.json','utf8'))"
+          node -e "JSON.parse(require('node:fs').readFileSync('site/public-route-patch/games/grower-conversations/data/prompt-bank.json','utf8'))"
+      - name: Verify browser runtime and canonical data synchronization
+        shell: bash
+        run: |
+          set -euo pipefail
+          route=site/public-route-patch/games/grower-conversations
+          node --check "$route/app.js"
+          cmp games/grower-conversations/data/prompt-bank.json "$route/data/prompt-bank.json"
+          test -s "$route/index.html"
+          test -s "$route/grower-conversations.css"
+          grep -Fq '<h1>Grower Conversations</h1>' "$route/index.html"
+          grep -Fq 'https://dtfseeds.com/games/grower-conversations/' "$route/index.html"
+          grep -Fqi 'rel="canonical"' "$route/index.html"
+          grep -Fqi 'name="description"' "$route/index.html"
