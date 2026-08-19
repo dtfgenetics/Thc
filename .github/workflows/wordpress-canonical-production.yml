@@ -19,13 +19,15 @@ jobs:
   publish:
     name: Publish and verify canonical WordPress pages
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     environment: production
     env:
       NODE_OPTIONS: --dns-result-order=ipv4first
       WP_SITE_URL: https://dtfseeds.com
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      WC_CONSUMER_KEY: ${{ secrets.WC_CONSUMER_KEY }}
+      WC_CONSUMER_SECRET: ${{ secrets.WC_CONSUMER_SECRET }}
       CONTENT_DIR: ${{ github.workspace }}/site/wordpress/pages
       BACKUP_ROOT: ${{ runner.temp }}/wordpress-production-backups
     steps:
@@ -44,6 +46,16 @@ jobs:
           set -euo pipefail
           [[ "${{ github.event.workflow_run.conclusion }}" == "success" ]]
 
+      - name: Validate protected production package
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/apply-wordpress-public-content-rest.mjs
+          node --check scripts/reconcile-woocommerce-products.mjs
+          node --check scripts/rollback-woocommerce-products.mjs
+          node scripts/validate-genetics-commerce.mjs
+          node scripts/validate-woocommerce-reconciliation.mjs
+
       - name: Detect protected WordPress credentials
         id: access
         shell: bash
@@ -51,8 +63,12 @@ jobs:
           set -euo pipefail
           [[ -n "${WP_API_USERNAME:-}" ]] && user_present=true || user_present=false
           [[ -n "${WP_API_PASSWORD:-}" ]] && password_present=true || password_present=false
+          [[ -n "${WC_CONSUMER_KEY:-}" ]] && wc_key_present=true || wc_key_present=false
+          [[ -n "${WC_CONSUMER_SECRET:-}" ]] && wc_secret_present=true || wc_secret_present=false
           echo "user_present=$user_present" >> "$GITHUB_OUTPUT"
           echo "password_present=$password_present" >> "$GITHUB_OUTPUT"
+          echo "wc_key_present=$wc_key_present" >> "$GITHUB_OUTPUT"
+          echo "wc_secret_present=$wc_secret_present" >> "$GITHUB_OUTPUT"
           if [[ "$user_present" == true && "$password_present" == true ]]; then
             echo "available=true" >> "$GITHUB_OUTPUT"
           else
@@ -129,6 +145,37 @@ jobs:
           verify_page '/community/' 'Join the official DTF / Teaching Healthy Cultivation Discord'
           verify_page '/contact/' 'Join the official DTF / Teaching Healthy Cultivation Discord'
 
+      - name: Reconcile canonical WooCommerce product copy and categories
+        id: commerce_reconcile
+        if: steps.access.outputs.available == 'true' && steps.verify.outcome == 'success'
+        continue-on-error: true
+        shell: bash
+        env:
+          BACKUP_ROOT: ${{ runner.temp }}/woocommerce-product-backups
+        run: |
+          set -euo pipefail
+          APPLY_WOOCOMMERCE_CHANGES=true node scripts/reconcile-woocommerce-products.mjs
+
+      - name: Automatically restore WooCommerce snapshots after a failed product reconciliation
+        id: commerce_rollback
+        if: steps.commerce_reconcile.outcome == 'failure'
+        shell: bash
+        env:
+          BACKUP_ROOT: ${{ runner.temp }}/woocommerce-product-backups
+        run: |
+          set -euo pipefail
+          pointer="$BACKUP_ROOT/woocommerce-backup-path.txt"
+          if [[ ! -f "$pointer" ]]; then
+            echo 'No product backup pointer exists; reconciliation failed before a rollback-capable snapshot set was created.'
+            exit 0
+          fi
+          backup_dir="$(cat "$pointer")"
+          if [[ ! -f "$backup_dir/backup-manifest.json" ]]; then
+            echo 'No complete product backup manifest exists; reconciliation failed before any product write could begin.'
+            exit 0
+          fi
+          APPLY_WOOCOMMERCE_ROLLBACK=true node scripts/rollback-woocommerce-products.mjs
+
       - name: Fail when WordPress credentials are absent
         if: steps.access.outputs.available != 'true'
         run: exit 1
@@ -138,7 +185,11 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: wordpress-production-backup-${{ github.run_id }}
-          path: ${{ runner.temp }}/wordpress-production-backups
+          path: |
+            ${{ runner.temp }}/wordpress-production-backups
+            ${{ runner.temp }}/woocommerce-product-backups
+            woocommerce-reconciliation-report.json
+            woocommerce-reconciliation-report.md
           if-no-files-found: warn
           retention-days: 30
 
@@ -149,9 +200,13 @@ jobs:
           JOB_STATUS: ${{ job.status }}
           USER_PRESENT: ${{ steps.access.outputs.user_present }}
           PASSWORD_PRESENT: ${{ steps.access.outputs.password_present }}
+          WC_KEY_PRESENT: ${{ steps.access.outputs.wc_key_present }}
+          WC_SECRET_PRESENT: ${{ steps.access.outputs.wc_secret_present }}
           COMMERCE_CAPABILITY_OUTCOME: ${{ steps.commerce_capabilities.outcome }}
           PUBLISH_OUTCOME: ${{ steps.publish.outcome }}
           VERIFY_OUTCOME: ${{ steps.verify.outcome }}
+          COMMERCE_RECONCILE_OUTCOME: ${{ steps.commerce_reconcile.outcome }}
+          COMMERCE_ROLLBACK_OUTCOME: ${{ steps.commerce_rollback.outcome }}
           MUTATIONS: ${{ steps.publish.outputs.mutations }}
           CHANGED_PAGES: ${{ steps.publish.outputs.changed_pages }}
         with:
@@ -163,14 +218,20 @@ jobs:
               `Protected job result: **${process.env.JOB_STATUS}**`,
               `WordPress username configured: **${process.env.USER_PRESENT || 'false'}**`,
               `WordPress application password configured: **${process.env.PASSWORD_PRESENT || 'false'}**`,
+              `WooCommerce consumer key configured: **${process.env.WC_KEY_PRESENT || 'false'}**`,
+              `WooCommerce consumer secret configured: **${process.env.WC_SECRET_PRESENT || 'false'}**`,
               `Read-only commerce capability probe: **${process.env.COMMERCE_CAPABILITY_OUTCOME || 'not-run'}**`,
-              `REST publish outcome: **${process.env.PUBLISH_OUTCOME || 'not-run'}**`,
-              `Live verification outcome: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
-              `Mutations: **${process.env.MUTATIONS || 'not-run'}**`,
+              `REST page publish outcome: **${process.env.PUBLISH_OUTCOME || 'not-run'}**`,
+              `Live page verification outcome: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
+              `WooCommerce reconciliation outcome: **${process.env.COMMERCE_RECONCILE_OUTCOME || 'not-run'}**`,
+              `WooCommerce automatic rollback outcome: **${process.env.COMMERCE_ROLLBACK_OUTCOME || 'not-needed'}**`,
+              `Page mutations: **${process.env.MUTATIONS || 'not-run'}**`,
               `Pages changed: **${process.env.CHANGED_PAGES || 'not-run'}**`,
               '',
-              'Canonical scope: Home, Seeds, Learn, Community, Shop, Gallery, About, Contact. Home is enforced as the WordPress front page at `/`. Static game routes are not modified.',
-              'The commerce capability probe is GET-only and never mutates WooCommerce products.',
+              'Canonical page scope: Home, Seeds, Learn, Community, Shop, Gallery, About, Contact. Home is enforced as the WordPress front page at `/`. Static game routes are not modified by this job.',
+              'WooCommerce scope is restricted to reviewed product names, descriptions, short descriptions, and category assignments for pinned product IDs 39, 41, and 91. Price, sale price, stock, SKU, slug, images, tags, shipping, tax, and order data are not written.',
+              'All three product snapshots are captured before the first product update. A failed product reconciliation automatically restores those fields when a complete backup manifest exists.',
+              'Blue Bubblegum product ID 91 keeps its current store title pending explicit naming reconciliation.',
               'No credential values are included in this report.'
             ].join('\n');
             await github.rest.issues.createComment({
