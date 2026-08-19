@@ -1,0 +1,168 @@
+name: Reconcile DTFSeeds WooCommerce Products
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Choose dry-run to inspect only, or apply to back up and update canonical product copy/categories.
+        required: true
+        default: dry-run
+        type: choice
+        options:
+          - dry-run
+          - apply
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-woocommerce-product-reconcile
+  cancel-in-progress: false
+
+jobs:
+  plan:
+    name: Build WooCommerce reconciliation plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate reconciliation package
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/reconcile-woocommerce-products.mjs
+          node --check scripts/validate-woocommerce-reconciliation.mjs
+          node scripts/validate-genetics-commerce.mjs
+          node scripts/validate-woocommerce-reconciliation.mjs
+
+      - name: Inspect published WooCommerce products without writing
+        shell: bash
+        env:
+          WP_SITE_URL: https://dtfseeds.com
+        run: |
+          set -euo pipefail
+          APPLY_WOOCOMMERCE_CHANGES=false node scripts/reconcile-woocommerce-products.mjs
+
+      - name: Publish dry-run summary
+        if: always()
+        shell: bash
+        run: |
+          if [[ -f woocommerce-reconciliation-report.md ]]; then
+            cat woocommerce-reconciliation-report.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload dry-run report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: woocommerce-reconciliation-plan-${{ github.run_id }}
+          path: |
+            woocommerce-reconciliation-report.json
+            woocommerce-reconciliation-report.md
+          if-no-files-found: warn
+          retention-days: 30
+
+  apply:
+    name: Back up, update, and verify WooCommerce products
+    if: inputs.mode == 'apply' && needs.plan.result == 'success'
+    needs: plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: production
+    env:
+      WP_SITE_URL: https://dtfseeds.com
+      WC_CONSUMER_KEY: ${{ secrets.WC_CONSUMER_KEY }}
+      WC_CONSUMER_SECRET: ${{ secrets.WC_CONSUMER_SECRET }}
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      BACKUP_ROOT: ${{ runner.temp }}/woocommerce-product-backups
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate reconciliation package again inside protected environment
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/reconcile-woocommerce-products.mjs
+          node scripts/validate-genetics-commerce.mjs
+          node scripts/validate-woocommerce-reconciliation.mjs
+
+      - name: Require an authenticated WooCommerce path
+        id: access
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -n "${WC_CONSUMER_KEY:-}" && -n "${WC_CONSUMER_SECRET:-}" ]]; then
+            echo 'mode=woocommerce-consumer-key' >> "$GITHUB_OUTPUT"
+          elif [[ -n "${WP_API_USERNAME:-}" && -n "${WP_API_PASSWORD:-}" ]]; then
+            echo 'mode=wordpress-basic-auth' >> "$GITHUB_OUTPUT"
+          else
+            echo 'No WooCommerce consumer key/secret or WordPress application credentials are configured.' >&2
+            exit 1
+          fi
+
+      - name: Apply canonical WooCommerce product copy and categories
+        shell: bash
+        run: |
+          set -euo pipefail
+          APPLY_WOOCOMMERCE_CHANGES=true node scripts/reconcile-woocommerce-products.mjs
+
+      - name: Publish applied reconciliation summary
+        if: always()
+        shell: bash
+        run: |
+          if [[ -f woocommerce-reconciliation-report.md ]]; then
+            cat woocommerce-reconciliation-report.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload rollback snapshots and reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: woocommerce-product-backup-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/woocommerce-product-backups
+            woocommerce-reconciliation-report.json
+            woocommerce-reconciliation-report.md
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report protected WooCommerce result to issue 46
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          JOB_STATUS: ${{ job.status }}
+          AUTH_MODE: ${{ steps.access.outputs.mode }}
+        with:
+          script: |
+            const body = [
+              '## WooCommerce product reconciliation',
+              '',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Protected apply result: **${process.env.JOB_STATUS}**`,
+              `Authentication path: **${process.env.AUTH_MODE || 'not-confirmed'}**`,
+              '',
+              'Scope is intentionally limited to canonical product name where approved, description, short description, and product categories. Price, sale price, inventory, SKU, slug, images, tags, shipping, tax data, and order data are not written.',
+              'Blue Bubblegum store-title normalization remains blocked from automatic rename pending explicit identity reconciliation.',
+              'Rollback snapshots are retained as a workflow artifact when authenticated product reads succeed.'
+            ].join('\n');
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 46,
+              body
+            });
