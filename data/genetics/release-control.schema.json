@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dtfseeds.com/schemas/genetics-release-control.schema.json",
+  "title": "DTF Genetics Public Release Control",
+  "type": "object",
+  "required": ["schemaVersion", "brand", "updated", "privacyBoundary", "lineControls"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {"const": 1},
+    "brand": {"const": "DTF Genetics"},
+    "updated": {"type": "string", "format": "date"},
+    "privacyBoundary": {"type": "string", "minLength": 20},
+    "lineControls": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["lineId", "publicReleaseState", "publicAvailability", "generation", "seedType", "packagingVersion", "evidenceRefs", "lastVerified", "publicListingAllowed", "notes"],
+        "properties": {
+          "lineId": {"type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"},
+          "publicReleaseState": {"enum": ["metadata-pending", "planning", "testing", "approved", "retired"]},
+          "publicAvailability": {"enum": ["not-asserted", "available", "sold-out", "not-for-sale"]},
+          "generation": {"type": ["string", "null"], "pattern": "^(F[1-9][0-9]*|S[1-9][0-9]*|BX[1-9][0-9]*|IBL(?:-[A-Za-z0-9]+)?)$"},
+          "seedType": {"enum": ["unknown", "regular", "feminized", "autoflower-regular", "autoflower-feminized"]},
+          "packagingVersion": {"type": ["string", "null"], "minLength": 1},
+          "evidenceRefs": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+          "lastVerified": {"type": ["string", "null"], "format": "date"},
+          "publicListingAllowed": {"type": "boolean"},
+          "notes": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  }
+}
