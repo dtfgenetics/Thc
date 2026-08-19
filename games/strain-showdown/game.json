@@ -3,22 +3,45 @@
   "id": "strain-showdown",
   "title": "Strain Showdown",
   "type": "trading-card-battle-game",
-  "status": "canonical-preproduction",
+  "status": "roster-data-alpha",
   "stats": ["vigor", "power"],
   "families": ["kush", "haze", "skunk", "gas", "cookies", "fruit", "purple", "frost"],
   "tiers": {
-    "1": {"label": "Base", "countPerFamily": 6},
-    "2": {"label": "Select", "countPerFamily": 4},
-    "3": {"label": "Elite", "countPerFamily": 2}
+    "1": {"label": "Base", "countPerFamily": 6, "stage": 1, "summonRule": "play-normally"},
+    "2": {"label": "Select", "countPerFamily": 4, "stage": 2, "summonRule": "sacrifice-one-same-family-stage-1"},
+    "3": {"label": "Elite", "countPerFamily": 2, "stage": 3, "summonRule": "sacrifice-one-same-family-stage-2"}
   },
   "coreRosterCount": 96,
-  "releaseGates": [
-    "complete-card-schema",
-    "roster-filled",
-    "effect-validation",
-    "balance-simulation",
-    "rules-playtest",
-    "art-rights-cleared",
-    "print-proof-approved"
-  ]
+  "machineData": {
+    "manifest": "games/strain-showdown/data/roster-manifest.json",
+    "familyDirectory": "games/strain-showdown/data/roster",
+    "validator": "node games/strain-showdown/scripts/validate-roster.mjs",
+    "cards": 96,
+    "cardsPerFamily": 12,
+    "uniqueNamesRequired": true,
+    "uniqueIdsRequired": true
+  },
+  "familyIdentity": {
+    "kush": "high-vigor",
+    "haze": "balanced-slight-power",
+    "skunk": "disruption",
+    "gas": "high-power",
+    "cookies": "flexible",
+    "fruit": "recovery-advantage",
+    "purple": "defensive-recovery",
+    "frost": "protection-evolution"
+  },
+  "dtfGeneticsCards": ["Blue Mango", "Mango Bubbles", "Blue Bubblegum", "Blueberry Butcher"],
+  "releaseGates": {
+    "complete-card-schema": true,
+    "roster-filled": true,
+    "roster-integrity-ci": true,
+    "effect-text-complete": false,
+    "effect-validation": false,
+    "balance-simulation": false,
+    "rules-playtest": false,
+    "browser-prototype": false,
+    "art-rights-cleared": false,
+    "print-proof-approved": false
+  }
 }
