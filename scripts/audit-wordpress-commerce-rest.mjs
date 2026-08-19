@@ -16,10 +16,35 @@ const authHeader = `Basic ${Buffer.from(`${username}:${password}`).toString('bas
 const headers = {
   Authorization: authHeader,
   Accept: 'application/json',
-  'User-Agent': 'DTFSeeds-Commerce-Capability-Audit/1.0'
+  'User-Agent': 'DTFSeeds-WordPress-Capability-Audit/1.1'
 };
 
-async function probe(path) {
+function textValue(value) {
+  if (typeof value === 'string') return value;
+  if (value && typeof value === 'object') return value.rendered || value.raw || '';
+  return '';
+}
+
+function compactText(value = '', max = 300) {
+  return String(value)
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, max);
+}
+
+function defectMarkers(value) {
+  const text = JSON.stringify(value || {}).toLowerCase();
+  return {
+    fakeEmail: text.includes('email@email.com'),
+    fakePhone: text.includes('+123456789'),
+    legacyBlogNavigation: text.includes('blog'),
+    legacyGalleryNavigation: text.includes('gallery'),
+    old2025Copyright: text.includes('2025') && text.includes('dtf genetics')
+  };
+}
+
+async function probe(path, summarize = null) {
   const startedAt = Date.now();
   try {
     const response = await fetch(`${siteUrl}${path}`, {
@@ -48,7 +73,8 @@ async function probe(path) {
           ? `object:${Object.keys(body).slice(0, 12).join(',')}`
           : typeof body,
       errorCode: body?.code || null,
-      errorMessage: body?.message || null
+      errorMessage: body?.message || null,
+      details: response.ok && summarize ? summarize(body) : null
     };
   } catch (error) {
     return {
@@ -59,7 +85,8 @@ async function probe(path) {
       contentType: '',
       responseShape: null,
       errorCode: error?.cause?.code || null,
-      errorMessage: error instanceof Error ? error.message : String(error)
+      errorMessage: error instanceof Error ? error.message : String(error),
+      details: null
     };
   }
 }
@@ -76,9 +103,55 @@ const candidates = [
 const endpointProbes = [];
 for (const path of candidates) endpointProbes.push(await probe(path));
 
+const themeProbe = await probe('/wp-json/wp/v2/themes?status=active', (body) =>
+  (Array.isArray(body) ? body : []).map((theme) => ({
+    stylesheet: theme?.stylesheet || null,
+    template: theme?.template || null,
+    name: compactText(textValue(theme?.name), 120),
+    version: theme?.version || null,
+    status: theme?.status || null,
+    isBlockTheme: Boolean(theme?.is_block_theme)
+  }))
+);
+
+const sidebarProbe = await probe('/wp-json/wp/v2/sidebars?context=edit', (body) =>
+  (Array.isArray(body) ? body : []).map((sidebar) => ({
+    id: sidebar?.id || null,
+    name: sidebar?.name || null,
+    status: sidebar?.status || null,
+    widgetIds: Array.isArray(sidebar?.widgets) ? sidebar.widgets : []
+  }))
+);
+
+const widgetProbe = await probe('/wp-json/wp/v2/widgets?context=edit', (body) =>
+  (Array.isArray(body) ? body : []).map((widget) => ({
+    id: widget?.id || null,
+    idBase: widget?.id_base || null,
+    sidebar: widget?.sidebar || null,
+    renderedExcerpt: compactText(widget?.rendered || '', 220),
+    markers: defectMarkers(widget)
+  }))
+);
+
+const navigationProbe = await probe('/wp-json/wp/v2/navigation?context=edit&per_page=100&status=publish', (body) =>
+  (Array.isArray(body) ? body : []).map((navigation) => ({
+    id: navigation?.id || null,
+    slug: navigation?.slug || null,
+    status: navigation?.status || null,
+    title: compactText(textValue(navigation?.title), 120),
+    contentExcerpt: compactText(textValue(navigation?.content), 300),
+    markers: defectMarkers(navigation)
+  }))
+);
+
 const editableCandidates = endpointProbes
   .filter((item) => item.ok && !item.path.includes('/wc/store/'))
   .map((item) => item.path);
+
+const presentationDefects = {
+  widgetMatches: (widgetProbe.details || []).filter((item) => Object.values(item.markers || {}).some(Boolean)),
+  navigationMatches: (navigationProbe.details || []).filter((item) => Object.values(item.markers || {}).some(Boolean))
+};
 
 const report = {
   generatedAt: new Date().toISOString(),
@@ -89,9 +162,16 @@ const report = {
   wordpressTypes: typeProbe,
   endpointProbes,
   editableProductApiCandidates: editableCandidates,
+  presentation: {
+    activeTheme: themeProbe,
+    sidebars: sidebarProbe,
+    widgets: widgetProbe,
+    navigation: navigationProbe,
+    defectMatches: presentationDefects
+  },
   writeAttempted: false,
   nextStep: editableCandidates.length
-    ? 'Build a backup-first product mutation script against the confirmed authenticated endpoint; do not mutate products from this audit.'
+    ? 'Use the backup-first product reconciler against the confirmed authenticated endpoint. Use the presentation probes to choose a REST-safe navigation/widget repair only if the defect source is positively identified.'
     : 'Do not attempt product mutation with the current WordPress application-password path. Use WooCommerce credentials or Hostinger/WP-CLI after access is configured.'
 };
 
