@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-08-19",
+  "policy": {
+    "pricingSource": "WooCommerce product page",
+    "inventorySource": "WooCommerce product page",
+    "doNotHardCodeDynamicCommerceFields": [
+      "price",
+      "salePrice",
+      "stockQuantity",
+      "stockStatus",
+      "shippingAvailability"
+    ],
+    "claimsStandard": "Breeding observations and selection goals may be stated with context. Do not guarantee phenotype, yield, potency, aroma, finish date, uniformity, or commercial performance."
+  },
+  "products": [
+    {
+      "id": "blue-mango-f2-regular-10",
+      "canonicalName": "Blue Mango",
+      "lineage": "Somango XXL × Blueberry Butcher",
+      "generation": "F2",
+      "seedType": "regular",
+      "packQuantity": 10,
+      "productPath": "/product/10-regular-f2-blue-mango-seeds/",
+      "liveStoreLabel": "10 regular F2 Blue Mango Seeds",
+      "catalogMatchStatus": "verified",
+      "descriptionStandard": {
+        "breedingDirection": "Selected around vigorous growth, branching, resin production, substantial flower structure, and a candy-blueberry-meets-ripe-mango aromatic direction.",
+        "floweringObservation": "An 8–10 week flowering window has been used as a planning observation for this project; phenotype and environment can change actual finish time.",
+        "prohibitedGuarantees": [
+          "large yields",
+          "high potential yields",
+          "optimized growth cycle",
+          "commercial performance",
+          "consistent phenotypes",
+          "guaranteed aroma or flavor"
+        ]
+      }
+    },
+    {
+      "id": "blue-mango-f2-feminized-10",
+      "canonicalName": "Blue Mango",
+      "lineage": "Somango XXL × Blueberry Butcher",
+      "generation": "F2",
+      "seedType": "feminized",
+      "packQuantity": 10,
+      "productPath": "/product/10-feminized-f2-blue-mango-x/",
+      "liveStoreLabel": "10 feminized f2 blue mango x",
+      "catalogMatchStatus": "verified-lineage-generation-route",
+      "descriptionStandard": {
+        "breedingDirection": "Same Blue Mango breeding project; the exact feminized release details must be stated on the transaction page.",
+        "prohibitedGuarantees": [
+          "large yields",
+          "commercial performance",
+          "consistent phenotypes",
+          "guaranteed aroma or flavor"
+        ]
+      }
+    },
+    {
+      "id": "blue-bubblegum-f1-regular-10",
+      "canonicalName": "Blue Bubblegum",
+      "lineage": "Bubblegum Kush × Blueberry Butcher",
+      "generation": "F1",
+      "seedType": "regular",
+      "packQuantity": 10,
+      "productPath": "/product/10-reg-f1-blueberry-bubblegum/",
+      "liveStoreLabel": "10 reg f1 Blueberry bubblegum",
+      "catalogMatchStatus": "needs-store-title-normalization-review",
+      "titleNormalization": {
+        "canonicalCatalogName": "Blue Bubblegum",
+        "currentStoreRouteUses": "Blueberry bubblegum",
+        "automaticRenameAllowed": false,
+        "reason": "The live store label and canonical breeding-project name differ. Preserve the route until the product identity is explicitly reconciled."
+      },
+      "descriptionStandard": {
+        "breedingDirection": "Sweet fruit-and-bubblegum direction from Bubblegum Kush × Blueberry Butcher.",
+        "prohibitedGuarantees": [
+          "large yields",
+          "commercial performance",
+          "consistent phenotypes",
+          "guaranteed aroma or flavor"
+        ]
+      }
+    }
+  ]
+}
