@@ -52,13 +52,38 @@ jobs:
           grep -Fq '/product/10-feminized-f2-blue-mango-x/' site/wordpress/pages/shop.html
           grep -Fq '/product/10-reg-f1-blueberry-bubblegum/' site/wordpress/pages/shop.html
 
+      - name: Probe live WooCommerce products without writing
+        id: commerce_probe
+        continue-on-error: true
+        shell: bash
+        env:
+          WP_SITE_URL: https://dtfseeds.com
+        run: |
+          set -euo pipefail
+          APPLY_WOOCOMMERCE_CHANGES=false node scripts/reconcile-woocommerce-products.mjs
+
       - name: Report workflow registration to issue 46
         if: always() && github.event_name != 'schedule'
         uses: actions/github-script@v7
         env:
           PREFLIGHT_STATUS: ${{ job.status }}
+          COMMERCE_PROBE_OUTCOME: ${{ steps.commerce_probe.outcome }}
         with:
           script: |
+            const fs = require('fs');
+            let commerceDetail = 'No live WooCommerce reconciliation report was produced.';
+            if (fs.existsSync('woocommerce-reconciliation-report.json')) {
+              const report = JSON.parse(fs.readFileSync('woocommerce-reconciliation-report.json', 'utf8'));
+              const rows = (report.results || []).map((item) => {
+                const fields = (item.changes || []).map((change) => change.field).join(', ') || 'none';
+                return `- ${item.registryId}: product ID ${item.productId ?? 'unknown'}; planned fields: ${fields}`;
+              });
+              commerceDetail = [
+                `Live products checked: **${report.productCount ?? 0}**`,
+                `Products needing reconciliation: **${report.productsNeedingChanges ?? 0}**`,
+                ...rows
+              ].join('\n');
+            }
             const body = [
               '## WordPress workflow registration preflight',
               '',
@@ -66,8 +91,11 @@ jobs:
               `Commit: \`${context.sha}\``,
               `Event: **${context.eventName}**`,
               `Preflight result: **${process.env.PREFLIGHT_STATUS}**`,
+              `Read-only WooCommerce probe: **${process.env.COMMERCE_PROBE_OUTCOME || 'not-run'}**`,
               '',
-              'This workflow intentionally accesses no production environment or credentials. It proves GitHub Actions registered the workflow and validates the trusted `main` WordPress package, genetics-to-store route consistency, and the backup-first WooCommerce reconciliation plan. A separate workflow-run deployment workflow owns protected production publishing.'
+              commerceDetail,
+              '',
+              'This workflow intentionally accesses no production credentials and performs no WooCommerce writes. It validates the trusted `main` WordPress package, genetics-to-store route consistency, and the backup-first WooCommerce reconciliation plan. A separate protected workflow owns production publishing and any future WooCommerce apply action.'
             ].join('\n');
             await github.rest.issues.createComment({
               owner: context.repo.owner,
