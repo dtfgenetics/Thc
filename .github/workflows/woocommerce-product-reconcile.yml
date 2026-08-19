@@ -19,6 +19,7 @@ on:
       - scripts/validate-genetics-commerce.mjs
       - scripts/validate-woocommerce-reconciliation.mjs
       - scripts/reconcile-woocommerce-products.mjs
+      - scripts/rollback-woocommerce-products.mjs
       - .github/workflows/woocommerce-product-reconcile.yml
 
 permissions:
@@ -48,6 +49,7 @@ jobs:
         run: |
           set -euo pipefail
           node --check scripts/reconcile-woocommerce-products.mjs
+          node --check scripts/rollback-woocommerce-products.mjs
           node --check scripts/validate-woocommerce-reconciliation.mjs
           node scripts/validate-genetics-commerce.mjs
           node scripts/validate-woocommerce-reconciliation.mjs
@@ -92,7 +94,7 @@ jobs:
               const report = JSON.parse(fs.readFileSync('woocommerce-reconciliation-report.json', 'utf8'));
               const rows = (report.results || []).map((item) => {
                 const changes = (item.changes || []).map((change) => change.field).join(', ') || 'none';
-                return `- ${item.registryId}: product ID ${item.productId ?? 'unknown'}; planned fields: ${changes}`;
+                return `- ${item.registryId}: pinned/live product ID ${item.expectedProductId ?? 'unknown'}/${item.productId ?? 'unknown'}; planned fields: ${changes}`;
               });
               detail = [
                 `Products checked: **${report.productCount ?? 0}**`,
@@ -118,7 +120,7 @@ jobs:
             });
 
   apply:
-    name: Back up, update, and verify WooCommerce products
+    name: Back up, update, verify, and roll back on failure
     if: github.event_name == 'workflow_dispatch' && inputs.mode == 'apply' && needs.plan.result == 'success'
     needs: plan
     runs-on: ubuntu-latest
@@ -140,11 +142,12 @@ jobs:
         with:
           node-version: 22
 
-      - name: Validate reconciliation package again inside protected environment
+      - name: Validate reconciliation and rollback package inside protected environment
         shell: bash
         run: |
           set -euo pipefail
           node --check scripts/reconcile-woocommerce-products.mjs
+          node --check scripts/rollback-woocommerce-products.mjs
           node scripts/validate-genetics-commerce.mjs
           node scripts/validate-woocommerce-reconciliation.mjs
 
@@ -163,10 +166,19 @@ jobs:
           fi
 
       - name: Apply canonical WooCommerce product copy and categories
+        id: reconcile
         shell: bash
         run: |
           set -euo pipefail
           APPLY_WOOCOMMERCE_CHANGES=true node scripts/reconcile-woocommerce-products.mjs
+
+      - name: Automatically restore product snapshots when reconciliation fails
+        id: rollback
+        if: failure() && steps.reconcile.outcome == 'failure'
+        shell: bash
+        run: |
+          set -euo pipefail
+          APPLY_WOOCOMMERCE_ROLLBACK=true node scripts/rollback-woocommerce-products.mjs
 
       - name: Publish applied reconciliation summary
         if: always()
@@ -174,6 +186,14 @@ jobs:
         run: |
           if [[ -f woocommerce-reconciliation-report.md ]]; then
             cat woocommerce-reconciliation-report.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+          if [[ -f "$BACKUP_ROOT/woocommerce-backup-path.txt" ]]; then
+            backup_dir="$(cat "$BACKUP_ROOT/woocommerce-backup-path.txt")"
+            if [[ -f "$backup_dir/rollback-report.json" ]]; then
+              echo '' >> "$GITHUB_STEP_SUMMARY"
+              echo '## Automatic rollback' >> "$GITHUB_STEP_SUMMARY"
+              echo 'A failed reconciliation triggered rollback from the pre-write snapshots.' >> "$GITHUB_STEP_SUMMARY"
+            fi
           fi
 
       - name: Upload rollback snapshots and reports
@@ -194,18 +214,23 @@ jobs:
         env:
           JOB_STATUS: ${{ job.status }}
           AUTH_MODE: ${{ steps.access.outputs.mode }}
+          RECONCILE_OUTCOME: ${{ steps.reconcile.outcome }}
+          ROLLBACK_OUTCOME: ${{ steps.rollback.outcome }}
         with:
           script: |
             const body = [
               '## WooCommerce product reconciliation',
               '',
               `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-              `Protected apply result: **${process.env.JOB_STATUS}**`,
+              `Protected job result: **${process.env.JOB_STATUS}**`,
               `Authentication path: **${process.env.AUTH_MODE || 'not-confirmed'}**`,
+              `Reconciliation outcome: **${process.env.RECONCILE_OUTCOME || 'not-run'}**`,
+              `Automatic rollback outcome: **${process.env.ROLLBACK_OUTCOME || 'not-needed'}**`,
               '',
               'Scope is intentionally limited to canonical product name where approved, description, short description, and product categories. Price, sale price, inventory, SKU, slug, images, tags, shipping, tax data, and order data are not written.',
+              'All three products must match their reviewed live product IDs before any write is permitted.',
               'Blue Bubblegum store-title normalization remains blocked from automatic rename pending explicit identity reconciliation.',
-              'Rollback snapshots are retained as a workflow artifact when authenticated product reads succeed.'
+              'Rollback snapshots are captured for all three products before the first product update and retained as a workflow artifact.'
             ].join('\n');
             await github.rest.issues.createComment({
               owner: context.repo.owner,
