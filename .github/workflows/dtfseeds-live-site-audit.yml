@@ -10,6 +10,7 @@ on:
     paths:
       - scripts/audit-dtfseeds-live.mjs
       - scripts/audit-dtfseeds-public-suite.mjs
+      - scripts/audit-dtfseeds-commerce.mjs
       - .github/workflows/dtfseeds-live-site-audit.yml
 
 permissions:
@@ -22,7 +23,7 @@ concurrency:
 jobs:
   audit:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
 
@@ -50,6 +51,16 @@ jobs:
           echo "status=$status" >> "$GITHUB_OUTPUT"
           exit 0
 
+      - name: Audit WooCommerce genetics storefront
+        id: commerce
+        shell: bash
+        run: |
+          set +e
+          node scripts/audit-dtfseeds-commerce.mjs
+          status=$?
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          exit 0
+
       - name: Publish core audit summary
         if: always()
         shell: bash
@@ -64,6 +75,13 @@ jobs:
           echo "Status: ${{ steps.suite.outputs.status == '0' && 'PASS' || 'FAIL' }}" >> "$GITHUB_STEP_SUMMARY"
           echo 'Checks: Crossword, Who Took It, GrowLens, Grow Doc, Tools, Projects, and current crossword puzzle data.' >> "$GITHUB_STEP_SUMMARY"
 
+      - name: Publish commerce audit summary
+        if: always()
+        shell: bash
+        run: |
+          echo '' >> "$GITHUB_STEP_SUMMARY"
+          cat commerce-audit.md >> "$GITHUB_STEP_SUMMARY"
+
       - name: Upload machine-readable and human-readable reports
         if: always()
         uses: actions/upload-artifact@v4
@@ -72,9 +90,11 @@ jobs:
           path: |
             live-site-audit.json
             live-site-audit.md
+            commerce-audit.json
+            commerce-audit.md
           if-no-files-found: error
           retention-days: 30
 
       - name: Fail when the live site does not meet the production gate
-        if: steps.core.outputs.status != '0' || steps.suite.outputs.status != '0'
+        if: steps.core.outputs.status != '0' || steps.suite.outputs.status != '0' || steps.commerce.outputs.status != '0'
         run: exit 1
