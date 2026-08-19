@@ -11,7 +11,8 @@ if (String(plan?.policy?.category || '').toLowerCase() !== 'seeds') errors.push(
 const registryById = new Map((genetics.products || []).map((product) => [product.id, product]));
 const plannedIds = new Set();
 const plannedSlugs = new Set();
-const allowedSpecFields = new Set(['registryId', 'slug', 'desiredName', 'preserveCurrentName', 'shortDescription', 'description']);
+const expectedProductIds = new Set();
+const allowedSpecFields = new Set(['registryId', 'expectedProductId', 'slug', 'desiredName', 'preserveCurrentName', 'shortDescription', 'description']);
 const forbiddenCommerceFields = new Set([
   'price', 'regular_price', 'sale_price', 'stock_quantity', 'stock_status', 'manage_stock',
   'sku', 'shipping_class', 'tax_status', 'tax_class', 'images', 'tags', 'attributes', 'downloads', 'status'
@@ -33,6 +34,9 @@ for (const spec of plan.products || []) {
   const label = spec?.registryId || '(missing registryId)';
   if (!spec.registryId) errors.push('Every reconciliation product requires registryId');
   if (!spec.slug) errors.push(`${label}: missing slug`);
+  if (!Number.isInteger(spec.expectedProductId) || spec.expectedProductId <= 0) {
+    errors.push(`${label}: expectedProductId must be a positive integer verified from the live Store API`);
+  }
   if (!spec.shortDescription) errors.push(`${label}: missing shortDescription`);
   if (!spec.description) errors.push(`${label}: missing description`);
 
@@ -40,6 +44,8 @@ for (const spec of plan.products || []) {
   plannedIds.add(spec.registryId);
   if (plannedSlugs.has(spec.slug)) errors.push(`${label}: duplicate slug ${spec.slug}`);
   plannedSlugs.add(spec.slug);
+  if (expectedProductIds.has(spec.expectedProductId)) errors.push(`${label}: duplicate expectedProductId ${spec.expectedProductId}`);
+  expectedProductIds.add(spec.expectedProductId);
 
   for (const key of Object.keys(spec)) {
     if (!allowedSpecFields.has(key)) errors.push(`${label}: unsupported reconciliation field ${key}`);
@@ -92,5 +98,5 @@ if (errors.length) {
   for (const error of errors) console.error(`- ${error}`);
   process.exitCode = 1;
 } else {
-  console.log(`Validated ${plannedIds.size} WooCommerce reconciliation records against ${registryById.size} genetics records.`);
+  console.log(`Validated ${plannedIds.size} WooCommerce reconciliation records against ${registryById.size} genetics records with ${expectedProductIds.size} pinned live product IDs.`);
 }
