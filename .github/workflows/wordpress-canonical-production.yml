@@ -51,6 +51,7 @@ jobs:
         run: |
           set -euo pipefail
           node --check scripts/apply-wordpress-public-content-rest.mjs
+          node --check scripts/audit-wordpress-commerce-rest.mjs
           node --check scripts/reconcile-woocommerce-products.mjs
           node --check scripts/rollback-woocommerce-products.mjs
           node scripts/validate-genetics-commerce.mjs
@@ -75,7 +76,7 @@ jobs:
             echo "available=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Probe WooCommerce REST capabilities without writes
+      - name: Probe WordPress commerce and presentation capabilities without writes
         id: commerce_capabilities
         if: steps.access.outputs.available == 'true'
         continue-on-error: true
@@ -211,6 +212,34 @@ jobs:
           CHANGED_PAGES: ${{ steps.publish.outputs.changed_pages }}
         with:
           script: |
+            const fs = require('fs');
+            const path = require('path');
+            let presentation = 'Presentation probe did not produce a readable report.';
+            const capabilityPath = path.join(process.env.BACKUP_ROOT || '', 'wordpress-commerce-capabilities.json');
+            if (capabilityPath && fs.existsSync(capabilityPath)) {
+              const report = JSON.parse(fs.readFileSync(capabilityPath, 'utf8'));
+              const theme = report.presentation?.activeTheme?.details?.[0];
+              const plugins = report.presentation?.installedPlugins?.details || [];
+              const defects = report.presentation?.defectMatches || {};
+              const formatMatches = (items, label) => (items || []).map((item) => {
+                const id = item.id || item.wpId || item.slug || 'unknown';
+                const title = item.title || item.name || item.renderedExcerpt || item.contentExcerpt || '';
+                return `- ${label} ${id}: ${String(title).slice(0, 180)}`;
+              });
+              const matches = [
+                ...formatMatches(defects.templatePartMatches, 'template-part'),
+                ...formatMatches(defects.widgetMatches, 'widget'),
+                ...formatMatches(defects.blockNavigationMatches, 'block-navigation'),
+                ...formatMatches(defects.classicMenuItemMatches, 'classic-menu-item')
+              ];
+              presentation = [
+                `Active theme: **${theme?.name || theme?.stylesheet || 'unresolved'}**${theme?.version ? ` ${theme.version}` : ''}`,
+                `Block theme: **${theme?.isBlockTheme ? 'yes' : 'no'}**`,
+                `Installed plugins visible to REST: **${plugins.length}**`,
+                `Presentation resources matching stale footer/navigation markers: **${matches.length}**`,
+                ...(matches.length ? matches.slice(0, 20) : ['- No exact marker match was returned by template-part/widget/navigation/menu probes.'])
+              ].join('\n');
+            }
             const body = [
               '## Canonical WordPress production deployment',
               '',
@@ -220,13 +249,17 @@ jobs:
               `WordPress application password configured: **${process.env.PASSWORD_PRESENT || 'false'}**`,
               `WooCommerce consumer key configured: **${process.env.WC_KEY_PRESENT || 'false'}**`,
               `WooCommerce consumer secret configured: **${process.env.WC_SECRET_PRESENT || 'false'}**`,
-              `Read-only commerce capability probe: **${process.env.COMMERCE_CAPABILITY_OUTCOME || 'not-run'}**`,
+              `Read-only commerce/presentation capability probe: **${process.env.COMMERCE_CAPABILITY_OUTCOME || 'not-run'}**`,
               `REST page publish outcome: **${process.env.PUBLISH_OUTCOME || 'not-run'}**`,
               `Live page verification outcome: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
               `WooCommerce reconciliation outcome: **${process.env.COMMERCE_RECONCILE_OUTCOME || 'not-run'}**`,
               `WooCommerce automatic rollback outcome: **${process.env.COMMERCE_ROLLBACK_OUTCOME || 'not-needed'}**`,
               `Page mutations: **${process.env.MUTATIONS || 'not-run'}**`,
               `Pages changed: **${process.env.CHANGED_PAGES || 'not-run'}**`,
+              '',
+              '### Presentation probe',
+              '',
+              presentation,
               '',
               'Canonical page scope: Home, Seeds, Learn, Community, Shop, Gallery, About, Contact. Home is enforced as the WordPress front page at `/`. Static game routes are not modified by this job.',
               'WooCommerce scope is restricted to reviewed product names, descriptions, short descriptions, and category assignments for pinned product IDs 39, 41, and 91. Price, sale price, stock, SKU, slug, images, tags, shipping, tax, and order data are not written.',
