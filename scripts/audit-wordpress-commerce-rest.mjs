@@ -16,7 +16,7 @@ const authHeader = `Basic ${Buffer.from(`${username}:${password}`).toString('bas
 const headers = {
   Authorization: authHeader,
   Accept: 'application/json',
-  'User-Agent': 'DTFSeeds-WordPress-Capability-Audit/1.2'
+  'User-Agent': 'DTFSeeds-WordPress-Capability-Audit/1.3'
 };
 
 function textValue(value) {
@@ -114,6 +114,32 @@ const themeProbe = await probe('/wp-json/wp/v2/themes?status=active', (body) =>
   }))
 );
 
+const pluginProbe = await probe('/wp-json/wp/v2/plugins?context=edit', (body) =>
+  (Array.isArray(body) ? body : []).map((plugin) => ({
+    plugin: plugin?.plugin || null,
+    status: plugin?.status || null,
+    name: compactText(textValue(plugin?.name), 140),
+    version: plugin?.version || null,
+    author: compactText(textValue(plugin?.author), 140)
+  }))
+);
+
+const templatePartProbe = await probe('/wp-json/wp/v2/template-parts?context=edit&per_page=100', (body) =>
+  (Array.isArray(body) ? body : []).map((part) => ({
+    id: part?.id || null,
+    wpId: Number(part?.wp_id || 0) || null,
+    slug: part?.slug || null,
+    theme: part?.theme || null,
+    area: part?.area || null,
+    source: part?.source || null,
+    origin: part?.origin || null,
+    status: part?.status || null,
+    title: compactText(textValue(part?.title), 120),
+    contentExcerpt: compactText(textValue(part?.content), 320),
+    markers: defectMarkers(part)
+  }))
+);
+
 const sidebarProbe = await probe('/wp-json/wp/v2/sidebars?context=edit', (body) =>
   (Array.isArray(body) ? body : []).map((sidebar) => ({
     id: sidebar?.id || null,
@@ -180,6 +206,7 @@ const editableCandidates = endpointProbes
   .map((item) => item.path);
 
 const presentationDefects = {
+  templatePartMatches: (templatePartProbe.details || []).filter((item) => Object.values(item.markers || {}).some(Boolean)),
   widgetMatches: (widgetProbe.details || []).filter((item) => Object.values(item.markers || {}).some(Boolean)),
   blockNavigationMatches: (navigationProbe.details || []).filter((item) => Object.values(item.markers || {}).some(Boolean)),
   classicMenuItemMatches: (menuItemProbe.details || []).filter((item) => Object.values(item.markers || {}).some(Boolean))
@@ -196,6 +223,8 @@ const report = {
   editableProductApiCandidates: editableCandidates,
   presentation: {
     activeTheme: themeProbe,
+    installedPlugins: pluginProbe,
+    templateParts: templatePartProbe,
     sidebars: sidebarProbe,
     widgets: widgetProbe,
     blockNavigation: navigationProbe,
@@ -206,7 +235,7 @@ const report = {
   },
   writeAttempted: false,
   nextStep: editableCandidates.length
-    ? 'Use the backup-first product reconciler against the confirmed authenticated endpoint. Repair presentation only when the theme/widget/menu probe positively identifies the source of the live defect.'
+    ? 'Use the backup-first product reconciler against the confirmed authenticated endpoint. Repair presentation only when the theme/plugin/template-part/widget/menu probe positively identifies the source of the live defect.'
     : 'Do not attempt product mutation with the current WordPress application-password path. Use WooCommerce credentials or Hostinger/WP-CLI after access is configured.'
 };
 
