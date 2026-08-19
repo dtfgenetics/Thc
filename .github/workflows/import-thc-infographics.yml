@@ -1,0 +1,87 @@
+name: Import THC Infographics
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - site/wordpress/assets/infographics/import-*.json
+      - .github/workflows/import-thc-infographics.yml
+  schedule:
+    - cron: '*/5 * * * *'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: thc-infographic-import
+  cancel-in-progress: false
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Import queued infographic assets
+        shell: python
+        run: |
+          import json
+          import pathlib
+          import sys
+          import urllib.request
+
+          root = pathlib.Path('site/wordpress/assets/infographics')
+          manifests = sorted(root.glob('import-*.json'))
+          if not manifests:
+              print('No infographic import manifests; nothing to do.')
+              sys.exit(0)
+
+          for manifest in manifests:
+              data = json.loads(manifest.read_text(encoding='utf-8'))
+              for item in data.get('assets', []):
+                  target = pathlib.Path(item['path'])
+                  request = urllib.request.Request(
+                      item['url'],
+                      headers={'User-Agent': 'Mozilla/5.0 THC-Infographic-Importer/1.0'},
+                  )
+                  with urllib.request.urlopen(request, timeout=60) as response:
+                      body = response.read()
+                      content_type = response.headers.get('Content-Type', '')
+                  if not content_type.startswith('image/'):
+                      raise RuntimeError(f'{target}: expected image content, got {content_type!r}')
+                  if len(body) < 10000:
+                      raise RuntimeError(f'{target}: downloaded image is unexpectedly small ({len(body)} bytes)')
+                  target.parent.mkdir(parents=True, exist_ok=True)
+                  target.write_bytes(body)
+                  print(f'Imported {target}: {len(body)} bytes, {content_type}')
+
+      - name: Commit imported assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          manifests=(site/wordpress/assets/infographics/import-*.json)
+          if (( ${#manifests[@]} == 0 )); then
+            echo 'No import manifests remain.'
+            exit 0
+          fi
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm -- "${manifests[@]}"
+          git add site/wordpress/assets/infographics
+
+          if git diff --cached --quiet; then
+            echo 'No imported asset changes to commit.'
+            exit 0
+          fi
+
+          git commit -m 'Import queued THC infographic assets'
+          git pull --rebase origin main
+          git push origin HEAD:main
