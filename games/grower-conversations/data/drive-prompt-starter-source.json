@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "type": "google-drive-spreadsheet",
+    "driveId": "1t05leUNrInIJbDH9O7UuSAcDI_z30MNXmgUtb3VAif8",
+    "title": "Grower Conversations Prompt Database Starter",
+    "driveModified": "2026-06-22T09:23:39.615Z"
+  },
+  "migrationDate": "2026-08-18",
+  "role": "starter prompt and editorial-rule provenance; current 96-card GitHub prompt bank supersedes this three-row starter as the executable dataset",
+  "starterPrompts": [
+    {
+      "category": "Mistakes",
+      "prompt": "What grow mistake taught you the most, and what did it change about how you grow now?",
+      "tone": "Reflective",
+      "difficulty": "Easy",
+      "driveStatus": "Draft",
+      "notes": "Good opener."
+    },
+    {
+      "category": "Hot Takes",
+      "prompt": "What common grow advice do you think gets repeated too often without enough context?",
+      "tone": "Debate",
+      "difficulty": "Medium",
+      "driveStatus": "Draft",
+      "notes": "Can spark discussion."
+    },
+    {
+      "category": "Breeding",
+      "prompt": "What trait would you chase for three generations even if it was hard to lock down?",
+      "tone": "Deep",
+      "difficulty": "Hard",
+      "driveStatus": "Draft",
+      "notes": "Breeder-focused."
+    }
+  ],
+  "editorialRules": [
+    {
+      "rule": "Grower-focused",
+      "requirement": "Prompts must feel like real grower conversations, not generic party cards."
+    },
+    {
+      "rule": "Debate without insults",
+      "requirement": "Hot takes should invite discussion, not attack players."
+    },
+    {
+      "rule": "Mix depth",
+      "requirement": "Include easy openers, thoughtful prompts, and expert/breeder prompts."
+    }
+  ],
+  "supersededBy": [
+    "games/grower-conversations/data/prompt-bank.json",
+    "games/grower-conversations/data/categories.json",
+    "site/public-route-patch/games/grower-conversations/"
+  ],
+  "policy": "Preserve starter wording and editorial intent as provenance. Do not replace the validated 96-card prompt bank with this earlier three-row draft."
+}
