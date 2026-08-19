@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "type": "google-drive-spreadsheet",
+    "driveId": "1c42REx-xlgS7tV-RrFZ0DhfxEXNpY5I47rfF8HIejbI",
+    "title": "Strain Showdown - Card Production Tracker",
+    "driveModified": "2026-07-14T23:19:54.553Z"
+  },
+  "migrationDate": "2026-08-18",
+  "role": "historical family/stat design provenance; current 96-card roster data in GitHub supersedes the starter TBD rows",
+  "starterRows": [
+    {
+      "family": "Kush",
+      "tier": "Tier 1",
+      "cardName": "TBD Kush Strain",
+      "vigor": 4,
+      "power": 2,
+      "effect": "Simple defense effect",
+      "status": "Missing",
+      "notes": "Use real verified strain names only."
+    },
+    {
+      "family": "Haze",
+      "tier": "Tier 1",
+      "cardName": "TBD Haze Strain",
+      "vigor": 3,
+      "power": 3,
+      "effect": "Balanced effect",
+      "status": "Missing",
+      "notes": "Needs fact-checked lineage."
+    },
+    {
+      "family": "Gas",
+      "tier": "Tier 1",
+      "cardName": "TBD Gas Strain",
+      "vigor": 2,
+      "power": 4,
+      "effect": "Simple attack effect",
+      "status": "Missing",
+      "notes": "Needs real strain name."
+    }
+  ],
+  "familyIdentitySource": [
+    {"family":"Kush","driveColor":"Deep green","playstyle":"Defensive","statDirection":"Higher Vigor","notes":"Durable family."},
+    {"family":"Haze","driveColor":"Yellow","playstyle":"Balanced / Power","statDirection":"Balanced plus Power","notes":"Fast/aggressive feel."},
+    {"family":"Skunk","driveColor":"Orange","playstyle":"Balanced","statDirection":"Medium Vigor/Power","notes":"Classic strain family."},
+    {"family":"Gas","driveColor":"Red","playstyle":"Attack","statDirection":"Higher Power","notes":"Hard-hitting family."},
+    {"family":"Cookies","driveColor":"Teal","playstyle":"Flexible","statDirection":"Flexible","notes":"No leaf on icon."},
+    {"family":"Fruit","driveColor":"Rainbow","playstyle":"Medium","statDirection":"Medium/Medium","notes":"Flavor-forward."},
+    {"family":"Purple","driveColor":"Purple","playstyle":"Defensive","statDirection":"Higher Vigor","notes":"Heavy/stable family."},
+    {"family":"Frost","driveColor":"Blue","playstyle":"Defensive","statDirection":"Higher Vigor","notes":"Resin/frost theme."}
+  ],
+  "supersededBy": [
+    "games/strain-showdown/data/roster-manifest.json",
+    "games/strain-showdown/data/families.json",
+    "games/strain-showdown/data/roster/"
+  ],
+  "policy": "Do not restore TBD starter rows over the completed roster. Use this source only to preserve family identity and early stat-direction provenance."
+}
