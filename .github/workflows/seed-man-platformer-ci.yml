@@ -1,0 +1,56 @@
+name: Seed Man Platformer CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'games/seed-man-platformer/**'
+      - 'site/public-route-patch/games/seed-man-platformer/**'
+      - '.github/workflows/seed-man-platformer-ci.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'games/seed-man-platformer/**'
+      - 'site/public-route-patch/games/seed-man-platformer/**'
+      - '.github/workflows/seed-man-platformer-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Test platformer physics and level interactions
+        run: node games/seed-man-platformer/test/physics.test.mjs
+      - name: Validate browser JavaScript syntax
+        run: |
+          node --check site/public-route-patch/games/seed-man-platformer/app.js
+          node --check site/public-route-patch/games/seed-man-platformer/physics.mjs
+      - name: Verify public simulation copies match canonical source
+        shell: bash
+        run: |
+          set -euo pipefail
+          cmp games/seed-man-platformer/src/physics.mjs site/public-route-patch/games/seed-man-platformer/physics.mjs
+          cmp games/seed-man-platformer/data/level-01.json site/public-route-patch/games/seed-man-platformer/data/level-01.json
+      - name: Verify original public route contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          route=site/public-route-patch/games/seed-man-platformer
+          test -s "$route/index.html"
+          test -s "$route/app.js"
+          test -s "$route/seed-man.css"
+          test -s "$route/physics.mjs"
+          test -s "$route/data/level-01.json"
+          grep -Fq '<h1>Sprout Run</h1>' "$route/index.html"
+          grep -Fq 'https://dtfseeds.com/games/seed-man-platformer/' "$route/index.html"
+          grep -Fqi 'rel="canonical"' "$route/index.html"
+          grep -Fqi 'name="description"' "$route/index.html"
+          grep -Fq 'No third-party level layouts or character assets are used.' "$route/index.html"
