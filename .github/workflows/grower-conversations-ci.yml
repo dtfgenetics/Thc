@@ -1,0 +1,33 @@
+name: Grower Conversations Content CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'games/grower-conversations/**'
+      - '.github/workflows/grower-conversations-ci.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'games/grower-conversations/**'
+      - '.github/workflows/grower-conversations-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate balanced 96-card prompt bank
+        run: node games/grower-conversations/scripts/validate-prompt-bank.mjs
+      - name: Confirm JSON files parse
+        run: |
+          node -e "JSON.parse(require('node:fs').readFileSync('games/grower-conversations/data/categories.json','utf8'))"
+          node -e "JSON.parse(require('node:fs').readFileSync('games/grower-conversations/data/prompt-bank.json','utf8'))"
