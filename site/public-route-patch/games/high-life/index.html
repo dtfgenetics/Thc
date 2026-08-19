@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>High Life: From Bagseed to Legacy | DTF Genetics</title>
+  <meta name="description" content="Play the High Life browser prototype, a branching cannabis-industry life-path game spanning Underground, Medical, and Legal eras.">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <meta name="theme-color" content="#10291d">
+  <link rel="canonical" href="https://dtfseeds.com/games/high-life/">
+  <link rel="stylesheet" href="./high-life.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="/">DTF Genetics <span>Dream the Future</span></a>
+    <nav aria-label="Primary"><a href="/games/">Games</a><a href="/learn/">Learn</a><a href="/community/">Community</a></nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <p class="eyebrow">High Life · Browser prototype</p>
+      <h1>From Bagseed to Legacy</h1>
+      <p class="lede">Build a career through three changing eras. Every turn you choose where to invest your time, then a seeded era event tests the strengths and weaknesses of the path you built.</p>
+      <p class="status" id="load-status">Loading deterministic game data…</p>
+    </section>
+
+    <section class="setup panel" id="setup-panel" hidden>
+      <h2>Start a career</h2>
+      <label>Grower name <input id="player-name" maxlength="40" value="Grower"></label>
+      <label>Seed <input id="seed" type="number" min="1" max="4294967295" value="420"></label>
+      <p class="hint">The same seed plus the same choices produces the same event sequence, which makes balance testing reproducible.</p>
+      <button class="primary" id="start-game">Begin Underground Era</button>
+    </section>
+
+    <section id="game-panel" hidden>
+      <div class="dashboard">
+        <article class="panel era-card">
+          <p class="eyebrow">Current era</p>
+          <h2 id="era-name">Underground Era</h2>
+          <p id="turn-label"></p>
+          <progress id="era-progress" max="6" value="0"></progress>
+        </article>
+        <article class="panel score-card"><p class="eyebrow">Projected legacy</p><strong id="score-preview">0</strong><span>points</span></article>
+      </div>
+
+      <section class="panel" aria-labelledby="resources-title">
+        <h2 id="resources-title">Your resources</h2>
+        <div class="resource-grid" id="resource-grid"></div>
+      </section>
+
+      <section class="panel" aria-labelledby="choices-title">
+        <h2 id="choices-title">Choose this turn</h2>
+        <p class="hint">No single resource wins by itself. Era transitions reward preparation, while events can expose neglected systems.</p>
+        <div class="action-grid" id="action-grid"></div>
+      </section>
+
+      <section class="panel event-panel" id="event-panel" hidden aria-live="polite">
+        <p class="eyebrow">Turn resolved</p>
+        <h2 id="event-title"></h2>
+        <p id="event-text"></p>
+        <p id="event-mitigation" class="mitigation"></p>
+        <div id="turn-delta" class="delta-list"></div>
+        <div id="transition-note" class="transition" hidden></div>
+        <button class="primary" id="continue-button">Continue</button>
+      </section>
+    </section>
+
+    <section class="panel results" id="results-panel" hidden>
+      <p class="eyebrow">Career complete</p>
+      <h2 id="result-title">Legacy score</h2>
+      <div class="final-score" id="final-score"></div>
+      <p id="result-summary"></p>
+      <div id="final-resources" class="resource-grid"></div>
+      <div class="actions"><button class="primary" id="play-again">Play another career</button><a class="button" href="/games/">Back to Game Hub</a></div>
+    </section>
+
+    <section class="panel about">
+      <h2>Prototype rules</h2>
+      <p>A career lasts 18 turns: six Underground, six Medical, and six Legal. Choose one action each turn. The action changes your resources, then one event from the current era resolves. The random stream is seeded, so identical seeds and choices are reproducible.</p>
+      <p>Legacy score values reputation, knowledge, assets, compliance, brand, operations, genetics, and remaining cash, with a bonus for a balanced career. Economic values are still playtest values—not final print rules.</p>
+    </section>
+  </main>
+
+  <footer><p><strong>DTF Genetics</strong> · Dream the Future</p><p>Adults only. This is a fictional strategy game, not legal, business, financial, or cultivation advice.</p></footer>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
