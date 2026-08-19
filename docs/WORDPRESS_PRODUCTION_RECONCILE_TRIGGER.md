@@ -4,4 +4,4 @@ This file exists only to provide a reviewable same-repository pull-request event
 
 The production workflow checks out trusted `main`, not this branch, before validating or publishing canonical WordPress content. No credentials or production data belong in this file.
 
-Trigger sequence: protected reconciliation check after `main` commit `a7be8760638840f69b36f9f9b2ec355af87ebb6d`.
+Trigger sequence: workflow-run deployment handoff check after split pipeline merge `1cafc7324ab1231b6c619cb99196422e7c945e29`.
