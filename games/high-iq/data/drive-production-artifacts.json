@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "game": "High IQ",
+  "migrationDate": "2026-08-18",
+  "artifacts": [
+    {
+      "role": "master-production-workbook",
+      "driveId": "1fERIAH253LT__Jy8AWzjfZTOhhckWLOH",
+      "title": "High_IQ_Master_Production_Workbook_v2_2.xlsx",
+      "created": "2026-08-16T16:58:47.964Z",
+      "modified": "2026-08-16T16:58:47.964Z",
+      "version": "2.2",
+      "deckStatus": "READY",
+      "approvedCards": 80,
+      "validationErrors": 0,
+      "validationWarnings": 0,
+      "correctAnswerDistribution": {"A":20,"B":20,"C":20,"D":20},
+      "categoryCounts": {
+        "Plant Biology": 8,
+        "Plant Physiology": 8,
+        "Photobiology": 8,
+        "Environment & Climate": 10,
+        "Nutrition & pH": 12,
+        "Root Zone & Irrigation": 10,
+        "Diagnostics": 8,
+        "Integrated Pest Management": 6,
+        "Genetics & Breeding": 6,
+        "Harvest & Postharvest": 4
+      },
+      "notes": "Drive workbook identifies itself as the 80-card verified deck and one source for print/digital editions. GitHub v2.2 machine data remains canonical for runtime/build validation."
+    },
+    {
+      "role": "duplex-print-pdf",
+      "driveId": "1qYimYjXytowm0YaO72ETlx_LmzDmuRJ5",
+      "title": "High_IQ_Duplex_Print_20pages_v2_2.pdf",
+      "created": "2026-08-16T16:58:31.161Z",
+      "modified": "2026-08-16T16:58:31.161Z",
+      "version": "2.2",
+      "notes": "Drive-controlled print artifact. Keep binary in Drive; do not duplicate the production PDF into the public code repository unless a release process explicitly requires it."
+    }
+  ],
+  "ownership": {
+    "drive": "approved workbook, print layouts, answer keys, proofs, playtest/release packages",
+    "github": "versioned machine-readable runtime question/source bank, validators, browser runtime, website integration, deployment"
+  }
+}
