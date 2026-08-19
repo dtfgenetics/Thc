@@ -3,16 +3,29 @@
   "id": "grower-conversations",
   "title": "Grower Conversations",
   "type": "conversation-card-deck",
-  "status": "canonical-preproduction",
+  "status": "prompt-bank-alpha",
   "modes": ["physical-deck", "browser-deck", "discord-prompt"],
-  "requiredCardFields": ["id", "category", "prompt", "promptType", "reviewStatus"],
-  "releaseGates": [
-    "prompt-bank-complete",
-    "duplicate-check",
-    "science-review-where-applicable",
-    "safety-review",
-    "editorial-review",
-    "print-proof",
-    "digital-sync-check"
-  ]
+  "machineData": {
+    "categories": "games/grower-conversations/data/categories.json",
+    "promptBank": "games/grower-conversations/data/prompt-bank.json",
+    "validator": "node games/grower-conversations/scripts/validate-prompt-bank.mjs",
+    "cards": 96,
+    "categoriesCount": 8,
+    "cardsPerCategory": 12,
+    "depths": ["easy", "reflective", "technical"],
+    "cardsPerDepth": 32
+  },
+  "requiredCardFields": ["id", "category", "depth", "prompt", "answerType"],
+  "materializationRule": "Each category contains 12 prompts. Positions 1-4 are Easy, 5-8 Reflective, and 9-12 Technical. IDs are gc-{category}-{01..12}.",
+  "releaseGates": {
+    "prompt-bank-complete": true,
+    "duplicate-check": true,
+    "distribution-check": true,
+    "science-review-where-applicable": false,
+    "safety-review": false,
+    "editorial-review": false,
+    "browser-deck": false,
+    "print-proof": false,
+    "digital-sync-check": false
+  }
 }
