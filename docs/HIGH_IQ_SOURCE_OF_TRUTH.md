@@ -10,6 +10,20 @@ High IQ is the cannabis grower trivia game. It is **not** THC U Know.
 - The older Base44 build is retained only as a legacy fallback link; it is no longer the canonical runtime.
 - ChatGPT Library `DTF Working Projects/02 Games/Cannabis trivia` is a working/recovery surface only.
 
+## Drive-backed v2.2 production artifacts
+
+The current Drive production package is now explicitly registered in `games/high-iq/data/drive-production-artifacts.json`:
+
+- `High_IQ_Master_Production_Workbook_v2_2.xlsx` — Drive ID `1fERIAH253LT__Jy8AWzjfZTOhhckWLOH`.
+  - 80-card verified deck.
+  - Deck status `READY` in the workbook.
+  - 80 approved cards.
+  - 0 validation errors and 0 validation warnings in the workbook control sheet.
+  - Correct-answer distribution is 20 A / 20 B / 20 C / 20 D.
+  - Category totals: Plant Biology 8, Plant Physiology 8, Photobiology 8, Environment & Climate 10, Nutrition & pH 12, Root Zone & Irrigation 10, Diagnostics 8, Integrated Pest Management 6, Genetics & Breeding 6, Harvest & Postharvest 4.
+- `High_IQ_Duplex_Print_20pages_v2_2.pdf` — Drive ID `1qYimYjXytowm0YaO72ETlx_LmzDmuRJ5`.
+  - Controlled duplex print artifact; the binary remains in Drive rather than being duplicated into the public code repository.
+
 ## Current production implementation
 
 - Self-hosted HTML/CSS/JavaScript browser game under `site/public-route-patch/games/high-iq/`.
