@@ -43,12 +43,16 @@ const routes = [
   {
     key: 'seeds',
     path: '/seeds/',
-    minimumText: 400,
+    minimumText: 600,
     requireDescription: true,
     requiredText: [
       'Genetics built through selection, observation, and documentation.',
+      'Shop current releases',
       'Blue Mango',
-      'Mango Bubbles'
+      'Mango Bubbles',
+      '/product/10-regular-f2-blue-mango-seeds/',
+      '/product/10-feminized-f2-blue-mango-x/',
+      '/product/10-reg-f1-blueberry-bubblegum/'
     ]
   },
   {
@@ -79,7 +83,21 @@ const routes = [
       'https://discord.gg/xJbUeHFPMt'
     ]
   },
-  { key: 'shop', path: '/shop/', minimumText: 250, requireDescription: true },
+  {
+    key: 'shop',
+    path: '/shop/',
+    minimumText: 600,
+    requireDescription: true,
+    requiredText: [
+      'Shop current DTF releases without losing the breeding context.',
+      'Blue Mango F2 — Regular',
+      'Blue Mango F2 — Feminized',
+      'Blueberry Bubblegum F1 — Regular',
+      '/product/10-regular-f2-blue-mango-seeds/',
+      '/product/10-feminized-f2-blue-mango-x/',
+      '/product/10-reg-f1-blueberry-bubblegum/'
+    ]
+  },
   { key: 'gallery', path: '/gallery/', minimumText: 250, requireDescription: true },
   { key: 'about', path: '/about/', minimumText: 300, requireDescription: true },
   {
