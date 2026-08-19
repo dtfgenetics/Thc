@@ -5,6 +5,8 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    types: [opened, synchronize, reopened]
   schedule:
     - cron: '17,47 * * * *'
 
@@ -13,30 +15,29 @@ permissions:
   issues: write
 
 concurrency:
-  group: dtfseeds-wordpress-canonical-watch
+  group: dtfseeds-wordpress-canonical-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  reconcile:
-    name: Reconcile and verify canonical WordPress pages
+  preflight:
+    name: Validate trusted canonical WordPress package
+    if: >-
+      github.event_name != 'pull_request' ||
+      (github.head_ref == 'ops/wordpress-production-reconcile' &&
+       github.event.pull_request.head.repo.full_name == github.repository &&
+       github.event.pull_request.user.login == github.repository_owner)
     runs-on: ubuntu-latest
-    timeout-minutes: 20
-    environment: production
-    env:
-      NODE_OPTIONS: --dns-result-order=ipv4first
-      WP_SITE_URL: https://dtfseeds.com
-      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME || secrets.WORDPRESS_USERNAME || secrets.WP_USERNAME }}
-      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD || secrets.WORDPRESS_APP_PASSWORD || secrets.WP_APPLICATION_PASSWORD }}
-      CONTENT_DIR: ${{ github.workspace }}/site/wordpress/pages
-      BACKUP_ROOT: ${{ runner.temp }}/wordpress-canonical-watch-backups
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
 
       - uses: actions/setup-node@v4
         with:
           node-version: 22
 
-      - name: Validate canonical page package
+      - name: Validate canonical page package from main
         shell: bash
         run: |
           set -euo pipefail
@@ -60,6 +61,54 @@ jobs:
           grep -Fq 'page_on_front: expectedFrontPageId' scripts/apply-wordpress-public-content-rest.mjs
           grep -Fq 'https://discord.gg/xJbUeHFPMt' site/wordpress/pages/community.html
           grep -Fq '/yellow-leaves/' site/wordpress/pages/learn.html
+
+      - name: Report preflight recognition to issue 46
+        if: always() && github.event_name != 'schedule'
+        uses: actions/github-script@v7
+        env:
+          PREFLIGHT_STATUS: ${{ job.status }}
+        with:
+          script: |
+            const body = [
+              '## WordPress canonical workflow preflight',
+              '',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Commit: \`${context.sha}\``,
+              `Event: **${context.eventName}**`,
+              `Preflight result: **${process.env.PREFLIGHT_STATUS}**`,
+              '',
+              'This preflight runs outside the protected production environment and validates the trusted `main` branch package. The protected reconciliation job runs only after this stage succeeds.',
+              'No credentials are accessed or exposed by this preflight.'
+            ].join('\n');
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 46,
+              body
+            });
+
+  reconcile:
+    name: Reconcile and verify canonical WordPress pages
+    needs: preflight
+    if: needs.preflight.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: production
+    env:
+      NODE_OPTIONS: --dns-result-order=ipv4first
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME || secrets.WORDPRESS_USERNAME || secrets.WP_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD || secrets.WORDPRESS_APP_PASSWORD || secrets.WP_APPLICATION_PASSWORD }}
+      CONTENT_DIR: ${{ github.workspace }}/site/wordpress/pages
+      BACKUP_ROOT: ${{ runner.temp }}/wordpress-canonical-watch-backups
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
 
       - name: Detect protected WordPress credentials
         id: access
@@ -139,7 +188,7 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
-      - name: Report reconciliation result to issue 46
+      - name: Report protected reconciliation result to issue 46
         if: always() && github.event_name != 'schedule'
         uses: actions/github-script@v7
         env:
@@ -153,12 +202,12 @@ jobs:
         with:
           script: |
             const body = [
-              '## Standalone canonical WordPress reconciliation',
+              '## Protected canonical WordPress reconciliation',
               '',
               `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
               `Commit: \`${context.sha}\``,
               `Event: **${context.eventName}**`,
-              `Overall result: **${process.env.JOB_STATUS}**`,
+              `Protected job result: **${process.env.JOB_STATUS}**`,
               '',
               `WordPress username configured: **${process.env.USER_PRESENT || 'false'}**`,
               `WordPress application password configured: **${process.env.PASSWORD_PRESENT || 'false'}**`,
