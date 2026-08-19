@@ -8,6 +8,10 @@ on:
         required: true
         default: all
         type: string
+  workflow_run:
+    workflows:
+      - Stage DTFSeeds WordPress Canonical Deployment
+    types: [completed]
   push:
     branches:
       - main
@@ -42,10 +46,18 @@ jobs:
       BACKUP_ROOT: ${{ runner.temp }}/wordpress-thc-article-backups
       NODE_OPTIONS: --dns-result-order=ipv4first
     steps:
-      - name: Check out repository with history
+      - name: Check out trusted main with history
         uses: actions/checkout@v4
         with:
+          ref: main
           fetch-depth: 0
+
+      - name: Require successful canonical handoff for workflow-run trigger
+        if: github.event_name == 'workflow_run'
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "${{ github.event.workflow_run.conclusion }}" == "success" ]]
 
       - name: Validate publishers and content packages
         shell: bash
@@ -85,6 +97,13 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p "$BACKUP_ROOT"
+
+          if [[ "${{ github.event_name }}" == "workflow_run" ]]; then
+            echo "mode=none" >> "$GITHUB_OUTPUT"
+            echo "slugs=none" >> "$GITHUB_OUTPUT"
+            echo "Workflow-run handoff: skip article publication and reconcile canonical pages only."
+            exit 0
+          fi
 
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             if [[ "$REQUESTED_SLUG" == "all" ]]; then
@@ -191,9 +210,9 @@ jobs:
             local body="$RUNNER_TEMP/canonical-$(echo "$path" | tr '/?' '__').html"
             local ok=0
             for attempt in 1 2 3 4 5 6; do
-              curl --fail --silent --show-error --location \
+              curl -4 --fail --silent --show-error --location \
                 --header 'Cache-Control: no-cache' \
-                "https://dtfseeds.com${path}?dtf_reconcile=${GITHUB_SHA}-${attempt}" \
+                "https://dtfseeds.com${path}?dtf_reconcile=${GITHUB_RUN_ID}-${attempt}" \
                 --output "$body"
               if grep -Fqi -- "$required" "$body"; then
                 ok=1
@@ -238,10 +257,15 @@ jobs:
           JOB_STATUS: ${{ job.status }}
         with:
           script: |
+            const sourceRun = context.eventName === 'workflow_run'
+              ? context.payload.workflow_run?.html_url
+              : 'not a workflow-run handoff';
             const body = [
               '## THC WordPress publication and canonical-page reconciliation',
               '',
               `Status: **${process.env.JOB_STATUS}**`,
+              `Event: **${context.eventName}**`,
+              `Source handoff: ${sourceRun}`,
               `Article mode: \`${process.env.MODE || 'unknown'}\``,
               `Articles: \`${process.env.SLUGS || 'unknown'}\``,
               `Canonical page/front-page mutations: **${process.env.PAGE_MUTATIONS || 'not-run'}**`,
