@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "game": "Bud or Bluff",
+  "migrationDate": "2026-08-18",
+  "source": {
+    "type": "google-drive-spreadsheet",
+    "driveId": "1r3ZJIh4Ymxh_0dzUgHl56vG_TnaXIxAdr4sZ73vOgOA",
+    "title": "Bud or Bluff - Strain Database"
+  },
+  "cardSnapshot": {
+    "count": 120,
+    "firstId": "BOB-001",
+    "lastId": "BOB-120",
+    "files": [
+      "cards-001-040.md",
+      "cards-041-080.md",
+      "cards-081-120.md"
+    ],
+    "fields": [
+      "card_id",
+      "strain_name",
+      "answer",
+      "category",
+      "difficulty",
+      "claimed_lineage",
+      "dealer_prompt",
+      "reality_check",
+      "source_1",
+      "source_2",
+      "collision_check_status",
+      "print_status",
+      "playtest_rating",
+      "notes"
+    ]
+  },
+  "separateScreenedBluffPool": {
+    "driveId": "1RWTIZbFTjU7YC9IZtHkvnpCMqAwUAH5vvw2qmwbLoSE",
+    "title": "Bud or Bluff - 200 Screened Bluff Names",
+    "total": 200,
+    "originalBatch": 100,
+    "expansionBatch": 100,
+    "uniqueFullNames": 200,
+    "exactFullNameMatchesFoundAtScreening": 0,
+    "difficultyCounts": {"Easy":45,"Medium":95,"Hard":60},
+    "screenedOn": "2026-07-17",
+    "statusMeaning": "Screened, not globally guaranteed"
+  },
+  "policy": "Drive remains the editable research/control surface. These GitHub snapshots preserve exact migration evidence. Bluff fictional lineages are game copy, not factual lineage claims. Real-name sources, collision checks, sensitivity/name review, and final legal/retail review remain release gates."
+}
