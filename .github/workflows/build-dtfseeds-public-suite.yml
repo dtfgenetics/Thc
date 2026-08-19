@@ -11,6 +11,9 @@ on:
       - apps/high-land-web/**
       - apps/growlens-web/**
       - games/high-iq/**
+      - games/high-life/**
+      - games/grower-conversations/**
+      - games/seed-man-platformer/**
       - site/public-route-patch/**
       - site/deployment/public-apps.json
       - .github/workflows/build-dtfseeds-public-suite.yml
@@ -49,6 +52,39 @@ jobs:
           test -s site/public-route-patch/games/high-iq/data/manifest.json
           grep -Fq 'High IQ — Test Higher Cognition' site/public-route-patch/games/high-iq/index.html
           grep -Fq 'https://dtfseeds.com/games/high-iq/' site/public-route-patch/games/high-iq/index.html
+
+      - name: Validate High Life browser prototype
+        run: |
+          set -euo pipefail
+          node games/high-life/test/engine.test.mjs
+          node --check site/public-route-patch/games/high-life/app.js
+          cmp games/high-life/src/engine.mjs site/public-route-patch/games/high-life/engine.mjs
+          cmp games/high-life/data/events.json site/public-route-patch/games/high-life/data/events.json
+          test -s site/public-route-patch/games/high-life/index.html
+          test -s site/public-route-patch/games/high-life/high-life.css
+          grep -Fq 'https://dtfseeds.com/games/high-life/' site/public-route-patch/games/high-life/index.html
+
+      - name: Validate Grower Conversations browser deck
+        run: |
+          set -euo pipefail
+          node games/grower-conversations/scripts/validate-prompt-bank.mjs
+          node --check site/public-route-patch/games/grower-conversations/app.js
+          cmp games/grower-conversations/data/prompt-bank.json site/public-route-patch/games/grower-conversations/data/prompt-bank.json
+          test -s site/public-route-patch/games/grower-conversations/index.html
+          test -s site/public-route-patch/games/grower-conversations/grower-conversations.css
+          grep -Fq 'https://dtfseeds.com/games/grower-conversations/' site/public-route-patch/games/grower-conversations/index.html
+
+      - name: Validate Seed Man browser vertical slice
+        run: |
+          set -euo pipefail
+          node games/seed-man-platformer/test/physics.test.mjs
+          node --check site/public-route-patch/games/seed-man-platformer/app.js
+          node --check site/public-route-patch/games/seed-man-platformer/physics.mjs
+          cmp games/seed-man-platformer/src/physics.mjs site/public-route-patch/games/seed-man-platformer/physics.mjs
+          cmp games/seed-man-platformer/data/level-01.json site/public-route-patch/games/seed-man-platformer/data/level-01.json
+          test -s site/public-route-patch/games/seed-man-platformer/index.html
+          test -s site/public-route-patch/games/seed-man-platformer/seed-man.css
+          grep -Fq 'https://dtfseeds.com/games/seed-man-platformer/' site/public-route-patch/games/seed-man-platformer/index.html
 
       - name: Test and build High Land
         run: |
@@ -161,6 +197,9 @@ jobs:
             "master": "$GITHUB_SHA",
             "sources": {
               "highIq": "$GITHUB_SHA",
+              "highLife": "$GITHUB_SHA",
+              "growerConversations": "$GITHUB_SHA",
+              "seedMan": "$GITHUB_SHA",
               "highLand": "$GITHUB_SHA",
               "growLens": "$GITHUB_SHA",
               "weedopolis": "$WEEDOPOLIS_SHA",
@@ -182,6 +221,20 @@ jobs:
             release/games/high-iq/app.js
             release/games/high-iq/high-iq.css
             release/games/high-iq/data/manifest.json
+            release/games/high-life/index.html
+            release/games/high-life/app.js
+            release/games/high-life/high-life.css
+            release/games/high-life/engine.mjs
+            release/games/high-life/data/events.json
+            release/games/grower-conversations/index.html
+            release/games/grower-conversations/app.js
+            release/games/grower-conversations/grower-conversations.css
+            release/games/grower-conversations/data/prompt-bank.json
+            release/games/seed-man-platformer/index.html
+            release/games/seed-man-platformer/app.js
+            release/games/seed-man-platformer/seed-man.css
+            release/games/seed-man-platformer/physics.mjs
+            release/games/seed-man-platformer/data/level-01.json
             release/games/weedopolis/index.html
             release/games/crossword/index.html
             release/games/who-took-it/index.html
@@ -195,6 +248,9 @@ jobs:
           for file in "${required[@]}"; do test -s "$file"; done
 
           grep -Fq '/games/high-iq/' release/games/high-iq/index.html
+          grep -Fq '/games/high-life/' release/games/high-life/index.html
+          grep -Fq '/games/grower-conversations/' release/games/grower-conversations/index.html
+          grep -Fq '/games/seed-man-platformer/' release/games/seed-man-platformer/index.html
           grep -Fq '/games/high-land/' release/games/high-land/index.html
           grep -Fq '/games/weedopolis/' release/games/weedopolis/index.html
           grep -Fq '/games/crossword/' release/games/crossword/index.html
@@ -213,6 +269,9 @@ jobs:
             echo '## DTFSeeds public suite'
             echo ''
             echo '- /games/high-iq/ (self-hosted validated browser game)'
+            echo '- /games/high-life/ (tested browser prototype)'
+            echo '- /games/grower-conversations/ (96-card browser deck)'
+            echo '- /games/seed-man-platformer/ (browser vertical slice)'
             echo '- /games/high-land/'
             echo '- /games/weedopolis/'
             echo '- /games/crossword/'
@@ -254,7 +313,7 @@ jobs:
                 ? 'The complete DTFSeeds public suite built and validated successfully. A 30-day immutable artifact is attached to this workflow run and is ready for the production deployer once Hostinger SSH is available.'
                 : 'The public-suite package did not complete successfully. Inspect this workflow run before attempting production deployment.',
               '',
-              'Build scope: High IQ, High Land, Weedopolis, THC Crossword, Who Took It?, GrowLens, THC Grow Doc, Game Hub, Tools, Projects, and puzzle data.',
+              'Build scope: High IQ, High Life, Grower Conversations, Seed Man, High Land, Weedopolis, THC Crossword, Who Took It?, GrowLens, THC Grow Doc, Game Hub, Tools, Projects, and puzzle data.',
               'No Hostinger mutation is performed by this build-only workflow.'
             ].join('\n');
             await github.rest.issues.createComment({
