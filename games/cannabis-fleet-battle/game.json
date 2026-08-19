@@ -3,31 +3,41 @@
   "id": "cannabis-fleet-battle",
   "title": "Cannabis Fleet Battle",
   "type": "multiplayer-hidden-fleet-strategy",
-  "status": "canonical-preproduction",
+  "status": "server-engine-alpha",
   "board": {"rows": 15, "columns": 15},
   "players": {"minimum": 2, "maximum": 2},
   "phases": ["lobby", "placement", "battle", "complete"],
   "networkAuthority": "server",
+  "fleet": {
+    "path": "games/cannabis-fleet-battle/data/fleet.json",
+    "pieces": 6,
+    "occupiedCells": 21
+  },
+  "implementation": {
+    "engine": "games/cannabis-fleet-battle/src/engine.mjs",
+    "tests": "games/cannabis-fleet-battle/test/engine.test.mjs",
+    "protocol": "games/cannabis-fleet-battle/docs/NETWORK_PROTOCOL.md",
+    "publicViewHidesOpponentCellsUntilComplete": true,
+    "disconnectChangesTurnAuthority": false
+  },
   "requiredEvents": [
     "room-created",
     "room-joined",
-    "player-ready",
     "fleet-locked",
-    "attack-submitted",
+    "battle-started",
     "attack-result",
-    "turn-changed",
-    "ship-sunk",
     "player-disconnected",
     "player-reconnected",
     "game-complete"
   ],
-  "releaseGates": [
-    "fleet-schema-locked",
-    "placement-validation-tested",
-    "turn-engine-tested",
-    "multiplayer-e2e-tested",
-    "reconnect-tested",
-    "mobile-qa",
-    "original-art-cleared"
-  ]
+  "releaseGates": {
+    "fleet-schema-locked": true,
+    "placement-validation-tested": true,
+    "turn-engine-tested": true,
+    "private-state-boundary-tested": true,
+    "multiplayer-e2e-tested": false,
+    "reconnect-transport-tested": false,
+    "mobile-qa": false,
+    "original-art-cleared": false
+  }
 }
