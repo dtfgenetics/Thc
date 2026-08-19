@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Grower Conversations | DTF Genetics</title>
+  <meta name="description" content="Play Grower Conversations, a 96-card DTF Genetics discussion deck for cultivation stories, observation, problem solving, genetics, community, and future ideas.">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <meta name="theme-color" content="#10291d">
+  <link rel="canonical" href="https://dtfseeds.com/games/grower-conversations/">
+  <link rel="stylesheet" href="./grower-conversations.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="/">DTF Genetics <span>Dream the Future</span></a>
+    <nav aria-label="Primary"><a href="/games/">Games</a><a href="/learn/">Learn</a><a href="/community/">Community</a></nav>
+  </header>
+  <main>
+    <section class="hero">
+      <p class="eyebrow">96-card community deck</p>
+      <h1>Grower Conversations</h1>
+      <p class="lede">Draw a question, compare experiences, and turn grow-room stories into useful conversation. Filter by topic or depth, or mix the whole deck.</p>
+      <p id="load-status" class="status">Loading prompt bank…</p>
+    </section>
+
+    <section class="controls panel" id="controls" hidden>
+      <label>Topic<select id="category-filter"><option value="all">All topics</option></select></label>
+      <label>Depth<select id="depth-filter"><option value="all">All depths</option><option value="easy">Easy</option><option value="reflective">Reflective</option><option value="technical">Technical</option></select></label>
+      <button id="shuffle-deck" type="button">Shuffle deck</button>
+    </section>
+
+    <section class="card-stage" id="card-stage" hidden aria-live="polite">
+      <article class="prompt-card" id="prompt-card">
+        <div class="card-top"><span id="card-category"></span><span id="card-depth"></span></div>
+        <p id="card-number" class="card-number"></p>
+        <h2 id="card-prompt"></h2>
+        <div class="card-bottom"><span>Teaching Healthy Cultivation</span><strong>DTF Genetics</strong></div>
+      </article>
+      <div class="deck-actions">
+        <button class="primary" id="next-card" type="button">Draw a prompt</button>
+        <button id="copy-card" type="button">Copy prompt</button>
+        <button id="reset-deck" type="button">Reset used cards</button>
+      </div>
+      <p id="deck-status" class="status"></p>
+    </section>
+
+    <section class="panel how-to">
+      <h2>Three ways to use the deck</h2>
+      <div class="grid">
+        <article><h3>Community circle</h3><p>Draw one prompt and give everyone a chance to answer before moving on.</p></article>
+        <article><h3>Grow-log reflection</h3><p>Use Reflective or Technical prompts as journal starters after a grow cycle or major change.</p></article>
+        <article><h3>Discord prompt</h3><p>Copy a card into the community and compare answers without requiring a formal game session.</p></article>
+      </div>
+    </section>
+  </main>
+  <footer><p><strong>DTF Genetics</strong> · Dream the Future</p><p>Conversation prompts are educational discussion starters, not legal, medical, pesticide-label, or electrical-safety instructions.</p></footer>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
