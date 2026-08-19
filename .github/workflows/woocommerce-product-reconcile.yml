@@ -11,6 +11,15 @@ on:
         options:
           - dry-run
           - apply
+  push:
+    branches: [main]
+    paths:
+      - site/wordpress/products/genetics.json
+      - site/wordpress/products/woocommerce-reconciliation.json
+      - scripts/validate-genetics-commerce.mjs
+      - scripts/validate-woocommerce-reconciliation.mjs
+      - scripts/reconcile-woocommerce-products.mjs
+      - .github/workflows/woocommerce-product-reconcile.yml
 
 permissions:
   contents: read
@@ -72,7 +81,7 @@ jobs:
 
   apply:
     name: Back up, update, and verify WooCommerce products
-    if: inputs.mode == 'apply' && needs.plan.result == 'success'
+    if: github.event_name == 'workflow_dispatch' && inputs.mode == 'apply' && needs.plan.result == 'success'
     needs: plan
     runs-on: ubuntu-latest
     timeout-minutes: 15
