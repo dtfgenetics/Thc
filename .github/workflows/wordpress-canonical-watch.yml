@@ -33,12 +33,16 @@ jobs:
           set -euo pipefail
           node --check scripts/apply-wordpress-public-content-rest.mjs
           node --check scripts/validate-genetics-commerce.mjs
+          node --check scripts/reconcile-woocommerce-products.mjs
+          node --check scripts/validate-woocommerce-reconciliation.mjs
           node scripts/validate-genetics-commerce.mjs
+          node scripts/validate-woocommerce-reconciliation.mjs
           for slug in home seeds learn community shop gallery about contact; do
             test -s "site/wordpress/pages/$slug.html"
             grep -Fq '<h1' "site/wordpress/pages/$slug.html"
           done
           test -s site/wordpress/products/genetics.json
+          test -s site/wordpress/products/woocommerce-reconciliation.json
           test ! -e site/wordpress/pages/games.html
           test ! -e site/wordpress/pages/high-iq.html
           grep -Fq "show_on_front: 'page'" scripts/apply-wordpress-public-content-rest.mjs
@@ -63,7 +67,7 @@ jobs:
               `Event: **${context.eventName}**`,
               `Preflight result: **${process.env.PREFLIGHT_STATUS}**`,
               '',
-              'This workflow intentionally accesses no production environment or credentials. It proves GitHub Actions registered the workflow and validates the trusted `main` WordPress package, including genetics-to-store route consistency. A separate workflow-run deployment workflow owns protected production publishing.'
+              'This workflow intentionally accesses no production environment or credentials. It proves GitHub Actions registered the workflow and validates the trusted `main` WordPress package, genetics-to-store route consistency, and the backup-first WooCommerce reconciliation plan. A separate workflow-run deployment workflow owns protected production publishing.'
             ].join('\n');
             await github.rest.issues.createComment({
               owner: context.repo.owner,
