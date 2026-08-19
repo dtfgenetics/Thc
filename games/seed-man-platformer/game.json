@@ -1,26 +1,47 @@
 {
   "schemaVersion": 1,
   "id": "seed-man-platformer",
-  "title": "Seed Man Platformer",
+  "title": "Seed Man: Sprout Run",
   "type": "browser-platformer",
-  "status": "concept-to-prototype",
-  "targetRuntime": "html5-browser",
+  "status": "browser-vertical-slice",
+  "route": "/games/seed-man-platformer/",
+  "targetRuntime": "html5-browser-canvas2d",
   "input": ["keyboard", "touch"],
-  "playerStates": ["idle", "run", "jump", "fall", "land", "hurt", "checkpoint", "finish"],
+  "playerStates": ["idle", "run", "jump", "fall", "hurt", "checkpoint", "finish"],
+  "implementation": {
+    "physics": "games/seed-man-platformer/src/physics.mjs",
+    "level": "games/seed-man-platformer/data/level-01.json",
+    "tests": "games/seed-man-platformer/test/physics.test.mjs",
+    "publicRoute": "site/public-route-patch/games/seed-man-platformer",
+    "fixedTimestepSeconds": 0.0166666667,
+    "canvas": {"width": 960, "height": 540},
+    "levelWorld": {"width": 2600, "height": 540},
+    "collectibles": 8,
+    "checkpointCount": 1,
+    "hazardZones": 3
+  },
   "implementationPrinciples": [
-    "fixed-timestep-or-delta-safe-physics",
+    "fixed-timestep-physics",
     "data-driven-levels",
     "separate-simulation-and-rendering",
     "touch-friendly-controls",
     "original-gameplay-assets",
     "seed-man-character-contract"
   ],
-  "releaseGates": [
-    "movement-prototype",
-    "collision-tests",
-    "first-complete-level",
-    "mobile-playtest",
-    "sprite-consistency-review",
-    "original-audio-and-art-cleared"
-  ]
+  "art": {
+    "prototypeRenderer": "canvas2d-primitives",
+    "productionSpriteAssigned": false,
+    "thirdPartyCharacterAssets": false,
+    "thirdPartyLevelLayouts": false
+  },
+  "releaseGates": {
+    "movement-prototype": true,
+    "collision-tests": true,
+    "first-complete-level": true,
+    "keyboard-controls": true,
+    "touch-controls-implemented": true,
+    "mobile-playtest": false,
+    "sprite-consistency-review": false,
+    "original-audio-and-art-cleared": false
+  }
 }
