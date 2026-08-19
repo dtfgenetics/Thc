@@ -1,0 +1,52 @@
+name: High Life Prototype CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'games/high-life/**'
+      - 'site/public-route-patch/games/high-life/**'
+      - '.github/workflows/high-life-ci.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'games/high-life/**'
+      - 'site/public-route-patch/games/high-life/**'
+      - '.github/workflows/high-life-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Run deterministic rules and balance tests
+        run: node games/high-life/test/engine.test.mjs
+      - name: Validate browser JavaScript syntax
+        run: |
+          node --check site/public-route-patch/games/high-life/app.js
+          node --check site/public-route-patch/games/high-life/engine.mjs
+      - name: Verify canonical and public runtime copies match
+        shell: bash
+        run: |
+          set -euo pipefail
+          cmp games/high-life/src/engine.mjs site/public-route-patch/games/high-life/engine.mjs
+          cmp games/high-life/data/events.json site/public-route-patch/games/high-life/data/events.json
+      - name: Verify public route contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s site/public-route-patch/games/high-life/index.html
+          test -s site/public-route-patch/games/high-life/app.js
+          test -s site/public-route-patch/games/high-life/high-life.css
+          grep -Fq '<h1>From Bagseed to Legacy</h1>' site/public-route-patch/games/high-life/index.html
+          grep -Fq 'https://dtfseeds.com/games/high-life/' site/public-route-patch/games/high-life/index.html
+          grep -Fqi 'rel="canonical"' site/public-route-patch/games/high-life/index.html
+          grep -Fqi 'name="description"' site/public-route-patch/games/high-life/index.html
