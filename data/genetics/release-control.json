@@ -11,10 +11,13 @@
       "generation": null,
       "seedType": "unknown",
       "packagingVersion": null,
-      "evidenceRefs": [],
-      "lastVerified": null,
+      "evidenceRefs": [
+        "drive:1aIPA7fQJr_xzwnfDPfB1nZWnITMVahPYQzd8eS78g6g",
+        "repo:data/genetics/sources/blue-mango-line-sheet.md"
+      ],
+      "lastVerified": "2026-08-18",
       "publicListingAllowed": false,
-      "notes": "Stable lineage record exists. Release-specific generation, seed type, packaging, availability, and evidence have not yet been migrated into this public-safe registry."
+      "notes": "Drive-backed line identity, parentage, F1/F2/F3 forms, 8–10 week planning window, and packaging direction are migrated. Release-specific generation, seed type, packaging version, availability, and inventory are still intentionally fail-closed."
     },
     {
       "lineId": "mango-bubbles",
@@ -23,10 +26,13 @@
       "generation": null,
       "seedType": "unknown",
       "packagingVersion": null,
-      "evidenceRefs": [],
-      "lastVerified": null,
+      "evidenceRefs": [
+        "drive:10C9hE4u45V8sw16gvDu2PgwfgICvZAwm7UcYWDRfwnU",
+        "repo:data/genetics/sources/mango-bubbles-line-sheet.md"
+      ],
+      "lastVerified": "2026-08-18",
       "publicListingAllowed": false,
-      "notes": "Active breeding-line identity is controlled, but release-specific public metadata remains unverified."
+      "notes": "Drive-backed naming approval, parentage, positioning, and suggested short copy are migrated. Release-specific generation, seed type, packaging version, and availability remain unverified."
     },
     {
       "lineId": "blue-bubblegum",
@@ -35,10 +41,12 @@
       "generation": null,
       "seedType": "unknown",
       "packagingVersion": null,
-      "evidenceRefs": [],
-      "lastVerified": null,
+      "evidenceRefs": [
+        "drive:10C9hE4u45V8sw16gvDu2PgwfgICvZAwm7UcYWDRfwnU"
+      ],
+      "lastVerified": "2026-08-18",
       "publicListingAllowed": false,
-      "notes": "Active breeding-line identity is controlled, but release-specific public metadata remains unverified."
+      "notes": "Mango Bubbles source material confirms Blue Bubblegum as a parent name, but no standalone Drive line sheet was found. A Drive navigation record separately lists Blueberry Bubblegum, so naming reconciliation remains open and no release claim is permitted."
     },
     {
       "lineId": "blueberry-butcher",
@@ -47,10 +55,12 @@
       "generation": null,
       "seedType": "unknown",
       "packagingVersion": null,
-      "evidenceRefs": [],
-      "lastVerified": null,
+      "evidenceRefs": [
+        "drive:1aIPA7fQJr_xzwnfDPfB1nZWnITMVahPYQzd8eS78g6g"
+      ],
+      "lastVerified": "2026-08-18",
       "publicListingAllowed": false,
-      "notes": "Parent-line record does not imply current retail availability. No release claim is permitted from this registry until release metadata is verified."
+      "notes": "Blue Mango source material confirms Blueberry Butcher as a parent name. The standalone Blueberry Butcher parentage record remains catalog-controlled pending a dedicated Drive source. Parent-line status does not imply current retail availability."
     }
   ]
 }
