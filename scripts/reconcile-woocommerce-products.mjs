@@ -51,6 +51,17 @@ function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+function assertExpectedProductId(spec, actualId, source) {
+  if (!Number.isInteger(spec.expectedProductId) || spec.expectedProductId <= 0) {
+    throw new Error(`${spec.registryId}: expectedProductId is missing or invalid`);
+  }
+  if (Number(actualId) !== Number(spec.expectedProductId)) {
+    throw new Error(
+      `${spec.registryId}: ${source} resolved product ID ${actualId}, but the reviewed reconciliation plan pins ID ${spec.expectedProductId}. Refusing to continue.`
+    );
+  }
+}
+
 async function fetchWithRetries(url, options = {}, attempts = 4) {
   let lastError;
   for (let attempt = 1; attempt <= attempts; attempt += 1) {
@@ -61,7 +72,7 @@ async function fetchWithRetries(url, options = {}, attempts = 4) {
         signal: AbortSignal.timeout(20_000),
         headers: {
           Accept: 'application/json',
-          'User-Agent': 'DTFSeeds-WooCommerce-Reconciler/1.0',
+          'User-Agent': 'DTFSeeds-WooCommerce-Reconciler/1.1',
           ...(options.headers || {})
         }
       });
@@ -190,6 +201,7 @@ function buildChanges(spec, current, categorySnapshot = []) {
 
 async function verifyUpdatedProduct(id, spec, seedCategory) {
   const { body } = await wcRequest(`/wp-json/wc/v3/products/${id}`);
+  assertExpectedProductId(spec, body?.id, 'post-update verification');
   const failures = [];
   if (!spec.preserveCurrentName && spec.desiredName && body?.name !== spec.desiredName) failures.push('name');
   if (normalizeHtml(body?.description) !== normalizeHtml(spec.description)) failures.push('description');
@@ -220,6 +232,7 @@ for (const spec of plan.products) {
   }
 
   const publicProduct = publicMatches[0];
+  assertExpectedProductId(spec, publicProduct.id, 'public Store API');
   let current = publicProduct;
   let categories = publicCategories(publicProduct);
   let productId = publicProduct.id;
@@ -230,6 +243,7 @@ for (const spec of plan.products) {
       throw new Error(`Expected exactly one authenticated WooCommerce product for slug '${spec.slug}'; found ${privateMatches.length}`);
     }
     current = privateMatches[0];
+    assertExpectedProductId(spec, current.id, 'authenticated wc/v3 API');
     categories = authenticatedCategories(current);
     productId = current.id;
     await writeFile(join(backupDir, `${spec.registryId}-before.json`), `${JSON.stringify(current, null, 2)}\n`, 'utf8');
@@ -239,6 +253,7 @@ for (const spec of plan.products) {
   const result = {
     registryId: spec.registryId,
     slug: spec.slug,
+    expectedProductId: spec.expectedProductId,
     productId,
     currentName: current?.name || '',
     preserveCurrentName: Boolean(spec.preserveCurrentName),
@@ -254,9 +269,7 @@ for (const spec of plan.products) {
       method: 'PUT',
       body: JSON.stringify(payload)
     });
-    if (Number(updated.body?.id) !== Number(productId)) {
-      throw new Error(`WooCommerce did not confirm update of product ${productId}`);
-    }
+    assertExpectedProductId(spec, updated.body?.id, 'WooCommerce update response');
     result.changed = true;
     await verifyUpdatedProduct(productId, spec, seedCategory);
     result.verified = true;
@@ -290,11 +303,12 @@ const markdown = [
   `Products needing changes: **${report.productsNeedingChanges}**`,
   `Products changed: **${report.productsChanged}**`,
   '',
-  '| Product | ID | Planned changes | Applied | Verified |',
-  '|---|---:|---|---|---|',
-  ...results.map((result) => `| ${result.registryId} | ${result.productId ?? ''} | ${result.changes.map((change) => change.field).join(', ') || 'none'} | ${result.changed ? 'yes' : 'no'} | ${result.verified ? 'yes' : 'no'} |`),
+  '| Product | Pinned ID | Live ID | Planned changes | Applied | Verified |',
+  '|---|---:|---:|---|---|---|',
+  ...results.map((result) => `| ${result.registryId} | ${result.expectedProductId ?? ''} | ${result.productId ?? ''} | ${result.changes.map((change) => change.field).join(', ') || 'none'} | ${result.changed ? 'yes' : 'no'} | ${result.verified ? 'yes' : 'no'} |`),
   '',
   'Protected transaction fields are never included in update payloads. Price, stock, SKU, slug, images, tags, attributes, shipping, and tax fields remain controlled by WooCommerce.',
+  'Pinned product IDs must match both the public Store API and authenticated wc/v3 response before a write is permitted.',
   applyChanges ? `Rollback snapshots: ${backupDir}` : 'No writes were performed.'
 ].join('\n') + '\n';
 
