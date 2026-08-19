@@ -9,8 +9,17 @@ on:
       - 'data/asset-manifest.json'
       - 'data/asset-manifest.schema.json'
       - 'site/deployment/public-apps.json'
+      - 'site/public-route-patch/projects/**'
       - 'games/high-iq/**'
+      - 'games/high-life/**'
+      - 'games/grower-conversations/**'
+      - 'games/cannabis-fleet-battle/**'
+      - 'games/strain-showdown/**'
+      - 'games/seed-man-platformer/**'
       - 'site/public-route-patch/games/high-iq/**'
+      - 'site/public-route-patch/games/high-life/**'
+      - 'site/public-route-patch/games/grower-conversations/**'
+      - 'site/public-route-patch/games/seed-man-platformer/**'
       - 'docs/**SOURCE_OF_TRUTH.md'
       - 'docs/PORTFOLIO_RELEASE_CRITERIA.md'
       - 'scripts/validate-portfolio-registry.mjs'
@@ -22,8 +31,17 @@ on:
       - 'data/asset-manifest.json'
       - 'data/asset-manifest.schema.json'
       - 'site/deployment/public-apps.json'
+      - 'site/public-route-patch/projects/**'
       - 'games/high-iq/**'
+      - 'games/high-life/**'
+      - 'games/grower-conversations/**'
+      - 'games/cannabis-fleet-battle/**'
+      - 'games/strain-showdown/**'
+      - 'games/seed-man-platformer/**'
       - 'site/public-route-patch/games/high-iq/**'
+      - 'site/public-route-patch/games/high-life/**'
+      - 'site/public-route-patch/games/grower-conversations/**'
+      - 'site/public-route-patch/games/seed-man-platformer/**'
       - 'docs/**SOURCE_OF_TRUTH.md'
       - 'docs/PORTFOLIO_RELEASE_CRITERIA.md'
       - 'scripts/validate-portfolio-registry.mjs'
@@ -39,7 +57,7 @@ concurrency:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -49,14 +67,61 @@ jobs:
       - name: Validate project, site, and asset registries
         run: node scripts/validate-portfolio-registry.mjs
 
-      - name: Validate High IQ canonical and deployable state
+      - name: Validate implemented game data and engines
         shell: bash
         run: |
           set -euo pipefail
           node games/high-iq/scripts/validate-data.mjs
-          node -e "const p=require('./data/project-registry.json').projects.find(x=>x.id==='high-iq'); if(!p||p.status!=='canonical') throw new Error('High IQ must be canonical in project registry')"
-          node -e "const a=require('./site/deployment/public-apps.json').apps.find(x=>x.id==='high-iq'); if(!a||a.runtime!=='static'||a.status!=='ready-to-package') throw new Error('High IQ deployment manifest must be static and ready-to-package')"
+          node games/high-life/test/engine.test.mjs
+          node games/grower-conversations/scripts/validate-prompt-bank.mjs
+          node games/cannabis-fleet-battle/test/engine.test.mjs
+          node games/strain-showdown/scripts/validate-roster.mjs
+          node games/seed-man-platformer/test/physics.test.mjs
+
+      - name: Verify canonical project statuses match deployment states
+        run: |
+          node <<'NODE'
+          const projects = require('./data/project-registry.json').projects;
+          const apps = require('./site/deployment/public-apps.json').apps;
+          const project = (id) => projects.find((item) => item.id === id);
+          const app = (id) => apps.find((item) => item.id === id);
+          const expect = (condition, message) => { if (!condition) throw new Error(message); };
+
+          expect(project('high-iq')?.status === 'canonical', 'High IQ must be canonical');
+          expect(app('high-iq')?.runtime === 'static' && app('high-iq')?.status === 'ready-to-package', 'High IQ deployment state drift');
+
+          expect(project('high-life')?.status === 'browser-prototype', 'High Life registry state drift');
+          expect(app('high-life')?.runtime === 'static' && app('high-life')?.status === 'ready-to-package', 'High Life deployment state drift');
+
+          expect(project('grower-conversations')?.status === 'browser-deck-alpha', 'Grower Conversations registry state drift');
+          expect(app('grower-conversations')?.runtime === 'static' && app('grower-conversations')?.status === 'ready-to-package', 'Grower Conversations deployment state drift');
+
+          expect(project('cannabis-fleet-battle')?.status === 'server-engine-alpha', 'Fleet Battle registry state drift');
+          expect(app('cannabis-fleet-battle')?.runtime === 'server-engine' && app('cannabis-fleet-battle')?.status === 'server-engine-alpha', 'Fleet Battle deployment state drift');
+
+          expect(project('strain-showdown')?.status === 'roster-data-alpha', 'Strain Showdown registry state drift');
+          expect(app('strain-showdown')?.runtime === 'roster-data' && app('strain-showdown')?.status === 'roster-data-alpha', 'Strain Showdown deployment state drift');
+
+          expect(project('seed-man-platformer')?.status === 'browser-vertical-slice', 'Seed Man registry state drift');
+          expect(app('seed-man-platformer')?.runtime === 'static-canvas2d' && app('seed-man-platformer')?.status === 'ready-to-package', 'Seed Man deployment state drift');
+          NODE
+
+      - name: Verify self-hosted public route files exist
+        shell: bash
+        run: |
+          set -euo pipefail
+          for route in high-iq high-life grower-conversations seed-man-platformer; do
+            test -s "site/public-route-patch/games/$route/index.html"
+            grep -Fqi 'rel="canonical"' "site/public-route-patch/games/$route/index.html"
+            grep -Fqi 'name="description"' "site/public-route-patch/games/$route/index.html"
+          done
+          test -s site/public-route-patch/projects/index.html
+          grep -Fq 'High Life: From Bagseed to Legacy' site/public-route-patch/projects/index.html
+          grep -Fq 'Cannabis Fleet Battle' site/public-route-patch/projects/index.html
+          grep -Fq 'Strain Showdown' site/public-route-patch/projects/index.html
+
+      - name: Validate High IQ legacy fallback boundary
+        shell: bash
+        run: |
+          set -euo pipefail
           grep -Fq 'The older Base44 build is retained only as a legacy fallback link' docs/HIGH_IQ_SOURCE_OF_TRUTH.md
-          test -s site/public-route-patch/games/high-iq/index.html
-          test -s site/public-route-patch/games/high-iq/app.js
-          test -s site/public-route-patch/games/high-iq/high-iq.css
