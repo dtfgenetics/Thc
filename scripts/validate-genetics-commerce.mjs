@@ -13,6 +13,8 @@ const [registryText, seedsHtml, shopHtml] = await Promise.all([
 const registry = JSON.parse(registryText);
 const errors = [];
 const warnings = [];
+const seedsLower = seedsHtml.toLowerCase();
+const shopLower = shopHtml.toLowerCase();
 
 if (registry?.schemaVersion !== 1) errors.push('genetics.json schemaVersion must be 1');
 if (!Array.isArray(registry?.products) || registry.products.length === 0) {
@@ -94,10 +96,10 @@ for (const phrase of forbiddenPublicClaims) {
   if (sourcePages.includes(phrase)) errors.push(`Canonical Seeds/Shop source contains prohibited legacy claim: ${phrase}`);
 }
 
-if (!seedsHtml.includes('product page is the transaction source of truth')) {
+if (!seedsLower.includes('product page is the transaction source of truth')) {
   errors.push('Seeds page must state that the product page controls transaction data');
 }
-if (!shopHtml.includes('product pages control current price, inventory, quantity, seed type')) {
+if (!shopLower.includes('product pages control current price, inventory, quantity, seed type')) {
   errors.push('Shop page must keep dynamic transaction fields on product pages');
 }
 
