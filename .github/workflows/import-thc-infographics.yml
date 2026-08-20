@@ -21,7 +21,7 @@ concurrency:
 jobs:
   import:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -32,56 +32,138 @@ jobs:
         shell: python
         run: |
           import json
+          import os
           import pathlib
-          import sys
+          import time
           import urllib.request
 
           root = pathlib.Path('site/wordpress/assets/infographics')
           manifests = sorted(root.glob('import-*.json'))
+          summary_lines = ['## THC infographic import', '']
+          failed_manifests = []
+          completed_manifests = []
+          imported_count = 0
+          existing_count = 0
+
+          def body_looks_like_image(body):
+              return (
+                  body.startswith(b'\x89PNG\r\n\x1a\n')
+                  or body.startswith(b'\xff\xd8\xff')
+                  or body.startswith((b'GIF87a', b'GIF89a'))
+                  or (len(body) >= 12 and body[:4] == b'RIFF' and body[8:12] == b'WEBP')
+              )
+
           if not manifests:
               print('No infographic import manifests; nothing to do.')
-              sys.exit(0)
+              summary_lines.append('No queued manifests were found.')
+          else:
+              for manifest in manifests:
+                  print(f'Processing {manifest}')
+                  failures = []
+                  try:
+                      data = json.loads(manifest.read_text(encoding='utf-8'))
+                  except Exception as exc:
+                      failures.append(f'manifest parse failed: {exc}')
+                      data = {'assets': []}
 
-          for manifest in manifests:
-              data = json.loads(manifest.read_text(encoding='utf-8'))
-              for item in data.get('assets', []):
-                  target = pathlib.Path(item['path'])
-                  request = urllib.request.Request(
-                      item['url'],
-                      headers={'User-Agent': 'Mozilla/5.0 THC-Infographic-Importer/1.0'},
-                  )
-                  with urllib.request.urlopen(request, timeout=60) as response:
-                      body = response.read()
-                      content_type = response.headers.get('Content-Type', '')
-                  if not content_type.startswith('image/'):
-                      raise RuntimeError(f'{target}: expected image content, got {content_type!r}')
-                  if len(body) < 10000:
-                      raise RuntimeError(f'{target}: downloaded image is unexpectedly small ({len(body)} bytes)')
-                  target.parent.mkdir(parents=True, exist_ok=True)
-                  target.write_bytes(body)
-                  print(f'Imported {target}: {len(body)} bytes, {content_type}')
+                  assets = data.get('assets', [])
+                  if not isinstance(assets, list):
+                      failures.append('assets must be a list')
+                      assets = []
 
-      - name: Commit imported assets
+                  for item in assets:
+                      target = pathlib.Path(item.get('path', ''))
+                      source_url = item.get('url')
+                      if not target.as_posix() or not source_url:
+                          failures.append(f'invalid asset entry: {item!r}')
+                          continue
+
+                      if target.exists() and target.stat().st_size >= 10000:
+                          print(f'Already present; skipping download: {target}')
+                          existing_count += 1
+                          continue
+
+                      last_error = None
+                      for attempt in range(1, 4):
+                          try:
+                              request = urllib.request.Request(
+                                  source_url,
+                                  headers={'User-Agent': 'Mozilla/5.0 THC-Infographic-Importer/2.0'},
+                              )
+                              with urllib.request.urlopen(request, timeout=45) as response:
+                                  body = response.read()
+                                  content_type = response.headers.get('Content-Type', '')
+
+                              if len(body) < 10000:
+                                  raise RuntimeError(
+                                      f'downloaded image is unexpectedly small ({len(body)} bytes)'
+                                  )
+                              if not content_type.startswith('image/') and not body_looks_like_image(body):
+                                  raise RuntimeError(
+                                      f'expected image content, got {content_type!r}'
+                                  )
+
+                              target.parent.mkdir(parents=True, exist_ok=True)
+                              target.write_bytes(body)
+                              print(
+                                  f'Imported {target}: {len(body)} bytes, '
+                                  f'{content_type or "signature-verified image"}'
+                              )
+                              imported_count += 1
+                              last_error = None
+                              break
+                          except Exception as exc:
+                              last_error = exc
+                              print(
+                                  f'Attempt {attempt}/3 failed for {target}: {exc}',
+                                  flush=True,
+                              )
+                              if attempt < 3:
+                                  time.sleep(attempt * 3)
+
+                      if last_error is not None:
+                          failures.append(f'{target}: {last_error}')
+
+                  if failures:
+                      failed_manifests.append(manifest.name)
+                      print(f'::warning title=Infographic manifest retained::{manifest.name}: ' + ' | '.join(failures))
+                      summary_lines.append(f'- ⚠️ `{manifest.name}` retained: {len(failures)} failed asset(s)')
+                      for failure in failures[:10]:
+                          summary_lines.append(f'  - {failure}')
+                  else:
+                      manifest.unlink()
+                      completed_manifests.append(manifest.name)
+                      summary_lines.append(f'- ✅ `{manifest.name}` completed')
+
+          summary_lines.extend([
+              '',
+              f'Imported assets: **{imported_count}**',
+              f'Already-present assets skipped: **{existing_count}**',
+              f'Completed manifests: **{len(completed_manifests)}**',
+              f'Retained manifests needing refreshed source data: **{len(failed_manifests)}**',
+          ])
+          if failed_manifests:
+              summary_lines.append('')
+              summary_lines.append('Retained manifests: ' + ', '.join(f'`{name}`' for name in failed_manifests))
+
+          summary_path = os.environ.get('GITHUB_STEP_SUMMARY')
+          if summary_path:
+              with open(summary_path, 'a', encoding='utf-8') as handle:
+                  handle.write('\n'.join(summary_lines) + '\n')
+
+      - name: Commit completed imports and queue cleanup
         shell: bash
         run: |
           set -euo pipefail
-          shopt -s nullglob
-          manifests=(site/wordpress/assets/infographics/import-*.json)
-          if (( ${#manifests[@]} == 0 )); then
-            echo 'No import manifests remain.'
-            exit 0
-          fi
-
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git rm -- "${manifests[@]}"
-          git add site/wordpress/assets/infographics
+          git add -A site/wordpress/assets/infographics
 
           if git diff --cached --quiet; then
-            echo 'No imported asset changes to commit.'
+            echo 'No infographic changes to commit.'
             exit 0
           fi
 
-          git commit -m 'Import queued THC infographic assets'
+          git commit -m 'Import available THC infographic assets'
           git pull --rebase origin main
           git push origin HEAD:main
