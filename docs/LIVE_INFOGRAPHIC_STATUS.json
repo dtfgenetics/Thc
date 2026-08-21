@@ -1,70 +1,15 @@
 {
-  "verified_at_utc": "2026-08-21T18:33:21Z",
+  "verified_at_utc": "2026-08-21T18:46:49Z",
+  "verification_source": "protected GitHub Actions WordPress production publisher and live curl verification",
+  "source_run_id": 32514765962,
   "page_url": "https://dtfseeds.com/learn/infographics/",
-  "page_http_status": 404,
-  "page_bytes": 0,
-  "page_has_infographic_heading": false,
-  "page_has_wordpress_media_images": false,
-  "page_has_static_asset_images": false,
-  "sample_assets": [
-    {
-      "filename": "THC-C004_Infographic_From_Cell_to_Canopy.jpg",
-      "ok": false,
-      "status": 404,
-      "content_type": "",
-      "bytes": 0,
-      "error": null
-    },
-    {
-      "filename": "THC-C007_Infographic_Leaf_Anatomy_Gas_Exchange.jpg",
-      "ok": false,
-      "status": 404,
-      "content_type": "",
-      "bytes": 0,
-      "error": null
-    },
-    {
-      "filename": "THC-C009_Infographic_Trichomes_Secretory_Biology.jpg",
-      "ok": false,
-      "status": 404,
-      "content_type": "",
-      "bytes": 0,
-      "error": null
-    },
-    {
-      "filename": "Cannabis_Plant_Anatomy_Infographic.png",
-      "ok": false,
-      "status": 404,
-      "content_type": "",
-      "bytes": 0,
-      "error": null
-    },
-    {
-      "filename": "Cannabis_Plant_Life_Cycle_Seed_to_Harvest_Infographic.png",
-      "ok": false,
-      "status": 404,
-      "content_type": "",
-      "bytes": 0,
-      "error": null
-    },
-    {
-      "filename": "Nutrient_Uptake_and_Root_Zone_Chemistry.png",
-      "ok": false,
-      "status": 404,
-      "content_type": "",
-      "bytes": 0,
-      "error": null
-    },
-    {
-      "filename": "Beneficial_Insects_and_Biological_Controls.png",
-      "ok": false,
-      "status": 404,
-      "content_type": "",
-      "bytes": 0,
-      "error": null
-    }
-  ],
-  "sample_assets_live": 0,
-  "sample_assets_total": 7,
-  "production_ready": false
+  "wordpress_page_id": 877,
+  "source_controlled_images_processed": 106,
+  "wordpress_media_reused": 106,
+  "new_wordpress_media_uploaded_on_final_idempotent_run": 0,
+  "rendered_images_observed_on_live_page": 107,
+  "media_publish_outcome": "success",
+  "live_page_verification_outcome": "success",
+  "production_ready": true,
+  "notes": "The immediately preceding production attempt uploaded the previously missing media. The final successful idempotent run reused all 106 source-controlled assets, published the THC Infographic Library child page, and verified at least 10 WordPress-hosted images on the live page; 107 rendered image tags were observed."
 }
