@@ -1,9 +1,14 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "siteRoute": "/learn/infographics/",
   "assetBase": "/assets/education/infographics/",
   "sourceRepository": "dtfgenetics/Thc",
   "sourcePath": "site/wordpress/assets/infographics",
-  "sourceTreeSha": "d7e7904c26648242b8998a25c23c1a3d7d36f2e3",
-  "publishingRule": "The full source-controlled infographic tree is copied into the DTFSeeds public release. Curated gallery links are a subset; review/quarantine material from other repositories is not promoted by this route."
+  "assetCount": 105,
+  "verifiedDate": "2026-08-21",
+  "publicationTargets": [
+    "https://dtfseeds.com/learn/infographics/",
+    "https://dtfseeds.com/assets/education/infographics/"
+  ],
+  "publishingRule": "All source-controlled, publication-ready infographic image files in the canonical directory are released to the DTFSeeds education asset route and WordPress infographic library. Draft, quarantined, superseded, and unresolved QA-only material remains excluded until promoted into the canonical publication directory."
 }
