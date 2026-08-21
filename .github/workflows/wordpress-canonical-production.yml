@@ -29,7 +29,7 @@ jobs:
       WC_CONSUMER_KEY: ${{ secrets.WC_CONSUMER_KEY }}
       WC_CONSUMER_SECRET: ${{ secrets.WC_CONSUMER_SECRET }}
       CONTENT_DIR: ${{ github.workspace }}/site/wordpress/pages
-      BACKUP_ROOT: ${{ runner.temp }}/wordpress-production-backups
+      BACKUP_ROOT: /tmp/wordpress-production-backups
     steps:
       - uses: actions/checkout@v4
         with:
@@ -187,7 +187,7 @@ jobs:
         with:
           name: wordpress-production-backup-${{ github.run_id }}
           path: |
-            ${{ runner.temp }}/wordpress-production-backups
+            /tmp/wordpress-production-backups
             ${{ runner.temp }}/woocommerce-product-backups
             woocommerce-reconciliation-report.json
             woocommerce-reconciliation-report.md
@@ -210,6 +210,7 @@ jobs:
           COMMERCE_ROLLBACK_OUTCOME: ${{ steps.commerce_rollback.outcome }}
           MUTATIONS: ${{ steps.publish.outputs.mutations }}
           CHANGED_PAGES: ${{ steps.publish.outputs.changed_pages }}
+          BACKUP_ROOT: /tmp/wordpress-production-backups
         with:
           script: |
             const fs = require('fs');
