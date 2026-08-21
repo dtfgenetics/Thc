@@ -29,30 +29,26 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test -s .github/workflows/wordpress-canonical-production.yml
-          test -s .github/workflows/wordpress-infographic-production.yml
-          test -s .github/workflows/wordpress-presentation-repair.yml
-          grep -Fq 'workflow_dispatch:' .github/workflows/wordpress-canonical-production.yml
-          grep -Fq 'workflow_dispatch:' .github/workflows/wordpress-infographic-production.yml
-          grep -Fq 'workflow_dispatch:' .github/workflows/wordpress-presentation-repair.yml
+          for workflow in \
+            wordpress-canonical-production.yml \
+            wordpress-infographic-production.yml \
+            wordpress-presentation-repair.yml \
+            wordpress-visual-rebuild.yml; do
+            test -s ".github/workflows/$workflow"
+            grep -Fq 'workflow_dispatch:' ".github/workflows/$workflow"
+          done
 
       - name: Dispatch canonical WordPress production
-        shell: bash
-        run: |
-          set -euo pipefail
-          gh workflow run wordpress-canonical-production.yml --ref main
+        run: gh workflow run wordpress-canonical-production.yml --ref main
 
       - name: Dispatch THC infographic production
-        shell: bash
-        run: |
-          set -euo pipefail
-          gh workflow run wordpress-infographic-production.yml --ref main
+        run: gh workflow run wordpress-infographic-production.yml --ref main
 
       - name: Dispatch WordPress presentation repair
-        shell: bash
-        run: |
-          set -euo pipefail
-          gh workflow run wordpress-presentation-repair.yml --ref main
+        run: gh workflow run wordpress-presentation-repair.yml --ref main
+
+      - name: Dispatch complete visual site rebuild
+        run: gh workflow run wordpress-visual-rebuild.yml --ref main
 
       - name: Report explicit production dispatch
         if: always()
@@ -74,7 +70,8 @@ jobs:
                 '- Publish DTFSeeds WordPress Production',
                 '- Publish THC Infographics to WordPress Production',
                 '- Repair DTFSeeds WordPress Presentation',
+                '- Rebuild DTFSeeds WordPress Visual Site',
                 '',
-                'All targets use the protected `production` environment and its configured WordPress credentials.'
+                'The visual rebuild installs the DTF cannabis-leaf site icon/logo, rebuilds Home and Learn from WordPress-hosted educational media, and renders the full infographic library as responsive visual galleries.'
               ].join('\n')
             });
