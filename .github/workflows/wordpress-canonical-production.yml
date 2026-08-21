@@ -134,23 +134,55 @@ jobs:
         run: |
           set -euo pipefail
           verify_page() {
-            local path="$1" required="$2" minimum="$3"
-            local key="$(echo "$path" | tr '/?' '__')" body="$RUNNER_TEMP/wp-production-${key}.html" ok=0
+            local path="$1"
+            local required="$2"
+            local minimum="$3"
+            local key
+            local body
+            local ok=0
+            local count=0
+            key="$(echo "$path" | tr '/?' '__')"
+            body="$RUNNER_TEMP/wp-production-${key}.html"
             for attempt in 1 2 3 4 5 6 7 8; do
               curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
-                --header 'Cache-Control: no-cache, no-store, max-age=0' --header 'Pragma: no-cache' \
-                "$WP_SITE_URL${path}?dtf_wp_production=${GITHUB_RUN_ID}-${attempt}" --output "$body"
-              if grep -Fqi -- "$required" "$body"; then ok=1; break; fi
+                --header 'Cache-Control: no-cache, no-store, max-age=0' \
+                --header 'Pragma: no-cache' \
+                "$WP_SITE_URL${path}?dtf_wp_production=${GITHUB_RUN_ID}-${attempt}" \
+                --output "$body"
+              if grep -Fqi -- "$required" "$body"; then
+                ok=1
+                break
+              fi
               sleep 8
             done
-            [[ "$ok" -eq 1 ]] || { echo "Required production text missing on $path: $required" >&2; head -c 3000 "$body" >&2 || true; exit 1; }
-            if [[ "$minimum" -gt 0 ]]; then
-              count="$(grep -Eo '/wp-content/uploads/[^"'"' )]+' "$body" | sort -u | wc -l | tr -d ' ')"
-              [[ "$count" -ge "$minimum" ]] || { echo "$path has $count WordPress-hosted image URLs; expected >= $minimum" >&2; exit 1; }
+            if [[ "$ok" -ne 1 ]]; then
+              echo "Required production text missing on $path: $required" >&2
+              head -c 3000 "$body" >&2 || true
+              exit 1
             fi
-            for forbidden in 'Reserved strain card' 'staged for verified' 'being rebuilt' 'Needed from owner' 'email@email.com' '+123456789' 'Tool-ready rebuild' 'Grow education belongs in a clean, readable library.' 'MOPS, cultivation notes, THC basics'; do
-              ! grep -Fqi -- "$forbidden" "$body" || { echo "Forbidden live phrase remains on $path: $forbidden" >&2; exit 1; }
+            if [[ "$minimum" -gt 0 ]]; then
+              count="$(grep -o '/wp-content/uploads/' "$body" | wc -l | tr -d ' ')"
+              if [[ "$count" -lt "$minimum" ]]; then
+                echo "$path has $count WordPress-hosted image references; expected at least $minimum" >&2
+                exit 1
+              fi
+            fi
+            for forbidden in \
+              'Reserved strain card' \
+              'staged for verified' \
+              'being rebuilt' \
+              'Needed from owner' \
+              'email@email.com' \
+              '+123456789' \
+              'Tool-ready rebuild' \
+              'Grow education belongs in a clean, readable library.' \
+              'MOPS, cultivation notes, THC basics'; do
+              if grep -Fqi -- "$forbidden" "$body"; then
+                echo "Forbidden live phrase remains on $path: $forbidden" >&2
+                exit 1
+              fi
             done
+            echo "$path verified with $count WordPress-hosted image references"
           }
           verify_page '/' 'Genetics. Plant science. Tools. Games. Community.' 8
           verify_page '/learn/' 'Explore by subject' 10
