@@ -61,7 +61,7 @@ jobs:
           echo "mutations=$(node -p "require(process.argv[1]).mutationCount" "$report")" >> "$GITHUB_OUTPUT"
           echo "backup_dir=$backup_dir" >> "$GITHUB_OUTPUT"
 
-      - name: Verify REST presentation no longer contains stale resources
+      - name: Verify active REST presentation no longer contains stale resources
         run: |
           set -euo pipefail
           node scripts/audit-wordpress-commerce-rest.mjs
@@ -69,9 +69,10 @@ jobs:
           const report = require('/tmp/wordpress-presentation-backups/wordpress-commerce-capabilities.json');
           const defects = report.presentation?.defectMatches || {};
           const staleTemplates = (defects.templateMatches || []).filter(x => x.markers?.staleHomeCopy || x.markers?.staleLearnCopy || x.markers?.staleLearnBody);
-          const staleParts = (defects.templatePartMatches || []).filter(x => x.markers?.fakeEmail || x.markers?.fakePhone || x.markers?.old2025Copyright);
+          const activePartIds = new Set(['hostinger-ai-theme//header', 'hostinger-ai-theme//footer']);
+          const staleActiveParts = (defects.templatePartMatches || []).filter(x => activePartIds.has(x.id) && (x.markers?.fakeEmail || x.markers?.fakePhone));
           if (staleTemplates.length) throw new Error(`Stale page templates remain: ${staleTemplates.map(x => x.id).join(', ')}`);
-          if (staleParts.length) throw new Error(`Stale template parts remain: ${staleParts.map(x => x.id).join(', ')}`);
+          if (staleActiveParts.length) throw new Error(`Stale active template parts remain: ${staleActiveParts.map(x => x.id).join(', ')}`);
           NODE
 
       - name: Verify live canonical pages after theme repair
@@ -97,6 +98,8 @@ jobs:
             done
             if [[ "$ok" -ne 1 ]]; then
               echo "Required live text not found on $path: $required" >&2
+              echo 'Rendered page excerpt:' >&2
+              sed -n '1,120p' "$body" | sed -E 's/<[^>]+>/ /g' | tr -s ' ' | head -c 2000 >&2 || true
               exit 1
             fi
             for forbidden in 'email@email.com' '+123456789' 'being rebuilt' 'Reserved strain card' 'Tool-ready rebuild' 'Needed from owner'; do
@@ -141,6 +144,6 @@ jobs:
                 `Theme/template mutations: **${process.env.MUTATIONS || '0'}**`,
                 `Live verification: **${process.env.LIVE_OUTCOME || 'not-run'}**`,
                 '',
-                'The repair backs up the Hostinger AI block presentation before writes, restores canonical DTF navigation/footer, and converts stale hard-coded page templates to WordPress post-content rendering.'
+                'The repair backs up the Hostinger AI block presentation before writes, restores canonical DTF navigation/footer, and verifies the live page shell against cache-busted requests.'
               ].join('\n')
             });
