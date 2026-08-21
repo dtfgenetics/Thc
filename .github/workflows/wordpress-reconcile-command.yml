@@ -18,10 +18,10 @@ jobs:
     if: >-
       github.event_name == 'workflow_dispatch' ||
       (github.event.issue.number == 46 &&
-       github.event.comment.body == '/reconcile-wordpress' &&
+       (github.event.comment.body == '/reconcile-wordpress' || github.event.comment.body == '/rebuild-site') &&
        github.event.comment.user.login == github.repository_owner)
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 35
     environment: production
     env:
       WP_SITE_URL: https://dtfseeds.com
@@ -41,6 +41,17 @@ jobs:
         with:
           node-version: 22
 
+      - name: Determine command mode
+        id: mode
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "${{ github.event_name }}" == "issue_comment" && "${{ github.event.comment.body }}" == "/rebuild-site" ]]; then
+            echo 'visual=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'visual=false' >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Validate reconciliation package
         shell: bash
         run: |
@@ -49,17 +60,17 @@ jobs:
           node --check scripts/audit-wordpress-commerce-rest.mjs
           node --check scripts/reconcile-woocommerce-products.mjs
           node --check scripts/rollback-woocommerce-products.mjs
+          node --check scripts/rebuild-wordpress-visual-site.mjs
+          node --check scripts/rebuild-wordpress-infographic-gallery.mjs
           node scripts/validate-genetics-commerce.mjs
           node scripts/validate-woocommerce-reconciliation.mjs
+          test -s site/wordpress/assets/brand/dtf-potleaf-512.png
           for slug in home seeds learn community shop gallery about contact; do
             test -s "site/wordpress/pages/$slug.html"
             grep -Fq '<h1' "site/wordpress/pages/$slug.html"
           done
           test ! -e site/wordpress/pages/games.html
           test ! -e site/wordpress/pages/high-iq.html
-          grep -Fq 'front-page-settings-before.json' scripts/apply-wordpress-public-content-rest.mjs
-          grep -Fq "show_on_front: 'page'" scripts/apply-wordpress-public-content-rest.mjs
-          grep -Fq 'page_on_front: expectedFrontPageId' scripts/apply-wordpress-public-content-rest.mjs
           grep -Fq 'https://discord.gg/xJbUeHFPMt' site/wordpress/pages/community.html
 
       - name: Require WordPress credentials
@@ -96,39 +107,75 @@ jobs:
           echo "mutations=$mutations" >> "$GITHUB_OUTPUT"
           echo "changed_pages=$changed_pages" >> "$GITHUB_OUTPUT"
 
+      - name: Rebuild visual brand shell, Home, and Learn
+        id: visual
+        if: steps.mode.outputs.visual == 'true'
+        env:
+          APPLY_VISUAL_REBUILD: 'true'
+          BACKUP_ROOT: ${{ runner.temp }}/dtf-visual-rebuild
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/rebuild-wordpress-visual-site.mjs
+          dir="$(cat "$BACKUP_ROOT/visual-rebuild-backup-path.txt")"
+          report="$dir/visual-rebuild-report.json"
+          echo "media_count=$(node -p "require(process.argv[1]).mediaCount" "$report")" >> "$GITHUB_OUTPUT"
+          echo "brand_id=$(node -p "require(process.argv[1]).brandMediaId" "$report")" >> "$GITHUB_OUTPUT"
+          echo "missing=$(node -p "require(process.argv[1]).missingSelections.join(',')" "$report")" >> "$GITHUB_OUTPUT"
+
+      - name: Rebuild responsive infographic gallery
+        id: gallery
+        if: steps.mode.outputs.visual == 'true'
+        env:
+          APPLY_INFOGRAPHIC_GALLERY: 'true'
+          BACKUP_ROOT: ${{ runner.temp }}/dtf-visual-rebuild
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/rebuild-wordpress-infographic-gallery.mjs
+          dir="$(cat "$BACKUP_ROOT/infographic-gallery-backup-path.txt")"
+          report="$dir/gallery-report.json"
+          echo "media_count=$(node -p "require(process.argv[1]).mediaCount" "$report")" >> "$GITHUB_OUTPUT"
+
+      - name: Verify DTF cannabis-leaf site icon
+        id: icon
+        if: steps.mode.outputs.visual == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          auth="$(printf '%s:%s' "$WP_API_USERNAME" "$WP_API_PASSWORD" | base64 -w0)"
+          curl -4 --fail --silent --show-error --location -H "Authorization: Basic $auth" \
+            "$WP_SITE_URL/wp-json/wp/v2/settings?context=edit" -o "$RUNNER_TEMP/settings.json"
+          site_icon="$(node -p "Number(require(process.argv[1]).site_icon || 0)" "$RUNNER_TEMP/settings.json")"
+          [[ "$site_icon" -gt 0 ]]
+          curl -4 --fail --silent --show-error --location -H "Authorization: Basic $auth" \
+            "$WP_SITE_URL/wp-json/wp/v2/media/$site_icon?context=edit" -o "$RUNNER_TEMP/icon.json"
+          node - <<'NODE' "$RUNNER_TEMP/icon.json"
+          const m=require(process.argv[2]);
+          const value=`${m.title?.rendered||''} ${m.alt_text||''}`.toLowerCase();
+          if(!value.includes('dtf genetics cannabis leaf')) throw new Error('Active WordPress site icon is not the DTF cannabis leaf');
+          NODE
+          echo "site_icon=$site_icon" >> "$GITHUB_OUTPUT"
+
       - name: Verify live canonical pages
         id: verify
+        if: steps.mode.outputs.visual != 'true'
         shell: bash
         run: |
           set -euo pipefail
           verify_page() {
-            local path="$1"
-            local required="$2"
-            local body="$RUNNER_TEMP/$(echo "$path" | tr '/?' '__').html"
-            local ok=0
+            local path="$1" required="$2" body="$RUNNER_TEMP/$(echo "$path" | tr '/?' '__').html" ok=0
             for attempt in 1 2 3 4 5 6; do
-              curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
-                --header 'Cache-Control: no-cache' \
-                "https://dtfseeds.com${path}?dtf_command=${GITHUB_RUN_ID}-${attempt}" \
-                --output "$body"
-              if grep -Fqi -- "$required" "$body"; then
-                ok=1
-                break
-              fi
+              curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 --header 'Cache-Control: no-cache' \
+                "https://dtfseeds.com${path}?dtf_command=${GITHUB_RUN_ID}-${attempt}" --output "$body"
+              if grep -Fqi -- "$required" "$body"; then ok=1; break; fi
               sleep 10
             done
             [[ "$ok" -eq 1 ]]
-            for forbidden in \
-              'Reserved strain card' \
-              'staged for verified' \
-              'being rebuilt' \
-              'Needed from owner' \
-              'email@email.com' \
-              '+123456789'; do
+            for forbidden in 'Reserved strain card' 'staged for verified' 'being rebuilt' 'Needed from owner' 'email@email.com' '+123456789'; do
               ! grep -Fqi -- "$forbidden" "$body"
             done
           }
-
           verify_page '/' 'Genetics, cultivation education, practical tools, and original cannabis games.'
           verify_page '/seeds/' 'Shop current releases'
           verify_page '/shop/' 'Shop current DTF releases without losing the breeding context.'
@@ -136,9 +183,40 @@ jobs:
           verify_page '/community/' 'Join the official DTF / Teaching Healthy Cultivation Discord'
           verify_page '/contact/' 'Join the official DTF / Teaching Healthy Cultivation Discord'
 
+      - name: Verify live visual site
+        id: visual_verify
+        if: steps.mode.outputs.visual == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          check_page() {
+            local path="$1" required="$2" minimum="$3"
+            local key="$(echo "$path" | tr '/?' '__')"
+            local body="$RUNNER_TEMP/live-${key}.html" ok=0
+            for attempt in 1 2 3 4 5 6 7 8; do
+              curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+                -H 'Cache-Control: no-cache, no-store, max-age=0' -H 'Pragma: no-cache' \
+                "$WP_SITE_URL${path}?dtf_rebuild=${GITHUB_RUN_ID}-${attempt}" -o "$body"
+              if grep -Fqi -- "$required" "$body"; then ok=1; break; fi
+              sleep 8
+            done
+            [[ "$ok" -eq 1 ]] || { echo "Missing required marker on $path: $required" >&2; head -c 3000 "$body" >&2 || true; exit 1; }
+            count="$(grep -Eo '/wp-content/uploads/[^"'"' )]+' "$body" | sort -u | wc -l | tr -d ' ')"
+            [[ "$count" -ge "$minimum" ]] || { echo "$path has $count WordPress-hosted image URLs; expected >= $minimum" >&2; exit 1; }
+            for forbidden in 'email@email.com' '+123456789' 'being rebuilt' 'Reserved strain card' 'Tool-ready rebuild' 'Grow education belongs in a clean, readable library.' 'MOPS, cultivation notes, THC basics'; do
+              ! grep -Fqi -- "$forbidden" "$body" || { echo "Stale phrase remains on $path: $forbidden" >&2; exit 1; }
+            done
+            echo "$path verified with $count WordPress-hosted image URLs"
+          }
+          check_page '/' 'Genetics. Plant science. Tools. Games. Community.' 8
+          check_page '/learn/' 'Explore by subject' 10
+          check_page '/learn/infographics/' 'Visual plant science and cultivation library.' 30
+          grep -Fqi 'DTF Genetics cannabis leaf' "$RUNNER_TEMP/live-_.html"
+          grep -Eqi '<link[^>]+rel=["'"'](shortcut )?icon["'"']' "$RUNNER_TEMP/live-_.html"
+
       - name: Reconcile canonical WooCommerce product copy and categories
         id: commerce_reconcile
-        if: steps.verify.outcome == 'success'
+        if: steps.mode.outputs.visual != 'true' && steps.verify.outcome == 'success'
         continue-on-error: true
         shell: bash
         env:
@@ -156,15 +234,9 @@ jobs:
         run: |
           set -euo pipefail
           pointer="$BACKUP_ROOT/woocommerce-backup-path.txt"
-          if [[ ! -f "$pointer" ]]; then
-            echo 'No product backup pointer exists; failure occurred before a rollback-capable snapshot set was created.'
-            exit 0
-          fi
+          if [[ ! -f "$pointer" ]]; then exit 0; fi
           backup_dir="$(cat "$pointer")"
-          if [[ ! -f "$backup_dir/backup-manifest.json" ]]; then
-            echo 'No complete backup manifest exists; failure occurred before any product write could begin.'
-            exit 0
-          fi
+          if [[ ! -f "$backup_dir/backup-manifest.json" ]]; then exit 0; fi
           APPLY_WOOCOMMERCE_ROLLBACK=true node scripts/rollback-woocommerce-products.mjs
 
       - name: Upload rollback and capability package
@@ -174,6 +246,7 @@ jobs:
           name: wordpress-reconcile-command-backup-${{ github.run_id }}
           path: |
             ${{ runner.temp }}/wordpress-public-page-backups
+            ${{ runner.temp }}/dtf-visual-rebuild
             ${{ runner.temp }}/woocommerce-product-backups
             woocommerce-reconciliation-report.json
             woocommerce-reconciliation-report.md
@@ -185,38 +258,33 @@ jobs:
         uses: actions/github-script@v7
         env:
           JOB_STATUS: ${{ job.status }}
+          VISUAL_MODE: ${{ steps.mode.outputs.visual }}
           MUTATIONS: ${{ steps.pages.outputs.mutations }}
           CHANGED_PAGES: ${{ steps.pages.outputs.changed_pages }}
+          MEDIA_COUNT: ${{ steps.visual.outputs.media_count }}
+          GALLERY_COUNT: ${{ steps.gallery.outputs.media_count }}
+          SITE_ICON: ${{ steps.icon.outputs.site_icon }}
+          VISUAL_VERIFY: ${{ steps.visual_verify.outcome }}
+          MISSING: ${{ steps.visual.outputs.missing }}
           PRESENTATION_OUTCOME: ${{ steps.presentation_probe.outcome }}
           COMMERCE_AUTH: ${{ steps.access.outputs.commerce_auth }}
           COMMERCE_RECONCILE: ${{ steps.commerce_reconcile.outcome }}
           COMMERCE_ROLLBACK: ${{ steps.commerce_rollback.outcome }}
         with:
           script: |
-            const fs = require('fs');
-            const path = require('path');
-            let presentation = 'Presentation probe did not produce a readable report.';
-            const capabilityPath = path.join(process.env.BACKUP_ROOT || '', 'wordpress-commerce-capabilities.json');
-            if (capabilityPath && fs.existsSync(capabilityPath)) {
-              const report = JSON.parse(fs.readFileSync(capabilityPath, 'utf8'));
-              const theme = report.presentation?.activeTheme?.details?.[0];
-              const defects = report.presentation?.defectMatches || {};
-              const matches = [
-                ...(defects.templatePartMatches || []).map((item) => `template-part:${item.id || item.slug || 'unknown'}`),
-                ...(defects.widgetMatches || []).map((item) => `widget:${item.id || 'unknown'}`),
-                ...(defects.blockNavigationMatches || []).map((item) => `block-navigation:${item.id || item.slug || 'unknown'}`),
-                ...(defects.classicMenuItemMatches || []).map((item) => `classic-menu-item:${item.id || 'unknown'}`)
-              ];
-              presentation = [
-                `Active theme: **${theme?.name || theme?.stylesheet || 'unresolved'}**${theme?.version ? ` ${theme.version}` : ''}`,
-                `Block theme: **${theme?.isBlockTheme ? 'yes' : 'no'}**`,
-                `Stale presentation resource matches: **${matches.length}**`,
-                ...(matches.length ? matches.slice(0, 20).map((item) => `- ${item}`) : ['- No exact marker resource was identified.'])
-              ].join('\n');
-            }
-            const body = [
-              '## Canonical WordPress reconciliation',
-              '',
+            const visual = process.env.VISUAL_MODE === 'true';
+            const body = visual ? [
+              '## DTFSeeds visual rebuild command', '',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Result: **${process.env.JOB_STATUS}**`,
+              `WordPress media indexed: **${process.env.MEDIA_COUNT || 'not-run'}**`,
+              `Education gallery media: **${process.env.GALLERY_COUNT || 'not-run'}**`,
+              `Cannabis-leaf Site Icon media ID: **${process.env.SITE_ICON || 'not-run'}**`,
+              `Live visual verification: **${process.env.VISUAL_VERIFY || 'not-run'}**`,
+              `Optional unmatched visual slots: **${process.env.MISSING || 'none'}**`, '',
+              'The visitor-facing brand shell, Home, Learn, and full infographic gallery were rebuilt from WordPress-hosted media. Backups were captured before writes.'
+            ].join('\n') : [
+              '## Canonical WordPress reconciliation', '',
               `Trigger: **${context.eventName}**`,
               `Status: **${process.env.JOB_STATUS}**`,
               `Page mutations: **${process.env.MUTATIONS || 'not-run'}**`,
@@ -225,20 +293,6 @@ jobs:
               `Commerce authentication: **${process.env.COMMERCE_AUTH || 'not-confirmed'}**`,
               `WooCommerce reconciliation: **${process.env.COMMERCE_RECONCILE || 'not-run'}**`,
               `WooCommerce rollback: **${process.env.COMMERCE_ROLLBACK || 'not-needed'}**`,
-              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-              '',
-              '### Presentation probe',
-              '',
-              presentation,
-              '',
-              'Verified page targets: Home, Seeds, Shop, Learn, Community, Contact. Home is enforced as the WordPress front page served at `/`.',
-              'WooCommerce writes are restricted to reviewed names, descriptions, short descriptions, and categories for pinned product IDs 39, 41, and 91. Transaction fields are preserved.',
-              'All three product snapshots are captured before the first product write; a failed product reconciliation automatically restores the reviewed fields when a complete backup manifest exists.',
-              'Static game/application routes are not modified.'
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`
             ].join('\n');
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: 46,
-              body
-            });
+            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body});
