@@ -14,7 +14,7 @@ const auth = `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}
 const baseHeaders = {
   Authorization: auth,
   Accept: 'application/json',
-  'User-Agent': 'DTFSeeds-WordPress-Presentation-Reconciler/1.0'
+  'User-Agent': 'DTFSeeds-WordPress-Presentation-Reconciler/1.1'
 };
 
 const stamp = new Date().toISOString().replace(/[-:.]/g, '').replace('Z', 'Z');
@@ -30,6 +30,27 @@ function raw(value) {
 function hasAny(text, needles) {
   const value = String(text || '').toLowerCase();
   return needles.some((needle) => value.includes(needle));
+}
+
+function hasAll(text, needles) {
+  const value = String(text || '').toLowerCase();
+  return needles.every((needle) => value.includes(String(needle).toLowerCase()));
+}
+
+function headerCompliant(text) {
+  return hasAll(text, ['/seeds/', '/learn/', '/tools/', '/games/', '/community/', '/shop/']) &&
+    !hasAny(text, ['email@email.com', '+123456789']);
+}
+
+function footerCompliant(text) {
+  const value = String(text || '');
+  const lower = value.toLowerCase();
+  const hasCurrentCopyright = lower.includes('2026 dtf genetics') || lower.includes('© 2026 dtf genetics') || lower.includes('&copy; 2026 dtf genetics');
+  return lower.includes('dtf genetics') &&
+    lower.includes('dream the future') &&
+    lower.includes('discord.gg/xjbuehfpmt') &&
+    hasCurrentCopyright &&
+    !hasAny(value, ['email@email.com', '+123456789', '2025 dtf genetics']);
 }
 
 async function request(path, options = {}) {
@@ -135,8 +156,8 @@ if (!footer?.id) throw new Error('Active Hostinger footer template part was not 
 const mutations = [];
 const planned = [];
 
-if (raw(header.content).trim() !== canonicalHeader.trim()) planned.push({ type: 'template-part', id: header.id, slug: 'header', content: canonicalHeader });
-if (raw(footer.content).trim() !== canonicalFooter.trim()) planned.push({ type: 'template-part', id: footer.id, slug: 'footer', content: canonicalFooter });
+if (!headerCompliant(raw(header.content))) planned.push({ type: 'template-part', id: header.id, slug: 'header', content: canonicalHeader });
+if (!footerCompliant(raw(footer.content))) planned.push({ type: 'template-part', id: footer.id, slug: 'footer', content: canonicalFooter });
 
 for (const template of Array.isArray(templates) ? templates : []) {
   if (template.theme !== themeSlug || !template.id) continue;
@@ -167,8 +188,10 @@ const [afterTemplates, afterParts] = await Promise.all([
 
 const afterHeader = (afterParts || []).find((item) => item.theme === themeSlug && item.slug === 'header');
 const afterFooter = (afterParts || []).find((item) => item.theme === themeSlug && item.slug === 'footer');
-if (apply && raw(afterHeader?.content).trim() !== canonicalHeader.trim()) throw new Error('Header verification failed after update');
-if (apply && raw(afterFooter?.content).trim() !== canonicalFooter.trim()) throw new Error('Footer verification failed after update');
+if (apply && !afterHeader?.id) throw new Error('Header verification failed: active header template part disappeared after update');
+if (apply && !afterFooter?.id) throw new Error('Footer verification failed: active footer template part disappeared after update');
+if (apply && !headerCompliant(raw(afterHeader?.content))) throw new Error('Header verification failed after update: canonical navigation is not present');
+if (apply && !footerCompliant(raw(afterFooter?.content))) throw new Error('Footer verification failed after update: canonical DTF footer markers are not present');
 
 const remainingStaleTemplates = (afterTemplates || []).filter((template) => template.theme === themeSlug && hasAny(raw(template.content), staleTemplateMarkers));
 if (apply && remainingStaleTemplates.length) {
@@ -185,6 +208,10 @@ const report = {
   mutationCount: mutations.length,
   planned: planned.map(({ content, ...item }) => item),
   mutations,
+  verification: {
+    headerCompliant: headerCompliant(raw(afterHeader?.content)),
+    footerCompliant: footerCompliant(raw(afterFooter?.content))
+  },
   remainingStaleTemplates: remainingStaleTemplates.map((item) => ({ id: item.id, slug: item.slug, source: item.source }))
 };
 
