@@ -16,7 +16,7 @@ const authHeader = `Basic ${Buffer.from(`${username}:${password}`).toString('bas
 const headers = {
   Authorization: authHeader,
   Accept: 'application/json',
-  'User-Agent': 'DTFSeeds-WordPress-Capability-Audit/1.3'
+  'User-Agent': 'DTFSeeds-WordPress-Capability-Audit/1.4'
 };
 
 function textValue(value) {
@@ -40,7 +40,10 @@ function defectMarkers(value) {
     fakePhone: text.includes('+123456789'),
     legacyBlogNavigation: text.includes('blog'),
     legacyGalleryNavigation: text.includes('gallery'),
-    old2025Copyright: text.includes('2025') && text.includes('dtf genetics')
+    old2025Copyright: text.includes('2025') && text.includes('dtf genetics'),
+    staleHomeCopy: text.includes('thc grow doc, genetics, cultivation education, and games in one home'),
+    staleLearnCopy: text.includes('grow education belongs in a clean, readable library'),
+    staleLearnBody: text.includes('mops, cultivation notes, thc basics, and practical grow education')
   };
 }
 
@@ -124,6 +127,21 @@ const pluginProbe = await probe('/wp-json/wp/v2/plugins?context=edit', (body) =>
   }))
 );
 
+const templateProbe = await probe('/wp-json/wp/v2/templates?context=edit&per_page=100', (body) =>
+  (Array.isArray(body) ? body : []).map((template) => ({
+    id: template?.id || null,
+    wpId: Number(template?.wp_id || 0) || null,
+    slug: template?.slug || null,
+    theme: template?.theme || null,
+    source: template?.source || null,
+    origin: template?.origin || null,
+    status: template?.status || null,
+    title: compactText(textValue(template?.title), 120),
+    contentExcerpt: compactText(textValue(template?.content), 700),
+    markers: defectMarkers(template)
+  }))
+);
+
 const templatePartProbe = await probe('/wp-json/wp/v2/template-parts?context=edit&per_page=100', (body) =>
   (Array.isArray(body) ? body : []).map((part) => ({
     id: part?.id || null,
@@ -135,7 +153,7 @@ const templatePartProbe = await probe('/wp-json/wp/v2/template-parts?context=edi
     origin: part?.origin || null,
     status: part?.status || null,
     title: compactText(textValue(part?.title), 120),
-    contentExcerpt: compactText(textValue(part?.content), 320),
+    contentExcerpt: compactText(textValue(part?.content), 500),
     markers: defectMarkers(part)
   }))
 );
@@ -206,6 +224,7 @@ const editableCandidates = endpointProbes
   .map((item) => item.path);
 
 const presentationDefects = {
+  templateMatches: (templateProbe.details || []).filter((item) => Object.values(item.markers || {}).some(Boolean)),
   templatePartMatches: (templatePartProbe.details || []).filter((item) => Object.values(item.markers || {}).some(Boolean)),
   widgetMatches: (widgetProbe.details || []).filter((item) => Object.values(item.markers || {}).some(Boolean)),
   blockNavigationMatches: (navigationProbe.details || []).filter((item) => Object.values(item.markers || {}).some(Boolean)),
@@ -224,6 +243,7 @@ const report = {
   presentation: {
     activeTheme: themeProbe,
     installedPlugins: pluginProbe,
+    templates: templateProbe,
     templateParts: templatePartProbe,
     sidebars: sidebarProbe,
     widgets: widgetProbe,
@@ -234,9 +254,7 @@ const report = {
     defectMatches: presentationDefects
   },
   writeAttempted: false,
-  nextStep: editableCandidates.length
-    ? 'Use the backup-first product reconciler against the confirmed authenticated endpoint. Repair presentation only when the theme/plugin/template-part/widget/menu probe positively identifies the source of the live defect.'
-    : 'Do not attempt product mutation with the current WordPress application-password path. Use WooCommerce credentials or Hostinger/WP-CLI after access is configured.'
+  nextStep: 'Repair only positively identified block-template, template-part, and navigation records after backup. Page-body synchronization is already handled separately.'
 };
 
 await writeFile(reportPath, `${JSON.stringify(report, null, 2)}\n`, 'utf8');
