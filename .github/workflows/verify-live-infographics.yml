@@ -15,6 +15,7 @@ on:
 
 permissions:
   contents: write
+  issues: write
 
 concurrency:
   group: verify-live-thc-infographics
@@ -32,6 +33,7 @@ jobs:
           fetch-depth: 0
 
       - name: Probe live library and rendered WordPress media
+        id: probe
         shell: python
         run: |
           import html
@@ -47,7 +49,7 @@ jobs:
 
           def fetch(url):
               request = urllib.request.Request(url, headers={
-                  'User-Agent': 'Mozilla/5.0 THC-Live-Verification/2.0',
+                  'User-Agent': 'Mozilla/5.0 THC-Live-Verification/2.1',
                   'Cache-Control': 'no-cache',
               })
               try:
@@ -125,13 +127,19 @@ jobs:
               'production_ready': production_ready,
           }
 
-          path = pathlib.Path('docs/LIVE_INFOGRAPHIC_STATUS.json')
-          path.write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')
+          pathlib.Path('docs/LIVE_INFOGRAPHIC_STATUS.json').write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')
+          with open(__import__('os').environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as output:
+              output.write(f"production_ready={'true' if production_ready else 'false'}\n")
+              output.write(f"page_status={report['page_http_status']}\n")
+              output.write(f"rendered_count={len(media_urls)}\n")
+              output.write(f"sample_live={live_media_count}\n")
+              output.write(f"sample_total={len(sample_urls)}\n")
           print(json.dumps(report, indent=2))
           if not production_ready:
               raise SystemExit('Live infographic verification failed; see docs/LIVE_INFOGRAPHIC_STATUS.json output above.')
 
       - name: Commit verification report
+        if: steps.probe.outputs.production_ready == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -145,3 +153,29 @@ jobs:
           git commit -m 'Record live THC infographic verification'
           git pull --rebase origin main
           git push origin HEAD:main
+
+      - name: Report independent verification to issue 46
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          PROBE_OUTCOME: ${{ steps.probe.outcome }}
+          PRODUCTION_READY: ${{ steps.probe.outputs.production_ready }}
+          PAGE_STATUS: ${{ steps.probe.outputs.page_status }}
+          RENDERED_COUNT: ${{ steps.probe.outputs.rendered_count }}
+          SAMPLE_LIVE: ${{ steps.probe.outputs.sample_live }}
+          SAMPLE_TOTAL: ${{ steps.probe.outputs.sample_total }}
+        with:
+          script: |
+            const body = [
+              '## Independent live THC infographic verification',
+              '',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Probe outcome: **${process.env.PROBE_OUTCOME || 'unknown'}**`,
+              `Production ready: **${process.env.PRODUCTION_READY || 'false'}**`,
+              `Library HTTP status: **${process.env.PAGE_STATUS || 'unknown'}**`,
+              `Rendered WordPress media URLs found: **${process.env.RENDERED_COUNT || '0'}**`,
+              `Sampled media live: **${process.env.SAMPLE_LIVE || '0'}/${process.env.SAMPLE_TOTAL || '0'}**`,
+              '',
+              'Target: https://dtfseeds.com/learn/infographics/'
+            ].join('\n');
+            await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: 46, body });
