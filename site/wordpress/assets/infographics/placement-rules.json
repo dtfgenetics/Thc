@@ -1,0 +1,124 @@
+{
+  "schemaVersion": 1,
+  "siteRoot": "/learn/",
+  "masterLibraryRoute": "/learn/infographics/",
+  "policy": {
+    "canonicalSource": "site/wordpress/assets/infographics",
+    "publishCanonicalOnly": true,
+    "keepSourceFilesFlat": true,
+    "reuseWordPressMediaAcrossPages": true,
+    "excludeNameFragments": [
+      "draft",
+      "quarantine",
+      "superseded",
+      "progress dashboard"
+    ],
+    "notes": "The canonical GitHub directory is the publication boundary. Drive remains a source/archive workspace; duplicates and unresolved intake copies are not separately published."
+  },
+  "categories": [
+    {
+      "id": "plant-biology",
+      "title": "Plant Biology & Anatomy",
+      "route": "/learn/plant-biology/",
+      "description": "Cells, tissues, roots, stems, leaves, flowers, trichomes, transport, gas exchange, photosynthesis, respiration, hormones, and whole-plant structure.",
+      "primaryMatch": ["anatomy", "cell", "tissue", "stem_transport", "stem transport", "leaf_anatomy", "leaf anatomy", "gas_exchange", "gas exchange", "flower_anatomy", "flower anatomy", "secretory_biology", "secretory biology", "physiology", "photosynthesis", "respiration", "transpiration", "stomata", "xylem", "phloem", "whole_plant", "whole plant", "morphology", "taxonomy"]
+    },
+    {
+      "id": "genetics-breeding",
+      "title": "Genetics & Breeding",
+      "route": "/learn/genetics-breeding/",
+      "description": "Genotype, phenotype, sex expression, chromosomes, inheritance, filial generations, selection, pollination, MOPS, breeding documentation, and domestication.",
+      "primaryMatch": ["genetic", "breed", "mops", "phenotype", "genotype", "sex_expression", "sex expression", "chromosome", "inheritance", "punnett", "filial", "pollination", "selection", "domestication", "dispersal"]
+    },
+    {
+      "id": "plant-health-ipm",
+      "title": "Plant Health & IPM",
+      "route": "/learn/ipm/",
+      "description": "Sanitation, scouting, pests, mites, insects, pathogens, diseases, deficiencies, toxicities, biological controls, prevention, and differential diagnosis.",
+      "primaryMatch": ["pest", "mite", "insect", "pathogen", "disease", "deficien", "toxicity", "biosecurity", "sanitation", "beneficial", "biological_control", "biological control", "mildew", "mold", "rot", "virus", "viroid", "yellow_leaf", "yellow leaf", "diagnos"]
+    },
+    {
+      "id": "harvest-postharvest",
+      "title": "Harvest & Post-Harvest",
+      "route": "/learn/harvest-postharvest/",
+      "description": "Harvest readiness, handling, bud washing, drying, water activity, curing, storage, trichome maturity, and quality preservation.",
+      "primaryMatch": ["harvest", "postharvest", "post_harvest", "post-harvest", "drying", "dry_", "_dry", "curing", "cure", "storage", "bud_wash", "bud wash", "water_activity", "water activity", "readiness", "ripeness"]
+    },
+    {
+      "id": "training-canopy",
+      "title": "Training & Canopy Management",
+      "route": "/learn/training-canopy/",
+      "description": "LST, HST, topping, pruning, SCROG, mainlining, support, spacing, airflow, and canopy shape.",
+      "primaryMatch": ["training", "lst", "low_stress", "low stress", "hst", "high_stress", "high stress", "topping", "pruning", "scrog", "mainline", "mainlining", "canopy_management", "canopy management"]
+    },
+    {
+      "id": "lighting",
+      "title": "Lighting",
+      "route": "/learn/lighting/",
+      "description": "PPFD, DLI, photoperiod, spectrum, PAR, photon delivery, fixture placement, uniformity, and light-stress interpretation.",
+      "primaryMatch": ["lighting", "light_", "_light", "ppfd", "dli", "photoperiod", "spectrum", "photon", "par_", "_par", "led"]
+    },
+    {
+      "id": "environment-vpd",
+      "title": "Environment & VPD",
+      "route": "/learn/environment-vpd/",
+      "description": "Temperature, relative humidity, VPD, air movement, ventilation, CO2, climate stability, and environmental measurement.",
+      "primaryMatch": ["vpd", "temperature", "humidity", "relative_humidity", "relative humidity", "environment", "climate", "airflow", "air_flow", "air flow", "ventilation", "circulation", "co2", "carbon_dioxide", "carbon dioxide"]
+    },
+    {
+      "id": "water-ph-ec",
+      "title": "Water, pH & EC",
+      "route": "/learn/water-ph-ec/",
+      "description": "Source water, irrigation, pH, EC/PPM/TDS, alkalinity, runoff, dryback, salinity, dissolved minerals, and root-zone measurement.",
+      "primaryMatch": ["water", "irrigation", "ph_", "_ph", "ec_", "_ec", "ppm", "tds", "alkalinity", "runoff", "dryback", "salinity", "conductivity", "dissolved_mineral", "dissolved mineral"]
+    },
+    {
+      "id": "nutrition-media",
+      "title": "Nutrition & Media",
+      "route": "/learn/nutrition-media/",
+      "description": "Macronutrients, micronutrients, nutrient interactions, media, root-zone chemistry, soil, coco, hydroponics, CEC, amendments, microbes, and organic matter.",
+      "primaryMatch": ["nutri", "macronutrient", "micronutrient", "root_zone", "root zone", "soil", "media", "coco", "hydro", "cec", "cation_exchange", "cation exchange", "amendment", "microbe", "microbial", "mycorr", "biostimulant", "organic", "synthetic", "fertil"]
+    },
+    {
+      "id": "outdoor",
+      "title": "Outdoor Cultivation",
+      "route": "/learn/outdoor/",
+      "description": "Site selection, climate, hardening-off, transplanting, wind, rain, wildlife, irrigation, pollen drift, microclimates, and seasonal planning.",
+      "primaryMatch": ["outdoor", "hardening", "wildlife", "pollen_drift", "pollen drift", "microclimate", "seasonal", "rain", "wind", "sunlight", "site_selection", "site selection"]
+    },
+    {
+      "id": "lifecycle-propagation",
+      "title": "Lifecycle & Propagation",
+      "route": "/learn/lifecycle-propagation/",
+      "description": "Seed anatomy, germination, seedlings, cloning, transplanting, vegetative growth, flowering stages, and crop-stage progression.",
+      "primaryMatch": ["seed", "germination", "seedling", "clone", "cloning", "propagation", "vegetative", "flowering", "life_cycle", "life cycle", "lifecycle", "transplant", "stage_"]
+    },
+    {
+      "id": "research-measurement",
+      "title": "Evidence, Measurement & Research",
+      "route": "/learn/research-methods/",
+      "description": "Evidence quality, claim-specific reasoning, observation, measurement, sampling, records, comparison, and interpretation.",
+      "primaryMatch": ["evidence", "claim", "measurement", "research", "sampling", "record", "documentation", "forensic", "method", "observation", "study"]
+    },
+    {
+      "id": "general-reference",
+      "title": "Plant Science Reference",
+      "route": "/learn/plant-science-reference/",
+      "description": "Cross-topic educational visuals that do not belong to a narrower primary category.",
+      "primaryMatch": []
+    }
+  ],
+  "relatedPlacementRules": [
+    {"match": ["root", "root_zone", "root zone"], "categoryIds": ["plant-biology", "water-ph-ec", "nutrition-media"]},
+    {"match": ["trichome"], "categoryIds": ["plant-biology", "harvest-postharvest"]},
+    {"match": ["flower"], "categoryIds": ["plant-biology", "lifecycle-propagation"]},
+    {"match": ["seed"], "categoryIds": ["plant-biology", "lifecycle-propagation", "genetics-breeding"]},
+    {"match": ["training", "canopy"], "categoryIds": ["training-canopy", "plant-biology"]},
+    {"match": ["nutri", "deficien", "toxicity"], "categoryIds": ["nutrition-media", "plant-health-ipm"]},
+    {"match": ["pest", "mite", "insect", "pathogen", "disease"], "categoryIds": ["plant-health-ipm"]},
+    {"match": ["vpd", "temperature", "humidity"], "categoryIds": ["environment-vpd"]},
+    {"match": ["ppfd", "dli", "spectrum", "photoperiod", "lighting"], "categoryIds": ["lighting"]},
+    {"match": ["drying", "curing", "harvest", "bud_wash", "bud wash", "storage"], "categoryIds": ["harvest-postharvest"]},
+    {"match": ["outdoor"], "categoryIds": ["outdoor"]}
+  ]
+}
