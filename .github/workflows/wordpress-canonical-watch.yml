@@ -32,6 +32,7 @@ jobs:
         run: |
           set -euo pipefail
           node --check scripts/apply-wordpress-public-content-rest.mjs
+          node --check scripts/deploy-wordpress-infographic-library-rest.mjs
           node --check scripts/audit-wordpress-commerce-rest.mjs
           node --check scripts/validate-genetics-commerce.mjs
           node --check scripts/reconcile-woocommerce-products.mjs
@@ -50,6 +51,12 @@ jobs:
           grep -Fq "show_on_front: 'page'" scripts/apply-wordpress-public-content-rest.mjs
           grep -Fq 'page_on_front: expectedFrontPageId' scripts/apply-wordpress-public-content-rest.mjs
           grep -Fq '/yellow-leaves/' site/wordpress/pages/learn.html
+          grep -Fq '/learn/infographics/' site/wordpress/pages/learn.html
+          test -d site/wordpress/assets/infographics
+          test -s site/wordpress/assets/infographics/Cannabis_Plant_Anatomy_Infographic.png
+          test -s site/wordpress/assets/infographics/Nutrient_Uptake_and_Root_Zone_Chemistry.png
+          image_count="$(find site/wordpress/assets/infographics -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webp' -o -iname '*.gif' \) | wc -l | tr -d ' ')"
+          test "$image_count" -ge 20
           grep -Fq '/product/10-regular-f2-blue-mango-seeds/' site/wordpress/pages/seeds.html
           grep -Fq '/product/10-feminized-f2-blue-mango-x/' site/wordpress/pages/shop.html
           grep -Fq '/product/10-reg-f1-blueberry-bubblegum/' site/wordpress/pages/shop.html
@@ -97,7 +104,7 @@ jobs:
               '',
               commerceDetail,
               '',
-              'This workflow intentionally accesses no production credentials and performs no WooCommerce writes. It validates the trusted `main` WordPress package, the authenticated presentation probe syntax, genetics-to-store route consistency, pinned product identities, and the backup/rollback WooCommerce reconciliation package. The protected production workflow owns all writes.'
+              'This workflow intentionally accesses no production credentials and performs no WooCommerce writes. It validates the trusted `main` WordPress package, the infographic media publisher, the authenticated presentation probe syntax, genetics-to-store route consistency, pinned product identities, and the backup/rollback WooCommerce reconciliation package. The protected production workflows own all writes.'
             ].join('\n');
             await github.rest.issues.createComment({
               owner: context.repo.owner,
