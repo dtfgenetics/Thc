@@ -8,6 +8,10 @@ on:
       - site/wordpress/assets/infographics/**
       - site/public-route-patch/learn/infographics/**
   workflow_dispatch:
+  workflow_run:
+    workflows:
+      - Publish THC Infographics to WordPress Production
+    types: [completed]
 
 permissions:
   contents: write
@@ -18,36 +22,32 @@ concurrency:
 
 jobs:
   verify:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: main
           fetch-depth: 0
 
-      - name: Probe live library and representative assets
+      - name: Probe live library and rendered WordPress media
         shell: python
         run: |
+          import html
           import json
           import pathlib
+          import re
           import time
           import urllib.error
+          import urllib.parse
           import urllib.request
 
           page_url = 'https://dtfseeds.com/learn/infographics/'
-          samples = [
-              'THC-C004_Infographic_From_Cell_to_Canopy.jpg',
-              'THC-C007_Infographic_Leaf_Anatomy_Gas_Exchange.jpg',
-              'THC-C009_Infographic_Trichomes_Secretory_Biology.jpg',
-              'Cannabis_Plant_Anatomy_Infographic.png',
-              'Cannabis_Plant_Life_Cycle_Seed_to_Harvest_Infographic.png',
-              'Nutrient_Uptake_and_Root_Zone_Chemistry.png',
-              'Beneficial_Insects_and_Biological_Controls.png',
-          ]
 
           def fetch(url):
               request = urllib.request.Request(url, headers={
-                  'User-Agent': 'Mozilla/5.0 THC-Live-Verification/1.0',
+                  'User-Agent': 'Mozilla/5.0 THC-Live-Verification/2.0',
                   'Cache-Control': 'no-cache',
               })
               try:
@@ -59,51 +59,77 @@ jobs:
                           'content_type': response.headers.get('Content-Type', ''),
                           'bytes': len(body),
                           'body': body,
+                          'final_url': response.geturl(),
                       }
               except urllib.error.HTTPError as exc:
-                  return {'ok': False, 'status': exc.code, 'content_type': '', 'bytes': 0, 'body': b''}
+                  return {'ok': False, 'status': exc.code, 'content_type': '', 'bytes': 0, 'body': b'', 'final_url': url}
               except Exception as exc:
-                  return {'ok': False, 'status': None, 'content_type': '', 'bytes': 0, 'body': b'', 'error': str(exc)}
+                  return {'ok': False, 'status': None, 'content_type': '', 'bytes': 0, 'body': b'', 'final_url': url, 'error': str(exc)}
 
           page = None
+          text = ''
           for attempt in range(1, 7):
               page = fetch(f'{page_url}?verify={int(time.time())}-{attempt}')
               text = page['body'].decode('utf-8', errors='ignore')
-              if page['ok'] and ('THC Infographic Library' in text or 'Infographic Library' in text):
+              if page['ok'] and 'THC Infographic Library' in text and 'wp-content/uploads/' in text:
                   break
               if attempt < 6:
                   time.sleep(10)
 
-          text = page['body'].decode('utf-8', errors='ignore') if page else ''
-          asset_results = []
-          for filename in samples:
-              result = fetch('https://dtfseeds.com/assets/education/infographics/' + filename)
-              asset_results.append({
-                  'filename': filename,
-                  'ok': result['ok'] and result['bytes'] >= 10000,
+          raw_urls = re.findall(r'''(?:src|href)=["']([^"']*wp-content/uploads/[^"']+)["']''', text, flags=re.I)
+          media_urls = []
+          seen = set()
+          for value in raw_urls:
+              value = html.unescape(value)
+              absolute = urllib.parse.urljoin(page_url, value)
+              if absolute not in seen:
+                  seen.add(absolute)
+                  media_urls.append(absolute)
+
+          sample_urls = media_urls[:20]
+          media_results = []
+          for url in sample_urls:
+              result = fetch(url)
+              content_type = (result.get('content_type') or '').lower()
+              media_results.append({
+                  'url': url,
+                  'ok': bool(result['ok'] and result['bytes'] >= 10000 and content_type.startswith('image/')),
                   'status': result['status'],
-                  'content_type': result['content_type'],
+                  'content_type': result.get('content_type', ''),
                   'bytes': result['bytes'],
+                  'final_url': result.get('final_url'),
                   'error': result.get('error'),
               })
+
+          live_media_count = sum(1 for item in media_results if item['ok'])
+          production_ready = bool(
+              page
+              and page['ok']
+              and 'THC Infographic Library' in text
+              and len(media_urls) >= 100
+              and len(sample_urls) >= 10
+              and live_media_count == len(sample_urls)
+          )
 
           report = {
               'verified_at_utc': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
               'page_url': page_url,
               'page_http_status': page.get('status') if page else None,
+              'page_final_url': page.get('final_url') if page else None,
               'page_bytes': page.get('bytes') if page else 0,
-              'page_has_infographic_heading': 'Infographic Library' in text,
-              'page_has_wordpress_media_images': 'wp-content/uploads/' in text,
-              'page_has_static_asset_images': '/assets/education/infographics/' in text,
-              'sample_assets': asset_results,
-              'sample_assets_live': sum(1 for item in asset_results if item['ok']),
-              'sample_assets_total': len(asset_results),
-              'production_ready': bool(page and page['ok'] and 'Infographic Library' in text and all(item['ok'] for item in asset_results)),
+              'page_has_infographic_heading': 'THC Infographic Library' in text,
+              'rendered_wordpress_media_url_count': len(media_urls),
+              'sampled_rendered_media_count': len(sample_urls),
+              'sampled_rendered_media_live': live_media_count,
+              'sampled_rendered_media': media_results,
+              'production_ready': production_ready,
           }
 
           path = pathlib.Path('docs/LIVE_INFOGRAPHIC_STATUS.json')
           path.write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')
           print(json.dumps(report, indent=2))
+          if not production_ready:
+              raise SystemExit('Live infographic verification failed; see docs/LIVE_INFOGRAPHIC_STATUS.json output above.')
 
       - name: Commit verification report
         shell: bash
