@@ -1,0 +1,196 @@
+name: Deploy DTFSeeds Education Assets
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Protected GitHub environment to deploy
+        required: true
+        default: production
+        type: choice
+        options:
+          - staging
+          - production
+  push:
+    branches:
+      - main
+    paths:
+      - site/public-route-patch/assets/education/**
+      - site/public-route-patch/learn/infographics/**
+      - site/wordpress/assets/infographics/**
+      - .github/workflows/dtfseeds-education-assets.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dtfseeds-education-assets
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: Validate public education image package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify infographic library and assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          base="site/public-route-patch/assets/education/infographics"
+          page="site/public-route-patch/learn/infographics/index.html"
+          test -s "$page"
+          test -s "site/public-route-patch/learn/infographics/library.json"
+          test -d "$base"
+          required=(
+            THC-C004_Infographic_From_Cell_to_Canopy.jpg
+            THC-C005_Infographic_Root_Anatomy_and_Forensics.jpg
+            THC-C006_Infographic_Stem_Transport_and_Training_Risk.jpg
+            THC-C007_Infographic_Leaf_Anatomy_Gas_Exchange.jpg
+            THC-C008_Infographic_Flower_Anatomy_Reproduction.jpg
+            THC-C009_Infographic_Trichomes_Secretory_Biology.jpg
+            Cannabis_Plant_Anatomy_Infographic.png
+            Cannabis_Plant_Life_Cycle_Seed_to_Harvest_Infographic.png
+            Nutrient_Uptake_and_Root_Zone_Chemistry.png
+            Beneficial_Insects_and_Biological_Controls.png
+          )
+          for file in "${required[@]}"; do
+            test -s "$base/$file"
+          done
+          grep -Fq 'https://dtfseeds.com/learn/infographics/' "$page"
+          grep -Fq '/assets/education/infographics/' "$page"
+          count="$(find "$base" -type f | wc -l | tr -d ' ')"
+          test "$count" -ge 20
+          echo "Education assets packaged: $count" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload education release artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dtfseeds-education-assets-${{ github.sha }}
+          path: |
+            site/public-route-patch/assets/education/infographics
+            site/public-route-patch/learn/infographics
+          if-no-files-found: error
+          retention-days: 30
+
+  deploy:
+    name: Back up and publish education assets
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    environment: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'production' }}
+    env:
+      SSH_HOST: ${{ secrets.HOSTINGER_HOST || secrets.SSH_HOST || secrets.SFTP_HOST }}
+      SSH_USER: ${{ secrets.HOSTINGER_USER || secrets.HOSTINGER_SSH_USER || secrets.SSH_USER || secrets.SFTP_USER }}
+      SSH_PORT: ${{ secrets.HOSTINGER_PORT || secrets.SSH_PORT || secrets.SFTP_PORT }}
+      SSH_PRIVATE_KEY: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY || secrets.HOSTINGER_SSH_KEY || secrets.SSH_PRIVATE_KEY || secrets.DEPLOY_KEY }}
+      SSH_KNOWN_HOSTS: ${{ secrets.HOSTINGER_KNOWN_HOSTS || secrets.SSH_KNOWN_HOSTS }}
+      SITE_ROOT: ${{ vars.HOSTINGER_WORDPRESS_PATH || vars.WORDPRESS_PATH || vars.WP_PATH }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate deployment access
+        shell: bash
+        run: |
+          set -euo pipefail
+          SSH_HOST="${SSH_HOST:-147.93.42.1}"
+          SSH_PORT="${SSH_PORT:-22}"
+          : "${SSH_USER:?Missing Hostinger SSH user}"
+          : "${SSH_PRIVATE_KEY:?Missing Hostinger SSH private key}"
+          [[ "$SSH_PORT" =~ ^[0-9]+$ ]]
+          echo "SSH_HOST=$SSH_HOST" >> "$GITHUB_ENV"
+          echo "SSH_PORT=$SSH_PORT" >> "$GITHUB_ENV"
+
+      - name: Configure SSH
+        shell: bash
+        run: |
+          set -euo pipefail
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          if [[ -n "${SSH_KNOWN_HOSTS:-}" ]]; then
+            printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          else
+            ssh-keyscan -p "$SSH_PORT" -H "$SSH_HOST" > ~/.ssh/known_hosts
+          fi
+          chmod 600 ~/.ssh/known_hosts
+
+      - name: Locate dtfseeds.com document root
+        id: root
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -n "${SITE_ROOT:-}" ]]; then
+            root="$SITE_ROOT"
+          else
+            root="$(ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" 'bash -s' <<'REMOTE'
+          set -euo pipefail
+          while IFS= read -r config; do
+            directory="$(dirname "$config")"
+            if command -v wp >/dev/null 2>&1; then
+              home_url="$(wp --path="$directory" option get home --skip-plugins --skip-themes 2>/dev/null || true)"
+              case "${home_url%/}" in
+                https://dtfseeds.com|http://dtfseeds.com|https://www.dtfseeds.com|http://www.dtfseeds.com)
+                  printf '%s\n' "$directory"
+                  exit 0
+                  ;;
+              esac
+            fi
+          done < <(find "$HOME" -maxdepth 8 -type f -name wp-config.php -print 2>/dev/null)
+          exit 1
+          REMOTE
+          )"
+          fi
+          [[ -n "$root" ]]
+          [[ "$root" != "/" ]]
+          [[ "$root" != *".."* ]]
+          echo "path=$root" >> "$GITHUB_OUTPUT"
+
+      - name: Back up current education routes
+        shell: bash
+        env:
+          ROOT: ${{ steps.root.outputs.path }}
+        run: |
+          set -euo pipefail
+          stamp="$(date -u +%Y%m%dT%H%M%SZ)"
+          backup="$HOME/dtfseeds-education-backups/$stamp"
+          ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" "ROOT='$ROOT' BACKUP='$backup' bash -s" <<'REMOTE'
+          set -euo pipefail
+          mkdir -p "$BACKUP/assets/education" "$BACKUP/learn"
+          [[ ! -e "$ROOT/assets/education/infographics" ]] || cp -a "$ROOT/assets/education/infographics" "$BACKUP/assets/education/infographics"
+          [[ ! -e "$ROOT/learn/infographics" ]] || cp -a "$ROOT/learn/infographics" "$BACKUP/learn/infographics"
+          printf '%s\n' "$BACKUP" > "$BACKUP/backup-location.txt"
+          REMOTE
+
+      - name: Publish infographic assets and library
+        shell: bash
+        env:
+          ROOT: ${{ steps.root.outputs.path }}
+        run: |
+          set -euo pipefail
+          ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" "mkdir -p '$ROOT/assets/education/infographics' '$ROOT/learn/infographics'"
+          rsync -az --delete --checksum -e "ssh -p $SSH_PORT" site/public-route-patch/assets/education/infographics/ "$SSH_USER@$SSH_HOST:$ROOT/assets/education/infographics/"
+          rsync -az --delete --checksum -e "ssh -p $SSH_PORT" site/public-route-patch/learn/infographics/ "$SSH_USER@$SSH_HOST:$ROOT/learn/infographics/"
+
+      - name: Verify live infographic library
+        shell: bash
+        run: |
+          set -euo pipefail
+          html="$(curl --fail --silent --show-error --location --retry 3 --retry-delay 2 https://dtfseeds.com/learn/infographics/)"
+          grep -Fqi '<h1>Infographic Library</h1>' <<<"$html"
+          grep -Fqi '/assets/education/infographics/' <<<"$html"
+          for asset in \
+            THC-C004_Infographic_From_Cell_to_Canopy.jpg \
+            THC-C009_Infographic_Trichomes_Secretory_Biology.jpg \
+            Cannabis_Plant_Anatomy_Infographic.png \
+            Nutrient_Uptake_and_Root_Zone_Chemistry.png; do
+            curl --fail --silent --show-error --location --retry 3 --retry-delay 2 "https://dtfseeds.com/assets/education/infographics/$asset" >/dev/null
+          done
+
+      - name: Record deployment
+        if: always()
+        run: |
+          echo "## DTFSeeds education asset deployment" >> "$GITHUB_STEP_SUMMARY"
+          echo "Revision: $GITHUB_SHA" >> "$GITHUB_STEP_SUMMARY"
+          echo "Routes: /assets/education/infographics/ and /learn/infographics/" >> "$GITHUB_STEP_SUMMARY"
