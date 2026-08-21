@@ -6,7 +6,8 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/wordpress-presentation-repair-production.yml'
-      - 'scripts/repair-wordpress-presentation-rest.mjs'
+      - 'scripts/reconcile-wordpress-presentation-rest.mjs'
+      - 'scripts/apply-wordpress-public-content-rest.mjs'
 
 permissions:
   contents: read
@@ -19,8 +20,10 @@ concurrency:
 jobs:
   repair-production-presentation:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     environment: production
     env:
+      NODE_OPTIONS: --dns-result-order=ipv4first
       WP_SITE_URL: https://dtfseeds.com
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
@@ -28,18 +31,42 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: main
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: '22'
 
-      - name: Validate repair script
-        run: node --check scripts/repair-wordpress-presentation-rest.mjs
+      - name: Validate production scripts
+        run: |
+          set -euo pipefail
+          node --check scripts/apply-wordpress-public-content-rest.mjs
+          node --check scripts/reconcile-wordpress-presentation-rest.mjs
 
-      - name: Repair WordPress presentation
+      - name: Require WordPress credentials
+        run: |
+          set -euo pipefail
+          test -n "${WP_API_USERNAME:-}"
+          test -n "${WP_API_PASSWORD:-}"
+
+      - name: Reconcile canonical WordPress page records
+        id: pages
+        run: |
+          set -euo pipefail
+          CONTENT_DIR="$GITHUB_WORKSPACE/site/wordpress/pages" node scripts/apply-wordpress-public-content-rest.mjs
+
+      - name: Repair active Hostinger presentation
         id: repair
-        run: node scripts/repair-wordpress-presentation-rest.mjs
+        env:
+          APPLY_PRESENTATION_CHANGES: 'true'
+        run: |
+          set -euo pipefail
+          node scripts/reconcile-wordpress-presentation-rest.mjs
+          backup_dir="$(cat "$BACKUP_ROOT/wordpress-presentation-backup-path.txt")"
+          report="$backup_dir/presentation-reconciliation.json"
+          echo "mutations=$(node -p "require(process.argv[1]).mutationCount" "$report")" >> "$GITHUB_OUTPUT"
 
       - name: Verify public site no longer exposes stale Hostinger presentation
         id: live_verify
@@ -47,29 +74,46 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p /tmp/live-check
-          for path in / /blog/ /learn/; do
+          fetch_page() {
+            local path="$1"
+            local safe
             safe=$(printf '%s' "$path" | tr '/?' '__')
-            url="https://dtfseeds.com${path}?dtf_verify=${GITHUB_RUN_ID}"
-            echo "Checking $url"
-            curl -fsSL --retry 4 --retry-delay 3 --connect-timeout 15 --max-time 45 \
-              -H 'Cache-Control: no-cache' -H 'Pragma: no-cache' \
-              "$url" -o "/tmp/live-check/${safe}.html"
-          done
+            local body="/tmp/live-check/${safe}.html"
+            local ok=0
+            for attempt in 1 2 3 4 5 6; do
+              url="https://dtfseeds.com${path}?dtf_verify=${GITHUB_RUN_ID}-${attempt}"
+              echo "Checking $url"
+              curl -4 -fsSL --retry 3 --retry-delay 2 --connect-timeout 15 --max-time 45 \
+                -H 'Cache-Control: no-cache, no-store, max-age=0' \
+                -H 'Pragma: no-cache' \
+                "$url" -o "$body"
+              if ! grep -Fqi 'email@email.com' "$body" && \
+                 ! grep -Fqi '+123456789' "$body" && \
+                 ! grep -Fqi '© 2025 DTF GENETICS' "$body" && \
+                 ! grep -Fqi '&copy; 2025 DTF GENETICS' "$body"; then
+                ok=1
+                break
+              fi
+              sleep 8
+            done
+            if [[ "$ok" -ne 1 ]]; then
+              echo "Stale Hostinger presentation remains live on $path" >&2
+              grep -Eio '.{0,80}(email@email\.com|\+123456789|2025 DTF GENETICS).{0,80}' "$body" | head -20 >&2 || true
+              exit 1
+            fi
+          }
 
-          if grep -RFiq 'email@email.com' /tmp/live-check; then
-            echo 'Stale fake email remains live.' >&2
-            exit 1
-          fi
-          if grep -RFiq '+123456789' /tmp/live-check; then
-            echo 'Stale fake phone remains live.' >&2
-            exit 1
-          fi
-          if grep -RFiq '© 2025 DTF GENETICS' /tmp/live-check || grep -RFiq '&copy; 2025 DTF GENETICS' /tmp/live-check; then
-            echo 'Stale 2025 footer remains live.' >&2
-            exit 1
-          fi
+          fetch_page '/'
+          fetch_page '/blog/'
+          fetch_page '/learn/'
+          fetch_page '/community/'
+
           if ! grep -RFiq 'discord.gg/xJbUeHFPMt' /tmp/live-check; then
             echo 'Official Discord CTA was not observed in checked public pages.' >&2
+            exit 1
+          fi
+          if ! grep -Fqi '/seeds/' /tmp/live-check/__blog__.html || ! grep -Fqi '/learn/' /tmp/live-check/__blog__.html; then
+            echo 'Canonical Seeds/Learn navigation was not observed on /blog/.' >&2
             exit 1
           fi
 
@@ -88,13 +132,15 @@ jobs:
         if: always()
         env:
           GH_TOKEN: ${{ github.token }}
+          PAGE_OUTCOME: ${{ steps.pages.outcome }}
           REPAIR_OUTCOME: ${{ steps.repair.outcome }}
           VERIFY_OUTCOME: ${{ steps.live_verify.outcome }}
+          MUTATIONS: ${{ steps.repair.outputs.mutations }}
         shell: bash
         run: |
-          if [[ "$REPAIR_OUTCOME" == "success" && "$VERIFY_OUTCOME" == "success" ]]; then
+          if [[ "$PAGE_OUTCOME" == "success" && "$REPAIR_OUTCOME" == "success" && "$VERIFY_OUTCOME" == "success" ]]; then
             status='SUCCESS'
           else
             status='FAILED'
           fi
-          gh issue comment 46 --repo "$GITHUB_REPOSITORY" --body "### WordPress presentation repair: ${status}\n\n- Run: ${GITHUB_RUN_ID}\n- Repair: **${REPAIR_OUTCOME}**\n- Live verification: **${VERIFY_OUTCOME}**\n- Target: https://dtfseeds.com/\n- Checked: /, /blog/, /learn/\n- Required outcome: stale fake email/phone/2025 footer removed and official Discord CTA visible."
+          gh issue comment 46 --repo "$GITHUB_REPOSITORY" --body "### WordPress presentation repair: ${status}\n\n- Run: ${GITHUB_RUN_ID}\n- Canonical pages: **${PAGE_OUTCOME}**\n- Theme repair: **${REPAIR_OUTCOME}**\n- Theme/template mutations: **${MUTATIONS:-0}**\n- Live verification: **${VERIFY_OUTCOME}**\n- Checked live: /, /blog/, /learn/, /community/\n- Required outcome: stale fake email/phone/2025 footer removed, canonical navigation visible, and official Discord CTA present."
