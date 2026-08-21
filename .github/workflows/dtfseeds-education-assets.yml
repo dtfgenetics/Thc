@@ -15,7 +15,6 @@ on:
     branches:
       - main
     paths:
-      - site/public-route-patch/assets/education/**
       - site/public-route-patch/learn/infographics/**
       - site/wordpress/assets/infographics/**
       - .github/workflows/dtfseeds-education-assets.yml
@@ -34,11 +33,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Verify infographic library and assets
+      - name: Verify infographic library and canonical assets
         shell: bash
         run: |
           set -euo pipefail
-          base="site/public-route-patch/assets/education/infographics"
+          base="site/wordpress/assets/infographics"
           page="site/public-route-patch/learn/infographics/index.html"
           test -s "$page"
           test -s "site/public-route-patch/learn/infographics/library.json"
@@ -60,16 +59,16 @@ jobs:
           done
           grep -Fq 'https://dtfseeds.com/learn/infographics/' "$page"
           grep -Fq '/assets/education/infographics/' "$page"
-          count="$(find "$base" -type f | wc -l | tr -d ' ')"
+          count="$(find "$base" -type f ! -name 'import-*.json' | wc -l | tr -d ' ')"
           test "$count" -ge 20
-          echo "Education assets packaged: $count" >> "$GITHUB_STEP_SUMMARY"
+          echo "Canonical education assets ready for website: $count" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload education release artifact
         uses: actions/upload-artifact@v4
         with:
           name: dtfseeds-education-assets-${{ github.sha }}
           path: |
-            site/public-route-patch/assets/education/infographics
+            site/wordpress/assets/infographics
             site/public-route-patch/learn/infographics
           if-no-files-found: error
           retention-days: 30
@@ -163,14 +162,14 @@ jobs:
           printf '%s\n' "$BACKUP" > "$BACKUP/backup-location.txt"
           REMOTE
 
-      - name: Publish infographic assets and library
+      - name: Publish canonical infographic assets and library
         shell: bash
         env:
           ROOT: ${{ steps.root.outputs.path }}
         run: |
           set -euo pipefail
           ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" "mkdir -p '$ROOT/assets/education/infographics' '$ROOT/learn/infographics'"
-          rsync -az --delete --checksum -e "ssh -p $SSH_PORT" site/public-route-patch/assets/education/infographics/ "$SSH_USER@$SSH_HOST:$ROOT/assets/education/infographics/"
+          rsync -az --delete --checksum --exclude 'import-*.json' -e "ssh -p $SSH_PORT" site/wordpress/assets/infographics/ "$SSH_USER@$SSH_HOST:$ROOT/assets/education/infographics/"
           rsync -az --delete --checksum -e "ssh -p $SSH_PORT" site/public-route-patch/learn/infographics/ "$SSH_USER@$SSH_HOST:$ROOT/learn/infographics/"
 
       - name: Verify live infographic library
@@ -193,4 +192,5 @@ jobs:
         run: |
           echo "## DTFSeeds education asset deployment" >> "$GITHUB_STEP_SUMMARY"
           echo "Revision: $GITHUB_SHA" >> "$GITHUB_STEP_SUMMARY"
-          echo "Routes: /assets/education/infographics/ and /learn/infographics/" >> "$GITHUB_STEP_SUMMARY"
+          echo "Canonical source: site/wordpress/assets/infographics" >> "$GITHUB_STEP_SUMMARY"
+          echo "Live routes: /assets/education/infographics/ and /learn/infographics/" >> "$GITHUB_STEP_SUMMARY"
