@@ -1,0 +1,132 @@
+name: Publish THC Infographics On Command
+
+on:
+  workflow_dispatch:
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-wordpress-infographic-command
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.issue.number == 46 &&
+       github.event.comment.body == '/publish-infographics' &&
+       github.event.comment.user.login == github.repository_owner)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    environment: production
+    env:
+      NODE_OPTIONS: --dns-result-order=ipv4first
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME || secrets.WORDPRESS_USERNAME || secrets.WP_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD || secrets.WORDPRESS_APP_PASSWORD || secrets.WP_APPLICATION_PASSWORD }}
+      INFOGRAPHIC_DIR: ${{ github.workspace }}/site/wordpress/assets/infographics
+      BACKUP_ROOT: ${{ runner.temp }}/wordpress-infographic-backups
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate infographic publication package
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/deploy-wordpress-infographic-library-rest.mjs
+          test -d site/wordpress/assets/infographics
+          count="$(find site/wordpress/assets/infographics -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webp' -o -iname '*.gif' \) | wc -l | tr -d ' ')"
+          test "$count" -ge 20
+          echo "Source-controlled images queued: $count" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Require WordPress credentials
+        id: access
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ -n "${WP_API_USERNAME:-}" ]]
+          [[ -n "${WP_API_PASSWORD:-}" ]]
+          echo 'available=true' >> "$GITHUB_OUTPUT"
+
+      - name: Upload media and publish library
+        id: media
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/deploy-wordpress-infographic-library-rest.mjs
+          backup_dir="$(cat "$BACKUP_ROOT/wordpress-infographic-backup-path.txt")"
+          result="$backup_dir/deployment-result.json"
+          echo "source_count=$(node -p "require(process.argv[1]).sourceImageCount" "$result")" >> "$GITHUB_OUTPUT"
+          echo "uploaded_count=$(node -p "require(process.argv[1]).uploadedMediaCount" "$result")" >> "$GITHUB_OUTPUT"
+          echo "reused_count=$(node -p "require(process.argv[1]).reusedMediaCount" "$result")" >> "$GITHUB_OUTPUT"
+          echo "page_id=$(node -p "require(process.argv[1]).pageId" "$result")" >> "$GITHUB_OUTPUT"
+
+      - name: Verify live infographic library
+        id: verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          page="$RUNNER_TEMP/infographic-library.html"
+          ok=0
+          for attempt in 1 2 3 4 5 6; do
+            curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+              --header 'Cache-Control: no-cache' \
+              "https://dtfseeds.com/learn/infographics/?dtf_infographic_command=${GITHUB_RUN_ID}-${attempt}" \
+              --output "$page"
+            if grep -Fqi 'THC Infographic Library' "$page" && grep -Eqi '<img[^>]+wp-content/uploads/' "$page"; then
+              ok=1
+              break
+            fi
+            sleep 10
+          done
+          [[ "$ok" -eq 1 ]]
+          image_count="$(grep -Eoi '<img[^>]+wp-content/uploads/' "$page" | wc -l | tr -d ' ')"
+          test "$image_count" -ge 10
+          echo "live_image_count=$image_count" >> "$GITHUB_OUTPUT"
+
+      - name: Upload rollback and audit package
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: wordpress-infographic-command-${{ github.run_id }}
+          path: ${{ runner.temp }}/wordpress-infographic-backups
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report command result
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          JOB_STATUS: ${{ job.status }}
+          SOURCE_COUNT: ${{ steps.media.outputs.source_count }}
+          UPLOADED_COUNT: ${{ steps.media.outputs.uploaded_count }}
+          REUSED_COUNT: ${{ steps.media.outputs.reused_count }}
+          PAGE_ID: ${{ steps.media.outputs.page_id }}
+          LIVE_IMAGE_COUNT: ${{ steps.verify.outputs.live_image_count }}
+        with:
+          script: |
+            const body = [
+              '## THC infographic publication command',
+              '',
+              `Status: **${process.env.JOB_STATUS}**`,
+              `Source-controlled images processed: **${process.env.SOURCE_COUNT || 'not-run'}**`,
+              `New WordPress media uploads: **${process.env.UPLOADED_COUNT || 'not-run'}**`,
+              `Existing WordPress media reused: **${process.env.REUSED_COUNT || 'not-run'}**`,
+              `Infographic page ID: **${process.env.PAGE_ID || 'not-run'}**`,
+              `Images observed on live page: **${process.env.LIVE_IMAGE_COUNT || 'not-run'}**`,
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              '',
+              'Live target: https://dtfseeds.com/learn/infographics/',
+              'No credential values are included in this report.'
+            ].join('\n');
+            await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: 46, body });
