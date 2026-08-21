@@ -31,8 +31,10 @@ jobs:
           set -euo pipefail
           test -s .github/workflows/wordpress-canonical-production.yml
           test -s .github/workflows/wordpress-infographic-production.yml
+          test -s .github/workflows/wordpress-presentation-repair.yml
           grep -Fq 'workflow_dispatch:' .github/workflows/wordpress-canonical-production.yml
           grep -Fq 'workflow_dispatch:' .github/workflows/wordpress-infographic-production.yml
+          grep -Fq 'workflow_dispatch:' .github/workflows/wordpress-presentation-repair.yml
 
       - name: Dispatch canonical WordPress production
         shell: bash
@@ -45,6 +47,12 @@ jobs:
         run: |
           set -euo pipefail
           gh workflow run wordpress-infographic-production.yml --ref main
+
+      - name: Dispatch WordPress presentation repair
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh workflow run wordpress-presentation-repair.yml --ref main
 
       - name: Report explicit production dispatch
         if: always()
@@ -65,7 +73,8 @@ jobs:
                 'Requested workflows:',
                 '- Publish DTFSeeds WordPress Production',
                 '- Publish THC Infographics to WordPress Production',
+                '- Repair DTFSeeds WordPress Presentation',
                 '',
-                'Both targets use the protected `production` environment and its configured WordPress credentials.'
+                'All targets use the protected `production` environment and its configured WordPress credentials.'
               ].join('\n')
             });
