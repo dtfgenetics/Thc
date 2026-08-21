@@ -1,0 +1,46 @@
+name: Force Live Infographic Verification
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/force-live-infographic-verification.yml
+
+permissions:
+  actions: write
+  contents: read
+  issues: write
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dispatch independent live verifier
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh workflow run verify-live-infographics.yml --ref main
+      - name: Report verifier dispatch
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          STATUS: ${{ job.status }}
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 46,
+              body: [
+                '## Independent infographic verifier dispatch',
+                '',
+                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                `Dispatch status: **${process.env.STATUS}**`,
+                'Target workflow: `verify-live-infographics.yml`'
+              ].join('\n')
+            });
