@@ -1,0 +1,146 @@
+name: Repair DTFSeeds WordPress Presentation
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-wordpress-presentation-repair
+  cancel-in-progress: true
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: production
+    env:
+      NODE_OPTIONS: --dns-result-order=ipv4first
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      BACKUP_ROOT: /tmp/wordpress-presentation-backups
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate repair scripts
+        run: |
+          set -euo pipefail
+          node --check scripts/reconcile-wordpress-presentation-rest.mjs
+          node --check scripts/apply-wordpress-public-content-rest.mjs
+          node --check scripts/audit-wordpress-commerce-rest.mjs
+
+      - name: Require WordPress production credentials
+        run: |
+          set -euo pipefail
+          test -n "${WP_API_USERNAME:-}"
+          test -n "${WP_API_PASSWORD:-}"
+
+      - name: Reconcile canonical WordPress page records first
+        run: |
+          set -euo pipefail
+          CONTENT_DIR="$GITHUB_WORKSPACE/site/wordpress/pages" node scripts/apply-wordpress-public-content-rest.mjs
+
+      - name: Back up and repair active Hostinger block presentation
+        id: presentation
+        env:
+          APPLY_PRESENTATION_CHANGES: 'true'
+        run: |
+          set -euo pipefail
+          node scripts/reconcile-wordpress-presentation-rest.mjs
+          backup_dir="$(cat "$BACKUP_ROOT/wordpress-presentation-backup-path.txt")"
+          report="$backup_dir/presentation-reconciliation.json"
+          echo "mutations=$(node -p "require(process.argv[1]).mutationCount" "$report")" >> "$GITHUB_OUTPUT"
+          echo "backup_dir=$backup_dir" >> "$GITHUB_OUTPUT"
+
+      - name: Verify REST presentation no longer contains stale resources
+        run: |
+          set -euo pipefail
+          node scripts/audit-wordpress-commerce-rest.mjs
+          node - <<'NODE'
+          const report = require('/tmp/wordpress-presentation-backups/wordpress-commerce-capabilities.json');
+          const defects = report.presentation?.defectMatches || {};
+          const staleTemplates = (defects.templateMatches || []).filter(x => x.markers?.staleHomeCopy || x.markers?.staleLearnCopy || x.markers?.staleLearnBody);
+          const staleParts = (defects.templatePartMatches || []).filter(x => x.markers?.fakeEmail || x.markers?.fakePhone || x.markers?.old2025Copyright);
+          if (staleTemplates.length) throw new Error(`Stale page templates remain: ${staleTemplates.map(x => x.id).join(', ')}`);
+          if (staleParts.length) throw new Error(`Stale template parts remain: ${staleParts.map(x => x.id).join(', ')}`);
+          NODE
+
+      - name: Verify live canonical pages after theme repair
+        id: live
+        run: |
+          set -euo pipefail
+          verify_page() {
+            local path="$1"
+            local required="$2"
+            local body="$RUNNER_TEMP/live-$(echo "$path" | tr '/?' '__').html"
+            local ok=0
+            for attempt in 1 2 3 4 5 6 7 8; do
+              curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+                --header 'Cache-Control: no-cache, no-store, max-age=0' \
+                --header 'Pragma: no-cache' \
+                "https://dtfseeds.com${path}?dtf_presentation=${GITHUB_RUN_ID}-${attempt}" \
+                --output "$body"
+              if grep -Fqi -- "$required" "$body"; then
+                ok=1
+                break
+              fi
+              sleep 8
+            done
+            if [[ "$ok" -ne 1 ]]; then
+              echo "Required live text not found on $path: $required" >&2
+              exit 1
+            fi
+            for forbidden in 'email@email.com' '+123456789' 'being rebuilt' 'Reserved strain card' 'Tool-ready rebuild' 'Needed from owner'; do
+              if grep -Fqi -- "$forbidden" "$body"; then
+                echo "Forbidden live phrase remains on $path: $forbidden" >&2
+                exit 1
+              fi
+            done
+          }
+          verify_page '/' 'Genetics, cultivation education, practical tools, and original cannabis games.'
+          verify_page '/learn/' 'Read the yellow-leaves diagnostic guide'
+          verify_page '/community/' 'Join the official DTF / Teaching Healthy Cultivation Discord'
+          verify_page '/contact/' 'Join the official DTF / Teaching Healthy Cultivation Discord'
+
+      - name: Upload presentation rollback package
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: wordpress-presentation-backup-${{ github.run_id }}
+          path: /tmp/wordpress-presentation-backups
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report presentation repair
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          JOB_STATUS: ${{ job.status }}
+          MUTATIONS: ${{ steps.presentation.outputs.mutations }}
+          LIVE_OUTCOME: ${{ steps.live.outcome }}
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 46,
+              body: [
+                '## WordPress presentation repair',
+                '',
+                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                `Result: **${process.env.JOB_STATUS}**`,
+                `Theme/template mutations: **${process.env.MUTATIONS || '0'}**`,
+                `Live verification: **${process.env.LIVE_OUTCOME || 'not-run'}**`,
+                '',
+                'The repair backs up the Hostinger AI block presentation before writes, restores canonical DTF navigation/footer, and converts stale hard-coded page templates to WordPress post-content rendering.'
+              ].join('\n')
+            });
