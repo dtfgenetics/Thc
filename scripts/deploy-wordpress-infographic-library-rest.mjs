@@ -11,7 +11,7 @@ const backupRoot = process.env.BACKUP_ROOT || process.cwd();
 const timestamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d{3}Z$/, 'Z');
 const backupDir = join(backupRoot, `wordpress-infographics-${timestamp}`);
 const authHeader = `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`;
-const userAgent = 'DTFSeeds-Education-Media-Publisher/1.0';
+const userAgent = 'DTFSeeds-Education-Media-Publisher/1.1';
 const imageExtensions = new Set(['.png', '.jpg', '.jpeg', '.webp', '.gif']);
 
 if (!username || !password) throw new Error('WP_API_USERNAME and WP_API_PASSWORD are required');
@@ -195,8 +195,26 @@ async function mapConcurrent(items, limit, fn) {
 async function getLearnPage() {
   const params = new URLSearchParams({ slug: 'learn', context: 'edit', per_page: '10' });
   const rows = await jsonRequest(`/wp-json/wp/v2/pages?${params}`);
-  if (!Array.isArray(rows) || rows.length !== 1) throw new Error(`Expected exactly one WordPress Learn page; found ${Array.isArray(rows) ? rows.length : 'invalid response'}`);
-  return rows[0];
+  if (!Array.isArray(rows)) throw new Error('Unexpected WordPress Learn page response');
+  if (rows.length > 1) throw new Error(`Expected at most one WordPress Learn page; found ${rows.length}`);
+  if (rows.length === 1) return rows[0];
+
+  const canonicalLearnPath = join(process.cwd(), 'site/wordpress/pages/learn.html');
+  const canonicalLearnContent = await readFile(canonicalLearnPath, 'utf8');
+  if (!canonicalLearnContent.trim()) throw new Error(`Canonical Learn source is empty: ${canonicalLearnPath}`);
+
+  const created = await jsonRequest('/wp-json/wp/v2/pages', {
+    method: 'POST',
+    body: JSON.stringify({
+      slug: 'learn',
+      title: 'Teaching Healthy Cultivation',
+      content: canonicalLearnContent,
+      status: 'publish'
+    })
+  });
+  if (!created?.id || created?.status !== 'publish') throw new Error('WordPress did not confirm creation of the Learn parent page');
+  console.log(`Created missing /learn/ parent page (page ID ${created.id}).`);
+  return created;
 }
 
 async function findInfographicPage(parentId) {
