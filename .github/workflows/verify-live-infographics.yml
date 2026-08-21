@@ -1,0 +1,121 @@
+name: Verify Live THC Infographics
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/verify-live-infographics.yml
+      - site/wordpress/assets/infographics/**
+      - site/public-route-patch/learn/infographics/**
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: verify-live-thc-infographics
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Probe live library and representative assets
+        shell: python
+        run: |
+          import json
+          import pathlib
+          import time
+          import urllib.error
+          import urllib.request
+
+          page_url = 'https://dtfseeds.com/learn/infographics/'
+          samples = [
+              'THC-C004_Infographic_From_Cell_to_Canopy.jpg',
+              'THC-C007_Infographic_Leaf_Anatomy_Gas_Exchange.jpg',
+              'THC-C009_Infographic_Trichomes_Secretory_Biology.jpg',
+              'Cannabis_Plant_Anatomy_Infographic.png',
+              'Cannabis_Plant_Life_Cycle_Seed_to_Harvest_Infographic.png',
+              'Nutrient_Uptake_and_Root_Zone_Chemistry.png',
+              'Beneficial_Insects_and_Biological_Controls.png',
+          ]
+
+          def fetch(url):
+              request = urllib.request.Request(url, headers={
+                  'User-Agent': 'Mozilla/5.0 THC-Live-Verification/1.0',
+                  'Cache-Control': 'no-cache',
+              })
+              try:
+                  with urllib.request.urlopen(request, timeout=30) as response:
+                      body = response.read()
+                      return {
+                          'ok': 200 <= response.status < 300,
+                          'status': response.status,
+                          'content_type': response.headers.get('Content-Type', ''),
+                          'bytes': len(body),
+                          'body': body,
+                      }
+              except urllib.error.HTTPError as exc:
+                  return {'ok': False, 'status': exc.code, 'content_type': '', 'bytes': 0, 'body': b''}
+              except Exception as exc:
+                  return {'ok': False, 'status': None, 'content_type': '', 'bytes': 0, 'body': b'', 'error': str(exc)}
+
+          page = None
+          for attempt in range(1, 7):
+              page = fetch(f'{page_url}?verify={int(time.time())}-{attempt}')
+              text = page['body'].decode('utf-8', errors='ignore')
+              if page['ok'] and ('THC Infographic Library' in text or 'Infographic Library' in text):
+                  break
+              if attempt < 6:
+                  time.sleep(10)
+
+          text = page['body'].decode('utf-8', errors='ignore') if page else ''
+          asset_results = []
+          for filename in samples:
+              result = fetch('https://dtfseeds.com/assets/education/infographics/' + filename)
+              asset_results.append({
+                  'filename': filename,
+                  'ok': result['ok'] and result['bytes'] >= 10000,
+                  'status': result['status'],
+                  'content_type': result['content_type'],
+                  'bytes': result['bytes'],
+                  'error': result.get('error'),
+              })
+
+          report = {
+              'verified_at_utc': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
+              'page_url': page_url,
+              'page_http_status': page.get('status') if page else None,
+              'page_bytes': page.get('bytes') if page else 0,
+              'page_has_infographic_heading': 'Infographic Library' in text,
+              'page_has_wordpress_media_images': 'wp-content/uploads/' in text,
+              'page_has_static_asset_images': '/assets/education/infographics/' in text,
+              'sample_assets': asset_results,
+              'sample_assets_live': sum(1 for item in asset_results if item['ok']),
+              'sample_assets_total': len(asset_results),
+              'production_ready': bool(page and page['ok'] and 'Infographic Library' in text and all(item['ok'] for item in asset_results)),
+          }
+
+          path = pathlib.Path('docs/LIVE_INFOGRAPHIC_STATUS.json')
+          path.write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')
+          print(json.dumps(report, indent=2))
+
+      - name: Commit verification report
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/LIVE_INFOGRAPHIC_STATUS.json
+          if git diff --cached --quiet; then
+            echo 'Live verification report unchanged.'
+            exit 0
+          fi
+          git commit -m 'Record live THC infographic verification'
+          git pull --rebase origin main
+          git push origin HEAD:main
