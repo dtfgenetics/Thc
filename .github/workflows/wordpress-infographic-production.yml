@@ -7,6 +7,7 @@ on:
     paths:
       - site/wordpress/assets/infographics/**
       - site/public-route-patch/learn/infographics/**
+      - scripts/rebuild-wordpress-infographic-gallery.mjs
       - .github/workflows/wordpress-infographic-production.yml
   workflow_run:
     workflows:
@@ -46,7 +47,7 @@ jobs:
                 `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
                 `Trigger: **${context.eventName}**`,
                 `Source: ${source}`,
-                'The next job enters the protected `production` environment and publishes the source-controlled image library.'
+                'The next job enters the protected `production` environment, synchronizes source-controlled education media, and rebuilds the categorized visual gallery.'
               ].join('\n')
             });
 
@@ -84,6 +85,7 @@ jobs:
         run: |
           set -euo pipefail
           node --check scripts/deploy-wordpress-infographic-library-rest.mjs
+          node --check scripts/rebuild-wordpress-infographic-gallery.mjs
           test -d site/wordpress/assets/infographics
           test -s site/wordpress/assets/infographics/Cannabis_Plant_Anatomy_Infographic.png
           test -s site/wordpress/assets/infographics/Nutrient_Uptake_and_Root_Zone_Chemistry.png
@@ -120,28 +122,45 @@ jobs:
           echo "reused_count=$(node -p "require(process.argv[1]).reusedMediaCount" "$result")" >> "$GITHUB_OUTPUT"
           echo "page_id=$(node -p "require(process.argv[1]).pageId" "$result")" >> "$GITHUB_OUTPUT"
 
+      - name: Rebuild responsive categorized visual gallery
+        id: gallery
+        if: steps.publish.outcome == 'success'
+        env:
+          APPLY_INFOGRAPHIC_GALLERY: 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/rebuild-wordpress-infographic-gallery.mjs
+          gallery_dir="$(cat "$BACKUP_ROOT/infographic-gallery-backup-path.txt")"
+          gallery_report="$gallery_dir/gallery-report.json"
+          echo "gallery_count=$(node -p "require(process.argv[1]).mediaCount" "$gallery_report")" >> "$GITHUB_OUTPUT"
+
       - name: Verify live WordPress infographic library
         id: verify
-        if: steps.publish.outcome == 'success'
+        if: steps.gallery.outcome == 'success'
         shell: bash
         run: |
           set -euo pipefail
           page="$RUNNER_TEMP/infographic-library.html"
           ok=0
-          for attempt in 1 2 3 4 5 6; do
+          for attempt in 1 2 3 4 5 6 7 8; do
             curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
-              --header 'Cache-Control: no-cache' \
+              --header 'Cache-Control: no-cache, no-store, max-age=0' \
+              --header 'Pragma: no-cache' \
               "https://dtfseeds.com/learn/infographics/?dtf_infographics=${GITHUB_RUN_ID}-${attempt}" \
               --output "$page"
-            if grep -Fqi 'THC Infographic Library' "$page" && grep -Eqi '<img[^>]+wp-content/uploads/' "$page"; then
+            if grep -Fqi 'Visual plant science and cultivation library.' "$page" && grep -Eqi '<img[^>]+wp-content/uploads/' "$page"; then
               ok=1
               break
             fi
-            sleep 10
+            sleep 8
           done
           [[ "$ok" -eq 1 ]]
           image_count="$(grep -Eoi '<img[^>]+wp-content/uploads/' "$page" | wc -l | tr -d ' ')"
-          test "$image_count" -ge 10
+          test "$image_count" -ge 30
+          grep -Fqi 'Plant Anatomy & Physiology' "$page"
+          grep -Fqi 'Nutrition, Water & Root Zone' "$page"
+          grep -Fqi 'IPM & Plant Health' "$page"
           echo "live_image_count=$image_count" >> "$GITHUB_OUTPUT"
 
       - name: Fail when WordPress credentials are absent
@@ -165,11 +184,13 @@ jobs:
           USER_PRESENT: ${{ steps.access.outputs.user_present }}
           PASSWORD_PRESENT: ${{ steps.access.outputs.password_present }}
           PUBLISH_OUTCOME: ${{ steps.publish.outcome }}
+          GALLERY_OUTCOME: ${{ steps.gallery.outcome }}
           VERIFY_OUTCOME: ${{ steps.verify.outcome }}
           SOURCE_COUNT: ${{ steps.publish.outputs.source_count }}
           UPLOADED_COUNT: ${{ steps.publish.outputs.uploaded_count }}
           REUSED_COUNT: ${{ steps.publish.outputs.reused_count }}
           PAGE_ID: ${{ steps.publish.outputs.page_id }}
+          GALLERY_COUNT: ${{ steps.gallery.outputs.gallery_count }}
           LIVE_IMAGE_COUNT: ${{ steps.verify.outputs.live_image_count }}
         with:
           script: |
@@ -180,21 +201,17 @@ jobs:
               `Protected job result: **${process.env.JOB_STATUS}**`,
               `WordPress username configured: **${process.env.USER_PRESENT || 'false'}**`,
               `WordPress application password configured: **${process.env.PASSWORD_PRESENT || 'false'}**`,
-              `Media/page publish outcome: **${process.env.PUBLISH_OUTCOME || 'not-run'}**`,
-              `Live verification outcome: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
+              `Media synchronization: **${process.env.PUBLISH_OUTCOME || 'not-run'}**`,
+              `Responsive gallery rebuild: **${process.env.GALLERY_OUTCOME || 'not-run'}**`,
+              `Live verification: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
               `Source-controlled images processed: **${process.env.SOURCE_COUNT || 'not-run'}**`,
               `New WordPress media uploads: **${process.env.UPLOADED_COUNT || 'not-run'}**`,
               `Existing WordPress media reused: **${process.env.REUSED_COUNT || 'not-run'}**`,
               `Infographic page ID: **${process.env.PAGE_ID || 'not-run'}**`,
+              `Education media placed in categorized gallery: **${process.env.GALLERY_COUNT || 'not-run'}**`,
               `Images observed on live library page: **${process.env.LIVE_IMAGE_COUNT || 'not-run'}**`,
               '',
               'Target: https://dtfseeds.com/learn/infographics/',
-              'The publisher is idempotent by source path + SHA-256 and never deletes WordPress media. It only creates/updates the Teaching Healthy Cultivation infographic child page and uploads missing source-controlled images.',
-              'No credential values are included in this report.'
+              'The final page is rebuilt from WordPress-hosted `dtf-edu-*` media into categorized responsive galleries. Draft/quarantine material is not promoted by this job.'
             ].join('\n');
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: 46,
-              body
-            });
+            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body});
