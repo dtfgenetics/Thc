@@ -18,13 +18,12 @@ const headers = {
   Authorization: authHeader,
   'Content-Type': 'application/json',
   Accept: 'application/json',
-  'User-Agent': 'DTFSeeds-Content-Deployment/1.5'
+  'User-Agent': 'DTFSeeds-Content-Deployment/1.6'
 };
 
 // WordPress owns the editorial/root pages below. /games/ and /games/high-iq/
 // are owned by the static public application suite and must never be required
-// to exist as WordPress pages. Keeping this ownership boundary explicit avoids
-// blocking editorial deployment when static routes are correctly absent from WP.
+// to exist as WordPress pages.
 const pageDefinitions = [
   ['home', 'DTF Genetics | Dream the Future'],
   ['seeds', 'Seeds / Genetics'],
@@ -91,10 +90,20 @@ async function getPublishedPageBySlug(slug) {
   const params = new URLSearchParams({ slug, context: 'edit', per_page: '100' });
   const { body } = await request(`/wp-json/wp/v2/pages?${params}`);
   if (!Array.isArray(body)) throw new Error(`Unexpected page response for ${slug}`);
-  if (body.length !== 1) {
-    throw new Error(`Expected exactly one published WordPress page for slug '${slug}'; found ${body.length}`);
+  if (body.length > 1) {
+    throw new Error(`Expected at most one published WordPress page for slug '${slug}'; found ${body.length}`);
   }
-  return body[0];
+  return body[0] || null;
+}
+
+async function createPage(slug, title, content) {
+  const { body } = await request('/wp-json/wp/v2/pages', {
+    method: 'POST',
+    body: JSON.stringify({ slug, title, content, status: 'publish' })
+  });
+  if (!body?.id) throw new Error(`WordPress did not return an ID while creating /${slug}/`);
+  if (body?.status !== 'publish') throw new Error(`WordPress did not publish newly created /${slug}/`);
+  return body;
 }
 
 async function updatePage(page, title, content) {
@@ -145,6 +154,8 @@ await writeFile(
   'utf8'
 );
 
+// First validate every canonical source file and inspect all current page identities.
+// No WordPress mutation occurs until the complete plan is known.
 const prepared = [];
 for (const [slug, title] of pageDefinitions) {
   const sourcePath = join(contentDir, `${slug}.html`);
@@ -158,11 +169,14 @@ for (const [slug, title] of pageDefinitions) {
 
   const page = await getPublishedPageBySlug(slug);
   const needsUpdate =
+    !page ||
     editableTitle(page) !== normalizeText(title) ||
     editableContent(page) !== normalizeText(content) ||
     page?.status !== 'publish';
 
-  await writeFile(join(backupDir, 'pages', `${slug}.json`), `${JSON.stringify(page, null, 2)}\n`, 'utf8');
+  if (page) {
+    await writeFile(join(backupDir, 'pages', `${slug}.json`), `${JSON.stringify(page, null, 2)}\n`, 'utf8');
+  }
   prepared.push({ slug, title, content, page, needsUpdate });
 }
 
@@ -171,8 +185,9 @@ await writeFile(
   `${JSON.stringify(prepared.map(({ slug, title, page, needsUpdate }) => ({
     slug,
     title,
-    pageId: page.id,
-    previousStatus: page.status,
+    pageId: page?.id || null,
+    previousStatus: page?.status || null,
+    action: !page ? 'create' : needsUpdate ? 'update' : 'none',
     needsUpdate
   })), null, 2)}\n`,
   'utf8'
@@ -180,8 +195,29 @@ await writeFile(
 
 const results = [];
 let changedPages = 0;
+let createdPages = 0;
 let auxiliaryMutations = 0;
 for (const item of prepared) {
+  if (!item.page) {
+    const created = await createPage(item.slug, item.title, item.content);
+    item.page = created;
+    item.needsUpdate = false;
+    createdPages += 1;
+    changedPages += 1;
+    await writeFile(join(backupDir, 'pages', `${item.slug}-created.json`), `${JSON.stringify(created, null, 2)}\n`, 'utf8');
+    results.push({
+      slug: item.slug,
+      pageId: created.id,
+      status: created.status,
+      modifiedGmt: created.modified_gmt,
+      link: created.link,
+      changed: true,
+      created: true
+    });
+    console.log(`Created /${item.slug}/ (page ID ${created.id})`);
+    continue;
+  }
+
   if (!item.needsUpdate) {
     results.push({
       slug: item.slug,
@@ -189,13 +225,15 @@ for (const item of prepared) {
       status: item.page.status,
       modifiedGmt: item.page.modified_gmt,
       link: item.page.link,
-      changed: false
+      changed: false,
+      created: false
     });
     console.log(`Already synchronized /${item.slug}/ (page ID ${item.page.id})`);
     continue;
   }
 
   const updated = await updatePage(item.page, item.title, item.content);
+  item.page = updated;
   changedPages += 1;
   results.push({
     slug: item.slug,
@@ -203,14 +241,13 @@ for (const item of prepared) {
     status: updated.status,
     modifiedGmt: updated.modified_gmt,
     link: updated.link,
-    changed: true
+    changed: true,
+    created: false
   });
   console.log(`Updated /${item.slug}/ (page ID ${updated.id})`);
 }
 
 // The canonical `home` page must also be the page WordPress serves at `/`.
-// Back up the Reading settings before changing them so this routing mutation is
-// independently reversible from the page-content backups above.
 try {
   const homeItem = prepared.find((item) => item.slug === 'home');
   if (!homeItem?.page?.id) throw new Error('Canonical home page ID is unavailable');
@@ -277,9 +314,6 @@ try {
   console.warn(`Legacy blog-page cleanup skipped safely: ${error.message}`);
 }
 
-// The legacy public blog currently exposes generated placeholder copy and fake
-// contact data. Draft only the two exact known generated posts, with a JSON
-// backup for each, so REST deployment matches the safer WP-CLI cleanup path.
 for (const title of legacyPostTitles) {
   try {
     auxiliaryMutations += await draftExactLegacyPost(title);
@@ -291,6 +325,7 @@ for (const title of legacyPostTitles) {
 const summary = {
   checkedPages: results.length,
   changedPages,
+  createdPages,
   auxiliaryMutations,
   mutationCount: changedPages + auxiliaryMutations,
   backupDir
@@ -300,5 +335,5 @@ await writeFile(join(backupDir, 'deployment-results.json'), `${JSON.stringify(re
 await writeFile(join(backupDir, 'deployment-summary.json'), `${JSON.stringify(summary, null, 2)}\n`, 'utf8');
 await writeFile(join(backupRoot, 'wordpress-rest-backup-path.txt'), `${backupDir}\n`, 'utf8');
 
-console.log(`REST content reconciliation checked ${results.length} pages; updated ${changedPages}; auxiliary mutations ${auxiliaryMutations}.`);
+console.log(`REST content reconciliation checked ${results.length} pages; changed ${changedPages}; created ${createdPages}; auxiliary mutations ${auxiliaryMutations}.`);
 console.log(`Page-level rollback data: ${backupDir}`);
