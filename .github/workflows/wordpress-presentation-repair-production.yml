@@ -1,0 +1,100 @@
+name: WordPress Presentation Repair Production
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/wordpress-presentation-repair-production.yml'
+      - 'scripts/repair-wordpress-presentation-rest.mjs'
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-wordpress-presentation-production
+  cancel-in-progress: false
+
+jobs:
+  repair-production-presentation:
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      BACKUP_ROOT: /tmp/wordpress-presentation-backups
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate repair script
+        run: node --check scripts/repair-wordpress-presentation-rest.mjs
+
+      - name: Repair WordPress presentation
+        id: repair
+        run: node scripts/repair-wordpress-presentation-rest.mjs
+
+      - name: Verify public site no longer exposes stale Hostinger presentation
+        id: live_verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/live-check
+          for path in / /blog/ /learn/; do
+            safe=$(printf '%s' "$path" | tr '/?' '__')
+            url="https://dtfseeds.com${path}?dtf_verify=${GITHUB_RUN_ID}"
+            echo "Checking $url"
+            curl -fsSL --retry 4 --retry-delay 3 --connect-timeout 15 --max-time 45 \
+              -H 'Cache-Control: no-cache' -H 'Pragma: no-cache' \
+              "$url" -o "/tmp/live-check/${safe}.html"
+          done
+
+          if grep -RFiq 'email@email.com' /tmp/live-check; then
+            echo 'Stale fake email remains live.' >&2
+            exit 1
+          fi
+          if grep -RFiq '+123456789' /tmp/live-check; then
+            echo 'Stale fake phone remains live.' >&2
+            exit 1
+          fi
+          if grep -RFiq '© 2025 DTF GENETICS' /tmp/live-check || grep -RFiq '&copy; 2025 DTF GENETICS' /tmp/live-check; then
+            echo 'Stale 2025 footer remains live.' >&2
+            exit 1
+          fi
+          if ! grep -RFiq 'discord.gg/xJbUeHFPMt' /tmp/live-check; then
+            echo 'Official Discord CTA was not observed in checked public pages.' >&2
+            exit 1
+          fi
+
+          echo 'Live presentation verification passed.'
+
+      - name: Upload presentation backup
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: wordpress-presentation-backup-${{ github.run_id }}
+          path: /tmp/wordpress-presentation-backups
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report production result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPAIR_OUTCOME: ${{ steps.repair.outcome }}
+          VERIFY_OUTCOME: ${{ steps.live_verify.outcome }}
+        shell: bash
+        run: |
+          if [[ "$REPAIR_OUTCOME" == "success" && "$VERIFY_OUTCOME" == "success" ]]; then
+            status='SUCCESS'
+          else
+            status='FAILED'
+          fi
+          gh issue comment 46 --repo "$GITHUB_REPOSITORY" --body "### WordPress presentation repair: ${status}\n\n- Run: ${GITHUB_RUN_ID}\n- Repair: **${REPAIR_OUTCOME}**\n- Live verification: **${VERIFY_OUTCOME}**\n- Target: https://dtfseeds.com/\n- Checked: /, /blog/, /learn/\n- Required outcome: stale fake email/phone/2025 footer removed and official Discord CTA visible."
