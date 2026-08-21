@@ -2,6 +2,13 @@ name: Stage DTFSeeds WordPress Canonical Deployment
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - site/wordpress/pages/**
+      - site/wordpress/assets/infographics/**
+      - site/public-route-patch/learn/infographics/**
+      - .github/workflows/wordpress-canonical-deploy.yml
   workflow_run:
     workflows:
       - Reconcile DTFSeeds WordPress Canonical Pages
@@ -10,6 +17,10 @@ on:
 permissions:
   contents: read
   issues: write
+
+concurrency:
+  group: dtfseeds-wordpress-canonical-handoff
+  cancel-in-progress: true
 
 jobs:
   observe:
@@ -29,10 +40,16 @@ jobs:
             [[ "${{ github.event.workflow_run.conclusion }}" == "success" ]]
           fi
           test -s scripts/apply-wordpress-public-content-rest.mjs
+          test -s scripts/deploy-wordpress-infographic-library-rest.mjs
           node --check scripts/apply-wordpress-public-content-rest.mjs
+          node --check scripts/deploy-wordpress-infographic-library-rest.mjs
           for slug in home seeds learn community shop gallery about contact; do
             test -s "site/wordpress/pages/$slug.html"
           done
+          test -d site/wordpress/assets/infographics
+          count="$(find site/wordpress/assets/infographics -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webp' -o -iname '*.gif' \) | wc -l | tr -d ' ')"
+          test "$count" -ge 20
+          echo "Validated $count infographic images for protected production handoff." >> "$GITHUB_STEP_SUMMARY"
 
       - name: Report deployment handoff to issue 46
         if: always()
@@ -43,16 +60,18 @@ jobs:
           script: |
             const sourceRun = context.eventName === 'workflow_run'
               ? context.payload.workflow_run?.html_url
-              : 'manual dispatch';
+              : context.eventName === 'push'
+                ? `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/commit/${context.sha}`
+                : 'manual dispatch';
             const body = [
               '## WordPress protected deployment handoff',
               '',
               `Handoff run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
               `Trigger: **${context.eventName}**`,
               `Trusted handoff result: **${process.env.OBSERVE_STATUS}**`,
-              `Source preflight: ${sourceRun}`,
+              `Source: ${sourceRun}`,
               '',
-              'This workflow accesses no production environment or credentials. A separate one-job production workflow runs after a successful handoff.'
+              'A successful handoff triggers both protected production workflows: canonical WordPress pages and the THC infographic media/library publisher.'
             ].join('\n');
             await github.rest.issues.createComment({
               owner: context.repo.owner,
