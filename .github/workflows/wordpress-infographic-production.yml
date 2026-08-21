@@ -62,7 +62,7 @@ jobs:
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
       INFOGRAPHIC_DIR: ${{ github.workspace }}/site/wordpress/assets/infographics
-      BACKUP_ROOT: ${{ runner.temp }}/wordpress-infographic-backups
+      BACKUP_ROOT: /tmp/wordpress-infographic-backups
     steps:
       - uses: actions/checkout@v4
         with:
@@ -153,7 +153,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: wordpress-infographic-production-${{ github.run_id }}
-          path: ${{ runner.temp }}/wordpress-infographic-backups
+          path: /tmp/wordpress-infographic-backups
           if-no-files-found: warn
           retention-days: 30
 
