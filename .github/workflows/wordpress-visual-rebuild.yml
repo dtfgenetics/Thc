@@ -1,0 +1,169 @@
+name: Rebuild DTFSeeds WordPress Visual Site
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+env:
+  WP_SITE_URL: https://dtfseeds.com
+
+concurrency:
+  group: dtfseeds-wordpress-visual-rebuild
+  cancel-in-progress: true
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: production
+    env:
+      NODE_OPTIONS: --dns-result-order=ipv4first
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      BACKUP_ROOT: /tmp/dtf-visual-rebuild
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate visual rebuild package
+        run: |
+          set -euo pipefail
+          test -s site/wordpress/assets/brand/dtf-potleaf-512.png
+          node --check scripts/rebuild-wordpress-visual-site.mjs
+          node --check scripts/rebuild-wordpress-infographic-gallery.mjs
+          test -n "${WP_API_USERNAME:-}"
+          test -n "${WP_API_PASSWORD:-}"
+
+      - name: Rebuild brand shell, Home, and Learn with WordPress media
+        id: site
+        env:
+          APPLY_VISUAL_REBUILD: 'true'
+        run: |
+          set -euo pipefail
+          node scripts/rebuild-wordpress-visual-site.mjs | tee "$RUNNER_TEMP/visual-rebuild.log"
+          report_dir="$(cat "$BACKUP_ROOT/visual-rebuild-backup-path.txt")"
+          report="$report_dir/visual-rebuild-report.json"
+          echo "media_count=$(node -p "require(process.argv[1]).mediaCount" "$report")" >> "$GITHUB_OUTPUT"
+          echo "brand_id=$(node -p "require(process.argv[1]).brandMediaId" "$report")" >> "$GITHUB_OUTPUT"
+          echo "missing=$(node -p "require(process.argv[1]).missingSelections.join(',')" "$report")" >> "$GITHUB_OUTPUT"
+
+      - name: Rebuild the complete infographic gallery
+        id: gallery
+        env:
+          APPLY_INFOGRAPHIC_GALLERY: 'true'
+        run: |
+          set -euo pipefail
+          node scripts/rebuild-wordpress-infographic-gallery.mjs | tee "$RUNNER_TEMP/infographic-gallery.log"
+          report_dir="$(cat "$BACKUP_ROOT/infographic-gallery-backup-path.txt")"
+          report="$report_dir/gallery-report.json"
+          echo "media_count=$(node -p "require(process.argv[1]).mediaCount" "$report")" >> "$GITHUB_OUTPUT"
+
+      - name: Verify WordPress site icon and brand media
+        id: brandverify
+        run: |
+          set -euo pipefail
+          auth="$(printf '%s:%s' "$WP_API_USERNAME" "$WP_API_PASSWORD" | base64 -w0)"
+          settings="$RUNNER_TEMP/wp-settings.json"
+          curl -4 --fail --silent --show-error --location \
+            -H "Authorization: Basic $auth" \
+            -H 'Cache-Control: no-cache' \
+            "$WP_SITE_URL/wp-json/wp/v2/settings?context=edit" -o "$settings"
+          site_icon="$(node -p "Number(require(process.argv[1]).site_icon || 0)" "$settings")"
+          if [[ "$site_icon" -le 0 ]]; then
+            echo 'WordPress site_icon was not set.' >&2
+            exit 1
+          fi
+          media="$RUNNER_TEMP/site-icon-media.json"
+          curl -4 --fail --silent --show-error --location \
+            -H "Authorization: Basic $auth" \
+            "$WP_SITE_URL/wp-json/wp/v2/media/$site_icon?context=edit" -o "$media"
+          node - <<'NODE' "$media"
+          const m=require(process.argv[2]);
+          const title=(m.title?.rendered||'').toLowerCase();
+          const alt=(m.alt_text||'').toLowerCase();
+          if(!title.includes('dtf genetics cannabis leaf') && !alt.includes('dtf genetics cannabis leaf')) throw new Error('Site icon media is not the DTF cannabis leaf');
+          NODE
+          echo "site_icon=$site_icon" >> "$GITHUB_OUTPUT"
+
+      - name: Verify live visual experience with cache-busted requests
+        id: live
+        run: |
+          set -euo pipefail
+          check_page() {
+            local path="$1"
+            local required="$2"
+            local min_images="$3"
+            local body="$RUNNER_TEMP/live-$(echo "$path" | tr '/?' '__').html"
+            local ok=0
+            for attempt in 1 2 3 4 5 6 7 8; do
+              curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+                -H 'Cache-Control: no-cache, no-store, max-age=0' -H 'Pragma: no-cache' \
+                "$WP_SITE_URL${path}?dtf_visual=${GITHUB_RUN_ID}-${attempt}" -o "$body"
+              if grep -Fqi -- "$required" "$body"; then ok=1; break; fi
+              sleep 8
+            done
+            [[ "$ok" -eq 1 ]] || { echo "Required live marker missing on $path: $required" >&2; exit 1; }
+            count="$(grep -Eo 'https?://[^"'"' ]+/wp-content/uploads/[^"'"' ]+' "$body" | sort -u | wc -l | tr -d ' ')"
+            if [[ "$count" -lt "$min_images" ]]; then
+              echo "$path has only $count unique WordPress-hosted media URLs; expected at least $min_images" >&2
+              exit 1
+            fi
+            for forbidden in 'email@email.com' '+123456789' 'being rebuilt' 'Reserved strain card' 'Tool-ready rebuild' 'Grow education belongs in a clean, readable library.' 'MOPS, cultivation notes, THC basics'; do
+              if grep -Fqi -- "$forbidden" "$body"; then echo "Forbidden stale content remains on $path: $forbidden" >&2; exit 1; fi
+            done
+            echo "$path media URLs: $count"
+          }
+          check_page '/' 'Genetics. Plant science. Tools. Games. Community.' 8
+          check_page '/learn/' 'Explore by subject' 10
+          check_page '/learn/infographics/' 'Visual plant science and cultivation library.' 30
+          home="$RUNNER_TEMP/live-_.html"
+          grep -Fqi 'DTF Genetics cannabis leaf' "$home" || { echo 'Cannabis-leaf brand mark missing from live homepage shell' >&2; exit 1; }
+          grep -Eqi '<link[^>]+rel=["'"'](shortcut )?icon["'"']' "$home" || { echo 'Browser site icon link missing from homepage head' >&2; exit 1; }
+
+      - name: Upload rollback package
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dtfseeds-visual-rebuild-backup-${{ github.run_id }}
+          path: /tmp/dtf-visual-rebuild
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report visual rebuild result
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          JOB_STATUS: ${{ job.status }}
+          SITE_MEDIA: ${{ steps.site.outputs.media_count }}
+          GALLERY_MEDIA: ${{ steps.gallery.outputs.media_count }}
+          BRAND_ID: ${{ steps.brandverify.outputs.site_icon }}
+          LIVE_OUTCOME: ${{ steps.live.outcome }}
+          MISSING: ${{ steps.site.outputs.missing }}
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 46,
+              body: [
+                '## DTFSeeds visual site rebuild',
+                '',
+                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                `Result: **${process.env.JOB_STATUS}**`,
+                `WordPress media indexed: **${process.env.SITE_MEDIA || 'not-run'}**`,
+                `Education visuals rendered in gallery source: **${process.env.GALLERY_MEDIA || 'not-run'}**`,
+                `Cannabis-leaf site icon media ID: **${process.env.BRAND_ID || 'not-run'}**`,
+                `Live visual verification: **${process.env.LIVE_OUTCOME || 'not-run'}**`,
+                `Optional visual selections not found: **${process.env.MISSING || 'none'}**`,
+                '',
+                'Scope: real DTF cannabis-leaf browser icon/logo, branded header/footer, image-driven Home and Learn pages, and responsive WordPress-hosted THC infographic galleries. Backups are captured before page/template/settings writes.'
+              ].join('\n')
+            });
