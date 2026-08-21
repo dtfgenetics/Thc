@@ -1,0 +1,165 @@
+name: Rebuild DTFSeeds Visual Site On Command
+
+on:
+  workflow_dispatch:
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-visual-command
+  cancel-in-progress: true
+
+jobs:
+  rebuild:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.issue.number == 46 &&
+       github.event.comment.body == '/rebuild-site' &&
+       github.event.comment.user.login == github.repository_owner)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: production
+    env:
+      NODE_OPTIONS: --dns-result-order=ipv4first
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME || secrets.WORDPRESS_USERNAME || secrets.WP_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD || secrets.WORDPRESS_APP_PASSWORD || secrets.WP_APPLICATION_PASSWORD }}
+      BACKUP_ROOT: ${{ runner.temp }}/dtf-visual-rebuild
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate visual rebuild package and credentials
+        run: |
+          set -euo pipefail
+          test -n "${WP_API_USERNAME:-}"
+          test -n "${WP_API_PASSWORD:-}"
+          test -s site/wordpress/assets/brand/dtf-potleaf-512.png
+          node --check scripts/rebuild-wordpress-visual-site.mjs
+          node --check scripts/rebuild-wordpress-infographic-gallery.mjs
+
+      - name: Reconcile canonical WordPress page records
+        run: |
+          set -euo pipefail
+          CONTENT_DIR="$GITHUB_WORKSPACE/site/wordpress/pages" node scripts/apply-wordpress-public-content-rest.mjs
+
+      - name: Install DTF cannabis-leaf brand and rebuild Home/Learn
+        id: visual
+        env:
+          APPLY_VISUAL_REBUILD: 'true'
+        run: |
+          set -euo pipefail
+          node scripts/rebuild-wordpress-visual-site.mjs
+          dir="$(cat "$BACKUP_ROOT/visual-rebuild-backup-path.txt")"
+          report="$dir/visual-rebuild-report.json"
+          echo "media_count=$(node -p "require(process.argv[1]).mediaCount" "$report")" >> "$GITHUB_OUTPUT"
+          echo "brand_id=$(node -p "require(process.argv[1]).brandMediaId" "$report")" >> "$GITHUB_OUTPUT"
+          echo "missing=$(node -p "require(process.argv[1]).missingSelections.join(',')" "$report")" >> "$GITHUB_OUTPUT"
+
+      - name: Rebuild all published educational visuals into responsive galleries
+        id: gallery
+        env:
+          APPLY_INFOGRAPHIC_GALLERY: 'true'
+        run: |
+          set -euo pipefail
+          node scripts/rebuild-wordpress-infographic-gallery.mjs
+          dir="$(cat "$BACKUP_ROOT/infographic-gallery-backup-path.txt")"
+          report="$dir/gallery-report.json"
+          echo "media_count=$(node -p "require(process.argv[1]).mediaCount" "$report")" >> "$GITHUB_OUTPUT"
+
+      - name: Verify site icon through authenticated WordPress REST
+        id: icon
+        run: |
+          set -euo pipefail
+          auth="$(printf '%s:%s' "$WP_API_USERNAME" "$WP_API_PASSWORD" | base64 -w0)"
+          curl -4 --fail --silent --show-error --location -H "Authorization: Basic $auth" \
+            "$WP_SITE_URL/wp-json/wp/v2/settings?context=edit" -o "$RUNNER_TEMP/settings.json"
+          site_icon="$(node -p "Number(require(process.argv[1]).site_icon || 0)" "$RUNNER_TEMP/settings.json")"
+          [[ "$site_icon" -gt 0 ]]
+          curl -4 --fail --silent --show-error --location -H "Authorization: Basic $auth" \
+            "$WP_SITE_URL/wp-json/wp/v2/media/$site_icon?context=edit" -o "$RUNNER_TEMP/icon.json"
+          node - <<'NODE' "$RUNNER_TEMP/icon.json"
+          const m=require(process.argv[2]);
+          const value=`${m.title?.rendered||''} ${m.alt_text||''}`.toLowerCase();
+          if(!value.includes('dtf genetics cannabis leaf')) throw new Error('Active WordPress site icon is not the DTF cannabis leaf');
+          NODE
+          echo "site_icon=$site_icon" >> "$GITHUB_OUTPUT"
+
+      - name: Verify live site is image-driven and stale shell is gone
+        id: verify
+        run: |
+          set -euo pipefail
+          check_page() {
+            local path="$1" required="$2" minimum="$3"
+            local key="$(echo "$path" | tr '/?' '__')"
+            local body="$RUNNER_TEMP/live-${key}.html"
+            local ok=0
+            for attempt in 1 2 3 4 5 6 7 8; do
+              curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+                -H 'Cache-Control: no-cache, no-store, max-age=0' -H 'Pragma: no-cache' \
+                "$WP_SITE_URL${path}?dtf_rebuild=${GITHUB_RUN_ID}-${attempt}" -o "$body"
+              if grep -Fqi -- "$required" "$body"; then ok=1; break; fi
+              sleep 8
+            done
+            [[ "$ok" -eq 1 ]] || { echo "Missing required marker on $path: $required" >&2; head -c 3000 "$body" >&2 || true; exit 1; }
+            count="$(grep -Eo '/wp-content/uploads/[^"'"' )]+' "$body" | sort -u | wc -l | tr -d ' ')"
+            [[ "$count" -ge "$minimum" ]] || { echo "$path has $count WordPress-hosted image URLs; expected at least $minimum" >&2; exit 1; }
+            for forbidden in 'email@email.com' '+123456789' 'being rebuilt' 'Reserved strain card' 'Tool-ready rebuild' 'Grow education belongs in a clean, readable library.' 'MOPS, cultivation notes, THC basics'; do
+              ! grep -Fqi -- "$forbidden" "$body" || { echo "Stale phrase remains on $path: $forbidden" >&2; exit 1; }
+            done
+            echo "$path verified with $count WordPress-hosted images"
+          }
+          check_page '/' 'Genetics. Plant science. Tools. Games. Community.' 8
+          check_page '/learn/' 'Explore by subject' 10
+          check_page '/learn/infographics/' 'Visual plant science and cultivation library.' 30
+          grep -Fqi 'DTF Genetics cannabis leaf' "$RUNNER_TEMP/live-_.html"
+          grep -Eqi '<link[^>]+rel=["'"'](shortcut )?icon["'"']' "$RUNNER_TEMP/live-_.html"
+
+      - name: Upload backup package
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dtf-visual-command-backup-${{ github.run_id }}
+          path: ${{ runner.temp }}/dtf-visual-rebuild
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report command result
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          JOB_STATUS: ${{ job.status }}
+          MEDIA_COUNT: ${{ steps.visual.outputs.media_count }}
+          GALLERY_COUNT: ${{ steps.gallery.outputs.media_count }}
+          SITE_ICON: ${{ steps.icon.outputs.site_icon }}
+          VERIFY: ${{ steps.verify.outcome }}
+          MISSING: ${{ steps.visual.outputs.missing }}
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 46,
+              body: [
+                '## DTFSeeds visual rebuild command',
+                '',
+                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                `Result: **${process.env.JOB_STATUS}**`,
+                `WordPress media indexed: **${process.env.MEDIA_COUNT || 'not-run'}**`,
+                `Education gallery media: **${process.env.GALLERY_COUNT || 'not-run'}**`,
+                `Cannabis-leaf Site Icon media ID: **${process.env.SITE_ICON || 'not-run'}**`,
+                `Live visual verification: **${process.env.VERIFY || 'not-run'}**`,
+                `Optional unmatched visual slots: **${process.env.MISSING || 'none'}**`,
+                '',
+                'This command rebuilds the visitor-facing DTF brand shell, Home, Learn, and the complete visual education gallery from WordPress-hosted media. It captures backups before production writes.'
+              ].join('\n')
+            });
