@@ -2,7 +2,9 @@
 set -euo pipefail
 
 script="scripts/repair-static-shadows-via-wordpress.mjs"
+runner="scripts/run-static-shadow-repair-resilient.mjs"
 test -s "$script"
+test -s "$runner"
 
 python3 - "$script" <<'PY'
 from pathlib import Path
@@ -21,4 +23,5 @@ p.write_text(s)
 PY
 
 node --check "$script"
-node "$script"
+node --check "$runner"
+node "$runner"
