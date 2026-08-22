@@ -1,0 +1,232 @@
+name: Clear DTFSeeds Static WordPress Shadows
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/hostinger-wordpress-shadow-cleanup.yml
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-hostinger-shadow-cleanup
+  cancel-in-progress: true
+
+jobs:
+  cleanup:
+    name: Back up and remove stale static files that shadow WordPress
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: growlens-production
+    env:
+      SSH_HOST: ${{ secrets.HOSTINGER_SSH_HOST }}
+      SSH_PORT: ${{ secrets.HOSTINGER_SSH_PORT }}
+      SSH_USER: ${{ secrets.HOSTINGER_SSH_USER }}
+      SSH_PRIVATE_KEY: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY }}
+      SSH_KNOWN_HOSTS: ${{ secrets.HOSTINGER_SSH_KNOWN_HOSTS }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate Hostinger access
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${SSH_HOST:?HOSTINGER_SSH_HOST is required}"
+          : "${SSH_USER:?HOSTINGER_SSH_USER is required}"
+          : "${SSH_PRIVATE_KEY:?HOSTINGER_SSH_PRIVATE_KEY is required}"
+          : "${SSH_KNOWN_HOSTS:?HOSTINGER_SSH_KNOWN_HOSTS is required}"
+          SSH_PORT="${SSH_PORT:-22}"
+          [[ "$SSH_PORT" =~ ^[0-9]+$ ]]
+          echo "SSH_PORT=$SSH_PORT" >> "$GITHUB_ENV"
+
+      - name: Configure strict SSH trust
+        shell: bash
+        run: |
+          set -euo pipefail
+          install -d -m 700 "$HOME/.ssh"
+          printf '%s\n' "$SSH_PRIVATE_KEY" | tr -d '\r' > "$HOME/.ssh/dtfseeds_deploy_key"
+          chmod 600 "$HOME/.ssh/dtfseeds_deploy_key"
+          printf '%s\n' "$SSH_KNOWN_HOSTS" | tr -d '\r' > "$HOME/.ssh/known_hosts"
+          chmod 600 "$HOME/.ssh/known_hosts"
+          ssh -i "$HOME/.ssh/dtfseeds_deploy_key" \
+            -p "$SSH_PORT" \
+            -o BatchMode=yes \
+            -o IdentitiesOnly=yes \
+            -o StrictHostKeyChecking=yes \
+            "$SSH_USER@$SSH_HOST" 'printf "Hostinger SSH connection verified.\n"'
+
+      - name: Locate dtfseeds.com WordPress root
+        id: root
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$(ssh -i "$HOME/.ssh/dtfseeds_deploy_key" -p "$SSH_PORT" \
+            -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
+            "$SSH_USER@$SSH_HOST" 'bash -s' <<'REMOTE'
+          set -euo pipefail
+          while IFS= read -r config; do
+            directory="$(dirname "$config")"
+            if command -v wp >/dev/null 2>&1; then
+              home_url="$(wp --path="$directory" option get home --skip-plugins --skip-themes 2>/dev/null || true)"
+              case "${home_url%/}" in
+                https://dtfseeds.com|http://dtfseeds.com|https://www.dtfseeds.com|http://www.dtfseeds.com)
+                  printf '%s\n' "$directory"
+                  exit 0
+                  ;;
+              esac
+            fi
+          done < <(find "$HOME" -maxdepth 8 -type f -name wp-config.php -print 2>/dev/null)
+          exit 1
+          REMOTE
+          )"
+          [[ -n "$root" ]]
+          [[ "$root" =~ ^/[A-Za-z0-9._/-]+$ ]]
+          [[ "$root" != "/" ]]
+          [[ "$root" != *".."* ]]
+          echo "path=$root" >> "$GITHUB_OUTPUT"
+          echo "Located WordPress root." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Back up and remove positively identified stale shadows
+        id: cleanup
+        shell: bash
+        env:
+          ROOT: ${{ steps.root.outputs.path }}
+        run: |
+          set -euo pipefail
+          stamp="$(date -u +%Y%m%dT%H%M%SZ)"
+          backup="$HOME/dtfseeds-route-shadow-backups/$stamp"
+          result="$(ssh -i "$HOME/.ssh/dtfseeds_deploy_key" -p "$SSH_PORT" \
+            -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
+            "$SSH_USER@$SSH_HOST" "ROOT='$ROOT' BACKUP='$backup' bash -s" <<'REMOTE'
+          set -euo pipefail
+          mkdir -p "$BACKUP"
+          removed=0
+
+          retire_if_stale() {
+            rel="$1"
+            shift
+            file="$ROOT/$rel"
+            [[ -f "$file" ]] || return 0
+            stale=0
+            for marker in "$@"; do
+              if grep -Fqi -- "$marker" "$file"; then
+                stale=1
+                break
+              fi
+            done
+            [[ "$stale" -eq 1 ]] || return 0
+            mkdir -p "$BACKUP/$(dirname "$rel")"
+            cp -a "$file" "$BACKUP/$rel"
+            rm -f "$file"
+            printf 'retired:%s\n' "$rel"
+            removed=$((removed + 1))
+          }
+
+          retire_if_stale index.html \
+            'dtf-home.css' \
+            'THC Grow Doc, genetics, cultivation education, and games in one home.'
+
+          retire_if_stale learn/index.html \
+            'Grow education belongs in a clean, readable library.' \
+            'MOPS, cultivation notes, THC basics'
+
+          retire_if_stale learn/infographics/index.html \
+            'being rebuilt' \
+            'Reserved strain card' \
+            'Tool-ready rebuild'
+
+          if command -v wp >/dev/null 2>&1; then
+            wp --path="$ROOT" rewrite flush --hard >/dev/null
+            wp --path="$ROOT" cache flush >/dev/null || true
+          fi
+
+          printf 'removed=%s\n' "$removed"
+          printf 'backup=%s\n' "$BACKUP"
+          REMOTE
+          )"
+          printf '%s\n' "$result"
+          removed="$(printf '%s\n' "$result" | awk -F= '/^removed=/{print $2}' | tail -1)"
+          echo "removed=${removed:-0}" >> "$GITHUB_OUTPUT"
+          echo "Retired stale static shadows: ${removed:-0}" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Verify visitor-facing routes
+        id: verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          check() {
+            path="$1"
+            marker="$2"
+            minimum="$3"
+            body="$RUNNER_TEMP/live-$(printf '%s' "$path" | tr '/?' '__').html"
+            ok=0
+            for attempt in 1 2 3 4 5 6 7 8; do
+              curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+                -H 'Cache-Control: no-cache, no-store, max-age=0' \
+                -H 'Pragma: no-cache' \
+                "https://dtfseeds.com${path}?dtf_shadow_cleanup=${GITHUB_RUN_ID}-${attempt}" \
+                -o "$body"
+              if grep -Fqi -- "$marker" "$body"; then
+                ok=1
+                break
+              fi
+              sleep 5
+            done
+            [[ "$ok" -eq 1 ]] || {
+              echo "Current WordPress marker missing on $path: $marker" >&2
+              head -c 3000 "$body" >&2 || true
+              exit 1
+            }
+            count="$(grep -o '/wp-content/uploads/' "$body" | wc -l | tr -d ' ')"
+            [[ "$count" -ge "$minimum" ]] || {
+              echo "$path has $count WordPress media references; expected at least $minimum" >&2
+              exit 1
+            }
+            for stale in \
+              'Grow education belongs in a clean, readable library.' \
+              'MOPS, cultivation notes, THC basics' \
+              'being rebuilt' \
+              'Reserved strain card' \
+              'Tool-ready rebuild' \
+              'email@email.com' \
+              '+123456789'; do
+              ! grep -Fqi -- "$stale" "$body" || {
+                echo "Stale content remains on $path: $stale" >&2
+                exit 1
+              }
+            done
+            echo "$path verified with $count WordPress media references"
+          }
+
+          check '/' 'Genetics. Plant science. Tools. Games. Community.' 8
+          check '/learn/' 'Explore by subject' 10
+          check '/learn/infographics/' 'Visual plant science and cultivation library.' 30
+
+      - name: Report cleanup result
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          JOB_STATUS: ${{ job.status }}
+          REMOVED: ${{ steps.cleanup.outputs.removed }}
+          VERIFY: ${{ steps.verify.outcome }}
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 46,
+              body: [
+                '## Hostinger static-shadow cleanup',
+                '',
+                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                `Result: **${process.env.JOB_STATUS}**`,
+                `Stale static route files retired: **${process.env.REMOVED || '0'}**`,
+                `Visitor-facing verification: **${process.env.VERIFY || 'not-run'}**`,
+                '',
+                'The job uses the existing Hostinger SSH credentials from the growlens-production environment, backs up each positively identified stale file before removal, flushes WordPress rewrites/cache, and verifies Home, Learn, and Infographics.'
+              ].join('\n')
+            });
