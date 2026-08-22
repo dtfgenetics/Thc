@@ -1,0 +1,99 @@
+name: Google Antigravity DTF Deployment Audit
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - scripts/antigravity-dtf-deployment-audit.py
+      - scripts/build-wordpress-public-suite-archive.sh
+      - .github/workflows/google-antigravity-deployment-audit.yml
+      - .github/antigravity-audit-trigger.txt
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: google-antigravity-dtf-deployment-audit
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: production
+    env:
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      ANTIGRAVITY_REPORT: ${{ runner.temp }}/antigravity-deployment-audit.md
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install official Google Antigravity SDK
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check google-antigravity
+          python - <<'PY'
+          import google.antigravity
+          print('google-antigravity import: ok')
+          PY
+
+      - name: Run Antigravity independent deployment audit
+        id: antigravity
+        continue-on-error: true
+        shell: bash
+        run: |
+          set +e
+          python scripts/antigravity-dtf-deployment-audit.py
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Upload Antigravity report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: google-antigravity-dtf-deployment-audit-${{ github.sha }}
+          path: ${{ runner.temp }}/antigravity-deployment-audit.md
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Report Antigravity result to deployment issue
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          REPORT_PATH: ${{ runner.temp }}/antigravity-deployment-audit.md
+          AG_EXIT: ${{ steps.antigravity.outputs.exit_code }}
+        with:
+          script: |
+            const fs = require('fs');
+            let report = '# Google Antigravity deployment audit\n\n**Status: report missing**';
+            if (fs.existsSync(process.env.REPORT_PATH)) {
+              report = fs.readFileSync(process.env.REPORT_PATH, 'utf8').trim();
+            }
+            const max = 55000;
+            if (report.length > max) report = report.slice(0, max) + '\n\n[truncated in issue comment; full report is in the workflow artifact]';
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 46,
+              body: [
+                '## Google Antigravity independent deployment audit',
+                '',
+                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                `Commit: \`${context.sha}\``,
+                `Agent exit code: **${process.env.AG_EXIT || 'unknown'}**`,
+                '',
+                report,
+                '',
+                '_Antigravity ran in an ephemeral checkout with no production credentials and checkout push credentials disabled. This audit is non-mutating._'
+              ].join('\n')
+            });
