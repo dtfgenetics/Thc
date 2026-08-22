@@ -6,6 +6,7 @@ on:
     branches: [main]
     paths:
       - scripts/repair-wordpress-route-precedence.mjs
+      - scripts/run-route-precedence-repair-current-markers.sh
       - .github/workflows/wordpress-route-precedence-repair.yml
 
 permissions:
@@ -46,6 +47,7 @@ jobs:
           test -n "${WP_API_USERNAME:-}"
           test -n "${WP_API_PASSWORD:-}"
           node --check scripts/repair-wordpress-route-precedence.mjs
+          bash -n scripts/run-route-precedence-repair-current-markers.sh
 
       - name: Confirm WordPress HTTPS path
         shell: bash
@@ -69,7 +71,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          node scripts/repair-wordpress-route-precedence.mjs
+          bash scripts/run-route-precedence-repair-current-markers.sh
 
       - name: Independent cache-busted live verification
         id: verify
@@ -114,8 +116,8 @@ jobs:
             done
             echo "$path verified"
           }
-          verify_page '/' 'Genetics. Plant science. Tools. Games. Community.'
-          verify_page '/learn/' 'Explore by subject'
+          verify_page '/' 'Genetics, cultivation education, practical tools, and original cannabis games.'
+          verify_page '/learn/' 'Understand the plant. Build the environment. Make better decisions.'
           verify_page '/learn/infographics/' 'Visual plant science and cultivation library.'
 
       - name: Report route-precedence repair
@@ -139,6 +141,6 @@ jobs:
                 `Transactional .htaccess repair: **${process.env.REPAIR_OUTCOME || 'not-run'}**`,
                 `Independent live verification: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
                 '',
-                'This follows the successful Codex production pattern: trusted source-controlled repair, protected production credentials, backup-before-write transaction, rollback on failed verification, and cache-busted visitor checks. It changes only the three confirmed legacy static-routing directives so WordPress owns /, /learn/, /learn/infographics/, and the other canonical WordPress sections.'
+                'This follows the successful Codex production pattern: trusted source-controlled repair, protected production credentials, backup-before-write transaction, rollback on failed verification, and cache-busted visitor checks. Verification now uses the canonical Home and Learn headlines stored in GitHub.'
               ].join('\n')
             });
