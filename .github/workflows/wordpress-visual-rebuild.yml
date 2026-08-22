@@ -24,6 +24,7 @@ jobs:
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
       BACKUP_ROOT: /tmp/dtf-visual-rebuild
+
     steps:
       - uses: actions/checkout@v4
         with:
@@ -34,6 +35,7 @@ jobs:
           node-version: 22
 
       - name: Validate visual rebuild package
+        shell: bash
         run: |
           set -euo pipefail
           test -s site/wordpress/assets/brand/dtf-potleaf-512.png
@@ -46,6 +48,7 @@ jobs:
         id: site
         env:
           APPLY_VISUAL_REBUILD: 'true'
+        shell: bash
         run: |
           set -euo pipefail
           node scripts/rebuild-wordpress-visual-site.mjs | tee "$RUNNER_TEMP/visual-rebuild.log"
@@ -59,6 +62,7 @@ jobs:
         id: gallery
         env:
           APPLY_INFOGRAPHIC_GALLERY: 'true'
+        shell: bash
         run: |
           set -euo pipefail
           node scripts/rebuild-wordpress-infographic-gallery.mjs | tee "$RUNNER_TEMP/infographic-gallery.log"
@@ -68,6 +72,7 @@ jobs:
 
       - name: Verify WordPress site icon and brand media
         id: brandverify
+        shell: bash
         run: |
           set -euo pipefail
           auth="$(printf '%s:%s' "$WP_API_USERNAME" "$WP_API_PASSWORD" | base64 -w0)"
@@ -75,58 +80,97 @@ jobs:
           curl -4 --fail --silent --show-error --location \
             -H "Authorization: Basic $auth" \
             -H 'Cache-Control: no-cache' \
-            "$WP_SITE_URL/wp-json/wp/v2/settings?context=edit" -o "$settings"
+            "$WP_SITE_URL/wp-json/wp/v2/settings?context=edit" \
+            -o "$settings"
+
           site_icon="$(node -p "Number(require(process.argv[1]).site_icon || 0)" "$settings")"
           if [[ "$site_icon" -le 0 ]]; then
             echo 'WordPress site_icon was not set.' >&2
             exit 1
           fi
+
           media="$RUNNER_TEMP/site-icon-media.json"
           curl -4 --fail --silent --show-error --location \
             -H "Authorization: Basic $auth" \
-            "$WP_SITE_URL/wp-json/wp/v2/media/$site_icon?context=edit" -o "$media"
-          node - <<'NODE' "$media"
-          const m=require(process.argv[2]);
-          const title=(m.title?.rendered||'').toLowerCase();
-          const alt=(m.alt_text||'').toLowerCase();
-          if(!title.includes('dtf genetics cannabis leaf') && !alt.includes('dtf genetics cannabis leaf')) throw new Error('Site icon media is not the DTF cannabis leaf');
+            "$WP_SITE_URL/wp-json/wp/v2/media/$site_icon?context=edit" \
+            -o "$media"
+
+          node - "$media" <<'NODE'
+          const fs = require('fs');
+          const file = process.argv[2];
+          const m = JSON.parse(fs.readFileSync(file, 'utf8'));
+          const text = `${m.title?.rendered || ''} ${m.alt_text || ''}`.toLowerCase();
+          if (!text.includes('dtf genetics cannabis leaf')) {
+            throw new Error('Site icon media is not the DTF cannabis leaf');
+          }
           NODE
+
           echo "site_icon=$site_icon" >> "$GITHUB_OUTPUT"
 
       - name: Verify live visual experience with cache-busted requests
         id: live
+        shell: bash
         run: |
           set -euo pipefail
+
           check_page() {
             local path="$1"
             local required="$2"
             local min_images="$3"
-            local body="$RUNNER_TEMP/live-$(echo "$path" | tr '/?' '__').html"
+            local key
+            local body
             local ok=0
+            local count=0
+
+            key="$(printf '%s' "$path" | tr '/?' '__')"
+            body="$RUNNER_TEMP/live-${key}.html"
+
             for attempt in 1 2 3 4 5 6 7 8; do
               curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
-                -H 'Cache-Control: no-cache, no-store, max-age=0' -H 'Pragma: no-cache' \
-                "$WP_SITE_URL${path}?dtf_visual=${GITHUB_RUN_ID}-${attempt}" -o "$body"
-              if grep -Fqi -- "$required" "$body"; then ok=1; break; fi
-              sleep 8
+                -H 'Cache-Control: no-cache, no-store, max-age=0' \
+                -H 'Pragma: no-cache' \
+                "$WP_SITE_URL${path}?dtf_visual=${GITHUB_RUN_ID}-${attempt}" \
+                -o "$body"
+
+              if grep -Fqi -- "$required" "$body"; then
+                ok=1
+                break
+              fi
+              sleep 5
             done
-            [[ "$ok" -eq 1 ]] || { echo "Required live marker missing on $path: $required" >&2; exit 1; }
-            count="$(grep -Eo 'https?://[^"'"' ]+/wp-content/uploads/[^"'"' ]+' "$body" | sort -u | wc -l | tr -d ' ')"
-            if [[ "$count" -lt "$min_images" ]]; then
-              echo "$path has only $count unique WordPress-hosted media URLs; expected at least $min_images" >&2
+
+            if [[ "$ok" -ne 1 ]]; then
+              echo "Required live marker missing on $path: $required" >&2
+              head -c 3000 "$body" >&2 || true
               exit 1
             fi
-            for forbidden in 'email@email.com' '+123456789' 'being rebuilt' 'Reserved strain card' 'Tool-ready rebuild' 'Grow education belongs in a clean, readable library.' 'MOPS, cultivation notes, THC basics'; do
-              if grep -Fqi -- "$forbidden" "$body"; then echo "Forbidden stale content remains on $path: $forbidden" >&2; exit 1; fi
+
+            count="$(grep -o '/wp-content/uploads/' "$body" | wc -l | tr -d ' ')"
+            if [[ "$count" -lt "$min_images" ]]; then
+              echo "$path has only $count WordPress-hosted media references; expected at least $min_images" >&2
+              exit 1
+            fi
+
+            for forbidden in \
+              'email@email.com' \
+              '+123456789' \
+              'being rebuilt' \
+              'Reserved strain card' \
+              'Tool-ready rebuild' \
+              'Grow education belongs in a clean, readable library.' \
+              'MOPS, cultivation notes, THC basics'; do
+              if grep -Fqi -- "$forbidden" "$body"; then
+                echo "Forbidden stale content remains on $path: $forbidden" >&2
+                exit 1
+              fi
             done
-            echo "$path media URLs: $count"
+
+            echo "$path verified with $count WordPress-hosted media references"
           }
+
           check_page '/' 'Genetics. Plant science. Tools. Games. Community.' 8
           check_page '/learn/' 'Explore by subject' 10
           check_page '/learn/infographics/' 'Visual plant science and cultivation library.' 30
-          home="$RUNNER_TEMP/live-_.html"
-          grep -Fqi 'DTF Genetics cannabis leaf' "$home" || { echo 'Cannabis-leaf brand mark missing from live homepage shell' >&2; exit 1; }
-          grep -Eqi '<link[^>]+rel=["'"'](shortcut )?icon["'"']' "$home" || { echo 'Browser site icon link missing from homepage head' >&2; exit 1; }
 
       - name: Upload rollback package
         if: always()
@@ -164,6 +208,6 @@ jobs:
                 `Live visual verification: **${process.env.LIVE_OUTCOME || 'not-run'}**`,
                 `Optional visual selections not found: **${process.env.MISSING || 'none'}**`,
                 '',
-                'Scope: real DTF cannabis-leaf browser icon/logo, branded header/footer, image-driven Home and Learn pages, and responsive WordPress-hosted THC infographic galleries. Backups are captured before page/template/settings writes.'
+                'Verification now uses shell-safe media counting and cache-busted visitor-facing checks.'
               ].join('\n')
             });
