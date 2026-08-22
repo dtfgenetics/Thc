@@ -60,15 +60,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          started="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-          gh workflow run build-dtfseeds-public-suite.yml --ref main
-          run_id=''
-          for attempt in $(seq 1 30); do
-            run_id="$(gh run list --workflow build-dtfseeds-public-suite.yml --branch main --event workflow_dispatch --limit 20 --json databaseId,createdAt,headSha --jq --arg started "$started" --arg sha "$GITHUB_SHA" '[.[] | select(.createdAt >= $started and .headSha == $sha)] | sort_by(.createdAt) | reverse | .[0].databaseId // empty')"
-            [[ -n "$run_id" ]] && break
-            sleep 3
-          done
-          [[ -n "$run_id" ]] || { echo 'Could not resolve fresh Public Suite build run.' >&2; exit 1; }
+          run_url="$(gh workflow run build-dtfseeds-public-suite.yml --ref main)"
+          run_id="${run_url##*/}"
+          [[ "$run_id" =~ ^[0-9]+$ ]] || { echo "Could not parse fresh Public Suite build run from: $run_url" >&2; exit 1; }
           echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
           echo "Fresh Public Suite build run: $run_id"
           gh run watch "$run_id" --exit-status
@@ -134,15 +128,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          started="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-          gh workflow run verify-dtfseeds-feature-surface.yml --ref main
-          run_id=''
-          for attempt in $(seq 1 30); do
-            run_id="$(gh run list --workflow verify-dtfseeds-feature-surface.yml --branch main --event workflow_dispatch --limit 20 --json databaseId,createdAt --jq --arg started "$started" '[.[] | select(.createdAt >= $started)] | sort_by(.createdAt) | reverse | .[0].databaseId // empty')"
-            [[ -n "$run_id" ]] && break
-            sleep 3
-          done
-          [[ -n "$run_id" ]] || { echo 'Could not resolve post-deploy feature audit.' >&2; exit 1; }
+          run_url="$(gh workflow run verify-dtfseeds-feature-surface.yml --ref main)"
+          run_id="${run_url##*/}"
+          [[ "$run_id" =~ ^[0-9]+$ ]] || { echo "Could not parse post-deploy feature audit run from: $run_url" >&2; exit 1; }
           echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
           gh run watch "$run_id" --exit-status
 
@@ -151,15 +139,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          started="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-          gh workflow run verify-dtfseeds-production-cutover.yml --ref main
-          run_id=''
-          for attempt in $(seq 1 30); do
-            run_id="$(gh run list --workflow verify-dtfseeds-production-cutover.yml --branch main --event workflow_dispatch --limit 20 --json databaseId,createdAt --jq --arg started "$started" '[.[] | select(.createdAt >= $started)] | sort_by(.createdAt) | reverse | .[0].databaseId // empty')"
-            [[ -n "$run_id" ]] && break
-            sleep 3
-          done
-          [[ -n "$run_id" ]] || { echo 'Could not resolve canonical route verifier.' >&2; exit 1; }
+          run_url="$(gh workflow run verify-dtfseeds-production-cutover.yml --ref main)"
+          run_id="${run_url##*/}"
+          [[ "$run_id" =~ ^[0-9]+$ ]] || { echo "Could not parse canonical route verifier run from: $run_url" >&2; exit 1; }
           echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
           gh run watch "$run_id" --exit-status
 
