@@ -98,3 +98,5 @@ jobs:
       - name: Fail when the live site does not meet the production gate
         if: steps.core.outputs.status != '0' || steps.suite.outputs.status != '0' || steps.commerce.outputs.status != '0'
         run: exit 1
+
+# Forced after the completed THC education, presentation, and commerce reconciliation pass.
