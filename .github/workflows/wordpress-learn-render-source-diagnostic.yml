@@ -1,0 +1,55 @@
+name: Diagnose DTFSeeds Learn Render Source
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - scripts/diagnose-learn-render-source.mjs
+      - .github/workflows/wordpress-learn-render-source-diagnostic.yml
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    environment: production
+    env:
+      NODE_OPTIONS: --dns-result-order=ipv4first
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Inspect Learn page and active template sources
+        run: |
+          set -euo pipefail
+          node --check scripts/diagnose-learn-render-source.mjs
+          node scripts/diagnose-learn-render-source.mjs | tee "$RUNNER_TEMP/learn-render.json"
+      - name: Report Learn render source
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs');let r={};const p=process.env.RUNNER_TEMP+'/learn-render.json';
+            if(fs.existsSync(p)){for(const line of fs.readFileSync(p,'utf8').trim().split(/\r?\n/).reverse()){try{r=JSON.parse(line);break}catch{}}}
+            const t=(r.templates||[]).map(x=>`- ${x.id}: slug=${x.slug}, source=${x.source}, flags=${JSON.stringify(x.flags)}, preview=${x.preview}`);
+            const parts=(r.templateParts||[]).map(x=>`- ${x.id}: slug=${x.slug}, source=${x.source}, flags=${JSON.stringify(x.flags)}, preview=${x.preview}`);
+            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body:[
+              '## Learn render-source diagnostic','',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Job: **${{ job.status }}**`,
+              `Learn page: ID ${r.learn?.id??'?'}, template=\`${r.learn?.template||'(default)'}\`, flags=${JSON.stringify(r.learn?.flags||{})}`,
+              `Learn content preview: ${r.learn?.preview||'unavailable'}`,
+              '', 'Relevant templates:', ...(t.length?t:['- none']),
+              '', 'Relevant template parts:', ...(parts.length?parts:['- none']),
+              '', 'Read-only REST diagnostic; no page or template mutation is performed.'
+            ].join('\n')});
