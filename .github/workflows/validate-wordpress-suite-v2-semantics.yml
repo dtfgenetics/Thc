@@ -1,0 +1,112 @@
+name: Validate WordPress Suite V2 Semantics
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - scripts/assemble-wordpress-suite-v2.py
+      - scripts/wordpress-suite-v2/**
+      - .github/workflows/validate-wordpress-suite-v2-semantics.yml
+      - .github/wordpress-suite-v2-semantics-trigger.txt
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: validate-wordpress-suite-v2-semantics
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Assemble and parse v2 bridge
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/assemble-wordpress-suite-v2.py "$RUNNER_TEMP/dtf-suite-v2.mjs"
+          node --check "$RUNNER_TEMP/dtf-suite-v2.mjs"
+          python - <<'PY'
+          import os, pathlib, re
+          text=(pathlib.Path(os.environ['RUNNER_TEMP'])/'dtf-suite-v2.mjs').read_text()
+          m=re.search(r"const snippetCode = String\.raw`(.*?)`\.trim\(\);", text, re.S)
+          assert m, 'embedded PHP missing'
+          php=m.group(1).replace('${tokenLiteral}', "'0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'")
+          (pathlib.Path(os.environ['RUNNER_TEMP'])/'dtf-suite-v2.php').write_text('<?php\n'+php+'\n')
+          PY
+          php -l "$RUNNER_TEMP/dtf-suite-v2.php"
+
+      - name: Verify named safety and recovery semantics
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import os, pathlib
+          text=(pathlib.Path(os.environ['RUNNER_TEMP'])/'dtf-suite-v2.mjs').read_text()
+          checks={
+            'admin authorization': "current_user_can('manage_options')" in text,
+            'one-time token': 'hash_equals($token, $supplied)' in text,
+            'server lock': 'dtf_suite_deploy_lock' in text,
+            'whole archive sha256': 'Whole-archive SHA-256 mismatch.' in text,
+            'duplicate zip rejection': 'Duplicate ZIP entry rejected.' in text,
+            'symlink rejection': 'Symlink entries are forbidden.' in text,
+            'wordpress ownership rejection': 'WordPress-owned route is forbidden in app deployment.' in text,
+            'manifest limit': '$max_manifest = 2 * 1024 * 1024;' in text,
+            'prepared state persisted': "'phase'=>'prepared'" in text,
+            'backup moved state persisted': "$state['current']['phase'] = 'backup_moved'" in text,
+            'new placed state persisted': "'phase'=>'new_placed'" in text,
+            'restore current interrupted target': '$restore_record($current, $backup_dir)' in text,
+            'rollback endpoint': "register_rest_route('dtf-suite/v2', '/rollback'" in text,
+            'abort endpoint': "register_rest_route('dtf-suite/v2', '/abort'" in text,
+            'finalize endpoint': "register_rest_route('dtf-suite/v2', '/finalize'" in text,
+            'stale touched lock refused': 'dtf_stale_touched_lock' in text,
+            'ambiguous commit polls state': 'Polling persisted server state before any recovery action.' in text,
+            'failure recovery reads state': 'async function recoverFailure()' in text and 'const state = await getState();' in text,
+            'root static forbidden': "name === 'index.html'" in text,
+            'learn static forbidden': "strpos($name, 'learn/')" in text,
+            'blog static forbidden': "strpos($name, 'blog/')" in text,
+            'root live ownership verified': "await verifyRoute('/', 'Genetics, cultivation education" in text,
+            'learn live ownership verified': "await verifyRoute('/learn/', 'Understand the plant." in text,
+          }
+          missing=[name for name, ok in checks.items() if not ok]
+          for name,ok in checks.items(): print(f'{name}: {"PASS" if ok else "FAIL"}')
+          if missing: raise SystemExit('missing controls: '+', '.join(missing))
+          PY
+
+      - name: Report v2 semantic gate
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          STATUS: ${{ job.status }}
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 46,
+              body: [
+                '## Hardened WordPress suite v2 semantic gate',
+                '',
+                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                `Commit: \`${context.sha}\``,
+                `Result: **${process.env.STATUS}**`,
+                '',
+                'This read-only gate reassembles the canonical v2 source by SHA-256, validates Node and embedded PHP syntax, and verifies named authorization, archive-safety, persisted mutation-phase, interrupted-commit recovery, rollback/abort/finalize, stale-lock, and WordPress route-ownership controls.'
+              ].join('\n')
+            });
