@@ -7,6 +7,7 @@ on:
     paths:
       - scripts/repair-static-shadows-via-wordpress.mjs
       - scripts/run-static-shadow-repair-resilient.mjs
+      - scripts/run-static-shadow-repair-current-markers.sh
       - .github/workflows/wordpress-static-shadow-transactional-repair.yml
 
 permissions:
@@ -46,13 +47,14 @@ jobs:
           test -n "${WP_API_PASSWORD:-}"
           node --check scripts/repair-static-shadows-via-wordpress.mjs
           node --check scripts/run-static-shadow-repair-resilient.mjs
+          bash -n scripts/run-static-shadow-repair-current-markers.sh
 
       - name: Execute transactional repair through authenticated WordPress
         id: repair
         shell: bash
         run: |
           set -euo pipefail
-          node scripts/run-static-shadow-repair-resilient.mjs
+          bash scripts/run-static-shadow-repair-current-markers.sh
 
       - name: Final independent visitor verification
         id: verify
@@ -103,8 +105,8 @@ jobs:
             echo "$path verified ($media WordPress media references)"
           }
 
-          verify '/' 'Genetics. Plant science. Tools. Games. Community.' 8
-          verify '/learn/' 'Explore by subject' 10
+          verify '/' 'Genetics, cultivation education, practical tools, and original cannabis games.' 8
+          verify '/learn/' 'Understand the plant. Build the environment. Make better decisions.' 10
           verify '/learn/infographics/' 'Visual plant science and cultivation library.' 30
 
       - name: Report transactional repair
@@ -128,7 +130,7 @@ jobs:
                 `Transactional repair: **${process.env.REPAIR_OUTCOME || 'not-run'}**`,
                 `Independent live verification: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
                 '',
-                'This repair uses the existing authenticated Hostinger WordPress MCP only to temporarily install/activate Code Snippets if needed. A temporary admin-only REST endpoint validates exact stale markers, stores database backups, removes only the positively identified static shadow files, auto-restores on failure, purges LiteSpeed, verifies the live WordPress pages, discards the temporary backups after success, and removes the temporary repair code. No SSH credentials are required.'
+                'The repair remains marker-gated and rollback-safe, preserves idempotent GET retry handling, and verifies against the canonical Home and Learn headlines stored in GitHub. No SSH credentials are required.'
               ].join('\n')
             });
 
