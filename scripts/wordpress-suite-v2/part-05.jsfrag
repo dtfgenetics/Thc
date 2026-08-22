@@ -1,0 +1,123 @@
+2/${action}`, { method: 'POST', headers: { 'X-DTF-Suite-Token': suiteToken }, json: { deployment_id: deploymentId, ...payload } });
+}
+
+async function uploadArchive() {
+  await postSuite('init', { archive_bytes: archiveBytes, archive_sha256: archiveSha256 });
+  const chunkSize = 384 * 1024;
+  let offset = 0;
+  while (offset < archiveBytes) {
+    const chunk = archive.subarray(offset, Math.min(offset + chunkSize, archiveBytes));
+    const chunkSha = crypto.createHash('sha256').update(chunk).digest('hex');
+    let accepted = false; let last;
+    for (let attempt = 1; attempt <= 5; attempt++) {
+      try {
+        const r = await postSuite('chunk', { offset, chunk_sha256: chunkSha, data_b64: chunk.toString('base64') });
+        if (Number(r.body?.uploaded_bytes) !== offset + chunk.length) throw new Error(`Unexpected server offset ${r.body?.uploaded_bytes}.`);
+        accepted = true; break;
+      } catch (error) {
+        last = error;
+        const state = await getState();
+        const serverOffset = Number(state?.uploaded_bytes ?? -1);
+        if (serverOffset === offset + chunk.length) { accepted = true; break; }
+        if (serverOffset !== offset) throw new Error(`Ambiguous chunk failure left server offset ${serverOffset}; refusing blind replay.`);
+        await sleep(1000 + attempt * 900);
+      }
+    }
+    if (!accepted) throw last || new Error(`Chunk at ${offset} was not accepted.`);
+    offset += chunk.length;
+    if (offset % (3 * 1024 * 1024) < chunk.length) console.log(`Uploaded ${offset}/${archiveBytes} bytes.`);
+  }
+}
+
+async function commitWithRecovery() {
+  try {
+    const r = await postSuite('commit');
+    if (r.body?.ok !== true || r.body?.status !== 'deployed') throw new Error(`Commit returned unexpected response: ${JSON.stringify(r.body).slice(0, 700)}`);
+    return r;
+  } catch (initialError) {
+    console.warn(`Commit response was ambiguous: ${initialError.message}. Polling persisted server state before any recovery action.`);
+    for (let attempt = 1; attempt <= 55; attempt++) {
+      const state = await getState();
+      if (state?.status === 'deployed') return { ok: true, status: 200, body: { ok: true, status: 'deployed', recovered: true } };
+      if (state?.status === 'rolled_back') throw new Error('Server rolled the deployment back during commit.');
+      if (state?.status && !['deploying', 'staged', 'uploading'].includes(state.status)) throw initialError;
+      await sleep(5000);
+    }
+    throw new Error(`Commit did not reach a terminal state after recovery window. Original error: ${initialError.message}`);
+  }
+}
+
+const liveChecks = [
+  ['/games/', 'Original cannabis games built to play, learn, compete, and share.'],
+  ['/tools/', 'Practical tools built around observation, records, and evidence.'],
+  ['/projects/', 'One place to see what is playable, usable, and still being built.'],
+  ['/growlens/', 'GrowLens'], ['/thc-grow-doc/', 'Grow Doc'], ['/games/high-iq/', 'High IQ'], ['/games/high-life/', 'High Life'],
+  ['/games/seed-man-platformer/', 'Seed Man'], ['/games/grower-conversations/', 'Grower Conversations'], ['/games/high-land/', 'High Land'],
+  ['/games/weedopolis/', 'Weedopolis'], ['/games/crossword/', 'Crossword'], ['/games/who-took-it/', 'Who Took It'],
+];
+
+async function verifyRoute(path, marker, tag) {
+  for (let attempt = 1; attempt <= 8; attempt++) {
+    try {
+      const response = await fetch(`${siteUrl}${path}?dtf_suite_v2=${encodeURIComponent(tag)}-${attempt}`, { headers: { 'Cache-Control': 'no-cache, no-store, max-age=0', Pragma: 'no-cache', 'User-Agent': 'DTFSeeds-Suite-Deploy-V2/1.0' }, redirect: 'follow' });
+      const text = await response.text();
+      if (response.ok && text.length > 400 && text.toLowerCase().includes(marker.toLowerCase())) return;
+    } catch {}
+    await sleep(1800 + attempt * 700);
+  }
+  throw new Error(`Live route ${path} did not expose expected marker: ${marker}`);
+}
+
+async function verifyLive() {
+  const tag = process.env.GITHUB_RUN_ID || Date.now().toString();
+  for (const [path, marker] of liveChecks) { await verifyRoute(path, marker, tag); console.log(`Verified ${path}`); }
+  const puzzle = await fetch(`${siteUrl}/puzzles/current.json?dtf_suite_v2=${encodeURIComponent(tag)}`, { headers: { 'Cache-Control': 'no-cache, no-store, max-age=0' } });
+  if (!puzzle.ok) throw new Error(`/puzzles/current.json returned HTTP ${puzzle.status}.`);
+  try { JSON.parse(await puzzle.text()); } catch { throw new Error('/puzzles/current.json is not valid JSON.'); }
+  await verifyRoute('/', 'Genetics, cultivation education, practical tools, and original cannabis games.', `${tag}-root`);
+  await verifyRoute('/learn/', 'Understand the plant. Build the environment. Make better decisions.', `${tag}-learn`);
+}
+
+async function recoverFailure() {
+  const state = await getState();
+  if (!state || !state.status) return;
+  const touched = Boolean(state.current) || (Array.isArray(state.applied) && state.applied.length > 0) || ['deploying', 'deployed'].includes(state.status);
+  try {
+    if (touched) {
+      let rollback;
+      try { rollback = await postSuite('rollback'); }
+      catch (error) {
+        const after = await getState();
+        if (after?.status !== 'rolled_back') throw error;
+        rollback = { body: { ok: true, status: 'rolled_back', recovered: true } };
+      }
+      if (rollback.body?.ok !== true) throw new Error(`Rollback did not confirm success: ${JSON.stringify(rollback.body).slice(0, 600)}`);
+      await flushHostingerCacheBestEffort();
+      const finalized = await postSuite('finalize');
+      if (finalized.body?.ok !== true) throw new Error('Rolled-back workspace could not be finalized.');
+      return;
+    }
+    const aborted = await postSuite('abort');
+    if (aborted.body?.ok !== true) throw new Error(`Abort did not confirm cleanup: ${JSON.stringify(aborted.body).slice(0, 600)}`);
+  } catch (error) {
+    rollbackFailed = true;
+    throw error;
+  }
+}
+
+try {
+  const pre = await queryCodeSnippetsPlugin();
+  pluginWasInstalled = Boolean(pre); pluginWasActive = pre?.status === 'active'; if (pre?.plugin) pluginRestId = pre.plugin;
+  const api = await wpGetRetry('/wp-json/code-snippets/v1/snippets/schema', { allow: [404] });
+  if (!api.ok) {
+    let plugin = pre;
+    if (!plugin) { plugin = await installCodeSnippetsNative(); installedByDeploy = true; }
+    if (plugin?.plugin) pluginRestId = plugin.plugin;
+    if (plugin?.status !== 'active') { const activated = await setPluginStatus(pluginRestId, 'active'); activatedByDeploy = true; if (activated.body?.plugin) pluginRestId = activated.body.plugin; }
+    else if (!pluginWasActive) activatedByDeploy = true;
+    if (!(await waitForSnippetApi())) throw new Error('Code Snippets REST API did not become available.');
+  }
+
+  const created = await wpRequest('/wp-json/code-snippets/v1/snippets', { method: 'POST', json: {
+    name: `DTF Public Suite Deploy V2 ${process.env.GITHUB_RUN_ID || Date.now()}`,
+    desc: 'Temporary authenticated transactional bridge fo
