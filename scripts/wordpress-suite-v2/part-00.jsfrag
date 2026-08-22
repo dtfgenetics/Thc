@@ -1,0 +1,157 @@
+import fs from 'node:fs';
+import crypto from 'node:crypto';
+
+const siteUrl = (process.env.WP_SITE_URL || 'https://dtfseeds.com').replace(/\/$/, '');
+const username = process.env.WP_API_USERNAME || '';
+const password = process.env.WP_API_PASSWORD || '';
+const archivePath = process.argv[2] || process.env.DTF_SUITE_ARCHIVE || '';
+if (!username || !password) throw new Error('WordPress credentials are required.');
+if (!archivePath || !fs.existsSync(archivePath)) throw new Error(`Public-suite archive not found: ${archivePath || '(missing)'}`);
+
+const archive = fs.readFileSync(archivePath);
+const archiveBytes = archive.length;
+const archiveSha256 = crypto.createHash('sha256').update(archive).digest('hex');
+if (archiveBytes < 1 || archiveBytes > 64 * 1024 * 1024) throw new Error(`Archive size ${archiveBytes} exceeds protected deployment limits.`);
+
+const auth = `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`;
+const suiteToken = crypto.randomBytes(32).toString('hex');
+const deploymentId = crypto.randomBytes(12).toString('hex');
+const tokenLiteral = JSON.stringify(suiteToken);
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+let mcpSession = '';
+let snippetId = null;
+let pluginWasInstalled = false;
+let pluginWasActive = false;
+let installedByDeploy = false;
+let activatedByDeploy = false;
+let pluginRestId = 'code-snippets/code-snippets';
+let rollbackFailed = false;
+
+function parseRpcText(text) {
+  try { return JSON.parse(text); } catch {}
+  for (const line of String(text).split(/\r?\n/)) {
+    if (!line.startsWith('data:')) continue;
+    try { return JSON.parse(line.slice(5).trim()); } catch {}
+  }
+  return null;
+}
+
+async function mcpRpc(payload) {
+  const headers = { Authorization: auth, Accept: 'application/json, text/event-stream', 'Content-Type': 'application/json', 'Cache-Control': 'no-cache' };
+  if (mcpSession) headers['Mcp-Session-Id'] = mcpSession;
+  const response = await fetch(`${siteUrl}/wp-json/hostinger-ai-assistant/v1/mcp`, { method: 'POST', headers, body: JSON.stringify(payload) });
+  const next = response.headers.get('mcp-session-id') || response.headers.get('Mcp-Session-Id');
+  if (next) mcpSession = next;
+  const text = await response.text();
+  const body = parseRpcText(text);
+  if (!response.ok || !body || body.error) throw new Error(`Hostinger MCP failed (${response.status}): ${JSON.stringify(body?.error || body || text.slice(0, 400))}`);
+  return body;
+}
+
+async function initMcp() {
+  let last;
+  for (const protocolVersion of ['2025-06-18', '2025-03-26', '2024-11-05']) {
+    try {
+      await mcpRpc({ jsonrpc: '2.0', id: 1, method: 'initialize', params: { protocolVersion, capabilities: {}, clientInfo: { name: 'DTFSeedsSuiteDeployV2', version: '2.0.0' } } });
+      try { await mcpRpc({ jsonrpc: '2.0', method: 'notifications/initialized', params: {} }); } catch {}
+      return;
+    } catch (error) { last = error; mcpSession = ''; }
+  }
+  throw last || new Error('Unable to initialize Hostinger MCP.');
+}
+
+async function flushHostingerCacheBestEffort() {
+  let last;
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      mcpSession = '';
+      await initMcp();
+      const result = await mcpRpc({ jsonrpc: '2.0', id: crypto.randomInt(1000, 9000000), method: 'tools/call', params: { name: 'hostinger-ai-assistant-litespeed-cache-flush', arguments: {} } });
+      if (result?.result?.isError === true) throw new Error('LiteSpeed tool returned isError.');
+      console.log('Hostinger LiteSpeed cache purge succeeded.');
+      return true;
+    } catch (error) { last = error; await sleep(1800 * attempt); }
+  }
+  console.warn(`Hostinger cache purge unavailable; cache-busted verification will still run: ${last?.message || 'unknown error'}`);
+  return false;
+}
+
+async function wpRequest(path, { method = 'GET', json, headers = {}, allow = [] } = {}) {
+  const response = await fetch(`${siteUrl}${path}`, {
+    method,
+    headers: { Authorization: auth, Accept: 'application/json', ...(json !== undefined ? { 'Content-Type': 'application/json' } : {}), ...headers },
+    body: json !== undefined ? JSON.stringify(json) : undefined,
+  });
+  const text = await response.text();
+  let body = text;
+  try { body = text ? JSON.parse(text) : null; } catch {}
+  if (!response.ok && !allow.includes(response.status)) {
+    throw new Error(`WordPress ${method} ${path} failed (${response.status}): ${typeof body === 'string' ? body.slice(0, 800) : JSON.stringify(body).slice(0, 800)}`);
+  }
+  return { ok: response.ok, status: response.status, body };
+}
+
+async function wpGetRetry(path, options = {}) {
+  let last;
+  for (let attempt = 1; attempt <= 6; attempt++) {
+    try { return await wpRequest(path, { ...options, method: 'GET' }); }
+    catch (error) { last = error; await sleep(1000 + attempt * 900); }
+  }
+  throw last || new Error(`GET ${path} failed after retries.`);
+}
+
+async function queryCodeSnippetsPlugin() {
+  const r = await wpGetRetry('/wp-json/wp/v2/plugins?search=Code%20Snippets&per_page=100', { allow: [401, 403, 404] });
+  if (!r.ok || !Array.isArray(r.body)) return null;
+  return r.body.find(p => String(p?.plugin || '').startsWith('code-snippets/')) || null;
+}
+
+function pluginEndpoint(pluginId) {
+  return `/wp-json/wp/v2/plugins/${String(pluginId || 'code-snippets/code-snippets').split('/').map(encodeURIComponent).join('/')}`;
+}
+
+async function setPluginStatus(pluginId, status) {
+  return wpRequest(pluginEndpoint(pluginId), { method: 'POST', json: { status } });
+}
+
+async function installCodeSnippetsNative() {
+  let last;
+  try {
+    const r = await wpRequest('/wp-json/wp/v2/plugins', { method: 'POST', json: { slug: 'code-snippets', status: 'active' } });
+    if (r.body?.plugin) return r.body;
+  } catch (error) { last = error; }
+  for (let attempt = 1; attempt <= 8; attempt++) {
+    const p = await queryCodeSnippetsPlugin().catch(() => null);
+    if (p) return p;
+    await sleep(1200 + attempt * 700);
+  }
+  throw last || new Error('Code Snippets installation did not become visible through WordPress REST.');
+}
+
+async function waitForSnippetApi() {
+  for (let attempt = 1; attempt <= 12; attempt++) {
+    try {
+      const r = await wpGetRetry('/wp-json/code-snippets/v1/snippets/schema', { allow: [404] });
+      if (r.ok) return true;
+    } catch {}
+    await sleep(1000 + attempt * 600);
+  }
+  return false;
+}
+
+const snippetCode = String.raw`
+add_action('rest_api_init', function () {
+    $token = ${tokenLiteral};
+    $permission = static function (WP_REST_Request $request) use ($token) {
+        $supplied = (string) $request->get_header('x-dtf-suite-token');
+        return current_user_can('manage_options') && $supplied !== '' && hash_equals($token, $supplied);
+    };
+
+    $work_root = wp_normalize_path(ABSPATH . '.dtf-suite-work');
+    $lock_key = 'dtf_suite_deploy_lock';
+    $max_archive = 64 * 1024 * 1024;
+    $max_uncompressed = 256 * 1024 * 1024;
+    $max_file = 64 * 1024 * 1024;
+    $max_manifest = 2 * 1024 * 1024;
+    $max_files = 5000;
