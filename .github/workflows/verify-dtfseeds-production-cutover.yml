@@ -49,9 +49,10 @@ jobs:
                 -D "$headers" -o "$body" -w '%{http_code}' \
                 -H 'Cache-Control: no-cache, no-store, max-age=0' \
                 -H 'Pragma: no-cache' \
-                -H 'User-Agent: DTFSeeds-Live-Verification/1.0' \
+                -H 'User-Agent: DTFSeeds-Live-Verification/2.0' \
                 "$SITE${path}?dtf_verify=${token}" || printf '000')"
               final_url="$(awk 'BEGIN{IGNORECASE=1} /^location:/ {gsub(/\r/,""); loc=$2} END{print loc}' "$headers")"
+              current_seen='no'
               if grep -Fqi -- "$current" "$body" 2>/dev/null; then current_seen='yes'; fi
 
               stale_seen='none'
@@ -79,8 +80,8 @@ jobs:
             if [[ "$ok" != 'yes' ]]; then failures=$((failures+1)); fi
           }
 
-          check_route '/' 'Genetics. Plant science. Tools. Games. Community.'
-          check_route '/learn/' 'Explore by subject'
+          check_route '/' 'Genetics, cultivation education, practical tools, and original cannabis games.'
+          check_route '/learn/' 'Understand the plant. Build the environment. Make better decisions.'
           check_route '/learn/infographics/' 'Visual plant science and cultivation library.'
 
           echo "report=$out" >> "$GITHUB_OUTPUT"
@@ -121,6 +122,6 @@ jobs:
                 '|---|---:|---|---|---|---|',
                 ...(rows.length ? rows : ['| no result | ? | ? | ? | **FAIL** | - |']),
                 '',
-                'This is a read-only visitor-facing test from a fresh GitHub runner using unique cache-busting URLs. No WordPress, Hostinger, file, cache, or repository production state is mutated by this workflow.'
+                'This is a read-only visitor-facing test from a fresh GitHub runner using unique cache-busting URLs. Current markers are sourced from the canonical Home/Learn/Infographics content in GitHub; no production state is mutated.'
               ].join('\n')
             });
