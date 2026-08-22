@@ -9,7 +9,7 @@ import sys
 # boundary normalization below. The source fragments are stored separately to
 # stay within the GitHub contents update limits; this assembler is the single
 # deterministic source of the executable used by validation and production.
-EXPECTED_SHA256 = "a7041f53148643971293f3634197909c4f7609d389f7ecdebd6c3502057d0e90"
+EXPECTED_SHA256 = "4dfeed1b10913613dc1f37df3c58e703a6e8cd6c53621259c96cd5e390398163"
 PART_DIR = pathlib.Path(__file__).resolve().parent / "wordpress-suite-v2"
 OUTPUT = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else "deploy-public-suite-via-wordpress-v2.mjs")
 
