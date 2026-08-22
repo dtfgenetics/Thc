@@ -1,0 +1,59 @@
+name: Audit DTFSeeds WordPress REST Routes
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - scripts/audit-wordpress-rest-routes.mjs
+      - .github/workflows/wordpress-rest-route-audit.yml
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: production
+    env:
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Audit authenticated REST routes
+        id: audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/audit-wordpress-rest-routes.mjs
+          node scripts/audit-wordpress-rest-routes.mjs | tee "$RUNNER_TEMP/rest-routes.json"
+      - name: Report route audit
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          JOB_STATUS: ${{ job.status }}
+          AUDIT_OUTCOME: ${{ steps.audit.outcome }}
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 46,
+              body: [
+                '## WordPress REST route audit',
+                '',
+                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                `Result: **${process.env.JOB_STATUS}**`,
+                `Audit step: **${process.env.AUDIT_OUTCOME || 'not-run'}**`,
+                '',
+                'This read-only audit lists authenticated WordPress REST routes related to Hostinger, files, caching, plugins, themes, templates, media, backups, and imports. No secrets or credential values are printed.'
+              ].join('\n')
+            });
