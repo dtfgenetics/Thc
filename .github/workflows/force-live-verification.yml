@@ -16,7 +16,7 @@ permissions:
 jobs:
   dispatch:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 25
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
@@ -39,19 +39,39 @@ jobs:
           set -euo pipefail
           gh workflow run verify-dtfseeds-production-cutover.yml --ref main
 
-      - name: Dispatch feature surface audit
+      - name: Dispatch and wait for feature surface audit
+        id: feature
         shell: bash
         run: |
           set -euo pipefail
+          before="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
           gh workflow run verify-dtfseeds-feature-surface.yml --ref main
+          run_id=''
+          for attempt in $(seq 1 20); do
+            run_id="$(gh run list --workflow verify-dtfseeds-feature-surface.yml --branch main --event workflow_dispatch --limit 10 --json databaseId,createdAt --jq '[.[] | select(.createdAt >= "'"$before"'")] | sort_by(.createdAt) | reverse | .[0].databaseId // empty')"
+            [[ -n "$run_id" ]] && break
+            sleep 3
+          done
+          if [[ -z "$run_id" ]]; then
+            echo 'Could not identify newly dispatched feature audit run.' >&2
+            exit 1
+          fi
+          echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+          echo "Feature audit run: $run_id"
+          gh run watch "$run_id" --exit-status
 
       - name: Report verifier dispatch
         if: always()
         uses: actions/github-script@v7
         env:
           STATUS: ${{ job.status }}
+          FEATURE_RUN_ID: ${{ steps.feature.outputs.run_id }}
+          FEATURE_OUTCOME: ${{ steps.feature.outcome }}
         with:
           script: |
+            const featureLink = process.env.FEATURE_RUN_ID
+              ? `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${process.env.FEATURE_RUN_ID}`
+              : 'not-resolved';
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -61,13 +81,10 @@ jobs:
                 '',
                 `Dispatcher: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
                 `Status: **${process.env.STATUS}**`,
-                'Requested:',
-                '- Verify DTFSeeds Production Cutover',
-                '- Verify DTFSeeds Feature Surface',
+                `Feature audit: **${process.env.FEATURE_OUTCOME || 'not-run'}** — ${featureLink}`,
                 '',
-                'Both targets are read-only fresh-runner audits; this dispatcher does not mutate WordPress or Hostinger production state.'
+                'The feature audit is read-only, is resolved to the newly dispatched run, waits for completion, and requires a complete 13-route report.'
               ].join('\n')
             });
 
-# Trusted-main trigger: post-cutover feature audit.
-# Trigger registered verifiers now.
+# Trusted-main trigger: deterministic complete feature audit.
