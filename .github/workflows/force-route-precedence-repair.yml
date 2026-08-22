@@ -61,3 +61,5 @@ jobs:
                 'This mirrors the successful Codex trusted-push dispatcher pattern. The target workflow owns protected production credentials and the rollback-safe live repair.'
               ].join('\n')
             });
+
+# Trusted-main trigger: route precedence repair.
