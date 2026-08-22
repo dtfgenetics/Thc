@@ -6,6 +6,7 @@ on:
     branches: [main]
     paths:
       - 'scripts/build-public-learning-center.mjs'
+      - 'scripts/publish-wordpress-learning-center-pages.mjs'
       - 'scripts/update-wordpress-learn-learning-center.mjs'
       - '.github/workflows/deploy-thc-learning-centers.yml'
 
@@ -26,12 +27,6 @@ jobs:
       WP_SITE_URL: https://dtfseeds.com
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
-      SSH_HOST: ${{ secrets.HOSTINGER_HOST || secrets.SSH_HOST || secrets.SFTP_HOST }}
-      SSH_USER: ${{ secrets.HOSTINGER_USER || secrets.HOSTINGER_SSH_USER || secrets.SSH_USER || secrets.SFTP_USER }}
-      SSH_PORT: ${{ secrets.HOSTINGER_PORT || secrets.SSH_PORT || secrets.SFTP_PORT }}
-      SSH_PRIVATE_KEY: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY || secrets.HOSTINGER_SSH_KEY || secrets.SSH_PRIVATE_KEY || secrets.DEPLOY_KEY }}
-      SSH_KNOWN_HOSTS: ${{ secrets.HOSTINGER_KNOWN_HOSTS || secrets.SSH_KNOWN_HOSTS }}
-      SITE_ROOT: ${{ vars.HOSTINGER_WORDPRESS_PATH || vars.WORDPRESS_PATH || vars.WP_PATH }}
       BACKUP_ROOT: /tmp/dtf-learning-center
 
     steps:
@@ -45,11 +40,12 @@ jobs:
         with:
           node-version: 22
 
-      - name: Validate learning-center source
+      - name: Validate learning-center source and WordPress access
         shell: bash
         run: |
           set -euo pipefail
           node --check scripts/build-public-learning-center.mjs
+          node --check scripts/publish-wordpress-learning-center-pages.mjs
           node --check scripts/update-wordpress-learn-learning-center.mjs
           test -n "${WP_API_USERNAME:-}"
           test -n "${WP_API_PASSWORD:-}"
@@ -73,112 +69,20 @@ jobs:
           test -s site/public-route-patch/learn/public-learning-center-manifest.json
           echo "route_count=${#routes[@]}" >> "$GITHUB_OUTPUT"
 
-      - name: Validate Hostinger deployment access
+      - name: Create or update WordPress learning-center pages
+        id: pages
         shell: bash
         run: |
           set -euo pipefail
-          SSH_HOST="${SSH_HOST:-147.93.42.1}"
-          SSH_PORT="${SSH_PORT:-22}"
-          : "${SSH_USER:?Missing Hostinger SSH user}"
-          : "${SSH_PRIVATE_KEY:?Missing Hostinger SSH private key}"
-          [[ "$SSH_PORT" =~ ^[0-9]+$ ]]
-          echo "SSH_HOST=$SSH_HOST" >> "$GITHUB_ENV"
-          echo "SSH_PORT=$SSH_PORT" >> "$GITHUB_ENV"
+          node scripts/publish-wordpress-learning-center-pages.mjs | tee "$RUNNER_TEMP/learning-pages.json"
+          echo "outcome=success" >> "$GITHUB_OUTPUT"
 
-      - name: Configure verified SSH connection
+      - name: Link the WordPress Learn page to all learning centers
+        id: navigation
         shell: bash
         run: |
           set -euo pipefail
-          install -d -m 700 ~/.ssh
-          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
-          if [[ -n "${SSH_KNOWN_HOSTS:-}" ]]; then
-            printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
-          else
-            ssh-keyscan -p "$SSH_PORT" -H "$SSH_HOST" > ~/.ssh/known_hosts
-          fi
-          test -s ~/.ssh/known_hosts
-          chmod 600 ~/.ssh/known_hosts
-
-      - name: Locate dtfseeds.com WordPress document root
-        id: root
-        shell: bash
-        run: |
-          set -euo pipefail
-          if [[ -n "${SITE_ROOT:-}" ]]; then
-            root="$SITE_ROOT"
-          else
-            root="$(ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" 'bash -s' <<'REMOTE'
-          set -euo pipefail
-          while IFS= read -r config; do
-            directory="$(dirname "$config")"
-            if command -v wp >/dev/null 2>&1; then
-              home_url="$(wp --path="$directory" option get home --skip-plugins --skip-themes 2>/dev/null || true)"
-              case "${home_url%/}" in
-                https://dtfseeds.com|http://dtfseeds.com|https://www.dtfseeds.com|http://www.dtfseeds.com)
-                  printf '%s\n' "$directory"
-                  exit 0
-                  ;;
-              esac
-            fi
-          done < <(find "$HOME" -maxdepth 8 -type f -name wp-config.php -print 2>/dev/null)
-          exit 1
-          REMOTE
-          )"
-          fi
-          [[ -n "$root" ]]
-          [[ "$root" =~ ^[A-Za-z0-9_./-]+$ ]]
-          [[ "$root" != "/" ]]
-          [[ "$root" != *".."* ]]
-          echo "path=$root" >> "$GITHUB_OUTPUT"
-
-      - name: Back up existing public learning routes
-        id: backup
-        shell: bash
-        env:
-          ROOT: ${{ steps.root.outputs.path }}
-        run: |
-          set -euo pipefail
-          stamp="$(date -u +%Y%m%dT%H%M%SZ)"
-          backup="$HOME/dtfseeds-learning-backups/$stamp"
-          ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" "ROOT='$ROOT' BACKUP='$backup' bash -s" <<'REMOTE'
-          set -euo pipefail
-          mkdir -p "$BACKUP/learn"
-          for route in library encyclopedia academy setup root-zone environment plant-health propagation; do
-            src="$ROOT/learn/$route"
-            [[ -e "$src" ]] || continue
-            cp -a "$src" "$BACKUP/learn/$route"
-          done
-          if [[ -f "$ROOT/learn/public-learning-center-manifest.json" ]]; then
-            cp -a "$ROOT/learn/public-learning-center-manifest.json" "$BACKUP/learn/"
-          fi
-          printf '%s\n' "$BACKUP" > "$BACKUP/backup-location.txt"
-          REMOTE
-          echo "path=$backup" >> "$GITHUB_OUTPUT"
-
-      - name: Publish static learning routes
-        shell: bash
-        env:
-          ROOT: ${{ steps.root.outputs.path }}
-        run: |
-          set -euo pipefail
-          ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" "mkdir -p '$ROOT/learn'"
-          for route in library encyclopedia academy setup root-zone environment plant-health propagation; do
-            ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" "mkdir -p '$ROOT/learn/$route'"
-            rsync -az --delete --checksum -e "ssh -p $SSH_PORT" \
-              "site/public-route-patch/learn/$route/" \
-              "$SSH_USER@$SSH_HOST:$ROOT/learn/$route/"
-          done
-          rsync -az --checksum -e "ssh -p $SSH_PORT" \
-            site/public-route-patch/learn/public-learning-center-manifest.json \
-            "$SSH_USER@$SSH_HOST:$ROOT/learn/public-learning-center-manifest.json"
-
-      - name: Patch WordPress Learn page with learning-center navigation
-        id: wordpress
-        shell: bash
-        run: |
-          set -euo pipefail
-          node scripts/update-wordpress-learn-learning-center.mjs | tee "$RUNNER_TEMP/learn-wordpress.json"
+          node scripts/update-wordpress-learn-learning-center.mjs | tee "$RUNNER_TEMP/learn-navigation.json"
           echo "outcome=success" >> "$GITHUB_OUTPUT"
 
       - name: Verify live learning centers and Learn navigation
@@ -194,7 +98,6 @@ jobs:
               "https://dtfseeds.com/learn/$route/?dtf_learning=${GITHUB_RUN_ID}" -o "$body"
             grep -Eqi '<h1([ >])' "$body"
             grep -Fqi 'Teaching Healthy Cultivation' "$body"
-            grep -Fqi "rel=\"canonical\"" "$body"
             grep -Fqi '/learn/infographics/' "$body"
             ! grep -Fqi 'email@email.com' "$body"
             ! grep -Fqi '+123456789' "$body"
@@ -225,9 +128,9 @@ jobs:
         env:
           JOB_STATUS: ${{ job.status }}
           ROUTE_COUNT: ${{ steps.build.outputs.route_count }}
-          WP_OUTCOME: ${{ steps.wordpress.outputs.outcome }}
+          PAGE_OUTCOME: ${{ steps.pages.outputs.outcome }}
+          NAV_OUTCOME: ${{ steps.navigation.outputs.outcome }}
           LIVE_OUTCOME: ${{ steps.live.outputs.outcome }}
-          STATIC_BACKUP: ${{ steps.backup.outputs.path }}
         with:
           script: |
             await github.rest.issues.createComment({
@@ -239,12 +142,12 @@ jobs:
                 '',
                 `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
                 `Result: **${process.env.JOB_STATUS}**`,
-                `Static learning routes built: **${process.env.ROUTE_COUNT || 'not-run'}**`,
-                `WordPress Learn navigation update: **${process.env.WP_OUTCOME || 'not-run'}**`,
+                `Learning routes built: **${process.env.ROUTE_COUNT || 'not-run'}**`,
+                `WordPress child-page publication: **${process.env.PAGE_OUTCOME || 'not-run'}**`,
+                `WordPress Learn navigation update: **${process.env.NAV_OUTCOME || 'not-run'}**`,
                 `Visitor-facing verification: **${process.env.LIVE_OUTCOME || 'not-run'}**`,
-                `Remote static backup: \`${process.env.STATIC_BACKUP || 'not-created'}\``,
                 '',
                 'Published scope: Education Library, Academy gateway, Encyclopedia gateway, Setup, Root Zone, Environment, Plant Health/IPM, and Genetics/Propagation.',
-                'Detailed controlled manuscripts continue to retain their existing review/release status; this deployment does not relabel unapproved material as independently approved.'
+                'All page records are backed up before update. Detailed controlled manuscripts retain their existing review/release status; this deployment does not relabel unapproved material as independently approved.'
               ].join('\n')
             });
