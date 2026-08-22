@@ -1,0 +1,108 @@
+name: Purge Hostinger Cache Through WordPress MCP
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - scripts/flush-hostinger-litespeed-mcp.mjs
+      - .github/workflows/hostinger-mcp-cache-flush.yml
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-hostinger-mcp-cache-flush
+  cancel-in-progress: true
+
+jobs:
+  purge:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    environment: production
+    env:
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Purge LiteSpeed through authenticated Hostinger MCP
+        id: purge
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${WP_API_USERNAME:-}"
+          test -n "${WP_API_PASSWORD:-}"
+          node --check scripts/flush-hostinger-litespeed-mcp.mjs
+          node scripts/flush-hostinger-litespeed-mcp.mjs
+
+      - name: Verify public WordPress markers after purge
+        id: verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          check() {
+            local path="$1"
+            local marker="$2"
+            local body="$RUNNER_TEMP/page-$(printf '%s' "$path" | tr '/?' '__').html"
+            local found=0
+            for attempt in 1 2 3 4 5 6; do
+              if curl -4 -fsSL --retry 2 --retry-delay 2 --connect-timeout 15 --max-time 45 \
+                -H 'Cache-Control: no-cache, no-store, max-age=0' \
+                -H 'Pragma: no-cache' \
+                "https://dtfseeds.com${path}?dtf_mcp_purge=${GITHUB_RUN_ID}-${attempt}" \
+                -o "$body"; then
+                if grep -Fqi -- "$marker" "$body"; then
+                  found=1
+                  break
+                fi
+              fi
+              sleep 5
+            done
+            if [[ "$found" -eq 1 ]]; then
+              echo "$path=current" >> "$GITHUB_OUTPUT"
+              echo "$path exposes current WordPress output"
+            else
+              echo "$path=shadowed" >> "$GITHUB_OUTPUT"
+              echo "$path remains shadowed after full LiteSpeed purge" >&2
+              head -c 1800 "$body" >&2 || true
+              return 1
+            fi
+          }
+          status=0
+          check '/' 'Genetics. Plant science. Tools. Games. Community.' || status=1
+          check '/learn/' 'Explore by subject' || status=1
+          check '/learn/infographics/' 'Visual plant science and cultivation library.' || status=1
+          exit "$status"
+
+      - name: Report cache repair result
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          JOB_STATUS: ${{ job.status }}
+          PURGE_OUTCOME: ${{ steps.purge.outcome }}
+          VERIFY_OUTCOME: ${{ steps.verify.outcome }}
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 46,
+              body: [
+                '## Hostinger MCP cache repair',
+                '',
+                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                `Result: **${process.env.JOB_STATUS}**`,
+                `LiteSpeed purge: **${process.env.PURGE_OUTCOME || 'not-run'}**`,
+                `Public WordPress verification: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
+                '',
+                'This uses the existing authenticated Hostinger WordPress MCP capability to purge LSCache, CSS/JS cache, localized resources, object cache, and opcache. It does not use SSH.'
+              ].join('\n')
+            });
