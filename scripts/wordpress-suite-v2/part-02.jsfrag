@@ -1,0 +1,76 @@
+_rest_route('dtf-suite/v2', '/init', [
+        'methods' => 'POST', 'permission_callback' => $permission,
+        'callback' => static function (WP_REST_Request $r) use ($safe_id, $safe_sha, $work_root, $lock_key, $state_key, $max_archive, $remove_tree, $ensure_dir) {
+            $id = (string) $r->get_param('deployment_id');
+            $bytes = (int) $r->get_param('archive_bytes');
+            $sha = strtolower((string) $r->get_param('archive_sha256'));
+            if (!$safe_id($id) || !$safe_sha($sha) || $bytes < 1 || $bytes > $max_archive) return new WP_Error('dtf_bad_init', 'Invalid deployment metadata.', ['status' => 400]);
+
+            $existing = get_option($lock_key, []);
+            if (is_array($existing) && !empty($existing['id']) && ($existing['id'] ?? '') !== $id) {
+                $old_id = (string) ($existing['id'] ?? '');
+                $age = time() - (int) ($existing['ts'] ?? time());
+                if (!preg_match('/^[a-f0-9]{24}$/', $old_id) || $age < 3600) return new WP_Error('dtf_locked', 'Another deployment holds the server lock.', ['status' => 409]);
+                $old_state = get_option($state_key($old_id), []);
+                $touched = is_array($old_state) && (!empty($old_state['current']) || !empty($old_state['applied']));
+                if ($touched) return new WP_Error('dtf_stale_touched_lock', 'A stale deployment has mutation state and must be recovered before a new deployment.', ['status' => 409, 'deployment_id' => $old_id]);
+                $old_work = is_array($old_state) ? (string) ($old_state['work_dir'] ?? '') : '';
+                if ($old_work !== '' && strpos(wp_normalize_path($old_work), trailingslashit($work_root)) === 0) $remove_tree($old_work);
+                delete_option($state_key($old_id));
+                delete_option($lock_key);
+            }
+            if (!add_option($lock_key, ['id' => $id, 'ts' => time()], '', false)) {
+                $lock = get_option($lock_key, []);
+                if (!is_array($lock) || ($lock['id'] ?? '') !== $id) return new WP_Error('dtf_lock_failed', 'Could not acquire deployment lock.', ['status' => 409]);
+            }
+            if (!$ensure_dir($work_root)) { delete_option($lock_key); return new WP_Error('dtf_work_root', 'Could not create deployment work root.', ['status' => 500]); }
+            @file_put_contents($work_root . '/.htaccess', "Require all denied\nDeny from all\n", LOCK_EX);
+            @file_put_contents($work_root . '/index.php', "<?php http_response_code(404); exit;\n", LOCK_EX);
+            $dir = wp_normalize_path($work_root . '/' . $id);
+            if (file_exists($dir) && !$remove_tree($dir)) { delete_option($lock_key); return new WP_Error('dtf_old_workspace', 'Could not clear prior workspace for this ID.', ['status' => 500]); }
+            if (!$ensure_dir($dir)) { delete_option($lock_key); return new WP_Error('dtf_workspace', 'Could not create deployment workspace.', ['status' => 500]); }
+            $state = ['id'=>$id,'status'=>'uploading','archive_bytes'=>$bytes,'archive_sha256'=>$sha,'uploaded_bytes'=>0,'work_dir'=>$dir,'applied'=>[],'current'=>null,'started_at'=>gmdate('c')];
+            update_option($state_key($id), $state, false);
+            return rest_ensure_response(['ok'=>true,'status'=>'uploading','uploaded_bytes'=>0]);
+        },
+    ]);
+
+    register_rest_route('dtf-suite/v2', '/chunk', [
+        'methods' => 'POST', 'permission_callback' => $permission,
+        'callback' => static function (WP_REST_Request $r) use ($safe_id, $safe_sha, $owns_lock, $state_key) {
+            $id = (string) $r->get_param('deployment_id');
+            $offset = (int) $r->get_param('offset');
+            $chunk_sha = strtolower((string) $r->get_param('chunk_sha256'));
+            $b64 = (string) $r->get_param('data_b64');
+            if (!$safe_id($id) || !$safe_sha($chunk_sha) || !$owns_lock($id)) return new WP_Error('dtf_bad_chunk', 'Invalid or unlocked chunk.', ['status' => 400]);
+            $state = get_option($state_key($id), []);
+            if (!is_array($state) || ($state['status'] ?? '') !== 'uploading') return new WP_Error('dtf_chunk_state', 'Deployment is not accepting chunks.', ['status' => 409]);
+            $raw = base64_decode($b64, true);
+            if ($raw === false || strlen($raw) < 1 || strlen($raw) > 768 * 1024) return new WP_Error('dtf_chunk_payload', 'Chunk payload is invalid.', ['status' => 400]);
+            if (!hash_equals($chunk_sha, hash('sha256', $raw))) return new WP_Error('dtf_chunk_hash', 'Chunk SHA-256 mismatch.', ['status' => 400]);
+            $part = $state['work_dir'] . '/suite.zip.part';
+            $current = is_file($part) ? (int) filesize($part) : 0;
+            if ($offset !== $current || $offset !== (int) ($state['uploaded_bytes'] ?? 0)) return new WP_Error('dtf_chunk_offset', 'Chunk offset does not match server state.', ['status' => 409, 'uploaded_bytes'=>$current]);
+            if ($current + strlen($raw) > (int) $state['archive_bytes']) return new WP_Error('dtf_chunk_overflow', 'Chunk exceeds declared archive size.', ['status' => 400]);
+            $written = file_put_contents($part, $raw, FILE_APPEND | LOCK_EX);
+            if ($written !== strlen($raw)) return new WP_Error('dtf_chunk_write', 'Chunk write was incomplete.', ['status' => 500]);
+            clearstatcache(true, $part);
+            $state['uploaded_bytes'] = (int) filesize($part);
+            update_option($state_key($id), $state, false);
+            return rest_ensure_response(['ok'=>true,'uploaded_bytes'=>$state['uploaded_bytes']]);
+        },
+    ]);
+
+    register_rest_route('dtf-suite/v2', '/commit', [
+        'methods' => 'POST', 'permission_callback' => $permission,
+        'callback' => static function (WP_REST_Request $r) use ($safe_id, $owns_lock, $state_key, $lock_key, $safe_name, $allowed_file, $allowed_dir, $max_uncompressed, $max_file, $max_manifest, $max_files, $targets, $required, $dir_size, $remove_tree, $ensure_dir, $rollback_state) {
+            @ignore_user_abort(true);
+            @set_time_limit(240);
+            $id = (string) $r->get_param('deployment_id');
+            if (!$safe_id($id) || !$owns_lock($id)) return new WP_Error('dtf_bad_commit', 'Invalid or unlocked deployment.', ['status' => 400]);
+            $state = get_option($state_key($id), []);
+            if (!is_array($state)) return new WP_Error('dtf_missing_state', 'Deployment state is missing.', ['status' => 404]);
+            if (($state['status'] ?? '') === 'deployed') return rest_ensure_response(['ok'=>true,'status'=>'deployed','recovered'=>true]);
+            if (($state['status'] ?? '') !== 'uploading') return new WP_Error('dtf_commit_state', 'Deployment cannot commit from current state.', ['status' => 409]);
+            $part = $state['work_dir'] . '/suite.zip.part';
+            if (!is_file($part) || (int) filesize($part) !== (int) $state['archive_bytes'] || (int) $state['uploaded_bytes'] !== (int) $state['archive_bytes']) return new WP_Error('dtf_ar
