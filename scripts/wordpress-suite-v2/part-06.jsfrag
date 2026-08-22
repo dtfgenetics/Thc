@@ -1,0 +1,20 @@
+r app-only DTFSeeds suite deployment without SSH.',
+    code: snippetCode, tags: ['dtf-deploy', 'temporary'], scope: 'global', priority: 1, active: false, network: false,
+  }});
+  snippetId = Number(created.body?.id || 0); if (!snippetId) throw new Error('Temporary deployment snippet was created without an ID.');
+  await wpRequest(`/wp-json/code-snippets/v1/snippets/${snippetId}/activate`, { method: 'POST' });
+
+  await uploadArchive();
+  await commitWithRecovery();
+  await flushHostingerCacheBestEffort();
+  await verifyLive();
+  const final = await postSuite('finalize');
+  if (final.body?.ok !== true) throw new Error(`Finalize failed: ${JSON.stringify(final.body).slice(0, 600)}`);
+  console.log(JSON.stringify({ ok: true, deploymentId, archiveBytes, archiveSha256, verifiedRoutes: liveChecks.length + 3 }));
+} catch (error) {
+  try { await recoverFailure(); }
+  catch (recoveryError) { console.error(`AUTOMATIC RECOVERY FAILED: ${recoveryError.message}`); }
+  throw error;
+} finally {
+  await cleanupTemporaryTools();
+}
