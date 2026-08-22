@@ -156,7 +156,7 @@ jobs:
             echo 'Official Discord CTA was not observed in checked public pages.' >&2
             exit 1
           fi
-          if ! grep -Fqi '/seeds/' /tmp/live-check/__blog__.html || ! grep -Fqi '/learn/' /tmp/live-check/__blog__.html; then
+          if ! grep -Fqi '/seeds/' /tmp/live-check/_blog_.html || ! grep -Fqi '/learn/' /tmp/live-check/_blog_.html; then
             echo 'Canonical Seeds/Learn navigation was not observed on /blog/.' >&2
             exit 1
           fi
