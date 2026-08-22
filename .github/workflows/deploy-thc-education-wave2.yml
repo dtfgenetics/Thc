@@ -6,6 +6,7 @@ on:
     branches: [main]
     paths:
       - 'scripts/publish-wordpress-education-wave2.mjs'
+      - 'scripts/repair-wordpress-education-records-route.mjs'
       - '.github/workflows/deploy-thc-education-wave2.yml'
 
 permissions:
@@ -42,6 +43,7 @@ jobs:
         run: |
           set -euo pipefail
           node --check scripts/publish-wordpress-education-wave2.mjs
+          node --check scripts/repair-wordpress-education-records-route.mjs
           test -n "${WP_API_USERNAME:-}"
           test -n "${WP_API_PASSWORD:-}"
 
@@ -67,6 +69,33 @@ jobs:
           test "$count" -eq 20
           echo "page_count=$count" >> "$GITHUB_OUTPUT"
           echo "outcome=success" >> "$GITHUB_OUTPUT"
+
+      - name: Repair records route collision
+        id: records
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3 4; do
+            echo "Records route repair attempt $attempt of 4"
+            if node scripts/repair-wordpress-education-records-route.mjs | tee "$RUNNER_TEMP/education-records-repair.json"; then
+              echo "outcome=success" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            if [[ "$attempt" -lt 4 ]]; then sleep $((attempt * 8)); fi
+          done
+          exit 1
+
+      - name: Purge Hostinger LiteSpeed cache
+        shell: bash
+        continue-on-error: true
+        run: |
+          set -u
+          for attempt in 1 2 3; do
+            echo "Cache purge attempt $attempt of 3"
+            node scripts/flush-hostinger-litespeed-mcp.mjs && exit 0
+            sleep $((attempt * 5))
+          done
+          exit 1
 
       - name: Allow public cache and permalink state to settle
         run: sleep 20
@@ -94,7 +123,7 @@ jobs:
             /learn/sops/environment-measurement/
             /learn/sops/lighting-measurement/
             /learn/diagnostics/
-            /learn/downloads/
+            /learn/records/
             /learn/sources/
             /learn/glossary/
           )
@@ -120,10 +149,11 @@ jobs:
           for href in \
             /learn/start-here/ /learn/library/ /learn/beginner-guides/ /learn/setup/ \
             /learn/root-zone/ /learn/environment/ /learn/plant-health/ /learn/propagation/ \
-            /learn/diagnostics/ /learn/postharvest/ /learn/sops/ /learn/downloads/ \
+            /learn/diagnostics/ /learn/postharvest/ /learn/sops/ /learn/records/ \
             /learn/sources/ /learn/glossary/ /learn/encyclopedia/ /learn/academy/ /learn/infographics/; do
             grep -Fq "$href" "$learn"
           done
+          ! grep -Fq '/learn/downloads/' "$learn"
           echo "outcome=success" >> "$GITHUB_OUTPUT"
 
       - name: Upload rollback package
@@ -142,6 +172,7 @@ jobs:
           JOB_STATUS: ${{ job.status }}
           PAGE_COUNT: ${{ steps.publish.outputs.page_count }}
           PUBLISH_OUTCOME: ${{ steps.publish.outputs.outcome }}
+          RECORDS_OUTCOME: ${{ steps.records.outputs.outcome }}
           LIVE_OUTCOME: ${{ steps.live.outputs.outcome }}
         with:
           script: |
@@ -156,6 +187,7 @@ jobs:
                 `Result: **${process.env.JOB_STATUS}**`,
                 `Education pages published: **${process.env.PAGE_COUNT || 'not-run'}**`,
                 `WordPress publication: **${process.env.PUBLISH_OUTCOME || 'not-run'}**`,
+                `Records-route repair: **${process.env.RECORDS_OUTCOME || 'not-run'}**`,
                 `Visitor-facing verification: **${process.env.LIVE_OUTCOME || 'not-run'}**`,
                 '',
                 'Scope: Start Here, five beginner guides, four postharvest guides, three measurement/SOP pages, diagnostics, printable records, sources/evidence, glossary, and full Learn navigation reconciliation.',
