@@ -56,6 +56,9 @@ jobs:
           echo "page_count=$count" >> "$GITHUB_OUTPUT"
           echo "outcome=success" >> "$GITHUB_OUTPUT"
 
+      - name: Allow public cache and permalink state to settle
+        run: sleep 20
+
       - name: Verify public education routes
         id: live
         shell: bash
@@ -84,20 +87,21 @@ jobs:
             /learn/glossary/
           )
           for route in "${routes[@]}"; do
-            file="$RUNNER_TEMP/verify-$(echo "$route" | tr '/' '-').html"
-            curl -4 --fail --silent --show-error --location --retry 3 --retry-delay 2 \
+            echo "Verifying $route"
+            body="$RUNNER_TEMP/verify-$(echo "$route" | tr '/' '-').html"
+            curl -4 --fail --silent --show-error --location --retry 6 --retry-delay 5 --retry-all-errors \
               -H 'Cache-Control: no-cache, no-store, max-age=0' -H 'Pragma: no-cache' \
-              "https://dtfseeds.com${route}?dtf_wave2=${GITHUB_RUN_ID}" -o "$file"
-            grep -Eqi '<h1([ >])' "$file"
-            grep -Fqi '/learn/infographics/' "$file"
-            ! grep -Fqi 'email@email.com' "$file"
-            ! grep -Fqi '+123456789' "$file"
-            ! grep -Fqi 'Needed from owner' "$file"
-            ! grep -Fqi 'Reserved strain card' "$file"
+              "https://dtfseeds.com${route}?dtf_wave2=${GITHUB_RUN_ID}" -o "$body"
+            grep -Eqi '<h1([ >])' "$body"
+            grep -Fqi '/learn/infographics/' "$body"
+            ! grep -Fqi 'email@email.com' "$body"
+            ! grep -Fqi '+123456789' "$body"
+            ! grep -Fqi 'Needed from owner' "$body"
+            ! grep -Fqi 'Reserved strain card' "$body"
           done
 
           learn="$RUNNER_TEMP/learn-root-wave2.html"
-          curl -4 --fail --silent --show-error --location --retry 3 --retry-delay 2 \
+          curl -4 --fail --silent --show-error --location --retry 6 --retry-delay 5 --retry-all-errors \
             -H 'Cache-Control: no-cache, no-store, max-age=0' -H 'Pragma: no-cache' \
             "https://dtfseeds.com/learn/?dtf_wave2=${GITHUB_RUN_ID}" -o "$learn"
           grep -Fqi 'The complete learning system' "$learn"
