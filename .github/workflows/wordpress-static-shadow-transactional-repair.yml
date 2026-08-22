@@ -129,3 +129,5 @@ jobs:
                 'This repair uses the existing authenticated Hostinger WordPress MCP only to temporarily install/activate Code Snippets if needed. A temporary admin-only REST endpoint validates exact stale markers, stores database backups, removes only the positively identified static shadow files, auto-restores on failure, purges LiteSpeed, verifies the live WordPress pages, discards the temporary backups after success, and removes the temporary repair code. No SSH credentials are required.'
               ].join('\n')
             });
+
+# Registered repair trigger: 2026-08-21
