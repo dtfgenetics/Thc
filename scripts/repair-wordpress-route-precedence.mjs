@@ -7,6 +7,88 @@ if (!username || !password) throw new Error('WordPress credentials are required.
 
 const auth = `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`;
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+const mcpEndpoint = `${siteUrl}/wp-json/hostinger-ai-assistant/v1/mcp`;
+let mcpSession = '';
+
+function parseRpcText(text) {
+  try { return JSON.parse(text); } catch {}
+  const dataLines = String(text).split(/\r?\n/)
+    .filter(line => line.startsWith('data:'))
+    .map(line => line.slice(5).trim())
+    .filter(Boolean);
+  for (const line of dataLines) {
+    try { return JSON.parse(line); } catch {}
+  }
+  return null;
+}
+
+async function mcpRpc(payload) {
+  const headers = {
+    Authorization: auth,
+    Accept: 'application/json, text/event-stream',
+    'Content-Type': 'application/json',
+    'Cache-Control': 'no-cache',
+  };
+  if (mcpSession) headers['Mcp-Session-Id'] = mcpSession;
+  const response = await fetch(mcpEndpoint, { method: 'POST', headers, body: JSON.stringify(payload) });
+  const nextSession = response.headers.get('mcp-session-id') || response.headers.get('Mcp-Session-Id');
+  if (nextSession) mcpSession = nextSession;
+  const text = await response.text();
+  const body = parseRpcText(text);
+  if (!response.ok || !body || body.error) {
+    throw new Error(`Hostinger MCP request failed (${response.status}): ${JSON.stringify(body?.error || body || text.slice(0, 500))}`);
+  }
+  return body;
+}
+
+async function initMcp() {
+  let lastError;
+  for (const protocolVersion of ['2025-06-18', '2025-03-26', '2024-11-05']) {
+    try {
+      await mcpRpc({
+        jsonrpc: '2.0', id: 1, method: 'initialize',
+        params: { protocolVersion, capabilities: {}, clientInfo: { name: 'DTFSeedsRoutePrecedenceRepair', version: '1.1.0' } },
+      });
+      try { await mcpRpc({ jsonrpc: '2.0', method: 'notifications/initialized', params: {} }); } catch {}
+      return;
+    } catch (error) {
+      lastError = error;
+      mcpSession = '';
+    }
+  }
+  throw lastError || new Error('Unable to initialize Hostinger MCP.');
+}
+
+function mcpToolFailed(body) {
+  const result = body?.result;
+  if (!result || result.isError === true) return true;
+  const text = Array.isArray(result.content)
+    ? result.content.map(item => item?.text || '').join('\n')
+    : JSON.stringify(result);
+  return /(^|\b)(error|failed|failure)(\b|:)/i.test(text) && !/no error/i.test(text);
+}
+
+async function flushHostingerCacheBestEffort() {
+  let lastError;
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      mcpSession = '';
+      await initMcp();
+      const body = await mcpRpc({
+        jsonrpc: '2.0', id: crypto.randomInt(1000, 9000000), method: 'tools/call',
+        params: { name: 'hostinger-ai-assistant-litespeed-cache-flush', arguments: {} },
+      });
+      if (mcpToolFailed(body)) throw new Error('Hostinger LiteSpeed cache tool reported failure.');
+      console.log('Hostinger LiteSpeed cache purge succeeded.');
+      return true;
+    } catch (error) {
+      lastError = error;
+      await sleep(attempt * 2500);
+    }
+  }
+  console.warn(`Hostinger cache purge unavailable; continuing with cache-busted checks: ${lastError?.message || 'unknown error'}`);
+  return false;
+}
 
 async function wpRequest(path, { method = 'GET', json, headers = {}, allow = [] } = {}) {
   const response = await fetch(`${siteUrl}${path}`, {
@@ -371,6 +453,7 @@ try {
     console.warn('Recovered route-precedence state after an ambiguous HTTP failure.');
   }
 
+  await flushHostingerCacheBestEffort();
   await verifyLive(runId);
 
   await wpRequest('/wp-json/dtf-repair/v1/finalize-route-precedence', {
@@ -385,6 +468,7 @@ try {
         method: 'POST',
         headers: { 'X-DTF-Repair-Token': repairToken },
       });
+      await flushHostingerCacheBestEffort();
       console.warn('Route-precedence repair failed verification; original .htaccess was restored.');
     } catch (restoreError) {
       rollbackFailed = true;
