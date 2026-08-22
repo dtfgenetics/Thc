@@ -6,7 +6,8 @@ on:
     branches: [main]
     paths:
       - scripts/package-public-suite-wordpress.py
-      - scripts/deploy-public-suite-via-wordpress.mjs
+      - scripts/assemble-wordpress-suite-v2.py
+      - scripts/wordpress-suite-v2/**
       - .github/workflows/validate-wordpress-public-suite-bridge.yml
       - .github/wordpress-suite-bridge-trigger.txt
 
@@ -41,12 +42,24 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Validate deployer and packager syntax
+      - name: Assemble and syntax-check hardened deployer
         shell: bash
         run: |
           set -euo pipefail
-          node --check scripts/deploy-public-suite-via-wordpress.mjs
-          python -m py_compile scripts/package-public-suite-wordpress.py
+          python -m py_compile scripts/package-public-suite-wordpress.py scripts/assemble-wordpress-suite-v2.py
+          python scripts/assemble-wordpress-suite-v2.py "$RUNNER_TEMP/deploy-public-suite-via-wordpress-v2.mjs"
+          node --check "$RUNNER_TEMP/deploy-public-suite-via-wordpress-v2.mjs"
+          python - <<'PY'
+          import os, pathlib, re
+          src = pathlib.Path(os.environ['RUNNER_TEMP']) / 'deploy-public-suite-via-wordpress-v2.mjs'
+          text = src.read_text()
+          match = re.search(r"const snippetCode = String\.raw`(.*?)`\.trim\(\);", text, re.S)
+          assert match, 'embedded PHP snippet not found'
+          php = match.group(1).replace('${tokenLiteral}', "'0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'")
+          out = pathlib.Path(os.environ['RUNNER_TEMP']) / 'dtf-suite-v2-snippet.php'
+          out.write_text('<?php\n' + php + '\n')
+          PY
+          php -l "$RUNNER_TEMP/dtf-suite-v2-snippet.php"
 
       - name: Download last fully validated public-suite release
         shell: bash
@@ -61,13 +74,11 @@ jobs:
           test -s "$RUNNER_TEMP/source-suite/thc-grow-doc/index.html"
 
       - name: Build protected WordPress app-only archive
-        id: package
         shell: bash
         run: |
           set -euo pipefail
           python scripts/package-public-suite-wordpress.py "$RUNNER_TEMP/source-suite" "$RUNNER_TEMP/dtf-public-suite-wordpress.zip" | tee "$RUNNER_TEMP/package-summary.json"
           test -s "$RUNNER_TEMP/dtf-public-suite-wordpress.zip"
-          echo "archive=$RUNNER_TEMP/dtf-public-suite-wordpress.zip" >> "$GITHUB_OUTPUT"
 
       - name: Assert archive ownership and integrity contract
         shell: bash
@@ -78,7 +89,8 @@ jobs:
           zpath = os.path.join(os.environ['RUNNER_TEMP'], 'dtf-public-suite-wordpress.zip')
           with zipfile.ZipFile(zpath) as z:
               names = z.namelist()
-              assert '.dtf-suite-manifest.json' in names
+              assert len(names) == len(set(names)), 'duplicate ZIP names'
+              assert names.count('.dtf-suite-manifest.json') == 1
               forbidden = [n for n in names if n == 'index.html' or n.startswith('learn/') or n.startswith('blog/')]
               assert not forbidden, forbidden
               required = [
@@ -88,9 +100,11 @@ jobs:
                   'thc-grow-doc/api/visual-observations.php','tools/index.html','projects/index.html','puzzles/current.json'
               ]
               for path in required: assert path in names, path
-              manifest = json.loads(z.read('.dtf-suite-manifest.json'))
+              manifest_raw = z.read('.dtf-suite-manifest.json')
+              assert len(manifest_raw) <= 2 * 1024 * 1024
+              manifest = json.loads(manifest_raw)
               assert manifest['purpose'] == 'dtfseeds-public-apps-only'
-              assert set(['/', '/learn/', '/blog/']).issubset(set(manifest['wordPressOwnedRoutesExcluded']))
+              assert {'/', '/learn/', '/blog/'}.issubset(set(manifest['wordPressOwnedRoutesExcluded']))
               archive_files = sorted(n for n in names if n != '.dtf-suite-manifest.json' and not n.endswith('/'))
               assert archive_files == sorted(manifest['files'])
               for rel, meta in manifest['files'].items():
@@ -100,28 +114,36 @@ jobs:
           print(f'validated archive entries={len(names)} bytes={os.path.getsize(zpath)}')
           PY
 
-      - name: Assert deployer contains required safety controls
+      - name: Assert hardened recovery and security controls
         shell: bash
         run: |
           set -euo pipefail
-          file=scripts/deploy-public-suite-via-wordpress.mjs
+          file="$RUNNER_TEMP/deploy-public-suite-via-wordpress-v2.mjs"
           grep -Fq "current_user_can('manage_options')" "$file"
           grep -Fq 'hash_equals($token, $supplied)' "$file"
           grep -Fq 'dtf_suite_deploy_lock' "$file"
           grep -Fq 'Whole-archive SHA-256 mismatch.' "$file"
+          grep -Fq 'Duplicate ZIP entry rejected.' "$file"
           grep -Fq 'Symlink entries are forbidden.' "$file"
           grep -Fq 'WordPress-owned route is forbidden in app deployment.' "$file"
-          grep -Fq "['/', '/learn/', '/blog/']" "$file"
+          grep -Fq '$max_manifest = 2 * 1024 * 1024;' "$file"
+          grep -Fq "'phase'=>'prepared'" "$file"
+          grep -Fq "'phase'=>'backup_moved'" "$file"
+          grep -Fq "'phase'=>'new_placed'" "$file"
           grep -Fq "'/rollback'" "$file"
+          grep -Fq "'/abort'" "$file"
           grep -Fq "'/finalize'" "$file"
+          grep -Fq 'Polling persisted server state before any recovery action.' "$file"
+          grep -Fq "['/','/learn/','/blog/']" "$file"
 
-      - name: Upload validated deploy archive
+      - name: Upload validated deploy inputs
         uses: actions/upload-artifact@v4
         with:
-          name: dtf-public-suite-wordpress-${{ github.sha }}
+          name: dtf-public-suite-wordpress-v2-${{ github.sha }}
           path: |
             ${{ runner.temp }}/dtf-public-suite-wordpress.zip
             ${{ runner.temp }}/package-summary.json
+            ${{ runner.temp }}/deploy-public-suite-via-wordpress-v2.mjs
           if-no-files-found: error
           retention-days: 7
 
@@ -143,8 +165,8 @@ jobs:
                 `Commit: \`${context.sha}\``,
                 `Result: **${process.env.STATUS}**`,
                 '',
-                'Checks: Node syntax, Python packager syntax, prior validated suite artifact retrieval, app-only archive creation, per-file SHA-256 verification, forbidden root/Learn/Blog exclusion, required route files, and presence of authorization/lock/hash/symlink/rollback/finalize controls.',
+                'Checks: fragment SHA-256 assembly, Node syntax, embedded PHP syntax, prior validated suite artifact retrieval, app-only archive creation, per-file SHA-256 verification, duplicate/manifest/path ownership checks, and authorization/locking/interrupted-commit/rollback/abort/finalize controls.',
                 '',
-                'This workflow is non-mutating. Production publication is a separate protected transaction.'
+                'This workflow is non-mutating. Production publication remains a separate protected transaction.'
               ].join('\n')
             });
