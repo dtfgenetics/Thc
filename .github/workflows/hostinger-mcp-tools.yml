@@ -1,0 +1,59 @@
+name: List Hostinger WordPress MCP Tools
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - scripts/list-hostinger-mcp-tools.mjs
+      - .github/workflows/hostinger-mcp-tools.yml
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  list:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: production
+    env:
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Enumerate Hostinger MCP tools
+        id: list
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/list-hostinger-mcp-tools.mjs
+          node scripts/list-hostinger-mcp-tools.mjs
+      - name: Report MCP tool enumeration
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          JOB_STATUS: ${{ job.status }}
+          LIST_OUTCOME: ${{ steps.list.outcome }}
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 46,
+              body: [
+                '## Hostinger MCP tool enumeration',
+                '',
+                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                `Result: **${process.env.JOB_STATUS}**`,
+                `Tool listing: **${process.env.LIST_OUTCOME || 'not-run'}**`,
+                '',
+                'Read-only MCP initialize + tools/list. No MCP tool is invoked.'
+              ].join('\n')
+            });
