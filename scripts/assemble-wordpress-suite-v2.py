@@ -8,7 +8,7 @@ import sys
 # Canonical SHA-256 of the executable v2 deployer after guarded source
 # normalizations below. Update only after the read-only semantic gate reports
 # and validates the newly assembled payload.
-EXPECTED_SHA256 = "4dfeed1b10913613dc1f37df3c58e703a6e8cd6c53621259c96cd5e390398163"
+EXPECTED_SHA256 = "94d88c054dfe9a6c4ed3304b5d553d38a67f06df31b5472ecfc21d05aaf60eb5"
 PART_DIR = pathlib.Path(__file__).resolve().parent / "wordpress-suite-v2"
 OUTPUT = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else "deploy-public-suite-via-wordpress-v2.mjs")
 
@@ -24,8 +24,6 @@ def replace_once(payload: bytes, old: bytes, new: bytes, label: str) -> bytes:
         raise SystemExit(f"expected exactly one {label} source block, found {count}")
     return payload.replace(old, new, 1)
 
-# part-01 historically ended in `register_` while part-02 began in
-# `_rest_route`, producing the runtime-only typo `register__rest_route`.
 payload = replace_once(
     raw,
     b"register__rest_route('dtf-suite/v2', '/init'",
