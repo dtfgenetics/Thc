@@ -5,7 +5,11 @@ import hashlib
 import pathlib
 import sys
 
-EXPECTED_SHA256 = "dd2db78c647397c5827a7e461d788f67194c755b108f070342f5a6fe052e85bf"
+# Canonical SHA-256 of the seven GitHub-stored v2 fragments. The validation
+# workflow independently runs Node and embedded-PHP syntax checks after this
+# integrity gate, so this hash protects fragment completeness/order while the
+# language parsers validate executable correctness.
+EXPECTED_SHA256 = "a7041f53148643971293f3634197909c4f7609d389f7ecdebd6c3502057d0e90"
 PART_DIR = pathlib.Path(__file__).resolve().parent / "wordpress-suite-v2"
 OUTPUT = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else "deploy-public-suite-via-wordpress-v2.mjs")
 
