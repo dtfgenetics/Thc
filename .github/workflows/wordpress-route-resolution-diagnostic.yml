@@ -1,0 +1,65 @@
+name: Diagnose DTFSeeds WordPress Route Resolution
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - scripts/diagnose-wordpress-route-resolution.mjs
+      - .github/workflows/wordpress-route-resolution-diagnostic.yml
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    environment: production
+    env:
+      NODE_OPTIONS: --dns-result-order=ipv4first
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Inspect WordPress page and filesystem route resolution
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/diagnose-wordpress-route-resolution.mjs
+          node scripts/diagnose-wordpress-route-resolution.mjs | tee "$RUNNER_TEMP/route-resolution.json"
+      - name: Report route resolution
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs');let r={};const p=process.env.RUNNER_TEMP+'/route-resolution.json';
+            if(fs.existsSync(p)){for(const line of fs.readFileSync(p,'utf8').trim().split(/\r?\n/).reverse()){try{r=JSON.parse(line);break}catch{}}}
+            const page=x=>x?`ID ${x.id}, slug=${x.slug}, status=${x.status}, parent=${x.parent}, link=${x.link}, markers=${JSON.stringify(x.markers)}`:'none';
+            const root=(r.server?.root_files||[]).map(x=>`- ${x.rel}: exists=${x.exists}, dir=${x.is_dir}, size=${x.size??'-'}, sha=${x.sha12??'-'}, markers=${JSON.stringify(x.markers||{})}`);
+            const learn=(r.server?.learn_files||[]).map(x=>`- ${x.rel}: file=${x.exists}, dir=${x.is_dir}, size=${x.size??'-'}, sha=${x.sha12??'-'}, markers=${JSON.stringify(x.markers||{})}`);
+            const rewrites=(r.server?.selected_rewrite_rules||[]).map(x=>`- \`${x[0]}\` → \`${x[1]}\``);
+            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body:[
+              '## WordPress route resolution diagnostic','',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Job: **${{ job.status }}**`,
+              `show_on_front=${r.server?.show_on_front??'unknown'}, page_on_front=${r.server?.page_on_front??'unknown'}, permalink=${r.server?.permalink_structure??'unknown'}, using_permalinks=${r.server?.using_permalinks??'unknown'}`,
+              `Home ID 743: ${page(r.pages?.id743)}`,
+              `Learn ID 869: ${page(r.pages?.id869)}`,
+              `Infographics ID 877: ${page(r.pages?.id877)}`,
+              `Home slug matches: ${(r.pages?.homeBySlug||[]).map(page).join(' | ')||'none'}`,
+              `Learn slug matches: ${(r.pages?.learnBySlug||[]).map(page).join(' | ')||'none'}`,
+              '', 'Root routing files:', ...(root.length?root:['- none']),
+              '', 'Learn directory entries:', ...(learn.length?learn:['- none']),
+              '', 'Relevant .htaccess directives:', ...(r.server?.htaccess_rewrite_lines||[]).map(x=>`- \`${x}\``),
+              '', `Rewrite rules stored: **${r.server?.rewrite_rule_count??'unknown'}**`, ...(rewrites.length?rewrites:['- no selected root/Learn rewrite rules']),
+              '', `Server: ${JSON.stringify(r.server?.server||{})}`,
+              '', 'Read-only diagnostic. It reports only routing metadata, filenames, hashes, marker flags, and rewrite directives; no arbitrary server file content is published.'
+            ].join('\n')});
