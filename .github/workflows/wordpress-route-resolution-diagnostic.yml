@@ -63,3 +63,5 @@ jobs:
               '', `Server: ${JSON.stringify(r.server?.server||{})}`,
               '', 'Read-only diagnostic. It reports only routing metadata, filenames, hashes, marker flags, and rewrite directives; no arbitrary server file content is published.'
             ].join('\n')});
+
+# Registered diagnostic trigger: 2026-08-21
