@@ -1,0 +1,126 @@
+name: Verify DTFSeeds Production Cutover
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/verify-dtfseeds-production-cutover.yml
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: verify-dtfseeds-production-cutover
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      SITE: https://dtfseeds.com
+    steps:
+      - name: Verify public routes from a fresh runner
+        id: live
+        shell: bash
+        run: |
+          set -uo pipefail
+          out="$RUNNER_TEMP/dtf-live-verification.tsv"
+          : > "$out"
+          failures=0
+
+          check_route() {
+            local path="$1"
+            local current="$2"
+            local body="$RUNNER_TEMP/body-$(printf '%s' "$path" | tr '/?' '__').html"
+            local headers="$RUNNER_TEMP/headers-$(printf '%s' "$path" | tr '/?' '__').txt"
+            local status='000'
+            local final_url=''
+            local current_seen='no'
+            local stale_seen='none'
+            local ok='no'
+
+            for attempt in 1 2 3 4 5 6; do
+              token="${GITHUB_RUN_ID}-${attempt}-$(date +%s%N)"
+              status="$(curl -4 -sS -L \
+                --retry 2 --retry-delay 2 --connect-timeout 15 --max-time 45 \
+                -D "$headers" -o "$body" -w '%{http_code}' \
+                -H 'Cache-Control: no-cache, no-store, max-age=0' \
+                -H 'Pragma: no-cache' \
+                -H 'User-Agent: DTFSeeds-Live-Verification/1.0' \
+                "$SITE${path}?dtf_verify=${token}" || printf '000')"
+              final_url="$(awk 'BEGIN{IGNORECASE=1} /^location:/ {gsub(/\r/,""); loc=$2} END{print loc}' "$headers")"
+              if grep -Fqi -- "$current" "$body" 2>/dev/null; then current_seen='yes'; fi
+
+              stale_seen='none'
+              for stale in \
+                'THC Grow Doc, genetics, cultivation education, and games in one home.' \
+                'Grow education belongs in a clean, readable library.' \
+                'MOPS, cultivation notes, THC basics' \
+                'being rebuilt' \
+                'Reserved strain card' \
+                'Tool-ready rebuild'; do
+                if grep -Fqi -- "$stale" "$body" 2>/dev/null; then
+                  stale_seen="$stale"
+                  break
+                fi
+              done
+
+              if [[ "$status" =~ ^2[0-9][0-9]$ ]] && [[ "$current_seen" == 'yes' ]] && [[ "$stale_seen" == 'none' ]]; then
+                ok='yes'
+                break
+              fi
+              sleep 5
+            done
+
+            printf '%s\t%s\t%s\t%s\t%s\t%s\n' "$path" "$status" "$current_seen" "$stale_seen" "$ok" "$final_url" >> "$out"
+            if [[ "$ok" != 'yes' ]]; then failures=$((failures+1)); fi
+          }
+
+          check_route '/' 'Genetics. Plant science. Tools. Games. Community.'
+          check_route '/learn/' 'Explore by subject'
+          check_route '/learn/infographics/' 'Visual plant science and cultivation library.'
+
+          echo "report=$out" >> "$GITHUB_OUTPUT"
+          echo "failures=$failures" >> "$GITHUB_OUTPUT"
+          cat "$out"
+          [[ "$failures" -eq 0 ]]
+
+      - name: Report definitive live verification
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          OUTCOME: ${{ steps.live.outcome }}
+          REPORT: ${{ steps.live.outputs.report }}
+          FAILURES: ${{ steps.live.outputs.failures }}
+        with:
+          script: |
+            const fs = require('fs');
+            const rows = [];
+            if (process.env.REPORT && fs.existsSync(process.env.REPORT)) {
+              for (const line of fs.readFileSync(process.env.REPORT, 'utf8').trim().split(/\r?\n/)) {
+                if (!line) continue;
+                const [path,status,current,stale,ok,finalUrl] = line.split('\t');
+                rows.push(`| \`${path}\` | ${status || '?'} | ${current || '?'} | ${stale || 'none'} | **${ok === 'yes' ? 'PASS' : 'FAIL'}** | ${finalUrl || '-'} |`);
+              }
+            }
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 46,
+              body: [
+                '## Definitive DTFSeeds live cutover verification',
+                '',
+                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                `Overall: **${process.env.OUTCOME === 'success' ? 'PASS' : 'FAIL'}**`,
+                `Failed routes: **${process.env.FAILURES || '?'}**`,
+                '',
+                '| Route | HTTP | Current marker | Stale marker | Result | Redirect target |',
+                '|---|---:|---|---|---|---|',
+                ...(rows.length ? rows : ['| no result | ? | ? | ? | **FAIL** | - |']),
+                '',
+                'This is a read-only visitor-facing test from a fresh GitHub runner using unique cache-busting URLs. No WordPress, Hostinger, file, cache, or repository production state is mutated by this workflow.'
+              ].join('\n')
+            });
