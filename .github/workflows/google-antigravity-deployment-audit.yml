@@ -6,7 +6,10 @@ on:
     branches: [main]
     paths:
       - scripts/antigravity-dtf-deployment-audit.py
-      - scripts/build-wordpress-public-suite-archive.sh
+      - scripts/package-public-suite-wordpress.py
+      - scripts/assemble-wordpress-suite-v2.py
+      - scripts/wordpress-suite-v2/**
+      - .github/workflows/validate-wordpress-public-suite-bridge.yml
       - .github/workflows/google-antigravity-deployment-audit.yml
       - .github/antigravity-audit-trigger.txt
 
@@ -40,7 +43,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          python -m pip install --disable-pip-version-check google-antigravity
+          python -m pip install --disable-pip-version-check google-antigravity==0.1.9
           python - <<'PY'
           import google.antigravity
           print('google-antigravity import: ok')
@@ -76,9 +79,7 @@ jobs:
           script: |
             const fs = require('fs');
             let report = '# Google Antigravity deployment audit\n\n**Status: report missing**';
-            if (fs.existsSync(process.env.REPORT_PATH)) {
-              report = fs.readFileSync(process.env.REPORT_PATH, 'utf8').trim();
-            }
+            if (fs.existsSync(process.env.REPORT_PATH)) report = fs.readFileSync(process.env.REPORT_PATH, 'utf8').trim();
             const max = 55000;
             if (report.length > max) report = report.slice(0, max) + '\n\n[truncated in issue comment; full report is in the workflow artifact]';
             await github.rest.issues.createComment({
@@ -94,6 +95,6 @@ jobs:
                 '',
                 report,
                 '',
-                '_Antigravity ran in an ephemeral checkout with no production credentials and checkout push credentials disabled. This audit is non-mutating._'
+                '_Antigravity ran in an ephemeral checkout with no WordPress/Hostinger credentials and checkout push credentials disabled. The Gemini API credential is removed from the shell environment before autonomous tools are exposed._'
               ].join('\n')
             });
