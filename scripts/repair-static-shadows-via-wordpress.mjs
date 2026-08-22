@@ -48,7 +48,7 @@ async function initMcp() {
     try {
       await mcpRpc({
         jsonrpc: '2.0', id: 1, method: 'initialize',
-        params: { protocolVersion, capabilities: {}, clientInfo: { name: 'DTFSeedsStaticShadowRepair', version: '1.0.0' } },
+        params: { protocolVersion, capabilities: {}, clientInfo: { name: 'DTFSeedsStaticShadowRepair', version: '2.0.0' } },
       });
       try { await mcpRpc({ jsonrpc: '2.0', method: 'notifications/initialized', params: {} }); } catch {}
       return;
@@ -78,6 +78,24 @@ async function mcpTool(name, args = {}, { allowFailure = false } = {}) {
   return body;
 }
 
+async function flushHostingerCacheBestEffort() {
+  let lastError;
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      mcpSession = '';
+      await initMcp();
+      await mcpTool('hostinger-ai-assistant-litespeed-cache-flush', {});
+      console.log('Hostinger LiteSpeed cache purge succeeded.');
+      return true;
+    } catch (error) {
+      lastError = error;
+      await sleep(attempt * 2500);
+    }
+  }
+  console.warn(`Hostinger cache purge was unavailable; continuing with cache-busted verification: ${lastError?.message || 'unknown error'}`);
+  return false;
+}
+
 async function wpRequest(path, { method = 'GET', json, headers = {}, allow = [] } = {}) {
   const response = await fetch(`${siteUrl}${path}`, {
     method,
@@ -98,19 +116,77 @@ async function wpRequest(path, { method = 'GET', json, headers = {}, allow = [] 
   return { ok: response.ok, status: response.status, body };
 }
 
+async function wpGetRetry(path, options = {}) {
+  let lastError;
+  for (let attempt = 1; attempt <= 6; attempt++) {
+    try {
+      return await wpRequest(path, { ...options, method: 'GET' });
+    } catch (error) {
+      lastError = error;
+      await sleep(1500 + attempt * 1000);
+    }
+  }
+  throw lastError || new Error(`GET ${path} failed after retries.`);
+}
+
 async function waitForSnippetApi() {
-  for (let attempt = 1; attempt <= 10; attempt++) {
-    const check = await wpRequest('/wp-json/code-snippets/v1/snippets/schema', { allow: [404] });
-    if (check.ok) return true;
-    await sleep(attempt * 1500);
+  for (let attempt = 1; attempt <= 12; attempt++) {
+    try {
+      const check = await wpGetRetry('/wp-json/code-snippets/v1/snippets/schema', { allow: [404] });
+      if (check.ok) return true;
+    } catch {}
+    await sleep(1200 + attempt * 700);
   }
   return false;
 }
 
 async function queryCodeSnippetsPlugin() {
-  const list = await wpRequest('/wp-json/wp/v2/plugins?search=Code%20Snippets&per_page=100', { allow: [404, 401, 403] });
+  const list = await wpGetRetry('/wp-json/wp/v2/plugins?search=Code%20Snippets&per_page=100', { allow: [404, 401, 403] });
   if (!list.ok || !Array.isArray(list.body)) return null;
   return list.body.find(plugin => String(plugin?.plugin || '').startsWith('code-snippets/')) || null;
+}
+
+function pluginEndpoint(pluginId) {
+  const safe = String(pluginId || 'code-snippets/code-snippets')
+    .split('/')
+    .map(segment => encodeURIComponent(segment))
+    .join('/');
+  return `/wp-json/wp/v2/plugins/${safe}`;
+}
+
+async function waitForCodeSnippetsPlugin() {
+  for (let attempt = 1; attempt <= 8; attempt++) {
+    try {
+      const plugin = await queryCodeSnippetsPlugin();
+      if (plugin) return plugin;
+    } catch {}
+    await sleep(1500 + attempt * 900);
+  }
+  return null;
+}
+
+async function installCodeSnippetsNative() {
+  let installError;
+  try {
+    const result = await wpRequest('/wp-json/wp/v2/plugins', {
+      method: 'POST',
+      json: { slug: 'code-snippets', status: 'active' },
+    });
+    if (result.body?.plugin) return result.body;
+  } catch (error) {
+    installError = error;
+  }
+
+  const recovered = await waitForCodeSnippetsPlugin();
+  if (recovered) return recovered;
+  throw installError || new Error('WordPress native plugin install did not produce Code Snippets.');
+}
+
+async function setPluginStatus(pluginId, status) {
+  return wpRequest(pluginEndpoint(pluginId), {
+    method: 'POST',
+    json: { status },
+  });
 }
 
 const repairToken = crypto.randomBytes(32).toString('hex');
@@ -130,11 +206,21 @@ add_action('rest_api_init', function () {
     ];
 
     $backup_key = static function ($rel) { return 'dtf_shadow_backup_' . md5($rel); };
+    $state_key = 'dtf_shadow_repair_state';
+
+    register_rest_route('dtf-repair/v1', '/static-shadow-state', [
+        'methods' => 'GET',
+        'permission_callback' => $permission,
+        'callback' => static function () use ($state_key) {
+            $state = get_option($state_key, []);
+            return rest_ensure_response(is_array($state) ? $state : []);
+        },
+    ]);
 
     register_rest_route('dtf-repair/v1', '/retire-static-shadows', [
         'methods' => 'POST',
         'permission_callback' => $permission,
-        'callback' => static function () use ($targets, $backup_key) {
+        'callback' => static function () use ($targets, $backup_key, $state_key) {
             $root = trailingslashit(wp_normalize_path(ABSPATH));
             $prepared = [];
             $skipped = [];
@@ -195,11 +281,18 @@ add_action('rest_api_init', function () {
                 $removed[] = $item;
             }
 
+            $state = [
+                'status' => 'retired',
+                'removed' => array_values(array_map(static fn($item) => $item['rel'], $removed)),
+                'skipped' => $skipped,
+                'updated_at' => gmdate('c'),
+            ];
+            update_option($state_key, $state, false);
             flush_rewrite_rules(true);
             if (function_exists('wp_cache_flush')) { wp_cache_flush(); }
             return rest_ensure_response([
                 'ok' => true,
-                'removed' => array_values(array_map(static fn($item) => $item['rel'], $removed)),
+                'removed' => $state['removed'],
                 'skipped' => $skipped,
                 'backup_keys' => array_values(array_map(static fn($item) => $item['key'], $removed)),
             ]);
@@ -209,7 +302,7 @@ add_action('rest_api_init', function () {
     register_rest_route('dtf-repair/v1', '/restore-static-shadows', [
         'methods' => 'POST',
         'permission_callback' => $permission,
-        'callback' => static function () use ($targets, $backup_key) {
+        'callback' => static function () use ($targets, $backup_key, $state_key) {
             $restored = [];
             foreach ($targets as $target) {
                 $rel = $target['rel'];
@@ -224,6 +317,7 @@ add_action('rest_api_init', function () {
                 @chmod($path, (int) ($backup['mode'] ?? 0644));
                 $restored[] = $rel;
             }
+            update_option($state_key, ['status' => 'restored', 'restored' => $restored, 'updated_at' => gmdate('c')], false);
             flush_rewrite_rules(true);
             if (function_exists('wp_cache_flush')) { wp_cache_flush(); }
             return rest_ensure_response(['ok' => true, 'restored' => $restored]);
@@ -233,7 +327,7 @@ add_action('rest_api_init', function () {
     register_rest_route('dtf-repair/v1', '/finalize-static-shadows', [
         'methods' => 'POST',
         'permission_callback' => $permission,
-        'callback' => static function () use ($targets, $backup_key) {
+        'callback' => static function () use ($targets, $backup_key, $state_key) {
             $deleted = [];
             foreach ($targets as $target) {
                 $key = $backup_key($target['rel']);
@@ -242,6 +336,7 @@ add_action('rest_api_init', function () {
                     $deleted[] = $key;
                 }
             }
+            delete_option($state_key);
             return rest_ensure_response(['ok' => true, 'backup_options_deleted' => count($deleted)]);
         },
     ]);
@@ -253,39 +348,71 @@ let pluginWasActive = false;
 let pluginWasInstalled = false;
 let installedByRepair = false;
 let activatedByRepair = false;
+let pluginRestId = 'code-snippets/code-snippets';
 let removedFiles = [];
 let repairSucceeded = false;
+let rollbackFailed = false;
 
 async function cleanupTemporaryTools() {
-  if (snippetId) {
+  if (snippetId && !rollbackFailed) {
     try { await wpRequest(`/wp-json/code-snippets/v1/snippets/${snippetId}/deactivate`, { method: 'POST', allow: [400, 404] }); } catch {}
     try { await wpRequest(`/wp-json/code-snippets/v1/snippets/${snippetId}`, { method: 'DELETE', allow: [404] }); } catch {}
     try { await wpRequest(`/wp-json/code-snippets/v1/snippets/${snippetId}`, { method: 'DELETE', allow: [404] }); } catch {}
   }
-  if (activatedByRepair && !pluginWasActive) {
-    try { await mcpTool('hostinger-ai-assistant-plugin-deactivate', { plugin_file: 'code-snippets/code-snippets.php' }, { allowFailure: true }); } catch {}
+
+  if (rollbackFailed) {
+    console.error('Rollback failed; leaving temporary repair tooling in place for recovery.');
+    return;
   }
+
   if (installedByRepair && !pluginWasInstalled) {
-    try { await mcpTool('hostinger-ai-assistant-plugin-delete', { plugin_file: 'code-snippets/code-snippets.php' }, { allowFailure: true }); } catch {}
+    try { await setPluginStatus(pluginRestId, 'inactive'); } catch {}
+    try { await wpRequest(pluginEndpoint(pluginRestId), { method: 'DELETE', allow: [400, 404] }); } catch {}
+  } else if (activatedByRepair && !pluginWasActive) {
+    try { await setPluginStatus(pluginRestId, 'inactive'); } catch {}
   }
 }
 
-try {
-  await initMcp();
+async function recoverRepairState() {
+  try {
+    const state = await wpGetRetry('/wp-json/dtf-repair/v1/static-shadow-state', {
+      headers: { 'X-DTF-Repair-Token': repairToken },
+      allow: [404],
+    });
+    if (state.ok && state.body?.status === 'retired' && Array.isArray(state.body.removed)) {
+      removedFiles = state.body.removed;
+      return state.body;
+    }
+  } catch {}
+  return null;
+}
 
+try {
   const prePlugin = await queryCodeSnippetsPlugin();
   pluginWasInstalled = Boolean(prePlugin);
   pluginWasActive = prePlugin?.status === 'active';
+  if (prePlugin?.plugin) pluginRestId = prePlugin.plugin;
 
-  const apiWasReady = await wpRequest('/wp-json/code-snippets/v1/snippets/schema', { allow: [404] });
+  const apiWasReady = await wpGetRetry('/wp-json/code-snippets/v1/snippets/schema', { allow: [404] });
   if (!apiWasReady.ok) {
-    if (!pluginWasInstalled) {
-      const install = await mcpTool('hostinger-ai-assistant-plugin-install', { slug: 'code-snippets' }, { allowFailure: true });
-      if (!mcpToolFailed(install)) installedByRepair = true;
+    let plugin = prePlugin;
+    if (!plugin) {
+      plugin = await installCodeSnippetsNative();
+      installedByRepair = true;
     }
-    const activate = await mcpTool('hostinger-ai-assistant-plugin-activate', { plugin_file: 'code-snippets/code-snippets.php' }, { allowFailure: true });
-    if (!mcpToolFailed(activate)) activatedByRepair = true;
-    if (!(await waitForSnippetApi())) throw new Error('Code Snippets REST API did not become available after temporary activation.');
+    if (plugin?.plugin) pluginRestId = plugin.plugin;
+
+    if (plugin?.status !== 'active') {
+      const activated = await setPluginStatus(pluginRestId, 'active');
+      activatedByRepair = true;
+      if (activated.body?.plugin) pluginRestId = activated.body.plugin;
+    } else if (!pluginWasActive) {
+      activatedByRepair = true;
+    }
+
+    if (!(await waitForSnippetApi())) {
+      throw new Error('Code Snippets REST API did not become available after native WordPress installation/activation.');
+    }
   }
 
   const runId = process.env.GITHUB_RUN_ID || Date.now().toString();
@@ -307,15 +434,25 @@ try {
 
   await wpRequest(`/wp-json/code-snippets/v1/snippets/${snippetId}/activate`, { method: 'POST' });
 
-  const repair = await wpRequest('/wp-json/dtf-repair/v1/retire-static-shadows', {
-    method: 'POST',
-    headers: { 'X-DTF-Repair-Token': repairToken },
-  });
-  if (repair.body?.ok !== true) throw new Error(`Repair endpoint did not return success: ${JSON.stringify(repair.body).slice(0, 500)}`);
-  removedFiles = Array.isArray(repair.body.removed) ? repair.body.removed : [];
-  if (removedFiles.length < 1) throw new Error(`No known stale static shadow file was removed. Result: ${JSON.stringify(repair.body).slice(0, 900)}`);
+  let repair;
+  try {
+    repair = await wpRequest('/wp-json/dtf-repair/v1/retire-static-shadows', {
+      method: 'POST',
+      headers: { 'X-DTF-Repair-Token': repairToken },
+    });
+    if (repair.body?.ok !== true) throw new Error(`Repair endpoint did not return success: ${JSON.stringify(repair.body).slice(0, 500)}`);
+    removedFiles = Array.isArray(repair.body.removed) ? repair.body.removed : [];
+  } catch (error) {
+    const recovered = await recoverRepairState();
+    if (!recovered) throw error;
+    console.warn('Recovered successful shadow-removal state after an ambiguous HTTP failure.');
+  }
 
-  await mcpTool('hostinger-ai-assistant-litespeed-cache-flush', {});
+  if (removedFiles.length < 1) {
+    throw new Error(`No known stale static shadow file was removed. Result: ${JSON.stringify(repair?.body || {}).slice(0, 900)}`);
+  }
+
+  await flushHostingerCacheBestEffort();
 
   const checks = [
     ['/', 'Genetics. Plant science. Tools. Games. Community.'],
@@ -324,17 +461,19 @@ try {
   ];
   for (const [path, marker] of checks) {
     let seen = false;
-    for (let attempt = 1; attempt <= 8; attempt++) {
-      const response = await fetch(`${siteUrl}${path}?dtf_static_repair=${encodeURIComponent(runId)}-${attempt}`, {
-        headers: { 'Cache-Control': 'no-cache, no-store, max-age=0', Pragma: 'no-cache' },
-        redirect: 'follow',
-      });
-      const text = await response.text();
-      if (response.ok && text.toLowerCase().includes(marker.toLowerCase())) {
-        seen = true;
-        break;
-      }
-      await sleep(4000 + attempt * 1000);
+    for (let attempt = 1; attempt <= 10; attempt++) {
+      try {
+        const response = await fetch(`${siteUrl}${path}?dtf_static_repair=${encodeURIComponent(runId)}-${attempt}`, {
+          headers: { 'Cache-Control': 'no-cache, no-store, max-age=0', Pragma: 'no-cache' },
+          redirect: 'follow',
+        });
+        const text = await response.text();
+        if (response.ok && text.toLowerCase().includes(marker.toLowerCase())) {
+          seen = true;
+          break;
+        }
+      } catch {}
+      await sleep(3500 + attempt * 900);
     }
     if (!seen) throw new Error(`Visitor-facing route ${path} did not expose expected current marker after shadow removal.`);
   }
@@ -345,14 +484,16 @@ try {
   });
   repairSucceeded = true;
 } catch (error) {
+  if (snippetId && removedFiles.length === 0) await recoverRepairState();
   if (snippetId && removedFiles.length) {
     try {
       await wpRequest('/wp-json/dtf-repair/v1/restore-static-shadows', {
         method: 'POST',
         headers: { 'X-DTF-Repair-Token': repairToken },
       });
-      try { await mcpTool('hostinger-ai-assistant-litespeed-cache-flush', {}, { allowFailure: true }); } catch {}
+      await flushHostingerCacheBestEffort();
     } catch (restoreError) {
+      rollbackFailed = true;
       console.error(`Automatic rollback also failed: ${restoreError.message}`);
     }
   }
