@@ -1,0 +1,77 @@
+name: Diagnose DTFSeeds WordPress Routing Shadows
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - scripts/diagnose-wordpress-routing-shadow.mjs
+      - .github/workflows/wordpress-routing-shadow-diagnostic.yml
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: production
+    env:
+      NODE_OPTIONS: --dns-result-order=ipv4first
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Run read-only routing shadow diagnostic
+        id: diagnose
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${WP_API_USERNAME:-}"
+          test -n "${WP_API_PASSWORD:-}"
+          node --check scripts/diagnose-wordpress-routing-shadow.mjs
+          node scripts/diagnose-wordpress-routing-shadow.mjs | tee "$RUNNER_TEMP/routing-shadow.json"
+      - name: Report routing diagnostic
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs');
+            const p=process.env.RUNNER_TEMP+'/routing-shadow.json';
+            let r={};
+            if(fs.existsSync(p)){
+              try{r=JSON.parse(fs.readFileSync(p,'utf8').trim().split(/\r?\n/).pop())}catch{}
+            }
+            const existing=(r.files||[]).filter(x=>x.exists).map(x=>`- ${x.root}/${x.rel}: size=${x.size ?? '?'} sha=${x.sha12 ?? '?'} markers=${(x.markers||[]).join(',')||'none'}`);
+            const front=r.front_page||{};
+            const home=r.home_slug_page||{};
+            await github.rest.issues.createComment({
+              owner:context.repo.owner,
+              repo:context.repo.repo,
+              issue_number:46,
+              body:[
+                '## WordPress routing/static-shadow diagnostic',
+                '',
+                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                `Job: **${process.env.DIAG_STATUS || '${{ job.status }}'}**`,
+                `Document root equals ABSPATH: **${r.document_root_equals_abspath ?? 'unknown'}**`,
+                `Document root is parent of ABSPATH: **${r.document_root_is_parent_of_abspath ?? 'unknown'}**`,
+                `ABSPATH is parent of document root: **${r.abspath_is_parent_of_document_root ?? 'unknown'}**`,
+                `show_on_front: **${r.show_on_front ?? 'unknown'}**`,
+                `page_on_front: **${r.page_on_front ?? 'unknown'}**`,
+                `Configured front page: **${front.slug || 'none'}** (ID ${front.id ?? 'n/a'}, current-marker=${front.has_current_home_marker ?? 'n/a'}, old-marker=${front.has_old_home_marker ?? 'n/a'})`,
+                `home slug page: **${home.id ?? 'none'}** (current-marker=${home.has_current_home_marker ?? 'n/a'}, old-marker=${home.has_old_home_marker ?? 'n/a'})`,
+                '',
+                'Existing candidate static files:',
+                ...(existing.length?existing:['- none']),
+                '',
+                'The temporary diagnostic endpoint is admin/token protected and read-only. Absolute server paths are intentionally not reported.'
+              ].join('\n')
+            });
