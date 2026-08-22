@@ -4,37 +4,37 @@ import os
 import pathlib
 
 from google.antigravity import Agent, CapabilitiesConfig, LocalAgentConfig
+from google.antigravity.hooks import policy
 
 OUT = pathlib.Path(os.environ.get("ANTIGRAVITY_REPORT", "antigravity-deployment-audit.md"))
 
 SYSTEM = """You are an independent deployment engineer auditing DTFSeeds production publication.
-You are running inside an ephemeral GitHub Actions checkout with NO production credentials and NO GitHub write credentials.
-You may inspect and modify only this disposable workspace, run tests/builds, and browse public URLs if available.
-Do not attempt to push git commits, change GitHub settings, access secrets, mutate WordPress/Hostinger, or bypass authentication.
-Your job is to challenge the deployment design, find concrete faults, and produce an actionable verification report.
-Prefer reproducible commands and evidence over speculation.
+You are running inside an ephemeral GitHub Actions checkout with no WordPress/Hostinger credentials and checkout push credentials disabled.
+You may inspect files, run commands, create temporary test files, and browse public URLs. Do not attempt to push commits, modify GitHub settings, bypass authentication, or mutate any remote service.
+Challenge the deployment design. Prefer reproducible commands and exact file/logic references over speculation.
 """
 
-PROMPT = """Audit the current checkout of dtfgenetics/Thc for the DTFSeeds public-suite deployment problem.
+PROMPT = """Audit the current checkout of dtfgenetics/Thc for the DTFSeeds no-SSH public-suite deployment.
 
-Context and target architecture:
-- Canonical WordPress ownership for / and /learn/ has already been repaired. Do NOT recommend static files for those paths.
-- The existing public-suite build assembles these production surfaces: /games/, eight browser game routes, /growlens/, /thc-grow-doc/, /tools/, /projects/, and /puzzles/.
-- The old deployment job used Hostinger SSH, but those SSH credentials are unavailable.
-- We are replacing only the transport layer with a WordPress-authenticated, allowlisted, transactional archive deployment.
-- The app-only archive packager is scripts/package-public-suite-wordpress.py.
-- The new no-SSH transactional deployer is scripts/deploy-public-suite-via-wordpress.mjs.
-- The package/deployer must never create static ownership for root index.html, learn/, or blog/.
+Production constraints:
+- WordPress owns / and /learn/. They must never regain static-file ownership.
+- The Public Suite contains /games/, eight browser game routes, /growlens/, /thc-grow-doc/, /tools/, /projects/, and /puzzles/.
+- Hostinger SSH credentials are unavailable.
+- Existing WordPress Application Password + WordPress REST + temporary Code Snippets REST bridge is the proven filesystem workaround.
+- App-only archive packager: scripts/package-public-suite-wordpress.py
+- Hardened v2 deployer source is stored in scripts/wordpress-suite-v2/ and must be assembled with scripts/assemble-wordpress-suite-v2.py.
+- Deterministic validator: .github/workflows/validate-wordpress-public-suite-bridge.yml
 
-Perform these tasks in the disposable checkout:
-1. Inspect site/deployment/public-apps.json, .github/workflows/build-dtfseeds-public-suite.yml, .github/workflows/dtfseeds-public-route-repair.yml, scripts/package-public-suite-wordpress.py, scripts/deploy-public-suite-via-wordpress.mjs, and the proven WordPress repair scripts used for filesystem-level repairs.
-2. Run relevant static checks/tests that are reasonably fast. At minimum run `node --check scripts/deploy-public-suite-via-wordpress.mjs`, Python compilation for the packager, inspect YAML validity where practical, and reason-test the archive allowlist against forbidden root/Learn/Blog ownership.
-3. Evaluate the chunked WordPress bridge for: Basic-auth application-password usage, manage_options authorization, one-time token protection, archive traversal/zip-slip, Windows/backslash paths, symlinks, file and total size limits, partial/ambiguous uploads, chunk and whole-archive checksums, manifest-to-archive equality, required files, disk exhaustion, backup/rollback, multi-target atomicity limitations, concurrency/server locks, PHP timeouts, stale temporary files, cache purge, Code Snippets cleanup, and post-deploy verification.
-4. Inspect public https://dtfseeds.com routes where network access permits. Do not mutate the site.
-5. Identify any concrete bug that could cause data loss, stale routing, unauthorized mutation, partial deployment, or inability to recover.
-6. Return a concise Markdown report with sections: Verdict, Blocking Issues, Required Safeguards, Tests Run, Recommended Implementation Order. State PASS only if the bridge is safe enough for a protected production trial; otherwise state HOLD and name exact blockers with file/logic references.
+Do this in the disposable checkout:
+1. Run `python scripts/assemble-wordpress-suite-v2.py /tmp/dtf-suite-v2.mjs` and `node --check /tmp/dtf-suite-v2.mjs`.
+2. Inspect the assembled v2 deployer, packager, public-app manifest, build workflow, deterministic validator, and the prior proven WordPress filesystem repair script.
+3. Evaluate authentication/authorization, one-time token handling, ZIP traversal/backslash/symlink/duplicate-entry defense, manifest limits, per-chunk and whole-archive hashes, required-file enforcement, disk-space checks, stale locks, partial uploads, PHP disconnect/timeouts, persisted mutation phases, backup/rollback, abort/finalize cleanup, cache purge, temporary Code Snippets cleanup, and post-deploy root/Learn ownership verification.
+4. Pay special attention to interruption between: current target -> backup rename, backup rename -> new target rename, new target rename -> state persistence, and HTTP disconnect during commit. Determine whether persisted state can recover each case without deleting the only good copy.
+5. Inspect public https://dtfseeds.com read-only if network access permits.
+6. Identify any concrete bug that could cause data loss, unauthorized mutation, stale routing, unrecoverable partial deployment, or incorrect success reporting.
+7. Return Markdown with sections: Verdict, Blocking Issues, Required Safeguards, Tests Run, Recommended Implementation Order. State PASS only if this v2 bridge is safe enough for one protected production trial. Otherwise state HOLD with exact blockers.
 
-Do not edit source files as the final solution; this run is an independent audit only. Temporary test files in the disposable workspace are allowed.
+Do not edit repository source as the final solution. Temporary files in the runner are fine.
 """
 
 async def main() -> int:
@@ -53,7 +53,11 @@ async def main() -> int:
         api_key=api_key,
         system_instructions=SYSTEM,
         capabilities=CapabilitiesConfig(),
+        policies=[policy.allow_all()],
     )
+    # The Antigravity runtime already has the explicit credential in config. Remove it
+    # from the runner environment before exposing autonomous shell access to the agent.
+    os.environ.pop("GEMINI_API_KEY", None)
 
     try:
         async with Agent(config) as agent:
@@ -75,7 +79,4 @@ async def main() -> int:
     return 0
 
 if __name__ == "__main__":
-    try:
-        raise SystemExit(asyncio.run(main()))
-    except KeyboardInterrupt:
-        raise SystemExit(130)
+    raise SystemExit(asyncio.run(main()))
