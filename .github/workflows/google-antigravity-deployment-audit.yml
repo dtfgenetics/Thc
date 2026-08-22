@@ -28,7 +28,6 @@ jobs:
     environment: production
     env:
       GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-      ANTIGRAVITY_REPORT: ${{ runner.temp }}/antigravity-deployment-audit.md
     steps:
       - uses: actions/checkout@v4
         with:
@@ -38,6 +37,18 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+
+      - name: Check Antigravity credential presence without exposing it
+        id: credential
+        shell: bash
+        run: |
+          if [[ -n "${GEMINI_API_KEY:-}" ]]; then
+            echo 'configured=true' >> "$GITHUB_OUTPUT"
+            echo 'Gemini API credential: configured'
+          else
+            echo 'configured=false' >> "$GITHUB_OUTPUT"
+            echo 'Gemini API credential: not configured'
+          fi
 
       - name: Install official Google Antigravity SDK
         shell: bash
@@ -53,6 +64,8 @@ jobs:
         id: antigravity
         continue-on-error: true
         shell: bash
+        env:
+          ANTIGRAVITY_REPORT: ${{ runner.temp }}/antigravity-deployment-audit.md
         run: |
           set +e
           python scripts/antigravity-dtf-deployment-audit.py
@@ -75,6 +88,7 @@ jobs:
         env:
           REPORT_PATH: ${{ runner.temp }}/antigravity-deployment-audit.md
           AG_EXIT: ${{ steps.antigravity.outputs.exit_code }}
+          CREDENTIAL_CONFIGURED: ${{ steps.credential.outputs.configured }}
         with:
           script: |
             const fs = require('fs');
@@ -91,10 +105,11 @@ jobs:
                 '',
                 `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
                 `Commit: \`${context.sha}\``,
+                `Gemini API credential configured: **${process.env.CREDENTIAL_CONFIGURED || 'unknown'}**`,
                 `Agent exit code: **${process.env.AG_EXIT || 'unknown'}**`,
                 '',
                 report,
                 '',
-                '_Antigravity ran in an ephemeral checkout with no WordPress/Hostinger credentials and checkout push credentials disabled. The Gemini API credential is removed from the shell environment before autonomous tools are exposed._'
+                '_Antigravity runs in an ephemeral checkout with no WordPress/Hostinger credentials and checkout push credentials disabled. The Gemini API credential is removed from the shell environment before autonomous tools are exposed._'
               ].join('\n')
             });
