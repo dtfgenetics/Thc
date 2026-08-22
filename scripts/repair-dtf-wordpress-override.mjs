@@ -254,8 +254,8 @@ function contains(text, value) { return String(text).toLowerCase().includes(valu
 
 async function verifyWordPressOrigin() {
   const checks = [
-    [`/index.php?dtf_origin_check=${encodeURIComponent(token)}`, 'Genetics. Plant science. Tools. Games. Community.', 'THC Grow Doc, genetics, cultivation education, and games in one home.'],
-    [`/index.php?pagename=learn&dtf_origin_check=${encodeURIComponent(token)}`, 'Teaching Healthy Cultivation', 'Grow education belongs in a clean, readable library.'],
+    [`/index.php?dtf_origin_check=${encodeURIComponent(token)}`, 'Genetics, cultivation education, practical tools, and original cannabis games.', 'THC Grow Doc, genetics, cultivation education, and games in one home.'],
+    [`/index.php?pagename=learn&dtf_origin_check=${encodeURIComponent(token)}`, 'Understand the plant. Build the environment. Make better decisions.', 'Grow education belongs in a clean, readable library.'],
   ];
   for (const [path, currentMarker, oldMarker] of checks) {
     let ok = false;
