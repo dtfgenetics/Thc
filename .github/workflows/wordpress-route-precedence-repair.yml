@@ -1,0 +1,144 @@
+name: Repair DTFSeeds WordPress Route Precedence
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - scripts/repair-wordpress-route-precedence.mjs
+      - .github/workflows/wordpress-route-precedence-repair.yml
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-wordpress-route-precedence
+  cancel-in-progress: false
+
+jobs:
+  repair:
+    name: transactionally-repair-wordpress-route-precedence
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    environment: production
+    env:
+      NODE_OPTIONS: --dns-result-order=ipv4first
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+
+    steps:
+      - name: Checkout trusted main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate route repair
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${WP_API_USERNAME:-}"
+          test -n "${WP_API_PASSWORD:-}"
+          node --check scripts/repair-wordpress-route-precedence.mjs
+
+      - name: Confirm WordPress HTTPS path
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3 4 5 6; do
+            if curl -4 --fail --silent --show-error --location \
+              --connect-timeout 15 --max-time 45 --retry 2 --retry-delay 2 \
+              -H 'Cache-Control: no-cache, no-store, max-age=0' \
+              "$WP_SITE_URL/wp-json/" -o "$RUNNER_TEMP/wp-index.json"; then
+              echo "WordPress HTTPS reachable on attempt $attempt"
+              exit 0
+            fi
+            sleep $((attempt * 6))
+          done
+          echo 'WordPress HTTPS remained unreachable.' >&2
+          exit 1
+
+      - name: Apply transactional route-precedence repair
+        id: repair
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/repair-wordpress-route-precedence.mjs
+
+      - name: Independent cache-busted live verification
+        id: verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          verify_page() {
+            local path="$1"
+            local marker="$2"
+            local body="$RUNNER_TEMP/route-$(printf '%s' "$path" | tr '/?' '__').html"
+            local ok=0
+            for attempt in 1 2 3 4 5 6; do
+              if curl -4 --fail --silent --show-error --location \
+                --retry 2 --retry-delay 2 --connect-timeout 15 --max-time 45 \
+                -H 'Cache-Control: no-cache, no-store, max-age=0' \
+                -H 'Pragma: no-cache' \
+                "$WP_SITE_URL${path}?dtf_route_final=${GITHUB_RUN_ID}-${attempt}" \
+                -o "$body"; then
+                if grep -Fqi -- "$marker" "$body"; then
+                  ok=1
+                  break
+                fi
+              fi
+              sleep 5
+            done
+            [[ "$ok" -eq 1 ]] || {
+              echo "Current WordPress marker missing from $path" >&2
+              head -c 2500 "$body" >&2 || true
+              return 1
+            }
+            for stale in \
+              'THC Grow Doc, genetics, cultivation education, and games in one home.' \
+              'Grow education belongs in a clean, readable library.' \
+              'MOPS, cultivation notes, THC basics' \
+              'being rebuilt' \
+              'Reserved strain card' \
+              'Tool-ready rebuild'; do
+              ! grep -Fqi -- "$stale" "$body" || {
+                echo "Stale static marker remains on $path: $stale" >&2
+                return 1
+              }
+            done
+            echo "$path verified"
+          }
+          verify_page '/' 'Genetics. Plant science. Tools. Games. Community.'
+          verify_page '/learn/' 'Explore by subject'
+          verify_page '/learn/infographics/' 'Visual plant science and cultivation library.'
+
+      - name: Report route-precedence repair
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          JOB_STATUS: ${{ job.status }}
+          REPAIR_OUTCOME: ${{ steps.repair.outcome }}
+          VERIFY_OUTCOME: ${{ steps.verify.outcome }}
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 46,
+              body: [
+                '## WordPress route-precedence repair',
+                '',
+                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                `Result: **${process.env.JOB_STATUS}**`,
+                `Transactional .htaccess repair: **${process.env.REPAIR_OUTCOME || 'not-run'}**`,
+                `Independent live verification: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
+                '',
+                'This follows the successful Codex production pattern: trusted source-controlled repair, protected production credentials, backup-before-write transaction, rollback on failed verification, and cache-busted visitor checks. It changes only the three confirmed legacy static-routing directives so WordPress owns /, /learn/, /learn/infographics/, and the other canonical WordPress sections.'
+              ].join('\n')
+            });
