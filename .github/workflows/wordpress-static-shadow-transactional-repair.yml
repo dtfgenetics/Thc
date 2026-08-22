@@ -1,0 +1,131 @@
+name: Repair DTFSeeds Static Shadows Through WordPress
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - scripts/repair-static-shadows-via-wordpress.mjs
+      - .github/workflows/wordpress-static-shadow-transactional-repair.yml
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-wordpress-static-shadow-transaction
+  cancel-in-progress: false
+
+jobs:
+  repair:
+    name: Transactionally retire stale static route shadows
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    environment: production
+    env:
+      NODE_OPTIONS: --dns-result-order=ipv4first
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate repair implementation
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${WP_API_USERNAME:-}"
+          test -n "${WP_API_PASSWORD:-}"
+          node --check scripts/repair-static-shadows-via-wordpress.mjs
+
+      - name: Execute transactional repair through authenticated WordPress
+        id: repair
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/repair-static-shadows-via-wordpress.mjs
+
+      - name: Final independent visitor verification
+        id: verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          verify() {
+            local path="$1"
+            local marker="$2"
+            local min_media="$3"
+            local body="$RUNNER_TEMP/final-$(printf '%s' "$path" | tr '/?' '__').html"
+            local ok=0
+            for attempt in 1 2 3 4 5 6; do
+              if curl -4 -fsSL --retry 3 --retry-delay 2 --connect-timeout 15 --max-time 45 \
+                -H 'Cache-Control: no-cache, no-store, max-age=0' \
+                -H 'Pragma: no-cache' \
+                "https://dtfseeds.com${path}?dtf_final_shadow_verify=${GITHUB_RUN_ID}-${attempt}" \
+                -o "$body"; then
+                if grep -Fqi -- "$marker" "$body"; then
+                  ok=1
+                  break
+                fi
+              fi
+              sleep 5
+            done
+            [[ "$ok" -eq 1 ]] || {
+              echo "Expected current marker is still absent from $path" >&2
+              head -c 2500 "$body" >&2 || true
+              return 1
+            }
+            for stale in \
+              'THC Grow Doc, genetics, cultivation education, and games in one home.' \
+              'Grow education belongs in a clean, readable library.' \
+              'MOPS, cultivation notes, THC basics' \
+              'being rebuilt' \
+              'Reserved strain card' \
+              'Tool-ready rebuild'; do
+              ! grep -Fqi -- "$stale" "$body" || {
+                echo "Stale route marker remains on $path: $stale" >&2
+                return 1
+              }
+            done
+            media="$(grep -o '/wp-content/uploads/' "$body" | wc -l | tr -d ' ')"
+            [[ "$media" -ge "$min_media" ]] || {
+              echo "$path has $media WordPress media references; expected at least $min_media" >&2
+              return 1
+            }
+            echo "$path verified ($media WordPress media references)"
+          }
+
+          verify '/' 'Genetics. Plant science. Tools. Games. Community.' 8
+          verify '/learn/' 'Explore by subject' 10
+          verify '/learn/infographics/' 'Visual plant science and cultivation library.' 30
+
+      - name: Report transactional repair
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          JOB_STATUS: ${{ job.status }}
+          REPAIR_OUTCOME: ${{ steps.repair.outcome }}
+          VERIFY_OUTCOME: ${{ steps.verify.outcome }}
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 46,
+              body: [
+                '## WordPress-side transactional static-shadow repair',
+                '',
+                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                `Result: **${process.env.JOB_STATUS}**`,
+                `Transactional repair: **${process.env.REPAIR_OUTCOME || 'not-run'}**`,
+                `Independent live verification: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
+                '',
+                'This repair uses the existing authenticated Hostinger WordPress MCP only to temporarily install/activate Code Snippets if needed. A temporary admin-only REST endpoint validates exact stale markers, stores database backups, removes only the positively identified static shadow files, auto-restores on failure, purges LiteSpeed, verifies the live WordPress pages, discards the temporary backups after success, and removes the temporary repair code. No SSH credentials are required.'
+              ].join('\n')
+            });
