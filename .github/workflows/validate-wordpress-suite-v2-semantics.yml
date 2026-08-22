@@ -27,15 +27,12 @@ jobs:
         with:
           ref: main
           persist-credentials: false
-
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-
       - name: Assemble and parse v2 bridge
         shell: bash
         run: |
@@ -51,7 +48,6 @@ jobs:
           (pathlib.Path(os.environ['RUNNER_TEMP'])/'dtf-suite-v2.php').write_text('<?php\n'+php+'\n')
           PY
           php -l "$RUNNER_TEMP/dtf-suite-v2.php"
-
       - name: Verify named safety and recovery semantics
         shell: bash
         run: |
@@ -81,6 +77,10 @@ jobs:
             'stale touched lock refused': 'dtf_stale_touched_lock' in text,
             'ambiguous commit polls state': 'Polling persisted server state before any recovery action.' in text,
             'failure recovery reads state': 'async function recoverFailure()' in text and 'const state = await getState();' in text,
+            'authenticated snippet safe mode': '?snippets-safe-mode=1' in text,
+            'stale temp snippet filter': "startsWith('DTF Public Suite Deploy V2 ')" in text,
+            'safe-mode stale cleanup': 'removeStaleDeploymentSnippetsSafeMode' in text,
+            'safe-mode final cleanup fallback': "if (await waitForSnippetApi(true)) suffix = '?snippets-safe-mode=1';" in text,
             'root static forbidden': "name === 'index.html'" in text,
             'learn static forbidden': "strpos($name, 'learn/')" in text,
             'blog static forbidden': "strpos($name, 'blog/')" in text,
@@ -91,7 +91,6 @@ jobs:
           for name,ok in checks.items(): print(f'{name}: {"PASS" if ok else "FAIL"}')
           if missing: raise SystemExit('missing controls: '+', '.join(missing))
           PY
-
       - name: Report v2 semantic gate
         if: always()
         uses: actions/github-script@v7
@@ -100,16 +99,11 @@ jobs:
         with:
           script: |
             await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: 46,
+              owner: context.repo.owner, repo: context.repo.repo, issue_number: 46,
               body: [
-                '## Hardened WordPress suite v2 semantic gate',
-                '',
+                '## Hardened WordPress suite v2 semantic gate','',
                 `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-                `Commit: \`${context.sha}\``,
-                `Result: **${process.env.STATUS}**`,
-                '',
-                'This read-only gate reassembles the canonical v2 source by SHA-256, validates Node and embedded PHP syntax, explicitly rejects malformed REST registration, requires every v2 endpoint, and verifies authorization, archive-safety, persisted mutation-phase, interrupted-commit recovery, rollback/abort/finalize, stale-lock, and WordPress route-ownership controls.'
+                `Commit: \`${context.sha}\``, `Result: **${process.env.STATUS}**`,'',
+                'This read-only gate reassembles the canonical v2 source by SHA-256, validates Node and embedded PHP syntax, rejects malformed REST registration, requires every v2 endpoint, and verifies archive safety, transaction recovery, authenticated Code Snippets safe-mode stale-temp recovery/cleanup, and WordPress route ownership.'
               ].join('\n')
             });
