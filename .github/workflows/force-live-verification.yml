@@ -16,115 +16,73 @@ permissions:
 jobs:
   dispatch:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 90
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v4
         with:
           ref: main
+          persist-credentials: false
 
-      - name: Validate registered targets
+      - name: Validate protected deployment target
         shell: bash
         run: |
           set -euo pipefail
           for file in \
+            .github/workflows/deploy-public-suite-wordpress-v2.yml \
             .github/workflows/verify-dtfseeds-production-cutover.yml \
             .github/workflows/verify-dtfseeds-feature-surface.yml \
-            .github/workflows/google-antigravity-deployment-audit.yml \
             .github/workflows/validate-wordpress-public-suite-bridge.yml; do
             test -s "$file"
             grep -Fq 'workflow_dispatch:' "$file"
           done
+          python scripts/assemble-wordpress-suite-v2.py "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          node --check "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
 
-      - name: Dispatch definitive live verifier
-        shell: bash
-        run: |
-          set -euo pipefail
-          gh workflow run verify-dtfseeds-production-cutover.yml --ref main
-
-      - name: Dispatch and wait for feature surface audit
-        id: feature
+      - name: Dispatch and wait for protected Public Suite deployment v2
+        id: deploy
         shell: bash
         run: |
           set -euo pipefail
           before="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-          gh workflow run verify-dtfseeds-feature-surface.yml --ref main
+          gh workflow run deploy-public-suite-wordpress-v2.yml --ref main
           run_id=''
-          for attempt in $(seq 1 20); do
-            run_id="$(gh run list --workflow verify-dtfseeds-feature-surface.yml --branch main --event workflow_dispatch --limit 10 --json databaseId,createdAt --jq '[.[] | select(.createdAt >= "'"$before"'")] | sort_by(.createdAt) | reverse | .[0].databaseId // empty')"
+          for attempt in $(seq 1 40); do
+            run_id="$(gh run list --workflow deploy-public-suite-wordpress-v2.yml --branch main --event workflow_dispatch --limit 20 --json databaseId,createdAt --jq '[.[] | select(.createdAt >= "'"$before"'")] | sort_by(.createdAt) | reverse | .[0].databaseId // empty')"
             [[ -n "$run_id" ]] && break
             sleep 3
           done
-          [[ -n "$run_id" ]] || { echo 'Could not identify newly dispatched feature audit run.' >&2; exit 1; }
+          [[ -n "$run_id" ]] || { echo 'Could not identify newly dispatched protected v2 deployment run.' >&2; exit 1; }
           echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+          echo "Protected v2 deployment run: $run_id"
           gh run watch "$run_id" --exit-status
 
-      - name: Dispatch and wait for Google Antigravity audit
-        id: antigravity
-        continue-on-error: true
-        shell: bash
-        run: |
-          set -euo pipefail
-          before="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-          gh workflow run google-antigravity-deployment-audit.yml --ref main
-          run_id=''
-          for attempt in $(seq 1 30); do
-            run_id="$(gh run list --workflow google-antigravity-deployment-audit.yml --branch main --event workflow_dispatch --limit 10 --json databaseId,createdAt --jq '[.[] | select(.createdAt >= "'"$before"'")] | sort_by(.createdAt) | reverse | .[0].databaseId // empty')"
-            [[ -n "$run_id" ]] && break
-            sleep 3
-          done
-          [[ -n "$run_id" ]] || { echo 'Could not identify newly dispatched Antigravity run.' >&2; exit 1; }
-          echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
-          gh run watch "$run_id" --exit-status
-
-      - name: Dispatch and wait for no-SSH bridge validation
-        id: bridge
-        continue-on-error: true
-        shell: bash
-        run: |
-          set -euo pipefail
-          before="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-          gh workflow run validate-wordpress-public-suite-bridge.yml --ref main
-          run_id=''
-          for attempt in $(seq 1 30); do
-            run_id="$(gh run list --workflow validate-wordpress-public-suite-bridge.yml --branch main --event workflow_dispatch --limit 10 --json databaseId,createdAt --jq '[.[] | select(.createdAt >= "'"$before"'")] | sort_by(.createdAt) | reverse | .[0].databaseId // empty')"
-            [[ -n "$run_id" ]] && break
-            sleep 3
-          done
-          [[ -n "$run_id" ]] || { echo 'Could not identify newly dispatched bridge validation run.' >&2; exit 1; }
-          echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
-          gh run watch "$run_id" --exit-status
-
-      - name: Report verifier and deployment gates
+      - name: Report trusted production dispatch
         if: always()
         uses: actions/github-script@v7
         env:
           STATUS: ${{ job.status }}
-          FEATURE_RUN_ID: ${{ steps.feature.outputs.run_id }}
-          FEATURE_OUTCOME: ${{ steps.feature.outcome }}
-          AG_RUN_ID: ${{ steps.antigravity.outputs.run_id }}
-          AG_OUTCOME: ${{ steps.antigravity.outcome }}
-          BRIDGE_RUN_ID: ${{ steps.bridge.outputs.run_id }}
-          BRIDGE_OUTCOME: ${{ steps.bridge.outcome }}
+          DEPLOY_RUN_ID: ${{ steps.deploy.outputs.run_id }}
+          DEPLOY_OUTCOME: ${{ steps.deploy.outcome }}
         with:
           script: |
-            const link = id => id ? `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${id}` : 'not-resolved';
+            const link = process.env.DEPLOY_RUN_ID
+              ? `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${process.env.DEPLOY_RUN_ID}`
+              : 'not-resolved';
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: 46,
               body: [
-                '## DTFSeeds trusted verification dispatcher',
+                '## Trusted protected Public Suite v2 dispatch',
                 '',
                 `Dispatcher: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-                `Status: **${process.env.STATUS}**`,
-                `Feature audit: **${process.env.FEATURE_OUTCOME || 'not-run'}** — ${link(process.env.FEATURE_RUN_ID)}`,
-                `Google Antigravity audit: **${process.env.AG_OUTCOME || 'not-run'}** — ${link(process.env.AG_RUN_ID)}`,
-                `No-SSH bridge validation: **${process.env.BRIDGE_OUTCOME || 'not-run'}** — ${link(process.env.BRIDGE_RUN_ID)}`,
+                `Dispatcher status: **${process.env.STATUS}**`,
+                `Protected deployment: **${process.env.DEPLOY_OUTCOME || 'not-run'}** — ${link}`,
                 '',
-                'All three child gates are read-only. No WordPress or Hostinger production mutation occurs in this dispatcher.'
+                'This dispatcher launches the protected production workflow. That child workflow builds a fresh suite, deploys only allowlisted app routes through the transactional WordPress bridge, preserves WordPress ownership of /, /learn/, and /blog/, and runs independent live verification.'
               ].join('\n')
             });
 
-# Trusted-main trigger: Google Antigravity + no-SSH bridge validation.
+# Trusted-main trigger: protected WordPress v2 Public Suite publication.
