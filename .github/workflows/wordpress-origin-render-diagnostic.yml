@@ -1,0 +1,56 @@
+name: Diagnose DTFSeeds WordPress Origin Render
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - scripts/diagnose-wordpress-origin-render.mjs
+      - .github/workflows/wordpress-origin-render-diagnostic.yml
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: production
+    env:
+      NODE_OPTIONS: --dns-result-order=ipv4first
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Inspect direct WordPress render and templates
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/diagnose-wordpress-origin-render.mjs
+          node scripts/diagnose-wordpress-origin-render.mjs | tee "$RUNNER_TEMP/origin-render.json"
+      - name: Report origin render diagnostic
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs');
+            let r={}; const p=process.env.RUNNER_TEMP+'/origin-render.json';
+            if(fs.existsSync(p)){try{r=JSON.parse(fs.readFileSync(p,'utf8').trim().split(/\r?\n/).pop())}catch{}}
+            const render=(r.renders||[]).map(x=>`- ${x.path}: HTTP ${x.status}, final=${x.finalUrl}, current-home=${x.markers?.currentHome}, old-home=${x.markers?.oldHome}, media=${x.wpMediaRefs}`);
+            const tpl=(r.templates||[]).map(x=>`- ${x.id}: slug=${x.slug}, source=${x.source}, post-content=${x.hasPostContent}, query=${x.hasQuery}, current-home=${x.markers?.currentHome}, old-home=${x.markers?.oldHome}`);
+            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body:[
+              '## WordPress origin/render diagnostic','',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Job: **${{ job.status }}**`,
+              `Home page ID: **${r.home?.id ?? 'unknown'}**, current-marker=${r.home?.markers?.currentHome ?? 'unknown'}, old-marker=${r.home?.markers?.oldHome ?? 'unknown'}`,
+              '', 'Direct WordPress renders:', ...(render.length?render:['- unavailable']),
+              '', 'Relevant templates:', ...(tpl.length?tpl:['- none returned']),
+              '', 'Read-only: no WordPress page, template, plugin, cache, or filesystem mutation is performed.'
+            ].join('\n')});
