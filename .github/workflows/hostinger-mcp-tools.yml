@@ -12,6 +12,10 @@ permissions:
   contents: read
   issues: write
 
+concurrency:
+  group: dtfseeds-hostinger-mcp-tool-audit
+  cancel-in-progress: true
+
 jobs:
   list:
     runs-on: ubuntu-latest
@@ -35,6 +39,16 @@ jobs:
           set -euo pipefail
           node --check scripts/list-hostinger-mcp-tools.mjs
           node scripts/list-hostinger-mcp-tools.mjs
+
+      - name: Upload sanitized tool summary
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hostinger-mcp-tools-${{ github.run_id }}
+          path: /tmp/hostinger-mcp-tools/summary.json
+          if-no-files-found: warn
+          retention-days: 7
+
       - name: Report MCP tool enumeration
         if: always()
         uses: actions/github-script@v7
@@ -43,6 +57,20 @@ jobs:
           LIST_OUTCOME: ${{ steps.list.outcome }}
         with:
           script: |
+            const fs = require('fs');
+            let detail = 'No sanitized tool summary was produced.';
+            const path = '/tmp/hostinger-mcp-tools/summary.json';
+            if (fs.existsSync(path)) {
+              const report = JSON.parse(fs.readFileSync(path, 'utf8'));
+              const lines = (report.tools || []).map((tool, index) => {
+                const properties = Object.keys(tool.inputSchema?.properties || {});
+                return `${index + 1}. \`${tool.name}\` — ${tool.description || 'No description'}${properties.length ? `\n   Inputs: ${properties.map(p => `\`${p}\``).join(', ')}` : ''}`;
+              });
+              detail = [
+                `Authenticated tools discovered: **${report.toolCount || 0}**`,
+                ...lines
+              ].join('\n');
+            }
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -54,6 +82,8 @@ jobs:
                 `Result: **${process.env.JOB_STATUS}**`,
                 `Tool listing: **${process.env.LIST_OUTCOME || 'not-run'}**`,
                 '',
-                'Read-only MCP initialize + tools/list. No MCP tool is invoked.'
+                detail,
+                '',
+                'Read-only MCP initialize + tools/list. No MCP tool was invoked and no credential values are included.'
               ].join('\n')
             });
