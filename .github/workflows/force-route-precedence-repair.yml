@@ -19,11 +19,13 @@ concurrency:
 jobs:
   dispatch:
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 45
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
 
       - name: Validate protected repair workflows
         shell: bash
@@ -31,26 +33,36 @@ jobs:
           set -euo pipefail
           test -s .github/workflows/wordpress-route-precedence-repair.yml
           test -s scripts/repair-wordpress-route-precedence.mjs
+          test -s scripts/run-route-precedence-repair-current-markers.sh
           test -s .github/workflows/wordpress-static-shadow-transactional-repair.yml
           test -s scripts/repair-static-shadows-via-wordpress.mjs
+          test -s scripts/run-static-shadow-repair-resilient.mjs
+          test -s scripts/run-static-shadow-repair-current-markers.sh
           grep -Fq 'workflow_dispatch:' .github/workflows/wordpress-route-precedence-repair.yml
           grep -Fq 'workflow_dispatch:' .github/workflows/wordpress-static-shadow-transactional-repair.yml
           node --check scripts/repair-wordpress-route-precedence.mjs
           node --check scripts/repair-static-shadows-via-wordpress.mjs
+          node --check scripts/run-static-shadow-repair-resilient.mjs
+          bash -n scripts/run-route-precedence-repair-current-markers.sh
+          bash -n scripts/run-static-shadow-repair-current-markers.sh
 
       - name: Dispatch and wait for protected route-precedence repair
         id: route
         shell: bash
         run: |
           set -euo pipefail
+          before="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
           gh workflow run wordpress-route-precedence-repair.yml --ref main
           route_id=''
           for attempt in $(seq 1 20); do
-            route_id="$(gh run list --workflow wordpress-route-precedence-repair.yml --branch main --event workflow_dispatch --limit 1 --json databaseId --jq '.[0].databaseId // empty')"
-            if [[ -n "$route_id" ]]; then break; fi
+            route_id="$(gh run list --workflow wordpress-route-precedence-repair.yml --branch main --event workflow_dispatch --limit 10 --json databaseId,createdAt --jq '[.[] | select(.createdAt >= "'"$before"'")] | sort_by(.createdAt) | reverse | .[0].databaseId // empty')"
+            [[ -n "$route_id" ]] && break
             sleep 3
           done
-          test -n "$route_id"
+          if [[ -z "$route_id" ]]; then
+            echo 'Could not identify newly dispatched route-precedence run.' >&2
+            exit 1
+          fi
           echo "run_id=$route_id" >> "$GITHUB_OUTPUT"
           echo "Route repair run: $route_id"
           gh run watch "$route_id" --exit-status
@@ -60,14 +72,18 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          before="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
           gh workflow run wordpress-static-shadow-transactional-repair.yml --ref main
           shadow_id=''
           for attempt in $(seq 1 20); do
-            shadow_id="$(gh run list --workflow wordpress-static-shadow-transactional-repair.yml --branch main --event workflow_dispatch --limit 1 --json databaseId --jq '.[0].databaseId // empty')"
-            if [[ -n "$shadow_id" ]]; then break; fi
+            shadow_id="$(gh run list --workflow wordpress-static-shadow-transactional-repair.yml --branch main --event workflow_dispatch --limit 10 --json databaseId,createdAt --jq '[.[] | select(.createdAt >= "'"$before"'")] | sort_by(.createdAt) | reverse | .[0].databaseId // empty')"
+            [[ -n "$shadow_id" ]] && break
             sleep 3
           done
-          test -n "$shadow_id"
+          if [[ -z "$shadow_id" ]]; then
+            echo 'Could not identify newly dispatched static-shadow run.' >&2
+            exit 1
+          fi
           echo "run_id=$shadow_id" >> "$GITHUB_OUTPUT"
           echo "Static-shadow cleanup run: $shadow_id"
           gh run watch "$shadow_id" --exit-status
@@ -82,7 +98,7 @@ jobs:
             local marker="$2"
             local body="$RUNNER_TEMP/final-$(printf '%s' "$path" | tr '/?' '__').html"
             local ok=0
-            for attempt in 1 2 3 4 5 6; do
+            for attempt in 1 2 3 4 5 6 7 8; do
               if curl -4 -fsSL --retry 3 --retry-delay 2 --connect-timeout 15 --max-time 45 \
                 -H 'Cache-Control: no-cache, no-store, max-age=0' \
                 -H 'Pragma: no-cache' \
@@ -102,9 +118,10 @@ jobs:
               'Tool-ready rebuild'; do
               ! grep -Fqi -- "$stale" "$body" || { echo "Stale marker remains on $path: $stale" >&2; return 1; }
             done
+            echo "$path final visitor verification passed."
           }
-          verify '/' 'Genetics. Plant science. Tools. Games. Community.'
-          verify '/learn/' 'Explore by subject'
+          verify '/' 'Genetics, cultivation education, practical tools, and original cannabis games.'
+          verify '/learn/' 'Understand the plant. Build the environment. Make better decisions.'
           verify '/learn/infographics/' 'Visual plant science and cultivation library.'
 
       - name: Report Codex-style production cutover
@@ -133,8 +150,8 @@ jobs:
                 `Static-shadow retirement: **${process.env.SHADOW_OUTCOME || 'not-run'}** — ${runLink(process.env.SHADOW_RUN)}`,
                 `Final visitor verification: **${process.env.FINAL_OUTCOME || 'not-run'}**`,
                 '',
-                'This reproduces the successful Codex production method: trusted-main dispatcher → protected production workflow → transactional backup/write/rollback → dependent cleanup → independent cache-busted verification.'
+                'This reproduces the successful Codex production method: trusted-main dispatcher → protected production workflow → transactional backup/write/rollback → dependent cleanup → independent cache-busted verification. Run resolution is scoped to newly dispatched jobs, and verification uses the canonical Home/Learn headlines stored in GitHub.'
               ].join('\n')
             });
 
-# Trusted-main orchestration trigger.
+# Trusted-main orchestration trigger: canonical cutover.
