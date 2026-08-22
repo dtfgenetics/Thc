@@ -21,19 +21,29 @@ jobs:
       GH_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
 
-      - name: Validate verifier
+      - name: Validate verifiers
         shell: bash
         run: |
           set -euo pipefail
           test -s .github/workflows/verify-dtfseeds-production-cutover.yml
+          test -s .github/workflows/verify-dtfseeds-feature-surface.yml
           grep -Fq 'workflow_dispatch:' .github/workflows/verify-dtfseeds-production-cutover.yml
+          grep -Fq 'workflow_dispatch:' .github/workflows/verify-dtfseeds-feature-surface.yml
 
       - name: Dispatch definitive live verifier
         shell: bash
         run: |
           set -euo pipefail
           gh workflow run verify-dtfseeds-production-cutover.yml --ref main
+
+      - name: Dispatch feature surface audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh workflow run verify-dtfseeds-feature-surface.yml --ref main
 
       - name: Report verifier dispatch
         if: always()
@@ -47,12 +57,16 @@ jobs:
               repo: context.repo.repo,
               issue_number: 46,
               body: [
-                '## Definitive live-verifier dispatch',
+                '## DTFSeeds live-verifier dispatch',
                 '',
                 `Dispatcher: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
                 `Status: **${process.env.STATUS}**`,
-                'Requested: Verify DTFSeeds Production Cutover',
+                'Requested:',
+                '- Verify DTFSeeds Production Cutover',
+                '- Verify DTFSeeds Feature Surface',
                 '',
-                'Read-only verification only; this dispatcher does not mutate WordPress or Hostinger production state.'
+                'Both targets are read-only fresh-runner audits; this dispatcher does not mutate WordPress or Hostinger production state.'
               ].join('\n')
             });
+
+# Trusted-main trigger: post-cutover feature audit.
