@@ -1,0 +1,125 @@
+;
+    $targets = [
+        'games/index.html','games/dtf-route.css','games/high-land','games/high-iq','games/high-life',
+        'games/grower-conversations','games/seed-man-platformer','games/weedopolis','games/crossword','games/who-took-it',
+        'growlens','thc-grow-doc','tools','projects','puzzles'
+    ];
+    $required = [
+        'games/index.html','games/high-land/index.html','games/high-iq/index.html','games/high-life/index.html',
+        'games/grower-conversations/index.html','games/seed-man-platformer/index.html','games/weedopolis/index.html',
+        'games/crossword/index.html','games/who-took-it/index.html','growlens/index.html','thc-grow-doc/index.html',
+        'thc-grow-doc/api/visual-observations.php','tools/index.html','projects/index.html','puzzles/current.json'
+    ];
+    $exact_files = ['games/index.html','games/dtf-route.css'];
+    $prefixes = [
+        'games/high-land/','games/high-iq/','games/high-life/','games/grower-conversations/','games/seed-man-platformer/',
+        'games/weedopolis/','games/crossword/','games/who-took-it/','growlens/','thc-grow-doc/','tools/','projects/','puzzles/'
+    ];
+
+    $state_key = static fn($id) => 'dtf_suite_state_' . $id;
+    $safe_id = static fn($id) => is_string($id) && preg_match('/^[a-f0-9]{24}$/', $id);
+    $safe_sha = static fn($sha) => is_string($sha) && preg_match('/^[a-f0-9]{64}$/', $sha);
+    $allowed_file = static function ($rel) use ($exact_files, $prefixes) {
+        if (in_array($rel, $exact_files, true)) return true;
+        foreach ($prefixes as $prefix) if (strpos($rel, $prefix) === 0) return true;
+        return false;
+    };
+    $allowed_dir = static function ($rel) use ($prefixes) {
+        if ($rel === 'games/') return true;
+        foreach ($prefixes as $prefix) if ($rel === $prefix || strpos($rel, $prefix) === 0 || strpos($prefix, $rel) === 0) return true;
+        return false;
+    };
+    $safe_name = static function ($name) {
+        if (!is_string($name) || $name === '' || strpos($name, "\0") !== false || strpos($name, '\\') !== false) return false;
+        if ($name[0] === '/' || preg_match('/^[A-Za-z]:\//', $name)) return false;
+        $trimmed = rtrim($name, '/');
+        if ($trimmed === '') return false;
+        foreach (explode('/', $trimmed) as $part) if ($part === '' || $part === '.' || $part === '..') return false;
+        return true;
+    };
+    $remove_tree = null;
+    $remove_tree = static function ($path) use (&$remove_tree) {
+        if (!file_exists($path) && !is_link($path)) return true;
+        if (is_link($path) || is_file($path)) return @unlink($path);
+        if (!is_dir($path)) return false;
+        $items = scandir($path); if ($items === false) return false;
+        foreach ($items as $item) {
+            if ($item === '.' || $item === '..') continue;
+            if (!$remove_tree($path . DIRECTORY_SEPARATOR . $item)) return false;
+        }
+        return @rmdir($path);
+    };
+    $dir_size = null;
+    $dir_size = static function ($path) use (&$dir_size) {
+        if (is_link($path)) return 0;
+        if (is_file($path)) return (int) @filesize($path);
+        if (!is_dir($path)) return 0;
+        $sum = 0; $items = scandir($path); if ($items === false) return 0;
+        foreach ($items as $item) if ($item !== '.' && $item !== '..') $sum += $dir_size($path . DIRECTORY_SEPARATOR . $item);
+        return $sum;
+    };
+    $ensure_dir = static fn($path) => is_dir($path) || wp_mkdir_p($path);
+    $owns_lock = static function ($id) use ($lock_key) {
+        $lock = get_option($lock_key, []);
+        return is_array($lock) && ($lock['id'] ?? '') === $id;
+    };
+
+    $restore_record = static function ($record, $backup_dir) use ($remove_tree) {
+        $rel = (string) ($record['rel'] ?? '');
+        $had = !empty($record['had_backup']);
+        $phase = (string) ($record['phase'] ?? '');
+        if ($rel === '') return true;
+        $dst = wp_normalize_path(ABSPATH . $rel);
+        $bak = wp_normalize_path($backup_dir . '/' . $rel);
+        $bak_exists = file_exists($bak) || is_link($bak);
+        $dst_exists = file_exists($dst) || is_link($dst);
+        if ($had) {
+            if ($bak_exists) {
+                if ($dst_exists && !$remove_tree($dst)) return false;
+                if (!is_dir(dirname($dst)) && !wp_mkdir_p(dirname($dst))) return false;
+                return @rename($bak, $dst);
+            }
+            if ($phase === 'prepared' && $dst_exists) return true;
+            return false;
+        }
+        if ($dst_exists && !$remove_tree($dst)) return false;
+        return true;
+    };
+
+    $rollback_state = static function ($id, $state) use ($restore_record, $state_key, $lock_key) {
+        $backup_dir = (string) ($state['backup_dir'] ?? '');
+        if ($backup_dir === '') return new WP_Error('dtf_rollback_no_backup', 'Rollback metadata is incomplete.', ['status' => 500]);
+        $current = is_array($state['current'] ?? null) ? $state['current'] : null;
+        if ($current && !$restore_record($current, $backup_dir)) return new WP_Error('dtf_rollback_current', 'Could not recover the target active when deployment was interrupted.', ['status' => 500, 'path' => $current['rel'] ?? '']);
+        $applied = is_array($state['applied'] ?? null) ? $state['applied'] : [];
+        for ($i = count($applied) - 1; $i >= 0; $i--) {
+            if (!$restore_record($applied[$i], $backup_dir)) return new WP_Error('dtf_rollback_applied', 'Could not restore a previously swapped target.', ['status' => 500, 'path' => $applied[$i]['rel'] ?? '']);
+        }
+        $state['current'] = null;
+        $state['status'] = 'rolled_back';
+        $state['rolled_back_at'] = gmdate('c');
+        update_option($state_key($id), $state, false);
+        $lock = get_option($lock_key, []);
+        if (is_array($lock) && ($lock['id'] ?? '') === $id) delete_option($lock_key);
+        if (function_exists('wp_cache_flush')) wp_cache_flush();
+        return rest_ensure_response(['ok' => true, 'status' => 'rolled_back']);
+    };
+
+    $cleanup_state = static function ($id, $state) use ($remove_tree, $state_key, $lock_key) {
+        $work = (string) ($state['work_dir'] ?? '');
+        if ($work !== '' && (file_exists($work) || is_link($work)) && !$remove_tree($work)) return new WP_Error('dtf_cleanup_work', 'Could not remove deployment workspace.', ['status' => 500]);
+        delete_option($state_key($id));
+        $lock = get_option($lock_key, []);
+        if (is_array($lock) && ($lock['id'] ?? '') === $id) delete_option($lock_key);
+        return rest_ensure_response(['ok' => true, 'status' => 'cleaned']);
+    };
+
+    register_rest_route('dtf-suite/v2', '/state/(?P<id>[a-f0-9]{24})', [
+        'methods' => 'GET', 'permission_callback' => $permission,
+        'callback' => static function (WP_REST_Request $r) use ($state_key) {
+            $state = get_option($state_key((string) $r['id']), []);
+            return rest_ensure_response(is_array($state) ? $state : []);
+        },
+    ]);
+
+    register_
