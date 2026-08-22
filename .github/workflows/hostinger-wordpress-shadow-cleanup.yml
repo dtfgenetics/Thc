@@ -230,3 +230,5 @@ jobs:
                 'The job uses the existing Hostinger SSH credentials from the growlens-production environment, backs up each positively identified stale file before removal, flushes WordPress rewrites/cache, and verifies Home, Learn, and Infographics.'
               ].join('\n')
             });
+
+# Triggered to reuse the existing growlens-production Hostinger connection on 2026-08-21.
