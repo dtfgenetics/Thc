@@ -14,7 +14,7 @@ const auth = `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}
 const baseHeaders = {
   Authorization: auth,
   Accept: 'application/json',
-  'User-Agent': 'DTFSeeds-WordPress-Presentation-Reconciler/1.1'
+  'User-Agent': 'DTFSeeds-WordPress-Presentation-Reconciler/1.2'
 };
 
 const stamp = new Date().toISOString().replace(/[-:.]/g, '').replace('Z', 'Z');
@@ -62,7 +62,7 @@ async function request(path, options = {}) {
       ...(options.headers || {})
     },
     redirect: 'follow',
-    signal: AbortSignal.timeout(30_000)
+    signal: AbortSignal.timeout(45_000)
   });
   const text = await response.text();
   let body = null;
@@ -79,6 +79,20 @@ async function updateResource(collection, id, content) {
   return request(`/wp-json/wp/v2/${collection}/${encodeURIComponent(id)}`, {
     method: 'POST',
     body: JSON.stringify({ content, status: 'publish' })
+  });
+}
+
+async function createTemplate({ slug, theme, content, title }) {
+  return request('/wp-json/wp/v2/templates', {
+    method: 'POST',
+    body: JSON.stringify({
+      slug,
+      theme,
+      type: 'wp_template',
+      content,
+      title,
+      status: 'publish'
+    })
   });
 }
 
@@ -136,6 +150,14 @@ const canonicalPageTemplate = `<!-- wp:template-part {"slug":"header","theme":"h
 <!-- /wp:group -->
 <!-- wp:template-part {"slug":"footer","theme":"hostinger-ai-theme","tagName":"footer"} /-->`;
 
+// The configured static Home page contains its own responsive/full-width visual shell.
+// Keep the front-page template deliberately thin so the page content is not constrained twice.
+const canonicalFrontPageTemplate = `<!-- wp:template-part {"slug":"header","theme":"hostinger-ai-theme","tagName":"header"} /-->
+<!-- wp:group {"tagName":"main","layout":{"type":"default"}} -->
+<main class="wp-block-group"><!-- wp:post-content {"layout":{"type":"default"}} /--></main>
+<!-- /wp:group -->
+<!-- wp:template-part {"slug":"footer","theme":"hostinger-ai-theme","tagName":"footer"} /-->`;
+
 const staleTemplateMarkers = [
   'seeds, cultivation education, and thc games in one home',
   'thc grow doc, genetics, cultivation education, and games in one home',
@@ -156,26 +178,65 @@ if (!footer?.id) throw new Error('Active Hostinger footer template part was not 
 const mutations = [];
 const planned = [];
 
-if (!headerCompliant(raw(header.content))) planned.push({ type: 'template-part', id: header.id, slug: 'header', content: canonicalHeader });
-if (!footerCompliant(raw(footer.content))) planned.push({ type: 'template-part', id: footer.id, slug: 'footer', content: canonicalFooter });
+if (!headerCompliant(raw(header.content))) planned.push({ action: 'update', type: 'template-part', id: header.id, slug: 'header', content: canonicalHeader });
+if (!footerCompliant(raw(footer.content))) planned.push({ action: 'update', type: 'template-part', id: footer.id, slug: 'footer', content: canonicalFooter });
 
-for (const template of Array.isArray(templates) ? templates : []) {
-  if (template.theme !== themeSlug || !template.id) continue;
+const activeTemplates = (Array.isArray(templates) ? templates : []).filter((template) => template.theme === themeSlug && template.id);
+const frontPageTemplate = activeTemplates.find((template) => String(template.slug || '') === 'front-page');
+
+if (!frontPageTemplate) {
+  planned.push({
+    action: 'create',
+    type: 'template',
+    id: null,
+    slug: 'front-page',
+    content: canonicalFrontPageTemplate,
+    title: 'Front Page',
+    reason: 'missing-static-front-page-template'
+  });
+}
+
+for (const template of activeTemplates) {
   const content = raw(template.content);
   const slug = String(template.slug || '');
   const stale = hasAny(content, staleTemplateMarkers);
   const pageShellWithoutContent = template.source === 'custom' && ['front-page', 'page'].includes(slug) && !content.includes('wp:post-content');
   if (stale || pageShellWithoutContent) {
-    planned.push({ type: 'template', id: template.id, slug, content: canonicalPageTemplate, reason: stale ? 'stale-hardcoded-content' : 'custom-page-shell-without-post-content' });
+    planned.push({
+      action: 'update',
+      type: 'template',
+      id: template.id,
+      slug,
+      content: slug === 'front-page' ? canonicalFrontPageTemplate : canonicalPageTemplate,
+      reason: stale ? 'stale-hardcoded-content' : 'custom-page-shell-without-post-content'
+    });
   }
 }
 
 if (apply) {
   for (const change of planned) {
-    const collection = change.type === 'template' ? 'templates' : 'template-parts';
-    const result = await updateResource(collection, change.id, change.content);
-    mutations.push({ type: change.type, id: change.id, slug: change.slug, wpId: result?.wp_id || null, reason: change.reason || 'canonical-shell' });
-    console.log(`Updated ${change.type} ${change.id}`);
+    let result;
+    if (change.action === 'create' && change.type === 'template') {
+      result = await createTemplate({
+        slug: change.slug,
+        theme: themeSlug,
+        content: change.content,
+        title: change.title || 'Front Page'
+      });
+      console.log(`Created template ${result?.id || `${themeSlug}//${change.slug}`}`);
+    } else {
+      const collection = change.type === 'template' ? 'templates' : 'template-parts';
+      result = await updateResource(collection, change.id, change.content);
+      console.log(`Updated ${change.type} ${change.id}`);
+    }
+    mutations.push({
+      action: change.action,
+      type: change.type,
+      id: result?.id || change.id || null,
+      slug: change.slug,
+      wpId: result?.wp_id || null,
+      reason: change.reason || 'canonical-shell'
+    });
   }
 } else {
   console.log(`Dry run: ${planned.length} presentation mutations planned.`);
@@ -188,10 +249,13 @@ const [afterTemplates, afterParts] = await Promise.all([
 
 const afterHeader = (afterParts || []).find((item) => item.theme === themeSlug && item.slug === 'header');
 const afterFooter = (afterParts || []).find((item) => item.theme === themeSlug && item.slug === 'footer');
+const afterFrontPage = (afterTemplates || []).find((item) => item.theme === themeSlug && item.slug === 'front-page');
 if (apply && !afterHeader?.id) throw new Error('Header verification failed: active header template part disappeared after update');
 if (apply && !afterFooter?.id) throw new Error('Footer verification failed: active footer template part disappeared after update');
 if (apply && !headerCompliant(raw(afterHeader?.content))) throw new Error('Header verification failed after update: canonical navigation is not present');
 if (apply && !footerCompliant(raw(afterFooter?.content))) throw new Error('Footer verification failed after update: canonical DTF footer markers are not present');
+if (apply && !afterFrontPage?.id) throw new Error('Front-page template verification failed: template was not created');
+if (apply && !raw(afterFrontPage?.content).includes('wp:post-content')) throw new Error('Front-page template verification failed: wp:post-content is missing');
 
 const remainingStaleTemplates = (afterTemplates || []).filter((template) => template.theme === themeSlug && hasAny(raw(template.content), staleTemplateMarkers));
 if (apply && remainingStaleTemplates.length) {
@@ -210,7 +274,9 @@ const report = {
   mutations,
   verification: {
     headerCompliant: headerCompliant(raw(afterHeader?.content)),
-    footerCompliant: footerCompliant(raw(afterFooter?.content))
+    footerCompliant: footerCompliant(raw(afterFooter?.content)),
+    frontPageTemplatePresent: Boolean(afterFrontPage?.id),
+    frontPageRendersPostContent: raw(afterFrontPage?.content).includes('wp:post-content')
   },
   remainingStaleTemplates: remainingStaleTemplates.map((item) => ({ id: item.id, slug: item.slug, source: item.source }))
 };
