@@ -73,3 +73,5 @@ jobs:
               '', ...(rows.length?rows:['No public fingerprints were captured.']),
               '', 'This diagnostic always restores the positively identified static shadow files before exiting; it does not finalize the cutover.'
             ].filter(Boolean).join('\n')});
+
+# Registered diagnostic trigger: 2026-08-21
