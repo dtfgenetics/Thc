@@ -1,0 +1,148 @@
+name: Deploy THC Education Wave 2
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/publish-wordpress-education-wave2.mjs'
+      - '.github/workflows/deploy-thc-education-wave2.yml'
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-thc-education-wave2
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: production
+    env:
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      BACKUP_ROOT: /tmp/dtf-education-wave2
+    steps:
+      - name: Checkout canonical site repo
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate publisher and production access
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/publish-wordpress-education-wave2.mjs
+          test -n "${WP_API_USERNAME:-}"
+          test -n "${WP_API_PASSWORD:-}"
+
+      - name: Publish remaining THC education system
+        id: publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/publish-wordpress-education-wave2.mjs | tee "$RUNNER_TEMP/education-wave2-result.json"
+          count="$(node -e "const fs=require('fs');const x=JSON.parse(fs.readFileSync(process.argv[1],'utf8'));process.stdout.write(String(x.pageCount))" "$RUNNER_TEMP/education-wave2-result.json")"
+          test "$count" -eq 20
+          echo "page_count=$count" >> "$GITHUB_OUTPUT"
+          echo "outcome=success" >> "$GITHUB_OUTPUT"
+
+      - name: Verify public education routes
+        id: live
+        shell: bash
+        run: |
+          set -euo pipefail
+          routes=(
+            /learn/start-here/
+            /learn/beginner-guides/
+            /learn/beginner-guides/seed-storage-basics/
+            /learn/beginner-guides/germination-mistakes/
+            /learn/beginner-guides/seedling-problems/
+            /learn/beginner-guides/vegetative-growth-checklist/
+            /learn/beginner-guides/flowering-checklist/
+            /learn/postharvest/
+            /learn/postharvest/harvest-readiness/
+            /learn/postharvest/drying-fundamentals/
+            /learn/postharvest/curing-water-activity/
+            /learn/postharvest/storage-packaging-crop-review/
+            /learn/sops/
+            /learn/sops/water-measurement/
+            /learn/sops/environment-measurement/
+            /learn/sops/lighting-measurement/
+            /learn/diagnostics/
+            /learn/downloads/
+            /learn/sources/
+            /learn/glossary/
+          )
+          for route in "${routes[@]}"; do
+            file="$RUNNER_TEMP/verify-$(echo "$route" | tr '/' '-').html"
+            curl -4 --fail --silent --show-error --location --retry 3 --retry-delay 2 \
+              -H 'Cache-Control: no-cache, no-store, max-age=0' -H 'Pragma: no-cache' \
+              "https://dtfseeds.com${route}?dtf_wave2=${GITHUB_RUN_ID}" -o "$file"
+            grep -Eqi '<h1([ >])' "$file"
+            grep -Fqi '/learn/infographics/' "$file"
+            ! grep -Fqi 'email@email.com' "$file"
+            ! grep -Fqi '+123456789' "$file"
+            ! grep -Fqi 'Needed from owner' "$file"
+            ! grep -Fqi 'Reserved strain card' "$file"
+          done
+
+          learn="$RUNNER_TEMP/learn-root-wave2.html"
+          curl -4 --fail --silent --show-error --location --retry 3 --retry-delay 2 \
+            -H 'Cache-Control: no-cache, no-store, max-age=0' -H 'Pragma: no-cache' \
+            "https://dtfseeds.com/learn/?dtf_wave2=${GITHUB_RUN_ID}" -o "$learn"
+          grep -Fqi 'The complete learning system' "$learn"
+          for href in \
+            /learn/start-here/ /learn/library/ /learn/beginner-guides/ /learn/setup/ \
+            /learn/root-zone/ /learn/environment/ /learn/plant-health/ /learn/propagation/ \
+            /learn/diagnostics/ /learn/postharvest/ /learn/sops/ /learn/downloads/ \
+            /learn/sources/ /learn/glossary/ /learn/encyclopedia/ /learn/academy/ /learn/infographics/; do
+            grep -Fq "$href" "$learn"
+          done
+          echo "outcome=success" >> "$GITHUB_OUTPUT"
+
+      - name: Upload rollback package
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dtf-education-wave2-backup-${{ github.run_id }}
+          path: /tmp/dtf-education-wave2
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report production result
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          JOB_STATUS: ${{ job.status }}
+          PAGE_COUNT: ${{ steps.publish.outputs.page_count }}
+          PUBLISH_OUTCOME: ${{ steps.publish.outputs.outcome }}
+          LIVE_OUTCOME: ${{ steps.live.outputs.outcome }}
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 46,
+              body: [
+                '## THC Education Wave 2 production',
+                '',
+                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                `Result: **${process.env.JOB_STATUS}**`,
+                `Education pages published: **${process.env.PAGE_COUNT || 'not-run'}**`,
+                `WordPress publication: **${process.env.PUBLISH_OUTCOME || 'not-run'}**`,
+                `Visitor-facing verification: **${process.env.LIVE_OUTCOME || 'not-run'}**`,
+                '',
+                'Scope: Start Here, five beginner guides, four postharvest guides, three measurement/SOP pages, diagnostics, printable records, sources/evidence, glossary, and full Learn navigation reconciliation.',
+                'All existing page records are backed up before update. Private internal review/download records remain excluded from the public pages.'
+              ].join('\n')
+            });
