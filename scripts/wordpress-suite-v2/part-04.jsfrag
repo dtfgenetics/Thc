@@ -1,0 +1,95 @@
+== false && (int) $free < $needed) return new WP_Error('dtf_disk', 'Insufficient disk for stage plus rollback backup.', ['status'=>507,'free'=>(int)$free,'needed'=>$needed]);
+
+            $state['status'] = 'staged'; $state['stage_dir'] = $stage; $state['backup_dir'] = $backup; $state['uncompressed_bytes'] = $total; $state['applied'] = []; $state['current'] = null;
+            update_option($state_key($id), $state, false);
+
+            foreach ($targets as $rel) {
+                $src = $stage . '/' . $rel; $dst = wp_normalize_path(ABSPATH . $rel); $bak = wp_normalize_path($backup . '/' . $rel);
+                if (!file_exists($src)) { $rollback_state($id, $state); return new WP_Error('dtf_target_source', 'Staged target is missing; rollback attempted.', ['status'=>500,'path'=>$rel]); }
+                if (!$ensure_dir(dirname($dst)) || !$ensure_dir(dirname($bak))) { $rollback_state($id, $state); return new WP_Error('dtf_target_parent', 'Could not prepare target directories; rollback attempted.', ['status'=>500,'path'=>$rel]); }
+                $had = file_exists($dst) || is_link($dst);
+                $state['status'] = 'deploying'; $state['current'] = ['rel'=>$rel,'had_backup'=>$had,'phase'=>'prepared']; update_option($state_key($id), $state, false);
+                if ($had) {
+                    if (!@rename($dst, $bak)) { $rollback_state($id, $state); return new WP_Error('dtf_backup_move', 'Could not move current target to rollback backup.', ['status'=>500,'path'=>$rel]); }
+                    $state['current']['phase'] = 'backup_moved'; update_option($state_key($id), $state, false);
+                }
+                if (!@rename($src, $dst)) {
+                    $rollback = $rollback_state($id, $state);
+                    return new WP_Error('dtf_target_move', 'Could not atomically place staged target; rollback attempted.', ['status'=>500,'path'=>$rel,'rollback_ok'=>!is_wp_error($rollback)]);
+                }
+                $record = ['rel'=>$rel,'had_backup'=>$had,'phase'=>'new_placed'];
+                $state['current'] = $record; update_option($state_key($id), $state, false);
+                $state['applied'][] = $record; $state['current'] = null; update_option($state_key($id), $state, false);
+            }
+            $state['status'] = 'deployed'; $state['deployed_at'] = gmdate('c'); $state['current'] = null; update_option($state_key($id), $state, false);
+            flush_rewrite_rules(false); if (function_exists('wp_cache_flush')) wp_cache_flush();
+            return rest_ensure_response(['ok'=>true,'status'=>'deployed','targets'=>$targets,'file_count'=>count($manifest_files),'uncompressed_bytes'=>$total]);
+        },
+    ]);
+
+    register_rest_route('dtf-suite/v2', '/rollback', [
+        'methods' => 'POST', 'permission_callback' => $permission,
+        'callback' => static function (WP_REST_Request $r) use ($safe_id, $state_key, $rollback_state) {
+            $id = (string) $r->get_param('deployment_id'); if (!$safe_id($id)) return new WP_Error('dtf_bad_id', 'Invalid deployment ID.', ['status'=>400]);
+            $state = get_option($state_key($id), []); if (!is_array($state) || empty($state)) return new WP_Error('dtf_no_state', 'Deployment state missing.', ['status'=>404]);
+            if (($state['status'] ?? '') === 'rolled_back') return rest_ensure_response(['ok'=>true,'status'=>'rolled_back','recovered'=>true]);
+            if (($state['status'] ?? '') === 'uploading' || ($state['status'] ?? '') === 'staged') {
+                if (empty($state['current']) && empty($state['applied'])) return new WP_Error('dtf_not_touched', 'No production target has been touched; use abort.', ['status'=>409]);
+            }
+            return $rollback_state($id, $state);
+        },
+    ]);
+
+    register_rest_route('dtf-suite/v2', '/abort', [
+        'methods' => 'POST', 'permission_callback' => $permission,
+        'callback' => static function (WP_REST_Request $r) use ($safe_id, $state_key, $rollback_state, $cleanup_state) {
+            $id = (string) $r->get_param('deployment_id'); if (!$safe_id($id)) return new WP_Error('dtf_bad_id', 'Invalid deployment ID.', ['status'=>400]);
+            $state = get_option($state_key($id), []); if (!is_array($state) || empty($state)) return rest_ensure_response(['ok'=>true,'status'=>'already-clean']);
+            if (!empty($state['current']) || !empty($state['applied']) || in_array(($state['status'] ?? ''), ['deploying','deployed'], true)) {
+                $rolled = $rollback_state($id, $state); if (is_wp_error($rolled)) return $rolled;
+                $state = get_option($state_key($id), []);
+            }
+            $clean = $cleanup_state($id, $state); if (is_wp_error($clean)) return $clean;
+            return rest_ensure_response(['ok'=>true,'status'=>'aborted']);
+        },
+    ]);
+
+    register_rest_route('dtf-suite/v2', '/finalize', [
+        'methods' => 'POST', 'permission_callback' => $permission,
+        'callback' => static function (WP_REST_Request $r) use ($safe_id, $state_key, $cleanup_state) {
+            $id = (string) $r->get_param('deployment_id'); if (!$safe_id($id)) return new WP_Error('dtf_bad_id', 'Invalid deployment ID.', ['status'=>400]);
+            $state = get_option($state_key($id), []); if (!is_array($state) || empty($state)) return rest_ensure_response(['ok'=>true,'status'=>'already-finalized']);
+            if (!in_array(($state['status'] ?? ''), ['deployed','rolled_back'], true)) return new WP_Error('dtf_finalize_state', 'Only deployed or rolled-back transactions may be finalized.', ['status'=>409]);
+            $clean = $cleanup_state($id, $state); if (is_wp_error($clean)) return $clean;
+            return rest_ensure_response(['ok'=>true,'status'=>'finalized']);
+        },
+    ]);
+});
+`.trim();
+
+async function cleanupTemporaryTools() {
+  if (snippetId && !rollbackFailed) {
+    try { await wpRequest(`/wp-json/code-snippets/v1/snippets/${snippetId}/deactivate`, { method: 'POST', allow: [400, 404] }); } catch {}
+    try { await wpRequest(`/wp-json/code-snippets/v1/snippets/${snippetId}`, { method: 'DELETE', allow: [404] }); } catch {}
+  }
+  if (rollbackFailed) {
+    console.error('Rollback failed; temporary recovery snippet is intentionally left active.');
+    return;
+  }
+  if (installedByDeploy && !pluginWasInstalled) {
+    try { await setPluginStatus(pluginRestId, 'inactive'); } catch {}
+    try { await wpRequest(pluginEndpoint(pluginRestId), { method: 'DELETE', allow: [400, 404] }); } catch {}
+  } else if (activatedByDeploy && !pluginWasActive) {
+    try { await setPluginStatus(pluginRestId, 'inactive'); } catch {}
+  }
+}
+
+async function getState() {
+  try {
+    const r = await wpGetRetry(`/wp-json/dtf-suite/v2/state/${deploymentId}`, { headers: { 'X-DTF-Suite-Token': suiteToken }, allow: [404] });
+    return r.ok && r.body && typeof r.body === 'object' ? r.body : null;
+  } catch { return null; }
+}
+
+async function postSuite(action, payload = {}) {
+  return wpRequest(`/wp-json/dtf-suite/v
