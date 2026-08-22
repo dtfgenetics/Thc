@@ -2,6 +2,10 @@ name: Deploy DTFSeeds Public Suite via WordPress V2
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/deploy-public-suite-v2-trigger.txt
 
 permissions:
   actions: write
