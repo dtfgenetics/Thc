@@ -190,3 +190,4 @@ jobs:
           gh issue comment 46 --repo "$GITHUB_REPOSITORY" --body "### WordPress presentation repair: ${status}\n\n- Run: ${GITHUB_RUN_ID}\n- Canonical pages: **${PAGE_OUTCOME}**\n- Theme repair: **${REPAIR_OUTCOME}**\n- Theme/template mutations: **${MUTATIONS:-0}**\n- Live verification: **${VERIFY_OUTCOME}**\n- Checked live: /, /blog/, /learn/, /community/\n- Required outcome: stale fake email/phone/2025 footer removed, canonical navigation visible, and official Discord CTA present."
 
 # Proven Codex REST-only deployment path, hardened for transient Hostinger HTTPS timeouts.
+# Forced after THC education Wave 2 to reconcile the current public shell and legacy blog presentation.
