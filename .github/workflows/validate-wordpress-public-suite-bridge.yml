@@ -118,23 +118,38 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          file="$RUNNER_TEMP/deploy-public-suite-via-wordpress-v2.mjs"
-          grep -Fq "current_user_can('manage_options')" "$file"
-          grep -Fq 'hash_equals($token, $supplied)' "$file"
-          grep -Fq 'dtf_suite_deploy_lock' "$file"
-          grep -Fq 'Whole-archive SHA-256 mismatch.' "$file"
-          grep -Fq 'Duplicate ZIP entry rejected.' "$file"
-          grep -Fq 'Symlink entries are forbidden.' "$file"
-          grep -Fq 'WordPress-owned route is forbidden in app deployment.' "$file"
-          grep -Fq '$max_manifest = 2 * 1024 * 1024;' "$file"
-          grep -Fq "'phase'=>'prepared'" "$file"
-          grep -Fq "'phase'=>'backup_moved'" "$file"
-          grep -Fq "'phase'=>'new_placed'" "$file"
-          grep -Fq "'/rollback'" "$file"
-          grep -Fq "'/abort'" "$file"
-          grep -Fq "'/finalize'" "$file"
-          grep -Fq 'Polling persisted server state before any recovery action.' "$file"
-          grep -Fq "['/','/learn/','/blog/']" "$file"
+          python - <<'PY'
+          import os, pathlib, re
+          path = pathlib.Path(os.environ['RUNNER_TEMP']) / 'deploy-public-suite-via-wordpress-v2.mjs'
+          text = path.read_text()
+          checks = {
+              'admin authorization': "current_user_can('manage_options')" in text,
+              'one-time token comparison': 'hash_equals($token, $supplied)' in text,
+              'server deployment lock': 'dtf_suite_deploy_lock' in text,
+              'whole archive hash': 'Whole-archive SHA-256 mismatch.' in text,
+              'duplicate ZIP rejection': 'Duplicate ZIP entry rejected.' in text,
+              'ZIP symlink rejection': 'Symlink entries are forbidden.' in text,
+              'WordPress route ownership rejection': 'WordPress-owned route is forbidden in app deployment.' in text,
+              'bounded manifest': '$max_manifest' in text and '2 * 1024 * 1024' in text,
+              'prepared mutation phase': "'phase'=>'prepared'" in text,
+              'backup-moved mutation phase': "'phase'=>'backup_moved'" in text,
+              'new-placed mutation phase': "'phase'=>'new_placed'" in text,
+              'rollback endpoint': "register_rest_route('dtf-suite/v2', '/rollback'" in text,
+              'abort endpoint': "register_rest_route('dtf-suite/v2', '/abort'" in text,
+              'finalize endpoint': "register_rest_route('dtf-suite/v2', '/finalize'" in text,
+              'ambiguous commit polling': 'Polling persisted server state before any recovery action.' in text,
+              'root ownership verification': "await verifyRoute('/', 'Genetics, cultivation education" in text,
+              'learn ownership verification': "await verifyRoute('/learn/', 'Understand the plant." in text,
+              'forbidden root static path check': "name === 'index.html'" in text,
+              'forbidden learn static path check': "strpos($name, 'learn/')" in text,
+              'forbidden blog static path check': "strpos($name, 'blog/')" in text,
+              'stale touched lock refuses takeover': 'dtf_stale_touched_lock' in text,
+              'client recovery inspects persisted state': 'const state = await getState();' in text and 'recoverFailure' in text,
+          }
+          missing = [name for name, ok in checks.items() if not ok]
+          for name, ok in checks.items(): print(f'{name}: {"PASS" if ok else "FAIL"}')
+          if missing: raise SystemExit('missing hardened controls: ' + ', '.join(missing))
+          PY
 
       - name: Upload validated deploy inputs
         uses: actions/upload-artifact@v4
@@ -165,7 +180,7 @@ jobs:
                 `Commit: \`${context.sha}\``,
                 `Result: **${process.env.STATUS}**`,
                 '',
-                'Checks: fragment SHA-256 assembly, Node syntax, embedded PHP syntax, prior validated suite artifact retrieval, app-only archive creation, per-file SHA-256 verification, duplicate/manifest/path ownership checks, and authorization/locking/interrupted-commit/rollback/abort/finalize controls.',
+                'Checks: fragment SHA-256 assembly, Node syntax, embedded PHP syntax, prior validated suite artifact retrieval, app-only archive creation, per-file SHA-256 verification, duplicate/manifest/path ownership checks, and named authorization/locking/interrupted-commit/rollback/abort/finalize controls.',
                 '',
                 'This workflow is non-mutating. Production publication remains a separate protected transaction.'
               ].join('\n')
