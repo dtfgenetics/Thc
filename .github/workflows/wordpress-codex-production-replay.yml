@@ -20,7 +20,7 @@ permissions:
 
 concurrency:
   group: dtfseeds-codex-rest-production
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   publish:
@@ -64,7 +64,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          node scripts/apply-wordpress-public-content-rest.mjs
+          for attempt in 1 2 3 4; do
+            if node scripts/apply-wordpress-public-content-rest.mjs; then exit 0; fi
+            [[ "$attempt" -lt 4 ]] || exit 1
+            sleep $((attempt * 10))
+          done
 
       - name: Replay successful Codex presentation repair
         id: presentation
@@ -107,6 +111,7 @@ jobs:
             marker="$2"
             file="$RUNNER_TEMP/rest-${slug}.json"
             curl -4 --fail --silent --show-error --location \
+              --retry 3 --retry-delay 2 --connect-timeout 15 --max-time 45 \
               -H "Authorization: Basic $auth" \
               -H 'Cache-Control: no-cache, no-store, max-age=0' \
               "$WP_SITE_URL/wp-json/wp/v2/pages?slug=$slug&context=edit&per_page=1" \
@@ -217,4 +222,4 @@ jobs:
               body
             });
 
-# Registered replay trigger: 2026-08-21
+# Final uninterrupted replay trigger: 2026-08-21.
