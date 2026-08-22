@@ -1,13 +1,10 @@
 #!/usr/bin/env python3
 import asyncio
-import json
 import os
 import pathlib
-import sys
 
 from google.antigravity import Agent, CapabilitiesConfig, LocalAgentConfig
 
-ROOT = pathlib.Path.cwd()
 OUT = pathlib.Path(os.environ.get("ANTIGRAVITY_REPORT", "antigravity-deployment-audit.md"))
 
 SYSTEM = """You are an independent deployment engineer auditing DTFSeeds production publication.
@@ -25,15 +22,17 @@ Context and target architecture:
 - The existing public-suite build assembles these production surfaces: /games/, eight browser game routes, /growlens/, /thc-grow-doc/, /tools/, /projects/, and /puzzles/.
 - The old deployment job used Hostinger SSH, but those SSH credentials are unavailable.
 - We are replacing only the transport layer with a WordPress-authenticated, allowlisted, transactional archive deployment.
-- A deploy archive packager exists at scripts/build-wordpress-public-suite-archive.sh (or similarly named current file). It must never include root index.html, learn/, or blog/ static ownership.
+- The app-only archive packager is scripts/package-public-suite-wordpress.py.
+- The new no-SSH transactional deployer is scripts/deploy-public-suite-via-wordpress.mjs.
+- The package/deployer must never create static ownership for root index.html, learn/, or blog/.
 
 Perform these tasks in the disposable checkout:
-1. Inspect site/deployment/public-apps.json, .github/workflows/build-dtfseeds-public-suite.yml, .github/workflows/dtfseeds-public-route-repair.yml, the WordPress repair scripts/workflows, and the new public-suite archive packager.
-2. Run relevant static checks/tests that are reasonably fast. At minimum validate shell/python/yaml syntax where possible and verify the archive allowlist cannot contain forbidden root/Learn ownership.
-3. Evaluate the proposed chunked WordPress bridge design for: authentication, authorization, archive traversal/zip-slip, symlink handling, size limits, partial uploads, checksum validation, backup/rollback, atomicity, concurrency, PHP timeouts, disk exhaustion, stale temporary files, cache purge, and post-deploy verification.
+1. Inspect site/deployment/public-apps.json, .github/workflows/build-dtfseeds-public-suite.yml, .github/workflows/dtfseeds-public-route-repair.yml, scripts/package-public-suite-wordpress.py, scripts/deploy-public-suite-via-wordpress.mjs, and the proven WordPress repair scripts used for filesystem-level repairs.
+2. Run relevant static checks/tests that are reasonably fast. At minimum run `node --check scripts/deploy-public-suite-via-wordpress.mjs`, Python compilation for the packager, inspect YAML validity where practical, and reason-test the archive allowlist against forbidden root/Learn/Blog ownership.
+3. Evaluate the chunked WordPress bridge for: Basic-auth application-password usage, manage_options authorization, one-time token protection, archive traversal/zip-slip, Windows/backslash paths, symlinks, file and total size limits, partial/ambiguous uploads, chunk and whole-archive checksums, manifest-to-archive equality, required files, disk exhaustion, backup/rollback, multi-target atomicity limitations, concurrency/server locks, PHP timeouts, stale temporary files, cache purge, Code Snippets cleanup, and post-deploy verification.
 4. Inspect public https://dtfseeds.com routes where network access permits. Do not mutate the site.
-5. Identify the smallest safe implementation needed to publish the existing validated Public Suite without SSH.
-6. Return a concise Markdown report with sections: Verdict, Blocking Issues, Required Safeguards, Tests Run, Recommended Implementation Order. State PASS only if the proposed bridge is safe enough to implement; otherwise state HOLD and name exact blockers.
+5. Identify any concrete bug that could cause data loss, stale routing, unauthorized mutation, partial deployment, or inability to recover.
+6. Return a concise Markdown report with sections: Verdict, Blocking Issues, Required Safeguards, Tests Run, Recommended Implementation Order. State PASS only if the bridge is safe enough for a protected production trial; otherwise state HOLD and name exact blockers with file/logic references.
 
 Do not edit source files as the final solution; this run is an independent audit only. Temporary test files in the disposable workspace are allowed.
 """
