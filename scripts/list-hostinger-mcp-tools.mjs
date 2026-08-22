@@ -1,4 +1,6 @@
 // Read-only MCP capability audit for the production WordPress Hostinger assistant.
+import fs from 'node:fs';
+
 const siteUrl=(process.env.WP_SITE_URL||'https://dtfseeds.com').replace(/\/$/,'');
 const username=process.env.WP_API_USERNAME||'';
 const password=process.env.WP_API_PASSWORD||'';
@@ -19,11 +21,23 @@ async function rpc(payload){
   return {status:response.status,ok:response.ok,sessionIdPresent:Boolean(nextSession),contentType:response.headers.get('content-type'),body};
 }
 
+function parseRpcBody(body){
+  if(body && typeof body==='object') return body;
+  if(typeof body!=='string') return null;
+  try{return JSON.parse(body)}catch{}
+  const dataLines=body.split(/\r?\n/).filter(line=>line.startsWith('data:')).map(line=>line.slice(5).trim()).filter(Boolean);
+  for(const line of dataLines){
+    try{return JSON.parse(line)}catch{}
+  }
+  return null;
+}
+
 const protocolVersions=['2025-06-18','2025-03-26','2024-11-05'];
 let initialized=null;
 for(const protocolVersion of protocolVersions){
-  const attempt=await rpc({jsonrpc:'2.0',id:1,method:'initialize',params:{protocolVersion,capabilities:{},clientInfo:{name:'DTFSeedsRepairAudit',version:'1.0.1'}}});
-  if(attempt.ok && !(attempt.body&&attempt.body.error)){
+  const attempt=await rpc({jsonrpc:'2.0',id:1,method:'initialize',params:{protocolVersion,capabilities:{},clientInfo:{name:'DTFSeedsRepairAudit',version:'1.0.2'}}});
+  const parsed=parseRpcBody(attempt.body);
+  if(attempt.ok && !(parsed&&parsed.error)){
     initialized={protocolVersion,attempt};
     break;
   }
@@ -31,7 +45,7 @@ for(const protocolVersion of protocolVersions){
 }
 
 const output={generatedAt:new Date().toISOString(),initialized,tools:null};
-if(initialized?.attempt?.ok && !(initialized.attempt.body&&initialized.attempt.body.error)){
+if(initialized?.attempt?.ok && !(parseRpcBody(initialized.attempt.body)?.error)){
   try{await rpc({jsonrpc:'2.0',method:'notifications/initialized',params:{}})}catch{}
   output.tools=await rpc({jsonrpc:'2.0',id:2,method:'tools/list',params:{}});
 }
@@ -48,4 +62,24 @@ function sanitize(value){
   }
   return value;
 }
-console.log(JSON.stringify(sanitize(output),null,2));
+
+const sanitized=sanitize(output);
+const parsedTools=parseRpcBody(output.tools?.body);
+const tools=Array.isArray(parsedTools?.result?.tools) ? parsedTools.result.tools : [];
+const compact={
+  generatedAt: sanitized.generatedAt,
+  endpoint: '/wp-json/hostinger-ai-assistant/v1/mcp',
+  initializeStatus: initialized?.attempt?.status ?? null,
+  toolsStatus: output.tools?.status ?? null,
+  toolCount: tools.length,
+  tools: tools.map(tool=>({
+    name: tool?.name || '',
+    description: tool?.description || '',
+    inputSchema: sanitize(tool?.inputSchema || tool?.input_schema || {})
+  }))
+};
+
+fs.mkdirSync('/tmp/hostinger-mcp-tools',{recursive:true});
+fs.writeFileSync('/tmp/hostinger-mcp-tools/summary.json',JSON.stringify(compact,null,2));
+console.log(`Discovered ${compact.toolCount} Hostinger MCP tools.`);
+for(const tool of compact.tools) console.log(`TOOL ${tool.name}: ${tool.description}`);
