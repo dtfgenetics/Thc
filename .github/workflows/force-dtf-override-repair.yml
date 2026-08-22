@@ -1,0 +1,63 @@
+name: Force DTF Stale MU Override Repair
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/force-dtf-override-repair.yml
+
+permissions:
+  actions: write
+  contents: read
+  issues: write
+
+concurrency:
+  group: force-dtfseeds-mu-override-repair
+  cancel-in-progress: true
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate protected MU repair
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s .github/workflows/wordpress-dtf-override-repair.yml
+          test -s scripts/repair-dtf-wordpress-override.mjs
+          grep -Fq 'workflow_dispatch:' .github/workflows/wordpress-dtf-override-repair.yml
+          node --check scripts/repair-dtf-wordpress-override.mjs
+
+      - name: Dispatch protected MU repair
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh workflow run wordpress-dtf-override-repair.yml --ref main
+
+      - name: Report explicit MU repair dispatch
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          DISPATCH_STATUS: ${{ job.status }}
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 46,
+              body: [
+                '## Explicit DTF MU override repair dispatch',
+                '',
+                `Dispatcher run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                `Status: **${process.env.DISPATCH_STATUS}**`,
+                'Requested workflow: Repair DTF Stale WordPress MU Override',
+                '',
+                'Trusted-main dispatcher mirroring the successful Codex production pattern.'
+              ].join('\n')
+            });
