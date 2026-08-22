@@ -59,7 +59,10 @@ jobs:
           python - <<'PY'
           import os, pathlib
           text=(pathlib.Path(os.environ['RUNNER_TEMP'])/'dtf-suite-v2.mjs').read_text()
+          endpoints=['/state/(?P<id>[a-f0-9]{24})','/init','/chunk','/commit','/rollback','/abort','/finalize']
           checks={
+            'no malformed REST registrar': 'register__rest_route' not in text,
+            'all seven v2 REST endpoints': all(("register_rest_route('dtf-suite/v2', '"+endpoint+"'") in text for endpoint in endpoints),
             'admin authorization': "current_user_can('manage_options')" in text,
             'one-time token': 'hash_equals($token, $supplied)' in text,
             'server lock': 'dtf_suite_deploy_lock' in text,
@@ -107,6 +110,6 @@ jobs:
                 `Commit: \`${context.sha}\``,
                 `Result: **${process.env.STATUS}**`,
                 '',
-                'This read-only gate reassembles the canonical v2 source by SHA-256, validates Node and embedded PHP syntax, and verifies named authorization, archive-safety, persisted mutation-phase, interrupted-commit recovery, rollback/abort/finalize, stale-lock, and WordPress route-ownership controls.'
+                'This read-only gate reassembles the canonical v2 source by SHA-256, validates Node and embedded PHP syntax, explicitly rejects malformed REST registration, requires every v2 endpoint, and verifies authorization, archive-safety, persisted mutation-phase, interrupted-commit recovery, rollback/abort/finalize, stale-lock, and WordPress route-ownership controls.'
               ].join('\n')
             });
