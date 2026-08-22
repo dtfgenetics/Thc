@@ -1,0 +1,136 @@
+#!/usr/bin/env python3
+"""Build an allowlisted DTFSeeds public-app archive for WordPress-mediated deployment.
+
+The package intentionally excludes the WordPress-owned root and /learn/ routes so a
+static suite deployment cannot recreate the shadowing incident fixed on 2026-08-21.
+"""
+from __future__ import annotations
+
+import hashlib
+import json
+import os
+from pathlib import Path, PurePosixPath
+import stat
+import sys
+import zipfile
+
+if len(sys.argv) != 3:
+    raise SystemExit("usage: package-public-suite-wordpress.py RELEASE_DIR OUTPUT_ZIP")
+
+root = Path(sys.argv[1]).resolve()
+out = Path(sys.argv[2]).resolve()
+if not root.is_dir():
+    raise SystemExit(f"release directory not found: {root}")
+
+allowed = [
+    "games/index.html",
+    "games/dtf-route.css",
+    "games/high-land",
+    "games/high-iq",
+    "games/high-life",
+    "games/grower-conversations",
+    "games/seed-man-platformer",
+    "games/weedopolis",
+    "games/crossword",
+    "games/who-took-it",
+    "growlens",
+    "thc-grow-doc",
+    "tools",
+    "projects",
+    "puzzles",
+]
+required = [
+    "games/index.html",
+    "games/high-land/index.html",
+    "games/high-iq/index.html",
+    "games/high-life/index.html",
+    "games/grower-conversations/index.html",
+    "games/seed-man-platformer/index.html",
+    "games/weedopolis/index.html",
+    "games/crossword/index.html",
+    "games/who-took-it/index.html",
+    "growlens/index.html",
+    "thc-grow-doc/index.html",
+    "thc-grow-doc/api/visual-observations.php",
+    "tools/index.html",
+    "projects/index.html",
+    "puzzles/current.json",
+]
+for rel in required:
+    path = root / rel
+    if not path.is_file() or path.stat().st_size == 0:
+        raise SystemExit(f"required deploy file missing or empty: {rel}")
+
+for forbidden in ["index.html", "learn/index.html", "blog/index.html"]:
+    if forbidden in allowed:
+        raise SystemExit(f"forbidden WordPress-owned route entered allowlist: {forbidden}")
+
+files: dict[str, dict[str, int | str]] = {}
+
+def add_file(path: Path, rel: str) -> None:
+    pure = PurePosixPath(rel)
+    if pure.is_absolute() or ".." in pure.parts or rel.startswith("./"):
+        raise SystemExit(f"unsafe archive path: {rel}")
+    st = path.lstat()
+    if stat.S_ISLNK(st.st_mode):
+        raise SystemExit(f"symlinks are not permitted in public suite archive: {rel}")
+    if not stat.S_ISREG(st.st_mode):
+        raise SystemExit(f"non-regular archive entry rejected: {rel}")
+    data = path.read_bytes()
+    files[rel] = {"size": len(data), "sha256": hashlib.sha256(data).hexdigest()}
+
+for item in allowed:
+    src = root / item
+    if not src.exists():
+        raise SystemExit(f"allowlisted release path missing: {item}")
+    if src.is_file():
+        add_file(src, item)
+    elif src.is_dir():
+        for path in sorted(src.rglob("*")):
+            if path.is_dir():
+                continue
+            rel = path.relative_to(root).as_posix()
+            add_file(path, rel)
+    else:
+        raise SystemExit(f"unsupported allowlisted release path: {item}")
+
+# Guard the incident-prone namespaces even if a future allowlist edit goes wrong.
+for rel in files:
+    if rel == "index.html" or rel.startswith("learn/") or rel.startswith("blog/"):
+        raise SystemExit(f"WordPress-owned route cannot be included in static app package: {rel}")
+
+manifest = {
+    "schemaVersion": 1,
+    "purpose": "dtfseeds-public-apps-only",
+    "wordPressOwnedRoutesExcluded": ["/", "/learn/", "/blog/"],
+    "targets": allowed,
+    "required": required,
+    "fileCount": len(files),
+    "uncompressedBytes": sum(int(meta["size"]) for meta in files.values()),
+    "files": files,
+}
+manifest_bytes = (json.dumps(manifest, sort_keys=True, separators=(",", ":")) + "\n").encode()
+manifest["manifestSha256"] = hashlib.sha256(manifest_bytes).hexdigest()
+manifest_bytes = (json.dumps(manifest, sort_keys=True, separators=(",", ":")) + "\n").encode()
+
+out.parent.mkdir(parents=True, exist_ok=True)
+if out.exists():
+    out.unlink()
+with zipfile.ZipFile(out, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=6, allowZip64=True) as zf:
+    for rel in sorted(files):
+        zf.write(root / rel, arcname=rel)
+    info = zipfile.ZipInfo(".dtf-suite-manifest.json")
+    info.compress_type = zipfile.ZIP_DEFLATED
+    info.external_attr = (0o100644 & 0xFFFF) << 16
+    zf.writestr(info, manifest_bytes)
+
+archive_sha = hashlib.sha256(out.read_bytes()).hexdigest()
+summary = {
+    "archive": str(out),
+    "archiveBytes": out.stat().st_size,
+    "archiveSha256": archive_sha,
+    "fileCount": len(files),
+    "uncompressedBytes": manifest["uncompressedBytes"],
+    "targets": allowed,
+}
+print(json.dumps(summary, separators=(",", ":")))
