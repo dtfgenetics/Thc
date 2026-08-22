@@ -1,3 +1,4 @@
+// Read-only MCP capability audit for the production WordPress Hostinger assistant.
 const siteUrl=(process.env.WP_SITE_URL||'https://dtfseeds.com').replace(/\/$/,'');
 const username=process.env.WP_API_USERNAME||'';
 const password=process.env.WP_API_PASSWORD||'';
@@ -21,7 +22,7 @@ async function rpc(payload){
 const protocolVersions=['2025-06-18','2025-03-26','2024-11-05'];
 let initialized=null;
 for(const protocolVersion of protocolVersions){
-  const attempt=await rpc({jsonrpc:'2.0',id:1,method:'initialize',params:{protocolVersion,capabilities:{},clientInfo:{name:'DTFSeedsRepairAudit',version:'1.0.0'}}});
+  const attempt=await rpc({jsonrpc:'2.0',id:1,method:'initialize',params:{protocolVersion,capabilities:{},clientInfo:{name:'DTFSeedsRepairAudit',version:'1.0.1'}}});
   if(attempt.ok && !(attempt.body&&attempt.body.error)){
     initialized={protocolVersion,attempt};
     break;
