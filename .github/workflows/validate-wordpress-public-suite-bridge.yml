@@ -1,0 +1,150 @@
+name: Validate WordPress Public Suite Bridge
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - scripts/package-public-suite-wordpress.py
+      - scripts/deploy-public-suite-via-wordpress.mjs
+      - .github/workflows/validate-wordpress-public-suite-bridge.yml
+      - .github/wordpress-suite-bridge-trigger.txt
+
+permissions:
+  contents: read
+  actions: read
+  issues: write
+
+concurrency:
+  group: validate-wordpress-public-suite-bridge
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      SOURCE_RUN: '32462671292'
+      SOURCE_ARTIFACT: dtfseeds-public-suite-da364c7fd261798efeadda8f0c56c49e4fbefeaf
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate deployer and packager syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/deploy-public-suite-via-wordpress.mjs
+          python -m py_compile scripts/package-public-suite-wordpress.py
+
+      - name: Download last fully validated public-suite release
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf "$RUNNER_TEMP/source-suite"
+          mkdir -p "$RUNNER_TEMP/source-suite"
+          gh run download "$SOURCE_RUN" --repo "$GITHUB_REPOSITORY" --name "$SOURCE_ARTIFACT" --dir "$RUNNER_TEMP/source-suite"
+          test -s "$RUNNER_TEMP/source-suite/games/index.html"
+          test -s "$RUNNER_TEMP/source-suite/games/high-land/index.html"
+          test -s "$RUNNER_TEMP/source-suite/growlens/index.html"
+          test -s "$RUNNER_TEMP/source-suite/thc-grow-doc/index.html"
+
+      - name: Build protected WordPress app-only archive
+        id: package
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/package-public-suite-wordpress.py "$RUNNER_TEMP/source-suite" "$RUNNER_TEMP/dtf-public-suite-wordpress.zip" | tee "$RUNNER_TEMP/package-summary.json"
+          test -s "$RUNNER_TEMP/dtf-public-suite-wordpress.zip"
+          echo "archive=$RUNNER_TEMP/dtf-public-suite-wordpress.zip" >> "$GITHUB_OUTPUT"
+
+      - name: Assert archive ownership and integrity contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib, json, os, zipfile
+          zpath = os.path.join(os.environ['RUNNER_TEMP'], 'dtf-public-suite-wordpress.zip')
+          with zipfile.ZipFile(zpath) as z:
+              names = z.namelist()
+              assert '.dtf-suite-manifest.json' in names
+              forbidden = [n for n in names if n == 'index.html' or n.startswith('learn/') or n.startswith('blog/')]
+              assert not forbidden, forbidden
+              required = [
+                  'games/index.html','games/high-land/index.html','games/high-iq/index.html','games/high-life/index.html',
+                  'games/grower-conversations/index.html','games/seed-man-platformer/index.html','games/weedopolis/index.html',
+                  'games/crossword/index.html','games/who-took-it/index.html','growlens/index.html','thc-grow-doc/index.html',
+                  'thc-grow-doc/api/visual-observations.php','tools/index.html','projects/index.html','puzzles/current.json'
+              ]
+              for path in required: assert path in names, path
+              manifest = json.loads(z.read('.dtf-suite-manifest.json'))
+              assert manifest['purpose'] == 'dtfseeds-public-apps-only'
+              assert set(['/', '/learn/', '/blog/']).issubset(set(manifest['wordPressOwnedRoutesExcluded']))
+              archive_files = sorted(n for n in names if n != '.dtf-suite-manifest.json' and not n.endswith('/'))
+              assert archive_files == sorted(manifest['files'])
+              for rel, meta in manifest['files'].items():
+                  data = z.read(rel)
+                  assert len(data) == meta['size'], rel
+                  assert hashlib.sha256(data).hexdigest() == meta['sha256'], rel
+          print(f'validated archive entries={len(names)} bytes={os.path.getsize(zpath)}')
+          PY
+
+      - name: Assert deployer contains required safety controls
+        shell: bash
+        run: |
+          set -euo pipefail
+          file=scripts/deploy-public-suite-via-wordpress.mjs
+          grep -Fq "current_user_can('manage_options')" "$file"
+          grep -Fq 'hash_equals($token, $supplied)' "$file"
+          grep -Fq 'dtf_suite_deploy_lock' "$file"
+          grep -Fq 'Whole-archive SHA-256 mismatch.' "$file"
+          grep -Fq 'Symlink entries are forbidden.' "$file"
+          grep -Fq 'WordPress-owned route is forbidden in app deployment.' "$file"
+          grep -Fq "['/', '/learn/', '/blog/']" "$file"
+          grep -Fq "'/rollback'" "$file"
+          grep -Fq "'/finalize'" "$file"
+
+      - name: Upload validated deploy archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: dtf-public-suite-wordpress-${{ github.sha }}
+          path: |
+            ${{ runner.temp }}/dtf-public-suite-wordpress.zip
+            ${{ runner.temp }}/package-summary.json
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Report bridge validation
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          STATUS: ${{ job.status }}
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 46,
+              body: [
+                '## No-SSH WordPress public-suite bridge validation',
+                '',
+                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                `Commit: \`${context.sha}\``,
+                `Result: **${process.env.STATUS}**`,
+                '',
+                'Checks: Node syntax, Python packager syntax, prior validated suite artifact retrieval, app-only archive creation, per-file SHA-256 verification, forbidden root/Learn/Blog exclusion, required route files, and presence of authorization/lock/hash/symlink/rollback/finalize controls.',
+                '',
+                'This workflow is non-mutating. Production publication is a separate protected transaction.'
+              ].join('\n')
+            });
