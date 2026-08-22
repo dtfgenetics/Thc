@@ -1,0 +1,57 @@
+chive_size', 'Archive size does not match declaration.', ['status' => 400]);
+            if (!hash_equals((string) $state['archive_sha256'], (string) hash_file('sha256', $part))) return new WP_Error('dtf_archive_hash', 'Whole-archive SHA-256 mismatch.', ['status' => 400]);
+            if (!class_exists('ZipArchive')) return new WP_Error('dtf_zip_missing', 'ZipArchive is required.', ['status' => 500]);
+
+            $zip = new ZipArchive();
+            if ($zip->open($part) !== true) return new WP_Error('dtf_zip_open', 'Archive is not a readable ZIP.', ['status' => 400]);
+            if ($zip->numFiles < 2 || $zip->numFiles > $max_files + 1) { $zip->close(); return new WP_Error('dtf_zip_count', 'Archive entry count is outside limits.', ['status' => 400]); }
+            $seen = []; $files = []; $total = 0; $manifest_count = 0; $manifest_size = 0;
+            for ($i = 0; $i < $zip->numFiles; $i++) {
+                $name = $zip->getNameIndex($i);
+                if (!$safe_name($name)) { $zip->close(); return new WP_Error('dtf_zip_path', 'Unsafe ZIP path rejected.', ['status'=>400,'path'=>$name]); }
+                if (isset($seen[$name])) { $zip->close(); return new WP_Error('dtf_zip_duplicate', 'Duplicate ZIP entry rejected.', ['status'=>400,'path'=>$name]); }
+                $seen[$name] = true;
+                $is_dir = substr($name, -1) === '/';
+                if ($name === '.dtf-suite-manifest.json') $manifest_count++;
+                if ($name === 'index.html' || strpos($name, 'learn/') === 0 || strpos($name, 'blog/') === 0) { $zip->close(); return new WP_Error('dtf_wp_owned', 'WordPress-owned route is forbidden in app deployment.', ['status'=>400,'path'=>$name]); }
+                if ($name !== '.dtf-suite-manifest.json' && (($is_dir && !$allowed_dir($name)) || (!$is_dir && !$allowed_file($name)))) { $zip->close(); return new WP_Error('dtf_not_allowed', 'ZIP entry is outside the fixed app allowlist.', ['status'=>400,'path'=>$name]); }
+                if (method_exists($zip, 'getExternalAttributesIndex')) {
+                    $opsys = 0; $attr = 0;
+                    if ($zip->getExternalAttributesIndex($i, $opsys, $attr) && $opsys === 3 && ((($attr >> 16) & 0170000) === 0120000)) { $zip->close(); return new WP_Error('dtf_zip_symlink', 'Symlink entries are forbidden.', ['status'=>400,'path'=>$name]); }
+                }
+                $stat = $zip->statIndex($i); $size = (int) ($stat['size'] ?? 0);
+                if ($name === '.dtf-suite-manifest.json') $manifest_size = $size;
+                if (!$is_dir && $size > $max_file) { $zip->close(); return new WP_Error('dtf_file_big', 'Archive member exceeds file size limit.', ['status'=>400,'path'=>$name]); }
+                $total += $size;
+                if ($total > $max_uncompressed) { $zip->close(); return new WP_Error('dtf_zip_big', 'Archive uncompressed size exceeds limit.', ['status'=>400]); }
+                if (!$is_dir && $name !== '.dtf-suite-manifest.json') $files[] = $name;
+            }
+            if ($manifest_count !== 1 || $manifest_size < 2 || $manifest_size > $max_manifest) { $zip->close(); return new WP_Error('dtf_manifest_size', 'Archive must contain exactly one bounded manifest.', ['status'=>400]); }
+            $manifest_raw = $zip->getFromName('.dtf-suite-manifest.json');
+            $manifest = is_string($manifest_raw) ? json_decode($manifest_raw, true) : null;
+            if (!is_array($manifest) || ($manifest['schemaVersion'] ?? null) !== 1 || ($manifest['purpose'] ?? '') !== 'dtfseeds-public-apps-only' || !is_array($manifest['files'] ?? null)) { $zip->close(); return new WP_Error('dtf_manifest', 'Manifest is invalid.', ['status'=>400]); }
+            $excluded = is_array($manifest['wordPressOwnedRoutesExcluded'] ?? null) ? $manifest['wordPressOwnedRoutesExcluded'] : [];
+            foreach (['/','/learn/','/blog/'] as $route) if (!in_array($route, $excluded, true)) { $zip->close(); return new WP_Error('dtf_manifest_ownership', 'Manifest does not preserve WordPress route ownership.', ['status'=>400,'route'=>$route]); }
+            sort($files); $manifest_files = array_keys($manifest['files']); sort($manifest_files);
+            if ($files !== $manifest_files || (int) ($manifest['fileCount'] ?? -1) !== count($files)) { $zip->close(); return new WP_Error('dtf_manifest_files', 'Manifest file set does not exactly match ZIP.', ['status'=>400]); }
+            foreach ($required as $rel) if (!in_array($rel, $files, true)) { $zip->close(); return new WP_Error('dtf_required_declared', 'Required production file is absent from archive.', ['status'=>400,'path'=>$rel]); }
+
+            $stage = $state['work_dir'] . '/stage'; $backup = $state['work_dir'] . '/backup';
+            if ((file_exists($stage) && !$remove_tree($stage)) || (file_exists($backup) && !$remove_tree($backup))) { $zip->close(); return new WP_Error('dtf_stage_cleanup', 'Could not reset stage/backup.', ['status'=>500]); }
+            if (!$ensure_dir($stage) || !$ensure_dir($backup)) { $zip->close(); return new WP_Error('dtf_stage_create', 'Could not create stage/backup.', ['status'=>500]); }
+            foreach ($manifest_files as $rel) {
+                $meta = $manifest['files'][$rel];
+                if (!$allowed_file($rel) || !is_array($meta) || !preg_match('/^[a-f0-9]{64}$/', (string) ($meta['sha256'] ?? ''))) { $zip->close(); return new WP_Error('dtf_manifest_member', 'Manifest member is invalid.', ['status'=>400,'path'=>$rel]); }
+                $dest = $stage . '/' . $rel;
+                if (!$ensure_dir(dirname($dest))) { $zip->close(); return new WP_Error('dtf_stage_parent', 'Could not create stage directory.', ['status'=>500,'path'=>$rel]); }
+                $in = $zip->getStream($rel); if (!$in) { $zip->close(); return new WP_Error('dtf_stream', 'Could not open archive member stream.', ['status'=>500,'path'=>$rel]); }
+                $out = fopen($dest, 'wb'); if (!$out) { fclose($in); $zip->close(); return new WP_Error('dtf_stage_write', 'Could not create staged file.', ['status'=>500,'path'=>$rel]); }
+                $copied = stream_copy_to_stream($in, $out); fclose($in); fclose($out);
+                if ($copied === false || (int) $copied !== (int) ($meta['size'] ?? -1) || !hash_equals((string) $meta['sha256'], (string) hash_file('sha256', $dest))) { $zip->close(); return new WP_Error('dtf_stage_hash', 'Staged member failed size/hash validation.', ['status'=>500,'path'=>$rel]); }
+            }
+            $zip->close();
+            foreach ($required as $rel) if (!is_file($stage . '/' . $rel) || filesize($stage . '/' . $rel) < 1) return new WP_Error('dtf_required_stage', 'Required staged file is missing.', ['status'=>500,'path'=>$rel]);
+
+            $current_bytes = 0; foreach ($targets as $rel) $current_bytes += $dir_size(wp_normalize_path(ABSPATH . $rel));
+            $free = @disk_free_space(ABSPATH); $needed = $total + $current_bytes + (int) $state['archive_bytes'] + 64 * 1024 * 1024;
+            if ($free !
