@@ -8,7 +8,7 @@ on:
       - '.github/workflows/woocommerce-product-reconcile-production.yml'
       - 'site/wordpress/products/genetics.json'
       - 'site/wordpress/products/woocommerce-reconciliation.json'
-      - 'scripts/reconcile-woocommerce-products.mjs'
+      - 'scripts/reconcile-woocommerce-products-semantic.mjs'
       - 'scripts/rollback-woocommerce-products.mjs'
 
 permissions:
@@ -45,21 +45,21 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          node --check scripts/reconcile-woocommerce-products.mjs
+          node --check scripts/reconcile-woocommerce-products-semantic.mjs
           node --check scripts/rollback-woocommerce-products.mjs
           node scripts/validate-genetics-commerce.mjs
           node scripts/validate-woocommerce-reconciliation.mjs
           test -n "${WP_API_USERNAME:-}"
           test -n "${WP_API_PASSWORD:-}"
 
-      - name: Apply canonical product copy and categories
+      - name: Apply and semantically verify canonical product copy and categories
         id: reconcile
         shell: bash
         run: |
           set -euo pipefail
           for attempt in 1 2 3 4; do
-            echo "WooCommerce reconciliation attempt $attempt of 4"
-            if APPLY_WOOCOMMERCE_CHANGES=true node scripts/reconcile-woocommerce-products.mjs; then
+            echo "WooCommerce semantic reconciliation attempt $attempt of 4"
+            if node scripts/reconcile-woocommerce-products-semantic.mjs; then
               echo 'outcome=success' >> "$GITHUB_OUTPUT"
               exit 0
             fi
@@ -75,19 +75,19 @@ jobs:
           set -euo pipefail
           APPLY_WOOCOMMERCE_ROLLBACK=true node scripts/rollback-woocommerce-products.mjs
 
-      - name: Re-probe live products after apply
+      - name: Confirm authenticated post-write report
         id: verify
         if: steps.reconcile.outcome == 'success'
         shell: bash
         run: |
           set -euo pipefail
-          APPLY_WOOCOMMERCE_CHANGES=false node scripts/reconcile-woocommerce-products.mjs
           node - <<'NODE'
           const fs=require('fs');
           const report=JSON.parse(fs.readFileSync('woocommerce-reconciliation-report.json','utf8'));
           if(report.productCount!==3) throw new Error(`Expected 3 products, saw ${report.productCount}`);
           if(report.productsNeedingChanges!==0) throw new Error(`${report.productsNeedingChanges} product(s) still need changes`);
-          console.log('All 3 reviewed WooCommerce products match canonical copy/categories.');
+          if(!Array.isArray(report.results) || !report.results.every((item)=>item.verified===true)) throw new Error('Not every reviewed product is verified.');
+          console.log('All 3 reviewed WooCommerce products passed authenticated semantic verification.');
           NODE
           echo 'outcome=success' >> "$GITHUB_OUTPUT"
 
@@ -147,10 +147,10 @@ jobs:
                 `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
                 `Result: **${process.env.JOB_STATUS}**`,
                 `Canonical product reconciliation: **${process.env.RECONCILE || 'not-run'}**`,
-                `Authenticated re-probe: **${process.env.VERIFY || 'not-run'}**`,
+                `Authenticated semantic verification: **${process.env.VERIFY || 'not-run'}**`,
                 `Public product-route verification: **${process.env.PUBLIC || 'not-run'}**`,
                 `Automatic rollback: **${process.env.ROLLBACK || 'not-needed'}**`,
                 '',
-                'Reviewed scope: product IDs 39, 41, and 91. Writes are limited to approved name where allowed, description, short description, and categories. Price, sale price, stock, SKU, slug, images, tags, shipping, tax, and order data are not written.'
+                'Reviewed scope: product IDs 39, 41, and 91. Writes are limited to approved name where allowed, description, short description, and categories. Protected transaction fields are snapshot-compared after every write; price, sale price, stock, SKU, slug, images, tags, shipping, tax, and order data are not intentionally written.'
               ].join('\n')
             });
