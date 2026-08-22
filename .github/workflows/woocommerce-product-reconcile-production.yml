@@ -1,0 +1,156 @@
+name: WooCommerce Genetics Reconciliation Production
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/woocommerce-product-reconcile-production.yml'
+      - 'site/wordpress/products/genetics.json'
+      - 'site/wordpress/products/woocommerce-reconciliation.json'
+      - 'scripts/reconcile-woocommerce-products.mjs'
+      - 'scripts/rollback-woocommerce-products.mjs'
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-woocommerce-genetics-production
+  cancel-in-progress: false
+
+jobs:
+  apply-reviewed-products:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: production
+    env:
+      NODE_OPTIONS: --dns-result-order=ipv4first
+      WP_SITE_URL: https://dtfseeds.com
+      WC_CONSUMER_KEY: ${{ secrets.WC_CONSUMER_KEY }}
+      WC_CONSUMER_SECRET: ${{ secrets.WC_CONSUMER_SECRET }}
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      BACKUP_ROOT: /tmp/woocommerce-product-backups
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate reviewed reconciliation package
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/reconcile-woocommerce-products.mjs
+          node --check scripts/rollback-woocommerce-products.mjs
+          node scripts/validate-genetics-commerce.mjs
+          node scripts/validate-woocommerce-reconciliation.mjs
+          test -n "${WP_API_USERNAME:-}"
+          test -n "${WP_API_PASSWORD:-}"
+
+      - name: Apply canonical product copy and categories
+        id: reconcile
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3 4; do
+            echo "WooCommerce reconciliation attempt $attempt of 4"
+            if APPLY_WOOCOMMERCE_CHANGES=true node scripts/reconcile-woocommerce-products.mjs; then
+              echo 'outcome=success' >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            if [[ "$attempt" -lt 4 ]]; then sleep $((attempt * 8)); fi
+          done
+          exit 1
+
+      - name: Restore product snapshots if reconciliation failed
+        id: rollback
+        if: failure() && steps.reconcile.outcome == 'failure'
+        shell: bash
+        run: |
+          set -euo pipefail
+          APPLY_WOOCOMMERCE_ROLLBACK=true node scripts/rollback-woocommerce-products.mjs
+
+      - name: Re-probe live products after apply
+        id: verify
+        if: steps.reconcile.outcome == 'success'
+        shell: bash
+        run: |
+          set -euo pipefail
+          APPLY_WOOCOMMERCE_CHANGES=false node scripts/reconcile-woocommerce-products.mjs
+          node - <<'NODE'
+          const fs=require('fs');
+          const report=JSON.parse(fs.readFileSync('woocommerce-reconciliation-report.json','utf8'));
+          if(report.productCount!==3) throw new Error(`Expected 3 products, saw ${report.productCount}`);
+          if(report.productsNeedingChanges!==0) throw new Error(`${report.productsNeedingChanges} product(s) still need changes`);
+          console.log('All 3 reviewed WooCommerce products match canonical copy/categories.');
+          NODE
+          echo 'outcome=success' >> "$GITHUB_OUTPUT"
+
+      - name: Verify public product routes
+        id: public
+        if: steps.verify.outcome == 'success'
+        shell: bash
+        run: |
+          set -euo pipefail
+          routes=(
+            /product/10-regular-f2-blue-mango-seeds/
+            /product/10-feminized-f2-blue-mango-x/
+            /product/10-reg-f1-blueberry-bubblegum/
+          )
+          for route in "${routes[@]}"; do
+            echo "Checking $route"
+            body="$RUNNER_TEMP/product-$(echo "$route" | tr '/' '-').html"
+            curl -4 --fail --silent --show-error --location --retry 6 --retry-delay 5 --retry-all-errors \
+              -H 'Cache-Control: no-cache, no-store, max-age=0' -H 'Pragma: no-cache' \
+              "https://dtfseeds.com${route}?dtf_product_verify=${GITHUB_RUN_ID}" -o "$body"
+            ! grep -Fqi 'email@email.com' "$body"
+            ! grep -Fqi '+123456789' "$body"
+            ! grep -Fqi '© 2025 DTF GENETICS' "$body"
+          done
+          echo 'outcome=success' >> "$GITHUB_OUTPUT"
+
+      - name: Upload rollback snapshots and reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: woocommerce-genetics-backup-${{ github.run_id }}
+          path: |
+            /tmp/woocommerce-product-backups
+            woocommerce-reconciliation-report.json
+            woocommerce-reconciliation-report.md
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report production result
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          JOB_STATUS: ${{ job.status }}
+          RECONCILE: ${{ steps.reconcile.outputs.outcome }}
+          VERIFY: ${{ steps.verify.outputs.outcome }}
+          PUBLIC: ${{ steps.public.outputs.outcome }}
+          ROLLBACK: ${{ steps.rollback.outcome }}
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 46,
+              body: [
+                '## WooCommerce genetics production reconciliation',
+                '',
+                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                `Result: **${process.env.JOB_STATUS}**`,
+                `Canonical product reconciliation: **${process.env.RECONCILE || 'not-run'}**`,
+                `Authenticated re-probe: **${process.env.VERIFY || 'not-run'}**`,
+                `Public product-route verification: **${process.env.PUBLIC || 'not-run'}**`,
+                `Automatic rollback: **${process.env.ROLLBACK || 'not-needed'}**`,
+                '',
+                'Reviewed scope: product IDs 39, 41, and 91. Writes are limited to approved name where allowed, description, short description, and categories. Price, sale price, stock, SKU, slug, images, tags, shipping, tax, and order data are not written.'
+              ].join('\n')
+            });
