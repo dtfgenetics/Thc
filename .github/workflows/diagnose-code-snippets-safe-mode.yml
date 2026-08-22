@@ -1,0 +1,78 @@
+name: Diagnose Code Snippets Safe Mode
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/code-snippets-safe-mode-trigger.txt
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: production
+    env:
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+    steps:
+      - name: Probe normal and authenticated safe-mode Code Snippets REST
+        id: probe
+        shell: bash
+        run: |
+          set -euo pipefail
+          node <<'NODE' | tee "$RUNNER_TEMP/code-snippets-safe-mode.json"
+          const site=(process.env.WP_SITE_URL||'').replace(/\/$/,'');
+          const auth='Basic '+Buffer.from(`${process.env.WP_API_USERNAME}:${process.env.WP_API_PASSWORD}`).toString('base64');
+          async function req(path){
+            const r=await fetch(site+path,{headers:{Authorization:auth,Accept:'application/json','Cache-Control':'no-cache'}});
+            const text=await r.text(); let body=text; try{body=text?JSON.parse(text):null}catch{}
+            return {status:r.status,ok:r.ok,body};
+          }
+          const normal=await req('/wp-json/code-snippets/v1/snippets/schema');
+          const safe=await req('/wp-json/code-snippets/v1/snippets/schema?snippets-safe-mode=1');
+          const list=await req('/wp-json/code-snippets/v1/snippets?snippets-safe-mode=1');
+          const candidates=[];
+          const raw=Array.isArray(list.body)?list.body:(Array.isArray(list.body?.snippets)?list.body.snippets:(Array.isArray(list.body?.data)?list.body.data:[]));
+          for(const s of raw){
+            const name=String(s?.name||'');
+            if(name.startsWith('DTF Public Suite Deploy V2 ')) candidates.push({id:Number(s?.id||0),name,status:s?.status||null,active:Boolean(s?.active)});
+          }
+          const out={normalSchemaStatus:normal.status,safeSchemaStatus:safe.status,safeListStatus:list.status,listShape:Array.isArray(list.body)?'array':(list.body&&typeof list.body==='object'?Object.keys(list.body).slice(0,12):typeof list.body),temporaryDeploymentSnippets:candidates};
+          console.log(JSON.stringify(out));
+          NODE
+
+      - name: Report safe-mode diagnostic
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          REPORT: ${{ runner.temp }}/code-snippets-safe-mode.json
+        with:
+          script: |
+            const fs=require('fs');
+            let body={error:'diagnostic output missing'};
+            if(fs.existsSync(process.env.REPORT)){
+              const lines=fs.readFileSync(process.env.REPORT,'utf8').trim().split(/\r?\n/);
+              try{body=JSON.parse(lines[lines.length-1])}catch{}
+            }
+            const candidates=Array.isArray(body.temporaryDeploymentSnippets)?body.temporaryDeploymentSnippets:[];
+            await github.rest.issues.createComment({
+              owner:context.repo.owner,repo:context.repo.repo,issue_number:46,
+              body:[
+                '## Code Snippets safe-mode diagnostic','',
+                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                `Normal schema HTTP: **${body.normalSchemaStatus ?? 'unknown'}**`,
+                `Safe-mode schema HTTP: **${body.safeSchemaStatus ?? 'unknown'}**`,
+                `Safe-mode list HTTP: **${body.safeListStatus ?? 'unknown'}**`,
+                `Safe-mode list shape: \`${JSON.stringify(body.listShape ?? 'unknown')}\``,
+                `Matching temporary DTF deployment snippets: **${candidates.length}**`,
+                ...candidates.map(s=>`- id ${s.id}: \`${s.name}\` — active=${s.active} status=${s.status ?? 'unknown'}`),
+                '',
+                'Read-only diagnostic. It does not modify snippets, plugins, WordPress content, files, routes, or caches.'
+              ].join('\n')
+            });
