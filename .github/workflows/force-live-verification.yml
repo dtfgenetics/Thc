@@ -16,7 +16,7 @@ permissions:
 jobs:
   dispatch:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 60
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
@@ -24,14 +24,18 @@ jobs:
         with:
           ref: main
 
-      - name: Validate verifiers
+      - name: Validate registered targets
         shell: bash
         run: |
           set -euo pipefail
-          test -s .github/workflows/verify-dtfseeds-production-cutover.yml
-          test -s .github/workflows/verify-dtfseeds-feature-surface.yml
-          grep -Fq 'workflow_dispatch:' .github/workflows/verify-dtfseeds-production-cutover.yml
-          grep -Fq 'workflow_dispatch:' .github/workflows/verify-dtfseeds-feature-surface.yml
+          for file in \
+            .github/workflows/verify-dtfseeds-production-cutover.yml \
+            .github/workflows/verify-dtfseeds-feature-surface.yml \
+            .github/workflows/google-antigravity-deployment-audit.yml \
+            .github/workflows/validate-wordpress-public-suite-bridge.yml; do
+            test -s "$file"
+            grep -Fq 'workflow_dispatch:' "$file"
+          done
 
       - name: Dispatch definitive live verifier
         shell: bash
@@ -52,39 +56,75 @@ jobs:
             [[ -n "$run_id" ]] && break
             sleep 3
           done
-          if [[ -z "$run_id" ]]; then
-            echo 'Could not identify newly dispatched feature audit run.' >&2
-            exit 1
-          fi
+          [[ -n "$run_id" ]] || { echo 'Could not identify newly dispatched feature audit run.' >&2; exit 1; }
           echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
-          echo "Feature audit run: $run_id"
           gh run watch "$run_id" --exit-status
 
-      - name: Report verifier dispatch
+      - name: Dispatch and wait for Google Antigravity audit
+        id: antigravity
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -euo pipefail
+          before="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          gh workflow run google-antigravity-deployment-audit.yml --ref main
+          run_id=''
+          for attempt in $(seq 1 30); do
+            run_id="$(gh run list --workflow google-antigravity-deployment-audit.yml --branch main --event workflow_dispatch --limit 10 --json databaseId,createdAt --jq '[.[] | select(.createdAt >= "'"$before"'")] | sort_by(.createdAt) | reverse | .[0].databaseId // empty')"
+            [[ -n "$run_id" ]] && break
+            sleep 3
+          done
+          [[ -n "$run_id" ]] || { echo 'Could not identify newly dispatched Antigravity run.' >&2; exit 1; }
+          echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+          gh run watch "$run_id" --exit-status
+
+      - name: Dispatch and wait for no-SSH bridge validation
+        id: bridge
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -euo pipefail
+          before="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          gh workflow run validate-wordpress-public-suite-bridge.yml --ref main
+          run_id=''
+          for attempt in $(seq 1 30); do
+            run_id="$(gh run list --workflow validate-wordpress-public-suite-bridge.yml --branch main --event workflow_dispatch --limit 10 --json databaseId,createdAt --jq '[.[] | select(.createdAt >= "'"$before"'")] | sort_by(.createdAt) | reverse | .[0].databaseId // empty')"
+            [[ -n "$run_id" ]] && break
+            sleep 3
+          done
+          [[ -n "$run_id" ]] || { echo 'Could not identify newly dispatched bridge validation run.' >&2; exit 1; }
+          echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+          gh run watch "$run_id" --exit-status
+
+      - name: Report verifier and deployment gates
         if: always()
         uses: actions/github-script@v7
         env:
           STATUS: ${{ job.status }}
           FEATURE_RUN_ID: ${{ steps.feature.outputs.run_id }}
           FEATURE_OUTCOME: ${{ steps.feature.outcome }}
+          AG_RUN_ID: ${{ steps.antigravity.outputs.run_id }}
+          AG_OUTCOME: ${{ steps.antigravity.outcome }}
+          BRIDGE_RUN_ID: ${{ steps.bridge.outputs.run_id }}
+          BRIDGE_OUTCOME: ${{ steps.bridge.outcome }}
         with:
           script: |
-            const featureLink = process.env.FEATURE_RUN_ID
-              ? `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${process.env.FEATURE_RUN_ID}`
-              : 'not-resolved';
+            const link = id => id ? `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${id}` : 'not-resolved';
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: 46,
               body: [
-                '## DTFSeeds live-verifier dispatch',
+                '## DTFSeeds trusted verification dispatcher',
                 '',
                 `Dispatcher: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
                 `Status: **${process.env.STATUS}**`,
-                `Feature audit: **${process.env.FEATURE_OUTCOME || 'not-run'}** — ${featureLink}`,
+                `Feature audit: **${process.env.FEATURE_OUTCOME || 'not-run'}** — ${link(process.env.FEATURE_RUN_ID)}`,
+                `Google Antigravity audit: **${process.env.AG_OUTCOME || 'not-run'}** — ${link(process.env.AG_RUN_ID)}`,
+                `No-SSH bridge validation: **${process.env.BRIDGE_OUTCOME || 'not-run'}** — ${link(process.env.BRIDGE_RUN_ID)}`,
                 '',
-                'The feature audit is read-only, is resolved to the newly dispatched run, waits for completion, and requires a complete 13-route report.'
+                'All three child gates are read-only. No WordPress or Hostinger production mutation occurs in this dispatcher.'
               ].join('\n')
             });
 
-# Trusted-main trigger: deterministic complete feature audit.
+# Trusted-main trigger: Google Antigravity + no-SSH bridge validation.
