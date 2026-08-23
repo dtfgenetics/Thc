@@ -61,21 +61,24 @@ jobs:
         run: |
           set -euo pipefail
           verify(){
-            path="$1"; marker="$2"; body="$RUNNER_TEMP/title-$(echo "$path"|tr '/' '_').html"
+            path="$1"; marker_a="$2"; marker_b="${3:-}"; body="$RUNNER_TEMP/title-$(echo "$path"|tr '/' '_').html"
             ok=0
             for attempt in 1 2 3 4 5 6; do
               curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
                 -H 'Cache-Control: no-cache, no-store, max-age=0' -H 'Pragma: no-cache' \
                 "$WP_SITE_URL${path}?dtf_title_verify=${GITHUB_RUN_ID}-${attempt}" -o "$body"
-              if grep -Fqi "$marker" "$body" && grep -Fqi 'dtf-premium-theme-title-suppression' "$body"; then ok=1; break; fi
+              marker_ok=0
+              if grep -Fqi "$marker_a" "$body"; then marker_ok=1; fi
+              if [[ "$marker_ok" -eq 0 && -n "$marker_b" ]] && grep -Fqi "$marker_b" "$body"; then marker_ok=1; fi
+              if [[ "$marker_ok" -eq 1 ]] && grep -Fqi 'dtf-premium-theme-title-suppression' "$body"; then ok=1; break; fi
               sleep 5
             done
             [[ "$ok" -eq 1 ]] || { echo "Premium title normalization not visible on $path" >&2; exit 1; }
           }
           verify '/seeds/' 'From breeding notes to current releases.'
-          verify '/learn/' 'Learn the plant as a connected system.'
+          verify '/learn/' 'Learn the plant as a connected system.' 'Understand the plant. Build the environment. Make better decisions.'
           verify '/community/' 'Grow together. Learn together. Build together.'
-          verify '/gallery/' 'DTF Visual Library'
+          verify '/gallery/' 'DTF Visual Library' 'See the plant science, genetics, tools, games, and community work.'
           echo 'outcome=success' >> "$GITHUB_OUTPUT"
       - name: Upload page snapshots
         if: always()
@@ -106,6 +109,6 @@ jobs:
                 `Scoped normalization: **${process.env.NORMALIZE || 'not-completed'}**`,
                 `Live verification: **${process.env.VERIFY || 'not-completed'}**`,
                 '',
-                'Scope is intentionally limited to Seeds, Learn, Community, and Gallery. Their custom hero remains the visible H1 while the theme-generated duplicate page title is suppressed. WooCommerce product/archive titles and other pages are not targeted. The workflow automatically reapplies after successful canonical WordPress production publishes.'
+                'Scope is intentionally limited to Seeds, Learn, Community, and Gallery. Their custom hero remains the visible H1 while the theme-generated duplicate page title is suppressed. WooCommerce product/archive titles and other pages are not targeted. The workflow accepts either the canonical editorial hero or the richer visual-rebuild hero and automatically reapplies after successful canonical WordPress production publishes.'
               ].join('\n')
             });
