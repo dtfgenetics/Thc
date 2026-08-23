@@ -11,10 +11,19 @@ on:
         options:
           - staging
           - production
+  pull_request:
+    branches:
+      - main
+    paths:
+      - scripts/build-education-image-derivatives.py
+      - site/public-route-patch/learn/infographics/**
+      - site/wordpress/assets/infographics/**
+      - .github/workflows/dtfseeds-education-assets.yml
   push:
     branches:
       - main
     paths:
+      - scripts/build-education-image-derivatives.py
       - site/public-route-patch/learn/infographics/**
       - site/wordpress/assets/infographics/**
       - .github/workflows/dtfseeds-education-assets.yml
@@ -23,12 +32,19 @@ permissions:
   contents: read
 
 concurrency:
-  group: dtfseeds-education-assets
+  group: dtfseeds-education-assets-${{ github.event_name == 'pull_request' && github.event.pull_request.number || github.ref }}
   cancel-in-progress: false
+
+env:
+  EDUCATION_SOURCE: site/wordpress/assets/infographics
+  EDUCATION_LIBRARY_SOURCE: site/public-route-patch/learn/infographics
+  EDUCATION_WEB_BUILD: build/education-web
+  EDUCATION_LIBRARY_BUILD: build/learn-infographics
+  PILLOW_VERSION: 12.3.0
 
 jobs:
   validate:
-    name: Validate public education image package
+    name: Validate and optimize public education image package
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -37,10 +53,10 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          base="site/wordpress/assets/infographics"
-          page="site/public-route-patch/learn/infographics/index.html"
+          base="$EDUCATION_SOURCE"
+          page="$EDUCATION_LIBRARY_SOURCE/index.html"
           test -s "$page"
-          test -s "site/public-route-patch/learn/infographics/library.json"
+          test -s "$EDUCATION_LIBRARY_SOURCE/library.json"
           test -d "$base"
           required=(
             THC-C004_Infographic_From_Cell_to_Canopy.jpg
@@ -59,9 +75,66 @@ jobs:
           done
           grep -Fq 'https://dtfseeds.com/learn/infographics/' "$page"
           grep -Fq '/assets/education/infographics/' "$page"
-          count="$(find "$base" -type f ! -name 'import-*.json' | wc -l | tr -d ' ')"
+          count="$(find "$base" -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webp' \) | wc -l | tr -d ' ')"
           test "$count" -ge 20
-          echo "Canonical education assets ready for website: $count" >> "$GITHUB_STEP_SUMMARY"
+          echo "Canonical education images ready for website: $count" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Install deterministic image tooling
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m pip install --disable-pip-version-check --no-cache-dir "Pillow==$PILLOW_VERSION"
+          python3 - <<'PY'
+          from PIL import features
+          if not features.check('webp'):
+              raise SystemExit('Pillow WebP support is unavailable')
+          print('Pillow WebP support verified')
+          PY
+
+      - name: Build responsive WebP derivatives and optimized library
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf "$EDUCATION_WEB_BUILD" "$EDUCATION_LIBRARY_BUILD"
+          python3 scripts/build-education-image-derivatives.py \
+            --source "$EDUCATION_SOURCE" \
+            --output "$EDUCATION_WEB_BUILD" \
+            --library-page "$EDUCATION_LIBRARY_SOURCE/index.html" \
+            --library-json "$EDUCATION_LIBRARY_SOURCE/library.json" \
+            --library-output "$EDUCATION_LIBRARY_BUILD" \
+            --widths 640 1280 \
+            --quality 82
+
+          test -s "$EDUCATION_WEB_BUILD/optimization-manifest.json"
+          test -s "$EDUCATION_LIBRARY_BUILD/index.html"
+          test -s "$EDUCATION_LIBRARY_BUILD/library.json"
+          test -s "$EDUCATION_LIBRARY_BUILD/optimization-manifest.json"
+          grep -Fq '/assets/education/infographics-web/' "$EDUCATION_LIBRARY_BUILD/index.html"
+          grep -Fq 'srcset=' "$EDUCATION_LIBRARY_BUILD/index.html"
+          grep -Fq 'decoding="async"' "$EDUCATION_LIBRARY_BUILD/index.html"
+
+          source_count="$(find "$EDUCATION_SOURCE" -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webp' \) | wc -l | tr -d ' ')"
+          preview_count="$(find "$EDUCATION_WEB_BUILD" -type f -name '*.webp' | wc -l | tr -d ' ')"
+          test "$preview_count" -ge "$source_count"
+
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          report=json.loads(Path('build/education-web/optimization-manifest.json').read_text())
+          if report['sourceImageCount'] < 20:
+              raise SystemExit('Too few canonical images were optimized')
+          if report['libraryImagesOptimized'] < 20:
+              raise SystemExit('Too few library image tags were converted to responsive previews')
+          if report['estimatedLargestPreviewSavingsPercent'] <= 0:
+              raise SystemExit('Preview optimization did not reduce aggregate bytes')
+          print(json.dumps({
+              'sourceImageCount': report['sourceImageCount'],
+              'libraryImagesOptimized': report['libraryImagesOptimized'],
+              'estimatedLargestPreviewSavingsPercent': report['estimatedLargestPreviewSavingsPercent'],
+          }, indent=2))
+          PY
+
+          echo "Responsive WebP previews built: $preview_count" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload education release artifact
         uses: actions/upload-artifact@v4
@@ -69,15 +142,17 @@ jobs:
           name: dtfseeds-education-assets-${{ github.sha }}
           path: |
             site/wordpress/assets/infographics
-            site/public-route-patch/learn/infographics
+            build/education-web
+            build/learn-infographics
           if-no-files-found: error
           retention-days: 30
 
   deploy:
     name: Back up and publish education assets
+    if: github.event_name != 'pull_request'
     needs: validate
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 35
     environment: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'production' }}
     env:
       SSH_HOST: ${{ secrets.HOSTINGER_HOST || secrets.SSH_HOST || secrets.SFTP_HOST }}
@@ -88,6 +163,31 @@ jobs:
       SITE_ROOT: ${{ vars.HOSTINGER_WORDPRESS_PATH || vars.WORDPRESS_PATH || vars.WP_PATH }}
     steps:
       - uses: actions/checkout@v4
+
+      - name: Install deterministic image tooling
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m pip install --disable-pip-version-check --no-cache-dir "Pillow==$PILLOW_VERSION"
+          python3 - <<'PY'
+          from PIL import features
+          if not features.check('webp'):
+              raise SystemExit('Pillow WebP support is unavailable')
+          PY
+
+      - name: Rebuild release derivatives from the checked-out revision
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf "$EDUCATION_WEB_BUILD" "$EDUCATION_LIBRARY_BUILD"
+          python3 scripts/build-education-image-derivatives.py \
+            --source "$EDUCATION_SOURCE" \
+            --output "$EDUCATION_WEB_BUILD" \
+            --library-page "$EDUCATION_LIBRARY_SOURCE/index.html" \
+            --library-json "$EDUCATION_LIBRARY_SOURCE/library.json" \
+            --library-output "$EDUCATION_LIBRARY_BUILD" \
+            --widths 640 1280 \
+            --quality 82
 
       - name: Validate deployment access
         shell: bash
@@ -158,27 +258,32 @@ jobs:
           set -euo pipefail
           mkdir -p "$BACKUP/assets/education" "$BACKUP/learn"
           [[ ! -e "$ROOT/assets/education/infographics" ]] || cp -a "$ROOT/assets/education/infographics" "$BACKUP/assets/education/infographics"
+          [[ ! -e "$ROOT/assets/education/infographics-web" ]] || cp -a "$ROOT/assets/education/infographics-web" "$BACKUP/assets/education/infographics-web"
           [[ ! -e "$ROOT/learn/infographics" ]] || cp -a "$ROOT/learn/infographics" "$BACKUP/learn/infographics"
           printf '%s\n' "$BACKUP" > "$BACKUP/backup-location.txt"
           REMOTE
 
-      - name: Publish canonical infographic assets and library
+      - name: Publish canonical originals, optimized previews and library
         shell: bash
         env:
           ROOT: ${{ steps.root.outputs.path }}
         run: |
           set -euo pipefail
-          ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" "mkdir -p '$ROOT/assets/education/infographics' '$ROOT/learn/infographics'"
-          rsync -az --delete --checksum --exclude 'import-*.json' -e "ssh -p $SSH_PORT" site/wordpress/assets/infographics/ "$SSH_USER@$SSH_HOST:$ROOT/assets/education/infographics/"
-          rsync -az --delete --checksum -e "ssh -p $SSH_PORT" site/public-route-patch/learn/infographics/ "$SSH_USER@$SSH_HOST:$ROOT/learn/infographics/"
+          ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" "mkdir -p '$ROOT/assets/education/infographics' '$ROOT/assets/education/infographics-web' '$ROOT/learn/infographics'"
+          rsync -az --delete --checksum --exclude 'import-*.json' -e "ssh -p $SSH_PORT" "$EDUCATION_SOURCE/" "$SSH_USER@$SSH_HOST:$ROOT/assets/education/infographics/"
+          rsync -az --delete --checksum -e "ssh -p $SSH_PORT" "$EDUCATION_WEB_BUILD/" "$SSH_USER@$SSH_HOST:$ROOT/assets/education/infographics-web/"
+          rsync -az --delete --checksum -e "ssh -p $SSH_PORT" "$EDUCATION_LIBRARY_BUILD/" "$SSH_USER@$SSH_HOST:$ROOT/learn/infographics/"
 
-      - name: Verify live infographic library
+      - name: Verify live optimized infographic library
         shell: bash
         run: |
           set -euo pipefail
-          html="$(curl --fail --silent --show-error --location --retry 3 --retry-delay 2 https://dtfseeds.com/learn/infographics/)"
+          html="$(curl --fail --silent --show-error --location --retry 3 --retry-delay 2 "https://dtfseeds.com/learn/infographics/?education_release=$GITHUB_SHA")"
           grep -Fqi '<h1>Infographic Library</h1>' <<<"$html"
-          grep -Fqi '/assets/education/infographics/' <<<"$html"
+          grep -Fqi '/assets/education/infographics-web/' <<<"$html"
+          grep -Fqi 'srcset=' <<<"$html"
+          grep -Fqi 'decoding="async"' <<<"$html"
+
           for asset in \
             THC-C004_Infographic_From_Cell_to_Canopy.jpg \
             THC-C009_Infographic_Trichomes_Secretory_Biology.jpg \
@@ -187,10 +292,31 @@ jobs:
             curl --fail --silent --show-error --location --retry 3 --retry-delay 2 "https://dtfseeds.com/assets/education/infographics/$asset" >/dev/null
           done
 
+          for preview in \
+            THC-C004_Infographic_From_Cell_to_Canopy-640.webp \
+            THC-C004_Infographic_From_Cell_to_Canopy-1280.webp \
+            Cannabis_Plant_Anatomy_Infographic-640.webp; do
+            curl --fail --silent --show-error --location --retry 3 --retry-delay 2 "https://dtfseeds.com/assets/education/infographics-web/$preview" >/dev/null
+          done
+
+          manifest="$(curl --fail --silent --show-error --location --retry 3 --retry-delay 2 "https://dtfseeds.com/assets/education/infographics-web/optimization-manifest.json")"
+          python3 - <<'PY' "$manifest"
+          import json, sys
+          report=json.loads(sys.argv[1])
+          if report['sourceImageCount'] < 20:
+              raise SystemExit('Live optimization manifest has too few images')
+          if report['libraryImagesOptimized'] < 20:
+              raise SystemExit('Live optimization manifest has too few optimized library images')
+          print('Live optimized image count:', report['sourceImageCount'])
+          print('Estimated largest-preview savings:', report['estimatedLargestPreviewSavingsPercent'])
+          PY
+
       - name: Record deployment
         if: always()
         run: |
           echo "## DTFSeeds education asset deployment" >> "$GITHUB_STEP_SUMMARY"
           echo "Revision: $GITHUB_SHA" >> "$GITHUB_STEP_SUMMARY"
-          echo "Canonical source: site/wordpress/assets/infographics" >> "$GITHUB_STEP_SUMMARY"
-          echo "Live routes: /assets/education/infographics/ and /learn/infographics/" >> "$GITHUB_STEP_SUMMARY"
+          echo "Canonical source: $EDUCATION_SOURCE" >> "$GITHUB_STEP_SUMMARY"
+          echo "Full-resolution route: /assets/education/infographics/" >> "$GITHUB_STEP_SUMMARY"
+          echo "Optimized preview route: /assets/education/infographics-web/" >> "$GITHUB_STEP_SUMMARY"
+          echo "Library route: /learn/infographics/" >> "$GITHUB_STEP_SUMMARY"
