@@ -1,0 +1,114 @@
+name: Publish DTFSeeds Genetics V2
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows:
+      - Publish DTFSeeds WordPress Production
+    types: [completed]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dtfseeds-genetics-v2
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    name: Publish Genetics V2 catalog and profiles
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: production
+    env:
+      NODE_OPTIONS: --dns-result-order=ipv4first
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      BACKUP_ROOT: /tmp/wordpress-genetics-v2
+
+    steps:
+      - name: Require successful canonical production deployment
+        if: github.event_name == 'workflow_run'
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "${{ github.event.workflow_run.conclusion }}" == "success" ]]
+
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate Genetics V2 package
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/publish-wordpress-genetics-v2.mjs
+          node - <<'NODE'
+          const fs = require('fs');
+          const data = JSON.parse(fs.readFileSync('site/wordpress/genetics/catalog.json','utf8'));
+          if (!Array.isArray(data.catalog) || data.catalog.length < 8) throw new Error('Genetics catalog is incomplete.');
+          const ids = new Set();
+          const slugs = new Set();
+          for (const item of data.catalog) {
+            for (const key of ['id','name','slug','lineage','status','statusLabel','profileUrl','summary']) {
+              if (!item[key]) throw new Error(`Missing ${key} on ${item.id || item.name || 'unknown item'}`);
+            }
+            if (ids.has(item.id)) throw new Error(`Duplicate id: ${item.id}`);
+            if (slugs.has(item.slug)) throw new Error(`Duplicate slug: ${item.slug}`);
+            if (item.profileUrl !== `/seeds/${item.slug}/`) throw new Error(`Profile must live under /seeds/: ${item.id}`);
+            ids.add(item.id);
+            slugs.add(item.slug);
+          }
+          console.log(`Validated ${data.catalog.length} genetics profiles.`);
+          NODE
+
+      - name: Publish Genetics V2
+        env:
+          APPLY_GENETICS_V2: 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/publish-wordpress-genetics-v2.mjs
+
+      - name: Verify live genetics catalog and profiles
+        shell: bash
+        run: |
+          set -euo pipefail
+          verify_text() {
+            local path="$1"
+            local required="$2"
+            local body="$RUNNER_TEMP/$(echo "$path" | tr '/' '_').html"
+            for attempt in 1 2 3 4 5 6; do
+              curl -4 --fail --silent --show-error --location \
+                --header 'Cache-Control: no-cache, no-store, max-age=0' \
+                --header 'Pragma: no-cache' \
+                "$WP_SITE_URL${path}?dtf_genetics_v2=${GITHUB_RUN_ID}-${attempt}" \
+                --output "$body"
+              if grep -Fqi -- "$required" "$body"; then return 0; fi
+              sleep 6
+            done
+            echo "Required Genetics V2 text missing on $path: $required" >&2
+            head -c 2500 "$body" >&2 || true
+            exit 1
+          }
+
+          verify_text '/seeds/' 'Built line by line. Documented generation by generation.'
+          verify_text '/seeds/blue-mango-regular-f2/' 'Somango XXL × Blueberry Butcher'
+          verify_text '/seeds/blue-mango-feminized-f2/' 'Feminized'
+          verify_text '/seeds/blue-bubblegum-f1/' 'Bubblegum Kush × Blueberry Butcher'
+          verify_text '/seeds/mango-bubbles/' 'Blue Mango × Blue Bubblegum'
+          verify_text '/seeds/blueberry-butcher/' 'Blueberry Muffin × Jack Herer'
+
+      - name: Upload Genetics V2 rollback package
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: genetics-v2-backup-${{ github.run_id }}
+          path: /tmp/wordpress-genetics-v2
+          if-no-files-found: warn
+          retention-days: 30
