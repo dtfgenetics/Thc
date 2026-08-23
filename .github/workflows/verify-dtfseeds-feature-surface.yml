@@ -47,7 +47,7 @@ jobs:
                 -o "$body" -w '%{http_code}' \
                 -H 'Cache-Control: no-cache, no-store, max-age=0' \
                 -H 'Pragma: no-cache' \
-                -H 'User-Agent: DTFSeeds-Feature-Audit/2.0' \
+                -H 'User-Agent: DTFSeeds-Feature-Audit/2.1' \
                 "$SITE${path}?dtf_feature_audit=${token}" || printf '000')"
               final_url="$(curl -4 -sS -L -o /dev/null -w '%{url_effective}' \
                 --connect-timeout 15 --max-time 45 \
@@ -69,7 +69,7 @@ jobs:
 
           check_route '/games/' 'Original cannabis games built to play, learn, compete, and share.' 'hub'
           check_route '/tools/' 'Practical tools built around observation, records, and evidence.' 'hub'
-          check_route '/projects/' 'One place to see what is playable, usable, and still being built.' 'hub'
+          check_route '/projects/' 'One place to see what is live now and what we are building next.' 'hub'
           check_route '/growlens/' 'GrowLens' 'tool'
           check_route '/thc-grow-doc/' 'Grow Doc' 'tool'
           check_route '/games/high-iq/' 'High IQ' 'game'
@@ -80,6 +80,8 @@ jobs:
           check_route '/games/weedopolis/' 'Weedopolis' 'game'
           check_route '/games/crossword/' 'Crossword' 'game'
           check_route '/games/who-took-it/' 'Who Took It' 'game'
+          check_route '/games/thc-u-know/' 'THC U Know' 'multiplayer'
+          check_route '/games/kush-kings-chess/' 'Kush Kings' 'multiplayer'
 
           echo "failures=$failures" >> "$GITHUB_OUTPUT"
           echo "total=$total" >> "$GITHUB_OUTPUT"
@@ -89,7 +91,7 @@ jobs:
             echo 'DTF_ROWS_EOF'
           } >> "$GITHUB_OUTPUT"
           cat "$out"
-          [[ "$total" -eq 13 ]] || { echo "Expected 13 routes, audited $total" >&2; exit 1; }
+          [[ "$total" -eq 15 ]] || { echo "Expected 15 routes, audited $total" >&2; exit 1; }
           exit 0
 
       - name: Report feature surface audit
@@ -109,7 +111,7 @@ jobs:
             });
             const total = Number(process.env.TOTAL || 0);
             const failures = Number(process.env.FAILURES || 0);
-            const complete = total === 13 && rows.length === 13;
+            const complete = total === 15 && rows.length === 15;
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -119,7 +121,7 @@ jobs:
                 '',
                 `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
                 `Audit execution: **${process.env.AUDIT_OUTCOME || 'unknown'}**`,
-                `Routes audited: **${total}/13**`,
+                `Routes audited: **${total}/15**`,
                 `Report completeness: **${complete ? 'complete' : 'INCOMPLETE'}**`,
                 `Advertised routes failing current-content checks: **${failures}**`,
                 '',
@@ -127,7 +129,7 @@ jobs:
                 '|---|---|---:|---|---:|---|---|',
                 ...(rows.length ? rows : ['| - | - | ? | ? | ? | **MISSING/BROKEN** | - |']),
                 '',
-                'Read-only fresh-runner audit. It does not mutate WordPress, Hostinger, repository files, caches, or app state. A valid report must contain all 13 advertised routes.'
+                'Read-only fresh-runner audit. It now includes both public multiplayer routes in addition to the game/tool hubs and single-player applications.'
               ].join('\n')
             });
-            if (!complete) core.setFailed(`Feature audit report is incomplete: ${total}/13 routes, ${rows.length} rows.`);
+            if (!complete) core.setFailed(`Feature audit report is incomplete: ${total}/15 routes, ${rows.length} rows.`);
