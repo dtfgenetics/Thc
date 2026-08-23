@@ -1,0 +1,36 @@
+name: Validate Education Visual Production Queue
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - docs/INFOGRAPHIC_COVERAGE_TARGETS.json
+      - site/wordpress/education/visual-production-queue-v1.json
+      - scripts/validate-education-visual-production-queue.mjs
+      - .github/workflows/education-visual-production-queue.yml
+  push:
+    branches: [main]
+    paths:
+      - docs/INFOGRAPHIC_COVERAGE_TARGETS.json
+      - site/wordpress/education/visual-production-queue-v1.json
+      - scripts/validate-education-visual-production-queue.mjs
+      - .github/workflows/education-visual-production-queue.yml
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate queue schema and canonical coverage
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/validate-education-visual-production-queue.mjs
+          node scripts/validate-education-visual-production-queue.mjs
