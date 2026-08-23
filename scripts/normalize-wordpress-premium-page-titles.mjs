@@ -15,11 +15,15 @@ const backupDir=join(backupRoot,`premium-title-${stamp}`);
 await mkdir(backupDir,{recursive:true});
 const sleep=(ms)=>new Promise(r=>setTimeout(r,ms));
 
+// Each page may temporarily exist in canonical editorial form or in its richer
+// visual-rebuild form. Both are intentionally designed pages with their own H1.
+// Accept only known exact hero markers so the normalizer still fails closed if
+// a page is unexpectedly replaced with unrelated content.
 const targets=[
-  {slug:'seeds',marker:'From breeding notes to current releases.'},
-  {slug:'learn',marker:'Learn the plant as a connected system.'},
-  {slug:'community',marker:'Grow together. Learn together. Build together.'},
-  {slug:'gallery',marker:'DTF Visual Library'}
+  {slug:'seeds',markers:['From breeding notes to current releases.']},
+  {slug:'learn',markers:['Learn the plant as a connected system.','Understand the plant. Build the environment. Make better decisions.']},
+  {slug:'community',markers:['Grow together. Learn together. Build together.']},
+  {slug:'gallery',markers:['DTF Visual Library','See the plant science, genetics, tools, games, and community work.']}
 ];
 
 const STYLE_ID='dtf-premium-theme-title-suppression';
@@ -38,7 +42,7 @@ async function request(path,options={}){
   let last;
   for(let attempt=1;attempt<=6;attempt+=1){
     try{
-      const response=await fetch(`${siteUrl}${path}`,{...options,redirect:'follow',signal:AbortSignal.timeout(60000),headers:{Authorization:auth,Accept:'application/json','User-Agent':'DTFSeeds-Premium-Title-Normalizer/1.0',...(options.body?{'Content-Type':'application/json'}:{}),...(options.headers||{})}});
+      const response=await fetch(`${siteUrl}${path}`,{...options,redirect:'follow',signal:AbortSignal.timeout(60000),headers:{Authorization:auth,Accept:'application/json','User-Agent':'DTFSeeds-Premium-Title-Normalizer/1.1',...(options.body?{'Content-Type':'application/json'}:{}),...(options.headers||{})}});
       const text=await response.text();let body=null;try{body=text?JSON.parse(text):null;}catch{body=text;}
       if((response.status>=500||response.status===429)&&attempt<6){await sleep(attempt*1800);continue;}
       if(!response.ok) throw new Error(`${options.method||'GET'} ${path} failed (${response.status}): ${typeof body==='string'?body.slice(0,500):JSON.stringify(body).slice(0,500)}`);
@@ -48,6 +52,7 @@ async function request(path,options={}){
   throw last;
 }
 function rendered(value){return typeof value==='string'?value:(value?.raw||value?.rendered||'');}
+function knownMarker(content,target){return target.markers.find(marker=>String(content).includes(marker))||null;}
 function normalize(content){
   const re=new RegExp(`<style\\s+id=["']${STYLE_ID}["'][^>]*>[\\s\\S]*?<\\/style>\\s*`,'i');
   return `${STYLE}\n${String(content).replace(re,'').trimStart()}`;
@@ -59,7 +64,8 @@ for(const target of targets){
   if(!Array.isArray(rows)||rows.length!==1) throw new Error(`${target.slug}: expected exactly one page, found ${Array.isArray(rows)?rows.length:'invalid'}.`);
   const page=rows[0];
   const before=rendered(page.content);
-  if(!before.includes(target.marker)) throw new Error(`${target.slug}: designed hero marker is missing; refusing title normalization.`);
+  const marker=knownMarker(before,target);
+  if(!marker) throw new Error(`${target.slug}: no approved designed-hero marker is present; refusing title normalization.`);
   if(!/<h1\b/i.test(before)) throw new Error(`${target.slug}: no custom H1 found; refusing to hide the theme title.`);
   const after=normalize(before);
   await writeFile(join(backupDir,`page-${page.id}-${target.slug}-before.json`),`${JSON.stringify(page,null,2)}\n`);
@@ -67,8 +73,8 @@ for(const target of targets){
   const check=await request(`/wp-json/wp/v2/pages/${page.id}?context=edit`);
   const current=rendered(check.content);
   if(apply&&!current.includes(`id="${STYLE_ID}"`)) throw new Error(`${target.slug}: scoped title suppression was not persisted.`);
-  if(!current.includes(target.marker)) throw new Error(`${target.slug}: hero marker changed unexpectedly.`);
-  results.push({slug:target.slug,pageId:page.id,changed:after!==before,applied:apply,marker:target.marker});
+  if(!knownMarker(current,target)) throw new Error(`${target.slug}: approved hero marker changed unexpectedly.`);
+  results.push({slug:target.slug,pageId:page.id,changed:after!==before,applied:apply,marker});
 }
 
 const report={generatedAt:new Date().toISOString(),siteUrl,apply,backupDir,styleId:STYLE_ID,targets:results};
