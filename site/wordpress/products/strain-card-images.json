@@ -3,9 +3,9 @@
   "updatedAt": "2026-08-23",
   "policy": {
     "purpose": "Use reviewed DTF Genetics strain-card artwork as primary WooCommerce imagery for the matching product.",
-    "sourceOfTruth": "Controlled Google Drive 02 Genetics folder with reviewed file IDs and expected visual dimensions.",
+    "sourceOfTruth": "Public permanent CDN copies of the reviewed user-supplied card files are the WordPress ingestion origin; controlled Google Drive IDs and source hashes remain provenance.",
     "imageWriteScope": "WooCommerce product images only. Preserve every non-image commerce field and retain existing secondary product images.",
-    "runtimeValidation": "Validate downloaded image magic and dimensions. Google Drive may serve a byte-different rendition, so original SHA-256 is retained as provenance rather than a runtime equality requirement."
+    "runtimeValidation": "Validate downloaded image magic and expected dimensions before any WordPress or WooCommerce write."
   },
   "cards": [
     {
@@ -16,10 +16,11 @@
       "generation": "F2",
       "seedType": "regular",
       "driveFileId": "1FbuXpjA9Z5FsKdPT-vQILMCPv1aejlLR",
-      "fileName": "Blue_Mango_F2_Regular_DTF_Strain_Card.png",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/0664/2542/1885/files/dtf-blue-mango-f2-regular.jpg?v=1787510072",
+      "fileName": "Blue_Mango_F2_Regular_DTF_Strain_Card.jpg",
       "expectedWidth": 1024,
       "expectedHeight": 1536,
-      "sourceSha256": "f9fa5988d05c65e458a55c4dc6c4c416048cb6bbf71c3a246c5ff238a8569f15",
+      "sourceSha256": "7a506baa63d554d4554f7747d5c9cd222bc85fa1879e565729f5c876e4e8dd61",
       "wordpressSlug": "dtf-strain-card-blue-mango-f2-regular",
       "altText": "Blue Mango F2 Regular DTF Genetics strain card"
     },
@@ -31,6 +32,7 @@
       "generation": "F2",
       "seedType": "feminized",
       "driveFileId": "1HnLstfC6OBvrwWMVI6rP9JH3S1b_XCsl",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/0664/2542/1885/files/dtf-blue-mango-f2-feminized.png?v=1787510082",
       "fileName": "Blue_Mango_F2_Feminized_DTF_Strain_Card.png",
       "expectedWidth": 1024,
       "expectedHeight": 1536,
@@ -46,10 +48,11 @@
       "generation": "F1",
       "seedType": "regular",
       "driveFileId": "13f_nC3Ri4hyIkbjjcRKPX4GKJ-UBZ7Ps",
-      "fileName": "Blue_Bubblegum_F1_Regular_DTF_Strain_Card.png",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/0664/2542/1885/files/dtf-blue-bubblegum-f1-regular.jpg?v=1787510057",
+      "fileName": "Blue_Bubblegum_F1_Regular_DTF_Strain_Card.jpg",
       "expectedWidth": 1024,
       "expectedHeight": 1536,
-      "sourceSha256": "6fd1ddc033a76fbdd5c901dabae50b3058f673ec3d8a45c41db9572079620cb5",
+      "sourceSha256": "81c91e59227f590cd65c163e9e860748f26cf74f8966c212871a6e196637d8ce",
       "wordpressSlug": "dtf-strain-card-blue-bubblegum-f1-regular",
       "altText": "Blue Bubblegum F1 Regular DTF Genetics strain card"
     }
