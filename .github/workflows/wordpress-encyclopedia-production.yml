@@ -29,7 +29,7 @@ jobs:
       WP_SITE_URL: https://dtfseeds.com
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
-      ENCYCLOPEDIA_BATCH_FILE: site/wordpress/education/encyclopedia/volume01-batch02.json
+      ENCYCLOPEDIA_BATCH_FILE: site/wordpress/education/encyclopedia/volume01-batch03.json
       BACKUP_ROOT: /tmp/dtf-encyclopedia-production
     steps:
       - uses: actions/checkout@v4
@@ -47,8 +47,8 @@ jobs:
           node --check scripts/publish-wordpress-encyclopedia-canonical-batch.mjs
           node - <<'NODE'
           const fs=require('fs');
-          const d=require('./site/wordpress/education/encyclopedia/volume01-batch02.json');
-          const expected=Array.from({length:9},(_,i)=>`THC-ENC-${String(i+12).padStart(3,'0')}`);
+          const d=require('./site/wordpress/education/encyclopedia/volume01-batch03.json');
+          const expected=['THC-ENC-004'];
           const got=d.lessonFiles.map(file=>JSON.parse(fs.readFileSync(file,'utf8')).id);
           if(JSON.stringify(got)!==JSON.stringify(expected)) throw new Error(`Unexpected batch IDs: ${got.join(',')}`);
           for(const file of d.lessonFiles){
@@ -108,17 +108,9 @@ jobs:
             echo "$route visitor verification passed"
           }
           fetch_verify '/learn/encyclopedia/' 'THC-ENC-003'
+          fetch_verify '/learn/encyclopedia/' 'THC-ENC-004'
           fetch_verify '/learn/encyclopedia/' 'THC-ENC-020' 'THC-ENC-001 — How to Read Cannabis Plant Science Critically'
-          fetch_verify '/learn/encyclopedia/thc-enc-003/' 'Taxonomic Debate: One Species, Multiple Lineages'
-          fetch_verify '/learn/encyclopedia/thc-enc-012/' 'Leaf Morphology, Leaflets, and Phyllotaxy'
-          fetch_verify '/learn/encyclopedia/thc-enc-013/' 'Meristems, Buds, and Apical Dominance'
-          fetch_verify '/learn/encyclopedia/thc-enc-014/' 'Primary Growth, Secondary Thickening, and Structural Support'
-          fetch_verify '/learn/encyclopedia/thc-enc-015/' 'Dioecy, Monoecy, and Sexual Plasticity'
-          fetch_verify '/learn/encyclopedia/thc-enc-016/' 'Male Flower and Inflorescence Anatomy'
-          fetch_verify '/learn/encyclopedia/thc-enc-017/' 'Female Flower, Bract, Stigma, and Inflorescence Anatomy'
-          fetch_verify '/learn/encyclopedia/thc-enc-018/' 'Wind Pollination, Fertilization, and Seed Set'
-          fetch_verify '/learn/encyclopedia/thc-enc-019/' 'Glandular and Nonglandular Trichome Classes'
-          fetch_verify '/learn/encyclopedia/thc-enc-020/' 'Morphological Measurement and Botanical Recordkeeping'
+          fetch_verify '/learn/encyclopedia/thc-enc-004/' 'Domestication, Dispersal, and Human Selection'
 
       - name: Upload encyclopedia rollback package
         if: always() && steps.publish.outputs.backup_dir != ''
@@ -139,7 +131,7 @@ jobs:
               '## THC encyclopedia production publication',
               '',
               `- Result: **${success?'success':'failed'}**`,
-              `- Published batch: **volume01-batch02**`,
+              `- Published batch: **volume01-batch03**`,
               `- Article count this batch: **${{ steps.publish.outputs.count || 'unknown' }}**`,
               `- Encyclopedia lessons listed: **${{ steps.publish.outputs.listed || 'unknown' }}**`,
               `- Encyclopedia index page ID: **${{ steps.publish.outputs.index_id || 'unknown' }}**`,
