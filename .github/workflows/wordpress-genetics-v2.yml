@@ -51,7 +51,7 @@ jobs:
           node - <<'NODE'
           const fs = require('fs');
           const data = JSON.parse(fs.readFileSync('site/wordpress/genetics/catalog.json','utf8'));
-          if (!Array.isArray(data.catalog) || data.catalog.length < 8) throw new Error('Genetics catalog is incomplete.');
+          if (!Array.isArray(data.catalog) || data.catalog.length < 18) throw new Error('Genetics catalog is incomplete.');
           const ids = new Set();
           const slugs = new Set();
           for (const item of data.catalog) {
@@ -101,7 +101,7 @@ jobs:
           verify_text '/seeds/blue-mango-regular-f2/' 'Somango XXL × Blueberry Butcher'
           verify_text '/seeds/blue-mango-feminized-f2/' 'Feminized'
           verify_text '/seeds/blue-bubblegum-f1/' 'Bubblegum Kush × Blueberry Butcher'
-          verify_text '/seeds/mango-bubbles/' 'Blue Mango × Blue Bubblegum'
+          verify_text '/seeds/mango-bubbles/' 'Blue Mango F2 × Blue Bubblegum F1'
           verify_text '/seeds/blueberry-butcher/' 'Blueberry Muffin × Jack Herer'
 
       - name: Upload Genetics V2 rollback package
