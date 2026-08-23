@@ -184,6 +184,12 @@ payload = replace_once(
     b"'games/high-land/','games/high-iq/','games/high-life/','games/grower-conversations/','games/seed-man-platformer/',\n        'games/protect-the-plants/','games/weedopolis/'",
     "Protect the Plants prefix allowlist",
 )
+payload = replace_once(
+    payload,
+    b"['/games/seed-man-platformer/', 'Seed Man'], ['/games/grower-conversations/', 'Grower Conversations'], ['/games/high-land/', 'High Land'],",
+    b"['/games/seed-man-platformer/', 'Seed Man'], ['/games/grower-conversations/', 'Grower Conversations'], ['/games/protect-the-plants/', 'Protect the Plants'], ['/games/high-land/', 'High Land'],",
+    "Protect the Plants live verification",
+)
 
 payload = replace_once(
     payload,
@@ -203,18 +209,10 @@ payload = replace_once(
     b"['/projects/', 'What is live, what is growing, and where it belongs.']",
     "Projects live-verification marker",
 )
-payload = replace_once(
-    payload,
-    b"await verifyRoute('/', 'Genetics, cultivation education, practical tools, and original cannabis games.'",
-    b"await verifyRoute('/', 'Genetics first. Learn the plant behind the pack.'",
-    "Home live-verification marker",
-)
-payload = replace_once(
-    payload,
-    b"await verifyRoute('/learn/', 'Understand the plant. Build the environment. Make better decisions.'",
-    b"await verifyRoute('/learn/', 'Teaching Healthy Cultivation'",
-    "Learn ownership-verification marker",
-)
+
+# Root and Learn are WordPress-owned routes. Keep their verification markers
+# aligned with the definitive production-cutover workflow instead of replacing
+# them with editorial copy that may not be live yet.
 
 # Transport hardening: keep the canonical guarded deployer intact, then widen
 # only the read-retry window used to discover WordPress/plugin state. Hostinger
