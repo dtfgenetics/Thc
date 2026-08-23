@@ -1,0 +1,142 @@
+name: Publish Plant Biology V6 Final
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'site/wordpress/education/plant-biology-v6.json'
+      - 'scripts/publish-wordpress-plant-biology-v6-final.mjs'
+      - '.github/workflows/wordpress-plant-biology-v6-final.yml'
+  workflow_run:
+    workflows:
+      - Enhance DTFSeeds Education V4
+    types: [completed]
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-plant-biology-v6-final
+  cancel-in-progress: true
+
+env:
+  WP_SITE_URL: https://dtfseeds.com
+  NODE_OPTIONS: --dns-result-order=ipv4first
+
+jobs:
+  publish:
+    name: Publish corrected complete Plant Biology curriculum
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: production
+    env:
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      APPLY_PLANT_BIOLOGY_V6: 'true'
+      PLANT_BIOLOGY_V6_PATH: site/wordpress/education/plant-biology-v6.json
+      BACKUP_ROOT: /tmp/dtf-plant-biology-v6-final
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate corrected Plant Biology package
+        id: validate
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
+          node --check scripts/publish-wordpress-plant-biology-v6-final.mjs
+          node - <<'NODE'
+          const fs=require('fs');
+          const c=JSON.parse(fs.readFileSync('site/wordpress/education/plant-biology-v6.json','utf8'));
+          const lessons=(c.chapters||[]).reduce((n,x)=>n+(x.lessons||[]).length,0);
+          if(c.id!=='plant-biology-v6'||c.chapters?.length!==8||lessons!==30) throw new Error('Plant Biology package shape changed unexpectedly.');
+          const ids=c.chapters.map(x=>x.id);
+          if(new Set(ids).size!==8) throw new Error('Chapter IDs must be unique.');
+          console.log(`Validated stable Plant Biology chapter IDs: ${ids.join(', ')}`);
+          NODE
+
+      - name: Publish and verify corrected Plant Biology V6
+        id: publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$BACKUP_ROOT"
+          node scripts/publish-wordpress-plant-biology-v6-final.mjs | tee "$RUNNER_TEMP/plant-biology-v6-final.log"
+          report="$BACKUP_ROOT/report.json"
+          test -s "$report"
+          echo "chapters=$(node -p "require(process.argv[1]).chapters" "$report")" >> "$GITHUB_OUTPUT"
+          echo "lessons=$(node -p "require(process.argv[1]).lessons" "$report")" >> "$GITHUB_OUTPUT"
+          echo "references=$(node -p "require(process.argv[1]).publishedReferencePages" "$report")" >> "$GITHUB_OUTPUT"
+
+      - name: Independently verify stable chapter IDs
+        id: verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          body="$RUNNER_TEMP/plant-biology-final.html"
+          ok=0
+          for attempt in 1 2 3 4 5 6 7 8; do
+            curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+              --header 'Cache-Control: no-cache, no-store, max-age=0' \
+              --header 'Pragma: no-cache' \
+              "$WP_SITE_URL/learn/plant-biology/?dtf_pb6_final_verify=${GITHUB_RUN_ID}-${attempt}" --output "$body"
+            if grep -Fqi 'data-dtf-plant-biology-v6="true"' "$body"; then ok=1; break; fi
+            sleep 6
+          done
+          [[ "$ok" -eq 1 ]]
+          [[ "$(grep -Fo 'data-pb6-chapter=' "$body" | wc -l | tr -d ' ')" = '8' ]]
+          [[ "$(grep -Fo 'class="pb6-lesson"' "$body" | wc -l | tr -d ' ')" = '30' ]]
+          for id in identity-morphology cells-tissues-meristems roots stems-transport leaves-stomata carbon-water-energy growth-signaling reproduction-trichomes-senescence; do
+            grep -Fqi "data-pb6-chapter=\"$id\"" "$body"
+          done
+          grep -Fqi 'data-dtf-topic="plant-biology"' "$body"
+          grep -Fqi 'data-dtf-learning-v4="topic-plant-biology"' "$body"
+
+      - name: Upload Plant Biology V6 final evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: plant-biology-v6-final-${{ github.run_id }}
+          path: |
+            /tmp/dtf-plant-biology-v6-final
+            ${{ runner.temp }}/plant-biology-v6-final.log
+            ${{ runner.temp }}/plant-biology-final.html
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report corrected Plant Biology V6 result
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          STATUS: ${{ job.status }}
+          VALIDATE: ${{ steps.validate.outcome }}
+          PUBLISH: ${{ steps.publish.outcome }}
+          VERIFY: ${{ steps.verify.outcome }}
+          CHAPTERS: ${{ steps.publish.outputs.chapters }}
+          LESSONS: ${{ steps.publish.outputs.lessons }}
+          REFERENCES: ${{ steps.publish.outputs.references }}
+        with:
+          script: |
+            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body:[
+              '## Plant Biology V6 final curriculum','',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Result: **${process.env.STATUS}**`,
+              `Package validation: **${process.env.VALIDATE || 'not-run'}**`,
+              `WordPress publication: **${process.env.PUBLISH || 'not-run'}**`,
+              `Visitor verification: **${process.env.VERIFY || 'not-run'}**`,
+              `Chapters: **${process.env.CHAPTERS || '0'}**`,
+              `Focused lessons: **${process.env.LESSONS || '0'}**`,
+              `Direct controlled encyclopedia references currently public: **${process.env.REFERENCES || '0'}**`,'',
+              'Verification now uses stable chapter IDs rather than display punctuation, so WordPress HTML entity encoding cannot create a false publication failure. The V3 Plant Biology owner and V4 guided-learning layer must remain present for this final layer to publish.'
+            ].join('\n')});
