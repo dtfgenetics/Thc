@@ -9,7 +9,6 @@ on:
       - site/wordpress/education/topic-literature.json
       - scripts/stage-eligible-infographics.mjs
       - scripts/deploy-wordpress-infographic-library-rest.mjs
-      - scripts/polish-wordpress-infographic-section.mjs
       - scripts/publish-wordpress-topic-literature.mjs
       - .github/workflows/wordpress-infographic-production.yml
   workflow_run:
@@ -50,7 +49,7 @@ jobs:
                 `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
                 `Trigger: **${context.eventName}**`,
                 `Source: ${source}`,
-                'This run filters simple/reference images, synchronizes only eligible infographic assets, and finishes by restoring literature-first topic pages plus the searchable infographic index.'
+                'This run filters simple/reference images, synchronizes only eligible infographic assets, publishes literature-first topic pages, and verifies the searchable infographic index semantically.'
               ].join('\n')
             });
 
@@ -91,7 +90,6 @@ jobs:
           set -euo pipefail
           node --check scripts/stage-eligible-infographics.mjs
           node --check scripts/deploy-wordpress-infographic-library-rest.mjs
-          node --check scripts/polish-wordpress-infographic-section.mjs
           node --check scripts/publish-wordpress-topic-literature.mjs
           node -e "const c=require('./site/wordpress/assets/infographics/placement-rules.json'); if(c.schemaVersion<2||!c.primaryOverrides?.length) process.exit(1)"
           node -e "const e=require('./site/wordpress/assets/infographics/infographic-exclusions.json'); if(!e.neverUseOnInfographicSurfaces||!e.excludePathFragments?.includes('pdf-pages/')) process.exit(1)"
@@ -123,16 +121,7 @@ jobs:
           echo "uploaded_count=$(node -p "require(process.argv[1]).uploadedMediaCount" "$result")" >> "$GITHUB_OUTPUT"
           echo "reused_count=$(node -p "require(process.argv[1]).reusedMediaCount" "$result")" >> "$GITHUB_OUTPUT"
 
-      - name: Preserve presentation and featured-image behavior
-        id: polish
-        env:
-          APPLY_INFOGRAPHIC_POLISH: 'true'
-        shell: bash
-        run: |
-          set -euo pipefail
-          node scripts/polish-wordpress-infographic-section.mjs
-
-      - name: Restore companion literature and searchable infographic index
+      - name: Publish companion literature and searchable infographic index
         id: literature
         shell: bash
         run: |
@@ -147,6 +136,8 @@ jobs:
 
       - name: Verify live literature-first topics and searchable infographic library
         id: verify
+        env:
+          EXPECTED_CARD_COUNT: ${{ steps.literature.outputs.gallery_count }}
         shell: bash
         run: |
           set -euo pipefail
@@ -180,12 +171,55 @@ jobs:
           grep -Fqi 'thc-infographic-search' "$library"
           grep -Fqi 'Read topic literature' "$library"
           grep -Fqi 'Quality rule:' "$library"
+
+          python3 - "$library" "$EXPECTED_CARD_COUNT" <<'PY'
+          import re, sys
+          from html.parser import HTMLParser
+          from urllib.parse import unquote
+
+          class CardParser(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.depth = 0
+                  self.current = None
+                  self.cards = []
+              def handle_starttag(self, tag, attrs):
+                  attrs = dict(attrs)
+                  classes = set(attrs.get('class', '').split())
+                  if tag == 'article' and 'thc-library-card' in classes and self.current is None:
+                      self.current = {'depth': self.depth, 'text': [], 'urls': []}
+                  if self.current is not None:
+                      for key in ('src', 'href'):
+                          if attrs.get(key): self.current['urls'].append(unquote(attrs[key]))
+                  self.depth += 1
+              def handle_endtag(self, tag):
+                  self.depth -= 1
+                  if tag == 'article' and self.current is not None and self.depth == self.current['depth']:
+                      self.cards.append(self.current)
+                      self.current = None
+              def handle_data(self, data):
+                  if self.current is not None: self.current['text'].append(data)
+
+          body = open(sys.argv[1], encoding='utf-8').read()
+          expected = int(sys.argv[2])
+          p = CardParser(); p.feed(body)
+          if len(p.cards) != expected:
+              raise SystemExit(f'Expected {expected} infographic cards, found {len(p.cards)}')
+          forbidden = re.compile(r'(thc[\s_/-]*enc[\s_/-]*001[\s_/-]*vis|v04[\s_/-]*sup|pdf[\s_/-]*pages)', re.I)
+          bad = []
+          for card in p.cards:
+              text = ' '.join(' '.join(card['text']).split())
+              blob = text + ' ' + ' '.join(card['urls'])
+              if forbidden.search(blob) or text.strip().lower() == 'page 01' or any(re.search(r'/page-0?1(?:[-.])', u, re.I) for u in card['urls']):
+                  bad.append(blob[:500])
+          if bad:
+              print('Excluded simple/reference cards found:', *bad, sep='\n- ')
+              raise SystemExit(1)
+          print(f'Verified {len(p.cards)} public finished-infographic cards with no excluded support-image cards.')
+          PY
+
           image_count="$(grep -Eoi '<img[^>]+wp-content/uploads/' "$library" | wc -l | tr -d ' ')"
           test "$image_count" -ge 20
-          if grep -Eqi 'ENC[ _-]*001[ _-]*VIS|V04[ _-]*SUP|pdf[ _-]*pages' "$library"; then
-            echo 'Excluded simple/reference image family remains on infographic surface' >&2
-            exit 1
-          fi
 
           for route in plant-biology genetics-breeding lifecycle-propagation environment-vpd lighting water-ph-ec nutrition-media ipm training-canopy harvest-postharvest outdoor research-methods plant-science-reference; do
             topic="$RUNNER_TEMP/topic-${route}.html"
@@ -220,7 +254,6 @@ jobs:
           JOB_STATUS: ${{ job.status }}
           QUALITY_OUTCOME: ${{ steps.quality.outcome }}
           MEDIA_OUTCOME: ${{ steps.publish_media.outcome }}
-          POLISH_OUTCOME: ${{ steps.polish.outcome }}
           LITERATURE_OUTCOME: ${{ steps.literature.outcome }}
           VERIFY_OUTCOME: ${{ steps.verify.outcome }}
           SOURCE_COUNT: ${{ steps.quality.outputs.source_count }}
@@ -245,7 +278,6 @@ jobs:
                 `Protected job result: **${process.env.JOB_STATUS}**`,
                 `Infographic quality gate: **${process.env.QUALITY_OUTCOME || 'not-run'}**`,
                 `Eligible media synchronization: **${process.env.MEDIA_OUTCOME || 'not-run'}**`,
-                `Presentation pass: **${process.env.POLISH_OUTCOME || 'not-run'}**`,
                 `Companion literature publication: **${process.env.LITERATURE_OUTCOME || 'not-run'}**`,
                 `Visitor-facing verification: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
                 `Source images inspected: **${process.env.SOURCE_COUNT || 'not-run'}**`,
