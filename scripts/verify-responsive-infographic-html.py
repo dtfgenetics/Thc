@@ -10,102 +10,77 @@ from pathlib import Path
 from urllib.parse import unquote
 
 
-class InfographicCardParser(HTMLParser):
+class InfographicLibraryParser(HTMLParser):
     def __init__(self) -> None:
         super().__init__(convert_charrefs=True)
-        self.current: dict[str, str] | None = None
-        self.article_depth = 0
-        self.anchor_stack: list[str] = []
-        self.cards: list[dict[str, str]] = []
+        self.card_count = 0
+        self.images: list[dict[str, str]] = []
+        self.hrefs: list[str] = []
 
     def _process_start(self, tag: str, attrs) -> None:
         attr = dict(attrs)
-        classes = set(attr.get("class", "").split())
-        if tag == "article" and "thc-library-card" in classes and self.current is None:
-            self.current = {
-                "img_src": "",
-                "img_srcset": "",
-                "img_sizes": "",
-                "img_class": "",
-                "image_href": "",
-            }
-            self.article_depth = 1
-        elif tag == "article" and self.current is not None:
-            self.article_depth += 1
-
-        if self.current is None:
-            return
-        if tag == "a":
-            self.anchor_stack.append(unquote(attr.get("href", "")))
+        if tag == "article" and "thc-library-card" in set(attr.get("class", "").split()):
+            self.card_count += 1
+        elif tag == "a":
+            href = unquote(attr.get("href", ""))
+            if href:
+                self.hrefs.append(href)
         elif tag == "img":
-            self.current["img_src"] = unquote(attr.get("src", ""))
-            self.current["img_srcset"] = unquote(attr.get("srcset", ""))
-            self.current["img_sizes"] = attr.get("sizes", "")
-            self.current["img_class"] = attr.get("class", "")
-            self.current["image_href"] = self.anchor_stack[-1] if self.anchor_stack else ""
+            self.images.append(
+                {
+                    "src": unquote(attr.get("src", "")),
+                    "srcset": unquote(attr.get("srcset", "")),
+                    "sizes": attr.get("sizes", ""),
+                    "class": attr.get("class", ""),
+                }
+            )
 
     def handle_starttag(self, tag: str, attrs) -> None:
         self._process_start(tag, attrs)
 
     def handle_startendtag(self, tag: str, attrs) -> None:
-        # WordPress commonly serializes images as <img ... />. HTMLParser sends
-        # those tags here instead of handle_starttag(), so both paths must share
-        # the same attribute extraction logic.
+        # WordPress commonly serializes media as <img ... />.
         self._process_start(tag, attrs)
-
-    def handle_endtag(self, tag: str) -> None:
-        if self.current is None:
-            return
-        if tag == "a" and self.anchor_stack:
-            self.anchor_stack.pop()
-        if tag == "article":
-            self.article_depth -= 1
-            if self.article_depth == 0:
-                self.cards.append(self.current)
-                self.current = None
-                self.anchor_stack.clear()
 
 
 def analyze(html: str, minimum: int) -> dict[str, int]:
-    parser = InfographicCardParser()
+    parser = InfographicLibraryParser()
     parser.feed(html)
-    cards = parser.cards
-    responsive = [
-        card
-        for card in cards
-        if card["img_srcset"]
-        and card["img_sizes"]
-        and "dtf-responsive-education" in card["img_class"].split()
+
+    responsive_images = [
+        image
+        for image in parser.images
+        if image["srcset"]
+        and image["sizes"]
+        and "dtf-responsive-education" in image["class"].split()
     ]
-    reduced = [
-        card
-        for card in responsive
-        if card["image_href"] and card["img_src"] and card["image_href"] != card["img_src"]
-    ]
-    masters = [
-        card
-        for card in responsive
-        if "/wp-content/uploads/" in card["image_href"]
+    full_size_links = {
+        href for href in parser.hrefs if "/wp-content/uploads/" in href
+    }
+    reduced_images = [
+        image
+        for image in responsive_images
+        if image["src"] and image["src"] not in full_size_links
     ]
 
     result = {
-        "cards": len(cards),
-        "responsive": len(responsive),
-        "reducedDisplaySource": len(reduced),
-        "fullSizeWordPressLinks": len(masters),
+        "cards": parser.card_count,
+        "responsiveEducationImages": len(responsive_images),
+        "reducedDisplaySources": len(reduced_images),
+        "fullSizeWordPressLinks": len(full_size_links),
     }
+
+    failures: list[str] = []
     if result["cards"] < minimum:
-        raise ValueError(f"Expected at least {minimum} infographic cards, found {result['cards']}")
-    if result["responsive"] < minimum:
-        raise ValueError(f"Only {result['responsive']} cards have responsive attributes")
-    if result["reducedDisplaySource"] < minimum:
-        raise ValueError(
-            f"Only {result['reducedDisplaySource']} cards use a smaller display source than their full-size link"
-        )
+        failures.append(f"only {result['cards']} infographic cards")
+    if result["responsiveEducationImages"] < minimum:
+        failures.append(f"only {result['responsiveEducationImages']} responsive DTF education images")
+    if result["reducedDisplaySources"] < minimum:
+        failures.append(f"only {result['reducedDisplaySources']} reduced display sources")
     if result["fullSizeWordPressLinks"] < minimum:
-        raise ValueError(
-            f"Only {result['fullSizeWordPressLinks']} cards preserve WordPress full-size media links"
-        )
+        failures.append(f"only {result['fullSizeWordPressLinks']} WordPress full-size links")
+    if failures:
+        raise ValueError("Live infographic verification failed: " + "; ".join(failures) + f". Observed {json.dumps(result, sort_keys=True)}")
     return result
 
 
@@ -113,16 +88,17 @@ def self_test() -> None:
     full = "https://example.test/wp-content/uploads/2026/08/example.png"
     medium = "https://example.test/wp-content/uploads/2026/08/example-819x1024.png"
     html = f'''<article class="thc-visual-card thc-library-card">
-<a class="thc-visual-image" href="{full}">
+<a class="thc-visual-image" href="{full}">Full-size</a>
 <img class="wp-image-42 dtf-responsive-education" src="{medium}" srcset="{medium} 819w, {full} 1280w" sizes="(max-width:700px) 92vw, 360px" loading="lazy" decoding="async" />
-</a></article>'''
+</article>'''
     result = analyze(html, 1)
-    if result != {
+    expected = {
         "cards": 1,
-        "responsive": 1,
-        "reducedDisplaySource": 1,
+        "responsiveEducationImages": 1,
+        "reducedDisplaySources": 1,
         "fullSizeWordPressLinks": 1,
-    }:
+    }
+    if result != expected:
         raise AssertionError(f"Unexpected self-test result: {result}")
     print(json.dumps({"selfTest": "passed", **result}, indent=2))
 
@@ -144,8 +120,7 @@ def main() -> int:
         raise ValueError("HTML file path is required unless --self-test is used")
     if args.minimum < 1:
         raise ValueError("--minimum must be at least 1")
-    html = args.html.read_text(encoding="utf-8")
-    result = analyze(html, args.minimum)
+    result = analyze(args.html.read_text(encoding="utf-8"), args.minimum)
     print(json.dumps(result, indent=2))
     return 0
 
