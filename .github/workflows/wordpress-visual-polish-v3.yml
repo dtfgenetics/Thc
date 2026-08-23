@@ -1,0 +1,165 @@
+name: Polish DTFSeeds Visual System V3
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/polish-wordpress-visual-site-v3.mjs'
+      - '.github/workflows/wordpress-visual-polish-v3.yml'
+  workflow_run:
+    workflows:
+      - 'Rebuild DTFSeeds WordPress Visual Site'
+      - 'Rebuild DTFSeeds Visual Site On Command'
+    types: [completed]
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-wordpress-visual-polish-v3
+  cancel-in-progress: true
+
+env:
+  WP_SITE_URL: https://dtfseeds.com
+
+jobs:
+  polish:
+    if: >-
+      github.event_name != 'workflow_run' ||
+      (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: production
+    env:
+      NODE_OPTIONS: --dns-result-order=ipv4first
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME || secrets.WORDPRESS_USERNAME || secrets.WP_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD || secrets.WORDPRESS_APP_PASSWORD || secrets.WP_APPLICATION_PASSWORD }}
+      BACKUP_ROOT: ${{ runner.temp }}/dtf-visual-polish-v3
+
+    steps:
+      - name: Checkout production source
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate visual polish package
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${WP_API_USERNAME:-}"
+          test -n "${WP_API_PASSWORD:-}"
+          node --check scripts/polish-wordpress-visual-site-v3.mjs
+
+      - name: Confirm WordPress REST path
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3 4 5; do
+            if curl -4 --fail --silent --show-error --location \
+              --connect-timeout 15 --max-time 45 --retry 2 --retry-delay 2 \
+              -H 'Cache-Control: no-cache, no-store, max-age=0' \
+              "$WP_SITE_URL/wp-json/" -o "$RUNNER_TEMP/wp-index.json"; then
+              exit 0
+            fi
+            [[ "$attempt" -lt 5 ]] || exit 1
+            sleep $((attempt * 7))
+          done
+
+      - name: Apply V3 visual polish
+        id: polish
+        env:
+          APPLY_VISUAL_POLISH: 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/polish-wordpress-visual-site-v3.mjs | tee "$RUNNER_TEMP/visual-polish-v3.log"
+          dir="$(cat "$BACKUP_ROOT/visual-polish-v3-backup-path.txt")"
+          report="$dir/visual-polish-v3-report.json"
+          echo "spotlight=$(node -p "require(process.argv[1]).spotlightInjected" "$report")" >> "$GITHUB_OUTPUT"
+          echo "brand_id=$(node -p "require(process.argv[1]).shell.brandMediaId || ''" "$report")" >> "$GITHUB_OUTPUT"
+
+      - name: Verify visitor-facing V3 experience
+        id: verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          check_page() {
+            local path="$1"
+            local marker="$2"
+            local body="$RUNNER_TEMP/$(printf '%s' "$path" | tr '/?' '__').html"
+            local ok=0
+            for attempt in 1 2 3 4 5 6 7 8; do
+              curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+                --connect-timeout 15 --max-time 50 \
+                -H 'Cache-Control: no-cache, no-store, max-age=0' \
+                -H 'Pragma: no-cache' \
+                "$WP_SITE_URL${path}?dtf_v3=${GITHUB_RUN_ID}-${attempt}" -o "$body"
+              if grep -Fqi -- "$marker" "$body" && grep -Fqi 'dtf-visual-polish-v3' "$body"; then
+                ok=1
+                break
+              fi
+              sleep 7
+            done
+            [[ "$ok" -eq 1 ]] || { echo "V3 marker not observed on $path" >&2; head -c 3500 "$body" >&2 || true; exit 1; }
+            for required in '/seeds/' '/learn/' '/tools/' '/games/' '/community/' '/shop/'; do
+              grep -Fqi -- "$required" "$body" || { echo "Required navigation route missing on $path: $required" >&2; exit 1; }
+            done
+            for forbidden in 'email@email.com' '+123456789' '© 2025 DTF Genetics' '&copy; 2025 DTF Genetics'; do
+              ! grep -Fqi -- "$forbidden" "$body" || { echo "Forbidden stale presentation remains on $path: $forbidden" >&2; exit 1; }
+            done
+          }
+
+          check_page '/' 'dtf-v3-spotlight'
+          check_page '/learn/' 'Explore by subject'
+
+          home="$RUNNER_TEMP/_.html"
+          grep -Fqi 'DTF Genetics cannabis leaf' "$home"
+          grep -Fqi 'dtf-shell-header' "$home"
+          grep -Fqi 'dtf-shell-footer' "$home"
+          grep -Fqi 'discord.gg/xJbUeHFPMt' "$home"
+          echo 'V3 live visual verification passed.'
+
+      - name: Upload rollback package
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dtfseeds-visual-polish-v3-backup-${{ github.run_id }}
+          path: ${{ runner.temp }}/dtf-visual-polish-v3
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report V3 production result
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          JOB_STATUS: ${{ job.status }}
+          POLISH_OUTCOME: ${{ steps.polish.outcome }}
+          VERIFY_OUTCOME: ${{ steps.verify.outcome }}
+          SPOTLIGHT: ${{ steps.polish.outputs.spotlight }}
+          BRAND_ID: ${{ steps.polish.outputs.brand_id }}
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 46,
+              body: [
+                '## DTFSeeds visual polish V3',
+                '',
+                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                `Result: **${process.env.JOB_STATUS}**`,
+                `V3 polish write: **${process.env.POLISH_OUTCOME || 'not-run'}**`,
+                `Live verification: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
+                `Homepage experience spotlight: **${process.env.SPOTLIGHT || 'not-run'}**`,
+                `Cannabis-leaf brand media ID: **${process.env.BRAND_ID || 'not-reported'}**`,
+                '',
+                'V3 upgrades the existing visual system rather than replacing it: premium hero depth, stronger typography and rhythm, richer cards, a sticky cannabis-leaf brand shell, cleaner mobile navigation, and reduced-motion support.'
+              ].join('\n')
+            });
