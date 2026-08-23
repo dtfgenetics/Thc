@@ -1,0 +1,143 @@
+name: Publish THC Encyclopedia Production
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/publish-wordpress-encyclopedia-batch.mjs'
+      - 'site/wordpress/education/encyclopedia/**'
+      - '.github/workflows/wordpress-encyclopedia-production.yml'
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-encyclopedia-production
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    name: Publish and visitor-verify controlled encyclopedia batch
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: production
+    env:
+      NODE_OPTIONS: --dns-result-order=ipv4first
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      ENCYCLOPEDIA_BATCH_FILE: site/wordpress/education/encyclopedia/volume01-batch01.json
+      BACKUP_ROOT: /tmp/dtf-encyclopedia-production
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate controlled encyclopedia package
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/publish-wordpress-encyclopedia-batch.mjs
+          node - <<'NODE'
+          const d=require('./site/wordpress/education/encyclopedia/volume01-batch01.json');
+          const expected=['THC-ENC-003','THC-ENC-006','THC-ENC-007','THC-ENC-008','THC-ENC-009','THC-ENC-010','THC-ENC-011'];
+          const got=d.articles.map(x=>x.id);
+          if(JSON.stringify(got)!==JSON.stringify(expected)) throw new Error(`Unexpected batch IDs: ${got.join(',')}`);
+          for(const a of d.articles){
+            if(!a.title||!a.summary||!a.learningObjective||a.coreScience.length<3||!a.sources.length) throw new Error(`Incomplete article ${a.id}`);
+            if(a.slug!==a.id.toLowerCase()) throw new Error(`Stable slug mismatch ${a.id}`);
+          }
+          NODE
+
+      - name: Require protected WordPress credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ -n "${WP_API_USERNAME:-}" ]]
+          [[ -n "${WP_API_PASSWORD:-}" ]]
+
+      - name: Publish controlled encyclopedia batch with backup
+        id: publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/publish-wordpress-encyclopedia-batch.mjs | tee "$RUNNER_TEMP/encyclopedia-publish.log"
+          backup_dir="$(cat "$BACKUP_ROOT/latest-backup-path.txt")"
+          report="$backup_dir/encyclopedia-publication-report.json"
+          test -s "$report"
+          echo "backup_dir=$backup_dir" >> "$GITHUB_OUTPUT"
+          echo "count=$(node -p "require(process.argv[1]).published.length" "$report")" >> "$GITHUB_OUTPUT"
+          echo "index_id=$(node -p "require(process.argv[1]).index.pageId" "$report")" >> "$GITHUB_OUTPUT"
+
+      - name: Visitor-verify encyclopedia index and article routes
+        id: verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          fetch_verify() {
+            local route="$1" required="$2" forbidden="${3:-}"
+            local body="$RUNNER_TEMP/$(echo "$route" | tr '/?' '__').html"
+            local ok=0
+            for attempt in 1 2 3 4 5 6 7 8; do
+              curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+                --header 'Cache-Control: no-cache, no-store, max-age=0' \
+                --header 'Pragma: no-cache' \
+                "$WP_SITE_URL${route}?dtf_encyclopedia=${GITHUB_RUN_ID}-${attempt}" \
+                --output "$body"
+              if grep -Fqi -- "$required" "$body"; then ok=1; break; fi
+              sleep 8
+            done
+            if [[ "$ok" -ne 1 ]]; then
+              echo "Missing visitor fingerprint on $route: $required" >&2
+              head -c 4000 "$body" >&2 || true
+              exit 1
+            fi
+            if [[ -n "$forbidden" ]] && grep -Fqi -- "$forbidden" "$body"; then
+              echo "Forbidden visitor fingerprint on $route: $forbidden" >&2
+              exit 1
+            fi
+            echo "$route visitor verification passed"
+          }
+          fetch_verify '/learn/encyclopedia/' 'Search published encyclopedia lessons'
+          fetch_verify '/learn/encyclopedia/thc-enc-003/' 'Taxonomic Debate: One Species, Multiple Lineages'
+          fetch_verify '/learn/encyclopedia/thc-enc-006/' 'Annual Growth Habit and the Whole-Plant Life Cycle'
+          fetch_verify '/learn/encyclopedia/thc-enc-007/' 'The Cannabis Achene: What Growers Call a Seed'
+          fetch_verify '/learn/encyclopedia/thc-enc-008/' 'Embryo, Cotyledons, Radicle, Hypocotyl, and Plumule'
+          fetch_verify '/learn/encyclopedia/thc-enc-009/' 'Root System Architecture'
+          fetch_verify '/learn/encyclopedia/thc-enc-010/' 'Stem Anatomy and Vascular Transport'
+          fetch_verify '/learn/encyclopedia/thc-enc-011/' 'Nodes, Internodes, and Branch Attachment'
+          fetch_verify '/learn/encyclopedia/' 'THC-ENC-011' 'THC-ENC-001 — How to Read Cannabis Plant Science Critically'
+
+      - name: Upload encyclopedia rollback package
+        if: always() && steps.publish.outputs.backup_dir != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: thc-encyclopedia-production-${{ github.run_id }}
+          path: ${{ steps.publish.outputs.backup_dir }}
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Report production result to issue 46
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const success='${{ job.status }}'==='success';
+            const body=[
+              '## THC encyclopedia production publication',
+              '',
+              `- Result: **${success?'success':'failed'}**`,
+              `- Published batch: **volume01-batch01**`,
+              `- Article count: **${{ steps.publish.outputs.count || 'unknown' }}**`,
+              `- Encyclopedia index page ID: **${{ steps.publish.outputs.index_id || 'unknown' }}**`,
+              `- Visitor verification: **${success?'passed':'not passed'}**`,
+              '- Review control: **claim-level PASS is not represented as independent lesson approval**',
+              `- Source: https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`
+            ].join('\n');
+            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body});
