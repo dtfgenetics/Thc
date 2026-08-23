@@ -59,7 +59,8 @@ jobs:
           checks={
             'no malformed REST registrar': 'register__rest_route' not in text,
             'all seven v2 REST endpoints': all(("register_rest_route('dtf-suite/v2', '"+endpoint+"'") in text for endpoint in endpoints),
-            'admin authorization': "current_user_can('manage_options')" in text,
+            'authenticated publisher authorization': "current_user_can('edit_pages')" in text,
+            'obsolete administrator capability removed': "current_user_can('manage_options')" not in text,
             'one-time token': 'hash_equals($token, $supplied)' in text,
             'server lock': 'dtf_suite_deploy_lock' in text,
             'whole archive sha256': 'Whole-archive SHA-256 mismatch.' in text,
@@ -84,8 +85,12 @@ jobs:
             'root static forbidden': "name === 'index.html'" in text,
             'learn static forbidden': "strpos($name, 'learn/')" in text,
             'blog static forbidden': "strpos($name, 'blog/')" in text,
-            'root live ownership verified': "await verifyRoute('/', 'Genetics, cultivation education" in text,
-            'learn live ownership verified': "await verifyRoute('/learn/', 'Understand the plant." in text,
+            'app-only WordPress ownership boundary': 'Home and Learn are WordPress-owned and are verified independently after this app-only transaction.' in text,
+            'current games marker': 'Pick what is playable. See what is coming next.' in text,
+            'current tools marker': 'Measure it. Document it. Diagnose with context.' in text,
+            'current projects marker': 'What is live, what is growing, and where it belongs.' in text,
+            'Protect the Plants route': "['/games/protect-the-plants/', 'Protect the Plants']" in text,
+            'Protect the Plants API gate': '/games/protect-the-plants/api.php?action=active' in text,
           }
           missing=[name for name, ok in checks.items() if not ok]
           for name,ok in checks.items(): print(f'{name}: {"PASS" if ok else "FAIL"}')
@@ -104,6 +109,6 @@ jobs:
                 '## Hardened WordPress suite v2 semantic gate','',
                 `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
                 `Commit: \`${context.sha}\``, `Result: **${process.env.STATUS}**`,'',
-                'This read-only gate reassembles the canonical v2 source by SHA-256, validates Node and embedded PHP syntax, rejects malformed REST registration, requires every v2 endpoint, and verifies archive safety, transaction recovery, authenticated Code Snippets safe-mode stale-temp recovery/cleanup, and WordPress route ownership.'
+                'This read-only gate reassembles the canonical v2 source by SHA-256, validates Node and embedded PHP syntax, rejects malformed REST registration, requires every v2 endpoint, verifies authenticated publisher capability plus the one-time token, archive safety, transaction recovery, Code Snippets safe-mode cleanup, app-only WordPress ownership boundaries, current gateway markers, and the Protect the Plants route/API gate.'
               ].join('\n')
             });
