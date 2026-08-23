@@ -1,0 +1,118 @@
+name: Publish DTFSeeds Learning Experience V3
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - scripts/rebuild-wordpress-learning-experience-v3.mjs
+      - site/wordpress/education/topic-literature.json
+      - .github/workflows/wordpress-learning-experience-v3-production.yml
+  workflow_run:
+    workflows:
+      - Publish DTFSeeds WordPress Production
+    types: [completed]
+
+permissions:
+  contents: read
+  issues: write
+
+env:
+  NODE_OPTIONS: --dns-result-order=ipv4first
+
+concurrency:
+  group: dtfseeds-learning-experience-v3
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    name: Publish and verify Home Learn and THC subject hierarchy
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    environment: production
+    env:
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      APPLY_LEARNING_V3: 'true'
+      BACKUP_ROOT: /tmp/dtf-learning-v3
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate publisher and protected credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
+          test -s scripts/rebuild-wordpress-learning-experience-v3.mjs
+          test -s site/wordpress/education/topic-literature.json
+          node --check scripts/rebuild-wordpress-learning-experience-v3.mjs
+          node -e "const fs=require('fs'); const x=JSON.parse(fs.readFileSync('site/wordpress/education/topic-literature.json','utf8')); if(!Array.isArray(x.topics)||x.topics.length<10) process.exit(1); console.log('Canonical topics:',x.topics.length)"
+
+      - name: Publish hierarchical learning experience
+        id: publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$BACKUP_ROOT"
+          node scripts/rebuild-wordpress-learning-experience-v3.mjs | tee /tmp/dtf-learning-v3-output.json
+
+      - name: Verify source markers and route intent
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -Fq 'data-dtf-layout="home-v3"' scripts/rebuild-wordpress-learning-experience-v3.mjs
+          grep -Fq 'data-dtf-layout="learn-v3"' scripts/rebuild-wordpress-learning-experience-v3.mjs
+          grep -Fq 'data-dtf-topic=' scripts/rebuild-wordpress-learning-experience-v3.mjs
+          grep -Fq '/seeds/' scripts/rebuild-wordpress-learning-experience-v3.mjs
+          grep -Fq '/learn/start-here/' scripts/rebuild-wordpress-learning-experience-v3.mjs
+          grep -Fq '/growlens/' scripts/rebuild-wordpress-learning-experience-v3.mjs
+          grep -Fq '/thc-grow-doc/' scripts/rebuild-wordpress-learning-experience-v3.mjs
+          grep -Fq '/gallery/' scripts/rebuild-wordpress-learning-experience-v3.mjs
+
+      - name: Upload rollback snapshots and report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dtf-learning-v3-${{ github.run_id }}
+          path: |
+            /tmp/dtf-learning-v3
+            /tmp/dtf-learning-v3-output.json
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report learning hierarchy deployment to issue 46
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          STATUS: ${{ job.status }}
+          PUBLISH_OUTCOME: ${{ steps.publish.outcome }}
+        with:
+          script: |
+            const source = context.eventName === 'workflow_run'
+              ? context.payload.workflow_run?.html_url
+              : context.eventName === 'push'
+                ? `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/commit/${context.sha}`
+                : 'manual dispatch';
+            const body = [
+              '## DTFSeeds learning experience v3',
+              '',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Trigger: **${context.eventName}**`,
+              `Overall: **${process.env.STATUS}**`,
+              `Publication step: **${process.env.PUBLISH_OUTCOME || 'not reached'}**`,
+              `Source: ${source}`,
+              '',
+              'Scope: Home, Learn, and every canonical THC subject page from site/wordpress/education/topic-literature.json.',
+              'Visual hierarchy: core site jobs first; foundation subjects featured; specialized subjects compact; individual subject pages use literature-first section cards plus supporting visuals.',
+              'The publisher creates rollback snapshots before writes, attempts a LiteSpeed cache flush, and performs cache-busted visitor-facing marker verification before success.'
+            ].join('\n');
+            await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: 46, body });
