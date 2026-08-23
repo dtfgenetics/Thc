@@ -14,12 +14,14 @@ on:
       - 'games/high-life/**'
       - 'games/grower-conversations/**'
       - 'games/cannabis-fleet-battle/**'
+      - 'games/protect-the-plants/**'
       - 'games/strain-showdown/**'
       - 'games/seed-man-platformer/**'
       - 'site/public-route-patch/games/high-iq/**'
       - 'site/public-route-patch/games/high-life/**'
       - 'site/public-route-patch/games/grower-conversations/**'
       - 'site/public-route-patch/games/seed-man-platformer/**'
+      - 'site/public-route-patch/games/protect-the-plants/**'
       - 'docs/**SOURCE_OF_TRUTH.md'
       - 'docs/PORTFOLIO_RELEASE_CRITERIA.md'
       - 'scripts/validate-portfolio-registry.mjs'
@@ -36,12 +38,14 @@ on:
       - 'games/high-life/**'
       - 'games/grower-conversations/**'
       - 'games/cannabis-fleet-battle/**'
+      - 'games/protect-the-plants/**'
       - 'games/strain-showdown/**'
       - 'games/seed-man-platformer/**'
       - 'site/public-route-patch/games/high-iq/**'
       - 'site/public-route-patch/games/high-life/**'
       - 'site/public-route-patch/games/grower-conversations/**'
       - 'site/public-route-patch/games/seed-man-platformer/**'
+      - 'site/public-route-patch/games/protect-the-plants/**'
       - 'docs/**SOURCE_OF_TRUTH.md'
       - 'docs/PORTFOLIO_RELEASE_CRITERIA.md'
       - 'scripts/validate-portfolio-registry.mjs'
@@ -75,6 +79,8 @@ jobs:
           node games/high-life/test/engine.test.mjs
           node games/grower-conversations/scripts/validate-prompt-bank.mjs
           node games/cannabis-fleet-battle/test/engine.test.mjs
+          node --check site/public-route-patch/games/protect-the-plants/app.js
+          php -l site/public-route-patch/games/protect-the-plants/api.php
           node games/strain-showdown/scripts/validate-roster.mjs
           node games/seed-man-platformer/test/physics.test.mjs
 
@@ -99,6 +105,8 @@ jobs:
           expect(project('cannabis-fleet-battle')?.status === 'server-engine-alpha', 'Fleet Battle registry state drift');
           expect(app('cannabis-fleet-battle')?.runtime === 'server-engine' && app('cannabis-fleet-battle')?.status === 'server-engine-alpha', 'Fleet Battle deployment state drift');
 
+          expect(app('protect-the-plants')?.runtime === 'static-php' && app('protect-the-plants')?.status === 'ready-to-package', 'Protect the Plants deployment state drift');
+
           expect(project('strain-showdown')?.status === 'roster-data-alpha', 'Strain Showdown registry state drift');
           expect(app('strain-showdown')?.runtime === 'roster-data' && app('strain-showdown')?.status === 'roster-data-alpha', 'Strain Showdown deployment state drift');
 
@@ -110,11 +118,15 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for route in high-iq high-life grower-conversations seed-man-platformer; do
+          for route in high-iq high-life grower-conversations seed-man-platformer protect-the-plants; do
             test -s "site/public-route-patch/games/$route/index.html"
             grep -Fqi 'rel="canonical"' "site/public-route-patch/games/$route/index.html"
             grep -Fqi 'name="description"' "site/public-route-patch/games/$route/index.html"
           done
+          test -s site/public-route-patch/games/protect-the-plants/api.php
+          test -s site/public-route-patch/games/protect-the-plants/app.js
+          test -s site/public-route-patch/games/protect-the-plants/styles.css
+          test -s site/public-route-patch/games/protect-the-plants/plant.svg
           test -s site/public-route-patch/projects/index.html
           grep -Fq 'High Life: From Bagseed to Legacy' site/public-route-patch/projects/index.html
           grep -Fq 'Cannabis Fleet Battle' site/public-route-patch/projects/index.html
