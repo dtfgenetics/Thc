@@ -6,9 +6,11 @@ on:
     branches: [main]
     paths:
       - site/wordpress/assets/infographics/**
-      - site/public-route-patch/learn/infographics/**
+      - site/wordpress/education/topic-literature.json
+      - scripts/stage-eligible-infographics.mjs
       - scripts/deploy-wordpress-infographic-library-rest.mjs
       - scripts/polish-wordpress-infographic-section.mjs
+      - scripts/publish-wordpress-topic-literature.mjs
       - .github/workflows/wordpress-infographic-production.yml
   workflow_run:
     workflows:
@@ -48,22 +50,26 @@ jobs:
                 `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
                 `Trigger: **${context.eventName}**`,
                 `Source: ${source}`,
-                'The protected production job synchronizes canonical education media, maps visuals into the correct topic pages, rebuilds the visual library, and sets topic-appropriate featured images for URL/share presentation.'
+                'This run filters simple/reference images, synchronizes only eligible infographic assets, and finishes by restoring literature-first topic pages plus the searchable infographic index.'
               ].join('\n')
             });
 
   publish:
-    name: Upload education images and publish infographic library
+    name: Publish filtered infographics inside literature-first topics
     needs: preflight
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 50
     environment: production
     env:
       NODE_OPTIONS: --dns-result-order=ipv4first
       WP_SITE_URL: https://dtfseeds.com
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
-      INFOGRAPHIC_DIR: ${{ github.workspace }}/site/wordpress/assets/infographics
+      INFOGRAPHIC_SOURCE_DIR: ${{ github.workspace }}/site/wordpress/assets/infographics
+      INFOGRAPHIC_DIR: ${{ github.workspace }}/.tmp/eligible-infographics
+      INFOGRAPHIC_PLACEMENT_CONFIG: ${{ github.workspace }}/site/wordpress/assets/infographics/placement-rules.json
+      INFOGRAPHIC_EXCLUSIONS: ${{ github.workspace }}/site/wordpress/assets/infographics/infographic-exclusions.json
+      TOPIC_LITERATURE_CONFIG: ${{ github.workspace }}/site/wordpress/education/topic-literature.json
       BACKUP_ROOT: /tmp/wordpress-infographic-backups
     steps:
       - uses: actions/checkout@v4
@@ -78,36 +84,46 @@ jobs:
         if: github.event_name == 'workflow_run'
         run: '[[ "${{ github.event.workflow_run.conclusion }}" == "success" ]]'
 
-      - name: Validate publisher and production access
+      - name: Validate publishers, literature, and production access
         id: access
         shell: bash
         run: |
           set -euo pipefail
+          node --check scripts/stage-eligible-infographics.mjs
           node --check scripts/deploy-wordpress-infographic-library-rest.mjs
           node --check scripts/polish-wordpress-infographic-section.mjs
+          node --check scripts/publish-wordpress-topic-literature.mjs
           node -e "const c=require('./site/wordpress/assets/infographics/placement-rules.json'); if(c.schemaVersion<2||!c.primaryOverrides?.length) process.exit(1)"
+          node -e "const e=require('./site/wordpress/assets/infographics/infographic-exclusions.json'); if(!e.neverUseOnInfographicSurfaces||!e.excludePathFragments?.includes('pdf-pages/')) process.exit(1)"
+          node -e "const d=require('./site/wordpress/education/topic-literature.json'); if(!Array.isArray(d.topics)||d.topics.length<10||d.topics.some(t=>!Array.isArray(t.sections)||t.sections.length<4)) process.exit(1)"
           test -n "${WP_API_USERNAME:-}"
           test -n "${WP_API_PASSWORD:-}"
-          count="$(find site/wordpress/assets/infographics -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webp' -o -iname '*.gif' \) | wc -l | tr -d ' ')"
-          test "$count" -ge 20
           echo "user_present=true" >> "$GITHUB_OUTPUT"
           echo "password_present=true" >> "$GITHUB_OUTPUT"
 
-      - name: Upload WordPress media and publish mapped topic pages
-        id: publish
+      - name: Stage only finished infographic assets
+        id: quality
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/stage-eligible-infographics.mjs
+          report="$BACKUP_ROOT/infographic-quality-gate.json"
+          echo "source_count=$(node -p "require(process.argv[1]).sourceImageCount" "$report")" >> "$GITHUB_OUTPUT"
+          echo "eligible_count=$(node -p "require(process.argv[1]).eligibleImageCount" "$report")" >> "$GITHUB_OUTPUT"
+          echo "excluded_count=$(node -p "require(process.argv[1]).excludedImageCount" "$report")" >> "$GITHUB_OUTPUT"
+
+      - name: Upload eligible WordPress media and map infographic topics
+        id: publish_media
         shell: bash
         run: |
           set -euo pipefail
           node scripts/deploy-wordpress-infographic-library-rest.mjs
           backup_dir="$(cat "$BACKUP_ROOT/wordpress-infographic-backup-path.txt")"
           result="$backup_dir/deployment-result.json"
-          echo "source_count=$(node -p "require(process.argv[1]).sourceImageCount" "$result")" >> "$GITHUB_OUTPUT"
           echo "uploaded_count=$(node -p "require(process.argv[1]).uploadedMediaCount" "$result")" >> "$GITHUB_OUTPUT"
           echo "reused_count=$(node -p "require(process.argv[1]).reusedMediaCount" "$result")" >> "$GITHUB_OUTPUT"
-          echo "page_id=$(node -p "require(process.argv[1]).pageId" "$result")" >> "$GITHUB_OUTPUT"
-          echo "topic_count=$(node -p "require(process.argv[1]).topicPages.length" "$result")" >> "$GITHUB_OUTPUT"
 
-      - name: Rebuild polished visual library and URL images
+      - name: Preserve presentation and featured-image behavior
         id: polish
         env:
           APPLY_INFOGRAPHIC_POLISH: 'true'
@@ -115,13 +131,21 @@ jobs:
         run: |
           set -euo pipefail
           node scripts/polish-wordpress-infographic-section.mjs
-          polish_dir="$(cat "$BACKUP_ROOT/infographic-polish-backup-path.txt")"
-          report="$polish_dir/infographic-polish-report.json"
-          echo "gallery_count=$(node -p "require(process.argv[1]).mediaCount" "$report")" >> "$GITHUB_OUTPUT"
-          echo "topic_count=$(node -p "require(process.argv[1]).topicPageCount" "$report")" >> "$GITHUB_OUTPUT"
-          echo "featured_media_id=$(node -p "require(process.argv[1]).masterFeaturedMediaId" "$report")" >> "$GITHUB_OUTPUT"
 
-      - name: Verify live WordPress infographic library and topic placement
+      - name: Restore companion literature and searchable infographic index
+        id: literature
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/publish-wordpress-topic-literature.mjs
+          backup_dir="$(cat "$BACKUP_ROOT/topic-literature-backup-path.txt")"
+          report="$backup_dir/topic-literature-report.json"
+          echo "topic_count=$(node -p "require(process.argv[1]).topicPages.length" "$report")" >> "$GITHUB_OUTPUT"
+          echo "gallery_count=$(node -p "require(process.argv[1]).eligibleInfographics" "$report")" >> "$GITHUB_OUTPUT"
+          echo "wp_excluded_count=$(node -p "require(process.argv[1]).excludedSimpleReferenceMedia" "$report")" >> "$GITHUB_OUTPUT"
+          echo "page_id=$(node -p "require(process.argv[1]).libraryPageId" "$report")" >> "$GITHUB_OUTPUT"
+
+      - name: Verify live literature-first topics and searchable infographic library
         id: verify
         shell: bash
         run: |
@@ -130,7 +154,7 @@ jobs:
             local url="$1"
             local body="$2"
             local marker="$3"
-            local require_image="${4:-true}"
+            local require_image="${4:-false}"
             local ok=0
             for attempt in 1 2 3 4 5 6 7 8; do
               curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
@@ -151,26 +175,33 @@ jobs:
             fi
           }
 
-          page="$RUNNER_TEMP/infographic-library.html"
-          fetch_until 'https://dtfseeds.com/learn/infographics/' "$page" 'THC Visual Learning Library' true
-          image_count="$(grep -Eoi '<img[^>]+wp-content/uploads/' "$page" | wc -l | tr -d ' ')"
-          test "$image_count" -ge 30
-          grep -Fqi 'Plant Biology &amp; Anatomy' "$page"
-          grep -Fqi 'Nutrition &amp; Media' "$page"
-          grep -Fqi 'Plant Health &amp; IPM' "$page"
-          grep -Fqi 'Find the right visual faster.' "$page"
+          library="$RUNNER_TEMP/infographic-library.html"
+          fetch_until 'https://dtfseeds.com/learn/infographics/' "$library" 'Searchable Infographic Library' true
+          grep -Fqi 'thc-infographic-search' "$library"
+          grep -Fqi 'Read topic literature' "$library"
+          grep -Fqi 'Quality rule:' "$library"
+          image_count="$(grep -Eoi '<img[^>]+wp-content/uploads/' "$library" | wc -l | tr -d ' ')"
+          test "$image_count" -ge 20
+          if grep -Eqi 'ENC[ _-]*001[ _-]*VIS|V04[ _-]*SUP|pdf[ _-]*pages' "$library"; then
+            echo 'Excluded simple/reference image family remains on infographic surface' >&2
+            exit 1
+          fi
 
-          for route in plant-biology nutrition-media ipm lifecycle-propagation; do
+          for route in plant-biology genetics-breeding lifecycle-propagation environment-vpd lighting water-ph-ec nutrition-media ipm training-canopy harvest-postharvest outdoor research-methods plant-science-reference; do
             topic="$RUNNER_TEMP/topic-${route}.html"
-            fetch_until "https://dtfseeds.com/learn/${route}/" "$topic" 'Learn the topic visually.' true
+            fetch_until "https://dtfseeds.com/learn/${route}/" "$topic" 'Literature first:' false
+            grep -Fqi 'Use this in practice' "$topic"
+            grep -Fqi 'Infographics for' "$topic"
+            section_count="$(grep -Eo 'class="thc-section"' "$topic" | wc -l | tr -d ' ')"
+            test "$section_count" -ge 4
           done
 
           featured_json="$RUNNER_TEMP/featured.json"
           curl -4 --fail --silent --show-error --location \
             --user "${WP_API_USERNAME}:${WP_API_PASSWORD}" \
-            "https://dtfseeds.com/wp-json/wp/v2/pages/${{ steps.publish.outputs.page_id }}?context=edit&_fields=id,featured_media" \
+            "https://dtfseeds.com/wp-json/wp/v2/pages/${{ steps.literature.outputs.page_id }}?context=edit&_fields=id,featured_media" \
             --output "$featured_json"
-          node -e "const r=require(process.argv[1]); if(!(r.featured_media>0)) throw new Error('Featured media missing'); console.log('Verified library featured media:',r.featured_media)" "$featured_json"
+          node -e "const r=require(process.argv[1]); if(!(r.featured_media>0)) throw new Error('Featured media missing');" "$featured_json"
           echo "live_image_count=$image_count" >> "$GITHUB_OUTPUT"
 
       - name: Upload infographic deployment audit package
@@ -187,18 +218,19 @@ jobs:
         uses: actions/github-script@v7
         env:
           JOB_STATUS: ${{ job.status }}
-          USER_PRESENT: ${{ steps.access.outputs.user_present }}
-          PASSWORD_PRESENT: ${{ steps.access.outputs.password_present }}
-          PUBLISH_OUTCOME: ${{ steps.publish.outcome }}
+          QUALITY_OUTCOME: ${{ steps.quality.outcome }}
+          MEDIA_OUTCOME: ${{ steps.publish_media.outcome }}
           POLISH_OUTCOME: ${{ steps.polish.outcome }}
+          LITERATURE_OUTCOME: ${{ steps.literature.outcome }}
           VERIFY_OUTCOME: ${{ steps.verify.outcome }}
-          SOURCE_COUNT: ${{ steps.publish.outputs.source_count }}
-          UPLOADED_COUNT: ${{ steps.publish.outputs.uploaded_count }}
-          REUSED_COUNT: ${{ steps.publish.outputs.reused_count }}
-          PAGE_ID: ${{ steps.publish.outputs.page_id }}
-          TOPIC_COUNT: ${{ steps.polish.outputs.topic_count }}
-          GALLERY_COUNT: ${{ steps.polish.outputs.gallery_count }}
-          FEATURED_MEDIA_ID: ${{ steps.polish.outputs.featured_media_id }}
+          SOURCE_COUNT: ${{ steps.quality.outputs.source_count }}
+          ELIGIBLE_COUNT: ${{ steps.quality.outputs.eligible_count }}
+          EXCLUDED_COUNT: ${{ steps.quality.outputs.excluded_count }}
+          UPLOADED_COUNT: ${{ steps.publish_media.outputs.uploaded_count }}
+          REUSED_COUNT: ${{ steps.publish_media.outputs.reused_count }}
+          TOPIC_COUNT: ${{ steps.literature.outputs.topic_count }}
+          GALLERY_COUNT: ${{ steps.literature.outputs.gallery_count }}
+          WP_EXCLUDED_COUNT: ${{ steps.literature.outputs.wp_excluded_count }}
           LIVE_IMAGE_COUNT: ${{ steps.verify.outputs.live_image_count }}
         with:
           script: |
@@ -207,23 +239,26 @@ jobs:
               repo: context.repo.repo,
               issue_number: 46,
               body: [
-                '## THC infographic WordPress publication',
+                '## THC infographic + companion literature publication',
                 '',
                 `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
                 `Protected job result: **${process.env.JOB_STATUS}**`,
-                `Media synchronization and topic placement: **${process.env.PUBLISH_OUTCOME || 'not-run'}**`,
-                `Visual redesign and URL featured-image update: **${process.env.POLISH_OUTCOME || 'not-run'}**`,
-                `Live verification: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
-                `Source-controlled images processed: **${process.env.SOURCE_COUNT || 'not-run'}**`,
+                `Infographic quality gate: **${process.env.QUALITY_OUTCOME || 'not-run'}**`,
+                `Eligible media synchronization: **${process.env.MEDIA_OUTCOME || 'not-run'}**`,
+                `Presentation pass: **${process.env.POLISH_OUTCOME || 'not-run'}**`,
+                `Companion literature publication: **${process.env.LITERATURE_OUTCOME || 'not-run'}**`,
+                `Visitor-facing verification: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
+                `Source images inspected: **${process.env.SOURCE_COUNT || 'not-run'}**`,
+                `Finished infographic images staged: **${process.env.ELIGIBLE_COUNT || 'not-run'}**`,
+                `Simple/reference source images excluded: **${process.env.EXCLUDED_COUNT || 'not-run'}**`,
                 `New WordPress media uploads: **${process.env.UPLOADED_COUNT || 'not-run'}**`,
-                `Existing WordPress media reused: **${process.env.REUSED_COUNT || 'not-run'}**`,
-                `Infographic page ID: **${process.env.PAGE_ID || 'not-run'}**`,
-                `Topic pages populated: **${process.env.TOPIC_COUNT || 'not-run'}**`,
-                `Education media in polished gallery: **${process.env.GALLERY_COUNT || 'not-run'}**`,
-                `Library featured media / URL image ID: **${process.env.FEATURED_MEDIA_ID || 'not-run'}**`,
-                `Images observed on live library page: **${process.env.LIVE_IMAGE_COUNT || 'not-run'}**`,
+                `Existing eligible WordPress media reused: **${process.env.REUSED_COUNT || 'not-run'}**`,
+                `Literature-first topic pages: **${process.env.TOPIC_COUNT || 'not-run'}**`,
+                `Finished infographic media in searchable index: **${process.env.GALLERY_COUNT || 'not-run'}**`,
+                `Previously uploaded simple/reference media filtered from reuse: **${process.env.WP_EXCLUDED_COUNT || 'not-run'}**`,
+                `Images observed on live searchable library: **${process.env.LIVE_IMAGE_COUNT || 'not-run'}**`,
                 '',
                 'Target: https://dtfseeds.com/learn/infographics/',
-                'Canonical media is mapped with refined topic rules. The library and topic pages use poster-style non-cropping cards, topic navigation, responsive grids, and WordPress featured media for URL/share presentation.'
+                'Canonical architecture: topic literature first; finished infographics embedded by subject and searchable; simple support art and PDF page extractions excluded from infographic surfaces.'
               ].join('\n')
             });
