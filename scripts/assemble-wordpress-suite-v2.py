@@ -163,6 +163,28 @@ payload = replace_once(
     b"$exact_files = ['games/index.html','games/dtf-route.css','games/dtf-shell.css'];",
     "customer-shell exact-file allowlist",
 )
+
+# Protect the Plants is a packaged static/PHP game. Keep the canonical bridge
+# fragments immutable, then widen only the guarded post-hash deployment scope.
+payload = replace_once(
+    payload,
+    b"'games/grower-conversations','games/seed-man-platformer','games/weedopolis'",
+    b"'games/grower-conversations','games/seed-man-platformer','games/protect-the-plants','games/weedopolis'",
+    "Protect the Plants target allowlist",
+)
+payload = replace_once(
+    payload,
+    b"'games/grower-conversations/index.html','games/seed-man-platformer/index.html','games/weedopolis/index.html'",
+    b"'games/grower-conversations/index.html','games/seed-man-platformer/index.html','games/protect-the-plants/index.html','games/protect-the-plants/api.php','games/weedopolis/index.html'",
+    "Protect the Plants required-file list",
+)
+payload = replace_once(
+    payload,
+    b"'games/high-land/','games/high-iq/','games/high-life/','games/grower-conversations/','games/seed-man-platformer/',\n        'games/weedopolis/'",
+    b"'games/high-land/','games/high-iq/','games/high-life/','games/grower-conversations/','games/seed-man-platformer/',\n        'games/protect-the-plants/','games/weedopolis/'",
+    "Protect the Plants prefix allowlist",
+)
+
 payload = replace_once(
     payload,
     b"['/games/', 'Original cannabis games built to play, learn, compete, and share.']",
