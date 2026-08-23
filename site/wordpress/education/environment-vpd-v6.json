@@ -1,0 +1,380 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-08-23",
+  "id": "environment-vpd-v6",
+  "route": "/learn/environment-vpd/",
+  "title": "Environment & VPD",
+  "purpose": "Expand Environment & VPD from a five-section overview into a measurement-first environmental systems curriculum while preserving the existing V3 topic owner and V4 guided-study layer.",
+  "learningOutcome": "A learner should be able to describe what the plant actually experiences rather than relying on a room-average setpoint; distinguish air temperature from leaf temperature; explain RH, vapor pressure, dew point, air VPD and leaf VPD; connect atmospheric demand to stomata, transpiration and root-zone supply; distinguish circulation from ventilation and moisture removal; understand CO2 as both a plant input and a life-safety concern; qualify sensor placement and calibration; map canopy microclimates; and use trends, transitions and risk-reviewed control envelopes instead of universal target charts.",
+  "visualTargets": [
+    "air temperature versus leaf temperature and energy balance",
+    "infrared leaf-temperature measurement geometry and field of view",
+    "relative humidity, saturation vapor pressure and dew point relationship",
+    "condensation risk when a surface falls below dew point",
+    "air VPD versus leaf VPD comparison",
+    "VPD calculation and interpretation without universal target claims",
+    "stomata, transpiration and the soil-plant-atmosphere continuum",
+    "root-zone supply versus atmospheric demand",
+    "boundary layer thinning with air movement",
+    "circulation versus ventilation versus dehumidification",
+    "canopy microclimate mapping and dead zones",
+    "CO2 supply, canopy distribution, ventilation loss and safety separation",
+    "sensor placement, shielding, calibration and mapping",
+    "stage-aware control bands, warnings, alarms and transition records"
+  ],
+  "chapters": [
+    {
+      "id": "measurement-sensors-mapping",
+      "number": 1,
+      "title": "Measurement, Sensors & Canopy Mapping",
+      "objective": "Build a defensible environmental measurement system before interpreting climate numbers or changing equipment.",
+      "encyclopediaIds": ["THC-ENC-087", "THC-ENC-089", "THC-ENC-099", "THC-ENC-100"],
+      "lessons": [
+        {
+          "title": "A sensor measures its location, not the whole room",
+          "summary": "Treat every temperature, RH, CO2 or substrate reading as a measurement taken at a defined location and exposure rather than as a universal description of the crop environment.",
+          "concepts": ["measurement location", "representativeness", "spatial gradient", "control sensor", "canopy zone"],
+          "cultivation": "A stable wall or controller reading can coexist with hot tops, humid flower pockets, cold corners or weakly mixed lower canopy zones.",
+          "observe": "Record sensor height, orientation, shielding, nearby equipment, plant distance and operating state before interpreting the number."
+        },
+        {
+          "title": "Control sensors, mapping sensors and safety sensors serve different jobs",
+          "summary": "Separate the instrument that drives equipment from temporary or fixed instruments used to map spatial conditions and from independent devices used for life-safety monitoring.",
+          "concepts": ["control sensor", "diagnostic mapping", "safety monitor", "independence", "data channel"],
+          "cultivation": "One sensor architecture should not silently stand in for every purpose, especially where CO2 safety or localized canopy risk is involved.",
+          "observe": "Maintain a sensor register with unique IDs, role, model, serial number, range, accuracy, location and data-system channel."
+        },
+        {
+          "title": "Calibration, verification and disagreement",
+          "summary": "Use traceable comparisons, stated tolerances and as-found/as-left records to distinguish real environmental differences from sensor drift or measurement bias.",
+          "concepts": ["calibration", "verification", "tolerance", "drift", "measurement uncertainty"],
+          "cultivation": "A climate decision based on a biased RH or temperature sensor can push equipment in the wrong direction while still producing a neat data trace.",
+          "observe": "When instruments disagree, investigate placement, stabilization, contamination, clock sync and calibration before averaging the readings."
+        },
+        {
+          "title": "Map occupied-canopy microclimates across operating states",
+          "summary": "Survey the crop at multiple heights and positions during representative lights-on, peak-load, irrigation, lights-off and equipment-cycle states.",
+          "concepts": ["microclimate", "dead zone", "stratification", "grid map", "operating state"],
+          "cultivation": "Plants change airflow, heat, water-vapor release and CO2 distribution, so an empty-room map cannot permanently qualify a full canopy.",
+          "observe": "Compare minimum, median, maximum and duration outside the intended envelope rather than relying only on room averages."
+        }
+      ],
+      "knowledgeChecks": [
+        "Why can a controller reading be accurate but still unrepresentative of the canopy?",
+        "What is the difference between a control sensor and a diagnostic mapping sensor?",
+        "Why should two disagreeing sensors not simply be averaged?",
+        "Which operating states should be included when qualifying an occupied-canopy map?"
+      ]
+    },
+    {
+      "id": "temperature-leaf-energy",
+      "number": 2,
+      "title": "Air Temperature, Leaf Temperature & Energy Balance",
+      "objective": "Understand why tissue temperature can differ from room air and how radiation, transpiration, convection, water supply and equipment state create that difference.",
+      "encyclopediaIds": ["THC-ENC-082", "THC-ENC-087", "THC-ENC-096", "THC-ENC-097"],
+      "lessons": [
+        {
+          "title": "Air temperature is context, leaf temperature is tissue condition",
+          "summary": "Separate the temperature of surrounding air from the temperature of the photosynthetic surface whose energy balance is altered by radiation, evaporation and convection.",
+          "concepts": ["air temperature", "leaf temperature", "radiation", "convection", "evaporative cooling"],
+          "cultivation": "Leaf temperature can rise above air under radiant load or fall below it when transpiration and convection remove enough heat.",
+          "observe": "Pair canopy air temperature with repeatable leaf-temperature measurements instead of assuming the two values are identical."
+        },
+        {
+          "title": "Measure leaf temperature without measuring the background",
+          "summary": "Use infrared instruments with attention to emissivity, distance-to-spot ratio, field of view, target fill, reflections and sampling geometry.",
+          "concepts": ["infrared thermometry", "emissivity", "field of view", "distance-to-spot", "target geometry"],
+          "cultivation": "An IR gun can report a precise-looking mixed temperature if the measurement spot includes wall, pot, fixture or several leaves.",
+          "observe": "Document leaf class, canopy zone, angle, distance, lit or shaded state and instrument settings for repeatable comparisons."
+        },
+        {
+          "title": "Heat load is duration, tissue state and location—not one room number",
+          "summary": "Distinguish warm growth conditions from damaging heat stress by considering tissue temperature, duration, water supply, root-zone temperature, developmental stage and plant response.",
+          "concepts": ["heat stress", "duration", "thermotolerance", "root-zone temperature", "radiant load"],
+          "cultivation": "Fixture heat, sunlit surfaces, failed cooling, warm roots or weak transpiration can create local stress that disappears in the average room temperature.",
+          "observe": "Map air, leaf and root-zone temperature together with PPFD, irrigation status and HVAC state before assigning cause."
+        },
+        {
+          "title": "Cold exposure can suppress function above freezing",
+          "summary": "Recognize chilling as a low-temperature constraint on membranes, metabolism, photosynthesis, water transport and root function even when no frost occurs.",
+          "concepts": ["chilling", "cold stress", "photoinhibition", "root-zone cooling", "recovery"],
+          "cultivation": "Cold supply air, exterior surfaces, irrigation solution or power failures can create tissue conditions below the room average and can interact with condensation risk.",
+          "observe": "Record minimum, duration, cooling and warming rate, leaf/root-zone temperature and delayed symptom development before diagnosing nutrient problems."
+        }
+      ],
+      "knowledgeChecks": [
+        "Which processes can make a leaf warmer or cooler than the surrounding air?",
+        "Why is the laser dot on an IR thermometer not the full measurement area?",
+        "What evidence distinguishes warm conditions from heat stress?",
+        "Why can chilling injury occur without frost?"
+      ]
+    },
+    {
+      "id": "humidity-dew-condensation",
+      "number": 3,
+      "title": "Humidity, Vapor Pressure, Dew Point & Condensation",
+      "objective": "Interpret water vapor using temperature-aware quantities and identify condensation risk at plant and facility surfaces, especially during transitions.",
+      "encyclopediaIds": ["THC-ENC-083", "THC-ENC-084", "THC-ENC-089", "THC-ENC-100"],
+      "lessons": [
+        {
+          "title": "Relative humidity changes when temperature changes",
+          "summary": "Understand RH as the ratio of actual water vapor to the saturation capacity at that temperature rather than as an absolute amount of water in the air.",
+          "concepts": ["relative humidity", "actual vapor pressure", "saturation", "temperature dependence", "water vapor"],
+          "cultivation": "The same moisture content can produce a different RH after air cools or warms, so RH trends must be interpreted alongside temperature.",
+          "observe": "Use synchronized temperature and RH measurements from the same zone instead of combining values collected at different locations or times."
+        },
+        {
+          "title": "Saturation vapor pressure rises strongly with temperature",
+          "summary": "Connect temperature to the maximum equilibrium vapor pressure of water, which underlies RH, dew point and VPD calculations.",
+          "concepts": ["saturation vapor pressure", "temperature curve", "vapor pressure", "psychrometrics", "calculation"],
+          "cultivation": "A temperature change modifies the vapor-pressure context even if no water vapor is added or removed.",
+          "observe": "When comparing environmental periods, separate changes caused by moisture removal from changes caused primarily by temperature."
+        },
+        {
+          "title": "Dew point predicts when a surface can become wet",
+          "summary": "Use dew point as the temperature at which the current vapor content reaches saturation and condensation can form on a sufficiently cool surface.",
+          "concepts": ["dew point", "surface temperature", "condensation", "saturation", "wetness"],
+          "cultivation": "Flowers, leaves, walls, ducts or containers can fall below dew point even while the room-average RH looks acceptable.",
+          "observe": "Compare local surface or leaf temperature with dew point during lights-off, cold-air delivery and other rapid transitions."
+        },
+        {
+          "title": "Transitions can create short wet events hidden by averages",
+          "summary": "Track lights-off cooling, equipment cycles, irrigation and thermal inertia because brief local condensation can disappear in hourly or room-average data.",
+          "concepts": ["lights-off transition", "thermal inertia", "wetness duration", "microclimate", "equipment cycling"],
+          "cultivation": "Dense reproductive tissue and cool surfaces can experience risk during a short transition even when the daily average climate seems stable.",
+          "observe": "Use higher-frequency records around transitions and inspect high-risk surfaces rather than relying only on daily min/max summaries."
+        }
+      ],
+      "knowledgeChecks": [
+        "Why can RH rise after lights turn off even if no new water vapor is added?",
+        "What is saturation vapor pressure and why does temperature matter?",
+        "What condition must occur for condensation to form on a surface?",
+        "Why can hourly averages miss biologically important wetness events?"
+      ]
+    },
+    {
+      "id": "vpd-meaning-limits",
+      "number": 4,
+      "title": "VPD: Meaning, Calculation & Limits",
+      "objective": "Use VPD as a physical descriptor of evaporative demand while avoiding universal setpoints, single-number diagnosis and confusion between air VPD and leaf VPD.",
+      "encyclopediaIds": ["THC-ENC-084", "THC-ENC-085", "THC-ENC-086", "THC-ENC-100"],
+      "lessons": [
+        {
+          "title": "VPD is a vapor-pressure difference",
+          "summary": "Define vapor pressure deficit as the difference between saturation vapor pressure and actual vapor pressure under a stated temperature basis.",
+          "concepts": ["vapor pressure deficit", "saturation", "actual vapor pressure", "kPa", "evaporative demand"],
+          "cultivation": "VPD summarizes atmospheric drying demand more directly than RH alone, but it does not reveal whether the roots can supply that demand.",
+          "observe": "State the calculation method, temperature source and whether the value describes air or leaf conditions."
+        },
+        {
+          "title": "Air VPD and leaf VPD answer different questions",
+          "summary": "Distinguish VPD calculated from air conditions from a leaf-centered calculation that uses measured leaf temperature and local vapor pressure.",
+          "concepts": ["air VPD", "leaf VPD", "leaf temperature", "local humidity", "canopy zone"],
+          "cultivation": "When leaf temperature differs materially from air temperature, a room-level air VPD can misrepresent the evaporative gradient at the tissue surface.",
+          "observe": "Pair representative leaf temperature with synchronized local air measurements when using leaf VPD for diagnosis or study."
+        },
+        {
+          "title": "VPD influences transpiration but does not control it alone",
+          "summary": "Connect VPD with stomatal conductance, boundary-layer conductance, radiation, root hydraulic supply and acclimation.",
+          "concepts": ["stomatal conductance", "boundary layer", "root supply", "radiation", "acclimation"],
+          "cultivation": "Two plants at the same VPD can transpire differently because cultivar, stage, light, roots, leaf area and stomatal state differ.",
+          "observe": "Interpret VPD with leaf temperature, substrate water status, water use and plant response rather than as a stand-alone diagnosis."
+        },
+        {
+          "title": "A VPD chart is a starting hypothesis, not settled law",
+          "summary": "Treat stage charts and target bands as provisional control envelopes that require facility, genotype and crop qualification rather than as universal recipes.",
+          "concepts": ["control envelope", "stage chart", "qualification", "risk review", "setpoint"],
+          "cultivation": "Tight universal targets can cause excessive cycling or unsafe assumptions when sensors, equipment capacity, leaf temperature and crop state differ from the chart's context.",
+          "observe": "Preserve the previous qualified recipe, define success and stop criteria, and review multiple plant and system measurements after a change."
+        }
+      ],
+      "knowledgeChecks": [
+        "What physical difference does VPD describe?",
+        "When can air VPD differ substantially from leaf VPD?",
+        "Why can two plants at the same VPD transpire differently?",
+        "Why should a stage-based VPD chart be treated as a starting hypothesis?"
+      ]
+    },
+    {
+      "id": "transpiration-root-supply",
+      "number": 5,
+      "title": "Transpiration, Stomata & Root-Zone Supply",
+      "objective": "Connect atmospheric demand to stomatal regulation, the soil-plant-atmosphere continuum and the root zone so wilting or high leaf temperature is not misread as an air-only problem.",
+      "encyclopediaIds": ["THC-ENC-081", "THC-ENC-082", "THC-ENC-090", "THC-ENC-094", "THC-ENC-095"],
+      "lessons": [
+        {
+          "title": "Water moves through a soil-plant-atmosphere continuum",
+          "summary": "Follow water from the root environment through plant tissues to the atmosphere along gradients in water potential and hydraulic resistance.",
+          "concepts": ["water potential", "SPAC", "hydraulic resistance", "root uptake", "atmospheric sink"],
+          "cultivation": "Atmospheric demand matters only in relation to the plant's ability to acquire and transport water from its actual root zone.",
+          "observe": "When plants lose turgor, assess substrate water status, salinity, roots, leaf temperature and demand together."
+        },
+        {
+          "title": "Transpiration links stomata, cooling and water transport",
+          "summary": "Understand transpiration as water-vapor loss shaped by stomatal aperture, boundary layers, vapor-pressure gradient and water supply.",
+          "concepts": ["transpiration", "stomata", "evaporative cooling", "conductance", "water transport"],
+          "cultivation": "A decline in transpiration can reduce leaf cooling while also signaling stomatal closure, low demand or root limitation.",
+          "observe": "Compare water use, leaf temperature, substrate trend and visible posture before deciding whether transpiration is too high or too low."
+        },
+        {
+          "title": "A wet root zone can still fail to supply the shoot",
+          "summary": "Separate water amount from water availability and root function by considering oxygen, salinity, temperature, disease, physical damage and sensor placement.",
+          "concepts": ["water content", "hypoxia", "salinity", "root function", "sensor placement"],
+          "cultivation": "Wilting in wet media does not prove the plant needs more irrigation and can worsen when root oxygen is already limited.",
+          "observe": "Check root condition, drainage, substrate distribution and competing causes before adding water."
+        },
+        {
+          "title": "Drought and overwatering can converge on similar canopy symptoms",
+          "summary": "Recognize that inadequate water supply and oxygen-limited roots can both reduce hydraulic delivery, stomatal function and growth while requiring very different corrective actions.",
+          "concepts": ["drought", "hypoxia", "hydraulic supply", "wilting", "differential diagnosis"],
+          "cultivation": "Symptom appearance alone is weak evidence when opposite root-zone states can produce drooping, warm leaves or slowed growth.",
+          "observe": "Use root-zone history and direct measurements to distinguish insufficient water from impaired uptake in a saturated zone."
+        }
+      ],
+      "knowledgeChecks": [
+        "What does the soil-plant-atmosphere continuum describe?",
+        "How does transpiration contribute to leaf cooling?",
+        "Why can a plant wilt while the substrate is wet?",
+        "Which measurements help separate drought from hypoxia?"
+      ]
+    },
+    {
+      "id": "airflow-ventilation-moisture-removal",
+      "number": 6,
+      "title": "Air Movement, Ventilation & Moisture Removal",
+      "objective": "Separate within-canopy mixing from air exchange and dehumidification while understanding boundary layers, distribution, equipment capacity and localized wind stress.",
+      "encyclopediaIds": ["THC-ENC-083", "THC-ENC-088", "THC-ENC-089", "THC-ENC-096", "THC-ENC-100"],
+      "lessons": [
+        {
+          "title": "Leaf boundary layers resist heat, vapor and gas exchange",
+          "summary": "Understand the slowed air immediately adjacent to plant surfaces and how leaf size, shelter, canopy density and air speed alter that resistance.",
+          "concepts": ["boundary layer", "forced convection", "free convection", "turbulence", "conductance"],
+          "cultivation": "Air movement can change leaf temperature, transpiration and CO2 exchange even without changing the room's total moisture content.",
+          "observe": "Evaluate leaf and flower zones throughout the canopy rather than using visible motion at the top as proof of uniform mixing."
+        },
+        {
+          "title": "Circulation redistributes; it does not automatically remove moisture",
+          "summary": "Distinguish mixing humid air within a space from exhausting that air, replacing it with drier air, or condensing water through dehumidification.",
+          "concepts": ["circulation", "ventilation", "dehumidification", "moisture load", "air exchange"],
+          "cultivation": "Adding fans can reduce stagnant pockets while leaving the room's total water-vapor load nearly unchanged.",
+          "observe": "Record fan state separately from HVAC, exhaust, intake and dehumidifier state when explaining humidity changes."
+        },
+        {
+          "title": "Uniform moderate distribution beats a damaging jet",
+          "summary": "Treat airflow as a spatial distribution problem because a strong stream can desiccate or mechanically stress one zone while leaving another zone stagnant.",
+          "concepts": ["air-speed map", "dead zone", "windward stress", "leeward pocket", "distribution"],
+          "cultivation": "Fan placement should be requalified as canopy height, density, trellis fill, filters and duct conditions change.",
+          "observe": "Map multiple heights and inspect leaf temperature, edge curl, mechanical damage, drying pattern and condensation zones after adjustments."
+        },
+        {
+          "title": "Moisture-removal capacity must match crop load and transitions",
+          "summary": "Connect plant evapotranspiration, irrigation, infiltration, lights-off cooling and equipment staging with the water that ventilation or dehumidification must actually remove.",
+          "concepts": ["latent load", "evapotranspiration", "equipment capacity", "lights-off", "control staging"],
+          "cultivation": "A system can hold acceptable average RH yet lose control during peak plant water release or rapid cooling if equipment capacity or control timing is insufficient.",
+          "observe": "Track humidity rise rate, dew-point margin and equipment duty state across peak and transition periods."
+        }
+      ],
+      "knowledgeChecks": [
+        "What is a leaf boundary layer and why does it matter?",
+        "Why can circulation improve mixing without lowering total room moisture?",
+        "How can stronger airflow create both a dry zone and a stagnant zone at the same time?",
+        "Which crop and operating events change the moisture-removal load?"
+      ]
+    },
+    {
+      "id": "co2-coordination-safety",
+      "number": 7,
+      "title": "CO2, Light, Ventilation & Safety Coordination",
+      "objective": "Understand carbon dioxide as a measured photosynthetic input whose crop value depends on other resources and whose occupational safety controls must remain separate from plant optimization.",
+      "encyclopediaIds": ["THC-ENC-089", "THC-ENC-098", "THC-ENC-099", "THC-ENC-100"],
+      "lessons": [
+        {
+          "title": "CO2 response depends on the rest of the photosynthetic system",
+          "summary": "Connect elevated carbon dioxide response with light, temperature, water, mineral supply, healthy leaf area and sink capacity instead of treating CO2 as an independent yield dial.",
+          "concepts": ["CO2 concentration", "C3 photosynthesis", "light interaction", "sink capacity", "limiting factor"],
+          "cultivation": "Adding CO2 cannot compensate for weak light, root dysfunction or another resource that has already become limiting.",
+          "observe": "Document PPFD, temperature, leaf temperature, irrigation, nutrition, stage and actual canopy CO2 before attributing a crop response to enrichment."
+        },
+        {
+          "title": "Canopy demand and ventilation determine CO2 distribution",
+          "summary": "Recognize that a dense lit canopy consumes CO2 while fans, injection points, leakage and ventilation shape the spatial concentration plants actually experience.",
+          "concepts": ["canopy uptake", "distribution", "ventilation loss", "injection", "microclimate"],
+          "cultivation": "A controller near an injection point can show target concentration while other crop zones are under-supplied or enrichment is being exhausted outdoors.",
+          "observe": "Map canopy CO2 under actual lights and ventilation states rather than trusting one sensor."
+        },
+        {
+          "title": "Plant-control targets are not worker-safety limits",
+          "summary": "Keep crop-control logic separate from independent occupational monitoring, alarms, ventilation, access controls and emergency procedures.",
+          "concepts": ["occupational exposure", "safety monitor", "alarm", "interlock", "purge"],
+          "cultivation": "A plant controller should not be treated as the life-safety system; compressed-gas or combustion installations require qualified design and current jurisdictional compliance.",
+          "observe": "Verify independent safety sensors, alarm routing, shutdown and purge behavior rather than assuming the enrichment controller proves safe occupancy."
+        },
+        {
+          "title": "Evaluate enrichment with crop response, input mass and system losses",
+          "summary": "Judge enrichment as a system intervention using measured plant response, CO2 consumption, ventilation losses, energy use, quality and equipment performance.",
+          "concepts": ["input mass", "ventilation loss", "energy use", "crop response", "qualification"],
+          "cultivation": "Short-term leaf photosynthesis response does not guarantee proportional whole-crop yield, quality or economic return.",
+          "observe": "Compare qualified enriched and baseline periods with enough context to identify whether another resource became limiting."
+        }
+      ],
+      "knowledgeChecks": [
+        "Why does elevated CO2 not guarantee a proportional yield increase?",
+        "How can ventilation undermine enrichment efficiency?",
+        "Why must a crop CO2 controller remain separate from life-safety monitoring?",
+        "Which measurements are needed to evaluate whether enrichment is actually beneficial?"
+      ]
+    },
+    {
+      "id": "control-transitions-records",
+      "number": 8,
+      "title": "Control Envelopes, Transitions, Alarms & Records",
+      "objective": "Turn environmental measurements into stage-aware control bands and auditable records without confusing setpoints, warnings, action limits or emergency conditions.",
+      "encyclopediaIds": ["THC-ENC-083", "THC-ENC-089", "THC-ENC-099", "THC-ENC-100"],
+      "lessons": [
+        {
+          "title": "A setpoint is a controller request, not the plant condition",
+          "summary": "Separate requested targets from measured room conditions, canopy distributions and tissue conditions while accounting for deadbands and equipment response.",
+          "concepts": ["setpoint", "control band", "deadband", "measured condition", "equipment response"],
+          "cultivation": "A controller can satisfy its local sensor while leaves, flowers or root zones remain outside the intended biological envelope.",
+          "observe": "Compare target, controller sensor, mapped canopy conditions and plant measurements in the same time window."
+        },
+        {
+          "title": "Normal bands, warnings, actions and emergencies are different layers",
+          "summary": "Design a hierarchy that distinguishes ordinary variation from conditions requiring attention, corrective action or safety/emergency response.",
+          "concepts": ["normal band", "warning", "action limit", "emergency limit", "persistence"],
+          "cultivation": "Tight alarms without persistence rules or equipment capacity create cycling and alarm fatigue rather than better crop control.",
+          "observe": "Document limit purpose, sensor/location, persistence time, response owner and recovery criteria for each alarm."
+        },
+        {
+          "title": "Transitions deserve their own environmental review",
+          "summary": "Treat lights-on, lights-off, irrigation, door events, equipment staging and weather shifts as transient states that can produce risks hidden by steady-state averages.",
+          "concepts": ["transition", "rate of change", "equipment staging", "thermal inertia", "dew-point margin"],
+          "cultivation": "Rapid cooling can raise RH and reduce dew-point margin while plant transpiration, surface temperatures and dehumidification response are all changing at once.",
+          "observe": "Use timestamped high-frequency data around transitions and compare equipment commands with actual measured response."
+        },
+        {
+          "title": "Environmental records should explain decisions, not just archive numbers",
+          "summary": "Link sensor identity, raw data, equipment state, irrigation, crop stage, observations, alarms, interventions and outcomes into a traceable environmental record.",
+          "concepts": ["environmental record", "equipment state", "alarm history", "change control", "trend review"],
+          "cultivation": "A useful record lets later reviewers determine whether a crop change followed environment, irrigation, equipment failure, sensor error or management intervention.",
+          "observe": "Preserve raw values, corrections, moved or replaced sensors and before/after maps whenever a control recipe changes."
+        }
+      ],
+      "knowledgeChecks": [
+        "Why is a controller setpoint not the same thing as the plant environment?",
+        "How do warning, action and emergency limits differ?",
+        "Why should transitions be reviewed separately from steady-state averages?",
+        "Which records are required to reconstruct why an environmental decision was made?"
+      ]
+    }
+  ],
+  "deepRoutes": [
+    {"label": "Environmental encyclopedia", "href": "/learn/encyclopedia/"},
+    {"label": "Plant Biology & Anatomy", "href": "/learn/plant-biology/"},
+    {"label": "Lifecycle & Propagation", "href": "/learn/lifecycle-propagation/"},
+    {"label": "Lighting", "href": "/learn/lighting/"},
+    {"label": "Water & Root Zone", "href": "/learn/water-root-zone/"},
+    {"label": "Plant Health & IPM", "href": "/learn/plant-health-ipm/"},
+    {"label": "GrowLens records", "href": "/growlens/"}
+  ]
+}
