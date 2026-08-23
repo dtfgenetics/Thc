@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "site": "https://dtfseeds.com",
   "sourceOfTruth": "dtfgenetics/Thc",
-  "updated": "2026-08-18",
+  "updated": "2026-08-23",
   "apps": [
     {
       "id": "high-land",
@@ -116,6 +116,19 @@
       "build": "node games/seed-man-platformer/test/physics.test.mjs",
       "machineData": {"level":"sprout-run","worldWidth":2600,"collectibles":8,"checkpointCount":1,"hazardZones":3},
       "notes": "Original self-hosted browser vertical slice with tested movement/collision physics, keyboard/touch controls, checkpoint, hazards, collectibles, camera, finish state, and Canvas2D prototype art. Human mobile QA and final art/audio remain open."
+    },
+    {
+      "id": "protect-the-plants",
+      "title": "Protect the Plants",
+      "repository": "dtfgenetics/Thc",
+      "sourcePath": "site/public-route-patch/games/protect-the-plants",
+      "canonicalDataPath": "games/protect-the-plants",
+      "route": "/games/protect-the-plants/",
+      "runtime": "static-php",
+      "status": "ready-to-package",
+      "build": "node --check site/public-route-patch/games/protect-the-plants/app.js && php -l site/public-route-patch/games/protect-the-plants/api.php",
+      "machineData": {"board":"15x15","players":2,"formations":5,"storage":"wordpress-transients","networkAuthority":"php-server"},
+      "notes": "Self-hosted two-player hidden-garden strategy game with animated potted-plant placement, authenticated room sessions, hidden opponent state, server-authoritative turns, active-game recovery, room chat, mobile board tabs, same-origin PHP API, and WordPress transient persistence. No external Node host is required."
     },
     {
       "id": "thc-u-know",

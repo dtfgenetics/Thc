@@ -33,6 +33,10 @@ const allowedStatuses = new Set([
   'not-deployable',
   'release-gated-content',
   'private-operations-only',
+  'server-engine-alpha',
+  'roster-data-alpha',
+  'implementation-alpha',
+  'do-not-develop',
 ]);
 
 const errors = [];

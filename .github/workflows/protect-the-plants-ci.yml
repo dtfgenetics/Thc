@@ -1,0 +1,37 @@
+name: Protect the Plants CI
+
+on:
+  pull_request:
+    paths:
+      - games/protect-the-plants/**
+      - site/public-route-patch/games/protect-the-plants/**
+      - .github/workflows/protect-the-plants-ci.yml
+  push:
+    branches: [main]
+    paths:
+      - games/protect-the-plants/**
+      - site/public-route-patch/games/protect-the-plants/**
+      - .github/workflows/protect-the-plants-ci.yml
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate browser JavaScript
+        run: node --check site/public-route-patch/games/protect-the-plants/app.js
+      - name: Validate PHP API
+        run: php -l site/public-route-patch/games/protect-the-plants/api.php
+      - name: Validate deployable route
+        run: |
+          set -euo pipefail
+          test -s site/public-route-patch/games/protect-the-plants/index.html
+          test -s site/public-route-patch/games/protect-the-plants/styles.css
+          test -s site/public-route-patch/games/protect-the-plants/plant.svg
+          grep -Fq 'https://dtfseeds.com/games/protect-the-plants/' site/public-route-patch/games/protect-the-plants/index.html
+          grep -Fq './api.php' site/public-route-patch/games/protect-the-plants/app.js
+          ! grep -Fq 'src="/' site/public-route-patch/games/protect-the-plants/index.html
+          ! grep -Fq 'href="/styles.css' site/public-route-patch/games/protect-the-plants/index.html
