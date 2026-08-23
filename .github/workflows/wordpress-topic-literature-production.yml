@@ -2,14 +2,6 @@ name: Publish THC Topic Literature to WordPress Production
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - site/wordpress/education/topic-literature.json
-      - site/wordpress/assets/infographics/infographic-exclusions.json
-      - site/wordpress/assets/infographics/placement-rules.json
-      - scripts/publish-wordpress-topic-literature.mjs
-      - .github/workflows/wordpress-topic-literature-production.yml
 
 permissions:
   contents: read
@@ -67,6 +59,8 @@ jobs:
 
       - name: Verify visitor-facing literature and infographic search
         id: verify
+        env:
+          EXPECTED_CARD_COUNT: ${{ steps.publish.outputs.eligible_count }}
         shell: bash
         run: |
           set -euo pipefail
@@ -94,13 +88,55 @@ jobs:
           grep -Fqi 'thc-infographic-search' "$library"
           grep -Fqi 'Read topic literature' "$library"
           grep -Fqi 'Quality rule:' "$library"
+
+          python3 - "$library" "$EXPECTED_CARD_COUNT" <<'PY'
+          import re, sys
+          from html.parser import HTMLParser
+          from urllib.parse import unquote
+
+          class CardParser(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.depth = 0
+                  self.current = None
+                  self.cards = []
+              def handle_starttag(self, tag, attrs):
+                  attrs = dict(attrs)
+                  classes = set(attrs.get('class', '').split())
+                  if tag == 'article' and 'thc-library-card' in classes and self.current is None:
+                      self.current = {'depth': self.depth, 'text': [], 'urls': []}
+                  if self.current is not None:
+                      for key in ('src', 'href'):
+                          if attrs.get(key): self.current['urls'].append(unquote(attrs[key]))
+                  self.depth += 1
+              def handle_endtag(self, tag):
+                  self.depth -= 1
+                  if tag == 'article' and self.current is not None and self.depth == self.current['depth']:
+                      self.cards.append(self.current)
+                      self.current = None
+              def handle_data(self, data):
+                  if self.current is not None: self.current['text'].append(data)
+
+          body = open(sys.argv[1], encoding='utf-8').read()
+          expected = int(sys.argv[2])
+          p = CardParser(); p.feed(body)
+          if len(p.cards) != expected:
+              raise SystemExit(f'Expected {expected} infographic cards, found {len(p.cards)}')
+          forbidden = re.compile(r'(thc[\s_/-]*enc[\s_/-]*001[\s_/-]*vis|v04[\s_/-]*sup|pdf[\s_/-]*pages)', re.I)
+          bad = []
+          for card in p.cards:
+              text = ' '.join(' '.join(card['text']).split())
+              blob = text + ' ' + ' '.join(card['urls'])
+              if forbidden.search(blob) or text.strip().lower() == 'page 01' or any(re.search(r'/page-0?1(?:[-.])', u, re.I) for u in card['urls']):
+                  bad.append(blob[:500])
+          if bad:
+              print('Excluded simple/reference cards found:', *bad, sep='\n- ')
+              raise SystemExit(1)
+          print(f'Verified {len(p.cards)} public finished-infographic cards with no excluded support-image cards.')
+          PY
+
           image_count="$(grep -Eoi '<img[^>]+wp-content/uploads/' "$library" | wc -l | tr -d ' ')"
           test "$image_count" -ge 20
-
-          if grep -Eqi 'ENC[ _-]*001[ _-]*VIS|V04[ _-]*SUP|pdf[ _-]*pages' "$library"; then
-            echo 'Excluded simple/reference visual family is still present in the public infographic library' >&2
-            exit 1
-          fi
 
           for route in plant-biology genetics-breeding lifecycle-propagation environment-vpd lighting water-ph-ec nutrition-media ipm training-canopy harvest-postharvest outdoor research-methods plant-science-reference; do
             page="$RUNNER_TEMP/topic-${route}.html"
