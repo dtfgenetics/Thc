@@ -13,6 +13,7 @@ on:
   workflow_run:
     workflows:
       - Publish DTFSeeds WordPress Production
+      - Publish THC Infographics to WordPress Production
     types: [completed]
 
 permissions:
@@ -158,6 +159,7 @@ jobs:
               'Visual hierarchy: core site jobs first; foundation subjects featured; specialized subjects compact; individual subject pages use literature-first section cards plus supporting visuals.',
               'Mobile navigation is a single horizontal rail instead of a multi-row wrapped header. Footer routes secondary destinations to Community, Gallery, About, Contact, and Discord.',
               'Canonical topic titles are normalized into stable layout aliases before publication so source IDs can evolve without breaking customer-facing routes.',
+              'The publisher runs after both canonical WordPress production and the THC infographic publisher so this hierarchy remains the final customer-facing layer.',
               'The publisher creates rollback snapshots, preserves the WooCommerce archive style injection, attempts a LiteSpeed cache flush, and performs cache-busted visitor verification on Home, Learn, Shop, and all subject routes.'
             ].join('\n');
             await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: 46, body });
