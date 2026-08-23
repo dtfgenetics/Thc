@@ -14,6 +14,8 @@ on:
       - scripts/rebuild-wordpress-visual-site.mjs
       - scripts/rebuild-wordpress-commerce-visuals.mjs
       - scripts/style-wordpress-woocommerce-archive.mjs
+      - scripts/polish-wordpress-genetics-visuals-v4.mjs
+      - scripts/polish-wordpress-commerce-archive-v4.mjs
       - scripts/rebuild-wordpress-infographic-gallery.mjs
       - .github/workflows/wordpress-canonical-production.yml
       - .github/workflows/wordpress-infographic-production.yml
@@ -53,6 +55,8 @@ jobs:
           test -s scripts/rebuild-wordpress-visual-site.mjs
           test -s scripts/rebuild-wordpress-commerce-visuals.mjs
           test -s scripts/style-wordpress-woocommerce-archive.mjs
+          test -s scripts/polish-wordpress-genetics-visuals-v4.mjs
+          test -s scripts/polish-wordpress-commerce-archive-v4.mjs
           test -s scripts/rebuild-wordpress-infographic-gallery.mjs
           test -s site/wordpress/assets/brand/dtf-potleaf-512.png
           node --check scripts/apply-wordpress-public-content-rest.mjs
@@ -60,6 +64,8 @@ jobs:
           node --check scripts/rebuild-wordpress-visual-site.mjs
           node --check scripts/rebuild-wordpress-commerce-visuals.mjs
           node --check scripts/style-wordpress-woocommerce-archive.mjs
+          node --check scripts/polish-wordpress-genetics-visuals-v4.mjs
+          node --check scripts/polish-wordpress-commerce-archive-v4.mjs
           node --check scripts/rebuild-wordpress-infographic-gallery.mjs
           for slug in home seeds learn community shop gallery about contact; do
             test -s "site/wordpress/pages/$slug.html"
@@ -67,7 +73,7 @@ jobs:
           test -d site/wordpress/assets/infographics
           count="$(find site/wordpress/assets/infographics -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webp' -o -iname '*.gif' \) | wc -l | tr -d ' ')"
           test "$count" -ge 20
-          echo "Validated $count infographic images, DTF brand media, commerce visual publisher, and WooCommerce archive styling for protected production handoff." >> "$GITHUB_STEP_SUMMARY"
+          echo "Validated $count infographic images, DTF brand media, V4 genetics visuals, commerce visual publishers, and WooCommerce archive styling for protected production handoff." >> "$GITHUB_STEP_SUMMARY"
 
       - name: Report deployment handoff to issue 46
         if: always()
@@ -87,6 +93,6 @@ jobs:
               `Trigger: **${context.eventName}**`,
               `Trusted handoff result: **${process.env.OBSERVE_STATUS}**`,
               `Source: ${sourceRun}`, '',
-              'A successful handoff triggers protected WordPress production. The canonical job rebuilds Home/Learn/Seeds, styles the WooCommerce Shop archive through the active theme shell, enforces the DTF site icon/logo, and verifies visitor-facing URL/share imagery.'
+              'A successful handoff triggers protected WordPress production. The canonical job rebuilds Home/Learn, applies the V4 genetics experience, layers V4 WooCommerce card styling, preserves the image-first Gallery, enforces the DTF site icon/logo, and verifies visitor-facing URL/share imagery.'
             ].join('\n');
             await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body});
