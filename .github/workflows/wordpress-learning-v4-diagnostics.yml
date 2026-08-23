@@ -1,0 +1,145 @@
+name: Enhance DTFSeeds Diagnostic Education V4
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'site/wordpress/education/diagnostic-expansions-v4.json'
+      - 'scripts/enhance-wordpress-topic-expansions-v4.mjs'
+      - '.github/workflows/wordpress-learning-v4-diagnostics.yml'
+  workflow_run:
+    workflows:
+      - Enhance DTFSeeds Education V4
+    types: [completed]
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-learning-v4-diagnostics
+  cancel-in-progress: true
+
+env:
+  WP_SITE_URL: https://dtfseeds.com
+  NODE_OPTIONS: --dns-result-order=ipv4first
+
+jobs:
+  diagnostics:
+    name: Publish advanced root-zone nutrition plant-health and measurement modules
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: production
+    env:
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      APPLY_TOPIC_EXPANSIONS_V4: 'true'
+      TOPIC_EXPANSION_V4_PATH: site/wordpress/education/diagnostic-expansions-v4.json
+      TOPIC_LITERATURE_PATH: site/wordpress/education/topic-literature.json
+      BACKUP_ROOT: /tmp/dtf-diagnostic-education-v4
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate diagnostic education package
+        id: validate
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
+          node --check scripts/enhance-wordpress-topic-expansions-v4.mjs
+          node - <<'NODE'
+          const fs=require('fs');
+          const d=JSON.parse(fs.readFileSync('site/wordpress/education/diagnostic-expansions-v4.json','utf8'));
+          const required=['water-root-zone','nutrition-media','plant-health-ipm','evidence-measurement'];
+          if(d.schemaVersion!==1) throw new Error('Unexpected diagnostic schema');
+          for(const id of required){
+            const topic=d.topics?.[id];
+            if(!topic||!Array.isArray(topic.sections)||topic.sections.length<5) throw new Error(`${id}: expected at least five advanced modules`);
+            for(const section of topic.sections){
+              if(!section.heading||!Array.isArray(section.paragraphs)||section.paragraphs.length<2) throw new Error(`${id}: incomplete paragraphs`);
+              if(!Array.isArray(section.records)||section.records.length<4) throw new Error(`${id}: incomplete record checklist`);
+            }
+          }
+          console.log(`Validated ${required.length} diagnostic subject expansions.`);
+          NODE
+
+      - name: Publish diagnostic modules
+        id: publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$BACKUP_ROOT"
+          node scripts/enhance-wordpress-topic-expansions-v4.mjs | tee "$RUNNER_TEMP/diagnostic-v4.log"
+          report="$BACKUP_ROOT/topic-expansions-v4-report.json"
+          test -s "$report"
+          echo "topics=$(node -p "require(process.argv[1]).topicCount" "$report")" >> "$GITHUB_OUTPUT"
+
+      - name: Visitor-verify diagnostic modules
+        id: verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          report="$BACKUP_ROOT/topic-expansions-v4-report.json"
+          node - <<'NODE' "$report" > "$RUNNER_TEMP/diagnostic-routes.tsv"
+          const r=require(process.argv[2]);
+          for(const item of r.results) console.log(`${item.id}\t${item.route}`);
+          NODE
+          while IFS=$'\t' read -r id route; do
+            body="$RUNNER_TEMP/diagnostic-$(echo "$id" | tr -cd '[:alnum:]_-').html"
+            ok=0
+            for attempt in 1 2 3 4 5 6 7 8; do
+              curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+                --header 'Cache-Control: no-cache, no-store, max-age=0' \
+                --header 'Pragma: no-cache' \
+                "$WP_SITE_URL${route}?dtf_diag_v4=${GITHUB_RUN_ID}-${attempt}" --output "$body"
+              if grep -Fqi 'dtf-learning-v4-expansion-style' "$body" && grep -Fqi 'Advanced subject depth' "$body"; then ok=1; break; fi
+              sleep 6
+            done
+            [[ "$ok" -eq 1 ]] || { echo "Diagnostic V4 module missing on $route" >&2; exit 1; }
+            grep -Fqi 'Record these observations' "$body"
+          done < "$RUNNER_TEMP/diagnostic-routes.tsv"
+
+      - name: Upload diagnostic rollback package
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dtf-diagnostic-education-v4-${{ github.run_id }}
+          path: |
+            /tmp/dtf-diagnostic-education-v4
+            ${{ runner.temp }}/diagnostic-v4.log
+            ${{ runner.temp }}/diagnostic-routes.tsv
+            ${{ runner.temp }}/diagnostic-*.html
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report diagnostic education result
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          STATUS: ${{ job.status }}
+          VALIDATE: ${{ steps.validate.outcome }}
+          PUBLISH: ${{ steps.publish.outcome }}
+          VERIFY: ${{ steps.verify.outcome }}
+          TOPICS: ${{ steps.publish.outputs.topics }}
+        with:
+          script: |
+            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body:[
+              '## THC diagnostic education V4','',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Result: **${process.env.STATUS}**`,
+              `Diagnostic curriculum validation: **${process.env.VALIDATE || 'not-run'}**`,
+              `WordPress diagnostic publication: **${process.env.PUBLISH || 'not-run'}**`,
+              `Visitor verification: **${process.env.VERIFY || 'not-run'}**`,
+              `Deepened diagnostic subjects: **${process.env.TOPICS || '0'}**`,'',
+              'Scope: root-zone diagnostics, nutrition differentials, plant-health/IPM differential diagnosis, and measurement/research skills. The goal is to reduce symptom-chart guessing by teaching what evidence separates look-alike causes.'
+            ].join('\n')});
