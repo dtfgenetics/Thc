@@ -1,0 +1,135 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-08-23",
+  "curriculumId": "lifecycle-propagation-v6",
+  "route": "/learn/lifecycle-propagation/",
+  "chapters": {
+    "seed-identity-quality": [
+      {
+        "file": "THC-ENC-001_VIS-06_Achene_Embryo_Germination_v3.0.0.jpg",
+        "title": "Cannabis Achene, Embryo & Germination Anatomy",
+        "alt": "Educational diagram showing cannabis seed-unit anatomy including the achene, embryo and structures involved in germination."
+      }
+    ],
+    "germination": [
+      {
+        "file": "THC-ENC-043_Root_Zone_Oxygen_Hypoxia_and_Recovery.jpg",
+        "title": "Oxygen Availability, Hypoxia & Recovery",
+        "alt": "Educational diagram explaining root-zone oxygen, hypoxia and recovery, used here to support the water-versus-oxygen balance taught during germination."
+      }
+    ],
+    "seedling-establishment": [
+      {
+        "file": "Stage_3_Seedling_Establishment_Infographic.png",
+        "title": "Seedling Establishment",
+        "alt": "THC educational infographic showing cannabis seedling establishment and early developmental targets."
+      },
+      {
+        "file": "THC-ENC-041_Root_Tip_Development_and_Functional_Zones.jpg",
+        "title": "Root Tip Development & Functional Zones",
+        "alt": "Educational diagram of root-tip development and functional zones supporting early seedling root-system study."
+      }
+    ],
+    "clonal-propagation": [
+      {
+        "file": "Cloning_Guide_with_Environment_Targets.png",
+        "title": "Cloning Guide & Propagation Environment",
+        "alt": "THC cloning guide illustrating cutting propagation and environmental targets."
+      },
+      {
+        "file": "Sanitation_and_Biosecurity_Infographic.png",
+        "title": "Sanitation & Biosecurity",
+        "alt": "THC educational infographic covering sanitation and biosecurity practices relevant to mother stock and clonal propagation."
+      },
+      {
+        "file": "THC-ENC-073_Plant_Hormones_Auxin.jpg",
+        "title": "Auxin & Root Initiation Context",
+        "alt": "Educational plant-hormone diagram explaining auxin, used here as supporting biology for adventitious root initiation in cuttings."
+      }
+    ],
+    "transplant-acclimation": [
+      {
+        "file": "THC-ENC-059_Container_Geometry_Root_Restriction_and_Transplanting.jpg",
+        "title": "Container Geometry, Root Restriction & Transplanting",
+        "alt": "Educational diagram connecting container geometry, root restriction and transplant decisions."
+      },
+      {
+        "file": "V04-SUP-008_Stress_Physiology_and_Acclimation.jpg",
+        "title": "Stress Physiology & Acclimation",
+        "alt": "Educational diagram explaining plant stress physiology and acclimation after environmental change."
+      }
+    ],
+    "vegetative-development": [
+      {
+        "file": "THC-ENC-001_VIS-03_Nodes_Internodes_Branching_v3.0.0.jpg",
+        "title": "Nodes, Internodes & Branching",
+        "alt": "Educational cannabis morphology diagram showing nodes, internodes and branching architecture during vegetative development."
+      },
+      {
+        "file": "THC-ENC-079_Growth_Rate_Development_and_Biomass_Partitioning.jpg",
+        "title": "Growth Rate, Development & Biomass Partitioning",
+        "alt": "Educational diagram explaining plant growth rate, developmental progression and biomass allocation."
+      }
+    ],
+    "reproductive-transition": [
+      {
+        "file": "V04-SUP-007_Photoperiod_Perception_and_Flowering_Control.jpg",
+        "title": "Photoperiod Perception & Flowering Control",
+        "alt": "Educational diagram explaining photoperiod perception and plant flowering control."
+      },
+      {
+        "file": "Cannabis_Sex_Expression_and_Chromosome_Combinations.png",
+        "title": "Cannabis Sex Expression",
+        "alt": "THC educational infographic about cannabis sex expression and chromosome combinations."
+      },
+      {
+        "file": "THC-ENC-001_VIS-05_Reproductive_Structures_v3.0.0.jpg",
+        "title": "Reproductive Structures",
+        "alt": "Educational cannabis diagram identifying reproductive structures used in sex-expression and flower-development study."
+      },
+      {
+        "file": "THC-C008_Infographic_Flower_Anatomy_Reproduction.jpg",
+        "title": "Flower Anatomy & Reproduction",
+        "alt": "THC educational infographic explaining cannabis flower anatomy and reproductive structures."
+      }
+    ],
+    "maturation-cycle-records": [
+      {
+        "file": "Cannabis_Plant_Life_Cycle_Seed_to_Harvest_Infographic.png",
+        "title": "Cannabis Life Cycle: Seed to Harvest",
+        "alt": "THC educational infographic showing the cannabis plant lifecycle from seed through harvest."
+      },
+      {
+        "file": "THC-C009_Infographic_Trichomes_Secretory_Biology.jpg",
+        "title": "Trichomes & Secretory Biology",
+        "alt": "THC educational infographic explaining cannabis trichomes and secretory biology relevant to reproductive maturation."
+      }
+    ]
+  },
+  "gaps": [
+    {
+      "id": "seed-viability-vigor",
+      "status": "needed",
+      "title": "Seed Viability vs Vigor",
+      "neededVisual": "A dedicated comparison showing viable versus vigorous lots, final germination percentage, germination speed, uniformity and normal-seedling scoring."
+    },
+    {
+      "id": "germination-sequence",
+      "status": "needed",
+      "title": "Imbibition → Radicle → Emergence → Establishment",
+      "neededVisual": "A dedicated stage sequence separating hydration, radicle protrusion, shoot emergence and normal seedling establishment, with water-temperature-oxygen constraints."
+    },
+    {
+      "id": "lifecycle-traceability",
+      "status": "needed",
+      "title": "Lifecycle Traceability Record",
+      "neededVisual": "A visual record chain linking seed lot or mother ID to propagation date, stage gates, interventions, environmental records and final outcome."
+    },
+    {
+      "id": "senescence-remobilization",
+      "status": "needed",
+      "title": "Senescence & Nutrient Remobilization",
+      "neededVisual": "A dedicated diagram separating regulated late-stage chlorophyll loss and nutrient remobilization from stress-driven decline."
+    }
+  ]
+}
