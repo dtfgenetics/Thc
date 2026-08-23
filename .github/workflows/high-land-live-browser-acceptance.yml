@@ -1,0 +1,90 @@
+name: Verify High Land Live Browser Multiplayer
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - apps/high-land-web/e2e-live/**
+      - apps/high-land-web/playwright.live.config.ts
+      - .github/workflows/high-land-live-browser-acceptance.yml
+  workflow_run:
+    workflows:
+      - Verify High Land Live Room Security
+    types:
+      - completed
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: high-land-live-browser-acceptance
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install workspace dependencies
+        run: npm ci
+
+      - name: Install Chromium for live multiplayer acceptance
+        run: npx playwright install --with-deps chromium
+
+      - name: Run two-browser High Land production acceptance
+        id: live
+        working-directory: apps/high-land-web
+        run: npx playwright test --config=playwright.live.config.ts
+
+      - name: Upload retained live-browser evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: high-land-live-browser-${{ github.run_id }}
+          path: |
+            apps/high-land-web/test-results
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: Report High Land live browser acceptance
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          JOB_STATUS: ${{ job.status }}
+          TEST_OUTCOME: ${{ steps.live.outcome }}
+          SECURITY_RUN: ${{ github.event.workflow_run.id || '' }}
+        with:
+          script: |
+            const upstream = process.env.SECURITY_RUN
+              ? `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${process.env.SECURITY_RUN}`
+              : 'direct push/manual acceptance run';
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 46,
+              body: [
+                '## High Land live two-browser multiplayer acceptance',
+                '',
+                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                `Upstream room-security verification: ${upstream}`,
+                `Overall: **${process.env.JOB_STATUS}**`,
+                `Two-browser production test: **${process.env.TEST_OUTCOME || 'not reached'}**`,
+                '',
+                'Acceptance scope: isolated host and guest browser contexts; separate 256-bit browser credentials; invite-link join; host-only start UI; synchronized deterministic host turn; synchronized deterministic guest turn; cross-browser player-position state; guest refresh/rejoin with preserved credential and room state.',
+                '',
+                'This is a visitor-facing test against https://dtfseeds.com/games/high-land/. It creates an isolated short-lived room that expires through the normal room TTL.'
+              ].join('\n')
+            });
