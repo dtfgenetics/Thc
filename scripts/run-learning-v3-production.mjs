@@ -1,8 +1,11 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import process from 'node:process';
+import { pathToFileURL } from 'node:url';
 
 const sourcePath = process.env.CANONICAL_TOPIC_LITERATURE_PATH || 'site/wordpress/education/topic-literature.json';
 const normalizedPath = process.env.NORMALIZED_TOPIC_LITERATURE_PATH || '/tmp/dtf-topic-literature-v3-normalized.json';
+const publisherPath = process.env.LEARNING_V3_PUBLISHER_PATH || 'scripts/rebuild-wordpress-learning-experience-v3.mjs';
+const normalizedPublisherPath = process.env.NORMALIZED_LEARNING_V3_PUBLISHER_PATH || '/tmp/rebuild-wordpress-learning-experience-v3-normalized.mjs';
 const source = JSON.parse(await readFile(sourcePath, 'utf8'));
 if (!Array.isArray(source?.topics) || !source.topics.length) throw new Error('Canonical topic literature is empty');
 
@@ -37,4 +40,16 @@ if (missing.length) throw new Error(`Could not normalize required THC topics: ${
 
 await writeFile(normalizedPath, `${JSON.stringify({ ...source, normalizedFor: 'learning-v3', topics }, null, 2)}\n`);
 process.env.TOPIC_LITERATURE_PATH = normalizedPath;
-await import('./rebuild-wordpress-learning-experience-v3.mjs');
+
+// The canonical asset registry contains a dedicated DLI/PPFD lighting infographic.
+// Keep the production selector strict so general pages mentioning "light" (for example
+// seedling establishment) cannot become the Lighting subject hero by accident.
+let publisher = await readFile(publisherPath, 'utf8');
+const originalLightingSelector = "  'lighting': [['ppfd'], ['dli'], ['lighting']],";
+const strictLightingSelector = "  'lighting': [['dli', 'ppfd'], ['dli', 'light', 'education'], ['ppfd', 'light']],";
+if (!publisher.includes(originalLightingSelector) && !publisher.includes(strictLightingSelector)) {
+  throw new Error('Could not locate the Learning V3 lighting media selector; refusing an unreviewed runtime patch.');
+}
+publisher = publisher.replace(originalLightingSelector, strictLightingSelector);
+await writeFile(normalizedPublisherPath, publisher);
+await import(pathToFileURL(normalizedPublisherPath).href);
