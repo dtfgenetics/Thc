@@ -18,7 +18,7 @@ permissions:
 
 concurrency:
   group: dtfseeds-wordpress-v4-post-v3
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 env:
   WP_SITE_URL: https://dtfseeds.com
@@ -124,7 +124,6 @@ jobs:
           grep -Fqi 'Blueberry Butcher' "$seeds"
           grep -Fqi 'DTF Visual Library' "$gallery"
           grep -Fqi '/learn/infographics/' "$gallery"
-          grep -Fqi 'DTF Genetics cannabis leaf' "$seeds" || true
 
           for body in "$seeds" "$shop" "$gallery"; do
             for forbidden in 'email@email.com' '+123456789' '© 2025 DTF Genetics'; do
@@ -175,3 +174,5 @@ jobs:
                 'V4 makes Genetics release cards, lineage mapping, and the WooCommerce archive more brand-specific while preserving the current image-first Gallery and the V3 site shell.'
               ].join('\n')
             });
+
+# Production trigger: 2026-08-23 stable V4 visual pass
