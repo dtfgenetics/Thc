@@ -71,7 +71,12 @@ const pages = await request('/wp-json/wp/v2/pages?slug=home&context=edit&per_pag
 if (!Array.isArray(pages) || pages.length !== 1) throw new Error(`Expected one Home page, found ${Array.isArray(pages) ? pages.length : 'invalid response'}`);
 const home = pages[0];
 const original = rendered(home.content);
-if (!original.includes('Current releases') || !original.includes('dtf-image-card')) throw new Error('Home page does not contain the expected current-release visual card structure');
+if (!original) throw new Error('Home page content is empty');
+for (const card of cards) {
+  const hrefNeedle = `/product/${card.productSlug}/`;
+  const count = original.split(hrefNeedle).length - 1;
+  if (count !== 1) throw new Error(`Expected one homepage product route for ${card.productSlug}, found ${count}`);
+}
 await writeFile(join(backupDir, 'home-before.json'), `${JSON.stringify(home, null, 2)}\n`);
 
 const resolved = [];
@@ -89,18 +94,34 @@ function releaseImage(media, card) {
   return `<img class="dtf-img dtf-release-card-image" src="${esc(media.source_url)}" alt="${esc(card.altText)}" loading="lazy" decoding="async" width="${width}" height="${height}" style="aspect-ratio:2/3;object-fit:contain;background:#f3efe5">`;
 }
 
+function replaceNearestImageBeforeRoute(content, card, media) {
+  const hrefNeedle = `/product/${card.productSlug}/`;
+  const hrefIndex = content.indexOf(hrefNeedle);
+  if (hrefIndex < 0) throw new Error(`Homepage product route missing for ${card.productSlug}`);
+
+  const imageStart = content.lastIndexOf('<img', hrefIndex);
+  if (imageStart < 0) throw new Error(`No image found before homepage product route ${card.productSlug}`);
+  const imageEnd = content.indexOf('>', imageStart);
+  if (imageEnd < 0 || imageEnd >= hrefIndex) throw new Error(`Could not isolate image tag for homepage product route ${card.productSlug}`);
+
+  const distance = hrefIndex - imageEnd;
+  if (distance > 7000) throw new Error(`Nearest image is too far from ${card.productSlug} (${distance} chars); refusing ambiguous replacement`);
+
+  const previousProduct = content.lastIndexOf('/product/', hrefIndex - 1);
+  if (previousProduct > imageStart) throw new Error(`Another product route appears between the candidate image and ${card.productSlug}; refusing ambiguous replacement`);
+
+  return {
+    content: `${content.slice(0, imageStart)}${releaseImage(media, card)}${content.slice(imageEnd + 1)}`,
+    distance
+  };
+}
+
 let next = original;
 const changes = [];
-for (const { card, media } of resolved) {
-  const hrefNeedle = `/product/${card.productSlug}/`;
-  let matched = 0;
-  next = next.replace(/<article\b[^>]*>[\s\S]*?<\/article>/gi, (block) => {
-    if (!block.includes(hrefNeedle)) return block;
-    matched += 1;
-    if (!/<img\b[^>]*>/i.test(block)) throw new Error(`Release card for ${card.productSlug} has no image to replace`);
-    return block.replace(/<img\b[^>]*>/i, releaseImage(media, card));
-  });
-  if (matched !== 1) throw new Error(`Expected one homepage release card for ${card.productSlug}, found ${matched}`);
+const ordered = [...resolved].sort((a, b) => original.indexOf(`/product/${b.card.productSlug}/`) - original.indexOf(`/product/${a.card.productSlug}/`));
+for (const { card, media } of ordered) {
+  const result = replaceNearestImageBeforeRoute(next, card, media);
+  next = result.content;
   changes.push({
     productSlug: card.productSlug,
     wordpressSlug: card.wordpressSlug,
@@ -108,7 +129,7 @@ for (const { card, media } of resolved) {
     mediaUrl: media.source_url,
     expectedWidth: card.expectedWidth,
     expectedHeight: card.expectedHeight,
-    matched
+    distanceToRoute: result.distance
   });
 }
 
@@ -117,6 +138,8 @@ for (const { card, media } of resolved) {
   if (!next.includes(media.source_url)) throw new Error(`Resolved strain-card media is missing from updated Home content for ${card.productSlug}`);
   if (!next.includes(card.altText)) throw new Error(`Release-card alt text is missing for ${card.productSlug}`);
 }
+const markerCount = (next.match(/dtf-release-card-image/g) || []).length;
+if (markerCount !== cards.length) throw new Error(`Expected ${cards.length} homepage release-card image markers after replacement, found ${markerCount}`);
 
 if (apply && next !== original) {
   await request(`/wp-json/wp/v2/pages/${home.id}`, {
@@ -134,6 +157,8 @@ if (apply) {
       throw new Error(`Post-write verification failed for ${card.productSlug}`);
     }
   }
+  const afterMarkerCount = (afterContent.match(/dtf-release-card-image/g) || []).length;
+  if (afterMarkerCount !== cards.length) throw new Error(`Post-write release-card marker count is ${afterMarkerCount}, expected ${cards.length}`);
 }
 
 const report = {
