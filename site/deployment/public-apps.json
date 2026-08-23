@@ -183,6 +183,17 @@
       "notes": "Full 96-card machine roster is committed and validated for unique IDs/names, tier progression, family stat identity, and DTF Genetics catalog cross-links. Final effects, battle rules, balance, and browser runtime remain open."
     },
     {
+      "id": "cannabis-fleet-battle",
+      "title": "Cannabis Fleet Battle",
+      "repository": "dtfgenetics/Thc",
+      "sourcePath": "games/cannabis-fleet-battle",
+      "runtime": "server-engine",
+      "status": "server-engine-alpha",
+      "build": "node games/cannabis-fleet-battle/test/engine.test.mjs",
+      "machineData": {"board":"15x15","fleetPieces":6,"occupiedCells":21,"networkAuthority":"server"},
+      "notes": "Server-authoritative placement, hidden-state serialization, turns, hits, sinks, wins, duplicate-shot protection, and disconnect/reconnect state are tested. Lobby transport, authenticated reconnect, multiplayer E2E, mobile QA, and art remain open."
+    },
+    {
       "id": "terpocalypse",
       "title": "Terpocalypse: Grow Room From Hell",
       "repository": "dtfgenetics/Terpocalapse",
