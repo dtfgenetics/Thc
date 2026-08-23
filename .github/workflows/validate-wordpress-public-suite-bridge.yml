@@ -85,7 +85,9 @@ jobs:
           cp -a site/public-route-patch/tools "$RUNNER_TEMP/source-suite/tools"
           cp -a site/public-route-patch/projects "$RUNNER_TEMP/source-suite/projects"
           test -s "$RUNNER_TEMP/source-suite/games/dtf-shell.css"
-          grep -Fq 'One place to see what is live now and what we are building next.' "$RUNNER_TEMP/source-suite/projects/index.html"
+          grep -Fq 'Pick what is playable. See what is coming next.' "$RUNNER_TEMP/source-suite/games/index.html"
+          grep -Fq 'Measure it. Document it. Diagnose with context.' "$RUNNER_TEMP/source-suite/tools/index.html"
+          grep -Fq 'What is live, what is growing, and where it belongs.' "$RUNNER_TEMP/source-suite/projects/index.html"
 
       - name: Build protected WordPress app-only archive
         shell: bash
@@ -137,7 +139,8 @@ jobs:
           path = pathlib.Path(os.environ['RUNNER_TEMP']) / 'deploy-public-suite-via-wordpress-v2.mjs'
           text = path.read_text()
           checks = {
-              'admin authorization': "current_user_can('manage_options')" in text,
+              'authenticated publisher authorization': "current_user_can('edit_pages')" in text,
+              'obsolete administrator capability removed': "current_user_can('manage_options')" not in text,
               'one-time token comparison': 'hash_equals($token, $supplied)' in text,
               'server deployment lock': 'dtf_suite_deploy_lock' in text,
               'whole archive hash': 'Whole-archive SHA-256 mismatch.' in text,
@@ -152,10 +155,13 @@ jobs:
               'abort endpoint': "register_rest_route('dtf-suite/v2', '/abort'" in text,
               'finalize endpoint': "register_rest_route('dtf-suite/v2', '/finalize'" in text,
               'ambiguous commit polling': 'Polling persisted server state before any recovery action.' in text,
-              'root ownership verification': "await verifyRoute('/', 'Genetics, cultivation education" in text,
-              'learn ownership verification': "await verifyRoute('/learn/', 'Understand the plant." in text,
-              'current Projects verification': "One place to see what is live now and what we are building next." in text,
-              'unified shell allowlist': "games/dtf-shell.css" in text,
+              'app-only WordPress ownership boundary': 'Home and Learn are WordPress-owned and are verified independently after this app-only transaction.' in text,
+              'current Games verification': 'Pick what is playable. See what is coming next.' in text,
+              'current Tools verification': 'Measure it. Document it. Diagnose with context.' in text,
+              'current Projects verification': 'What is live, what is growing, and where it belongs.' in text,
+              'unified shell allowlist': 'games/dtf-shell.css' in text,
+              'Protect the Plants deployment scope': 'games/protect-the-plants' in text,
+              'Protect the Plants API gate': '/games/protect-the-plants/api.php?action=active' in text,
               'forbidden root static path check': "name === 'index.html'" in text,
               'forbidden learn static path check': "strpos($name, 'learn/')" in text,
               'forbidden blog static path check': "strpos($name, 'blog/')" in text,
@@ -196,7 +202,7 @@ jobs:
                 `Commit: \`${context.sha}\``,
                 `Result: **${process.env.STATUS}**`,
                 '',
-                'Checks: canonical v2 assembly, Node/PHP syntax, stable validated app fixture plus the current static customer shell, app-only archive creation, per-file SHA-256 verification, duplicate/manifest/path ownership checks, and named authorization/locking/interrupted-commit/rollback/abort/finalize controls.',
+                'Checks: canonical v2 assembly, Node/PHP syntax, stable validated app fixture plus the current Games/Tools/Projects shell, app-only archive creation, per-file SHA-256 verification, duplicate/manifest/path ownership checks, authenticated publisher plus one-time-token authorization, current live markers, and transaction locking/recovery/rollback/abort/finalize controls.',
                 '',
                 'This workflow is non-mutating. Production publication remains a separate protected transaction.'
               ].join('\n')
