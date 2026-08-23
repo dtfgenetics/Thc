@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-08-23",
+  "curriculumId": "environment-vpd-v6",
+  "route": "/learn/environment-vpd/",
+  "chapters": {
+    "measurement-sensors-mapping": [
+      {
+        "file": "THC-ENC-001_VIS-06_Measurement_Quality_Chain.jpg",
+        "title": "Measurement Quality Chain",
+        "alt": "Educational diagram showing how measurement quality affects interpretation and decision quality."
+      }
+    ],
+    "temperature-leaf-energy": [
+      {
+        "file": "V04-SUP-009_Heat_Stress_and_Thermotolerance.jpg",
+        "title": "Heat Stress & Thermotolerance",
+        "alt": "Educational diagram explaining plant heat stress, thermotolerance and recovery context."
+      },
+      {
+        "file": "V04-SUP-011_Cold_Stress_Chilling_and_Freezing_Responses.jpg",
+        "title": "Cold Stress, Chilling & Freezing Responses",
+        "alt": "Educational diagram explaining plant responses to chilling, cold stress and freezing conditions."
+      }
+    ],
+    "humidity-dew-condensation": [
+      {
+        "file": "THC-ENC-083_Relative_Humidity_Dew_Point_and_Condensation.jpg",
+        "title": "Relative Humidity, Dew Point & Condensation",
+        "alt": "Educational diagram connecting relative humidity, dew point, surface temperature and condensation risk."
+      },
+      {
+        "file": "THC-ENC-084_Saturation_Vapor_Pressure_and_Temperature.jpg",
+        "title": "Saturation Vapor Pressure & Temperature",
+        "alt": "Educational diagram showing how saturation vapor pressure changes with temperature."
+      }
+    ],
+    "vpd-meaning-limits": [
+      {
+        "file": "THC-ENC-085_Vapor_Pressure_Deficit_Meaning_and_Calculation.jpg",
+        "title": "Vapor Pressure Deficit: Meaning & Calculation",
+        "alt": "Educational diagram explaining vapor pressure deficit and its calculation."
+      },
+      {
+        "file": "THC-ENC-086_Air_VPD_Versus_Leaf_VPD.jpg",
+        "title": "Air VPD Versus Leaf VPD",
+        "alt": "Educational diagram comparing air vapor pressure deficit with leaf-centered vapor pressure deficit."
+      }
+    ],
+    "transpiration-root-supply": [
+      {
+        "file": "THC-ENC-081_Water_Potential_and_the_Soil_Plant_Atmosphere_Continuum.jpg",
+        "title": "Water Potential & the Soil-Plant-Atmosphere Continuum",
+        "alt": "Educational diagram explaining water potential and movement through the soil-plant-atmosphere continuum."
+      },
+      {
+        "file": "THC-ENC-082_Transpiration_as_a_Physical_and_Biological_Process.jpg",
+        "title": "Transpiration as a Physical & Biological Process",
+        "alt": "Educational diagram explaining plant transpiration, evaporative demand and biological regulation."
+      },
+      {
+        "file": "THC-ENC-068_Stomata_Guard_Cells_and_Gas_Exchange.jpg",
+        "title": "Stomata, Guard Cells & Gas Exchange",
+        "alt": "Educational diagram showing stomata, guard cells and their role in plant gas exchange and water loss."
+      },
+      {
+        "file": "THC-ENC-043_Root_Zone_Oxygen_Hypoxia_and_Recovery.jpg",
+        "title": "Root-Zone Oxygen, Hypoxia & Recovery",
+        "alt": "Educational diagram explaining root-zone oxygen limitation, hypoxia and plant recovery."
+      },
+      {
+        "file": "V04-SUP-010_Drought_Stress_and_Water_Deficit_Responses.jpg",
+        "title": "Drought Stress & Water-Deficit Responses",
+        "alt": "Educational diagram explaining plant drought stress and physiological responses to water deficit."
+      }
+    ],
+    "airflow-ventilation-moisture-removal": [],
+    "co2-coordination-safety": [
+      {
+        "file": "THC-ENC-064_Carbon_Fixation_and_the_Calvin_Cycle.jpg",
+        "title": "Carbon Fixation & the Calvin Cycle",
+        "alt": "Educational diagram explaining carbon fixation and the Calvin cycle as biological context for carbon dioxide use in photosynthesis."
+      }
+    ],
+    "control-transitions-records": [
+      {
+        "file": "THC-ENC-001_VIS-08_Monitored_Cultivation_Decision.jpg",
+        "title": "Monitored Cultivation Decision",
+        "alt": "Educational decision diagram showing how monitored observations can support bounded cultivation decisions."
+      }
+    ]
+  },
+  "gaps": [
+    {
+      "id": "sensor-placement-calibration-mapping",
+      "status": "needed",
+      "title": "Sensor Placement, Calibration & Canopy Mapping",
+      "neededVisual": "A dedicated environmental measurement diagram showing control versus mapping sensors, shielding, canopy height, calibration, representative placement and spatial mapping."
+    },
+    {
+      "id": "leaf-temperature-measurement",
+      "status": "needed",
+      "title": "Leaf-Temperature Measurement Geometry",
+      "neededVisual": "A dedicated infrared leaf-temperature diagram showing field of view, distance-to-spot ratio, target fill, emissivity, angle and canopy sampling positions."
+    },
+    {
+      "id": "airflow-ventilation-dehumidification",
+      "status": "needed",
+      "title": "Boundary Layers, Circulation, Ventilation & Dehumidification",
+      "neededVisual": "A dedicated diagram separating leaf boundary-layer effects and within-canopy circulation from air exchange and actual moisture removal by ventilation or dehumidification."
+    },
+    {
+      "id": "co2-distribution-safety",
+      "status": "needed",
+      "title": "CO2 Distribution, Ventilation Loss & Safety Separation",
+      "neededVisual": "A dedicated environmental diagram showing canopy CO2 demand and distribution, enrichment points, ventilation loss, crop-control sensing and independent worker-safety monitoring."
+    },
+    {
+      "id": "control-bands-alarms-transitions",
+      "status": "needed",
+      "title": "Control Bands, Alarms, Transitions & Environmental Records",
+      "neededVisual": "A dedicated control diagram distinguishing setpoint, normal band, warning, action and emergency limits while showing lights-on/lights-off transitions, equipment state and traceable records."
+    }
+  ]
+}
