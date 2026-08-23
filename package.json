@@ -8,6 +8,7 @@
   "scripts": {
     "verify:connections": "node scripts/verify-connections.mjs",
     "verify:portfolio": "node scripts/validate-portfolio-registry.mjs",
+    "verify:navigation": "node scripts/validate-public-navigation.mjs",
     "dev": "npm run dev:high-land",
     "build": "npm run build:high-land",
     "test": "npm run test:high-land",
