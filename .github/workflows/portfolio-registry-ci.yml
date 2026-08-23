@@ -10,6 +10,7 @@ on:
       - 'data/asset-manifest.schema.json'
       - 'site/deployment/public-apps.json'
       - 'site/public-route-patch/projects/**'
+      - 'site/public-route-patch/games/index.html'
       - 'games/high-iq/**'
       - 'games/high-life/**'
       - 'games/grower-conversations/**'
@@ -34,6 +35,7 @@ on:
       - 'data/asset-manifest.schema.json'
       - 'site/deployment/public-apps.json'
       - 'site/public-route-patch/projects/**'
+      - 'site/public-route-patch/games/index.html'
       - 'games/high-iq/**'
       - 'games/high-life/**'
       - 'games/grower-conversations/**'
@@ -128,9 +130,9 @@ jobs:
           test -s site/public-route-patch/games/protect-the-plants/styles.css
           test -s site/public-route-patch/games/protect-the-plants/plant.svg
           test -s site/public-route-patch/projects/index.html
-          grep -Fq 'High Life: From Bagseed to Legacy' site/public-route-patch/projects/index.html
           grep -Fq 'Cannabis Fleet Battle' site/public-route-patch/projects/index.html
           grep -Fq 'Strain Showdown' site/public-route-patch/projects/index.html
+          grep -Fq 'Protect the Plants' site/public-route-patch/games/index.html
 
       - name: Validate High IQ legacy fallback boundary
         shell: bash
