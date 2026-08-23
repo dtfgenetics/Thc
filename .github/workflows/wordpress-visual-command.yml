@@ -2,6 +2,12 @@ name: Rebuild DTFSeeds Visual Site On Command
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/wordpress-visual-command.yml'
+      - 'scripts/polish-wordpress-visual-site-v3.mjs'
+      - 'scripts/fix-wordpress-visual-polish-v3-cascade.mjs'
   issue_comment:
     types: [created]
 
@@ -17,6 +23,7 @@ jobs:
   rebuild:
     if: >-
       github.event_name == 'workflow_dispatch' ||
+      github.event_name == 'push' ||
       (github.event.issue.number == 46 &&
        github.event.comment.body == '/rebuild-site' &&
        github.event.comment.user.login == github.repository_owner)
