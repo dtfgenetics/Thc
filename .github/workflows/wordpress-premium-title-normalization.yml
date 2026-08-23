@@ -1,4 +1,4 @@
-name: Normalize DTF Premium WordPress Page Titles
+name: Normalize DTF Editorial WordPress Page Titles
 
 on:
   workflow_dispatch:
@@ -17,7 +17,7 @@ permissions:
   issues: write
 
 concurrency:
-  group: dtfseeds-premium-wordpress-title-normalization
+  group: dtfseeds-editorial-wordpress-title-normalization
   cancel-in-progress: true
 
 jobs:
@@ -46,7 +46,7 @@ jobs:
           test -n "${WP_API_USERNAME:-}"
           test -n "${WP_API_PASSWORD:-}"
           node --check scripts/normalize-wordpress-premium-page-titles.mjs
-      - name: Normalize four premium page title hierarchies
+      - name: Normalize editorial page title hierarchies
         id: normalize
         shell: bash
         env:
@@ -55,7 +55,7 @@ jobs:
           set -euo pipefail
           node scripts/normalize-wordpress-premium-page-titles.mjs | tee "$RUNNER_TEMP/premium-title-result.json"
           echo 'outcome=success' >> "$GITHUB_OUTPUT"
-      - name: Verify live pages retain designed hero and suppression CSS
+      - name: Verify live editorial pages retain designed hero and suppression CSS
         id: verify
         shell: bash
         run: |
@@ -73,10 +73,8 @@ jobs:
               if [[ "$marker_ok" -eq 1 ]] && grep -Fqi 'dtf-premium-theme-title-suppression' "$body"; then ok=1; break; fi
               sleep 5
             done
-            [[ "$ok" -eq 1 ]] || { echo "Premium title normalization not visible on $path" >&2; exit 1; }
+            [[ "$ok" -eq 1 ]] || { echo "Editorial title normalization not visible on $path" >&2; exit 1; }
           }
-          verify '/seeds/' 'From breeding notes to current releases.'
-          verify '/learn/' 'Learn the plant as a connected system.' 'Understand the plant. Build the environment. Make better decisions.'
           verify '/community/' 'Grow together. Learn together. Build together.'
           verify '/gallery/' 'DTF Visual Library' 'See the plant science, genetics, tools, games, and community work.'
           echo 'outcome=success' >> "$GITHUB_OUTPUT"
@@ -84,7 +82,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: wordpress-premium-title-normalization-${{ github.run_id }}
+          name: wordpress-editorial-title-normalization-${{ github.run_id }}
           path: /tmp/wordpress-premium-title-backups
           if-no-files-found: warn
           retention-days: 30
@@ -102,13 +100,13 @@ jobs:
               repo: context.repo.repo,
               issue_number: 46,
               body: [
-                '## Premium WordPress page-title hierarchy',
+                '## Editorial WordPress page-title hierarchy',
                 '',
                 `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
                 `Result: **${process.env.STATUS}**`,
                 `Scoped normalization: **${process.env.NORMALIZE || 'not-completed'}**`,
                 `Live verification: **${process.env.VERIFY || 'not-completed'}**`,
                 '',
-                'Scope is intentionally limited to Seeds, Learn, Community, and Gallery. Their custom hero remains the visible H1 while the theme-generated duplicate page title is suppressed. WooCommerce product/archive titles and other pages are not targeted. The workflow accepts either the canonical editorial hero or the richer visual-rebuild hero and automatically reapplies after successful canonical WordPress production publishes.'
+                'Scope is intentionally limited to Community and Gallery. V3 owns Home/Learn and V4 owns Genetics/Shop, so this workflow no longer rewrites pages controlled by those visual systems.'
               ].join('\n')
             });
