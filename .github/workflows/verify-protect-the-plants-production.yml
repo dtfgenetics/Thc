@@ -1,0 +1,118 @@
+name: Verify Protect the Plants Production
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/verify-protect-the-plants-production.yml
+      - site/public-route-patch/games/protect-the-plants/**
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: verify-protect-the-plants-production
+  cancel-in-progress: true
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      BASE: https://dtfseeds.com/games/protect-the-plants
+    steps:
+      - name: Verify public page and assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          token="${GITHUB_RUN_ID}-$(date +%s%N)"
+          curl -4 -fsSL --retry 3 --retry-delay 2 --connect-timeout 15 --max-time 45 \
+            -H 'Cache-Control: no-cache, no-store, max-age=0' \
+            -H 'Pragma: no-cache' \
+            "$BASE/?ptp_smoke=$token" -o "$RUNNER_TEMP/index.html"
+          grep -Fqi 'Protect the Plants' "$RUNNER_TEMP/index.html"
+          for asset in app.js styles.css plant.svg; do
+            curl -4 -fsSL --retry 3 --retry-delay 2 --connect-timeout 15 --max-time 45 \
+              -H 'Cache-Control: no-cache, no-store, max-age=0' \
+              "$BASE/$asset?ptp_smoke=$token" -o "$RUNNER_TEMP/$asset"
+            test -s "$RUNNER_TEMP/$asset"
+          done
+
+      - name: Exercise two-player production API
+        id: api
+        shell: bash
+        run: |
+          set -euo pipefail
+          api="$BASE/api.php"
+          json_header=(-H 'Content-Type: application/json' -H 'Cache-Control: no-cache, no-store, max-age=0')
+
+          create="$(curl -4 -fsSL --retry 2 --retry-delay 2 --connect-timeout 15 --max-time 45 \
+            "${json_header[@]}" -X POST "$api?action=create" --data '{"name":"PTP Smoke A"}')"
+          code="$(jq -er '.code' <<<"$create")"
+          p1="$(jq -er '.playerId' <<<"$create")"
+          t1="$(jq -er '.token' <<<"$create")"
+          [[ "$code" =~ ^[A-Z0-9]{6}$ ]]
+
+          state1="$(curl -4 -fsSL "$api?action=state&code=$code" \
+            -H "X-Player-Id: $p1" -H "X-Player-Token: $t1" -H 'Cache-Control: no-cache')"
+          jq -e '.status == "waiting" and .me.name == "PTP Smoke A"' <<<"$state1" >/dev/null
+
+          active="$(curl -4 -fsSL "$api?action=active" \
+            -H "X-Player-Id: $p1" -H "X-Player-Token: $t1" -H 'Cache-Control: no-cache')"
+          jq -e --arg code "$code" '.game.code == $code' <<<"$active" >/dev/null
+
+          join="$(curl -4 -fsSL "${json_header[@]}" -X POST "$api?action=join" \
+            --data "$(jq -nc --arg code "$code" '{name:"PTP Smoke B",code:$code}')")"
+          p2="$(jq -er '.playerId' <<<"$join")"
+          t2="$(jq -er '.token' <<<"$join")"
+
+          chat="$(curl -4 -fsSL "${json_header[@]}" -H "X-Player-Id: $p1" -H "X-Player-Token: $t1" \
+            -X POST "$api?action=chat&code=$code" --data '{"text":"production smoke chat"}')"
+          jq -e '.chat | any(.text == "production smoke chat")' <<<"$chat" >/dev/null
+
+          fleet='[{"id":"mother-row","cells":[{"row":0,"col":0},{"row":0,"col":1},{"row":0,"col":2},{"row":0,"col":3},{"row":0,"col":4}]},{"id":"trellis-row","cells":[{"row":2,"col":0},{"row":2,"col":1},{"row":2,"col":2},{"row":2,"col":3}]},{"id":"tall-pheno","cells":[{"row":4,"col":0},{"row":4,"col":1},{"row":4,"col":2}]},{"id":"bushy-pheno","cells":[{"row":6,"col":0},{"row":6,"col":1},{"row":6,"col":2}]},{"id":"solo-pots","cells":[{"row":8,"col":0},{"row":8,"col":1}]}]'
+          place_body="$(jq -nc --argjson fleet "$fleet" '{fleet:$fleet}')"
+
+          placed1="$(curl -4 -fsSL "${json_header[@]}" -H "X-Player-Id: $p1" -H "X-Player-Token: $t1" \
+            -X POST "$api?action=place&code=$code" --data "$place_body")"
+          jq -e '.me.ready == true' <<<"$placed1" >/dev/null
+
+          placed2="$(curl -4 -fsSL "${json_header[@]}" -H "X-Player-Id: $p2" -H "X-Player-Token: $t2" \
+            -X POST "$api?action=place&code=$code" --data "$place_body")"
+          jq -e --arg p1 "$p1" '.status == "playing" and .turnPlayerId == $p1' <<<"$placed2" >/dev/null
+
+          hit="$(curl -4 -fsSL "${json_header[@]}" -H "X-Player-Id: $p1" -H "X-Player-Token: $t1" \
+            -X POST "$api?action=fire&code=$code" --data '{"row":0,"col":0}')"
+          jq -e --arg p2 "$p2" '.lastEvent.hit == true and .turnPlayerId == $p2' <<<"$hit" >/dev/null
+
+          miss="$(curl -4 -fsSL "${json_header[@]}" -H "X-Player-Id: $p2" -H "X-Player-Token: $t2" \
+            -X POST "$api?action=fire&code=$code" --data '{"row":14,"col":14}')"
+          jq -e --arg p1 "$p1" '.lastEvent.hit == false and .turnPlayerId == $p1' <<<"$miss" >/dev/null
+
+          echo "room=$code" >> "$GITHUB_OUTPUT"
+          echo 'Protect the Plants production multiplayer smoke test passed.'
+
+      - name: Report production smoke result
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          OUTCOME: ${{ steps.api.outcome }}
+          ROOM: ${{ steps.api.outputs.room }}
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 46,
+              body: [
+                '## Protect the Plants production smoke test',
+                '',
+                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                `Result: **${process.env.OUTCOME === 'success' ? 'PASS' : 'FAIL'}**`,
+                process.env.ROOM ? `Temporary smoke-test room: \`${process.env.ROOM}\`` : 'No room reached the completed smoke-test stage.',
+                '',
+                'Checks: live HTML/assets, room creation, authenticated state, active-game recovery, second-player join, room chat, both fleet placements, game start, hit, miss, and turn handoff.'
+              ].join('\n')
+            });
