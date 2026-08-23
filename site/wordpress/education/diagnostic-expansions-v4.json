@@ -1,0 +1,191 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-08-23",
+  "purpose": "Advanced diagnostic reasoning modules for Teaching Healthy Cultivation. These modules emphasize differential diagnosis, measurement quality, and verification before intervention.",
+  "topics": {
+    "water-root-zone": {
+      "title": "Root-zone Diagnostics: Advanced Modules",
+      "intro": "Many leaf symptoms begin as root-zone problems. Water availability, oxygen, salinity, pH, temperature, media structure, irrigation pattern, and root health can create similar above-ground symptoms, so the root zone must be measured as a system.",
+      "sections": [
+        {
+          "heading": "Water quality and alkalinity",
+          "paragraphs": [
+            "Source-water pH alone does not describe how strongly the water will resist pH change. Alkalinity, often associated with bicarbonate and carbonate, influences how much acid is required to shift pH and how irrigation water can change the root-zone chemical environment over repeated applications.",
+            "Two water sources can have similar measured pH but behave very differently after nutrients are mixed or after repeated irrigation. Useful records therefore include source identity, alkalinity or bicarbonate information where available, conductivity, and the behavior of the final irrigation solution."
+          ],
+          "records": ["Water source and date", "Source pH and EC", "Alkalinity or bicarbonate data where available", "Final solution behavior after mixing"]
+        },
+        {
+          "heading": "Irrigation uniformity and preferential flow",
+          "paragraphs": [
+            "A root zone is not automatically wet evenly because a target volume was applied. Channeling, hydrophobic dry pockets, compacted zones, emitter placement, container geometry, and root density can create areas that are saturated while others remain dry.",
+            "Uneven wetting can produce mixed symptoms and inconsistent runoff measurements. Comparing container weight, moisture at several locations, emitter output, and drainage behavior can reveal distribution problems that a single runoff sample misses."
+          ],
+          "records": ["Emitter output or hand-watering distribution", "Moisture at multiple root-zone positions", "Container weight before and after irrigation", "Runoff timing and volume"]
+        },
+        {
+          "heading": "Dryback, oxygen, and root respiration",
+          "paragraphs": [
+            "Roots require oxygen for respiration. Water-filled pore space reduces gas exchange, while an excessively dry root zone can limit water and ion movement. The useful goal is not maximum wetness or maximum dryback, but a repeatable moisture cycle appropriate to the medium, container, plant size, and environment.",
+            "Symptoms of chronic over-saturation, poor aeration, high root-zone temperature, and root disease can overlap. Root appearance, odor, drainage, moisture history, temperature, and progression through time help separate these possibilities."
+          ],
+          "records": ["Time between irrigation events", "Moisture or weight trend through dryback", "Root-zone temperature", "Root appearance, odor, and new-root development"]
+        },
+        {
+          "heading": "pH and EC measurements are method-dependent",
+          "paragraphs": [
+            "A pH or EC number has meaning only with its sampling method. Direct substrate probes, saturated-media extracts, pour-through methods, runoff, drainage solution, and nutrient reservoirs can produce different values because they sample different water fractions and chemical conditions.",
+            "Comparing values across time is strongest when the same method, instrument, calibration practice, sampling point, and timing are used. A changing method can create an apparent trend even when the root zone itself has not changed in the same way."
+          ],
+          "records": ["Sampling method", "Instrument and calibration date", "Time since irrigation", "Sample location and temperature"]
+        },
+        {
+          "heading": "Separating salinity, drought, and root injury",
+          "paragraphs": [
+            "High dissolved-salt concentration can reduce the plant's ability to take up water even when the medium is visibly wet. Drought, salinity, damaged roots, and high evaporative demand can therefore all contribute to wilting, marginal injury, slow growth, or altered nutrient uptake.",
+            "Differential diagnosis compares the moisture history, root-zone EC, root condition, environmental demand, and symptom distribution rather than assuming that wilt means the plant simply needs more water."
+          ],
+          "records": ["Root-zone moisture history", "EC trend using a consistent method", "Canopy temperature and humidity", "Root condition and symptom progression"]
+        }
+      ]
+    },
+    "nutrition-media": {
+      "title": "Nutrition Diagnostics: Advanced Modules",
+      "intro": "Nutrient disorders are rarely solved by matching one leaf to one chart. The same visible pattern can result from low supply, excess supply, antagonism, pH, salinity, root damage, irrigation problems, environmental stress, or normal developmental change.",
+      "sections": [
+        {
+          "heading": "Symptom location and nutrient mobility",
+          "paragraphs": [
+            "Where a symptom appears first can help narrow a differential because nutrients differ in how readily the plant can redistribute them from older tissues to new growth. This principle is useful, but it is not a stand-alone diagnosis because root stress, disease, environmental injury, and multiple-element problems can change the expected pattern.",
+            "A stronger observation records plant age, affected leaves, vein versus interveinal pattern, margins, spots, distortion, progression, and whether new growth is improving or worsening."
+          ],
+          "records": ["Old versus new leaves affected first", "Veinal, interveinal, marginal, or generalized pattern", "Rate and direction of progression", "Condition of newest growth"]
+        },
+        {
+          "heading": "Availability is not the same as uptake",
+          "paragraphs": [
+            "An element can be present in the fertilizer or medium and still fail to reach the shoot at an adequate rate. Root damage, temperature, oxygen, salinity, water status, pH, ionic competition, and transpiration all influence uptake and transport.",
+            "This is why adding more of a suspected element can worsen some problems. Before increasing supply, verify the root zone and consider whether the existing nutrient concentration is already adequate or excessive."
+          ],
+          "records": ["Feed formulation and concentration", "Root-zone pH and EC trend", "Root health and moisture history", "Environmental conditions affecting transpiration"]
+        },
+        {
+          "heading": "EC, salt accumulation, and osmotic stress",
+          "paragraphs": [
+            "Electrical conductivity estimates the total ability of dissolved ions to carry current; it does not identify which ions are present. A rising root-zone EC can indicate accumulation of dissolved salts, but the cause may involve concentration, irrigation strategy, water source, evaporation, media properties, or plant uptake.",
+            "High salinity can reduce water uptake and create symptoms that resemble nutrient deficiency or drought. EC therefore belongs inside a broader water-and-root-zone diagnosis rather than being interpreted as a fertilizer score by itself."
+          ],
+          "records": ["Input EC", "Root-zone or drainage EC using one method", "Irrigation and drainage volumes", "Plant-water response and leaf-edge injury"]
+        },
+        {
+          "heading": "Media buffering, exchange, and nutrient interactions",
+          "paragraphs": [
+            "Different media store and exchange ions differently. Organic matter, clay, coco fiber, mineral substrates, and amended mixes differ in cation exchange, buffering, water retention, decomposition, and nutrient release. A feed strategy that behaves predictably in one medium may behave differently in another.",
+            "Nutrients also interact. An excess of one ion can influence uptake or balance of another, so a visible deficiency-like symptom does not prove that the deficient-looking element is absent from the root zone."
+          ],
+          "records": ["Media composition and amendments", "Recent changes in fertilizer or water source", "Repeated pH/EC behavior", "Multiple symptoms that appeared after the same change"]
+        },
+        {
+          "heading": "Correction should be treated as a test",
+          "paragraphs": [
+            "A correction is most informative when it is based on a documented differential and changes as few variables as practical. Damaged tissue may not become visually normal, so response should be judged mainly by progression, new growth, root-zone trends, and plant function.",
+            "If several major changes are made at once, improvement may occur without revealing which change mattered. Good records turn each correction into a small experiment that improves the next diagnosis."
+          ],
+          "records": ["Original differential diagnosis", "Exact correction and date", "New-growth response", "Follow-up pH, EC, irrigation, and environmental measurements"]
+        }
+      ]
+    },
+    "plant-health-ipm": {
+      "title": "Plant-health Differential Diagnosis: Advanced Modules",
+      "intro": "Plant-health diagnosis begins by separating categories before naming a specific cause. Abiotic stress, arthropod pests, infectious disease, root disorders, mechanical damage, and normal development can produce overlapping visual symptoms.",
+      "sections": [
+        {
+          "heading": "Build the differential before naming the problem",
+          "paragraphs": [
+            "A differential diagnosis is a ranked list of plausible causes that could explain the observed pattern. The list should be broad enough to include environmental, root-zone, nutritional, pest, disease, and developmental explanations when they fit the evidence.",
+            "The goal is not to generate every possible disorder. It is to identify a small set of plausible causes and then choose observations or measurements that can eliminate or strengthen each one."
+          ],
+          "records": ["Symptom description without a diagnosis label", "Three to five plausible causes", "Evidence supporting each cause", "Evidence that would weaken each cause"]
+        },
+        {
+          "heading": "Abiotic versus biotic patterns",
+          "paragraphs": [
+            "Abiotic problems often follow environmental gradients, irrigation patterns, equipment failures, or management events, while pests and diseases may spread according to host contact, vector movement, inoculum, or localized entry points. These are tendencies, not absolute rules.",
+            "Mapping where symptoms begin and how they move through a crop can be more informative than the appearance of one damaged leaf. A spatial pattern can connect the problem to a fan, emitter zone, doorway, incoming plant batch, or other common factor."
+          ],
+          "records": ["Affected versus unaffected plant locations", "Equipment and irrigation zones", "Incoming plant or propagation batches", "Change in distribution over time"]
+        },
+        {
+          "heading": "Pest injury versus disease symptoms",
+          "paragraphs": [
+            "Feeding damage, honeydew, webbing, frass, eggs, cast skins, insects, mites, fungal growth, lesions, stem cankers, and root discoloration provide different levels of evidence. Some are direct signs of an organism; others are plant responses that can have several causes.",
+            "Magnification and repeated scouting improve confidence. If the suspected organism cannot be found, the diagnosis should remain provisional instead of being treated as confirmed because a symptom photograph looks similar."
+          ],
+          "records": ["Direct signs or organisms observed", "Magnification used", "Damage pattern and plant location", "Repeated scouting result if the first inspection was negative"]
+        },
+        {
+          "heading": "Scouting design and trend detection",
+          "paragraphs": [
+            "Scouting is most useful when the same zones, approximate plant counts, traps, and observation methods are repeated. Consistency turns isolated observations into a trend and makes it easier to see whether a problem is expanding, stable, or declining.",
+            "Hot spots deserve extra inspection, but only inspecting obvious damaged plants can exaggerate prevalence. A crop-wide view needs both targeted inspection and repeatable sampling."
+          ],
+          "records": ["Scouting zones", "Plants or leaves inspected per zone", "Trap counts where used", "Trend from the previous scouting pass"]
+        },
+        {
+          "heading": "Verify intervention outcomes",
+          "paragraphs": [
+            "An intervention should have a defined target and an expected measurable response. For pest management, this may be reduced counts or slower spread. For an environmental correction, it may be improved measurements and healthier new growth. Without a defined response, treatment can continue even when it is not solving the actual problem.",
+            "Verification also helps prevent repeated unnecessary interventions. When a suspected cause is not supported by the response, the differential should be reopened rather than simply intensifying the same treatment."
+          ],
+          "records": ["Target of the intervention", "Pre-intervention baseline", "Follow-up observation interval", "Measured response and decision to continue, change, or stop"]
+        }
+      ]
+    },
+    "evidence-measurement": {
+      "title": "Measurement & Research Skills: Advanced Modules",
+      "intro": "Better tools do not automatically create better evidence. Measurement quality depends on calibration, sampling, units, timing, repeatability, and whether the measurement actually represents the biological question being asked.",
+      "sections": [
+        {
+          "heading": "Accuracy, precision, and calibration",
+          "paragraphs": [
+            "Accuracy describes closeness to the true value, while precision describes repeatability. A sensor can be precise but consistently biased. Calibration and comparison against a trusted reference help reveal that difference.",
+            "Environmental and solution sensors also drift, foul, age, or respond to temperature. A useful record includes the instrument identity, calibration history, maintenance, and any known limitations."
+          ],
+          "records": ["Instrument model or identifier", "Calibration date and standard", "Measurement units", "Known uncertainty or resolution"]
+        },
+        {
+          "heading": "Sampling determines what the measurement represents",
+          "paragraphs": [
+            "A perfect measurement from an unrepresentative location can still support a poor conclusion. One leaf, one runoff sample, one canopy point, or one plant may not describe the whole crop.",
+            "Sampling should match the question. If the goal is canopy uniformity, measure several crop-plane positions. If the goal is disease prevalence, inspect a repeatable set of plants across zones. If the goal is root-zone chemistry, use a consistent sampling method that represents the medium of interest."
+          ],
+          "records": ["Sampling locations", "Number of samples", "Reason those samples represent the question", "Any excluded or missing observations"]
+        },
+        {
+          "heading": "Repeatability and biological variation",
+          "paragraphs": [
+            "Plants vary even when grown together. Sensors and sampling methods vary too. Repeated observations help separate a stable pattern from noise, one-time events, or individual outliers.",
+            "Averages can summarize a group, but they can also hide hot spots or extremes. Preserve the individual observations so the distribution can be inspected later."
+          ],
+          "records": ["Repeated values rather than only an average", "Range or spread", "Outliers and whether they were retained", "Biological replicate identity"]
+        },
+        {
+          "heading": "Controlled comparisons and confounding",
+          "paragraphs": [
+            "When two groups differ in several ways, a difference in outcome cannot confidently be assigned to one variable. This is confounding. Cultivation comparisons become more informative when the tested variable is defined clearly and other major conditions are kept as comparable as practical.",
+            "Perfect control is rarely possible in a grow, but documenting the differences makes the conclusion more honest. The record should distinguish what was intentionally changed from what also changed unintentionally."
+          ],
+          "records": ["Question and tested variable", "Conditions intended to remain comparable", "Unplanned differences", "Outcome measure chosen before the comparison"]
+        },
+        {
+          "heading": "Claims should match the strength of the evidence",
+          "paragraphs": [
+            "A useful conclusion states what was observed and the conditions under which it was observed. One grow can generate a valuable observation without proving that every cultivar, room, medium, or season will respond the same way.",
+            "Source quality matters too. Peer-reviewed studies, extension publications, manufacturer documentation, breeder notes, grow logs, and social posts can all provide information, but they support different levels of confidence and should be labeled accordingly."
+          ],
+          "records": ["What was directly observed", "What remains inferred", "Source type and date", "Conditions that limit generalization"]
+        }
+      ]
+    }
+  }
+}
