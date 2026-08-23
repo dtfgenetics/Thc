@@ -76,43 +76,25 @@ jobs:
 
       - name: Require successful trusted handoff
         if: github.event_name == 'workflow_run'
-        shell: bash
-        run: |
-          set -euo pipefail
-          [[ "${{ github.event.workflow_run.conclusion }}" == "success" ]]
+        run: '[[ "${{ github.event.workflow_run.conclusion }}" == "success" ]]'
 
-      - name: Validate protected infographic publisher
+      - name: Validate publisher and production access
+        id: access
         shell: bash
         run: |
           set -euo pipefail
           node --check scripts/deploy-wordpress-infographic-library-rest.mjs
           node --check scripts/polish-wordpress-infographic-section.mjs
           node -e "const c=require('./site/wordpress/assets/infographics/placement-rules.json'); if(c.schemaVersion<2||!c.primaryOverrides?.length) process.exit(1)"
-          test -d site/wordpress/assets/infographics
-          test -s site/wordpress/assets/infographics/Cannabis_Plant_Anatomy_Infographic.png
-          test -s site/wordpress/assets/infographics/Nutrient_Uptake_and_Root_Zone_Chemistry.png
+          test -n "${WP_API_USERNAME:-}"
+          test -n "${WP_API_PASSWORD:-}"
           count="$(find site/wordpress/assets/infographics -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webp' -o -iname '*.gif' \) | wc -l | tr -d ' ')"
           test "$count" -ge 20
-          echo "Source-controlled images queued: $count" >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Detect protected WordPress credentials
-        id: access
-        shell: bash
-        run: |
-          set -euo pipefail
-          [[ -n "${WP_API_USERNAME:-}" ]] && user_present=true || user_present=false
-          [[ -n "${WP_API_PASSWORD:-}" ]] && password_present=true || password_present=false
-          echo "user_present=$user_present" >> "$GITHUB_OUTPUT"
-          echo "password_present=$password_present" >> "$GITHUB_OUTPUT"
-          if [[ "$user_present" == true && "$password_present" == true ]]; then
-            echo "available=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "available=false" >> "$GITHUB_OUTPUT"
-          fi
+          echo "user_present=true" >> "$GITHUB_OUTPUT"
+          echo "password_present=true" >> "$GITHUB_OUTPUT"
 
       - name: Upload WordPress media and publish mapped topic pages
         id: publish
-        if: steps.access.outputs.available == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -127,7 +109,6 @@ jobs:
 
       - name: Rebuild polished visual library and URL images
         id: polish
-        if: steps.publish.outcome == 'success'
         env:
           APPLY_INFOGRAPHIC_POLISH: 'true'
         shell: bash
@@ -142,25 +123,36 @@ jobs:
 
       - name: Verify live WordPress infographic library and topic placement
         id: verify
-        if: steps.polish.outcome == 'success'
         shell: bash
         run: |
           set -euo pipefail
-          page="$RUNNER_TEMP/infographic-library.html"
-          ok=0
-          for attempt in 1 2 3 4 5 6 7 8; do
-            curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
-              --header 'Cache-Control: no-cache, no-store, max-age=0' \
-              --header 'Pragma: no-cache' \
-              "https://dtfseeds.com/learn/infographics/?dtf_infographics=${GITHUB_RUN_ID}-${attempt}" \
-              --output "$page"
-            if grep -Fqi 'THC Visual Learning Library' "$page" && grep -Eqi '<img[^>]+wp-content/uploads/' "$page"; then
-              ok=1
-              break
+          fetch_until() {
+            local url="$1"
+            local body="$2"
+            local marker="$3"
+            local require_image="${4:-true}"
+            local ok=0
+            for attempt in 1 2 3 4 5 6 7 8; do
+              curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+                --header 'Cache-Control: no-cache, no-store, max-age=0' \
+                --header 'Pragma: no-cache' \
+                "${url}?dtf_infographics=${GITHUB_RUN_ID}-${attempt}" --output "$body"
+              if grep -Fqi "$marker" "$body"; then
+                if [[ "$require_image" != true ]] || grep -Eqi '<img[^>]+wp-content/uploads/' "$body"; then
+                  ok=1
+                  break
+                fi
+              fi
+              sleep 8
+            done
+            if [[ "$ok" -ne 1 ]]; then
+              echo "Live verification did not observe '$marker' at $url" >&2
+              exit 1
             fi
-            sleep 8
-          done
-          [[ "$ok" -eq 1 ]]
+          }
+
+          page="$RUNNER_TEMP/infographic-library.html"
+          fetch_until 'https://dtfseeds.com/learn/infographics/' "$page" 'THC Visual Learning Library' true
           image_count="$(grep -Eoi '<img[^>]+wp-content/uploads/' "$page" | wc -l | tr -d ' ')"
           test "$image_count" -ge 30
           grep -Fqi 'Plant Biology & Anatomy' "$page"
@@ -170,24 +162,16 @@ jobs:
 
           for route in plant-biology nutrition-media ipm lifecycle-propagation; do
             topic="$RUNNER_TEMP/topic-${route}.html"
-            curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
-              --header 'Cache-Control: no-cache, no-store, max-age=0' \
-              --header 'Pragma: no-cache' \
-              "https://dtfseeds.com/learn/${route}/?dtf_infographics=${GITHUB_RUN_ID}" --output "$topic"
-            grep -Fqi 'Learn the topic visually.' "$topic"
-            grep -Eqi '<img[^>]+wp-content/uploads/' "$topic"
+            fetch_until "https://dtfseeds.com/learn/${route}/" "$topic" 'Learn the topic visually.' true
           done
 
           featured_json="$RUNNER_TEMP/featured.json"
           curl -4 --fail --silent --show-error --location \
-            "https://dtfseeds.com/wp-json/wp/v2/pages/${{ steps.publish.outputs.page_id }}?_fields=id,featured_media" \
+            --user "${WP_API_USERNAME}:${WP_API_PASSWORD}" \
+            "https://dtfseeds.com/wp-json/wp/v2/pages/${{ steps.publish.outputs.page_id }}?context=edit&_fields=id,featured_media" \
             --output "$featured_json"
-          node -e "const r=require(process.argv[1]); if(!(r.featured_media>0)) process.exit(1); console.log('Featured media:',r.featured_media)" "$featured_json"
+          node -e "const r=require(process.argv[1]); if(!(r.featured_media>0)) throw new Error('Featured media missing'); console.log('Verified library featured media:',r.featured_media)" "$featured_json"
           echo "live_image_count=$image_count" >> "$GITHUB_OUTPUT"
-
-      - name: Fail when WordPress credentials are absent
-        if: steps.access.outputs.available != 'true'
-        run: exit 1
 
       - name: Upload infographic deployment audit package
         if: always()
@@ -218,26 +202,28 @@ jobs:
           LIVE_IMAGE_COUNT: ${{ steps.verify.outputs.live_image_count }}
         with:
           script: |
-            const body = [
-              '## THC infographic WordPress publication',
-              '',
-              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-              `Protected job result: **${process.env.JOB_STATUS}**`,
-              `WordPress username configured: **${process.env.USER_PRESENT || 'false'}**`,
-              `WordPress application password configured: **${process.env.PASSWORD_PRESENT || 'false'}**`,
-              `Media synchronization and topic placement: **${process.env.PUBLISH_OUTCOME || 'not-run'}**`,
-              `Visual redesign and URL featured-image update: **${process.env.POLISH_OUTCOME || 'not-run'}**`,
-              `Live verification: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
-              `Source-controlled images processed: **${process.env.SOURCE_COUNT || 'not-run'}**`,
-              `New WordPress media uploads: **${process.env.UPLOADED_COUNT || 'not-run'}**`,
-              `Existing WordPress media reused: **${process.env.REUSED_COUNT || 'not-run'}**`,
-              `Infographic page ID: **${process.env.PAGE_ID || 'not-run'}**`,
-              `Topic pages populated: **${process.env.TOPIC_COUNT || 'not-run'}**`,
-              `Education media in polished gallery: **${process.env.GALLERY_COUNT || 'not-run'}**`,
-              `Library featured media / URL image ID: **${process.env.FEATURED_MEDIA_ID || 'not-run'}**`,
-              `Images observed on live library page: **${process.env.LIVE_IMAGE_COUNT || 'not-run'}**`,
-              '',
-              'Target: https://dtfseeds.com/learn/infographics/',
-              'Canonical `dtf-edu-*` media is mapped with refined topic rules. The library and topic pages use poster-style non-cropping cards, topic navigation, responsive grids, and WordPress featured media for improved URL/share presentation.'
-            ].join('\n');
-            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body});
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 46,
+              body: [
+                '## THC infographic WordPress publication',
+                '',
+                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                `Protected job result: **${process.env.JOB_STATUS}**`,
+                `Media synchronization and topic placement: **${process.env.PUBLISH_OUTCOME || 'not-run'}**`,
+                `Visual redesign and URL featured-image update: **${process.env.POLISH_OUTCOME || 'not-run'}**`,
+                `Live verification: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
+                `Source-controlled images processed: **${process.env.SOURCE_COUNT || 'not-run'}**`,
+                `New WordPress media uploads: **${process.env.UPLOADED_COUNT || 'not-run'}**`,
+                `Existing WordPress media reused: **${process.env.REUSED_COUNT || 'not-run'}**`,
+                `Infographic page ID: **${process.env.PAGE_ID || 'not-run'}**`,
+                `Topic pages populated: **${process.env.TOPIC_COUNT || 'not-run'}**`,
+                `Education media in polished gallery: **${process.env.GALLERY_COUNT || 'not-run'}**`,
+                `Library featured media / URL image ID: **${process.env.FEATURED_MEDIA_ID || 'not-run'}**`,
+                `Images observed on live library page: **${process.env.LIVE_IMAGE_COUNT || 'not-run'}**`,
+                '',
+                'Target: https://dtfseeds.com/learn/infographics/',
+                'Canonical media is mapped with refined topic rules. The library and topic pages use poster-style non-cropping cards, topic navigation, responsive grids, and WordPress featured media for URL/share presentation.'
+              ].join('\n')
+            });
