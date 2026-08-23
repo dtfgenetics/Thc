@@ -1,3 +1,4 @@
+// production-trigger: 2026-08-22 potleaf favicon
 import { readFile, mkdir, writeFile } from 'node:fs/promises';
 import { basename, join } from 'node:path';
 import process from 'node:process';
