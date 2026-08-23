@@ -25,8 +25,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
-      SOURCE_RUN: '32462671292'
-      SOURCE_ARTIFACT: dtfseeds-public-suite-da364c7fd261798efeadda8f0c56c49e4fbefeaf
+      SOURCE_RUN: '32670204724'
+      SOURCE_ARTIFACT: dtfseeds-public-suite-03ebe6aa87a148de28dcc10b23a3d4ea37a8587e
       GH_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v4
@@ -61,7 +61,7 @@ jobs:
           PY
           php -l "$RUNNER_TEMP/dtf-suite-v2-snippet.php"
 
-      - name: Download last fully validated app fixture
+      - name: Download current fully validated app fixture
         shell: bash
         run: |
           set -euo pipefail
@@ -70,6 +70,8 @@ jobs:
           gh run download "$SOURCE_RUN" --repo "$GITHUB_REPOSITORY" --name "$SOURCE_ARTIFACT" --dir "$RUNNER_TEMP/source-suite"
           test -s "$RUNNER_TEMP/source-suite/games/index.html"
           test -s "$RUNNER_TEMP/source-suite/games/high-land/index.html"
+          test -s "$RUNNER_TEMP/source-suite/games/protect-the-plants/index.html"
+          test -s "$RUNNER_TEMP/source-suite/games/protect-the-plants/api.php"
           test -s "$RUNNER_TEMP/source-suite/growlens/index.html"
           test -s "$RUNNER_TEMP/source-suite/thc-grow-doc/index.html"
 
@@ -111,9 +113,9 @@ jobs:
               assert not forbidden, forbidden
               required = [
                   'games/index.html','games/dtf-shell.css','games/high-land/index.html','games/high-iq/index.html','games/high-life/index.html',
-                  'games/grower-conversations/index.html','games/seed-man-platformer/index.html','games/weedopolis/index.html',
-                  'games/crossword/index.html','games/who-took-it/index.html','growlens/index.html','thc-grow-doc/index.html',
-                  'thc-grow-doc/api/visual-observations.php','tools/index.html','projects/index.html','puzzles/current.json'
+                  'games/grower-conversations/index.html','games/seed-man-platformer/index.html','games/protect-the-plants/index.html',
+                  'games/protect-the-plants/api.php','games/weedopolis/index.html','games/crossword/index.html','games/who-took-it/index.html',
+                  'growlens/index.html','thc-grow-doc/index.html','thc-grow-doc/api/visual-observations.php','tools/index.html','projects/index.html','puzzles/current.json'
               ]
               for path in required: assert path in names, path
               manifest_raw = z.read('.dtf-suite-manifest.json')
@@ -202,7 +204,7 @@ jobs:
                 `Commit: \`${context.sha}\``,
                 `Result: **${process.env.STATUS}**`,
                 '',
-                'Checks: canonical v2 assembly, Node/PHP syntax, stable validated app fixture plus the current Games/Tools/Projects shell, app-only archive creation, per-file SHA-256 verification, duplicate/manifest/path ownership checks, authenticated publisher plus one-time-token authorization, current live markers, and transaction locking/recovery/rollback/abort/finalize controls.',
+                'Checks: canonical v2 assembly, Node/PHP syntax, a current fully validated app fixture plus the current Games/Tools/Projects shell, app-only archive creation, Protect the Plants PHP packaging, per-file SHA-256 verification, duplicate/manifest/path ownership checks, authenticated publisher plus one-time-token authorization, current live markers, and transaction locking/recovery/rollback/abort/finalize controls.',
                 '',
                 'This workflow is non-mutating. Production publication remains a separate protected transaction.'
               ].join('\n')
