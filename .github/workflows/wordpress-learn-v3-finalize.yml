@@ -26,12 +26,13 @@ jobs:
   finalize:
     if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 20
     environment: production
     env:
       NODE_OPTIONS: --dns-result-order=ipv4first
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME || secrets.WORDPRESS_USERNAME || secrets.WP_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD || secrets.WORDPRESS_APP_PASSWORD || secrets.WP_APPLICATION_PASSWORD }}
+      BACKUP_ROOT: ${{ runner.temp }}/dtf-learn-v3-final
     steps:
       - uses: actions/checkout@v4
         with:
@@ -39,12 +40,30 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Validate V3 Learn finalizer
+      - name: Validate V3 Learn package
         run: |
           set -euo pipefail
           test -n "${WP_API_USERNAME:-}"
           test -n "${WP_API_PASSWORD:-}"
+          node --check scripts/polish-wordpress-visual-site-v3.mjs
+          node --check scripts/fix-wordpress-visual-polish-v3-cascade.mjs
           node --check scripts/finalize-wordpress-learn-v3.mjs
+      - name: Restore V3 visual ownership
+        id: restore
+        env:
+          APPLY_VISUAL_POLISH: 'true'
+        run: |
+          set -euo pipefail
+          node scripts/polish-wordpress-visual-site-v3.mjs
+          echo 'outcome=success' >> "$GITHUB_OUTPUT"
+      - name: Put V3 last in the page cascade
+        id: cascade
+        env:
+          APPLY_V3_CASCADE_FIX: 'true'
+        run: |
+          set -euo pipefail
+          node scripts/fix-wordpress-visual-polish-v3-cascade.mjs
+          echo 'outcome=success' >> "$GITHUB_OUTPUT"
       - name: Finalize Learn hierarchy
         id: apply
         env:
@@ -61,7 +80,7 @@ jobs:
           ok=0
           for attempt in 1 2 3 4 5 6 7 8; do
             curl -4 -fsSL --retry 2 --retry-delay 2 -H 'Cache-Control: no-cache, no-store, max-age=0' -H 'Pragma: no-cache' "$WP_SITE_URL/learn/?dtf_learn_v3_final=${GITHUB_RUN_ID}-${attempt}" -o "$body"
-            if grep -Fqi 'dtf-visual-polish-v3' "$body" && grep -Fqi 'dtf-v3-learn-theme-title-suppression' "$body"; then ok=1; break; fi
+            if grep -Fqi 'dtf-visual-polish-v3' "$body" && grep -Fqi 'dtf-v3-learn-theme-title-suppression' "$body" && grep -Fqi '/learn/genetics-breeding/' "$body"; then ok=1; break; fi
             sleep 6
           done
           [[ "$ok" -eq 1 ]] || { echo 'Final V3 Learn hierarchy is not visible.' >&2; exit 1; }
@@ -71,6 +90,8 @@ jobs:
         uses: actions/github-script@v7
         env:
           STATUS: ${{ job.status }}
+          RESTORE: ${{ steps.restore.outputs.outcome }}
+          CASCADE: ${{ steps.cascade.outputs.outcome }}
           APPLY: ${{ steps.apply.outputs.outcome }}
           VERIFY: ${{ steps.verify.outputs.outcome }}
         with:
@@ -79,8 +100,10 @@ jobs:
               '## Learn V3 final hierarchy','',
               `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
               `Result: **${process.env.STATUS}**`,
+              `V3 restoration: **${process.env.RESTORE || 'not-completed'}**`,
+              `Final cascade ordering: **${process.env.CASCADE || 'not-completed'}**`,
               `V3-owned title normalization: **${process.env.APPLY || 'not-completed'}**`,
               `Live verification: **${process.env.VERIFY || 'not-completed'}**`,
               '',
-              'Learn now keeps its designed V3 hero as the single visible page heading while the theme-generated duplicate title is suppressed inside the V3-owned page itself.'
+              'This workflow restores the V3 Learn presentation before applying the single-H1 hierarchy fix, so a prior canonical publish cannot leave Learn in a half-polished state.'
             ].join('\n')});
