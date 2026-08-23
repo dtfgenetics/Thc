@@ -1,0 +1,115 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-08-23",
+  "purpose": "Advanced companion modules for subject areas that need more depth than the core overview. These sections supplement, not replace, canonical topic literature.",
+  "topics": {
+    "outdoor-cultivation": {
+      "title": "Outdoor Cultivation: Advanced Field Modules",
+      "intro": "Outdoor growing is a site-management problem as much as a plant-management problem. The useful unit of observation is the plant inside its microclimate, soil or container, water system, local weather pattern, and surrounding ecology.",
+      "sections": [
+        {
+          "heading": "Site selection and solar exposure",
+          "paragraphs": [
+            "Regional sunlight estimates are only a starting point. Buildings, trees, slopes, fences, greenhouse frames, and neighboring vegetation create moving shade patterns that change across the day and season. A useful site assessment records when direct light reaches the crop, when it is blocked, and whether the pattern changes as the sun angle shifts through the season.",
+            "Site selection also includes access, drainage, wind exposure, irrigation logistics, and the ability to inspect plants consistently. A location with strong midday light can still be a poor crop site if water pools after storms, wind repeatedly damages branches, or the grower cannot reach the root zone and canopy for routine observation."
+          ],
+          "records": ["Morning, midday, and late-day shade map", "Seasonal sun-angle changes", "Wind exposure and barriers", "Access to irrigation and drainage routes"]
+        },
+        {
+          "heading": "Soil structure, rooting volume, and drainage",
+          "paragraphs": [
+            "Outdoor root performance depends on more than fertilizer concentration. Soil texture, aggregation, pore space, compaction, organic matter, rooting depth, drainage, and biological activity all influence how roots explore the soil and how water and oxygen move through it. A nutrient program cannot compensate for a root zone that remains physically hostile to root growth.",
+            "Field soil is spatially variable. One test pit or one laboratory sample may not represent the entire planting area. Comparing several locations can reveal compacted layers, fill soil, low areas, gravel lenses, or changes in organic matter that explain why nearby plants behave differently."
+          ],
+          "records": ["Soil or media type by planting zone", "Compaction or restrictive layers", "Drainage after irrigation or rainfall", "Effective rooting depth and visible root condition"]
+        },
+        {
+          "heading": "Irrigation as a soil-water problem",
+          "paragraphs": [
+            "Outdoor irrigation should respond to the amount of water stored in the root zone and the rate at which the crop and environment remove it. Air temperature, solar radiation, wind, humidity, plant size, soil texture, mulch, container size, and recent rainfall all change water demand. A fixed calendar can therefore overwater one period and underwater another.",
+            "Rainfall totals alone do not describe plant-available water. Intense rain can run off, bypass dry soil through preferential flow, or wet only the upper profile. Irrigation decisions are stronger when rainfall records are combined with direct soil or container observations and plant response."
+          ],
+          "records": ["Irrigation volume and duration", "Rainfall plus infiltration observations", "Root-zone moisture before and after irrigation", "Plant response through the following dry-down period"]
+        },
+        {
+          "heading": "Hardening-off and transplant transition",
+          "paragraphs": [
+            "Plants moved from protected indoor conditions into full outdoor exposure experience simultaneous changes in light intensity, ultraviolet exposure, wind, temperature range, humidity, and evaporative demand. Hardening-off is a gradual acclimation process that allows leaves, stems, stomatal behavior, and root water supply to adjust to those changes.",
+            "A transplant can also alter root-zone temperature, moisture distribution, and mechanical stability. Evaluating the transition as several interacting stresses is more useful than attributing every temporary symptom to transplant shock as a single cause."
+          ],
+          "records": ["Previous environment and outdoor exposure schedule", "Light and temperature change during acclimation", "Water demand before and after transplant", "New-growth response rather than damaged older tissue alone"]
+        },
+        {
+          "heading": "Wind, storms, heat, rain, and smoke events",
+          "paragraphs": [
+            "Weather risk is episodic. A crop may spend most of the season in acceptable conditions and still suffer major damage during a short heat wave, wind event, hailstorm, prolonged rain period, or smoke episode. Planning therefore needs both average-season information and response plans for extremes.",
+            "Dense flowering canopies are particularly sensitive to prolonged wetness and reduced air movement. After rain or storm damage, inspection should focus on trapped moisture, broken tissues, lodged branches, soil saturation, and new disease symptoms rather than only visible leaf damage."
+          ],
+          "records": ["Extreme-weather dates and duration", "Canopy wetness or standing-water observations", "Mechanical damage and supported branches", "Changes in pest or disease pressure after the event"]
+        },
+        {
+          "heading": "Outdoor pest, disease, and ecological pressure",
+          "paragraphs": [
+            "Outdoor crops exist inside a larger food web. Predators, parasitoids, herbivores, pathogens, weeds, nearby crops, wild plants, and seasonal insect movement all influence what appears on the plant. This makes repeated scouting and identification more useful than assuming every insect is harmful or every damaged leaf needs treatment.",
+            "Disease risk also depends on the interaction among a susceptible host, a capable pathogen, and a favorable environment. Moisture duration, dense canopy structure, sanitation, plant injury, and incoming material can change risk even when the pathogen is already present in the region."
+          ],
+          "records": ["Scouting zones and repeated pest counts", "Beneficial organisms observed", "Disease distribution and progression", "Nearby vegetation or crop events that may change pressure"]
+        }
+      ]
+    },
+    "harvest-postharvest": {
+      "title": "Harvest & Post-harvest: Advanced Quality Modules",
+      "intro": "Post-harvest quality is the result of a chain of decisions. Maturity assessment, handling, drying, equilibration, storage, sanitation, and measurement all affect the final material, and each stage can hide problems that become visible later.",
+      "sections": [
+        {
+          "heading": "Harvest maturity as a multi-signal assessment",
+          "paragraphs": [
+            "No single visual cue perfectly defines harvest maturity across cultivars and growing conditions. Trichome appearance can be useful, but interpretation changes with sampling location, lighting, magnification, gland type, tissue age, and the observer. Floral development, plant condition, breeder observations, aroma development, and the intended evaluation goal provide additional context.",
+            "Representative sampling matters. Looking only at the most exposed top flower can exaggerate maturity relative to shaded or lower sites. A batch-level decision is stronger when observations are taken from several consistent canopy positions and recorded in the same way over time."
+          ],
+          "records": ["Sampling locations and magnification method", "Trichome observations by location", "Floral and plant-development notes", "Reason for the harvest decision and uncertainty"]
+        },
+        {
+          "heading": "Harvest handling and contamination control",
+          "paragraphs": [
+            "Freshly harvested plant material is physically vulnerable and contains substantial moisture. Rough handling can damage glandular structures and flowers, while dirty tools, surfaces, containers, or hands can introduce contaminants. A post-harvest workflow should therefore treat cleanliness, traceability, gentle handling, and separation of questionable material as part of quality control.",
+            "Batch identity should remain attached to material as plants are cut, moved, divided, dried, trimmed, and stored. Losing identity during handling makes later comparisons of cultivar, phenotype, drying response, or contamination findings much less useful."
+          ],
+          "records": ["Batch or plant identifier", "Harvest and handling timestamps", "Sanitation status of tools and contact surfaces", "Material isolated because of visible damage or contamination concern"]
+        },
+        {
+          "heading": "Drying is moisture movement, not just room humidity",
+          "paragraphs": [
+            "Drying occurs as water moves from wetter interior tissues toward the surface and then into the surrounding air. Temperature, relative humidity, air movement, flower size, tissue density, hanging or rack arrangement, and the amount of material in the room all affect that process. Room conditions describe the air; they do not directly prove that moisture is evenly distributed inside the product.",
+            "Drying too aggressively can create a large moisture gradient between the surface and interior. Drying too slowly under poor moisture-control conditions can increase microbial risk. The useful goal is a controlled, observable moisture decline with enough air movement to keep conditions uniform without creating extreme localized drying."
+          ],
+          "records": ["Temperature and RH at more than one room location", "Airflow pattern and equipment state", "Product mass or another repeatable drying indicator", "Differences among large, small, dense, and exposed material"]
+        },
+        {
+          "heading": "Moisture content, water activity, and equilibration",
+          "paragraphs": [
+            "Moisture content describes how much water is present relative to product mass, while water activity describes how available that water is for chemical reactions and microbial growth. They are related but not interchangeable. Two samples can contain similar total moisture yet differ in how that water is bound and distributed.",
+            "After an apparent drying endpoint, moisture can continue redistributing within the material. This equilibration is one reason a single surface feel or room reading is not a complete stability measurement. Where formal quality control is required, validated measurement methods and representative sampling are more reliable than subjective texture alone."
+          ],
+          "records": ["Measurement method and sampling location", "Time between drying endpoint and measurement", "Variation among samples from the same batch", "Any evidence of internal/external moisture imbalance"]
+        },
+        {
+          "heading": "Curing and storage as controlled stabilization",
+          "paragraphs": [
+            "Curing is best understood as a controlled stabilization period rather than a guaranteed process that creates quality from poorly harvested or improperly dried material. Aroma, texture, moisture distribution, and chemical composition may continue changing, but those changes depend on starting material and storage conditions.",
+            "Long-term storage quality is influenced by temperature, light, oxygen exposure, container permeability, headspace, moisture state, handling frequency, and contamination. Records should distinguish intentional storage conditions from repeated container opening or environmental excursions."
+          ],
+          "records": ["Container type and fill level", "Storage temperature and light exposure", "Opening or handling frequency", "Aroma, texture, moisture, or contamination changes over time"]
+        },
+        {
+          "heading": "Batch comparison and process improvement",
+          "paragraphs": [
+            "Post-harvest improvement requires comparing batches with enough process information to explain differences. A final quality rating without harvest timing, drying data, product condition, storage history, and sampling notes cannot identify which part of the process should change next time.",
+            "The strongest records preserve both successful and unsuccessful batches. Failure data reveal process limits, environmental weak points, and measurement gaps that are easy to miss when only ideal results are documented."
+          ],
+          "records": ["Harvest and maturity record", "Drying curve or repeated condition log", "Storage history", "Final quality observations and deviations from the intended process"]
+        }
+      ]
+    }
+  }
+}
