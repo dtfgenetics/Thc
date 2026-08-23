@@ -41,15 +41,39 @@ if (missing.length) throw new Error(`Could not normalize required THC topics: ${
 await writeFile(normalizedPath, `${JSON.stringify({ ...source, normalizedFor: 'learning-v3', topics }, null, 2)}\n`);
 process.env.TOPIC_LITERATURE_PATH = normalizedPath;
 
-// The canonical asset registry contains a dedicated DLI/PPFD lighting infographic.
-// Keep the production selector strict so general pages mentioning "light" (for example
-// seedling establishment) cannot become the Lighting subject hero by accident.
+// Subject hero images are intentionally strict. A neutral placeholder is preferable to a
+// visually impressive but misleading image (for example a seedling card on Lighting or a
+// root-pathogen diagram on a general water/pH/EC page).
 let publisher = await readFile(publisherPath, 'utf8');
-const originalLightingSelector = "  'lighting': [['ppfd'], ['dli'], ['lighting']],";
-const strictLightingSelector = "  'lighting': [['dli', 'ppfd'], ['dli', 'light', 'education'], ['ppfd', 'light']],";
-if (!publisher.includes(originalLightingSelector) && !publisher.includes(strictLightingSelector)) {
-  throw new Error('Could not locate the Learning V3 lighting media selector; refusing an unreviewed runtime patch.');
+const selectorPatches = [
+  {
+    name: 'lighting',
+    original: "  'lighting': [['ppfd'], ['dli'], ['lighting']],",
+    strict: "  'lighting': [['dli', 'ppfd'], ['dli', 'light', 'education'], ['ppfd', 'light']],"
+  },
+  {
+    name: 'water-root-zone',
+    original: "  'water-root-zone': [['root', 'zone'], ['root', 'anatomy'], ['water']],",
+    strict: "  'water-root-zone': [['nutrient', 'uptake', 'root', 'zone'], ['root', 'zone', 'chemistry'], ['ph', 'ec'], ['root', 'anatomy']],"
+  },
+  {
+    name: 'harvest-postharvest',
+    original: "  'harvest-postharvest': [['harvest'], ['drying'], ['curing'], ['trichome']],",
+    strict: "  'harvest-postharvest': [['drying', 'environment'], ['curing'], ['trichome', 'maturity'], ['harvest', 'handling']],"
+  },
+  {
+    name: 'outdoor-cultivation',
+    original: "  'outdoor-cultivation': [['outdoor'], ['life', 'cycle'], ['plant', 'anatomy']],",
+    strict: "  'outdoor-cultivation': [['outdoor', 'site'], ['outdoor', 'cultivation'], ['microclimate'], ['hardening', 'off']],"
+  }
+];
+
+for (const patch of selectorPatches) {
+  if (!publisher.includes(patch.original) && !publisher.includes(patch.strict)) {
+    throw new Error(`Could not locate the Learning V3 ${patch.name} media selector; refusing an unreviewed runtime patch.`);
+  }
+  publisher = publisher.replace(patch.original, patch.strict);
 }
-publisher = publisher.replace(originalLightingSelector, strictLightingSelector);
+
 await writeFile(normalizedPublisherPath, publisher);
 await import(pathToFileURL(normalizedPublisherPath).href);
