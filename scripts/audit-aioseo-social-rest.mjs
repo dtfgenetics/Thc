@@ -8,7 +8,7 @@ const password=process.env.WP_API_PASSWORD||'';
 const outputRoot=process.env.AIOSEO_AUDIT_ROOT||'/tmp/aioseo-social-audit';
 if(!username||!password) throw new Error('WP_API_USERNAME and WP_API_PASSWORD are required');
 const auth=`Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`;
-const headers={Authorization:auth,Accept:'application/json','User-Agent':'DTFSeeds-AIOSEO-Audit/1.1'};
+const headers={Authorization:auth,Accept:'application/json','User-Agent':'DTFSeeds-AIOSEO-Audit/1.2'};
 await mkdir(outputRoot,{recursive:true});
 
 async function fetchJson(path,options={}){
@@ -31,6 +31,15 @@ function safeMetadata(value,depth=0){
   return out;
 }
 
+function cleanObject(value){
+  if(value===null||['string','number','boolean'].includes(typeof value)) return value;
+  if(Array.isArray(value)) return value.slice(0,50).map(cleanObject);
+  if(!value||typeof value!=='object') return String(value??'');
+  return Object.fromEntries(Object.entries(value)
+    .filter(([key])=>!/license|token|secret|password|auth|api.?key/i.test(key))
+    .map(([key,val])=>[key,cleanObject(val)]));
+}
+
 const indexResult=await fetchJson('/wp-json/');
 if(!indexResult.ok||!indexResult.body?.routes) throw new Error(`WordPress REST index unavailable (${indexResult.status})`);
 const routes=indexResult.body.routes;
@@ -49,6 +58,15 @@ for(const path of ['/wp-json/aioseo/v1/post','/wp-json/aioseo/v1/options']){
   const probe=await fetchJson(path,{method:'OPTIONS'});
   optionProbes[path]={status:probe.status,ok:probe.ok,allow:probe.allow,body:safeMetadata(probe.body)};
 }
+
+const optionsGet=await fetchJson('/wp-json/aioseo/v1/options');
+if(!optionsGet.ok||!optionsGet.body?.success) throw new Error(`Unable to read AIOSEO options (${optionsGet.status})`);
+const aioOptions=optionsGet.body?.options||{};
+const activeSocialSettings={
+  facebook:cleanObject(aioOptions?.social?.facebook?.general??null),
+  twitter:cleanObject(aioOptions?.social?.twitter?.general??null),
+  profiles:cleanObject(aioOptions?.social?.profiles??null)
+};
 
 const homepageId=743;
 const postProbes={};
@@ -87,6 +105,7 @@ const report={
   aioseoNamespacePresent:Array.isArray(indexResult.body.namespaces)&&indexResult.body.namespaces.includes('aioseo/v1'),
   selectedRoutes:Object.fromEntries(Object.entries(selected).map(([key,value])=>[key,{namespace:value.namespace,methods:value.methods,endpoints:endpointSummary(value)}])),
   optionProbes,
+  activeSocialSettings,
   postProbes,
   firstAttachedImage:{status:attached.status,ok:attached.ok,body:safeMetadata(attached.body)}
 };
