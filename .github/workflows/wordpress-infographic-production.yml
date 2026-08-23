@@ -155,9 +155,9 @@ jobs:
           fetch_until 'https://dtfseeds.com/learn/infographics/' "$page" 'THC Visual Learning Library' true
           image_count="$(grep -Eoi '<img[^>]+wp-content/uploads/' "$page" | wc -l | tr -d ' ')"
           test "$image_count" -ge 30
-          grep -Fqi 'Plant Biology & Anatomy' "$page"
-          grep -Fqi 'Nutrition & Media' "$page"
-          grep -Fqi 'Plant Health & IPM' "$page"
+          grep -Fqi 'Plant Biology &amp; Anatomy' "$page"
+          grep -Fqi 'Nutrition &amp; Media' "$page"
+          grep -Fqi 'Plant Health &amp; IPM' "$page"
           grep -Fqi 'Find the right visual faster.' "$page"
 
           for route in plant-biology nutrition-media ipm lifecycle-propagation; do
