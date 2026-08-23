@@ -5,12 +5,13 @@ on:
   push:
     branches: [main]
     paths:
-      - 'scripts/polish-wordpress-genetics-visuals-v4.mjs'
       - 'scripts/polish-wordpress-commerce-archive-v4.mjs'
+      - 'scripts/polish-wordpress-product-pages-v5.mjs'
       - '.github/workflows/wordpress-visual-v4-post-v3.yml'
   workflow_run:
     workflows:
       - 'Apply DTFSeeds Visual V3 After Canonical Production'
+      - 'Finalize DTFSeeds Learn V3'
       - 'Rebuild DTFSeeds Visual Site On Command'
     types: [completed]
 
@@ -20,7 +21,7 @@ permissions:
 
 concurrency:
   group: dtfseeds-wordpress-v4-post-v3
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 env:
   WP_SITE_URL: https://dtfseeds.com
@@ -36,8 +37,8 @@ jobs:
       NODE_OPTIONS: --dns-result-order=ipv4first
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME || secrets.WORDPRESS_USERNAME || secrets.WP_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD || secrets.WORDPRESS_APP_PASSWORD || secrets.WP_APPLICATION_PASSWORD }}
-      GENETICS_BACKUP_ROOT: ${{ runner.temp }}/dtf-genetics-v4
       SHOP_BACKUP_ROOT: ${{ runner.temp }}/dtf-shop-v4
+      PRODUCT_BACKUP_ROOT: ${{ runner.temp }}/dtf-product-v5
 
     steps:
       - name: Checkout trusted main
@@ -50,30 +51,16 @@ jobs:
         with:
           node-version: 22
 
-      - name: Validate V4 visual package
+      - name: Validate post-V3 commerce package
         shell: bash
         run: |
           set -euo pipefail
           test -n "${WP_API_USERNAME:-}"
           test -n "${WP_API_PASSWORD:-}"
           test -s site/wordpress/pages/gallery.html
-          node --check scripts/polish-wordpress-genetics-visuals-v4.mjs
           node --check scripts/polish-wordpress-commerce-archive-v4.mjs
+          node --check scripts/polish-wordpress-product-pages-v5.mjs
           grep -Fq 'dtf-gallery-v2' site/wordpress/pages/gallery.html
-
-      - name: Apply V4 genetics visual system
-        id: genetics
-        env:
-          APPLY_GENETICS_VISUALS: 'true'
-          BACKUP_ROOT: ${{ env.GENETICS_BACKUP_ROOT }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          node scripts/polish-wordpress-genetics-visuals-v4.mjs | tee "$RUNNER_TEMP/genetics-v4.log"
-          dir="$(cat "$GENETICS_BACKUP_ROOT/genetics-visual-v4-backup-path.txt")"
-          report="$dir/genetics-visual-v4-report.json"
-          echo "page_id=$(node -p "require(process.argv[1]).pageId" "$report")" >> "$GITHUB_OUTPUT"
-          echo "release_count=$(node -p "require(process.argv[1]).releaseCount" "$report")" >> "$GITHUB_OUTPUT"
 
       - name: Apply V4 WooCommerce archive polish
         id: shop
@@ -88,7 +75,18 @@ jobs:
           report="$dir/commerce-archive-v4-report.json"
           echo "template_parts=$(node -p "require(process.argv[1]).templateParts.length" "$report")" >> "$GITHUB_OUTPUT"
 
-      - name: Verify live V4 genetics, Shop, and Gallery
+      - name: Apply V5 genetics product-page polish
+        id: product
+        env:
+          APPLY_PRODUCT_VISUAL_V5: 'true'
+          BACKUP_ROOT: ${{ env.PRODUCT_BACKUP_ROOT }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/polish-wordpress-product-pages-v5.mjs | tee "$RUNNER_TEMP/product-v5.log"
+          echo 'outcome=success' >> "$GITHUB_OUTPUT"
+
+      - name: Verify current Genetics library, Shop, products, and Gallery
         id: verify
         shell: bash
         run: |
@@ -99,62 +97,62 @@ jobs:
               curl -4 -fsSL --retry 2 --retry-delay 2 \
                 -H 'Cache-Control: no-cache, no-store, max-age=0' \
                 -H 'Pragma: no-cache' \
-                "$WP_SITE_URL${path}?dtf_v4=${GITHUB_RUN_ID}-${attempt}" -o "$output"
+                "$WP_SITE_URL${path}?dtf_post_v3=${GITHUB_RUN_ID}-${attempt}" -o "$output"
               if grep -Fqi "$marker" "$output"; then ok=1; break; fi
               sleep 7
             done
-            [[ "$ok" -eq 1 ]] || { echo "V4 marker not visible on $path: $marker" >&2; head -c 3000 "$output" >&2 || true; exit 1; }
+            [[ "$ok" -eq 1 ]] || { echo "Required marker not visible on $path: $marker" >&2; head -c 3000 "$output" >&2 || true; exit 1; }
           }
 
           seeds="$RUNNER_TEMP/seeds.html"
           shop="$RUNNER_TEMP/shop.html"
           gallery="$RUNNER_TEMP/gallery.html"
-          fetch_live '/seeds/' 'dtf-genetics-visual-v4' "$seeds"
+          bubblegum="$RUNNER_TEMP/bubblegum.html"
+          fetch_live '/seeds/' 'DTF Genetics library' "$seeds"
           fetch_live '/shop/' 'dtf-commerce-archive-v4' "$shop"
           fetch_live '/gallery/' 'dtf-gallery-v2' "$gallery"
+          fetch_live '/product/10-reg-f1-blueberry-bubblegum/' 'dtf-product-visual-v5' "$bubblegum"
+
+          grep -Fqi 'Mango Bubbles' "$seeds"
+          grep -Fqi 'Blue Mango' "$seeds"
+          grep -Fqi 'Blue Bubblegum' "$seeds"
+          grep -Fqi 'DTF Visual Library' "$gallery"
+          grep -Fqi '/learn/infographics/' "$gallery"
 
           for route in \
             '/product/10-regular-f2-blue-mango-seeds/' \
             '/product/10-feminized-f2-blue-mango-x/' \
             '/product/10-reg-f1-blueberry-bubblegum/'; do
-            grep -Fqi "$route" "$seeds" || { echo "Required genetics product route missing: $route" >&2; exit 1; }
             grep -Fqi "$route" "$shop" || { echo "Required Shop product route missing: $route" >&2; exit 1; }
           done
 
-          grep -Fqi 'Mango Bubbles' "$seeds"
-          grep -Fqi 'Somango XXL' "$seeds"
-          grep -Fqi 'Blueberry Butcher' "$seeds"
-          grep -Fqi 'DTF Visual Library' "$gallery"
-          grep -Fqi '/learn/infographics/' "$gallery"
-
-          for body in "$seeds" "$shop" "$gallery"; do
+          for body in "$seeds" "$shop" "$gallery" "$bubblegum"; do
             for forbidden in 'email@email.com' '+123456789' '© 2025 DTF Genetics'; do
               ! grep -Fqi "$forbidden" "$body" || { echo "Stale presentation remains: $forbidden" >&2; exit 1; }
             done
           done
 
-          echo 'V4 live visual verification passed.'
+          echo 'Post-V3 current-library and commerce verification passed.'
 
-      - name: Upload V4 rollback package
+      - name: Upload post-V3 rollback package
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: dtf-v4-post-v3-backup-${{ github.run_id }}
           path: |
-            ${{ env.GENETICS_BACKUP_ROOT }}
             ${{ env.SHOP_BACKUP_ROOT }}
+            ${{ env.PRODUCT_BACKUP_ROOT }}
           if-no-files-found: warn
           retention-days: 30
 
-      - name: Report V4 production result
+      - name: Report post-V3 production result
         if: always()
         uses: actions/github-script@v7
         env:
           STATUS: ${{ job.status }}
-          GENETICS: ${{ steps.genetics.outcome }}
           SHOP: ${{ steps.shop.outcome }}
+          PRODUCT: ${{ steps.product.outcome }}
           VERIFY: ${{ steps.verify.outcome }}
-          RELEASE_COUNT: ${{ steps.genetics.outputs.release_count }}
           TEMPLATE_PARTS: ${{ steps.shop.outputs.template_parts }}
         with:
           script: |
@@ -163,18 +161,17 @@ jobs:
               repo: context.repo.repo,
               issue_number: 46,
               body: [
-                '## DTFSeeds visual V4 deployment',
+                '## DTFSeeds post-V3 commerce visual deployment',
                 '',
                 `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
                 `Result: **${process.env.STATUS}**`,
-                `Genetics V4 write: **${process.env.GENETICS || 'not-run'}**`,
-                `Shop V4 write: **${process.env.SHOP || 'not-run'}**`,
+                `Shop archive styling: **${process.env.SHOP || 'not-run'}**`,
+                `Product-page styling: **${process.env.PRODUCT || 'not-run'}**`,
                 `Live verification: **${process.env.VERIFY || 'not-run'}**`,
-                `Current release cards: **${process.env.RELEASE_COUNT || 'not-reported'}**`,
                 `Shop template parts styled: **${process.env.TEMPLATE_PARTS || 'not-reported'}**`,
                 '',
-                'V4 makes Genetics release cards, lineage mapping, and the WooCommerce archive more brand-specific while preserving the current image-first Gallery and the V3 site shell.'
+                'The obsolete V4 Genetics page writer has been removed from this chain. The newer multi-line Genetics library is now read-only here; this workflow only restores Shop/archive and current product-page presentation after V3 rewrites the shared header shell.'
               ].join('\n')
             });
 
-# Production trigger: chain V4 after direct V3 rebuilds
+# Production trigger: preserve current Genetics library; restyle commerce after V3
