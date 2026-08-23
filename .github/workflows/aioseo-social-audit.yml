@@ -1,0 +1,80 @@
+name: Audit AIOSEO Social Metadata
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/aioseo-social-audit.yml'
+      - 'scripts/audit-aioseo-social-rest.mjs'
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-aioseo-social-audit
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    name: Read installed AIOSEO social REST schema
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: production
+    env:
+      NODE_OPTIONS: --dns-result-order=ipv4first
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      AIOSEO_AUDIT_ROOT: /tmp/aioseo-social-audit
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate audit script and credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/audit-aioseo-social-rest.mjs
+          test -n "${WP_API_USERNAME:-}"
+          test -n "${WP_API_PASSWORD:-}"
+
+      - name: Read AIOSEO route schema without writes
+        id: audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/audit-aioseo-social-rest.mjs | tee "$RUNNER_TEMP/aioseo-audit.log"
+          test -s "$AIOSEO_AUDIT_ROOT/aioseo-social-route-audit.json"
+
+      - name: Upload audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: aioseo-social-audit-${{ github.run_id }}
+          path: /tmp/aioseo-social-audit
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Report audit result
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          AUDIT_OUTCOME: ${{ steps.audit.outcome }}
+          JOB_STATUS: ${{ job.status }}
+        with:
+          script: |
+            const body=[
+              '## AIOSEO social metadata route audit', '',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Result: **${process.env.JOB_STATUS}**`,
+              `Read-only route/schema audit: **${process.env.AUDIT_OUTCOME || 'not-run'}**`, '',
+              'This audit makes no WordPress or AIOSEO mutation. It identifies the installed AIOSEO REST contract needed to set and verify the homepage Open Graph/share image safely.'
+            ].join('\n');
+            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body});
