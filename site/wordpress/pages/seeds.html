@@ -1,80 +1,82 @@
 <!-- DTFSeeds.com public genetics page content. -->
-<section aria-labelledby="genetics-title">
-  <p><strong>DTF Genetics</strong></p>
+<style>
+.dtf-genetics{--ink:#102b1a;--green:#1d7040;--deep:#091d12;--gold:#d6b75c;--cream:#f7f4ea;--line:#d8e1d9;--muted:#53675a;color:var(--ink)}
+.dtf-genetics *{box-sizing:border-box}.dtf-genetics a{color:var(--green)}
+.dtf-genetics .dtf-hero{padding:42px 28px;border-radius:26px;background:linear-gradient(145deg,var(--deep),#153d25);color:#fff;margin:0 0 28px}.dtf-genetics .dtf-kicker{margin:0 0 8px;color:var(--gold);font-weight:900;letter-spacing:.11em;text-transform:uppercase;font-size:.78rem}.dtf-genetics .dtf-hero h1{margin:0;max-width:900px;font-size:clamp(2.2rem,5vw,4rem);line-height:1}.dtf-genetics .dtf-hero p{max-width:850px;line-height:1.7;color:#dce8df}.dtf-genetics .dtf-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}.dtf-genetics .dtf-btn{display:inline-block;padding:11px 17px;border-radius:999px;text-decoration:none!important;font-weight:850}.dtf-genetics .dtf-btn-primary{background:var(--gold);color:var(--deep)!important}.dtf-genetics .dtf-btn-secondary{border:1px solid rgba(255,255,255,.4);color:#fff!important}
+.dtf-genetics .dtf-section{padding:28px 0}.dtf-genetics .dtf-section h2{font-size:clamp(1.8rem,3vw,2.65rem);margin:0 0 10px}.dtf-genetics .dtf-lede{max-width:850px;color:var(--muted);line-height:1.7}.dtf-genetics .dtf-card-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;margin-top:22px}.dtf-genetics .dtf-card{border:1px solid var(--line);background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 12px 30px rgba(16,43,26,.08)}.dtf-genetics .dtf-card img{display:block;width:100%;height:auto;aspect-ratio:2/3;object-fit:cover;background:#e7ece8}.dtf-genetics .dtf-card-copy{padding:18px}.dtf-genetics .dtf-card h3{margin:0 0 5px;font-size:1.2rem}.dtf-genetics .dtf-meta{font-size:.9rem;color:var(--muted);margin:0 0 10px}.dtf-genetics .dtf-card p{line-height:1.55}.dtf-genetics .dtf-card-link{font-weight:900;text-decoration:none}.dtf-genetics .dtf-line-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.dtf-genetics .dtf-line{padding:20px;border:1px solid var(--line);border-radius:18px;background:var(--cream)}.dtf-genetics .dtf-line h3{margin:0 0 8px}.dtf-genetics .dtf-line p{margin:7px 0;line-height:1.6}.dtf-genetics .dtf-note{padding:18px 20px;border-left:4px solid var(--gold);background:#fbf7ea;border-radius:12px;line-height:1.65}.dtf-genetics .dtf-route-list li{margin:.55rem 0}
+@media(max-width:950px){.dtf-genetics .dtf-card-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:620px){.dtf-genetics .dtf-card-grid,.dtf-genetics .dtf-line-grid{grid-template-columns:1fr}.dtf-genetics .dtf-hero{padding:32px 20px}}
+</style>
+
+<div class="dtf-genetics">
+<section class="dtf-hero" aria-labelledby="genetics-title">
+  <p class="dtf-kicker">DTF Genetics · Dream the Future</p>
   <h1 id="genetics-title">Genetics built through selection, observation, and documentation.</h1>
-  <p>This catalog introduces active DTF Genetics breeding projects and the traits being studied in each line. Availability, generation, seed type, quantity, and current price are controlled by the individual WooCommerce product page rather than hard-coded into this educational catalog.</p>
-  <p><a href="#current-releases"><strong>Shop current releases</strong></a> &nbsp; <a href="/learn/"><strong>Learn the genetics</strong></a> &nbsp; <a href="https://discord.gg/xJbUeHFPMt" target="_blank" rel="noopener noreferrer"><strong>Join the grow community</strong></a></p>
+  <p>This catalog brings the strain cards, stable lineage records, and verified store routes into one public genetics section. Card art documents a line or project; price, stock, pack quantity, and transaction details remain controlled by the exact WooCommerce product page when one exists.</p>
+  <div class="dtf-actions"><a class="dtf-btn dtf-btn-primary" href="#strain-cards">Explore strain cards</a><a class="dtf-btn dtf-btn-secondary" href="/shop/">Open shop</a><a class="dtf-btn dtf-btn-secondary" href="/learn/">Learn genetics</a></div>
 </section>
 
-<section id="current-releases" aria-labelledby="current-releases-title">
-  <h2 id="current-releases-title">Current store routes</h2>
-  <p>These links connect the genetics catalog directly to product pages already published in the DTF WooCommerce store. Check the product page itself for current inventory, price, quantity, generation, seed type, fulfillment information, and policies.</p>
-  <ul>
+<section id="strain-cards" class="dtf-section" aria-labelledby="strain-cards-title">
+  <h2 id="strain-cards-title">Strain card library</h2>
+  <p class="dtf-lede">These are the supplied DTF Genetics card designs currently being organized into the public catalog. Each card now has a dedicated line page so the image, title, generation, seed type, documented lineage, and notes stay together instead of being scattered across the site.</p>
+  <div class="dtf-card-grid">
+    <article class="dtf-card">
+      <a href="/mystery-line/"><img src="__DTF_MEDIA_MYSTERY_LINE_F1_REGULAR__" alt="Mystery Line F1 Regular DTF Genetics strain card" loading="eager" decoding="async"></a>
+      <div class="dtf-card-copy"><h3>Mystery Line</h3><p class="dtf-meta">F1 Regular · Hybrid · Unknown lineage</p><p>The mystery is intentional: lineage, flower time, and yield are not filled in until they are actually documented.</p><a class="dtf-card-link" href="/mystery-line/">Open Mystery Line →</a></div>
+    </article>
+    <article class="dtf-card">
+      <a href="/blue-frequency/"><img src="__DTF_MEDIA_BLUE_FREQUENCY_F1_REGULAR__" alt="Blue Frequency F1 Regular DTF Genetics strain card" loading="lazy" decoding="async"></a>
+      <div class="dtf-card-copy"><h3>Blue Frequency</h3><p class="dtf-meta">F1 Regular · Lineage pending documentation</p><p>The supplied card presents an electric-aroma, resin-forward concept with an energetic-effect theme. Effects vary by person and phenotype.</p><a class="dtf-card-link" href="/blue-frequency/">Open Blue Frequency →</a></div>
+    </article>
+    <article class="dtf-card">
+      <a href="/blue-mango/"><img src="__DTF_MEDIA_BLUE_MANGO_F2_REGULAR_20260823__" alt="Blue Mango F2 Regular DTF Genetics strain card" loading="lazy" decoding="async"></a>
+      <div class="dtf-card-copy"><h3>Blue Mango</h3><p class="dtf-meta">F2 Regular · Somango XXL × Blueberry Butcher</p><p>Flagship DTF line with a berry, tropical, sweet presentation and an established 8–10 week planning observation.</p><a class="dtf-card-link" href="/blue-mango/">Open Blue Mango →</a></div>
+    </article>
+    <article class="dtf-card">
+      <a href="/rainbow-bubblegum/"><img src="__DTF_MEDIA_RAINBOW_BUBBLEGUM_F1_REGULAR__" alt="Rainbow Bubblegum F1 Regular collaboration strain card" loading="lazy" decoding="async"></a>
+      <div class="dtf-card-copy"><h3>Rainbow Bubblegum</h3><p class="dtf-meta">F1 Regular · Blue Bubblegum × Rainbow Belts F1</p><p>Collaboration card built around berry, candy, and tropical-fruit direction with an 8–10 week flower-time estimate printed on the card.</p><a class="dtf-card-link" href="/rainbow-bubblegum/">Open Rainbow Bubblegum →</a></div>
+    </article>
+  </div>
+  <p class="dtf-note"><strong>Catalog rule:</strong> a card is not an inventory claim. Unknown fields stay unknown, and descriptive traits are not guarantees that every seed will express the same aroma, color, effect, yield, potency, or finish time.</p>
+</section>
+
+<section id="current-releases" class="dtf-section" aria-labelledby="current-releases-title">
+  <h2 id="current-releases-title">Verified store routes</h2>
+  <p class="dtf-lede">These links connect the catalog to product pages already documented in the DTF WooCommerce store. Check the product page itself for current inventory, price, quantity, generation, seed type, fulfillment information, and policies.</p>
+  <ul class="dtf-route-list">
     <li><a href="/product/10-regular-f2-blue-mango-seeds/"><strong>Blue Mango F2 — regular seed listing</strong></a></li>
     <li><a href="/product/10-feminized-f2-blue-mango-x/"><strong>Blue Mango F2 — feminized seed listing</strong></a></li>
-    <li><a href="/product/10-reg-f1-blueberry-bubblegum/"><strong>Blueberry Bubblegum F1 — regular seed listing</strong></a></li>
+    <li><a href="/product/10-reg-f1-blueberry-bubblegum/"><strong>Blue Bubblegum F1 — regular seed listing</strong></a></li>
   </ul>
   <p><a href="/shop/">Open the DTF shop gateway</a></p>
 </section>
 
-<section aria-labelledby="blue-mango-title">
-  <h2 id="blue-mango-title">Blue Mango</h2>
-  <p><strong>Lineage:</strong> Somango XXL × Blueberry Butcher</p>
-  <p><strong>Breeding direction:</strong> vigorous plants, strong branching, heavy resin production, substantial flower structure, and a candy-blueberry-meets-ripe-mango aromatic profile.</p>
-  <p><strong>Observed flowering window:</strong> commonly described within an 8–10 week range under suitable conditions. Phenotype and environment can change actual finish time.</p>
-  <p>Blue Mango is a flagship DTF Genetics project developed through multiple filial generations. Generation, regular/feminized status, inventory, and release details must be checked on the exact listing being purchased.</p>
-  <p><a href="/product/10-regular-f2-blue-mango-seeds/">Open the current regular F2 listing</a> · <a href="/product/10-feminized-f2-blue-mango-x/">Open the current feminized F2 listing</a></p>
+<section class="dtf-section" aria-labelledby="documented-lines-title">
+  <h2 id="documented-lines-title">Documented DTF breeding lines</h2>
+  <div class="dtf-line-grid">
+    <article class="dtf-line"><h3>Blue Mango</h3><p><strong>Lineage:</strong> Somango XXL × Blueberry Butcher</p><p><strong>Breeding direction:</strong> vigorous plants, strong branching, heavy resin production, substantial flower structure, and a candy-blueberry-meets-ripe-mango aromatic profile.</p><p><strong>Observed flowering window:</strong> commonly described within an 8–10 week planning range under suitable conditions. Phenotype and environment can change actual finish time.</p><p><a href="/blue-mango/">View the Blue Mango line page</a></p></article>
+    <article class="dtf-line"><h3>Mango Bubbles</h3><p><strong>Lineage:</strong> Blue Mango × Blue Bubblegum</p><p><strong>Breeding direction:</strong> combine the fruit-forward mango and blueberry character of Blue Mango with the sweet bubblegum influence of Blue Bubblegum.</p><p>Mango Bubbles is an active DTF Genetics line. Formal release details will identify the exact generation and seed type when a verified product listing is published.</p></article>
+    <article class="dtf-line"><h3>Blue Bubblegum</h3><p><strong>Lineage:</strong> Bubblegum Kush × Blueberry Butcher</p><p>Blue Bubblegum contributes a sweet, fruit-and-bubblegum direction to the DTF breeding catalog and serves as a parent in Mango Bubbles.</p><p><a href="/product/10-reg-f1-blueberry-bubblegum/">Open the current F1 regular store listing</a></p></article>
+    <article class="dtf-line"><h3>Blueberry Butcher</h3><p><strong>Lineage:</strong> Blueberry Muffin × Jack Herer</p><p>Blueberry Butcher is an important parent in the DTF catalog and contributes to both Blue Mango and Blue Bubblegum.</p></article>
+  </div>
 </section>
 
-<section aria-labelledby="mango-bubbles-title">
-  <h2 id="mango-bubbles-title">Mango Bubbles</h2>
-  <p><strong>Lineage:</strong> Blue Mango × Blue Bubblegum</p>
-  <p><strong>Breeding direction:</strong> combine the fruit-forward mango and blueberry character of Blue Mango with the sweet bubblegum influence of Blue Bubblegum.</p>
-  <p>Mango Bubbles is an active DTF Genetics line. Formal release details will identify the exact generation and seed type when a product listing is published.</p>
-</section>
-
-<section aria-labelledby="blue-bubblegum-title">
-  <h2 id="blue-bubblegum-title">Blue Bubblegum</h2>
-  <p><strong>Lineage:</strong> Bubblegum Kush × Blueberry Butcher</p>
-  <p>Blue Bubblegum contributes a sweet, fruit-and-bubblegum direction to the DTF breeding catalog and serves as a parent in Mango Bubbles.</p>
-  <p><a href="/product/10-reg-f1-blueberry-bubblegum/">Open the current F1 regular store listing</a></p>
-</section>
-
-<section aria-labelledby="butcher-title">
-  <h2 id="butcher-title">Blueberry Butcher</h2>
-  <p><strong>Lineage:</strong> Blueberry Muffin × Jack Herer</p>
-  <p>Blueberry Butcher is an important parent in the DTF catalog and contributes to both Blue Mango and Blue Bubblegum.</p>
-</section>
-
-<section aria-labelledby="catalog-standard-title">
+<section class="dtf-section" aria-labelledby="catalog-standard-title">
   <h2 id="catalog-standard-title">How to read this catalog</h2>
   <ul>
-    <li><strong>Lineage</strong> identifies the documented parents used in the DTF breeding project.</li>
-    <li><strong>Breeding direction</strong> describes selection goals and repeated observations, not a promise that every seed will express the same traits.</li>
+    <li><strong>Lineage</strong> identifies documented parents. When lineage is unknown or not yet verified, the page says so instead of filling the gap with a guess.</li>
+    <li><strong>Breeding direction</strong> and card traits describe selection goals, observations, or supplied creative copy—not a promise that every seed will express the same traits.</li>
     <li><strong>Generation and seed type</strong> can differ between releases and must be checked on the exact listing.</li>
     <li><strong>Flowering estimates</strong> are planning ranges, not fixed harvest dates.</li>
-    <li><strong>Grow reports</strong> are observations from specific plants and environments.</li>
-    <li><strong>Price and availability</strong> can change; the linked WooCommerce product page is the transaction source of truth.</li>
+    <li><strong>Price and availability</strong> can change; a linked WooCommerce product page is the transaction source of truth.</li>
   </ul>
 </section>
 
-<section aria-labelledby="genetics-learning-title">
+<section class="dtf-section" aria-labelledby="genetics-learning-title">
   <h2 id="genetics-learning-title">Learn the science behind the catalog</h2>
   <p>Use Teaching Healthy Cultivation to study genotype, phenotype, filial generations, selection, environmental effects, seed storage, germination, and crop documentation.</p>
-  <p><a href="/learn/">Explore cultivation and genetics education</a></p>
-</section>
-
-<section aria-labelledby="genetics-tools-title">
-  <h2 id="genetics-tools-title">Document what the plant actually does</h2>
-  <p>Use the DTF cultivation tools to keep grow records, environmental observations, photos, tasks, measurements, and plant-health evidence connected to the specific plants you are evaluating.</p>
-  <p><a href="/tools/">Open cultivation tools</a></p>
-</section>
-
-<section aria-labelledby="genetics-community-title">
-  <h2 id="genetics-community-title">Share observations with the community</h2>
-  <p>Grow documentation and honest phenotype observations are more useful than hype. Join the official DTF / Teaching Healthy Cultivation Discord for community discussion, grow logs, events, and grow-offs.</p>
-  <p><a href="https://discord.gg/xJbUeHFPMt" target="_blank" rel="noopener noreferrer"><strong>Join the official Discord</strong></a></p>
+  <p><a href="/learn/">Explore cultivation and genetics education</a> · <a href="/tools/">Open cultivation tools</a> · <a href="https://discord.gg/xJbUeHFPMt" target="_blank" rel="noopener noreferrer">Join the official Discord</a></p>
 </section>
 
 <hr>
-<p><small>Adults only. Follow all applicable laws. Names, observations, and estimated traits do not guarantee a specific phenotype, yield, potency, aroma, or finish date. Product-page availability and pricing may change.</small></p>
+<p><small>Adults only. Follow all applicable laws. Names, observations, card copy, and estimated traits do not guarantee a specific phenotype, effect, yield, potency, aroma, color, or finish date. Product-page availability and pricing may change.</small></p>
+</div>
