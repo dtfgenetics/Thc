@@ -11,15 +11,21 @@ const sourceRoot = join(process.cwd(), 'site/public-route-patch/learn');
 if (!username || !password) throw new Error('WP_API_USERNAME and WP_API_PASSWORD are required');
 
 const auth = `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`;
-const headers = { Authorization: auth, Accept: 'application/json', 'User-Agent': 'DTFSeeds-Learning-Publisher/1.0' };
+const headers = { Authorization: auth, Accept: 'application/json', 'User-Agent': 'DTFSeeds-Learning-Publisher/1.1' };
 const stamp = new Date().toISOString().replace(/[-:.]/g, '').replace('Z', 'Z');
 const backupDir = join(backupRoot, `learning-pages-${stamp}`);
 await mkdir(backupDir, { recursive: true });
 
 const routes = [
   { slug: 'library', title: 'Teaching Healthy Cultivation Education Library' },
-  { slug: 'encyclopedia', title: 'THC Plant Science Encyclopedia' },
+  { slug: 'start-here', title: 'Start Here — Teaching Healthy Cultivation' },
+  { slug: 'beginner-guides', title: 'Beginner Grow Guides — Teaching Healthy Cultivation' },
   { slug: 'academy', title: 'THC Academy' },
+  { slug: 'encyclopedia', title: 'THC Plant Science Encyclopedia' },
+  { slug: 'sops', title: 'SOPs & Measurement — Teaching Healthy Cultivation' },
+  { slug: 'glossary', title: 'Cultivation Glossary — Teaching Healthy Cultivation' },
+  { slug: 'records', title: 'Grow Records & Printables — Teaching Healthy Cultivation' },
+  { slug: 'search', title: 'Search THC Education — Teaching Healthy Cultivation' },
   { slug: 'setup', title: 'Set Up Before You Grow' },
   { slug: 'root-zone', title: 'Root Zone, Water, and Nutrition' },
   { slug: 'environment', title: 'Light, Climate, and Canopy Environment' },
@@ -96,19 +102,19 @@ for (const result of results) {
   let ok = false;
   for (let attempt = 1; attempt <= 6; attempt++) {
     const response = await fetch(`${result.url}?dtf_learning=${Date.now()}-${attempt}`, {
-      headers: { 'Cache-Control': 'no-cache, no-store, max-age=0', Pragma: 'no-cache', 'User-Agent': 'DTFSeeds-Learning-Publisher/1.0' },
+      headers: { 'Cache-Control': 'no-cache, no-store, max-age=0', Pragma: 'no-cache', 'User-Agent': 'DTFSeeds-Learning-Publisher/1.1' },
       redirect: 'follow',
       signal: AbortSignal.timeout(60_000),
     });
     html = await response.text();
-    if (response.ok && html.includes('Teaching Healthy Cultivation') && html.includes('/learn/infographics/')) {
+    if (response.ok && html.includes('Teaching Healthy Cultivation') && html.includes('/learn/')) {
       ok = true;
       break;
     }
     await new Promise((resolve) => setTimeout(resolve, 3000));
   }
   if (!ok) throw new Error(`Visitor-facing verification failed for ${result.url}`);
-  for (const forbidden of ['email@email.com', '+123456789']) {
+  for (const forbidden of ['email@email.com', '+123456789', 'being rebuilt', 'Needed from owner']) {
     if (html.toLowerCase().includes(forbidden.toLowerCase())) throw new Error(`Stale placeholder content found on ${result.url}: ${forbidden}`);
   }
 }
