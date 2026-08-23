@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Keep simple supporting/reference images out of the public THC Infographic Library and all infographic topic-page reuse.",
+  "neverUseOnInfographicSurfaces": true,
+  "excludePathFragments": [
+    "pdf-pages/",
+    "THC-ENC-001_VIS-",
+    "V04-SUP-",
+    "THC-ENC-004_asset_01_",
+    "THC-ENC-004_asset_02_",
+    "THC-ENC-004_asset_04_",
+    "THC-ENC-004_asset_05_"
+  ],
+  "allowedExceptions": [
+    "THC-ENC-004_asset_03_domestication_dispersal_selection_infographic.jpg"
+  ],
+  "policy": {
+    "excludedFilesRemainReferenceOnly": true,
+    "doNotUploadAsInfographicMedia": true,
+    "doNotUseAsInfographicFeaturedMedia": true,
+    "doNotUseAsRelatedInfographic": true,
+    "doNotDeleteUnderlyingReferenceAsset": true
+  },
+  "notes": [
+    "PDF page extractions are source/recovery material, not standalone infographics.",
+    "THC-ENC-001 VIS images are supporting encyclopedia/reference visuals, not infographic-library entries.",
+    "V04-SUP images are supplemental lesson visuals, not infographic-library entries.",
+    "THC-ENC-004 supporting assets 01, 02, 04, and 05 are reference panels. Asset 03 is explicitly a finished infographic and remains eligible.",
+    "Other THC-ENC educational panels are not blanket-excluded; they remain eligible unless specifically classified as a simple supporting image in this manifest."
+  ]
+}
