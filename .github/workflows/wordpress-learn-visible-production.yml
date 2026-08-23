@@ -1,0 +1,177 @@
+name: Publish Visitor-Visible THC Infographics on Learn
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - scripts/ensure-learn-infographic-entry.mjs
+      - scripts/repair-static-shadows-via-wordpress.mjs
+      - scripts/run-static-shadow-repair-resilient.mjs
+      - scripts/run-static-shadow-repair-current-markers.sh
+      - .github/workflows/wordpress-learn-visible-production.yml
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-learn-visible-production
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    name: Put infographic visuals on the visitor-facing Learn page
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    environment: production
+    env:
+      NODE_OPTIONS: --dns-result-order=ipv4first
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      BACKUP_ROOT: /tmp/wordpress-learn-visible-backups
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate protected Learn publication package
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${WP_API_USERNAME:-}"
+          test -n "${WP_API_PASSWORD:-}"
+          node --check scripts/ensure-learn-infographic-entry.mjs
+          node --check scripts/repair-static-shadows-via-wordpress.mjs
+          node --check scripts/run-static-shadow-repair-resilient.mjs
+          bash -n scripts/run-static-shadow-repair-current-markers.sh
+
+      - name: Publish prominent infographic entry directly on Learn
+        id: publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/ensure-learn-infographic-entry.mjs
+          dir="$(cat "$BACKUP_ROOT/learn-visible-backup-path.txt")"
+          report="$dir/learn-visible-report.json"
+          echo "page_id=$(node -p "require(process.argv[1]).pageId" "$report")" >> "$GITHUB_OUTPUT"
+          echo "media_count=$(node -p "require(process.argv[1]).educationMediaCount" "$report")" >> "$GITHUB_OUTPUT"
+          echo "featured_media=$(node -p "require(process.argv[1]).featuredMediaId" "$report")" >> "$GITHUB_OUTPUT"
+
+      - name: Retire stale public HTML shadows and purge visitor path
+        id: cutover
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash scripts/run-static-shadow-repair-current-markers.sh
+
+      - name: Verify the visuals are actually visible to a fresh visitor
+        id: verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          learn="$RUNNER_TEMP/learn.html"
+          library="$RUNNER_TEMP/infographics.html"
+          ok=0
+          for attempt in 1 2 3 4 5 6 7 8; do
+            curl -4 -fsSL --retry 2 --retry-delay 2 --connect-timeout 15 --max-time 45 \
+              -H 'Cache-Control: no-cache, no-store, max-age=0' \
+              -H 'Pragma: no-cache' \
+              "$WP_SITE_URL/learn/?dtf_visible_learn=${GITHUB_RUN_ID}-${attempt}" -o "$learn"
+            if grep -Fqi 'Browse ${{ steps.publish.outputs.media_count }} THC Infographics' "$learn" && \
+               grep -Fqi '/learn/infographics/' "$learn" && \
+               grep -Eqi '<img[^>]+wp-content/uploads/' "$learn"; then
+              ok=1
+              break
+            fi
+            sleep 8
+          done
+          [[ "$ok" -eq 1 ]] || {
+            echo 'Visitor-facing Learn page did not expose the new infographic visual entry.' >&2
+            head -c 5000 "$learn" >&2 || true
+            exit 1
+          }
+          ! grep -Fqi 'Grow education belongs in a clean, readable library.' "$learn"
+          ! grep -Fqi 'MOPS, cultivation notes, THC basics' "$learn"
+          learn_images="$(grep -o '/wp-content/uploads/' "$learn" | wc -l | tr -d ' ')"
+          test "$learn_images" -ge 10
+
+          ok=0
+          for attempt in 1 2 3 4 5 6 7 8; do
+            curl -4 -fsSL --retry 2 --retry-delay 2 --connect-timeout 15 --max-time 45 \
+              -H 'Cache-Control: no-cache, no-store, max-age=0' \
+              -H 'Pragma: no-cache' \
+              "$WP_SITE_URL/learn/infographics/?dtf_visible_library=${GITHUB_RUN_ID}-${attempt}" -o "$library"
+            if grep -Fqi 'Visual plant science and cultivation library.' "$library" && \
+               grep -Eqi '<img[^>]+wp-content/uploads/' "$library"; then
+              ok=1
+              break
+            fi
+            sleep 8
+          done
+          [[ "$ok" -eq 1 ]]
+          library_images="$(grep -o '/wp-content/uploads/' "$library" | wc -l | tr -d ' ')"
+          test "$library_images" -ge 30
+
+          auth="$(printf '%s:%s' "$WP_API_USERNAME" "$WP_API_PASSWORD" | base64 -w0)"
+          curl -4 -fsSL -H "Authorization: Basic $auth" \
+            "$WP_SITE_URL/wp-json/wp/v2/pages/${{ steps.publish.outputs.page_id }}?context=edit&_fields=id,featured_media" \
+            -o "$RUNNER_TEMP/learn-rest.json"
+          node - <<'NODE' "$RUNNER_TEMP/learn-rest.json"
+          const r=require(process.argv[2]);
+          if(!(Number(r.featured_media)>0)) throw new Error('Learn featured media is missing');
+          console.log('Learn featured media:',r.featured_media);
+          NODE
+
+          echo "learn_images=$learn_images" >> "$GITHUB_OUTPUT"
+          echo "library_images=$library_images" >> "$GITHUB_OUTPUT"
+
+      - name: Upload rollback evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: wordpress-learn-visible-${{ github.run_id }}
+          path: /tmp/wordpress-learn-visible-backups
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report visitor-visible Learn result
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          JOB_STATUS: ${{ job.status }}
+          PUBLISH_OUTCOME: ${{ steps.publish.outcome }}
+          CUTOVER_OUTCOME: ${{ steps.cutover.outcome }}
+          VERIFY_OUTCOME: ${{ steps.verify.outcome }}
+          MEDIA_COUNT: ${{ steps.publish.outputs.media_count }}
+          FEATURED_MEDIA: ${{ steps.publish.outputs.featured_media }}
+          LEARN_IMAGES: ${{ steps.verify.outputs.learn_images }}
+          LIBRARY_IMAGES: ${{ steps.verify.outputs.library_images }}
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 46,
+              body: [
+                '## Visitor-visible THC infographic Learn publication',
+                '',
+                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                `Result: **${process.env.JOB_STATUS}**`,
+                `Learn page update: **${process.env.PUBLISH_OUTCOME || 'not-run'}**`,
+                `Static-shadow/cache cutover: **${process.env.CUTOVER_OUTCOME || 'not-run'}**`,
+                `Fresh visitor verification: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
+                `Canonical education media discovered: **${process.env.MEDIA_COUNT || 'not-run'}**`,
+                `Learn featured media ID: **${process.env.FEATURED_MEDIA || 'not-run'}**`,
+                `WordPress image references observed on /learn/: **${process.env.LEARN_IMAGES || 'not-run'}**`,
+                `WordPress image references observed on /learn/infographics/: **${process.env.LIBRARY_IMAGES || 'not-run'}**`,
+                '',
+                'Acceptance requires the prominent Browse THC Infographics visual entry on the normal Learn page, the full infographic library route, WordPress-hosted imagery on both, and absence of the stale legacy Learn copy.'
+              ].join('\n')
+            });
