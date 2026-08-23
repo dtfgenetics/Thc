@@ -1,0 +1,136 @@
+name: Publish THC Beginner Course V5
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/publish-wordpress-beginner-course-v5.mjs'
+      - '.github/workflows/wordpress-beginner-course-v5.yml'
+  workflow_run:
+    workflows:
+      - Deploy THC Learning Centers
+      - Enhance DTFSeeds Education V4
+    types: [completed]
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-beginner-course-v5
+  cancel-in-progress: true
+
+env:
+  WP_SITE_URL: https://dtfseeds.com
+  NODE_OPTIONS: --dns-result-order=ipv4first
+
+jobs:
+  publish:
+    name: Publish Start Here and Beginner Guides final layer
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    environment: production
+    env:
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      APPLY_BEGINNER_V5: 'true'
+      BACKUP_ROOT: /tmp/dtf-beginner-v5
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate beginner course publisher
+        id: validate
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
+          node --check scripts/publish-wordpress-beginner-course-v5.mjs
+          grep -Fq 'data-dtf-beginner-v5="start-here"' scripts/publish-wordpress-beginner-course-v5.mjs
+          grep -Fq 'data-dtf-beginner-v5="beginner-guides"' scripts/publish-wordpress-beginner-course-v5.mjs
+          grep -Fq '/learn/plant-biology/' scripts/publish-wordpress-beginner-course-v5.mjs
+          grep -Fq '/learn/water-ph-ec/' scripts/publish-wordpress-beginner-course-v5.mjs
+          grep -Fq '/learn/ipm/' scripts/publish-wordpress-beginner-course-v5.mjs
+          grep -Fq '/growlens/' scripts/publish-wordpress-beginner-course-v5.mjs
+          grep -Fq '/thc-grow-doc/' scripts/publish-wordpress-beginner-course-v5.mjs
+
+      - name: Publish beginner course and practical guides
+        id: publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$BACKUP_ROOT"
+          node scripts/publish-wordpress-beginner-course-v5.mjs | tee "$RUNNER_TEMP/beginner-v5.log"
+          report="$(find "$BACKUP_ROOT" -name beginner-v5-report.json -print -quit)"
+          test -s "$report"
+          echo "report=$report" >> "$GITHUB_OUTPUT"
+
+      - name: Independently visitor-verify both beginner routes
+        id: verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          for slug in start-here beginner-guides; do
+            body="$RUNNER_TEMP/${slug}.html"
+            ok=0
+            for attempt in 1 2 3 4 5 6 7 8; do
+              curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+                --header 'Cache-Control: no-cache, no-store, max-age=0' \
+                --header 'Pragma: no-cache' \
+                "$WP_SITE_URL/learn/$slug/?dtf_beginner_v5=${GITHUB_RUN_ID}-${attempt}" --output "$body"
+              if grep -Fqi "data-dtf-beginner-v5=\"$slug\"" "$body"; then ok=1; break; fi
+              sleep 6
+            done
+            [[ "$ok" -eq 1 ]]
+            count="$(grep -Eio '<h1([ >])' "$body" | wc -l | tr -d ' ')"
+            [[ "$count" = '1' ]]
+          done
+          grep -Fqi 'Learn the plant before chasing the fix.' "$RUNNER_TEMP/start-here.html"
+          grep -Fqi 'Eight modules, in a useful order.' "$RUNNER_TEMP/start-here.html"
+          grep -Fqi 'Build a minimum evidence set.' "$RUNNER_TEMP/start-here.html"
+          grep -Fqi 'Your first complete grow-learning map.' "$RUNNER_TEMP/beginner-guides.html"
+          grep -Fqi 'Common beginner traps' "$RUNNER_TEMP/beginner-guides.html"
+          grep -Fqi 'Record this every session' "$RUNNER_TEMP/beginner-guides.html"
+
+      - name: Upload rollback and verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: thc-beginner-course-v5-${{ github.run_id }}
+          path: |
+            /tmp/dtf-beginner-v5
+            ${{ runner.temp }}/beginner-v5.log
+            ${{ runner.temp }}/start-here.html
+            ${{ runner.temp }}/beginner-guides.html
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report beginner course V5 result
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          STATUS: ${{ job.status }}
+          VALIDATE: ${{ steps.validate.outcome }}
+          PUBLISH: ${{ steps.publish.outcome }}
+          VERIFY: ${{ steps.verify.outcome }}
+        with:
+          script: |
+            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body:[
+              '## THC beginner course V5','',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Result: **${process.env.STATUS}**`,
+              `Publisher validation: **${process.env.VALIDATE || 'not-run'}**`,
+              `WordPress publication: **${process.env.PUBLISH || 'not-run'}**`,
+              `Visitor verification: **${process.env.VERIFY || 'not-run'}**`,'',
+              'Start Here is now an eight-module evidence-first beginner course. Beginner Guides is the practical companion with milestones, session records, common mistakes, self-checks, and direct routes into the V4 subject system, Encyclopedia, GrowLens, and Grow Doc.',
+              'The workflow is intentionally final after the older Learning Center deployment so legacy generated pages cannot flatten these two beginner routes.'
+            ].join('\n')});
