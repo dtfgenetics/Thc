@@ -1,4 +1,4 @@
-// production-trigger: 2026-08-22 potleaf favicon cache bust
+// production-trigger: 2026-08-23 potleaf favicon v3 regression guard
 import { readFile, mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import process from 'node:process';
@@ -8,14 +8,14 @@ const username=process.env.WP_API_USERNAME||'';
 const password=process.env.WP_API_PASSWORD||'';
 const iconPath=process.env.DTF_BRAND_ICON||join(process.cwd(),'site/wordpress/assets/brand/dtf-potleaf-512.png');
 const backupRoot=process.env.BACKUP_ROOT||'/tmp/dtf-potleaf-site-icon';
-const cacheVersion=(process.env.DTF_ICON_CACHE_VERSION||'v2-20260822').toLowerCase().replace(/[^a-z0-9-]+/g,'-').replace(/^-+|-+$/g,'');
+const cacheVersion=(process.env.DTF_ICON_CACHE_VERSION||'v3-20260823').toLowerCase().replace(/[^a-z0-9-]+/g,'-').replace(/^-+|-+$/g,'');
 const mediaSlug=`dtf-potleaf-site-icon-${cacheVersion}`;
 const uploadFilename=`${mediaSlug}.png`;
 if(!username||!password) throw new Error('WP_API_USERNAME and WP_API_PASSWORD are required');
 if(!cacheVersion) throw new Error('DTF_ICON_CACHE_VERSION resolved to an empty value');
 
 const auth=`Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`;
-const headers={Authorization:auth,Accept:'application/json','User-Agent':'DTFSeeds-Potleaf-Icon/2.0'};
+const headers={Authorization:auth,Accept:'application/json','User-Agent':'DTFSeeds-Potleaf-Icon/3.0'};
 const stamp=new Date().toISOString().replace(/[-:.]/g,'');
 const backupDir=join(backupRoot,stamp);
 await mkdir(backupDir,{recursive:true});
