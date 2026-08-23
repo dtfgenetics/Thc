@@ -1,0 +1,143 @@
+name: WooCommerce Genetics Lineage Visuals Production
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/woocommerce-genetics-lineage-production.yml'
+      - 'scripts/enhance-woocommerce-genetics-lineage.mjs'
+  workflow_run:
+    workflows:
+      - WooCommerce Genetics Reconciliation Production
+    types: [completed]
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-woocommerce-genetics-lineage-production
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Publish and verify cultivar lineage boards
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: production
+    env:
+      NODE_OPTIONS: --dns-result-order=ipv4first
+      WP_SITE_URL: https://dtfseeds.com
+      WC_CONSUMER_KEY: ${{ secrets.WC_CONSUMER_KEY }}
+      WC_CONSUMER_SECRET: ${{ secrets.WC_CONSUMER_SECRET }}
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      APPLY_GENETICS_LINEAGE_VISUALS: 'true'
+      BACKUP_ROOT: /tmp/woocommerce-genetics-lineage-backups
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate canonical genetics visual publisher
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
+          test -s scripts/enhance-woocommerce-genetics-lineage.mjs
+          test -s site/wordpress/products/genetics.json
+          test -s site/wordpress/products/woocommerce-reconciliation.json
+          node --check scripts/enhance-woocommerce-genetics-lineage.mjs
+          node scripts/validate-genetics-commerce.mjs
+          node scripts/validate-woocommerce-reconciliation.mjs
+
+      - name: Publish cultivar-specific lineage visuals
+        id: publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$BACKUP_ROOT"
+          node scripts/enhance-woocommerce-genetics-lineage.mjs | tee /tmp/woocommerce-genetics-lineage-output.json
+          test -s woocommerce-lineage-visual-report.json
+          node - <<'NODE'
+          const fs=require('fs');
+          const report=JSON.parse(fs.readFileSync('woocommerce-lineage-visual-report.json','utf8'));
+          if(!report.apply) throw new Error('Publisher did not run in apply mode.');
+          if(!Array.isArray(report.products)||report.products.length!==3) throw new Error('Expected exactly three genetics products.');
+          if(!report.products.every(p=>p.verified===true)) throw new Error('Not every lineage visual was verified.');
+          console.log('All three cultivar lineage boards passed authenticated and public verification.');
+          NODE
+          echo 'outcome=success' >> "$GITHUB_OUTPUT"
+
+      - name: Verify public cultivar markers and current names
+        id: public
+        shell: bash
+        run: |
+          set -euo pipefail
+          checks=(
+            '/product/10-regular-f2-blue-mango-seeds/|blue-mango-f2-regular-10-lineage-v1|Blue Mango F2'
+            '/product/10-feminized-f2-blue-mango-x/|blue-mango-f2-feminized-10-lineage-v1|Blue Mango F2'
+            '/product/10-reg-f1-blueberry-bubblegum/|blue-bubblegum-f1-regular-10-lineage-v1|Blue Bubblegum F1'
+          )
+          for item in "${checks[@]}"; do
+            IFS='|' read -r route marker release <<< "$item"
+            body="$RUNNER_TEMP/lineage-$(echo "$marker" | tr -cd '[:alnum:]_-').html"
+            ok=0
+            for attempt in 1 2 3 4 5 6; do
+              curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+                -H 'Cache-Control: no-cache, no-store, max-age=0' -H 'Pragma: no-cache' \
+                "https://dtfseeds.com${route}?dtf_lineage_gate=${GITHUB_RUN_ID}-${attempt}" -o "$body"
+              if grep -Fq "$marker" "$body" && grep -Fq "$release" "$body"; then ok=1; break; fi
+              sleep 5
+            done
+            test "$ok" -eq 1
+          done
+          echo 'outcome=success' >> "$GITHUB_OUTPUT"
+
+      - name: Upload lineage snapshots and verification report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: woocommerce-genetics-lineage-${{ github.run_id }}
+          path: |
+            /tmp/woocommerce-genetics-lineage-backups
+            /tmp/woocommerce-genetics-lineage-output.json
+            woocommerce-lineage-visual-report.json
+            ${{ runner.temp }}/lineage-*.html
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report lineage visual deployment to issue 46
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          STATUS: ${{ job.status }}
+          PUBLISH: ${{ steps.publish.outputs.outcome }}
+          PUBLIC: ${{ steps.public.outputs.outcome }}
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 46,
+              body: [
+                '## WooCommerce cultivar lineage visuals',
+                '',
+                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                `Result: **${process.env.STATUS}**`,
+                `Lineage publication: **${process.env.PUBLISH || 'not-run'}**`,
+                `Public route verification: **${process.env.PUBLIC || 'not-run'}**`,
+                '',
+                'Scope: Blue Mango F2 Regular, Blue Mango F2 Feminized, and Blue Bubblegum F1 Regular.',
+                'The lineage boards are rendered from site/wordpress/products/genetics.json and layered above the canonical WooCommerce description after reconciliation.',
+                'Only product description HTML is written by this visual layer. Name, slug, prices, sale price, stock, SKU, images, tags, attributes, shipping, tax, categories, short description, and order data are protected and snapshot-compared.',
+                'No cultivar flower photo is asserted unless an approved cultivar-specific photo library exists.'
+              ].join('\n')
+            });
