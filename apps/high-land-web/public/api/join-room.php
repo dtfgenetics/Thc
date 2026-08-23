@@ -15,13 +15,18 @@ $joinedPlayer = null;
 $room = api_mutate_room($roomCode, function (array $room) use ($data, &$joinedPlayer): array {
     $players = is_array($room['players'] ?? null) ? $room['players'] : [];
     $incomingPlayerId = api_clean_string($data['playerId'] ?? '', 80);
+    $credential = api_clean_string($data['credential'] ?? '', 256);
 
     if ($incomingPlayerId !== '') {
-        foreach ($players as $player) {
-            if (($player['id'] ?? '') === $incomingPlayerId) {
-                $joinedPlayer = $player;
-                return $room;
+        foreach ($players as $index => $player) {
+            if (($player['id'] ?? '') !== $incomingPlayerId) {
+                continue;
             }
+            api_require_player_credential($room, $incomingPlayerId, $credential);
+            $players[$index]['connected'] = true;
+            $room['players'] = $players;
+            $joinedPlayer = $players[$index];
+            return $room;
         }
     }
 
@@ -43,8 +48,11 @@ $room = api_mutate_room($roomCode, function (array $room) use ($data, &$joinedPl
     return $room;
 });
 
+$publicPlayer = is_array($joinedPlayer) ? $joinedPlayer : [];
+unset($publicPlayer['authHash'], $publicPlayer['credential']);
+
 api_send_json([
     'ok' => true,
-    'room' => $room,
-    'player' => $joinedPlayer
+    'room' => api_public_room($room),
+    'player' => $publicPlayer
 ]);
