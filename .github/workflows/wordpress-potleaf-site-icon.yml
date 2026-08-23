@@ -1,0 +1,135 @@
+name: Publish DTF Potleaf Site Icon
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - site/wordpress/assets/brand/dtf-potleaf-512.png
+      - scripts/set-dtf-potleaf-site-icon.mjs
+      - .github/workflows/wordpress-potleaf-site-icon.yml
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtf-potleaf-site-icon
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: production
+    env:
+      NODE_OPTIONS: --dns-result-order=ipv4first
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      BACKUP_ROOT: /tmp/dtf-potleaf-site-icon
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate potleaf publication package
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${WP_API_USERNAME:-}"
+          test -n "${WP_API_PASSWORD:-}"
+          test -s site/wordpress/assets/brand/dtf-potleaf-512.png
+          node --check scripts/set-dtf-potleaf-site-icon.mjs
+
+      - name: Set WordPress Site Icon and logo to the DTF potleaf
+        id: publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/set-dtf-potleaf-site-icon.mjs | tee "$RUNNER_TEMP/potleaf-report-output.txt"
+          dir="$(cat "$BACKUP_ROOT/latest.txt")"
+          report="$dir/report.json"
+          echo "media_id=$(node -p "require(process.argv[1]).mediaId" "$report")" >> "$GITHUB_OUTPUT"
+          echo "source_url=$(node -p "require(process.argv[1]).sourceUrl" "$report")" >> "$GITHUB_OUTPUT"
+
+      - name: Verify live browser favicon uses the DTF potleaf
+        id: verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          auth="$(printf '%s:%s' "$WP_API_USERNAME" "$WP_API_PASSWORD" | base64 -w0)"
+          curl -4 -fsSL -H "Authorization: Basic $auth" \
+            "$WP_SITE_URL/wp-json/wp/v2/settings?context=edit" -o "$RUNNER_TEMP/settings.json"
+          node - <<'NODE' "$RUNNER_TEMP/settings.json" "${{ steps.publish.outputs.media_id }}"
+          const s=require(process.argv[2]);
+          const id=Number(process.argv[3]);
+          if(Number(s.site_icon)!==id) throw new Error(`site_icon mismatch: ${s.site_icon} != ${id}`);
+          if(Object.prototype.hasOwnProperty.call(s,'site_logo') && Number(s.site_logo)!==id) throw new Error(`site_logo mismatch: ${s.site_logo} != ${id}`);
+          console.log(`WordPress settings point to potleaf media ${id}`);
+          NODE
+
+          ok=0
+          for attempt in 1 2 3 4 5 6 7 8; do
+            body="$RUNNER_TEMP/home-${attempt}.html"
+            curl -4 -fsSL --retry 2 --retry-delay 2 \
+              -H 'Cache-Control: no-cache, no-store, max-age=0' \
+              -H 'Pragma: no-cache' \
+              "$WP_SITE_URL/?dtf_potleaf_icon=${GITHUB_RUN_ID}-${attempt}" -o "$body"
+            if node - <<'NODE' "$body" "${{ steps.publish.outputs.source_url }}"
+          const fs=require('fs');
+          const html=fs.readFileSync(process.argv[2],'utf8');
+          const source=process.argv[3];
+          const sourceName=(source.split('/').pop()||'').replace(/-\d+x\d+(?=\.[a-z]+$)/i,'');
+          const iconTags=[...html.matchAll(/<link\b[^>]*rel=["'][^"']*icon[^"']*["'][^>]*>/gi)].map(m=>m[0]);
+          const hasUploadIcon=iconTags.some(tag=>/wp-content\/uploads\//i.test(tag));
+          const hasOldStatic=iconTags.some(tag=>/assets\/dtf-home\/dtf-mark\.svg/i.test(tag));
+          if(!hasUploadIcon || hasOldStatic) process.exit(1);
+          if(sourceName && !iconTags.some(tag=>tag.toLowerCase().includes(sourceName.toLowerCase().replace(/\.png$/,'')))) process.exit(1);
+          console.log(iconTags.join('\n'));
+          NODE
+            then ok=1; break; fi
+            sleep 8
+          done
+          [[ "$ok" -eq 1 ]] || { echo 'Fresh public homepage still does not expose the DTF potleaf favicon.' >&2; exit 1; }
+
+      - name: Upload rollback evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dtf-potleaf-site-icon-${{ github.run_id }}
+          path: /tmp/dtf-potleaf-site-icon
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report result to issue 46
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          JOB_STATUS: ${{ job.status }}
+          PUBLISH_OUTCOME: ${{ steps.publish.outcome }}
+          VERIFY_OUTCOME: ${{ steps.verify.outcome }}
+          MEDIA_ID: ${{ steps.publish.outputs.media_id }}
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 46,
+              body: [
+                '## DTF potleaf URL/site icon',
+                '',
+                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                `Result: **${process.env.JOB_STATUS}**`,
+                `WordPress potleaf setting: **${process.env.PUBLISH_OUTCOME || 'not-run'}**`,
+                `Fresh visitor favicon verification: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
+                `Potleaf media ID: **${process.env.MEDIA_ID || 'not-run'}**`,
+                '',
+                'This workflow is intentionally independent from Shop, Learn, WooCommerce, and other release gates so the browser/URL logo cannot be blocked by unrelated failures.'
+              ].join('\n')
+            });
