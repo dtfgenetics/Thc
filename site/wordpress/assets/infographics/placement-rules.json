@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "siteRoot": "/learn/",
   "masterLibraryRoute": "/learn/infographics/",
   "policy": {
@@ -7,14 +7,35 @@
     "publishCanonicalOnly": true,
     "keepSourceFilesFlat": true,
     "reuseWordPressMediaAcrossPages": true,
+    "setFeaturedMediaOnTopicPages": true,
     "excludeNameFragments": [
       "draft",
       "quarantine",
       "superseded",
       "progress dashboard"
     ],
-    "notes": "The canonical GitHub directory is the publication boundary. Drive remains a source/archive workspace; duplicates and unresolved intake copies are not separately published."
+    "notes": "The canonical GitHub directory is the publication boundary. Drive remains a source/archive workspace; duplicates and unresolved intake copies are not separately published. Topic pages reuse one canonical WordPress media item instead of creating duplicates."
   },
+  "featuredMediaPreference": [
+    "Cannabis_Plant_Anatomy_Infographic",
+    "THC-C004_Infographic_From_Cell_to_Canopy",
+    "THC-ENC-001_VIS-01_Whole_Plant_Atlas"
+  ],
+  "primaryOverrides": [
+    {"match": ["cloning_guide", "clone", "cloning"], "categoryId": "lifecycle-propagation"},
+    {"match": ["seedling", "germination", "life_cycle", "life cycle", "seed_to_harvest", "seed to harvest"], "categoryId": "lifecycle-propagation"},
+    {"match": ["root_zone", "root zone", "nutrient_uptake", "nutrient uptake", "cec", "cation_exchange", "cation exchange"], "categoryId": "nutrition-media"},
+    {"match": ["ph_", "_ph", "ec_", "_ec", "ppm", "tds", "water_quality", "water quality", "irrigation", "runoff", "dryback", "salinity"], "categoryId": "water-ph-ec"},
+    {"match": ["deficien", "toxicity", "spider_mite", "spider mite", "beneficial_insect", "beneficial insect", "biosecurity", "sanitation", "pathogen", "disease", "virus", "viroid"], "categoryId": "plant-health-ipm"},
+    {"match": ["harvest", "drying", "curing", "water_activity", "water activity", "bud_wash", "bud wash", "storage"], "categoryId": "harvest-postharvest"},
+    {"match": ["mops", "sex_expression", "sex expression", "chromosome", "genotype", "phenotype", "inheritance", "filial", "pollination", "selection"], "categoryId": "genetics-breeding"},
+    {"match": ["ppfd", "dli", "photoperiod", "spectrum", "lighting", "photon", "par_", "_par"], "categoryId": "lighting"},
+    {"match": ["vpd", "relative_humidity", "relative humidity", "temperature", "airflow", "air_flow", "ventilation", "co2", "carbon_dioxide"], "categoryId": "environment-vpd"},
+    {"match": ["training", "topping", "low_stress", "low stress", "high_stress", "high stress", "scrog", "mainline", "pruning"], "categoryId": "training-canopy"},
+    {"match": ["outdoor", "hardening", "wildlife", "pollen_drift", "microclimate", "site_selection"], "categoryId": "outdoor"},
+    {"match": ["evidence", "claim", "replication", "sampling", "measurement_quality", "measurement quality", "claim_audit", "observation_to", "number_classification"], "categoryId": "research-measurement"},
+    {"match": ["root_anatomy", "root anatomy", "root_system", "root system", "root_tip", "root tip", "leaf_anatomy", "leaf anatomy", "flower_anatomy", "flower anatomy", "whole_plant", "whole plant", "trichomes_secretory", "secretory_biology", "cell_to_canopy", "cell to canopy"], "categoryId": "plant-biology"}
+  ],
   "categories": [
     {
       "id": "plant-biology",
@@ -111,14 +132,17 @@
   "relatedPlacementRules": [
     {"match": ["root", "root_zone", "root zone"], "categoryIds": ["plant-biology", "water-ph-ec", "nutrition-media"]},
     {"match": ["trichome"], "categoryIds": ["plant-biology", "harvest-postharvest"]},
-    {"match": ["flower"], "categoryIds": ["plant-biology", "lifecycle-propagation"]},
+    {"match": ["flower", "reproduction"], "categoryIds": ["plant-biology", "lifecycle-propagation", "genetics-breeding"]},
     {"match": ["seed"], "categoryIds": ["plant-biology", "lifecycle-propagation", "genetics-breeding"]},
+    {"match": ["clone", "cloning", "propagation"], "categoryIds": ["lifecycle-propagation", "environment-vpd"]},
     {"match": ["training", "canopy"], "categoryIds": ["training-canopy", "plant-biology"]},
     {"match": ["nutri", "deficien", "toxicity"], "categoryIds": ["nutrition-media", "plant-health-ipm"]},
     {"match": ["pest", "mite", "insect", "pathogen", "disease"], "categoryIds": ["plant-health-ipm"]},
     {"match": ["vpd", "temperature", "humidity"], "categoryIds": ["environment-vpd"]},
-    {"match": ["ppfd", "dli", "spectrum", "photoperiod", "lighting"], "categoryIds": ["lighting"]},
+    {"match": ["ppfd", "dli", "spectrum", "photoperiod", "lighting"], "categoryIds": ["lighting", "environment-vpd"]},
+    {"match": ["water", "ph_", "_ph", "ec_", "_ec", "ppm", "tds", "irrigation", "dryback"], "categoryIds": ["water-ph-ec", "nutrition-media"]},
     {"match": ["drying", "curing", "harvest", "bud_wash", "bud wash", "storage"], "categoryIds": ["harvest-postharvest"]},
-    {"match": ["outdoor"], "categoryIds": ["outdoor"]}
+    {"match": ["outdoor", "hardening", "rain", "wind", "microclimate"], "categoryIds": ["outdoor", "environment-vpd"]},
+    {"match": ["evidence", "claim", "measurement", "sampling", "observation", "replication"], "categoryIds": ["research-measurement"]}
   ]
 }
