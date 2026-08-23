@@ -165,9 +165,33 @@ payload = replace_once(
 )
 payload = replace_once(
     payload,
+    b"['/games/', 'Original cannabis games built to play, learn, compete, and share.']",
+    b"['/games/', 'Pick what is playable. See what is coming next.']",
+    "Games live-verification marker",
+)
+payload = replace_once(
+    payload,
+    b"['/tools/', 'Practical tools built around observation, records, and evidence.']",
+    b"['/tools/', 'Measure it. Document it. Diagnose with context.']",
+    "Tools live-verification marker",
+)
+payload = replace_once(
+    payload,
     b"['/projects/', 'One place to see what is playable, usable, and still being built.']",
     b"['/projects/', 'One place to see what is live now and what we are building next.']",
     "Projects live-verification marker",
+)
+payload = replace_once(
+    payload,
+    b"await verifyRoute('/', 'Genetics, cultivation education, practical tools, and original cannabis games.'",
+    b"await verifyRoute('/', 'Genetics first. Learn the plant behind the pack.'",
+    "Home live-verification marker",
+)
+payload = replace_once(
+    payload,
+    b"await verifyRoute('/learn/', 'Understand the plant. Build the environment. Make better decisions.'",
+    b"await verifyRoute('/learn/', 'Learn the plant as a connected system.'",
+    "Learn live-verification marker",
 )
 
 # Transport hardening: keep the canonical guarded deployer intact, then widen
