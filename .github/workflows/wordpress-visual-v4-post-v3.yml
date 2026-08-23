@@ -7,6 +7,7 @@ on:
     paths:
       - 'scripts/polish-wordpress-commerce-archive-v4.mjs'
       - 'scripts/polish-wordpress-product-pages-v5.mjs'
+      - 'scripts/flush-hostinger-litespeed-mcp.mjs'
       - '.github/workflows/wordpress-visual-v4-post-v3.yml'
   workflow_run:
     workflows:
@@ -60,6 +61,7 @@ jobs:
           test -s site/wordpress/pages/gallery.html
           node --check scripts/polish-wordpress-commerce-archive-v4.mjs
           node --check scripts/polish-wordpress-product-pages-v5.mjs
+          node --check scripts/flush-hostinger-litespeed-mcp.mjs
           grep -Fq 'dtf-gallery-v2' site/wordpress/pages/gallery.html
 
       - name: Apply V4 WooCommerce archive polish
@@ -86,6 +88,22 @@ jobs:
           node scripts/polish-wordpress-product-pages-v5.mjs | tee "$RUNNER_TEMP/product-v5.log"
           echo 'outcome=success' >> "$GITHUB_OUTPUT"
 
+      - name: Purge Hostinger LiteSpeed cache
+        id: cache
+        shell: bash
+        run: |
+          set -euo pipefail
+          ok=0
+          for attempt in 1 2 3; do
+            if node scripts/flush-hostinger-litespeed-mcp.mjs; then
+              ok=1
+              break
+            fi
+            sleep $((attempt * 4))
+          done
+          [[ "$ok" -eq 1 ]] || { echo 'Hostinger LiteSpeed cache purge failed after retries.' >&2; exit 1; }
+          sleep 5
+
       - name: Verify current Genetics library, Shop, products, and Gallery
         id: verify
         shell: bash
@@ -101,7 +119,18 @@ jobs:
               if grep -Fqi "$marker" "$output"; then ok=1; break; fi
               sleep 7
             done
-            [[ "$ok" -eq 1 ]] || { echo "Required marker not visible on $path: $marker" >&2; head -c 3000 "$output" >&2 || true; exit 1; }
+            [[ "$ok" -eq 1 ]] || { echo "Required marker not visible on origin $path: $marker" >&2; head -c 3000 "$output" >&2 || true; exit 1; }
+
+            local public_output="${output%.html}-public.html" public_ok=0
+            for attempt in 1 2 3 4 5 6; do
+              curl -4 -fsSL --retry 2 --retry-delay 2 \
+                -H 'Cache-Control: no-cache, no-store, max-age=0' \
+                -H 'Pragma: no-cache' \
+                "$WP_SITE_URL${path}" -o "$public_output"
+              if grep -Fqi "$marker" "$public_output"; then public_ok=1; break; fi
+              sleep 5
+            done
+            [[ "$public_ok" -eq 1 ]] || { echo "Required marker not visible on public cached route $path: $marker" >&2; head -c 3000 "$public_output" >&2 || true; exit 1; }
           }
 
           seeds="$RUNNER_TEMP/seeds.html"
@@ -126,13 +155,16 @@ jobs:
             grep -Fqi "$route" "$shop" || { echo "Required Shop product route missing: $route" >&2; exit 1; }
           done
 
+          grep -Fqi 'BLUE BUBBLEGUM • F1 REGULAR' "$shop" || { echo 'Shop archive is missing canonical Blue Bubblegum release badge styling.' >&2; exit 1; }
+          grep -Fqi 'aspect-ratio:2/3' "$shop" || { echo 'Shop archive is missing portrait strain-card image styling.' >&2; exit 1; }
+
           for body in "$seeds" "$shop" "$gallery" "$bubblegum"; do
             for forbidden in 'email@email.com' '+123456789' '© 2025 DTF Genetics'; do
               ! grep -Fqi "$forbidden" "$body" || { echo "Stale presentation remains: $forbidden" >&2; exit 1; }
             done
           done
 
-          echo 'Post-V3 current-library and commerce verification passed.'
+          echo 'Post-V3 current-library and commerce verification passed for origin and public cache.'
 
       - name: Upload post-V3 rollback package
         if: always()
@@ -152,6 +184,7 @@ jobs:
           STATUS: ${{ job.status }}
           SHOP: ${{ steps.shop.outcome }}
           PRODUCT: ${{ steps.product.outcome }}
+          CACHE: ${{ steps.cache.outcome }}
           VERIFY: ${{ steps.verify.outcome }}
           TEMPLATE_PARTS: ${{ steps.shop.outputs.template_parts }}
         with:
@@ -167,10 +200,11 @@ jobs:
                 `Result: **${process.env.STATUS}**`,
                 `Shop archive styling: **${process.env.SHOP || 'not-run'}**`,
                 `Product-page styling: **${process.env.PRODUCT || 'not-run'}**`,
-                `Live verification: **${process.env.VERIFY || 'not-run'}**`,
+                `Hostinger/LiteSpeed purge: **${process.env.CACHE || 'not-run'}**`,
+                `Origin + public-cache verification: **${process.env.VERIFY || 'not-run'}**`,
                 `Shop template parts styled: **${process.env.TEMPLATE_PARTS || 'not-reported'}**`,
                 '',
-                'The obsolete V4 Genetics page writer has been removed from this chain. The newer multi-line Genetics library is now read-only here; this workflow only restores Shop/archive and current product-page presentation after V3 rewrites the shared header shell.'
+                'The newer multi-line Genetics library remains read-only here. This workflow restores the Shop/archive and current product-page presentation after shared-theme rewrites, preserves the full portrait strain-card artwork, purges Hostinger/LiteSpeed, and verifies both origin and normal public routes.'
               ].join('\n')
             });
 
