@@ -22,14 +22,14 @@ jobs:
   publish:
     name: Publish and visitor-verify controlled encyclopedia batch
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 35
     environment: production
     env:
       NODE_OPTIONS: --dns-result-order=ipv4first
       WP_SITE_URL: https://dtfseeds.com
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
-      ENCYCLOPEDIA_BATCH_FILE: site/wordpress/education/encyclopedia/volume01-batch03.json
+      ENCYCLOPEDIA_BATCH_FILE: site/wordpress/education/encyclopedia/current-production-batch.json
       BACKUP_ROOT: /tmp/dtf-encyclopedia-production
     steps:
       - uses: actions/checkout@v4
@@ -47,14 +47,18 @@ jobs:
           node --check scripts/publish-wordpress-encyclopedia-canonical-batch.mjs
           node - <<'NODE'
           const fs=require('fs');
-          const d=require('./site/wordpress/education/encyclopedia/volume01-batch03.json');
-          const expected=['THC-ENC-004'];
-          const got=d.lessonFiles.map(file=>JSON.parse(fs.readFileSync(file,'utf8')).id);
-          if(JSON.stringify(got)!==JSON.stringify(expected)) throw new Error(`Unexpected batch IDs: ${got.join(',')}`);
+          const path=process.env.ENCYCLOPEDIA_BATCH_FILE;
+          const d=JSON.parse(fs.readFileSync(path,'utf8'));
+          if(!d.batch||!Array.isArray(d.lessonFiles)||!d.lessonFiles.length) throw new Error('Invalid current encyclopedia batch manifest');
+          const ids=[];
           for(const file of d.lessonFiles){
             const a=JSON.parse(fs.readFileSync(file,'utf8'));
+            if(!/^THC-ENC-\d{3}$/.test(a.id)) throw new Error(`Invalid lesson ID in ${file}`);
+            if(ids.includes(a.id)) throw new Error(`Duplicate lesson ID ${a.id}`);
             if(!a.title||!a.objective||!Array.isArray(a.coreScience)||a.coreScience.length<2||!Array.isArray(a.sourceNotes)||!a.sourceNotes.length) throw new Error(`Incomplete canonical lesson ${a.id}`);
+            ids.push(a.id);
           }
+          console.log(`Validated ${d.batch}: ${ids.join(', ')}`);
           NODE
 
       - name: Require protected WordPress credentials
@@ -74,43 +78,55 @@ jobs:
           report="$backup_dir/encyclopedia-publication-report.json"
           test -s "$report"
           echo "backup_dir=$backup_dir" >> "$GITHUB_OUTPUT"
+          echo "report=$report" >> "$GITHUB_OUTPUT"
+          echo "batch=$(node -p "require(process.argv[1]).batch" "$report")" >> "$GITHUB_OUTPUT"
           echo "count=$(node -p "require(process.argv[1]).published.length" "$report")" >> "$GITHUB_OUTPUT"
           echo "index_id=$(node -p "require(process.argv[1]).index.pageId" "$report")" >> "$GITHUB_OUTPUT"
           echo "listed=$(node -p "require(process.argv[1]).index.listedLessons" "$report")" >> "$GITHUB_OUTPUT"
 
-      - name: Visitor-verify encyclopedia index and article routes
+      - name: Visitor-verify encyclopedia index and every current-batch article
         id: verify
         shell: bash
         run: |
           set -euo pipefail
-          fetch_verify() {
-            local route="$1" required="$2" forbidden="${3:-}"
-            local body="$RUNNER_TEMP/$(echo "$route" | tr '/?' '__').html"
-            local ok=0
+          report="${{ steps.publish.outputs.report }}"
+          index_body="$RUNNER_TEMP/encyclopedia-index.html"
+          ok=0
+          for attempt in 1 2 3 4 5 6 7 8; do
+            curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+              --header 'Cache-Control: no-cache, no-store, max-age=0' \
+              --header 'Pragma: no-cache' \
+              "$WP_SITE_URL/learn/encyclopedia/?dtf_encyclopedia=${GITHUB_RUN_ID}-${attempt}" \
+              --output "$index_body"
+            if grep -Fqi -- 'Search published encyclopedia lessons' "$index_body"; then ok=1; break; fi
+            sleep 8
+          done
+          [[ "$ok" -eq 1 ]]
+          if grep -Fqi -- 'THC-ENC-001 — How to Read Cannabis Plant Science Critically' "$index_body"; then
+            echo 'Superseded THC-ENC-001 title must not be listed on the public encyclopedia index.' >&2
+            exit 1
+          fi
+          node - <<'NODE' "$report" > "$RUNNER_TEMP/current-batch-routes.tsv"
+          const r=require(process.argv[2]);
+          for(const p of r.published) process.stdout.write(`${p.id}\t${p.slug}\t${p.title}\n`);
+          NODE
+          while IFS=$'\t' read -r id slug title; do
+            grep -Fqi -- "$id" "$index_body" || { echo "$id missing from encyclopedia index" >&2; exit 1; }
+            route="/learn/encyclopedia/$slug/"
+            body="$RUNNER_TEMP/${slug}.html"
+            found=0
             for attempt in 1 2 3 4 5 6 7 8; do
               curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
                 --header 'Cache-Control: no-cache, no-store, max-age=0' \
                 --header 'Pragma: no-cache' \
                 "$WP_SITE_URL${route}?dtf_encyclopedia=${GITHUB_RUN_ID}-${attempt}" \
                 --output "$body"
-              if grep -Fqi -- "$required" "$body"; then ok=1; break; fi
+              if grep -Fqi -- "$id" "$body" && grep -Fqi -- "$title" "$body" && grep -Fqi -- 'Controlled education content' "$body"; then found=1; break; fi
               sleep 8
             done
-            if [[ "$ok" -ne 1 ]]; then
-              echo "Missing visitor fingerprint on $route: $required" >&2
-              head -c 4000 "$body" >&2 || true
-              exit 1
-            fi
-            if [[ -n "$forbidden" ]] && grep -Fqi -- "$forbidden" "$body"; then
-              echo "Forbidden visitor fingerprint on $route: $forbidden" >&2
-              exit 1
-            fi
+            [[ "$found" -eq 1 ]] || { echo "Visitor verification failed for $route" >&2; head -c 4000 "$body" >&2 || true; exit 1; }
             echo "$route visitor verification passed"
-          }
-          fetch_verify '/learn/encyclopedia/' 'THC-ENC-003'
-          fetch_verify '/learn/encyclopedia/' 'THC-ENC-004'
-          fetch_verify '/learn/encyclopedia/' 'THC-ENC-020' 'THC-ENC-001 — How to Read Cannabis Plant Science Critically'
-          fetch_verify '/learn/encyclopedia/thc-enc-004/' 'Domestication, Dispersal, and Human Selection'
+          done < "$RUNNER_TEMP/current-batch-routes.tsv"
 
       - name: Upload encyclopedia rollback package
         if: always() && steps.publish.outputs.backup_dir != ''
@@ -131,7 +147,7 @@ jobs:
               '## THC encyclopedia production publication',
               '',
               `- Result: **${success?'success':'failed'}**`,
-              `- Published batch: **volume01-batch03**`,
+              `- Published batch: **${{ steps.publish.outputs.batch || 'unknown' }}**`,
               `- Article count this batch: **${{ steps.publish.outputs.count || 'unknown' }}**`,
               `- Encyclopedia lessons listed: **${{ steps.publish.outputs.listed || 'unknown' }}**`,
               `- Encyclopedia index page ID: **${{ steps.publish.outputs.index_id || 'unknown' }}**`,
