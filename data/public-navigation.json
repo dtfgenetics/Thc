@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-08-22",
+  "site": "https://dtfseeds.com",
+  "principles": {
+    "maxPrimaryNavItems": 6,
+    "primaryAction": "Diagnose a Plant",
+    "statusLabels": ["play-now", "multiplayer", "development", "private"],
+    "rule": "Only routes marked public may be rendered as visitor-facing navigation or play buttons."
+  },
+  "primaryNavigation": [
+    {"id":"learn","label":"Learn","route":"/learn/"},
+    {"id":"diagnose","label":"Diagnose","route":"/thc-grow-doc/","cta":"primary"},
+    {"id":"genetics","label":"Genetics","route":"/seeds/"},
+    {"id":"games","label":"Games","route":"/games/"},
+    {"id":"community","label":"Community","route":"/community/"},
+    {"id":"shop","label":"Shop","route":"/shop/"}
+  ],
+  "utilityNavigation": [
+    {"id":"tools","label":"Tools","route":"/tools/"},
+    {"id":"gallery","label":"Gallery","route":"/gallery/"},
+    {"id":"about","label":"About","route":"/about/"},
+    {"id":"contact","label":"Contact","route":"/contact/"}
+  ],
+  "homeQuickActions": [
+    {"label":"Diagnose a Plant","route":"/thc-grow-doc/","priority":1},
+    {"label":"Browse THC Education","route":"/learn/","priority":2},
+    {"label":"Play Games","route":"/games/","priority":3},
+    {"label":"Explore Genetics","route":"/seeds/","priority":4}
+  ],
+  "learn": {
+    "route":"/learn/",
+    "sections":[
+      {"label":"Start Here","route":"/learn/start-here/"},
+      {"label":"Academy","route":"/learn/academy/"},
+      {"label":"Encyclopedia","route":"/learn/encyclopedia/"},
+      {"label":"Infographics","route":"/learn/infographics/"},
+      {"label":"Beginner Guides","route":"/learn/beginner-guides/"},
+      {"label":"SOPs & Measurement","route":"/learn/sops/"},
+      {"label":"Glossary","route":"/learn/glossary/"},
+      {"label":"Printables & Records","route":"/learn/records/"}
+    ]
+  },
+  "games": [
+    {"id":"high-iq","title":"High IQ — Test Higher Cognition","route":"/games/high-iq/","status":"play-now","public":true},
+    {"id":"high-life","title":"High Life: From Bagseed to Legacy","route":"/games/high-life/","status":"play-now","public":true},
+    {"id":"seed-man-platformer","title":"Seed Man: Sprout Run","route":"/games/seed-man-platformer/","status":"play-now","public":true},
+    {"id":"grower-conversations","title":"Grower Conversations","route":"/games/grower-conversations/","status":"play-now","public":true},
+    {"id":"high-land","title":"High Land: The Sweet Escape","route":"/games/high-land/","status":"play-now","public":true},
+    {"id":"weedopolis","title":"Weedopolis: Strain City Edition","route":"/games/weedopolis/","status":"play-now","public":true},
+    {"id":"crossword","title":"THC Weekly Crossword","route":"/games/crossword/","status":"play-now","public":true},
+    {"id":"who-took-it","title":"Who Took It?","route":"/games/who-took-it/","status":"play-now","public":true},
+    {"id":"thc-u-know","title":"THC U Know","route":"/games/thc-u-know/","status":"multiplayer","public":true},
+    {"id":"kush-kings","title":"Kush Kings Chess","route":"/games/kush-kings-chess/","status":"multiplayer","public":true},
+    {"id":"cannabis-fleet-battle","title":"Cannabis Fleet Battle","route":null,"status":"development","public":false},
+    {"id":"strain-showdown","title":"Strain Showdown","route":null,"status":"development","public":false},
+    {"id":"bud-or-bluff","title":"Bud or Bluff","route":null,"status":"development","public":false},
+    {"id":"terpocalypse","title":"Terpocalypse: Grow Room From Hell","route":null,"status":"development","public":false},
+    {"id":"phenoquest","title":"PhenoQuest: The Living Seed Vault","route":null,"status":"development","public":false}
+  ],
+  "external": [
+    {"id":"discord","label":"Join Discord","url":"https://discord.gg/xJbUeHFPMt","newTab":true}
+  ]
+}
