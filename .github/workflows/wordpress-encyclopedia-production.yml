@@ -150,16 +150,33 @@ jobs:
             echo "$route visitor verification passed"
           done < "$RUNNER_TEMP/current-batch-routes.tsv"
 
-          physiology="$RUNNER_TEMP/plant-physiology.html"
+          node - <<'NODE' > "$RUNNER_TEMP/current-topic.tsv"
+          const fs=require('fs');
+          const batch=JSON.parse(fs.readFileSync(process.env.ENCYCLOPEDIA_BATCH_FILE,'utf8'));
+          const topics=JSON.parse(fs.readFileSync(process.env.ENCYCLOPEDIA_TOPIC_FILE,'utf8')).topics;
+          const lessons=batch.lessonFiles.map(file=>JSON.parse(fs.readFileSync(file,'utf8')));
+          const numbers=lessons.map(x=>Number(x.id.match(/(\d{3})$/)[1]));
+          const topic=topics.find(t=>numbers.every(n=>n>=t.range[0]&&n<=t.range[1]));
+          if(!topic) throw new Error(`Current batch ${batch.batch} does not resolve to one topic hub.`);
+          process.stdout.write(`${topic.slug}\t${lessons[0].id}\n`);
+          NODE
+          IFS=$'\t' read -r topic_slug topic_first_id < "$RUNNER_TEMP/current-topic.tsv"
+          current_topic="$RUNNER_TEMP/current-topic.html"
           hub_ok=0
           for attempt in 1 2 3 4 5 6 7 8; do
-            curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+            if ! curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
               --header 'Cache-Control: no-cache, no-store, max-age=0' --header 'Pragma: no-cache' \
-              "$WP_SITE_URL/learn/encyclopedia/plant-physiology/?dtf_encyclopedia=${GITHUB_RUN_ID}-${attempt}" -o "$physiology"
-            if grep -Fqi -- 'Plant Physiology' "$physiology" && grep -Fqi -- 'thc-enc-061' "$physiology"; then hub_ok=1; break; fi
+              "$WP_SITE_URL/learn/encyclopedia/$topic_slug/?dtf_encyclopedia=${GITHUB_RUN_ID}-${attempt}" -o "$current_topic"; then
+              sleep 8
+              continue
+            fi
+            if grep -Fqi -- "$topic_first_id" "$current_topic" && grep -Fqi -- "data-thc-topic=\"$topic_slug\"" "$current_topic"; then
+              hub_ok=1
+              break
+            fi
             sleep 8
           done
-          [[ "$hub_ok" -eq 1 ]]
+          [[ "$hub_ok" -eq 1 ]] || { echo "Current topic hub verification failed: $topic_slug" >&2; head -c 4000 "$current_topic" >&2 || true; exit 1; }
 
           preserved="$RUNNER_TEMP/thc-enc-041.html"
           curl -4 --fail --silent --show-error --location --retry 3 --retry-delay 2 \
@@ -203,6 +220,7 @@ jobs:
               `- Encyclopedia index page ID: **${{ steps.publish.outputs.index_id || 'unknown' }}**`,
               `- Visitor verification: **${success?'passed':'not passed'}**`,
               '- Existing published visuals preservation check: **included**',
+              '- Current batch topic-hub verification: **included in primary gate**',
               '- Review control: **website publication does not represent independent lesson approval**',
               `- Source: https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`
             ].join('\n');
