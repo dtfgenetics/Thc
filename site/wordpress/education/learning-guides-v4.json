@@ -1,0 +1,345 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-08-23",
+  "purpose": "Instructional layer for Teaching Healthy Cultivation. Core literature remains canonical; this file adds learning order, measurements, interpretation cautions, field exercises, and encyclopedia depth.",
+  "tracks": [
+    {
+      "id": "foundations",
+      "title": "Build the plant-science foundation",
+      "description": "Start with how the plant is built, then connect development, environment, light, water, and mineral nutrition.",
+      "topics": ["plant-biology", "lifecycle-propagation", "environment-vpd", "lighting", "water-root-zone", "nutrition-media"]
+    },
+    {
+      "id": "diagnostics",
+      "title": "Learn to diagnose without guessing",
+      "description": "Build an evidence-first workflow that separates symptoms from causes and uses measurements to test competing explanations.",
+      "topics": ["evidence-measurement", "plant-biology", "water-root-zone", "environment-vpd", "plant-health-ipm"]
+    },
+    {
+      "id": "crop-architecture",
+      "title": "Manage the growing plant",
+      "description": "Connect light distribution, canopy structure, outdoor conditions, plant-health risk, and harvest handling into one crop-management path.",
+      "topics": ["lighting", "training-canopy", "outdoor-cultivation", "plant-health-ipm", "harvest-postharvest"]
+    },
+    {
+      "id": "breeding-research",
+      "title": "Breed and evaluate with better records",
+      "description": "Move from inheritance concepts into propagation, measurement, repeatability, provenance, and evidence-aware selection.",
+      "topics": ["genetics-breeding", "lifecycle-propagation", "evidence-measurement", "plant-biology"]
+    }
+  ],
+  "topics": {
+    "plant-biology": {
+      "level": "Foundation",
+      "coreQuestion": "What structure or process is changing, and what does that tissue normally do?",
+      "prerequisites": [],
+      "next": "lifecycle-propagation",
+      "measure": [
+        "Which organ and tissue show the change: roots, stems, older leaves, new leaves, flowers, or the whole plant?",
+        "Is the pattern local, symmetric, directional, or systemic?",
+        "What changed recently in environment, irrigation, nutrition, handling, or plant stage?"
+      ],
+      "mistakes": [
+        "Naming a deficiency from leaf color alone.",
+        "Treating roots, stems, leaves, and flowers as independent systems.",
+        "Using one close-up photograph without whole-plant context."
+      ],
+      "exercise": {
+        "title": "Map one plant as a system",
+        "steps": [
+          "Photograph the entire plant and then one root-zone, stem, leaf, and growing-tip detail.",
+          "Label each visible organ and write one primary function for it.",
+          "Choose one symptom or normal feature and trace which upstream systems could influence it.",
+          "Write what additional measurement would help separate those possibilities."
+        ]
+      },
+      "encyclopedia": ["plant-structure-anatomy", "plant-physiology", "flowering-reproduction", "trichomes-cannabinoids"]
+    },
+    "genetics-breeding": {
+      "level": "Intermediate",
+      "coreQuestion": "Which observed differences are repeatable inherited variation, and which may be environmental or developmental?",
+      "prerequisites": ["plant-biology", "evidence-measurement"],
+      "next": "lifecycle-propagation",
+      "measure": [
+        "Define each selection trait in measurable or consistently scorable terms before evaluating plants.",
+        "Record population size, generation, parent identifiers, environment, and selection intensity.",
+        "Separate source-reported lineage from traits directly observed in the current population."
+      ],
+      "mistakes": [
+        "Treating F1, F2, or later-generation labels as quality grades.",
+        "Calling a trait stable after observing one exceptional plant.",
+        "Filling uncertain parentage or provenance gaps with assumptions."
+      ],
+      "exercise": {
+        "title": "Build a selection scorecard",
+        "steps": [
+          "Choose three breeding traits and define how each will be measured or scored.",
+          "Record the environment and developmental stage in which each score is taken.",
+          "Score several sibling plants without changing the criteria midway.",
+          "Compare rankings with raw measurements and note which conclusions still need another generation or environment."
+        ]
+      },
+      "encyclopedia": ["genetics-sex-chemotype", "breeding-conservation", "measurement-research"]
+    },
+    "lifecycle-propagation": {
+      "level": "Foundation",
+      "coreQuestion": "What developmental stage is the plant actually in, and what changes in physiology at that stage?",
+      "prerequisites": ["plant-biology"],
+      "next": "environment-vpd",
+      "measure": [
+        "Record developmental stage in addition to chronological age.",
+        "Track germination, emergence, rooting, transplant, vegetative development, transition, and maturation as separate events.",
+        "Record source identity and propagation method so later observations remain traceable."
+      ],
+      "mistakes": [
+        "Using calendar age as the only readiness criterion.",
+        "Treating a rooted cutting as physiologically identical to an established plant.",
+        "Changing several environmental variables at the same stage transition and losing causal clarity."
+      ],
+      "exercise": {
+        "title": "Build a stage-based crop timeline",
+        "steps": [
+          "Create a timeline using biological milestones rather than dates alone.",
+          "Add the root, leaf, and canopy observations that indicate each stage transition.",
+          "Mark management changes such as transplanting, training, photoperiod change, or hardening-off.",
+          "At the end of the cycle, compare actual transitions with the original schedule and revise the next plan."
+        ]
+      },
+      "encyclopedia": ["seeds-germination-seedlings", "cloning-tissue-culture", "flowering-reproduction"]
+    },
+    "environment-vpd": {
+      "level": "Foundation",
+      "coreQuestion": "What conditions does the leaf actually experience across space and time?",
+      "prerequisites": ["plant-biology"],
+      "next": "lighting",
+      "measure": [
+        "Air temperature and relative humidity from representative canopy locations.",
+        "Leaf temperature when interpreting leaf-based vapor pressure deficit.",
+        "Lights-on, lights-off, irrigation, and equipment-state transitions instead of daily averages alone."
+      ],
+      "mistakes": [
+        "Treating a VPD number as a diagnosis or universal growth dial.",
+        "Using one wall-mounted sensor as a complete canopy map.",
+        "Confusing air movement inside the room with removal of heat and moisture from the room."
+      ],
+      "exercise": {
+        "title": "Map canopy microclimates",
+        "steps": [
+          "Measure temperature and humidity at canopy center, edge, upper canopy, and a shaded interior location.",
+          "Record leaf temperature at the same locations when possible.",
+          "Repeat the measurements near lights-on and lights-off transitions.",
+          "Identify where averages hide the largest local difference and what equipment or canopy feature may explain it."
+        ]
+      },
+      "encyclopedia": ["water-environment", "plant-physiology", "measurement-research"]
+    },
+    "lighting": {
+      "level": "Foundation",
+      "coreQuestion": "How many photosynthetically active photons reach the crop, for how long, and how evenly?",
+      "prerequisites": ["plant-biology", "environment-vpd"],
+      "next": "water-root-zone",
+      "measure": [
+        "PPFD at multiple points across the actual crop plane rather than at one center point.",
+        "Photoperiod and calculated or measured daily light integral.",
+        "Canopy uniformity, distance to fixtures, leaf response, and environmental conditions at the same time."
+      ],
+      "mistakes": [
+        "Comparing lights by electrical wattage alone.",
+        "Using one PPFD measurement to represent an entire canopy.",
+        "Increasing light without considering acclimation, water supply, temperature, and nutrition."
+      ],
+      "exercise": {
+        "title": "Create a light map",
+        "steps": [
+          "Divide the canopy into a simple grid and measure PPFD at each point at crop height.",
+          "Calculate the average and note the highest and lowest readings.",
+          "Estimate DLI from PPFD and photoperiod using the same measurement assumptions throughout.",
+          "Repeat after changing fixture height or canopy structure and compare uniformity, not just the maximum value."
+        ]
+      },
+      "encyclopedia": ["lighting-photobiology", "plant-physiology", "measurement-research"]
+    },
+    "water-root-zone": {
+      "level": "Foundation",
+      "coreQuestion": "Can the root system access water, oxygen, and dissolved ions under the current physical and chemical conditions?",
+      "prerequisites": ["plant-biology", "environment-vpd"],
+      "next": "nutrition-media",
+      "measure": [
+        "Irrigation volume, timing, drainage behavior, and change in container or substrate water status.",
+        "Root-zone pH and EC using a method appropriate to the medium and with consistent sampling.",
+        "Water source characteristics and root-zone temperature when they are relevant to the problem."
+      ],
+      "mistakes": [
+        "Treating runoff pH or EC as a complete description of the root zone without considering sampling method.",
+        "Assuming a wet medium always means roots have adequate oxygen and usable water.",
+        "Changing pH, EC, irrigation frequency, and nutrient formula simultaneously."
+      ],
+      "exercise": {
+        "title": "Document one irrigation cycle",
+        "steps": [
+          "Record the starting root-zone condition, container weight or another consistent moisture indicator.",
+          "Record irrigation volume, solution pH and EC where applicable, and time of application.",
+          "Observe drainage, rewetting pattern, and plant response through the following dryback period.",
+          "Use the record to identify what is measured directly versus what is still inferred."
+        ]
+      },
+      "encyclopedia": ["roots-growing-media", "water-environment", "nutrition-root-zone-chemistry"]
+    },
+    "nutrition-media": {
+      "level": "Intermediate",
+      "coreQuestion": "Are essential elements available to the roots in the right chemical and physical context, and is the plant actually taking them up?",
+      "prerequisites": ["water-root-zone", "plant-biology"],
+      "next": "plant-health-ipm",
+      "measure": [
+        "Nutrient solution concentration, pH, water source, and mixing history where applicable.",
+        "Root-zone EC/pH trends using a repeatable medium-specific method.",
+        "Symptom location, plant stage, recent feeding changes, and root condition before assigning a nutrient cause."
+      ],
+      "mistakes": [
+        "Matching a photograph to a deficiency chart and treating the match as proof.",
+        "Assuming more fertilizer corrects every deficiency-like symptom.",
+        "Ignoring antagonism, root damage, water stress, pH, salinity, or environmental limitations on uptake."
+      ],
+      "exercise": {
+        "title": "Build a nutrient differential",
+        "steps": [
+          "Describe the symptom without naming the cause and record where it appears first.",
+          "List at least three plausible explanations, including one non-nutrient explanation.",
+          "Choose measurements or observations that could separate those explanations.",
+          "Make the smallest justified correction and track new growth instead of expecting damaged tissue to fully reverse."
+        ]
+      },
+      "encyclopedia": ["nutrition-root-zone-chemistry", "roots-growing-media", "diagnostics-abiotic-disorders", "measurement-research"]
+    },
+    "training-canopy": {
+      "level": "Intermediate",
+      "coreQuestion": "How does changing plant architecture redistribute light, growth, mechanical load, and future flowering sites?",
+      "prerequisites": ["plant-biology", "lighting"],
+      "next": "harvest-postharvest",
+      "measure": [
+        "Canopy dimensions, branch distribution, internode spacing, and light measurements before and after training.",
+        "Plant stage, vigor, recovery time, and wound condition after higher-stress interventions.",
+        "Shaded or crowded zones that could develop poor airflow or disease risk."
+      ],
+      "mistakes": [
+        "Applying a training technique because of its name rather than a defined canopy goal.",
+        "Stacking major pruning, transplant, environmental change, and training stress at the same time.",
+        "Judging success by appearance without measuring light distribution or recovery."
+      ],
+      "exercise": {
+        "title": "Measure a training intervention",
+        "steps": [
+          "Photograph and measure the canopy before intervention.",
+          "Write the intended outcome: height control, branch redistribution, light uniformity, access, or another specific goal.",
+          "Apply one training intervention and record plant response over several days.",
+          "Repeat the original measurements and decide whether the intervention achieved the stated goal."
+        ]
+      },
+      "encyclopedia": ["training-canopy", "plant-physiology", "lighting-photobiology"]
+    },
+    "plant-health-ipm": {
+      "level": "Intermediate",
+      "coreQuestion": "What evidence separates an abiotic disorder, arthropod pest, disease process, and normal development?",
+      "prerequisites": ["evidence-measurement", "plant-biology", "water-root-zone"],
+      "next": "evidence-measurement",
+      "measure": [
+        "Distribution and progression of symptoms across plants, organs, and time.",
+        "Direct pest or pathogen evidence where available, including scouting counts, magnified inspection, or appropriate testing.",
+        "Environmental and root-zone conditions that may create similar symptoms or alter disease risk."
+      ],
+      "mistakes": [
+        "Identifying a pest or disease only from damage shape or leaf color.",
+        "Treating every problem as a spray decision instead of a prevention, identification, and threshold problem.",
+        "Ignoring sanitation, incoming plant material, tools, clothing, and movement pathways."
+      ],
+      "exercise": {
+        "title": "Run a structured scouting pass",
+        "steps": [
+          "Divide the growing area into repeatable scouting zones and inspect a consistent number of plants per zone.",
+          "Record pest counts, symptom types, affected plant stage, and exact location.",
+          "Photograph representative evidence and mark uncertain findings as uncertain.",
+          "Compare the next scouting pass with the first to determine whether the problem is expanding, stable, or declining."
+        ]
+      },
+      "encyclopedia": ["diagnostics-abiotic-disorders", "pests", "diseases-viroids", "ipm-biosecurity", "measurement-research"]
+    },
+    "harvest-postharvest": {
+      "level": "Applied",
+      "coreQuestion": "How can harvest timing, handling, drying, curing, and storage preserve quality while reducing moisture and contamination risk?",
+      "prerequisites": ["plant-biology", "environment-vpd", "evidence-measurement"],
+      "next": "evidence-measurement",
+      "measure": [
+        "Maturity observations from multiple representative plant locations rather than a single trichome image.",
+        "Drying-room temperature, relative humidity, airflow pattern, time, and product moisture trend.",
+        "Water activity or another validated moisture-control measure when storage stability and microbial risk are being evaluated."
+      ],
+      "mistakes": [
+        "Using trichome color as the only harvest criterion.",
+        "Treating room RH as direct proof of product moisture or water activity.",
+        "Accelerating drying without tracking product condition, case hardening, aroma loss, or contamination risk."
+      ],
+      "exercise": {
+        "title": "Build a post-harvest batch record",
+        "steps": [
+          "Record harvest date, plant or batch identity, maturity observations, and handling method.",
+          "Log drying temperature and humidity at consistent intervals and note airflow or equipment changes.",
+          "Record product mass or another repeatable moisture-related indicator through drying.",
+          "Document the endpoint, cure/storage conditions, and any quality or contamination observations so the next batch can be compared."
+        ]
+      },
+      "encyclopedia": ["trichomes-cannabinoids", "terpenes-secondary-metabolites", "harvest-postharvest", "measurement-research"]
+    },
+    "outdoor-cultivation": {
+      "level": "Applied",
+      "coreQuestion": "How do site, season, weather, soil, water, pests, and microclimate interact when the environment cannot be fully controlled?",
+      "prerequisites": ["environment-vpd", "water-root-zone", "plant-health-ipm"],
+      "next": "harvest-postharvest",
+      "measure": [
+        "Hours of direct sun, shade movement, wind exposure, drainage, soil or media condition, and irrigation capacity at the actual site.",
+        "Seasonal temperature, humidity, rainfall, storm, smoke, and first/last frost patterns relevant to the crop window.",
+        "Microclimate differences within the site, especially dense canopy, low areas, windbreaks, walls, and greenhouse edges."
+      ],
+      "mistakes": [
+        "Using regional weather data as if every point on the property has the same microclimate.",
+        "Planning irrigation from rainfall totals without checking infiltration, root depth, evaporation, and actual soil water status.",
+        "Waiting for pest, disease, wind, or rain damage before establishing prevention and response plans."
+      ],
+      "exercise": {
+        "title": "Build a site risk map",
+        "steps": [
+          "Walk the site at several times of day and map sun, shade, wind exposure, low spots, water access, and barriers.",
+          "Record where water drains after irrigation or rain and where moisture remains longest.",
+          "Mark likely pest entry, wildlife, pollen-drift, visibility, storm, and late-season moisture risks.",
+          "Choose planting or container locations only after comparing these risks with the expected crop calendar."
+        ]
+      },
+      "encyclopedia": ["water-environment", "ipm-biosecurity", "outdoor-greenhouse", "measurement-research"]
+    },
+    "evidence-measurement": {
+      "level": "Foundation",
+      "coreQuestion": "What do we actually know, what was measured, and what conclusion is justified by that evidence?",
+      "prerequisites": ["plant-biology"],
+      "next": "plant-health-ipm",
+      "measure": [
+        "What instrument, sampling method, location, timing, units, and calibration state produced the measurement?",
+        "How much biological and measurement variation exists across repeated observations?",
+        "Which variables changed together and which were held reasonably constant?"
+      ],
+      "mistakes": [
+        "Treating a single reading as a stable condition.",
+        "Confusing correlation, sequence, or improvement after an intervention with proof of cause.",
+        "Reporting more precision than the sensor, sampling method, or experiment can support."
+      ],
+      "exercise": {
+        "title": "Test one cultivation assumption",
+        "steps": [
+          "Write one clear question and the observation that would count as evidence.",
+          "Choose one variable to change and identify the major conditions you will try to keep comparable.",
+          "Collect repeated measurements using the same method and units.",
+          "Summarize what the data support, what they do not prove, and what next observation would reduce uncertainty."
+        ]
+      },
+      "encyclopedia": ["diagnostics-abiotic-disorders", "measurement-research"]
+    }
+  }
+}
