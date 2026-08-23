@@ -1,0 +1,153 @@
+name: Publish Lifecycle Propagation Visual Atlas V6
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'site/wordpress/education/lifecycle-propagation-v6-visual-map.json'
+      - 'scripts/publish-wordpress-lifecycle-propagation-visual-atlas-v6.mjs'
+      - '.github/workflows/wordpress-lifecycle-propagation-visual-atlas-v6.yml'
+  workflow_run:
+    workflows:
+      - Publish Lifecycle Propagation V6 Final
+    types: [completed]
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-lifecycle-propagation-visual-atlas-v6
+  cancel-in-progress: true
+
+env:
+  WP_SITE_URL: https://dtfseeds.com
+  NODE_OPTIONS: --dns-result-order=ipv4first
+
+jobs:
+  publish:
+    name: Publish Lifecycle and Propagation chapter visual atlas
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: production
+    env:
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      APPLY_LIFECYCLE_PROPAGATION_VISUALS_V6: 'true'
+      LIFECYCLE_PROPAGATION_VISUAL_MAP: site/wordpress/education/lifecycle-propagation-v6-visual-map.json
+      BACKUP_ROOT: /tmp/dtf-lifecycle-propagation-visuals-v6
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate Lifecycle visual atlas mapping
+        id: validate
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
+          node --check scripts/publish-wordpress-lifecycle-propagation-visual-atlas-v6.mjs
+          node - <<'NODE'
+          const fs=require('fs');
+          const m=JSON.parse(fs.readFileSync('site/wordpress/education/lifecycle-propagation-v6-visual-map.json','utf8'));
+          const groups=Object.entries(m.chapters||{});
+          const assets=groups.flatMap(([chapter,items])=>(items||[]).map(x=>({chapter,...x})));
+          if(m.schemaVersion!==1||m.curriculumId!=='lifecycle-propagation-v6') throw new Error('Invalid visual map identity');
+          if(groups.length!==8) throw new Error(`Expected 8 visual groups, got ${groups.length}`);
+          if(assets.length!==17) throw new Error(`Expected 17 mapped visuals, got ${assets.length}`);
+          if((m.gaps||[]).length!==4) throw new Error('Expected exactly 4 unresolved visual gaps');
+          for(const a of assets){
+            if(/draft|quarantine|superseded|legacy|qa[-_ ]?required/i.test(a.file)) throw new Error(`Unsafe asset: ${a.file}`);
+            if(!fs.existsSync(`site/wordpress/assets/infographics/${a.file}`)) throw new Error(`Missing canonical asset: ${a.file}`);
+          }
+          console.log(`Lifecycle atlas validated: ${groups.length} groups, ${assets.length} visuals, ${m.gaps.length} explicit gaps.`);
+          NODE
+
+      - name: Publish visual atlas and verify live page
+        id: publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$BACKUP_ROOT"
+          node scripts/publish-wordpress-lifecycle-propagation-visual-atlas-v6.mjs | tee "$RUNNER_TEMP/lifecycle-propagation-visuals-v6.log"
+          report="$BACKUP_ROOT/report.json"
+          test -s "$report"
+          echo "visuals=$(node -p "require(process.argv[1]).visuals" "$report")" >> "$GITHUB_OUTPUT"
+          echo "wp_media=$(node -p "require(process.argv[1]).wordpressMedia" "$report")" >> "$GITHUB_OUTPUT"
+          echo "fallbacks=$(node -p "require(process.argv[1]).canonicalFallbacks" "$report")" >> "$GITHUB_OUTPUT"
+          echo "gaps=$(node -p "require(process.argv[1]).unresolvedGaps.length" "$report")" >> "$GITHUB_OUTPUT"
+
+      - name: Independent visitor verification
+        id: verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          body="$RUNNER_TEMP/lifecycle-propagation-visual-atlas.html"
+          ok=0
+          for attempt in 1 2 3 4 5 6 7 8; do
+            curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+              --header 'Cache-Control: no-cache, no-store, max-age=0' \
+              --header 'Pragma: no-cache' \
+              "$WP_SITE_URL/learn/lifecycle-propagation/?dtf_lp6v_verify=${GITHUB_RUN_ID}-${attempt}" --output "$body"
+            if grep -Fqi 'data-dtf-lifecycle-propagation-visuals-v6="true"' "$body"; then ok=1; break; fi
+            sleep 6
+          done
+          [[ "$ok" -eq 1 ]]
+          [[ "$(grep -Fo 'class="lp6v-card"' "$body" | wc -l | tr -d ' ')" = '17' ]]
+          [[ "$(grep -Fo 'data-lp6v-group=' "$body" | wc -l | tr -d ' ')" = '8' ]]
+          [[ "$(grep -Fo 'class="lp6v-gap"' "$body" | wc -l | tr -d ' ')" = '4' ]]
+          grep -Fqi 'Seedling Establishment' "$body"
+          grep -Fqi 'Cloning Guide &amp; Propagation Environment' "$body"
+          grep -Fqi 'Container Geometry, Root Restriction &amp; Transplanting' "$body"
+          grep -Fqi 'Photoperiod Perception &amp; Flowering Control' "$body"
+          grep -Fqi 'Flower Anatomy &amp; Reproduction' "$body"
+          grep -Fqi 'data-dtf-lifecycle-propagation-v6="true"' "$body"
+
+      - name: Upload visual-atlas evidence and rollback package
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lifecycle-propagation-visual-atlas-v6-${{ github.run_id }}
+          path: |
+            /tmp/dtf-lifecycle-propagation-visuals-v6
+            ${{ runner.temp }}/lifecycle-propagation-visuals-v6.log
+            ${{ runner.temp }}/lifecycle-propagation-visual-atlas.html
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report Lifecycle visual-atlas result
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          STATUS: ${{ job.status }}
+          VALIDATE: ${{ steps.validate.outcome }}
+          PUBLISH: ${{ steps.publish.outcome }}
+          VERIFY: ${{ steps.verify.outcome }}
+          VISUALS: ${{ steps.publish.outputs.visuals }}
+          WP_MEDIA: ${{ steps.publish.outputs.wp_media }}
+          FALLBACKS: ${{ steps.publish.outputs.fallbacks }}
+          GAPS: ${{ steps.publish.outputs.gaps }}
+        with:
+          script: |
+            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body:[
+              '## Lifecycle & Propagation V6 visual atlas','',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Result: **${process.env.STATUS}**`,
+              `Mapping validation: **${process.env.VALIDATE || 'not-run'}**`,
+              `WordPress publication: **${process.env.PUBLISH || 'not-run'}**`,
+              `Visitor verification: **${process.env.VERIFY || 'not-run'}**`,
+              `Verified visual cards: **${process.env.VISUALS || '0'}**`,
+              `Using WordPress media: **${process.env.WP_MEDIA || '0'}**`,
+              `Using canonical GitHub fallback: **${process.env.FALLBACKS || '0'}**`,
+              `Explicit unresolved visual gaps: **${process.env.GAPS || '0'}**`,'',
+              'The atlas uses exact approved supporting visuals across all eight Lifecycle & Propagation chapters. Four dedicated diagrams remain intentionally unresolved rather than substituted: seed viability vs vigor; the imbibition-to-establishment germination sequence; lifecycle traceability; and senescence/nutrient remobilization.'
+            ].join('\n')});
