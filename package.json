@@ -15,7 +15,7 @@
     "test:e2e": "npm run test:e2e:high-land",
     "dev:high-land": "npm --workspace apps/high-land-web run dev",
     "build:high-land": "npm --workspace apps/high-land-web run build",
-    "test:high-land": "npm --workspace apps/high-land-web run test",
+    "test:high-land": "npm --workspace apps/high-land-web run test && node apps/high-land-web/scripts/verify-room-api-security.mjs",
     "test:e2e:high-land": "npm --workspace apps/high-land-web run test:e2e",
     "dev:growlens": "vite --config apps/growlens-web/vite.config.ts",
     "build:growlens": "tsc -p apps/growlens-web/tsconfig.json && vite build --config apps/growlens-web/vite.config.ts",
