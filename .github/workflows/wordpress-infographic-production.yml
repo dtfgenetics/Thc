@@ -180,23 +180,26 @@ jobs:
           class CardParser(HTMLParser):
               def __init__(self):
                   super().__init__()
-                  self.depth = 0
                   self.current = None
+                  self.article_depth = 0
                   self.cards = []
               def handle_starttag(self, tag, attrs):
                   attrs = dict(attrs)
                   classes = set(attrs.get('class', '').split())
                   if tag == 'article' and 'thc-library-card' in classes and self.current is None:
-                      self.current = {'depth': self.depth, 'text': [], 'urls': []}
+                      self.current = {'text': [], 'urls': []}
+                      self.article_depth = 1
+                  elif tag == 'article' and self.current is not None:
+                      self.article_depth += 1
                   if self.current is not None:
                       for key in ('src', 'href'):
                           if attrs.get(key): self.current['urls'].append(unquote(attrs[key]))
-                  self.depth += 1
               def handle_endtag(self, tag):
-                  self.depth -= 1
-                  if tag == 'article' and self.current is not None and self.depth == self.current['depth']:
-                      self.cards.append(self.current)
-                      self.current = None
+                  if tag == 'article' and self.current is not None:
+                      self.article_depth -= 1
+                      if self.article_depth == 0:
+                          self.cards.append(self.current)
+                          self.current = None
               def handle_data(self, data):
                   if self.current is not None: self.current['text'].append(data)
 
