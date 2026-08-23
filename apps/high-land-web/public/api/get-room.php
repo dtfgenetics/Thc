@@ -13,5 +13,5 @@ $room = api_require_room($roomCode);
 
 api_send_json([
     'ok' => true,
-    'room' => $room
+    'room' => api_public_room($room)
 ]);
