@@ -41,8 +41,8 @@ if (missing.length) throw new Error(`Could not normalize required THC topics: ${
 await writeFile(normalizedPath, `${JSON.stringify({ ...source, normalizedFor: 'learning-v3', topics }, null, 2)}\n`);
 process.env.TOPIC_LITERATURE_PATH = normalizedPath;
 
-// Subject hero images are intentionally strict. A neutral placeholder is preferable to a
-// visually impressive but misleading image (for example a seedling card on Lighting or a
+// Subject hero images are intentionally strict. A polished branded subject panel is preferable
+// to a visually impressive but misleading image (for example a seedling card on Lighting or a
 // root-pathogen diagram on a general water/pH/EC page).
 let publisher = await readFile(publisherPath, 'utf8');
 const selectorPatches = [
@@ -74,6 +74,26 @@ for (const patch of selectorPatches) {
   }
   publisher = publisher.replace(patch.original, patch.strict);
 }
+
+const originalMissingVisual = `function img(item, alt, { ratio = '4/3', eager = false } = {}) {
+  if (!item) return '<div class="v3-image-placeholder" aria-hidden="true"></div>';
+  return \`<img src="\${esc(imageUrl(item))}" alt="\${esc(imageAlt(item, alt))}" \${eager ? 'loading="eager" fetchpriority="high"' : 'loading="lazy"'} decoding="async" style="aspect-ratio:\${esc(ratio)}">\`;
+}`;
+const brandedMissingVisual = `function img(item, alt, { ratio = '4/3', eager = false } = {}) {
+  if (!item) return \`<div class="v3-image-placeholder" role="img" aria-label="\${esc(alt)}"><span>Teaching Healthy Cultivation</span><strong>\${esc(alt)}</strong></div>\`;
+  return \`<img src="\${esc(imageUrl(item))}" alt="\${esc(imageAlt(item, alt))}" \${eager ? 'loading="eager" fetchpriority="high"' : 'loading="lazy"'} decoding="async" style="aspect-ratio:\${esc(ratio)}">\`;
+}`;
+if (!publisher.includes(originalMissingVisual) && !publisher.includes(brandedMissingVisual)) {
+  throw new Error('Could not locate the Learning V3 missing-visual renderer; refusing an unreviewed runtime patch.');
+}
+publisher = publisher.replace(originalMissingVisual, brandedMissingVisual);
+
+const originalPlaceholderCss = `.v3-image-placeholder{width:100%;aspect-ratio:4/3;border-radius:24px;background:linear-gradient(135deg,#dbe7dc,#edf2e9)}`;
+const brandedPlaceholderCss = `.v3-image-placeholder{position:relative;display:flex;flex-direction:column;justify-content:flex-end;width:100%;aspect-ratio:4/3;overflow:hidden;border-radius:24px;padding:26px;background:radial-gradient(circle at 78% 20%,rgba(214,183,92,.34),transparent 28%),linear-gradient(145deg,#0a2114,#17482b);border:1px solid rgba(214,183,92,.38);color:#fff}.v3-image-placeholder:before{content:'THC';position:absolute;right:18px;top:12px;color:rgba(255,255,255,.07);font-size:clamp(4rem,10vw,8rem);font-weight:950;letter-spacing:-.08em}.v3-image-placeholder span{position:relative;z-index:1;margin-bottom:8px;color:#d6b75c;font-size:.72rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase}.v3-image-placeholder strong{position:relative;z-index:1;max-width:85%;font-size:clamp(1.3rem,3vw,2.25rem);line-height:1.02;letter-spacing:-.035em}`;
+if (!publisher.includes(originalPlaceholderCss) && !publisher.includes(brandedPlaceholderCss)) {
+  throw new Error('Could not locate the Learning V3 placeholder CSS; refusing an unreviewed runtime patch.');
+}
+publisher = publisher.replace(originalPlaceholderCss, brandedPlaceholderCss);
 
 await writeFile(normalizedPublisherPath, publisher);
 await import(pathToFileURL(normalizedPublisherPath).href);
