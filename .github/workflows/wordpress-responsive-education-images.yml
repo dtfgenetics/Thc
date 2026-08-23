@@ -1,0 +1,228 @@
+name: Enforce Responsive THC Education Images
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - scripts/optimize-wordpress-infographic-page-images.mjs
+      - .github/workflows/wordpress-responsive-education-images.yml
+  push:
+    branches: [main]
+    paths:
+      - scripts/optimize-wordpress-infographic-page-images.mjs
+      - .github/workflows/wordpress-responsive-education-images.yml
+  workflow_run:
+    workflows:
+      - Publish THC Infographics to WordPress Production
+      - Publish THC Topic Literature to WordPress Production
+      - Restore Canonical Lighting Infographic
+    types: [completed]
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-responsive-education-images
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Validate responsive image transformation
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Syntax and idempotence self-test
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/optimize-wordpress-infographic-page-images.mjs
+          node scripts/optimize-wordpress-infographic-page-images.mjs --self-test
+
+  apply:
+    name: Optimize and verify WordPress education images
+    if: >-
+      github.event_name != 'pull_request' &&
+      (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success')
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    environment: production
+    env:
+      NODE_OPTIONS: --dns-result-order=ipv4first
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      TOPIC_LITERATURE_CONFIG: ${{ github.workspace }}/site/wordpress/education/topic-literature.json
+      BACKUP_ROOT: /tmp/wordpress-infographic-backups
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Require protected WordPress access
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
+          node --check scripts/optimize-wordpress-infographic-page-images.mjs
+          node scripts/optimize-wordpress-infographic-page-images.mjs --self-test
+
+      - name: Apply responsive attachment sizes to education pages
+        id: optimize
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/optimize-wordpress-infographic-page-images.mjs
+          backup_dir="$(cat "$BACKUP_ROOT/responsive-image-backup-path.txt")"
+          report="$backup_dir/responsive-image-report.json"
+          test -s "$report"
+          echo "media_count=$(node -p "require(process.argv[1]).mediaItems" "$report")" >> "$GITHUB_OUTPUT"
+          echo "page_count=$(node -p "require(process.argv[1]).pagesInspected" "$report")" >> "$GITHUB_OUTPUT"
+          echo "matched_count=$(node -p "require(process.argv[1]).matchedImageTags" "$report")" >> "$GITHUB_OUTPUT"
+          echo "responsive_count=$(node -p "require(process.argv[1]).responsiveImageTags" "$report")" >> "$GITHUB_OUTPUT"
+          echo "changed_count=$(node -p "require(process.argv[1]).changedImageTags" "$report")" >> "$GITHUB_OUTPUT"
+
+      - name: Verify fresh visitors receive responsive images
+        id: verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          library="$RUNNER_TEMP/responsive-infographic-library.html"
+          ok=0
+          for attempt in 1 2 3 4 5 6 7 8; do
+            curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+              --header 'Cache-Control: no-cache, no-store, max-age=0' \
+              --header 'Pragma: no-cache' \
+              "https://dtfseeds.com/learn/infographics/?dtf_responsive=${GITHUB_RUN_ID}-${attempt}" \
+              --output "$library"
+            if grep -Fqi 'Searchable Infographic Library' "$library" && \
+               grep -Fqi 'srcset=' "$library" && \
+               grep -Fqi 'sizes=' "$library" && \
+               grep -Fqi 'dtf-responsive-education' "$library"; then
+              ok=1
+              break
+            fi
+            sleep 8
+          done
+          [[ "$ok" -eq 1 ]] || {
+            echo 'Live infographic library did not expose responsive image attributes.' >&2
+            exit 1
+          }
+
+          python3 - "$library" <<'PY'
+          import sys
+          from html.parser import HTMLParser
+          from urllib.parse import unquote
+
+          class Parser(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.current = None
+                  self.depth = 0
+                  self.anchor = None
+                  self.cards = []
+              def handle_starttag(self, tag, attrs):
+                  attrs = dict(attrs)
+                  classes = set(attrs.get('class', '').split())
+                  if tag == 'article' and 'thc-library-card' in classes and self.current is None:
+                      self.current = {'img_src': '', 'img_srcset': '', 'img_sizes': '', 'img_class': '', 'image_href': ''}
+                      self.depth = 1
+                  elif tag == 'article' and self.current is not None:
+                      self.depth += 1
+                  if self.current is None:
+                      return
+                  if tag == 'a':
+                      self.anchor = unquote(attrs.get('href', ''))
+                  elif tag == 'img':
+                      self.current['img_src'] = unquote(attrs.get('src', ''))
+                      self.current['img_srcset'] = unquote(attrs.get('srcset', ''))
+                      self.current['img_sizes'] = attrs.get('sizes', '')
+                      self.current['img_class'] = attrs.get('class', '')
+                      self.current['image_href'] = self.anchor or ''
+              def handle_endtag(self, tag):
+                  if self.current is None:
+                      return
+                  if tag == 'a':
+                      self.anchor = None
+                  if tag == 'article':
+                      self.depth -= 1
+                      if self.depth == 0:
+                          self.cards.append(self.current)
+                          self.current = None
+
+          body = open(sys.argv[1], encoding='utf-8').read()
+          p = Parser(); p.feed(body)
+          if len(p.cards) < 20:
+              raise SystemExit(f'Expected at least 20 infographic cards, found {len(p.cards)}')
+          responsive = [c for c in p.cards if c['img_srcset'] and c['img_sizes'] and 'dtf-responsive-education' in c['img_class']]
+          reduced = [c for c in responsive if c['image_href'] and c['img_src'] and c['image_href'] != c['img_src']]
+          masters = [c for c in responsive if '/wp-content/uploads/' in c['image_href']]
+          if len(responsive) < 20:
+              raise SystemExit(f'Only {len(responsive)} cards have responsive attributes')
+          if len(reduced) < 20:
+              raise SystemExit(f'Only {len(reduced)} cards use a smaller display source than their full-size link')
+          if len(masters) < 20:
+              raise SystemExit(f'Only {len(masters)} cards preserve WordPress full-size media links')
+          print(f'Verified {len(responsive)} responsive cards; {len(reduced)} use smaller display sources; full-size links preserved.')
+          PY
+
+          responsive_count="$(grep -Eoi '<img[^>]+srcset="[^"]+"' "$library" | wc -l | tr -d ' ')"
+          test "$responsive_count" -ge 20
+          echo "live_responsive_count=$responsive_count" >> "$GITHUB_OUTPUT"
+
+      - name: Upload rollback and measurement evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: wordpress-responsive-education-${{ github.run_id }}
+          path: /tmp/wordpress-infographic-backups
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report responsive image result
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          JOB_STATUS: ${{ job.status }}
+          OPTIMIZE_OUTCOME: ${{ steps.optimize.outcome }}
+          VERIFY_OUTCOME: ${{ steps.verify.outcome }}
+          MEDIA_COUNT: ${{ steps.optimize.outputs.media_count }}
+          PAGE_COUNT: ${{ steps.optimize.outputs.page_count }}
+          MATCHED_COUNT: ${{ steps.optimize.outputs.matched_count }}
+          RESPONSIVE_COUNT: ${{ steps.optimize.outputs.responsive_count }}
+          CHANGED_COUNT: ${{ steps.optimize.outputs.changed_count }}
+          LIVE_RESPONSIVE_COUNT: ${{ steps.verify.outputs.live_responsive_count }}
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 46,
+              body: [
+                '## Responsive THC education image enforcement',
+                '',
+                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                `Result: **${process.env.JOB_STATUS}**`,
+                `WordPress optimization: **${process.env.OPTIMIZE_OUTCOME || 'not-run'}**`,
+                `Fresh-visitor verification: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
+                `DTF education media discovered: **${process.env.MEDIA_COUNT || 'not-run'}**`,
+                `Education pages inspected: **${process.env.PAGE_COUNT || 'not-run'}**`,
+                `Image tags matched to canonical WordPress media: **${process.env.MATCHED_COUNT || 'not-run'}**`,
+                `Image tags with responsive attachment candidates: **${process.env.RESPONSIVE_COUNT || 'not-run'}**`,
+                `Image tags changed in this run: **${process.env.CHANGED_COUNT || 'not-run'}**`,
+                `Responsive image tags observed on live library: **${process.env.LIVE_RESPONSIVE_COUNT || 'not-run'}**`,
+                '',
+                'Full-resolution WordPress media remains the destination for Full-size links. Cards and topic-page previews use responsive attachment sizes.'
+              ].join('\n')
+            });
