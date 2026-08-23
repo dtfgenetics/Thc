@@ -7,7 +7,9 @@ on:
       - main
     paths:
       - site/wordpress/pages/**
+      - site/wordpress/products/catalog-strain-cards.json
       - scripts/apply-wordpress-public-content-rest.mjs
+      - scripts/validate-catalog-strain-cards.mjs
       - .github/workflows/wordpress-public-pages-deploy.yml
 
 permissions:
@@ -22,7 +24,7 @@ jobs:
   validate:
     name: Validate public page package
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
 
@@ -35,8 +37,10 @@ jobs:
         run: |
           set -euo pipefail
           node --check scripts/apply-wordpress-public-content-rest.mjs
+          node --check scripts/validate-catalog-strain-cards.mjs
+          node scripts/validate-catalog-strain-cards.mjs
 
-          expected=(home seeds learn community shop gallery about contact)
+          expected=(home seeds blue-mango blue-frequency mystery-line rainbow-bubblegum learn community shop gallery about contact)
           for slug in "${expected[@]}"; do
             file="site/wordpress/pages/$slug.html"
             test -s "$file"
@@ -62,6 +66,10 @@ jobs:
           grep -Fq "show_on_front: 'page'" scripts/apply-wordpress-public-content-rest.mjs
           grep -Fq 'page_on_front: expectedFrontPageId' scripts/apply-wordpress-public-content-rest.mjs
           grep -Fq 'front-page-settings-before.json' scripts/apply-wordpress-public-content-rest.mjs
+          grep -Fq '__DTF_MEDIA_MYSTERY_LINE_F1_REGULAR__' site/wordpress/pages/seeds.html
+          grep -Fq '__DTF_MEDIA_BLUE_FREQUENCY_F1_REGULAR__' site/wordpress/pages/blue-frequency.html
+          grep -Fq '__DTF_MEDIA_BLUE_MANGO_F2_REGULAR_20260823__' site/wordpress/pages/blue-mango.html
+          grep -Fq '__DTF_MEDIA_RAINBOW_BUBBLEGUM_F1_REGULAR__' site/wordpress/pages/rainbow-bubblegum.html
 
           test -s site/public-route-patch/games/index.html
           test -s site/public-route-patch/games/high-iq/index.html
@@ -114,8 +122,8 @@ jobs:
               `Validation result: **${process.env.VALIDATION_STATUS}**`,
               '',
               process.env.VALIDATION_STATUS === 'success'
-                ? 'The canonical eight-page WordPress package passed pre-deployment validation. The protected production deployment job may now proceed.'
-                : 'The canonical WordPress package failed before the protected deployment stage. Inspect this run; no production WordPress mutation was attempted by the deploy job.',
+                ? 'The canonical WordPress package and exact strain-card sources passed pre-deployment validation. The protected production deployment job may now proceed.'
+                : 'The canonical WordPress package failed before the protected deployment stage. Inspect this run; no production WordPress page mutation was attempted by the deploy job.',
               '',
               'No credential values are included in this report.'
             ].join('\n');
@@ -130,7 +138,7 @@ jobs:
     name: Back up and publish public pages
     needs: validate
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     environment: production
     env:
       WP_SITE_URL: https://dtfseeds.com
@@ -155,7 +163,7 @@ jobs:
             exit 1
           fi
 
-      - name: Reconcile canonical public pages with rollback backups
+      - name: Reconcile canonical public pages and exact strain-card media
         id: publish
         shell: bash
         run: |
@@ -165,9 +173,11 @@ jobs:
           summary="$backup_dir/deployment-summary.json"
           mutations="$(node -p "require(process.argv[1]).mutationCount" "$summary")"
           changed_pages="$(node -p "require(process.argv[1]).changedPages" "$summary")"
+          media_count="$(node -p "require(process.argv[1]).catalogMediaCount" "$summary")"
           echo "mutations=$mutations" >> "$GITHUB_OUTPUT"
           echo "changed_pages=$changed_pages" >> "$GITHUB_OUTPUT"
-          echo "WordPress reconciliation mutations: $mutations; changed pages: $changed_pages"
+          echo "media_count=$media_count" >> "$GITHUB_OUTPUT"
+          echo "WordPress reconciliation mutations: $mutations; changed pages: $changed_pages; catalog media: $media_count"
 
       - name: Verify canonical public pages on production
         shell: bash
@@ -198,7 +208,8 @@ jobs:
               'staged for verified' \
               'being rebuilt' \
               'email@email.com' \
-              '+123456789'; do
+              '+123456789' \
+              '__DTF_MEDIA_'; do
               if grep -Fqi -- "$forbidden" "$body"; then
                 echo "Forbidden live phrase remains on $path: $forbidden" >&2
                 exit 1
@@ -207,7 +218,11 @@ jobs:
           }
 
           verify_page '/' 'Genetics, cultivation education, practical tools, and original cannabis games.'
-          verify_page '/seeds/' 'Genetics built through selection, observation, and documentation.'
+          verify_page '/seeds/' 'Strain card library'
+          verify_page '/blue-mango/' 'Somango XXL × Blueberry Butcher'
+          verify_page '/blue-frequency/' 'Lineage not yet documented'
+          verify_page '/mystery-line/' 'Unknown lineage'
+          verify_page '/rainbow-bubblegum/' 'Blue Bubblegum × Rainbow Belts F1'
           verify_page '/learn/' 'Read the yellow-leaves diagnostic guide'
           verify_page '/community/' 'Join the official DTF / Teaching Healthy Cultivation Discord'
           verify_page '/contact/' 'Join the official DTF / Teaching Healthy Cultivation Discord'
@@ -227,6 +242,7 @@ jobs:
         env:
           MUTATIONS: ${{ steps.publish.outputs.mutations }}
           CHANGED_PAGES: ${{ steps.publish.outputs.changed_pages }}
+          MEDIA_COUNT: ${{ steps.publish.outputs.media_count }}
           JOB_STATUS: ${{ job.status }}
         with:
           script: |
@@ -237,13 +253,13 @@ jobs:
               `Commit: \`${context.sha}\``,
               `Event: **${context.eventName}**`,
               `Result: **${process.env.JOB_STATUS}**`,
-              `Page mutations: **${process.env.MUTATIONS || 'unknown'}**`,
+              `Mutations: **${process.env.MUTATIONS || 'unknown'}**`,
               `Pages changed: **${process.env.CHANGED_PAGES || 'unknown'}**`,
+              `Exact catalog strain-card media records: **${process.env.MEDIA_COUNT || 'unknown'}**`,
               '',
-              'Scope: Home, Seeds, Learn, Community, Shop, Gallery, About, and Contact.',
+              'Scope: Home, Seeds, four genetics line pages, Learn, Community, Shop, Gallery, About, and Contact.',
               'The canonical `home` page is also enforced as the WordPress front page served at `/`.',
               'Static `/games/` and `/games/high-iq/` routes are intentionally absent from WordPress source ownership.',
-              'Verified live targets: Home, Seeds, Learn gateway, Community, Contact.',
               'No credential values are included in this report.'
             ].join('\n');
             await github.rest.issues.createComment({
