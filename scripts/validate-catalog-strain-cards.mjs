@@ -1,10 +1,12 @@
 import { createHash } from 'node:crypto';
-import { readFile } from 'node:fs/promises';
+import { readdir, readFile } from 'node:fs/promises';
+import { join } from 'node:path';
 
 const registryPath = new URL('../site/wordpress/products/catalog-strain-cards.json', import.meta.url);
 const seedsPath = new URL('../site/wordpress/pages/seeds.html', import.meta.url);
 const registry = JSON.parse(await readFile(registryPath, 'utf8'));
 const seedsHtml = await readFile(seedsPath, 'utf8');
+const repoRoot = process.cwd();
 
 function fail(message) {
   throw new Error(`Catalog strain-card validation failed: ${message}`);
@@ -12,97 +14,132 @@ function fail(message) {
 function sha256(bytes) {
   return createHash('sha256').update(bytes).digest('hex');
 }
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+function jpegDimensions(bytes) {
+  if (bytes.length < 4 || bytes[0] !== 0xff || bytes[1] !== 0xd8) fail('invalid JPEG start marker');
+  let offset = 2;
+  const sof = new Set([0xc0, 0xc1, 0xc2, 0xc3, 0xc5, 0xc6, 0xc7, 0xc9, 0xca, 0xcb, 0xcd, 0xce, 0xcf]);
+  while (offset + 3 < bytes.length) {
+    if (bytes[offset] !== 0xff) { offset += 1; continue; }
+    while (offset < bytes.length && bytes[offset] === 0xff) offset += 1;
+    const marker = bytes[offset++];
+    if (marker === 0xd8 || marker === 0xd9 || (marker >= 0xd0 && marker <= 0xd7) || marker === 0x01) continue;
+    if (offset + 1 >= bytes.length) break;
+    const length = bytes.readUInt16BE(offset);
+    if (length < 2 || offset + length > bytes.length) break;
+    if (sof.has(marker)) {
+      if (length < 7) fail('invalid JPEG SOF segment');
+      return { height: bytes.readUInt16BE(offset + 3), width: bytes.readUInt16BE(offset + 5) };
+    }
+    offset += length;
+  }
+  fail('JPEG dimensions could not be read');
+}
+
+async function loadReviewedWebCard(card) {
+  const permanentPath = join(repoRoot, card.webAssetPath);
+  try {
+    const bytes = await readFile(permanentPath);
+    return { bytes, source: card.webAssetPath };
+  } catch (permanentError) {
+    const stagingDir = join(repoRoot, '.tmp', 'strain-card-b64', card.webStagingKey);
+    let names;
+    try {
+      names = (await readdir(stagingDir)).filter((name) => name.endsWith('.txt')).sort();
+    } catch {
+      fail(`${card.registryId} has neither permanent web asset ${card.webAssetPath} nor staging directory ${card.webStagingKey}`);
+    }
+    if (!names.length) fail(`${card.registryId} staging directory contains no chunks`);
+    const parts = [];
+    for (const name of names) parts.push(await readFile(join(stagingDir, name), 'utf8'));
+    const encoded = parts.join('').replace(/\s+/g, '');
+    if (!encoded || encoded.length % 4 !== 0 || !/^[A-Za-z0-9+/]+={0,2}$/.test(encoded)) {
+      fail(`${card.registryId} staging data is not valid base64`);
+    }
+    return { bytes: Buffer.from(encoded, 'base64'), source: `.tmp/strain-card-b64/${card.webStagingKey}` };
+  }
+}
+
+function verifyReviewedWebCard(card, loaded) {
+  const { bytes, source } = loaded;
+  const hash = sha256(bytes);
+  if (bytes.length !== Number(card.webByteLength)) fail(`${card.registryId} web byte length ${bytes.length} != ${card.webByteLength}`);
+  if (hash !== card.webSha256) fail(`${card.registryId} web SHA-256 ${hash} != ${card.webSha256}`);
+  if (bytes.subarray(0, 3).toString('hex') !== 'ffd8ff' || bytes.subarray(-2).toString('hex') !== 'ffd9') {
+    fail(`${card.registryId} web asset is not a complete JPEG`);
+  }
+  const dimensions = jpegDimensions(bytes);
+  if (dimensions.width !== Number(card.webWidth) || dimensions.height !== Number(card.webHeight)) {
+    fail(`${card.registryId} web dimensions ${dimensions.width}×${dimensions.height} != ${card.webWidth}×${card.webHeight}`);
+  }
+  return { source, byteLength: bytes.length, sha256: hash, width: dimensions.width, height: dimensions.height };
+}
 
 if (registry?.schemaVersion !== 1) fail('schemaVersion must be 1');
 if (!Array.isArray(registry?.cards) || registry.cards.length === 0) fail('cards must be a non-empty array');
-if (registry.policy?.requireExactHash !== true) fail('requireExactHash must be true');
+if (registry.policy?.requireExactMasterHash !== true) fail('requireExactMasterHash must be true');
+if (registry.policy?.requireExactWebDerivativeHash !== true) fail('requireExactWebDerivativeHash must be true');
 
 const ids = new Set();
 const driveIds = new Set();
 const mediaSlugs = new Set();
 const placeholders = new Set();
 const detailPaths = new Set();
+const webPaths = new Set();
+const stagingKeys = new Set();
+const verified = [];
 
-async function fetchBytes(url, attempts = 3) {
-  let lastError;
-  for (let attempt = 1; attempt <= attempts; attempt += 1) {
-    try {
-      const response = await fetch(url, {
-        redirect: 'follow',
-        signal: AbortSignal.timeout(45_000),
-        headers: { 'User-Agent': 'DTFSeeds-Catalog-Card-Validator/1.0' }
-      });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      return Buffer.from(await response.arrayBuffer());
-    } catch (error) {
-      lastError = error;
-      if (attempt < attempts) await sleep(attempt * 1500);
-    }
-  }
-  throw lastError;
-}
-
-async function downloadExact(card) {
-  const urls = [
-    `https://drive.usercontent.google.com/download?id=${encodeURIComponent(card.driveFileId)}&export=download&confirm=t`,
-    `https://drive.google.com/uc?export=download&id=${encodeURIComponent(card.driveFileId)}&confirm=t`
-  ];
-  const failures = [];
-  for (const url of urls) {
-    try {
-      const bytes = await fetchBytes(url);
-      if (bytes.length !== Number(card.byteLength)) throw new Error(`byte length ${bytes.length} != ${card.byteLength}`);
-      const hash = sha256(bytes);
-      if (hash !== card.sha256) throw new Error(`SHA-256 ${hash} != ${card.sha256}`);
-      if (bytes.subarray(0, 3).toString('hex') !== 'ffd8ff') throw new Error('JPEG start marker missing');
-      if (bytes.subarray(-2).toString('hex') !== 'ffd9') throw new Error('JPEG end marker missing');
-      return { url, bytes: bytes.length, sha256: hash };
-    } catch (error) {
-      failures.push(`${url}: ${error.message}`);
-    }
-  }
-  fail(`${card.registryId} exact Drive source is not publicly downloadable: ${failures.join(' | ')}`);
-}
-
-const downloadResults = [];
 for (const card of registry.cards) {
-  for (const [field, value] of Object.entries({
+  const required = {
     registryId: card.registryId,
     canonicalName: card.canonicalName,
     generation: card.generation,
     seedType: card.seedType,
     driveFileId: card.driveFileId,
-    fileName: card.fileName,
-    mimeType: card.mimeType,
+    masterFileName: card.masterFileName,
+    masterMimeType: card.masterMimeType,
+    masterSha256: card.masterSha256,
+    webStagingKey: card.webStagingKey,
+    webAssetPath: card.webAssetPath,
+    webFileName: card.webFileName,
+    webMimeType: card.webMimeType,
+    webSha256: card.webSha256,
     wordpressSlug: card.wordpressSlug,
     altText: card.altText,
     placeholder: card.placeholder,
     detailPath: card.detailPath
-  })) {
+  };
+  for (const [field, value] of Object.entries(required)) {
     if (!String(value || '').trim()) fail(`${card.registryId || 'unknown'} missing ${field}`);
   }
 
-  if (ids.has(card.registryId)) fail(`duplicate registryId ${card.registryId}`);
-  if (driveIds.has(card.driveFileId)) fail(`duplicate driveFileId ${card.driveFileId}`);
-  if (mediaSlugs.has(card.wordpressSlug)) fail(`duplicate wordpressSlug ${card.wordpressSlug}`);
-  if (placeholders.has(card.placeholder)) fail(`duplicate placeholder ${card.placeholder}`);
-  if (detailPaths.has(card.detailPath)) fail(`duplicate detailPath ${card.detailPath}`);
-  ids.add(card.registryId);
-  driveIds.add(card.driveFileId);
-  mediaSlugs.add(card.wordpressSlug);
-  placeholders.add(card.placeholder);
-  detailPaths.add(card.detailPath);
+  const uniqueFields = [
+    [ids, card.registryId, 'registryId'],
+    [driveIds, card.driveFileId, 'driveFileId'],
+    [mediaSlugs, card.wordpressSlug, 'wordpressSlug'],
+    [placeholders, card.placeholder, 'placeholder'],
+    [detailPaths, card.detailPath, 'detailPath'],
+    [webPaths, card.webAssetPath, 'webAssetPath'],
+    [stagingKeys, card.webStagingKey, 'webStagingKey']
+  ];
+  for (const [set, value, label] of uniqueFields) {
+    if (set.has(value)) fail(`duplicate ${label} ${value}`);
+    set.add(value);
+  }
 
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(card.registryId)) fail(`${card.registryId} has invalid registryId`);
   if (!/^F[1-9][0-9]*$/.test(card.generation)) fail(`${card.registryId} has invalid generation ${card.generation}`);
   if (!['regular', 'feminized', 'autoflower-regular', 'autoflower-feminized'].includes(card.seedType)) fail(`${card.registryId} has invalid seedType ${card.seedType}`);
-  if (card.mimeType !== 'image/jpeg') fail(`${card.registryId} must be image/jpeg`);
-  if (!/\.jpe?g$/i.test(card.fileName)) fail(`${card.registryId} filename must use a JPEG extension`);
-  if (!Number.isInteger(card.byteLength) || card.byteLength < 1000) fail(`${card.registryId} has invalid byteLength`);
-  if (!/^[a-f0-9]{64}$/.test(card.sha256 || '')) fail(`${card.registryId} has invalid SHA-256`);
+  if (card.masterMimeType !== 'image/jpeg' || card.webMimeType !== 'image/jpeg') fail(`${card.registryId} master and web mime types must be image/jpeg`);
+  if (!/\.jpe?g$/i.test(card.masterFileName) || !/\.jpe?g$/i.test(card.webFileName)) fail(`${card.registryId} JPEG filenames are required`);
+  if (!Number.isInteger(card.masterByteLength) || card.masterByteLength < 1000) fail(`${card.registryId} has invalid masterByteLength`);
+  if (!Number.isInteger(card.webByteLength) || card.webByteLength < 1000) fail(`${card.registryId} has invalid webByteLength`);
+  if (!Number.isInteger(card.webWidth) || !Number.isInteger(card.webHeight) || card.webWidth < 320 || card.webHeight < 480) fail(`${card.registryId} has invalid web dimensions`);
+  if (!/^[a-f0-9]{64}$/.test(card.masterSha256 || '')) fail(`${card.registryId} has invalid master SHA-256`);
+  if (!/^[a-f0-9]{64}$/.test(card.webSha256 || '')) fail(`${card.registryId} has invalid web SHA-256`);
   if (!/^__DTF_MEDIA_[A-Z0-9_]+__$/.test(card.placeholder)) fail(`${card.registryId} has invalid placeholder`);
   if (!/^\/[a-z0-9-]+\/$/.test(card.detailPath)) fail(`${card.registryId} has invalid detailPath`);
+  if (!/^site\/wordpress\/assets\/genetics\/[a-z0-9-]+\.jpe?g$/.test(card.webAssetPath)) fail(`${card.registryId} has invalid webAssetPath`);
   if (card.lineage !== null && !String(card.lineage).includes('×')) fail(`${card.registryId} documented lineage must use ×`);
   if (card.floweringWindowWeeks !== null) {
     const w = card.floweringWindowWeeks;
@@ -123,11 +160,17 @@ for (const card of registry.cards) {
   if (!pageHtml.includes(card.placeholder)) fail(`${slug}.html is missing its exact media placeholder`);
   if (card.lineage && !pageHtml.includes(card.lineage)) fail(`${slug}.html is missing documented lineage ${card.lineage}`);
 
-  downloadResults.push({ registryId: card.registryId, ...(await downloadExact(card)) });
+  verified.push({ registryId: card.registryId, ...(verifyReviewedWebCard(card, await loadReviewedWebCard(card))) });
 }
 
 console.log(JSON.stringify({
   ok: true,
   cardCount: registry.cards.length,
-  exactSourcesVerified: downloadResults
+  controlledMasterRecords: registry.cards.map((card) => ({
+    registryId: card.registryId,
+    driveFileId: card.driveFileId,
+    masterByteLength: card.masterByteLength,
+    masterSha256: card.masterSha256
+  })),
+  reviewedWebAssetsVerified: verified
 }, null, 2));
