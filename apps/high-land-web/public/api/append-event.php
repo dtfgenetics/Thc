@@ -15,26 +15,17 @@ if ($event === []) {
     api_send_json(['ok' => false, 'error' => 'event is required.'], 400);
 }
 
-$playerId = api_clean_string($data['playerId'] ?? $event['playerId'] ?? '', 80);
+$playerId = api_clean_string($data['playerId'] ?? '', 80);
+$credential = api_clean_string($data['credential'] ?? '', 256);
 if ($playerId === '') {
-    $playerId = 'system-event';
+    api_send_json(['ok' => false, 'error' => 'playerId is required.'], 400);
 }
 
-$room = api_mutate_room($roomCode, function (array $room) use ($event, $playerId): array {
-    if ($playerId !== 'system-event') {
-        $players = is_array($room['players'] ?? null) ? $room['players'] : [];
-        $playerIds = [];
-        foreach ($players as $player) {
-            $playerIds[] = is_array($player) ? ($player['id'] ?? '') : '';
-        }
-
-        if (!in_array($playerId, $playerIds, true)) {
-            api_send_json(['ok' => false, 'error' => 'Player is not in this room.'], 403);
-        }
-    }
+$room = api_mutate_room($roomCode, function (array $room) use ($event, $playerId, $credential): array {
+    api_require_player_credential($room, $playerId, $credential);
 
     $nextEvent = $event;
-    $nextEvent['playerId'] = $playerId === 'system-event' ? ($event['playerId'] ?? null) : $playerId;
+    $nextEvent['playerId'] = $playerId;
     $nextEvent['createdAt'] = api_now();
     $room['events'][] = $nextEvent;
 
@@ -43,5 +34,5 @@ $room = api_mutate_room($roomCode, function (array $room) use ($event, $playerId
 
 api_send_json([
     'ok' => true,
-    'room' => $room
+    'room' => api_public_room($room)
 ]);

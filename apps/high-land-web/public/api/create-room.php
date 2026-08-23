@@ -13,5 +13,5 @@ $room = api_create_room($data);
 
 api_send_json([
     'ok' => true,
-    'room' => $room
+    'room' => api_public_room($room)
 ]);

@@ -14,7 +14,7 @@ export async function startRoomWithTransport(
 
   const result = startRoomGameplay(room);
   const updatedRoom = await transport.updateGameState(room.code, result.room.gameState!, requestingPlayerId);
-  await appendEventsBestEffort(room.code, result.events, transport);
+  await appendEventsBestEffort(room.code, result.events, transport, requestingPlayerId);
 
   return {
     ...updatedRoom,
@@ -35,7 +35,7 @@ export async function rollRoomWithTransport(
 
   const result = rollRoomGameplay(room, random);
   const updatedRoom = await transport.updateGameState(room.code, result.room.gameState!, requestingPlayerId);
-  await appendEventsBestEffort(room.code, result.events, transport);
+  await appendEventsBestEffort(room.code, result.events, transport, requestingPlayerId);
 
   return {
     ...updatedRoom,
@@ -44,10 +44,15 @@ export async function rollRoomWithTransport(
   };
 }
 
-async function appendEventsBestEffort(roomCode: string, events: HighLandGameEvent[], transport: RoomTransport): Promise<void> {
+async function appendEventsBestEffort(
+  roomCode: string,
+  events: HighLandGameEvent[],
+  transport: RoomTransport,
+  requestingPlayerId: string
+): Promise<void> {
   for (const event of events) {
     try {
-      await transport.appendEvent(roomCode, event);
+      await transport.appendEvent(roomCode, event, requestingPlayerId);
     } catch (error) {
       console.warn('High Land room event log failed after state sync.', error);
     }

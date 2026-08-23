@@ -8,10 +8,11 @@
 
 declare(strict_types=1);
 
-const THC_GAME_API_VERSION = '1.0.0';
+const THC_GAME_API_VERSION = '1.1.0';
 const THC_GAME_ROOM_CODE_LENGTH = 6;
 const THC_GAME_MAX_PLAYERS_DEFAULT = 10;
 const THC_GAME_ROOM_TTL_SECONDS = 86400;
+const THC_GAME_CREDENTIAL_MIN_LENGTH = 32;
 
 function api_send_json(array $payload, int $statusCode = 200): void
 {
@@ -114,6 +115,23 @@ function api_generate_room_code(): string
     return $code;
 }
 
+function api_require_credential_value(array $data): string
+{
+    $credential = api_clean_string($data['credential'] ?? '', 256);
+    if (strlen($credential) < THC_GAME_CREDENTIAL_MIN_LENGTH) {
+        api_send_json([
+            'ok' => false,
+            'error' => 'A valid room credential is required.'
+        ], 401);
+    }
+    return $credential;
+}
+
+function api_hash_credential(string $credential): string
+{
+    return hash('sha256', $credential);
+}
+
 function api_new_player(array $data, int $index): array
 {
     $defaultName = 'Player ' . ($index + 1);
@@ -127,6 +145,8 @@ function api_new_player(array $data, int $index): array
         $id = 'player-' . bin2hex(random_bytes(6));
     }
 
+    $credential = api_require_credential_value($data);
+
     return [
         'id' => $id,
         'name' => $name,
@@ -134,7 +154,8 @@ function api_new_player(array $data, int $index): array
         'color' => api_clean_string($data['color'] ?? api_default_player_color($index), 20),
         'host' => (bool)($data['host'] ?? false),
         'connected' => true,
-        'joinedAt' => api_now()
+        'joinedAt' => api_now(),
+        'authHash' => api_hash_credential($credential)
     ];
 }
 
@@ -158,6 +179,47 @@ function api_read_room(string $roomCode): ?array
 
     $room = json_decode($contents, true);
     return is_array($room) ? $room : null;
+}
+
+function api_public_room(array $room): array
+{
+    $public = $room;
+    $players = is_array($room['players'] ?? null) ? $room['players'] : [];
+    $public['players'] = array_map(static function ($player): array {
+        if (!is_array($player)) {
+            return [];
+        }
+        unset($player['authHash'], $player['credential']);
+        return $player;
+    }, $players);
+    return $public;
+}
+
+function api_require_player_credential(array $room, string $playerId, string $credential): array
+{
+    if ($playerId === '') {
+        api_send_json(['ok' => false, 'error' => 'playerId is required.'], 400);
+    }
+
+    $credential = api_clean_string($credential, 256);
+    if (strlen($credential) < THC_GAME_CREDENTIAL_MIN_LENGTH) {
+        api_send_json(['ok' => false, 'error' => 'A valid room credential is required.'], 401);
+    }
+
+    $players = is_array($room['players'] ?? null) ? $room['players'] : [];
+    foreach ($players as $player) {
+        if (!is_array($player) || ($player['id'] ?? '') !== $playerId) {
+            continue;
+        }
+
+        $storedHash = api_clean_string($player['authHash'] ?? '', 128);
+        if ($storedHash === '' || !hash_equals($storedHash, api_hash_credential($credential))) {
+            api_send_json(['ok' => false, 'error' => 'Room credential rejected.'], 403);
+        }
+        return $player;
+    }
+
+    api_send_json(['ok' => false, 'error' => 'Player is not in this room.'], 403);
 }
 
 function api_write_room(array $room): array
