@@ -69,7 +69,7 @@ jobs:
 
           check_route '/games/' 'Pick what is playable. See what is coming next.' 'hub'
           check_route '/tools/' 'Measure it. Document it. Diagnose with context.' 'hub'
-          check_route '/projects/' 'One place to see what is live now and what we are building next.' 'hub'
+          check_route '/projects/' 'What is live, what is growing, and where it belongs.' 'hub'
           check_route '/growlens/' 'GrowLens' 'tool'
           check_route '/thc-grow-doc/' 'Grow Doc' 'tool'
           check_route '/games/high-iq/' 'High IQ' 'game'
