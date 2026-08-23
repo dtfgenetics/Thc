@@ -52,6 +52,24 @@ jobs:
             php -l "$file"
           done
 
+      - name: Verify room authorization and private storage contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          api='apps/high-land-web/public/api'
+          grep -Fq "'authHash' => api_auth_hash(\$authKey)" "$api/_shared.php"
+          grep -Fq "unset(\$player['authHash'])" "$api/_shared.php"
+          grep -Fq 'function api_require_player_auth' "$api/_shared.php"
+          grep -Fq 'api_public_room($room)' "$api/create-room.php"
+          grep -Fq 'api_public_room($room)' "$api/get-room.php"
+          grep -Fq 'api_require_player_auth($room, $incomingPlayerId, $authKey)' "$api/join-room.php"
+          grep -Fq 'api_require_player_auth($room, $playerId, $authKey)' "$api/update-room.php"
+          grep -Fq 'api_require_player_auth($room, $playerId, $authKey)' "$api/append-event.php"
+          grep -Fq 'Require all denied' "$api/_rooms/.htaccess"
+          ! grep -Fq "'authHash'" "$api/get-room.php"
+          grep -Fq 'high-land-room-auth-v1' apps/high-land-web/src/game/multiplayer/websiteRoomTransport.ts
+          grep -Fq 'Secure room session is missing' apps/high-land-web/src/game/multiplayer/websiteRoomTransport.ts
+
       - name: Upload High Land build artifact
         if: success()
         uses: actions/upload-artifact@v4
