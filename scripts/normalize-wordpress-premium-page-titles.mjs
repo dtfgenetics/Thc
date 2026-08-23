@@ -15,20 +15,17 @@ const backupDir=join(backupRoot,`premium-title-${stamp}`);
 await mkdir(backupDir,{recursive:true});
 const sleep=(ms)=>new Promise(r=>setTimeout(r,ms));
 
-// Each page may temporarily exist in canonical editorial form or in its richer
-// visual-rebuild form. Both are intentionally designed pages with their own H1.
-// Accept only known exact hero markers so the normalizer still fails closed if
-// a page is unexpectedly replaced with unrelated content.
+// V3 owns Home/Learn and V4 owns Genetics/Shop. Keep this small normalizer
+// deliberately limited to editorial pages that are not owned by those visual
+// layers so production polishers do not fight each other.
 const targets=[
-  {slug:'seeds',markers:['From breeding notes to current releases.']},
-  {slug:'learn',markers:['Learn the plant as a connected system.','Understand the plant. Build the environment. Make better decisions.']},
   {slug:'community',markers:['Grow together. Learn together. Build together.']},
   {slug:'gallery',markers:['DTF Visual Library','See the plant science, genetics, tools, games, and community work.']}
 ];
 
 const STYLE_ID='dtf-premium-theme-title-suppression';
 const STYLE=`<style id="${STYLE_ID}">
-/* These four pages provide their own designed hero heading. Suppress only the WordPress/theme-generated duplicate title on the page where this style is embedded. */
+/* This page provides its own designed hero H1. Suppress the theme-generated duplicate title only on this page. */
 body.page h1.entry-title,
 body.page .entry-header > h1.entry-title,
 body.page .page-header > h1.page-title,
@@ -42,7 +39,7 @@ async function request(path,options={}){
   let last;
   for(let attempt=1;attempt<=6;attempt+=1){
     try{
-      const response=await fetch(`${siteUrl}${path}`,{...options,redirect:'follow',signal:AbortSignal.timeout(60000),headers:{Authorization:auth,Accept:'application/json','User-Agent':'DTFSeeds-Premium-Title-Normalizer/1.2',...(options.body?{'Content-Type':'application/json'}:{}),...(options.headers||{})}});
+      const response=await fetch(`${siteUrl}${path}`,{...options,redirect:'follow',signal:AbortSignal.timeout(60000),headers:{Authorization:auth,Accept:'application/json','User-Agent':'DTFSeeds-Premium-Title-Normalizer/2.0',...(options.body?{'Content-Type':'application/json'}:{}),...(options.headers||{})}});
       const text=await response.text();let body=null;try{body=text?JSON.parse(text):null;}catch{body=text;}
       if((response.status>=500||response.status===429)&&attempt<6){await sleep(attempt*1800);continue;}
       if(!response.ok) throw new Error(`${options.method||'GET'} ${path} failed (${response.status}): ${typeof body==='string'?body.slice(0,500):JSON.stringify(body).slice(0,500)}`);
@@ -57,39 +54,6 @@ function normalizeThemeTitle(content){
   const re=new RegExp(`<style\\s+id=["']${STYLE_ID}["'][^>]*>[\\s\\S]*?<\\/style>\\s*`,'i');
   return `${STYLE}\n${String(content).replace(re,'').trimStart()}`;
 }
-function normalizeSeedsLinks(content){
-  let out=String(content);
-  const changes=[];
-  const rules=[
-    {
-      label:'Learn the genetics',
-      pattern:/href="\/learn\/"([^>]*)>Learn the genetics<\/a>/g,
-      replacement:'href="/learn/genetics-breeding/"$1>Learn the genetics</a>',
-      to:'/learn/genetics-breeding/'
-    },
-    {
-      label:'Study genetics & breeding',
-      pattern:/href="\/learn\/"([^>]*)>Study genetics (?:&amp;|&) breeding<\/a>/g,
-      replacement:'href="/learn/genetics-breeding/"$1>Study genetics &amp; breeding</a>',
-      to:'/learn/genetics-breeding/'
-    },
-    {
-      label:'Document your grow',
-      pattern:/href="\/tools\/"([^>]*)>Document your grow<\/a>/g,
-      replacement:'href="/growlens/"$1>Document your grow</a>',
-      to:'/growlens/'
-    }
-  ];
-  for(const rule of rules){
-    const matches=[...out.matchAll(rule.pattern)];
-    if(matches.length>1) throw new Error(`seeds: expected at most one ${rule.label} CTA, found ${matches.length}.`);
-    if(matches.length===1){
-      out=out.replace(rule.pattern,rule.replacement);
-      changes.push({label:rule.label,to:rule.to});
-    }
-  }
-  return {content:out,changes};
-}
 
 const results=[];
 for(const target of targets){
@@ -100,14 +64,7 @@ for(const target of targets){
   const marker=knownMarker(before,target);
   if(!marker) throw new Error(`${target.slug}: no approved designed-hero marker is present; refusing title normalization.`);
   if(!/<h1\b/i.test(before)) throw new Error(`${target.slug}: no custom H1 found; refusing to hide the theme title.`);
-
-  let after=normalizeThemeTitle(before);
-  let linkChanges=[];
-  if(target.slug==='seeds'){
-    const normalizedLinks=normalizeSeedsLinks(after);
-    after=normalizedLinks.content;
-    linkChanges=normalizedLinks.changes;
-  }
+  const after=normalizeThemeTitle(before);
 
   await writeFile(join(backupDir,`page-${page.id}-${target.slug}-before.json`),`${JSON.stringify(page,null,2)}\n`);
   if(apply&&after!==before){await request(`/wp-json/wp/v2/pages/${page.id}`,{method:'POST',body:JSON.stringify({content:after,status:'publish'})});}
@@ -115,10 +72,7 @@ for(const target of targets){
   const current=rendered(check.content);
   if(apply&&!current.includes(`id="${STYLE_ID}"`)) throw new Error(`${target.slug}: scoped title suppression was not persisted.`);
   if(!knownMarker(current,target)) throw new Error(`${target.slug}: approved hero marker changed unexpectedly.`);
-  if(target.slug==='seeds' && /Document your grow<\/a>/i.test(current) && !/href="\/growlens\/"[^>]*>Document your grow<\/a>/i.test(current)) throw new Error('seeds: Document your grow CTA is not routed directly to GrowLens.');
-  if(target.slug==='seeds' && /Study genetics (?:&amp;|&) breeding<\/a>/i.test(current) && !/href="\/learn\/genetics-breeding\/"[^>]*>Study genetics (?:&amp;|&) breeding<\/a>/i.test(current)) throw new Error('seeds: genetics study CTA is not routed to the genetics subject page.');
-  if(target.slug==='seeds' && /Learn the genetics<\/a>/i.test(current) && !/href="\/learn\/genetics-breeding\/"[^>]*>Learn the genetics<\/a>/i.test(current)) throw new Error('seeds: genetics hero CTA is not routed to the genetics subject page.');
-  results.push({slug:target.slug,pageId:page.id,changed:after!==before,applied:apply,marker,linkChanges});
+  results.push({slug:target.slug,pageId:page.id,changed:after!==before,applied:apply,marker});
 }
 
 const report={generatedAt:new Date().toISOString(),siteUrl,apply,backupDir,styleId:STYLE_ID,targets:results};
