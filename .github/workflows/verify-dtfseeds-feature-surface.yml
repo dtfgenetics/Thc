@@ -47,7 +47,7 @@ jobs:
                 -o "$body" -w '%{http_code}' \
                 -H 'Cache-Control: no-cache, no-store, max-age=0' \
                 -H 'Pragma: no-cache' \
-                -H 'User-Agent: DTFSeeds-Feature-Audit/2.1' \
+                -H 'User-Agent: DTFSeeds-Feature-Audit/2.2' \
                 "$SITE${path}?dtf_feature_audit=${token}" || printf '000')"
               final_url="$(curl -4 -sS -L -o /dev/null -w '%{url_effective}' \
                 --connect-timeout 15 --max-time 45 \
@@ -67,8 +67,8 @@ jobs:
             if [[ "$ok" != 'yes' ]]; then failures=$((failures+1)); fi
           }
 
-          check_route '/games/' 'Original cannabis games built to play, learn, compete, and share.' 'hub'
-          check_route '/tools/' 'Practical tools built around observation, records, and evidence.' 'hub'
+          check_route '/games/' 'Pick what is playable. See what is coming next.' 'hub'
+          check_route '/tools/' 'Measure it. Document it. Diagnose with context.' 'hub'
           check_route '/projects/' 'One place to see what is live now and what we are building next.' 'hub'
           check_route '/growlens/' 'GrowLens' 'tool'
           check_route '/thc-grow-doc/' 'Grow Doc' 'tool'
@@ -129,7 +129,7 @@ jobs:
                 '|---|---|---:|---|---:|---|---|',
                 ...(rows.length ? rows : ['| - | - | ? | ? | ? | **MISSING/BROKEN** | - |']),
                 '',
-                'Read-only fresh-runner audit. It now includes both public multiplayer routes in addition to the game/tool hubs and single-player applications.'
+                'Read-only fresh-runner audit. It includes both public multiplayer routes and checks the current visual-system hub headlines rather than retired copy.'
               ].join('\n')
             });
             if (!complete) core.setFailed(`Feature audit report is incomplete: ${total}/15 routes, ${rows.length} rows.`);
