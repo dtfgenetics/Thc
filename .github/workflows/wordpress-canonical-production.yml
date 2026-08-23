@@ -53,6 +53,7 @@ jobs:
           node --check scripts/apply-wordpress-public-content-rest.mjs
           node --check scripts/audit-wordpress-commerce-rest.mjs
           node --check scripts/rebuild-wordpress-visual-site.mjs
+          node --check scripts/rebuild-wordpress-commerce-visuals.mjs
           node --check scripts/reconcile-woocommerce-products.mjs
           node --check scripts/rollback-woocommerce-products.mjs
           node scripts/validate-genetics-commerce.mjs
@@ -109,9 +110,24 @@ jobs:
           echo "brand_id=$(node -p "require(process.argv[1]).brandMediaId" "$report")" >> "$GITHUB_OUTPUT"
           echo "missing=$(node -p "require(process.argv[1]).missingSelections.join(',')" "$report")" >> "$GITHUB_OUTPUT"
 
+      - name: Rebuild polished Seeds and Shop and set URL brand image
+        id: commerce_visual
+        if: steps.visual.outcome == 'success'
+        env:
+          APPLY_COMMERCE_VISUALS: 'true'
+          BACKUP_ROOT: /tmp/wordpress-production-backups/commerce-visual
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/rebuild-wordpress-commerce-visuals.mjs
+          dir="$(cat "$BACKUP_ROOT/commerce-visual-backup-path.txt")"
+          report="$dir/commerce-visual-report.json"
+          echo "brand_id=$(node -p "require(process.argv[1]).brandMediaId" "$report")" >> "$GITHUB_OUTPUT"
+          echo "aioseo_routes=$(node -p "require(process.argv[1]).aioseoRoutes.length" "$report")" >> "$GITHUB_OUTPUT"
+
       - name: Verify DTF cannabis-leaf site icon through WordPress REST
         id: icon
-        if: steps.visual.outcome == 'success'
+        if: steps.commerce_visual.outcome == 'success'
         shell: bash
         run: |
           set -euo pipefail
@@ -137,22 +153,18 @@ jobs:
             local path="$1"
             local required="$2"
             local minimum="$3"
-            local key
-            local body
-            local ok=0
-            local count=0
+            local key body ok count
             key="$(echo "$path" | tr '/?' '__')"
             body="$RUNNER_TEMP/wp-production-${key}.html"
+            ok=0
+            count=0
             for attempt in 1 2 3 4 5 6 7 8; do
               curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
                 --header 'Cache-Control: no-cache, no-store, max-age=0' \
                 --header 'Pragma: no-cache' \
                 "$WP_SITE_URL${path}?dtf_wp_production=${GITHUB_RUN_ID}-${attempt}" \
                 --output "$body"
-              if grep -Fqi -- "$required" "$body"; then
-                ok=1
-                break
-              fi
+              if grep -Fqi -- "$required" "$body"; then ok=1; break; fi
               sleep 8
             done
             if [[ "$ok" -ne 1 ]]; then
@@ -186,16 +198,35 @@ jobs:
           }
           verify_page '/' 'Genetics. Plant science. Tools. Games. Community.' 8
           verify_page '/learn/' 'Explore by subject' 10
-          verify_page '/seeds/' 'Shop current releases' 0
-          verify_page '/shop/' 'Shop current DTF releases without losing the breeding context.' 0
+          verify_page '/seeds/' 'From breeding notes to current releases.' 2
+          verify_page '/shop/' 'Shop the line. Read the story.' 2
           verify_page '/community/' 'Join the official DTF / Teaching Healthy Cultivation Discord' 0
           verify_page '/contact/' 'Join the official DTF / Teaching Healthy Cultivation Discord' 0
-          grep -Fqi 'DTF Genetics cannabis leaf' "$RUNNER_TEMP/wp-production-_.html"
-          grep -Eqi '<link[^>]+rel=["'"'](shortcut )?icon["'"']' "$RUNNER_TEMP/wp-production-_.html"
+
+      - name: Verify browser icon and URL social image on live homepage
+        id: url_image
+        if: steps.verify.outcome == 'success'
+        shell: bash
+        run: |
+          set -euo pipefail
+          body="$RUNNER_TEMP/wp-production-_.html"
+          node - <<'NODE' "$body"
+          const fs=require('fs');
+          const path=process.argv[2];
+          const html=fs.readFileSync(path,'utf8');
+          if(/\/assets\/dtf-home\/dtf-mark\.svg/i.test(html)) throw new Error('Old static favicon remains live.');
+          if(/\/wp-content\/uploads\/2025\/07\/1000007006-1024x450\.png/i.test(html)) throw new Error('Old 2025 social preview image remains live.');
+          const iconTags=[...html.matchAll(/<link\b[^>]*rel=["'][^"']*icon[^"']*["'][^>]*>/gi)].map(m=>m[0]);
+          if(!iconTags.some(tag=>/wp-content\/uploads\//i.test(tag))) throw new Error(`No WordPress-controlled live favicon found: ${iconTags.slice(0,4).join(' ')}`);
+          const ogTags=[...html.matchAll(/<meta\b[^>]*property=["']og:image["'][^>]*>/gi)].map(m=>m[0]);
+          if(!ogTags.length) throw new Error('No live og:image meta tag found.');
+          if(!ogTags.some(tag=>/dtf-potleaf-512\.png/i.test(tag))) throw new Error(`og:image is not the controlled DTF brand media: ${ogTags.join(' ')}`);
+          console.log('Live favicon and og:image use current DTF-controlled media.');
+          NODE
 
       - name: Reconcile canonical WooCommerce product copy and categories
         id: commerce_reconcile
-        if: steps.verify.outcome == 'success'
+        if: steps.url_image.outcome == 'success'
         continue-on-error: true
         shell: bash
         env:
@@ -242,15 +273,15 @@ jobs:
           JOB_STATUS: ${{ job.status }}
           USER_PRESENT: ${{ steps.access.outputs.user_present }}
           PASSWORD_PRESENT: ${{ steps.access.outputs.password_present }}
-          WC_KEY_PRESENT: ${{ steps.access.outputs.wc_key_present }}
-          WC_SECRET_PRESENT: ${{ steps.access.outputs.wc_secret_present }}
-          COMMERCE_CAPABILITY_OUTCOME: ${{ steps.commerce_capabilities.outcome }}
           PUBLISH_OUTCOME: ${{ steps.publish.outcome }}
           VISUAL_OUTCOME: ${{ steps.visual.outcome }}
+          COMMERCE_VISUAL_OUTCOME: ${{ steps.commerce_visual.outcome }}
           VERIFY_OUTCOME: ${{ steps.verify.outcome }}
+          URL_IMAGE_OUTCOME: ${{ steps.url_image.outcome }}
           SITE_ICON: ${{ steps.icon.outputs.site_icon }}
           MEDIA_COUNT: ${{ steps.visual.outputs.media_count }}
           MISSING: ${{ steps.visual.outputs.missing }}
+          AIOSEO_ROUTES: ${{ steps.commerce_visual.outputs.aioseo_routes }}
           COMMERCE_RECONCILE_OUTCOME: ${{ steps.commerce_reconcile.outcome }}
           COMMERCE_ROLLBACK_OUTCOME: ${{ steps.commerce_rollback.outcome }}
           MUTATIONS: ${{ steps.publish.outputs.mutations }}
@@ -264,15 +295,18 @@ jobs:
               `WordPress username configured: **${process.env.USER_PRESENT || 'false'}**`,
               `WordPress application password configured: **${process.env.PASSWORD_PRESENT || 'false'}**`,
               `Canonical page reconciliation: **${process.env.PUBLISH_OUTCOME || 'not-run'}**`,
-              `DTF visual rebuild: **${process.env.VISUAL_OUTCOME || 'not-run'}**`,
+              `Home/Learn visual rebuild: **${process.env.VISUAL_OUTCOME || 'not-run'}**`,
+              `Seeds/Shop visual rebuild: **${process.env.COMMERCE_VISUAL_OUTCOME || 'not-run'}**`,
               `Cannabis-leaf Site Icon media ID: **${process.env.SITE_ICON || 'not-run'}**`,
               `WordPress media indexed for visual composition: **${process.env.MEDIA_COUNT || 'not-run'}**`,
               `Live visual verification: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
+              `Live favicon + URL social image verification: **${process.env.URL_IMAGE_OUTCOME || 'not-run'}**`,
+              `AIOSEO/social route candidates discovered: **${process.env.AIOSEO_ROUTES || '0'}**`,
               `Optional visual slots unmatched: **${process.env.MISSING || 'none'}**`,
               `WooCommerce reconciliation: **${process.env.COMMERCE_RECONCILE_OUTCOME || 'not-run'}**`,
               `WooCommerce rollback: **${process.env.COMMERCE_ROLLBACK_OUTCOME || 'not-needed'}**`,
               `Page mutations before visual composition: **${process.env.MUTATIONS || 'not-run'}**`,
               `Pages changed before visual composition: **${process.env.CHANGED_PAGES || 'not-run'}**`, '',
-              'Production scope now includes the DTF cannabis-leaf brand shell, image-driven Home and Learn experiences, canonical pages, and live cache-busted verification. Infographic production independently finishes the full categorized visual library.'
+              'Production scope includes the DTF cannabis-leaf brand shell, image-driven Home/Learn/Seeds/Shop experiences, canonical pages, and live cache-busted verification. The URL-image gate rejects both the retired static favicon and the retired 2025 share image.'
             ].join('\n');
             await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body});
