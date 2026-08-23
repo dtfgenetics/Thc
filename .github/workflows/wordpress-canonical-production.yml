@@ -30,6 +30,7 @@ jobs:
       WC_CONSUMER_SECRET: ${{ secrets.WC_CONSUMER_SECRET }}
       CONTENT_DIR: ${{ github.workspace }}/site/wordpress/pages
       BACKUP_ROOT: /tmp/wordpress-production-backups
+
     steps:
       - uses: actions/checkout@v4
         with:
@@ -68,24 +69,24 @@ jobs:
           set -euo pipefail
           [[ -n "${WP_API_USERNAME:-}" ]] && user_present=true || user_present=false
           [[ -n "${WP_API_PASSWORD:-}" ]] && password_present=true || password_present=false
-          [[ -n "${WC_CONSUMER_KEY:-}" ]] && wc_key_present=true || wc_key_present=false
-          [[ -n "${WC_CONSUMER_SECRET:-}" ]] && wc_secret_present=true || wc_secret_present=false
           echo "user_present=$user_present" >> "$GITHUB_OUTPUT"
           echo "password_present=$password_present" >> "$GITHUB_OUTPUT"
-          echo "wc_key_present=$wc_key_present" >> "$GITHUB_OUTPUT"
-          echo "wc_secret_present=$wc_secret_present" >> "$GITHUB_OUTPUT"
-          if [[ "$user_present" == true && "$password_present" == true ]]; then echo "available=true" >> "$GITHUB_OUTPUT"; else echo "available=false" >> "$GITHUB_OUTPUT"; fi
+          if [[ "$user_present" == true && "$password_present" == true ]]; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            echo "WordPress production credentials are not configured." >&2
+            exit 1
+          fi
 
       - name: Probe WordPress commerce and presentation capabilities without writes
         id: commerce_capabilities
-        if: steps.access.outputs.available == 'true'
         continue-on-error: true
         shell: bash
         run: node scripts/audit-wordpress-commerce-rest.mjs
 
       - name: Reconcile canonical pages and front page
         id: publish
-        if: steps.access.outputs.available == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -97,7 +98,6 @@ jobs:
 
       - name: Rebuild DTF visual brand shell, Home, and Learn
         id: visual
-        if: steps.publish.outcome == 'success'
         env:
           APPLY_VISUAL_REBUILD: 'true'
           BACKUP_ROOT: /tmp/wordpress-production-backups/visual
@@ -113,7 +113,6 @@ jobs:
 
       - name: Rebuild polished Seeds content and URL brand state
         id: commerce_visual
-        if: steps.visual.outcome == 'success'
         env:
           APPLY_COMMERCE_VISUALS: 'true'
           BACKUP_ROOT: /tmp/wordpress-production-backups/commerce-visual
@@ -128,7 +127,6 @@ jobs:
 
       - name: Style active WooCommerce Shop archive
         id: shop_archive
-        if: steps.commerce_visual.outcome == 'success'
         env:
           APPLY_WOOCOMMERCE_ARCHIVE_STYLE: 'true'
           BACKUP_ROOT: /tmp/wordpress-production-backups/woocommerce-archive
@@ -142,7 +140,6 @@ jobs:
 
       - name: Verify DTF cannabis-leaf site icon through WordPress REST
         id: icon
-        if: steps.shop_archive.outcome == 'success'
         shell: bash
         run: |
           set -euo pipefail
@@ -158,9 +155,8 @@ jobs:
           NODE
           echo "site_icon=$site_icon" >> "$GITHUB_OUTPUT"
 
-      - name: Verify live visual WordPress pages
+      - name: Verify live visual WordPress pages and internal-link structure
         id: verify
-        if: steps.icon.outcome == 'success'
         shell: bash
         run: |
           set -euo pipefail
@@ -211,12 +207,27 @@ jobs:
             done
             echo "$path verified with $count WordPress-hosted image references"
           }
-          verify_page '/' 'Genetics. Plant science. Tools. Games. Community.' 8
-          verify_page '/learn/' 'Explore by subject' 10
+
+          verify_page '/' 'Genetics first. Cultivation science behind it.' 8
+          verify_page '/learn/' 'Learn the plant as a connected system.' 10
           verify_page '/seeds/' 'From breeding notes to current releases.' 2
           verify_page '/shop/' 'dtf-commerce-archive-style' 2
           verify_page '/community/' 'Join the official DTF / Teaching Healthy Cultivation Discord' 0
           verify_page '/contact/' 'Join the official DTF / Teaching Healthy Cultivation Discord' 0
+
+          learn_body="$RUNNER_TEMP/wp-production-_learn_.html"
+          for route in \
+            '/learn/plant-biology/' \
+            '/learn/environment-vpd/' \
+            '/learn/lighting/' \
+            '/learn/water-ph-ec/' \
+            '/learn/nutrition-media/' \
+            '/learn/ipm/' \
+            '/learn/harvest-postharvest/' \
+            '/learn/genetics-breeding/'; do
+            grep -Fqi "$route" "$learn_body" || { echo "Subject route missing from live Learn page: $route" >&2; exit 1; }
+          done
+
           shop_body="$RUNNER_TEMP/wp-production-_shop_.html"
           for route in \
             '/product/10-regular-f2-blue-mango-seeds/' \
@@ -227,7 +238,6 @@ jobs:
 
       - name: Verify browser icon and URL social image on live homepage
         id: url_image
-        if: steps.verify.outcome == 'success'
         shell: bash
         run: |
           set -euo pipefail
@@ -248,11 +258,10 @@ jobs:
 
       - name: Reconcile canonical WooCommerce product copy and categories
         id: commerce_reconcile
-        if: steps.url_image.outcome == 'success'
         continue-on-error: true
-        shell: bash
         env:
           BACKUP_ROOT: ${{ runner.temp }}/woocommerce-product-backups
+        shell: bash
         run: |
           set -euo pipefail
           APPLY_WOOCOMMERCE_CHANGES=true node scripts/reconcile-woocommerce-products.mjs
@@ -260,20 +269,16 @@ jobs:
       - name: Automatically restore WooCommerce snapshots after a failed product reconciliation
         id: commerce_rollback
         if: steps.commerce_reconcile.outcome == 'failure'
-        shell: bash
         env:
           BACKUP_ROOT: ${{ runner.temp }}/woocommerce-product-backups
+        shell: bash
         run: |
           set -euo pipefail
           pointer="$BACKUP_ROOT/woocommerce-backup-path.txt"
-          if [[ ! -f "$pointer" ]]; then exit 0; fi
+          [[ -f "$pointer" ]] || exit 0
           backup_dir="$(cat "$pointer")"
-          if [[ ! -f "$backup_dir/backup-manifest.json" ]]; then exit 0; fi
+          [[ -f "$backup_dir/backup-manifest.json" ]] || exit 0
           APPLY_WOOCOMMERCE_ROLLBACK=true node scripts/rollback-woocommerce-products.mjs
-
-      - name: Fail when WordPress credentials are absent
-        if: steps.access.outputs.available != 'true'
-        run: exit 1
 
       - name: Upload rollback and capability package
         if: always()
@@ -304,11 +309,8 @@ jobs:
           SITE_ICON: ${{ steps.icon.outputs.site_icon }}
           MEDIA_COUNT: ${{ steps.visual.outputs.media_count }}
           MISSING: ${{ steps.visual.outputs.missing }}
-          AIOSEO_ROUTES: ${{ steps.commerce_visual.outputs.aioseo_routes }}
           COMMERCE_RECONCILE_OUTCOME: ${{ steps.commerce_reconcile.outcome }}
           COMMERCE_ROLLBACK_OUTCOME: ${{ steps.commerce_rollback.outcome }}
-          MUTATIONS: ${{ steps.publish.outputs.mutations }}
-          CHANGED_PAGES: ${{ steps.publish.outputs.changed_pages }}
         with:
           script: |
             const body = [
@@ -323,14 +325,11 @@ jobs:
               `WooCommerce Shop archive styling: **${process.env.SHOP_ARCHIVE_OUTCOME || 'not-run'}**`,
               `Cannabis-leaf Site Icon media ID: **${process.env.SITE_ICON || 'not-run'}**`,
               `WordPress media indexed for visual composition: **${process.env.MEDIA_COUNT || 'not-run'}**`,
-              `Live visual verification: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
+              `Live visual + internal-link verification: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
               `Live favicon + URL social image verification: **${process.env.URL_IMAGE_OUTCOME || 'not-run'}**`,
-              `AIOSEO/social route candidates discovered: **${process.env.AIOSEO_ROUTES || '0'}**`,
               `Optional visual slots unmatched: **${process.env.MISSING || 'none'}**`,
               `WooCommerce reconciliation: **${process.env.COMMERCE_RECONCILE_OUTCOME || 'not-run'}**`,
-              `WooCommerce rollback: **${process.env.COMMERCE_ROLLBACK_OUTCOME || 'not-needed'}**`,
-              `Page mutations before visual composition: **${process.env.MUTATIONS || 'not-run'}**`,
-              `Pages changed before visual composition: **${process.env.CHANGED_PAGES || 'not-run'}**`, '',
-              'Production scope includes the DTF cannabis-leaf brand shell, image-driven Home/Learn/Seeds, a styled WooCommerce product archive, canonical pages, and live cache-busted verification. The URL-image gate rejects both the retired static favicon and the retired 2025 share image.'
+              `WooCommerce rollback: **${process.env.COMMERCE_ROLLBACK_OUTCOME || 'not-needed'}**`, '',
+              'Production scope: unified DTF visual hierarchy, Home/Learn/Seeds structure, correct subject links, WooCommerce release-card styling, current brand imagery, and cache-busted live verification.'
             ].join('\n');
             await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body});
