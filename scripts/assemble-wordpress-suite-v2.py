@@ -170,6 +170,39 @@ payload = replace_once(
     "Projects live-verification marker",
 )
 
+# Transport hardening: keep the canonical guarded deployer intact, then widen
+# only the read-retry window used to discover WordPress/plugin state. Hostinger
+# occasionally drops a full TLS connection window even when the site and build
+# are healthy. This makes publication resilient to that transient condition
+# without changing write scope, authorization, archive limits, or rollback.
+payload = replace_once(
+    payload,
+    b"""async function wpGetRetry(path, options = {}) {
+  let last;
+  for (let attempt = 1; attempt <= 6; attempt++) {
+    try { return await wpRequest(path, { ...options, method: 'GET' }); }
+    catch (error) { last = error; await sleep(1000 + attempt * 900); }
+  }
+  throw last || new Error(`GET ${path} failed after retries.`);
+}
+""",
+    b"""async function wpGetRetry(path, options = {}) {
+  let last;
+  for (let attempt = 1; attempt <= 12; attempt++) {
+    try { return await wpRequest(path, { ...options, method: 'GET' }); }
+    catch (error) {
+      last = error;
+      const delay = Math.min(15000, 1200 + attempt * 1200);
+      console.warn(`WordPress GET retry ${attempt}/12 for ${path}: ${error?.message || error}`);
+      await sleep(delay);
+    }
+  }
+  throw last || new Error(`GET ${path} failed after retries.`);
+}
+""",
+    "WordPress GET transport retry window",
+)
+
 final_actual = hashlib.sha256(payload).hexdigest()
 OUTPUT.parent.mkdir(parents=True, exist_ok=True)
 OUTPUT.write_bytes(payload)
