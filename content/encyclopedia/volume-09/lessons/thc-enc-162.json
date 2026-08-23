@@ -1,0 +1,52 @@
+{
+  "id": "THC-ENC-162",
+  "number": 162,
+  "title": "Mother-Plant Identity and Health Status",
+  "objective": "Build a mother-stock identity and health system that separates provenance, visible condition, laboratory status, and propagation performance.",
+  "terms": [
+    {"term":"mother plant","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"donor plant","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"provenance","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"clean stock","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"quarantine","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"latent infection","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"release status","definition":"Pending controlled-glossary reconciliation."}
+  ],
+  "termDefinitionsStatus": "pending_controlled_glossary_reconciliation",
+  "coreScience": [
+    "A mother plant is both a genetic source and a biological reservoir. Every cutting inherits tissue from that donor, so mother identity, health, nutrition, stress history, and infection status affect the entire downstream clone batch.",
+    "Visual inspection can identify obvious pests, lesions, distortion, nutrient stress, and poor vigor, but it cannot prove absence of latent viruses, viroids, endophytes, or systemic pathogens. Hop latent viroid is especially important because infected plants may be propagated before severe symptoms appear, allowing the clone network to distribute the agent.",
+    "Clean stock should mean material that has passed a defined identity and health-release program. It should not mean merely ‘looks clean.’ A defensible program defines the organisms tested, sample tissue, method, laboratory, date, lot, retest interval, quarantine status, and release authority."
+  ],
+  "cultivationRelevance": [
+    "Separate mother-stock areas from incoming clones and production rooms. Do not harvest cuttings from plants with unresolved identity, pest, disease, chemical-injury, or root-health findings. Retain a documented backup rather than relying on one irreplaceable donor."
+  ],
+  "measureAndRecord": [
+    {"field":"Controlled record set","requirement":"Mother ID and provenance; acquisition and quarantine dates; genotype/chemotype records; pest and disease observations; laboratory sample IDs and results; nutrition and environment; cutting count; rooting and rejection rates; release and retirement decisions."}
+  ],
+  "misconceptions": [
+    "Mother plants only need to be vigorous.",
+    "No symptoms means no systemic pathogen.",
+    "One negative test permanently certifies a plant."
+  ],
+  "evidenceLimits": [
+    "Testing sensitivity, tissue distribution, infection timing, and sampling method affect results. This lesson does not define a universal pathogen panel or legal release standard."
+  ],
+  "crossLinks": "THC-ENC-141–160 for genotype, chemotype, sex, clonal fidelity, and evidence standards; THC-ENC-301–340 for disease, viroid, biosecurity, sanitation, and release controls; THC-GROW-034 for the controlled propagation SOP package.",
+  "sourceNotes": [
+    "V09-SRC-001 — THC Cannabis Plant Science Source Packet v1.0 (project control source).",
+    "V09-SRC-002 — THC Cultivation SOP Source Materials Packet v1.0 (project control source).",
+    "Punja ZK et al. (2025). Transmission, spread, longevity and management of hop latent viroid, a widespread and destructive pathogen affecting Cannabis plants in North America. Plants 14:830. DOI 10.3390/plants14050830."
+  ],
+  "reviewControl": {
+    "controlledManuscript":"Volume 09 v1.0",
+    "evidenceControl":"complete",
+    "secondaryEvidenceReview":"complete_high_risk_pathology_qualified",
+    "externalReview":"required",
+    "externalReviewType":"plant_pathology_and_diagnostic_testing",
+    "publicationAuthorized": false,
+    "websiteAction":"do_not_publish"
+  },
+  "slug": "mother-plant-identity-and-health-status",
+  "route": "/encyclopedia/mother-plant-identity-and-health-status"
+}
