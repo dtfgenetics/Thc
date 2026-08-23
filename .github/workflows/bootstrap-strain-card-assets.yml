@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - '.tmp/strain-card-b64/**'
+      - 'site/wordpress/products/catalog-strain-cards.json'
       - '.github/workflows/bootstrap-strain-card-assets.yml'
   workflow_dispatch:
 
@@ -20,35 +21,51 @@ jobs:
   materialize:
     if: ${{ hashFiles('.tmp/strain-card-b64/**') != '' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
         with:
           ref: main
           fetch-depth: 0
 
-      - name: Reconstruct and verify exact strain card web derivatives
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Reconstruct and verify exact catalog web derivatives
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p site/wordpress/assets/genetics
-          reconstruct() {
-            key="$1"; target="$2"; expected_bytes="$3"; expected_sha="$4"
-            cat ".tmp/strain-card-b64/${key}/"*.txt | base64 -d > "$target"
-            actual_bytes="$(stat -c %s "$target")"
-            actual_sha="$(sha256sum "$target" | awk '{print $1}')"
-            test "$actual_bytes" = "$expected_bytes"
-            test "$actual_sha" = "$expected_sha"
-            python3 - "$target" <<'PY'
-          import pathlib,sys
-          b=pathlib.Path(sys.argv[1]).read_bytes()
-          assert b[:3] == b'\xff\xd8\xff', 'not a JPEG'
-          assert b[-2:] == b'\xff\xd9', 'JPEG end marker missing'
-          PY
+          node <<'NODE'
+          const {createHash}=require('node:crypto');
+          const {existsSync,mkdirSync,readFileSync,readdirSync,writeFileSync}=require('node:fs');
+          const {dirname,join}=require('node:path');
+          const registry=JSON.parse(readFileSync('site/wordpress/products/catalog-strain-cards.json','utf8'));
+          if(registry?.schemaVersion!==1||!Array.isArray(registry?.cards)) throw new Error('Invalid catalog strain-card registry');
+          const sha256=(bytes)=>createHash('sha256').update(bytes).digest('hex');
+
+          for(const card of registry.cards){
+            if(!card.webAssetPath||!card.webStagingKey||!card.webSha256||!card.webByteLength) throw new Error(`${card.registryId}: incomplete web derivative metadata`);
+            const target=card.webAssetPath;
+            mkdirSync(dirname(target),{recursive:true});
+            if(!existsSync(target)){
+              const staging=join('.tmp','strain-card-b64',card.webStagingKey);
+              if(!existsSync(staging)) throw new Error(`${card.registryId}: missing permanent asset and staging source`);
+              const chunks=readdirSync(staging).filter(name=>name.endsWith('.txt')).sort();
+              if(!chunks.length) throw new Error(`${card.registryId}: no staging chunks`);
+              const encoded=chunks.map(name=>readFileSync(join(staging,name),'utf8')).join('').replace(/\s+/g,'');
+              const bytes=Buffer.from(encoded,'base64');
+              writeFileSync(target,bytes);
+              console.log(`Materialized ${target} from ${chunks.length} staging chunks.`);
+            }
+            const bytes=readFileSync(target);
+            const hash=sha256(bytes);
+            if(bytes.length!==Number(card.webByteLength)) throw new Error(`${card.registryId}: ${bytes.length} bytes != ${card.webByteLength}`);
+            if(hash!==card.webSha256) throw new Error(`${card.registryId}: ${hash} != ${card.webSha256}`);
+            if(bytes.subarray(0,3).toString('hex')!=='ffd8ff'||bytes.subarray(-2).toString('hex')!=='ffd9') throw new Error(`${card.registryId}: invalid JPEG markers`);
+            console.log(`Verified ${card.registryId}: ${bytes.length} bytes, ${hash}`);
           }
-          reconstruct blue-mango-f2-regular-strain-card site/wordpress/assets/genetics/blue-mango-f2-regular-strain-card.jpg 148419 faf3fb47b47248ba94c1f62b714c99071966e1c367022275f6f3f5f2670e0591
-          reconstruct blue-mango-f2-feminized-strain-card site/wordpress/assets/genetics/blue-mango-f2-feminized-strain-card.jpg 145734 98ae81732a01b44e96720fd0ad386144efa8710eebb1b32155b5dacacad7e421
-          reconstruct blue-bubblegum-f1-regular-strain-card site/wordpress/assets/genetics/blue-bubblegum-f1-regular-strain-card.jpg 146868 7ea5edaae9830e4f93a540458dc8402e0f1909f360be9b2d10dc3c818f90426e
+          NODE
 
       - name: Commit permanent binary assets and remove staging chunks
         id: commit
@@ -57,13 +74,15 @@ jobs:
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git rm -r .tmp/strain-card-b64
-          git add site/wordpress/assets/genetics/*.jpg
+          if [[ -d .tmp/strain-card-b64 ]]; then
+            git rm -r .tmp/strain-card-b64
+          fi
+          git add site/wordpress/assets/genetics
           if git diff --cached --quiet; then
             echo 'changed=false' >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          git commit -m 'Materialize exact strain card web assets'
+          git commit -m 'Materialize exact catalog strain card web assets'
           git push origin HEAD:main
           echo 'changed=true' >> "$GITHUB_OUTPUT"
           echo "commit_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
@@ -77,18 +96,21 @@ jobs:
           COMMIT_SHA: ${{ steps.commit.outputs.commit_sha }}
         with:
           script: |
+            const registry = require(`${process.env.GITHUB_WORKSPACE}/site/wordpress/products/catalog-strain-cards.json`);
+            const cards = registry.cards.map(card => `${card.canonicalName} ${card.generation} ${card.seedType}`).join(', ');
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: 46,
               body: [
-                '## Exact DTF strain card web assets',
+                '## Exact DTF catalog strain-card web assets',
                 '',
                 `Bootstrap run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
                 `Result: **${process.env.STATUS}**`,
                 `Permanent binary asset commit created: **${process.env.CHANGED || 'false'}**`,
                 process.env.COMMIT_SHA ? `Asset commit: \`${process.env.COMMIT_SHA}\`` : '',
                 '',
-                'Assets: Blue Mango F2 Regular, Blue Mango F2 Feminized, and Blue Bubblegum F1 Regular. These are web-optimized derivatives of the exact previously-created strain cards; full-resolution controlled masters remain in Drive.'
+                `Catalog assets verified: ${cards}.`,
+                'Full-resolution controlled masters remain recorded separately from the reviewed web derivatives.'
               ].filter(Boolean).join('\n')
             });
