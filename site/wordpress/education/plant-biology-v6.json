@@ -1,0 +1,355 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-08-23",
+  "id": "plant-biology-v6",
+  "route": "/learn/plant-biology/",
+  "title": "Plant Biology & Anatomy",
+  "purpose": "Expand the Plant Biology subject from a five-section overview into a chapter-based plant-science curriculum while preserving the existing canonical literature and evidence-first V4 layer.",
+  "learningOutcome": "A learner should be able to identify major cannabis organs and tissues, explain their primary biological functions, connect plant structure to transport, gas exchange, carbon gain, water relations, growth regulation, reproduction, stress and senescence, and use that model to improve cultivation observations without diagnosing from appearance alone.",
+  "visualTargets": [
+    "whole-plant anatomy atlas",
+    "plant cell to tissue organization",
+    "root tip and root cross-section anatomy",
+    "stem cross-section with xylem and phloem",
+    "leaf cross-section with stomata and mesophyll",
+    "photosynthesis and respiration relationship",
+    "transpiration and whole-plant water movement",
+    "plant hormone and tropism overview",
+    "male and female flower anatomy",
+    "pollination and fertilization sequence",
+    "trichome types and secretory anatomy",
+    "senescence and nutrient remobilization"
+  ],
+  "chapters": [
+    {
+      "id": "identity-morphology",
+      "number": 1,
+      "title": "Plant Identity & Whole-Plant Morphology",
+      "objective": "Learn the names and relationships of the visible structures that make up the whole plant before moving into cells and internal tissues.",
+      "encyclopediaIds": ["THC-ENC-002", "THC-ENC-003", "THC-ENC-004", "THC-ENC-005", "THC-ENC-006"],
+      "lessons": [
+        {
+          "title": "Botanical identity and classification",
+          "summary": "Separate the accepted botanical identity of Cannabis from ancestry labels, market categories, morphology shorthand and source-reported cultivar names.",
+          "concepts": ["species-level identity", "taxonomy versus ancestry", "population variation", "cultivar and source labels"],
+          "cultivation": "Classification should organize records, not substitute for measurement. Broad labels do not determine irrigation, nutrient, light or harvest requirements by themselves.",
+          "observe": "Record the exact supplied identity, source, propagation type and any uncertainty before interpreting plant behavior."
+        },
+        {
+          "title": "Whole-plant organ map",
+          "summary": "Connect roots, stems, leaves, shoots and reproductive structures as one resource-sharing organism rather than independent parts.",
+          "concepts": ["root system", "shoot system", "vegetative organs", "reproductive organs", "whole-plant integration"],
+          "cultivation": "A symptom on a leaf can originate from root, stem, environment or developmental changes. Whole-plant context should come before a local diagnosis.",
+          "observe": "Photograph the entire plant before close-ups and note whether the change is local, repeated or systemic."
+        },
+        {
+          "title": "Nodes, internodes, petioles and stipules",
+          "summary": "Identify the repeating structural units that organize leaves, branches and future reproductive sites along the shoot.",
+          "concepts": ["node", "internode", "petiole", "stipule", "axillary position"],
+          "cultivation": "Node spacing and branch position are useful architecture measurements when evaluating light response, training and developmental change.",
+          "observe": "Record node count, internode length, branch position and whether changes are uniform across the canopy."
+        },
+        {
+          "title": "Phyllotaxy, branching and morphological plasticity",
+          "summary": "Understand leaf arrangement, branching patterns and the fact that visible form changes with genetics, development and environment.",
+          "concepts": ["phyllotaxy", "branching pattern", "juvenile versus mature form", "phenotypic plasticity"],
+          "cultivation": "Normal variation should not be mistaken automatically for stress. Compare repeated structures, siblings or earlier growth before assigning a problem.",
+          "observe": "Distinguish a stable plant-wide pattern from a new change that appeared after an environmental or management event."
+        }
+      ],
+      "knowledgeChecks": [
+        "Why can a cultivar or market label not replace direct plant measurements?",
+        "Which visible structures define a node, and why is node position useful in crop records?",
+        "What evidence would help separate normal morphology from a new stress response?"
+      ]
+    },
+    {
+      "id": "cells-tissues-meristems",
+      "number": 2,
+      "title": "Cells, Tissues & Meristems",
+      "objective": "Move from the plant cell to organized tissues and growth zones so later lessons on water, nutrients, training and disease have a cellular foundation.",
+      "encyclopediaIds": ["THC-ENC-009", "THC-ENC-010", "THC-ENC-011", "THC-ENC-012"],
+      "lessons": [
+        {
+          "title": "Plant cell architecture",
+          "summary": "Learn the roles of the cell wall, plasma membrane, nucleus, chloroplasts, mitochondria, vacuole and cytoplasm in living plant tissue.",
+          "concepts": ["cell wall", "plasma membrane", "nucleus", "chloroplast", "mitochondrion", "central vacuole"],
+          "cultivation": "Many cultivation responses begin at cell membranes, chloroplasts, mitochondria or the vacuole even when the visible symptom appears much later.",
+          "observe": "Use cellular explanations to interpret mechanisms, but do not infer a cellular cause from leaf appearance alone."
+        },
+        {
+          "title": "Osmosis, turgor and cell expansion",
+          "summary": "Connect water movement across membranes to vacuole pressure, tissue firmness, growth and wilting.",
+          "concepts": ["osmosis", "turgor", "solute concentration", "membrane transport", "cell expansion"],
+          "cultivation": "Water status, salinity and root function can all alter cell turgor. Similar-looking wilt can therefore arise from different upstream conditions.",
+          "observe": "Pair tissue firmness with root-zone moisture, salinity context, temperature and recovery pattern."
+        },
+        {
+          "title": "Dermal, ground and vascular tissue systems",
+          "summary": "Organize epidermis, mesophyll, supportive tissues, xylem and phloem into the three major tissue systems of the plant body.",
+          "concepts": ["dermal tissue", "ground tissue", "vascular tissue", "epidermis", "parenchyma", "support tissue"],
+          "cultivation": "Knowing which tissue performs a function makes injury patterns more interpretable and improves the connection between anatomy and crop management.",
+          "observe": "Ask whether damage is superficial, structural, vascular or distributed through photosynthetic tissue."
+        },
+        {
+          "title": "Meristems, differentiation and new growth",
+          "summary": "Learn how shoot and root meristems generate new cells that expand and differentiate into specialized tissues and organs.",
+          "concepts": ["shoot apical meristem", "root apical meristem", "axillary meristem", "cell division", "differentiation"],
+          "cultivation": "Damage or stress at a growing point can affect future architecture differently from damage to mature tissue. Training works partly by changing which meristems dominate growth.",
+          "observe": "Separate symptoms on actively developing tissue from symptoms that appear only on mature organs."
+        }
+      ],
+      "knowledgeChecks": [
+        "How are cell turgor and visible wilting related?",
+        "What is the difference between a tissue system and an organ?",
+        "Why can injury to a meristem change future plant structure?"
+      ]
+    },
+    {
+      "id": "roots",
+      "number": 3,
+      "title": "Roots",
+      "objective": "Understand root growth zones, absorption surfaces, selective transport and architecture before interpreting water, nutrient or root-health problems.",
+      "encyclopediaIds": ["THC-ENC-013", "THC-ENC-014", "THC-ENC-015"],
+      "lessons": [
+        {
+          "title": "Root cap and root-tip growth zones",
+          "summary": "Follow the root tip through protection, cell division, elongation and differentiation as the root explores new substrate.",
+          "concepts": ["root cap", "division zone", "elongation zone", "differentiation zone"],
+          "cultivation": "Young root tips are important sites of active growth and can be sensitive to oxygen limitation, mechanical injury and unfavorable root-zone conditions.",
+          "observe": "Assess root color, branching, new tips, odor and distribution together rather than treating one color cue as a complete diagnosis."
+        },
+        {
+          "title": "Root hairs and absorptive surface",
+          "summary": "Understand how fine roots and root hairs increase contact with the surrounding water and dissolved ions.",
+          "concepts": ["root hair", "absorptive surface", "rhizosphere contact", "young root tissue"],
+          "cultivation": "Root access depends on both biological surface area and the physical condition of the medium around it.",
+          "observe": "Record media structure, moisture pattern and root distribution when uptake appears limited."
+        },
+        {
+          "title": "Cortex, endodermis and selective entry",
+          "summary": "Trace water and dissolved ions from the root exterior toward vascular tissue and understand the selective role of internal root barriers.",
+          "concepts": ["cortex", "endodermis", "Casparian strip", "selective transport", "vascular cylinder"],
+          "cultivation": "Nutrients do not simply diffuse unregulated from a solution into the shoot. Root membranes and internal barriers help control uptake and transport.",
+          "observe": "Do not equate nutrient presence in solution with confirmed nutrient delivery to leaves."
+        },
+        {
+          "title": "Lateral roots and root-system architecture",
+          "summary": "Learn how branching, container geometry, substrate structure and growth history influence the shape and distribution of the root system.",
+          "concepts": ["lateral root", "root branching", "root architecture", "root exploration", "root restriction"],
+          "cultivation": "A container can contain a large root mass yet still have uneven access to water, oxygen or fresh substrate.",
+          "observe": "Inspect where roots are concentrated, absent, circling, damaged or limited rather than judging root health from total mass alone."
+        }
+      ],
+      "knowledgeChecks": [
+        "Which root zone produces root hairs?",
+        "Why does dissolved nutrient concentration not prove nutrient uptake?",
+        "How can container and media structure alter root architecture?"
+      ]
+    },
+    {
+      "id": "stems-transport",
+      "number": 4,
+      "title": "Stems & Vascular Transport",
+      "objective": "Connect stem structure with mechanical support and long-distance movement of water, minerals, sugars and signals.",
+      "encyclopediaIds": ["THC-ENC-016", "THC-ENC-017"],
+      "lessons": [
+        {
+          "title": "Stem anatomy and mechanical support",
+          "summary": "Identify epidermal, cortical, vascular and central stem tissues and how developing stems gain strength.",
+          "concepts": ["stem epidermis", "cortex", "vascular bundles", "pith", "support tissue"],
+          "cultivation": "Stem diameter and rigidity respond to genetics, development, mechanical loading and environment; they should be interpreted as traits, not universal vigor scores.",
+          "observe": "Document stem injury, constriction, splitting and branch attachment when investigating localized decline."
+        },
+        {
+          "title": "Xylem and upward water transport",
+          "summary": "Understand xylem as the pathway linking root water supply with transpiring leaves and developing shoots.",
+          "concepts": ["xylem", "transpiration stream", "cohesion-tension", "hydraulic continuity"],
+          "cultivation": "Root damage, stem damage, water deficit and excessive evaporative demand can all reduce effective water delivery to leaves.",
+          "observe": "When wilt is localized to one branch, inspect the transport path as well as the root zone."
+        },
+        {
+          "title": "Phloem and source-sink transport",
+          "summary": "Follow sugars and other transported compounds from source tissues toward growing, storage and reproductive sinks.",
+          "concepts": ["phloem", "source tissue", "sink tissue", "assimilate transport", "carbon allocation"],
+          "cultivation": "Young shoots, roots, flowers and developing seeds compete for carbon according to developmental state and plant demand.",
+          "observe": "Interpret changes in growth allocation by stage and whole-plant condition rather than assuming every organ receives resources equally."
+        },
+        {
+          "title": "Secondary thickening, lignification and wound response",
+          "summary": "Learn how stems strengthen with development and how injured tissue seals, reorganizes and sometimes restores vascular continuity.",
+          "concepts": ["secondary growth", "lignification", "wound response", "callus", "vascular repair"],
+          "cultivation": "Training and accidental damage should be evaluated by recovery, tissue integrity and restored function, not by the size of a visible knot alone.",
+          "observe": "Track discoloration, softening, cracking, swelling and recovery over time after mechanical injury."
+        }
+      ],
+      "knowledgeChecks": [
+        "How do xylem and phloem differ in transported material and directionality?",
+        "Why can one branch wilt while the rest of a plant remains normal?",
+        "What evidence shows that a wound has recovered function rather than merely formed scar tissue?"
+      ]
+    },
+    {
+      "id": "leaves-stomata",
+      "number": 5,
+      "title": "Leaves, Stomata & Gas Exchange",
+      "objective": "Understand the leaf as a layered exchange organ that balances carbon dioxide entry, light capture, water loss and heat transfer.",
+      "encyclopediaIds": ["THC-ENC-018", "THC-ENC-019"],
+      "lessons": [
+        {
+          "title": "Leaf cross-section and mesophyll",
+          "summary": "Follow light and gases through epidermal layers into palisade and spongy mesophyll where most photosynthetic carbon gain occurs.",
+          "concepts": ["cuticle", "upper epidermis", "palisade mesophyll", "spongy mesophyll", "vascular bundle"],
+          "cultivation": "Leaf thickness, angle and internal structure influence how a leaf handles light and gas exchange, but appearance alone cannot quantify photosynthesis.",
+          "observe": "Compare upper and lower surfaces, tissue position and exposure when documenting leaf injury."
+        },
+        {
+          "title": "Stomata and guard-cell control",
+          "summary": "Learn how guard cells regulate stomatal pores in response to light, water status, carbon dioxide, humidity, temperature and signaling.",
+          "concepts": ["stoma", "guard cell", "stomatal aperture", "stomatal conductance", "ABA signaling"],
+          "cultivation": "A leaf can receive intense light yet have restricted carbon dioxide entry when water stress or other signals reduce stomatal opening.",
+          "observe": "Interpret leaf response with water status and environment instead of assuming light intensity alone determines carbon gain."
+        },
+        {
+          "title": "Boundary layers and canopy air movement",
+          "summary": "Understand the thin layer of air surrounding leaves and how leaf shape, air speed and canopy density affect exchange with the room.",
+          "concepts": ["boundary layer", "air movement", "leaf surface", "gas diffusion", "convective heat transfer"],
+          "cultivation": "Air movement changes the local conditions at a leaf; room-average humidity and temperature do not fully describe a dense canopy interior.",
+          "observe": "Compare sheltered and exposed leaves when investigating condensation, temperature or transpiration differences."
+        },
+        {
+          "title": "Transpiration and leaf temperature",
+          "summary": "Connect stomatal water loss with evaporative cooling, hydraulic demand and the difference between leaf and air temperature.",
+          "concepts": ["transpiration", "evaporative cooling", "leaf temperature", "hydraulic demand", "vapor gradient"],
+          "cultivation": "Leaf temperature can depart from room temperature because of radiation, airflow, transpiration and water status, which is why leaf-based VPD requires leaf temperature.",
+          "observe": "Measure leaf temperature and canopy location when environmental interpretation depends on the conditions the leaf actually experiences."
+        }
+      ],
+      "knowledgeChecks": [
+        "Why are the upper and lower surfaces of a leaf not functionally identical?",
+        "What signals can alter stomatal opening?",
+        "Why can a room sensor miss conditions experienced by leaves inside a dense canopy?"
+      ]
+    },
+    {
+      "id": "carbon-water-energy",
+      "number": 6,
+      "title": "Photosynthesis, Respiration & Water Relations",
+      "objective": "Connect light capture, carbon fixation, cellular energy use and plant water status as coordinated processes rather than isolated cultivation targets.",
+      "encyclopediaIds": ["THC-ENC-020"],
+      "lessons": [
+        {
+          "title": "Photosynthesis from photons to carbon gain",
+          "summary": "Understand chloroplasts, light reactions and carbon fixation well enough to interpret PPFD, DLI, carbon dioxide and leaf response biologically.",
+          "concepts": ["chlorophyll", "photosystems", "ATP and NADPH", "Calvin cycle", "Rubisco", "C3 photosynthesis"],
+          "cultivation": "More photons do not guarantee more net carbon gain when carbon dioxide, temperature, water status, nutrient status or photosynthetic capacity becomes limiting.",
+          "observe": "Treat light response as a whole-plant interaction and record environment, water status and acclimation when changing intensity."
+        },
+        {
+          "title": "Respiration and cellular energy use",
+          "summary": "Learn why plant cells consume stored carbon to generate usable energy for maintenance, transport, biosynthesis and growth during both day and night.",
+          "concepts": ["glycolysis", "mitochondria", "respiration", "maintenance energy", "growth energy"],
+          "cultivation": "Night is not metabolically inactive. Temperature and tissue activity influence respiratory demand even without photosynthetic light reactions.",
+          "observe": "Interpret growth rate from net carbon balance rather than photosynthesis alone."
+        },
+        {
+          "title": "Water potential, turgor and whole-plant hydraulics",
+          "summary": "Use water potential as the framework connecting roots, xylem, leaves, evaporation, cell turgor and wilting.",
+          "concepts": ["water potential", "osmotic potential", "pressure potential", "turgor", "hydraulic gradient"],
+          "cultivation": "A visibly wet medium does not prove that leaves are hydraulically supplied; salinity, root injury, oxygen limitation and high demand can all disrupt the system.",
+          "observe": "Pair wilt or leaf-temperature changes with root-zone condition, salinity context, evaporative demand and recovery timing."
+        }
+      ],
+      "knowledgeChecks": [
+        "Why does increasing PPFD eventually stop producing proportional carbon gain?",
+        "Why does respiration continue during the dark period?",
+        "How can a plant wilt while the medium still appears wet?"
+      ]
+    },
+    {
+      "id": "growth-signaling",
+      "number": 7,
+      "title": "Hormones, Tropisms & Stress Responses",
+      "objective": "Build a practical model of growth regulation and directional responses without reducing plant development to a single hormone or product claim.",
+      "encyclopediaIds": ["THC-ENC-011", "THC-ENC-012", "THC-ENC-020"],
+      "lessons": [
+        {
+          "title": "Hormone networks and apical dominance",
+          "summary": "Introduce auxin, cytokinins, gibberellins, abscisic acid, ethylene and other signaling systems as interacting regulators of development.",
+          "concepts": ["auxin", "cytokinin", "gibberellin", "abscisic acid", "ethylene", "apical dominance"],
+          "cultivation": "Topping, branching, rooting, elongation, water-stress responses and senescence involve hormone networks rather than one universal growth switch.",
+          "observe": "Use hormone biology to explain patterns, not to claim that a visible response proves the concentration of one hormone."
+        },
+        {
+          "title": "Phototropism, gravitropism and directional growth",
+          "summary": "Learn how plants sense directional light, gravity and mechanical contact and translate those signals into uneven growth.",
+          "concepts": ["phototropism", "gravitropism", "thigmotropism", "directional growth", "differential cell expansion"],
+          "cultivation": "Plant orientation after bending, training or uneven light is an active growth response, not merely passive movement.",
+          "observe": "Photograph the same branch over time after training to distinguish immediate mechanical position from new directional growth."
+        },
+        {
+          "title": "Stress signaling, acclimation and oxidative balance",
+          "summary": "Understand acute versus chronic stress, acclimation, reactive oxygen species and antioxidant defenses as general components of plant stress biology.",
+          "concepts": ["stress signaling", "reactive oxygen species", "antioxidant defense", "acclimation", "acute versus chronic stress"],
+          "cultivation": "A plant can acclimate to a gradual environmental change yet be injured by a rapid shift to the same final condition. Timing and rate of change therefore matter.",
+          "observe": "Record the speed and duration of an environmental change along with the final measurement."
+        }
+      ],
+      "knowledgeChecks": [
+        "Why is apical dominance better described as a hormone network than an auxin-only switch?",
+        "How is a tropic response different from physically bending a branch?",
+        "Why can the rate of environmental change matter as much as the final value?"
+      ]
+    },
+    {
+      "id": "reproduction-trichomes-senescence",
+      "number": 8,
+      "title": "Flowers, Reproduction, Trichomes & Senescence",
+      "objective": "Finish the plant-biology foundation by connecting reproductive anatomy, fertilization, secretory structures and regulated late-stage aging.",
+      "encyclopediaIds": ["THC-ENC-005", "THC-ENC-006", "THC-ENC-020"],
+      "lessons": [
+        {
+          "title": "Female and male flower anatomy",
+          "summary": "Identify pistillate and staminate reproductive structures correctly before interpreting sex expression, pollination or harvest-stage observations.",
+          "concepts": ["pistillate flower", "staminate flower", "bract", "stigma", "ovule", "anther", "pollen sac"],
+          "cultivation": "Accurate reproductive anatomy is essential for breeding records, pollen control and distinguishing normal floral structures from disease or injury.",
+          "observe": "Use magnified, position-aware observations and document uncertainty when floral identity is not yet clear."
+        },
+        {
+          "title": "Pollination, fertilization and seed development",
+          "summary": "Follow pollen release, stigma capture, pollen-tube growth, fertilization, embryo development and achene maturation as a continuous reproductive sequence.",
+          "concepts": ["pollination", "pollen germination", "pollen tube", "fertilization", "embryo development", "achene maturation"],
+          "cultivation": "Seed production changes sink demand and crop goals. Breeding work requires identity control, timing, isolation and traceable pollination records.",
+          "observe": "Record parent IDs, dates, flower position, intended versus uncertain pollen exposure and seed-development progress."
+        },
+        {
+          "title": "Trichome types and secretory biology",
+          "summary": "Separate nonglandular trichomes from glandular forms and understand the basic architecture of stalks, secretory cells and storage cavities.",
+          "concepts": ["nonglandular trichome", "bulbous", "capitate sessile", "capitate stalked", "secretory disc", "storage cavity"],
+          "cultivation": "Trichome density, type and appearance vary with tissue, position, development, genetics and environment. A single close-up should not stand in for whole-crop maturity.",
+          "observe": "Standardize tissue position, magnification and lighting when comparing trichomes over time."
+        },
+        {
+          "title": "Senescence, remobilization and abscission",
+          "summary": "Learn regulated tissue aging, chlorophyll loss, nutrient remobilization and organ shedding so normal late-stage change can be separated from stress.",
+          "concepts": ["senescence", "chlorophyll degradation", "nutrient remobilization", "abscission", "developmental aging"],
+          "cultivation": "Not every late-stage color change is a deficiency, but normal senescence also does not rule out root, environmental, pest or disease stress.",
+          "observe": "Compare timing, tissue age, distribution, progression and environmental context before labeling late-stage decline normal or abnormal."
+        }
+      ],
+      "knowledgeChecks": [
+        "Which structures should be identified before documenting a pollination event?",
+        "Why does trichome color alone provide incomplete maturity evidence?",
+        "What evidence helps distinguish regulated senescence from stress-accelerated decline?"
+      ]
+    }
+  ],
+  "deepRoutes": [
+    {"label": "Plant Structure & Anatomy encyclopedia hub", "href": "/learn/encyclopedia/plant-structure-anatomy/"},
+    {"label": "Plant Physiology encyclopedia hub", "href": "/learn/encyclopedia/plant-physiology/"},
+    {"label": "Flowering & Reproduction encyclopedia hub", "href": "/learn/encyclopedia/flowering-reproduction/"},
+    {"label": "Trichomes & Cannabinoids encyclopedia hub", "href": "/learn/encyclopedia/trichomes-cannabinoids/"},
+    {"label": "Plant Biology visuals", "href": "/learn/infographics/"},
+    {"label": "Diagnostic Index", "href": "/learn/diagnostics/"}
+  ]
+}
