@@ -1,0 +1,114 @@
+name: Apply DTFSeeds Visual V3 After Canonical Production
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/wordpress-visual-polish-v3-post-canonical.yml'
+  workflow_run:
+    workflows: ['Publish DTFSeeds WordPress Production']
+    types: [completed]
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-wordpress-v3-post-canonical
+  cancel-in-progress: true
+
+env:
+  WP_SITE_URL: https://dtfseeds.com
+
+jobs:
+  v3:
+    if: >-
+      github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: production
+    env:
+      NODE_OPTIONS: --dns-result-order=ipv4first
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME || secrets.WORDPRESS_USERNAME || secrets.WP_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD || secrets.WORDPRESS_APP_PASSWORD || secrets.WP_APPLICATION_PASSWORD }}
+      BACKUP_ROOT: ${{ runner.temp }}/dtf-v3-post-canonical
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate V3 production layer
+        run: |
+          set -euo pipefail
+          test -n "${WP_API_USERNAME:-}"
+          test -n "${WP_API_PASSWORD:-}"
+          node --check scripts/polish-wordpress-visual-site-v3.mjs
+          node --check scripts/fix-wordpress-visual-polish-v3-cascade.mjs
+      - name: Apply V3 after canonical WordPress publication
+        id: apply
+        env:
+          APPLY_VISUAL_POLISH: 'true'
+        run: |
+          set -euo pipefail
+          node scripts/polish-wordpress-visual-site-v3.mjs
+      - name: Make V3 the final cascade layer
+        id: cascade
+        env:
+          APPLY_V3_CASCADE_FIX: 'true'
+        run: |
+          set -euo pipefail
+          node scripts/fix-wordpress-visual-polish-v3-cascade.mjs
+      - name: Verify live V3 presentation
+        id: verify
+        run: |
+          set -euo pipefail
+          verify() {
+            local path="$1" marker="$2" body="$RUNNER_TEMP/$(echo "$path" | tr '/?' '__').html" ok=0
+            for attempt in 1 2 3 4 5 6 7 8; do
+              curl -4 -fsSL --retry 2 --retry-delay 2 \
+                -H 'Cache-Control: no-cache, no-store, max-age=0' \
+                "$WP_SITE_URL${path}?dtf_v3_post=${GITHUB_RUN_ID}-${attempt}" -o "$body"
+              if grep -Fqi 'dtf-visual-polish-v3' "$body" && grep -Fqi "$marker" "$body"; then ok=1; break; fi
+              sleep 7
+            done
+            [[ "$ok" -eq 1 ]] || { echo "V3 not visible on $path" >&2; exit 1; }
+          }
+          verify '/' 'dtf-v3-spotlight'
+          verify '/learn/' 'Learn the plant as a connected system.'
+          home="$RUNNER_TEMP/_.html"
+          grep -Fqi 'dtf-shell-header' "$home"
+          grep -Fqi 'dtf-shell-footer' "$home"
+          grep -Fqi 'DTF Genetics cannabis leaf' "$home"
+          grep -Fqi '/games/' "$home"
+          grep -Fqi '/tools/' "$home"
+      - name: Upload V3 rollback package
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dtf-v3-post-canonical-backup-${{ github.run_id }}
+          path: ${{ runner.temp }}/dtf-v3-post-canonical
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Report V3 post-canonical result
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          STATUS: ${{ job.status }}
+          APPLY: ${{ steps.apply.outcome }}
+          CASCADE: ${{ steps.cascade.outcome }}
+          VERIFY: ${{ steps.verify.outcome }}
+        with:
+          script: |
+            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body:[
+              '## DTFSeeds V3 post-canonical visual deployment','',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Result: **${process.env.STATUS}**`,
+              `V3 presentation write: **${process.env.APPLY || 'not-run'}**`,
+              `Final cascade ordering: **${process.env.CASCADE || 'not-run'}**`,
+              `Live V3 verification: **${process.env.VERIFY || 'not-run'}**`,
+              '',
+              'This workflow runs after the canonical WordPress publisher so the canonical rebuild cannot overwrite the final V3 visitor-facing visual layer.'
+            ].join('\n')});
