@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
@@ -6,6 +7,7 @@ const user=process.env.WP_API_USERNAME;
 const pass=process.env.WP_API_PASSWORD;
 const mapFile=process.env.ENCYCLOPEDIA_VISUAL_MAP||'site/wordpress/education/encyclopedia/volume03-visual-map.json';
 const backupRoot=process.env.BACKUP_ROOT||'/tmp/dtf-encyclopedia-visuals';
+const assetRoot=path.join(process.cwd(),'site/wordpress/assets/infographics');
 if(!user||!pass) throw new Error('Missing WordPress API credentials.');
 const auth=Buffer.from(`${user}:${pass}`).toString('base64');
 const map=JSON.parse(await readFile(mapFile,'utf8'));
@@ -20,8 +22,16 @@ for(const item of map.items){
 }
 
 const esc=s=>String(s??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
-const wpSlug=rel=>`dtf-edu-${rel.replace(/\.[^.]+$/,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,170)}`;
 const stablePageSlug=id=>id.toLowerCase();
+const slugify=value=>String(value).toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,145);
+async function canonicalMediaIdentity(assetPath){
+  const full=path.join(assetRoot,assetPath);
+  const bytes=await readFile(full);
+  const ext=path.extname(assetPath).toLowerCase();
+  const hash=createHash('sha256').update(bytes).digest('hex');
+  const baseSlug=slugify(assetPath.slice(0,-ext.length))||'visual';
+  return {full,hash,slug:`dtf-edu-${baseSlug}-${hash.slice(0,10)}`.slice(0,190)};
+}
 
 async function request(endpoint,{method='GET',body}={}){
   const res=await fetch(`${site}/wp-json/wp/v2${endpoint}`,{
@@ -50,9 +60,13 @@ async function getAll(endpoint){
 const media=await getAll('/media?context=edit&orderby=id&order=asc');
 const preflight=[];
 for(const item of map.items){
-  const mediaSlug=wpSlug(item.assetPath);
-  const mediaMatches=media.filter(m=>m.slug===mediaSlug);
-  if(mediaMatches.length!==1) throw new Error(`${item.id}: expected exactly one WordPress media item with slug ${mediaSlug}, found ${mediaMatches.length}.`);
+  const identity=await canonicalMediaIdentity(item.assetPath);
+  const pathMarker=`Repository path: ${item.assetPath}.`;
+  const mediaMatches=[...new Map(media.filter(m=>{
+    const description=String(m.description?.raw||m.description?.rendered||'');
+    return m.slug===identity.slug||description.includes(pathMarker);
+  }).map(m=>[m.id,m])).values()];
+  if(mediaMatches.length!==1) throw new Error(`${item.id}: expected exactly one WordPress media item for ${item.assetPath} (slug ${identity.slug}), found ${mediaMatches.length}.`);
   const mediaItem=mediaMatches[0];
   if(!String(mediaItem.source_url||'').includes('/wp-content/uploads/')) throw new Error(`${item.id}: media source URL is not a WordPress upload URL.`);
 
@@ -63,14 +77,14 @@ for(const item of map.items){
   const raw=String(page.content?.raw||'');
   if(!raw.includes('<h2>Terms to know</h2>')) throw new Error(`${item.id}: canonical insertion marker is missing.`);
 
-  preflight.push({item,media:mediaItem,page,raw,mediaSlug});
+  preflight.push({item,media:mediaItem,page,raw,mediaSlug:mediaItem.slug,assetHash:identity.hash});
 }
 
 const now=new Date().toISOString().replace(/[:.]/g,'-');
 const backupDir=path.join(backupRoot,now);
 await mkdir(backupDir,{recursive:true});
 await writeFile(path.join(backupDir,'preflight.json'),JSON.stringify(preflight.map(x=>({
-  id:x.item.id,title:x.item.title,assetPath:x.item.assetPath,pageId:x.page.id,pageLink:x.page.link,mediaId:x.media.id,mediaSlug:x.mediaSlug,mediaSourceUrl:x.media.source_url
+  id:x.item.id,title:x.item.title,assetPath:x.item.assetPath,assetSha256:x.assetHash,pageId:x.page.id,pageLink:x.page.link,mediaId:x.media.id,mediaSlug:x.mediaSlug,mediaSourceUrl:x.media.source_url
 })),null,2));
 await writeFile(path.join(backupDir,'pre-write-pages.json'),JSON.stringify(preflight.map(x=>({
   id:x.item.id,pageId:x.page.id,status:x.page.status,slug:x.page.slug,title:x.page.title?.raw||x.page.title?.rendered||'',content:x.raw,excerpt:x.page.excerpt?.raw||''
@@ -98,7 +112,7 @@ try{
   for(const x of preflight){
     const content=nextContent(x);
     const page=await wp(`/pages/${x.page.id}`,{method:'POST',body:{content,status:x.page.status}});
-    updated.push({id:x.item.id,pageId:page.id,link:page.link,mediaId:x.media.id,mediaSlug:x.mediaSlug,mediaSourceUrl:x.media.source_url,assetPath:x.item.assetPath});
+    updated.push({id:x.item.id,pageId:page.id,link:page.link,mediaId:x.media.id,mediaSlug:x.mediaSlug,mediaSourceUrl:x.media.source_url,assetPath:x.item.assetPath,assetSha256:x.assetHash});
   }
 }catch(error){
   rollback.attempted=true;
