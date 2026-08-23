@@ -1,0 +1,104 @@
+name: Publish DTF Genetics Library Direct
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/wordpress-genetics-library-push.yml'
+      - 'site/wordpress/products/seed-line-catalog.json'
+      - 'scripts/publish-wordpress-genetics-library-cdn.mjs'
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-genetics-library-direct
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: production
+    env:
+      NODE_OPTIONS: --dns-result-order=ipv4first
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      SEED_LINE_CATALOG: site/wordpress/products/seed-line-catalog.json
+      BACKUP_ROOT: /tmp/wordpress-genetics-direct
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate genetics library package
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${WP_API_USERNAME:-}"
+          test -n "${WP_API_PASSWORD:-}"
+          node --check scripts/publish-wordpress-genetics-library-cdn.mjs
+          node - <<'NODE'
+          const r=require('./site/wordpress/products/seed-line-catalog.json');
+          if(r.schemaVersion!==1||r.lines?.length!==8) throw new Error('Expected 8 genetics lines');
+          const cards=r.lines.flatMap(x=>x.releaseCards||[]);
+          if(cards.length!==10) throw new Error(`Expected 10 cards; found ${cards.length}`);
+          for(const c of cards) if(!c.sourceUrl||!c.expectedWidth||!c.expectedHeight) throw new Error('Card source metadata incomplete');
+          console.log(`Validated ${r.lines.length} lines and ${cards.length} cards.`);
+          NODE
+      - name: Publish genetics library
+        id: publish
+        env:
+          APPLY_GENETICS_LIBRARY: 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/publish-wordpress-genetics-library-cdn.mjs
+          dir="$(cat "$BACKUP_ROOT/genetics-library-backup-path.txt")"
+          echo "report=$dir/genetics-library-report.json" >> "$GITHUB_OUTPUT"
+      - name: Verify visitor routes
+        id: verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          check() {
+            path="$1"; text="$2"; body="$RUNNER_TEMP/$(echo "$path"|tr '/' '_').html"; ok=0
+            for n in 1 2 3 4 5 6; do
+              curl -4 --fail --silent --show-error --location --header 'Cache-Control: no-cache, no-store' "$WP_SITE_URL${path}?dtf_genetics_direct=${GITHUB_RUN_ID}-${n}" -o "$body"
+              if grep -Fqi "$text" "$body"; then ok=1; break; fi
+              sleep 5
+            done
+            [[ "$ok" -eq 1 ]] || { echo "Verification failed: $path missing $text" >&2; exit 1; }
+          }
+          check '/seeds/' 'DTF Genetics library'
+          check '/seeds/berry-blue/' 'Berry Blue'
+          check '/seeds/berry-lemonade/' 'Berry Lemonade'
+          check '/seeds/zestberry/' 'Zestberry'
+          check '/seeds/blue-bubblegum/' 'Blue Bubblegum'
+          check '/seeds/blue-cali-glue/' 'Blue Cali Glue'
+          check '/seeds/blue-mango/' 'Blue Mango'
+          check '/seeds/blue-mango-bx1/' 'Blue Mango BX1'
+          check '/seeds/mango-bubbles/' 'Mango Bubbles'
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: genetics-library-direct-${{ github.run_id }}
+          path: /tmp/wordpress-genetics-direct
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Report result
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          JOB_STATUS: ${{ job.status }}
+          PUBLISH: ${{ steps.publish.outcome }}
+          VERIFY: ${{ steps.verify.outcome }}
+        with:
+          script: |
+            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body:['## DTF Genetics library direct publication','',`Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,`Result: **${process.env.JOB_STATUS}**`,`Library publication: **${process.env.PUBLISH||'not-run'}**`,`Visitor verification: **${process.env.VERIFY||'not-run'}**`,'','Target: https://dtfseeds.com/seeds/'].join('\n')});
