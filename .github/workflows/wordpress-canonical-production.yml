@@ -54,6 +54,7 @@ jobs:
           node --check scripts/audit-wordpress-commerce-rest.mjs
           node --check scripts/rebuild-wordpress-visual-site.mjs
           node --check scripts/rebuild-wordpress-commerce-visuals.mjs
+          node --check scripts/style-wordpress-woocommerce-archive.mjs
           node --check scripts/reconcile-woocommerce-products.mjs
           node --check scripts/rollback-woocommerce-products.mjs
           node scripts/validate-genetics-commerce.mjs
@@ -110,7 +111,7 @@ jobs:
           echo "brand_id=$(node -p "require(process.argv[1]).brandMediaId" "$report")" >> "$GITHUB_OUTPUT"
           echo "missing=$(node -p "require(process.argv[1]).missingSelections.join(',')" "$report")" >> "$GITHUB_OUTPUT"
 
-      - name: Rebuild polished Seeds and Shop and set URL brand image
+      - name: Rebuild polished Seeds content and URL brand state
         id: commerce_visual
         if: steps.visual.outcome == 'success'
         env:
@@ -125,9 +126,23 @@ jobs:
           echo "brand_id=$(node -p "require(process.argv[1]).brandMediaId" "$report")" >> "$GITHUB_OUTPUT"
           echo "aioseo_routes=$(node -p "require(process.argv[1]).aioseoRoutes.length" "$report")" >> "$GITHUB_OUTPUT"
 
+      - name: Style active WooCommerce Shop archive
+        id: shop_archive
+        if: steps.commerce_visual.outcome == 'success'
+        env:
+          APPLY_WOOCOMMERCE_ARCHIVE_STYLE: 'true'
+          BACKUP_ROOT: /tmp/wordpress-production-backups/woocommerce-archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/style-wordpress-woocommerce-archive.mjs
+          dir="$(cat "$BACKUP_ROOT/woocommerce-archive-style-backup-path.txt")"
+          report="$dir/woocommerce-archive-style-report.json"
+          echo "template_parts=$(node -p "require(process.argv[1]).templateParts.length" "$report")" >> "$GITHUB_OUTPUT"
+
       - name: Verify DTF cannabis-leaf site icon through WordPress REST
         id: icon
-        if: steps.commerce_visual.outcome == 'success'
+        if: steps.shop_archive.outcome == 'success'
         shell: bash
         run: |
           set -euo pipefail
@@ -199,9 +214,16 @@ jobs:
           verify_page '/' 'Genetics. Plant science. Tools. Games. Community.' 8
           verify_page '/learn/' 'Explore by subject' 10
           verify_page '/seeds/' 'From breeding notes to current releases.' 2
-          verify_page '/shop/' 'Shop the line. Read the story.' 2
+          verify_page '/shop/' 'dtf-commerce-archive-style' 2
           verify_page '/community/' 'Join the official DTF / Teaching Healthy Cultivation Discord' 0
           verify_page '/contact/' 'Join the official DTF / Teaching Healthy Cultivation Discord' 0
+          shop_body="$RUNNER_TEMP/wp-production-_shop_.html"
+          for route in \
+            '/product/10-regular-f2-blue-mango-seeds/' \
+            '/product/10-feminized-f2-blue-mango-x/' \
+            '/product/10-reg-f1-blueberry-bubblegum/'; do
+            grep -Fqi "$route" "$shop_body" || { echo "Reviewed product route missing from live Shop archive: $route" >&2; exit 1; }
+          done
 
       - name: Verify browser icon and URL social image on live homepage
         id: url_image
@@ -276,6 +298,7 @@ jobs:
           PUBLISH_OUTCOME: ${{ steps.publish.outcome }}
           VISUAL_OUTCOME: ${{ steps.visual.outcome }}
           COMMERCE_VISUAL_OUTCOME: ${{ steps.commerce_visual.outcome }}
+          SHOP_ARCHIVE_OUTCOME: ${{ steps.shop_archive.outcome }}
           VERIFY_OUTCOME: ${{ steps.verify.outcome }}
           URL_IMAGE_OUTCOME: ${{ steps.url_image.outcome }}
           SITE_ICON: ${{ steps.icon.outputs.site_icon }}
@@ -296,7 +319,8 @@ jobs:
               `WordPress application password configured: **${process.env.PASSWORD_PRESENT || 'false'}**`,
               `Canonical page reconciliation: **${process.env.PUBLISH_OUTCOME || 'not-run'}**`,
               `Home/Learn visual rebuild: **${process.env.VISUAL_OUTCOME || 'not-run'}**`,
-              `Seeds/Shop visual rebuild: **${process.env.COMMERCE_VISUAL_OUTCOME || 'not-run'}**`,
+              `Seeds visual rebuild + URL brand state: **${process.env.COMMERCE_VISUAL_OUTCOME || 'not-run'}**`,
+              `WooCommerce Shop archive styling: **${process.env.SHOP_ARCHIVE_OUTCOME || 'not-run'}**`,
               `Cannabis-leaf Site Icon media ID: **${process.env.SITE_ICON || 'not-run'}**`,
               `WordPress media indexed for visual composition: **${process.env.MEDIA_COUNT || 'not-run'}**`,
               `Live visual verification: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
@@ -307,6 +331,6 @@ jobs:
               `WooCommerce rollback: **${process.env.COMMERCE_ROLLBACK_OUTCOME || 'not-needed'}**`,
               `Page mutations before visual composition: **${process.env.MUTATIONS || 'not-run'}**`,
               `Pages changed before visual composition: **${process.env.CHANGED_PAGES || 'not-run'}**`, '',
-              'Production scope includes the DTF cannabis-leaf brand shell, image-driven Home/Learn/Seeds/Shop experiences, canonical pages, and live cache-busted verification. The URL-image gate rejects both the retired static favicon and the retired 2025 share image.'
+              'Production scope includes the DTF cannabis-leaf brand shell, image-driven Home/Learn/Seeds, a styled WooCommerce product archive, canonical pages, and live cache-busted verification. The URL-image gate rejects both the retired static favicon and the retired 2025 share image.'
             ].join('\n');
             await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body});
