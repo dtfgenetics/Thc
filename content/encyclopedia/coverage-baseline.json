@@ -1,0 +1,60 @@
+{
+  "schemaVersion": "1.0.0",
+  "baselineDate": "2026-08-05",
+  "sourceRegisters": [
+    {
+      "title": "THC Master Deliverable Register v1.0 — CONTROLLED",
+      "driveId": "1sHeeKVd4_3PSi8vHQMdgVAznD5pbxrHyjC9uXEDw9jo"
+    },
+    {
+      "title": "THC Encyclopedia Verification and Crosswalk Workbook v2.0 — Claim and Release Control",
+      "driveId": "1gKxi36UWsssFX1dm7qaEitU0Kt6gakr4F5ZHUI0oVuM"
+    }
+  ],
+  "rules": {
+    "manuscript": [
+      {
+        "parts": [1,2,3,4,5,6,7,8],
+        "status": "final_for_review"
+      },
+      {
+        "parts": [9,10,11,12,13,14,15,16,17,18,19,20,21],
+        "status": "draft_complete"
+      }
+    ],
+    "evidence": [
+      {
+        "start": 1,
+        "end": 100,
+        "status": "selected_claim_internal_review_complete"
+      },
+      {
+        "start": 101,
+        "end": 120,
+        "status": "atomic_claim_review_pending"
+      },
+      {
+        "start": 121,
+        "end": 420,
+        "status": "claim_ledger_pending"
+      }
+    ],
+    "global": {
+      "visualStatus": "reconciliation_required_existing_assets_unapproved",
+      "independentReviewStatus": "pending",
+      "accessibilityStatus": "pending",
+      "websiteIntegrationStatus": "reconcile_against_github_main",
+      "academyMappingStatus": "reconcile_against_academy_catalog",
+      "sopCrosslinkStatus": "reconciliation_required",
+      "downloadStatus": "reconciliation_required",
+      "approved": false,
+      "deployed": false,
+      "live": false
+    }
+  },
+  "notes": [
+    "Created manuscript coverage does not equal reviewed, approved, deployed, or live.",
+    "Existing visual assets must be reconciled; do not classify them as missing or approved without asset-level evidence.",
+    "No lesson advances to approved/live without explicit release evidence."
+  ]
+}
