@@ -9,7 +9,9 @@ on:
       - 'scripts/polish-wordpress-commerce-archive-v4.mjs'
       - '.github/workflows/wordpress-visual-v4-post-v3.yml'
   workflow_run:
-    workflows: ['Apply DTFSeeds Visual V3 After Canonical Production']
+    workflows:
+      - 'Apply DTFSeeds Visual V3 After Canonical Production'
+      - 'Rebuild DTFSeeds Visual Site On Command'
     types: [completed]
 
 permissions:
@@ -175,4 +177,4 @@ jobs:
               ].join('\n')
             });
 
-# Production trigger: 2026-08-23 stable V4 visual pass
+# Production trigger: chain V4 after direct V3 rebuilds
