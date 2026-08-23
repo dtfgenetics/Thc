@@ -1,0 +1,209 @@
+name: Restore Canonical Lighting Infographic
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/restore-lighting-infographic-production.yml
+      - site/wordpress/assets/infographics/import-remaining-core-031-047.json
+
+permissions:
+  contents: write
+  issues: write
+
+env:
+  NODE_OPTIONS: --dns-result-order=ipv4first
+  WP_SITE_URL: https://dtfseeds.com
+  TARGET_PATH: site/wordpress/assets/infographics/DLI_PPFD_Light_Education_Infographic.png
+  IMPORT_MANIFEST: site/wordpress/assets/infographics/import-remaining-core-031-047.json
+  INFOGRAPHIC_SOURCE_DIR: ${{ github.workspace }}/site/wordpress/assets/infographics
+  INFOGRAPHIC_DIR: ${{ github.workspace }}/.tmp/eligible-infographics
+  INFOGRAPHIC_PLACEMENT_CONFIG: ${{ github.workspace }}/site/wordpress/assets/infographics/placement-rules.json
+  INFOGRAPHIC_EXCLUSIONS: ${{ github.workspace }}/site/wordpress/assets/infographics/infographic-exclusions.json
+  TOPIC_LITERATURE_CONFIG: ${{ github.workspace }}/site/wordpress/education/topic-literature.json
+  BACKUP_ROOT: /tmp/dtf-lighting-recovery
+  APPLY_LEARNING_V3: 'true'
+
+concurrency:
+  group: dtfseeds-lighting-infographic-recovery
+  cancel-in-progress: false
+
+jobs:
+  restore:
+    name: Restore source asset publish and verify Lighting visual
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    environment: production
+    env:
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate protected inputs and publishers
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
+          test -s "$IMPORT_MANIFEST"
+          node --check scripts/stage-eligible-infographics.mjs
+          node --check scripts/deploy-wordpress-infographic-library-rest.mjs
+          node --check scripts/publish-wordpress-topic-literature.mjs
+          node --check scripts/run-learning-v3-production.mjs
+
+      - name: Recover canonical DLI PPFD source image from reviewed manifest
+        id: recover
+        shell: bash
+        run: |
+          set -euo pipefail
+          url="$(node - <<'NODE'
+          const fs=require('fs');
+          const manifest=JSON.parse(fs.readFileSync(process.env.IMPORT_MANIFEST,'utf8'));
+          const target=manifest.assets?.find(x=>x.path===process.env.TARGET_PATH);
+          if(!target?.url) process.exit(2);
+          process.stdout.write(target.url);
+          NODE
+          )"
+          test -n "$url"
+          tmp="$RUNNER_TEMP/dli-ppfd-lighting.png"
+          curl -4 --fail --silent --show-error --location --retry 5 --retry-delay 3 --connect-timeout 20 --max-time 120 "$url" --output "$tmp"
+          size="$(stat -c %s "$tmp")"
+          test "$size" -ge 100000
+          python3 - "$tmp" <<'PY'
+          import pathlib,sys
+          p=pathlib.Path(sys.argv[1])
+          b=p.read_bytes()
+          assert b[:8]==b'\x89PNG\r\n\x1a\n', 'Recovered asset is not a PNG'
+          assert b.find(b'IEND')!=-1, 'PNG does not contain an IEND marker'
+          PY
+          mkdir -p "$(dirname "$TARGET_PATH")"
+          cp "$tmp" "$TARGET_PATH"
+          echo "bytes=$size" >> "$GITHUB_OUTPUT"
+          sha256sum "$TARGET_PATH"
+
+      - name: Commit restored canonical asset to main
+        id: commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- "$TARGET_PATH" && git ls-files --error-unmatch "$TARGET_PATH" >/dev/null 2>&1; then
+            echo 'changed=false' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$TARGET_PATH"
+          git commit -m 'Restore canonical DLI PPFD lighting infographic'
+          git pull --rebase origin main
+          git push origin HEAD:main
+          echo 'changed=true' >> "$GITHUB_OUTPUT"
+          echo "commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Stage finished infographic assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$BACKUP_ROOT"
+          node scripts/stage-eligible-infographics.mjs
+          test -s "$INFOGRAPHIC_DIR/DLI_PPFD_Light_Education_Infographic.png"
+
+      - name: Publish canonical infographic media to WordPress
+        id: media
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/deploy-wordpress-infographic-library-rest.mjs
+          backup_dir="$(cat "$BACKUP_ROOT/wordpress-infographic-backup-path.txt")"
+          result="$backup_dir/deployment-result.json"
+          test -s "$result"
+          node - "$result" <<'NODE'
+          const r=require(process.argv[2]);
+          console.log(JSON.stringify({uploaded:r.uploadedMediaCount,reused:r.reusedMediaCount},null,2));
+          NODE
+
+      - name: Refresh topic literature and infographic index
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/publish-wordpress-topic-literature.mjs
+
+      - name: Rebuild Home Learn and subject hierarchy with restored media
+        id: v3
+        shell: bash
+        run: |
+          set -euo pipefail
+          export BACKUP_ROOT=/tmp/dtf-learning-v3-lighting-recovery
+          node scripts/run-learning-v3-production.mjs | tee "$RUNNER_TEMP/learning-v3-lighting-report.json"
+          grep -Fq 'DLI PPFD Light Education Infographic' "$RUNNER_TEMP/learning-v3-lighting-report.json"
+          ! grep -Fq '"lighting": null' "$RUNNER_TEMP/learning-v3-lighting-report.json"
+
+      - name: Verify live Lighting page uses correct visual
+        id: verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          body="$RUNNER_TEMP/lighting-live.html"
+          ok=0
+          for attempt in 1 2 3 4 5 6; do
+            curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+              --header 'Cache-Control: no-cache, no-store, max-age=0' \
+              "https://dtfseeds.com/learn/lighting/?dtf_lighting_recovery=${GITHUB_RUN_ID}-${attempt}" --output "$body"
+            if grep -Fq 'data-dtf-topic="lighting"' "$body" && grep -Fq 'DLI_PPFD_Light_Education_Infographic' "$body"; then
+              ok=1
+              break
+            fi
+            sleep 6
+          done
+          test "$ok" -eq 1
+          ! grep -Fq 'Stage_3_Seedling_Establishment_Infographic' "$body"
+
+      - name: Upload recovery evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dtf-lighting-infographic-recovery-${{ github.run_id }}
+          path: |
+            /tmp/dtf-lighting-recovery
+            /tmp/dtf-learning-v3-lighting-recovery
+            ${{ runner.temp }}/learning-v3-lighting-report.json
+            ${{ runner.temp }}/lighting-live.html
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report recovery to issue 46
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          STATUS: ${{ job.status }}
+          COMMIT_CHANGED: ${{ steps.commit.outputs.changed }}
+          RESTORED_BYTES: ${{ steps.recover.outputs.bytes }}
+          V3_OUTCOME: ${{ steps.v3.outcome }}
+          VERIFY_OUTCOME: ${{ steps.verify.outcome }}
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 46,
+              body: [
+                '## Canonical Lighting visual recovery',
+                '',
+                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                `Overall: **${process.env.STATUS}**`,
+                `Canonical source restored/changed: **${process.env.COMMIT_CHANGED || 'unknown'}**`,
+                `Recovered PNG bytes: **${process.env.RESTORED_BYTES || 'unknown'}**`,
+                `Learning v3 rebuild: **${process.env.V3_OUTCOME || 'not reached'}**`,
+                `Live Lighting verification: **${process.env.VERIFY_OUTCOME || 'not reached'}**`,
+                '',
+                'The recovery source is the reviewed DLI_PPFD_Light_Education_Infographic entry in import-remaining-core-031-047.json. The job verifies PNG integrity and size before committing or publishing it, then rejects the prior seedling visual on the live Lighting route.'
+              ].join('\n')
+            });
