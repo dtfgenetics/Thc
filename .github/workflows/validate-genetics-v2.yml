@@ -1,0 +1,82 @@
+name: Validate DTFSeeds Genetics V2
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'scripts/publish-wordpress-genetics-v2.mjs'
+      - 'site/wordpress/genetics/**'
+      - 'site/wordpress/pages/seeds.html'
+      - '.github/workflows/wordpress-genetics-v2.yml'
+      - '.github/workflows/validate-genetics-v2.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate Genetics V2 package
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Check publisher syntax and catalog integrity
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/publish-wordpress-genetics-v2.mjs
+          node - <<'NODE'
+          const fs = require('fs');
+          const data = JSON.parse(fs.readFileSync('site/wordpress/genetics/catalog.json', 'utf8'));
+          if (!Array.isArray(data.catalog) || data.catalog.length < 18) {
+            throw new Error(`Expected at least 18 genetics profiles; found ${data.catalog?.length || 0}`);
+          }
+          const ids = new Set();
+          const slugs = new Set();
+          for (const item of data.catalog) {
+            for (const key of ['id','name','slug','lineage','status','statusLabel','profileUrl','summary']) {
+              if (!item[key]) throw new Error(`Missing ${key} on ${item.id || item.name || 'unknown item'}`);
+            }
+            if (ids.has(item.id)) throw new Error(`Duplicate id: ${item.id}`);
+            if (slugs.has(item.slug)) throw new Error(`Duplicate slug: ${item.slug}`);
+            if (item.profileUrl !== `/seeds/${item.slug}/`) throw new Error(`Invalid profileUrl for ${item.id}: ${item.profileUrl}`);
+            if (item.status === 'current-release' && !item.shopUrl) throw new Error(`Current release lacks shopUrl: ${item.id}`);
+            ids.add(item.id);
+            slugs.add(item.slug);
+          }
+          const requiredIds = [
+            'blue-mango-regular-f2',
+            'blue-mango-feminized-f2',
+            'blue-bubblegum-f1',
+            'blue-mango-f3-regular',
+            'blue-mango-bx1-regular',
+            'blue-frequency-f1-regular',
+            'blue-cali-glue-f1-regular',
+            'berry-blue-f2-regular',
+            'berry-lemonade-f1-regular',
+            'zestberry-f1-regular',
+            'rainbow-bubblegum-f1-regular',
+            'mystery-line-f1-regular',
+            'mango-bubbles'
+          ];
+          for (const id of requiredIds) {
+            if (!ids.has(id)) throw new Error(`Required supplied-card profile missing: ${id}`);
+          }
+          console.log(`Validated ${data.catalog.length} genetics profiles and ${requiredIds.length} required supplied-card records.`);
+          NODE
+
+      - name: Verify canonical Seeds fallback routes
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -Fq '/seeds/blue-mango-regular-f2/' site/wordpress/pages/seeds.html
+          grep -Fq '/seeds/blue-bubblegum-f1/' site/wordpress/pages/seeds.html
+          grep -Fq '/seeds/mango-bubbles/' site/wordpress/pages/seeds.html
+          grep -Fq 'Built line by line. Documented generation by generation.' site/wordpress/pages/seeds.html
