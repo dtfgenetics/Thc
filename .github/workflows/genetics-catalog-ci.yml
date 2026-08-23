@@ -5,15 +5,27 @@ on:
     branches: [main]
     paths:
       - 'data/genetics/**'
-      - 'scripts/validate-genetics-catalog.mjs'
+      - 'site/wordpress/products/catalog-strain-cards.json'
       - 'site/wordpress/pages/seeds.html'
+      - 'site/wordpress/pages/blue-mango.html'
+      - 'site/wordpress/pages/blue-frequency.html'
+      - 'site/wordpress/pages/mystery-line.html'
+      - 'site/wordpress/pages/rainbow-bubblegum.html'
+      - 'scripts/validate-genetics-catalog.mjs'
+      - 'scripts/validate-catalog-strain-cards.mjs'
       - '.github/workflows/genetics-catalog-ci.yml'
   pull_request:
     branches: [main]
     paths:
       - 'data/genetics/**'
-      - 'scripts/validate-genetics-catalog.mjs'
+      - 'site/wordpress/products/catalog-strain-cards.json'
       - 'site/wordpress/pages/seeds.html'
+      - 'site/wordpress/pages/blue-mango.html'
+      - 'site/wordpress/pages/blue-frequency.html'
+      - 'site/wordpress/pages/mystery-line.html'
+      - 'site/wordpress/pages/rainbow-bubblegum.html'
+      - 'scripts/validate-genetics-catalog.mjs'
+      - 'scripts/validate-catalog-strain-cards.mjs'
       - '.github/workflows/genetics-catalog-ci.yml'
   workflow_dispatch:
 
@@ -23,11 +35,16 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Validate catalog and public page synchronization
-        run: node scripts/validate-genetics-catalog.mjs
+      - name: Validate catalog, public page synchronization, and exact strain-card sources
+        run: |
+          set -euo pipefail
+          node --check scripts/validate-genetics-catalog.mjs
+          node --check scripts/validate-catalog-strain-cards.mjs
+          node scripts/validate-genetics-catalog.mjs
+          node scripts/validate-catalog-strain-cards.mjs
