@@ -8,7 +8,7 @@ on:
       - 'scripts/finalize-wordpress-genetics-v4.mjs'
       - '.github/workflows/wordpress-genetics-v4-finalize.yml'
   workflow_run:
-    workflows: ['Apply DTFSeeds Visual V4 After V3']
+    workflows: ['Publish DTFSeeds Genetics Library']
     types: [completed]
 
 permissions:
@@ -32,7 +32,6 @@ jobs:
       NODE_OPTIONS: --dns-result-order=ipv4first
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME || secrets.WORDPRESS_USERNAME || secrets.WP_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD || secrets.WORDPRESS_APP_PASSWORD || secrets.WP_APPLICATION_PASSWORD }}
-      BACKUP_ROOT: ${{ runner.temp }}/dtf-genetics-v4-final
     steps:
       - uses: actions/checkout@v4
         with:
@@ -40,22 +39,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Validate V4 Genetics package
+      - name: Validate Genetics library finalizer
         run: |
           set -euo pipefail
           test -n "${WP_API_USERNAME:-}"
           test -n "${WP_API_PASSWORD:-}"
-          node --check scripts/polish-wordpress-genetics-visuals-v4.mjs
           node --check scripts/finalize-wordpress-genetics-v4.mjs
-      - name: Restore V4 Genetics visual ownership
-        id: restore
-        env:
-          APPLY_GENETICS_VISUALS: 'true'
-        run: |
-          set -euo pipefail
-          node scripts/polish-wordpress-genetics-visuals-v4.mjs
-          echo 'outcome=success' >> "$GITHUB_OUTPUT"
-      - name: Finalize Genetics hierarchy and direct links
+      - name: Finalize current Genetics hierarchy
         id: apply
         env:
           APPLY_V4_GENETICS_FINALIZE: 'true'
@@ -63,36 +53,34 @@ jobs:
           set -euo pipefail
           node scripts/finalize-wordpress-genetics-v4.mjs
           echo 'outcome=success' >> "$GITHUB_OUTPUT"
-      - name: Verify visitor-facing Genetics
+      - name: Verify visitor-facing Genetics library
         id: verify
         run: |
           set -euo pipefail
           body="$RUNNER_TEMP/seeds.html"
           ok=0
           for attempt in 1 2 3 4 5 6 7 8; do
-            curl -4 -fsSL --retry 2 --retry-delay 2 -H 'Cache-Control: no-cache, no-store, max-age=0' -H 'Pragma: no-cache' "$WP_SITE_URL/seeds/?dtf_genetics_v4_final=${GITHUB_RUN_ID}-${attempt}" -o "$body"
-            if grep -Fqi 'dtf-genetics-visual-v4' "$body" && grep -Fqi 'dtf-v4-genetics-theme-title-suppression' "$body" && grep -Fqi 'href="/growlens/"' "$body" && grep -Fqi 'href="/learn/genetics-breeding/"' "$body"; then ok=1; break; fi
+            curl -4 -fsSL --retry 2 --retry-delay 2 -H 'Cache-Control: no-cache, no-store, max-age=0' -H 'Pragma: no-cache' "$WP_SITE_URL/seeds/?dtf_genetics_final=${GITHUB_RUN_ID}-${attempt}" -o "$body"
+            if grep -Fqi 'DTF Genetics library' "$body" && grep -Fqi 'From breeding notes to current releases.' "$body" && grep -Fqi 'dtf-genetics-library-title-suppression' "$body" && grep -Fqi 'Blue Mango' "$body" && grep -Fqi 'Blue Bubblegum' "$body" && grep -Fqi 'Mango Bubbles' "$body"; then ok=1; break; fi
             sleep 6
           done
-          [[ "$ok" -eq 1 ]] || { echo 'Final V4 Genetics hierarchy/direct links are not visible.' >&2; exit 1; }
+          [[ "$ok" -eq 1 ]] || { echo 'Current Genetics library hierarchy is not visible.' >&2; exit 1; }
           echo 'outcome=success' >> "$GITHUB_OUTPUT"
-      - name: Report V4 Genetics finalization
+      - name: Report Genetics finalization
         if: always()
         uses: actions/github-script@v7
         env:
           STATUS: ${{ job.status }}
-          RESTORE: ${{ steps.restore.outputs.outcome }}
           APPLY: ${{ steps.apply.outputs.outcome }}
           VERIFY: ${{ steps.verify.outputs.outcome }}
         with:
           script: |
             await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body:[
-              '## Genetics V4 final hierarchy','',
+              '## Genetics library final hierarchy','',
               `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
               `Result: **${process.env.STATUS}**`,
-              `V4 restoration: **${process.env.RESTORE || 'not-completed'}**`,
-              `V4-owned hierarchy/link normalization: **${process.env.APPLY || 'not-completed'}**`,
+              `Current-library hierarchy normalization: **${process.env.APPLY || 'not-completed'}**`,
               `Live verification: **${process.env.VERIFY || 'not-completed'}**`,
               '',
-              'This workflow restores the V4 Genetics presentation before enforcing the single-H1 hierarchy and direct Genetics/GrowLens routes, so a prior canonical publish cannot leave Genetics in an intermediate state.'
+              'This preserves the newer multi-line Genetics library and its reviewed strain-card artwork. It removes the duplicate theme page title without restoring the older three-release V4 page over the current library.'
             ].join('\n')});
