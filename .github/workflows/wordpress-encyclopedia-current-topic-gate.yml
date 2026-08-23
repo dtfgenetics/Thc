@@ -1,0 +1,94 @@
+name: Verify THC Encyclopedia Current Topic
+
+on:
+  workflow_run:
+    workflows: ['Publish THC Encyclopedia Production']
+    types: [completed]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  verify:
+    name: Visitor-verify current encyclopedia topic hub
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      WP_SITE_URL: https://dtfseeds.com
+      ENCYCLOPEDIA_BATCH_FILE: site/wordpress/education/encyclopedia/current-production-batch.json
+      ENCYCLOPEDIA_TOPIC_FILE: configuration/encyclopedia-topics.json
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Resolve current batch topic
+        id: topic
+        shell: bash
+        run: |
+          set -euo pipefail
+          node - <<'NODE' >> "$GITHUB_OUTPUT"
+          const fs=require('fs');
+          const batch=JSON.parse(fs.readFileSync(process.env.ENCYCLOPEDIA_BATCH_FILE,'utf8'));
+          const topics=JSON.parse(fs.readFileSync(process.env.ENCYCLOPEDIA_TOPIC_FILE,'utf8')).topics;
+          const lessons=batch.lessonFiles.map(file=>JSON.parse(fs.readFileSync(file,'utf8')));
+          const numbers=lessons.map(x=>Number(x.id.match(/(\d{3})$/)[1]));
+          const topic=topics.find(t=>numbers.every(n=>n>=t.range[0]&&n<=t.range[1]));
+          if(!topic) throw new Error(`Current batch ${batch.batch} does not resolve to one topic hub.`);
+          console.log(`batch=${batch.batch}`);
+          console.log(`slug=${topic.slug}`);
+          console.log(`title=${topic.title}`);
+          console.log(`first_id=${lessons[0].id}`);
+          console.log(`count=${lessons.length}`);
+          NODE
+
+      - name: Visitor-verify current topic hub and index link
+        shell: bash
+        run: |
+          set -euo pipefail
+          slug='${{ steps.topic.outputs.slug }}'
+          title='${{ steps.topic.outputs.title }}'
+          first_id='${{ steps.topic.outputs.first_id }}'
+          hub="$RUNNER_TEMP/current-topic.html"
+          index="$RUNNER_TEMP/encyclopedia-index.html"
+          hub_ok=0
+          for attempt in 1 2 3 4 5 6 7 8; do
+            curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+              --header 'Cache-Control: no-cache, no-store, max-age=0' --header 'Pragma: no-cache' \
+              "$WP_SITE_URL/learn/encyclopedia/$slug/?dtf_topic_gate=${GITHUB_RUN_ID}-${attempt}" -o "$hub"
+            if grep -Fqi -- "$title" "$hub" && grep -Fqi -- "$first_id" "$hub" && grep -Fqi -- "data-thc-topic=\"$slug\"" "$hub"; then
+              hub_ok=1
+              break
+            fi
+            sleep 8
+          done
+          [[ "$hub_ok" -eq 1 ]] || { echo "Current topic hub verification failed: $slug" >&2; head -c 4000 "$hub" >&2 || true; exit 1; }
+
+          curl -4 --fail --silent --show-error --location --retry 3 --retry-delay 2 \
+            --header 'Cache-Control: no-cache, no-store, max-age=0' --header 'Pragma: no-cache' \
+            "$WP_SITE_URL/learn/encyclopedia/?dtf_topic_gate=${GITHUB_RUN_ID}" -o "$index"
+          grep -Fqi -- "$title" "$index"
+          grep -Fqi -- "/learn/encyclopedia/$slug/" "$index"
+          echo "Verified current topic hub: $title ($slug)"
+
+      - name: Report current-topic verification to issue 46
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const success='${{ job.status }}'==='success';
+            const body=[
+              '## THC encyclopedia current-topic visitor gate',
+              '',
+              `- Result: **${success?'success':'failed'}**`,
+              `- Source production run: **${{ github.event.workflow_run.id }}**`,
+              `- Published batch: **${{ steps.topic.outputs.batch || 'unknown' }}**`,
+              `- Topic hub: **${{ steps.topic.outputs.title || 'unknown' }}**`,
+              `- Topic slug: **${{ steps.topic.outputs.slug || 'unknown' }}**`,
+              `- Current-batch lesson count: **${{ steps.topic.outputs.count || 'unknown' }}**`,
+              `- Visitor topic verification: **${success?'passed':'not passed'}**`,
+              `- Source: https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`
+            ].join('\n');
+            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body});
