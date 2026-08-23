@@ -1,0 +1,80 @@
+name: Reconcile DTFSeeds Homepage Social Metadata
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - scripts/reconcile-aioseo-home-social.mjs
+      - .github/workflows/aioseo-home-social-production.yml
+      - site/wordpress/assets/brand/dtf-potleaf-512.png
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-aioseo-home-social
+  cancel-in-progress: true
+
+jobs:
+  reconcile:
+    name: Apply and verify homepage Open Graph image
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: production
+    env:
+      NODE_OPTIONS: --dns-result-order=ipv4first
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      APPLY_AIOSEO_HOME_SOCIAL: 'true'
+      BACKUP_ROOT: /tmp/aioseo-home-social
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate protected social reconciliation
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/reconcile-aioseo-home-social.mjs
+          test -n "${WP_API_USERNAME:-}"
+          test -n "${WP_API_PASSWORD:-}"
+
+      - name: Apply AIOSEO homepage social metadata safely
+        id: reconcile
+        shell: bash
+        run: node scripts/reconcile-aioseo-home-social.mjs
+
+      - name: Upload rollback and verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: aioseo-home-social-${{ github.run_id }}
+          path: /tmp/aioseo-home-social
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report homepage social reconciliation
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          JOB_STATUS: ${{ job.status }}
+          RECONCILE_OUTCOME: ${{ steps.reconcile.outcome }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const body=[
+              '## DTFSeeds homepage social metadata reconciliation','',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Result: **${process.env.JOB_STATUS}**`,
+              `AIOSEO homepage reconciliation: **${process.env.RECONCILE_OUTCOME || 'not-run'}**`,'',
+              'Target: the homepage Open Graph image uses current DTF-controlled media while preserving existing SEO/robots state.'
+            ].join('\n');
+            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body});
