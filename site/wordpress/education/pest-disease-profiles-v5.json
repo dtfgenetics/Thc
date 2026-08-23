@@ -1,0 +1,139 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-08-23",
+  "purpose": "Evidence-first pest and disease reference profiles for Teaching Healthy Cultivation. Profiles support identification and differential reasoning; they do not treat a single image or symptom as confirmation.",
+  "profiles": [
+    {
+      "slug": "spider-mites",
+      "title": "Spider Mites",
+      "category": "Arthropod pest",
+      "summary": "Spider mites are tiny arachnids that feed on plant cells. Early infestations can be easy to miss because damage may appear before obvious webbing.",
+      "observe": ["Fine stippling or pale speckling that expands over time", "Mites, eggs, or cast skins on leaf undersides under magnification", "Webbing in heavier infestations, often around petioles, leaf edges, or dense growth", "Hot or dry microclimates where populations may increase rapidly"],
+      "lookAlikes": ["Thrips feeding scars", "Spray or contact injury", "Some nutrient or environmental spotting", "Dust or residue mistaken for eggs or cast skins"],
+      "confirm": ["Inspect several symptomatic and nearby leaves with magnification", "Look for moving mites plus eggs rather than webbing alone", "Map distribution and repeat counts to determine whether the population is increasing"],
+      "riskContext": ["Dense canopies can hide early colonies", "New plants, clothing, tools, and nearby vegetation can move pests between areas", "Environmental conditions can influence population growth but do not prove mite presence"],
+      "managementPrinciples": ["Isolate affected material when practical and prevent movement to clean areas", "Remove heavily damaged or infested debris according to site policy", "Improve scouting frequency and preserve before/after counts", "Use only lawful, label-compliant biological, cultural, mechanical, or chemical controls appropriate to the crop and location"]
+    },
+    {
+      "slug": "thrips",
+      "title": "Thrips",
+      "category": "Insect pest",
+      "summary": "Thrips are slender insects whose feeding can create silvery scars, distorted young growth, and dark fecal specks. Several life stages may occur in different parts of the crop environment.",
+      "observe": ["Silvery or bronze feeding scars rather than uniform chlorosis", "Small elongated insects on leaves, flowers, or traps", "Dark fecal specks associated with feeding sites", "Distorted or scarred new growth when feeding occurs on developing tissue"],
+      "lookAlikes": ["Spider mite stippling", "Mechanical abrasion", "Spray residue or phytotoxicity", "Some viral or environmental distortion"],
+      "confirm": ["Use magnification to identify body shape and movement", "Inspect sticky cards and plant tissue together", "Check more than one life stage when possible and track repeated counts"],
+      "riskContext": ["Incoming plant material can introduce thrips", "Flowers and protected growing points can shelter insects", "Weeds or nearby vegetation can serve as alternate hosts"],
+      "managementPrinciples": ["Quarantine and inspect incoming plants", "Use repeatable trap and plant-scouting routes", "Reduce unnecessary plant debris and alternate hosts", "Use only lawful, crop-appropriate, label-compliant controls and verify the result with follow-up counts"]
+    },
+    {
+      "slug": "fungus-gnats",
+      "title": "Fungus Gnats",
+      "category": "Insect pest / root-zone indicator",
+      "summary": "Adult fungus gnats are small flies often associated with moist organic substrates. Larvae develop in the root zone and can feed on organic matter, fungi, and tender roots.",
+      "observe": ["Small dark adults running or flying near the media surface", "Larvae in moist media under close inspection", "Persistent wet media or algae/fungal growth that supports larval habitat", "Weak young plants where root injury is plausible"],
+      "lookAlikes": ["Shore flies", "Other small flying insects", "Seedling problems caused by overwatering without meaningful gnat pressure", "Root disease unrelated to insect feeding"],
+      "confirm": ["Use sticky cards for adult trend data", "Inspect the media or use an appropriate larval sampling method", "Separate insect presence from proof that insects caused the plant symptom"],
+      "riskContext": ["Chronically wet media favors habitat development", "Propagation areas can be particularly vulnerable", "Algae and decaying organic matter can support populations"],
+      "managementPrinciples": ["Correct avoidable overwatering and improve media/aeration practices where appropriate", "Remove standing water and unnecessary organic debris", "Monitor adults and larvae separately", "Use only lawful, crop-appropriate biological or other controls and verify population change"]
+    },
+    {
+      "slug": "aphids",
+      "title": "Aphids",
+      "category": "Insect pest",
+      "summary": "Aphids are soft-bodied sap-feeding insects that may cluster on growing tips, stems, or leaf undersides. Honeydew and cast skins can be important clues.",
+      "observe": ["Clusters of soft-bodied insects in protected plant areas", "Sticky honeydew on leaves or surfaces", "White cast skins that remain after molting", "Curling or distorted young growth in feeding areas"],
+      "lookAlikes": ["Whitefly nymphs or cast material", "Scale-like debris", "Physiological leaf curl", "Residue mistaken for shed skins"],
+      "confirm": ["Identify living insects under magnification", "Check stems, petioles, growing points, and leaf undersides", "Record colony locations and repeat counts"],
+      "riskContext": ["Dense growth can conceal colonies", "Winged forms can disperse from established populations", "Incoming plant material is a common biosecurity concern"],
+      "managementPrinciples": ["Inspect and quarantine incoming material", "Remove heavily colonized plant debris where practical", "Protect beneficial organisms when using controls", "Use only lawful, label-compliant controls and confirm declining counts over time"]
+    },
+    {
+      "slug": "whiteflies",
+      "title": "Whiteflies",
+      "category": "Insect pest",
+      "summary": "Whiteflies are small sap-feeding insects. Adults may fly when leaves are disturbed, while immature stages remain attached to leaf undersides.",
+      "observe": ["Small pale adults flying from disturbed foliage", "Flattened immature stages on leaf undersides", "Honeydew and associated surface growth where populations are high", "General decline or chlorosis that tracks with infestation intensity"],
+      "lookAlikes": ["Small moth-like insects", "Scale insects or residue on leaf undersides", "Aphid-related honeydew", "Non-pest chlorosis"],
+      "confirm": ["Inspect adults and immature stages", "Use sticky cards for trend data, not as the sole identification tool", "Check whether symptoms spatially correspond with actual colonies"],
+      "riskContext": ["Protected environments can allow continuous reproduction", "New plants can introduce hidden immature stages", "Honeydew can create secondary cleanliness and microbial concerns"],
+      "managementPrinciples": ["Strengthen incoming-plant inspection", "Remove heavily infested material where site policy allows", "Monitor adult and immature stages separately", "Use lawful, crop-appropriate controls and verify population trends"]
+    },
+    {
+      "slug": "broad-russet-mites",
+      "title": "Broad & Russet Mite Suspicion",
+      "category": "Microscopic arthropod pest",
+      "summary": "Broad and russet mites are extremely small and may cause distorted new growth, bronzing, reduced vigor, or flower damage. Visual symptoms alone are not sufficient for confirmation.",
+      "observe": ["Abnormal distortion concentrated in new growth", "Bronzing, roughened tissue, or unusual leaf margins", "Symptoms that persist despite otherwise reasonable nutrition and environment", "Very small organisms requiring strong magnification or microscopy"],
+      "lookAlikes": ["Herbicide or spray injury", "Nutrient imbalance", "Heat or light stress", "Viral or viroid-associated distortion", "Genetic/developmental abnormalities"],
+      "confirm": ["Use suitable magnification or microscopy on symptomatic growing points", "Sample more than one plant and location", "Consider professional identification when the organism cannot be resolved reliably"],
+      "riskContext": ["Symptoms can be severe before mites are noticed", "Plant-to-plant movement and contaminated tools/material can spread infestations", "Misdiagnosis can lead to repeated unnecessary input changes"],
+      "managementPrinciples": ["Isolate suspicious material until identification improves", "Strengthen sanitation and movement controls", "Preserve samples/photos and repeat scouting", "Use lawful, crop-appropriate controls only after the target is reasonably established"]
+    },
+    {
+      "slug": "caterpillars",
+      "title": "Caterpillars & Chewing Larvae",
+      "category": "Insect pest",
+      "summary": "Caterpillars and other chewing larvae remove tissue directly and can hide inside dense foliage or flowers. Frass is often an important clue.",
+      "observe": ["Missing tissue, holes, or chewed margins", "Frass near damaged tissue", "Larvae, silk, or feeding shelters", "Flower damage that may create secondary decay risk"],
+      "lookAlikes": ["Grasshopper or beetle feeding", "Mechanical tears", "Slug/snail damage", "Necrotic tissue that later falls away"],
+      "confirm": ["Search damaged areas and nearby protected sites", "Identify larvae or characteristic frass", "Inspect at different times when feeding activity may change"],
+      "riskContext": ["Outdoor crops are exposed to egg-laying adults and surrounding vegetation", "Dense flowers can hide larvae and damage", "Wounds can increase secondary disease concerns"],
+      "managementPrinciples": ["Remove confirmed larvae when practical", "Use exclusion and repeated scouting where appropriate", "Inspect damaged flower tissue for secondary decay", "Use lawful, crop-appropriate controls and verify reduced damage/new counts"]
+    },
+    {
+      "slug": "powdery-mildew",
+      "title": "Powdery Mildew",
+      "category": "Fungal disease complex",
+      "summary": "Powdery mildew presents as superficial white fungal growth on susceptible tissue. Similar-looking residues make confirmation important before management decisions are made.",
+      "observe": ["White powdery colonies that recur or expand rather than wiping away permanently", "Distribution on leaves, petioles, stems, or flowers depending on disease stage", "New colonies appearing over time", "Microclimates with limited air movement or favorable humidity patterns"],
+      "lookAlikes": ["Mineral or spray residue", "Dust", "Dried droplets", "Other superficial fungal growth"],
+      "confirm": ["Inspect colony structure with magnification", "Compare wiped and unwiped areas over time", "Use microscopy or laboratory testing when species-level or regulatory confirmation matters"],
+      "riskContext": ["Dense canopies and susceptible cultivars can increase risk", "Air movement within the canopy and moisture management affect disease conditions", "Infected plant material can serve as inoculum"],
+      "managementPrinciples": ["Separate or remove heavily affected material according to site policy", "Improve sanitation and environmental management", "Reduce movement of contaminated plant debris", "Use only lawful, crop-appropriate disease controls and verify new-colony incidence"]
+    },
+    {
+      "slug": "botrytis-gray-mold",
+      "title": "Botrytis / Gray Mold Suspicion",
+      "category": "Fungal disease",
+      "summary": "Botrytis can infect damaged or senescing tissues and is especially concerning in dense flowering material. Internal decay may be present before the exterior looks severe.",
+      "observe": ["Localized browning, collapse, or soft decay inside flowers", "Gray-brown sporulation under favorable conditions", "Damage following prolonged wetness, condensation, injury, or dense flower development", "Affected tissue that separates from healthy material abnormally"],
+      "lookAlikes": ["Normal late-stage browning", "Mechanical injury", "Caterpillar damage with secondary decay", "Other fungal or bacterial rots"],
+      "confirm": ["Inspect the interior of suspicious flower tissue carefully", "Document wetness/condensation and progression", "Use microscopy or laboratory testing when definitive identification is important"],
+      "riskContext": ["Dense flowers can trap moisture", "Rain, condensation, and prolonged high moisture increase risk", "Wounded or senescing tissues can be vulnerable entry points"],
+      "managementPrinciples": ["Isolate affected material and avoid spreading spores/debris", "Remove contaminated tissue according to site policy", "Address moisture, condensation, and canopy airflow problems", "Use lawful, crop-appropriate disease controls and protect post-harvest material from contaminated batches"]
+    },
+    {
+      "slug": "root-zone-disease-complex",
+      "title": "Root-Zone Disease Complex",
+      "category": "Root disease differential",
+      "summary": "Brown roots, weak growth, wilt, or root loss can result from low oxygen, temperature, salinity, physical injury, pathogens, or combinations of these factors. Root appearance alone rarely identifies the causal organism.",
+      "observe": ["Root color, texture, odor, and distribution of damage", "Whether roots are slimy, dry, brittle, stained, or mechanically damaged", "Media moisture, drainage, oxygenation, and root-zone temperature", "Whole-plant wilt, stunting, or nutrient-like symptoms"],
+      "lookAlikes": ["Normal staining from media or nutrient inputs", "Chronic overwatering without primary disease", "High salinity or chemical injury", "Root binding or physical restriction", "Temperature stress"],
+      "confirm": ["Separate environmental/root-zone evidence from pathogen evidence", "Compare healthy and symptomatic root samples", "Use microscopy, culturing, molecular testing, or a plant diagnostic laboratory when causal identification matters"],
+      "riskContext": ["Saturated or poorly aerated zones can damage roots and favor some pathogens", "Warm or unstable root-zone conditions can increase stress", "Shared water, tools, or reused material can spread some root pathogens"],
+      "managementPrinciples": ["Correct physical root-zone problems that can be measured", "Separate contaminated material and strengthen sanitation", "Avoid assuming every brown root is the same disease", "Use lawful, crop-appropriate disease controls only with an evidence-based target"]
+    },
+    {
+      "slug": "hop-latent-viroid",
+      "title": "Hop Latent Viroid (HLVd) Suspicion",
+      "category": "Viroid disease",
+      "summary": "Hop latent viroid can infect cannabis and may be associated with reduced vigor, altered morphology, poor rooting, or reduced flower/resin performance. Symptoms are variable and visual inspection cannot confirm infection.",
+      "observe": ["Unexplained loss of vigor or performance across clones or time", "Abnormal branching, leaf shape, rooting, or developmental behavior in some infected plants", "Patterns associated with shared propagation material", "Plants that look normal despite possible infection"],
+      "lookAlikes": ["Nutrient or environmental stress", "Root disease", "Genetic or clonal variation", "Other viruses/viroids", "Chronic propagation stress"],
+      "confirm": ["Use a validated molecular diagnostic test such as an appropriate RT-PCR/RT-qPCR assay through a capable laboratory", "Sample according to the laboratory's guidance", "Do not use visual symptoms as a substitute for testing"],
+      "riskContext": ["Vegetative propagation can preserve and spread infected plant material", "Contaminated cutting tools or plant sap can create transmission risk", "Asymptomatic infected plants can make visual screening unreliable"],
+      "managementPrinciples": ["Use tested propagation stock where practical", "Strengthen tool sanitation and plant-identity records", "Separate suspect material pending test results", "Follow applicable facility, laboratory, and crop-health protocols for confirmed infected stock"]
+    },
+    {
+      "slug": "damping-off-seedlings",
+      "title": "Damping-Off & Seedling Collapse",
+      "category": "Seedling disease differential",
+      "summary": "Seedling collapse near the media surface can involve pathogenic fungi or oomycetes, but excessive moisture, poor aeration, weak seedlings, temperature, and mechanical injury can create similar outcomes or increase disease risk.",
+      "observe": ["Stem constriction or water-soaked tissue near the media line", "Seedlings that fail before or shortly after emergence", "Root discoloration or decay", "Clusters associated with wet media, poor airflow, contaminated materials, or propagation trays"],
+      "lookAlikes": ["Physical stem damage", "Severe overwatering without confirmed pathogen", "Desiccation after emergence", "Temperature injury", "Nutrient or salt injury to very young roots"],
+      "confirm": ["Inspect stem/root tissue and compare affected with healthy seedlings", "Document propagation moisture, temperature, sanitation, and emergence timing", "Use a plant diagnostic laboratory when identification of the causal organism matters"],
+      "riskContext": ["Very young plants have limited reserves and small root systems", "Saturated media and poor sanitation can increase disease risk", "Contaminated trays, tools, water, or media can contribute to repeated outbreaks"],
+      "managementPrinciples": ["Use clean propagation materials and tools", "Avoid chronically saturated media and maintain appropriate aeration", "Remove collapsed seedlings according to sanitation practice", "Use lawful, crop-appropriate disease management only when the target and context justify it"]
+    }
+  ]
+}
