@@ -7,6 +7,7 @@ on:
     paths:
       - scripts/rebuild-wordpress-learning-experience-v3.mjs
       - scripts/run-learning-v3-production.mjs
+      - scripts/rebuild-wordpress-shared-shell-v3.mjs
       - site/wordpress/education/topic-literature.json
       - .github/workflows/wordpress-learning-experience-v3-production.yml
   workflow_run:
@@ -27,7 +28,7 @@ concurrency:
 
 jobs:
   publish:
-    name: Publish and verify Home Learn and THC subject hierarchy
+    name: Publish responsive shell Home Learn and THC subject hierarchy
     if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 35
@@ -36,6 +37,7 @@ jobs:
       WP_SITE_URL: https://dtfseeds.com
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      APPLY_SHARED_SHELL_V3: 'true'
       APPLY_LEARNING_V3: 'true'
       BACKUP_ROOT: /tmp/dtf-learning-v3
     steps:
@@ -47,7 +49,7 @@ jobs:
         with:
           node-version: 22
 
-      - name: Validate publisher and protected credentials
+      - name: Validate publishers and protected credentials
         shell: bash
         run: |
           set -euo pipefail
@@ -55,10 +57,22 @@ jobs:
           : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
           test -s scripts/rebuild-wordpress-learning-experience-v3.mjs
           test -s scripts/run-learning-v3-production.mjs
+          test -s scripts/rebuild-wordpress-shared-shell-v3.mjs
           test -s site/wordpress/education/topic-literature.json
           node --check scripts/rebuild-wordpress-learning-experience-v3.mjs
           node --check scripts/run-learning-v3-production.mjs
+          node --check scripts/rebuild-wordpress-shared-shell-v3.mjs
           node -e "const fs=require('fs'); const x=JSON.parse(fs.readFileSync('site/wordpress/education/topic-literature.json','utf8')); if(!Array.isArray(x.topics)||x.topics.length<10) process.exit(1); console.log('Canonical topics:',x.topics.length)"
+
+      - name: Publish responsive shared header and footer
+        id: shell
+        shell: bash
+        env:
+          BACKUP_ROOT: /tmp/dtf-shared-shell-v3
+        run: |
+          set -euo pipefail
+          mkdir -p "$BACKUP_ROOT"
+          node scripts/rebuild-wordpress-shared-shell-v3.mjs | tee /tmp/dtf-shared-shell-v3-output.json
 
       - name: Publish hierarchical learning experience
         id: publish
@@ -68,13 +82,17 @@ jobs:
           mkdir -p "$BACKUP_ROOT"
           node scripts/run-learning-v3-production.mjs | tee /tmp/dtf-learning-v3-output.json
 
-      - name: Verify source markers and route intent
+      - name: Verify live shared shell and learning routes
+        id: verify
         shell: bash
         run: |
           set -euo pipefail
           grep -Fq 'data-dtf-layout="home-v3"' scripts/rebuild-wordpress-learning-experience-v3.mjs
           grep -Fq 'data-dtf-layout="learn-v3"' scripts/rebuild-wordpress-learning-experience-v3.mjs
           grep -Fq 'data-dtf-topic=' scripts/rebuild-wordpress-learning-experience-v3.mjs
+          grep -Fq 'data-dtf-shell="header-v3"' scripts/rebuild-wordpress-shared-shell-v3.mjs
+          grep -Fq 'data-dtf-shell="footer-v3"' scripts/rebuild-wordpress-shared-shell-v3.mjs
+          grep -Fq 'overflow-x:auto' scripts/rebuild-wordpress-shared-shell-v3.mjs
           grep -Fq 'water-root-zone' scripts/run-learning-v3-production.mjs
           grep -Fq 'plant-health-ipm' scripts/run-learning-v3-production.mjs
           grep -Fq '/seeds/' scripts/rebuild-wordpress-learning-experience-v3.mjs
@@ -82,6 +100,18 @@ jobs:
           grep -Fq '/growlens/' scripts/rebuild-wordpress-learning-experience-v3.mjs
           grep -Fq '/thc-grow-doc/' scripts/rebuild-wordpress-learning-experience-v3.mjs
           grep -Fq '/gallery/' scripts/rebuild-wordpress-learning-experience-v3.mjs
+          for route in / /learn/ /shop/; do
+            body="$RUNNER_TEMP/shell-$(echo "$route" | tr '/' '_' | tr -cd '[:alnum:]_').html"
+            ok=0
+            for attempt in 1 2 3 4 5; do
+              curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+                --header 'Cache-Control: no-cache, no-store, max-age=0' \
+                "https://dtfseeds.com${route}?dtf_shell_v3=${GITHUB_RUN_ID}-${attempt}" --output "$body"
+              if grep -Fq 'data-dtf-shell="header-v3"' "$body" && grep -Fq 'data-dtf-shell="footer-v3"' "$body"; then ok=1; break; fi
+              sleep 5
+            done
+            test "$ok" -eq 1
+          done
 
       - name: Upload rollback snapshots and report
         if: always()
@@ -92,6 +122,9 @@ jobs:
             /tmp/dtf-learning-v3
             /tmp/dtf-learning-v3-output.json
             /tmp/dtf-topic-literature-v3-normalized.json
+            /tmp/dtf-shared-shell-v3
+            /tmp/dtf-shared-shell-v3-output.json
+            ${{ runner.temp }}/shell-*.html
           if-no-files-found: warn
           retention-days: 30
 
@@ -100,7 +133,9 @@ jobs:
         uses: actions/github-script@v7
         env:
           STATUS: ${{ job.status }}
+          SHELL_OUTCOME: ${{ steps.shell.outcome }}
           PUBLISH_OUTCOME: ${{ steps.publish.outcome }}
+          VERIFY_OUTCOME: ${{ steps.verify.outcome }}
         with:
           script: |
             const source = context.eventName === 'workflow_run'
@@ -114,12 +149,15 @@ jobs:
               `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
               `Trigger: **${context.eventName}**`,
               `Overall: **${process.env.STATUS}**`,
-              `Publication step: **${process.env.PUBLISH_OUTCOME || 'not reached'}**`,
+              `Responsive shared shell: **${process.env.SHELL_OUTCOME || 'not reached'}**`,
+              `Learning publication: **${process.env.PUBLISH_OUTCOME || 'not reached'}**`,
+              `Live verification: **${process.env.VERIFY_OUTCOME || 'not reached'}**`,
               `Source: ${source}`,
               '',
-              'Scope: Home, Learn, and every canonical THC subject page from site/wordpress/education/topic-literature.json.',
+              'Scope: responsive shared header/footer, Home, Learn, and every canonical THC subject page from site/wordpress/education/topic-literature.json.',
               'Visual hierarchy: core site jobs first; foundation subjects featured; specialized subjects compact; individual subject pages use literature-first section cards plus supporting visuals.',
+              'Mobile navigation is a single horizontal rail instead of a multi-row wrapped header. Footer routes secondary destinations to Community, Gallery, About, Contact, and Discord.',
               'Canonical topic titles are normalized into stable layout aliases before publication so source IDs can evolve without breaking customer-facing routes.',
-              'The publisher creates rollback snapshots before writes, attempts a LiteSpeed cache flush, and performs cache-busted visitor-facing marker verification before success.'
+              'The publisher creates rollback snapshots, preserves the WooCommerce archive style injection, attempts a LiteSpeed cache flush, and performs cache-busted visitor verification on Home, Learn, Shop, and all subject routes.'
             ].join('\n');
             await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: 46, body });
