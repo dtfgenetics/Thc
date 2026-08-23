@@ -5,7 +5,8 @@ on:
   push:
     branches: [main]
     paths:
-      - 'scripts/publish-wordpress-encyclopedia-batch.mjs'
+      - 'scripts/publish-wordpress-encyclopedia-*.mjs'
+      - 'content/encyclopedia/**'
       - 'site/wordpress/education/encyclopedia/**'
       - '.github/workflows/wordpress-encyclopedia-production.yml'
 
@@ -28,7 +29,7 @@ jobs:
       WP_SITE_URL: https://dtfseeds.com
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
-      ENCYCLOPEDIA_BATCH_FILE: site/wordpress/education/encyclopedia/volume01-batch01.json
+      ENCYCLOPEDIA_BATCH_FILE: site/wordpress/education/encyclopedia/volume01-batch02.json
       BACKUP_ROOT: /tmp/dtf-encyclopedia-production
     steps:
       - uses: actions/checkout@v4
@@ -43,15 +44,16 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          node --check scripts/publish-wordpress-encyclopedia-batch.mjs
+          node --check scripts/publish-wordpress-encyclopedia-canonical-batch.mjs
           node - <<'NODE'
-          const d=require('./site/wordpress/education/encyclopedia/volume01-batch01.json');
-          const expected=['THC-ENC-003','THC-ENC-006','THC-ENC-007','THC-ENC-008','THC-ENC-009','THC-ENC-010','THC-ENC-011'];
-          const got=d.articles.map(x=>x.id);
+          const fs=require('fs');
+          const d=require('./site/wordpress/education/encyclopedia/volume01-batch02.json');
+          const expected=Array.from({length:9},(_,i)=>`THC-ENC-${String(i+12).padStart(3,'0')}`);
+          const got=d.lessonFiles.map(file=>JSON.parse(fs.readFileSync(file,'utf8')).id);
           if(JSON.stringify(got)!==JSON.stringify(expected)) throw new Error(`Unexpected batch IDs: ${got.join(',')}`);
-          for(const a of d.articles){
-            if(!a.title||!a.summary||!a.learningObjective||a.coreScience.length<3||!a.sources.length) throw new Error(`Incomplete article ${a.id}`);
-            if(a.slug!==a.id.toLowerCase()) throw new Error(`Stable slug mismatch ${a.id}`);
+          for(const file of d.lessonFiles){
+            const a=JSON.parse(fs.readFileSync(file,'utf8'));
+            if(!a.title||!a.objective||!Array.isArray(a.coreScience)||a.coreScience.length<2||!Array.isArray(a.sourceNotes)||!a.sourceNotes.length) throw new Error(`Incomplete canonical lesson ${a.id}`);
           }
           NODE
 
@@ -67,13 +69,14 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          node scripts/publish-wordpress-encyclopedia-batch.mjs | tee "$RUNNER_TEMP/encyclopedia-publish.log"
+          node scripts/publish-wordpress-encyclopedia-canonical-batch.mjs | tee "$RUNNER_TEMP/encyclopedia-publish.log"
           backup_dir="$(cat "$BACKUP_ROOT/latest-backup-path.txt")"
           report="$backup_dir/encyclopedia-publication-report.json"
           test -s "$report"
           echo "backup_dir=$backup_dir" >> "$GITHUB_OUTPUT"
           echo "count=$(node -p "require(process.argv[1]).published.length" "$report")" >> "$GITHUB_OUTPUT"
           echo "index_id=$(node -p "require(process.argv[1]).index.pageId" "$report")" >> "$GITHUB_OUTPUT"
+          echo "listed=$(node -p "require(process.argv[1]).index.listedLessons" "$report")" >> "$GITHUB_OUTPUT"
 
       - name: Visitor-verify encyclopedia index and article routes
         id: verify
@@ -104,15 +107,18 @@ jobs:
             fi
             echo "$route visitor verification passed"
           }
-          fetch_verify '/learn/encyclopedia/' 'Search published encyclopedia lessons'
+          fetch_verify '/learn/encyclopedia/' 'THC-ENC-003'
+          fetch_verify '/learn/encyclopedia/' 'THC-ENC-020' 'THC-ENC-001 — How to Read Cannabis Plant Science Critically'
           fetch_verify '/learn/encyclopedia/thc-enc-003/' 'Taxonomic Debate: One Species, Multiple Lineages'
-          fetch_verify '/learn/encyclopedia/thc-enc-006/' 'Annual Growth Habit and the Whole-Plant Life Cycle'
-          fetch_verify '/learn/encyclopedia/thc-enc-007/' 'The Cannabis Achene: What Growers Call a Seed'
-          fetch_verify '/learn/encyclopedia/thc-enc-008/' 'Embryo, Cotyledons, Radicle, Hypocotyl, and Plumule'
-          fetch_verify '/learn/encyclopedia/thc-enc-009/' 'Root System Architecture'
-          fetch_verify '/learn/encyclopedia/thc-enc-010/' 'Stem Anatomy and Vascular Transport'
-          fetch_verify '/learn/encyclopedia/thc-enc-011/' 'Nodes, Internodes, and Branch Attachment'
-          fetch_verify '/learn/encyclopedia/' 'THC-ENC-011' 'THC-ENC-001 — How to Read Cannabis Plant Science Critically'
+          fetch_verify '/learn/encyclopedia/thc-enc-012/' 'Leaf Morphology, Leaflets, and Phyllotaxy'
+          fetch_verify '/learn/encyclopedia/thc-enc-013/' 'Meristems, Buds, and Apical Dominance'
+          fetch_verify '/learn/encyclopedia/thc-enc-014/' 'Primary Growth, Secondary Thickening, and Structural Support'
+          fetch_verify '/learn/encyclopedia/thc-enc-015/' 'Dioecy, Monoecy, and Sexual Plasticity'
+          fetch_verify '/learn/encyclopedia/thc-enc-016/' 'Male Flower and Inflorescence Anatomy'
+          fetch_verify '/learn/encyclopedia/thc-enc-017/' 'Female Flower, Bract, Stigma, and Inflorescence Anatomy'
+          fetch_verify '/learn/encyclopedia/thc-enc-018/' 'Wind Pollination, Fertilization, and Seed Set'
+          fetch_verify '/learn/encyclopedia/thc-enc-019/' 'Glandular and Nonglandular Trichome Classes'
+          fetch_verify '/learn/encyclopedia/thc-enc-020/' 'Morphological Measurement and Botanical Recordkeeping'
 
       - name: Upload encyclopedia rollback package
         if: always() && steps.publish.outputs.backup_dir != ''
@@ -133,11 +139,12 @@ jobs:
               '## THC encyclopedia production publication',
               '',
               `- Result: **${success?'success':'failed'}**`,
-              `- Published batch: **volume01-batch01**`,
-              `- Article count: **${{ steps.publish.outputs.count || 'unknown' }}**`,
+              `- Published batch: **volume01-batch02**`,
+              `- Article count this batch: **${{ steps.publish.outputs.count || 'unknown' }}**`,
+              `- Encyclopedia lessons listed: **${{ steps.publish.outputs.listed || 'unknown' }}**`,
               `- Encyclopedia index page ID: **${{ steps.publish.outputs.index_id || 'unknown' }}**`,
               `- Visitor verification: **${success?'passed':'not passed'}**`,
-              '- Review control: **claim-level PASS is not represented as independent lesson approval**',
+              '- Review control: **website publication does not represent independent lesson approval**',
               `- Source: https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`
             ].join('\n');
             await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body});
