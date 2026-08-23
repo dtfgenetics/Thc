@@ -1,0 +1,134 @@
+name: Publish THC Diagnostic Index V5
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/publish-wordpress-diagnostic-index-v5.mjs'
+      - '.github/workflows/wordpress-diagnostic-index-v5.yml'
+  workflow_run:
+    workflows:
+      - Publish THC Beginner Course V5
+      - Enhance DTFSeeds Diagnostic Education V4
+    types: [completed]
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-diagnostic-index-v5
+  cancel-in-progress: true
+
+env:
+  WP_SITE_URL: https://dtfseeds.com
+  NODE_OPTIONS: --dns-result-order=ipv4first
+
+jobs:
+  publish:
+    name: Publish symptom-first diagnostic index
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    environment: production
+    env:
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      APPLY_DIAGNOSTIC_INDEX_V5: 'true'
+      BACKUP_ROOT: /tmp/dtf-diagnostic-index-v5
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate diagnostic index publisher
+        id: validate
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
+          node --check scripts/publish-wordpress-diagnostic-index-v5.mjs
+          for marker in 'Yellowing / chlorosis' 'Spots / necrosis / burnt tissue' 'Curling / clawing / distorted growth' 'Wilt / droop / loss of turgor' 'Slow growth / stunting' 'Root discoloration / odor / poor roots' 'Flower / late-stage problems' 'Visible pests / feeding evidence'; do
+            grep -Fq "$marker" scripts/publish-wordpress-diagnostic-index-v5.mjs
+          done
+          grep -Fq '/thc-grow-doc/' scripts/publish-wordpress-diagnostic-index-v5.mjs
+          grep -Fq '/growlens/' scripts/publish-wordpress-diagnostic-index-v5.mjs
+
+      - name: Publish diagnostic index
+        id: publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$BACKUP_ROOT"
+          node scripts/publish-wordpress-diagnostic-index-v5.mjs | tee "$RUNNER_TEMP/diagnostic-index-v5.log"
+          report="$(find "$BACKUP_ROOT" -name diagnostic-index-v5-report.json -print -quit)"
+          test -s "$report"
+          echo "pattern_count=$(node -p "require(process.argv[1]).patternCount" "$report")" >> "$GITHUB_OUTPUT"
+
+      - name: Independently visitor-verify diagnostic index
+        id: verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          body="$RUNNER_TEMP/diagnostics.html"
+          ok=0
+          for attempt in 1 2 3 4 5 6 7 8; do
+            curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+              --header 'Cache-Control: no-cache, no-store, max-age=0' \
+              --header 'Pragma: no-cache' \
+              "$WP_SITE_URL/learn/diagnostics/?dtf_dx5=${GITHUB_RUN_ID}-${attempt}" --output "$body"
+            if grep -Fqi 'data-dtf-diagnostic-index-v5="true"' "$body"; then ok=1; break; fi
+            sleep 6
+          done
+          [[ "$ok" -eq 1 ]]
+          grep -Fqi 'Start with the symptom. End with evidence.' "$body"
+          grep -Fqi 'Minimum evidence rule' "$body"
+          grep -Fqi 'Yellowing / chlorosis' "$body"
+          grep -Fqi 'Root discoloration / odor / poor roots' "$body"
+          grep -Fqi '/learn/water-ph-ec/' "$body"
+          grep -Fqi '/learn/nutrition-media/' "$body"
+          grep -Fqi '/learn/ipm/' "$body"
+          grep -Fqi '/thc-grow-doc/' "$body"
+          count="$(grep -Eio '<h1([ >])' "$body" | wc -l | tr -d ' ')"
+          [[ "$count" = '1' ]]
+
+      - name: Upload rollback and verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: thc-diagnostic-index-v5-${{ github.run_id }}
+          path: |
+            /tmp/dtf-diagnostic-index-v5
+            ${{ runner.temp }}/diagnostic-index-v5.log
+            ${{ runner.temp }}/diagnostics.html
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report diagnostic index V5 result
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          STATUS: ${{ job.status }}
+          VALIDATE: ${{ steps.validate.outcome }}
+          PUBLISH: ${{ steps.publish.outcome }}
+          VERIFY: ${{ steps.verify.outcome }}
+          PATTERNS: ${{ steps.publish.outputs.pattern_count }}
+        with:
+          script: |
+            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body:[
+              '## THC diagnostic index V5','',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Result: **${process.env.STATUS}**`,
+              `Publisher validation: **${process.env.VALIDATE || 'not-run'}**`,
+              `WordPress publication: **${process.env.PUBLISH || 'not-run'}**`,
+              `Visitor verification: **${process.env.VERIFY || 'not-run'}**`,
+              `Symptom-pattern groups: **${process.env.PATTERNS || '0'}**`,'',
+              'This page is symptom-first and evidence-first: observe → contextualize → compare → verify. It routes yellowing, necrosis, distortion, wilt, stunting, root problems, flower problems, and pest evidence into the existing THC subject, diagnostic, recordkeeping, and encyclopedia systems without presenting a single visual symptom as proof of one cause.'
+            ].join('\n')});
