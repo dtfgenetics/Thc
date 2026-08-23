@@ -210,9 +210,20 @@ payload = replace_once(
     "Projects live-verification marker",
 )
 
-# Root and Learn are WordPress-owned routes. Keep their verification markers
-# aligned with the definitive production-cutover workflow instead of replacing
-# them with editorial copy that may not be live yet.
+# The app-only transaction should prove the game page and PHP runtime work,
+# without rolling back app routes because separate WordPress-owned pages drift.
+payload = replace_once(
+    payload,
+    b"  const puzzle = await fetch(`${siteUrl}/puzzles/current.json?dtf_suite_v2=${encodeURIComponent(tag)}`, { headers: { 'Cache-Control': 'no-cache, no-store, max-age=0' } });",
+    b"  const ptpApi = await fetch(`${siteUrl}/games/protect-the-plants/api.php?action=active&dtf_suite_v2=${encodeURIComponent(tag)}`, { headers: { 'Cache-Control': 'no-cache, no-store, max-age=0', Pragma: 'no-cache' } });\n  if (!ptpApi.ok) throw new Error(`/games/protect-the-plants/api.php returned HTTP ${ptpApi.status}.`);\n  let ptpState; try { ptpState = await ptpApi.json(); } catch { throw new Error('/games/protect-the-plants/api.php did not return JSON.'); }\n  if (!ptpState || !Object.prototype.hasOwnProperty.call(ptpState, 'game')) throw new Error('/games/protect-the-plants/api.php returned an unexpected payload.');\n  console.log('Verified /games/protect-the-plants/api.php');\n  const puzzle = await fetch(`${siteUrl}/puzzles/current.json?dtf_suite_v2=${encodeURIComponent(tag)}`, { headers: { 'Cache-Control': 'no-cache, no-store, max-age=0' } });",
+    "Protect the Plants API live verification",
+)
+payload = replace_once(
+    payload,
+    b"  await verifyRoute('/', 'Genetics, cultivation education, practical tools, and original cannabis games.', `${tag}-root`);\n  await verifyRoute('/learn/', 'Understand the plant. Build the environment. Make better decisions.', `${tag}-learn`);",
+    b"  // Home and Learn are WordPress-owned and are verified independently after this app-only transaction.",
+    "app-only WordPress ownership verification boundary",
+)
 
 # Transport hardening: keep the canonical guarded deployer intact, then widen
 # only the read-retry window used to discover WordPress/plugin state. Hostinger
