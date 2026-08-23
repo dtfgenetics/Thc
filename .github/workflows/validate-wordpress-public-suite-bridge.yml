@@ -61,7 +61,7 @@ jobs:
           PY
           php -l "$RUNNER_TEMP/dtf-suite-v2-snippet.php"
 
-      - name: Download last fully validated public-suite release
+      - name: Download last fully validated app fixture
         shell: bash
         run: |
           set -euo pipefail
@@ -72,6 +72,20 @@ jobs:
           test -s "$RUNNER_TEMP/source-suite/games/high-land/index.html"
           test -s "$RUNNER_TEMP/source-suite/growlens/index.html"
           test -s "$RUNNER_TEMP/source-suite/thc-grow-doc/index.html"
+
+      - name: Overlay current static customer shell onto fixture
+        shell: bash
+        run: |
+          set -euo pipefail
+          install -d "$RUNNER_TEMP/source-suite/games"
+          cp site/public-route-patch/games/index.html "$RUNNER_TEMP/source-suite/games/index.html"
+          cp site/public-route-patch/games/dtf-route.css "$RUNNER_TEMP/source-suite/games/dtf-route.css"
+          cp site/public-route-patch/games/dtf-shell.css "$RUNNER_TEMP/source-suite/games/dtf-shell.css"
+          rm -rf "$RUNNER_TEMP/source-suite/tools" "$RUNNER_TEMP/source-suite/projects"
+          cp -a site/public-route-patch/tools "$RUNNER_TEMP/source-suite/tools"
+          cp -a site/public-route-patch/projects "$RUNNER_TEMP/source-suite/projects"
+          test -s "$RUNNER_TEMP/source-suite/games/dtf-shell.css"
+          grep -Fq 'One place to see what is live now and what we are building next.' "$RUNNER_TEMP/source-suite/projects/index.html"
 
       - name: Build protected WordPress app-only archive
         shell: bash
@@ -94,7 +108,7 @@ jobs:
               forbidden = [n for n in names if n == 'index.html' or n.startswith('learn/') or n.startswith('blog/')]
               assert not forbidden, forbidden
               required = [
-                  'games/index.html','games/high-land/index.html','games/high-iq/index.html','games/high-life/index.html',
+                  'games/index.html','games/dtf-shell.css','games/high-land/index.html','games/high-iq/index.html','games/high-life/index.html',
                   'games/grower-conversations/index.html','games/seed-man-platformer/index.html','games/weedopolis/index.html',
                   'games/crossword/index.html','games/who-took-it/index.html','growlens/index.html','thc-grow-doc/index.html',
                   'thc-grow-doc/api/visual-observations.php','tools/index.html','projects/index.html','puzzles/current.json'
@@ -119,7 +133,7 @@ jobs:
         run: |
           set -euo pipefail
           python - <<'PY'
-          import os, pathlib, re
+          import os, pathlib
           path = pathlib.Path(os.environ['RUNNER_TEMP']) / 'deploy-public-suite-via-wordpress-v2.mjs'
           text = path.read_text()
           checks = {
@@ -140,6 +154,8 @@ jobs:
               'ambiguous commit polling': 'Polling persisted server state before any recovery action.' in text,
               'root ownership verification': "await verifyRoute('/', 'Genetics, cultivation education" in text,
               'learn ownership verification': "await verifyRoute('/learn/', 'Understand the plant." in text,
+              'current Projects verification': "One place to see what is live now and what we are building next." in text,
+              'unified shell allowlist': "games/dtf-shell.css" in text,
               'forbidden root static path check': "name === 'index.html'" in text,
               'forbidden learn static path check': "strpos($name, 'learn/')" in text,
               'forbidden blog static path check': "strpos($name, 'blog/')" in text,
@@ -180,7 +196,7 @@ jobs:
                 `Commit: \`${context.sha}\``,
                 `Result: **${process.env.STATUS}**`,
                 '',
-                'Checks: fragment SHA-256 assembly, Node syntax, embedded PHP syntax, prior validated suite artifact retrieval, app-only archive creation, per-file SHA-256 verification, duplicate/manifest/path ownership checks, and named authorization/locking/interrupted-commit/rollback/abort/finalize controls.',
+                'Checks: canonical v2 assembly, Node/PHP syntax, stable validated app fixture plus the current static customer shell, app-only archive creation, per-file SHA-256 verification, duplicate/manifest/path ownership checks, and named authorization/locking/interrupted-commit/rollback/abort/finalize controls.',
                 '',
                 'This workflow is non-mutating. Production publication remains a separate protected transaction.'
               ].join('\n')
