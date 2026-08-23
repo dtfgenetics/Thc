@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 2,
+  "id": "protect-the-plants",
+  "title": "Protect the Plants",
+  "type": "multiplayer-hidden-garden-strategy",
+  "route": "/games/protect-the-plants/",
+  "board": "15x15",
+  "players": 2,
+  "runtime": "static-php-wordpress-transients",
+  "status": "playable-alpha",
+  "formations": [
+    {"id":"mother-row","size":5},
+    {"id":"trellis-row","size":4},
+    {"id":"tall-pheno","size":3},
+    {"id":"bushy-pheno","size":3},
+    {"id":"solo-pots","size":2}
+  ],
+  "features": ["room-codes","active-game-recovery","room-chat","mobile-board-tabs","placement-animation","server-authoritative-turns","hidden-opponent-state","post-game-stats"],
+  "production": {"frontEnd":"static","api":"php","storage":"wordpress-transients","externalNodeHostRequired":false}
+}
