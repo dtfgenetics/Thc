@@ -3,70 +3,82 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>DTF Projects | Games, Tools, Education & Publishing</title>
-  <meta name="description" content="Track active DTF Genetics projects across browser games, cultivation tools, Teaching Healthy Cultivation, plant diagnostics, publishing, community automation, and production systems." />
+  <title>DTF Projects | Live Games, Tools, Education & What’s Next</title>
+  <meta name="description" content="See what DTF Genetics has live now across browser games, multiplayer, cultivation tools and Teaching Healthy Cultivation, plus projects still in development." />
   <meta name="robots" content="index,follow,max-image-preview:large" />
   <meta name="theme-color" content="#10291d" />
   <link rel="canonical" href="https://dtfseeds.com/projects/" />
-  <link rel="stylesheet" href="/games/dtf-route.css" />
+  <link rel="stylesheet" href="/games/dtf-shell.css" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="DTF Genetics" />
+  <meta property="og:title" content="DTF Projects | Live Products and What’s Next" />
+  <meta property="og:description" content="Customer-facing status for DTF games, multiplayer, grow tools, education and active development projects." />
+  <meta property="og:url" content="https://dtfseeds.com/projects/" />
 </head>
 <body>
   <header class="site-header">
     <a class="brand" href="/">DTF Genetics <span>Dream the Future</span></a>
-    <nav aria-label="Primary"><a href="/">Home</a><a href="/learn/">Learn</a><a href="/tools/">Tools</a><a href="/games/">Games</a><a aria-current="page" href="/projects/">Projects</a><a href="/community/">Community</a></nav>
+    <nav aria-label="Primary">
+      <a href="/learn/">Learn</a>
+      <a class="nav-cta" href="/thc-grow-doc/">Diagnose</a>
+      <a href="/seeds/">Genetics</a>
+      <a href="/games/">Games</a>
+      <a href="/community/">Community</a>
+      <a href="/shop/">Shop</a>
+    </nav>
   </header>
+
   <main>
     <section class="hero">
       <p class="eyebrow">DTF Project Index</p>
-      <h1>One place to see what is playable, usable, and still being built.</h1>
-      <p class="lede">DTF Genetics keeps code, machine data, tests, deployment controls, and release status explicit. A project moves up this page only when the corresponding implementation actually exists in source control.</p>
+      <h1>One place to see what is live now and what we are building next.</h1>
+      <p class="lede">This page reflects the customer-facing production state. Live products have working public routes. Development projects stay clearly labeled until they earn a public release.</p>
       <div class="actions"><a class="button primary" href="/games/">Play Games</a><a class="button" href="/tools/">Use Tools</a><a class="button" href="/learn/">Learn</a><a class="button" href="https://discord.gg/xJbUeHFPMt" target="_blank" rel="noopener noreferrer">Join Community</a></div>
     </section>
 
-    <section aria-labelledby="ready-title">
-      <div class="section-heading"><p class="eyebrow">Buildable now</p><h2 id="ready-title">Public applications and playable builds</h2></div>
+    <section aria-labelledby="live-title">
+      <div class="section-heading"><div><p class="eyebrow">Live now</p><h2 id="live-title">Public games, tools, and learning</h2></div><p>These products are customer-facing and have a public route on dtfseeds.com.</p></div>
       <div class="card-grid">
-        <article class="card"><p class="status live">Self-hosted browser build</p><h3>High IQ</h3><p>80 validated questions, 50 verification sources, category and difficulty filters, weighted scoring, explanations, and source links.</p><a href="/games/high-iq/">Open →</a></article>
-        <article class="card"><p class="status live">Tested browser prototype</p><h3>High Life: From Bagseed to Legacy</h3><p>18-turn seeded career strategy across Underground, Medical, and Legal eras with a deterministic rules engine, event system, era gates, Legacy scoring, and multi-seed balance regression tests.</p><a href="/games/high-life/">Open →</a></article>
-        <article class="card"><p class="status live">Browser vertical slice</p><h3>Seed Man: Sprout Run</h3><p>Original Canvas2D platformer level with tested movement and collisions, eight collectibles, hazards, checkpoint, camera, finish state, keyboard input, and touch controls.</p><a href="/games/seed-man-platformer/">Open →</a></article>
-        <article class="card"><p class="status live">Browser deck alpha</p><h3>Grower Conversations</h3><p>96 unique discussion prompts across eight topics and three depth bands with filtered no-repeat draws and copy-ready community prompts.</p><a href="/games/grower-conversations/">Open →</a></article>
-        <article class="card"><p class="status live">Browser build</p><h3>High Land</h3><p>Original cannabis-themed board-race game with tested browser gameplay.</p><a href="/games/high-land/">Open →</a></article>
-        <article class="card"><p class="status live">Browser build</p><h3>Weedopolis</h3><p>Strain-city property strategy game with a self-contained browser production build.</p><a href="/games/weedopolis/">Open →</a></article>
-        <article class="card"><p class="status live">Browser build</p><h3>THC Weekly Crossword</h3><p>Weekly puzzle player, clue bank, generator, archive, and export system.</p><a href="/games/crossword/">Open →</a></article>
-        <article class="card"><p class="status live">Browser prototype</p><h3>Who Took It?</h3><p>Original 5×5 deduction game with preset questions, eliminations, accusations, and local play modes.</p><a href="/games/who-took-it/">Open →</a></article>
-        <article class="card"><p class="status live">Cultivation app</p><h3>THC GrowLens</h3><p>Local-first grow records, environmental tools, observations, reports, exports, and optional account sync.</p><a href="/growlens/">Open →</a></article>
-        <article class="card"><p class="status live">Diagnostic evidence tool</p><h3>THC Grow Doc</h3><p>Structured plant-health intake, ranked differentials, evidence review, references, and dataset coverage.</p><a href="/thc-grow-doc/">Open →</a></article>
-      </div>
-    </section>
-
-    <section aria-labelledby="runtime-title">
-      <div class="section-heading"><p class="eyebrow">Runtime integration</p><h2 id="runtime-title">Implemented systems that still need production server activation</h2></div>
-      <div class="card-grid compact">
-        <article class="card"><p class="status development">Node runtime</p><h3>THC U Know</h3><p>2–8 player multiplayer card game with browser client, shared rules, Socket.IO server, private rooms, invite links, and Discord-bot integration.</p></article>
-        <article class="card"><p class="status development">Node runtime</p><h3>Kush Kings Chess</h3><p>Next.js chess client and multiplayer server with PostgreSQL/session production requirements.</p></article>
-        <article class="card"><p class="status development">Server-engine alpha</p><h3>Cannabis Fleet Battle</h3><p>15×15 hidden-fleet engine with tested atomic placement, server turn authority, opponent-state secrecy, hit/sink/win resolution, duplicate-shot rejection, and reconnect-safe match state. Network transport and multiplayer E2E remain open.</p></article>
-        <article class="card"><p class="status development">Implementation alpha</p><h3>THC Discord Music Bot</h3><p>Canonical Node voice-bot implementation with slash commands, per-server queues, public-audio URL safety controls, tests, environment template, and CI. Live use still requires Discord credentials and persistent Node hosting.</p></article>
-        <article class="card"><p class="status development">Public artifact integration</p><h3>THC Grow Hub</h3><p>Private-source education platform containing academy, encyclopedia, reader, SOPs, glossary, downloads, sources library, diagnostics, environment, root-zone, post-harvest, and plant-health/IPM modules.</p><a href="/learn/">Current public learning route →</a></article>
+        <article class="card"><p class="status live">Public education</p><h3>Teaching Healthy Cultivation</h3><p>Start Here, Academy, Encyclopedia, infographics, beginner guides, SOPs, glossary, records and printables, search, and cultivation learning centers.</p><a href="/learn/">Explore THC Education →</a></article>
+        <article class="card"><p class="status live">Cultivation app</p><h3>THC GrowLens</h3><p>Grow records, environmental tools, observations, tasks, reports, exports, and optional account synchronization.</p><a href="/growlens/">Open GrowLens →</a></article>
+        <article class="card"><p class="status live">Plant-health tool</p><h3>THC Grow Doc</h3><p>Structured image/video intake, grow context, ranked differentials, evidence review, references, and corrective-action support.</p><a href="/thc-grow-doc/">Open Grow Doc →</a></article>
+        <article class="card"><p class="status live">Browser game</p><h3>High IQ</h3><p>Plant-science trivia with validated questions, weighted difficulty, explanations, categories, and source verification.</p><a href="/games/high-iq/">Play →</a></article>
+        <article class="card"><p class="status live">Browser game</p><h3>High Land</h3><p>Cannabis-fantasy board race with HIT cards, special spaces, tested movement, and a race to Cloud 9.</p><a href="/games/high-land/">Play →</a></article>
+        <article class="card"><p class="status live">Browser game</p><h3>High Life</h3><p>Career strategy across Underground, Medical, and Legal eras with events and legacy scoring.</p><a href="/games/high-life/">Play →</a></article>
+        <article class="card"><p class="status live">Browser game</p><h3>Seed Man: Sprout Run</h3><p>Original platformer with collectibles, hazards, checkpoint play, keyboard controls, and touch controls.</p><a href="/games/seed-man-platformer/">Play →</a></article>
+        <article class="card"><p class="status live">Browser deck</p><h3>Grower Conversations</h3><p>96 filtered, no-repeat discussion prompts for community conversations and grower groups.</p><a href="/games/grower-conversations/">Open →</a></article>
+        <article class="card"><p class="status live">Browser game</p><h3>Weedopolis</h3><p>Strain-city property strategy with Bud Bucks, Grow Tents, Dispensaries, auctions, and saves.</p><a href="/games/weedopolis/">Play →</a></article>
+        <article class="card"><p class="status live">Weekly puzzle</p><h3>THC Weekly Crossword</h3><p>Cannabis-themed crossword play with current puzzle data, archive support, and validation.</p><a href="/games/crossword/">Play →</a></article>
+        <article class="card"><p class="status live">Deduction game</p><h3>Who Took It?</h3><p>Ask yes/no questions, eliminate suspects and missing items, and make the final accusation.</p><a href="/games/who-took-it/">Play →</a></article>
+        <article class="card"><p class="status network">Live multiplayer</p><h3>THC U Know</h3><p>Create a private room, share a room code or invite link, ready up, and play the live multiplayer card table.</p><a href="/games/thc-u-know/">Open multiplayer →</a></article>
+        <article class="card"><p class="status network">Live multiplayer</p><h3>Kush Kings Chess</h3><p>Create or join a chess room, choose a side, copy the invite, chat, and play through the live session runtime.</p><a href="/games/kush-kings-chess/">Open multiplayer →</a></article>
       </div>
     </section>
 
     <section aria-labelledby="development-title">
-      <div class="section-heading"><p class="eyebrow">Structured development</p><h2 id="development-title">Real source exists, but important gameplay or release gates remain</h2></div>
+      <div class="section-heading"><div><p class="eyebrow">In development</p><h2 id="development-title">Projects with real source but unfinished release gates</h2></div><p>These remain visible as roadmap items without Play buttons until the customer experience is ready.</p></div>
       <div class="card-grid compact">
-        <article class="card"><p class="status development">Roster-data alpha</p><h3>Strain Showdown</h3><p>All 96 card records now exist across Kush, Haze, Skunk, Gas, Cookies, Fruit, Purple, and Frost families with the locked 6 Base / 4 Select / 2 Elite distribution, stat progression checks, and DTF Genetics catalog cross-links. Final effects, battle rules, simulation, art, and browser play remain open.</p></article>
-        <article class="card"><h3>Bud or Bluff</h3><p>Real-versus-invented cultivar-name party game with controlled data maintained in the master repository.</p></article>
-        <article class="card"><h3>Terpocalypse: Grow Room From Hell</h3><p>Original retro-FPS project currently in asset-first preproduction toward a browser vertical slice.</p></article>
-        <article class="card"><h3>PhenoQuest: The Living Seed Vault</h3><p>Original genetics-adventure project with structured phenotype, cloning, breeding, expression, and world systems in preproduction.</p></article>
-        <article class="card"><h3>Happy Seed Stories</h3><p>Controlled plant-science story and publishing series with story/science source, art rules, accessibility standards, and release workflow.</p></article>
-        <article class="card"><h3>THC Content Engine</h3><p>Internal media-processing and posting-package production system with source-controlled schemas, recipes, and CI.</p></article>
+        <article class="card"><p class="status development">Server-engine alpha</p><h3>Cannabis Fleet Battle</h3><p>15×15 hidden-fleet engine with tested placement, turn authority, secrecy, hit/sink/win resolution, and reconnect-safe state. Multiplayer transport, E2E, mobile QA, and final art remain open.</p></article>
+        <article class="card"><p class="status development">Roster-data alpha</p><h3>Strain Showdown</h3><p>96-card, eight-family roster is established. Final effects, battle rules, simulation, art, balance, and browser play remain open.</p></article>
+        <article class="card"><p class="status development">Content system</p><h3>Bud or Bluff</h3><p>Real-versus-invented cultivar-name party game with controlled source data and application-ready research.</p></article>
+        <article class="card"><p class="status development">Preproduction</p><h3>Terpocalypse: Grow Room From Hell</h3><p>Original retro-FPS project progressing toward a browser vertical slice.</p></article>
+        <article class="card"><p class="status development">Preproduction</p><h3>PhenoQuest: The Living Seed Vault</h3><p>Genetics-adventure project centered on phenotype expression, cloning, crossing, and genetic diversity.</p></article>
+        <article class="card"><p class="status development">Service project</p><h3>THC Discord Music Bot</h3><p>Voice-bot code, queues, slash commands, URL safety controls, tests, and CI exist; live use still depends on persistent hosting and Discord credentials.</p></article>
+        <article class="card"><p class="status development">Publishing project</p><h3>Happy Seed Stories</h3><p>Controlled plant-science story series with story/science source, art rules, accessibility standards, and release workflow.</p></article>
+        <article class="card"><p class="status development">Internal production</p><h3>THC Content Engine</h3><p>Media-processing and posting-package production system with source-controlled schemas, recipes, and CI.</p></article>
       </div>
     </section>
 
     <section class="notice">
-      <h2>Controlled placeholders are kept separate</h2>
-      <p>Ganjumanji and the standalone THC RPG repository remain placeholders because canonical approved executable rules/data have not been promoted into them. The legacy All-in-One Grow repository remains a merge candidate, and the second misspelled Discord music-bot repository is an archive pointer. Those are intentionally not presented as working products.</p>
+      <h2>Public status must match the real product</h2>
+      <p>DTF keeps unfinished placeholders separate from customer-facing releases. A project is promoted to Live only when a real public route exists and the production verification checks pass.</p>
+      <div class="actions"><a class="button" href="/games/">Browse live games</a><a class="button" href="/tools/">Open cultivation tools</a><a class="button" href="/learn/search/">Search THC education</a></div>
     </section>
   </main>
-  <footer><p><strong>DTF Genetics</strong> · Dream the Future</p><p><a href="/tools/">Tools</a> · <a href="/games/">Games</a> · <a href="/learn/">Learn</a> · <a href="/community/">Community</a> · <a href="https://discord.gg/xJbUeHFPMt" target="_blank" rel="noopener noreferrer">Discord</a> · <a href="/contact/">Contact</a></p></footer>
+
+  <footer>
+    <div><p><strong>DTF Genetics</strong> · Dream the Future</p><p>Games, cultivation tools, education, genetics, and community products in one growing platform.</p></div>
+    <nav aria-label="Footer"><a href="/learn/">Learn</a><a href="/tools/">Tools</a><a href="/games/">Games</a><a href="/community/">Community</a><a href="/contact/">Contact</a><a href="https://discord.gg/xJbUeHFPMt" target="_blank" rel="noopener noreferrer">Discord</a></nav>
+  </footer>
 </body>
 </html>
