@@ -6,6 +6,7 @@ on:
     branches: [main]
     paths:
       - 'scripts/publish-wordpress-diagnostic-index-v5.mjs'
+      - 'scripts/run-diagnostic-index-v5-production.mjs'
       - '.github/workflows/wordpress-diagnostic-index-v5.yml'
   workflow_run:
     workflows:
@@ -55,6 +56,7 @@ jobs:
           : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
           : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
           node --check scripts/publish-wordpress-diagnostic-index-v5.mjs
+          node --check scripts/run-diagnostic-index-v5-production.mjs
           for marker in 'Yellowing / chlorosis' 'Spots / necrosis / burnt tissue' 'Curling / clawing / distorted growth' 'Wilt / droop / loss of turgor' 'Slow growth / stunting' 'Root discoloration / odor / poor roots' 'Flower / late-stage problems' 'Visible pests / feeding evidence'; do
             grep -Fq "$marker" scripts/publish-wordpress-diagnostic-index-v5.mjs
           done
@@ -67,7 +69,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p "$BACKUP_ROOT"
-          node scripts/publish-wordpress-diagnostic-index-v5.mjs | tee "$RUNNER_TEMP/diagnostic-index-v5.log"
+          node scripts/run-diagnostic-index-v5-production.mjs | tee "$RUNNER_TEMP/diagnostic-index-v5.log"
           report="$(find "$BACKUP_ROOT" -name diagnostic-index-v5-report.json -print -quit)"
           test -s "$report"
           echo "pattern_count=$(node -p "require(process.argv[1]).patternCount" "$report")" >> "$GITHUB_OUTPUT"
@@ -96,8 +98,14 @@ jobs:
           grep -Fqi '/learn/nutrition-media/' "$body"
           grep -Fqi '/learn/ipm/' "$body"
           grep -Fqi '/thc-grow-doc/' "$body"
-          count="$(grep -Eio '<h1([ >])' "$body" | wc -l | tr -d ' ')"
-          [[ "$count" = '1' ]]
+          python3 - "$body" <<'PY'
+          import re,sys
+          html=open(sys.argv[1],encoding='utf-8').read()
+          m=re.search(r'<main class="dx5"[\s\S]*?</main>',html,re.I)
+          assert m, 'controlled diagnostic wrapper missing'
+          assert len(re.findall(r'<h1\b',m.group(0),re.I))==1, 'controlled diagnostic content must contain exactly one H1'
+          assert 'display:none!important' in html and '.entry-title' in html, 'theme title suppression missing'
+          PY
 
       - name: Upload rollback and verification evidence
         if: always()
@@ -130,5 +138,6 @@ jobs:
               `WordPress publication: **${process.env.PUBLISH || 'not-run'}**`,
               `Visitor verification: **${process.env.VERIFY || 'not-run'}**`,
               `Symptom-pattern groups: **${process.env.PATTERNS || '0'}**`,'',
-              'This page is symptom-first and evidence-first: observe → contextualize → compare → verify. It routes yellowing, necrosis, distortion, wilt, stunting, root problems, flower problems, and pest evidence into the existing THC subject, diagnostic, recordkeeping, and encyclopedia systems without presenting a single visual symptom as proof of one cause.'
+              'This page is symptom-first and evidence-first: observe → contextualize → compare → verify. It routes yellowing, necrosis, distortion, wilt, stunting, root problems, flower problems, and pest evidence into the existing THC subject, diagnostic, recordkeeping, and encyclopedia systems without presenting a single visual symptom as proof of one cause.',
+              'Verification counts the controlled visible diagnostic H1 rather than the theme-generated title that is intentionally hidden by page-scoped CSS.'
             ].join('\n')});
