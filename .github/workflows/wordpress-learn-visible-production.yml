@@ -64,8 +64,9 @@ jobs:
           echo "media_count=$(node -p "require(process.argv[1]).educationMediaCount" "$report")" >> "$GITHUB_OUTPUT"
           echo "featured_media=$(node -p "require(process.argv[1]).featuredMediaId" "$report")" >> "$GITHUB_OUTPUT"
 
-      - name: Retire stale public HTML shadows and purge visitor path
+      - name: Best-effort stale-shadow/cache cutover
         id: cutover
+        continue-on-error: true
         shell: bash
         run: |
           set -euo pipefail
@@ -73,6 +74,7 @@ jobs:
 
       - name: Verify the visuals are actually visible to a fresh visitor
         id: verify
+        if: steps.publish.outcome == 'success'
         shell: bash
         run: |
           set -euo pipefail
@@ -165,13 +167,13 @@ jobs:
                 `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
                 `Result: **${process.env.JOB_STATUS}**`,
                 `Learn page update: **${process.env.PUBLISH_OUTCOME || 'not-run'}**`,
-                `Static-shadow/cache cutover: **${process.env.CUTOVER_OUTCOME || 'not-run'}**`,
+                `Best-effort static-shadow/cache cutover: **${process.env.CUTOVER_OUTCOME || 'not-run'}**`,
                 `Fresh visitor verification: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
                 `Canonical education media discovered: **${process.env.MEDIA_COUNT || 'not-run'}**`,
                 `Learn featured media ID: **${process.env.FEATURED_MEDIA || 'not-run'}**`,
                 `WordPress image references observed on /learn/: **${process.env.LEARN_IMAGES || 'not-run'}**`,
                 `WordPress image references observed on /learn/infographics/: **${process.env.LIBRARY_IMAGES || 'not-run'}**`,
                 '',
-                'Acceptance requires the prominent Browse THC Infographics visual entry on the normal Learn page, the full infographic library route, WordPress-hosted imagery on both, and absence of the stale legacy Learn copy.'
+                'Acceptance is based on fresh visitor visibility, not the legacy repair endpoint: the normal Learn page must show the prominent Browse THC Infographics visual entry, the full infographic library route must render WordPress-hosted imagery, and the stale legacy Learn copy must be absent.'
               ].join('\n')
             });
