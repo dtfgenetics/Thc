@@ -146,7 +146,7 @@ jobs:
               'WordPress route ownership rejection': 'WordPress-owned route is forbidden in app deployment.' in text,
               'bounded manifest': '$max_manifest' in text and '2 * 1024 * 1024' in text,
               'prepared mutation phase': "'phase'=>'prepared'" in text,
-              'backup-moved mutation phase': "'phase'=>'backup_moved'" in text,
+              'backup-moved mutation phase': "$state['current']['phase'] = 'backup_moved'" in text,
               'new-placed mutation phase': "'phase'=>'new_placed'" in text,
               'rollback endpoint': "register_rest_route('dtf-suite/v2', '/rollback'" in text,
               'abort endpoint': "register_rest_route('dtf-suite/v2', '/abort'" in text,
