@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "brand": "DTF Genetics",
-  "updated": "2026-08-18",
+  "updated": "2026-08-23",
   "lines": [
     {
       "id": "blue-mango",
@@ -17,7 +17,8 @@
         { "generation": "F2", "seedType": "regular" },
         { "generation": "F2", "seedType": "feminized" },
         { "generation": "F3", "seedType": "regular" },
-        { "generation": "F3", "seedType": "feminized" }
+        { "generation": "F3", "seedType": "feminized" },
+        { "generation": "BX1", "seedType": "regular" }
       ],
       "floweringWindowWeeks": {
         "minimum": 8,
@@ -42,7 +43,7 @@
         ],
         "miniPackagingFooter": "dtf420.com"
       },
-      "publicDescription": "A flagship DTF Genetics project developed through multiple filial generations.",
+      "publicDescription": "A flagship DTF Genetics project developed through multiple filial generations and a documented backcross form.",
       "claimsPolicy": {
         "phenotypeGuarantee": false,
         "yieldGuarantee": false,
@@ -57,6 +58,12 @@
           "title": "Blue Mango Line Sheet",
           "repoMirror": "data/genetics/sources/blue-mango-line-sheet.md",
           "driveModified": "2026-06-22T02:39:59.863Z"
+        },
+        {
+          "type": "strain-card",
+          "driveId": "1g8LtdKjdJc7cV2r-qYTYBI03nVsHsJZs",
+          "title": "Blue Mango BX1 Regular DTF Strain Card",
+          "scope": "Documents the Blue Mango BX1 Regular form as Blue Mango F2 × Somango XXL."
         }
       ]
     },
@@ -70,6 +77,9 @@
         { "role": "pollen-parent", "name": "Blue Bubblegum", "catalogId": "blue-bubblegum" }
       ],
       "namingStatus": "approved",
+      "knownGenerationForms": [
+        { "generation": "F1", "seedType": "regular" }
+      ],
       "floweringWindowWeeks": null,
       "breedingDirection": [
         "mango-forward fruit profile",
@@ -92,6 +102,12 @@
           "title": "Mango Bubbles Line Sheet",
           "repoMirror": "data/genetics/sources/mango-bubbles-line-sheet.md",
           "driveModified": "2026-06-22T02:41:06.616Z"
+        },
+        {
+          "type": "strain-card",
+          "driveId": "1Qv-dNjq1Ae6gBthoxGzeZyJkPjkIKQmB",
+          "title": "Mango Bubbles F1 Regular DTF Strain Card",
+          "scope": "Documents the F1 Regular card as Blue Mango F2 × Blue Bubblegum F1 without changing the stable line identity."
         }
       ]
     },
@@ -103,6 +119,9 @@
       "parents": [
         { "role": "seed-parent", "name": "Bubblegum Kush", "catalogId": null },
         { "role": "pollen-parent", "name": "Blueberry Butcher", "catalogId": "blueberry-butcher" }
+      ],
+      "knownGenerationForms": [
+        { "generation": "F1", "seedType": "regular" }
       ],
       "floweringWindowWeeks": null,
       "breedingDirection": [
@@ -123,6 +142,12 @@
           "driveId": "10C9hE4u45V8sw16gvDu2PgwfgICvZAwm7UcYWDRfwnU",
           "title": "Mango Bubbles Line Sheet",
           "scope": "Documents Blue Bubblegum as the second parent of Mango Bubbles; it is not a standalone Blue Bubblegum line sheet."
+        },
+        {
+          "type": "strain-card",
+          "driveId": "1b2jjdhtHmGFNQ6TEB-lXsrQpbA57FpoW",
+          "title": "Blue Bubblegum F1 Regular DTF Strain Card",
+          "scope": "Documents the F1 Regular form and supplied bubblegum/sweet-fruit card direction."
         }
       ]
     },
@@ -151,6 +176,77 @@
           "driveId": "1aIPA7fQJr_xzwnfDPfB1nZWnITMVahPYQzd8eS78g6g",
           "title": "Blue Mango Line Sheet",
           "scope": "Documents Blueberry Butcher as a Blue Mango parent; standalone Blueberry Butcher parentage remains controlled by the catalog record pending a dedicated Drive source record."
+        }
+      ]
+    },
+    {
+      "id": "zestberry",
+      "name": "Zestberry",
+      "status": "active-breeding-line",
+      "lineage": "Blue Mango × Cali Orange",
+      "parents": [
+        { "role": "seed-parent", "name": "Blue Mango", "catalogId": "blue-mango" },
+        { "role": "pollen-parent", "name": "Cali Orange", "catalogId": null }
+      ],
+      "knownGenerationForms": [
+        { "generation": "F1", "seedType": "regular" }
+      ],
+      "floweringWindowWeeks": null,
+      "breedingDirection": [
+        "citrus-zest aromatic direction",
+        "berry sweetness direction",
+        "vigorous hybrid growth direction"
+      ],
+      "publicDescription": "A DTF Genetics line combining Blue Mango with Cali Orange.",
+      "claimsPolicy": {
+        "phenotypeGuarantee": false,
+        "yieldGuarantee": false,
+        "potencyGuarantee": false,
+        "finishDateGuarantee": false
+      },
+      "releaseNotes": "The supplied F1 Regular card documents an 8–10 week estimate and medium-to-high yield direction for that card; neither is a guaranteed outcome or a claim of current availability.",
+      "sourceRecords": [
+        {
+          "type": "strain-card",
+          "driveId": "1TRAM4o_LJzD9tt-8AKKuuVTs-WIfMYe2",
+          "title": "Zestberry F1 Regular DTF Strain Card",
+          "scope": "Documents Blue Mango × Cali Orange, F1 Regular, Hybrid, an 8–10 week estimate, and citrus/berry card direction."
+        }
+      ]
+    },
+    {
+      "id": "rainbow-bubblegum",
+      "name": "Rainbow Bubblegum",
+      "status": "active-breeding-line",
+      "lineage": "Blue Bubblegum × Rainbow Belts F1",
+      "parents": [
+        { "role": "seed-parent", "name": "Blue Bubblegum", "catalogId": "blue-bubblegum" },
+        { "role": "pollen-parent", "name": "Rainbow Belts F1", "catalogId": null }
+      ],
+      "knownGenerationForms": [
+        { "generation": "F1", "seedType": "regular" }
+      ],
+      "floweringWindowWeeks": null,
+      "breedingDirection": [
+        "berry direction",
+        "candy direction",
+        "tropical-fruit direction",
+        "colorful frosty presentation direction"
+      ],
+      "publicDescription": "An AMFIBEON + DTF Genetics collaboration line combining Blue Bubblegum with Rainbow Belts F1.",
+      "claimsPolicy": {
+        "phenotypeGuarantee": false,
+        "yieldGuarantee": false,
+        "potencyGuarantee": false,
+        "finishDateGuarantee": false
+      },
+      "releaseNotes": "The supplied collaboration card documents an 8–10 week estimate for the F1 Regular card. Availability is not implied.",
+      "sourceRecords": [
+        {
+          "type": "strain-card",
+          "driveId": "1lLB515y8XeJrLCnC4e9yViiH6gq6NqBg",
+          "title": "Rainbow Bubblegum F1 Regular DTF Strain Card",
+          "scope": "Documents Blue Bubblegum × Rainbow Belts F1, F1 Regular, AMFIBEON + DTF Genetics collaboration credit, and berry/candy/tropical card direction."
         }
       ]
     }
