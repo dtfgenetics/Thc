@@ -26,12 +26,13 @@ jobs:
   finalize:
     if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 20
     environment: production
     env:
       NODE_OPTIONS: --dns-result-order=ipv4first
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME || secrets.WORDPRESS_USERNAME || secrets.WP_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD || secrets.WORDPRESS_APP_PASSWORD || secrets.WP_APPLICATION_PASSWORD }}
+      BACKUP_ROOT: ${{ runner.temp }}/dtf-genetics-v4-final
     steps:
       - uses: actions/checkout@v4
         with:
@@ -39,12 +40,21 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Validate V4 Genetics finalizer
+      - name: Validate V4 Genetics package
         run: |
           set -euo pipefail
           test -n "${WP_API_USERNAME:-}"
           test -n "${WP_API_PASSWORD:-}"
+          node --check scripts/polish-wordpress-genetics-visuals-v4.mjs
           node --check scripts/finalize-wordpress-genetics-v4.mjs
+      - name: Restore V4 Genetics visual ownership
+        id: restore
+        env:
+          APPLY_GENETICS_VISUALS: 'true'
+        run: |
+          set -euo pipefail
+          node scripts/polish-wordpress-genetics-visuals-v4.mjs
+          echo 'outcome=success' >> "$GITHUB_OUTPUT"
       - name: Finalize Genetics hierarchy and direct links
         id: apply
         env:
@@ -71,6 +81,7 @@ jobs:
         uses: actions/github-script@v7
         env:
           STATUS: ${{ job.status }}
+          RESTORE: ${{ steps.restore.outputs.outcome }}
           APPLY: ${{ steps.apply.outputs.outcome }}
           VERIFY: ${{ steps.verify.outputs.outcome }}
         with:
@@ -79,8 +90,9 @@ jobs:
               '## Genetics V4 final hierarchy','',
               `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
               `Result: **${process.env.STATUS}**`,
+              `V4 restoration: **${process.env.RESTORE || 'not-completed'}**`,
               `V4-owned hierarchy/link normalization: **${process.env.APPLY || 'not-completed'}**`,
               `Live verification: **${process.env.VERIFY || 'not-completed'}**`,
               '',
-              'Genetics now keeps its designed V4 hero as the single visible page heading. Genetics education routes directly to the Genetics & Breeding subject and grow documentation routes directly to GrowLens.'
+              'This workflow restores the V4 Genetics presentation before enforcing the single-H1 hierarchy and direct Genetics/GrowLens routes, so a prior canonical publish cannot leave Genetics in an intermediate state.'
             ].join('\n')});
