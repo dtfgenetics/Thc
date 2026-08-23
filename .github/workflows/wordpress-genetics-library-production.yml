@@ -2,6 +2,14 @@ name: Publish DTF Genetics Library
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/wordpress-genetics-library-production.yml'
+      - 'site/wordpress/products/seed-line-catalog.json'
+      - 'site/wordpress/products/strain-card-images.json'
+      - 'scripts/publish-wordpress-genetics-library-cdn.mjs'
+      - 'scripts/publish-woocommerce-strain-card-images-cdn.mjs'
   workflow_run:
     workflows:
       - Publish DTFSeeds WordPress Production
@@ -31,52 +39,44 @@ jobs:
       SEED_LINE_CATALOG: site/wordpress/products/seed-line-catalog.json
       STRAIN_CARD_REGISTRY: site/wordpress/products/strain-card-images.json
       BACKUP_ROOT: /tmp/wordpress-genetics-production
-
     steps:
       - uses: actions/checkout@v4
         with:
           ref: main
-
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-
       - name: Require successful canonical WordPress deployment
         if: github.event_name == 'workflow_run'
         shell: bash
         run: |
           set -euo pipefail
           [[ "${{ github.event.workflow_run.conclusion }}" == "success" ]]
-
       - name: Validate genetics production package
         shell: bash
         run: |
           set -euo pipefail
           test -n "${WP_API_USERNAME:-}"
           test -n "${WP_API_PASSWORD:-}"
-          test -s "$SEED_LINE_CATALOG"
-          test -s "$STRAIN_CARD_REGISTRY"
-          node --check scripts/publish-wordpress-genetics-library.mjs
-          node --check scripts/publish-woocommerce-strain-card-images.mjs
+          node --check scripts/publish-wordpress-genetics-library-cdn.mjs
+          node --check scripts/publish-woocommerce-strain-card-images-cdn.mjs
           node - <<'NODE'
           const fs=require('fs');
           const catalog=JSON.parse(fs.readFileSync(process.env.SEED_LINE_CATALOG,'utf8'));
           const products=JSON.parse(fs.readFileSync(process.env.STRAIN_CARD_REGISTRY,'utf8'));
           if(catalog.schemaVersion!==1 || !Array.isArray(catalog.lines) || catalog.lines.length!==8) throw new Error(`Expected 8 genetics lines, found ${catalog.lines?.length}`);
           const cards=catalog.lines.flatMap(line=>line.releaseCards||[]);
-          if(cards.length<10) throw new Error(`Expected at least 10 reviewed cards in genetics library, found ${cards.length}`);
+          if(cards.length!==10) throw new Error(`Expected 10 reviewed catalog cards, found ${cards.length}`);
           for(const line of catalog.lines){
-            if(!line.id||!line.name||!line.slug||!line.summary) throw new Error(`Incomplete line record: ${JSON.stringify(line).slice(0,200)}`);
-            if(!Array.isArray(line.releaseCards)||!line.releaseCards.length) throw new Error(`${line.id}: no releaseCards`);
-            for(const card of line.releaseCards){
-              if(!card.driveFileId||!card.fileName||!card.altText) throw new Error(`${line.id}: incomplete card metadata`);
+            if(!line.id||!line.name||!line.slug||!line.summary) throw new Error(`Incomplete line record: ${line.id||'unknown'}`);
+            for(const card of line.releaseCards||[]){
+              if(!card.sourceUrl||!card.fileName||!card.altText||!card.wordpressSlug) throw new Error(`${line.id}: incomplete card metadata`);
               if(!Number.isInteger(card.expectedWidth)||!Number.isInteger(card.expectedHeight)) throw new Error(`${line.id}: missing image dimensions`);
             }
           }
-          if(products.schemaVersion!==1 || !Array.isArray(products.cards) || products.cards.length!==3) throw new Error('Expected exactly 3 pinned WooCommerce strain cards.');
+          if(products.schemaVersion!==1 || !Array.isArray(products.cards) || products.cards.length!==3) throw new Error('Expected exactly 3 pinned WooCommerce cards.');
           console.log(`Validated ${catalog.lines.length} line pages, ${cards.length} catalog cards and ${products.cards.length} WooCommerce card mappings.`);
           NODE
-
       - name: Publish Seeds library and individual line pages
         id: library
         env:
@@ -85,12 +85,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          node scripts/publish-wordpress-genetics-library.mjs
+          node scripts/publish-wordpress-genetics-library-cdn.mjs
           dir="$(cat "$BACKUP_ROOT/genetics-library-backup-path.txt")"
           report="$dir/genetics-library-report.json"
           echo "line_count=$(node -p "require(process.argv[1]).lineCount" "$report")" >> "$GITHUB_OUTPUT"
           echo "card_count=$(node -p "require(process.argv[1]).cardCount" "$report")" >> "$GITHUB_OUTPUT"
-
       - name: Publish reviewed cards to current WooCommerce products
         id: products
         env:
@@ -99,64 +98,35 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          node scripts/publish-woocommerce-strain-card-images.mjs
-
+          node scripts/publish-woocommerce-strain-card-images-cdn.mjs
       - name: Verify live Seeds library and line routes
         id: verify
         shell: bash
         run: |
           set -euo pipefail
           fetch_page() {
-            local path="$1"
-            local required="$2"
-            local min_images="$3"
-            local safe body ok count
+            local path="$1" required="$2" min_images="$3" safe body ok count
             safe="$(echo "$path" | tr '/?' '__')"
             body="$RUNNER_TEMP/genetics-${safe}.html"
             ok=0
             for attempt in 1 2 3 4 5 6 7 8; do
-              curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
-                --header 'Cache-Control: no-cache, no-store, max-age=0' \
-                --header 'Pragma: no-cache' \
-                "$WP_SITE_URL${path}?dtf_genetics_verify=${GITHUB_RUN_ID}-${attempt}" \
-                --output "$body"
+              curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 --header 'Cache-Control: no-cache, no-store, max-age=0' --header 'Pragma: no-cache' "$WP_SITE_URL${path}?dtf_genetics_verify=${GITHUB_RUN_ID}-${attempt}" --output "$body"
               if grep -Fqi -- "$required" "$body"; then ok=1; break; fi
               sleep 6
             done
             [[ "$ok" -eq 1 ]] || { echo "Missing required text on $path: $required" >&2; exit 1; }
             count="$(grep -o '/wp-content/uploads/' "$body" | wc -l | tr -d ' ')"
             [[ "$count" -ge "$min_images" ]] || { echo "$path exposes $count WordPress images; expected at least $min_images" >&2; exit 1; }
-            echo "$path verified with $count WordPress-hosted image references"
+            echo "$path verified with $count WordPress image references"
           }
-
-          fetch_page '/seeds/' 'DTF Genetics library' 9
-          for spec in \
-            'berry-blue|Berry Blue' \
-            'berry-lemonade|Berry Lemonade' \
-            'zestberry|Zestberry' \
-            'blue-bubblegum|Blue Bubblegum' \
-            'blue-cali-glue|Blue Cali Glue' \
-            'blue-mango|Blue Mango' \
-            'blue-mango-bx1|Blue Mango BX1' \
-            'mango-bubbles|Mango Bubbles'; do
-            slug="${spec%%|*}"
-            title="${spec#*|}"
-            fetch_page "/seeds/$slug/" "$title" 1
+          fetch_page '/seeds/' 'DTF Genetics library' 8
+          for spec in 'berry-blue|Berry Blue' 'berry-lemonade|Berry Lemonade' 'zestberry|Zestberry' 'blue-bubblegum|Blue Bubblegum' 'blue-cali-glue|Blue Cali Glue' 'blue-mango|Blue Mango' 'blue-mango-bx1|Blue Mango BX1' 'mango-bubbles|Mango Bubbles'; do
+            slug="${spec%%|*}"; title="${spec#*|}"; fetch_page "/seeds/$slug/" "$title" 1
           done
-
           seeds="$RUNNER_TEMP/genetics-_seeds_.html"
-          for route in \
-            '/seeds/berry-blue/' \
-            '/seeds/berry-lemonade/' \
-            '/seeds/zestberry/' \
-            '/seeds/blue-bubblegum/' \
-            '/seeds/blue-cali-glue/' \
-            '/seeds/blue-mango/' \
-            '/seeds/blue-mango-bx1/' \
-            '/seeds/mango-bubbles/'; do
+          for route in '/seeds/berry-blue/' '/seeds/berry-lemonade/' '/seeds/zestberry/' '/seeds/blue-bubblegum/' '/seeds/blue-cali-glue/' '/seeds/blue-mango/' '/seeds/blue-mango-bx1/' '/seeds/mango-bubbles/'; do
             grep -Fqi "$route" "$seeds" || { echo "Seeds library missing route $route" >&2; exit 1; }
           done
-
       - name: Upload genetics rollback/evidence package
         if: always()
         uses: actions/upload-artifact@v4
@@ -167,7 +137,6 @@ jobs:
             woocommerce-strain-card-image-report.json
           if-no-files-found: warn
           retention-days: 30
-
       - name: Report genetics production result
         if: always()
         uses: actions/github-script@v7
@@ -180,15 +149,5 @@ jobs:
           CARD_COUNT: ${{ steps.library.outputs.card_count }}
         with:
           script: |
-            const body = [
-              '## DTF Genetics library production', '',
-              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-              `Result: **${process.env.JOB_STATUS}**`,
-              `Seeds library + line pages: **${process.env.LIBRARY_OUTCOME || 'not-run'}**`,
-              `WooCommerce reviewed card publication: **${process.env.PRODUCT_OUTCOME || 'not-run'}**`,
-              `Live verification: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
-              `Published line profiles: **${process.env.LINE_COUNT || 'not-run'}**`,
-              `Reviewed catalog cards: **${process.env.CARD_COUNT || 'not-run'}**`, '',
-              'Target: https://dtfseeds.com/seeds/'
-            ].join('\n');
+            const body=['## DTF Genetics library production','',`Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,`Result: **${process.env.JOB_STATUS}**`,`Seeds library + line pages: **${process.env.LIBRARY_OUTCOME||'not-run'}**`,`WooCommerce reviewed card publication: **${process.env.PRODUCT_OUTCOME||'not-run'}**`,`Live verification: **${process.env.VERIFY_OUTCOME||'not-run'}**`,`Published line profiles: **${process.env.LINE_COUNT||'not-run'}**`,`Reviewed catalog cards: **${process.env.CARD_COUNT||'not-run'}**`,'','Target: https://dtfseeds.com/seeds/'].join('\n');
             await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body});
