@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://thc-grow-hub.local/schemas/chapter.schema.json",
+  "title": "THC Grow Hub Chapter",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "id",
+    "publicationId",
+    "title",
+    "order",
+    "status",
+    "version",
+    "lessons"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+    "publicationId": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+    "title": { "type": "string", "minLength": 1 },
+    "order": { "type": "integer", "minimum": 1 },
+    "status": {
+      "enum": ["draft", "editorial-review", "science-review", "approved", "published", "retired"]
+    },
+    "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "updatedAt": { "type": "string", "format": "date" },
+    "lessons": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/lesson" }
+    }
+  },
+  "$defs": {
+    "contentBlock": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "enum": ["lead", "paragraph", "list", "do", "avoid", "watch", "move-on", "rule"]
+        },
+        "heading": { "type": "string" },
+        "text": { "type": "string" },
+        "items": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "type": { "const": "list" } } },
+          "then": { "required": ["heading", "items"] }
+        },
+        {
+          "if": { "properties": { "type": { "enum": ["lead", "paragraph", "do", "avoid", "watch", "move-on", "rule"] } } },
+          "then": { "required": ["text"] }
+        }
+      ]
+    },
+    "lesson": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "slug",
+        "order",
+        "title",
+        "audience",
+        "objective",
+        "blocks",
+        "visualBrief",
+        "accuracyGuardrail",
+        "sourceIds",
+        "status",
+        "version",
+        "updatedAt"
+      ],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+        "slug": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+        "order": { "type": "integer", "minimum": 1 },
+        "title": { "type": "string", "minLength": 1 },
+        "audience": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "objective": { "type": "string", "minLength": 1 },
+        "blocks": {
+          "type": "array",
+          "minItems": 2,
+          "items": { "$ref": "#/$defs/contentBlock" }
+        },
+        "visualBrief": { "type": "string", "minLength": 1 },
+        "accuracyGuardrail": { "type": "string", "minLength": 1 },
+        "sourceIds": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+          "uniqueItems": true
+        },
+        "assetIds": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+          "uniqueItems": true
+        },
+        "status": {
+          "enum": ["draft", "editorial-review", "science-review", "approved", "published", "retired"]
+        },
+        "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+        "updatedAt": { "type": "string", "format": "date" }
+      }
+    }
+  }
+}

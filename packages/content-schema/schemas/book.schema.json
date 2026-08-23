@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://thc-grow-hub.local/schemas/book.schema.json",
+  "title": "THC Grow Hub Publication",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "id",
+    "title",
+    "subtitle",
+    "series",
+    "audience",
+    "status",
+    "version",
+    "modules",
+    "glossaryPath",
+    "sourceRegistryPath",
+    "assetManifestPath"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+    "title": { "type": "string", "minLength": 1 },
+    "subtitle": { "type": "string", "minLength": 1 },
+    "series": { "type": "string", "minLength": 1 },
+    "description": { "type": "string", "minLength": 1 },
+    "audience": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "status": {
+      "enum": ["draft", "editorial-review", "science-review", "approved", "published", "retired"]
+    },
+    "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "updatedAt": { "type": "string", "format": "date" },
+    "modules": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "path", "order"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+          "path": { "type": "string", "minLength": 1 },
+          "order": { "type": "integer", "minimum": 1 }
+        }
+      }
+    },
+    "glossaryPath": { "type": "string", "minLength": 1 },
+    "sourceRegistryPath": { "type": "string", "minLength": 1 },
+    "assetManifestPath": { "type": "string", "minLength": 1 }
+  }
+}
