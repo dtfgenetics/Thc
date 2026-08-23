@@ -6,6 +6,7 @@ on:
     branches: [main]
     paths:
       - scripts/rebuild-wordpress-learning-experience-v3.mjs
+      - scripts/run-learning-v3-production.mjs
       - site/wordpress/education/topic-literature.json
       - .github/workflows/wordpress-learning-experience-v3-production.yml
   workflow_run:
@@ -53,8 +54,10 @@ jobs:
           : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
           : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
           test -s scripts/rebuild-wordpress-learning-experience-v3.mjs
+          test -s scripts/run-learning-v3-production.mjs
           test -s site/wordpress/education/topic-literature.json
           node --check scripts/rebuild-wordpress-learning-experience-v3.mjs
+          node --check scripts/run-learning-v3-production.mjs
           node -e "const fs=require('fs'); const x=JSON.parse(fs.readFileSync('site/wordpress/education/topic-literature.json','utf8')); if(!Array.isArray(x.topics)||x.topics.length<10) process.exit(1); console.log('Canonical topics:',x.topics.length)"
 
       - name: Publish hierarchical learning experience
@@ -63,7 +66,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p "$BACKUP_ROOT"
-          node scripts/rebuild-wordpress-learning-experience-v3.mjs | tee /tmp/dtf-learning-v3-output.json
+          node scripts/run-learning-v3-production.mjs | tee /tmp/dtf-learning-v3-output.json
 
       - name: Verify source markers and route intent
         shell: bash
@@ -72,6 +75,8 @@ jobs:
           grep -Fq 'data-dtf-layout="home-v3"' scripts/rebuild-wordpress-learning-experience-v3.mjs
           grep -Fq 'data-dtf-layout="learn-v3"' scripts/rebuild-wordpress-learning-experience-v3.mjs
           grep -Fq 'data-dtf-topic=' scripts/rebuild-wordpress-learning-experience-v3.mjs
+          grep -Fq 'water-root-zone' scripts/run-learning-v3-production.mjs
+          grep -Fq 'plant-health-ipm' scripts/run-learning-v3-production.mjs
           grep -Fq '/seeds/' scripts/rebuild-wordpress-learning-experience-v3.mjs
           grep -Fq '/learn/start-here/' scripts/rebuild-wordpress-learning-experience-v3.mjs
           grep -Fq '/growlens/' scripts/rebuild-wordpress-learning-experience-v3.mjs
@@ -86,6 +91,7 @@ jobs:
           path: |
             /tmp/dtf-learning-v3
             /tmp/dtf-learning-v3-output.json
+            /tmp/dtf-topic-literature-v3-normalized.json
           if-no-files-found: warn
           retention-days: 30
 
@@ -113,6 +119,7 @@ jobs:
               '',
               'Scope: Home, Learn, and every canonical THC subject page from site/wordpress/education/topic-literature.json.',
               'Visual hierarchy: core site jobs first; foundation subjects featured; specialized subjects compact; individual subject pages use literature-first section cards plus supporting visuals.',
+              'Canonical topic titles are normalized into stable layout aliases before publication so source IDs can evolve without breaking customer-facing routes.',
               'The publisher creates rollback snapshots before writes, attempts a LiteSpeed cache flush, and performs cache-busted visitor-facing marker verification before success.'
             ].join('\n');
             await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: 46, body });
