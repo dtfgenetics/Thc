@@ -1,0 +1,54 @@
+{
+  "id": "THC-ENC-161",
+  "number": 161,
+  "title": "Why Cuttings Preserve Genotype",
+  "objective": "Explain why a stem cutting normally retains the donor plant’s inherited genotype while also carrying biological history that can alter later performance.",
+  "terms": [
+    {"term":"clone","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"ramet","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"ortet","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"genotype","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"phenotype","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"somatic mutation","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"epigenetic state","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"off-type","definition":"Pending controlled-glossary reconciliation."}
+  ],
+  "termDefinitionsStatus": "pending_controlled_glossary_reconciliation",
+  "coreScience": [
+    "Vegetative propagation produces a new plant from somatic tissue rather than from meiosis and fertilization. The cutting is therefore a ramet derived from the donor ortet, and its nuclear genotype is expected to match the sampled donor tissue. This is the central reason growers use clones to retain a selected plant’s inherited traits.",
+    "Genetic identity does not make every clone phenotypically identical. Rooting conditions, plant age, source position, nutrition, water status, light, pathogens, viroids, and later cultivation conditions can change morphology, vigor, flowering behavior, and chemical expression. A clone can also carry physiological history and transmissible biological agents present in donor tissue; specific microbes or pathogens must be evidenced separately.",
+    "Clonal fidelity is a testable expectation, not a guarantee. Somatic mutation, chimerism, labeling errors, sample mix-ups, and culture-associated genetic or epigenetic changes can create off-types. Marker studies can test selected regions or genome-wide variation, but no finite test proves absolute identity in every cell."
+  ],
+  "cultivationRelevance": [
+    "Use permanent mother and clone identifiers. Record the exact donor, cutting date, operator, source branch, tray, treatment, rooting outcome, and later crop observations. Do not use a cultivar name alone as proof that two clones are identical."
+  ],
+  "measureAndRecord": [
+    {"field":"Controlled record set","requirement":"Mother ID; clone batch; source node and branch position; date and operator; rooting percentage and time; morphology after establishment; unexpected off-types; pathogen-test records; genetic or chemistry confirmation when used."}
+  ],
+  "misconceptions": [
+    "A clone is automatically identical in every visible trait.",
+    "A healthy-looking clone is pathogen-free.",
+    "A cultivar name proves genetic identity."
+  ],
+  "evidenceLimits": [
+    "The controlled source packet supports genotype preservation as the purpose of cloning, but public claims about absolute genetic or epigenetic stability require direct testing. Studies showing marker similarity apply only to the genotypes, markers, passages, and methods tested."
+  ],
+  "crossLinks": "THC-ENC-141–160 for genotype, chemotype, sex, clonal fidelity, and evidence standards; THC-ENC-301–340 for disease, viroid, biosecurity, sanitation, and release controls; THC-GROW-034 for the controlled propagation SOP package.",
+  "sourceNotes": [
+    "V09-SRC-001 — THC Cannabis Plant Science Source Packet v1.0 (project control source).",
+    "Campbell LG, Naraine SGU, Dusfresne J. (2019). Phenotypic plasticity influences the success of clonal propagation in industrial pharmaceutical Cannabis sativa. PLOS ONE 14:e0213434. DOI 10.1371/journal.pone.0213434.",
+    "Ioannidis K et al. (2022). Genetic evaluation of in vitro micropropagated and regenerated plants of Cannabis sativa L. using SSR molecular markers. Plants 11:2569. DOI 10.3390/plants11192569.",
+    "Lefebvre V et al. (2026). Micropropagation of Cannabis sativa: genetic and epigenetic stability assessment over multiple generations. Journal of Cannabis Research 8:43. DOI 10.1186/s42238-026-00406-y."
+  ],
+  "reviewControl": {
+    "controlledManuscript":"Volume 09 v1.0",
+    "evidenceControl":"complete",
+    "secondaryEvidenceReview":"complete_qualified",
+    "externalReview":"required",
+    "externalReviewType":"genetics_and_propagation_science",
+    "publicationAuthorized": false,
+    "websiteAction":"do_not_publish"
+  },
+  "slug": "why-cuttings-preserve-genotype",
+  "route": "/encyclopedia/why-cuttings-preserve-genotype"
+}
