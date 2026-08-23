@@ -1,0 +1,158 @@
+name: Organize THC Encyclopedia by Topic in WordPress Production
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'configuration/encyclopedia-topics.json'
+      - 'scripts/organize-wordpress-encyclopedia-topics.mjs'
+      - '.github/workflows/wordpress-encyclopedia-topics-production.yml'
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-encyclopedia-topic-organization
+  cancel-in-progress: false
+
+jobs:
+  organize:
+    name: Build topic hubs and visitor-verify encyclopedia IA
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    environment: production
+    env:
+      NODE_OPTIONS: --dns-result-order=ipv4first
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      ENCYCLOPEDIA_TOPIC_FILE: configuration/encyclopedia-topics.json
+      BACKUP_ROOT: /tmp/dtf-encyclopedia-topics
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate topic architecture and publisher
+        id: validate
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/organize-wordpress-encyclopedia-topics.mjs
+          node - <<'NODE'
+          const fs=require('fs');
+          const d=JSON.parse(fs.readFileSync(process.env.ENCYCLOPEDIA_TOPIC_FILE,'utf8'));
+          if(d.schemaVersion!==1||!Array.isArray(d.topics)||d.topics.length!==21) throw new Error('Expected 21 encyclopedia topics.');
+          for(let i=0;i<21;i++){
+            const t=d.topics[i], start=i*20+1, end=(i+1)*20;
+            if(t.part!==i+1||t.range[0]!==start||t.range[1]!==end||!t.slug||!t.title) throw new Error(`Invalid part ${i+1}`);
+          }
+          console.log('Validated 21 topic areas covering THC-ENC-001 through THC-ENC-420.');
+          NODE
+          test -n "${WP_API_USERNAME:-}"
+          test -n "${WP_API_PASSWORD:-}"
+
+      - name: Rebuild encyclopedia navigation around topic hubs
+        id: organize
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/organize-wordpress-encyclopedia-topics.mjs | tee "$RUNNER_TEMP/encyclopedia-topics.log"
+          backup_dir="$(cat "$BACKUP_ROOT/latest-backup-path.txt")"
+          report="$backup_dir/encyclopedia-topic-organization-report.json"
+          test -s "$report"
+          echo "backup_dir=$backup_dir" >> "$GITHUB_OUTPUT"
+          echo "report=$report" >> "$GITHUB_OUTPUT"
+          echo "articles=$(node -p "require(process.argv[1]).articleCount" "$report")" >> "$GITHUB_OUTPUT"
+          echo "topics=$(node -p "require(process.argv[1]).activeTopics.length" "$report")" >> "$GITHUB_OUTPUT"
+
+      - name: Visitor-verify topic-first encyclopedia
+        id: verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          get_page() {
+            local route="$1" marker="$2" output="$3" ok=0
+            for attempt in 1 2 3 4 5 6 7 8; do
+              curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+                --header 'Cache-Control: no-cache, no-store, max-age=0' \
+                --header 'Pragma: no-cache' \
+                "$WP_SITE_URL${route}?dtf_topics=${GITHUB_RUN_ID}-${attempt}" --output "$output"
+              if grep -Fqi -- "$marker" "$output"; then ok=1; break; fi
+              sleep 8
+            done
+            [[ "$ok" -eq 1 ]]
+          }
+
+          index="$RUNNER_TEMP/encyclopedia-index.html"
+          get_page '/learn/encyclopedia/' 'Browse by topic' "$index"
+          grep -Fqi -- 'Plant Structure &amp; Anatomy' "$index" || grep -Fqi -- 'Plant Structure & Anatomy' "$index"
+          grep -Fqi -- 'Seeds, Germination &amp; Seedlings' "$index" || grep -Fqi -- 'Seeds, Germination & Seedlings' "$index"
+          grep -Fqi -- 'Roots, Rhizosphere &amp; Growing Media' "$index" || grep -Fqi -- 'Roots, Rhizosphere & Growing Media' "$index"
+          grep -Fqi -- '57' "$index"
+          grep -Fqi -- 'Search all published encyclopedia lessons' "$index"
+
+          plant="$RUNNER_TEMP/plant.html"
+          seeds="$RUNNER_TEMP/seeds.html"
+          roots="$RUNNER_TEMP/roots.html"
+          get_page '/learn/encyclopedia/plant-structure-anatomy/' 'Plant Structure &amp; Anatomy' "$plant" || get_page '/learn/encyclopedia/plant-structure-anatomy/' 'Plant Structure & Anatomy' "$plant"
+          get_page '/learn/encyclopedia/seeds-germination-seedlings/' 'Seeds, Germination &amp; Seedlings' "$seeds" || get_page '/learn/encyclopedia/seeds-germination-seedlings/' 'Seeds, Germination & Seedlings' "$seeds"
+          get_page '/learn/encyclopedia/roots-growing-media/' 'Roots, Rhizosphere &amp; Growing Media' "$roots" || get_page '/learn/encyclopedia/roots-growing-media/' 'Roots, Rhizosphere & Growing Media' "$roots"
+
+          grep -Fqi -- 'thc-enc-003' "$plant"
+          grep -Fqi -- 'thc-enc-020' "$plant"
+          grep -Fqi -- 'thc-enc-021' "$seeds"
+          grep -Fqi -- 'thc-enc-040' "$seeds"
+          grep -Fqi -- 'thc-enc-041' "$roots"
+          grep -Fqi -- 'thc-enc-060' "$roots"
+          grep -Fqi -- 'Infographic included' "$roots"
+
+          lesson="$RUNNER_TEMP/lesson-041.html"
+          get_page '/learn/encyclopedia/thc-enc-041/' 'data-thc-lesson-visual-id="THC-ENC-041"' "$lesson"
+          grep -Fqi -- '/wp-content/uploads/' "$lesson"
+
+      - name: Upload rollback and organization evidence
+        if: always() && steps.organize.outputs.backup_dir != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: thc-encyclopedia-topic-organization-${{ github.run_id }}
+          path: ${{ steps.organize.outputs.backup_dir }}
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Report topic organization to issue 46
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          JOB_STATUS: ${{ job.status }}
+          VALIDATE: ${{ steps.validate.outcome }}
+          ORGANIZE: ${{ steps.organize.outcome }}
+          VERIFY: ${{ steps.verify.outcome }}
+          ARTICLES: ${{ steps.organize.outputs.articles }}
+          TOPICS: ${{ steps.organize.outputs.topics }}
+        with:
+          script: |
+            const success=process.env.JOB_STATUS==='success';
+            const body=[
+              '## THC encyclopedia topic-first organization',
+              '',
+              `Run: https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Result: **${process.env.JOB_STATUS}**`,
+              `Architecture validation: **${process.env.VALIDATE || 'not-run'}**`,
+              `WordPress topic organization: **${process.env.ORGANIZE || 'not-run'}**`,
+              `Visitor verification: **${process.env.VERIFY || 'not-run'}**`,
+              `Published encyclopedia lessons organized: **${process.env.ARTICLES || '0'}**`,
+              `Active topic hubs: **${process.env.TOPICS || '0'}**`,
+              '',
+              success ? 'The public encyclopedia is topic-first and all current verification routes passed.' : 'This organization release is not accepted; inspect the rollback artifact before retrying.',
+              '',
+              'Permanent THC-ENC IDs remain stable backend identifiers; visitor-facing display titles may evolve.'
+            ].join('\n');
+            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body});
