@@ -6,8 +6,8 @@
     "commerceSource": "WooCommerce product pages control current price, stock, pack quantity, fulfillment and transaction details.",
     "claimsStandard": "Treat packaging traits and flowering windows as breeding direction or planning observations, not guarantees.",
     "unknownLineage": "Do not invent parentage. Publish lineage as unverified until a controlled breeding record exists.",
-    "mediaSource": "Controlled Google Drive 02 Genetics folder; deployment validates image magic and dimensions because Google may serve a byte-different rendition of the same reviewed image.",
-    "byteIdentity": "Original SHA-256 values are provenance only. Runtime does not require byte identity from Google Drive rendition URLs."
+    "mediaSource": "Public, permanent Shopify CDN copies of the user-supplied reviewed strain-card files are used only as origin URLs for WordPress media ingestion; Google Drive IDs remain provenance/backups.",
+    "byteIdentity": "WordPress ingestion validates image type and expected dimensions; original source SHA-256 and byte length remain provenance."
   },
   "lines": [
     {
@@ -19,7 +19,7 @@
       "lineageStatus": "awaiting-controlled-record",
       "summary": "Berry Blue is presented as a berry-forward DTF line with blue and purple visual direction, sweet berry aroma direction, and dense resinous flower structure.",
       "breedingDirection": ["berry aroma direction", "blue and purple coloration direction", "dense resinous flower structure"],
-      "releaseCards": [{"generation":"F2","seedType":"regular","fileName":"Berry_Blue_F2_Regular_DTF_Strain_Card.jpg","mimeType":"image/jpeg","altText":"Berry Blue F2 Regular DTF Genetics strain card","wordpressSlug":"dtf-strain-card-berry-blue-f2-regular","driveFileId":"1EEAVuXjjPWYpg9gRZhg5TUZLGhyY5Dwk","expectedWidth":1024,"expectedHeight":1536,"sourceSha256":"2562d83bd8a001718f1e4b8f72c95053d0c16d22f0cdfb64a4995bbb0b29bbc4","sourceByteLength":494250}],
+      "releaseCards": [{"generation":"F2","seedType":"regular","fileName":"Berry_Blue_F2_Regular_DTF_Strain_Card.jpg","mimeType":"image/jpeg","altText":"Berry Blue F2 Regular DTF Genetics strain card","wordpressSlug":"dtf-strain-card-berry-blue-f2-regular","driveFileId":"1EEAVuXjjPWYpg9gRZhg5TUZLGhyY5Dwk","expectedWidth":1024,"expectedHeight":1536,"sourceSha256":"2562d83bd8a001718f1e4b8f72c95053d0c16d22f0cdfb64a4995bbb0b29bbc4","sourceByteLength":494250,"sourceUrl":"https://cdn.shopify.com/s/files/1/0664/2542/1885/files/dtf-berry-blue-f2-regular.jpg?v=1787509973"}],
       "storeRoutes": []
     },
     {
@@ -31,7 +31,7 @@
       "lineageStatus": "awaiting-controlled-record",
       "summary": "Berry Lemonade is presented as a sweet berry-and-citrus DTF line with colorful fruit-forward presentation and dense resinous flower direction.",
       "breedingDirection": ["sweet berry aroma direction", "citrus aroma direction", "colorful fruit-forward presentation", "dense resinous flower structure"],
-      "releaseCards": [{"generation":"F1","seedType":"regular","fileName":"Berry_Lemonade_F1_Regular_DTF_Strain_Card.jpg","mimeType":"image/jpeg","altText":"Berry Lemonade F1 Regular DTF Genetics strain card","wordpressSlug":"dtf-strain-card-berry-lemonade-f1-regular","driveFileId":"18VsbCCxWnOQySaqSAK4N_85fUweJ98we","expectedWidth":1024,"expectedHeight":1536,"sourceSha256":"02532a2fb6495e601f6b6aaa5613cb8350c6246df71866abcc655a4162ac220f","sourceByteLength":508871}],
+      "releaseCards": [{"generation":"F1","seedType":"regular","fileName":"Berry_Lemonade_F1_Regular_DTF_Strain_Card.jpg","mimeType":"image/jpeg","altText":"Berry Lemonade F1 Regular DTF Genetics strain card","wordpressSlug":"dtf-strain-card-berry-lemonade-f1-regular","driveFileId":"18VsbCCxWnOQySaqSAK4N_85fUweJ98we","expectedWidth":1024,"expectedHeight":1536,"sourceSha256":"02532a2fb6495e601f6b6aaa5613cb8350c6246df71866abcc655a4162ac220f","sourceByteLength":508871,"sourceUrl":"https://cdn.shopify.com/s/files/1/0664/2542/1885/files/dtf-berry-lemonade-f1-regular.jpg?v=1787509991"}],
       "storeRoutes": []
     },
     {
@@ -44,7 +44,7 @@
       "summary": "Zestberry combines Blue Mango with Cali Orange in a citrus-zest and berry-sweetness direction.",
       "breedingDirection": ["citrus zest direction", "berry sweetness direction", "vigorous growth direction"],
       "floweringObservation": "8–10 weeks is printed on the reviewed card as a planning range.",
-      "releaseCards": [{"generation":"F1","seedType":"regular","fileName":"Zestberry_F1_Regular_DTF_Strain_Card.jpg","mimeType":"image/jpeg","altText":"Zestberry F1 Regular DTF Genetics strain card","wordpressSlug":"dtf-strain-card-zestberry-f1-regular","driveFileId":"1TRAM4o_LJzD9tt-8AKKuuVTs-WIfMYe2","expectedWidth":1024,"expectedHeight":1536,"sourceSha256":"aef67fe041c6448f0edbd1b20f74bde1970623078b3fd65bde52ea4b98b172e0","sourceByteLength":490144}],
+      "releaseCards": [{"generation":"F1","seedType":"regular","fileName":"Zestberry_F1_Regular_DTF_Strain_Card.jpg","mimeType":"image/jpeg","altText":"Zestberry F1 Regular DTF Genetics strain card","wordpressSlug":"dtf-strain-card-zestberry-f1-regular","driveFileId":"1TRAM4o_LJzD9tt-8AKKuuVTs-WIfMYe2","expectedWidth":1024,"expectedHeight":1536,"sourceSha256":"aef67fe041c6448f0edbd1b20f74bde1970623078b3fd65bde52ea4b98b172e0","sourceByteLength":490144,"sourceUrl":"https://cdn.shopify.com/s/files/1/0664/2542/1885/files/dtf-zestberry-f1-regular.jpg?v=1787510049"}],
       "storeRoutes": []
     },
     {
@@ -56,7 +56,7 @@
       "lineageStatus": "controlled-catalog",
       "summary": "Blue Bubblegum is a DTF breeding line built around sweet fruit and bubblegum aromatic direction and is a parent line used in Mango Bubbles.",
       "breedingDirection": ["sweet fruit direction", "bubblegum aromatic direction"],
-      "releaseCards": [{"generation":"F1","seedType":"regular","fileName":"Blue_Bubblegum_F1_Regular_DTF_Strain_Card.jpg","mimeType":"image/jpeg","altText":"Blue Bubblegum F1 Regular DTF Genetics strain card","wordpressSlug":"dtf-strain-card-blue-bubblegum-f1-regular","driveFileId":"1b2jjdhtHmGFNQ6TEB-lXsrQpbA57FpoW","expectedWidth":1024,"expectedHeight":1536,"sourceSha256":"81c91e59227f590cd65c163e9e860748f26cf74f8966c212871a6e196637d8ce","sourceByteLength":505164}],
+      "releaseCards": [{"generation":"F1","seedType":"regular","fileName":"Blue_Bubblegum_F1_Regular_DTF_Strain_Card.jpg","mimeType":"image/jpeg","altText":"Blue Bubblegum F1 Regular DTF Genetics strain card","wordpressSlug":"dtf-strain-card-blue-bubblegum-f1-regular","driveFileId":"1b2jjdhtHmGFNQ6TEB-lXsrQpbA57FpoW","expectedWidth":1024,"expectedHeight":1536,"sourceSha256":"81c91e59227f590cd65c163e9e860748f26cf74f8966c212871a6e196637d8ce","sourceByteLength":505164,"sourceUrl":"https://cdn.shopify.com/s/files/1/0664/2542/1885/files/dtf-blue-bubblegum-f1-regular.jpg?v=1787510057"}],
       "storeRoutes": [{"label":"Current F1 Regular product","path":"/product/10-reg-f1-blueberry-bubblegum/"}]
     },
     {
@@ -68,7 +68,7 @@
       "lineageStatus": "awaiting-controlled-record",
       "summary": "Blue Cali Glue is presented as a resin-forward, gassy and glue-like DTF line with dense flower structure.",
       "breedingDirection": ["sticky resin direction", "gassy glue-like aromatic direction", "dense resinous flower structure"],
-      "releaseCards": [{"generation":"F1","seedType":"regular","fileName":"Blue_Cali_Glue_F1_Regular_DTF_Strain_Card.jpg","mimeType":"image/jpeg","altText":"Blue Cali Glue F1 Regular DTF Genetics strain card","wordpressSlug":"dtf-strain-card-blue-cali-glue-f1-regular","driveFileId":"1ztaWL8FIXvTnv5mPPRL3215whiEKZoEN","expectedWidth":1024,"expectedHeight":1536,"sourceSha256":"2b2c57fdbf2496c7fc19c13b52077bf97893000b2ac9e97b36471f830c57592f","sourceByteLength":498075}],
+      "releaseCards": [{"generation":"F1","seedType":"regular","fileName":"Blue_Cali_Glue_F1_Regular_DTF_Strain_Card.jpg","mimeType":"image/jpeg","altText":"Blue Cali Glue F1 Regular DTF Genetics strain card","wordpressSlug":"dtf-strain-card-blue-cali-glue-f1-regular","driveFileId":"1ztaWL8FIXvTnv5mPPRL3215whiEKZoEN","expectedWidth":1024,"expectedHeight":1536,"sourceSha256":"2b2c57fdbf2496c7fc19c13b52077bf97893000b2ac9e97b36471f830c57592f","sourceByteLength":498075,"sourceUrl":"https://cdn.shopify.com/s/files/1/0664/2542/1885/files/dtf-blue-cali-glue-f1-regular.jpg?v=1787510063"}],
       "storeRoutes": []
     },
     {
@@ -82,9 +82,9 @@
       "breedingDirection": ["vigorous plant structure", "strong branching", "heavy resin production", "substantial flower structure", "candy blueberry and ripe mango aromatic direction"],
       "floweringObservation": "An 8–10 week planning window is documented for this project; phenotype and environment can change actual finish time.",
       "releaseCards": [
-        {"generation":"F2","seedType":"regular","fileName":"Blue_Mango_F2_Regular_DTF_Strain_Card.jpg","mimeType":"image/jpeg","altText":"Blue Mango F2 Regular DTF Genetics strain card","wordpressSlug":"dtf-strain-card-blue-mango-f2-regular","driveFileId":"1-LR9fZ_iX7dJsSI1xFywItAV4DhkJkLB","expectedWidth":1024,"expectedHeight":1536,"sourceSha256":"7a506baa63d554d4554f7747d5c9cd222bc85fa1879e565729f5c876e4e8dd61","sourceByteLength":515236},
-        {"generation":"F2","seedType":"feminized","fileName":"Blue_Mango_F2_Feminized_DTF_Strain_Card.png","mimeType":"image/png","altText":"Blue Mango F2 Feminized DTF Genetics strain card","wordpressSlug":"dtf-strain-card-blue-mango-f2-feminized","driveFileId":"1HnLstfC6OBvrwWMVI6rP9JH3S1b_XCsl","expectedWidth":1024,"expectedHeight":1536,"sourceSha256":"0f009757befd075f7cb8b5e6936bc909e6a403b442047fd8fe7bb69c1b8e84ab","sourceByteLength":2549517},
-        {"generation":"F3","seedType":"regular","fileName":"Blue_Mango_F3_Regular_DTF_Strain_Card.jpg","mimeType":"image/jpeg","altText":"Blue Mango F3 Regular DTF Genetics strain card","wordpressSlug":"dtf-strain-card-blue-mango-f3-regular","driveFileId":"1kViyfXQ5G_hH9QXyeRtauEA4p6qbn7jQ","expectedWidth":1024,"expectedHeight":1536,"sourceSha256":"81adfd67d0d8b7f8f33fc1b374f0159a3798d60c3fc629e5a48da1e676db7673","sourceByteLength":493339}
+        {"generation":"F2","seedType":"regular","fileName":"Blue_Mango_F2_Regular_DTF_Strain_Card.jpg","mimeType":"image/jpeg","altText":"Blue Mango F2 Regular DTF Genetics strain card","wordpressSlug":"dtf-strain-card-blue-mango-f2-regular","driveFileId":"1-LR9fZ_iX7dJsSI1xFywItAV4DhkJkLB","expectedWidth":1024,"expectedHeight":1536,"sourceSha256":"7a506baa63d554d4554f7747d5c9cd222bc85fa1879e565729f5c876e4e8dd61","sourceByteLength":515236,"sourceUrl":"https://cdn.shopify.com/s/files/1/0664/2542/1885/files/dtf-blue-mango-f2-regular.jpg?v=1787510072"},
+        {"generation":"F2","seedType":"feminized","fileName":"Blue_Mango_F2_Feminized_DTF_Strain_Card.png","mimeType":"image/png","altText":"Blue Mango F2 Feminized DTF Genetics strain card","wordpressSlug":"dtf-strain-card-blue-mango-f2-feminized","driveFileId":"1HnLstfC6OBvrwWMVI6rP9JH3S1b_XCsl","expectedWidth":1024,"expectedHeight":1536,"sourceSha256":"0f009757befd075f7cb8b5e6936bc909e6a403b442047fd8fe7bb69c1b8e84ab","sourceByteLength":2549517,"sourceUrl":"https://cdn.shopify.com/s/files/1/0664/2542/1885/files/dtf-blue-mango-f2-feminized.png?v=1787510082"},
+        {"generation":"F3","seedType":"regular","fileName":"Blue_Mango_F3_Regular_DTF_Strain_Card.jpg","mimeType":"image/jpeg","altText":"Blue Mango F3 Regular DTF Genetics strain card","wordpressSlug":"dtf-strain-card-blue-mango-f3-regular","driveFileId":"1kViyfXQ5G_hH9QXyeRtauEA4p6qbn7jQ","expectedWidth":1024,"expectedHeight":1536,"sourceSha256":"81adfd67d0d8b7f8f33fc1b374f0159a3798d60c3fc629e5a48da1e676db7673","sourceByteLength":493339,"sourceUrl":"https://cdn.shopify.com/s/files/1/0664/2542/1885/files/dtf-blue-mango-f3-regular.jpg?v=1787510089"}
       ],
       "storeRoutes": [{"label":"Current F2 Regular product","path":"/product/10-regular-f2-blue-mango-seeds/"},{"label":"Current F2 Feminized product","path":"/product/10-feminized-f2-blue-mango-x/"}]
     },
@@ -98,7 +98,7 @@
       "summary": "Blue Mango BX1 returns Blue Mango F2 toward Somango XXL and is presented with mango, tropical-fruit and sweet aromatic direction.",
       "breedingDirection": ["mango direction", "tropical fruit direction", "sweet aromatic direction"],
       "floweringObservation": "An 8–10 week planning range is printed on the reviewed card.",
-      "releaseCards": [{"generation":"BX1","seedType":"regular","fileName":"Blue_Mango_BX1_Regular_DTF_Strain_Card.jpg","mimeType":"image/jpeg","altText":"Blue Mango BX1 Regular DTF Genetics strain card","wordpressSlug":"dtf-strain-card-blue-mango-bx1-bx1-regular","driveFileId":"1g8LtdKjdJc7cV2r-qYTYBI03nVsHsJZs","expectedWidth":1024,"expectedHeight":1536,"sourceSha256":"fc8f620e36a267a72dad8ea707710ab26b8cb57c2e4baca27783ea5060b7a11d","sourceByteLength":516271}],
+      "releaseCards": [{"generation":"BX1","seedType":"regular","fileName":"Blue_Mango_BX1_Regular_DTF_Strain_Card.jpg","mimeType":"image/jpeg","altText":"Blue Mango BX1 Regular DTF Genetics strain card","wordpressSlug":"dtf-strain-card-blue-mango-bx1-bx1-regular","driveFileId":"1g8LtdKjdJc7cV2r-qYTYBI03nVsHsJZs","expectedWidth":1024,"expectedHeight":1536,"sourceSha256":"fc8f620e36a267a72dad8ea707710ab26b8cb57c2e4baca27783ea5060b7a11d","sourceByteLength":516271,"sourceUrl":"https://cdn.shopify.com/s/files/1/0664/2542/1885/files/dtf-blue-mango-bx1-regular.jpg?v=1787510099"}],
       "storeRoutes": []
     },
     {
@@ -112,7 +112,7 @@
       "summary": "Mango Bubbles combines the fruit-forward direction of Blue Mango with the sweet bubblegum influence of Blue Bubblegum.",
       "breedingDirection": ["mango-forward fruit direction", "bubblegum sweetness direction", "sweet colorful candy-forward presentation"],
       "floweringObservation": "The reviewed F1 Regular card lists an 8–10 week planning range.",
-      "releaseCards": [{"generation":"F1","seedType":"regular","fileName":"Mango_Bubbles_F1_Regular_DTF_Strain_Card.jpg","mimeType":"image/jpeg","altText":"Mango Bubbles F1 Regular DTF Genetics strain card","wordpressSlug":"dtf-strain-card-mango-bubbles-f1-regular","driveFileId":"1Qv-dNjq1Ae6gBthoxGzeZyJkPjkIKQmB","expectedWidth":1031,"expectedHeight":1536,"sourceSha256":"b1fbcd5bc7572b5460606b6aa3e2c3bd226ea4d7d00732d8ce2f3527fe8f649b","sourceByteLength":401230}],
+      "releaseCards": [{"generation":"F1","seedType":"regular","fileName":"Mango_Bubbles_F1_Regular_DTF_Strain_Card.jpg","mimeType":"image/jpeg","altText":"Mango Bubbles F1 Regular DTF Genetics strain card","wordpressSlug":"dtf-strain-card-mango-bubbles-f1-regular","driveFileId":"1Qv-dNjq1Ae6gBthoxGzeZyJkPjkIKQmB","expectedWidth":1031,"expectedHeight":1536,"sourceSha256":"b1fbcd5bc7572b5460606b6aa3e2c3bd226ea4d7d00732d8ce2f3527fe8f649b","sourceByteLength":401230,"sourceUrl":"https://cdn.shopify.com/s/files/1/0664/2542/1885/files/dtf-mango-bubbles-f1-regular.jpg?v=1787510106"}],
       "storeRoutes": []
     }
   ]
