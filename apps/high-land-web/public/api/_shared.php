@@ -8,10 +8,11 @@
 
 declare(strict_types=1);
 
-const THC_GAME_API_VERSION = '1.0.0';
+const THC_GAME_API_VERSION = '1.1.0';
 const THC_GAME_ROOM_CODE_LENGTH = 6;
 const THC_GAME_MAX_PLAYERS_DEFAULT = 10;
 const THC_GAME_ROOM_TTL_SECONDS = 86400;
+const THC_GAME_AUTH_KEY_HEX_LENGTH = 64;
 
 function api_send_json(array $payload, int $statusCode = 200): void
 {
@@ -74,6 +75,23 @@ function api_clean_room_code($value): string
     return preg_replace('/[^A-Z0-9]/', '', $text) ?? '';
 }
 
+/**
+ * @param mixed $value
+ */
+function api_clean_auth_key($value): string
+{
+    $text = strtolower(is_string($value) ? trim($value) : '');
+    if (strlen($text) !== THC_GAME_AUTH_KEY_HEX_LENGTH || !preg_match('/^[a-f0-9]{64}$/', $text)) {
+        return '';
+    }
+    return $text;
+}
+
+function api_auth_hash(string $authKey): string
+{
+    return hash('sha256', $authKey);
+}
+
 function api_now(): string
 {
     return gmdate('c');
@@ -127,6 +145,11 @@ function api_new_player(array $data, int $index): array
         $id = 'player-' . bin2hex(random_bytes(6));
     }
 
+    $authKey = api_clean_auth_key($data['authKey'] ?? '');
+    if ($authKey === '') {
+        api_send_json(['ok' => false, 'error' => 'A valid room authorization key is required.'], 400);
+    }
+
     return [
         'id' => $id,
         'name' => $name,
@@ -134,7 +157,8 @@ function api_new_player(array $data, int $index): array
         'color' => api_clean_string($data['color'] ?? api_default_player_color($index), 20),
         'host' => (bool)($data['host'] ?? false),
         'connected' => true,
-        'joinedAt' => api_now()
+        'joinedAt' => api_now(),
+        'authHash' => api_auth_hash($authKey)
     ];
 }
 
@@ -142,6 +166,49 @@ function api_default_player_color(int $index): string
 {
     $colors = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#3b82f6', '#8b5cf6', '#ec4899', '#14b8a6', '#f43f5e', '#84cc16'];
     return $colors[$index % count($colors)];
+}
+
+function api_public_player(array $player): array
+{
+    unset($player['authHash']);
+    return $player;
+}
+
+function api_public_room(array $room): array
+{
+    $players = is_array($room['players'] ?? null) ? $room['players'] : [];
+    $room['players'] = array_values(array_map(
+        static fn($player): array => api_public_player(is_array($player) ? $player : []),
+        $players
+    ));
+    return $room;
+}
+
+function api_require_player_auth(array $room, string $playerId, string $authKey): array
+{
+    $cleanPlayerId = api_clean_string($playerId, 80);
+    $cleanAuthKey = api_clean_auth_key($authKey);
+    if ($cleanPlayerId === '' || $cleanAuthKey === '') {
+        api_send_json(['ok' => false, 'error' => 'Player authorization is required.'], 401);
+    }
+
+    $players = is_array($room['players'] ?? null) ? $room['players'] : [];
+    foreach ($players as $player) {
+        if (!is_array($player) || ($player['id'] ?? '') !== $cleanPlayerId) {
+            continue;
+        }
+
+        $storedHash = is_string($player['authHash'] ?? null) ? $player['authHash'] : '';
+        if ($storedHash === '') {
+            api_send_json(['ok' => false, 'error' => 'This room predates secure player sessions. Create a new room to continue.'], 409);
+        }
+        if (!hash_equals($storedHash, api_auth_hash($cleanAuthKey))) {
+            api_send_json(['ok' => false, 'error' => 'Player authorization failed.'], 403);
+        }
+        return $player;
+    }
+
+    api_send_json(['ok' => false, 'error' => 'Player is not in this room.'], 403);
 }
 
 function api_read_room(string $roomCode): ?array
