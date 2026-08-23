@@ -37,9 +37,11 @@ jobs:
           const numbers=lessons.map(x=>Number(x.id.match(/(\d{3})$/)[1]));
           const topic=topics.find(t=>numbers.every(n=>n>=t.range[0]&&n<=t.range[1]));
           if(!topic) throw new Error(`Current batch ${batch.batch} does not resolve to one topic hub.`);
+          const htmlTitle=String(topic.title).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
           console.log(`batch=${batch.batch}`);
           console.log(`slug=${topic.slug}`);
           console.log(`title=${topic.title}`);
+          console.log(`title_html=${htmlTitle}`);
           console.log(`first_id=${lessons[0].id}`);
           console.log(`count=${lessons.length}`);
           NODE
@@ -50,15 +52,22 @@ jobs:
           set -euo pipefail
           slug='${{ steps.topic.outputs.slug }}'
           title='${{ steps.topic.outputs.title }}'
+          title_html='${{ steps.topic.outputs.title_html }}'
           first_id='${{ steps.topic.outputs.first_id }}'
           hub="$RUNNER_TEMP/current-topic.html"
           index="$RUNNER_TEMP/encyclopedia-index.html"
+
           hub_ok=0
           for attempt in 1 2 3 4 5 6 7 8; do
-            curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+            if ! curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
               --header 'Cache-Control: no-cache, no-store, max-age=0' --header 'Pragma: no-cache' \
-              "$WP_SITE_URL/learn/encyclopedia/$slug/?dtf_topic_gate=${GITHUB_RUN_ID}-${attempt}" -o "$hub"
-            if grep -Fqi -- "$title" "$hub" && grep -Fqi -- "$first_id" "$hub" && grep -Fqi -- "data-thc-topic=\"$slug\"" "$hub"; then
+              "$WP_SITE_URL/learn/encyclopedia/$slug/?dtf_topic_gate=${GITHUB_RUN_ID}-${attempt}" -o "$hub"; then
+              sleep 8
+              continue
+            fi
+            if { grep -Fqi -- "$title" "$hub" || grep -Fqi -- "$title_html" "$hub"; } \
+              && grep -Fqi -- "$first_id" "$hub" \
+              && grep -Fqi -- "data-thc-topic=\"$slug\"" "$hub"; then
               hub_ok=1
               break
             fi
@@ -66,11 +75,22 @@ jobs:
           done
           [[ "$hub_ok" -eq 1 ]] || { echo "Current topic hub verification failed: $slug" >&2; head -c 4000 "$hub" >&2 || true; exit 1; }
 
-          curl -4 --fail --silent --show-error --location --retry 3 --retry-delay 2 \
-            --header 'Cache-Control: no-cache, no-store, max-age=0' --header 'Pragma: no-cache' \
-            "$WP_SITE_URL/learn/encyclopedia/?dtf_topic_gate=${GITHUB_RUN_ID}" -o "$index"
-          grep -Fqi -- "$title" "$index"
-          grep -Fqi -- "/learn/encyclopedia/$slug/" "$index"
+          index_ok=0
+          for attempt in 1 2 3 4 5 6 7 8; do
+            if ! curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+              --header 'Cache-Control: no-cache, no-store, max-age=0' --header 'Pragma: no-cache' \
+              "$WP_SITE_URL/learn/encyclopedia/?dtf_topic_gate=${GITHUB_RUN_ID}-${attempt}" -o "$index"; then
+              sleep 8
+              continue
+            fi
+            if { grep -Fqi -- "$title" "$index" || grep -Fqi -- "$title_html" "$index"; } \
+              && grep -Fqi -- "/learn/encyclopedia/$slug/" "$index"; then
+              index_ok=1
+              break
+            fi
+            sleep 8
+          done
+          [[ "$index_ok" -eq 1 ]] || { echo "Current topic index verification failed: $slug" >&2; head -c 4000 "$index" >&2 || true; exit 1; }
           echo "Verified current topic hub: $title ($slug)"
 
       - name: Report current-topic verification to issue 46
