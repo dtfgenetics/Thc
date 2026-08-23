@@ -1,0 +1,73 @@
+name: Probe AIOSEO Post Write Contract
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/aioseo-write-contract-probe.yml'
+      - 'scripts/probe-aioseo-post-write-contract.mjs'
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-aioseo-write-contract-probe
+  cancel-in-progress: true
+
+jobs:
+  probe:
+    name: Verify state-preserving AIOSEO post update contract
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: production
+    env:
+      NODE_OPTIONS: --dns-result-order=ipv4first
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      AIOSEO_PROBE_ROOT: /tmp/aioseo-write-probe
+      AIOSEO_HOME_POST_ID: '743'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate probe package
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/probe-aioseo-post-write-contract.mjs
+          test -n "${WP_API_USERNAME:-}"
+          test -n "${WP_API_PASSWORD:-}"
+      - name: Probe postId-only update and verify no state change
+        id: probe
+        shell: bash
+        run: node scripts/probe-aioseo-post-write-contract.mjs
+      - name: Upload probe and backup evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: aioseo-write-contract-probe-${{ github.run_id }}
+          path: /tmp/aioseo-write-probe
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Report probe result
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          JOB_STATUS: ${{ job.status }}
+          PROBE: ${{ steps.probe.outcome }}
+        with:
+          script: |
+            const body=[
+              '## AIOSEO state-preserving write-contract probe', '',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Result: **${process.env.JOB_STATUS}**`,
+              `postId-only no-op update + re-read: **${process.env.PROBE || 'not-run'}**`, '',
+              'The probe backs up homepage AIOSEO metadata, sends only the required homepage postId, and proves the social fields remain byte-equivalent before applying the real Open Graph image update.'
+            ].join('\n');
+            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body});
