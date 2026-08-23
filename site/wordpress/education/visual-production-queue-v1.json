@@ -9,33 +9,235 @@
     "masterFormat": "PNG",
     "masterMinimumWidthPx": 2400,
     "masterMinimumHeightPx": 3000,
-    "webDelivery": ["WordPress responsive attachment sizes", "WebP mirror derivatives"],
+    "webDelivery": [
+      "WordPress responsive attachment sizes",
+      "WebP mirror derivatives"
+    ],
     "style": "academic studio-quality cultivation education; clean neutral/cream background; natural plant color; crisp labels; no yellow cast; no decorative clutter",
     "textPolicy": "Keep baked-in text concise. Prefer diagram labels, short callouts, legends, and captions over paragraph text.",
     "accuracyPolicy": "No unsupported universal thresholds. Numeric targets must be source-supported and context-labeled. Diagnostic visuals must distinguish observation from interpretation.",
     "accessibilityPolicy": "Every asset requires descriptive alt text and a caption that communicates the educational point without relying on color alone.",
     "reviewPolicy": "Artwork remains artwork-needed until visual QA, scientific QA, spelling/label QA, and page-placement QA are all complete."
   },
-  "statusValues": ["artwork-needed", "artwork-in-review", "approved", "published"],
+  "statusValues": [
+    "artwork-needed",
+    "artwork-in-review",
+    "approved",
+    "published"
+  ],
   "batches": [
     {
-      "id": "wave-01-harvest-postharvest", "categoryId": "harvest-postharvest", "route": "/learn/harvest-postharvest/", "priority": 1,
+      "id": "wave-01-harvest-postharvest",
+      "categoryId": "harvest-postharvest",
+      "route": "/learn/harvest-postharvest/",
+      "priority": 1,
       "items": [
-        {"id":"THC-HARV-01","requiredTopic":"harvest readiness indicators","title":"Harvest Readiness: Multiple Signals, Not One","imageType":"comparison-reference","educationalPurpose":"Compare flower maturity signals across pistils, calyx swelling, trichomes, plant fade, and whole-plant context without presenting any single sign as decisive.","masterFilename":"THC-HARV-01_harvest_readiness_indicators.png","route":"/learn/harvest-postharvest/","libraryCategoryId":"harvest-postharvest","altText":"Compare flower maturity signals across pistils, calyx swelling, trichomes, plant fade, and whole-plant context without presenting any single sign as decisive.","caption":"Harvest readiness is assessed from multiple plant signals together; no single visual cue should be treated as a universal trigger.","status":"artwork-needed","sourceRefs":[],"review":{"scientificQA":false,"visualQA":false,"labelSpellingQA":false,"pagePlacementQA":false},"delivery":{"preserveFullResolutionMaster":true,"responsiveWordPress":true,"webpMirror":true,"lazyLoadWhenBelowFold":true}},
-        {"id":"THC-HARV-02","requiredTopic":"trichome maturity interpretation","title":"Trichome Maturity Under Magnification","imageType":"diagnostic-reference","educationalPurpose":"Show clear, cloudy, and amber glandular trichome appearances under consistent magnification, with a caution that lighting and camera white balance can distort interpretation.","masterFilename":"THC-HARV-02_trichome_maturity_interpretation.png","route":"/learn/harvest-postharvest/","libraryCategoryId":"harvest-postharvest","altText":"Show clear, cloudy, and amber glandular trichome appearances under consistent magnification, with a caution that lighting and camera white balance can distort interpretation.","caption":"Trichome appearance can help assess maturation when viewed under consistent magnification and lighting.","status":"artwork-needed","sourceRefs":[],"review":{"scientificQA":false,"visualQA":false,"labelSpellingQA":false,"pagePlacementQA":false},"delivery":{"preserveFullResolutionMaster":true,"responsiveWordPress":true,"webpMirror":true,"lazyLoadWhenBelowFold":true}},
-        {"id":"THC-HARV-03","requiredTopic":"harvest handling workflow","title":"Harvest Handling Workflow","imageType":"process-workflow","educationalPurpose":"Illustrate a clean sequence from pre-harvest setup through cutting, transport, trimming strategy, and entry into drying while minimizing unnecessary handling.","masterFilename":"THC-HARV-03_harvest_handling_workflow.png","route":"/learn/harvest-postharvest/","libraryCategoryId":"harvest-postharvest","altText":"Illustrate a clean sequence from pre-harvest setup through cutting, transport, trimming strategy, and entry into drying while minimizing unnecessary handling.","caption":"A clean harvest workflow reduces handling damage and moves flowers efficiently into controlled drying.","status":"artwork-needed","sourceRefs":[],"review":{"scientificQA":false,"visualQA":false,"labelSpellingQA":false,"pagePlacementQA":false},"delivery":{"preserveFullResolutionMaster":true,"responsiveWordPress":true,"webpMirror":true,"lazyLoadWhenBelowFold":true}},
-        {"id":"THC-HARV-04","requiredTopic":"bud washing overview","title":"Bud Washing: What It Is and When It Is Considered","imageType":"process-overview","educationalPurpose":"Explain bud washing as a post-harvest rinse concept, distinguish it from remediation, and show decision factors such as outdoor debris, dust, and visible contamination concerns.","masterFilename":"THC-HARV-04_bud_washing_overview.png","route":"/learn/harvest-postharvest/","libraryCategoryId":"harvest-postharvest","altText":"Explain bud washing as a post-harvest rinse concept, distinguish it from remediation, and show decision factors such as outdoor debris, dust, and visible contamination concerns.","caption":"Bud washing is a post-harvest rinsing practice sometimes used to remove surface debris; it is not a substitute for contamination prevention.","status":"artwork-needed","sourceRefs":[],"review":{"scientificQA":false,"visualQA":false,"labelSpellingQA":false,"pagePlacementQA":false},"delivery":{"preserveFullResolutionMaster":true,"responsiveWordPress":true,"webpMirror":true,"lazyLoadWhenBelowFold":true}},
-        {"id":"THC-HARV-05","requiredTopic":"drying environment fundamentals","title":"Drying Environment Fundamentals","imageType":"systems-diagram","educationalPurpose":"Visualize temperature, relative humidity, air exchange, gentle circulation, darkness, hanging density, and monitoring as interacting variables rather than isolated targets.","masterFilename":"THC-HARV-05_drying_environment_fundamentals.png","route":"/learn/harvest-postharvest/","libraryCategoryId":"harvest-postharvest","altText":"Visualize temperature, relative humidity, air exchange, gentle circulation, darkness, hanging density, and monitoring as interacting variables rather than isolated targets.","caption":"Controlled drying depends on stable temperature, humidity, airflow, darkness, spacing, and monitoring.","status":"artwork-needed","sourceRefs":[],"review":{"scientificQA":false,"visualQA":false,"labelSpellingQA":false,"pagePlacementQA":false},"delivery":{"preserveFullResolutionMaster":true,"responsiveWordPress":true,"webpMirror":true,"lazyLoadWhenBelowFold":true}},
-        {"id":"THC-HARV-06","requiredTopic":"drying failure modes","title":"Drying Failure Modes","imageType":"diagnostic-reference","educationalPurpose":"Compare overdrying, uneven drying, stalled drying, excessive direct airflow, and mold-risk conditions with observable warning signs and corrective monitoring priorities.","masterFilename":"THC-HARV-06_drying_failure_modes.png","route":"/learn/harvest-postharvest/","libraryCategoryId":"harvest-postharvest","altText":"Compare overdrying, uneven drying, stalled drying, excessive direct airflow, and mold-risk conditions with observable warning signs and corrective monitoring priorities.","caption":"Drying problems can often be traced to unstable humidity, excessive airflow, poor spacing, or overly rapid moisture loss.","status":"artwork-needed","sourceRefs":[],"review":{"scientificQA":false,"visualQA":false,"labelSpellingQA":false,"pagePlacementQA":false},"delivery":{"preserveFullResolutionMaster":true,"responsiveWordPress":true,"webpMirror":true,"lazyLoadWhenBelowFold":true}},
-        {"id":"THC-HARV-07","requiredTopic":"water activity concepts","title":"Water Activity: Moisture Availability vs. Moisture Content","imageType":"concept-diagram","educationalPurpose":"Explain water activity as available water rather than total water content, show why the distinction matters for storage stability, and avoid unsupported universal pass/fail claims.","masterFilename":"THC-HARV-07_water_activity_concepts.png","route":"/learn/harvest-postharvest/","libraryCategoryId":"harvest-postharvest","altText":"Explain water activity as available water rather than total water content, show why the distinction matters for storage stability, and avoid unsupported universal pass/fail claims.","caption":"Water activity describes how available water is for physical, chemical, and microbial processes; it is different from total moisture content.","status":"artwork-needed","sourceRefs":[],"review":{"scientificQA":false,"visualQA":false,"labelSpellingQA":false,"pagePlacementQA":false},"delivery":{"preserveFullResolutionMaster":true,"responsiveWordPress":true,"webpMirror":true,"lazyLoadWhenBelowFold":true}},
-        {"id":"THC-HARV-08","requiredTopic":"curing workflow","title":"Curing Workflow and Moisture Equalization","imageType":"process-workflow","educationalPurpose":"Illustrate stabilization after drying, container loading, observation, periodic checks, moisture equalization, and storage transition without presenting curing as a way to fix unsafe material.","masterFilename":"THC-HARV-08_curing_workflow.png","route":"/learn/harvest-postharvest/","libraryCategoryId":"harvest-postharvest","altText":"Illustrate stabilization after drying, container loading, observation, periodic checks, moisture equalization, and storage transition without presenting curing as a way to fix unsafe material.","caption":"Curing is a controlled post-drying stabilization process that depends on properly dried material and ongoing observation.","status":"artwork-needed","sourceRefs":[],"review":{"scientificQA":false,"visualQA":false,"labelSpellingQA":false,"pagePlacementQA":false},"delivery":{"preserveFullResolutionMaster":true,"responsiveWordPress":true,"webpMirror":true,"lazyLoadWhenBelowFold":true}},
-        {"id":"THC-HARV-09","requiredTopic":"storage environment","title":"Storage Environment: Light, Heat, Oxygen and Moisture","imageType":"risk-factor-map","educationalPurpose":"Show how light, elevated heat, excess oxygen exposure, and unsuitable moisture conditions can accelerate quality loss during storage.","masterFilename":"THC-HARV-09_storage_environment.png","route":"/learn/harvest-postharvest/","libraryCategoryId":"harvest-postharvest","altText":"Show how light, elevated heat, excess oxygen exposure, and unsuitable moisture conditions can accelerate quality loss during storage.","caption":"Stable, dark, moderate storage conditions help limit quality degradation driven by light, heat, oxygen, and moisture.","status":"artwork-needed","sourceRefs":[],"review":{"scientificQA":false,"visualQA":false,"labelSpellingQA":false,"pagePlacementQA":false},"delivery":{"preserveFullResolutionMaster":true,"responsiveWordPress":true,"webpMirror":true,"lazyLoadWhenBelowFold":true}},
-        {"id":"THC-HARV-10","requiredTopic":"light oxygen heat and moisture degradation","title":"Post-Harvest Degradation Pathways","imageType":"cause-effect-diagram","educationalPurpose":"Map major post-harvest stressors to likely quality consequences such as oxidation, aroma loss, color changes, texture changes, and microbial risk.","masterFilename":"THC-HARV-10_light_oxygen_heat_moisture_degradation.png","route":"/learn/harvest-postharvest/","libraryCategoryId":"harvest-postharvest","altText":"Map major post-harvest stressors to likely quality consequences such as oxidation, aroma loss, color changes, texture changes, and microbial risk.","caption":"Post-harvest quality can decline through interacting light, oxygen, heat, and moisture pathways.","status":"artwork-needed","sourceRefs":[],"review":{"scientificQA":false,"visualQA":false,"labelSpellingQA":false,"pagePlacementQA":false},"delivery":{"preserveFullResolutionMaster":true,"responsiveWordPress":true,"webpMirror":true,"lazyLoadWhenBelowFold":true}}
+        {
+          "id": "THC-HARV-01",
+          "requiredTopic": "harvest readiness indicators",
+          "title": "Harvest Readiness: Multiple Signals, Not One",
+          "imageType": "comparison-reference",
+          "educationalPurpose": "Compare flower maturity signals across pistils, calyx swelling, trichomes, plant fade, and whole-plant context without presenting any single sign as decisive.",
+          "masterFilename": "THC-HARV-01_harvest_readiness_indicators.png",
+          "route": "/learn/harvest-postharvest/",
+          "libraryCategoryId": "harvest-postharvest",
+          "altText": "Compare flower maturity signals across pistils, calyx swelling, trichomes, plant fade, and whole-plant context without presenting any single sign as decisive.",
+          "caption": "Harvest readiness is assessed from multiple plant signals together; no single visual cue should be treated as a universal trigger.",
+          "status": "artwork-needed",
+          "sourceRefs": [
+            {"type":"peer-reviewed","ref":"PMCID: PMC10071647","title":"Glandular trichome development, morphology, and maturation are influenced by plant age and genotype in high THC-containing cannabis","use":"Supports genotype/age variability, asynchronous trichome development, and maturation/senescence context."},
+            {"type":"peer-reviewed-review","ref":"PMCID: PMC8911901","title":"Post-Harvest Operations to Generate High-Quality Medicinal Cannabis Products: A Systemic Review","use":"Context for common harvest-readiness observations; use cautiously and avoid universal thresholds."}
+          ],
+          "review": {"scientificQA": false, "visualQA": false, "labelSpellingQA": false, "pagePlacementQA": false},
+          "delivery": {"preserveFullResolutionMaster": true, "responsiveWordPress": true, "webpMirror": true, "lazyLoadWhenBelowFold": true},
+          "evidenceNotes": "Use the cited literature to constrain claims and labels. Do not copy figures; create original educational artwork. Where evidence is genotype-, method-, or context-dependent, label that limitation in the visual or caption."
+        },
+        {
+          "id": "THC-HARV-02",
+          "requiredTopic": "trichome maturity interpretation",
+          "title": "Trichome Maturity Under Magnification",
+          "imageType": "diagnostic-reference",
+          "educationalPurpose": "Show clear, cloudy, and amber glandular trichome appearances under consistent magnification, with a caution that lighting and camera white balance can distort interpretation.",
+          "masterFilename": "THC-HARV-02_trichome_maturity_interpretation.png",
+          "route": "/learn/harvest-postharvest/",
+          "libraryCategoryId": "harvest-postharvest",
+          "altText": "Show clear, cloudy, and amber glandular trichome appearances under consistent magnification, with a caution that lighting and camera white balance can distort interpretation.",
+          "caption": "Trichome appearance can help assess maturation when viewed under consistent magnification and lighting.",
+          "status": "artwork-needed",
+          "sourceRefs": [
+            {"type":"peer-reviewed","ref":"PMCID: PMC10071647","title":"Glandular trichome development, morphology, and maturation are influenced by plant age and genotype in high THC-containing cannabis","use":"Primary evidence for capitate trichome morphology, maturation, senescence, and variability."}
+          ],
+          "review": {"scientificQA": false, "visualQA": false, "labelSpellingQA": false, "pagePlacementQA": false},
+          "delivery": {"preserveFullResolutionMaster": true, "responsiveWordPress": true, "webpMirror": true, "lazyLoadWhenBelowFold": true},
+          "evidenceNotes": "Use the cited literature to constrain claims and labels. Do not copy figures; create original educational artwork. Where evidence is genotype-, method-, or context-dependent, label that limitation in the visual or caption."
+        },
+        {
+          "id": "THC-HARV-03",
+          "requiredTopic": "harvest handling workflow",
+          "title": "Harvest Handling Workflow",
+          "imageType": "process-workflow",
+          "educationalPurpose": "Illustrate a clean sequence from pre-harvest setup through cutting, transport, trimming strategy, and entry into drying while minimizing unnecessary handling.",
+          "masterFilename": "THC-HARV-03_harvest_handling_workflow.png",
+          "route": "/learn/harvest-postharvest/",
+          "libraryCategoryId": "harvest-postharvest",
+          "altText": "Illustrate a clean sequence from pre-harvest setup through cutting, transport, trimming strategy, and entry into drying while minimizing unnecessary handling.",
+          "caption": "A clean harvest workflow reduces handling damage and moves flowers efficiently into controlled drying.",
+          "status": "artwork-needed",
+          "sourceRefs": [
+            {"type":"peer-reviewed-review","ref":"PMCID: PMC9404914","title":"Postharvest Operations of Cannabis and Their Effect on Cannabinoid Content: A Review","use":"Postharvest handling, trimming, drying, curing, packaging, and storage sequence."},
+            {"type":"peer-reviewed","ref":"PMCID: PMC11249524","title":"Optimization of Trimming Techniques for Enhancing Cannabinoid and Terpene Content in Medical Cannabis Inflorescences","use":"Evidence that trimming timing and intensity can affect measured phytochemical outcomes."}
+          ],
+          "review": {"scientificQA": false, "visualQA": false, "labelSpellingQA": false, "pagePlacementQA": false},
+          "delivery": {"preserveFullResolutionMaster": true, "responsiveWordPress": true, "webpMirror": true, "lazyLoadWhenBelowFold": true},
+          "evidenceNotes": "Use the cited literature to constrain claims and labels. Do not copy figures; create original educational artwork. Where evidence is genotype-, method-, or context-dependent, label that limitation in the visual or caption."
+        },
+        {
+          "id": "THC-HARV-04",
+          "requiredTopic": "bud washing overview",
+          "title": "Bud Washing: What It Is and When It Is Considered",
+          "imageType": "process-overview",
+          "educationalPurpose": "Explain bud washing as a post-harvest rinse concept, distinguish it from remediation, and show decision factors such as outdoor debris, dust, and visible contamination concerns.",
+          "masterFilename": "THC-HARV-04_bud_washing_overview.png",
+          "route": "/learn/harvest-postharvest/",
+          "libraryCategoryId": "harvest-postharvest",
+          "altText": "Explain bud washing as a post-harvest rinse concept, distinguish it from remediation, and show decision factors such as outdoor debris, dust, and visible contamination concerns.",
+          "caption": "Bud washing is a post-harvest rinsing practice sometimes used to remove surface debris; it is not a substitute for contamination prevention.",
+          "status": "artwork-needed",
+          "sourceRefs": [
+            {"type":"evidence-gap","ref":"Cannabis-specific peer-reviewed evidence for consumer-style bud-washing workflows is limited.","use":"Keep the visual descriptive and decision-oriented; do not claim decontamination efficacy or safety remediation."}
+          ],
+          "review": {"scientificQA": false, "visualQA": false, "labelSpellingQA": false, "pagePlacementQA": false},
+          "delivery": {"preserveFullResolutionMaster": true, "responsiveWordPress": true, "webpMirror": true, "lazyLoadWhenBelowFold": true},
+          "evidenceNotes": "Use the cited literature to constrain claims and labels. Do not copy figures; create original educational artwork. Where evidence is genotype-, method-, or context-dependent, label that limitation in the visual or caption."
+        },
+        {
+          "id": "THC-HARV-05",
+          "requiredTopic": "drying environment fundamentals",
+          "title": "Drying Environment Fundamentals",
+          "imageType": "systems-diagram",
+          "educationalPurpose": "Visualize temperature, relative humidity, air exchange, gentle circulation, darkness, hanging density, and monitoring as interacting variables rather than isolated targets.",
+          "masterFilename": "THC-HARV-05_drying_environment_fundamentals.png",
+          "route": "/learn/harvest-postharvest/",
+          "libraryCategoryId": "harvest-postharvest",
+          "altText": "Visualize temperature, relative humidity, air exchange, gentle circulation, darkness, hanging density, and monitoring as interacting variables rather than isolated targets.",
+          "caption": "Controlled drying depends on stable temperature, humidity, airflow, darkness, spacing, and monitoring.",
+          "status": "artwork-needed",
+          "sourceRefs": [
+            {"type":"peer-reviewed-review","ref":"PMCID: PMC9404914","title":"Postharvest Operations of Cannabis and Their Effect on Cannabinoid Content: A Review","use":"Drying process variables, water activity, equilibrium moisture, curing and storage context."},
+            {"type":"peer-reviewed","ref":"PMCID: PMC11821007","title":"Postharvest Drying and Curing Affect Cannabinoid Contents and Microbial Levels in Industrial Hemp","use":"Experimental evidence that drying/curing conditions influence chemical, moisture and microbial outcomes."}
+          ],
+          "review": {"scientificQA": false, "visualQA": false, "labelSpellingQA": false, "pagePlacementQA": false},
+          "delivery": {"preserveFullResolutionMaster": true, "responsiveWordPress": true, "webpMirror": true, "lazyLoadWhenBelowFold": true},
+          "evidenceNotes": "Use the cited literature to constrain claims and labels. Do not copy figures; create original educational artwork. Where evidence is genotype-, method-, or context-dependent, label that limitation in the visual or caption."
+        },
+        {
+          "id": "THC-HARV-06",
+          "requiredTopic": "drying failure modes",
+          "title": "Drying Failure Modes",
+          "imageType": "diagnostic-reference",
+          "educationalPurpose": "Compare overdrying, uneven drying, stalled drying, excessive direct airflow, and mold-risk conditions with observable warning signs and corrective monitoring priorities.",
+          "masterFilename": "THC-HARV-06_drying_failure_modes.png",
+          "route": "/learn/harvest-postharvest/",
+          "libraryCategoryId": "harvest-postharvest",
+          "altText": "Compare overdrying, uneven drying, stalled drying, excessive direct airflow, and mold-risk conditions with observable warning signs and corrective monitoring priorities.",
+          "caption": "Drying problems can often be traced to unstable humidity, excessive airflow, poor spacing, or overly rapid moisture loss.",
+          "status": "artwork-needed",
+          "sourceRefs": [
+            {"type":"peer-reviewed","ref":"PMCID: PMC11821007","title":"Postharvest Drying and Curing Affect Cannabinoid Contents and Microbial Levels in Industrial Hemp","use":"Drying/curing effects on moisture, cannabinoids, color and microbial levels."},
+            {"type":"peer-reviewed","ref":"PMCID: PMC11180634","title":"The influence of drying and storage conditions on the volatilome and cannabinoid content of Cannabis sativa L. inflorescences","use":"Drying and storage can alter volatile and cannabinoid profiles; supports failure-mode risk framing."}
+          ],
+          "review": {"scientificQA": false, "visualQA": false, "labelSpellingQA": false, "pagePlacementQA": false},
+          "delivery": {"preserveFullResolutionMaster": true, "responsiveWordPress": true, "webpMirror": true, "lazyLoadWhenBelowFold": true},
+          "evidenceNotes": "Use the cited literature to constrain claims and labels. Do not copy figures; create original educational artwork. Where evidence is genotype-, method-, or context-dependent, label that limitation in the visual or caption."
+        },
+        {
+          "id": "THC-HARV-07",
+          "requiredTopic": "water activity concepts",
+          "title": "Water Activity: Moisture Availability vs. Moisture Content",
+          "imageType": "concept-diagram",
+          "educationalPurpose": "Explain water activity as available water rather than total water content, show why the distinction matters for storage stability, and avoid unsupported universal pass/fail claims.",
+          "masterFilename": "THC-HARV-07_water_activity_concepts.png",
+          "route": "/learn/harvest-postharvest/",
+          "libraryCategoryId": "harvest-postharvest",
+          "altText": "Explain water activity as available water rather than total water content, show why the distinction matters for storage stability, and avoid unsupported universal pass/fail claims.",
+          "caption": "Water activity describes how available water is for physical, chemical, and microbial processes; it is different from total moisture content.",
+          "status": "artwork-needed",
+          "sourceRefs": [
+            {"type":"peer-reviewed-review","ref":"PMCID: PMC9404914","title":"Postharvest Operations of Cannabis and Their Effect on Cannabinoid Content: A Review","use":"Explains water activity, equilibrium moisture content and sorption behavior in cannabis drying."},
+            {"type":"peer-reviewed-review","ref":"PMCID: PMC8290527","title":"Processing and extraction methods of medicinal cannabis: a narrative review","use":"Water-activity context for microbial stability; any numeric range must be clearly attributed and jurisdiction/context checked."}
+          ],
+          "review": {"scientificQA": false, "visualQA": false, "labelSpellingQA": false, "pagePlacementQA": false},
+          "delivery": {"preserveFullResolutionMaster": true, "responsiveWordPress": true, "webpMirror": true, "lazyLoadWhenBelowFold": true},
+          "evidenceNotes": "Use the cited literature to constrain claims and labels. Do not copy figures; create original educational artwork. Where evidence is genotype-, method-, or context-dependent, label that limitation in the visual or caption."
+        },
+        {
+          "id": "THC-HARV-08",
+          "requiredTopic": "curing workflow",
+          "title": "Curing Workflow and Moisture Equalization",
+          "imageType": "process-workflow",
+          "educationalPurpose": "Illustrate stabilization after drying, container loading, observation, periodic checks, moisture equalization, and storage transition without presenting curing as a way to fix unsafe material.",
+          "masterFilename": "THC-HARV-08_curing_workflow.png",
+          "route": "/learn/harvest-postharvest/",
+          "libraryCategoryId": "harvest-postharvest",
+          "altText": "Illustrate stabilization after drying, container loading, observation, periodic checks, moisture equalization, and storage transition without presenting curing as a way to fix unsafe material.",
+          "caption": "Curing is a controlled post-drying stabilization process that depends on properly dried material and ongoing observation.",
+          "status": "artwork-needed",
+          "sourceRefs": [
+            {"type":"peer-reviewed-review","ref":"PMCID: PMC9404914","title":"Postharvest Operations of Cannabis and Their Effect on Cannabinoid Content: A Review","use":"Curing and storage overview."},
+            {"type":"peer-reviewed","ref":"PMCID: PMC11821007","title":"Postharvest Drying and Curing Affect Cannabinoid Contents and Microbial Levels in Industrial Hemp","use":"Experimental curing observations and evidence limits."}
+          ],
+          "review": {"scientificQA": false, "visualQA": false, "labelSpellingQA": false, "pagePlacementQA": false},
+          "delivery": {"preserveFullResolutionMaster": true, "responsiveWordPress": true, "webpMirror": true, "lazyLoadWhenBelowFold": true},
+          "evidenceNotes": "Use the cited literature to constrain claims and labels. Do not copy figures; create original educational artwork. Where evidence is genotype-, method-, or context-dependent, label that limitation in the visual or caption."
+        },
+        {
+          "id": "THC-HARV-09",
+          "requiredTopic": "storage environment",
+          "title": "Storage Environment: Light, Heat, Oxygen and Moisture",
+          "imageType": "risk-factor-map",
+          "educationalPurpose": "Show how light, elevated heat, excess oxygen exposure, and unsuitable moisture conditions can accelerate quality loss during storage.",
+          "masterFilename": "THC-HARV-09_storage_environment.png",
+          "route": "/learn/harvest-postharvest/",
+          "libraryCategoryId": "harvest-postharvest",
+          "altText": "Show how light, elevated heat, excess oxygen exposure, and unsuitable moisture conditions can accelerate quality loss during storage.",
+          "caption": "Stable, dark, moderate storage conditions help limit quality degradation driven by light, heat, oxygen, and moisture.",
+          "status": "artwork-needed",
+          "sourceRefs": [
+            {"type":"peer-reviewed-review","ref":"PMCID: PMC9404914","title":"Postharvest Operations of Cannabis and Their Effect on Cannabinoid Content: A Review","use":"Packaging/storage and postharvest quality context."},
+            {"type":"peer-reviewed","ref":"PMCID: PMC11180634","title":"The influence of drying and storage conditions on the volatilome and cannabinoid content of Cannabis sativa L. inflorescences","use":"Experimental storage-condition effects on volatile and cannabinoid profiles."}
+          ],
+          "review": {"scientificQA": false, "visualQA": false, "labelSpellingQA": false, "pagePlacementQA": false},
+          "delivery": {"preserveFullResolutionMaster": true, "responsiveWordPress": true, "webpMirror": true, "lazyLoadWhenBelowFold": true},
+          "evidenceNotes": "Use the cited literature to constrain claims and labels. Do not copy figures; create original educational artwork. Where evidence is genotype-, method-, or context-dependent, label that limitation in the visual or caption."
+        },
+        {
+          "id": "THC-HARV-10",
+          "requiredTopic": "light oxygen heat and moisture degradation",
+          "title": "Post-Harvest Degradation Pathways",
+          "imageType": "cause-effect-diagram",
+          "educationalPurpose": "Map major post-harvest stressors to likely quality consequences such as oxidation, aroma loss, color changes, texture changes, and microbial risk.",
+          "masterFilename": "THC-HARV-10_light_oxygen_heat_moisture_degradation.png",
+          "route": "/learn/harvest-postharvest/",
+          "libraryCategoryId": "harvest-postharvest",
+          "altText": "Map major post-harvest stressors to likely quality consequences such as oxidation, aroma loss, color changes, texture changes, and microbial risk.",
+          "caption": "Post-harvest quality can decline through interacting light, oxygen, heat, and moisture pathways.",
+          "status": "artwork-needed",
+          "sourceRefs": [
+            {"type":"peer-reviewed-review","ref":"PMCID: PMC9404914","title":"Postharvest Operations of Cannabis and Their Effect on Cannabinoid Content: A Review","use":"Temperature, drying and storage effects on cannabinoid retention and transformation."},
+            {"type":"peer-reviewed","ref":"PMCID: PMC11180634","title":"The influence of drying and storage conditions on the volatilome and cannabinoid content of Cannabis sativa L. inflorescences","use":"Supports degradation-pathway framing for storage and volatile preservation."}
+          ],
+          "review": {"scientificQA": false, "visualQA": false, "labelSpellingQA": false, "pagePlacementQA": false},
+          "delivery": {"preserveFullResolutionMaster": true, "responsiveWordPress": true, "webpMirror": true, "lazyLoadWhenBelowFold": true},
+          "evidenceNotes": "Use the cited literature to constrain claims and labels. Do not copy figures; create original educational artwork. Where evidence is genotype-, method-, or context-dependent, label that limitation in the visual or caption."
+        }
       ]
     },
     {
-      "id":"wave-02-outdoor","categoryId":"outdoor","route":"/learn/outdoor/","priority":2,
-      "items":[
+      "id": "wave-02-outdoor",
+      "categoryId": "outdoor",
+      "route": "/learn/outdoor/",
+      "priority": 2,
+      "items": [
         {"id":"THC-OUT-01","requiredTopic":"outdoor site selection","title":"Outdoor Site Selection","imageType":"site-planning-diagram","educationalPurpose":"Evaluate direct sun exposure, drainage, air movement, access to water, privacy/security constraints, slope, soil/media plan, and nearby contamination or pollen sources.","masterFilename":"THC-OUT-01_outdoor_site_selection.png","route":"/learn/outdoor/","libraryCategoryId":"outdoor","altText":"Evaluate direct sun exposure, drainage, air movement, access to water, privacy/security constraints, slope, soil/media plan, and nearby contamination or pollen sources.","caption":"Outdoor site selection should consider sun, drainage, airflow, water access, terrain, and nearby biological or environmental risks.","status":"artwork-needed","sourceRefs":[],"review":{"scientificQA":false,"visualQA":false,"labelSpellingQA":false,"pagePlacementQA":false},"delivery":{"preserveFullResolutionMaster":true,"responsiveWordPress":true,"webpMirror":true,"lazyLoadWhenBelowFold":true}},
         {"id":"THC-OUT-02","requiredTopic":"sun path and exposure","title":"Sun Path and Seasonal Exposure","imageType":"seasonal-sun-diagram","educationalPurpose":"Illustrate changing solar angle and day length across a season and how buildings, trees, and terrain create moving shade.","masterFilename":"THC-OUT-02_sun_path_and_exposure.png","route":"/learn/outdoor/","libraryCategoryId":"outdoor","altText":"Illustrate changing solar angle and day length across a season and how buildings, trees, and terrain create moving shade.","caption":"Seasonal sun angle, day length, and surrounding obstacles determine how much direct light an outdoor crop actually receives.","status":"artwork-needed","sourceRefs":[],"review":{"scientificQA":false,"visualQA":false,"labelSpellingQA":false,"pagePlacementQA":false},"delivery":{"preserveFullResolutionMaster":true,"responsiveWordPress":true,"webpMirror":true,"lazyLoadWhenBelowFold":true}},
         {"id":"THC-OUT-03","requiredTopic":"hardening off","title":"Hardening Off: Indoor to Outdoor Transition","imageType":"process-workflow","educationalPurpose":"Show gradual exposure to brighter light, wind, temperature variation, and outdoor humidity while monitoring stress response.","masterFilename":"THC-OUT-03_hardening_off.png","route":"/learn/outdoor/","libraryCategoryId":"outdoor","altText":"Show gradual exposure to brighter light, wind, temperature variation, and outdoor humidity while monitoring stress response.","caption":"Hardening off gradually acclimates plants to outdoor light, wind, and temperature variability.","status":"artwork-needed","sourceRefs":[],"review":{"scientificQA":false,"visualQA":false,"labelSpellingQA":false,"pagePlacementQA":false},"delivery":{"preserveFullResolutionMaster":true,"responsiveWordPress":true,"webpMirror":true,"lazyLoadWhenBelowFold":true}},
