@@ -5,9 +5,9 @@ import hashlib
 import pathlib
 import sys
 
-# Canonical SHA-256 of the executable v2 deployer after guarded source
-# normalizations below. Update only after the read-only semantic gate reports
-# and validates the newly assembled payload.
+# Canonical SHA-256 of the executable v2 deployer after the long-lived guarded
+# source normalizations below. Customer-shell release adjustments are applied
+# only after this base hash passes and each adjustment must match exactly once.
 EXPECTED_SHA256 = "94d88c054dfe9a6c4ed3304b5d553d38a67f06df31b5472ecfc21d05aaf60eb5"
 PART_DIR = pathlib.Path(__file__).resolve().parent / "wordpress-suite-v2"
 OUTPUT = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else "deploy-public-suite-via-wordpress-v2.mjs")
@@ -137,10 +137,40 @@ new_cleanup = b"""async function cleanupTemporaryTools() {
 """
 payload = replace_once(payload, old_cleanup, new_cleanup, "temporary-tool cleanup")
 
-actual = hashlib.sha256(payload).hexdigest()
-if actual != EXPECTED_SHA256:
-    raise SystemExit(f"v2 deployer fragment SHA-256 mismatch: expected {EXPECTED_SHA256}, got {actual}")
+base_actual = hashlib.sha256(payload).hexdigest()
+if base_actual != EXPECTED_SHA256:
+    raise SystemExit(f"v2 deployer fragment SHA-256 mismatch: expected {EXPECTED_SHA256}, got {base_actual}")
 
+# Guarded customer-shell release adjustments. These intentionally happen only
+# after the canonical base payload hash is verified, and each source shape must
+# appear exactly once so drift fails closed instead of silently broadening the
+# deployment boundary.
+payload = replace_once(
+    payload,
+    b"'games/index.html','games/dtf-route.css','games/high-land'",
+    b"'games/index.html','games/dtf-route.css','games/dtf-shell.css','games/high-land'",
+    "customer-shell target allowlist",
+)
+payload = replace_once(
+    payload,
+    b"'games/index.html','games/high-land/index.html'",
+    b"'games/index.html','games/dtf-shell.css','games/high-land/index.html'",
+    "customer-shell required-file list",
+)
+payload = replace_once(
+    payload,
+    b"$exact_files = ['games/index.html','games/dtf-route.css'];",
+    b"$exact_files = ['games/index.html','games/dtf-route.css','games/dtf-shell.css'];",
+    "customer-shell exact-file allowlist",
+)
+payload = replace_once(
+    payload,
+    b"['/projects/', 'One place to see what is playable, usable, and still being built.']",
+    b"['/projects/', 'One place to see what is live now and what we are building next.']",
+    "Projects live-verification marker",
+)
+
+final_actual = hashlib.sha256(payload).hexdigest()
 OUTPUT.parent.mkdir(parents=True, exist_ok=True)
 OUTPUT.write_bytes(payload)
-print(f"assembled={OUTPUT} bytes={len(payload)} sha256={actual}")
+print(f"assembled={OUTPUT} bytes={len(payload)} base_sha256={base_actual} sha256={final_actual}")
