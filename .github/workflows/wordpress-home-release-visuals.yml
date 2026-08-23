@@ -1,0 +1,131 @@
+name: Reconcile DTF Homepage Release Visuals
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - scripts/fix-wordpress-home-release-visuals.mjs
+      - site/wordpress/products/strain-card-images.json
+      - .github/workflows/wordpress-home-release-visuals.yml
+  workflow_run:
+    workflows:
+      - Publish DTFSeeds WordPress Production
+    types: [completed]
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-home-release-visuals
+  cancel-in-progress: true
+
+jobs:
+  reconcile:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: production
+    env:
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      APPLY_HOME_RELEASE_VISUALS: 'true'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate release visual inputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
+          node --check scripts/fix-wordpress-home-release-visuals.mjs
+          node --check scripts/flush-hostinger-litespeed-mcp.mjs
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const data = JSON.parse(fs.readFileSync('site/wordpress/products/strain-card-images.json', 'utf8'));
+          if (!Array.isArray(data.cards) || data.cards.length !== 3) throw new Error('Expected exactly three current release-card records');
+          for (const card of data.cards) {
+            for (const key of ['productSlug','wordpressSlug','altText','expectedWidth','expectedHeight']) {
+              if (!card[key]) throw new Error(`Missing ${key} for ${card.registryId || 'unknown card'}`);
+            }
+            if (Number(card.expectedWidth) !== 1024 || Number(card.expectedHeight) !== 1536) {
+              throw new Error(`Unexpected reviewed strain-card dimensions for ${card.registryId}`);
+            }
+          }
+          console.log('Release-card registry validated.');
+          NODE
+
+      - name: Apply exact strain cards to homepage current releases
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/fix-wordpress-home-release-visuals.mjs | tee "$RUNNER_TEMP/home-release-visuals.log"
+          grep -Fq '"apply": true' "$RUNNER_TEMP/home-release-visuals.log" || grep -Fq '"apply":true' "$RUNNER_TEMP/home-release-visuals.log"
+
+      - name: Purge Hostinger LiteSpeed cache
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/flush-hostinger-litespeed-mcp.mjs
+
+      - name: Verify visitor-facing homepage release artwork
+        shell: bash
+        run: |
+          set -euo pipefail
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const registry = JSON.parse(fs.readFileSync('site/wordpress/products/strain-card-images.json', 'utf8'));
+          const url = `https://dtfseeds.com/?dtf_release_visuals=${Date.now()}`;
+          const response = await fetch(url, { headers: { 'Cache-Control': 'no-cache', 'User-Agent': 'DTFSeeds-Release-Visual-Verify/1.0' }, redirect: 'follow' });
+          const html = await response.text();
+          if (!response.ok) throw new Error(`Homepage verification failed with HTTP ${response.status}`);
+          const start = html.indexOf('Current releases');
+          const end = html.indexOf('Teaching Healthy Cultivation', start + 1);
+          if (start < 0 || end <= start) throw new Error('Could not isolate current-release section on public homepage');
+          const section = html.slice(start, end);
+          const classCount = (section.match(/dtf-release-card-image/g) || []).length;
+          if (classCount !== registry.cards.length) throw new Error(`Expected ${registry.cards.length} release-card image markers, saw ${classCount}`);
+          for (const card of registry.cards) {
+            if (!section.includes(`/product/${card.productSlug}/`)) throw new Error(`Missing public product route for ${card.productSlug}`);
+            if (!section.includes(card.altText)) throw new Error(`Missing public strain-card alt text for ${card.productSlug}`);
+          }
+          if (!section.includes('aspect-ratio:2/3') || !section.includes('object-fit:contain')) throw new Error('Portrait strain-card presentation markers are missing');
+          console.log(`Verified ${registry.cards.length} exact portrait strain cards on public homepage.`);
+          NODE
+
+      - name: Report homepage release visual reconciliation
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          STATUS: ${{ job.status }}
+        with:
+          script: |
+            const source = context.eventName === 'workflow_run'
+              ? context.payload.workflow_run?.html_url
+              : context.eventName === 'push'
+                ? `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/commit/${context.sha}`
+                : 'manual dispatch';
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 46,
+              body: [
+                '## Homepage release-card visual reconciliation',
+                '',
+                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                `Result: **${process.env.STATUS}**`,
+                `Source: ${source}`,
+                '',
+                'This guard maps the three current homepage release cards to the exact reviewed WordPress strain-card media from strain-card-images.json, preserves the 2:3 portrait artwork without cropping, purges Hostinger/LiteSpeed, and verifies the cache-busted public homepage. It also reapplies after successful canonical WordPress production so generic education imagery cannot silently replace product artwork again.'
+              ].join('\n')
+            });
