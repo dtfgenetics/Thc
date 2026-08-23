@@ -1,0 +1,13 @@
+{
+  "name": "burn-buds",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Burn Buds - multiplayer cannabis-themed fleet battle game",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
