@@ -1,0 +1,205 @@
+name: Publish DTFSeeds Commerce Visuals
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/wordpress-commerce-visual-production.yml'
+      - 'scripts/rebuild-wordpress-commerce-visuals.mjs'
+      - 'site/wordpress/assets/brand/**'
+      - 'site/wordpress/pages/seeds.html'
+      - 'site/wordpress/pages/shop.html'
+      - 'site/wordpress/products/**'
+      - 'data/genetics/**'
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-commerce-visual-production
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Publish and verify polished Seeds Shop and URL imagery
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    environment: production
+    env:
+      NODE_OPTIONS: --dns-result-order=ipv4first
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      BACKUP_ROOT: /tmp/dtf-commerce-visual-backups
+    steps:
+      - name: Checkout trusted main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate visual production package
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${WP_API_USERNAME:-}"
+          test -n "${WP_API_PASSWORD:-}"
+          test -s site/wordpress/assets/brand/dtf-potleaf-512.png
+          node --check scripts/rebuild-wordpress-commerce-visuals.mjs
+          node scripts/validate-genetics-commerce.mjs
+          node scripts/validate-woocommerce-reconciliation.mjs
+
+      - name: Publish polished Seeds Shop and URL brand state
+        id: publish
+        env:
+          APPLY_COMMERCE_VISUALS: 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3 4; do
+            echo "Commerce visual publication attempt $attempt of 4"
+            if node scripts/rebuild-wordpress-commerce-visuals.mjs; then
+              backup_dir="$(cat "$BACKUP_ROOT/commerce-visual-backup-path.txt")"
+              report="$backup_dir/commerce-visual-report.json"
+              echo "brand_id=$(node -p "require(process.argv[1]).brandMediaId" "$report")" >> "$GITHUB_OUTPUT"
+              echo "brand_url=$(node -p "require(process.argv[1]).brandMediaUrl" "$report")" >> "$GITHUB_OUTPUT"
+              echo "aioseo_routes=$(node -p "require(process.argv[1]).aioseoRoutes.length" "$report")" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            if [[ "$attempt" -eq 4 ]]; then
+              echo 'Commerce visual publication exhausted all retries.' >&2
+              exit 1
+            fi
+            sleep $((attempt * 8))
+          done
+
+      - name: Verify WordPress site icon and logo
+        id: icon
+        shell: bash
+        run: |
+          set -euo pipefail
+          auth="$(printf '%s:%s' "$WP_API_USERNAME" "$WP_API_PASSWORD" | base64 -w0)"
+          curl -4 -fsSL --retry 3 --retry-delay 2 -H "Authorization: Basic $auth" "$WP_SITE_URL/wp-json/wp/v2/settings?context=edit" -o "$RUNNER_TEMP/settings.json"
+          site_icon="$(node -p "Number(require(process.argv[1]).site_icon || 0)" "$RUNNER_TEMP/settings.json")"
+          site_logo="$(node -p "Number(require(process.argv[1]).site_logo || 0)" "$RUNNER_TEMP/settings.json")"
+          [[ "$site_icon" -gt 0 ]]
+          [[ "$site_logo" -gt 0 ]]
+          curl -4 -fsSL --retry 3 --retry-delay 2 -H "Authorization: Basic $auth" "$WP_SITE_URL/wp-json/wp/v2/media/$site_icon?context=edit" -o "$RUNNER_TEMP/icon.json"
+          node - <<'NODE' "$RUNNER_TEMP/icon.json"
+          const media=require(process.argv[2]);
+          const text=`${media.title?.rendered||''} ${media.alt_text||''}`.toLowerCase();
+          if(!text.includes('dtf genetics cannabis leaf')) throw new Error('Site icon is not the controlled DTF Genetics brand media.');
+          NODE
+          echo "site_icon=$site_icon" >> "$GITHUB_OUTPUT"
+          echo "site_logo=$site_logo" >> "$GITHUB_OUTPUT"
+
+      - name: Verify visitor-facing visual pages
+        id: pages
+        shell: bash
+        run: |
+          set -euo pipefail
+          verify_page() {
+            local path="$1"
+            local marker="$2"
+            local min_images="$3"
+            local key body images ok
+            key="$(printf '%s' "$path" | tr '/?' '__')"
+            body="$RUNNER_TEMP/visual-${key}.html"
+            ok=0
+            for attempt in 1 2 3 4 5 6; do
+              curl -4 -fsSL --retry 3 --retry-delay 2 --connect-timeout 15 --max-time 45 \
+                -H 'Cache-Control: no-cache, no-store, max-age=0' \
+                -H 'Pragma: no-cache' \
+                "$WP_SITE_URL${path}?dtf_visual=${GITHUB_RUN_ID}-${attempt}" -o "$body"
+              if grep -Fqi "$marker" "$body"; then ok=1; break; fi
+              sleep 8
+            done
+            [[ "$ok" -eq 1 ]] || { echo "Expected visual marker missing on $path: $marker" >&2; head -c 2500 "$body" >&2 || true; exit 1; }
+            images="$(grep -o '/wp-content/uploads/' "$body" | wc -l | tr -d ' ')"
+            [[ "$images" -ge "$min_images" ]] || { echo "$path has only $images WordPress-hosted image references; expected at least $min_images" >&2; exit 1; }
+            if grep -Fqi 'email@email.com' "$body" || grep -Fqi '+123456789' "$body"; then
+              echo "Stale fake contact data remains on $path" >&2
+              exit 1
+            fi
+            echo "$path passed visual verification with $images WordPress-hosted image references."
+          }
+          verify_page '/seeds/' 'From breeding notes to current releases.' 2
+          verify_page '/shop/' 'Shop the line. Read the story.' 2
+
+      - name: Verify live favicon and social preview image
+        id: url_image
+        shell: bash
+        run: |
+          set -euo pipefail
+          body="$RUNNER_TEMP/home-head.html"
+          for attempt in 1 2 3 4 5 6; do
+            curl -4 -fsSL --retry 3 --retry-delay 2 --connect-timeout 15 --max-time 45 \
+              -H 'Cache-Control: no-cache, no-store, max-age=0' \
+              -H 'Pragma: no-cache' \
+              "$WP_SITE_URL/?dtf_url_image=${GITHUB_RUN_ID}-${attempt}" -o "$body"
+            if grep -Eqi '<link[^>]+rel=["'"'](shortcut )?icon["'"']' "$body"; then break; fi
+            sleep 8
+          done
+          if grep -Fqi '/assets/dtf-home/dtf-mark.svg' "$body"; then
+            echo 'Old static favicon is still live.' >&2
+            exit 1
+          fi
+          if grep -Fqi '/wp-content/uploads/2025/07/1000007006-1024x450.png' "$body"; then
+            echo 'Old 2025 social preview image is still live.' >&2
+            exit 1
+          fi
+          grep -Eqi '<link[^>]+rel=["'"'](shortcut )?icon["'"'][^>]+wp-content/uploads/' "$body" || {
+            echo 'Live favicon does not resolve to WordPress-controlled uploaded media.' >&2
+            grep -Eio '<link[^>]+rel=["'"'](shortcut )?icon["'"'][^>]*>' "$body" | head -10 >&2 || true
+            exit 1
+          }
+          og="$(grep -Eio '<meta[^>]+property=["'"']og:image["'"'][^>]*>' "$body" | head -1 || true)"
+          [[ -n "$og" ]] || { echo 'No og:image meta tag found on the live homepage.' >&2; exit 1; }
+          printf '%s' "$og" | grep -Fqi 'dtf-potleaf-512.png' || {
+            echo 'Live og:image is not yet using the controlled DTF URL image.' >&2
+            echo "$og" >&2
+            exit 1
+          }
+          echo 'Live favicon and Open Graph image both use current DTF-controlled media.'
+
+      - name: Upload rollback package
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dtf-commerce-visual-backup-${{ github.run_id }}
+          path: /tmp/dtf-commerce-visual-backups
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report production result
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          JOB_STATUS: ${{ job.status }}
+          PUBLISH: ${{ steps.publish.outcome }}
+          PAGES: ${{ steps.pages.outcome }}
+          ICON: ${{ steps.icon.outcome }}
+          URL_IMAGE: ${{ steps.url_image.outcome }}
+          BRAND_ID: ${{ steps.publish.outputs.brand_id }}
+          AIOSEO_ROUTES: ${{ steps.publish.outputs.aioseo_routes }}
+        with:
+          script: |
+            const body=[
+              '## DTFSeeds visual + URL image production', '',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Result: **${process.env.JOB_STATUS}**`,
+              `Seeds/Shop publication: **${process.env.PUBLISH || 'not-run'}**`,
+              `Visitor visual verification: **${process.env.PAGES || 'not-run'}**`,
+              `WordPress icon/logo verification: **${process.env.ICON || 'not-run'}**`,
+              `Favicon + social preview verification: **${process.env.URL_IMAGE || 'not-run'}**`,
+              `DTF brand media ID: **${process.env.BRAND_ID || 'not-run'}**`,
+              `AIOSEO/social REST route candidates discovered: **${process.env.AIOSEO_ROUTES || '0'}**`, '',
+              'Required live outcome: polished Seeds and Shop layouts render with WordPress-hosted visuals, the old static favicon is absent, the old 2025 preview image is absent, and the homepage og:image resolves to the controlled DTF brand media.'
+            ].join('\n');
+            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body});
