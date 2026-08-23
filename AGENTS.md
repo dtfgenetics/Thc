@@ -2,6 +2,17 @@
 
 These instructions apply to the entire `dtfgenetics/Thc` repository.
 
+## Read before publishing or repairing dtfseeds.com
+
+For any task that asks to publish, deploy, push, move, synchronize, repair, or verify content, products, education, infographics, games, tools, or applications on `https://dtfseeds.com/`, read:
+
+1. `CLAUDE.md` - repository-wide safety, source-of-truth, and secret-handling rules.
+2. `.agents/skills/dtfseeds-production-publishing/SKILL.md` - canonical DTFSeeds production publishing sequence, route ownership, backup, rollback, and live-verification rules.
+3. The current workflow/script for the route owner being changed.
+4. `docs/deployment-hostinger.md` when static Hostinger deployment or live game behavior is in scope.
+
+Do not call a repository commit or a successful write step a live website update. A live-success claim requires visitor-facing verification of the exact production route and expected content or behavior.
+
 ## Read before changing High Land
 
 Read these files in order before editing:
