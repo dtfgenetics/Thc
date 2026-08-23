@@ -6,7 +6,9 @@ on:
     branches: [main]
     paths:
       - 'site/wordpress/education/learning-guides-v4.json'
+      - 'site/wordpress/education/topic-expansions-v4.json'
       - 'scripts/enhance-wordpress-learning-v4.mjs'
+      - 'scripts/enhance-wordpress-topic-expansions-v4.mjs'
       - '.github/workflows/wordpress-learning-v4-enhancement.yml'
   workflow_run:
     workflows:
@@ -28,16 +30,18 @@ env:
 
 jobs:
   enhance:
-    name: Add guided study measurement exercises and encyclopedia depth
+    name: Add guided study advanced subject depth and encyclopedia connections
     if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 35
     environment: production
     env:
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
       APPLY_LEARNING_V4: 'true'
+      APPLY_TOPIC_EXPANSIONS_V4: 'true'
       LEARNING_GUIDE_V4_PATH: site/wordpress/education/learning-guides-v4.json
+      TOPIC_EXPANSION_V4_PATH: site/wordpress/education/topic-expansions-v4.json
       TOPIC_LITERATURE_PATH: site/wordpress/education/topic-literature.json
       ENCYCLOPEDIA_TOPIC_FILE: configuration/encyclopedia-topics.json
       BACKUP_ROOT: /tmp/dtf-learning-v4
@@ -59,9 +63,11 @@ jobs:
           : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
           : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
           node --check scripts/enhance-wordpress-learning-v4.mjs
+          node --check scripts/enhance-wordpress-topic-expansions-v4.mjs
           node - <<'NODE'
           const fs=require('fs');
           const guide=JSON.parse(fs.readFileSync('site/wordpress/education/learning-guides-v4.json','utf8'));
+          const expansion=JSON.parse(fs.readFileSync('site/wordpress/education/topic-expansions-v4.json','utf8'));
           const encyclopedia=JSON.parse(fs.readFileSync('configuration/encyclopedia-topics.json','utf8'));
           if(guide.schemaVersion!==1||Object.keys(guide.topics||{}).length!==12) throw new Error('Expected 12 V4 topic guides');
           if(!Array.isArray(guide.tracks)||guide.tracks.length<4) throw new Error('Expected at least 4 guided learning paths');
@@ -72,7 +78,13 @@ jobs:
             if(!item.exercise||!Array.isArray(item.exercise.steps)||item.exercise.steps.length<4) throw new Error(`${id}: field exercise incomplete`);
             for(const slug of item.encyclopedia||[]) if(!hubs.has(slug)) throw new Error(`${id}: missing encyclopedia hub ${slug}`);
           }
-          console.log(`Validated ${Object.keys(guide.topics).length} guided subjects and ${guide.tracks.length} learning paths.`);
+          if(expansion.schemaVersion!==1||!expansion.topics?.['outdoor-cultivation']||!expansion.topics?.['harvest-postharvest']) throw new Error('Outdoor and post-harvest expansions are required');
+          for(const id of ['outdoor-cultivation','harvest-postharvest']){
+            const sections=expansion.topics[id].sections||[];
+            if(sections.length<6) throw new Error(`${id}: expected at least 6 advanced modules`);
+            for(const section of sections) if(!section.heading||!Array.isArray(section.paragraphs)||section.paragraphs.length<2||!Array.isArray(section.records)||section.records.length<4) throw new Error(`${id}: incomplete advanced module`);
+          }
+          console.log(`Validated ${Object.keys(guide.topics).length} guided subjects, ${guide.tracks.length} learning paths, and advanced Outdoor/Post-harvest modules.`);
           NODE
 
       - name: Publish guided learning layer
@@ -85,6 +97,15 @@ jobs:
           test -s "$BACKUP_ROOT/learning-v4-report.json"
           echo "topics=$(node -p "require(process.argv[1]).topicCount" "$BACKUP_ROOT/learning-v4-report.json")" >> "$GITHUB_OUTPUT"
           echo "tracks=$(node -p "require(process.argv[1]).trackCount" "$BACKUP_ROOT/learning-v4-report.json")" >> "$GITHUB_OUTPUT"
+
+      - name: Publish advanced Outdoor and Post-harvest modules
+        id: expand
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/enhance-wordpress-topic-expansions-v4.mjs | tee "$RUNNER_TEMP/topic-expansions-v4.log"
+          test -s "$BACKUP_ROOT/topic-expansions-v4-report.json"
+          echo "expanded=$(node -p "require(process.argv[1]).topicCount" "$BACKUP_ROOT/topic-expansions-v4-report.json")" >> "$GITHUB_OUTPUT"
 
       - name: Visitor-verify guided education
         id: verify
@@ -119,6 +140,21 @@ jobs:
             fi
           done < "$RUNNER_TEMP/v4-routes.tsv"
 
+          expansion="$BACKUP_ROOT/topic-expansions-v4-report.json"
+          node - <<'NODE' "$expansion" > "$RUNNER_TEMP/v4-expansion-routes.tsv"
+          const r=require(process.argv[2]);
+          for(const item of r.results) console.log(`${item.id}\t${item.route}`);
+          NODE
+          while IFS=$'\t' read -r id route; do
+            body="$RUNNER_TEMP/v4-expansion-$(echo "$id" | tr -cd '[:alnum:]_-').html"
+            curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+              --header 'Cache-Control: no-cache, no-store, max-age=0' \
+              "$WP_SITE_URL${route}?dtf_expansion_v4=${GITHUB_RUN_ID}" --output "$body"
+            grep -Fqi 'dtf-learning-v4-expansion-style' "$body"
+            grep -Fqi 'Advanced subject depth' "$body"
+            grep -Fqi 'Record these observations' "$body"
+          done < "$RUNNER_TEMP/v4-expansion-routes.tsv"
+
       - name: Upload rollback and verification package
         if: always()
         uses: actions/upload-artifact@v4
@@ -127,7 +163,9 @@ jobs:
           path: |
             /tmp/dtf-learning-v4
             ${{ runner.temp }}/learning-v4.log
+            ${{ runner.temp }}/topic-expansions-v4.log
             ${{ runner.temp }}/v4-routes.tsv
+            ${{ runner.temp }}/v4-expansion-routes.tsv
             ${{ runner.temp }}/v4-*.html
           if-no-files-found: warn
           retention-days: 30
@@ -139,9 +177,11 @@ jobs:
           STATUS: ${{ job.status }}
           VALIDATE: ${{ steps.validate.outcome }}
           PUBLISH: ${{ steps.publish.outcome }}
+          EXPAND: ${{ steps.expand.outcome }}
           VERIFY: ${{ steps.verify.outcome }}
           TOPICS: ${{ steps.publish.outputs.topics }}
           TRACKS: ${{ steps.publish.outputs.tracks }}
+          EXPANDED: ${{ steps.expand.outputs.expanded }}
         with:
           script: |
             await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body:[
@@ -150,8 +190,10 @@ jobs:
               `Result: **${process.env.STATUS}**`,
               `Curriculum validation: **${process.env.VALIDATE || 'not-run'}**`,
               `WordPress guided-learning publication: **${process.env.PUBLISH || 'not-run'}**`,
+              `Advanced subject expansion: **${process.env.EXPAND || 'not-run'}**`,
               `Visitor verification: **${process.env.VERIFY || 'not-run'}**`,
               `Guided subject pages: **${process.env.TOPICS || '0'}**`,
-              `Learning paths: **${process.env.TRACKS || '0'}**`,'',
-              'This layer preserves the canonical THC literature and adds prerequisites, measurements, interpretation cautions, field exercises, ordered learning paths, and direct links into the topic-first 420-entry encyclopedia.'
+              `Learning paths: **${process.env.TRACKS || '0'}**`,
+              `Deepened subjects: **${process.env.EXPANDED || '0'}**`,'',
+              'This layer preserves the canonical THC literature and adds prerequisites, measurements, interpretation cautions, field exercises, ordered learning paths, direct encyclopedia depth, plus advanced Outdoor and Harvest/Post-harvest modules.'
             ].join('\n')});
