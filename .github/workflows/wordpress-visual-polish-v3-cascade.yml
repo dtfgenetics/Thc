@@ -1,0 +1,87 @@
+name: Finalize DTFSeeds Visual V3 Cascade
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/fix-wordpress-visual-polish-v3-cascade.mjs'
+      - '.github/workflows/wordpress-visual-polish-v3-cascade.yml'
+  workflow_run:
+    workflows: ['Polish DTFSeeds Visual System V3']
+    types: [completed]
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-wordpress-visual-polish-v3-cascade
+  cancel-in-progress: true
+
+env:
+  WP_SITE_URL: https://dtfseeds.com
+
+jobs:
+  finalize:
+    if: >-
+      github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: production
+    env:
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME || secrets.WORDPRESS_USERNAME || secrets.WP_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD || secrets.WORDPRESS_APP_PASSWORD || secrets.WP_APPLICATION_PASSWORD }}
+      BACKUP_ROOT: ${{ runner.temp }}/dtf-v3-cascade-fix
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Finalize V3 cascade order
+        id: fix
+        env:
+          APPLY_V3_CASCADE_FIX: 'true'
+        run: |
+          set -euo pipefail
+          node --check scripts/fix-wordpress-visual-polish-v3-cascade.mjs
+          node scripts/fix-wordpress-visual-polish-v3-cascade.mjs | tee "$RUNNER_TEMP/cascade.log"
+          found="$(node -e "const s=require('fs').readFileSync(process.argv[1],'utf8');const m=s.match(/\"found\"\s*:\s*(\d+)/);console.log(m?m[1]:'0')" "$RUNNER_TEMP/cascade.log")"
+          echo "found=$found" >> "$GITHUB_OUTPUT"
+      - name: Verify final style ordering when V3 is present
+        id: verify
+        run: |
+          set -euo pipefail
+          home="$RUNNER_TEMP/home.html"
+          curl -4 -fsSL --retry 3 --retry-delay 2 -H 'Cache-Control: no-cache, no-store' "$WP_SITE_URL/?dtf_v3_final=$GITHUB_RUN_ID" -o "$home"
+          if grep -Fqi 'dtf-visual-polish-v3' "$home"; then
+            grep -Fqi 'dtf-v3-spotlight' "$home"
+            grep -Fqi 'dtf-shell-header' "$home"
+            grep -Fqi 'DTF Genetics cannabis leaf' "$home"
+          fi
+      - name: Upload rollback package
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dtf-v3-cascade-backup-${{ github.run_id }}
+          path: ${{ runner.temp }}/dtf-v3-cascade-fix
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Report cascade finalization
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          STATUS: ${{ job.status }}
+          FOUND: ${{ steps.fix.outputs.found }}
+          VERIFY: ${{ steps.verify.outcome }}
+        with:
+          script: |
+            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body:[
+              '## DTFSeeds V3 cascade finalization','',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Result: **${process.env.STATUS}**`,
+              `Pages with V3 style finalized: **${process.env.FOUND || '0'}**`,
+              `Live verification: **${process.env.VERIFY || 'not-run'}**`
+            ].join('\n')});
