@@ -1,0 +1,163 @@
+name: Publish THC Encyclopedia Visuals to WordPress Production
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - scripts/attach-wordpress-encyclopedia-visuals.mjs
+      - site/wordpress/education/encyclopedia/volume03-visual-map.json
+      - .github/workflows/wordpress-encyclopedia-visuals-production.yml
+  workflow_dispatch:
+
+concurrency:
+  group: wordpress-encyclopedia-visuals-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  actions: read
+  issues: write
+
+jobs:
+  publish:
+    name: Publish and verify Volume 03 lesson visuals
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://dtfseeds.com/learn/encyclopedia/
+    env:
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      ENCYCLOPEDIA_VISUAL_MAP: site/wordpress/education/encyclopedia/volume03-visual-map.json
+      BACKUP_ROOT: /tmp/dtf-encyclopedia-visuals
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate credentials, publisher, map, and canonical assets
+        id: validate
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${WP_API_USERNAME:-}"
+          test -n "${WP_API_PASSWORD:-}"
+          node --check scripts/attach-wordpress-encyclopedia-visuals.mjs
+          node - <<'NODE'
+          const fs=require('fs');
+          const map=JSON.parse(fs.readFileSync(process.env.ENCYCLOPEDIA_VISUAL_MAP,'utf8'));
+          if(map.schemaVersion!==1 || map.batch!=='volume03-visuals-v1' || !Array.isArray(map.items) || map.items.length!==20) throw new Error('Unexpected Volume 03 visual map.');
+          const expected=Array.from({length:20},(_,i)=>`THC-ENC-${String(i+41).padStart(3,'0')}`);
+          const ids=map.items.map(x=>x.id);
+          if(new Set(ids).size!==20 || expected.some(id=>!ids.includes(id))) throw new Error('Expected exactly THC-ENC-041 through THC-ENC-060.');
+          for(const item of map.items){
+            const p=`site/wordpress/assets/infographics/${item.assetPath}`;
+            if(!fs.existsSync(p)) throw new Error(`Missing canonical infographic asset: ${p}`);
+          }
+          console.log('Validated 20 lesson-to-infographic mappings and canonical assets.');
+          NODE
+
+      - name: Attach existing WordPress media to encyclopedia lessons
+        id: publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/attach-wordpress-encyclopedia-visuals.mjs
+          report="$(find "$BACKUP_ROOT" -name encyclopedia-visual-publication-report.json -type f | sort | tail -n 1)"
+          test -s "$report"
+          echo "report=$report" >> "$GITHUB_OUTPUT"
+          echo "count=$(node -p "require(process.argv[1]).lessonVisualsAttached" "$report")" >> "$GITHUB_OUTPUT"
+          echo "reused=$(node -p "require(process.argv[1]).existingWordPressMediaReused" "$report")" >> "$GITHUB_OUTPUT"
+          echo "uploads=$(node -p "require(process.argv[1]).newMediaUploads" "$report")" >> "$GITHUB_OUTPUT"
+
+      - name: Verify all 20 visitor-facing lesson visuals
+        id: verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          report="${{ steps.publish.outputs.report }}"
+          test -s "$report"
+          node - "$report" > "$RUNNER_TEMP/visuals.tsv" <<'NODE'
+          const r=require(process.argv[2]);
+          for(const x of r.updated) console.log([x.id,x.mediaSlug,x.mediaSourceUrl].join('\t'));
+          NODE
+          test "$(wc -l < "$RUNNER_TEMP/visuals.tsv")" -eq 20
+
+          while IFS=$'\t' read -r id media_slug media_url; do
+            slug="$(printf '%s' "$id" | tr '[:upper:]' '[:lower:]')"
+            ok=0
+            for attempt in 1 2 3 4 5 6; do
+              body="$RUNNER_TEMP/${slug}-${attempt}.html"
+              if curl -4 -fsSL \
+                -H 'Cache-Control: no-cache, no-store, max-age=0' \
+                -H 'Pragma: no-cache' \
+                "$WP_SITE_URL/learn/encyclopedia/$slug/?dtf_enc_visual=${GITHUB_RUN_ID}-${attempt}" -o "$body"; then
+                if node - "$body" "$id" "$media_slug" "$media_url" <<'NODE'
+          const fs=require('fs');
+          const html=fs.readFileSync(process.argv[2],'utf8');
+          const id=process.argv[3];
+          const mediaSlug=process.argv[4];
+          const mediaUrl=process.argv[5];
+          const marker=`data-thc-lesson-visual-id="${id}"`;
+          const count=html.split(marker).length-1;
+          if(count!==1) throw new Error(`${id}: expected one rendered visual marker, found ${count}`);
+          if(!html.includes('/wp-content/uploads/')) throw new Error(`${id}: rendered page has no WordPress upload image.`);
+          if(!html.includes(mediaUrl) && !html.toLowerCase().includes(mediaSlug.toLowerCase())) throw new Error(`${id}: expected mapped media is not rendered.`);
+          console.log(`${id}: visitor visual verified`);
+          NODE
+                then ok=1; break; fi
+              fi
+              sleep 8
+            done
+            [[ "$ok" -eq 1 ]] || { echo "$id visitor visual verification failed" >&2; exit 1; }
+          done < "$RUNNER_TEMP/visuals.tsv"
+
+      - name: Upload rollback and publication evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: wordpress-encyclopedia-visuals-${{ github.run_id }}
+          path: ${{ env.BACKUP_ROOT }}
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report encyclopedia visual publication
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          JOB_STATUS: ${{ job.status }}
+          VALIDATE_OUTCOME: ${{ steps.validate.outcome }}
+          PUBLISH_OUTCOME: ${{ steps.publish.outcome }}
+          VERIFY_OUTCOME: ${{ steps.verify.outcome }}
+          COUNT: ${{ steps.publish.outputs.count }}
+          REUSED: ${{ steps.publish.outputs.reused }}
+          UPLOADS: ${{ steps.publish.outputs.uploads }}
+        with:
+          script: |
+            const success=process.env.JOB_STATUS==='success';
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 46,
+              body: [
+                '## THC encyclopedia Volume 03 visual publication',
+                '',
+                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                `Result: **${process.env.JOB_STATUS}**`,
+                'Visual batch: **volume03-visuals-v1**',
+                `Validation: **${process.env.VALIDATE_OUTCOME || 'not-run'}**`,
+                `WordPress page update: **${process.env.PUBLISH_OUTCOME || 'not-run'}**`,
+                `Visitor verification: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
+                `Lesson visuals attached: **${process.env.COUNT || '0'}**`,
+                `Existing WordPress media reused: **${process.env.REUSED || '0'}**`,
+                `New media uploads: **${process.env.UPLOADS || '0'}**`,
+                '',
+                success
+                  ? 'All 20 current-batch lesson pages passed fresh visitor-facing verification.'
+                  : 'This visual release is not accepted; inspect the workflow artifact and rollback evidence before retrying.',
+                '',
+                'Review control: **visual placement does not represent independent lesson approval**'
+              ].join('\n')
+            });
