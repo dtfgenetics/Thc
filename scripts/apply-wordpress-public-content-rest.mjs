@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import process from 'node:process';
@@ -9,6 +10,7 @@ const contentDir = process.env.CONTENT_DIR || '';
 const backupRoot = process.env.BACKUP_ROOT || process.cwd();
 const timestamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d{3}Z$/, 'Z');
 const backupDir = join(backupRoot, `wordpress-rest-content-${timestamp}`);
+const catalogCardRegistryPath = new URL('../site/wordpress/products/catalog-strain-cards.json', import.meta.url);
 
 if (!username || !password) throw new Error('WP_API_USERNAME and WP_API_PASSWORD are required');
 if (!contentDir) throw new Error('CONTENT_DIR is required');
@@ -18,7 +20,7 @@ const headers = {
   Authorization: authHeader,
   'Content-Type': 'application/json',
   Accept: 'application/json',
-  'User-Agent': 'DTFSeeds-Content-Deployment/1.6'
+  'User-Agent': 'DTFSeeds-Content-Deployment/1.7'
 };
 
 // WordPress owns the editorial/root pages below. /games/ and /games/high-iq/
@@ -27,6 +29,10 @@ const headers = {
 const pageDefinitions = [
   ['home', 'DTF Genetics | Dream the Future'],
   ['seeds', 'Seeds / Genetics'],
+  ['blue-mango', 'Blue Mango | DTF Genetics'],
+  ['blue-frequency', 'Blue Frequency | DTF Genetics'],
+  ['mystery-line', 'Mystery Line | DTF Genetics'],
+  ['rainbow-bubblegum', 'Rainbow Bubblegum | DTF Genetics'],
   ['learn', 'Teaching Healthy Cultivation'],
   ['community', 'Community'],
   ['shop', 'Shop'],
@@ -62,6 +68,12 @@ function editableContent(page) {
   return normalizeText(page?.content?.raw || page?.content?.rendered || '');
 }
 
+function sha256(bytes) {
+  return createHash('sha256').update(bytes).digest('hex');
+}
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 async function request(path, options = {}) {
   const response = await fetch(`${siteUrl}${path}`, {
     ...options,
@@ -84,6 +96,129 @@ async function request(path, options = {}) {
     throw new Error(`WordPress request ${path} returned HTTP ${response.status}${code}${message}`);
   }
   return { response, body };
+}
+
+async function fetchBinary(url, attempts = 4) {
+  let lastError;
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try {
+      const response = await fetch(url, {
+        redirect: 'follow',
+        signal: AbortSignal.timeout(45_000),
+        headers: { 'User-Agent': 'DTFSeeds-Catalog-Card-Publisher/1.0' }
+      });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      return { response, bytes: Buffer.from(await response.arrayBuffer()) };
+    } catch (error) {
+      lastError = error;
+      if (attempt < attempts) await sleep(attempt * 1800);
+    }
+  }
+  throw lastError;
+}
+
+async function downloadExactCatalogCard(card) {
+  const urls = [
+    `https://drive.usercontent.google.com/download?id=${encodeURIComponent(card.driveFileId)}&export=download&confirm=t`,
+    `https://drive.google.com/uc?export=download&id=${encodeURIComponent(card.driveFileId)}&confirm=t`
+  ];
+  const failures = [];
+  for (const url of urls) {
+    try {
+      const { bytes } = await fetchBinary(url, 3);
+      const hash = sha256(bytes);
+      if (bytes.length !== Number(card.byteLength)) throw new Error(`byte length ${bytes.length} != ${card.byteLength}`);
+      if (hash !== card.sha256) throw new Error(`SHA-256 ${hash} != ${card.sha256}`);
+      if (bytes.subarray(0, 3).toString('hex') !== 'ffd8ff' || bytes.subarray(-2).toString('hex') !== 'ffd9') {
+        throw new Error('not a complete JPEG');
+      }
+      return { card, bytes, hash, downloadUrl: url };
+    } catch (error) {
+      failures.push(`${url}: ${error.message}`);
+    }
+  }
+  throw new Error(`${card.registryId}: exact Drive card could not be downloaded. ${failures.join(' | ')}`);
+}
+
+async function mediaBySlug(slug) {
+  const params = new URLSearchParams({ slug, context: 'edit', per_page: '10' });
+  const { body } = await request(`/wp-json/wp/v2/media?${params}`);
+  if (!Array.isArray(body)) throw new Error(`Unexpected media response for ${slug}`);
+  return body;
+}
+
+async function verifyMediaBytes(item, card) {
+  if (!item?.source_url) return false;
+  try {
+    const { bytes } = await fetchBinary(item.source_url, 3);
+    return bytes.length === Number(card.byteLength) && sha256(bytes) === card.sha256;
+  } catch {
+    return false;
+  }
+}
+
+async function ensureCatalogMedia(downloaded) {
+  const { card, bytes } = downloaded;
+  const existing = await mediaBySlug(card.wordpressSlug);
+  if (existing.length > 1) throw new Error(`${card.registryId}: multiple WordPress media items use slug ${card.wordpressSlug}`);
+
+  if (existing.length === 1) {
+    if (!(await verifyMediaBytes(existing[0], card))) {
+      throw new Error(`${card.registryId}: existing WordPress media slug does not match exact reviewed bytes`);
+    }
+    const { body: updated } = await request(`/wp-json/wp/v2/media/${existing[0].id}`, {
+      method: 'POST',
+      body: JSON.stringify({
+        title: card.canonicalName + ' ' + card.generation + ' ' + card.seedType,
+        slug: card.wordpressSlug,
+        alt_text: card.altText,
+        caption: 'DTF Genetics catalog strain card'
+      })
+    });
+    return { ...updated, reused: true };
+  }
+
+  const upload = await fetch(`${siteUrl}/wp-json/wp/v2/media`, {
+    method: 'POST',
+    headers: {
+      Authorization: authHeader,
+      Accept: 'application/json',
+      'User-Agent': 'DTFSeeds-Catalog-Card-Publisher/1.0',
+      'Content-Type': card.mimeType,
+      'Content-Disposition': `attachment; filename="${card.fileName}"`
+    },
+    body: bytes,
+    redirect: 'follow',
+    signal: AbortSignal.timeout(120_000)
+  });
+  const text = await upload.text();
+  let created = null;
+  try { created = text ? JSON.parse(text) : null; } catch { created = { raw: text.slice(0, 1000) }; }
+  if (!upload.ok || !created?.id) {
+    throw new Error(`${card.registryId}: WordPress media upload failed (${upload.status}): ${created?.message || created?.raw || 'unknown error'}`);
+  }
+
+  const { body: updated } = await request(`/wp-json/wp/v2/media/${created.id}`, {
+    method: 'POST',
+    body: JSON.stringify({
+      title: card.canonicalName + ' ' + card.generation + ' ' + card.seedType,
+      slug: card.wordpressSlug,
+      alt_text: card.altText,
+      caption: 'DTF Genetics catalog strain card'
+    })
+  });
+  if (!(await verifyMediaBytes(updated, card))) throw new Error(`${card.registryId}: uploaded WordPress media failed exact hash verification`);
+  return { ...updated, reused: false };
+}
+
+function resolveMediaPlaceholders(content, mediaByPlaceholder) {
+  let resolved = String(content);
+  for (const [placeholder, url] of mediaByPlaceholder) {
+    resolved = resolved.split(placeholder).join(url);
+  }
+  const leftovers = resolved.match(/__DTF_MEDIA_[A-Z0-9_]+__/g) || [];
+  if (leftovers.length) throw new Error(`Unresolved media placeholder(s): ${[...new Set(leftovers)].join(', ')}`);
+  return resolved;
 }
 
 async function getPublishedPageBySlug(slug) {
@@ -137,6 +272,7 @@ async function draftExactLegacyPost(title) {
 }
 
 await mkdir(join(backupDir, 'pages'), { recursive: true });
+await mkdir(join(backupDir, 'media'), { recursive: true });
 
 const siteInfo = await request('/wp-json/');
 await writeFile(join(backupDir, 'site-index.json'), `${JSON.stringify(siteInfo.body, null, 2)}\n`, 'utf8');
@@ -154,30 +290,69 @@ await writeFile(
   'utf8'
 );
 
-// First validate every canonical source file and inspect all current page identities.
-// No WordPress mutation occurs until the complete plan is known.
-const prepared = [];
+// Validate all page source files and page identities before media or page writes.
+const sourceRows = [];
 for (const [slug, title] of pageDefinitions) {
   const sourcePath = join(contentDir, `${slug}.html`);
-  const content = await readFile(sourcePath, 'utf8');
-  if (!content.trim()) throw new Error(`Missing or empty content file: ${sourcePath}`);
+  const sourceContent = await readFile(sourcePath, 'utf8');
+  if (!sourceContent.trim()) throw new Error(`Missing or empty content file: ${sourcePath}`);
   for (const phrase of forbiddenPhrases) {
-    if (content.toLowerCase().includes(phrase.toLowerCase())) {
+    if (sourceContent.toLowerCase().includes(phrase.toLowerCase())) {
       throw new Error(`Forbidden staging phrase found in ${slug}.html: ${phrase}`);
     }
   }
-
   const page = await getPublishedPageBySlug(slug);
-  const needsUpdate =
-    !page ||
-    editableTitle(page) !== normalizeText(title) ||
-    editableContent(page) !== normalizeText(content) ||
-    page?.status !== 'publish';
+  if (page) await writeFile(join(backupDir, 'pages', `${slug}.json`), `${JSON.stringify(page, null, 2)}\n`, 'utf8');
+  sourceRows.push({ slug, title, sourceContent, page });
+}
 
-  if (page) {
-    await writeFile(join(backupDir, 'pages', `${slug}.json`), `${JSON.stringify(page, null, 2)}\n`, 'utf8');
+// Preflight every exact Drive source before any media or page mutation.
+const cardRegistry = JSON.parse(await readFile(catalogCardRegistryPath, 'utf8'));
+if (cardRegistry?.schemaVersion !== 1 || !Array.isArray(cardRegistry?.cards)) {
+  throw new Error('Invalid catalog strain-card registry');
+}
+const placeholders = new Set();
+const downloads = [];
+for (const card of cardRegistry.cards) {
+  if (!card.registryId || !card.driveFileId || !card.fileName || !card.wordpressSlug || !card.placeholder) {
+    throw new Error('Catalog strain-card registry entry is missing required fields');
   }
-  prepared.push({ slug, title, content, page, needsUpdate });
+  if (placeholders.has(card.placeholder)) throw new Error(`Duplicate strain-card placeholder ${card.placeholder}`);
+  placeholders.add(card.placeholder);
+  const downloaded = await downloadExactCatalogCard(card);
+  downloads.push(downloaded);
+  await writeFile(
+    join(backupDir, 'media', `${card.registryId}-source-proof.json`),
+    `${JSON.stringify({ registryId: card.registryId, driveFileId: card.driveFileId, byteLength: downloaded.bytes.length, sha256: downloaded.hash, downloadUrl: downloaded.downloadUrl }, null, 2)}\n`,
+    'utf8'
+  );
+}
+
+// Upload or reuse exact WordPress media, then resolve source placeholders to stable WP URLs.
+const mediaByPlaceholder = new Map();
+const mediaResults = [];
+for (const downloaded of downloads) {
+  const media = await ensureCatalogMedia(downloaded);
+  mediaByPlaceholder.set(downloaded.card.placeholder, media.source_url);
+  mediaResults.push({
+    registryId: downloaded.card.registryId,
+    mediaId: media.id,
+    sourceUrl: media.source_url,
+    reused: Boolean(media.reused)
+  });
+}
+await writeFile(join(backupDir, 'catalog-media-results.json'), `${JSON.stringify(mediaResults, null, 2)}\n`, 'utf8');
+
+// Resolve final source content and compute the complete page mutation plan.
+const prepared = [];
+for (const row of sourceRows) {
+  const content = resolveMediaPlaceholders(row.sourceContent, mediaByPlaceholder);
+  const needsUpdate =
+    !row.page ||
+    editableTitle(row.page) !== normalizeText(row.title) ||
+    editableContent(row.page) !== normalizeText(content) ||
+    row.page?.status !== 'publish';
+  prepared.push({ ...row, content, needsUpdate });
 }
 
 await writeFile(
@@ -326,8 +501,10 @@ const summary = {
   checkedPages: results.length,
   changedPages,
   createdPages,
+  catalogMediaCount: mediaResults.length,
+  catalogMediaUploaded: mediaResults.filter((item) => !item.reused).length,
   auxiliaryMutations,
-  mutationCount: changedPages + auxiliaryMutations,
+  mutationCount: changedPages + auxiliaryMutations + mediaResults.filter((item) => !item.reused).length,
   backupDir
 };
 
@@ -335,5 +512,5 @@ await writeFile(join(backupDir, 'deployment-results.json'), `${JSON.stringify(re
 await writeFile(join(backupDir, 'deployment-summary.json'), `${JSON.stringify(summary, null, 2)}\n`, 'utf8');
 await writeFile(join(backupRoot, 'wordpress-rest-backup-path.txt'), `${backupDir}\n`, 'utf8');
 
-console.log(`REST content reconciliation checked ${results.length} pages; changed ${changedPages}; created ${createdPages}; auxiliary mutations ${auxiliaryMutations}.`);
+console.log(`REST content reconciliation checked ${results.length} pages; changed ${changedPages}; created ${createdPages}; catalog media ${mediaResults.length}; auxiliary mutations ${auxiliaryMutations}.`);
 console.log(`Page-level rollback data: ${backupDir}`);
