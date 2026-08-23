@@ -25,6 +25,7 @@ if not root.is_dir():
 allowed = [
     "games/index.html",
     "games/dtf-route.css",
+    "games/dtf-shell.css",
     "games/high-land",
     "games/high-iq",
     "games/high-life",
@@ -41,6 +42,7 @@ allowed = [
 ]
 required = [
     "games/index.html",
+    "games/dtf-shell.css",
     "games/high-land/index.html",
     "games/high-iq/index.html",
     "games/high-life/index.html",
