@@ -25,6 +25,7 @@ concurrency:
 
 jobs:
   publish:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     name: Publish genetics library and reviewed strain cards
     runs-on: ubuntu-latest
     timeout-minutes: 35
@@ -46,12 +47,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Require successful canonical WordPress deployment
-        if: github.event_name == 'workflow_run'
-        shell: bash
-        run: |
-          set -euo pipefail
-          [[ "${{ github.event.workflow_run.conclusion }}" == "success" ]]
       - name: Validate genetics production package
         shell: bash
         run: |
@@ -75,6 +70,10 @@ jobs:
             }
           }
           if(products.schemaVersion!==1 || !Array.isArray(products.cards) || products.cards.length!==3) throw new Error('Expected exactly 3 pinned WooCommerce cards.');
+          for(const card of products.cards){
+            if(!card.sourceUrl||!card.productId||!card.productSlug||!card.wordpressSlug) throw new Error(`${card.registryId||'unknown'}: incomplete pinned WooCommerce card mapping`);
+            if(!Number.isInteger(card.expectedWidth)||!Number.isInteger(card.expectedHeight)) throw new Error(`${card.registryId}: missing pinned image dimensions`);
+          }
           console.log(`Validated ${catalog.lines.length} line pages, ${cards.length} catalog cards and ${products.cards.length} WooCommerce card mappings.`);
           NODE
       - name: Publish Seeds library and individual line pages
