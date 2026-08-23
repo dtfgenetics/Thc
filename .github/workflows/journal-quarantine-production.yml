@@ -1,0 +1,75 @@
+name: Quarantine Unfinished DTFSeeds Journals
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - scripts/quarantine-unfinished-journals.mjs
+      - .github/workflows/journal-quarantine-production.yml
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-journal-quarantine-production
+  cancel-in-progress: false
+
+jobs:
+  quarantine:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: production
+    env:
+      NODE_OPTIONS: --dns-result-order=ipv4first
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      WC_CONSUMER_KEY: ${{ secrets.WC_CONSUMER_KEY }}
+      WC_CONSUMER_SECRET: ${{ secrets.WC_CONSUMER_SECRET }}
+      APPLY_JOURNAL_QUARANTINE: 'true'
+      BACKUP_ROOT: /tmp/dtf-journal-quarantine
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate protected journal quarantine
+        run: |
+          set -euo pipefail
+          node --check scripts/quarantine-unfinished-journals.mjs
+          if [[ -z "${WC_CONSUMER_KEY:-}" || -z "${WC_CONSUMER_SECRET:-}" ]]; then
+            test -n "${WP_API_USERNAME:-}"
+            test -n "${WP_API_PASSWORD:-}"
+          fi
+      - name: Back up, quarantine, and verify unfinished journals
+        id: quarantine
+        run: node scripts/quarantine-unfinished-journals.mjs
+      - name: Upload rollback evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: journal-quarantine-${{ github.run_id }}
+          path: /tmp/dtf-journal-quarantine
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Report journal quarantine
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          JOB_STATUS: ${{ job.status }}
+          QUARANTINE_OUTCOME: ${{ steps.quarantine.outcome }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const body=[
+              '## DTFSeeds unfinished journal quarantine','',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Result: **${process.env.JOB_STATUS}**`,
+              `Protected quarantine: **${process.env.QUARANTINE_OUTCOME || 'not-run'}**`,'',
+              'Five unfinished journal product records are backed up and moved to draft only if safety guards confirm they have no SKU, product images, selectable attributes, or prior sales. Nothing is deleted.'
+            ].join('\n');
+            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body});
