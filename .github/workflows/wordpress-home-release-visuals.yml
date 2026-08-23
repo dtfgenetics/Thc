@@ -55,7 +55,7 @@ jobs:
           const data = JSON.parse(fs.readFileSync('site/wordpress/products/strain-card-images.json', 'utf8'));
           if (!Array.isArray(data.cards) || data.cards.length !== 3) throw new Error('Expected exactly three current release-card records');
           for (const card of data.cards) {
-            for (const key of ['productSlug','wordpressSlug','altText','expectedWidth','expectedHeight']) {
+            for (const key of ['productSlug','wordpressSlug','sourceUrl','altText','expectedWidth','expectedHeight']) {
               if (!card[key]) throw new Error(`Missing ${key} for ${card.registryId || 'unknown card'}`);
             }
             if (Number(card.expectedWidth) !== 1024 || Number(card.expectedHeight) !== 1536) {
@@ -84,23 +84,28 @@ jobs:
           set -euo pipefail
           node - <<'NODE'
           const fs = require('node:fs');
-          const registry = JSON.parse(fs.readFileSync('site/wordpress/products/strain-card-images.json', 'utf8'));
-          const url = `https://dtfseeds.com/?dtf_release_visuals=${Date.now()}`;
-          const response = await fetch(url, { headers: { 'Cache-Control': 'no-cache', 'User-Agent': 'DTFSeeds-Release-Visual-Verify/1.0' }, redirect: 'follow' });
-          const html = await response.text();
-          if (!response.ok) throw new Error(`Homepage verification failed with HTTP ${response.status}`);
-          const start = html.indexOf('Current releases');
-          const end = html.indexOf('Teaching Healthy Cultivation', start + 1);
-          if (start < 0 || end <= start) throw new Error('Could not isolate current-release section on public homepage');
-          const section = html.slice(start, end);
-          const classCount = (section.match(/dtf-release-card-image/g) || []).length;
-          if (classCount !== registry.cards.length) throw new Error(`Expected ${registry.cards.length} release-card image markers, saw ${classCount}`);
-          for (const card of registry.cards) {
-            if (!section.includes(`/product/${card.productSlug}/`)) throw new Error(`Missing public product route for ${card.productSlug}`);
-            if (!section.includes(card.altText)) throw new Error(`Missing public strain-card alt text for ${card.productSlug}`);
-          }
-          if (!section.includes('aspect-ratio:2/3') || !section.includes('object-fit:contain')) throw new Error('Portrait strain-card presentation markers are missing');
-          console.log(`Verified ${registry.cards.length} exact portrait strain cards on public homepage.`);
+          (async () => {
+            const registry = JSON.parse(fs.readFileSync('site/wordpress/products/strain-card-images.json', 'utf8'));
+            const url = `https://dtfseeds.com/?dtf_release_visuals=${Date.now()}`;
+            const response = await fetch(url, { headers: { 'Cache-Control': 'no-cache', 'User-Agent': 'DTFSeeds-Release-Visual-Verify/1.0' }, redirect: 'follow' });
+            const html = await response.text();
+            if (!response.ok) throw new Error(`Homepage verification failed with HTTP ${response.status}`);
+            const start = html.indexOf('Current releases');
+            const end = html.indexOf('Teaching Healthy Cultivation', start + 1);
+            if (start < 0 || end <= start) throw new Error('Could not isolate current-release section on public homepage');
+            const section = html.slice(start, end);
+            const classCount = (section.match(/dtf-release-card-image/g) || []).length;
+            if (classCount !== registry.cards.length) throw new Error(`Expected ${registry.cards.length} release-card image markers, saw ${classCount}`);
+            for (const card of registry.cards) {
+              if (!section.includes(`/product/${card.productSlug}/`)) throw new Error(`Missing public product route for ${card.productSlug}`);
+              if (!section.includes(card.altText)) throw new Error(`Missing public strain-card alt text for ${card.productSlug}`);
+            }
+            if (!section.includes('aspect-ratio:2/3') || !section.includes('object-fit:contain')) throw new Error('Portrait strain-card presentation markers are missing');
+            console.log(`Verified ${registry.cards.length} exact portrait strain cards on public homepage.`);
+          })().catch((error) => {
+            console.error(error);
+            process.exit(1);
+          });
           NODE
 
       - name: Report homepage release visual reconciliation
