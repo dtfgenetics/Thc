@@ -1,0 +1,136 @@
+name: Publish THC Pest Disease Library V5
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'site/wordpress/education/pest-disease-profiles-v5.json'
+      - 'scripts/publish-wordpress-pest-disease-library-v5.mjs'
+      - '.github/workflows/wordpress-pest-disease-library-v5.yml'
+  workflow_run:
+    workflows:
+      - Publish THC Diagnostic Index V5
+    types: [completed]
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-pest-disease-library-v5
+  cancel-in-progress: true
+
+env:
+  WP_SITE_URL: https://dtfseeds.com
+  NODE_OPTIONS: --dns-result-order=ipv4first
+
+jobs:
+  publish:
+    name: Publish pest and disease reference profiles
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: production
+    env:
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      APPLY_PEST_DISEASE_V5: 'true'
+      PEST_DISEASE_V5_PATH: site/wordpress/education/pest-disease-profiles-v5.json
+      BACKUP_ROOT: /tmp/dtf-pest-disease-v5
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate pest and disease catalog
+        id: validate
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
+          node --check scripts/publish-wordpress-pest-disease-library-v5.mjs
+          node - <<'NODE'
+          const fs=require('fs');
+          const d=JSON.parse(fs.readFileSync('site/wordpress/education/pest-disease-profiles-v5.json','utf8'));
+          if(d.schemaVersion!==1||!Array.isArray(d.profiles)||d.profiles.length!==12) throw new Error('Expected exactly 12 reviewed pest/disease profiles.');
+          for(const p of d.profiles){
+            for(const key of ['observe','lookAlikes','confirm','riskContext','managementPrinciples']) if(!Array.isArray(p[key])||p[key].length<3) throw new Error(`${p.slug}: ${key} is incomplete`);
+          }
+          console.log('Validated 12 evidence-first pest and disease profiles.');
+          NODE
+
+      - name: Publish pest and disease library
+        id: publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$BACKUP_ROOT"
+          node scripts/publish-wordpress-pest-disease-library-v5.mjs | tee "$RUNNER_TEMP/pd-v5.log"
+          report="$(find "$BACKUP_ROOT" -name pest-disease-v5-report.json -print -quit)"
+          test -s "$report"
+          echo "profiles=$(node -p "require(process.argv[1]).profileCount" "$report")" >> "$GITHUB_OUTPUT"
+
+      - name: Visitor-verify hub and profile routes
+        id: verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          hub="$RUNNER_TEMP/pd-hub.html"
+          curl -4 --fail --silent --show-error --location --retry 3 --retry-delay 2 \
+            -H 'Cache-Control: no-cache, no-store, max-age=0' -H 'Pragma: no-cache' \
+            "$WP_SITE_URL/learn/pests-diseases/?dtf_pd5=${GITHUB_RUN_ID}" -o "$hub"
+          grep -Fqi 'data-dtf-pd-v5="hub"' "$hub"
+          grep -Fqi 'Identify the organism or disorder before choosing a response.' "$hub"
+          for slug in spider-mites thrips powdery-mildew botrytis-gray-mold root-zone-disease-complex hop-latent-viroid; do
+            body="$RUNNER_TEMP/pd-$slug.html"
+            curl -4 --fail --silent --show-error --location --retry 3 --retry-delay 2 \
+              -H 'Cache-Control: no-cache, no-store, max-age=0' -H 'Pragma: no-cache' \
+              "$WP_SITE_URL/learn/pests-diseases/$slug/?dtf_pd5=${GITHUB_RUN_ID}" -o "$body"
+            grep -Fqi 'data-dtf-pd-v5="profile"' "$body"
+            grep -Fqi 'What to observe' "$body"
+            grep -Fqi 'Common look-alikes' "$body"
+            grep -Fqi 'Evidence that improves confirmation' "$body"
+            grep -Fqi 'Management principles' "$body"
+          done
+
+      - name: Upload rollback and verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: thc-pest-disease-v5-${{ github.run_id }}
+          path: |
+            /tmp/dtf-pest-disease-v5
+            ${{ runner.temp }}/pd-v5.log
+            ${{ runner.temp }}/pd-*.html
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report pest disease V5 result
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          STATUS: ${{ job.status }}
+          VALIDATE: ${{ steps.validate.outcome }}
+          PUBLISH: ${{ steps.publish.outcome }}
+          VERIFY: ${{ steps.verify.outcome }}
+          PROFILES: ${{ steps.publish.outputs.profiles }}
+        with:
+          script: |
+            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body:[
+              '## THC pest and disease library V5','',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Result: **${process.env.STATUS}**`,
+              `Catalog validation: **${process.env.VALIDATE || 'not-run'}**`,
+              `WordPress publication: **${process.env.PUBLISH || 'not-run'}**`,
+              `Visitor verification: **${process.env.VERIFY || 'not-run'}**`,
+              `Published profiles: **${process.env.PROFILES || '0'}**`,'',
+              'The library adds an evidence-first hub plus individual references for spider mites, thrips, fungus gnats, aphids, whiteflies, broad/russet mite suspicion, caterpillars, powdery mildew, Botrytis/gray mold suspicion, root-zone disease complex, hop latent viroid suspicion, and damping-off/seedling collapse.',
+              'Each profile separates observation, look-alikes, confirmation evidence, risk context, and management principles; it does not treat one photograph or symptom as definitive proof.'
+            ].join('\n')});
