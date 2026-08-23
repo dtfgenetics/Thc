@@ -1,0 +1,105 @@
+name: WooCommerce Strain Card Images Production
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/woocommerce-strain-card-images-production.yml'
+      - 'site/wordpress/products/strain-card-images.json'
+      - 'scripts/publish-woocommerce-strain-card-images.mjs'
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-woocommerce-strain-card-images-production
+  cancel-in-progress: false
+
+jobs:
+  publish-reviewed-strain-cards:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: production
+    env:
+      NODE_OPTIONS: --dns-result-order=ipv4first
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      WC_CONSUMER_KEY: ${{ secrets.WC_CONSUMER_KEY }}
+      WC_CONSUMER_SECRET: ${{ secrets.WC_CONSUMER_SECRET }}
+      STRAIN_CARD_REGISTRY: site/wordpress/products/strain-card-images.json
+      BACKUP_ROOT: /tmp/woocommerce-strain-card-backups
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate exact strain card package
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${WP_API_USERNAME:-}"
+          test -n "${WP_API_PASSWORD:-}"
+          node --check scripts/publish-woocommerce-strain-card-images.mjs
+          node - <<'NODE'
+          const fs=require('fs');
+          const r=JSON.parse(fs.readFileSync('site/wordpress/products/strain-card-images.json','utf8'));
+          if(r.schemaVersion!==1 || !Array.isArray(r.cards) || r.cards.length!==3) throw new Error('Expected exactly 3 reviewed strain cards.');
+          const ids=r.cards.map(x=>Number(x.productId)).sort((a,b)=>a-b);
+          if(JSON.stringify(ids)!==JSON.stringify([39,41,91])) throw new Error(`Unexpected product IDs: ${ids.join(',')}`);
+          for(const c of r.cards){
+            if(!/^[a-f0-9]{64}$/.test(c.sha256)) throw new Error(`${c.registryId}: invalid SHA-256`);
+            if(c.mimeType!=='image/png') throw new Error(`${c.registryId}: expected image/png`);
+            if(!Number.isInteger(c.byteLength)||c.byteLength<100000) throw new Error(`${c.registryId}: implausible byte length`);
+          }
+          console.log('Reviewed strain card registry is structurally valid.');
+          NODE
+
+      - name: Publish exact strain cards and verify live products
+        id: publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          APPLY_STRAIN_CARD_IMAGES=true node scripts/publish-woocommerce-strain-card-images.mjs
+          echo 'outcome=success' >> "$GITHUB_OUTPUT"
+
+      - name: Upload product snapshots and evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: woocommerce-strain-card-images-${{ github.run_id }}
+          path: |
+            /tmp/woocommerce-strain-card-backups
+            woocommerce-strain-card-image-report.json
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report production result
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          JOB_STATUS: ${{ job.status }}
+          PUBLISH: ${{ steps.publish.outputs.outcome }}
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 46,
+              body: [
+                '## WooCommerce exact strain card images',
+                '',
+                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                `Result: **${process.env.JOB_STATUS}**`,
+                `Exact card publication and live verification: **${process.env.PUBLISH || 'not-completed'}**`,
+                '',
+                'Reviewed visual scope: Blue Mango F2 Regular, Blue Mango F2 Feminized, and Blue Bubblegum F1 Regular. Source assets are the exact previously-created strain cards, normalized to true PNG files and checksum-locked in the source-controlled registry.',
+                'The publisher downloads and validates all three exact Drive assets before any WordPress write. It changes only WooCommerce product images, makes the exact strain card primary, retains existing secondary images, snapshot-compares all protected non-image commerce fields, and rolls product images back on verification failure.'
+              ].join('\n')
+            });
