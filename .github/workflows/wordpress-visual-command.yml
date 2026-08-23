@@ -46,6 +46,8 @@ jobs:
           test -s site/wordpress/assets/brand/dtf-potleaf-512.png
           node --check scripts/rebuild-wordpress-visual-site.mjs
           node --check scripts/rebuild-wordpress-infographic-gallery.mjs
+          node --check scripts/polish-wordpress-visual-site-v3.mjs
+          node --check scripts/fix-wordpress-visual-polish-v3-cascade.mjs
 
       - name: Reconcile canonical WordPress page records
         run: |
@@ -76,6 +78,26 @@ jobs:
           report="$dir/gallery-report.json"
           echo "media_count=$(node -p "require(process.argv[1]).mediaCount" "$report")" >> "$GITHUB_OUTPUT"
 
+      - name: Apply V3 premium visual system
+        id: v3
+        env:
+          APPLY_VISUAL_POLISH: 'true'
+        run: |
+          set -euo pipefail
+          node scripts/polish-wordpress-visual-site-v3.mjs
+          dir="$(cat "$BACKUP_ROOT/visual-polish-v3-backup-path.txt")"
+          report="$dir/visual-polish-v3-report.json"
+          echo "spotlight=$(node -p "require(process.argv[1]).spotlightInjected" "$report")" >> "$GITHUB_OUTPUT"
+          echo "brand_id=$(node -p "require(process.argv[1]).shell.brandMediaId || ''" "$report")" >> "$GITHUB_OUTPUT"
+
+      - name: Finalize V3 as the last presentation cascade
+        id: cascade
+        env:
+          APPLY_V3_CASCADE_FIX: 'true'
+        run: |
+          set -euo pipefail
+          node scripts/fix-wordpress-visual-polish-v3-cascade.mjs
+
       - name: Verify site icon through authenticated WordPress REST
         id: icon
         run: |
@@ -94,7 +116,7 @@ jobs:
           NODE
           echo "site_icon=$site_icon" >> "$GITHUB_OUTPUT"
 
-      - name: Verify live site is image-driven and stale shell is gone
+      - name: Verify live V3 site is image-driven and stale shell is gone
         id: verify
         run: |
           set -euo pipefail
@@ -118,11 +140,20 @@ jobs:
             done
             echo "$path verified with $count WordPress-hosted images"
           }
-          check_page '/' 'Genetics. Plant science. Tools. Games. Community.' 8
+          check_page '/' 'Breeding projects with documented lineage' 8
           check_page '/learn/' 'Explore by subject' 10
           check_page '/learn/infographics/' 'Visual plant science and cultivation library.' 30
-          grep -Fqi 'DTF Genetics cannabis leaf' "$RUNNER_TEMP/live-_.html"
-          grep -Eqi '<link[^>]+rel=["'"'](shortcut )?icon["'"']' "$RUNNER_TEMP/live-_.html"
+          home="$RUNNER_TEMP/live-_.html"
+          learn="$RUNNER_TEMP/live-_learn_.html"
+          grep -Fqi 'dtf-visual-polish-v3' "$home"
+          grep -Fqi 'dtf-v3-spotlight' "$home"
+          grep -Fqi 'Measure. Diagnose. Document.' "$home"
+          grep -Fqi 'Original DTF games' "$home"
+          grep -Fqi 'dtf-shell-header' "$home"
+          grep -Fqi 'dtf-shell-footer' "$home"
+          grep -Fqi 'DTF Genetics cannabis leaf' "$home"
+          grep -Fqi 'dtf-visual-polish-v3' "$learn"
+          grep -Eqi '<link[^>]+rel=["'"'](shortcut )?icon["'"']' "$home"
 
       - name: Upload backup package
         if: always()
@@ -141,6 +172,10 @@ jobs:
           MEDIA_COUNT: ${{ steps.visual.outputs.media_count }}
           GALLERY_COUNT: ${{ steps.gallery.outputs.media_count }}
           SITE_ICON: ${{ steps.icon.outputs.site_icon }}
+          V3_SPOTLIGHT: ${{ steps.v3.outputs.spotlight }}
+          V3_BRAND_ID: ${{ steps.v3.outputs.brand_id }}
+          V3_WRITE: ${{ steps.v3.outcome }}
+          V3_CASCADE: ${{ steps.cascade.outcome }}
           VERIFY: ${{ steps.verify.outcome }}
           MISSING: ${{ steps.visual.outputs.missing }}
         with:
@@ -150,16 +185,20 @@ jobs:
               repo: context.repo.repo,
               issue_number: 46,
               body: [
-                '## DTFSeeds visual rebuild command',
+                '## DTFSeeds visual rebuild command + V3',
                 '',
                 `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
                 `Result: **${process.env.JOB_STATUS}**`,
                 `WordPress media indexed: **${process.env.MEDIA_COUNT || 'not-run'}**`,
                 `Education gallery media: **${process.env.GALLERY_COUNT || 'not-run'}**`,
                 `Cannabis-leaf Site Icon media ID: **${process.env.SITE_ICON || 'not-run'}**`,
-                `Live visual verification: **${process.env.VERIFY || 'not-run'}**`,
+                `V3 presentation write: **${process.env.V3_WRITE || 'not-run'}**`,
+                `V3 final cascade: **${process.env.V3_CASCADE || 'not-run'}**`,
+                `V3 homepage spotlight: **${process.env.V3_SPOTLIGHT || 'not-run'}**`,
+                `V3 cannabis-leaf brand media ID: **${process.env.V3_BRAND_ID || 'not-run'}**`,
+                `Live V3 visual verification: **${process.env.VERIFY || 'not-run'}**`,
                 `Optional unmatched visual slots: **${process.env.MISSING || 'none'}**`,
                 '',
-                'This command rebuilds the visitor-facing DTF brand shell, Home, Learn, and the complete visual education gallery from WordPress-hosted media. It captures backups before production writes.'
+                'This single protected command now rebuilds the canonical visual site, applies the final V3 premium presentation layer, finalizes cascade order, and verifies the visitor-facing result. Rollback assets are captured before production writes.'
               ].join('\n')
             });
