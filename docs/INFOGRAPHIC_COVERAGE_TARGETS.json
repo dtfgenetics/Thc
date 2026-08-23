@@ -1,0 +1,222 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Canonical coverage checklist for the Teaching Healthy Cultivation infographic system. A topic is complete only when at least one publication-ready visual is present in site/wordpress/assets/infographics and maps to its intended Learn topic page.",
+  "publicationBoundary": "site/wordpress/assets/infographics",
+  "libraryRoute": "/learn/infographics/",
+  "statusRule": "Targets are requirements, not claims that an asset is missing. Inventory must be matched before a target is marked covered; unmatched targets become the next infographic production queue.",
+  "categories": [
+    {
+      "id": "plant-biology",
+      "route": "/learn/plant-biology/",
+      "requiredTopics": [
+        "whole plant anatomy",
+        "plant cell to tissue organization",
+        "root anatomy and root tips",
+        "stem xylem and phloem transport",
+        "leaf anatomy and stomata",
+        "photosynthesis and respiration",
+        "transpiration and water movement",
+        "flower anatomy and reproduction",
+        "trichome anatomy and secretory biology",
+        "plant hormones and tropisms"
+      ]
+    },
+    {
+      "id": "lifecycle-propagation",
+      "route": "/learn/lifecycle-propagation/",
+      "requiredTopics": [
+        "seed anatomy",
+        "germination sequence",
+        "seedling establishment",
+        "vegetative growth stages",
+        "preflower and sex identification",
+        "flowering progression",
+        "cloning workflow",
+        "clone environment targets",
+        "transplanting and root establishment",
+        "photoperiod versus autoflower lifecycle"
+      ]
+    },
+    {
+      "id": "environment-vpd",
+      "route": "/learn/environment-vpd/",
+      "requiredTopics": [
+        "temperature and humidity interaction",
+        "VPD fundamentals",
+        "stage-based VPD reference",
+        "leaf temperature versus air temperature",
+        "air movement and circulation",
+        "ventilation and air exchange",
+        "CO2 fundamentals and limitations",
+        "environmental stress signatures",
+        "day versus night environment",
+        "sensor placement and measurement"
+      ]
+    },
+    {
+      "id": "lighting",
+      "route": "/learn/lighting/",
+      "requiredTopics": [
+        "PAR and photon fundamentals",
+        "PPFD measurement",
+        "DLI calculation and interpretation",
+        "photoperiod by crop stage",
+        "light spectrum fundamentals",
+        "fixture height and intensity",
+        "canopy light uniformity",
+        "light stress versus deficiency",
+        "indoor lighting types",
+        "outdoor sunlight and daily light"
+      ]
+    },
+    {
+      "id": "water-ph-ec",
+      "route": "/learn/water-ph-ec/",
+      "requiredTopics": [
+        "source water quality",
+        "pH fundamentals",
+        "nutrient availability versus pH",
+        "EC PPM and TDS fundamentals",
+        "EC conversion scales",
+        "irrigation volume and frequency",
+        "runoff interpretation",
+        "dryback fundamentals",
+        "alkalinity and buffering",
+        "salinity and osmotic stress"
+      ]
+    },
+    {
+      "id": "nutrition-media",
+      "route": "/learn/nutrition-media/",
+      "requiredTopics": [
+        "primary macronutrients NPK",
+        "secondary macronutrients",
+        "essential micronutrients",
+        "nutrient mobility in plants",
+        "nutrient interactions and antagonism",
+        "root-zone nutrient uptake",
+        "deficiency versus toxicity logic",
+        "soil versus soilless versus hydroponic media",
+        "cation exchange capacity CEC",
+        "organic matter humic and fulvic compounds",
+        "microbes and mycorrhizae",
+        "organic versus mineral nutrition"
+      ]
+    },
+    {
+      "id": "plant-health-ipm",
+      "route": "/learn/ipm/",
+      "requiredTopics": [
+        "IPM decision framework",
+        "sanitation and biosecurity",
+        "scouting workflow",
+        "symptom pattern diagnostic workflow",
+        "spider mites",
+        "thrips",
+        "fungus gnats",
+        "aphids",
+        "whiteflies",
+        "powdery mildew",
+        "botrytis bud rot",
+        "root disease and root rot",
+        "virus and viroid awareness",
+        "beneficial insects and biological controls",
+        "abiotic stress versus pest disease damage"
+      ]
+    },
+    {
+      "id": "training-canopy",
+      "route": "/learn/training-canopy/",
+      "requiredTopics": [
+        "LST fundamentals",
+        "topping and apical dominance",
+        "FIM overview",
+        "HST fundamentals",
+        "SCROG workflow",
+        "mainlining or manifolding",
+        "pruning and lollipopping",
+        "canopy airflow and spacing",
+        "branch support and trellising",
+        "training timing by growth stage"
+      ]
+    },
+    {
+      "id": "harvest-postharvest",
+      "route": "/learn/harvest-postharvest/",
+      "requiredTopics": [
+        "harvest readiness indicators",
+        "trichome maturity interpretation",
+        "harvest handling workflow",
+        "bud washing overview",
+        "drying environment fundamentals",
+        "drying failure modes",
+        "water activity concepts",
+        "curing workflow",
+        "storage environment",
+        "light oxygen heat and moisture degradation"
+      ]
+    },
+    {
+      "id": "genetics-breeding",
+      "route": "/learn/genetics-breeding/",
+      "requiredTopics": [
+        "genotype versus phenotype",
+        "sex expression and chromosomes",
+        "Mendelian inheritance basics",
+        "Punnett square interpretation",
+        "F1 F2 F3 and filial generations",
+        "backcrossing and stabilization",
+        "selection and phenotype documentation",
+        "pollination and seed production",
+        "regular versus feminized versus autoflower genetics",
+        "polyploidy overview",
+        "MOPS breeding documentation framework"
+      ]
+    },
+    {
+      "id": "outdoor",
+      "route": "/learn/outdoor/",
+      "requiredTopics": [
+        "outdoor site selection",
+        "sun path and exposure",
+        "hardening off",
+        "outdoor transplanting",
+        "wind and structural support",
+        "rain and flower risk",
+        "outdoor irrigation",
+        "wildlife protection",
+        "microclimates",
+        "pollen drift",
+        "seasonal planning"
+      ]
+    },
+    {
+      "id": "research-measurement",
+      "route": "/learn/research-methods/",
+      "requiredTopics": [
+        "claim-specific evidence",
+        "observation versus interpretation",
+        "measurement quality chain",
+        "replication versus subsampling",
+        "sampling and comparison",
+        "recordkeeping standards",
+        "photo documentation standards",
+        "measurement uncertainty",
+        "bounded conclusions",
+        "seven-step claim audit"
+      ]
+    },
+    {
+      "id": "general-reference",
+      "route": "/learn/plant-science-reference/",
+      "requiredTopics": [
+        "cultivation terminology map",
+        "crop-stage quick reference",
+        "six plant growth factors overview",
+        "measurement unit reference",
+        "common cultivation abbreviations",
+        "safety and label-compliance reference"
+      ]
+    }
+  ]
+}
