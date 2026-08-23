@@ -130,8 +130,11 @@ for (const card of registry.cards) {
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(card.registryId)) fail(`${card.registryId} has invalid registryId`);
   if (!/^F[1-9][0-9]*$/.test(card.generation)) fail(`${card.registryId} has invalid generation ${card.generation}`);
   if (!['regular', 'feminized', 'autoflower-regular', 'autoflower-feminized'].includes(card.seedType)) fail(`${card.registryId} has invalid seedType ${card.seedType}`);
-  if (card.masterMimeType !== 'image/jpeg' || card.webMimeType !== 'image/jpeg') fail(`${card.registryId} master and web mime types must be image/jpeg`);
-  if (!/\.jpe?g$/i.test(card.masterFileName) || !/\.jpe?g$/i.test(card.webFileName)) fail(`${card.registryId} JPEG filenames are required`);
+  if (!['image/png', 'image/jpeg'].includes(card.masterMimeType)) fail(`${card.registryId} master mime type must be image/png or image/jpeg`);
+  if (card.webMimeType !== 'image/jpeg') fail(`${card.registryId} web mime type must be image/jpeg`);
+  const masterExtOk = card.masterMimeType === 'image/png' ? /\.png$/i.test(card.masterFileName) : /\.jpe?g$/i.test(card.masterFileName);
+  if (!masterExtOk) fail(`${card.registryId} master filename extension does not match masterMimeType`);
+  if (!/\.jpe?g$/i.test(card.webFileName)) fail(`${card.registryId} web filename must use a JPEG extension`);
   if (!Number.isInteger(card.masterByteLength) || card.masterByteLength < 1000) fail(`${card.registryId} has invalid masterByteLength`);
   if (!Number.isInteger(card.webByteLength) || card.webByteLength < 1000) fail(`${card.registryId} has invalid webByteLength`);
   if (!Number.isInteger(card.webWidth) || !Number.isInteger(card.webHeight) || card.webWidth < 320 || card.webHeight < 480) fail(`${card.registryId} has invalid web dimensions`);
@@ -169,6 +172,7 @@ console.log(JSON.stringify({
   controlledMasterRecords: registry.cards.map((card) => ({
     registryId: card.registryId,
     driveFileId: card.driveFileId,
+    masterMimeType: card.masterMimeType,
     masterByteLength: card.masterByteLength,
     masterSha256: card.masterSha256
   })),
