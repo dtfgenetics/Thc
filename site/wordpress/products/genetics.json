@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-19",
+  "updatedAt": "2026-08-23",
   "policy": {
     "pricingSource": "WooCommerce product page",
     "inventorySource": "WooCommerce product page",
@@ -22,7 +22,7 @@
       "seedType": "regular",
       "packQuantity": 10,
       "productPath": "/product/10-regular-f2-blue-mango-seeds/",
-      "liveStoreLabel": "10 regular F2 Blue Mango Seeds",
+      "liveStoreLabel": "10 Regular F2 Blue Mango Seeds",
       "catalogMatchStatus": "verified",
       "descriptionStandard": {
         "breedingDirection": "Selected around vigorous growth, branching, resin production, substantial flower structure, and a candy-blueberry-meets-ripe-mango aromatic direction.",
@@ -45,8 +45,8 @@
       "seedType": "feminized",
       "packQuantity": 10,
       "productPath": "/product/10-feminized-f2-blue-mango-x/",
-      "liveStoreLabel": "10 feminized f2 blue mango x",
-      "catalogMatchStatus": "verified-lineage-generation-route",
+      "liveStoreLabel": "10 Feminized F2 Blue Mango Seeds",
+      "catalogMatchStatus": "verified",
       "descriptionStandard": {
         "breedingDirection": "Same Blue Mango breeding project; the exact feminized release details must be stated on the transaction page.",
         "prohibitedGuarantees": [
@@ -65,13 +65,13 @@
       "seedType": "regular",
       "packQuantity": 10,
       "productPath": "/product/10-reg-f1-blueberry-bubblegum/",
-      "liveStoreLabel": "10 reg f1 Blueberry bubblegum",
-      "catalogMatchStatus": "needs-store-title-normalization-review",
+      "liveStoreLabel": "10 Regular F1 Blue Bubblegum Seeds",
+      "catalogMatchStatus": "verified",
       "titleNormalization": {
         "canonicalCatalogName": "Blue Bubblegum",
-        "currentStoreRouteUses": "Blueberry bubblegum",
-        "automaticRenameAllowed": false,
-        "reason": "The live store label and canonical breeding-project name differ. Preserve the route until the product identity is explicitly reconciled."
+        "preservedProductPath": "/product/10-reg-f1-blueberry-bubblegum/",
+        "automaticRenameAllowed": true,
+        "reason": "The canonical breeding-project name is Blue Bubblegum. Preserve the existing product URL for continuity while normalizing the customer-facing title."
       },
       "descriptionStandard": {
         "breedingDirection": "Sweet fruit-and-bubblegum direction from Bubblegum Kush × Blueberry Butcher.",
