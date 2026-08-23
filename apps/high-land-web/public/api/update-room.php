@@ -11,20 +11,13 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $data = api_read_json_body();
 $roomCode = api_clean_room_code($data['roomCode'] ?? $data['room'] ?? '');
 $playerId = api_clean_string($data['playerId'] ?? '', 80);
+$authKey = api_clean_auth_key($data['authKey'] ?? '');
 if ($playerId === '') {
     api_send_json(['ok' => false, 'error' => 'playerId is required.'], 400);
 }
 
-$room = api_mutate_room($roomCode, function (array $room) use ($data, $playerId): array {
-    $players = is_array($room['players'] ?? null) ? $room['players'] : [];
-    $playerIds = [];
-    foreach ($players as $player) {
-        $playerIds[] = is_array($player) ? ($player['id'] ?? '') : '';
-    }
-
-    if (!in_array($playerId, $playerIds, true)) {
-        api_send_json(['ok' => false, 'error' => 'Player is not in this room.'], 403);
-    }
+$room = api_mutate_room($roomCode, function (array $room) use ($data, $playerId, $authKey): array {
+    api_require_player_auth($room, $playerId, $authKey);
 
     $incomingStatus = isset($data['status']) ? api_clean_string($data['status'], 20) : null;
     $storedStatus = api_clean_string($room['status'] ?? 'waiting', 20);
@@ -66,5 +59,5 @@ $room = api_mutate_room($roomCode, function (array $room) use ($data, $playerId)
 
 api_send_json([
     'ok' => true,
-    'room' => $room
+    'room' => api_public_room($room)
 ]);
