@@ -8,6 +8,17 @@ on:
       - site/wordpress/assets/brand/dtf-potleaf-512.png
       - scripts/set-dtf-potleaf-site-icon.mjs
       - .github/workflows/wordpress-potleaf-site-icon.yml
+  workflow_run:
+    workflows:
+      - Rebuild DTFSeeds WordPress Visual Site
+      - Rebuild DTFSeeds Visual Site On Command
+      - Reconcile DTFSeeds WordPress Pages On Command
+      - Recreate Codex WordPress Production Path
+      - Publish DTFSeeds WordPress Production
+      - Force DTF Visual + Favicon Production
+      - Polish DTFSeeds Visual System V3
+      - Reconcile DTFSeeds Homepage Social Metadata
+    types: [completed]
 
 permissions:
   contents: read
@@ -19,6 +30,9 @@ concurrency:
 
 jobs:
   publish:
+    if: >-
+      github.event_name != 'workflow_run' ||
+      (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main')
     runs-on: ubuntu-latest
     timeout-minutes: 20
     environment: production
@@ -28,7 +42,7 @@ jobs:
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
       BACKUP_ROOT: /tmp/dtf-potleaf-site-icon
-      DTF_ICON_CACHE_VERSION: v2-20260822
+      DTF_ICON_CACHE_VERSION: v3-20260823
 
     steps:
       - uses: actions/checkout@v4
@@ -62,7 +76,7 @@ jobs:
           echo "cache_version=$(node -p "require(process.argv[1]).cacheVersion" "$report")" >> "$GITHUB_OUTPUT"
           echo "source_url=$(node -p "require(process.argv[1]).sourceUrl" "$report")" >> "$GITHUB_OUTPUT"
 
-      - name: Verify public head uses the new versioned favicon family
+      - name: Verify public head uses only the new potleaf favicon family
         id: verify
         shell: bash
         run: |
@@ -91,25 +105,31 @@ jobs:
           const source=process.argv[3];
           const slug=process.argv[4].toLowerCase();
           const links=[...html.matchAll(/<link\b[^>]*>/gi)].map(m=>m[0]);
-          const iconTags=links.filter(tag=>/rel=["'][^"']*icon[^"']*["']/i.test(tag));
+          const metas=[...html.matchAll(/<meta\b[^>]*>/gi)].map(m=>m[0]);
+          const iconTags=links.filter(tag=>/rel=["'][^"']*icon[^"']*["']/i.test(tag) && !/apple-touch-icon/i.test(tag));
+          const appleTags=links.filter(tag=>/rel=["']apple-touch-icon["']/i.test(tag));
+          const tileTags=metas.filter(tag=>/name=["']msapplication-TileImage["']/i.test(tag));
           const versioned=tag=>tag.toLowerCase().includes(slug);
           const has32=iconTags.some(tag=>versioned(tag) && /sizes=["']32x32["']/i.test(tag));
           const has192=iconTags.some(tag=>versioned(tag) && /sizes=["']192x192["']/i.test(tag));
-          const hasApple=links.some(tag=>versioned(tag) && /rel=["']apple-touch-icon["']/i.test(tag));
-          const hasOldStatic=iconTags.some(tag=>/assets\/dtf-home\/dtf-mark\.svg/i.test(tag));
-          const hasOldUnversioned=iconTags.some(tag=>/dtf-potleaf-site-icon(?:-\d+x\d+)?\.png/i.test(tag));
+          const hasApple=appleTags.some(versioned);
+          const staleIcons=iconTags.filter(tag=>!versioned(tag));
+          const staleApple=appleTags.filter(tag=>!versioned(tag));
+          const staleTiles=tileTags.filter(tag=>!versioned(tag));
           if(!source.toLowerCase().includes(slug)) throw new Error(`Source URL is not versioned: ${source}`);
-          if(!has32) throw new Error('Missing versioned 32x32 favicon declaration');
-          if(!has192) throw new Error('Missing versioned 192x192 favicon declaration');
-          if(!hasApple) throw new Error('Missing versioned apple-touch-icon declaration');
-          if(hasOldStatic) throw new Error('Old static SVG favicon is still declared');
-          if(hasOldUnversioned) throw new Error('Old unversioned potleaf favicon is still declared');
-          console.log(iconTags.join('\n'));
+          if(!has32) throw new Error('Missing versioned 32x32 potleaf favicon declaration');
+          if(!has192) throw new Error('Missing versioned 192x192 potleaf favicon declaration');
+          if(!hasApple) throw new Error('Missing versioned potleaf apple-touch-icon declaration');
+          if(staleIcons.length) throw new Error(`Stale non-potleaf favicon declarations remain: ${staleIcons.join(' | ')}`);
+          if(staleApple.length) throw new Error(`Stale apple-touch-icon declarations remain: ${staleApple.join(' | ')}`);
+          if(staleTiles.length) throw new Error(`Stale msapplication tile image declarations remain: ${staleTiles.join(' | ')}`);
+          if(/assets\/dtf-home\/dtf-mark\.svg/i.test(html)) throw new Error('Legacy DTF mark is still referenced in the public head');
+          console.log([...iconTags,...appleTags,...tileTags].join('\n'));
           NODE
             then ok=1; break; fi
             sleep 8
           done
-          [[ "$ok" -eq 1 ]] || { echo 'Fresh public homepage does not expose the complete versioned DTF potleaf favicon family.' >&2; exit 1; }
+          [[ "$ok" -eq 1 ]] || { echo 'Fresh public homepage does not expose only the new DTF potleaf favicon family.' >&2; exit 1; }
 
       - name: Upload rollback evidence
         if: always()
@@ -138,7 +158,7 @@ jobs:
               repo: context.repo.repo,
               issue_number: 46,
               body: [
-                '## DTF versioned potleaf URL/site icon',
+                '## DTF potleaf favicon regression guard',
                 '',
                 `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
                 `Result: **${process.env.JOB_STATUS}**`,
@@ -149,6 +169,6 @@ jobs:
                 `Media slug: **${process.env.MEDIA_SLUG || 'not-run'}**`,
                 `Versioned source URL: ${process.env.SOURCE_URL || 'not-run'}`,
                 '',
-                'Success requires the public HTML head to expose versioned 32x32, 192x192, and Apple touch icon declarations with no old DTF favicon declaration.'
+                'The guard now reapplies the cannabis-leaf icon after WordPress visual/presentation production workflows so older site-icon media cannot silently replace it again. Success also requires every favicon and Apple touch icon declaration in the public head to use the current versioned potleaf asset.'
               ].join('\n')
             });
