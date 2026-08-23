@@ -10,7 +10,7 @@ const backupRoot = process.env.BACKUP_ROOT || '/tmp/dtf-learning-center';
 if (!username || !password) throw new Error('WP_API_USERNAME and WP_API_PASSWORD are required');
 
 const auth = `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`;
-const headers = { Authorization: auth, Accept: 'application/json', 'User-Agent': 'DTFSeeds-Learning-Center/1.0' };
+const headers = { Authorization: auth, Accept: 'application/json', 'User-Agent': 'DTFSeeds-Learning-Center/1.1' };
 const stamp = new Date().toISOString().replace(/[-:.]/g, '').replace('Z', 'Z');
 const backupDir = join(backupRoot, `learn-center-${stamp}`);
 await mkdir(backupDir, { recursive: true });
@@ -44,35 +44,39 @@ function raw(value) {
 const start = '<!-- DTF-LEARNING-CENTER-START -->';
 const end = '<!-- DTF-LEARNING-CENTER-END -->';
 const cards = [
-  ['/learn/library/', 'Education Library', 'The gateway to Teaching Healthy Cultivation learning centers, Academy, Encyclopedia, visual education, diagnostics, and tools.'],
+  ['/learn/start-here/', 'Start Here', 'A beginner-friendly path through plant stage, grow-space safety, environment, roots, plant health, and records.'],
+  ['/learn/library/', 'Education Library', 'The gateway to THC learning centers, Academy, Encyclopedia, visual education, diagnostics, and tools.'],
+  ['/learn/beginner-guides/', 'Beginner Guides', 'A practical sequence from setup and propagation through light, root-zone care, plant health, and reference use.'],
+  ['/learn/academy/', 'THC Academy', 'Course-based learning that connects plant science, evidence, cultivation interpretation, and practical application.'],
+  ['/learn/encyclopedia/', 'Plant Science Encyclopedia', 'The public gateway into the structured 21-part, 420-record THC plant-science reference architecture.'],
+  ['/learn/infographics/', 'Infographic Library', 'Source-controlled visual education covering anatomy, roots, nutrition, climate, plant health, propagation, and more.'],
+  ['/learn/sops/', 'SOPs & Measurement', 'Repeatable pH, EC, PPFD, DLI, VPD, scouting, sanitation, calibration, and recordkeeping practices.'],
+  ['/learn/glossary/', 'Cultivation Glossary', 'Plain-language definitions for common plant-science and cultivation measurements and terms.'],
+  ['/learn/records/', 'Printables & Records', 'Print-friendly daily logs, irrigation records, plant observations, IPM scouting, and breeding selection sheets.'],
+  ['/learn/search/', 'Search THC Education', 'Search the customer-facing education system by plant-science or cultivation topic.'],
   ['/learn/setup/', 'Set Up Before You Grow', 'Location, electrical and water safety, equipment mapping, sanitation, pest exclusion, and empty-room commissioning.'],
   ['/learn/root-zone/', 'Root Zone, Water & Nutrition', 'Media, root oxygen, water chemistry, pH and EC, irrigation, dryback, nutrient mixing, diagnosis, and corrective action.'],
   ['/learn/environment/', 'Light, Climate & Canopy', 'PPFD, DLI, fixture distribution, photoperiod, temperature, humidity, VPD, airflow, mapping, alarms, and CO₂ safety.'],
   ['/learn/plant-health/', 'Plant Health & IPM', 'Scouting, abiotic-versus-biotic reasoning, arthropods, disease prevention, quarantine, lawful controls, disposal, and CAPA.'],
   ['/learn/propagation/', 'Genetics & Propagation', 'Identity, provenance, crop planning, mother stock, cuttings, rooting, acclimation, clone release, tissue culture, and preservation.'],
-  ['/learn/encyclopedia/', 'Plant Science Encyclopedia', 'The public gateway into the structured 21-part, 420-record THC plant-science reference architecture.'],
-  ['/learn/academy/', 'THC Academy', 'Course-based learning that connects plant science, evidence, cultivation interpretation, and practical application.'],
 ];
 
 function esc(value = '') {
   return String(value)
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#039;');
+    .replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;').replaceAll("'", '&#039;');
 }
 
 const section = `${start}
 <section id="thc-learning-centers" style="background:#edf5ef;margin:0;padding:58px 22px">
   <div style="max-width:1240px;margin:auto">
-    <p style="margin:0 0 8px;color:#176d39;font-weight:900;letter-spacing:.11em;text-transform:uppercase">Teaching Healthy Cultivation · Full Learning System</p>
-    <h2 style="margin:0 0 14px;font-size:clamp(2rem,4vw,3.2rem);letter-spacing:-.03em;color:#15341f">Explore the content we have been building.</h2>
-    <p style="max-width:860px;line-height:1.75;color:#496253;font-size:1.05rem">Move beyond a single infographic. These learning centers organize the larger THC education system around the grower’s workflow, with connected plant-science references, visuals, diagnostics, and practical checkpoints.</p>
+    <p style="margin:0 0 8px;color:#176d39;font-weight:900;letter-spacing:.11em;text-transform:uppercase">Teaching Healthy Cultivation · Customer Learning System</p>
+    <h2 style="margin:0 0 14px;font-size:clamp(2rem,4vw,3.2rem);letter-spacing:-.03em;color:#15341f">Choose a path, search a topic, or diagnose a plant.</h2>
+    <p style="max-width:900px;line-height:1.75;color:#496253;font-size:1.05rem">The THC education system connects beginner guides, Academy courses, Encyclopedia references, infographics, measurement SOPs, printables, diagnostics, and grow tools so visitors can move from a question to the right depth of information.</p>
+    <p style="margin:20px 0"><a href="/learn/search/" style="display:inline-block;padding:12px 18px;border-radius:999px;background:#15341f;color:#fff;text-decoration:none;font-weight:900">Search THC Education</a> <a href="/thc-grow-doc/" style="display:inline-block;padding:12px 18px;border-radius:999px;background:#176d39;color:#fff;text-decoration:none;font-weight:900">Diagnose a Plant</a> <a href="/learn/start-here/" style="display:inline-block;padding:12px 18px;border-radius:999px;background:#fff;color:#176d39;border:1px solid #176d39;text-decoration:none;font-weight:900">Start Here</a></p>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:16px;margin-top:26px">
       ${cards.map(([href, title, text]) => `<article style="background:#fff;border:1px solid #d6e4d9;border-radius:20px;padding:22px;box-shadow:0 10px 26px rgba(22,64,35,.06)"><h3 style="margin:0 0 9px;font-size:1.18rem;color:#15341f">${esc(title)}</h3><p style="margin:0 0 17px;color:#496253;line-height:1.6">${esc(text)}</p><a href="${esc(href)}" style="display:inline-block;padding:10px 14px;border-radius:999px;background:#176d39;color:#fff;text-decoration:none;font-weight:900">Open</a></article>`).join('')}
     </div>
-    <p style="margin-top:26px"><a href="/learn/infographics/" style="display:inline-block;padding:11px 16px;border-radius:999px;background:#176d39;color:#fff;text-decoration:none;font-weight:900">Browse 100+ educational visuals</a> <a href="/thc-grow-doc/" style="display:inline-block;padding:11px 16px;border-radius:999px;background:#fff;color:#176d39;border:1px solid #176d39;text-decoration:none;font-weight:900">Open THC Grow Doc</a></p>
   </div>
 </section>
 ${end}`;
@@ -103,13 +107,19 @@ await writeFile(join(backupRoot, 'learning-center-backup-path.txt'), `${backupDi
 
 const verifyUrl = `${siteUrl}/learn/?dtf_learning=${Date.now()}`;
 const response = await fetch(verifyUrl, {
-  headers: { 'Cache-Control': 'no-cache, no-store, max-age=0', Pragma: 'no-cache', 'User-Agent': 'DTFSeeds-Learning-Center/1.0' },
+  headers: { 'Cache-Control': 'no-cache, no-store, max-age=0', Pragma: 'no-cache', 'User-Agent': 'DTFSeeds-Learning-Center/1.1' },
   redirect: 'follow',
   signal: AbortSignal.timeout(60_000),
 });
 const html = await response.text();
 if (!response.ok) throw new Error(`Live Learn verification failed (${response.status})`);
-for (const required of ['Explore the content we have been building.', '/learn/library/', '/learn/setup/', '/learn/root-zone/', '/learn/environment/', '/learn/plant-health/', '/learn/propagation/', '/learn/encyclopedia/', '/learn/academy/']) {
+for (const required of [
+  'Choose a path, search a topic, or diagnose a plant.',
+  '/learn/start-here/', '/learn/library/', '/learn/beginner-guides/', '/learn/academy/',
+  '/learn/encyclopedia/', '/learn/infographics/', '/learn/sops/', '/learn/glossary/',
+  '/learn/records/', '/learn/search/', '/learn/setup/', '/learn/root-zone/',
+  '/learn/environment/', '/learn/plant-health/', '/learn/propagation/', '/thc-grow-doc/'
+]) {
   if (!html.includes(required)) throw new Error(`Live Learn page is missing required learning-center marker: ${required}`);
 }
 
