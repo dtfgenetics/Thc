@@ -4,8 +4,12 @@ on:
   pull_request:
     paths:
       - site/wordpress/pages/**
+      - site/wordpress/products/catalog-strain-cards.json
+      - .tmp/strain-card-b64/**
       - scripts/apply-wordpress-public-content.sh
       - scripts/apply-wordpress-public-content-rest.mjs
+      - scripts/validate-catalog-strain-cards.mjs
+      - .github/workflows/bootstrap-strain-card-assets.yml
       - .github/workflows/wordpress-public-content-*.yml
       - .github/workflows/wordpress-public-pages-deploy.yml
       - .github/workflows/wordpress-reconcile-command.yml
@@ -14,8 +18,12 @@ on:
       - main
     paths:
       - site/wordpress/pages/**
+      - site/wordpress/products/catalog-strain-cards.json
+      - .tmp/strain-card-b64/**
       - scripts/apply-wordpress-public-content.sh
       - scripts/apply-wordpress-public-content-rest.mjs
+      - scripts/validate-catalog-strain-cards.mjs
+      - .github/workflows/bootstrap-strain-card-assets.yml
       - .github/workflows/wordpress-public-content-*.yml
       - .github/workflows/wordpress-public-pages-deploy.yml
       - .github/workflows/wordpress-reconcile-command.yml
@@ -26,20 +34,26 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
 
-      - name: Validate deployment script syntax
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate deployment and strain-card script syntax
         run: |
           bash -n scripts/apply-wordpress-public-content.sh
           node --check scripts/apply-wordpress-public-content-rest.mjs
+          node --check scripts/validate-catalog-strain-cards.mjs
+          node scripts/validate-catalog-strain-cards.mjs
 
       - name: Validate maintained WordPress page sources
         shell: bash
         run: |
           set -euo pipefail
-          expected=(home seeds learn community shop gallery about contact)
+          expected=(home seeds blue-mango blue-frequency mystery-line rainbow-bubblegum learn community shop gallery about contact)
           for slug in "${expected[@]}"; do
             file="site/wordpress/pages/$slug.html"
             test -s "$file"
@@ -61,7 +75,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          for slug in home seeds learn community shop gallery about contact; do
+          for slug in home seeds blue-mango blue-frequency mystery-line rainbow-bubblegum learn community shop gallery about contact; do
             grep -Eq "['\"]$slug['\"]" scripts/apply-wordpress-public-content-rest.mjs
           done
 
@@ -129,8 +143,11 @@ jobs:
         run: |
           set -euo pipefail
           ! grep -Eq 'wp (plugin|theme|user|media|wc|product|shop_order) (delete|update|install|activate|deactivate)' scripts/apply-wordpress-public-content.sh
-          ! grep -Eq '/wp-json/wp/v2/(users/[0-9]+|media|plugins|themes|products|orders)' scripts/apply-wordpress-public-content-rest.mjs
+          ! grep -Eq '/wp-json/wp/v2/(users/[0-9]+|plugins|themes|products|orders)' scripts/apply-wordpress-public-content-rest.mjs
+          grep -Fq '/wp-json/wp/v2/media' scripts/apply-wordpress-public-content-rest.mjs
+          grep -Fq 'catalog-strain-cards.json' scripts/apply-wordpress-public-content-rest.mjs
+          grep -Fq 'webSha256' scripts/apply-wordpress-public-content-rest.mjs
           grep -Fq 'db export' scripts/apply-wordpress-public-content.sh
           grep -Fq 'Expected exactly one published page' scripts/apply-wordpress-public-content.sh
-          grep -Fq 'Expected exactly one published WordPress page' scripts/apply-wordpress-public-content-rest.mjs
+          grep -Fq 'Expected at most one published WordPress page' scripts/apply-wordpress-public-content-rest.mjs
           grep -Fq 'wordpress-rest-content-' scripts/apply-wordpress-public-content-rest.mjs
