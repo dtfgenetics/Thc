@@ -1,0 +1,269 @@
+name: Verify High Land Live Room Security
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows:
+      - Deploy DTFSeeds Public Suite via WordPress V2
+    types:
+      - completed
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: high-land-live-room-security
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      API_BASE: https://dtfseeds.com/games/high-land/api
+    steps:
+      - name: Verify live High Land room authentication and authority
+        id: probe
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY' | tee "$RUNNER_TEMP/high-land-live-security.json"
+          import json
+          import os
+          import secrets
+          import urllib.error
+          import urllib.parse
+          import urllib.request
+
+          base = os.environ['API_BASE'].rstrip('/')
+          host_credential = secrets.token_hex(32)
+          guest_credential = secrets.token_hex(32)
+          host_id = 'dtf-security-host-' + secrets.token_hex(6)
+          guest_id = 'dtf-security-guest-' + secrets.token_hex(6)
+
+          def call(endpoint, method='GET', body=None):
+              url = f"{base}/{endpoint}"
+              data = None if body is None else json.dumps(body).encode('utf-8')
+              headers = {
+                  'Accept': 'application/json',
+                  'Cache-Control': 'no-cache, no-store, max-age=0',
+                  'Pragma': 'no-cache',
+                  'User-Agent': 'DTF-High-Land-Live-Security/1.0'
+              }
+              if data is not None:
+                  headers['Content-Type'] = 'application/json'
+              request = urllib.request.Request(url, data=data, headers=headers, method=method)
+              try:
+                  with urllib.request.urlopen(request, timeout=30) as response:
+                      raw = response.read().decode('utf-8')
+                      return response.status, json.loads(raw)
+              except urllib.error.HTTPError as error:
+                  raw = error.read().decode('utf-8')
+                  try:
+                      payload = json.loads(raw)
+                  except Exception:
+                      payload = {'raw': raw}
+                  return error.code, payload
+
+          def post(endpoint, body):
+              return call(endpoint, 'POST', body)
+
+          def require(condition, message):
+              if not condition:
+                  raise RuntimeError(message)
+
+          def state(current_index, winner=None):
+              return {
+                  'players': [
+                      {'id': host_id, 'name': 'DTF Security Host', 'token': 'tokenA', 'color': '#ef4444', 'positionIndex': 0, 'skipTurns': 0, 'protectedFromBackward': 0},
+                      {'id': guest_id, 'name': 'DTF Security Guest', 'token': 'tokenB', 'color': '#22c55e', 'positionIndex': 0, 'skipTurns': 0, 'protectedFromBackward': 0}
+                  ],
+                  'currentPlayerIndex': current_index,
+                  'phase': 'ready',
+                  'turnDirection': 1,
+                  'reverseTurnsRemaining': 0,
+                  'lastRoll': None,
+                  'lastMove': None,
+                  'lastCard': None,
+                  'message': 'DTF production security probe',
+                  'winnerId': winner,
+                  'cardCursor': 0
+              }
+
+          create_status, created = post('create-room.php', {
+              'game': 'high-land',
+              'maxPlayers': 2,
+              'playerId': host_id,
+              'playerName': 'DTF Security Host',
+              'token': 'tokenA',
+              'color': '#ef4444',
+              'credential': host_credential,
+              'state': None
+          })
+          require(create_status == 200 and created.get('ok'), f'create failed: {create_status} {created}')
+          room_code = created.get('room', {}).get('code', '')
+          require(room_code, 'create returned no room code')
+          created_text = json.dumps(created)
+          require('authHash' not in created_text and host_credential not in created_text, 'create response leaked authentication material')
+
+          join_status, joined = post('join-room.php', {
+              'roomCode': room_code,
+              'playerId': guest_id,
+              'playerName': 'DTF Security Guest',
+              'token': 'tokenB',
+              'color': '#22c55e',
+              'credential': guest_credential
+          })
+          require(join_status == 200 and joined.get('ok'), f'join failed: {join_status} {joined}')
+          require(len(joined.get('room', {}).get('players', [])) == 2, 'join did not produce two-player room')
+          joined_text = json.dumps(joined)
+          require('authHash' not in joined_text and guest_credential not in joined_text, 'join response leaked authentication material')
+
+          query = urllib.parse.urlencode({'room': room_code, 'cache': secrets.token_hex(6)})
+          public_status, public_room = call(f'get-room.php?{query}')
+          require(public_status == 200 and public_room.get('ok'), f'public room read failed: {public_status}')
+          public_text = json.dumps(public_room)
+          require('authHash' not in public_text, 'public room snapshot leaked authHash')
+          require(host_credential not in public_text and guest_credential not in public_text, 'public room snapshot leaked credential')
+
+          wrong_rejoin, _ = post('join-room.php', {
+              'roomCode': room_code,
+              'playerId': guest_id,
+              'playerName': 'DTF Security Guest',
+              'token': 'tokenB',
+              'color': '#22c55e',
+              'credential': 'x' * 64
+          })
+          require(wrong_rejoin == 403, f'wrong rejoin credential was not rejected: {wrong_rejoin}')
+
+          forged_host, _ = post('update-room.php', {
+              'roomCode': room_code,
+              'playerId': host_id,
+              'credential': 'z' * 64,
+              'status': 'playing',
+              'state': state(0)
+          })
+          require(forged_host == 403, f'forged host credential was not rejected: {forged_host}')
+
+          guest_start, _ = post('update-room.php', {
+              'roomCode': room_code,
+              'playerId': guest_id,
+              'credential': guest_credential,
+              'status': 'playing',
+              'state': state(0)
+          })
+          require(guest_start == 403, f'guest start was not rejected: {guest_start}')
+
+          host_start, host_started = post('update-room.php', {
+              'roomCode': room_code,
+              'playerId': host_id,
+              'credential': host_credential,
+              'status': 'playing',
+              'state': state(0)
+          })
+          require(host_start == 200 and host_started.get('ok'), f'valid host start failed: {host_start}')
+
+          guest_out_of_turn, _ = post('update-room.php', {
+              'roomCode': room_code,
+              'playerId': guest_id,
+              'credential': guest_credential,
+              'status': 'playing',
+              'state': state(1)
+          })
+          require(guest_out_of_turn == 409, f'guest mutated host turn: {guest_out_of_turn}')
+
+          host_turn, _ = post('update-room.php', {
+              'roomCode': room_code,
+              'playerId': host_id,
+              'credential': host_credential,
+              'status': 'playing',
+              'state': state(1)
+          })
+          require(host_turn == 200, f'valid host turn failed: {host_turn}')
+
+          host_out_of_turn, _ = post('update-room.php', {
+              'roomCode': room_code,
+              'playerId': host_id,
+              'credential': host_credential,
+              'status': 'playing',
+              'state': state(0)
+          })
+          require(host_out_of_turn == 409, f'host bypassed guest turn: {host_out_of_turn}')
+
+          guest_turn, _ = post('update-room.php', {
+              'roomCode': room_code,
+              'playerId': guest_id,
+              'credential': guest_credential,
+              'status': 'playing',
+              'state': state(0)
+          })
+          require(guest_turn == 200, f'valid guest turn failed: {guest_turn}')
+
+          forged_event, _ = post('append-event.php', {
+              'roomCode': room_code,
+              'playerId': host_id,
+              'credential': 'q' * 64,
+              'event': {'id': 'forged-live-event', 'name': 'dice_rolled', 'roomCode': room_code, 'playerId': host_id, 'createdAt': 'probe', 'payload': {'roll': 6}}
+          })
+          require(forged_event == 403, f'forged event credential was not rejected: {forged_event}')
+
+          valid_event, _ = post('append-event.php', {
+              'roomCode': room_code,
+              'playerId': guest_id,
+              'credential': guest_credential,
+              'event': {'id': 'valid-live-event', 'name': 'dice_rolled', 'roomCode': room_code, 'playerId': guest_id, 'createdAt': 'probe', 'payload': {'roll': 4}}
+          })
+          require(valid_event == 200, f'valid event append failed: {valid_event}')
+
+          complete_status, _ = post('update-room.php', {
+              'roomCode': room_code,
+              'playerId': host_id,
+              'credential': host_credential,
+              'status': 'complete',
+              'state': state(0, host_id)
+          })
+          require(complete_status == 200, f'probe room could not be marked complete: {complete_status}')
+
+          print(json.dumps({
+              'ok': True,
+              'roomCode': room_code,
+              'checks': 13,
+              'authMaterialRedacted': True,
+              'forgedCredentialRejected': True,
+              'hostAuthorityEnforced': True,
+              'turnAuthorityEnforced': True,
+              'eventAuthenticationEnforced': True,
+              'roomMarkedComplete': True
+          }, sort_keys=True))
+          PY
+          grep -Fq '"ok": true' "$RUNNER_TEMP/high-land-live-security.json"
+
+      - name: Report live High Land security verification
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          JOB_STATUS: ${{ job.status }}
+          PROBE_OUTCOME: ${{ steps.probe.outcome }}
+          DEPLOY_RUN: ${{ github.event.workflow_run.id || '' }}
+        with:
+          script: |
+            const deploy = process.env.DEPLOY_RUN
+              ? `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${process.env.DEPLOY_RUN}`
+              : 'manual verification';
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 46,
+              body: [
+                '## High Land live room security verification',
+                '',
+                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                `Triggered by deployment: ${deploy}`,
+                `Overall: **${process.env.JOB_STATUS}**`,
+                `Live room security probe: **${process.env.PROBE_OUTCOME || 'not reached'}**`,
+                '',
+                'Visitor-facing API checks: public room snapshots redact auth material; wrong rejoin credentials fail; forged host credentials fail; guests cannot start; out-of-turn mutations fail; authenticated host/guest turns succeed; forged event writes fail; authenticated event writes succeed. The isolated probe room is marked complete and expires through the normal room TTL cleanup.'
+              ].join('\n')
+            });
