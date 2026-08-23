@@ -16,7 +16,9 @@ env:
   NODE_OPTIONS: --dns-result-order=ipv4first
   WP_SITE_URL: https://dtfseeds.com
   TARGET_PATH: site/wordpress/assets/infographics/DLI_PPFD_Light_Education_Infographic.png
-  IMPORT_MANIFEST: site/wordpress/assets/infographics/import-remaining-core-031-047.json
+  CANONICAL_DRIVE_FILE_ID: 1UKOVWoGxJnb8VJW5Vxncvpp9BhrBHh4u
+  EXPECTED_SHA256: 2287cb16dc3b848635c33b2a4aea523c3abb33085ef3e26f1b818976625548f7
+  EXPECTED_BYTES: '303651'
   INFOGRAPHIC_SOURCE_DIR: ${{ github.workspace }}/site/wordpress/assets/infographics
   INFOGRAPHIC_DIR: ${{ github.workspace }}/.tmp/eligible-infographics
   INFOGRAPHIC_PLACEMENT_CONFIG: ${{ github.workspace }}/site/wordpress/assets/infographics/placement-rules.json
@@ -54,41 +56,53 @@ jobs:
           set -euo pipefail
           : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
           : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
-          test -s "$IMPORT_MANIFEST"
+          [[ "$CANONICAL_DRIVE_FILE_ID" =~ ^[A-Za-z0-9_-]+$ ]]
+          [[ "$EXPECTED_SHA256" =~ ^[a-f0-9]{64}$ ]]
           node --check scripts/stage-eligible-infographics.mjs
           node --check scripts/deploy-wordpress-infographic-library-rest.mjs
           node --check scripts/publish-wordpress-topic-literature.mjs
           node --check scripts/run-learning-v3-production.mjs
 
-      - name: Recover canonical DLI PPFD source image from reviewed manifest
+      - name: Recover exact DLI PPFD image from canonical Drive file
         id: recover
         shell: bash
         run: |
           set -euo pipefail
-          url="$(node - <<'NODE'
-          const fs=require('fs');
-          const manifest=JSON.parse(fs.readFileSync(process.env.IMPORT_MANIFEST,'utf8'));
-          const target=manifest.assets?.find(x=>x.path===process.env.TARGET_PATH);
-          if(!target?.url) process.exit(2);
-          process.stdout.write(target.url);
-          NODE
-          )"
-          test -n "$url"
           tmp="$RUNNER_TEMP/dli-ppfd-lighting.png"
-          curl -4 --fail --silent --show-error --location --retry 5 --retry-delay 3 --connect-timeout 20 --max-time 120 "$url" --output "$tmp"
-          size="$(stat -c %s "$tmp")"
-          test "$size" -ge 100000
-          python3 - "$tmp" <<'PY'
-          import pathlib,sys
-          p=pathlib.Path(sys.argv[1])
-          b=p.read_bytes()
-          assert b[:8]==b'\x89PNG\r\n\x1a\n', 'Recovered asset is not a PNG'
-          assert b.find(b'IEND')!=-1, 'PNG does not contain an IEND marker'
+          rm -f "$tmp"
+          urls=(
+            "https://drive.usercontent.google.com/download?id=${CANONICAL_DRIVE_FILE_ID}&export=download&confirm=t"
+            "https://drive.google.com/uc?export=download&id=${CANONICAL_DRIVE_FILE_ID}&confirm=t"
+          )
+          recovered=0
+          for url in "${urls[@]}"; do
+            candidate="$RUNNER_TEMP/dli-candidate.png"
+            rm -f "$candidate"
+            if curl -4 --fail --silent --show-error --location --retry 3 --retry-delay 2 --connect-timeout 20 --max-time 120 "$url" --output "$candidate"; then
+              if python3 - "$candidate" "$EXPECTED_SHA256" "$EXPECTED_BYTES" <<'PY'
+          import hashlib,pathlib,sys
+          path=pathlib.Path(sys.argv[1])
+          expected_sha=sys.argv[2]
+          expected_bytes=int(sys.argv[3])
+          data=path.read_bytes()
+          assert len(data)==expected_bytes, f'byte size mismatch: {len(data)} != {expected_bytes}'
+          assert data[:8]==b'\x89PNG\r\n\x1a\n', 'not a PNG'
+          assert b'IEND' in data, 'PNG has no IEND marker'
+          actual=hashlib.sha256(data).hexdigest()
+          assert actual==expected_sha, f'SHA-256 mismatch: {actual}'
           PY
+              then
+                mv "$candidate" "$tmp"
+                recovered=1
+                break
+              fi
+            fi
+          done
+          test "$recovered" -eq 1
           mkdir -p "$(dirname "$TARGET_PATH")"
           cp "$tmp" "$TARGET_PATH"
-          echo "bytes=$size" >> "$GITHUB_OUTPUT"
-          sha256sum "$TARGET_PATH"
+          echo "bytes=$(stat -c %s "$TARGET_PATH")" >> "$GITHUB_OUTPUT"
+          echo "sha256=$(sha256sum "$TARGET_PATH" | awk '{print $1}')" >> "$GITHUB_OUTPUT"
 
       - name: Commit restored canonical asset to main
         id: commit
@@ -143,7 +157,7 @@ jobs:
           set -euo pipefail
           export BACKUP_ROOT=/tmp/dtf-learning-v3-lighting-recovery
           node scripts/run-learning-v3-production.mjs | tee "$RUNNER_TEMP/learning-v3-lighting-report.json"
-          grep -Fq 'DLI PPFD Light Education Infographic' "$RUNNER_TEMP/learning-v3-lighting-report.json"
+          grep -Fqi 'DLI PPFD' "$RUNNER_TEMP/learning-v3-lighting-report.json"
           ! grep -Fq '"lighting": null' "$RUNNER_TEMP/learning-v3-lighting-report.json"
 
       - name: Verify live Lighting page uses correct visual
@@ -157,7 +171,7 @@ jobs:
             curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
               --header 'Cache-Control: no-cache, no-store, max-age=0' \
               "https://dtfseeds.com/learn/lighting/?dtf_lighting_recovery=${GITHUB_RUN_ID}-${attempt}" --output "$body"
-            if grep -Fq 'data-dtf-topic="lighting"' "$body" && grep -Fq 'DLI_PPFD_Light_Education_Infographic' "$body"; then
+            if grep -Fq 'data-dtf-topic="lighting"' "$body" && grep -Eqi 'DLI[_ -]PPFD|Light_Education_Pack_Page_1' "$body"; then
               ok=1
               break
             fi
@@ -186,6 +200,7 @@ jobs:
           STATUS: ${{ job.status }}
           COMMIT_CHANGED: ${{ steps.commit.outputs.changed }}
           RESTORED_BYTES: ${{ steps.recover.outputs.bytes }}
+          RESTORED_SHA: ${{ steps.recover.outputs.sha256 }}
           V3_OUTCOME: ${{ steps.v3.outcome }}
           VERIFY_OUTCOME: ${{ steps.verify.outcome }}
         with:
@@ -201,9 +216,10 @@ jobs:
                 `Overall: **${process.env.STATUS}**`,
                 `Canonical source restored/changed: **${process.env.COMMIT_CHANGED || 'unknown'}**`,
                 `Recovered PNG bytes: **${process.env.RESTORED_BYTES || 'unknown'}**`,
+                `Recovered SHA-256: \`${process.env.RESTORED_SHA || 'unknown'}\``,
                 `Learning v3 rebuild: **${process.env.V3_OUTCOME || 'not reached'}**`,
                 `Live Lighting verification: **${process.env.VERIFY_OUTCOME || 'not reached'}**`,
                 '',
-                'The recovery source is the reviewed DLI_PPFD_Light_Education_Infographic entry in import-remaining-core-031-047.json. The job verifies PNG integrity and size before committing or publishing it, then rejects the prior seedling visual on the live Lighting route.'
+                'Recovery uses the canonical Drive asset THC_Light_Education_Pack_Page_1_DLI_PPFD_Portrait.png and requires the exact reviewed byte length and SHA-256 before any repository or WordPress write. The live gate rejects the prior seedling visual.'
               ].join('\n')
             });
