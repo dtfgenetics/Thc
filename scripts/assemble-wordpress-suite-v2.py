@@ -190,8 +190,8 @@ payload = replace_once(
 payload = replace_once(
     payload,
     b"await verifyRoute('/learn/', 'Understand the plant. Build the environment. Make better decisions.'",
-    b"await verifyRoute('/learn/', 'Learn the plant as a connected system.'",
-    "Learn live-verification marker",
+    b"await verifyRoute('/learn/', 'Teaching Healthy Cultivation'",
+    "Learn ownership-verification marker",
 )
 
 # Transport hardening: keep the canonical guarded deployer intact, then widen
