@@ -1,0 +1,380 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-08-23",
+  "id": "lifecycle-propagation-v6",
+  "route": "/learn/lifecycle-propagation/",
+  "title": "Lifecycle & Propagation",
+  "purpose": "Expand Lifecycle & Propagation from a five-section overview into a stage-based cultivation-science curriculum while preserving the existing V3 topic owner and V4 evidence-first guided-study layer.",
+  "learningOutcome": "A learner should be able to follow a cannabis plant from a traceable seed lot or cutting through germination, establishment, clonal rooting, transplanting, vegetative development, reproductive transition, flowering, maturation and cycle completion; define stage transitions with observable biological criteria; distinguish germination from emergence and establishment; recognize major propagation failure points; and keep records that separate developmental change from environmental or management problems.",
+  "visualTargets": [
+    "seed and embryo anatomy with germination sequence",
+    "seed viability versus vigor comparison",
+    "germination water oxygen temperature balance",
+    "radicle emergence versus emergence versus establishment",
+    "seedling establishment and true-leaf progression",
+    "cloning workflow from donor to rooted cutting",
+    "adventitious root initiation on a cutting",
+    "transplant timing and root restriction",
+    "vegetative node and canopy development",
+    "photoperiod perception and reproductive transition",
+    "preflower sex-expression identification",
+    "flower development and maturation timeline",
+    "developmental senescence versus stress comparison",
+    "lifecycle traceability record from lot or mother to final outcome"
+  ],
+  "chapters": [
+    {
+      "id": "seed-identity-quality",
+      "number": 1,
+      "title": "Seed Identity, Quality & Storage",
+      "objective": "Start the lifecycle with traceable biological material and learn why supplied identity, viability, vigor, maturity and storage history are separate pieces of evidence.",
+      "encyclopediaIds": ["THC-ENC-021", "THC-ENC-022", "THC-ENC-023", "THC-ENC-024", "THC-ENC-025"],
+      "lessons": [
+        {
+          "title": "The cannabis seed unit: achene, embryo and reserves",
+          "summary": "Treat the commercial cannabis seed as a fruit-seed unit containing protective outer tissues, an embryo and stored reserves prepared to support early development before the seedling becomes fully photosynthetic.",
+          "concepts": ["achene", "embryo", "cotyledons", "protective coats", "stored reserves"],
+          "cultivation": "Understanding the seed as a living developmental package explains why early germination depends first on seed condition, water, oxygen and temperature rather than on external fertilizer.",
+          "observe": "Record lot identity, physical damage, contamination, obvious immaturity and storage history, but do not infer viability from coat color, size or hardness alone."
+        },
+        {
+          "title": "Seed-lot identity and chain of custody",
+          "summary": "Separate a supplied cultivar or strain name from a traceable lot record that preserves source, generation, parentage claim, receipt history, subdivisions, tests and planting events.",
+          "concepts": ["seed lot", "provenance", "lot ID", "aliquot", "chain of custody"],
+          "cultivation": "A germination result or later phenotype is useful only when it can be connected reliably to the material that produced it.",
+          "observe": "Keep same-named lots separate unless evidence supports combining them, and retain parent-lot identity whenever a package is subdivided."
+        },
+        {
+          "title": "Viability, vigor and lot uniformity",
+          "summary": "Distinguish the ability to produce a normal seedling from the speed, uniformity and resilience with which a seed lot establishes.",
+          "concepts": ["viability", "vigor", "germination percentage", "germination timing", "normal seedling"],
+          "cultivation": "Two lots can reach the same final germination percentage while differing greatly in speed, uniformity and seedling quality, which changes planting and population planning.",
+          "observe": "Track time to germination and final seedling categories instead of reducing lot quality to a single final percentage."
+        },
+        {
+          "title": "Storage, aging and dormancy questions",
+          "summary": "Connect seed moisture, temperature stability, packaging, age and physiological state with deterioration while distinguishing true dormancy from nonviability or unsuitable test conditions.",
+          "concepts": ["seed moisture", "cool storage", "hermetic packaging", "longevity", "dormancy", "quiescence"],
+          "cultivation": "Stable dry and cool storage protects reserve material better than relying on age labels or refrigeration alone, and periodic retesting is more defensible than assuming an expiration date.",
+          "observe": "When a lot performs poorly, verify storage and test conditions before labeling the seed dormant, dead or genetically weak."
+        }
+      ],
+      "knowledgeChecks": [
+        "Why is a supplied strain name not a complete seed-lot identity?",
+        "How can a lot be viable yet have weak vigor?",
+        "Why does cool storage not compensate for excessive seed moisture?",
+        "What evidence is needed before calling an ungerminated seed dormant?"
+      ]
+    },
+    {
+      "id": "germination",
+      "number": 2,
+      "title": "Germination: From Imbibition to Radicle Emergence",
+      "objective": "Understand germination as a measurable biological sequence driven by hydration, metabolic restart, reserve use, temperature and oxygen rather than as a single yes-or-no event.",
+      "encyclopediaIds": ["THC-ENC-026", "THC-ENC-027", "THC-ENC-028", "THC-ENC-029", "THC-ENC-030"],
+      "lessons": [
+        {
+          "title": "Imbibition and metabolic restart",
+          "summary": "Follow the dry unit through rapid water uptake, membrane reorganization, repair and renewed metabolism before visible root emergence.",
+          "concepts": ["imbibition", "membrane repair", "hydration", "respiration restart", "triphasic water uptake"],
+          "cultivation": "Multiple germination methods can work when they provide repeatable water contact without drowning the seed; the biology matters more than the container or substrate fashion.",
+          "observe": "Swelling alone does not prove viability, so continue tracking the seed through radicle emergence and subsequent normal development."
+        },
+        {
+          "title": "Reserve mobilization before photosynthetic independence",
+          "summary": "Learn how stored lipids, proteins and carbohydrates support respiration, cell expansion and early root and shoot growth before the emerging seedling can meet most of its carbon demand through photosynthesis.",
+          "concepts": ["reserve mobilization", "respiration", "stored lipids", "cotyledons", "heterotrophic-to-autotrophic transition"],
+          "cultivation": "External fertilizer does not power the earliest germination process and can add unnecessary salinity before a functional root system is established.",
+          "observe": "When germination is slow, inspect seed condition, temperature, oxygen and moisture before reaching for additives or stimulants."
+        },
+        {
+          "title": "Temperature, moisture and oxygen as one system",
+          "summary": "Treat germination temperature, water availability and gas exchange as interacting variables because saturated or compacted media can contain abundant water while restricting oxygen.",
+          "concepts": ["cardinal temperature", "water availability", "air-filled porosity", "hypoxia", "saturation"],
+          "cultivation": "The goal is moist and aerated, not flooded and not repeatedly dried. Seed-zone temperature should be measured where the seed actually sits rather than inferred from room temperature.",
+          "observe": "Record seed-level temperature, watering method, drainage, media condition, odor and visible contamination when comparing germination outcomes."
+        },
+        {
+          "title": "Define the germination endpoint",
+          "summary": "Use radicle protrusion as a defined germination event while keeping later emergence and normal seedling establishment as separate acceptance gates.",
+          "concepts": ["radicle protrusion", "germination event", "emergence", "establishment", "time-to-event scoring"],
+          "cultivation": "Separating germinated, emerged and established reveals whether losses occur before root emergence, during mechanical emergence or after the seedling enters its new environment.",
+          "observe": "Record newly germinated units by time and preserve each seed's lot identity when it is transferred or direct-sown."
+        }
+      ],
+      "knowledgeChecks": [
+        "Why can a dead seed swell during imbibition?",
+        "What is the biological problem with a saturated germination medium?",
+        "Why should room temperature not automatically be treated as seed temperature?",
+        "How do germination, emergence and establishment differ?"
+      ]
+    },
+    {
+      "id": "seedling-establishment",
+      "number": 3,
+      "title": "Seedling Establishment",
+      "objective": "Follow the plant from cotyledon opening through true-leaf development and early root expansion using developmental criteria rather than arbitrary calendar age.",
+      "encyclopediaIds": ["THC-ENC-008", "THC-ENC-013", "THC-ENC-018", "THC-ENC-019"],
+      "lessons": [
+        {
+          "title": "Cotyledons, hypocotyl and first true leaves",
+          "summary": "Recognize the structural transition from an emerged seedling supported partly by seed reserves to a young plant building new photosynthetic leaf area and an expanding root system.",
+          "concepts": ["cotyledon", "hypocotyl", "epicotyl", "first true leaves", "juvenile morphology"],
+          "cultivation": "Stage labels should follow actual development because two seedlings of the same age can differ substantially in leaf, root and stem maturity.",
+          "observe": "Record cotyledon opening, true-leaf appearance, node development and root progress rather than age alone."
+        },
+        {
+          "title": "Root-shoot balance during establishment",
+          "summary": "Connect expansion of new roots with leaf area, transpiration demand and the seedling's increasing dependence on a functional root zone.",
+          "concepts": ["root-shoot balance", "root tips", "transpiration", "water uptake", "early allocation"],
+          "cultivation": "A rapidly expanding shoot supported by a small or impaired root system has less hydraulic margin when light, heat or vapor demand increases.",
+          "observe": "Pair shoot growth with root-zone moisture, root appearance and recovery between irrigation events."
+        },
+        {
+          "title": "Light, morphology and early stretch",
+          "summary": "Understand how light quantity, direction and competition interact with genetics and temperature to influence seedling elongation and leaf development.",
+          "concepts": ["photomorphogenesis", "stem elongation", "leaf expansion", "light direction", "temperature interaction"],
+          "cultivation": "Excessive elongation is a morphology observation, not a diagnosis by itself; light, temperature, density and genetics all belong in the comparison.",
+          "observe": "Measure internode length, stem diameter, leaf expansion and plant-to-plant uniformity instead of relying on a vague stretched/not-stretched label."
+        },
+        {
+          "title": "Seedling release criteria and failure patterns",
+          "summary": "Define when a seedling is established enough for the next stage and distinguish damping-off, mechanical injury, water stress, salinity and poor root-zone aeration as different failure pathways.",
+          "concepts": ["release criteria", "normal seedling", "damping-off", "root-zone oxygen", "uniformity"],
+          "cultivation": "A release gate based on active roots, healthy new growth and stable water balance is more transferable than a rule such as move every plant on day seven.",
+          "observe": "Track lesion location, stem integrity, root color, media moisture, temperature and disease spread before assigning a cause to seedling collapse."
+        }
+      ],
+      "knowledgeChecks": [
+        "Why is seedling age alone a weak transplant or release criterion?",
+        "How does increasing leaf area change hydraulic demand on the root system?",
+        "What measurements improve an assessment of early stretch?",
+        "Which observations help separate damping-off from simple water stress?"
+      ]
+    },
+    {
+      "id": "clonal-propagation",
+      "number": 4,
+      "title": "Clonal Propagation & Mother Stock",
+      "objective": "Understand a cutting as wounded shoot tissue that must survive water imbalance, initiate adventitious roots and retain traceable identity while sanitation limits pathogen transfer.",
+      "encyclopediaIds": ["THC-ENC-011", "THC-ENC-012", "THC-ENC-013", "THC-ENC-020"],
+      "lessons": [
+        {
+          "title": "Mother-stock selection and donor condition",
+          "summary": "Treat donor identity, developmental state, health, recent stress, pest and disease status and cutting position as part of the propagation input rather than assuming every shoot is equivalent.",
+          "concepts": ["mother stock", "donor condition", "source identity", "physiological state", "sanitation"],
+          "cultivation": "Cloning preserves genotype but does not freeze physiological condition or erase pests and pathogens carried with the cutting.",
+          "observe": "Record donor ID, source node or shoot position, recent treatments, visible health and date before the cutting is separated."
+        },
+        {
+          "title": "Wounding, water balance and cutting preparation",
+          "summary": "Explain why a severed shoot immediately loses root-supplied water and must control transpiration while the wound seals and rooting processes begin.",
+          "concepts": ["wound response", "transpiration", "hydraulic disconnect", "leaf area", "cut surface"],
+          "cultivation": "Humidity and light management should reduce water-loss pressure without creating stagnant, persistently wet conditions that favor tissue decline or disease.",
+          "observe": "Track turgor, leaf condition, stem base appearance, media moisture and recovery pattern rather than judging rooting from leaf appearance alone."
+        },
+        {
+          "title": "Adventitious root initiation",
+          "summary": "Follow the developmental shift in which competent stem tissues form root initials and new roots under coordinated hormonal, carbohydrate and environmental signals.",
+          "concepts": ["adventitious roots", "auxin", "cell competence", "root initials", "carbon supply"],
+          "cultivation": "Rooting products cannot compensate for unsuitable donor tissue, poor sanitation, water imbalance or an oxygen-limited propagation medium.",
+          "observe": "Use actual root emergence and continued root extension as the rooting endpoint rather than a fixed number of days."
+        },
+        {
+          "title": "Rooted-clone acclimation and release",
+          "summary": "Transition newly rooted cuttings from a protected high-humidity propagation environment toward the light, airflow and evaporative conditions of normal vegetative growth.",
+          "concepts": ["acclimation", "rooted cutting", "transpiration recovery", "hardening", "release gate"],
+          "cultivation": "Abrupt environmental change can exceed the new root system's ability to support the shoot even when roots are visible.",
+          "observe": "Release clones when new roots are actively extending, the shoot maintains turgor under progressively normal conditions and new growth is healthy."
+        }
+      ],
+      "knowledgeChecks": [
+        "What does cloning preserve, and what biological conditions can still change or transfer?",
+        "Why is water balance difficult immediately after a cutting is taken?",
+        "Why is visible root emergence better than calendar age as a rooting endpoint?",
+        "What evidence shows that a rooted clone is ready to leave propagation conditions?"
+      ]
+    },
+    {
+      "id": "transplant-acclimation",
+      "number": 5,
+      "title": "Transplanting, Acclimation & Early Vegetative Growth",
+      "objective": "Connect container geometry, root occupation, media condition and environmental change with the transition from propagation into stable vegetative growth.",
+      "encyclopediaIds": ["THC-ENC-013", "THC-ENC-014", "THC-ENC-015", "THC-ENC-020"],
+      "lessons": [
+        {
+          "title": "Container occupancy and transplant timing",
+          "summary": "Use root distribution, media behavior, plant water demand and available volume together to decide when a plant is outgrowing its current root environment.",
+          "concepts": ["container geometry", "root occupancy", "root restriction", "media volume", "water demand"],
+          "cultivation": "Transplanting too early wastes root-zone volume and can complicate moisture control; waiting too long can produce uneven moisture, restriction and circling roots.",
+          "observe": "Inspect root distribution and irrigation behavior rather than using canopy width or plant age as the only transplant trigger."
+        },
+        {
+          "title": "Root disturbance and transplant shock",
+          "summary": "Understand transplant shock as a temporary imbalance that can result from root injury, changed moisture distribution, new chemistry, temperature change or altered evaporative demand.",
+          "concepts": ["root disturbance", "hydraulic adjustment", "media transition", "transplant shock", "recovery"],
+          "cultivation": "The goal is to minimize simultaneous stressors rather than to assume every transplant requires a stimulant or corrective feeding.",
+          "observe": "Record root disturbance, media condition, irrigation, temperature, light and recovery of new growth after the move."
+        },
+        {
+          "title": "Hardening and environmental acclimation",
+          "summary": "Treat hardening as gradual physiological adjustment to a new light, temperature, humidity, airflow or outdoor environment rather than as a single move event.",
+          "concepts": ["hardening", "acclimation", "light increase", "vapor demand", "temperature exposure"],
+          "cultivation": "A plant adapted to protected propagation conditions may respond poorly to a sudden increase in radiation or evaporative demand despite having a healthy root system.",
+          "observe": "Change one major exposure dimension at a time when possible and track turgor, leaf temperature, new growth and recovery."
+        },
+        {
+          "title": "Confirming vegetative establishment",
+          "summary": "Define early vegetative establishment by sustained new root and shoot growth, stable irrigation response and expanding nodes rather than by survival alone.",
+          "concepts": ["active root growth", "new nodes", "stable water balance", "vegetative establishment", "growth rate"],
+          "cultivation": "A plant that merely remains alive after transplant is not necessarily ready for aggressive training, environmental escalation or reproductive transition.",
+          "observe": "Look for repeatable new growth and stable daily response before increasing management intensity."
+        }
+      ],
+      "knowledgeChecks": [
+        "Why can irrigation behavior reveal container restriction before canopy appearance does?",
+        "What different mechanisms can produce the umbrella term transplant shock?",
+        "Why should acclimation be gradual after protected propagation?",
+        "What distinguishes survival from successful vegetative establishment?"
+      ]
+    },
+    {
+      "id": "vegetative-development",
+      "number": 6,
+      "title": "Vegetative Development & Crop Readiness",
+      "objective": "Track the expanding root-shoot system through node production, branching, leaf-area development and resource allocation until the plant is biologically ready for the next intended stage.",
+      "encyclopediaIds": ["THC-ENC-006", "THC-ENC-011", "THC-ENC-012", "THC-ENC-020"],
+      "lessons": [
+        {
+          "title": "Nodes, branches and expanding architecture",
+          "summary": "Follow vegetative development through repeated production of nodes, internodes, leaves and axillary shoots that build the future canopy.",
+          "concepts": ["node production", "internode", "axillary growth", "branch architecture", "leaf area"],
+          "cultivation": "Node count, branch position and internode length provide more useful developmental information than height alone.",
+          "observe": "Track architecture over time and compare new growth with earlier nodes to identify changes in growth pattern."
+        },
+        {
+          "title": "Source-sink growth and biomass allocation",
+          "summary": "Understand that mature leaves supply carbon while roots, shoot tips and developing branches compete as sinks whose priorities shift with stage and environment.",
+          "concepts": ["source", "sink", "carbon allocation", "root-shoot allocation", "growth demand"],
+          "cultivation": "Removing, bending or shading tissue changes the source-sink system and can redirect subsequent growth rather than simply subtracting biomass.",
+          "observe": "Assess recovery and new growth after training before assuming the intended canopy response occurred."
+        },
+        {
+          "title": "Training timing and recovery capacity",
+          "summary": "Place low- and high-stress training inside developmental context by considering meristem activity, stem maturity, root support and time available for recovery.",
+          "concepts": ["meristem", "apical dominance", "training response", "wound recovery", "canopy architecture"],
+          "cultivation": "Training belongs after stable establishment and should be judged by recovery and architecture, while detailed technique belongs in the dedicated Training & Canopy section.",
+          "observe": "Document the intervention, tissue condition, time to resumed growth and any localized transport or wound problems."
+        },
+        {
+          "title": "Readiness for reproductive transition",
+          "summary": "Define transition readiness as a management decision based on plant health, root-zone stability, canopy structure, developmental maturity and available space rather than plant age alone.",
+          "concepts": ["developmental readiness", "crop uniformity", "root-zone stability", "canopy readiness", "transition planning"],
+          "cultivation": "Moving an unstable crop into a new developmental and environmental regime makes later problems harder to interpret because multiple variables change at once.",
+          "observe": "Record baseline plant size, node development, root-zone performance and health before changing the reproductive signal."
+        }
+      ],
+      "knowledgeChecks": [
+        "Why is height alone a weak measure of vegetative development?",
+        "How can a training intervention change source-sink relationships?",
+        "What evidence should show recovery before another high-stress intervention?",
+        "Why is a pre-transition baseline valuable for later troubleshooting?"
+      ]
+    },
+    {
+      "id": "reproductive-transition",
+      "number": 7,
+      "title": "Reproductive Transition, Sex Expression & Flower Development",
+      "objective": "Follow the plant through photoperiod perception, preflower expression, transition stretch and progressive reproductive development while separating genotype, developmental state and environmental influence.",
+      "encyclopediaIds": ["THC-ENC-005", "THC-ENC-006", "THC-ENC-020"],
+      "lessons": [
+        {
+          "title": "Photoperiod perception and the dark period",
+          "summary": "Understand reproductive transition as a plant signaling response to light-dark timing, interpreted through photoreceptor and circadian systems rather than as a simple switch located in the flower.",
+          "concepts": ["photoperiod", "dark period", "photoreceptor", "circadian timing", "flowering signal"],
+          "cultivation": "Consistent timing matters because the plant integrates light-dark information across days; the dedicated Lighting section should hold detailed fixture and DLI management.",
+          "observe": "Record actual timer schedule, interruptions and stage response rather than assuming the programmed schedule is what the plant experienced."
+        },
+        {
+          "title": "Photoperiod versus autoflower development",
+          "summary": "Separate photoperiod-sensitive reproductive timing from genotypes with reduced dependence on day length while recognizing that environment still influences growth rate, stress and final morphology.",
+          "concepts": ["photoperiod-sensitive", "autoflower", "developmental timing", "genotype", "environment"],
+          "cultivation": "Autoflower does not mean environment-independent, and photoperiod plants do not all transition at identical rates after a schedule change.",
+          "observe": "Record genotype type, emergence date, node development and first reproductive signs rather than using one universal calendar."
+        },
+        {
+          "title": "Preflowers and sex expression",
+          "summary": "Identify reproductive structures at nodes and distinguish normal male, female and mixed sex-expression observations from assumptions based on vegetative morphology.",
+          "concepts": ["preflower", "staminate", "pistillate", "sex expression", "node inspection"],
+          "cultivation": "Early, repeated inspection protects breeding and seedless-flower goals, while sex-expression conclusions should be based on reproductive structures rather than plant shape.",
+          "observe": "Inspect multiple nodes over time and photograph ambiguous structures before making irreversible crop decisions."
+        },
+        {
+          "title": "Transition stretch and progressive flower formation",
+          "summary": "Follow the coordinated shift in internode growth, branching behavior, floral initiation and reproductive sink demand that occurs during early flowering.",
+          "concepts": ["transition stretch", "floral initiation", "reproductive sink", "internode change", "flower development"],
+          "cultivation": "Early flowering is a changing developmental phase, so architecture, water demand and nutrient demand should be interpreted against the stage rather than treated as static vegetative behavior.",
+          "observe": "Track stretch, node response, flower-site progression and environmental changes together to distinguish normal transition from new stress."
+        }
+      ],
+      "knowledgeChecks": [
+        "Why is reproductive transition more than a timer switch?",
+        "What does autoflower not imply about environmental sensitivity?",
+        "Which structures should be used to determine sex expression?",
+        "Why can water and carbon demand change during transition stretch?"
+      ]
+    },
+    {
+      "id": "maturation-cycle-records",
+      "number": 8,
+      "title": "Maturation, Senescence & Lifecycle Records",
+      "objective": "Finish the crop cycle by separating progressive reproductive maturation from stress-induced decline, documenting the endpoint and carrying traceable observations forward into the next cycle.",
+      "encyclopediaIds": ["THC-ENC-005", "THC-ENC-006", "THC-ENC-020", "THC-ENC-022"],
+      "lessons": [
+        {
+          "title": "Flower maturation is a sequence, not a date",
+          "summary": "Treat reproductive maturation as a progression of structural, physiological and chemical changes rather than a single calendar endpoint inherited from a label.",
+          "concepts": ["reproductive maturation", "developmental sequence", "flower structure", "trichome development", "genotype-environment interaction"],
+          "cultivation": "Breeder timing estimates can guide planning but should not replace direct observation of the actual crop and its environmental history.",
+          "observe": "Use repeated observations from consistent plant positions and avoid making maturity decisions from one photograph or one isolated cue."
+        },
+        {
+          "title": "Developmental senescence versus stress decline",
+          "summary": "Understand senescence as regulated late-stage aging and nutrient remobilization while recognizing that root problems, disease, salinity, drought and other stresses can produce superficially similar yellowing or tissue loss.",
+          "concepts": ["senescence", "nutrient remobilization", "chlorophyll breakdown", "stress", "source-sink change"],
+          "cultivation": "Calling every late-stage color change normal fade can hide a correctable problem, while treating all senescence as deficiency can provoke unnecessary intervention.",
+          "observe": "Compare stage, symptom location, progression, root-zone data and environmental history before deciding whether decline is developmental or pathological."
+        },
+        {
+          "title": "Close the cycle with outcome records",
+          "summary": "Link the final crop outcome back to seed lot or mother ID, dates of stage transitions, environment, irrigation, nutrition, interventions, health events and representative images.",
+          "concepts": ["lifecycle record", "stage dates", "traceability", "outcome", "evidence trail"],
+          "cultivation": "A complete record turns one crop into evidence that can improve the next instead of leaving only memory and a harvest date.",
+          "observe": "Preserve deviations and failures as carefully as successful settings because they explain why otherwise similar cycles diverged."
+        },
+        {
+          "title": "Compare cycles and revise stage gates",
+          "summary": "Use repeated crops to refine germination, establishment, transplant, training, transition and maturation criteria while keeping genotype, environment and management differences visible.",
+          "concepts": ["cycle comparison", "stage gate", "repeatability", "baseline", "continuous improvement"],
+          "cultivation": "The goal is not to force every plant onto one calendar; it is to improve the rules used to recognize biological readiness and risk in the actual system.",
+          "observe": "Change stage targets only when the record shows a repeatable relationship between the revised criterion and a better downstream outcome."
+        }
+      ],
+      "knowledgeChecks": [
+        "Why should a label-based flowering time not be treated as the sole maturity criterion?",
+        "What evidence helps separate senescence from stress-related decline?",
+        "Which records are necessary to connect a final outcome to its propagation source?",
+        "How can repeated cycles improve stage-gate decisions without creating a rigid calendar?"
+      ]
+    }
+  ],
+  "deepRoutes": [
+    {"label": "Lifecycle encyclopedia", "href": "/learn/encyclopedia/"},
+    {"label": "Plant Biology & Anatomy", "href": "/learn/plant-biology/"},
+    {"label": "Environment & VPD", "href": "/learn/environment-vpd/"},
+    {"label": "Lighting", "href": "/learn/lighting/"},
+    {"label": "Training & Canopy", "href": "/learn/training-canopy/"},
+    {"label": "Genetics & Breeding", "href": "/learn/genetics-breeding/"},
+    {"label": "GrowLens records", "href": "/growlens/"}
+  ]
+}
