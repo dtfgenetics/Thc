@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-08-23",
+  "policy": {
+    "purpose": "Use exact previously-created DTF Genetics strain cards as the primary WooCommerce product visual for the matching cultivar, generation, and seed type.",
+    "sourceOfTruth": "Controlled Google Drive 02 Genetics folder, with original ChatGPT Library provenance retained in this registry.",
+    "imageWriteScope": "WooCommerce product images only. Preserve every non-image commerce field and retain any existing secondary product images after the exact strain card.",
+    "requireExactHash": true
+  },
+  "cards": [
+    {
+      "registryId": "blue-mango-f2-regular-10",
+      "productId": 39,
+      "productSlug": "10-regular-f2-blue-mango-seeds",
+      "canonicalName": "Blue Mango",
+      "generation": "F2",
+      "seedType": "regular",
+      "libraryFileId": "file_00000000c6cc71f5b08a3c83472ec3f4",
+      "driveFileId": "1FbuXpjA9Z5FsKdPT-vQILMCPv1aejlLR",
+      "fileName": "Blue_Mango_F2_Regular_DTF_Strain_Card.png",
+      "mimeType": "image/png",
+      "byteLength": 2605528,
+      "sha256": "f9fa5988d05c65e458a55c4dc6c4c416048cb6bbf71c3a246c5ff238a8569f15",
+      "wordpressSlug": "dtf-strain-card-blue-mango-f2-regular",
+      "altText": "Blue Mango F2 Regular DTF Genetics strain card"
+    },
+    {
+      "registryId": "blue-mango-f2-feminized-10",
+      "productId": 41,
+      "productSlug": "10-feminized-f2-blue-mango-x",
+      "canonicalName": "Blue Mango",
+      "generation": "F2",
+      "seedType": "feminized",
+      "libraryFileId": "file_00000000907471f8af6f3fa67db175c2",
+      "driveFileId": "1HnLstfC6OBvrwWMVI6rP9JH3S1b_XCsl",
+      "fileName": "Blue_Mango_F2_Feminized_DTF_Strain_Card.png",
+      "mimeType": "image/png",
+      "byteLength": 2549517,
+      "sha256": "0f009757befd075f7cb8b5e6936bc909e6a403b442047fd8fe7bb69c1b8e84ab",
+      "wordpressSlug": "dtf-strain-card-blue-mango-f2-feminized",
+      "altText": "Blue Mango F2 Feminized DTF Genetics strain card"
+    },
+    {
+      "registryId": "blue-bubblegum-f1-regular-10",
+      "productId": 91,
+      "productSlug": "10-reg-f1-blueberry-bubblegum",
+      "canonicalName": "Blue Bubblegum",
+      "generation": "F1",
+      "seedType": "regular",
+      "libraryFileId": "file_000000000b4071f584c3e3209e23d5f8",
+      "driveFileId": "13f_nC3Ri4hyIkbjjcRKPX4GKJ-UBZ7Ps",
+      "fileName": "Blue_Bubblegum_F1_Regular_DTF_Strain_Card.png",
+      "mimeType": "image/png",
+      "byteLength": 2573629,
+      "sha256": "6fd1ddc033a76fbdd5c901dabae50b3058f673ec3d8a45c41db9572079620cb5",
+      "wordpressSlug": "dtf-strain-card-blue-bubblegum-f1-regular",
+      "altText": "Blue Bubblegum F1 Regular DTF Genetics strain card"
+    }
+  ]
+}
