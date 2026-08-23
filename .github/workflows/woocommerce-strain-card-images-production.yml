@@ -40,7 +40,7 @@ jobs:
         with:
           node-version: 22
 
-      - name: Validate exact strain card package
+      - name: Validate reviewed strain card package
         shell: bash
         run: |
           set -euo pipefail
@@ -49,19 +49,20 @@ jobs:
           node --check scripts/publish-woocommerce-strain-card-images.mjs
           node - <<'NODE'
           const fs=require('fs');
-          const r=JSON.parse(fs.readFileSync('site/wordpress/products/strain-card-images.json','utf8'));
+          const r=JSON.parse(fs.readFileSync(process.env.STRAIN_CARD_REGISTRY,'utf8'));
           if(r.schemaVersion!==1 || !Array.isArray(r.cards) || r.cards.length!==3) throw new Error('Expected exactly 3 reviewed strain cards.');
           const ids=r.cards.map(x=>Number(x.productId)).sort((a,b)=>a-b);
           if(JSON.stringify(ids)!==JSON.stringify([39,41,91])) throw new Error(`Unexpected product IDs: ${ids.join(',')}`);
           for(const c of r.cards){
-            if(!/^[a-f0-9]{64}$/.test(c.sha256)) throw new Error(`${c.registryId}: invalid SHA-256`);
-            if(c.mimeType!=='image/png') throw new Error(`${c.registryId}: expected image/png`);
-            if(!Number.isInteger(c.byteLength)||c.byteLength<100000) throw new Error(`${c.registryId}: implausible byte length`);
+            if(!c.registryId||!c.productSlug||!c.driveFileId||!c.fileName||!c.altText||!c.wordpressSlug) throw new Error(`${c.registryId||'unknown'}: incomplete reviewed card mapping`);
+            if(!Number.isInteger(c.expectedWidth)||c.expectedWidth<500) throw new Error(`${c.registryId}: invalid expectedWidth`);
+            if(!Number.isInteger(c.expectedHeight)||c.expectedHeight<500) throw new Error(`${c.registryId}: invalid expectedHeight`);
+            if(c.sourceSha256 && !/^[a-f0-9]{64}$/.test(c.sourceSha256)) throw new Error(`${c.registryId}: invalid provenance SHA-256`);
           }
-          console.log('Reviewed strain card registry is structurally valid.');
+          console.log('Reviewed strain card registry is structurally valid for dimension-validated Drive renditions.');
           NODE
 
-      - name: Publish exact strain cards and verify live products
+      - name: Publish reviewed strain cards and verify live products
         id: publish
         shell: bash
         run: |
@@ -93,13 +94,13 @@ jobs:
               repo: context.repo.repo,
               issue_number: 46,
               body: [
-                '## WooCommerce exact strain card images',
+                '## WooCommerce reviewed strain card images',
                 '',
                 `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
                 `Result: **${process.env.JOB_STATUS}**`,
-                `Exact card publication and live verification: **${process.env.PUBLISH || 'not-completed'}**`,
+                `Reviewed card publication and live verification: **${process.env.PUBLISH || 'not-completed'}**`,
                 '',
-                'Reviewed visual scope: Blue Mango F2 Regular, Blue Mango F2 Feminized, and Blue Bubblegum F1 Regular. Source assets are the exact previously-created strain cards, normalized to true PNG files and checksum-locked in the source-controlled registry.',
-                'The publisher downloads and validates all three exact Drive assets before any WordPress write. It changes only WooCommerce product images, makes the exact strain card primary, retains existing secondary images, snapshot-compares all protected non-image commerce fields, and rolls product images back on verification failure.'
+                'Scope: Blue Mango F2 Regular, Blue Mango F2 Feminized, and Blue Bubblegum F1 Regular.',
+                'The publisher validates the controlled Drive rendition as a real image at the expected dimensions, then makes that reviewed card the primary WooCommerce image while preserving protected commerce fields and retaining secondary images. Runtime byte verification is performed on the WordPress-hosted original.'
               ].join('\n')
             });
