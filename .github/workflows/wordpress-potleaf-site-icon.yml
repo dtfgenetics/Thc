@@ -28,6 +28,7 @@ jobs:
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
       BACKUP_ROOT: /tmp/dtf-potleaf-site-icon
+      DTF_ICON_CACHE_VERSION: v2-20260822
 
     steps:
       - uses: actions/checkout@v4
@@ -44,10 +45,11 @@ jobs:
           set -euo pipefail
           test -n "${WP_API_USERNAME:-}"
           test -n "${WP_API_PASSWORD:-}"
+          test -n "${DTF_ICON_CACHE_VERSION:-}"
           test -s site/wordpress/assets/brand/dtf-potleaf-512.png
           node --check scripts/set-dtf-potleaf-site-icon.mjs
 
-      - name: Set WordPress Site Icon and logo to the DTF potleaf
+      - name: Set WordPress Site Icon and logo to the versioned DTF potleaf
         id: publish
         shell: bash
         run: |
@@ -56,9 +58,11 @@ jobs:
           dir="$(cat "$BACKUP_ROOT/latest.txt")"
           report="$dir/report.json"
           echo "media_id=$(node -p "require(process.argv[1]).mediaId" "$report")" >> "$GITHUB_OUTPUT"
+          echo "media_slug=$(node -p "require(process.argv[1]).mediaSlug" "$report")" >> "$GITHUB_OUTPUT"
+          echo "cache_version=$(node -p "require(process.argv[1]).cacheVersion" "$report")" >> "$GITHUB_OUTPUT"
           echo "source_url=$(node -p "require(process.argv[1]).sourceUrl" "$report")" >> "$GITHUB_OUTPUT"
 
-      - name: Verify live browser favicon uses the DTF potleaf
+      - name: Verify public head uses the new versioned favicon family
         id: verify
         shell: bash
         run: |
@@ -66,12 +70,12 @@ jobs:
           auth="$(printf '%s:%s' "$WP_API_USERNAME" "$WP_API_PASSWORD" | base64 -w0)"
           curl -4 -fsSL -H "Authorization: Basic $auth" \
             "$WP_SITE_URL/wp-json/wp/v2/settings?context=edit" -o "$RUNNER_TEMP/settings.json"
-          node - <<'NODE' "$RUNNER_TEMP/settings.json" "${{ steps.publish.outputs.media_id }}"
+          node - "$RUNNER_TEMP/settings.json" "${{ steps.publish.outputs.media_id }}" <<'NODE'
           const s=require(process.argv[2]);
           const id=Number(process.argv[3]);
           if(Number(s.site_icon)!==id) throw new Error(`site_icon mismatch: ${s.site_icon} != ${id}`);
           if(Object.prototype.hasOwnProperty.call(s,'site_logo') && Number(s.site_logo)!==id) throw new Error(`site_logo mismatch: ${s.site_logo} != ${id}`);
-          console.log(`WordPress settings point to potleaf media ${id}`);
+          console.log(`WordPress settings point to versioned potleaf media ${id}`);
           NODE
 
           ok=0
@@ -81,22 +85,31 @@ jobs:
               -H 'Cache-Control: no-cache, no-store, max-age=0' \
               -H 'Pragma: no-cache' \
               "$WP_SITE_URL/?dtf_potleaf_icon=${GITHUB_RUN_ID}-${attempt}" -o "$body"
-            if node - <<'NODE' "$body" "${{ steps.publish.outputs.source_url }}"
+            if node - "$body" "${{ steps.publish.outputs.source_url }}" "${{ steps.publish.outputs.media_slug }}" <<'NODE'
           const fs=require('fs');
           const html=fs.readFileSync(process.argv[2],'utf8');
           const source=process.argv[3];
-          const sourceName=(source.split('/').pop()||'').replace(/-\d+x\d+(?=\.[a-z]+$)/i,'');
-          const iconTags=[...html.matchAll(/<link\b[^>]*rel=["'][^"']*icon[^"']*["'][^>]*>/gi)].map(m=>m[0]);
-          const hasUploadIcon=iconTags.some(tag=>/wp-content\/uploads\//i.test(tag));
+          const slug=process.argv[4].toLowerCase();
+          const links=[...html.matchAll(/<link\b[^>]*>/gi)].map(m=>m[0]);
+          const iconTags=links.filter(tag=>/rel=["'][^"']*icon[^"']*["']/i.test(tag));
+          const versioned=tag=>tag.toLowerCase().includes(slug);
+          const has32=iconTags.some(tag=>versioned(tag) && /sizes=["']32x32["']/i.test(tag));
+          const has192=iconTags.some(tag=>versioned(tag) && /sizes=["']192x192["']/i.test(tag));
+          const hasApple=links.some(tag=>versioned(tag) && /rel=["']apple-touch-icon["']/i.test(tag));
           const hasOldStatic=iconTags.some(tag=>/assets\/dtf-home\/dtf-mark\.svg/i.test(tag));
-          if(!hasUploadIcon || hasOldStatic) process.exit(1);
-          if(sourceName && !iconTags.some(tag=>tag.toLowerCase().includes(sourceName.toLowerCase().replace(/\.png$/,'')))) process.exit(1);
+          const hasOldUnversioned=iconTags.some(tag=>/dtf-potleaf-site-icon(?:-\d+x\d+)?\.png/i.test(tag));
+          if(!source.toLowerCase().includes(slug)) throw new Error(`Source URL is not versioned: ${source}`);
+          if(!has32) throw new Error('Missing versioned 32x32 favicon declaration');
+          if(!has192) throw new Error('Missing versioned 192x192 favicon declaration');
+          if(!hasApple) throw new Error('Missing versioned apple-touch-icon declaration');
+          if(hasOldStatic) throw new Error('Old static SVG favicon is still declared');
+          if(hasOldUnversioned) throw new Error('Old unversioned potleaf favicon is still declared');
           console.log(iconTags.join('\n'));
           NODE
             then ok=1; break; fi
             sleep 8
           done
-          [[ "$ok" -eq 1 ]] || { echo 'Fresh public homepage still does not expose the DTF potleaf favicon.' >&2; exit 1; }
+          [[ "$ok" -eq 1 ]] || { echo 'Fresh public homepage does not expose the complete versioned DTF potleaf favicon family.' >&2; exit 1; }
 
       - name: Upload rollback evidence
         if: always()
@@ -115,6 +128,9 @@ jobs:
           PUBLISH_OUTCOME: ${{ steps.publish.outcome }}
           VERIFY_OUTCOME: ${{ steps.verify.outcome }}
           MEDIA_ID: ${{ steps.publish.outputs.media_id }}
+          MEDIA_SLUG: ${{ steps.publish.outputs.media_slug }}
+          CACHE_VERSION: ${{ steps.publish.outputs.cache_version }}
+          SOURCE_URL: ${{ steps.publish.outputs.source_url }}
         with:
           script: |
             await github.rest.issues.createComment({
@@ -122,14 +138,17 @@ jobs:
               repo: context.repo.repo,
               issue_number: 46,
               body: [
-                '## DTF potleaf URL/site icon',
+                '## DTF versioned potleaf URL/site icon',
                 '',
                 `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
                 `Result: **${process.env.JOB_STATUS}**`,
                 `WordPress potleaf setting: **${process.env.PUBLISH_OUTCOME || 'not-run'}**`,
                 `Fresh visitor favicon verification: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
                 `Potleaf media ID: **${process.env.MEDIA_ID || 'not-run'}**`,
+                `Version: **${process.env.CACHE_VERSION || 'not-run'}**`,
+                `Media slug: **${process.env.MEDIA_SLUG || 'not-run'}**`,
+                `Versioned source URL: ${process.env.SOURCE_URL || 'not-run'}`,
                 '',
-                'This workflow is intentionally independent from Shop, Learn, WooCommerce, and other release gates so the browser/URL logo cannot be blocked by unrelated failures.'
+                'Success requires the public HTML head to expose versioned 32x32, 192x192, and Apple touch icon declarations with no old DTF favicon declaration.'
               ].join('\n')
             });
