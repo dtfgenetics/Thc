@@ -1,5 +1,5 @@
 import { mkdir, readFile, readdir, copyFile, rm, writeFile } from 'node:fs/promises';
-import { extname, join, relative, sep } from 'node:path';
+import { dirname, extname, join, relative, sep } from 'node:path';
 import process from 'node:process';
 
 const sourceRoot = process.env.INFOGRAPHIC_SOURCE_DIR || join(process.cwd(), 'site/wordpress/assets/infographics');
@@ -50,9 +50,7 @@ for (const file of all) {
   }
   eligible.push(rel);
   const dest = join(outputRoot, ...rel.split('/'));
-  await mkdir(join(dest, '..'), { recursive: true }).catch(() => {});
-  const parent = dest.slice(0, dest.length - dest.split('/').at(-1).length - 1);
-  if (parent) await mkdir(parent, { recursive: true });
+  await mkdir(dirname(dest), { recursive: true });
   await copyFile(file, dest);
 }
 
