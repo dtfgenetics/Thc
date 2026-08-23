@@ -1,0 +1,157 @@
+name: Enhance DTFSeeds Education V4
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'site/wordpress/education/learning-guides-v4.json'
+      - 'scripts/enhance-wordpress-learning-v4.mjs'
+      - '.github/workflows/wordpress-learning-v4-enhancement.yml'
+  workflow_run:
+    workflows:
+      - Publish DTFSeeds Learning Experience V3
+      - Organize THC Encyclopedia by Topic in WordPress Production
+    types: [completed]
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-learning-v4-enhancement
+  cancel-in-progress: true
+
+env:
+  WP_SITE_URL: https://dtfseeds.com
+  NODE_OPTIONS: --dns-result-order=ipv4first
+
+jobs:
+  enhance:
+    name: Add guided study measurement exercises and encyclopedia depth
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: production
+    env:
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      APPLY_LEARNING_V4: 'true'
+      LEARNING_GUIDE_V4_PATH: site/wordpress/education/learning-guides-v4.json
+      TOPIC_LITERATURE_PATH: site/wordpress/education/topic-literature.json
+      ENCYCLOPEDIA_TOPIC_FILE: configuration/encyclopedia-topics.json
+      BACKUP_ROOT: /tmp/dtf-learning-v4
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate guided curriculum package
+        id: validate
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
+          node --check scripts/enhance-wordpress-learning-v4.mjs
+          node - <<'NODE'
+          const fs=require('fs');
+          const guide=JSON.parse(fs.readFileSync('site/wordpress/education/learning-guides-v4.json','utf8'));
+          const encyclopedia=JSON.parse(fs.readFileSync('configuration/encyclopedia-topics.json','utf8'));
+          if(guide.schemaVersion!==1||Object.keys(guide.topics||{}).length!==12) throw new Error('Expected 12 V4 topic guides');
+          if(!Array.isArray(guide.tracks)||guide.tracks.length<4) throw new Error('Expected at least 4 guided learning paths');
+          const hubs=new Set((encyclopedia.topics||[]).map(x=>x.slug));
+          for(const [id,item] of Object.entries(guide.topics)){
+            if(!item.coreQuestion||!Array.isArray(item.measure)||item.measure.length<3) throw new Error(`${id}: measurement guide incomplete`);
+            if(!Array.isArray(item.mistakes)||item.mistakes.length<3) throw new Error(`${id}: interpretation cautions incomplete`);
+            if(!item.exercise||!Array.isArray(item.exercise.steps)||item.exercise.steps.length<4) throw new Error(`${id}: field exercise incomplete`);
+            for(const slug of item.encyclopedia||[]) if(!hubs.has(slug)) throw new Error(`${id}: missing encyclopedia hub ${slug}`);
+          }
+          console.log(`Validated ${Object.keys(guide.topics).length} guided subjects and ${guide.tracks.length} learning paths.`);
+          NODE
+
+      - name: Publish guided learning layer
+        id: publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$BACKUP_ROOT"
+          node scripts/enhance-wordpress-learning-v4.mjs | tee "$RUNNER_TEMP/learning-v4.log"
+          test -s "$BACKUP_ROOT/learning-v4-report.json"
+          echo "topics=$(node -p "require(process.argv[1]).topicCount" "$BACKUP_ROOT/learning-v4-report.json")" >> "$GITHUB_OUTPUT"
+          echo "tracks=$(node -p "require(process.argv[1]).trackCount" "$BACKUP_ROOT/learning-v4-report.json")" >> "$GITHUB_OUTPUT"
+
+      - name: Visitor-verify guided education
+        id: verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          report="$BACKUP_ROOT/learning-v4-report.json"
+          node - <<'NODE' "$report" > "$RUNNER_TEMP/v4-routes.tsv"
+          const r=require(process.argv[2]);
+          for(const item of r.results) console.log(`${item.id}\t${item.route}`);
+          NODE
+          while IFS=$'\t' read -r id route; do
+            body="$RUNNER_TEMP/v4-$(echo "$id" | tr -cd '[:alnum:]_-').html"
+            ok=0
+            for attempt in 1 2 3 4 5 6 7 8; do
+              curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+                --header 'Cache-Control: no-cache, no-store, max-age=0' \
+                --header 'Pragma: no-cache' \
+                "$WP_SITE_URL${route}?dtf_learning_v4=${GITHUB_RUN_ID}-${attempt}" --output "$body"
+              if grep -Fqi 'dtf-learning-v4-style' "$body" && grep -Fqi 'data-dtf-learning-v4=' "$body"; then ok=1; break; fi
+              sleep 6
+            done
+            [[ "$ok" -eq 1 ]] || { echo "V4 education marker missing on $route" >&2; exit 1; }
+            if [[ "$id" != 'learn' ]]; then
+              grep -Fqi 'Measure first' "$body"
+              grep -Fqi 'Common reasoning errors' "$body"
+              grep -Fqi 'Apply it' "$body"
+              grep -Fqi '/learn/encyclopedia/' "$body"
+            else
+              grep -Fqi 'Choose a learning path' "$body"
+              grep -Fqi 'Learn to diagnose without guessing' "$body"
+            fi
+          done < "$RUNNER_TEMP/v4-routes.tsv"
+
+      - name: Upload rollback and verification package
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dtf-learning-v4-${{ github.run_id }}
+          path: |
+            /tmp/dtf-learning-v4
+            ${{ runner.temp }}/learning-v4.log
+            ${{ runner.temp }}/v4-routes.tsv
+            ${{ runner.temp }}/v4-*.html
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report education V4 result
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          STATUS: ${{ job.status }}
+          VALIDATE: ${{ steps.validate.outcome }}
+          PUBLISH: ${{ steps.publish.outcome }}
+          VERIFY: ${{ steps.verify.outcome }}
+          TOPICS: ${{ steps.publish.outputs.topics }}
+          TRACKS: ${{ steps.publish.outputs.tracks }}
+        with:
+          script: |
+            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body:[
+              '## THC education guided-learning V4','',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Result: **${process.env.STATUS}**`,
+              `Curriculum validation: **${process.env.VALIDATE || 'not-run'}**`,
+              `WordPress guided-learning publication: **${process.env.PUBLISH || 'not-run'}**`,
+              `Visitor verification: **${process.env.VERIFY || 'not-run'}**`,
+              `Guided subject pages: **${process.env.TOPICS || '0'}**`,
+              `Learning paths: **${process.env.TRACKS || '0'}**`,'',
+              'This layer preserves the canonical THC literature and adds prerequisites, measurements, interpretation cautions, field exercises, ordered learning paths, and direct links into the topic-first 420-entry encyclopedia.'
+            ].join('\n')});
