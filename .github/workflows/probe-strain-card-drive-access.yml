@@ -1,0 +1,50 @@
+name: Probe Strain Card Drive Access
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/probe-strain-card-drive-access.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify controlled card masters are anonymously downloadable
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/dtf-drive-cards"
+          cards=(
+            'rainbow-bubblegum|1lLB515y8XeJrLCnC4e9yViiH6gq6NqBg'
+            'mystery-line|1DYA5MAY-DUun9z6cRNroBEtctM7-xl_0'
+            'blue-mango-f2-regular|1sY-nGWEMX25fCoBV6pC7pu6WqhJgzYNH'
+            'blue-frequency|19pNeXj56tyFVOQFAtuB3nAiWP5c_Tj0_'
+            'mango-bubbles|1Qv-dNjq1Ae6gBthoxGzeZyJkPjkIKQmB'
+            'blue-mango-bx1|1g8LtdKjdJc7cV2r-qYTYBI03nVsHsJZs'
+            'blue-mango-f3|1kViyfXQ5G_hH9QXyeRtauEA4p6qbn7jQ'
+            'blue-cali-glue|1ztaWL8FIXvTnv5mPPRL3215whiEKZoEN'
+            'blue-bubblegum|1b2jjdhtHmGFNQ6TEB-lXsrQpbA57FpoW'
+            'zestberry|1TRAM4o_LJzD9tt-8AKKuuVTs-WIfMYe2'
+            'berry-lemonade|18VsbCCxWnOQySaqSAK4N_85fUweJ98we'
+            'berry-blue|1EEAVuXjjPWYpg9gRZhg5TUZLGhyY5Dwk'
+            'blue-mango-f2-feminized|1HnLstfC6OBvrwWMVI6rP9JH3S1b_XCsl'
+          )
+          for row in "${cards[@]}"; do
+            IFS='|' read -r key id <<< "$row"
+            out="$RUNNER_TEMP/dtf-drive-cards/$key.bin"
+            url="https://drive.usercontent.google.com/download?id=${id}&export=download&confirm=t"
+            curl --fail --silent --show-error --location --retry 2 --retry-delay 2 "$url" -o "$out"
+            bytes="$(stat -c %s "$out")"
+            mime="$(file --brief --mime-type "$out")"
+            sha="$(sha256sum "$out" | awk '{print $1}')"
+            case "$mime" in image/jpeg|image/png|image/webp) ;; *) echo "$key returned unexpected MIME $mime" >&2; exit 1;; esac
+            test "$bytes" -gt 100000
+            echo "$key|$id|$mime|$bytes|$sha"
+          done
