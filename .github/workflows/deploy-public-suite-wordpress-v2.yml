@@ -47,6 +47,7 @@ jobs:
           : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
           : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
           python -m py_compile scripts/package-public-suite-wordpress.py scripts/assemble-wordpress-suite-v2.py
+          node --check scripts/cleanup-stale-wordpress-suite-snippets.mjs
           python scripts/assemble-wordpress-suite-v2.py "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
           node --check "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
           python - <<'PY'
@@ -117,6 +118,14 @@ jobs:
           PY
           echo "archive=$archive" >> "$GITHUB_OUTPUT"
 
+      - name: Remove stale temporary Public Suite bridges
+        id: cleanup
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/cleanup-stale-wordpress-suite-snippets.mjs | tee "$RUNNER_TEMP/stale-suite-bridge-cleanup.json"
+          grep -Fq '"ok":true' "$RUNNER_TEMP/stale-suite-bridge-cleanup.json" || grep -Fq '"ok": true' "$RUNNER_TEMP/stale-suite-bridge-cleanup.json"
+
       - name: Publish Public Suite through transactional WordPress bridge
         id: publish
         shell: bash
@@ -157,6 +166,7 @@ jobs:
           BUILD_RUN: ${{ steps.build.outputs.run_id }}
           FEATURE_RUN: ${{ steps.verify.outputs.run_id }}
           CANONICAL_RUN: ${{ steps.canonical.outputs.run_id }}
+          CLEANUP_OUTCOME: ${{ steps.cleanup.outcome }}
           PUBLISH_OUTCOME: ${{ steps.publish.outcome }}
         with:
           script: |
@@ -171,11 +181,12 @@ jobs:
                 `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
                 `Commit: \`${context.sha}\``,
                 `Overall: **${process.env.STATUS}**`,
+                `Stale temporary bridge cleanup: **${process.env.CLEANUP_OUTCOME || 'not reached'}**`,
                 `Transactional WordPress publication: **${process.env.PUBLISH_OUTCOME || 'not reached'}**`,
                 `Fresh Public Suite build: ${link(process.env.BUILD_RUN)}`,
                 `Independent feature verification: ${link(process.env.FEATURE_RUN)}`,
                 `Canonical Home/Learn verification: ${link(process.env.CANONICAL_RUN)}`,
                 '',
-                'Transport: WordPress Application Password + temporary admin/token-protected REST bridge. No Hostinger SSH is used. The archive explicitly excludes static ownership of /, /learn/, and /blog/. The bridge maintains staged backups and automatic recovery/rollback on failed publication verification.'
+                'Transport: WordPress Application Password + temporary authenticated/token-protected REST bridge. No Hostinger SSH is used. The archive explicitly excludes static ownership of /, /learn/, and /blog/. The bridge maintains staged backups and automatic recovery/rollback on failed publication verification; stale temporary bridge snippets are removed before each new transaction.'
               ].join('\n')
             });
