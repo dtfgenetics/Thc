@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-08-23",
+  "curriculumId": "lighting-v6",
+  "route": "/learn/lighting/",
+  "chapters": {
+    "photon-language-bands": [],
+    "fixture-output-delivery": [],
+    "ppfd-mapping-uniformity": [],
+    "dli-photoperiod-timing": [
+      {
+        "file": "V04-SUP-006_Circadian_Rhythms_and_Daily_Plant_Timing.jpg",
+        "title": "Circadian Rhythms & Daily Plant Timing",
+        "alt": "Educational diagram explaining circadian rhythms and recurring daily timing in plants."
+      },
+      {
+        "file": "V04-SUP-007_Photoperiod_Perception_and_Flowering_Control.jpg",
+        "title": "Photoperiod Perception & Flowering Control",
+        "alt": "Educational diagram explaining photoperiod perception, dark-period signaling and flowering control."
+      }
+    ],
+    "spectrum-source-signaling": [
+      {
+        "file": "THC-ENC-062_Chloroplasts_Chlorophyll_and_Light_Capture.jpg",
+        "title": "Chloroplasts, Chlorophyll & Light Capture",
+        "alt": "Educational diagram explaining chloroplast structure, pigments and biological light capture."
+      }
+    ],
+    "photosynthetic-response-canopy-use": [
+      {
+        "file": "THC-ENC-063_The_Light_Reactions_of_Photosynthesis.jpg",
+        "title": "The Light Reactions of Photosynthesis",
+        "alt": "Educational diagram explaining photosynthetic light reactions and conversion of photon energy into chemical energy."
+      },
+      {
+        "file": "THC-ENC-065_Net_Photosynthesis_Versus_Gross_Photosynthesis.jpg",
+        "title": "Net Photosynthesis Versus Gross Photosynthesis",
+        "alt": "Educational diagram comparing gross photosynthesis, respiration and net carbon gain."
+      },
+      {
+        "file": "THC-ENC-072_Leaf_Area_Canopy_Photosynthesis_and_Self_Shading.jpg",
+        "title": "Leaf Area, Canopy Photosynthesis & Self-Shading",
+        "alt": "Educational diagram explaining how leaf area, canopy structure and self-shading affect canopy photosynthesis."
+      },
+      {
+        "file": "V04-SUP-001_Photosynthesis_and_Light_Energy_Conversion.jpg",
+        "title": "Photosynthesis & Light-Energy Conversion",
+        "alt": "Educational diagram connecting light energy capture to photosynthetic energy conversion."
+      }
+    ],
+    "high-light-stress-acclimation": [
+      {
+        "file": "THC-ENC-066_Photorespiration_and_Temperature_Stress.jpg",
+        "title": "Photorespiration & Temperature Stress",
+        "alt": "Educational diagram explaining photorespiration and its relationship with temperature stress."
+      },
+      {
+        "file": "V04-SUP-008_Stress_Physiology_and_Acclimation.jpg",
+        "title": "Stress Physiology & Acclimation",
+        "alt": "Educational diagram explaining plant stress physiology, acclimation and recovery context."
+      },
+      {
+        "file": "V04-SUP-009_Heat_Stress_and_Thermotolerance.jpg",
+        "title": "Heat Stress & Thermotolerance",
+        "alt": "Educational diagram explaining heat stress, thermotolerance and plant recovery responses."
+      }
+    ],
+    "verification-records-change-control": [
+      {
+        "file": "THC-ENC-001_VIS-06_Measurement_Quality_Chain.jpg",
+        "title": "Measurement Quality Chain",
+        "alt": "Educational diagram showing how measurement quality affects interpretation and decision quality."
+      },
+      {
+        "file": "THC-ENC-001_VIS-08_Monitored_Cultivation_Decision.jpg",
+        "title": "Monitored Cultivation Decision",
+        "alt": "Educational decision diagram showing how monitored observations support bounded cultivation decisions."
+      }
+    ]
+  },
+  "gaps": [
+    {
+      "id": "par-epar-lux-ppfd-bands",
+      "status": "needed",
+      "title": "PAR, ePAR, Lux & PPFD Measurement Bands",
+      "neededVisual": "A dedicated measurement diagram comparing human-vision units with photon-counting metrics, clearly labeling PAR 400-700 nm, ePAR 400-750 nm, PPFD/ePPFD and why generic lux conversion is source-dependent."
+    },
+    {
+      "id": "fixture-output-to-canopy-delivery",
+      "status": "needed",
+      "title": "PPF to Installed PPFD: Fixture Geometry & Crop Delivery",
+      "neededVisual": "A dedicated diagram following photons from fixture PPF through height, overlap, optics, boundaries and crop interception to a measured canopy PPFD distribution, while showing why simple inverse-square rules fail for close extended fixtures."
+    },
+    {
+      "id": "ppfd-grid-uniformity-map",
+      "status": "needed",
+      "title": "PPFD Grid, Heat Map & Uniformity Metrics",
+      "neededVisual": "A dedicated canopy mapping diagram with a fixed coordinate grid, raw PPFD values, mean, minimum, maximum, coefficient of variation and an explicitly defined uniformity ratio."
+    },
+    {
+      "id": "canonical-dli-ppfd-poster-migration",
+      "status": "needed",
+      "title": "Canonical DLI / PPFD Poster Source Migration",
+      "neededVisual": "The reviewed 2550×3300 DLI/PPFD Lighting Education Pack poster is verified in the private Drive source but still needs a secure source-controlled binary migration before it can be used by the production atlas. No substitute image should impersonate it."
+    },
+    {
+      "id": "spectrum-source-red-far-red-comparison",
+      "status": "needed",
+      "title": "Spectral Photon Distribution, Source Technologies & Red/Far-Red Signaling",
+      "neededVisual": "A dedicated spectral photon distribution graphic comparing representative source spectra while separating photon quantity from red/far-red signaling and clearly distinguishing photosynthetic effects from photoreceptor responses."
+    }
+  ]
+}
