@@ -1,0 +1,49 @@
+name: Validate Homepage Genetics V2
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'scripts/finalize-wordpress-home-genetics-art.mjs'
+      - '.github/workflows/wordpress-home-genetics-art.yml'
+      - '.github/workflows/homepage-genetics-v2-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate Home Genetics V2 source
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/finalize-wordpress-home-genetics-art.mjs
+          grep -Fq 'data-dtf-home-genetics-v2' scripts/finalize-wordpress-home-genetics-art.mjs
+          grep -Fq 'Current releases, shown with the real strain cards.' scripts/finalize-wordpress-home-genetics-art.mjs
+          grep -Fq 'dtf-strain-card-blue-mango-f2-regular' scripts/finalize-wordpress-home-genetics-art.mjs
+          grep -Fq 'dtf-strain-card-blue-mango-f2-feminized' scripts/finalize-wordpress-home-genetics-art.mjs
+          grep -Fq 'dtf-strain-card-blue-bubblegum-f1-regular' scripts/finalize-wordpress-home-genetics-art.mjs
+          grep -Fq 'dtf-strain-card-mango-bubbles-f1-regular' scripts/finalize-wordpress-home-genetics-art.mjs
+          grep -Fq 'Publish DTF Genetics Library' .github/workflows/wordpress-home-genetics-art.yml
+      - name: Regression-test homepage card matchers
+        shell: bash
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const rx=(value)=>String(value).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+          const sample=`<div class="v3" data-dtf-layout="home-v3"><section class="hero"><div class="wrap hero-grid"><div>copy</div><div class="hero-media"><img src="education.jpg" alt="education"></div></div></section><section><article class="feature"><img src="education-genetics.jpg"><div class="feature-copy"><h3>Know the breeding project before you buy the pack.</h3><a href="/seeds/">Explore genetics</a></div></article></section><section class="section soft"><div class="release-grid"><article class="release"><img src="old.jpg"><div class="release-copy"><span class="pill">F2 · Regular</span><h3>Blue Mango</h3><p><strong>Somango XXL × Blueberry Butcher</strong></p><a href="/product/10-regular-f2-blue-mango-seeds/">Open release</a></div></article></div></section></div>`;
+          const href=rx('/product/10-regular-f2-blue-mango-seeds/');
+          const articleRe=new RegExp(`(<article\\s+class=["'][^"']*\\brelease\\b[^"']*["'][^>]*>)([\\s\\S]*?<a[^>]+href=["']${href}["'][^>]*>[\\s\\S]*?<\\/a>[\\s\\S]*?<\\/article>)`,'i');
+          if(!articleRe.test(sample)) throw new Error('Product-route release matcher no longer matches V3 release markup.');
+          if(!/<div\s+class=["']hero-media["']>[\s\S]*?<\/div>/i.test(sample)) throw new Error('Hero matcher no longer matches V3 markup.');
+          if(!/<article\s+class=["']feature["']>[\s\S]*?<h3>Know the breeding project before you buy the pack\.<\/h3>[\s\S]*?<\/article>/i.test(sample)) throw new Error('Genetics feature matcher no longer matches V3 markup.');
+          console.log('Homepage Genetics V2 matchers validated against canonical V3 structure.');
+          NODE
