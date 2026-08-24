@@ -1,0 +1,29 @@
+{
+  "id":"THC-ENC-174",
+  "number":174,
+  "title":"Mother-Stock Rotation and Senescence",
+  "objective":"Manage mother-stock rotation using measured propagation performance, health, identity, and crop outcomes rather than folklore about clone generations.",
+  "terms":[
+    {"term":"mother rotation","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"senescence","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"physiological drift","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"epigenetic change","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"somatic mutation","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"replacement stock","definition":"Pending controlled-glossary reconciliation."}
+  ],
+  "termDefinitionsStatus":"pending_controlled_glossary_reconciliation",
+  "coreScience":[
+    "Repeated vegetative propagation does not create Mendelian genetic drift because there is no breeding population, but clone lines can accumulate somatic variants, infections, labeling errors, and persistent physiological or epigenetic states.",
+    "Mother performance changes with root restriction, repeated pruning, nutrition, environment, disease pressure, and age. Declining cutting quality may come from management rather than irreversible genetic deterioration.",
+    "Micropropagation studies show that stability findings depend on genotype, method, passage number, and test resolution. Recent genome and methylation work supports monitoring rather than assuming indefinite stability."
+  ],
+  "cultivationRelevance":["Rotate mothers when predefined evidence shows health, identity, propagation, or crop performance is unacceptable. Maintain verified backups and compare replacement candidates before retiring the only source."],
+  "measureAndRecord":[{"field":"Controlled record set","requirement":"Mother age and lineage; cutting cycles; rooting and rejection trends; health tests; off-types; crop performance; genetic/chemistry checks; replacement and retirement rationale."}],
+  "misconceptions":["Every clone generation loses a fixed percentage of vigor.","Old mothers always have mutated genetics.","Tissue culture automatically resets every problem."],
+  "evidenceLimits":["Cannabis does not have a scientifically established universal maximum clone generation or mother age. Monitoring methods detect only what they measure."],
+  "crossLinks":"THC-ENC-141–160 for genetic/epigenetic identity and fidelity; THC-ENC-161–173 for propagation and health; THC-GROW-034 for controlled propagation records.",
+  "sourceNotes":["Ioannidis K et al. (2022). Plants 11:2569. DOI 10.3390/plants11192569.","Lefebvre V et al. (2026). Journal of Cannabis Research 8:43. DOI 10.1186/s42238-026-00406-y.","V09-SRC-001 project control source."],
+  "reviewControl":{"controlledManuscript":"Volume 09 v1.0","evidenceControl":"complete","secondaryEvidenceReview":"complete_qualified","externalReview":"required","externalReviewType":"genetics_and_propagation_science","publicationAuthorized":false,"websiteAction":"do_not_publish"},
+  "slug":"mother-stock-rotation-and-senescence",
+  "route":"/encyclopedia/mother-stock-rotation-and-senescence"
+}
