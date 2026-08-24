@@ -7,6 +7,7 @@ on:
     paths:
       - 'site/wordpress/education/water-root-zone-v6.json'
       - 'scripts/publish-wordpress-water-root-zone-v6-final.mjs'
+      - 'scripts/run-water-root-zone-v6-production.mjs'
       - '.github/workflows/wordpress-water-root-zone-v6-final.yml'
   workflow_run:
     workflows:
@@ -56,6 +57,7 @@ jobs:
           : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
           : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
           node --check scripts/publish-wordpress-water-root-zone-v6-final.mjs
+          node --check scripts/run-water-root-zone-v6-production.mjs
           node - <<'NODE'
           const fs=require('fs');
           const c=JSON.parse(fs.readFileSync('site/wordpress/education/water-root-zone-v6.json','utf8'));
@@ -77,7 +79,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p "$BACKUP_ROOT"
-          node scripts/publish-wordpress-water-root-zone-v6-final.mjs | tee "$RUNNER_TEMP/water-root-zone-v6-final.log"
+          node scripts/run-water-root-zone-v6-production.mjs | tee "$RUNNER_TEMP/water-root-zone-v6-final.log"
           report="$BACKUP_ROOT/report.json"
           test -s "$report"
           echo "chapters=$(node -p "require(process.argv[1]).chapters" "$report")" >> "$GITHUB_OUTPUT"
@@ -96,7 +98,7 @@ jobs:
             curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
               --header 'Cache-Control: no-cache, no-store, max-age=0' \
               --header 'Pragma: no-cache' \
-              "$WP_SITE_URL/learn/water-root-zone/?dtf_wr6_final_verify=${GITHUB_RUN_ID}-${attempt}" --output "$body"
+              "$WP_SITE_URL/learn/water-ph-ec/?dtf_wr6_final_verify=${GITHUB_RUN_ID}-${attempt}" --output "$body"
             if grep -Fqi 'data-dtf-water-root-zone-v6="true"' "$body"; then ok=1; break; fi
             sleep 6
           done
@@ -146,5 +148,5 @@ jobs:
               `Focused lessons: **${process.env.LESSONS || '0'}**`,
               `Direct controlled root/water/chemistry encyclopedia references currently public: **${process.env.REFERENCES || '0'}**`,
               `Defined visual study targets: **${process.env.VISUALS || '0'}**`,'',
-              'The publisher is fail-closed: it requires the existing V3 Water & Root Zone topic owner and V4 guided-learning marker, limits references to controlled encyclopedia Parts 3, 5 and 7, stores rollback evidence, and restores the prior page if edit-context or visitor verification fails. The curriculum intentionally does not publish one universal runoff percentage, dryback target, irrigation frequency, pH decimal or EC recipe.'
+              'The publisher is fail-closed: it requires the existing V3 Water & Root Zone topic owner and V4 guided-learning marker, preserves the canonical /learn/water-ph-ec/ route while using the normalized semantic owner ID water-root-zone, limits references to controlled encyclopedia Parts 3, 5 and 7, stores rollback evidence, and restores the prior page if edit-context or visitor verification fails. The curriculum intentionally does not publish one universal runoff percentage, dryback target, irrigation frequency, pH decimal or EC recipe.'
             ].join('\n')});
