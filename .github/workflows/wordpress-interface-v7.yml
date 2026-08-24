@@ -1,0 +1,133 @@
+name: Publish DTFSeeds Interface V7
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/publish-wordpress-interface-v7.mjs'
+      - '.github/workflows/wordpress-interface-v7.yml'
+  workflow_run:
+    workflows:
+      - Publish DTFSeeds Learning Experience V3
+    types: [completed]
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-interface-v7
+  cancel-in-progress: true
+
+env:
+  NODE_OPTIONS: --dns-result-order=ipv4first
+  WP_SITE_URL: https://dtfseeds.com
+
+jobs:
+  publish:
+    name: Publish navigation and education visual polish
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    environment: production
+    env:
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      APPLY_INTERFACE_V7: 'true'
+      BACKUP_ROOT: /tmp/dtf-interface-v7
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate interface publisher
+        id: validate
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
+          node --check scripts/publish-wordpress-interface-v7.mjs
+          grep -Fq 'dtf-interface-v7-style' scripts/publish-wordpress-interface-v7.mjs
+          grep -Fq 'dtf-shell-menu' scripts/publish-wordpress-interface-v7.mjs
+          grep -Fq 'dtf-edu-rail' scripts/publish-wordpress-interface-v7.mjs
+          grep -Fq 'sv6v-gaps{display:none' scripts/publish-wordpress-interface-v7.mjs
+          grep -Fq 'aria-current' scripts/publish-wordpress-interface-v7.mjs
+
+      - name: Publish Interface V7
+        id: publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$BACKUP_ROOT"
+          node scripts/publish-wordpress-interface-v7.mjs | tee "$RUNNER_TEMP/interface-v7.log"
+          report="$(find "$BACKUP_ROOT" -name interface-v7-report.json -print -quit)"
+          test -n "$report"
+          test "$(node -p "require(process.argv[1]).publicResults.length" "$report")" -eq 5
+
+      - name: Independent public verification
+        id: verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          for route in / /learn/ /learn/lighting/ /tools/ /shop/; do
+            out="$RUNNER_TEMP/v7-$(echo "$route" | tr '/' '_' | tr -cd '[:alnum:]_').html"
+            ok=0
+            for attempt in 1 2 3 4 5 6 7 8; do
+              curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+                --header 'Cache-Control: no-cache, no-store, max-age=0' \
+                --header 'Pragma: no-cache' \
+                "$WP_SITE_URL${route}?dtf_interface_v7_verify=${GITHUB_RUN_ID}-${attempt}" --output "$out"
+              if grep -Fq 'dtf-interface-v7-style' "$out" && grep -Fq 'dtf-interface-v7-script' "$out" && grep -Fq 'data-dtf-shell="header-v3"' "$out"; then
+                ok=1
+                break
+              fi
+              sleep 5
+            done
+            test "$ok" -eq 1
+          done
+
+      - name: Upload rollback and verification package
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dtf-interface-v7-${{ github.run_id }}
+          path: |
+            /tmp/dtf-interface-v7
+            ${{ runner.temp }}/interface-v7.log
+            ${{ runner.temp }}/v7-*.html
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report Interface V7 result
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          STATUS: ${{ job.status }}
+          VALIDATE: ${{ steps.validate.outcome }}
+          PUBLISH: ${{ steps.publish.outcome }}
+          VERIFY: ${{ steps.verify.outcome }}
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 46,
+              body: [
+                '## DTFSeeds Interface V7 — navigation + education visual cleanup',
+                '',
+                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                `Result: **${process.env.STATUS}**`,
+                `Publisher validation: **${process.env.VALIDATE || 'not-run'}**`,
+                `WordPress publication: **${process.env.PUBLISH || 'not-run'}**`,
+                `Independent public verification: **${process.env.VERIFY || 'not-run'}**`,
+                '',
+                'Scope is presentation-only: sticky active-state primary navigation, accessible mobile menu, THC education shortcut rail, duplicate education-title suppression, unified V3/V4/V6 spacing/card language, mobile chapter navigation, and removal of internal visual-production-gap cards from the learner-facing UI.',
+                'The underlying V3/V4/V6 education content, WooCommerce data, genetics records, tools, and source-controlled visual-gap registry are not rewritten.'
+              ].join('\n')
+            });
