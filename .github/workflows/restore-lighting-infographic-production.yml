@@ -59,6 +59,7 @@ jobs:
           : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
           [[ "$CANONICAL_DRIVE_FILE_ID" =~ ^[A-Za-z0-9_-]+$ ]]
           [[ "$EXPECTED_SHA256" =~ ^[a-f0-9]{64}$ ]]
+          test -s site/wordpress/assets/infographics/import-remaining-core-031-047.json
           node --check scripts/stage-eligible-infographics.mjs
           node --check scripts/deploy-wordpress-infographic-library-rest.mjs
           node --check scripts/publish-wordpress-topic-literature.mjs
@@ -92,14 +93,50 @@ jobs:
           source='none'
           recovered=0
 
-          # Permanent path: once the reviewed asset is source-controlled, use it directly.
+          # Permanent path: once source-controlled, use the reviewed repository copy directly.
           if [[ -f "$TARGET_PATH" ]] && validate_png "$TARGET_PATH"; then
             cp "$TARGET_PATH" "$tmp"
             recovered=1
             source='repository'
           fi
 
-          # Recovery-only fallback for a future public/shared copy. Private Drive responses are
+          # The migration registry preserves the original Google-rendered source URL. Try it and
+          # deterministic full-resolution variants, but accept only the exact reviewed bytes.
+          if [[ "$recovered" -ne 1 ]]; then
+            registry_url="$(node - <<'NODE'
+          const fs=require('fs');
+          const j=JSON.parse(fs.readFileSync('site/wordpress/assets/infographics/import-remaining-core-031-047.json','utf8'));
+          const item=(j.assets||[]).find(x=>x.path==='site/wordpress/assets/infographics/DLI_PPFD_Light_Education_Infographic.png');
+          if(!item?.url) process.exit(2);
+          process.stdout.write(item.url);
+          NODE
+            )"
+            urls=(
+              "$registry_url"
+              "${registry_url/=s2048/=s0}"
+              "${registry_url/=s2048/=s3300}"
+              "${registry_url/=s2048/=w2550-h3300}"
+            )
+            i=0
+            for url in "${urls[@]}"; do
+              i=$((i+1))
+              candidate="$RUNNER_TEMP/dli-registry-${i}.png"
+              rm -f "$candidate"
+              if curl -4 --fail --silent --show-error --location --retry 3 --retry-delay 2 --connect-timeout 20 --max-time 120 "$url" --output "$candidate"; then
+                bytes="$(stat -c %s "$candidate" 2>/dev/null || echo 0)"
+                sha="$(sha256sum "$candidate" 2>/dev/null | awk '{print $1}' || true)"
+                echo "registry candidate ${i}: bytes=${bytes} sha256=${sha}"
+                if validate_png "$candidate"; then
+                  mv "$candidate" "$tmp"
+                  recovered=1
+                  source="registry-variant-${i}"
+                  break
+                fi
+              fi
+            done
+          fi
+
+          # Recovery-only fallback for a future public/shared Drive copy. Private responses are
           # intentionally rejected by the exact byte/hash gate.
           if [[ "$recovered" -ne 1 ]]; then
             urls=(
@@ -245,6 +282,6 @@ jobs:
                 `Learning v3 rebuild: **${process.env.V3_OUTCOME || 'not reached'}**`,
                 `Live Lighting verification: **${process.env.VERIFY_OUTCOME || 'not reached'}**`,
                 '',
-                'The canonical repository asset is preferred permanently. Any recovery download remains fail-closed behind exact byte length, dimensions, PNG integrity, and SHA-256 checks. The live gate rejects the prior seedling visual.'
+                'The canonical repository asset is preferred permanently. Registry and Drive recovery candidates remain fail-closed behind exact byte length, dimensions, PNG integrity, and SHA-256 checks. The live gate rejects the prior seedling visual.'
               ].join('\n')
             });
