@@ -1,0 +1,29 @@
+{
+  "id":"THC-ENC-179",
+  "number":179,
+  "title":"Ex Vitro Acclimation and Survival",
+  "objective":"Explain why in vitro plantlets require a controlled transition to ex vitro humidity, light, airflow, substrate, and microbial conditions.",
+  "terms":[
+    {"term":"ex vitro","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"acclimatization","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"photoautotrophy","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"cuticle","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"stomatal function","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"transplant survival","definition":"Pending controlled-glossary reconciliation."}
+  ],
+  "termDefinitionsStatus":"pending_controlled_glossary_reconciliation",
+  "coreScience":[
+    "In vitro plantlets often develop under high humidity, low air movement, limited mechanical load, artificial carbon supply, and low microbial exposure. Leaves and roots formed under those conditions may not immediately regulate water or function like greenhouse-grown tissues.",
+    "Acclimatization changes the plant’s atmosphere, substrate, nutrition, irradiance, and microbial environment. Root damage during washing or transfer, poorly aerated media, excessive light, and abrupt humidity reduction can cause losses.",
+    "In one drug-type cannabis study, survival differed among hydroponic, peat-plug, and rockwool systems. A newer photoautotrophic study reported direct transplanting without a separate acclimation period for two cultivars under its specific protocol. These findings demonstrate protocol dependence rather than a universal best substrate."
+  ],
+  "cultivationRelevance":["Define transplant readiness, handle roots gently, use a clean but functional substrate, and change humidity and light progressively. Track survival beyond the first upright appearance."],
+  "measureAndRecord":[{"field":"Controlled record set","requirement":"Plantlet size and roots; passage; transfer method; substrate; humidity and venting; light and temperature; irrigation; survival at defined days; new root/shoot growth; losses by cause."}],
+  "misconceptions":["A rooted in vitro shoot is ready for full greenhouse conditions.","The substrate with the highest survival in one paper is universally best.","Standing upright after transfer proves complete acclimation."],
+  "evidenceLimits":["Acclimation success is genotype-, protocol-, and facility-specific. Survival percentages cannot be transferred without matching the method."],
+  "crossLinks":"THC-ENC-081–120 for environment and lighting; THC-ENC-175–178 for tissue-culture workflow; THC-GROW-034 for propagation/acclimation records.",
+  "sourceNotes":["Holmes JE et al. (2021). Frontiers in Plant Science 12:732344.","Liang J et al. (2026). Efficient propagation protocol and genetic similarity assessment of medicinal cannabis based on photoautotrophic micropropagation. Frontiers in Plant Science. DOI 10.3389/fpls.2026.1846572."],
+  "reviewControl":{"controlledManuscript":"Volume 09 v1.0","evidenceControl":"complete","secondaryEvidenceReview":"complete_qualified","externalReview":"required","externalReviewType":"tissue_culture_and_environment","publicationAuthorized":false,"websiteAction":"do_not_publish"},
+  "slug":"ex-vitro-acclimation-and-survival",
+  "route":"/encyclopedia/ex-vitro-acclimation-and-survival"
+}
