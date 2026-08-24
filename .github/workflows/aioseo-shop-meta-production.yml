@@ -48,9 +48,17 @@ jobs:
       - name: Reconcile Shop title and meta description
         shell: bash
         run: |
-          set -euo pipefail
-          node scripts/reconcile-aioseo-shop-meta.mjs | tee "$RUNNER_TEMP/shop-meta.log"
-          grep -Fq '"verified": true' "$RUNNER_TEMP/shop-meta.log" || grep -Fq '"verified":true' "$RUNNER_TEMP/shop-meta.log"
+          set -uo pipefail
+          node scripts/reconcile-aioseo-shop-meta.mjs 2>&1 | tee "$RUNNER_TEMP/shop-meta.log"
+          status=${PIPESTATUS[0]}
+          set -e
+          if [[ "$status" -ne 0 ]]; then
+            if grep -Fq 'AIOSEO Shop state saved but public metadata did not verify' "$RUNNER_TEMP/shop-meta.log"; then
+              echo 'AIOSEO Shop state persisted; preliminary visitor verification was cache-stale. Continuing to the explicit LiteSpeed purge before the authoritative visitor check.'
+            else
+              exit "$status"
+            fi
+          fi
 
       - name: Purge Hostinger LiteSpeed cache
         shell: bash
@@ -65,23 +73,29 @@ jobs:
           node - <<'NODE'
           (async () => {
             const expected = 'Shop current DTF Genetics seed releases with documented lineage, generation details, and direct links to verified product listings.';
-            const response = await fetch(`https://dtfseeds.com/shop/?dtf_shop_seo=${Date.now()}`, {
-              headers: { 'Cache-Control': 'no-cache, no-store, max-age=0', Pragma: 'no-cache', 'User-Agent': 'DTFSeeds-Shop-SEO-Verify/1.0' },
-              redirect: 'follow'
-            });
-            const html = await response.text();
-            const title = (html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1] || '').replace(/\s+/g, ' ').trim();
-            let description = '';
-            for (const tag of html.match(/<meta\b[^>]*>/gi) || []) {
-              const name = tag.match(/name=["']([^"']+)["']/i)?.[1]?.toLowerCase() || '';
-              if (name !== 'description') continue;
-              description = tag.match(/content=["']([^"']*)["']/i)?.[1] || '';
-              break;
+            let last = null;
+            for (let attempt = 1; attempt <= 8; attempt += 1) {
+              const response = await fetch(`https://dtfseeds.com/shop/?dtf_shop_seo=${Date.now()}-${attempt}`, {
+                headers: { 'Cache-Control': 'no-cache, no-store, max-age=0', Pragma: 'no-cache', 'User-Agent': 'DTFSeeds-Shop-SEO-Verify/1.1' },
+                redirect: 'follow'
+              });
+              const html = await response.text();
+              const title = (html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1] || '').replace(/\s+/g, ' ').trim();
+              let description = '';
+              for (const tag of html.match(/<meta\b[^>]*>/gi) || []) {
+                const name = tag.match(/name=["']([^"']+)["']/i)?.[1]?.toLowerCase() || '';
+                if (name !== 'description') continue;
+                description = tag.match(/content=["']([^"']*)["']/i)?.[1] || '';
+                break;
+              }
+              last = { status: response.status, title, description };
+              if (response.ok && title.includes('DTF Genetics Shop') && description === expected) {
+                console.log(`Verified Shop SEO metadata: title=${title}; descriptionLength=${description.length}; attempt=${attempt}`);
+                return;
+              }
+              await new Promise((resolve) => setTimeout(resolve, 4000));
             }
-            if (!response.ok) throw new Error(`Shop returned HTTP ${response.status}`);
-            if (!title.includes('DTF Genetics Shop')) throw new Error(`Unexpected Shop title: ${title}`);
-            if (description !== expected) throw new Error(`Unexpected Shop description: ${description}`);
-            console.log(`Verified Shop SEO metadata: title=${title}; descriptionLength=${description.length}`);
+            throw new Error(`Shop metadata did not converge after cache purge: ${JSON.stringify(last)}`);
           })().catch((error) => { console.error(error); process.exit(1); });
           NODE
 
@@ -103,6 +117,6 @@ jobs:
                 `Commit: \`${context.sha}\``,
                 `Result: **${process.env.STATUS}**`,
                 '',
-                'This guarded AIOSEO update round-trips the existing Shop SEO record, changes only the Shop title and meta description, checks critical SEO/social fields for unintended drift, purges LiteSpeed, and verifies the visitor-facing HTML.'
+                'This guarded AIOSEO update round-trips the existing Shop SEO record, changes only the Shop title and meta description, checks critical SEO/social fields for unintended drift, then purges LiteSpeed before the authoritative visitor-facing verification.'
               ].join('\n')
             });
