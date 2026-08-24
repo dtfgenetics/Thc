@@ -1,0 +1,33 @@
+{
+  "id":"THC-ENC-170",
+  "number":170,
+  "title":"Sanitation and Tool-Mediated Pathogen Spread",
+  "objective":"Prevent propagation tools and workflows from moving pests, pathogens, and viroids between donors and clone batches.",
+  "terms":[
+    {"term":"cleaning","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"disinfection","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"contact time","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"tool-mediated transmission","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"cross-contamination","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"workflow zoning","definition":"Pending controlled-glossary reconciliation."}
+  ],
+  "termDefinitionsStatus":"pending_controlled_glossary_reconciliation",
+  "coreScience":[
+    "Cutting tools contact sap and wounded tissue, creating a direct pathway between plants. Shared hands, gloves, trays, labels, water, benches, and transport containers can also move contamination.",
+    "Cleaning removes dirt and organic matter from surfaces. Disinfection uses an antimicrobial product according to its current label, including required use conditions and contact time. These are separate steps, and a quick wipe does not by itself establish disinfection.",
+    "Hop latent viroid can spread through propagation networks and mechanical practices. Containment therefore depends on donor status, workflow direction, tool control, batch segregation, testing, and traceable corrective action."
+  ],
+  "cultivationRelevance":["Use a written clean-to-dirty sequence. Separate incoming, quarantine, mother, propagation, and released stock. Replace or reprocess tools and gloves according to the validated program, and stop work when contamination control is lost."],
+  "measureAndRecord":[{"field":"Controlled record set","requirement":"Tool ID or disposable status; cleaning/disinfection agent and lot; concentration; contact time; operator; donor and batch sequence; deviations; test and incident results."}],
+  "misconceptions":["Alcohol instantly sterilizes every tool.","A clean-looking blade is disinfected.","One tool can safely move through a room if plants look healthy."],
+  "evidenceLimits":["Agent effectiveness depends on organism, surface, soil load, concentration, time, use site, and product label. This lesson does not prescribe a universal disinfectant recipe."],
+  "crossLinks":"THC-ENC-301–340 for disease, viroid, biosecurity, sanitation, and release controls; THC-GROW-034 for the controlled propagation SOP package.",
+  "sourceNotes":[
+    "V09-SRC-002 — THC Cultivation SOP Source Materials Packet v1.0 (project control source).",
+    "Punja ZK et al. (2025). Transmission, spread, longevity and management of hop latent viroid, a widespread and destructive pathogen affecting Cannabis plants in North America. Plants 14:830. DOI 10.3390/plants14050830.",
+    "V09-SRC-012 — U.S. EPA cleaning/disinfection and selected registered-disinfectant guidance; reverified 2026-08-24. Current label directions and wet contact time control efficacy claims."
+  ],
+  "reviewControl":{"controlledManuscript":"Volume 09 v1.0","evidenceControl":"complete","secondaryEvidenceReview":"complete_qualified","externalReview":"required","externalReviewType":"plant_pathology_plus_release_time_disinfectant_label_safety","publicationAuthorized":false,"websiteAction":"do_not_publish"},
+  "slug":"sanitation-and-tool-mediated-pathogen-spread",
+  "route":"/encyclopedia/sanitation-and-tool-mediated-pathogen-spread"
+}
