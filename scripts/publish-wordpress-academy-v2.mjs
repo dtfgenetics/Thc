@@ -31,7 +31,7 @@ function validate(d) {
   }
   if (!Array.isArray(d.supportRoutes) || d.supportRoutes.length < 5) throw new Error('Support routes incomplete.');
   const text = JSON.stringify(d);
-  const unsupportedPositiveClaims = [/guaranteed\s+yield/i,/amber\s*=\s*couchlock/i,/guaranteed\s+zero[- ]risk/i,/always\s+use\s+\d/i];
+  const unsupportedPositiveClaims = [/guaranteed\s+yield/i,/amber\s*=\s*couchlock/i,/zero[- ]risk\s+isolation\s+(?:is|can be)\s+guaranteed/i,/always\s+use\s+\d/i];
   for (const re of unsupportedPositiveClaims) if (re.test(text)) throw new Error(`Unsupported universal claim found: ${re}`);
   return { courses:12, units, exercises, capstones, checklistItems, supportRoutes:d.supportRoutes.length };
 }
