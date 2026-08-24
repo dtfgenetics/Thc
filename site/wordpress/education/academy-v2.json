@@ -1,0 +1,277 @@
+{
+  "schemaVersion": 1,
+  "id": "thc-academy-v2",
+  "route": "/learn/academy/",
+  "title": "THC Academy",
+  "subtitle": "Practice the system, not just the vocabulary.",
+  "learningOutcome": "Move from observation to measurement, interpretation, action, and verification across the major cannabis plant-science and cultivation systems without relying on universal recipes or single-symptom guesses.",
+  "studyRules": [
+    "Record what you observed before writing what you think caused it.",
+    "Preserve units, sampling method, location, time, plant stage, and recent changes with every measurement.",
+    "Change one controllable variable at a time when practical, then verify the response before stacking another change.",
+    "Treat cultivar, environment, media, water, equipment, and measurement method as context rather than assuming one universal target.",
+    "Use the linked V6 subject page as the reference layer when an exercise exposes a knowledge gap."
+  ],
+  "courses": [
+    {
+      "number": 1,
+      "id": "evidence-observation-records",
+      "title": "Evidence, Observation & Records",
+      "route": "/learn/research-methods/",
+      "purpose": "Build the measurement habits that make every later Academy course more reliable.",
+      "evidenceBoundary": "A measurement is only comparable when method and context are comparable. Precision does not prove accuracy, and correlation does not by itself prove cause.",
+      "units": [
+        {"title":"Observation versus interpretation","task":"Write a plant observation using only visible or measured facts, then write three possible interpretations separately.","verify":"A second reader can distinguish facts from hypotheses without guessing."},
+        {"title":"Accuracy, precision and calibration","task":"Create a calibration log for one meter or sensor and record standard, date, result, adjustment and acceptance decision.","verify":"The record shows what standard was used and whether the instrument was accepted or held."},
+        {"title":"Sampling and sensor placement","task":"Map at least four measurement locations and state why each location represents a different question or risk.","verify":"The map can be repeated by another person using the written positions."},
+        {"title":"Baselines and change control","task":"Choose one variable and define the baseline period, planned change, hold conditions and follow-up window before making the change.","verify":"The record makes it possible to compare before and after without relying on memory."},
+        {"title":"Standardized photos and timelines","task":"Create a repeatable photo protocol with plant ID, angle, distance, lighting condition and date/time fields.","verify":"Two photo sessions can be compared without major framing or identity ambiguity."}
+      ],
+      "exercises": [
+        {"title":"Build a one-page observation form","deliverable":"A reusable form containing plant ID, stage, location, measurements, symptoms, recent changes, photos, hypotheses, action and verification date."},
+        {"title":"Audit a strong-sounding claim","deliverable":"A short claim audit separating the claim, evidence actually shown, missing controls, uncertainty and what additional observation would strengthen it."}
+      ],
+      "capstone":"Document one small cultivation change from baseline through follow-up using measurements, photos, a stated hypothesis and an explicit conclusion that preserves uncertainty.",
+      "completion":["I can separate observation from diagnosis.","I record method and units with measurements.","I can describe a baseline and comparison window.","I preserve uncertainty when evidence is incomplete."]
+    },
+    {
+      "number": 2,
+      "id": "plant-biology",
+      "title": "Plant Biology & Anatomy",
+      "route": "/learn/plant-biology/",
+      "purpose": "Use anatomy and physiology to explain what a plant can sense, move, build and repair.",
+      "evidenceBoundary": "Visible structure supports biological interpretation, but one visual feature rarely proves a physiological mechanism without additional measurements.",
+      "units": [
+        {"title":"Organs and functional roles","task":"Label roots, stems, nodes, leaves, shoot tips and reproductive structures on a real plant or reference image and write one primary function for each.","verify":"Labels and functions match the actual structure rather than grower slang."},
+        {"title":"Transport pathways","task":"Trace a conceptual path for water/minerals from root to leaf and for assimilated carbon from source leaves to sinks.","verify":"The diagram distinguishes xylem transport from phloem allocation."},
+        {"title":"Meristems and architecture","task":"Map the active shoot and axillary growth points on one plant before any training action.","verify":"The map predicts which sites could continue growth if the main apex changes."},
+        {"title":"Stomata, leaves and gas exchange","task":"List the environmental variables that change leaf gas exchange and identify which can be measured in your setup.","verify":"The list includes light, leaf/air conditions and water status rather than only room RH."},
+        {"title":"Trichomes and reproductive tissues","task":"Compare glandular trichomes, stigmas, bracts and leaf tissue using magnification and record what each observation can and cannot establish.","verify":"The notes do not treat one visual cue as a complete maturity or chemistry test."}
+      ],
+      "exercises": [
+        {"title":"Build a plant anatomy field sheet","deliverable":"A labeled specimen or photo sheet with organ, function, observation and uncertainty columns."},
+        {"title":"Explain one symptom through anatomy","deliverable":"A short mechanism map connecting the symptom location to the tissues and transport processes that could plausibly be involved."}
+      ],
+      "capstone":"Create a one-page whole-plant systems diagram connecting roots, transport, leaves, meristems, reproductive structures and environmental inputs.",
+      "completion":["I can identify major organs and growth points.","I can distinguish xylem and phloem roles.","I can connect anatomy to cultivation observations.","I avoid using visual anatomy as proof of unmeasured chemistry."]
+    },
+    {
+      "number": 3,
+      "id": "lifecycle-propagation",
+      "title": "Lifecycle & Propagation",
+      "route": "/learn/lifecycle-propagation/",
+      "purpose": "Match decisions to developmental stage and release propagated plants by observed readiness rather than elapsed days alone.",
+      "evidenceBoundary": "Development rate varies with genotype, environment, root condition and propagation method; calendar age alone is not a universal release criterion.",
+      "units": [
+        {"title":"Stage identification","task":"Define observable criteria for germination, seedling establishment, vegetative growth, reproductive transition and maturation.","verify":"Each stage has observable criteria rather than only an age range."},
+        {"title":"Seed and seedling establishment","task":"Track one establishment batch using identity, start date, emergence, early growth and failure notes.","verify":"Losses can be traced to individual IDs or batch records."},
+        {"title":"Cuttings and donor health","task":"Create a donor/cutting record that includes source identity, donor condition, sanitation, cutting position and rooting observations.","verify":"Every cutting can be traced back to a donor and handling event."},
+        {"title":"Rooting and acclimation","task":"Define release criteria for rooted propagules using roots, posture, new growth and water response.","verify":"Release does not depend on a fixed number of days alone."},
+        {"title":"Transition management","task":"List the measurements that should be rechecked when a plant moves to a new container, light level or environmental zone.","verify":"The checklist includes both root-zone and canopy/environment measurements."}
+      ],
+      "exercises": [
+        {"title":"Propagation batch card","deliverable":"A batch record with source, IDs, dates, method, environment, rooting evidence, losses and release decision."},
+        {"title":"Stage-change checklist","deliverable":"A transition checklist for one lifecycle move with acceptance criteria and follow-up measurements."}
+      ],
+      "capstone":"Follow one plant or propagation batch through two developmental transitions and document what changed in management, measurements and acceptance criteria.",
+      "completion":["I identify stage from observable development.","I preserve source identity through propagation.","I use readiness criteria for release.","I remeasure after meaningful transitions."]
+    },
+    {
+      "number": 4,
+      "id": "environment-vpd",
+      "title": "Environment & VPD",
+      "route": "/learn/environment-vpd/",
+      "purpose": "Understand the environment as spatial and time-varying rather than one room-average number.",
+      "evidenceBoundary": "VPD is a useful descriptor of atmospheric demand, not a stand-alone diagnosis. Leaf temperature, air movement, plant water status and sensor location affect interpretation.",
+      "units": [
+        {"title":"Temperature and RH mapping","task":"Measure at multiple canopy positions and compare room-average values with interior or edge values.","verify":"The map preserves location, time and sensor identity."},
+        {"title":"Leaf temperature context","task":"Measure or estimate leaf-temperature differences at representative canopy positions and note what changed the reading.","verify":"Leaf and air temperature are not treated as interchangeable."},
+        {"title":"VPD interpretation","task":"Calculate or record VPD for two conditions and explain what additional plant information is needed before acting.","verify":"The conclusion does not treat VPD alone as proof of stress."},
+        {"title":"Air movement versus moisture removal","task":"Identify which equipment circulates air and which equipment actually removes or exchanges moisture.","verify":"The equipment map separates circulation from dehumidification/ventilation."},
+        {"title":"Transitions and risk windows","task":"Graph or log conditions around lights-on, lights-off or irrigation to find rapid environmental transitions.","verify":"The record captures a time series rather than one spot reading."}
+      ],
+      "exercises": [
+        {"title":"Nine-point climate map","deliverable":"A canopy map showing temperature/RH measurements, sensor positions and the most important spatial differences."},
+        {"title":"Transition investigation","deliverable":"A short timeline around one environmental transition with suspected cause, observed plant response and follow-up."}
+      ],
+      "capstone":"Build an environment characterization for one grow zone using spatial measurements, transition data, equipment states and explicit uncertainty.",
+      "completion":["I map more than one location.","I distinguish leaf and air temperature.","I use VPD as context, not diagnosis.","I distinguish air movement from moisture removal."]
+    },
+    {
+      "number": 5,
+      "id": "lighting",
+      "title": "Lighting",
+      "route": "/learn/lighting/",
+      "purpose": "Measure the photons reaching the crop and connect intensity, duration, geometry and plant response.",
+      "evidenceBoundary": "Fixture wattage, hanging height and marketing output do not substitute for crop-plane measurement; usable settings depend on geometry, canopy, environment and cultivar response.",
+      "units": [
+        {"title":"PPF, PPFD and DLI","task":"Explain the difference between fixture output, photon density at the crop plane and daily photon exposure.","verify":"The explanation keeps units and time components distinct."},
+        {"title":"Crop-plane mapping","task":"Measure or plan a repeatable grid across the canopy plane and record fixture state and measurement height.","verify":"The grid can be repeated after a change."},
+        {"title":"Uniformity and edge falloff","task":"Compare minimum, maximum and average measurements and identify zones that are consistently different.","verify":"The conclusion does not rely on average PPFD alone."},
+        {"title":"Photoperiod and dark integrity","task":"Document timer/controller schedule and identify possible interruptions or timing drift.","verify":"The actual schedule is checked rather than assumed from controller settings."},
+        {"title":"Light response and heat interaction","task":"Compare light position with leaf temperature, posture and environmental measurements.","verify":"A light-related interpretation includes heat/environment context."}
+      ],
+      "exercises": [
+        {"title":"Create a PPFD map template","deliverable":"A reusable grid with coordinates, sensor height, fixture settings, raw readings and summary statistics."},
+        {"title":"Calculate a DLI comparison","deliverable":"Two DLI calculations using measured or hypothetical PPFD and photoperiod, with assumptions shown."}
+      ],
+      "capstone":"Characterize one lighting zone with a repeatable PPFD grid, DLI calculation, uniformity summary and plant-response notes.",
+      "completion":["I distinguish PPF, PPFD and DLI.","I map the crop plane.","I preserve raw readings and geometry.","I connect light changes to environmental and plant response."]
+    },
+    {
+      "number": 6,
+      "id": "water-ph-ec",
+      "title": "Water, pH & EC",
+      "route": "/learn/water-ph-ec/",
+      "purpose": "Use water chemistry and root-zone measurements as a system instead of treating one pH or EC number as the diagnosis.",
+      "evidenceBoundary": "pH, EC, alkalinity and hardness describe different properties. Runoff or extract values depend on sampling method and cannot be compared blindly across systems.",
+      "units": [
+        {"title":"Source-water characterization","task":"Record source-water pH, EC and available alkalinity/hardness information separately.","verify":"The record does not treat pH as a measure of alkalinity or mineral concentration."},
+        {"title":"Meter control","task":"Create calibration and storage steps for pH and EC instruments used in the grow.","verify":"The procedure includes standards, rinsing/storage and acceptance decisions."},
+        {"title":"Sampling method","task":"Define exactly how one feed, root-zone, runoff or extract sample is collected.","verify":"Another person could repeat the sample method."},
+        {"title":"Irrigation and dryback","task":"Choose a repeatable method for tracking water input and media drying between events.","verify":"Dryback is defined by a measurement or explicit observation method."},
+        {"title":"Trend interpretation","task":"Plot several sequential readings before deciding whether a value is stable, drifting or an outlier.","verify":"The interpretation uses a trend rather than one isolated number."}
+      ],
+      "exercises": [
+        {"title":"Water profile worksheet","deliverable":"A source-water and irrigation record separating pH, EC, alkalinity/hardness context, treatment and final solution measurements."},
+        {"title":"Sampling-method comparison","deliverable":"A side-by-side description of two sample methods and why their results should or should not be compared directly."}
+      ],
+      "capstone":"Build a seven-day water/root-zone log and explain the observed trends without using a universal target as the only evidence.",
+      "completion":["I distinguish pH, EC, alkalinity and hardness.","I document calibration.","I state sample method with results.","I interpret trends before isolated readings."]
+    },
+    {
+      "number": 7,
+      "id": "nutrition-media",
+      "title": "Nutrition & Media",
+      "route": "/learn/nutrition-media/",
+      "purpose": "Connect essential elements, media physics, nutrient delivery and plant response without reducing nutrition to a bottle recipe.",
+      "evidenceBoundary": "Element demand and root-zone behavior depend on cultivar, stage, media, water chemistry, environment and total delivery. Visual symptoms alone rarely identify one nutrient cause with certainty.",
+      "units": [
+        {"title":"Essential elements and roles","task":"Group macro- and micronutrients by broad plant roles and note where visual overlap makes diagnosis uncertain.","verify":"The worksheet separates biological role from symptom folklore."},
+        {"title":"Media physical properties","task":"Describe the media in terms of water retention, aeration, drainage, particle structure and container geometry.","verify":"The description goes beyond simply naming the media brand/type."},
+        {"title":"CEC and buffering context","task":"Explain how exchange capacity or buffering can affect root-zone chemistry in the chosen media.","verify":"The explanation avoids assuming all media behave the same way."},
+        {"title":"Mixing records and compatibility","task":"Create a repeatable input log with product, batch, sequence, measured final EC/pH and observations.","verify":"The log can recreate what was actually mixed without relying on memory."},
+        {"title":"Differential nutrition diagnosis","task":"For one visual symptom, list nutrient and non-nutrient alternatives and what evidence would separate them.","verify":"At least one environmental/root-zone alternative remains until evidence excludes it."}
+      ],
+      "exercises": [
+        {"title":"Media system profile","deliverable":"A profile covering container, media components, drainage/aeration assumptions, irrigation behavior and sampling method."},
+        {"title":"Nutrient differential table","deliverable":"A symptom comparison table with candidate causes, supporting evidence, conflicting evidence and next measurement."}
+      ],
+      "capstone":"Explain one nutrition-related case using media, water, environment, feed records, symptoms and competing hypotheses rather than a single deficiency chart.",
+      "completion":["I connect nutrients to root-zone context.","I describe media physical behavior.","I keep complete mixing records.","I use differential diagnosis for visual symptoms."]
+    },
+    {
+      "number": 8,
+      "id": "plant-health-ipm",
+      "title": "Plant Health & IPM",
+      "route": "/learn/ipm/",
+      "purpose": "Turn scouting into mapped evidence and choose controls only after the problem is characterized well enough to act responsibly.",
+      "evidenceBoundary": "A symptom or trap catch is evidence, not a complete diagnosis. Pest/pathogen identification, environment, distribution and progression should be considered before treatment.",
+      "units": [
+        {"title":"Mapped scouting","task":"Create a repeatable scouting route and assign plant/zone/trap identifiers.","verify":"Findings can be located on a map after the scouting session."},
+        {"title":"Abiotic versus biotic patterns","task":"Compare distribution, progression, tissue age, roots, environment and recent changes for one case.","verify":"The notes preserve both abiotic and biotic possibilities until evidence separates them."},
+        {"title":"Arthropod identification","task":"Document one arthropod observation with location, life stage if known, magnification/photo and confidence level.","verify":"The record distinguishes confirmed identification from suspected identification."},
+        {"title":"Disease and sanitation boundaries","task":"Map clean, suspect and affected zones plus tool/person movement controls.","verify":"The workflow reduces cross-contamination and preserves evidence."},
+        {"title":"Control and follow-up","task":"For any intervention, define label/legal check, target problem, application record and verification date.","verify":"Success is evaluated with follow-up evidence rather than assuming treatment worked."}
+      ],
+      "exercises": [
+        {"title":"Scout a 10-location route","deliverable":"A completed scouting sheet with locations, observations, counts/severity, photos and next actions."},
+        {"title":"Build a differential diagnosis tree","deliverable":"A decision tree beginning with symptom pattern and separating root, environment, nutrition, arthropod and disease possibilities."}
+      ],
+      "capstone":"Investigate a real or simulated plant-health case from intake through differential diagnosis, action criteria and follow-up verification.",
+      "completion":["I scout on a repeatable map.","I separate evidence from diagnosis.","I preserve quarantine/sanitation boundaries.","I verify outcomes after intervention."]
+    },
+    {
+      "number": 9,
+      "id": "training-canopy",
+      "title": "Training & Canopy Management",
+      "route": "/learn/training-canopy/",
+      "purpose": "Choose training techniques from plant architecture and measured goals instead of technique names or yield promises.",
+      "evidenceBoundary": "Training changes geometry, tissue allocation, light interception and access; it does not create energy or guarantee yield.",
+      "units": [
+        {"title":"Define the architecture goal","task":"Write a measurable goal such as height control, branch spacing, support, access or light distribution before choosing a technique.","verify":"The goal can be assessed after the intervention."},
+        {"title":"Map growth points","task":"Record active tips, nodes, branch angles, plant height and stem condition before cutting or bending.","verify":"The pre-intervention architecture is documented."},
+        {"title":"Wound and recovery monitoring","task":"Track posture, new extension, wound condition and irrigation response after a tissue-removal event.","verify":"Further stress is held until stated recovery criteria are met."},
+        {"title":"Canopy light distribution","task":"Compare canopy geometry with PPFD or representative light observations before and after training.","verify":"The result is evaluated by distribution, not only top count."},
+        {"title":"Airflow, support and access","task":"Inspect interior humidity/air movement, branch support and service access after canopy fill changes.","verify":"The canopy can still be scouted, serviced and supported safely."}
+      ],
+      "exercises": [
+        {"title":"Training decision worksheet","deliverable":"Goal, plant condition, chosen technique, expected tradeoffs, measurements and recovery criteria."},
+        {"title":"Before/after canopy map","deliverable":"A pair of architecture/light/access maps using the same measurement points."}
+      ],
+      "capstone":"Evaluate one training intervention from stated objective through recovery and before/after canopy measurements.",
+      "completion":["I define the objective before the technique.","I document pre-intervention architecture.","I use recovery criteria before stacking stress.","I evaluate light, airflow and access after training."]
+    },
+    {
+      "number": 10,
+      "id": "genetics-breeding",
+      "title": "Genetics & Breeding",
+      "route": "/learn/genetics-breeding/",
+      "purpose": "Document inheritance and selection while separating lineage claims, observed phenotype and measured genetic/chemical evidence.",
+      "evidenceBoundary": "A cultivar name or reported pedigree is not the same as verified genetic identity. Phenotype reflects genotype, development and environment; one plant does not define an entire population.",
+      "units": [
+        {"title":"Identity and provenance","task":"Build a line record with source, reported lineage, generation/clone status, acquisition date and uncertainty notes.","verify":"Reported claims are labeled as reported rather than silently converted into verified facts."},
+        {"title":"Genotype, phenotype and environment","task":"Choose three traits and list genetic, developmental and environmental contributors that could affect each.","verify":"The worksheet does not treat phenotype as genotype alone."},
+        {"title":"Population and generation labels","task":"Draw a simple F1, F2 and backcross pedigree and state what each label does and does not guarantee.","verify":"Generation labels are not treated as proof of uniformity or quality."},
+        {"title":"Selection criteria","task":"Define measurable selection traits, minimum observations and disqualifying conditions before evaluating plants.","verify":"Selection rules are written before final choices."},
+        {"title":"Progeny and repeatability","task":"Design a follow-up plan to test whether a selected trait repeats in relatives or progeny under documented conditions.","verify":"The plan distinguishes an individual phenotype from inherited repeatability."}
+      ],
+      "exercises": [
+        {"title":"Pedigree and population sheet","deliverable":"A traceable family diagram with parent IDs, generation labels, population counts and uncertainty notes."},
+        {"title":"Selection scorecard","deliverable":"A predeclared multi-trait scorecard with measurements, notes and reasons for keep/remove decisions."}
+      ],
+      "capstone":"Document one breeding or selection population with provenance, generation labels, phenotype records, selection criteria and a repeatability/progeny-test plan.",
+      "completion":["I separate reported pedigree from verified identity.","I distinguish genotype and phenotype.","I use generation labels correctly.","I predeclare selection criteria and test repeatability."]
+    },
+    {
+      "number": 11,
+      "id": "harvest-postharvest",
+      "title": "Harvest & Post-Harvest",
+      "route": "/learn/harvest-postharvest/",
+      "purpose": "Assess maturity with multiple indicators and preserve quality through controlled handling, drying, equilibration and storage.",
+      "evidenceBoundary": "Maturation can be asynchronous and cultivar-specific. Stigma or trichome appearance alone should not be converted into a universal harvest percentage, effect prediction or fixed week.",
+      "units": [
+        {"title":"Representative maturity sampling","task":"Define where and how maturity observations are sampled across a plant or crop.","verify":"The sample is not limited to one conveniently chosen flower site."},
+        {"title":"Multiple maturity indicators","task":"Record trichome observations, stigma/flower development, plant/cultivar context and time trend separately.","verify":"No single visual indicator is treated as universal proof."},
+        {"title":"Clean harvest handling","task":"Map tool sanitation, lot identity, handling surfaces and hold/discard conditions.","verify":"Harvested material remains traceable to plant/lot and handling event."},
+        {"title":"Drying as moisture transfer","task":"Track temperature/RH and representative material observations through the drying period.","verify":"The record uses time-series conditions rather than one room setpoint."},
+        {"title":"Storage and degradation","task":"Identify light, heat, oxygen, moisture and handling exposures that could change stored quality.","verify":"Storage choices are tied to controllable degradation risks."}
+      ],
+      "exercises": [
+        {"title":"Maturity observation sheet","deliverable":"A repeated sampling sheet with site, date, magnification, observations and uncertainty."},
+        {"title":"Drying run log","deliverable":"A time-series environmental/handling log with lot ID, observations and hold/release notes."}
+      ],
+      "capstone":"Build a harvest-to-storage record for one lot that preserves maturity evidence, identity, drying conditions, handling and final storage decision.",
+      "completion":["I sample maturity representatively.","I use multiple indicators.","I preserve lot identity and sanitation records.","I track drying/storage as controlled processes."]
+    },
+    {
+      "number": 12,
+      "id": "outdoor",
+      "title": "Outdoor Cultivation",
+      "route": "/learn/outdoor/",
+      "purpose": "Plan around the actual site, season, weather, water, biological pressure and pollen risk rather than copying an indoor schedule outdoors.",
+      "evidenceBoundary": "Outdoor timing and risk are location-, season-, genotype- and weather-dependent. There is no single universal month schedule or guaranteed zero-risk pollen isolation distance.",
+      "units": [
+        {"title":"Site and sun characterization","task":"Map direct sun, shade, access, drainage, wind exposure and nearby risk sources across the intended area.","verify":"The plan uses observed site conditions instead of a generic sun-hours assumption."},
+        {"title":"Hardening and transplant","task":"Create a staged exposure plan for moving protected plants into stronger sun, wind and temperature variation.","verify":"Release depends on plant response rather than one fixed number of days."},
+        {"title":"Water and root-zone planning","task":"Estimate irrigation access, delivery method, drainage and how soil/media moisture will be checked.","verify":"The plan includes a repeatable observation or measurement method."},
+        {"title":"Weather, disease and support risk","task":"Identify rain, humidity, wind and structural-load conditions that raise flowering or breakage risk.","verify":"The plan includes monitoring and response triggers rather than weather folklore."},
+        {"title":"Pollen, pests and season records","task":"Map nearby pollen sources where known, pest/wildlife pressure and key seasonal observations.","verify":"Pollen risk is described probabilistically rather than as a guaranteed safe distance."}
+      ],
+      "exercises": [
+        {"title":"Outdoor site scorecard","deliverable":"A site map/scorecard covering sun, water, drainage, wind, access, pests, pollen and disease-risk observations."},
+        {"title":"Season log template","deliverable":"A weekly record for weather, plant stage, irrigation, pests/disease, support, flowering development and interventions."}
+      ],
+      "capstone":"Create a location-specific outdoor crop plan that explains site choice, acclimation, irrigation, support, biological risk, pollen risk and the records used to adapt through the season.",
+      "completion":["I characterize the actual site.","I harden plants gradually and observe response.","I plan water and support around local conditions.","I keep weather, pest and pollen risk contextual rather than universal."]
+    }
+  ],
+  "supportRoutes": [
+    {"href":"/learn/records/","label":"Records & printables"},
+    {"href":"/learn/sops/","label":"Measurement SOPs"},
+    {"href":"/learn/infographics/","label":"Infographic library"},
+    {"href":"/learn/encyclopedia/","label":"Plant Science Encyclopedia"},
+    {"href":"/thc-grow-doc/","label":"Grow Doc diagnostic tool"},
+    {"href":"/growlens/","label":"GrowLens"}
+  ]
+}
