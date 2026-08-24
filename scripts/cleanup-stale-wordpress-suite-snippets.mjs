@@ -1,103 +1,66 @@
 import process from 'node:process';
 
-const siteUrl = (process.env.WP_SITE_URL || 'https://dtfseeds.com').replace(/\/$/, '');
-const username = process.env.WP_API_USERNAME || '';
-const password = process.env.WP_API_PASSWORD || '';
-const currentRunId = String(process.env.GITHUB_RUN_ID || '').trim();
-const prefix = 'DTF Public Suite Deploy V2 ';
+const siteUrl=(process.env.WP_SITE_URL||'https://dtfseeds.com').replace(/\/$/,'');
+const username=process.env.WP_API_USERNAME||'';
+const password=process.env.WP_API_PASSWORD||'';
+const prefix='DTF Public Suite Deploy V2 ';
+const currentRunId=String(process.env.GITHUB_RUN_ID||'').trim();
+if(!username||!password)throw new Error('WP_API_USERNAME and WP_API_PASSWORD are required.');
+const auth=`Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`;
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 
-if (!username || !password) throw new Error('WP_API_USERNAME and WP_API_PASSWORD are required.');
-
-const auth = `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`;
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
-async function request(path, { method = 'GET', allow = [] } = {}) {
+async function request(path,{method='GET',json,allow=[]}={}){
   let last;
-  for (let attempt = 1; attempt <= 5; attempt += 1) {
-    try {
-      const response = await fetch(`${siteUrl}${path}`, {
-        method,
-        headers: {
-          Authorization: auth,
-          Accept: 'application/json',
-          'Cache-Control': 'no-cache, no-store, max-age=0',
-          Pragma: 'no-cache',
-          'User-Agent': 'DTFSeeds-Stale-Suite-Bridge-Cleanup/1.0'
-        },
-        redirect: 'follow',
-        signal: AbortSignal.timeout(45_000)
-      });
-      const text = await response.text();
-      let body = text;
-      try { body = text ? JSON.parse(text) : null; } catch {}
-      if ((response.status >= 500 || response.status === 429) && attempt < 5) {
-        await sleep(attempt * 1800);
-        continue;
-      }
-      if (!response.ok && !allow.includes(response.status)) {
-        throw new Error(`${method} ${path} failed (${response.status}): ${typeof body === 'string' ? body.slice(0, 600) : JSON.stringify(body).slice(0, 600)}`);
-      }
-      return { ok: response.ok, status: response.status, body };
-    } catch (error) {
-      last = error;
-      if (attempt < 5) await sleep(attempt * 1800);
+  for(let attempt=1;attempt<=5;attempt++){
+    try{
+      const response=await fetch(`${siteUrl}${path}`,{method,headers:{Authorization:auth,Accept:'application/json','Cache-Control':'no-cache, no-store, max-age=0',Pragma:'no-cache','User-Agent':'DTFSeeds-Stale-Suite-Bridge-Cleanup/1.1',...(json!==undefined?{'Content-Type':'application/json'}:{})},body:json!==undefined?JSON.stringify(json):undefined,redirect:'follow',signal:AbortSignal.timeout(45000)});
+      const text=await response.text();let body=text;try{body=text?JSON.parse(text):null}catch{}
+      if((response.status>=500||response.status===429)&&attempt<5){await sleep(attempt*1800);continue}
+      if(!response.ok&&!allow.includes(response.status))throw new Error(`${method} ${path} failed (${response.status}): ${typeof body==='string'?body.slice(0,600):JSON.stringify(body).slice(0,600)}`);
+      return{ok:response.ok,status:response.status,body};
+    }catch(error){last=error;if(attempt<5)await sleep(attempt*1800)}
+  }
+  throw last||new Error(`${method} ${path} failed.`);
+}
+function collection(body){if(Array.isArray(body))return body;for(const k of ['snippets','data','items','results'])if(Array.isArray(body?.[k]))return body[k];return[]}
+function item(body){if(body&&typeof body==='object'&&!Array.isArray(body)){for(const k of ['snippet','data','item'])if(body[k]&&typeof body[k]==='object'&&!Array.isArray(body[k]))return body[k];return body}return null}
+async function list(safe=false){const q=safe?'snippets-safe-mode=1&':'';const r=await request(`/wp-json/code-snippets/v1/snippets?${q}per_page=100`,{allow:[400,403,404,500]});return{available:r.ok,safe,status:r.status,snippets:r.ok?collection(r.body):[]}}
+async function removeSnippet(id,safe=false){const q=safe?'?snippets-safe-mode=1':'';await request(`/wp-json/code-snippets/v1/snippets/${id}/deactivate${q}`,{method:'POST',allow:[400,404,500]});await request(`/wp-json/code-snippets/v1/snippets/${id}${q}`,{method:'DELETE',allow:[404,500]});await request(`/wp-json/code-snippets/v1/snippets/${id}${q}`,{method:'DELETE',allow:[400,404,500]});}
+
+let mode='collection';let safe=false;let candidates=[];let markerId=null;let scannedIds=[];
+let listing=await list(false);if(!listing.available)listing=await list(true);
+if(listing.available){
+  safe=listing.safe;
+  candidates=listing.snippets.filter(s=>String(s?.name||'').startsWith(prefix)&&(!currentRunId||String(s?.name)!==`${prefix}${currentRunId}`));
+}else{
+  // Some deployed Code Snippets versions expose POST /snippets and item routes but
+  // not collection GET. Create one inactive marker to learn the current numeric ID,
+  // scan only recent item IDs, and remove solely exact DTF temporary bridge names.
+  mode='recent-id-scan';
+  const marker=await request('/wp-json/code-snippets/v1/snippets',{method:'POST',json:{name:`DTF Suite Cleanup Marker ${currentRunId||Date.now()}`,desc:'Inactive temporary marker used only to discover recent Code Snippets IDs for stale DTF deployment cleanup.',code:'// DTF cleanup marker. Intentionally inactive.',tags:['dtf-deploy-cleanup','temporary'],scope:'global',priority:1,active:false,network:false}});
+  markerId=Number(item(marker.body)?.id||0);if(!Number.isInteger(markerId)||markerId<=0)throw new Error('Cleanup marker was created without a numeric snippet ID.');
+  try{
+    const floor=Math.max(1,markerId-80);
+    for(let id=markerId-1;id>=floor;id--){
+      const r=await request(`/wp-json/code-snippets/v1/snippets/${id}`,{allow:[404]});
+      scannedIds.push(id);if(!r.ok)continue;
+      const s=item(r.body);if(!s)continue;
+      const name=String(s.name||'');
+      if(name.startsWith(prefix)&&(!currentRunId||name!==`${prefix}${currentRunId}`))candidates.push({...s,id:Number(s.id||id)});
     }
+  }finally{
+    await removeSnippet(markerId,false).catch(async()=>removeSnippet(markerId,true));
   }
-  throw last || new Error(`${method} ${path} failed.`);
 }
 
-function normalizeCollection(body) {
-  if (Array.isArray(body)) return body;
-  for (const key of ['snippets', 'data', 'items', 'results']) {
-    if (Array.isArray(body?.[key])) return body[key];
-  }
-  return [];
+const unique=[...new Map(candidates.map(s=>[Number(s?.id||0),s])).values()];
+const removed=[];
+for(const s of unique){const id=Number(s?.id||0);const name=String(s?.name||'');if(!Number.isInteger(id)||id<=0||!name.startsWith(prefix))throw new Error(`Refusing unsafe stale-snippet candidate: ${JSON.stringify({id,name})}`);await removeSnippet(id,safe).catch(async()=>removeSnippet(id,true));removed.push({id,name});console.log(`Removed stale temporary Public Suite bridge snippet id=${id}.`)}
+if(removed.length)await sleep(1200);
+
+if(mode==='collection'){
+  let after=await list(false);if(!after.available)after=await list(true);if(!after.available)throw new Error('Collection listing disappeared before cleanup verification.');const remaining=after.snippets.filter(s=>String(s?.name||'').startsWith(prefix));if(remaining.length)throw new Error(`Stale Public Suite bridge snippets remain: ${JSON.stringify(remaining.map(s=>({id:s?.id??null,name:s?.name??null})))}`);
+}else{
+  for(const {id} of removed){const r=await request(`/wp-json/code-snippets/v1/snippets/${id}`,{allow:[404]});if(r.ok){const s=item(r.body);if(String(s?.name||'').startsWith(prefix))throw new Error(`Stale Public Suite bridge snippet ${id} still exists after cleanup.`)}}
 }
-
-async function listSnippets(safeMode = false) {
-  const suffix = safeMode ? 'snippets-safe-mode=1&' : '';
-  const result = await request(`/wp-json/code-snippets/v1/snippets?${suffix}per_page=100`, { allow: [400, 403, 404, 500] });
-  if (!result.ok) return { available: false, safeMode, status: result.status, snippets: [] };
-  return { available: true, safeMode, status: result.status, snippets: normalizeCollection(result.body) };
-}
-
-let listing = await listSnippets(false);
-if (!listing.available) listing = await listSnippets(true);
-if (!listing.available) {
-  throw new Error(`Code Snippets REST listing is unavailable in normal and safe mode; last status=${listing.status}. Refusing production publication while stale bridge state is unknown.`);
-}
-
-const stale = listing.snippets.filter((snippet) => {
-  const name = String(snippet?.name || '');
-  if (!name.startsWith(prefix)) return false;
-  if (currentRunId && name === `${prefix}${currentRunId}`) return false;
-  return true;
-});
-
-const removed = [];
-const suffix = listing.safeMode ? '?snippets-safe-mode=1' : '';
-for (const snippet of stale) {
-  const id = Number(snippet?.id || 0);
-  if (!Number.isInteger(id) || id <= 0) throw new Error(`Stale deployment snippet has no valid numeric ID: ${JSON.stringify({ name: snippet?.name ?? null, id: snippet?.id ?? null })}`);
-  await request(`/wp-json/code-snippets/v1/snippets/${id}/deactivate${suffix}`, { method: 'POST', allow: [400, 404, 500] });
-  await request(`/wp-json/code-snippets/v1/snippets/${id}${suffix}`, { method: 'DELETE', allow: [404, 500] });
-  removed.push({ id, name: String(snippet?.name || '') });
-  console.log(`Removed stale temporary Public Suite bridge snippet id=${id}.`);
-}
-
-if (removed.length) await sleep(1800);
-let after = await listSnippets(false);
-if (!after.available) after = await listSnippets(true);
-if (!after.available) throw new Error('Unable to verify stale deployment snippet cleanup.');
-const remaining = after.snippets.filter((snippet) => String(snippet?.name || '').startsWith(prefix));
-if (remaining.length) {
-  throw new Error(`Stale Public Suite bridge snippets remain after cleanup: ${JSON.stringify(remaining.map((snippet) => ({ id: snippet?.id ?? null, name: snippet?.name ?? null })))}`);
-}
-
-console.log(JSON.stringify({
-  ok: true,
-  checkedMode: listing.safeMode ? 'safe-mode' : 'normal',
-  candidates: stale.length,
-  removed,
-  remaining: 0
-}));
+console.log(JSON.stringify({ok:true,mode,collectionStatus:listing.status,markerId,scanned:scannedIds.length,candidates:unique.length,removed,remaining:0}));
