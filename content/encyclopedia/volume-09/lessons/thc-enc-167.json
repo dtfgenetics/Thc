@@ -1,0 +1,33 @@
+{
+  "id":"THC-ENC-167",
+  "number":167,
+  "title":"Rooting Media, Moisture, and Oxygen",
+  "objective":"Relate rooting-medium physical properties to water supply, gas exchange, temperature, and root development.",
+  "terms":[
+    {"term":"air-filled porosity","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"water-holding capacity","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"bulk density","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"hydraulic contact","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"saturation","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"rooting plug","definition":"Pending controlled-glossary reconciliation."}
+  ],
+  "termDefinitionsStatus":"pending_controlled_glossary_reconciliation",
+  "coreScience":[
+    "An unrooted cutting needs continuous water contact at the base, but living tissue also needs oxygen. A medium that remains saturated can restrict gas exchange, while a medium that dries or shrinks away from the stem can interrupt hydraulic contact.",
+    "Rooting media differ in pore size, water retention, drainage, sterility status, structural stability, and chemistry. In a study of eight high-CBD hemp cultivars, medium had a large effect on rooting and rockwool performed best among the tested treatments. That result is evidence for those cultivars and methods, not proof that rockwool is universally superior.",
+    "Container geometry, plug compression, insertion depth, irrigation method, temperature, and rooting density change the actual air-water environment. Media must be evaluated as installed systems."
+  ],
+  "cultivationRelevance":["Standardize media batch, plug preparation, saturation method, drainage, insertion depth, tray position, and irrigation. Avoid comparing hormone treatments across uncontrolled media conditions."],
+  "measureAndRecord":[{"field":"Controlled record set","requirement":"Medium composition and lot; plug dimensions; pre-wet method; water content or mass; drainage; temperature; EC/pH context; rooting and transplant outcomes."}],
+  "misconceptions":["The wettest medium roots best.","One media brand works the same in every tray and cultivar.","Rockwool is proven best for all cannabis propagation."],
+  "evidenceLimits":["Media results are genotype- and system-specific. Physical measurements are more transferable than brand claims."],
+  "crossLinks":"THC-ENC-141–160 for genotype, chemotype, sex, clonal fidelity, and evidence standards; THC-ENC-301–340 for disease, viroid, biosecurity, sanitation, and release controls; THC-GROW-034 for the controlled propagation SOP package.",
+  "sourceNotes":[
+    "Campbell SM et al. (2021). Evaluation of substrate composition and exogenous hormone application on vegetative propagule rooting success of essential oil hemp (Cannabis sativa L.). PLOS ONE 16:e0249160. DOI 10.1371/journal.pone.0249160.",
+    "Holmes JE et al. (2021). Variables affecting shoot growth and plantlet recovery in tissue cultures of drug-type Cannabis sativa L. Frontiers in Plant Science 12:732344. DOI 10.3389/fpls.2021.732344.",
+    "Controlled Volume 03 root-zone evidence for oxygen, saturation, pore structure, and air-water balance."
+  ],
+  "reviewControl":{"controlledManuscript":"Volume 09 v1.0","evidenceControl":"complete","secondaryEvidenceReview":"complete_qualified","externalReview":"required","externalReviewType":"root_zone_and_propagation_science","publicationAuthorized":false,"websiteAction":"do_not_publish"},
+  "slug":"rooting-media-moisture-and-oxygen",
+  "route":"/encyclopedia/rooting-media-moisture-and-oxygen"
+}
