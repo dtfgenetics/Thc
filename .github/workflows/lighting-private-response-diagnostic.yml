@@ -1,0 +1,78 @@
+name: Diagnose Lighting Private Drive Response
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/lighting-private-response-diagnostic.yml
+
+permissions:
+  issues: write
+  contents: read
+
+env:
+  FILE_ID: 1UKOVWoGxJnb8VJW5Vxncvpp9BhrBHh4u
+  EXPECTED_SHA256: 2287cb16dc3b848635c33b2a4aea523c3abb33085ef3e26f1b818976625548f7
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Download and classify anonymous responses
+        id: inspect
+        shell: bash
+        run: |
+          set -euo pipefail
+          report="$RUNNER_TEMP/report.txt"
+          : > "$report"
+          urls=(
+            "https://drive.usercontent.google.com/download?id=${FILE_ID}&export=download&confirm=t"
+            "https://drive.google.com/uc?export=download&id=${FILE_ID}&confirm=t"
+          )
+          i=0
+          for url in "${urls[@]}"; do
+            i=$((i+1))
+            out="$RUNNER_TEMP/candidate-${i}"
+            headers="$RUNNER_TEMP/headers-${i}.txt"
+            curl -4 --silent --show-error --location --retry 2 --dump-header "$headers" "$url" --output "$out" || true
+            bytes="$(stat -c %s "$out" 2>/dev/null || echo 0)"
+            sha="$(sha256sum "$out" 2>/dev/null | awk '{print $1}' || true)"
+            mime="$(file --brief --mime-type "$out" 2>/dev/null || true)"
+            desc="$(file --brief "$out" 2>/dev/null || true)"
+            magic="$(xxd -l 16 -p "$out" 2>/dev/null || true)"
+            dims="$(python3 - "$out" <<'PY'
+          import pathlib,struct,sys
+          p=pathlib.Path(sys.argv[1])
+          try:
+            d=p.read_bytes()
+            if d[:8]==b'\x89PNG\r\n\x1a\n' and len(d)>=24:
+              w,h=struct.unpack('>II',d[16:24]); print(f'{w}x{h}')
+            else: print('not-png')
+          except Exception: print('unreadable')
+          PY
+            )"
+            ctype="$(awk 'BEGIN{IGNORECASE=1}/^content-type:/{gsub("\r",""); print $0}' "$headers" | tail -1 | cut -d' ' -f2- || true)"
+            printf 'candidate-%s bytes=%s sha256=%s mime=%s dimensions=%s magic=%s content-type=%s\n' "$i" "$bytes" "$sha" "$mime" "$dims" "$magic" "$ctype" | tee -a "$report"
+            printf 'description-%s=%s\n' "$i" "$desc" >> "$report"
+          done
+          {
+            echo 'report<<EOF'
+            cat "$report"
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Report to issue 46
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          REPORT: ${{ steps.inspect.outputs.report }}
+        with:
+          script: |
+            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body:[
+              '## Lighting private Drive response diagnostic','',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,'',
+              '```text',process.env.REPORT || 'no report','```','',
+              'Diagnostic only. No repository, WordPress, Drive, or page content is modified.'
+            ].join('\n')});
