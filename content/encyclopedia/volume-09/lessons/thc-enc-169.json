@@ -1,0 +1,34 @@
+{
+  "id":"THC-ENC-169",
+  "number":169,
+  "title":"Light During Root Initiation",
+  "objective":"Balance photosynthetic support, heat load, and water demand during root initiation.",
+  "terms":[
+    {"term":"PPFD","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"DLI","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"photoperiod","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"photomorphogenesis","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"leaf temperature","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"light acclimation","definition":"Pending controlled-glossary reconciliation."}
+  ],
+  "termDefinitionsStatus":"pending_controlled_glossary_reconciliation",
+  "coreScience":[
+    "Light supplies energy for photosynthesis and signals development, but an unrooted cutting has restricted hydraulic capacity. Excess photon load or radiant heat can raise leaf temperature and water demand faster than the cutting can replace water.",
+    "Very low light can preserve water while limiting carbohydrate supply and delaying functional growth. The useful range depends on donor reserves, leaf area, temperature, humidity, spectrum, genotype, and progression of rooting.",
+    "Cannabis propagation studies use different fixtures and conditions, and donor-light treatments can change mother architecture and cutting performance. A fixture label does not define the cutting’s actual exposure."
+  ],
+  "cultivationRelevance":["Map PPFD across the tray and record photoperiod, DLI, spectrum, fixture distance, leaf temperature, and rooting stage. Increase light only after roots and water regulation are demonstrated."],
+  "measureAndRecord":[{"field":"Controlled record set","requirement":"PPFD map; DLI; photoperiod; fixture and spectrum; leaf temperature; tray position; rooting time; wilt, bleaching, elongation, and transplant performance."}],
+  "misconceptions":["Clones need darkness to root.","More light always creates faster roots.","A propagation lamp setting transfers unchanged between shelves."],
+  "evidenceLimits":["Cannabis-specific optimum-light evidence is limited and protocol-dependent. Do not publish one universal PPFD target."],
+  "crossLinks":"THC-ENC-101–120 for lighting and photobiology; THC-ENC-081–100 for water relations and environmental control; THC-GROW-034 for the controlled propagation SOP package.",
+  "sourceNotes":[
+    "Campbell LG, Naraine SGU, Dusfresne J. (2019). Phenotypic plasticity influences the success of clonal propagation in industrial pharmaceutical Cannabis sativa. PLOS ONE 14:e0213434.",
+    "Holmes JE et al. (2021). Variables affecting shoot growth and plantlet recovery in tissue cultures of drug-type Cannabis sativa L. Frontiers in Plant Science 12:732344.",
+    "Liang J et al. (2026). Efficient propagation protocol and genetic similarity assessment of medicinal cannabis based on photoautotrophic micropropagation. Frontiers in Plant Science. DOI 10.3389/fpls.2026.1846572.",
+    "Controlled Volume 05–06 evidence for leaf-temperature, VPD, PPFD, DLI, and energy-demand interactions."
+  ],
+  "reviewControl":{"controlledManuscript":"Volume 09 v1.0","evidenceControl":"complete","secondaryEvidenceReview":"complete_qualified","externalReview":"required","externalReviewType":"lighting_and_propagation_science","publicationAuthorized":false,"websiteAction":"do_not_publish"},
+  "slug":"light-during-root-initiation",
+  "route":"/encyclopedia/light-during-root-initiation"
+}
