@@ -1,0 +1,56 @@
+{
+  "id": "THC-ENC-163",
+  "number": 163,
+  "title": "Juvenility, Maturity, and Cutting Competence",
+  "objective": "Explain how ontogenetic age, tissue position, donor condition, and genotype affect a cutting’s competence to form roots.",
+  "terms": [
+    {"term":"juvenility","definition":"An early developmental phase in which tissues express juvenile characteristics and may differ in propagation response from mature tissues."},
+    {"term":"maturation","definition":"Developmental progression from juvenile toward mature physiological and morphological states."},
+    {"term":"competence","definition":"The capacity of a tissue to respond to developmental and environmental signals and execute a process such as adventitious rooting."},
+    {"term":"rejuvenation","definition":"A shift toward juvenile-like developmental or propagation behavior; it does not by itself imply a change or reset of genotype."},
+    {"term":"ontogeny","definition":"The developmental history of an organism or tissue from its origin through later stages."},
+    {"term":"physiological age","definition":"A tissue’s functional developmental state as shaped by ontogeny, environment, and management rather than calendar age alone."}
+  ],
+  "termDefinitionsStatus": "controlled_glossary_reconciled_for_publication",
+  "coreScience": [
+    "Juvenility and maturity describe developmental states, not simply calendar age. In many woody and herbaceous plants, juvenile tissues root more readily than mature tissues, but the magnitude and direction of the effect are species- and genotype-dependent.",
+    "Within one cannabis mother, shoot position, branch vigor, recent pruning, light exposure, nutritional status, and reproductive history may influence cutting behavior and should be treated as trial variables rather than universal causal factors. Reverted or repeatedly maintained material may show unusual morphology or delayed normalization without necessarily having changed genotype.",
+    "Rooting competence is the capacity of a tissue to respond to wound, auxin, carbohydrate, oxygen, moisture, and environmental signals by initiating and developing adventitious roots. It should be evaluated by measured rooting outcomes rather than inferred from labels such as ‘young mother’ or ‘old clone.’"
+  ],
+  "cultivationRelevance": [
+    "Standardize donor age class, branch position, node number, harvest interval, and mother-management history during trials. Rotate or rehabilitate mothers only after comparing propagation and crop performance."
+  ],
+  "measureAndRecord": [
+    {"field":"Controlled record set","requirement":"Mother age and propagation generation; vegetative or reproductive history; branch position; node age; rooting percentage; days to root; root mass or length; transplant survival; morphology after establishment."}
+  ],
+  "misconceptions": [
+    "Calendar age alone predicts rooting.",
+    "Taking a new cutting resets all biological history.",
+    "Revegetated material is automatically rejuvenated and superior."
+  ],
+  "evidenceLimits": [
+    "Cannabis-specific evidence on formal rejuvenation and phase change is limited. Do not claim a universal maximum mother age or clone generation without controlled data."
+  ],
+  "crossLinks": "THC-ENC-141–160 for genotype, chemotype, sex, clonal fidelity, and evidence standards; THC-ENC-301–340 for disease, viroid, biosecurity, sanitation, and release controls; THC-GROW-034 for the controlled propagation SOP package.",
+  "sourceNotes": [
+    "V09-SRC-001 — THC Cannabis Plant Science Source Packet v1.0 (project control source).",
+    "Campbell LG, Naraine SGU, Dusfresne J. (2019). Phenotypic plasticity influences the success of clonal propagation in industrial pharmaceutical Cannabis sativa. PLOS ONE 14:e0213434. DOI 10.1371/journal.pone.0213434.",
+    "Holmes JE, Lung S, Collyer D, Punja ZK. (2021). Variables affecting shoot growth and plantlet recovery in tissue cultures of drug-type Cannabis sativa L. Frontiers in Plant Science 12:732344. DOI 10.3389/fpls.2021.732344.",
+    "Lefebvre V et al. (2026). Micropropagation of Cannabis sativa: genetic and epigenetic stability assessment over multiple generations. Journal of Cannabis Research 8:43. DOI 10.1186/s42238-026-00406-y.",
+    "Díaz-Sala C. (2020). A Perspective on Adventitious Root Formation in Tree Species. Plants 9:1789. DOI 10.3390/plants9121789."
+  ],
+  "publicationAuthorized": true,
+  "reviewControl": {
+    "controlledManuscript":"Volume 09 v1.0",
+    "evidenceControl":"complete",
+    "secondaryEvidenceReview":"complete_cross_species_qualified",
+    "externalReview":"pending_not_recorded",
+    "externalReviewType":"propagation_science",
+    "publicationAuthorized":true,
+    "publicationAuthorization":"project_owner_2026-08-24",
+    "independentApproval":false,
+    "websiteAction":"publish_with_review_notice"
+  },
+  "slug": "juvenility-maturity-and-cutting-competence",
+  "route": "/encyclopedia/juvenility-maturity-and-cutting-competence"
+}
