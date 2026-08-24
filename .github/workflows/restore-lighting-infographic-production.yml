@@ -7,6 +7,7 @@ on:
     paths:
       - .github/workflows/restore-lighting-infographic-production.yml
       - site/wordpress/assets/infographics/import-remaining-core-031-047.json
+      - site/wordpress/assets/infographics/DLI_PPFD_Light_Education_Infographic.png
 
 permissions:
   contents: write
@@ -63,24 +64,17 @@ jobs:
           node --check scripts/publish-wordpress-topic-literature.mjs
           node --check scripts/run-learning-v3-production.mjs
 
-      - name: Recover exact DLI PPFD image from canonical Drive file
+      - name: Resolve exact DLI PPFD image
         id: recover
         shell: bash
         run: |
           set -euo pipefail
           tmp="$RUNNER_TEMP/dli-ppfd-lighting.png"
           rm -f "$tmp"
-          urls=(
-            "https://drive.usercontent.google.com/download?id=${CANONICAL_DRIVE_FILE_ID}&export=download&confirm=t"
-            "https://drive.google.com/uc?export=download&id=${CANONICAL_DRIVE_FILE_ID}&confirm=t"
-          )
-          recovered=0
-          for url in "${urls[@]}"; do
-            candidate="$RUNNER_TEMP/dli-candidate.png"
-            rm -f "$candidate"
-            if curl -4 --fail --silent --show-error --location --retry 3 --retry-delay 2 --connect-timeout 20 --max-time 120 "$url" --output "$candidate"; then
-              if python3 - "$candidate" "$EXPECTED_SHA256" "$EXPECTED_BYTES" <<'PY'
-          import hashlib,pathlib,sys
+
+          validate_png() {
+            python3 - "$1" "$EXPECTED_SHA256" "$EXPECTED_BYTES" <<'PY'
+          import hashlib,pathlib,struct,sys
           path=pathlib.Path(sys.argv[1])
           expected_sha=sys.argv[2]
           expected_bytes=int(sys.argv[3])
@@ -88,21 +82,50 @@ jobs:
           assert len(data)==expected_bytes, f'byte size mismatch: {len(data)} != {expected_bytes}'
           assert data[:8]==b'\x89PNG\r\n\x1a\n', 'not a PNG'
           assert b'IEND' in data, 'PNG has no IEND marker'
+          width,height=struct.unpack('>II', data[16:24])
+          assert (width,height)==(2550,3300), f'unexpected dimensions: {(width,height)}'
           actual=hashlib.sha256(data).hexdigest()
           assert actual==expected_sha, f'SHA-256 mismatch: {actual}'
           PY
-              then
-                mv "$candidate" "$tmp"
-                recovered=1
-                break
+          }
+
+          source='none'
+          recovered=0
+
+          # Permanent path: once the reviewed asset is source-controlled, use it directly.
+          if [[ -f "$TARGET_PATH" ]] && validate_png "$TARGET_PATH"; then
+            cp "$TARGET_PATH" "$tmp"
+            recovered=1
+            source='repository'
+          fi
+
+          # Recovery-only fallback for a future public/shared copy. Private Drive responses are
+          # intentionally rejected by the exact byte/hash gate.
+          if [[ "$recovered" -ne 1 ]]; then
+            urls=(
+              "https://drive.usercontent.google.com/download?id=${CANONICAL_DRIVE_FILE_ID}&export=download&confirm=t"
+              "https://drive.google.com/uc?export=download&id=${CANONICAL_DRIVE_FILE_ID}&confirm=t"
+            )
+            for url in "${urls[@]}"; do
+              candidate="$RUNNER_TEMP/dli-candidate.png"
+              rm -f "$candidate"
+              if curl -4 --fail --silent --show-error --location --retry 3 --retry-delay 2 --connect-timeout 20 --max-time 120 "$url" --output "$candidate"; then
+                if validate_png "$candidate"; then
+                  mv "$candidate" "$tmp"
+                  recovered=1
+                  source='drive-public-download'
+                  break
+                fi
               fi
-            fi
-          done
+            done
+          fi
+
           test "$recovered" -eq 1
           mkdir -p "$(dirname "$TARGET_PATH")"
           cp "$tmp" "$TARGET_PATH"
           echo "bytes=$(stat -c %s "$TARGET_PATH")" >> "$GITHUB_OUTPUT"
           echo "sha256=$(sha256sum "$TARGET_PATH" | awk '{print $1}')" >> "$GITHUB_OUTPUT"
+          echo "source=$source" >> "$GITHUB_OUTPUT"
 
       - name: Commit restored canonical asset to main
         id: commit
@@ -201,6 +224,7 @@ jobs:
           COMMIT_CHANGED: ${{ steps.commit.outputs.changed }}
           RESTORED_BYTES: ${{ steps.recover.outputs.bytes }}
           RESTORED_SHA: ${{ steps.recover.outputs.sha256 }}
+          RESTORED_SOURCE: ${{ steps.recover.outputs.source }}
           V3_OUTCOME: ${{ steps.v3.outcome }}
           VERIFY_OUTCOME: ${{ steps.verify.outcome }}
         with:
@@ -214,12 +238,13 @@ jobs:
                 '',
                 `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
                 `Overall: **${process.env.STATUS}**`,
+                `Resolved source: **${process.env.RESTORED_SOURCE || 'unknown'}**`,
                 `Canonical source restored/changed: **${process.env.COMMIT_CHANGED || 'unknown'}**`,
                 `Recovered PNG bytes: **${process.env.RESTORED_BYTES || 'unknown'}**`,
                 `Recovered SHA-256: \`${process.env.RESTORED_SHA || 'unknown'}\``,
                 `Learning v3 rebuild: **${process.env.V3_OUTCOME || 'not reached'}**`,
                 `Live Lighting verification: **${process.env.VERIFY_OUTCOME || 'not reached'}**`,
                 '',
-                'Recovery uses the canonical Drive asset THC_Light_Education_Pack_Page_1_DLI_PPFD_Portrait.png and requires the exact reviewed byte length and SHA-256 before any repository or WordPress write. The live gate rejects the prior seedling visual.'
+                'The canonical repository asset is preferred permanently. Any recovery download remains fail-closed behind exact byte length, dimensions, PNG integrity, and SHA-256 checks. The live gate rejects the prior seedling visual.'
               ].join('\n')
             });
