@@ -12,7 +12,7 @@ const backupRoot=process.env.BACKUP_ROOT||'/tmp/dtf-genetics-evidence-v6';
 
 const specs=[
   {file:'site/wordpress/education/genetics-breeding-v6.json',id:'genetics-breeding-v6',topicId:'genetics-breeding',slug:'genetics-breeding',route:'/learn/genetics-breeding/',accent:'#715a91',hero:'Genetics & Breeding, taught as inheritance plus evidence.'},
-  {file:'site/wordpress/education/evidence-measurement-v6.json',id:'evidence-measurement-v6',topicId:'evidence-measurement',slug:'evidence-measurement',route:'/learn/evidence-measurement/',accent:'#3c6d7b',hero:'Evidence & Measurement, taught as a reproducible system.'}
+  {file:'site/wordpress/education/evidence-measurement-v6.json',id:'evidence-measurement-v6',topicId:'evidence-measurement',slug:'research-methods',route:'/learn/research-methods/',accent:'#3c6d7b',hero:'Evidence & Measurement, taught as a reproducible system.'}
 ];
 const esc=(v='')=>String(v).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;');
 const rendered=v=>typeof v==='string'?v:(v?.raw||v?.rendered||'');

@@ -20,7 +20,7 @@ const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 const curriculum=JSON.parse(await readFile(join(ROOT,curriculumPath),'utf8'));
 function validate(){
   if(curriculum?.schemaVersion!==1||curriculum?.id!=='plant-health-ipm-v6') fail('Invalid Plant Health & IPM V6 schema/id.');
-  if(curriculum.topicId!=='plant-health-ipm'||curriculum.slug!=='plant-health-ipm'||curriculum.route!=='/learn/plant-health-ipm/') fail('Plant Health & IPM V6 route ownership is incorrect.');
+  if(curriculum.topicId!=='plant-health-ipm'||curriculum.slug!=='ipm'||curriculum.route!=='/learn/ipm/') fail('Plant Health & IPM V6 route ownership is incorrect.');
   if(!curriculum.learningOutcome||curriculum.learningOutcome.length<120||!curriculum.evidenceBoundary||curriculum.evidenceBoundary.length<120) fail('Plant Health & IPM V6 metadata is too thin.');
   if(!Array.isArray(curriculum.sourceRefs)||curriculum.sourceRefs.length<4) fail('Plant Health & IPM V6 requires at least four evidence references.');
   const sourceIds=new Set(curriculum.sourceRefs.map(source=>source.id));
@@ -83,7 +83,7 @@ body.page-id-${pageId} .entry-title,body.page-id-${pageId} .wp-block-post-title,
 @media(max-width:920px){.phi6-intro,.phi6-bottom{grid-template-columns:1fr}.phi6-nav,.phi6-routes{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:620px){.phi6{padding:52px 0 60px}.phi6-wrap{width:min(100% - 26px,1180px)}.phi6-nav,.phi6-two,.phi6-routes,.phi6-visuals ul,.phi6-ref-grid{grid-template-columns:1fr}.phi6-chapter-head{align-items:flex-start;flex-direction:column}.phi6-body{padding:0 15px 17px}}
 </style><section class="phi6" data-dtf-plant-health-ipm-v6="true" id="phi6-top"><div class="phi6-wrap"><div class="phi6-intro"><div><p class="phi6-kicker">Teaching Healthy Cultivation · Evidence-first plant health</p><h2>Plant Health & IPM, built around proof instead of symptom guessing.</h2><p class="phi6-lede">${esc(curriculum.learningOutcome)}</p></div><aside class="phi6-boundary"><strong>Evidence boundary</strong><p>${esc(curriculum.evidenceBoundary)}</p></aside></div><nav class="phi6-nav">${curriculum.chapters.map(c=>`<a href="#phi6-${esc(c.id)}"><span>Chapter ${String(c.number).padStart(2,'0')}</span>${esc(c.title)}</a>`).join('')}</nav>${curriculum.chapters.map(chapterHtml).join('')}<section class="phi6-next"><p class="phi6-kicker">Continue deeper</p><h3>Connect plant health to environment, roots, measurement and diagnostic records.</h3><div class="phi6-routes">${curriculum.deepRoutes.map(x=>`<a href="${esc(x.href)}">${esc(x.label)} →</a>`).join('')}</div></section><section class="phi6-visuals"><p class="phi6-kicker">Visual study map</p><h3>High-value diagrams still to produce under the artwork QA gate.</h3><ul>${curriculum.visualTargets.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></section><section class="phi6-refs"><p class="phi6-kicker">Evidence references</p><h3>Core source set supporting this V6 curriculum.</h3><div class="phi6-ref-grid">${curriculum.sourceRefs.map(refCard).join('')}</div></section></div></section><!-- dtf-plant-health-ipm-v6:end -->`;}
 
-const page=await pageBySlug('plant-health-ipm');
+const page=await pageBySlug('ipm');
 const before=rendered(page.content);
 const ownerMarker='data-dtf-topic="plant-health-ipm"';
 const guideMarker='data-dtf-learning-v4="topic-plant-health-ipm"';
@@ -108,7 +108,7 @@ try{
     await request(`/wp-json/wp/v2/pages/${page.id}`,{method:'POST',body:JSON.stringify({content:next,status:'publish'})});
     changed=true;
   }
-  const check=await pageBySlug('plant-health-ipm');
+  const check=await pageBySlug('ipm');
   const html=rendered(check.content);
   if(!html.includes(ownerMarker)||!html.includes(guideMarker)||!html.includes('data-dtf-plant-health-ipm-v6="true"')) fail('Post-write Plant Health & IPM ownership verification failed.');
   if(count(html,'data-phi6-chapter=')!==8||count(html,'class="phi6-lesson"')!==32) fail('Post-write Plant Health & IPM chapter/lesson count verification failed.');
