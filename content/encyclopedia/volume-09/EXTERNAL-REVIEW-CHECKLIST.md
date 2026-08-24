@@ -77,6 +77,9 @@ Release-time control: verify the exact disinfectant product, organism claim, use
 Decision:
 Reviewer rationale / required edits:
 
+## Next review block
+`THC-ENC-171–175` will be staged only after its secondary evidence review is complete. `THC-ENC-176–180` contains additional chemical, diagnostic, PGR, and cryogenic release-time controls and will remain separately gated.
+
 ## Release recommendation
 Choose one after reviewing all ten lessons:
 
