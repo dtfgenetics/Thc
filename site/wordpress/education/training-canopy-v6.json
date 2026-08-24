@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "id": "training-canopy-v6",
+  "route": "/learn/training-canopy/",
+  "title": "Training & Canopy Management",
+  "learningOutcome": "Understand canopy training as a controlled change to plant architecture, light interception, mechanical loading, airflow and access; choose techniques from plant vigor and crop goals; and evaluate topping, bending, pruning, trellising and support by measured recovery and canopy performance rather than technique folklore.",
+  "evidenceNote": "Training changes geometry and tissue allocation; it does not create energy or guarantee yield. Compare architecture, light distribution, environmental uniformity, labor, recovery and final crop outcomes under the actual cultivar and production system.",
+  "chapters": [
+    {
+      "number": 1,
+      "id": "architecture-goals-apical-dominance",
+      "title": "Architecture, Meristems & Training Goals",
+      "objective": "Connect meristem biology, apical dominance, stem growth and crop objectives before selecting a training technique.",
+      "encyclopediaIds": ["THC-ENC-013","THC-ENC-014","THC-ENC-073"],
+      "lessons": [
+        {"title":"Meristems define the plant's available growth points","summary":"Shoot and axillary meristems create new stems, leaves and branches; training changes which of those growth points continue, compete or become exposed.","concepts":["shoot meristem","axillary bud","branch architecture"],"cultivation":"Map active tips before cutting or bending so the intervention matches the desired final architecture.","observe":"Record node number, active growth points, branch order, plant height and developmental stage before intervention."},
+        {"title":"Apical dominance is a network, not one hormone switch","summary":"Auxin, sugars, cytokinins, strigolactones, bud maturity, light and root resources interact in branch release after the main apex is bent or removed.","concepts":["apical dominance","auxin","bud outgrowth"],"cultivation":"Do not assume every topped plant will release the same number or strength of branches.","observe":"Track which buds break, days to visible growth, branch length, symmetry and plant vigor after treatment."},
+        {"title":"Primary growth and stem thickening solve different problems","summary":"Length growth expands canopy reach while secondary thickening increases transport and mechanical capacity of established axes.","concepts":["primary growth","secondary growth","lignification"],"cultivation":"Fast elongation can create long lever arms before stems and branch attachments are ready for later load.","observe":"Measure height, internode length, stem diameter, branch angle and support requirement over time."},
+        {"title":"Define the crop objective before choosing the technique","summary":"A useful training objective can be lower height, more uniform light, better access, improved support, reduced density or a controlled branch count; technique names are not objectives.","concepts":["crop objective","constraint","tradeoff"],"cultivation":"Choose the smallest intervention that addresses the measured architectural problem.","observe":"Write the target outcome, available footprint, headroom, labor/access constraints and acceptance criteria before treatment."}
+      ],
+      "knowledgeChecks": ["What is an axillary meristem?","Why does topping not produce identical branch release in every plant?","How does stem thickening differ from shoot elongation?","What makes a training goal measurable?"]
+    },
+    {
+      "number": 2,
+      "id": "low-stress-bending-positioning",
+      "title": "Low-Stress Bending, Positioning & Ties",
+      "objective": "Use gradual positioning to change canopy geometry while protecting vascular continuity and allowing for stem growth.",
+      "encyclopediaIds": ["THC-ENC-013","THC-ENC-014","THC-ENC-073"],
+      "lessons": [
+        {"title":"Bending changes position without removing the apex","summary":"Repositioning a shoot can reduce positional dominance, expose other growth points and redistribute the canopy without the tissue loss of topping.","concepts":["bending","positional dominance","light exposure"],"cultivation":"Use gradual changes when the objective can be achieved by geometry rather than tissue removal.","observe":"Record bend location, angle, branch flexibility, leaf posture and growth-point response."},
+        {"title":"Stem age and bend radius change injury risk","summary":"Young flexible tissue tolerates curvature differently from older lignified stems; sharp kinks concentrate strain and can damage vascular tissues.","concepts":["bend radius","lignification","vascular injury"],"cultivation":"Avoid forcing a branch beyond the mechanical range needed for the canopy objective.","observe":"Check for creasing, collapse, discoloration, loss of turgor and recovery distal to the bend."},
+        {"title":"Ties and clips become hazards as stems expand","summary":"A support that is loose at installation can later constrict a growing stem, abrade tissue or create a weak loading point.","concepts":["tie pressure","girdling","support"],"cultivation":"Use adjustable attachments and inspect them throughout stem expansion.","observe":"Record attachment type/date and inspect contact points for indentation, abrasion and restricted diameter growth."},
+        {"title":"Positioning changes light and water demand","summary":"Moving leaves and shoots into stronger light changes photon exposure, leaf temperature, transpiration and the spatial pattern of demand.","concepts":["canopy geometry","PPFD","transpiration"],"cultivation":"Remap the canopy after meaningful positioning changes instead of assuming the prior lighting/environment map still applies.","observe":"Compare PPFD, leaf temperature, posture and irrigation response before and after repositioning."}
+      ],
+      "knowledgeChecks": ["How can bending affect branch competition without removing tissue?","Why does stem age matter during bending?","How can a tie become damaging later?","Why should light be remapped after major positioning?"]
+    },
+    {
+      "number": 3,
+      "id": "topping-pruning-wound-recovery",
+      "title": "Topping, Pruning & Wound Recovery",
+      "objective": "Differentiate tissue-removal techniques, control sanitation and evaluate wound recovery before stacking additional stress.",
+      "encyclopediaIds": ["THC-ENC-013","THC-ENC-073","THC-ENC-076","THC-ENC-078"],
+      "lessons": [
+        {"title":"Topping changes dominance by removing an active apex","summary":"Removing a shoot tip changes signaling, sink competition and future architecture while also creating a wound and removing future tissue.","concepts":["topping","apex removal","bud release"],"cultivation":"Select the cut position from the desired remaining node structure rather than a rigid universal node count.","observe":"Record exact cut node, remaining buds, tool sanitation and days to resumed extension."},
+        {"title":"Pruning should have a defined structural purpose","summary":"Leaf or branch removal can improve access, reduce unwanted density or redirect architecture, but it also removes photosynthetic area and stored resources.","concepts":["pruning","leaf area","source-sink"],"cultivation":"Remove only tissue linked to a stated canopy or access objective instead of treating defoliation intensity as a quality dial.","observe":"Record tissue type/amount removed, canopy density, light distribution and recovery."},
+        {"title":"Wounding activates repair and defense signaling","summary":"Cut or damaged tissue triggers wound closure, hormonal and defense responses while exposed surfaces can become infection entry points.","concepts":["wound response","jasmonate","defense"],"cultivation":"Use clean tools and avoid unnecessary tissue damage when plants are already stressed or disease pressure is high.","observe":"Inspect wound color, drying, cracking, softening, odor and nearby tissue over time."},
+        {"title":"Recovery is an acceptance step, not a calendar wait","summary":"Resumed growth, stable water status, healthy wounds and restored leaf posture provide stronger release criteria than waiting a fixed number of days.","concepts":["recovery","acceptance criteria","change stacking"],"cultivation":"Do not stack another severe intervention until the plant demonstrates recovery from the previous one.","observe":"Track extension growth, leaf posture, irrigation response, wound condition and new symptoms."}
+      ],
+      "knowledgeChecks": ["What biological change follows apex removal?","Why is pruning not a free redistribution of resources?","Which defense pathways respond to wounding?","What evidence indicates recovery is sufficient for another intervention?"]
+    },
+    {
+      "number": 4,
+      "id": "trellis-scrog-support-loads",
+      "title": "Trellis, SCROG, Support & Mechanical Loads",
+      "objective": "Use support systems to control branch position and load while preserving service access and avoiding hidden structural damage.",
+      "encyclopediaIds": ["THC-ENC-014","THC-ENC-072","THC-ENC-106","THC-ENC-107"],
+      "lessons": [
+        {"title":"A screen is a positioning tool, not a yield guarantee","summary":"SCROG or trellis systems can distribute branches across a plane, but final performance still depends on leaf area, light, roots, environment and crop timing.","concepts":["trellis","SCROG","canopy plane"],"cultivation":"Use the screen to solve geometry and support needs rather than as an automatic production claim.","observe":"Record screen height, cell size, branch locations, fill percentage and time required to manage it."},
+        {"title":"Support should anticipate future load","summary":"Branch mass, flower mass, water on foliage, long lever arms, attachment angles and prior injuries all affect structural-failure risk.","concepts":["mechanical load","branch angle","support"],"cultivation":"Install support before heavy loading makes access destructive or forces emergency ties onto brittle tissue.","observe":"Track stem diameter, branch angle, unsupported span, attachment condition and load-related bending."},
+        {"title":"Trellis fill changes the optical target","summary":"As branches occupy a screen, leaf overlap and source distance change; fixture geometry that was acceptable over an empty or sparse plane may not match the filled canopy.","concepts":["canopy fill","fixture geometry","uniformity"],"cultivation":"Remap PPFD after meaningful canopy fill or fixture-height changes.","observe":"Preserve the same map grid, measurement plane and fixture settings for before/after comparison."},
+        {"title":"Serviceability is part of canopy design","summary":"A dense supported canopy can obstruct irrigation service, pest scouting, sanitation, airflow inspection and safe worker access.","concepts":["access","serviceability","inspection"],"cultivation":"Reserve paths and inspection access while the canopy is still easy to reposition.","observe":"Document blocked emitters, inaccessible branches, scouting reach and time required for routine service."}
+      ],
+      "knowledgeChecks": ["What does a screen actually control?","Which factors increase branch-failure risk?","Why does trellis fill require light remapping?","Why is service access part of canopy quality?"]
+    },
+    {
+      "number": 5,
+      "id": "light-distribution-density-interception",
+      "title": "Light Distribution, Density & Canopy Interception",
+      "objective": "Evaluate canopy shape using spatial light measurements and leaf distribution rather than top-view appearance alone.",
+      "encyclopediaIds": ["THC-ENC-072","THC-ENC-106","THC-ENC-107"],
+      "lessons": [
+        {"title":"A canopy creates its own light gradient","summary":"Upper leaves intercept photons and shade lower layers; leaf angle, overlap, branch spacing and source geometry determine how quickly light declines through the canopy.","concepts":["self-shading","light interception","leaf angle"],"cultivation":"Architecture should be judged by the distribution of usable light, not only by how many tops are visible.","observe":"Map top-plane PPFD and inspect representative interior/lower-canopy exposure."},
+        {"title":"Uniformity needs a declared measurement method","summary":"Average PPFD can hide hotspots and dark zones, so raw grids, minima, maxima and a stated uniformity metric are more informative.","concepts":["light map","uniformity","spatial variation"],"cultivation":"Use the same grid and operating conditions when comparing canopy-training changes.","observe":"Preserve coordinates, measurement plane, fixture state, canopy stage and raw grid values."},
+        {"title":"More branch tips can increase competition","summary":"Increasing shoot count divides available light, root support, water and assimilate among more sinks; branch count alone does not prove better production.","concepts":["sink competition","branch count","resource allocation"],"cultivation":"Balance tip count with available footprint, fixture distribution, root capacity and cultivar architecture.","observe":"Track branch number, canopy fill, average shoot vigor, lower-canopy decline and final usable output."},
+        {"title":"Selective lower-canopy removal is a tradeoff","summary":"Removing consistently shaded or inaccessible tissue can reduce density and labor, but excessive removal sacrifices photosynthetic surface and can add wound stress.","concepts":["lower canopy","pruning tradeoff","light threshold"],"cultivation":"Base removal on persistent location, access and measured light rather than a fixed stripping height copied from another room.","observe":"Record tissue removed, local light, disease/scouting access and later branch/flower response."}
+      ],
+      "knowledgeChecks": ["Why does light decline inside a canopy?","Why is average PPFD insufficient for uniformity?","Why can more tops become counterproductive?","What evidence should support lower-canopy removal?"]
+    },
+    {
+      "number": 6,
+      "id": "airflow-microclimate-canopy-access",
+      "title": "Airflow, Microclimate & Interior Access",
+      "objective": "Connect canopy density with boundary layers, humidity pockets, disease scouting and safe air movement.",
+      "encyclopediaIds": ["THC-ENC-014","THC-ENC-088"],
+      "lessons": [
+        {"title":"Dense foliage creates local microclimates","summary":"Leaves and flowers obstruct mixing and generate heat and water vapor, so interior temperature and humidity can differ from room averages.","concepts":["microclimate","canopy density","humidity"],"cultivation":"Training should preserve enough spacing to inspect and measure the interior rather than trusting one room sensor.","observe":"Compare interior and exterior temperature/RH, leaf temperature and condensation risk at representative points."},
+        {"title":"Air movement changes boundary layers","summary":"Moving air can reduce stagnant leaf boundary layers, but excessive local speed can increase water loss, abrasion and mechanical stress.","concepts":["boundary layer","air speed","transpiration"],"cultivation":"Seek distributed circulation rather than aiming high-speed fans directly at vulnerable tissue.","observe":"Check fan direction, leaf flutter, edge damage, local drying and measured environmental uniformity."},
+        {"title":"Circulation does not equal moisture removal","summary":"Fans redistribute air while ventilation and dehumidification actually remove accumulated moisture or exchange it with another air mass.","concepts":["circulation","ventilation","dehumidification"],"cultivation":"Do not solve a dense-canopy moisture problem only by moving the same humid air faster.","observe":"Record equipment state, RH/dew-point trends and interior canopy conditions during lights-off transitions."},
+        {"title":"Scouting access is a biological control tool","summary":"Canopy layouts that hide leaf undersides, stems, media surfaces or branch junctions delay pest, disease and mechanical-injury detection.","concepts":["scouting","inspection access","early detection"],"cultivation":"Include visibility and reach in the canopy plan before the plant becomes fixed in a screen.","observe":"Measure time required to inspect representative interior sites and note areas that cannot be seen or reached."}
+      ],
+      "knowledgeChecks": ["Why can room-average RH miss canopy risk?","How can too much air speed damage plants?","What is the difference between circulation and dehumidification?","How does access influence plant-health outcomes?"]
+    },
+    {
+      "number": 7,
+      "id": "timing-stage-recovery-strategy",
+      "title": "Timing, Stage, Recovery & Technique Stacking",
+      "objective": "Match intervention intensity to developmental stage, plant condition and recovery capacity instead of following a universal calendar.",
+      "encyclopediaIds": ["THC-ENC-013","THC-ENC-014","THC-ENC-073","THC-ENC-078"],
+      "lessons": [
+        {"title":"Vigor determines how much stress a plant can absorb","summary":"Root health, water status, recent growth, environment, disease and previous interventions influence recovery capacity.","concepts":["vigor","stress load","recovery capacity"],"cultivation":"Delay elective high-stress training when the plant is already managing root, water, pest, disease or environmental stress.","observe":"Record recent growth rate, roots, posture, irrigation response and active symptoms before intervention."},
+        {"title":"Developmental stage changes the cost of restructuring","summary":"Early architecture is easier to redirect, while late structural changes can remove reproductive sites, create wounds and disrupt already-established support relationships.","concepts":["developmental stage","restructure cost","flower transition"],"cultivation":"Use stage-aware intervention plans instead of repeating the same training schedule on every cultivar and cycle.","observe":"Record stage, days since transition, stretch status and tissue maturity at each intervention."},
+        {"title":"Stacked techniques destroy causal clarity","summary":"Topping, pruning, transplanting, major irrigation changes and environmental changes applied together make it difficult to identify why a plant improved or declined.","concepts":["change stacking","confounding","causal clarity"],"cultivation":"Sequence major changes when possible and define recovery before the next intervention.","observe":"Keep a timestamped intervention log and compare untreated or less-treated plants where practical."},
+        {"title":"Recovery should be measured over time","summary":"Leaf posture may recover before extension growth, wound closure or normal water use; one quick visual check is not a complete recovery assessment.","concepts":["recovery curve","new growth","water use"],"cultivation":"Use multiple checkpoints before declaring the plant ready for another high-stress action.","observe":"Track posture, growth, water demand, wound status and new symptoms over hours and days."}
+      ],
+      "knowledgeChecks": ["Which plant conditions reduce training recovery capacity?","Why can late restructuring be more costly?","How does change stacking weaken diagnosis?","Which measurements provide stronger recovery evidence than posture alone?"]
+    },
+    {
+      "number": 8,
+      "id": "measurement-records-outcome-review",
+      "title": "Measurement, Records & Outcome Review",
+      "objective": "Evaluate training techniques as repeatable experiments using architecture, light, environment, labor and crop outcomes.",
+      "encyclopediaIds": ["THC-ENC-001","THC-ENC-013","THC-ENC-106"],
+      "lessons": [
+        {"title":"Photographs need fixed viewpoints to become data","summary":"Before-and-after images are much more useful when camera position, scale, lighting and plant orientation are standardized.","concepts":["photographic record","scale","repeatability"],"cultivation":"Build a repeatable canopy photo station or defined camera positions rather than relying on random attractive images.","observe":"Record viewpoint, distance, plant ID, date, stage and a scale reference."},
+        {"title":"Architecture metrics should match the objective","summary":"Height, width, branch count, node spacing, stem diameter, canopy area and support load answer different questions.","concepts":["architecture metric","canopy area","branch count"],"cultivation":"Choose the smallest measurement set that directly tests the training goal.","observe":"Define measurement points and intervals before treatment so the outcome is comparable."},
+        {"title":"Measure canopy performance, not just plant shape","summary":"A visually even canopy can still contain poor light uniformity, hidden humid zones, inaccessible tissue or high labor cost.","concepts":["PPFD map","microclimate","labor"],"cultivation":"Pair architecture with light maps, environmental checks, service time and plant-health observations.","observe":"Record raw map values, interior environment, scouting/service time and deviations."},
+        {"title":"Compare completed cycles before standardizing a method","summary":"A technique becomes an SOP only after repeated crops show acceptable recovery, workflow and production outcomes under defined conditions.","concepts":["cycle comparison","SOP","effectiveness review"],"cultivation":"Keep cultivar and room context attached to the result instead of declaring a universal best training style.","observe":"Compare labor, losses, uniformity, yield/quality endpoints and deviations across repeated cycles."}
+      ],
+      "knowledgeChecks": ["What makes a canopy photograph comparable over time?","Why should architecture metrics match the training objective?","Which measurements can reveal problems hidden by a visually even canopy?","What evidence is needed before making a training technique an SOP?"]
+    }
+  ],
+  "deepRoutes": [
+    {"label":"Plant Biology & Anatomy","href":"/learn/plant-biology/"},
+    {"label":"Lighting","href":"/learn/lighting/"},
+    {"label":"Environment & VPD","href":"/learn/environment-vpd/"},
+    {"label":"Lifecycle & Propagation","href":"/learn/lifecycle-propagation/"},
+    {"label":"Plant Health & IPM","href":"/learn/plant-health-ipm/"},
+    {"label":"GrowLens records","href":"/growlens/"}
+  ],
+  "visualTargets": [
+    "Meristems, axillary buds and apical dominance before versus after topping",
+    "Low-stress bend radius, branch positioning and tie safety",
+    "Topping and pruning wound anatomy plus recovery sequence",
+    "Trellis/SCROG geometry, branch support and mechanical-load paths",
+    "Canopy PPFD grid before and after training",
+    "Vertical light attenuation and self-shading through a dense canopy",
+    "Canopy density, boundary layer and interior humidity microclimate",
+    "Circulation versus ventilation/dehumidification around a canopy",
+    "Training timing by plant vigor and developmental stage",
+    "Recovery acceptance checklist before another major intervention",
+    "Standardized before/after canopy photography and architecture measurements",
+    "Training outcome review linking uniformity, labor, plant health and final crop result"
+  ]
+}
