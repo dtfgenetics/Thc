@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updated": "2026-08-22",
+  "updated": "2026-08-24",
   "site": "https://dtfseeds.com",
   "principles": {
     "maxPrimaryNavItems": 6,
@@ -17,20 +17,23 @@
     {"id":"shop","label":"Shop","route":"/shop/"}
   ],
   "utilityNavigation": [
+    {"id":"atlas","label":"Plant Atlas","route":"/atlas/"},
     {"id":"tools","label":"Tools","route":"/tools/"},
     {"id":"gallery","label":"Gallery","route":"/gallery/"},
     {"id":"about","label":"About","route":"/about/"},
     {"id":"contact","label":"Contact","route":"/contact/"}
   ],
   "homeQuickActions": [
-    {"label":"Diagnose a Plant","route":"/thc-grow-doc/","priority":1},
-    {"label":"Browse THC Education","route":"/learn/","priority":2},
-    {"label":"Play Games","route":"/games/","priority":3},
-    {"label":"Explore Genetics","route":"/seeds/","priority":4}
+    {"label":"Open Plant Atlas","route":"/atlas/","priority":1},
+    {"label":"Diagnose a Plant","route":"/thc-grow-doc/","priority":2},
+    {"label":"Browse THC Education","route":"/learn/","priority":3},
+    {"label":"Play Games","route":"/games/","priority":4},
+    {"label":"Explore Genetics","route":"/seeds/","priority":5}
   ],
   "learn": {
     "route":"/learn/",
     "sections":[
+      {"label":"Living Plant Atlas","route":"/atlas/"},
       {"label":"Start Here","route":"/learn/start-here/"},
       {"label":"Academy","route":"/learn/academy/"},
       {"label":"Encyclopedia","route":"/learn/encyclopedia/"},
@@ -41,6 +44,11 @@
       {"label":"Printables & Records","route":"/learn/records/"}
     ]
   },
+  "tools": [
+    {"id":"atlas","title":"THC Living Plant Atlas","route":"/atlas/","status":"play-now","public":true},
+    {"id":"growlens","title":"THC GrowLens","route":"/growlens/","status":"play-now","public":true},
+    {"id":"grow-doc","title":"THC Grow Doc","route":"/thc-grow-doc/","status":"play-now","public":true}
+  ],
   "games": [
     {"id":"high-iq","title":"High IQ — Test Higher Cognition","route":"/games/high-iq/","status":"play-now","public":true},
     {"id":"high-life","title":"High Life: From Bagseed to Legacy","route":"/games/high-life/","status":"play-now","public":true},
