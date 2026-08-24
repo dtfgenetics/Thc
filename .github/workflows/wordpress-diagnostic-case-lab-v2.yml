@@ -1,0 +1,170 @@
+name: Publish Diagnostic Case Lab V2
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'site/wordpress/education/diagnostic-case-lab-v1.json'
+      - 'site/wordpress/education/diagnostic-case-lab-v2-extension.json'
+      - 'scripts/publish-wordpress-diagnostic-case-lab-v2.mjs'
+      - '.github/workflows/wordpress-diagnostic-case-lab-v2.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'site/wordpress/education/diagnostic-case-lab-v1.json'
+      - 'site/wordpress/education/diagnostic-case-lab-v2-extension.json'
+      - 'scripts/publish-wordpress-diagnostic-case-lab-v2.mjs'
+      - '.github/workflows/wordpress-diagnostic-case-lab-v2.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-diagnostic-case-lab-v2
+  cancel-in-progress: true
+
+env:
+  WP_SITE_URL: https://dtfseeds.com
+  NODE_OPTIONS: --dns-result-order=ipv4first
+
+jobs:
+  validate:
+    name: Validate Diagnostic Case Lab V2
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate V2 merged package and publisher
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/publish-wordpress-diagnostic-case-lab-v2.mjs
+          node scripts/publish-wordpress-diagnostic-case-lab-v2.mjs --validate-only | tee "$RUNNER_TEMP/dcl-v2-validation.json"
+          grep -Fq '"cases": 24' "$RUNNER_TEMP/dcl-v2-validation.json"
+          grep -Fq '"trees": 12' "$RUNNER_TEMP/dcl-v2-validation.json"
+          grep -Fq '"decisionNodes": 60' "$RUNNER_TEMP/dcl-v2-validation.json"
+          grep -Fq '"sources": 13' "$RUNNER_TEMP/dcl-v2-validation.json"
+          grep -Fq '"addedCases": 12' "$RUNNER_TEMP/dcl-v2-validation.json"
+          grep -Fq '"addedTrees": 6' "$RUNNER_TEMP/dcl-v2-validation.json"
+
+  publish:
+    name: Publish and verify Diagnostic Case Lab V2
+    needs: validate
+    if: ${{ github.event_name != 'pull_request' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    environment: production
+    env:
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      APPLY_DIAGNOSTIC_CASE_LAB_V2: 'true'
+      BACKUP_ROOT: /tmp/dtf-diagnostic-case-lab-v2
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Confirm production package
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
+          node --check scripts/publish-wordpress-diagnostic-case-lab-v2.mjs
+          node scripts/publish-wordpress-diagnostic-case-lab-v2.mjs --validate-only
+      - name: Publish Diagnostic Case Lab V2
+        id: publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$BACKUP_ROOT"
+          node scripts/publish-wordpress-diagnostic-case-lab-v2.mjs | tee "$RUNNER_TEMP/dcl-v2-publish.log"
+          report="$(find "$BACKUP_ROOT" -name report.json -type f -print -quit)"
+          test -n "$report"; test -s "$report"
+          echo "cases=$(node -p "require(process.argv[1]).cases" "$report")" >> "$GITHUB_OUTPUT"
+          echo "trees=$(node -p "require(process.argv[1]).trees" "$report")" >> "$GITHUB_OUTPUT"
+          echo "nodes=$(node -p "require(process.argv[1]).decisionNodes" "$report")" >> "$GITHUB_OUTPUT"
+          echo "sources=$(node -p "require(process.argv[1]).sources" "$report")" >> "$GITHUB_OUTPUT"
+      - name: Verify fresh visitor Case Lab and Diagnostic Index
+        id: verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          case_body="$RUNNER_TEMP/dcl-v2-live.html"
+          dx_body="$RUNNER_TEMP/dx-v2-live.html"
+          case_ok=0
+          dx_ok=0
+          for attempt in 1 2 3 4 5 6 7 8; do
+            curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+              --header 'Cache-Control: no-cache, no-store, max-age=0' --header 'Pragma: no-cache' \
+              "$WP_SITE_URL/learn/diagnostic-cases/?dtf_dcl_v2_verify=${GITHUB_RUN_ID}-${attempt}" --output "$case_body"
+            if grep -Fq 'data-dtf-diagnostic-case-lab-v2="true"' "$case_body"; then case_ok=1; break; fi
+            sleep 6
+          done
+          [[ "$case_ok" -eq 1 ]]
+          [[ "$(grep -Fo 'data-dcl-case=' "$case_body" | wc -l | tr -d ' ')" = '24' ]]
+          [[ "$(grep -Fo 'data-dcl-tree=' "$case_body" | wc -l | tr -d ' ')" = '12' ]]
+          [[ "$(grep -Fo 'class="dcl-node"' "$case_body" | wc -l | tr -d ' ')" = '60' ]]
+          [[ "$(grep -Fo 'class="dcl-source"' "$case_body" | wc -l | tr -d ' ')" = '13' ]]
+          grep -Fq '24 worked cases' "$case_body"
+          grep -Fq 'DX-C13' "$case_body"
+          grep -Fq 'DX-C20' "$case_body"
+          grep -Fq 'DX-C23' "$case_body"
+          grep -Fq '/learn/lifecycle-propagation/' "$case_body"
+          grep -Fq '/learn/outdoor/' "$case_body"
+          grep -Fq '/learn/harvest-postharvest/' "$case_body"
+
+          for attempt in 1 2 3 4 5 6 7 8; do
+            curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+              --header 'Cache-Control: no-cache, no-store, max-age=0' --header 'Pragma: no-cache' \
+              "$WP_SITE_URL/learn/diagnostics/?dtf_dcl_v2_index_verify=${GITHUB_RUN_ID}-${attempt}" --output "$dx_body"
+            if grep -Fq 'data-dtf-diagnostic-cases-link-v2="true"' "$dx_body"; then dx_ok=1; break; fi
+            sleep 6
+          done
+          [[ "$dx_ok" -eq 1 ]]
+          [[ "$(grep -Fo 'data-dtf-diagnostic-cases-link-v2=' "$dx_body" | wc -l | tr -d ' ')" = '1' ]]
+          grep -Fq 'Practice with 24 worked diagnostic cases' "$dx_body"
+          grep -Fq '/learn/diagnostic-cases/' "$dx_body"
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: diagnostic-case-lab-v2-${{ github.run_id }}
+          path: |
+            /tmp/dtf-diagnostic-case-lab-v2
+            ${{ runner.temp }}/dcl-v2-publish.log
+            ${{ runner.temp }}/dcl-v2-live.html
+            ${{ runner.temp }}/dx-v2-live.html
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Report Diagnostic Case Lab V2 result
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          STATUS: ${{ job.status }}
+          PUBLISH: ${{ steps.publish.outcome }}
+          VERIFY: ${{ steps.verify.outcome }}
+          CASES: ${{ steps.publish.outputs.cases }}
+          TREES: ${{ steps.publish.outputs.trees }}
+          NODES: ${{ steps.publish.outputs.nodes }}
+          SOURCES: ${{ steps.publish.outputs.sources }}
+        with:
+          script: |
+            const body = [
+              '## Diagnostic Case Lab V2 production','',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Result: **${process.env.STATUS}**`,
+              `WordPress publication: **${process.env.PUBLISH || 'not-run'}**`,
+              `Visitor verification: **${process.env.VERIFY || 'not-run'}**`,
+              `Diagnostic cases: **${process.env.CASES || '0'}**`,
+              `Decision trees: **${process.env.TREES || '0'}**`,
+              `Decision nodes: **${process.env.NODES || '0'}**`,
+              `Evidence sources: **${process.env.SOURCES || '0'}**`, '',
+              'The live /learn/diagnostic-cases/ route now includes V1 + V2, and /learn/diagnostics/ points to the expanded Case Lab.'
+            ].join('\n');
+            for (const issue_number of [46,148]) await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number,body});
