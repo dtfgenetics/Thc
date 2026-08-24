@@ -14,7 +14,7 @@ async function request(path,{method='GET',json,allow=[],retryServer=true}={}){
   const attempts=retryServer?5:1;
   for(let attempt=1;attempt<=attempts;attempt++){
     try{
-      const response=await fetch(`${siteUrl}${path}`,{method,headers:{Authorization:auth,Accept:'application/json','Cache-Control':'no-cache, no-store, max-age=0',Pragma:'no-cache','User-Agent':'DTFSeeds-Stale-Suite-Bridge-Cleanup/1.3',...(json!==undefined?{'Content-Type':'application/json'}:{})},body:json!==undefined?JSON.stringify(json):undefined,redirect:'follow',signal:AbortSignal.timeout(45000)});
+      const response=await fetch(`${siteUrl}${path}`,{method,headers:{Authorization:auth,Accept:'application/json','Cache-Control':'no-cache, no-store, max-age=0',Pragma:'no-cache','User-Agent':'DTFSeeds-Stale-Suite-Bridge-Cleanup/1.4',...(json!==undefined?{'Content-Type':'application/json'}:{})},body:json!==undefined?JSON.stringify(json):undefined,redirect:'follow',signal:AbortSignal.timeout(45000)});
       const text=await response.text();let body=text;try{body=text?JSON.parse(text):null}catch{}
       if(retryServer&&(response.status>=500||response.status===429)&&attempt<attempts){await sleep(attempt*1200);continue}
       if(!response.ok&&!allow.includes(response.status))throw new Error(`${method} ${path} failed (${response.status}): ${typeof body==='string'?body.slice(0,600):JSON.stringify(body).slice(0,600)}`);
@@ -24,7 +24,19 @@ async function request(path,{method='GET',json,allow=[],retryServer=true}={}){
   throw last||new Error(`${method} ${path} failed.`);
 }
 function collection(body){if(Array.isArray(body))return body;for(const k of ['snippets','data','items','results'])if(Array.isArray(body?.[k]))return body[k];return[]}
-function item(body){if(body&&typeof body==='object'&&!Array.isArray(body)){for(const k of ['snippet','data','item'])if(body[k]&&typeof body[k]==='object'&&!Array.isArray(body[k]))return body[k];return body}return null}
+function item(body){
+  if(!body||typeof body!=='object'||Array.isArray(body))return null;
+  // Code Snippets item responses can include a top-level snippet plus a nested
+  // `data` object containing REST metadata. Prefer the top-level object whenever
+  // it already carries snippet identity/state so `active` and `trashed` are not
+  // accidentally discarded in favor of HTTP metadata.
+  if(['id','name','active','trashed','status','code','scope'].some(k=>Object.prototype.hasOwnProperty.call(body,k)))return body;
+  for(const k of ['snippet','data','item']){
+    const nested=body[k];
+    if(nested&&typeof nested==='object'&&!Array.isArray(nested))return nested;
+  }
+  return body;
+}
 function isActive(s){return s?.active===true||s?.active===1||s?.active==='1'||s?.active==='true'}
 function isTrashed(s){return s?.trashed===true||s?.trashed===1||s?.trashed==='1'||s?.trashed==='true'||String(s?.status||'').toLowerCase()==='trash'||String(s?.status||'').toLowerCase()==='trashed'}
 async function list(safe=false){const q=safe?'snippets-safe-mode=1&':'';const r=await request(`/wp-json/code-snippets/v1/snippets?${q}per_page=100`,{allow:[400,403,404,500]});return{available:r.ok,safe,status:r.status,snippets:r.ok?collection(r.body):[]}}
