@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-08-24",
+  "curriculumId": "training-canopy-v6",
+  "route": "/learn/training-canopy/",
+  "chapters": {
+    "architecture-goals-apical-dominance": [
+      {"file":"THC-ENC-001_VIS-03_Nodes_Internodes_Branching_v3.0.0.jpg","title":"Nodes, Internodes & Branching","alt":"Educational diagram identifying nodes, internodes and branch positions used when planning plant architecture."},
+      {"file":"THC-ENC-073_Plant_Hormones_Auxin.jpg","title":"Auxin & Apical Dominance","alt":"Educational diagram explaining auxin signaling and why branch release after apex removal is a network response rather than a single switch."},
+      {"file":"V04-SUP-004_Plant_Hormones_and_Signal_Integration.jpg","title":"Hormone & Signal Integration","alt":"Educational overview showing how plant growth responses integrate multiple hormonal and environmental signals."}
+    ],
+    "low-stress-bending-positioning": [
+      {"file":"V04-SUP-005_Tropisms_and_Directional_Growth_Responses.jpg","title":"Tropisms & Directional Growth","alt":"Educational diagram explaining directional growth responses relevant to repositioned shoots and changing light orientation."},
+      {"file":"THC-C006_Infographic_Stem_Transport_and_Training_Risk.jpg","title":"Stem Transport & Training Risk","alt":"Educational stem diagram linking vascular continuity, mechanical injury and training risk."}
+    ],
+    "topping-pruning-wound-recovery": [
+      {"file":"Training_Recovery_and_Aftercare_Infographic.png","title":"Training Recovery & Aftercare","alt":"Educational infographic focused on recovery observations after plant training and tissue stress."},
+      {"file":"THC-ENC-078_Defense_Signaling.jpg","title":"Wound & Defense Signaling","alt":"Educational diagram showing defense-signaling pathways activated by tissue injury and stress."}
+    ],
+    "trellis-scrog-support-loads": [
+      {"file":"Plant_Training_Basics_Infographic.png","title":"Plant Training Basics","alt":"Educational overview of common plant-training concepts and their structural purposes."},
+      {"file":"THC-C006_Infographic_Stem_Transport_and_Training_Risk.jpg","title":"Stem Structure Under Training","alt":"Educational stem reference showing why support and training should protect transport tissues and avoid concentrated injury."}
+    ],
+    "light-distribution-density-interception": [
+      {"file":"THC-ENC-072_Leaf_Area_Canopy_Photosynthesis_and_Self_Shading.jpg","title":"Canopy Photosynthesis & Self-Shading","alt":"Educational diagram showing how leaf area, overlap and self-shading create light gradients within a canopy."},
+      {"file":"THC-C004_Infographic_From_Cell_to_Canopy.jpg","title":"From Cell to Canopy","alt":"Educational systems diagram connecting leaf-level biology with whole-canopy structure and performance."},
+      {"file":"THC-ENC-079_Growth_Rate_Development_and_Biomass_Partitioning.jpg","title":"Growth & Biomass Partitioning","alt":"Educational diagram connecting growth rate, developmental state and biomass allocation to changing plant architecture."}
+    ],
+    "airflow-microclimate-canopy-access": [
+      {"file":"THC-ENC-083_Relative_Humidity_Dew_Point_and_Condensation.jpg","title":"Humidity, Dew Point & Condensation","alt":"Educational diagram explaining humidity and condensation risk relevant to dense canopy microclimates."},
+      {"file":"THC-ENC-068_Stomata_Guard_Cells_and_Gas_Exchange.jpg","title":"Stomata & Gas Exchange","alt":"Educational diagram showing stomatal gas exchange and the leaf interface affected by airflow and humidity."}
+    ],
+    "timing-stage-recovery-strategy": [
+      {"file":"V04-SUP-008_Stress_Physiology_and_Acclimation.jpg","title":"Stress Physiology & Acclimation","alt":"Educational diagram showing plant acclimation and why recovery capacity matters before stacking interventions."},
+      {"file":"Training_Recovery_and_Aftercare_Infographic.png","title":"Recovery Before the Next Intervention","alt":"Educational training-recovery reference emphasizing observation before another major stress event."}
+    ],
+    "measurement-records-outcome-review": [
+      {"file":"THC-ENC-001_VIS-06_Measurement_Quality_Chain.jpg","title":"Measurement Quality Chain","alt":"Educational diagram showing how measurement quality affects conclusions drawn from training comparisons."},
+      {"file":"THC-ENC-001_VIS-03_Observation_to_Bounded_Conclusion.jpg","title":"Observation to Bounded Conclusion","alt":"Educational evidence workflow moving from observation through measurement to a limited defensible conclusion."},
+      {"file":"THC-ENC-001_VIS-08_Monitored_Cultivation_Decision.jpg","title":"Monitored Cultivation Decision","alt":"Educational decision diagram connecting a planned intervention with monitoring, acceptance criteria and follow-up."}
+    ]
+  },
+  "gaps": [
+    {"id":"bend-radius-tie-safety","status":"needed","title":"Low-Stress Bend Radius & Tie Safety","neededVisual":"A stepwise stem-positioning diagram showing safe bend radius, gradual repositioning, adjustable tie placement, stem expansion allowance and warning signs for kinking, abrasion or girdling."},
+    {"id":"topping-wound-recovery-sequence","status":"needed","title":"Topping Cut, Wound Response & Branch Release","neededVisual":"A time-sequence diagram showing apex removal, wound closure, surviving node/axillary buds, branch release and recovery checkpoints without implying identical timing for every cultivar."},
+    {"id":"trellis-load-paths","status":"needed","title":"Trellis / SCROG Load Paths & Support Geometry","neededVisual":"A structural diagram showing screen height, branch routing, attachment points, unsupported spans, branch-angle load and service access as the canopy gains mass."},
+    {"id":"ppfd-before-after-training","status":"needed","title":"PPFD Grid Before vs After Canopy Training","neededVisual":"Matched canopy PPFD maps using the same grid, measurement plane and fixture state to show how training changes hotspots, dark zones and uniformity."},
+    {"id":"canopy-airflow-microclimate-map","status":"needed","title":"Canopy Airflow & Interior Microclimate Map","neededVisual":"A cross-section showing leaf density, boundary layers, circulation paths, stagnant pockets, humidity/dew-point risk and the distinction between moving air and removing moisture."},
+    {"id":"service-access-scouting-layout","status":"needed","title":"Canopy Serviceability & Scouting Access","neededVisual":"A top/side canopy layout showing inspection paths, emitter access, leaf-underside visibility, branch-junction access and zones that become inaccessible when a screen is overfilled."},
+    {"id":"standardized-canopy-photo-measurement","status":"needed","title":"Standardized Canopy Photography & Architecture Measurements","neededVisual":"A repeatable before/after documentation setup showing fixed camera points, scale reference, plant orientation, height/width/branch measurements and timestamped intervention records."}
+  ]
+}
