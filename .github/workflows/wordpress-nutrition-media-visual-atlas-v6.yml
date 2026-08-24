@@ -35,6 +35,8 @@ jobs:
     env:
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      APPLY_NUTRITION_MEDIA_V6: 'true'
+      NUTRITION_MEDIA_V6_PATH: site/wordpress/education/nutrition-media-v6.json
       APPLY_SUBJECT_VISUAL_ATLAS_V6: 'true'
       SUBJECT_VISUAL_MAP: site/wordpress/education/nutrition-media-v6-visual-map.json
       SUBJECT_CURRICULUM_PATH: site/wordpress/education/nutrition-media-v6.json
@@ -56,6 +58,7 @@ jobs:
           set -euo pipefail
           : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
           : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
+          node --check scripts/publish-wordpress-nutrition-media-v6-final.mjs
           node --check scripts/publish-wordpress-subject-visual-atlas-v6.mjs
           node - <<'NODE'
           const fs=require('fs');
@@ -72,6 +75,20 @@ jobs:
           for(const item of assets){if(!fs.existsSync(`site/wordpress/assets/infographics/${item.file}`)) throw new Error(`Mapped asset missing: ${item.file}`);}
           console.log(`Validated ${assets.length} reviewed visual mappings and ${map.gaps.length} explicit gaps.`);
           NODE
+
+      - name: Restore and verify Nutrition Media V6 curriculum owner
+        id: restore
+        shell: bash
+        env:
+          BACKUP_ROOT: /tmp/dtf-nutrition-media-v6-atlas-restore
+        run: |
+          set -euo pipefail
+          mkdir -p "$BACKUP_ROOT"
+          node scripts/publish-wordpress-nutrition-media-v6-final.mjs | tee "$RUNNER_TEMP/nutrition-media-v6-atlas-restore.log"
+          report="$BACKUP_ROOT/report.json"
+          test -s "$report"
+          [[ "$(node -p "require(process.argv[1]).chapters" "$report")" = '8' ]]
+          [[ "$(node -p "require(process.argv[1]).lessons" "$report")" = '32' ]]
 
       - name: Publish and verify Nutrition Media visual atlas
         id: publish
@@ -107,6 +124,8 @@ jobs:
           [[ "$(grep -Fo 'class="sv6v-card"' "$body" | wc -l | tr -d ' ')" = '25' ]]
           [[ "$(grep -Fo 'data-sv6v-group=' "$body" | wc -l | tr -d ' ')" = '8' ]]
           [[ "$(grep -Fo 'class="sv6v-gap"' "$body" | wc -l | tr -d ' ')" = '10' ]]
+          [[ "$(grep -Fo 'data-nm6-chapter=' "$body" | wc -l | tr -d ' ')" = '8' ]]
+          [[ "$(grep -Fo 'class="nm6-lesson"' "$body" | wc -l | tr -d ' ')" = '32' ]]
           grep -Fqi 'data-dtf-nutrition-media-v6="true"' "$body"
           grep -Fqi 'data-dtf-topic="nutrition-media"' "$body"
           grep -Fqi 'data-dtf-learning-v4="topic-nutrition-media"' "$body"
@@ -121,7 +140,9 @@ jobs:
         with:
           name: nutrition-media-visual-atlas-v6-${{ github.run_id }}
           path: |
+            /tmp/dtf-nutrition-media-v6-atlas-restore
             /tmp/dtf-nutrition-media-visuals-v6
+            ${{ runner.temp }}/nutrition-media-v6-atlas-restore.log
             ${{ runner.temp }}/nutrition-media-visuals-v6.log
             ${{ runner.temp }}/nutrition-media-visual-atlas.html
           if-no-files-found: warn
@@ -133,6 +154,7 @@ jobs:
         env:
           STATUS: ${{ job.status }}
           VALIDATE: ${{ steps.validate.outcome }}
+          RESTORE: ${{ steps.restore.outcome }}
           PUBLISH: ${{ steps.publish.outcome }}
           VERIFY: ${{ steps.verify.outcome }}
           VISUALS: ${{ steps.publish.outputs.visuals }}
@@ -147,12 +169,13 @@ jobs:
               `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
               `Result: **${process.env.STATUS}**`,
               `Mapping validation: **${process.env.VALIDATE || 'not-run'}**`,
-              `WordPress publication: **${process.env.PUBLISH || 'not-run'}**`,
+              `V6 curriculum owner restoration: **${process.env.RESTORE || 'not-run'}**`,
+              `WordPress atlas publication: **${process.env.PUBLISH || 'not-run'}**`,
               `Visitor verification: **${process.env.VERIFY || 'not-run'}**`,
               `Verified visual cards: **${process.env.VISUALS || '0'}**`,
               `Chapter groups: **${process.env.GROUPS || '0'}**`,
               `WordPress-media resolutions: **${process.env.WORDPRESS || '0'}**`,
               `Canonical GitHub fallbacks: **${process.env.FALLBACKS || '0'}**`,
               `Explicit unresolved visual gaps: **${process.env.GAPS || '0'}**`,'',
-              'The Nutrition atlas is fail-closed and attaches only to the live Nutrition & Media V6 curriculum on canonical /learn/nutrition-media/. Every mapped image already exists in the reviewed publication library. Unresolved nutrient-mechanism and sampling diagrams stay explicit rather than receiving generic deficiency or bottle imagery.'
+              'This workflow is self-healing against education-layer drift: it first restores and verifies the approved 8-chapter/32-lesson Nutrition V6 owner, then attaches the reviewed visual atlas. The atlas remains fail-closed and never substitutes generic deficiency or bottle imagery for unresolved nutrient mechanisms.'
             ].join('\n')});
