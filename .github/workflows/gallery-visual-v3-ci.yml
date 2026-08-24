@@ -1,0 +1,48 @@
+name: Validate Gallery Visual V3
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'scripts/finalize-wordpress-gallery-visual-v3.mjs'
+      - '.github/workflows/wordpress-gallery-visual-v3.yml'
+      - '.github/workflows/gallery-visual-v3-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate Gallery V3 source
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/finalize-wordpress-gallery-visual-v3.mjs
+          grep -Fq 'data-dtf-gallery-visual-v3="true"' scripts/finalize-wordpress-gallery-visual-v3.mjs
+          grep -Fq 'See the genetics first. Explore the science behind them.' scripts/finalize-wordpress-gallery-visual-v3.mjs
+          grep -Fq 'Education graphics do not stand in for cultivar artwork here.' scripts/finalize-wordpress-gallery-visual-v3.mjs
+          grep -Fq 'dtf-strain-card-blue-mango-f2-regular' scripts/finalize-wordpress-gallery-visual-v3.mjs
+          grep -Fq 'dtf-strain-card-blue-mango-f2-feminized' scripts/finalize-wordpress-gallery-visual-v3.mjs
+          grep -Fq 'dtf-strain-card-blue-bubblegum-f1-regular' scripts/finalize-wordpress-gallery-visual-v3.mjs
+          grep -Fq 'dtf-strain-card-mango-bubbles-f1-regular' scripts/finalize-wordpress-gallery-visual-v3.mjs
+          grep -Fq 'Deploy DTFSeeds WordPress Pages' .github/workflows/wordpress-gallery-visual-v3.yml
+          grep -Fq 'Publish DTF Genetics Library' .github/workflows/wordpress-gallery-visual-v3.yml
+      - name: Require a genuinely visual page
+        shell: bash
+        run: |
+          set -euo pipefail
+          count="$(grep -o '<img' scripts/finalize-wordpress-gallery-visual-v3.mjs | wc -l | tr -d ' ')"
+          # Dynamic helper calls create the actual image tags; require the explicit education collection too.
+          grep -Fq 'Cannabis_Plant_Anatomy_Infographic.png' scripts/finalize-wordpress-gallery-visual-v3.mjs
+          grep -Fq 'Nutrient_Uptake_and_Root_Zone_Chemistry.png' scripts/finalize-wordpress-gallery-visual-v3.mjs
+          grep -Fq 'Beneficial_Insects_and_Biological_Controls.png' scripts/finalize-wordpress-gallery-visual-v3.mjs
+          grep -Fq 'THC-ENC-086_Air_VPD_Versus_Leaf_VPD.jpg' scripts/finalize-wordpress-gallery-visual-v3.mjs
+          test "$count" -ge 2
