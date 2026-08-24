@@ -1,0 +1,34 @@
+{
+  "id":"THC-ENC-170",
+  "number":170,
+  "title":"Sanitation and Tool-Mediated Pathogen Spread",
+  "objective":"Prevent propagation tools and workflows from moving pests, pathogens, and viroids between donors and clone batches.",
+  "terms":[
+    {"term":"cleaning","definition":"Removal of soil, debris, and organic matter from a surface before a disinfection step when required."},
+    {"term":"disinfection","definition":"Use of an antimicrobial process or product to reduce or inactivate microorganisms on a surface under defined conditions."},
+    {"term":"contact time","definition":"The period a disinfectant must remain in effective contact with a surface under its label directions."},
+    {"term":"tool-mediated transmission","definition":"Transfer of a pest or pathogen between plants by contaminated cutting or handling tools."},
+    {"term":"cross-contamination","definition":"Transfer of contamination from one plant, surface, batch, or workflow zone to another."},
+    {"term":"workflow zoning","definition":"Deliberate separation of work areas and movement paths by contamination risk to limit transfer between clean and higher-risk material."}
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Cutting tools contact sap and wounded tissue, creating a direct pathway between plants. Shared hands, gloves, trays, labels, water, benches, and transport containers can also move contamination.",
+    "Cleaning removes dirt and organic matter from surfaces. Disinfection uses an antimicrobial product according to its current label, including required use conditions and contact time. These are separate steps, and a quick wipe does not by itself establish disinfection.",
+    "Hop latent viroid can spread through propagation networks and mechanical practices. Containment therefore depends on donor status, workflow direction, tool control, batch segregation, testing, and traceable corrective action."
+  ],
+  "cultivationRelevance":["Use a written clean-to-dirty sequence. Separate incoming, quarantine, mother, propagation, and released stock. Replace or reprocess tools and gloves according to the validated program, and stop work when contamination control is lost."],
+  "measureAndRecord":[{"field":"Controlled record set","requirement":"Tool ID or disposable status; cleaning/disinfection agent and lot; concentration; contact time; operator; donor and batch sequence; deviations; test and incident results."}],
+  "misconceptions":["Alcohol instantly sterilizes every tool.","A clean-looking blade is disinfected.","One tool can safely move through a room if plants look healthy."],
+  "evidenceLimits":["Agent effectiveness depends on organism, surface, soil load, concentration, time, use site, and product label. This lesson does not prescribe a universal disinfectant recipe."],
+  "crossLinks":"THC-ENC-301–340 for disease, viroid, biosecurity, sanitation, and release controls; THC-GROW-034 for the controlled propagation SOP package.",
+  "sourceNotes":[
+    "V09-SRC-002 — THC Cultivation SOP Source Materials Packet v1.0 (project control source).",
+    "Punja ZK et al. (2025). Transmission, spread, longevity and management of hop latent viroid, a widespread and destructive pathogen affecting Cannabis plants in North America. Plants 14:830. DOI 10.3390/plants14050830.",
+    "V09-SRC-012 — U.S. EPA cleaning/disinfection and selected registered-disinfectant guidance; reverified 2026-08-24. Current label directions and wet contact time control efficacy claims."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 09 v1.0","evidenceControl":"complete","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"plant_pathology_plus_release_time_disinfectant_label_safety","publicationAuthorized":true,"publicationAuthorization":"project_owner_2026-08-24","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"sanitation-and-tool-mediated-pathogen-spread",
+  "route":"/encyclopedia/sanitation-and-tool-mediated-pathogen-spread"
+}

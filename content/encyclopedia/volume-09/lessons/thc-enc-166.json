@@ -1,0 +1,36 @@
+{
+  "id":"THC-ENC-166",
+  "number":166,
+  "title":"Auxin Biology and Rooting Hormones",
+  "objective":"Separate endogenous auxin biology from product-specific rooting-hormone use and evaluate dose, formulation, and genotype effects.",
+  "terms":[
+    {"term":"IAA","definition":"Indole-3-acetic acid, the principal naturally occurring auxin in many plants."},
+    {"term":"IBA","definition":"Indole-3-butyric acid, an auxinic compound widely used in propagation to promote adventitious rooting."},
+    {"term":"NAA","definition":"1-naphthaleneacetic acid, a synthetic auxin used as a plant growth regulator in some propagation systems."},
+    {"term":"auxin","definition":"A class of growth regulators represented naturally by indole-3-acetic acid and acting through concentration, transport, and tissue competence."},
+    {"term":"basipetal transport","definition":"Directional movement toward the base of an organ; shoot auxin transport is commonly described as predominantly basipetal."},
+    {"term":"induction phase","definition":"An early adventitious-rooting phase in which responsive cells acquire root-forming competence before visible root primordia emerge."},
+    {"term":"phytotoxicity","definition":"Plant injury caused by a chemical, dose, exposure, or formulation under the conditions tested."},
+    {"term":"formulation","definition":"The complete physical and chemical product form that determines how an active ingredient is delivered and used."}
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Endogenous auxin participates in adventitious-root induction, and polar auxin transport contributes to directional development. Cannabis-specific transport kinetics are not inferred from general plant evidence, and rooting response remains dependent on genotype and the propagation environment.",
+    "Commercial and research protocols commonly use IBA or NAA. Cannabis experiments show that exogenous auxin can improve root number, length, or mass, yet responses vary with cultivar, medium, concentration, exposure, and application method. A treatment that improves one root metric may not improve survival or later crop performance.",
+    "Excess auxin or prolonged exposure can suppress shoot growth, cause callus, deform roots, or injure tissue. Product concentration is not interchangeable across powders, gels, solutions, salts, and active-ingredient percentages."
+  ],
+  "cultivationRelevance":["Treat any commercial rooting-hormone use as a controlled product application. Record active ingredient, formulation, lot, concentration, exposure, operator, and current legal/label status. Maintain an untreated or current-standard comparison during protocol development."],
+  "measureAndRecord":[{"field":"Controlled record set","requirement":"Product and active ingredient; concentration and exposure; cutting genotype and morphology; rooting percentage; days to root; root number/length/mass; callus and injury; post-transplant growth."}],
+  "misconceptions":["Rooting gel creates roots by itself.","A stronger dose always roots faster.","IBA, IAA, and NAA are interchangeable."],
+  "evidenceLimits":["This lesson does not authorize a product or application. U.S. regulatory treatment depends on product claims, composition, intended use, applicable exemptions, state requirements, and current label status; release-time legal and worker-safety review remains required."],
+  "crossLinks":"THC-ENC-141–160 for genotype, chemotype, sex, clonal fidelity, and evidence standards; THC-ENC-301–340 for disease, viroid, biosecurity, sanitation, and release controls; THC-GROW-034 for the controlled propagation SOP package.",
+  "sourceNotes":[
+    "Campbell SM et al. (2021). Evaluation of substrate composition and exogenous hormone application on vegetative propagule rooting success of essential oil hemp (Cannabis sativa L.). PLOS ONE 16:e0249160. DOI 10.1371/journal.pone.0249160.",
+    "Holmes JE et al. (2021). Variables affecting shoot growth and plantlet recovery in tissue cultures of drug-type Cannabis sativa L. Frontiers in Plant Science 12:732344. DOI 10.3389/fpls.2021.732344.",
+    "V09-SRC-018 — U.S. EPA plant-regulator / pesticide-registration and labeling guidance, reverified 2026-08-24; product/use-specific registration, exemption, labeling, and worker-safety status must be checked at release."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 09 v1.0","evidenceControl":"complete","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"plant_physiology_plus_release_time_product_label_legal_safety","publicationAuthorized":true,"publicationAuthorization":"project_owner_2026-08-24","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"auxin-biology-and-rooting-hormones",
+  "route":"/encyclopedia/auxin-biology-and-rooting-hormones"
+}

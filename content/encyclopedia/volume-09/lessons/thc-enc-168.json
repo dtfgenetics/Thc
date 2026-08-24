@@ -1,0 +1,35 @@
+{
+  "id":"THC-ENC-168",
+  "number":168,
+  "title":"Humidity Management and Transpiration Control",
+  "objective":"Manage humidity as a water-loss control while preventing condensation, stagnation, and delayed acclimation.",
+  "terms":[
+    {"term":"relative humidity","definition":"The ratio of actual vapor pressure to saturation vapor pressure at the same air temperature, expressed as a percent."},
+    {"term":"VPD","definition":"Vapor pressure deficit: the difference between saturation vapor pressure and actual vapor pressure."},
+    {"term":"transpiration","definition":"Loss of water vapor from plant tissues, primarily through stomata, as governed by vapor-pressure gradients and conductance."},
+    {"term":"leaf wetness","definition":"The presence of liquid water on leaf or flower surfaces, whether from condensation, irrigation, or guttation."},
+    {"term":"condensation","definition":"Conversion of water vapor to liquid water on a surface at or below the local dew point."},
+    {"term":"stomatal control","definition":"Physiological regulation of stomatal aperture that changes gas exchange and water loss."},
+    {"term":"humidity dome","definition":"A local enclosure used in propagation to reduce vapor exchange and raise humidity around cuttings."}
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Before roots form, cuttings have limited capacity to replace water lost from leaves. High surrounding humidity reduces the vapor-pressure gradient and can help maintain turgor during the most vulnerable period.",
+    "Humidity is not the only control. Leaf temperature, airflow, radiation, leaf area, tissue water status, and stomatal behavior influence loss. Condensation and persistent leaf wetness can favor some greenhouse foliar pathogens and can spread inoculum by splashing; disease response is pathogen-specific rather than universal.",
+    "Humidity should change with root development. A gradual transition toward the production environment tests whether roots and stomata can support the cutting without abrupt wilt."
+  ],
+  "cultivationRelevance":["Measure the propagation-zone air near leaves, not only the room wall. Remove standing water, verify dome and tray cleanliness, and reduce humidity in controlled steps tied to rooting and recovery observations."],
+  "measureAndRecord":[{"field":"Controlled record set","requirement":"Air and leaf temperature; RH and VPD method; dome state; condensation and wetness duration; airflow; rooting stage; wilt and recovery after venting."}],
+  "misconceptions":["Unrooted cuttings require 100% RH at all times.","A closed dome is automatically safe.","Leaves standing upright proves the cutting has roots."],
+  "evidenceLimits":["No single RH or VPD target applies to every cutting stage, cultivar, dome, light level, and airflow pattern."],
+  "crossLinks":"THC-ENC-081–100 for water relations and environmental control; THC-ENC-301–340 for disease, viroid, biosecurity, sanitation, and release controls; THC-GROW-034 for the controlled propagation SOP package.",
+  "sourceNotes":[
+    "Controlled Volume 05 water-relations evidence for VPD, leaf temperature, energy balance, stomatal behavior, and water-loss controls.",
+    "V09-SRC-011 — UMass Amherst Extension greenhouse humidity guidance supporting dew-point condensation, leaf wetness, and pathogen-favorable moisture with pathogen-specific limits.",
+    "Holmes JE et al. (2021). Variables affecting shoot growth and plantlet recovery in tissue cultures of drug-type Cannabis sativa L. Frontiers in Plant Science 12:732344."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 09 v1.0","evidenceControl":"complete","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"environment_and_plant_pathology","publicationAuthorized":true,"publicationAuthorization":"project_owner_2026-08-24","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"humidity-management-and-transpiration-control",
+  "route":"/encyclopedia/humidity-management-and-transpiration-control"
+}
