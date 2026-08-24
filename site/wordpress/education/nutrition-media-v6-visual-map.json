@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-08-24",
+  "curriculumId": "nutrition-media-v6",
+  "route": "/learn/nutrition-media/",
+  "chapters": {
+    "media-physical-root-space": [
+      {"file":"THC-ENC-050_Soil_Texture_Structure_and_Aggregation.jpg","title":"Soil Texture, Structure & Aggregation","alt":"Educational diagram separating mineral soil texture from aggregation, structure and pore arrangement."},
+      {"file":"THC-ENC-053_Porosity_Air-Filled_Porosity_and_Water-Holding_Capacity.jpg","title":"Porosity, Air Space & Water Holding","alt":"Educational diagram comparing total porosity, air-filled porosity and water-holding capacity in growing media."},
+      {"file":"THC-ENC-054_Peat-Based_Substrates.jpg","title":"Peat-Based Substrates","alt":"Educational reference for peat-based substrate properties and management considerations."},
+      {"file":"THC-ENC-055_Coco_Coir_Properties_and_Management.jpg","title":"Coco Coir Properties & Management","alt":"Educational reference explaining coco coir physical and chemical properties that affect cultivation management."},
+      {"file":"THC-ENC-057_Rockwool_Perlite_and_Inert_Media.jpg","title":"Rockwool, Perlite & Inert Media","alt":"Educational comparison of inert growing-media properties and management implications."},
+      {"file":"THC-ENC-059_Container_Geometry_Root_Restriction_and_Transplanting.jpg","title":"Container Geometry & Root Space","alt":"Educational diagram showing how container geometry and root occupancy influence the managed root zone."}
+    ],
+    "cec-organic-matter-microbes": [
+      {"file":"THC-ENC-052_Cation_Exchange_Capacity_and_Nutrient_Buffering.jpg","title":"Cation Exchange Capacity & Buffering","alt":"Educational diagram explaining cation exchange capacity, exchange sites and nutrient buffering."},
+      {"file":"THC-ENC-051_Organic_Matter_Humus_and_Carbon_Cycling.jpg","title":"Organic Matter & Carbon Cycling","alt":"Educational diagram explaining decomposition, carbon cycling and changing root-zone properties."},
+      {"file":"THC-ENC-046_Root_Exudates_and_Rhizosphere_Signaling.jpg","title":"Root Exudates & Rhizosphere Signaling","alt":"Educational diagram showing root-derived compounds and signaling in the rhizosphere."},
+      {"file":"THC-ENC-047_Rhizosphere_Microbes_Functions_and_Limits_of_Claims.jpg","title":"Rhizosphere Microbes: Functions & Limits","alt":"Evidence-aware educational reference on root-associated microbial functions and limits of product claims."},
+      {"file":"THC-ENC-048_Mycorrhizal_Associations_in_Cannabis_and_Hemp.jpg","title":"Mycorrhizal Associations","alt":"Educational diagram explaining mycorrhizal root colonization and evidence-aware expectations."},
+      {"file":"THC-ENC-056_Compost_Living_Soil_and_Biological_Variability.jpg","title":"Compost, Living Soil & Biological Variability","alt":"Educational reference showing biological and chemical variability in compost and living-media systems."}
+    ],
+    "essential-elements-npk": [
+      {"file":"Primary_Macronutrients_Infographic.png","title":"Primary Macronutrients","alt":"Educational infographic introducing nitrogen, phosphorus and potassium functions without presenting a universal feed ratio."},
+      {"file":"The_Role_of_Nutrients_Infographic.png","title":"The Role of Essential Nutrients","alt":"Educational overview of essential plant nutrients and their biological roles."},
+      {"file":"Cannabis_Nutrition_Science_Behind_Healthy_Growth.png","title":"Nutrition Science Behind Healthy Growth","alt":"Educational infographic connecting balanced mineral nutrition with plant growth and root-zone context."}
+    ],
+    "calcium-magnesium-sulfur": [
+      {"file":"Secondary_Macronutrients_Infographic.png","title":"Calcium, Magnesium & Sulfur","alt":"Educational infographic introducing calcium, magnesium and sulfur functions and transport considerations."}
+    ],
+    "micronutrients-availability": [
+      {"file":"Essential_Micronutrients_Infographic.png","title":"Essential Micronutrients","alt":"Educational infographic introducing essential trace elements and their narrow deficiency-toxicity margins."}
+    ],
+    "mobility-ph-ec-alkalinity": [
+      {"file":"Nutrient_Uptake_and_Root_Zone_Chemistry.png","title":"Nutrient Uptake & Root-Zone Chemistry","alt":"Educational infographic connecting nutrient uptake with roots, pH, salinity and root-zone chemistry."},
+      {"file":"THC-ENC-045_Ion_Uptake_and_Membrane_Transport.jpg","title":"Ion Uptake & Membrane Transport","alt":"Educational diagram showing selective ion uptake across living root-cell membranes."}
+    ],
+    "formulation-compatibility-testing": [
+      {"file":"Nutrition_Best_Practices_Infographic.png","title":"Nutrition Best Practices","alt":"Educational infographic emphasizing measured nutrient preparation, delivery and verification practices."},
+      {"file":"Organic_vs_Synthetic_Nutrients_Infographic.png","title":"Nutrient Source Categories","alt":"Educational comparison of organic and mineral nutrient-source categories without implying one universal superior system."},
+      {"file":"THC-ENC-060_Media_Testing_Batch_Qualification_and_Reuse_Decisions.jpg","title":"Media Testing & Batch Qualification","alt":"Educational workflow for testing and qualifying media batches before nutrient decisions."}
+    ],
+    "diagnosis-records-capa": [
+      {"file":"Diagnosing_Deficiency_vs_Toxicity_Infographic.png","title":"Deficiency vs Toxicity: Start With Evidence","alt":"Educational infographic showing why nutrient-like symptoms require differential diagnosis before correction."},
+      {"file":"THC-ENC-001_VIS-06_Measurement_Quality_Chain.jpg","title":"Measurement Quality Chain","alt":"Educational diagram showing how instrument and sampling quality affect nutrient interpretation."},
+      {"file":"THC-ENC-001_VIS-08_Monitored_Cultivation_Decision.jpg","title":"Monitored Cultivation Decision","alt":"Educational decision diagram connecting observations, measurements, bounded corrections and verification."}
+    ]
+  },
+  "gaps": [
+    {"id":"nitrogen-forms-ph-drift","status":"needed","title":"Nitrate vs Ammonium & Root-Zone pH Drift","neededVisual":"A mechanism diagram separating total nitrogen from nitrate and ammonium form, assimilation pathways, charge balance and the directional root-zone pH effects of different N-form uptake."},
+    {"id":"phosphorus-availability-precipitation","status":"needed","title":"Phosphorus Availability, Adsorption & Precipitation","neededVisual":"A chemistry diagram showing phosphate speciation, pH effects, adsorption and precipitation with calcium or iron without presenting one universal cannabis pH target."},
+    {"id":"potassium-cation-competition","status":"needed","title":"Potassium & Cation Competition","neededVisual":"A root-interface diagram showing potassium supply alongside calcium, magnesium and ammonium competition, total salinity and plant demand."},
+    {"id":"calcium-transport-demand","status":"needed","title":"Calcium Supply vs Transport to Growing Tissue","neededVisual":"A whole-plant transport diagram showing root acquisition, xylem flow, transpiration dependence, poor remobilization and why local calcium stress can occur despite calcium in solution."},
+    {"id":"magnesium-sulfur-functions","status":"needed","title":"Magnesium Mobility & Sulfur Assimilation","neededVisual":"A paired diagram contrasting magnesium mobility/chlorophyll and enzyme functions with sulfate uptake and sulfur-amino-acid assimilation."},
+    {"id":"micronutrient-ph-chelation","status":"needed","title":"Micronutrient Availability, pH & Chelation","neededVisual":"An evidence-aware matrix showing that Fe, Mn, Zn, Cu, Mo, B, Cl and Ni have distinct chemistry, pH response, chelation behavior and toxicity margins."},
+    {"id":"nutrient-interactions-antagonism","status":"needed","title":"Nutrient Interactions Without a Lockout Myth","neededVisual":"A mechanism-first interaction map separating competition, precipitation, transport limitation, salinity and root impairment instead of labeling every interaction as nutrient lockout."},
+    {"id":"elemental-formulation-stock-compatibility","status":"needed","title":"From Product Label to Elemental Formula & Compatible Stocks","neededVisual":"A calculation-and-mixing diagram connecting guaranteed analysis, elemental units, oxide conversions, stock concentration, injector ratio, final volume, mixing order and precipitation risk."},
+    {"id":"root-zone-tissue-sampling-methods","status":"needed","title":"Root-Zone & Tissue Sampling Methods","neededVisual":"A side-by-side workflow showing runoff, pour-through, slurry/dilution extract, saturated-media extract and tissue sampling, with method-specific variables and a warning not to exchange reference ranges."},
+    {"id":"nutrition-differential-capa","status":"needed","title":"Nutrition Differential Diagnosis & CAPA Loop","neededVisual":"A decision tree moving from symptom geometry and tissue age through delivery, roots, pH/EC, environment and analytical evidence to the smallest justified correction and effectiveness check."}
+  ]
+}
