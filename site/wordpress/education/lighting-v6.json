@@ -1,0 +1,138 @@
+{
+  "schemaVersion": 1,
+  "id": "lighting-v6",
+  "title": "Lighting",
+  "learningOutcome": "Measure light as a spatial and time-dependent plant input, connect photon delivery to photosynthesis and developmental signaling, and make lighting changes from repeatable maps, plant response, and recorded context rather than fixture labels or universal target numbers.",
+  "chapters": [
+    {
+      "number": 1,
+      "id": "photon-language-bands",
+      "title": "Photon Language & Measurement Bands",
+      "objective": "Separate photons, energy, human-vision units, PAR and ePAR so every lighting value states what was actually measured.",
+      "encyclopediaIds": ["THC-ENC-101", "THC-ENC-102"],
+      "lessons": [
+        {"title":"Plants intercept photons, not lumens","summary":"Human vision weights wavelengths differently from plant-light photon measurements. Lux and lumens are therefore not interchangeable with PPFD without source-specific validation.","concepts":["photons","lux vs PPFD","radiant energy"],"cultivation":"Use photon-based measurements for crop-light decisions so fixture color and visual brightness do not substitute for crop delivery.","observe":"Record the instrument, source spectrum, measurement band and units before comparing any two readings."},
+        {"title":"PAR is a defined counting band","summary":"PAR conventionally counts photons from 400-700 nm; ePAR extends the proposed count to 750 nm. The two metrics must remain labeled.","concepts":["PAR","ePAR","wavelength band"],"cultivation":"A number can appear larger simply because the meter counts a wider band. That is not automatically a real increase in conventional PPFD.","observe":"Confirm the sensor band and whether the displayed value is PPFD, ePPFD or another metric."},
+        {"title":"PPF and PPFD answer different questions","summary":"PPF describes total fixture photon output per second. PPFD describes photon density arriving at a surface.","concepts":["PPF","PPFD","crop surface"],"cultivation":"Use PPF to understand source output and PPFD maps to verify what the crop actually receives after geometry and room losses.","observe":"Record fixture model, dimming, mounting geometry and the measured canopy plane."},
+        {"title":"Photon efficacy is not crop efficiency","summary":"Micromoles per joule describes fixture conversion of electrical input to photons; it does not prove biological, spatial or economic efficiency.","concepts":["photon efficacy","system efficiency","interception"],"cultivation":"A highly efficient fixture can still perform poorly when spacing, overlap, canopy interception or room conditions are wrong.","observe":"Compare electrical draw, installed map, crop area, operating hours and crop outcome together."}
+      ],
+      "knowledgeChecks": ["Why can two lights with similar lux readings deliver different PPFD?", "What is the difference between PPF and PPFD?", "Why must PAR and ePAR values stay labeled?", "Why does fixture efficacy not prove crop productivity?"]
+    },
+    {
+      "number": 2,
+      "id": "fixture-output-delivery",
+      "title": "Fixture Output → Canopy Delivery",
+      "objective": "Follow photons from the fixture specification to the installed crop surface and identify where geometry changes delivery.",
+      "encyclopediaIds": ["THC-ENC-102", "THC-ENC-107", "THC-ENC-108"],
+      "lessons": [
+        {"title":"Specifications are design inputs","summary":"Rated PPF, spectrum and efficacy describe a tested fixture state, not the final crop exposure in a room.","concepts":["fixture specification","installed system","verification"],"cultivation":"Treat manufacturer data as the starting model, then commission the installed system with crop-plane measurements.","observe":"Record model, voltage, dimming, thermal state, fixture age and current cleaning condition."},
+        {"title":"Height changes intensity and footprint","summary":"Distance changes local intensity, overlap and spill. Extended horticultural fixtures do not behave like ideal point sources at normal mounting distances.","concepts":["fixture height","overlap","inverse-square limits"],"cultivation":"Lowering a fixture can create hotspots while raising it can improve overlap but increase spill; the correct change depends on the map.","observe":"Measure the same grid before and after height or spacing changes rather than relying on a distance ratio alone."},
+        {"title":"Room boundaries alter delivery","summary":"Walls, curtains, benches, leaves and obstructions absorb or redirect photons, so installed optical conditions matter.","concepts":["reflectance","obstructions","interception"],"cultivation":"A room map can drift after canopy growth, curtain changes, fixture cleaning or new equipment even when dimming is unchanged.","observe":"Document reflective surfaces, crop state, trellis fill, obstructions and fixture positions with each map."},
+        {"title":"Technology labels are not performance grades","summary":"LED, HID, fluorescent and sunlight systems differ in controls, spectrum, distribution and heat pathways, but crop performance must be measured rather than assumed from the label.","concepts":["LED","HID","sunlight","system comparison"],"cultivation":"Compare technologies using delivered photons, controllability, energy, heat, maintenance, reliability and crop response.","observe":"Capture actual electrical draw, installed PPFD/DLI, HVAC response, maintenance state and production outcomes."}
+      ],
+      "knowledgeChecks": ["Why can a high-PPF fixture produce poor canopy delivery?", "When does simple inverse-square reasoning fail?", "How can reflective boundaries alter a map?", "What measurements are needed for a fair source-technology comparison?"]
+    },
+    {
+      "number": 3,
+      "id": "ppfd-mapping-uniformity",
+      "title": "PPFD Mapping & Uniformity",
+      "objective": "Build a repeatable canopy-light map that preserves location, exposes hotspots and weak zones, and supports before-after comparison.",
+      "encyclopediaIds": ["THC-ENC-105", "THC-ENC-106", "THC-ENC-107"],
+      "lessons": [
+        {"title":"A meter reading is a protocol","summary":"Sensor choice, orientation, height, timing, room state and operator position all affect the result.","concepts":["quantum sensor","measurement plane","repeatability"],"cultivation":"A repeatable protocol makes lighting changes auditable instead of turning every reading into a new uncontrolled experiment.","observe":"Record sensor model, calibration, band, orientation, height, warm-up time, dimming and room boundary state."},
+        {"title":"Map the crop area, not just the center","summary":"A useful grid includes edges, corners, seams, known obstructions and representative crop positions.","concepts":["grid","spatial sampling","hotspots"],"cultivation":"Center-only readings can hide weak edges or damaging local peaks that drive inconsistent growth and maturity.","observe":"Preserve raw coordinate values and a fixed grid origin so the next map can be compared directly."},
+        {"title":"Mean PPFD can hide bad distribution","summary":"Two rooms can share the same mean while one contains large highs and lows. Distribution metrics and raw values matter.","concepts":["mean","minimum","maximum","coefficient of variation"],"cultivation":"Uniformity affects canopy consistency, water demand, stress risk and harvest timing even when average light is unchanged.","observe":"Report mean, median, minimum, maximum, variability and the exact formula for any uniformity ratio."},
+        {"title":"Empty-room and mature-canopy maps answer different questions","summary":"Leaves absorb and redirect photons, while canopy height changes the measurement plane. Commissioning and crop-state maps should not be confused.","concepts":["commissioning map","canopy map","crop geometry"],"cultivation":"Remap after major stretch, trellis fill, fixture movement or canopy restructuring when geometry has materially changed.","observe":"Version each map with canopy height, architecture, stage, fixture layout and operating state."}
+      ],
+      "knowledgeChecks": ["What variables must be fixed for a repeatable PPFD map?", "Why is one center reading insufficient?", "How can the mean hide a lighting problem?", "Why should commissioning and mature-canopy maps be kept separate?"]
+    },
+    {
+      "number": 4,
+      "id": "dli-photoperiod-timing",
+      "title": "DLI, Photoperiod & Timing",
+      "objective": "Integrate photons across the day while keeping developmental timing and the dark period separate from the arithmetic total.",
+      "encyclopediaIds": ["THC-ENC-103", "THC-ENC-104"],
+      "lessons": [
+        {"title":"DLI is accumulated daily photon dose","summary":"For constant PPFD, DLI equals PPFD × photoperiod hours × 0.0036. Variable light requires time integration rather than one spot reading.","concepts":["DLI","time integration","mol m-2 d-1"],"cultivation":"DLI is useful for comparing days and coordinating supplemental light, but the measurement band and time profile still matter.","observe":"Record PPFD/ePPFD band, logging interval, photoperiod and missing or abnormal time periods."},
+        {"title":"Equal DLI does not mean equal treatment","summary":"The same daily total can come from different intensities and durations, changing saturation, temperature, water demand, signaling and dark-period biology.","concepts":["intensity-duration tradeoff","nonlinear response","dark period"],"cultivation":"Do not exchange hours for intensity solely to preserve DLI without evaluating developmental and environmental effects.","observe":"Compare photoperiod, peak PPFD, leaf temperature, irrigation demand and crop response alongside DLI."},
+        {"title":"Photoperiod is developmental information","summary":"Light-dark timing entrains circadian processes and contributes to flowering control in photoperiod-sensitive plants.","concepts":["photoperiod","scotoperiod","circadian timing"],"cultivation":"Production schedules should distinguish photon dose from the uninterrupted dark signal used for developmental control.","observe":"Log actual light at the crop during transitions and dark checks, not only controller commands."},
+        {"title":"Transitions and light leaks belong in the record","summary":"Ramps, greenhouse sunlight, indicator lamps, door openings and controller faults can alter the effective schedule.","concepts":["transition","night interruption","controller verification"],"cultivation":"A schedule is only as reliable as the measured environment at the crop; commanded on/off times are not proof.","observe":"Record clock times, ramps, spectral-channel timing, dark-period checks and any interruption event."}
+      ],
+      "knowledgeChecks": ["How is DLI calculated from constant PPFD?", "Why can equal DLI treatments produce different plant responses?", "What information is lost when a day is reduced to one DLI number?", "Why should actual dark-period light be measured?"]
+    },
+    {
+      "number": 5,
+      "id": "spectrum-source-signaling",
+      "title": "Spectrum, Sources & Signaling",
+      "objective": "Separate photon quantity from spectral distribution and distinguish photosynthetic effects from photoreceptor signaling.",
+      "encyclopediaIds": ["THC-ENC-101", "THC-ENC-108", "THC-ENC-112"],
+      "lessons": [
+        {"title":"An integrated PPFD number hides spectrum","summary":"PPFD reports photon quantity within a band but cannot show blue, green, red or far-red distribution by itself.","concepts":["spectral photon distribution","PPFD","wavelength"],"cultivation":"When spectrum changes, keep photon dose and distribution controlled where possible so the cause of a plant response can be interpreted.","observe":"Record the spectral photon distribution or channel settings, not only a color name such as white or full spectrum."},
+        {"title":"Photosynthesis and signaling are different mechanisms","summary":"A wavelength can contribute to carbon gain while also affecting photoreceptors and morphology. These effects should not be collapsed into one claim.","concepts":["photosynthesis","photoreceptors","morphology"],"cultivation":"Evaluate architecture, development and carbon-response outcomes separately when testing spectral treatments.","observe":"Measure total photons, timing, morphology, stage and untreated controls alongside spectrum."},
+        {"title":"Red/far-red changes phytochrome state","summary":"Vegetation and fixtures can alter red/far-red conditions, influencing elongation, leaf display, branching, circadian behavior and reproductive timing.","concepts":["phytochrome","red/far-red","shade signaling"],"cultivation":"Far-red decisions should be framed as controlled treatments rather than a universal stretch or flowering switch.","observe":"Record absolute photon dose, band definitions, timing, background spectrum, genotype and stage."},
+        {"title":"Technology and spectrum must be separated","summary":"Two LED products or two HID systems can have different spectra and distributions; technology family alone does not define the treatment.","concepts":["source technology","spectrum","distribution"],"cultivation":"Compare actual spectral and spatial delivery rather than assuming all products in a technology family behave alike.","observe":"Pair fixture identity with measured spectrum, PPFD map, DLI, power and crop response."}
+      ],
+      "knowledgeChecks": ["What information does PPFD hide?", "Why should photosynthetic and signaling effects be separated?", "What additional context is needed to interpret red/far-red treatments?", "Why is a technology label not a complete spectrum description?"]
+    },
+    {
+      "number": 6,
+      "id": "photosynthetic-response-canopy-use",
+      "title": "Photosynthetic Response & Canopy Use",
+      "objective": "Interpret leaf response curves and saturation without turning single-leaf measurements into universal room setpoints.",
+      "encyclopediaIds": ["THC-ENC-109", "THC-ENC-110", "THC-ENC-106"],
+      "lessons": [
+        {"title":"Photosynthetic response curves are conditional","summary":"Leaf carbon assimilation changes with photon flux, but the curve depends on leaf age, acclimation, CO2, temperature, water status, nutrition, spectrum and protocol.","concepts":["light-response curve","net assimilation","acclimation"],"cultivation":"Use curves to understand a measured leaf under stated conditions, not as a universal fixture prescription.","observe":"Record leaf identity, cuvette environment, photon sequence, stabilization criteria and raw observations."},
+        {"title":"Saturation is not a hard crop ceiling","summary":"A leaf can show diminishing gains while lower leaves and other crop surfaces remain light-limited.","concepts":["light saturation","canopy interception","distribution"],"cultivation":"Redistributing photons can improve whole-canopy use even when the most exposed leaf is near its short-term asymptote.","observe":"Compare top, middle and lower canopy light plus crop response rather than using one top-leaf curve."},
+        {"title":"Compensation is not a room minimum","summary":"A measured leaf's compensation point is where its net exchange reaches zero under a defined protocol; it is not a universal crop survival threshold.","concepts":["compensation point","respiration","net carbon"],"cultivation":"Use the concept to understand why deeply shaded tissue may contribute little net carbon, while keeping whole-plant allocation in view.","observe":"Document the calculation method, tissue, environment, acclimation and uncertainty."},
+        {"title":"Canopy distribution connects physiology to yield","summary":"Whole-crop response integrates photon interception, leaf area, self-shading, respiration, allocation and time, so yield cannot be inferred from one instantaneous leaf reading.","concepts":["canopy photosynthesis","self-shading","yield integration"],"cultivation":"Lighting design should target useful distribution across the canopy and be verified against harvest consistency and quality.","observe":"Track spatial light, canopy architecture, biomass, quality, water use and defect patterns together."}
+      ],
+      "knowledgeChecks": ["Why is a leaf light-response curve not a room setpoint?", "How can a canopy still use more photons after a top leaf approaches saturation?", "What does the compensation point actually describe?", "Which crop-level data should accompany leaf physiology measurements?"]
+    },
+    {
+      "number": 7,
+      "id": "high-light-stress-acclimation",
+      "title": "High-Light Stress & Acclimation",
+      "objective": "Distinguish normal photoprotection from sustained injury and diagnose high-light problems with spatial and environmental evidence.",
+      "encyclopediaIds": ["THC-ENC-111", "THC-ENC-109", "THC-ENC-110"],
+      "lessons": [
+        {"title":"Plants actively dissipate excess excitation","summary":"Leaf-angle changes, non-photochemical quenching, pigment responses and repair can protect photosystems when input temporarily exceeds use.","concepts":["photoprotection","NPQ","repair"],"cultivation":"A short-term protective response is not automatically permanent damage; trend recovery and supporting conditions before diagnosing injury.","observe":"Record timing, leaf posture, temperature, recent lighting changes and recovery after conditions normalize."},
+        {"title":"Photoinhibition is context-dependent","summary":"Sustained high-light injury becomes more likely when heat, water deficit, root dysfunction, nutrient imbalance, cold or abrupt exposure reduce the plant's capacity to use or dissipate energy.","concepts":["photoinhibition","combined stress","acclimation"],"cultivation":"Manage lighting with root-zone and atmospheric support rather than treating PPFD as an isolated stress variable.","observe":"Map light at symptomatic and healthy sites and pair it with leaf temperature, VPD, CO2, irrigation and root status."},
+        {"title":"Symptoms are not specific to light","summary":"Bleaching, curl, reduced expansion and necrosis can also arise from heat, roots, nutrition, sprays or pathogens.","concepts":["differential diagnosis","spatial evidence","symptom overlap"],"cultivation":"A lighting diagnosis should require correlation with mapped exposure and change history instead of appearance alone.","observe":"Compare symptom location to PPFD/DLI maps and review recent sprays, irrigation, environment and nutrient events."},
+        {"title":"Acclimate major increases","summary":"Pigment, leaf structure, photosynthetic capacity and protective systems adjust to prior exposure, so abrupt large changes can create avoidable stress.","concepts":["acclimation","step change","recovery"],"cultivation":"Increase light in measured steps after propagation, transplant, major canopy work or other changes that alter capacity or exposure.","observe":"Record previous and new mapped exposure, dates, plant response and the time required to stabilize."}
+      ],
+      "knowledgeChecks": ["How does photoprotection differ from sustained photoinhibition?", "Which non-light stresses can increase high-light risk?", "Why are visual symptoms alone insufficient for diagnosis?", "What should be recorded during a lighting acclimation change?"]
+    },
+    {
+      "number": 8,
+      "id": "verification-records-change-control",
+      "title": "Verification, Records & Change Control",
+      "objective": "Turn lighting management into a repeatable measurement system with baselines, controlled changes and post-change verification.",
+      "encyclopediaIds": ["THC-ENC-102", "THC-ENC-103", "THC-ENC-105", "THC-ENC-106"],
+      "lessons": [
+        {"title":"Create a lighting baseline before changing anything","summary":"A useful baseline captures fixture state, map, DLI, photoperiod, canopy geometry, environment and crop response.","concepts":["baseline","versioning","context"],"cultivation":"Without a baseline, a change can improve one metric while worsening another and there is no reliable comparison point.","observe":"Save raw grid data, photographs, canopy height, controller settings, sensor metadata and current plant observations."},
+        {"title":"Change one interpretable variable at a time when possible","summary":"Simultaneous changes to height, dimming, spectrum, photoperiod and environment make cause-and-effect difficult to interpret.","concepts":["change control","confounding","comparison"],"cultivation":"Structured changes make it easier to identify useful adjustments and roll back harmful ones.","observe":"Document exactly what changed, when it changed, the intended outcome and which conditions were held constant."},
+        {"title":"Remap after physical or control changes","summary":"Fixture movement, cleaning, driver replacement, canopy growth and controller updates can all alter delivered photons.","concepts":["verification map","maintenance","drift"],"cultivation":"A post-change map confirms that the crop received the intended change rather than merely trusting settings or calculations.","observe":"Repeat the same grid and compare raw values, distribution statistics, DLI and any new hotspots or weak zones."},
+        {"title":"Judge the system by repeated crop response","summary":"Lighting targets should remain bounded by genotype, stage, environment, canopy, energy and repeated production outcomes.","concepts":["trend","crop response","evidence boundary"],"cultivation":"Use multiple cycles and consistent records to refine working envelopes instead of turning one successful crop into a universal recipe.","observe":"Trend yield, quality, uniformity, defects, energy, water demand and environmental stability against versioned lighting records."}
+      ],
+      "knowledgeChecks": ["What belongs in a lighting baseline?", "Why do simultaneous changes weaken interpretation?", "When should a room be remapped?", "Why should working light targets remain bounded by repeated crop context?"]
+    }
+  ],
+  "deepRoutes": [
+    {"label":"Lighting encyclopedia","href":"/learn/encyclopedia/"},
+    {"label":"Environment & VPD","href":"/learn/environment-vpd/"},
+    {"label":"Plant Biology","href":"/learn/plant-biology/"},
+    {"label":"Lifecycle & Propagation","href":"/learn/lifecycle-propagation/"},
+    {"label":"GrowLens records","href":"/growlens/"}
+  ],
+  "visualTargets": [
+    "Photon bands: PAR versus ePAR and why lux is different",
+    "PPF versus PPFD: fixture output to crop surface",
+    "DLI calculation from PPFD and photoperiod",
+    "Canopy PPFD grid with mean, minimum, maximum and variability",
+    "Fixture height, overlap and extended-source geometry",
+    "Spectral photon distribution with red/far-red signaling separated from photosynthesis",
+    "Leaf light-response curve versus whole-canopy response",
+    "High-light stress diagnosis mapped against exposure and leaf temperature",
+    "Lighting baseline and change-control record"
+  ]
+}
