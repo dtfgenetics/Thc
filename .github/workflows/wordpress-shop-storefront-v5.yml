@@ -1,0 +1,196 @@
+name: Publish DTF Shop Storefront V5
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/polish-wordpress-shop-storefront-v5.mjs'
+      - 'scripts/polish-wordpress-commerce-archive-v4.mjs'
+      - 'scripts/flush-hostinger-litespeed-mcp.mjs'
+      - '.github/workflows/wordpress-shop-storefront-v5.yml'
+  workflow_run:
+    workflows:
+      - 'Finalize DTFSeeds Home Genetics Art'
+      - 'Publish DTF Genetics Library'
+    types: [completed]
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-shop-storefront-v5
+  cancel-in-progress: true
+
+env:
+  WP_SITE_URL: https://dtfseeds.com
+  NODE_OPTIONS: --dns-result-order=ipv4first
+
+jobs:
+  publish-shop-v5:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    environment: production
+    env:
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME || secrets.WORDPRESS_USERNAME || secrets.WP_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD || secrets.WORDPRESS_APP_PASSWORD || secrets.WP_APPLICATION_PASSWORD }}
+      V4_BACKUP_ROOT: ${{ runner.temp }}/dtf-shop-v4
+      V5_BACKUP_ROOT: ${{ runner.temp }}/dtf-shop-v5
+
+    steps:
+      - name: Checkout trusted main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate Shop V5 package
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${WP_API_USERNAME:-}"
+          test -n "${WP_API_PASSWORD:-}"
+          node --check scripts/polish-wordpress-commerce-archive-v4.mjs
+          node --check scripts/polish-wordpress-shop-storefront-v5.mjs
+          node --check scripts/flush-hostinger-litespeed-mcp.mjs
+          grep -Fq 'data-dtf-shop-storefront-v5' scripts/polish-wordpress-shop-storefront-v5.mjs
+          grep -Fq '/product/10-regular-f2-blue-mango-seeds/' scripts/polish-wordpress-shop-storefront-v5.mjs
+          grep -Fq '/product/10-feminized-f2-blue-mango-x/' scripts/polish-wordpress-shop-storefront-v5.mjs
+          grep -Fq '/product/10-reg-f1-blueberry-bubblegum/' scripts/polish-wordpress-shop-storefront-v5.mjs
+
+      - name: Restore V4 portrait release-card styling
+        id: v4
+        env:
+          APPLY_COMMERCE_ARCHIVE_V4: 'true'
+          BACKUP_ROOT: ${{ env.V4_BACKUP_ROOT }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$BACKUP_ROOT"
+          node scripts/polish-wordpress-commerce-archive-v4.mjs | tee "$RUNNER_TEMP/shop-v4.json"
+          echo 'outcome=success' >> "$GITHUB_OUTPUT"
+
+      - name: Publish server-rendered Shop V5 storefront
+        id: v5
+        env:
+          APPLY_SHOP_STOREFRONT_V5: 'true'
+          BACKUP_ROOT: ${{ env.V5_BACKUP_ROOT }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$BACKUP_ROOT"
+          node scripts/polish-wordpress-shop-storefront-v5.mjs | tee "$RUNNER_TEMP/shop-v5.json"
+          dir="$(cat "$BACKUP_ROOT/shop-storefront-v5-backup-path.txt")"
+          report="$dir/shop-storefront-v5-report.json"
+          echo "template_id=$(node -p "require(process.argv[1]).templateId" "$report")" >> "$GITHUB_OUTPUT"
+          echo 'outcome=success' >> "$GITHUB_OUTPUT"
+
+      - name: Purge Hostinger LiteSpeed cache
+        id: cache
+        shell: bash
+        run: |
+          set -euo pipefail
+          ok=0
+          for attempt in 1 2 3; do
+            if node scripts/flush-hostinger-litespeed-mcp.mjs; then ok=1; break; fi
+            sleep $((attempt * 4))
+          done
+          [[ "$ok" -eq 1 ]] || { echo 'Hostinger LiteSpeed cache purge failed after retries.' >&2; exit 1; }
+          sleep 5
+
+      - name: Verify Shop V5 origin and public cache
+        id: verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          verify_shop() {
+            local url="$1" output="$2" attempts="$3" ok=0
+            for attempt in $(seq 1 "$attempts"); do
+              curl -4 -fsSL --retry 2 --retry-delay 2 \
+                -H 'Cache-Control: no-cache, no-store, max-age=0' \
+                -H 'Pragma: no-cache' \
+                "$url" -o "$output"
+              if \
+                grep -Fqi 'data-dtf-shop-storefront-v5="true"' "$output" && \
+                grep -Fqi 'Shop the release. Read the breeding story.' "$output" && \
+                grep -Fqi 'dtf-commerce-archive-v4' "$output" && \
+                grep -Fqi '/product/10-regular-f2-blue-mango-seeds/' "$output" && \
+                grep -Fqi '/product/10-feminized-f2-blue-mango-x/' "$output" && \
+                grep -Fqi '/product/10-reg-f1-blueberry-bubblegum/' "$output" && \
+                grep -Fqi 'Blue_Mango_F2_Regular_DTF_Strain_Card' "$output" && \
+                grep -Fqi 'Blue_Mango_F2_Feminized_DTF_Strain_Card' "$output" && \
+                grep -Fqi 'Blue_Bubblegum_F1_Regular_DTF_Strain_Card' "$output"; then
+                ok=1
+                break
+              fi
+              sleep 6
+            done
+            [[ "$ok" -eq 1 ]] || {
+              echo "Shop V5 verification failed for $url" >&2
+              grep -oiE 'dtf-shop-storefront-v5|Shop the release[^<]{0,120}|Blue_Mango[^" ]*|Blue_Bubblegum[^" ]*' "$output" | head -60 >&2 || true
+              exit 1
+            }
+          }
+
+          origin="$RUNNER_TEMP/shop-v5-origin.html"
+          public="$RUNNER_TEMP/shop-v5-public.html"
+          verify_shop "$WP_SITE_URL/shop/?dtf_shop_v5=${GITHUB_RUN_ID}" "$origin" 8
+          verify_shop "$WP_SITE_URL/shop/" "$public" 8
+
+          for spec in \
+            '/product/10-regular-f2-blue-mango-seeds/|Blue_Mango_F2_Regular_DTF_Strain_Card' \
+            '/product/10-feminized-f2-blue-mango-x/|Blue_Mango_F2_Feminized_DTF_Strain_Card' \
+            '/product/10-reg-f1-blueberry-bubblegum/|Blue_Bubblegum_F1_Regular_DTF_Strain_Card'; do
+            route="${spec%%|*}"
+            image="${spec##*|}"
+            body="$RUNNER_TEMP/product-$(echo "$route" | tr '/' '_' | tr -cd '[:alnum:]_').html"
+            curl -4 -fsSL --retry 3 --retry-delay 2 -H 'Cache-Control: no-cache' "$WP_SITE_URL$route" -o "$body"
+            grep -Fqi "$image" "$body" || { echo "Reviewed product image missing on $route" >&2; exit 1; }
+          done
+
+          echo 'Shop V5 storefront and all three reviewed WooCommerce release images verified on public routes.'
+          echo 'outcome=success' >> "$GITHUB_OUTPUT"
+
+      - name: Upload Shop V5 rollback evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dtf-shop-storefront-v5-${{ github.run_id }}
+          path: |
+            ${{ env.V4_BACKUP_ROOT }}
+            ${{ env.V5_BACKUP_ROOT }}
+            ${{ runner.temp }}/shop-v5-*.html
+            ${{ runner.temp }}/product-*.html
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report Shop V5 production result
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          STATUS: ${{ job.status }}
+          V4: ${{ steps.v4.outputs.outcome }}
+          V5: ${{ steps.v5.outputs.outcome }}
+          CACHE: ${{ steps.cache.outcome }}
+          VERIFY: ${{ steps.verify.outputs.outcome }}
+          TEMPLATE_ID: ${{ steps.v5.outputs.template_id }}
+        with:
+          script: |
+            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body:[
+              '## DTF Shop Storefront V5','',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Result: **${process.env.STATUS}**`,
+              `Portrait release-card styling: **${process.env.V4 || 'not-run'}**`,
+              `Server-rendered storefront write: **${process.env.V5 || 'not-run'}**`,
+              `LiteSpeed cache purge: **${process.env.CACHE || 'not-run'}**`,
+              `Origin + public verification: **${process.env.VERIFY || 'not-run'}**`,
+              `Archive template: **${process.env.TEMPLATE_ID || 'not-reported'}**`,
+              '',
+              'Shop now exposes real server-rendered DTF Genetics release context above the WooCommerce product grid while preserving price, stock, checkout behavior, the product loop, and the three reviewed portrait strain-card images.'
+            ].join('\n')});

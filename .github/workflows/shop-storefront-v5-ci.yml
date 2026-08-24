@@ -1,0 +1,56 @@
+name: Validate Shop Storefront V5
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'scripts/polish-wordpress-shop-storefront-v5.mjs'
+      - '.github/workflows/wordpress-shop-storefront-v5.yml'
+      - '.github/workflows/shop-storefront-v5-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate Shop V5 source and production order
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/polish-wordpress-shop-storefront-v5.mjs
+          grep -Fq "slug || '').toLowerCase() === 'archive-product'" scripts/polish-wordpress-shop-storefront-v5.mjs
+          grep -Fq 'refusing to rewrite the archive' scripts/polish-wordpress-shop-storefront-v5.mjs
+          grep -Fq 'data-dtf-shop-storefront-v5="true"' scripts/polish-wordpress-shop-storefront-v5.mjs
+          grep -Fq 'Shop the release. Read the breeding story.' scripts/polish-wordpress-shop-storefront-v5.mjs
+          grep -Fq '/seeds/blue-mango/' scripts/polish-wordpress-shop-storefront-v5.mjs
+          grep -Fq '/seeds/blue-bubblegum/' scripts/polish-wordpress-shop-storefront-v5.mjs
+          grep -Fq 'Finalize DTFSeeds Home Genetics Art' .github/workflows/wordpress-shop-storefront-v5.yml
+          grep -Fq 'polish-wordpress-commerce-archive-v4.mjs' .github/workflows/wordpress-shop-storefront-v5.yml
+          grep -Fq 'Blue_Mango_F2_Regular_DTF_Strain_Card' .github/workflows/wordpress-shop-storefront-v5.yml
+          grep -Fq 'Blue_Mango_F2_Feminized_DTF_Strain_Card' .github/workflows/wordpress-shop-storefront-v5.yml
+          grep -Fq 'Blue_Bubblegum_F1_Regular_DTF_Strain_Card' .github/workflows/wordpress-shop-storefront-v5.yml
+
+      - name: Regression-test archive insertion without touching product loop
+        shell: bash
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const storefront='<!-- wp:html --><section class="dtf-shop-storefront-v5" data-dtf-shop-storefront-v5="true">Shop the release. Read the breeding story.</section><!-- /wp:html -->';
+          const sample='<!-- wp:template-part {"slug":"header","theme":"hostinger-ai-theme"} /-->\n<!-- wp:woocommerce/store-notices /-->\n<!-- wp:woocommerce/product-collection {"query":{"postType":"product"}} -->PRODUCT_LOOP_SENTINEL<!-- /wp:woocommerce/product-collection -->';
+          const header=/<!-- wp:template-part\s+\{[^}]*"slug"\s*:\s*"header"[^}]*\}\s*\/-->/i;
+          if(!header.test(sample)) throw new Error('Fixture header is not matched.');
+          const next=sample.replace(header,(match)=>`${match}\n${storefront}`);
+          if(!next.includes('data-dtf-shop-storefront-v5="true"')) throw new Error('Storefront was not inserted.');
+          if(!next.includes('PRODUCT_LOOP_SENTINEL')) throw new Error('WooCommerce product loop was altered.');
+          if((next.match(/data-dtf-shop-storefront-v5=/g)||[]).length!==1) throw new Error('Storefront marker duplicated.');
+          console.log('Shop V5 archive insertion preserves the WooCommerce product loop.');
+          NODE
