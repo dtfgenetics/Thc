@@ -1,0 +1,147 @@
+name: Publish Beginner Guides V2
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'site/wordpress/education/beginner-guides-v2.json'
+      - 'scripts/publish-wordpress-beginner-guides-v2.mjs'
+      - '.github/workflows/wordpress-beginner-guides-v2.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'site/wordpress/education/beginner-guides-v2.json'
+      - 'scripts/publish-wordpress-beginner-guides-v2.mjs'
+      - '.github/workflows/wordpress-beginner-guides-v2.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-beginner-guides-v2
+  cancel-in-progress: true
+
+env:
+  WP_SITE_URL: https://dtfseeds.com
+  NODE_OPTIONS: --dns-result-order=ipv4first
+
+jobs:
+  validate:
+    name: Validate Beginner Guides V2
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate package
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/publish-wordpress-beginner-guides-v2.mjs
+          node scripts/publish-wordpress-beginner-guides-v2.mjs --validate-only | tee "$RUNNER_TEMP/bg2-validation.json"
+          grep -Fq '"pathways": 10' "$RUNNER_TEMP/bg2-validation.json"
+          grep -Fq '"steps": 40' "$RUNNER_TEMP/bg2-validation.json"
+          grep -Fq '"mistakes": 20' "$RUNNER_TEMP/bg2-validation.json"
+          grep -Fq '"capstones": 10' "$RUNNER_TEMP/bg2-validation.json"
+
+  publish:
+    name: Publish and verify Beginner Guides V2
+    needs: validate
+    if: ${{ github.event_name != 'pull_request' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    environment: production
+    env:
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      APPLY_BEGINNER_GUIDES_V2: 'true'
+      BACKUP_ROOT: /tmp/dtf-beginner-guides-v2
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Confirm production package
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
+          node --check scripts/publish-wordpress-beginner-guides-v2.mjs
+          node scripts/publish-wordpress-beginner-guides-v2.mjs --validate-only
+      - name: Publish Beginner Guides V2
+        id: publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$BACKUP_ROOT"
+          node scripts/publish-wordpress-beginner-guides-v2.mjs | tee "$RUNNER_TEMP/bg2-publish.log"
+          report="$(find "$BACKUP_ROOT" -name report.json -type f -print -quit)"
+          test -n "$report"; test -s "$report"
+          echo "pathways=$(node -p "require(process.argv[1]).pathways" "$report")" >> "$GITHUB_OUTPUT"
+          echo "steps=$(node -p "require(process.argv[1]).steps" "$report")" >> "$GITHUB_OUTPUT"
+          echo "mistakes=$(node -p "require(process.argv[1]).mistakes" "$report")" >> "$GITHUB_OUTPUT"
+          echo "capstones=$(node -p "require(process.argv[1]).capstones" "$report")" >> "$GITHUB_OUTPUT"
+      - name: Verify fresh visitor Beginner Guides page
+        id: verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          body="$RUNNER_TEMP/bg2-live.html"; ok=0
+          for attempt in 1 2 3 4 5 6 7 8; do
+            curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+              --header 'Cache-Control: no-cache, no-store, max-age=0' --header 'Pragma: no-cache' \
+              "$WP_SITE_URL/learn/beginner-guides/?dtf_bg2_verify=${GITHUB_RUN_ID}-${attempt}" --output "$body"
+            if grep -Fq 'data-dtf-beginner-guides-v2="true"' "$body"; then ok=1; break; fi
+            sleep 6
+          done
+          [[ "$ok" -eq 1 ]]
+          [[ "$(grep -Fo 'data-bg2-path=' "$body" | wc -l | tr -d ' ')" = '10' ]]
+          [[ "$(grep -Fo 'class="bg2-step"' "$body" | wc -l | tr -d ' ')" = '40' ]]
+          [[ "$(grep -Fo 'class="bg2-mistake"' "$body" | wc -l | tr -d ' ')" = '20' ]]
+          [[ "$(grep -Fo 'class="bg2-capstone"' "$body" | wc -l | tr -d ' ')" = '10' ]]
+          grep -Fq 'Start simple. Measure first. Change with a reason.' "$body"
+          grep -Fq '/learn/academy/' "$body"
+          grep -Fq '/learn/ipm/' "$body"
+          grep -Fq '/learn/harvest-postharvest/' "$body"
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: beginner-guides-v2-${{ github.run_id }}
+          path: |
+            /tmp/dtf-beginner-guides-v2
+            ${{ runner.temp }}/bg2-publish.log
+            ${{ runner.temp }}/bg2-live.html
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Report Beginner Guides V2 result
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          STATUS: ${{ job.status }}
+          PUBLISH: ${{ steps.publish.outcome }}
+          VERIFY: ${{ steps.verify.outcome }}
+          PATHWAYS: ${{ steps.publish.outputs.pathways }}
+          STEPS: ${{ steps.publish.outputs.steps }}
+          MISTAKES: ${{ steps.publish.outputs.mistakes }}
+          CAPSTONES: ${{ steps.publish.outputs.capstones }}
+        with:
+          script: |
+            const body = [
+              '## Beginner Guides V2 production','',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Result: **${process.env.STATUS}**`,
+              `WordPress publication: **${process.env.PUBLISH || 'not-run'}**`,
+              `Visitor verification: **${process.env.VERIFY || 'not-run'}**`,
+              `Guided pathways: **${process.env.PATHWAYS || '0'}**`,
+              `Concrete steps: **${process.env.STEPS || '0'}**`,
+              `Common-mistake checks: **${process.env.MISTAKES || '0'}**`,
+              `Readiness tasks: **${process.env.CAPSTONES || '0'}**`, '',
+              'The canonical /learn/beginner-guides/ route now feeds directly into Academy and the live V6 subject system.'
+            ].join('\n');
+            for (const issue_number of [46,144]) await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number,body});
