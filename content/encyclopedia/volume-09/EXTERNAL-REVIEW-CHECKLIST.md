@@ -1,4 +1,4 @@
-# Volume 09 External Review Checklist — THC-ENC-161–165
+# Volume 09 External Review Checklist — THC-ENC-161–170
 
 This checklist records **external specialist review**. It does not authorize publication by itself. Website publication remains blocked until the controlled release state is explicitly changed and the production manifest is updated through the protected publishing lane.
 
@@ -16,77 +16,69 @@ This checklist records **external specialist review**. It does not authorize pub
 Decision values: `PASS`, `REVISE`, `HOLD`, `REVIEW EACH RELEASE`.
 
 ## THC-ENC-161 — Why Cuttings Preserve Genotype
-
 External specialty: genetics + propagation science.
-
-Confirm or revise:
-- somatic propagation / sampled-donor genotype framing;
-- genotype versus phenotype separation;
-- limits of finite SSR/genome assays for absolute identity;
-- wording around physiological history and transmissible biological agents;
-- off-type / somatic / epigenetic qualification.
-
+Confirm genotype preservation, genotype/phenotype separation, assay limits, biological-history wording, and off-type/somatic/epigenetic qualifications.
 Decision:
 Reviewer rationale / required edits:
 
 ## THC-ENC-162 — Mother-Plant Identity and Health Status
-
 External specialty: plant pathology + diagnostic testing + propagation.
-
-High-risk review. Confirm or revise:
-- asymptomatic HLVd / propagation-network wording;
-- visual inspection versus laboratory health-status claims;
-- `clean stock` as a defined program rather than appearance;
-- sample/tissue/method/timing limitations;
-- prohibition on universal pathogen panels or permanent pathogen-free certification.
-
+High-risk review. Confirm asymptomatic HLVd wording, visual inspection limits, clean-stock definition, sample/method/timing limitations, and prohibition on universal pathogen panels or permanent pathogen-free certification.
 Decision:
 Reviewer rationale / required edits:
 
 ## THC-ENC-163 — Juvenility, Maturity, and Cutting Competence
-
 External specialty: propagation science.
-
-Confirm or revise:
-- developmental age versus calendar age;
-- cross-species maturation evidence and explicit cannabis transfer limits;
-- donor position / pruning / nutrition / reproductive-history variables as trial variables, not universal causal factors;
-- no universal maximum mother age or clone-generation threshold.
-
+Confirm developmental age versus calendar age, explicit cannabis transfer limits, donor-management variables as trial variables, and no universal maximum mother age or clone-generation threshold.
 Decision:
 Reviewer rationale / required edits:
 
 ## THC-ENC-164 — Cutting Selection and Carbohydrate Status
-
 External specialty: propagation physiology.
-
-Confirm or revise:
-- detached-cutting source–sink / water-balance framing;
-- cannabis cultivar and cutting-morphology evidence;
-- apex / leaf-area mechanisms as qualified physiology rather than a recipe;
-- morphology as a proxy rather than direct carbohydrate measurement;
-- no fixed node-count, leaf-trimming, or cutting-size prescription.
-
+Confirm source-sink/water-balance framing, cultivar/morphology evidence, qualified apex/leaf-area mechanisms, morphology as proxy, and no fixed node-count/leaf-trimming/cutting-size prescription.
 Decision:
 Reviewer rationale / required edits:
 
 ## THC-ENC-165 — Wound Response and Adventitious Root Formation
-
 External specialty: propagation physiology / plant developmental biology.
+Confirm wound/auxin/root-development framing, callus versus root distinction, heavy-callus hypotheses, study-specific wounding evidence, and no universal cut/scraping/splitting rule.
+Decision:
+Reviewer rationale / required edits:
 
-Confirm or revise:
-- wound / auxin / adventitious-root developmental framing;
-- callus versus organized root distinction;
-- heavy callus causes remain diagnostic hypotheses, not conclusions;
-- Campbell 2019 wounding result remains study-specific;
-- no universal 45-degree cut, scraping, splitting, or wounding rule.
+## THC-ENC-166 — Auxin Biology and Rooting Hormones
+External specialty: plant physiology + product-label/legal/safety review.
+High-risk release-time review. Confirm endogenous auxin framing, cannabis-specific limits, IBA/NAA evidence, dose/formulation/genotype dependence, phytotoxicity qualifications, and that no product or application is authorized.
+Release-time control: verify the exact product, intended use, current label, applicable FIFRA/state status, worker-safety requirements, and jurisdiction before publication/use guidance.
+Decision:
+Reviewer rationale / required edits:
 
+## THC-ENC-167 — Rooting Media, Moisture, and Oxygen
+External specialty: root-zone + propagation science.
+Confirm saturation/oxygen/hydraulic-contact framing, cannabis substrate-study boundaries, container/plug effects, and no universal substrate or brand ranking.
+Decision:
+Reviewer rationale / required edits:
+
+## THC-ENC-168 — Humidity Management and Transpiration Control
+External specialty: environment + plant pathology.
+Confirm humidity as one water-loss control, leaf-temperature/airflow/radiation/stomatal interactions, condensation/leaf-wetness pathogen qualification, gradual hardening logic, and no universal RH/VPD target.
+Decision:
+Reviewer rationale / required edits:
+
+## THC-ENC-169 — Light During Root Initiation
+External specialty: lighting + propagation science.
+Confirm photosynthesis-versus-hydraulic-demand framing, leaf-temperature/water-demand coupling, donor reserves and genotype limits, actual PPFD/DLI measurement requirements, and no universal propagation PPFD target.
+Decision:
+Reviewer rationale / required edits:
+
+## THC-ENC-170 — Sanitation and Tool-Mediated Pathogen Spread
+External specialty: plant pathology + sanitation + product-label/safety review.
+High-risk release-time review. Confirm tool/sap transmission pathways, cleaning versus disinfection distinction, HLVd propagation-network/mechanical-spread framing, clean-to-dirty workflow logic, and no universal disinfectant recipe.
+Release-time control: verify the exact disinfectant product, organism claim, use site, concentration/dilution, wet contact time, PPE/safety instructions, and current label before publication/use guidance.
 Decision:
 Reviewer rationale / required edits:
 
 ## Release recommendation
-
-Choose one after reviewing all five lessons:
+Choose one after reviewing all ten lessons:
 
 - [ ] `PASS FOR CONTROLLED WEBSITE PUBLICATION` — scientific wording acceptable; publication still requires project authorization and production verification.
 - [ ] `PASS WITH RELEASE-TIME CONTROLS` — list controls below.
