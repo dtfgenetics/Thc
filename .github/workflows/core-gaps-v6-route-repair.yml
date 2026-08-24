@@ -1,0 +1,187 @@
+name: Repair and publish core Learn V6 routes
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'scripts/fix-core-gaps-v6-live-routes.mjs'
+      - '.github/workflows/core-gaps-v6-route-repair.yml'
+      - '.github/workflows/wordpress-plant-health-ipm-v6.yml'
+      - '.github/workflows/wordpress-genetics-evidence-v6.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/fix-core-gaps-v6-live-routes.mjs'
+      - '.github/workflows/core-gaps-v6-route-repair.yml'
+      - '.github/workflows/wordpress-plant-health-ipm-v6.yml'
+      - '.github/workflows/wordpress-genetics-evidence-v6.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: dtfseeds-core-gaps-v6-route-repair
+  cancel-in-progress: true
+
+env:
+  WP_SITE_URL: https://dtfseeds.com
+  NODE_OPTIONS: --dns-result-order=ipv4first
+
+jobs:
+  validate:
+    name: Validate route repair and all three V6 curricula
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Apply route repair in isolated workspace
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/fix-core-gaps-v6-live-routes.mjs | tee "$RUNNER_TEMP/core-gaps-route-repair.json"
+          node --check scripts/publish-wordpress-plant-health-ipm-v6.mjs
+          node --check scripts/publish-wordpress-genetics-evidence-v6.mjs
+          node scripts/publish-wordpress-plant-health-ipm-v6.mjs --validate-only | tee "$RUNNER_TEMP/plant-health-validation.json"
+          node scripts/publish-wordpress-genetics-evidence-v6.mjs --validate-only | tee "$RUNNER_TEMP/genetics-evidence-validation.json"
+          grep -Fq '"route": "/learn/ipm/"' site/wordpress/education/plant-health-ipm-v6.json
+          grep -Fq '"route": "/learn/research-methods/"' site/wordpress/education/evidence-measurement-v6.json
+          grep -Fq '"lessons": 32' "$RUNNER_TEMP/plant-health-validation.json"
+          grep -Fq '"lessons": 64' "$RUNNER_TEMP/genetics-evidence-validation.json"
+
+  publish:
+    name: Persist route repair, publish three subjects, verify visitors
+    needs: validate
+    if: ${{ github.event_name != 'pull_request' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    environment: production
+    env:
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      APPLY_PLANT_HEALTH_IPM_V6: 'true'
+      APPLY_GENETICS_EVIDENCE_V6: 'true'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Persist repaired canonical routes on newest main
+        id: repair
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          pushed=0
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            node scripts/fix-core-gaps-v6-live-routes.mjs | tee "$RUNNER_TEMP/core-gaps-route-repair-${attempt}.json"
+            node --check scripts/publish-wordpress-plant-health-ipm-v6.mjs
+            node --check scripts/publish-wordpress-genetics-evidence-v6.mjs
+            node scripts/publish-wordpress-plant-health-ipm-v6.mjs --validate-only > "$RUNNER_TEMP/plant-health-validation-${attempt}.json"
+            node scripts/publish-wordpress-genetics-evidence-v6.mjs --validate-only > "$RUNNER_TEMP/genetics-evidence-validation-${attempt}.json"
+            if git diff --quiet -- site/wordpress/education/plant-health-ipm-v6.json site/wordpress/education/evidence-measurement-v6.json scripts/publish-wordpress-plant-health-ipm-v6.mjs scripts/publish-wordpress-genetics-evidence-v6.mjs; then
+              pushed=1
+              break
+            fi
+            git add site/wordpress/education/plant-health-ipm-v6.json site/wordpress/education/evidence-measurement-v6.json scripts/publish-wordpress-plant-health-ipm-v6.mjs scripts/publish-wordpress-genetics-evidence-v6.mjs
+            git commit -m 'Fix core Learn V6 canonical public routes'
+            if git push origin HEAD:main; then pushed=1; break; fi
+            sleep $((attempt * 3))
+          done
+          [[ "$pushed" -eq 1 ]]
+          echo "head=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Publish Plant Health IPM V6
+        id: plant
+        env:
+          BACKUP_ROOT: /tmp/dtf-plant-health-ipm-v6-route-repair
+        run: |
+          set -euo pipefail
+          node scripts/publish-wordpress-plant-health-ipm-v6.mjs | tee "$RUNNER_TEMP/plant-health-ipm-v6-publish.log"
+
+      - name: Publish Genetics and Evidence V6
+        id: ge
+        env:
+          BACKUP_ROOT: /tmp/dtf-genetics-evidence-v6-route-repair
+        run: |
+          set -euo pipefail
+          node scripts/publish-wordpress-genetics-evidence-v6.mjs | tee "$RUNNER_TEMP/genetics-evidence-v6-publish.log"
+
+      - name: Verify all three live routes
+        id: verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          verify_page() {
+            url="$1"; marker="$2"; chapter_marker="$3"; lesson_marker="$4"; owner="$5"; guide="$6"; out="$7"
+            ok=0
+            for attempt in 1 2 3 4 5 6 7 8; do
+              curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+                --header 'Cache-Control: no-cache, no-store, max-age=0' --header 'Pragma: no-cache' \
+                "$WP_SITE_URL${url}?dtf_core_v6_verify=${GITHUB_RUN_ID}-${attempt}" --output "$out"
+              if grep -Fq "$marker" "$out"; then ok=1; break; fi
+              sleep 6
+            done
+            [[ "$ok" -eq 1 ]]
+            [[ "$(grep -Fo "$chapter_marker" "$out" | wc -l | tr -d ' ')" = '8' ]]
+            [[ "$(grep -Fo "$lesson_marker" "$out" | wc -l | tr -d ' ')" = '32' ]]
+            grep -Fq "$owner" "$out"
+            grep -Fq "$guide" "$out"
+          }
+          verify_page '/learn/ipm/' 'data-dtf-plant-health-ipm-v6="true"' 'data-phi6-chapter=' 'class="phi6-lesson"' 'data-dtf-topic="plant-health-ipm"' 'data-dtf-learning-v4="topic-plant-health-ipm"' "$RUNNER_TEMP/ipm-live.html"
+          verify_page '/learn/genetics-breeding/' 'data-dtf-genetics-breeding-v6="true"' 'data-cgv6-chapter=' 'class="cgv6-lesson"' 'data-dtf-topic="genetics-breeding"' 'data-dtf-learning-v4="topic-genetics-breeding"' "$RUNNER_TEMP/genetics-live.html"
+          verify_page '/learn/research-methods/' 'data-dtf-evidence-measurement-v6="true"' 'data-cgv6-chapter=' 'class="cgv6-lesson"' 'data-dtf-topic="evidence-measurement"' 'data-dtf-learning-v4="topic-evidence-measurement"' "$RUNNER_TEMP/evidence-live.html"
+
+      - name: Upload repair and publication evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: core-gaps-v6-route-repair-${{ github.run_id }}
+          path: |
+            /tmp/dtf-plant-health-ipm-v6-route-repair
+            /tmp/dtf-genetics-evidence-v6-route-repair
+            ${{ runner.temp }}/core-gaps-route-repair-*.json
+            ${{ runner.temp }}/plant-health-ipm-v6-publish.log
+            ${{ runner.temp }}/genetics-evidence-v6-publish.log
+            ${{ runner.temp }}/ipm-live.html
+            ${{ runner.temp }}/genetics-live.html
+            ${{ runner.temp }}/evidence-live.html
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report core V6 route repair result
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          STATUS: ${{ job.status }}
+          REPAIR: ${{ steps.repair.outcome }}
+          PLANT: ${{ steps.plant.outcome }}
+          GE: ${{ steps.ge.outcome }}
+          VERIFY: ${{ steps.verify.outcome }}
+          HEAD: ${{ steps.repair.outputs.head }}
+        with:
+          script: |
+            const body = [
+              '## Core Learn V6 canonical-route production', '',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Result: **${process.env.STATUS}**`,
+              `Durable route repair: **${process.env.REPAIR || 'not-run'}**`,
+              `Plant Health publication: **${process.env.PLANT || 'not-run'}**`,
+              `Genetics + Evidence publication: **${process.env.GE || 'not-run'}**`,
+              `Three-route visitor verification: **${process.env.VERIFY || 'not-run'}**`,
+              'Published V6 scope: **3 subjects / 24 chapters / 96 focused lessons / 15 evidence references / 30 quality-gated visual targets**',
+              `Repository head used: \`${process.env.HEAD || 'unknown'}\``
+            ].join('\n');
+            for (const issue_number of [46,136]) await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number,body});
