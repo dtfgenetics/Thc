@@ -1,0 +1,30 @@
+{
+  "id":"THC-ENC-177",
+  "number":177,
+  "title":"Culture Media, Plant Growth Regulators, and Genotype Effects",
+  "objective":"Explain how basal salts, carbon source, vessel atmosphere, plant growth regulators, and genotype interact in cannabis tissue culture.",
+  "terms":[
+    {"term":"MS medium","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"DKW medium","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"cytokinin","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"auxin","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"PGR balance","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"multiplication rate","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"genotype effect","definition":"Pending controlled-glossary reconciliation."}
+  ],
+  "termDefinitionsStatus":"pending_controlled_glossary_reconciliation",
+  "coreScience":[
+    "Culture medium supplies mineral salts, vitamins, carbon when used, water, and a physical support. Murashige and Skoog and Driver-Kuniyuki Walnut salts are common starting systems, but their concentrations and ion balance are not automatically optimal for cannabis.",
+    "Cytokinins and auxins influence axillary growth, callus, rooting, elongation, and abnormal development. Cannabis studies report strong genotype-by-medium and genotype-by-PGR interactions. A formulation that produces multiple shoots in one genotype may produce poor elongation, callus, or weak plantlets in another.",
+    "Vessel gas exchange, sugar, humidity, light, temperature, subculture interval, and tissue density also change response. Photoautotrophic systems illustrate that alternative vessel and carbon strategies can work for selected cultivars."
+  ],
+  "cultivationRelevance":["Treat every medium as a complete controlled formulation. Record ingredient source, lot, final concentration, pH before/after sterilization when relevant, vessel, fill volume, explant density, passage, and genotype."],
+  "measureAndRecord":[{"field":"Controlled record set","requirement":"Basal salts; vitamins and sugar; gelling agent; PGR identity/dose; pH; vessel and ventilation; light; genotype; shoot number/length; abnormalities; rooting and survival."}],
+  "misconceptions":["MS is a universal cannabis medium.","More cytokinin always multiplies faster.","One published recipe should work for every cultivar."],
+  "evidenceLimits":["Published protocols are starting hypotheses. They do not establish a universally optimal commercial formula or authorize PGR products outside controlled research and lawful use. Exact PGR/product status requires release-time review."],
+  "crossLinks":"THC-ENC-121–140 for mineral/root-zone chemistry; THC-ENC-141–160 for genotype effects; THC-ENC-175–180 for tissue culture and germplasm.",
+  "sourceNotes":["Holmes JE et al. (2021). Frontiers in Plant Science 12:732344.","Ioannidis K et al. (2022). Plants 11:2569.","Liang J et al. (2026). Frontiers in Plant Science. DOI 10.3389/fpls.2026.1846572.","V09-SRC-018 — current U.S. EPA plant-regulator guidance; used for release-control principles, not as a tissue-culture formula."],
+  "reviewControl":{"controlledManuscript":"Volume 09 v1.0","evidenceControl":"complete","secondaryEvidenceReview":"complete_qualified","externalReview":"required","externalReviewType":"tissue_culture_plus_release_time_pgr_product_legal_safety","publicationAuthorized":false,"websiteAction":"do_not_publish"},
+  "slug":"culture-media-plant-growth-regulators-and-genotype-effects",
+  "route":"/encyclopedia/culture-media-plant-growth-regulators-and-genotype-effects"
+}
