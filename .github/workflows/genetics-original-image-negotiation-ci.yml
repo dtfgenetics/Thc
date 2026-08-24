@@ -1,0 +1,60 @@
+name: Validate Genetics Original Image Negotiation
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'scripts/force-original-image-accept.mjs'
+      - 'scripts/publish-wordpress-genetics-library-cdn.mjs'
+      - 'scripts/publish-wordpress-genetics-library-cdn-core.mjs'
+      - '.github/workflows/genetics-original-image-negotiation-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate publisher entry and core syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/force-original-image-accept.mjs
+          node --check scripts/publish-wordpress-genetics-library-cdn.mjs
+          node --check scripts/publish-wordpress-genetics-library-cdn-core.mjs
+          grep -Fq "force-original-image-accept.mjs" scripts/publish-wordpress-genetics-library-cdn.mjs
+          grep -Fq "publish-wordpress-genetics-library-cdn-core.mjs" scripts/publish-wordpress-genetics-library-cdn.mjs
+
+      - name: Prove AVIF/WebP-capable request receives the pinned original JPEG
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          import { createHash } from 'node:crypto';
+          await import('./scripts/force-original-image-accept.mjs');
+          const url='https://cdn.shopify.com/s/files/1/0664/2542/1885/files/dtf-blue-frequency-f1-regular.jpg?v=1787590808';
+          const response=await fetch(url,{
+            headers:{
+              Accept:'image/avif,image/webp,image/apng,image/*,*/*;q=0.8',
+              'Cache-Control':'no-cache, no-store, max-age=0',
+              'User-Agent':'DTFSeeds-Genetics-Negotiation-CI/1.0'
+            },
+            redirect:'follow',
+            signal:AbortSignal.timeout(60000)
+          });
+          if(!response.ok) throw new Error(`HTTP ${response.status}`);
+          const bytes=Buffer.from(await response.arrayBuffer());
+          const sha=createHash('sha256').update(bytes).digest('hex');
+          if(bytes.subarray(0,3).toString('hex')!=='ffd8ff') throw new Error('Negotiated response is not the original JPEG representation.');
+          if(bytes.length!==464477) throw new Error(`Unexpected byte length ${bytes.length}`);
+          if(sha!=='c352cf1800584be44603fd2adba754858a4be1664a5eab6e88f1706d7a9b0f2f') throw new Error(`Unexpected SHA-256 ${sha}`);
+          console.log(`Verified original reviewed JPEG: ${bytes.length} bytes · ${sha}`);
+          NODE
