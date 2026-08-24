@@ -1,0 +1,87 @@
+import { mkdir, writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
+import process from 'node:process';
+
+const site=(process.env.WP_SITE_URL||'https://dtfseeds.com').replace(/\/$/,'');
+const user=process.env.WP_API_USERNAME||'';
+const pass=process.env.WP_API_PASSWORD||'';
+const apply=String(process.env.APPLY_INTERFACE_V7||'').toLowerCase()==='true';
+const backupRoot=process.env.BACKUP_ROOT||'/tmp/dtf-interface-v7';
+if(!user||!pass) throw new Error('WP_API_USERNAME and WP_API_PASSWORD are required.');
+
+const auth=`Basic ${Buffer.from(`${user}:${pass}`).toString('base64')}`;
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const rendered=v=>typeof v==='string'?v:(v?.raw||v?.rendered||'');
+const stamp=new Date().toISOString().replace(/[-:.]/g,'');
+const backupDir=join(backupRoot,`interface-v7-${stamp}`);
+await mkdir(backupDir,{recursive:true});
+
+async function request(path,options={}){
+  let last;
+  for(let attempt=1;attempt<=8;attempt+=1){
+    try{
+      const response=await fetch(`${site}${path}`,{
+        ...options,redirect:'follow',signal:AbortSignal.timeout(60000),
+        headers:{Authorization:auth,Accept:'application/json','User-Agent':'DTFSeeds-Interface-V7/1.0',...(options.body?{'Content-Type':'application/json'}:{}),...(options.headers||{})}
+      });
+      const text=await response.text();let body=text;try{body=text?JSON.parse(text):null}catch{}
+      if((response.status===429||response.status>=500)&&attempt<8){await sleep(attempt*1500);continue;}
+      if(!response.ok) throw new Error(`${options.method||'GET'} ${path} failed (${response.status}): ${typeof body==='string'?body.slice(0,600):JSON.stringify(body).slice(0,600)}`);
+      return body;
+    }catch(error){last=error;if(attempt<8) await sleep(attempt*1500);}
+  }
+  throw last;
+}
+
+const start='<!-- dtf-interface-v7:start -->';
+const end='<!-- dtf-interface-v7:end -->';
+const css=`<style id="dtf-interface-v7-style">
+:root{--dtf7-deep:#081b11;--dtf7-forest:#123821;--dtf7-green:#2d7245;--dtf7-gold:#d6b75c;--dtf7-cream:#f7f4ea;--dtf7-paper:#fffdf8;--dtf7-ink:#173420;--dtf7-muted:#55685a;--dtf7-line:#d8e1d7;--dtf7-shadow:0 10px 28px rgba(12,45,27,.055);--dtf7-radius:17px}
+.dtf-shell-v3{position:sticky!important;top:0;z-index:1000;background:rgba(8,27,17,.96)!important;backdrop-filter:saturate(145%) blur(12px);-webkit-backdrop-filter:saturate(145%) blur(12px);box-shadow:0 8px 24px rgba(3,18,9,.12)}
+body.admin-bar .dtf-shell-v3{top:32px}.dtf-shell-v3-inner{min-height:64px!important}.dtf-shell-nav a{transition:background-color .18s ease,color .18s ease,box-shadow .18s ease}.dtf-shell-nav a.is-active{background:rgba(214,183,92,.14)!important;color:#f0d57a!important;box-shadow:inset 0 0 0 1px rgba(214,183,92,.28)}.dtf-shell-nav .shop.is-active{background:#e2c86f!important;color:#081b11!important;box-shadow:0 0 0 2px rgba(255,255,255,.12)}.dtf-shell-menu{display:none;align-items:center;gap:8px;min-height:40px;padding:8px 13px;border:1px solid rgba(255,255,255,.2);border-radius:12px;background:rgba(255,255,255,.06);color:#fff;font:inherit;font-weight:850;cursor:pointer}.dtf-shell-menu:focus-visible,.dtf-shell-nav a:focus-visible,.dtf-edu-rail a:focus-visible{outline:3px solid rgba(214,183,92,.58)!important;outline-offset:2px!important}
+.dtf-edu-rail{position:sticky;top:64px;z-index:850;background:rgba(255,253,248,.96);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--dtf7-line);box-shadow:0 7px 18px rgba(12,45,27,.055)}body.admin-bar .dtf-edu-rail{top:96px}.dtf-edu-rail-inner{width:min(1180px,calc(100% - 32px));min-height:49px;margin:auto;display:flex;align-items:center;gap:14px}.dtf-edu-identity{display:flex;align-items:center;gap:8px;flex:0 0 auto;color:var(--dtf7-ink);font-size:.78rem;font-weight:950;letter-spacing:.05em;text-transform:uppercase}.dtf-edu-identity:before{content:'THC';display:grid;place-items:center;min-width:39px;height:27px;padding:0 8px;border-radius:999px;background:var(--dtf7-deep);color:var(--dtf7-gold);font-size:.66rem}.dtf-edu-links{display:flex;align-items:center;gap:4px;min-width:0;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}.dtf-edu-links::-webkit-scrollbar{display:none}.dtf-edu-links a{flex:0 0 auto;padding:7px 10px;border-radius:10px;color:#365742!important;text-decoration:none!important;font-size:.8rem;font-weight:850;white-space:nowrap}.dtf-edu-links a:hover{background:#edf2e9}.dtf-edu-links a.is-active{background:#e7efe4;color:#1f6239!important}.dtf-edu-current{margin-left:auto;flex:0 0 auto;max-width:230px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#7a6934;font-size:.76rem;font-weight:900}
+html.dtf-edu-route body .entry-title,html.dtf-edu-route body .wp-block-post-title,html.dtf-edu-route body header.entry-header>h1{display:none!important}html.dtf-edu-route{scroll-padding-top:126px}html.dtf-edu-route [id]{scroll-margin-top:126px}
+html.dtf-edu-route body{background:var(--dtf7-cream)}html.dtf-edu-route .v3 .wrap,html.dtf-edu-route .dtf-learning-v4 .e4-wrap,html.dtf-edu-route .cv6-wrap,html.dtf-edu-route .sv6v-wrap{width:min(1160px,calc(100% - 32px))!important}html.dtf-edu-route .v3 .hero{padding:58px 0 50px!important}html.dtf-edu-route .v3 h1{font-size:clamp(2.65rem,5.6vw,4.85rem)!important}html.dtf-edu-route .v3 .section{padding:54px 0!important}html.dtf-edu-route .v3 .compact,html.dtf-edu-route .v3 .path,html.dtf-edu-route .v3 .subject-mini,html.dtf-edu-route .v3 .ref-card,html.dtf-edu-route .v3 .lesson,html.dtf-edu-route .v3 .release,html.dtf-edu-route .v3 .visual{border-radius:var(--dtf7-radius)!important;box-shadow:var(--dtf7-shadow)!important}
+html.dtf-edu-route .dtf-learning-v4{background:var(--dtf7-cream)!important}html.dtf-edu-route .dtf-learning-v4 .e4-section{padding:44px 0!important}html.dtf-edu-route .dtf-learning-v4 .e4-focus,html.dtf-edu-route .dtf-learning-v4 .e4-nav,html.dtf-edu-route .dtf-learning-v4 .e4-card,html.dtf-edu-route .dtf-learning-v4 .e4-deep-card,html.dtf-edu-route .dtf-learning-v4 .e4-track{border-radius:var(--dtf7-radius)!important;box-shadow:var(--dtf7-shadow)!important}html.dtf-edu-route .dtf-learning-v4 h2{font-size:clamp(1.85rem,3.5vw,3rem)!important}
+html.dtf-edu-route .cv6{padding:54px 0 62px!important;background:var(--dtf7-cream)!important}html.dtf-edu-route .cv6 h2{font-size:clamp(2.1rem,4.2vw,3.75rem)!important}html.dtf-edu-route .cv6-intro{gap:20px!important}html.dtf-edu-route .cv6-stats{display:grid!important;grid-template-columns:auto 1fr!important;gap:7px 12px!important;align-items:center!important;border-radius:var(--dtf7-radius)!important}html.dtf-edu-route .cv6-stats strong{font-size:1.7rem!important}html.dtf-edu-route .cv6-stats p{margin:0!important}html.dtf-edu-route .cv6-nav a,html.dtf-edu-route .cv6-lesson,html.dtf-edu-route .cv6-two article,html.dtf-edu-route .cv6-bottom>article,html.dtf-edu-route .cv6-ref,html.dtf-edu-route .cv6-deep,html.dtf-edu-route .cv6-visuals{border-radius:var(--dtf7-radius)!important;box-shadow:none!important}html.dtf-edu-route .cv6-chapter{padding:35px 0!important}
+html.dtf-edu-route .sv6v{padding:52px 0 60px!important;background:#f1f4ed!important}html.dtf-edu-route .sv6v h2{font-size:clamp(2rem,3.8vw,3.2rem)!important}html.dtf-edu-route .sv6v-card{border-radius:var(--dtf7-radius)!important;box-shadow:var(--dtf7-shadow)!important}html.dtf-edu-route .sv6v-gaps{display:none!important}html.dtf-edu-route .sv6v-summary{border-radius:12px!important;box-shadow:none!important}
+html.dtf-edu-route a,html.dtf-edu-route button{touch-action:manipulation}.dtf-footer-v3{border-top:1px solid rgba(214,183,92,.12)}
+@media(max-width:820px){body.admin-bar .dtf-shell-v3{top:46px}body.admin-bar .dtf-edu-rail{top:110px}.dtf-shell-v3-inner{width:min(100% - 24px,1240px)!important;display:grid!important;grid-template-columns:1fr auto!important;align-items:center!important;gap:8px!important;padding:8px 0!important}.dtf-shell-brand{width:auto!important;margin:0!important}.dtf-shell-brand small{display:none!important}.dtf-shell-menu{display:inline-flex}.dtf-shell-nav{display:none!important;grid-column:1/-1;grid-template-columns:repeat(2,minmax(0,1fr));width:100%!important;overflow:visible!important;padding:10px 0 3px!important;margin:2px 0 0!important;border-top:1px solid rgba(255,255,255,.1)}.dtf-shell-nav.is-open{display:grid!important}.dtf-shell-nav:after{display:none!important}.dtf-shell-nav a{justify-content:center;min-height:42px!important;border-radius:11px!important}.dtf-shell-nav .shop{margin-left:0!important}.dtf-edu-rail-inner{width:min(100% - 24px,1180px);gap:9px}.dtf-edu-current{display:none}.dtf-edu-identity{font-size:0}.dtf-edu-identity:before{font-size:.66rem}.dtf-edu-links{mask-image:linear-gradient(90deg,#000 0,#000 92%,transparent 100%);-webkit-mask-image:linear-gradient(90deg,#000 0,#000 92%,transparent 100%)}html.dtf-edu-route .cv6-nav{display:flex!important;overflow-x:auto!important;gap:8px!important;scroll-snap-type:x proximity;scrollbar-width:none}html.dtf-edu-route .cv6-nav::-webkit-scrollbar{display:none}html.dtf-edu-route .cv6-nav a{flex:0 0 210px;scroll-snap-align:start}html.dtf-edu-route .cv6-intro{grid-template-columns:1fr!important}}
+@media(max-width:600px){html.dtf-edu-route .v3 .wrap,html.dtf-edu-route .dtf-learning-v4 .e4-wrap,html.dtf-edu-route .cv6-wrap,html.dtf-edu-route .sv6v-wrap{width:min(100% - 24px,1160px)!important}html.dtf-edu-route .v3 .hero{padding:48px 0 42px!important}html.dtf-edu-route .v3 .section{padding:46px 0!important}html.dtf-edu-route .dtf-learning-v4 .e4-section{padding:38px 0!important}html.dtf-edu-route .cv6{padding:46px 0 52px!important}html.dtf-edu-route .sv6v{padding:44px 0 50px!important}.dtf-edu-rail-inner{width:100%;padding:0 12px}.dtf-edu-identity{display:none}}
+@media(prefers-reduced-motion:reduce){.dtf-shell-nav a{transition:none!important}}
+</style>`;
+
+const js=`<script id="dtf-interface-v7-script">(function(){
+var raw=location.pathname||'/';var path=raw==='/'?'/':('/'+raw.split('/').filter(Boolean).join('/')+'/');
+var html=document.documentElement;if(path.indexOf('/learn/')===0){html.classList.add('dtf-edu-route');if(path==='/learn/')html.classList.add('dtf-edu-home');else html.classList.add('dtf-edu-subject');}
+var titles={'plant-biology':'Plant Biology & Anatomy','genetics-breeding':'Genetics & Breeding','lifecycle-propagation':'Lifecycle & Propagation','environment-vpd':'Environment & VPD','lighting':'Lighting','water-root-zone':'Water & Root Zone','water-ph-ec':'Water, pH & EC','nutrition-media':'Nutrition & Media','training-canopy':'Training & Canopy','plant-health-ipm':'Plant Health & IPM','harvest-postharvest':'Harvest & Post-Harvest','outdoor-cultivation':'Outdoor Cultivation','evidence-measurement':'Evidence & Measurement'};
+function activePrimary(a){var href=(a.getAttribute('href')||'');if(href==='/shop/')return /^\/(shop|product|cart|checkout|my-account)\//.test(path);if(href==='/tools/')return /^\/(tools|growlens|thc-grow-doc)\//.test(path);if(href==='/seeds/')return path.indexOf('/seeds/')===0;if(href==='/learn/')return path.indexOf('/learn/')===0;if(href==='/games/')return path.indexOf('/games/')===0;if(href==='/community/')return path.indexOf('/community/')===0;return false;}
+function setAnchorIds(){if(path!=='/learn/')return;var map=[['Choose your goal','dtf-goals'],['Foundations first','dtf-subjects'],['Specialized subjects','dtf-specialized'],['Choose the depth','dtf-depth']];Array.prototype.forEach.call(document.querySelectorAll('h2'),function(h){map.forEach(function(pair){var parent=h.closest('section')||h.parentElement;if(h.textContent.indexOf(pair[0])>=0&&parent&&!parent.id)parent.id=pair[1];});});}
+function railHtml(){if(path==='/learn/')return '<div class="dtf-edu-rail-inner"><span class="dtf-edu-identity">Learning system</span><nav class="dtf-edu-links" aria-label="Learning shortcuts"><a class="is-active" href="/learn/">Overview</a><a href="#dtf-goals">Goals</a><a href="#dtf-subjects">Subjects</a><a href="#dtf-depth">Depth</a><a href="/learn/diagnostic-index/">Diagnose</a><a href="/learn/encyclopedia/">Encyclopedia</a><a href="/learn/infographics/">Visuals</a></nav></div>';var slug=path.split('/').filter(Boolean)[1]||'';var current=titles[slug]||'THC subject';return '<div class="dtf-edu-rail-inner"><span class="dtf-edu-identity">Learning system</span><nav class="dtf-edu-links" aria-label="Learning shortcuts"><a href="/learn/#dtf-subjects">All subjects</a><a href="/learn/start-here/">Start Here</a><a href="/learn/diagnostic-index/">Diagnose</a><a href="/learn/encyclopedia/">Encyclopedia</a><a href="/learn/infographics/">Visuals</a><a href="/growlens/">GrowLens</a></nav><span class="dtf-edu-current">'+current+'</span></div>';}
+function init(){var shell=document.querySelector('.dtf-shell-v3');var nav=shell&&shell.querySelector('.dtf-shell-nav');if(nav){nav.id='dtf-primary-nav';Array.prototype.forEach.call(nav.querySelectorAll('a'),function(a){if(activePrimary(a)){a.classList.add('is-active');a.setAttribute('aria-current','page');}});var inner=shell.querySelector('.dtf-shell-v3-inner');var button=document.createElement('button');button.type='button';button.className='dtf-shell-menu';button.setAttribute('aria-expanded','false');button.setAttribute('aria-controls','dtf-primary-nav');button.innerHTML='<span>Menu</span><span aria-hidden="true">☰</span>';inner.insertBefore(button,nav);button.addEventListener('click',function(){var open=nav.classList.toggle('is-open');button.setAttribute('aria-expanded',open?'true':'false');document.body.classList.toggle('dtf-menu-open',open);});nav.addEventListener('click',function(e){if(e.target.closest('a')){nav.classList.remove('is-open');button.setAttribute('aria-expanded','false');document.body.classList.remove('dtf-menu-open');}});document.addEventListener('keydown',function(e){if(e.key==='Escape'){nav.classList.remove('is-open');button.setAttribute('aria-expanded','false');document.body.classList.remove('dtf-menu-open');}});window.addEventListener('resize',function(){if(innerWidth>820){nav.classList.remove('is-open');button.setAttribute('aria-expanded','false');document.body.classList.remove('dtf-menu-open');}});}
+if(path.indexOf('/learn/')===0&&shell&&!document.querySelector('.dtf-edu-rail')){setAnchorIds();var rail=document.createElement('div');rail.className='dtf-edu-rail';rail.setAttribute('data-dtf-interface','education-v7');rail.innerHTML=railHtml();shell.insertAdjacentElement('afterend',rail);}}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();</script>`;
+
+const block=`${start}<!-- wp:html -->${css}${js}<!-- /wp:html -->${end}`;
+const parts=await request('/wp-json/wp/v2/template-parts?context=edit&per_page=100');
+const header=(parts||[]).find(p=>p.theme==='hostinger-ai-theme'&&p.slug==='header');
+if(!header?.id) throw new Error('Active Hostinger header template part is missing.');
+const before=rendered(header.content);
+if(!before.includes('data-dtf-shell="header-v3"')) throw new Error('Shared header V3 marker missing; refusing to layer Interface V7 onto an unknown shell.');
+await writeFile(join(backupDir,'header-before.json'),`${JSON.stringify(header,null,2)}\n`);
+const rx=/<!-- dtf-interface-v7:start -->[\s\S]*?<!-- dtf-interface-v7:end -->/g;
+const clean=before.replace(rx,'').trim();
+const next=`${clean}\n${block}`;
+await writeFile(join(backupDir,'header-next.html'),next);
+if(apply) await request(`/wp-json/wp/v2/template-parts/${encodeURIComponent(header.id)}`,{method:'POST',body:JSON.stringify({content:next,status:'publish'})});
+const after=rendered((await request('/wp-json/wp/v2/template-parts?context=edit&per_page=100')).find(p=>p.theme==='hostinger-ai-theme'&&p.slug==='header')?.content);
+for(const marker of ['dtf-interface-v7-style','dtf-interface-v7-script','dtf-shell-menu','dtf-edu-rail','sv6v-gaps{display:none']) if(!after.includes(marker)) throw new Error(`Interface V7 marker missing after write: ${marker}`);
+if(!after.includes('data-dtf-shell="header-v3"')) throw new Error('Interface V7 update removed the canonical shared-shell marker.');
+
+const routes=['/','/learn/','/learn/lighting/','/tools/','/shop/'];
+const publicResults=[];
+for(const route of routes){let ok=false;let htmlText='';for(let attempt=1;attempt<=8;attempt+=1){try{const res=await fetch(`${site}${route}?dtf_interface_v7=${Date.now()}-${attempt}`,{redirect:'follow',signal:AbortSignal.timeout(60000),headers:{'User-Agent':'DTFSeeds-Interface-V7-Verify/1.0','Cache-Control':'no-cache, no-store, max-age=0','Pragma':'no-cache'}});htmlText=await res.text();if(res.ok&&htmlText.includes('dtf-interface-v7-style')&&htmlText.includes('dtf-interface-v7-script')&&htmlText.includes('data-dtf-shell="header-v3"')){ok=true;break;}}catch{}await sleep(attempt*1700);}await writeFile(join(backupDir,`visitor-${route.replace(/[^a-z0-9]+/gi,'_')||'home'}.html`),htmlText);if(!ok) throw new Error(`Public Interface V7 verification failed on ${route}`);publicResults.push({route,verified:true});}
+const report={generatedAt:new Date().toISOString(),site,apply,backupDir,headerId:header.id,publicResults,features:['sticky active-state primary navigation','accessible mobile menu','THC education navigation rail','duplicate education title suppression','unified V3/V4/V6 visual language','mobile chapter rail','public production-gap suppression']};
+await writeFile(join(backupDir,'interface-v7-report.json'),`${JSON.stringify(report,null,2)}\n`);
+console.log(JSON.stringify(report,null,2));
