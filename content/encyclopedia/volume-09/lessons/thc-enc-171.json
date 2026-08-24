@@ -1,0 +1,30 @@
+{
+  "id":"THC-ENC-171",
+  "number":171,
+  "title":"Rooting Success Metrics and Failure Diagnosis",
+  "objective":"Define propagation success with multiple measurable endpoints and use failure patterns to identify the limiting step.",
+  "terms":[
+    {"term":"rooting percentage","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"time to root","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"root quality","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"survival","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"uniformity","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"censoring","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"failure category","definition":"Pending controlled-glossary reconciliation."}
+  ],
+  "termDefinitionsStatus":"pending_controlled_glossary_reconciliation",
+  "coreScience":[
+    "Rooting percentage alone can hide slow, weak, or highly variable batches. A complete assessment includes time to root, root number, length or mass, distribution, callus, shoot condition, transplant survival, and later uniformity.",
+    "Failure can occur before root initiation, during emergence, or after transplant. Basal rot, desiccation, heavy callus, delayed rooting, weak roots, sudden post-dome wilt, and uneven tray patterns point to different hypotheses.",
+    "Tray position and donor identity must be retained. Averages can conceal edge drying, light gradients, blocked irrigation, one contaminated mother, or an operator effect."
+  ],
+  "cultivationRelevance":["Define acceptance criteria before the batch begins. Photograph representative successes and failures, retain rejects long enough for diagnosis when safe, and compare changes against a current standard."],
+  "measureAndRecord":[{"field":"Controlled record set","requirement":"Cuttings started; viable at each observation; first root date; rooting percentage; root score; callus/rot; spatial map; transplant survival; rejection reason; mother and operator effects."}],
+  "misconceptions":["Any visible root is a successful clone.","A high final rooting percentage means the protocol is efficient.","All failures are caused by humidity."],
+  "evidenceLimits":["Metrics and acceptance limits depend on intended use. Research-grade, nursery, clean-stock, and emergency-rescue programs may require different endpoints."],
+  "crossLinks":"THC-ENC-161–170 for propagation inputs and controls; THC-ENC-261–280 for diagnostics; THC-GROW-034 for the controlled propagation SOP package.",
+  "sourceNotes":["Campbell LG, Naraine SGU, Dusfresne J. (2019). PLOS ONE 14:e0213434.","Campbell SM et al. (2021). PLOS ONE 16:e0249160.","Holmes JE et al. (2021). Frontiers in Plant Science 12:732344."],
+  "reviewControl":{"controlledManuscript":"Volume 09 v1.0","evidenceControl":"complete","secondaryEvidenceReview":"complete_qualified","externalReview":"required","externalReviewType":"propagation_quality_assurance_and_diagnostics","publicationAuthorized":false,"websiteAction":"do_not_publish"},
+  "slug":"rooting-success-metrics-and-failure-diagnosis",
+  "route":"/encyclopedia/rooting-success-metrics-and-failure-diagnosis"
+}
