@@ -6,6 +6,7 @@ on:
     paths:
       - docs/INFOGRAPHIC_COVERAGE_TARGETS.json
       - site/wordpress/education/visual-production-queue-v1.json
+      - site/wordpress/education/visual-art-briefs/**
       - scripts/validate-education-visual-production-queue.mjs
       - .github/workflows/education-visual-production-queue.yml
   push:
@@ -13,6 +14,7 @@ on:
     paths:
       - docs/INFOGRAPHIC_COVERAGE_TARGETS.json
       - site/wordpress/education/visual-production-queue-v1.json
+      - site/wordpress/education/visual-art-briefs/**
       - scripts/validate-education-visual-production-queue.mjs
       - .github/workflows/education-visual-production-queue.yml
 
@@ -28,7 +30,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Validate queue schema and canonical coverage
+      - name: Validate queue schema, detailed briefs, and canonical coverage
         shell: bash
         run: |
           set -euo pipefail
