@@ -1,0 +1,139 @@
+{
+  "schemaVersion": 1,
+  "queueFile": "site/wordpress/education/visual-production-queue-v1.json",
+  "categoryId": "harvest-postharvest",
+  "route": "/learn/harvest-postharvest/",
+  "artDirection": {
+    "style": "academic studio-quality cannabis cultivation education; realistic botanical forms; cream/neutral background; natural green/flower colors; crisp vector labels layered over realistic or scientifically styled botanical imagery; no yellow cast; no decorative clutter",
+    "masterCanvas": {"widthPx": 2550, "heightPx": 3300, "dpi": 300, "orientation": "portrait"},
+    "textPolicy": "Use short labels and callouts only. No paragraph blocks baked into artwork.",
+    "colorPolicy": "Do not rely on color alone; every maturity state and comparison must also have a text label or shape cue.",
+    "copyrightPolicy": "Create original artwork. Source papers constrain claims only; do not copy article figures, microscopy panels, or photographs."
+  },
+  "sources": [
+    {
+      "id": "s2023-trichome-maturation",
+      "type": "peer-reviewed",
+      "citation": "Livingstone et al. Glandular trichome development, morphology, and maturation are influenced by plant age and genotype in high THC-containing cannabis (Cannabis sativa L.) inflorescences. Journal of Cannabis Research. 2023.",
+      "doi": "10.1186/s42238-023-00178-9",
+      "pmid": "37016398",
+      "pmcid": "PMC10071647",
+      "supports": [
+        "clear/translucent to cloudy/milky to amber/brown visual maturation sequence",
+        "asynchronous trichome development on bracts",
+        "genotype and plant-age effects on trichome maturation",
+        "senescence, collapse, dehiscence and post-harvest morphology changes"
+      ]
+    },
+    {
+      "id": "s2025-trichome-development",
+      "type": "peer-reviewed",
+      "citation": "Nolan et al. Characterisation of Cannabis glandular trichome development reveals distinct features of cannabinoid biosynthesis. Plant Cell Reports. 2025.",
+      "doi": "10.1007/s00299-024-03410-9",
+      "pmid": "39806251",
+      "supports": [
+        "developmental phases of cannabis glandular trichomes",
+        "dynamic cannabinoid and terpenoid biosynthesis across trichome development"
+      ]
+    },
+    {
+      "id": "s2025-stigma-harvest",
+      "type": "peer-reviewed",
+      "citation": "Tran et al. Determination of Optimal Harvest Time in Cannabis sativa L. Based upon Stigma Color Transition. Plants. 2025;14(10):1532.",
+      "doi": "10.3390/plants14101532",
+      "pmid": "40431097",
+      "pmcid": "PMC12114869",
+      "supports": [
+        "stigma color can be a useful approximation in many genotypes but is not universally predictive",
+        "genotype-specific differences in timing of peak cannabinoid concentration",
+        "need to avoid a universal single-signal harvest rule"
+      ]
+    }
+  ],
+  "briefs": [
+    {
+      "id": "THC-HARV-01",
+      "queueTitle": "Harvest Readiness: Multiple Signals, Not One",
+      "masterFilename": "THC-HARV-01_harvest_readiness_indicators.png",
+      "productionStatus": "brief-approved-artwork-needed",
+      "primaryMessage": "Harvest readiness is a multi-signal assessment. Visual cues can narrow the harvest window, but genotype and crop context matter and no single cue is a universal trigger.",
+      "layout": [
+        "Top title band: HARVEST READINESS — MULTIPLE SIGNALS, NOT ONE",
+        "Central realistic flowering cannabis inflorescence as the anchor image",
+        "Five surrounding evidence panels: stigma/pistil change, bract/flower development, glandular trichomes, overall plant/crop context, known genotype timing/history",
+        "Bottom decision strip: Observe → Compare → Sample consistently → Decide within genotype/context"
+      ],
+      "requiredLabels": [
+        "Stigma / pistil color change",
+        "Flower and bract development",
+        "Trichome appearance under magnification",
+        "Whole-plant and crop context",
+        "Genotype-specific timing/history",
+        "Use multiple signals together"
+      ],
+      "requiredCallouts": [
+        "Useful approximation ≠ universal rule",
+        "Different genotypes can peak at different visual stages",
+        "Sample the same flower region under consistent lighting/magnification"
+      ],
+      "forbiddenClaims": [
+        "Do not state a universal percentage of amber pistils or trichomes as the correct harvest point",
+        "Do not claim amber trichomes directly equal a specific psychoactive effect",
+        "Do not imply plant fade or yellowing alone proves maturity",
+        "Do not present a fixed week number as universal"
+      ],
+      "sourceIds": ["s2023-trichome-maturation", "s2025-trichome-development", "s2025-stigma-harvest"],
+      "altText": "Educational harvest-readiness diagram centered on a mature cannabis flower, comparing stigma color, flower development, trichome appearance, whole-plant context, and genotype-specific history as multiple signals rather than one universal harvest trigger.",
+      "caption": "Harvest readiness is best treated as a multi-signal assessment. Stigma and trichome appearance can help define a harvest window, but genotype and crop context can shift when cannabinoid profiles peak.",
+      "qa": {
+        "scientific": ["All five signal panels are framed as observations, not guarantees", "No universal amber percentage or week number", "Genotype variability is visibly stated"],
+        "visual": ["Cannabis flower morphology looks realistic", "Labels remain legible at mobile preview size", "No yellow cast"],
+        "spelling": ["stigma", "pistil", "trichome", "genotype"],
+        "placement": ["Primary page /learn/harvest-postharvest/", "Library category harvest-postharvest", "Master remains in site/wordpress/assets/infographics"]
+      }
+    },
+    {
+      "id": "THC-HARV-02",
+      "queueTitle": "Trichome Maturity Under Magnification",
+      "masterFilename": "THC-HARV-02_trichome_maturity_interpretation.png",
+      "productionStatus": "brief-approved-artwork-needed",
+      "primaryMessage": "Clear, cloudy/milky, and amber/brown glandular heads are observable maturation states, but trichomes on the same bract can mature asynchronously and their meaning is context-dependent.",
+      "layout": [
+        "Top title band: TRICHOME MATURITY UNDER MAGNIFICATION",
+        "Three large matched-magnification botanical macro panels: CLEAR / CLOUDY-MILKY / AMBER-BROWN",
+        "Small anatomy key identifying stalk and glandular head",
+        "Asynchronous-maturation inset showing mixed clear, cloudy and amber heads on one bract",
+        "Bottom imaging-quality strip: same magnification + neutral white balance + same sample region"
+      ],
+      "requiredLabels": [
+        "Clear / translucent",
+        "Cloudy / milky",
+        "Amber / brown",
+        "Glandular head",
+        "Stalk",
+        "Mixed maturity can occur on the same bract",
+        "Consistent magnification and lighting"
+      ],
+      "requiredCallouts": [
+        "Color is one observation, not a complete harvest decision",
+        "Maturation is asynchronous",
+        "Genotype and plant age influence trichome development"
+      ],
+      "forbiddenClaims": [
+        "Do not label clear/cloudy/amber as exact THC percentages",
+        "Do not equate amber percentage with sedative versus energetic effects",
+        "Do not imply every trichome passes through states synchronously",
+        "Do not copy published microscopy images"
+      ],
+      "sourceIds": ["s2023-trichome-maturation", "s2025-trichome-development"],
+      "altText": "Matched-magnification educational comparison of clear, cloudy or milky, and amber or brown cannabis glandular trichomes, with an inset showing mixed maturity on one bract and a reminder to use consistent lighting and magnification.",
+      "caption": "Cannabis glandular trichomes visibly change during maturation, but development is asynchronous and varies with genotype and plant age. Use trichome appearance as one observation within a broader harvest assessment.",
+      "qa": {
+        "scientific": ["Three maturity appearances match the evidence-supported sequence", "Asynchronous maturation inset is present", "No effect claims or THC-percentage claims"],
+        "visual": ["All three panels use identical apparent magnification", "White balance is neutral", "Glandular heads remain distinct at mobile preview size", "No yellow cast"],
+        "spelling": ["translucent", "cloudy", "milky", "amber", "glandular", "asynchronous"],
+        "placement": ["Primary page /learn/harvest-postharvest/", "Library category harvest-postharvest", "Master remains in site/wordpress/assets/infographics"]
+      }
+    }
+  ]
+}
