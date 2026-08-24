@@ -1,12 +1,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="Potted cannabis plant">
-  <g fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M60 79V48"/>
-    <path d="M60 55c-10-18-22-24-35-25 4 15 14 26 30 31"/>
-    <path d="M60 55c10-18 22-24 35-25-4 15-14 26-30 31"/>
-    <path d="M60 44c-5-15-2-28 0-35 7 10 10 23 0 35"/>
-    <path d="M58 65c-9-11-18-14-27-12 4 10 12 16 25 18"/>
-    <path d="M62 65c9-11 18-14 27-12-4 10-12 16-25 18"/>
-    <path d="M34 81h52l-7 28H41z"/>
-    <path d="M30 81h60"/>
+  <defs>
+    <linearGradient id="leaf" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#d2ff8b"/><stop offset=".45" stop-color="#8fc947"/><stop offset="1" stop-color="#427326"/></linearGradient>
+    <linearGradient id="pot" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#9f6b3f"/><stop offset="1" stop-color="#4a2f20"/></linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="180%"><feDropShadow dx="0" dy="5" stdDeviation="4" flood-color="#000" flood-opacity=".45"/></filter>
+  </defs>
+  <g filter="url(#shadow)" stroke="#26351f" stroke-width="2.5" stroke-linejoin="round">
+    <path fill="#547f32" d="M58 84V43h4v41z"/>
+    <path fill="url(#leaf)" d="M60 49C45 35 30 31 15 33c8 15 20 24 40 25-13 1-24 7-31 18 14 4 26 0 36-11z"/>
+    <path fill="url(#leaf)" d="M60 49c15-14 30-18 45-16-8 15-20 24-40 25 13 1 24 7 31 18-14 4-26 0-36-11z"/>
+    <path fill="url(#leaf)" d="M60 47C51 31 52 16 60 6c9 13 10 27 0 41z"/>
+    <path fill="url(#leaf)" d="M57 62C46 52 35 50 25 54c7 10 17 15 30 14z"/>
+    <path fill="url(#leaf)" d="M63 62c11-10 22-12 32-8-7 10-17 15-30 14z"/>
+    <path fill="#6d452c" d="M29 82h62l-6 9H35z"/>
+    <path fill="url(#pot)" d="M36 89h48l-6 25H42z"/>
+    <path fill="#c08b56" d="M34 83h52v8H34z"/>
+    <path fill="#2d241b" d="M40 91h40l-2 4H42z"/>
   </g>
 </svg>
