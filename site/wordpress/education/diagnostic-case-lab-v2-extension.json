@@ -1,1 +1,793 @@
-PLACEHOLDER
+{
+  "schemaVersion": 1,
+  "id": "diagnostic-case-lab-v2-extension",
+  "baseId": "diagnostic-case-lab-v1",
+  "route": "/learn/diagnostic-cases/",
+  "title": "Diagnostic Case Lab V2 Expansion",
+  "sourceRefs": [
+    {
+      "id": "DX-S8",
+      "type": "peer-reviewed seed study",
+      "citation": "Geneve RL, Janes EW, Kester ST, Hildebrand DF, Davis D. Temperature Limits for Seed Germination in Industrial Hemp (Cannabis sativa L.). Crops. 2022;2(4):415-427.",
+      "doi": "10.3390/crops2040029",
+      "supports": "Seed germination rate is temperature-dependent and should be evaluated with cultivar and test conditions in mind rather than treated as a fixed calendar event."
+    },
+    {
+      "id": "DX-S9",
+      "type": "peer-reviewed propagation study",
+      "citation": "Caplan D, Stemeroff J, Dixon M, Zheng Y. Vegetative propagation of cannabis by stem cuttings: effects of leaf number, cutting position, rooting hormone, and leaf tip removal. Can J Plant Sci. 2018;98(5):1126-1132.",
+      "doi": "10.1139/cjps-2018-0038",
+      "supports": "Cannabis cutting propagation success depends on propagation choices; rooting quality and success are measurable outcomes rather than assumptions based on leaf appearance."
+    },
+    {
+      "id": "DX-S10",
+      "type": "peer-reviewed review",
+      "citation": "Richards CD, Ryu B-R, Gim G-J, Park S-H. Hermaphroditism in Cannabis sativa L.: Impacts, Inducers, and Industry Implications. Plants. 2026;15(11):1643.",
+      "pmcid": "PMC13258890",
+      "pmid": "42280679",
+      "doi": "10.3390/plants15111643",
+      "supports": "Cannabis sex expression is plastic and context-dependent; genotype, developmental stage, hormones, treatments and environment can interact, so one stress event does not prove a single cause of intersexual expression."
+    },
+    {
+      "id": "DX-S11",
+      "type": "peer-reviewed pollen-dispersal study",
+      "citation": "Nimmala M, Ross SD, Foroutan H. Cannabis pollen dispersal across the United States. Sci Rep. 2024;14:20605.",
+      "pmcid": "PMC11375005",
+      "pmid": "39232057",
+      "doi": "10.1038/s41598-024-70633-x",
+      "supports": "Cannabis pollen is windborne and dispersal depends on meteorological context; a fixed universal isolation distance cannot guarantee zero pollen exposure."
+    },
+    {
+      "id": "DX-S12",
+      "type": "peer-reviewed outdoor stress study",
+      "citation": "Kay ER, Philbin CS, Richards LA, Forister ML, Jeffrey C, Dyer LA. Effects of Water and Wind Stress on Phytochemical Diversity, Cannabinoid Composition, and Arthropod Diversity in Hemp. Plants. 2025;14(3):474; corrected 2026.",
+      "pmcid": "PMC11819868",
+      "pmid": "39943036",
+      "doi": "10.3390/plants14030474",
+      "supports": "Outdoor hemp responses can shift after water deficit, flooding and wind stress, and cultivar effects can be large; weather exposure should be recorded as context rather than inferred from symptoms alone."
+    },
+    {
+      "id": "DX-S13",
+      "type": "peer-reviewed postharvest study",
+      "citation": "Baek Y, Grab H, Chen C. Postharvest Drying and Curing Affect Cannabinoid Contents and Microbial Levels in Industrial Hemp (Cannabis sativa L.). Plants. 2025;14(3):414.",
+      "pmcid": "PMC11821007",
+      "pmid": "39942976",
+      "doi": "10.3390/plants14030414",
+      "supports": "Drying and curing conditions alter moisture, decarboxylation, color and microbial levels; postharvest quality problems require measured process and storage evidence."
+    }
+  ],
+  "cases": [
+    {
+      "id": "DX-C13",
+      "difficulty": "Beginner",
+      "title": "A seed lot is germinating slowly and unevenly",
+      "category": "germination",
+      "presenting": "A tray from one seed lot shows delayed and uneven radicle emergence. The grower assumes the lot is dead and wants to change several inputs at once.",
+      "evidence": [
+        "The same lot shows a broad spread in time-to-germination rather than a single synchronized event.",
+        "Seed-zone temperature is lower than the room sensor suggests and varies across the tray.",
+        "The medium is moist and aerated rather than waterlogged, and there is no strong decay odor.",
+        "A comparison lot in the same setup germinates faster, so both lot effects and temperature remain plausible."
+      ],
+      "differential": [
+        {
+          "cause": "Temperature-limited germination rate",
+          "weight": "higher",
+          "reason": "Measured seed-zone temperature is below the faster range for the comparison and is spatially uneven."
+        },
+        {
+          "cause": "Low seed-lot vigor",
+          "weight": "medium",
+          "reason": "The comparison lot performs better, so lot vigor may also contribute and should be tested rather than assumed."
+        },
+        {
+          "cause": "Nutrient deficiency",
+          "weight": "lower",
+          "reason": "External fertilizer is not the primary driver of the earliest germination event and does not explain the temperature pattern."
+        }
+      ],
+      "interpretation": "The best working interpretation is a temperature-and-lot interaction, not proof that the entire lot is nonviable.",
+      "why": "Germination is a time-to-event process. A single final check can hide differences in rate and vigor, and room temperature is not necessarily seed-zone temperature.",
+      "action": "Stabilize the seed-zone environment and continue a defined germination test without adding unrelated treatments. Keep the lot identity intact.",
+      "verify": "Record new radicle emergence by time. If the final normal-seedling percentage remains poor under controlled conditions, then low lot vigor or viability gains weight.",
+      "sourceIds": [
+        "DX-S8"
+      ],
+      "relatedRoutes": [
+        "/learn/lifecycle-propagation/",
+        "/learn/research-methods/",
+        "/learn/records/"
+      ]
+    },
+    {
+      "id": "DX-C14",
+      "difficulty": "Intermediate",
+      "title": "Seedlings emerge, then several collapse at the media line",
+      "category": "seedling establishment",
+      "presenting": "Several recently emerged seedlings develop a pinched or weak stem near the media surface and fall over. The tray has stayed persistently wet.",
+      "evidence": [
+        "Losses occur after emergence rather than before radicle protrusion.",
+        "The affected cells remain wetter than healthy comparison cells and have limited air-filled porosity.",
+        "Failure is clustered rather than evenly distributed across the entire seed lot.",
+        "No single pathogen has been laboratory-confirmed from the collapsed tissue."
+      ],
+      "differential": [
+        {
+          "cause": "Saturated root-zone / damping-off disease complex",
+          "weight": "higher",
+          "reason": "Persistent wetness and post-emergence collapse support a root-collar disease or low-oxygen environment, but species-level confirmation is absent."
+        },
+        {
+          "cause": "Seed-lot viability problem",
+          "weight": "lower",
+          "reason": "The seeds completed germination and emergence, so the failure gate is later than basic seed viability."
+        },
+        {
+          "cause": "Simple nutrient shortage",
+          "weight": "lower",
+          "reason": "A nutrient shortage is not the best explanation for abrupt clustered collapse at the media line."
+        }
+      ],
+      "interpretation": "A wet seedling-zone failure is strongly supported, with damping-off or secondary pathogen involvement possible but not proven to species.",
+      "why": "The key evidence is when failure occurs and where it is located. 'Seed did not make it' is too broad to diagnose the failure stage.",
+      "action": "Separate affected cells, correct avoidable saturation and sanitation problems, and preserve representative samples if pathogen confirmation is important.",
+      "verify": "Track incidence among newly emerged seedlings and compare moisture/aeration conditions between affected and unaffected cells.",
+      "sourceIds": [
+        "DX-S1",
+        "DX-S8"
+      ],
+      "relatedRoutes": [
+        "/learn/lifecycle-propagation/",
+        "/learn/ipm/",
+        "/learn/water-ph-ec/"
+      ]
+    },
+    {
+      "id": "DX-C15",
+      "difficulty": "Intermediate",
+      "title": "Cuttings stay green but are not rooting",
+      "category": "cloning",
+      "presenting": "A clone tray still looks mostly green after the expected internal schedule, but destructive checks show little root initiation and the grower wants to increase fertilizer.",
+      "evidence": [
+        "Several cuttings remain turgid enough to look alive but have weak or absent roots.",
+        "The tray record shows inconsistent donor-leaf preparation and propagation treatment between batches.",
+        "Rooting media temperature and moisture have not been logged at the cutting base.",
+        "A previous batch from the same donor rooted normally under a different propagation setup."
+      ],
+      "differential": [
+        {
+          "cause": "Propagation-process limitation",
+          "weight": "higher",
+          "reason": "Rooting outcomes can change with cutting preparation and rooting treatment, and this batch differs from the successful reference."
+        },
+        {
+          "cause": "Donor genetic inability to root",
+          "weight": "lower",
+          "reason": "The same donor previously rooted, so a fixed genetic inability is poorly supported."
+        },
+        {
+          "cause": "Fertilizer deficiency",
+          "weight": "lower",
+          "reason": "Green leaves without roots do not show that more nutrient concentration will solve adventitious root initiation."
+        }
+      ],
+      "interpretation": "The propagation process is the best-supported investigation target; a green cutting is not the same as a rooted cutting.",
+      "why": "Rooting success and root quality are distinct measurable outcomes. Visual survival above the media can delay recognition of failed root initiation.",
+      "action": "Standardize cutting preparation and propagation conditions, then compare a controlled batch rather than stacking new inputs onto the current tray.",
+      "verify": "Use destructive sample checks or another defined root-quality measure at scheduled intervals and compare success by batch.",
+      "sourceIds": [
+        "DX-S9"
+      ],
+      "relatedRoutes": [
+        "/learn/lifecycle-propagation/",
+        "/learn/research-methods/",
+        "/learn/records/"
+      ]
+    },
+    {
+      "id": "DX-C16",
+      "difficulty": "Intermediate",
+      "title": "Freshly rooted clones stall after transplant",
+      "category": "transplant",
+      "presenting": "Clones with visible roots are transplanted and then show several days of poor extension growth and intermittent droop. The grower calls it a nutrient deficiency immediately.",
+      "evidence": [
+        "Roots were visible at transplant but root volume differed substantially among clones.",
+        "The new container holds more water than the propagation plug and the irrigation routine was not adjusted.",
+        "Symptoms are strongest on the least-rooted transplants.",
+        "There is no new pest evidence and no documented nutrient-mixing error."
+      ],
+      "differential": [
+        {
+          "cause": "Transplant/root-zone establishment stress",
+          "weight": "higher",
+          "reason": "Root-system size and a changed water environment align with the plants that are stalling."
+        },
+        {
+          "cause": "Nutrient deficiency",
+          "weight": "medium",
+          "reason": "Possible if the new root zone is limiting uptake, but there is no direct evidence of a missing element."
+        },
+        {
+          "cause": "Systemic pathogen",
+          "weight": "lower",
+          "reason": "No propagation-network pattern or supporting direct evidence has appeared yet."
+        }
+      ],
+      "interpretation": "Transplant establishment and root-zone water balance are the leading explanation, not a confirmed elemental deficiency.",
+      "why": "A rooted cutting still has to establish a larger functional root system after transplant, and irrigation behavior changes when container volume and media geometry change.",
+      "action": "Stabilize irrigation around the actual root-zone condition and avoid changing multiple nutrient variables simultaneously.",
+      "verify": "Compare new extension growth, leaf posture and root-zone moisture against better-rooted transplants over the same interval.",
+      "sourceIds": [
+        "DX-S9"
+      ],
+      "relatedRoutes": [
+        "/learn/lifecycle-propagation/",
+        "/learn/water-ph-ec/",
+        "/learn/nutrition-media/"
+      ]
+    },
+    {
+      "id": "DX-C17",
+      "difficulty": "Advanced",
+      "title": "Two pH readings disagree on the same irrigation event",
+      "category": "measurement",
+      "presenting": "A grower records one pH value from the source solution and a very different value from runoff, then concludes the medium has an exact 'lockout pH' from those two numbers.",
+      "evidence": [
+        "The two samples came from different locations and represent different material.",
+        "The meters were not checked against fresh calibration standards before the comparison.",
+        "Runoff volume and timing varied between containers.",
+        "Plant symptoms are not uniform across plants despite the claimed single pH cause."
+      ],
+      "differential": [
+        {
+          "cause": "Sampling/method disagreement",
+          "weight": "higher",
+          "reason": "Different samples and uncontrolled collection methods can legitimately produce different values before biology is invoked."
+        },
+        {
+          "cause": "True root-zone chemical shift",
+          "weight": "medium",
+          "reason": "Possible, but it needs a repeatable root-zone sampling method and calibrated instrumentation to characterize."
+        },
+        {
+          "cause": "Guaranteed nutrient lockout at one pH number",
+          "weight": "lower",
+          "reason": "A single reading does not prove a universal lockout threshold or identify which nutrient is limiting."
+        }
+      ],
+      "interpretation": "The first problem is measurement comparability. The data do not yet support an exact root-zone diagnosis.",
+      "why": "Accuracy, precision, sample identity and method belong in the diagnosis. Numbers without method metadata can look more certain than they are.",
+      "action": "Calibrate instruments, define where and how each sample is collected, repeat the measurement, and compare with plant and root-zone evidence.",
+      "verify": "If repeatable same-method measurements continue to diverge in a consistent direction, then investigate the root-zone chemistry mechanism.",
+      "sourceIds": [
+        "DX-S4",
+        "DX-S5"
+      ],
+      "relatedRoutes": [
+        "/learn/research-methods/",
+        "/learn/water-ph-ec/",
+        "/learn/records/"
+      ]
+    },
+    {
+      "id": "DX-C18",
+      "difficulty": "Advanced",
+      "title": "EC is rising while growth slows and leaves droop",
+      "category": "root-zone concentration",
+      "presenting": "A container crop shows slowing growth, intermittent droop and a rising root-zone EC trend. The grower proposes adding more fertilizer because lower leaves are pale.",
+      "evidence": [
+        "EC has increased across repeated same-method measurements rather than from one sample.",
+        "Container dryback has become more extreme while feed concentration stayed similar.",
+        "Drainage and irrigation timing changed shortly before the trend began.",
+        "No analytical evidence shows that the total nutrient solution is deficient in concentration."
+      ],
+      "differential": [
+        {
+          "cause": "Concentration/salinity and water-balance stress",
+          "weight": "higher",
+          "reason": "Rising EC plus stronger dryback and changed irrigation provide a coherent root-zone mechanism."
+        },
+        {
+          "cause": "Single-element nutrient deficiency",
+          "weight": "medium",
+          "reason": "Specific deficiency can coexist, but adding total concentration is not justified by the EC evidence."
+        },
+        {
+          "cause": "Leaf-age senescence alone",
+          "weight": "lower",
+          "reason": "It does not explain the measured root-zone trend and whole-plant slowing."
+        }
+      ],
+      "interpretation": "Root-zone concentration and water balance deserve priority over increasing total fertilizer strength.",
+      "why": "EC reports ionic concentration, not the identity of every nutrient, and high concentration does not imply that more fertilizer is beneficial.",
+      "action": "Correct the irrigation/process driver and return the root zone toward the intended program without making unrelated changes.",
+      "verify": "Follow same-method EC, substrate water status, new growth and plant posture to see whether the trend reverses.",
+      "sourceIds": [
+        "DX-S5"
+      ],
+      "relatedRoutes": [
+        "/learn/water-ph-ec/",
+        "/learn/nutrition-media/",
+        "/learn/research-methods/"
+      ]
+    },
+    {
+      "id": "DX-C19",
+      "difficulty": "Beginner",
+      "title": "Sticky leaves and curled tips are being called a deficiency",
+      "category": "pest evidence",
+      "presenting": "Young leaves are curled and some surfaces feel sticky. The grower focuses on nutrient charts because the insects are small and clustered under tender growth.",
+      "evidence": [
+        "Magnified inspection finds aphid colonies on shoots and leaf undersides.",
+        "Cast skins and sticky honeydew occur in the same zones as the colonies.",
+        "The distribution is patchy and expands between scouting dates.",
+        "Neighboring unaffected plants receive the same nutrient solution."
+      ],
+      "differential": [
+        {
+          "cause": "Aphid pressure",
+          "weight": "higher",
+          "reason": "Live colonies, cast skins and honeydew are direct organism evidence."
+        },
+        {
+          "cause": "Nutrient imbalance",
+          "weight": "lower",
+          "reason": "The common feed does not explain localized colonies and honeydew."
+        },
+        {
+          "cause": "Powdery mildew",
+          "weight": "lower",
+          "reason": "Powdery mildew does not produce aphid bodies, cast skins or honeydew."
+        }
+      ],
+      "interpretation": "Aphid pressure is confirmed in the sampled zones.",
+      "why": "Direct organism evidence outranks a look-alike leaf curl pattern.",
+      "action": "Map colonies, inspect neighboring plants and apply a lawful IPM response appropriate to crop stage and the confirmed pest.",
+      "verify": "Repeat counts on the same shoots or leaves and track whether colony expansion slows or reverses.",
+      "sourceIds": [
+        "DX-S2"
+      ],
+      "relatedRoutes": [
+        "/learn/ipm/",
+        "/learn/records/",
+        "/learn/diagnostics/"
+      ]
+    },
+    {
+      "id": "DX-C20",
+      "difficulty": "Advanced",
+      "title": "Unexpected seeds appear in an intended unseeded flower crop",
+      "category": "pollination",
+      "presenting": "A previously unseeded flowering room begins producing scattered seeds. No intentionally flowering male plant is present in the room.",
+      "evidence": [
+        "Mature or developing seeds are confirmed inside pistillate flowers.",
+        "A detailed flower inspection finds a small number of anthers on some otherwise female inflorescences.",
+        "Outdoor or neighboring pollen exposure cannot be ruled out from the current records.",
+        "The event is not uniform across every plant or every room zone."
+      ],
+      "differential": [
+        {
+          "cause": "Intersexual flower expression with self/nearby pollination",
+          "weight": "higher",
+          "reason": "Observed anthers provide a plausible local pollen source and cannabis sex expression can be plastic."
+        },
+        {
+          "cause": "External windborne pollen exposure",
+          "weight": "medium",
+          "reason": "Cannabis pollen can disperse with wind, so outside exposure remains plausible without stronger containment evidence."
+        },
+        {
+          "cause": "Nutrient deficiency causing seeds",
+          "weight": "lower",
+          "reason": "Nutrient stress can affect plant health but does not itself replace the requirement for pollination and fertilization to form normal seeds."
+        }
+      ],
+      "interpretation": "Pollination is confirmed by seed set, but the pollen source is not yet fully resolved.",
+      "why": "Finding anthers changes the source ranking, yet it does not prove every seed came from that source; airflow, timing and genetic identity matter.",
+      "action": "Map seeded flowers and any anthers, preserve plant identity, review airflow/contact history and separate suspect reproductive material.",
+      "verify": "Trace seed distribution and pollen-source evidence over time; genetic testing can be used if parentage matters enough to justify it.",
+      "sourceIds": [
+        "DX-S10",
+        "DX-S11"
+      ],
+      "relatedRoutes": [
+        "/learn/genetics-breeding/",
+        "/learn/lifecycle-propagation/",
+        "/learn/research-methods/"
+      ]
+    },
+    {
+      "id": "DX-C21",
+      "difficulty": "Intermediate",
+      "title": "Outdoor plants are damaged after an extreme wind event",
+      "category": "outdoor weather",
+      "presenting": "After a strong wind event, several outdoor plants show torn leaves, bent stems and a temporary growth slowdown. New spots appearing later are being assumed to be the same injury.",
+      "evidence": [
+        "Mechanical tears and stem damage align with the documented wind event.",
+        "Damage is strongest on exposed edges rather than uniformly through sheltered plants.",
+        "Some later lesions do not share the same shape or location as the original mechanical injury.",
+        "Weather exposure and plant position are available in the field record."
+      ],
+      "differential": [
+        {
+          "cause": "Mechanical wind stress",
+          "weight": "higher",
+          "reason": "Timing, exposed-edge distribution and physical injury support wind damage for the initial symptoms."
+        },
+        {
+          "cause": "Secondary disease or pest issue",
+          "weight": "medium",
+          "reason": "Later lesions with a different pattern should be evaluated separately rather than automatically attributed to wind."
+        },
+        {
+          "cause": "Uniform nutrient deficiency",
+          "weight": "lower",
+          "reason": "A nutrient shortage is less consistent with exposure-edge mechanical damage after a known event."
+        }
+      ],
+      "interpretation": "The original injury is best explained by wind, but later symptoms should be treated as a new diagnostic question if their pattern differs.",
+      "why": "Outdoor crops can experience multiple sequential stresses. One known event should not become a permanent explanation for every symptom afterward.",
+      "action": "Stabilize damaged plants as appropriate, document the affected zones and start a separate scouting record for any newly developing lesion pattern.",
+      "verify": "Compare recovery of new growth and the incidence of new lesions in exposed versus sheltered zones.",
+      "sourceIds": [
+        "DX-S12"
+      ],
+      "relatedRoutes": [
+        "/learn/outdoor/",
+        "/learn/ipm/",
+        "/learn/records/"
+      ]
+    },
+    {
+      "id": "DX-C22",
+      "difficulty": "Intermediate",
+      "title": "Plants droop after repeated heavy rain",
+      "category": "outdoor root-zone",
+      "presenting": "Outdoor container plants droop and pale after several days of heavy rain. The grower wants to feed immediately because the foliage looks hungry.",
+      "evidence": [
+        "Containers remain much heavier than their normal irrigation baseline.",
+        "Drainage is slow and root-zone aeration is likely reduced.",
+        "Symptoms appear after the rain sequence across the wettest containers first.",
+        "There is no documented feed-mixing change immediately before the event."
+      ],
+      "differential": [
+        {
+          "cause": "Flooding/saturation and root-zone oxygen stress",
+          "weight": "higher",
+          "reason": "The water history, container weight and spatial pattern strongly support saturation."
+        },
+        {
+          "cause": "Nutrient uptake limitation secondary to root stress",
+          "weight": "medium",
+          "reason": "Uptake can be affected by a stressed root zone, but adding more concentration does not address the primary water condition."
+        },
+        {
+          "cause": "Primary fertilizer shortage",
+          "weight": "lower",
+          "reason": "The timing is tied more closely to the rain/saturation event than to a change in nutrient supply."
+        }
+      ],
+      "interpretation": "Saturation/root-zone stress is the leading explanation, with secondary nutrient symptoms possible.",
+      "why": "Water and nutrient symptoms interact. Treating the leaf color alone can worsen a root-zone problem if concentration is increased before aeration recovers.",
+      "action": "Restore drainage and allow the root zone to move back toward its normal water/air balance before making large nutrient changes.",
+      "verify": "Track container weight or moisture, root condition and new growth as the weather clears.",
+      "sourceIds": [
+        "DX-S12",
+        "DX-S1"
+      ],
+      "relatedRoutes": [
+        "/learn/outdoor/",
+        "/learn/water-ph-ec/",
+        "/learn/nutrition-media/"
+      ]
+    },
+    {
+      "id": "DX-C23",
+      "difficulty": "Advanced",
+      "title": "Drying flower develops a musty odor and uneven moisture",
+      "category": "postharvest microbial risk",
+      "presenting": "During drying, outer flower surfaces feel dry while denser interiors remain moist and a musty odor appears in part of the batch.",
+      "evidence": [
+        "Moisture is visibly and tactilely nonuniform across flower density and position.",
+        "The problem is strongest in dense material with slower air exchange.",
+        "A musty odor appears during a period of prolonged moisture retention.",
+        "No validated microbial result has yet identified a specific organism or toxin."
+      ],
+      "differential": [
+        {
+          "cause": "Uneven drying with elevated microbial-spoilage risk",
+          "weight": "higher",
+          "reason": "Persistent interior moisture and odor during drying support a process-control and microbial-risk problem."
+        },
+        {
+          "cause": "Normal curing aroma development",
+          "weight": "lower",
+          "reason": "An unexplained musty odor plus wet interiors should not be normalized as desirable curing."
+        },
+        {
+          "cause": "Harvest maturity difference only",
+          "weight": "lower",
+          "reason": "Maturity can affect chemistry and structure but does not explain the measured/observed moisture nonuniformity by itself."
+        }
+      ],
+      "interpretation": "Uneven drying with microbial-spoilage risk is strongly supported; species or toxin claims require testing.",
+      "why": "Postharvest safety cannot be judged from outer crispness alone. Dense interiors can retain water after surfaces feel dry.",
+      "action": "Segregate suspect material, verify the drying environment and moisture/water-activity process, and follow applicable quality and testing procedures before release.",
+      "verify": "Use repeatable moisture or water-activity measurements and batch inspection to confirm the process is converging uniformly.",
+      "sourceIds": [
+        "DX-S13"
+      ],
+      "relatedRoutes": [
+        "/learn/harvest-postharvest/",
+        "/learn/research-methods/",
+        "/learn/records/"
+      ]
+    },
+    {
+      "id": "DX-C24",
+      "difficulty": "Intermediate",
+      "title": "A dried batch becomes brittle and loses aroma rapidly",
+      "category": "postharvest quality",
+      "presenting": "One dried batch becomes unusually brittle and its aroma drops quickly compared with a reference batch of the same cultivar.",
+      "evidence": [
+        "The affected batch experienced a faster, warmer drying profile than the reference batch.",
+        "Drying endpoint was judged only by feel and no batch moisture or water-activity record was kept.",
+        "The reference batch retained more pliability and aroma under a slower documented process.",
+        "There is no evidence that the two batches differed in genetics."
+      ],
+      "differential": [
+        {
+          "cause": "Over-aggressive drying / volatile loss",
+          "weight": "higher",
+          "reason": "The process difference aligns with faster moisture removal and lower aroma retention."
+        },
+        {
+          "cause": "Genetic difference",
+          "weight": "lower",
+          "reason": "The batches share cultivar identity and the major known difference is postharvest process."
+        },
+        {
+          "cause": "Guaranteed proof of low cannabinoid content",
+          "weight": "lower",
+          "reason": "Brittleness or aroma alone does not quantify cannabinoid concentration."
+        }
+      ],
+      "interpretation": "The postharvest process is the best-supported cause of the quality difference, but chemical potency cannot be inferred from feel or smell alone.",
+      "why": "Drying changes water, volatile compounds and chemistry in cultivar- and process-dependent ways; sensory observations are useful but incomplete measurements.",
+      "action": "Standardize and record the drying process, then compare future batches with objective endpoint measurements appropriate to the operation.",
+      "verify": "Compare moisture/water activity, aroma retention and—when needed—laboratory chemistry across matched batches.",
+      "sourceIds": [
+        "DX-S13"
+      ],
+      "relatedRoutes": [
+        "/learn/harvest-postharvest/",
+        "/learn/research-methods/",
+        "/learn/records/"
+      ]
+    }
+  ],
+  "decisionTrees": [
+    {
+      "id": "DX-T07",
+      "title": "Seeds are not germinating",
+      "start": "N1",
+      "nodes": [
+        {
+          "id": "N1",
+          "question": "Is the failure before radicle protrusion?",
+          "yes": "Check seed condition, time-to-event, seed-zone temperature, moisture and oxygen.",
+          "no": "If radicles emerged, move to emergence/establishment rather than seed viability."
+        },
+        {
+          "id": "N2",
+          "question": "Is seed-zone temperature measured at the seed and stable?",
+          "yes": "Compare it with the tested range for the cultivar or a valid reference lot.",
+          "no": "Measure the seed zone; do not substitute room air temperature."
+        },
+        {
+          "id": "N3",
+          "question": "Is the medium moist but still aerated?",
+          "yes": "Keep moisture method consistent and compare lots.",
+          "no": "Correct saturation or repeated drying before blaming genetics."
+        },
+        {
+          "id": "N4",
+          "question": "Does a comparison lot perform normally in the same setup?",
+          "yes": "Lot vigor/viability gains weight.",
+          "no": "Environment or method remains a stronger common cause."
+        },
+        {
+          "id": "N5",
+          "question": "Does the lot still underperform after controlled retest?",
+          "yes": "Document the lot as low-performing under the test and investigate vigor/viability.",
+          "no": "Continue establishment tracking; do not call delayed seeds dead prematurely."
+        }
+      ]
+    },
+    {
+      "id": "DX-T08",
+      "title": "A clone tray is not rooting",
+      "start": "N1",
+      "nodes": [
+        {
+          "id": "N1",
+          "question": "Have roots been measured rather than inferred from green leaves?",
+          "yes": "Score rooting success/root quality on a defined sample.",
+          "no": "Create a root check; shoot survival alone is not the endpoint."
+        },
+        {
+          "id": "N2",
+          "question": "Were donor identity and cutting preparation consistent?",
+          "yes": "Compare rooting environment and treatment variables next.",
+          "no": "Standardize donor/cutting preparation before comparing batches."
+        },
+        {
+          "id": "N3",
+          "question": "Were basal-zone moisture and temperature recorded?",
+          "yes": "Compare failed and successful batches using the same method.",
+          "no": "Instrument the propagation zone before adding inputs."
+        },
+        {
+          "id": "N4",
+          "question": "Did the same donor root successfully in a prior controlled batch?",
+          "yes": "Process/environment gains weight over fixed donor inability.",
+          "no": "Donor health or identity deserves more scrutiny."
+        },
+        {
+          "id": "N5",
+          "question": "Does a controlled repeat improve rooting?",
+          "yes": "Keep the standardized protocol and record batch outcomes.",
+          "no": "Escalate to donor health, pathogen testing or additional propagation variables."
+        }
+      ]
+    },
+    {
+      "id": "DX-T09",
+      "title": "pH or EC numbers do not agree",
+      "start": "N1",
+      "nodes": [
+        {
+          "id": "N1",
+          "question": "Are the values from the same sample type and location?",
+          "yes": "Check instrument and timing comparability.",
+          "no": "Do not compare source, drain, runoff and media extracts as if they are identical samples."
+        },
+        {
+          "id": "N2",
+          "question": "Was the instrument checked with appropriate standards?",
+          "yes": "Repeat the sample with method metadata.",
+          "no": "Calibrate or verify before interpreting the crop."
+        },
+        {
+          "id": "N3",
+          "question": "Was collection timing/volume consistent?",
+          "yes": "Compare repeated same-method trends.",
+          "no": "Standardize sampling before calling the difference biological."
+        },
+        {
+          "id": "N4",
+          "question": "Does the repeatable trend match plant/root-zone evidence?",
+          "yes": "Investigate the relevant chemical or irrigation mechanism.",
+          "no": "Keep alternative explanations open."
+        },
+        {
+          "id": "N5",
+          "question": "Would a proposed correction change several variables at once?",
+          "yes": "Use the smallest justified adjustment and remeasure.",
+          "no": "Preserve one-variable learning when practical."
+        }
+      ]
+    },
+    {
+      "id": "DX-T10",
+      "title": "Unexpected seed set or male structures appear",
+      "start": "N1",
+      "nodes": [
+        {
+          "id": "N1",
+          "question": "Are actual seeds or male floral structures confirmed?",
+          "yes": "Map their location and developmental stage.",
+          "no": "Do not infer pollination from swollen tissue alone."
+        },
+        {
+          "id": "N2",
+          "question": "Are anthers/male flowers present on otherwise female plants?",
+          "yes": "Intersexual expression becomes a local pollen-source candidate.",
+          "no": "External or hidden pollen sources remain important."
+        },
+        {
+          "id": "N3",
+          "question": "Could outside or neighboring pollen exposure occur?",
+          "yes": "Review airflow, flowering timing and containment history.",
+          "no": "Local sources and handling pathways gain weight."
+        },
+        {
+          "id": "N4",
+          "question": "Is the pattern concentrated in one genotype or stress history?",
+          "yes": "Genotype/context interaction deserves investigation.",
+          "no": "A shared environmental or external pollen source may be more likely."
+        },
+        {
+          "id": "N5",
+          "question": "Does parentage matter for breeding decisions?",
+          "yes": "Use traceability and genetic testing if justified.",
+          "no": "Manage the crop based on confirmed seed/pollen evidence without inventing parentage."
+        }
+      ]
+    },
+    {
+      "id": "DX-T11",
+      "title": "Outdoor symptoms appear after severe weather",
+      "start": "N1",
+      "nodes": [
+        {
+          "id": "N1",
+          "question": "Is there a documented wind, flood, drought or rain event?",
+          "yes": "Map symptoms against exposure and timing.",
+          "no": "Treat weather as one hypothesis, not a default."
+        },
+        {
+          "id": "N2",
+          "question": "Are injuries mechanical and strongest on exposed edges?",
+          "yes": "Wind/mechanical stress gains weight.",
+          "no": "Inspect roots, pests, disease lesions and irrigation."
+        },
+        {
+          "id": "N3",
+          "question": "Is the root zone still saturated or unusually dry?",
+          "yes": "Prioritize water/oxygen balance evidence.",
+          "no": "Move to tissue-specific pest/disease inspection."
+        },
+        {
+          "id": "N4",
+          "question": "Are new lesions different from the original weather injury?",
+          "yes": "Open a new differential for secondary disease/pest issues.",
+          "no": "Continue recovery tracking."
+        },
+        {
+          "id": "N5",
+          "question": "Does sheltered comparison growth recover differently?",
+          "yes": "Use the contrast to test the weather hypothesis.",
+          "no": "Reopen systemic causes if exposure does not explain the pattern."
+        }
+      ]
+    },
+    {
+      "id": "DX-T12",
+      "title": "Drying or curing quality is going wrong",
+      "start": "N1",
+      "nodes": [
+        {
+          "id": "N1",
+          "question": "Is moisture uniform through dense and thin material?",
+          "yes": "Check objective endpoint/process records.",
+          "no": "Treat nonuniformity as a process problem before calling it curing."
+        },
+        {
+          "id": "N2",
+          "question": "Is there musty odor, visible growth or other spoilage evidence?",
+          "yes": "Segregate suspect material and use appropriate quality/testing procedures.",
+          "no": "Continue chemistry and texture evaluation."
+        },
+        {
+          "id": "N3",
+          "question": "Was drying temperature/RH/airflow recorded?",
+          "yes": "Compare with a successful batch.",
+          "no": "Instrument the process before changing many variables."
+        },
+        {
+          "id": "N4",
+          "question": "Did the batch dry much faster or warmer than the reference?",
+          "yes": "Over-aggressive drying/volatile loss gains weight.",
+          "no": "Storage and starting-material differences remain plausible."
+        },
+        {
+          "id": "N5",
+          "question": "Are potency or microbial claims being made from smell/feel alone?",
+          "yes": "Use laboratory testing when the claim requires it.",
+          "no": "Use sensory data as one observation, not the final measurement."
+        }
+      ]
+    }
+  ]
+}
