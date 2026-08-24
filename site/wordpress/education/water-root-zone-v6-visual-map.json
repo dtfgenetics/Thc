@@ -1,0 +1,146 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-08-24",
+  "curriculumId": "water-root-zone-v6",
+  "route": "/learn/water-ph-ec/",
+  "chapters": {
+    "root-interface-water-uptake": [
+      {
+        "file": "THC-ENC-041_Root_Tip_Development_and_Functional_Zones.jpg",
+        "title": "Root Tip Development & Functional Zones",
+        "alt": "Educational diagram showing root-cap, division, elongation and differentiation zones in a developing root tip."
+      },
+      {
+        "file": "THC-ENC-042_Lateral_Roots_vs_Root_Hairs.jpg",
+        "title": "Lateral Roots Versus Root Hairs",
+        "alt": "Educational diagram comparing lateral roots and root hairs as distinct structures that expand contact with the root environment."
+      },
+      {
+        "file": "THC-ENC-044_Water_Movement_from_Media_to_Leaf.jpg",
+        "title": "Water Movement from Media to Leaf",
+        "alt": "Educational diagram tracing water movement from growing media through roots and xylem toward transpiring leaves."
+      },
+      {
+        "file": "THC-ENC-045_Ion_Uptake_and_Membrane_Transport.jpg",
+        "title": "Ion Uptake & Membrane Transport",
+        "alt": "Educational diagram showing selective ion uptake and membrane transport at the root interface."
+      },
+      {
+        "file": "THC-ENC-081_Water_Potential_and_the_Soil_Plant_Atmosphere_Continuum.jpg",
+        "title": "Water Potential & the Soil-Plant-Atmosphere Continuum",
+        "alt": "Educational diagram connecting water-potential gradients across root zone, plant and atmosphere."
+      }
+    ],
+    "oxygen-air-water-balance": [
+      {
+        "file": "THC-ENC-043_Root_Zone_Oxygen_Hypoxia_and_Recovery.jpg",
+        "title": "Root-Zone Oxygen, Hypoxia & Recovery",
+        "alt": "Educational diagram explaining oxygen supply, root hypoxia and recovery in the root zone."
+      },
+      {
+        "file": "THC-ENC-053_Porosity_Air-Filled_Porosity_and_Water-Holding_Capacity.jpg",
+        "title": "Porosity, Air-Filled Porosity & Water-Holding Capacity",
+        "alt": "Educational diagram comparing pore space occupied by air and water and its effect on root-zone physical conditions."
+      }
+    ],
+    "media-physical-storage": [
+      {
+        "file": "THC-ENC-050_Soil_Texture_Structure_and_Aggregation.jpg",
+        "title": "Soil Texture, Structure & Aggregation",
+        "alt": "Educational diagram separating soil texture from structure, aggregation and pore arrangement."
+      },
+      {
+        "file": "THC-ENC-052_Cation_Exchange_Capacity_and_Nutrient_Buffering.jpg",
+        "title": "Cation Exchange Capacity & Nutrient Buffering",
+        "alt": "Educational diagram explaining cation exchange capacity and chemical buffering in the root environment."
+      },
+      {
+        "file": "THC-ENC-059_Container_Geometry_Root_Restriction_and_Transplanting.jpg",
+        "title": "Container Geometry, Root Restriction & Transplanting",
+        "alt": "Educational diagram showing how container dimensions and root occupancy affect the physical root environment."
+      }
+    ],
+    "irrigation-volume-uniformity": [
+      {
+        "file": "THC-ENC-058_Deep_Water_Film_Drip_and_Aeroponic_Root_Environments.jpg",
+        "title": "Deep Water, Film, Drip & Aeroponic Root Environments",
+        "alt": "Educational comparison of deep-water, film, drip and aeroponic root environments and their water and oxygen delivery pathways."
+      }
+    ],
+    "dryback-water-stress": [
+      {
+        "file": "THC-ENC-077_Abscisic_Acid_and_Water_Stress_Signaling.jpg",
+        "title": "Abscisic Acid & Water-Stress Signaling",
+        "alt": "Educational diagram explaining abscisic-acid signaling and plant response to water stress."
+      },
+      {
+        "file": "V04-SUP-010_Drought_Stress_and_Water_Deficit_Responses.jpg",
+        "title": "Drought Stress & Water-Deficit Responses",
+        "alt": "Educational diagram explaining plant drought stress, water-deficit response and recovery context."
+      }
+    ],
+    "runoff-salts-ec": [],
+    "ph-alkalinity-water-chemistry": [],
+    "sampling-records-change-control": [
+      {
+        "file": "THC-ENC-060_Media_Testing_Batch_Qualification_and_Reuse_Decisions.jpg",
+        "title": "Media Testing, Batch Qualification & Reuse Decisions",
+        "alt": "Educational diagram showing structured media testing and qualification before root-zone decisions."
+      },
+      {
+        "file": "THC-ENC-001_VIS-06_Measurement_Quality_Chain.jpg",
+        "title": "Measurement Quality Chain",
+        "alt": "Educational diagram showing how measurement quality affects interpretation and decision quality."
+      },
+      {
+        "file": "THC-ENC-001_VIS-08_Monitored_Cultivation_Decision.jpg",
+        "title": "Monitored Cultivation Decision",
+        "alt": "Educational decision diagram connecting monitored observations to bounded cultivation decisions and verification."
+      }
+    ]
+  },
+  "gaps": [
+    {
+      "id": "container-water-sensor-placement",
+      "status": "needed",
+      "title": "Container Water Distribution & Sensor Placement",
+      "neededVisual": "A dedicated container cross-section showing vertical and horizontal moisture gradients, emitter wetting pattern, representative versus biased sensor positions, root occupancy and how one probe can miss dry or saturated zones."
+    },
+    {
+      "id": "irrigation-catch-test-uniformity",
+      "status": "needed",
+      "title": "Irrigation Catch Test & Distribution Uniformity",
+      "neededVisual": "A purpose-built irrigation audit diagram showing catch cups across a zone, beginning/middle/end pressure locations, raw delivery volumes, low-quarter sampling and a clearly defined distribution-uniformity calculation."
+    },
+    {
+      "id": "dryback-curve-definition",
+      "status": "needed",
+      "title": "Dryback Curve: Drainage, Daytime & Overnight Segments",
+      "neededVisual": "A time-series diagram that labels post-irrigation peak, drainage, daytime decline, last irrigation, lights-off, overnight decline and next-day pre-irrigation while distinguishing absolute VWC change from relative percent change."
+    },
+    {
+      "id": "runoff-leaching-salt-mass-balance",
+      "status": "needed",
+      "title": "Runoff, Leaching Fraction & Salt Mass Balance",
+      "neededVisual": "A container water-and-salt balance diagram separating applied solution, retained pore water, preferential flow, drainage collection, evaporation and plant uptake while showing why runoff is not a direct biopsy of the entire rhizosphere."
+    },
+    {
+      "id": "ec-salinity-ppm",
+      "status": "needed",
+      "title": "EC, Salinity, Osmotic Availability & PPM Scales",
+      "neededVisual": "A dedicated chemistry diagram showing EC as total ionic conductivity, rising osmotic constraint as dissolved salts concentrate, and why 500-scale and 700-scale meter ppm displays can differ for the same measured EC."
+    },
+    {
+      "id": "ph-alkalinity-root-zone-drift",
+      "status": "needed",
+      "title": "Input pH, Root-Zone pH, Alkalinity & Buffering",
+      "neededVisual": "A chemistry flow diagram separating current input pH from alkalinity and buffer capacity, then showing how roots, fertilizer form, lime, irrigation fraction and stored chemistry can drive root-zone pH away from the input value."
+    },
+    {
+      "id": "root-zone-sampling-methods",
+      "status": "needed",
+      "title": "Runoff, Pour-Through, Slurry & Extract Sampling",
+      "neededVisual": "A side-by-side root-zone testing diagram showing what runoff, pour-through, slurry or dilution extract and saturated-media extract actually sample, including dilution/timing differences and a warning not to exchange method-specific reference ranges."
+    }
+  ]
+}
