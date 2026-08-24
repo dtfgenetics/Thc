@@ -1,0 +1,106 @@
+name: Lighting Asset Bridge
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ops/asset-bridge/lighting/READY
+
+permissions:
+  contents: write
+  issues: write
+
+env:
+  TARGET_PATH: site/wordpress/assets/infographics/DLI_PPFD_Light_Education_Infographic.png
+  BRIDGE_DIR: ops/asset-bridge/lighting
+  EXPECTED_SHA256: 2287cb16dc3b848635c33b2a4aea523c3abb33085ef3e26f1b818976625548f7
+  EXPECTED_BYTES: '303651'
+  EXPECTED_WIDTH: '2550'
+  EXPECTED_HEIGHT: '3300'
+
+concurrency:
+  group: dtfseeds-lighting-asset-bridge
+  cancel-in-progress: false
+
+jobs:
+  bridge:
+    name: Reconstruct verify and source-control canonical Lighting PNG
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Reconstruct and verify exact reviewed PNG
+        id: verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t chunks < <(find "$BRIDGE_DIR" -maxdepth 1 -type f -name 'chunk-*.b64' -print | sort)
+          test "${#chunks[@]}" -eq 7
+          tmp64="$RUNNER_TEMP/lighting.b64"
+          tmp="$RUNNER_TEMP/lighting.png"
+          : > "$tmp64"
+          for f in "${chunks[@]}"; do cat "$f" >> "$tmp64"; done
+          base64 --decode "$tmp64" > "$tmp"
+          python3 - "$tmp" "$EXPECTED_SHA256" "$EXPECTED_BYTES" "$EXPECTED_WIDTH" "$EXPECTED_HEIGHT" <<'PY'
+          import hashlib,pathlib,struct,sys
+          p=pathlib.Path(sys.argv[1]); data=p.read_bytes()
+          expected_sha=sys.argv[2]; expected_bytes=int(sys.argv[3])
+          expected_w=int(sys.argv[4]); expected_h=int(sys.argv[5])
+          assert len(data)==expected_bytes, (len(data),expected_bytes)
+          assert data[:8]==b'\x89PNG\r\n\x1a\n'
+          assert b'IEND' in data
+          width,height=struct.unpack('>II',data[16:24])
+          assert (width,height)==(expected_w,expected_h), (width,height)
+          sha=hashlib.sha256(data).hexdigest()
+          assert sha==expected_sha, sha
+          print(f'verified bytes={len(data)} dimensions={width}x{height} sha256={sha}')
+          PY
+          mkdir -p "$(dirname "$TARGET_PATH")"
+          cp "$tmp" "$TARGET_PATH"
+          echo "bytes=$(stat -c %s "$TARGET_PATH")" >> "$GITHUB_OUTPUT"
+          echo "sha256=$(sha256sum "$TARGET_PATH" | awk '{print $1}')" >> "$GITHUB_OUTPUT"
+
+      - name: Commit canonical asset and remove temporary bridge
+        id: commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$TARGET_PATH"
+          git rm -r "$BRIDGE_DIR"
+          git commit -m 'Source-control canonical DLI PPFD lighting infographic'
+          git pull --rebase origin main
+          git push origin HEAD:main
+          echo "commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Report bridge result to issue 46
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          STATUS: ${{ job.status }}
+          BYTES: ${{ steps.verify.outputs.bytes }}
+          SHA: ${{ steps.verify.outputs.sha256 }}
+          COMMIT: ${{ steps.commit.outputs.commit }}
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 46,
+              body: [
+                '## Lighting canonical asset bridge',
+                '',
+                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                `Result: **${process.env.STATUS}**`,
+                `Verified bytes: **${process.env.BYTES || 'unknown'}**`,
+                `Verified SHA-256: \`${process.env.SHA || 'unknown'}\``,
+                `Canonical asset commit: \`${process.env.COMMIT || 'not committed'}\``,
+                '',
+                'This one-time bridge only accepts the reviewed 2550×3300 PNG at exactly 303651 bytes and the locked SHA-256, then deletes its temporary chunk files. The normal Lighting recovery workflow owns WordPress publication after the canonical asset commit.'
+              ].join('\n')
+            });
