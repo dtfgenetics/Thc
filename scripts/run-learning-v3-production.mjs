@@ -95,5 +95,36 @@ if (!publisher.includes(originalPlaceholderCss) && !publisher.includes(brandedPl
 }
 publisher = publisher.replace(originalPlaceholderCss, brandedPlaceholderCss);
 
+// Home is genetics-first. Reviewed release slots and the main hero must never use generic cultivation art.
+const originalReleaseImages = `const releaseImages = {
+  mangoRegular: chooseMedia(media, [['flower', 'anatomy'], ['trichome']], used) || fallbackHero,
+  mangoFem: chooseMedia(media, [['trichome'], ['flower']], used) || fallbackHero,
+  bubblegum: chooseMedia(media, [['sex', 'expression'], ['genetics']], used) || fallbackHero
+};`;
+const reviewedReleaseImages = `const releaseImages = {
+  mangoRegular: chooseMedia(media, [['dtf-strain-card-blue-mango-f2-regular']], new Set()) || fallbackHero,
+  mangoFem: chooseMedia(media, [['dtf-strain-card-blue-mango-f2-feminized']], new Set()) || fallbackHero,
+  bubblegum: chooseMedia(media, [['dtf-strain-card-blue-bubblegum-f1-regular']], new Set()) || fallbackHero
+};
+const reviewedGeneticsHero = chooseMedia(media, [['dtf-strain-card-blue-mango-f2-regular']], new Set()) || releaseImages.mangoRegular || fallbackHero;`;
+if (!publisher.includes(originalReleaseImages) && !publisher.includes(reviewedReleaseImages)) {
+  throw new Error('Could not locate the Learning V3 Home release-image selector; refusing to publish education art into genetics positions.');
+}
+publisher = publisher.replace(originalReleaseImages, reviewedReleaseImages);
+
+const originalReleaseCss = `.v3 .release img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover}`;
+const reviewedReleaseCss = `.v3 .release img{display:block;width:100%;aspect-ratio:2/3;object-fit:contain;background:#fff;padding:10px}.v3 .hero-media img{object-fit:contain!important;background:#fff!important;padding:10px}`;
+if (!publisher.includes(originalReleaseCss) && !publisher.includes(reviewedReleaseCss)) {
+  throw new Error('Could not locate the Learning V3 Home release image CSS.');
+}
+publisher = publisher.replace(originalReleaseCss, reviewedReleaseCss);
+
+const originalHomeHero = "<div class=\"hero-media\">${img(fallbackHero, 'DTF Genetics and Teaching Healthy Cultivation plant science', { ratio: '1/1', eager: true })}</div>";
+const reviewedHomeHero = "<div class=\"hero-media\">${img(reviewedGeneticsHero, 'Blue Mango F2 Regular DTF Genetics strain card', { ratio: '2/3', eager: true })}</div>";
+if (!publisher.includes(originalHomeHero) && !publisher.includes(reviewedHomeHero)) {
+  throw new Error('Could not locate the Learning V3 Home hero image slot.');
+}
+publisher = publisher.replace(originalHomeHero, reviewedHomeHero);
+
 await writeFile(normalizedPublisherPath, publisher);
 await import(pathToFileURL(normalizedPublisherPath).href);

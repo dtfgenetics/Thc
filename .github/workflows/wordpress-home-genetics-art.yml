@@ -2,14 +2,9 @@ name: Finalize DTFSeeds Home Genetics Art
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - 'scripts/finalize-wordpress-home-genetics-art.mjs'
-      - '.github/workflows/wordpress-home-genetics-art.yml'
   workflow_run:
     workflows:
-      - Publish DTF Genetics Library
+      - Publish DTFSeeds Learning Experience V3
     types: [completed]
 
 permissions:
@@ -103,5 +98,5 @@ jobs:
               `Genetics visual write: **${process.env.APPLY || 'not-completed'}**`,
               `Live verification: **${process.env.VERIFY || 'not-completed'}**`,
               '',
-              'Home now uses reviewed DTF Genetics strain-card artwork for the genetics hero, genetics feature, and all three current-release tiles. WordPress-hosted reviewed media is preferred; permanent reviewed CDN files are the fallback.'
+              'This finalizer now runs only after Learning Experience V3 succeeds. It upgrades the reviewed genetics hero into the premium three-card stack, applies Mango Bubbles to the genetics feature, and preserves the three reviewed current-release cards.'
             ].join('\n')});
