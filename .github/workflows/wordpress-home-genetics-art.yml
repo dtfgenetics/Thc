@@ -40,13 +40,17 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Validate Home genetics-art finalizer
+      - name: Validate Home Genetics V2 finalizer
         run: |
           set -euo pipefail
           test -n "${WP_API_USERNAME:-}"
           test -n "${WP_API_PASSWORD:-}"
           node --check scripts/finalize-wordpress-home-genetics-art.mjs
-      - name: Apply reviewed release artwork to Home
+          grep -Fq 'data-dtf-home-genetics-v2' scripts/finalize-wordpress-home-genetics-art.mjs
+          grep -Fq '/product/10-regular-f2-blue-mango-seeds/' scripts/finalize-wordpress-home-genetics-art.mjs
+          grep -Fq '/product/10-feminized-f2-blue-mango-x/' scripts/finalize-wordpress-home-genetics-art.mjs
+          grep -Fq '/product/10-reg-f1-blueberry-bubblegum/' scripts/finalize-wordpress-home-genetics-art.mjs
+      - name: Apply reviewed genetics artwork to Home
         id: apply
         env:
           APPLY_HOME_GENETICS_ART: 'true'
@@ -54,18 +58,34 @@ jobs:
           set -euo pipefail
           node scripts/finalize-wordpress-home-genetics-art.mjs | tee "$RUNNER_TEMP/home-genetics-art.json"
           echo 'outcome=success' >> "$GITHUB_OUTPUT"
-      - name: Verify Home release art
+      - name: Verify Homepage Genetics V2
         id: verify
         run: |
           set -euo pipefail
           body="$RUNNER_TEMP/home.html"
           ok=0
           for attempt in 1 2 3 4 5 6 7 8; do
-            curl -4 -fsSL --retry 2 --retry-delay 2 -H 'Cache-Control: no-cache, no-store, max-age=0' -H 'Pragma: no-cache' "$WP_SITE_URL/?dtf_home_genetics_art=${GITHUB_RUN_ID}-${attempt}" -o "$body"
-            if grep -Fqi 'Blue Mango F2 Regular DTF Genetics strain card' "$body" && grep -Fqi 'Blue Mango F2 Feminized DTF Genetics strain card' "$body" && grep -Fqi 'Blue Bubblegum F1 Regular DTF Genetics strain card' "$body"; then ok=1; break; fi
+            curl -4 -fsSL --retry 2 --retry-delay 2 \
+              -H 'Cache-Control: no-cache, no-store, max-age=0' \
+              -H 'Pragma: no-cache' \
+              "$WP_SITE_URL/?dtf_home_genetics_v2=${GITHUB_RUN_ID}-${attempt}" -o "$body"
+            if \
+              grep -Fqi 'data-dtf-home-genetics-v2="hero"' "$body" && \
+              grep -Fqi 'Blue Mango F2 Regular DTF Genetics strain card' "$body" && \
+              grep -Fqi 'Blue Mango F2 Feminized DTF Genetics strain card' "$body" && \
+              grep -Fqi 'Blue Bubblegum F1 Regular DTF Genetics strain card' "$body" && \
+              grep -Fqi 'Mango Bubbles F1 Regular DTF Genetics strain card' "$body" && \
+              grep -Fqi 'Current releases, shown with the real strain cards.' "$body"; then
+              ok=1
+              break
+            fi
             sleep 6
           done
-          [[ "$ok" -eq 1 ]] || { echo 'Reviewed release artwork is not visible on Home.' >&2; exit 1; }
+          [[ "$ok" -eq 1 ]] || {
+            echo 'Homepage Genetics V2 reviewed artwork/copy is not visible.' >&2
+            grep -oiE 'Blue Mango[^<]{0,120}|Blue Bubblegum[^<]{0,120}|Mango Bubbles[^<]{0,120}|data-dtf-home-genetics-v2' "$body" | head -40 >&2 || true
+            exit 1
+          }
           echo 'outcome=success' >> "$GITHUB_OUTPUT"
       - name: Report Home genetics artwork
         if: always()
@@ -77,11 +97,11 @@ jobs:
         with:
           script: |
             await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body:[
-              '## Home reviewed genetics artwork','',
+              '## Homepage Genetics V2','',
               `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
               `Result: **${process.env.STATUS}**`,
-              `Artwork write: **${process.env.APPLY || 'not-completed'}**`,
+              `Genetics visual write: **${process.env.APPLY || 'not-completed'}**`,
               `Live verification: **${process.env.VERIFY || 'not-completed'}**`,
               '',
-              'The three Home current-release cards now use their reviewed DTF strain-card artwork. WordPress-hosted media is preferred when available; the permanent reviewed CDN file is used only as a fallback.'
+              'Home now uses reviewed DTF Genetics strain-card artwork for the genetics hero, genetics feature, and all three current-release tiles. WordPress-hosted reviewed media is preferred; permanent reviewed CDN files are the fallback.'
             ].join('\n')});
