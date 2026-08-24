@@ -10,12 +10,18 @@ if(!user||!pass) throw new Error('Missing WordPress API credentials.');
 const auth=Buffer.from(`${user}:${pass}`).toString('base64');
 const batch=JSON.parse(await readFile(input,'utf8'));
 if(!Array.isArray(batch.lessonFiles)||!batch.lessonFiles.length) throw new Error('Batch has no lessonFiles.');
+if(batch.publicationAuthorized===false||batch.status==='blocked_external_review'){
+  throw new Error(`Batch ${batch.batch||input} is review-only and not authorized for publication.`);
+}
 
 const lessons=[];
 for(const file of batch.lessonFiles){
   const lesson=JSON.parse(await readFile(file,'utf8'));
   if(!/^THC-ENC-\d{3}$/.test(lesson.id)) throw new Error(`Invalid lesson ID in ${file}`);
   if(!lesson.title||!lesson.objective||!Array.isArray(lesson.coreScience)||lesson.coreScience.length<2) throw new Error(`Incomplete canonical lesson ${lesson.id}`);
+  if(lesson.reviewControl?.publicationAuthorized===false){
+    throw new Error(`${lesson.id} is blocked from publication by reviewControl.publicationAuthorized=false`);
+  }
   lessons.push({...lesson,_sourceFile:file});
 }
 
