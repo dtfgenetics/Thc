@@ -1,0 +1,142 @@
+{
+  "schemaVersion": 1,
+  "id": "nutrition-media-v6",
+  "title": "Nutrition & Media",
+  "learningOutcome": "Understand growing media, essential mineral elements, nutrient availability, root-zone chemistry, interactions, formulation and testing as one measured system; separate element function from product marketing; and diagnose nutrition problems from plant, root, chemistry and delivery evidence rather than symptom charts or bottle recipes alone.",
+  "chapters": [
+    {
+      "number": 1,
+      "id": "media-physical-root-space",
+      "title": "Media Physical Properties & Root Space",
+      "objective": "Compare soil, soilless and inert media by measured physical behavior rather than by category labels alone.",
+      "encyclopediaIds": ["THC-ENC-050", "THC-ENC-053", "THC-ENC-054", "THC-ENC-055", "THC-ENC-057", "THC-ENC-059"],
+      "lessons": [
+        {"title":"Texture, structure and porosity answer different questions","summary":"Mineral soil texture, aggregation and total pore space describe different physical properties; soilless media require substrate-specific measurements.","concepts":["texture","structure","porosity"],"cultivation":"Choose media from its actual air-water and handling behavior, not from a generic soil label applied to peat, coir, bark, perlite or rockwool.","observe":"Record media composition, batch, bulk density or fill condition, settling, drainage and root distribution."},
+        {"title":"Air-filled porosity and water storage must coexist","summary":"Root-zone performance depends on how pore space divides between water and air after irrigation and as the medium dries.","concepts":["air-filled porosity","water holding","container capacity"],"cultivation":"A medium that stores large amounts of water is not automatically better if gas exchange and hydraulic behavior do not match the crop system.","observe":"Use a consistent physical test or validated sensor method with container geometry, irrigation and root occupancy."},
+        {"title":"Peat, coir and inert media behave differently","summary":"Peat-based substrates, coco coir and inert materials differ in exchange capacity, initial salts, decomposition, wetting behavior and management requirements.","concepts":["peat","coir","inert media"],"cultivation":"Do not transfer irrigation or fertilizer assumptions between media simply because the container size is the same.","observe":"Keep media identity, source, lot, pre-treatment, initial pH/EC and water-holding behavior in the crop record."},
+        {"title":"Container geometry changes the medium you actually manage","summary":"Height, width, root restriction, drainage and transplant timing change water distribution, aeration and the usable root volume.","concepts":["container geometry","root restriction","transplant"],"cultivation":"Media choice and container choice are one physical system; a recipe validated in one geometry may behave differently in another.","observe":"Track container dimensions, fill volume, root occupancy, drainage and transplant response rather than volume label alone."}
+      ],
+      "knowledgeChecks": ["Why are texture and porosity not the same property?", "Why is maximum water holding not automatically desirable?", "Which properties make peat, coir and inert media management different?", "How can container geometry change root-zone behavior?"]
+    },
+    {
+      "number": 2,
+      "id": "cec-organic-matter-microbes",
+      "title": "CEC, Organic Matter & Root-Zone Biology",
+      "objective": "Connect chemical buffering and biological activity to measurable root-zone processes while separating established mechanisms from product claims.",
+      "encyclopediaIds": ["THC-ENC-046", "THC-ENC-047", "THC-ENC-048", "THC-ENC-051", "THC-ENC-052", "THC-ENC-056"],
+      "lessons": [
+        {"title":"CEC is exchange capacity, not a fertility score","summary":"Negatively charged exchange sites can retain and exchange cations, but higher CEC does not by itself prove better nutrition or crop performance.","concepts":["CEC","exchange sites","buffering"],"cultivation":"Interpret CEC with pH, exchangeable ions, media identity, inputs and plant response rather than ranking substrates by one number.","observe":"Record laboratory method, media lot, pH, EC and exchangeable cations when CEC is used for a decision."},
+        {"title":"Organic matter changes chemistry, structure and biology","summary":"Decomposing organic material can influence aggregation, water behavior, exchange capacity, mineralization and microbial activity.","concepts":["organic matter","decomposition","mineralization"],"cultivation":"Organic inputs are not chemically static; nutrient release and oxygen demand can change with material, maturity, temperature and moisture.","observe":"Document source, maturity or analysis, application rate, storage and root-zone response rather than assuming every compost behaves alike."},
+        {"title":"Root exudates and microbes create a dynamic rhizosphere","summary":"Roots release carbon compounds and signals that influence microbial communities, while microbes can alter nutrient transformations and root interactions.","concepts":["root exudates","rhizosphere","microbial ecology"],"cultivation":"Biological activity matters, but community presence does not prove a particular yield, disease-control or nutrient-delivery claim.","observe":"Separate direct measurements such as root health or nutrient trends from inferred microbial mechanisms unless appropriate tests are available."},
+        {"title":"Mycorrhizae and inoculants need evidence-aware use","summary":"Mycorrhizal associations can alter nutrient acquisition in suitable plant-root systems, but inoculation response depends on colonization, phosphorus status, media, environment and product viability.","concepts":["mycorrhizae","colonization","inoculants"],"cultivation":"Treat inoculants as testable biological inputs rather than guaranteed performance additives.","observe":"Record product lot/storage, application, compatible practices, colonization evidence where measured and matched untreated crop response when evaluating claims."}
+      ],
+      "knowledgeChecks": ["What does CEC actually measure?", "Why can organic matter alter nutrient release over time?", "Why does microbial presence not prove a claimed crop benefit?", "What evidence would strengthen a mycorrhizal product claim?"]
+    },
+    {
+      "number": 3,
+      "id": "essential-elements-npk",
+      "title": "Essential Elements, Nitrogen, Phosphorus & Potassium",
+      "objective": "Build mineral nutrition from essentiality criteria and dose-response logic instead of treating N-P-K label numbers as direct crop instructions.",
+      "encyclopediaIds": ["THC-ENC-121", "THC-ENC-122", "THC-ENC-123", "THC-ENC-124"],
+      "lessons": [
+        {"title":"Essentiality is a biological criterion","summary":"An essential element is required for normal plant life-cycle completion and has a specific function that cannot be fully replaced by another element.","concepts":["essential elements","macronutrients","micronutrients"],"cultivation":"Completeness means adequate essential elements in available forms—not the longest ingredient list or the most additives.","observe":"Inventory water, media, amendments and fertilizer sources before assuming a bottled product is the only supply."},
+        {"title":"Nitrogen form matters as well as total nitrogen","summary":"Nitrate and ammonium enter nitrogen metabolism differently and can drive different root-zone pH, ion-balance and growth responses.","concepts":["nitrate","ammonium","assimilation"],"cultivation":"Record total N and N form separately; a high ammonium fraction is not automatically faster or better nutrition.","observe":"Pair N dose/form with pH trajectory, EC, irrigation, roots, plant growth and tissue evidence."},
+        {"title":"Phosphorus is essential but excess is not a bloom strategy","summary":"Phosphorus supports ATP, nucleic acids and membranes, while availability depends on pH, precipitation, adsorption and system chemistry.","concepts":["phosphate","energy transfer","precipitation"],"cultivation":"Verify elemental P and root-zone availability before increasing phosphorus; reproductive importance does not justify unlimited bloom-booster escalation.","observe":"Track P basis, pH, calcium/iron context, stock compatibility, tissue response and discharge where relevant."},
+        {"title":"Potassium supports osmotic regulation and charge balance","summary":"Potassium remains largely ionic and supports stomata, enzyme activation, turgor, phloem transport and electrical balance.","concepts":["potassium","osmotic regulation","cation competition"],"cultivation":"High K is not a universal flower-quality lever and can interact with Ca, Mg, ammonium and total salinity.","observe":"Record elemental K, cation context, root-zone moisture/EC and crop response before adjusting a ratio."}
+      ],
+      "knowledgeChecks": ["What makes an element essential?", "Why should nitrate and ammonium be recorded separately?", "Why does phosphorus importance not prove benefit from excess?", "Which functions make potassium important without making high K universally optimal?"]
+    },
+    {
+      "number": 4,
+      "id": "calcium-magnesium-sulfur",
+      "title": "Calcium, Magnesium, Sulfur & Transport",
+      "objective": "Relate secondary macronutrient function to transport, root conditions and interacting ions instead of automatic supplement responses.",
+      "encyclopediaIds": ["THC-ENC-125", "THC-ENC-126", "THC-ENC-127", "THC-ENC-131"],
+      "lessons": [
+        {"title":"Calcium disorders are often transport disorders","summary":"Calcium supports cell walls, membranes and signaling but is poorly remobilized, so growing tissues depend strongly on continuing root-to-shoot delivery.","concepts":["calcium","xylem transport","meristems"],"cultivation":"A calcium-containing feed can coexist with local calcium stress when roots, water flow, salinity or atmospheric conditions restrict delivery.","observe":"Audit Ca supply together with roots, moisture, EC, leaf temperature, airflow, humidity and symptom location."},
+        {"title":"Magnesium connects chlorophyll with broader metabolism","summary":"Magnesium sits at the center of chlorophyll and also supports enzymes, ribosomes and phosphate-energy reactions.","concepts":["magnesium","chlorophyll","enzyme cofactor"],"cultivation":"Older-leaf interveinal chlorosis is a clue, not proof; K/Ca/NH4 balance, pH, EC, roots and light can alter Mg acquisition or mimic symptoms.","observe":"Calculate total Mg from water and fertilizer, then pair with tissue age, paired cations and root-zone measurements."},
+        {"title":"Sulfur is essential metabolism, not an aroma switch","summary":"Sulfate is assimilated into sulfur amino acids, proteins, glutathione and cofactors, but elemental sulfur and sulfate fertilizers behave differently.","concepts":["sulfate","cysteine","sulfur assimilation"],"cultivation":"Do not infer a predictable terpene or aroma gain merely because sulfur has roles in plant metabolism.","observe":"Inventory water sulfate, fertilizer/amendment sources, pH/EC and tissue pattern before supplementing."},
+        {"title":"Mobility helps locate hypotheses, not diagnoses","summary":"Relatively mobile nutrients often show shortage first in older tissue while poorly remobilized elements may affect new growth, but these are general tendencies.","concepts":["phloem mobility","symptom location","chronology"],"cultivation":"Use tissue age and pattern to narrow possibilities, then verify roots, pH/EC, environment and analytical evidence.","observe":"Map node/leaf age, vein/margin pattern, population distribution and progression over time."}
+      ],
+      "knowledgeChecks": ["Why can calcium stress occur when Ca is present in feed?", "Why is magnesium more than a chlorophyll nutrient?", "Why are sulfur and sulfate not interchangeable inputs?", "How should nutrient mobility be used in diagnosis?"]
+    },
+    {
+      "number": 5,
+      "id": "micronutrients-availability",
+      "title": "Micronutrients & Availability",
+      "objective": "Differentiate essential trace elements by function and chemistry while respecting their narrow margin between insufficient and excessive supply.",
+      "encyclopediaIds": ["THC-ENC-128", "THC-ENC-129", "THC-ENC-130"],
+      "lessons": [
+        {"title":"Iron can be abundant but unavailable","summary":"Iron supports electron transfer and chlorophyll formation, yet pH, bicarbonate, redox state, chelation and roots strongly affect usable supply.","concepts":["iron","chelation","chlorosis"],"cultivation":"Repeated young-leaf chlorosis can indicate persistent root-zone chemistry rather than simple absence of Fe from the formula.","observe":"Review Fe source/chelate with pH, alkalinity, roots, tissue sampling and new-leaf response."},
+        {"title":"Mn, Zn, Cu and Mo have different chemistry","summary":"These four essential micronutrients support different enzymes and redox functions, and their availability does not respond identically to pH.","concepts":["manganese","zinc","copper","molybdenum"],"cultivation":"Avoid treating a generic micronutrient mix as a diagnosis for any pale or distorted new growth.","observe":"Record each elemental dose separately, delivery verification, background sources, tissue pattern and laboratory evidence when needed."},
+        {"title":"Boron, chloride and nickel are essential at low supply","summary":"B, Cl and Ni support distinct structural, osmotic and enzymatic functions, but background water and trace contamination can already meet or exceed demand.","concepts":["boron","chloride","nickel"],"cultivation":"Essentiality does not justify routine extra dosing when the required amount is small and the safe margin can be narrow.","observe":"Use water analysis, product inputs, root-zone trend and contamination controls before adding trace elements."},
+        {"title":"Micronutrient dosing demands scale accuracy","summary":"Small required quantities mean weighing, stock homogeneity, injector performance and contamination can dominate actual delivered concentration.","concepts":["trace dosing","stock solution","delivery verification"],"cultivation":"A small formulation error can multiply micronutrient exposure far beyond the intended range.","observe":"Preserve scale resolution, stock volume, dilution, lot, injector ratio, output sample and independent calculation check."}
+      ],
+      "knowledgeChecks": ["Why can iron deficiency-like symptoms occur despite iron being present?", "Why should micronutrients not be treated as one pH-response group?", "Why is background water important for B and Cl?", "Why is measurement quality especially important for micronutrients?"]
+    },
+    {
+      "number": 6,
+      "id": "mobility-ph-ec-alkalinity",
+      "title": "Mobility, pH, Alkalinity, EC & Units",
+      "objective": "Interpret nutrient availability through measured chemistry and method-specific units rather than lockout shorthand or incompatible meter displays.",
+      "encyclopediaIds": ["THC-ENC-131", "THC-ENC-132", "THC-ENC-133", "THC-ENC-134", "THC-ENC-135"],
+      "lessons": [
+        {"title":"Replace 'lockout' with a specific mechanism","summary":"Availability problems can result from pH, precipitation, ion competition, roots, salinity, water flow or transport; the informal word lockout does not identify which mechanism is operating.","concepts":["availability","antagonism","mechanism"],"cultivation":"Name the mechanism before choosing a correction, because pH adjustment, salt removal and root repair are not interchangeable actions.","observe":"Pair symptom pattern with input chemistry, root-zone method, roots, water status and recent changes."},
+        {"title":"Input pH and root-zone pH are different measurements","summary":"Roots, alkalinity, fertilizer form, buffering, biology and irrigation history can drive root-zone pH away from the incoming solution.","concepts":["solution pH","root-zone pH","buffering"],"cultivation":"Do not chase the reservoir pH while ignoring the root-zone trend and the method used to measure it.","observe":"Label sample type/method, meter calibration, temperature, alkalinity, EC and fertilizer context."},
+        {"title":"Alkalinity predicts resistance to acidification","summary":"Water sources with similar pH can differ greatly in bicarbonate and acid-neutralizing capacity, which changes long-term media-pH drift.","concepts":["alkalinity","bicarbonate","hardness"],"cultivation":"Separate pH, alkalinity and hardness; a single displayed water pH does not describe the chemical load entering the root zone.","observe":"Use a current water analysis and keep units, source and sampling date with the record."},
+        {"title":"EC is transferable; meter ppm may not be","summary":"EC directly measures conductivity while common ppm/TDS displays apply device-specific conversion factors and do not identify individual nutrients.","concepts":["EC","salinity","TDS","ppm scales"],"cultivation":"Use raw EC for field trend and defined elemental mg/L for formulation rather than treating meter ppm as nutrient concentration.","observe":"Record meter model, calibration, reference temperature, sample method, raw EC and any conversion factor."}
+      ],
+      "knowledgeChecks": ["Why is 'nutrient lockout' an incomplete diagnosis?", "Why can input and root-zone pH diverge?", "How does alkalinity differ from pH and hardness?", "Why can two ppm meters disagree on the same solution?"]
+    },
+    {
+      "number": 7,
+      "id": "formulation-compatibility-testing",
+      "title": "Formulation, Mixing, Compatibility & Testing",
+      "objective": "Convert guaranteed analyses into controlled elemental delivery, prevent concentrated-stock incompatibilities, and standardize sampling methods.",
+      "encyclopediaIds": ["THC-ENC-136", "THC-ENC-137", "THC-ENC-138"],
+      "lessons": [
+        {"title":"Formulate in elemental units","summary":"Product label percentages, oxide conventions, density, stock concentration, injector ratio and final volume must be translated into actual elemental delivery.","concepts":["elemental calculation","guaranteed analysis","dilution"],"cultivation":"A bottle rate is not a transferable nutrient recipe until the actual elements and final concentration are known.","observe":"Preserve product lot, analysis, mass/volume, source water, final batch volume and independent calculation check."},
+        {"title":"Mixing order and concentration affect compatibility","summary":"Concentrated calcium, phosphate, sulfate and some micronutrient combinations can precipitate or react before reaching the crop.","concepts":["precipitation","stock compatibility","mixing order"],"cultivation":"Separate incompatible concentrates and diagnose deposits as chemistry or water-quality problems before increasing dose.","observe":"Record stock identity, concentration, water temperature, mixing order, visual precipitate, filters and emitter condition."},
+        {"title":"Sampling methods are not interchangeable","summary":"Runoff, pour-through, slurry/dilution extracts and saturated-media extracts sample different solution fractions and produce different pH/EC values.","concepts":["runoff","pour-through","extract methods"],"cultivation":"Trend one standardized method and use reference ranges validated for that method rather than mixing numbers from different extraction procedures.","observe":"Record pre-irrigation condition, wait time, dilution, collection volume, temperature, sample location and instrument."},
+        {"title":"Tissue analysis adds evidence but not certainty","summary":"Tissue concentration depends on organ, age, growth rate, contamination, sampling, laboratory method and cultivar as well as nutrient acquisition.","concepts":["tissue testing","sampling","growth dilution"],"cultivation":"Use tissue results with solution, root-zone, growth and symptom evidence instead of letting one laboratory number name the cause alone.","observe":"Preserve sampled organ/node, plant count, handling/washing, lab, method, units and paired root-zone data."}
+      ],
+      "knowledgeChecks": ["Why must product labels be converted into elemental delivery?", "Which concentrated nutrient combinations can create precipitation risk?", "Why should different root-zone extraction methods not share one reference range?", "What limits interpretation of tissue analysis?"]
+    },
+    {
+      "number": 8,
+      "id": "diagnosis-records-capa",
+      "title": "Diagnosis, Records & Corrective Action",
+      "objective": "Turn nutrient observations into a differential diagnosis and traceable corrective-action system that tests the smallest justified change.",
+      "encyclopediaIds": ["THC-ENC-139", "THC-ENC-140"],
+      "lessons": [
+        {"title":"A nutrient-looking symptom has multiple cause classes","summary":"Inadequate input, chemical unavailability, root acquisition failure, transport failure and excess/imbalance can overlap with light, water, temperature, pest, disease and spray injury.","concepts":["deficiency","toxicity","differential diagnosis"],"cultivation":"Symptom charts generate hypotheses; they do not replace system verification.","observe":"Start with cultivar, stage, tissue age, symptom geometry, population pattern, timeline and recent changes."},
+        {"title":"Verify the measurement system before treating the plant","summary":"Meter error, recipe mistakes, injector drift, irrigation nonuniformity and incompatible sampling can create apparent nutrient problems or hide real ones.","concepts":["measurement verification","delivery audit","confounding"],"cultivation":"Check the process that generated the number before using that number to justify a crop-wide correction.","observe":"Review calibration, calculation, stock, emitter output, irrigation, pH/EC method and root status."},
+        {"title":"Correct the smallest verified cause","summary":"Broad flushing, heavy feeding, pH chasing or multiple supplements at once destroys causal clarity and can create new osmotic or chemical stress.","concepts":["corrective action","change control","effectiveness check"],"cultivation":"Define the hypothesis, correction, stop condition and recheck before changing the system.","observe":"Track new growth, halted progression, roots and standardized re-tests rather than expecting damaged tissue to become perfect."},
+        {"title":"Trend records make nutrition reproducible","summary":"A useful fertility record connects water source, product lots, recipe version, stock preparation, delivery, root-zone measurements, environment, cultivar, stage and plant outcome.","concepts":["trend review","control limits","CAPA"],"cultivation":"Consistent records reveal drift and allow future operating ranges to be based on successful crops instead of memory.","observe":"Preserve units, methods, timestamps, sample IDs, deviations, owner, corrective action and effectiveness review."}
+      ],
+      "knowledgeChecks": ["What broad cause classes can produce nutrient-like symptoms?", "Why should meters and delivery be verified before correction?", "Why are multiple simultaneous changes weak diagnostic practice?", "What makes a nutrient record useful for future crops?"]
+    }
+  ],
+  "deepRoutes": [
+    {"label":"Water & Root Zone","href":"/learn/water-ph-ec/"},
+    {"label":"Plant Biology & Anatomy","href":"/learn/plant-biology/"},
+    {"label":"Environment & VPD","href":"/learn/environment-vpd/"},
+    {"label":"Plant Health & IPM","href":"/learn/plant-health-ipm/"},
+    {"label":"Evidence & Measurement","href":"/learn/evidence-measurement/"},
+    {"label":"Grow Doc diagnostics","href":"/thc-grow-doc/"}
+  ],
+  "visualTargets": [
+    "Media comparison: pore space, water holding, air-filled porosity and exchange behavior",
+    "CEC and exchange-site buffering",
+    "Rhizosphere microbes and evidence limits",
+    "Essential-element function map without product branding",
+    "Nitrogen forms, phosphorus availability and potassium osmotic roles",
+    "Calcium transport versus magnesium mobility and sulfur assimilation",
+    "Micronutrient availability and narrow deficiency-toxicity margins",
+    "pH, alkalinity, EC and meter-unit relationship",
+    "Fertilizer formulation, stock compatibility and precipitation",
+    "Root-zone and tissue sampling-method comparison",
+    "Nutrient differential-diagnosis decision tree",
+    "Nutrition trend record and corrective-action loop"
+  ]
+}
