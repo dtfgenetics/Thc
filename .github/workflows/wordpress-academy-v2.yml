@@ -1,0 +1,157 @@
+name: Publish THC Academy V2
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'site/wordpress/education/academy-v2.json'
+      - 'scripts/publish-wordpress-academy-v2.mjs'
+      - '.github/workflows/wordpress-academy-v2.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'site/wordpress/education/academy-v2.json'
+      - 'scripts/publish-wordpress-academy-v2.mjs'
+      - '.github/workflows/wordpress-academy-v2.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-academy-v2
+  cancel-in-progress: true
+
+env:
+  WP_SITE_URL: https://dtfseeds.com
+  NODE_OPTIONS: --dns-result-order=ipv4first
+
+jobs:
+  validate:
+    name: Validate THC Academy V2
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate curriculum and publisher
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/publish-wordpress-academy-v2.mjs
+          node scripts/publish-wordpress-academy-v2.mjs --validate-only | tee "$RUNNER_TEMP/academy-v2-validation.json"
+          grep -Fq '"courses": 12' "$RUNNER_TEMP/academy-v2-validation.json"
+          grep -Fq '"units": 60' "$RUNNER_TEMP/academy-v2-validation.json"
+          grep -Fq '"exercises": 24' "$RUNNER_TEMP/academy-v2-validation.json"
+          grep -Fq '"capstones": 12' "$RUNNER_TEMP/academy-v2-validation.json"
+
+  publish:
+    name: Publish and verify THC Academy V2
+    needs: validate
+    if: ${{ github.event_name != 'pull_request' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    environment: production
+    env:
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      APPLY_ACADEMY_V2: 'true'
+      BACKUP_ROOT: /tmp/dtf-academy-v2
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Confirm production package
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
+          node --check scripts/publish-wordpress-academy-v2.mjs
+          node scripts/publish-wordpress-academy-v2.mjs --validate-only
+
+      - name: Publish Academy V2
+        id: publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$BACKUP_ROOT"
+          node scripts/publish-wordpress-academy-v2.mjs | tee "$RUNNER_TEMP/academy-v2-publish.log"
+          report="$(find "$BACKUP_ROOT" -name report.json -type f -print -quit)"
+          test -n "$report"
+          test -s "$report"
+          echo "report=$report" >> "$GITHUB_OUTPUT"
+          echo "courses=$(node -p "require(process.argv[1]).courses" "$report")" >> "$GITHUB_OUTPUT"
+          echo "units=$(node -p "require(process.argv[1]).units" "$report")" >> "$GITHUB_OUTPUT"
+          echo "exercises=$(node -p "require(process.argv[1]).exercises" "$report")" >> "$GITHUB_OUTPUT"
+          echo "capstones=$(node -p "require(process.argv[1]).capstones" "$report")" >> "$GITHUB_OUTPUT"
+
+      - name: Verify fresh visitor Academy page
+        id: verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          body="$RUNNER_TEMP/academy-v2-live.html"
+          ok=0
+          for attempt in 1 2 3 4 5 6 7 8; do
+            curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+              --header 'Cache-Control: no-cache, no-store, max-age=0' --header 'Pragma: no-cache' \
+              "$WP_SITE_URL/learn/academy/?dtf_av2_verify=${GITHUB_RUN_ID}-${attempt}" --output "$body"
+            if grep -Fq 'data-dtf-academy-v2="true"' "$body"; then ok=1; break; fi
+            sleep 6
+          done
+          [[ "$ok" -eq 1 ]]
+          [[ "$(grep -Fo 'data-av2-course=' "$body" | wc -l | tr -d ' ')" = '12' ]]
+          [[ "$(grep -Fo 'class="av2-unit"' "$body" | wc -l | tr -d ' ')" = '60' ]]
+          [[ "$(grep -Fo 'class="av2-exercise"' "$body" | wc -l | tr -d ' ')" = '24' ]]
+          [[ "$(grep -Fo 'class="av2-capstone"' "$body" | wc -l | tr -d ' ')" = '12' ]]
+          grep -Fq 'Practice the system, not just the vocabulary.' "$body"
+          grep -Fq '/learn/research-methods/' "$body"
+          grep -Fq '/learn/ipm/' "$body"
+          grep -Fq '/learn/harvest-postharvest/' "$body"
+
+      - name: Upload publication and rollback evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: academy-v2-${{ github.run_id }}
+          path: |
+            /tmp/dtf-academy-v2
+            ${{ runner.temp }}/academy-v2-publish.log
+            ${{ runner.temp }}/academy-v2-live.html
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report Academy V2 result
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          STATUS: ${{ job.status }}
+          PUBLISH: ${{ steps.publish.outcome }}
+          VERIFY: ${{ steps.verify.outcome }}
+          COURSES: ${{ steps.publish.outputs.courses }}
+          UNITS: ${{ steps.publish.outputs.units }}
+          EXERCISES: ${{ steps.publish.outputs.exercises }}
+          CAPSTONES: ${{ steps.publish.outputs.capstones }}
+        with:
+          script: |
+            const body = [
+              '## THC Academy V2 production', '',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Result: **${process.env.STATUS}**`,
+              `WordPress publication: **${process.env.PUBLISH || 'not-run'}**`,
+              `Visitor verification: **${process.env.VERIFY || 'not-run'}**`,
+              `Courses: **${process.env.COURSES || '0'}**`,
+              `Guided units: **${process.env.UNITS || '0'}**`,
+              `Practical exercises: **${process.env.EXERCISES || '0'}**`,
+              `Capstones: **${process.env.CAPSTONES || '0'}**`, '',
+              'The Academy remains on the canonical /learn/academy/ route and links directly to the live V6 subject system.'
+            ].join('\n');
+            for (const issue_number of [46,142]) {
+              await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number,body});
+            }
