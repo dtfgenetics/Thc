@@ -1,0 +1,151 @@
+name: Publish Lighting Visual Atlas V6
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'site/wordpress/education/lighting-v6-visual-map.json'
+      - 'scripts/publish-wordpress-lighting-visual-atlas-v6.mjs'
+      - '.github/workflows/wordpress-lighting-visual-atlas-v6.yml'
+  workflow_run:
+    workflows:
+      - Publish Lighting V6 Final
+    types: [completed]
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-lighting-visual-atlas-v6
+  cancel-in-progress: true
+
+env:
+  WP_SITE_URL: https://dtfseeds.com
+  NODE_OPTIONS: --dns-result-order=ipv4first
+
+jobs:
+  publish:
+    name: Publish verified Lighting visual atlas
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: production
+    env:
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      APPLY_LIGHTING_VISUALS_V6: 'true'
+      LIGHTING_VISUAL_MAP: site/wordpress/education/lighting-v6-visual-map.json
+      BACKUP_ROOT: /tmp/dtf-lighting-visuals-v6
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate Lighting visual package
+        id: validate
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
+          node --check scripts/publish-wordpress-lighting-visual-atlas-v6.mjs
+          node - <<'NODE'
+          const fs=require('fs');
+          const m=JSON.parse(fs.readFileSync('site/wordpress/education/lighting-v6-visual-map.json','utf8'));
+          const groups=Object.keys(m.chapters||{});
+          const visuals=Object.values(m.chapters||{}).reduce((n,a)=>n+(a||[]).length,0);
+          if(m.curriculumId!=='lighting-v6'||groups.length!==8||visuals!==12) throw new Error('Lighting visual map shape changed unexpectedly.');
+          if(!Array.isArray(m.gaps)||m.gaps.length!==5||m.gaps.some(x=>x.status!=='needed')) throw new Error('Lighting visual gaps changed unexpectedly.');
+          const files=Object.values(m.chapters).flat().map(x=>x.file);
+          if(files.some(x=>/draft|quarantine|superseded|legacy|qa[-_ ]?required/i.test(x))) throw new Error('Unsafe asset label in Lighting map.');
+          if(files.includes('DLI_PPFD_Light_Education_Infographic.png')) throw new Error('Private-source DLI/PPFD poster cannot be mapped until exact binary migration succeeds.');
+          console.log(`Validated ${visuals} Lighting visual cards across ${groups.length} groups with ${m.gaps.length} explicit gaps.`);
+          NODE
+
+      - name: Publish and verify Lighting visual atlas
+        id: publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$BACKUP_ROOT"
+          node scripts/publish-wordpress-lighting-visual-atlas-v6.mjs | tee "$RUNNER_TEMP/lighting-visual-atlas-v6.log"
+          report="$BACKUP_ROOT/report.json"
+          test -s "$report"
+          echo "visuals=$(node -p "require(process.argv[1]).visuals" "$report")" >> "$GITHUB_OUTPUT"
+          echo "groups=$(node -p "require(process.argv[1]).groups" "$report")" >> "$GITHUB_OUTPUT"
+          echo "wp_media=$(node -p "require(process.argv[1]).wordpressMedia" "$report")" >> "$GITHUB_OUTPUT"
+          echo "fallbacks=$(node -p "require(process.argv[1]).canonicalFallbacks" "$report")" >> "$GITHUB_OUTPUT"
+          echo "gaps=$(node -p "require(process.argv[1]).unresolvedGaps.length" "$report")" >> "$GITHUB_OUTPUT"
+
+      - name: Independently verify live Lighting atlas
+        id: verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          body="$RUNNER_TEMP/lighting-atlas-live.html"
+          ok=0
+          for attempt in 1 2 3 4 5 6 7 8; do
+            curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+              --header 'Cache-Control: no-cache, no-store, max-age=0' --header 'Pragma: no-cache' \
+              "$WP_SITE_URL/learn/lighting/?dtf_li6v_verify=${GITHUB_RUN_ID}-${attempt}" --output "$body"
+            if grep -Fqi 'data-dtf-lighting-visuals-v6="true"' "$body"; then ok=1; break; fi
+            sleep 6
+          done
+          [[ "$ok" -eq 1 ]]
+          [[ "$(grep -Fo 'class="li6v-card"' "$body" | wc -l | tr -d ' ')" = '12' ]]
+          [[ "$(grep -Fo 'data-li6v-group=' "$body" | wc -l | tr -d ' ')" = '8' ]]
+          [[ "$(grep -Fo 'class="li6v-gap"' "$body" | wc -l | tr -d ' ')" = '5' ]]
+          grep -Fqi 'data-dtf-lighting-v6="true"' "$body"
+          grep -Fqi 'data-dtf-topic="lighting"' "$body"
+          grep -Fqi 'data-dtf-learning-v4="topic-lighting"' "$body"
+          ! grep -Fqi 'DLI_PPFD_Light_Education_Infographic.png' "$body"
+          ! grep -Eqi 'draft|quarantine|superseded|qa[-_ ]?required' "$body"
+
+      - name: Upload Lighting visual evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighting-visual-atlas-v6-${{ github.run_id }}
+          path: |
+            /tmp/dtf-lighting-visuals-v6
+            ${{ runner.temp }}/lighting-visual-atlas-v6.log
+            ${{ runner.temp }}/lighting-atlas-live.html
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report Lighting visual atlas result
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          STATUS: ${{ job.status }}
+          VALIDATE: ${{ steps.validate.outcome }}
+          PUBLISH: ${{ steps.publish.outcome }}
+          VERIFY: ${{ steps.verify.outcome }}
+          VISUALS: ${{ steps.publish.outputs.visuals }}
+          GROUPS: ${{ steps.publish.outputs.groups }}
+          WP_MEDIA: ${{ steps.publish.outputs.wp_media }}
+          FALLBACKS: ${{ steps.publish.outputs.fallbacks }}
+          GAPS: ${{ steps.publish.outputs.gaps }}
+        with:
+          script: |
+            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body:[
+              '## Lighting V6 visual atlas','',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Result: **${process.env.STATUS}**`,
+              `Mapping validation: **${process.env.VALIDATE || 'not-run'}**`,
+              `WordPress publication: **${process.env.PUBLISH || 'not-run'}**`,
+              `Visitor verification: **${process.env.VERIFY || 'not-run'}**`,
+              `Verified visual cards: **${process.env.VISUALS || '0'}**`,
+              `Chapter groups: **${process.env.GROUPS || '0'}**`,
+              `WordPress-media resolutions: **${process.env.WP_MEDIA || '0'}**`,
+              `Canonical GitHub fallbacks: **${process.env.FALLBACKS || '0'}**`,
+              `Explicit unresolved visual gaps: **${process.env.GAPS || '0'}**`,'',
+              'The atlas remains fail-closed and concept-specific. The verified private DLI/PPFD poster is intentionally excluded until its exact 303651-byte, 2550×3300, locked-SHA binary can be source-migrated safely; no generic substitute is used.'
+            ].join('\n')});
