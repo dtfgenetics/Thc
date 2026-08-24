@@ -1,0 +1,143 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-08-24",
+  "id": "harvest-postharvest-v6",
+  "route": "/learn/harvest-postharvest/",
+  "title": "Harvest & Post-Harvest",
+  "purpose": "Expand the Harvest & Post-Harvest subject into a measurement-first curriculum covering harvest readiness, clean handling, drying, water activity, curing, storage, degradation, and batch records while preserving existing Learn layers.",
+  "learningOutcome": "A learner should be able to evaluate harvest readiness with multiple genotype-aware observations; create a repeatable sampling plan; move flowers into post-harvest handling with clean tools and minimal damage; explain how temperature, humidity, air movement, spacing, moisture gradients, water activity and time interact during drying; distinguish curing from drying and from remediation; identify storage risks from light, heat, oxygen and moisture; and document batches so decisions can be compared rather than remembered.",
+  "evidenceBoundary": "Cannabis-specific peer-reviewed evidence is used where available. Where evidence is incomplete, the curriculum labels the uncertainty and avoids universal amber percentages, fixed harvest weeks, universal drying recipes, or claims that curing can make contaminated material safe.",
+  "sourceRefs": [
+    {
+      "id": "H1",
+      "type": "peer-reviewed",
+      "citation": "Livingstone et al. Glandular trichome development, morphology, and maturation are influenced by plant age and genotype in high THC-containing cannabis. Journal of Cannabis Research. 2023. DOI 10.1186/s42238-023-00178-9; PMCID PMC10071647.",
+      "supports": "Trichome development, asynchronous maturation, genotype and plant-age effects, and senescence context."
+    },
+    {
+      "id": "H2",
+      "type": "peer-reviewed",
+      "citation": "Tran et al. Determination of Optimal Harvest Time in Cannabis sativa L. Based upon Stigma Color Transition. Plants. 2025;14(10):1532. DOI 10.3390/plants14101532; PMCID PMC12114869.",
+      "supports": "Stigma color as a useful approximation in many genotypes while showing genotype-specific timing differences."
+    },
+    {
+      "id": "H3",
+      "type": "peer-reviewed review",
+      "citation": "Mujumdar et al. Postharvest Operations of Cannabis and Their Effect on Cannabinoid Content: A Review. 2022. PMCID PMC9404914.",
+      "supports": "Drying, water activity, equilibrium moisture, curing, packaging and storage concepts."
+    },
+    {
+      "id": "H4",
+      "type": "peer-reviewed",
+      "citation": "Postharvest Drying and Curing Affect Cannabinoid Contents and Microbial Levels in Industrial Hemp. 2025. PMCID PMC11821007.",
+      "supports": "Experimental evidence that drying and curing conditions influence moisture, chemistry and microbial outcomes."
+    },
+    {
+      "id": "H5",
+      "type": "peer-reviewed",
+      "citation": "The influence of drying and storage conditions on the volatilome and cannabinoid content of Cannabis sativa L. inflorescences. 2024. PMCID PMC11180634.",
+      "supports": "Drying and storage condition effects on volatile and cannabinoid profiles."
+    }
+  ],
+  "visualTargets": [
+    "harvest readiness using multiple signals rather than one universal trigger",
+    "clear, cloudy and amber trichome appearance with sampling and lighting cautions",
+    "clean harvest handling workflow from cut to drying space",
+    "drying environment interactions: temperature, RH, airflow, spacing and monitoring",
+    "drying failure modes and moisture-gradient risk",
+    "water activity versus total moisture content",
+    "curing as post-drying stabilization rather than remediation",
+    "storage risks from light, heat, oxygen and unsuitable moisture",
+    "post-harvest degradation pathways",
+    "batch sampling and recordkeeping workflow"
+  ],
+  "deepRoutes": [
+    {"label":"Plant biology & trichomes","href":"/learn/plant-biology/"},
+    {"label":"Environment & VPD","href":"/learn/environment-vpd/"},
+    {"label":"Plant health & IPM","href":"/learn/ipm/"},
+    {"label":"Research methods","href":"/learn/research-methods/"},
+    {"label":"Infographic library","href":"/learn/infographics/"}
+  ],
+  "chapters": [
+    {
+      "id":"readiness-sampling","number":1,"title":"Harvest Readiness & Sampling","objective":"Build a repeatable, genotype-aware readiness assessment instead of choosing a harvest date from one visual cue.","sourceIds":["H1","H2"],
+      "lessons":[
+        {"title":"Use multiple signals together","summary":"Treat stigma change, flower/bract development, glandular trichome appearance, whole-plant condition and known genotype history as complementary observations rather than independent stop/go rules.","concepts":["harvest window","stigma color","bract development","trichome appearance","genotype context"],"cultivation":"A crop can show mixed maturity signals at the same time, and different genotypes can reach peak measured chemistry at different visual stages.","observe":"Record the same set of cues on repeated dates and avoid changing the sampling location each time."},
+        {"title":"Stigma color is an approximation, not a universal clock","summary":"Stigma darkening can narrow the likely harvest window in many genotypes, but published cannabis data also show exceptions and genotype-specific timing.","concepts":["stigma transition","genotype","approximation","flower age","sampling"],"cultivation":"A fixed rule such as 'harvest at one stigma percentage' can misclassify a genotype that matures earlier or later than the reference population.","observe":"Photograph representative flowers under consistent lighting and record the fraction of visibly transitioned stigmas as one observation among several."},
+        {"title":"Trichomes mature asynchronously","summary":"Capitate glandular trichomes do not all enter translucent, cloudy and amber/brown states at the same moment; plant age, genotype and local tissue conditions influence the distribution.","concepts":["glandular trichome","asynchronous maturation","senescence","magnification","genotype"],"cultivation":"A single amber gland or one microscope field should not define the entire crop's readiness.","observe":"Sample comparable bract regions on several representative flowers with consistent magnification, illumination and white balance."},
+        {"title":"Build a sampling plan before looking","summary":"Define plants, canopy zones, flower positions, dates, imaging method and decision criteria before sampling so the result reflects a repeatable method rather than cherry-picked flowers.","concepts":["sampling plan","representativeness","canopy zone","repeatability","decision criteria"],"cultivation":"Consistent sampling makes year-to-year and genotype-to-genotype comparisons useful even when no universal readiness threshold exists.","observe":"Write down which plants and flower regions are sampled and keep the same method through the final decision."}
+      ],
+      "knowledgeChecks":["Why should stigma color not be treated as a universal harvest trigger?","What does asynchronous trichome maturation mean for microscope sampling?","Which observations should be recorded together when narrowing a harvest window?","How does a predefined sampling plan reduce confirmation bias?"]
+    },
+    {
+      "id":"clean-handling","number":2,"title":"Clean Harvest Handling & Sanitation","objective":"Move mature flowers into drying with traceable batches, clean contact surfaces and minimal unnecessary handling.","sourceIds":["H3"],
+      "lessons":[
+        {"title":"Prepare the workflow before the first cut","summary":"Set up clean tools, labeled batch containers or racks, transport paths, drying locations and record forms before cutting so material does not wait in uncontrolled piles.","concepts":["workflow","sanitation","batch identity","transport","time-to-dry"],"cultivation":"A clean, organized harvest reduces handling damage and prevents batch identity from being lost during a busy cut.","observe":"Verify clean tools, destination space readiness, labels and environmental monitoring before harvesting."},
+        {"title":"Minimize compression and rough handling","summary":"Glandular trichomes and flower surfaces are physically vulnerable, so repeated squeezing, piling, abrasion and unnecessary transfers should be minimized.","concepts":["mechanical damage","trichomes","compression","abrasion","handling"],"cultivation":"Gentle handling protects flower structure and reduces detached material and contact contamination opportunities.","observe":"Inspect containers and hanging methods for pressure points, deep piles or repeated transfers that can be eliminated."},
+        {"title":"Separate sanitation from remediation","summary":"Clean tools and surfaces reduce preventable contamination; they do not convert visibly diseased or contaminated flowers into acceptable material.","concepts":["sanitation","contamination","remediation","segregation","inspection"],"cultivation":"Post-harvest cleanliness is a preventive control, not permission to ignore mold, rot, foreign material or other unacceptable conditions.","observe":"Segregate questionable material and document the reason instead of mixing it into a clean batch."},
+        {"title":"Treat trim timing as a documented process variable","summary":"Wet versus dry trimming changes exposed surface area, handling and drying geometry; evidence does not justify presenting one method as universally best.","concepts":["wet trim","dry trim","surface area","process variable","batch comparison"],"cultivation":"Trim timing can change how quickly material loses moisture and how much it is handled.","observe":"Record trim timing and intensity alongside drying conditions so quality differences can be interpreted later."}
+      ],
+      "knowledgeChecks":["Why should tools, labels and the drying destination be ready before cutting?","What handling actions are most likely to create avoidable mechanical damage?","Why is sanitation not the same as remediation?","Why should trim timing be recorded as part of the batch process?"]
+    },
+    {
+      "id":"drying-physics","number":3,"title":"Drying Physics & Environment","objective":"Understand drying as controlled moisture movement through flower tissue into surrounding air rather than as a single room setpoint.","sourceIds":["H3","H4"],
+      "lessons":[
+        {"title":"Drying is moisture transport through a gradient","summary":"Water moves from wetter internal tissue toward drier surfaces and then into the surrounding air; internal diffusion and external air conditions both limit the process.","concepts":["moisture gradient","diffusion","surface evaporation","drying rate","mass transfer"],"cultivation":"A flower can feel dry on the outside while internal regions still contain substantially more available moisture.","observe":"Track time, mass or another repeatable moisture indicator together with environmental records instead of judging by surface feel alone."},
+        {"title":"Temperature and humidity work together","summary":"Temperature changes vapor-pressure conditions and drying kinetics while relative humidity describes saturation relative to temperature; either variable alone is incomplete.","concepts":["temperature","relative humidity","vapor pressure","drying kinetics","stability"],"cultivation":"Rapid temperature or humidity swings can change drying rate even when the daily average looks acceptable.","observe":"Use synchronized temperature and RH trends from the actual drying zone and note equipment cycles and door openings."},
+        {"title":"Air movement should remove moisture without blasting flowers","summary":"Air circulation helps move humid boundary air away from material, but strong direct airflow can create uneven surface drying and localized overdrying.","concepts":["air movement","boundary layer","direct airflow","uniformity","air exchange"],"cultivation":"The goal is gentle, distributed movement and moisture removal rather than aiming a fan directly at hanging flowers.","observe":"Use lightweight indicators or multiple sensors to identify dead zones and high-velocity paths instead of assuming fan placement equals uniform airflow."},
+        {"title":"Spacing and load change the microclimate","summary":"Hanging density, branch size, flower size and room load alter local humidity and air exchange around material.","concepts":["spacing","load density","microclimate","flower size","air exchange"],"cultivation":"A drying room qualified with a small load may behave differently when densely filled.","observe":"Compare temperature/RH at several locations and inspect dense clusters where local moisture can persist."}
+      ],
+      "knowledgeChecks":["Why can a dry-feeling surface coexist with a wetter flower interior?","Why must temperature and RH be interpreted together?","What is the difference between useful circulation and damaging direct airflow?","How can room loading change drying behavior?"]
+    },
+    {
+      "id":"failure-microbial-risk","number":4,"title":"Drying Failure Modes & Microbial Risk","objective":"Recognize common failure patterns early and respond to evidence rather than trying to rescue quality after the fact.","sourceIds":["H3","H4","H5"],
+      "lessons":[
+        {"title":"Too-fast drying can create steep moisture gradients","summary":"High heat, very dry air or strong direct airflow can remove surface moisture faster than internal moisture redistributes.","concepts":["overdrying","moisture gradient","surface drying","quality loss","rate"],"cultivation":"Rapid surface drying can produce brittle outer tissue while deeper material remains less equilibrated and can accelerate aroma loss.","observe":"Compare outer texture with internal or whole-sample moisture measurements and review the environmental trace for rapid early loss."},
+        {"title":"Stalled drying increases wet-time risk","summary":"High humidity, weak moisture removal, excessive load density or cool wet pockets can slow drying and extend the period material remains favorable to microbial growth.","concepts":["stalled drying","wet time","humidity pocket","load density","microbial risk"],"cultivation":"Dense flowers and poorly mixed zones deserve more inspection than room-average data suggests.","observe":"Look for persistent high-RH zones, condensation, musty odor, visible discoloration or soft/wet interiors and quarantine suspect material."},
+        {"title":"Uneven rooms create uneven batches","summary":"Doorways, supply air, corners, rack geometry and material density can produce location-specific drying rates.","concepts":["spatial variation","rack position","supply air","dead zone","mapping"],"cultivation":"Mixing material from very different drying zones can hide process problems and produce inconsistent storage behavior.","observe":"Map conditions and label rack or hanging positions so outliers can be traced to location."},
+        {"title":"Do not cure a contamination problem","summary":"Curing is not a sanitation or remediation step and should not be used to conceal mold, rot or persistently unsafe moisture conditions.","concepts":["curing","contamination","segregation","quality control","stop criteria"],"cultivation":"Unsafe or visibly compromised material requires a separate disposition decision, not additional time in a closed container.","observe":"Define reject/hold criteria before harvest and document why any batch is segregated."}
+      ],
+      "knowledgeChecks":["What conditions can produce steep surface-to-interior moisture gradients?","Why does stalled drying increase microbial concern?","How can rack position create apparent batch inconsistency?","Why must curing never be presented as remediation?"]
+    },
+    {
+      "id":"water-activity","number":5,"title":"Water Activity & Moisture Concepts","objective":"Distinguish total water content from the availability of water for physical, chemical and microbial processes.","sourceIds":["H3","H4"],
+      "lessons":[
+        {"title":"Water activity is not the same as moisture percentage","summary":"Moisture content describes how much water a sample contains; water activity describes the thermodynamic availability of that water relative to pure water.","concepts":["water activity","moisture content","available water","thermodynamics","aw"],"cultivation":"Two materials with similar total moisture can differ in how tightly water is bound and therefore in storage behavior.","observe":"Record the measurement method and do not substitute a moisture-content number for water activity."},
+        {"title":"Equilibration matters before measurement","summary":"A sample and instrument chamber need time to approach equilibrium; temperature, sample preparation and sealed-chamber behavior can affect the reading.","concepts":["equilibrium","sample preparation","instrument chamber","temperature","measurement method"],"cultivation":"Rushing a reading or using a nonrepresentative fragment can create false confidence in batch stability.","observe":"Follow instrument instructions, use representative samples and record sample temperature and equilibration method."},
+        {"title":"A batch has variation, not one magical number","summary":"Flower size, position, drying history and internal gradients produce within-batch variability that a single measurement may miss.","concepts":["sampling variation","within-batch","replication","uncertainty","representativeness"],"cultivation":"One acceptable reading should not override contradictory evidence from wet pockets or other locations.","observe":"Use multiple samples or a defined composite/sampling plan and investigate outliers instead of deleting them."},
+        {"title":"Use water activity as one storage-stability indicator","summary":"Water activity can inform microbial and physical stability, but interpretation depends on method, product form, applicable standards and the full storage system.","concepts":["storage stability","microbial risk","method","standards","context"],"cultivation":"A universal pass/fail value should not be presented without identifying the governing method or regulatory/product context.","observe":"Document the instrument, calibration/verification, sample method and applicable specification when a numeric limit is used."}
+      ],
+      "knowledgeChecks":["How does water activity differ from total moisture content?","Why does sample equilibration matter?","Why can one water-activity reading fail to represent an entire batch?","What information must accompany a numeric water-activity specification?"]
+    },
+    {
+      "id":"curing-stabilization","number":6,"title":"Curing & Moisture Equalization","objective":"Treat curing as controlled post-drying stabilization and observation, not as a substitute for adequate drying or safety controls.","sourceIds":["H3","H4"],
+      "lessons":[
+        {"title":"Curing begins after adequate drying","summary":"Material should enter curing only after the drying process has brought it into a defensible storage/stabilization condition based on the chosen measurement method.","concepts":["curing","post-drying","stabilization","entry criteria","measurement"],"cultivation":"Sealing material that is still too wet can trap a high-moisture microenvironment rather than improve it.","observe":"Define curing entry criteria before filling containers and retain the pre-cure measurement record."},
+        {"title":"Closed storage redistributes internal moisture","summary":"Moisture can migrate between wetter and drier tissues after material is enclosed, so early readings and texture may change as the batch equilibrates.","concepts":["moisture redistribution","equilibration","container","gradient","stabilization"],"cultivation":"Curing observations should focus on trend and uniformity rather than assuming the first sealed-container reading is final.","observe":"Recheck representative samples after equilibration and compare them with the drying endpoint."},
+        {"title":"Container loading changes headspace and equilibration","summary":"Fill ratio, container volume, flower density and opening frequency influence headspace conditions and the rate at which a batch equilibrates.","concepts":["headspace","fill ratio","container volume","opening frequency","equilibrium"],"cultivation":"Overfilled or inconsistently loaded containers can create uneven observations and make batch-to-batch comparisons difficult.","observe":"Standardize container type and approximate fill method when comparing cure trials."},
+        {"title":"Curing claims should stay bounded","summary":"Curing may change moisture distribution, sensory qualities and chemistry over time, but the literature does not justify every traditional claim as a universal mechanism.","concepts":["evidence boundary","sensory change","chemistry","time","bounded claim"],"cultivation":"Teach what is measured or observed and separate it from folklore about guaranteed potency, smoothness or safety.","observe":"Record sensory observations separately from analytical measurements and note who evaluated them and under what conditions."}
+      ],
+      "knowledgeChecks":["What should be true before material enters curing?","Why can readings change after a batch is first sealed?","How does container loading affect curing comparisons?","Why should curing claims be separated into measured outcomes and sensory observations?"]
+    },
+    {
+      "id":"storage-degradation","number":7,"title":"Storage & Degradation","objective":"Protect dried material by managing light, temperature, oxygen exposure, moisture and packaging as an interacting storage system.","sourceIds":["H3","H5"],
+      "lessons":[
+        {"title":"Light can accelerate chemical change","summary":"Photochemical exposure can contribute to degradation and color/aroma change, so storage should minimize unnecessary light when quality preservation is the goal.","concepts":["light exposure","photodegradation","storage","packaging","quality"],"cultivation":"Clear containers on a bright shelf do not provide the same protection as opaque or dark storage.","observe":"Record packaging light barrier and storage location rather than treating all containers as equivalent."},
+        {"title":"Temperature changes reaction rates and volatility","summary":"Elevated temperatures can accelerate chemical reactions and volatile losses; excessive cold can introduce condensation risk when cold material is opened in humid air.","concepts":["temperature","reaction rate","volatiles","condensation","thermal cycling"],"cultivation":"Stable storage is usually more interpretable than repeated heating/cooling cycles.","observe":"Log storage temperature and note excursions, shipping periods and warm-up practices before opening cold containers."},
+        {"title":"Oxygen exposure is shaped by packaging and headspace","summary":"Oxygen-driven reactions depend on package permeability, headspace, repeated opening and seal integrity rather than on 'air' as a binary condition.","concepts":["oxygen","headspace","permeability","seal integrity","opening frequency"],"cultivation":"Frequent opening or damaged seals can make two nominally identical packages age differently.","observe":"Inspect seals and record package type, fill level and opening history when evaluating storage performance."},
+        {"title":"Moisture and packaging must be managed together","summary":"Packaging can slow water exchange with the environment, but it cannot correct a batch that entered storage too wet, too dry or highly nonuniform.","concepts":["moisture migration","package barrier","equilibrium","storage entry","uniformity"],"cultivation":"A high-barrier package preserves the condition it receives; it does not automatically create the correct condition.","observe":"Measure or verify the batch before final packaging and recheck when storage complaints or texture changes appear."}
+      ],
+      "knowledgeChecks":["Why does storage light exposure matter?","How can cold storage create condensation risk during handling?","Which packaging variables influence oxygen exposure?","Why can a high-barrier package not fix an improper drying endpoint?"]
+    },
+    {
+      "id":"records-qa","number":8,"title":"Records, QA & Continuous Improvement","objective":"Turn harvest and post-harvest work into a traceable process that can be compared across batches and improved without relying on memory.","sourceIds":["H1","H2","H3","H4","H5"],
+      "lessons":[
+        {"title":"Give every batch a stable identity","summary":"Link genotype, plant or lot source, harvest date, room/rack location, handling method, drying record, curing containers and storage package to one batch identifier.","concepts":["batch ID","traceability","genotype","harvest date","process history"],"cultivation":"Traceability lets a quality difference be connected to a real process variable instead of a story reconstructed later.","observe":"Check that labels survive every transfer and that records use the same identifier."},
+        {"title":"Preserve raw observations before interpretation","summary":"Keep images, instrument readings, times, locations and direct sensory notes separate from later conclusions about cause or quality.","concepts":["raw data","observation","interpretation","photo record","instrument record"],"cultivation":"Separating observation from interpretation makes audits and future re-analysis possible.","observe":"Store original photos and readings with timestamps and avoid overwriting them with only a summary score."},
+        {"title":"Compare batches using the same definitions","summary":"If drying endpoint, water-activity sampling, sensory scoring or storage checks change between batches, document the method change before comparing results.","concepts":["method consistency","comparability","endpoint","sampling","change control"],"cultivation":"A process can look better simply because the measurement method changed.","observe":"Version procedures and note instrument, sampling and scoring changes in the batch record."},
+        {"title":"Use bounded conclusions and planned next tests","summary":"When a batch differs, identify the evidence, plausible factors and next controlled comparison rather than declaring one cause from correlation.","concepts":["bounded conclusion","hypothesis","controlled comparison","replication","improvement loop"],"cultivation":"Small, documented changes protect quality better than changing several drying or storage variables at once.","observe":"Choose one or a few testable variables, define success/stop criteria and preserve the previous qualified process for comparison."}
+      ],
+      "knowledgeChecks":["What information should a post-harvest batch ID connect?","Why should raw observations be stored separately from conclusions?","How can a method change create a false process improvement?","What makes a post-harvest conclusion appropriately bounded?"]
+    }
+  ]
+}
