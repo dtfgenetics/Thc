@@ -1,0 +1,30 @@
+{
+  "id":"THC-ENC-172",
+  "number":172,
+  "title":"Hardening-Off Rooted Cuttings",
+  "objective":"Transition rooted cuttings from protected propagation conditions to production conditions without exceeding hydraulic or light capacity.",
+  "terms":[
+    {"term":"hardening off","definition":"A staged transition from protected propagation conditions toward the intended production environment."},
+    {"term":"acclimation","definition":"Physiological adjustment to a changed environment over time."},
+    {"term":"root function","definition":"The root system's ability to maintain water and nutrient uptake, anchorage, and growth under the conditions being imposed."},
+    {"term":"cuticle","definition":"The hydrophobic outer layer of aerial plant surfaces that limits uncontrolled water loss and provides a surface barrier."},
+    {"term":"stomatal regulation","definition":"Physiological adjustment of stomatal aperture that changes gas exchange and transpiration."},
+    {"term":"transplant shock","definition":"Temporary loss of growth or water balance following transplant caused by root disturbance or a rapid environmental change."}
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Root emergence does not mean the cutting can immediately support full production demand. New roots may be small, poorly distributed, or only loosely connected to the medium, while leaves remain adapted to high humidity and low airflow.",
+    "Hardening reduces protection in steps. Humidity, airflow, light, irrigation frequency, and root-zone conditions are adjusted while the plant’s turgor, leaf temperature, water use, and new growth are observed.",
+    "Rapid wilt after dome removal can reflect insufficient roots, root damage, excessive light, high VPD, cold or saline media, poor plug contact, or a sudden environmental jump. Reclosing the dome may restore turgor without correcting the cause."
+  ],
+  "cultivationRelevance":["Use staged venting and environmental transitions. Transplant only when roots hold the plug or otherwise meet a defined functional criterion, and protect the first production interval from extreme demand."],
+  "measureAndRecord":[{"field":"Controlled record set","requirement":"Root stage; venting schedule; RH/VPD and leaf temperature; light change; irrigation; wilt and recovery; transplant survival; new root and shoot growth."}],
+  "misconceptions":["Roots at the plug edge mean the plant is fully hardened.","Wilt after transplant always means it needs more water.","Hardening is only lowering humidity."],
+  "evidenceLimits":["The transition rate is system-specific. A fixed number of days cannot replace functional assessment."],
+  "crossLinks":"THC-ENC-081–120 for environment and lighting; THC-ENC-161–171 for propagation; THC-GROW-034 for the controlled propagation SOP package.",
+  "sourceNotes":["Holmes JE et al. (2021). Frontiers in Plant Science 12:732344.","Liang J et al. (2026). Frontiers in Plant Science. DOI 10.3389/fpls.2026.1846572.","Controlled Volume 05–06 environment and lighting evidence."],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 09 v1.0","evidenceControl":"complete","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"propagation_and_environment","publicationAuthorized":true,"publicationAuthorization":"project_owner_2026-08-24","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"hardening-off-rooted-cuttings",
+  "route":"/encyclopedia/hardening-off-rooted-cuttings"
+}
