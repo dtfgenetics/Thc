@@ -1,0 +1,47 @@
+name: Validate About Brand V3
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'scripts/finalize-wordpress-about-brand-v3.mjs'
+      - '.github/workflows/wordpress-about-brand-v3.yml'
+      - '.github/workflows/about-brand-v3-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate About V3 source and finalizer order
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/finalize-wordpress-about-brand-v3.mjs
+          grep -Fq 'data-dtf-about-brand-v3="true"' scripts/finalize-wordpress-about-brand-v3.mjs
+          grep -Fq 'Breeding with a record. Teaching the plant behind it.' scripts/finalize-wordpress-about-brand-v3.mjs
+          grep -Fq 'Genetics first. Documentation always.' scripts/finalize-wordpress-about-brand-v3.mjs
+          grep -Fq '/seeds/blue-mango/' scripts/finalize-wordpress-about-brand-v3.mjs
+          grep -Fq '/seeds/blue-bubblegum/' scripts/finalize-wordpress-about-brand-v3.mjs
+          grep -Fq '/seeds/mango-bubbles/' scripts/finalize-wordpress-about-brand-v3.mjs
+          grep -Fq 'Deploy DTFSeeds WordPress Pages' .github/workflows/wordpress-about-brand-v3.yml
+          grep -Fq 'Publish DTF Genetics Library' .github/workflows/wordpress-about-brand-v3.yml
+          grep -Fq '/about/?dtf_about_v3=' .github/workflows/wordpress-about-brand-v3.yml
+      - name: Reject internal project-language regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          for phrase in 'Open project tracking' 'implementation gates' 'server-engine alpha' 'source-controlled development'; do
+            if grep -Fqi "$phrase" scripts/finalize-wordpress-about-brand-v3.mjs; then
+              echo "Internal project language leaked into About V3: $phrase" >&2
+              exit 1
+            fi
+          done

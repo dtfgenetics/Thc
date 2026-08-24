@@ -1,0 +1,142 @@
+name: Publish DTF About Brand V3
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/finalize-wordpress-about-brand-v3.mjs'
+      - '.github/workflows/wordpress-about-brand-v3.yml'
+  workflow_run:
+    workflows:
+      - 'Deploy DTFSeeds WordPress Pages'
+      - 'Publish DTF Genetics Library'
+    types: [completed]
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-about-brand-v3
+  cancel-in-progress: true
+
+env:
+  WP_SITE_URL: https://dtfseeds.com
+  NODE_OPTIONS: --dns-result-order=ipv4first
+
+jobs:
+  publish-about-v3:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: production
+    env:
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME || secrets.WORDPRESS_USERNAME || secrets.WP_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD || secrets.WORDPRESS_APP_PASSWORD || secrets.WP_APPLICATION_PASSWORD }}
+      BACKUP_ROOT: /tmp/dtf-about-brand-v3
+
+    steps:
+      - name: Checkout trusted main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate About V3 package
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${WP_API_USERNAME:-}"
+          test -n "${WP_API_PASSWORD:-}"
+          node --check scripts/finalize-wordpress-about-brand-v3.mjs
+          node --check scripts/flush-hostinger-litespeed-mcp.mjs
+          grep -Fq 'data-dtf-about-brand-v3' scripts/finalize-wordpress-about-brand-v3.mjs
+          grep -Fq 'Breeding with a record. Teaching the plant behind it.' scripts/finalize-wordpress-about-brand-v3.mjs
+          grep -Fq 'dtf-strain-card-blue-mango-f2-regular' scripts/finalize-wordpress-about-brand-v3.mjs
+          grep -Fq 'dtf-strain-card-mango-bubbles-f1-regular' scripts/finalize-wordpress-about-brand-v3.mjs
+          grep -Fq 'dtf-strain-card-blue-bubblegum-f1-regular' scripts/finalize-wordpress-about-brand-v3.mjs
+
+      - name: Publish About V3 brand page
+        id: publish
+        env:
+          APPLY_ABOUT_BRAND_V3: 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$BACKUP_ROOT"
+          node scripts/finalize-wordpress-about-brand-v3.mjs | tee "$RUNNER_TEMP/about-v3.json"
+
+      - name: Purge Hostinger LiteSpeed cache
+        id: cache
+        shell: bash
+        run: |
+          set -euo pipefail
+          ok=0
+          for attempt in 1 2 3; do
+            if node scripts/flush-hostinger-litespeed-mcp.mjs; then ok=1; break; fi
+            sleep $((attempt * 4))
+          done
+          [[ "$ok" -eq 1 ]] || { echo 'LiteSpeed cache purge failed.' >&2; exit 1; }
+          sleep 5
+
+      - name: Verify About V3 origin and public cache
+        id: verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          verify_about() {
+            local url="$1" output="$2" ok=0
+            for attempt in 1 2 3 4 5 6 7 8; do
+              curl -4 -fsSL --retry 2 --retry-delay 2 -H 'Cache-Control: no-cache, no-store, max-age=0' -H 'Pragma: no-cache' "$url" -o "$output"
+              if \
+                grep -Fqi 'data-dtf-about-brand-v3="true"' "$output" && \
+                grep -Fqi 'Breeding with a record. Teaching the plant behind it.' "$output" && \
+                grep -Fqi 'Blue Mango F2 Regular DTF Genetics strain card' "$output" && \
+                grep -Fqi 'Mango Bubbles F1 Regular DTF Genetics strain card' "$output" && \
+                grep -Fqi 'Blue Bubblegum F1 Regular DTF Genetics strain card' "$output" && \
+                grep -Fqi 'Genetics first. Documentation always.' "$output"; then
+                ok=1; break
+              fi
+              sleep 6
+            done
+            [[ "$ok" -eq 1 ]] || { echo "About V3 verification failed for $url" >&2; exit 1; }
+          }
+          verify_about "$WP_SITE_URL/about/?dtf_about_v3=${GITHUB_RUN_ID}" "$RUNNER_TEMP/about-v3-origin.html"
+          verify_about "$WP_SITE_URL/about/" "$RUNNER_TEMP/about-v3-public.html"
+
+      - name: Upload About V3 rollback evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dtf-about-brand-v3-${{ github.run_id }}
+          path: |
+            /tmp/dtf-about-brand-v3
+            ${{ runner.temp }}/about-v3-*.html
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report About V3 production result
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          STATUS: ${{ job.status }}
+          PUBLISH: ${{ steps.publish.outcome }}
+          CACHE: ${{ steps.cache.outcome }}
+          VERIFY: ${{ steps.verify.outcome }}
+        with:
+          script: |
+            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body:[
+              '## DTF About Brand V3','',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Result: **${process.env.STATUS}**`,
+              `About write: **${process.env.PUBLISH || 'not-run'}**`,
+              `LiteSpeed cache purge: **${process.env.CACHE || 'not-run'}**`,
+              `Origin + public verification: **${process.env.VERIFY || 'not-run'}**`,
+              '',
+              'About now leads with DTF Genetics, breeding documentation, reviewed strain-card artwork, and the Dream the Future brand story. Education, tools, and community support the genetics instead of competing with it for the brand identity.'
+            ].join('\n')});
