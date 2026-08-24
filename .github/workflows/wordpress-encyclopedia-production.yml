@@ -50,6 +50,8 @@ jobs:
           set -euo pipefail
           node --check scripts/publish-wordpress-encyclopedia-canonical-batch.mjs
           node --check scripts/organize-wordpress-encyclopedia-topics.mjs
+          node --check scripts/validate-encyclopedia-release-control.mjs
+          node scripts/validate-encyclopedia-release-control.mjs "$ENCYCLOPEDIA_BATCH_FILE"
           node - <<'NODE'
           const fs=require('fs');
           const path=process.env.ENCYCLOPEDIA_BATCH_FILE;
