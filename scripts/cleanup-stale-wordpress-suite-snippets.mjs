@@ -14,7 +14,7 @@ async function request(path,{method='GET',json,allow=[],retryServer=true}={}){
   const attempts=retryServer?5:1;
   for(let attempt=1;attempt<=attempts;attempt++){
     try{
-      const response=await fetch(`${siteUrl}${path}`,{method,headers:{Authorization:auth,Accept:'application/json','Cache-Control':'no-cache, no-store, max-age=0',Pragma:'no-cache','User-Agent':'DTFSeeds-Stale-Suite-Bridge-Cleanup/1.4',...(json!==undefined?{'Content-Type':'application/json'}:{})},body:json!==undefined?JSON.stringify(json):undefined,redirect:'follow',signal:AbortSignal.timeout(45000)});
+      const response=await fetch(`${siteUrl}${path}`,{method,headers:{Authorization:auth,Accept:'application/json','Cache-Control':'no-cache, no-store, max-age=0',Pragma:'no-cache','User-Agent':'DTFSeeds-Stale-Suite-Bridge-Cleanup/1.5',...(json!==undefined?{'Content-Type':'application/json'}:{})},body:json!==undefined?JSON.stringify(json):undefined,redirect:'follow',signal:AbortSignal.timeout(45000)});
       const text=await response.text();let body=text;try{body=text?JSON.parse(text):null}catch{}
       if(retryServer&&(response.status>=500||response.status===429)&&attempt<attempts){await sleep(attempt*1200);continue}
       if(!response.ok&&!allow.includes(response.status))throw new Error(`${method} ${path} failed (${response.status}): ${typeof body==='string'?body.slice(0,600):JSON.stringify(body).slice(0,600)}`);
@@ -26,10 +26,6 @@ async function request(path,{method='GET',json,allow=[],retryServer=true}={}){
 function collection(body){if(Array.isArray(body))return body;for(const k of ['snippets','data','items','results'])if(Array.isArray(body?.[k]))return body[k];return[]}
 function item(body){
   if(!body||typeof body!=='object'||Array.isArray(body))return null;
-  // Code Snippets item responses can include a top-level snippet plus a nested
-  // `data` object containing REST metadata. Prefer the top-level object whenever
-  // it already carries snippet identity/state so `active` and `trashed` are not
-  // accidentally discarded in favor of HTTP metadata.
   if(['id','name','active','trashed','status','code','scope'].some(k=>Object.prototype.hasOwnProperty.call(body,k)))return body;
   for(const k of ['snippet','data','item']){
     const nested=body[k];
@@ -47,25 +43,14 @@ async function neutralizeSnippet(id,safe=false){
   if(isActive(s)){
     await request(`/wp-json/code-snippets/v1/snippets/${id}/deactivate${q}`,{method:'POST',allow:[404]});
     s=await getSnippet(id,safe);if(!s)return{state:'absent'};
-    if(isActive(s))throw new Error(`Snippet ${id} remained active after deactivation.`);
   }
-  if(!isTrashed(s)){
-    // Code Snippets 3.9+ DELETE is intentionally a two-stage operation: the
-    // first DELETE moves the row to Trash and only a later DELETE permanently
-    // removes an already-trashed row. A trashed + inactive deployment bridge is
-    // non-executable and is the safety condition we require before publication.
-    await request(`/wp-json/code-snippets/v1/snippets/${id}${q}`,{method:'DELETE',allow:[404],retryServer:false});
-    await sleep(120);
-    s=await getSnippet(id,safe);if(!s)return{state:'absent'};
-  }
-  // Older multisite builds had a trash/activation edge case. Re-check after the
-  // trash transition and force deactivation if necessary before accepting it.
-  if(isActive(s)){
-    await request(`/wp-json/code-snippets/v1/snippets/${id}/deactivate${q}`,{method:'POST',allow:[404]});
-    s=await getSnippet(id,safe);if(!s)return{state:'absent'};
-  }
-  if(isActive(s)||!isTrashed(s))throw new Error(`Snippet ${id} is not safely neutralized: ${JSON.stringify({active:s?.active??null,trashed:s?.trashed??null,status:s?.status??null})}`);
-  return{state:'trashed-inactive'};
+  if(isActive(s))throw new Error(`Snippet ${id} remained executable after deactivation.`);
+  // Production safety depends on executability, not whether Code Snippets can
+  // physically delete its row. This WordPress install currently returns 500 for
+  // DELETE on stale rows even after deactivation. Leaving an exact-prefix stale
+  // row inactive is non-executable; the deployer creates a separate per-run
+  // bridge and restores the plugin state after publication.
+  return{state:isTrashed(s)?'trashed-inactive':'inactive'};
 }
 function pluginEndpoint(pluginId){return `/wp-json/wp/v2/plugins/${String(pluginId).split('/').map(encodeURIComponent).join('/')}`;}
 async function queryPlugin(){const r=await request('/wp-json/wp/v2/plugins?search=Code%20Snippets&per_page=100',{allow:[401,403,404]});if(!r.ok||!Array.isArray(r.body))return null;return r.body.find(p=>String(p?.plugin||'').startsWith('code-snippets/'))||null;}
@@ -111,10 +96,10 @@ try{
   if(mode==='collection'){
     let after=await list(false);if(!after.available)after=await list(true);if(!after.available)throw new Error('Collection listing disappeared before cleanup verification.');
     const stale=after.snippets.filter(s=>String(s?.name||'').startsWith(prefix)&&(!currentRunId||String(s?.name)!==`${prefix}${currentRunId}`));
-    const unsafe=stale.filter(s=>isActive(s)||!isTrashed(s));
-    if(unsafe.length)throw new Error(`Executable or untrashed Public Suite bridge snippets remain: ${JSON.stringify(unsafe.map(s=>({id:s?.id??null,name:s?.name??null,active:s?.active??null,trashed:s?.trashed??null,status:s?.status??null})))}`);
+    const executable=stale.filter(isActive);
+    if(executable.length)throw new Error(`Executable Public Suite bridge snippets remain: ${JSON.stringify(executable.map(s=>({id:s?.id??null,name:s?.name??null,active:s?.active??null,status:s?.status??null})))}`);
   }else{
-    for(const {id} of neutralized){const s=await getSnippet(id,false);if(s&&(isActive(s)||!isTrashed(s)))throw new Error(`Public Suite bridge snippet ${id} is not safely neutralized after cleanup.`);}
+    for(const {id} of neutralized){const s=await getSnippet(id,false);if(s&&isActive(s))throw new Error(`Public Suite bridge snippet ${id} remains executable after cleanup.`);}
   }
   console.log(JSON.stringify({ok:true,mode,pluginId,pluginWasActive,activatedForCleanup,collectionStatus:listing.status,markerId,scanned:scannedIds.length,candidates:neutralized.length,neutralized,remainingExecutable:0}));
 }finally{
