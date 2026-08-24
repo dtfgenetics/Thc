@@ -1,0 +1,209 @@
+name: Publish Harvest Outdoor V6 final repair
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-harvest-outdoor-v6-final-repair.yml'
+      - 'scripts/fix-harvest-outdoor-v6-owner-markers.mjs'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-harvest-outdoor-v6-final-repair.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: dtfseeds-harvest-outdoor-v6-final-repair
+  cancel-in-progress: false
+
+env:
+  WP_SITE_URL: https://dtfseeds.com
+  NODE_OPTIONS: --dns-result-order=ipv4first
+
+jobs:
+  validate:
+    name: Validate final repair path
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Simulate canonical marker repair
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/fix-harvest-outdoor-v6-owner-markers.mjs
+          node --check scripts/publish-wordpress-harvest-outdoor-v6-final.mjs
+          node scripts/publish-wordpress-harvest-outdoor-v6-final.mjs --validate-only | tee "$RUNNER_TEMP/hov6-final-validation.json"
+          grep -Fq 'data-dtf-topic="outdoor-cultivation"' scripts/publish-wordpress-harvest-outdoor-v6-final.mjs
+          grep -Fq 'data-dtf-learning-v4="topic-outdoor-cultivation"' scripts/publish-wordpress-harvest-outdoor-v6-final.mjs
+          grep -Fq '"lessons": 32' "$RUNNER_TEMP/hov6-final-validation.json"
+
+  publish:
+    name: Persist publisher, publish WordPress, verify live pages
+    needs: validate
+    if: ${{ github.event_name != 'pull_request' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    environment: production
+    env:
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      APPLY_HARVEST_OUTDOOR_V6: 'true'
+      BACKUP_ROOT: /tmp/dtf-harvest-outdoor-v6-final-repair
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Persist only the publisher marker repair on newest main
+        id: repair
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          pushed=0
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            node scripts/fix-harvest-outdoor-v6-owner-markers.mjs | tee "$RUNNER_TEMP/hov6-source-repair-${attempt}.json"
+            git checkout -- .github/workflows/wordpress-harvest-outdoor-v6-production.yml
+            node --check scripts/publish-wordpress-harvest-outdoor-v6-final.mjs
+            node scripts/publish-wordpress-harvest-outdoor-v6-final.mjs --validate-only > "$RUNNER_TEMP/hov6-validation-${attempt}.json"
+            grep -Fq 'data-dtf-topic="outdoor-cultivation"' scripts/publish-wordpress-harvest-outdoor-v6-final.mjs
+            grep -Fq 'data-dtf-learning-v4="topic-outdoor-cultivation"' scripts/publish-wordpress-harvest-outdoor-v6-final.mjs
+            if git diff --quiet -- scripts/publish-wordpress-harvest-outdoor-v6-final.mjs; then
+              pushed=1
+              echo 'already_fixed=true' >> "$GITHUB_OUTPUT"
+              break
+            fi
+            git add scripts/publish-wordpress-harvest-outdoor-v6-final.mjs
+            git commit -m 'Fix Outdoor V6 publisher ownership markers'
+            if git push origin HEAD:main; then
+              pushed=1
+              echo 'already_fixed=false' >> "$GITHUB_OUTPUT"
+              break
+            fi
+            sleep $((attempt * 3))
+          done
+          [[ "$pushed" -eq 1 ]]
+          echo "head=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Publish complete Harvest and Outdoor V6 curricula
+        id: publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$BACKUP_ROOT"
+          node scripts/publish-wordpress-harvest-outdoor-v6-final.mjs | tee "$RUNNER_TEMP/hov6-final-publish.log"
+          report="$(find "$BACKUP_ROOT" -name report.json -type f -print -quit)"
+          test -n "$report"
+          test -s "$report"
+          echo "report=$report" >> "$GITHUB_OUTPUT"
+          echo "subjects=$(node -p "require(process.argv[1]).totals.subjects" "$report")" >> "$GITHUB_OUTPUT"
+          echo "chapters=$(node -p "require(process.argv[1]).totals.chapters" "$report")" >> "$GITHUB_OUTPUT"
+          echo "lessons=$(node -p "require(process.argv[1]).totals.lessons" "$report")" >> "$GITHUB_OUTPUT"
+          echo "sources=$(node -p "require(process.argv[1]).totals.sources" "$report")" >> "$GITHUB_OUTPUT"
+          echo "visual_targets=$(node -p "require(process.argv[1]).totals.visualTargets" "$report")" >> "$GITHUB_OUTPUT"
+
+      - name: Verify Harvest visitor page
+        id: harvest
+        shell: bash
+        run: |
+          set -euo pipefail
+          body="$RUNNER_TEMP/harvest-postharvest-v6-live.html"
+          ok=0
+          for attempt in 1 2 3 4 5 6 7 8 9 10; do
+            curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+              --header 'Cache-Control: no-cache, no-store, max-age=0' --header 'Pragma: no-cache' \
+              "$WP_SITE_URL/learn/harvest-postharvest/?dtf_hov6_final=${GITHUB_RUN_ID}-${attempt}" --output "$body"
+            if grep -Fq 'data-dtf-harvest-postharvest-v6="true"' "$body"; then ok=1; break; fi
+            sleep 6
+          done
+          [[ "$ok" -eq 1 ]]
+          [[ "$(grep -Fo 'data-hov6-chapter=' "$body" | wc -l | tr -d ' ')" = '8' ]]
+          [[ "$(grep -Fo 'class="hov6-lesson"' "$body" | wc -l | tr -d ' ')" = '32' ]]
+          grep -Fq 'data-dtf-topic="harvest-postharvest"' "$body"
+          grep -Fq 'data-dtf-learning-v4="topic-harvest-postharvest"' "$body"
+
+      - name: Verify Outdoor visitor page
+        id: outdoor
+        shell: bash
+        run: |
+          set -euo pipefail
+          body="$RUNNER_TEMP/outdoor-v6-live.html"
+          ok=0
+          for attempt in 1 2 3 4 5 6 7 8 9 10; do
+            curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+              --header 'Cache-Control: no-cache, no-store, max-age=0' --header 'Pragma: no-cache' \
+              "$WP_SITE_URL/learn/outdoor/?dtf_hov6_final=${GITHUB_RUN_ID}-${attempt}" --output "$body"
+            if grep -Fq 'data-dtf-outdoor-v6="true"' "$body"; then ok=1; break; fi
+            sleep 6
+          done
+          [[ "$ok" -eq 1 ]]
+          [[ "$(grep -Fo 'data-hov6-chapter=' "$body" | wc -l | tr -d ' ')" = '8' ]]
+          [[ "$(grep -Fo 'class="hov6-lesson"' "$body" | wc -l | tr -d ' ')" = '32' ]]
+          grep -Fq 'data-dtf-topic="outdoor-cultivation"' "$body"
+          grep -Fq 'data-dtf-learning-v4="topic-outdoor-cultivation"' "$body"
+
+      - name: Upload final publication evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: harvest-outdoor-v6-final-repair-${{ github.run_id }}
+          path: |
+            /tmp/dtf-harvest-outdoor-v6-final-repair
+            ${{ runner.temp }}/hov6-*.json
+            ${{ runner.temp }}/hov6-final-publish.log
+            ${{ runner.temp }}/harvest-postharvest-v6-live.html
+            ${{ runner.temp }}/outdoor-v6-live.html
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report final production result
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          STATUS: ${{ job.status }}
+          REPAIR: ${{ steps.repair.outcome }}
+          PUBLISH: ${{ steps.publish.outcome }}
+          HARVEST_VERIFY: ${{ steps.harvest.outcome }}
+          OUTDOOR_VERIFY: ${{ steps.outdoor.outcome }}
+          SUBJECTS: ${{ steps.publish.outputs.subjects }}
+          CHAPTERS: ${{ steps.publish.outputs.chapters }}
+          LESSONS: ${{ steps.publish.outputs.lessons }}
+          SOURCES: ${{ steps.publish.outputs.sources }}
+          VISUAL_TARGETS: ${{ steps.publish.outputs.visual_targets }}
+          DEPLOYED_HEAD: ${{ steps.repair.outputs.head }}
+        with:
+          script: |
+            const body = [
+              '## Harvest + Outdoor V6 final production repair', '',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Result: **${process.env.STATUS}**`,
+              `Publisher repair persisted: **${process.env.REPAIR || 'not-run'}**`,
+              `WordPress publication: **${process.env.PUBLISH || 'not-run'}**`,
+              `Harvest visitor verification: **${process.env.HARVEST_VERIFY || 'not-run'}**`,
+              `Outdoor visitor verification: **${process.env.OUTDOOR_VERIFY || 'not-run'}**`,
+              `Published subjects: **${process.env.SUBJECTS || '0'}**`,
+              `V6 chapters: **${process.env.CHAPTERS || '0'}**`,
+              `Focused lessons: **${process.env.LESSONS || '0'}**`,
+              `Evidence references: **${process.env.SOURCES || '0'}**`,
+              `Quality-gated visual targets: **${process.env.VISUAL_TARGETS || '0'}**`,
+              `Repository head used: \`${process.env.DEPLOYED_HEAD || 'unknown'}\``
+            ].join('\n');
+            for (const issue_number of [46,126]) {
+              await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number,body});
+            }
