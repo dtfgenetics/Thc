@@ -1,0 +1,119 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-08-24",
+  "site": "https://dtfseeds.com/atlas/",
+  "system": {
+    "name": "THC Living Plant Atlas",
+    "brand": "Teaching Healthy Cultivation",
+    "purpose": "A clickable cannabis plant learning system that connects plant anatomy, physiology, diagnostics, measurements, visuals, field cards, and future image/video analysis.",
+    "coreRule": "A symptom is evidence, not proof. Observation must be separated from diagnosis and interpreted with plant stage, environment, root-zone data, pest inspection, and recent changes."
+  },
+  "sections": [
+    {
+      "id": "seed_germination",
+      "label": "Seed & Germination",
+      "route": "/atlas/seed-germination/",
+      "summary": "Seed anatomy, viability, imbibition, radicle emergence, cotyledons, seedling transition, storage, and early failure points.",
+      "priority": 4,
+      "starterPages": ["Seed Anatomy", "Germination Stages", "Seed Viability", "Common Germination Failures", "Seed Storage"],
+      "imageNeeds": ["Annotated seed anatomy plate", "Germination stage strip", "Viable vs nonviable seed comparison"]
+    },
+    {
+      "id": "root_system",
+      "label": "Root System",
+      "route": "/atlas/root-system/",
+      "summary": "Roots, root hairs, rhizosphere, oxygen, water uptake, nutrient uptake, media interaction, dryback, and root disorders.",
+      "priority": 2,
+      "starterPages": ["Root Anatomy", "Root Hairs", "Rhizosphere", "Water Uptake", "Dryback", "Root Stress"],
+      "imageNeeds": ["Root-zone cutaway", "Root hair close-up", "Healthy vs stressed root comparison"]
+    },
+    {
+      "id": "stem_vascular",
+      "label": "Stem & Vascular System",
+      "route": "/atlas/stem-vascular/",
+      "summary": "Stem support, xylem, phloem, transport, internodal spacing, stem elongation, damage response, and training response.",
+      "priority": 5,
+      "starterPages": ["Stem Anatomy", "Vascular Transport", "Internodal Spacing", "Stem Damage", "Training Response"],
+      "imageNeeds": ["Stem cross-section", "Xylem/phloem transport diagram", "Internode comparison"]
+    },
+    {
+      "id": "nodes_branching",
+      "label": "Nodes & Branching",
+      "route": "/atlas/nodes-branching/",
+      "summary": "Nodes, internodes, axillary buds, branch formation, apical dominance, topping, FIM, LST, mainlining, and SCROG.",
+      "priority": 3,
+      "starterPages": ["Node Anatomy", "Apical Dominance", "Topping Response", "Low-Stress Training", "Canopy Formation"],
+      "imageNeeds": ["Node anatomy diagram", "Apical dominance illustration", "Training response sequence"]
+    },
+    {
+      "id": "leaves",
+      "label": "Leaves",
+      "route": "/atlas/leaf-module/",
+      "summary": "Leaf anatomy, photosynthesis, stomata, transpiration, chlorosis, necrosis, leaf curl, nutrient clues, pest damage, and environmental stress.",
+      "priority": 1,
+      "starterPages": ["Leaf Anatomy", "Photosynthesis", "Stomata", "Transpiration", "Chlorosis", "Necrosis", "Leaf Curl", "Nutrient Symptoms on Leaves", "Pest Damage on Leaves", "Environmental Stress on Leaves"],
+      "imageNeeds": ["Healthy fan leaf reference", "Leaf anatomy diagram", "Stomata open/closed", "Transpiration flow", "Chlorosis chart", "Necrosis chart", "Leaf curl chart", "Pest damage chart"]
+    },
+    {
+      "id": "flowers",
+      "label": "Flowers",
+      "route": "/atlas/flowers/",
+      "summary": "Flower initiation, bracts, pistils, stigmas, bud development, resin, pollination, maturation, harvest timing, and mold risk.",
+      "priority": 6,
+      "starterPages": ["Flower Anatomy", "Flower Initiation", "Bud Development", "Pollination Basics", "Harvest Timing", "Mold Risk"],
+      "imageNeeds": ["Flower anatomy plate", "Bract/pistil/stigma labels", "Bud development timeline"]
+    },
+    {
+      "id": "trichomes_resin",
+      "label": "Trichomes & Resin",
+      "route": "/atlas/trichomes-resin/",
+      "summary": "Trichome types, resin glands, maturity cues, microscope inspection, and harvest interpretation.",
+      "priority": 7,
+      "starterPages": ["Trichome Types", "Resin Glands", "Microscope Inspection", "Trichome Maturity", "Harvest Interpretation"],
+      "imageNeeds": ["Trichome type comparison", "Clear cloudy amber reference", "Microscope inspection guide"]
+    },
+    {
+      "id": "sex_pollen_seed",
+      "label": "Sex, Pollen & Seeds",
+      "route": "/atlas/sex-pollen-seed/",
+      "summary": "Female flowers, male flowers, hermaphroditism, pollen sacs, pollination, fertilization, seed formation, and seed maturity.",
+      "priority": 8,
+      "starterPages": ["Male vs Female Flowers", "Hermaphroditism", "Pollen Basics", "Seed Formation", "Controlled Pollination"],
+      "imageNeeds": ["Male vs female flower comparison", "Pollen sac diagram", "Seed formation timeline"]
+    },
+    {
+      "id": "environment_overlay",
+      "label": "Environment Overlay",
+      "route": "/atlas/environment-overlay/",
+      "summary": "Whole-plant overlay for light, temperature, humidity, VPD, airflow, water, nutrients, pH, EC, CO2, and their interactions.",
+      "priority": 9,
+      "starterPages": ["Environmental Systems Overview", "Light Overlay", "VPD Overlay", "Airflow Overlay", "Water and Nutrient Overlay"],
+      "imageNeeds": ["Environmental interaction map", "VPD overlay", "Canopy airflow map"]
+    },
+    {
+      "id": "diagnostic_overlay",
+      "label": "Diagnostic Overlay",
+      "route": "/atlas/diagnostic-overlay/",
+      "summary": "Symptom-location system for yellowing, browning, spots, curling, wilting, burnt tips, stunting, pest signs, mold signs, and root-zone clues.",
+      "priority": 10,
+      "starterPages": ["Symptom Location Map", "Observation vs Diagnosis", "Leaf Symptom Triage", "Root-Zone Triage", "Flower Symptom Triage"],
+      "imageNeeds": ["Symptom location map", "Observation checklist", "Differential diagnosis flow"]
+    }
+  ],
+  "leafModule": {
+    "route": "/atlas/leaf-module/",
+    "status": "starter content expanded",
+    "pages": [
+      {"slug":"leaf-anatomy","title":"Leaf Anatomy","type":"anatomy","purpose":"Define the healthy visual baseline before interpreting symptoms.","measurements":["canopy position","leaf age","leaf surface","leaf underside"],"firstAsset":"Healthy fan leaf reference card"},
+      {"slug":"photosynthesis","title":"Photosynthesis","type":"process","purpose":"Connect light, carbon dioxide, water status, chlorophyll, sugars, and plant growth.","measurements":["PPFD","DLI","CO2","leaf temperature"],"firstAsset":"Photosynthesis flow card"},
+      {"slug":"stomata","title":"Stomata","type":"anatomy/process","purpose":"Explain pores, guard cells, CO2 entry, water vapor exit, VPD, and transpiration.","measurements":["VPD","RH","temperature","leaf temperature"],"firstAsset":"Stomata open/closed diagram"},
+      {"slug":"transpiration","title":"Transpiration","type":"process","purpose":"Show water movement from root zone through xylem and out of leaves.","measurements":["VPD","substrate moisture","airflow","EC"],"firstAsset":"Transpiration root-to-leaf flow"},
+      {"slug":"chlorosis","title":"Chlorosis","type":"diagnostic","purpose":"Document yellowing patterns without jumping to one cause.","measurements":["pH","EC","old/new growth","progression"],"firstAsset":"Chlorosis pattern checklist"},
+      {"slug":"necrosis","title":"Necrosis","type":"diagnostic","purpose":"Separate dead tissue patterns such as burnt tips, margins, spots, blotches, and lesions.","measurements":["EC","VPD","leaf temperature","spread rate"],"firstAsset":"Necrosis evaluation card"},
+      {"slug":"leaf-curl","title":"Leaf Curl","type":"diagnostic","purpose":"Distinguish tacoing, canoeing, clawing, drooping, twisting, and cupping.","measurements":["PPFD","leaf temperature","VPD","substrate moisture"],"firstAsset":"Leaf curl pattern guide"},
+      {"slug":"nutrient-symptoms-on-leaves","title":"Nutrient Symptoms on Leaves","type":"diagnostic","purpose":"Interpret nutrient-like leaf symptoms with pH, EC, feed history, roots, and environment.","measurements":["pH","EC","feed history","runoff or solution readings"],"firstAsset":"Nutrient symptom triage card"},
+      {"slug":"pest-damage-on-leaves","title":"Pest Damage on Leaves","type":"diagnostic/IPM","purpose":"Recognize stippling, webbing, eggs, frass, trails, silvering, chewing, and distorted growth.","measurements":["underside inspection","node inspection","RH","temperature"],"firstAsset":"Leaf pest inspection card"},
+      {"slug":"environmental-stress-on-leaves","title":"Environmental Stress on Leaves","type":"environment/diagnostic","purpose":"Connect leaf posture, color, texture, growth rate, and damage location to environment.","measurements":["PPFD","DLI","temperature","RH","VPD","airflow"],"firstAsset":"Environmental leaf stress checklist"}
+    ]
+  }
+}
