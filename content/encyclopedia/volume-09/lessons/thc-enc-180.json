@@ -1,0 +1,30 @@
+{
+  "id":"THC-ENC-180",
+  "number":180,
+  "title":"Germplasm Preservation, Cryopreservation, and Clean Stock",
+  "objective":"Design a redundant germplasm system that connects identity, health, preservation method, recovery, and periodic verification.",
+  "terms":[
+    {"term":"germplasm","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"base collection","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"active collection","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"slow-growth storage","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"cryopreservation","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"redundancy","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"regeneration","definition":"Pending controlled-glossary reconciliation."}
+  ],
+  "termDefinitionsStatus":"pending_controlled_glossary_reconciliation",
+  "coreScience":[
+    "Germplasm preservation protects genetic resources against crop loss, contamination, equipment failure, mislabeling, and biological decline. No single method protects against every risk.",
+    "Living mothers are accessible but exposed to pests, pathogens, space limits, and continuous management. In vitro slow-growth collections reduce space but require aseptic maintenance and passage. Seeds preserve populations rather than exact heterozygous clones. Cryopreservation can store shoot tips at liquid-nitrogen temperatures and reduce active growth, but recovery is protocol- and genotype-dependent.",
+    "A cannabis droplet-vitrification study recovered shoot tips from three cultivars with substantial differences among cryoprotectant treatments and cultivars. Preservation success must include post-recovery growth, identity, health, and phenotype—not only tissue survival."
+  ],
+  "cultivationRelevance":["Maintain geographically or operationally independent backups. Link every accession to provenance, clone or seed identity, health status, preservation method, storage location, inventory, recovery test, and responsible owner."],
+  "measureAndRecord":[{"field":"Controlled record set","requirement":"Accession ID; genotype/chemotype; provenance; health tests; storage method and location; passage or regeneration date; cryoprotectant/protocol where used; recovery; identity and phenotype checks; loss events."}],
+  "misconceptions":["One mother plant is a germplasm bank.","Frozen tissue is automatically recoverable and true-to-type.","Seed storage preserves an exact elite female clone."],
+  "evidenceLimits":["Cryopreservation is specialist work requiring validated facilities, hazardous-material controls, oxygen-deficiency safeguards, and genotype-specific recovery. This lesson does not provide a cryogenic procedure. ‘Clean stock’ requires ongoing organism-specific testing and identity control."],
+  "crossLinks":"THC-ENC-141–160 for identity/genetic fidelity; THC-ENC-173–179 for health/testing/tissue culture; THC-ENC-301–340 for pathogen and biosecurity controls.",
+  "sourceNotes":["Uchendu E et al. (2019). Cryopreservation of Shoot Tips of Elite Cultivars of Cannabis sativa L. by Droplet Vitrification. Medical Cannabis and Cannabinoids 2(1):29–34. DOI 10.1159/000496869.","Ioannidis K et al. (2022). Plants 11:2569.","Lefebvre V et al. (2026). Journal of Cannabis Research 8:43.","V09-SRC-019 — U.S. OSHA liquid-nitrogen/asphyxiation safety evidence; supports facility and oxygen-deficiency controls only, not a cryopreservation procedure."],
+  "reviewControl":{"controlledManuscript":"Volume 09 v1.0","evidenceControl":"complete","secondaryEvidenceReview":"complete_qualified","externalReview":"required","externalReviewType":"germplasm_pathology_identity_plus_release_time_cryogenic_facility_safety","publicationAuthorized":false,"websiteAction":"do_not_publish"},
+  "slug":"germplasm-preservation-cryopreservation-and-clean-stock",
+  "route":"/encyclopedia/germplasm-preservation-cryopreservation-and-clean-stock"
+}
