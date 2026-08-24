@@ -1,0 +1,33 @@
+{
+  "id":"THC-ENC-175",
+  "number":175,
+  "title":"Tissue Culture Terminology and Workflow",
+  "objective":"Use precise tissue-culture terminology and understand the stages from donor preparation to acclimatized plant.",
+  "terms":[
+    {"term":"in vitro","definition":"Cultivation of living material under controlled conditions outside the intact organism, commonly in a vessel on a defined medium."},
+    {"term":"aseptic","definition":"Maintained using practices intended to prevent introduction of unwanted microorganisms into a controlled culture."},
+    {"term":"explant","definition":"A piece of plant tissue removed from a donor and introduced into culture."},
+    {"term":"meristem","definition":"A region of actively dividing plant cells that produces new tissues and organs."},
+    {"term":"nodal culture","definition":"In vitro culture initiated from stem tissue containing a node and usually an axillary bud."},
+    {"term":"micropropagation","definition":"In vitro clonal propagation using small plant explants through establishment, multiplication, rooting or elongation, and acclimatization stages."},
+    {"term":"callus","definition":"A mass of relatively unorganized proliferating plant cells that can form at wounds or in culture; callus is not synonymous with roots or shoots."},
+    {"term":"organogenesis","definition":"Development of organized plant organs such as shoots or roots from cultured tissues or cells."},
+    {"term":"acclimatization","definition":"Controlled physiological transition of in vitro plantlets to ex vitro humidity, light, airflow, substrate, and microbial conditions."}
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "In vitro culture grows plant material in a controlled sterile vessel. The explant may be a node, shoot tip, meristem, leaf, petiole, embryo, or other tissue. The biological response depends on explant type, genotype, medium, plant growth regulators, light, gas exchange, and contamination.",
+    "Micropropagation commonly includes donor preparation, culture establishment, multiplication, rooting or elongation, and acclimatization. Some protocols use direct axillary-shoot proliferation; others pass through callus or regeneration pathways that can increase variation risk.",
+    "Meristem-tip culture can support pathogen-reduction programs, but success is organism-, cultivar-, and protocol-dependent. A 2025 cannabis study combining meristem-tip culture with thermotherapy reported HLVd eradication in five of thirteen tested cultivars, so meristem-derived material is not automatically HLVd-free or pathogen-free without organism-specific confirmation testing. Clean-stock claims also require identity control."
+  ],
+  "cultivationRelevance":["Document every transfer and passage. Keep donor, explant, vessel, medium, operator, date, contamination, growth response, rooting, acclimation, and test records connected through one identifier."],
+  "measureAndRecord":[{"field":"Controlled record set","requirement":"Donor status; explant type and size; establishment date; medium and PGRs; vessel; passage number; multiplication; contamination; rooting; acclimation; identity and health tests."}],
+  "misconceptions":["Tissue culture means genetic engineering.","All tissue culture is callus culture.","A meristem-derived plant is automatically disease-free."],
+  "evidenceLimits":["Terminology is transferable; recipes are not. Cannabis remains genotype-responsive and many published protocols cover only a few cultivars. Pathogen-reduction claims require organism-specific confirmation testing."],
+  "crossLinks":"THC-ENC-141–160 for genetic fidelity and identity; THC-ENC-173 for quarantine/testing; THC-ENC-301–340 for pathogen/biosecurity controls.",
+  "sourceNotes":["Holmes JE et al. (2021). Frontiers in Plant Science 12:732344.","Ioannidis K et al. (2022). Plants 11:2569.","V09-SRC-014 — Torres A et al. (2025). Plant Cell, Tissue and Organ Culture 161:66. DOI 10.1007/s11240-025-03057-8; meristem-tip culture plus thermotherapy showed cultivar-dependent HLVd eradication and requires confirmatory testing."],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 09 v1.0","evidenceControl":"complete","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"tissue_culture_and_plant_pathology","publicationAuthorized":true,"publicationAuthorization":"project_owner_2026-08-24","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"tissue-culture-terminology-and-workflow",
+  "route":"/encyclopedia/tissue-culture-terminology-and-workflow"
+}
