@@ -12,15 +12,26 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 
 async function request(path,{method='GET',json,allow=[],retryServer=true,headers={}}={}){
   let last;
-  const attempts=retryServer?5:1;
+  const attempts=retryServer?8:1;
   for(let attempt=1;attempt<=attempts;attempt++){
     try{
-      const response=await fetch(`${siteUrl}${path}`,{method,headers:{Authorization:auth,Accept:'application/json','Cache-Control':'no-cache, no-store, max-age=0',Pragma:'no-cache','User-Agent':'DTFSeeds-Stale-Suite-Bridge-Cleanup/1.6',...(json!==undefined?{'Content-Type':'application/json'}:{}),...headers},body:json!==undefined?JSON.stringify(json):undefined,redirect:'follow',signal:AbortSignal.timeout(45000)});
+      const response=await fetch(`${siteUrl}${path}`,{method,headers:{Authorization:auth,Accept:'application/json','Cache-Control':'no-cache, no-store, max-age=0',Pragma:'no-cache','User-Agent':'DTFSeeds-Stale-Suite-Bridge-Cleanup/1.7',...(json!==undefined?{'Content-Type':'application/json'}:{}),...headers},body:json!==undefined?JSON.stringify(json):undefined,redirect:'follow',signal:AbortSignal.timeout(45000)});
       const text=await response.text();let body=text;try{body=text?JSON.parse(text):null}catch{}
-      if(retryServer&&(response.status>=500||response.status===429)&&attempt<attempts){await sleep(attempt*1200);continue}
+      if(retryServer&&(response.status>=500||response.status===429)&&attempt<attempts){
+        const delay=Math.min(15000,2000*attempt+Math.floor(Math.random()*750));
+        console.warn(`Cleanup request ${method} ${path} returned HTTP ${response.status}; retrying ${attempt}/${attempts} after ${delay}ms.`);
+        await sleep(delay);continue;
+      }
       if(!response.ok&&!allow.includes(response.status))throw new Error(`${method} ${path} failed (${response.status}): ${typeof body==='string'?body.slice(0,600):JSON.stringify(body).slice(0,600)}`);
       return{ok:response.ok,status:response.status,body};
-    }catch(error){last=error;if(attempt<attempts)await sleep(attempt*1200)}
+    }catch(error){
+      last=error;
+      if(attempt<attempts){
+        const delay=Math.min(15000,2000*attempt+Math.floor(Math.random()*750));
+        console.warn(`Cleanup request ${method} ${path} transport failure on attempt ${attempt}/${attempts}: ${error?.cause?.code||error?.code||error?.message||'unknown'}; retrying after ${delay}ms.`);
+        await sleep(delay);
+      }
+    }
   }
   throw last||new Error(`${method} ${path} failed.`);
 }
