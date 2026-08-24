@@ -1,0 +1,171 @@
+{
+  "schemaVersion": 1,
+  "id": "diagnostic-records-v2",
+  "route": "/learn/records/",
+  "title": "Grow Records & Diagnostic Worksheets",
+  "subtitle": "Record what happened before deciding why it happened.",
+  "evidenceBoundary": "A record improves diagnosis only when observations are separated from interpretations. Preserve units, sample location, time, plant stage, recent changes and uncertainty. A completed worksheet does not by itself confirm a pest, pathogen, nutrient deficiency or environmental disorder.",
+  "templates": [
+    {
+      "id": "DR-01",
+      "title": "Diagnostic Intake Record",
+      "purpose": "Capture the minimum whole-case context before assigning a cause.",
+      "fields": [
+        {"label":"Plant or batch ID","help":"Use a stable identifier that connects photos, samples and follow-up notes."},
+        {"label":"Cultivar / source / lot","help":"Record the supplied identity and source without treating the name as proof of genetics."},
+        {"label":"Plant stage","help":"Seedling, vegetative, transition, flowering, maturation, drying or other defined stage."},
+        {"label":"First symptom date","help":"Record when the change was first noticed, not when a diagnosis was guessed."},
+        {"label":"Primary affected organ","help":"Leaf, root, stem, meristem, flower, seedling collar or postharvest material."},
+        {"label":"One-sentence neutral description","help":"Describe color, shape, distribution and progression without naming the cause."},
+        {"label":"Urgency / crop impact","help":"Note whether the issue is localized, spreading, severe, reproductive, or a possible safety/quality concern."}
+      ],
+      "verificationPrompt": "Can another grower understand what changed without seeing your proposed diagnosis?"
+    },
+    {
+      "id": "DR-02",
+      "title": "Symptom Distribution Map",
+      "purpose": "Describe where symptoms occur so location becomes diagnostic evidence.",
+      "fields": [
+        {"label":"Old vs new growth","help":"Mark whether symptoms begin on older, middle, newest or all growth."},
+        {"label":"Canopy position","help":"Top, middle, lower, edge, interior, shaded or directly illuminated zone."},
+        {"label":"Plant distribution","help":"Single plant, cultivar group, irrigation zone, room edge, entire crop or random plants."},
+        {"label":"Tissue pattern","help":"Uniform, interveinal, marginal, tip-first, spots, lesions, stippling, distortion or wilting."},
+        {"label":"Progression direction","help":"Stable, spreading upward/downward, expanding from a point, or appearing on new sites."},
+        {"label":"Photo set IDs","help":"Record whole-plant, affected-tissue and comparison-plant photo identifiers."},
+        {"label":"Unaffected comparison","help":"Identify a nearby healthy comparison plant or tissue and how it differs."}
+      ],
+      "verificationPrompt": "Does the mapped pattern support more than one plausible cause? Keep those alternatives open."
+    },
+    {
+      "id": "DR-03",
+      "title": "Environment Snapshot",
+      "purpose": "Record the environment where the affected tissue actually exists, not only a room average.",
+      "fields": [
+        {"label":"Air temperature + sensor location","help":"Include units, canopy height and distance from the affected zone."},
+        {"label":"Relative humidity + sensor location","help":"Record units/location and whether the value is instantaneous, minimum, maximum or average."},
+        {"label":"Leaf or surface temperature","help":"If measured, record method and location; do not substitute air temperature silently."},
+        {"label":"Light measurement","help":"Record PPFD or other light metric, units, instrument and canopy position when relevant."},
+        {"label":"Air movement / exposure","help":"Note still zones, direct fan exposure, outdoor wind or obvious airflow differences."},
+        {"label":"Recent environment event","help":"Heat spike, cold period, humidity excursion, power outage, rain, wind or equipment change."},
+        {"label":"Comparison-zone readings","help":"Record the same measurements in an unaffected or reference zone when possible."}
+      ],
+      "verificationPrompt": "Are the measurements from the plant zone that shows the problem, with units and locations preserved?"
+    },
+    {
+      "id": "DR-04",
+      "title": "Irrigation & Root-Zone Record",
+      "purpose": "Separate water-balance, aeration, salinity and root-condition evidence from leaf appearance.",
+      "fields": [
+        {"label":"Last irrigation time / volume","help":"Record when and how much water or solution was applied."},
+        {"label":"Pre-irrigation substrate condition","help":"Container mass, moisture sensor, visual/tactile state or other repeatable method."},
+        {"label":"Drainage / runoff behavior","help":"Record whether drainage changed, pooled, slowed or differed among containers."},
+        {"label":"pH sample + method","help":"Record the actual sample type, collection method, value and meter status."},
+        {"label":"EC sample + method","help":"Record units and whether it is source, feed, drain, runoff, extract or another defined sample."},
+        {"label":"Root appearance","help":"Color, texture, odor, distribution and whether findings are representative or from one root."},
+        {"label":"Root-zone temperature / oxygen context","help":"Record temperature and saturation/oxygenation clues where relevant."}
+      ],
+      "verificationPrompt": "Could another person reproduce your pH, EC and moisture measurements from the method notes?"
+    },
+    {
+      "id": "DR-05",
+      "title": "Nutrition & Input History",
+      "purpose": "Document what actually entered the system before calling a symptom a deficiency or toxicity.",
+      "fields": [
+        {"label":"Base nutrient / recipe ID","help":"Use the exact batch or recipe identifier rather than a remembered product name alone."},
+        {"label":"Mix date and operator","help":"Connect the symptom window to a traceable preparation event."},
+        {"label":"Measured feed EC / concentration","help":"Record units and measurement method."},
+        {"label":"Measured feed pH","help":"Record value after mixing and note calibration/check status."},
+        {"label":"Water source / analysis changes","help":"Municipal, well, RO, blend or other source; note any recent source change."},
+        {"label":"Additives / foliar / amendments","help":"Record all recent additions, including sprays and substrate amendments."},
+        {"label":"Known mixing error or omission","help":"Document verified mistakes separately from suspected nutrient explanations."}
+      ],
+      "verificationPrompt": "Is there a documented input change that separates one nutrient hypothesis from its look-alikes?"
+    },
+    {
+      "id": "DR-06",
+      "title": "Pest & Disease Scouting Record",
+      "purpose": "Pair symptom patterns with direct organism, lesion and crop-distribution evidence.",
+      "fields": [
+        {"label":"Scouting route / zone","help":"Use a repeatable route or mapped crop zone so counts can be compared over time."},
+        {"label":"Plants / leaves / traps inspected","help":"Record the sampling unit instead of a bare pest count."},
+        {"label":"Direct organisms or structures","help":"Live pests, eggs, cast skins, webbing, spores, colonies, decay or other direct evidence."},
+        {"label":"Magnification / identification method","help":"Record hand lens, microscope, lab test or other method when identification depends on it."},
+        {"label":"Lesion / feeding pattern","help":"Stippling, chewing, honeydew, powdery colony, internal rot, root decay or other defined sign."},
+        {"label":"Beneficial organisms / controls present","help":"Record predators, parasitoids, biologicals or other controls that affect interpretation of counts."},
+        {"label":"Trend since last scout","help":"Increasing, stable, decreasing, newly detected or unresolved; include comparable counts where possible."}
+      ],
+      "verificationPrompt": "Do you have direct evidence of an organism or disease process, or only a plant response that could have other causes?"
+    },
+    {
+      "id": "DR-07",
+      "title": "Propagation & Plant Identity Record",
+      "purpose": "Preserve lineage and propagation context when establishment or systemic problems are possible.",
+      "fields": [
+        {"label":"Mother / seed lot / source ID","help":"Keep the upstream source connected to every downstream plant or clone batch."},
+        {"label":"Propagation batch date","help":"Record cutting, sowing, transplant or receipt date as applicable."},
+        {"label":"Cutting / seed treatment","help":"Record preparation, rooting treatment or germination method without assuming it caused the outcome."},
+        {"label":"Rooting / germination outcome","help":"Use defined counts, time-to-event or root-quality observations."},
+        {"label":"Shared tools / water / work area","help":"Note connections that could distribute pests, pathogens or process errors."},
+        {"label":"Prior test results","help":"Record HLVd or other lab results with date, sample identity and laboratory/method where available."},
+        {"label":"Related plants showing same pattern","help":"Map whether siblings, clones or a source plant share the issue."}
+      ],
+      "verificationPrompt": "Can you trace this plant backward to its source and forward to every connected clone or batch?"
+    },
+    {
+      "id": "DR-08",
+      "title": "Recent Change Timeline",
+      "purpose": "Find cause candidates by aligning symptom onset with documented system changes.",
+      "fields": [
+        {"label":"Lighting changes","help":"Intensity, fixture height, photoperiod, spectrum or equipment replacement."},
+        {"label":"Irrigation changes","help":"Frequency, volume, emitter, drainage, dryback strategy or water source."},
+        {"label":"Nutrition changes","help":"Recipe, concentration, pH management, amendment or supplement changes."},
+        {"label":"Environment changes","help":"Temperature/RH control, fan position, ventilation, weather or enclosure changes."},
+        {"label":"Plant handling changes","help":"Transplant, pruning, training, spraying, cleaning, moving or mechanical injury."},
+        {"label":"New plant / genetics introduction","help":"Record incoming material, quarantine status and integration date."},
+        {"label":"Symptom timing relative to changes","help":"Write which changes occurred before, during or after symptom onset."}
+      ],
+      "verificationPrompt": "Which recent change has a biologically plausible timing and distribution, and what evidence would disprove it?"
+    },
+    {
+      "id": "DR-09",
+      "title": "Intervention & One-Change Log",
+      "purpose": "Make corrective actions testable instead of stacking several changes and losing causal information.",
+      "fields": [
+        {"label":"Working interpretation","help":"State the current best-supported explanation and confidence level."},
+        {"label":"Competing explanation kept open","help":"Record at least one plausible alternative that could explain the same symptom."},
+        {"label":"Chosen intervention","help":"Describe the smallest justified change or containment action."},
+        {"label":"Why this action was chosen","help":"Connect the action directly to evidence, not just a product recommendation."},
+        {"label":"Date / time / crop zone","help":"Make the action traceable to the affected plants and observation interval."},
+        {"label":"Variables intentionally held constant","help":"List important factors left unchanged so follow-up evidence remains interpretable."},
+        {"label":"Expected observable response","help":"Define what should change if the working interpretation is useful."}
+      ],
+      "verificationPrompt": "If the plant improves, will the record tell you which change likely mattered?"
+    },
+    {
+      "id": "DR-10",
+      "title": "Follow-Up Verification & Case Closeout",
+      "purpose": "Decide whether the interpretation survived follow-up evidence and preserve what was learned.",
+      "fields": [
+        {"label":"Follow-up date / interval","help":"Record when the crop was rechecked relative to the intervention."},
+        {"label":"New growth / new tissue response","help":"Prioritize newly produced tissue when old damage cannot reverse."},
+        {"label":"Symptom incidence / progression","help":"New cases, stable area, reduced spread, continued spread or resolved pattern."},
+        {"label":"Repeat measurements","help":"Record the same pH, EC, moisture, environment, pest-count or other method used initially."},
+        {"label":"Interpretation status","help":"Supported, weakened, rejected, unresolved or replaced by a better explanation."},
+        {"label":"Escalation / testing needed","help":"Microscopy, laboratory test, tissue/water analysis, professional diagnosis or additional controlled observation."},
+        {"label":"Case lesson / prevention change","help":"Write the process change, baseline or monitoring improvement that should carry into the next crop."
+        }
+      ],
+      "verificationPrompt": "Did the follow-up test the original interpretation, or only document that time passed?"
+    }
+  ],
+  "supportRoutes": [
+    {"label":"Diagnostic Case Lab","route":"/learn/diagnostic-cases/"},
+    {"label":"Diagnostic Index","route":"/learn/diagnostics/"},
+    {"label":"Evidence & Measurement","route":"/learn/research-methods/"},
+    {"label":"Plant Health & IPM","route":"/learn/ipm/"},
+    {"label":"Water, pH & EC","route":"/learn/water-ph-ec/"},
+    {"label":"Nutrition & Media","route":"/learn/nutrition-media/"},
+    {"label":"Environment & VPD","route":"/learn/environment-vpd/"},
+    {"label":"Grow Doc","route":"/thc-grow-doc/"}
+  ]
+}
