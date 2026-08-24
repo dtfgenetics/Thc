@@ -1,0 +1,186 @@
+{
+  "schemaVersion": 1,
+  "id": "beginner-guides-v2",
+  "route": "/learn/beginner-guides/",
+  "title": "Beginner Grow Guides",
+  "subtitle": "Start simple. Measure first. Change with a reason.",
+  "intro": "These pathways help a new grower move from setup to observation without memorizing recipes. Each pathway gives four concrete steps, two common mistakes to avoid, one readiness task, and a direct link to the deeper THC learning system.",
+  "rules": [
+    "Know the plant stage before changing the plan.",
+    "Write down what changed before trying to fix what changed.",
+    "Use measurements with units, location and time whenever possible.",
+    "Avoid changing several variables at once when one controlled change can answer the question.",
+    "Treat cultivar, media, water and environment as context; copied targets are starting hypotheses, not universal rules."
+  ],
+  "pathways": [
+    {
+      "number": 1,
+      "id": "safe-measurable-space",
+      "title": "Build a Safe, Measurable Grow Space",
+      "route": "/learn/start-here/",
+      "deepRoute": "/learn/environment-vpd/",
+      "goal": "Make the space safe to operate and easy to measure before plants depend on it.",
+      "steps": [
+        {"title":"Map power, water and access","action":"List major electrical loads, water sources, drains, walkways, shutoffs and anything that could become a heat or leak hazard.","check":"You can reach service points without moving plants or crossing wet areas with electrical equipment."},
+        {"title":"Place sensors by purpose","action":"Choose canopy-level locations for temperature/RH and identify where light, root-zone and water measurements will be taken.","check":"A sensor location answers a defined question instead of simply being convenient."},
+        {"title":"Plan airflow and moisture removal","action":"Separate equipment that circulates air from equipment that actually exchanges or removes heat and moisture.","check":"You can explain what happens when humidity rises rather than only pointing to a fan."},
+        {"title":"Run the room empty","action":"Operate lights, climate equipment and normal loads together before plant entry and record conditions over time.","check":"The room completes a realistic run without unresolved safety or environmental holds."}
+      ],
+      "mistakes": ["Buying plants before proving the room can operate safely.","Treating one wall-mounted room sensor as the whole canopy environment."],
+      "capstone": "Create a one-page grow-space map showing equipment, sensors, water, power, access and the first measurements you will record."
+    },
+    {
+      "number": 2,
+      "id": "read-the-plant-stage",
+      "title": "Read Plant Stage Before Acting",
+      "route": "/learn/plant-biology/",
+      "deepRoute": "/learn/lifecycle-propagation/",
+      "goal": "Use observable development to decide what information matters next.",
+      "steps": [
+        {"title":"Identify the current stage","action":"Record whether the plant is germinating, establishing as a seedling/clone, vegetative, transitioning, flowering, finishing or recovering.","check":"The stage is based on visible development rather than age alone."},
+        {"title":"Locate new growth","action":"Inspect shoot tips, nodes, branch growth and new leaves before judging older tissue.","check":"You know whether symptoms affect old tissue, new tissue or the entire plant."},
+        {"title":"Compare growth over time","action":"Use dated photos or simple height/node/branch observations to see whether growth is accelerating, stable or declining.","check":"Your conclusion uses more than a single-day impression."},
+        {"title":"Match the next measurement to stage","action":"Choose the next useful measurement from light, environment, water/root zone, plant health or maturity based on the current stage.","check":"You can explain why that measurement matters now."}
+      ],
+      "mistakes": ["Diagnosing every yellow leaf without considering natural age or tissue position.","Using a fixed calendar as proof that every plant should be at the same developmental point."],
+      "capstone": "Build a seven-day plant-stage photo and observation record that shows what changed and what stayed stable."
+    },
+    {
+      "number": 3,
+      "id": "seeds-clones-establishment",
+      "title": "Seeds, Clones & Early Establishment",
+      "route": "/learn/lifecycle-propagation/",
+      "deepRoute": "/learn/genetics-breeding/",
+      "goal": "Protect identity and release young plants by observed readiness instead of elapsed days.",
+      "steps": [
+        {"title":"Label the source","action":"Record cultivar/source, seed lot or donor plant, date started and unique plant or batch ID.","check":"Every plant can be traced back to its source."},
+        {"title":"Watch water status, not just humidity","action":"Observe media moisture, leaf posture and root development while keeping the propagation environment stable enough to compare days.","check":"You are not using dome humidity as the only indicator of plant water status."},
+        {"title":"Look for establishment evidence","action":"Record emergence, new leaf growth, roots where visible and the plant response between irrigation events.","check":"Release criteria include active growth or rooting evidence."},
+        {"title":"Acclimate after the plant proves ready","action":"Increase exposure to the next light/environment gradually while watching posture and growth.","check":"The plant is moved forward because it is responding well, not because a calendar date arrived."}
+      ],
+      "mistakes": ["Losing plant identity by using temporary or duplicated labels.","Moving clones or seedlings into a much harsher environment in one step."],
+      "capstone": "Complete one propagation batch card from source identity through release decision and first post-release check."
+    },
+    {
+      "number": 4,
+      "id": "light-basics",
+      "title": "Understand the Light the Plant Receives",
+      "route": "/learn/lighting/",
+      "deepRoute": "/learn/academy/#av2-lighting",
+      "goal": "Move beyond fixture wattage and learn to describe crop-plane light and duration.",
+      "steps": [
+        {"title":"Know PPFD versus wattage","action":"Treat wattage as equipment input and PPFD as photons arriving at the measured crop position.","check":"You do not use watts as a substitute for canopy intensity."},
+        {"title":"Measure more than one point","action":"Use a repeatable grid or at minimum compare center, edge and representative plant positions.","check":"Your light description includes spatial variation."},
+        {"title":"Record photoperiod","action":"Write the actual light-on and light-off timing and verify the controller follows it.","check":"DLI or daily exposure calculations use the actual duration."},
+        {"title":"Watch plant and temperature response","action":"Compare leaf posture and leaf/air temperature after meaningful light changes.","check":"A light adjustment is evaluated with plant and environmental response."}
+      ],
+      "mistakes": ["Assuming the fixture manufacturer’s center reading represents the whole canopy.","Increasing intensity without rechecking leaf temperature or environmental demand."],
+      "capstone": "Make a simple crop-plane light map and calculate or document the daily light period used for that map."
+    },
+    {
+      "number": 5,
+      "id": "climate-vpd-basics",
+      "title": "Temperature, Humidity, Airflow & VPD",
+      "route": "/learn/environment-vpd/",
+      "deepRoute": "/learn/research-methods/",
+      "goal": "Describe the environment the plant experiences rather than chasing one target number.",
+      "steps": [
+        {"title":"Record temperature and RH together","action":"Log both values with location and time, including at least one lights-on and one transition period.","check":"The reading can be placed in space and time."},
+        {"title":"Inspect canopy microclimates","action":"Compare room air with at least one interior/edge canopy location where foliage changes mixing.","check":"You know whether room averages hide a wetter, hotter or cooler zone."},
+        {"title":"Use VPD as context","action":"Use VPD to describe atmospheric demand while also checking leaf temperature, roots, irrigation and plant posture.","check":"You do not diagnose the plant from VPD alone."},
+        {"title":"Watch transitions","action":"Record how quickly temperature/RH changes around lights-off, lights-on or irrigation.","check":"You can identify the fastest environmental shift in the day."}
+      ],
+      "mistakes": ["Treating VPD as a diagnosis rather than an environmental descriptor.","Trying to solve excess moisture only by moving the same humid air faster."],
+      "capstone": "Create a one-day climate timeline with at least three locations or time windows and write the most important difference you found."
+    },
+    {
+      "number": 6,
+      "id": "water-root-zone-basics",
+      "title": "Water, pH, EC & the Root Zone",
+      "route": "/learn/water-ph-ec/",
+      "deepRoute": "/learn/nutrition-media/",
+      "goal": "Track the water and root environment as connected measurements instead of reacting to one runoff number.",
+      "steps": [
+        {"title":"Know the source water","action":"Record source, pH, EC and any available alkalinity/hardness information separately.","check":"You can explain that pH, EC, alkalinity and hardness are different properties."},
+        {"title":"Use controlled meters","action":"Calibrate/store pH and EC instruments according to their requirements and record calibration date/result.","check":"A questionable meter result can be traced to a calibration record."},
+        {"title":"Define the irrigation event","action":"Record volume applied, timing, media/container and how drainage or dryback is observed.","check":"Another person could repeat the same observation method."},
+        {"title":"Look for trends","action":"Compare several sequential root-zone or irrigation records before deciding whether a change is persistent.","check":"You can identify an outlier without treating it automatically as a trend."}
+      ],
+      "mistakes": ["Treating pH as if it measures nutrient concentration or alkalinity.","Comparing runoff, slurry, pore-water or feed readings as if sampling method does not matter."],
+      "capstone": "Complete a seven-day irrigation/root-zone log with source water, applied solution, method and plant-response notes."
+    },
+    {
+      "number": 7,
+      "id": "nutrition-without-guessing",
+      "title": "Nutrition Without Symptom Guessing",
+      "route": "/learn/nutrition-media/",
+      "deepRoute": "/learn/ipm/",
+      "goal": "Understand nutrient delivery while keeping environmental and root causes in the differential diagnosis.",
+      "steps": [
+        {"title":"Know what is being applied","action":"Record products/inputs, mix sequence, water source, final EC/pH and volume rather than only writing a recipe name.","check":"The mix can be recreated from the record."},
+        {"title":"Inspect symptom location and pattern","action":"Record whether symptoms begin on older/newer tissue, one plant/many plants, edge/center or one irrigation zone.","check":"The pattern is documented before a nutrient label is assigned."},
+        {"title":"Check roots, water and environment","action":"Compare root-zone condition, irrigation history and environmental measurements before changing feed strength.","check":"At least one non-nutrient alternative has been considered."},
+        {"title":"Verify after one justified change","action":"Define what improvement should look like and when it will be checked after an intervention.","check":"Success is based on follow-up evidence, not the act of feeding itself."}
+      ],
+      "mistakes": ["Matching a leaf color to one deficiency chart and skipping root/environment checks.","Stacking multiple supplements so the cause of improvement or worsening cannot be separated."],
+      "capstone": "Build a one-page differential table for one common leaf symptom with at least four candidate causes and the evidence needed to separate them."
+    },
+    {
+      "number": 8,
+      "id": "plant-health-scouting",
+      "title": "Plant Health, Scouting & IPM",
+      "route": "/learn/ipm/",
+      "deepRoute": "/thc-grow-doc/",
+      "goal": "Find problems earlier and preserve enough evidence to choose the right next step.",
+      "steps": [
+        {"title":"Use a repeatable scouting route","action":"Inspect the same zones, representative leaves, undersides, stems, media surfaces and traps on a defined schedule.","check":"A finding can be mapped back to a location."},
+        {"title":"Separate observation from ID","action":"Record what is seen, then mark organism/cause as confirmed, suspected or unknown.","check":"Confidence is visible in the record."},
+        {"title":"Protect clean areas","action":"Use clean-to-suspect movement, tool hygiene and quarantine when spread is plausible.","check":"The investigation does not create avoidable cross-contamination."},
+        {"title":"Verify control results","action":"Define the next scouting date and what count/pattern change will show improvement or failure.","check":"A treatment does not disappear from the record after it is applied."}
+      ],
+      "mistakes": ["Spraying first and identifying later, destroying useful evidence.","Assuming one sticky trap represents pest pressure everywhere in the crop."],
+      "capstone": "Complete a ten-location scouting sheet with mapped findings, confidence level, photos/samples and follow-up date."
+    },
+    {
+      "number": 9,
+      "id": "training-and-recovery",
+      "title": "Training, Canopy Shape & Recovery",
+      "route": "/learn/training-canopy/",
+      "deepRoute": "/learn/lighting/",
+      "goal": "Use training to solve a measured architecture problem while protecting plant recovery and canopy access.",
+      "steps": [
+        {"title":"Define the goal first","action":"Write whether the objective is height, spacing, support, access, branch position or light distribution.","check":"You can measure whether the objective was achieved."},
+        {"title":"Document the plant before stress","action":"Record active tips, nodes, branch angles, plant vigor and any existing symptoms before cutting or bending.","check":"There is a before record for comparison."},
+        {"title":"Make the smallest useful intervention","action":"Choose positioning, support, pruning or topping based on the stated goal rather than technique popularity.","check":"The intervention removes or damages no more tissue than needed for the objective."},
+        {"title":"Wait for recovery evidence","action":"Track posture, new extension, wounds and irrigation response before adding another high-stress intervention.","check":"Recovery is demonstrated by the plant rather than a fixed waiting period."}
+      ],
+      "mistakes": ["Choosing a training technique before defining the architecture problem.","Stacking topping, heavy pruning and environmental changes before the plant recovers."],
+      "capstone": "Document one training intervention with goal, before photo/map, method, recovery checks and after photo/map."
+    },
+    {
+      "number": 10,
+      "id": "finish-harvest-outdoor-next",
+      "title": "Finish, Harvest & Plan the Next Cycle",
+      "route": "/learn/harvest-postharvest/",
+      "deepRoute": "/learn/outdoor/",
+      "goal": "Use representative maturity observations, clean handling and final records to finish one cycle and improve the next.",
+      "steps": [
+        {"title":"Sample maturity representatively","action":"Inspect more than one flower position and track observations over time rather than choosing one convenient top.","check":"The maturity record includes location, date and magnification/context."},
+        {"title":"Use multiple indicators","action":"Combine flower development, trichome/stigma observations, cultivar context and trend without assigning universal effect claims to one color percentage.","check":"No single visual cue is treated as complete proof."},
+        {"title":"Preserve lot identity through drying","action":"Record harvest identity, sanitation, drying environment and observations until storage/release.","check":"Finished material can be traced back to its plant or lot record."},
+        {"title":"Review the cycle before repeating it","action":"List what worked, what failed, measurements you lacked and one change to test next cycle; for outdoor plans add site, season, weather, pollen and water context.","check":"The next-cycle plan is based on recorded evidence instead of memory alone."}
+      ],
+      "mistakes": ["Using a fixed week or universal amber percentage as the only harvest decision.","Starting the next crop without reviewing records from the previous one."],
+      "capstone": "Write a one-page end-of-cycle review with harvest evidence, drying/handling notes, biggest uncertainty and the single most useful improvement for the next cycle."
+    }
+  ],
+  "supportRoutes": [
+    {"href":"/learn/academy/","label":"THC Academy"},
+    {"href":"/learn/records/","label":"Records & printables"},
+    {"href":"/learn/sops/","label":"Measurement SOPs"},
+    {"href":"/learn/infographics/","label":"Infographic library"},
+    {"href":"/learn/encyclopedia/","label":"Plant Science Encyclopedia"},
+    {"href":"/thc-grow-doc/","label":"Grow Doc"},
+    {"href":"/growlens/","label":"GrowLens"}
+  ]
+}
