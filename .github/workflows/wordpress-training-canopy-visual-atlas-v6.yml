@@ -1,0 +1,174 @@
+name: Publish Training Canopy V6 Visual Atlas
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'site/wordpress/education/training-canopy-v6-visual-map.json'
+      - 'scripts/publish-wordpress-subject-curriculum-v6.mjs'
+      - 'scripts/publish-wordpress-subject-visual-atlas-v6.mjs'
+      - '.github/workflows/wordpress-training-canopy-visual-atlas-v6.yml'
+  workflow_run:
+    workflows:
+      - Publish Training Canopy V6 Final
+    types: [completed]
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-training-canopy-visual-atlas-v6
+  cancel-in-progress: true
+
+env:
+  WP_SITE_URL: https://dtfseeds.com
+  NODE_OPTIONS: --dns-result-order=ipv4first
+
+jobs:
+  publish:
+    name: Publish Training Canopy V6 visual atlas
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: production
+    env:
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      APPLY_SUBJECT_CURRICULUM_V6: 'true'
+      APPLY_SUBJECT_VISUAL_ATLAS_V6: 'true'
+      SUBJECT_CURRICULUM_PATH: site/wordpress/education/training-canopy-v6.json
+      SUBJECT_VISUAL_MAP: site/wordpress/education/training-canopy-v6-visual-map.json
+      BACKUP_ROOT: /tmp/dtf-training-canopy-visuals-v6
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate Training Canopy visual mapping
+        id: validate
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
+          node --check scripts/publish-wordpress-subject-curriculum-v6.mjs
+          node --check scripts/publish-wordpress-subject-visual-atlas-v6.mjs
+          node - <<'NODE'
+          const fs=require('fs');
+          const map=JSON.parse(fs.readFileSync('site/wordpress/education/training-canopy-v6-visual-map.json','utf8'));
+          const c=JSON.parse(fs.readFileSync('site/wordpress/education/training-canopy-v6.json','utf8'));
+          const groups=Object.entries(map.chapters||{});const assets=groups.flatMap(([,items])=>items||[]);
+          if(map.curriculumId!=='training-canopy-v6'||map.route!=='/learn/training-canopy/'||c.id!==map.curriculumId) throw new Error('Unexpected Training visual-map owner or route.');
+          if(groups.length!==8||assets.length!==19) throw new Error(`Expected 8 groups and 19 cards; found ${groups.length} and ${assets.length}.`);
+          if((map.gaps||[]).length!==7) throw new Error(`Expected 7 explicit gaps; found ${(map.gaps||[]).length}.`);
+          if(JSON.stringify(groups.map(([id])=>id).sort())!==JSON.stringify(c.chapters.map(x=>x.id).sort())) throw new Error('Visual-map chapters do not match Training V6 curriculum chapters.');
+          for(const item of assets){
+            if(!/\.(?:png|jpe?g|webp)$/i.test(item.file||'')||/draft|quarantine|superseded|legacy|qa[-_ ]?required/i.test(item.file||'')) throw new Error(`Unsafe mapped asset: ${item.file}`);
+            if(!fs.existsSync(`site/wordpress/assets/infographics/${item.file}`)) throw new Error(`Mapped asset missing: ${item.file}`);
+          }
+          console.log(`Validated ${assets.length} Training visual cards and ${map.gaps.length} explicit gaps.`);
+          NODE
+
+      - name: Restore and verify Training Canopy V6 curriculum owner
+        id: restore
+        shell: bash
+        env:
+          BACKUP_ROOT: /tmp/dtf-training-canopy-v6-atlas-restore
+        run: |
+          set -euo pipefail
+          mkdir -p "$BACKUP_ROOT"
+          node scripts/publish-wordpress-subject-curriculum-v6.mjs | tee "$RUNNER_TEMP/training-canopy-v6-atlas-restore.log"
+          report="$BACKUP_ROOT/report.json"; test -s "$report"
+          [[ "$(node -p "require(process.argv[1]).chapters" "$report")" = '8' ]]
+          [[ "$(node -p "require(process.argv[1]).lessons" "$report")" = '32' ]]
+
+      - name: Publish and verify Training Canopy visual atlas
+        id: publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$BACKUP_ROOT"
+          node scripts/publish-wordpress-subject-visual-atlas-v6.mjs | tee "$RUNNER_TEMP/training-canopy-visuals-v6.log"
+          report="$BACKUP_ROOT/report.json"; test -s "$report"
+          echo "visuals=$(node -p "require(process.argv[1]).visuals" "$report")" >> "$GITHUB_OUTPUT"
+          echo "groups=$(node -p "require(process.argv[1]).groups" "$report")" >> "$GITHUB_OUTPUT"
+          echo "wordpress=$(node -p "require(process.argv[1]).wordpressMedia" "$report")" >> "$GITHUB_OUTPUT"
+          echo "fallbacks=$(node -p "require(process.argv[1]).canonicalFallbacks" "$report")" >> "$GITHUB_OUTPUT"
+          echo "gaps=$(node -p "require(process.argv[1]).unresolvedGaps.length" "$report")" >> "$GITHUB_OUTPUT"
+
+      - name: Independently verify public Training Canopy curriculum and atlas
+        id: verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          body="$RUNNER_TEMP/training-canopy-visual-atlas.html"; ok=0
+          for attempt in 1 2 3 4 5 6 7 8; do
+            curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+              --header 'Cache-Control: no-cache, no-store, max-age=0' --header 'Pragma: no-cache' \
+              "$WP_SITE_URL/learn/training-canopy/?dtf_tc6v_final_verify=${GITHUB_RUN_ID}-${attempt}" --output "$body"
+            if grep -Fqi 'data-dtf-subject-visuals-v6="training-canopy-v6"' "$body"; then ok=1; break; fi
+            sleep 6
+          done
+          [[ "$ok" -eq 1 ]]
+          [[ "$(grep -Fo 'class="sv6v-card"' "$body" | wc -l | tr -d ' ')" = '19' ]]
+          [[ "$(grep -Fo 'data-sv6v-group=' "$body" | wc -l | tr -d ' ')" = '8' ]]
+          [[ "$(grep -Fo 'class="sv6v-gap"' "$body" | wc -l | tr -d ' ')" = '7' ]]
+          [[ "$(grep -Fo 'data-cv6-chapter=' "$body" | wc -l | tr -d ' ')" = '8' ]]
+          [[ "$(grep -Fo 'class="cv6-lesson"' "$body" | wc -l | tr -d ' ')" = '32' ]]
+          grep -Fqi 'data-dtf-training-canopy-v6="true"' "$body"
+          grep -Fqi 'data-dtf-topic="training-canopy"' "$body"
+          grep -Fqi 'data-dtf-learning-v4="topic-training-canopy"' "$body"
+          if grep -Eqi 'draft|quarantine|superseded|qa[-_ ]?required' "$body"; then echo 'Unsafe asset-state label found in public Training atlas.' >&2; exit 1; fi
+
+      - name: Upload Training Canopy visual evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: training-canopy-visual-atlas-v6-${{ github.run_id }}
+          path: |
+            /tmp/dtf-training-canopy-v6-atlas-restore
+            /tmp/dtf-training-canopy-visuals-v6
+            ${{ runner.temp }}/training-canopy-v6-atlas-restore.log
+            ${{ runner.temp }}/training-canopy-visuals-v6.log
+            ${{ runner.temp }}/training-canopy-visual-atlas.html
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report Training Canopy visual atlas result
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          STATUS: ${{ job.status }}
+          VALIDATE: ${{ steps.validate.outcome }}
+          RESTORE: ${{ steps.restore.outcome }}
+          PUBLISH: ${{ steps.publish.outcome }}
+          VERIFY: ${{ steps.verify.outcome }}
+          VISUALS: ${{ steps.publish.outputs.visuals }}
+          GROUPS: ${{ steps.publish.outputs.groups }}
+          WORDPRESS: ${{ steps.publish.outputs.wordpress }}
+          FALLBACKS: ${{ steps.publish.outputs.fallbacks }}
+          GAPS: ${{ steps.publish.outputs.gaps }}
+        with:
+          script: |
+            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body:[
+              '## Training & Canopy V6 visual atlas','',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Result: **${process.env.STATUS}**`,
+              `Mapping validation: **${process.env.VALIDATE || 'not-run'}**`,
+              `V6 curriculum owner restoration: **${process.env.RESTORE || 'not-run'}**`,
+              `WordPress atlas publication: **${process.env.PUBLISH || 'not-run'}**`,
+              `Visitor verification: **${process.env.VERIFY || 'not-run'}**`,
+              `Verified visual cards: **${process.env.VISUALS || '0'}**`,
+              `Chapter groups: **${process.env.GROUPS || '0'}**`,
+              `WordPress-media resolutions: **${process.env.WORDPRESS || '0'}**`,
+              `Canonical GitHub fallbacks: **${process.env.FALLBACKS || '0'}**`,
+              `Explicit unresolved visual gaps: **${process.env.GAPS || '0'}**`,'',
+              'The Training atlas restores the approved 8-chapter/32-lesson V6 owner before attaching visuals. Existing physiology and canopy references are used only where they directly support a training chapter; technique-specific diagrams remain explicit production gaps instead of being replaced with generic cannabis imagery.'
+            ].join('\n')});
