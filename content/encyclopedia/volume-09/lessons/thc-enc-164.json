@@ -1,0 +1,55 @@
+{
+  "id": "THC-ENC-164",
+  "number": 164,
+  "title": "Cutting Selection and Carbohydrate Status",
+  "objective": "Select cuttings using measured tissue quality rather than a rigid node-count recipe.",
+  "terms": [
+    {"term":"source–sink status","definition":"The current balance between exporting and importing assimilates or other resources within plant tissues."},
+    {"term":"carbohydrate reserve","definition":"Stored soluble sugars and starch that can support metabolism when current supply is limited."},
+    {"term":"cutting diameter","definition":"Stem thickness measured at a defined position on the cutting."},
+    {"term":"leaf area","definition":"The surface area of leaves retained on a cutting or measured on a plant."},
+    {"term":"apical meristem","definition":"Actively dividing tissue at the shoot tip that produces new shoot organs."},
+    {"term":"donor nutrition","definition":"The nutrient status and recent nutrition history of the source plant from which a cutting is taken."}
+  ],
+  "termDefinitionsStatus": "controlled_glossary_reconciled_for_publication",
+  "coreScience": [
+    "A detached cutting temporarily loses root access to water and minerals. It must survive from stored resources, photosynthesis, and controlled water loss while new roots develop. Carbohydrate status, nitrogen status, leaf area, stem maturity, and intact meristems can therefore affect survival and rooting.",
+    "Cannabis studies show strong cultivar effects and demonstrate that cutting morphology and donor conditions can influence outcomes. An intact apex can contribute endogenous auxin, while greater leaf area can increase potential transpiring surface; the net rooting effect must be validated for the genotype and protocol. Removing too much leaf tissue can also reduce photosynthetic capacity and stored resources.",
+    "Cutting length, node number, diameter, and leaf trimming should be treated as protocol variables. A successful specification defines an acceptable range for the actual genotype and system instead of turning one research method into a universal rule."
+  ],
+  "cultivationRelevance": [
+    "Harvest uniform cuttings from identified donor zones. Protect them from desiccation, heat, crushing, and long delays. Reject tissue with pests, lesions, weak stems, unresolved nutrient stress, or abnormal growth."
+  ],
+  "measureAndRecord": [
+    {"field":"Controlled record set","requirement":"Source branch and node; length; basal diameter; fresh mass if used; leaf count/area proxy; apex retained or removed; time from cut to insertion; rooting and survival outcomes."}
+  ],
+  "misconceptions": [
+    "Every cutting needs exactly the same number of nodes.",
+    "Bigger cuttings always root faster.",
+    "Removing most leaf area always improves rooting."
+  ],
+  "evidenceLimits": [
+    "Direct carbohydrate measurements are uncommon in production. Morphology can act as a proxy, but its relationship to rooting must be validated for each genotype and protocol."
+  ],
+  "crossLinks": "THC-ENC-141–160 for genotype, chemotype, sex, clonal fidelity, and evidence standards; THC-ENC-301–340 for disease, viroid, biosecurity, sanitation, and release controls; THC-GROW-034 for the controlled propagation SOP package.",
+  "sourceNotes": [
+    "Campbell LG, Naraine SGU, Dusfresne J. (2019). Phenotypic plasticity influences the success of clonal propagation in industrial pharmaceutical Cannabis sativa. PLOS ONE 14:e0213434. DOI 10.1371/journal.pone.0213434.",
+    "Campbell SM et al. (2021). Evaluation of substrate composition and exogenous hormone application on vegetative propagule rooting success of essential oil hemp (Cannabis sativa L.). PLOS ONE 16:e0249160. DOI 10.1371/journal.pone.0249160.",
+    "Liang J et al. (2026). Efficient propagation protocol and genetic similarity assessment of medicinal cannabis based on photoautotrophic micropropagation. Frontiers in Plant Science. DOI 10.3389/fpls.2026.1846572.",
+    "Druege U et al. (2019). Molecular and physiological control of adventitious rooting in cuttings: phytohormone action meets resource allocation. Annals of Botany. DOI 10.1093/aob/mcy234."
+  ],
+  "publicationAuthorized": true,
+  "reviewControl": {
+    "controlledManuscript":"Volume 09 v1.0",
+    "evidenceControl":"complete",
+    "secondaryEvidenceReview":"complete_qualified",
+    "externalReview":"pending_not_recorded",
+    "externalReviewType":"propagation_science",
+    "publicationAuthorized":true,
+    "publicationAuthorization":"project_owner_2026-08-24",
+    "independentApproval":false,
+    "websiteAction":"publish_with_review_notice"
+  },
+  "slug": "cutting-selection-and-carbohydrate-status",
+  "route": "/encyclopedia/cutting-selection-and-carbohydrate-status"
+}
