@@ -11,6 +11,7 @@ on:
   workflow_run:
     workflows:
       - Publish DTFSeeds WordPress Production
+      - Publish DTFSeeds Learning Experience V3
     types: [completed]
 
 permissions:
@@ -131,6 +132,6 @@ jobs:
                 `Result: **${process.env.STATUS}**`,
                 `Source: ${source}`,
                 '',
-                'This guard maps the three current homepage release cards to the exact reviewed WordPress strain-card media from strain-card-images.json, preserves the 2:3 portrait artwork without cropping, purges Hostinger/LiteSpeed, and verifies the cache-busted public homepage. It also reapplies after successful canonical WordPress production so generic education imagery cannot silently replace product artwork again.'
+                'This guard maps the three current homepage release cards to the exact reviewed WordPress strain-card media from strain-card-images.json, preserves the 2:3 portrait artwork without cropping, purges Hostinger/LiteSpeed, and verifies the cache-busted public homepage. It reapplies after both canonical WordPress production and the later Learning Experience V3 rebuild so generic education imagery cannot silently replace product artwork again.'
               ].join('\n')
             });
