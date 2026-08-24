@@ -1,0 +1,61 @@
+name: Diagnose DTF Shop SEO Contract
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/diagnose-shop-seo-contract.mjs'
+      - '.github/workflows/diagnose-shop-seo-contract.yml'
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: diagnose-dtf-shop-seo-contract
+  cancel-in-progress: true
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: production
+    env:
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Inspect AIOSEO and WooCommerce metadata ownership without writes
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?missing WP_API_USERNAME}"
+          : "${WP_API_PASSWORD:?missing WP_API_PASSWORD}"
+          node --check scripts/diagnose-shop-seo-contract.mjs
+          node scripts/diagnose-shop-seo-contract.mjs
+      - name: Upload diagnostic
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: shop-seo-contract-${{ github.run_id }}
+          path: shop-seo-contract-diagnostic.json
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Report relevant option paths
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          STATUS: ${{ job.status }}
+        with:
+          script: |
+            const fs=require('fs');let details='Diagnostic file was not generated.';
+            if(fs.existsSync('shop-seo-contract-diagnostic.json')){const r=JSON.parse(fs.readFileSync('shop-seo-contract-diagnostic.json','utf8'));const rows=(r.optionMatches||[]).slice(0,120).map(x=>`- ${x.path}: ${JSON.stringify(x.value)}`);details=[`Shop page ID: ${r.shop?.id??'unknown'}`,`AIOSEO post title: ${JSON.stringify(r.aioseoPost?.title??null)}`,`AIOSEO post description: ${JSON.stringify(r.aioseoPost?.description??null)}`,'Relevant AIOSEO option paths:',...(rows.length?rows:['- none detected'])].join('\n');}
+            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body:['## Read-only Shop SEO ownership diagnostic','',`Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,`Commit: \`${context.sha}\``,`Result: **${process.env.STATUS}**`,'',details,'','No WordPress or AIOSEO state is mutated by this diagnostic.'].join('\n')});
