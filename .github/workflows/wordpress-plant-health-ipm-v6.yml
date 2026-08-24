@@ -101,7 +101,7 @@ jobs:
           for attempt in 1 2 3 4 5 6 7 8; do
             curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
               --header 'Cache-Control: no-cache, no-store, max-age=0' --header 'Pragma: no-cache' \
-              "$WP_SITE_URL/learn/plant-health-ipm/?dtf_phi6_verify=${GITHUB_RUN_ID}-${attempt}" --output "$body"
+              "$WP_SITE_URL/learn/ipm/?dtf_phi6_verify=${GITHUB_RUN_ID}-${attempt}" --output "$body"
             if grep -Fq 'data-dtf-plant-health-ipm-v6="true"' "$body"; then ok=1; break; fi
             sleep 6
           done
