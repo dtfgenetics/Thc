@@ -36,8 +36,8 @@ jobs:
     env:
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME || secrets.WORDPRESS_USERNAME || secrets.WP_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD || secrets.WORDPRESS_APP_PASSWORD || secrets.WP_APPLICATION_PASSWORD }}
-      V4_BACKUP_ROOT: ${{ runner.temp }}/dtf-shop-v4
-      V5_BACKUP_ROOT: ${{ runner.temp }}/dtf-shop-v5
+      V4_BACKUP_ROOT: /tmp/dtf-shop-v4
+      V5_BACKUP_ROOT: /tmp/dtf-shop-v5
 
     steps:
       - name: Checkout trusted main
@@ -68,19 +68,18 @@ jobs:
         id: v4
         env:
           APPLY_COMMERCE_ARCHIVE_V4: 'true'
-          BACKUP_ROOT: ${{ env.V4_BACKUP_ROOT }}
+          BACKUP_ROOT: /tmp/dtf-shop-v4
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p "$BACKUP_ROOT"
           node scripts/polish-wordpress-commerce-archive-v4.mjs | tee "$RUNNER_TEMP/shop-v4.json"
-          echo 'outcome=success' >> "$GITHUB_OUTPUT"
 
       - name: Publish server-rendered Shop V5 storefront
         id: v5
         env:
           APPLY_SHOP_STOREFRONT_V5: 'true'
-          BACKUP_ROOT: ${{ env.V5_BACKUP_ROOT }}
+          BACKUP_ROOT: /tmp/dtf-shop-v5
         shell: bash
         run: |
           set -euo pipefail
@@ -88,8 +87,8 @@ jobs:
           node scripts/polish-wordpress-shop-storefront-v5.mjs | tee "$RUNNER_TEMP/shop-v5.json"
           dir="$(cat "$BACKUP_ROOT/shop-storefront-v5-backup-path.txt")"
           report="$dir/shop-storefront-v5-report.json"
-          echo "template_id=$(node -p "require(process.argv[1]).templateId" "$report")" >> "$GITHUB_OUTPUT"
-          echo 'outcome=success' >> "$GITHUB_OUTPUT"
+          template_id="$(node -p 'require(process.argv[1]).templateId' "$report")"
+          echo "template_id=$template_id" >> "$GITHUB_OUTPUT"
 
       - name: Purge Hostinger LiteSpeed cache
         id: cache
@@ -155,7 +154,6 @@ jobs:
           done
 
           echo 'Shop V5 storefront and all three reviewed WooCommerce release images verified on public routes.'
-          echo 'outcome=success' >> "$GITHUB_OUTPUT"
 
       - name: Upload Shop V5 rollback evidence
         if: always()
@@ -163,8 +161,8 @@ jobs:
         with:
           name: dtf-shop-storefront-v5-${{ github.run_id }}
           path: |
-            ${{ env.V4_BACKUP_ROOT }}
-            ${{ env.V5_BACKUP_ROOT }}
+            /tmp/dtf-shop-v4
+            /tmp/dtf-shop-v5
             ${{ runner.temp }}/shop-v5-*.html
             ${{ runner.temp }}/product-*.html
           if-no-files-found: warn
@@ -175,10 +173,10 @@ jobs:
         uses: actions/github-script@v7
         env:
           STATUS: ${{ job.status }}
-          V4: ${{ steps.v4.outputs.outcome }}
-          V5: ${{ steps.v5.outputs.outcome }}
+          V4: ${{ steps.v4.outcome }}
+          V5: ${{ steps.v5.outcome }}
           CACHE: ${{ steps.cache.outcome }}
-          VERIFY: ${{ steps.verify.outputs.outcome }}
+          VERIFY: ${{ steps.verify.outcome }}
           TEMPLATE_ID: ${{ steps.v5.outputs.template_id }}
         with:
           script: |
