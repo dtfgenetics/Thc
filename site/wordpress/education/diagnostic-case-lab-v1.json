@@ -1,0 +1,456 @@
+{
+  "schemaVersion": 1,
+  "id": "diagnostic-case-lab-v1",
+  "slug": "diagnostic-cases",
+  "route": "/learn/diagnostic-cases/",
+  "title": "Diagnostic Case Lab",
+  "subtitle": "Practice differential diagnosis before you reach for a fix.",
+  "learningOutcome": "Use symptom distribution, plant stage, environmental and root-zone measurements, direct pest or pathogen evidence, recent changes and follow-up observations to rank competing explanations and choose the smallest justified next action.",
+  "evidenceBoundary": "These cases teach diagnostic reasoning. A visual pattern alone does not confirm a nutrient deficiency, pest, disease or environmental disorder. Some cases intentionally stop at a supported category such as root-zone stress or suspected pathogen because laboratory testing, microscopy or additional measurements would be required to identify a specific cause.",
+  "sourceRefs": [
+    {
+      "id": "DX-S1",
+      "type": "peer-reviewed review",
+      "citation": "Punja ZK. Integrated Management of Pathogens and Microbes in Cannabis sativa L. under Greenhouse Conditions. 2024.",
+      "pmcid": "PMC10974757",
+      "pmid": "38592798",
+      "supports": "Powdery mildew, Botrytis, Fusarium/Pythium root disease, waterlogging as a root-browning look-alike, HLVd and integrated disease management."
+    },
+    {
+      "id": "DX-S2",
+      "type": "peer-reviewed entomology study",
+      "citation": "Assessing the impact of piercing-sucking pests on greenhouse-grown industrial hemp (Cannabis sativa L.). 2024.",
+      "pmcid": "PMC10878361",
+      "pmid": "37156240",
+      "supports": "Twospotted spider mite, hemp russet mite, broad mite and aphid injury context."
+    },
+    {
+      "id": "DX-S3",
+      "type": "peer-reviewed study",
+      "citation": "Punja ZK et al. Transmission, Spread, Longevity and Management of Hop Latent Viroid in Cannabis. 2025.",
+      "pmcid": "PMC11902214",
+      "pmid": "40094815",
+      "doi": "10.3390/plants14050830",
+      "supports": "HLVd transmission, asymptomatic stock, root and water pathways, sampling and containment."
+    },
+    {
+      "id": "DX-S4",
+      "type": "peer-reviewed nutrient study",
+      "citation": "Llewellyn D, Golem S, Jones AMP, Zheng Y. Foliar Symptomology, Nutrient Content, Yield, and Secondary Metabolite Variability of Cannabis Grown Hydroponically with Different Single-Element Nutrient Deficiencies. 2023.",
+      "pmcid": "PMC9920212",
+      "pmid": "36771506",
+      "doi": "10.3390/plants12030422",
+      "supports": "Cannabis nutrient-deficiency symptom progression and the need to integrate visual symptoms with analytical evidence."
+    },
+    {
+      "id": "DX-S5",
+      "type": "peer-reviewed nutrition study",
+      "citation": "Hershkowitz JA, Westmoreland FM, Bugbee B. Elevated root-zone P and nutrient concentration do not increase yield or cannabinoids in medical cannabis. 2025.",
+      "pmcid": "PMC11882401",
+      "pmid": "40051879",
+      "doi": "10.3389/fpls.2025.1433985",
+      "supports": "EC as a concentration metric rather than a complete description of nutrient composition and limits of assuming more fertilizer improves crop performance."
+    },
+    {
+      "id": "DX-S6",
+      "type": "peer-reviewed lighting study",
+      "citation": "Rodriguez-Morrison V et al. Cannabis Yield, Potency, and Leaf Photosynthesis Respond Differently to Increasing Light Levels in an Indoor Environment. 2021.",
+      "pmcid": "PMC8144505",
+      "pmid": "34046049",
+      "supports": "Cannabis responses vary with localized light intensity, plant age and acclimation; canopy position matters when investigating top-zone stress."
+    },
+    {
+      "id": "DX-S7",
+      "type": "peer-reviewed harvest study",
+      "citation": "Tran J et al. Determination of Optimal Harvest Time in Cannabis sativa L. Based upon Stigma Color Transition. 2025.",
+      "pmcid": "PMC12114869",
+      "pmid": "40431097",
+      "doi": "10.3390/plants14101532",
+      "supports": "Maturation indicators are genotype-dependent and should not be interpreted as universal harvest thresholds."
+    }
+  ],
+  "cases": [
+    {
+      "id": "DX-C01",
+      "difficulty": "Beginner",
+      "title": "Lower leaves are turning uniformly pale",
+      "category": "yellowing",
+      "presenting": "A vigorous plant entering early flowering develops gradual, mostly uniform yellowing on the oldest fan leaves. New growth remains greener. No insects or lesions are visible.",
+      "evidence": [
+        "Symptoms begin on older leaves and move upward slowly.",
+        "The feed log shows nitrogen supply was reduced sharply several irrigations before symptoms appeared.",
+        "Root-zone moisture, drainage and odor are unchanged from healthy comparison plants.",
+        "No pest colonies, webbing, powdery growth or localized hot-zone pattern is present."
+      ],
+      "differential": [
+        {"cause":"Nitrogen limitation","weight":"higher","reason":"Older-leaf chlorosis and a documented reduction in N supply are mutually supportive."},
+        {"cause":"Root-zone oxygen or irrigation stress","weight":"lower","reason":"Possible in general, but the root-zone history and comparison plants do not currently support it."},
+        {"cause":"Normal late senescence","weight":"lower","reason":"Plant stage is early enough that a rapid whole-canopy decline should not be assumed to be normal maturation."}
+      ],
+      "interpretation": "Nitrogen limitation is the best-supported working explanation, but the conclusion comes from the pattern plus the feed history rather than leaf color alone.",
+      "why": "The visual pattern is compatible with several stresses. The documented change in nutrient supply is the strongest separating evidence in this case.",
+      "action": "Restore the planned nutrient program appropriate to this crop system rather than making multiple unrelated changes at once. Record the change and avoid chasing old damaged leaves for instant recovery.",
+      "verify": "Follow new growth, rate of spread and overall vigor over the next observation interval. If yellowing continues despite a corrected program, reopen the root-zone and environmental differential.",
+      "sourceIds": ["DX-S4"],
+      "relatedRoutes": ["/learn/nutrition-media/","/learn/water-ph-ec/","/learn/research-methods/"]
+    },
+    {
+      "id": "DX-C02",
+      "difficulty": "Intermediate",
+      "title": "Interveinal chlorosis appears on older leaves",
+      "category": "yellowing",
+      "presenting": "Older leaves develop pale tissue between greener veins while the newest leaves are less affected. The grower wants to call it magnesium deficiency from the photo alone.",
+      "evidence": [
+        "The pattern is strongest on older leaves rather than only the newest tissue.",
+        "A recent nutrient-solution analysis shows magnesium was unintentionally omitted from a batch.",
+        "The root zone is not saturated and roots remain structurally healthy on representative plants.",
+        "No mites or aphid colonies are found on magnified inspection."
+      ],
+      "differential": [
+        {"cause":"Magnesium limitation","weight":"higher","reason":"The symptom distribution and confirmed solution error point in the same direction."},
+        {"cause":"pH or salinity-related uptake problem","weight":"medium","reason":"Still worth checking because availability problems can imitate an elemental shortage."},
+        {"cause":"Piercing-sucking pest injury","weight":"lower","reason":"No direct pest evidence was found and the pattern is not behaving like localized feeding injury."}
+      ],
+      "interpretation": "Magnesium limitation is strongly supported because the visual clue is paired with a verified input error; the photograph alone would not be enough.",
+      "why": "Controlled cannabis deficiency studies show recognizable patterns, but they also caution that visual symptom onset and tissue measurements do not always align perfectly.",
+      "action": "Correct the documented nutrient-program error using the normal mixing and measurement process. Do not add unrelated supplements simply because the symptom resembles an online deficiency chart.",
+      "verify": "Confirm the corrected solution composition, then track whether new symptoms stop progressing. Reassess pH, EC and roots if the crop does not stabilize.",
+      "sourceIds": ["DX-S4","DX-S5"],
+      "relatedRoutes": ["/learn/nutrition-media/","/learn/water-ph-ec/"]
+    },
+    {
+      "id": "DX-C03",
+      "difficulty": "Beginner",
+      "title": "Fine stippling is spreading from one canopy corner",
+      "category": "pests",
+      "presenting": "Several leaves show pale pinprick stippling. The damage is concentrated near one side of the room and has expanded between scouting dates.",
+      "evidence": [
+        "Magnification reveals motile mites and eggs on leaf undersides.",
+        "Fine webbing is visible on the most affected leaves.",
+        "Counts are higher in one mapped zone and are increasing over time.",
+        "Neighboring unaffected plants do not share a distinct pH, EC or irrigation difference."
+      ],
+      "differential": [
+        {"cause":"Twospotted spider mite","weight":"higher","reason":"Live mites, eggs, webbing and stippling provide direct evidence."},
+        {"cause":"Nutrient deficiency","weight":"lower","reason":"A deficiency can discolor leaves but does not explain confirmed mite colonies and webbing."},
+        {"cause":"Spray or contact injury","weight":"lower","reason":"The expanding pest counts and underside colonies are more specific evidence."}
+      ],
+      "interpretation": "Twospotted spider mite pressure is confirmed at the sampled sites.",
+      "why": "Direct identification of the organism is stronger evidence than interpreting the damage pattern by itself.",
+      "action": "Map the infestation, protect clean areas, inspect adjacent plants and select lawful IPM tactics based on pest stage, crop stage and local label restrictions. Do not assume one application equals control.",
+      "verify": "Repeat counts on the same sampling unit and compare the population trend after intervention, including beneficial activity where used.",
+      "sourceIds": ["DX-S2"],
+      "relatedRoutes": ["/learn/ipm/","/learn/records/"]
+    },
+    {
+      "id": "DX-C04",
+      "difficulty": "Intermediate",
+      "title": "New growth is twisted but no obvious insects are visible",
+      "category": "distortion",
+      "presenting": "Young leaves emerge narrow, curled and distorted. The grower has already changed nutrients twice because no pests were visible to the naked eye.",
+      "evidence": [
+        "Symptoms are concentrated in meristems and newest leaves.",
+        "Standard visual scouting finds no aphids or spider-mite webbing.",
+        "Higher magnification of symptomatic tissue reveals very small mite-like organisms.",
+        "The nutrient changes did not stop the progression."
+      ],
+      "differential": [
+        {"cause":"Russet or broad mite pressure","weight":"higher","reason":"Very small mites can be missed without adequate magnification and are consistent with distorted new growth."},
+        {"cause":"Nutrient imbalance","weight":"medium","reason":"Can distort growth, but repeated nutrient changes did not explain the direct organism evidence."},
+        {"cause":"Genetic/developmental variation","weight":"lower","reason":"The progressive spread among previously normal plants argues against a stable inherited trait."
+        }
+      ],
+      "interpretation": "A microscopic mite problem is strongly supported, but species-level identification should use adequate magnification or expert confirmation when it affects management choices.",
+      "why": "The key diagnostic move was changing the observation method rather than changing the feed again.",
+      "action": "Quarantine affected material as appropriate, increase magnified scouting and use an IPM response matched to the confirmed organism and legal crop options.",
+      "verify": "Track organism counts and the condition of newly produced leaves; old distorted leaves are not the primary success measure.",
+      "sourceIds": ["DX-S2"],
+      "relatedRoutes": ["/learn/ipm/","/learn/research-methods/"]
+    },
+    {
+      "id": "DX-C05",
+      "difficulty": "Beginner",
+      "title": "White powdery colonies appear on fan leaves",
+      "category": "disease",
+      "presenting": "Small white surface colonies appear on several leaves and new lesions are appearing on connected plants over successive scouting dates.",
+      "evidence": [
+        "Colonies are visible on leaf surfaces rather than as internal pale tissue.",
+        "New lesions are appearing over time in the same crop zone.",
+        "The affected plants share canopy and handling connections.",
+        "The pattern is not explained by a one-time foliar residue event."
+      ],
+      "differential": [
+        {"cause":"Powdery mildew","weight":"higher","reason":"Surface colonies and progressive crop spread are characteristic and fit known cannabis disease behavior."},
+        {"cause":"Dried spray residue","weight":"lower","reason":"Residue should track an application event and not produce progressive new biological colonies."},
+        {"cause":"Nutrient spotting","weight":"lower","reason":"Nutrient disorders do not create removable powdery fungal colonies."
+        }
+      ],
+      "interpretation": "Powdery mildew is the best-supported diagnosis at the observed sites; crop-wide risk extends beyond the first visible leaf.",
+      "why": "The evidence combines lesion appearance with progression and spatial connections instead of relying on one close-up image.",
+      "action": "Isolate or manage affected zones according to the crop plan, reduce transmission opportunities, inspect stock and connected plants, and use lawful integrated disease-management tactics.",
+      "verify": "Record new-lesion incidence on a repeatable scouting route. Success means fewer new infections over time, not merely wiping visible powder from one leaf.",
+      "sourceIds": ["DX-S1"],
+      "relatedRoutes": ["/learn/ipm/","/learn/environment-vpd/"]
+    },
+    {
+      "id": "DX-C06",
+      "difficulty": "Intermediate",
+      "title": "One dense flower browns from the inside after a humid period",
+      "category": "flower disease",
+      "presenting": "Near harvest, an otherwise green flower develops internal brown, soft tissue. The room-average humidity log looked acceptable most of the week.",
+      "evidence": [
+        "Damage begins inside dense inflorescence tissue rather than uniformly across leaves.",
+        "The affected flower has poor internal air exchange and evidence of retained moisture.",
+        "Recent canopy wetness or high-humidity periods occurred even though the room average hides local peaks.",
+        "Nearby dense flowers are prioritized for inspection because they share the same microclimate risk."
+      ],
+      "differential": [
+        {"cause":"Botrytis bud rot","weight":"higher","reason":"Internal flower browning in dense moist tissue fits a major cannabis disease risk."},
+        {"cause":"Normal maturation","weight":"lower","reason":"Normal maturation does not explain localized soft internal decay."},
+        {"cause":"Nutrient deficiency","weight":"lower","reason":"A nutrient disorder would not usually present as focal internal flower rot."
+        }
+      ],
+      "interpretation": "Botrytis is strongly suspected and should be managed as a disease risk; confirmation may require closer examination or laboratory support where needed.",
+      "why": "The room average was not enough. The decisive context is the microclimate inside dense flower tissue plus the lesion type.",
+      "action": "Segregate affected material, inspect surrounding flowers, address moisture and airflow drivers, and follow crop-safety and disposal procedures. Do not treat visibly decayed flower as a quality product.",
+      "verify": "Track incidence of new affected flowers and the local microclimate rather than relying only on room-average RH.",
+      "sourceIds": ["DX-S1"],
+      "relatedRoutes": ["/learn/ipm/","/learn/environment-vpd/","/learn/harvest-postharvest/"]
+    },
+    {
+      "id": "DX-C07",
+      "difficulty": "Intermediate",
+      "title": "Brown roots and droop in a chronically saturated container",
+      "category": "roots",
+      "presenting": "A plant droops despite wet media. Roots are tan-brown and the container has remained heavy between irrigations.",
+      "evidence": [
+        "The root zone has stayed saturated longer than comparable healthy containers.",
+        "Drainage is restricted and the media has little measurable dryback.",
+        "Root browning is present, but no pathogen test has been performed.",
+        "The symptom began after irrigation frequency increased."
+      ],
+      "differential": [
+        {"cause":"Root-zone oxygen/water-balance stress","weight":"higher","reason":"Persistent saturation and timing strongly support an abiotic root-zone driver."},
+        {"cause":"Pythium or Fusarium root disease","weight":"unresolved","reason":"These pathogens can also brown roots and may be favored by wet systems, but color alone cannot identify them."},
+        {"cause":"Simple underwatering","weight":"lower","reason":"The container is persistently saturated rather than dry."
+        }
+      ],
+      "interpretation": "Chronic saturation is confirmed as a root-zone problem; a specific infectious root disease is not confirmed from brown roots alone.",
+      "why": "Cannabis disease literature specifically notes that excessive waterlogging can brown roots and imitate infectious root disease.",
+      "action": "Correct the documented drainage/irrigation problem and preserve representative samples if pathogen confirmation matters. Avoid automatically adding a disease product without evidence.",
+      "verify": "Track container water behavior, new root condition and plant turgor. Escalate to pathogen testing if decline continues or spreads despite corrected root-zone conditions.",
+      "sourceIds": ["DX-S1"],
+      "relatedRoutes": ["/learn/water-ph-ec/","/learn/ipm/"]
+    },
+    {
+      "id": "DX-C08",
+      "difficulty": "Advanced",
+      "title": "Root decline clusters along one recirculating table",
+      "category": "roots",
+      "presenting": "Multiple plants sharing a recirculating irrigation path develop root browning, stunting and wilt while plants on a separate system remain healthier.",
+      "evidence": [
+        "Affected plants are spatially linked by shared water rather than randomly distributed.",
+        "Root symptoms occur in several plants with different individual containers.",
+        "The water pathway includes shared return solution and wet surfaces.",
+        "No single nutrient-mixing error is unique to only the affected table."
+      ],
+      "differential": [
+        {"cause":"Shared-water root pathogen or microbial spread","weight":"higher","reason":"Clustering along a connected water pathway raises the probability of a transmissible root problem."},
+        {"cause":"Shared irrigation/oxygen design failure","weight":"also plausible","reason":"A system-level hydraulic or oxygen problem can create the same spatial cluster without a pathogen."},
+        {"cause":"Random individual nutrient deficiency","weight":"lower","reason":"The distribution follows a shared infrastructure boundary rather than individual plant identity."
+        }
+      ],
+      "interpretation": "The evidence supports a system-level root-zone problem. Pathogen involvement is plausible but requires confirmation; the water network itself is part of the diagnostic unit.",
+      "why": "Mapping connections explains more than treating each pot as an isolated case.",
+      "action": "Separate affected pathways where practical, document hydraulic conditions, preserve root/water samples if testing is warranted, and review sanitation and recirculation practices.",
+      "verify": "Compare new incidence inside and outside the connected system after corrective actions and testing.",
+      "sourceIds": ["DX-S1"],
+      "relatedRoutes": ["/learn/water-ph-ec/","/learn/ipm/","/learn/research-methods/"]
+    },
+    {
+      "id": "DX-C09",
+      "difficulty": "Advanced",
+      "title": "Mother plant looks acceptable but its clones repeatedly underperform",
+      "category": "systemic disease",
+      "presenting": "A long-held stock plant has only subtle leaf distortion, but successive clone batches root poorly and related flowering plants are stunted with reduced inflorescence development.",
+      "evidence": [
+        "The performance problem tracks one mother lineage across multiple clone batches.",
+        "The stock plant itself can appear mildly affected or nearly normal.",
+        "No single irrigation or lighting zone explains all descendants.",
+        "The propagation history creates repeated opportunities for sap-mediated transmission."
+      ],
+      "differential": [
+        {"cause":"HLVd or another systemic stock-borne problem","weight":"higher","reason":"Asymptomatic or subtle stock infection plus poor rooting and downstream stunting matches known HLVd risk patterns."},
+        {"cause":"One-room environmental stress","weight":"lower","reason":"The problem follows lineage across environments rather than one room boundary."},
+        {"cause":"Genetic low vigor","weight":"medium","reason":"Possible, but a change in performance over time and transmission-risk history justify pathogen testing before accepting genetics as the explanation."
+        }
+      ],
+      "interpretation": "HLVd is a serious suspicion, not a visual diagnosis. The correct next step is identity-preserved diagnostic testing and traceback.",
+      "why": "HLVd can be detected in plants that are not strongly symptomatic, making symptom-only certification of mother stock unreliable.",
+      "action": "Quarantine the suspect lineage as appropriate, preserve plant-to-clone identity, test with a validated diagnostic method, and trace shared tools, propagation batches and water connections.",
+      "verify": "Use laboratory results plus traceback to determine the exposed network and confirm whether clean replacement stock restores propagation performance.",
+      "sourceIds": ["DX-S1","DX-S3"],
+      "relatedRoutes": ["/learn/ipm/","/learn/genetics-breeding/","/learn/research-methods/"]
+    },
+    {
+      "id": "DX-C10",
+      "difficulty": "Intermediate",
+      "title": "Leaf tips burn after the feed concentration is increased",
+      "category": "root-zone chemistry",
+      "presenting": "Soon after a deliberate increase in nutrient concentration, several plants develop tip and marginal injury. The grower assumes a specific elemental toxicity from appearance alone.",
+      "evidence": [
+        "The symptom onset follows a documented concentration change.",
+        "Measured solution EC increased substantially relative to the crop's previous stable baseline.",
+        "No single ion concentration has been analytically confirmed as toxic.",
+        "The injury appears across plants receiving the same solution rather than one pest zone."
+      ],
+      "differential": [
+        {"cause":"Excess root-zone concentration/salinity context","weight":"higher","reason":"Timing and measured EC shift support an overconcentration problem at the system level."},
+        {"cause":"Specific elemental toxicity","weight":"unresolved","reason":"EC does not reveal which ions are responsible, so a specific toxicity cannot be named from EC and leaf tips alone."},
+        {"cause":"Piercing-sucking pest injury","weight":"lower","reason":"The distribution follows the shared feed change and no direct pest evidence is present."
+        }
+      ],
+      "interpretation": "Excess concentration is the supported category; naming a specific toxic element would exceed the evidence.",
+      "why": "EC is useful for concentration tracking but does not describe nutrient composition by itself.",
+      "action": "Return toward the validated crop program and investigate solution composition, source water, mixing records and root-zone accumulation before adding more inputs.",
+      "verify": "Track new leaf development, EC trend and root-zone behavior after the program is corrected. Do not expect necrotic tissue to become healthy again.",
+      "sourceIds": ["DX-S5"],
+      "relatedRoutes": ["/learn/water-ph-ec/","/learn/nutrition-media/"]
+    },
+    {
+      "id": "DX-C11",
+      "difficulty": "Intermediate",
+      "title": "Only the hottest, brightest canopy tops are curling upward",
+      "category": "environment",
+      "presenting": "Upper leaves directly beneath one fixture zone curl upward and lose normal posture while lower and edge leaves remain comparatively normal.",
+      "evidence": [
+        "The symptom maps to the highest-light canopy zone rather than cultivar or irrigation group.",
+        "Canopy-level PPFD and leaf-temperature measurements differ from unaffected zones.",
+        "The pattern changes with position beneath the fixture.",
+        "Roots and irrigation records do not show the same spatial boundary."
+      ],
+      "differential": [
+        {"cause":"Localized light/heat/environmental stress","weight":"higher","reason":"The symptom follows measured canopy exposure and position."},
+        {"cause":"Root-zone nutrient disorder","weight":"lower","reason":"All plants share the root program but only the high-exposure zone is affected."},
+        {"cause":"Genetic trait","weight":"lower","reason":"Different plants show the same position-dependent pattern."
+        }
+      ],
+      "interpretation": "A localized canopy-environment problem is best supported; the exact contribution of light intensity, leaf temperature and water demand should be separated by measurement.",
+      "why": "Cannabis responses to light vary with localized PPFD, acclimation and plant stage, so room-level fixture settings are weaker evidence than crop-plane measurements.",
+      "action": "Correct the verified spatial imbalance rather than changing the entire nutrient program. Re-map the canopy after fixture, distance, airflow or environmental adjustments.",
+      "verify": "Compare leaf posture and new growth in the corrected zone with unchanged reference zones while logging PPFD and temperature.",
+      "sourceIds": ["DX-S6"],
+      "relatedRoutes": ["/learn/lighting/","/learn/environment-vpd/","/learn/research-methods/"]
+    },
+    {
+      "id": "DX-C12",
+      "difficulty": "Advanced",
+      "title": "Late-flower yellowing is being called a deficiency from one photo",
+      "category": "maturation",
+      "presenting": "A plant late in flower shows fan-leaf yellowing and changing stigma color. One observer says it is normal fade; another says the plant needs an immediate nutrient correction.",
+      "evidence": [
+        "The plant is genuinely late in reproductive development, but exact maturation timing varies by genotype.",
+        "Yellowing is compared with healthy reference plants of the same genotype and age rather than an unrelated cultivar.",
+        "Root-zone, irrigation and environment records are reviewed for abnormal changes before labeling the response normal.",
+        "Maturity observations are sampled from representative flower sites rather than one dramatic close-up."
+      ],
+      "differential": [
+        {"cause":"Developmental senescence/maturation","weight":"medium","reason":"Late stage supports it, but stage alone does not exclude root-zone or nutritional stress."},
+        {"cause":"Nutrient or root-zone stress","weight":"medium","reason":"Still plausible if decline is premature relative to same-genotype references or paired with abnormal measurements."},
+        {"cause":"Universal harvest signal","weight":"lower","reason":"Stigma and trichome transitions are genotype- and sampling-dependent and should not be converted into one universal harvest rule."
+        }
+      ],
+      "interpretation": "The correct answer is initially 'insufficient evidence.' Late-flower color changes must be interpreted against genotype, plant age, representative maturity observations and root-zone/environment records.",
+      "why": "Recent cannabis harvest research supports maturity indicators as useful approximations while also documenting genotype-specific exceptions.",
+      "action": "Compare representative samples and records before changing the feed or harvest date. Avoid making a major intervention from one late-flower photograph.",
+      "verify": "Document progression, maturity indicators, plant performance and eventual harvest-quality observations for that genotype so future decisions have a local reference.",
+      "sourceIds": ["DX-S4","DX-S7"],
+      "relatedRoutes": ["/learn/harvest-postharvest/","/learn/nutrition-media/","/learn/research-methods/"]
+    }
+  ],
+  "decisionTrees": [
+    {
+      "id": "DX-T01",
+      "title": "Yellowing / chlorosis",
+      "start": "dx-t01-n1",
+      "nodes": [
+        {"id":"dx-t01-n1","question":"Is the yellowing concentrated on older leaves first?","yes":"dx-t01-n2","no":"dx-t01-n3"},
+        {"id":"dx-t01-n2","question":"Is the pattern mostly uniform rather than localized lesions or stippling?","yes":"Check mobile-nutrient supply, root function and developmental stage together.","no":"Inspect for pests, lesions, contact injury and spatial environmental patterns."},
+        {"id":"dx-t01-n3","question":"Is the newest tissue affected first or most strongly?","yes":"Compare immobile-nutrient availability, root-zone chemistry, meristem pests and environmental injury.","no":"Map the whole-plant distribution before assigning a nutrient label."},
+        {"id":"dx-t01-n4","question":"Did a measurable feed, pH, EC, irrigation or environmental change occur before symptoms?","yes":"Use the change as a testable lead, not automatic proof.","no":"Broaden the differential and gather more measurements."},
+        {"id":"dx-t01-n5","question":"Do direct measurements support the leading explanation?","yes":"Make the smallest justified correction and verify progression.","no":"Do not force a deficiency name from color alone."}
+      ]
+    },
+    {
+      "id": "DX-T02",
+      "title": "Droop / wilt",
+      "start": "dx-t02-n1",
+      "nodes": [
+        {"id":"dx-t02-n1","question":"Is the root zone actually dry by a repeatable method?","yes":"Compare irrigation timing, root access to water and evaporative demand.","no":"dx-t02-n2"},
+        {"id":"dx-t02-n2","question":"Is the root zone persistently saturated or poorly drained?","yes":"Root oxygen/water-balance stress moves higher on the list; inspect roots.","no":"dx-t02-n3"},
+        {"id":"dx-t02-n3","question":"Is only one branch or vascular section affected?","yes":"Inspect for stem injury, localized disease or mechanical damage.","no":"Compare environment, roots and whole-plant water status."},
+        {"id":"dx-t02-n4","question":"Are roots brown, soft, odorous or structurally declining?","yes":"Keep both infectious root disease and noninfectious saturation stress in the differential.","no":"Prioritize water availability and canopy demand."},
+        {"id":"dx-t02-n5","question":"Does the plant recover predictably after the measured root-zone problem is corrected?","yes":"Continue verification without stacking extra treatments.","no":"Escalate diagnostics and consider pathogen testing or vascular causes."}
+      ]
+    },
+    {
+      "id": "DX-T03",
+      "title": "Spots / necrosis / burnt tissue",
+      "start": "dx-t03-n1",
+      "nodes": [
+        {"id":"dx-t03-n1","question":"Are there live pests, eggs, webbing, honeydew or cast skins?","yes":"Use organism identification and counts to guide IPM.","no":"dx-t03-n2"},
+        {"id":"dx-t03-n2","question":"Do lesions expand biologically or appear on connected plants over time?","yes":"Disease moves higher; document lesion progression and environment.","no":"dx-t03-n3"},
+        {"id":"dx-t03-n3","question":"Does damage map to spray contact, droplets, fixture position or a mechanical event?","yes":"Investigate contact/environmental injury before nutrient changes.","no":"dx-t03-n4"},
+        {"id":"dx-t03-n4","question":"Did root-zone concentration or feed chemistry shift before injury?","yes":"Check EC, composition, roots and mixing records.","no":"Compare nutrient patterns, disease evidence and environment."},
+        {"id":"dx-t03-n5","question":"Can one explanation account for both pattern and timing?","yes":"Test that explanation with a limited corrective action.","no":"Keep the case open and collect more discriminating evidence."}
+      ]
+    },
+    {
+      "id": "DX-T04",
+      "title": "Twisted / distorted new growth",
+      "start": "dx-t04-n1",
+      "nodes": [
+        {"id":"dx-t04-n1","question":"Is distortion strongest at meristems and newest leaves?","yes":"dx-t04-n2","no":"Compare older-leaf nutrition, root stress and whole-canopy environment."},
+        {"id":"dx-t04-n2","question":"Are aphids or obvious mites visible with routine scouting?","yes":"Confirm organism and life stage, then use IPM.","no":"dx-t04-n3"},
+        {"id":"dx-t04-n3","question":"Has symptomatic tissue been examined with sufficient magnification for russet/broad mites?","yes":"Use direct organism evidence to raise or lower the pest hypothesis.","no":"Increase magnification before changing nutrients again."},
+        {"id":"dx-t04-n4","question":"Does the pattern follow one light/heat zone or recent spray event?","yes":"Investigate localized environmental/contact injury.","no":"Review root-zone chemistry and developmental context."},
+        {"id":"dx-t04-n5","question":"Did new growth improve after the targeted cause was corrected?","yes":"Continue monitoring new tissue.","no":"Reopen the differential rather than repeating the same treatment."}
+      ]
+    },
+    {
+      "id": "DX-T05",
+      "title": "Brown roots / root decline",
+      "start": "dx-t05-n1",
+      "nodes": [
+        {"id":"dx-t05-n1","question":"Is the media or solution chronically saturated, stagnant or poorly drained?","yes":"Correct water/oxygen conditions while preserving disease evidence.","no":"dx-t05-n2"},
+        {"id":"dx-t05-n2","question":"Do affected plants cluster along shared water, propagation or sanitation pathways?","yes":"A transmissible/system-level root problem moves higher.","no":"Compare individual container, chemistry and mechanical causes."},
+        {"id":"dx-t05-n3","question":"Is browning accompanied by soft decay, odor, crown/stem symptoms or progressive spread?","yes":"Pathogen testing becomes more valuable.","no":"Do not name Pythium or Fusarium from color alone."},
+        {"id":"dx-t05-n4","question":"Are source/feed/root-zone pH and EC measured with clearly identified sampling methods?","yes":"Use them to test chemistry and salinity hypotheses.","no":"Measure before adding a chemistry-based treatment."},
+        {"id":"dx-t05-n5","question":"Does correcting the verified system driver stop new decline?","yes":"Continue monitoring and document recovery.","no":"Escalate to microbiological/pathogen diagnostics and network tracing."}
+      ]
+    },
+    {
+      "id": "DX-T06",
+      "title": "Flower decline / possible mold",
+      "start": "dx-t06-n1",
+      "nodes": [
+        {"id":"dx-t06-n1","question":"Is damage focal inside dense flower tissue rather than uniform plant senescence?","yes":"dx-t06-n2","no":"Compare maturation, nutrition and root-zone decline."},
+        {"id":"dx-t06-n2","question":"Is tissue soft, brown/gray, collapsing or associated with visible fungal growth?","yes":"Treat as a serious disease/quality risk and segregate affected material.","no":"dx-t06-n3"},
+        {"id":"dx-t06-n3","question":"Did local wetness, condensation, rain or high-humidity periods occur?","yes":"Botrytis risk moves higher; inspect adjacent dense flowers.","no":"Keep mechanical injury, pests and other diseases in the differential."},
+        {"id":"dx-t06-n4","question":"Are maturity conclusions based on representative sites and genotype context?","yes":"Use them as one line of evidence.","no":"Do not turn one stigma/trichome photo into a universal harvest decision."},
+        {"id":"dx-t06-n5","question":"Is new disease incidence decreasing after sanitation and microclimate correction?","yes":"Continue documented verification.","no":"Escalate disease investigation and review connected crop zones."}
+      ]
+    }
+  ],
+  "supportRoutes": [
+    {"route":"/learn/diagnostics/","label":"Diagnostic Index"},
+    {"route":"/thc-grow-doc/","label":"THC Grow Doc"},
+    {"route":"/growlens/","label":"GrowLens"},
+    {"route":"/learn/ipm/","label":"Plant Health & IPM"},
+    {"route":"/learn/water-ph-ec/","label":"Water, pH & EC"},
+    {"route":"/learn/nutrition-media/","label":"Nutrition & Media"},
+    {"route":"/learn/research-methods/","label":"Evidence & Measurement"},
+    {"route":"/learn/records/","label":"Grow Records"},
+    {"route":"/learn/academy/","label":"THC Academy"}
+  ]
+}
