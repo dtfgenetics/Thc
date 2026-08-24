@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-23",
+  "updatedAt": "2026-08-24",
   "policy": {
     "purpose": "Canonical public genetics library for DTF Genetics. Each line receives a dedicated /seeds/<slug>/ page and one or more source-controlled strain-card visuals.",
     "commerceSource": "WooCommerce product pages control current price, stock, pack quantity, fulfillment and transaction details.",
@@ -113,6 +113,44 @@
       "breedingDirection": ["mango-forward fruit direction", "bubblegum sweetness direction", "sweet colorful candy-forward presentation"],
       "floweringObservation": "The reviewed F1 Regular card lists an 8–10 week planning range.",
       "releaseCards": [{"generation":"F1","seedType":"regular","fileName":"Mango_Bubbles_F1_Regular_DTF_Strain_Card.jpg","mimeType":"image/jpeg","altText":"Mango Bubbles F1 Regular DTF Genetics strain card","wordpressSlug":"dtf-strain-card-mango-bubbles-f1-regular","driveFileId":"1Qv-dNjq1Ae6gBthoxGzeZyJkPjkIKQmB","expectedWidth":1031,"expectedHeight":1536,"sourceSha256":"b1fbcd5bc7572b5460606b6aa3e2c3bd226ea4d7d00732d8ce2f3527fe8f649b","sourceByteLength":401230,"sourceUrl":"https://cdn.shopify.com/s/files/1/0664/2542/1885/files/dtf-mango-bubbles-f1-regular.jpg?v=1787510106"}],
+      "storeRoutes": []
+    },
+    {
+      "id": "blue-frequency",
+      "name": "Blue Frequency",
+      "slug": "blue-frequency",
+      "status": "documented-card",
+      "lineage": null,
+      "lineageStatus": "awaiting-controlled-record",
+      "summary": "Blue Frequency is presented as a vivid blue, resin-forward DTF line with an electric aromatic theme and frosty flower presentation.",
+      "breedingDirection": ["electric aromatic direction", "vivid blue visual direction", "resinous flower presentation"],
+      "releaseCards": [{"generation":"F1","seedType":"regular","fileName":"Blue_Frequency_F1_Regular_DTF_Strain_Card.jpg","mimeType":"image/jpeg","altText":"Blue Frequency F1 Regular DTF Genetics strain card","wordpressSlug":"dtf-strain-card-blue-frequency-f1-regular","driveFileId":"19pNeXj56tyFVOQFAtuB3nAiWP5c_Tj0_","expectedWidth":1024,"expectedHeight":1536,"sourceSha256":"f2e2421aeb6a0df09ed6c299b5239571eee7fc5b9242ac9c448e1e2fd179f4d3","sourceByteLength":464431,"sourceUrl":"https://cdn.shopify.com/s/files/1/0664/2542/1885/files/dtf-blue-frequency-f1-regular.jpg?v=1787590808"}],
+      "storeRoutes": []
+    },
+    {
+      "id": "rainbow-bubblegum",
+      "name": "Rainbow Bubblegum",
+      "slug": "rainbow-bubblegum",
+      "status": "documented-card",
+      "lineage": "Blue Bubblegum × Rainbow Belts F1",
+      "lineageStatus": "printed-on-reviewed-card",
+      "summary": "Rainbow Bubblegum is an AMFIBEON + DTF Genetics collaboration line combining Blue Bubblegum with Rainbow Belts F1 in a berry, candy and tropical-fruit direction.",
+      "breedingDirection": ["berry direction", "candy direction", "tropical-fruit direction", "colorful frosty presentation"],
+      "floweringObservation": "An 8–10 week planning range is printed on the reviewed collaboration card.",
+      "releaseCards": [{"generation":"F1","seedType":"regular","fileName":"Rainbow_Bubblegum_F1_Regular_DTF_Strain_Card.jpg","mimeType":"image/jpeg","altText":"Rainbow Bubblegum F1 Regular DTF Genetics strain card","wordpressSlug":"dtf-strain-card-rainbow-bubblegum-f1-regular","driveFileId":"1lLB515y8XeJrLCnC4e9yViiH6gq6NqBg","expectedWidth":1024,"expectedHeight":1536,"sourceSha256":"3923df7d7f068f5faa1d63a7777d7a24d854beef763f7d74c3cc1af6866915b8","sourceByteLength":566322,"sourceUrl":"https://cdn.shopify.com/s/files/1/0664/2542/1885/files/dtf-rainbow-bubblegum-f1-regular.jpg?v=1787590817"}],
+      "storeRoutes": []
+    },
+    {
+      "id": "mystery-line",
+      "name": "Mystery Line",
+      "slug": "mystery-line",
+      "status": "documented-card",
+      "lineage": null,
+      "lineageStatus": "intentionally-unknown-on-reviewed-card",
+      "summary": "Mystery Line is intentionally presented with unknown lineage and unknown finish details so growers can observe the F1 Regular hybrid without invented parentage or performance claims.",
+      "breedingDirection": ["mystery-trait observation", "hybrid card classification"],
+      "floweringObservation": "The reviewed card explicitly marks flowering time as unknown.",
+      "releaseCards": [{"generation":"F1","seedType":"regular","fileName":"Mystery_Line_F1_Regular_DTF_Strain_Card.jpg","mimeType":"image/jpeg","altText":"Mystery Line F1 Regular DTF Genetics strain card","wordpressSlug":"dtf-strain-card-mystery-line-f1-regular","driveFileId":"1DYA5MAY-DUun9z6cRNroBEtctM7-xl_0","expectedWidth":1024,"expectedHeight":1536,"sourceSha256":"04ae1c099d7f7227d7f6076fdc71953c55d8f7e75d25ae4e7d574db4fbb697a8","sourceByteLength":545042,"sourceUrl":"https://cdn.shopify.com/s/files/1/0664/2542/1885/files/dtf-mystery-line-f1-regular.jpg?v=1787590826"}],
       "storeRoutes": []
     }
   ]

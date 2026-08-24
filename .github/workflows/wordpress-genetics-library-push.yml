@@ -7,7 +7,9 @@ on:
     paths:
       - '.github/workflows/wordpress-genetics-library-push.yml'
       - 'site/wordpress/products/seed-line-catalog.json'
+      - 'site/wordpress/products/genetics-cdn-identities.json'
       - 'scripts/publish-wordpress-genetics-library-cdn.mjs'
+      - 'scripts/audit-genetics-cdn-sources.mjs'
       - 'scripts/flush-hostinger-litespeed-mcp.mjs'
 
 permissions:
@@ -29,7 +31,9 @@ jobs:
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
       SEED_LINE_CATALOG: site/wordpress/products/seed-line-catalog.json
+      GENETICS_CDN_IDENTITIES: site/wordpress/products/genetics-cdn-identities.json
       BACKUP_ROOT: /tmp/wordpress-genetics-direct
+
     steps:
       - uses: actions/checkout@v4
         with:
@@ -46,15 +50,36 @@ jobs:
           test -n "${WP_API_USERNAME:-}"
           test -n "${WP_API_PASSWORD:-}"
           node --check scripts/publish-wordpress-genetics-library-cdn.mjs
+          node --check scripts/audit-genetics-cdn-sources.mjs
           node --check scripts/flush-hostinger-litespeed-mcp.mjs
-          node - <<'NODE'
-          const r=require('./site/wordpress/products/seed-line-catalog.json');
-          if(r.schemaVersion!==1||r.lines?.length!==8) throw new Error('Expected 8 genetics lines');
-          const cards=r.lines.flatMap(x=>x.releaseCards||[]);
-          if(cards.length!==10) throw new Error(`Expected 10 cards; found ${cards.length}`);
-          for(const c of cards) if(!c.sourceUrl||!c.expectedWidth||!c.expectedHeight) throw new Error('Card source metadata incomplete');
-          console.log(`Validated ${r.lines.length} lines and ${cards.length} cards.`);
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const catalog=JSON.parse(fs.readFileSync(process.env.SEED_LINE_CATALOG,'utf8'));
+          const identities=JSON.parse(fs.readFileSync(process.env.GENETICS_CDN_IDENTITIES,'utf8'));
+          if(catalog.schemaVersion!==1||!Array.isArray(catalog.lines)||catalog.lines.length===0) throw new Error('Genetics catalog is missing or empty.');
+          const cards=catalog.lines.flatMap(line=>line.releaseCards||[]);
+          if(cards.length===0) throw new Error('Genetics catalog contains no cards.');
+          const cardSlugs=new Set();
+          for(const line of catalog.lines){
+            if(!line.id||!line.name||!line.slug||!line.summary) throw new Error(`Incomplete genetics line ${line.id||'unknown'}`);
+            for(const card of line.releaseCards||[]){
+              if(!card.sourceUrl||!card.expectedWidth||!card.expectedHeight||!card.wordpressSlug) throw new Error(`${line.id}: card source metadata incomplete`);
+              if(cardSlugs.has(card.wordpressSlug)) throw new Error(`Duplicate card slug ${card.wordpressSlug}`);
+              cardSlugs.add(card.wordpressSlug);
+            }
+          }
+          if(identities.schemaVersion!==1||!Array.isArray(identities.cards)||identities.cards.length!==cards.length) throw new Error(`Expected ${cards.length} CDN identities; found ${identities.cards?.length}`);
+          const identitySlugs=new Set(identities.cards.map(row=>row.wordpressSlug));
+          if(identitySlugs.size!==identities.cards.length) throw new Error('Duplicate CDN identity slug.');
+          for(const slug of cardSlugs) if(!identitySlugs.has(slug)) throw new Error(`Missing CDN identity ${slug}`);
+          console.log(`Validated ${catalog.lines.length} lines, ${cards.length} cards, and ${identities.cards.length} CDN identities.`);
           NODE
+
+      - name: Audit reviewed CDN sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          GENETICS_CDN_REPORT="$RUNNER_TEMP/genetics-cdn-source-report.json" node scripts/audit-genetics-cdn-sources.mjs
 
       - name: Publish genetics library
         id: publish
@@ -105,22 +130,25 @@ jobs:
             check_url "$WP_SITE_URL${path}?dtf_genetics_origin=${GITHUB_RUN_ID}" "$text" "origin-$path"
             check_url "$WP_SITE_URL${path}" "$text" "public-$path"
           }
+
           check '/seeds/' 'DTF Genetics library'
-          check '/seeds/berry-blue/' 'Berry Blue'
-          check '/seeds/berry-lemonade/' 'Berry Lemonade'
-          check '/seeds/zestberry/' 'Zestberry'
-          check '/seeds/blue-bubblegum/' 'Blue Bubblegum'
-          check '/seeds/blue-cali-glue/' 'Blue Cali Glue'
-          check '/seeds/blue-mango/' 'Blue Mango'
-          check '/seeds/blue-mango-bx1/' 'Blue Mango BX1'
-          check '/seeds/mango-bubbles/' 'Mango Bubbles'
+          node --input-type=module <<'NODE' > "$RUNNER_TEMP/genetics-routes.tsv"
+          import fs from 'node:fs';
+          const catalog=JSON.parse(fs.readFileSync('site/wordpress/products/seed-line-catalog.json','utf8'));
+          for(const line of catalog.lines) console.log(`${line.slug}\t${line.name}`);
+          NODE
+          while IFS=$'\t' read -r slug title; do
+            check "/seeds/$slug/" "$title"
+          done < "$RUNNER_TEMP/genetics-routes.tsv"
 
       - name: Upload evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: genetics-library-direct-${{ github.run_id }}
-          path: /tmp/wordpress-genetics-direct
+          path: |
+            /tmp/wordpress-genetics-direct
+            ${{ runner.temp }}/genetics-cdn-source-report.json
           if-no-files-found: warn
           retention-days: 30
 
@@ -134,4 +162,17 @@ jobs:
           VERIFY: ${{ steps.verify.outcome }}
         with:
           script: |
-            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body:['## DTF Genetics library direct publication','',`Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,`Result: **${process.env.JOB_STATUS}**`,`Library publication: **${process.env.PUBLISH||'not-run'}**`,`Hostinger/LiteSpeed purge: **${process.env.CACHE||'not-run'}**`,`Origin + public-cache verification: **${process.env.VERIFY||'not-run'}**`,'','Target: https://dtfseeds.com/seeds/'].join('\n')});
+            await github.rest.issues.createComment({
+              owner:context.repo.owner,
+              repo:context.repo.repo,
+              issue_number:46,
+              body:[
+                '## DTF Genetics library direct publication','',
+                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                `Result: **${process.env.JOB_STATUS}**`,
+                `Library publication: **${process.env.PUBLISH||'not-run'}**`,
+                `Hostinger/LiteSpeed purge: **${process.env.CACHE||'not-run'}**`,
+                `Origin + public-cache verification: **${process.env.VERIFY||'not-run'}**`,
+                '', 'Target: https://dtfseeds.com/seeds/'
+              ].join('\n')
+            });

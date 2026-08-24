@@ -1,0 +1,102 @@
+name: Validate DTF Genetics Library V2
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'site/wordpress/products/seed-line-catalog.json'
+      - 'site/wordpress/products/genetics-cdn-identities.json'
+      - 'site/wordpress/pages/seeds.html'
+      - 'scripts/publish-wordpress-genetics-library-cdn.mjs'
+      - 'scripts/audit-genetics-cdn-sources.mjs'
+      - '.github/workflows/wordpress-genetics-library-production.yml'
+      - '.github/workflows/wordpress-genetics-library-push.yml'
+      - '.github/workflows/genetics-library-ci-v2.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate scripts and catalog relationships
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/publish-wordpress-genetics-library-cdn.mjs
+          node --check scripts/audit-genetics-cdn-sources.mjs
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const catalog=JSON.parse(fs.readFileSync('site/wordpress/products/seed-line-catalog.json','utf8'));
+          const identities=JSON.parse(fs.readFileSync('site/wordpress/products/genetics-cdn-identities.json','utf8'));
+          const fallback=fs.readFileSync('site/wordpress/pages/seeds.html','utf8');
+          if(catalog.schemaVersion!==1||!Array.isArray(catalog.lines)||catalog.lines.length===0) throw new Error('Catalog is missing or empty.');
+          const lineIds=new Set(); const lineSlugs=new Set(); const cardSlugs=new Set();
+          let cardCount=0;
+          for(const line of catalog.lines){
+            if(!line.id||!line.name||!line.slug||!line.summary) throw new Error(`Incomplete line ${line.id||'unknown'}`);
+            if(lineIds.has(line.id)||lineSlugs.has(line.slug)) throw new Error(`Duplicate line id/slug ${line.id}/${line.slug}`);
+            lineIds.add(line.id); lineSlugs.add(line.slug);
+            if(!fallback.includes(line.name)) throw new Error(`Seeds fallback missing line name ${line.name}`);
+            if(!fallback.includes(`/seeds/${line.slug}/`)) throw new Error(`Seeds fallback missing route /seeds/${line.slug}/`);
+            if(!Array.isArray(line.releaseCards)||line.releaseCards.length===0) throw new Error(`${line.id}: no reviewed cards`);
+            for(const card of line.releaseCards){
+              cardCount+=1;
+              for(const key of ['generation','seedType','fileName','mimeType','altText','wordpressSlug','driveFileId','sourceSha256','sourceUrl']) if(!card[key]) throw new Error(`${line.id}: card missing ${key}`);
+              if(!Number.isInteger(card.sourceByteLength)||card.sourceByteLength<100000) throw new Error(`${line.id}: invalid sourceByteLength`);
+              if(!Number.isInteger(card.expectedWidth)||!Number.isInteger(card.expectedHeight)) throw new Error(`${line.id}: invalid dimensions`);
+              if(!/^[a-f0-9]{64}$/.test(card.sourceSha256)) throw new Error(`${line.id}: invalid source SHA-256`);
+              if(cardSlugs.has(card.wordpressSlug)) throw new Error(`Duplicate card slug ${card.wordpressSlug}`);
+              cardSlugs.add(card.wordpressSlug);
+              const url=new URL(card.sourceUrl);
+              if(url.protocol!=='https:'||url.hostname!=='cdn.shopify.com') throw new Error(`${line.id}: sourceUrl must use the reviewed Shopify CDN origin`);
+            }
+          }
+          if(identities.schemaVersion!==1||!Array.isArray(identities.cards)||identities.cards.length!==cardCount) throw new Error(`Catalog has ${cardCount} cards but identity registry has ${identities.cards?.length}`);
+          const identitySlugs=new Set();
+          for(const row of identities.cards){
+            if(!row.wordpressSlug||!Number.isInteger(row.cdnByteLength)||row.cdnByteLength<100000||!/^[a-f0-9]{64}$/.test(String(row.cdnSha256||''))) throw new Error(`Invalid CDN identity ${row.wordpressSlug||'unknown'}`);
+            if(!['image/jpeg','image/png'].includes(row.mimeType)||!Number.isInteger(row.width)||!Number.isInteger(row.height)) throw new Error(`Invalid image metadata for ${row.wordpressSlug}`);
+            if(identitySlugs.has(row.wordpressSlug)) throw new Error(`Duplicate identity ${row.wordpressSlug}`);
+            identitySlugs.add(row.wordpressSlug);
+            if(!cardSlugs.has(row.wordpressSlug)) throw new Error(`Orphan identity ${row.wordpressSlug}`);
+          }
+          for(const slug of cardSlugs) if(!identitySlugs.has(slug)) throw new Error(`Missing identity ${slug}`);
+          console.log(`Validated ${catalog.lines.length} genetics lines and ${cardCount} reviewed strain cards.`);
+          NODE
+
+      - name: Re-audit every public CDN source
+        shell: bash
+        run: |
+          set -euo pipefail
+          GENETICS_CDN_REPORT="$RUNNER_TEMP/genetics-cdn-source-report.json" node scripts/audit-genetics-cdn-sources.mjs
+          test -s "$RUNNER_TEMP/genetics-cdn-source-report.json"
+
+      - name: Require catalog-driven deployment logic
+        shell: bash
+        run: |
+          set -euo pipefail
+          ! grep -Fq "Expected 8 genetics lines" scripts/publish-wordpress-genetics-library-cdn.mjs
+          ! grep -Fq "Expected 10 reviewed CDN identities" scripts/publish-wordpress-genetics-library-cdn.mjs
+          ! grep -Fq "Expected canonical 8-line genetics catalog" scripts/audit-genetics-cdn-sources.mjs
+          grep -Fq 'expectedCardCount' scripts/publish-wordpress-genetics-library-cdn.mjs
+          grep -Fq 'catalog.lines.length' .github/workflows/wordpress-genetics-library-production.yml
+          grep -Fq 'genetics-cdn-identities.json' .github/workflows/wordpress-genetics-library-production.yml
+          grep -Fq 'genetics-cdn-identities.json' .github/workflows/wordpress-genetics-library-push.yml
+
+      - name: Upload CDN audit evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: genetics-library-v2-ci-${{ github.run_id }}
+          path: ${{ runner.temp }}/genetics-cdn-source-report.json
+          if-no-files-found: warn
+          retention-days: 14

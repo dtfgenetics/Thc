@@ -7,9 +7,11 @@ on:
     paths:
       - '.github/workflows/wordpress-genetics-library-production.yml'
       - 'site/wordpress/products/seed-line-catalog.json'
+      - 'site/wordpress/products/genetics-cdn-identities.json'
       - 'site/wordpress/products/strain-card-images.json'
       - 'scripts/publish-wordpress-genetics-library-cdn.mjs'
       - 'scripts/publish-woocommerce-strain-card-images-cdn.mjs'
+      - 'scripts/audit-genetics-cdn-sources.mjs'
   workflow_run:
     workflows:
       - Publish DTFSeeds WordPress Production
@@ -38,15 +40,19 @@ jobs:
       WC_CONSUMER_KEY: ${{ secrets.WC_CONSUMER_KEY }}
       WC_CONSUMER_SECRET: ${{ secrets.WC_CONSUMER_SECRET }}
       SEED_LINE_CATALOG: site/wordpress/products/seed-line-catalog.json
+      GENETICS_CDN_IDENTITIES: site/wordpress/products/genetics-cdn-identities.json
       STRAIN_CARD_REGISTRY: site/wordpress/products/strain-card-images.json
       BACKUP_ROOT: /tmp/wordpress-genetics-production
+
     steps:
       - uses: actions/checkout@v4
         with:
           ref: main
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+
       - name: Validate genetics production package
         shell: bash
         run: |
@@ -55,27 +61,51 @@ jobs:
           test -n "${WP_API_PASSWORD:-}"
           node --check scripts/publish-wordpress-genetics-library-cdn.mjs
           node --check scripts/publish-woocommerce-strain-card-images-cdn.mjs
-          node - <<'NODE'
-          const fs=require('fs');
+          node --check scripts/audit-genetics-cdn-sources.mjs
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
           const catalog=JSON.parse(fs.readFileSync(process.env.SEED_LINE_CATALOG,'utf8'));
+          const identities=JSON.parse(fs.readFileSync(process.env.GENETICS_CDN_IDENTITIES,'utf8'));
           const products=JSON.parse(fs.readFileSync(process.env.STRAIN_CARD_REGISTRY,'utf8'));
-          if(catalog.schemaVersion!==1 || !Array.isArray(catalog.lines) || catalog.lines.length!==8) throw new Error(`Expected 8 genetics lines, found ${catalog.lines?.length}`);
+          if(catalog.schemaVersion!==1 || !Array.isArray(catalog.lines) || catalog.lines.length===0) throw new Error('Genetics catalog is missing or empty.');
           const cards=catalog.lines.flatMap(line=>line.releaseCards||[]);
-          if(cards.length!==10) throw new Error(`Expected 10 reviewed catalog cards, found ${cards.length}`);
+          if(cards.length===0) throw new Error('Genetics catalog contains no reviewed cards.');
+          const ids=new Set(); const slugs=new Set(); const cardSlugs=new Set();
           for(const line of catalog.lines){
             if(!line.id||!line.name||!line.slug||!line.summary) throw new Error(`Incomplete line record: ${line.id||'unknown'}`);
-            for(const card of line.releaseCards||[]){
+            if(ids.has(line.id)||slugs.has(line.slug)) throw new Error(`Duplicate genetics line identity: ${line.id}/${line.slug}`);
+            ids.add(line.id); slugs.add(line.slug);
+            if(!Array.isArray(line.releaseCards)||line.releaseCards.length===0) throw new Error(`${line.id}: no reviewed strain cards`);
+            for(const card of line.releaseCards){
               if(!card.sourceUrl||!card.fileName||!card.altText||!card.wordpressSlug) throw new Error(`${line.id}: incomplete card metadata`);
               if(!Number.isInteger(card.expectedWidth)||!Number.isInteger(card.expectedHeight)) throw new Error(`${line.id}: missing image dimensions`);
+              if(!/^[a-f0-9]{64}$/.test(String(card.sourceSha256||''))) throw new Error(`${line.id}: invalid provenance SHA-256`);
+              if(cardSlugs.has(card.wordpressSlug)) throw new Error(`Duplicate card slug: ${card.wordpressSlug}`);
+              cardSlugs.add(card.wordpressSlug);
             }
+          }
+          if(identities.schemaVersion!==1 || !Array.isArray(identities.cards) || identities.cards.length!==cards.length) throw new Error(`Expected ${cards.length} CDN identities; found ${identities.cards?.length}`);
+          const identitySlugs=new Set(identities.cards.map(row=>row.wordpressSlug));
+          if(identitySlugs.size!==identities.cards.length) throw new Error('Duplicate CDN identity slug.');
+          for(const slug of cardSlugs) if(!identitySlugs.has(slug)) throw new Error(`Missing CDN identity for ${slug}`);
+          for(const row of identities.cards){
+            if(!cardSlugs.has(row.wordpressSlug)) throw new Error(`Orphan CDN identity ${row.wordpressSlug}`);
+            if(!/^[a-f0-9]{64}$/.test(String(row.cdnSha256||''))||!Number.isInteger(row.cdnByteLength)) throw new Error(`Invalid CDN identity ${row.wordpressSlug}`);
           }
           if(products.schemaVersion!==1 || !Array.isArray(products.cards) || products.cards.length!==3) throw new Error('Expected exactly 3 pinned WooCommerce cards.');
           for(const card of products.cards){
             if(!card.sourceUrl||!card.productId||!card.productSlug||!card.wordpressSlug) throw new Error(`${card.registryId||'unknown'}: incomplete pinned WooCommerce card mapping`);
             if(!Number.isInteger(card.expectedWidth)||!Number.isInteger(card.expectedHeight)) throw new Error(`${card.registryId}: missing pinned image dimensions`);
           }
-          console.log(`Validated ${catalog.lines.length} line pages, ${cards.length} catalog cards and ${products.cards.length} WooCommerce card mappings.`);
+          console.log(`Validated ${catalog.lines.length} line pages, ${cards.length} catalog cards, ${identities.cards.length} CDN identities and ${products.cards.length} WooCommerce card mappings.`);
           NODE
+
+      - name: Audit reviewed CDN sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          GENETICS_CDN_REPORT="$RUNNER_TEMP/genetics-cdn-source-report.json" node scripts/audit-genetics-cdn-sources.mjs
+
       - name: Publish Seeds library and individual line pages
         id: library
         env:
@@ -89,6 +119,7 @@ jobs:
           report="$dir/genetics-library-report.json"
           echo "line_count=$(node -p "require(process.argv[1]).lineCount" "$report")" >> "$GITHUB_OUTPUT"
           echo "card_count=$(node -p "require(process.argv[1]).cardCount" "$report")" >> "$GITHUB_OUTPUT"
+
       - name: Publish reviewed cards to current WooCommerce products
         id: products
         env:
@@ -98,7 +129,8 @@ jobs:
         run: |
           set -euo pipefail
           node scripts/publish-woocommerce-strain-card-images-cdn.mjs
-      - name: Verify live Seeds library and line routes
+
+      - name: Verify live Seeds library and all catalog routes
         id: verify
         shell: bash
         run: |
@@ -109,7 +141,11 @@ jobs:
             body="$RUNNER_TEMP/genetics-${safe}.html"
             ok=0
             for attempt in 1 2 3 4 5 6 7 8; do
-              curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 --header 'Cache-Control: no-cache, no-store, max-age=0' --header 'Pragma: no-cache' "$WP_SITE_URL${path}?dtf_genetics_verify=${GITHUB_RUN_ID}-${attempt}" --output "$body"
+              curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+                --header 'Cache-Control: no-cache, no-store, max-age=0' \
+                --header 'Pragma: no-cache' \
+                "$WP_SITE_URL${path}?dtf_genetics_verify=${GITHUB_RUN_ID}-${attempt}" \
+                --output "$body"
               if grep -Fqi -- "$required" "$body"; then ok=1; break; fi
               sleep 6
             done
@@ -118,14 +154,25 @@ jobs:
             [[ "$count" -ge "$min_images" ]] || { echo "$path exposes $count WordPress images; expected at least $min_images" >&2; exit 1; }
             echo "$path verified with $count WordPress image references"
           }
-          fetch_page '/seeds/' 'DTF Genetics library' 8
-          for spec in 'berry-blue|Berry Blue' 'berry-lemonade|Berry Lemonade' 'zestberry|Zestberry' 'blue-bubblegum|Blue Bubblegum' 'blue-cali-glue|Blue Cali Glue' 'blue-mango|Blue Mango' 'blue-mango-bx1|Blue Mango BX1' 'mango-bubbles|Mango Bubbles'; do
-            slug="${spec%%|*}"; title="${spec#*|}"; fetch_page "/seeds/$slug/" "$title" 1
-          done
+
+          line_count="$(node -p "require('./site/wordpress/products/seed-line-catalog.json').lines.length")"
+          fetch_page '/seeds/' 'DTF Genetics library' "$line_count"
+
+          node --input-type=module <<'NODE' > "$RUNNER_TEMP/genetics-routes.tsv"
+          import fs from 'node:fs';
+          const catalog=JSON.parse(fs.readFileSync('site/wordpress/products/seed-line-catalog.json','utf8'));
+          for(const line of catalog.lines) console.log(`${line.slug}\t${line.name}`);
+          NODE
+
+          while IFS=$'\t' read -r slug title; do
+            fetch_page "/seeds/$slug/" "$title" 1
+          done < "$RUNNER_TEMP/genetics-routes.tsv"
+
           seeds="$RUNNER_TEMP/genetics-_seeds_.html"
-          for route in '/seeds/berry-blue/' '/seeds/berry-lemonade/' '/seeds/zestberry/' '/seeds/blue-bubblegum/' '/seeds/blue-cali-glue/' '/seeds/blue-mango/' '/seeds/blue-mango-bx1/' '/seeds/mango-bubbles/'; do
-            grep -Fqi "$route" "$seeds" || { echo "Seeds library missing route $route" >&2; exit 1; }
-          done
+          while IFS=$'\t' read -r slug title; do
+            grep -Fqi "/seeds/$slug/" "$seeds" || { echo "Seeds library missing route /seeds/$slug/" >&2; exit 1; }
+          done < "$RUNNER_TEMP/genetics-routes.tsv"
+
       - name: Upload genetics rollback/evidence package
         if: always()
         uses: actions/upload-artifact@v4
@@ -133,9 +180,11 @@ jobs:
           name: wordpress-genetics-production-${{ github.run_id }}
           path: |
             /tmp/wordpress-genetics-production
+            ${{ runner.temp }}/genetics-cdn-source-report.json
             woocommerce-strain-card-image-report.json
           if-no-files-found: warn
           retention-days: 30
+
       - name: Report genetics production result
         if: always()
         uses: actions/github-script@v7
@@ -148,5 +197,15 @@ jobs:
           CARD_COUNT: ${{ steps.library.outputs.card_count }}
         with:
           script: |
-            const body=['## DTF Genetics library production','',`Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,`Result: **${process.env.JOB_STATUS}**`,`Seeds library + line pages: **${process.env.LIBRARY_OUTCOME||'not-run'}**`,`WooCommerce reviewed card publication: **${process.env.PRODUCT_OUTCOME||'not-run'}**`,`Live verification: **${process.env.VERIFY_OUTCOME||'not-run'}**`,`Published line profiles: **${process.env.LINE_COUNT||'not-run'}**`,`Reviewed catalog cards: **${process.env.CARD_COUNT||'not-run'}**`,'','Target: https://dtfseeds.com/seeds/'].join('\n');
+            const body=[
+              '## DTF Genetics library production','',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Result: **${process.env.JOB_STATUS}**`,
+              `Seeds library + line pages: **${process.env.LIBRARY_OUTCOME||'not-run'}**`,
+              `WooCommerce reviewed card publication: **${process.env.PRODUCT_OUTCOME||'not-run'}**`,
+              `Live verification: **${process.env.VERIFY_OUTCOME||'not-run'}**`,
+              `Published line profiles: **${process.env.LINE_COUNT||'not-run'}**`,
+              `Reviewed catalog cards: **${process.env.CARD_COUNT||'not-run'}**`,
+              '', 'Target: https://dtfseeds.com/seeds/'
+            ].join('\n');
             await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body});

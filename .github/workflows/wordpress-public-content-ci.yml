@@ -132,5 +132,5 @@ jobs:
           ! grep -Eq '/wp-json/wp/v2/(users/[0-9]+|media|plugins|themes|products|orders)' scripts/apply-wordpress-public-content-rest.mjs
           grep -Fq 'db export' scripts/apply-wordpress-public-content.sh
           grep -Fq 'Expected exactly one published page' scripts/apply-wordpress-public-content.sh
-          grep -Fq 'Expected exactly one published WordPress page' scripts/apply-wordpress-public-content-rest.mjs
+          grep -Fq 'Expected at most one published WordPress page' scripts/apply-wordpress-public-content-rest.mjs
           grep -Fq 'wordpress-rest-content-' scripts/apply-wordpress-public-content-rest.mjs
