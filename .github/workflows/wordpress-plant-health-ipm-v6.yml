@@ -1,0 +1,154 @@
+name: Publish Plant Health IPM V6
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'site/wordpress/education/plant-health-ipm-v6.json'
+      - 'scripts/publish-wordpress-plant-health-ipm-v6.mjs'
+      - '.github/workflows/wordpress-plant-health-ipm-v6.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'site/wordpress/education/plant-health-ipm-v6.json'
+      - 'scripts/publish-wordpress-plant-health-ipm-v6.mjs'
+      - '.github/workflows/wordpress-plant-health-ipm-v6.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-plant-health-ipm-v6
+  cancel-in-progress: true
+
+env:
+  WP_SITE_URL: https://dtfseeds.com
+  NODE_OPTIONS: --dns-result-order=ipv4first
+
+jobs:
+  validate:
+    name: Validate Plant Health IPM V6
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate publisher and curriculum
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/publish-wordpress-plant-health-ipm-v6.mjs
+          node scripts/publish-wordpress-plant-health-ipm-v6.mjs --validate-only | tee "$RUNNER_TEMP/plant-health-ipm-v6-validation.json"
+          grep -Fq '"chapters": 8' "$RUNNER_TEMP/plant-health-ipm-v6-validation.json"
+          grep -Fq '"lessons": 32' "$RUNNER_TEMP/plant-health-ipm-v6-validation.json"
+          grep -Fq '"sources": 4' "$RUNNER_TEMP/plant-health-ipm-v6-validation.json"
+          grep -Fq '"visualTargets": 10' "$RUNNER_TEMP/plant-health-ipm-v6-validation.json"
+
+  publish:
+    name: Publish and verify Plant Health IPM V6
+    needs: validate
+    if: ${{ github.event_name != 'pull_request' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: production
+    env:
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      APPLY_PLANT_HEALTH_IPM_V6: 'true'
+      BACKUP_ROOT: /tmp/dtf-plant-health-ipm-v6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Confirm production credentials and package
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
+          node --check scripts/publish-wordpress-plant-health-ipm-v6.mjs
+          node scripts/publish-wordpress-plant-health-ipm-v6.mjs --validate-only
+
+      - name: Publish Plant Health IPM V6
+        id: publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$BACKUP_ROOT"
+          node scripts/publish-wordpress-plant-health-ipm-v6.mjs | tee "$RUNNER_TEMP/plant-health-ipm-v6-publish.log"
+          report="$(find "$BACKUP_ROOT" -name report.json -type f -print -quit)"
+          test -n "$report"
+          test -s "$report"
+          echo "report=$report" >> "$GITHUB_OUTPUT"
+          echo "chapters=$(node -p "require(process.argv[1]).chapters" "$report")" >> "$GITHUB_OUTPUT"
+          echo "lessons=$(node -p "require(process.argv[1]).lessons" "$report")" >> "$GITHUB_OUTPUT"
+          echo "sources=$(node -p "require(process.argv[1]).sources" "$report")" >> "$GITHUB_OUTPUT"
+          echo "visual_targets=$(node -p "require(process.argv[1]).visualTargets" "$report")" >> "$GITHUB_OUTPUT"
+
+      - name: Verify fresh visitor Plant Health IPM page
+        id: verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          body="$RUNNER_TEMP/plant-health-ipm-v6-live.html"
+          ok=0
+          for attempt in 1 2 3 4 5 6 7 8; do
+            curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+              --header 'Cache-Control: no-cache, no-store, max-age=0' --header 'Pragma: no-cache' \
+              "$WP_SITE_URL/learn/plant-health-ipm/?dtf_phi6_verify=${GITHUB_RUN_ID}-${attempt}" --output "$body"
+            if grep -Fq 'data-dtf-plant-health-ipm-v6="true"' "$body"; then ok=1; break; fi
+            sleep 6
+          done
+          [[ "$ok" -eq 1 ]]
+          [[ "$(grep -Fo 'data-phi6-chapter=' "$body" | wc -l | tr -d ' ')" = '8' ]]
+          [[ "$(grep -Fo 'class="phi6-lesson"' "$body" | wc -l | tr -d ' ')" = '32' ]]
+          grep -Fq 'data-dtf-topic="plant-health-ipm"' "$body"
+          grep -Fq 'data-dtf-learning-v4="topic-plant-health-ipm"' "$body"
+          grep -Fq 'Plant Health &amp; IPM, built around proof instead of symptom guessing.' "$body"
+
+      - name: Upload publication and rollback evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: plant-health-ipm-v6-${{ github.run_id }}
+          path: |
+            /tmp/dtf-plant-health-ipm-v6
+            ${{ runner.temp }}/plant-health-ipm-v6-publish.log
+            ${{ runner.temp }}/plant-health-ipm-v6-live.html
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report Plant Health IPM V6 result
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          STATUS: ${{ job.status }}
+          PUBLISH: ${{ steps.publish.outcome }}
+          VERIFY: ${{ steps.verify.outcome }}
+          CHAPTERS: ${{ steps.publish.outputs.chapters }}
+          LESSONS: ${{ steps.publish.outputs.lessons }}
+          SOURCES: ${{ steps.publish.outputs.sources }}
+          VISUAL_TARGETS: ${{ steps.publish.outputs.visual_targets }}
+        with:
+          script: |
+            const body = [
+              '## Plant Health & IPM V6 production', '',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Result: **${process.env.STATUS}**`,
+              `WordPress publication: **${process.env.PUBLISH || 'not-run'}**`,
+              `Visitor verification: **${process.env.VERIFY || 'not-run'}**`,
+              `V6 chapters: **${process.env.CHAPTERS || '0'}**`,
+              `Focused lessons: **${process.env.LESSONS || '0'}**`,
+              `Evidence references: **${process.env.SOURCES || '0'}**`,
+              `Quality-gated visual targets: **${process.env.VISUAL_TARGETS || '0'}**`, '',
+              'Existing subject ownership and guided-learning layers are preserved. Visual targets remain planning targets until artwork QA passes.'
+            ].join('\n');
+            for (const issue_number of [46,136]) {
+              await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number,body});
+            }

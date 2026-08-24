@@ -1,0 +1,184 @@
+name: Publish Genetics and Evidence V6
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'site/wordpress/education/genetics-breeding-v6.json'
+      - 'site/wordpress/education/evidence-measurement-v6.json'
+      - 'scripts/publish-wordpress-genetics-evidence-v6.mjs'
+      - '.github/workflows/wordpress-genetics-evidence-v6.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'site/wordpress/education/genetics-breeding-v6.json'
+      - 'site/wordpress/education/evidence-measurement-v6.json'
+      - 'scripts/publish-wordpress-genetics-evidence-v6.mjs'
+      - '.github/workflows/wordpress-genetics-evidence-v6.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-genetics-evidence-v6
+  cancel-in-progress: true
+
+env:
+  WP_SITE_URL: https://dtfseeds.com
+  NODE_OPTIONS: --dns-result-order=ipv4first
+
+jobs:
+  validate:
+    name: Validate Genetics and Evidence V6
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate publisher and both curricula
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/publish-wordpress-genetics-evidence-v6.mjs
+          node scripts/publish-wordpress-genetics-evidence-v6.mjs --validate-only | tee "$RUNNER_TEMP/genetics-evidence-v6-validation.json"
+          grep -Fq '"subjects": 2' "$RUNNER_TEMP/genetics-evidence-v6-validation.json"
+          grep -Fq '"chapters": 16' "$RUNNER_TEMP/genetics-evidence-v6-validation.json"
+          grep -Fq '"lessons": 64' "$RUNNER_TEMP/genetics-evidence-v6-validation.json"
+          grep -Fq '"sources": 11' "$RUNNER_TEMP/genetics-evidence-v6-validation.json"
+          grep -Fq '"visualTargets": 20' "$RUNNER_TEMP/genetics-evidence-v6-validation.json"
+
+  publish:
+    name: Publish and verify Genetics and Evidence V6
+    needs: validate
+    if: ${{ github.event_name != 'pull_request' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    environment: production
+    env:
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      APPLY_GENETICS_EVIDENCE_V6: 'true'
+      BACKUP_ROOT: /tmp/dtf-genetics-evidence-v6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Confirm production credentials and package
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
+          node --check scripts/publish-wordpress-genetics-evidence-v6.mjs
+          node scripts/publish-wordpress-genetics-evidence-v6.mjs --validate-only
+
+      - name: Publish both V6 subject expansions
+        id: publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$BACKUP_ROOT"
+          node scripts/publish-wordpress-genetics-evidence-v6.mjs | tee "$RUNNER_TEMP/genetics-evidence-v6-publish.log"
+          report="$(find "$BACKUP_ROOT" -name report.json -type f -print -quit)"
+          test -n "$report"
+          test -s "$report"
+          echo "report=$report" >> "$GITHUB_OUTPUT"
+          echo "subjects=$(node -p "require(process.argv[1]).totals.subjects" "$report")" >> "$GITHUB_OUTPUT"
+          echo "chapters=$(node -p "require(process.argv[1]).totals.chapters" "$report")" >> "$GITHUB_OUTPUT"
+          echo "lessons=$(node -p "require(process.argv[1]).totals.lessons" "$report")" >> "$GITHUB_OUTPUT"
+          echo "sources=$(node -p "require(process.argv[1]).totals.sources" "$report")" >> "$GITHUB_OUTPUT"
+          echo "visual_targets=$(node -p "require(process.argv[1]).totals.visualTargets" "$report")" >> "$GITHUB_OUTPUT"
+
+      - name: Verify fresh visitor Genetics page
+        id: verify_genetics
+        shell: bash
+        run: |
+          set -euo pipefail
+          body="$RUNNER_TEMP/genetics-breeding-v6-live.html"
+          ok=0
+          for attempt in 1 2 3 4 5 6 7 8; do
+            curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+              --header 'Cache-Control: no-cache, no-store, max-age=0' --header 'Pragma: no-cache' \
+              "$WP_SITE_URL/learn/genetics-breeding/?dtf_gv6_verify=${GITHUB_RUN_ID}-${attempt}" --output "$body"
+            if grep -Fq 'data-dtf-genetics-breeding-v6="true"' "$body"; then ok=1; break; fi
+            sleep 6
+          done
+          [[ "$ok" -eq 1 ]]
+          [[ "$(grep -Fo 'data-cgv6-chapter=' "$body" | wc -l | tr -d ' ')" = '8' ]]
+          [[ "$(grep -Fo 'class="cgv6-lesson"' "$body" | wc -l | tr -d ' ')" = '32' ]]
+          grep -Fq 'data-dtf-topic="genetics-breeding"' "$body"
+          grep -Fq 'data-dtf-learning-v4="topic-genetics-breeding"' "$body"
+          grep -Fq 'Genetics &amp; Breeding, taught as inheritance plus evidence.' "$body"
+
+      - name: Verify fresh visitor Evidence page
+        id: verify_evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          body="$RUNNER_TEMP/evidence-measurement-v6-live.html"
+          ok=0
+          for attempt in 1 2 3 4 5 6 7 8; do
+            curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+              --header 'Cache-Control: no-cache, no-store, max-age=0' --header 'Pragma: no-cache' \
+              "$WP_SITE_URL/learn/evidence-measurement/?dtf_evm6_verify=${GITHUB_RUN_ID}-${attempt}" --output "$body"
+            if grep -Fq 'data-dtf-evidence-measurement-v6="true"' "$body"; then ok=1; break; fi
+            sleep 6
+          done
+          [[ "$ok" -eq 1 ]]
+          [[ "$(grep -Fo 'data-cgv6-chapter=' "$body" | wc -l | tr -d ' ')" = '8' ]]
+          [[ "$(grep -Fo 'class="cgv6-lesson"' "$body" | wc -l | tr -d ' ')" = '32' ]]
+          grep -Fq 'data-dtf-topic="evidence-measurement"' "$body"
+          grep -Fq 'data-dtf-learning-v4="topic-evidence-measurement"' "$body"
+          grep -Fq 'Evidence &amp; Measurement, taught as a reproducible system.' "$body"
+
+      - name: Upload publication and rollback evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: genetics-evidence-v6-${{ github.run_id }}
+          path: |
+            /tmp/dtf-genetics-evidence-v6
+            ${{ runner.temp }}/genetics-evidence-v6-publish.log
+            ${{ runner.temp }}/genetics-breeding-v6-live.html
+            ${{ runner.temp }}/evidence-measurement-v6-live.html
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report Genetics and Evidence V6 result
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          STATUS: ${{ job.status }}
+          PUBLISH: ${{ steps.publish.outcome }}
+          GENETICS_VERIFY: ${{ steps.verify_genetics.outcome }}
+          EVIDENCE_VERIFY: ${{ steps.verify_evidence.outcome }}
+          SUBJECTS: ${{ steps.publish.outputs.subjects }}
+          CHAPTERS: ${{ steps.publish.outputs.chapters }}
+          LESSONS: ${{ steps.publish.outputs.lessons }}
+          SOURCES: ${{ steps.publish.outputs.sources }}
+          VISUAL_TARGETS: ${{ steps.publish.outputs.visual_targets }}
+        with:
+          script: |
+            const body = [
+              '## Genetics + Evidence V6 production', '',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Result: **${process.env.STATUS}**`,
+              `WordPress publication: **${process.env.PUBLISH || 'not-run'}**`,
+              `Genetics visitor verification: **${process.env.GENETICS_VERIFY || 'not-run'}**`,
+              `Evidence visitor verification: **${process.env.EVIDENCE_VERIFY || 'not-run'}**`,
+              `Published subjects: **${process.env.SUBJECTS || '0'}**`,
+              `V6 chapters: **${process.env.CHAPTERS || '0'}**`,
+              `Focused lessons: **${process.env.LESSONS || '0'}**`,
+              `Evidence references: **${process.env.SOURCES || '0'}**`,
+              `Quality-gated visual targets: **${process.env.VISUAL_TARGETS || '0'}**`, '',
+              'Existing V3 subject ownership and V4 guided-learning layers are preserved. Visual targets remain planning targets until artwork QA passes.'
+            ].join('\n');
+            for (const issue_number of [46,136]) {
+              await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number,body});
+            }
