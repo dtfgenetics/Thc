@@ -30,8 +30,11 @@ jobs:
           set -euo pipefail
           test -s site/public-route-patch/games/protect-the-plants/index.html
           test -s site/public-route-patch/games/protect-the-plants/styles.css
+          test -s site/public-route-patch/games/protect-the-plants/visual-fixes.css
           test -s site/public-route-patch/games/protect-the-plants/plant.svg
           grep -Fq 'https://dtfseeds.com/games/protect-the-plants/' site/public-route-patch/games/protect-the-plants/index.html
           grep -Fq './api.php' site/public-route-patch/games/protect-the-plants/app.js
+          grep -Fq './visual-fixes.css' site/public-route-patch/games/protect-the-plants/index.html
+          grep -Fq 'formation-trellis-row' site/public-route-patch/games/protect-the-plants/app.js
           ! grep -Fq 'src="/' site/public-route-patch/games/protect-the-plants/index.html
           ! grep -Fq 'href="/styles.css' site/public-route-patch/games/protect-the-plants/index.html
