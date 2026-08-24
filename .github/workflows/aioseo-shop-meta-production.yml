@@ -48,6 +48,7 @@ jobs:
       - name: Reconcile Shop title and meta description
         shell: bash
         run: |
+          set +e
           set -uo pipefail
           node scripts/reconcile-aioseo-shop-meta.mjs 2>&1 | tee "$RUNNER_TEMP/shop-meta.log"
           status=${PIPESTATUS[0]}
