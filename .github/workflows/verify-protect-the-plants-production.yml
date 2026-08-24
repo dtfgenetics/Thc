@@ -39,12 +39,15 @@ jobs:
             -H 'Pragma: no-cache' \
             "$BASE/?ptp_smoke=$token" -o "$RUNNER_TEMP/index.html"
           grep -Fqi 'Protect the Plants' "$RUNNER_TEMP/index.html"
-          for asset in app.js styles.css plant.svg; do
+          grep -Fq './visual-fixes.css' "$RUNNER_TEMP/index.html"
+          for asset in app.js styles.css visual-fixes.css plant.svg; do
             curl -4 -fsSL --retry 3 --retry-delay 2 --connect-timeout 15 --max-time 45 \
               -H 'Cache-Control: no-cache, no-store, max-age=0' \
               "$BASE/$asset?ptp_smoke=$token" -o "$RUNNER_TEMP/$asset"
             test -s "$RUNNER_TEMP/$asset"
           done
+          grep -Fq 'coordinate-grid' "$RUNNER_TEMP/app.js"
+          grep -Fq '.plant-token.formation-trellis-row' "$RUNNER_TEMP/styles.css"
 
       - name: Exercise two-player production API
         id: api
@@ -125,22 +128,30 @@ jobs:
             const c1 = await browser.newContext({ viewport: { width: 1280, height: 900 } });
             const p1 = await c1.newPage(); hook(p1);
             await p1.goto(`${base}/?browser_smoke=${Date.now()}`, { waitUntil: 'networkidle', timeout: 60000 });
+            await p1.locator('.hero-title').waitFor({ state: 'visible', timeout: 15000 });
+            await p1.locator('.formation-grid').waitFor({ state: 'visible', timeout: 15000 });
             await p1.locator('#createName').fill('Browser Smoke A');
             await p1.locator('[data-action="create"]').click();
             await p1.waitForURL(/room=[A-Z0-9]{6}/, { timeout: 30000 });
             const code = new URL(p1.url()).searchParams.get('room');
             if (!/^[A-Z0-9]{6}$/.test(code || '')) throw new Error(`UI did not produce a room code: ${code}`);
+            await p1.locator('.coordinate-grid').first().waitFor({ state: 'visible', timeout: 15000 });
+            await p1.locator('.battle-log').waitFor({ state: 'visible', timeout: 15000 });
+            await p1.locator('.side-rail').waitFor({ state: 'visible', timeout: 15000 });
             await p1.locator('[data-action="random"]').click();
             await p1.locator('[data-action="lock"]').click();
-            await p1.getByText(/Fleet locked|Garden locked|Waiting for opponent/i).first().waitFor({ timeout: 15000 }).catch(() => {});
+            await p1.getByText(/Garden locked|Waiting for opponent/i).first().waitFor({ timeout: 15000 }).catch(() => {});
 
             const c2 = await browser.newContext({ viewport: { width: 390, height: 844 } });
             const p2 = await c2.newPage(); hook(p2);
             await p2.goto(`${base}/?browser_smoke_b=${Date.now()}`, { waitUntil: 'networkidle', timeout: 60000 });
+            await p2.locator('.hero-title').waitFor({ state: 'visible', timeout: 15000 });
             await p2.locator('#joinName').fill('Browser Smoke B');
             await p2.locator('#joinCode').fill(code);
             await p2.locator('[data-action="join"]').click();
             await p2.waitForURL(new RegExp(`room=${code}`), { timeout: 30000 });
+            await p2.locator('.mobile-tabs').waitFor({ state: 'visible', timeout: 15000 });
+            await p2.locator('.coordinate-grid').first().waitFor({ state: 'visible', timeout: 15000 });
             await p2.locator('[data-action="random"]').click();
             await p2.locator('[data-action="lock"]').click();
 
@@ -153,7 +164,7 @@ jobs:
             await p2.locator('.board').first().waitFor({ state: 'visible', timeout: 15000 });
             if (errors.length) throw new Error(errors.join('\n'));
 
-            console.log(`Protect the Plants live browser UI passed for room ${code}.`);
+            console.log(`Protect the Plants final live browser UI passed for room ${code}.`);
             await browser.close();
           })().catch(err => { console.error(err); process.exit(1); });
           NODE
@@ -181,6 +192,6 @@ jobs:
                 `Browser UI: **${process.env.UI_OUTCOME || 'not-run'}**`,
                 process.env.ROOM ? `Temporary API smoke-test room: \`${process.env.ROOM}\`` : 'No API room reached the completed smoke-test stage.',
                 '',
-                'Checks: live HTML/assets, browser create/join/random placement/lock/chat on desktop + mobile viewports, JavaScript console/page errors, API room creation, authenticated state, active-game recovery, second-player join, room chat, both fleet placements, game start, hit, miss, and turn handoff.'
+                'Checks: live final visual assets, greenhouse lobby/formation UI, coordinate-grid battle UI, desktop battle log/side rail, mobile board tabs, browser create/join/random placement/lock/chat on desktop + mobile viewports, JavaScript console/page errors, API room creation, authenticated state, active-game recovery, second-player join, room chat, both fleet placements, game start, hit, miss, and turn handoff.'
               ].join('\n')
             });
