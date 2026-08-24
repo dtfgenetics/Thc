@@ -1,0 +1,30 @@
+{
+  "id":"THC-ENC-173",
+  "number":173,
+  "title":"Clone Intake, Quarantine, and Testing",
+  "objective":"Control incoming clone risk through identity checks, quarantine, representative testing, and documented release.",
+  "terms":[
+    {"term":"intake","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"quarantine","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"chain of custody","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"representative sample","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"diagnostic panel","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"release","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"false negative","definition":"Pending controlled-glossary reconciliation."}
+  ],
+  "termDefinitionsStatus":"pending_controlled_glossary_reconciliation",
+  "coreScience":[
+    "Incoming clones can introduce pests, pathogens, viroids, mislabeled genetics, resistant organisms, and unknown chemical residues. Quarantine separates this uncertainty from established mother and production stock.",
+    "Testing answers a defined question about the submitted tissue and method. A negative result does not prove permanent freedom from every organism. Uneven pathogen distribution, tissue choice, timing, and sampling design can contribute to false-negative results, so organism-specific laboratory instructions must control sampling.",
+    "Identity and health are separate release gates. A clone may match the expected cultivar yet fail health criteria, or test negative for a limited pathogen panel while its identity remains uncertain."
+  ],
+  "cultivationRelevance":["Assign an intake ID before unpacking. Record source and transport conditions, photograph condition, inspect under magnification, isolate material, use dedicated tools, and release only through a documented decision."],
+  "measureAndRecord":[{"field":"Controlled record set","requirement":"Supplier and provenance; clone count and IDs; arrival condition; quarantine location; pest observations; sample chain of custody; laboratory and method; results; retest; release/reject/destruction decision."}],
+  "misconceptions":["A supplier certificate replaces quarantine.","Testing one leaf certifies an entire shipment.","Quarantine ends when plants look normal."],
+  "evidenceLimits":["Required panels, quarantine duration, destruction, reporting, and sample instructions are jurisdiction-, laboratory-, organism-, and facility-specific and require release-time review."],
+  "crossLinks":"THC-ENC-141–160 for identity; THC-ENC-301–340 for disease, viroid, biosecurity, sanitation, and release controls; THC-GROW-034 for the controlled propagation SOP package.",
+  "sourceNotes":["V09-SRC-001 and V09-SRC-002 project control sources.","Punja ZK et al. (2025). Plants 14:830. DOI 10.3390/plants14050830.","V09-SRC-013 — APS/PhytoFrontiers diagnostic-assay validation guidance supporting fitness-for-purpose, sampling limitations, and false-negative risk."],
+  "reviewControl":{"controlledManuscript":"Volume 09 v1.0","evidenceControl":"complete","secondaryEvidenceReview":"complete_qualified","externalReview":"required","externalReviewType":"plant_pathology_diagnostics_plus_release_time_lab_quarantine","publicationAuthorized":false,"websiteAction":"do_not_publish"},
+  "slug":"clone-intake-quarantine-and-testing",
+  "route":"/encyclopedia/clone-intake-quarantine-and-testing"
+}
