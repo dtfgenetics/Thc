@@ -1,0 +1,29 @@
+{
+  "id":"THC-ENC-176",
+  "number":176,
+  "title":"Explant Selection and Surface Disinfection",
+  "objective":"Select explants and design surface-disinfection trials that reduce external contamination without destroying viable tissue.",
+  "terms":[
+    {"term":"surface disinfection","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"endophyte","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"aseptic transfer","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"explant injury","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"contamination frequency","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"donor preparation","definition":"Pending controlled-glossary reconciliation."}
+  ],
+  "termDefinitionsStatus":"pending_controlled_glossary_reconciliation",
+  "coreScience":[
+    "Surface disinfection targets organisms on exposed tissue surfaces. It does not reliably eliminate internal endophytes or systemic pathogens. Cannabis nodal explants can carry internal contaminants that emerge after apparently successful surface treatment.",
+    "Explant type, age, source position, donor-room sanitation, preconditioning, chemical identity, concentration, exposure, agitation, rinse quality, and operator technique all influence establishment.",
+    "More aggressive treatment can reduce contamination while also damaging meristems, leaves, and axillary buds. The useful protocol balances viable clean establishment against tissue injury."
+  ],
+  "cultivationRelevance":["Improve donor cleanliness before increasing chemical severity. Run small controlled trials, include untreated or current-standard comparisons when appropriate, and identify contaminants rather than assuming every cloudy culture has the same cause."],
+  "measureAndRecord":[{"field":"Controlled record set","requirement":"Donor and explant; prewash; agent and concentration; exposure and rinse; operator; contamination type and day detected; tissue survival; shoot recovery."}],
+  "misconceptions":["Bleach sterilizes the inside of the plant.","Stronger surface treatment is always better.","A clear vessel after a few days proves a clean culture."],
+  "evidenceLimits":["Disinfection recipes are organism-, tissue-, genotype-, product-, and facility-specific. Exact chemical identity, concentration, exposure, rinse, PPE, label/use status, and facility safety controls require release-time specialist review."],
+  "crossLinks":"THC-ENC-170 for sanitation; THC-ENC-175 for tissue-culture workflow; THC-ENC-301–340 for pathogen and biosecurity controls.",
+  "sourceNotes":["Holmes JE et al. (2021). Frontiers in Plant Science 12:732344.","V09-SRC-002 project sanitation/safety control source.","V09-SRC-012 — current EPA cleaning/disinfection and label/contact-time guidance; used only for release-control principles, not as a plant-tissue recipe."],
+  "reviewControl":{"controlledManuscript":"Volume 09 v1.0","evidenceControl":"complete","secondaryEvidenceReview":"complete_qualified","externalReview":"required","externalReviewType":"tissue_culture_pathology_plus_release_time_chemical_label_safety","publicationAuthorized":false,"websiteAction":"do_not_publish"},
+  "slug":"explant-selection-and-surface-disinfection",
+  "route":"/encyclopedia/explant-selection-and-surface-disinfection"
+}
