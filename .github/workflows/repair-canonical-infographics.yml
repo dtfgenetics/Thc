@@ -19,61 +19,101 @@ jobs:
   repair:
     name: Restore verified canonical infographic binaries
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
         with:
           ref: main
           fetch-depth: 0
 
-      - name: Verify embedded PNG data and repair canonical extensions
+      - name: Recover exact 300-DPI masters from curated Google-rendered sources
         shell: bash
         run: |
           set -euo pipefail
           root='site/wordpress/assets/infographics'
+          registry="$root/import-curated-2026-08-19.json"
+          tmp="$RUNNER_TEMP/thc-c004-c009-masters"
+          mkdir -p "$tmp"
 
-          stems=(
-            'THC-C004_Infographic_From_Cell_to_Canopy'
-            'THC-C005_Infographic_Root_Anatomy_and_Forensics'
-            'THC-C006_Infographic_Stem_Transport_and_Training_Risk'
-            'THC-C007_Infographic_Leaf_Anatomy_Gas_Exchange'
-            'THC-C008_Infographic_Flower_Anatomy_Reproduction'
-            'THC-C009_Infographic_Trichomes_Secretory_Biology'
-          )
+          cat > "$tmp/expected.tsv" <<'EOF'
+          THC-C004_Infographic_From_Cell_to_Canopy	286425	f37b0d34d1df59e4b3c1b00f4704aa9ddfe01f34a08da75a953c6898a9accb4e
+          THC-C005_Infographic_Root_Anatomy_and_Forensics	255268	3e5cdd4f2a823d65e42c2f12426340518bf177536ebdfd86f30126adfc417968
+          THC-C006_Infographic_Stem_Transport_and_Training_Risk	251938	995913c034a3bd9e73f3090cf40c2e60fe82c4965e500f546eda5af4a015ce71
+          THC-C007_Infographic_Leaf_Anatomy_Gas_Exchange	347576	31300aa7d22fa29fc40a5722ebe918b94fa9a49fd506ee3f70306776a122ed50
+          THC-C008_Infographic_Flower_Anatomy_Reproduction	287636	563ad278f034f7aeea72037f9825e6adb7082942263b8cec88d043e041e178eb
+          THC-C009_Infographic_Trichomes_Secretory_Biology	291366	b41c43fb663ef9fb3b1fcff5a313e0063abcdda013fb0bb40c23561d1e10cf23
+          EOF
 
-          for stem in "${stems[@]}"; do
+          validate_png() {
+            python3 - "$1" "$2" "$3" <<'PY'
+          import hashlib,pathlib,struct,sys
+          path=pathlib.Path(sys.argv[1]); expected_bytes=int(sys.argv[2]); expected_sha=sys.argv[3]
+          data=path.read_bytes()
+          assert len(data)==expected_bytes, f'byte size mismatch: {len(data)} != {expected_bytes}'
+          assert data[:8]==b'\x89PNG\r\n\x1a\n', 'not a PNG'
+          assert b'IEND' in data, 'PNG has no IEND marker'
+          width,height=struct.unpack('>II',data[16:24])
+          assert (width,height)==(2550,3300), f'unexpected dimensions: {(width,height)}'
+          actual=hashlib.sha256(data).hexdigest()
+          assert actual==expected_sha, f'SHA-256 mismatch: {actual}'
+          PY
+          }
+
+          while IFS=$'\t' read -r stem expected_bytes expected_sha; do
+            test -n "$stem"
+            target="$root/$stem.png"
             old="$root/$stem.jpg"
-            new="$root/$stem.png"
+            recovered=0
 
-            if [[ -f "$new" ]]; then
-              candidate="$new"
-            elif [[ -f "$old" ]]; then
-              candidate="$old"
-            else
-              echo "Missing canonical source for $stem" >&2
+            if [[ -f "$target" ]] && validate_png "$target" "$expected_bytes" "$expected_sha"; then
+              recovered=1
+              echo "$stem already matches approved 300-DPI master."
+            fi
+
+            if [[ "$recovered" -ne 1 ]]; then
+              registry_url="$(node - "$registry" "$stem" <<'NODE'
+          const fs=require('fs');
+          const [registry,stem]=process.argv.slice(2);
+          const j=JSON.parse(fs.readFileSync(registry,'utf8'));
+          const suffix=`/${stem}.jpg`;
+          const item=(j.assets||[]).find(x=>String(x.path||'').endsWith(suffix));
+          if(!item?.url) process.exit(2);
+          process.stdout.write(item.url);
+          NODE
+              )"
+
+              urls=(
+                "${registry_url/=s2048/=s0}"
+                "${registry_url/=s2048/=s3300}"
+                "${registry_url/=s2048/=w2550-h3300}"
+                "$registry_url"
+              )
+              i=0
+              for url in "${urls[@]}"; do
+                i=$((i+1))
+                candidate="$tmp/${stem}-${i}.png"
+                rm -f "$candidate"
+                if curl -4 --fail --silent --show-error --location --retry 4 --retry-delay 2 --connect-timeout 20 --max-time 120 "$url" --output "$candidate"; then
+                  bytes="$(stat -c %s "$candidate" 2>/dev/null || echo 0)"
+                  sha="$(sha256sum "$candidate" 2>/dev/null | awk '{print $1}' || true)"
+                  echo "$stem candidate $i: bytes=$bytes sha256=$sha"
+                  if validate_png "$candidate" "$expected_bytes" "$expected_sha"; then
+                    cp "$candidate" "$target"
+                    recovered=1
+                    echo "$stem recovered from curated registry variant $i."
+                    break
+                  fi
+                fi
+              done
+            fi
+
+            if [[ "$recovered" -ne 1 ]]; then
+              echo "Unable to recover exact approved master for $stem" >&2
               exit 1
             fi
-
-            node - "$candidate" <<'NODE'
-          const fs = require('fs');
-          const file = process.argv[2];
-          const b = fs.readFileSync(file);
-          const sig = Buffer.from([0x89,0x50,0x4e,0x47,0x0d,0x0a,0x1a,0x0a]);
-          if (b.length < 24 || !b.subarray(0,8).equals(sig)) {
-            throw new Error(`${file}: expected PNG bytes but signature is invalid`);
-          }
-          const width = b.readUInt32BE(16);
-          const height = b.readUInt32BE(20);
-          if (width !== 2550 || height !== 3300) {
-            throw new Error(`${file}: expected 2550x3300, got ${width}x${height}`);
-          }
-          console.log(`${file}: verified PNG ${width}x${height}`);
-          NODE
-
-            if [[ -f "$old" ]]; then
-              mv "$old" "$new"
-            fi
-          done
+            validate_png "$target" "$expected_bytes" "$expected_sha"
+            rm -f "$old"
+          done < "$tmp/expected.tsv"
 
       - name: Update canonical visual-map references
         shell: bash
@@ -127,11 +167,13 @@ jobs:
           git add site/wordpress/assets/infographics site/wordpress/education/plant-biology-v6-visual-map.json site/wordpress/education/training-canopy-v6-visual-map.json
           if git diff --cached --quiet; then
             echo 'changed=false' >> "$GITHUB_OUTPUT"
-            echo 'Canonical infographic sources already have correct PNG extensions.'
+            echo 'Canonical infographic sources already match the approved masters.'
           else
-            git commit -m 'Restore verified C004-C009 infographic PNG sources'
+            git commit -m 'Restore verified C004-C009 infographic PNG masters'
+            git pull --rebase origin main
             git push origin HEAD:main
             echo 'changed=true' >> "$GITHUB_OUTPUT"
+            echo "commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Launch protected WordPress infographic production
