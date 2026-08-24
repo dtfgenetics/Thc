@@ -1,0 +1,116 @@
+{
+  "schemaVersion": 1,
+  "id": "evidence-measurement-v6",
+  "topicId": "evidence-measurement",
+  "slug": "evidence-measurement",
+  "route": "/learn/evidence-measurement/",
+  "title": "Evidence & Measurement",
+  "learningOutcome": "Measure cultivation systems with defined variables, calibrated instruments, representative sampling, baselines and controls; preserve uncertainty and context; and connect observations to decisions without confusing precision, correlation or one dramatic image with proof.",
+  "evidenceBoundary": "Measurement quality depends on the complete chain: question, instrument, calibration, placement, timing, sampling, metadata and interpretation. More decimal places or more data points do not repair a biased method.",
+  "sourceRefs": [
+    {"id":"EVM-S1","type":"peer-reviewed measurement guideline","citation":"Guidelines for measuring and reporting environmental parameters for experiments in greenhouses. 2015.","pmcid":"PMC4567830","supports":"Sensor selection, accuracy, precision, calibration, placement, units and reporting of light, temperature, gases, water and nutrient parameters."},
+    {"id":"EVM-S2","type":"controlled-environment evidence base","citation":"Controlled-environment cannabis research across lighting, nutrition, water and post-harvest studies.","supports":"Cannabis responses are genotype-, stage-, environment- and method-dependent, making context and repeatable measurement essential."},
+    {"id":"EVM-S3","type":"scientific-method reference","citation":"Core experimental-design principles: replication, randomization, controls, predefined outcomes and uncertainty reporting.","supports":"Separating treatment effects from position, time, measurement and sampling bias."},
+    {"id":"EVM-S4","type":"instrument-quality reference","citation":"Greenhouse measurement guidance for pH, EC, radiation, temperature, humidity, CO2 and airflow instrumentation.","supports":"Calibration and sensor placement are part of data quality, not optional housekeeping."}
+  ],
+  "chapters": [
+    {
+      "number":1,"id":"measurement-question-model","title":"From Question to Measurement Model","objective":"Turn cultivation questions into variables, units and comparison plans before collecting numbers.","sourceIds":["EVM-S1","EVM-S3"],
+      "lessons":[
+        {"title":"Start with the decision, not the sensor","summary":"A measurement is useful when it answers a defined question such as whether light is uniform, roots are drying predictably or an intervention changed disease pressure.","concepts":["measurement question","decision","variable"],"cultivation":"Write the decision and the variable that would change it before buying or deploying instrumentation.","observe":"Record the question, variable, unit, sampling location and action that different results would trigger."},
+        {"title":"Operational definitions make observations repeatable","summary":"Terms like dry, high light, healthy roots or vigorous become useful data only after the observation or measurement rule is defined.","concepts":["operational definition","repeatability","trait definition"],"cultivation":"Replace vague adjectives with measurable criteria whenever the information will guide comparison or breeding.","observe":"Write the exact scoring rubric, unit or visual rule before data collection."},
+        {"title":"Independent and response variables must be separated","summary":"The factor intentionally changed is different from the outcome measured, while uncontrolled co-varying factors can create confounding.","concepts":["independent variable","response","confounder"],"cultivation":"When testing a change, keep other major factors stable or record them explicitly.","observe":"List treatment, outcomes and plausible confounders before the run."},
+        {"title":"One number rarely represents a dynamic crop","summary":"Plants experience cycles, gradients and developmental change; a point reading can miss night transitions, irrigation events or canopy hotspots.","concepts":["time series","spatial variation","development"],"cultivation":"Choose measurement frequency and locations that match how quickly the variable changes.","observe":"Record timestamp, plant stage, equipment state and position for every critical measurement."}
+      ],
+      "knowledgeChecks":["What makes a measurement decision-useful?","What is an operational definition?","How does a confounder differ from the treatment?","Why can a single point reading misrepresent a crop?"]
+    },
+    {
+      "number":2,"id":"accuracy-precision-calibration","title":"Accuracy, Precision, Resolution & Calibration","objective":"Understand instrument quality and calibration well enough to know whether a reported change is biological or measurement error.","sourceIds":["EVM-S1","EVM-S4"],
+      "lessons":[
+        {"title":"Accuracy and precision answer different questions","summary":"Accuracy describes closeness to the true value while precision describes repeatability among measurements; an instrument can be precise yet consistently biased.","concepts":["accuracy","precision","bias"],"cultivation":"Do not interpret repeatable readings as proof they are correct without calibration or reference checks.","observe":"Record reference standard, observed deviation and repeated readings."},
+        {"title":"Resolution does not equal accuracy","summary":"A display showing two decimal places may still have much larger uncertainty, so extra digits can create false confidence.","concepts":["resolution","uncertainty","significant digits"],"cultivation":"Report values at a precision supported by the instrument and method instead of preserving meaningless decimals.","observe":"Keep manufacturer accuracy specification and calibration result with the instrument record."},
+        {"title":"Calibration is part of the measurement chain","summary":"pH, EC, humidity, CO2 and other sensors drift or respond to contamination and aging; calibration connects instrument output to a known reference.","concepts":["calibration","drift","standard"],"cultivation":"Use appropriate standards and intervals from validated methods or manufacturer guidance, especially before high-consequence comparisons.","observe":"Log calibration date, standards, pre/post deviation, maintenance and operator."},
+        {"title":"Cross-checks can reveal hidden sensor failure","summary":"Comparing a field sensor to a maintained reference or overlapping sensors can expose drift, placement errors or damaged probes.","concepts":["reference sensor","cross-check","quality control"],"cultivation":"Use periodic comparison rather than waiting for crop symptoms to reveal a bad sensor.","observe":"Record paired readings under the same location and conditions and investigate persistent offsets."}
+      ],
+      "knowledgeChecks":["Can an instrument be precise but inaccurate?","Why do decimal places not prove accuracy?","What belongs in a calibration log?","How can a reference sensor reveal drift?"]
+    },
+    {
+      "number":3,"id":"sensor-placement-spatial-sampling","title":"Sensor Placement & Spatial Sampling","objective":"Measure where the plant experiences the environment and use spatial sampling to expose gradients hidden by room averages.","sourceIds":["EVM-S1","EVM-S3"],
+      "lessons":[
+        {"title":"Sensor placement changes the value measured","summary":"Temperature, humidity, PPFD, CO2 and airflow vary with height, canopy density, equipment and distance from sources, so location is part of the measurement definition.","concepts":["sensor placement","gradient","measurement plane"],"cultivation":"Define height and position relative to canopy and equipment, and keep them consistent when comparing runs.","observe":"Record coordinates or zone, height, canopy stage and nearby sources or obstructions."},
+        {"title":"Canopy measurements should follow a reproducible grid","summary":"A grid reveals hotspots and low zones that an average can hide, especially for PPFD, temperature or canopy microclimate.","concepts":["spatial grid","uniformity","mapping"],"cultivation":"Reuse the same grid after fixture, canopy or HVAC changes so differences can be attributed to the change.","observe":"Store raw grid values, not only the average or heatmap."},
+        {"title":"Random sampling reduces selection bias","summary":"Choosing only the most damaged, healthiest or easiest-to-reach leaves can exaggerate or hide a population pattern.","concepts":["random sampling","selection bias","representative sample"],"cultivation":"Combine fixed sentinel locations with randomized sampling when the goal is crop-level inference.","observe":"Record how plants or leaves were chosen and the number sampled."},
+        {"title":"Sampling unit determines what a count means","summary":"Five mites per leaf, five mites per plant and five mites per trap are different metrics; comparisons require the same unit and observation effort.","concepts":["sampling unit","denominator","comparability"],"cultivation":"Define the denominator before counting pests, lesions, roots or flowers.","observe":"Store both count and sampling effort so rates can be reconstructed."}
+      ],
+      "knowledgeChecks":["Why must sensor position be documented?","What can a spatial grid reveal?","How does random sampling reduce bias?","Why is the denominator part of every count?"]
+    },
+    {
+      "number":4,"id":"baseline-controls-change-isolation","title":"Baselines, Controls & Change Isolation","objective":"Use baselines and controls to distinguish normal variation from the effect of a cultivation change.","sourceIds":["EVM-S1","EVM-S3"],
+      "lessons":[
+        {"title":"A baseline describes the system before intervention","summary":"Without pre-change data, it is difficult to know whether an apparent improvement was already underway or falls within normal variation.","concepts":["baseline","before-after","natural variation"],"cultivation":"Collect enough stable pre-change observations to characterize the metric before altering the system.","observe":"Record baseline window, conditions and variability, not only one starting value."},
+        {"title":"Controls provide a comparison that did not receive the treatment","summary":"A contemporaneous control helps separate treatment effects from time, plant age, weather or room-wide changes.","concepts":["control","treatment","comparison"],"cultivation":"When practical, retain comparable untreated plants or zones rather than relying only on last cycle.","observe":"Record how control and treatment units were assigned and any differences between them."},
+        {"title":"Change one major variable when learning causality","summary":"Stacking nutrient, light, irrigation and environment changes together can improve the crop yet destroy the ability to know which change mattered.","concepts":["change isolation","causality","confounding"],"cultivation":"Separate changes when the goal is learning; if emergency correction requires multiple actions, document that causal attribution is limited.","observe":"Maintain a timestamped change log with reason and expected effect."},
+        {"title":"Position effects can masquerade as treatment effects","summary":"Bench edge, airflow, irrigation pressure, fixture overlap and worker access can systematically differ across positions.","concepts":["position effect","randomization","blocking"],"cultivation":"Randomize or block treatment positions when testing methods across a nonuniform space.","observe":"Map treatment assignments and compare environmental conditions by position."}
+      ],
+      "knowledgeChecks":["Why is one pre-change reading a weak baseline?","What does a control help separate?","Why do stacked changes limit causal learning?","What is a position effect?"]
+    },
+    {
+      "number":5,"id":"time-series-events-derived-metrics","title":"Time Series, Events & Derived Metrics","objective":"Interpret dynamic variables by aligning measurements with plant events and understanding how derived metrics are calculated.","sourceIds":["EVM-S1","EVM-S3"],
+      "lessons":[
+        {"title":"Timestamps turn measurements into process data","summary":"Irrigation, lights-on, lights-off, HVAC cycling and training events change the meaning of temperature, RH, EC and water-content readings.","concepts":["timestamp","event alignment","process data"],"cultivation":"Synchronize logs so environmental and root-zone responses can be compared to the event that caused them.","observe":"Store local timestamp or time zone, device clock checks and event times."},
+        {"title":"Averages can hide damaging excursions","summary":"A daily mean temperature or RH can look acceptable while brief extremes or repeated transitions create stress or condensation risk.","concepts":["average","extreme","duration"],"cultivation":"Review maxima, minima, duration and timing for variables where excursions matter.","observe":"Preserve raw or suitably frequent time-series data instead of only daily summaries."},
+        {"title":"Derived metrics inherit input error","summary":"VPD, DLI, dryback percentage and uniformity metrics are calculated from measured inputs; sensor error or inconsistent definitions propagate into the result.","concepts":["derived metric","error propagation","definition"],"cultivation":"Keep the raw inputs and calculation method alongside the derived value.","observe":"Record formula, units, sampling interval and sensor source for each derived metric."},
+        {"title":"Use the right statistic for the decision","summary":"Mean, median, range, coefficient of variation and percentile answer different questions about central tendency and spread.","concepts":["summary statistic","distribution","variation"],"cultivation":"Choose summaries that reveal the risk relevant to the decision rather than defaulting to an average.","observe":"Keep raw observations so alternative summaries can be calculated later."}
+      ],
+      "knowledgeChecks":["Why should measurements be aligned to events?","How can a daily average hide risk?","Why keep raw inputs for derived metrics?","When is spread more important than the mean?"]
+    },
+    {
+      "number":6,"id":"imaging-observation-scoring","title":"Imaging, Observation & Scoring","objective":"Make visual evidence comparable by controlling capture conditions, identity, scale and interpretation.","sourceIds":["EVM-S3"],
+      "lessons":[
+        {"title":"Images need identity and scale","summary":"A close-up without plant ID, tissue location or size reference can look compelling but cannot reliably support trend or comparison.","concepts":["image metadata","scale","traceability"],"cultivation":"Capture an overview plus close-up and include a reference when size matters.","observe":"Store plant ID, date, tissue or site, camera or magnification and scale information."},
+        {"title":"Lighting and white balance can change apparent symptoms","summary":"Leaf color and lesion contrast shift with spectrum, exposure and phone processing, so uncontrolled images can invent or hide visual differences.","concepts":["white balance","exposure","color"],"cultivation":"Use consistent neutral lighting and avoid filters when images will be compared diagnostically.","observe":"Record light source and preserve unedited originals."},
+        {"title":"Separate observation from interpretation","summary":"Yellowing between veins is an observation; naming a nutrient deficiency is an interpretation that requires supporting evidence.","concepts":["observation","interpretation","diagnosis"],"cultivation":"Write visible features first and hypotheses second so later evidence can revise the diagnosis without rewriting history.","observe":"Use separate fields for observed signs, candidate causes and confidence."},
+        {"title":"Ordinal scores need anchors","summary":"A 1–5 vigor or disease score becomes more reliable when each number has a written visual or quantitative definition.","concepts":["scoring rubric","ordinal scale","inter-rater consistency"],"cultivation":"Train scorers on example anchors and periodically compare scoring among people.","observe":"Store scorer, rubric version and notes for borderline cases."}
+      ],
+      "knowledgeChecks":["What metadata make an image useful evidence?","How can lighting alter symptom appearance?","Give an observation and interpretation of the same leaf.","Why do ordinal scores need anchors?"]
+    },
+    {
+      "number":7,"id":"uncertainty-replication-statistical-thinking","title":"Uncertainty, Replication & Statistical Thinking","objective":"Interpret variation and repeated observations without turning small samples or correlations into certainty.","sourceIds":["EVM-S1","EVM-S3"],
+      "lessons":[
+        {"title":"Biological systems contain real variation","summary":"Two genetically similar plants can differ because of microenvironment, developmental timing and stochastic biology; variation is data rather than automatic error.","concepts":["biological variation","variance","distribution"],"cultivation":"Report spread and sample size alongside averages when comparing groups.","observe":"Keep individual-plant data instead of only group means."},
+        {"title":"Replication estimates repeatability","summary":"Independent plants, batches or runs help reveal whether an effect is robust or depended on one unit or one cycle.","concepts":["replication","repeatability","independence"],"cultivation":"Match the level of replication to the claim; multiple leaves on one plant are not multiple independent plants.","observe":"Record the experimental unit and distinguish technical from biological replicates."},
+        {"title":"Correlation does not identify cause by itself","summary":"Two variables can move together because one affects the other, both respond to a third factor or the relationship is coincidental.","concepts":["correlation","causation","confounder"],"cultivation":"Use controlled changes, temporal order and mechanism when moving from association to causal claims.","observe":"Preserve candidate confounders and avoid causal wording in observational summaries."},
+        {"title":"Uncertainty should change decision confidence","summary":"Measurement error, small sample size, inconsistent observations or conflicting evidence should reduce confidence rather than be hidden.","concepts":["uncertainty","confidence","evidence quality"],"cultivation":"Label low-confidence diagnoses and prioritize measurements that would discriminate among alternatives.","observe":"Record confidence and the next observation or test that could change the conclusion."}
+      ],
+      "knowledgeChecks":["Why is plant-to-plant variation not automatically bad data?","What is the experimental unit?","Why can correlation be misleading?","How should uncertainty affect a cultivation decision?"]
+    },
+    {
+      "number":8,"id":"records-reproducibility-decision-learning","title":"Records, Reproducibility & Decision Learning","objective":"Build cultivation records that allow a future grower to reconstruct what happened, compare cycles and learn from interventions.","sourceIds":["EVM-S1","EVM-S3"],
+      "lessons":[
+        {"title":"A useful record can reconstruct the event","summary":"Numbers without units, times, locations or equipment state are difficult to interpret later; reproducible records include enough context for another person to repeat the measurement.","concepts":["reproducibility","metadata","context"],"cultivation":"Define required fields for each measurement type rather than relying on free-form notes.","observe":"Audit whether a later reviewer can identify who, what, where, when, how and why."},
+        {"title":"Stable IDs connect observations across systems","summary":"Plant, room, sensor, seed-lot and image IDs allow measurements, genetics and interventions to be joined without depending on names that may change.","concepts":["stable ID","traceability","data linkage"],"cultivation":"Assign IDs at intake or creation and keep human-readable names as separate fields.","observe":"Check that images, measurements and intervention logs resolve to the same plant or zone IDs."},
+        {"title":"Version methods when procedures change","summary":"Changing a calibration method, sampling grid or scoring rubric can shift data even if the crop is identical.","concepts":["method version","protocol change","comparability"],"cultivation":"Version SOPs and record which version generated each dataset.","observe":"Maintain effective dates and change notes for measurement procedures."},
+        {"title":"Close the loop from data to decision to outcome","summary":"The highest-value record connects observation, interpretation, action and later result so the system learns which decisions were effective.","concepts":["decision log","outcome","learning loop"],"cultivation":"For important interventions, write the expected result and follow-up time before acting.","observe":"Review whether the expected outcome occurred and update the working model rather than only archiving data."}
+      ],
+      "knowledgeChecks":["Which metadata make a record reproducible?","Why are stable IDs better than names alone?","How can a protocol change create apparent crop change?","What closes the learning loop after an intervention?"]
+    }
+  ],
+  "deepRoutes":[
+    {"label":"Environment & VPD","href":"/learn/environment-vpd/"},
+    {"label":"Lighting","href":"/learn/lighting/"},
+    {"label":"Water & Root Zone","href":"/learn/water-root-zone/"},
+    {"label":"GrowLens","href":"/growlens/"}
+  ],
+  "visualTargets":[
+    "Accuracy vs precision target diagram",
+    "Calibration and sensor-drift workflow",
+    "Canopy sensor-placement map",
+    "PPFD/environment grid sampling example",
+    "Baseline-control-treatment timeline",
+    "Confounding and change-stacking diagram",
+    "Derived metric input/output map",
+    "Standardized diagnostic photo setup",
+    "Biological vs technical replication graphic",
+    "Observation → hypothesis → action → outcome evidence loop"
+  ]
+}
