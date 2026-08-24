@@ -114,7 +114,10 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          command -v ffmpeg >/dev/null 2>&1 || { echo 'ffmpeg is required to normalize WebP assets' >&2; exit 1; }
+          if ! command -v ffmpeg >/dev/null 2>&1; then
+            sudo apt-get update -qq
+            sudo apt-get install -y --no-install-recommends ffmpeg
+          fi
           converted=0
           while IFS= read -r -d '' file; do
             output="${file%.*}.png"
