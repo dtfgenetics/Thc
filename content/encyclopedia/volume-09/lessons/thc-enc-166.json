@@ -1,0 +1,35 @@
+{
+  "id":"THC-ENC-166",
+  "number":166,
+  "title":"Auxin Biology and Rooting Hormones",
+  "objective":"Separate endogenous auxin biology from product-specific rooting-hormone use and evaluate dose, formulation, and genotype effects.",
+  "terms":[
+    {"term":"IAA","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"IBA","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"NAA","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"auxin","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"basipetal transport","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"induction phase","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"phytotoxicity","definition":"Pending controlled-glossary reconciliation."},
+    {"term":"formulation","definition":"Pending controlled-glossary reconciliation."}
+  ],
+  "termDefinitionsStatus":"pending_controlled_glossary_reconciliation",
+  "coreScience":[
+    "Endogenous auxin participates in adventitious-root induction, and polar auxin transport contributes to directional development. Cannabis-specific transport kinetics are not inferred from general plant evidence, and rooting response remains dependent on genotype and the propagation environment.",
+    "Commercial and research protocols commonly use IBA or NAA. Cannabis experiments show that exogenous auxin can improve root number, length, or mass, yet responses vary with cultivar, medium, concentration, exposure, and application method. A treatment that improves one root metric may not improve survival or later crop performance.",
+    "Excess auxin or prolonged exposure can suppress shoot growth, cause callus, deform roots, or injure tissue. Product concentration is not interchangeable across powders, gels, solutions, salts, and active-ingredient percentages."
+  ],
+  "cultivationRelevance":["Treat any commercial rooting-hormone use as a controlled product application. Record active ingredient, formulation, lot, concentration, exposure, operator, and current legal/label status. Maintain an untreated or current-standard comparison during protocol development."],
+  "measureAndRecord":[{"field":"Controlled record set","requirement":"Product and active ingredient; concentration and exposure; cutting genotype and morphology; rooting percentage; days to root; root number/length/mass; callus and injury; post-transplant growth."}],
+  "misconceptions":["Rooting gel creates roots by itself.","A stronger dose always roots faster.","IBA, IAA, and NAA are interchangeable."],
+  "evidenceLimits":["This lesson does not authorize a product or application. U.S. regulatory treatment depends on product claims, composition, intended use, applicable exemptions, state requirements, and current label status; release-time legal and worker-safety review remains required."],
+  "crossLinks":"THC-ENC-141–160 for genotype, chemotype, sex, clonal fidelity, and evidence standards; THC-ENC-301–340 for disease, viroid, biosecurity, sanitation, and release controls; THC-GROW-034 for the controlled propagation SOP package.",
+  "sourceNotes":[
+    "Campbell SM et al. (2021). Evaluation of substrate composition and exogenous hormone application on vegetative propagule rooting success of essential oil hemp (Cannabis sativa L.). PLOS ONE 16:e0249160. DOI 10.1371/journal.pone.0249160.",
+    "Holmes JE et al. (2021). Variables affecting shoot growth and plantlet recovery in tissue cultures of drug-type Cannabis sativa L. Frontiers in Plant Science 12:732344. DOI 10.3389/fpls.2021.732344.",
+    "V09-SRC-018 — U.S. EPA plant-regulator / pesticide-registration guidance, reverified 2026-08-24; product/use-specific registration and exemption status must be checked at release."
+  ],
+  "reviewControl":{"controlledManuscript":"Volume 09 v1.0","evidenceControl":"complete","secondaryEvidenceReview":"complete_qualified","externalReview":"required","externalReviewType":"plant_physiology_plus_release_time_product_label_legal_safety","publicationAuthorized":false,"websiteAction":"do_not_publish"},
+  "slug":"auxin-biology-and-rooting-hormones",
+  "route":"/encyclopedia/auxin-biology-and-rooting-hormones"
+}
