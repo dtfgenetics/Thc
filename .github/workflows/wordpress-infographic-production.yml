@@ -110,6 +110,21 @@ jobs:
           echo "eligible_count=$(node -p "require(process.argv[1]).eligibleImageCount" "$report")" >> "$GITHUB_OUTPUT"
           echo "excluded_count=$(node -p "require(process.argv[1]).excludedImageCount" "$report")" >> "$GITHUB_OUTPUT"
 
+      - name: Normalize WebP assets for WordPress compatibility
+        shell: bash
+        run: |
+          set -euo pipefail
+          command -v ffmpeg >/dev/null 2>&1 || { echo 'ffmpeg is required to normalize WebP assets' >&2; exit 1; }
+          converted=0
+          while IFS= read -r -d '' file; do
+            output="${file%.*}.png"
+            ffmpeg -hide_banner -loglevel error -y -i "$file" -frames:v 1 "$output"
+            test -s "$output"
+            rm "$file"
+            converted=$((converted + 1))
+          done < <(find "$INFOGRAPHIC_DIR" -type f -iname '*.webp' -print0)
+          echo "Normalized ${converted} WebP infographic asset(s) to PNG for WordPress upload."
+
       - name: Upload eligible WordPress media and map infographic topics
         id: publish_media
         shell: bash
