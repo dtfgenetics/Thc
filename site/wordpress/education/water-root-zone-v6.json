@@ -1,0 +1,140 @@
+{
+  "schemaVersion": 1,
+  "id": "water-root-zone-v6",
+  "title": "Water & Root Zone",
+  "learningOutcome": "Evaluate the root zone as a coupled water, oxygen, media and chemistry system; measure irrigation delivery, substrate water status, pH, EC and drainage with declared methods; and make changes from trends and plant response rather than runoff folklore or universal target numbers.",
+  "chapters": [
+    {
+      "number": 1,
+      "id": "root-interface-water-uptake",
+      "title": "Roots as the Water & Ion Interface",
+      "objective": "Connect root development, contact area, water-potential gradients and membrane transport to actual uptake capacity.",
+      "encyclopediaIds": ["THC-ENC-041", "THC-ENC-042", "THC-ENC-044", "THC-ENC-045"],
+      "lessons": [
+        {"title":"Young roots are active but vulnerable","summary":"Growing root tips divide, elongate and differentiate while fine young tissues provide important interfaces with the surrounding solution.","concepts":["root tips","root hairs","development"],"cultivation":"Protect fine roots from drying, crushing and abrupt chemical stress during transplant and root-zone changes.","observe":"Record root color and branching with plant age, recent handling, media moisture, temperature and EC rather than judging health from color alone."},
+        {"title":"Root architecture controls contact","summary":"Lateral roots and root hairs expand contact with water films, ions and microbes, but visible root mass does not prove functional uptake.","concepts":["root architecture","functional surface area","contact"],"cultivation":"Uniform wetting matters because roots proliferate where water, oxygen and usable ions repeatedly coexist.","observe":"Check root distribution by container sector and compare it with emitter position, dry pockets and saturated zones."},
+        {"title":"Water moves down a gradient","summary":"Water reaches roots through the medium, crosses root tissues and enters xylem because of water-potential gradients and regulated hydraulic pathways.","concepts":["water potential","apoplast","symplast","aquaporins"],"cultivation":"A wet container can still fail to supply the shoot when salinity, cold, hypoxia, disease or poor root contact restricts hydraulic flow.","observe":"Pair substrate status with atmospheric demand, root condition, salinity and plant recovery instead of diagnosing from moisture alone."},
+        {"title":"Ions in solution are not ions absorbed","summary":"Mineral ions must reach living roots and cross selective membrane transport systems before they become plant nutrition.","concepts":["membrane transport","ion uptake","proton gradient"],"cultivation":"Increasing feed strength can worsen a root-transport problem when oxygen, pH, salinity or root health is limiting uptake.","observe":"Record input chemistry, root-zone pH/EC by method, roots and plant pattern before changing concentration."}
+      ],
+      "knowledgeChecks": ["Why is visible root mass not proof of uptake capacity?", "What drives net water movement into the plant?", "How can a wet root zone still produce wilt?", "Why does nutrient presence in solution not prove uptake?"]
+    },
+    {
+      "number": 2,
+      "id": "oxygen-air-water-balance",
+      "title": "Oxygen, Saturation & Root Respiration",
+      "objective": "Explain why roots require oxygen and how pore filling, drainage, temperature and biological demand determine hypoxia risk.",
+      "encyclopediaIds": ["THC-ENC-043", "THC-ENC-095"],
+      "lessons": [
+        {"title":"Roots respire continuously","summary":"Living roots use oxygen-dependent respiration to support membrane transport, growth, repair and defense.","concepts":["root respiration","ATP","oxygen demand"],"cultivation":"Water and nutrients cannot compensate for a root zone that cannot replenish oxygen fast enough for the biological load.","observe":"Record root-zone temperature, saturation duration, irrigation history and oxygen measurements where instrumentation is available."},
+        {"title":"Water-filled pores slow gas exchange","summary":"Oxygen diffuses far more slowly through water than through connected air-filled pores, so prolonged saturation can outpace replenishment.","concepts":["water-filled pore space","diffusion","air-filled porosity"],"cultivation":"The goal is not a permanently dry medium but a repeatable air-water balance that rewets the intended root volume and then restores gas exchange.","observe":"Track drainage time, container geometry, substrate condition and the water-content curve after irrigation."},
+        {"title":"Temperature changes supply and demand","summary":"Warmer water holds less dissolved oxygen at equilibrium while root and microbial respiration can accelerate with temperature.","concepts":["dissolved oxygen","temperature","biological demand"],"cultivation":"Warm root zones can increase oxygen risk even when aeration equipment has not changed.","observe":"Log solution/root-zone temperature together with aeration status, root load and any oxygen measurement."},
+        {"title":"Hypoxia and disease can coexist","summary":"Low oxygen is an abiotic condition that can injure roots and predispose them to disease; brown roots alone do not identify a pathogen.","concepts":["hypoxia","root decline","differential diagnosis"],"cultivation":"Correct hydraulic causes while preserving evidence for pathogen testing rather than treating every root discoloration as the same disease.","observe":"Compare water history, roots, odor/texture, temperature, pH/EC, distribution and laboratory evidence where warranted."}
+      ],
+      "knowledgeChecks": ["Why do roots need oxygen?", "Why does saturation reduce oxygen supply?", "How does root-zone temperature affect oxygen risk?", "Why is hypoxia not the same diagnosis as root disease?"]
+    },
+    {
+      "number": 3,
+      "id": "media-physical-storage",
+      "title": "Media Physics, Storage & Buffering",
+      "objective": "Separate media composition from the physical pore network and chemical buffering that shape water storage, aeration and root-zone response.",
+      "encyclopediaIds": ["THC-ENC-050", "THC-ENC-052", "THC-ENC-090"],
+      "lessons": [
+        {"title":"Texture and structure are different","summary":"Mineral-soil texture describes particle-size composition; structure describes aggregation and pore arrangement. Soilless media require substrate-specific physical measurements.","concepts":["texture","structure","porosity"],"cultivation":"Do not apply a field-soil texture model directly to peat, coir, bark, perlite or rockwool systems.","observe":"Record media composition, batch, fill density, container geometry, settling and visible compaction."},
+        {"title":"Water content is not water availability","summary":"Volumetric water content describes amount, while matric potential and salinity influence how difficult that water is for roots to acquire.","concepts":["VWC","matric potential","plant-available water"],"cultivation":"The same moisture percentage can have different biological meaning in different media, containers and salinity conditions.","observe":"Keep the sensor model, calibration, position, substrate and EC context with every moisture value."},
+        {"title":"Container geometry creates gradients","summary":"Height, shape, drainage and root occupancy affect vertical and horizontal water distribution and the amount retained after drainage.","concepts":["container capacity","perched water","spatial gradient"],"cultivation":"A single probe or runoff sample can miss dry and saturated regions inside the same container.","observe":"Compare multiple positions or a validated representative position with container mass, roots and drainage behavior."},
+        {"title":"CEC changes buffering, not quality rank","summary":"Cation exchange capacity influences how a medium stores and exchanges positively charged ions, but higher CEC is not automatically better fertility.","concepts":["CEC","exchange sites","buffering"],"cultivation":"Low-CEC inert media can perform well under precise solution control, while buffered media require attention to stored ion history.","observe":"Use CEC only with media identity, pH/EC method, exchangeable ions, inputs and crop response."}
+      ],
+      "knowledgeChecks": ["Why should soilless media not be classified only by soil texture?", "What is the difference between water content and water availability?", "How can container geometry alter water distribution?", "Why is CEC not a stand-alone fertility score?"]
+    },
+    {
+      "number": 4,
+      "id": "irrigation-volume-uniformity",
+      "title": "Irrigation Volume, Frequency & Uniformity",
+      "objective": "Design irrigation events from measured delivery and root-zone response rather than clock time or nominal emitter specifications alone.",
+      "encyclopediaIds": ["THC-ENC-090", "THC-ENC-091"],
+      "lessons": [
+        {"title":"Volume and frequency are separate controls","summary":"The same daily total delivered in one event or many pulses can create different storage, oxygen, drainage and salt-movement patterns.","concepts":["event volume","frequency","pulse irrigation"],"cultivation":"Choose event structure for the media, container, root density and plant demand rather than copying a schedule from another system.","observe":"Record start time, event duration, delivered volume, pauses, drainage and pre/post water status."},
+        {"title":"Equal run time does not mean equal delivery","summary":"Pressure, clogs, elevation, plumbing and hand-watering technique create plant-to-plant differences even when runtime matches.","concepts":["emitter output","pressure","delivery variation"],"cultivation":"Verify delivery before blaming cultivar or nutrient response for spatially repeated weak plants.","observe":"Catch-test representative beginning, middle, end and high-risk locations under the actual operating condition."},
+        {"title":"Distribution uniformity exposes low-delivery zones","summary":"Averages can hide plants receiving persistently less water; low-quarter or other declared uniformity metrics preserve that risk.","concepts":["distribution uniformity","low quarter","spatial sampling"],"cultivation":"Use a declared sampling and calculation method so maintenance and before-after comparisons are auditable.","observe":"Preserve raw catch volumes, sample count, calculation rule, pressure state and acceptance criterion."},
+        {"title":"Plant demand changes through the cycle","summary":"Canopy area, PPFD, VPD, stage and root occupancy change water use, so a fixed clock schedule can drift away from plant demand.","concepts":["crop demand","stage","trigger logic"],"cultivation":"Use measured root-zone trends and plant response to revise irrigation boundaries gradually.","observe":"Track water-use trend with canopy size, environment and stage when evaluating schedule changes."}
+      ],
+      "knowledgeChecks": ["Why can equal daily volume produce different root-zone conditions?", "What causes delivery nonuniformity?", "Why can the average emitter output be misleading?", "Which plant and environmental variables change irrigation demand?"]
+    },
+    {
+      "number": 5,
+      "id": "dryback-water-stress",
+      "title": "Dryback, Drought & Recovery",
+      "objective": "Define dryback with explicit units and timepoints, distinguish controlled trends from stress, and verify recovery rather than treating a percentage as a universal recipe.",
+      "encyclopediaIds": ["THC-ENC-092", "THC-ENC-094", "THC-ENC-095"],
+      "lessons": [
+        {"title":"Dryback must be defined before it is compared","summary":"Dryback can mean change in mass, VWC percentage points, relative VWC or matric potential; the number is meaningless without the metric and reference points.","concepts":["dryback","absolute change","relative change"],"cultivation":"Do not copy a branded percentage into a different substrate, sensor, container or crop stage.","observe":"Record metric, units, start/end timestamps, sensor position, drainage segment and whether the change is absolute or relative."},
+        {"title":"The curve contains more than plant uptake","summary":"Drainage, redistribution, evaporation, sensor temperature/EC effects and plant use all contribute to the observed decline after irrigation.","concepts":["drainage","redistribution","water-use curve"],"cultivation":"Separate early drainage from later crop-driven decline before attributing the entire trace to physiology.","observe":"Mark post-irrigation peak, drainage period, daytime slope, lights-off, overnight slope and next irrigation."},
+        {"title":"Visible wilt is late and nonspecific","summary":"Water deficit can cause turgor loss and stomatal closure, but salinity, hypoxia, disease, heat and emitter failure can create similar symptoms.","concepts":["drought stress","turgor","differential diagnosis"],"cultivation":"Verify inadequate supply or hydraulic continuity before applying a drought diagnosis to the whole crop.","observe":"Check water status, emitter delivery, EC, roots, leaf temperature, environment and spatial pattern."},
+        {"title":"Turgor recovery is not full recovery","summary":"Leaves can lift soon after rewatering while gas exchange, root function and growth remain impaired.","concepts":["rewatering","recovery","residual stress"],"cultivation":"Judge recovery over minutes, hours and days and reduce excessive demand when root capacity remains compromised.","observe":"Track posture, leaf temperature, water use, new growth and residual injury after the correction."}
+      ],
+      "knowledgeChecks": ["Why is '20% dryback' incomplete information?", "What processes shape a post-irrigation moisture curve?", "Why is wilting not proof of dry media?", "Why can apparent turgor recovery overstate physiological recovery?"]
+    },
+    {
+      "number": 6,
+      "id": "runoff-salts-ec",
+      "title": "Runoff, Salt Movement & EC",
+      "objective": "Use drainage and electrical conductivity as method-defined trend indicators without treating runoff as a direct biopsy of the entire rhizosphere.",
+      "encyclopediaIds": ["THC-ENC-093", "THC-ENC-134", "THC-ENC-135"],
+      "lessons": [
+        {"title":"Leaching fraction is a water-balance ratio","summary":"For a defined event or interval, drainage volume divided by applied volume describes leaching fraction, but collection boundaries and recirculation must be stated.","concepts":["drainage","leaching fraction","water balance"],"cultivation":"Use the ratio to understand water movement, not as a universal runoff target for every medium and system.","observe":"Record applied volume, collected volume, collection period, pooled versus individual sampling and any recirculation."},
+        {"title":"Runoff follows flow paths","summary":"Drainage chemistry reflects resident solution, evaporation, uptake, exchange reactions and preferential channels, so one grab sample may not represent the whole root zone.","concepts":["preferential flow","drainage chemistry","sampling"],"cultivation":"More runoff cannot correct a region that is never being wetted because water bypasses it.","observe":"Compare wetting distribution, drainage timing, media status and repeated method-consistent samples."},
+        {"title":"EC measures conductivity, not nutrient identity","summary":"Electrical conductivity responds to dissolved ions but cannot identify which salts or nutrients create the reading.","concepts":["EC","salinity","osmotic stress"],"cultivation":"High EC may reflect fertilizer, source-water salts or concentration during dryback; the correct response depends on composition and root-zone water status.","observe":"Keep units, temperature reference, meter calibration, sample type, pH and water status with every EC result."},
+        {"title":"Meter ppm is a conversion convention","summary":"Many TDS/ppm displays multiply EC by a meter-specific factor such as 500 or 700, so identical solution can display different ppm numbers.","concepts":["TDS","500 scale","700 scale"],"cultivation":"Standardize field records on raw EC and use defined elemental mg/L for formulation work.","observe":"Record meter model, mode, conversion factor and raw EC whenever a ppm display is retained."}
+      ],
+      "knowledgeChecks": ["How is leaching fraction calculated?", "Why is runoff not a direct root-zone biopsy?", "What can EC tell you and what can it not tell you?", "Why can two ppm meters disagree on the same solution?"]
+    },
+    {
+      "number": 7,
+      "id": "ph-alkalinity-water-chemistry",
+      "title": "pH, Alkalinity & Water Chemistry",
+      "objective": "Separate current pH from buffering and alkalinity so root-zone drift is interpreted from chemistry and sampling history rather than one input number.",
+      "encyclopediaIds": ["THC-ENC-132", "THC-ENC-133", "THC-ENC-134"],
+      "lessons": [
+        {"title":"Solution pH and root-zone pH are different samples","summary":"Input solution and root-zone extracts represent different chemical environments shaped by roots, fertilizer, alkalinity, buffering and irrigation history.","concepts":["input pH","root-zone pH","buffer capacity"],"cultivation":"A correctly adjusted reservoir does not guarantee the substrate is at the same pH.","observe":"Label every pH by sample identity and method, then trend it with fertilizer, water source, EC and irrigation context."},
+        {"title":"pH is logarithmic and method-dependent","summary":"A pH value describes hydrogen-ion activity, but interpretation depends on sample preparation, meter control, temperature and root-zone system.","concepts":["pH","calibration","sample method"],"cultivation":"Avoid chasing decimal changes smaller than the method and instrument can support.","observe":"Record meter/probe, calibration buffers, sample type, dilution or extraction method, timing and temperature."},
+        {"title":"Alkalinity is resistance to acidification","summary":"Water sources with similar pH can have very different acid-neutralizing capacity, producing different long-term root-zone pH drift.","concepts":["alkalinity","bicarbonate","buffering"],"cultivation":"Persistent upward media-pH drift can originate in alkalinity even when each irrigation is adjusted to the same displayed pH.","observe":"Use a water analysis that includes alkalinity/bicarbonate plus pH, hardness, Ca/Mg, sodium, chloride and EC when source chemistry matters."},
+        {"title":"Hardness is not alkalinity","summary":"Hardness largely reflects multivalent cations such as calcium and magnesium; alkalinity measures acid-neutralizing capacity. The terms are not interchangeable.","concepts":["hardness","alkalinity","water analysis"],"cultivation":"Credit source-water calcium and magnesium to nutrient accounting without assuming they predict pH buffering.","observe":"Keep the laboratory units and analytical date because source chemistry can change seasonally."}
+      ],
+      "knowledgeChecks": ["Why can input and root-zone pH differ?", "What controls the reliability of a pH measurement?", "What is the difference between pH and alkalinity?", "Why is hardness not a synonym for alkalinity?"]
+    },
+    {
+      "number": 8,
+      "id": "sampling-records-change-control",
+      "title": "Sampling, Records & Change Control",
+      "objective": "Standardize root-zone measurements, separate methods that sample different fractions, and use controlled changes to test rather than obscure the cause of a problem.",
+      "encyclopediaIds": ["THC-ENC-138", "THC-ENC-132", "THC-ENC-134", "THC-ENC-091"],
+      "lessons": [
+        {"title":"Different extraction methods produce different values","summary":"Runoff, pour-through, slurry, 1:2 dilution and saturated-media extracts sample different solution fractions and dilution states.","concepts":["runoff","pour-through","slurry","method comparability"],"cultivation":"Method-specific reference ranges cannot be exchanged as though all root-zone pH or EC tests are equivalent.","observe":"Record pre-irrigation state, wait time, collection volume, dilution ratio, temperature and exact method."},
+        {"title":"Routine monitoring needs one repeatable method","summary":"Trend value comes from repeating the same procedure at comparable crop and irrigation states, not from constantly switching sampling methods.","concepts":["repeatability","baseline","control limits"],"cultivation":"Build internal healthy-crop baselines with the method actually used in the production system.","observe":"Track sample ID, cultivar, stage, container, operator, instrument, method, timestamp and replicate count."},
+        {"title":"One number should not trigger four simultaneous corrections","summary":"Changing pH, EC, irrigation frequency and fertilizer formula together destroys causal clarity and can create new stress.","concepts":["change control","confounding","verification"],"cultivation":"Make the smallest justified correction, define what response should change, and set a recheck interval.","observe":"Record the hypothesis, one controlled change where practical, acceptance criterion and follow-up response."},
+        {"title":"Root-zone records should connect to the whole plant","summary":"Water, roots and chemistry interact with light, VPD, stage and canopy demand, so isolated root-zone data can be misleading.","concepts":["systems thinking","crop context","traceability"],"cultivation":"Use root-zone measurements as part of an evidence chain that connects delivery, storage, roots, shoot demand and outcome.","observe":"Pair root-zone trends with PPFD/DLI, environment, stage, plant observations and recent management history."}
+      ],
+      "knowledgeChecks": ["Why should root-zone extraction methods not be compared directly?", "What makes a routine monitoring method useful?", "Why are multiple simultaneous corrections diagnostically weak?", "Which whole-plant variables should accompany root-zone records?"]
+    }
+  ],
+  "deepRoutes": [
+    {"label":"Plant Biology & Anatomy","href":"/learn/plant-biology/"},
+    {"label":"Environment & VPD","href":"/learn/environment-vpd/"},
+    {"label":"Nutrition & Media","href":"/learn/nutrition-media/"},
+    {"label":"Evidence & Measurement","href":"/learn/evidence-measurement/"},
+    {"label":"GrowLens records","href":"/growlens/"},
+    {"label":"Grow Doc diagnostics","href":"/thc-grow-doc/"}
+  ],
+  "visualTargets": [
+    "Root tip, lateral-root and root-hair functional zones",
+    "Water-potential pathway from media through root to xylem",
+    "Air-filled versus water-filled pore space and root oxygen",
+    "Container water distribution and sensor-placement geometry",
+    "Irrigation catch-test and distribution-uniformity map",
+    "Dryback curve with drainage, daytime and overnight segments",
+    "Runoff versus pore-water sampling pathways",
+    "EC, salinity and osmotic water-availability relationship",
+    "Input pH versus root-zone pH with alkalinity and buffering",
+    "Runoff, pour-through, slurry and standardized extraction comparison"
+  ]
+}
