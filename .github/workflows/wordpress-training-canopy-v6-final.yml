@@ -1,0 +1,147 @@
+name: Publish Training Canopy V6 Final
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'site/wordpress/education/training-canopy-v6.json'
+      - 'scripts/publish-wordpress-subject-curriculum-v6.mjs'
+      - '.github/workflows/wordpress-training-canopy-v6-final.yml'
+  workflow_run:
+    workflows:
+      - Enhance DTFSeeds Education V4
+    types: [completed]
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-training-canopy-v6-final
+  cancel-in-progress: true
+
+env:
+  WP_SITE_URL: https://dtfseeds.com
+  NODE_OPTIONS: --dns-result-order=ipv4first
+
+jobs:
+  publish:
+    name: Publish complete Training and Canopy curriculum
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: production
+    env:
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      APPLY_SUBJECT_CURRICULUM_V6: 'true'
+      SUBJECT_CURRICULUM_PATH: site/wordpress/education/training-canopy-v6.json
+      BACKUP_ROOT: /tmp/dtf-training-canopy-v6-final
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate Training Canopy V6 package
+        id: validate
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
+          node --check scripts/publish-wordpress-subject-curriculum-v6.mjs
+          node - <<'NODE'
+          const fs=require('fs');
+          const c=JSON.parse(fs.readFileSync('site/wordpress/education/training-canopy-v6.json','utf8'));
+          const lessons=(c.chapters||[]).reduce((n,x)=>n+(x.lessons||[]).length,0);
+          if(c.id!=='training-canopy-v6'||c.route!=='/learn/training-canopy/'||c.chapters?.length!==8||lessons!==32) throw new Error('Training Canopy package shape changed unexpectedly.');
+          const expected=['architecture-goals-apical-dominance','low-stress-bending-positioning','topping-pruning-wound-recovery','trellis-scrog-support-loads','light-distribution-density-interception','airflow-microclimate-canopy-access','timing-stage-recovery-strategy','measurement-records-outcome-review'];
+          if(JSON.stringify(c.chapters.map(x=>x.id))!==JSON.stringify(expected)) throw new Error('Training chapter IDs/order changed unexpectedly.');
+          const refs=[...new Set(c.chapters.flatMap(x=>x.encyclopediaIds||[]))];
+          for(const id of refs){
+            if(!/^THC-ENC-\d{3}$/.test(id)) throw new Error(`Invalid reference ${id}`);
+            const n=Number(id.slice(-3));const volume=Math.floor((n-1)/20)+1;
+            const path=`content/encyclopedia/volume-${String(volume).padStart(2,'0')}/lessons/thc-enc-${String(n).padStart(3,'0')}.json`;
+            if(!fs.existsSync(path)) throw new Error(`Missing controlled source ${path}`);
+          }
+          console.log(`Validated 8 chapters, 32 lessons and ${refs.length} controlled references.`);
+          NODE
+
+      - name: Publish and verify Training Canopy V6
+        id: publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$BACKUP_ROOT"
+          node scripts/publish-wordpress-subject-curriculum-v6.mjs | tee "$RUNNER_TEMP/training-canopy-v6-final.log"
+          report="$BACKUP_ROOT/report.json"; test -s "$report"
+          echo "chapters=$(node -p "require(process.argv[1]).chapters" "$report")" >> "$GITHUB_OUTPUT"
+          echo "lessons=$(node -p "require(process.argv[1]).lessons" "$report")" >> "$GITHUB_OUTPUT"
+          echo "references=$(node -p "require(process.argv[1]).publishedReferencePages" "$report")" >> "$GITHUB_OUTPUT"
+          echo "visuals=$(node -p "require(process.argv[1]).visualTargets" "$report")" >> "$GITHUB_OUTPUT"
+
+      - name: Independently verify Training Canopy V6
+        id: verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          body="$RUNNER_TEMP/training-canopy-v6-final.html"; ok=0
+          for attempt in 1 2 3 4 5 6 7 8; do
+            curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+              --header 'Cache-Control: no-cache, no-store, max-age=0' --header 'Pragma: no-cache' \
+              "$WP_SITE_URL/learn/training-canopy/?dtf_tc6_final_verify=${GITHUB_RUN_ID}-${attempt}" --output "$body"
+            if grep -Fqi 'data-dtf-training-canopy-v6="true"' "$body"; then ok=1; break; fi
+            sleep 6
+          done
+          [[ "$ok" -eq 1 ]]
+          [[ "$(grep -Fo 'data-cv6-chapter=' "$body" | wc -l | tr -d ' ')" = '8' ]]
+          [[ "$(grep -Fo 'class="cv6-lesson"' "$body" | wc -l | tr -d ' ')" = '32' ]]
+          for id in architecture-goals-apical-dominance low-stress-bending-positioning topping-pruning-wound-recovery trellis-scrog-support-loads light-distribution-density-interception airflow-microclimate-canopy-access timing-stage-recovery-strategy measurement-records-outcome-review; do grep -Fqi "data-cv6-chapter=\"$id\"" "$body"; done
+          grep -Fqi 'data-dtf-topic="training-canopy"' "$body"
+          grep -Fqi 'data-dtf-learning-v4="topic-training-canopy"' "$body"
+
+      - name: Upload Training Canopy V6 evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: training-canopy-v6-final-${{ github.run_id }}
+          path: |
+            /tmp/dtf-training-canopy-v6-final
+            ${{ runner.temp }}/training-canopy-v6-final.log
+            ${{ runner.temp }}/training-canopy-v6-final.html
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report Training Canopy V6 result
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          STATUS: ${{ job.status }}
+          VALIDATE: ${{ steps.validate.outcome }}
+          PUBLISH: ${{ steps.publish.outcome }}
+          VERIFY: ${{ steps.verify.outcome }}
+          CHAPTERS: ${{ steps.publish.outputs.chapters }}
+          LESSONS: ${{ steps.publish.outputs.lessons }}
+          REFERENCES: ${{ steps.publish.outputs.references }}
+          VISUALS: ${{ steps.publish.outputs.visuals }}
+        with:
+          script: |
+            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body:[
+              '## Training & Canopy V6 final curriculum','',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Result: **${process.env.STATUS}**`,
+              `Package validation: **${process.env.VALIDATE || 'not-run'}**`,
+              `WordPress publication: **${process.env.PUBLISH || 'not-run'}**`,
+              `Visitor verification: **${process.env.VERIFY || 'not-run'}**`,
+              `Chapters: **${process.env.CHAPTERS || '0'}**`,
+              `Focused lessons: **${process.env.LESSONS || '0'}**`,
+              `Direct controlled encyclopedia references currently public: **${process.env.REFERENCES || '0'}**`,
+              `Defined visual study targets: **${process.env.VISUALS || '0'}**`,'',
+              'The publisher is fail-closed: it requires the existing V3 Training & Canopy topic owner and V4 guided-learning marker, validates every encyclopedia ID against a source-controlled lesson, snapshots the page before mutation, and rolls back if edit-context or visitor verification fails. Training is taught as architecture, recovery, light/environment distribution and measured crop outcomes—not as a guaranteed yield technique.'
+            ].join('\n')});
