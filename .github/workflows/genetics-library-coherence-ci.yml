@@ -1,0 +1,74 @@
+name: Genetics Library Coherence CI
+
+on:
+  pull_request:
+    paths:
+      - 'data/genetics/**'
+      - 'site/wordpress/pages/seeds.html'
+      - 'site/wordpress/pages/shop.html'
+      - 'site/wordpress/products/genetics.json'
+      - 'site/wordpress/products/seed-line-catalog.json'
+      - 'site/wordpress/products/genetics-cdn-identities.json'
+      - 'site/wordpress/products/strain-card-images.json'
+      - 'scripts/validate-genetics-catalog.mjs'
+      - 'scripts/validate-genetics-commerce.mjs'
+      - 'scripts/validate-genetics-library-coherence.mjs'
+      - 'scripts/publish-wordpress-genetics-library-cdn.mjs'
+      - '.github/workflows/genetics-library-coherence-ci.yml'
+      - '.github/workflows/wordpress-genetics-library-production.yml'
+      - '.github/workflows/wordpress-genetics-line-pages-production.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate one authoritative genetics production path
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate JSON, pedigree, commerce, and public-library coherence
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/validate-genetics-library-coherence.mjs
+          node --check scripts/publish-wordpress-genetics-library-cdn.mjs
+          node scripts/validate-genetics-catalog.mjs
+          node scripts/validate-genetics-commerce.mjs
+          node scripts/validate-genetics-library-coherence.mjs
+
+      - name: Enforce authoritative production writer
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -Fq 'Publish authoritative genetics library and reviewed strain cards' .github/workflows/wordpress-genetics-library-production.yml
+          grep -Fq 'node scripts/validate-genetics-library-coherence.mjs' .github/workflows/wordpress-genetics-library-production.yml
+          grep -Fq 'Legacy two-line publisher is retained only as historical/compatibility code.' .github/workflows/wordpress-genetics-line-pages-production.yml
+          ! grep -Fq 'APPLY_GENETICS_LINE_PAGES' .github/workflows/wordpress-genetics-line-pages-production.yml
+          ! grep -Fq 'WP_API_PASSWORD' .github/workflows/wordpress-genetics-line-pages-production.yml
+
+      - name: Verify stable pedigree promotion rules
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const stable=JSON.parse(fs.readFileSync('data/genetics/catalog.json','utf8'));
+          const controls=JSON.parse(fs.readFileSync('data/genetics/release-control.json','utf8'));
+          const expected=new Map([
+            ['zestberry','Blue Mango × Cali Orange'],
+            ['rainbow-bubblegum','Blue Bubblegum × Rainbow Belts F1']
+          ]);
+          for(const [id,lineage] of expected){
+            const line=stable.lines.find(row=>row.id===id);
+            if(!line||line.lineage!==lineage) throw new Error(`${id}: stable lineage missing or incorrect`);
+            const control=controls.lineControls.find(row=>row.lineId===id);
+            if(!control||control.publicListingAllowed!==false||control.publicAvailability!=='not-asserted') throw new Error(`${id}: release control is not fail-closed`);
+          }
+          NODE
