@@ -1,0 +1,184 @@
+name: Repair DTF Game Routes by Directory Swap
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - site/public-route-patch/games/index.html
+      - site/public-route-patch/games/dtf-route.css
+      - site/public-route-patch/games/high-iq/**
+      - site/public-route-patch/games/grower-conversations/**
+      - games/high-iq/**
+      - games/grower-conversations/**
+      - scripts/package-game-routes-wordpress.py
+      - scripts/deploy-game-routes-via-wordpress.mjs
+      - .github/workflows/wordpress-game-route-directory-swap.yml
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtf-game-route-directory-swap-production
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: Validate reviewed directory-swap package
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate source, package, and exact scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          node games/high-iq/scripts/validate-data.mjs
+          node games/grower-conversations/scripts/validate-prompt-bank.mjs
+          node scripts/validate-public-navigation.mjs
+          node --check scripts/deploy-game-routes-via-wordpress.mjs
+          python -m py_compile scripts/package-game-routes-wordpress.py
+          grep -Fq 'href="/games/dtf-route.css"' site/public-route-patch/games/index.html
+          ! grep -Fq '/assets/dtf-gateway-v2.css' site/public-route-patch/games/index.html
+          archive="$RUNNER_TEMP/dtf-game-routes.zip"
+          python scripts/package-game-routes-wordpress.py site/public-route-patch "$archive" | tee "$RUNNER_TEMP/game-route-package-summary.json"
+          python - "$archive" <<'PY'
+          import json, sys, zipfile
+          expected=['games/index.html','games/dtf-route.css','games/high-iq','games/grower-conversations']
+          with zipfile.ZipFile(sys.argv[1]) as z:
+              m=json.loads(z.read('.dtf-game-route-manifest.json'))
+              assert m['purpose']=='dtfseeds-game-route-directory-swap'
+              assert m['targets']==expected
+              assert {'/','/learn/','/blog/','/shop/','/seeds/'}.issubset(set(m['wordPressOwnedRoutesExcluded']))
+          PY
+
+  deploy:
+    name: Back up, swap directories, audit, or roll back
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    environment: production
+    env:
+      WP_SITE_URL: https://dtfseeds.com
+      NODE_OPTIONS: --dns-result-order=ipv4first
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+    steps:
+      - name: Checkout trusted main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Require proven WordPress Application Password credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${WP_API_USERNAME:-}"
+          test -n "${WP_API_PASSWORD:-}"
+
+      - name: Package exact reviewed game-route transaction
+        id: package
+        shell: bash
+        run: |
+          set -euo pipefail
+          archive="$RUNNER_TEMP/dtf-game-routes.zip"
+          python scripts/package-game-routes-wordpress.py site/public-route-patch "$archive" | tee "$RUNNER_TEMP/game-route-package-summary.json"
+          test -s "$archive"
+          echo "archive=$archive" >> "$GITHUB_OUTPUT"
+
+      - name: Execute atomic directory-swap transaction
+        id: swap
+        shell: bash
+        env:
+          DTF_GAME_ROUTE_ARCHIVE: ${{ steps.package.outputs.archive }}
+        run: |
+          set -euo pipefail
+          node scripts/deploy-game-routes-via-wordpress.mjs "$DTF_GAME_ROUTE_ARCHIVE" | tee "$RUNNER_TEMP/game-route-directory-swap.log"
+          grep -Eq '"ok"[[:space:]]*:[[:space:]]*true' "$RUNNER_TEMP/game-route-directory-swap.log"
+
+      - name: Independent visitor verification after finalization
+        id: verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/audit-game-route-integrity.mjs | tee "$RUNNER_TEMP/game-route-independent-audit.log"
+          node --input-type=module - <<'NODE'
+          const base='https://dtfseeds.com';
+          const checks=[
+            ['/games/',['Pick what is playable. See what is coming next.','/games/dtf-route.css'],['server-engine alpha','implementation gates','/assets/dtf-gateway-v2.css']],
+            ['/games/high-iq/',['High IQ — Test Higher Cognition','/games/dtf-route.css','./high-iq.css','./app.js'],['/assets/dtf-gateway-v2.css']],
+            ['/games/grower-conversations/',['Grower Conversations','./grower-conversations.css','./app.js'],['/assets/dtf-gateway-v2.css']],
+          ];
+          for (const [path, required, forbidden] of checks) {
+            const u=new URL(path,base); u.searchParams.set('dtf_independent_swap_verify',Date.now().toString());
+            const r=await fetch(u,{headers:{'cache-control':'no-cache, no-store, max-age=0'},redirect:'follow',signal:AbortSignal.timeout(30000)});
+            const text=await r.text();
+            if(!r.ok) throw new Error(`${path} HTTP ${r.status}`);
+            for(const marker of required) if(!text.toLowerCase().includes(marker.toLowerCase())) throw new Error(`${path} missing ${marker}`);
+            for(const marker of forbidden) if(text.toLowerCase().includes(marker.toLowerCase())) throw new Error(`${path} still contains forbidden ${marker}`);
+          }
+          const css=await fetch(`${base}/games/dtf-route.css?dtf_independent_swap_verify=${Date.now()}`,{headers:{'cache-control':'no-cache, no-store, max-age=0'},signal:AbortSignal.timeout(30000)});
+          if(!css.ok) throw new Error(`/games/dtf-route.css HTTP ${css.status}`);
+          console.log('Independent game-route directory-swap verification passed.');
+          NODE
+
+      - name: Upload sanitized production evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: game-route-directory-swap-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/game-route-package-summary.json
+            ${{ runner.temp }}/game-route-directory-swap.log
+            ${{ runner.temp }}/game-route-independent-audit.log
+            game-route-audit.json
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report directory-swap result to issue 46
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          JOB_STATUS: ${{ job.status }}
+          SWAP_OUTCOME: ${{ steps.swap.outcome }}
+          VERIFY_OUTCOME: ${{ steps.verify.outcome }}
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 46,
+              body: [
+                '## Atomic game-route directory swap',
+                '',
+                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                `Commit: \`${context.sha}\``,
+                `Overall: **${process.env.JOB_STATUS}**`,
+                `Atomic swap + rollback-safe pre-finalize audit: **${process.env.SWAP_OUTCOME || 'not reached'}**`,
+                `Independent post-finalize verification: **${process.env.VERIFY_OUTCOME || 'not reached'}**`,
+                '',
+                'Scope: `/games/index.html`, `/games/dtf-route.css`, the complete `/games/high-iq/` directory, and the complete `/games/grower-conversations/` directory. Existing targets are moved into rollback storage before clean staged replacements are renamed into place. Hidden stale files inside the replaced game directories cannot survive the swap. WordPress-owned content, WooCommerce, genetics, education, GrowLens, Grow Doc, and unrelated games are outside the transaction.'
+              ].join('\n')
+            });

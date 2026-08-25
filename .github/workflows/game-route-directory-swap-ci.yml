@@ -1,0 +1,118 @@
+name: Validate Game Route Directory Swap
+
+on:
+  pull_request:
+    paths:
+      - site/public-route-patch/games/index.html
+      - site/public-route-patch/games/dtf-route.css
+      - site/public-route-patch/games/high-iq/**
+      - site/public-route-patch/games/grower-conversations/**
+      - games/high-iq/**
+      - games/grower-conversations/**
+      - scripts/package-game-routes-wordpress.py
+      - scripts/deploy-game-routes-via-wordpress.mjs
+      - .github/workflows/game-route-directory-swap-ci.yml
+      - .github/workflows/wordpress-game-route-directory-swap.yml
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate atomic directory swap
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate game sources and deployment scripts
+        shell: bash
+        run: |
+          set -euo pipefail
+          node games/high-iq/scripts/validate-data.mjs
+          node games/grower-conversations/scripts/validate-prompt-bank.mjs
+          node --check scripts/deploy-game-routes-via-wordpress.mjs
+          python -m py_compile scripts/package-game-routes-wordpress.py
+          node scripts/validate-public-navigation.mjs
+
+      - name: Enforce corrected stylesheet ownership
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -Fq 'href="/games/dtf-route.css"' site/public-route-patch/games/index.html
+          grep -Fq 'href="/games/dtf-route.css"' site/public-route-patch/games/high-iq/index.html
+          ! grep -Fq '/assets/dtf-gateway-v2.css' site/public-route-patch/games/index.html
+          ! grep -Fq '/assets/dtf-gateway-v2.css' site/public-route-patch/games/high-iq/index.html
+          ! grep -Fq '/assets/dtf-gateway-v2.css' site/public-route-patch/games/grower-conversations/index.html
+
+      - name: Package exact four-target transaction
+        shell: bash
+        run: |
+          set -euo pipefail
+          archive="$RUNNER_TEMP/dtf-game-routes.zip"
+          python scripts/package-game-routes-wordpress.py site/public-route-patch "$archive" | tee "$RUNNER_TEMP/package-summary.json"
+          test -s "$archive"
+          python - "$archive" <<'PY'
+          import json, sys, zipfile
+          zpath=sys.argv[1]
+          expected=[
+              'games/index.html',
+              'games/dtf-route.css',
+              'games/high-iq',
+              'games/grower-conversations',
+          ]
+          with zipfile.ZipFile(zpath) as z:
+              names=z.namelist()
+              assert len(names)==len(set(names)), 'duplicate archive entries'
+              assert names.count('.dtf-game-route-manifest.json')==1, 'manifest missing or duplicated'
+              manifest=json.loads(z.read('.dtf-game-route-manifest.json'))
+              assert manifest['purpose']=='dtfseeds-game-route-directory-swap'
+              assert manifest['targets']==expected, manifest['targets']
+              assert {'/','/learn/','/blog/','/shop/','/seeds/'}.issubset(set(manifest['wordPressOwnedRoutesExcluded']))
+              files=set(manifest['files'])
+              assert 'games/index.html' in files
+              assert 'games/dtf-route.css' in files
+              assert any(n.startswith('games/high-iq/') for n in files)
+              assert any(n.startswith('games/grower-conversations/') for n in files)
+              forbidden=[n for n in files if not (
+                  n in {'games/index.html','games/dtf-route.css'} or
+                  n.startswith('games/high-iq/') or
+                  n.startswith('games/grower-conversations/')
+              )]
+              assert not forbidden, forbidden
+          PY
+
+      - name: Lint embedded transactional PHP
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import pathlib, re
+          text=pathlib.Path('scripts/deploy-game-routes-via-wordpress.mjs').read_text()
+          m=re.search(r"const snippetCode = String\.raw`(.*?)`\.trim\(\);", text, re.S)
+          assert m, 'embedded PHP bridge not found'
+          php=m.group(1).replace('${tokenLiteral}', "'0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'")
+          pathlib.Path('/tmp/dtf-game-swap.php').write_text('<?php\n'+php+'\n')
+          PY
+          php -l /tmp/dtf-game-swap.php
+
+      - name: Enforce rollback and atomic-swap controls
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -Fq "'games/high-iq', 'games/grower-conversations'" scripts/deploy-game-routes-via-wordpress.mjs
+          grep -Fq "@rename(\$dst, \$bak)" scripts/deploy-game-routes-via-wordpress.mjs
+          grep -Fq "@rename(\$src, \$dst)" scripts/deploy-game-routes-via-wordpress.mjs
+          grep -Fq "rollback_state" scripts/deploy-game-routes-via-wordpress.mjs
+          grep -Fq "await verifyLive();" scripts/deploy-game-routes-via-wordpress.mjs
+          grep -Fq "await runFullAudits();" scripts/deploy-game-routes-via-wordpress.mjs
+          grep -Fq "callDeploy('finalize'" scripts/deploy-game-routes-via-wordpress.mjs
+          ! grep -Eq 'HOSTINGER_(SSH|HOST|USER|PRIVATE_KEY)' scripts/deploy-game-routes-via-wordpress.mjs
