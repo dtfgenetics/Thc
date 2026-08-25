@@ -1,0 +1,140 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-08-25",
+  "system": "THC Living Plant Atlas",
+  "module": "Root System",
+  "qualityStandard": {
+    "style": "academic studio quality with clean botanical and root-zone reference visuals",
+    "palette": "cream, soil brown, deep green, neutral whites, subtle gold accents",
+    "rules": [
+      "No yellow tint",
+      "No generic clip art",
+      "Readable labels at mobile and print size",
+      "Scientifically accurate root-zone terminology",
+      "Use clear hierarchy and uncluttered layouts",
+      "Every visual must teach one useful concept"
+    ]
+  },
+  "assets": [
+    {
+      "id": "root-anatomy-reference-plate",
+      "title": "Root Anatomy Reference Plate",
+      "status": "needed",
+      "priority": 1,
+      "type": "labeled teaching visual",
+      "targetPages": ["/atlas/root-system/root-anatomy/"],
+      "targetCards": [],
+      "placementPath": "/assets/images/atlas/root-system/root-anatomy-reference-plate.png",
+      "altTextDraft": "Labeled cannabis root anatomy reference showing primary root, lateral roots, root hairs, root tip, and healthy white root structure.",
+      "productionBrief": "Create a clean academic root anatomy plate showing a young cannabis root system removed from media. Label primary root, lateral roots, root hairs, root tip, elongation zone, and healthy root color. Use cream background, soil-brown accents, green title styling, and precise botanical labels. Keep it realistic but not cluttered."
+    },
+    {
+      "id": "rhizosphere-interaction-map",
+      "title": "Rhizosphere Interaction Map",
+      "status": "needed",
+      "priority": 2,
+      "type": "process diagram",
+      "targetPages": ["/atlas/root-system/rhizosphere/"],
+      "targetCards": [],
+      "placementPath": "/assets/images/atlas/root-system/rhizosphere-interaction-map.png",
+      "altTextDraft": "Diagram of root exudates, microbes, biofilms, nutrient cycling, and media particles interacting around the root zone.",
+      "productionBrief": "Create an educational rhizosphere diagram showing roots releasing exudates, microbes clustering around roots, media particles, nutrient cycling, water films, and oxygen pockets. Use a cross-section style with labels and simple arrows. Keep biology accurate and visually clean."
+    },
+    {
+      "id": "water-uptake-flow-card",
+      "title": "Water Uptake Flow Card",
+      "status": "needed",
+      "priority": 3,
+      "type": "flow diagram",
+      "targetPages": ["/atlas/root-system/water-uptake/"],
+      "targetCards": ["/atlas/downloads/watering-dryback-field-card/"],
+      "placementPath": "/assets/images/atlas/root-system/water-uptake-flow-card.png",
+      "altTextDraft": "Root-to-leaf water uptake flow diagram showing water entering root hairs, moving through xylem, and supporting leaf transpiration.",
+      "productionBrief": "Create a root-to-leaf water uptake diagram showing water entering through root hairs, moving through root tissues, into xylem, up the stem, and out through leaves during transpiration. Add callouts for moisture, oxygen, VPD demand, and plant stage."
+    },
+    {
+      "id": "nutrient-uptake-context-chart",
+      "title": "Nutrient Uptake Context Chart",
+      "status": "needed",
+      "priority": 4,
+      "type": "diagnostic chart",
+      "targetPages": ["/atlas/root-system/nutrient-uptake/"],
+      "targetCards": ["/atlas/downloads/ph-ec-troubleshooting-card/", "/atlas/downloads/deficiency-vs-lockout-comparison-card/"],
+      "placementPath": "/assets/images/atlas/root-system/nutrient-uptake-context-chart.png",
+      "altTextDraft": "Diagnostic chart showing how pH, EC, moisture, oxygen, root health, and environment affect nutrient uptake.",
+      "productionBrief": "Create a clean diagnostic chart showing nutrient uptake as a system controlled by pH, EC, moisture, oxygen, root health, media, temperature, and plant demand. The chart should make clear that nutrients can be present but unavailable."
+    },
+    {
+      "id": "root-oxygen-risk-visual",
+      "title": "Root Oxygen Risk Visual",
+      "status": "needed",
+      "priority": 5,
+      "type": "comparison visual",
+      "targetPages": ["/atlas/root-system/root-oxygen/"],
+      "targetCards": ["/atlas/downloads/root-zone-problem-card/"],
+      "placementPath": "/assets/images/atlas/root-system/root-oxygen-risk-visual.png",
+      "altTextDraft": "Comparison of well-aerated root zone and saturated low-oxygen root zone with root stress cues.",
+      "productionBrief": "Create a side-by-side comparison of a well-aerated media/root zone versus a saturated low-oxygen root zone. Show air pockets, water films, healthy white roots, stressed browning roots, and leaf symptom connection."
+    },
+    {
+      "id": "dryback-timeline-field-card",
+      "title": "Dryback Timeline Field Card",
+      "status": "needed",
+      "priority": 6,
+      "type": "timeline visual",
+      "targetPages": ["/atlas/root-system/dryback/"],
+      "targetCards": ["/atlas/downloads/watering-dryback-field-card/"],
+      "placementPath": "/assets/images/atlas/root-system/dryback-timeline-field-card.png",
+      "altTextDraft": "Dryback timeline showing container weight, moisture, oxygen, EC concentration, and leaf posture across time after watering.",
+      "productionBrief": "Create a wet-to-dry container timeline showing heavy/wet, ideal active uptake, approaching dryback, and too-dry stress. Include container weight, moisture, oxygen, EC concentration, and leaf posture response."
+    },
+    {
+      "id": "root-rot-damage-reference-plate",
+      "title": "Root Rot & Damage Reference Plate",
+      "status": "needed",
+      "priority": 7,
+      "type": "diagnostic reference plate",
+      "targetPages": ["/atlas/root-system/root-rot/"],
+      "targetCards": ["/atlas/downloads/root-zone-problem-card/"],
+      "placementPath": "/assets/images/atlas/root-system/root-rot-damage-reference-plate.png",
+      "altTextDraft": "Reference plate comparing healthy white roots with brown, slimy, damaged, or oxygen-stressed roots.",
+      "productionBrief": "Create a diagnostic reference plate comparing healthy white roots, mildly stained roots, brown damaged roots, slimy root rot appearance, and dry brittle damaged roots. Include note that visual evidence must be paired with smell, texture, oxygen, moisture, and temperature."
+    },
+    {
+      "id": "root-zone-diagnostic-flowchart",
+      "title": "Root-Zone Diagnostic Flowchart",
+      "status": "needed",
+      "priority": 8,
+      "type": "field workflow chart",
+      "targetPages": ["/atlas/root-system/root-zone-diagnostics/"],
+      "targetCards": ["/atlas/downloads/root-zone-problem-card/", "/atlas/downloads/ph-ec-troubleshooting-card/"],
+      "placementPath": "/assets/images/atlas/root-system/root-zone-diagnostic-flowchart.png",
+      "altTextDraft": "Root-zone diagnostic workflow connecting leaf symptoms, moisture, pH, EC, oxygen, media, roots, and recent changes.",
+      "productionBrief": "Create a field workflow chart that starts with leaf symptom pattern, then checks moisture, container weight, pH, EC, runoff or slurry trend, oxygen risk, root appearance, media behavior, and recent changes before recommending correction categories."
+    },
+    {
+      "id": "ph-ec-troubleshooting-decision-card",
+      "title": "pH & EC Troubleshooting Decision Card",
+      "status": "needed",
+      "priority": 9,
+      "type": "decision chart",
+      "targetPages": ["/atlas/root-system/nutrient-uptake/", "/atlas/root-system/root-zone-diagnostics/"],
+      "targetCards": ["/atlas/downloads/ph-ec-troubleshooting-card/"],
+      "placementPath": "/assets/images/atlas/root-system/ph-ec-troubleshooting-decision-card.png",
+      "altTextDraft": "Decision chart for interpreting feed EC, runoff EC, pH drift, salt buildup, and nutrient uptake issues.",
+      "productionBrief": "Create a decision chart for pH and EC troubleshooting. Show feed/input, root-zone behavior, runoff/slurry trend, salt buildup risk, pH availability issue, and when symptoms may be caused by uptake conditions instead of lack of fertilizer."
+    },
+    {
+      "id": "deficiency-vs-lockout-decision-chart",
+      "title": "Deficiency vs Lockout Decision Chart",
+      "status": "needed",
+      "priority": 10,
+      "type": "comparison decision chart",
+      "targetPages": ["/atlas/root-system/nutrient-uptake/", "/atlas/leaf-module/nutrient-symptoms/"],
+      "targetCards": ["/atlas/downloads/deficiency-vs-lockout-comparison-card/"],
+      "placementPath": "/assets/images/atlas/root-system/deficiency-vs-lockout-decision-chart.png",
+      "altTextDraft": "Comparison decision chart separating true deficiency from pH lockout, EC buildup, root stress, water stress, and environmental limitation.",
+      "productionBrief": "Create a polished side-by-side diagnostic decision chart comparing true deficiency, pH lockout, EC buildup, root damage, water stress, low oxygen, and environmental limitation. Include evidence needed before feeding more."
+    }
+  ]
+}
