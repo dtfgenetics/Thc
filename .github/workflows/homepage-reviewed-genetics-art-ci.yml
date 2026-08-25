@@ -1,0 +1,70 @@
+name: Reviewed Homepage Genetics Art CI
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/homepage-reviewed-genetics-art-ci.yml'
+      - '.github/workflows/homepage-reviewed-genetics-art-production.yml'
+      - '.github/workflows/wordpress-home-genetics-art.yml'
+      - '.github/workflows/homepage-genetics-v2-ci.yml'
+      - 'scripts/finalize-wordpress-home-genetics-art.mjs'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate reviewed-card Home protection
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate finalizer and production workflow contracts
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/finalize-wordpress-home-genetics-art.mjs
+          for identity in \
+            'dtf-strain-card-blue-mango-f2-regular' \
+            'dtf-strain-card-blue-mango-f2-feminized' \
+            'dtf-strain-card-blue-bubblegum-f1-regular' \
+            'dtf-strain-card-mango-bubbles-f1-regular'; do
+            grep -Fq "$identity" scripts/finalize-wordpress-home-genetics-art.mjs
+            grep -Fq "$identity" .github/workflows/homepage-reviewed-genetics-art-production.yml
+          done
+          for producer in \
+            'Publish DTFSeeds Learning Experience V3' \
+            'Rebuild DTFSeeds WordPress Visual Site' \
+            'Publish DTFSeeds WordPress Production' \
+            'Reconcile DTFSeeds WordPress Pages On Command' \
+            'Rebuild DTFSeeds Visual Site On Command' \
+            'Force DTF Visual + Favicon Production' \
+            'Recreate Codex WordPress Production Path'; do
+            grep -Fq -- "- $producer" .github/workflows/homepage-reviewed-genetics-art-production.yml || {
+              echo "Fresh Home genetics production workflow is missing upstream producer: $producer" >&2
+              exit 1
+            }
+          done
+          grep -Fq "- '.github/workflows/homepage-reviewed-genetics-art-production.yml'" .github/workflows/homepage-reviewed-genetics-art-production.yml
+          grep -Fq "APPLY_HOME_GENETICS_ART: 'true'" .github/workflows/homepage-reviewed-genetics-art-production.yml
+          grep -Fq 'Current releases, shown with the real strain cards.' scripts/finalize-wordpress-home-genetics-art.mjs
+          grep -Fq 'aspect-ratio:2/3' scripts/finalize-wordpress-home-genetics-art.mjs
+
+      - name: Reject education media as release-card completion criteria
+        shell: bash
+        run: |
+          set -euo pipefail
+          file=.github/workflows/homepage-reviewed-genetics-art-production.yml
+          grep -Fq 'Blue Mango F2 Regular DTF Genetics strain card' "$file"
+          grep -Fq 'Blue Mango F2 Feminized DTF Genetics strain card' "$file"
+          grep -Fq 'Blue Bubblegum F1 Regular DTF Genetics strain card' "$file"
+          grep -Fq 'Mango Bubbles F1 Regular DTF Genetics strain card' "$file"
+          grep -Fq 'Cannabis Sex Expression and Chromosome Combinations' "$file"
+          grep -Fq 'Flower Anatomy Reproduction' "$file"
+          grep -Fq 'Education artwork remains in current-release region' "$file"
+          echo 'Reviewed Homepage Genetics Art protection contract verified.'
