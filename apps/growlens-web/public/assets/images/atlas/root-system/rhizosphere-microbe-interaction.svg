@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 900" role="img" aria-labelledby="title desc">
+  <title id="title">Rhizosphere and Microbe Interaction Visual</title>
+  <desc id="desc">Educational root-zone visual showing root hairs, exudates, beneficial microbes, mycorrhizal-like networks, nutrient cycling, moisture, oxygen, and healthy rhizosphere conditions.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#fffdf8"/><stop offset="1" stop-color="#f6f1e6"/></linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#16331f" flood-opacity="0.13"/></filter>
+    <style>
+      .title{font:800 46px system-ui,Segoe UI,Arial;fill:#16331f}.sub{font:500 22px system-ui,Segoe UI,Arial;fill:#59695c}.label{font:700 21px system-ui,Segoe UI,Arial;fill:#16331f}.small{font:600 17px system-ui,Segoe UI,Arial;fill:#59695c}.callout{fill:#fffdf8;stroke:#d8cdb8;stroke-width:3}.soil{fill:#7a5132}.root{fill:none;stroke:#f7f0df;stroke-width:18;stroke-linecap:round}.hair{stroke:#fff8e8;stroke-width:5;stroke-linecap:round}.microbe{fill:#2f7d43;stroke:#16331f;stroke-width:2}.fungal{fill:none;stroke:#c79b2c;stroke-width:6;stroke-linecap:round;stroke-dasharray:12 10}.drop{fill:#9fd3e8;stroke:#236985;stroke-width:2}.arrow{fill:none;stroke:#2f7d43;stroke-width:5;marker-end:url(#arrow)}
+    </style>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 z" fill="#2f7d43"/></marker>
+  </defs>
+  <rect width="1400" height="900" fill="url(#bg)"/>
+  <text x="70" y="82" class="title">Rhizosphere &amp; Microbe Interaction</text>
+  <text x="72" y="122" class="sub">The active zone around roots where exudates, microbes, oxygen, water, and nutrients interact.</text>
+
+  <rect x="70" y="170" width="820" height="620" rx="34" fill="#6b4528" filter="url(#shadow)"/>
+  <rect x="100" y="205" width="760" height="550" rx="28" fill="#7b5437" opacity="0.98"/>
+  <path class="root" d="M450 205 C455 310 430 390 455 500 C475 590 420 650 400 735"/>
+  <path class="root" d="M450 315 C350 350 280 400 230 470" stroke-width="13"/>
+  <path class="root" d="M455 420 C545 455 610 515 690 590" stroke-width="13"/>
+  <path class="root" d="M440 545 C345 575 290 625 245 710" stroke-width="11"/>
+  <path class="root" d="M468 575 C560 620 660 650 780 700" stroke-width="11"/>
+
+  <g opacity=".95">
+    <path class="hair" d="M355 350 l-48 -28"/><path class="hair" d="M335 372 l-58 8"/><path class="hair" d="M295 420 l-46 30"/>
+    <path class="hair" d="M540 455 l55 -30"/><path class="hair" d="M595 500 l70 -6"/><path class="hair" d="M640 550 l70 34"/>
+    <path class="hair" d="M352 590 l-62 -16"/><path class="hair" d="M315 640 l-65 42"/><path class="hair" d="M585 632 l62 -34"/><path class="hair" d="M690 662 l65 -22"/>
+  </g>
+
+  <path class="fungal" d="M175 285 C275 245 360 285 438 340 C560 425 675 410 790 350"/>
+  <path class="fungal" d="M160 665 C290 590 380 565 510 610 C630 650 710 735 830 675"/>
+  <path class="fungal" d="M220 510 C345 470 510 475 640 520 C740 555 790 515 845 470"/>
+
+  <g>
+    <circle class="microbe" cx="220" cy="310" r="15"/><circle class="microbe" cx="305" cy="262" r="11"/><circle class="microbe" cx="655" cy="360" r="14"/><circle class="microbe" cx="760" cy="405" r="10"/>
+    <circle class="microbe" cx="230" cy="585" r="13"/><circle class="microbe" cx="335" cy="535" r="10"/><circle class="microbe" cx="615" cy="655" r="13"/><circle class="microbe" cx="760" cy="720" r="11"/>
+    <circle class="drop" cx="180" cy="435" r="13"/><circle class="drop" cx="735" cy="300" r="14"/><circle class="drop" cx="705" cy="610" r="12"/>
+  </g>
+
+  <rect class="callout" x="940" y="175" width="365" height="110" rx="22"/>
+  <text x="970" y="218" class="label">Root exudates</text>
+  <text x="970" y="250" class="small">Sugars and compounds help shape</text>
+  <text x="970" y="274" class="small">the microbial zone near roots.</text>
+
+  <rect class="callout" x="940" y="315" width="365" height="120" rx="22"/>
+  <text x="970" y="358" class="label">Beneficial microbes</text>
+  <text x="970" y="390" class="small">Support nutrient cycling and</text>
+  <text x="970" y="414" class="small">root-zone resilience when conditions fit.</text>
+
+  <rect class="callout" x="940" y="465" width="365" height="120" rx="22"/>
+  <text x="970" y="508" class="label">Air + water balance</text>
+  <text x="970" y="540" class="small">Moisture helps biology; oxygen</text>
+  <text x="970" y="564" class="small">keeps roots and microbes active.</text>
+
+  <rect class="callout" x="940" y="615" width="365" height="135" rx="22"/>
+  <text x="970" y="658" class="label">Diagnostic link</text>
+  <text x="970" y="690" class="small">Root-zone stress can look like</text>
+  <text x="970" y="714" class="small">leaf deficiency, slow growth,</text>
+  <text x="970" y="738" class="small">curl, or weak recovery.</text>
+
+  <path class="arrow" d="M895 230 C880 240 850 260 820 295"/>
+  <path class="arrow" d="M895 374 C830 370 785 382 750 405"/>
+  <path class="arrow" d="M895 525 C820 560 785 590 735 612"/>
+  <path class="arrow" d="M895 680 C820 690 790 692 760 700"/>
+
+  <text x="126" y="238" class="label" fill="#fffdf8">root hairs</text>
+  <text x="550" y="248" class="label" fill="#fffdf8">microbes</text>
+  <text x="126" y="745" class="label" fill="#fffdf8">fungal-like network</text>
+  <text x="612" y="745" class="label" fill="#fffdf8">moisture pockets</text>
+</svg>
