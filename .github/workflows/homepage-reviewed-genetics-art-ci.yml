@@ -50,7 +50,7 @@ jobs:
               exit 1
             }
           done
-          grep -Fq "- '.github/workflows/homepage-reviewed-genetics-art-production.yml'" .github/workflows/homepage-reviewed-genetics-art-production.yml
+          grep -Fq -- "- '.github/workflows/homepage-reviewed-genetics-art-production.yml'" .github/workflows/homepage-reviewed-genetics-art-production.yml
           grep -Fq "APPLY_HOME_GENETICS_ART: 'true'" .github/workflows/homepage-reviewed-genetics-art-production.yml
           grep -Fq 'Current releases, shown with the real strain cards.' scripts/finalize-wordpress-home-genetics-art.mjs
           grep -Fq 'aspect-ratio:2/3' scripts/finalize-wordpress-home-genetics-art.mjs
