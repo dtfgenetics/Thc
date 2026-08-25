@@ -36,9 +36,23 @@ jobs:
           grep -Fq 'dtf-strain-card-blue-mango-f2-feminized' scripts/run-learning-v3-production.mjs
           grep -Fq 'dtf-strain-card-blue-bubblegum-f1-regular' scripts/run-learning-v3-production.mjs
           grep -Fq 'dtf-strain-card-mango-bubbles-f1-regular' scripts/finalize-wordpress-home-genetics-art.mjs
-          grep -Fq 'Publish DTFSeeds Learning Experience V3' .github/workflows/wordpress-home-genetics-art.yml
-          ! grep -Fq 'Publish DTF Genetics Library' .github/workflows/wordpress-home-genetics-art.yml
-          grep -Fq 'Blue Mango F2 Regular DTF Genetics strain card' .github/workflows/wordpress-learning-experience-v3-production.yml
+          for producer in \
+            'Publish DTFSeeds Learning Experience V3' \
+            'Rebuild DTFSeeds WordPress Visual Site' \
+            'Publish DTFSeeds WordPress Production' \
+            'Reconcile DTFSeeds WordPress Pages On Command' \
+            'Rebuild DTFSeeds Visual Site On Command' \
+            'Force DTF Visual + Favicon Production' \
+            'Recreate Codex WordPress Production Path'; do
+            grep -Fq -- "- $producer" .github/workflows/wordpress-home-genetics-art.yml || {
+              echo "Homepage reviewed-card finalizer is not subscribed to visual producer: $producer" >&2
+              exit 1
+            }
+          done
+          grep -Fq "- '.github/workflows/wordpress-home-genetics-art.yml'" .github/workflows/wordpress-home-genetics-art.yml
+          grep -Fq 'Blue Mango F2 Regular DTF Genetics strain card' .github/workflows/wordpress-home-genetics-art.yml
+          grep -Fq 'Blue Mango F2 Feminized DTF Genetics strain card' .github/workflows/wordpress-home-genetics-art.yml
+          grep -Fq 'Blue Bubblegum F1 Regular DTF Genetics strain card' .github/workflows/wordpress-home-genetics-art.yml
           grep -Fq 'Mango Bubbles F1 Regular DTF Genetics strain card' .github/workflows/wordpress-home-genetics-art.yml
 
       - name: Prove V3 runtime patch still matches canonical publisher
