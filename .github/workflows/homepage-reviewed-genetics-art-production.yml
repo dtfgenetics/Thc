@@ -1,0 +1,135 @@
+name: Publish DTFSeeds Reviewed Homepage Genetics Art V3
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/homepage-reviewed-genetics-art-production.yml'
+      - '.github/workflows/wordpress-home-genetics-art.yml'
+      - 'scripts/finalize-wordpress-home-genetics-art.mjs'
+  workflow_run:
+    workflows:
+      - Publish DTFSeeds Learning Experience V3
+      - Rebuild DTFSeeds WordPress Visual Site
+      - Publish DTFSeeds WordPress Production
+      - Reconcile DTFSeeds WordPress Pages On Command
+      - Rebuild DTFSeeds Visual Site On Command
+      - Force DTF Visual + Favicon Production
+      - Recreate Codex WordPress Production Path
+    types: [completed]
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-home-reviewed-genetics-art-v3
+  cancel-in-progress: false
+
+env:
+  WP_SITE_URL: https://dtfseeds.com
+
+jobs:
+  publish:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    name: Restore reviewed strain-card art and verify Home
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: production
+    env:
+      NODE_OPTIONS: --dns-result-order=ipv4first
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME || secrets.WORDPRESS_USERNAME || secrets.WP_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD || secrets.WORDPRESS_APP_PASSWORD || secrets.WP_APPLICATION_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate reviewed genetics Home finalizer
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${WP_API_USERNAME:-}"
+          test -n "${WP_API_PASSWORD:-}"
+          node --check scripts/finalize-wordpress-home-genetics-art.mjs
+          for identity in \
+            'dtf-strain-card-blue-mango-f2-regular' \
+            'dtf-strain-card-blue-mango-f2-feminized' \
+            'dtf-strain-card-blue-bubblegum-f1-regular' \
+            'dtf-strain-card-mango-bubbles-f1-regular'; do
+            grep -Fq "$identity" scripts/finalize-wordpress-home-genetics-art.mjs
+          done
+
+      - name: Apply reviewed genetics artwork to Home
+        id: apply
+        env:
+          APPLY_HOME_GENETICS_ART: 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/finalize-wordpress-home-genetics-art.mjs | tee "$RUNNER_TEMP/home-reviewed-genetics-v3.json"
+          echo 'outcome=success' >> "$GITHUB_OUTPUT"
+
+      - name: Verify reviewed genetics artwork on live Home
+        id: verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          body="$RUNNER_TEMP/home-reviewed-genetics-v3.html"
+          ok=0
+          for attempt in 1 2 3 4 5 6 7 8; do
+            curl -4 -fsSL --retry 2 --retry-delay 2 \
+              -H 'Cache-Control: no-cache, no-store, max-age=0' \
+              -H 'Pragma: no-cache' \
+              "$WP_SITE_URL/?dtf_home_reviewed_genetics_v3=${GITHUB_RUN_ID}-${attempt}" -o "$body"
+            if \
+              grep -Fqi 'data-dtf-home-genetics-v2="hero"' "$body" && \
+              grep -Fqi 'Blue Mango F2 Regular DTF Genetics strain card' "$body" && \
+              grep -Fqi 'Blue Mango F2 Feminized DTF Genetics strain card' "$body" && \
+              grep -Fqi 'Blue Bubblegum F1 Regular DTF Genetics strain card' "$body" && \
+              grep -Fqi 'Mango Bubbles F1 Regular DTF Genetics strain card' "$body" && \
+              grep -Fqi 'Current releases, shown with the real strain cards.' "$body"; then
+              ok=1
+              break
+            fi
+            sleep 6
+          done
+          [[ "$ok" -eq 1 ]] || {
+            echo 'Reviewed genetics artwork is not visible on the public Home page.' >&2
+            grep -oiE 'Blue Mango[^<]{0,140}|Blue Bubblegum[^<]{0,140}|Mango Bubbles[^<]{0,140}|data-dtf-home-genetics-v2' "$body" | head -50 >&2 || true
+            exit 1
+          }
+          for forbidden in \
+            'Cannabis Sex Expression and Chromosome Combinations' \
+            'Flower Anatomy Reproduction'; do
+            release_region="$(grep -o -i -E '.{0,300}Current releases.{0,5000}' "$body" | head -1 || true)"
+            if [[ -n "$release_region" ]] && grep -Fqi "$forbidden" <<< "$release_region"; then
+              echo "Education artwork remains in current-release region: $forbidden" >&2
+              exit 1
+            fi
+          done
+          echo 'outcome=success' >> "$GITHUB_OUTPUT"
+
+      - name: Report reviewed Home genetics production
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          STATUS: ${{ job.status }}
+          APPLY: ${{ steps.apply.outputs.outcome }}
+          VERIFY: ${{ steps.verify.outputs.outcome }}
+        with:
+          script: |
+            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body:[
+              '## Reviewed Homepage Genetics Art V3','',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Result: **${process.env.STATUS}**`,
+              `Reviewed-card publication: **${process.env.APPLY || 'not-completed'}**`,
+              `Live homepage verification: **${process.env.VERIFY || 'not-completed'}**`,
+              '',
+              'The customer-facing current-release cards use the reviewed Blue Mango F2 Regular, Blue Mango F2 Feminized, and Blue Bubblegum F1 Regular artwork. Mango Bubbles remains the genetics feature artwork. This workflow runs after every known Home visual producer so education infographics cannot remain in product slots.'
+            ].join('\n')});
