@@ -49,7 +49,7 @@ jobs:
               exit 1
             }
           done
-          grep -Fq "- '.github/workflows/wordpress-home-genetics-art.yml'" .github/workflows/wordpress-home-genetics-art.yml
+          grep -Fq -- "- '.github/workflows/wordpress-home-genetics-art.yml'" .github/workflows/wordpress-home-genetics-art.yml
           grep -Fq 'Blue Mango F2 Regular DTF Genetics strain card' .github/workflows/wordpress-home-genetics-art.yml
           grep -Fq 'Blue Mango F2 Feminized DTF Genetics strain card' .github/workflows/wordpress-home-genetics-art.yml
           grep -Fq 'Blue Bubblegum F1 Regular DTF Genetics strain card' .github/workflows/wordpress-home-genetics-art.yml
