@@ -8,6 +8,11 @@ on:
       - 'scripts/polish-wordpress-shop-storefront-v5.mjs'
       - 'scripts/polish-wordpress-commerce-archive-v4.mjs'
       - 'scripts/flush-hostinger-litespeed-mcp.mjs'
+      - 'scripts/deploy-wordpress-public-audit-fixes.mjs'
+      - 'scripts/install-wordpress-shop-seo-meta.mjs'
+      - 'site/public-route-patch/games/protect-the-plants/index.html'
+      - 'site/public-route-patch/projects/index.html'
+      - 'site/wordpress/mu-plugins/dtf-shop-seo-meta.php'
       - '.github/workflows/wordpress-shop-storefront-v5.yml'
   workflow_run:
     workflows:
@@ -31,7 +36,7 @@ jobs:
   publish-shop-v5:
     if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 35
     environment: production
     env:
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME || secrets.WORDPRESS_USERNAME || secrets.WP_USERNAME }}
@@ -50,7 +55,7 @@ jobs:
         with:
           node-version: 22
 
-      - name: Validate Shop V5 package
+      - name: Validate Shop V5 and current audit-fix package
         shell: bash
         run: |
           set -euo pipefail
@@ -59,10 +64,19 @@ jobs:
           node --check scripts/polish-wordpress-commerce-archive-v4.mjs
           node --check scripts/polish-wordpress-shop-storefront-v5.mjs
           node --check scripts/flush-hostinger-litespeed-mcp.mjs
+          node --check scripts/deploy-wordpress-public-audit-fixes.mjs
+          node --check scripts/install-wordpress-shop-seo-meta.mjs
+          node --check scripts/audit-dtfseeds-live.mjs
+          node --check scripts/audit-dtfseeds-public-suite.mjs
+          node --check scripts/audit-dtfseeds-commerce.mjs
+          php -l site/wordpress/mu-plugins/dtf-shop-seo-meta.php
           grep -Fq 'data-dtf-shop-storefront-v5' scripts/polish-wordpress-shop-storefront-v5.mjs
           grep -Fq '/product/10-regular-f2-blue-mango-seeds/' scripts/polish-wordpress-shop-storefront-v5.mjs
           grep -Fq '/product/10-feminized-f2-blue-mango-x/' scripts/polish-wordpress-shop-storefront-v5.mjs
           grep -Fq '/product/10-reg-f1-blueberry-bubblegum/' scripts/polish-wordpress-shop-storefront-v5.mjs
+          grep -Fq '<h1 id="protect-the-plants-title"' site/public-route-patch/games/protect-the-plants/index.html
+          grep -Fq '>High IQ<' site/public-route-patch/projects/index.html
+          grep -Fq '>High Life<' site/public-route-patch/projects/index.html
 
       - name: Restore V4 portrait release-card styling
         id: v4
@@ -89,6 +103,20 @@ jobs:
           report="$dir/shop-storefront-v5-report.json"
           template_id="$(node -p 'require(process.argv[1]).templateId' "$report")"
           echo "template_id=$template_id" >> "$GITHUB_OUTPUT"
+
+      - name: Publish crawlable Protect the Plants and Projects routes
+        id: audit_routes
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/deploy-wordpress-public-audit-fixes.mjs | tee "$RUNNER_TEMP/public-audit-route-fixes.json"
+
+      - name: Install source-controlled Shop SEO head metadata
+        id: shop_seo
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/install-wordpress-shop-seo-meta.mjs | tee "$RUNNER_TEMP/shop-seo-meta.json"
 
       - name: Purge Hostinger LiteSpeed cache
         id: cache
@@ -119,6 +147,8 @@ jobs:
                 grep -Fqi 'data-dtf-shop-storefront-v5="true"' "$output" && \
                 grep -Fqi 'Shop the release. Read the breeding story.' "$output" && \
                 grep -Fqi 'dtf-commerce-archive-v4' "$output" && \
+                grep -Fqi 'name="description"' "$output" && \
+                grep -Fqi 'Shop current DTF Genetics seed releases with reviewed strain-card artwork' "$output" && \
                 grep -Fqi '/product/10-regular-f2-blue-mango-seeds/' "$output" && \
                 grep -Fqi '/product/10-feminized-f2-blue-mango-x/' "$output" && \
                 grep -Fqi '/product/10-reg-f1-blueberry-bubblegum/' "$output" && \
@@ -132,7 +162,7 @@ jobs:
             done
             [[ "$ok" -eq 1 ]] || {
               echo "Shop V5 verification failed for $url" >&2
-              grep -oiE 'dtf-shop-storefront-v5|Shop the release[^<]{0,120}|Blue_Mango[^" ]*|Blue_Bubblegum[^" ]*' "$output" | head -60 >&2 || true
+              grep -oiE 'dtf-shop-storefront-v5|Shop the release[^<]{0,120}|Shop current DTF Genetics[^<]{0,180}|Blue_Mango[^" ]*|Blue_Bubblegum[^" ]*' "$output" | head -80 >&2 || true
               exit 1
             }
           }
@@ -153,9 +183,18 @@ jobs:
             grep -Fqi "$image" "$body" || { echo "Reviewed product image missing on $route" >&2; exit 1; }
           done
 
-          echo 'Shop V5 storefront and all three reviewed WooCommerce release images verified on public routes.'
+          echo 'Shop V5 storefront, Shop SEO metadata and all three reviewed WooCommerce release images verified on public routes.'
 
-      - name: Upload Shop V5 rollback evidence
+      - name: Run full current production audits
+        id: production_audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/audit-dtfseeds-live.mjs
+          node scripts/audit-dtfseeds-public-suite.mjs
+          node scripts/audit-dtfseeds-commerce.mjs
+
+      - name: Upload Shop V5 and production-audit rollback evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -165,6 +204,12 @@ jobs:
             /tmp/dtf-shop-v5
             ${{ runner.temp }}/shop-v5-*.html
             ${{ runner.temp }}/product-*.html
+            ${{ runner.temp }}/public-audit-route-fixes.json
+            ${{ runner.temp }}/shop-seo-meta.json
+            live-site-audit.json
+            live-site-audit.md
+            commerce-audit.json
+            commerce-audit.md
           if-no-files-found: warn
           retention-days: 30
 
@@ -175,8 +220,11 @@ jobs:
           STATUS: ${{ job.status }}
           V4: ${{ steps.v4.outcome }}
           V5: ${{ steps.v5.outcome }}
+          AUDIT_ROUTES: ${{ steps.audit_routes.outcome }}
+          SHOP_SEO: ${{ steps.shop_seo.outcome }}
           CACHE: ${{ steps.cache.outcome }}
           VERIFY: ${{ steps.verify.outcome }}
+          PRODUCTION_AUDIT: ${{ steps.production_audit.outcome }}
           TEMPLATE_ID: ${{ steps.v5.outputs.template_id }}
         with:
           script: |
@@ -186,9 +234,12 @@ jobs:
               `Result: **${process.env.STATUS}**`,
               `Portrait release-card styling: **${process.env.V4 || 'not-run'}**`,
               `Server-rendered storefront write: **${process.env.V5 || 'not-run'}**`,
+              `Protect the Plants + Projects publication: **${process.env.AUDIT_ROUTES || 'not-run'}**`,
+              `Shop SEO head metadata: **${process.env.SHOP_SEO || 'not-run'}**`,
               `LiteSpeed cache purge: **${process.env.CACHE || 'not-run'}**`,
               `Origin + public verification: **${process.env.VERIFY || 'not-run'}**`,
+              `Core + apps + commerce production audits: **${process.env.PRODUCTION_AUDIT || 'not-run'}**`,
               `Archive template: **${process.env.TEMPLATE_ID || 'not-reported'}**`,
               '',
-              'Shop now exposes real server-rendered DTF Genetics release context above the WooCommerce product grid while preserving price, stock, checkout behavior, the product loop, and the three reviewed portrait strain-card images.'
+              'Shop remains the verified genetics storefront. This run also applies the reviewed crawlability/Projects fixes and source-controlled Shop head metadata through rollback-safe WordPress transactions, then requires the full live production audit to pass.'
             ].join('\n')});
