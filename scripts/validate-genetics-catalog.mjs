@@ -19,7 +19,7 @@ if (!Array.isArray(catalog.lines) || catalog.lines.length === 0) fail('lines mus
 const ids = new Set();
 const names = new Set();
 const byId = new Map();
-const allowedStatuses = new Set(['parent-line', 'active-breeding-line', 'flagship-breeding-line', 'released-line', 'archived-line']);
+const allowedStatuses = new Set(['parent-line', 'active-breeding-line', 'flagship-breeding-line', 'collaboration-breeding-line', 'released-line', 'archived-line']);
 const allowedRoles = new Set(['seed-parent', 'pollen-parent', 'parent-unspecified']);
 
 for (const line of catalog.lines) {
