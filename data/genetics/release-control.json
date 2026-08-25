@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "brand": "DTF Genetics",
-  "updated": "2026-08-18",
+  "updated": "2026-08-25",
   "privacyBoundary": "This public registry contains only release metadata safe for public source control. Exact inventory counts, pricing, private commercial decisions, customer data, seed-lot custody details, and non-public testing records belong in private control systems.",
   "lineControls": [
     {
@@ -15,38 +15,40 @@
         "drive:1aIPA7fQJr_xzwnfDPfB1nZWnITMVahPYQzd8eS78g6g",
         "repo:data/genetics/sources/blue-mango-line-sheet.md"
       ],
-      "lastVerified": "2026-08-18",
+      "lastVerified": "2026-08-25",
       "publicListingAllowed": false,
-      "notes": "Drive-backed line identity, parentage, F1/F2/F3 forms, 8–10 week planning window, and packaging direction are migrated. Release-specific generation, seed type, packaging version, availability, and inventory are still intentionally fail-closed."
+      "notes": "Stable lineage, documented F1/F2/F3/BX1 forms, planning range, and packaging direction are recorded. Release-specific availability remains intentionally fail-closed; current commerce is represented only by separately verified WooCommerce product records."
     },
     {
       "lineId": "mango-bubbles",
       "publicReleaseState": "metadata-pending",
       "publicAvailability": "not-asserted",
-      "generation": null,
-      "seedType": "unknown",
+      "generation": "F1",
+      "seedType": "regular",
       "packagingVersion": null,
       "evidenceRefs": [
         "drive:10C9hE4u45V8sw16gvDu2PgwfgICvZAwm7UcYWDRfwnU",
-        "repo:data/genetics/sources/mango-bubbles-line-sheet.md"
+        "repo:data/genetics/sources/mango-bubbles-line-sheet.md",
+        "drive:1Qv-dNjq1Ae6gBthoxGzeZyJkPjkIKQmB"
       ],
-      "lastVerified": "2026-08-18",
+      "lastVerified": "2026-08-25",
       "publicListingAllowed": false,
-      "notes": "Drive-backed naming approval, parentage, positioning, and suggested short copy are migrated. Release-specific generation, seed type, packaging version, and availability remain unverified."
+      "notes": "Stable lineage and the reviewed F1 regular card are documented. The card identifies the release-specific cross as Blue Mango F2 × Blue Bubblegum F1. Current retail availability is not asserted."
     },
     {
       "lineId": "blue-bubblegum",
       "publicReleaseState": "metadata-pending",
       "publicAvailability": "not-asserted",
-      "generation": null,
-      "seedType": "unknown",
+      "generation": "F1",
+      "seedType": "regular",
       "packagingVersion": null,
       "evidenceRefs": [
-        "drive:10C9hE4u45V8sw16gvDu2PgwfgICvZAwm7UcYWDRfwnU"
+        "drive:10C9hE4u45V8sw16gvDu2PgwfgICvZAwm7UcYWDRfwnU",
+        "drive:1b2jjdhtHmGFNQ6TEB-lXsrQpbA57FpoW"
       ],
-      "lastVerified": "2026-08-18",
+      "lastVerified": "2026-08-25",
       "publicListingAllowed": false,
-      "notes": "Mango Bubbles source material confirms Blue Bubblegum as a parent name, but no standalone Drive line sheet was found. A Drive navigation record separately lists Blueberry Bubblegum, so naming reconciliation remains open and no release claim is permitted."
+      "notes": "Stable lineage and the reviewed F1 regular strain card are documented. This line-level registry does not claim inventory; the separate verified WooCommerce product registry controls the current store route."
     },
     {
       "lineId": "blueberry-butcher",
@@ -58,9 +60,37 @@
       "evidenceRefs": [
         "drive:1aIPA7fQJr_xzwnfDPfB1nZWnITMVahPYQzd8eS78g6g"
       ],
-      "lastVerified": "2026-08-18",
+      "lastVerified": "2026-08-25",
       "publicListingAllowed": false,
-      "notes": "Blue Mango source material confirms Blueberry Butcher as a parent name. The standalone Blueberry Butcher parentage record remains catalog-controlled pending a dedicated Drive source. Parent-line status does not imply current retail availability."
+      "notes": "Blue Mango source material confirms Blueberry Butcher as a parent name. Parent-line status does not imply current retail availability."
+    },
+    {
+      "lineId": "zestberry",
+      "publicReleaseState": "metadata-pending",
+      "publicAvailability": "not-asserted",
+      "generation": "F1",
+      "seedType": "regular",
+      "packagingVersion": null,
+      "evidenceRefs": [
+        "drive:1TRAM4o_LJzD9tt-8AKKuuVTs-WIfMYe2"
+      ],
+      "lastVerified": "2026-08-25",
+      "publicListingAllowed": false,
+      "notes": "Reviewed DTF strain card supports lineage Blue Mango × Cali Orange, F1 regular identity, and the printed 8–10 week planning range. No retail availability is asserted."
+    },
+    {
+      "lineId": "rainbow-bubblegum",
+      "publicReleaseState": "metadata-pending",
+      "publicAvailability": "not-asserted",
+      "generation": "F1",
+      "seedType": "regular",
+      "packagingVersion": null,
+      "evidenceRefs": [
+        "drive:1lLB515y8XeJrLCnC4e9yViiH6gq6NqBg"
+      ],
+      "lastVerified": "2026-08-25",
+      "publicListingAllowed": false,
+      "notes": "Reviewed AMFIBEON + DTF Genetics collaboration card supports lineage Blue Bubblegum × Rainbow Belts F1, F1 regular identity, and the printed 8–10 week planning range. No retail availability is asserted."
     }
   ]
 }
