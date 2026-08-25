@@ -22,7 +22,6 @@ const errors=[];
 const warnings=[];
 
 const fail=(msg)=>errors.push(msg);
-const warn=(msg)=>warnings.push(msg);
 const norm=(value)=>String(value??'').trim().toLowerCase();
 
 for(const [label,obj] of [['stable catalog',stable],['release control',controls],['public library',library],['commerce registry',products]]){
@@ -61,6 +60,7 @@ const libraryById=new Map();
 const libraryByName=new Map();
 const cardSlugs=new Set();
 const storePaths=new Set();
+const allowedNullLineageStatuses=new Set(['awaiting-controlled-record','intentionally-unknown-on-reviewed-card']);
 for(const line of library.lines||[]){
   if(!line.id||!line.name||!line.slug||!line.summary) fail(`public library: incomplete line ${line.id||line.name||'(unknown)'}`);
   if(libraryById.has(line.id)) fail(`public library: duplicate id ${line.id}`);
@@ -69,7 +69,8 @@ for(const line of library.lines||[]){
   libraryByName.set(line.name,line);
 
   if(line.lineage==null){
-    if(line.lineageStatus!=='awaiting-controlled-record') fail(`${line.id}: null lineage must stay awaiting-controlled-record`);
+    if(!allowedNullLineageStatuses.has(line.lineageStatus)) fail(`${line.id}: null lineage must be pending a controlled record or explicitly unknown on the reviewed card`);
+    if(line.lineageStatus==='intentionally-unknown-on-reviewed-card' && !norm(line.summary).includes('unknown')) fail(`${line.id}: intentionally unknown lineage must be stated clearly in public summary`);
   } else {
     const stableLine=stableById.get(line.id);
     if(stableLine && stableLine.lineage!==line.lineage) fail(`${line.id}: public lineage '${line.lineage}' drifts from stable catalog '${stableLine.lineage}'`);
