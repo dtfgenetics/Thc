@@ -66,7 +66,7 @@ jobs:
           grep -Fq "layout === 'home-v3'" "$file"
           grep -Fq 'dtf-hero-media' "$file"
           grep -Fq 'dtf-home-genetics-feature' "$file"
-          grep -Fq 'data-dtf-home-genetics-v2=\"feature\"' "$file"
+          grep -Fq 'data-dtf-home-genetics-v2="feature"' "$file"
           grep -Fq '/seeds/mango-bubbles/' "$file"
           grep -Fq 'all three verified current-release routes' "$file"
           grep -Fq 'supported reviewed-genetics layout' "$file"
@@ -77,8 +77,8 @@ jobs:
         run: |
           set -euo pipefail
           source=scripts/rebuild-wordpress-visual-site.mjs
-          grep -Fq '<div class=\"dtf-page\">' "$source"
-          grep -Fq 'class=\"dtf-hero-media\"' "$source"
+          grep -Fq '<div class="dtf-page">' "$source"
+          grep -Fq 'class="dtf-hero-media"' "$source"
           grep -Fq 'dtf-image-card' "$source"
           grep -Fq 'Shop the pack. Read the breeding context.' "$source"
           grep -Fq '/product/10-regular-f2-blue-mango-seeds/' "$source"
