@@ -34,6 +34,12 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Parse production workflow YAML
+        shell: bash
+        run: |
+          set -euo pipefail
+          ruby -e "require 'psych'; Psych.parse_file(ARGV[0])" .github/workflows/wordpress-game-route-directory-swap.yml
+
       - name: Validate game sources and deployment scripts
         shell: bash
         run: |
