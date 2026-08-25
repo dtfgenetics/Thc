@@ -1,13 +1,15 @@
 {
-  "schemaVersion": 1,
-  "updatedAt": "2026-08-23",
+  "schemaVersion": 2,
+  "updatedAt": "2026-08-25",
   "curriculumId": "plant-biology-v6",
   "policy": {
     "canonicalAssetRoot": "site/wordpress/assets/infographics",
     "useExactCanonicalFilesOnly": true,
     "preferWordPressMedia": true,
     "allowGitHubRawFallback": true,
-    "neverSubstituteMisleadingRelatedVisuals": true
+    "neverSubstituteMisleadingRelatedVisuals": true,
+    "rejectedVisualStyle": "old-thc-course-card-infographic",
+    "excludedFiles": ["THC-C008_Infographic_Flower_Anatomy_Reproduction.jpg", "THC-C009_Infographic_Trichomes_Secretory_Biology.jpg"]
   },
   "chapters": {
     "identity-morphology": [
@@ -20,13 +22,11 @@
     ],
     "roots": [
       {"file":"THC-C005_Infographic_Root_Anatomy_and_Forensics.jpg","title":"Root Anatomy & Forensics","alt":"Cannabis root anatomy and diagnostic observation infographic"},
-      {"file":"THC-ENC-041_Root_Tip_Development_and_Functional_Zones.jpg","title":"Root Tip Functional Zones","alt":"Root cap, division, elongation and differentiation zones"},
-      {"file":"THC-ENC-042_Lateral_Roots_vs_Root_Hairs.jpg","title":"Lateral Roots vs Root Hairs","alt":"Comparison of lateral roots and absorptive root hairs"}
+      {"file":"THC-ENC-041_Root_Tip_Development_and_Functional_Zones.jpg","title":"Root Tip Functional Zones","alt":"Root cap, division, elongation and differentiation zones"}
     ],
     "stems-transport": [
       {"file":"THC-C006_Infographic_Stem_Transport_and_Training_Risk.jpg","title":"Stem Transport & Training Risk","alt":"Cannabis stem anatomy, vascular transport and injury context"},
-      {"file":"V04-SUP-002_Xylem_Phloem_and_Long_Distance_Transport.jpg","title":"Xylem, Phloem & Long-Distance Transport","alt":"Xylem and phloem long-distance transport reference"},
-      {"file":"THC-ENC-071_Source_Leaves_and_Sink_Tissues.jpg","title":"Source Leaves & Sink Tissues","alt":"Source-sink relationships and carbohydrate allocation in plants"}
+      {"file":"V04-SUP-002_Xylem_Phloem_and_Long_Distance_Transport.jpg","title":"Xylem, Phloem & Long-Distance Transport","alt":"Xylem and phloem long-distance transport reference"}
     ],
     "leaves-stomata": [
       {"file":"THC-C007_Infographic_Leaf_Anatomy_Gas_Exchange.jpg","title":"Leaf Anatomy & Gas Exchange","alt":"Cannabis leaf cross-section and gas-exchange anatomy"},
@@ -42,25 +42,10 @@
       {"file":"V04-SUP-005_Tropisms_and_Directional_Growth_Responses.jpg","title":"Tropisms & Directional Growth","alt":"Phototropism, gravitropism and directional plant growth responses"},
       {"file":"V04-SUP-008_Stress_Physiology_and_Acclimation.jpg","title":"Stress Physiology & Acclimation","alt":"Plant stress response, acclimation and recovery concepts"}
     ],
-    "reproduction-trichomes-senescence": [
-      {"file":"THC-C008_Infographic_Flower_Anatomy_Reproduction.jpg","title":"Flower Anatomy & Reproduction","alt":"Cannabis male and female flower anatomy and reproductive structures"},
-      {"file":"THC-C009_Infographic_Trichomes_Secretory_Biology.jpg","title":"Trichomes & Secretory Biology","alt":"Cannabis glandular trichome anatomy and secretory biology"}
-    ]
+    "reproduction-trichomes-senescence": []
   },
   "gaps": [
-    {
-      "id":"pollination-fertilization-sequence",
-      "chapter":"reproduction-trichomes-senescence",
-      "status":"needed",
-      "title":"Pollination → Pollen-Tube Growth → Fertilization → Seed Development",
-      "reason":"Current canonical flower/reproductive visuals cover anatomy but do not clearly provide the full process sequence. Do not substitute a static flower anatomy plate for the process diagram."
-    },
-    {
-      "id":"senescence-remobilization",
-      "chapter":"reproduction-trichomes-senescence",
-      "status":"needed",
-      "title":"Senescence → Chlorophyll Breakdown → Nutrient Remobilization → Abscission",
-      "reason":"Current hormone and stress visuals provide context but no canonical visual directly teaches regulated senescence and nutrient remobilization."
-    }
+    {"id":"flower-anatomy-redesign","chapter":"reproduction-trichomes-senescence","status":"needed","title":"Flower Anatomy & Reproductive Structures - redesigned Atlas visual","reason":"Old THC-C008 course-card infographic style is rejected sitewide and removed."},
+    {"id":"trichome-secretory-biology-redesign","chapter":"reproduction-trichomes-senescence","status":"needed","title":"Trichomes & Secretory Biology - redesigned Atlas visual","reason":"Old THC-C009 course-card infographic style is rejected sitewide and removed."}
   ]
 }
