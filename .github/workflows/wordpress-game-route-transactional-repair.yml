@@ -1,0 +1,169 @@
+name: Repair DTF Game Routes Through WordPress
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - scripts/repair-game-routes-via-wordpress.mjs
+      - .github/workflows/wordpress-game-route-transactional-repair.yml
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-wordpress-game-route-transaction
+  cancel-in-progress: false
+
+env:
+  WP_SITE_URL: https://dtfseeds.com
+  NODE_OPTIONS: --dns-result-order=ipv4first
+
+jobs:
+  validate:
+    name: Validate reviewed game-route transaction
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate exact source package
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/repair-game-routes-via-wordpress.mjs
+          node --check scripts/audit-game-route-integrity.mjs
+          node --check scripts/validate-public-navigation.mjs
+          node games/high-iq/scripts/validate-data.mjs
+          node games/grower-conversations/scripts/validate-prompt-bank.mjs
+          test -s site/public-route-patch/games/index.html
+          test -s site/public-route-patch/games/dtf-route.css
+          test -s site/public-route-patch/games/high-iq/index.html
+          test -s site/public-route-patch/games/high-iq/app.js
+          test -s site/public-route-patch/games/high-iq/high-iq.css
+          test -s site/public-route-patch/games/high-iq/data/manifest.json
+          test -s site/public-route-patch/games/grower-conversations/index.html
+          test -s site/public-route-patch/games/grower-conversations/app.js
+          test -s site/public-route-patch/games/grower-conversations/grower-conversations.css
+          test -s site/public-route-patch/games/grower-conversations/data/prompt-bank.json
+          grep -Fq 'Pick what is playable. See what is coming next.' site/public-route-patch/games/index.html
+          ! grep -Fqi 'server-engine alpha' site/public-route-patch/games/index.html
+          ! grep -Fqi 'implementation gates' site/public-route-patch/games/index.html
+
+  repair:
+    name: Back up, publish, audit, or roll back
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    environment: production
+    env:
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+    steps:
+      - name: Checkout trusted main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Require proven WordPress Application Password credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${WP_API_USERNAME:-}"
+          test -n "${WP_API_PASSWORD:-}"
+
+      - name: Execute rollback-safe game-route transaction
+        id: repair
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/repair-game-routes-via-wordpress.mjs | tee "$RUNNER_TEMP/game-route-transaction.log"
+
+      - name: Independent visitor verification after transaction finalization
+        id: verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          evidence="$RUNNER_TEMP/game-route-evidence"
+          mkdir -p "$evidence"
+
+          verify_page() {
+            local route="$1" required="$2" forbidden="$3" out="$4" ok=0
+            for attempt in 1 2 3 4 5 6; do
+              curl -4 -fsSL --retry 2 --retry-delay 2 \
+                -H 'Cache-Control: no-cache, no-store, max-age=0' \
+                -H 'Pragma: no-cache' \
+                "$WP_SITE_URL$route?dtf_game_postverify=${GITHUB_RUN_ID}-${attempt}" -o "$out"
+              if grep -Fqi "$required" "$out" && ! grep -Fqi "$forbidden" "$out"; then ok=1; break; fi
+              sleep 5
+            done
+            [[ "$ok" -eq 1 ]] || { echo "Post-transaction verification failed for $route" >&2; head -c 2500 "$out" >&2 || true; exit 1; }
+          }
+
+          verify_page '/games/' 'Pick what is playable. See what is coming next.' 'server-engine alpha' "$evidence/games.html"
+          verify_page '/games/high-iq/' './high-iq.css' '/assets/dtf-gateway-v2.css' "$evidence/high-iq.html"
+          verify_page '/games/grower-conversations/' './grower-conversations.css' '/assets/dtf-gateway-v2.css' "$evidence/grower-conversations.html"
+
+          grep -Fqi 'href="/seeds/"' "$evidence/games.html"
+          grep -Fqi 'href="/shop/"' "$evidence/games.html"
+          grep -Fqi './app.js' "$evidence/high-iq.html"
+          grep -Fqi './app.js' "$evidence/grower-conversations.html"
+
+          for asset in \
+            '/games/dtf-route.css' \
+            '/games/high-iq/high-iq.css' \
+            '/games/high-iq/app.js' \
+            '/games/high-iq/data/manifest.json' \
+            '/games/grower-conversations/grower-conversations.css' \
+            '/games/grower-conversations/app.js' \
+            '/games/grower-conversations/data/prompt-bank.json'; do
+            curl -4 -fsSL --retry 3 --retry-delay 2 "$WP_SITE_URL$asset?dtf_game_postverify=${GITHUB_RUN_ID}" -o /dev/null
+          done
+
+          node scripts/validate-public-navigation.mjs | tee "$evidence/navigation-audit.log"
+          node scripts/audit-game-route-integrity.mjs | tee "$evidence/game-route-audit.log"
+          test -s game-route-audit.json && cp game-route-audit.json "$evidence/game-route-audit.json"
+
+      - name: Upload sanitized production evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: wordpress-game-route-transaction-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/game-route-transaction.log
+            ${{ runner.temp }}/game-route-evidence
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report game-route transaction to issue 46
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          JOB_STATUS: ${{ job.status }}
+          REPAIR_OUTCOME: ${{ steps.repair.outcome }}
+          VERIFY_OUTCOME: ${{ steps.verify.outcome }}
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 46,
+              body: [
+                '## WordPress-side transactional game-route repair',
+                '',
+                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                `Commit: \`${context.sha}\``,
+                `Result: **${process.env.JOB_STATUS}**`,
+                `Transactional publish + pre-finalize full audit: **${process.env.REPAIR_OUTCOME || 'not-run'}**`,
+                `Independent post-finalize verification: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
+                '',
+                'Scope is strictly limited to `/games/index.html`, `/games/dtf-route.css`, `/games/high-iq/**`, and `/games/grower-conversations/**` under WordPress `ABSPATH`. The transaction SHA-verifies every payload, stores per-file backups, automatically rolls back if live verification or the full game-route audit fails, purges LiteSpeed through the authenticated Hostinger WordPress MCP, and removes its temporary repair tooling after completion. No SSH credentials are used.'
+              ].join('\n')
+            });

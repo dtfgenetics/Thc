@@ -1,0 +1,89 @@
+name: Validate WordPress Game Route Repair
+
+on:
+  pull_request:
+    paths:
+      - scripts/repair-game-routes-via-wordpress.mjs
+      - .github/workflows/wordpress-game-route-transactional-repair.yml
+      - .github/workflows/game-route-wordpress-repair-ci.yml
+      - site/public-route-patch/games/index.html
+      - site/public-route-patch/games/dtf-route.css
+      - site/public-route-patch/games/high-iq/**
+      - site/public-route-patch/games/grower-conversations/**
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate publisher syntax and source package
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/repair-game-routes-via-wordpress.mjs
+          node --check scripts/audit-game-route-integrity.mjs
+          node --check scripts/validate-public-navigation.mjs
+          node games/high-iq/scripts/validate-data.mjs
+          node games/grower-conversations/scripts/validate-prompt-bank.mjs
+
+          test -s site/public-route-patch/games/index.html
+          test -s site/public-route-patch/games/dtf-route.css
+          test -s site/public-route-patch/games/high-iq/index.html
+          test -s site/public-route-patch/games/high-iq/app.js
+          test -s site/public-route-patch/games/high-iq/high-iq.css
+          test -s site/public-route-patch/games/high-iq/data/manifest.json
+          test -s site/public-route-patch/games/grower-conversations/index.html
+          test -s site/public-route-patch/games/grower-conversations/app.js
+          test -s site/public-route-patch/games/grower-conversations/grower-conversations.css
+          test -s site/public-route-patch/games/grower-conversations/data/prompt-bank.json
+
+      - name: Enforce transaction and filesystem safety boundaries
+        shell: bash
+        run: |
+          set -euo pipefail
+          file=scripts/repair-game-routes-via-wordpress.mjs
+          grep -Fq "games/index.html" "$file"
+          grep -Fq "games/dtf-route.css" "$file"
+          grep -Fq "games/high-iq/" "$file"
+          grep -Fq "games/grower-conversations/" "$file"
+          grep -Fq "X-DTF-Repair-Token" "$file"
+          grep -Fq "sha256" "$file"
+          grep -Fq "rollback" "$file"
+          grep -Fq "finalize" "$file"
+          grep -Fq "audit-game-route-integrity.mjs" "$file"
+          grep -Fq "validate-public-navigation.mjs" "$file"
+          grep -Fq "Code Snippets" "$file"
+          grep -Fq "ABSPATH" "$file"
+
+          ! grep -Eiq 'child_process.*(ssh|rsync|scp)|HOSTINGER_SSH_|SSH_PRIVATE_KEY|SFTP_' "$file"
+          ! grep -Fq "wp-content/uploads" "$file"
+          ! grep -Fq "wp-config.php" "$file"
+
+          grep -Fq 'Pick what is playable. See what is coming next.' site/public-route-patch/games/index.html
+          ! grep -Fqi 'server-engine alpha' site/public-route-patch/games/index.html
+          ! grep -Fqi 'implementation gates' site/public-route-patch/games/index.html
+          grep -Fq 'href="/games/dtf-route.css"' site/public-route-patch/games/high-iq/index.html
+          grep -Fq 'href="./high-iq.css"' site/public-route-patch/games/high-iq/index.html
+          grep -Fq 'src="./app.js"' site/public-route-patch/games/high-iq/index.html
+          grep -Fq 'href="./grower-conversations.css"' site/public-route-patch/games/grower-conversations/index.html
+          grep -Fq 'src="./app.js"' site/public-route-patch/games/grower-conversations/index.html
+
+      - name: Ensure production workflow uses WordPress-only credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          file=.github/workflows/wordpress-game-route-transactional-repair.yml
+          test -s "$file"
+          grep -Fq 'environment: production' "$file"
+          grep -Fq 'WP_API_USERNAME' "$file"
+          grep -Fq 'WP_API_PASSWORD' "$file"
+          ! grep -Eiq 'HOSTINGER_SSH_|SSH_PRIVATE_KEY|SFTP_|rsync|scp ' "$file"
