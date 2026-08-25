@@ -1,0 +1,138 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-08-25",
+  "system": "THC Living Plant Atlas",
+  "module": "Leaf Module",
+  "qualityStandard": {
+    "style": "academic studio quality with clean botanical reference visuals",
+    "palette": "cream, green, neutral, botanical natural tones",
+    "rules": [
+      "No yellow tint",
+      "No blurry or muddy imagery",
+      "Accurate cannabis morphology",
+      "Readable labels at normal website size",
+      "Works as website art and print-friendly reference",
+      "One clear teaching purpose per visual",
+      "Alt text required before publishing"
+    ]
+  },
+  "assets": [
+    {
+      "id": "leaf-healthy-reference-plate",
+      "title": "Healthy Fan Leaf Reference Plate",
+      "status": "needed",
+      "priority": 1,
+      "type": "reference visual",
+      "targetPages": ["/atlas/leaf-module/leaf-anatomy/", "/atlas/downloads/leaf-diagnostic-field-card/"],
+      "placementPath": "/assets/images/atlas/leaf-module/healthy-fan-leaf-reference-plate.png",
+      "brief": "High-detail healthy cannabis fan leaf on clean cream background, top and underside reference, visible petiole, leaflets, serrations, midrib and secondary veins, natural green color, no yellow tint, studio lighting, educational label space.",
+      "altTextDraft": "Healthy cannabis fan leaf reference showing leaflets, veins, petiole, serrations, and upper and lower surface comparison."
+    },
+    {
+      "id": "leaf-anatomy-labeled-diagram",
+      "title": "Leaf Anatomy Labeled Diagram",
+      "status": "needed",
+      "priority": 2,
+      "type": "teaching diagram",
+      "targetPages": ["/atlas/leaf-module/leaf-anatomy/"],
+      "placementPath": "/assets/images/atlas/leaf-module/leaf-anatomy-labeled-diagram.png",
+      "brief": "Clean labeled cannabis fan leaf diagram with petiole, central leaflet, lateral leaflets, blade, margin, serration, midrib, secondary veins, upper surface, lower surface, and leaflet tip. Cream background, dark green labels, high readability.",
+      "altTextDraft": "Labeled cannabis fan leaf anatomy diagram identifying petiole, leaflets, serrations, midrib, veins, and leaf surfaces."
+    },
+    {
+      "id": "stomata-open-closed-diagram",
+      "title": "Stomata Open vs Closed Diagram",
+      "status": "needed",
+      "priority": 3,
+      "type": "microscopic teaching diagram",
+      "targetPages": ["/atlas/leaf-module/stomata/"],
+      "placementPath": "/assets/images/atlas/leaf-module/stomata-open-closed-diagram.png",
+      "brief": "Two-panel educational diagram showing open and closed stomata with guard cells, stomatal pore, CO2 entry, water vapor exit, and connection to VPD. Scientific but simple, clean labels, no decorative clutter.",
+      "altTextDraft": "Open and closed stomata diagram showing guard cells, gas exchange, water vapor loss, and VPD connection."
+    },
+    {
+      "id": "transpiration-root-to-leaf-flow",
+      "title": "Transpiration Root-to-Leaf Flow",
+      "status": "needed",
+      "priority": 4,
+      "type": "process diagram",
+      "targetPages": ["/atlas/leaf-module/transpiration/", "/atlas/leaf-module/stomata/"],
+      "placementPath": "/assets/images/atlas/leaf-module/transpiration-root-to-leaf-flow.png",
+      "brief": "Root-to-leaf process diagram showing water uptake at roots, movement through xylem, leaf vein distribution, stomatal water vapor exit, and environmental demand. Clean arrows, accurate plant structure, print-friendly labels.",
+      "altTextDraft": "Transpiration flow diagram showing water uptake from roots, movement through xylem, and vapor release through leaf stomata."
+    },
+    {
+      "id": "chlorosis-pattern-comparison-chart",
+      "title": "Chlorosis Pattern Comparison Chart",
+      "status": "needed",
+      "priority": 5,
+      "type": "diagnostic comparison chart",
+      "targetPages": ["/atlas/leaf-module/chlorosis/", "/atlas/downloads/chlorosis-pattern-checklist/"],
+      "placementPath": "/assets/images/atlas/leaf-module/chlorosis-pattern-comparison-chart.png",
+      "brief": "Five-panel cannabis leaf comparison showing uniform chlorosis, interveinal chlorosis, marginal yellowing, old-growth-first yellowing, and new-growth-first yellowing. Same scale, consistent lighting, clear labels, no diagnosis claims on image.",
+      "altTextDraft": "Comparison chart of cannabis leaf chlorosis patterns including uniform, interveinal, marginal, old-growth-first, and new-growth-first yellowing."
+    },
+    {
+      "id": "necrosis-pattern-comparison-chart",
+      "title": "Necrosis Pattern Comparison Chart",
+      "status": "needed",
+      "priority": 6,
+      "type": "diagnostic comparison chart",
+      "targetPages": ["/atlas/leaf-module/necrosis/", "/atlas/downloads/necrosis-evaluation-card/"],
+      "placementPath": "/assets/images/atlas/leaf-module/necrosis-pattern-comparison-chart.png",
+      "brief": "Five-panel cannabis leaf comparison showing tip burn, marginal necrosis, rust spots, irregular lesions, and necrosis following chlorosis. Clean neutral background, high-detail tissue edges, clear labels.",
+      "altTextDraft": "Comparison chart of cannabis leaf necrosis patterns including tip burn, marginal necrosis, rust spots, irregular lesions, and dead tissue following chlorosis."
+    },
+    {
+      "id": "leaf-curl-pattern-chart",
+      "title": "Leaf Curl Pattern Chart",
+      "status": "needed",
+      "priority": 7,
+      "type": "diagnostic posture chart",
+      "targetPages": ["/atlas/leaf-module/leaf-curl/", "/atlas/downloads/leaf-curl-pattern-guide/"],
+      "placementPath": "/assets/images/atlas/leaf-module/leaf-curl-pattern-chart.png",
+      "brief": "Cannabis leaf posture comparison showing upward tacoing, downward clawing, wilted droop, twisted new growth, and cupping. Include simple direction arrows, clean labels, and consistent scale.",
+      "altTextDraft": "Cannabis leaf curl comparison chart showing tacoing, clawing, drooping, twisting, and cupping patterns."
+    },
+    {
+      "id": "pest-damage-comparison-chart",
+      "title": "Leaf Pest Damage Comparison Chart",
+      "status": "needed",
+      "priority": 8,
+      "type": "IPM reference chart",
+      "targetPages": ["/atlas/leaf-module/pest-damage/", "/atlas/downloads/leaf-diagnostic-field-card/"],
+      "placementPath": "/assets/images/atlas/leaf-module/pest-damage-comparison-chart.png",
+      "brief": "Macro reference grid showing common visible pest evidence on cannabis leaves: stippling, webbing, eggs under leaf, frass, chewing marks, silvering, trails, and distorted new tips. Avoid pesticide advice; focus on inspection evidence.",
+      "altTextDraft": "Cannabis leaf pest damage comparison chart showing stippling, webbing, eggs, frass, chewing, silvering, trails, and distorted tips."
+    },
+    {
+      "id": "nutrient-symptom-triage-visual",
+      "title": "Nutrient Symptom Triage Visual",
+      "status": "needed",
+      "priority": 9,
+      "type": "diagnostic decision visual",
+      "targetPages": ["/atlas/leaf-module/nutrient-symptoms/"],
+      "placementPath": "/assets/images/atlas/leaf-module/nutrient-symptom-triage-visual.png",
+      "brief": "Decision-map style visual showing how to separate deficiency-like symptoms from pH issue, EC issue, root stress, watering issue, environmental stress, and pest damage. Use observation-first language, not absolute diagnosis claims.",
+      "altTextDraft": "Nutrient symptom triage map comparing deficiency-like leaf symptoms with pH, EC, root stress, watering, environment, and pest checks."
+    },
+    {
+      "id": "environmental-canopy-stress-map",
+      "title": "Environmental Canopy Stress Map",
+      "status": "needed",
+      "priority": 10,
+      "type": "canopy diagnostic map",
+      "targetPages": ["/atlas/leaf-module/environmental-stress/", "/atlas/downloads/environmental-leaf-stress-checklist/"],
+      "placementPath": "/assets/images/atlas/leaf-module/environmental-canopy-stress-map.png",
+      "brief": "Whole-plant canopy map showing likely stress zones: top canopy light/heat stress, dense interior humidity risk, lower-canopy shading, airflow dead zones, and root-zone demand connection. Clean arrows and labels.",
+      "altTextDraft": "Canopy stress map showing light and heat stress at the top, humidity risk in dense canopy, lower-canopy shading, airflow dead zones, and root-zone demand."
+    }
+  ],
+  "nextActions": [
+    "Create the first five visuals as approved Atlas assets",
+    "Place approved assets into the visual slots on related pages",
+    "Add alt text from this map when images are published",
+    "Update status from needed to approved once QA passes",
+    "Generate print-ready PDF exports for the five download pages"
+  ]
+}
