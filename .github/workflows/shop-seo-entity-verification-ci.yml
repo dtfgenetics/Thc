@@ -1,0 +1,41 @@
+name: Shop SEO Entity Verification CI
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/install-wordpress-shop-seo-meta.mjs'
+      - 'scripts/install-wordpress-shop-seo-meta-core.mjs'
+      - 'scripts/normalize-shop-seo-verification-html.mjs'
+      - '.github/workflows/shop-seo-entity-verification-ci.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate wrapper and verifier normalization
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/install-wordpress-shop-seo-meta.mjs
+          node --check scripts/install-wordpress-shop-seo-meta-core.mjs
+          node --check scripts/normalize-shop-seo-verification-html.mjs
+          grep -Fq "import './normalize-shop-seo-verification-html.mjs';" scripts/install-wordpress-shop-seo-meta.mjs
+          grep -Fq "await import('./install-wordpress-shop-seo-meta-core.mjs');" scripts/install-wordpress-shop-seo-meta.mjs
+          node --input-type=module <<'NODE'
+          import { decodeHtmlEntities } from './scripts/normalize-shop-seo-verification-html.mjs';
+          const encoded = 'DTF Genetics Seeds &#038; Current Releases &#8211; DTF GENETICS';
+          const decoded = decodeHtmlEntities(encoded);
+          if (decoded !== 'DTF Genetics Seeds & Current Releases – DTF GENETICS') {
+            throw new Error(`Unexpected entity decoding: ${decoded}`);
+          }
+          const description = decodeHtmlEntities('Lineage &amp; generation context');
+          if (description !== 'Lineage & generation context') throw new Error(`Named entity decoding failed: ${description}`);
+          console.log('Shop SEO HTML-entity normalization regression passed.');
+          NODE
