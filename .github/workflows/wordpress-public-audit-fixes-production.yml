@@ -1,5 +1,6 @@
 name: Publish Current DTF Production Audit Fixes
 
+# Production retrigger marker: 2026-08-25. This comment is intentionally non-functional.
 on:
   workflow_dispatch:
   push:
