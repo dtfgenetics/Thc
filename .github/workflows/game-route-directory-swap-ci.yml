@@ -11,6 +11,7 @@ on:
       - games/grower-conversations/**
       - scripts/package-game-routes-wordpress.py
       - scripts/deploy-game-routes-via-wordpress.mjs
+      - scripts/repair-game-route-redirects-via-wordpress.mjs
       - .github/workflows/game-route-directory-swap-ci.yml
       - .github/workflows/wordpress-game-route-directory-swap.yml
 
@@ -19,7 +20,7 @@ permissions:
 
 jobs:
   validate:
-    name: Validate atomic directory swap
+    name: Validate routing repair and atomic directory swap
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -40,6 +41,7 @@ jobs:
           node games/high-iq/scripts/validate-data.mjs
           node games/grower-conversations/scripts/validate-prompt-bank.mjs
           node --check scripts/deploy-game-routes-via-wordpress.mjs
+          node --check scripts/repair-game-route-redirects-via-wordpress.mjs
           python -m py_compile scripts/package-game-routes-wordpress.py
           node scripts/validate-public-navigation.mjs
 
@@ -53,6 +55,19 @@ jobs:
           ! grep -Fq '/assets/dtf-gateway-v2.css' site/public-route-patch/games/high-iq/index.html
           ! grep -Fq '/assets/dtf-gateway-v2.css' site/public-route-patch/games/grower-conversations/index.html
 
+      - name: Enforce exact legacy redirect repair
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -Fq "RewriteRule ^games/(?:future-slots|high-iq|bud-or-bluff|grower-conversations)(?:/|$) /games/ [R=301,L]" scripts/repair-game-route-redirects-via-wordpress.mjs
+          grep -Fq "RewriteRule ^games/(?:future-slots|bud-or-bluff)(?:/|$) /games/ [R=301,L]" scripts/repair-game-route-redirects-via-wordpress.mjs
+          grep -Fq "RewriteRule ^(?:future-slots|high-iq|bud-or-bluff|grower-conversations)(?:/|$) /games/ [R=301,L]" scripts/repair-game-route-redirects-via-wordpress.mjs
+          grep -Fq "RewriteRule ^(?:future-slots|bud-or-bluff)(?:/|$) /games/ [R=301,L]" scripts/repair-game-route-redirects-via-wordpress.mjs
+          grep -Fq "Routing verification failed; both .htaccess files were restored automatically." scripts/repair-game-route-redirects-via-wordpress.mjs
+          grep -Fq "'/games/future-slots/'" scripts/repair-game-route-redirects-via-wordpress.mjs
+          grep -Fq "'/games/bud-or-bluff/'" scripts/repair-game-route-redirects-via-wordpress.mjs
+          ! grep -Eq 'HOSTINGER_(SSH|HOST|USER|PRIVATE_KEY)' scripts/repair-game-route-redirects-via-wordpress.mjs
+
       - name: Package exact four-target transaction
         shell: bash
         run: |
@@ -62,47 +77,38 @@ jobs:
           test -s "$archive"
           python - "$archive" <<'PY'
           import json, sys, zipfile
-          zpath=sys.argv[1]
-          expected=[
-              'games/index.html',
-              'games/dtf-route.css',
-              'games/high-iq',
-              'games/grower-conversations',
-          ]
-          with zipfile.ZipFile(zpath) as z:
+          expected=['games/index.html','games/dtf-route.css','games/high-iq','games/grower-conversations']
+          with zipfile.ZipFile(sys.argv[1]) as z:
               names=z.namelist()
-              assert len(names)==len(set(names)), 'duplicate archive entries'
-              assert names.count('.dtf-game-route-manifest.json')==1, 'manifest missing or duplicated'
+              assert len(names)==len(set(names))
+              assert names.count('.dtf-game-route-manifest.json')==1
               manifest=json.loads(z.read('.dtf-game-route-manifest.json'))
               assert manifest['purpose']=='dtfseeds-game-route-directory-swap'
-              assert manifest['targets']==expected, manifest['targets']
+              assert manifest['targets']==expected
               assert {'/','/learn/','/blog/','/shop/','/seeds/'}.issubset(set(manifest['wordPressOwnedRoutesExcluded']))
               files=set(manifest['files'])
-              assert 'games/index.html' in files
-              assert 'games/dtf-route.css' in files
-              assert any(n.startswith('games/high-iq/') for n in files)
-              assert any(n.startswith('games/grower-conversations/') for n in files)
-              forbidden=[n for n in files if not (
-                  n in {'games/index.html','games/dtf-route.css'} or
-                  n.startswith('games/high-iq/') or
-                  n.startswith('games/grower-conversations/')
-              )]
+              forbidden=[n for n in files if not (n in {'games/index.html','games/dtf-route.css'} or n.startswith('games/high-iq/') or n.startswith('games/grower-conversations/'))]
               assert not forbidden, forbidden
           PY
 
-      - name: Lint embedded transactional PHP
+      - name: Lint embedded repair PHP
         shell: bash
         run: |
           set -euo pipefail
           python - <<'PY'
           import pathlib, re
-          text=pathlib.Path('scripts/deploy-game-routes-via-wordpress.mjs').read_text()
-          m=re.search(r"const snippetCode = String\.raw`(.*?)`\.trim\(\);", text, re.S)
-          assert m, 'embedded PHP bridge not found'
-          php=m.group(1).replace('${tokenLiteral}', "'0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'")
-          pathlib.Path('/tmp/dtf-game-swap.php').write_text('<?php\n'+php+'\n')
+          for src,out in [
+              ('scripts/deploy-game-routes-via-wordpress.mjs','/tmp/dtf-game-swap.php'),
+              ('scripts/repair-game-route-redirects-via-wordpress.mjs','/tmp/dtf-route-repair.php'),
+          ]:
+              text=pathlib.Path(src).read_text()
+              m=re.search(r"const snippetCode = String\.raw`(.*?)`\.trim\(\);", text, re.S)
+              assert m, f'embedded PHP bridge not found in {src}'
+              php=m.group(1).replace('${tokenLiteral}', "'0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'")
+              pathlib.Path(out).write_text('<?php\n'+php+'\n')
           PY
           php -l /tmp/dtf-game-swap.php
+          php -l /tmp/dtf-route-repair.php
 
       - name: Enforce rollback and atomic-swap controls
         shell: bash
