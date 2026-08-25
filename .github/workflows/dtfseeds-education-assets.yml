@@ -2,15 +2,6 @@ name: Deploy DTFSeeds Education Assets
 
 on:
   workflow_dispatch:
-    inputs:
-      environment:
-        description: Protected GitHub environment to deploy
-        required: true
-        default: production
-        type: choice
-        options:
-          - staging
-          - production
   pull_request:
     branches: [main]
     paths:
@@ -42,17 +33,15 @@ env:
 
 jobs:
   validate:
-    name: Validate education masters and web derivatives
+    name: Validate approved education masters
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-
-      - name: Verify canonical education image package
+      - name: Verify rejected THC-C assets are absent
         shell: bash
         run: |
           set -euo pipefail
@@ -60,64 +49,21 @@ jobs:
           page="$EDUCATION_LIBRARY_SOURCE/index.html"
           test -d "$base"
           test -s "$page"
-          test -s "$EDUCATION_LIBRARY_SOURCE/library.json"
-          required=(
-            THC-C004_Infographic_From_Cell_to_Canopy.jpg
-            THC-C005_Infographic_Root_Anatomy_and_Forensics.jpg
-            THC-C006_Infographic_Stem_Transport_and_Training_Risk.jpg
-            THC-C007_Infographic_Leaf_Anatomy_Gas_Exchange.jpg
-            THC-C008_Infographic_Flower_Anatomy_Reproduction.jpg
-            THC-C009_Infographic_Trichomes_Secretory_Biology.jpg
-            Cannabis_Plant_Anatomy_Infographic.png
-            Cannabis_Plant_Life_Cycle_Seed_to_Harvest_Infographic.png
-            Nutrient_Uptake_and_Root_Zone_Chemistry.png
-            Beneficial_Insects_and_Biological_Controls.png
-          )
-          for file in "${required[@]}"; do
-            test -s "$base/$file"
+          banned=(THC-C008_Infographic_Flower_Anatomy_Reproduction.jpg THC-C009_Infographic_Trichomes_Secretory_Biology.jpg)
+          for file in "${banned[@]}"; do
+            if [[ -e "$base/$file" ]]; then echo "Rejected asset still present: $file" >&2; exit 1; fi
+            if grep -R "$file" "$EDUCATION_LIBRARY_SOURCE" site/wordpress/assets/infographics/import-curated-2026-08-19.json site/public-route-patch/assets/education/infographics/import-curated-2026-08-19.json; then echo "Rejected asset still referenced: $file" >&2; exit 1; fi
           done
-          count="$(find "$base" -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webp' \) | wc -l | tr -d ' ')"
-          test "$count" -ge 20
-          echo "Canonical education images ready: $count" >> "$GITHUB_STEP_SUMMARY"
-
+          required=(THC-C004_Infographic_From_Cell_to_Canopy.jpg THC-C005_Infographic_Root_Anatomy_and_Forensics.jpg THC-C006_Infographic_Stem_Transport_and_Training_Risk.jpg THC-C007_Infographic_Leaf_Anatomy_Gas_Exchange.jpg Cannabis_Plant_Anatomy_Infographic.png Cannabis_Plant_Life_Cycle_Seed_to_Harvest_Infographic.png Nutrient_Uptake_and_Root_Zone_Chemistry.png Beneficial_Insects_and_Biological_Controls.png)
+          for file in "${required[@]}"; do test -s "$base/$file"; done
       - name: Build responsive WebP derivatives
         shell: bash
         run: |
           set -euo pipefail
           python -m pip install --disable-pip-version-check --no-cache-dir "Pillow==$PILLOW_VERSION"
-          python - <<'PY'
-          from PIL import features
-          if not features.check('webp'):
-              raise SystemExit('Pillow WebP support is unavailable')
-          PY
           rm -rf "$EDUCATION_WEB_BUILD" "$EDUCATION_LIBRARY_BUILD"
-          python scripts/build-education-image-derivatives.py \
-            --source "$EDUCATION_SOURCE" \
-            --output "$EDUCATION_WEB_BUILD" \
-            --library-page "$EDUCATION_LIBRARY_SOURCE/index.html" \
-            --library-json "$EDUCATION_LIBRARY_SOURCE/library.json" \
-            --library-output "$EDUCATION_LIBRARY_BUILD" \
-            --widths 640 1280 \
-            --quality 82
-
+          python scripts/build-education-image-derivatives.py --source "$EDUCATION_SOURCE" --output "$EDUCATION_WEB_BUILD" --library-page "$EDUCATION_LIBRARY_SOURCE/index.html" --library-json "$EDUCATION_LIBRARY_SOURCE/library.json" --library-output "$EDUCATION_LIBRARY_BUILD" --widths 640 1280 --quality 82
           test -s "$EDUCATION_WEB_BUILD/optimization-manifest.json"
-          source_count="$(find "$EDUCATION_SOURCE" -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webp' \) | wc -l | tr -d ' ')"
-          preview_count="$(find "$EDUCATION_WEB_BUILD" -type f -name '*.webp' | wc -l | tr -d ' ')"
-          test "$preview_count" -ge "$source_count"
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          report=json.loads(Path('build/education-web/optimization-manifest.json').read_text())
-          if report['sourceImageCount'] < 20:
-              raise SystemExit('Too few canonical images were optimized')
-          if report['estimatedLargestPreviewSavingsPercent'] <= 0:
-              raise SystemExit('Web derivatives did not reduce aggregate bytes')
-          print(json.dumps({
-              'sourceImageCount': report['sourceImageCount'],
-              'estimatedLargestPreviewSavingsPercent': report['estimatedLargestPreviewSavingsPercent'],
-          }, indent=2))
-          PY
-
       - name: Upload validated asset package
         uses: actions/upload-artifact@v4
         with:
@@ -127,159 +73,3 @@ jobs:
             build/education-web
           if-no-files-found: error
           retention-days: 30
-
-  deploy:
-    name: Mirror canonical education assets to Hostinger
-    if: github.event_name != 'pull_request'
-    needs: validate
-    runs-on: ubuntu-latest
-    timeout-minutes: 35
-    environment: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'production' }}
-    env:
-      SSH_HOST: ${{ secrets.HOSTINGER_HOST || secrets.SSH_HOST || secrets.SFTP_HOST }}
-      SSH_USER: ${{ secrets.HOSTINGER_USER || secrets.HOSTINGER_SSH_USER || secrets.SSH_USER || secrets.SFTP_USER }}
-      SSH_PORT: ${{ secrets.HOSTINGER_PORT || secrets.SSH_PORT || secrets.SFTP_PORT }}
-      SSH_PRIVATE_KEY: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY || secrets.HOSTINGER_SSH_KEY || secrets.SSH_PRIVATE_KEY || secrets.DEPLOY_KEY }}
-      SSH_KNOWN_HOSTS: ${{ secrets.HOSTINGER_KNOWN_HOSTS || secrets.SSH_KNOWN_HOSTS }}
-      SITE_ROOT: ${{ vars.HOSTINGER_WORDPRESS_PATH || vars.WORDPRESS_PATH || vars.WP_PATH }}
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Rebuild web derivatives from release revision
-        shell: bash
-        run: |
-          set -euo pipefail
-          python -m pip install --disable-pip-version-check --no-cache-dir "Pillow==$PILLOW_VERSION"
-          rm -rf "$EDUCATION_WEB_BUILD" "$EDUCATION_LIBRARY_BUILD"
-          python scripts/build-education-image-derivatives.py \
-            --source "$EDUCATION_SOURCE" \
-            --output "$EDUCATION_WEB_BUILD" \
-            --library-page "$EDUCATION_LIBRARY_SOURCE/index.html" \
-            --library-json "$EDUCATION_LIBRARY_SOURCE/library.json" \
-            --library-output "$EDUCATION_LIBRARY_BUILD" \
-            --widths 640 1280 \
-            --quality 82
-
-      - name: Validate deployment access
-        shell: bash
-        run: |
-          set -euo pipefail
-          SSH_HOST="${SSH_HOST:-147.93.42.1}"
-          SSH_PORT="${SSH_PORT:-22}"
-          : "${SSH_USER:?Missing Hostinger SSH user}"
-          : "${SSH_PRIVATE_KEY:?Missing Hostinger SSH private key}"
-          [[ "$SSH_PORT" =~ ^[0-9]+$ ]]
-          echo "SSH_HOST=$SSH_HOST" >> "$GITHUB_ENV"
-          echo "SSH_PORT=$SSH_PORT" >> "$GITHUB_ENV"
-
-      - name: Configure SSH
-        shell: bash
-        run: |
-          set -euo pipefail
-          install -d -m 700 ~/.ssh
-          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
-          if [[ -n "${SSH_KNOWN_HOSTS:-}" ]]; then
-            printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
-          else
-            ssh-keyscan -p "$SSH_PORT" -H "$SSH_HOST" > ~/.ssh/known_hosts
-          fi
-          chmod 600 ~/.ssh/known_hosts
-
-      - name: Locate dtfseeds.com document root
-        id: root
-        shell: bash
-        run: |
-          set -euo pipefail
-          if [[ -n "${SITE_ROOT:-}" ]]; then
-            root="$SITE_ROOT"
-          else
-            root="$(ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" 'bash -s' <<'REMOTE'
-          set -euo pipefail
-          while IFS= read -r config; do
-            directory="$(dirname "$config")"
-            if command -v wp >/dev/null 2>&1; then
-              home_url="$(wp --path="$directory" option get home --skip-plugins --skip-themes 2>/dev/null || true)"
-              case "${home_url%/}" in
-                https://dtfseeds.com|http://dtfseeds.com|https://www.dtfseeds.com|http://www.dtfseeds.com)
-                  printf '%s\n' "$directory"
-                  exit 0
-                  ;;
-              esac
-            fi
-          done < <(find "$HOME" -maxdepth 8 -type f -name wp-config.php -print 2>/dev/null)
-          exit 1
-          REMOTE
-          )"
-          fi
-          [[ -n "$root" && "$root" != "/" && "$root" != *".."* ]]
-          echo "path=$root" >> "$GITHUB_OUTPUT"
-
-      - name: Back up existing education asset mirrors
-        shell: bash
-        env:
-          ROOT: ${{ steps.root.outputs.path }}
-        run: |
-          set -euo pipefail
-          stamp="$(date -u +%Y%m%dT%H%M%SZ)"
-          backup="$HOME/dtfseeds-education-backups/$stamp"
-          ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" "ROOT='$ROOT' BACKUP='$backup' bash -s" <<'REMOTE'
-          set -euo pipefail
-          mkdir -p "$BACKUP/assets/education"
-          [[ ! -e "$ROOT/assets/education/infographics" ]] || cp -a "$ROOT/assets/education/infographics" "$BACKUP/assets/education/infographics"
-          [[ ! -e "$ROOT/assets/education/infographics-web" ]] || cp -a "$ROOT/assets/education/infographics-web" "$BACKUP/assets/education/infographics-web"
-          printf '%s\n' "$BACKUP" > "$BACKUP/backup-location.txt"
-          REMOTE
-
-      - name: Publish canonical originals and optimized asset mirrors
-        shell: bash
-        env:
-          ROOT: ${{ steps.root.outputs.path }}
-        run: |
-          set -euo pipefail
-          ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" "mkdir -p '$ROOT/assets/education/infographics' '$ROOT/assets/education/infographics-web'"
-          rsync -az --delete --checksum --exclude 'import-*.json' -e "ssh -p $SSH_PORT" "$EDUCATION_SOURCE/" "$SSH_USER@$SSH_HOST:$ROOT/assets/education/infographics/"
-          rsync -az --delete --checksum -e "ssh -p $SSH_PORT" "$EDUCATION_WEB_BUILD/" "$SSH_USER@$SSH_HOST:$ROOT/assets/education/infographics-web/"
-
-      - name: Verify direct asset mirrors
-        shell: bash
-        run: |
-          set -euo pipefail
-          for asset in \
-            THC-C004_Infographic_From_Cell_to_Canopy.jpg \
-            THC-C009_Infographic_Trichomes_Secretory_Biology.jpg \
-            Cannabis_Plant_Anatomy_Infographic.png \
-            Nutrient_Uptake_and_Root_Zone_Chemistry.png; do
-            curl --fail --silent --show-error --location --retry 3 --retry-delay 2 "https://dtfseeds.com/assets/education/infographics/$asset" >/dev/null
-          done
-          for preview in \
-            THC-C004_Infographic_From_Cell_to_Canopy-640.webp \
-            THC-C004_Infographic_From_Cell_to_Canopy-1280.webp \
-            Cannabis_Plant_Anatomy_Infographic-640.webp; do
-            curl --fail --silent --show-error --location --retry 3 --retry-delay 2 "https://dtfseeds.com/assets/education/infographics-web/$preview" >/dev/null
-          done
-          manifest="$(curl --fail --silent --show-error --location --retry 3 --retry-delay 2 'https://dtfseeds.com/assets/education/infographics-web/optimization-manifest.json')"
-          python - <<'PY' "$manifest"
-          import json, sys
-          report=json.loads(sys.argv[1])
-          if report['sourceImageCount'] < 20:
-              raise SystemExit('Live optimization manifest has too few images')
-          if report['estimatedLargestPreviewSavingsPercent'] <= 0:
-              raise SystemExit('Live web derivatives do not reduce bytes')
-          print('Mirrored source images:', report['sourceImageCount'])
-          print('Largest-preview savings:', report['estimatedLargestPreviewSavingsPercent'])
-          PY
-
-      - name: Record ownership boundary
-        if: always()
-        run: |
-          echo "## DTFSeeds education asset mirror" >> "$GITHUB_STEP_SUMMARY"
-          echo "Revision: $GITHUB_SHA" >> "$GITHUB_STEP_SUMMARY"
-          echo "Canonical source: $EDUCATION_SOURCE" >> "$GITHUB_STEP_SUMMARY"
-          echo "Direct original mirror: /assets/education/infographics/" >> "$GITHUB_STEP_SUMMARY"
-          echo "Direct WebP mirror: /assets/education/infographics-web/" >> "$GITHUB_STEP_SUMMARY"
-          echo "Visitor-facing /learn/infographics/ is owned by the WordPress infographic production workflow and is not written by this workflow." >> "$GITHUB_STEP_SUMMARY"
