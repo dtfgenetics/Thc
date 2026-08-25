@@ -1,135 +1,30 @@
-name: Publish WordPress Genetics Line Pages Production
+name: Deprecated Genetics Line Publisher Guard
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/wordpress-genetics-line-pages-production.yml'
-      - 'scripts/publish-wordpress-genetics-line-pages.mjs'
-      - 'data/genetics/catalog.json'
-      - 'site/wordpress/products/genetics.json'
 
 permissions:
   contents: read
-  issues: write
-
-concurrency:
-  group: dtfseeds-wordpress-genetics-line-pages
-  cancel-in-progress: false
 
 jobs:
-  publish:
-    name: Publish and verify Blue Mango and Blue Bubblegum line pages
+  guard:
+    name: Validate canonical genetics architecture only
     runs-on: ubuntu-latest
-    timeout-minutes: 20
-    environment: production
-    env:
-      NODE_OPTIONS: --dns-result-order=ipv4first
-      WP_SITE_URL: https://dtfseeds.com
-      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
-      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
-      APPLY_GENETICS_LINE_PAGES: 'true'
-      BACKUP_ROOT: /tmp/wordpress-genetics-line-pages
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: main
 
       - uses: actions/setup-node@v4
         with:
           node-version: 22
 
-      - name: Validate genetics registry and publisher
+      - name: Confirm legacy publisher is no longer a production writer
         shell: bash
         run: |
           set -euo pipefail
-          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
-          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
-          test -s scripts/publish-wordpress-genetics-line-pages.mjs
-          test -s data/genetics/catalog.json
-          test -s site/wordpress/products/genetics.json
           node --check scripts/publish-wordpress-genetics-line-pages.mjs
           node scripts/validate-genetics-commerce.mjs
-
-      - name: Publish canonical genetics line pages
-        id: publish
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p "$BACKUP_ROOT"
-          node scripts/publish-wordpress-genetics-line-pages.mjs | tee /tmp/wordpress-genetics-line-pages-output.json
-          test -s wordpress-genetics-line-pages-report.json
-          node - <<'NODE'
-          const fs=require('fs');
-          const report=JSON.parse(fs.readFileSync('wordpress-genetics-line-pages-report.json','utf8'));
-          if(!report.apply) throw new Error('Publisher did not run in apply mode.');
-          if(!Array.isArray(report.results)||report.results.length!==2) throw new Error('Expected exactly two genetics line pages.');
-          if(!report.results.every(row=>row.verified===true)) throw new Error('Not every genetics line page was verified.');
-          console.log(JSON.stringify(report.results,null,2));
-          NODE
-          echo 'outcome=success' >> "$GITHUB_OUTPUT"
-
-      - name: Verify public line pages
-        id: public
-        shell: bash
-        run: |
-          set -euo pipefail
-          checks=(
-            '/seeds/blue-mango/|genetics-line-blue-mango-v1|Somango XXL × Blueberry Butcher'
-            '/seeds/blue-bubblegum/|genetics-line-blue-bubblegum-v1|Bubblegum Kush × Blueberry Butcher'
-          )
-          for item in "${checks[@]}"; do
-            IFS='|' read -r route marker lineage <<< "$item"
-            body="$RUNNER_TEMP/genetics-line-$(echo "$marker" | tr -cd '[:alnum:]_-').html"
-            ok=0
-            for attempt in 1 2 3 4 5 6; do
-              curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
-                -H 'Cache-Control: no-cache, no-store, max-age=0' -H 'Pragma: no-cache' \
-                "https://dtfseeds.com${route}?dtf_genetics_line_gate=${GITHUB_RUN_ID}-${attempt}" -o "$body"
-              if grep -Fq "$marker" "$body" && grep -Fq "$lineage" "$body"; then ok=1; break; fi
-              sleep 5
-            done
-            test "$ok" -eq 1
-          done
-          echo 'outcome=success' >> "$GITHUB_OUTPUT"
-
-      - name: Upload page backups and reports
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: wordpress-genetics-line-pages-${{ github.run_id }}
-          path: |
-            /tmp/wordpress-genetics-line-pages
-            /tmp/wordpress-genetics-line-pages-output.json
-            wordpress-genetics-line-pages-report.json
-            ${{ runner.temp }}/genetics-line-*.html
-          if-no-files-found: warn
-          retention-days: 30
-
-      - name: Report genetics line page deployment to issue 46
-        if: always()
-        uses: actions/github-script@v7
-        env:
-          STATUS: ${{ job.status }}
-          PUBLISH: ${{ steps.publish.outputs.outcome }}
-          PUBLIC: ${{ steps.public.outputs.outcome }}
-        with:
-          script: |
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: 46,
-              body: [
-                '## DTF Genetics line pages',
-                '',
-                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-                `Result: **${process.env.STATUS}**`,
-                `WordPress publication: **${process.env.PUBLISH || 'not-run'}**`,
-                `Public route verification: **${process.env.PUBLIC || 'not-run'}**`,
-                '',
-                'Published routes: /seeds/blue-mango/ and /seeds/blue-bubblegum/.',
-                'Content is generated from data/genetics/catalog.json and site/wordpress/products/genetics.json so stable lineage records stay separate from release-specific commerce data.',
-                'The pages include lineage, breeding direction, documented generation context, variation language, and direct links to current release listings. No cultivar flower photography is asserted without an approved cultivar-specific photo source.'
-              ].join('\n')
-            });
+          node scripts/validate-genetics-library-coherence.mjs
+          echo 'Legacy two-line publisher is retained only as historical/compatibility code.'
+          echo 'Authoritative production writer: .github/workflows/wordpress-genetics-library-production.yml'
+          echo 'No WordPress credentials are loaded and no public pages are modified by this workflow.'
