@@ -19,14 +19,12 @@ if not root.is_dir():
 
 allowed = [
     "games/index.html",
-    "games/game-hub.css",
     "games/dtf-route.css",
     "games/high-iq",
     "games/grower-conversations",
 ]
 required = [
     "games/index.html",
-    "games/game-hub.css",
     "games/dtf-route.css",
     "games/high-iq/index.html",
     "games/high-iq/app.js",
