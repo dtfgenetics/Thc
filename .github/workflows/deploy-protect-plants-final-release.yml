@@ -1,0 +1,198 @@
+name: Deploy Protect the Plants Final Release
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - release/protect-plants-final-20260824
+    paths:
+      - .github/protect-plants-final-release-trigger.txt
+
+permissions:
+  actions: write
+  contents: read
+  issues: write
+
+concurrency:
+  group: deploy-protect-plants-final-release
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    environment: production
+    env:
+      GH_TOKEN: ${{ github.token }}
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      PINNED_BUILD_RUN: '32755317428'
+      PINNED_BUILD_SHA: d16c2c45b26a0c94b1089f33778609c995f1d11d
+    steps:
+      - name: Checkout isolated release branch
+        uses: actions/checkout@v4
+        with:
+          ref: release/protect-plants-final-20260824
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate protected deploy source
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
+          python -m py_compile scripts/package-public-suite-wordpress.py scripts/assemble-wordpress-suite-v2.py
+          node --check scripts/cleanup-stale-wordpress-suite-snippets.mjs
+          python scripts/assemble-wordpress-suite-v2.py "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          node --check "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          python - <<'PY'
+          import os, pathlib, re
+          text=(pathlib.Path(os.environ['RUNNER_TEMP'])/'deploy-public-suite-v2.mjs').read_text()
+          m=re.search(r"const snippetCode = String\.raw`(.*?)`\.trim\(\);", text, re.S)
+          assert m, 'embedded PHP missing'
+          php=m.group(1).replace('${tokenLiteral}', "'0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'")
+          (pathlib.Path(os.environ['RUNNER_TEMP'])/'dtf-suite-v2.php').write_text('<?php\n'+php+'\n')
+          PY
+          php -l "$RUNNER_TEMP/dtf-suite-v2.php"
+
+      - name: Download pinned validated Public Suite artifact
+        id: suite
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf "$RUNNER_TEMP/suite-download"
+          mkdir -p "$RUNNER_TEMP/suite-download"
+          gh run download "$PINNED_BUILD_RUN" --repo "$GITHUB_REPOSITORY" --dir "$RUNNER_TEMP/suite-download"
+          build_json="$(find "$RUNNER_TEMP/suite-download" -type f -name dtf-build.json -print -quit)"
+          [[ -n "$build_json" ]] || { echo 'Pinned artifact does not contain dtf-build.json.' >&2; exit 1; }
+          suite_root="$(dirname "$build_json")"
+          case "$suite_root" in
+            *"$PINNED_BUILD_SHA"*) ;;
+            *) echo "Pinned artifact root does not identify expected build SHA: $suite_root" >&2; exit 1 ;;
+          esac
+          for file in \
+            games/protect-the-plants/index.html \
+            games/protect-the-plants/app.js \
+            games/protect-the-plants/styles.css \
+            games/protect-the-plants/visual-fixes.css \
+            games/protect-the-plants/plant.svg \
+            games/protect-the-plants/api.php \
+            games/index.html tools/index.html projects/index.html \
+            growlens/index.html thc-grow-doc/index.html; do
+            test -s "$suite_root/$file"
+          done
+          grep -Fq 'visual-fixes.css' "$suite_root/games/protect-the-plants/index.html"
+          grep -Fq 'formation-' "$suite_root/games/protect-the-plants/styles.css" "$suite_root/games/protect-the-plants/visual-fixes.css"
+          echo "root=$suite_root" >> "$GITHUB_OUTPUT"
+
+      - name: Package immutable app-only WordPress archive
+        id: package
+        shell: bash
+        env:
+          SUITE_ROOT: ${{ steps.suite.outputs.root }}
+        run: |
+          set -euo pipefail
+          archive="$RUNNER_TEMP/dtf-public-suite-wordpress-v2.zip"
+          python scripts/package-public-suite-wordpress.py "$SUITE_ROOT" "$archive" | tee "$RUNNER_TEMP/package-summary.json"
+          test -s "$archive"
+          python - <<'PY'
+          import json, os, zipfile
+          zpath=os.path.join(os.environ['RUNNER_TEMP'],'dtf-public-suite-wordpress-v2.zip')
+          with zipfile.ZipFile(zpath) as z:
+              names=z.namelist()
+              assert len(names)==len(set(names)), 'duplicate ZIP entries'
+              assert names.count('.dtf-suite-manifest.json')==1
+              required={
+                  'games/protect-the-plants/index.html',
+                  'games/protect-the-plants/app.js',
+                  'games/protect-the-plants/styles.css',
+                  'games/protect-the-plants/visual-fixes.css',
+                  'games/protect-the-plants/plant.svg',
+                  'games/protect-the-plants/api.php',
+              }
+              assert required.issubset(set(names)), f'missing final Protect the Plants assets: {sorted(required-set(names))}'
+              assert not [n for n in names if n=='index.html' or n.startswith('learn/') or n.startswith('blog/')]
+              manifest=json.loads(z.read('.dtf-suite-manifest.json'))
+              assert manifest['purpose']=='dtfseeds-public-apps-only'
+              assert {'/','/learn/','/blog/'}.issubset(set(manifest['wordPressOwnedRoutesExcluded']))
+          PY
+          echo "archive=$archive" >> "$GITHUB_OUTPUT"
+
+      - name: Recover stale Public Suite transaction and neutralize temporary bridges
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/cleanup-stale-wordpress-suite-snippets.mjs | tee "$RUNNER_TEMP/stale-suite-bridge-cleanup.json"
+          grep -Eq '"ok"[[:space:]]*:[[:space:]]*true' "$RUNNER_TEMP/stale-suite-bridge-cleanup.json"
+
+      - name: Publish pinned release through transactional WordPress bridge
+        shell: bash
+        env:
+          DTF_SUITE_ARCHIVE: ${{ steps.package.outputs.archive }}
+        run: |
+          set -euo pipefail
+          node "$RUNNER_TEMP/deploy-public-suite-v2.mjs" "$DTF_SUITE_ARCHIVE" | tee "$RUNNER_TEMP/deploy-result.log"
+          grep -Eq '"ok"[[:space:]]*:[[:space:]]*true' "$RUNNER_TEMP/deploy-result.log"
+
+      - name: Verify complete DTFSeeds feature surface
+        shell: bash
+        run: |
+          set -euo pipefail
+          run_url="$(gh workflow run verify-dtfseeds-feature-surface.yml --ref main)"
+          run_id="${run_url##*/}"
+          [[ "$run_id" =~ ^[0-9]+$ ]]
+          echo "Feature verification: $run_url"
+          gh run watch "$run_id" --exit-status
+
+      - name: Verify canonical WordPress route ownership
+        shell: bash
+        run: |
+          set -euo pipefail
+          run_url="$(gh workflow run verify-dtfseeds-production-cutover.yml --ref main)"
+          run_id="${run_url##*/}"
+          [[ "$run_id" =~ ^[0-9]+$ ]]
+          echo "Canonical verification: $run_url"
+          gh run watch "$run_id" --exit-status
+
+      - name: Verify Protect the Plants live production gameplay and visuals
+        shell: bash
+        run: |
+          set -euo pipefail
+          run_url="$(gh workflow run verify-protect-the-plants-production.yml --ref main)"
+          run_id="${run_url##*/}"
+          [[ "$run_id" =~ ^[0-9]+$ ]]
+          echo "Protect the Plants verification: $run_url"
+          gh run watch "$run_id" --exit-status
+
+      - name: Report isolated final release
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 46,
+              body: [
+                '## Protect the Plants isolated final release',
+                '',
+                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                `Release branch: \`${context.ref.replace('refs/heads/','')}\``,
+                `Pinned validated Public Suite run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${process.env.PINNED_BUILD_RUN}`,
+                `Pinned suite SHA: \`${process.env.PINNED_BUILD_SHA}\``,
+                `Overall: **${process.env.STATUS || 'see run'}**`,
+                '',
+                'This release consumes a previously validated immutable Public Suite artifact, preserves WordPress ownership of canonical content routes, uses the transactional rollback-capable WordPress bridge, and requires independent feature, route-ownership, and Protect-the-Plants production verification before success.'
+              ].join('\n')
+            });
+        env:
+          STATUS: ${{ job.status }}
