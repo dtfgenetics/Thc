@@ -1,0 +1,80 @@
+name: Diagnose DTF Game Route Routing
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - scripts/diagnose-game-route-routing-via-wordpress.mjs
+      - .github/workflows/game-route-routing-diagnostic.yml
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtf-game-route-routing-diagnostic
+  cancel-in-progress: false
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: production
+    env:
+      WP_SITE_URL: https://dtfseeds.com
+      NODE_OPTIONS: --dns-result-order=ipv4first
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Require proven WordPress credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${WP_API_USERNAME:-}"
+          test -n "${WP_API_PASSWORD:-}"
+      - name: Run read-only routing diagnostic
+        id: diagnostic
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/diagnose-game-route-routing-via-wordpress.mjs | tee "$RUNNER_TEMP/game-route-routing-diagnostic.json"
+          grep -Eq '"ok"[[:space:]]*:[[:space:]]*true' "$RUNNER_TEMP/game-route-routing-diagnostic.json"
+      - name: Upload routing evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: game-route-routing-diagnostic-${{ github.run_id }}
+          path: ${{ runner.temp }}/game-route-routing-diagnostic.json
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Report diagnostic to issue 46
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          STATUS: ${{ job.status }}
+          DIAGNOSTIC: ${{ steps.diagnostic.outcome }}
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 46,
+              body: [
+                '## Read-only game-route routing diagnostic',
+                '',
+                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                `Commit: \`${context.sha}\``,
+                `Overall: **${process.env.STATUS}**`,
+                `Diagnostic: **${process.env.DIAGNOSTIC || 'not reached'}**`,
+                '',
+                'This probe performs no game-file mutation. It compares WordPress `ABSPATH` with the public document root, inventories the affected game directories, reports only routing-related `.htaccess` directives, and compares directory URLs with explicit `index.html` / `index.php` requests. Detailed server paths remain in the protected workflow artifact rather than this public issue comment.'
+              ].join('\n')
+            });
