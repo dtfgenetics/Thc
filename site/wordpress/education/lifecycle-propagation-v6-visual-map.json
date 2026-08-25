@@ -1,8 +1,19 @@
 {
-  "schemaVersion": 1,
-  "updatedAt": "2026-08-23",
+  "schemaVersion": 2,
+  "updatedAt": "2026-08-25",
   "curriculumId": "lifecycle-propagation-v6",
   "route": "/learn/lifecycle-propagation/",
+  "visualPolicy": {
+    "bannedStyleIds": [
+      "old-thc-course-card-infographic"
+    ],
+    "bannedStyleDescription": "Do not use flat beige/green THC-C### course-card infographic posters with dark green title strip, small boxed diagram panels, tiny academic labels, simple flat plant icons, or blank rounded image containers. This style is rejected sitewide and must not be used in product cards, seed cards, education cards, galleries, or Atlas pages.",
+    "bannedFiles": [
+      "THC-C008_Infographic_Flower_Anatomy_Reproduction.jpg",
+      "THC-C009_Infographic_Trichomes_Secretory_Biology.jpg"
+    ],
+    "replacementRule": "Use approved strain/product visuals in seed areas. Use redesigned high-quality Atlas visuals in education areas. If a redesigned visual is not available, leave the image slot empty with a clean non-image placeholder rather than using the banned style."
+  },
   "chapters": {
     "seed-identity-quality": [
       {
@@ -86,11 +97,6 @@
         "file": "THC-ENC-001_VIS-05_Reproductive_Structures_v3.0.0.jpg",
         "title": "Reproductive Structures",
         "alt": "Educational cannabis diagram identifying reproductive structures used in sex-expression and flower-development study."
-      },
-      {
-        "file": "THC-C008_Infographic_Flower_Anatomy_Reproduction.jpg",
-        "title": "Flower Anatomy & Reproduction",
-        "alt": "THC educational infographic explaining cannabis flower anatomy and reproductive structures."
       }
     ],
     "maturation-cycle-records": [
@@ -98,15 +104,32 @@
         "file": "Cannabis_Plant_Life_Cycle_Seed_to_Harvest_Infographic.png",
         "title": "Cannabis Life Cycle: Seed to Harvest",
         "alt": "THC educational infographic showing the cannabis plant lifecycle from seed through harvest."
-      },
-      {
-        "file": "THC-C009_Infographic_Trichomes_Secretory_Biology.jpg",
-        "title": "Trichomes & Secretory Biology",
-        "alt": "THC educational infographic explaining cannabis trichomes and secretory biology relevant to reproductive maturation."
       }
     ]
   },
+  "removedRejectedVisuals": [
+    {
+      "file": "THC-C008_Infographic_Flower_Anatomy_Reproduction.jpg",
+      "reason": "Rejected old THC-C course-card infographic style shown by user on dtfseeds.com."
+    },
+    {
+      "file": "THC-C009_Infographic_Trichomes_Secretory_Biology.jpg",
+      "reason": "Rejected old THC-C course-card infographic style shown by user on dtfseeds.com."
+    }
+  ],
   "gaps": [
+    {
+      "id": "flower-anatomy-redesign",
+      "status": "needed",
+      "title": "Flower Anatomy & Reproductive Structures — redesigned visual",
+      "neededVisual": "A redesigned high-quality Atlas visual, not the old THC-C course-card poster style. Use cleaner modern educational layout, larger labels, realistic/academic cannabis morphology, and no dark green THC-C header card system."
+    },
+    {
+      "id": "trichome-secretory-biology-redesign",
+      "status": "needed",
+      "title": "Trichomes & Secretory Biology — redesigned visual",
+      "neededVisual": "A redesigned high-quality Atlas visual, not the old THC-C course-card poster style. Use polished microscopy/reference layout, readable labels, and modern Atlas visual language."
+    },
     {
       "id": "seed-viability-vigor",
       "status": "needed",
