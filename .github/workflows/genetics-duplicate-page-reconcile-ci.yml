@@ -1,0 +1,72 @@
+name: Genetics Duplicate Page Reconciliation CI
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/genetics-duplicate-page-reconcile-ci.yml'
+      - 'scripts/reconcile-wordpress-genetics-duplicate-pages.mjs'
+      - 'scripts/publish-wordpress-genetics-library-cdn.mjs'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/genetics-duplicate-page-reconcile-ci.yml'
+      - 'scripts/reconcile-wordpress-genetics-duplicate-pages.mjs'
+      - 'scripts/publish-wordpress-genetics-library-cdn.mjs'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate safe duplicate-page reconciliation
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate script syntax and wrapper order
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/reconcile-wordpress-genetics-duplicate-pages.mjs
+          node --check scripts/publish-wordpress-genetics-library-cdn.mjs
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const wrapper=fs.readFileSync('scripts/publish-wordpress-genetics-library-cdn.mjs','utf8');
+          const negotiate=wrapper.indexOf("force-original-image-accept.mjs");
+          const reconcile=wrapper.indexOf("reconcile-wordpress-genetics-duplicate-pages.mjs");
+          const publish=wrapper.indexOf("publish-wordpress-genetics-library-cdn-core.mjs");
+          if(!(negotiate>=0 && reconcile>negotiate && publish>reconcile)) throw new Error('Genetics wrapper must negotiate original images, reconcile duplicates, then publish.');
+          const source=fs.readFileSync('scripts/reconcile-wordpress-genetics-duplicate-pages.mjs','utf8');
+          for(const required of ['candidates-before.json',"status:'draft'",'-duplicate-${page.id}','after.length!==1','duplicate-page-reconciliation-report.json']){
+            if(!source.includes(required)) throw new Error(`Missing duplicate-page safety control: ${required}`);
+          }
+          NODE
+
+      - name: Test deterministic canonical page selection
+        shell: bash
+        env:
+          GENETICS_DUPLICATE_RECONCILE_TEST: 'true'
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          const {chooseCanonical}=await import('./scripts/reconcile-wordpress-genetics-duplicate-pages.mjs');
+          const slug='rainbow-bubblegum';
+          const rows=[
+            {id:31,status:'draft',modified_gmt:'2026-08-25T10:00:00Z',link:'https://dtfseeds.com/seeds/rainbow-bubblegum/',content:{raw:'data-dtf-genetics-line="rainbow-bubblegum"'}},
+            {id:22,status:'publish',modified_gmt:'2026-08-24T10:00:00Z',link:'https://dtfseeds.com/seeds/rainbow-bubblegum/',content:{raw:'legacy content'}},
+            {id:44,status:'publish',modified_gmt:'2026-08-23T10:00:00Z',link:'https://dtfseeds.com/seeds/rainbow-bubblegum/',content:{raw:'data-dtf-genetics-line="rainbow-bubblegum"'}}
+          ];
+          const chosen=chooseCanonical(rows,slug);
+          if(chosen?.id!==44) throw new Error(`Expected published genetics-marked page 44, got ${chosen?.id}`);
+
+          const equal=[
+            {id:8,status:'publish',modified_gmt:'2026-08-24T10:00:00Z',link:'https://dtfseeds.com/seeds/rainbow-bubblegum/',content:{raw:''}},
+            {id:9,status:'publish',modified_gmt:'2026-08-25T10:00:00Z',link:'https://dtfseeds.com/seeds/rainbow-bubblegum/',content:{raw:''}}
+          ];
+          if(chooseCanonical(equal,slug)?.id!==9) throw new Error('Newest otherwise-equivalent published page must win deterministically.');
+          console.log('Duplicate genetics page selection rules verified.');
+          NODE
