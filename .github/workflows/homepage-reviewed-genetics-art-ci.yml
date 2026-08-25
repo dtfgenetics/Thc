@@ -55,6 +55,37 @@ jobs:
           grep -Fq 'Current releases, shown with the real strain cards.' scripts/finalize-wordpress-home-genetics-art.mjs
           grep -Fq 'aspect-ratio:2/3' scripts/finalize-wordpress-home-genetics-art.mjs
 
+      - name: Validate both supported homepage layout contracts
+        shell: bash
+        run: |
+          set -euo pipefail
+          file=scripts/finalize-wordpress-home-genetics-art.mjs
+          grep -Fq "return 'home-v3'" "$file"
+          grep -Fq "return 'visual-v2'" "$file"
+          grep -Fq "classNeedle = layout === 'home-v3' ? 'release' : 'dtf-image-card'" "$file"
+          grep -Fq "layout === 'home-v3'" "$file"
+          grep -Fq 'dtf-hero-media' "$file"
+          grep -Fq 'dtf-home-genetics-feature' "$file"
+          grep -Fq 'data-dtf-home-genetics-v2="feature"' "$file"
+          grep -Fq '/seeds/mango-bubbles/' "$file"
+          grep -Fq 'all three verified current-release routes' "$file"
+          grep -Fq 'supported reviewed-genetics layout' "$file"
+          echo 'Old Home V3 and current visual-v2 contracts are both explicitly supported.'
+
+      - name: Verify current canonical visual builder remains a recognized source layout
+        shell: bash
+        run: |
+          set -euo pipefail
+          source=scripts/rebuild-wordpress-visual-site.mjs
+          grep -Fq '<div class="dtf-page">' "$source"
+          grep -Fq 'class="dtf-hero-media"' "$source"
+          grep -Fq 'dtf-image-card' "$source"
+          grep -Fq 'Shop the pack. Read the breeding context.' "$source"
+          grep -Fq '/product/10-regular-f2-blue-mango-seeds/' "$source"
+          grep -Fq '/product/10-feminized-f2-blue-mango-x/' "$source"
+          grep -Fq '/product/10-reg-f1-blueberry-bubblegum/' "$source"
+          echo 'Current visual builder markup is covered by the reviewed-genetics finalizer.'
+
       - name: Reject education media as release-card completion criteria
         shell: bash
         run: |
