@@ -1,0 +1,71 @@
+name: Public Production Audit Fixes CI
+
+on:
+  pull_request:
+    paths:
+      - 'site/public-route-patch/games/protect-the-plants/index.html'
+      - 'site/public-route-patch/projects/index.html'
+      - 'site/wordpress/mu-plugins/dtf-shop-seo-meta.php'
+      - 'scripts/deploy-wordpress-public-audit-fixes.mjs'
+      - 'scripts/install-wordpress-shop-seo-meta.mjs'
+      - '.github/workflows/public-production-audit-fixes-ci.yml'
+      - '.github/workflows/wordpress-public-audit-fixes-production.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate scripts and Shop MU plugin
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/deploy-wordpress-public-audit-fixes.mjs
+          node --check scripts/install-wordpress-shop-seo-meta.mjs
+          php -l site/wordpress/mu-plugins/dtf-shop-seo-meta.php
+          grep -Fq "is_shop" site/wordpress/mu-plugins/dtf-shop-seo-meta.php
+          grep -Fq 'DTF Genetics Seeds & Current Releases' site/wordpress/mu-plugins/dtf-shop-seo-meta.php
+          grep -Fq 'reviewed strain-card artwork' site/wordpress/mu-plugins/dtf-shop-seo-meta.php
+
+      - name: Validate crawlable public route fixes
+        shell: bash
+        run: |
+          set -euo pipefail
+          protect='site/public-route-patch/games/protect-the-plants/index.html'
+          projects='site/public-route-patch/projects/index.html'
+          grep -Fq '<h1 id="protect-the-plants-title"' "$protect"
+          grep -Fq 'https://dtfseeds.com/games/protect-the-plants/' "$protect"
+          grep -Fq '15×15' "$protect"
+          grep -Fq '<title>DTF Projects | Live Systems & Roadmap</title>' "$projects"
+          grep -Fq 'https://dtfseeds.com/projects/' "$projects"
+          grep -Fq '>High IQ<' "$projects"
+          grep -Fq '>High Life<' "$projects"
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const strip = html => html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,' ').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
+          const protect=fs.readFileSync('site/public-route-patch/games/protect-the-plants/index.html','utf8');
+          if(strip(protect).length < 150) throw new Error('Protect the Plants crawlable text is still too short.');
+          const projects=fs.readFileSync('site/public-route-patch/projects/index.html','utf8');
+          if(!strip(projects).includes('High IQ') || !strip(projects).includes('High Life')) throw new Error('Projects is missing current live games.');
+          NODE
+
+      - name: Enforce narrow production mutation scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -Fq "['games/protect-the-plants/index.html', 'site/public-route-patch/games/protect-the-plants/index.html']" scripts/deploy-wordpress-public-audit-fixes.mjs
+          grep -Fq "['projects/index.html', 'site/public-route-patch/projects/index.html']" scripts/deploy-wordpress-public-audit-fixes.mjs
+          grep -Fq "\$allowed = ['games/protect-the-plants/index.html', 'projects/index.html'];" scripts/deploy-wordpress-public-audit-fixes.mjs
+          grep -Fq "WPMU_PLUGIN_DIR . '/dtf-shop-seo-meta.php'" scripts/install-wordpress-shop-seo-meta.mjs
+          grep -Fq '/rollback' scripts/deploy-wordpress-public-audit-fixes.mjs
+          grep -Fq '/rollback' scripts/install-wordpress-shop-seo-meta.mjs
+          grep -Fq '/finalize' scripts/deploy-wordpress-public-audit-fixes.mjs
+          grep -Fq '/finalize' scripts/install-wordpress-shop-seo-meta.mjs
