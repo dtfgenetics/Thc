@@ -2,9 +2,20 @@ name: Finalize DTFSeeds Home Genetics Art
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/wordpress-home-genetics-art.yml'
+      - 'scripts/finalize-wordpress-home-genetics-art.mjs'
   workflow_run:
     workflows:
       - Publish DTFSeeds Learning Experience V3
+      - Rebuild DTFSeeds WordPress Visual Site
+      - Publish DTFSeeds WordPress Production
+      - Reconcile DTFSeeds WordPress Pages On Command
+      - Rebuild DTFSeeds Visual Site On Command
+      - Force DTF Visual + Favicon Production
+      - Recreate Codex WordPress Production Path
     types: [completed]
 
 permissions:
@@ -91,12 +102,13 @@ jobs:
           VERIFY: ${{ steps.verify.outputs.outcome }}
         with:
           script: |
-            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body:[
+            const body=[
               '## Homepage Genetics V2','',
               `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
               `Result: **${process.env.STATUS}**`,
               `Genetics visual write: **${process.env.APPLY || 'not-completed'}**`,
               `Live verification: **${process.env.VERIFY || 'not-completed'}**`,
               '',
-              'This finalizer now runs only after Learning Experience V3 succeeds. It upgrades the reviewed genetics hero into the premium three-card stack, applies Mango Bubbles to the genetics feature, and preserves the three reviewed current-release cards.'
-            ].join('\n')});
+              'This finalizer is the last Home genetics layer after every workflow that can rebuild the customer-facing visual site. It restores the premium three-card hero, Mango Bubbles genetics feature, and the three reviewed current-release strain cards so generic education media cannot overwrite product artwork.'
+            ].join('\n');
+            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body});
