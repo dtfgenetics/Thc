@@ -1,0 +1,31 @@
+name: Validate Game Route Routing Diagnostic
+
+on:
+  pull_request:
+    paths:
+      - scripts/diagnose-game-route-routing-via-wordpress.mjs
+      - .github/workflows/game-route-routing-diagnostic-ci.yml
+      - .github/workflows/game-route-routing-diagnostic.yml
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate diagnostic syntax and read-only boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/diagnose-game-route-routing-via-wordpress.mjs
+          ! grep -Eq "file_put_contents|\bunlink\s*\(|\brename\s*\(|\brmdir\s*\(|\bmkdir\s*\(|wp_mkdir_p|ZipArchive|DTF_GAME_ROUTE_ARCHIVE" scripts/diagnose-game-route-routing-via-wordpress.mjs
+          grep -Fq "'/games/high-iq/index.html'" scripts/diagnose-game-route-routing-via-wordpress.mjs
+          grep -Fq "'/games/high-iq/index.php'" scripts/diagnose-game-route-routing-via-wordpress.mjs
+          grep -Fq "document_root" scripts/diagnose-game-route-routing-via-wordpress.mjs
+          grep -Fq "routing_directives" scripts/diagnose-game-route-routing-via-wordpress.mjs
