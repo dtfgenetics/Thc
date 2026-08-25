@@ -1,0 +1,159 @@
+name: Publish Current DTF Production Audit Fixes
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'site/public-route-patch/games/protect-the-plants/index.html'
+      - 'site/public-route-patch/projects/index.html'
+      - 'site/wordpress/mu-plugins/dtf-shop-seo-meta.php'
+      - 'scripts/deploy-wordpress-public-audit-fixes.mjs'
+      - 'scripts/install-wordpress-shop-seo-meta.mjs'
+      - 'scripts/flush-hostinger-litespeed-mcp.mjs'
+      - 'scripts/audit-dtfseeds-live.mjs'
+      - 'scripts/audit-dtfseeds-public-suite.mjs'
+      - 'scripts/audit-dtfseeds-commerce.mjs'
+      - '.github/workflows/wordpress-public-audit-fixes-production.yml'
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtf-current-production-audit-fixes
+  cancel-in-progress: false
+
+env:
+  WP_SITE_URL: https://dtfseeds.com
+  NODE_OPTIONS: --dns-result-order=ipv4first
+
+jobs:
+  publish-and-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    environment: production
+    env:
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME || secrets.WORDPRESS_USERNAME || secrets.WP_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD || secrets.WORDPRESS_APP_PASSWORD || secrets.WP_APPLICATION_PASSWORD }}
+    steps:
+      - name: Checkout trusted main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate protected production package
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${WP_API_USERNAME:-}"
+          test -n "${WP_API_PASSWORD:-}"
+          node --check scripts/deploy-wordpress-public-audit-fixes.mjs
+          node --check scripts/install-wordpress-shop-seo-meta.mjs
+          node --check scripts/flush-hostinger-litespeed-mcp.mjs
+          node --check scripts/audit-dtfseeds-live.mjs
+          node --check scripts/audit-dtfseeds-public-suite.mjs
+          node --check scripts/audit-dtfseeds-commerce.mjs
+          php -l site/wordpress/mu-plugins/dtf-shop-seo-meta.php
+          grep -Fq '<h1 id="protect-the-plants-title"' site/public-route-patch/games/protect-the-plants/index.html
+          grep -Fq '>High IQ<' site/public-route-patch/projects/index.html
+          grep -Fq '>High Life<' site/public-route-patch/projects/index.html
+
+      - name: Publish crawlable Protect the Plants and Projects routes
+        id: routes
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/deploy-wordpress-public-audit-fixes.mjs | tee "$RUNNER_TEMP/public-audit-route-fixes.json"
+
+      - name: Install source-controlled Shop SEO metadata
+        id: shop_seo
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/install-wordpress-shop-seo-meta.mjs | tee "$RUNNER_TEMP/shop-seo-meta.json"
+
+      - name: Purge Hostinger LiteSpeed cache
+        id: cache
+        shell: bash
+        run: |
+          set -euo pipefail
+          ok=0
+          for attempt in 1 2 3; do
+            if node scripts/flush-hostinger-litespeed-mcp.mjs; then ok=1; break; fi
+            sleep $((attempt * 4))
+          done
+          [[ "$ok" -eq 1 ]] || { echo 'LiteSpeed cache purge failed after retries.' >&2; exit 1; }
+          sleep 5
+
+      - name: Run current core public-route and metadata audit
+        id: core
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/audit-dtfseeds-live.mjs
+
+      - name: Run current expanded public-suite audit
+        id: suite
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/audit-dtfseeds-public-suite.mjs
+
+      - name: Run current WooCommerce genetics audit
+        id: commerce
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/audit-dtfseeds-commerce.mjs
+
+      - name: Upload production audit evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dtf-current-production-audit-fixes-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/public-audit-route-fixes.json
+            ${{ runner.temp }}/shop-seo-meta.json
+            live-site-audit.json
+            live-site-audit.md
+            commerce-audit.json
+            commerce-audit.md
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report production result
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          STATUS: ${{ job.status }}
+          ROUTES: ${{ steps.routes.outcome }}
+          SHOP_SEO: ${{ steps.shop_seo.outcome }}
+          CACHE: ${{ steps.cache.outcome }}
+          CORE: ${{ steps.core.outcome }}
+          SUITE: ${{ steps.suite.outcome }}
+          COMMERCE: ${{ steps.commerce.outcome }}
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 46,
+              body: [
+                '## Current DTF production audit fixes', '',
+                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                `Overall: **${process.env.STATUS}**`,
+                `Protect the Plants + Projects publication: **${process.env.ROUTES || 'not-run'}**`,
+                `Shop SEO metadata installation: **${process.env.SHOP_SEO || 'not-run'}**`,
+                `LiteSpeed purge: **${process.env.CACHE || 'not-run'}**`,
+                `Core routes + metadata audit: **${process.env.CORE || 'not-run'}**`,
+                `Expanded apps/tools audit: **${process.env.SUITE || 'not-run'}**`,
+                `WooCommerce genetics audit: **${process.env.COMMERCE || 'not-run'}**`, '',
+                'Protected scope: two reviewed static HTML files plus the source-controlled Shop SEO MU plugin. Both installers back up before mutation, SHA-verify the live target, rollback on failed public verification, and finalize only after the reviewed source is confirmed.'
+              ].join('\n')
+            });
