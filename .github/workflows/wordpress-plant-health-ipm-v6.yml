@@ -37,7 +37,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Validate publisher and curriculum
+      - name: Validate publisher, curriculum, and canonical route
         shell: bash
         run: |
           set -euo pipefail
@@ -47,6 +47,14 @@ jobs:
           grep -Fq '"lessons": 32' "$RUNNER_TEMP/plant-health-ipm-v6-validation.json"
           grep -Fq '"sources": 4' "$RUNNER_TEMP/plant-health-ipm-v6-validation.json"
           grep -Fq '"visualTargets": 10' "$RUNNER_TEMP/plant-health-ipm-v6-validation.json"
+          node - <<'NODE'
+          const fs=require('fs');
+          const c=JSON.parse(fs.readFileSync('site/wordpress/education/plant-health-ipm-v6.json','utf8'));
+          if(c.topicId!=='plant-health-ipm' || c.slug!=='ipm' || c.route!=='/learn/ipm/') throw new Error('Plant Health canonical route must remain /learn/ipm/.');
+          const p=fs.readFileSync('scripts/publish-wordpress-plant-health-ipm-v6.mjs','utf8');
+          if(!p.includes("pageBySlug('ipm')")) throw new Error('Publisher is not pinned to the canonical ipm slug.');
+          console.log('Plant Health canonical route preflight passed.');
+          NODE
 
   publish:
     name: Publish and verify Plant Health IPM V6
@@ -147,7 +155,7 @@ jobs:
               `Focused lessons: **${process.env.LESSONS || '0'}**`,
               `Evidence references: **${process.env.SOURCES || '0'}**`,
               `Quality-gated visual targets: **${process.env.VISUAL_TARGETS || '0'}**`, '',
-              'Existing subject ownership and guided-learning layers are preserved. Visual targets remain planning targets until artwork QA passes.'
+              'Canonical live route is /learn/ipm/. Existing subject ownership and guided-learning layers are preserved. Visual targets remain planning targets until artwork QA passes.'
             ].join('\n');
             for (const issue_number of [46,136]) {
               await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number,body});
