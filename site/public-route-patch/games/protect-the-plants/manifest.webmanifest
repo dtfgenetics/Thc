@@ -1,0 +1,19 @@
+{
+  "name": "Protect the Plants",
+  "short_name": "Protect Plants",
+  "description": "DTF Genetics' two-player hidden-garden strategy game.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#050b08",
+  "theme_color": "#0b2012",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "./plant.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

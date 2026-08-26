@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "id": "protect-the-plants",
   "title": "Protect the Plants",
   "type": "multiplayer-hidden-garden-strategy",
@@ -7,7 +7,7 @@
   "board": "15x15",
   "players": 2,
   "runtime": "static-php-wordpress-transients",
-  "status": "playable-alpha",
+  "status": "playable-beta",
   "formations": [
     {"id":"mother-row","size":5},
     {"id":"trellis-row","size":4},
@@ -15,6 +15,36 @@
     {"id":"bushy-pheno","size":3},
     {"id":"solo-pots","size":2}
   ],
-  "features": ["room-codes","active-game-recovery","room-chat","mobile-board-tabs","placement-animation","server-authoritative-turns","hidden-opponent-state","post-game-stats"],
-  "production": {"frontEnd":"static","api":"php","storage":"wordpress-transients","externalNodeHostRequired":false}
+  "features": [
+    "room-codes",
+    "active-game-recovery",
+    "finished-game-recovery",
+    "room-chat",
+    "mobile-board-tabs",
+    "placement-animation",
+    "placement-preview",
+    "placement-undo-clear",
+    "keyboard-board-navigation",
+    "coordinate-readout",
+    "optional-shot-confirmation",
+    "generated-web-audio",
+    "optional-haptics",
+    "web-share-fallback",
+    "fullscreen-support",
+    "network-status",
+    "server-authoritative-turns",
+    "hidden-opponent-state",
+    "persistent-battle-events",
+    "two-player-rematch-consent",
+    "alternating-rematch-starter",
+    "post-game-stats",
+    "reduced-motion"
+  ],
+  "production": {
+    "frontEnd": "static",
+    "api": "php",
+    "storage": "wordpress-transients",
+    "externalNodeHostRequired": false,
+    "paidRuntimeDependencies": false
+  }
 }
