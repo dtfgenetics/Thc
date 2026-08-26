@@ -1,0 +1,147 @@
+name: Polish THC Encyclopedia Public Copy V1
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/polish-wordpress-encyclopedia-public-copy-v1.mjs'
+      - '.github/workflows/wordpress-encyclopedia-public-copy-v1.yml'
+  workflow_run:
+    workflows:
+      - Publish THC Encyclopedia Production
+    types: [completed]
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-encyclopedia-public-copy-v1
+  cancel-in-progress: true
+
+env:
+  WP_SITE_URL: https://dtfseeds.com
+  NODE_OPTIONS: --dns-result-order=ipv4first
+
+jobs:
+  polish:
+    name: Remove internal QA language from public encyclopedia copy
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    environment: production
+    env:
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      APPLY_ENCYCLOPEDIA_PUBLIC_COPY_V1: 'true'
+      BACKUP_ROOT: /tmp/dtf-encyclopedia-public-copy-v1
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate public-copy publisher
+        id: validate
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
+          node --check scripts/polish-wordpress-encyclopedia-public-copy-v1.mjs
+          grep -Fq 'Educational reference · evidence, sources, and limits shown below' scripts/polish-wordpress-encyclopedia-public-copy-v1.mjs
+          grep -Fq 'About this reference' scripts/polish-wordpress-encyclopedia-public-copy-v1.mjs
+
+      - name: Polish learner-facing encyclopedia copy
+        id: publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$BACKUP_ROOT"
+          node scripts/polish-wordpress-encyclopedia-public-copy-v1.mjs | tee "$RUNNER_TEMP/encyclopedia-public-copy-v1.log"
+          backup_dir="$(cat "$BACKUP_ROOT/latest-backup-path.txt")"
+          report="$backup_dir/encyclopedia-public-copy-v1-report.json"
+          test -s "$report"
+          echo "backup_dir=$backup_dir" >> "$GITHUB_OUTPUT"
+          echo "report=$report" >> "$GITHUB_OUTPUT"
+          echo "updated=$(node -p "require(process.argv[1]).updatedCount" "$report")" >> "$GITHUB_OUTPUT"
+          echo "lessons=$(node -p "require(process.argv[1]).lessonCount" "$report")" >> "$GITHUB_OUTPUT"
+
+      - name: Visitor-verify updated public copy
+        id: verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          report="${{ steps.publish.outputs.report }}"
+          node - <<'NODE' "$report" > "$RUNNER_TEMP/updated-slugs.txt"
+          const r=require(process.argv[2]);
+          for(const slug of r.updatedSlugs) console.log(slug);
+          NODE
+
+          while IFS= read -r slug; do
+            [[ -n "$slug" ]] || continue
+            if [[ "$slug" == "encyclopedia" ]]; then
+              route="/learn/encyclopedia/"
+            else
+              route="/learn/encyclopedia/$slug/"
+            fi
+            body="$RUNNER_TEMP/${slug}.html"
+            curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 1 \
+              --connect-timeout 10 --max-time 45 \
+              -H 'Cache-Control: no-cache, no-store, max-age=0' -H 'Pragma: no-cache' \
+              "$WP_SITE_URL${route}?dtf_public_copy_v1=${GITHUB_RUN_ID}-${slug}" -o "$body"
+
+            if grep -Fqi 'Controlled education content' "$body"; then
+              echo "$route still exposes internal controlled-content language" >&2
+              exit 1
+            fi
+            if grep -Fqi 'Publication control' "$body"; then
+              echo "$route still exposes internal publication-control language" >&2
+              exit 1
+            fi
+            if [[ "$slug" != "encyclopedia" ]]; then
+              grep -Fqi 'Educational reference · evidence, sources, and limits shown below' "$body"
+              grep -Fqi 'About this reference' "$body"
+            fi
+          done < "$RUNNER_TEMP/updated-slugs.txt"
+
+      - name: Upload rollback and verification evidence
+        if: always() && steps.publish.outputs.backup_dir != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: thc-encyclopedia-public-copy-v1-${{ github.run_id }}
+          path: |
+            ${{ steps.publish.outputs.backup_dir }}
+            ${{ runner.temp }}/encyclopedia-public-copy-v1.log
+            ${{ runner.temp }}/updated-slugs.txt
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report encyclopedia public-copy result
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          STATUS: ${{ job.status }}
+          VALIDATE: ${{ steps.validate.outcome }}
+          PUBLISH: ${{ steps.publish.outcome }}
+          VERIFY: ${{ steps.verify.outcome }}
+          UPDATED: ${{ steps.publish.outputs.updated }}
+          LESSONS: ${{ steps.publish.outputs.lessons }}
+        with:
+          script: |
+            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body:[
+              '## THC Encyclopedia public-copy polish V1','',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Result: **${process.env.STATUS}**`,
+              `Publisher validation: **${process.env.VALIDATE || 'not-run'}**`,
+              `WordPress update: **${process.env.PUBLISH || 'not-run'}**`,
+              `Visitor verification: **${process.env.VERIFY || 'not-run'}**`,
+              `Published lessons scanned: **${process.env.LESSONS || 'unknown'}**`,
+              `Pages changed this run: **${process.env.UPDATED || 'unknown'}**`,'',
+              'Internal release-control language remains in source/CI while learner-facing Encyclopedia pages use educational reference language.'
+            ].join('\n')});
