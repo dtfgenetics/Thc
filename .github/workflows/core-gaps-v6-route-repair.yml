@@ -16,6 +16,10 @@ on:
       - '.github/workflows/wordpress-plant-health-ipm-v6.yml'
       - '.github/workflows/wordpress-genetics-evidence-v6.yml'
   workflow_dispatch:
+  workflow_run:
+    workflows:
+      - Enhance DTFSeeds Education V4
+    types: [completed]
 
 permissions:
   contents: write
@@ -56,7 +60,7 @@ jobs:
   publish:
     name: Persist route repair, publish three subjects, verify visitors
     needs: validate
-    if: ${{ github.event_name != 'pull_request' }}
+    if: ${{ github.event_name != 'pull_request' && (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success') }}
     runs-on: ubuntu-latest
     timeout-minutes: 40
     environment: production
