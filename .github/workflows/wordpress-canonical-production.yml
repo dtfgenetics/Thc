@@ -111,7 +111,7 @@ jobs:
           echo "brand_id=$(node -p "require(process.argv[1]).brandMediaId" "$report")" >> "$GITHUB_OUTPUT"
           echo "missing=$(node -p "require(process.argv[1]).missingSelections.join(',')" "$report")" >> "$GITHUB_OUTPUT"
 
-      - name: Rebuild polished Seeds content and URL brand state
+      - name: Rebuild commerce presentation and URL brand state
         id: commerce_visual
         env:
           APPLY_COMMERCE_VISUALS: 'true'
@@ -210,7 +210,6 @@ jobs:
 
           verify_page '/' 'Genetics first. Cultivation science behind it.' 8
           verify_page '/learn/' 'Learn the plant as a connected system.' 10
-          verify_page '/seeds/' 'From breeding notes to current releases.' 2
           verify_page '/shop/' 'dtf-commerce-archive-style' 2
           verify_page '/community/' 'Join the official DTF / Teaching Healthy Cultivation Discord' 0
           verify_page '/contact/' 'Join the official DTF / Teaching Healthy Cultivation Discord' 0
@@ -321,7 +320,7 @@ jobs:
               `WordPress application password configured: **${process.env.PASSWORD_PRESENT || 'false'}**`,
               `Canonical page reconciliation: **${process.env.PUBLISH_OUTCOME || 'not-run'}**`,
               `Home/Learn visual rebuild: **${process.env.VISUAL_OUTCOME || 'not-run'}**`,
-              `Seeds visual rebuild + URL brand state: **${process.env.COMMERCE_VISUAL_OUTCOME || 'not-run'}**`,
+              `Commerce presentation + URL brand state: **${process.env.COMMERCE_VISUAL_OUTCOME || 'not-run'}**`,
               `WooCommerce Shop archive styling: **${process.env.SHOP_ARCHIVE_OUTCOME || 'not-run'}**`,
               `Cannabis-leaf Site Icon media ID: **${process.env.SITE_ICON || 'not-run'}**`,
               `WordPress media indexed for visual composition: **${process.env.MEDIA_COUNT || 'not-run'}**`,
@@ -330,6 +329,6 @@ jobs:
               `Optional visual slots unmatched: **${process.env.MISSING || 'none'}**`,
               `WooCommerce reconciliation: **${process.env.COMMERCE_RECONCILE_OUTCOME || 'not-run'}**`,
               `WooCommerce rollback: **${process.env.COMMERCE_ROLLBACK_OUTCOME || 'not-needed'}**`, '',
-              'Production scope: unified DTF visual hierarchy, Home/Learn/Seeds structure, correct subject links, WooCommerce release-card styling, current brand imagery, and cache-busted live verification.'
+              'Production scope: canonical WordPress Home/Learn/community/shop presentation, WooCommerce release-card styling, current brand imagery, and cache-busted live verification. Genetics routes are owned and verified by the dedicated genetics publisher.'
             ].join('\n');
             await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body});
