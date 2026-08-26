@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-08-26",
+  "curriculumId": "outdoor-v6",
+  "route": "/learn/outdoor/",
+  "chapters": {
+    "site-sun": [
+      {
+        "file": "THC-ENC-050_Soil_Texture_Structure_and_Aggregation.jpg",
+        "title": "Soil Texture, Structure & Aggregation",
+        "alt": "Educational diagram separating soil texture from structure, aggregation and pore arrangement as context for outdoor drainage and rooting."
+      }
+    ],
+    "hardening-transplant": [
+      {
+        "file": "THC-ENC-059_Container_Geometry_Root_Restriction_and_Transplanting.jpg",
+        "title": "Container Geometry, Root Restriction & Transplanting",
+        "alt": "Educational diagram showing container root restriction and transplant context for establishment outdoors."
+      },
+      {
+        "file": "V04-SUP-009_Heat_Stress_and_Thermotolerance.jpg",
+        "title": "Heat Stress & Thermotolerance",
+        "alt": "Educational diagram explaining plant heat stress and thermotolerance as supporting context for outdoor acclimation."
+      },
+      {
+        "file": "V04-SUP-011_Cold_Stress_Chilling_and_Freezing_Responses.jpg",
+        "title": "Cold Stress, Chilling & Freezing Responses",
+        "alt": "Educational diagram explaining plant responses to chilling, cold stress and freezing as supporting context for outdoor acclimation."
+      }
+    ],
+    "water-rootzone": [
+      {
+        "file": "THC-ENC-044_Water_Movement_from_Media_to_Leaf.jpg",
+        "title": "Water Movement from Media to Leaf",
+        "alt": "Educational diagram tracing water movement from the root environment through roots and xylem toward transpiring leaves."
+      },
+      {
+        "file": "THC-ENC-081_Water_Potential_and_the_Soil_Plant_Atmosphere_Continuum.jpg",
+        "title": "Water Potential & the Soil-Plant-Atmosphere Continuum",
+        "alt": "Educational diagram connecting water-potential gradients across root zone, plant and atmosphere."
+      },
+      {
+        "file": "THC-ENC-043_Root_Zone_Oxygen_Hypoxia_and_Recovery.jpg",
+        "title": "Root-Zone Oxygen, Hypoxia & Recovery",
+        "alt": "Educational diagram explaining root-zone oxygen limitation, hypoxia and recovery after excessive saturation."
+      },
+      {
+        "file": "V04-SUP-010_Drought_Stress_and_Water_Deficit_Responses.jpg",
+        "title": "Drought Stress & Water-Deficit Responses",
+        "alt": "Educational diagram explaining drought stress, water-deficit response and recovery context."
+      }
+    ],
+    "wind-support": [],
+    "rain-flower-risk": [
+      {
+        "file": "THC-ENC-083_Relative_Humidity_Dew_Point_and_Condensation.jpg",
+        "title": "Relative Humidity, Dew Point & Condensation",
+        "alt": "Educational diagram connecting relative humidity, dew point, surface temperature and condensation risk as supporting physics for wet outdoor flowers."
+      },
+      {
+        "file": "THC-ENC-084_Saturation_Vapor_Pressure_and_Temperature.jpg",
+        "title": "Saturation Vapor Pressure & Temperature",
+        "alt": "Educational diagram showing how saturation vapor pressure changes with temperature and contributes to outdoor moisture-risk interpretation."
+      }
+    ],
+    "pests-wildlife": [
+      {
+        "file": "THC-ENC-001_VIS-08_Monitored_Cultivation_Decision.jpg",
+        "title": "Monitored Cultivation Decision",
+        "alt": "Educational decision diagram connecting monitored observations to bounded cultivation decisions and verification."
+      }
+    ],
+    "pollen-sex": [],
+    "season-microclimate": [
+      {
+        "file": "THC-ENC-001_VIS-06_Measurement_Quality_Chain.jpg",
+        "title": "Measurement Quality Chain",
+        "alt": "Educational diagram showing how measurement quality affects interpretation and decision quality when comparing outdoor microclimates and seasons."
+      }
+    ]
+  },
+  "gaps": [
+    {"id":"THC-OUT-01","status":"artwork-needed","title":"Outdoor Site Selection","neededVisual":"Evaluate direct sun exposure, drainage, air movement, water access, privacy/security constraints, slope, soil/media plan, and nearby contamination or pollen sources."},
+    {"id":"THC-OUT-02","status":"artwork-needed","title":"Sun Path and Seasonal Exposure","neededVisual":"Show changing solar angle and day length across a season and how buildings, trees, and terrain create moving shade."},
+    {"id":"THC-OUT-03","status":"artwork-needed","title":"Hardening Off: Indoor to Outdoor Transition","neededVisual":"Show gradual exposure to brighter light, wind, temperature variation and outdoor humidity while monitoring stress response."},
+    {"id":"THC-OUT-04","status":"artwork-needed","title":"Outdoor Transplanting and Root Establishment","neededVisual":"Show transplant timing considerations, root-ball handling, planting depth, immediate watering, temporary support, mulch clearance and establishment monitoring."},
+    {"id":"THC-OUT-05","status":"artwork-needed","title":"Wind Load and Structural Support","neededVisual":"Show prevailing wind, branch leverage, staking or trellising, flexible ties and load distribution without stem girdling."},
+    {"id":"THC-OUT-06","status":"artwork-needed","title":"Rain, Dense Flowers and Moisture Risk","neededVisual":"Show repeated rain, dense floral structure, cool nights, poor airflow and trapped moisture as interacting disease-risk factors."},
+    {"id":"THC-OUT-07","status":"artwork-needed","title":"Outdoor Irrigation: Root-Zone Coverage and Timing","neededVisual":"Compare shallow frequent wetting with root-zone irrigation, emitter placement, runoff/drainage and observation-based adjustment."},
+    {"id":"THC-OUT-08","status":"artwork-needed","title":"Wildlife Protection by Exclusion","neededVisual":"Show fencing, guards, appropriate netting, sanitation and site design as prevention-first wildlife controls."},
+    {"id":"THC-OUT-09","status":"artwork-needed","title":"Outdoor Microclimates Around the Plant","neededVisual":"Map slope, walls, ground cover, shade, windbreaks, canopy density, nearby water and structures to temperature, humidity, wind and drying rate."},
+    {"id":"THC-OUT-10","status":"artwork-needed","title":"Pollen Drift and Unwanted Pollination Risk","neededVisual":"Explain airborne pollen movement, wind direction, uncertainty in travel distance and why geographic separation alone cannot guarantee isolation."},
+    {"id":"THC-OUT-11","status":"artwork-needed","title":"Outdoor Seasonal Planning Timeline","neededVisual":"Organize site preparation, acclimation, transplanting, vegetative growth, reproductive transition, weather-risk periods, harvest monitoring and post-season sanitation on a flexible local timeline."}
+  ]
+}
