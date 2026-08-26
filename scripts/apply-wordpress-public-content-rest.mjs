@@ -21,12 +21,11 @@ const headers = {
   'User-Agent': 'DTFSeeds-Content-Deployment/1.6'
 };
 
-// WordPress owns the editorial/root pages below. /games/ and /games/high-iq/
-// are owned by the static public application suite and must never be required
-// to exist as WordPress pages.
+// WordPress owns the editorial/root pages below. /seeds/ and /seeds/* are
+// exclusively owned by the dedicated genetics publisher. /games/ and
+// /games/high-iq/ are owned by the static public application suite.
 const pageDefinitions = [
   ['home', 'DTF Genetics | Dream the Future'],
-  ['seeds', 'Seeds / Genetics'],
   ['learn', 'Teaching Healthy Cultivation'],
   ['community', 'Community'],
   ['shop', 'Shop'],
