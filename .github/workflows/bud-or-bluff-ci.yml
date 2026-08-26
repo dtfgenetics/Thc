@@ -7,8 +7,6 @@ on:
       - 'site/public-route-patch/games/bud-or-bluff/**'
       - '.github/workflows/bud-or-bluff-ci.yml'
   push:
-    branches:
-      - main
     paths:
       - 'games/bud-or-bluff/**'
       - 'site/public-route-patch/games/bud-or-bluff/**'
