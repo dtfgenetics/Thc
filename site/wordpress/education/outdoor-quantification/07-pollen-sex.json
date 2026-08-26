@@ -1,0 +1,313 @@
+{
+  "schemaVersion": 1,
+  "parentId": "outdoor-quantification-v1",
+  "route": "/learn/outdoor/",
+  "chapter": {
+    "chapterId": "pollen-sex",
+    "chapterNumber": 7,
+    "chapterTitle": "Sex Expression, Pollen Drift & Seed-Set Investigation",
+    "learnerQuestion": "What reproductive structures are present, when and where could pollen have been released, and what evidence supports an internal or external explanation for seed set?",
+    "sourceContext": [
+      {
+        "id": "Q22",
+        "type": "peer-reviewed",
+        "citation": "Nimmala M, Ross SD, Foroutan H. Cannabis pollen dispersal across the United States. Scientific Reports. 2024;14:20605. doi:10.1038/s41598-024-70633-x.",
+        "supports": "Windborne cannabis pollen deposition has a steep near-source decline but a long dispersal tail, with strong seasonal, regional and day/night variation. Uniform isolation distance cannot guarantee zero cross-pollination."
+      },
+      {
+        "id": "Q23",
+        "type": "peer-reviewed review",
+        "citation": "Hermaphroditism in Cannabis sativa L.: Impacts, Inducers, and Industry Implications. 2026.",
+        "supports": "Cannabis sex expression is plastic and affected by genotype, developmental state and environmental context; intersex expression can create unintended pollen and seed set, and early detection is important."
+      },
+      {
+        "id": "Q24",
+        "type": "canonical THC genetics context",
+        "citation": "THC Genetics & Breeding companion literature and Outdoor V6 reproductive-risk lessons.",
+        "supports": "Source-reported lineage, observed sex expression, intended pollination and uncertain parentage must remain separate evidence categories in breeding and crop records."
+      }
+    ],
+    "visualTargets": [
+      "THC macro reference: female preflower, male pollen structures and intersex structures at multiple stages",
+      "THC inspection map: nodes, branches, inner canopy and late-flower reproductive checks",
+      "THC pollen-release sequence from closed structure to open release with field-record points",
+      "THC pollen-risk map combining source bearing, wind direction and flowering overlap",
+      "THC seed-set progression plate from early swelling to mature seed",
+      "THC seed-set investigation decision tree separating internal source, external source and unresolved origin"
+    ],
+    "subtopics": [
+      {
+        "id": "reproductive-structure-survey",
+        "lessonTitle": "Inspect reproductive structures systematically instead of checking one branch once",
+        "goal": "Quantify sex-expression observations across plants, nodes and flowering stages so male or intersex structures can be detected and tracked before seed set is used as the first warning.",
+        "measure": [
+          {
+            "metric": "Plants inspected",
+            "unit": "count and % of defined crop population",
+            "method": "Use a repeatable route and record which plants were actually inspected. Include lower, interior and late-developing branch positions rather than only top flowers.",
+            "frequency": "At defined reproductive-stage checkpoints and more frequently when unexpected structures are found."
+          },
+          {
+            "metric": "Reproductive-structure observation",
+            "unit": "count by female / male / intersex-suspect / unknown class",
+            "method": "Count observed structures using macro photos for uncertain cases. Keep sex-expression class separate from plant identity and do not label an uncertain structure as confirmed pollen-producing tissue without adequate evidence.",
+            "frequency": "Every reproductive scouting round."
+          },
+          {
+            "metric": "Intersex-expression incidence",
+            "unit": "% plants with confirmed or suspect intersex structures",
+            "method": "Record confirmed and suspect counts separately, each divided by plants inspected.",
+            "frequency": "Every reproductive scouting round."
+          },
+          {
+            "metric": "First-observation timing",
+            "unit": "date + flowering stage",
+            "method": "Record the first date and developmental stage for each plant where unexpected reproductive expression is observed.",
+            "frequency": "At first observation and updated if expression changes."
+          }
+        ],
+        "record": [
+          "plant ID / genotype / source",
+          "date / flowering stage",
+          "plants and branch zones inspected",
+          "female / male / intersex-suspect / unknown counts",
+          "confirmed vs suspect status",
+          "first-observation date",
+          "recent stress or intervention context without assuming causation",
+          "macro photo IDs",
+          "follow-up inspection date"
+        ],
+        "compare": [
+          "same plant across flowering stages",
+          "genotypes or cohorts under the same environment",
+          "outer/top vs interior/lower branch positions",
+          "confirmed intersex incidence vs suspect incidence"
+        ],
+        "interpret": [
+          "Sex expression should be recorded as an observed phenotype, not automatically attributed to one stress event or one genetic cause.",
+          "A single missed inspection can matter because reproductive structures can develop in hidden or late-forming sites.",
+          "Repeated expression within a genotype or family is stronger breeding evidence than one isolated observation, but environment and developmental timing still belong in the record."
+        ],
+        "decisionRule": "Increase inspection intensity when unexpected reproductive structures are observed and keep the plant identity traceable. Make removal, breeding or containment decisions according to the project's reproductive goal and legal/site protocol rather than from an unverified photo alone.",
+        "confidenceCheck": "Young floral structures and damaged tissue can be misidentified. Use repeat observations or expert/macro confirmation before high-confidence classification."
+      },
+      {
+        "id": "internal-pollen-source-audit",
+        "lessonTitle": "Audit internal pollen sources before blaming neighboring fields",
+        "goal": "Map pollen-producing structures, likely release timing and crop movement so an internal source is investigated before external pollen is treated as the default explanation.",
+        "measure": [
+          {
+            "metric": "Pollen-source plants",
+            "unit": "count + plant IDs",
+            "method": "Record confirmed male or pollen-producing intersex plants/branches separately from suspect structures.",
+            "frequency": "At discovery and every follow-up reproductive survey."
+          },
+          {
+            "metric": "Open or released structures",
+            "unit": "count or ordinal abundance class by plant/branch",
+            "method": "Record whether pollen structures are closed, opening, empty/released or unknown. Photograph representative stages before handling when practical.",
+            "frequency": "Every inspection of a known source."
+          },
+          {
+            "metric": "Source-to-affected distance",
+            "unit": "m/ft + direction",
+            "method": "Map the location of confirmed internal pollen sources relative to later seed-set clusters or susceptible flowers.",
+            "frequency": "Once a source or seed-set cluster is identified; update if additional sources are found."
+          },
+          {
+            "metric": "Release-window overlap",
+            "unit": "dates/days of temporal overlap",
+            "method": "Compare likely pollen-release dates with the period when nearby female flowers were receptive. Keep uncertain dates labeled estimated.",
+            "frequency": "During source investigation and after new evidence."
+          }
+        ],
+        "record": [
+          "source plant/branch ID",
+          "structure stage: closed / opening / released / unknown",
+          "first and last observed source dates",
+          "source location and direction",
+          "distance to affected/susceptible zones",
+          "wind condition during observed release when known",
+          "crop work or handling event near source",
+          "containment/removal action by site protocol",
+          "photos / sample IDs"
+        ],
+        "compare": [
+          "seed-set distribution near vs far from confirmed internal sources",
+          "timing of source release vs female susceptibility",
+          "windward/downwind pattern during known release windows",
+          "internal-source evidence vs external-source evidence"
+        ],
+        "interpret": [
+          "A confirmed pollen-producing plant inside the crop is a plausible source but still may not explain every seeded flower.",
+          "Spatial proximity and timing overlap strengthen an internal-source hypothesis; absence of either weakens it.",
+          "Removing a source after pollen release does not erase the earlier exposure window, so source history must be retained."
+        ],
+        "decisionRule": "Complete an internal-source audit before assigning seed set to external drift. Preserve release timing, location and affected-zone maps so later parentage or crop-quality investigation has usable evidence.",
+        "confidenceCheck": "Field mapping can establish plausibility, not genetic parentage. DNA-based parentage testing would be needed for high-confidence attribution to a specific pollen donor."
+      },
+      {
+        "id": "external-pollen-risk",
+        "lessonTitle": "Treat external pollen as a weather-and-timing risk, not a fixed radius",
+        "goal": "Quantify neighboring pollen sources, wind-source overlap and flowering timing so external cross-pollination risk is described dynamically rather than by one isolation-distance number.",
+        "measure": [
+          {
+            "metric": "Known or suspected external source distance and bearing",
+            "unit": "m/km or ft/mi + compass direction",
+            "method": "Map known hemp/cannabis pollen sources or likely source sectors relative to the crop. Label unverified sources as suspected.",
+            "frequency": "Before flowering and whenever neighboring land use becomes known or changes."
+          },
+          {
+            "metric": "Wind-source overlap",
+            "unit": "% observations or hours with source sector upwind",
+            "method": "Using on-site or clearly labeled nearby weather data, count defined observation periods when wind travels from the source sector toward the crop during the reproductive overlap window.",
+            "frequency": "Throughout external-source flowering overlap."
+          },
+          {
+            "metric": "Phenology overlap",
+            "unit": "days of overlapping pollen release and female susceptibility",
+            "method": "Record best-known flowering/release timing for the external source and crop. Mark modeled, reported and directly observed dates separately.",
+            "frequency": "Update as flowering observations improve."
+          },
+          {
+            "metric": "Optional airborne pollen observation",
+            "unit": "pollen count per validated sampler area/time or lab result",
+            "method": "Where an appropriate pollen sampler and identification method are available, preserve sampler location, exposure duration and identification method. Do not treat generic dust capture as confirmed Cannabis pollen.",
+            "frequency": "During targeted high-risk windows when the method is available."
+          }
+        ],
+        "record": [
+          "source identity or suspected source sector",
+          "distance and bearing",
+          "source observation confidence",
+          "crop and source flowering dates",
+          "wind direction / speed / data source",
+          "source-sector overlap observations",
+          "rain or weather events affecting the period",
+          "optional sampler / lab IDs",
+          "seed-set map for later comparison"
+        ],
+        "compare": [
+          "periods with vs without source-sector winds",
+          "upwind-facing vs sheltered crop zones",
+          "different external sources by timing and direction",
+          "external-risk pattern against the internal pollen-source audit"
+        ],
+        "interpret": [
+          "The 2024 dispersal model shows a steep decline in deposition near source but a long tail with meaningful seasonal, spatial and day/night variation.",
+          "Distance alone cannot establish zero risk; source size, weather, release timing and receptive flowering overlap all matter.",
+          "A mapped source and favorable wind create exposure plausibility, not proof that a particular seed was fathered by that source."
+        ],
+        "decisionRule": "Rate external pollen risk from source confidence + distance/bearing + timing overlap + wind overlap. Avoid declaring any universal distance completely safe and keep unresolved origin explicitly unresolved.",
+        "confidenceCheck": "Weather models and neighboring-crop reports add context but do not directly measure pollen deposition at the flower. Direct sampling or genetic parentage testing provides stronger attribution."
+      },
+      {
+        "id": "seed-set-investigation",
+        "lessonTitle": "Use seed-set distribution to investigate exposure without inventing parentage",
+        "goal": "Measure where seed set occurs, when it became visible and how its distribution relates to internal sources, external-risk sectors and plant developmental stage.",
+        "measure": [
+          {
+            "metric": "Seed-set incidence",
+            "unit": "% sampled flowers/branches with developing or mature seed",
+            "method": "Use a defined sampling method and count sampled units with confirmed seed development separately from suspect swelling.",
+            "frequency": "At defined late-flower checkpoints and when unexpected seed set is found."
+          },
+          {
+            "metric": "Seed count per sampled unit",
+            "unit": "count per flower/branch or defined sample mass",
+            "method": "Count confirmed seeds within the same sampling unit. Keep destructive samples traceable to plant/branch ID.",
+            "frequency": "At investigation sampling and harvest-quality assessment."
+          },
+          {
+            "metric": "Spatial seed-set distribution",
+            "unit": "mapped plant/branch/canopy zone",
+            "method": "Map seeded units by plant and branch orientation, including edge/interior and source-facing direction when known.",
+            "frequency": "Each investigation round."
+          },
+          {
+            "metric": "Seed maturity/development class",
+            "unit": "early / developing / mature / uncertain",
+            "method": "Use a consistent visual/physical maturity class and preserve representative images or samples.",
+            "frequency": "At each seed-set assessment."
+          }
+        ],
+        "record": [
+          "plant / branch / flower sample ID",
+          "sample size and method",
+          "confirmed vs suspect seed-set incidence",
+          "seed count per sample unit",
+          "seed development class",
+          "branch orientation and canopy zone",
+          "internal-source map overlap",
+          "external-source/wind overlap",
+          "first date seed set was noticed",
+          "photos / preserved sample IDs",
+          "parentage status: known / intended / uncertain"
+        ],
+        "compare": [
+          "seed-set incidence near vs far from internal source locations",
+          "source-facing vs opposite crop edges where relevant",
+          "plants with vs without observed intersex expression",
+          "seed-set pattern across timing and flowering-stage cohorts"
+        ],
+        "interpret": [
+          "Seed distribution can narrow hypotheses but does not identify the pollen parent by itself.",
+          "Localized seed set near a confirmed internal source differs from broad edge-biased seed set during strong external-source overlap, but either pattern can have alternative explanations.",
+          "Seed maturity can help reconstruct approximate pollination timing only within biological uncertainty; it should not be converted into an exact pollination date without validated developmental data."
+        ],
+        "decisionRule": "Classify seed-set origin as intended, probable internal, probable external or unresolved only when the evidence supports that level. Keep parentage uncertain unless direct breeding records or genetic testing establish it.",
+        "confidenceCheck": "Field pattern, wind and timing are circumstantial evidence. Genetic parentage analysis is required for high-confidence donor identification when multiple possible pollen sources exist."
+      }
+    ],
+    "fieldWorksheet": {
+      "title": "Section 7 sex, pollen & seed-set investigation record",
+      "fields": [
+        "plant ID / genotype / source",
+        "flowering stage and inspection date",
+        "plants / nodes / branches inspected",
+        "female / male / intersex-suspect / unknown observations",
+        "confirmed internal pollen-source IDs",
+        "source structure stage and release window",
+        "source-to-affected distance / direction",
+        "external source distance / bearing / confidence",
+        "wind-source overlap",
+        "phenology overlap dates",
+        "optional pollen sampler / lab result",
+        "seed-set sample size / incidence",
+        "seed count / development class",
+        "spatial seed-set map",
+        "intended / probable internal / probable external / unresolved classification",
+        "photos / sample IDs",
+        "measured / estimated / uncertain label",
+        "decision and evidence needed to change it"
+      ],
+      "outcome": "The learner should finish with a reproductive evidence chain that separates sex-expression observation, internal pollen release, external drift risk and seed-set distribution while keeping parentage uncertainty explicit."
+    },
+    "calculationHelpers": [
+      {
+        "name": "Intersex-expression incidence",
+        "formula": "plants with confirmed or suspect intersex structures ÷ plants inspected × 100",
+        "use": "Track how widespread unexpected sex expression is within a defined scouting population.",
+        "boundary": "Confirmed and suspect observations should be calculated separately when identification confidence differs."
+      },
+      {
+        "name": "Wind-source overlap",
+        "formula": "source-sector upwind observations ÷ total defined wind observations × 100",
+        "use": "Describe how often the external source sector was upwind during the overlap window.",
+        "boundary": "This is a risk-context metric, not pollen deposition probability."
+      },
+      {
+        "name": "Phenology overlap",
+        "formula": "end of shared reproductive window − start of shared reproductive window",
+        "use": "Compare timing compatibility among possible pollen sources and susceptible crop flowering.",
+        "boundary": "Observed or reported flowering windows may be uncertain and should be labeled accordingly."
+      },
+      {
+        "name": "Seed-set incidence",
+        "formula": "seeded sample units ÷ sampled units × 100",
+        "use": "Track how widespread confirmed seed development is in a defined sampling frame.",
+        "boundary": "Incidence does not identify the pollen source or quantify all seeds in the crop."
+      }
+    ]
+  }
+}
