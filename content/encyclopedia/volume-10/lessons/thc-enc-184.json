@@ -1,0 +1,68 @@
+{
+  "id": "THC-ENC-184",
+  "number": 184,
+  "title": "Low-Stress Bending and Thigmomorphogenesis",
+  "objective": "Explain what plants can perceive and change after mechanical bending, distinguish repositioning from wounding, and evaluate low-stress training claims without treating grower terminology as a standardized cannabis research treatment.",
+  "terms": [
+    {"term":"mechanical stimulus","definition":"A physical force or deformation experienced by plant tissue, including bending, touch, wind, vibration, compression, or tension."},
+    {"term":"thigmomorphogenesis","definition":"Longer-term changes in plant growth or form that develop in response to repeated or sustained mechanical stimulation."},
+    {"term":"mechanoperception","definition":"The biological detection and transduction of mechanical force or deformation into cellular and whole-plant responses."},
+    {"term":"strain","definition":"Deformation of a material or tissue relative to its original dimensions when force is applied."},
+    {"term":"gravitropism","definition":"Directional growth responses to gravity that can reorient shoots after they are displaced from their previous position."},
+    {"term":"elastic deformation","definition":"A deformation from which tissue substantially returns toward its original shape after the applied force is removed."},
+    {"term":"plastic deformation","definition":"A lasting deformation that remains after an applied force is removed."},
+    {"term":"wound","definition":"Physical disruption of tissue integrity that can activate repair, defense, hydraulic, and metabolic responses distinct from noninjurious repositioning."}
+  ],
+  "termDefinitionsStatus": "controlled_glossary_reconciled_for_publication",
+  "coreScience": [
+    "Plants sense mechanical forces and can alter gene expression, hormone signaling, elongation, cell-wall properties, radial growth, and architecture after mechanical stimulation. The direction, duration, frequency, tissue, developmental stage, and severity of the force all influence the response, so 'mechanical stress' is not one uniform treatment.",
+    "Bending a cannabis shoot can change its orientation relative to gravity and light while also imposing tensile and compressive strain across the stem. A shoot that remains intact may subsequently reorient through differential growth and gravitropic responses. If tissues crack, crush, split, or lose hydraulic continuity, the biological problem changes from repositioning to injury and wound recovery.",
+    "The cultivation phrase low-stress training or LST describes a family of grower practices rather than a single experimentally standardized treatment. Cannabis-specific controlled trials have studied pruning, branch removal, defoliation, density, and architecture, but direct evidence isolating noninjurious bending as an independent treatment is comparatively sparse.",
+    "General plant mechanobiology supports the existence of thigmomorphogenic responses, but it does not establish that a particular bend angle, tie-down schedule, or repeated manipulation will increase cannabis yield or cannabinoid concentration. Any production claim must be tested against an appropriate control under the same genotype and environment."
+  ],
+  "cultivationRelevance": [
+    "Treat bending primarily as a change in shoot position and canopy architecture, then separately document whether tissue injury occurred. This distinction helps explain whether later changes are likely associated with altered light distribution, gravitropic reorientation, mechanical acclimation, wound recovery, or several processes together.",
+    "Evaluate the result by canopy exposure, branch survival, new growth, structural integrity, and the crop endpoint that matters. A branch staying in the desired position is not by itself evidence of improved plant performance."
+  ],
+  "measureAndRecord": [
+    {"field":"Mechanical intervention","requirement":"Plant and shoot ID, date, developmental stage, bend or support location, initial and final orientation when measurable, duration of restraint, and whether force was applied once or repeatedly."},
+    {"field":"Tissue integrity","requirement":"Record intact tissue, visible crease, abrasion, epidermal split, stem crack, crushing, loss of turgor, or branch failure separately."},
+    {"field":"Reorientation and recovery","requirement":"Time to resumed extension, change in shoot angle, new vertical growth, leaf orientation, and any persistent deformation."},
+    {"field":"Canopy effect","requirement":"Light exposure or representative light measurements at defined positions, canopy width/height, branch overlap, and airflow-related observations before and after repositioning."},
+    {"field":"Outcome","requirement":"Breakage rate, branch survival, growth, final architecture, and defined yield or quality endpoints compared with a reference treatment where possible."}
+  ],
+  "misconceptions": [
+    "Low-stress training means the plant experiences no mechanical signal or physiological response.",
+    "Any bent stem becomes stronger because it was bent.",
+    "A specific bend angle is universally safe for every cannabis stem.",
+    "Bending has been proven to guarantee higher cannabis yield.",
+    "A cracked or crushed stem is biologically equivalent to an intact repositioned stem."
+  ],
+  "evidenceLimits": [
+    "Much of the mechanoperception and thigmomorphogenesis literature comes from non-Cannabis species and from mechanical treatments such as wind, brushing, flexing, or controlled strain that are not identical to cultivation LST. Mechanistic principles can inform interpretation but should not be presented as direct cannabis production proof.",
+    "The cannabis literature does not currently support a universal bend angle, frequency, recovery interval, or yield response. This lesson therefore teaches observation and differential interpretation rather than a prescriptive bending recipe."
+  ],
+  "crossLinks": "THC-ENC-014 for structural support; THC-ENC-061–080 for growth and source-sink physiology; THC-ENC-101–120 for light distribution; THC-ENC-181–183 for architecture and timing; THC-ENC-185–200 for higher-impact training and canopy management.",
+  "sourceNotes": [
+    "Doonan JH et al. (2025). Mechanical stimulation in plants: molecular insights, morphological adaptations, and agricultural applications in monocots. BMC Biology. DOI 10.1186/s12915-025-02157-3; general plant mechanobiology evidence, not a cannabis LST trial.",
+    "Chehab EW, Eich E, Braam J. (2009). Thigmomorphogenesis: a complex plant response to mechano-stimulation. Journal of Experimental Botany 60(1):43–56; general mechanism and terminology.",
+    "Spitzer-Rimon B, Duchin S, Bernstein N, Kamenetsky R. (2019). Architecture and Florogenesis in Female Cannabis sativa Plants. Frontiers in Plant Science 10:350. DOI 10.3389/fpls.2019.00350; cannabis architecture framework.",
+    "Danziger N, Bernstein N. (2021). Plant architecture manipulation increases cannabinoid standardization in drug-type medical cannabis. Industrial Crops and Products 167:113528. DOI 10.1016/j.indcrop.2021.113528; cannabis architecture-management evidence, not a standardized LST trial.",
+    "Danziger N, Bernstein N. (2022). Too Dense or Not Too Dense: Higher Planting Density Reduces Cannabinoid Uniformity but Increases Yield/Area in Drug-Type Medical Cannabis. Frontiers in Plant Science 13:713481. DOI 10.3389/fpls.2022.713481."
+  ],
+  "publicationAuthorized": true,
+  "reviewControl": {
+    "controlledManuscript": "Part 10 Batch 01 evidence synthesis",
+    "evidenceControl": "release_time_source_check_complete",
+    "secondaryEvidenceReview": "complete_qualified",
+    "externalReview": "pending_not_recorded",
+    "externalReviewType": "plant_mechanobiology_and_cannabis_horticulture",
+    "releaseTimeReview": "completed_2026-08-26; LST is identified as nonstandardized cultivation terminology, general plant mechanobiology is not represented as cannabis yield proof, and no bend-angle prescription is provided",
+    "publicationAuthorized": true,
+    "publicationAuthorization": "project_owner_2026-08-26_continue_pushing_content",
+    "independentApproval": false,
+    "websiteAction": "publish_with_review_notice"
+  },
+  "slug": "low-stress-bending-and-thigmomorphogenesis",
+  "route": "/encyclopedia/low-stress-bending-and-thigmomorphogenesis"
+}
