@@ -33,7 +33,11 @@ concurrency:
 
 jobs:
   publish:
-    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    # The canonical WordPress workflow can fail a later visitor/cache check after
+    # it has already rewritten /seeds/. The genetics publisher is the recovery
+    # authority for /seeds/ and its child line pages, so run after any completed
+    # canonical attempt except a cancelled one.
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion != 'cancelled' }}
     name: Publish authoritative genetics library and reviewed strain cards
     runs-on: ubuntu-latest
     timeout-minutes: 35
