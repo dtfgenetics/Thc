@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 1,
+  "curriculumId": "harvest-postharvest-v6",
+  "route": "/learn/harvest-postharvest/",
+  "updatedAt": "2026-08-26",
+  "publicationPolicy": {
+    "approvedOnly": true,
+    "draftExcluded": true,
+    "qaRequiredExcluded": true,
+    "exactOrClearlySupportingConceptOnly": true,
+    "genericSubstitutionForbidden": true
+  },
+  "visuals": [
+    {
+      "chapterNumber": 1,
+      "file": "THC-ENC-001_VIS-07_Trichomes_on_Cannabis_Surfaces_v3.0.0.jpg",
+      "title": "Trichomes on Cannabis Surfaces",
+      "alt": "Educational cannabis trichome anatomy reference showing trichomes on plant surfaces",
+      "use": "Anatomy context only. This visual does not define harvest maturity or a universal clear-cloudy-amber threshold."
+    },
+    {
+      "chapterNumber": 2,
+      "file": "Sanitation_and_Biosecurity_Infographic.png",
+      "title": "Sanitation & Biosecurity",
+      "alt": "Educational sanitation and biosecurity infographic for clean cultivation and harvest handling",
+      "use": "Supports clean tools, contact surfaces, traffic control, segregation and contamination prevention during harvest handling."
+    },
+    {
+      "chapterNumber": 3,
+      "file": "THC-ENC-083_Relative_Humidity_Dew_Point_and_Condensation.jpg",
+      "title": "Relative Humidity, Dew Point & Condensation",
+      "alt": "Educational diagram explaining relative humidity, dew point and condensation",
+      "use": "Supports drying-room humidity interpretation and condensation risk; it is not a complete drying recipe."
+    },
+    {
+      "chapterNumber": 3,
+      "file": "THC-ENC-084_Saturation_Vapor_Pressure_and_Temperature.jpg",
+      "title": "Saturation Vapor Pressure & Temperature",
+      "alt": "Educational diagram explaining saturation vapor pressure and temperature",
+      "use": "Supports the temperature-humidity physics behind moisture removal during drying."
+    }
+  ],
+  "gaps": [
+    {
+      "id": "harvest-readiness-multiple-signals",
+      "title": "Harvest Readiness: Multiple Signals, Not One",
+      "neededVisual": "Original comparison showing stigma change, bract development, representative trichome sampling and whole-plant context without a universal harvest percentage.",
+      "status": "needed"
+    },
+    {
+      "id": "trichome-maturity-standardized-imaging",
+      "title": "Trichome Maturity Under Standardized Imaging",
+      "neededVisual": "Purpose-built clear/cloudy/amber glandular-trichome reference with magnification, lighting, white-balance and sampling-location cautions.",
+      "status": "needed"
+    },
+    {
+      "id": "clean-harvest-handling-workflow",
+      "title": "Clean Harvest Handling Workflow",
+      "neededVisual": "Workflow from pre-harvest setup through cutting, transport, trim strategy and entry into drying with batch identity preserved.",
+      "status": "needed"
+    },
+    {
+      "id": "drying-environment-system",
+      "title": "Drying Environment as a System",
+      "neededVisual": "Integrated diagram showing temperature, RH, air exchange, gentle circulation, darkness, spacing, room load and monitoring as interacting variables.",
+      "status": "needed"
+    },
+    {
+      "id": "drying-failure-moisture-gradients",
+      "title": "Drying Failure Modes & Moisture Gradients",
+      "neededVisual": "Cross-section/process diagram comparing rapid surface drying, wet interiors, stalled drying, dead zones, direct-airflow damage and microbial-risk conditions.",
+      "status": "needed"
+    },
+    {
+      "id": "water-activity-vs-moisture-content",
+      "title": "Water Activity vs. Moisture Content",
+      "neededVisual": "Concept diagram separating total moisture from water availability, sampling variability and measurement equilibration without unsupported universal pass/fail numbers.",
+      "status": "needed"
+    },
+    {
+      "id": "curing-moisture-equalization",
+      "title": "Curing & Moisture Equalization",
+      "neededVisual": "Post-drying stabilization workflow showing equilibration, observation, representative sampling and storage transition while explicitly excluding remediation claims.",
+      "status": "needed"
+    },
+    {
+      "id": "storage-risk-factor-map",
+      "title": "Storage Risk Factors",
+      "neededVisual": "Risk map connecting light, heat, oxygen exposure, moisture conditions, container/packaging behavior and time to quality degradation.",
+      "status": "needed"
+    },
+    {
+      "id": "postharvest-degradation-pathways",
+      "title": "Post-Harvest Degradation Pathways",
+      "neededVisual": "Cause-effect diagram for oxidation, volatile loss, color change and other quality shifts with evidence limits clearly labeled.",
+      "status": "needed"
+    },
+    {
+      "id": "batch-sampling-traceability",
+      "title": "Batch Sampling & Traceability",
+      "neededVisual": "Workflow linking batch ID, harvest zone, drying position, sample IDs, instrument records, storage conditions, deviations and release/hold decisions.",
+      "status": "needed"
+    }
+  ]
+}
