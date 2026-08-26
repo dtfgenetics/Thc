@@ -7,6 +7,7 @@ on:
     paths:
       - '.github/workflows/bootstrap-genetics-breeding-infographics.yml'
       - 'site/wordpress/assets/infographics/import-genetics-breeding-001-014.json'
+      - 'site/wordpress/assets/infographics/genetics-import-trigger.txt'
 
 permissions:
   contents: write
@@ -78,8 +79,6 @@ jobs:
               exit 1
             fi
 
-            # Manifest filenames are canonical PNG names. Normalize actual bytes to PNG
-            # so extension and media type cannot drift from the controlled registry.
             convert "$tmp" -strip "$out"
             normalized_mime="$(file -b --mime-type "$out")"
             test "$normalized_mime" = 'image/png'
