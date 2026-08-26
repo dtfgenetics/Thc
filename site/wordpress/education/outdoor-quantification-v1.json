@@ -1,0 +1,306 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-08-26",
+  "id": "outdoor-quantification-v1",
+  "route": "/learn/outdoor/",
+  "title": "Outdoor Cultivation — Quantification Layer",
+  "purpose": "Turn each outdoor subtopic into a repeatable field-observation workflow so learners can measure site conditions, preserve context, compare observations and make bounded decisions instead of relying on generic rules.",
+  "coverage": {
+    "completedChapters": [
+      "site-sun"
+    ],
+    "plannedChapters": [
+      "hardening-transplant",
+      "water-rootzone",
+      "wind-support",
+      "rain-flower-risk",
+      "pests-wildlife",
+      "pollen-sex",
+      "season-microclimate"
+    ]
+  },
+  "measurementPrinciples": [
+    {
+      "title": "Measure before changing",
+      "detail": "Capture the condition that exists before an intervention. Without a baseline, improvement or deterioration cannot be separated from normal variation."
+    },
+    {
+      "title": "Repeat at comparable times and places",
+      "detail": "Outdoor conditions change by hour, weather and canopy position. Repeat measurements at the same point, depth and approximate time when comparing days."
+    },
+    {
+      "title": "Separate measured, estimated and unknown",
+      "detail": "Label direct measurements, model or app estimates, and unknowns separately so confidence is visible instead of implied."
+    },
+    {
+      "title": "Use trends, not isolated numbers",
+      "detail": "One reading can be useful, but repeated observations tied to weather and plant response usually support stronger conclusions."
+    }
+  ],
+  "calculations": [
+    {
+      "name": "Direct-sun duration",
+      "formula": "direct sun end time − direct sun start time",
+      "use": "Compare candidate sites and track seasonal changes in obstruction and sun angle.",
+      "boundary": "Hours of direct sun do not equal DLI because light intensity changes through the day."
+    },
+    {
+      "name": "Rain depth to area volume",
+      "formula": "1 mm rain on 1 m² = 1 L water",
+      "use": "Translate rainfall depth into the maximum water arriving at a horizontal area before interception, runoff and drainage losses.",
+      "boundary": "It does not prove that the same volume entered the active root zone."
+    },
+    {
+      "name": "Water-source flow",
+      "formula": "flow rate = collected volume ÷ collection time",
+      "use": "Compare source flow at the beginning and far end of the delivery system using the same container and test duration.",
+      "boundary": "Flow alone does not describe pressure, emitter uniformity or infiltration."
+    },
+    {
+      "name": "Observed wind-source overlap",
+      "formula": "overlap % = observations with wind arriving from the source sector ÷ total wind observations × 100",
+      "use": "Describe how often a known neighboring pollen/dust source was upwind during the observation window.",
+      "boundary": "This is a screening metric, not a pollen exposure probability."
+    }
+  ],
+  "sections": [
+    {
+      "chapterId": "site-sun",
+      "chapterNumber": 1,
+      "chapterTitle": "Site Selection & Seasonal Sun",
+      "learnerQuestion": "Is this site suitable across the actual season, or does it only look suitable during one visit?",
+      "sourceContext": [
+        {
+          "id": "Q1",
+          "type": "peer-reviewed",
+          "citation": "Nimmala M, Ross SD, Foroutan H. Cannabis pollen dispersal across the United States. Scientific Reports. 2024;14:20605. doi:10.1038/s41598-024-70633-x.",
+          "supports": "Cannabis pollen transport varies with meteorology, time of day, season and distance, so neighboring-source risk should be recorded as a changing landscape variable rather than reduced to one universal radius."
+        },
+        {
+          "id": "Q2",
+          "type": "university extension",
+          "citation": "Oregon State University Extension. Optimum irrigation for CBD-type hemp plants in the field. EM 9571.",
+          "supports": "Field water response depends on cultivar type, density, irrigation method and climate, supporting site-specific water-access and delivery measurements instead of one universal irrigation amount."
+        }
+      ],
+      "subtopics": [
+        {
+          "id": "seasonal-sun",
+          "lessonTitle": "Map sun over the season, not one afternoon",
+          "goal": "Quantify how much unobstructed light opportunity the plant position actually receives as sun angle, day length and obstacles change.",
+          "measure": [
+            {
+              "metric": "Direct-sun start and end",
+              "unit": "clock time and hours/day",
+              "method": "From the intended canopy position, record when direct sunlight first reaches the site and when it becomes blocked. Note every major shade interruption rather than counting only sunrise-to-sunset.",
+              "frequency": "Repeat on representative early-, mid- and late-season dates; repeat after major vegetation or structure changes."
+            },
+            {
+              "metric": "Obstacle direction and apparent height",
+              "unit": "bearing/sector + photo reference",
+              "method": "Record the direction of trees, walls, fences and terrain that create shade. Photograph from the same marked position so seasonal changes can be compared.",
+              "frequency": "Baseline before planting and whenever the obstruction changes."
+            },
+            {
+              "metric": "Optional PAR/DLI measurement",
+              "unit": "µmol·m⁻²·s⁻¹ and mol·m⁻²·day⁻¹",
+              "method": "If a calibrated PAR sensor or logger is available, measure at canopy height over the day. Keep sensor position and logging interval consistent.",
+              "frequency": "Use representative clear and cloudy days if comparing sites."
+            }
+          ],
+          "record": [
+            "site ID and exact measurement point",
+            "date and local time",
+            "direct-sun start/end plus shade interruptions",
+            "weather/sky condition",
+            "obstacle direction and photo ID",
+            "sensor model and height when PAR/DLI is measured"
+          ],
+          "compare": [
+            "same site across seasonal checkpoints",
+            "candidate sites on comparable weather days",
+            "measured PAR/DLI against direct-sun duration without assuming the two are interchangeable"
+          ],
+          "interpret": [
+            "A site can lose useful late-season exposure even if it was open earlier in the year.",
+            "Long direct-sun duration does not guarantee the same DLI under clouds, haze or partial obstruction.",
+            "Late-day shade may also lengthen post-rain or dew drying, so light and disease-weather context should be considered together."
+          ],
+          "decisionRule": "Choose the site from whole-season exposure and drying opportunity. Do not approve or reject a site from one noon observation or one universal 'minimum sun hours' number.",
+          "confidenceCheck": "High confidence requires repeated site-specific observations or calibrated measurements; app-only sun-path estimates should be labeled estimated until field-verified."
+        },
+        {
+          "id": "drainage-topography",
+          "lessonTitle": "Drainage and topography shape the root environment",
+          "goal": "Quantify where water enters, ponds, infiltrates and leaves the site after real rain or irrigation.",
+          "measure": [
+            {
+              "metric": "Rain or irrigation input",
+              "unit": "mm or inches",
+              "method": "Use a local rain gauge or nearby verified weather record; for irrigation, record runtime and measured source/emitter output.",
+              "frequency": "For representative storms and irrigation events."
+            },
+            {
+              "metric": "Ponding duration",
+              "unit": "minutes or hours",
+              "method": "Record when visible ponding begins and when each mapped low spot becomes free of standing water.",
+              "frequency": "After representative light, moderate and heavy events when possible."
+            },
+            {
+              "metric": "Root-zone moisture pattern",
+              "unit": "sensor value or consistent qualitative class at recorded depth",
+              "method": "Check the same marked points and depths after water events. If no calibrated sensor is available, use a repeatable field class such as dry / moist / wet / saturated and label it qualitative.",
+              "frequency": "Before the event, shortly after, and again during drainage/dryback."
+            },
+            {
+              "metric": "Runoff/erosion path",
+              "unit": "mapped direction + affected distance/area",
+              "method": "Mark where water moves, deposits sediment or removes soil. Photograph from fixed references.",
+              "frequency": "After events that create visible runoff."
+            }
+          ],
+          "record": [
+            "event start/end and rainfall/irrigation amount",
+            "ponding locations and duration",
+            "measurement depth and point ID",
+            "soil/media condition before and after",
+            "runoff direction and erosion/deposition",
+            "photo IDs"
+          ],
+          "compare": [
+            "high and low points on the same site",
+            "drainage time after different event intensities",
+            "root-zone response before and after bed, container, compaction or drainage changes"
+          ],
+          "interpret": [
+            "Rainfall depth is an input, not proof of root-zone recharge: interception, runoff and drainage change what roots experience.",
+            "Repeated long ponding at the same point indicates a different root-aeration risk than fast surface wetting followed by drainage.",
+            "A dry surface can coexist with deeper saturation, so depth must be recorded with the observation."
+          ],
+          "decisionRule": "Treat drainage as a time-and-depth pattern. Escalate site redesign or root-zone investigation when the same zones repeatedly remain saturated or erode while comparison zones recover normally.",
+          "confidenceCheck": "Do not convert qualitative hand-feel classes into volumetric water content unless the sensor/method has been calibrated for that medium."
+        },
+        {
+          "id": "water-access",
+          "lessonTitle": "Water access is a design constraint",
+          "goal": "Verify that the water source and delivery system can supply repeatable flow to the actual planting area before demand peaks.",
+          "measure": [
+            {
+              "metric": "Source flow rate",
+              "unit": "L/min or gal/min",
+              "method": "Collect water for a timed interval in a known-volume container and calculate volume ÷ time.",
+              "frequency": "Baseline before planting; repeat during high-demand periods or when performance changes."
+            },
+            {
+              "metric": "Near-vs-far delivery flow",
+              "unit": "L/min or gal/min at matched outlets",
+              "method": "Measure comparable outlets near the source and at the farthest/highest delivery point using the same test duration.",
+              "frequency": "At setup, after system changes and when uneven watering is suspected."
+            },
+            {
+              "metric": "Fill/runtime requirement",
+              "unit": "minutes per target volume",
+              "method": "Time how long the system requires to deliver a known volume or refill storage. Record simultaneous demand from other users/zones.",
+              "frequency": "During representative operating conditions."
+            },
+            {
+              "metric": "Source-water context",
+              "unit": "pH, EC and temperature when relevant",
+              "method": "Use calibrated meters and record units, calibration date and sampling point.",
+              "frequency": "Baseline and whenever source, season or water quality changes."
+            }
+          ],
+          "record": [
+            "source type and source ID",
+            "container volume and timed interval",
+            "near/far test locations",
+            "flow result and observed pressure problems",
+            "filter/emitter condition",
+            "pH/EC units and meter calibration when measured"
+          ],
+          "compare": [
+            "source performance across dates and demand conditions",
+            "near and far delivery points",
+            "measured delivery against actual root-zone wetting rather than runtime alone"
+          ],
+          "interpret": [
+            "A source can provide adequate total water yet distribute it unevenly across distance, elevation or restricted emitters.",
+            "A stable runtime is not evidence of stable delivered volume if flow or pressure changes.",
+            "OSU field guidance shows hemp water response depends on production system and environment; site-specific delivery measurements are therefore more useful than copying one irrigation volume."
+          ],
+          "decisionRule": "Do not finalize the site or irrigation layout until the farthest intended point has been flow-tested and a repeatable way to verify root-zone wetting exists.",
+          "confidenceCheck": "Flow tests describe delivery capacity, not plant water requirement. Plant demand still depends on weather, root volume, genotype, spacing and medium."
+        },
+        {
+          "id": "neighbor-risk",
+          "lessonTitle": "Neighboring land can create biological and environmental risk",
+          "goal": "Turn surrounding pollen, dust, spray, water, vegetation and access risks into a mapped, time-stamped exposure record.",
+          "measure": [
+            {
+              "metric": "Potential source distance and bearing",
+              "unit": "m/km or ft/mi + compass direction",
+              "method": "Map known or observed neighboring sources from the crop boundary/planting area and record direction, not distance alone.",
+              "frequency": "Before planting and whenever neighboring land use changes."
+            },
+            {
+              "metric": "Wind direction during overlap window",
+              "unit": "direction/sector and observation count",
+              "method": "Use a local weather station or on-site wind observation and mark periods when wind arrives from the source sector toward the crop.",
+              "frequency": "During relevant flowering, spray, dust or smoke windows."
+            },
+            {
+              "metric": "Timing overlap",
+              "unit": "dates/days",
+              "method": "Record when the neighboring source is active and when the crop is biologically or physically susceptible.",
+              "frequency": "Update as neighboring crop stage or activity becomes known."
+            },
+            {
+              "metric": "Observed deposition or symptom pattern",
+              "unit": "location, severity class and photo ID",
+              "method": "Map where dust, drift-like injury, seed set or other suspected external effects appear before assigning a cause.",
+              "frequency": "After suspected exposure events and during routine scouting."
+            }
+          ],
+          "record": [
+            "source type, distance and bearing",
+            "wind direction/time during relevant windows",
+            "overlap dates",
+            "weather event notes",
+            "symptom/deposition map and photos",
+            "internal pollen/intersex findings when investigating seed set"
+          ],
+          "compare": [
+            "upwind vs downwind crop zones after a suspected event",
+            "dates with and without source-sector wind",
+            "internal and external explanations before assigning causality"
+          ],
+          "interpret": [
+            "Cannabis pollen risk is distance-dependent but meteorology creates a long dispersal tail; a single 'safe radius' is not scientifically defensible.",
+            "The 2024 U.S. pollen-dispersal study found strong spatial, seasonal and day/night variation, so direction and timing add information that distance alone cannot.",
+            "A mapped external source is a risk factor, not proof that it caused a specific symptom or seed set."
+          ],
+          "decisionRule": "Rate neighboring risk from source + direction + timing + observed pattern. Keep uncertainty explicit and avoid claiming zero risk from any universal isolation distance.",
+          "confidenceCheck": "Source identification and wind overlap improve attribution, but direct pollen or residue measurements would be needed for high-confidence exposure confirmation."
+        }
+      ],
+      "fieldWorksheet": {
+        "title": "Section 1 field record",
+        "fields": [
+          "site ID / candidate site",
+          "measurement point and photo reference",
+          "date / time / weather",
+          "direct-sun start, end and interruptions",
+          "rain or irrigation input",
+          "ponding duration by location",
+          "root-zone moisture point + depth",
+          "source flow and far-point flow",
+          "neighbor source distance + bearing",
+          "wind/source overlap notes",
+          "measured / estimated / unknown label",
+          "decision and what evidence would change it"
+        ],
+        "outcome": "The learner should finish with a comparable site record, not merely a statement that the area is 'sunny', 'well drained' or 'has water'."
+      }
+    }
+  ]
+}
