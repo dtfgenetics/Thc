@@ -67,18 +67,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          gh workflow run build-dtfseeds-public-suite.yml --ref main
-          echo 'Waiting for current public-suite build to appear...'
-          run_id=''
-          for attempt in {1..60}; do
-            run_id="$(gh run list --workflow build-dtfseeds-public-suite.yml --branch main --limit 20 --json databaseId,headSha,event,status --jq '.[] | select(.headSha == env.GITHUB_SHA and .event == "workflow_dispatch") | .databaseId' | head -n 1)"
-            if [[ "$run_id" =~ ^[0-9]+$ ]]; then
-              break
-            fi
-            sleep 10
-          done
-          [[ "$run_id" =~ ^[0-9]+$ ]] || { echo 'Could not locate current public-suite build run.' >&2; exit 1; }
+          run_url="$(gh workflow run build-dtfseeds-public-suite.yml --ref main)"
+          run_id="${run_url##*/}"
+          [[ "$run_id" =~ ^[0-9]+$ ]] || { echo "Could not parse public-suite build run from: $run_url" >&2; exit 1; }
           echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+          echo "Current public-suite build run: $run_id"
           gh run watch "$run_id" --exit-status
 
       - name: Download current validated Public Suite artifact
