@@ -32,7 +32,7 @@ jobs:
     name: Publish Genetics Breeding V6 visual atlas
     if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 55
     environment: production
     env:
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
@@ -85,17 +85,40 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          APPLY_LEARNING_V4=true BACKUP_ROOT=/tmp/dtf-genetics-v4-restore \
-            node scripts/enhance-wordpress-learning-v4.mjs | tee "$RUNNER_TEMP/genetics-v4-restore.log"
-          APPLY_GENETICS_EVIDENCE_V6=true BACKUP_ROOT=/tmp/dtf-genetics-v6-restore \
-            node scripts/publish-wordpress-genetics-evidence-v6.mjs | tee "$RUNNER_TEMP/genetics-v6-restore.log"
+          restore_v4=0
+          for attempt in 1 2 3 4; do
+            echo "V4 restore attempt $attempt"
+            rm -rf /tmp/dtf-genetics-v4-restore
+            if APPLY_LEARNING_V4=true BACKUP_ROOT=/tmp/dtf-genetics-v4-restore \
+              node scripts/enhance-wordpress-learning-v4.mjs 2>&1 | tee "$RUNNER_TEMP/genetics-v4-restore-${attempt}.log"; then
+              restore_v4=1
+              break
+            fi
+            sleep $((attempt * 8))
+          done
+          [[ "$restore_v4" -eq 1 ]]
+
+          restore_v6=0
+          for attempt in 1 2 3 4; do
+            echo "Genetics V6 restore attempt $attempt"
+            rm -rf /tmp/dtf-genetics-v6-restore
+            if APPLY_GENETICS_EVIDENCE_V6=true BACKUP_ROOT=/tmp/dtf-genetics-v6-restore \
+              node scripts/publish-wordpress-genetics-evidence-v6.mjs 2>&1 | tee "$RUNNER_TEMP/genetics-v6-restore-${attempt}.log"; then
+              restore_v6=1
+              break
+            fi
+            sleep $((attempt * 8))
+          done
+          [[ "$restore_v6" -eq 1 ]]
+
           body="$RUNNER_TEMP/genetics-restored.html"
           ok=0
-          for attempt in 1 2 3 4 5 6; do
-            curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+          for attempt in 1 2 3 4 5 6 7 8; do
+            if curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
               --header 'Cache-Control: no-cache, no-store, max-age=0' --header 'Pragma: no-cache' \
-              "$WP_SITE_URL/learn/genetics-breeding/?dtf_gb6_restore=${GITHUB_RUN_ID}-${attempt}" --output "$body"
-            if grep -Fq 'data-dtf-genetics-breeding-v6="true"' "$body" && grep -Fq 'data-dtf-learning-v4="topic-genetics-breeding"' "$body"; then ok=1; break; fi
+              "$WP_SITE_URL/learn/genetics-breeding/?dtf_gb6_restore=${GITHUB_RUN_ID}-${attempt}" --output "$body"; then
+              if grep -Fq 'data-dtf-genetics-breeding-v6="true"' "$body" && grep -Fq 'data-dtf-learning-v4="topic-genetics-breeding"' "$body"; then ok=1; break; fi
+            fi
             sleep 6
           done
           [[ "$ok" -eq 1 ]]
@@ -108,7 +131,16 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p "$BACKUP_ROOT"
-          node scripts/publish-wordpress-genetics-breeding-visuals-v6.mjs | tee "$RUNNER_TEMP/genetics-breeding-visuals-v6.log"
+          published=0
+          for attempt in 1 2 3; do
+            echo "Atlas publication attempt $attempt"
+            if node scripts/publish-wordpress-genetics-breeding-visuals-v6.mjs 2>&1 | tee "$RUNNER_TEMP/genetics-breeding-visuals-v6-${attempt}.log"; then
+              published=1
+              break
+            fi
+            sleep $((attempt * 8))
+          done
+          [[ "$published" -eq 1 ]]
           report="$BACKUP_ROOT/report.json"
           test -s "$report"
           echo "visuals=$(node -p "require(process.argv[1]).visuals" "$report")" >> "$GITHUB_OUTPUT"
@@ -129,11 +161,12 @@ jobs:
           body="$RUNNER_TEMP/genetics-breeding-visual-atlas.html"
           ok=0
           for attempt in 1 2 3 4 5 6 7 8; do
-            curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+            if curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
               --header 'Cache-Control: no-cache, no-store, max-age=0' \
               --header 'Pragma: no-cache' \
-              "$WP_SITE_URL/learn/genetics-breeding/?dtf_gb6v_final_verify=${GITHUB_RUN_ID}-${attempt}" --output "$body"
-            if grep -Fqi 'data-dtf-genetics-breeding-visuals-v6="true"' "$body"; then ok=1; break; fi
+              "$WP_SITE_URL/learn/genetics-breeding/?dtf_gb6v_final_verify=${GITHUB_RUN_ID}-${attempt}" --output "$body"; then
+              if grep -Fqi 'data-dtf-genetics-breeding-visuals-v6="true"' "$body"; then ok=1; break; fi
+            fi
             sleep 6
           done
           [[ "$ok" -eq 1 ]]
@@ -159,10 +192,10 @@ jobs:
             /tmp/dtf-genetics-breeding-visuals-v6
             /tmp/dtf-genetics-v4-restore
             /tmp/dtf-genetics-v6-restore
-            ${{ runner.temp }}/genetics-v4-restore.log
-            ${{ runner.temp }}/genetics-v6-restore.log
+            ${{ runner.temp }}/genetics-v4-restore-*.log
+            ${{ runner.temp }}/genetics-v6-restore-*.log
             ${{ runner.temp }}/genetics-restored.html
-            ${{ runner.temp }}/genetics-breeding-visuals-v6.log
+            ${{ runner.temp }}/genetics-breeding-visuals-v6-*.log
             ${{ runner.temp }}/genetics-breeding-visual-atlas.html
           if-no-files-found: warn
           retention-days: 30
@@ -196,6 +229,6 @@ jobs:
               `WordPress-media resolutions: **${process.env.WORDPRESS || '0'}**`,
               `Canonical GitHub fallbacks: **${process.env.FALLBACKS || '0'}**`,
               `Explicit unresolved visual gaps: **${process.env.GAPS || '0'}**`,'',
-              'The workflow restores canonical education ownership before attaching the quality-gated atlas. It publishes only reviewed mapped assets and keeps missing genetics concepts explicit instead of substituting generic cannabis imagery.'
+              'The workflow restores canonical education ownership before attaching the quality-gated atlas. Whole-operation retries absorb transient Hostinger connection timeouts without weakening asset or ownership validation.'
             ].join('\n');
             for(const issue_number of [46,136]) await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number,body});
