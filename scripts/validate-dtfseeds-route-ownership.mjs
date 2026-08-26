@@ -1,5 +1,6 @@
 import { readFile } from 'node:fs/promises';
 
+// This validator is intentionally lightweight so every ownership-affecting push can run it.
 const files = {
   canonicalPages: 'scripts/apply-wordpress-public-content-rest.mjs',
   commerceVisuals: 'scripts/rebuild-wordpress-commerce-visuals.mjs',
