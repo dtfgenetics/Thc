@@ -6,8 +6,10 @@ on:
     branches: [main]
     paths:
       - 'site/wordpress/assets/infographics/genetics/**'
+      - 'site/wordpress/assets/infographics/THC-ENC-004_asset_03_domestication_dispersal_selection_infographic.jpg'
       - 'site/wordpress/education/genetics-breeding-v6-visual-map.json'
       - 'scripts/publish-wordpress-genetics-breeding-visuals-v6.mjs'
+      - '.github/workflows/wordpress-genetics-breeding-visual-atlas-v6.yml'
   workflow_run:
     workflows:
       - Core Learn V6 Canonical Route Production
@@ -48,7 +50,7 @@ jobs:
         with:
           node-version: 22
 
-      - name: Validate Genetics Breeding visual mapping
+      - name: Validate Genetics Breeding quality-gated visual mapping
         id: validate
         shell: bash
         run: |
@@ -56,20 +58,23 @@ jobs:
           : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
           : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
           node --check scripts/publish-wordpress-genetics-breeding-visuals-v6.mjs
-          node - <<'NODE'
+          node - <<'NODE' >> "$GITHUB_OUTPUT"
           const fs=require('fs');
           const map=JSON.parse(fs.readFileSync('site/wordpress/education/genetics-breeding-v6-visual-map.json','utf8'));
           if(map.curriculumId!=='genetics-breeding-v6'||map.route!=='/learn/genetics-breeding/') throw new Error('Unexpected Genetics visual map owner/route.');
+          if(map.publicationPolicy?.approvedOnly!==true||map.publicationPolicy?.draftExcluded!==true||map.publicationPolicy?.qaRequiredExcluded!==true) throw new Error('Approved-only Genetics publication policy is required.');
           const groups=Object.entries(map.chapters||{});
-          const assets=groups.flatMap(([,items])=>items||[]);
-          if(groups.length!==8||assets.length!==18) throw new Error(`Expected 8 groups and 18 visuals; found ${groups.length} and ${assets.length}.`);
-          if((map.gaps||[]).length!==10) throw new Error(`Expected 10 explicit gaps; found ${(map.gaps||[]).length}.`);
-          const bad=assets.filter(x=>!/\.(?:png|jpe?g|webp)$/i.test(x.file||'')||/draft|quarantine|superseded|legacy|qa[-_ ]?required/i.test(x.file||''));
+          if(groups.length!==8) throw new Error(`Expected 8 Genetics groups; found ${groups.length}.`);
+          const assets=groups.flatMap(([chapter,items])=>{if(!Array.isArray(items)) throw new Error(`${chapter}: visual group must be an array.`);return items;});
+          const gaps=Array.isArray(map.gaps)?map.gaps:[];
+          if(!gaps.length||gaps.some(g=>g.status!=='needed'||!g.id||!g.title||!g.neededVisual)) throw new Error('Every unresolved Genetics visual gap must be explicitly described and marked needed.');
+          const bad=assets.filter(x=>!/\.(?:png|jpe?g|webp)$/i.test(x.file||'')||/draft|quarantine|superseded|legacy|qa[-_ ]?required/i.test(x.file||'')||!x.title||!x.alt);
           if(bad.length) throw new Error(`Unsafe mapped assets: ${bad.map(x=>x.file).join(', ')}`);
-          for(const item of assets){if(!fs.existsSync(`site/wordpress/assets/infographics/${item.file}`)) throw new Error(`Mapped asset missing: ${item.file}`);}
-          const imported=assets.filter(x=>String(x.file).startsWith('genetics/'));
-          if(imported.length!==14) throw new Error(`Expected 14 dedicated genetics assets; found ${imported.length}.`);
-          console.log(`Validated ${assets.length} canonical Genetics mappings, including ${imported.length} dedicated breeding assets, and ${map.gaps.length} explicit gaps.`);
+          for(const item of assets) if(!fs.existsSync(`site/wordpress/assets/infographics/${item.file}`)) throw new Error(`Mapped asset missing: ${item.file}`);
+          console.error(`Validated ${assets.length} approved Genetics visual(s), 8 chapter groups, and ${gaps.length} explicit visual-production gaps.`);
+          console.log(`visuals=${assets.length}`);
+          console.log('groups=8');
+          console.log(`gaps=${gaps.length}`);
           NODE
 
       - name: Publish and verify Genetics Breeding visual atlas
@@ -89,6 +94,10 @@ jobs:
 
       - name: Independently verify public Genetics Breeding atlas
         id: verify
+        env:
+          EXPECTED_VISUALS: ${{ steps.validate.outputs.visuals }}
+          EXPECTED_GROUPS: ${{ steps.validate.outputs.groups }}
+          EXPECTED_GAPS: ${{ steps.validate.outputs.gaps }}
         shell: bash
         run: |
           set -euo pipefail
@@ -103,9 +112,9 @@ jobs:
             sleep 6
           done
           [[ "$ok" -eq 1 ]]
-          [[ "$(grep -Fo 'class="gb6v-card"' "$body" | wc -l | tr -d ' ')" = '18' ]]
-          [[ "$(grep -Fo 'data-gb6v-group=' "$body" | wc -l | tr -d ' ')" = '8' ]]
-          [[ "$(grep -Fo 'class="gb6v-gap"' "$body" | wc -l | tr -d ' ')" = '10' ]]
+          [[ "$(grep -Fo 'class="gb6v-card"' "$body" | wc -l | tr -d ' ')" = "$EXPECTED_VISUALS" ]]
+          [[ "$(grep -Fo 'data-gb6v-group=' "$body" | wc -l | tr -d ' ')" = "$EXPECTED_GROUPS" ]]
+          [[ "$(grep -Fo 'class="gb6v-gap"' "$body" | wc -l | tr -d ' ')" = "$EXPECTED_GAPS" ]]
           grep -Fqi 'data-dtf-genetics-breeding-v6="true"' "$body"
           grep -Fqi 'data-dtf-topic="genetics-breeding"' "$body"
           grep -Fqi 'data-dtf-learning-v4="topic-genetics-breeding"' "$body"
@@ -148,11 +157,11 @@ jobs:
               `Mapping validation: **${process.env.VALIDATE || 'not-run'}**`,
               `WordPress publication: **${process.env.PUBLISH || 'not-run'}**`,
               `Visitor verification: **${process.env.VERIFY || 'not-run'}**`,
-              `Verified visual cards: **${process.env.VISUALS || '0'}**`,
+              `Approved visual cards currently mapped: **${process.env.VISUALS || '0'}**`,
               `Chapter groups: **${process.env.GROUPS || '0'}**`,
               `WordPress-media resolutions: **${process.env.WORDPRESS || '0'}**`,
               `Canonical GitHub fallbacks: **${process.env.FALLBACKS || '0'}**`,
               `Explicit unresolved visual gaps: **${process.env.GAPS || '0'}**`,'',
-              'The atlas is fail-closed and attaches only to the live Genetics & Breeding V6 curriculum. All 14 dedicated breeding visuals must exist in the canonical genetics asset directory before publication; exact-concept gaps remain visible rather than receiving generic cannabis imagery.'
+              'The atlas is quality-map driven and fail-closed. It publishes only assets currently approved in the reviewed Genetics map, preserves all eight curriculum chapter groups, and renders exact-concept gaps explicitly instead of demanding or substituting unapproved genetics artwork.'
             ].join('\n');
             for(const issue_number of [46,136]) await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number,body});
