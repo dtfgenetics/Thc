@@ -1,0 +1,65 @@
+{
+  "id": "THC-ENC-183",
+  "number": 183,
+  "title": "Node Development and Training Timing",
+  "objective": "Use node, internode, meristem, tissue maturity, and whole-plant developmental status to interpret training timing instead of treating a fixed plant age or universal node number as a biological rule.",
+  "terms": [
+    {"term":"node","definition":"A position on the stem where leaves, axillary buds, branches, or reproductive structures are attached."},
+    {"term":"internode","definition":"The stem segment between two adjacent nodes."},
+    {"term":"phytomer","definition":"A repeating developmental shoot unit containing a node, leaf or leaves, axillary bud, and associated internode."},
+    {"term":"axillary meristem","definition":"A meristem formed in the leaf axil that can produce an axillary bud and later a lateral shoot or reproductive structure."},
+    {"term":"developmental stage","definition":"A biologically defined phase or structural condition of the plant rather than simply the number of days since propagation."},
+    {"term":"tissue maturation","definition":"Progressive anatomical and mechanical change as expanding stem and leaf tissues complete growth, strengthen, and develop more mature cell-wall characteristics."},
+    {"term":"recovery","definition":"Restoration of stable growth and function after a management intervention, injury, transplant, environmental change, or other stress."}
+  ],
+  "termDefinitionsStatus": "controlled_glossary_reconciled_for_publication",
+  "coreScience": [
+    "Nodes are developmental landmarks, not identical units. As a shoot grows, the youngest phytomers near the apex are still expanding while older nodes lower on the stem have more mature leaves, stems, vascular connections, and axillary buds. The same training action can therefore impose different mechanical and developmental consequences at different positions on one plant.",
+    "Calendar age is an incomplete description of training readiness. Propagation history, genotype, light, temperature, root volume, water status, nutrition, disease, and prior stress alter the rate at which nodes are produced and tissues mature. A rooted clone and a seedling of the same chronological age can also have different developmental histories.",
+    "Cannabis architecture and pruning studies demonstrate that changing shoot structure affects subsequent branch and inflorescence development, but the research base does not establish one universal node count or day after planting at which every training intervention should occur. Controlled decisions should therefore document stage, tissue condition, and target structure rather than copy a fixed calendar rule.",
+    "Training close to a major developmental transition can change more than plant shape. Removing or repositioning actively growing sinks can alter branch hierarchy and resource distribution, while injury or severe defoliation can require recovery. Timing should be evaluated in relation to the plant's current growth rate, root-zone condition, reproductive status, and the amount of tissue being altered."
+  ],
+  "cultivationRelevance": [
+    "Describe the plant before training using node count, active shoot number, stem condition, growth rate, and developmental stage. These observations make a training record transferable in a way that a statement such as 'week three' does not.",
+    "Avoid stacking major interventions simply because a calendar calls for them. When a plant is recovering from transplant, water stress, root dysfunction, pest injury, disease, or another structural intervention, document recovery before interpreting the next response."
+  ],
+  "measureAndRecord": [
+    {"field":"Developmental position","requirement":"Plant ID, propagation type, age for scheduling context, node count on the reference shoot, and the exact node or shoot affected."},
+    {"field":"Tissue condition","requirement":"Stem diameter when useful, visible flexibility or rigidity, active expansion, prior wounds, branch attachment condition, and signs of tissue damage or weakness."},
+    {"field":"Growth status","requirement":"Recent height or shoot-extension change, new-leaf production, root-zone condition, irrigation status, and major environmental or health stressors."},
+    {"field":"Intervention timing","requirement":"Date, developmental phase, relation to transplant or reproductive transition, and time since any prior major training action."},
+    {"field":"Recovery response","requirement":"Time to resumed shoot growth, bud activation, leaf expansion, wound closure where applicable, breakage, wilting, chlorosis, or other adverse response."}
+  ],
+  "misconceptions": [
+    "Every cannabis plant is ready for the same training action at the same node number.",
+    "Plant age in days is a complete description of developmental stage.",
+    "Every node on the same plant has the same tissue maturity and mechanical properties.",
+    "If a plant remains upright after training, it has necessarily recovered physiologically."
+  ],
+  "evidenceLimits": [
+    "Direct cannabis experiments that isolate training timing while holding genotype, environment, intervention intensity, and developmental stage constant are limited. Fixed node-count recommendations common in cultivation culture should therefore be treated as grower protocols to test, not universal plant-science thresholds.",
+    "Visible stem stiffness or node count alone cannot establish vascular maturity, carbohydrate status, root health, or recovery capacity. Multiple observations are required."
+  ],
+  "crossLinks": "THC-ENC-006 for whole-plant developmental staging; THC-ENC-011–014 for nodes, meristems, and structural support; THC-ENC-061–080 for source-sink physiology; THC-ENC-161–170 for propagation history; THC-ENC-181–182 and THC-ENC-184–200 for training responses.",
+  "sourceNotes": [
+    "Spitzer-Rimon B, Duchin S, Bernstein N, Kamenetsky R. (2019). Architecture and Florogenesis in Female Cannabis sativa Plants. Frontiers in Plant Science 10:350. DOI 10.3389/fpls.2019.00350.",
+    "Danziger N, Bernstein N. (2021). Plant architecture manipulation increases cannabinoid standardization in drug-type medical cannabis. Industrial Crops and Products 167:113528. DOI 10.1016/j.indcrop.2021.113528.",
+    "Crispim Massuela D et al. (2022). Impact of Harvest Time and Pruning Technique on Total CBD Concentration and Yield of Medicinal Cannabis. Plants 11(1):140. DOI 10.3390/plants11010140.",
+    "Beveridge CA et al. (2023). Strigolactones and Shoot Branching: What Is the Real Hormone and How Does It Work? Plant and Cell Physiology 64(9):967–983; used for general shoot-branching context rather than a cannabis-specific timing threshold."
+  ],
+  "publicationAuthorized": true,
+  "reviewControl": {
+    "controlledManuscript": "Part 10 Batch 01 evidence synthesis",
+    "evidenceControl": "release_time_source_check_complete",
+    "secondaryEvidenceReview": "complete_qualified",
+    "externalReview": "pending_not_recorded",
+    "externalReviewType": "cannabis_developmental_architecture_and_training",
+    "releaseTimeReview": "completed_2026-08-26; no fixed node count, age, or universal intervention schedule is presented as established cannabis biology",
+    "publicationAuthorized": true,
+    "publicationAuthorization": "project_owner_2026-08-26_continue_pushing_content",
+    "independentApproval": false,
+    "websiteAction": "publish_with_review_notice"
+  },
+  "slug": "node-development-and-training-timing",
+  "route": "/encyclopedia/node-development-and-training-timing"
+}
