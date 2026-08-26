@@ -1,0 +1,145 @@
+name: Bootstrap Genetics Breeding Infographics
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/bootstrap-genetics-breeding-infographics.yml'
+      - 'site/wordpress/assets/infographics/import-genetics-breeding-001-014.json'
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: dtf-genetics-breeding-infographic-bootstrap
+  cancel-in-progress: false
+
+jobs:
+  materialize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Install image validation tools
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq imagemagick jq
+
+      - name: Download, validate, and normalize 14 reviewed genetics visuals
+        id: assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          manifest='site/wordpress/assets/infographics/import-genetics-breeding-001-014.json'
+          target_dir='site/wordpress/assets/infographics/genetics'
+          mkdir -p "$target_dir"
+          report="$RUNNER_TEMP/genetics-asset-bootstrap.tsv"
+          : > "$report"
+          total="$(jq '.assets | length' "$manifest")"
+          test "$total" = '14'
+
+          for i in $(seq 0 $((total-1))); do
+            path="$(jq -r ".assets[$i].path" "$manifest")"
+            url="$(jq -r ".assets[$i].url" "$manifest")"
+            base="$(basename "$path")"
+            tmp="$RUNNER_TEMP/${base}.download"
+            out="$target_dir/$base"
+
+            curl -4 --fail --silent --show-error --location --retry 4 --retry-delay 2 \
+              --connect-timeout 25 --max-time 120 \
+              -H 'User-Agent: Mozilla/5.0 DTFSeeds Genetics Asset Importer' \
+              "$url" -o "$tmp"
+
+            bytes="$(stat -c %s "$tmp")"
+            mime="$(file -b --mime-type "$tmp")"
+            if [[ "$mime" != image/* ]]; then
+              echo "Rejected $base: MIME=$mime bytes=$bytes" >&2
+              head -c 120 "$tmp" >&2 || true
+              exit 1
+            fi
+            if (( bytes < 50000 )); then
+              echo "Rejected $base: implausibly small image ($bytes bytes)" >&2
+              exit 1
+            fi
+
+            dims="$(identify -format '%w %h' "$tmp" 2>/dev/null || true)"
+            width="${dims%% *}"
+            height="${dims##* }"
+            if [[ -z "$width" || -z "$height" || "$width" -lt 900 || "$height" -lt 900 ]]; then
+              echo "Rejected $base: dimensions ${width:-?}x${height:-?}" >&2
+              exit 1
+            fi
+
+            # Manifest filenames are canonical PNG names. Normalize actual bytes to PNG
+            # so extension and media type cannot drift from the controlled registry.
+            convert "$tmp" -strip "$out"
+            normalized_mime="$(file -b --mime-type "$out")"
+            test "$normalized_mime" = 'image/png'
+            normalized_dims="$(identify -format '%w %h' "$out")"
+            normalized_bytes="$(stat -c %s "$out")"
+            normalized_sha="$(sha256sum "$out" | awk '{print $1}')"
+            printf '%s\t%s\t%s\t%s\t%s\n' "$base" "$normalized_dims" "$normalized_bytes" "$normalized_sha" "$url" >> "$report"
+          done
+
+          test "$(find "$target_dir" -maxdepth 1 -type f -name '*.png' | wc -l | tr -d ' ')" = '14'
+          echo "count=14" >> "$GITHUB_OUTPUT"
+          echo "report=$report" >> "$GITHUB_OUTPUT"
+          cat "$report"
+
+      - name: Commit durable reviewed genetics assets
+        id: commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add site/wordpress/assets/infographics/genetics/*.png
+          if git diff --cached --quiet; then
+            echo 'changed=false' >> "$GITHUB_OUTPUT"
+            echo "commit_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git commit -m 'Materialize reviewed genetics breeding infographics'
+          git push origin HEAD:main
+          echo 'changed=true' >> "$GITHUB_OUTPUT"
+          echo "commit_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Upload bootstrap evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: genetics-breeding-infographic-bootstrap-${{ github.run_id }}
+          path: ${{ runner.temp }}/genetics-asset-bootstrap.tsv
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report genetics asset bootstrap
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          STATUS: ${{ job.status }}
+          COUNT: ${{ steps.assets.outputs.count }}
+          CHANGED: ${{ steps.commit.outputs.changed }}
+          COMMIT_SHA: ${{ steps.commit.outputs.commit_sha }}
+        with:
+          script: |
+            const body = [
+              '## Genetics & Breeding infographic asset bootstrap', '',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Result: **${process.env.STATUS}**`,
+              `Validated reviewed assets: **${process.env.COUNT || '0'} / 14**`,
+              `Repository asset commit created: **${process.env.CHANGED || 'false'}**`,
+              process.env.COMMIT_SHA ? `Asset commit: \`${process.env.COMMIT_SHA}\`` : '', '',
+              'Every source was required to resolve as a real image, exceed the minimum size/dimension gates, and was normalized to a true PNG before entering the canonical infographic publication boundary.'
+            ].filter(Boolean).join('\n');
+            for (const issue_number of [46,136]) {
+              await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number,body});
+            }
