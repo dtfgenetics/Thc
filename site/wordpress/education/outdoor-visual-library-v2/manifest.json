@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "thc-outdoor-visual-library-v2",
+  "brand": "THC — Teaching Healthy Cultivation",
+  "route": "/learn/outdoor/",
+  "purpose": "Create the visual evidence layer for the complete Outdoor curriculum. Every asset must help a learner observe, measure, compare, diagnose, or make a bounded field decision; decorative filler and genetics/strain-card imagery are prohibited.",
+  "designSystem": {
+    "brandRule": "THC — Teaching Healthy Cultivation only. Do not use DTFSeeds or DTF Genetics as the infographic brand.",
+    "masterCanvas": "8.5 x 11 in portrait, 2550 x 3300 px, 300 DPI",
+    "masterFormat": "PNG",
+    "style": "academic studio-quality cannabis cultivation education; detailed realistic plant and field imagery; clean cream/green scientific layout; natural color; crisp labels; no yellow cast; no cartoon/vector-card look",
+    "textPolicy": "Scientific but plain-language. Use concise labels, legends, measurement callouts and differential notes instead of dense paragraph blocks.",
+    "diagnosticPolicy": "Never equate one visible symptom with one cause. Comparison plates must show look-alikes and the next evidence to collect.",
+    "measurementPolicy": "Show units, sensor/observation position and repeat method when the visual teaches measurement. No unsupported universal thresholds.",
+    "accessibilityPolicy": "Each asset requires descriptive alt text, a learner-facing caption, readable contrast and information that does not rely on color alone.",
+    "qaRequired": ["scientific QA", "visual QA", "label/spelling QA", "measurement/unit QA", "page-placement QA"]
+  },
+  "statusValues": ["artwork-needed", "artwork-in-review", "approved", "published"],
+  "assetCount": 48,
+  "chapters": [
+    {"number":1,"chapterId":"site-sun","title":"Site Selection & Seasonal Sun","assetCount":6,"path":"site/wordpress/education/outdoor-visual-library-v2/01-site-sun.json"},
+    {"number":2,"chapterId":"hardening-transplant","title":"Hardening Off & Transplant Establishment","assetCount":6,"path":"site/wordpress/education/outdoor-visual-library-v2/02-hardening-transplant.json"},
+    {"number":3,"chapterId":"water-rootzone","title":"Outdoor Water, Irrigation & Root-Zone Balance","assetCount":6,"path":"site/wordpress/education/outdoor-visual-library-v2/03-water-rootzone.json"},
+    {"number":4,"chapterId":"wind-support","title":"Wind, Support & Canopy Architecture","assetCount":6,"path":"site/wordpress/education/outdoor-visual-library-v2/04-wind-support.json"},
+    {"number":5,"chapterId":"rain-flower-risk","title":"Rain, Humidity & Flower Disease Risk","assetCount":6,"path":"site/wordpress/education/outdoor-visual-library-v2/05-rain-flower-risk.json"},
+    {"number":6,"chapterId":"pests-wildlife","title":"Pests, Scouting & Wildlife Pressure","assetCount":6,"path":"site/wordpress/education/outdoor-visual-library-v2/06-pests-wildlife.json"},
+    {"number":7,"chapterId":"pollen-sex","title":"Sex Expression, Pollen Drift & Seed-Set Investigation","assetCount":6,"path":"site/wordpress/education/outdoor-visual-library-v2/07-pollen-sex.json"},
+    {"number":8,"chapterId":"season-microclimate","title":"Season Records, Microclimate & Contingency Planning","assetCount":6,"path":"site/wordpress/education/outdoor-visual-library-v2/08-season-microclimate.json"}
+  ],
+  "legacyQueueContext": {
+    "existingBroadOutdoorItems": 11,
+    "legacyFile": "site/wordpress/education/visual-production-queue-v1.json",
+    "rule": "Legacy THC-OUT-01 through THC-OUT-11 may be superseded or expanded by V2 assets. Do not mark a V2 diagnostic/measurement gap complete merely because a broad legacy poster has a similar title."
+  }
+}
