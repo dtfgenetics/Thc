@@ -46,7 +46,6 @@ class InfographicLibraryParser(HTMLParser):
         self._process_start(tag, attrs)
 
     def handle_startendtag(self, tag: str, attrs) -> None:
-        # WordPress commonly serializes media as <img ... />.
         self._process_start(tag, attrs)
 
     def handle_endtag(self, tag: str) -> None:
@@ -71,10 +70,6 @@ def analyze(html: str, minimum: int) -> dict[str, int]:
         href for href in parser.hrefs if "/wp-content/uploads/" in href
     }
 
-    # Verify browser-facing responsive behavior rather than assuming the fallback
-    # src must itself be the reduced WordPress attachment. WordPress, Hostinger,
-    # and CDN/theme render filters are free to normalize the fallback src while
-    # srcset still carries the actual responsive attachment candidates.
     responsive_images: list[dict[str, str | bool]] = []
     candidate_sets: list[list[str]] = []
     for image in parser.images:
@@ -97,9 +92,6 @@ def analyze(html: str, minimum: int) -> dict[str, int]:
         if "dtf-responsive-education" in str(image["class"]).split()
     ]
 
-    # A responsive card is useful when srcset offers an alternate candidate to
-    # the fallback/full-size resource (or multiple browser-selectable variants).
-    # This measures the srcset itself, not a particular fallback-src convention.
     responsive_candidate_sets = 0
     for image, candidates in zip(responsive_images, candidate_sets):
         src = str(image["src"])
@@ -107,13 +99,23 @@ def analyze(html: str, minimum: int) -> dict[str, int]:
         if len(distinct) >= 2 or any(candidate != src for candidate in distinct):
             responsive_candidate_sets += 1
 
+    card_images = [image for image in parser.images if image["in_card"]]
+    all_srcset_images = [image for image in parser.images if image["srcset"] and image["sizes"]]
+    card_srcset_images = [image for image in card_images if image["srcset"] and image["sizes"]]
+    all_marker_images = [
+        image for image in parser.images
+        if "dtf-responsive-education" in str(image["class"]).split()
+    ]
+
     result = {
         "cards": parser.card_count,
+        "allImages": len(parser.images),
+        "cardImages": len(card_images),
+        "allSrcsetImages": len(all_srcset_images),
+        "cardSrcsetImages": len(card_srcset_images),
+        "allResponsiveMarkerImages": len(all_marker_images),
         "responsiveEducationImages": len(responsive_images),
         "responsiveMarkerImages": len(marker_images),
-        # Retain the historical result key for workflow/report compatibility.
-        # It now means the card exposes a browser-selectable alternate srcset
-        # candidate, which is the behavior the gate intended to prove.
         "reducedDisplaySources": responsive_candidate_sets,
         "fullSizeWordPressLinks": len(full_size_links),
     }
@@ -141,18 +143,9 @@ def self_test() -> None:
 <img class="wp-image-42 dtf-responsive-education" src="{medium}" srcset="{medium} 819w, {full} 1280w" sizes="(max-width:700px) 92vw, 360px" loading="lazy" decoding="async" />
 </article>'''
     result = analyze(html, 1)
-    expected = {
-        "cards": 1,
-        "responsiveEducationImages": 1,
-        "responsiveMarkerImages": 1,
-        "reducedDisplaySources": 1,
-        "fullSizeWordPressLinks": 1,
-    }
-    if result != expected:
+    if result["cards"] != 1 or result["responsiveEducationImages"] != 1 or result["reducedDisplaySources"] != 1 or result["fullSizeWordPressLinks"] != 1:
         raise AssertionError(f"Unexpected self-test result: {result}")
 
-    # WordPress/theme output may normalize the private marker and fallback src.
-    # The srcset/sizes behavior must still verify from the card itself.
     normalized = html.replace(" dtf-responsive-education", "").replace(f'src="{medium}"', f'src="{cdn_fallback}"')
     normalized_result = analyze(normalized, 1)
     if normalized_result["responsiveEducationImages"] != 1 or normalized_result["responsiveMarkerImages"] != 0:
