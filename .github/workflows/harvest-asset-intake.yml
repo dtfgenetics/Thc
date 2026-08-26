@@ -1,0 +1,74 @@
+name: Assemble Harvest Education Image Intake
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - staging/harvest-asset-upload/READY.json
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: harvest-education-asset-intake
+  cancel-in-progress: false
+
+jobs:
+  assemble:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Assemble verified JPEG assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ ! -f staging/harvest-asset-upload/READY.json ]]; then
+            echo 'READY marker absent; nothing to assemble.'
+            exit 0
+          fi
+          python3 - <<'PY'
+          import base64, hashlib, json
+          from pathlib import Path
+
+          root = Path('staging/harvest-asset-upload')
+          ready = json.loads((root / 'READY.json').read_text())
+          dest_root = Path('site/wordpress/assets/infographics')
+          dest_root.mkdir(parents=True, exist_ok=True)
+
+          for item in ready['assets']:
+              part_dir = root / item['id']
+              parts = sorted(part_dir.glob('*.part'))
+              if not parts:
+                  raise SystemExit(f"No chunks found for {item['id']}")
+              encoded = ''.join(p.read_text().strip() for p in parts)
+              data = base64.b64decode(encoded, validate=True)
+              if not data.startswith(b'\xff\xd8\xff'):
+                  raise SystemExit(f"{item['id']} is not a JPEG")
+              sha = hashlib.sha256(data).hexdigest()
+              if sha != item['sha256']:
+                  raise SystemExit(f"SHA-256 mismatch for {item['id']}: {sha} != {item['sha256']}")
+              out = dest_root / item['filename']
+              out.write_bytes(data)
+              print(f"assembled {item['id']} -> {out} ({len(data)} bytes)")
+          PY
+
+      - name: Commit canonical and quarantined source assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add site/wordpress/assets/infographics
+          git rm -r staging/harvest-asset-upload
+          if git diff --cached --quiet; then
+            echo 'No changes to commit.'
+            exit 0
+          fi
+          git commit -m 'Add remaining Harvest education image assets'
+          git push origin HEAD:main
