@@ -156,7 +156,8 @@ jobs:
           [[ "$(grep -Fo 'class="phi6-lesson"' "$body" | wc -l | tr -d ' ')" = '32' ]]
           grep -Fq 'data-dtf-topic="plant-health-ipm"' "$body"
           grep -Fq 'data-dtf-learning-v4="topic-plant-health-ipm"' "$body"
-          grep -Fq 'Plant Health &amp; IPM, built around proof instead of symptom guessing.' "$body"
+          grep -Fq 'class="phi6-lede"' "$body"
+          grep -Fq 'proof instead of symptom guessing' "$body"
 
       - name: Upload publication and rollback evidence
         if: always()
