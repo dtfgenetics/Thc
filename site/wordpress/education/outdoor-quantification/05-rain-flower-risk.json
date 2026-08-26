@@ -1,0 +1,316 @@
+{
+  "schemaVersion": 1,
+  "parentId": "outdoor-quantification-v1",
+  "route": "/learn/outdoor/",
+  "chapter": {
+    "chapterId": "rain-flower-risk",
+    "chapterNumber": 5,
+    "chapterTitle": "Rain, Humidity & Flower Disease Risk",
+    "learnerQuestion": "After rain or dew, what is happening inside the flower and sheltered canopy, how long does moisture persist, and is the observed pattern consistent with rising disease risk or another cause?",
+    "sourceContext": [
+      {
+        "id": "Q15",
+        "type": "peer-reviewed",
+        "citation": "Punja ZK, Ni L, Lung S, Buirs L. Total yeast and mold levels in high THC-containing cannabis (Cannabis sativa L.) inflorescences are influenced by genotype, environment, and pre-and post-harvest handling practices. Frontiers in Microbiology. 2023;14:1192035. doi:10.3389/fmicb.2023.1192035.",
+        "supports": "Cannabis inflorescence temperature and relative humidity can exceed nearby ambient conditions; genotype, inflorescence structure, air circulation, temperature and humidity all affected microbial load in the reported work."
+      },
+      {
+        "id": "Q16",
+        "type": "peer-reviewed review",
+        "citation": "Punja ZK. Emerging diseases of Cannabis sativa and sustainable management. Pest Management Science. 2021.",
+        "supports": "Botrytis bud rot can be severe under cool, wet field weather. Disease management depends on reducing moisture deposition, favorable humidity and pathogen spread rather than relying on a single ambient reading."
+      },
+      {
+        "id": "Q17",
+        "type": "peer-reviewed review",
+        "citation": "Punja ZK, Collyer D, Scott C, Lung S, Holmes J, Sutton D. Fungal and mycotoxin contaminants in cannabis and hemp flowers: implications for consumer health and directions for further research. Frontiers in Microbiology. 2023;14:1278189.",
+        "supports": "Cannabis and hemp inflorescences provide humid ecological niches for fungi, damaged tissues can be colonized under favorable conditions, and reducing humidity and spore spread can reduce fungal development."
+      }
+    ],
+    "visualTargets": [
+      "THC full-sheet infographic: ambient weather vs inflorescence microclimate",
+      "THC comparison plate: outer flower dry while interior remains humid or wet",
+      "THC rain and dew drying timeline with repeated observation points",
+      "THC Botrytis progression reference: healthy flower, early suspect tissue, advanced rot, differential notes",
+      "THC field map: disease incidence and severity by plant and canopy zone",
+      "THC sanitation and triage workflow for suspect flower inspection and tool hygiene"
+    ],
+    "subtopics": [
+      {
+        "id": "flower-microclimate",
+        "lessonTitle": "Measure the flower microclimate instead of assuming ambient RH describes it",
+        "goal": "Quantify temperature and humidity at representative inflorescences and compare those readings with nearby ambient conditions so hidden humid zones are visible.",
+        "measure": [
+          {
+            "metric": "Inflorescence relative humidity",
+            "unit": "% RH",
+            "method": "Using a compact calibrated temperature/RH probe appropriate for the space, measure inside a representative dense inflorescence without crushing tissue. Record insertion location and allow the sensor to stabilize according to its response time.",
+            "frequency": "At consistent morning, midday and evening checkpoints during representative dry and humid periods; repeat after rain or dew events."
+          },
+          {
+            "metric": "Ambient relative humidity",
+            "unit": "% RH",
+            "method": "Measure adjacent to the same plant at comparable height but outside the flower boundary, using the same instrument when practical.",
+            "frequency": "Paired with every inflorescence measurement."
+          },
+          {
+            "metric": "Inflorescence temperature",
+            "unit": "°C or °F",
+            "method": "Record temperature from the same probe and location used for flower RH. Avoid treating a nearby weather-station temperature as flower temperature.",
+            "frequency": "Paired with every flower RH measurement."
+          },
+          {
+            "metric": "Ambient temperature",
+            "unit": "°C or °F",
+            "method": "Measure adjacent air temperature at the same plant height and time as the flower reading.",
+            "frequency": "Paired with every inflorescence measurement."
+          }
+        ],
+        "record": [
+          "plant ID / cultivar or genotype",
+          "flower position and density class",
+          "date / local time",
+          "inside-flower RH and temperature",
+          "adjacent ambient RH and temperature",
+          "sensor model / calibration status / stabilization method",
+          "recent rain, dew, irrigation or fog exposure",
+          "wind / airflow condition",
+          "photo ID of measured flower"
+        ],
+        "compare": [
+          "inside-flower vs adjacent ambient readings from the same time",
+          "dense vs more open flowers on the same plant or cohort",
+          "morning vs afternoon vs evening measurements",
+          "pre-rain vs post-rain/dew vs recovered dry-period measurements"
+        ],
+        "interpret": [
+          "A lower ambient RH does not prove the flower interior is equally dry; sheltered tissues can retain a different microclimate.",
+          "Repeated positive flower-to-ambient RH differences identify zones that deserve closer wetness and disease inspection, but they do not diagnose disease by themselves.",
+          "Genotype and flower architecture can change internal microclimate, so comparisons should preserve plant identity and developmental stage."
+        ],
+        "decisionRule": "Escalate monitoring and drying-risk inspection when the same flowers repeatedly remain more humid or warmer than comparison flowers after wet events. Do not assign a universal RH cutoff as a stand-alone disease diagnosis.",
+        "confidenceCheck": "Probe placement, response time and disturbance can affect readings. High-confidence comparisons use the same calibrated instrument, repeated locations and paired ambient measurements."
+      },
+      {
+        "id": "wetness-drying-window",
+        "lessonTitle": "Track how long flowers stay wet after rain and dew",
+        "goal": "Measure wetting start, wetness persistence and drying opportunity so two rain events with similar totals are not treated as equivalent when the post-event environment differs.",
+        "measure": [
+          {
+            "metric": "Wetting-event start and end",
+            "unit": "clock time / duration",
+            "method": "Record when rain, heavy dew, fog or overhead wetting begins and ends. Use on-site observation or a nearby weather record and label off-site data clearly.",
+            "frequency": "Every material flower-wetting event during susceptible flowering."
+          },
+          {
+            "metric": "Outer-flower drying interval",
+            "unit": "minutes or hours",
+            "method": "Select marked flower positions and record the time from wetting end until the outer surfaces reach a consistent defined visibly-dry condition.",
+            "frequency": "Across representative rain and dew events."
+          },
+          {
+            "metric": "Sheltered/interior wetness persistence",
+            "unit": "minutes or hours or sensor wetness units",
+            "method": "Inspect the same sheltered flower zones at defined intervals. If using a wetness sensor, record sensor type, location and scale instead of converting its output to unsupported tissue-water values.",
+            "frequency": "At fixed intervals after wetting until the defined dry state returns."
+          },
+          {
+            "metric": "Post-event drying environment",
+            "unit": "RH, temperature, wind speed/direction, solar exposure",
+            "method": "Record paired local weather during the drying period, preferably at canopy height or with clearly labeled weather-station data.",
+            "frequency": "At wetting end and during the drying interval."
+          }
+        ],
+        "record": [
+          "wetting source: rain / dew / fog / overhead water",
+          "event start/end and rainfall depth when available",
+          "marked flower/canopy positions",
+          "outer and sheltered drying times",
+          "ambient/flower RH and temperature where available",
+          "wind and solar exposure during drying",
+          "flower density / developmental stage",
+          "repeat-event history over preceding days",
+          "photo IDs"
+        ],
+        "compare": [
+          "events with similar rainfall but different drying weather",
+          "outer vs sheltered flower positions",
+          "open vs dense canopy zones",
+          "drying intervals before and after spacing/support/architecture changes"
+        ],
+        "interpret": [
+          "Rainfall total alone does not describe disease-weather pressure; duration of wetness and the environment after the event can differ substantially.",
+          "A flower that appears dry externally may still have a more humid interior, so visible drying and flower-microclimate measurements answer different questions.",
+          "Repeated wet events with incomplete drying between them deserve more attention than one isolated event followed by rapid drying."
+        ],
+        "decisionRule": "Use wetting duration plus post-event drying observations to prioritize scouting. Increase inspection frequency when sheltered flower zones repeatedly dry later than comparison zones or wet events recur before recovery.",
+        "confidenceCheck": "Visible dryness is a field screening definition, not a laboratory moisture measurement. Keep the definition consistent across events so trends remain comparable."
+      },
+      {
+        "id": "symptom-incidence-severity",
+        "lessonTitle": "Map suspect flower symptoms before naming the disease",
+        "goal": "Quantify how many sampled flowers are affected, how severe the symptoms are, where they occur, and whether they are progressing before attributing the pattern to Botrytis or another cause.",
+        "measure": [
+          {
+            "metric": "Symptom incidence",
+            "unit": "% of inspected flowers or count/total",
+            "method": "Inspect a defined sample of flowers using the same sampling pattern each round and record affected count divided by inspected count.",
+            "frequency": "Routine scouting and after prolonged wet or humid periods."
+          },
+          {
+            "metric": "Symptom severity",
+            "unit": "0–4 ordinal class",
+            "method": "Use a defined visual scale: 0 = no suspect tissue; 1 = small localized discoloration; 2 = multiple or locally expanding suspect areas; 3 = substantial flower tissue collapse or rot; 4 = extensive destruction or obvious fungal growth. Keep photo references for each class.",
+            "frequency": "Every affected flower recorded during scouting."
+          },
+          {
+            "metric": "Spatial distribution",
+            "unit": "plant/canopy zone map",
+            "method": "Map affected plants and flower positions: outer/interior, upper/lower, windward/leeward, sheltered/exposed. Record clustering rather than only totals.",
+            "frequency": "Each scouting round."
+          },
+          {
+            "metric": "Progression rate",
+            "unit": "change in incidence/severity per defined interval",
+            "method": "Recheck marked suspect flowers or comparable sampling zones after a fixed interval and calculate the change.",
+            "frequency": "Shorten the interval when active progression is suspected; otherwise use the normal scouting cadence."
+          }
+        ],
+        "record": [
+          "sampling method and number inspected",
+          "affected count and incidence",
+          "severity class by affected flower",
+          "plant/canopy location",
+          "flower density and developmental stage",
+          "weather/wetness history",
+          "presence/absence of visible mycelium, sporulation, soft collapse or internal browning",
+          "physical injury / insect feeding / senescence look-alikes",
+          "photo IDs and recheck date"
+        ],
+        "compare": [
+          "symptom incidence across exposed vs sheltered zones",
+          "affected vs unaffected flowers with similar weather exposure",
+          "current vs previous scouting round",
+          "suspect rot pattern vs physical injury, insect feeding and normal senescence observations"
+        ],
+        "interpret": [
+          "Browning or collapse is not uniquely diagnostic of Botrytis; tissue injury, insects, senescence and other pathogens can create overlapping appearances.",
+          "A clustered pattern following persistently wet sheltered zones provides different evidence than random isolated damage.",
+          "Increasing incidence and severity over repeated observations strengthens evidence of an active biological process but still may require laboratory confirmation for species-level diagnosis."
+        ],
+        "decisionRule": "Treat a symptom map as evidence for triage, not proof of pathogen identity. Escalate suspect biological disease when symptoms progress, cluster in favorable microclimates, or show characteristic fungal signs; preserve uncertainty when those features are absent.",
+        "confidenceCheck": "Visual diagnosis cannot reliably identify every pathogen to species. Laboratory microscopy, culture or molecular testing may be required when exact identification changes the decision."
+      },
+      {
+        "id": "triage-sanitation-response",
+        "lessonTitle": "Triage suspect flowers without turning inspection into a spread event",
+        "goal": "Record how suspect tissue is handled, whether sanitation steps are followed, and whether disease incidence changes after the response.",
+        "measure": [
+          {
+            "metric": "Suspect-flower handling count",
+            "unit": "count per scouting or response event",
+            "method": "Record how many flowers or plants were flagged, isolated, sampled or removed according to the site's legal and operational protocol.",
+            "frequency": "Every response event."
+          },
+          {
+            "metric": "Tool/contact sanitation completion",
+            "unit": "completed / missed / not applicable",
+            "method": "Use a checklist for tool changes or cleaning, glove/contact changes, and movement order from healthier to suspect zones where applicable. Record the approved product or procedure by reference rather than improvising concentrations on the field sheet.",
+            "frequency": "Every suspect-tissue handling event."
+          },
+          {
+            "metric": "Post-response incidence",
+            "unit": "% affected in the same sampling frame",
+            "method": "Repeat the same incidence survey after a defined interval and compare with the pre-response baseline.",
+            "frequency": "At the next planned scouting interval and sooner if progression is rapid."
+          },
+          {
+            "metric": "New-cluster distance/pattern",
+            "unit": "plant positions / mapped distance",
+            "method": "Map whether new suspect flowers appear adjacent to prior clusters, in the same sheltered zones, or elsewhere.",
+            "frequency": "Each follow-up scouting round."
+          }
+        ],
+        "record": [
+          "date/time and affected plant/flower IDs",
+          "handling action by site protocol",
+          "tool/contact sanitation checklist",
+          "order of movement through the crop",
+          "material containment/disposal route according to local/site rules",
+          "pre-response incidence/severity",
+          "follow-up incidence/severity",
+          "new-cluster map",
+          "weather after response",
+          "photos and any laboratory sample IDs"
+        ],
+        "compare": [
+          "incidence/severity before vs after the response",
+          "areas handled with complete sanitation records vs missed or unknown steps",
+          "new symptom clusters relative to prior suspect areas and prevailing microclimate"
+        ],
+        "interpret": [
+          "A sanitation record helps determine whether handling practices could have contributed to spread, but correlation does not prove transmission route.",
+          "A decline in incidence after a response can coincide with drier weather or crop development; outcome should be interpreted with environmental context.",
+          "Chemical or biological treatment decisions require product legality, label compliance, crop stage and local rules; this field layer does not substitute for an approved pesticide program."
+        ],
+        "decisionRule": "Keep suspect-tissue handling traceable and re-measure outcome. If incidence continues to rise or new clusters appear despite improved drying conditions and sanitation, escalate diagnosis and management rather than repeating an unverified intervention.",
+        "confidenceCheck": "Before/after field observations are observational evidence. Strong causal claims require controlled comparison or diagnostic testing."
+      }
+    ],
+    "fieldWorksheet": {
+      "title": "Section 5 rain, flower microclimate & disease-risk field record",
+      "fields": [
+        "plant ID / cultivar / flower position",
+        "date / time / flower stage",
+        "wetting source and event start/end",
+        "rainfall amount if measured",
+        "inside-flower RH / temperature",
+        "adjacent ambient RH / temperature",
+        "outer and sheltered drying interval",
+        "wind / solar exposure during drying",
+        "incidence sample size / affected count / percent",
+        "severity class",
+        "spatial cluster / canopy zone",
+        "visible fungal signs vs look-alike observations",
+        "handling / sanitation checklist",
+        "follow-up incidence / severity",
+        "laboratory sample ID if collected",
+        "measured / estimated / ordinal label",
+        "decision and evidence needed to change it"
+      ],
+      "outcome": "The learner should finish with a time-linked record connecting wetting, flower microclimate, drying, symptom distribution and response outcome instead of labeling any wet or browned flower as bud rot from appearance alone."
+    },
+    "calculationHelpers": [
+      {
+        "name": "Flower-to-ambient RH difference",
+        "formula": "inflorescence RH − adjacent ambient RH",
+        "use": "Compare hidden flower humidity with the surrounding air at the same time.",
+        "boundary": "This difference is not a universal disease threshold and depends on probe placement, genotype, structure and weather."
+      },
+      {
+        "name": "Flower-to-ambient temperature difference",
+        "formula": "inflorescence temperature − adjacent ambient temperature",
+        "use": "Track whether representative flowers consistently maintain a different temperature microclimate.",
+        "boundary": "Temperature difference alone does not diagnose disease or moisture status."
+      },
+      {
+        "name": "Drying interval",
+        "formula": "defined dry time − wetting end time",
+        "use": "Compare drying opportunity among flowers, canopy zones and weather events.",
+        "boundary": "A visibly dry exterior does not prove the inflorescence interior has reached the same humidity."
+      },
+      {
+        "name": "Symptom incidence",
+        "formula": "affected flowers ÷ inspected flowers × 100",
+        "use": "Track how widespread the observed symptom is in a defined sampling frame.",
+        "boundary": "Incidence measures frequency, not severity or pathogen identity."
+      },
+      {
+        "name": "Incidence change",
+        "formula": "follow-up incidence − baseline incidence",
+        "use": "Describe whether the sampled symptom frequency increased or decreased after time or an intervention.",
+        "boundary": "Observed change is not proof that the intervention caused the result because weather, sampling and crop development may also change."
+      }
+    ]
+  }
+}
