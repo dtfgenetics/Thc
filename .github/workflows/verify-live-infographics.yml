@@ -50,7 +50,7 @@ jobs:
 
           def fetch(url):
               request = urllib.request.Request(url, headers={
-                  'User-Agent': 'Mozilla/5.0 THC-Live-Verification/2.2',
+                  'User-Agent': 'Mozilla/5.0 THC-Live-Verification/2.3',
                   'Cache-Control': 'no-cache, no-store, max-age=0',
                   'Pragma': 'no-cache',
               })
@@ -143,13 +143,21 @@ jobs:
                       seen.add(absolute)
                       card_media.append(absolute)
 
+          # WordPress may render card thumbnails through responsive/lazy markup while
+          # the full-size attachment remains in the card link. Verify the first
+          # usable WordPress media URL per card instead of requiring a literal src.
           preview_urls = []
           seen_preview = set()
           for card in cards:
-              src = card.get('src', '')
-              if '/wp-content/uploads/' not in src:
+              selected = ''
+              for key in ('src', 'href'):
+                  value = card.get(key, '')
+                  if '/wp-content/uploads/' in value:
+                      selected = value
+                      break
+              if not selected:
                   continue
-              absolute = urllib.parse.urljoin(page_url, src)
+              absolute = urllib.parse.urljoin(page_url, selected)
               if absolute not in seen_preview:
                   seen_preview.add(absolute)
                   preview_urls.append(absolute)
