@@ -100,14 +100,19 @@ jobs:
 
           # Sink all five formations while player B deliberately misses between player A turns.
           shots=('0 0' '0 1' '0 2' '0 3' '0 4' '2 0' '2 1' '2 2' '2 3' '4 0' '4 1' '4 2' '6 0' '6 1' '6 2' '8 0' '8 1')
+          miss_row=14
           miss_col=14
           for shot in "${shots[@]}"; do
             read -r row col <<<"$shot"
             final="$(curl "${post[@]}" "${json[@]}" -H "X-Player-Id: $p1" -H "X-Player-Token: $t1" -X POST "$api?action=fire&code=$code" --data "{\"row\":$row,\"col\":$col}")"
             status="$(jq -r '.status' <<<"$final")"
             [[ "$status" == finished ]] && break
-            curl "${post[@]}" "${json[@]}" -H "X-Player-Id: $p2" -H "X-Player-Token: $t2" -X POST "$api?action=fire&code=$code" --data "{\"row\":14,\"col\":$miss_col}" >/dev/null
+            curl "${post[@]}" "${json[@]}" -H "X-Player-Id: $p2" -H "X-Player-Token: $t2" -X POST "$api?action=fire&code=$code" --data "{\"row\":$miss_row,\"col\":$miss_col}" >/dev/null
             miss_col=$((miss_col-1))
+            if (( miss_col < 0 )); then
+              miss_row=$((miss_row-1))
+              miss_col=14
+            fi
           done
           jq -e --arg p1 "$p1" '.status == "finished" and .winnerId == $p1 and (.events|map(select(.type=="game-finished"))|length)==1' <<<"$final" >/dev/null
 
