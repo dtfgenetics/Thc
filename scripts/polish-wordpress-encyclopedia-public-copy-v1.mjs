@@ -111,6 +111,22 @@ function polish(content = '') {
   return next;
 }
 
+function linkRelatedReferences(content = '') {
+  return String(content).replace(
+    /(<h2>Related encyclopedia topics<\/h2>)([\s\S]*?)(<h2>Source notes<\/h2>)/g,
+    (section, heading, middle, sourceHeading) => {
+      const linked = middle.replace(/<li>([\s\S]*?)<\/li>/g, (item, inner) => {
+        if (/<a\b/i.test(inner)) return item;
+        const nextInner = inner.replace(/\bTHC-ENC-(\d{3})\b/g, (id, number) =>
+          `<a href=\"/learn/encyclopedia/thc-enc-${number}/\">${id}</a>`
+        );
+        return `<li>${nextInner}</li>`;
+      });
+      return `${heading}${linked}${sourceHeading}`;
+    },
+  );
+}
+
 const stamp = new Date().toISOString().replace(/[-:.]/g, '');
 const backupDir = path.join(backupRoot, `encyclopedia-public-copy-v1-${stamp}`);
 await mkdir(backupDir, { recursive: true });
@@ -130,7 +146,7 @@ const unchanged = [];
 
 for (const page of targets) {
   const raw = page?.content?.raw || page?.content?.rendered || '';
-  const nextContent = polish(raw);
+  const nextContent = linkRelatedReferences(polish(raw));
   const nextExcerpt = polish(page?.excerpt?.raw || '');
   const changed = nextContent !== raw || nextExcerpt !== (page?.excerpt?.raw || '');
 
