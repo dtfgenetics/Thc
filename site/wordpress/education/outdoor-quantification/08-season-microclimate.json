@@ -1,0 +1,322 @@
+{
+  "schemaVersion": 1,
+  "parentId": "outdoor-quantification-v1",
+  "route": "/learn/outdoor/",
+  "chapter": {
+    "chapterId": "season-microclimate",
+    "chapterNumber": 8,
+    "chapterTitle": "Season Records, Microclimate & Contingency Planning",
+    "learnerQuestion": "What actually happened at this site through the season, which local microclimates and weather events changed plant response, and what evidence should change next season's plan?",
+    "sourceContext": [
+      {
+        "id": "Q25",
+        "type": "university extension",
+        "citation": "Penn State Extension. Understanding and Preventing Spring Frost and Freeze Damage to Grapes. Updated 2026.",
+        "supports": "Cold air drains downhill and can collect in low areas; site-level topography and local temperature records can therefore differ materially from regional forecasts."
+      },
+      {
+        "id": "Q26",
+        "type": "university extension",
+        "citation": "Penn State Extension. Wildfire Smoke: Growing Crops Through the Haze. Updated July 21, 2026.",
+        "supports": "Wildfire smoke can alter radiation, temperature, atmospheric chemistry and particulate deposition, while crop responses vary by species, development and environment. Smoke exposure should therefore be recorded rather than assigned one universal plant effect."
+      },
+      {
+        "id": "Q27",
+        "type": "government agroclimate reference",
+        "citation": "Agriculture and Agri-Food Canada. Extreme Weather Indices.",
+        "supports": "Heat, freeze, precipitation and wind can be tracked as separate extreme-weather variables and forecast probabilities, supporting event-based contingency records rather than one generic weather-risk label."
+      },
+      {
+        "id": "Q28",
+        "type": "THC field-system context",
+        "citation": "Outdoor Quantification Sections 1–7.",
+        "supports": "Season review is most useful when it links site, root-zone, structural, flower-risk, pest and reproductive records by plant and event instead of summarizing the year from memory."
+      }
+    ],
+    "visualTargets": [
+      "THC full-sheet infographic: outdoor season timeline linking weather, phenology and major interventions",
+      "THC microclimate map: slope, low spot, wall/fence, canopy edge, sheltered zone and sensor locations",
+      "THC frost-pocket and cold-air-drainage diagram",
+      "THC extreme-weather field card for heat, cold, wind, heavy rain, hail and smoke",
+      "THC smoke/haze observation plate separating air-quality record, plant deposition and unsupported quality claims",
+      "THC end-of-season evidence review worksheet with keep/change/test-next-season columns"
+    ],
+    "subtopics": [
+      {
+        "id": "season-phenology-ledger",
+        "lessonTitle": "Build a local season from weather and plant milestones instead of generic calendar dates",
+        "goal": "Link plant development to measured site weather so future planning uses local phenology rather than assuming the same week behaves the same every year.",
+        "measure": [
+          {
+            "metric": "Daily or interval temperature",
+            "unit": "°C or °F minimum / maximum / representative mean",
+            "method": "Use a shielded on-site sensor at a documented height when available. If weather-station data are used, record station/source and distance from the site.",
+            "frequency": "Daily logging or the highest practical regular interval through the crop season."
+          },
+          {
+            "metric": "Precipitation",
+            "unit": "mm or inches per event/day",
+            "method": "Use an on-site rain gauge or clearly labeled nearby weather record. Keep irrigation separate from rainfall.",
+            "frequency": "Every precipitation event or daily total."
+          },
+          {
+            "metric": "Phenology milestone",
+            "unit": "date + defined plant stage",
+            "method": "Record emergence/establishment, major vegetative transition, first reproductive structures, flowering progression, seed-set observations where relevant and harvest/maturity checkpoints using the same stage definitions each season.",
+            "frequency": "At each meaningful developmental transition."
+          },
+          {
+            "metric": "Optional accumulated heat index",
+            "unit": "growing degree days or another documented thermal index",
+            "method": "Only calculate GDD when the base temperature and formula are explicitly recorded. Do not borrow a base temperature from another crop and present it as cannabis-specific without validation.",
+            "frequency": "Cumulative through the season when used."
+          }
+        ],
+        "record": [
+          "site / season ID",
+          "sensor or weather-station source and height/location",
+          "daily/interval min and max temperature",
+          "rainfall events",
+          "irrigation events kept separately",
+          "plant/cohort phenology dates",
+          "photoperiod/day-length context if used",
+          "optional GDD formula and base temperature",
+          "photos at fixed seasonal checkpoints"
+        ],
+        "compare": [
+          "same phenology milestone across years",
+          "different genotypes/cohorts within the same season",
+          "on-site weather vs regional station summaries",
+          "calendar date vs accumulated local weather and observed plant stage"
+        ],
+        "interpret": [
+          "A local cultivation calendar becomes stronger when it is built from repeated phenology and weather records rather than generic month labels.",
+          "The same calendar date can carry different temperature, rainfall and developmental context in different years.",
+          "Thermal indices can help compare seasons only when their assumptions are explicit; they are not automatically validated cannabis development models."
+        ],
+        "decisionRule": "Base future timing decisions on observed plant stage plus local weather history. Keep generic regional calendars as planning context, not as proof that the crop should reach a stage on a fixed date.",
+        "confidenceCheck": "One season describes one season. Confidence in a local seasonal model increases as multiple years and genotypes are recorded under comparable definitions."
+      },
+      {
+        "id": "microclimate-map",
+        "lessonTitle": "Map the temperatures, humidity, wind and wetness the plants actually experience",
+        "goal": "Quantify differences among slope positions, low areas, structures, canopy edges and sheltered zones so regional weather is not mistaken for the entire site microclimate.",
+        "measure": [
+          {
+            "metric": "Zone temperature difference",
+            "unit": "°C or °F",
+            "method": "Place matched or cross-checked sensors in defined high/low, exposed/sheltered or structure-adjacent zones at comparable heights. Record the same time interval.",
+            "frequency": "Representative normal days plus high-risk heat/cold nights."
+          },
+          {
+            "metric": "Zone relative humidity difference",
+            "unit": "% RH",
+            "method": "Measure RH with matched sensors at documented positions. Preserve sensor calibration and shielding information.",
+            "frequency": "Paired with zone temperature logging."
+          },
+          {
+            "metric": "Wind exposure by zone",
+            "unit": "m/s, km/h, mph or matched ordinal class",
+            "method": "Compare exposed and sheltered points using the same instrument/time window or a standardized qualitative class when instruments are unavailable.",
+            "frequency": "Across representative wind directions and after major vegetation/structure changes."
+          },
+          {
+            "metric": "Wetness or drying difference",
+            "unit": "minutes/hours to defined dry state or sensor wetness units",
+            "method": "Compare repeatable leaf/flower/canopy reference points after dew or rain. Keep visible-dry observations separate from sensor outputs.",
+            "frequency": "Across representative wet events."
+          }
+        ],
+        "record": [
+          "zone IDs and map coordinates/reference points",
+          "elevation/slope position where relevant",
+          "sensor model / calibration / height",
+          "temperature/RH by zone",
+          "wind by zone",
+          "wetness/drying interval",
+          "sun/shade and structure/windbreak context",
+          "plant response or damage in each zone",
+          "photo/map IDs"
+        ],
+        "compare": [
+          "low vs elevated positions during calm cold nights",
+          "sun-exposed vs shaded/structure-adjacent zones during heat",
+          "windward vs sheltered zones",
+          "microclimate differences before and after canopy/structure changes"
+        ],
+        "interpret": [
+          "Cold air can collect in lower positions, so the coldest crop-zone temperature may be lower than a weather report measured elsewhere or higher above ground.",
+          "Walls, fences, tree lines and canopy density can create useful shelter or problematic heat/humidity depending on weather and season.",
+          "A microclimate map should connect environmental differences to plant observations without assuming every zone difference causes injury."
+        ],
+        "decisionRule": "Use repeated zone differences to place vulnerable plants, sensors, supports and inspection priorities. Redesign or protect a zone when measured extremes repeatedly coincide with plant injury or delayed recovery.",
+        "confidenceCheck": "Sensor mismatch can look like microclimate. Cross-check instruments and keep placement consistent before treating small differences as real."
+      },
+      {
+        "id": "extreme-weather-contingency",
+        "lessonTitle": "Turn extreme weather into an event record with triggers, actions and recovery checks",
+        "goal": "Track heat, cold, wind, heavy rain, hail and smoke as separate events so preparation and recovery can be evaluated instead of relying on a generic 'bad weather' note.",
+        "measure": [
+          {
+            "metric": "Event magnitude and duration",
+            "unit": "temperature, rainfall, wind/gust, hail class, smoke/AQI/PM2.5 context plus hours",
+            "method": "Record the variable relevant to the event from on-site instruments or clearly labeled official data. For smoke, keep worker air-quality metrics separate from assumptions about crop product quality.",
+            "frequency": "For every material extreme-weather event."
+          },
+          {
+            "metric": "Forecast-to-site difference",
+            "unit": "difference in relevant weather variable",
+            "method": "Compare the forecast or regional station with the on-site measurement during the event when both are available.",
+            "frequency": "During major events used for future contingency planning."
+          },
+          {
+            "metric": "Immediate damage incidence",
+            "unit": "% plants/branches/flowers affected by defined damage class",
+            "method": "Use a standardized post-event route and count broken, wilted, burned, flooded, hailed, frost-injured or deposition-affected units separately.",
+            "frequency": "As soon as safe after the event and at follow-up."
+          },
+          {
+            "metric": "Recovery score",
+            "unit": "0–3 defined ordinal class or repeated growth/turgor measure",
+            "method": "Use the same plant or cohort references: 0 = no detectable change, 1 = temporary response with recovery, 2 = persistent injury/stalled growth, 3 = severe irreversible loss of tissue/structure. Keep photos.",
+            "frequency": "Immediate post-event plus defined follow-up intervals."
+          }
+        ],
+        "record": [
+          "event type / start / end",
+          "forecast source and forecasted magnitude",
+          "on-site measured magnitude",
+          "worker-safety alert/AQI context for smoke events",
+          "pre-event action or preparation",
+          "immediate damage incidence",
+          "zone-specific damage map",
+          "recovery score over time",
+          "secondary pest/disease/root-zone observations",
+          "photos / sensor logs",
+          "what preparation worked / failed"
+        ],
+        "compare": [
+          "forecast vs on-site actual",
+          "prepared/protected vs more exposed comparable zones",
+          "immediate injury vs later recovery",
+          "similar event types across years"
+        ],
+        "interpret": [
+          "Different extreme-weather variables should not be collapsed into one risk score because heat, freeze, wind, flooding, hail and smoke affect plants through different pathways.",
+          "Wildfire smoke can alter radiation, temperature and particulate exposure, but current crop effects are complex and species-dependent; visible residue or haze alone should not be converted into unsupported safety or quality claims.",
+          "Post-event damage can evolve over time, so an immediate inspection is a baseline rather than the final outcome."
+        ],
+        "decisionRule": "Define contingency triggers from local risk tolerance, plant stage, legal/work-safety guidance and measured site behavior. After each event, revise the plan from measured damage and recovery rather than assuming the preparation succeeded.",
+        "confidenceCheck": "Forecasts, AQI, regional weather stations and crop-zone sensors answer different questions. Preserve source and location so their values are not treated as interchangeable."
+      },
+      {
+        "id": "end-season-review",
+        "lessonTitle": "End the season with an evidence review, not a memory-based story",
+        "goal": "Summarize the season by linking plant identity, environmental events, interventions, diagnostic outcomes and harvest/termination results so the next plan can be changed deliberately.",
+        "measure": [
+          {
+            "metric": "Major event count",
+            "unit": "count by weather / pest / disease / structural / reproductive category",
+            "method": "Count documented events from field records rather than estimating from memory. Keep repeat observations of the same event linked under one event ID.",
+            "frequency": "End-of-season review."
+          },
+          {
+            "metric": "Intervention verification rate",
+            "unit": "% documented interventions with a planned follow-up measurement completed",
+            "method": "Count interventions that had a defined follow-up result divided by all recorded interventions.",
+            "frequency": "End-of-season review."
+          },
+          {
+            "metric": "Plant/cohort completion outcome",
+            "unit": "harvested / removed / failed / unresolved plus date and reason",
+            "method": "Assign a final status to each tracked plant/cohort and link it to the evidence record that supports the status.",
+            "frequency": "At crop completion."
+          },
+          {
+            "metric": "Next-season test priority",
+            "unit": "ranked keep / change / test list",
+            "method": "For each major decision area, classify practices that should be retained, changed or tested under a controlled comparison next season and cite the field evidence behind the choice.",
+            "frequency": "Once after records are complete, revised when laboratory or delayed results arrive."
+          }
+        ],
+        "record": [
+          "season/site ID",
+          "plant/cohort final status",
+          "major weather-event IDs",
+          "major pest/disease/reproductive event IDs",
+          "interventions and whether follow-up was completed",
+          "harvest/termination date and reason",
+          "diagnoses confirmed / probable / unresolved",
+          "genotype-specific observations",
+          "practices to keep",
+          "practices to change",
+          "questions to test next season",
+          "missing data that reduced confidence"
+        ],
+        "compare": [
+          "planned vs actual season milestones",
+          "plant/cohort outcomes across microclimate zones",
+          "interventions with vs without measured follow-up",
+          "current season vs prior-season evidence using the same definitions"
+        ],
+        "interpret": [
+          "A failed outcome with good records can be more educational than a successful outcome with no measured context because the next hypothesis can be tested.",
+          "Genotype, site and season interact; a result from one plant or one year should not automatically become a universal cultivation rule.",
+          "Unresolved diagnoses and missing measurements should remain visible so future planning can target those evidence gaps."
+        ],
+        "decisionRule": "Convert the season review into a small number of evidence-backed keep/change/test priorities. Do not rewrite uncertain observations as facts simply because the season is over.",
+        "confidenceCheck": "End-of-season summaries inherit the quality of the original records. Missing baselines, inconsistent sample methods or unverified diagnoses should lower confidence explicitly."
+      }
+    ],
+    "fieldWorksheet": {
+      "title": "Section 8 season, microclimate & contingency record",
+      "fields": [
+        "site / season ID",
+        "weather sensor/source and position",
+        "temperature / rainfall log",
+        "phenology milestone dates",
+        "optional thermal-index formula",
+        "microclimate zone map",
+        "zone temperature/RH/wind/drying comparisons",
+        "extreme-weather event ID / magnitude / duration",
+        "forecast vs on-site actual",
+        "pre-event preparation",
+        "immediate damage incidence",
+        "recovery score",
+        "smoke/AQI worker-safety context where relevant",
+        "plant/cohort final status",
+        "intervention follow-up completion",
+        "keep / change / test-next-season priorities",
+        "missing-data / uncertainty notes",
+        "photos / sensor / event IDs"
+      ],
+      "outcome": "The learner should finish with a local season model that connects plant development to microclimate and major events, then converts that evidence into explicit next-season tests instead of generic calendar rules."
+    },
+    "calculationHelpers": [
+      {
+        "name": "Microclimate temperature difference",
+        "formula": "zone A temperature − zone B temperature at the same timestamp",
+        "use": "Quantify cold pockets, heat zones and structure/slope effects.",
+        "boundary": "Cross-check sensors before attributing small differences to the site."
+      },
+      {
+        "name": "Forecast error at crop zone",
+        "formula": "on-site observed value − forecast or regional-station value",
+        "use": "Learn how well public forecasts represent the actual cultivation site during important events.",
+        "boundary": "The sign and relevance depend on the variable and sensor placement; it is not a forecast-quality score by itself."
+      },
+      {
+        "name": "Intervention follow-up completion",
+        "formula": "interventions with completed follow-up ÷ interventions recorded × 100",
+        "use": "Measure whether the field system is actually verifying actions rather than only recording them.",
+        "boundary": "Completion measures documentation discipline, not whether the intervention was effective."
+      },
+      {
+        "name": "Optional GDD accumulation",
+        "formula": "sum of documented daily heat-unit calculation using an explicitly stated base temperature and method",
+        "use": "Compare thermal accumulation among seasons when a chosen model is being tested.",
+        "boundary": "Do not present a borrowed base temperature or GDD model as validated for cannabis development without supporting evidence."
+      }
+    ]
+  }
+}
