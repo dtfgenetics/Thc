@@ -32,7 +32,7 @@ jobs:
     name: Publish Genetics Breeding V6 visual atlas
     if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     environment: production
     env:
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
@@ -58,6 +58,9 @@ jobs:
           : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
           : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
           node --check scripts/publish-wordpress-genetics-breeding-visuals-v6.mjs
+          node --check scripts/enhance-wordpress-learning-v4.mjs
+          node --check scripts/publish-wordpress-genetics-evidence-v6.mjs
+          node scripts/publish-wordpress-genetics-evidence-v6.mjs --validate-only > "$RUNNER_TEMP/genetics-evidence-v6-validation.json"
           node - <<'NODE' >> "$GITHUB_OUTPUT"
           const fs=require('fs');
           const map=JSON.parse(fs.readFileSync('site/wordpress/education/genetics-breeding-v6-visual-map.json','utf8'));
@@ -76,6 +79,28 @@ jobs:
           console.log('groups=8');
           console.log(`gaps=${gaps.length}`);
           NODE
+
+      - name: Restore guided-learning and canonical Genetics V6 ownership
+        id: restore
+        shell: bash
+        run: |
+          set -euo pipefail
+          APPLY_LEARNING_V4=true BACKUP_ROOT=/tmp/dtf-genetics-v4-restore \
+            node scripts/enhance-wordpress-learning-v4.mjs | tee "$RUNNER_TEMP/genetics-v4-restore.log"
+          APPLY_GENETICS_EVIDENCE_V6=true BACKUP_ROOT=/tmp/dtf-genetics-v6-restore \
+            node scripts/publish-wordpress-genetics-evidence-v6.mjs | tee "$RUNNER_TEMP/genetics-v6-restore.log"
+          body="$RUNNER_TEMP/genetics-restored.html"
+          ok=0
+          for attempt in 1 2 3 4 5 6; do
+            curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+              --header 'Cache-Control: no-cache, no-store, max-age=0' --header 'Pragma: no-cache' \
+              "$WP_SITE_URL/learn/genetics-breeding/?dtf_gb6_restore=${GITHUB_RUN_ID}-${attempt}" --output "$body"
+            if grep -Fq 'data-dtf-genetics-breeding-v6="true"' "$body" && grep -Fq 'data-dtf-learning-v4="topic-genetics-breeding"' "$body"; then ok=1; break; fi
+            sleep 6
+          done
+          [[ "$ok" -eq 1 ]]
+          [[ "$(grep -Fo 'data-cgv6-chapter=' "$body" | wc -l | tr -d ' ')" = '8' ]]
+          [[ "$(grep -Fo 'class="cgv6-lesson"' "$body" | wc -l | tr -d ' ')" = '32' ]]
 
       - name: Publish and verify Genetics Breeding visual atlas
         id: publish
@@ -115,6 +140,8 @@ jobs:
           [[ "$(grep -Fo 'class="gb6v-card"' "$body" | wc -l | tr -d ' ')" = "$EXPECTED_VISUALS" ]]
           [[ "$(grep -Fo 'data-gb6v-group=' "$body" | wc -l | tr -d ' ')" = "$EXPECTED_GROUPS" ]]
           [[ "$(grep -Fo 'class="gb6v-gap"' "$body" | wc -l | tr -d ' ')" = "$EXPECTED_GAPS" ]]
+          [[ "$(grep -Fo 'data-cgv6-chapter=' "$body" | wc -l | tr -d ' ')" = '8' ]]
+          [[ "$(grep -Fo 'class="cgv6-lesson"' "$body" | wc -l | tr -d ' ')" = '32' ]]
           grep -Fqi 'data-dtf-genetics-breeding-v6="true"' "$body"
           grep -Fqi 'data-dtf-topic="genetics-breeding"' "$body"
           grep -Fqi 'data-dtf-learning-v4="topic-genetics-breeding"' "$body"
@@ -130,6 +157,11 @@ jobs:
           name: genetics-breeding-visual-atlas-v6-${{ github.run_id }}
           path: |
             /tmp/dtf-genetics-breeding-visuals-v6
+            /tmp/dtf-genetics-v4-restore
+            /tmp/dtf-genetics-v6-restore
+            ${{ runner.temp }}/genetics-v4-restore.log
+            ${{ runner.temp }}/genetics-v6-restore.log
+            ${{ runner.temp }}/genetics-restored.html
             ${{ runner.temp }}/genetics-breeding-visuals-v6.log
             ${{ runner.temp }}/genetics-breeding-visual-atlas.html
           if-no-files-found: warn
@@ -141,6 +173,7 @@ jobs:
         env:
           STATUS: ${{ job.status }}
           VALIDATE: ${{ steps.validate.outcome }}
+          RESTORE: ${{ steps.restore.outcome }}
           PUBLISH: ${{ steps.publish.outcome }}
           VERIFY: ${{ steps.verify.outcome }}
           VISUALS: ${{ steps.publish.outputs.visuals }}
@@ -155,13 +188,14 @@ jobs:
               `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
               `Result: **${process.env.STATUS}**`,
               `Mapping validation: **${process.env.VALIDATE || 'not-run'}**`,
-              `WordPress publication: **${process.env.PUBLISH || 'not-run'}**`,
+              `V4 + Genetics V6 owner restoration: **${process.env.RESTORE || 'not-run'}**`,
+              `WordPress atlas publication: **${process.env.PUBLISH || 'not-run'}**`,
               `Visitor verification: **${process.env.VERIFY || 'not-run'}**`,
               `Approved visual cards currently mapped: **${process.env.VISUALS || '0'}**`,
               `Chapter groups: **${process.env.GROUPS || '0'}**`,
               `WordPress-media resolutions: **${process.env.WORDPRESS || '0'}**`,
               `Canonical GitHub fallbacks: **${process.env.FALLBACKS || '0'}**`,
               `Explicit unresolved visual gaps: **${process.env.GAPS || '0'}**`,'',
-              'The atlas is quality-map driven and fail-closed. It publishes only assets currently approved in the reviewed Genetics map, preserves all eight curriculum chapter groups, and renders exact-concept gaps explicitly instead of demanding or substituting unapproved genetics artwork.'
+              'The workflow restores canonical education ownership before attaching the quality-gated atlas. It publishes only reviewed mapped assets and keeps missing genetics concepts explicit instead of substituting generic cannabis imagery.'
             ].join('\n');
             for(const issue_number of [46,136]) await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number,body});
