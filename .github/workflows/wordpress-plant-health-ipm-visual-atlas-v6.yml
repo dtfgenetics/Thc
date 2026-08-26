@@ -118,10 +118,19 @@ jobs:
           grep -Fqi 'data-dtf-plant-health-ipm-v6="true"' "$body"
           grep -Fqi 'data-dtf-topic="plant-health-ipm"' "$body"
           grep -Fqi 'data-dtf-learning-v4="topic-plant-health-ipm"' "$body"
-          if grep -Eqi 'draft|quarantine|superseded|qa[-_ ]?required' "$body"; then
-            echo 'Unsafe asset state label found in public Plant Health atlas.' >&2
-            exit 1
-          fi
+          python3 - "$body" <<'PY'
+          import re,sys
+          html=open(sys.argv[1],encoding='utf-8').read()
+          start=html.find('data-dtf-subject-visuals-v6="plant-health-ipm-v6"')
+          if start < 0: raise SystemExit('Plant Health atlas wrapper missing')
+          end=html.find('<!-- dtf-subject-visuals-v6:plant-health-ipm-v6:end -->', start)
+          block=html[start:end if end >= 0 else None]
+          srcs=re.findall(r'<img[^>]+src=["\']([^"\']+)', block, flags=re.I)
+          if len(srcs) != 14: raise SystemExit(f'Expected 14 atlas image sources, found {len(srcs)}')
+          bad=[s for s in srcs if re.search(r'draft|quarantine|superseded|legacy|qa[-_ ]?required', s, re.I)]
+          if bad: raise SystemExit('Unsafe asset-state filename found in Plant Health atlas: '+', '.join(bad))
+          print('Scoped atlas image-source safety verification passed.')
+          PY
 
       - name: Upload Plant Health visual evidence
         if: always()
