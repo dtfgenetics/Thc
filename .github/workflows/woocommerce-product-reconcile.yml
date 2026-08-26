@@ -132,7 +132,7 @@ jobs:
       WC_CONSUMER_SECRET: ${{ secrets.WC_CONSUMER_SECRET }}
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
-      BACKUP_ROOT: ${{ runner.temp }}/woocommerce-product-backups
+      BACKUP_ROOT: /tmp/woocommerce-product-backups
     steps:
       - uses: actions/checkout@v4
         with:
@@ -202,7 +202,7 @@ jobs:
         with:
           name: woocommerce-product-backup-${{ github.run_id }}
           path: |
-            ${{ runner.temp }}/woocommerce-product-backups
+            /tmp/woocommerce-product-backups
             woocommerce-reconciliation-report.json
             woocommerce-reconciliation-report.md
           if-no-files-found: warn
