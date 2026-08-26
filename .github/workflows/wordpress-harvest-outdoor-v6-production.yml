@@ -20,6 +20,10 @@ on:
       - 'scripts/enhance-wordpress-outdoor-quantification-v1.mjs'
       - '.github/workflows/wordpress-harvest-outdoor-v6-production.yml'
   workflow_dispatch:
+  workflow_run:
+    workflows:
+      - Enhance DTFSeeds Education V4
+    types: [completed]
 
 permissions:
   contents: read
@@ -62,7 +66,7 @@ jobs:
   publish:
     name: Publish and verify Harvest, Outdoor and field measurement layer
     needs: validate
-    if: ${{ github.event_name != 'pull_request' }}
+    if: ${{ github.event_name != 'pull_request' && (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success') }}
     runs-on: ubuntu-latest
     timeout-minutes: 35
     environment: production
