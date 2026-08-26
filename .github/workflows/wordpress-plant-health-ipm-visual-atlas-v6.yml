@@ -123,8 +123,9 @@ jobs:
           html=open(sys.argv[1],encoding='utf-8').read()
           start=html.find('data-dtf-subject-visuals-v6="plant-health-ipm-v6"')
           if start < 0: raise SystemExit('Plant Health atlas wrapper missing')
-          end=html.find('<!-- dtf-subject-visuals-v6:plant-health-ipm-v6:end -->', start)
-          block=html[start:end if end >= 0 else None]
+          end=html.find('<!-- dtf-subject-visuals-v6:end -->', start)
+          if end < 0: raise SystemExit('Plant Health atlas end marker missing')
+          block=html[start:end]
           srcs=re.findall(r'<img[^>]+src=["\']([^"\']+)', block, flags=re.I)
           if len(srcs) != 14: raise SystemExit(f'Expected 14 atlas image sources, found {len(srcs)}')
           bad=[s for s in srcs if re.search(r'draft|quarantine|superseded|legacy|qa[-_ ]?required', s, re.I)]
