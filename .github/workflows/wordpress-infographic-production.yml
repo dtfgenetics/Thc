@@ -7,9 +7,13 @@ on:
     paths:
       - site/wordpress/assets/infographics/**
       - site/wordpress/education/topic-literature.json
+      - site/wordpress/education/outdoor-quantification-v1.json
+      - site/wordpress/education/outdoor-quantification/**
       - scripts/stage-eligible-infographics.mjs
       - scripts/deploy-wordpress-infographic-library-rest.mjs
       - scripts/publish-wordpress-topic-literature.mjs
+      - scripts/assemble-outdoor-quantification-v1.mjs
+      - scripts/enhance-wordpress-outdoor-quantification-v1.mjs
       - .github/workflows/wordpress-infographic-production.yml
   workflow_run:
     workflows:
@@ -49,7 +53,7 @@ jobs:
                 `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
                 `Trigger: **${context.eventName}**`,
                 `Source: ${source}`,
-                'This run filters simple/reference images, synchronizes only eligible infographic assets, publishes literature-first topic pages, and verifies the searchable infographic index semantically.'
+                'This run filters simple/reference images, synchronizes only eligible infographic assets, publishes literature-first topic pages, assembles the complete eight-section Outdoor field-measurement curriculum, and verifies the public result.'
               ].join('\n')
             });
 
@@ -83,7 +87,7 @@ jobs:
         if: github.event_name == 'workflow_run'
         run: '[[ "${{ github.event.workflow_run.conclusion }}" == "success" ]]'
 
-      - name: Validate publishers, literature, and production access
+      - name: Validate publishers, literature, Outdoor curriculum, and production access
         id: access
         shell: bash
         run: |
@@ -91,9 +95,22 @@ jobs:
           node --check scripts/stage-eligible-infographics.mjs
           node --check scripts/deploy-wordpress-infographic-library-rest.mjs
           node --check scripts/publish-wordpress-topic-literature.mjs
+          node --check scripts/assemble-outdoor-quantification-v1.mjs
+          node --check scripts/enhance-wordpress-outdoor-quantification-v1.mjs
           node -e "const c=require('./site/wordpress/assets/infographics/placement-rules.json'); if(c.schemaVersion<2||!c.primaryOverrides?.length) process.exit(1)"
           node -e "const e=require('./site/wordpress/assets/infographics/infographic-exclusions.json'); if(!e.neverUseOnInfographicSurfaces||!e.excludePathFragments?.includes('pdf-pages/')) process.exit(1)"
           node -e "const d=require('./site/wordpress/education/topic-literature.json'); if(!Array.isArray(d.topics)||d.topics.length<10||d.topics.some(t=>!Array.isArray(t.sections)||t.sections.length<4)) process.exit(1)"
+
+          node scripts/assemble-outdoor-quantification-v1.mjs --write | tee "$RUNNER_TEMP/outdoor-assembly-validation.json"
+          grep -Fq '"sections": 8' "$RUNNER_TEMP/outdoor-assembly-validation.json"
+          grep -Fq '"subtopics": 32' "$RUNNER_TEMP/outdoor-assembly-validation.json"
+          node -e "const r=require(process.argv[1]); if(!(r.metrics>=100)) throw new Error('Outdoor metric set too thin: '+r.metrics);" "$RUNNER_TEMP/outdoor-assembly-validation.json"
+
+          node scripts/enhance-wordpress-outdoor-quantification-v1.mjs --validate-only | tee "$RUNNER_TEMP/outdoor-quantification-validation.json"
+          grep -Fq '"sections": 8' "$RUNNER_TEMP/outdoor-quantification-validation.json"
+          grep -Fq '"subtopics": 32' "$RUNNER_TEMP/outdoor-quantification-validation.json"
+          node -e "const r=require(process.argv[1]); if(!(r.metrics>=100)) throw new Error('Published Outdoor metric set too thin: '+r.metrics);" "$RUNNER_TEMP/outdoor-quantification-validation.json"
+
           test -n "${WP_API_USERNAME:-}"
           test -n "${WP_API_PASSWORD:-}"
           echo "user_present=true" >> "$GITHUB_OUTPUT"
@@ -151,6 +168,25 @@ jobs:
           echo "gallery_count=$(node -p "require(process.argv[1]).eligibleInfographics" "$report")" >> "$GITHUB_OUTPUT"
           echo "wp_excluded_count=$(node -p "require(process.argv[1]).excludedSimpleReferenceMedia" "$report")" >> "$GITHUB_OUTPUT"
           echo "page_id=$(node -p "require(process.argv[1]).libraryPageId" "$report")" >> "$GITHUB_OUTPUT"
+
+      - name: Publish complete Outdoor field-measurement curriculum
+        id: outdoor_quant
+        env:
+          APPLY_OUTDOOR_QUANT_V1: 'true'
+          BACKUP_ROOT: /tmp/wordpress-infographic-backups/outdoor-quantification
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$BACKUP_ROOT"
+          node scripts/enhance-wordpress-outdoor-quantification-v1.mjs | tee "$RUNNER_TEMP/outdoor-quantification-publish.log"
+          report="$(find "$BACKUP_ROOT" -name report.json -type f -print -quit)"
+          test -n "$report"
+          test -s "$report"
+          echo "sections=$(node -p "require(process.argv[1]).validation.sections" "$report")" >> "$GITHUB_OUTPUT"
+          echo "subtopics=$(node -p "require(process.argv[1]).validation.subtopics" "$report")" >> "$GITHUB_OUTPUT"
+          echo "metrics=$(node -p "require(process.argv[1]).validation.metrics" "$report")" >> "$GITHUB_OUTPUT"
+          [[ "$(node -p "require(process.argv[1]).validation.sections" "$report")" = '8' ]]
+          [[ "$(node -p "require(process.argv[1]).validation.subtopics" "$report")" = '32' ]]
 
       - name: Verify live literature-first topics and searchable infographic library
         id: verify
@@ -249,6 +285,17 @@ jobs:
             grep -Fqi 'Infographics for' "$topic"
             section_count="$(grep -Eo 'class="thc-section"' "$topic" | wc -l | tr -d ' ')"
             test "$section_count" -ge 4
+            if [[ "$route" == outdoor ]]; then
+              grep -Fq 'data-dtf-outdoor-quantification-v1="true"' "$topic"
+              [[ "$(grep -Fo 'data-oqv1-chapter=' "$topic" | wc -l | tr -d ' ')" = '8' ]]
+              [[ "$(grep -Fo 'data-oqv1-subtopic=' "$topic" | wc -l | tr -d ' ')" = '32' ]]
+              grep -Fq 'data-oqv1-chapter="site-sun"' "$topic"
+              grep -Fq 'data-oqv1-chapter="rain-flower-risk"' "$topic"
+              grep -Fq 'data-oqv1-chapter="pests-wildlife"' "$topic"
+              grep -Fq 'data-oqv1-chapter="pollen-sex"' "$topic"
+              grep -Fq 'data-oqv1-chapter="season-microclimate"' "$topic"
+              grep -Fq 'Turn outdoor observations into evidence.' "$topic"
+            fi
           done
 
           featured_json="$RUNNER_TEMP/featured.json"
@@ -276,6 +323,7 @@ jobs:
           QUALITY_OUTCOME: ${{ steps.quality.outcome }}
           MEDIA_OUTCOME: ${{ steps.publish_media.outcome }}
           LITERATURE_OUTCOME: ${{ steps.literature.outcome }}
+          OUTDOOR_QUANT_OUTCOME: ${{ steps.outdoor_quant.outcome }}
           VERIFY_OUTCOME: ${{ steps.verify.outcome }}
           SOURCE_COUNT: ${{ steps.quality.outputs.source_count }}
           ELIGIBLE_COUNT: ${{ steps.quality.outputs.eligible_count }}
@@ -286,6 +334,9 @@ jobs:
           GALLERY_COUNT: ${{ steps.literature.outputs.gallery_count }}
           WP_EXCLUDED_COUNT: ${{ steps.literature.outputs.wp_excluded_count }}
           LIVE_IMAGE_COUNT: ${{ steps.verify.outputs.live_image_count }}
+          OUTDOOR_SECTIONS: ${{ steps.outdoor_quant.outputs.sections }}
+          OUTDOOR_SUBTOPICS: ${{ steps.outdoor_quant.outputs.subtopics }}
+          OUTDOOR_METRICS: ${{ steps.outdoor_quant.outputs.metrics }}
         with:
           script: |
             await github.rest.issues.createComment({
@@ -300,6 +351,7 @@ jobs:
                 `Infographic quality gate: **${process.env.QUALITY_OUTCOME || 'not-run'}**`,
                 `Eligible media synchronization: **${process.env.MEDIA_OUTCOME || 'not-run'}**`,
                 `Companion literature publication: **${process.env.LITERATURE_OUTCOME || 'not-run'}**`,
+                `Outdoor field curriculum publication: **${process.env.OUTDOOR_QUANT_OUTCOME || 'not-run'}**`,
                 `Visitor-facing verification: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
                 `Source images inspected: **${process.env.SOURCE_COUNT || 'not-run'}**`,
                 `Finished infographic images staged: **${process.env.ELIGIBLE_COUNT || 'not-run'}**`,
@@ -310,8 +362,11 @@ jobs:
                 `Finished infographic media in searchable index: **${process.env.GALLERY_COUNT || 'not-run'}**`,
                 `Previously uploaded simple/reference media filtered from reuse: **${process.env.WP_EXCLUDED_COUNT || 'not-run'}**`,
                 `Images observed on live searchable library: **${process.env.LIVE_IMAGE_COUNT || 'not-run'}**`,
+                `Outdoor quantified sections: **${process.env.OUTDOOR_SECTIONS || 'not-run'}**`,
+                `Outdoor quantified subtopics: **${process.env.OUTDOOR_SUBTOPICS || 'not-run'}**`,
+                `Outdoor field metrics: **${process.env.OUTDOOR_METRICS || 'not-run'}**`,
                 '',
                 'Target: https://dtfseeds.com/learn/infographics/',
-                'Canonical architecture: topic literature first; finished infographics embedded by subject and searchable; simple support art and PDF page extractions excluded from infographic surfaces.'
+                'Canonical architecture: topic literature is published first; the complete THC Outdoor field-measurement curriculum is assembled and appended immediately after that canonical write; finished infographics remain subject-mapped and searchable.'
               ].join('\n')
             });
