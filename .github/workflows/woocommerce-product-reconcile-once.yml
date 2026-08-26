@@ -18,7 +18,7 @@ concurrency:
 
 jobs:
   reconcile:
-    name: Back up, reconcile reviewed product copy, and verify
+    name: Back up, semantically reconcile reviewed product copy, and verify
     runs-on: ubuntu-latest
     timeout-minutes: 15
     environment: production
@@ -44,7 +44,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          node --check scripts/reconcile-woocommerce-products.mjs
+          node --check scripts/reconcile-woocommerce-products-semantic.mjs
           node --check scripts/rollback-woocommerce-products.mjs
           node --check scripts/validate-woocommerce-reconciliation.mjs
           node scripts/validate-genetics-commerce.mjs
@@ -64,12 +64,12 @@ jobs:
             exit 1
           fi
 
-      - name: Apply canonical product descriptions and categories
+      - name: Apply and semantically verify canonical product descriptions and categories
         id: reconcile
         shell: bash
         run: |
           set -euo pipefail
-          APPLY_WOOCOMMERCE_CHANGES=true node scripts/reconcile-woocommerce-products.mjs
+          node scripts/reconcile-woocommerce-products-semantic.mjs
 
       - name: Restore snapshots automatically if reconciliation fails
         id: rollback
@@ -106,14 +106,14 @@ jobs:
         with:
           script: |
             const body = [
-              '## One-shot WooCommerce copy reconciliation',
+              '## One-shot WooCommerce semantic copy reconciliation',
               '',
               `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
               `Protected job result: **${process.env.JOB_STATUS}**`,
               `Authentication path: **${process.env.AUTH_MODE || 'not-confirmed'}**`,
-              `Reconciliation outcome: **${process.env.RECONCILE_OUTCOME || 'not-run'}**`,
+              `Semantic reconciliation outcome: **${process.env.RECONCILE_OUTCOME || 'not-run'}**`,
               `Automatic rollback: **${process.env.ROLLBACK_OUTCOME || 'not-needed'}**`,
               '',
-              'Scope: reviewed product name where permitted, description, short description, and category reconciliation only. Price, sale price, stock, SKU, slug, images, shipping, tax data, and order data remain preserved by the canonical reconciliation policy.'
+              'Scope: reviewed product name where permitted, description, short description, and category reconciliation only. Verification compares visible canonical copy and required links/categories while snapshot-checking protected transaction fields. Price, sale price, stock, SKU, slug, images, shipping, tax data, and order data remain preserved.'
             ].join('\n');
             await github.rest.issues.createComment({owner: context.repo.owner, repo: context.repo.repo, issue_number: 46, body});
