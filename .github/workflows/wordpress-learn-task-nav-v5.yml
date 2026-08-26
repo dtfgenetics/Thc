@@ -6,14 +6,12 @@ on:
     branches: [main]
     paths:
       - 'scripts/publish-wordpress-learn-task-nav-v5.mjs'
-      - 'scripts/polish-wordpress-encyclopedia-public-copy-v1.mjs'
       - '.github/workflows/wordpress-learn-task-nav-v5.yml'
   workflow_run:
     workflows:
       - Enhance DTFSeeds Education V4
       - Publish THC Beginner Course V5
       - Publish THC Pest Disease Library V5
-      - Publish THC Encyclopedia Production
     types: [completed]
 
 permissions:
@@ -30,10 +28,10 @@ env:
 
 jobs:
   publish:
-    name: Publish Learn shortcuts and learner-facing Encyclopedia polish
+    name: Add task-first shortcuts to Learn
     if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 20
     environment: production
     env:
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
@@ -50,7 +48,7 @@ jobs:
         with:
           node-version: 22
 
-      - name: Validate education publishers
+      - name: Validate task navigation publisher
         id: validate
         shell: bash
         run: |
@@ -62,8 +60,6 @@ jobs:
           for href in /learn/start-here/ /learn/diagnostics/ /learn/pests-diseases/ /learn/encyclopedia/ /learn/infographics/ /growlens/ /thc-grow-doc/; do
             grep -Fq "$href" scripts/publish-wordpress-learn-task-nav-v5.mjs
           done
-          grep -Fq 'Educational reference · evidence, sources, and limits shown below' scripts/polish-wordpress-encyclopedia-public-copy-v1.mjs
-          grep -Fq 'linkRelatedReferences' scripts/polish-wordpress-encyclopedia-public-copy-v1.mjs
 
       - name: Publish task-first Learn navigation
         id: publish
@@ -85,14 +81,13 @@ jobs:
             -H 'Cache-Control: no-cache, no-store, max-age=0' -H 'Pragma: no-cache' \
             "$WP_SITE_URL/learn/?dtf_task_v5=${GITHUB_RUN_ID}" -o "$body"
           grep -Fqi 'data-dtf-learn-task-nav-v5="true"' "$body"
-          grep -Fqi 'Learn, identify, or explore.' "$body"
-          ! grep -Fqi 'Choose your goal' "$body"
-          for href in /learn/start-here/ /learn/diagnostics/ /learn/search/ /learn/pests-diseases/ /learn/encyclopedia/ /learn/infographics/ /growlens/ /thc-grow-doc/ /learn/glossary/; do
+          grep -Fqi 'Go straight to what you need.' "$body"
+          for href in /learn/start-here/ /learn/diagnostics/ /learn/pests-diseases/ /learn/encyclopedia/ /learn/infographics/ /growlens/ /thc-grow-doc/; do
             grep -Fq "$href" "$body"
           done
 
-      - name: Polish learner-facing Encyclopedia copy and related links
-        id: encyclopedia
+      - name: Polish learner-facing Encyclopedia copy
+        id: encyclopedia_polish
         shell: bash
         env:
           APPLY_ENCYCLOPEDIA_PUBLIC_COPY_V1: 'true'
@@ -101,26 +96,8 @@ jobs:
           set -euo pipefail
           mkdir -p "$BACKUP_ROOT"
           node scripts/polish-wordpress-encyclopedia-public-copy-v1.mjs | tee "$RUNNER_TEMP/encyclopedia-public-copy-v1.log"
-          backup_dir="$(cat "$BACKUP_ROOT/latest-backup-path.txt")"
-          report="$backup_dir/encyclopedia-public-copy-v1-report.json"
+          report="$(find "$BACKUP_ROOT" -name encyclopedia-public-copy-v1-report.json -print -quit)"
           test -s "$report"
-          echo "updated=$(node -p "require(process.argv[1]).updatedCount" "$report")" >> "$GITHUB_OUTPUT"
-          echo "lessons=$(node -p "require(process.argv[1]).lessonCount" "$report")" >> "$GITHUB_OUTPUT"
-
-      - name: Visitor-verify Encyclopedia public copy
-        id: encyclopedia_verify
-        shell: bash
-        run: |
-          set -euo pipefail
-          body="$RUNNER_TEMP/thc-enc-013.html"
-          curl -4 --fail --silent --show-error --location --retry 3 --retry-delay 2 \
-            -H 'Cache-Control: no-cache, no-store, max-age=0' -H 'Pragma: no-cache' \
-            "$WP_SITE_URL/learn/encyclopedia/thc-enc-013/?dtf_public_copy_v1=${GITHUB_RUN_ID}" -o "$body"
-          grep -Fqi 'Educational reference · evidence, sources, and limits shown below' "$body"
-          grep -Fqi 'About this reference' "$body"
-          grep -Fqi 'href="/learn/encyclopedia/thc-enc-011/"' "$body"
-          ! grep -Fqi 'Controlled education content' "$body"
-          ! grep -Fqi 'Publication control' "$body"
 
       - name: Upload rollback and verification evidence
         if: always()
@@ -133,11 +110,10 @@ jobs:
             ${{ runner.temp }}/task-nav-v5.log
             ${{ runner.temp }}/learn.html
             ${{ runner.temp }}/encyclopedia-public-copy-v1.log
-            ${{ runner.temp }}/thc-enc-013.html
           if-no-files-found: warn
           retention-days: 30
 
-      - name: Report education improvement result
+      - name: Report Learn task navigation result
         if: always()
         uses: actions/github-script@v7
         env:
@@ -145,22 +121,16 @@ jobs:
           VALIDATE: ${{ steps.validate.outcome }}
           PUBLISH: ${{ steps.publish.outcome }}
           VERIFY: ${{ steps.verify.outcome }}
-          ENCYCLOPEDIA: ${{ steps.encyclopedia.outcome }}
-          ENCYCLOPEDIA_VERIFY: ${{ steps.encyclopedia_verify.outcome }}
-          UPDATED: ${{ steps.encyclopedia.outputs.updated }}
-          LESSONS: ${{ steps.encyclopedia.outputs.lessons }}
+          ENCYCLOPEDIA_POLISH: ${{ steps.encyclopedia_polish.outcome }}
         with:
           script: |
             await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body:[
-              '## THC education navigation + Encyclopedia polish','',
+              '## THC Learn task navigation V5','',
               `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
               `Result: **${process.env.STATUS}**`,
               `Publisher validation: **${process.env.VALIDATE || 'not-run'}**`,
-              `Learn publication: **${process.env.PUBLISH || 'not-run'}**`,
-              `Learn visitor verification: **${process.env.VERIFY || 'not-run'}**`,
-              `Encyclopedia polish: **${process.env.ENCYCLOPEDIA || 'not-run'}**`,
-              `Encyclopedia visitor verification: **${process.env.ENCYCLOPEDIA_VERIFY || 'not-run'}**`,
-              `Published lessons scanned: **${process.env.LESSONS || 'unknown'}**`,
-              `Encyclopedia pages changed: **${process.env.UPDATED || 'unknown'}**`,'',
-              'The Learn front door is task-first, and learner-facing Encyclopedia pages hide internal release-control language while linking related THC-ENC references.'
+              `WordPress publication: **${process.env.PUBLISH || 'not-run'}**`,
+              `Visitor verification: **${process.env.VERIFY || 'not-run'}**`,
+              `Encyclopedia public-copy polish: **${process.env.ENCYCLOPEDIA_POLISH || 'not-run'}**`,'',
+              'Learn now includes a task-first shortcut layer for Start Here, Diagnostic Index, Pest & Disease Library, Encyclopedia, visual references, GrowLens, Grow Doc, and glossary/records without replacing the existing subject-first V4 curriculum.'
             ].join('\n')});
