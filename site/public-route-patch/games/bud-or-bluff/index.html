@@ -9,6 +9,7 @@
   <meta name="robots" content="index,follow" />
   <link rel="canonical" href="https://dtfseeds.com/games/bud-or-bluff/" />
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="v2.css" />
 </head>
 <body>
   <div class="ambient ambient-a"></div><div class="ambient ambient-b"></div>
@@ -31,7 +32,7 @@
           <label>Player name<input id="createName" maxlength="24" autocomplete="nickname" placeholder="Your name" required /></label>
           <label>Rounds<select id="roundCount"><option value="8">8 rounds</option><option value="12" selected>12 rounds</option><option value="16">16 rounds</option><option value="20">20 rounds</option></select></label>
           <button class="primary-action" type="submit">Create lobby</button>
-          <p class="form-note">Share the room code. Up to 9 more players can join from any phone or browser.</p>
+          <p class="form-note">Share the room code or invite link. Up to 9 more players can join from any phone or browser.</p>
         </form>
         <form id="joinForm" class="launch-form hidden">
           <label>Player name<input id="joinName" maxlength="24" autocomplete="nickname" placeholder="Your name" required /></label>
@@ -48,7 +49,7 @@
         <section class="stage panel">
           <div class="stage-head">
             <div><span id="phaseLabel" class="phase-label">Lobby</span><h2 id="stageTitle">Room loading…</h2></div>
-            <div class="room-code-wrap"><span>Room code</span><button id="copyCode" class="room-code" type="button">------</button></div>
+            <div class="room-code-wrap"><span>Room code</span><button id="copyCode" class="room-code" type="button" aria-label="Copy room code">------</button></div>
           </div>
 
           <div id="lobbyStage" class="game-stage">
@@ -62,12 +63,12 @@
           </div>
 
           <div id="playStage" class="game-stage hidden">
-            <div class="round-meta"><span id="roundLabel">Round 1 / 12</span><div class="timer-track"><i id="timerFill"></i></div><strong id="timerText">24</strong></div>
+            <div class="round-meta"><span id="roundLabel">Round 1 / 12</span><div class="timer-track" aria-hidden="true"><i id="timerFill"></i></div><strong id="timerText" aria-live="polite">24</strong></div>
             <article id="strainCard" class="strain-card">
               <div class="card-noise"></div>
               <div class="card-top"><span id="difficulty">Hard</span><span id="voteCount">0 / 0 locked</span></div>
               <div class="strain-main"><p>STRAIN NAME</p><h2 id="strainName">Purple Monkey Balls</h2><div class="clue-line"><span>Claimed lineage</span><strong id="strainClue">Mendo Purps × Deep Chunk</strong></div></div>
-              <div id="revealPanel" class="reveal-panel hidden"><p id="revealAnswer" class="reveal-answer">BUD</p><p id="realityText"></p><small id="sourceText"></small></div>
+              <div id="revealPanel" class="reveal-panel hidden" aria-live="polite"><p id="revealAnswer" class="reveal-answer">BUD</p><p id="realityText"></p><small id="sourceText"></small></div>
             </article>
             <div id="voteControls" class="vote-controls">
               <button class="vote-button bud" data-vote="BUD" type="button"><span>🌿</span><strong>BUD</strong><small>It's real</small></button>
@@ -81,19 +82,19 @@
           <div id="finishStage" class="game-stage hidden">
             <div class="finish-copy"><p class="overline">Final results</p><h2 id="winnerTitle">Bluff busted.</h2><p id="winnerSub">The room has spoken.</p></div>
             <div id="finalStandings" class="final-standings"></div>
-            <button id="newRoomButton" class="primary-action" type="button">New room</button>
+            <button id="newRoomButton" class="primary-action" type="button">Leave room</button>
           </div>
         </section>
 
         <aside class="sidebar">
           <section class="panel score-panel"><div class="panel-title"><h3>Scoreboard</h3><span id="playerCounter">1 / 10</span></div><div id="scoreboard" class="scoreboard"></div></section>
-          <section class="panel chat-panel"><div class="panel-title"><h3>Room chat</h3><span class="live-dot">Live</span></div><div id="chatMessages" class="chat-messages"></div><form id="chatForm" class="chat-form"><input id="chatInput" maxlength="240" placeholder="Say something…" autocomplete="off" /><button type="submit" aria-label="Send message">Send</button></form></section>
+          <section class="panel chat-panel"><div class="panel-title"><h3>Room chat</h3><span class="live-dot">Live</span></div><div id="chatMessages" class="chat-messages" aria-live="polite"></div><form id="chatForm" class="chat-form"><input id="chatInput" maxlength="240" placeholder="Say something…" autocomplete="off" /><button type="submit" aria-label="Send message">Send</button></form></section>
         </aside>
       </div>
       <div id="roomError" class="toast hidden" role="alert"></div>
     </section>
   </main>
 
-  <script src="app.js" defer></script>
+  <script src="app-v2.js" defer></script>
 </body>
 </html>
