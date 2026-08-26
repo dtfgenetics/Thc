@@ -6,12 +6,16 @@ on:
     paths:
       - 'site/wordpress/education/plant-health-ipm-v6.json'
       - 'scripts/publish-wordpress-plant-health-ipm-v6.mjs'
+      - 'scripts/enhance-wordpress-learning-v4.mjs'
+      - 'site/wordpress/education/learning-guides-v4.json'
       - '.github/workflows/wordpress-plant-health-ipm-v6.yml'
   push:
     branches: [main]
     paths:
       - 'site/wordpress/education/plant-health-ipm-v6.json'
       - 'scripts/publish-wordpress-plant-health-ipm-v6.mjs'
+      - 'scripts/enhance-wordpress-learning-v4.mjs'
+      - 'site/wordpress/education/learning-guides-v4.json'
       - '.github/workflows/wordpress-plant-health-ipm-v6.yml'
   workflow_dispatch:
 
@@ -37,11 +41,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Validate publisher, curriculum, and canonical route
+      - name: Validate publisher, curriculum, guided-layer restorer, and canonical route
         shell: bash
         run: |
           set -euo pipefail
           node --check scripts/publish-wordpress-plant-health-ipm-v6.mjs
+          node --check scripts/enhance-wordpress-learning-v4.mjs
           node scripts/publish-wordpress-plant-health-ipm-v6.mjs --validate-only | tee "$RUNNER_TEMP/plant-health-ipm-v6-validation.json"
           grep -Fq '"chapters": 8' "$RUNNER_TEMP/plant-health-ipm-v6-validation.json"
           grep -Fq '"lessons": 32' "$RUNNER_TEMP/plant-health-ipm-v6-validation.json"
@@ -53,7 +58,9 @@ jobs:
           if(c.topicId!=='plant-health-ipm' || c.slug!=='ipm' || c.route!=='/learn/ipm/') throw new Error('Plant Health canonical route must remain /learn/ipm/.');
           const p=fs.readFileSync('scripts/publish-wordpress-plant-health-ipm-v6.mjs','utf8');
           if(!p.includes("pageBySlug('ipm')")) throw new Error('Publisher is not pinned to the canonical ipm slug.');
-          console.log('Plant Health canonical route preflight passed.');
+          const guide=JSON.parse(fs.readFileSync('site/wordpress/education/learning-guides-v4.json','utf8'));
+          if(!guide?.topics?.['plant-health-ipm']) throw new Error('Plant Health V4 guide is missing.');
+          console.log('Plant Health canonical route and guided-learning restore preflight passed.');
           NODE
 
   publish:
@@ -61,7 +68,7 @@ jobs:
     needs: validate
     if: ${{ github.event_name != 'pull_request' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 40
     environment: production
     env:
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
@@ -70,6 +77,8 @@ jobs:
       BACKUP_ROOT: /tmp/dtf-plant-health-ipm-v6
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -81,7 +90,36 @@ jobs:
           : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
           : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
           node --check scripts/publish-wordpress-plant-health-ipm-v6.mjs
+          node --check scripts/enhance-wordpress-learning-v4.mjs
           node scripts/publish-wordpress-plant-health-ipm-v6.mjs --validate-only
+
+      - name: Restore guided-learning ownership before V6
+        id: restore_v4
+        shell: bash
+        env:
+          APPLY_LEARNING_V4: 'true'
+          LEARNING_GUIDE_V4_PATH: site/wordpress/education/learning-guides-v4.json
+          TOPIC_LITERATURE_PATH: site/wordpress/education/topic-literature.json
+          ENCYCLOPEDIA_TOPIC_FILE: configuration/encyclopedia-topics.json
+          BACKUP_ROOT: /tmp/dtf-learning-v4-plant-health-repair
+        run: |
+          set -euo pipefail
+          mkdir -p "$BACKUP_ROOT"
+          node scripts/enhance-wordpress-learning-v4.mjs | tee "$RUNNER_TEMP/plant-health-v4-restore.log"
+          test -s "$BACKUP_ROOT/learning-v4-report.json"
+          body="$RUNNER_TEMP/plant-health-v4-restored.html"
+          ok=0
+          for attempt in 1 2 3 4 5 6; do
+            curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+              --header 'Cache-Control: no-cache, no-store, max-age=0' --header 'Pragma: no-cache' \
+              "$WP_SITE_URL/learn/ipm/?dtf_phi_v4_restore=${GITHUB_RUN_ID}-${attempt}" --output "$body"
+            if grep -Fq 'data-dtf-learning-v4="topic-plant-health-ipm"' "$body"; then ok=1; break; fi
+            sleep 5
+          done
+          [[ "$ok" -eq 1 ]]
+          grep -Fqi 'Measure first' "$body"
+          grep -Fqi 'Common reasoning errors' "$body"
+          grep -Fqi 'Apply it' "$body"
 
       - name: Publish Plant Health IPM V6
         id: publish
@@ -127,6 +165,9 @@ jobs:
           name: plant-health-ipm-v6-${{ github.run_id }}
           path: |
             /tmp/dtf-plant-health-ipm-v6
+            /tmp/dtf-learning-v4-plant-health-repair
+            ${{ runner.temp }}/plant-health-v4-restore.log
+            ${{ runner.temp }}/plant-health-v4-restored.html
             ${{ runner.temp }}/plant-health-ipm-v6-publish.log
             ${{ runner.temp }}/plant-health-ipm-v6-live.html
           if-no-files-found: warn
@@ -137,6 +178,7 @@ jobs:
         uses: actions/github-script@v7
         env:
           STATUS: ${{ job.status }}
+          RESTORE_V4: ${{ steps.restore_v4.outcome }}
           PUBLISH: ${{ steps.publish.outcome }}
           VERIFY: ${{ steps.verify.outcome }}
           CHAPTERS: ${{ steps.publish.outputs.chapters }}
@@ -149,13 +191,14 @@ jobs:
               '## Plant Health & IPM V6 production', '',
               `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
               `Result: **${process.env.STATUS}**`,
+              `V4 guided-learning restore: **${process.env.RESTORE_V4 || 'not-run'}**`,
               `WordPress publication: **${process.env.PUBLISH || 'not-run'}**`,
               `Visitor verification: **${process.env.VERIFY || 'not-run'}**`,
               `V6 chapters: **${process.env.CHAPTERS || '0'}**`,
               `Focused lessons: **${process.env.LESSONS || '0'}**`,
               `Evidence references: **${process.env.SOURCES || '0'}**`,
               `Quality-gated visual targets: **${process.env.VISUAL_TARGETS || '0'}**`, '',
-              'Canonical live route is /learn/ipm/. Existing subject ownership and guided-learning layers are preserved. Visual targets remain planning targets until artwork QA passes.'
+              'Canonical live route is /learn/ipm/. This production path restores the idempotent V4 guided-study layer first, then applies V6, so missing V4 ownership can no longer strand Plant Health after an upstream page rebuild.'
             ].join('\n');
             for (const issue_number of [46,136]) {
               await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number,body});
