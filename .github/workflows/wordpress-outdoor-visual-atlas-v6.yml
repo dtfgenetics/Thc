@@ -1,0 +1,153 @@
+name: Publish Outdoor V6 Visual Atlas
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'site/wordpress/education/outdoor-v6-visual-map.json'
+      - 'scripts/publish-wordpress-outdoor-visuals-v6.mjs'
+      - '.github/workflows/wordpress-outdoor-visual-atlas-v6.yml'
+  workflow_run:
+    workflows:
+      - Publish Harvest Outdoor V6 Production
+    types: [completed]
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-outdoor-visual-atlas-v6
+  cancel-in-progress: true
+
+env:
+  WP_SITE_URL: https://dtfseeds.com
+  NODE_OPTIONS: --dns-result-order=ipv4first
+
+jobs:
+  publish:
+    name: Publish Outdoor visual atlas
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: production
+    env:
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      APPLY_OUTDOOR_VISUALS_V6: 'true'
+      OUTDOOR_VISUAL_MAP: site/wordpress/education/outdoor-v6-visual-map.json
+      BACKUP_ROOT: /tmp/dtf-outdoor-visuals-v6
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate Outdoor visual map
+        id: validate
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
+          node --check scripts/publish-wordpress-outdoor-visuals-v6.mjs
+          node - <<'NODE'
+          const fs=require('fs');
+          const m=JSON.parse(fs.readFileSync('site/wordpress/education/outdoor-v6-visual-map.json','utf8'));
+          const ids=['site-sun','hardening-transplant','water-rootzone','wind-support','rain-flower-risk','pests-wildlife','pollen-sex','season-microclimate'];
+          const groups=Object.keys(m.chapters||{});
+          const visuals=Object.values(m.chapters||{}).flat().length;
+          if(m.curriculumId!=='outdoor-v6'||m.route!=='/learn/outdoor/'||groups.length!==8||ids.some(id=>!groups.includes(id))) throw new Error('Outdoor visual map chapter boundary changed unexpectedly.');
+          if(visuals!==12) throw new Error(`Expected 12 approved supporting visuals, found ${visuals}.`);
+          if(!Array.isArray(m.gaps)||m.gaps.length!==11||m.gaps.some(x=>x.status!=='artwork-needed'||!/^THC-OUT-\d{2}$/.test(x.id))) throw new Error('Outdoor THC-OUT production gap boundary changed unexpectedly.');
+          for(const item of Object.values(m.chapters).flat()){
+            if(/draft|quarantine|superseded|legacy|qa[-_ ]?required/i.test(item.file||'')) throw new Error(`Unsafe mapped asset ${item.file}`);
+            if(!fs.existsSync(`site/wordpress/assets/infographics/${item.file}`)) throw new Error(`Mapped asset missing: ${item.file}`);
+          }
+          console.log(`Validated ${groups.length} Outdoor groups, ${visuals} supporting visuals, ${m.gaps.length} THC-OUT gaps.`);
+          NODE
+
+      - name: Publish and verify Outdoor visual atlas
+        id: publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$BACKUP_ROOT"
+          node scripts/publish-wordpress-outdoor-visuals-v6.mjs | tee "$RUNNER_TEMP/outdoor-visual-atlas-v6.log"
+          report="$BACKUP_ROOT/report.json"
+          test -s "$report"
+          echo "visuals=$(node -p "require(process.argv[1]).visuals" "$report")" >> "$GITHUB_OUTPUT"
+          echo "groups=$(node -p "require(process.argv[1]).groups" "$report")" >> "$GITHUB_OUTPUT"
+          echo "wordpress_media=$(node -p "require(process.argv[1]).wordpressMedia" "$report")" >> "$GITHUB_OUTPUT"
+          echo "fallbacks=$(node -p "require(process.argv[1]).canonicalFallbacks" "$report")" >> "$GITHUB_OUTPUT"
+          echo "gaps=$(node -p "require(process.argv[1]).unresolvedGaps.length" "$report")" >> "$GITHUB_OUTPUT"
+
+      - name: Independently verify Outdoor atlas visitor surface
+        id: verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          body="$RUNNER_TEMP/outdoor-visual-atlas-v6.html"
+          ok=0
+          for attempt in 1 2 3 4 5 6 7 8; do
+            curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+              --header 'Cache-Control: no-cache, no-store, max-age=0' \
+              --header 'Pragma: no-cache' \
+              "$WP_SITE_URL/learn/outdoor/?dtf_outv6_verify=${GITHUB_RUN_ID}-${attempt}" --output "$body"
+            if grep -Fqi 'data-dtf-outdoor-visuals-v6="true"' "$body"; then ok=1; break; fi
+            sleep 6
+          done
+          [[ "$ok" -eq 1 ]]
+          [[ "$(grep -Fo 'class="outv6-card"' "$body" | wc -l | tr -d ' ')" = '12' ]]
+          [[ "$(grep -Fo 'data-outv6-group=' "$body" | wc -l | tr -d ' ')" = '8' ]]
+          [[ "$(grep -Fo 'class="outv6-gap"' "$body" | wc -l | tr -d ' ')" = '11' ]]
+          grep -Fqi 'data-dtf-outdoor-v6="true"' "$body"
+          grep -Fqi 'data-dtf-topic="outdoor-cultivation"' "$body"
+          for id in THC-OUT-01 THC-OUT-02 THC-OUT-03 THC-OUT-04 THC-OUT-05 THC-OUT-06 THC-OUT-07 THC-OUT-08 THC-OUT-09 THC-OUT-10 THC-OUT-11; do grep -Fqi "data-outv6-gap=\"$id\"" "$body"; done
+
+      - name: Upload Outdoor atlas evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: outdoor-visual-atlas-v6-${{ github.run_id }}
+          path: |
+            /tmp/dtf-outdoor-visuals-v6
+            ${{ runner.temp }}/outdoor-visual-atlas-v6.log
+            ${{ runner.temp }}/outdoor-visual-atlas-v6.html
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report Outdoor visual atlas result
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          STATUS: ${{ job.status }}
+          VALIDATE: ${{ steps.validate.outcome }}
+          PUBLISH: ${{ steps.publish.outcome }}
+          VERIFY: ${{ steps.verify.outcome }}
+          VISUALS: ${{ steps.publish.outputs.visuals }}
+          GROUPS: ${{ steps.publish.outputs.groups }}
+          WP_MEDIA: ${{ steps.publish.outputs.wordpress_media }}
+          FALLBACKS: ${{ steps.publish.outputs.fallbacks }}
+          GAPS: ${{ steps.publish.outputs.gaps }}
+        with:
+          script: |
+            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body:[
+              '## Outdoor V6 visual atlas','',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Result: **${process.env.STATUS}**`,
+              `Mapping validation: **${process.env.VALIDATE || 'not-run'}**`,
+              `WordPress publication: **${process.env.PUBLISH || 'not-run'}**`,
+              `Visitor verification: **${process.env.VERIFY || 'not-run'}**`,
+              `Verified supporting visual cards: **${process.env.VISUALS || '0'}**`,
+              `Chapter groups: **${process.env.GROUPS || '0'}**`,
+              `WordPress-media resolutions: **${process.env.WP_MEDIA || '0'}**`,
+              `Canonical GitHub fallbacks: **${process.env.FALLBACKS || '0'}**`,
+              `Purpose-built THC-OUT artwork gaps: **${process.env.GAPS || '0'}**`,'',
+              'The atlas is fail-closed: it requires the current Outdoor V6 owner before writing, uses only approved source-controlled supporting visuals, rejects unsafe asset labels, stores rollback evidence, and restores the prior page if edit-context or public visitor verification fails. Eleven evidence-aware Outdoor originals remain intentionally queued rather than being replaced with generic cannabis imagery.'
+            ].join('\n')});
