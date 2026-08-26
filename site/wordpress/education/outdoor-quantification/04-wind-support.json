@@ -1,0 +1,293 @@
+{
+  "schemaVersion": 1,
+  "parentId": "outdoor-quantification-v1",
+  "route": "/learn/outdoor/",
+  "chapter": {
+    "chapterId": "wind-support",
+    "chapterNumber": 4,
+    "chapterTitle": "Wind, Support & Canopy Architecture",
+    "learnerQuestion": "Where is wind load entering the plant, how is support redistributing that load, and are movement, ties and canopy density staying within a safe, observable range?",
+    "sourceContext": [
+      {
+        "id": "Q11",
+        "type": "university extension",
+        "citation": "Penn State Extension. Planting Ornamentals. Guying and staking guidance.",
+        "supports": "Support should prevent damaging root/stem movement while still allowing some flex; tight wires or ties can girdle expanding stems."
+      },
+      {
+        "id": "Q12",
+        "type": "university extension",
+        "citation": "Penn State Extension. Supporting Herbaceous Plants in a Flower Garden. Updated 2026.",
+        "supports": "Tall, heavy-flowered or wind-exposed herbaceous plants may require adaptable support, multiple tie points or grid systems, and ties should avoid pinching or choking living stems."
+      },
+      {
+        "id": "Q13",
+        "type": "university extension",
+        "citation": "Oregon State University Extension. Selecting, planting and caring for a new tree. EC 1438.",
+        "supports": "Rigid staking can interfere with normal strengthening; support is most useful when wind or top-heaviness threatens anchorage, and broad flexible attachment is preferred over constricting wire."
+      },
+      {
+        "id": "Q14",
+        "type": "peer-reviewed review",
+        "citation": "Mechanical stimulation in plants: molecular insights, morphological adaptations, and agricultural applications in monocots. BMC Biology. 2025.",
+        "supports": "Plants respond biologically to mechanical forces such as wind and touch; severe mechanical loading can progress from adaptive response to lodging or structural failure."
+      }
+    ],
+    "subtopics": [
+      {
+        "id": "wind-load-map",
+        "lessonTitle": "Map wind exposure before structural failure appears",
+        "goal": "Quantify where wind enters the canopy, which branches experience the greatest movement, and how exposure changes with direction, plant size and weather.",
+        "measure": [
+          {
+            "metric": "Wind direction and speed",
+            "unit": "direction + m/s, km/h or mph",
+            "method": "Measure with an on-site anemometer/weather station when possible. Record sensor height and whether the reading represents open-site wind or canopy-level wind.",
+            "frequency": "During representative moderate-wind periods and before/after major storms."
+          },
+          {
+            "metric": "Peak gust",
+            "unit": "m/s, km/h or mph",
+            "method": "Record the maximum gust over the same observation window used for mean wind. If using a weather service, label the value off-site.",
+            "frequency": "During high-wind events."
+          },
+          {
+            "metric": "Branch/stem deflection",
+            "unit": "degrees, cm/inches displacement, or defined ordinal class",
+            "method": "Choose marked structural branches and record displacement from a fixed reference in a defined wind window. Standardized video can be used when direct measurement is impractical.",
+            "frequency": "At baseline and during representative stronger wind."
+          },
+          {
+            "metric": "Damage/failure map",
+            "unit": "count + plant location + damage class",
+            "method": "After wind, map cracked unions, bent branches, rubbing, torn leaves, uprooting/lean and support failures. Photograph before repair.",
+            "frequency": "After material wind events."
+          }
+        ],
+        "record": [
+          "plant ID and canopy dimensions",
+          "wind direction / mean speed / gust",
+          "sensor or weather-source location",
+          "marked branch/stem deflection",
+          "windward/leeward canopy zones",
+          "damage locations and classes",
+          "support state during the event",
+          "photos/video IDs"
+        ],
+        "compare": [
+          "windward vs leeward plant zones",
+          "the same marked branch before and after support changes",
+          "damage pattern against measured wind direction/gust history"
+        ],
+        "interpret": [
+          "Wind load is not distributed evenly; exposed canopy edges, long lever arms and heavy branch ends can experience very different movement within one plant.",
+          "A plant that survives one gust event without visible breakage can still accumulate rubbing, tie damage or progressive lean that becomes apparent later.",
+          "Open-site weather values may overstate or understate canopy-level exposure depending on windbreaks, structures and neighboring vegetation."
+        ],
+        "decisionRule": "Add or redistribute support where repeated measurements show excessive displacement, progressive lean, union damage or concentrated failure—not simply because a plant moves visibly in normal wind.",
+        "confidenceCheck": "Deflection classes and video observations are comparative tools. They do not directly measure force or bending moment unless a calibrated mechanical setup is used."
+      },
+      {
+        "id": "support-load-distribution",
+        "lessonTitle": "Design support to spread load without constricting stems",
+        "goal": "Measure where stakes, trellis lines and ties carry load, and detect support-induced injury before stems expand into the hardware.",
+        "measure": [
+          {
+            "metric": "Support-point position",
+            "unit": "cm/inches from branch union or ground + mapped location",
+            "method": "Map every major tie/support contact on a plant diagram or standardized photo. Record height and which branch/stem is supported.",
+            "frequency": "At installation and after every major canopy/support adjustment."
+          },
+          {
+            "metric": "Stem diameter at tie",
+            "unit": "mm or inches",
+            "method": "Measure stem diameter adjacent to each important tie with calipers or a flexible diameter method that does not injure the stem.",
+            "frequency": "At installation and periodically during rapid growth."
+          },
+          {
+            "metric": "Tie clearance / contact condition",
+            "unit": "clear / touching / compressing / girdling ordinal class",
+            "method": "Inspect each tie for free movement, bark/stem indentation, rubbing and trapped moisture. Photograph any change.",
+            "frequency": "Weekly during rapid stem expansion and after wind events."
+          },
+          {
+            "metric": "Support deflection or slack",
+            "unit": "cm/inches or defined class",
+            "method": "Mark stake/line position and record bending, sag, anchor movement or loss of tension after load events.",
+            "frequency": "At setup, during peak canopy mass and after storms."
+          }
+        ],
+        "record": [
+          "support system type/material",
+          "tie/support map",
+          "stem diameter at major contacts",
+          "tie clearance/contact class",
+          "stake/anchor/line deflection",
+          "branch load condition",
+          "adjustment date and reason",
+          "damage or rubbing observations"
+        ],
+        "compare": [
+          "tie condition across successive stem-diameter measurements",
+          "load distribution before and after adding/removing support points",
+          "support deflection after similar wind events"
+        ],
+        "interpret": [
+          "A support can prevent branch failure while simultaneously damaging a stem if attachment pressure is concentrated or not adjusted as the stem expands.",
+          "More support points are not automatically better; poorly placed contacts can create new leverage, rubbing or constriction.",
+          "Broad flexible ties and distributed support are consistent with extension guidance because they reduce concentrated stem injury."
+        ],
+        "decisionRule": "Loosen, move or replace any tie showing compression, girdling or repeated rubbing. Reinforce supports when anchors or lines are moving enough to shift load unpredictably.",
+        "confidenceCheck": "Tie inspection indicates contact risk, not internal stem strength. Continue to inspect the underlying branch union and plant response."
+      },
+      {
+        "id": "movement-anchorage",
+        "lessonTitle": "Preserve useful movement while protecting root and stem anchorage",
+        "goal": "Distinguish normal flexible movement from progressive lean, root-ball movement or structural instability.",
+        "measure": [
+          {
+            "metric": "Baseline stem/plant lean",
+            "unit": "degrees from vertical or fixed photo reference",
+            "method": "Measure the main structural axis from a fixed camera position or inclinometer reference.",
+            "frequency": "At support setup and after significant wind."
+          },
+          {
+            "metric": "Base/root-zone movement",
+            "unit": "none / slight / visible soil cracking / root-ball shift class",
+            "method": "Observe the stem base and surrounding soil/media during or immediately after wind. Record cracking, rocking or displacement without disturbing roots.",
+            "frequency": "During representative wind and after storms."
+          },
+          {
+            "metric": "Post-event recovery angle",
+            "unit": "degrees or fixed-photo position",
+            "method": "Re-measure lean after wind subsides and again after a defined recovery period.",
+            "frequency": "After events that produced noticeable movement."
+          },
+          {
+            "metric": "Stem movement range at support point",
+            "unit": "cm/inches or ordinal movement class",
+            "method": "Record movement relative to the support using a fixed visual reference. The purpose is comparison, not eliminating motion.",
+            "frequency": "At installation, after adjustment and during representative wind."
+          }
+        ],
+        "record": [
+          "baseline lean",
+          "wind condition during observation",
+          "base/root-zone movement class",
+          "stem movement range",
+          "post-event lean/recovery",
+          "support configuration",
+          "soil/root-zone moisture context",
+          "new cracks, kinks or union damage"
+        ],
+        "compare": [
+          "post-wind lean against baseline",
+          "base movement before and after support changes",
+          "plants/support zones with different anchorage conditions"
+        ],
+        "interpret": [
+          "Some stem movement is normal and can be part of mechanical acclimation; the concern is progressive instability, root movement or tissue damage.",
+          "Wet or loose root zones can change anchorage independently of stem strength, so root-zone condition belongs in the wind record.",
+          "A plant that returns near its baseline position after wind provides different evidence than one with cumulative permanent lean."
+        ],
+        "decisionRule": "Increase anchorage/support when wind produces root-zone rocking, progressive permanent lean or structural damage. Avoid tightening support merely to eliminate all visible stem movement.",
+        "confidenceCheck": "Lean measurements describe geometry, not failure probability. Weather history, root-zone anchorage and branch condition must be interpreted together."
+      },
+      {
+        "id": "canopy-wind-drying",
+        "lessonTitle": "Use canopy architecture to manage both wind load and post-rain drying",
+        "goal": "Measure whether dense canopy zones are simultaneously catching excessive wind and remaining wet longer than more open zones.",
+        "measure": [
+          {
+            "metric": "Canopy width / height / exposed face",
+            "unit": "cm, m, inches or feet",
+            "method": "Measure overall plant dimensions and the approximate wind-facing canopy width from fixed directions.",
+            "frequency": "At major growth stages and after structural pruning/training."
+          },
+          {
+            "metric": "Branch contact / rubbing points",
+            "unit": "count per mapped canopy zone",
+            "method": "Inspect where branches cross, rub or are pressed against trellis/support during wind. Mark persistent contact points.",
+            "frequency": "Weekly and after wind events."
+          },
+          {
+            "metric": "Post-rain/dew drying interval",
+            "unit": "minutes or hours to defined visibly dry state",
+            "method": "Record the end of rain/dew wetting and the time representative outer and sheltered canopy zones become visibly dry. Use the same zones each event.",
+            "frequency": "Across representative wet events."
+          },
+          {
+            "metric": "Sheltered vs exposed wind reading",
+            "unit": "m/s, km/h, mph or matched ordinal class",
+            "method": "Compare wind at an exposed canopy edge and a defined sheltered interior/lee point using the same instrument/time window.",
+            "frequency": "During representative breezes and after canopy architecture changes."
+          }
+        ],
+        "record": [
+          "canopy dimensions and measurement direction",
+          "support/training geometry",
+          "branch contact/rubbing count",
+          "rain/dew event timing",
+          "outer vs sheltered drying time",
+          "outer vs sheltered wind reading",
+          "pruning/training change",
+          "disease or tissue-damage observations"
+        ],
+        "compare": [
+          "dense vs open canopy zones",
+          "drying time before and after architecture/support changes",
+          "wind exposure and rubbing pattern across canopy edges/interior"
+        ],
+        "interpret": [
+          "Dense canopy architecture can increase drag on exposed surfaces while also creating sheltered humid zones that dry more slowly.",
+          "Opening a canopy can change both mechanical loading and moisture behavior; those effects should be measured rather than assumed.",
+          "The best support architecture is therefore not only the one that prevents breakage but the one that avoids chronic rubbing and preserves reasonable drying opportunity."
+        ],
+        "decisionRule": "Modify support, spacing or selective architecture when the same zones repeatedly show rubbing/damage or prolonged wetness relative to comparison zones. Re-measure after the change instead of assuming the intervention worked.",
+        "confidenceCheck": "Visible dryness does not equal measured internal flower humidity. This canopy metric is a field screening layer and should connect to the dedicated rain/flower-risk section."
+      }
+    ],
+    "fieldWorksheet": {
+      "title": "Section 4 wind & support field record",
+      "fields": [
+        "plant ID / canopy dimensions",
+        "wind direction / mean / gust",
+        "sensor/source and height",
+        "marked branch/stem deflection",
+        "damage/failure map",
+        "support/tie-point map",
+        "stem diameter and tie condition",
+        "support slack/deflection",
+        "baseline and post-event lean",
+        "base/root-zone movement",
+        "branch rubbing/contact points",
+        "outer vs sheltered wind",
+        "outer vs sheltered drying interval",
+        "support/pruning change",
+        "measured / estimated / ordinal label",
+        "decision and what evidence would change it"
+      ],
+      "outcome": "The learner should finish with a structural record showing where wind load occurs, how support is carrying it, whether ties or anchors are creating new damage, and how canopy architecture affects both movement and drying."
+    },
+    "calculationHelpers": [
+      {
+        "name": "Gust factor",
+        "formula": "peak gust ÷ mean wind speed over the same observation window",
+        "use": "Describe how gusty an event was relative to its mean wind.",
+        "boundary": "It is an event descriptor, not a plant-failure threshold."
+      },
+      {
+        "name": "Permanent lean change",
+        "formula": "post-recovery lean angle − baseline lean angle",
+        "use": "Track cumulative structural displacement across wind events.",
+        "boundary": "Small angle changes can reflect measurement error; use fixed references and repeat measurements."
+      },
+      {
+        "name": "Drying interval",
+        "formula": "time at defined dry observation − end of wetting event",
+        "use": "Compare outer and sheltered canopy drying or before/after architecture changes.",
+        "boundary": "Visible dryness does not quantify internal tissue or inflorescence humidity."
+      }
+    ]
+  }
+}
