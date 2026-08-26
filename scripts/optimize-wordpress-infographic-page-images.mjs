@@ -175,7 +175,10 @@ function runSelfTest() {
   if (first.responsiveTags !== 1) throw new Error('Self-test did not count responsive image');
   const second = optimizeContent(first.content, media);
   if (second.content !== first.content) throw new Error('Responsive optimization is not idempotent');
-  console.log(JSON.stringify({ selfTest: 'passed', responsiveTags: first.responsiveTags }, null, 2));
+  if (second.changedTags !== 0 || second.matchedTags !== 1 || second.responsiveTags !== 1) {
+    throw new Error('Self-test persistence/idempotence counters are inconsistent');
+  }
+  console.log(JSON.stringify({ selfTest: 'passed', responsiveTags: first.responsiveTags, persistedMutationCandidates: second.changedTags }, null, 2));
 }
 
 if (SELF_TEST) {
@@ -195,7 +198,7 @@ const headers = {
   Authorization: auth,
   Accept: 'application/json',
   'Content-Type': 'application/json',
-  'User-Agent': 'DTFSeeds-Responsive-Education-Images/1.0'
+  'User-Agent': 'DTFSeeds-Responsive-Education-Images/1.1'
 };
 const stamp = new Date().toISOString().replace(/[-:.]/g, '').replace('Z', 'Z');
 const backupDir = join(backupRoot, `responsive-images-${stamp}`);
@@ -229,6 +232,10 @@ async function getChild(parentId, route) {
   return rows[0];
 }
 
+async function getPageById(pageId) {
+  return request(`/wp-json/wp/v2/pages/${pageId}?context=edit`);
+}
+
 async function allEducationMedia() {
   const out = [];
   for (let page = 1; page <= 12; page += 1) {
@@ -254,6 +261,9 @@ const pageReports = [];
 let totalMatched = 0;
 let totalResponsive = 0;
 let totalChanged = 0;
+let totalPersistedMatched = 0;
+let totalPersistedResponsive = 0;
+let totalPersistedMutationCandidates = 0;
 for (const route of routes) {
   const page = await getChild(learn.id, route);
   const raw = page?.content?.raw || page?.content?.rendered || '';
@@ -261,8 +271,8 @@ for (const route of routes) {
   totalMatched += optimized.matchedTags;
   totalResponsive += optimized.responsiveTags;
   totalChanged += optimized.changedTags;
+  const slug = String(route).split('/').filter(Boolean).at(-1);
   if (optimized.changedTags > 0) {
-    const slug = String(route).split('/').filter(Boolean).at(-1);
     await writeFile(join(backupDir, `before-${slug}.json`), `${JSON.stringify(page, null, 2)}\n`);
     const updated = await request(`/wp-json/wp/v2/pages/${page.id}`, {
       method: 'POST',
@@ -270,11 +280,45 @@ for (const route of routes) {
     });
     if (!updated?.id || updated?.status !== 'publish') throw new Error(`WordPress did not confirm responsive image update for ${route}`);
   }
-  pageReports.push({ route, pageId: page.id, matchedTags: optimized.matchedTags, responsiveTags: optimized.responsiveTags, changedTags: optimized.changedTags });
+
+  // Re-read edit context after the write. This separates WordPress persistence
+  // from public-page cache/render behavior: a second optimization pass must be
+  // a no-op if src/srcset/sizes/classes were actually retained by WordPress.
+  const persistedPage = optimized.changedTags > 0 ? await getPageById(page.id) : page;
+  const persistedRaw = persistedPage?.content?.raw || persistedPage?.content?.rendered || '';
+  const persisted = optimizeContent(persistedRaw, mediaItems);
+  totalPersistedMatched += persisted.matchedTags;
+  totalPersistedResponsive += persisted.responsiveTags;
+  totalPersistedMutationCandidates += persisted.changedTags;
+  await writeFile(join(backupDir, `persisted-${slug}.html`), String(persistedRaw), 'utf8');
+
+  if (persisted.matchedTags !== optimized.matchedTags) {
+    throw new Error(`${route}: WordPress edit-context retained ${persisted.matchedTags}/${optimized.matchedTags} matched education images`);
+  }
+  if (persisted.responsiveTags !== optimized.responsiveTags) {
+    throw new Error(`${route}: WordPress edit-context retained ${persisted.responsiveTags}/${optimized.responsiveTags} responsive image candidates`);
+  }
+  if (persisted.changedTags !== 0) {
+    throw new Error(`${route}: WordPress edit-context still needs ${persisted.changedTags} responsive-image mutations after save; attributes did not persist exactly`);
+  }
+
+  pageReports.push({
+    route,
+    pageId: page.id,
+    matchedTags: optimized.matchedTags,
+    responsiveTags: optimized.responsiveTags,
+    changedTags: optimized.changedTags,
+    persistedMatchedTags: persisted.matchedTags,
+    persistedResponsiveTags: persisted.responsiveTags,
+    persistedMutationCandidates: persisted.changedTags
+  });
 }
 
 if (totalMatched < 20) throw new Error(`Only ${totalMatched} education image tags matched WordPress media`);
 if (totalResponsive < 20) throw new Error(`Only ${totalResponsive} education image tags have responsive attachment sizes`);
+if (totalPersistedMatched !== totalMatched) throw new Error(`WordPress edit-context retained ${totalPersistedMatched}/${totalMatched} matched education images`);
+if (totalPersistedResponsive !== totalResponsive) throw new Error(`WordPress edit-context retained ${totalPersistedResponsive}/${totalResponsive} responsive education images`);
+if (totalPersistedMutationCandidates !== 0) throw new Error(`WordPress edit-context still needs ${totalPersistedMutationCandidates} responsive-image mutations after save`);
 
 const report = {
   generatedAt: new Date().toISOString(),
@@ -283,6 +327,9 @@ const report = {
   matchedImageTags: totalMatched,
   responsiveImageTags: totalResponsive,
   changedImageTags: totalChanged,
+  persistedMatchedImageTags: totalPersistedMatched,
+  persistedResponsiveImageTags: totalPersistedResponsive,
+  persistedMutationCandidates: totalPersistedMutationCandidates,
   pages: pageReports
 };
 await writeFile(join(backupDir, 'responsive-image-report.json'), `${JSON.stringify(report, null, 2)}\n`);
