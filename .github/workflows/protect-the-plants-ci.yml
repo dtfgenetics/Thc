@@ -16,26 +16,96 @@ on:
 jobs:
   verify:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+
       - name: Validate browser JavaScript
-        run: node --check site/public-route-patch/games/protect-the-plants/app.js
-      - name: Validate PHP API
-        run: php -l site/public-route-patch/games/protect-the-plants/api.php
-      - name: Validate deployable route
         run: |
           set -euo pipefail
-          test -s site/public-route-patch/games/protect-the-plants/index.html
-          test -s site/public-route-patch/games/protect-the-plants/styles.css
-          test -s site/public-route-patch/games/protect-the-plants/visual-fixes.css
-          test -s site/public-route-patch/games/protect-the-plants/plant.svg
-          grep -Fq 'https://dtfseeds.com/games/protect-the-plants/' site/public-route-patch/games/protect-the-plants/index.html
-          grep -Fq './api.php' site/public-route-patch/games/protect-the-plants/app.js
-          grep -Fq './visual-fixes.css' site/public-route-patch/games/protect-the-plants/index.html
-          grep -Fq '.plant-token.formation-trellis-row' site/public-route-patch/games/protect-the-plants/styles.css
-          grep -Fq 'coordinate-grid' site/public-route-patch/games/protect-the-plants/app.js
-          ! grep -Fq 'src="/' site/public-route-patch/games/protect-the-plants/index.html
-          ! grep -Fq 'href="/styles.css' site/public-route-patch/games/protect-the-plants/index.html
+          node --check site/public-route-patch/games/protect-the-plants/app.js
+          node --check site/public-route-patch/games/protect-the-plants/enhancements.js
+          node --check site/public-route-patch/games/protect-the-plants/v2-extras.js
+          node --check site/public-route-patch/games/protect-the-plants/sw.js
+
+      - name: Validate PHP API
+        run: php -l site/public-route-patch/games/protect-the-plants/api.php
+
+      - name: Validate manifest and deployable route
+        run: |
+          set -euo pipefail
+          root=site/public-route-patch/games/protect-the-plants
+          for asset in \
+            index.html app.js api.php styles.css visual-fixes.css plant.svg \
+            enhancements.js enhancements.css v2-extras.js v2-extras.css \
+            manifest.webmanifest sw.js; do
+            test -s "$root/$asset"
+          done
+          jq -e '.name == "Protect the Plants" and .display == "standalone" and .start_url == "./" and .scope == "./"' "$root/manifest.webmanifest" >/dev/null
+          grep -Fq 'https://dtfseeds.com/games/protect-the-plants/' "$root/index.html"
+          grep -Fq './api.php' "$root/app.js"
+          grep -Fq './visual-fixes.css' "$root/index.html"
+          grep -Fq './enhancements.css' "$root/index.html"
+          grep -Fq './v2-extras.css' "$root/index.html"
+          grep -Fq './manifest.webmanifest' "$root/index.html"
+          grep -Fq './enhancements.js' "$root/index.html"
+          grep -Fq './v2-extras.js' "$root/index.html"
+          grep -Fq '.plant-token.formation-trellis-row' "$root/styles.css"
+          grep -Fq 'coordinate-grid' "$root/app.js"
+          grep -Fq 'rematch' "$root/api.php"
+          grep -Fq 'events' "$root/api.php"
+          grep -Fq 'serviceWorker' "$root/v2-extras.js"
+          ! grep -Fq 'src="/' "$root/index.html"
+          ! grep -Fq 'href="/styles.css' "$root/index.html"
+
+      - name: Exercise local two-player and rematch API
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$GITHUB_WORKSPACE/site/public-route-patch/games/protect-the-plants"
+          php -S 127.0.0.1:8765 -t "$root" >"$RUNNER_TEMP/ptp-php.log" 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          for n in {1..30}; do
+            curl -fsS 'http://127.0.0.1:8765/api.php?action=create' -H 'Content-Type: application/json' -X POST --data '{"name":"Health Probe"}' >/dev/null && break
+            sleep .2
+          done
+          api='http://127.0.0.1:8765/api.php'
+          json=(-H 'Content-Type: application/json')
+
+          create="$(curl -fsS "${json[@]}" -X POST "$api?action=create" --data '{"name":"V2 Smoke A"}')"
+          code="$(jq -er '.code' <<<"$create")"; p1="$(jq -er '.playerId' <<<"$create")"; t1="$(jq -er '.token' <<<"$create")"
+          join="$(curl -fsS "${json[@]}" -X POST "$api?action=join" --data "$(jq -nc --arg code "$code" '{name:"V2 Smoke B",code:$code}')")"
+          p2="$(jq -er '.playerId' <<<"$join")"; t2="$(jq -er '.token' <<<"$join")"
+          fleet='[{"id":"mother-row","cells":[{"row":0,"col":0},{"row":0,"col":1},{"row":0,"col":2},{"row":0,"col":3},{"row":0,"col":4}]},{"id":"trellis-row","cells":[{"row":2,"col":0},{"row":2,"col":1},{"row":2,"col":2},{"row":2,"col":3}]},{"id":"tall-pheno","cells":[{"row":4,"col":0},{"row":4,"col":1},{"row":4,"col":2}]},{"id":"bushy-pheno","cells":[{"row":6,"col":0},{"row":6,"col":1},{"row":6,"col":2}]},{"id":"solo-pots","cells":[{"row":8,"col":0},{"row":8,"col":1}]}]'
+          place="$(jq -nc --argjson fleet "$fleet" '{fleet:$fleet}')"
+          curl -fsS "${json[@]}" -H "X-Player-Id: $p1" -H "X-Player-Token: $t1" -X POST "$api?action=place&code=$code" --data "$place" >/dev/null
+          started="$(curl -fsS "${json[@]}" -H "X-Player-Id: $p2" -H "X-Player-Token: $t2" -X POST "$api?action=place&code=$code" --data "$place")"
+          jq -e --arg p1 "$p1" '.status == "playing" and .round == 1 and .turnPlayerId == $p1 and (.events|length) >= 1' <<<"$started" >/dev/null
+
+          # Sink all five formations while player B deliberately misses between player A turns.
+          shots=('0 0' '0 1' '0 2' '0 3' '0 4' '2 0' '2 1' '2 2' '2 3' '4 0' '4 1' '4 2' '6 0' '6 1' '6 2' '8 0' '8 1')
+          miss_col=14
+          for shot in "${shots[@]}"; do
+            read -r row col <<<"$shot"
+            final="$(curl -fsS "${json[@]}" -H "X-Player-Id: $p1" -H "X-Player-Token: $t1" -X POST "$api?action=fire&code=$code" --data "{\"row\":$row,\"col\":$col}")"
+            status="$(jq -r '.status' <<<"$final")"
+            [[ "$status" == finished ]] && break
+            curl -fsS "${json[@]}" -H "X-Player-Id: $p2" -H "X-Player-Token: $t2" -X POST "$api?action=fire&code=$code" --data "{\"row\":14,\"col\":$miss_col}" >/dev/null
+            miss_col=$((miss_col-1))
+          done
+          jq -e --arg p1 "$p1" '.status == "finished" and .winnerId == $p1 and (.events|map(select(.type=="game-finished"))|length)==1' <<<"$final" >/dev/null
+
+          rematch1="$(curl -fsS "${json[@]}" -H "X-Player-Id: $p1" -H "X-Player-Token: $t1" -X POST "$api?action=rematch&code=$code" --data '{}')"
+          jq -e '.status == "finished" and .rematch.meRequested == true' <<<"$rematch1" >/dev/null
+          rematch2="$(curl -fsS "${json[@]}" -H "X-Player-Id: $p2" -H "X-Player-Token: $t2" -X POST "$api?action=rematch&code=$code" --data '{}')"
+          jq -e '.status == "placement" and .round == 2 and .me.ready == false and .opponent.ready == false and (.events|map(select(.type=="rematch-started"))|length)==1' <<<"$rematch2" >/dev/null
+
+          # Replant and verify round-two starter alternates to player B.
+          curl -fsS "${json[@]}" -H "X-Player-Id: $p1" -H "X-Player-Token: $t1" -X POST "$api?action=place&code=$code" --data "$place" >/dev/null
+          round2="$(curl -fsS "${json[@]}" -H "X-Player-Id: $p2" -H "X-Player-Token: $t2" -X POST "$api?action=place&code=$code" --data "$place")"
+          jq -e --arg p2 "$p2" '.status == "playing" and .round == 2 and .turnPlayerId == $p2' <<<"$round2" >/dev/null
+          echo 'Protect the Plants V2 local multiplayer/rematch smoke passed.'
