@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 1,
+  "id": "outdoor-quantification-chapter-manifest",
+  "route": "/learn/outdoor/",
+  "parentData": "site/wordpress/education/outdoor-quantification-v1.json",
+  "architecture": "Section 1 remains inline in the original quantification dataset while new chapters are authored as independently verifiable chapter files. A later assembly step can merge them for publication without changing the chapter schema.",
+  "chapterContract": {
+    "subtopicsPerChapter": 4,
+    "minimumMeasurementsPerSubtopic": 3,
+    "requiredSubtopicFields": [
+      "id",
+      "lessonTitle",
+      "goal",
+      "measure",
+      "record",
+      "compare",
+      "interpret",
+      "decisionRule",
+      "confidenceCheck"
+    ],
+    "requiredMeasurementFields": [
+      "metric",
+      "unit",
+      "method",
+      "frequency"
+    ],
+    "requiredChapterFields": [
+      "chapterId",
+      "chapterNumber",
+      "chapterTitle",
+      "learnerQuestion",
+      "sourceContext",
+      "subtopics",
+      "fieldWorksheet"
+    ]
+  },
+  "chapters": [
+    {
+      "number": 1,
+      "id": "site-sun",
+      "title": "Site Selection & Seasonal Sun",
+      "status": "completed",
+      "storage": "inline-parent",
+      "path": "site/wordpress/education/outdoor-quantification-v1.json"
+    },
+    {
+      "number": 2,
+      "id": "hardening-transplant",
+      "title": "Hardening Off & Transplant Establishment",
+      "status": "completed",
+      "storage": "chapter-file",
+      "path": "site/wordpress/education/outdoor-quantification/02-hardening-transplant.json"
+    },
+    {
+      "number": 3,
+      "id": "water-rootzone",
+      "title": "Outdoor Water, Irrigation & Root-Zone Balance",
+      "status": "completed",
+      "storage": "chapter-file",
+      "path": "site/wordpress/education/outdoor-quantification/03-water-rootzone.json"
+    },
+    {
+      "number": 4,
+      "id": "wind-support",
+      "title": "Wind, Support & Canopy Architecture",
+      "status": "completed",
+      "storage": "chapter-file",
+      "path": "site/wordpress/education/outdoor-quantification/04-wind-support.json"
+    },
+    {
+      "number": 5,
+      "id": "rain-flower-risk",
+      "title": "Rain, Humidity & Flower Disease Risk",
+      "status": "planned",
+      "storage": "chapter-file",
+      "path": "site/wordpress/education/outdoor-quantification/05-rain-flower-risk.json"
+    },
+    {
+      "number": 6,
+      "id": "pests-wildlife",
+      "title": "Pests, Scouting & Wildlife Pressure",
+      "status": "planned",
+      "storage": "chapter-file",
+      "path": "site/wordpress/education/outdoor-quantification/06-pests-wildlife.json"
+    },
+    {
+      "number": 7,
+      "id": "pollen-sex",
+      "title": "Sex Expression, Pollen Drift & Seed-Set Investigation",
+      "status": "planned",
+      "storage": "chapter-file",
+      "path": "site/wordpress/education/outdoor-quantification/07-pollen-sex.json"
+    },
+    {
+      "number": 8,
+      "id": "season-microclimate",
+      "title": "Season Records, Microclimate & Contingency Planning",
+      "status": "planned",
+      "storage": "chapter-file",
+      "path": "site/wordpress/education/outdoor-quantification/08-season-microclimate.json"
+    }
+  ],
+  "nextChapter": "rain-flower-risk"
+}
