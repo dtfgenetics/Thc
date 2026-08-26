@@ -1,0 +1,65 @@
+{
+  "id": "THC-ENC-182",
+  "number": 182,
+  "title": "Plant Architecture as a Genetic and Managed Trait",
+  "objective": "Explain cannabis plant architecture as an emergent phenotype shaped by genotype, developmental stage, environment, spacing, and management, and show how to measure architecture without reducing it to retail ancestry labels or one ideal canopy form.",
+  "terms": [
+    {"term":"plant architecture","definition":"The three-dimensional arrangement and developmental pattern of stems, branches, leaves, nodes, internodes, and reproductive structures on a plant."},
+    {"term":"phytomer","definition":"A repeating shoot unit consisting of a node, its leaf or leaves, associated axillary bud or branch, and the adjacent internode."},
+    {"term":"branch order","definition":"A hierarchical description of branches according to their origin, such as primary branches from the main stem and secondary branches from primary branches."},
+    {"term":"internode length","definition":"The measured distance between adjacent nodes on a shoot."},
+    {"term":"phenotypic plasticity","definition":"The capacity of one genotype to express different phenotypes under different environmental or management conditions."},
+    {"term":"canopy density","definition":"The amount and spatial distribution of foliage and shoots within a defined canopy volume or area."},
+    {"term":"planting density","definition":"The number of plants established per unit cultivation area, which changes competition, light distribution, airflow, and space available for architecture."}
+  ],
+  "termDefinitionsStatus": "controlled_glossary_reconciled_for_publication",
+  "coreScience": [
+    "Cannabis shoot architecture develops from repeating phytomers and branch hierarchies. The architecture observed at any one time is not purely genetic: it is a phenotype produced by genotype interacting with developmental stage, light environment, temperature, water and nutrient status, plant density, mechanical support, and deliberate pruning or training.",
+    "Genetic differences can produce repeatable tendencies in height, internode length, branching intensity, leaf distribution, and reproductive architecture, but management and environment can substantially modify those traits. Architecture therefore should be measured directly rather than inferred from broad retail labels such as sativa, indica, or hybrid.",
+    "Architecture alters the plant's internal light and microclimate. Cannabis studies show strong vertical gradients in inflorescence cannabinoid concentration and demonstrate that pruning, branch removal, defoliation, and plant density can change spatial uniformity. Higher density can increase yield per unit area while reducing yield per plant and increasing lower-canopy light limitation, showing that an architecture decision can improve one production metric while worsening another.",
+    "No single canopy form is biologically optimal under all conditions. A useful architecture must be judged against a defined goal such as uniform light exposure, airflow, plant count, labor, structural stability, chemical uniformity, harvestable biomass, or experimental comparability."
+  ],
+  "cultivationRelevance": [
+    "Record architecture as measurable plant data before deciding whether a plant is too tall, too dense, too sparse, or poorly branched. Height alone does not describe the distribution of productive shoots or the internal canopy environment.",
+    "When comparing cultivars or training systems, use replicated plants and the same developmental stage and environment where possible. Separating genotype effects from density, lighting, and pruning effects prevents architecture differences from being misattributed."
+  ],
+  "measureAndRecord": [
+    {"field":"Plant dimensions","requirement":"Height from substrate surface to highest living shoot, maximum canopy width, and a defined second canopy axis when useful."},
+    {"field":"Shoot organization","requirement":"Node count on reference shoots, internode lengths at stated positions, primary and secondary branch counts, branch angles, and branch order."},
+    {"field":"Canopy distribution","requirement":"Foliage or shoot density by vertical zone, visible gaps, lower-canopy senescence, and representative light measurements at defined positions when available."},
+    {"field":"Context","requirement":"Genotype or accession ID, propagation type, developmental stage, planting density, container/root-zone system, lighting, environmental conditions, and training history."},
+    {"field":"Outcome metric","requirement":"Define the endpoint before comparison: per-plant yield, yield per area, uniformity, quality metric, labor, breakage, or another stated response."}
+  ],
+  "misconceptions": [
+    "A retail sativa or indica label is enough to predict final plant architecture.",
+    "The shortest plant automatically has the most efficient canopy.",
+    "More plants per square meter always means proportionally more yield.",
+    "One training shape is universally best for every genotype and production goal."
+  ],
+  "evidenceLimits": [
+    "Cannabis architecture studies have evaluated limited sets of genotypes, densities, and controlled environments. Their numerical outcomes should not be generalized as universal targets for other genetics, lights, climates, or cultivation systems.",
+    "Architecture is multidimensional. A single measurement such as height, branch count, or leaf-area removal cannot independently establish canopy quality or predict final yield and chemistry."
+  ],
+  "crossLinks": "THC-ENC-011–014 for nodes, internodes, meristems, and structural growth; THC-ENC-101–120 for light measurement; THC-ENC-181 for branching control; THC-ENC-183–200 for training biology; THC-ENC-201–220 for flowering architecture.",
+  "sourceNotes": [
+    "Spitzer-Rimon B, Duchin S, Bernstein N, Kamenetsky R. (2019). Architecture and Florogenesis in Female Cannabis sativa Plants. Frontiers in Plant Science 10:350. DOI 10.3389/fpls.2019.00350.",
+    "Danziger N, Bernstein N. (2021). Plant architecture manipulation increases cannabinoid standardization in drug-type medical cannabis. Industrial Crops and Products 167:113528. DOI 10.1016/j.indcrop.2021.113528.",
+    "Danziger N, Bernstein N. (2022). Too Dense or Not Too Dense: Higher Planting Density Reduces Cannabinoid Uniformity but Increases Yield/Area in Drug-Type Medical Cannabis. Frontiers in Plant Science 13:713481. DOI 10.3389/fpls.2022.713481.",
+    "Crispim Massuela D et al. (2022). Impact of Harvest Time and Pruning Technique on Total CBD Concentration and Yield of Medicinal Cannabis. Plants 11(1):140. DOI 10.3390/plants11010140."
+  ],
+  "publicationAuthorized": true,
+  "reviewControl": {
+    "controlledManuscript": "Part 10 Batch 01 evidence synthesis",
+    "evidenceControl": "release_time_source_check_complete",
+    "secondaryEvidenceReview": "complete_qualified",
+    "externalReview": "pending_not_recorded",
+    "externalReviewType": "cannabis_architecture_and_horticulture",
+    "releaseTimeReview": "completed_2026-08-26; genotype, environment, density, and management are separated and no universal canopy or density target is asserted",
+    "publicationAuthorized": true,
+    "publicationAuthorization": "project_owner_2026-08-26_continue_pushing_content",
+    "independentApproval": false,
+    "websiteAction": "publish_with_review_notice"
+  },
+  "slug": "plant-architecture-as-a-genetic-and-managed-trait",
+  "route": "/encyclopedia/plant-architecture-as-a-genetic-and-managed-trait"
+}
