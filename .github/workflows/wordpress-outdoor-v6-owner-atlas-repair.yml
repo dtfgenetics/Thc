@@ -1,0 +1,172 @@
+name: Repair Outdoor V6 Owner and Atlas
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/publish-wordpress-outdoor-v6-owner-only.mjs'
+      - 'scripts/publish-wordpress-outdoor-visuals-v6.mjs'
+      - 'site/wordpress/education/outdoor-v6.json'
+      - 'site/wordpress/education/outdoor-v6-visual-map.json'
+      - '.github/workflows/wordpress-outdoor-v6-owner-atlas-repair.yml'
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-outdoor-v6-owner-atlas-repair
+  cancel-in-progress: false
+
+env:
+  WP_SITE_URL: https://dtfseeds.com
+  NODE_OPTIONS: --dns-result-order=ipv4first
+
+jobs:
+  repair:
+    name: Restore Outdoor V6 owner and visual atlas
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    environment: production
+    env:
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      APPLY_OUTDOOR_V6_OWNER: 'true'
+      APPLY_OUTDOOR_VISUALS_V6: 'true'
+      OUTDOOR_V6_PATH: site/wordpress/education/outdoor-v6.json
+      OUTDOOR_VISUAL_MAP: site/wordpress/education/outdoor-v6-visual-map.json
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate Outdoor owner and atlas packages
+        id: validate
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
+          node --check scripts/publish-wordpress-outdoor-v6-owner-only.mjs
+          node --check scripts/publish-wordpress-outdoor-visuals-v6.mjs
+          node - <<'NODE'
+          const fs=require('fs');
+          const c=JSON.parse(fs.readFileSync('site/wordpress/education/outdoor-v6.json','utf8'));
+          const m=JSON.parse(fs.readFileSync('site/wordpress/education/outdoor-v6-visual-map.json','utf8'));
+          const lessons=(c.chapters||[]).reduce((n,x)=>n+(x.lessons||[]).length,0);
+          const groups=Object.entries(m.chapters||{});
+          const visuals=groups.flatMap(([,items])=>items||[]);
+          if(c.id!=='outdoor-v6'||c.route!=='/learn/outdoor/'||c.chapters?.length!==8||lessons!==32) throw new Error('Outdoor V6 curriculum shape changed.');
+          if(m.curriculumId!==c.id||m.route!==c.route||groups.length!==8||visuals.length!==12) throw new Error('Outdoor atlas shape changed.');
+          if((m.gaps||[]).length!==11) throw new Error('Outdoor artwork queue shape changed.');
+          for(const x of visuals) if(!fs.existsSync(`site/wordpress/assets/infographics/${x.file}`)) throw new Error(`Missing mapped visual: ${x.file}`);
+          console.log(`Validated Outdoor ${c.chapters.length} chapters / ${lessons} lessons / ${visuals.length} supporting visuals / ${m.gaps.length} queued originals.`);
+          NODE
+
+      - name: Restore Outdoor V6 owner only
+        id: restore
+        shell: bash
+        env:
+          BACKUP_ROOT: /tmp/dtf-outdoor-v6-owner-only
+        run: |
+          set -euo pipefail
+          mkdir -p "$BACKUP_ROOT"
+          node scripts/publish-wordpress-outdoor-v6-owner-only.mjs | tee "$RUNNER_TEMP/outdoor-v6-owner-only.log"
+          report="$BACKUP_ROOT/report.json"
+          test -s "$report"
+          [[ "$(node -p "require(process.argv[1]).chapters" "$report")" = '8' ]]
+          [[ "$(node -p "require(process.argv[1]).lessons" "$report")" = '32' ]]
+          [[ "$(node -p "require(process.argv[1]).visitorVerified" "$report")" = 'true' ]]
+
+      - name: Publish Outdoor V6 visual atlas
+        id: publish
+        shell: bash
+        env:
+          BACKUP_ROOT: /tmp/dtf-outdoor-visuals-v6
+        run: |
+          set -euo pipefail
+          mkdir -p "$BACKUP_ROOT"
+          node scripts/publish-wordpress-outdoor-visuals-v6.mjs | tee "$RUNNER_TEMP/outdoor-v6-atlas.log"
+          report="$BACKUP_ROOT/report.json"
+          test -s "$report"
+          echo "visuals=$(node -p "require(process.argv[1]).visuals" "$report")" >> "$GITHUB_OUTPUT"
+          echo "groups=$(node -p "require(process.argv[1]).groups" "$report")" >> "$GITHUB_OUTPUT"
+          echo "wordpress=$(node -p "require(process.argv[1]).wordpressMedia" "$report")" >> "$GITHUB_OUTPUT"
+          echo "fallbacks=$(node -p "require(process.argv[1]).canonicalFallbacks" "$report")" >> "$GITHUB_OUTPUT"
+          echo "gaps=$(node -p "require(process.argv[1]).unresolvedGaps.length" "$report")" >> "$GITHUB_OUTPUT"
+
+      - name: Final public Outdoor verification
+        id: verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          body="$RUNNER_TEMP/outdoor-v6-final.html"
+          ok=0
+          for attempt in 1 2 3 4 5 6 7 8; do
+            curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+              --header 'Cache-Control: no-cache, no-store, max-age=0' --header 'Pragma: no-cache' \
+              "$WP_SITE_URL/learn/outdoor/?dtf_outdoor_final=${GITHUB_RUN_ID}-${attempt}" --output "$body"
+            if grep -Fq 'data-dtf-outdoor-v6="true"' "$body" && grep -Fq 'data-dtf-outdoor-visuals-v6="true"' "$body"; then ok=1; break; fi
+            sleep 6
+          done
+          [[ "$ok" -eq 1 ]]
+          [[ "$(grep -Fo 'data-hov6-chapter=' "$body" | wc -l | tr -d ' ')" = '8' ]]
+          [[ "$(grep -Fo 'class="hov6-lesson"' "$body" | wc -l | tr -d ' ')" = '32' ]]
+          [[ "$(grep -Fo 'class="outv6-card"' "$body" | wc -l | tr -d ' ')" = '12' ]]
+          [[ "$(grep -Fo 'data-outv6-group=' "$body" | wc -l | tr -d ' ')" = '8' ]]
+          [[ "$(grep -Fo 'class="outv6-gap"' "$body" | wc -l | tr -d ' ')" = '11' ]]
+          grep -Fq 'data-dtf-topic="outdoor-cultivation"' "$body"
+          grep -Fq 'data-dtf-learning-v4="topic-outdoor-cultivation"' "$body"
+          for id in THC-OUT-01 THC-OUT-02 THC-OUT-03 THC-OUT-04 THC-OUT-05 THC-OUT-06 THC-OUT-07 THC-OUT-08 THC-OUT-09 THC-OUT-10 THC-OUT-11; do grep -Fq "data-outv6-gap=\"$id\"" "$body"; done
+
+      - name: Upload Outdoor repair evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: outdoor-v6-owner-atlas-repair-${{ github.run_id }}
+          path: |
+            /tmp/dtf-outdoor-v6-owner-only
+            /tmp/dtf-outdoor-visuals-v6
+            ${{ runner.temp }}/outdoor-v6-owner-only.log
+            ${{ runner.temp }}/outdoor-v6-atlas.log
+            ${{ runner.temp }}/outdoor-v6-final.html
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report Outdoor repair result
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          STATUS: ${{ job.status }}
+          VALIDATE: ${{ steps.validate.outcome }}
+          RESTORE: ${{ steps.restore.outcome }}
+          PUBLISH: ${{ steps.publish.outcome }}
+          VERIFY: ${{ steps.verify.outcome }}
+          VISUALS: ${{ steps.publish.outputs.visuals }}
+          GROUPS: ${{ steps.publish.outputs.groups }}
+          WORDPRESS: ${{ steps.publish.outputs.wordpress }}
+          FALLBACKS: ${{ steps.publish.outputs.fallbacks }}
+          GAPS: ${{ steps.publish.outputs.gaps }}
+        with:
+          script: |
+            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body:[
+              '## Outdoor V6 independent owner + atlas repair','',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Result: **${process.env.STATUS}**`,
+              `Package validation: **${process.env.VALIDATE || 'not-run'}**`,
+              `Outdoor-only V6 owner restoration: **${process.env.RESTORE || 'not-run'}**`,
+              `Visual atlas publication: **${process.env.PUBLISH || 'not-run'}**`,
+              `Final public verification: **${process.env.VERIFY || 'not-run'}**`,
+              `Supporting visual cards: **${process.env.VISUALS || '0'}**`,
+              `Chapter groups: **${process.env.GROUPS || '0'}**`,
+              `WordPress-media resolutions: **${process.env.WORDPRESS || '0'}**`,
+              `Canonical fallbacks: **${process.env.FALLBACKS || '0'}**`,
+              `Purpose-built THC-OUT gaps: **${process.env.GAPS || '0'}**`,'',
+              'This repair is deliberately independent of Harvest. It requires the canonical Outdoor V3/V4 owners, restores only the approved Outdoor 8-chapter/32-lesson V6 layer, then publishes the exact-supporting visual atlas and verifies all eleven THC-OUT production gaps on the visitor route.'
+            ].join('\n')});
