@@ -2,6 +2,7 @@ import { readFile, writeFile } from 'node:fs/promises';
 import process from 'node:process';
 import { pathToFileURL } from 'node:url';
 
+// Canonical owner-chain trigger: V3 base owners -> V4 guided learning -> subject V6 finalizers.
 const sourcePath = process.env.CANONICAL_TOPIC_LITERATURE_PATH || 'site/wordpress/education/topic-literature.json';
 const normalizedPath = process.env.NORMALIZED_TOPIC_LITERATURE_PATH || '/tmp/dtf-topic-literature-v3-normalized.json';
 const publisherPath = process.env.LEARNING_V3_PUBLISHER_PATH || 'scripts/rebuild-wordpress-learning-experience-v3.mjs';
