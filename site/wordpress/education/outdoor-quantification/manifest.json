@@ -3,7 +3,7 @@
   "id": "outdoor-quantification-chapter-manifest",
   "route": "/learn/outdoor/",
   "parentData": "site/wordpress/education/outdoor-quantification-v1.json",
-  "architecture": "Section 1 remains inline in the original quantification dataset while new chapters are authored as independently verifiable chapter files. A later assembly step can merge them for publication without changing the chapter schema.",
+  "architecture": "Section 1 remains inline in the original quantification dataset while Sections 2–8 are stored as independently verifiable chapter files. The chapter set is now complete and ready for assembly into the canonical Outdoor publication path.",
   "chapterContract": {
     "subtopicsPerChapter": 4,
     "minimumMeasurementsPerSubtopic": 3,
@@ -18,8 +18,9 @@
     {"number":4,"id":"wind-support","title":"Wind, Support & Canopy Architecture","status":"completed","storage":"chapter-file","path":"site/wordpress/education/outdoor-quantification/04-wind-support.json"},
     {"number":5,"id":"rain-flower-risk","title":"Rain, Humidity & Flower Disease Risk","status":"completed","storage":"chapter-file","path":"site/wordpress/education/outdoor-quantification/05-rain-flower-risk.json"},
     {"number":6,"id":"pests-wildlife","title":"Pests, Scouting & Wildlife Pressure","status":"completed","storage":"chapter-file","path":"site/wordpress/education/outdoor-quantification/06-pests-wildlife.json"},
-    {"number":7,"id":"pollen-sex","title":"Sex Expression, Pollen Drift & Seed-Set Investigation","status":"planned","storage":"chapter-file","path":"site/wordpress/education/outdoor-quantification/07-pollen-sex.json"},
-    {"number":8,"id":"season-microclimate","title":"Season Records, Microclimate & Contingency Planning","status":"planned","storage":"chapter-file","path":"site/wordpress/education/outdoor-quantification/08-season-microclimate.json"}
+    {"number":7,"id":"pollen-sex","title":"Sex Expression, Pollen Drift & Seed-Set Investigation","status":"completed","storage":"chapter-file","path":"site/wordpress/education/outdoor-quantification/07-pollen-sex.json"},
+    {"number":8,"id":"season-microclimate","title":"Season Records, Microclimate & Contingency Planning","status":"completed","storage":"chapter-file","path":"site/wordpress/education/outdoor-quantification/08-season-microclimate.json"}
   ],
-  "nextChapter": "pollen-sex"
+  "nextChapter": null,
+  "nextAction": "Assemble Sections 1–8 through one canonical Outdoor publisher, validate the merged schema, then run visitor-facing production verification before declaring the curriculum live."
 }
