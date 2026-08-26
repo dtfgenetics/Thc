@@ -1,5 +1,6 @@
 name: Apply Pending DTFSeeds WooCommerce Copy Once
 
+# Registered one-shot production reconciliation. Update only to intentionally rerun.
 on:
   push:
     branches: [main]
