@@ -1,0 +1,38 @@
+name: Validate DTFSeeds Route Ownership
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - scripts/apply-wordpress-public-content-rest.mjs
+      - scripts/rebuild-wordpress-commerce-visuals.mjs
+      - .github/workflows/wordpress-canonical-production.yml
+      - .github/workflows/wordpress-genetics-library-production.yml
+      - scripts/validate-dtfseeds-route-ownership.mjs
+      - .github/workflows/validate-dtfseeds-route-ownership.yml
+  push:
+    branches: [main]
+    paths:
+      - scripts/apply-wordpress-public-content-rest.mjs
+      - scripts/rebuild-wordpress-commerce-visuals.mjs
+      - .github/workflows/wordpress-canonical-production.yml
+      - .github/workflows/wordpress-genetics-library-production.yml
+      - scripts/validate-dtfseeds-route-ownership.mjs
+      - .github/workflows/validate-dtfseeds-route-ownership.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Enforce single-writer route ownership
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate production ownership
+        run: node scripts/validate-dtfseeds-route-ownership.mjs
