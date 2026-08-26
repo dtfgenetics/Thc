@@ -1,3 +1,4 @@
+// Section 1 quantification publisher — validated release 2026-08-26.
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import process from 'node:process';
