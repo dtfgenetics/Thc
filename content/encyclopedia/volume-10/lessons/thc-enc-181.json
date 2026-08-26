@@ -1,0 +1,66 @@
+{
+  "id": "THC-ENC-181",
+  "number": 181,
+  "title": "Apical Dominance and Branching Control",
+  "objective": "Explain how the shoot apex, axillary buds, plant hormones, resource status, and environment interact to control branch outgrowth, and distinguish the general plant mechanism from cannabis-specific cultivation evidence.",
+  "terms": [
+    {"term":"apical dominance","definition":"The tendency of an actively growing primary shoot apex to suppress or delay outgrowth of axillary buds below it through integrated hormonal, developmental, and resource signals."},
+    {"term":"axillary bud","definition":"A bud formed in the axil of a leaf at a node that can remain inhibited or grow into a lateral shoot."},
+    {"term":"auxin","definition":"A class of plant hormones, including indole-3-acetic acid, involved in growth, polarity, vascular development, and indirect regulation of axillary bud outgrowth."},
+    {"term":"cytokinin","definition":"A class of plant hormones that can promote axillary bud activation and interact with other branching signals."},
+    {"term":"strigolactone","definition":"A class of carotenoid-derived plant signals that participates in suppression of shoot branching and integrates with auxin, cytokinin, nutrient, and sugar signaling."},
+    {"term":"correlative inhibition","definition":"Suppression of one growing organ or bud by other active organs through whole-plant signaling and competition rather than by a single local signal."},
+    {"term":"bud outgrowth","definition":"The transition of an axillary bud from an inhibited state into sustained elongation as a branch."}
+  ],
+  "termDefinitionsStatus": "controlled_glossary_reconciled_for_publication",
+  "coreScience": [
+    "Cannabis shoots are organized as repeating phytomers with nodes, leaves, axillary meristems, and internodes. The primary shoot apex normally contributes to a hierarchical branching pattern, but individual axillary buds retain developmental potential and can respond to changes in whole-plant signaling and environment.",
+    "Apical dominance is not explained by auxin simply entering a dormant bud and switching it off. In model plants, auxin transported from active shoots interacts with strigolactone, cytokinin, sugar availability, auxin transport, and transcriptional regulators of bud activity. Removing or losing a dominant apex changes this network and can permit previously inhibited buds to grow.",
+    "Bud activation and sustained branch growth are separate biological steps. A bud can become permissive for growth yet fail to become a strong branch when light, carbon supply, mineral nutrition, vascular connection, root function, developmental stage, or competing sinks are limiting.",
+    "Cannabis architecture-manipulation studies confirm that pruning and branch removal can alter branch distribution, inflorescence position, microclimate, biomass allocation, and spatial cannabinoid uniformity. The magnitude and direction of those effects are genotype- and treatment-dependent, so removal of apical dominance is a mechanism, not a universal yield guarantee."
+  ],
+  "cultivationRelevance": [
+    "Interpret topping, pruning, bending, branch removal, and trellising as ways of changing a living branch-control system rather than as fixed recipes. Compare the resulting architecture, canopy exposure, branch order, recovery, and final crop measurements against an untrained or differently trained reference whenever practical.",
+    "When a lateral bud does not grow after the main apex is removed, investigate developmental stage, light exposure, root-zone health, water status, nutrition, recent stress, and competing shoots before assuming that the training action failed."
+  ],
+  "measureAndRecord": [
+    {"field":"Architecture before intervention","requirement":"Plant age or developmental stage, node count, active apex count, branch order, plant height, canopy width, and visible axillary-bud status."},
+    {"field":"Architecture change","requirement":"Date, plant ID, affected shoot or node, intervention category, tissue removed or repositioned, and whether the primary apex remained intact."},
+    {"field":"Bud response","requirement":"Which axillary buds resumed growth, time to visible sustained outgrowth, branch elongation, and any buds that remained inhibited."},
+    {"field":"Whole-plant context","requirement":"Light distribution, spacing or density, root-zone status, irrigation, nutrition, temperature, humidity, and major stress events during the observation period."},
+    {"field":"Outcome","requirement":"Final branch distribution, canopy dimensions, inflorescence distribution, dry yield or other defined endpoint, and variability among replicate plants when available."}
+  ],
+  "misconceptions": [
+    "Auxin from the top simply flows into side buds and turns them off.",
+    "Removing the main tip automatically creates two equal branches.",
+    "Every plant of the same named cultivar will respond identically to topping or pruning.",
+    "More branches automatically mean more usable yield."
+  ],
+  "evidenceLimits": [
+    "The detailed hormone network controlling shoot branching is best resolved in model and crop species rather than Cannabis. Cannabis-specific studies support architectural and production effects of pruning, but they do not justify assuming every mechanistic detail or production response transfers identically among genotypes and environments.",
+    "This lesson explains branching biology and measurement. It does not prescribe a universal pruning schedule, node number, intensity, or yield claim."
+  ],
+  "crossLinks": "THC-ENC-011–014 for nodes, meristems, and structural growth; THC-ENC-061–080 for source-sink physiology; THC-ENC-182–200 for architecture and training; THC-ENC-201–220 for reproductive development.",
+  "sourceNotes": [
+    "Spitzer-Rimon B, Duchin S, Bernstein N, Kamenetsky R. (2019). Architecture and Florogenesis in Female Cannabis sativa Plants. Frontiers in Plant Science 10:350. DOI 10.3389/fpls.2019.00350.",
+    "Beveridge CA et al. (2023). Strigolactones and Shoot Branching: What Is the Real Hormone and How Does It Work? Plant and Cell Physiology 64(9):967–983.",
+    "Wang B, Smith SM, Li J. (2018/2021 review literature). Molecular and genetic regulation of shoot branching. Plant Physiology 187(3):1033–1044; used for general branching-network evidence, not cannabis-specific response claims.",
+    "Danziger N, Bernstein N. (2021). Plant architecture manipulation increases cannabinoid standardization in drug-type medical cannabis. Industrial Crops and Products 167:113528. DOI 10.1016/j.indcrop.2021.113528.",
+    "Crispim Massuela D et al. (2022). Impact of Harvest Time and Pruning Technique on Total CBD Concentration and Yield of Medicinal Cannabis. Plants 11(1):140. DOI 10.3390/plants11010140."
+  ],
+  "publicationAuthorized": true,
+  "reviewControl": {
+    "controlledManuscript": "Part 10 Batch 01 evidence synthesis",
+    "evidenceControl": "release_time_source_check_complete",
+    "secondaryEvidenceReview": "complete_qualified",
+    "externalReview": "pending_not_recorded",
+    "externalReviewType": "plant_architecture_hormone_and_cannabis_horticulture",
+    "releaseTimeReview": "completed_2026-08-26; general branching mechanisms are labeled separately from cannabis-specific cultivation evidence and no universal pruning prescription is asserted",
+    "publicationAuthorized": true,
+    "publicationAuthorization": "project_owner_2026-08-26_continue_pushing_content",
+    "independentApproval": false,
+    "websiteAction": "publish_with_review_notice"
+  },
+  "slug": "apical-dominance-and-branching-control",
+  "route": "/encyclopedia/apical-dominance-and-branching-control"
+}
