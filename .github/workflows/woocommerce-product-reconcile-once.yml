@@ -1,0 +1,118 @@
+name: Apply Pending DTFSeeds WooCommerce Copy Once
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/woocommerce-product-reconcile-once.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-woocommerce-copy-once
+  cancel-in-progress: false
+
+jobs:
+  reconcile:
+    name: Back up, reconcile reviewed product copy, and verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: production
+    env:
+      WP_SITE_URL: https://dtfseeds.com
+      WC_CONSUMER_KEY: ${{ secrets.WC_CONSUMER_KEY }}
+      WC_CONSUMER_SECRET: ${{ secrets.WC_CONSUMER_SECRET }}
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      BACKUP_ROOT: /tmp/woocommerce-product-backups
+      NODE_OPTIONS: --dns-result-order=ipv4first
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate reviewed reconciliation package
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/reconcile-woocommerce-products.mjs
+          node --check scripts/rollback-woocommerce-products.mjs
+          node --check scripts/validate-woocommerce-reconciliation.mjs
+          node scripts/validate-genetics-commerce.mjs
+          node scripts/validate-woocommerce-reconciliation.mjs
+
+      - name: Require authenticated protected write path
+        id: access
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -n "${WC_CONSUMER_KEY:-}" && -n "${WC_CONSUMER_SECRET:-}" ]]; then
+            echo 'mode=woocommerce-consumer-key' >> "$GITHUB_OUTPUT"
+          elif [[ -n "${WP_API_USERNAME:-}" && -n "${WP_API_PASSWORD:-}" ]]; then
+            echo 'mode=wordpress-basic-auth' >> "$GITHUB_OUTPUT"
+          else
+            echo 'No protected WooCommerce/WordPress credentials are configured.' >&2
+            exit 1
+          fi
+
+      - name: Apply canonical product descriptions and categories
+        id: reconcile
+        shell: bash
+        run: |
+          set -euo pipefail
+          APPLY_WOOCOMMERCE_CHANGES=true node scripts/reconcile-woocommerce-products.mjs
+
+      - name: Restore snapshots automatically if reconciliation fails
+        id: rollback
+        if: failure() && steps.reconcile.outcome == 'failure'
+        shell: bash
+        run: |
+          set -euo pipefail
+          pointer="$BACKUP_ROOT/woocommerce-backup-path.txt"
+          [[ -f "$pointer" ]] || exit 0
+          backup_dir="$(cat "$pointer")"
+          [[ -f "$backup_dir/backup-manifest.json" ]] || exit 0
+          APPLY_WOOCOMMERCE_ROLLBACK=true node scripts/rollback-woocommerce-products.mjs
+
+      - name: Upload rollback evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: woocommerce-copy-reconciliation-${{ github.run_id }}
+          path: |
+            /tmp/woocommerce-product-backups
+            woocommerce-reconciliation-report.json
+            woocommerce-reconciliation-report.md
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report one-shot reconciliation to production tracker
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          JOB_STATUS: ${{ job.status }}
+          AUTH_MODE: ${{ steps.access.outputs.mode }}
+          RECONCILE_OUTCOME: ${{ steps.reconcile.outcome }}
+          ROLLBACK_OUTCOME: ${{ steps.rollback.outcome }}
+        with:
+          script: |
+            const body = [
+              '## One-shot WooCommerce copy reconciliation',
+              '',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Protected job result: **${process.env.JOB_STATUS}**`,
+              `Authentication path: **${process.env.AUTH_MODE || 'not-confirmed'}**`,
+              `Reconciliation outcome: **${process.env.RECONCILE_OUTCOME || 'not-run'}**`,
+              `Automatic rollback: **${process.env.ROLLBACK_OUTCOME || 'not-needed'}**`,
+              '',
+              'Scope: reviewed product name where permitted, description, short description, and category reconciliation only. Price, sale price, stock, SKU, slug, images, shipping, tax data, and order data remain preserved by the canonical reconciliation policy.'
+            ].join('\n');
+            await github.rest.issues.createComment({owner: context.repo.owner, repo: context.repo.repo, issue_number: 46, body});
