@@ -1,15 +1,195 @@
 {
-  "verified_at_utc": "2026-08-21T18:46:49Z",
-  "verification_source": "protected GitHub Actions WordPress production publisher and live curl verification",
-  "source_run_id": 32514765962,
+  "verified_at_utc": "2026-08-26T21:18:38Z",
   "page_url": "https://dtfseeds.com/learn/infographics/",
-  "wordpress_page_id": 877,
-  "source_controlled_images_processed": 106,
-  "wordpress_media_reused": 106,
-  "new_wordpress_media_uploaded_on_final_idempotent_run": 0,
-  "rendered_images_observed_on_live_page": 107,
-  "media_publish_outcome": "success",
-  "live_page_verification_outcome": "success",
-  "production_ready": true,
-  "notes": "The immediately preceding production attempt uploaded the previously missing media. The final successful idempotent run reused all 106 source-controlled assets, published the THC Infographic Library child page, and verified at least 10 WordPress-hosted images on the live page; 107 rendered image tags were observed."
+  "page_http_status": 200,
+  "page_final_url": "https://dtfseeds.com/learn/infographics/?verify=1787779109-1",
+  "page_bytes": 197039,
+  "page_has_infographic_heading": true,
+  "rendered_infographic_card_count": 75,
+  "rendered_wordpress_media_url_count": 75,
+  "sampled_rendered_media_count": 20,
+  "sampled_rendered_media_live": 20,
+  "sampled_rendered_media": [
+    {
+      "url": "https://dtfseeds.com/wp-content/uploads/2026/08/Beneficial_Insects_and_Biological_Controls.png",
+      "ok": true,
+      "status": 200,
+      "content_type": "image/png",
+      "bytes": 2022967,
+      "final_url": "https://dtfseeds.com/wp-content/uploads/2026/08/Beneficial_Insects_and_Biological_Controls.png",
+      "error": null
+    },
+    {
+      "url": "https://dtfseeds.com/wp-content/uploads/2026/08/THC-C004_Infographic_From_Cell_to_Canopy.png",
+      "ok": true,
+      "status": 200,
+      "content_type": "image/png",
+      "bytes": 460508,
+      "final_url": "https://dtfseeds.com/wp-content/uploads/2026/08/THC-C004_Infographic_From_Cell_to_Canopy.png",
+      "error": null
+    },
+    {
+      "url": "https://dtfseeds.com/wp-content/uploads/2026/08/THC-C005_Infographic_Root_Anatomy_and_Forensics.png",
+      "ok": true,
+      "status": 200,
+      "content_type": "image/png",
+      "bytes": 443183,
+      "final_url": "https://dtfseeds.com/wp-content/uploads/2026/08/THC-C005_Infographic_Root_Anatomy_and_Forensics.png",
+      "error": null
+    },
+    {
+      "url": "https://dtfseeds.com/wp-content/uploads/2026/08/THC-C006_Infographic_Stem_Transport_and_Training_Risk.png",
+      "ok": true,
+      "status": 200,
+      "content_type": "image/png",
+      "bytes": 526705,
+      "final_url": "https://dtfseeds.com/wp-content/uploads/2026/08/THC-C006_Infographic_Stem_Transport_and_Training_Risk.png",
+      "error": null
+    },
+    {
+      "url": "https://dtfseeds.com/wp-content/uploads/2026/08/THC-C007_Infographic_Leaf_Anatomy_Gas_Exchange.png",
+      "ok": true,
+      "status": 200,
+      "content_type": "image/png",
+      "bytes": 600026,
+      "final_url": "https://dtfseeds.com/wp-content/uploads/2026/08/THC-C007_Infographic_Leaf_Anatomy_Gas_Exchange.png",
+      "error": null
+    },
+    {
+      "url": "https://dtfseeds.com/wp-content/uploads/2026/08/THC-C008_Infographic_Flower_Anatomy_Reproduction.png",
+      "ok": true,
+      "status": 200,
+      "content_type": "image/png",
+      "bytes": 551627,
+      "final_url": "https://dtfseeds.com/wp-content/uploads/2026/08/THC-C008_Infographic_Flower_Anatomy_Reproduction.png",
+      "error": null
+    },
+    {
+      "url": "https://dtfseeds.com/wp-content/uploads/2026/08/THC-C009_Infographic_Trichomes_Secretory_Biology.png",
+      "ok": true,
+      "status": 200,
+      "content_type": "image/png",
+      "bytes": 517087,
+      "final_url": "https://dtfseeds.com/wp-content/uploads/2026/08/THC-C009_Infographic_Trichomes_Secretory_Biology.png",
+      "error": null
+    },
+    {
+      "url": "https://dtfseeds.com/wp-content/uploads/2026/08/Cannabis_Nutrition_Science_Behind_Healthy_Growth.png",
+      "ok": true,
+      "status": 200,
+      "content_type": "image/png",
+      "bytes": 2007258,
+      "final_url": "https://dtfseeds.com/wp-content/uploads/2026/08/Cannabis_Nutrition_Science_Behind_Healthy_Growth.png",
+      "error": null
+    },
+    {
+      "url": "https://dtfseeds.com/wp-content/uploads/2026/08/Cannabis_Plant_Anatomy_Infographic.png",
+      "ok": true,
+      "status": 200,
+      "content_type": "image/png",
+      "bytes": 2354715,
+      "final_url": "https://dtfseeds.com/wp-content/uploads/2026/08/Cannabis_Plant_Anatomy_Infographic.png",
+      "error": null
+    },
+    {
+      "url": "https://dtfseeds.com/wp-content/uploads/2026/08/Cannabis_Plant_Life_Cycle_Seed_to_Harvest_Infographic.png",
+      "ok": true,
+      "status": 200,
+      "content_type": "image/png",
+      "bytes": 2281618,
+      "final_url": "https://dtfseeds.com/wp-content/uploads/2026/08/Cannabis_Plant_Life_Cycle_Seed_to_Harvest_Infographic.png",
+      "error": null
+    },
+    {
+      "url": "https://dtfseeds.com/wp-content/uploads/2026/08/Cannabis_Sex_Expression_and_Chromosome_Combinations.png",
+      "ok": true,
+      "status": 200,
+      "content_type": "image/png",
+      "bytes": 1980086,
+      "final_url": "https://dtfseeds.com/wp-content/uploads/2026/08/Cannabis_Sex_Expression_and_Chromosome_Combinations.png",
+      "error": null
+    },
+    {
+      "url": "https://dtfseeds.com/wp-content/uploads/2026/08/Cloning_Guide_with_Environment_Targets.png",
+      "ok": true,
+      "status": 200,
+      "content_type": "image/png",
+      "bytes": 1984145,
+      "final_url": "https://dtfseeds.com/wp-content/uploads/2026/08/Cloning_Guide_with_Environment_Targets.png",
+      "error": null
+    },
+    {
+      "url": "https://dtfseeds.com/wp-content/uploads/2026/08/Diagnosing_Deficiency_vs_Toxicity_Infographic.png",
+      "ok": true,
+      "status": 200,
+      "content_type": "image/png",
+      "bytes": 2059971,
+      "final_url": "https://dtfseeds.com/wp-content/uploads/2026/08/Diagnosing_Deficiency_vs_Toxicity_Infographic.png",
+      "error": null
+    },
+    {
+      "url": "https://dtfseeds.com/wp-content/uploads/2026/08/THC-ENC-004_asset_03_domestication_dispersal_selection_infographic.jpg",
+      "ok": true,
+      "status": 200,
+      "content_type": "image/jpeg",
+      "bytes": 152185,
+      "final_url": "https://dtfseeds.com/wp-content/uploads/2026/08/THC-ENC-004_asset_03_domestication_dispersal_selection_infographic.jpg",
+      "error": null
+    },
+    {
+      "url": "https://dtfseeds.com/wp-content/uploads/2026/08/THC-ENC-041_Root_Tip_Development_and_Functional_Zones.jpg",
+      "ok": true,
+      "status": 200,
+      "content_type": "image/jpeg",
+      "bytes": 279754,
+      "final_url": "https://dtfseeds.com/wp-content/uploads/2026/08/THC-ENC-041_Root_Tip_Development_and_Functional_Zones.jpg",
+      "error": null
+    },
+    {
+      "url": "https://dtfseeds.com/wp-content/uploads/2026/08/THC-ENC-042_Lateral_Roots_vs_Root_Hairs.jpg",
+      "ok": true,
+      "status": 200,
+      "content_type": "image/jpeg",
+      "bytes": 295323,
+      "final_url": "https://dtfseeds.com/wp-content/uploads/2026/08/THC-ENC-042_Lateral_Roots_vs_Root_Hairs.jpg",
+      "error": null
+    },
+    {
+      "url": "https://dtfseeds.com/wp-content/uploads/2026/08/THC-ENC-043_Root_Zone_Oxygen_Hypoxia_and_Recovery.jpg",
+      "ok": true,
+      "status": 200,
+      "content_type": "image/jpeg",
+      "bytes": 311809,
+      "final_url": "https://dtfseeds.com/wp-content/uploads/2026/08/THC-ENC-043_Root_Zone_Oxygen_Hypoxia_and_Recovery.jpg",
+      "error": null
+    },
+    {
+      "url": "https://dtfseeds.com/wp-content/uploads/2026/08/THC-ENC-044_Water_Movement_from_Media_to_Leaf.jpg",
+      "ok": true,
+      "status": 200,
+      "content_type": "image/jpeg",
+      "bytes": 286323,
+      "final_url": "https://dtfseeds.com/wp-content/uploads/2026/08/THC-ENC-044_Water_Movement_from_Media_to_Leaf.jpg",
+      "error": null
+    },
+    {
+      "url": "https://dtfseeds.com/wp-content/uploads/2026/08/THC-ENC-045_Ion_Uptake_and_Membrane_Transport.jpg",
+      "ok": true,
+      "status": 200,
+      "content_type": "image/jpeg",
+      "bytes": 304576,
+      "final_url": "https://dtfseeds.com/wp-content/uploads/2026/08/THC-ENC-045_Ion_Uptake_and_Membrane_Transport.jpg",
+      "error": null
+    },
+    {
+      "url": "https://dtfseeds.com/wp-content/uploads/2026/08/THC-ENC-046_Root_Exudates_and_Rhizosphere_Signaling.jpg",
+      "ok": true,
+      "status": 200,
+      "content_type": "image/jpeg",
+      "bytes": 375196,
+      "final_url": "https://dtfseeds.com/wp-content/uploads/2026/08/THC-ENC-046_Root_Exudates_and_Rhizosphere_Signaling.jpg",
+      "error": null
+    }
+  ],
+  "production_ready": true
 }
