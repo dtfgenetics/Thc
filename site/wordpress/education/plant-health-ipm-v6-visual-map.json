@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-08-25",
+  "curriculumId": "plant-health-ipm-v6",
+  "route": "/learn/ipm/",
+  "chapters": {
+    "ipm-thinking-scouting": [
+      {
+        "file": "THC-ENC-001_VIS-03_Observation_to_Bounded_Conclusion.jpg",
+        "title": "Observation to Bounded Conclusion",
+        "alt": "Evidence-focused diagram showing how observations support a bounded conclusion rather than an immediate diagnosis."
+      },
+      {
+        "file": "THC-ENC-001_VIS-06_Measurement_Quality_Chain.jpg",
+        "title": "Measurement Quality Chain",
+        "alt": "Educational diagram showing how sampling, measurement and interpretation quality affect plant-health decisions."
+      },
+      {
+        "file": "Diagnosing_Deficiency_vs_Toxicity_Infographic.png",
+        "title": "Deficiency Versus Toxicity Diagnostic Reasoning",
+        "alt": "Educational infographic comparing evidence patterns used to separate deficiency and toxicity hypotheses."
+      }
+    ],
+    "exclusion-sanitation-stock": [
+      {
+        "file": "Sanitation_and_Biosecurity_Infographic.png",
+        "title": "Sanitation & Biosecurity",
+        "alt": "Educational infographic covering sanitation, clean workflow and biosecurity practices that reduce plant-health transmission risk."
+      }
+    ],
+    "arthropods-damage-identification": [
+      {
+        "file": "Spider_Mite_Management_Infographic.png",
+        "title": "Spider Mite Identification & Management Context",
+        "alt": "Educational infographic showing spider-mite evidence, damage context and integrated management principles."
+      }
+    ],
+    "fungal-oomycete-disease": [
+      {
+        "file": "THC-ENC-049_Root_Zone_Pathogens_and_Predisposing_Conditions.jpg",
+        "title": "Root-Zone Pathogens & Predisposing Conditions",
+        "alt": "Educational diagram separating root-zone pathogens from environmental conditions that predispose plants to root decline."
+      },
+      {
+        "file": "THC-ENC-043_Root_Zone_Oxygen_Hypoxia_and_Recovery.jpg",
+        "title": "Root-Zone Oxygen, Hypoxia & Recovery",
+        "alt": "Educational diagram showing root hypoxia and recovery as an abiotic look-alike and disease-predisposing condition."
+      }
+    ],
+    "hlvd-systemic-pathogens": [],
+    "biological-cultural-product-controls": [
+      {
+        "file": "Beneficial_Insects_and_Biological_Controls.png",
+        "title": "Beneficial Insects & Biological Controls",
+        "alt": "Educational infographic introducing beneficial insects and biological-control concepts within an integrated pest-management program."
+      },
+      {
+        "file": "THC-ENC-078_Defense_Signaling.jpg",
+        "title": "Plant Defense Signaling",
+        "alt": "Educational diagram showing plant defense signaling and why biological responses should not be confused with guaranteed control."
+      }
+    ],
+    "environment-disease-interactions": [
+      {
+        "file": "THC-ENC-083_Relative_Humidity_Dew_Point_and_Condensation.jpg",
+        "title": "Relative Humidity, Dew Point & Condensation",
+        "alt": "Educational diagram connecting humidity, dew point and condensation risk to disease-favorable microclimates."
+      },
+      {
+        "file": "V04-SUP-008_Stress_Physiology_and_Acclimation.jpg",
+        "title": "Stress Physiology & Acclimation",
+        "alt": "Educational diagram showing plant stress and acclimation responses that can overlap with pest or disease symptoms."
+      },
+      {
+        "file": "V04-SUP-012_Oxidative_Stress_and_Antioxidant_Defense.jpg",
+        "title": "Oxidative Stress & Antioxidant Defense",
+        "alt": "Educational diagram explaining oxidative stress and antioxidant defense as physiological context for plant injury."
+      }
+    ],
+    "verification-records-escalation": [
+      {
+        "file": "THC-ENC-001_VIS-08_Monitored_Cultivation_Decision.jpg",
+        "title": "Monitored Cultivation Decision",
+        "alt": "Educational decision diagram connecting observations, intervention, monitoring and verification."
+      },
+      {
+        "file": "THC-ENC-001_VIS-07_Seven_Step_Claim_Audit.jpg",
+        "title": "Seven-Step Claim Audit",
+        "alt": "Educational diagram for auditing a plant-health claim before accepting it as a cause or treatment conclusion."
+      }
+    ]
+  },
+  "gaps": [
+    {
+      "id": "ipm-scouting-route-thresholds",
+      "status": "needed",
+      "title": "Scouting Route, Sticky Cards & Trend Thresholds",
+      "neededVisual": "A purpose-built scouting diagram showing a fixed room route, representative plant selection, leaf-underside inspection, sticky-card locations, sample units, repeated counts and how a trend informs an escalation threshold without implying one universal pest number."
+    },
+    {
+      "id": "small-pest-identification-comparison",
+      "status": "needed",
+      "title": "Russet Mites, Broad Mites, Aphids & Other Small-Pest Evidence",
+      "neededVisual": "A magnification-aware comparison of hemp russet mite, broad mite, cannabis aphid and common look-alike damage, including organism scale, preferred plant location, direct evidence and symptom patterns that are not diagnostic by themselves."
+    },
+    {
+      "id": "powdery-mildew-botrytis-comparison",
+      "status": "needed",
+      "title": "Powdery Mildew vs Botrytis Evidence & Disease Cycle",
+      "neededVisual": "A side-by-side disease diagram showing powdery mildew surface colonies versus Botrytis infection in dense or damaged flower tissue, spore movement, favorable microclimate, confirmation evidence and the difference between visible symptoms and crop-wide epidemiology."
+    },
+    {
+      "id": "hlvd-transmission-testing-traceback",
+      "status": "needed",
+      "title": "HLVd Transmission, Sampling, Testing & Traceback",
+      "neededVisual": "A systemic-pathogen workflow showing asymptomatic mother stock, mechanical sap transmission, clone relationships, representative tissue sampling, laboratory testing, positive-result traceback and containment without presenting visual symptoms as a reliable screen."
+    },
+    {
+      "id": "resistance-compatibility-verification",
+      "status": "needed",
+      "title": "Resistance Management, Biological Compatibility & Post-Treatment Verification",
+      "neededVisual": "An IPM planning matrix that separates legal label requirements from mode-of-action rotation, biological-control compatibility, coverage/timing, pre-treatment baseline, post-treatment scouting and recurrence prevention without giving unsafe pesticide mixing instructions."
+    }
+  ]
+}
