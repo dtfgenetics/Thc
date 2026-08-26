@@ -19,7 +19,7 @@ concurrency:
 jobs:
   smoke:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 18
     env:
       BASE: https://dtfseeds.com/games/protect-the-plants
     steps:
@@ -29,7 +29,7 @@ jobs:
           node-version: 22
           cache: npm
 
-      - name: Verify public page and assets
+      - name: Verify public page and V2 assets
         shell: bash
         run: |
           set -euo pipefail
@@ -39,8 +39,10 @@ jobs:
             -H 'Pragma: no-cache' \
             "$BASE/?ptp_smoke=$token" -o "$RUNNER_TEMP/index.html"
           grep -Fqi 'Protect the Plants' "$RUNNER_TEMP/index.html"
-          grep -Fq './visual-fixes.css' "$RUNNER_TEMP/index.html"
-          for asset in app.js styles.css visual-fixes.css plant.svg; do
+          for marker in './visual-fixes.css' './enhancements.css' './v2-extras.css' './manifest.webmanifest' './enhancements.js' './v2-extras.js'; do
+            grep -Fq "$marker" "$RUNNER_TEMP/index.html"
+          done
+          for asset in app.js styles.css visual-fixes.css plant.svg enhancements.js enhancements.css v2-extras.js v2-extras.css manifest.webmanifest sw.js; do
             curl -4 -fsSL --retry 3 --retry-delay 2 --connect-timeout 15 --max-time 45 \
               -H 'Cache-Control: no-cache, no-store, max-age=0' \
               "$BASE/$asset?ptp_smoke=$token" -o "$RUNNER_TEMP/$asset"
@@ -48,8 +50,12 @@ jobs:
           done
           grep -Fq 'coordinate-grid' "$RUNNER_TEMP/app.js"
           grep -Fq '.plant-token.formation-trellis-row' "$RUNNER_TEMP/styles.css"
+          grep -Fq 'serviceWorker' "$RUNNER_TEMP/v2-extras.js"
+          grep -Fq 'ptp-quick-chat' "$RUNNER_TEMP/v2-extras.js"
+          grep -Fq 'rematch' "$RUNNER_TEMP/enhancements.js"
+          jq -e '.name == "Protect the Plants" and .display == "standalone" and .start_url == "./" and .scope == "./"' "$RUNNER_TEMP/manifest.webmanifest" >/dev/null
 
-      - name: Exercise two-player production API
+      - name: Exercise two-player V2 production API
         id: api
         shell: bash
         run: |
@@ -58,64 +64,67 @@ jobs:
           json_header=(-H 'Content-Type: application/json' -H 'Cache-Control: no-cache, no-store, max-age=0')
 
           create="$(curl -4 -fsSL --retry 2 --retry-delay 2 --connect-timeout 15 --max-time 45 \
-            "${json_header[@]}" -X POST "$api?action=create" --data '{"name":"PTP Smoke A"}')"
-          code="$(jq -er '.code' <<<"$create")"
-          p1="$(jq -er '.playerId' <<<"$create")"
-          t1="$(jq -er '.token' <<<"$create")"
+            "${json_header[@]}" -X POST "$api?action=create" --data '{"name":"PTP V2 Smoke A"}')"
+          code="$(jq -er '.code' <<<"$create")"; p1="$(jq -er '.playerId' <<<"$create")"; t1="$(jq -er '.token' <<<"$create")"
           [[ "$code" =~ ^[A-Z0-9]{6}$ ]]
 
-          state1="$(curl -4 -fsSL "$api?action=state&code=$code" \
-            -H "X-Player-Id: $p1" -H "X-Player-Token: $t1" -H 'Cache-Control: no-cache')"
-          jq -e '.status == "waiting" and .me.name == "PTP Smoke A"' <<<"$state1" >/dev/null
+          state1="$(curl -4 -fsSL "$api?action=state&code=$code" -H "X-Player-Id: $p1" -H "X-Player-Token: $t1" -H 'Cache-Control: no-cache')"
+          jq -e '.status == "waiting" and .round == 1 and .me.name == "PTP V2 Smoke A" and (.events|length) >= 1' <<<"$state1" >/dev/null
 
-          active="$(curl -4 -fsSL "$api?action=active" \
-            -H "X-Player-Id: $p1" -H "X-Player-Token: $t1" -H 'Cache-Control: no-cache')"
-          jq -e --arg code "$code" '.game.code == $code' <<<"$active" >/dev/null
+          active="$(curl -4 -fsSL "$api?action=active" -H "X-Player-Id: $p1" -H "X-Player-Token: $t1" -H 'Cache-Control: no-cache')"
+          jq -e --arg code "$code" '.game.code == $code and .game.round == 1' <<<"$active" >/dev/null
 
-          join="$(curl -4 -fsSL "${json_header[@]}" -X POST "$api?action=join" \
-            --data "$(jq -nc --arg code "$code" '{name:"PTP Smoke B",code:$code}')")"
-          p2="$(jq -er '.playerId' <<<"$join")"
-          t2="$(jq -er '.token' <<<"$join")"
+          join="$(curl -4 -fsSL "${json_header[@]}" -X POST "$api?action=join" --data "$(jq -nc --arg code "$code" '{name:"PTP V2 Smoke B",code:$code}')")"
+          p2="$(jq -er '.playerId' <<<"$join")"; t2="$(jq -er '.token' <<<"$join")"
 
-          chat="$(curl -4 -fsSL "${json_header[@]}" -H "X-Player-Id: $p1" -H "X-Player-Token: $t1" \
-            -X POST "$api?action=chat&code=$code" --data '{"text":"production smoke chat"}')"
-          jq -e '.chat | any(.text == "production smoke chat")' <<<"$chat" >/dev/null
+          chat="$(curl -4 -fsSL "${json_header[@]}" -H "X-Player-Id: $p1" -H "X-Player-Token: $t1" -X POST "$api?action=chat&code=$code" --data '{"text":"production v2 smoke chat"}')"
+          jq -e '.chat | any(.text == "production v2 smoke chat")' <<<"$chat" >/dev/null
 
           fleet='[{"id":"mother-row","cells":[{"row":0,"col":0},{"row":0,"col":1},{"row":0,"col":2},{"row":0,"col":3},{"row":0,"col":4}]},{"id":"trellis-row","cells":[{"row":2,"col":0},{"row":2,"col":1},{"row":2,"col":2},{"row":2,"col":3}]},{"id":"tall-pheno","cells":[{"row":4,"col":0},{"row":4,"col":1},{"row":4,"col":2}]},{"id":"bushy-pheno","cells":[{"row":6,"col":0},{"row":6,"col":1},{"row":6,"col":2}]},{"id":"solo-pots","cells":[{"row":8,"col":0},{"row":8,"col":1}]}]'
           place_body="$(jq -nc --argjson fleet "$fleet" '{fleet:$fleet}')"
+          curl -4 -fsSL "${json_header[@]}" -H "X-Player-Id: $p1" -H "X-Player-Token: $t1" -X POST "$api?action=place&code=$code" --data "$place_body" >/dev/null
+          placed2="$(curl -4 -fsSL "${json_header[@]}" -H "X-Player-Id: $p2" -H "X-Player-Token: $t2" -X POST "$api?action=place&code=$code" --data "$place_body")"
+          jq -e --arg p1 "$p1" '.status == "playing" and .round == 1 and .turnPlayerId == $p1' <<<"$placed2" >/dev/null
 
-          placed1="$(curl -4 -fsSL "${json_header[@]}" -H "X-Player-Id: $p1" -H "X-Player-Token: $t1" \
-            -X POST "$api?action=place&code=$code" --data "$place_body")"
-          jq -e '.me.ready == true' <<<"$placed1" >/dev/null
+          # Player A finds every formation; player B deliberately scouts empty row 14 between turns.
+          shots=('0 0' '0 1' '0 2' '0 3' '0 4' '2 0' '2 1' '2 2' '2 3' '4 0' '4 1' '4 2' '6 0' '6 1' '6 2' '8 0' '8 1')
+          miss_col=14
+          for shot in "${shots[@]}"; do
+            read -r row col <<<"$shot"
+            final="$(curl -4 -fsSL "${json_header[@]}" -H "X-Player-Id: $p1" -H "X-Player-Token: $t1" -X POST "$api?action=fire&code=$code" --data "{\"row\":$row,\"col\":$col}")"
+            [[ "$(jq -r '.status' <<<"$final")" == finished ]] && break
+            curl -4 -fsSL "${json_header[@]}" -H "X-Player-Id: $p2" -H "X-Player-Token: $t2" -X POST "$api?action=fire&code=$code" --data "{\"row\":14,\"col\":$miss_col}" >/dev/null
+            miss_col=$((miss_col-1))
+          done
+          jq -e --arg p1 "$p1" '.status == "finished" and .winnerId == $p1 and (.events|map(select(.type=="game-finished"))|length)==1' <<<"$final" >/dev/null
 
-          placed2="$(curl -4 -fsSL "${json_header[@]}" -H "X-Player-Id: $p2" -H "X-Player-Token: $t2" \
-            -X POST "$api?action=place&code=$code" --data "$place_body")"
-          jq -e --arg p1 "$p1" '.status == "playing" and .turnPlayerId == $p1' <<<"$placed2" >/dev/null
+          finished_active="$(curl -4 -fsSL "$api?action=active" -H "X-Player-Id: $p1" -H "X-Player-Token: $t1")"
+          jq -e --arg code "$code" '.game.code == $code and (.game.label|test("finished";"i"))' <<<"$finished_active" >/dev/null
 
-          hit="$(curl -4 -fsSL "${json_header[@]}" -H "X-Player-Id: $p1" -H "X-Player-Token: $t1" \
-            -X POST "$api?action=fire&code=$code" --data '{"row":0,"col":0}')"
-          jq -e --arg p2 "$p2" '.lastEvent.hit == true and .turnPlayerId == $p2' <<<"$hit" >/dev/null
+          rematch1="$(curl -4 -fsSL "${json_header[@]}" -H "X-Player-Id: $p1" -H "X-Player-Token: $t1" -X POST "$api?action=rematch&code=$code" --data '{}')"
+          jq -e '.status == "finished" and .rematch.meRequested == true' <<<"$rematch1" >/dev/null
+          rematch2="$(curl -4 -fsSL "${json_header[@]}" -H "X-Player-Id: $p2" -H "X-Player-Token: $t2" -X POST "$api?action=rematch&code=$code" --data '{}')"
+          jq -e '.status == "placement" and .round == 2 and .me.ready == false and .opponent.ready == false and (.events|map(select(.type=="rematch-started"))|length)==1' <<<"$rematch2" >/dev/null
 
-          miss="$(curl -4 -fsSL "${json_header[@]}" -H "X-Player-Id: $p2" -H "X-Player-Token: $t2" \
-            -X POST "$api?action=fire&code=$code" --data '{"row":14,"col":14}')"
-          jq -e --arg p1 "$p1" '.lastEvent.hit == false and .turnPlayerId == $p1' <<<"$miss" >/dev/null
+          curl -4 -fsSL "${json_header[@]}" -H "X-Player-Id: $p1" -H "X-Player-Token: $t1" -X POST "$api?action=place&code=$code" --data "$place_body" >/dev/null
+          round2="$(curl -4 -fsSL "${json_header[@]}" -H "X-Player-Id: $p2" -H "X-Player-Token: $t2" -X POST "$api?action=place&code=$code" --data "$place_body")"
+          jq -e --arg p2 "$p2" '.status == "playing" and .round == 2 and .turnPlayerId == $p2' <<<"$round2" >/dev/null
 
           echo "room=$code" >> "$GITHUB_OUTPUT"
-          echo 'Protect the Plants production multiplayer API smoke test passed.'
+          echo 'Protect the Plants V2 production multiplayer/rematch API smoke passed.'
 
       - name: Install browser test runtime
         run: |
           npm ci
           npx playwright install chromium
 
-      - name: Exercise live browser UI
+      - name: Exercise live V2 browser UI
         id: ui
         shell: bash
         run: |
           set -euo pipefail
           node <<'NODE'
           const { chromium } = require('@playwright/test');
-
           (async () => {
             const base = process.env.BASE;
             const browser = await chromium.launch({ headless: true });
@@ -124,47 +133,44 @@ jobs:
               page.on('pageerror', e => errors.push(`pageerror: ${e.message}`));
               page.on('console', m => { if (m.type() === 'error') errors.push(`console: ${m.text()}`); });
             };
-
             const c1 = await browser.newContext({ viewport: { width: 1280, height: 900 } });
             const p1 = await c1.newPage(); hook(p1);
-            await p1.goto(`${base}/?browser_smoke=${Date.now()}`, { waitUntil: 'networkidle', timeout: 60000 });
+            await p1.goto(`${base}/?browser_v2=${Date.now()}`, { waitUntil: 'networkidle', timeout: 60000 });
             await p1.locator('.hero-title').waitFor({ state: 'visible', timeout: 15000 });
             await p1.locator('.formation-grid').waitFor({ state: 'visible', timeout: 15000 });
-            await p1.locator('#createName').fill('Browser Smoke A');
+            await p1.locator('#createName').fill('Browser V2 A');
             await p1.locator('[data-action="create"]').click();
             await p1.waitForURL(/room=[A-Z0-9]{6}/, { timeout: 30000 });
             const code = new URL(p1.url()).searchParams.get('room');
             if (!/^[A-Z0-9]{6}$/.test(code || '')) throw new Error(`UI did not produce a room code: ${code}`);
             await p1.locator('.coordinate-grid').first().waitFor({ state: 'visible', timeout: 15000 });
             await p1.locator('.battle-log').waitFor({ state: 'visible', timeout: 15000 });
-            await p1.locator('.side-rail').waitFor({ state: 'visible', timeout: 15000 });
             await p1.locator('[data-action="random"]').click();
             await p1.locator('[data-action="lock"]').click();
-            await p1.getByText(/Garden locked|Waiting for opponent/i).first().waitFor({ timeout: 15000 }).catch(() => {});
 
             const c2 = await browser.newContext({ viewport: { width: 390, height: 844 } });
             const p2 = await c2.newPage(); hook(p2);
-            await p2.goto(`${base}/?browser_smoke_b=${Date.now()}`, { waitUntil: 'networkidle', timeout: 60000 });
-            await p2.locator('.hero-title').waitFor({ state: 'visible', timeout: 15000 });
-            await p2.locator('#joinName').fill('Browser Smoke B');
+            await p2.goto(`${base}/?browser_v2_b=${Date.now()}`, { waitUntil: 'networkidle', timeout: 60000 });
+            await p2.locator('#joinName').fill('Browser V2 B');
             await p2.locator('#joinCode').fill(code);
             await p2.locator('[data-action="join"]').click();
             await p2.waitForURL(new RegExp(`room=${code}`), { timeout: 30000 });
             await p2.locator('.mobile-tabs').waitFor({ state: 'visible', timeout: 15000 });
-            await p2.locator('.coordinate-grid').first().waitFor({ state: 'visible', timeout: 15000 });
             await p2.locator('[data-action="random"]').click();
             await p2.locator('[data-action="lock"]').click();
 
-            await p1.waitForTimeout(2500);
-            await p1.locator('#chatInput').fill('browser ui smoke chat');
-            await p1.locator('#chatForm button').click();
-            await p2.getByText('browser ui smoke chat').waitFor({ timeout: 15000 });
+            await p1.waitForTimeout(2200);
+            await p1.locator('.ptp-quick-chat').waitFor({ state: 'visible', timeout: 10000 });
+            await p1.locator('[data-ptp-quick]').first().click();
+            await p2.getByText('Nice hit 🌿').waitFor({ timeout: 15000 });
+            await p1.locator('[data-ptp-action="settings"]').waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
+            await p1.locator('.coordinate-grid').first().locator('.cell').first().focus();
+            await p1.keyboard.press('ArrowRight');
+            const focused = await p1.locator(':focus').getAttribute('aria-label');
+            if (!focused) throw new Error('Keyboard board navigation did not retain focus on a grid cell.');
 
-            await p1.locator('.board').first().waitFor({ state: 'visible', timeout: 15000 });
-            await p2.locator('.board').first().waitFor({ state: 'visible', timeout: 15000 });
             if (errors.length) throw new Error(errors.join('\n'));
-
-            console.log(`Protect the Plants final live browser UI passed for room ${code}.`);
+            console.log(`Protect the Plants V2 live browser UI passed for room ${code}.`);
             await browser.close();
           })().catch(err => { console.error(err); process.exit(1); });
           NODE
@@ -184,14 +190,14 @@ jobs:
               repo: context.repo.repo,
               issue_number: 46,
               body: [
-                '## Protect the Plants production smoke test',
+                '## Protect the Plants V2 production smoke test',
                 '',
                 `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
                 `Result: **${pass ? 'PASS' : 'FAIL'}**`,
-                `Production API: **${process.env.API_OUTCOME || 'not-run'}**`,
+                `Production API/rematch: **${process.env.API_OUTCOME || 'not-run'}**`,
                 `Browser UI: **${process.env.UI_OUTCOME || 'not-run'}**`,
-                process.env.ROOM ? `Temporary API smoke-test room: \`${process.env.ROOM}\`` : 'No API room reached the completed smoke-test stage.',
+                process.env.ROOM ? `Temporary V2 smoke-test room: \`${process.env.ROOM}\`` : 'No API room reached the completed smoke-test stage.',
                 '',
-                'Checks: live final visual assets, greenhouse lobby/formation UI, coordinate-grid battle UI, desktop battle log/side rail, mobile board tabs, browser create/join/random placement/lock/chat on desktop + mobile viewports, JavaScript console/page errors, API room creation, authenticated state, active-game recovery, second-player join, room chat, both fleet placements, game start, hit, miss, and turn handoff.'
+                'Checks: final V2 assets and manifest, desktop/mobile create + join + placement + chat, quick-chat UI, keyboard grid focus, JavaScript console/page errors, authenticated state, finished-game recovery, persistent event history, full game completion, two-party rematch reset, round increment, and alternating round starter.'
               ].join('\n')
             });
