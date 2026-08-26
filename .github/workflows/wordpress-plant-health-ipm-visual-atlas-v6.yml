@@ -121,15 +121,14 @@ jobs:
           python3 - "$body" <<'PY'
           import re,sys
           html=open(sys.argv[1],encoding='utf-8').read()
-          start=html.find('data-dtf-subject-visuals-v6="plant-health-ipm-v6"')
-          if start < 0: raise SystemExit('Plant Health atlas wrapper missing')
-          end=html.find('<!-- dtf-subject-visuals-v6:end -->', start)
-          if end < 0: raise SystemExit('Plant Health atlas end marker missing')
-          block=html[start:end]
-          srcs=re.findall(r'<img[^>]+src=["\']([^"\']+)', block, flags=re.I)
-          if len(srcs) != 14: raise SystemExit(f'Expected 14 atlas image sources, found {len(srcs)}')
-          bad=[s for s in srcs if re.search(r'draft|quarantine|superseded|legacy|qa[-_ ]?required', s, re.I)]
-          if bad: raise SystemExit('Unsafe asset-state filename found in Plant Health atlas: '+', '.join(bad))
+          if 'data-dtf-subject-visuals-v6="plant-health-ipm-v6"' not in html:
+              raise SystemExit('Plant Health atlas wrapper missing')
+          cards=re.findall(r'<figure[^>]*class=["\'][^"\']*\bsv6v-card\b[^"\']*["\'][^>]*>[\s\S]*?<img[^>]+src=["\']([^"\']+)', html, flags=re.I)
+          if len(cards) != 14:
+              raise SystemExit(f'Expected 14 atlas image sources, found {len(cards)}')
+          bad=[s for s in cards if re.search(r'draft|quarantine|superseded|legacy|qa[-_ ]?required', s, re.I)]
+          if bad:
+              raise SystemExit('Unsafe asset-state filename found in Plant Health atlas: '+', '.join(bad))
           print('Scoped atlas image-source safety verification passed.')
           PY
 
