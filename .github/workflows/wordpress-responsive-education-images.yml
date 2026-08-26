@@ -1,5 +1,6 @@
 name: Enforce Responsive THC Education Images
 
+# Production diagnostic trigger: verifies edit-context persistence before public HTML.
 on:
   workflow_dispatch:
   pull_request:
