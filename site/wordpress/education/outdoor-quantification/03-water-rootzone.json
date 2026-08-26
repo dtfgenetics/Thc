@@ -1,0 +1,299 @@
+{
+  "schemaVersion": 1,
+  "parentId": "outdoor-quantification-v1",
+  "route": "/learn/outdoor/",
+  "chapter": {
+    "chapterId": "water-rootzone",
+    "chapterNumber": 3,
+    "chapterTitle": "Outdoor Water, Irrigation & Root-Zone Balance",
+    "learnerQuestion": "What water actually reached the active root zone, how evenly was it distributed, and how quickly did the root environment move from wetting toward dryback?",
+    "sourceContext": [
+      {
+        "id": "Q7",
+        "type": "cannabis/hemp university research-extension",
+        "citation": "Oregon State University Extension. Optimum irrigation for CBD-type hemp plants in the field. EM 9571. July 2024.",
+        "supports": "Hemp response to irrigation varies with cultivar type, plant density, irrigation method, climate and seasonal water demand, so irrigation should not be reduced to one universal volume."
+      },
+      {
+        "id": "Q8",
+        "type": "university extension",
+        "citation": "Penn State Extension. Drip Irrigation for Vegetable Production.",
+        "supports": "Irrigation frequency and amount depend on crop water use, root-zone water storage, soil texture and wetting pattern; drip systems should be managed from the root-zone reservoir rather than runtime alone."
+      },
+      {
+        "id": "Q9",
+        "type": "university extension",
+        "citation": "University of Minnesota Extension. Evapotranspiration-based irrigation scheduling or water-balance method.",
+        "supports": "Root-zone water status can be monitored directly with soil-moisture methods or estimated from a water balance that separates precipitation, irrigation, crop water use, runoff and deep percolation."
+      },
+      {
+        "id": "Q10",
+        "type": "university extension",
+        "citation": "Penn State Extension. Making Drip Irrigation Decisions After Rain in Plasticulture. 2026.",
+        "supports": "Rainfall contribution to the root zone depends on surface cover, soil texture, lateral movement and crop rooting; rainfall totals alone do not prove equivalent root-zone recharge."
+      }
+    ],
+    "subtopics": [
+      {
+        "id": "rainfall-rootzone-recharge",
+        "lessonTitle": "Measure rainfall as an input, then verify root-zone recharge",
+        "goal": "Separate rain depth from the amount and distribution of water that actually reaches active roots.",
+        "measure": [
+          {
+            "metric": "Rainfall depth",
+            "unit": "mm or inches",
+            "method": "Use an on-site rain gauge when possible and record the event start/end time. If using a nearby station, record station identity and distance so the value is clearly labeled off-site.",
+            "frequency": "Every material rain event."
+          },
+          {
+            "metric": "Root-zone moisture before and after rain",
+            "unit": "volumetric water content, sensor units, or defined qualitative class at fixed depth",
+            "method": "Measure the same marked points and depths before rain when possible, then after the event and during subsequent drainage/dryback. Keep sensor/method and depth consistent.",
+            "frequency": "Before representative events, after rain, and during dryback."
+          },
+          {
+            "metric": "Wetting depth",
+            "unit": "cm or inches",
+            "method": "Use a probe, soil core, or calibrated moisture profile to identify how deeply the event changed moisture. Avoid aggressive excavation near important roots.",
+            "frequency": "After representative light, moderate and heavy rain events."
+          },
+          {
+            "metric": "Runoff / ponding / bypass observation",
+            "unit": "duration + mapped location or ordinal class",
+            "method": "Record visible runoff paths, ponding time, mulch/plastic shedding, channeling, or dry sheltered zones that explain why rain depth and root-zone response differ.",
+            "frequency": "During or immediately after representative events."
+          }
+        ],
+        "record": [
+          "rain gauge/station source and event duration",
+          "rain depth",
+          "measurement point IDs and depths",
+          "pre-rain and post-rain moisture",
+          "wetting depth",
+          "runoff/ponding/bypass observations",
+          "surface cover or mulch condition",
+          "photos of representative wetting or runoff patterns"
+        ],
+        "compare": [
+          "rain depth against measured change in root-zone moisture",
+          "different depths and positions within the same planting area",
+          "similar rainfall events under different antecedent moisture or surface-cover conditions"
+        ],
+        "interpret": [
+          "The same rainfall depth can produce different root-zone recharge because infiltration, interception, runoff, surface cover and prior moisture differ.",
+          "Rain can wet the surface while deeper active roots remain comparatively dry, or saturate low zones while raised/container zones drain rapidly.",
+          "A rain event should therefore modify irrigation decisions only after its root-zone effect is verified or reasonably estimated."
+        ],
+        "decisionRule": "Do not cancel or schedule irrigation from rainfall total alone. Verify moisture at relevant depths/positions and adjust only after identifying how much of the root zone actually changed.",
+        "confidenceCheck": "On-site depth-specific moisture measurements provide stronger evidence than a regional rainfall total. Qualitative hand-feel observations should remain labeled qualitative."
+      },
+      {
+        "id": "irrigation-wetting-pattern",
+        "lessonTitle": "Verify that irrigation wets the intended root volume",
+        "goal": "Measure delivery and wetting geometry so runtime is connected to actual root-zone coverage.",
+        "measure": [
+          {
+            "metric": "Emitter or outlet flow",
+            "unit": "L/h, L/min, gal/h, or gal/min",
+            "method": "Collect from representative emitters/outlets for a timed interval in a known-volume container. Test near, middle and far positions when pressure loss or clogging is possible.",
+            "frequency": "At setup, after maintenance, and whenever uneven delivery is suspected."
+          },
+          {
+            "metric": "Delivered volume",
+            "unit": "L or gallons per irrigation event",
+            "method": "Calculate measured flow multiplied by runtime for each emitter/zone or use a calibrated flow meter. Record whether the value is measured or calculated.",
+            "frequency": "For representative irrigation events and after system changes."
+          },
+          {
+            "metric": "Wetting radius and depth",
+            "unit": "cm or inches from emitter and below surface",
+            "method": "After irrigation, probe or measure moisture at fixed distances and depths from the emitter. Use a repeatable grid so the wetting shape can be compared as roots expand.",
+            "frequency": "At establishment, mid-season, and after emitter/layout/runtime changes."
+          },
+          {
+            "metric": "Delivery uniformity sample",
+            "unit": "individual emitter volumes and optional % uniformity",
+            "method": "Collect the same-duration output from multiple representative emitters. Compare the lowest-output locations with the overall sample rather than relying on one convenient emitter.",
+            "frequency": "At setup and periodically during the season."
+          }
+        ],
+        "record": [
+          "zone/line/emitter IDs",
+          "test duration and container volume",
+          "individual emitter flows",
+          "irrigation runtime and delivered-volume calculation",
+          "wetting radius/depth grid",
+          "system pressure/filter/clog notes",
+          "root/canopy size or developmental stage",
+          "maintenance or layout changes"
+        ],
+        "compare": [
+          "near, middle and far delivery points",
+          "wetting pattern early season vs later root expansion",
+          "measured delivered volume against observed root-zone moisture response"
+        ],
+        "interpret": [
+          "A consistent runtime does not guarantee a consistent delivered volume when pressure, clogging, line length or source flow changes.",
+          "As roots expand, an early-season wetting bulb can become too narrow even if the same irrigation volume still prevents immediate wilt.",
+          "Soil texture affects wetting geometry; sandy and fine-textured soils can distribute drip water differently."
+        ],
+        "decisionRule": "Change emitter placement, number, runtime or system maintenance when the measured wetting pattern no longer covers the intended active root volume or when sampled outputs become meaningfully uneven.",
+        "confidenceCheck": "Wetting radius/depth observed at one event is condition-specific. Recheck after major root growth, soil drying, emitter changes or seasonal demand shifts."
+      },
+      {
+        "id": "mulch-dryback-temperature",
+        "lessonTitle": "Measure how mulch changes dryback and root-zone temperature",
+        "goal": "Quantify the effect of surface cover on evaporation, temperature and moisture distribution instead of assuming mulch always changes irrigation in the same way.",
+        "measure": [
+          {
+            "metric": "Root-zone temperature",
+            "unit": "°C or °F at fixed depth",
+            "method": "Measure at the same depth under mulch and at a defined comparison point. Record time of day, surface condition and weather.",
+            "frequency": "During representative hot/cool periods and after mulch changes."
+          },
+          {
+            "metric": "Moisture under mulch vs comparison point",
+            "unit": "matched sensor units or qualitative class at fixed depth",
+            "method": "Use the same measurement method and depth under the mulched zone and at an unmulched/reference zone when a valid comparison is available.",
+            "frequency": "Before irrigation/rain and through representative dryback intervals."
+          },
+          {
+            "metric": "Dryback interval",
+            "unit": "hours or days between defined moisture states",
+            "method": "Choose a repeatable starting and comparison state using the same sensor or qualitative class, then record elapsed time under comparable weather.",
+            "frequency": "Across several irrigation/rain cycles."
+          },
+          {
+            "metric": "Stem-base surface wetness",
+            "unit": "dry/moist/wet class + duration when observable",
+            "method": "Inspect the mulch/soil interface immediately around the stem base separately from the wider root zone and record persistent contact with wet material.",
+            "frequency": "After irrigation/rain and during routine scouting."
+          }
+        ],
+        "record": [
+          "mulch material and approximate thickness/coverage",
+          "temperature measurement depth/time",
+          "matched moisture points and depths",
+          "irrigation/rain event",
+          "dryback interval",
+          "stem-base wetness observation",
+          "weather context",
+          "any mulch movement or replacement"
+        ],
+        "compare": [
+          "mulched and reference zones at the same time/depth",
+          "dryback before and after adding or changing mulch",
+          "stem-base conditions against the wider root-zone condition"
+        ],
+        "interpret": [
+          "Mulch can reduce evaporative loss and buffer temperature, but its effect depends on material, coverage, weather and irrigation placement.",
+          "A moist surface under mulch does not prove the deeper root zone is adequately wet, and a dry exposed surface does not prove deeper roots are dry.",
+          "Keeping the stem base as a separate observation prevents the broader benefits of mulch from hiding a localized persistently wet interface."
+        ],
+        "decisionRule": "Adjust irrigation only after comparing the new dryback/root-zone pattern created by mulch. Keep a distinct stem-base inspection point rather than treating all covered soil as one condition.",
+        "confidenceCheck": "Mulch effects are site-specific. Use repeated matched measurements instead of importing evaporation or temperature reductions from a different material or climate."
+      },
+      {
+        "id": "drainage-salinity-root-health",
+        "lessonTitle": "Track drainage, salts and root condition as one root-zone system",
+        "goal": "Detect when repeated irrigation or restricted drainage creates persistent saturation, salt accumulation or root stress that foliage alone cannot identify.",
+        "measure": [
+          {
+            "metric": "Drainage / post-irrigation recovery time",
+            "unit": "minutes or hours to a defined moisture state",
+            "method": "After a known irrigation/rain event, measure the same depth/point until it leaves the defined saturated/wet state. Record the criterion used.",
+            "frequency": "During representative high-volume events and when root stress is suspected."
+          },
+          {
+            "metric": "Source-water EC",
+            "unit": "mS/cm or µS/cm",
+            "method": "Measure a representative source-water sample with a calibrated EC meter and record temperature compensation/meter details when available.",
+            "frequency": "Baseline and whenever the source or season changes."
+          },
+          {
+            "metric": "Root-zone / extract / leachate EC when method is appropriate",
+            "unit": "mS/cm or µS/cm with method named",
+            "method": "Use a documented soil/media extraction or leachate method appropriate to the production system. Do not compare numbers from different extraction methods as if they are identical.",
+            "frequency": "Baseline for managed media/containers and when salt accumulation is suspected."
+          },
+          {
+            "metric": "Root condition observation",
+            "unit": "location + defined qualitative class/photo",
+            "method": "Where roots can be observed without damaging the crop, record color, odor, firmness, visible lesions and distribution. Pair observations with moisture/drainage history.",
+            "frequency": "During transplant, troubleshooting, or planned root inspections."
+          }
+        ],
+        "record": [
+          "water event amount/runtime",
+          "measurement depth/point and recovery time",
+          "source-water EC and meter calibration status",
+          "root-zone EC method and value when measured",
+          "recent fertilizer/input history",
+          "drainage/ponding observations",
+          "root observations and photos",
+          "plant symptoms and their distribution"
+        ],
+        "compare": [
+          "source-water EC against root-zone trend using a consistent method",
+          "well-drained and slow-draining zones",
+          "root observations before and after correcting water/drainage problems"
+        ],
+        "interpret": [
+          "Persistent saturation can reduce root-zone aeration even when leaves are being interpreted as a nutrient problem.",
+          "EC is method-dependent and reflects dissolved ions, not the identity or plant availability of each nutrient.",
+          "Outdoor rainfall can leach salts in some systems, but covered containers, protected root zones, repeated fertigation or limited drainage can still accumulate salts."
+        ],
+        "decisionRule": "When stress coincides with slow drainage or rising EC, investigate water movement and root condition before increasing fertilizer. Correct the root-zone process that is generating the pattern rather than treating leaf color alone.",
+        "confidenceCheck": "EC values are only comparable when units, sample method, dilution/extraction and meter calibration are known. Root appearance alone does not identify a specific pathogen or nutrient disorder."
+      }
+    ],
+    "fieldWorksheet": {
+      "title": "Section 3 water & root-zone field record",
+      "fields": [
+        "plant/zone ID and developmental stage",
+        "rainfall or irrigation event start/end",
+        "rain depth or delivered irrigation volume",
+        "emitter/outlet flow sample",
+        "wetting radius and depth",
+        "root-zone moisture point IDs/depths",
+        "pre-event and post-event moisture",
+        "dryback/recovery interval",
+        "mulch material/coverage",
+        "root-zone temperature",
+        "runoff / ponding / bypass notes",
+        "source-water EC",
+        "root-zone/leachate EC method + value when used",
+        "root-condition observation",
+        "measured / calculated / estimated / qualitative label",
+        "decision and what evidence would change it"
+      ],
+      "outcome": "The learner should finish with a water record that distinguishes input volume from root-zone recharge, verifies distribution, tracks dryback and identifies drainage or salinity concerns with explicit measurement context."
+    },
+    "calculationHelpers": [
+      {
+        "name": "Delivered irrigation volume",
+        "formula": "volume = measured flow rate × runtime",
+        "use": "Translate emitter/system flow and runtime into an estimated delivered volume.",
+        "boundary": "The calculation does not prove uniform delivery or root-zone capture."
+      },
+      {
+        "name": "Sample delivery uniformity",
+        "formula": "low-quarter average collected volume ÷ overall average collected volume × 100",
+        "use": "Screen a set of sampled emitters for uneven delivery.",
+        "boundary": "A small sample is a screening tool, not a full irrigation-system audit; sampling design matters."
+      },
+      {
+        "name": "Root-zone water-balance estimate",
+        "formula": "current deficit ≈ previous deficit + crop water use − precipitation − irrigation",
+        "use": "Provide a weather-based planning estimate when crop-water-use data and an initial root-zone condition are available.",
+        "boundary": "Runoff, deep percolation, interception and inaccurate crop coefficients can make the estimate diverge from measured soil water; direct root-zone checks remain important."
+      },
+      {
+        "name": "Dryback interval",
+        "formula": "time at comparison moisture state − time after defined wetting state",
+        "use": "Compare how quickly the same root zone dries under different weather, mulch or plant-size conditions.",
+        "boundary": "Only compare intervals that use the same moisture definition, depth and measurement method."
+      }
+    ]
+  }
+}
