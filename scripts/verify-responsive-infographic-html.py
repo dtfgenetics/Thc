@@ -14,13 +14,19 @@ class InfographicLibraryParser(HTMLParser):
     def __init__(self) -> None:
         super().__init__(convert_charrefs=True)
         self.card_count = 0
-        self.images: list[dict[str, str]] = []
+        self.card_depth = 0
+        self.images: list[dict[str, str | bool]] = []
         self.hrefs: list[str] = []
 
     def _process_start(self, tag: str, attrs) -> None:
         attr = dict(attrs)
-        if tag == "article" and "thc-library-card" in set(attr.get("class", "").split()):
-            self.card_count += 1
+        if tag == "article":
+            classes = set(attr.get("class", "").split())
+            if "thc-library-card" in classes:
+                self.card_count += 1
+                self.card_depth += 1
+            elif self.card_depth:
+                self.card_depth += 1
         elif tag == "a":
             href = unquote(attr.get("href", ""))
             if href:
@@ -32,6 +38,7 @@ class InfographicLibraryParser(HTMLParser):
                     "srcset": unquote(attr.get("srcset", "")),
                     "sizes": attr.get("sizes", ""),
                     "class": attr.get("class", ""),
+                    "in_card": self.card_depth > 0,
                 }
             )
 
@@ -42,17 +49,32 @@ class InfographicLibraryParser(HTMLParser):
         # WordPress commonly serializes media as <img ... />.
         self._process_start(tag, attrs)
 
+    def handle_endtag(self, tag: str) -> None:
+        if tag == "article" and self.card_depth:
+            self.card_depth -= 1
+
 
 def analyze(html: str, minimum: int) -> dict[str, int]:
     parser = InfographicLibraryParser()
     parser.feed(html)
 
+    # Verify the visitor-facing behavior rather than a private implementation
+    # marker. WordPress/theme render filters may legitimately normalize or drop
+    # custom classes while still preserving the browser-critical srcset/sizes.
+    # Constrain the count to images inside infographic cards and WordPress media
+    # so unrelated responsive site chrome cannot satisfy this gate.
     responsive_images = [
         image
         for image in parser.images
-        if image["srcset"]
+        if image["in_card"]
+        and image["srcset"]
         and image["sizes"]
-        and "dtf-responsive-education" in image["class"].split()
+        and "/wp-content/uploads/" in str(image["src"])
+    ]
+    marker_images = [
+        image
+        for image in responsive_images
+        if "dtf-responsive-education" in str(image["class"]).split()
     ]
     full_size_links = {
         href for href in parser.hrefs if "/wp-content/uploads/" in href
@@ -66,6 +88,7 @@ def analyze(html: str, minimum: int) -> dict[str, int]:
     result = {
         "cards": parser.card_count,
         "responsiveEducationImages": len(responsive_images),
+        "responsiveMarkerImages": len(marker_images),
         "reducedDisplaySources": len(reduced_images),
         "fullSizeWordPressLinks": len(full_size_links),
     }
@@ -74,7 +97,7 @@ def analyze(html: str, minimum: int) -> dict[str, int]:
     if result["cards"] < minimum:
         failures.append(f"only {result['cards']} infographic cards")
     if result["responsiveEducationImages"] < minimum:
-        failures.append(f"only {result['responsiveEducationImages']} responsive DTF education images")
+        failures.append(f"only {result['responsiveEducationImages']} responsive infographic-card images")
     if result["reducedDisplaySources"] < minimum:
         failures.append(f"only {result['reducedDisplaySources']} reduced display sources")
     if result["fullSizeWordPressLinks"] < minimum:
@@ -95,12 +118,21 @@ def self_test() -> None:
     expected = {
         "cards": 1,
         "responsiveEducationImages": 1,
+        "responsiveMarkerImages": 1,
         "reducedDisplaySources": 1,
         "fullSizeWordPressLinks": 1,
     }
     if result != expected:
         raise AssertionError(f"Unexpected self-test result: {result}")
-    print(json.dumps({"selfTest": "passed", **result}, indent=2))
+
+    # WordPress/theme output is allowed to normalize away the private marker;
+    # responsive delivery must still verify from card context + srcset/sizes.
+    normalized = html.replace(" dtf-responsive-education", "")
+    normalized_result = analyze(normalized, 1)
+    if normalized_result["responsiveEducationImages"] != 1 or normalized_result["responsiveMarkerImages"] != 0:
+        raise AssertionError(f"Normalized-render self-test failed: {normalized_result}")
+
+    print(json.dumps({"selfTest": "passed", **result, "normalizedRender": normalized_result}, indent=2))
 
 
 def parse_args() -> argparse.Namespace:
