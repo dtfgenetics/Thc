@@ -1,0 +1,221 @@
+name: Protect the Plants V2 Release Recovery
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  actions: write
+  contents: read
+  issues: write
+
+concurrency:
+  group: protect-the-plants-v2-release-recovery
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, 'Run Protect the Plants V2 recovery deployment')
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    environment: production
+    env:
+      GH_TOKEN: ${{ github.token }}
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+    steps:
+      - name: Checkout current main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate current V2 source and protected bridge
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
+          root=site/public-route-patch/games/protect-the-plants
+          for asset in \
+            index.html app.js api.php styles.css visual-fixes.css plant.svg \
+            enhancements.js enhancements.css v2-extras.js v2-extras.css \
+            manifest.webmanifest sw.js; do
+            test -s "$root/$asset"
+          done
+          node --check "$root/app.js"
+          node --check "$root/enhancements.js"
+          node --check "$root/v2-extras.js"
+          node --check "$root/sw.js"
+          php -l "$root/api.php"
+          jq -e '.name == "Protect the Plants" and .display == "standalone" and .start_url == "./" and .scope == "./"' "$root/manifest.webmanifest" >/dev/null
+          grep -Fq './enhancements.js' "$root/index.html"
+          grep -Fq './v2-extras.js' "$root/index.html"
+          grep -Fq './manifest.webmanifest' "$root/index.html"
+          grep -Fq 'rematch' "$root/api.php"
+          grep -Fq 'events' "$root/api.php"
+          grep -Fq 'serviceWorker' "$root/v2-extras.js"
+          python -m py_compile scripts/package-public-suite-wordpress.py scripts/assemble-wordpress-suite-v2.py
+          node --check scripts/cleanup-stale-wordpress-suite-snippets.mjs
+          python scripts/assemble-wordpress-suite-v2.py "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          node --check "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+
+      - name: Build fresh Public Suite from current main
+        id: build
+        shell: bash
+        run: |
+          set -euo pipefail
+          run_url="$(gh workflow run build-dtfseeds-public-suite.yml --ref main)"
+          run_id="${run_url##*/}"
+          [[ "$run_id" =~ ^[0-9]+$ ]] || { echo "Could not parse Public Suite build run from: $run_url" >&2; exit 1; }
+          echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+          echo "Fresh Public Suite build: $run_url"
+          gh run watch "$run_id" --exit-status
+
+      - name: Download and validate current Protect the Plants V2 artifact
+        id: suite
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf "$RUNNER_TEMP/suite-download"
+          mkdir -p "$RUNNER_TEMP/suite-download"
+          gh run download "${{ steps.build.outputs.run_id }}" --repo "$GITHUB_REPOSITORY" --dir "$RUNNER_TEMP/suite-download"
+          build_json="$(find "$RUNNER_TEMP/suite-download" -type f -name dtf-build.json -print -quit)"
+          [[ -n "$build_json" ]] || { echo 'Fresh artifact does not contain dtf-build.json.' >&2; exit 1; }
+          suite_root="$(dirname "$build_json")"
+          for file in \
+            games/protect-the-plants/index.html \
+            games/protect-the-plants/app.js \
+            games/protect-the-plants/api.php \
+            games/protect-the-plants/styles.css \
+            games/protect-the-plants/visual-fixes.css \
+            games/protect-the-plants/plant.svg \
+            games/protect-the-plants/enhancements.js \
+            games/protect-the-plants/enhancements.css \
+            games/protect-the-plants/v2-extras.js \
+            games/protect-the-plants/v2-extras.css \
+            games/protect-the-plants/manifest.webmanifest \
+            games/protect-the-plants/sw.js; do
+            test -s "$suite_root/$file"
+          done
+          grep -Fq './enhancements.js' "$suite_root/games/protect-the-plants/index.html"
+          grep -Fq './v2-extras.js' "$suite_root/games/protect-the-plants/index.html"
+          grep -Fq './manifest.webmanifest' "$suite_root/games/protect-the-plants/index.html"
+          grep -Fq 'rematch' "$suite_root/games/protect-the-plants/api.php"
+          grep -Fq 'events' "$suite_root/games/protect-the-plants/api.php"
+          grep -Fq 'serviceWorker' "$suite_root/games/protect-the-plants/v2-extras.js"
+          echo "root=$suite_root" >> "$GITHUB_OUTPUT"
+
+      - name: Package rollback-safe app-only archive
+        id: package
+        shell: bash
+        env:
+          SUITE_ROOT: ${{ steps.suite.outputs.root }}
+        run: |
+          set -euo pipefail
+          archive="$RUNNER_TEMP/dtf-public-suite-wordpress-v2.zip"
+          python scripts/package-public-suite-wordpress.py "$SUITE_ROOT" "$archive" | tee "$RUNNER_TEMP/package-summary.json"
+          test -s "$archive"
+          python - <<'PY'
+          import json, os, zipfile
+          zpath=os.path.join(os.environ['RUNNER_TEMP'],'dtf-public-suite-wordpress-v2.zip')
+          with zipfile.ZipFile(zpath) as z:
+              names=set(z.namelist())
+              required={
+                  'games/protect-the-plants/index.html',
+                  'games/protect-the-plants/app.js',
+                  'games/protect-the-plants/api.php',
+                  'games/protect-the-plants/styles.css',
+                  'games/protect-the-plants/visual-fixes.css',
+                  'games/protect-the-plants/plant.svg',
+                  'games/protect-the-plants/enhancements.js',
+                  'games/protect-the-plants/enhancements.css',
+                  'games/protect-the-plants/v2-extras.js',
+                  'games/protect-the-plants/v2-extras.css',
+                  'games/protect-the-plants/manifest.webmanifest',
+                  'games/protect-the-plants/sw.js',
+              }
+              missing=required-names
+              assert not missing, f'missing current V2 assets: {sorted(missing)}'
+              assert not [n for n in names if n=='index.html' or n.startswith('learn/') or n.startswith('blog/')]
+              manifest=json.loads(z.read('.dtf-suite-manifest.json'))
+              assert manifest['purpose']=='dtfseeds-public-apps-only'
+              assert 'games/protect-the-plants' in manifest['targets']
+              assert {'/','/learn/','/blog/'}.issubset(set(manifest['wordPressOwnedRoutesExcluded']))
+          PY
+          echo "archive=$archive" >> "$GITHUB_OUTPUT"
+
+      - name: Recover stale transaction and remove temporary bridges
+        id: cleanup
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/cleanup-stale-wordpress-suite-snippets.mjs | tee "$RUNNER_TEMP/stale-suite-bridge-cleanup.json"
+          grep -Eq '"ok"[[:space:]]*:[[:space:]]*true' "$RUNNER_TEMP/stale-suite-bridge-cleanup.json"
+
+      - name: Publish through transactional WordPress bridge
+        id: publish
+        shell: bash
+        env:
+          DTF_SUITE_ARCHIVE: ${{ steps.package.outputs.archive }}
+        run: |
+          set -euo pipefail
+          node "$RUNNER_TEMP/deploy-public-suite-v2.mjs" "$DTF_SUITE_ARCHIVE" | tee "$RUNNER_TEMP/deploy-result.log"
+          grep -Eq '"ok"[[:space:]]*:[[:space:]]*true' "$RUNNER_TEMP/deploy-result.log"
+
+      - name: Launch post-publication Protect the Plants verifier
+        if: always() && steps.publish.outcome == 'success'
+        id: verify
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -euo pipefail
+          run_url="$(gh workflow run verify-protect-the-plants-production.yml --ref main)"
+          run_id="${run_url##*/}"
+          [[ "$run_id" =~ ^[0-9]+$ ]]
+          echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+          echo "Production verification: $run_url"
+          gh run watch "$run_id" --exit-status
+
+      - name: Report recovery release
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          STATUS: ${{ job.status }}
+          BUILD_RUN: ${{ steps.build.outputs.run_id }}
+          CLEANUP_OUTCOME: ${{ steps.cleanup.outcome }}
+          PUBLISH_OUTCOME: ${{ steps.publish.outcome }}
+          VERIFY_OUTCOME: ${{ steps.verify.outcome }}
+          VERIFY_RUN: ${{ steps.verify.outputs.run_id }}
+        with:
+          script: |
+            const buildRun = process.env.BUILD_RUN ? `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${process.env.BUILD_RUN}` : 'not reached';
+            const verifyRun = process.env.VERIFY_RUN ? `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${process.env.VERIFY_RUN}` : 'not reached';
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 46,
+              body: [
+                '## Protect the Plants V2 recovery release',
+                '',
+                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                `Source: \`main\` at \`${context.sha}\``,
+                `Fresh Public Suite build: ${buildRun}`,
+                `Release job: **${process.env.STATUS}**`,
+                `Stale transaction cleanup: **${process.env.CLEANUP_OUTCOME || 'not reached'}**`,
+                `Transactional publication: **${process.env.PUBLISH_OUTCOME || 'not reached'}**`,
+                `Post-publication verifier: **${process.env.VERIFY_OUTCOME || 'not reached'}** — ${verifyRun}`,
+                '',
+                'This recovery workflow uses the established rollback-capable WordPress Public Suite bridge, requires the complete current Protect-the-Plants V2 asset set, and never takes ownership of WordPress routes /, /learn/, or /blog/.'
+              ].join('\n')
+            });
