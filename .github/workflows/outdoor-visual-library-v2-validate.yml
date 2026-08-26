@@ -1,0 +1,64 @@
+name: Validate THC Outdoor Visual Library V2
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - site/wordpress/education/outdoor-visual-library-v2/**
+      - site/wordpress/education/outdoor-quantification-v1.json
+      - site/wordpress/education/outdoor-quantification/**
+      - scripts/validate-outdoor-visual-library-v2.mjs
+      - .github/workflows/outdoor-visual-library-v2-validate.yml
+  pull_request:
+    paths:
+      - site/wordpress/education/outdoor-visual-library-v2/**
+      - site/wordpress/education/outdoor-quantification-v1.json
+      - site/wordpress/education/outdoor-quantification/**
+      - scripts/validate-outdoor-visual-library-v2.mjs
+      - .github/workflows/outdoor-visual-library-v2-validate.yml
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate 48 THC Outdoor visual specifications
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate script syntax
+        run: node --check scripts/validate-outdoor-visual-library-v2.mjs
+
+      - name: Validate visual library structure and brand rules
+        id: library
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/validate-outdoor-visual-library-v2.mjs | tee "$RUNNER_TEMP/outdoor-visual-library-v2-validation.json"
+          grep -Fq '"valid": true' "$RUNNER_TEMP/outdoor-visual-library-v2-validation.json"
+          grep -Fq '"brand": "THC — Teaching Healthy Cultivation"' "$RUNNER_TEMP/outdoor-visual-library-v2-validation.json"
+          grep -Fq '"chapters": 8' "$RUNNER_TEMP/outdoor-visual-library-v2-validation.json"
+          grep -Fq '"assets": 48' "$RUNNER_TEMP/outdoor-visual-library-v2-validation.json"
+          grep -Fq '"firstAssetId": "THC-OUT2-001"' "$RUNNER_TEMP/outdoor-visual-library-v2-validation.json"
+          grep -Fq '"lastAssetId": "THC-OUT2-048"' "$RUNNER_TEMP/outdoor-visual-library-v2-validation.json"
+
+      - name: Summarize validation
+        shell: bash
+        run: |
+          {
+            echo '## THC Outdoor Visual Library V2'
+            echo ''
+            echo '- Brand: **THC — Teaching Healthy Cultivation**'
+            echo '- Chapters: **8**'
+            echo '- Planned visuals: **48**'
+            echo '- Asset IDs: **THC-OUT2-001 → THC-OUT2-048**'
+            echo '- Master format: **8.5 × 11 in, 2550 × 3300 px, 300 DPI PNG**'
+            echo '- QA: structure, unique IDs/filenames, source linkage, branding, diagnostic purpose, measurement fields, status gates'
+          } >> "$GITHUB_STEP_SUMMARY"
