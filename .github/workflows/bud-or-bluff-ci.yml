@@ -1,0 +1,48 @@
+name: Bud or Bluff Multiplayer CI
+
+on:
+  pull_request:
+    paths:
+      - 'games/bud-or-bluff/**'
+      - 'site/public-route-patch/games/bud-or-bluff/**'
+      - '.github/workflows/bud-or-bluff-ci.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'games/bud-or-bluff/**'
+      - 'site/public-route-patch/games/bud-or-bluff/**'
+      - '.github/workflows/bud-or-bluff-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate canonical game rules and deck
+        run: node games/bud-or-bluff/test/engine.test.mjs
+      - name: Generate private PHP answer deck
+        run: node games/bud-or-bluff/scripts/build-private-deck.mjs
+      - name: Validate browser and PHP syntax
+        run: |
+          node --check site/public-route-patch/games/bud-or-bluff/app.js
+          php -l site/public-route-patch/games/bud-or-bluff/api.php
+          php -l site/public-route-patch/games/bud-or-bluff/deck.php
+      - name: Exercise 10-player simultaneous lobby
+        run: node games/bud-or-bluff/test/online-lobby.test.mjs
+      - name: Verify production route files
+        run: |
+          test -s site/public-route-patch/games/bud-or-bluff/index.html
+          test -s site/public-route-patch/games/bud-or-bluff/styles.css
+          test -s site/public-route-patch/games/bud-or-bluff/app.js
+          test -s site/public-route-patch/games/bud-or-bluff/api.php
+          test -s site/public-route-patch/games/bud-or-bluff/deck.php
+          grep -Fq 'https://dtfseeds.com/games/bud-or-bluff/' site/public-route-patch/games/bud-or-bluff/index.html
