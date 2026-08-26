@@ -1,0 +1,288 @@
+{
+  "schemaVersion": 1,
+  "parentId": "outdoor-quantification-v1",
+  "route": "/learn/outdoor/",
+  "chapter": {
+    "chapterId": "hardening-transplant",
+    "chapterNumber": 2,
+    "chapterTitle": "Hardening Off & Transplant Establishment",
+    "learnerQuestion": "Is the plant adapting to outdoor demand and establishing into the new root zone, or is stress accumulating faster than recovery?",
+    "sourceContext": [
+      {
+        "id": "Q3",
+        "type": "university extension",
+        "citation": "Penn State Extension. Seed and Seedling Biology. Hardening Off section.",
+        "supports": "Hardening gradually exposes transplants to temperature fluctuation, increased air movement, reduced watering pressure without excessive wilting, and full light; sudden field exposure can reduce establishment performance."
+      },
+      {
+        "id": "Q4",
+        "type": "university extension",
+        "citation": "Penn State Extension. Transplanting Annuals into the Garden. Updated March 30, 2026.",
+        "supports": "Hardening is an acclimation process to full sun, wind, and cooler nights. Gradual exposure reduces damage from abrupt light and temperature changes."
+      },
+      {
+        "id": "Q5",
+        "type": "university extension",
+        "citation": "Oregon State University Extension. An Educator's Guide to Vegetable Gardening, EM 9032.",
+        "supports": "Transplants should be acclimated before field placement, roots handled carefully, and root-zone moisture managed around transplant to reduce avoidable water stress."
+      },
+      {
+        "id": "Q6",
+        "type": "university extension",
+        "citation": "University of Minnesota Extension. Maintaining healthy transplants through cool weather.",
+        "supports": "Over-conditioning can delay growth, so hardening should be strong enough to prepare plants for field variability without creating excessive water, nutrient, cold, or mechanical stress."
+      }
+    ],
+    "subtopics": [
+      {
+        "id": "exposure-ramp",
+        "lessonTitle": "Increase outdoor exposure from observed response, not a rigid calendar",
+        "goal": "Measure how the plant responds as light, wind, temperature variability and evaporative demand increase, and only advance exposure when recovery remains acceptable.",
+        "measure": [
+          {
+            "metric": "Outdoor exposure duration",
+            "unit": "hours/day",
+            "method": "Record the total time each plant or cohort spends outdoors. Separate sheltered/shaded time from direct-sun time instead of counting all outdoor hours as equivalent.",
+            "frequency": "Every hardening day."
+          },
+          {
+            "metric": "Direct-sun exposure",
+            "unit": "minutes or hours/day",
+            "method": "Record when direct sunlight begins and ends for the plant position. If plants are moved between shade and sun, record each interval.",
+            "frequency": "Every hardening day."
+          },
+          {
+            "metric": "Light intensity when available",
+            "unit": "µmol·m⁻²·s⁻¹ PPFD or mol·m⁻²·day⁻¹ DLI",
+            "method": "Use a calibrated PAR meter or logger at leaf/canopy height. If no meter is available, label sun exposure as qualitative rather than converting phone lux estimates into PAR without a validated conversion.",
+            "frequency": "At major exposure steps and on unusually bright/cloudy days."
+          },
+          {
+            "metric": "Plant response score",
+            "unit": "0–3 ordinal score for turgor/injury",
+            "method": "Use the same defined scale each observation: 0 = baseline/no visible stress, 1 = mild temporary droop or color change, 2 = clear stress with delayed recovery or localized injury, 3 = persistent wilt or expanding injury. Photograph the same leaves/plant angle.",
+            "frequency": "Before exposure, near peak demand, and after recovery."
+          }
+        ],
+        "record": [
+          "plant/cohort ID and developmental stage",
+          "protected-environment light/temperature baseline before hardening",
+          "outdoor exposure hours and direct-sun intervals",
+          "weather, wind and sky condition",
+          "response score at comparable observation times",
+          "photo IDs from the same plant angle",
+          "any change in irrigation, nutrition or handling"
+        ],
+        "compare": [
+          "today's response against the same plant/cohort at the previous exposure step",
+          "sheltered/shaded plants against plants receiving the next exposure step when a comparison group is available",
+          "visible response with measured light/weather so a stress response is not attributed to sunlight alone"
+        ],
+        "interpret": [
+          "A plant that recovers promptly after a modest exposure increase is providing different evidence than a plant whose wilt or injury persists into the next observation period.",
+          "Full outdoor hours are not a useful standalone dose because shade, direct sun, wind and temperature can make equal clock time very different physiologically.",
+          "Hardening that is too aggressive can injure tissue, while excessive conditioning can also slow later growth; the target is adaptation with continued recovery, not maximum stress."
+        ],
+        "decisionRule": "Increase exposure only after the prior step produced acceptable recovery and no expanding injury. Hold or reduce the next step when stress persists, weather demand rises sharply, or the plant has not returned near its pre-exposure condition.",
+        "confidenceCheck": "A response score is an ordinal field tool, not a physiological measurement. Confidence improves when repeated scores, photos and environmental measurements point in the same direction."
+      },
+      {
+        "id": "transplant-weather-window",
+        "lessonTitle": "Use the actual weather window to plan transplant timing",
+        "goal": "Quantify the environmental demand surrounding transplant so root disturbance is not combined unnecessarily with abrupt heat, intense radiation, cold or strong wind.",
+        "measure": [
+          {
+            "metric": "Air temperature",
+            "unit": "°C or °F",
+            "method": "Measure or log at transplant/canopy height in a representative shaded sensor location; record forecast and observed values separately.",
+            "frequency": "Before transplant, during the transplant window, and through the first high-demand period."
+          },
+          {
+            "metric": "Wind and gust exposure",
+            "unit": "m/s, km/h, mph, or consistent qualitative class",
+            "method": "Use an on-site anemometer/weather station when available. Otherwise use a defined qualitative class and record the source of any forecast value.",
+            "frequency": "At transplant and during follow-up checks."
+          },
+          {
+            "metric": "Solar exposure / sky condition",
+            "unit": "PPFD when measured; otherwise direct sun / broken cloud / overcast",
+            "method": "Measure at canopy height when a PAR meter is available or record a consistent sky/exposure class. Note whether newly transplanted plants receive immediate full midday sun.",
+            "frequency": "At transplant and the first several post-transplant observation windows."
+          },
+          {
+            "metric": "Root-zone temperature",
+            "unit": "°C or °F at recorded depth",
+            "method": "Measure in the receiving soil/media near the intended root-ball depth using the same probe depth and location method.",
+            "frequency": "Before transplant and during unusual cold/heat events."
+          }
+        ],
+        "record": [
+          "transplant date and exact start/end time",
+          "forecast source plus observed air temperature",
+          "wind/gust and sky/direct-sun condition",
+          "receiving root-zone temperature and moisture",
+          "shade/wind protection used, if any",
+          "plant response during the first high-demand period"
+        ],
+        "compare": [
+          "forecast conditions against actual transplant-site measurements",
+          "plants transplanted under different weather windows or protection levels when records exist",
+          "morning/evening recovery against midday response instead of judging from one hot-period observation"
+        ],
+        "interpret": [
+          "Transplant shock is not one condition: abrupt radiation, wind, temperature and root disturbance can act together and should be recorded separately.",
+          "A mild air temperature does not guarantee low plant demand if direct radiation and wind are high.",
+          "Cool/cloudy weather can reduce immediate evaporative demand, but cold or saturated root zones can create different establishment constraints."
+        ],
+        "decisionRule": "Choose the lower-demand weather window available for transplant and avoid stacking major stressors. If weather demand rises beyond what the hardened plants have experienced, add temporary protection or delay the exposure increase rather than assuming plant age alone makes them ready.",
+        "confidenceCheck": "Weather-station values can differ from the plant microclimate. On-site measurements at relevant height/depth provide stronger evidence than a distant forecast alone."
+      },
+      {
+        "id": "rootball-placement",
+        "lessonTitle": "Document root-ball condition, handling and initial wetting",
+        "goal": "Preserve root function during transplant and verify that water contacts both the original root ball and the surrounding receiving medium.",
+        "measure": [
+          {
+            "metric": "Pre-transplant root-ball moisture",
+            "unit": "sensor value or defined dry/moist/wet class",
+            "method": "Measure at a consistent depth in the original container shortly before transplant. If using a qualitative class, define and reuse the same method.",
+            "frequency": "Immediately before transplant."
+          },
+          {
+            "metric": "Root restriction / circling score",
+            "unit": "0–3 ordinal score",
+            "method": "After removing the container, score the visible outer root system: 0 = roots hold media with little visible circling, 1 = light edge roots, 2 = clear circling/matting, 3 = dense constriction or strongly root-bound pattern. Photograph before correction.",
+            "frequency": "Once per sampled plant at transplant."
+          },
+          {
+            "metric": "Root-ball integrity / disturbance",
+            "unit": "0–3 ordinal handling score",
+            "method": "Record whether the root ball remained intact or experienced increasing breakage/root tearing. Use the same scale across cohorts and note any deliberate root correction separately.",
+            "frequency": "At transplant."
+          },
+          {
+            "metric": "Initial wetting pattern",
+            "unit": "wetting radius/depth plus delivered volume when known",
+            "method": "After transplant irrigation, verify moisture in the original root ball and at multiple points in surrounding soil/media. Record emitter/runtime or measured volume where possible.",
+            "frequency": "Immediately after transplant and again after the first dryback interval."
+          }
+        ],
+        "record": [
+          "container/root-ball size",
+          "pre-transplant moisture reading/class",
+          "root restriction score and photo",
+          "root-ball integrity/disturbance score",
+          "planting position/depth relative to original root crown",
+          "initial irrigation volume/runtime",
+          "wetting observations in root ball and surrounding medium"
+        ],
+        "compare": [
+          "original root-ball moisture against surrounding receiving-medium moisture",
+          "plants with different root restriction or disturbance scores against establishment response",
+          "initial wetting pattern against the pattern after the first dryback"
+        ],
+        "interpret": [
+          "A wet surrounding bed does not prove that a dry original root ball has rewetted, and a wet root ball does not prove roots can immediately access a large surrounding volume.",
+          "Dense circling roots, broken root balls and poor soil-to-root-ball contact can each affect establishment differently; they should not be collapsed into one generic 'transplant shock' label.",
+          "Ordinal root scores support comparison within the same method but are not direct measurements of total root mass or root function."
+        ],
+        "decisionRule": "Do not complete the transplant record until root condition and the first wetting pattern are documented. Correct obvious container restrictions carefully, avoid unnecessary root damage, and verify water contact across the root-ball/receiving-medium interface.",
+        "confidenceCheck": "Surface appearance is weak evidence of root-zone wetting. Confidence rises when moisture is checked at more than one depth/location with the same method."
+      },
+      {
+        "id": "establishment-recovery",
+        "lessonTitle": "Define establishment from recovery and renewed growth",
+        "goal": "Track whether the plant is recovering water balance and resuming growth instead of assuming transplant success after one irrigation.",
+        "measure": [
+          {
+            "metric": "Turgor/recovery score",
+            "unit": "0–3 ordinal score at fixed observation times",
+            "method": "Use the same 0–3 response scale at morning and peak-demand observations. Record whether droop is temporary and reversible or persists into low-demand periods.",
+            "frequency": "At least morning and peak-demand during early establishment; reduce frequency after the trend stabilizes."
+          },
+          {
+            "metric": "New growth increment",
+            "unit": "mm/cm shoot extension, new-node count, or standardized photo change",
+            "method": "Mark a reference shoot or node and measure from the same point. If exact length is impractical, use standardized photographs and count newly expanded nodes/leaves.",
+            "frequency": "Every 1–3 days during establishment using the same method."
+          },
+          {
+            "metric": "Leaf injury progression",
+            "unit": "count or % of marked leaves with expanding injury",
+            "method": "Mark representative leaves and photograph them. Separate old, non-expanding damage from new or expanding bleaching, necrosis, tearing or edge injury.",
+            "frequency": "Daily while injury is changing."
+          },
+          {
+            "metric": "Root-ball vs surrounding moisture",
+            "unit": "matched sensor readings or consistent qualitative classes at fixed points/depths",
+            "method": "Measure one point in the original root ball and one or more points in surrounding soil/media using the same tool and documented depth. Do not compare absolute sensor values across unlike media unless the sensor is calibrated for both.",
+            "frequency": "Before irrigation and during representative dryback intervals."
+          }
+        ],
+        "record": [
+          "morning and peak-demand turgor score",
+          "new growth measurement/reference point",
+          "marked-leaf injury count or estimated area",
+          "root-ball and surrounding moisture points/depths",
+          "irrigation/rain events",
+          "weather during each observation",
+          "interventions and the response observed afterward"
+        ],
+        "compare": [
+          "same plant morning vs peak-demand vs next-morning recovery",
+          "growth rate before transplant against the post-transplant trend when a baseline exists",
+          "root-ball moisture pattern against surrounding-medium moisture and plant response"
+        ],
+        "interpret": [
+          "Temporary midday droop with full low-demand recovery is different from persistent wilt that remains through morning or cool conditions.",
+          "Old sun/wind injury can remain visible after the plant has resumed healthy growth; progression matters more than whether a damaged leaf still looks damaged.",
+          "Resumed extension/new-node development plus stable turgor provides stronger establishment evidence than appearance immediately after watering."
+        ],
+        "decisionRule": "Treat establishment as achieved only after the plant shows a stable recovery pattern and renewed growth under representative outdoor demand. Persistent low-demand wilt, expanding injury or stalled growth should trigger a root-zone/weather review before simply increasing irrigation or fertilizer.",
+        "confidenceCheck": "Growth and turgor are influenced by weather and developmental stage. Use repeated observations and root-zone context before assigning the cause of slow establishment."
+      }
+    ],
+    "fieldWorksheet": {
+      "title": "Section 2 hardening & transplant field record",
+      "fields": [
+        "plant/cohort ID and stage",
+        "protected-environment baseline",
+        "outdoor exposure hours and direct-sun intervals",
+        "weather / wind / sky condition",
+        "response score before, peak demand and recovery",
+        "transplant date/time and receiving root-zone temperature",
+        "pre-transplant root-ball moisture",
+        "root restriction and disturbance scores",
+        "initial irrigation and wetting pattern",
+        "morning vs peak-demand turgor",
+        "new growth reference measurement",
+        "marked-leaf injury progression",
+        "root-ball vs surrounding moisture",
+        "intervention and observed response",
+        "measured / estimated / qualitative label",
+        "decision and what evidence would change it"
+      ],
+      "outcome": "The learner should finish with evidence showing how exposure increased, what conditions existed at transplant, how the root ball was handled and wetted, and whether the plant actually resumed stable recovery and growth."
+    },
+    "calculationHelpers": [
+      {
+        "name": "Cumulative outdoor exposure",
+        "formula": "sum of recorded outdoor exposure hours across hardening days",
+        "use": "Describe the acclimation history without pretending equal hours under different light/wind conditions are equal physiological doses.",
+        "boundary": "Cumulative hours must be interpreted with direct-sun, weather and response records."
+      },
+      {
+        "name": "Recovery interval",
+        "formula": "time at return-to-baseline observation − time of peak stress/exposure observation",
+        "use": "Compare how quickly the same plant/cohort returns toward its defined baseline after exposure or transplant.",
+        "boundary": "A shorter interval is not automatically better if the observation times or stress intensity differ."
+      },
+      {
+        "name": "Moisture differential",
+        "formula": "root-ball reading − surrounding-medium reading",
+        "use": "Identify persistent wet/dry mismatch across the transplant interface when the same calibrated method is valid for both locations.",
+        "boundary": "Do not compare absolute sensor values across different media unless the sensor is calibrated for those media."
+      }
+    ]
+  }
+}
