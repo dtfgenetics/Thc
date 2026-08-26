@@ -1,0 +1,325 @@
+{
+  "schemaVersion": 1,
+  "parentId": "outdoor-quantification-v1",
+  "route": "/learn/outdoor/",
+  "chapter": {
+    "chapterId": "pests-wildlife",
+    "chapterNumber": 6,
+    "chapterTitle": "Pests, Scouting & Wildlife Pressure",
+    "learnerQuestion": "What organism or damage pattern is present, how widespread and fast-changing is it, what beneficial activity is occurring, and is exclusion or intervention actually reducing new damage?",
+    "sourceContext": [
+      {
+        "id": "Q18",
+        "type": "peer-reviewed review",
+        "citation": "Hemp Pest Spectrum and Potential Relationship between Helicoverpa zea Infestation and Hemp Production in the United States in the Face of Climate Change. 2021.",
+        "supports": "Outdoor hemp supports a diverse arthropod community, including aphids, thrips, leafhoppers, beetles, borers and caterpillars; effective management begins with surveying and correct identification rather than assuming every arthropod is harmful."
+      },
+      {
+        "id": "Q19",
+        "type": "peer-reviewed review",
+        "citation": "Integrated Pest Management: An Update on the Sustainability Approach to Crop Protection. 2024.",
+        "supports": "Scouting, sampling, traps and repeated monitoring are foundational IPM tools because decisions are stronger when pest abundance and damage trends are measured rather than inferred from isolated sightings."
+      },
+      {
+        "id": "Q20",
+        "type": "peer-reviewed cannabis/hemp review",
+        "citation": "Exploiting Beneficial Pseudomonas spp. for Cannabis Production. 2022. Biotic-stress review section.",
+        "supports": "Outdoor cannabis and hemp encounter insects, mites, caterpillars, beetles, leaf miners and other biotic stressors; pest prevalence differs by cropping system, reinforcing the need for site-specific monitoring."
+      },
+      {
+        "id": "Q21",
+        "type": "university extension",
+        "citation": "Penn State Extension. Orchard Wildlife — Integrated Management of White-Tailed Deer; Cottontail Rabbits.",
+        "supports": "Wildlife damage can often be distinguished by damage signature, tracks and height/pattern, and physical exclusion is a primary preventive approach when browsing pressure is important."
+      }
+    ],
+    "visualTargets": [
+      "THC full-sheet infographic: outdoor scouting route and representative sampling map",
+      "THC diagnostic plate: pest, beneficial and neutral arthropod observations",
+      "THC comparison plate: chewing, piercing-sucking, stippling, mining and physical-weather damage",
+      "THC caterpillar and flower-damage reference including frass and entry points",
+      "THC wildlife damage plate: deer-type tearing, rabbit/rodent clipping or gnawing, bird and digging damage",
+      "THC exclusion audit diagram showing fence, gate, ground gap and overhead breach points"
+    ],
+    "subtopics": [
+      {
+        "id": "standardized-scouting",
+        "lessonTitle": "Scout the same way often enough to see trends",
+        "goal": "Create a repeatable sampling route and sample unit so pest pressure can be compared across dates, plants and canopy zones instead of being described only as present or absent.",
+        "measure": [
+          {
+            "metric": "Plants or sample units inspected",
+            "unit": "count and % of defined scouting population",
+            "method": "Define the population or block, then inspect the same number and distribution of plants, leaves or flowers each round. Record replacements when a sample point cannot be used.",
+            "frequency": "On a fixed routine cadence, with additional rounds after weather events or new symptoms."
+          },
+          {
+            "metric": "Pest observations per sample unit",
+            "unit": "count per leaf, shoot, flower, trap or defined plant section",
+            "method": "Count each target organism or target life stage on the same defined inspection surface or organ. Preserve the unit so counts remain comparable.",
+            "frequency": "Every scouting round."
+          },
+          {
+            "metric": "Trap catch",
+            "unit": "count per trap per day or defined deployment interval",
+            "method": "Number each trap, record placement, height, deployment and replacement dates, then normalize counts by exposure time when comparing unequal intervals.",
+            "frequency": "At each trap check."
+          },
+          {
+            "metric": "Affected-plant incidence",
+            "unit": "% plants or sample units with target pest/damage",
+            "method": "Record affected count divided by the number inspected using the same target definition each round.",
+            "frequency": "Every scouting round."
+          }
+        ],
+        "record": [
+          "block / row / plant IDs",
+          "scouting route and sample-unit definition",
+          "date / time / weather",
+          "plants or units inspected",
+          "target organism count by sample unit",
+          "trap IDs / placement / exposure time",
+          "affected count and incidence",
+          "canopy position / organ inspected",
+          "photo IDs"
+        ],
+        "compare": [
+          "same sample route across dates",
+          "edge vs interior crop zones",
+          "upper vs lower and outer vs sheltered canopy positions",
+          "visual scouting counts vs trap trends without assuming the methods measure the same population"
+        ],
+        "interpret": [
+          "One insect sighting establishes presence, not population trend or damage risk.",
+          "Counts are only comparable when sample units and effort are comparable; ten insects from ten leaves is different evidence from ten insects from one hundred leaves.",
+          "Trap counts can signal activity but may not equal the number feeding on the crop, so trap and plant-inspection data should remain separate."
+        ],
+        "decisionRule": "Do not escalate management from a single unstandardized observation when a repeatable sample can be collected. Increase scouting intensity when abundance, incidence or damage rises across comparable rounds.",
+        "confidenceCheck": "Sampling detects only what the method can see. Hidden, nocturnal, microscopic or root-zone organisms may require targeted methods beyond routine visual scouting."
+      },
+      {
+        "id": "identity-life-stage-beneficials",
+        "lessonTitle": "Separate pest identity, life stage, damage and beneficial activity",
+        "goal": "Improve diagnostic confidence by recording the organism, its developmental stage, the plant damage pattern and associated beneficial organisms as different evidence fields.",
+        "measure": [
+          {
+            "metric": "Organism identity confidence",
+            "unit": "confirmed / probable / unknown",
+            "method": "Record the most specific defensible identification. Use clear macro images or collected samples where permitted, and mark uncertain IDs as unknown rather than forcing a species name.",
+            "frequency": "For each new organism or changed life-stage pattern."
+          },
+          {
+            "metric": "Life-stage distribution",
+            "unit": "count by egg / immature / larva or nymph / adult class",
+            "method": "Count visible stages separately on the same sample unit. Preserve organism-specific terminology in notes when known.",
+            "frequency": "Each targeted scouting round."
+          },
+          {
+            "metric": "Damage-sign incidence",
+            "unit": "% sample units with defined feeding/damage signature",
+            "method": "Score a specific signature such as stippling, mines, chewing, webbing, honeydew, frass or flower entry damage separately from organism counts.",
+            "frequency": "Every scouting round."
+          },
+          {
+            "metric": "Beneficial activity observation",
+            "unit": "count per sample unit or event count",
+            "method": "Record predators, parasitoid evidence, parasitized hosts or other beneficial activity separately from pest counts. Photograph uncertain beneficials before handling.",
+            "frequency": "Every scouting round."
+          }
+        ],
+        "record": [
+          "organism name or unknown code",
+          "identification confidence",
+          "life-stage counts",
+          "damage-sign type and incidence",
+          "beneficial organism/activity counts",
+          "plant organ and canopy zone",
+          "macro image or sample ID",
+          "date of first and most recent observation",
+          "look-alike organisms considered"
+        ],
+        "compare": [
+          "pest abundance vs damage-sign trend",
+          "life-stage distribution across successive rounds",
+          "pest and beneficial observations in the same crop zones",
+          "confirmed identifications vs observations still coded unknown"
+        ],
+        "interpret": [
+          "Visible damage may persist after the causal organism has left, while a newly arrived organism may be present before substantial damage appears.",
+          "Eggs, immature stages and adults imply different population timing; separating them helps distinguish a transient adult from an actively reproducing population.",
+          "Not every arthropod is a pest. Beneficials and neutral organisms should not be combined into a generic bug count."
+        ],
+        "decisionRule": "Require organism identity or a sufficiently distinctive damage pattern before selecting a pest-specific response. Preserve and monitor beneficial activity unless a verified site protocol requires otherwise.",
+        "confidenceCheck": "Photographs may be insufficient for small mites, thrips, immature stages or damaged specimens. Microscopy or expert identification may be necessary before species-level claims."
+      },
+      {
+        "id": "damage-trend-response",
+        "lessonTitle": "Measure damage progression and verify whether a response changes the trend",
+        "goal": "Connect pest abundance to plant injury and compare the same measurements before and after cultural, physical, biological or legally approved intervention steps.",
+        "measure": [
+          {
+            "metric": "Damage severity",
+            "unit": "0–4 defined ordinal class or % affected tissue when measurable",
+            "method": "Use a photo-anchored scale appropriate to the damage type. Keep existing old damage separate from newly expanding damage when possible.",
+            "frequency": "Every targeted scouting round."
+          },
+          {
+            "metric": "New damage incidence",
+            "unit": "% newly affected sample units",
+            "method": "Mark previously clean sample units or photograph fixed reference tissue, then count newly affected units at follow-up.",
+            "frequency": "At defined follow-up intervals."
+          },
+          {
+            "metric": "Population trend",
+            "unit": "% change or absolute change in comparable pest count",
+            "method": "Compare mean or total target counts using the same sample unit and effort before and after the observation interval.",
+            "frequency": "At every repeat survey."
+          },
+          {
+            "metric": "Plant-response context",
+            "unit": "growth / turgor / flower injury / yield-zone notes with defined score where practical",
+            "method": "Record plant condition separately from pest count so falling insect abundance is not mistaken for crop recovery when injury is still progressing.",
+            "frequency": "Paired with targeted pest follow-up."
+          }
+        ],
+        "record": [
+          "baseline pest count / incidence",
+          "baseline damage severity",
+          "new-damage reference points",
+          "response type and date",
+          "legal/label/site-protocol reference when a regulated product is involved",
+          "follow-up pest count / incidence",
+          "follow-up damage severity",
+          "beneficial observations",
+          "weather and plant-stage context",
+          "unintended effects or phytotoxicity observations"
+        ],
+        "compare": [
+          "pest abundance before vs after response",
+          "new damage before vs after response",
+          "treated/changed zones vs comparable unchanged zones when an ethical operational comparison exists",
+          "pest decline vs plant recovery instead of assuming they are identical outcomes"
+        ],
+        "interpret": [
+          "Old feeding damage does not disappear when control succeeds, so new damage and pest counts are more useful outcome measures than total historical injury alone.",
+          "A population can decline because of weather, predators, crop stage or movement as well as intervention; record those factors before assigning causality.",
+          "Action thresholds are crop, pest, production-goal and jurisdiction dependent. A universal numeric threshold should not be invented where validated cannabis-specific thresholds do not exist."
+        ],
+        "decisionRule": "Continue, modify or escalate a response from repeated pest and new-damage trends, not from whether old leaves still look damaged. Use locally validated thresholds or site protocols when available and label expert judgment when they are not.",
+        "confidenceCheck": "Before/after observations support field decisions but do not prove treatment efficacy unless sampling, comparison conditions and confounders are controlled adequately."
+      },
+      {
+        "id": "wildlife-exclusion",
+        "lessonTitle": "Diagnose wildlife damage and audit exclusion before blaming insects or disease",
+        "goal": "Distinguish wildlife feeding or physical damage from arthropod and weather injury, map where animals enter, and verify whether physical exclusion reduces new damage.",
+        "measure": [
+          {
+            "metric": "Wildlife damage incidence",
+            "unit": "% plants affected and count by damage type",
+            "method": "Record torn browsing, clean clipping, gnawing, digging, trampling, flower removal or bird damage as separate categories using a mapped crop sample.",
+            "frequency": "Routine scouting and after suspected wildlife events."
+          },
+          {
+            "metric": "Damage height and signature",
+            "unit": "cm/inches above ground + damage class",
+            "method": "Measure the height of browse or breakage and photograph edge shape, tooth/gnaw marks, tracks, scat or other signs without assuming species from one clue alone.",
+            "frequency": "For every new wildlife-damage event."
+          },
+          {
+            "metric": "Barrier breach points",
+            "unit": "count + mapped location + gap dimensions",
+            "method": "Walk fences, gates, mesh, netting and ground interfaces and record openings, undermining, damaged sections or overhead access points.",
+            "frequency": "At setup, weekly during pressure periods and after storms or damage events."
+          },
+          {
+            "metric": "New damage after exclusion change",
+            "unit": "newly affected plants per day or scouting interval",
+            "method": "Mark repaired exclusion points and repeat the same damage survey after a defined interval.",
+            "frequency": "After every meaningful exclusion repair or redesign."
+          }
+        ],
+        "record": [
+          "plant IDs / affected count",
+          "damage category and height",
+          "edge/gnaw/browse signature",
+          "tracks / scat / camera or observation evidence",
+          "suspected species and confidence level",
+          "barrier type / height / mesh or gap context",
+          "breach-point map",
+          "repair or exclusion change",
+          "new damage at follow-up",
+          "photos / camera IDs"
+        ],
+        "compare": [
+          "damage signatures among crop zones",
+          "new damage before vs after exclusion repair",
+          "barrier-protected vs unprotected exposure where comparable",
+          "suspected wildlife damage vs insect chewing, wind breakage and human/mechanical injury"
+        ],
+        "interpret": [
+          "Different wildlife can leave characteristic clues, but attribution is strongest when damage signature is combined with tracks, droppings, camera evidence or direct observation.",
+          "Physical exclusion addresses access rather than trying to eliminate wildlife and can be evaluated by whether new damage falls after identified breach points are corrected.",
+          "Storms, plant growth and ground settling can create new barrier gaps, so a previously effective fence or net is not permanently verified."
+        ],
+        "decisionRule": "Prioritize safe physical exclusion and repair when wildlife attribution is supported. Re-evaluate the diagnosis if new damage continues without new breach evidence or if the damage signature changes.",
+        "confidenceCheck": "Damage height or bite shape alone may not uniquely identify the animal. Use multiple field signs or camera evidence before high-confidence species attribution."
+      }
+    ],
+    "fieldWorksheet": {
+      "title": "Section 6 pest, scouting & wildlife field record",
+      "fields": [
+        "block / row / plant IDs and scouting route",
+        "sample unit and number inspected",
+        "target organism / unknown code / identification confidence",
+        "counts by life stage",
+        "trap ID / placement / days exposed / catch",
+        "damage-sign incidence and severity",
+        "beneficial activity",
+        "new damage since prior round",
+        "response / protocol reference",
+        "follow-up pest and new-damage trend",
+        "wildlife damage category / height / signature",
+        "tracks / scat / camera evidence",
+        "barrier breach map / gap dimensions",
+        "exclusion repair and follow-up damage",
+        "weather / plant stage",
+        "photo / sample IDs",
+        "measured / estimated / ordinal label",
+        "decision and evidence needed to change it"
+      ],
+      "outcome": "The learner should finish with comparable pest, beneficial, damage and wildlife records that separate organism presence from crop injury and show whether prevention or intervention changed new damage over time."
+    },
+    "calculationHelpers": [
+      {
+        "name": "Pest or damage incidence",
+        "formula": "affected sample units ÷ inspected sample units × 100",
+        "use": "Track how widespread a defined pest or damage sign is in a repeatable sample.",
+        "boundary": "Incidence does not measure abundance within each affected unit or economic impact."
+      },
+      {
+        "name": "Mean target count",
+        "formula": "total target organisms counted ÷ sample units inspected",
+        "use": "Compare abundance when the same sampling method and unit are repeated.",
+        "boundary": "Do not compare means from different sample-unit definitions as if they are equivalent."
+      },
+      {
+        "name": "Trap catch rate",
+        "formula": "target catch ÷ trap-days",
+        "use": "Normalize trap observations when deployment intervals differ.",
+        "boundary": "Trap catch rate is an activity index, not a direct census of organisms feeding on plants."
+      },
+      {
+        "name": "New-damage rate",
+        "formula": "newly affected sample units ÷ elapsed days or scouting intervals",
+        "use": "Distinguish continuing injury from old persistent damage.",
+        "boundary": "Sampling effort and interval must remain comparable."
+      },
+      {
+        "name": "Beneficial-to-target observation ratio",
+        "formula": "beneficial observations ÷ target-pest observations",
+        "use": "Describe the observed balance in a defined scouting method and watch how it changes over time.",
+        "boundary": "This is not a universal biological-control threshold because detectability and predator/prey effectiveness differ among organisms."
+      }
+    ]
+  }
+}
