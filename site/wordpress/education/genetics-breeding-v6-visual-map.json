@@ -3,125 +3,71 @@
   "updatedAt": "2026-08-26",
   "curriculumId": "genetics-breeding-v6",
   "route": "/learn/genetics-breeding/",
+  "publicationPolicy": {
+    "approvedOnly": true,
+    "qaRequiredExcluded": true,
+    "draftExcluded": true,
+    "referenceOnlyExcluded": true,
+    "note": "Recovered Genetics/MOPS visuals, DRAFT G×E artwork, recovered sex-expression artwork, and THC-ENC-004 reference-only panels are intentionally excluded."
+  },
   "chapters": {
-    "genotype-phenotype-environment": [
-      {
-        "file": "THC-ENC-080_Genotype_by_Environment_Effects_on_Physiology.jpg",
-        "title": "Genotype × Environment Effects on Physiology",
-        "alt": "Educational diagram showing how inherited genotype and growing environment interact to produce measured plant phenotype."
-      },
-      {
-        "file": "genetics/Simple_Traits_vs_Quantitative_Traits.png",
-        "title": "Simple Traits Versus Quantitative Traits",
-        "alt": "Breeding infographic comparing relatively simple inherited traits with quantitative traits influenced by many loci and environment."
-      },
-      {
-        "file": "genetics/Genes_vs_Gene_Expression.png",
-        "title": "Genes Versus Gene Expression",
-        "alt": "Educational genetics infographic distinguishing inherited genes from context-dependent gene expression and visible phenotype."
-      }
-    ],
+    "genotype-phenotype-environment": [],
     "population-structure-lineage-identity": [
       {
-        "file": "genetics/MOPS_Outcross_Populations.png",
-        "title": "MOPS Outcross Populations",
-        "alt": "Breeding infographic showing how outcross populations preserve and recombine broader genetic variation."
+        "file": "THC-ENC-004_asset_03_domestication_dispersal_selection_infographic.jpg",
+        "title": "Domestication, Dispersal & Selection",
+        "alt": "Finished educational infographic connecting cannabis domestication, dispersal and human selection with population history and genetic diversity."
       }
     ],
-    "inheritance-segregation-generations": [
-      {
-        "file": "genetics/MOPS_Make_Filial_Generations.png",
-        "title": "MOPS: Make Filial Generations",
-        "alt": "Breeding infographic explaining controlled progression through filial generations while preserving parent and population records."
-      },
-      {
-        "file": "genetics/MOPS_Why_F2_Populations_Matter.png",
-        "title": "MOPS: Why F2 Populations Matter",
-        "alt": "Breeding infographic explaining why F2 populations expose segregation and recombination useful for selection."
-      },
-      {
-        "file": "genetics/MOPS_Self_Populations.png",
-        "title": "MOPS Self Populations",
-        "alt": "Breeding infographic showing selfed population development and its role in revealing inherited variation."
-      },
-      {
-        "file": "genetics/MOPS_When_to_Outcross_vs_Inbreed.png",
-        "title": "MOPS: When to Outcross Versus Inbreed",
-        "alt": "Breeding decision infographic comparing outcrossing and inbreeding strategies against explicit line-development goals."
-      }
-    ],
+    "inheritance-segregation-generations": [],
     "chemotype-cannabinoid-genetics": [],
-    "sex-determination-expression": [
-      {
-        "file": "Cannabis_Sex_Expression_and_Chromosome_Combinations.png",
-        "title": "Cannabis Sex Expression & Chromosome Combinations",
-        "alt": "Educational diagram separating cannabis chromosome combinations from observed floral sex expression and sexual plasticity."
-      }
-    ],
-    "selection-phenotyping-parent-choice": [
-      {
-        "file": "genetics/MOPS_Trait_Selection.png",
-        "title": "MOPS Trait Selection",
-        "alt": "Breeding infographic showing a documented trait-selection process based on defined objectives and measured evidence."
-      },
-      {
-        "file": "THC-ENC-004_asset_02_selection_pathways.jpg",
-        "title": "Selection Pathways",
-        "alt": "Educational genetics diagram illustrating alternative selection pathways and how selection changes a breeding population."
-      },
-      {
-        "file": "genetics/Seed_Lot_Evaluation.png",
-        "title": "Seed Lot Evaluation",
-        "alt": "Breeding quality infographic showing structured evaluation of a seed lot rather than judging a family from isolated plants."
-      }
-    ],
-    "stabilization-testing-line-development": [
-      {
-        "file": "genetics/MOPS_Pollen_Control.png",
-        "title": "MOPS Pollen Control",
-        "alt": "Breeding infographic showing controlled pollen handling and isolation practices used to protect known parentage."
-      },
-      {
-        "file": "genetics/MOPS_Pollen_Collection_Basics.png",
-        "title": "MOPS Pollen Collection Basics",
-        "alt": "Breeding infographic showing documented pollen collection as part of controlled cannabis line development."
-      },
-      {
-        "file": "genetics/Pollen_Quality.png",
-        "title": "Pollen Quality",
-        "alt": "Educational breeding infographic showing factors used to evaluate pollen quality before controlled crosses."
-      },
-      {
-        "file": "genetics/Reproductive_Barrier_Troubleshooting_Decision_Tree.png",
-        "title": "Reproductive Barrier Troubleshooting",
-        "alt": "Breeding decision tree for investigating reproductive barriers and failed seed-set outcomes without assuming one cause."
-      }
-    ],
-    "molecular-tools-records-breeding-evidence": [
-      {
-        "file": "genetics/MOPS_Recordkeeping_System.png",
-        "title": "MOPS Recordkeeping System",
-        "alt": "Breeding infographic showing stable parent, cross, generation, seed-lot and selection records needed for lineage traceability."
-      },
-      {
-        "file": "MOPS_Framework_Breeding_Projects_Infographic.png",
-        "title": "MOPS Breeding Project Framework",
-        "alt": "Breeding framework infographic connecting objectives, observations, parentage, selection and records across a controlled project."
-      }
-    ]
+    "sex-determination-expression": [],
+    "selection-phenotyping-parent-choice": [],
+    "stabilization-testing-line-development": [],
+    "molecular-tools-records-breeding-evidence": []
   },
   "gaps": [
+    {
+      "id": "genotype-environment-phenotype",
+      "status": "needed",
+      "title": "Genotype → Environment → Phenotype",
+      "neededVisual": "A purpose-built model showing inherited genotype, environment, developmental history and genotype-by-environment interaction converging on measured phenotype."
+    },
+    {
+      "id": "genes-vs-expression",
+      "status": "needed",
+      "title": "Genes, Regulation & Gene Expression",
+      "neededVisual": "A reviewed genetics diagram distinguishing possession of a gene or allele from when, where and how strongly it is expressed, without implying that expression equals a fixed visible trait."
+    },
+    {
+      "id": "simple-vs-quantitative-traits",
+      "status": "needed",
+      "title": "Simple vs Quantitative Traits",
+      "neededVisual": "A comparison of relatively simple inheritance with polygenic quantitative traits, continuous distributions, environment effects and measurement requirements."
+    },
     {
       "id": "population-structure-admixture",
       "status": "needed",
       "title": "Cannabis Population Structure & Admixture",
-      "neededVisual": "A genetics diagram showing broad cannabis population structure, admixture, ancestry uncertainty and why commercial sativa/indica labels are not equivalent to genome-wide identity."
+      "neededVisual": "A genetics diagram showing broad cannabis population structure, admixture and ancestry uncertainty while explaining why commercial sativa/indica labels are not equivalent to genome-wide identity."
+    },
+    {
+      "id": "pedigree-lineage-identity",
+      "status": "needed",
+      "title": "Pedigree, Lineage & Genetic Identity",
+      "neededVisual": "A diagram separating a recorded pedigree from independently verified genetic identity, including parent IDs, source records, possible stray pollen or mix-ups and uncertainty notation."
     },
     {
       "id": "punnett-mendelian-basics",
       "status": "needed",
       "title": "Mendelian Inheritance & Punnett-Square Interpretation",
       "neededVisual": "A carefully bounded Punnett-square lesson explaining alleles, genotype ratios, phenotype assumptions and why simple ratios apply only when the biological assumptions are satisfied."
+    },
+    {
+      "id": "filial-generations-segregation",
+      "status": "needed",
+      "title": "F1, F2 & Segregation",
+      "neededVisual": "A multigeneration diagram showing parent structure, F1 heterozygosity, F2 segregation and recombination while explaining why generation labels alone do not guarantee uniformity."
     },
     {
       "id": "backcross-recurrent-parent-recovery",
@@ -136,22 +82,28 @@
       "neededVisual": "A modern evidence-aware genetics diagram connecting Type I/II/III chemotype segregation with THCAS/CBDAS loci, structural complexity, marker limits and measured cannabinoid phenotype."
     },
     {
+      "id": "sex-determination-expression",
+      "status": "needed",
+      "title": "Sex Determination vs Sex Expression",
+      "neededVisual": "A reviewed XX/XY and floral-expression diagram separating chromosomal sex from observed male, female or intersex floral expression and showing genotype, hormone and environment context."
+    },
+    {
       "id": "regular-feminized-autoflower-genetics",
       "status": "needed",
       "title": "Regular, Feminized & Autoflower Genetics",
-      "neededVisual": "A genetics comparison separating sex-chromosome outcomes, feminized-seed production context and autoflowering inheritance without presenting any category as inherently superior."
+      "neededVisual": "A genetics comparison separating regular seed sex outcomes, feminized-seed production context and autoflowering inheritance without presenting any category as inherently superior."
     },
     {
-      "id": "pollination-fertilization-seed-production",
+      "id": "selection-progeny-testing",
       "status": "needed",
-      "title": "Pollination → Fertilization → Seed Development",
-      "neededVisual": "A reproductive sequence showing pollen capture, pollen-tube growth, fertilization, embryo development and mature seed formation, linked to controlled-parentage records."
+      "title": "Selection Funnel & Progeny Testing",
+      "neededVisual": "A breeding workflow moving from written objectives to phenotype measurement, culling, parent choice, offspring testing and evidence-based retention across generations."
     },
     {
-      "id": "polyploidy-breeding-overview",
+      "id": "quantitative-phenotyping",
       "status": "needed",
-      "title": "Polyploidy in Cannabis Breeding",
-      "neededVisual": "A neutral overview of diploid versus polyploid chromosome sets, induction versus natural occurrence, confirmation methods and trait claims that require direct measurement."
+      "title": "Quantitative Phenotyping & Trait Measurement",
+      "neededVisual": "A measurement-focused diagram showing trait definition, units, timing, replication, environmental context and raw-value retention before subjective scoring."
     },
     {
       "id": "family-pedigree-stable-id",
@@ -166,10 +118,40 @@
       "neededVisual": "A matrix comparing one breeding line across sex, chemotype, flowering time, architecture, aroma and yield to show that a line can be uniform for one trait while variable for another."
     },
     {
+      "id": "line-development-release-gates",
+      "status": "needed",
+      "title": "Line Development & Release Gates",
+      "neededVisual": "A generational breeding diagram showing population size, family selection, negative-trait tracking, retesting and explicit release criteria rather than using F-number alone as a quality claim."
+    },
+    {
+      "id": "pollination-fertilization-seed-production",
+      "status": "needed",
+      "title": "Pollination → Fertilization → Seed Development",
+      "neededVisual": "A reproductive sequence showing pollen capture, pollen-tube growth, fertilization, embryo development and mature seed formation linked to controlled-parentage records."
+    },
+    {
+      "id": "polyploidy-breeding-overview",
+      "status": "needed",
+      "title": "Polyploidy in Cannabis Breeding",
+      "neededVisual": "A neutral overview of diploid versus polyploid chromosome sets, induction versus natural occurrence, confirmation methods and trait claims that require direct measurement."
+    },
+    {
       "id": "marker-assisted-vs-genomic-selection",
       "status": "needed",
       "title": "Marker-Assisted vs Genomic Selection",
       "neededVisual": "A modern breeding diagram comparing single/few-marker decisions with genome-wide prediction, training populations, phenotype requirements, validation and discordant-case review."
+    },
+    {
+      "id": "pangenome-structural-variation",
+      "status": "needed",
+      "title": "Pangenomes & Structural Variation",
+      "neededVisual": "A genomic diagram showing why a single reference genome can miss presence/absence and structural variation captured across a cannabis pangenome."
+    },
+    {
+      "id": "breeding-records-evidence-chain",
+      "status": "needed",
+      "title": "Breeding Records & Evidence Chain",
+      "neededVisual": "A traceability diagram connecting stable IDs, parents, pollination event, family, seed lot, generation, phenotype records, marker data and release evidence into one auditable breeding record."
     }
   ]
 }
