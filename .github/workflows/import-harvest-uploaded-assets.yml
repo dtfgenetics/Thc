@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'site/wordpress/education/upload-staging/harvest-2026-08-26/READY'
+      - 'site/wordpress/education/upload-staging/harvest-v2/READY'
   workflow_dispatch:
 
 permissions:
@@ -35,11 +35,11 @@ jobs:
         with:
           node-version: 22
 
-      - name: Reconstruct uploaded Harvest assets
+      - name: Reconstruct and checksum uploaded Harvest assets
         shell: bash
         run: |
           set -euo pipefail
-          stage='site/wordpress/education/upload-staging/harvest-2026-08-26'
+          stage='site/wordpress/education/upload-staging/harvest-v2'
           out='site/wordpress/assets/infographics'
           mkdir -p "$out"
           files=(
@@ -50,19 +50,30 @@ jobs:
             'THC-HARV-05_drying_environment_fundamentals.webp'
             'THC-HARV-06_drying_failure_modes.webp'
           )
-          for file in "${files[@]}"; do
+          hashes=(
+            '371b84769d1c379fe6a869e91e376bb41cbb4a8106069a070e8ad413cda30251'
+            'fbecac70ab0319c5fdea9b79299d1fdf19fbb4400575dce2038c30a252a825a8'
+            'd4ac4e9ce6a299a9adda2e94b5c1db96f0a139aa11cac9aafb4f9d0ab5c240d5'
+            '3dea73a328913b9070be87eb9516ac0446c5c0ce2ae7e80253549b6b70bf93eb'
+            'fb07f7b2a1477d5bdeef75d53ea26b3d32aeab161362347e89fb8dd1ca487569'
+            '22c8650406acad5eb0ac58d4bb8863354ecd10c13ab14e41ba0bf077db9e3a7a'
+          )
+          for i in "${!files[@]}"; do
+            file="${files[$i]}"
             parts=("$stage/$file.b64.part"*)
             [[ -e "${parts[0]}" ]] || { echo "Missing chunks for $file" >&2; exit 1; }
             cat "${parts[@]}" | base64 -d > "$out/$file"
             test -s "$out/$file"
             file "$out/$file" | grep -qi 'webp'
+            actual="$(sha256sum "$out/$file" | awk '{print $1}')"
+            [[ "$actual" == "${hashes[$i]}" ]] || { echo "Checksum mismatch for $file: $actual" >&2; exit 1; }
           done
 
       - name: Commit canonical image assets
         shell: bash
         run: |
           set -euo pipefail
-          rm -rf site/wordpress/education/upload-staging/harvest-2026-08-26
+          rm -rf site/wordpress/education/upload-staging/harvest-v2
           git config user.name 'DTF Harvest Asset Publisher'
           git config user.email 'actions@users.noreply.github.com'
           git add site/wordpress/assets/infographics site/wordpress/education/upload-staging
