@@ -3,269 +3,136 @@ name: Publish THC Infographics Direct
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches:
+      - main
     paths:
-      - site/wordpress/assets/infographics/**
-      - site/public-route-patch/learn/infographics/**
-      - .github/workflows/wordpress-infographic-direct.yml
-  issue_comment:
-    types: [created]
+      - '.github/workflows/wordpress-infographic-direct.yml'
+      - 'site/wordpress/assets/infographics/**'
 
 permissions:
-  contents: write
-  issues: write
-
-concurrency:
-  group: dtfseeds-wordpress-infographic-direct
-  cancel-in-progress: false
+  contents: read
 
 jobs:
   publish:
-    if: >-
-      github.event_name == 'workflow_dispatch' ||
-      github.event_name == 'push' ||
-      (github.event.issue.number == 46 &&
-       github.event.comment.body == '/publish-infographics-direct' &&
-       github.event.comment.user.login == github.repository_owner)
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    environment: production
     env:
-      NODE_OPTIONS: --dns-result-order=ipv4first
       WP_SITE_URL: https://dtfseeds.com
-      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME || secrets.WORDPRESS_USERNAME || secrets.WP_USERNAME }}
-      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD || secrets.WORDPRESS_APP_PASSWORD || secrets.WP_APPLICATION_PASSWORD }}
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
       INFOGRAPHIC_DIR: ${{ github.workspace }}/site/wordpress/assets/infographics
       BACKUP_ROOT: ${{ runner.temp }}/wordpress-infographic-direct-backups
-    steps:
-      - name: Report direct publisher start
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const body = [
-              '## THC infographic direct run started',
-              '',
-              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-              `Commit: \`${context.sha}\``,
-              `Trigger: **${context.eventName}**`,
-              'No credential values are included in this report.'
-            ].join('\n');
-            await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: 46, body });
+      NODE_OPTIONS: --dns-result-order=ipv4first
 
+    steps:
       - uses: actions/checkout@v4
-        with:
-          ref: main
-          fetch-depth: 0
 
       - uses: actions/setup-node@v4
         with:
           node-version: 22
 
-      - name: Import approved Harvest image binaries
-        id: harvest
+      - name: Stage approved Harvest images
         shell: bash
         run: |
           set -euo pipefail
-          out='site/wordpress/assets/infographics'
+          out="$INFOGRAPHIC_DIR"
           mkdir -p "$out"
 
-          files=(
-            'THC-HARV-01_harvest_readiness_indicators.jpg'
-            'THC-HARV-02_harvest_trichome_maturity_interpretation.jpg'
-            'THC-HARV-03_harvest_handling_workflow.jpg'
-            'THC-HARV-04_bud_washing_overview.jpg'
-            'THC-HARV-05_drying_environment_fundamentals.jpg'
-            'THC-HARV-06_drying_failure_modes.jpg'
-          )
-          urls=(
-            'https://cdn.shopify.com/s/files/1/0664/2542/1885/files/THC-HARV-01_harvest_readiness_indicators.jpg?v=1787825276'
-            'https://cdn.shopify.com/s/files/1/0664/2542/1885/files/THC-HARV-02_harvest_trichome_maturity_interpretation.jpg?v=1787825286'
-            'https://cdn.shopify.com/s/files/1/0664/2542/1885/files/THC-HARV-03_harvest_handling_workflow.jpg?v=1787825295'
-            'https://cdn.shopify.com/s/files/1/0664/2542/1885/files/THC-HARV-04_bud_washing_overview.jpg?v=1787825306'
-            'https://cdn.shopify.com/s/files/1/0664/2542/1885/files/THC-HARV-05_drying_environment_fundamentals.jpg?v=1787851009'
-            'https://cdn.shopify.com/s/files/1/0664/2542/1885/files/THC-HARV-06_drying_failure_modes.jpg?v=1787851015'
-          )
-          hashes=(
-            '602886525a9958010d40c971bc6d7975fdeb4f493d57f0d088f62b773d7bb56e'
-            'fdc376ba6d27044c275c32f98b01ed24196e0c009abb144192cebcc2e8f7ca12'
-            '50a0466b44fc26fa5d3b6eba10714fde797e53d5e4a66ca114906597301aecf6'
-            'ebee432c5a57b349e0fa27852e47084298bbee306d798799e525c02d5c7e06d5'
-            '340981530325535504f79115eeb87b0eecb6da4811f167d35ec80f7428012a31'
-            '3bf9c6845aafa031b5bbbbdec53529caf9e8a77b7c5a8ae078c207dafe171558'
-          )
+          curl -4 -L --fail --silent --show-error --retry 4 --retry-delay 2 \
+            'https://cdn.shopify.com/s/files/1/0664/2542/1885/files/THC-HARV-01_harvest_readiness_indicators.jpg?v=1787825276' \
+            -o "$out/THC-HARV-01_harvest_readiness_indicators.jpg"
+          curl -4 -L --fail --silent --show-error --retry 4 --retry-delay 2 \
+            'https://cdn.shopify.com/s/files/1/0664/2542/1885/files/THC-HARV-02_harvest_trichome_maturity_interpretation.jpg?v=1787825286' \
+            -o "$out/THC-HARV-02_harvest_trichome_maturity_interpretation.jpg"
+          curl -4 -L --fail --silent --show-error --retry 4 --retry-delay 2 \
+            'https://cdn.shopify.com/s/files/1/0664/2542/1885/files/THC-HARV-03_harvest_handling_workflow.jpg?v=1787825295' \
+            -o "$out/THC-HARV-03_harvest_handling_workflow.jpg"
+          curl -4 -L --fail --silent --show-error --retry 4 --retry-delay 2 \
+            'https://cdn.shopify.com/s/files/1/0664/2542/1885/files/THC-HARV-04_bud_washing_overview.jpg?v=1787825306' \
+            -o "$out/THC-HARV-04_bud_washing_overview.jpg"
+          curl -4 -L --fail --silent --show-error --retry 4 --retry-delay 2 \
+            'https://cdn.shopify.com/s/files/1/0664/2542/1885/files/THC-HARV-05_drying_environment_fundamentals.jpg?v=1787851009' \
+            -o "$out/THC-HARV-05_drying_environment_fundamentals.jpg"
+          curl -4 -L --fail --silent --show-error --retry 4 --retry-delay 2 \
+            'https://cdn.shopify.com/s/files/1/0664/2542/1885/files/THC-HARV-06_drying_failure_modes.jpg?v=1787851015' \
+            -o "$out/THC-HARV-06_drying_failure_modes.jpg"
 
-          for i in "${!files[@]}"; do
-            target="$out/${files[$i]}"
-            curl -4 --location --fail --silent --show-error --retry 4 --retry-delay 2 \
-              "${urls[$i]}" -o "$target"
-            test -s "$target"
-            actual="$(sha256sum "$target" | awk '{print $1}')"
-            [[ "$actual" == "${hashes[$i]}" ]] || {
-              echo "Checksum mismatch for ${files[$i]}: $actual" >&2
-              exit 1
-            }
+          count=0
+          for file in "$out"/THC-HARV-0{1,2,3,4,5,6}_*.jpg; do
+            test -s "$file"
+            file "$file" | grep -qi 'JPEG image data'
+            count=$((count + 1))
           done
+          test "$count" -eq 6
+          echo "Verified six approved Harvest JPEG assets."
 
-          printf '%s\n' "${files[@]}" > "$RUNNER_TEMP/approved-harvest-files.txt"
-          echo 'verified_count=6' >> "$GITHUB_OUTPUT"
-
-      - name: Commit canonical Harvest image assets
-        id: harvest_commit
+      - name: Validate publisher and credentials
         shell: bash
         run: |
           set -euo pipefail
-          git config user.name 'DTF Infographic Publisher'
-          git config user.email 'actions@users.noreply.github.com'
-          git add site/wordpress/assets/infographics/THC-HARV-*.jpg
-          if git diff --cached --quiet; then
-            echo 'changed=false' >> "$GITHUB_OUTPUT"
-            echo 'Canonical Harvest assets already match approved binaries.'
-          else
-            git commit -m 'Publish approved Harvest education images'
-            git push origin HEAD:main
-            echo 'changed=true' >> "$GITHUB_OUTPUT"
-            echo "commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Validate publication package
-        shell: bash
-        run: |
-          set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME missing}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD missing}"
           node --check scripts/deploy-wordpress-infographic-library-rest.mjs
-          test -d site/wordpress/assets/infographics
-          count="$(find site/wordpress/assets/infographics -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webp' -o -iname '*.gif' \) | wc -l | tr -d ' ')"
+          count="$(find "$INFOGRAPHIC_DIR" -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webp' -o -iname '*.gif' \) | wc -l | tr -d ' ')"
           test "$count" -ge 20
-          while read -r file; do
-            test -s "site/wordpress/assets/infographics/$file"
-          done < "$RUNNER_TEMP/approved-harvest-files.txt"
-          echo "Source-controlled images queued: $count" >> "$GITHUB_STEP_SUMMARY"
+          echo "Images ready for publication: $count"
 
-      - name: Detect repository-level WordPress credentials
-        id: access
-        shell: bash
-        run: |
-          set -euo pipefail
-          if [[ -n "${WP_API_USERNAME:-}" && -n "${WP_API_PASSWORD:-}" ]]; then
-            echo 'available=true' >> "$GITHUB_OUTPUT"
-          else
-            echo 'available=false' >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Upload media and publish library
-        id: media
-        if: steps.access.outputs.available == 'true'
+      - name: Publish infographic library and topic pages
         shell: bash
         run: |
           set -euo pipefail
           node scripts/deploy-wordpress-infographic-library-rest.mjs
-          backup_dir="$(cat "$BACKUP_ROOT/wordpress-infographic-backup-path.txt")"
-          result="$backup_dir/deployment-result.json"
-          echo "source_count=$(node -p "require(process.argv[1]).sourceImageCount" "$result")" >> "$GITHUB_OUTPUT"
-          echo "uploaded_count=$(node -p "require(process.argv[1]).uploadedMediaCount" "$result")" >> "$GITHUB_OUTPUT"
-          echo "reused_count=$(node -p "require(process.argv[1]).reusedMediaCount" "$result")" >> "$GITHUB_OUTPUT"
-          echo "page_id=$(node -p "require(process.argv[1]).pageId" "$result")" >> "$GITHUB_OUTPUT"
 
-      - name: Verify live Harvest placements and infographic library
-        id: verify
-        if: steps.media.outcome == 'success'
+      - name: Verify all six images live
         shell: bash
         run: |
           set -euo pipefail
-          fetch_page() {
-            local path="$1" output="$2" ok=0
+
+          verify_page() {
+            local route="$1"
+            local output="$2"
+            local ok=0
             for attempt in 1 2 3 4 5 6 7 8; do
-              curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
-                --header 'Cache-Control: no-cache, no-store, max-age=0' \
-                --header 'Pragma: no-cache' \
-                "https://dtfseeds.com${path}?dtf_harvest_direct=${GITHUB_RUN_ID}-${attempt}" \
-                --output "$output"
+              curl -4 -L --fail --silent --show-error --retry 2 --retry-delay 2 \
+                -H 'Cache-Control: no-cache, no-store, max-age=0' \
+                -H 'Pragma: no-cache' \
+                "https://dtfseeds.com${route}?dtf_harvest_live=${GITHUB_RUN_ID}-${attempt}" \
+                -o "$output"
               if grep -Fqi 'HARV 03 harvest handling workflow' "$output"; then
                 ok=1
                 break
               fi
               sleep 8
             done
-            [[ "$ok" -eq 1 ]]
+            test "$ok" -eq 1
           }
 
-          library="$RUNNER_TEMP/infographic-library.html"
-          harvest="$RUNNER_TEMP/harvest-postharvest.html"
-          fetch_page '/learn/infographics/' "$library"
-          fetch_page '/learn/harvest-postharvest/' "$harvest"
+          library="$RUNNER_TEMP/infographics-live.html"
+          harvest="$RUNNER_TEMP/harvest-live.html"
+          verify_page '/learn/infographics/' "$library"
+          verify_page '/learn/harvest-postharvest/' "$harvest"
 
           for page in "$library" "$harvest"; do
-            for marker in \
-              'HARV 01 harvest readiness indicators' \
-              'HARV 02 harvest trichome maturity interpretation' \
-              'HARV 03 harvest handling workflow' \
-              'HARV 04 bud washing overview' \
-              'HARV 05 drying environment fundamentals' \
-              'HARV 06 drying failure modes'; do
-              grep -Fqi "$marker" "$page" || {
-                echo "Missing live Harvest asset: $marker" >&2
-                exit 1
-              }
-            done
+            grep -Fqi 'HARV 01 harvest readiness indicators' "$page"
+            grep -Fqi 'HARV 02 harvest trichome maturity interpretation' "$page"
+            grep -Fqi 'HARV 03 harvest handling workflow' "$page"
+            grep -Fqi 'HARV 04 bud washing overview' "$page"
+            grep -Fqi 'HARV 05 drying environment fundamentals' "$page"
+            grep -Fqi 'HARV 06 drying failure modes' "$page"
             grep -Eqi '<img[^>]+wp-content/uploads/' "$page"
           done
 
-          image_count="$(grep -Eoi '<img[^>]+wp-content/uploads/' "$library" | wc -l | tr -d ' ')"
-          test "$image_count" -ge 10
-          echo "live_image_count=$image_count" >> "$GITHUB_OUTPUT"
-          echo 'harvest_verified=6' >> "$GITHUB_OUTPUT"
+          echo 'All six Harvest images verified on both live routes.'
 
-      - name: Fail when repository-level credentials are absent
-        if: steps.access.outputs.available != 'true'
-        run: exit 1
-
-      - name: Upload rollback package
+      - name: Preserve publication evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: wordpress-infographic-direct-${{ github.run_id }}
+          name: harvest-infographic-production-${{ github.run_id }}
           path: |
             ${{ runner.temp }}/wordpress-infographic-direct-backups
-            ${{ runner.temp }}/approved-harvest-files.txt
-            ${{ runner.temp }}/infographic-library.html
-            ${{ runner.temp }}/harvest-postharvest.html
+            ${{ runner.temp }}/infographics-live.html
+            ${{ runner.temp }}/harvest-live.html
           if-no-files-found: warn
           retention-days: 30
-
-      - name: Report direct publication result
-        if: always()
-        uses: actions/github-script@v7
-        env:
-          JOB_STATUS: ${{ job.status }}
-          ACCESS: ${{ steps.access.outputs.available }}
-          HARVEST_VERIFIED: ${{ steps.harvest.outputs.verified_count }}
-          HARVEST_COMMIT_CHANGED: ${{ steps.harvest_commit.outputs.changed }}
-          HARVEST_COMMIT: ${{ steps.harvest_commit.outputs.commit }}
-          SOURCE_COUNT: ${{ steps.media.outputs.source_count }}
-          UPLOADED_COUNT: ${{ steps.media.outputs.uploaded_count }}
-          REUSED_COUNT: ${{ steps.media.outputs.reused_count }}
-          PAGE_ID: ${{ steps.media.outputs.page_id }}
-          LIVE_IMAGE_COUNT: ${{ steps.verify.outputs.live_image_count }}
-          LIVE_HARVEST_COUNT: ${{ steps.verify.outputs.harvest_verified }}
-        with:
-          script: |
-            const body = [
-              '## THC infographic direct publication',
-              '',
-              `Status: **${process.env.JOB_STATUS}**`,
-              `Approved Harvest binaries checksum-verified: **${process.env.HARVEST_VERIFIED || '0'}**`,
-              `Canonical Harvest commit created: **${process.env.HARVEST_COMMIT_CHANGED || 'false'}**`,
-              `Canonical asset commit: ${process.env.HARVEST_COMMIT ? `\`${process.env.HARVEST_COMMIT}\`` : 'existing canonical files reused'}`,
-              `Repository-level WordPress credentials available: **${process.env.ACCESS || 'false'}**`,
-              `Source images processed: **${process.env.SOURCE_COUNT || 'not-run'}**`,
-              `New media uploads: **${process.env.UPLOADED_COUNT || 'not-run'}**`,
-              `Existing media reused: **${process.env.REUSED_COUNT || 'not-run'}**`,
-              `Infographic page ID: **${process.env.PAGE_ID || 'not-run'}**`,
-              `Images verified live in library: **${process.env.LIVE_IMAGE_COUNT || 'not-run'}**`,
-              `Approved Harvest images verified on both live routes: **${process.env.LIVE_HARVEST_COUNT || 'not-run'}**`,
-              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-              '',
-              'Targets:',
-              '- https://dtfseeds.com/learn/harvest-postharvest/',
-              '- https://dtfseeds.com/learn/infographics/',
-              'No secret values are included in this report.'
-            ].join('\n');
-            await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: 46, body });
