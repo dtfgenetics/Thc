@@ -32,6 +32,7 @@ allowed = [
     "games/grower-conversations",
     "games/seed-man-platformer",
     "games/protect-the-plants",
+    "games/bud-or-bluff",
     "games/weedopolis",
     "games/crossword",
     "games/who-took-it",
@@ -40,6 +41,8 @@ allowed = [
     "tools",
     "projects",
     "puzzles",
+    "atlas",
+    "assets/images/atlas",
 ]
 required = [
     "games/index.html",
@@ -51,6 +54,11 @@ required = [
     "games/seed-man-platformer/index.html",
     "games/protect-the-plants/index.html",
     "games/protect-the-plants/api.php",
+    "games/bud-or-bluff/index.html",
+    "games/bud-or-bluff/app-v2.js",
+    "games/bud-or-bluff/styles.css",
+    "games/bud-or-bluff/v2.css",
+    "games/bud-or-bluff/api-v2.php",
     "games/weedopolis/index.html",
     "games/crossword/index.html",
     "games/who-took-it/index.html",
@@ -60,6 +68,12 @@ required = [
     "tools/index.html",
     "projects/index.html",
     "puzzles/current.json",
+    "atlas/index.html",
+    "atlas/leaf-module/index.html",
+    "atlas/root-system/index.html",
+    "atlas/root-system/rhizosphere/index.html",
+    "atlas/downloads/index.html",
+    "assets/images/atlas/root-system/rhizosphere-microbe-interaction.svg",
 ]
 for rel in required:
     path = root / rel
