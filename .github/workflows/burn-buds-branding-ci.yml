@@ -66,6 +66,6 @@ jobs:
           grep -Fq 'Grow Room Chat' "$root/app.js"
           grep -Fq "const GRID=15" "$root/app.js"
           grep -Fq "api('rematch'" "$root/enhancements.js"
-          grep -Fq "action==='fire'" "$root/app.js"
+          grep -Fq "api('fire'" "$root/app.js"
           grep -Fq "api('place'" "$root/app.js"
           grep -Fq 'wordpress-transients' games/protect-the-plants/game.json
