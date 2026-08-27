@@ -1,0 +1,66 @@
+{
+  "id": "THC-ENC-189",
+  "number": 189,
+  "title": "Pruning Lower Shoots and Sink Competition",
+  "objective": "Explain how removing lower shoots changes canopy structure and the population of competing sinks, while avoiding the oversimplification that resources removed from one branch are automatically redirected in a fixed amount to retained flowers.",
+  "terms": [
+    {"term":"sink","definition":"A plant organ or tissue that imports and uses or stores assimilates and resources because its current demand exceeds local production."},
+    {"term":"source","definition":"A plant organ, commonly a mature photosynthetic leaf, that exports assimilated carbon to other tissues."},
+    {"term":"source-sink relationship","definition":"The dynamic production, transport, competition, and allocation of assimilates among organs as plant development and environment change."},
+    {"term":"lower-shoot pruning","definition":"Removal of selected shoots or branches from lower or otherwise targeted canopy positions to alter architecture and reproductive distribution."},
+    {"term":"sink strength","definition":"The relative ability of a growing organ to attract and utilize imported resources, reflecting organ size, developmental activity, metabolism, transport connection, and other factors."},
+    {"term":"assimilate partitioning","definition":"Distribution of recently fixed carbon and related resources among competing organs and tissues."},
+    {"term":"canopy stratification","definition":"Vertical organization of plant organs into layers that can differ in light, microclimate, age, and physiological performance."}
+  ],
+  "termDefinitionsStatus": "controlled_glossary_reconciled_for_publication",
+  "coreScience": [
+    "Developing shoots and inflorescences are sinks that compete within a connected whole plant, but allocation is not a simple bucket of resources divided equally among branch tips. Sink strength, vascular connection, developmental stage, leaf photosynthesis, root function, local light, hormone signaling, and whole-plant demand all affect partitioning.",
+    "Lower canopy positions in cannabis can experience substantially less light and can produce inflorescences with different mass and cannabinoid concentrations than upper positions. Dense stands can intensify lower-canopy shading and leaf decline. These gradients provide a biological reason to study removal or retention of poorly exposed lower growth rather than assuming every shoot contributes equally to the crop.",
+    "Cannabis architecture experiments have directly evaluated lower branch removal and related pruning treatments. Some treatments improved spatial cannabinoid uniformity by eliminating or changing low-position inflorescences, while yield and chemical responses depended on treatment and genotype. Removal therefore changes both the number of sinks and the architecture/microclimate in which remaining organs develop.",
+    "It is not accurate to say that every gram of biomass prevented on a removed lower branch becomes an extra gram in a retained upper inflorescence. Pruning also removes tissue that required resources to build, can remove photosynthetic leaves, triggers wound and architectural responses, changes leaf-area distribution, and may alter total plant growth."
+  ],
+  "cultivationRelevance": [
+    "Define why lower shoots are being removed: reduce shaded reproductive sites, improve access, change airflow pathways, standardize harvest positions, or test resource allocation. Different objectives require different outcome measurements.",
+    "Before pruning, distinguish a productive lower branch receiving useful light from a chronically shaded or weak sink. After pruning, evaluate retained-leaf area, canopy light, branch response, and final yield distribution rather than assuming redistribution occurred."
+  ],
+  "measureAndRecord": [
+    {"field":"Removed growth","requirement":"Plant ID, date, developmental stage, branch order and vertical position, number of shoots removed, and fresh or dry removed biomass when useful."},
+    {"field":"Leaf-area context","requirement":"Whether photosynthetic leaves were removed with shoots, approximate foliage distribution, and representative light measurements before and after when available."},
+    {"field":"Remaining sinks","requirement":"Number and position of retained reproductive shoots or inflorescences, branch hierarchy, and subsequent changes in their size or growth rate."},
+    {"field":"Canopy environment","requirement":"Lower-canopy light, visible shading, leaf senescence, airflow-related observations, density, and environmental conditions."},
+    {"field":"Outcome","requirement":"Total and positional dry yield, cannabinoid or other quality data when measured, uniformity, labor, and any discarded low-quality fraction; do not infer redistribution without endpoint data."}
+  ],
+  "misconceptions": [
+    "Resources from a removed branch are transferred one-for-one into the remaining flowers.",
+    "Every lower shoot is inherently unproductive.",
+    "Removing more lower growth always increases top-flower yield.",
+    "Sink competition can be understood without considering light, leaf area, vascular position, roots, and developmental stage."
+  ],
+  "evidenceLimits": [
+    "Cannabis studies demonstrate strong positional and architecture effects, but the ideal amount of lower-shoot removal is not universal. Results depend on genotype, planting density, light distribution, crop size, timing, and which leaves and branches are removed.",
+    "Source-sink theory explains why organs compete and why allocation can change, but it does not support simple arithmetic claims about guaranteed redistribution after pruning."
+  ],
+  "crossLinks": "THC-ENC-061–080 for photosynthesis, transport, and source-sink physiology; THC-ENC-101–120 for light measurement; THC-ENC-182 and THC-ENC-188 for architecture and support; THC-ENC-190 for defoliation; THC-ENC-201–220 for reproductive sinks.",
+  "sourceNotes": [
+    "Danziger N, Bernstein N. (2021). Plant architecture manipulation increases cannabinoid standardization in drug-type medical cannabis. Industrial Crops and Products 167:113528. DOI 10.1016/j.indcrop.2021.113528.",
+    "Danziger N, Bernstein N. (2022). Too Dense or Not Too Dense: Higher Planting Density Reduces Cannabinoid Uniformity but Increases Yield/Area in Drug-Type Medical Cannabis. Frontiers in Plant Science 13:713481. DOI 10.3389/fpls.2022.713481.",
+    "Crispim Massuela D et al. (2022). Impact of Harvest Time and Pruning Technique on Total CBD Concentration and Yield of Medicinal Cannabis. Plants 11(1):140. DOI 10.3390/plants11010140.",
+    "Danziger N, Bernstein N. (2021). Shape Matters: Plant Architecture Affects Chemical Uniformity in Large-Size Medical Cannabis Plants. Plants 10(9):1834; cannabis evidence on positional architecture and chemical uniformity.",
+    "General plant source-sink physiology is used for allocation concepts; no fixed redistribution coefficient is asserted for cannabis."
+  ],
+  "publicationAuthorized": true,
+  "reviewControl": {
+    "controlledManuscript": "Part 10 Batch 02 evidence synthesis",
+    "evidenceControl": "release_time_source_check_complete",
+    "secondaryEvidenceReview": "complete_qualified",
+    "externalReview": "pending_not_recorded",
+    "externalReviewType": "plant_source_sink_and_cannabis_pruning",
+    "releaseTimeReview": "completed_2026-08-26; resource redistribution is described as dynamic source-sink allocation, not one-for-one transfer, and no universal lower-pruning amount is prescribed",
+    "publicationAuthorized": true,
+    "publicationAuthorization": "project_owner_2026-08-26_continue_pushing_content",
+    "independentApproval": false,
+    "websiteAction": "publish_with_review_notice"
+  },
+  "slug": "pruning-lower-shoots-and-sink-competition",
+  "route": "/encyclopedia/pruning-lower-shoots-and-sink-competition"
+}
