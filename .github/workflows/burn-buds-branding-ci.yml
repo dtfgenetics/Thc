@@ -1,0 +1,71 @@
+name: Burn Buds Production Branding CI
+
+on:
+  pull_request:
+    paths:
+      - site/public-route-patch/games/index.html
+      - site/public-route-patch/games/protect-the-plants/**
+      - games/protect-the-plants/**
+      - .github/workflows/burn-buds-branding-ci.yml
+  push:
+    branches: [main]
+    paths:
+      - site/public-route-patch/games/index.html
+      - site/public-route-patch/games/protect-the-plants/**
+      - games/protect-the-plants/**
+      - .github/workflows/burn-buds-branding-ci.yml
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate Burn Buds browser assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          root=site/public-route-patch/games/protect-the-plants
+          for asset in index.html app.js api.php styles.css burn-buds.css burn-buds-branding.js plant.svg sw.js; do
+            test -s "$root/$asset"
+          done
+          node --check "$root/burn-buds-branding.js"
+          node --check "$root/sw.js"
+          php -l "$root/api.php"
+
+      - name: Validate product identity and compatibility
+        shell: bash
+        run: |
+          set -euo pipefail
+          root=site/public-route-patch/games/protect-the-plants
+          grep -Fq '<h1 id="burn-buds-title"' "$root/index.html"
+          grep -Fq 'Burn Buds' "$root/index.html"
+          grep -Fq './burn-buds.css' "$root/index.html"
+          grep -Fq './burn-buds-branding.js' "$root/index.html"
+          grep -Fq 'BUD BURNED!' "$root/index.html"
+          grep -Fq 'Burn Buds' site/public-route-patch/games/index.html
+          grep -Fq 'Play Burn Buds' site/public-route-patch/games/index.html
+          grep -Fq 'https://dtfseeds.com/games/protect-the-plants/' "$root/index.html"
+          grep -Fq "const apiUrl='./api.php'" "$root/app.js"
+          grep -Fq 'burn-buds-branding.js' "$root/sw.js"
+          grep -Fq 'burn-buds.css' "$root/sw.js"
+          grep -Fq 'Cannabis leaf game piece' "$root/plant.svg"
+          ! grep -Fqi 'potted cannabis plant' "$root/plant.svg"
+          jq -e '.title == "Burn Buds" and .legacyTitle == "Protect the Plants" and .route == "/games/protect-the-plants/"' games/protect-the-plants/game.json >/dev/null
+
+      - name: Preserve multiplayer contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          root=site/public-route-patch/games/protect-the-plants
+          grep -Fq 'View Active Game' "$root/app.js"
+          grep -Fq 'Grow Room Chat' "$root/app.js"
+          grep -Fq "const GRID=15" "$root/app.js"
+          grep -Fq "api('rematch'" "$root/enhancements.js"
+          grep -Fq "action==='fire'" "$root/app.js"
+          grep -Fq "action==='place'" "$root/app.js"
+          grep -Fq 'wordpress-transients' games/protect-the-plants/game.json
