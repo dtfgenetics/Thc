@@ -1,0 +1,39 @@
+name: Test THC Outdoor Canva Asset Transfer
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/thc-outdoor-canva-transfer-test.yml
+
+permissions:
+  contents: read
+
+jobs:
+  verify-transfer:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Install image metadata tool
+        run: sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends imagemagick
+
+      - name: Fetch signed full-size candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          url='https://media.canva.com/v2/image-resize/format:PNG/height:1086/quality:100/uri:ifs%3A%2F%2FM%2F7c880ff9-7121-40ef-a986-d567779af794/watermark:F/width:1448?csig=AAAAAAAAAAAAAAAAAAAAAIyRqXK7oUvZKfvfQeVFDq9TH30sAHmrplnMKjXci5GA&exp=1787864020&osig=AAAAAAAAAAAAAAAAAAAAAE4M0bQBtZePzLamGS1hIyFWuY_PyK34_wLVqnhsKG3E&signer=media-rpc&x-canva-quality=thumbnail'
+          curl --fail --silent --show-error --location "$url" --output /tmp/outdoor-section-01.png
+          test -s /tmp/outdoor-section-01.png
+          file /tmp/outdoor-section-01.png
+          identify /tmp/outdoor-section-01.png
+          dims="$(identify -format '%wx%h' /tmp/outdoor-section-01.png)"
+          echo "dimensions=$dims"
+          [[ "$dims" == '1448x1086' ]]
+
+      - name: Upload verification sample
+        uses: actions/upload-artifact@v4
+        with:
+          name: outdoor-canva-transfer-test
+          path: /tmp/outdoor-section-01.png
+          retention-days: 1
