@@ -204,6 +204,60 @@ payload = replace_once(
     "Protect the Plants live verification",
 )
 
+# Bud or Bluff is a packaged static/PHP multiplayer game. Scope the V2 bridge
+# to its route only after the guarded base and Protect the Plants expansions.
+payload = replace_once(
+    payload,
+    b"'games/grower-conversations','games/seed-man-platformer','games/protect-the-plants','games/weedopolis'",
+    b"'games/grower-conversations','games/seed-man-platformer','games/bud-or-bluff','games/protect-the-plants','games/weedopolis'",
+    "Bud or Bluff target allowlist",
+)
+payload = replace_once(
+    payload,
+    b"'games/grower-conversations/index.html','games/seed-man-platformer/index.html','games/protect-the-plants/index.html','games/protect-the-plants/api.php','games/weedopolis/index.html'",
+    b"'games/grower-conversations/index.html','games/seed-man-platformer/index.html','games/bud-or-bluff/index.html','games/bud-or-bluff/app-v2.js','games/bud-or-bluff/api-v2.php','games/bud-or-bluff/styles.css','games/bud-or-bluff/v2.css','games/protect-the-plants/index.html','games/protect-the-plants/api.php','games/weedopolis/index.html'",
+    "Bud or Bluff required-file list",
+)
+payload = replace_once(
+    payload,
+    b"'games/high-land/','games/high-iq/','games/high-life/','games/grower-conversations/','games/seed-man-platformer/',\n        'games/protect-the-plants/','games/weedopolis/'",
+    b"'games/high-land/','games/high-iq/','games/high-life/','games/grower-conversations/','games/seed-man-platformer/',\n        'games/bud-or-bluff/','games/protect-the-plants/','games/weedopolis/'",
+    "Bud or Bluff prefix allowlist",
+)
+payload = replace_once(
+    payload,
+    b"['/games/seed-man-platformer/', 'Seed Man'], ['/games/grower-conversations/', 'Grower Conversations'], ['/games/protect-the-plants/', 'Protect the Plants'], ['/games/high-land/', 'High Land'],",
+    b"['/games/seed-man-platformer/', 'Seed Man'], ['/games/grower-conversations/', 'Grower Conversations'], ['/games/bud-or-bluff/', 'Bud or Bluff'], ['/games/protect-the-plants/', 'Protect the Plants'], ['/games/high-land/', 'High Land'],",
+    "Bud or Bluff live verification",
+)
+
+# Atlas is part of the public app-only suite, including its dedicated image
+# subtree. Keep it inside the same transactional rollback boundary.
+payload = replace_once(
+    payload,
+    b"'growlens','thc-grow-doc','tools','projects','puzzles'",
+    b"'growlens','thc-grow-doc','tools','projects','puzzles','atlas','assets/images/atlas'",
+    "Atlas target allowlist",
+)
+payload = replace_once(
+    payload,
+    b"'thc-grow-doc/api/visual-observations.php','tools/index.html','projects/index.html','puzzles/current.json'",
+    b"'thc-grow-doc/api/visual-observations.php','tools/index.html','projects/index.html','puzzles/current.json','atlas/index.html','atlas/leaf-module/index.html','atlas/root-system/index.html','atlas/root-system/rhizosphere/index.html','atlas/downloads/index.html','assets/images/atlas/root-system/rhizosphere-microbe-interaction.svg'",
+    "Atlas required-file list",
+)
+payload = replace_once(
+    payload,
+    b"'games/weedopolis/','games/crossword/','games/who-took-it/','growlens/','thc-grow-doc/','tools/','projects/','puzzles/'",
+    b"'games/weedopolis/','games/crossword/','games/who-took-it/','growlens/','thc-grow-doc/','tools/','projects/','puzzles/','atlas/','assets/images/atlas/'",
+    "Atlas prefix allowlist",
+)
+payload = replace_once(
+    payload,
+    b"  ['/growlens/', 'GrowLens'], ['/thc-grow-doc/', 'Grow Doc'], ['/games/high-iq/', 'High IQ'],",
+    b"  ['/atlas/', 'THC Living Plant Atlas'], ['/growlens/', 'GrowLens'], ['/thc-grow-doc/', 'Grow Doc'], ['/games/high-iq/', 'High IQ'],",
+    "Atlas live verification",
+)
+
 payload = replace_once(
     payload,
     b"['/games/', 'Original cannabis games built to play, learn, compete, and share.']",
