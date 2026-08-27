@@ -1,0 +1,137 @@
+name: Publish Water Root Zone Missing Material V6
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'site/wordpress/education/water-root-zone-missing-material-v6.json'
+      - 'scripts/publish-wordpress-water-root-zone-missing-material-v6.mjs'
+      - '.github/workflows/wordpress-water-root-zone-missing-material-v6.yml'
+  workflow_run:
+    workflows:
+      - Publish Water Root Zone V6 Visual Atlas
+    types: [completed]
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-water-root-zone-missing-material-v6
+  cancel-in-progress: true
+
+env:
+  WP_SITE_URL: https://dtfseeds.com
+  NODE_OPTIONS: --dns-result-order=ipv4first
+
+jobs:
+  publish:
+    name: Publish seven Water Root Zone deep labs
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    environment: production
+    env:
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      APPLY_WATER_ROOT_ZONE_MISSING_V6: 'true'
+      WATER_ROOT_ZONE_MISSING_V6_PATH: site/wordpress/education/water-root-zone-missing-material-v6.json
+      BACKUP_ROOT: /tmp/dtf-water-root-zone-missing-v6
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate missing material package
+        id: validate
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
+          node --check scripts/publish-wordpress-water-root-zone-missing-material-v6.mjs
+          node - <<'NODE'
+          const fs=require('fs');
+          const p=JSON.parse(fs.readFileSync('site/wordpress/education/water-root-zone-missing-material-v6.json','utf8'));
+          if(p.id!=='water-root-zone-missing-material-v6'||p.modules?.length!==7) throw new Error('Expected exactly seven Water Root Zone missing-material modules.');
+          const ids=p.modules.map(x=>x.id);
+          if(new Set(ids).size!==7) throw new Error('Module IDs must be unique.');
+          for(const m of p.modules){
+            for(const k of ['mechanism','measureFirst','interpretationLimits','commonMistakes']) if(!Array.isArray(m[k])||m[k].length<3) throw new Error(`${m.id}: ${k} incomplete`);
+            if(!m.fieldExercise||!m.visualBrief||!m.learningOutcome) throw new Error(`${m.id}: missing required teaching field`);
+          }
+          console.log(`Validated modules: ${ids.join(', ')}`);
+          NODE
+
+      - name: Publish and verify seven deep labs
+        id: publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/publish-wordpress-water-root-zone-missing-material-v6.mjs | tee "$RUNNER_TEMP/water-root-zone-missing-v6.log"
+          test -s water-root-zone-missing-material-v6-report.json
+          cp water-root-zone-missing-material-v6-report.json "$RUNNER_TEMP/report.json"
+          echo "modules=$(node -p "require(process.argv[1]).modules" "$RUNNER_TEMP/report.json")" >> "$GITHUB_OUTPUT"
+
+      - name: Independent visitor verification
+        id: verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          body="$RUNNER_TEMP/water-root-zone-missing-v6.html"
+          ok=0
+          for attempt in 1 2 3 4 5 6 7 8; do
+            curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+              --header 'Cache-Control: no-cache, no-store, max-age=0' \
+              --header 'Pragma: no-cache' \
+              "$WP_SITE_URL/learn/water-ph-ec/?dtf_wr6m_verify=${GITHUB_RUN_ID}-${attempt}" --output "$body"
+            if grep -Fqi 'data-dtf-water-root-zone-missing-v6="true"' "$body"; then ok=1; break; fi
+            sleep 5
+          done
+          [[ "$ok" -eq 1 ]]
+          [[ "$(grep -Fo 'data-wr6m-module=' "$body" | wc -l | tr -d ' ')" = '7' ]]
+          grep -Fqi 'data-dtf-water-root-zone-v6="true"' "$body"
+          grep -Fqi 'data-dtf-water-root-zone-visuals-v6="true"' "$body"
+          grep -Fqi 'data-dtf-topic="water-root-zone"' "$body"
+          grep -Fqi 'data-dtf-learning-v4="topic-water-root-zone"' "$body"
+
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: water-root-zone-missing-material-v6-${{ github.run_id }}
+          path: |
+            /tmp/dtf-water-root-zone-missing-v6
+            water-root-zone-missing-material-v6-report.json
+            ${{ runner.temp }}/water-root-zone-missing-v6.log
+            ${{ runner.temp }}/water-root-zone-missing-v6.html
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report production result
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          STATUS: ${{ job.status }}
+          VALIDATE: ${{ steps.validate.outcome }}
+          PUBLISH: ${{ steps.publish.outcome }}
+          VERIFY: ${{ steps.verify.outcome }}
+          MODULES: ${{ steps.publish.outputs.modules }}
+        with:
+          script: |
+            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body:[
+              '## Water & Root Zone V6 missing material closure','',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Result: **${process.env.STATUS}**`,
+              `Package validation: **${process.env.VALIDATE || 'not-run'}**`,
+              `WordPress publication: **${process.env.PUBLISH || 'not-run'}**`,
+              `Visitor verification: **${process.env.VERIFY || 'not-run'}**`,
+              `Deep diagnostic/measurement labs: **${process.env.MODULES || '0'}**`,'',
+              'This layer closes the seven instructional gaps behind the existing visual-production targets: container water/sensor placement, irrigation uniformity, dryback definition, runoff/leaching mass balance, EC/salinity/ppm scales, pH/alkalinity/root-zone drift, and root-zone sampling methods. It preserves the existing 8-chapter/32-lesson curriculum and 16-card visual atlas. The seven purpose-built diagrams remain separately tracked as visual-production work until exact reviewed artwork is produced.'
+            ].join('\n')});
