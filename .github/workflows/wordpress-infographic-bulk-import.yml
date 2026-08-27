@@ -1,0 +1,108 @@
+name: Import Bulk THC Infographic Assets
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'site/wordpress/imports/infographic-bulk-import.json'
+      - 'scripts/import-wordpress-infographic-remote-batch.mjs'
+      - '.github/workflows/wordpress-infographic-bulk-import.yml'
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: dtfseeds-wordpress-infographic-bulk-import
+  cancel-in-progress: true
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate bulk import package
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/import-wordpress-infographic-remote-batch.mjs
+          node -e "const m=require('./site/wordpress/imports/infographic-bulk-import.json'); if(m.schemaVersion!==1||!Array.isArray(m.assets)) process.exit(1)"
+
+      - name: Download and validate queued images
+        id: import
+        env:
+          BULK_IMPORT_REPORT: ${{ runner.temp }}/infographic-bulk-import-report.json
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/import-wordpress-infographic-remote-batch.mjs
+          report="$BULK_IMPORT_REPORT"
+          echo "requested=$(node -p "require(process.argv[1]).requestedAssets" "$report")" >> "$GITHUB_OUTPUT"
+          echo "created=$(node -p "require(process.argv[1]).created" "$report")" >> "$GITHUB_OUTPUT"
+          echo "updated=$(node -p "require(process.argv[1]).updated" "$report")" >> "$GITHUB_OUTPUT"
+          echo "reused=$(node -p "require(process.argv[1]).reused" "$report")" >> "$GITHUB_OUTPUT"
+
+      - name: Commit canonical images to main
+        id: commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'DTF Bulk Image Importer'
+          git config user.email 'actions@users.noreply.github.com'
+          git add site/wordpress/assets/infographics
+          if git diff --cached --quiet; then
+            echo 'changed=false' >> "$GITHUB_OUTPUT"
+            echo 'No new image binaries required a repository commit.'
+          else
+            git commit -m 'Import bulk THC infographic assets'
+            git push origin HEAD:main
+            echo 'changed=true' >> "$GITHUB_OUTPUT"
+            echo "commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Preserve intake report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: infographic-bulk-import-${{ github.run_id }}
+          path: ${{ runner.temp }}/infographic-bulk-import-report.json
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report intake result
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          STATUS: ${{ job.status }}
+          REQUESTED: ${{ steps.import.outputs.requested }}
+          CREATED: ${{ steps.import.outputs.created }}
+          UPDATED: ${{ steps.import.outputs.updated }}
+          REUSED: ${{ steps.import.outputs.reused }}
+          COMMIT_CHANGED: ${{ steps.commit.outputs.changed }}
+          ASSET_COMMIT: ${{ steps.commit.outputs.commit }}
+        with:
+          script: |
+            const body = [
+              '## Bulk infographic intake', '',
+              `Status: **${process.env.STATUS}**`,
+              `Queued assets: **${process.env.REQUESTED || '0'}**`,
+              `New files: **${process.env.CREATED || '0'}**`,
+              `Intentional replacements: **${process.env.UPDATED || '0'}**`,
+              `Already-current files: **${process.env.REUSED || '0'}**`,
+              `Canonical image commit created: **${process.env.COMMIT_CHANGED || 'false'}**`,
+              `Asset commit: ${process.env.ASSET_COMMIT ? `\`${process.env.ASSET_COMMIT}\`` : 'none required'}`,
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              '',
+              'When new canonical images are committed, the existing protected WordPress infographic production workflow is triggered automatically and performs the actual WordPress upload plus visitor-facing verification.'
+            ].join('\n');
+            await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: 46, body });
