@@ -1,6 +1,6 @@
 {
-  "revision": 2,
-  "purpose": "Replace stale Harvest placeholders with the approved full-resolution assets and verify every CDN download by SHA-256.",
+  "revision": 3,
+  "purpose": "Trigger the isolated approved Harvest replacement importer for HARV-03 and HARV-05; retain all six source records for auditability.",
   "assets": [
     {
       "path": "site/wordpress/assets/infographics/THC-HARV-01_harvest_readiness_indicators.jpg",
