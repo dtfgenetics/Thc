@@ -1,0 +1,67 @@
+{
+  "id":"THC-ENC-190",
+  "number":190,
+  "title":"Defoliation: Mechanisms, Evidence, and Risk",
+  "objective":"Evaluate defoliation as a canopy intervention by separating the physiological role of leaf area from treatment-specific claims about light penetration, airflow, yield, and recovery.",
+  "terms":[
+    {"term":"defoliation","definition":"Intentional removal of leaves from a plant canopy."},
+    {"term":"leaf area","definition":"The photosynthetically active leaf surface available to intercept light and exchange gases."},
+    {"term":"source tissue","definition":"Tissue that exports assimilated carbon to support growth, storage, or reproduction elsewhere in the plant."},
+    {"term":"source-sink balance","definition":"The dynamic relationship between organs that supply assimilates and organs that consume or store them."},
+    {"term":"canopy porosity","definition":"The degree to which open space within a canopy permits light and air movement through foliage and branches."},
+    {"term":"compensatory response","definition":"Growth or physiological adjustment that partly offsets tissue loss after disturbance; the magnitude and timing depend on plant condition and environment."}
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Leaves are major photosynthetic source organs. Removing them changes total light-intercepting area, internal light distribution, transpiring surface, source-sink relationships, and canopy airflow at the same time. Defoliation is therefore not a single-variable treatment.",
+    "Opening a dense canopy can improve photon penetration and air movement to previously shaded or enclosed tissue, but the benefit must be weighed against loss of photosynthetic area and the plant's capacity to replace or functionally compensate for removed leaves.",
+    "Cannabis studies of pruning, architecture, and defoliation show that treatment effects are strongly dependent on cultivar, intensity, timing, plant density, and the surrounding production system. These studies do not support a universal defoliation schedule or a fixed percentage of leaves to remove across cultivars.",
+    "Broader plant-physiology research supports the concepts of source limitation, sink demand, compensatory photosynthesis, and canopy-light redistribution, but responses vary substantially by species and developmental stage. These mechanisms should inform interpretation without being presented as cannabis-specific proof.",
+    "Defoliation should be treated as a measured canopy intervention rather than as a ritual. A useful comparison records canopy density, internal light, branch or inflorescence development, recovery, and final crop response instead of assuming that a visibly open canopy is automatically more productive."
+  ],
+  "cultivationRelevance":[
+    "Use defoliation only for a stated canopy objective such as reducing severe internal shading, improving access for inspection, or increasing airflow through a congested zone.",
+    "Prefer staged, observable changes over large undocumented removals when plant response is uncertain. Reassess canopy closure, leaf posture, new growth, and stress before additional removal.",
+    "Do not remove healthy leaves solely because they are large. A leaf that appears to shade one site may still contribute strongly to whole-plant carbon gain.",
+    "Compare treated and untreated plants or canopy zones when possible so the intervention produces usable evidence for that cultivar and system."
+  ],
+  "measureAndRecord":[
+    {"field":"Treatment description","requirement":"Date, developmental stage, cultivar, plant age, approximate number or proportion of leaves removed, canopy zones affected, and reason for removal."},
+    {"field":"Canopy condition before treatment","requirement":"Plant height/width, branch count, canopy density or coverage, internal PPFD when available, airflow observations, and visible congestion."},
+    {"field":"Recovery","requirement":"Leaf posture, new shoot expansion, irrigation demand, visible stress, and days until normal active growth resumes."},
+    {"field":"Canopy redistribution","requirement":"Repeat internal-light and canopy-density observations from the same measurement locations after treatment."},
+    {"field":"Crop outcome","requirement":"Final yield and quality measurements using the same harvest, drying, sampling, and normalization method used for comparison plants."}
+  ],
+  "misconceptions":[
+    "Removing more leaves always increases light use efficiency.",
+    "A leaf that shades a flower is biologically useless.",
+    "Cannabis requires a universal defoliation schedule at specific weeks of flowering.",
+    "If the canopy looks cleaner after defoliation, yield must have improved.",
+    "One successful cultivar response proves the same treatment is optimal for all genotypes and densities."
+  ],
+  "evidenceLimits":[
+    "Direct cannabis evidence on defoliation remains much smaller than the broader horticultural literature and often differs in cultivar, density, treatment intensity, and production system. Mechanistic discussion of source-sink relations and compensatory responses partly relies on general plant physiology. This lesson does not establish a universal removal percentage, node count, or calendar schedule."
+  ],
+  "crossLinks":"THC-ENC-061–080 for photosynthesis and source-sink physiology; THC-ENC-101–120 for canopy light; THC-ENC-181–189 for architecture and structural training; THC-ENC-191–200 for canopy spacing, airflow, support, and recovery.",
+  "sourceNotes":[
+    "Danziger N, Bernstein N. (2021). Shape Matters: Plant Architecture Affects Chemical Uniformity in Large-Size Medical Cannabis Plants. Plants 10(9):1834. Supports architecture- and canopy-position effects; not a universal defoliation prescription.",
+    "Danziger N, Bernstein N. (2021). Light matters: Effect of light spectra on cannabinoid profile and plant development of medical cannabis (Cannabis sativa L.). Industrial Crops and Products 164:113351. Supports the importance of light environment and plant development; not a direct defoliation trial.",
+    "Recent cannabis pruning/architecture studies and reviews were consulted for treatment-specific evidence; results remain cultivar- and system-dependent and should not be generalized into fixed schedules.",
+    "General plant-physiology literature on source-sink balance, leaf-area loss, and compensatory photosynthesis is used only as mechanistic context where cannabis-specific evidence is limited."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{
+    "controlledManuscript":"Volume 10 batch 02 controlled web derivative",
+    "evidenceControl":"current_topic_secondary_review_complete",
+    "secondaryEvidenceReview":"complete_qualified",
+    "externalReview":"pending_not_recorded",
+    "externalReviewType":"canopy_physiology_and_cannabis_horticulture",
+    "releaseTimeReview":"completed_2026-08-26_non_universal_defoliation_claims",
+    "publicationAuthorized":true,
+    "publicationAuthorization":"project_owner_continuation_2026-08-26",
+    "independentApproval":false,
+    "websiteAction":"publish_with_review_notice"
+  },
+  "slug":"defoliation-mechanisms-evidence-and-risk",
+  "route":"/encyclopedia/defoliation-mechanisms-evidence-and-risk"
+}
