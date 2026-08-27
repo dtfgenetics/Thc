@@ -1,0 +1,66 @@
+{
+  "id": "THC-ENC-188",
+  "number": 188,
+  "title": "Screen and Trellis Systems",
+  "objective": "Explain screens and trellises as physical canopy-support and shoot-positioning systems, and show how their effects depend on architecture, spacing, light distribution, airflow, access, and the training decisions made around the support structure.",
+  "terms": [
+    {"term":"trellis","definition":"A physical support structure used to hold, guide, separate, or stabilize plant shoots."},
+    {"term":"screen","definition":"A grid-like support or positioning surface used to distribute shoots across a defined area; in cannabis cultivation it is often associated with the informal term Screen of Green or SCROG."},
+    {"term":"shoot positioning","definition":"Deliberate placement or redirection of shoots to change their location, orientation, spacing, or support within a canopy."},
+    {"term":"canopy plane","definition":"A practical reference surface describing the height or spatial layer at which actively growing shoots or reproductive structures are distributed."},
+    {"term":"self-shading","definition":"Reduction of light to one plant organ because other leaves or shoots on the same plant intercept radiation first."},
+    {"term":"support load","definition":"The mechanical weight and force carried by a branch, attachment point, tie, net, frame, or other support component."},
+    {"term":"canopy access","definition":"The ability to inspect, measure, prune, harvest, and service plants without excessive obstruction from foliage or support structures."}
+  ],
+  "termDefinitionsStatus": "controlled_glossary_reconciled_for_publication",
+  "coreScience": [
+    "A screen or trellis is not itself a plant physiological treatment. It is a physical framework that changes what growers can support and where shoots can be positioned. Its biological effects arise indirectly through altered shoot orientation, spacing, light exposure, self-shading, branch loading, airflow pathways, and the pruning or bending decisions used with it.",
+    "Cannabis can form substantial vertical gradients in light environment, leaf condition, inflorescence development, and cannabinoid concentration within a dense canopy. Research on plant density and architecture manipulation shows that reducing lower-canopy light deprivation or removing poorly exposed lower growth can change crop uniformity. A support system can assist spatial organization, but it does not guarantee uniform irradiance by itself.",
+    "A visually level canopy is not necessarily a physiologically uniform canopy. Leaves differ in angle, overlap, age, photosynthetic capacity, and distance from fixtures or sunlight. Representative light measurements and plant observations are required to determine whether a screen has actually improved exposure.",
+    "Trellising also changes mechanical risk and work access. Supporting heavy or long branches can reduce uncontrolled movement, but crowded grids can restrict inspection and make disease, pest, sanitation, or harvest work harder if canopy density and access are not considered together."
+  ],
+  "cultivationRelevance": [
+    "Evaluate a support system by measurable functions: branch stability, shoot spacing, canopy height variation, light distribution, inspection access, airflow-related observations, and harvest accessibility. Do not score a trellis only by whether the grid appears full.",
+    "Keep structural support distinct from plant-density decisions. A screen can spread one plant over more area or organize several plants in less space, and those scenarios create different competition, root-zone, irrigation, and yield-per-area questions."
+  ],
+  "measureAndRecord": [
+    {"field":"Support geometry","requirement":"Grid or support type, height, dimensions, spacing of support points or openings, attachment method, and whether one or multiple support layers are present."},
+    {"field":"Shoot distribution","requirement":"Number of retained leaders, shoot positions, canopy width, height variation, overlap, empty areas, and branch order at defined dates."},
+    {"field":"Light environment","requirement":"Representative PPFD or other relevant light readings at defined canopy positions and times, plus visible self-shading and lower-canopy decline."},
+    {"field":"Mechanical condition","requirement":"Branch loading, bending at support points, abrasion, constriction, breakage, net/frame movement, and any failed attachments."},
+    {"field":"Access and health","requirement":"Ability to inspect both canopy surfaces and lower stems, airflow-related observations, sanitation access, pest/disease findings, and harvest or maintenance constraints."}
+  ],
+  "misconceptions": [
+    "A flat-looking screen guarantees equal light to every flowering site.",
+    "SCROG is a standardized scientific treatment with one validated cannabis protocol.",
+    "A trellis automatically improves airflow regardless of canopy density.",
+    "Filling every grid opening is always better than preserving access and separation.",
+    "Support systems remove the need to measure light or inspect lower canopy health."
+  ],
+  "evidenceLimits": [
+    "Cannabis research supports the importance of architecture, density, and light distribution, but direct controlled comparisons of standardized SCROG or trellis configurations are limited. Most claims about exact grid dimensions, fill percentages, or timing remain practice-specific rather than universal research targets.",
+    "A support system interacts with genotype, plant count, light source, crop duration, pruning, branch strength, and environment. Effects cannot be attributed to the screen alone without a controlled comparison."
+  ],
+  "crossLinks": "THC-ENC-101–120 for light measurement; THC-ENC-181–187 for architecture and training; THC-ENC-189–190 for lower-shoot pruning and defoliation; THC-ENC-281–340 for scouting, disease, and biosecurity access considerations.",
+  "sourceNotes": [
+    "Danziger N, Bernstein N. (2022). Too Dense or Not Too Dense: Higher Planting Density Reduces Cannabinoid Uniformity but Increases Yield/Area in Drug-Type Medical Cannabis. Frontiers in Plant Science 13:713481. DOI 10.3389/fpls.2022.713481.",
+    "Danziger N, Bernstein N. (2021). Plant architecture manipulation increases cannabinoid standardization in drug-type medical cannabis. Industrial Crops and Products 167:113528. DOI 10.1016/j.indcrop.2021.113528.",
+    "Ijoma GN et al. (2026). The curious origins of a high-stress training technique mainlining: its molecular, biochemical, and agronomic perspectives for the cultivation of Cannabis sativa. Journal of Cannabis Research 8:3. DOI 10.1186/s42238-025-00339-y; secondary source documenting SCROG/trellis terminology and evidence gaps.",
+    "Spitzer-Rimon B, Duchin S, Bernstein N, Kamenetsky R. (2019). Architecture and Florogenesis in Female Cannabis sativa Plants. Frontiers in Plant Science 10:350. DOI 10.3389/fpls.2019.00350."
+  ],
+  "publicationAuthorized": true,
+  "reviewControl": {
+    "controlledManuscript": "Part 10 Batch 02 evidence synthesis",
+    "evidenceControl": "release_time_source_check_complete",
+    "secondaryEvidenceReview": "complete_qualified",
+    "externalReview": "pending_not_recorded",
+    "externalReviewType": "canopy_support_light_and_cannabis_architecture",
+    "releaseTimeReview": "completed_2026-08-26; trellis/SCROG terminology is separated from experimentally established architecture and light-distribution evidence and no grid-size or fill-percentage target is prescribed",
+    "publicationAuthorized": true,
+    "publicationAuthorization": "project_owner_2026-08-26_continue_pushing_content",
+    "independentApproval": false,
+    "websiteAction": "publish_with_review_notice"
+  },
+  "slug": "screen-and-trellis-systems",
+  "route": "/encyclopedia/screen-and-trellis-systems"
+}
