@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "site": "https://dtfseeds.com",
   "sourceOfTruth": "dtfgenetics/Thc",
-  "updated": "2026-08-23",
+  "updated": "2026-08-26",
   "apps": [
     {
       "id": "high-land",
@@ -166,10 +166,14 @@
       "id": "bud-or-bluff",
       "title": "Bud or Bluff",
       "repository": "dtfgenetics/Thc",
-      "sourcePath": "games/bud-or-bluff",
-      "runtime": "content-data",
-      "status": "in-development",
-      "notes": "Application-ready real-name groups live in GitHub; editable research and approved BUD/BLUFF decisions remain controlled in the project Sheet/Drive."
+      "sourcePath": "site/public-route-patch/games/bud-or-bluff",
+      "canonicalDataPath": "games/bud-or-bluff",
+      "route": "/games/bud-or-bluff/",
+      "runtime": "static-php",
+      "status": "ready-to-package",
+      "build": "node games/bud-or-bluff/test/engine.test.mjs && node games/bud-or-bluff/scripts/build-private-deck.mjs && node --check site/public-route-patch/games/bud-or-bluff/app-v2.js && php -l site/public-route-patch/games/bud-or-bluff/api-v2.php && node games/bud-or-bluff/test/online-lobby-v2.test.mjs",
+      "machineData": {"players":"2-10","cards":40,"roundOptions":[8,12,16,20],"storage":"wordpress-transients","networkAuthority":"php-server","transport":"polling"},
+      "notes": "Self-hosted 2–10 player online party game with six-character rooms, simultaneous server-authoritative BUD/BLUFF voting, hidden answers until reveal, Double Hit scoring, lobby lock/settings, chat, reconnectable sessions, vote-split reveal stats, rematches, host transfer, and same-origin PHP persistence."
     },
     {
       "id": "strain-showdown",
