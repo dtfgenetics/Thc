@@ -1,0 +1,149 @@
+name: Publish Harvest Images Now
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-harvest-images-now.yml'
+
+permissions:
+  contents: write
+  issues: write
+
+env:
+  WP_SITE_URL: https://dtfseeds.com
+  NODE_OPTIONS: --dns-result-order=ipv4first
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    environment: production
+    env:
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME || secrets.WORDPRESS_USERNAME || secrets.WP_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD || secrets.WORDPRESS_APP_PASSWORD || secrets.WP_APPLICATION_PASSWORD }}
+      INFOGRAPHIC_DIR: ${{ github.workspace }}/site/wordpress/assets/infographics
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Download new Harvest infographics
+        shell: bash
+        run: |
+          set -euo pipefail
+          out='site/wordpress/assets/infographics'
+          mkdir -p "$out"
+          files=(
+            'THC-HARV-07_water_activity_vs_moisture_content.jpg'
+            'THC-HARV-08_curing_workflow_moisture_equalization.jpg'
+            'THC-HARV-09_storage_environment_light_heat_oxygen_moisture.jpg'
+            'THC-HARV-10_post_harvest_degradation_pathways.jpg'
+            'THC-HARV-11_harvest_wet_trim_vs_dry_trim_process_choices.jpg'
+            'THC-HARV-12_post_harvest_quality_control_checklist.jpg'
+            'THC-HARV-13_drying_failure_modes_detailed.jpg'
+            'THC-HARV-14_harvest_resin_contamination_comparison.jpg'
+            'THC-HARV-15_drying_room_sensor_placement.jpg'
+            'THC-HARV-16_drying_room_airflow_mapping.jpg'
+          )
+          urls=(
+            'https://cdn.shopify.com/s/files/1/0664/2542/1885/files/THC-HARV-07_water_activity_vs_moisture_content.jpg?v=1787872112'
+            'https://cdn.shopify.com/s/files/1/0664/2542/1885/files/THC-HARV-08_curing_workflow_moisture_equalization.jpg?v=1787850620'
+            'https://cdn.shopify.com/s/files/1/0664/2542/1885/files/THC-HARV-09_storage_environment_light_heat_oxygen_moisture.jpg?v=1787850630'
+            'https://cdn.shopify.com/s/files/1/0664/2542/1885/files/THC-HARV-10_post_harvest_degradation_pathways.jpg?v=1787850640'
+            'https://cdn.shopify.com/s/files/1/0664/2542/1885/files/THC-HARV-11_harvest_wet_trim_vs_dry_trim_process_choices.jpg?v=1787850652'
+            'https://cdn.shopify.com/s/files/1/0664/2542/1885/files/THC-HARV-12_post_harvest_quality_control_checklist.jpg?v=1787850664'
+            'https://cdn.shopify.com/s/files/1/0664/2542/1885/files/THC-HARV-13_drying_failure_modes_detailed.jpg?v=1787872122'
+            'https://cdn.shopify.com/s/files/1/0664/2542/1885/files/THC-HARV-14_harvest_resin_contamination_comparison.jpg?v=1787850674'
+            'https://cdn.shopify.com/s/files/1/0664/2542/1885/files/THC-HARV-15_drying_room_sensor_placement.jpg?v=1787850687'
+            'https://cdn.shopify.com/s/files/1/0664/2542/1885/files/THC-HARV-16_drying_room_airflow_mapping.jpg?v=1787850697'
+          )
+          hashes=(
+            'd8d908aad0b789d9afd0ee04db5a5d174e4ea8ad4bb5938ce05538707adf7f22'
+            'b0e9a58d47d9a62b2290e205c7ef9fb7458cc59c3540c5cbd96a0ae90c48eb45'
+            'e9bd0d9adf9df2cbfb6bcb1f7ee20bf6d3fe4dce0e79e0b090009e0706d5b9bb'
+            '94e80c5765f641bd9f67896e5a65aed4d95877a5b4a19ad69c130f74e54c564d'
+            'cc14b4985aae954dc5b33e4d39bf5b82e1309820535cb6fe4b3c5f730c3e8a16'
+            '74b75e2a9be8a2262ca2ad6a84006a833290493f5199d6234fddf9ed66af272f'
+            '49ad817117af3c7638c2038e5f0f0e698a8c752291bfb88fe499b00e2d765733'
+            '46ed7a9b145daba66ac420279f4160f116b69e9bf98dfa5011ef395fc47936ab'
+            '9f33741985be5009602040eba0e9333ba6f040b7dab43e6d65fcb960b1f689ad'
+            'f7fd652468a0397a3517e534e495c7162d18adc6a6418077df8f3c0c88c21daf'
+          )
+          for i in "${!files[@]}"; do
+            echo "Fetching ${files[$i]}"
+            curl -4 --location --fail --silent --show-error --retry 4 --retry-delay 2 "${urls[$i]}" -o "$out/${files[$i]}"
+            test -s "$out/${files[$i]}"
+            actual="$(sha256sum "$out/${files[$i]}" | awk '{print $1}')"
+            [[ "$actual" == "${hashes[$i]}" ]] || { echo "Checksum mismatch for ${files[$i]}: $actual" >&2; exit 1; }
+          done
+
+      - name: Commit new canonical assets to main
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'DTF Harvest Image Publisher'
+          git config user.email 'actions@users.noreply.github.com'
+          git add site/wordpress/assets/infographics/THC-HARV-0*.jpg site/wordpress/assets/infographics/THC-HARV-1*.jpg
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish Harvest infographics HARV-07 through HARV-16'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+
+      - name: Publish infographic library and subject placements to WordPress
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?WordPress username missing}"
+          : "${WP_API_PASSWORD:?WordPress password missing}"
+          node --check scripts/deploy-wordpress-infographic-library-rest.mjs
+          node scripts/deploy-wordpress-infographic-library-rest.mjs
+
+      - name: Verify live visitor pages contain the new images
+        shell: bash
+        run: |
+          set -euo pipefail
+          check_page() {
+            local path="$1" body="$2"
+            for attempt in 1 2 3 4 5 6 7 8 9 10; do
+              curl -4 --fail --silent --show-error --location \
+                -H 'Cache-Control: no-cache, no-store, max-age=0' \
+                "$WP_SITE_URL${path}?dtf_harvest_publish=${GITHUB_RUN_ID}-${attempt}" -o "$body"
+              if grep -Fqi 'THC-HARV-16' "$body" || grep -Fqi 'HARV 16 drying room airflow mapping' "$body"; then
+                return 0
+              fi
+              sleep 6
+            done
+            return 1
+          }
+          harvest="$RUNNER_TEMP/harvest.html"
+          library="$RUNNER_TEMP/library.html"
+          check_page '/learn/harvest-postharvest/' "$harvest"
+          check_page '/learn/infographics/' "$library"
+          for marker in 'HARV-07' 'HARV-08' 'HARV-09' 'HARV-10' 'HARV-11' 'HARV-12' 'HARV-13' 'HARV-14' 'HARV-15' 'HARV-16'; do
+            grep -Fqi "$marker" "$library" || grep -Fqi "${marker/-/ }" "$library" || { echo "Missing $marker in live library" >&2; exit 1; }
+          done
+
+      - name: Report result
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = [
+              '## Harvest image publish run',
+              '',
+              `Status: **${{ job.status }}**`,
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              '',
+              'Targets:',
+              '- https://dtfseeds.com/learn/harvest-postharvest/',
+              '- https://dtfseeds.com/learn/infographics/'
+            ].join('\n');
+            await github.rest.issues.createComment({owner: context.repo.owner, repo: context.repo.repo, issue_number: 46, body});
