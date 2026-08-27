@@ -2,13 +2,17 @@ name: Publish THC Infographics to WordPress Production
 
 on:
   workflow_dispatch:
+  issue_comment:
+    types: [created]
   push:
     branches: [main]
     paths:
       - site/wordpress/assets/infographics/**
+      - site/wordpress/imports/infographic-bulk-import.json
       - site/wordpress/education/topic-literature.json
       - site/wordpress/education/outdoor-quantification-v1.json
       - site/wordpress/education/outdoor-quantification/**
+      - scripts/import-wordpress-infographic-remote-batch.mjs
       - scripts/stage-eligible-infographics.mjs
       - scripts/deploy-wordpress-infographic-library-rest.mjs
       - scripts/publish-wordpress-topic-literature.mjs
@@ -21,7 +25,7 @@ on:
     types: [completed]
 
 permissions:
-  contents: read
+  contents: write
   issues: write
 
 concurrency:
@@ -30,6 +34,11 @@ concurrency:
 
 jobs:
   preflight:
+    if: >-
+      github.event_name != 'issue_comment' ||
+      (github.event.issue.number == 182 &&
+       github.event.comment.body == '/publish-infographics' &&
+       github.event.comment.user.login == github.repository_owner)
     name: Expose production run
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -42,26 +51,33 @@ jobs:
               ? context.payload.workflow_run?.html_url
               : context.eventName === 'push'
                 ? `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/commit/${context.sha}`
-                : 'manual dispatch';
+                : context.eventName === 'issue_comment'
+                  ? context.payload.comment?.html_url
+                  : 'manual dispatch';
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              issue_number: 46,
+              issue_number: 182,
               body: [
                 '## Protected THC infographic production started',
                 '',
                 `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
                 `Trigger: **${context.eventName}**`,
                 `Source: ${source}`,
-                'This run filters simple/reference images, synchronizes only eligible infographic assets, publishes literature-first topic pages, assembles the complete eight-section Outdoor field-measurement curriculum, and verifies the public result.'
+                'This run imports the queued bulk image manifest, filters simple/reference images, synchronizes only eligible infographic assets, publishes literature-first topic pages, assembles the complete eight-section Outdoor field-measurement curriculum, and verifies the public result.'
               ].join('\n')
             });
 
   publish:
+    if: >-
+      github.event_name != 'issue_comment' ||
+      (github.event.issue.number == 182 &&
+       github.event.comment.body == '/publish-infographics' &&
+       github.event.comment.user.login == github.repository_owner)
     name: Publish filtered infographics inside literature-first topics
     needs: preflight
     runs-on: ubuntu-latest
-    timeout-minutes: 50
+    timeout-minutes: 55
     environment: production
     env:
       NODE_OPTIONS: --dns-result-order=ipv4first
@@ -72,12 +88,15 @@ jobs:
       INFOGRAPHIC_DIR: ${{ github.workspace }}/.tmp/eligible-infographics
       INFOGRAPHIC_PLACEMENT_CONFIG: ${{ github.workspace }}/site/wordpress/assets/infographics/placement-rules.json
       INFOGRAPHIC_EXCLUSIONS: ${{ github.workspace }}/site/wordpress/assets/infographics/infographic-exclusions.json
+      BULK_INFOGRAPHIC_MANIFEST: ${{ github.workspace }}/site/wordpress/imports/infographic-bulk-import.json
+      BULK_IMPORT_REPORT: ${{ runner.temp }}/infographic-bulk-import-report.json
       TOPIC_LITERATURE_CONFIG: ${{ github.workspace }}/site/wordpress/education/topic-literature.json
       BACKUP_ROOT: /tmp/wordpress-infographic-backups
     steps:
       - uses: actions/checkout@v4
         with:
           ref: main
+          fetch-depth: 0
 
       - uses: actions/setup-node@v4
         with:
@@ -87,16 +106,18 @@ jobs:
         if: github.event_name == 'workflow_run'
         run: '[[ "${{ github.event.workflow_run.conclusion }}" == "success" ]]'
 
-      - name: Validate publishers, literature, Outdoor curriculum, and production access
+      - name: Validate publishers, literature, Outdoor curriculum, bulk intake, and production access
         id: access
         shell: bash
         run: |
           set -euo pipefail
+          node --check scripts/import-wordpress-infographic-remote-batch.mjs
           node --check scripts/stage-eligible-infographics.mjs
           node --check scripts/deploy-wordpress-infographic-library-rest.mjs
           node --check scripts/publish-wordpress-topic-literature.mjs
           node --check scripts/assemble-outdoor-quantification-v1.mjs
           node --check scripts/enhance-wordpress-outdoor-quantification-v1.mjs
+          node -e "const m=require('./site/wordpress/imports/infographic-bulk-import.json'); if(m.schemaVersion!==1||!Array.isArray(m.assets)) process.exit(1)"
           node -e "const c=require('./site/wordpress/assets/infographics/placement-rules.json'); if(c.schemaVersion<2||!c.primaryOverrides?.length) process.exit(1)"
           node -e "const e=require('./site/wordpress/assets/infographics/infographic-exclusions.json'); if(!e.neverUseOnInfographicSurfaces||!e.excludePathFragments?.includes('pdf-pages/')) process.exit(1)"
           node -e "const d=require('./site/wordpress/education/topic-literature.json'); if(!Array.isArray(d.topics)||d.topics.length<10||d.topics.some(t=>!Array.isArray(t.sections)||t.sections.length<4)) process.exit(1)"
@@ -115,6 +136,37 @@ jobs:
           test -n "${WP_API_PASSWORD:-}"
           echo "user_present=true" >> "$GITHUB_OUTPUT"
           echo "password_present=true" >> "$GITHUB_OUTPUT"
+
+      - name: Download and validate queued bulk infographic images
+        id: intake
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/import-wordpress-infographic-remote-batch.mjs
+          echo "requested=$(node -p "require(process.argv[1]).requestedAssets" "$BULK_IMPORT_REPORT")" >> "$GITHUB_OUTPUT"
+          echo "created=$(node -p "require(process.argv[1]).created" "$BULK_IMPORT_REPORT")" >> "$GITHUB_OUTPUT"
+          echo "updated=$(node -p "require(process.argv[1]).updated" "$BULK_IMPORT_REPORT")" >> "$GITHUB_OUTPUT"
+          echo "reused=$(node -p "require(process.argv[1]).reused" "$BULK_IMPORT_REPORT")" >> "$GITHUB_OUTPUT"
+
+      - name: Persist imported image binaries in canonical source
+        id: canonical
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'DTF Bulk Image Publisher'
+          git config user.email 'actions@users.noreply.github.com'
+          git add site/wordpress/assets/infographics
+          if git diff --cached --quiet; then
+            echo 'changed=false' >> "$GITHUB_OUTPUT"
+          else
+            git commit -m 'Import queued THC infographic assets'
+            if ! git push origin HEAD:main; then
+              git pull --rebase origin main
+              git push origin HEAD:main
+            fi
+            echo 'changed=true' >> "$GITHUB_OUTPUT"
+            echo "commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Stage only finished infographic assets
         id: quality
@@ -311,15 +363,23 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: wordpress-infographic-production-${{ github.run_id }}
-          path: /tmp/wordpress-infographic-backups
+          path: |
+            /tmp/wordpress-infographic-backups
+            ${{ runner.temp }}/infographic-bulk-import-report.json
           if-no-files-found: warn
           retention-days: 30
 
-      - name: Report infographic publication to issue 46
+      - name: Report infographic publication to control issue
         if: always()
         uses: actions/github-script@v7
         env:
           JOB_STATUS: ${{ job.status }}
+          INTAKE_OUTCOME: ${{ steps.intake.outcome }}
+          QUEUED_COUNT: ${{ steps.intake.outputs.requested }}
+          CREATED_COUNT: ${{ steps.intake.outputs.created }}
+          UPDATED_COUNT: ${{ steps.intake.outputs.updated }}
+          INTAKE_REUSED_COUNT: ${{ steps.intake.outputs.reused }}
+          CANONICAL_COMMIT: ${{ steps.canonical.outputs.commit }}
           QUALITY_OUTCOME: ${{ steps.quality.outcome }}
           MEDIA_OUTCOME: ${{ steps.publish_media.outcome }}
           LITERATURE_OUTCOME: ${{ steps.literature.outcome }}
@@ -342,12 +402,18 @@ jobs:
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              issue_number: 46,
+              issue_number: 182,
               body: [
                 '## THC infographic + companion literature publication',
                 '',
                 `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
                 `Protected job result: **${process.env.JOB_STATUS}**`,
+                `Bulk intake: **${process.env.INTAKE_OUTCOME || 'not-run'}**`,
+                `Batch URLs queued: **${process.env.QUEUED_COUNT || '0'}**`,
+                `New canonical image files: **${process.env.CREATED_COUNT || '0'}**`,
+                `Intentional replacements: **${process.env.UPDATED_COUNT || '0'}**`,
+                `Canonical image files reused: **${process.env.INTAKE_REUSED_COUNT || '0'}**`,
+                `Canonical image commit: ${process.env.CANONICAL_COMMIT ? `\`${process.env.CANONICAL_COMMIT}\`` : 'none required'}`,
                 `Infographic quality gate: **${process.env.QUALITY_OUTCOME || 'not-run'}**`,
                 `Eligible media synchronization: **${process.env.MEDIA_OUTCOME || 'not-run'}**`,
                 `Companion literature publication: **${process.env.LITERATURE_OUTCOME || 'not-run'}**`,
@@ -367,6 +433,6 @@ jobs:
                 `Outdoor field metrics: **${process.env.OUTDOOR_METRICS || 'not-run'}**`,
                 '',
                 'Target: https://dtfseeds.com/learn/infographics/',
-                'Canonical architecture: topic literature is published first; the complete THC Outdoor field-measurement curriculum is assembled and appended immediately after that canonical write; finished infographics remain subject-mapped and searchable.'
+                'Canonical architecture: queued remote images are imported first; topic literature is published first; the complete THC Outdoor field-measurement curriculum is assembled and appended immediately after that canonical write; finished infographics remain subject-mapped and searchable.'
               ].join('\n')
             });
