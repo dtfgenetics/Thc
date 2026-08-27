@@ -7,8 +7,17 @@ on:
     paths:
       - .github/deploy-public-suite-v2-trigger.txt
       - .github/workflows/deploy-public-suite-wordpress-v2.yml
-      - apps/growlens-web/public/atlas/**
-      - apps/growlens-web/public/assets/images/atlas/**
+      - apps/high-land-web/**
+      - apps/growlens-web/**
+      - games/high-iq/**
+      - games/high-life/**
+      - games/grower-conversations/**
+      - games/seed-man-platformer/**
+      - site/public-route-patch/**
+      - site/deployment/public-apps.json
+      - scripts/package-public-suite-wordpress.py
+      - scripts/assemble-wordpress-suite-v2.py
+      - scripts/wordpress-suite-v2/**
 
 permissions:
   actions: write
@@ -53,6 +62,37 @@ jobs:
           python -m py_compile scripts/package-public-suite-wordpress.py scripts/assemble-wordpress-suite-v2.py
           node --check scripts/cleanup-stale-wordpress-suite-snippets.mjs
           python scripts/assemble-wordpress-suite-v2.py "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          python - <<'PY'
+          import os
+          from pathlib import Path
+
+          path = Path(os.environ['RUNNER_TEMP']) / 'deploy-public-suite-v2.mjs'
+          text = path.read_text()
+
+          def replace_once(old, new, label):
+              global text
+              count = text.count(old)
+              if count != 1:
+                  raise SystemExit(f'Expected exactly one {label} block, found {count}')
+              text = text.replace(old, new, 1)
+
+          replace_once(
+              "'growlens','thc-grow-doc','tools','projects','puzzles'\n    ];",
+              "'growlens','thc-grow-doc','tools','projects','puzzles','atlas','assets/images/atlas'\n    ];",
+              'Atlas deployment target allowlist',
+          )
+          replace_once(
+              "'thc-grow-doc/api/visual-observations.php','tools/index.html','projects/index.html','puzzles/current.json'\n    ];",
+              "'thc-grow-doc/api/visual-observations.php','tools/index.html','projects/index.html','puzzles/current.json',\n        'atlas/index.html','atlas/root-system/index.html','atlas/root-system/rhizosphere/index.html','atlas/downloads/index.html',\n        'assets/images/atlas/root-system/rhizosphere-microbe-interaction.svg'\n    ];",
+              'Atlas required-file allowlist',
+          )
+          replace_once(
+              "'games/protect-the-plants/','games/weedopolis/','games/crossword/','games/who-took-it/','growlens/','thc-grow-doc/','tools/','projects/','puzzles/'\n    ];",
+              "'games/protect-the-plants/','games/weedopolis/','games/crossword/','games/who-took-it/','growlens/','thc-grow-doc/','tools/','projects/','puzzles/',\n        'atlas/','assets/images/atlas/'\n    ];",
+              'Atlas prefix allowlist',
+          )
+          path.write_text(text)
+          PY
           node --check "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
           python - <<'PY'
           import os, pathlib, re
@@ -94,6 +134,9 @@ jobs:
             games/high-life/index.html
             games/grower-conversations/index.html
             games/seed-man-platformer/index.html
+            games/protect-the-plants/index.html
+            games/protect-the-plants/api.php
+            games/bud-or-bluff/index.html
             games/weedopolis/index.html
             games/crossword/index.html
             games/who-took-it/index.html
@@ -141,6 +184,8 @@ jobs:
                   'assets/images/atlas/root-system/rhizosphere-microbe-interaction.svg',
                   'growlens/index.html',
                   'thc-grow-doc/index.html',
+                  'games/protect-the-plants/index.html',
+                  'games/bud-or-bluff/index.html',
               }
               missing=required-set(names)
               assert not missing, f'missing deploy archive assets: {sorted(missing)}'
@@ -183,41 +228,38 @@ jobs:
             curl -fsSL --retry 5 --retry-delay 6 "$url" | grep -Eiq 'THC Living Plant Atlas|Rhizosphere|Field Cards|Root System'
           done
 
+      - name: Verify current public application surfaces
+        shell: bash
+        run: |
+          set -euo pipefail
+          check() {
+            local url="$1" marker="$2"
+            echo "Checking $url"
+            curl -fsSL --retry 5 --retry-delay 5 -H 'Cache-Control: no-cache, no-store, max-age=0' "$url?dtf_suite_verify=${GITHUB_RUN_ID}" | grep -Fqi "$marker"
+          }
+          check 'https://dtfseeds.com/games/' '10 playable browser games'
+          check 'https://dtfseeds.com/games/protect-the-plants/' 'Protect the Plants'
+          check 'https://dtfseeds.com/games/bud-or-bluff/' 'Bud or Bluff'
+          check 'https://dtfseeds.com/growlens/' 'GrowLens'
+          check 'https://dtfseeds.com/thc-grow-doc/' 'Grow Doc'
+
       - name: Dispatch independent feature-surface verification
         if: always()
-        id: verify
         shell: bash
         run: |
           set -euo pipefail
           gh workflow run verify-dtfseeds-feature-surface.yml --ref main || true
 
-      - name: Report current Atlas deployment
+      - name: Summarize deployment
         if: always()
-        uses: actions/github-script@v7
-        env:
-          STATUS: ${{ job.status }}
-          BUILD_RUN: ${{ steps.current_build.outputs.run_id }}
-          CLEANUP_OUTCOME: ${{ steps.cleanup.outcome }}
-          PUBLISH_OUTCOME: ${{ steps.publish.outcome }}
-          LIVE_ATLAS_OUTCOME: ${{ steps.live_atlas.outcome }}
-        with:
-          script: |
-            const buildRun = process.env.BUILD_RUN ? `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${process.env.BUILD_RUN}` : 'not reached';
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: 46,
-              body: [
-                '## Current public-suite Atlas deployment',
-                '',
-                `Deploy run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-                `Trigger commit: \`${context.sha}\``,
-                `Current public-suite build: ${buildRun}`,
-                `Overall: **${process.env.STATUS}**`,
-                `Stale transaction cleanup: **${process.env.CLEANUP_OUTCOME || 'not reached'}**`,
-                `Transactional publication: **${process.env.PUBLISH_OUTCOME || 'not reached'}**`,
-                `Live Atlas route verification: **${process.env.LIVE_ATLAS_OUTCOME || 'not reached'}**`,
-                '',
-                'This deploy consumes a freshly built public-suite artifact from main and verifies /atlas/ routes instead of using the old pinned d16 artifact.'
-              ].join('\n')
-            });
+        shell: bash
+        run: |
+          {
+            echo '## DTFSeeds Public Suite Production Deployment'
+            echo
+            echo "- Trigger commit: $GITHUB_SHA"
+            echo "- Build run: ${{ steps.current_build.outputs.run_id }}"
+            echo "- Transactional publication: ${{ steps.publish.outcome }}"
+            echo "- Atlas verification: ${{ steps.live_atlas.outcome }}"
+            echo '- WordPress-owned /, /learn/, and /blog/ remain outside this app-only transaction.'
+          } >> "$GITHUB_STEP_SUMMARY"
