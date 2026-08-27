@@ -1,0 +1,67 @@
+{
+  "id": "THC-ENC-185",
+  "number": 185,
+  "title": "Topping and Meristem Removal",
+  "objective": "Explain what changes biologically when an actively growing shoot apex is removed, how topping differs from simple bending or branch removal, and how to evaluate recovery and architecture without promising a universal yield response.",
+  "terms": [
+    {"term":"shoot apical meristem","definition":"The actively dividing tissue at the shoot tip that produces new stem, leaf, and axillary-meristem structures."},
+    {"term":"topping","definition":"Deliberate removal of the actively growing terminal portion of a shoot to interrupt its current apical growth and alter subsequent branch hierarchy."},
+    {"term":"decapitation","definition":"A plant-development research term for removal of a shoot apex; its physiological effects are often used to study apical dominance and branching."},
+    {"term":"axillary bud","definition":"A bud at a node that can remain inhibited or develop into a lateral shoot after changes in signaling, resources, or competing shoot activity."},
+    {"term":"wound response","definition":"Local and systemic biological responses initiated when tissues are cut or damaged, including sealing, defense, hydraulic adjustment, and repair processes."},
+    {"term":"branch hierarchy","definition":"The ordered relationship among the main stem, primary branches, secondary branches, and higher-order shoots."},
+    {"term":"source-sink relationship","definition":"The changing movement and allocation of carbon, water, mineral nutrients, and other resources among producing and consuming plant organs."}
+  ],
+  "termDefinitionsStatus": "controlled_glossary_reconciled_for_publication",
+  "coreScience": [
+    "Topping removes an actively growing shoot apex and therefore changes both structure and regulation. The removed apex no longer produces new phytomers or participates in the same apical-dominance network, while axillary buds below the cut can become stronger competing shoots depending on their developmental status, light exposure, vascular connection, hormones, resources, and competing sinks.",
+    "Removing a meristem does not create a fixed number of equal replacement branches. Multiple axillary buds may respond, one or more may become dominant, and subsequent architecture depends on genotype, node position, plant vigor, environment, and later management. Branch symmetry should therefore be measured rather than assumed.",
+    "Topping is also a wound. Cutting disrupts tissue and temporarily creates an exposed surface while the plant seals and reorganizes growth. Recovery should be evaluated separately from the architectural objective, especially when plants are already experiencing root-zone stress, water imbalance, disease pressure, transplant shock, or another major intervention.",
+    "Cannabis trials show that apical cutting and other pruning treatments can change branch distribution, inflorescence dry weight, vertical chemical gradients, and cannabinoid standardization. Those responses vary among genotypes and experimental systems. In a CBD-type cannabis study, apical cutting increased inflorescence and leaf dry weight relative to some other pruning treatments, while total CBD yield did not differ significantly from the unpruned control. This illustrates why biomass, concentration, and compound yield must be reported separately."
+  ],
+  "cultivationRelevance": [
+    "Define the reason for topping before performing or evaluating it: changing height, redistributing shoot dominance, filling horizontal space, altering light distribution, creating a comparison architecture, or another measurable goal. The intervention is successful only if the defined plant and crop endpoints improve without unacceptable loss or injury.",
+    "Use clean, appropriate cutting practices under the cultivation site's sanitation and biosecurity procedures, and avoid presenting a cut as biologically harmless. After topping, observe wound condition, branch activation, whole-plant water status, and resumed growth before interpreting the final architecture."
+  ],
+  "measureAndRecord": [
+    {"field":"Cut identity","requirement":"Plant ID, shoot identity, date, developmental stage, exact node or position, and whether only the terminal apex or additional leaf/stem tissue was removed."},
+    {"field":"Pre-cut architecture","requirement":"Plant height, node count, active branches, reference internode lengths, canopy dimensions, and recent growth status."},
+    {"field":"Wound and recovery","requirement":"Visible cut condition, wilting, discoloration, infection concerns, time to stable new growth, and any branch or stem failure."},
+    {"field":"Branch response","requirement":"Which axillary buds grew, number of sustained replacement shoots, their elongation rates or lengths, branch angles, and resulting hierarchy."},
+    {"field":"Crop outcome","requirement":"Final canopy dimensions and the relevant endpoint such as dry inflorescence mass, yield per area, chemical concentration, compound yield, uniformity, or labor; keep these metrics separate."}
+  ],
+  "misconceptions": [
+    "Topping always creates exactly two equal leaders.",
+    "Removing the top automatically increases final yield.",
+    "A higher cannabinoid concentration and a higher total cannabinoid yield are the same outcome.",
+    "The cut surface is irrelevant once the plant remains upright.",
+    "One topping height or node number is optimal for every cannabis genotype."
+  ],
+  "evidenceLimits": [
+    "Cannabis pruning studies provide direct evidence that architecture and production metrics can change, but the available experiments cover limited genotypes, environments, pruning definitions, and harvest systems. Their treatment effects are not universal prescriptions.",
+    "General apical-dominance research explains why shoot removal can release axillary growth, but the detailed hormone network is derived largely from model and crop species. This lesson does not claim a cannabis-specific hormone concentration or timing threshold after topping."
+  ],
+  "crossLinks": "THC-ENC-013 for meristems and apical dominance; THC-ENC-061–080 for source-sink physiology; THC-ENC-181 for branching control; THC-ENC-182–184 for architecture, timing, and bending; THC-ENC-186–200 for related training and canopy-management decisions.",
+  "sourceNotes": [
+    "Crispim Massuela D, Hartung J, Munz S, Erpenbach F, Graeff-Hönninger S. (2022). Impact of Harvest Time and Pruning Technique on Total CBD Concentration and Yield of Medicinal Cannabis. Plants 11(1):140. DOI 10.3390/plants11010140.",
+    "Danziger N, Bernstein N. (2021). Plant architecture manipulation increases cannabinoid standardization in drug-type medical cannabis. Industrial Crops and Products 167:113528. DOI 10.1016/j.indcrop.2021.113528.",
+    "Danziger N, Bernstein N. (2022). Too Dense or Not Too Dense: Higher Planting Density Reduces Cannabinoid Uniformity but Increases Yield/Area in Drug-Type Medical Cannabis. Frontiers in Plant Science 13:713481. DOI 10.3389/fpls.2022.713481.",
+    "Beveridge CA et al. (2023). Strigolactones and Shoot Branching: What Is the Real Hormone and How Does It Work? Plant and Cell Physiology 64(9):967–983; used for general branching-control mechanisms, not a cannabis-specific topping protocol.",
+    "Spitzer-Rimon B, Duchin S, Bernstein N, Kamenetsky R. (2019). Architecture and Florogenesis in Female Cannabis sativa Plants. Frontiers in Plant Science 10:350. DOI 10.3389/fpls.2019.00350."
+  ],
+  "publicationAuthorized": true,
+  "reviewControl": {
+    "controlledManuscript": "Part 10 Batch 01 evidence synthesis",
+    "evidenceControl": "release_time_source_check_complete",
+    "secondaryEvidenceReview": "complete_qualified",
+    "externalReview": "pending_not_recorded",
+    "externalReviewType": "cannabis_pruning_and_plant_branching",
+    "releaseTimeReview": "completed_2026-08-26; biomass, concentration, and compound-yield outcomes are separated, no fixed topping height/node count is prescribed, and general branching mechanisms are not represented as cannabis-specific thresholds",
+    "publicationAuthorized": true,
+    "publicationAuthorization": "project_owner_2026-08-26_continue_pushing_content",
+    "independentApproval": false,
+    "websiteAction": "publish_with_review_notice"
+  },
+  "slug": "topping-and-meristem-removal",
+  "route": "/encyclopedia/topping-and-meristem-removal"
+}
