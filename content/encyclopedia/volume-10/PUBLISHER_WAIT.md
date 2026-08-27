@@ -1,0 +1,1 @@
+Source freeze in effect while the protected encyclopedia publisher verifies volume10-batch02.
