@@ -28,13 +28,63 @@ test -n "${WP_API_PASSWORD:-}"
 echo '== Import queued remote image batch =='
 node scripts/import-wordpress-infographic-remote-batch.mjs
 
-# Persist any downloaded source binaries before publication. The current backlog run can be
-# empty here; canonical repo assets are still staged and synchronized below.
+echo '== Repair mislabeled canonical image binaries =='
+repair_count=0
+while IFS= read -r -d '' file; do
+  hex="$(xxd -p -l 12 "$file" | tr -d '\n' | tr '[:upper:]' '[:lower:]')"
+  lower="${file,,}"
+  target=''
+  if [[ "$hex" == 89504e470d0a1a0a* && "$lower" != *.png ]]; then
+    target="${file%.*}.png"
+  elif [[ "$hex" == ffd8ff* && "$lower" != *.jpg && "$lower" != *.jpeg ]]; then
+    target="${file%.*}.jpg"
+  elif [[ "$hex" == 52494646*57454250* && "$lower" != *.webp ]]; then
+    target="${file%.*}.webp"
+  fi
+
+  if [[ -n "$target" ]]; then
+    if [[ -e "$target" ]]; then
+      if cmp -s "$file" "$target"; then
+        rm "$file"
+      else
+        echo "Refusing to overwrite distinct canonical image: $target" >&2
+        exit 1
+      fi
+    else
+      mv "$file" "$target"
+    fi
+    echo "Repaired mislabeled image: $(basename "$file") -> $(basename "$target")"
+    repair_count=$((repair_count + 1))
+  fi
+done < <(find "$INFOGRAPHIC_SOURCE_DIR" -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.webp' \) -print0)
+echo "Canonical extension repairs: $repair_count"
+
+# Keep the curated import manifest aligned with any extension repairs.
+node <<'NODE'
+const fs = require('fs');
+const path = require('path');
+const manifestPath = 'site/wordpress/assets/infographics/import-curated-2026-08-19.json';
+if (fs.existsSync(manifestPath)) {
+  const data = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+  let changed = false;
+  for (const asset of data.assets || []) {
+    if (!asset?.path || !/\.jpe?g$/i.test(asset.path)) continue;
+    const png = asset.path.replace(/\.jpe?g$/i, '.png');
+    if (fs.existsSync(png)) {
+      asset.path = png;
+      changed = true;
+    }
+  }
+  if (changed) fs.writeFileSync(manifestPath, JSON.stringify(data, null, 2) + '\n');
+}
+NODE
+
+# Persist downloaded or repaired source binaries before publication.
 git config user.name 'DTF Bulk Image Publisher'
 git config user.email 'actions@users.noreply.github.com'
-git add site/wordpress/assets/infographics
+git add -A site/wordpress/assets/infographics
 if ! git diff --cached --quiet; then
-  git commit -m 'Import queued THC infographic assets'
+  git commit -m 'Repair canonical THC infographic binaries'
   git pull --rebase origin main
   git push origin HEAD:main
 fi
@@ -102,6 +152,7 @@ done
 SOURCE_COUNT="$(node -p 'require(process.argv[1]).sourceImageCount' "$QUALITY_REPORT")"
 ELIGIBLE_COUNT="$(node -p 'require(process.argv[1]).eligibleImageCount' "$QUALITY_REPORT")"
 EXCLUDED_COUNT="$(node -p 'require(process.argv[1]).excludedImageCount' "$QUALITY_REPORT")"
+INVALID_COUNT="$(node -p 'require(process.argv[1]).invalidImageCount ?? 0' "$QUALITY_REPORT")"
 UPLOADED_COUNT="$(node -p 'require(process.argv[1]).uploadedMediaCount' "$MEDIA_REPORT")"
 REUSED_COUNT="$(node -p 'require(process.argv[1]).reusedMediaCount' "$MEDIA_REPORT")"
 TOPIC_COUNT="$(node -p 'require(process.argv[1]).topicPages.length' "$LITERATURE_REPORT")"
@@ -112,6 +163,7 @@ DTFSEEDS_IMAGE_PUBLISH_RESULT=success
 source_images=$SOURCE_COUNT
 eligible_images=$ELIGIBLE_COUNT
 excluded_images=$EXCLUDED_COUNT
+invalid_images=$INVALID_COUNT
 new_wordpress_uploads=$UPLOADED_COUNT
 reused_wordpress_media=$REUSED_COUNT
 topic_pages=$TOPIC_COUNT
@@ -126,6 +178,7 @@ if [[ -n "${GITHUB_STEP_SUMMARY:-}" ]]; then
 - Source images inspected: **$SOURCE_COUNT**
 - Finished eligible images: **$ELIGIBLE_COUNT**
 - Excluded support/reference images: **$EXCLUDED_COUNT**
+- Invalid canonical images remaining: **$INVALID_COUNT**
 - New WordPress uploads: **$UPLOADED_COUNT**
 - Existing WordPress media reused: **$REUSED_COUNT**
 - Topic pages synchronized: **$TOPIC_COUNT**
