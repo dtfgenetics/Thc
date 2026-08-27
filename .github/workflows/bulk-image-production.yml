@@ -1,0 +1,64 @@
+name: Publish DTFSeeds Image Backlog
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - site/wordpress/imports/infographic-bulk-import.json
+      - site/wordpress/assets/infographics/**
+      - scripts/publish-wordpress-image-backlog.sh
+      - .github/workflows/bulk-image-production.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: dtfseeds-image-backlog-production
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    environment: production
+    env:
+      NODE_OPTIONS: --dns-result-order=ipv4first
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      INFOGRAPHIC_SOURCE_DIR: ${{ github.workspace }}/site/wordpress/assets/infographics
+      INFOGRAPHIC_DIR: ${{ github.workspace }}/.tmp/eligible-infographics
+      INFOGRAPHIC_PLACEMENT_CONFIG: ${{ github.workspace }}/site/wordpress/assets/infographics/placement-rules.json
+      INFOGRAPHIC_EXCLUSIONS: ${{ github.workspace }}/site/wordpress/assets/infographics/infographic-exclusions.json
+      BULK_INFOGRAPHIC_MANIFEST: ${{ github.workspace }}/site/wordpress/imports/infographic-bulk-import.json
+      BULK_IMPORT_REPORT: /tmp/infographic-bulk-import-report.json
+      TOPIC_LITERATURE_CONFIG: ${{ github.workspace }}/site/wordpress/education/topic-literature.json
+      BACKUP_ROOT: /tmp/wordpress-infographic-backups
+    steps:
+      - name: Check out production source
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Publish missing images and verify public site
+        shell: bash
+        run: bash scripts/publish-wordpress-image-backlog.sh
+
+      - name: Upload publication audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dtfseeds-image-backlog-${{ github.run_id }}
+          path: |
+            /tmp/wordpress-infographic-backups
+            /tmp/infographic-bulk-import-report.json
+            /tmp/dtfseeds-infographic-library.html
+          if-no-files-found: warn
+          retention-days: 30
