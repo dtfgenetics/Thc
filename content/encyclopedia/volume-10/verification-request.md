@@ -1,0 +1,1 @@
+Final source state for volume10-batch02. No further source changes should be made before publisher verification completes.
