@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "templateId": "THC-ENC-V10-CANOPY-MEASUREMENT",
+  "title": "Canopy Training Observation Record",
+  "purpose": "Create comparable before/after records for structural training, pruning, trellising, and defoliation so treatment decisions can be evaluated rather than remembered anecdotally.",
+  "fields": [
+    {"group":"identity","fields":["plant_id","cultivar_or_line","propagation_type","age_or_stage","container_or_root_zone","treatment_date"]},
+    {"group":"treatment","fields":["lesson_or_method_reference","objective","tissue_or_zone_treated","cut_or_bend_locations","approximate_leaf_or_shoot_removal","support_or_trellis_change"]},
+    {"group":"before","fields":["plant_height","canopy_width","node_count","primary_branch_count","canopy_coverage","upper_ppfd","mid_canopy_ppfd","lower_canopy_ppfd","airflow_observation","visible_stress"]},
+    {"group":"recovery","fields":["hours_to_first_check","days_to_normal_growth","leaf_posture","wound_condition","new_branch_extension","irrigation_change","visible_damage_or_infection"]},
+    {"group":"after","fields":["plant_height","canopy_width","primary_branch_count","canopy_coverage","upper_ppfd","mid_canopy_ppfd","lower_canopy_ppfd","airflow_observation","additional_intervention_needed"]},
+    {"group":"outcome","fields":["harvest_date","yield_measurement_method","dry_mass","quality_measurement_method","comparison_control","notes_and_confounders"]}
+  ],
+  "interpretationRules": [
+    "Use the same measurement locations and instruments before and after treatment when possible.",
+    "Do not compare yield values produced with different harvest, drying, trimming, or normalization methods.",
+    "Record cultivar, density, environment, and developmental stage because architecture responses are context-dependent.",
+    "A visually open canopy is not by itself evidence of improved crop performance."
+  ]
+}
