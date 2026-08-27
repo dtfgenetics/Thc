@@ -191,3 +191,5 @@ jobs:
             echo '- https://dtfseeds.com/learn/harvest-postharvest/'
             echo '- https://dtfseeds.com/learn/infographics/'
           } >> "$GITHUB_STEP_SUMMARY"
+
+# Trigger fixed publisher through a GitHub merge commit.
