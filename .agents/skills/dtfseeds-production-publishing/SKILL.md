@@ -18,6 +18,78 @@ Always report these separately when relevant:
 
 If step 3 has not passed, the correct status is `NOT VERIFIED LIVE` even if the repository and production write steps succeeded.
 
+## MAKE IT LIVE execution contract
+
+When the user says **make it live**, **push it live**, **put this on the site**, **publish this**, **deploy this**, or equivalent language, treat that as authorization to execute the complete applicable production chain in the current task.
+
+Do **not** stop at any of these intermediate states unless an external hard blocker makes further execution impossible:
+
+- local/generated artifact created,
+- deployment package or ZIP created,
+- temporary transfer/staging copy created,
+- feature or transfer branch created,
+- Git blob created,
+- canonical source committed,
+- `main` updated,
+- workflow merely triggered,
+- production write merely started,
+- WordPress record/media merely created,
+- crawler/search snippet checked without origin verification.
+
+For a normal in-scope production request, continue through:
+
+**canonical source → `main` → production workflow → production write → visitor-facing verification**.
+
+If a step fails, inspect and repair the failure, then continue. Do not turn a repairable failure into a planning discussion or ask the user to perform routine repo/deployment steps that the connected production path can perform.
+
+Only stop short of live completion when there is a genuine blocker such as unavailable credentials/connector permissions, a protected environment requiring an external approval that cannot be performed here, an unsafe/destructive ambiguity, or a third-party outage. In that case, report the exact blocker and the last successfully completed stage. Do not represent the work as live.
+
+### Binary/image asset rule
+
+When the requested live change includes images, videos, archives, or other binary assets:
+
+1. Verify the source file exists and inspect its dimensions/format when relevant.
+2. Use the route owner's canonical repository asset directory. For THC infographics this is `site/wordpress/assets/infographics/` and the publication policy keeps canonical infographic source files flat.
+3. Prefer a directly supported production image format (`.png`, `.jpg`, `.jpeg`, `.webp`, `.gif`) so the existing staging/publisher can validate its signature.
+4. When a normal text contents write is unsuitable for the binary, use Git data primitives such as blob → tree → commit → ref update. Re-read the current `main` head immediately before creating the final commit so concurrent work is not discarded.
+5. Never force-update `main` merely to simplify a binary transfer. Preserve unrelated/newer work.
+6. Verify each binary landed at the intended repository path and is not a thumbnail, corrupt image, mislabeled extension, or temporary transport file.
+7. Let the canonical quality/staging publisher handle eligible assets. Do not bypass its exclusion/quarantine rules just to make an image appear.
+8. Verify the production media and actual visitor-visible image on the intended page/library route before reporting the image live.
+
+For THC education/infographic publication, inspect the current versions of:
+
+- `site/wordpress/assets/infographics/placement-rules.json`
+- `scripts/stage-eligible-infographics.mjs`
+- `scripts/deploy-wordpress-infographic-library-rest.mjs`
+- `scripts/publish-wordpress-topic-literature.mjs`
+- `.github/workflows/wordpress-infographic-production.yml`
+
+Do not assume an old filename classifier, asset count, or workflow behavior is still current; read the files at `main` first.
+
+### Workflow-follow-through rule
+
+After pushing the production-triggering commit:
+
+1. Find the workflow run associated with the new `main` state.
+2. Follow its jobs/steps until they settle.
+3. If concurrency cancels a run, identify the superseding run and follow that one instead of treating the cancellation as the content failure.
+4. If validation, upload, WordPress write, or visitor verification fails, read the relevant job steps/logs and repair the specific failure.
+5. Do not claim success from an earlier successful run that does not contain the new commit/content.
+
+### Visitor verification rule
+
+A live-success claim requires an origin/public check for the exact requested work. Use a cache-busting query parameter when appropriate.
+
+For a new infographic/image release, verify both:
+
+- the intended topic route (for example `/learn/outdoor/`), and
+- the infographic library (`/learn/infographics/`) when that library is part of the publishing lane.
+
+Verify a positive fingerprint of the new release, such as the expected image/media URL, title, unique marker, card, or rendered asset. When the task replaces bad content, also verify the stale/incorrect fingerprint is gone where practical.
+
+An external search crawler may remain stale after the origin is correct. Record that separately; do not substitute crawler freshness for origin verification.
+
 ## Production map
 
 DTFSeeds uses more than one publishing lane. Choose the owner of the route before changing anything.
@@ -44,6 +116,14 @@ The WordPress REST lane uses the protected `production` environment with `WP_API
 ### THC education and infographics
 
 Published education and infographic content must use the repository-controlled source and the existing production publisher/reconciliation workflows.
+
+Canonical infographic source:
+
+- `site/wordpress/assets/infographics/`
+
+Current production workflow:
+
+- `.github/workflows/wordpress-infographic-production.yml`
 
 The infographic library is visitor-facing at:
 
@@ -216,6 +296,8 @@ Never say `pushed live` when only the repository changed.
 - Cache-busted public verification is stronger evidence of immediate origin state than an external crawler's older cached copy.
 - Backup-first, idempotent reconciliation is preferred over destructive replacement.
 - A zero-mutation successful reconciliation can be correct when production already matches canonical source.
+- A transfer branch, package file, Git blob, or successful `main` commit is only an intermediate state when the user requested the change live.
+- For binary assets, preserving the canonical publisher's validation and classification rules is more important than choosing the fastest transfer method.
 
 ## Completion gate
 
@@ -223,12 +305,15 @@ A website task is complete only when all applicable boxes are true:
 
 - [ ] Correct route owner identified.
 - [ ] Canonical source updated.
+- [ ] Binary assets, if any, are valid at the canonical repository path and are not thumbnails/temporary transfer files.
 - [ ] Applicable validation/tests passed.
 - [ ] Backup/rollback evidence exists for production mutations.
+- [ ] Production-triggering state is on current `main` without discarding concurrent work.
 - [ ] Protected production write/deployment passed.
+- [ ] Correct workflow run for the new content was followed to completion.
 - [ ] Visitor-facing route verification passed.
-- [ ] Expected new content/function is visible/working.
+- [ ] Expected new content/function/image is visible/working.
 - [ ] Known stale/fake content is absent when relevant.
 - [ ] Remaining unverified routes or known issues are explicitly reported.
 
-If any applicable box is not true, report the task as partially complete or failed and continue repairing it rather than claiming success.
+If any applicable box is not true, continue repairing the task when possible. If a hard blocker prevents further execution, report the blocker and the last completed stage. Do not claim success.
