@@ -42,8 +42,8 @@ jobs:
         run: |
           set -euo pipefail
           root=site/public-route-patch/games/protect-the-plants
-          grep -Fq '<h1 id="burn-buds-title"' "$root/index.html"
-          grep -Fq 'Burn Buds' "$root/index.html"
+          grep -Fq '<h1 id="protect-the-plants-title"' "$root/index.html"
+          grep -Fq '>Burn Buds</h1>' "$root/index.html"
           grep -Fq './burn-buds.css' "$root/index.html"
           grep -Fq './burn-buds-branding.js' "$root/index.html"
           grep -Fq 'BUD BURNED!' "$root/index.html"
@@ -67,5 +67,5 @@ jobs:
           grep -Fq "const GRID=15" "$root/app.js"
           grep -Fq "api('rematch'" "$root/enhancements.js"
           grep -Fq "action==='fire'" "$root/app.js"
-          grep -Fq "action==='place'" "$root/app.js"
+          grep -Fq "api('place'" "$root/app.js"
           grep -Fq 'wordpress-transients' games/protect-the-plants/game.json
