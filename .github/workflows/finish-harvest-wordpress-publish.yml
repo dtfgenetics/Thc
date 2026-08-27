@@ -1,0 +1,105 @@
+name: Finish Harvest WordPress Publish
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/finish-harvest-wordpress-publish.yml'
+
+permissions:
+  contents: write
+
+env:
+  WP_SITE_URL: https://dtfseeds.com
+  NODE_OPTIONS: --dns-result-order=ipv4first
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    environment: production
+    env:
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME || secrets.WORDPRESS_USERNAME || secrets.WP_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD || secrets.WORDPRESS_APP_PASSWORD || secrets.WP_APPLICATION_PASSWORD }}
+      INFOGRAPHIC_DIR: ${{ github.workspace }}/site/wordpress/assets/infographics
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Normalize WebP infographic assets for WordPress
+        shell: bash
+        run: |
+          set -euo pipefail
+          root='site/wordpress/assets/infographics'
+          count=0
+          while IFS= read -r -d '' src; do
+            dst="${src%.*}.jpg"
+            echo "Converting $src -> $dst"
+            ffmpeg -hide_banner -loglevel error -y -i "$src" -q:v 2 "$dst"
+            test -s "$dst"
+            file "$dst" | grep -qi 'JPEG image data'
+            git rm "$src"
+            git add "$dst"
+            count=$((count + 1))
+          done < <(find "$root" -type f -iname '*.webp' -print0)
+          echo "Normalized $count WebP infographic asset(s)."
+
+      - name: Commit normalized canonical assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'DTF WordPress Image Publisher'
+          git config user.email 'actions@users.noreply.github.com'
+          if git diff --cached --quiet; then
+            echo 'No WebP normalization commit required.'
+          else
+            git commit -m 'Normalize WordPress infographic image formats'
+            git fetch origin main
+            git rebase origin/main
+            git push origin HEAD:main
+          fi
+
+      - name: Publish full canonical infographic library to WordPress
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?WordPress username missing}"
+          : "${WP_API_PASSWORD:?WordPress password missing}"
+          node --check scripts/deploy-wordpress-infographic-library-rest.mjs
+          node scripts/deploy-wordpress-infographic-library-rest.mjs | tee "$RUNNER_TEMP/wordpress-infographic-publish.log"
+
+      - name: Verify Harvest images live
+        shell: bash
+        run: |
+          set -euo pipefail
+          fetch_page() {
+            local path="$1" body="$2"
+            for attempt in 1 2 3 4 5 6 7 8 9 10; do
+              curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+                -H 'Cache-Control: no-cache, no-store, max-age=0' \
+                -H 'Pragma: no-cache' \
+                "$WP_SITE_URL${path}?dtf_harvest_finish=${GITHUB_RUN_ID}-${attempt}" -o "$body"
+              if grep -Eqi 'HARV[- _]16|drying.room.airflow.mapping' "$body"; then
+                return 0
+              fi
+              sleep 6
+            done
+            return 1
+          }
+          harvest="$RUNNER_TEMP/harvest.html"
+          library="$RUNNER_TEMP/library.html"
+          fetch_page '/learn/harvest-postharvest/' "$harvest"
+          fetch_page '/learn/infographics/' "$library"
+          for n in 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16; do
+            grep -Eqi "HARV[- _]${n}" "$library" || { echo "Missing HARV-${n} from live infographic library" >&2; exit 1; }
+          done
+          grep -Eqi '<img[^>]+wp-content/uploads/' "$harvest"
+          grep -Eqi '<img[^>]+wp-content/uploads/' "$library"
+          echo 'HARV-01 through HARV-16 verified live.'
