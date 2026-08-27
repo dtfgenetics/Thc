@@ -1,8 +1,9 @@
 {
   "schemaVersion": 3,
   "id": "protect-the-plants",
-  "title": "Protect the Plants",
-  "type": "multiplayer-hidden-garden-strategy",
+  "title": "Burn Buds",
+  "legacyTitle": "Protect the Plants",
+  "type": "multiplayer-hidden-fleet-strategy",
   "route": "/games/protect-the-plants/",
   "board": "15x15",
   "players": 2,
@@ -21,6 +22,8 @@
     "finished-game-recovery",
     "room-chat",
     "mobile-board-tabs",
+    "cannabis-leaf-fleet-markers",
+    "burned-formation-animation",
     "placement-animation",
     "placement-preview",
     "placement-undo-clear",
@@ -45,6 +48,7 @@
     "api": "php",
     "storage": "wordpress-transients",
     "externalNodeHostRequired": false,
-    "paidRuntimeDependencies": false
+    "paidRuntimeDependencies": false,
+    "legacyRouteRetained": true
   }
 }

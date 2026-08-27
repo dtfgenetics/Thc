@@ -1,19 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="Potted cannabis plant">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="Cannabis leaf game piece">
   <defs>
-    <linearGradient id="leaf" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#d2ff8b"/><stop offset=".45" stop-color="#8fc947"/><stop offset="1" stop-color="#427326"/></linearGradient>
-    <linearGradient id="pot" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#9f6b3f"/><stop offset="1" stop-color="#4a2f20"/></linearGradient>
-    <filter id="shadow" x="-30%" y="-30%" width="160%" height="180%"><feDropShadow dx="0" dy="5" stdDeviation="4" flood-color="#000" flood-opacity=".45"/></filter>
+    <linearGradient id="leaf" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#d4ff8d"/>
+      <stop offset=".45" stop-color="#82c84a"/>
+      <stop offset="1" stop-color="#2e6d32"/>
+    </linearGradient>
+    <filter id="shadow" x="-25%" y="-25%" width="150%" height="160%">
+      <feDropShadow dx="0" dy="4" stdDeviation="3.2" flood-color="#000" flood-opacity=".42"/>
+    </filter>
   </defs>
-  <g filter="url(#shadow)" stroke="#26351f" stroke-width="2.5" stroke-linejoin="round">
-    <path fill="#547f32" d="M58 84V43h4v41z"/>
-    <path fill="url(#leaf)" d="M60 49C45 35 30 31 15 33c8 15 20 24 40 25-13 1-24 7-31 18 14 4 26 0 36-11z"/>
-    <path fill="url(#leaf)" d="M60 49c15-14 30-18 45-16-8 15-20 24-40 25 13 1 24 7 31 18-14 4-26 0-36-11z"/>
-    <path fill="url(#leaf)" d="M60 47C51 31 52 16 60 6c9 13 10 27 0 41z"/>
-    <path fill="url(#leaf)" d="M57 62C46 52 35 50 25 54c7 10 17 15 30 14z"/>
-    <path fill="url(#leaf)" d="M63 62c11-10 22-12 32-8-7 10-17 15-30 14z"/>
-    <path fill="#6d452c" d="M29 82h62l-6 9H35z"/>
-    <path fill="url(#pot)" d="M36 89h48l-6 25H42z"/>
-    <path fill="#c08b56" d="M34 83h52v8H34z"/>
-    <path fill="#2d241b" d="M40 91h40l-2 4H42z"/>
+  <g filter="url(#shadow)" fill="url(#leaf)" stroke="#17371d" stroke-width="2.3" stroke-linejoin="round">
+    <path d="M60 7c8 18 9 34 2 49 9-13 20-24 35-32-2 18-10 32-25 41 12-5 25-6 39-3-8 15-19 25-35 30 11 0 21 3 30 9-12 8-25 10-39 7l-5-2v9h-4v-9l-5 2c-14 3-27 1-39-7 9-6 19-9 30-9-16-5-27-15-35-30 14-3 27-2 39 3-15-9-23-23-25-41 15 8 26 19 35 32-7-15-6-31 2-49Z"/>
   </g>
+  <path d="M60 42v70" fill="none" stroke="#244f28" stroke-width="4" stroke-linecap="round"/>
 </svg>

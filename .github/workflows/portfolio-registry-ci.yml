@@ -132,7 +132,7 @@ jobs:
           test -s site/public-route-patch/projects/index.html
           grep -Fq 'Cannabis Fleet Battle' site/public-route-patch/projects/index.html
           grep -Fq 'Strain Showdown' site/public-route-patch/projects/index.html
-          grep -Fq 'Protect the Plants' site/public-route-patch/games/index.html
+          grep -Fq 'Burn Buds' site/public-route-patch/games/index.html
 
       - name: Validate High IQ legacy fallback boundary
         shell: bash
