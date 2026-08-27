@@ -1,23 +1,22 @@
 {
   "schemaVersion": 1,
-  "batch": "volume10-batch01",
+  "batch": "volume10-batch02",
   "status": "owner_authorized_external_review_pending",
   "publicationAuthorized": true,
-  "validationGate": "dynamic-topic-v2",
+  "validationGate": "current-topic-v2",
   "source": {
-    "masterContentMapDriveId": "1EG28EycJ5bE1oGKxVAeOWa5SBLKOw8CdeT0jsfnTe1U",
-    "claimReleaseWorkbookId": "1gKxi36UWsssFX1dm7qaEitU0Kt6gakr4F5ZHUI0oVuM",
-    "controlledGlossaryId": "11RpLM-ETSeBpLugxuHtIKkBWR9exi3gVEIpqE_rohDk",
-    "version": "Part 10 Batch 01 — evidence synthesis 2026-08-26 / independent review pending",
-    "publicationAuthorization": "Project owner instructed continuation of production content publication on 2026-08-26. Independent specialist approval remains pending and is not implied by website publication.",
-    "releaseTimeReview": "THC-ENC-181–185 were checked at release time on 2026-08-26. Cannabis-specific architecture and pruning evidence is separated from general plant branching and mechanobiology evidence. The public lessons do not assert a universal node count, calendar schedule, bend angle, topping height, training frequency, or guaranteed yield response. Low-stress training is identified as cultivation terminology rather than a standardized cannabis research treatment.",
-    "note": "Part 10 Batch 01 preserves the controlled Master 420-Entry Content Map titles and numbering. Website publication carries a review notice and does not represent independent lesson approval."
+    "driveDocumentId": "1EG28EycJ5bE1oGKxVAeOWa5SBLKOw8CdeT0jsfnTe1U",
+    "controlledCatalogueVersion": "Master Content Map v1.1",
+    "version": "Part 10 — Canopy Architecture and Training Biology — Batch 02",
+    "publicationAuthorization": "Project owner authorized continued website publication on 2026-08-26. Independent specialist approval remains pending and is not implied by publication.",
+    "releaseTimeReview": "THC-ENC-186–190 were reviewed for non-universal training claims. Public wording distinguishes direct cannabis evidence from broader plant-physiology mechanisms and avoids fixed timing, node-count, removal-percentage, or guaranteed-yield prescriptions.",
+    "note": "THC-ENC-186–190 extend the controlled Training & Canopy Architecture topic. Variable outcomes, recovery, cultivar effects, density, light distribution, and source-sink tradeoffs must remain visible in public wording."
   },
   "lessonFiles": [
-    "content/encyclopedia/volume-10/lessons/thc-enc-181.json",
-    "content/encyclopedia/volume-10/lessons/thc-enc-182.json",
-    "content/encyclopedia/volume-10/lessons/thc-enc-183.json",
-    "content/encyclopedia/volume-10/lessons/thc-enc-184.json",
-    "content/encyclopedia/volume-10/lessons/thc-enc-185.json"
+    "content/encyclopedia/volume-10/lessons/thc-enc-186.json",
+    "content/encyclopedia/volume-10/lessons/thc-enc-187.json",
+    "content/encyclopedia/volume-10/lessons/thc-enc-188.json",
+    "content/encyclopedia/volume-10/lessons/thc-enc-189.json",
+    "content/encyclopedia/volume-10/lessons/thc-enc-190.json"
   ]
 }
