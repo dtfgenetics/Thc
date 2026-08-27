@@ -1,0 +1,64 @@
+{
+  "id": "THC-ENC-186",
+  "number": 186,
+  "title": "FIM-Style Cuts and Variable Outcomes",
+  "objective": "Explain why partial or irregular cuts through an actively developing shoot apex can produce variable architecture, and distinguish documented meristem biology from informal claims about predictable FIM outcomes.",
+  "terms": [
+    {"term":"FIM-style cut","definition":"Cultivation terminology for a partial or irregular cut through the developing shoot tip intended to alter apical growth without cleanly removing the entire terminal meristem region."},
+    {"term":"shoot apical meristem","definition":"The actively dividing shoot-tip tissue that maintains stem cells and initiates new leaves, nodes, and associated axillary structures."},
+    {"term":"leaf primordium","definition":"An early developing leaf structure initiated near the shoot apical meristem."},
+    {"term":"meristem injury","definition":"Physical damage to some or all of a meristematic region that can change subsequent organ initiation, symmetry, or shoot continuation."},
+    {"term":"organogenesis","definition":"The developmental process by which new plant organs such as leaves and shoots are initiated and formed."},
+    {"term":"variable outcome","definition":"A response that is not reliably identical among plants because the exact tissue affected, developmental stage, genotype, environment, and recovery differ."}
+  ],
+  "termDefinitionsStatus": "controlled_glossary_reconciled_for_publication",
+  "coreScience": [
+    "The shoot tip is a small, three-dimensional developmental system containing the shoot apical meristem and surrounding young leaf primordia. A clean topping cut removes the terminal growth region. A partial or irregular cut can instead damage a mixture of meristematic tissue and developing organs while leaving other portions intact.",
+    "Because the exact depth, angle, tissue boundary, and developmental stage of a partial cut are difficult to reproduce, subsequent growth can vary. The original apex may continue in altered form, multiple nearby growing points may become visible, damaged primordia can produce distorted leaves, and axillary buds below the cut may also change growth as apical control is weakened.",
+    "FIM is cultivation terminology rather than a well-standardized experimental treatment in Cannabis. The peer-reviewed cannabis literature contains evidence for topping, pruning, branch removal, defoliation, and broader architecture manipulation, but direct replicated trials establishing a predictable number of new leaders from a defined FIM cut are sparse.",
+    "A visually dramatic shoot response is not evidence by itself of improved crop performance. Architecture, recovery, reproductive development, biomass, and chemical outcomes must be measured separately."
+  ],
+  "cultivationRelevance": [
+    "Record FIM-style cuts as partial meristem injuries rather than assuming a fixed architectural result. If the goal is comparison or repeatability, document the exact shoot position, developmental stage, visible tissue removed, subsequent leader count, and recovery.",
+    "Do not interpret malformed young leaves immediately after a partial cut as a nutrient disorder without considering direct injury to developing primordia. Follow new growth beyond the damaged region before assigning a systemic diagnosis."
+  ],
+  "measureAndRecord": [
+    {"field":"Cut description","requirement":"Plant and shoot ID, date, node position, developmental stage, approximate portion of the terminal tissue affected, and photographs before and after where possible."},
+    {"field":"Immediate injury","requirement":"Visible meristem loss, damaged primordia, split tissue, wilting, discoloration, or intact terminal growth."},
+    {"field":"Shoot response","requirement":"Number and identity of sustained growing points, axillary-bud activation, leader symmetry, distorted leaves, and time to resumed extension."},
+    {"field":"Architecture outcome","requirement":"Height, branch number/order, canopy spread, dominant-leader count, and whether later pruning or support changed the response."},
+    {"field":"Crop endpoint","requirement":"Defined yield, quality, uniformity, labor, or structural endpoint compared with a reference when possible."}
+  ],
+  "misconceptions": [
+    "A FIM-style cut reliably produces the same number of leaders every time.",
+    "Partial meristem injury is a precisely standardized cannabis research treatment.",
+    "Distorted leaves after a cut automatically indicate nutrient deficiency or disease.",
+    "More visible growing tips automatically mean greater final yield."
+  ],
+  "evidenceLimits": [
+    "Direct cannabis trials that define and replicate FIM cuts with anatomical precision are limited. Claims about exact leader counts or superiority over topping should therefore be treated as unverified cultivation claims unless supported by a controlled comparison.",
+    "General shoot-apical-meristem biology supports the expectation that partial injury can alter organ initiation and shoot continuity, but the specific outcome depends on which tissues remain functional."
+  ],
+  "crossLinks": "THC-ENC-013 for meristem biology; THC-ENC-181 for apical dominance; THC-ENC-183 for developmental timing; THC-ENC-185 for complete meristem removal; THC-ENC-187–200 for repeated training and canopy management.",
+  "sourceNotes": [
+    "Ijoma GN et al. (2026). The curious origins of a high-stress training technique mainlining: its molecular, biochemical, and agronomic perspectives for the cultivation of Cannabis sativa. Journal of Cannabis Research 8:3. DOI 10.1186/s42238-025-00339-y; secondary synthesis noting FIM/fimming terminology and the scarcity of standardized cannabis training literature.",
+    "Beveridge CA et al. (2023). Strigolactones and Shoot Branching: What Is the Real Hormone and How Does It Work? Plant and Cell Physiology 64(9):967–983; general shoot-branching context.",
+    "Spitzer-Rimon B, Duchin S, Bernstein N, Kamenetsky R. (2019). Architecture and Florogenesis in Female Cannabis sativa Plants. Frontiers in Plant Science 10:350. DOI 10.3389/fpls.2019.00350.",
+    "Danziger N, Bernstein N. (2021). Plant architecture manipulation increases cannabinoid standardization in drug-type medical cannabis. Industrial Crops and Products 167:113528. DOI 10.1016/j.indcrop.2021.113528; direct cannabis architecture evidence, not a FIM trial."
+  ],
+  "publicationAuthorized": true,
+  "reviewControl": {
+    "controlledManuscript": "Part 10 Batch 02 evidence synthesis",
+    "evidenceControl": "release_time_source_check_complete",
+    "secondaryEvidenceReview": "complete_qualified",
+    "externalReview": "pending_not_recorded",
+    "externalReviewType": "shoot_meristem_and_cannabis_training",
+    "releaseTimeReview": "completed_2026-08-26; FIM is labeled as cultivation terminology, direct cannabis evidence limitations are explicit, and no exact leader-count or yield claim is asserted",
+    "publicationAuthorized": true,
+    "publicationAuthorization": "project_owner_2026-08-26_continue_pushing_content",
+    "independentApproval": false,
+    "websiteAction": "publish_with_review_notice"
+  },
+  "slug": "fim-style-cuts-and-variable-outcomes",
+  "route": "/encyclopedia/fim-style-cuts-and-variable-outcomes"
+}
