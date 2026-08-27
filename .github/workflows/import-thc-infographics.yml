@@ -1,4 +1,4 @@
-name: Publish DTFSeeds Bulk Images
+name: Dispatch DTFSeeds Bulk Image Publisher
 
 on:
   workflow_dispatch:
@@ -6,246 +6,38 @@ on:
     types: [created]
 
 permissions:
-  contents: write
+  actions: write
+  contents: read
   issues: write
 
-concurrency:
-  group: dtfseeds-wordpress-infographics-production
-  cancel-in-progress: false
-
 jobs:
-  publish:
+  dispatch:
     if: >-
       github.event_name == 'workflow_dispatch' ||
       (github.event_name == 'issue_comment' &&
        github.event.issue.number == 182 &&
        github.event.comment.body == '/publish-infographics' &&
        github.event.comment.user.login == github.repository_owner)
-    name: Import, publish, and verify image backlog
     runs-on: ubuntu-latest
-    timeout-minutes: 55
-    environment: production
-    env:
-      NODE_OPTIONS: --dns-result-order=ipv4first
-      WP_SITE_URL: https://dtfseeds.com
-      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
-      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
-      INFOGRAPHIC_SOURCE_DIR: ${{ github.workspace }}/site/wordpress/assets/infographics
-      INFOGRAPHIC_DIR: ${{ github.workspace }}/.tmp/eligible-infographics
-      INFOGRAPHIC_PLACEMENT_CONFIG: ${{ github.workspace }}/site/wordpress/assets/infographics/placement-rules.json
-      INFOGRAPHIC_EXCLUSIONS: ${{ github.workspace }}/site/wordpress/assets/infographics/infographic-exclusions.json
-      BULK_INFOGRAPHIC_MANIFEST: ${{ github.workspace }}/site/wordpress/imports/infographic-bulk-import.json
-      BULK_IMPORT_REPORT: ${{ runner.temp }}/infographic-bulk-import-report.json
-      TOPIC_LITERATURE_CONFIG: ${{ github.workspace }}/site/wordpress/education/topic-literature.json
-      BACKUP_ROOT: /tmp/wordpress-infographic-backups
     steps:
-      - name: Check out production source
-        uses: actions/checkout@v4
-        with:
-          ref: main
-          fetch-depth: 0
-
-      - name: Set up Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-
-      - name: Validate production publisher
-        shell: bash
-        run: |
-          set -euo pipefail
-          node --check scripts/import-wordpress-infographic-remote-batch.mjs
-          node --check scripts/stage-eligible-infographics.mjs
-          node --check scripts/deploy-wordpress-infographic-library-rest.mjs
-          node --check scripts/publish-wordpress-topic-literature.mjs
-          node --check scripts/assemble-outdoor-quantification-v1.mjs
-          node --check scripts/enhance-wordpress-outdoor-quantification-v1.mjs
-          node -e "const m=require('./site/wordpress/imports/infographic-bulk-import.json'); if(m.schemaVersion!==1||!Array.isArray(m.assets)) process.exit(1)"
-          test -n "${WP_API_USERNAME:-}"
-          test -n "${WP_API_PASSWORD:-}"
-          mkdir -p "$BACKUP_ROOT" "$INFOGRAPHIC_DIR"
-
-      - name: Import queued remote image batch
-        id: intake
-        shell: bash
-        run: |
-          set -euo pipefail
-          node scripts/import-wordpress-infographic-remote-batch.mjs
-          if [[ -s "$BULK_IMPORT_REPORT" ]]; then
-            echo "requested=$(node -p "require(process.argv[1]).requestedAssets ?? 0" "$BULK_IMPORT_REPORT")" >> "$GITHUB_OUTPUT"
-            echo "created=$(node -p "require(process.argv[1]).created ?? 0" "$BULK_IMPORT_REPORT")" >> "$GITHUB_OUTPUT"
-            echo "updated=$(node -p "require(process.argv[1]).updated ?? 0" "$BULK_IMPORT_REPORT")" >> "$GITHUB_OUTPUT"
-            echo "reused=$(node -p "require(process.argv[1]).reused ?? 0" "$BULK_IMPORT_REPORT")" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Persist imported image binaries
-        id: canonical
-        shell: bash
-        run: |
-          set -euo pipefail
-          git config user.name 'DTF Bulk Image Publisher'
-          git config user.email 'actions@users.noreply.github.com'
-          git add site/wordpress/assets/infographics
-          if git diff --cached --quiet; then
-            echo 'changed=false' >> "$GITHUB_OUTPUT"
-          else
-            git commit -m 'Import queued THC infographic assets'
-            if ! git push origin HEAD:main; then
-              git pull --rebase origin main
-              git push origin HEAD:main
-            fi
-            echo 'changed=true' >> "$GITHUB_OUTPUT"
-            echo "commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Stage finished infographic assets only
-        id: quality
-        shell: bash
-        run: |
-          set -euo pipefail
-          node scripts/stage-eligible-infographics.mjs
-          report="$BACKUP_ROOT/infographic-quality-gate.json"
-          test -s "$report"
-          echo "source_count=$(node -p "require(process.argv[1]).sourceImageCount" "$report")" >> "$GITHUB_OUTPUT"
-          echo "eligible_count=$(node -p "require(process.argv[1]).eligibleImageCount" "$report")" >> "$GITHUB_OUTPUT"
-          echo "excluded_count=$(node -p "require(process.argv[1]).excludedImageCount" "$report")" >> "$GITHUB_OUTPUT"
-
-      - name: Normalize WebP for WordPress
-        shell: bash
-        run: |
-          set -euo pipefail
-          if ! command -v ffmpeg >/dev/null 2>&1; then
-            sudo apt-get update -qq
-            sudo apt-get install -y --no-install-recommends ffmpeg
-          fi
-          while IFS= read -r -d '' file; do
-            output="${file%.*}.png"
-            ffmpeg -hide_banner -loglevel error -y -i "$file" -frames:v 1 "$output"
-            test -s "$output"
-            rm "$file"
-          done < <(find "$INFOGRAPHIC_DIR" -type f -iname '*.webp' -print0)
-
-      - name: Upload missing eligible images to WordPress
-        id: media
-        shell: bash
-        run: |
-          set -euo pipefail
-          node scripts/deploy-wordpress-infographic-library-rest.mjs
-          backup_dir="$(cat "$BACKUP_ROOT/wordpress-infographic-backup-path.txt")"
-          result="$backup_dir/deployment-result.json"
-          test -s "$result"
-          echo "uploaded=$(node -p "require(process.argv[1]).uploadedMediaCount" "$result")" >> "$GITHUB_OUTPUT"
-          echo "reused=$(node -p "require(process.argv[1]).reusedMediaCount" "$result")" >> "$GITHUB_OUTPUT"
-
-      - name: Publish image placements and searchable library
-        id: literature
-        shell: bash
-        run: |
-          set -euo pipefail
-          node scripts/publish-wordpress-topic-literature.mjs
-          backup_dir="$(cat "$BACKUP_ROOT/topic-literature-backup-path.txt")"
-          report="$backup_dir/topic-literature-report.json"
-          test -s "$report"
-          echo "topics=$(node -p "require(process.argv[1]).topicPages.length" "$report")" >> "$GITHUB_OUTPUT"
-          echo "gallery=$(node -p "require(process.argv[1]).eligibleInfographics" "$report")" >> "$GITHUB_OUTPUT"
-          echo "page_id=$(node -p "require(process.argv[1]).libraryPageId" "$report")" >> "$GITHUB_OUTPUT"
-
-      - name: Keep Outdoor curriculum synchronized
-        id: outdoor
-        env:
-          APPLY_OUTDOOR_QUANT_V1: 'true'
-          BACKUP_ROOT: /tmp/wordpress-infographic-backups/outdoor-quantification
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p "$BACKUP_ROOT"
-          node scripts/assemble-outdoor-quantification-v1.mjs --write > "$RUNNER_TEMP/outdoor-assembly.json"
-          node scripts/enhance-wordpress-outdoor-quantification-v1.mjs > "$RUNNER_TEMP/outdoor-publish.log"
-
-      - name: Verify public image library and topic pages
-        id: verify
-        shell: bash
-        run: |
-          set -euo pipefail
-          fetch_live() {
-            local url="$1"
-            local output="$2"
-            for attempt in 1 2 3 4 5 6; do
-              if curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
-                --header 'Cache-Control: no-cache, no-store, max-age=0' \
-                "${url}?dtf_bulk=${GITHUB_RUN_ID}-${attempt}" --output "$output"; then
-                return 0
-              fi
-              sleep 5
-            done
-            return 1
-          }
-
-          library="$RUNNER_TEMP/infographic-library.html"
-          fetch_live 'https://dtfseeds.com/learn/infographics/' "$library"
-          grep -Fqi 'Searchable Infographic Library' "$library"
-          grep -Fqi 'thc-infographic-search' "$library"
-          grep -Eqi '<img[^>]+wp-content/uploads/' "$library"
-          image_count="$(grep -Eoi '<img[^>]+wp-content/uploads/' "$library" | wc -l | tr -d ' ')"
-          test "$image_count" -ge 20
-          echo "live_images=$image_count" >> "$GITHUB_OUTPUT"
-
-          for route in plant-biology genetics-breeding lifecycle-propagation environment-vpd lighting water-ph-ec nutrition-media ipm training-canopy harvest-postharvest outdoor research-methods plant-science-reference; do
-            page="$RUNNER_TEMP/topic-${route}.html"
-            fetch_live "https://dtfseeds.com/learn/${route}/" "$page"
-            grep -Fqi 'Infographics for' "$page"
-          done
-
-      - name: Upload production audit
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: dtfseeds-bulk-image-publish-${{ github.run_id }}
-          path: |
-            /tmp/wordpress-infographic-backups
-            ${{ runner.temp }}/infographic-bulk-import-report.json
-          if-no-files-found: warn
-          retention-days: 30
-
-      - name: Report result to bulk publishing control
-        if: always()
+      - name: Launch protected WordPress infographic publisher
         uses: actions/github-script@v7
-        env:
-          RESULT: ${{ job.status }}
-          REQUESTED: ${{ steps.intake.outputs.requested }}
-          IMPORTED: ${{ steps.intake.outputs.created }}
-          UPDATED: ${{ steps.intake.outputs.updated }}
-          SOURCE: ${{ steps.quality.outputs.source_count }}
-          ELIGIBLE: ${{ steps.quality.outputs.eligible_count }}
-          EXCLUDED: ${{ steps.quality.outputs.excluded_count }}
-          UPLOADED: ${{ steps.media.outputs.uploaded }}
-          REUSED: ${{ steps.media.outputs.reused }}
-          TOPICS: ${{ steps.literature.outputs.topics }}
-          GALLERY: ${{ steps.literature.outputs.gallery }}
-          LIVE_IMAGES: ${{ steps.verify.outputs.live_images }}
+        with:
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'wordpress-infographic-production.yml',
+              ref: 'main'
+            });
+
+      - name: Record dispatch
+        uses: actions/github-script@v7
         with:
           script: |
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: 182,
-              body: [
-                '## DTFSeeds bulk image publication',
-                '',
-                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-                `Result: **${process.env.RESULT}**`,
-                `Remote batch requested: **${process.env.REQUESTED || '0'}**`,
-                `Remote images imported: **${process.env.IMPORTED || '0'}**`,
-                `Remote images replaced: **${process.env.UPDATED || '0'}**`,
-                `Canonical source images inspected: **${process.env.SOURCE || 'not-run'}**`,
-                `Finished eligible images: **${process.env.ELIGIBLE || 'not-run'}**`,
-                `Excluded support/reference images: **${process.env.EXCLUDED || 'not-run'}**`,
-                `New WordPress media uploads: **${process.env.UPLOADED || 'not-run'}**`,
-                `Existing WordPress media reused: **${process.env.REUSED || 'not-run'}**`,
-                `Topic pages synchronized: **${process.env.TOPICS || 'not-run'}**`,
-                `Searchable library entries: **${process.env.GALLERY || 'not-run'}**`,
-                `Images observed on public library: **${process.env.LIVE_IMAGES || 'not-run'}**`,
-                '',
-                'Verified target: https://dtfseeds.com/learn/infographics/'
-              ].join('\n')
+              body: `Bulk image production dispatch accepted from run ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}.`
             });
