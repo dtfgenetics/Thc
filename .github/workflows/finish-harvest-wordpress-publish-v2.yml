@@ -100,3 +100,5 @@ jobs:
           grep -Eqi '<img[^>]+wp-content/uploads/' "$harvest"
           grep -Eqi '<img[^>]+wp-content/uploads/' "$library"
           echo 'HARV-01 through HARV-16 verified live on both pages.'
+
+# production retrigger 2026-08-27
