@@ -8,7 +8,7 @@ on:
       - '.github/workflows/finish-harvest-wordpress-publish.yml'
 
 permissions:
-  contents: write
+  contents: read
 
 env:
   WP_SITE_URL: https://dtfseeds.com
@@ -27,60 +27,75 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: main
-          fetch-depth: 0
+          fetch-depth: 1
 
       - uses: actions/setup-node@v4
         with:
           node-version: 22
 
-      - name: Normalize WebP infographic assets for WordPress
+      - name: Validate Harvest set and prepare WordPress-safe image workspace
         shell: bash
         run: |
           set -euo pipefail
           python3 -m pip install --quiet Pillow
           python3 - <<'PY'
+          import os
+          import re
+          import shutil
           from pathlib import Path
-          from PIL import Image
-          root = Path('site/wordpress/assets/infographics')
-          files = sorted(root.rglob('*.webp')) + sorted(root.rglob('*.WEBP'))
-          for src in files:
-              dst = src.with_suffix('.jpg')
-              print(f'Converting {src} -> {dst}')
-              with Image.open(src) as im:
-                  if im.mode in ('RGBA', 'LA'):
-                      bg = Image.new('RGB', im.size, 'white')
-                      alpha = im.getchannel('A')
-                      bg.paste(im.convert('RGB'), mask=alpha)
-                      out = bg
-                  else:
-                      out = im.convert('RGB')
-                  out.save(dst, 'JPEG', quality=95, optimize=True)
-              if dst.stat().st_size < 10000:
-                  raise RuntimeError(f'Converted JPEG unexpectedly small: {dst}')
-          print(f'Normalized {len(files)} WebP infographic asset(s).')
-          PY
-          while IFS= read -r -d '' src; do
-            dst="${src%.*}.jpg"
-            test -s "$dst"
-            file "$dst" | grep -qi 'JPEG image data'
-            git rm "$src"
-            git add "$dst"
-          done < <(find site/wordpress/assets/infographics -type f -iname '*.webp' -print0)
+          from PIL import Image, ImageOps, UnidentifiedImageError
 
-      - name: Commit normalized canonical assets
-        shell: bash
-        run: |
-          set -euo pipefail
-          git config user.name 'DTF WordPress Image Publisher'
-          git config user.email 'actions@users.noreply.github.com'
-          if git diff --cached --quiet; then
-            echo 'No WebP normalization commit required.'
-          else
-            git commit -m 'Normalize WordPress infographic image formats'
-            git fetch origin main
-            git rebase origin/main
-            git push origin HEAD:main
-          fi
+          root = Path('site/wordpress/assets/infographics')
+          quarantine = Path(os.environ['RUNNER_TEMP']) / 'invalid-infographic-assets'
+          quarantine.mkdir(parents=True, exist_ok=True)
+
+          expected = [f'{n:02d}' for n in range(1, 17)]
+          harvest = sorted(root.glob('THC-HARV-*.jpg'))
+          found = []
+          for path in harvest:
+              match = re.search(r'THC-HARV-(\d{2})', path.name, re.I)
+              if match:
+                  found.append(match.group(1))
+              with Image.open(path) as image:
+                  image.verify()
+                  if image.format != 'JPEG':
+                      raise RuntimeError(f'Harvest asset is not a JPEG: {path} ({image.format})')
+          found = sorted(set(found))
+          if found != expected:
+              raise RuntimeError(f'Expected HARV-01 through HARV-16; found {found}')
+          print('Validated HARV-01 through HARV-16 as JPEG source assets.')
+
+          webps = sorted(set(root.rglob('*.webp')) | set(root.rglob('*.WEBP')))
+          converted = 0
+          isolated = 0
+          for src in webps:
+              try:
+                  with Image.open(src) as image:
+                      image.load()
+                      image = ImageOps.exif_transpose(image)
+                      if image.mode in ('RGBA', 'LA'):
+                          bg = Image.new('RGB', image.size, 'white')
+                          alpha = image.getchannel('A')
+                          bg.paste(image.convert('RGB'), mask=alpha)
+                          out = bg
+                      else:
+                          out = image.convert('RGB')
+                      dst = src.with_suffix('.jpg')
+                      out.save(dst, 'JPEG', quality=95, optimize=True, progressive=True)
+                  if dst.stat().st_size < 10000:
+                      raise RuntimeError(f'Converted JPEG unexpectedly small: {dst}')
+                  src.unlink()
+                  converted += 1
+                  print(f'Prepared WebP for WordPress: {src} -> {dst}')
+              except (UnidentifiedImageError, OSError, ValueError, RuntimeError) as error:
+                  target = quarantine / src.relative_to(root)
+                  target.parent.mkdir(parents=True, exist_ok=True)
+                  shutil.move(str(src), str(target))
+                  isolated += 1
+                  print(f'Isolated malformed legacy image from publication workspace: {src}: {error}')
+
+          print(f'WordPress image preparation complete: {converted} WebP converted, {isolated} malformed legacy image(s) isolated.')
+          PY
 
       - name: Publish full canonical infographic library to WordPress
         shell: bash
