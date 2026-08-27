@@ -37,19 +37,35 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          root='site/wordpress/assets/infographics'
-          count=0
+          python3 -m pip install --quiet Pillow
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          root = Path('site/wordpress/assets/infographics')
+          files = sorted(root.rglob('*.webp')) + sorted(root.rglob('*.WEBP'))
+          for src in files:
+              dst = src.with_suffix('.jpg')
+              print(f'Converting {src} -> {dst}')
+              with Image.open(src) as im:
+                  if im.mode in ('RGBA', 'LA'):
+                      bg = Image.new('RGB', im.size, 'white')
+                      alpha = im.getchannel('A')
+                      bg.paste(im.convert('RGB'), mask=alpha)
+                      out = bg
+                  else:
+                      out = im.convert('RGB')
+                  out.save(dst, 'JPEG', quality=95, optimize=True)
+              if dst.stat().st_size < 10000:
+                  raise RuntimeError(f'Converted JPEG unexpectedly small: {dst}')
+          print(f'Normalized {len(files)} WebP infographic asset(s).')
+          PY
           while IFS= read -r -d '' src; do
             dst="${src%.*}.jpg"
-            echo "Converting $src -> $dst"
-            ffmpeg -hide_banner -loglevel error -y -i "$src" -q:v 2 "$dst"
             test -s "$dst"
             file "$dst" | grep -qi 'JPEG image data'
             git rm "$src"
             git add "$dst"
-            count=$((count + 1))
-          done < <(find "$root" -type f -iname '*.webp' -print0)
-          echo "Normalized $count WebP infographic asset(s)."
+          done < <(find site/wordpress/assets/infographics -type f -iname '*.webp' -print0)
 
       - name: Commit normalized canonical assets
         shell: bash
