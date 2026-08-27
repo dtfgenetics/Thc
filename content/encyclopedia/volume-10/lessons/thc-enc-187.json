@@ -1,0 +1,65 @@
+{
+  "id": "THC-ENC-187",
+  "number": 187,
+  "title": "Mainlining and Repeated Structural Training",
+  "objective": "Analyze mainlining as a sequence of repeated structural interventions that changes branch hierarchy and canopy geometry, while separating its plausible plant-development mechanisms from cultivation claims that remain weakly standardized or insufficiently tested.",
+  "terms": [
+    {"term":"mainlining","definition":"Cannabis cultivation terminology for a repeated structural-training system that combines shoot-tip removal, selective branch retention or removal, and branch positioning to create a deliberately organized canopy."},
+    {"term":"manifold","definition":"Grower terminology for a deliberately constructed central branching framework intended to distribute several retained leaders from a limited number of structural junctions."},
+    {"term":"repeated intervention","definition":"A management sequence in which a plant is altered more than once, so each later response depends partly on recovery and architecture created by earlier actions."},
+    {"term":"branch hierarchy","definition":"The ordered relationship among the main stem, primary branches, secondary branches, and higher-order shoots."},
+    {"term":"architectural symmetry","definition":"Similarity in position, size, or developmental status among selected branches; visual symmetry does not guarantee equal physiology or resource flow."},
+    {"term":"recovery interval","definition":"The observed period between an intervention and restoration of stable growth; it varies with plant condition and is not a universal fixed duration."}
+  ],
+  "termDefinitionsStatus": "controlled_glossary_reconciled_for_publication",
+  "coreScience": [
+    "Mainlining is not one biological mechanism. It is a management sequence that combines effects already covered by apical-dominance disruption, selective pruning, branch positioning, altered light distribution, wound recovery, and repeated changes to source-sink relationships. Because the interventions occur in sequence, the response to a later cut depends on the architecture and physiological state produced by earlier steps.",
+    "Creating a visually symmetrical framework can reduce height differences among retained leaders and make canopy positioning more deliberate, but equal-looking branches are not guaranteed to receive exactly equal hormones, carbohydrates, water, mineral nutrients, or light. Vascular development, branch age, branch angle, leaf area, root status, and local irradiance still differ.",
+    "A 2026 review specifically examining cannabis mainlining concluded that the practice is widespread but its scientific literature remains limited and protocols are not standardized. Many mechanistic explanations are inferred from general apical-dominance, meristem, vascular-development, and stress-recovery research rather than from replicated cannabis experiments that isolate the complete mainlining sequence.",
+    "Direct cannabis studies of topping, pruning, branch removal, defoliation, and density demonstrate that architecture can alter biomass distribution, chemical uniformity, and canopy microclimate. They support studying repeated structural systems, but they do not prove that every mainlining recipe produces superior yield or quality."
+  ],
+  "cultivationRelevance": [
+    "Evaluate repeated structural training as a sequence, not as a single treatment. Record what was changed at each stage and whether the plant had resumed stable growth before the next intervention. This makes it possible to distinguish architecture benefits from cumulative injury or lost growth time.",
+    "Use the intended crop goal to judge the architecture: height control, horizontal space filling, uniform light exposure, branch support, harvest uniformity, or another measurable endpoint. Symmetry is a design feature, not an independent yield metric."
+  ],
+  "measureAndRecord": [
+    {"field":"Training sequence","requirement":"Plant ID, each intervention date, developmental stage, exact shoot or node affected, tissue removed, branches retained, branches repositioned, and support system used."},
+    {"field":"Recovery between stages","requirement":"Time to resumed extension, leaf production, branch activation, wound condition, wilting or growth suppression, and any skipped or delayed intervention."},
+    {"field":"Framework geometry","requirement":"Retained leader count, branch order, branch angles, canopy width, leader-height variation, spacing among leaders, and structural failures."},
+    {"field":"Environment","requirement":"Light distribution, plant density, root-zone system, irrigation, nutrition, temperature, humidity, and major stress events during the sequence."},
+    {"field":"Final comparison","requirement":"Per-plant and/or per-area yield, uniformity, defined chemistry metrics, labor inputs, crop duration, breakage, and an appropriate comparison treatment where possible."}
+  ],
+  "misconceptions": [
+    "A symmetrical manifold guarantees equal nutrient and hormone flow to every branch.",
+    "Mainlining is one standardized treatment with one scientifically established protocol.",
+    "Repeated topping automatically increases yield each time another leader is created.",
+    "A visually even canopy proves that all inflorescences receive the same light or develop identically."
+  ],
+  "evidenceLimits": [
+    "The dedicated cannabis mainlining literature is presently dominated by synthesis and extrapolation rather than multiple replicated trials using a standardized protocol. Claims about ideal topping count, leader number, recovery interval, or yield increase require direct controlled testing.",
+    "Because mainlining combines several interventions, causal attribution is difficult: any outcome may reflect pruning, bending, density, light redistribution, genotype, crop duration, or interactions among them."
+  ],
+  "crossLinks": "THC-ENC-181–186 for apical dominance, architecture, timing, bending, topping, and partial meristem cuts; THC-ENC-188–190 for trellising, lower-shoot pruning, and defoliation; THC-ENC-101–120 for light measurement.",
+  "sourceNotes": [
+    "Ijoma GN et al. (2026). The curious origins of a high-stress training technique mainlining: its molecular, biochemical, and agronomic perspectives for the cultivation of Cannabis sativa. Journal of Cannabis Research 8:3. DOI 10.1186/s42238-025-00339-y; review explicitly identifies major standardization and evidence gaps.",
+    "Danziger N, Bernstein N. (2021). Plant architecture manipulation increases cannabinoid standardization in drug-type medical cannabis. Industrial Crops and Products 167:113528. DOI 10.1016/j.indcrop.2021.113528.",
+    "Danziger N, Bernstein N. (2022). Too Dense or Not Too Dense: Higher Planting Density Reduces Cannabinoid Uniformity but Increases Yield/Area in Drug-Type Medical Cannabis. Frontiers in Plant Science 13:713481. DOI 10.3389/fpls.2022.713481.",
+    "Crispim Massuela D et al. (2022). Impact of Harvest Time and Pruning Technique on Total CBD Concentration and Yield of Medicinal Cannabis. Plants 11(1):140. DOI 10.3390/plants11010140.",
+    "Beveridge CA et al. (2023). Strigolactones and Shoot Branching: What Is the Real Hormone and How Does It Work? Plant and Cell Physiology 64(9):967–983; general branching evidence only."
+  ],
+  "publicationAuthorized": true,
+  "reviewControl": {
+    "controlledManuscript": "Part 10 Batch 02 evidence synthesis",
+    "evidenceControl": "release_time_source_check_complete",
+    "secondaryEvidenceReview": "complete_qualified",
+    "externalReview": "pending_not_recorded",
+    "externalReviewType": "cannabis_architecture_and_repeated_training",
+    "releaseTimeReview": "completed_2026-08-26; mainlining is labeled as a combined cultivation system with limited standardized direct evidence and no guaranteed yield, leader-count, or recovery claim",
+    "publicationAuthorized": true,
+    "publicationAuthorization": "project_owner_2026-08-26_continue_pushing_content",
+    "independentApproval": false,
+    "websiteAction": "publish_with_review_notice"
+  },
+  "slug": "mainlining-and-repeated-structural-training",
+  "route": "/encyclopedia/mainlining-and-repeated-structural-training"
+}
