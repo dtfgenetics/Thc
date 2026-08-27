@@ -1,0 +1,89 @@
+name: Import approved Harvest replacements V1
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - site/wordpress/assets/infographics/import-harvest-approved-2026-08-27.json
+      - .github/workflows/import-harvest-replacements-v1.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: harvest-approved-replacements-v1
+  cancel-in-progress: true
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out current main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Download approved full-resolution replacements
+        shell: bash
+        run: |
+          set -euo pipefail
+          root='site/wordpress/assets/infographics'
+          mkdir -p "$root"
+
+          fetch_image() {
+            local url="$1"
+            local target="$2"
+            local tmp="${target}.download"
+
+            curl -4 --fail --silent --show-error --location \
+              --connect-timeout 10 --max-time 60 \
+              --retry 2 --retry-delay 2 \
+              --header 'User-Agent: Mozilla/5.0 THC-Harvest-Importer/1.0' \
+              "$url" --output "$tmp"
+
+            local size
+            size="$(stat -c '%s' "$tmp")"
+            test "$size" -ge 250000
+            test "$(od -An -tx1 -N3 "$tmp" | tr -d ' \n')" = 'ffd8ff'
+            file "$tmp" | grep -qi 'JPEG image data'
+
+            mv "$tmp" "$target"
+            echo "Verified replacement: $target ($size bytes)"
+          }
+
+          fetch_image \
+            'https://cdn.shopify.com/s/files/1/0664/2542/1885/files/THC-HARV-03_harvest_handling_workflow.jpg?v=1787825295' \
+            "$root/THC-HARV-03_harvest_handling_workflow.jpg"
+
+          fetch_image \
+            'https://cdn.shopify.com/s/files/1/0664/2542/1885/files/THC-HARV-05_drying_environment_fundamentals.jpg?v=1787851009' \
+            "$root/THC-HARV-05_drying_environment_fundamentals.jpg"
+
+      - name: Commit canonical replacements
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add \
+            site/wordpress/assets/infographics/THC-HARV-03_harvest_handling_workflow.jpg \
+            site/wordpress/assets/infographics/THC-HARV-05_drying_environment_fundamentals.jpg
+
+          if git diff --cached --quiet; then
+            echo 'Approved replacements already match current main.'
+            exit 0
+          fi
+
+          git commit -m 'Replace stale Harvest infographics with approved full-resolution assets'
+          git pull --rebase origin main
+          git push origin HEAD:main
+
+      - name: Verify canonical file sizes on checked-out tree
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(stat -c '%s' site/wordpress/assets/infographics/THC-HARV-03_harvest_handling_workflow.jpg)" -ge 250000
+          test "$(stat -c '%s' site/wordpress/assets/infographics/THC-HARV-05_drying_environment_fundamentals.jpg)" -ge 250000
