@@ -7,6 +7,8 @@ on:
     paths:
       - .github/deploy-public-suite-v2-trigger.txt
       - .github/workflows/deploy-public-suite-wordpress-v2.yml
+      - apps/growlens-web/public/atlas/**
+      - apps/growlens-web/public/assets/images/atlas/**
 
 permissions:
   actions: write
