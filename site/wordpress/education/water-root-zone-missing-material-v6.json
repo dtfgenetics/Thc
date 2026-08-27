@@ -1,0 +1,227 @@
+{
+  "schemaVersion": 1,
+  "id": "water-root-zone-missing-material-v6",
+  "title": "Water & Root Zone — Missing Material Pack",
+  "updatedAt": "2026-08-27",
+  "purpose": "Close the seven remaining high-value instructional gaps in the Water & Root Zone curriculum without duplicating Nutrition or Environment content.",
+  "modules": [
+    {
+      "id": "container-water-sensor-placement",
+      "title": "Container Water Distribution & Sensor Placement",
+      "encyclopediaIds": ["THC-ENC-090", "THC-ENC-091"],
+      "learningOutcome": "Explain why one moisture reading cannot represent an entire container and design a defensible sensor-placement and validation plan.",
+      "mechanism": [
+        "Irrigation creates three-dimensional wetting patterns shaped by emitter location, substrate hydraulic properties, container geometry, root occupancy and preferential flow.",
+        "Volumetric water content is a point measurement unless the sensing volume and spatial representativeness have been validated. A probe directly below an emitter may read wetter than the container average, while a wall position, shallow placement or poorly contacted probe can bias the opposite direction.",
+        "Root growth changes the hydraulic system over time. Roots alter pore structure, local extraction and sensor contact, so a placement that represented an empty or young container may become less representative later in the crop."
+      ],
+      "measureFirst": [
+        "Record substrate batch, fill density, container dimensions, emitter number and positions.",
+        "Map sensor depth, orientation and horizontal location using a fixed coordinate description.",
+        "Compare sensor output with container mass or a gravimetric check at multiple moisture states.",
+        "Inspect root occupancy and wetting pattern at representative destructive samples.",
+        "Retain calibration equation, temperature/EC context and sensor serial number."
+      ],
+      "interpretationLimits": [
+        "Factory calibration may be adequate for trend monitoring but not absolute VWC in every cannabis substrate.",
+        "A single point cannot prove the wettest or driest region is safe.",
+        "Comparisons across media, container sizes or probe orientations require revalidation."
+      ],
+      "commonMistakes": [
+        "Treating a single probe as the whole container.",
+        "Installing the sensor directly under an emitter without declaring that sampling intent.",
+        "Moving sensors between crops and comparing numbers as if geometry were unchanged.",
+        "Ignoring EC and temperature effects on electromagnetic moisture sensors."
+      ],
+      "fieldExercise": "Install or simulate three sampling positions in representative containers: near-emitter, mid-radius and edge or lower-depth. Record pre-irrigation value, post-irrigation peak, drainage period and next-day value. Compare the three traces with delivered volume, container mass and observed wetting. Identify which position best predicts whole-container change and which positions reveal risk zones.",
+      "visualBrief": "Academic container cross-section with one or two drip emitters, root architecture, wetting bulb, vertical/horizontal moisture gradient, perched or wetter lower zone, dry edge pocket, and three labeled sensor locations: representative, emitter-biased and edge-biased. Include a small validation inset pairing probe trend with container mass."
+    },
+    {
+      "id": "irrigation-catch-test-uniformity",
+      "title": "Irrigation Catch Test & Distribution Uniformity",
+      "encyclopediaIds": ["THC-ENC-091"],
+      "learningOutcome": "Audit actual irrigation delivery, calculate a declared distribution-uniformity metric and separate plumbing variation from plant response.",
+      "mechanism": [
+        "Runtime is only a command. Delivered volume varies with pressure, emitter condition, line length, elevation, pump state, plumbing design and maintenance.",
+        "A representative catch test measures actual output at multiple locations. Low-quarter distribution uniformity is commonly calculated as the mean delivery of the lowest quarter of samples divided by the overall mean.",
+        "Uniformity metrics summarize a sampling design; they do not replace the raw measurements. A good average can hide repeatedly under-supplied plants."
+      ],
+      "measureFirst": [
+        "Use identical collection vessels and a defined irrigation duration.",
+        "Sample beginning, middle and end of laterals plus high-risk pressure/elevation positions.",
+        "Record each catch volume rather than only the average.",
+        "Calculate mean, lowest-quarter mean and the declared DU equation.",
+        "Record operating pressure or pump state, clogs, leaks and maintenance actions."
+      ],
+      "interpretationLimits": [
+        "A DU threshold must fit the irrigation technology and crop risk; one universal percentage is not appropriate for every system.",
+        "A short catch test may not expose intermittent pump or pressure faults.",
+        "Hand watering needs a different sampling design but still requires measured delivered volume."
+      ],
+      "commonMistakes": [
+        "Measuring only one convenient emitter.",
+        "Reporting a DU percentage without raw values or the formula used.",
+        "Changing nutrient concentration to compensate for under-delivery caused by plumbing.",
+        "Testing after maintenance but not preserving a before measurement."
+      ],
+      "fieldExercise": "Catch-test at least eight representative emitters during the same event. Rank the volumes, calculate overall mean and lowest-quarter mean, then compute DU. Mark each sampled position on the irrigation layout and look for spatial patterns. Correct one identified cause and repeat the same test.",
+      "visualBrief": "Top-down irrigation-zone diagram with catch cups at beginning/middle/end and elevation/pressure-risk positions. Show example raw volumes, sort the lowest quarter, and present DU = lowest-quarter mean / overall mean. Include a before/after maintenance mini-panel."
+    },
+    {
+      "id": "dryback-curve-definition",
+      "title": "Dryback Curve: Drainage, Daytime & Overnight Segments",
+      "encyclopediaIds": ["THC-ENC-090", "THC-ENC-092", "THC-ENC-094"],
+      "learningOutcome": "Define dryback with explicit units and reference points and interpret each segment of the water-status curve without treating a percentage as a universal crop-steering target.",
+      "mechanism": [
+        "Dryback can mean container-mass loss, VWC percentage-point decline, relative change from a reference value or change in matric potential. These are not interchangeable metrics.",
+        "The post-irrigation curve contains physically different phases: free drainage and redistribution soon after irrigation, crop uptake plus evaporation during the day, and an overnight segment whose slope depends on crop demand and any irrigation during darkness.",
+        "As water content falls, dissolved salts can concentrate and hydraulic conductivity can decline. A larger dryback therefore changes both water and osmotic conditions."
+      ],
+      "measureFirst": [
+        "State the metric, units, sensor or weighing method and whether change is absolute or relative.",
+        "Mark irrigation start/end, post-event peak, end of drainage, last irrigation, lights-off, overnight minimum and next-day first irrigation.",
+        "Record PPFD, VPD, canopy size, stage and substrate EC context.",
+        "Separate drainage-driven decline from later plant-use slope.",
+        "Repeat the same definition before comparing treatments."
+      ],
+      "interpretationLimits": [
+        "Cannabis research does not validate one universal dryback percentage across substrates, containers, cultivars and stages.",
+        "Electromagnetic probe traces can be affected by salinity, temperature and changing root contact.",
+        "A larger decline is not automatically a beneficial generative treatment."
+      ],
+      "commonMistakes": [
+        "Saying '20% dryback' without defining the denominator.",
+        "Counting rapid free drainage as plant water use.",
+        "Comparing relative percent change with VWC percentage-point change.",
+        "Changing dryback boundaries while simultaneously changing light, VPD or feed strength."
+      ],
+      "fieldExercise": "Annotate one full 24-hour root-zone trace. Identify post-irrigation peak, drainage, daytime use, last irrigation, lights-off and overnight minimum. Calculate both absolute VWC percentage-point change and relative percent change to demonstrate why the two numbers differ.",
+      "visualBrief": "Clean 24-hour line graph with irrigation pulses and labeled post-irrigation peak, drainage segment, daytime slope, last irrigation, lights-off, overnight slope and next-day pre-irrigation value. Add side-by-side equations for absolute percentage-point change versus relative percent change."
+    },
+    {
+      "id": "runoff-leaching-salt-mass-balance",
+      "title": "Runoff, Leaching Fraction & Salt Mass Balance",
+      "encyclopediaIds": ["THC-ENC-093", "THC-ENC-134", "THC-ENC-138"],
+      "learningOutcome": "Track where irrigation water and dissolved ions can go and explain why runoff chemistry is a pathway-dependent sample rather than a direct root-zone biopsy.",
+      "mechanism": [
+        "Applied solution can be retained in pore space, absorbed by plants, evaporated, redistributed, exchanged with media surfaces or leave as drainage. Dissolved ions follow these pathways unevenly.",
+        "Leaching fraction is drainage volume divided by applied irrigation volume for a clearly defined event or interval. It describes a water balance, not a complete nutrient mass balance.",
+        "Preferential flow can allow water to bypass dry or saline pockets. A large drainage volume can therefore coexist with poor rewetting of part of the root volume."
+      ],
+      "measureFirst": [
+        "Measure applied and drained volumes over the same defined interval.",
+        "Record input and drainage pH/EC, temperature, collection timing and whether samples are pooled or individual.",
+        "Inspect wetting distribution and preferential flow pathways.",
+        "Retain source-water ion analysis and fertilizer formulation when salt identity matters.",
+        "Use the same drainage or extraction method across time."
+      ],
+      "interpretationLimits": [
+        "Runoff concentration does not identify the average concentration at every root surface.",
+        "Leaching fraction does not show which ions were taken up, retained or exchanged.",
+        "Recirculating systems require a different whole-system mass balance."
+      ],
+      "commonMistakes": [
+        "Assuming more runoff always removes salts uniformly.",
+        "Using one grab sample as the entire rhizosphere value.",
+        "Ignoring solution already stored in saucers or recirculation lines.",
+        "Correcting high runoff EC before confirming delivery uniformity and meter calibration."
+      ],
+      "fieldExercise": "For one irrigation event, measure applied volume, drainage volume, input EC and drainage EC for several representative plants. Calculate leaching fraction and compare it with container wetting and plant location. Identify whether high drainage came from uniform displacement or likely preferential flow.",
+      "visualBrief": "Container mass-balance diagram showing applied solution entering, water/ions retained in pore space, plant uptake, evaporation, media exchange, preferential-flow channel and drainage collection. Use arrows of different destinations and a clearly labeled LF = drainage volume / applied volume equation."
+    },
+    {
+      "id": "ec-salinity-ppm",
+      "title": "EC, Salinity, Osmotic Availability & PPM Scales",
+      "encyclopediaIds": ["THC-ENC-134", "THC-ENC-135"],
+      "learningOutcome": "Interpret EC as total ionic conductivity, connect increasing salt concentration to osmotic constraint and eliminate 500-versus-700-scale ppm confusion from records.",
+      "mechanism": [
+        "EC increases with the concentration, charge and mobility of dissolved ions and with temperature. It does not identify which ions are present.",
+        "Higher dissolved-solute concentration lowers solution osmotic potential, making water acquisition more difficult even when physical water content remains high.",
+        "Many handheld meters estimate TDS or ppm from EC using a fixed conversion factor. A 2.0 mS/cm solution may display about 1000 ppm on a 500-scale meter and about 1400 ppm on a 700-scale meter without any change to the solution."
+      ],
+      "measureFirst": [
+        "Record raw EC in mS/cm or dS/m and the instrument temperature-reference behavior.",
+        "Label sample type: source, mixed feed, emitter, pore solution, runoff, pour-through or extract.",
+        "Retain pH and water-content context with root-zone EC.",
+        "If ppm/TDS is displayed, record the meter model and conversion factor.",
+        "Use elemental mg/L or mmol/L, not meter-derived ppm, for fertilizer formulation."
+      ],
+      "interpretationLimits": [
+        "Two solutions with the same EC can have different nutrient and contaminant composition.",
+        "A high EC reading can reflect source-water sodium/chloride or concentration during dryback, not only fertilizer excess.",
+        "Universal cannabis EC targets are not scientifically justified across every genotype and root-zone condition."
+      ],
+      "commonMistakes": [
+        "Treating meter ppm as measured elemental nutrient concentration.",
+        "Comparing runoff EC directly with a diluted extract without accounting for method.",
+        "Ignoring temperature, calibration and units.",
+        "Increasing irrigation water simply to chase a single EC reading before diagnosing the cause."
+      ],
+      "fieldExercise": "Measure one solution in raw EC and then display both 500- and 700-scale ppm if the meter permits. Document how the same solution produces different ppm numbers. Then compare a root-zone sample at two water contents and discuss why EC interpretation changes with concentration and method.",
+      "visualBrief": "Three-part chemistry infographic: ions carrying current through solution; a root-water diagram showing greater osmotic resistance as salt concentration rises; and a conversion panel showing 2.0 mS/cm = ~1000 ppm on 500 scale and ~1400 ppm on 700 scale, clearly labeled as meter estimates rather than elemental concentration."
+    },
+    {
+      "id": "ph-alkalinity-root-zone-drift",
+      "title": "Input pH, Root-Zone pH, Alkalinity & Buffering",
+      "encyclopediaIds": ["THC-ENC-132", "THC-ENC-133"],
+      "learningOutcome": "Separate current solution pH from acid-neutralizing capacity and explain why root-zone pH can drift away from the irrigation value.",
+      "mechanism": [
+        "pH describes hydrogen-ion activity at the time and method of measurement. Alkalinity describes the water's acid-neutralizing capacity and therefore its resistance to acidification.",
+        "Root-zone pH evolves from water alkalinity, fertilizer nitrogen form, root ion uptake, nitrification, lime or substrate buffering, accumulated salts, decomposition and irrigation fraction.",
+        "Two water sources can have similar pH but very different alkalinity and therefore produce different long-term root-zone trajectories."
+      ],
+      "measureFirst": [
+        "Keep source-water pH and laboratory alkalinity/bicarbonate as separate fields.",
+        "Identify final irrigation pH after all fertilizers/additives are mixed.",
+        "Measure root-zone pH with one repeated, declared method.",
+        "Record nitrogen form, substrate/buffer history, irrigation fraction and EC trend.",
+        "Calibrate pH instrumentation and retain sample temperature/timing."
+      ],
+      "interpretationLimits": [
+        "Adjusting irrigation pH does not instantly reset stored root-zone chemistry.",
+        "Hardness and alkalinity are not synonyms even though both may be reported as CaCO3 equivalents.",
+        "Acid treatment requires product-specific safety procedures and qualified calculation; this material does not provide a handling recipe."
+      ],
+      "commonMistakes": [
+        "Assuming water with pH 7.5 necessarily has high alkalinity.",
+        "Treating runoff pH as identical to a standardized root-zone extract.",
+        "Chasing each pH reading with corrective chemistry before checking the trend and meter.",
+        "Ignoring fertilizer nitrogen form and substrate buffer history."
+      ],
+      "fieldExercise": "Compare two irrigation-water reports with similar pH but different alkalinity. Predict which source would exert greater long-term upward pH pressure under otherwise similar conditions. Then plot one crop's input-pH and root-zone-pH trends over time and annotate fertilizer, irrigation or substrate changes.",
+      "visualBrief": "Flow diagram with two separate starting boxes: current pH and alkalinity/bicarbonate. Route both into a root-zone box influenced by nitrate/ammonium uptake, lime/buffering, irrigation/leaching and biology. Show input pH and root-zone pH diverging over time to reinforce that they are different measurements."
+    },
+    {
+      "id": "root-zone-sampling-methods",
+      "title": "Runoff, Pour-Through, Slurry & Extract Sampling",
+      "encyclopediaIds": ["THC-ENC-132", "THC-ENC-134", "THC-ENC-138"],
+      "learningOutcome": "Select and repeat a root-zone sampling method, understand which solution fraction it represents and avoid exchanging method-specific reference ranges.",
+      "mechanism": [
+        "Runoff is drainage generated by irrigation and is shaped by flow path, container state and applied volume.",
+        "Pour-through is a standardized displacement technique intended to sample pore solution after controlled pre-irrigation and timing.",
+        "Slurry, 1:2 dilution and saturated-media extract methods deliberately mix substrate with defined water ratios or extraction states. Their dilution and chemistry differ by design.",
+        "Tissue analysis measures elemental concentration in selected plant material and answers a different question from solution chemistry."
+      ],
+      "measureFirst": [
+        "Record exact method name and written procedure.",
+        "Control pre-irrigation condition, wait time, added water or dilution ratio, collection volume and temperature.",
+        "Use the same meter calibration and units.",
+        "Record substrate, container, crop stage and sample location.",
+        "Build method-specific healthy-crop baselines rather than mixing reference ranges."
+      ],
+      "interpretationLimits": [
+        "Values from runoff, pour-through, 1:2 and saturated-media extract are not expected to match numerically.",
+        "Casual runoff is convenient but strongly affected by irrigation volume and preferential flow.",
+        "Validated cannabis tissue sufficiency ranges remain limited and laboratory methods vary."
+      ],
+      "commonMistakes": [
+        "Comparing one method's EC directly with another method's reference table.",
+        "Changing sample timing between dates.",
+        "Collecting runoff from pooled plants and assigning it to one plant.",
+        "Using a tissue result alone to name the root-zone cause."
+      ],
+      "fieldExercise": "Take two root-zone samples from the same substrate using two deliberately different methods, such as casual runoff and a standardized dilution extract. Document the procedures and compare pH/EC. Explain why disagreement is not automatically instrument error and why each value must be interpreted against its own method.",
+      "visualBrief": "Four-column comparison showing runoff, pour-through, slurry/1:2 extract and saturated-media extract. For each, illustrate where water comes from, dilution/timing, what fraction is sampled and a bold warning: method-specific values and reference ranges are not interchangeable. Add tissue analysis as a separate fifth box labeled plant-status evidence, not root-zone solution."
+    }
+  ]
+}
