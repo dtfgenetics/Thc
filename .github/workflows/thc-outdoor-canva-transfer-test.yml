@@ -22,6 +22,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          # Section 1 transfer probe: production imports use this same full-resolution transform pattern.
           url='https://media.canva.com/v2/image-resize/format:PNG/height:1086/quality:100/uri:ifs%3A%2F%2FM%2F7c880ff9-7121-40ef-a986-d567779af794/watermark:F/width:1448?csig=AAAAAAAAAAAAAAAAAAAAAIyRqXK7oUvZKfvfQeVFDq9TH30sAHmrplnMKjXci5GA&exp=1787864020&osig=AAAAAAAAAAAAAAAAAAAAAE4M0bQBtZePzLamGS1hIyFWuY_PyK34_wLVqnhsKG3E&signer=media-rpc&x-canva-quality=thumbnail'
           curl --fail --silent --show-error --location "$url" --output /tmp/outdoor-section-01.png
           test -s /tmp/outdoor-section-01.png
