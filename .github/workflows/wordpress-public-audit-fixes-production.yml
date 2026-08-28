@@ -1,17 +1,17 @@
-name: Publish Current DTF Production Audit Fixes
+name: Publish Shop SEO and Audit DTF Production
 
-# Production retrigger marker: 2026-08-25. This comment is intentionally non-functional.
+# Public app routes are deployed transactionally by the DTFSeeds Production Gateway.
+# This workflow owns only the Shop SEO metadata mutation plus read-only production audits.
 on:
   workflow_dispatch:
   push:
     branches: [main]
     paths:
-      - 'site/public-route-patch/games/protect-the-plants/index.html'
-      - 'site/public-route-patch/projects/index.html'
+      - 'data/public-navigation.json'
       - 'site/wordpress/mu-plugins/dtf-shop-seo-meta.php'
-      - 'scripts/deploy-wordpress-public-audit-fixes.mjs'
       - 'scripts/install-wordpress-shop-seo-meta.mjs'
       - 'scripts/flush-hostinger-litespeed-mcp.mjs'
+      - 'scripts/verify-dtfseeds-feature-surface.mjs'
       - 'scripts/audit-dtfseeds-live.mjs'
       - 'scripts/audit-dtfseeds-public-suite.mjs'
       - 'scripts/audit-dtfseeds-commerce.mjs'
@@ -42,6 +42,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: main
+          persist-credentials: false
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -54,23 +55,14 @@ jobs:
           set -euo pipefail
           test -n "${WP_API_USERNAME:-}"
           test -n "${WP_API_PASSWORD:-}"
-          node --check scripts/deploy-wordpress-public-audit-fixes.mjs
           node --check scripts/install-wordpress-shop-seo-meta.mjs
           node --check scripts/flush-hostinger-litespeed-mcp.mjs
+          node --check scripts/verify-dtfseeds-feature-surface.mjs
           node --check scripts/audit-dtfseeds-live.mjs
           node --check scripts/audit-dtfseeds-public-suite.mjs
           node --check scripts/audit-dtfseeds-commerce.mjs
           php -l site/wordpress/mu-plugins/dtf-shop-seo-meta.php
-          grep -Fq '<h1 id="protect-the-plants-title"' site/public-route-patch/games/protect-the-plants/index.html
-          grep -Fq '>High IQ<' site/public-route-patch/projects/index.html
-          grep -Fq '>High Life<' site/public-route-patch/projects/index.html
-
-      - name: Publish crawlable Protect the Plants and Projects routes
-        id: routes
-        shell: bash
-        run: |
-          set -euo pipefail
-          node scripts/deploy-wordpress-public-audit-fixes.mjs | tee "$RUNNER_TEMP/public-audit-route-fixes.json"
+          node scripts/verify-dtfseeds-feature-surface.mjs --plan-only > "$RUNNER_TEMP/public-feature-plan.json"
 
       - name: Install source-controlled Shop SEO metadata
         id: shop_seo
@@ -91,6 +83,16 @@ jobs:
           done
           [[ "$ok" -eq 1 ]] || { echo 'LiteSpeed cache purge failed after retries.' >&2; exit 1; }
           sleep 5
+
+      - name: Verify registry-backed public feature surface
+        id: routes
+        shell: bash
+        env:
+          SITE: https://dtfseeds.com
+          DTF_FEATURE_REPORT: ${{ runner.temp }}/dtf-feature-surface.json
+        run: |
+          set -euo pipefail
+          node scripts/verify-dtfseeds-feature-surface.mjs
 
       - name: Run current core public-route and metadata audit
         id: core
@@ -119,8 +121,8 @@ jobs:
         with:
           name: dtf-current-production-audit-fixes-${{ github.run_id }}
           path: |
-            ${{ runner.temp }}/public-audit-route-fixes.json
             ${{ runner.temp }}/shop-seo-meta.json
+            ${{ runner.temp }}/dtf-feature-surface.json
             live-site-audit.json
             live-site-audit.md
             commerce-audit.json
@@ -130,6 +132,7 @@ jobs:
 
       - name: Report production result
         if: always()
+        continue-on-error: true
         uses: actions/github-script@v7
         env:
           STATUS: ${{ job.status }}
@@ -141,20 +144,24 @@ jobs:
           COMMERCE: ${{ steps.commerce.outcome }}
         with:
           script: |
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: 46,
-              body: [
-                '## Current DTF production audit fixes', '',
-                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-                `Overall: **${process.env.STATUS}**`,
-                `Protect the Plants + Projects publication: **${process.env.ROUTES || 'not-run'}**`,
-                `Shop SEO metadata installation: **${process.env.SHOP_SEO || 'not-run'}**`,
-                `LiteSpeed purge: **${process.env.CACHE || 'not-run'}**`,
-                `Core routes + metadata audit: **${process.env.CORE || 'not-run'}**`,
-                `Expanded apps/tools audit: **${process.env.SUITE || 'not-run'}**`,
-                `WooCommerce genetics audit: **${process.env.COMMERCE || 'not-run'}**`, '',
-                'Protected scope: two reviewed static HTML files plus the source-controlled Shop SEO MU plugin. Both installers back up before mutation, SHA-verify the live target, rollback on failed public verification, and finalize only after the reviewed source is confirmed.'
-              ].join('\n')
-            });
+            try {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: 220,
+                body: [
+                  '## DTF production SEO + audit', '',
+                  `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                  `Overall: **${process.env.STATUS}**`,
+                  `Registry-backed public surface: **${process.env.ROUTES || 'not-run'}**`,
+                  `Shop SEO metadata installation: **${process.env.SHOP_SEO || 'not-run'}**`,
+                  `LiteSpeed purge: **${process.env.CACHE || 'not-run'}**`,
+                  `Core routes + metadata audit: **${process.env.CORE || 'not-run'}**`,
+                  `Expanded apps/tools audit: **${process.env.SUITE || 'not-run'}**`,
+                  `WooCommerce genetics audit: **${process.env.COMMERCE || 'not-run'}**`, '',
+                  'Public app route publication is owned by the serialized DTFSeeds Production Gateway. This workflow no longer calls the retired dtf-public-audit route mutator.'
+                ].join('\n')
+              });
+            } catch (error) {
+              core.warning(`Could not post production audit result: ${error.message}`);
+            }

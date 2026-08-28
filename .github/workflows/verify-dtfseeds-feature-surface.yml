@@ -14,130 +14,86 @@ concurrency:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     env:
       SITE: https://dtfseeds.com
     steps:
-      - name: Audit advertised production routes from fresh runner
-        id: live
+      - name: Checkout verification source
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Use Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate registry-backed audit plan
         shell: bash
         run: |
-          set -uo pipefail
-          out="$RUNNER_TEMP/dtf-feature-surface.tsv"
-          : > "$out"
-          failures=0
-          total=0
-
-          check_route() {
-            local path="$1"
-            local marker="$2"
-            local class="$3"
-            local body="$RUNNER_TEMP/feature-$(printf '%s' "$path" | tr '/?' '__').html"
-            local status='000'
-            local final_url=''
-            local marker_seen='no'
-            local ok='no'
-            local bytes=0
-
-            total=$((total+1))
-            for attempt in 1 2 3 4; do
-              token="${GITHUB_RUN_ID}-${attempt}-$(date +%s%N)"
-              status="$(curl -4 -sS -L \
-                --retry 2 --retry-delay 2 --connect-timeout 15 --max-time 45 \
-                -o "$body" -w '%{http_code}' \
-                -H 'Cache-Control: no-cache, no-store, max-age=0' \
-                -H 'Pragma: no-cache' \
-                -H 'User-Agent: DTFSeeds-Feature-Audit/2.3' \
-                "$SITE${path}?dtf_feature_audit=${token}" || printf '000')"
-              final_url="$(curl -4 -sS -L -o /dev/null -w '%{url_effective}' \
-                --connect-timeout 15 --max-time 45 \
-                -H 'Cache-Control: no-cache, no-store, max-age=0' \
-                "$SITE${path}?dtf_feature_audit_url=${token}" || true)"
-              bytes="$(wc -c < "$body" 2>/dev/null | tr -d ' ' || printf '0')"
-              marker_seen='no'
-              if grep -Fqi -- "$marker" "$body" 2>/dev/null; then marker_seen='yes'; fi
-              if [[ "$status" =~ ^2[0-9][0-9]$ ]] && [[ "$marker_seen" == 'yes' ]] && [[ "$bytes" -gt 400 ]]; then
-                ok='yes'
-                break
-              fi
-              sleep 3
-            done
-
-            printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\n' "$class" "$path" "$status" "$marker_seen" "$bytes" "$ok" "$final_url" >> "$out"
-            if [[ "$ok" != 'yes' ]]; then failures=$((failures+1)); fi
+          set -euo pipefail
+          node --check scripts/verify-dtfseeds-feature-surface.mjs
+          node scripts/verify-dtfseeds-feature-surface.mjs --plan-only > "$RUNNER_TEMP/dtf-feature-plan.json"
+          node - <<'NODE'
+          const fs = require('fs');
+          const plan = JSON.parse(fs.readFileSync(process.env.RUNNER_TEMP + '/dtf-feature-plan.json', 'utf8'));
+          if (!Array.isArray(plan.routes) || plan.routes.length < 6) throw new Error('Feature plan is unexpectedly small.');
+          const routes = new Set(plan.routes.map(row => row.route));
+          for (const required of ['/projects/','/games/terpocalypse/','/games/phenoquest/','/games/kush-kings-chess/','/atlas/']) {
+            if (!routes.has(required)) throw new Error(`Registry-backed audit plan is missing ${required}`);
           }
+          console.log(`Validated ${plan.routes.length} public feature routes from the registry.`);
+          NODE
 
-          check_route '/games/' 'Pick what is playable. See what is coming next.' 'hub'
-          check_route '/tools/' 'Measure it. Document it. Diagnose with context.' 'hub'
-          check_route '/projects/' 'What is live, what is growing, and where it belongs.' 'hub'
-          check_route '/growlens/' 'GrowLens' 'tool'
-          check_route '/thc-grow-doc/' 'Grow Doc' 'tool'
-          check_route '/games/high-iq/' 'High IQ' 'game'
-          check_route '/games/high-life/' 'High Life' 'game'
-          check_route '/games/seed-man-platformer/' 'Seed Man' 'game'
-          check_route '/games/grower-conversations/' 'Grower Conversations' 'game'
-          check_route '/games/high-land/' 'High Land' 'game'
-          check_route '/games/weedopolis/' 'Weedopolis' 'game'
-          check_route '/games/strain-showdown/' 'Strain Showdown' 'game'
-          check_route '/games/crossword/' 'Crossword' 'game'
-          check_route '/games/who-took-it/' 'Who Took It' 'game'
-          check_route '/games/protect-the-plants/' 'Burn Buds' 'multiplayer'
-          check_route '/games/bud-or-bluff/' 'Bud or Bluff' 'multiplayer'
-          check_route '/games/thc-u-know/' 'THC U Know' 'multiplayer'
-          check_route '/games/kush-kings-chess/' 'Kush Kings' 'multiplayer'
-
-          echo "failures=$failures" >> "$GITHUB_OUTPUT"
-          echo "total=$total" >> "$GITHUB_OUTPUT"
-          {
-            echo 'rows<<DTF_ROWS_EOF'
-            cat "$out"
-            echo 'DTF_ROWS_EOF'
-          } >> "$GITHUB_OUTPUT"
-          cat "$out"
-          [[ "$total" -eq 18 ]] || { echo "Expected 18 routes, audited $total" >&2; exit 1; }
-          [[ "$failures" -eq 0 ]] || { echo "$failures advertised production route(s) failed verification" >&2; exit 1; }
+      - name: Audit registry-backed production routes from fresh runner
+        id: live
+        shell: bash
+        env:
+          DTF_FEATURE_REPORT: ${{ runner.temp }}/dtf-feature-surface.json
+        run: |
+          set -euo pipefail
+          node scripts/verify-dtfseeds-feature-surface.mjs
 
       - name: Report feature surface audit
         if: always()
         continue-on-error: true
         uses: actions/github-script@v7
         env:
-          ROWS: ${{ steps.live.outputs.rows }}
-          TOTAL: ${{ steps.live.outputs.total }}
-          FAILURES: ${{ steps.live.outputs.failures }}
+          REPORT_PATH: ${{ runner.temp }}/dtf-feature-surface.json
           AUDIT_OUTCOME: ${{ steps.live.outcome }}
         with:
           script: |
-            const lines = String(process.env.ROWS || '').trim().split(/\r?\n/).filter(Boolean);
-            const rows = lines.map(line => {
-              const [kind,path,status,marker,bytes,ok,finalUrl] = line.split('\t');
-              return `| ${kind || '?'} | \`${path || '?'}\` | ${status || '?'} | ${marker || '?'} | ${bytes || '?'} | **${ok === 'yes' ? 'PASS' : 'MISSING/BROKEN'}** | ${finalUrl || '-'} |`;
-            });
-            const total = Number(process.env.TOTAL || 0);
-            const failures = Number(process.env.FAILURES || 0);
-            const complete = total === 18 && rows.length === 18;
+            const fs = require('fs');
+            let report = null;
+            try {
+              report = JSON.parse(fs.readFileSync(process.env.REPORT_PATH, 'utf8'));
+            } catch (error) {
+              core.warning(`Feature audit report was unavailable: ${error.message}`);
+            }
+            const rows = Array.isArray(report?.rows) ? report.rows : [];
+            const table = rows.map(row =>
+              `| ${row.kind || '?'} | \`${row.route || '?'}\` | ${row.status || '000'} | ${row.markerSeen ? 'yes' : 'no'} | ${row.routeIdentity ? 'yes' : 'no'} | ${row.bytes || 0} | **${row.ok ? 'PASS' : 'MISSING/BROKEN'}** | ${row.finalUrl || '-'} |`
+            );
             try {
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                issue_number: 46,
+                issue_number: 220,
                 body: [
-                  '## DTFSeeds feature surface audit',
+                  '## DTFSeeds registry-backed feature surface audit',
                   '',
                   `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
                   `Audit execution: **${process.env.AUDIT_OUTCOME || 'unknown'}**`,
-                  `Routes audited: **${total}/18**`,
-                  `Report completeness: **${complete ? 'complete' : 'INCOMPLETE'}**`,
-                  `Advertised routes failing current-content checks: **${failures}**`,
+                  `Routes audited: **${report?.total ?? 0}**`,
+                  `Current-content failures: **${report?.failures ?? 'unknown'}**`,
                   '',
-                  '| Type | Route | HTTP | Marker | Bytes | Result | Final URL |',
-                  '|---|---|---:|---|---:|---|---|',
-                  ...(rows.length ? rows : ['| - | - | ? | ? | ? | **MISSING/BROKEN** | - |']),
+                  '| Type | Route | HTTP | Marker | Route identity | Bytes | Result | Final URL |',
+                  '|---|---|---:|---|---|---:|---|---|',
+                  ...(table.length ? table : ['| - | - | ? | ? | ? | ? | **MISSING/BROKEN** | - |']),
                   '',
-                  'Read-only fresh-runner audit. It includes all currently advertised public game routes and checks the current visual-system hub headlines rather than retired copy.'
+                  'Read-only fresh-runner audit generated from data/public-navigation.json. Public routes must return their own canonical path and durable route identity marker; a redirect to a hub cannot pass.'
                 ].join('\n')
               });
             } catch (error) {
-              core.warning(`Could not post feature-surface result to issue #46: ${error.message}`);
+              core.warning(`Could not post feature-surface result: ${error.message}`);
             }
-            if (!complete) core.setFailed(`Feature audit report is incomplete: ${total}/18 routes, ${rows.length} rows.`);
