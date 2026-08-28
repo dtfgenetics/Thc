@@ -284,7 +284,7 @@ payload = replace_once(
 payload = replace_once(
     payload,
     b"['/projects/', 'One place to see what is playable, usable, and still being built.']",
-    b"['/projects/', 'What is live, what is growing, and where it belongs.']",
+    b"['/projects/', 'DTF Projects']",
     "Projects live-verification marker",
 )
 
