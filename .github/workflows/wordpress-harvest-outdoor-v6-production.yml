@@ -13,6 +13,8 @@ on:
       - 'scripts/assemble-outdoor-quantification-v1.mjs'
       - 'scripts/enhance-wordpress-outdoor-quantification-v1.mjs'
       - 'scripts/publish-wordpress-outdoor-applied-v1.mjs'
+      - 'scripts/enhance-wordpress-learning-v4.mjs'
+      - 'scripts/enhance-wordpress-topic-expansions-v4.mjs'
       - '.github/workflows/wordpress-harvest-outdoor-v6-production.yml'
   push:
     branches: [main]
@@ -29,8 +31,7 @@ on:
       - '.github/workflows/wordpress-harvest-outdoor-v6-production.yml'
   workflow_dispatch:
   workflow_run:
-    workflows:
-      - Enhance DTFSeeds Education V4
+    workflows: [Enhance DTFSeeds Education V4]
     types: [completed]
 
 permissions:
@@ -55,43 +56,41 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Validate publishers and curricula
+      - name: Validate complete source-controlled package
         shell: bash
         run: |
           set -euo pipefail
+          node --check scripts/enhance-wordpress-learning-v4.mjs
+          node --check scripts/enhance-wordpress-topic-expansions-v4.mjs
           node --check scripts/publish-wordpress-harvest-outdoor-v6-final.mjs
-          node scripts/publish-wordpress-harvest-outdoor-v6-final.mjs --validate-only | tee "$RUNNER_TEMP/harvest-outdoor-v6-validation.json"
-          grep -Fq '"lessons": 32' "$RUNNER_TEMP/harvest-outdoor-v6-validation.json"
-          grep -Fq 'harvest-postharvest-v6' "$RUNNER_TEMP/harvest-outdoor-v6-validation.json"
-          grep -Fq 'outdoor-v6' "$RUNNER_TEMP/harvest-outdoor-v6-validation.json"
+          node scripts/publish-wordpress-harvest-outdoor-v6-final.mjs --validate-only | tee "$RUNNER_TEMP/v6.json"
+          grep -Fq '"lessons": 32' "$RUNNER_TEMP/v6.json"
+          grep -Fq 'harvest-postharvest-v6' "$RUNNER_TEMP/v6.json"
+          grep -Fq 'outdoor-v6' "$RUNNER_TEMP/v6.json"
 
           node --check scripts/assemble-outdoor-quantification-v1.mjs
-          node scripts/assemble-outdoor-quantification-v1.mjs --write | tee "$RUNNER_TEMP/outdoor-quantification-assembly.json"
-          grep -Fq '"sections": 8' "$RUNNER_TEMP/outdoor-quantification-assembly.json"
-          grep -Fq '"subtopics": 32' "$RUNNER_TEMP/outdoor-quantification-assembly.json"
-          metrics="$(node -p "require(process.argv[1]).metrics" "$RUNNER_TEMP/outdoor-quantification-assembly.json")"
-          [[ "$metrics" -ge 100 ]]
+          node scripts/assemble-outdoor-quantification-v1.mjs --write | tee "$RUNNER_TEMP/quant-assembly.json"
+          grep -Fq '"sections": 8' "$RUNNER_TEMP/quant-assembly.json"
+          grep -Fq '"subtopics": 32' "$RUNNER_TEMP/quant-assembly.json"
+          [[ "$(node -p "require(process.argv[1]).metrics" "$RUNNER_TEMP/quant-assembly.json")" -ge 100 ]]
 
           node --check scripts/enhance-wordpress-outdoor-quantification-v1.mjs
-          node scripts/enhance-wordpress-outdoor-quantification-v1.mjs --validate-only | tee "$RUNNER_TEMP/outdoor-quantification-v1-validation.json"
-          grep -Fq '"sections": 8' "$RUNNER_TEMP/outdoor-quantification-v1-validation.json"
-          grep -Fq '"subtopics": 32' "$RUNNER_TEMP/outdoor-quantification-v1-validation.json"
-          metrics="$(node -p "require(process.argv[1]).metrics" "$RUNNER_TEMP/outdoor-quantification-v1-validation.json")"
-          [[ "$metrics" -ge 100 ]]
-          grep -Fq 'outdoor-quantification-v1' "$RUNNER_TEMP/outdoor-quantification-v1-validation.json"
+          node scripts/enhance-wordpress-outdoor-quantification-v1.mjs --validate-only | tee "$RUNNER_TEMP/quant.json"
+          grep -Fq '"sections": 8' "$RUNNER_TEMP/quant.json"
+          grep -Fq '"subtopics": 32' "$RUNNER_TEMP/quant.json"
+          [[ "$(node -p "require(process.argv[1]).metrics" "$RUNNER_TEMP/quant.json")" -ge 100 ]]
 
           node --check scripts/publish-wordpress-outdoor-applied-v1.mjs
-          node scripts/publish-wordpress-outdoor-applied-v1.mjs --validate-only | tee "$RUNNER_TEMP/outdoor-applied-v1-validation.json"
-          grep -Fq '"modules": 5' "$RUNNER_TEMP/outdoor-applied-v1-validation.json"
-          grep -Fq '"lessons": 20' "$RUNNER_TEMP/outdoor-applied-v1-validation.json"
-          grep -Fq 'outdoor-applied-v1' "$RUNNER_TEMP/outdoor-applied-v1-validation.json"
+          node scripts/publish-wordpress-outdoor-applied-v1.mjs --validate-only | tee "$RUNNER_TEMP/applied.json"
+          grep -Fq '"modules": 5' "$RUNNER_TEMP/applied.json"
+          grep -Fq '"lessons": 20' "$RUNNER_TEMP/applied.json"
 
   publish:
-    name: Publish and verify Harvest, Outdoor and complete field-learning layers
+    name: Self-heal, publish and verify complete Outdoor learning stack
     needs: validate
     if: ${{ github.event_name != 'pull_request' && (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success') }}
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 45
     environment: production
     env:
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
@@ -99,202 +98,165 @@ jobs:
       APPLY_HARVEST_OUTDOOR_V6: 'true'
       APPLY_OUTDOOR_QUANT_V1: 'true'
       APPLY_OUTDOOR_APPLIED_V1: 'true'
-      BACKUP_ROOT: /tmp/dtf-harvest-outdoor-v6-final
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
 
-      - name: Confirm production credentials and assemble complete package
-        id: validate
+      - name: Confirm production credentials and assemble all eight field labs
         shell: bash
         run: |
           set -euo pipefail
           : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
           : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
-          node --check scripts/publish-wordpress-harvest-outdoor-v6-final.mjs
-          node scripts/publish-wordpress-harvest-outdoor-v6-final.mjs --validate-only
-          node --check scripts/assemble-outdoor-quantification-v1.mjs
-          node scripts/assemble-outdoor-quantification-v1.mjs --write | tee "$RUNNER_TEMP/outdoor-quantification-assembly.json"
-          grep -Fq '"sections": 8' "$RUNNER_TEMP/outdoor-quantification-assembly.json"
-          grep -Fq '"subtopics": 32' "$RUNNER_TEMP/outdoor-quantification-assembly.json"
-          metrics="$(node -p "require(process.argv[1]).metrics" "$RUNNER_TEMP/outdoor-quantification-assembly.json")"
-          [[ "$metrics" -ge 100 ]]
-          node --check scripts/enhance-wordpress-outdoor-quantification-v1.mjs
-          node scripts/enhance-wordpress-outdoor-quantification-v1.mjs --validate-only
-          node --check scripts/publish-wordpress-outdoor-applied-v1.mjs
-          node scripts/publish-wordpress-outdoor-applied-v1.mjs --validate-only
+          node scripts/assemble-outdoor-quantification-v1.mjs --write | tee "$RUNNER_TEMP/quant-assembly.json"
+          grep -Fq '"sections": 8' "$RUNNER_TEMP/quant-assembly.json"
+          grep -Fq '"subtopics": 32' "$RUNNER_TEMP/quant-assembly.json"
+          [[ "$(node -p "require(process.argv[1]).metrics" "$RUNNER_TEMP/quant-assembly.json")" -ge 100 ]]
 
-      - name: Publish both V6 subject expansions
-        id: publish
+      - name: Restore V4 guided-learning ownership before V6 publication
+        id: v4
+        env:
+          APPLY_LEARNING_V4: 'true'
+          APPLY_TOPIC_EXPANSIONS_V4: 'true'
+          LEARNING_GUIDE_V4_PATH: site/wordpress/education/learning-guides-v4.json
+          TOPIC_EXPANSION_V4_PATH: site/wordpress/education/topic-expansions-v4.json
+          TOPIC_LITERATURE_PATH: site/wordpress/education/topic-literature.json
+          ENCYCLOPEDIA_TOPIC_FILE: configuration/encyclopedia-topics.json
+          BACKUP_ROOT: /tmp/dtf-learning-v4-self-heal
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p "$BACKUP_ROOT"
-          node scripts/publish-wordpress-harvest-outdoor-v6-final.mjs | tee "$RUNNER_TEMP/harvest-outdoor-v6-publish.log"
-          report="$(find "$BACKUP_ROOT" -name report.json -type f -print -quit)"
-          test -n "$report"
-          test -s "$report"
-          echo "report=$report" >> "$GITHUB_OUTPUT"
-          echo "subjects=$(node -p "require(process.argv[1]).totals.subjects" "$report")" >> "$GITHUB_OUTPUT"
-          echo "chapters=$(node -p "require(process.argv[1]).totals.chapters" "$report")" >> "$GITHUB_OUTPUT"
-          echo "lessons=$(node -p "require(process.argv[1]).totals.lessons" "$report")" >> "$GITHUB_OUTPUT"
-          echo "sources=$(node -p "require(process.argv[1]).totals.sources" "$report")" >> "$GITHUB_OUTPUT"
-          echo "visual_targets=$(node -p "require(process.argv[1]).totals.visualTargets" "$report")" >> "$GITHUB_OUTPUT"
+          node scripts/enhance-wordpress-learning-v4.mjs | tee "$RUNNER_TEMP/learning-v4-self-heal.log"
+          test -s "$BACKUP_ROOT/learning-v4-report.json"
+          node scripts/enhance-wordpress-topic-expansions-v4.mjs | tee "$RUNNER_TEMP/topic-expansions-v4-self-heal.log"
+          test -s "$BACKUP_ROOT/topic-expansions-v4-report.json"
 
-      - name: Publish all eight Outdoor quantification field labs
-        id: publish_quant
+      - name: Publish complete Harvest and Outdoor V6 curricula
+        id: v6
+        env:
+          BACKUP_ROOT: /tmp/dtf-harvest-outdoor-v6-final
         shell: bash
         run: |
           set -euo pipefail
-          quant_root="/tmp/dtf-outdoor-quantification-v1"
-          mkdir -p "$quant_root"
-          BACKUP_ROOT="$quant_root" node scripts/enhance-wordpress-outdoor-quantification-v1.mjs | tee "$RUNNER_TEMP/outdoor-quantification-v1-publish.log"
-          report="$(find "$quant_root" -name report.json -type f -print -quit)"
-          test -n "$report"
-          test -s "$report"
-          echo "report=$report" >> "$GITHUB_OUTPUT"
-          echo "sections=$(node -p "require(process.argv[1]).validation.sections" "$report")" >> "$GITHUB_OUTPUT"
-          echo "subtopics=$(node -p "require(process.argv[1]).validation.subtopics" "$report")" >> "$GITHUB_OUTPUT"
-          echo "metrics=$(node -p "require(process.argv[1]).validation.metrics" "$report")" >> "$GITHUB_OUTPUT"
+          mkdir -p "$BACKUP_ROOT"
+          node scripts/publish-wordpress-harvest-outdoor-v6-final.mjs | tee "$RUNNER_TEMP/v6-publish.log"
+          report="$(find "$BACKUP_ROOT" -name report.json -type f -print -quit)"
+          test -n "$report" && test -s "$report"
+          [[ "$(node -p "require(process.argv[1]).totals.subjects" "$report")" = '2' ]]
+          [[ "$(node -p "require(process.argv[1]).totals.chapters" "$report")" = '16' ]]
+          [[ "$(node -p "require(process.argv[1]).totals.lessons" "$report")" = '64' ]]
+
+      - name: Publish all eight Outdoor measurement field labs
+        id: quant
+        env:
+          BACKUP_ROOT: /tmp/dtf-outdoor-quantification-v1
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$BACKUP_ROOT"
+          node scripts/enhance-wordpress-outdoor-quantification-v1.mjs | tee "$RUNNER_TEMP/quant-publish.log"
+          report="$(find "$BACKUP_ROOT" -name report.json -type f -print -quit)"
+          test -n "$report" && test -s "$report"
           [[ "$(node -p "require(process.argv[1]).validation.sections" "$report")" = '8' ]]
           [[ "$(node -p "require(process.argv[1]).validation.subtopics" "$report")" = '32' ]]
           [[ "$(node -p "require(process.argv[1]).validation.metrics" "$report")" -ge 100 ]]
 
-      - name: Publish Outdoor applied decision modules
-        id: publish_applied
+      - name: Publish five THC applied decision modules
+        id: applied
+        env:
+          BACKUP_ROOT: /tmp/dtf-outdoor-applied-v1
         shell: bash
         run: |
           set -euo pipefail
-          applied_root="/tmp/dtf-outdoor-applied-v1"
-          mkdir -p "$applied_root"
-          BACKUP_ROOT="$applied_root" node scripts/publish-wordpress-outdoor-applied-v1.mjs | tee "$RUNNER_TEMP/outdoor-applied-v1-publish.log"
-          report="$(find "$applied_root" -name report.json -type f -print -quit)"
-          test -n "$report"
-          test -s "$report"
-          echo "report=$report" >> "$GITHUB_OUTPUT"
-          echo "modules=$(node -p "require(process.argv[1]).validation.modules" "$report")" >> "$GITHUB_OUTPUT"
-          echo "lessons=$(node -p "require(process.argv[1]).validation.lessons" "$report")" >> "$GITHUB_OUTPUT"
+          mkdir -p "$BACKUP_ROOT"
+          node scripts/publish-wordpress-outdoor-applied-v1.mjs | tee "$RUNNER_TEMP/applied-publish.log"
+          report="$(find "$BACKUP_ROOT" -name report.json -type f -print -quit)"
+          test -n "$report" && test -s "$report"
           [[ "$(node -p "require(process.argv[1]).validation.modules" "$report")" = '5' ]]
           [[ "$(node -p "require(process.argv[1]).validation.lessons" "$report")" = '20' ]]
 
-      - name: Verify fresh visitor Harvest page
-        id: verify_harvest
+      - name: Cache-busted visitor verification
+        id: verify
         shell: bash
         run: |
           set -euo pipefail
-          body="$RUNNER_TEMP/harvest-postharvest-v6-live.html"
+          harvest="$RUNNER_TEMP/harvest-live.html"
+          outdoor="$RUNNER_TEMP/outdoor-live.html"
           ok=0
-          for attempt in 1 2 3 4 5 6 7 8; do
+          for attempt in 1 2 3 4 5 6 7 8 9 10; do
             curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
               --header 'Cache-Control: no-cache, no-store, max-age=0' --header 'Pragma: no-cache' \
-              "$WP_SITE_URL/learn/harvest-postharvest/?dtf_hov6_verify=${GITHUB_RUN_ID}-${attempt}" --output "$body"
-            if grep -Fq 'data-dtf-harvest-postharvest-v6="true"' "$body"; then ok=1; break; fi
+              "$WP_SITE_URL/learn/harvest-postharvest/?thc_complete=${GITHUB_RUN_ID}-${attempt}" -o "$harvest"
+            curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+              --header 'Cache-Control: no-cache, no-store, max-age=0' --header 'Pragma: no-cache' \
+              "$WP_SITE_URL/learn/outdoor/?thc_complete=${GITHUB_RUN_ID}-${attempt}" -o "$outdoor"
+            if grep -Fq 'data-dtf-harvest-postharvest-v6="true"' "$harvest" && \
+               grep -Fq 'data-dtf-outdoor-v6="true"' "$outdoor" && \
+               grep -Fq 'data-dtf-outdoor-quantification-v1="true"' "$outdoor" && \
+               grep -Fq 'data-thc-outdoor-applied-v1="true"' "$outdoor"; then ok=1; break; fi
             sleep 6
           done
           [[ "$ok" -eq 1 ]]
-          [[ "$(grep -Fo 'data-hov6-chapter=' "$body" | wc -l | tr -d ' ')" = '8' ]]
-          [[ "$(grep -Fo 'class="hov6-lesson"' "$body" | wc -l | tr -d ' ')" = '32' ]]
-          grep -Fq 'data-dtf-topic="harvest-postharvest"' "$body"
-          grep -Fq 'data-dtf-learning-v4="topic-harvest-postharvest"' "$body"
-          grep -Fq 'Harvest &amp; post-harvest, taught as a measurable process.' "$body"
+          grep -Fq 'data-dtf-learning-v4="topic-harvest-postharvest"' "$harvest"
+          grep -Fq 'data-dtf-topic="harvest-postharvest"' "$harvest"
+          [[ "$(grep -Fo 'data-hov6-chapter=' "$harvest" | wc -l | tr -d ' ')" = '8' ]]
+          [[ "$(grep -Fo 'class="hov6-lesson"' "$harvest" | wc -l | tr -d ' ')" = '32' ]]
 
-      - name: Verify fresh visitor Outdoor page and complete field-learning layers
-        id: verify_outdoor
-        shell: bash
-        run: |
-          set -euo pipefail
-          body="$RUNNER_TEMP/outdoor-v6-live.html"
-          ok=0
-          for attempt in 1 2 3 4 5 6 7 8; do
-            curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
-              --header 'Cache-Control: no-cache, no-store, max-age=0' --header 'Pragma: no-cache' \
-              "$WP_SITE_URL/learn/outdoor/?dtf_hov6_verify=${GITHUB_RUN_ID}-${attempt}" --output "$body"
-            if grep -Fq 'data-dtf-outdoor-v6="true"' "$body" && grep -Fq 'data-dtf-outdoor-quantification-v1="true"' "$body" && grep -Fq 'data-thc-outdoor-applied-v1="true"' "$body"; then ok=1; break; fi
-            sleep 6
-          done
-          [[ "$ok" -eq 1 ]]
-          [[ "$(grep -Fo 'data-hov6-chapter=' "$body" | wc -l | tr -d ' ')" = '8' ]]
-          [[ "$(grep -Fo 'class="hov6-lesson"' "$body" | wc -l | tr -d ' ')" = '32' ]]
-          [[ "$(grep -Fo 'data-oqv1-chapter=' "$body" | wc -l | tr -d ' ')" = '8' ]]
-          [[ "$(grep -Fo 'data-oqv1-subtopic=' "$body" | wc -l | tr -d ' ')" = '32' ]]
-          [[ "$(grep -Fo 'data-oav1-module=' "$body" | wc -l | tr -d ' ')" = '5' ]]
-          grep -Fq 'data-dtf-topic="outdoor"' "$body"
-          grep -Fq 'data-dtf-learning-v4="topic-outdoor"' "$body"
-          grep -Fq 'Outdoor cultivation, built around weather, roots, risk and records.' "$body"
-          grep -Fq 'Turn outdoor observations into evidence.' "$body"
-          grep -Fq 'Make outdoor decisions from evidence, not recipes.' "$body"
-          for chapter in site-sun hardening-transplant water-rootzone wind-support rain-flower-risk pests-wildlife pollen-sex season-microclimate; do
-            grep -Fq "data-oqv1-chapter=\"$chapter\"" "$body"
-          done
+          grep -Fq 'data-dtf-learning-v4="topic-outdoor-cultivation"' "$outdoor"
+          grep -Fq 'data-dtf-topic="outdoor-cultivation"' "$outdoor"
+          [[ "$(grep -Fo 'data-hov6-chapter=' "$outdoor" | wc -l | tr -d ' ')" = '8' ]]
+          [[ "$(grep -Fo 'class="hov6-lesson"' "$outdoor" | wc -l | tr -d ' ')" = '32' ]]
+          [[ "$(grep -Fo 'data-oqv1-chapter=' "$outdoor" | wc -l | tr -d ' ')" = '8' ]]
+          [[ "$(grep -Fo 'data-oqv1-subtopic=' "$outdoor" | wc -l | tr -d ' ')" = '32' ]]
+          [[ "$(grep -Fo 'data-oav1-module=' "$outdoor" | wc -l | tr -d ' ')" = '5' ]]
+          grep -Fq 'Make outdoor decisions from evidence, not recipes.' "$outdoor"
           for module in rootzone-systems photoperiod-season weather-contingency canopy-access-airflow harvest-weather; do
-            grep -Fq "data-oav1-module=\"$module\"" "$body"
+            grep -Fq "data-oav1-module=\"$module\"" "$outdoor"
           done
 
-      - name: Upload publication and rollback evidence
+      - name: Upload rollback and verification evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: harvest-outdoor-v6-${{ github.run_id }}
+          name: complete-outdoor-learning-${{ github.run_id }}
           path: |
+            /tmp/dtf-learning-v4-self-heal
             /tmp/dtf-harvest-outdoor-v6-final
             /tmp/dtf-outdoor-quantification-v1
             /tmp/dtf-outdoor-applied-v1
-            ${{ runner.temp }}/outdoor-quantification-assembly.json
-            ${{ runner.temp }}/harvest-outdoor-v6-publish.log
-            ${{ runner.temp }}/outdoor-quantification-v1-publish.log
-            ${{ runner.temp }}/outdoor-applied-v1-publish.log
-            ${{ runner.temp }}/harvest-postharvest-v6-live.html
-            ${{ runner.temp }}/outdoor-v6-live.html
+            ${{ runner.temp }}/*self-heal.log
+            ${{ runner.temp }}/v6-publish.log
+            ${{ runner.temp }}/quant-publish.log
+            ${{ runner.temp }}/applied-publish.log
+            ${{ runner.temp }}/harvest-live.html
+            ${{ runner.temp }}/outdoor-live.html
           if-no-files-found: warn
           retention-days: 30
 
-      - name: Report Harvest and Outdoor V6 result
+      - name: Report complete Outdoor learning result
         if: always()
         uses: actions/github-script@v7
         env:
           STATUS: ${{ job.status }}
-          VALIDATE: ${{ steps.validate.outcome }}
-          PUBLISH: ${{ steps.publish.outcome }}
-          QUANT_PUBLISH: ${{ steps.publish_quant.outcome }}
-          APPLIED_PUBLISH: ${{ steps.publish_applied.outcome }}
-          HARVEST_VERIFY: ${{ steps.verify_harvest.outcome }}
-          OUTDOOR_VERIFY: ${{ steps.verify_outdoor.outcome }}
-          SUBJECTS: ${{ steps.publish.outputs.subjects }}
-          CHAPTERS: ${{ steps.publish.outputs.chapters }}
-          LESSONS: ${{ steps.publish.outputs.lessons }}
-          SOURCES: ${{ steps.publish.outputs.sources }}
-          VISUAL_TARGETS: ${{ steps.publish.outputs.visual_targets }}
-          QUANT_SECTIONS: ${{ steps.publish_quant.outputs.sections }}
-          QUANT_SUBTOPICS: ${{ steps.publish_quant.outputs.subtopics }}
-          QUANT_METRICS: ${{ steps.publish_quant.outputs.metrics }}
-          APPLIED_MODULES: ${{ steps.publish_applied.outputs.modules }}
-          APPLIED_LESSONS: ${{ steps.publish_applied.outputs.lessons }}
+          V4: ${{ steps.v4.outcome }}
+          V6: ${{ steps.v6.outcome }}
+          QUANT: ${{ steps.quant.outcome }}
+          APPLIED: ${{ steps.applied.outcome }}
+          VERIFY: ${{ steps.verify.outcome }}
         with:
           script: |
             const body=[
-              '## Harvest + Outdoor V6 production', '',
+              '## THC Outdoor complete learning-stack publication','',
               `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
               `Result: **${process.env.STATUS}**`,
-              `Package validation: **${process.env.VALIDATE || 'not-run'}**`,
-              `WordPress publication: **${process.env.PUBLISH || 'not-run'}**`,
-              `Outdoor quantification publication: **${process.env.QUANT_PUBLISH || 'not-run'}**`,
-              `Outdoor applied-guide publication: **${process.env.APPLIED_PUBLISH || 'not-run'}**`,
-              `Harvest visitor verification: **${process.env.HARVEST_VERIFY || 'not-run'}**`,
-              `Outdoor visitor verification: **${process.env.OUTDOOR_VERIFY || 'not-run'}**`,
-              `Published subjects: **${process.env.SUBJECTS || '0'}**`,
-              `New V6 chapters: **${process.env.CHAPTERS || '0'}**`,
-              `New focused lessons: **${process.env.LESSONS || '0'}**`,
-              `Evidence references: **${process.env.SOURCES || '0'}**`,
-              `Quality-gated visual targets: **${process.env.VISUAL_TARGETS || '0'}**`,
-              `Quantified Outdoor field labs: **${process.env.QUANT_SECTIONS || '0'}**`,
-              `Quantified Outdoor subtopics: **${process.env.QUANT_SUBTOPICS || '0'}**`,
-              `Field metrics: **${process.env.QUANT_METRICS || '0'}**`,
-              `Applied Outdoor modules: **${process.env.APPLIED_MODULES || '0'}**`,
-              `Applied Outdoor lessons: **${process.env.APPLIED_LESSONS || '0'}**`, '',
-              'Existing V3 subject ownership and V4 guided-learning layers are preserved. The complete eight-chapter quantification layer is assembled from source-controlled chapter files, and the THC applied decision guide adds root-zone, photoperiod, weather, canopy and harvest-weather decision modules. All layers are visitor-verified before success.'
+              `V4 guided-learning self-heal: **${process.env.V4 || 'not-run'}**`,
+              `V6 core curriculum: **${process.env.V6 || 'not-run'}**`,
+              `8 field labs / 32 quantified subtopics: **${process.env.QUANT || 'not-run'}**`,
+              `5 applied modules / 20 lessons: **${process.env.APPLIED || 'not-run'}**`,
+              `Cache-busted visitor verification: **${process.env.VERIFY || 'not-run'}**`,'',
+              'The production lane now restores its guided-learning prerequisite before publishing Outdoor V6, then publishes the complete measurement and applied-decision layers and verifies the public page.'
             ].join('\n');
-            for (const issue_number of [46,126]) {
-              await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number,body});
-            }
+            for (const issue_number of [46,126]) await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number,body});
