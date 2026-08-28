@@ -142,11 +142,15 @@ function resolveEvent(state, events) {
   const index = Math.floor(nextRandom(state) * pool.length);
   const event = pool[Math.min(index, pool.length - 1)];
   const before = clone(state.resources);
+  const mitigationEligible = Boolean(
+    event.mitigation &&
+    (before[event.mitigation.resource] ?? 0) >= event.mitigation.minimum
+  );
 
   applyDelta(state.resources, event.effects);
 
   let mitigation = null;
-  if (event.mitigation && (state.resources[event.mitigation.resource] ?? 0) >= event.mitigation.minimum) {
+  if (mitigationEligible) {
     applyDelta(state.resources, event.mitigation.effects);
     mitigation = event.mitigation.label;
   }
