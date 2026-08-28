@@ -78,7 +78,12 @@ function applyEffect(state: GameState, currentPlayer: Player, effect: ActionCard
     }
     case 'reverse_turn_order': {
       const nextDirection: TurnDirection = nextState.turnDirection === 1 ? -1 : 1;
-      nextState = { ...nextState, turnDirection: nextDirection, reverseTurnsRemaining: effect.turns };
+      const rounds = Math.max(0, Math.trunc(effect.turns));
+      nextState = {
+        ...nextState,
+        turnDirection: nextDirection,
+        reverseTurnsRemaining: rounds * nextState.players.length
+      };
       break;
     }
     case 'protect_from_backward':
