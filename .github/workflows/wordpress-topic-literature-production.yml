@@ -2,6 +2,20 @@ name: Publish THC Topic Literature to WordPress Production
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - scripts/publish-wordpress-topic-literature.mjs
+      - site/wordpress/education/topic-literature.json
+      - site/wordpress/assets/infographics/placement-rules.json
+      - site/wordpress/assets/infographics/infographic-exclusions.json
+      - .github/workflows/wordpress-topic-literature-production.yml
+  workflow_run:
+    workflows:
+      - Publish DTFSeeds Learning Experience V3
+      - Publish THC Infographics to WordPress Production
+      - Publish Harvest Images Now
+    types: [completed]
 
 permissions:
   contents: read
@@ -14,6 +28,7 @@ concurrency:
 jobs:
   publish:
     name: Publish companion literature and searchable infographic index
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 35
     environment: production
@@ -150,6 +165,24 @@ jobs:
             test "$section_count" -ge 4
           done
 
+          harvest="$RUNNER_TEMP/topic-harvest-postharvest.html"
+          for marker in \
+            'HARV 07 water activity vs moisture content' \
+            'HARV 08 curing workflow moisture equalization' \
+            'HARV 09 storage environment light heat oxygen moisture' \
+            'HARV 10 post harvest degradation pathways' \
+            'HARV 11 harvest wet trim vs dry trim process choices' \
+            'HARV 12 post harvest quality control checklist' \
+            'HARV 13 drying failure modes detailed' \
+            'HARV 14 harvest resin contamination comparison' \
+            'HARV 15 drying room sensor placement' \
+            'HARV 16 drying room airflow mapping'; do
+            grep -Fqi "$marker" "$harvest" || {
+              echo "Harvest visual missing from final literature-first page: $marker" >&2
+              exit 1
+            }
+          done
+
           echo "live_image_count=$image_count" >> "$GITHUB_OUTPUT"
 
       - name: Upload rollback and publication audit
@@ -184,7 +217,8 @@ jobs:
                 '## THC literature-first topic publication',
                 '',
                 `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-                `Protected job result: **${process.env.JOB_STATUS}**`,
+                `Trigger: **${context.eventName}**`,
+                `Overall: **${process.env.JOB_STATUS}**`,
                 `Validation: **${process.env.VALIDATE_OUTCOME || 'not-run'}**`,
                 `WordPress publication: **${process.env.PUBLISH_OUTCOME || 'not-run'}**`,
                 `Visitor-facing verification: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
@@ -194,6 +228,6 @@ jobs:
                 `Infographic library page ID: **${process.env.LIBRARY_PAGE_ID || 'not-run'}**`,
                 `Infographic images observed on live searchable library: **${process.env.LIVE_IMAGE_COUNT || 'not-run'}**`,
                 '',
-                'Architecture: companion literature is canonical. Finished infographics live inside their designated topic pages and in the searchable infographic index. Simple supporting images and PDF page extractions are excluded from infographic surfaces.'
+                'Architecture: companion literature is canonical and now automatically reclaims final ownership after visual and Learning V3 publishers. Finished infographics live inside their designated topic pages and in the searchable infographic index. Simple supporting images and PDF page extractions are excluded from infographic surfaces.'
               ].join('\n')
             });
