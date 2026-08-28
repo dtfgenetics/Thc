@@ -2,6 +2,11 @@ name: Terpocalypse CI
 
 on:
   workflow_dispatch:
+  pull_request:
+    paths:
+      - site/public-route-patch/games/terpocalypse/**
+      - games/terpocalypse-integration/**
+      - .github/workflows/terpocalypse-ci.yml
   push:
     branches: [main]
     paths:
@@ -32,6 +37,7 @@ jobs:
         run: |
           node --check site/public-route-patch/games/terpocalypse/main.js
           node --check site/public-route-patch/games/terpocalypse/game-data.js
+          node --check site/public-route-patch/games/terpocalypse/visibility-pause-v1.js
       - name: Verify no external runtime dependencies
         run: |
           set -euo pipefail
