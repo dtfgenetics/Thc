@@ -3,26 +3,66 @@ set -euo pipefail
 
 workflow="${1:?workflow file/name required}"
 shift || true
+mode="dispatch"
+if [[ "${1:-}" == "--join-existing" ]]; then
+  mode="join-existing"
+  shift
+elif [[ "${1:-}" == "--join-only" ]]; then
+  mode="join-only"
+  shift
+fi
+
 expected_sha="${EXPECTED_SOURCE_SHA:-${GITHUB_SHA:-}}"
 started="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 
-echo "Dispatching $workflow from main at $started"
-gh workflow run "$workflow" --ref main "$@"
+find_same_sha_run() {
+  gh run list --workflow "$workflow" --branch main --limit 30 \
+    --json databaseId,createdAt,headSha,status,conclusion,event \
+    | jq -r --arg sha "$expected_sha" '
+        [ .[] | select(($sha == "") or (.headSha == $sha)) ]
+        | sort_by(.createdAt)
+        | last
+        | .databaseId // empty
+      '
+}
 
 run_id=""
-for attempt in $(seq 1 30); do
-  runs="$(gh run list --workflow "$workflow" --branch main --event workflow_dispatch --limit 20 --json databaseId,createdAt,headSha,status,conclusion)"
-  run_id="$(jq -r --arg started "$started" --arg sha "$expected_sha" '
-    [ .[] | select(.createdAt >= $started) | select(($sha == "") or (.headSha == $sha)) ]
-    | sort_by(.createdAt) | last | .databaseId // empty
-  ' <<<"$runs")"
-  [[ -n "$run_id" ]] && break
-  sleep 2
-done
+if [[ "$mode" == "join-existing" ]]; then
+  run_id="$(find_same_sha_run)"
+  if [[ -n "$run_id" ]]; then
+    echo "Joining existing $workflow run $run_id for source $expected_sha"
+  fi
+fi
 
-if [[ -z "$run_id" ]]; then
-  echo "Could not identify the workflow_dispatch run for $workflow at expected source $expected_sha" >&2
-  exit 2
+if [[ "$mode" == "join-only" ]]; then
+  for attempt in $(seq 1 60); do
+    run_id="$(find_same_sha_run)"
+    [[ -n "$run_id" ]] && break
+    sleep 2
+  done
+  if [[ -z "$run_id" ]]; then
+    echo "No same-source run appeared for required workflow $workflow at $expected_sha" >&2
+    exit 2
+  fi
+  echo "Joining required downstream $workflow run $run_id for source $expected_sha"
+elif [[ -z "$run_id" ]]; then
+  echo "Dispatching $workflow from main at $started"
+  gh workflow run "$workflow" --ref main "$@"
+
+  for attempt in $(seq 1 30); do
+    runs="$(gh run list --workflow "$workflow" --branch main --event workflow_dispatch --limit 20 --json databaseId,createdAt,headSha,status,conclusion)"
+    run_id="$(jq -r --arg started "$started" --arg sha "$expected_sha" '
+      [ .[] | select(.createdAt >= $started) | select(($sha == "") or (.headSha == $sha)) ]
+      | sort_by(.createdAt) | last | .databaseId // empty
+    ' <<<"$runs")"
+    [[ -n "$run_id" ]] && break
+    sleep 2
+  done
+
+  if [[ -z "$run_id" ]]; then
+    echo "Could not identify the workflow_dispatch run for $workflow at expected source $expected_sha" >&2
+    exit 2
+  fi
 fi
 
 echo "Child workflow run: $run_id"
