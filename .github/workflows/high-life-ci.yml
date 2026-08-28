@@ -29,15 +29,19 @@ jobs:
           node-version: 22
       - name: Run deterministic rules and balance tests
         run: node games/high-life/test/engine.test.mjs
+      - name: Run autosave recovery tests
+        run: node games/high-life/test/save-state.test.mjs
       - name: Validate browser JavaScript syntax
         run: |
           node --check site/public-route-patch/games/high-life/app.js
           node --check site/public-route-patch/games/high-life/engine.mjs
+          node --check site/public-route-patch/games/high-life/save-state.mjs
       - name: Verify canonical and public runtime copies match
         shell: bash
         run: |
           set -euo pipefail
           cmp games/high-life/src/engine.mjs site/public-route-patch/games/high-life/engine.mjs
+          cmp games/high-life/src/save-state.mjs site/public-route-patch/games/high-life/save-state.mjs
           cmp games/high-life/data/events.json site/public-route-patch/games/high-life/data/events.json
       - name: Verify public route contract
         shell: bash

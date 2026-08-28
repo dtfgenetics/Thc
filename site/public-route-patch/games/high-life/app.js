@@ -1,4 +1,5 @@
 import { ACTIONS, ERA_LENGTH, MAX_TURNS, calculateLegacyScore, createGame, currentEra, legalActions, takeTurn } from './engine.mjs';
+import { isRecoverableHighLifeState } from './save-state.mjs';
 
 const SAVE_KEY = 'dtf-high-life-save-v1';
 const eraLabels = { underground: 'Underground Era', medical: 'Medical Era', legal: 'Legal Era' };
@@ -41,7 +42,7 @@ function readSave() {
   try {
     const payload = JSON.parse(localStorage.getItem(SAVE_KEY) || 'null');
     const saved = payload?.state;
-    if (!saved || payload.version !== 1 || saved.complete || !Number.isInteger(saved.turn) || saved.turn < 0 || saved.turn >= MAX_TURNS || !saved.resources) return null;
+    if (!payload || payload.version !== 1 || !isRecoverableHighLifeState(saved, MAX_TURNS)) return null;
     return payload;
   } catch {
     return null;
@@ -56,12 +57,16 @@ function refreshSaveControls() {
   ui.saveStatus.hidden = !hasSave;
   if (!hasSave) return;
   const saved = payload.state;
+  if (saved.complete) {
+    ui.saveStatus.textContent = `Completed career ready to review: ${saved.playerName || 'Grower'} · ${saved.finalScore} Legacy points.`;
+    return;
+  }
   const era = eraLabels[currentEra(saved)] || 'Career';
   ui.saveStatus.textContent = `Saved career: ${saved.playerName || 'Grower'} · ${era} · turn ${Math.min(saved.turn + 1, MAX_TURNS)} of ${MAX_TURNS}.`;
 }
 
 function saveGame() {
-  if (!state || state.complete) {
+  if (!state) {
     localStorage.removeItem(SAVE_KEY);
     refreshSaveControls();
     return;
@@ -160,6 +165,14 @@ function startGame() {
 function resumeGame() {
   const payload = readSave();
   if (!payload) return refreshSaveControls();
+  if (payload.state.complete) {
+    state = payload.state;
+    ui.setup.hidden = true;
+    ui.game.hidden = true;
+    ui.eventPanel.hidden = true;
+    showResults();
+    return;
+  }
   enterGame(payload.state);
   document.querySelector('#choices-title').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
