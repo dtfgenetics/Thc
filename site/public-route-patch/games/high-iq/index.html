@@ -4,16 +4,16 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>High IQ | Cannabis Knowledge Challenge | DTF Genetics</title>
-  <meta name="description" content="Play High IQ, DTF Genetics' self-hosted cannabis knowledge challenge with 80 validated questions, weighted difficulty, explanations, and source references." />
+  <meta name="description" content="Play High IQ, DTF Genetics' self-hosted cannabis knowledge challenge with 80 validated questions, weighted difficulty, explanations, category mastery feedback, and source references." />
   <meta name="robots" content="index,follow,max-image-preview:large" />
-  <meta name="theme-color" content="#10291d" />
+  <meta name="theme-color" content="#0b1711" />
   <link rel="canonical" href="https://dtfseeds.com/games/high-iq/" />
   <link rel="stylesheet" href="/games/dtf-route.css" />
   <link rel="stylesheet" href="./high-iq.css" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="DTF Genetics" />
   <meta property="og:title" content="High IQ — Test Higher Cognition" />
-  <meta property="og:description" content="A self-hosted cannabis plant-science knowledge challenge with verified answers, explanations, and sources." />
+  <meta property="og:description" content="A self-hosted cannabis plant-science knowledge challenge with verified answers, explanations, mastery feedback, and sources." />
   <meta property="og:url" content="https://dtfseeds.com/games/high-iq/" />
 </head>
 <body>
@@ -29,30 +29,66 @@
   </header>
 
   <main class="high-iq-shell">
-    <section class="hero">
-      <p class="eyebrow">DTF Game Hub · Self-hosted knowledge game</p>
-      <h1>High IQ — Test Higher Cognition</h1>
-      <p class="lede">Test cultivation and plant-science knowledge with clear A/B/C/D questions, believable distractors, difficulty-weighted scoring, explanations, and the source records used to verify each answer.</p>
-      <div class="actions">
-        <a class="button" href="/games/">Back to Game Hub</a>
-        <a class="button" href="/learn/">Study in THC Learn</a>
+    <section class="hero high-iq-hero">
+      <div class="high-iq-hero-copy">
+        <p class="eyebrow">DTF Game Hub · Verified plant-science challenge</p>
+        <h1>High IQ — Test Higher Cognition</h1>
+        <p class="lede">A real knowledge game, not random trivia. Build a challenge from the approved production bank, lock an answer, then learn why it is right with context and the source records used to verify it.</p>
+        <div class="actions">
+          <a class="button primary" href="#challenge-title">Start a challenge</a>
+          <a class="button" href="/learn/">Study in THC Learn</a>
+          <a class="button" href="/games/">Game Hub</a>
+        </div>
+        <div class="hero-trust-row" aria-label="High IQ features">
+          <span>Source-backed answers</span>
+          <span>Weighted difficulty</span>
+          <span>Explanations after every question</span>
+        </div>
       </div>
+
+      <aside class="knowledge-panel" aria-label="High IQ production bank">
+        <div class="knowledge-mark" aria-hidden="true">IQ</div>
+        <p class="knowledge-label">Production knowledge bank</p>
+        <div class="knowledge-stats">
+          <div><strong id="hero-question-count">80</strong><span>approved questions</span></div>
+          <div><strong id="hero-category-count">10</strong><span>topic domains</span></div>
+          <div><strong id="hero-source-count">50</strong><span>registered sources</span></div>
+          <div><strong id="hero-version">2.2</strong><span>dataset version</span></div>
+        </div>
+        <p class="knowledge-note">Each question includes a locked answer, explanation, context note, difficulty value, and source IDs.</p>
+      </aside>
     </section>
 
     <section class="quiz-console" aria-labelledby="challenge-title">
       <div class="quiz-console-header">
         <div>
-          <p class="eyebrow">Production question bank</p>
-          <h2 id="challenge-title">Build your challenge</h2>
+          <p class="eyebrow">Challenge console</p>
+          <h2 id="challenge-title">Build your High IQ run</h2>
         </div>
-        <p id="loading-status" class="dataset-status">Loading verified question data…</p>
+        <div class="data-health" aria-live="polite">
+          <span id="data-health-dot" class="data-health-dot loading" aria-hidden="true"></span>
+          <p id="loading-status" class="dataset-status">Loading verified question data…</p>
+        </div>
       </div>
 
       <div id="quiz-setup" class="quiz-section" hidden>
-        <p>Choose a category, difficulty, and session length. Questions are randomized from the filtered production bank.</p>
+        <div class="setup-intro">
+          <div>
+            <h3>Choose your challenge</h3>
+            <p>Filter the verified bank or use a preset. Questions are randomized from the matching pool, so repeated sessions do not have to feel identical.</p>
+          </div>
+          <p id="pool-summary" class="pool-summary"></p>
+        </div>
+
+        <div class="preset-row" aria-label="Challenge presets">
+          <button class="preset-button" type="button" data-preset-count="5"><strong>Quick Hit</strong><span>5 questions</span></button>
+          <button class="preset-button is-active" type="button" data-preset-count="10"><strong>Core Session</strong><span>10 questions</span></button>
+          <button class="preset-button" type="button" data-preset-count="20"><strong>Deep Run</strong><span>20 questions</span></button>
+        </div>
+
         <div class="quiz-setup-grid">
           <div class="field">
-            <label for="category-filter">Category</label>
+            <label for="category-filter">Topic</label>
             <select id="category-filter"></select>
           </div>
           <div class="field">
@@ -66,54 +102,88 @@
         </div>
         <div class="quiz-actions">
           <button id="start-quiz" class="quiz-action primary" type="button">Start challenge</button>
-          <span class="note">Keyboard: A–D or 1–4 selects an answer.</span>
+          <span class="note">Keyboard: A–D or 1–4 selects · Enter locks or advances.</span>
         </div>
       </div>
 
       <div id="quiz-panel" class="quiz-section" hidden>
-        <div class="quiz-progress-row">
-          <p id="progress-text">Question 1</p>
-          <span class="note">Lock each answer to reveal the explanation and sources.</span>
+        <div class="quiz-scoreboard" aria-label="Current challenge status">
+          <div><span>Progress</span><strong id="progress-text">Question 1</strong></div>
+          <div><span>Score</span><strong id="live-score">0 pts</strong></div>
+          <div><span>Streak</span><strong id="live-streak">0</strong></div>
         </div>
         <progress id="quiz-progress" class="quiz-progress" value="0" max="10">0%</progress>
         <div class="question-meta" aria-label="Question metadata">
           <span id="question-category" class="quiz-chip"></span>
           <span id="question-difficulty" class="quiz-chip"></span>
           <span id="question-points" class="quiz-chip"></span>
+          <span class="quiz-chip verified-chip">Verified</span>
         </div>
         <h2 id="question-text" class="question-heading" tabindex="-1"></h2>
         <div id="answer-options" class="answer-grid" role="group" aria-label="Answer choices"></div>
         <div class="quiz-controls">
+          <span class="note">Select the best answer, then lock it.</span>
           <button id="lock-answer" class="quiz-action primary" type="button" disabled>Lock answer</button>
           <button id="next-question" class="quiz-action primary" type="button" hidden>Next question</button>
         </div>
 
         <section id="answer-feedback" class="answer-feedback" aria-labelledby="feedback-title" hidden>
-          <h3 id="feedback-title"></h3>
-          <p id="answer-explanation"></p>
-          <p><strong>Context:</strong> <span id="answer-context"></span></p>
-          <details>
-            <summary>Verification sources</summary>
+          <div class="feedback-heading-row">
+            <div>
+              <p class="feedback-label">Learning review</p>
+              <h3 id="feedback-title"></h3>
+            </div>
+            <p id="feedback-points" class="feedback-points"></p>
+          </div>
+          <p id="answer-explanation" class="explanation-copy"></p>
+          <div class="context-box"><strong>Why the wording matters</strong><span id="answer-context"></span></div>
+          <details class="source-drawer">
+            <summary>View verification sources</summary>
             <ul id="answer-sources" class="source-list"></ul>
           </details>
         </section>
       </div>
 
-      <div id="results-panel" class="quiz-section" hidden>
+      <div id="results-panel" class="quiz-section results-panel" hidden>
         <p class="eyebrow">Challenge complete</p>
-        <h2>Your High IQ score</h2>
-        <p id="result-score" class="result-score"></p>
-        <p id="result-detail"></p>
-        <div class="quiz-actions">
+        <div class="result-hero">
+          <div>
+            <h2>Your High IQ score</h2>
+            <p id="result-score" class="result-score"></p>
+            <p id="result-detail"></p>
+          </div>
+          <div class="result-rank" aria-label="Result rank">
+            <span>Rank</span>
+            <strong id="result-rank">—</strong>
+          </div>
+        </div>
+        <div class="result-grid">
+          <section class="result-card" aria-labelledby="mastery-title">
+            <h3 id="mastery-title">Topic mastery</h3>
+            <div id="category-results" class="category-results"></div>
+          </section>
+          <section class="result-card" aria-labelledby="study-title">
+            <h3 id="study-title">Best next study move</h3>
+            <p id="study-recommendation"></p>
+            <a class="button" href="/learn/">Open THC Learn</a>
+          </section>
+        </div>
+        <div class="quiz-actions results-actions">
           <button id="restart-quiz" class="quiz-action primary" type="button">Build another challenge</button>
-          <a class="button" href="/learn/">Study another topic</a>
+          <a class="button" href="/games/">Choose another game</a>
         </div>
       </div>
 
       <p id="quiz-live" class="quiz-live" aria-live="polite"></p>
       <div id="legacy-fallback" class="legacy-fallback" hidden>
-        <p>The self-hosted question data did not load. You can use the previous external development build while the route is checked.</p>
-        <a class="button" href="https://inescapable-grow-smart-lab.base44.app/" target="_blank" rel="noopener noreferrer">Open legacy development build</a>
+        <div>
+          <strong>Question bank unavailable</strong>
+          <p>The production data route did not respond with valid JSON. Retry the self-hosted bank first; the legacy development build remains a temporary fallback only.</p>
+        </div>
+        <div class="quiz-actions">
+          <button id="retry-data" class="quiz-action primary" type="button">Retry production bank</button>
+          <a class="button" href="https://inescapable-grow-smart-lab.base44.app/" target="_blank" rel="noopener noreferrer">Legacy development build</a>
+        </div>
       </div>
 
       <noscript>
@@ -123,13 +193,21 @@
       </noscript>
     </section>
 
+    <section aria-labelledby="topics-title">
+      <div class="section-heading topic-heading">
+        <div><p class="eyebrow">Knowledge map</p><h2 id="topics-title">What High IQ actually tests</h2></div>
+        <p>The game spans plant systems rather than repeating basic strain trivia. Topic counts below are generated directly from the production manifest.</p>
+      </div>
+      <div id="topic-map" class="topic-map" aria-live="polite"></div>
+    </section>
+
     <section aria-labelledby="quality-title">
-      <div class="section-heading"><p class="eyebrow">Quality model</p><h2 id="quality-title">Questions that teach after the guess</h2></div>
-      <div class="card-grid compact">
-        <article class="card"><h3>80 validated questions</h3><p>The v2.2 bank spans plant biology, physiology, photobiology, environment, nutrition, irrigation, diagnostics, IPM, genetics, breeding, harvest, and post-harvest topics.</p></article>
-        <article class="card"><h3>Difficulty-weighted score</h3><p>Easy questions are worth 1 point, Medium 2, Hard 3, and Expert 4. A session score therefore reflects both accuracy and technical difficulty.</p></article>
-        <article class="card"><h3>Explanation-first feedback</h3><p>Every production question includes an explanation and context note so a wrong answer becomes a short learning step instead of a dead end.</p></article>
-        <article class="card"><h3>Visible verification</h3><p>Source records are attached to each question and shown after the answer is locked. Sources support the factual claim; they do not replace crop-specific professional judgment.</p></article>
+      <div class="section-heading"><div><p class="eyebrow">Quality model</p><h2 id="quality-title">Questions that teach after the guess</h2></div></div>
+      <div class="quality-strip">
+        <article><span>01</span><h3>Approved question bank</h3><p>The current v2.2 bank is machine-validated for IDs, answer mappings, status, audit state, source references, categories and difficulty distribution.</p></article>
+        <article><span>02</span><h3>Difficulty-weighted score</h3><p>Easy questions are worth 1 point, Medium 2, Hard 3, and Expert 4, so technical depth matters in the final score.</p></article>
+        <article><span>03</span><h3>Explanation-first feedback</h3><p>Every production question includes an explanation and context note so a miss becomes a short lesson instead of a dead end.</p></article>
+        <article><span>04</span><h3>Visible verification</h3><p>Source records are attached to questions and shown after an answer is locked. The game makes its evidence trail inspectable.</p></article>
       </div>
     </section>
 
