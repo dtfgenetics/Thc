@@ -8,6 +8,7 @@ const nav = JSON.parse(fs.readFileSync('data/public-navigation.json', 'utf8'));
 const games = nav.games.filter((game) => game.public && game.route);
 const failures = [];
 const results = [];
+const isPullRequest = process.env.GITHUB_EVENT_NAME === 'pull_request';
 
 function absolute(base, value) {
   try { return new URL(value, base); } catch { return null; }
@@ -57,7 +58,7 @@ async function fetchWithTimeout(url, options = {}) {
         ...fetchOptions,
         signal: AbortSignal.timeout(timeoutMs),
         headers: {
-          'user-agent': 'DTFSeeds-Game-Route-QA/1.1',
+          'user-agent': 'DTFSeeds-Game-Route-QA/1.2',
           'cache-control': 'no-cache, no-store, max-age=0',
           pragma: 'no-cache',
           ...headers
@@ -88,6 +89,21 @@ async function assetOk(url) {
     });
   }
   return { ok: response.ok, status: response.status };
+}
+
+function validateHubLinks(html, sourceLabel) {
+  const problems = [];
+  for (const game of games) {
+    if (!html.includes(`href="${game.route}"`) && !html.includes(`href='${game.route}'`)) {
+      problems.push(`missing link for ${game.id}: ${game.route}`);
+    }
+  }
+  for (const game of nav.games.filter((item) => !item.public)) {
+    if (game.route && (html.includes(`href="${game.route}"`) || html.includes(`href='${game.route}'`))) {
+      problems.push(`development-only game linked publicly: ${game.id}`);
+    }
+  }
+  if (problems.length) failures.push({ id: 'game-hub', route: sourceLabel, problems });
 }
 
 for (const game of games) {
@@ -132,26 +148,39 @@ for (const game of games) {
   if (problems.length) failures.push({ id: game.id, route: game.route, problems });
 }
 
-const hubUrl = new URL('/games/', BASE);
-hubUrl.searchParams.set('dtf_game_hub_audit', Date.now().toString());
-try {
-  const response = await fetchWithTimeout(hubUrl.href);
-  const html = await response.text();
-  if (!response.ok) failures.push({ id: 'game-hub', route: '/games/', problems: [`HTTP ${response.status}`] });
-  for (const game of games) {
-    if (!html.includes(`href="${game.route}"`) && !html.includes(`href='${game.route}'`)) failures.push({ id: 'game-hub', route: '/games/', problems: [`missing link for ${game.id}: ${game.route}`] });
+if (isPullRequest) {
+  const hubPath = 'site/public-route-patch/games/index.html';
+  try {
+    const html = fs.readFileSync(hubPath, 'utf8');
+    validateHubLinks(html, hubPath);
+  } catch (error) {
+    failures.push({ id: 'game-hub', route: hubPath, problems: [`candidate hub source unavailable: ${networkErrorDetail(error)}`] });
   }
-  for (const game of nav.games.filter((item) => !item.public)) {
-    if (game.route && (html.includes(`href="${game.route}"`) || html.includes(`href='${game.route}'`))) failures.push({ id: 'game-hub', route: '/games/', problems: [`development-only game linked publicly: ${game.id}`] });
+} else {
+  const hubUrl = new URL('/games/', BASE);
+  hubUrl.searchParams.set('dtf_game_hub_audit', Date.now().toString());
+  try {
+    const response = await fetchWithTimeout(hubUrl.href);
+    const html = await response.text();
+    if (!response.ok) failures.push({ id: 'game-hub', route: '/games/', problems: [`HTTP ${response.status}`] });
+    validateHubLinks(html, '/games/');
+  } catch (error) {
+    failures.push({ id: 'game-hub', route: '/games/', problems: [networkErrorDetail(error)] });
   }
-} catch (error) {
-  failures.push({ id: 'game-hub', route: '/games/', problems: [networkErrorDetail(error)] });
 }
 
-fs.writeFileSync('game-route-audit.json', JSON.stringify({ generatedAt: new Date().toISOString(), gamesChecked: games.length, results, failures }, null, 2));
+fs.writeFileSync('game-route-audit.json', JSON.stringify({
+  generatedAt: new Date().toISOString(),
+  gamesChecked: games.length,
+  hubCheckedFrom: isPullRequest ? 'candidate-source' : 'production',
+  results,
+  failures
+}, null, 2));
 
 console.log(`Checked ${games.length} public game routes.`);
+console.log(`Hub link contract checked from ${isPullRequest ? 'candidate source' : 'production'}.`);
 for (const result of results) console.log(`${result.problems.length ? 'FAIL' : 'PASS'} ${result.route} — assets checked: ${result.assetsChecked}${result.problems.length ? ` — ${result.problems.join('; ')}` : ''}`);
+for (const failure of failures.filter((item) => item.id === 'game-hub')) console.error(`FAIL ${failure.route} — ${failure.problems.join('; ')}`);
 
 if (failures.length) {
   console.error(`Game route integrity failed with ${failures.length} problem group(s).`);
