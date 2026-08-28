@@ -19,6 +19,7 @@
     "publicRuntimeValidation": "node games/high-iq/test/runtime-smoke.mjs",
     "gameCoreTests": "node games/high-iq/test/game-core.test.mjs",
     "browserPlaythrough": "node games/high-iq/test/browser-smoke.mjs",
+    "liveVerification": "node games/high-iq/scripts/verify-live-v3.mjs",
     "provenance": "High_IQ_Master_Production_Workbook_v2_2.xlsx"
   },
   "browserSource": {
@@ -61,6 +62,7 @@
     "v3_gameplay_ready": true,
     "v3_ci_gates_ready": true,
     "browser_playthrough_gate_ready": true,
+    "live_verification_script_ready": true,
     "production_route_verified": false
   }
 }
