@@ -25,12 +25,13 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
@@ -52,6 +53,7 @@ jobs:
           node --check site/public-route-patch/games/high-iq/app.js
           node --check site/public-route-patch/games/high-iq/app-v3.js
           node --check site/public-route-patch/games/high-iq/game-core.mjs
+          node --check games/high-iq/test/browser-smoke.mjs
           python -m py_compile scripts/package-game-routes-wordpress.py scripts/package-public-suite-wordpress.py
 
       - name: Verify crawlable production shell
@@ -99,3 +101,11 @@ jobs:
               assert not missing, f'High IQ v3 deploy package is missing: {sorted(missing)}'
               assert '.dtf-game-route-manifest.json' in names
           PY
+
+      - name: Install browser-test dependencies
+        run: |
+          npm ci
+          npx playwright install chromium
+
+      - name: Play through High IQ v3 in Chromium
+        run: node games/high-iq/test/browser-smoke.mjs
