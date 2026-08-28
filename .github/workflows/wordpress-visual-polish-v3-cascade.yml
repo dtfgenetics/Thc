@@ -32,7 +32,7 @@ jobs:
     env:
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME || secrets.WORDPRESS_USERNAME || secrets.WP_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD || secrets.WORDPRESS_APP_PASSWORD || secrets.WP_APPLICATION_PASSWORD }}
-      BACKUP_ROOT: ${{ runner.temp }}/dtf-v3-cascade-fix
+      BACKUP_ROOT: /tmp/dtf-v3-cascade-fix
     steps:
       - uses: actions/checkout@v4
         with:
