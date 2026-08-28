@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-08-28",
+  "curriculumId": "evidence-measurement-v6",
+  "route": "/learn/research-methods/",
+  "publicationPolicy": {
+    "approvedOnly": true,
+    "exactConceptMatchOnly": true,
+    "draftExcluded": true,
+    "qaRequiredExcluded": true,
+    "note": "Evidence & Measurement uses only reviewed visuals that directly teach measurement, interpretation, or a clearly labeled worked example. Missing methods remain explicit production gaps rather than receiving decorative science imagery."
+  },
+  "chapters": {
+    "measurement-question-model": [
+      {
+        "file": "THC-ENC-001_VIS-06_Measurement_Quality_Chain.jpg",
+        "title": "Measurement Quality Chain",
+        "alt": "Educational diagram showing how question definition, measurement quality and interpretation affect cultivation decisions."
+      }
+    ],
+    "accuracy-precision-calibration": [],
+    "sensor-placement-spatial-sampling": [],
+    "baseline-controls-change-isolation": [
+      {
+        "file": "THC-ENC-001_VIS-08_Monitored_Cultivation_Decision.jpg",
+        "title": "Monitored Cultivation Decision",
+        "alt": "Educational decision diagram showing how monitored observations, bounded changes and verification support cultivation decisions."
+      }
+    ],
+    "time-series-events-derived-metrics": [
+      {
+        "file": "THC-ENC-085_Vapor_Pressure_Deficit_Meaning_and_Calculation.jpg",
+        "title": "VPD as a Derived-Metric Example",
+        "alt": "Educational diagram showing vapor pressure deficit as a calculated metric derived from measured environmental inputs."
+      }
+    ],
+    "imaging-observation-scoring": [],
+    "uncertainty-replication-statistical-thinking": [],
+    "records-interpretation-change-control": [
+      {
+        "file": "THC-ENC-060_Media_Testing_Batch_Qualification_and_Reuse_Decisions.jpg",
+        "title": "Media Testing, Batch Qualification & Reuse Decisions",
+        "alt": "Educational workflow showing standardized testing, recorded evidence and qualification decisions for a cultivation material batch."
+      }
+    ]
+  },
+  "gaps": [
+    {
+      "id": "accuracy-precision-resolution-uncertainty",
+      "status": "needed",
+      "title": "Accuracy, Precision, Resolution & Uncertainty",
+      "neededVisual": "A target-style comparison showing accurate/precise combinations, instrument resolution versus stated accuracy, uncertainty bounds and why extra decimal places do not prove measurement quality."
+    },
+    {
+      "id": "calibration-drift-reference-check",
+      "status": "needed",
+      "title": "Calibration, Sensor Drift & Reference Cross-Check",
+      "neededVisual": "A calibration workflow showing known standards, pre-check, adjustment where appropriate, post-check, maintenance, drift over time, reference-sensor comparison and a traceable calibration log."
+    },
+    {
+      "id": "sensor-placement-spatial-grid",
+      "status": "needed",
+      "title": "Sensor Placement, Canopy Grid & Representative Sampling",
+      "neededVisual": "A room/canopy map showing biased versus representative sensor locations, height and coordinate metadata, a repeatable spatial grid, raw values and why a room average can hide gradients."
+    },
+    {
+      "id": "baseline-control-randomization",
+      "status": "needed",
+      "title": "Baseline, Control, Treatment, Randomization & Position Effects",
+      "neededVisual": "A cultivation experiment timeline and bench layout showing baseline collection, contemporaneous controls, randomized or blocked treatment positions, one major variable changed and post-change verification."
+    },
+    {
+      "id": "standardized-imaging-scoring",
+      "status": "needed",
+      "title": "Standardized Imaging, Scale & Scoring Anchors",
+      "neededVisual": "A diagnostic photography protocol showing plant ID, overview plus close-up, scale reference, neutral lighting/white balance, tissue location, unedited original retention and anchored ordinal scoring."
+    },
+    {
+      "id": "replication-uncertainty-evidence-chain",
+      "status": "needed",
+      "title": "Replication, Uncertainty, Correlation & Evidence Chain",
+      "neededVisual": "A statistical-thinking diagram separating biological and technical replicates, sample size, spread, correlation from causation, confidence/uncertainty and the traceable path from raw observation to decision and recheck."
+    }
+  ]
+}
