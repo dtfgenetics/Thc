@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "disclaimer": "All cultivar names and trait profiles in Mystery Strain are original fictional game data created for deduction gameplay.",
+  "questions": [
+    {"id":"fruit","group":"Aroma","prompt":"Is the profile fruit-forward?"},
+    {"id":"citrus","group":"Aroma","prompt":"Is the profile citrus-forward?"},
+    {"id":"gas","group":"Aroma","prompt":"Does the profile lean fuel/gas?"},
+    {"id":"earth","group":"Aroma","prompt":"Does the profile lean earthy or spiced?"},
+    {"id":"floral","group":"Aroma","prompt":"Does the profile lean floral or sweet?"},
+    {"id":"compact","group":"Structure","prompt":"Is the game profile compact?"},
+    {"id":"tall","group":"Structure","prompt":"Is the game profile tall or stretchy?"},
+    {"id":"branchy","group":"Structure","prompt":"Does the game profile emphasize branching?"},
+    {"id":"purple","group":"Visual","prompt":"Does the profile include purple coloration?"},
+    {"id":"fast","group":"Timing","prompt":"Is the fictional finish class fast?"},
+    {"id":"long","group":"Timing","prompt":"Is the fictional finish class long?"},
+    {"id":"resin","group":"Visual","prompt":"Does the profile emphasize a heavy-resin look?"}
+  ],
+  "strains": [
+    {"id":"blue-orbit","name":"Blue Orbit","traits":["fruit","floral","branchy","purple","resin"]},
+    {"id":"mango-circuit","name":"Mango Circuit","traits":["fruit","citrus","tall","branchy","fast"]},
+    {"id":"diesel-lantern","name":"Diesel Lantern","traits":["gas","earth","tall","long","resin"]},
+    {"id":"velvet-kush","name":"Velvet Kush","traits":["earth","compact","purple","fast","resin"]},
+    {"id":"citrus-relay","name":"Citrus Relay","traits":["citrus","floral","branchy","fast","resin"]},
+    {"id":"grape-static","name":"Grape Static","traits":["fruit","gas","compact","purple","resin"]},
+    {"id":"lemon-spire","name":"Lemon Spire","traits":["citrus","floral","tall","long"]},
+    {"id":"forest-signal","name":"Forest Signal","traits":["earth","floral","branchy","resin"]},
+    {"id":"ruby-engine","name":"Ruby Engine","traits":["fruit","gas","branchy","purple","long"]},
+    {"id":"solar-skunk","name":"Solar Skunk","traits":["citrus","gas","tall","branchy","fast"]},
+    {"id":"night-orchard","name":"Night Orchard","traits":["fruit","earth","compact","purple","long"]},
+    {"id":"frost-compass","name":"Frost Compass","traits":["citrus","earth","compact","fast","resin"]},
+    {"id":"cloud-nectar","name":"Cloud Nectar","traits":["fruit","floral","tall","long","resin"]},
+    {"id":"ember-grove","name":"Ember Grove","traits":["gas","earth","branchy","fast"]},
+    {"id":"violet-current","name":"Violet Current","traits":["floral","compact","purple","long","resin"]},
+    {"id":"lime-foundry","name":"Lime Foundry","traits":["citrus","gas","compact","fast"]},
+    {"id":"berry-tower","name":"Berry Tower","traits":["fruit","tall","purple","fast"]},
+    {"id":"pine-prism","name":"Pine Prism","traits":["earth","floral","tall","branchy","fast"]},
+    {"id":"cosmic-fuel","name":"Cosmic Fuel","traits":["fruit","gas","tall","fast","resin"]},
+    {"id":"dawn-haze","name":"Dawn Haze","traits":["citrus","floral","tall","branchy","long"]}
+  ]
+}
