@@ -123,7 +123,7 @@ function describeEffect(card: ActionCard): string {
     case 'move_to_color': return `${effect.direction} ${effect.color}`;
     case 'move_all': return `${effect.filter.replace('_', ' ')} ${effect.amount >= 0 ? '+' : ''}${effect.amount}`;
     case 'move_leader': return `Leader ${effect.amount >= 0 ? '+' : ''}${effect.amount}`;
-    case 'reverse_turn_order': return `Reverse ${effect.turns} turn${effect.turns === 1 ? '' : 's'}`;
+    case 'reverse_turn_order': return `Reverse ${effect.turns} round${effect.turns === 1 ? '' : 's'}`;
     case 'protect_from_backward': return `Protection x${effect.uses}`;
     case 'draw_again': return 'Draw again';
     case 'move_and_roll_again': return `Move +${effect.amount}, roll again`;
