@@ -32,7 +32,7 @@ jobs:
       NODE_OPTIONS: --dns-result-order=ipv4first
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME || secrets.WORDPRESS_USERNAME || secrets.WP_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD || secrets.WORDPRESS_APP_PASSWORD || secrets.WP_APPLICATION_PASSWORD }}
-      BACKUP_ROOT: ${{ runner.temp }}/dtf-v3-post-canonical
+      BACKUP_ROOT: /tmp/dtf-v3-post-canonical
     steps:
       - uses: actions/checkout@v4
         with:
@@ -94,6 +94,7 @@ jobs:
           retention-days: 30
       - name: Report V3 post-canonical result
         if: always()
+        continue-on-error: true
         uses: actions/github-script@v7
         env:
           STATUS: ${{ job.status }}
