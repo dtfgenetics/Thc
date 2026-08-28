@@ -1,3 +1,5 @@
+const SESSION_KEY = 'dtf-grower-conversations-session-v1';
+
 const ui = {
   load: document.querySelector('#load-status'),
   controls: document.querySelector('#controls'),
@@ -59,12 +61,49 @@ function remaining() {
   return pool().filter((card) => !used.has(card.id));
 }
 
+function saveSession() {
+  try {
+    localStorage.setItem(SESSION_KEY, JSON.stringify({
+      version: 1,
+      category: ui.category.value,
+      depth: ui.depth.value,
+      used: [...used],
+      currentId: current?.id || null
+    }));
+  } catch (error) {
+    console.warn('Grower Conversations session persistence unavailable.', error);
+  }
+}
+
+function readSession() {
+  try {
+    const payload = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
+    return payload?.version === 1 ? payload : null;
+  } catch {
+    return null;
+  }
+}
+
 function updateStatus() {
   const filtered = pool();
   const available = remaining();
-  ui.status.textContent = `${available.length} unused of ${filtered.length} matching cards · ${used.size} used in this session.`;
+  ui.status.textContent = `${available.length} unused of ${filtered.length} matching cards · ${used.size} used · progress saved on this device.`;
   ui.next.disabled = filtered.length === 0;
   ui.next.textContent = available.length === 0 && filtered.length > 0 ? 'Reset and draw' : current ? 'Next prompt' : 'Draw a prompt';
+}
+
+function renderCurrent() {
+  if (!current) {
+    ui.categoryText.textContent = 'Ready';
+    ui.depthText.textContent = 'Mixed deck';
+    ui.number.textContent = '96 cards';
+    ui.prompt.textContent = 'Choose a topic or depth, then draw a conversation prompt.';
+    return;
+  }
+  ui.categoryText.textContent = current.categoryLabel;
+  ui.depthText.textContent = current.depth;
+  ui.number.textContent = current.id.toUpperCase();
+  ui.prompt.textContent = current.prompt;
 }
 
 function draw() {
@@ -77,22 +116,18 @@ function draw() {
   if (!available.length) return;
   current = available[Math.floor(Math.random() * available.length)];
   used.add(current.id);
-  ui.categoryText.textContent = current.categoryLabel;
-  ui.depthText.textContent = current.depth;
-  ui.number.textContent = current.id.toUpperCase();
-  ui.prompt.textContent = current.prompt;
+  renderCurrent();
   updateStatus();
+  saveSession();
   ui.prompt.focus?.({ preventScroll: true });
 }
 
 function resetUsed() {
   used.clear();
   current = null;
-  ui.categoryText.textContent = 'Ready';
-  ui.depthText.textContent = 'Mixed deck';
-  ui.number.textContent = '96 cards';
-  ui.prompt.textContent = 'Choose a topic or depth, then draw a conversation prompt.';
+  renderCurrent();
   updateStatus();
+  saveSession();
 }
 
 function shuffleDeck() {
@@ -122,6 +157,19 @@ function populateCategories() {
   }
 }
 
+function restoreSession() {
+  const payload = readSession();
+  if (!payload) return resetUsed();
+  const validIds = new Set(cards.map((card) => card.id));
+  used = new Set((Array.isArray(payload.used) ? payload.used : []).filter((id) => validIds.has(id)));
+  if (payload.category === 'all' || Object.hasOwn(categoryLabels, payload.category)) ui.category.value = payload.category;
+  if (['all', 'easy', 'reflective', 'technical'].includes(payload.depth)) ui.depth.value = payload.depth;
+  current = cards.find((card) => card.id === payload.currentId) || null;
+  renderCurrent();
+  updateStatus();
+  saveSession();
+}
+
 async function load() {
   try {
     const response = await fetch('./data/prompt-bank.json', { credentials: 'same-origin' });
@@ -130,10 +178,10 @@ async function load() {
     cards = materialize(bank);
     if (cards.length !== 96 || new Set(cards.map((card) => card.id)).size !== 96) throw new Error('96-card contract mismatch');
     populateCategories();
-    ui.load.textContent = `Deck ready · ${cards.length} prompts · ${Object.keys(categoryLabels).length} topics`;
+    ui.load.textContent = `Deck ready · ${cards.length} prompts · ${Object.keys(categoryLabels).length} topics · session progress enabled`;
     ui.controls.hidden = false;
     ui.stage.hidden = false;
-    resetUsed();
+    restoreSession();
   } catch (error) {
     console.error(error);
     ui.load.textContent = 'The Grower Conversations prompt bank could not be loaded.';
@@ -144,6 +192,6 @@ ui.next.addEventListener('click', draw);
 ui.reset.addEventListener('click', resetUsed);
 ui.shuffle.addEventListener('click', shuffleDeck);
 ui.copy.addEventListener('click', copyPrompt);
-ui.category.addEventListener('change', updateStatus);
-ui.depth.addEventListener('change', updateStatus);
+ui.category.addEventListener('change', () => { updateStatus(); saveSession(); });
+ui.depth.addEventListener('change', () => { updateStatus(); saveSession(); });
 load();
