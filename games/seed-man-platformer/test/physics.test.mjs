@@ -5,6 +5,7 @@ const level = JSON.parse(fs.readFileSync(new URL('../data/level-01.json', import
 
 assert.equal(level.worldWidth, 2600);
 assert.equal(level.pickups.length, 8);
+assert.equal(level.requiredPickups, 8);
 assert.equal(overlaps({x:0,y:0,width:10,height:10},{x:9,y:9,width:10,height:10}), true);
 assert.equal(overlaps({x:0,y:0,width:10,height:10},{x:10,y:0,width:10,height:10}), false);
 
@@ -38,6 +39,18 @@ assert.equal(player.checkpoint.x,1380);
 
 player=createPlayer({x:2515,y:400});
 player=stepPlayer(player,{left:false,right:false,jumpPressed:false},level,1/60);
-assert.equal(player.finished,true);
+assert.equal(player.finished,false,'finish must stay locked while sprouts are missing');
+assert.equal(player.finishBlocked,true);
+assert.equal(player.missingPickups,8);
+assert.equal(player.state,'finish-blocked');
+assert.ok(player.x <= level.finish.x-player.width,'blocked player must remain before the finish gate');
+
+player=createPlayer({x:2515,y:400});
+player.collected=level.pickups.map(pickup=>pickup.id);
+player=stepPlayer(player,{left:false,right:false,jumpPressed:false},level,1/60);
+assert.equal(player.missingPickups,0);
+assert.equal(player.finishBlocked,false);
+assert.equal(player.finished,true,'finish must unlock after all required sprouts are collected');
 assert.equal(player.state,'finish');
+
 console.log('Seed Man platformer physics tests passed');
