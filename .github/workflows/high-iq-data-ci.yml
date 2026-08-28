@@ -29,6 +29,8 @@ jobs:
           node-version: 22
       - name: Validate production question and source data
         run: node games/high-iq/scripts/validate-data.mjs
+      - name: Validate public runtime mirrors canonical bank
+        run: node games/high-iq/scripts/validate-public-runtime.mjs
       - name: Check self-hosted browser source syntax
         run: node --check site/public-route-patch/games/high-iq/app.js
       - name: Verify crawlable production shell
@@ -41,3 +43,4 @@ jobs:
           grep -Fqi 'rel="canonical"' site/public-route-patch/games/high-iq/index.html
           grep -Fqi 'name="description"' site/public-route-patch/games/high-iq/index.html
           grep -Fq './app.js' site/public-route-patch/games/high-iq/index.html
+          grep -Fq 'Build your High IQ run' site/public-route-patch/games/high-iq/index.html
