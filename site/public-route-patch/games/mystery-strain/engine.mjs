@@ -7,7 +7,7 @@ export const WILD_MODIFIERS = Object.freeze([
   {
     id: 'foggy-jar',
     label: 'Foggy Jar',
-    description: 'One question returns UNKNOWN and does not narrow the candidate list.',
+    description: 'Your first question returns UNKNOWN and does not narrow the candidate list.',
     maxQuestions: 8,
     guesses: 3
   },
@@ -83,9 +83,7 @@ export function createGame({ code, wild = false } = {}, data) {
   const secret = data.strains[hash(`${normalized}:secret`) % data.strains.length];
   const modifier = modifierFor(normalized, Boolean(wild));
   const config = configFor(modifier);
-  const fogQuestionIndex = modifier?.id === 'foggy-jar'
-    ? hash(`${normalized}:fog`) % config.maxQuestions
-    : null;
+  const fogQuestionIndex = modifier?.id === 'foggy-jar' ? 0 : null;
 
   return {
     schemaVersion: 1,
