@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "site": "https://dtfseeds.com",
+  "reportIssue": 220,
+  "description": "Central release routing for the DTFSeeds production gateway. Source-only files are never copied to production unless an approved worker packages them into a public route.",
+  "fullReleasePaths": [
+    "site/deployment/release-lanes.json",
+    "scripts/plan-dtfseeds-release.mjs",
+    "scripts/run-workflow-and-wait.sh",
+    ".github/workflows/dtfseeds-production-gateway.yml",
+    ".github/workflows/wordpress-canonical-watch.yml",
+    ".github/workflows/wordpress-canonical-deploy.yml",
+    ".github/workflows/wordpress-canonical-production.yml",
+    ".github/workflows/deploy-public-suite-wordpress-v2.yml",
+    ".github/workflows/deploy-thc-learning-center-expansion-v1.yml"
+  ],
+  "lanes": {
+    "publicSuite": {
+      "description": "Static/browser applications, games, tools, project pages, puzzles, GrowLens, Grow Doc and other allowlisted public routes.",
+      "prefixes": [
+        "apps/high-land-web/",
+        "apps/growlens-web/",
+        "games/",
+        "site/public-route-patch/games/",
+        "site/public-route-patch/tools/",
+        "site/public-route-patch/projects/",
+        "site/public-route-patch/atlas/",
+        "site/public-route-patch/assets/",
+        "site/deployment/public-apps.json",
+        "scripts/package-public-suite-wordpress.py",
+        "scripts/assemble-wordpress-suite-v2.py",
+        "scripts/wordpress-suite-v2/"
+      ]
+    },
+    "wordpress": {
+      "description": "Canonical WordPress pages, genetics/store presentation and approved WordPress-hosted media.",
+      "prefixes": [
+        "site/wordpress/",
+        "data/genetics/",
+        "scripts/apply-wordpress-public-content-rest.mjs",
+        "scripts/deploy-wordpress-infographic-library-rest.mjs",
+        "scripts/rebuild-wordpress-",
+        "scripts/polish-wordpress-",
+        "scripts/style-wordpress-",
+        "scripts/reconcile-woocommerce-products.mjs",
+        "scripts/validate-genetics-commerce.mjs"
+      ]
+    },
+    "education": {
+      "description": "Source-controlled learning-center expansion and approved education publication roots.",
+      "prefixes": [
+        "content/",
+        "configuration/",
+        "assets/education/",
+        "site/public-route-patch/learn/",
+        "scripts/build-public-learning-center-expansion-v1.mjs",
+        "scripts/publish-wordpress-learning-center-expansion-v1.mjs",
+        "scripts/update-wordpress-learn-expansion-v1.mjs"
+      ]
+    }
+  }
+}

@@ -1,0 +1,107 @@
+name: Validate DTFSeeds Production Gateway
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - site/deployment/release-lanes.json
+      - scripts/plan-dtfseeds-release.mjs
+      - scripts/run-workflow-and-wait.sh
+      - .github/workflows/dtfseeds-production-gateway.yml
+      - .github/workflows/dtfseeds-production-gateway-ci.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate gateway source syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/plan-dtfseeds-release.mjs
+          bash -n scripts/run-workflow-and-wait.sh
+          node -e "JSON.parse(require('fs').readFileSync('site/deployment/release-lanes.json','utf8'))"
+          grep -Fq 'concurrency:' .github/workflows/dtfseeds-production-gateway.yml
+          grep -Fq 'cancel-in-progress: false' .github/workflows/dtfseeds-production-gateway.yml
+          grep -Fq 'continue-on-error: true' .github/workflows/dtfseeds-production-gateway.yml
+          grep -Fq 'Refuse stale queued release' .github/workflows/dtfseeds-production-gateway.yml
+          grep -Fq 'Join trusted WordPress production handoff' .github/workflows/dtfseeds-production-gateway.yml
+
+      - name: Verify full-release planning
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/plan-dtfseeds-release.mjs --mode=full --head=HEAD > "$RUNNER_TEMP/full.json"
+          node - <<'NODE' "$RUNNER_TEMP/full.json"
+          const fs=require('fs');
+          const plan=JSON.parse(fs.readFileSync(process.argv[2],'utf8'));
+          if(!plan.deploy || !plan.forceFull) throw new Error('full release was not forced');
+          for(const lane of ['publicSuite','wordpress','education']) {
+            if(plan.lanes[lane] !== true) throw new Error(`full release omitted ${lane}`);
+          }
+          NODE
+
+      - name: Verify each explicit lane remains independently dispatchable
+        shell: bash
+        run: |
+          set -euo pipefail
+          for lane in publicSuite wordpress education; do
+            node scripts/plan-dtfseeds-release.mjs --mode="$lane" --head=HEAD > "$RUNNER_TEMP/$lane.json"
+            node - <<'NODE' "$RUNNER_TEMP/$lane.json" "$lane"
+          const fs=require('fs');
+          const plan=JSON.parse(fs.readFileSync(process.argv[2],'utf8'));
+          const lane=process.argv[3];
+          if(plan.lanes[lane] !== true) throw new Error(`explicit lane ${lane} was not selected`);
+          NODE
+          done
+
+      - name: Verify Learn infographic changes select WordPress and Education only
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'DTF Gateway CI'
+          git config user.email 'gateway-ci@localhost'
+          base="$(git rev-parse HEAD)"
+          mkdir -p site/public-route-patch/learn/infographics
+          printf 'gateway routing test\n' > site/public-route-patch/learn/infographics/__gateway-routing-test.txt
+          git add site/public-route-patch/learn/infographics/__gateway-routing-test.txt
+          git commit -m 'test gateway learn infographic routing' >/dev/null
+          node scripts/plan-dtfseeds-release.mjs --mode=auto --base="$base" --head=HEAD > "$RUNNER_TEMP/learn-infographic.json"
+          node - <<'NODE' "$RUNNER_TEMP/learn-infographic.json"
+          const fs=require('fs');
+          const plan=JSON.parse(fs.readFileSync(process.argv[2],'utf8'));
+          if(plan.forceFull) throw new Error('ordinary Learn infographic changes should not force all lanes');
+          if(plan.lanes.wordpress !== true) throw new Error('Learn infographic change did not select WordPress');
+          if(plan.lanes.education !== true) throw new Error('Learn infographic change did not select Education');
+          if(plan.lanes.publicSuite !== false) throw new Error('Learn infographic change incorrectly selected Public Suite');
+          NODE
+          git reset --hard "$base" >/dev/null
+
+      - name: Verify gateway changes force reconciliation
+        if: github.event_name == 'pull_request'
+        shell: bash
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          node scripts/plan-dtfseeds-release.mjs --mode=auto --base="$BASE_SHA" --head="$HEAD_SHA" > "$RUNNER_TEMP/auto.json"
+          node - <<'NODE' "$RUNNER_TEMP/auto.json"
+          const fs=require('fs');
+          const plan=JSON.parse(fs.readFileSync(process.argv[2],'utf8'));
+          if(!plan.forceFull) throw new Error('gateway architecture changes must force a full reconciliation');
+          if(!Object.values(plan.lanes).every(Boolean)) throw new Error('forced reconciliation did not select all lanes');
+          NODE
