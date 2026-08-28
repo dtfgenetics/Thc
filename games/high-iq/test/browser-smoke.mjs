@@ -58,6 +58,25 @@ try {
     assert.ok((await page.locator('#answer-explanation').innerText()).trim().length > 20);
     assert.ok((await page.locator('#answer-context').innerText()).trim().length > 10);
     assert.ok(await page.locator('#answer-sources li').count() >= 1);
+
+    if (index === 0) {
+      const progressBefore = await page.locator('#progress-text').innerText();
+      const sourceDrawer = page.locator('#answer-feedback .source-drawer');
+      await sourceDrawer.locator('summary').click();
+      assert.equal(await sourceDrawer.getAttribute('open'), '');
+      const sourceLink = page.locator('#answer-sources a').first();
+      await sourceLink.focus();
+      assert.equal(await sourceLink.evaluate((element) => document.activeElement === element), true);
+      const keyboardResult = await sourceLink.evaluate((element) => {
+        const event = new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true });
+        const allowed = element.dispatchEvent(event);
+        return { allowed, defaultPrevented: event.defaultPrevented };
+      });
+      assert.equal(keyboardResult.allowed, true, 'source-link Enter should retain its native default action');
+      assert.equal(keyboardResult.defaultPrevented, false, 'source-link Enter must not be prevented by quiz shortcuts');
+      assert.equal(await page.locator('#progress-text').innerText(), progressBefore, 'source-link Enter must not advance the quiz');
+    }
+
     await page.locator('#next-question').click();
   }
 
@@ -85,6 +104,7 @@ try {
     desktop: '1280x900',
     mobile: '390x844',
     completedQuestions: 5,
+    sourceLinkKeyboardGuard: true,
     consoleErrors: 0,
     mobileOverflowPx: overflow
   }, null, 2));
