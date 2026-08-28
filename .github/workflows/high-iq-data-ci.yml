@@ -6,12 +6,16 @@ on:
     paths:
       - 'games/high-iq/**'
       - 'site/public-route-patch/games/high-iq/**'
+      - 'scripts/package-game-routes-wordpress.py'
+      - 'scripts/package-public-suite-wordpress.py'
       - '.github/workflows/high-iq-data-ci.yml'
   pull_request:
     branches: [main]
     paths:
       - 'games/high-iq/**'
       - 'site/public-route-patch/games/high-iq/**'
+      - 'scripts/package-game-routes-wordpress.py'
+      - 'scripts/package-public-suite-wordpress.py'
       - '.github/workflows/high-iq-data-ci.yml'
   workflow_dispatch:
 
@@ -21,26 +25,88 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
       - name: Validate production question and source data
         run: node games/high-iq/scripts/validate-data.mjs
+
       - name: Validate public runtime mirrors canonical bank
         run: node games/high-iq/scripts/validate-public-runtime.mjs
-      - name: Check self-hosted browser source syntax
-        run: node --check site/public-route-patch/games/high-iq/app.js
+
+      - name: Test High IQ v3 game core
+        run: node games/high-iq/test/game-core.test.mjs
+
+      - name: Smoke-test High IQ v3 runtime contract
+        run: node games/high-iq/test/runtime-smoke.mjs
+
+      - name: Check browser, live-verifier, and packaging source syntax
+        run: |
+          node --check site/public-route-patch/games/high-iq/app.js
+          node --check site/public-route-patch/games/high-iq/app-v3.js
+          node --check site/public-route-patch/games/high-iq/game-core.mjs
+          node --check games/high-iq/test/browser-smoke.mjs
+          node --check games/high-iq/scripts/verify-live-v3.mjs
+          python -m py_compile scripts/package-game-routes-wordpress.py scripts/package-public-suite-wordpress.py
+
       - name: Verify crawlable production shell
         shell: bash
         run: |
           set -euo pipefail
           test -s site/public-route-patch/games/high-iq/index.html
           test -s site/public-route-patch/games/high-iq/high-iq.css
+          test -s site/public-route-patch/games/high-iq/high-iq-v3.css
+          test -s site/public-route-patch/games/high-iq/app-v3.js
+          test -s site/public-route-patch/games/high-iq/game-core.mjs
           grep -Eqi '<h1([ >])' site/public-route-patch/games/high-iq/index.html
           grep -Fqi 'rel="canonical"' site/public-route-patch/games/high-iq/index.html
           grep -Fqi 'name="description"' site/public-route-patch/games/high-iq/index.html
-          grep -Fq './app.js' site/public-route-patch/games/high-iq/index.html
+          grep -Fq './app-v3.js' site/public-route-patch/games/high-iq/index.html
+          grep -Fq './high-iq-v3.css' site/public-route-patch/games/high-iq/index.html
           grep -Fq 'Build your High IQ run' site/public-route-patch/games/high-iq/index.html
+          grep -Fq "Today's Daily 10" site/public-route-patch/games/high-iq/index.html
+          grep -Fq 'Missed-question review' site/public-route-patch/games/high-iq/index.html
+
+      - name: Build and inspect WordPress game-route package
+        shell: bash
+        run: |
+          set -euo pipefail
+          release="$RUNNER_TEMP/high-iq-release"
+          archive="$RUNNER_TEMP/high-iq-game-routes.zip"
+          mkdir -p "$release"
+          cp -a site/public-route-patch/. "$release/"
+          python scripts/package-game-routes-wordpress.py "$release" "$archive"
+          test -s "$archive"
+          python - <<'PY'
+          import os, zipfile
+          archive=os.path.join(os.environ['RUNNER_TEMP'],'high-iq-game-routes.zip')
+          required={
+              'games/high-iq/index.html',
+              'games/high-iq/app-v3.js',
+              'games/high-iq/game-core.mjs',
+              'games/high-iq/high-iq.css',
+              'games/high-iq/high-iq-v3.css',
+              'games/high-iq/data/manifest.json',
+          }
+          with zipfile.ZipFile(archive) as z:
+              names=set(z.namelist())
+              missing=required-names
+              assert not missing, f'High IQ v3 deploy package is missing: {sorted(missing)}'
+              assert '.dtf-game-route-manifest.json' in names
+          PY
+
+      - name: Install browser-test dependencies
+        run: |
+          npm ci
+          npx playwright install chromium
+
+      - name: Play through High IQ v3 in Chromium
+        run: node games/high-iq/test/browser-smoke.mjs

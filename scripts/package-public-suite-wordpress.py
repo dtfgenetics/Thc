@@ -52,7 +52,10 @@ required = [
     "games/high-land/index.html",
     "games/high-iq/index.html",
     "games/high-iq/app.js",
+    "games/high-iq/app-v3.js",
+    "games/high-iq/game-core.mjs",
     "games/high-iq/high-iq.css",
+    "games/high-iq/high-iq-v3.css",
     "games/high-iq/data/manifest.json",
     "games/high-iq/data/questions-001-010.v2.2.json",
     "games/high-iq/data/questions-011-020.v2.2.json",
@@ -148,7 +151,6 @@ for item in allowed:
     else:
         raise SystemExit(f"unsupported allowlisted release path: {item}")
 
-# Guard the incident-prone namespaces even if a future allowlist edit goes wrong.
 for rel in files:
     if rel == "index.html" or rel.startswith("learn/") or rel.startswith("blog/"):
         raise SystemExit(f"WordPress-owned route cannot be included in static app package: {rel}")

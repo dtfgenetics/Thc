@@ -1,18 +1,35 @@
 # High IQ — Test Higher Cognition
 
-High IQ is the DTF / THC cannabis knowledge game. GitHub owns the machine-readable production dataset, validation, and the self-hosted browser implementation for `https://dtfseeds.com/games/high-iq/`. The approved human production workbook remains the migration/provenance source in Google Drive.
+High IQ is the DTF / THC source-backed cannabis plant-science knowledge game for `https://dtfseeds.com/games/high-iq/`. GitHub owns the machine-readable production dataset, validation, browser runtime, gameplay tests, and deployable public mirror. The approved human production workbook remains the controlled migration/provenance source.
 
-## Self-hosted browser build
+## Current browser build
 
-The DTF-hosted implementation now lives in:
+The production-readiness v3 layer lives in:
 
 - `site/public-route-patch/games/high-iq/index.html`
-- `site/public-route-patch/games/high-iq/app.js`
+- `site/public-route-patch/games/high-iq/app-v3.js`
+- `site/public-route-patch/games/high-iq/game-core.mjs`
 - `site/public-route-patch/games/high-iq/high-iq.css`
+- `site/public-route-patch/games/high-iq/high-iq-v3.css`
 
-It loads the source-controlled production bank at runtime and supports category/difficulty filters, variable session lengths, randomized question order, difficulty-weighted scoring, answer explanations, context notes, source links, and A–D / 1–4 keyboard selection.
+The previous `app.js` remains in the public route as rollback/reference code while v3 completes live verification, but `index.html` now targets `app-v3.js`.
 
-The previous Base44 build is retained only as a rollback/legacy development link until the DTF-hosted production route has passed live verification. Do not treat the external Base44 application as the canonical runtime after the self-hosted route is verified.
+V3 features include:
+
+- Balanced Mix question sampling across topic/difficulty buckets.
+- Random Mix for a classic shuffled challenge.
+- Deterministic Daily 10 keyed to local calendar date plus dataset version.
+- Variable session lengths and category/difficulty filters.
+- Difficulty-weighted scoring, live accuracy, current streak, and best streak.
+- Answer explanations, context notes, source links, source organization type, and verification-use context.
+- Missed-question review and one-click practice of missed questions.
+- Local browser run history and dataset-version-specific personal best.
+- Web Share API support with clipboard fallback.
+- Topic, difficulty, and source-coverage visualization generated from the manifest/source registry.
+- Keyboard A–D / 1–4 selection and Enter lock/advance behavior.
+- Skip navigation, reduced-motion support, forced-colors support, and explicit data-retry diagnostics.
+
+The legacy Base44 build remains rollback-only until the self-hosted production route passes live v3 verification.
 
 ## Production question bank
 
@@ -24,22 +41,56 @@ Dataset **v2.2** was migrated from `High_IQ_Master_Production_Workbook_v2_2.xlsx
 - 50 registered sources.
 - Four difficulty levels: Easy, Medium, Hard, Expert.
 - Stable question IDs `HIQ-S1-001` through `HIQ-S1-080`.
-- Every `correctAnswer` was checked against its A/B/C/D `correctLetter`.
-- Every referenced `sourceId` was checked against the migrated source registry.
+- Every `correctAnswer` is validated against its A/B/C/D `correctLetter`.
+- Every referenced `sourceId` is validated against the source registry.
 
 Runtime data lives under `data/` in eight 10-question chunks and two 25-source chunks. `scripts/validate-data.mjs` rejects duplicates, missing/invalid answers, broken source references, wrong status/audit/version values, invalid URLs, and unexpected category/difficulty totals.
 
-The workbook in Drive remains the controlled human review/production record. Do not edit JSON and then claim the workbook was updated; approved changes must be reconciled back to the controlled workbook or migrated into a clearly versioned successor dataset.
+The workbook in Drive remains the controlled human review/production record. Approved content changes must be reconciled back to that workbook or migrated into a clearly versioned successor dataset; browser feature work must not silently rewrite approved question content.
 
-## Production gate
+## Tests and production gates
 
-A DTF-hosted release requires:
+Run these checks before promotion:
 
-1. `node games/high-iq/scripts/validate-data.mjs` passes.
-2. The browser source passes JavaScript syntax checks.
-3. The public-suite build copies all High IQ data chunks into `/games/high-iq/data/`.
-4. The packaged route contains a crawlable H1, unique title, description, and canonical URL.
-5. Live verification confirms the route loads the question bank and no longer depends on Base44 for normal play.
-6. The legacy external URL remains available only as rollback evidence until the DTF route is stable.
+```bash
+node games/high-iq/scripts/validate-data.mjs
+node games/high-iq/scripts/validate-public-runtime.mjs
+node games/high-iq/test/game-core.test.mjs
+node games/high-iq/test/runtime-smoke.mjs
+node --check site/public-route-patch/games/high-iq/app-v3.js
+node --check site/public-route-patch/games/high-iq/game-core.mjs
+node --check games/high-iq/scripts/verify-live-v3.mjs
+```
 
-See `game.json` for machine-readable integration status and `data/manifest.json` for the production dataset contract.
+For the real-browser gate, install the workspace plus Chromium and run:
+
+```bash
+npm ci
+npx playwright install chromium
+node games/high-iq/test/browser-smoke.mjs
+```
+
+The browser smoke test serves `site/public-route-patch` locally, loads the complete production bank in Chromium, completes a five-question challenge through the results screen, verifies explanations/sources/history, checks for browser console/page errors, and performs a 390×844 mobile overflow check.
+
+After deployment, run the live production verifier:
+
+```bash
+node games/high-iq/scripts/verify-live-v3.mjs
+```
+
+`verify-live-v3.mjs` checks the actual `dtfseeds.com` High IQ route for the Daily 10 and missed-review v3 shell, downloads the live v3 JavaScript/core/CSS assets, then fetches the manifest plus all eight question chunks and both source chunks. It fails if the site serves stale HTML, non-JSON data, duplicate IDs, incomplete counts, or missing v3 assets. Set `HIGH_IQ_LIVE_ORIGIN` only when validating a deliberate alternate deployment target.
+
+A DTF-hosted v3 release requires:
+
+1. Canonical data validation passes.
+2. The public data mirror exactly matches the canonical 80-question / 50-source bank.
+3. Deterministic gameplay-core tests pass.
+4. Runtime smoke validation proves every JavaScript UI selector has a matching production DOM element and all data chunks load to the expected totals.
+5. Browser and post-deploy verifier syntax checks pass.
+6. The WordPress game-route package contains `app-v3.js`, `game-core.mjs`, both High IQ CSS layers, all data chunks, a crawlable H1, unique title, description, and canonical URL.
+7. Chromium completes an actual High IQ run on desktop and loads without horizontal overflow at the tested mobile viewport.
+8. `verify-live-v3.mjs` passes against the production origin after deployment.
+9. Only after the live verifier passes should `production_route_verified` become `true`.
+10. The legacy external URL remains rollback-only evidence until the self-hosted route is stable.
+
+See `game.json` for the machine-readable feature/integration contract and `data/manifest.json` for the controlled dataset contract.

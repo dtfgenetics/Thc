@@ -3,20 +3,38 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>High IQ | Cannabis Knowledge Challenge | DTF Genetics</title>
-  <meta name="description" content="Play High IQ, DTF Genetics' self-hosted cannabis knowledge challenge with 80 validated questions, weighted difficulty, explanations, category mastery feedback, and source references." />
+  <title>High IQ | Cannabis Plant-Science Knowledge Game | DTF Genetics</title>
+  <meta name="description" content="Play High IQ, DTF Genetics' source-backed cannabis plant-science knowledge game with 80 approved questions, weighted scoring, explanations, missed-question review, mastery analytics, and verified references." />
   <meta name="robots" content="index,follow,max-image-preview:large" />
   <meta name="theme-color" content="#0b1711" />
   <link rel="canonical" href="https://dtfseeds.com/games/high-iq/" />
   <link rel="stylesheet" href="/games/dtf-route.css" />
   <link rel="stylesheet" href="./high-iq.css" />
+  <link rel="stylesheet" href="./high-iq-v3.css" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="DTF Genetics" />
   <meta property="og:title" content="High IQ — Test Higher Cognition" />
-  <meta property="og:description" content="A self-hosted cannabis plant-science knowledge challenge with verified answers, explanations, mastery feedback, and sources." />
+  <meta property="og:description" content="A source-backed plant-science challenge with approved questions, explanations, mastery feedback, missed-question review, and visible verification sources." />
   <meta property="og:url" content="https://dtfseeds.com/games/high-iq/" />
+  <meta name="twitter:card" content="summary" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": ["LearningResource", "SoftwareApplication"],
+    "name": "High IQ — Test Higher Cognition",
+    "url": "https://dtfseeds.com/games/high-iq/",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Web",
+    "learningResourceType": "Quiz",
+    "educationalUse": ["assessment", "self study"],
+    "description": "A source-backed cannabis plant-science knowledge game with approved questions, explanations, weighted scoring, mastery analytics, and visible references.",
+    "publisher": {"@type": "Organization", "name": "DTF Genetics"},
+    "isAccessibleForFree": true
+  }
+  </script>
 </head>
 <body>
+  <a class="skip-link" href="#main-content">Skip to High IQ</a>
   <header class="site-header">
     <a class="brand" href="/">DTF Genetics <span>Dream the Future</span></a>
     <nav aria-label="Primary">
@@ -28,21 +46,24 @@
     </nav>
   </header>
 
-  <main class="high-iq-shell">
+  <main id="main-content" class="high-iq-shell">
     <section class="hero high-iq-hero">
       <div class="high-iq-hero-copy">
-        <p class="eyebrow">DTF Game Hub · Verified plant-science challenge</p>
+        <p class="eyebrow">DTF Game Hub · Source-backed plant-science challenge</p>
         <h1>High IQ — Test Higher Cognition</h1>
-        <p class="lede">A real knowledge game, not random trivia. Build a challenge from the approved production bank, lock an answer, then learn why it is right with context and the source records used to verify it.</p>
+        <p class="lede">Build a challenge from the approved High IQ production bank, lock in an answer, then learn from the explanation, wording context, and verification records behind it. The game tracks mastery, missed questions, personal history, and repeat improvement on your device.</p>
         <div class="actions">
-          <a class="button primary" href="#challenge-title">Start a challenge</a>
+          <a class="button primary" href="#challenge-title">Build a challenge</a>
+          <a id="daily-hero-start" class="button hero-daily-button" href="#challenge-title">Today's Daily 10</a>
           <a class="button" href="/learn/">Study in THC Learn</a>
           <a class="button" href="/games/">Game Hub</a>
         </div>
+        <span class="daily-date-note">Daily 10 uses a date-seeded question order from the verified bank; no account is required.</span>
         <div class="hero-trust-row" aria-label="High IQ features">
-          <span>Source-backed answers</span>
-          <span>Weighted difficulty</span>
-          <span>Explanations after every question</span>
+          <span>Approved production bank</span>
+          <span>Difficulty-weighted scoring</span>
+          <span>Missed-question review</span>
+          <span>Visible verification sources</span>
         </div>
       </div>
 
@@ -55,7 +76,7 @@
           <div><strong id="hero-source-count">50</strong><span>registered sources</span></div>
           <div><strong id="hero-version">2.2</strong><span>dataset version</span></div>
         </div>
-        <p class="knowledge-note">Each question includes a locked answer, explanation, context note, difficulty value, and source IDs.</p>
+        <p class="knowledge-note">Each production question carries a locked A–D answer, weighted point value, explanation, context note, audit state, and one or more source IDs.</p>
       </aside>
     </section>
 
@@ -67,20 +88,23 @@
         </div>
         <div class="data-health" aria-live="polite">
           <span id="data-health-dot" class="data-health-dot loading" aria-hidden="true"></span>
-          <p id="loading-status" class="dataset-status">Loading verified question data…</p>
+          <div class="data-health-copy">
+            <p id="loading-status" class="dataset-status">Loading verified question data…</p>
+            <p id="data-error-detail" class="data-error-detail" hidden></p>
+          </div>
         </div>
       </div>
 
       <div id="quiz-setup" class="quiz-section" hidden>
         <div class="setup-intro">
           <div>
-            <h3>Choose your challenge</h3>
-            <p>Filter the verified bank or use a preset. Questions are randomized from the matching pool, so repeated sessions do not have to feel identical.</p>
+            <h3>Choose how you want to be tested</h3>
+            <p>Balanced Mix spreads a run across matching topic and difficulty buckets. Random Mix fully shuffles the filtered pool. Daily 10 creates the same date-seeded ten-question challenge for everyone using the current dataset.</p>
           </div>
           <p id="pool-summary" class="pool-summary"></p>
         </div>
 
-        <div class="preset-row" aria-label="Challenge presets">
+        <div class="preset-row" aria-label="Challenge length presets">
           <button class="preset-button" type="button" data-preset-count="5"><strong>Quick Hit</strong><span>5 questions</span></button>
           <button class="preset-button is-active" type="button" data-preset-count="10"><strong>Core Session</strong><span>10 questions</span></button>
           <button class="preset-button" type="button" data-preset-count="20"><strong>Deep Run</strong><span>20 questions</span></button>
@@ -96,27 +120,35 @@
             <select id="difficulty-filter"></select>
           </div>
           <div class="field">
+            <label for="question-mode">Question mix</label>
+            <select id="question-mode"></select>
+          </div>
+          <div class="field">
             <label for="question-count">Session length</label>
             <select id="question-count"></select>
           </div>
         </div>
+
         <div class="quiz-actions">
           <button id="start-quiz" class="quiz-action primary" type="button">Start challenge</button>
+          <button id="daily-start" class="quiz-action" type="button">Play Daily 10</button>
           <span class="note">Keyboard: A–D or 1–4 selects · Enter locks or advances.</span>
         </div>
       </div>
 
       <div id="quiz-panel" class="quiz-section" hidden>
         <div class="quiz-scoreboard" aria-label="Current challenge status">
-          <div><span>Progress</span><strong id="progress-text">Question 1</strong></div>
+          <div><span>Progress</span><strong id="progress-text">1 / 10</strong></div>
           <div><span>Score</span><strong id="live-score">0 pts</strong></div>
           <div><span>Streak</span><strong id="live-streak">0</strong></div>
+          <div><span>Accuracy</span><strong id="live-accuracy">—</strong></div>
         </div>
         <progress id="quiz-progress" class="quiz-progress" value="0" max="10">0%</progress>
         <div class="question-meta" aria-label="Question metadata">
           <span id="question-category" class="quiz-chip"></span>
           <span id="question-difficulty" class="quiz-chip"></span>
           <span id="question-points" class="quiz-chip"></span>
+          <span id="question-id" class="quiz-chip question-id-chip"></span>
           <span class="quiz-chip verified-chip">Verified</span>
         </div>
         <h2 id="question-text" class="question-heading" tabindex="-1"></h2>
@@ -151,15 +183,22 @@
             <h2>Your High IQ score</h2>
             <p id="result-score" class="result-score"></p>
             <p id="result-detail"></p>
+            <div class="result-metrics" aria-label="Result metrics">
+              <div class="result-metric"><span>Accuracy</span><strong id="result-accuracy">—</strong></div>
+              <div class="result-metric"><span>Best streak</span><strong id="result-streak">0</strong></div>
+              <div class="result-metric"><span>Personal best</span><strong id="result-best">—</strong></div>
+            </div>
           </div>
           <div class="result-rank" aria-label="Result rank">
             <span>Rank</span>
             <strong id="result-rank">—</strong>
           </div>
         </div>
-        <div class="result-grid">
+
+        <div class="result-grid v3-result-grid">
           <section class="result-card" aria-labelledby="mastery-title">
             <h3 id="mastery-title">Topic mastery</h3>
+            <p class="mastery-help">Weighted score by topic from this run. Harder questions contribute more points.</p>
             <div id="category-results" class="category-results"></div>
           </section>
           <section class="result-card" aria-labelledby="study-title">
@@ -167,18 +206,41 @@
             <p id="study-recommendation"></p>
             <a class="button" href="/learn/">Open THC Learn</a>
           </section>
+          <section class="result-card full-width-result" aria-labelledby="review-title">
+            <div class="review-heading">
+              <div>
+                <h3 id="review-title">Missed-question review</h3>
+                <p>Every miss stays attached to its explanation, context note, and source records so the result screen doubles as a study session.</p>
+              </div>
+              <button id="practice-missed" class="quiz-action secondary-small" type="button" hidden>Practice missed</button>
+            </div>
+            <div id="missed-review" class="missed-review-list"></div>
+          </section>
         </div>
+
         <div class="quiz-actions results-actions">
           <button id="restart-quiz" class="quiz-action primary" type="button">Build another challenge</button>
+          <button id="share-score" class="quiz-action" type="button">Share score</button>
           <a class="button" href="/games/">Choose another game</a>
         </div>
+
+        <section class="history-shell" aria-labelledby="history-title">
+          <div class="history-heading">
+            <div>
+              <h3 id="history-title">Recent runs on this device</h3>
+              <p class="gameplay-note">Stored only in this browser. No account or server profile is required.</p>
+            </div>
+            <button id="clear-history" class="quiz-action secondary-small" type="button">Clear local history</button>
+          </div>
+          <div id="history-list" class="history-list"></div>
+        </section>
       </div>
 
       <p id="quiz-live" class="quiz-live" aria-live="polite"></p>
       <div id="legacy-fallback" class="legacy-fallback" hidden>
         <div>
-          <strong>Question bank unavailable</strong>
-          <p>The production data route did not respond with valid JSON. Retry the self-hosted bank first; the legacy development build remains a temporary fallback only.</p>
+          <strong>Verified question bank unavailable</strong>
+          <p>The production data route did not return the expected JSON. Retry the DTF-hosted bank first. The legacy external build remains rollback-only.</p>
         </div>
         <div class="quiz-actions">
           <button id="retry-data" class="quiz-action primary" type="button">Retry production bank</button>
@@ -188,7 +250,7 @@
 
       <noscript>
         <div class="quiz-section">
-          <p>High IQ requires JavaScript for interactive play. The educational page and source-controlled question bank remain available through DTF Genetics.</p>
+          <p>High IQ requires JavaScript for interactive play. The page remains crawlable and the production question bank remains source-controlled by DTF Genetics.</p>
         </div>
       </noscript>
     </section>
@@ -196,24 +258,37 @@
     <section aria-labelledby="topics-title">
       <div class="section-heading topic-heading">
         <div><p class="eyebrow">Knowledge map</p><h2 id="topics-title">What High IQ actually tests</h2></div>
-        <p>The game spans plant systems rather than repeating basic strain trivia. Topic counts below are generated directly from the production manifest.</p>
+        <p>The current bank spans plant systems instead of repeating strain trivia. Counts below are generated directly from the production manifest.</p>
       </div>
       <div id="topic-map" class="topic-map" aria-live="polite"></div>
+    </section>
+
+    <section class="coverage-layout" aria-label="High IQ coverage">
+      <article class="coverage-panel">
+        <h3>Difficulty distribution</h3>
+        <p>Weighted scoring makes technically deeper questions matter more without hiding how the bank is structured.</p>
+        <div id="difficulty-map" class="difficulty-map"></div>
+      </article>
+      <article class="coverage-panel">
+        <h3>Source mix</h3>
+        <p>The source registry combines peer-reviewed literature, university extension material, government resources, and foundational plant-science references.</p>
+        <div id="source-map" class="source-map"></div>
+      </article>
     </section>
 
     <section aria-labelledby="quality-title">
       <div class="section-heading"><div><p class="eyebrow">Quality model</p><h2 id="quality-title">Questions that teach after the guess</h2></div></div>
       <div class="quality-strip">
-        <article><span>01</span><h3>Approved question bank</h3><p>The current v2.2 bank is machine-validated for IDs, answer mappings, status, audit state, source references, categories and difficulty distribution.</p></article>
-        <article><span>02</span><h3>Difficulty-weighted score</h3><p>Easy questions are worth 1 point, Medium 2, Hard 3, and Expert 4, so technical depth matters in the final score.</p></article>
-        <article><span>03</span><h3>Explanation-first feedback</h3><p>Every production question includes an explanation and context note so a miss becomes a short lesson instead of a dead end.</p></article>
-        <article><span>04</span><h3>Visible verification</h3><p>Source records are attached to questions and shown after an answer is locked. The game makes its evidence trail inspectable.</p></article>
+        <article><span>01</span><h3>Approved question bank</h3><p>The v2.2 bank is machine-validated for IDs, answer mappings, status, audit state, source references, category counts, and difficulty distribution.</p></article>
+        <article><span>02</span><h3>Balanced or random runs</h3><p>Balanced Mix spreads questions across matching topic and difficulty buckets. Random Mix keeps the classic fully shuffled experience.</p></article>
+        <article><span>03</span><h3>Explanation-first feedback</h3><p>Every production question includes an explanation and context note, so a miss becomes a short lesson instead of a dead end.</p></article>
+        <article><span>04</span><h3>Visible verification</h3><p>Source records are attached to questions and shown after an answer is locked. High IQ makes its evidence trail inspectable.</p></article>
       </div>
     </section>
 
     <section class="notice" aria-labelledby="disclaimer-title">
       <h2 id="disclaimer-title">Educational use</h2>
-      <p>High IQ is an adult educational game. Cultivation and plant-health questions teach general principles and diagnostic reasoning; they do not replace legal, medical, electrical, pesticide-label, laboratory, or workplace-safety guidance.</p>
+      <p>High IQ is an adult educational game. Plant-health and cultivation questions teach general principles and diagnostic reasoning; they do not replace legal, medical, electrical, pesticide-label, laboratory, or workplace-safety guidance.</p>
     </section>
   </main>
 
@@ -221,6 +296,6 @@
     <p><strong>DTF Genetics</strong> · Dream the Future</p>
     <p><a href="/learn/">Teaching Healthy Cultivation</a> · <a href="/contact/">Report a question</a></p>
   </footer>
-  <script type="module" src="./app.js"></script>
+  <script type="module" src="./app-v3.js"></script>
 </body>
 </html>
