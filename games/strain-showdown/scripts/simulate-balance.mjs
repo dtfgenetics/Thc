@@ -18,6 +18,10 @@ const families = ["kush", "haze", "skunk", "gas", "cookies", "fruit", "purple", 
 
 const seedArg = process.argv.find((arg) => arg.startsWith("--seeds="));
 const seedsPerMatchup = Math.max(1, Number.parseInt(seedArg?.split("=")[1] || "12", 10) || 12);
+const assertBalanced = process.argv.includes("--assert-balanced");
+const MIN_WIN_RATE = 0.4;
+const MAX_WIN_RATE = 0.68;
+const MAX_SPREAD = 0.25;
 
 function sideKeys(actor) {
   return actor === "player" ? ["player", "cpu"] : ["cpu", "player"];
@@ -64,7 +68,8 @@ function chooseAction(state, actor) {
 }
 
 function runGame(playerFamily, cpuFamily, seed) {
-  const state = createGame({ cards, playerFamily, cpuFamily, seed });
+  const startingActor = seed % 2 === 0 ? "player" : "cpu";
+  const state = createGame({ cards, playerFamily, cpuFamily, seed, startingActor });
   let actions = 0;
   while (!state.winner && actions < 600) {
     actions += 1;
@@ -125,7 +130,7 @@ const report = families.map((family) => {
 });
 
 const payload = {
-  ruleset: "0.1.0",
+  ruleset: "0.2.0",
   seedsPerOrderedMatchup: seedsPerMatchup,
   totalGames,
   averageRounds: Number((totalRounds / totalGames).toFixed(2)),
@@ -133,4 +138,14 @@ const payload = {
 };
 
 console.log(JSON.stringify(payload, null, 2));
+if (assertBalanced) {
+  const winRates = report.map((family) => family.winRate);
+  const outsideRange = report.filter((family) => family.winRate < MIN_WIN_RATE || family.winRate > MAX_WIN_RATE);
+  const spread = Math.max(...winRates) - Math.min(...winRates);
+  if (outsideRange.length || spread > MAX_SPREAD) {
+    const details = outsideRange.map((family) => `${family.family}=${family.winRate}`).join(', ') || `spread=${spread.toFixed(3)}`;
+    throw new Error(`Balance gate failed (${details}); expected ${MIN_WIN_RATE}-${MAX_WIN_RATE} with spread <= ${MAX_SPREAD}.`);
+  }
+  console.log(`Balance gate passed: all family win rates are ${MIN_WIN_RATE}-${MAX_WIN_RATE}; spread ${spread.toFixed(3)}.`);
+}
 console.log(`Strain Showdown balance simulation completed: ${totalGames} deterministic games.`);

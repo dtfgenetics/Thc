@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "id": "bud-or-bluff",
+  "title": "Bud or Bluff",
+  "type": "multiplayer-strain-name-party-game",
+  "route": "/games/bud-or-bluff/",
+  "runtime": "static-php-wordpress-transients",
+  "status": "playable-beta",
+  "players": {
+    "minimum": 2,
+    "maximum": 10
+  },
+  "implementation": {
+    "rules": "games/bud-or-bluff/src/rules.mjs",
+    "deck": "games/bud-or-bluff/data/playtest-v1.json",
+    "publicRoute": "site/public-route-patch/games/bud-or-bluff",
+    "serverAuthority": "site/public-route-patch/games/bud-or-bluff/api-v2.php",
+    "tests": [
+      "games/bud-or-bluff/test/engine.test.mjs",
+      "games/bud-or-bluff/test/online-lobby-v2.test.mjs"
+    ]
+  },
+  "features": [
+    "six-character-room-codes",
+    "simultaneous-voting",
+    "hidden-answers-until-reveal",
+    "double-hit-scoring",
+    "room-chat",
+    "refresh-reconnect",
+    "rematches",
+    "host-transfer",
+    "mobile-friendly-controls"
+  ],
+  "releaseGates": {
+    "rules-tested": true,
+    "balanced-playtest-deck": true,
+    "private-answer-boundary-tested": true,
+    "multiplayer-lobby-tested": true,
+    "production-route-present": true,
+    "final-card-database-legal-review": false
+  }
+}

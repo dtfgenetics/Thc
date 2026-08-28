@@ -41,7 +41,7 @@ jobs:
       - name: Test battle engine
         run: node games/strain-showdown/test/engine.test.mjs
       - name: Simulate deterministic family matchups
-        run: node games/strain-showdown/scripts/simulate-balance.mjs --seeds=8
+        run: node games/strain-showdown/scripts/simulate-balance.mjs --seeds=32 --assert-balanced
       - name: Validate public runtime
         run: |
           set -euo pipefail

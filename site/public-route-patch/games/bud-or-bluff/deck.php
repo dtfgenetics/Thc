@@ -1,7 +1,6 @@
 <?php
 declare(strict_types=1);
-// Generated runtime copy of games/bud-or-bluff/data/playtest-v1.json.
-// Direct web requests execute this file and produce no output.
+// Generated from games/bud-or-bluff/data/playtest-v1.json. Do not edit by hand.
 return [
   ['id'=>'BOB-001','name'=>'Purple Monkey Balls','answer'=>'BUD','difficulty'=>'Hard','category'=>'Real But Ridiculous','clue'=>'Mendo Purps × Deep Chunk background','reality'=>'Documented as a real cannabis strain name.','source'=>'Leafly + SeedFinder'],
   ['id'=>'BOB-002','name'=>'Cat Piss','answer'=>'BUD','difficulty'=>'Medium','category'=>'Real But Ridiculous','clue'=>'Old-school clone background','reality'=>'Documented as a real cannabis strain name.','source'=>'Leafly + SeedFinder'],

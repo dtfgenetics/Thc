@@ -84,6 +84,22 @@ async function assetOk(url) {
   return { ok: response.ok, status: response.status };
 }
 
+async function mapLimit(items, limit, task) {
+  const output = new Array(items.length);
+  let cursor = 0;
+
+  async function worker() {
+    while (cursor < items.length) {
+      const index = cursor;
+      cursor += 1;
+      output[index] = await task(items[index], index);
+    }
+  }
+
+  await Promise.all(Array.from({ length: Math.min(limit, items.length) }, () => worker()));
+  return output;
+}
+
 function validateHubLinks(html, sourceLabel) {
   const problems = [];
   for (const game of games) {
@@ -233,15 +249,15 @@ async function auditLiveGame(game) {
     if (/email@email\.com|\+123456789|Needed from owner|Reserved strain card/i.test(html)) problems.push('stale placeholder content detected');
 
     const assets = assetsFromHtml(html, finalUrl.href);
-    const brokenAssets = [];
-    for (const asset of assets) {
+    const assetProblems = await mapLimit(assets, 6, async (asset) => {
       try {
         const check = await assetOk(asset.href);
-        if (!check.ok) brokenAssets.push(`${asset.pathname} (${check.status})`);
+        return check.ok ? null : `${asset.pathname} (${check.status})`;
       } catch (error) {
-        brokenAssets.push(`${asset.pathname} (${errorDetail(error)})`);
+        return `${asset.pathname} (${errorDetail(error)})`;
       }
-    }
+    });
+    const brokenAssets = assetProblems.filter(Boolean);
     if (brokenAssets.length) problems.push(`broken same-origin assets: ${brokenAssets.join(', ')}`);
 
     if (game.status === 'multiplayer') {
@@ -267,7 +283,8 @@ if (isPullRequest) {
     failures.push({ id: 'game-hub', route: hubPath, problems: [`candidate hub source unavailable: ${errorDetail(error)}`] });
   }
 } else {
-  for (const game of games) await auditLiveGame(game);
+  await mapLimit(games, 4, auditLiveGame);
+  results.sort((a, b) => games.findIndex((game) => game.id === a.id) - games.findIndex((game) => game.id === b.id));
   const hubUrl = new URL('/games/', BASE);
   hubUrl.searchParams.set('dtf_game_hub_audit', Date.now().toString());
   try {

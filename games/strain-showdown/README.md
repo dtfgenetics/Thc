@@ -31,7 +31,7 @@ Each family contains 12 strain cards: 6 Tier 1 Base, 4 Tier 2 Select, and 2 Tier
 - `scripts/validate-roster.mjs` checks the canonical 96-card roster and DTF Genetics catalog cross-links.
 - `test/engine.test.mjs` exercises setup, legal play, evolution prerequisites, attacks, turn flow, and CPU actions.
 - `scripts/validate-browser-build.mjs` verifies that the public runtime and public roster remain synchronized with canonical source.
-- `scripts/simulate-balance.mjs` runs deterministic family-vs-family matches so tuning can be measured instead of guessed.
+- `scripts/simulate-balance.mjs` alternates the starting side and runs deterministic family-vs-family matches so tuning can be measured instead of guessed. CI requires all automated family win rates to stay between 40% and 68% with no more than a 25-point spread.
 - `.github/workflows/strain-showdown-ci.yml` runs roster, engine, simulation, and public-runtime checks for pull requests and changes to `main`.
 
 ## Public runtime

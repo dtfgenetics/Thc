@@ -184,7 +184,7 @@
       "route": "/games/strain-showdown/",
       "runtime": "static",
       "status": "ready-to-package",
-      "build": "node games/strain-showdown/scripts/validate-roster.mjs && node games/strain-showdown/test/engine.test.mjs && node games/strain-showdown/scripts/simulate-balance.mjs --seeds=8 && node games/strain-showdown/scripts/validate-browser-build.mjs",
+      "build": "node games/strain-showdown/scripts/validate-roster.mjs && node games/strain-showdown/test/engine.test.mjs && node games/strain-showdown/scripts/simulate-balance.mjs --seeds=32 --assert-balanced && node games/strain-showdown/scripts/validate-browser-build.mjs",
       "machineData": {"cards":96,"families":8,"cardsPerFamily":12,"lanes":3,"mode":"solo-vs-cpu","startingGarden":20,"maxRounds":18,"familyPassives":8,"tiers":{"base":6,"select":4,"elite":2}},
       "notes": "Self-hosted playable browser prototype with a tested deterministic three-lane battle engine, CPU rival, Base/Select/Elite evolution, eight family passives, Focus economy, Garden health, 96-card canonical roster synchronization, result tracking, and deterministic balance simulation tooling. Final per-card effects, balance approval, human rules playtesting, final art, and print proof remain open release gates."
     },

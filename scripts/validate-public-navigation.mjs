@@ -30,6 +30,12 @@ assert(new Set(primaryRoutes).size === primaryRoutes.length, 'primary navigation
 const appById = new Map(apps.apps.map((app) => [app.id, app]));
 const publicGames = nav.games.filter((game) => game.public);
 const privateGames = nav.games.filter((game) => !game.public);
+const hubPlayableCount = hub.match(/<strong>(\d+)<\/strong><span>playable browser games<\/span>/i);
+
+assert(Boolean(hubPlayableCount), 'Game Hub must expose its playable-game count');
+if (hubPlayableCount) {
+  assert(Number(hubPlayableCount[1]) === publicGames.length, `Game Hub playable count ${hubPlayableCount[1]} does not match ${publicGames.length} public games`);
+}
 
 for (const game of publicGames) {
   assert(Boolean(game.route), `${game.id} is public but has no route`);

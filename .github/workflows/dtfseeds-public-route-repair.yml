@@ -21,6 +21,9 @@ on:
       - games/high-life/**
       - games/grower-conversations/**
       - games/seed-man-platformer/**
+      - games/strain-showdown/**
+      - games/bud-or-bluff/**
+      - games/protect-the-plants/**
       - site/public-route-patch/**
       - site/deployment/public-apps.json
       - .github/workflows/dtfseeds-public-route-repair.yml
@@ -83,6 +86,39 @@ jobs:
           cmp games/seed-man-platformer/src/physics.mjs site/public-route-patch/games/seed-man-platformer/physics.mjs
           cmp games/seed-man-platformer/data/level-01.json site/public-route-patch/games/seed-man-platformer/data/level-01.json
           test -s site/public-route-patch/games/seed-man-platformer/index.html
+
+      - name: Validate Strain Showdown browser prototype
+        run: |
+          set -euo pipefail
+          node games/strain-showdown/scripts/validate-roster.mjs
+          node games/strain-showdown/test/engine.test.mjs
+          node games/strain-showdown/scripts/simulate-balance.mjs --seeds=32 --assert-balanced
+          node games/strain-showdown/scripts/validate-browser-build.mjs
+          node --check site/public-route-patch/games/strain-showdown/app.js
+          test -s site/public-route-patch/games/strain-showdown/index.html
+
+      - name: Validate Bud or Bluff multiplayer game
+        run: |
+          set -euo pipefail
+          node games/bud-or-bluff/test/engine.test.mjs
+          node games/bud-or-bluff/scripts/build-private-deck.mjs
+          node --check site/public-route-patch/games/bud-or-bluff/app-v2.js
+          node --check site/public-route-patch/games/bud-or-bluff/keyboard-v1.js
+          php -l site/public-route-patch/games/bud-or-bluff/api-v2.php
+          php -l site/public-route-patch/games/bud-or-bluff/deck.php
+          node games/bud-or-bluff/test/online-lobby-v2.test.mjs
+          test -s site/public-route-patch/games/bud-or-bluff/index.html
+
+      - name: Validate Burn Buds multiplayer game
+        run: |
+          set -euo pipefail
+          node games/protect-the-plants/test/burn-buds-branding.test.mjs
+          node games/protect-the-plants/test/burn-buds-gameplay-v3.test.mjs
+          node --check site/public-route-patch/games/protect-the-plants/app.js
+          node --check site/public-route-patch/games/protect-the-plants/gameplay-v3.js
+          node --check site/public-route-patch/games/protect-the-plants/burn-buds-branding.js
+          php -l site/public-route-patch/games/protect-the-plants/api.php
+          test -s site/public-route-patch/games/protect-the-plants/index.html
 
       - name: Build and test High Land
         run: |
@@ -198,6 +234,9 @@ jobs:
               "highLife": "$GITHUB_SHA",
               "growerConversations": "$GITHUB_SHA",
               "seedMan": "$GITHUB_SHA",
+              "strainShowdown": "$GITHUB_SHA",
+              "budOrBluff": "$GITHUB_SHA",
+              "burnBuds": "$GITHUB_SHA",
               "highLand": "$GITHUB_SHA",
               "growLens": "$GITHUB_SHA",
               "weedopolis": "$WEEDOPOLIS_SHA",
@@ -227,6 +266,17 @@ jobs:
             release/games/seed-man-platformer/app.js
             release/games/seed-man-platformer/physics.mjs
             release/games/seed-man-platformer/data/level-01.json
+            release/games/strain-showdown/index.html
+            release/games/strain-showdown/app.js
+            release/games/strain-showdown/engine.mjs
+            release/games/strain-showdown/data/families.json
+            release/games/bud-or-bluff/index.html
+            release/games/bud-or-bluff/app-v2.js
+            release/games/bud-or-bluff/api-v2.php
+            release/games/bud-or-bluff/deck.php
+            release/games/protect-the-plants/index.html
+            release/games/protect-the-plants/app.js
+            release/games/protect-the-plants/api.php
             release/games/weedopolis/index.html
             release/games/crossword/index.html
             release/games/who-took-it/index.html
@@ -247,6 +297,9 @@ jobs:
             release/games/high-life/index.html \
             release/games/grower-conversations/index.html \
             release/games/seed-man-platformer/index.html \
+            release/games/strain-showdown/index.html \
+            release/games/bud-or-bluff/index.html \
+            release/games/protect-the-plants/index.html \
             release/games/weedopolis/index.html \
             release/games/crossword/index.html \
             release/games/who-took-it/index.html \
@@ -264,6 +317,9 @@ jobs:
           grep -Fq '/games/high-life/' release/games/high-life/index.html
           grep -Fq '/games/grower-conversations/' release/games/grower-conversations/index.html
           grep -Fq '/games/seed-man-platformer/' release/games/seed-man-platformer/index.html
+          grep -Fq '/games/strain-showdown/' release/games/strain-showdown/index.html
+          grep -Fq '/games/bud-or-bluff/' release/games/bud-or-bluff/index.html
+          grep -Fq '/games/protect-the-plants/' release/games/protect-the-plants/index.html
           grep -Fq '/games/high-land/' release/games/high-land/index.html
           grep -Fq '/games/weedopolis/' release/games/weedopolis/index.html
           grep -Fq '/games/crossword/' release/games/crossword/index.html
@@ -383,6 +439,9 @@ jobs:
             games/high-life
             games/grower-conversations
             games/seed-man-platformer
+            games/strain-showdown
+            games/bud-or-bluff
+            games/protect-the-plants
             games/weedopolis
             games/crossword
             games/who-took-it
@@ -416,7 +475,7 @@ jobs:
           rsync -az --checksum -e "ssh -p $SSH_PORT" release/games/index.html "$SSH_USER@$SSH_HOST:$ROOT/games/index.html"
           rsync -az --checksum -e "ssh -p $SSH_PORT" release/games/dtf-route.css "$SSH_USER@$SSH_HOST:$ROOT/games/dtf-route.css"
 
-          for route in high-land high-iq high-life grower-conversations seed-man-platformer weedopolis crossword who-took-it; do
+          for route in high-land high-iq high-life grower-conversations seed-man-platformer strain-showdown bud-or-bluff protect-the-plants weedopolis crossword who-took-it; do
             ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" "mkdir -p '$ROOT/games/$route'"
             rsync -az --delete --checksum -e "ssh -p $SSH_PORT" "release/games/$route/" "$SSH_USER@$SSH_HOST:$ROOT/games/$route/"
           done
@@ -441,6 +500,9 @@ jobs:
             https://dtfseeds.com/games/high-life/ \
             https://dtfseeds.com/games/grower-conversations/ \
             https://dtfseeds.com/games/seed-man-platformer/ \
+            https://dtfseeds.com/games/strain-showdown/ \
+            https://dtfseeds.com/games/bud-or-bluff/ \
+            https://dtfseeds.com/games/protect-the-plants/ \
             https://dtfseeds.com/games/weedopolis/ \
             https://dtfseeds.com/games/crossword/ \
             https://dtfseeds.com/games/who-took-it/ \
@@ -474,5 +536,5 @@ jobs:
         run: |
           echo "## DTFSeeds public-suite deployment" >> "$GITHUB_STEP_SUMMARY"
           echo "Revision: $GITHUB_SHA" >> "$GITHUB_STEP_SUMMARY"
-          echo "Packaged routes: Game Hub, High Land, High IQ, High Life, Grower Conversations, Seed Man, Weedopolis, Crossword, Who Took It, GrowLens, Grow Doc, Tools, Projects, Blog retirement routes." >> "$GITHUB_STEP_SUMMARY"
+          echo "Packaged routes: Game Hub, High Land, High IQ, High Life, Grower Conversations, Seed Man, Strain Showdown, Bud or Bluff, Burn Buds, Weedopolis, Crossword, Who Took It, GrowLens, Grow Doc, Tools, Projects, Blog retirement routes." >> "$GITHUB_STEP_SUMMARY"
           echo "Unrelated WordPress pages and unrelated game directories are preserved." >> "$GITHUB_STEP_SUMMARY"
