@@ -48,12 +48,13 @@ jobs:
       - name: Smoke-test High IQ v3 runtime contract
         run: node games/high-iq/test/runtime-smoke.mjs
 
-      - name: Check browser and packaging source syntax
+      - name: Check browser, live-verifier, and packaging source syntax
         run: |
           node --check site/public-route-patch/games/high-iq/app.js
           node --check site/public-route-patch/games/high-iq/app-v3.js
           node --check site/public-route-patch/games/high-iq/game-core.mjs
           node --check games/high-iq/test/browser-smoke.mjs
+          node --check games/high-iq/scripts/verify-live-v3.mjs
           python -m py_compile scripts/package-game-routes-wordpress.py scripts/package-public-suite-wordpress.py
 
       - name: Verify crawlable production shell
