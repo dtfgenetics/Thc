@@ -147,6 +147,14 @@ jobs:
             games/strain-showdown/app.js
             games/strain-showdown/engine.mjs
             games/strain-showdown/styles.css
+            games/terpocalypse/index.html
+            games/terpocalypse/main.js
+            games/terpocalypse/game-data.js
+            games/phenoquest/index.html
+            games/phenoquest/game.js
+            games/phenoquest/lineage-runtime.js
+            games/phenoquest/style.css
+            games/phenoquest/build-meta.json
             games/weedopolis/index.html
             games/crossword/index.html
             games/who-took-it/index.html
@@ -166,6 +174,9 @@ jobs:
           for file in "${required[@]}"; do
             test -s "$suite_root/$file" || { echo "Missing required release file: $file" >&2; exit 1; }
           done
+          node --check "$suite_root/games/terpocalypse/main.js"
+          node --check "$suite_root/games/terpocalypse/game-data.js"
+          grep -Fq '"selfContained": true' "$suite_root/games/phenoquest/build-meta.json"
           node games/high-iq/scripts/validate-public-runtime.mjs
           node games/strain-showdown/scripts/validate-browser-build.mjs
           echo "root=$suite_root" >> "$GITHUB_OUTPUT"
@@ -206,6 +217,14 @@ jobs:
                   'games/strain-showdown/app.js',
                   'games/strain-showdown/engine.mjs',
                   'games/strain-showdown/styles.css',
+                  'games/terpocalypse/index.html',
+                  'games/terpocalypse/main.js',
+                  'games/terpocalypse/game-data.js',
+                  'games/phenoquest/index.html',
+                  'games/phenoquest/game.js',
+                  'games/phenoquest/lineage-runtime.js',
+                  'games/phenoquest/style.css',
+                  'games/phenoquest/build-meta.json',
               }
               missing=required-set(names)
               assert not missing, f'missing deploy archive assets: {sorted(missing)}'
@@ -257,11 +276,13 @@ jobs:
             echo "Checking $url"
             curl -fsSL --retry 5 --retry-delay 5 -H 'Cache-Control: no-cache, no-store, max-age=0' "$url?dtf_suite_verify=${GITHUB_RUN_ID}" | grep -Fqi "$marker"
           }
-          check 'https://dtfseeds.com/games/' '13 playable browser games'
+          check 'https://dtfseeds.com/games/' '15 playable browser games'
           check 'https://dtfseeds.com/games/high-iq/' 'Build your High IQ run'
           check 'https://dtfseeds.com/games/strain-showdown/' 'Eight play styles. One showdown.'
           check 'https://dtfseeds.com/games/protect-the-plants/' 'Protect the Plants'
           check 'https://dtfseeds.com/games/bud-or-bluff/' 'Bud or Bluff'
+          check 'https://dtfseeds.com/games/terpocalypse/' 'LEVEL 01 · THE VEG LAB'
+          check 'https://dtfseeds.com/games/phenoquest/' 'The Living Seed Vault'
           check 'https://dtfseeds.com/growlens/' 'GrowLens'
           check 'https://dtfseeds.com/thc-grow-doc/' 'Grow Doc'
           node --input-type=module <<'NODE'
@@ -304,6 +325,9 @@ jobs:
             echo "- Build run: ${{ steps.current_build.outputs.run_id }}"
             echo "- Transactional publication: ${{ steps.publish.outcome }}"
             echo "- Atlas verification: ${{ steps.live_atlas.outcome }}"
+            echo '- Game Hub verification requires 15 playable browser games, including Terpocalypse and PhenoQuest.'
+            echo '- PhenoQuest must package as a verified self-contained canonical build.'
+            echo '- Terpocalypse must package validated browser runtime JavaScript from the integration snapshot.'
             echo '- High IQ verification requires the upgraded challenge console plus the complete v2.2 80-question / 50-source production bank.'
             echo '- Strain Showdown verification requires the packaged browser runtime, synchronized 96-card roster, and live three-lane game route.'
             echo '- WordPress-owned /, /learn/, and /blog/ remain outside this app-only transaction.'
