@@ -1,18 +1,31 @@
 :root{--burn-ember:#ff9a3d;--burn-hot:#ffcf65;--burn-smoke:#b9c1ba}
 .brand-mark svg,.mini-leaf svg,.demo-plant svg,.hero-leaf svg,.active-plant svg,.plant-token svg{width:100%;height:100%;display:block;overflow:visible}
 .brand-mark,.mini-leaf,.demo-plant,.hero-leaf,.active-plant,.plant-token{color:#86d957}
+.burn-buds-meta{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:16px auto 0}
+.burn-buds-meta span{display:inline-flex;align-items:center;min-height:28px;padding:5px 9px;border:1px solid rgba(134,217,87,.28);border-radius:999px;background:rgba(5,17,10,.72);color:#cfead3;font-size:.72rem;font-weight:850;letter-spacing:.04em;text-transform:uppercase;box-shadow:inset 0 0 0 1px rgba(255,255,255,.02)}
 .cell.planted .plant-token{filter:drop-shadow(0 2px 3px rgba(0,0,0,.4));transform-origin:50% 78%}
+.cell.can-fire{cursor:crosshair;position:relative}
+.cell.can-fire::before{content:"";position:absolute;inset:18%;border:1px solid rgba(255,207,101,0);border-radius:50%;transform:scale(.55);transition:transform .14s ease,border-color .14s ease,box-shadow .14s ease;pointer-events:none}
+.cell.can-fire:hover::before,.cell.can-fire:focus-visible::before{border-color:rgba(255,207,101,.82);box-shadow:0 0 0 2px rgba(255,154,61,.12),0 0 12px rgba(255,154,61,.34);transform:scale(1)}
 .cell.hit .plant-token{animation:burn-bud-hit .62s cubic-bezier(.2,.8,.2,1) both}
+.cell.hit{position:relative}
+.cell.hit::after{content:"";position:absolute;inset:24%;border-radius:50%;background:radial-gradient(circle,var(--burn-hot) 0 15%,var(--burn-ember) 20% 42%,transparent 70%);opacity:.82;mix-blend-mode:screen;pointer-events:none;animation:burn-impact .58s ease-out both}
+.cell.miss{position:relative}
+.cell.miss::after{content:"";position:absolute;inset:29%;border:1px solid rgba(201,218,206,.55);border-radius:50%;pointer-events:none;animation:burn-miss-ring .65s ease-out both}
 .cell.lost .plant-token{color:#573c2d;filter:grayscale(.72) brightness(.7) drop-shadow(0 0 5px rgba(255,122,34,.5));animation:burn-bud-lost 1.1s ease-out both}
+.fleet-chip.sunk{border-color:rgba(255,154,61,.35);color:#c8a58c;background:rgba(62,28,14,.42)}
 .plant-overlay.show .plant-loss{animation:burn-bud-overlay 1.65s ease-out both;transform-origin:50% 80%}
 .plant-overlay.show .plant-loss-wrap{position:relative}
 .plant-overlay.show .plant-loss-wrap::before,.plant-overlay.show .plant-loss-wrap::after{content:"";position:absolute;left:50%;bottom:18%;width:28px;height:54px;border-radius:55% 45% 65% 35%;pointer-events:none;z-index:3;mix-blend-mode:screen}
 .plant-overlay.show .plant-loss-wrap::before{background:radial-gradient(ellipse at 50% 80%,var(--burn-hot),var(--burn-ember) 42%,transparent 70%);animation:burn-flame-left .75s ease-in-out 2}
 .plant-overlay.show .plant-loss-wrap::after{background:radial-gradient(ellipse at 50% 78%,#fff1b3,var(--burn-hot) 36%,transparent 72%);animation:burn-flame-right .62s ease-in-out 2}
 .plant-loss-title{letter-spacing:.12em;text-shadow:0 0 18px rgba(255,135,45,.45)}
+@keyframes burn-impact{0%{transform:scale(.25);opacity:0}28%{transform:scale(1.35);opacity:1}100%{transform:scale(2.2);opacity:0}}
+@keyframes burn-miss-ring{0%{transform:scale(.4);opacity:0}24%{opacity:.8}100%{transform:scale(2);opacity:0}}
 @keyframes burn-bud-hit{0%{transform:scale(1);filter:brightness(1)}22%{transform:scale(1.22) rotate(-5deg);color:var(--burn-hot);filter:brightness(1.55) drop-shadow(0 0 7px var(--burn-ember))}55%{transform:scale(.94) rotate(4deg);color:var(--burn-ember)}100%{transform:scale(1);filter:brightness(.8)}}
 @keyframes burn-bud-lost{0%{transform:scale(1);opacity:1}28%{color:var(--burn-hot);filter:brightness(1.7) drop-shadow(0 0 10px var(--burn-ember));transform:scale(1.18) rotate(-7deg)}72%{color:#7b4b2a;transform:scale(.86) rotate(5deg);opacity:.82}100%{color:#4b4039;transform:scale(.76);opacity:.6;filter:grayscale(1) brightness(.62)}}
 @keyframes burn-bud-overlay{0%{transform:translateY(18px) scale(.72);opacity:0;filter:brightness(.8)}18%{transform:translateY(0) scale(1.12);opacity:1;filter:brightness(1.65) drop-shadow(0 0 20px var(--burn-ember))}56%{transform:scale(1.02) rotate(-3deg);filter:sepia(.45) saturate(1.8) drop-shadow(0 0 16px var(--burn-ember))}100%{transform:translateY(-10px) scale(.82) rotate(4deg);opacity:.2;filter:grayscale(1) brightness(.58)}}
 @keyframes burn-flame-left{0%,100%{transform:translate(-68%,5px) scale(.55,.8) rotate(-16deg);opacity:0}28%{opacity:.95}60%{transform:translate(-92%,-28px) scale(.9,1.35) rotate(9deg);opacity:.72}}
 @keyframes burn-flame-right{0%,100%{transform:translate(-20%,8px) scale(.5,.72) rotate(13deg);opacity:0}25%{opacity:1}62%{transform:translate(6%,-34px) scale(.82,1.45) rotate(-8deg);opacity:.62}}
-@media(prefers-reduced-motion:reduce){.cell.hit .plant-token,.cell.lost .plant-token,.plant-overlay.show .plant-loss,.plant-overlay.show .plant-loss-wrap::before,.plant-overlay.show .plant-loss-wrap::after{animation:none!important}.cell.lost .plant-token{opacity:.62;filter:grayscale(1) brightness(.66)}}
+@media(max-width:640px){.burn-buds-meta{gap:6px}.burn-buds-meta span{font-size:.66rem;padding:4px 7px}}
+@media(prefers-reduced-motion:reduce){.cell.hit .plant-token,.cell.hit::after,.cell.miss::after,.cell.lost .plant-token,.plant-overlay.show .plant-loss,.plant-overlay.show .plant-loss-wrap::before,.plant-overlay.show .plant-loss-wrap::after{animation:none!important}.cell.lost .plant-token{opacity:.62;filter:grayscale(1) brightness(.66)}}

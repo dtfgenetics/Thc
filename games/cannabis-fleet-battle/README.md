@@ -1,20 +1,22 @@
-# Cannabis Fleet Battle
+# Cannabis Fleet Battle — merged into Burn Buds
 
-**Cannabis Fleet Battle** is an original browser strategy game built around hidden fleet placement and alternating attacks on a **15 × 15** grid.
+This repository folder contains an earlier server-engine scaffold for the same 15×15 hidden-fleet concept that is now shipped as **Burn Buds**.
 
-This project is not a reskin of another game's artwork, board, terminology, or interface. It uses independently designed cannabis-themed vessels/objects, rules presentation, visual identity, lobby flow, and progression.
+## Canonical game
 
-## Locked digital goals
+- Public product: **Burn Buds**
+- Canonical implementation metadata: `games/protect-the-plants/game.json`
+- Browser runtime: `site/public-route-patch/games/protect-the-plants/`
+- Production compatibility route: `https://dtfseeds.com/games/protect-the-plants/`
+- Board: 15×15
+- Players: 2
+- Fleet presentation: cannabis-leaf formations
+- Multiplayer: same-origin PHP with server-authoritative turns and hidden opponent state
+- Persistence: WordPress transients in production
+- Existing features: room codes, invite sharing, active-game recovery, room chat, reconnect handling, mobile board tabs, burn animations, rematches, sound/haptics, and post-game statistics
 
-- 15 × 15 player and opponent grids.
-- Multiplayer lobby with room code/invite flow.
-- Player names.
-- Private fleet placement phase.
-- Alternating server-validated attacks.
-- Hit, miss, sunk, turn, disconnect, reconnect, and victory states.
-- Mobile and desktop layouts.
-- No paywall required for core play.
+## Why this folder remains
 
-## Current status
+The engine and protocol files here are retained as design/test history. They should **not** become a second public Battleship implementation. New browser gameplay, branding, multiplayer UX, deployment, and production work belongs in Burn Buds so the project keeps one source of truth.
 
-`canonical-preproduction` — the multiplayer flow and board size are defined; exact fleet composition, names, balance, art, persistence, and networking implementation remain to be finalized and tested.
+Useful concepts from this scaffold may be ported into Burn Buds only when they improve the canonical implementation and preserve its tested PHP multiplayer contract.
