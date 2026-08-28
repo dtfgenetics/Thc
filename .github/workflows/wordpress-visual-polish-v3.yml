@@ -36,7 +36,7 @@ jobs:
       NODE_OPTIONS: --dns-result-order=ipv4first
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME || secrets.WORDPRESS_USERNAME || secrets.WP_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD || secrets.WORDPRESS_APP_PASSWORD || secrets.WP_APPLICATION_PASSWORD }}
-      BACKUP_ROOT: ${{ runner.temp }}/dtf-visual-polish-v3
+      BACKUP_ROOT: /tmp/dtf-visual-polish-v3
 
     steps:
       - name: Checkout production source
