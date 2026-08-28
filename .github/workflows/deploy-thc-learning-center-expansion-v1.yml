@@ -1,5 +1,5 @@
 name: Deploy THC Education Expansion V1
-# Production release retrigger: 2026-08-28
+# Production release ledger: issue #220
 
 on:
   workflow_dispatch:
@@ -136,7 +136,7 @@ jobs:
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              issue_number: 46,
+              issue_number: 220,
               body: [
                 '## THC education expansion V1 production',
                 '',
