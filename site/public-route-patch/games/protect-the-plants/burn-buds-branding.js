@@ -4,6 +4,31 @@
 
   const setText=(selector,value)=>document.querySelectorAll(selector).forEach(el=>{if(el.textContent!==value)el.textContent=value});
   const setHtml=(selector,value)=>document.querySelectorAll(selector).forEach(el=>{if(el.innerHTML!==value)el.innerHTML=value});
+  const replaceText=(selector,replacer)=>document.querySelectorAll(selector).forEach(el=>{
+    const next=replacer(el.textContent||'');
+    if(next!==el.textContent)el.textContent=next;
+  });
+
+  function burnLanguage(text=''){
+    return String(text)
+      .replace(/Protect the Plants/g,PRODUCT)
+      .replace(/Defend your garden\. Scout theirs\./g,'Hide your buds. Burn theirs.')
+      .replace(/Your Garden Preview/g,'Your Stash Preview')
+      .replace(/Plant Formations/g,'Bud Formations')
+      .replace(/Place Your Plants/g,'Place Your Buds')
+      .replace(/Garden Locked/g,'Stash Locked')
+      .replace(/Garden Protected/g,'Opponent Buds Burned')
+      .replace(/Garden Lost/g,'Your Buds Burned')
+      .replace(/formation runs off the garden/gi,'formation runs off the grid')
+      .replace(/Plant formations cannot overlap\./g,'Bud formations cannot overlap.')
+      .replace(/A garden formation was locked\./g,'A bud formation was locked.')
+      .replace(/protected the garden/gi,'burned every opposing bud')
+      .replace(/found every opponent formation/gi,'burned every opponent formation')
+      .replace(/found every hidden formation/gi,'burned every hidden formation')
+      .replace(/found the final formation/gi,'burned the final formation')
+      .replace(/found ([^.]+ formation)/gi,'burned $1')
+      .replace(/Scout(s|ing)?/g,(match)=>match==='Scouts'?'Shots':match==='Scouting'?'Firing':'Fire');
+  }
 
   function brandIcons(){
     document.querySelectorAll('.brand-mark,.mini-leaf,.demo-plant,.plant-token,.hero-leaf,.active-plant').forEach(el=>{
@@ -13,7 +38,27 @@
     });
   }
 
+  function ensureMetaStrip(){
+    const hero=document.querySelector('.hero-lobby');
+    if(!hero||hero.querySelector('.burn-buds-meta'))return;
+    const strip=document.createElement('div');
+    strip.className='burn-buds-meta';
+    strip.setAttribute('aria-label','Burn Buds game details');
+    strip.innerHTML='<span>15×15 Grid</span><span>2 Players</span><span>Live Rooms</span><span>Room Chat</span>';
+    const sub=hero.querySelector('.hero-sub');
+    (sub||hero.lastElementChild)?.after(strip);
+  }
+
+  function brandNavigation(){
+    document.querySelectorAll('.navlink').forEach(el=>{
+      const label=(el.textContent||'').trim();
+      if(label==='Garden')el.textContent='Battle Grid';
+      if(label==='Battle Log')el.textContent='Burn Log';
+    });
+  }
+
   function brandView(){
+    document.documentElement.dataset.burnBuds='1';
     setText('.brand-copy strong',PRODUCT);
     setHtml('.hero-title','Burn <span>Buds</span>');
     setHtml('.battle-brand strong','Burn <span>Buds</span>');
@@ -22,29 +67,32 @@
     setText('.lobby-preview .panel-title','Your Stash Preview');
     setText('.lobby-preview .muted','15×15 battle grid with cannabis-leaf formations, hit markers, and firing history.');
     setText('.formation-strip .panel-title','Bud Formations');
+    brandNavigation();
+    ensureMetaStrip();
 
     document.querySelectorAll('.status-pill').forEach(el=>{
-      const map={'Garden Locked':'Stash Locked','Place Your Plants':'Place Your Buds','Garden Protected':'Buds Protected','Garden Lost':'Your Buds Burned'};
+      const map={
+        'Garden Locked':'Stash Locked',
+        'Place Your Plants':'Place Your Buds',
+        'Garden Protected':'Opponent Buds Burned',
+        'Garden Lost':'Your Buds Burned'
+      };
       if(map[el.textContent])el.textContent=map[el.textContent];
     });
     document.querySelectorAll('.result-banner strong').forEach(el=>{
       if(el.textContent==='Garden Protected')el.textContent='Opponent Buds Burned';
       if(el.textContent==='Garden Lost')el.textContent='Your Buds Burned';
     });
-    document.querySelectorAll('.result-banner .muted').forEach(el=>{
-      if(el.textContent.includes('found every opponent formation'))el.textContent='You burned every opponent formation.';
-      if(el.textContent.includes('found every hidden formation'))el.textContent='Your opponent burned every hidden formation.';
+    replaceText('.result-banner .muted,.event div:last-child,.plant-loss-subtitle,.toast,.empty,.muted',burnLanguage);
+    document.querySelectorAll('.event strong').forEach(el=>{
+      if(el.textContent==='FORMATION FOUND')el.textContent='BUDS BURNED';
+      if(el.textContent==='READY')el.textContent='STASH READY';
     });
-    document.querySelectorAll('.event strong').forEach(el=>{if(el.textContent==='FORMATION FOUND')el.textContent='BUDS BURNED'});
-    document.querySelectorAll('.event div:last-child').forEach(el=>{
-      if(el.textContent.includes(' found ')&&el.textContent.includes('formation'))el.textContent=el.textContent.replace(' found ',' burned ');
-      if(el.textContent.includes('protected the garden'))el.textContent=el.textContent.replace('protected the garden','burned every opposing bud');
+    document.querySelectorAll('.stats .stat span').forEach(el=>{
+      if(el.textContent==='Scouts')el.textContent='Shots';
     });
 
-    const subtitle=document.querySelector('#plantLossSubtitle');
-    if(subtitle?.textContent.includes('has been found.'))subtitle.textContent=subtitle.textContent.replace('has been found.','has been burned.');
     brandIcons();
-
     if(document.title.includes('Protect the Plants'))document.title=document.title.replace('Protect the Plants',PRODUCT);
   }
 
@@ -67,7 +115,9 @@
         const ok=await share({title:PRODUCT,text:`Join my ${PRODUCT} game — room ${state.code}`,url});
         if(!ok&&typeof toast==='function')toast('Could not share the invite.');
       }else{
-        const won=state.winnerId===state.me?.id;const stats=state.me?.stats||{};const shots=Number(stats.shots||0),hits=Number(stats.hits||0),accuracy=shots?Math.round(hits/shots*100):0;
+        const won=state.winnerId===state.me?.id;
+        const stats=state.me?.stats||{};
+        const shots=Number(stats.shots||0),hits=Number(stats.hits||0),accuracy=shots?Math.round(hits/shots*100):0;
         const ok=await share({title:PRODUCT,text:`${won?'I burned every opposing bud':'Good game'} in ${PRODUCT} — ${hits}/${shots} hits (${accuracy}% accuracy).`,url});
         if(!ok&&typeof toast==='function')toast('Could not share the result.');
       }
