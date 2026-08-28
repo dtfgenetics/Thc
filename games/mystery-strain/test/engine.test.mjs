@@ -15,11 +15,12 @@ import {
 const data = JSON.parse(fs.readFileSync(new URL('../data/strains.json', import.meta.url), 'utf8'));
 
 assert.equal(normalizeCaseCode('ab-cd ef'), 'ABCDEF');
+assert.equal(normalizeCaseCode('ABOI01'), 'AB');
 assert.equal(isValidCaseCode('ABCDE'), false);
 assert.equal(isValidCaseCode('ABCDEF'), true);
 
-const a = createGame({ code: 'GROW42', wild: false }, data);
-const b = createGame({ code: 'grow42', wild: false }, data);
+const a = createGame({ code: 'GR8W42', wild: false }, data);
+const b = createGame({ code: 'gr8w42', wild: false }, data);
 assert.equal(a.secretId, b.secretId, 'Same case code should select the same secret.');
 assert.equal(a.modifier, null);
 assert.equal(a.maxQuestions, 8);
@@ -46,7 +47,7 @@ const won = guessStrain(afterWrongGuess, afterWrongGuess.secretId, data);
 assert.equal(won.status, 'won');
 assert.ok(Number.isInteger(gameScore(won)) && gameScore(won) >= 0);
 
-let losing = createGame({ code: 'LOSS42', wild: false }, data);
+let losing = createGame({ code: 'LASS42', wild: false }, data);
 while (losing.status === 'playing') {
   const wrong = losing.candidates.find((id) => id !== losing.secretId);
   losing = guessStrain(losing, wrong, data);
@@ -84,8 +85,8 @@ foggy = askQuestion(foggy, fogOption.id, data);
 assert.equal(foggy.clues.at(-1).answer, 'unknown');
 assert.equal(foggy.candidates.length, beforeFog, 'Foggy Jar must not eliminate candidates.');
 
-const wildA = createGame({ code: 'WILD42', wild: true }, data);
-const wildB = createGame({ code: 'WILD42', wild: true }, data);
+const wildA = createGame({ code: 'WELD42', wild: true }, data);
+const wildB = createGame({ code: 'WELD42', wild: true }, data);
 assert.equal(wildA.modifier?.id, wildB.modifier?.id, 'Wild modifier must be deterministic for a case code.');
 
 console.log('Mystery Strain deterministic engine tests passed.');
