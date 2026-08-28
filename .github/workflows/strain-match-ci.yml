@@ -1,0 +1,39 @@
+name: Strain Match CI
+
+on:
+  push:
+    paths:
+      - 'games/strain-match/**'
+      - 'site/public-route-patch/games/strain-match/**'
+      - '.github/workflows/strain-match-ci.yml'
+  pull_request:
+    paths:
+      - 'games/strain-match/**'
+      - 'site/public-route-patch/games/strain-match/**'
+      - '.github/workflows/strain-match-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate canonical and public game data
+        run: node games/strain-match/scripts/validate-data.mjs
+      - name: Validate browser runtime syntax and route contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check site/public-route-patch/games/strain-match/app.js
+          test -s site/public-route-patch/games/strain-match/index.html
+          test -s site/public-route-patch/games/strain-match/strain-match.css
+          grep -Fq 'rel="canonical" href="https://dtfseeds.com/games/strain-match/"' site/public-route-patch/games/strain-match/index.html
+          grep -Fq 'Strain Match' site/public-route-patch/games/strain-match/index.html
+          grep -Fq 'deploymentRegistered": false' games/strain-match/game.json

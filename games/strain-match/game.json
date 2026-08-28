@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "id": "strain-match",
+  "title": "Strain Match",
+  "type": "browser-game",
+  "status": "browser-vertical-slice",
+  "route": "/games/strain-match/",
+  "productionTarget": "https://dtfseeds.com",
+  "implementation": {
+    "data": "games/strain-match/data/decks.json",
+    "validator": "games/strain-match/scripts/validate-data.mjs",
+    "publicRoute": "site/public-route-patch/games/strain-match/"
+  },
+  "releaseGates": {
+    "rulesTested": true,
+    "browserTested": false,
+    "mobileTested": false,
+    "accessibilityReviewed": false,
+    "originalArtCleared": true,
+    "deploymentRegistered": false
+  }
+}
