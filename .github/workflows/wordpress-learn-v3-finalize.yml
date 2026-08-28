@@ -32,7 +32,7 @@ jobs:
       NODE_OPTIONS: --dns-result-order=ipv4first
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME || secrets.WORDPRESS_USERNAME || secrets.WP_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD || secrets.WORDPRESS_APP_PASSWORD || secrets.WP_APPLICATION_PASSWORD }}
-      BACKUP_ROOT: ${{ runner.temp }}/dtf-learn-v3-final
+      BACKUP_ROOT: /tmp/dtf-learn-v3-final
     steps:
       - uses: actions/checkout@v4
         with:
