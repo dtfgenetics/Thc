@@ -1,0 +1,184 @@
+{
+  "schemaVersion": 1,
+  "id": "evidence-measurement-method-plates-v1",
+  "route": "/learn/research-methods/",
+  "title": "Evidence & Measurement Method Plates",
+  "purpose": "Live instructional plates that close the most important method-teaching gaps while dedicated downloadable infographic masters are still in artwork production.",
+  "plates": [
+    {
+      "id": "accuracy-precision-uncertainty",
+      "chapterId": "accuracy-precision-calibration",
+      "title": "Accuracy, Precision, Resolution & Uncertainty",
+      "coreIdea": "A measurement can be repeatable without being correct, and a display can show more digits than the method can justify.",
+      "visualModel": {
+        "type": "four-state-target",
+        "states": [
+          {"label":"Accurate + precise","meaning":"Repeated values cluster near the reference."},
+          {"label":"Accurate + imprecise","meaning":"Values spread around the reference; the average may be close while individual readings vary."},
+          {"label":"Precise + biased","meaning":"Values cluster tightly but are consistently displaced from the reference."},
+          {"label":"Imprecise + biased","meaning":"Values are both scattered and displaced from the reference."}
+        ]
+      },
+      "methodSteps": [
+        "Define the measurand and unit before comparing instruments or readings.",
+        "Check the instrument specification for stated accuracy, resolution, operating range and environmental limitations.",
+        "Compare against an appropriate reference or standard when the method allows.",
+        "Repeat measurements under the same condition to estimate repeatability.",
+        "Report only digits supported by the method and preserve the uncertainty or known tolerance."
+      ],
+      "failureModes": [
+        "Treating two decimal places as evidence of high accuracy.",
+        "Calling a stable offset 'good data' because the readings repeat.",
+        "Comparing values produced by different methods without documenting the method difference.",
+        "Hiding spread by reporting only an average."
+      ],
+      "recordFields": ["instrument/model","unit","reference standard","reference value","repeated readings","observed offset","stated accuracy","resolution","date/time","operator"],
+      "interpretationLimit": "Repeated measurements can estimate precision, but repetition alone cannot reveal a shared systematic bias.",
+      "knowledgeCheck": "If a meter repeatedly reads 6.20 against a traceable 6.00 reference, is it precise, accurate, both, or neither? Explain why."
+    },
+    {
+      "id": "calibration-drift-reference",
+      "chapterId": "accuracy-precision-calibration",
+      "title": "Calibration, Drift & Reference Cross-Checks",
+      "coreIdea": "Calibration is part of the measurement chain. Drift, contamination, aging and handling can move a sensor away from its reference even when its display looks stable.",
+      "visualModel": {
+        "type": "quality-control-chain",
+        "stages": ["Inspect / clean","Known standard","Pre-check","Adjust if method permits","Post-check","Record","Periodic cross-check"]
+      },
+      "methodSteps": [
+        "Inspect the sensor and sampling interface before calibration; contamination can invalidate the check.",
+        "Use standards and procedures appropriate to the instrument and variable being measured.",
+        "Record the pre-check result before any adjustment so drift remains visible in the history.",
+        "After adjustment, verify the reading again instead of assuming the calibration succeeded.",
+        "Periodically compare field instruments with a maintained reference under the same conditions."
+      ],
+      "failureModes": [
+        "Adjusting the instrument before recording how far it had drifted.",
+        "Using expired, contaminated or temperature-inappropriate standards.",
+        "Comparing two sensors placed in different microclimates and calling the difference sensor error.",
+        "Waiting for crop symptoms before checking an instrument that controls the environment."
+      ],
+      "recordFields": ["instrument ID","standard lot","standard value","temperature","pre-check reading","post-check reading","adjustment made","maintenance","operator","next review"],
+      "interpretationLimit": "A reference instrument also has uncertainty and maintenance requirements; cross-checking improves confidence but does not create an error-free truth source.",
+      "knowledgeCheck": "Why is the pre-calibration reading valuable even when the meter can be adjusted immediately?"
+    },
+    {
+      "id": "sensor-placement-spatial-grid",
+      "chapterId": "sensor-placement-spatial-sampling",
+      "title": "Sensor Placement, Canopy Grids & Representative Sampling",
+      "coreIdea": "Location is part of the measurement definition. Height, distance from equipment, canopy density and room position can change the value being measured.",
+      "visualModel": {
+        "type": "canopy-grid",
+        "grid": [
+          ["A1","A2","A3","A4"],
+          ["B1","B2","B3","B4"],
+          ["C1","C2","C3","C4"]
+        ],
+        "biasedExamples": ["directly under a supply vent","against a wall","touching a leaf","inside direct fixture heat","only the easiest-to-reach plant"]
+      },
+      "methodSteps": [
+        "Define the measurement plane and height relative to the canopy.",
+        "Create fixed coordinates that can be reused after lighting, HVAC or canopy changes.",
+        "Record raw values at each point before making a heat map or summary statistic.",
+        "Use fixed sentinel positions for trend monitoring and randomized sampling when making crop-level inferences.",
+        "Document nearby obstructions, emitters, fixtures, vents and other position-specific influences."
+      ],
+      "failureModes": [
+        "Using one convenient room sensor as proof of canopy uniformity.",
+        "Moving sensor height between measurements without recording it.",
+        "Keeping only the room average and losing the raw spatial pattern.",
+        "Choosing only the most damaged or healthiest leaves for a crop-level conclusion."
+      ],
+      "recordFields": ["coordinate/zone","height","canopy stage","timestamp","raw value","instrument","nearby source/obstruction","sampling rule","plant/tissue ID"],
+      "interpretationLimit": "A grid describes the points and time sampled. Interpolation between points is a model, not an additional direct measurement.",
+      "knowledgeCheck": "Why can the same room average hide two very different canopy environments?"
+    },
+    {
+      "id": "baseline-control-randomization",
+      "chapterId": "baseline-controls-change-isolation",
+      "title": "Baseline, Control, Treatment & Position Effects",
+      "coreIdea": "A convincing before-after story requires knowing what the system was already doing and what happened to a comparable unit that did not receive the treatment.",
+      "visualModel": {
+        "type": "trial-timeline",
+        "stages": ["Baseline window","Assignment","Treatment","Observation window","Recheck","Decision"],
+        "positionModels": ["confounded: treatment all on one bench edge","randomized: treatments mixed across positions","blocked: compare treatments within known environmental zones"]
+      },
+      "methodSteps": [
+        "Define the outcome before the intervention and collect enough baseline data to see ordinary variation.",
+        "When practical, retain a comparable contemporaneous control that does not receive the treatment.",
+        "Randomize or block positions when bench edge, airflow, irrigation pressure or light overlap could influence the result.",
+        "Change one major learning variable at a time when the goal is causal learning.",
+        "If an emergency requires multiple corrections, document that causal attribution is limited."
+      ],
+      "failureModes": [
+        "Calling a normal upward trend a treatment response because there was no baseline.",
+        "Comparing this cycle to last cycle while many other conditions changed.",
+        "Putting every treated plant under one fixture and every control plant under another.",
+        "Stacking light, nutrition, irrigation and climate changes and later assigning credit to one of them."
+      ],
+      "recordFields": ["baseline window","treatment definition","control definition","assignment method","position map","start time","outcome metric","co-changes","recheck date","interpretation confidence"],
+      "interpretationLimit": "Production crops are not always formal experiments. The method should match the strength of the claim: operational learning can be useful without pretending it proves a universal causal rule.",
+      "knowledgeCheck": "What problem occurs if all treatment plants sit nearest the HVAC supply while all control plants sit at the opposite wall?"
+    },
+    {
+      "id": "standardized-imaging-scoring",
+      "chapterId": "imaging-observation-scoring",
+      "title": "Standardized Imaging, Scale & Scoring Anchors",
+      "coreIdea": "A compelling close-up is weak evidence when identity, location, scale, lighting and the scoring rule are missing.",
+      "visualModel": {
+        "type": "three-frame-capture",
+        "frames": ["whole-plant overview","affected-organ context","close detail + physical scale"],
+        "scoreAnchors": [
+          {"score":1,"anchor":"none / trace expression"},
+          {"score":2,"anchor":"mild, localized expression"},
+          {"score":3,"anchor":"moderate, clearly established expression"},
+          {"score":4,"anchor":"severe or broadly distributed expression"},
+          {"score":5,"anchor":"extreme expression / major functional impact"}
+        ]
+      },
+      "methodSteps": [
+        "Capture a whole-plant image before the close-up so distribution remains visible.",
+        "Record the organ, tissue, node or canopy location shown.",
+        "Use neutral, repeatable lighting and avoid filters or automatic color effects when diagnostic color matters.",
+        "Include a physical scale or known magnification when size is part of the observation.",
+        "Write the visible observation separately from the suspected cause and use anchored scoring definitions."
+      ],
+      "failureModes": [
+        "Diagnosing from one isolated damaged leaf with no whole-plant context.",
+        "Comparing blurple-lit and daylight images as if color is directly comparable.",
+        "Using a 1–5 score when each scorer imagines a different meaning for 3.",
+        "Overwriting or discarding the unedited original image."
+      ],
+      "recordFields": ["plant ID","date/time","tissue/location","overview filename","close-up filename","scale/magnification","light source","camera/device","unedited original","score rubric version","observer"],
+      "interpretationLimit": "Standardized imaging improves comparability, but an image still records appearance rather than proving the underlying biological cause.",
+      "knowledgeCheck": "Why should 'interveinal yellowing on older fan leaves' be recorded separately from 'magnesium deficiency'?"
+    },
+    {
+      "id": "replication-uncertainty-evidence-chain",
+      "chapterId": "uncertainty-replication-statistical-thinking",
+      "title": "Replication, Uncertainty, Correlation & the Evidence Chain",
+      "coreIdea": "The strength of a conclusion depends on what was independently replicated, how variable the observations were, what alternative explanations remain and whether the result can be reproduced.",
+      "visualModel": {
+        "type": "evidence-chain",
+        "chain": ["Raw observation","Method + metadata","Independent comparison","Variation + uncertainty","Interpretation","Bounded action","Recheck"],
+        "replicationExamples": ["5 leaves from 1 plant = subsamples of one biological unit","1 measurement from each of 5 independent plants = biological replication at the plant level"]
+      },
+      "methodSteps": [
+        "Define the experimental or observational unit that receives the treatment or represents the independent biological entity.",
+        "Keep individual values so spread and unusual responses remain visible.",
+        "Distinguish technical repeats or subsamples from independent biological replicates.",
+        "Treat correlation as association until temporal order, controlled comparison and plausible mechanism support a causal interpretation.",
+        "State confidence and the next measurement that could change the conclusion."
+      ],
+      "failureModes": [
+        "Counting ten leaves from one plant as ten independent plants.",
+        "Showing only group averages while hiding large individual variation.",
+        "Assuming two variables moving together means one caused the other.",
+        "Writing a high-confidence diagnosis when the measurements are inconsistent or the sample is tiny."
+      ],
+      "recordFields": ["experimental unit","sample size","biological replicates","technical repeats","individual values","summary statistic","spread","candidate confounders","confidence","next discriminating test"],
+      "interpretationLimit": "More observations do not rescue a systematically biased design. Replication estimates repeatability only at the level that was actually replicated.",
+      "knowledgeCheck": "Why are five leaves measured on one plant not equivalent to one leaf measured on each of five independent plants?"
+    }
+  ]
+}
