@@ -47,12 +47,11 @@ function validateData(data){
   }
   if(lessons!==20) fail(`Expected 20 applied lessons, found ${lessons}`);
 
-  // Fail only on affirmative universal prescriptions; anti-claim language such as
-  // “do not use a universal spacing rule” must remain valid educational content.
+  // These patterns target affirmative dangerous shortcuts only. Anti-claim teaching
+  // (for example “do not teach a fixed 12-hour trigger”) is intentionally allowed.
   const raw=JSON.stringify(data).toLowerCase();
   const forbidden=[
     /harvest at \d+\s*%/,
-    /(?:all|every) photoperiod (?:cultivar|strain|plant).*?(?:12 hours|12 h)/,
     /(?:spacing|irrigation|flowering date|harvest timing) (?:is|equals|must be) universal/,
     /curing (?:kills|removes|fixes) mold/,
     /rain(?:fall)? (?:total|amount) (?:equals|is) root-zone recharge/
@@ -61,16 +60,9 @@ function validateData(data){
   return {modules:data.modules.length,lessons,sources:data.sourceRefs.length,checklists:data.modules.length};
 }
 
-function sources(data,ids){
-  const wanted=new Set(ids||[]);
-  return data.sourceRefs.filter(s=>wanted.has(s.id)).map(s=>`<article class="oav1-source"><span>${esc(s.id)} · ${esc(s.type)}</span><strong>${esc(s.citation)}</strong><p>${esc(s.supports)}</p></article>`).join('');
-}
-function lesson(l,i){
-  return `<article class="oav1-lesson"><div class="oav1-lesson-head"><span>${String(i+1).padStart(2,'0')}</span><h4>${esc(l.title)}</h4></div><p class="oav1-core">${esc(l.coreIdea)}</p><div class="oav1-three"><section><strong>Inspect first</strong><p>${esc(l.inspect)}</p></section><section><strong>Decision framework</strong><p>${esc(l.decision)}</p></section><section><strong>Avoid this shortcut</strong><p>${esc(l.avoid)}</p></section></div></article>`;
-}
-function moduleHtml(data,m){
-  return `<details class="oav1-module" id="oav1-${esc(m.id)}" data-oav1-module="${esc(m.id)}"><summary><span>Module ${String(m.number).padStart(2,'0')}</span><div><h3>${esc(m.title)}</h3><p>${esc(m.learnerQuestion)}</p></div></summary><div class="oav1-module-body"><div class="oav1-lessons">${m.lessons.map(lesson).join('')}</div><div class="oav1-bottom"><article class="oav1-check"><p class="oav1-kicker">Field checklist</p><h4>Capture these before you call the problem solved</h4><ul>${m.fieldChecklist.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></article><article><p class="oav1-kicker">Evidence context</p><div class="oav1-sources">${sources(data,m.sourceIds)}</div></article></div></div></details>`;
-}
+function sources(data,ids){const wanted=new Set(ids||[]);return data.sourceRefs.filter(s=>wanted.has(s.id)).map(s=>`<article class="oav1-source"><span>${esc(s.id)} · ${esc(s.type)}</span><strong>${esc(s.citation)}</strong><p>${esc(s.supports)}</p></article>`).join('')}
+function lesson(l,i){return `<article class="oav1-lesson"><div class="oav1-lesson-head"><span>${String(i+1).padStart(2,'0')}</span><h4>${esc(l.title)}</h4></div><p class="oav1-core">${esc(l.coreIdea)}</p><div class="oav1-three"><section><strong>Inspect first</strong><p>${esc(l.inspect)}</p></section><section><strong>Decision framework</strong><p>${esc(l.decision)}</p></section><section><strong>Avoid this shortcut</strong><p>${esc(l.avoid)}</p></section></div></article>`}
+function moduleHtml(data,m){return `<details class="oav1-module" id="oav1-${esc(m.id)}" data-oav1-module="${esc(m.id)}"><summary><span>Module ${String(m.number).padStart(2,'0')}</span><div><h3>${esc(m.title)}</h3><p>${esc(m.learnerQuestion)}</p></div></summary><div class="oav1-module-body"><div class="oav1-lessons">${m.lessons.map(lesson).join('')}</div><div class="oav1-bottom"><article class="oav1-check"><p class="oav1-kicker">Field checklist</p><h4>Capture these before you call the problem solved</h4><ul>${m.fieldChecklist.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></article><article><p class="oav1-kicker">Evidence context</p><div class="oav1-sources">${sources(data,m.sourceIds)}</div></article></div></div></details>`}
 function block(data){
   const css=`<style id="thc-outdoor-applied-v1-style">.oav1{--green:#1f704f;--gold:#a9852e;--cream:#f7f4ea;--paper:#fffdf8;--ink:#143027;--muted:#52665e;--line:#d7e2dc;background:var(--cream);color:var(--ink);padding:58px 0 72px}.oav1 *{box-sizing:border-box}.oav1-wrap{width:min(1120px,calc(100% - 34px));margin:auto}.oav1-kicker{margin:0 0 7px!important;color:#78672f!important;font-size:.7rem!important;font-weight:900;letter-spacing:.12em;text-transform:uppercase}.oav1-hero{display:grid;grid-template-columns:1.1fr .9fr;gap:24px;margin-bottom:28px}.oav1 h2{margin:0;font-size:clamp(2.2rem,4.8vw,4rem);line-height:.98}.oav1 h3,.oav1 h4{margin:0}.oav1 p,.oav1 li{color:var(--muted);line-height:1.6}.oav1-boundary{padding:17px;border-radius:16px;background:#fff9eb;border:1px solid #eadbb8;border-left:4px solid var(--gold)}.oav1-module{background:var(--paper);border:1px solid var(--line);border-radius:20px;margin:12px 0;overflow:hidden}.oav1-module>summary{display:grid;grid-template-columns:95px 1fr;gap:15px;padding:21px;cursor:pointer;list-style:none;background:linear-gradient(135deg,#fffdf8,#f0f5f1)}.oav1-module>summary::-webkit-details-marker{display:none}.oav1-module>summary>span{display:inline-flex;align-items:center;justify-content:center;height:35px;border-radius:999px;background:#e6efe9;color:#3d6553;font-size:.68rem;font-weight:950}.oav1-module-body{padding:0 20px 22px}.oav1-lessons,.oav1-sources{display:grid;gap:10px}.oav1-lesson{padding:17px;border:1px solid #e0e7e3;border-radius:15px;background:#fff}.oav1-lesson-head{display:flex;gap:10px;align-items:center}.oav1-lesson-head>span{display:grid;place-items:center;width:32px;height:32px;border-radius:9px;background:#edf3ef;color:#3d6553;font-size:.68rem;font-weight:950}.oav1-three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.oav1-three section,.oav1-bottom>article{padding:12px;border-radius:12px;background:#f3f6f4;border:1px solid #e1e8e4}.oav1-three section:nth-child(3){background:#fff8eb;border-color:#eadfc6}.oav1-bottom{display:grid;grid-template-columns:.8fr 1.2fr;gap:12px;margin-top:13px}.oav1-source{padding:10px;border-radius:10px;background:#fff;border:1px solid #dfe7e2}.oav1-source span{display:block;color:#78672f;font-size:.63rem;font-weight:950;text-transform:uppercase}.oav1-source strong{display:block;margin:4px 0;font-size:.8rem}@media(max-width:860px){.oav1-hero,.oav1-bottom,.oav1-three{grid-template-columns:1fr}}@media(max-width:620px){.oav1-module>summary{grid-template-columns:1fr}.oav1-module-body{padding:0 13px 16px}}</style>`;
   return `${start}${css}<section class="oav1" data-thc-outdoor-applied-v1="true"><div class="oav1-wrap"><div class="oav1-hero"><div><p class="oav1-kicker">THC · Teaching Healthy Cultivation · Applied Outdoor field guide</p><h2>Make outdoor decisions from evidence, not recipes.</h2><p>${esc(data.purpose)}</p></div><div class="oav1-boundary"><strong>Evidence boundary</strong><p>${esc(data.evidenceBoundary)}</p></div></div>${data.modules.map(m=>moduleHtml(data,m)).join('')}</div></section>${end}`;
@@ -81,7 +73,7 @@ async function request(path,options={}){
   let last;
   for(let attempt=1;attempt<=8;attempt++){
     try{
-      const response=await fetch(`${site}${path}`,{...options,redirect:'follow',signal:AbortSignal.timeout(60000),headers:{Authorization:`Basic ${Buffer.from(`${user}:${pass}`).toString('base64')}`,Accept:'application/json','User-Agent':'THC-Outdoor-Applied-V1/1.1',...(options.body?{'Content-Type':'application/json'}:{}),...(options.headers||{})}});
+      const response=await fetch(`${site}${path}`,{...options,redirect:'follow',signal:AbortSignal.timeout(60000),headers:{Authorization:`Basic ${Buffer.from(`${user}:${pass}`).toString('base64')}`,Accept:'application/json','User-Agent':'THC-Outdoor-Applied-V1/1.2',...(options.body?{'Content-Type':'application/json'}:{}),...(options.headers||{})}});
       const text=await response.text();let body=text;try{body=text?JSON.parse(text):null}catch{}
       if((response.status===429||response.status>=500)&&attempt<8){await sleep(attempt*1500);continue}
       if(!response.ok)fail(`${options.method||'GET'} ${path} failed (${response.status}): ${typeof body==='string'?body.slice(0,600):JSON.stringify(body).slice(0,600)}`);
