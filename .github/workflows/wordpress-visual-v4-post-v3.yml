@@ -38,8 +38,8 @@ jobs:
       NODE_OPTIONS: --dns-result-order=ipv4first
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME || secrets.WORDPRESS_USERNAME || secrets.WP_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD || secrets.WORDPRESS_APP_PASSWORD || secrets.WP_APPLICATION_PASSWORD }}
-      SHOP_BACKUP_ROOT: ${{ runner.temp }}/dtf-shop-v4
-      PRODUCT_BACKUP_ROOT: ${{ runner.temp }}/dtf-product-v5
+      SHOP_BACKUP_ROOT: /tmp/dtf-shop-v4
+      PRODUCT_BACKUP_ROOT: /tmp/dtf-product-v5
 
     steps:
       - name: Checkout trusted main
