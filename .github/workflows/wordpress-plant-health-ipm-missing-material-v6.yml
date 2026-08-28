@@ -1,0 +1,145 @@
+name: Publish Plant Health IPM Missing Material V6
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'site/wordpress/education/plant-health-ipm-missing-material-v6.json'
+      - 'scripts/publish-wordpress-plant-health-ipm-missing-material-v6.mjs'
+      - '.github/workflows/wordpress-plant-health-ipm-missing-material-v6.yml'
+  workflow_run:
+    workflows:
+      - Publish Plant Health IPM V6 Visual Atlas
+    types: [completed]
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-plant-health-ipm-missing-material-v6
+  cancel-in-progress: true
+
+env:
+  WP_SITE_URL: https://dtfseeds.com
+  NODE_OPTIONS: --dns-result-order=ipv4first
+
+jobs:
+  publish:
+    name: Publish five Plant Health IPM deep labs
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    environment: production
+    env:
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      APPLY_PLANT_HEALTH_IPM_MISSING_V6: 'true'
+      PLANT_HEALTH_IPM_MISSING_V6_PATH: site/wordpress/education/plant-health-ipm-missing-material-v6.json
+      PLANT_HEALTH_IPM_V6_PATH: site/wordpress/education/plant-health-ipm-v6.json
+      BACKUP_ROOT: /tmp/dtf-plant-health-ipm-missing-v6
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate missing material package
+        id: validate
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
+          node --check scripts/publish-wordpress-plant-health-ipm-missing-material-v6.mjs
+          node - <<'NODE'
+          const fs=require('fs');
+          const p=JSON.parse(fs.readFileSync('site/wordpress/education/plant-health-ipm-missing-material-v6.json','utf8'));
+          const c=JSON.parse(fs.readFileSync('site/wordpress/education/plant-health-ipm-v6.json','utf8'));
+          if(p.id!=='plant-health-ipm-missing-material-v6'||p.modules?.length!==5) throw new Error('Expected exactly five Plant Health missing-material modules.');
+          if(c.id!=='plant-health-ipm-v6'||c.slug!=='ipm') throw new Error('Unexpected Plant Health curriculum owner.');
+          const sources=new Set((c.sourceRefs||[]).map(x=>x.id));
+          const ids=p.modules.map(x=>x.id);
+          if(new Set(ids).size!==5) throw new Error('Module IDs must be unique.');
+          for(const m of p.modules){
+            for(const k of ['mechanism','measureFirst','interpretationLimits','commonMistakes']) if(!Array.isArray(m[k])||m[k].length<3) throw new Error(`${m.id}: ${k} incomplete`);
+            if(!m.fieldExercise||!m.visualBrief||!m.learningOutcome) throw new Error(`${m.id}: missing required teaching field`);
+            for(const id of m.sourceIds||[]) if(!sources.has(id)) throw new Error(`${m.id}: unknown source ${id}`);
+          }
+          console.log(`Validated modules: ${ids.join(', ')}`);
+          NODE
+
+      - name: Publish and verify five deep labs
+        id: publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/publish-wordpress-plant-health-ipm-missing-material-v6.mjs | tee "$RUNNER_TEMP/plant-health-ipm-missing-v6.log"
+          test -s plant-health-ipm-missing-material-v6-report.json
+          cp plant-health-ipm-missing-material-v6-report.json "$RUNNER_TEMP/report.json"
+          echo "modules=$(node -p "require(process.argv[1]).modules" "$RUNNER_TEMP/report.json")" >> "$GITHUB_OUTPUT"
+
+      - name: Independent visitor verification
+        id: verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          body="$RUNNER_TEMP/plant-health-ipm-missing-v6.html"
+          ok=0
+          for attempt in 1 2 3 4 5 6 7 8; do
+            curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+              --header 'Cache-Control: no-cache, no-store, max-age=0' \
+              --header 'Pragma: no-cache' \
+              "$WP_SITE_URL/learn/ipm/?dtf_phi6m_verify=${GITHUB_RUN_ID}-${attempt}" --output "$body"
+            if grep -Fqi 'data-dtf-plant-health-ipm-missing-v6="true"' "$body"; then ok=1; break; fi
+            sleep 5
+          done
+          [[ "$ok" -eq 1 ]]
+          [[ "$(grep -Fo 'data-phi6m-module=' "$body" | wc -l | tr -d ' ')" = '5' ]]
+          [[ "$(grep -Fo 'data-phi6-chapter=' "$body" | wc -l | tr -d ' ')" = '8' ]]
+          [[ "$(grep -Fo 'class="phi6-lesson"' "$body" | wc -l | tr -d ' ')" = '32' ]]
+          [[ "$(grep -Fo 'class="sv6v-card"' "$body" | wc -l | tr -d ' ')" = '14' ]]
+          grep -Fqi 'data-dtf-plant-health-ipm-v6="true"' "$body"
+          grep -Fqi 'data-dtf-subject-visuals-v6="plant-health-ipm-v6"' "$body"
+          grep -Fqi 'data-dtf-topic="plant-health-ipm"' "$body"
+          grep -Fqi 'data-dtf-learning-v4="topic-plant-health-ipm"' "$body"
+
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: plant-health-ipm-missing-material-v6-${{ github.run_id }}
+          path: |
+            /tmp/dtf-plant-health-ipm-missing-v6
+            plant-health-ipm-missing-material-v6-report.json
+            ${{ runner.temp }}/plant-health-ipm-missing-v6.log
+            ${{ runner.temp }}/plant-health-ipm-missing-v6.html
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report production result
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          STATUS: ${{ job.status }}
+          VALIDATE: ${{ steps.validate.outcome }}
+          PUBLISH: ${{ steps.publish.outcome }}
+          VERIFY: ${{ steps.verify.outcome }}
+          MODULES: ${{ steps.publish.outputs.modules }}
+        with:
+          script: |
+            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body:[
+              '## Plant Health & IPM V6 missing material closure','',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Result: **${process.env.STATUS}**`,
+              `Package validation: **${process.env.VALIDATE || 'not-run'}**`,
+              `WordPress publication: **${process.env.PUBLISH || 'not-run'}**`,
+              `Visitor verification: **${process.env.VERIFY || 'not-run'}**`,
+              `Deep diagnostic/IPM labs: **${process.env.MODULES || '0'}**`,'',
+              'This layer closes the five instructional gaps behind the Plant Health & IPM visual targets: scouting/trend thresholds, small-pest evidence, powdery mildew versus Botrytis, HLVd sampling/traceback, and resistance/compatibility/post-treatment verification. It preserves the existing 8-chapter/32-lesson curriculum and 14-card visual atlas. Purpose-built diagrams remain separately tracked until exact reviewed artwork is produced.'
+            ].join('\n')});
