@@ -4,6 +4,11 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '29 8 * * *'
+  workflow_run:
+    workflows:
+      - Deploy DTFSeeds Public Suite
+    types:
+      - completed
   pull_request:
     paths:
       - data/public-navigation.json
@@ -12,16 +17,6 @@ on:
       - scripts/validate-public-navigation.mjs
       - scripts/audit-game-route-integrity.mjs
       - .github/workflows/game-route-integrity.yml
-  push:
-    branches: [main]
-    paths:
-      - data/public-navigation.json
-      - site/deployment/public-apps.json
-      - site/public-route-patch/games/**
-      - scripts/validate-public-navigation.mjs
-      - scripts/audit-game-route-integrity.mjs
-      - .github/workflows/game-route-integrity.yml
-
 permissions:
   contents: read
   issues: write
@@ -32,10 +27,13 @@ concurrency:
 
 jobs:
   audit:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
 
       - uses: actions/setup-node@v4
         with:
