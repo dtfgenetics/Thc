@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "mystery-strain",
+  "title": "Mystery Strain",
+  "type": "browser-game",
+  "status": "browser-vertical-slice",
+  "route": "/games/mystery-strain/",
+  "productionTarget": "https://dtfseeds.com",
+  "implementation": {
+    "data": "games/mystery-strain/data/strains.json",
+    "engine": "games/mystery-strain/src/engine.mjs",
+    "validator": "games/mystery-strain/scripts/validate-data.mjs",
+    "publicRoute": "site/public-route-patch/games/mystery-strain/"
+  },
+  "releaseGates": {
+    "rulesTested": true,
+    "browserTested": false,
+    "mobileTested": false,
+    "accessibilityReviewed": false,
+    "originalArtCleared": true,
+    "deploymentRegistered": false
+  }
+}
