@@ -1,0 +1,85 @@
+name: Game Release Integrity
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - data/public-navigation.json
+      - data/project-registry.json
+      - site/deployment/public-apps.json
+      - site/public-route-patch/games/**
+      - site/public-route-patch/projects/**
+      - scripts/validate-public-game-release-integrity.mjs
+      - scripts/promote-public-game-routes-via-wordpress.mjs
+      - package.json
+      - .github/workflows/game-release-integrity.yml
+  workflow_run:
+    workflows: ["DTFSeeds Production Gateway"]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: game-release-integrity-${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  static-integrity:
+    name: Validate registry and public-page agreement
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate public game release contract
+        run: npm run verify:release-integrity
+
+      - name: Syntax-check production route promotion
+        run: node --check scripts/promote-public-game-routes-via-wordpress.mjs
+
+  production-integrity:
+    name: Promote routes and verify production identity
+    needs: static-integrity
+    if: >-
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success') ||
+      github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    environment: production
+    env:
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      NODE_OPTIONS: --dns-result-order=ipv4first
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Require production WordPress credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${WP_API_USERNAME:-}"
+          test -n "${WP_API_PASSWORD:-}"
+
+      - name: Remove stale redirects from promoted public game routes
+        run: node scripts/promote-public-game-routes-via-wordpress.mjs
+
+      - name: Verify every ready public game resolves as its own page
+        run: npm run verify:release-integrity:live
