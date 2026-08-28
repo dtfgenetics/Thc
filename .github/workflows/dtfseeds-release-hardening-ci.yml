@@ -31,10 +31,16 @@ jobs:
           set -euo pipefail
           node --check scripts/plan-dtfseeds-release.mjs
           node --check scripts/publish-wordpress-learning-center-expansion-v1.mjs
+          node --check scripts/cleanup-stale-wordpress-suite-snippets.mjs
           bash -n scripts/run-workflow-and-wait.sh
           python -m py_compile scripts/package-public-suite-wordpress.py scripts/assemble-wordpress-suite-v2.py
           grep -Fq 'Enforce authoritative lane outcomes' .github/workflows/dtfseeds-production-gateway.yml
           grep -Fq 'cancel-in-progress: false' .github/workflows/wordpress-canonical-production.yml
+          grep -Fq 'cancel-in-progress: false' .github/workflows/deploy-public-suite-wordpress-v2.yml
+          grep -Fq 'assertNoOtherActivePublisher' scripts/cleanup-stale-wordpress-suite-snippets.mjs
+          grep -Fq 'Temporary read-only inspector' scripts/cleanup-stale-wordpress-suite-snippets.mjs
+          grep -Fq 'age<120' scripts/cleanup-stale-wordpress-suite-snippets.mjs
+          grep -Fq 'clearTransaction(bridge.token,staleId,state)' scripts/cleanup-stale-wordpress-suite-snippets.mjs
           grep -A2 -F 'Report production result to issue 46' .github/workflows/wordpress-canonical-production.yml | grep -Fq 'continue-on-error: true'
 
       - name: Assemble and inspect transactional Public Suite bridge
