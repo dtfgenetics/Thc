@@ -1,0 +1,85 @@
+name: DTFSeeds Live Verification Qualification
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - data/public-navigation.json
+      - scripts/verify-dtfseeds-feature-surface.mjs
+      - scripts/assemble-wordpress-suite-v2.py
+      - scripts/wordpress-suite-v2/**
+      - .github/workflows/verify-dtfseeds-feature-surface.yml
+      - .github/workflows/validate-wordpress-suite-v2-semantics.yml
+      - .github/workflows/dtfseeds-live-verification-ci.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dtfseeds-live-verification-ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  qualify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      SITE: https://dtfseeds.com
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate registry-derived route plan
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/verify-dtfseeds-feature-surface.mjs
+          node scripts/verify-dtfseeds-feature-surface.mjs --plan-only > "$RUNNER_TEMP/feature-plan.json"
+          node - <<'NODE'
+          const fs = require('fs');
+          const registry = JSON.parse(fs.readFileSync('data/public-navigation.json', 'utf8'));
+          const plan = JSON.parse(fs.readFileSync(process.env.RUNNER_TEMP + '/feature-plan.json', 'utf8'));
+          const expected = 3
+            + (registry.tools || []).filter(item => item?.public === true).length
+            + (registry.games || []).filter(item => item?.public === true).length;
+          if (plan.total !== expected) throw new Error(`Plan total ${plan.total} does not match registry-derived total ${expected}.`);
+          const routes = new Set(plan.routes.map(row => row.route));
+          if (routes.size !== plan.routes.length) throw new Error('Duplicate routes entered the public verification plan.');
+          for (const required of ['/projects/','/atlas/','/games/terpocalypse/','/games/phenoquest/','/games/kush-kings-chess/']) {
+            if (!routes.has(required)) throw new Error(`Missing required current public route ${required}`);
+          }
+          console.log(`Registry-backed plan contains ${plan.total} unique public surfaces.`);
+          NODE
+
+      - name: Assemble transactional deployer with durable route markers
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile scripts/assemble-wordpress-suite-v2.py
+          python scripts/assemble-wordpress-suite-v2.py "$RUNNER_TEMP/dtf-suite-v2.mjs"
+          node --check "$RUNNER_TEMP/dtf-suite-v2.mjs"
+          grep -Fq "['/projects/', 'DTF Projects']" "$RUNNER_TEMP/dtf-suite-v2.mjs"
+          ! grep -Fq "['/projects/', 'What is live, what is growing, and where it belongs.']" "$RUNNER_TEMP/dtf-suite-v2.mjs"
+
+      - name: Audit current public registry from fresh runner
+        shell: bash
+        env:
+          DTF_FEATURE_REPORT: ${{ runner.temp }}/dtf-feature-surface.json
+        run: |
+          set -euo pipefail
+          node scripts/verify-dtfseeds-feature-surface.mjs
+          node - <<'NODE'
+          const fs = require('fs');
+          const report = JSON.parse(fs.readFileSync(process.env.RUNNER_TEMP + '/dtf-feature-surface.json', 'utf8'));
+          if (report.failures !== 0) throw new Error(`Fresh-runner audit found ${report.failures} public route failures.`);
+          console.log(`Fresh-runner audit passed ${report.total} public surfaces.`);
+          NODE
