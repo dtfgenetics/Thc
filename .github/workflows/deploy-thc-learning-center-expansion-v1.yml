@@ -1,0 +1,151 @@
+name: Deploy THC Education Expansion V1
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/build-public-learning-center-expansion-v1.mjs'
+      - 'scripts/publish-wordpress-learning-center-expansion-v1.mjs'
+      - 'scripts/update-wordpress-learn-expansion-v1.mjs'
+      - '.github/workflows/deploy-thc-learning-center-expansion-v1.yml'
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-thc-education-expansion-v1
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: production
+    env:
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      BACKUP_ROOT: /tmp/dtf-learning-center-expansion
+
+    steps:
+      - name: Checkout canonical production repo
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate publisher code
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/build-public-learning-center-expansion-v1.mjs
+          node --check scripts/publish-wordpress-learning-center-expansion-v1.mjs
+          node --check scripts/update-wordpress-learn-expansion-v1.mjs
+          test -n "${WP_API_USERNAME:-}"
+          test -n "${WP_API_PASSWORD:-}"
+
+      - name: Build pinned Dtf420 education expansion
+        id: build
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/build-public-learning-center-expansion-v1.mjs | tee "$RUNNER_TEMP/education-expansion-build.json"
+          routes=(plant-health cultivation-science symptoms tools sources)
+          for route in "${routes[@]}"; do
+            file="site/public-route-patch/learn/$route/index.html"
+            test -s "$file"
+            grep -Eqi '<h1([ >])' "$file"
+            grep -Fqi 'Teaching Healthy Cultivation' "$file"
+            grep -Fqi 'rel="canonical"' "$file"
+            ! grep -Fqi 'Mystery_Line_F1_Regular_DTF_Strain_Card' "$file"
+            ! grep -Fqi 'Rainbow_Bubblegum_F1_Regular_DTF_Strain_Card' "$file"
+          done
+          test -s site/public-route-patch/learn/dtf420-education-expansion-manifest.json
+          grep -Fq '1427a9e1619a76a04b07c879d39b2af3b5b8806e' site/public-route-patch/learn/dtf420-education-expansion-manifest.json
+          echo "route_count=${#routes[@]}" >> "$GITHUB_OUTPUT"
+
+      - name: Publish expansion pages to WordPress
+        id: publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/publish-wordpress-learning-center-expansion-v1.mjs | tee "$RUNNER_TEMP/education-expansion-publish.json"
+          echo "outcome=success" >> "$GITHUB_OUTPUT"
+
+      - name: Add expansion routes to Learn hub
+        id: navigation
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/update-wordpress-learn-expansion-v1.mjs | tee "$RUNNER_TEMP/education-expansion-nav.json"
+          echo "outcome=success" >> "$GITHUB_OUTPUT"
+
+      - name: Fresh anonymous production verification
+        id: live
+        shell: bash
+        run: |
+          set -euo pipefail
+          routes=(plant-health cultivation-science symptoms tools sources)
+          for route in "${routes[@]}"; do
+            body="$RUNNER_TEMP/live-${route}.html"
+            curl -4 --fail --silent --show-error --location --retry 4 --retry-delay 3 \
+              -H 'Cache-Control: no-cache, no-store, max-age=0' -H 'Pragma: no-cache' \
+              "https://dtfseeds.com/learn/$route/?dtf_expansion=${GITHUB_RUN_ID}" -o "$body"
+            grep -Eqi '<h1([ >])' "$body"
+            grep -Fqi 'Teaching Healthy Cultivation' "$body"
+            grep -Fqi 'Source-controlled release' "$body"
+            ! grep -Fqi 'Mystery_Line_F1_Regular_DTF_Strain_Card' "$body"
+            ! grep -Fqi 'Rainbow_Bubblegum_F1_Regular_DTF_Strain_Card' "$body"
+          done
+          learn="$RUNNER_TEMP/live-learn.html"
+          curl -4 --fail --silent --show-error --location --retry 4 --retry-delay 3 \
+            -H 'Cache-Control: no-cache, no-store, max-age=0' -H 'Pragma: no-cache' \
+            "https://dtfseeds.com/learn/?dtf_expansion=${GITHUB_RUN_ID}" -o "$learn"
+          for href in /learn/cultivation-science/ /learn/symptoms/ /learn/tools/ /learn/sources/; do grep -Fq "$href" "$learn"; done
+          echo "outcome=success" >> "$GITHUB_OUTPUT"
+
+      - name: Upload rollback and release evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dtf-education-expansion-v1-${{ github.run_id }}
+          path: |
+            /tmp/dtf-learning-center-expansion
+            ${{ runner.temp }}/education-expansion-*.json
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report production result
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          JOB_STATUS: ${{ job.status }}
+          ROUTE_COUNT: ${{ steps.build.outputs.route_count }}
+          PUBLISH_OUTCOME: ${{ steps.publish.outputs.outcome }}
+          NAV_OUTCOME: ${{ steps.navigation.outputs.outcome }}
+          LIVE_OUTCOME: ${{ steps.live.outputs.outcome }}
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 46,
+              body: [
+                '## THC education expansion V1 production',
+                '',
+                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                `Result: **${process.env.JOB_STATUS}**`,
+                `Routes built: **${process.env.ROUTE_COUNT || 'not-run'}**`,
+                `WordPress publish: **${process.env.PUBLISH_OUTCOME || 'not-run'}**`,
+                `Learn navigation: **${process.env.NAV_OUTCOME || 'not-run'}**`,
+                `Fresh visitor verification: **${process.env.LIVE_OUTCOME || 'not-run'}**`,
+                '',
+                'Scope: expanded Plant Health/IPM, Cultivation Science, Symptom Differentials, printable field tools, and evidence/source library from pinned validated Dtf420 education content.'
+              ].join('\n')
+            });
