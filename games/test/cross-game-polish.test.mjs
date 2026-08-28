@@ -56,6 +56,12 @@ includes('site/public-route-patch/games/bud-or-bluff/index.html', [
   'src="player-pref-v1.js"'
 ]);
 
+includes('apps/high-land-web/src/overflowFixes.css', [
+  ':focus-visible',
+  '@media (prefers-reduced-motion: reduce)',
+  'animation-duration: 0.01ms !important'
+]);
+
 includes('site/public-route-patch/games/dtf-route.css', [
   ':focus-visible',
   'scroll-margin-top:96px',
