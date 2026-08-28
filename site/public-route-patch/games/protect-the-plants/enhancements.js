@@ -66,7 +66,7 @@
     } else if (name === 'lost') {
       tone(190, 0.12, 0, 'sawtooth', 0.03);
       tone(140, 0.18, 0.09, 'triangle', 0.025);
-      tone(95, 0.22, 0.18, 0, 'sine', 0.02);
+      tone(95, 0.22, 0.18, 'sine', 0.02);
     } else if (name === 'turn') {
       tone(520, 0.08, 0, 'sine', 0.024);
       tone(660, 0.09, 0.08, 'sine', 0.022);
