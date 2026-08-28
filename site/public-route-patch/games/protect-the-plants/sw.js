@@ -1,4 +1,4 @@
-const CACHE='ptp-shell-v2-burn-buds-20260827';
+const CACHE='ptp-shell-v2-burn-buds-native-20260827';
 const SHELL=['./','./index.html','./styles.css','./visual-fixes.css','./enhancements.css','./v2-extras.css','./burn-buds.css','./app.js','./enhancements.js','./v2-extras.js','./burn-buds-branding.js','./plant.svg','./manifest.webmanifest'];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(SHELL)).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith('ptp-shell-')&&key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim()))});
