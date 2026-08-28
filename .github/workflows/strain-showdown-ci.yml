@@ -1,25 +1,25 @@
-name: Strain Showdown Roster CI
+name: Strain Showdown CI
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'games/strain-showdown/**'
-      - 'data/genetics/catalog.json'
-      - '.github/workflows/strain-showdown-ci.yml'
-  pull_request:
-    branches: [main]
-    paths:
-      - 'games/strain-showdown/**'
-      - 'data/genetics/catalog.json'
-      - '.github/workflows/strain-showdown-ci.yml'
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - games/strain-showdown/**
+      - site/public-route-patch/games/strain-showdown/**
+      - .github/workflows/strain-showdown-ci.yml
 
 permissions:
   contents: read
 
+concurrency:
+  group: strain-showdown-ci
+  cancel-in-progress: true
+
 jobs:
-  validate:
+  test:
+    name: Validate 96-card browser prototype
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -27,13 +27,14 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Validate 96-card roster architecture and family identities
+      - name: Validate canonical roster
         run: node games/strain-showdown/scripts/validate-roster.mjs
-      - name: Confirm roster files are machine-readable JSON
-        shell: bash
+      - name: Test battle engine
+        run: node games/strain-showdown/test/engine.test.mjs
+      - name: Validate public runtime
         run: |
           set -euo pipefail
-          node -e "JSON.parse(require('node:fs').readFileSync('games/strain-showdown/data/roster-manifest.json','utf8'))"
-          for file in games/strain-showdown/data/roster/*.json; do
-            node -e "JSON.parse(require('node:fs').readFileSync(process.argv[1],'utf8'))" "$file"
-          done
+          node games/strain-showdown/scripts/validate-browser-build.mjs
+          node --check site/public-route-patch/games/strain-showdown/app.js
+          node --check site/public-route-patch/games/strain-showdown/engine.mjs
+          cmp games/strain-showdown/src/engine.mjs site/public-route-patch/games/strain-showdown/engine.mjs

@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#07100c">
+  <meta name="description" content="Strain Showdown — an original DTF Genetics browser card battle. Build a cannabis-family lineup, evolve Base cards into Select and Elite strains, and outplay the CPU.">
+  <link rel="canonical" href="https://dtfseeds.com/games/strain-showdown/">
+  <title>Strain Showdown | DTF Genetics Game Hub</title>
+  <link rel="stylesheet" href="../dtf-shell.css">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <main class="showdown-shell">
+    <header class="game-header">
+      <a class="hub-link" href="/games/" aria-label="Back to DTF Game Hub">← Game Hub</a>
+      <div class="brand-lockup">
+        <span class="eyebrow">DTF Genetics Original Browser Game</span>
+        <h1>STRAIN <span>SHOWDOWN</span></h1>
+        <p>Build the line. Make the selection. Evolve the keeper.</p>
+      </div>
+      <div class="header-actions">
+        <button id="rulesButton" class="ghost-button" type="button">How to Play</button>
+        <button id="soundButton" class="icon-button" type="button" aria-pressed="true" title="Toggle sound">Sound: On</button>
+      </div>
+    </header>
+
+    <section id="familyScreen" class="family-screen">
+      <div class="intro-panel">
+        <span class="section-kicker">Choose your family</span>
+        <h2>Eight play styles. One showdown.</h2>
+        <p>This first playable ruleset uses the canonical 96-card Strain Showdown roster. Card-specific effect text is intentionally not finalized yet; family passives drive the prototype battle system.</p>
+        <div class="record-strip" id="recordStrip">Prototype record: 0 W / 0 L</div>
+      </div>
+      <div id="familyGrid" class="family-grid" aria-live="polite"></div>
+    </section>
+
+    <section id="battleScreen" class="battle-screen" hidden>
+      <div class="scoreboard">
+        <div class="fighter-summary cpu-summary">
+          <span class="side-label">RIVAL GARDEN</span>
+          <strong id="cpuFamilyName">—</strong>
+          <div class="meter-row"><span>Garden</span><div class="garden-meter"><i id="cpuGardenBar"></i></div><b id="cpuGarden">20</b></div>
+          <div class="mini-stats"><span id="cpuFocus">Focus 3/3</span><span id="cpuDeck">Deck 6</span></div>
+        </div>
+        <div class="round-core">
+          <span id="turnBadge" class="turn-badge">YOUR TURN</span>
+          <b id="roundLabel">Round 1</b>
+          <small id="matchupLabel">— vs —</small>
+        </div>
+        <div class="fighter-summary player-summary">
+          <span class="side-label">YOUR GARDEN</span>
+          <strong id="playerFamilyName">—</strong>
+          <div class="meter-row"><span>Garden</span><div class="garden-meter"><i id="playerGardenBar"></i></div><b id="playerGarden">20</b></div>
+          <div class="mini-stats"><span id="playerFocus">Focus 3/3</span><span id="playerDeck">Deck 6</span></div>
+        </div>
+      </div>
+
+      <div class="passive-ribbon">
+        <div><span>Rival passive</span><strong id="cpuPassive">—</strong><small id="cpuPassiveText"></small></div>
+        <div><span>Your passive</span><strong id="playerPassive">—</strong><small id="playerPassiveText"></small></div>
+      </div>
+
+      <div id="arena" class="arena">
+        <div class="arena-label rival-label">RIVAL FIELD</div>
+        <div id="cpuLanes" class="lane-grid enemy-grid"></div>
+
+        <div class="midline" aria-hidden="true">
+          <i></i><span>SHOWDOWN</span><i></i>
+        </div>
+
+        <div id="playerLanes" class="lane-grid player-grid"></div>
+        <div class="arena-label your-label">YOUR FIELD</div>
+      </div>
+
+      <section class="hand-panel">
+        <div class="hand-head">
+          <div>
+            <span class="section-kicker">Your hand</span>
+            <p id="selectionHint">Select a card, then choose a valid lane.</p>
+          </div>
+          <div class="turn-actions">
+            <button id="cancelSelection" class="ghost-button compact" type="button" hidden>Cancel</button>
+            <button id="endTurnButton" class="primary-button" type="button">End Turn</button>
+          </div>
+        </div>
+        <div id="hand" class="hand" aria-live="polite"></div>
+      </section>
+
+      <aside class="battle-feed">
+        <div class="feed-head"><span>Battle Feed</span><button id="restartButton" type="button">Restart Match</button></div>
+        <ol id="battleLog"></ol>
+      </aside>
+    </section>
+  </main>
+
+  <dialog id="rulesDialog" class="rules-dialog">
+    <button id="closeRules" class="dialog-close" type="button" aria-label="Close rules">×</button>
+    <span class="section-kicker">Prototype ruleset v0.1</span>
+    <h2>How Strain Showdown Works</h2>
+    <div class="rules-grid">
+      <article><b>1</b><h3>Play a Base</h3><p>Stage 1 Base cards enter an empty lane. They cost 1 Focus.</p></article>
+      <article><b>2</b><h3>Make a Selection</h3><p>Replace a same-family Stage 1 card with a Stage 2 Select card. It costs 2 Focus.</p></article>
+      <article><b>3</b><h3>Raise an Elite</h3><p>Replace a Stage 2 Select with a Stage 3 Elite. It costs 3 Focus.</p></article>
+      <article><b>4</b><h3>Attack the Lane</h3><p>Attacks normally cost 1 Focus. Damage hits the opposing card in that lane; an open lane damages the rival Garden.</p></article>
+      <article><b>5</b><h3>Use Family Identity</h3><p>Each family has one prototype passive based on its locked design identity.</p></article>
+      <article><b>6</b><h3>Break the Garden</h3><p>Reduce the rival Garden from 20 to 0. If the battle reaches 18 rounds, board strength breaks the tie.</p></article>
+    </div>
+    <p class="rules-note">This browser build is a gameplay prototype. The canonical 96-card roster is locked, while final per-card effect text, balance, art, and print rules remain separate release gates.</p>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <div id="resultOverlay" class="result-overlay" hidden>
+    <div class="result-card">
+      <span class="section-kicker">Match complete</span>
+      <h2 id="resultTitle">Victory</h2>
+      <p id="resultText"></p>
+      <div id="resultStats" class="result-stats"></div>
+      <div class="result-actions">
+        <button id="rematchButton" class="primary-button" type="button">Rematch</button>
+        <button id="changeFamilyButton" class="ghost-button" type="button">Change Family</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
