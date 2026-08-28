@@ -13,7 +13,7 @@ permissions:
 
 concurrency:
   group: dtfseeds-wordpress-production
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   publish:
@@ -294,6 +294,7 @@ jobs:
 
       - name: Report production result to issue 46
         if: always()
+        continue-on-error: true
         uses: actions/github-script@v7
         env:
           JOB_STATUS: ${{ job.status }}
