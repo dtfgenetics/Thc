@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Strain Match | DTF Genetics</title>
+  <meta name="description" content="Play Strain Match, a DTF Genetics educational memory game about terpenes, plant-problem clues, seeds and breeding, and cultivation tools." />
+  <meta name="theme-color" content="#07130c" />
+  <link rel="canonical" href="https://dtfseeds.com/games/strain-match/" />
+  <link rel="stylesheet" href="/games/dtf-route.css" />
+  <link rel="stylesheet" href="./strain-match.css" />
+</head>
+<body>
+  <main class="match-shell">
+    <header class="match-hero">
+      <a class="back-link" href="/games/">← Game Hub</a>
+      <p class="eyebrow">DTF Genetics · Educational memory game</p>
+      <h1>Strain Match</h1>
+      <p class="lede">Flip two cards. Match each cultivation term with its paired clue. Build recall while you play.</p>
+    </header>
+
+    <section class="control-panel" aria-label="Game controls">
+      <div class="deck-picker" id="deck-picker" aria-label="Choose a deck"></div>
+      <button id="restart" class="primary-control" type="button">Shuffle & restart</button>
+    </section>
+
+    <section class="score-strip" aria-label="Round score">
+      <div><span>Moves</span><strong id="moves">0</strong></div>
+      <div><span>Time</span><strong id="time">0:00</strong></div>
+      <div><span>Pairs</span><strong id="pairs">0 / 8</strong></div>
+      <div><span>Best</span><strong id="best">—</strong></div>
+    </section>
+
+    <section class="deck-copy" aria-live="polite">
+      <h2 id="deck-title">Loading…</h2>
+      <p id="deck-description"></p>
+    </section>
+
+    <section id="board" class="match-board" aria-label="Memory card board"></section>
+
+    <section class="learn-panel" aria-live="polite">
+      <p class="eyebrow">Match note</p>
+      <p id="learn-note">Solve a pair to reveal a quick learning note.</p>
+    </section>
+
+    <section id="complete" class="complete-panel" hidden aria-live="assertive">
+      <p class="eyebrow">Round complete</p>
+      <h2>Garden memory locked in.</h2>
+      <p id="complete-copy"></p>
+      <button id="play-again" class="primary-control" type="button">Play this deck again</button>
+    </section>
+  </main>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
