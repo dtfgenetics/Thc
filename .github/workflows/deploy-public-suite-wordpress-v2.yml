@@ -254,7 +254,7 @@ jobs:
             echo "Checking $url"
             curl -fsSL --retry 5 --retry-delay 5 -H 'Cache-Control: no-cache, no-store, max-age=0' "$url?dtf_suite_verify=${GITHUB_RUN_ID}" | grep -Fqi "$marker"
           }
-          check 'https://dtfseeds.com/games/' '11 playable browser games'
+          check 'https://dtfseeds.com/games/' '13 playable browser games'
           check 'https://dtfseeds.com/games/high-iq/' 'Build your High IQ run'
           check 'https://dtfseeds.com/games/strain-showdown/' 'Eight play styles. One showdown.'
           check 'https://dtfseeds.com/games/protect-the-plants/' 'Protect the Plants'
