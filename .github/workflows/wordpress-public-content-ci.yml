@@ -6,8 +6,10 @@ on:
       - site/wordpress/pages/**
       - scripts/apply-wordpress-public-content.sh
       - scripts/apply-wordpress-public-content-rest.mjs
+      - docs/DTFSEEDS_PRODUCTION_OWNERSHIP.md
       - .github/workflows/wordpress-public-content-*.yml
       - .github/workflows/wordpress-public-pages-deploy.yml
+      - .github/workflows/wordpress-canonical-production.yml
       - .github/workflows/wordpress-reconcile-command.yml
   push:
     branches:
@@ -16,8 +18,10 @@ on:
       - site/wordpress/pages/**
       - scripts/apply-wordpress-public-content.sh
       - scripts/apply-wordpress-public-content-rest.mjs
+      - docs/DTFSEEDS_PRODUCTION_OWNERSHIP.md
       - .github/workflows/wordpress-public-content-*.yml
       - .github/workflows/wordpress-public-pages-deploy.yml
+      - .github/workflows/wordpress-canonical-production.yml
       - .github/workflows/wordpress-reconcile-command.yml
 
 permissions:
@@ -52,7 +56,7 @@ jobs:
           actual="$(find site/wordpress/pages -maxdepth 1 -type f -name '*.html' -printf '%f\n' | sed 's/\.html$//' | sort | paste -sd, -)"
           expected_sorted="$(printf '%s\n' "${expected[@]}" | sort | paste -sd, -)"
           [[ "$actual" == "$expected_sorted" ]] || {
-            echo "Unexpected WordPress page ownership. Expected: $expected_sorted; actual: $actual" >&2
+            echo "Unexpected maintained WordPress page sources. Expected: $expected_sorted; actual: $actual" >&2
             exit 1
           }
 
@@ -61,17 +65,27 @@ jobs:
         run: |
           set -euo pipefail
 
-          for slug in home seeds learn community shop gallery about contact; do
+          # Generic canonical reconciliation owns editorial/root pages only.
+          for slug in home learn community shop gallery about contact; do
             grep -Eq "['\"]$slug['\"]" scripts/apply-wordpress-public-content-rest.mjs
           done
+          ! grep -Eq "\['seeds',[[:space:]]*'|\['games',[[:space:]]*'|\['high-iq',[[:space:]]*'" scripts/apply-wordpress-public-content-rest.mjs
 
-          ! grep -Eq "\['games',[[:space:]]*'|\['high-iq',[[:space:]]*'" scripts/apply-wordpress-public-content-rest.mjs
+          # Seeds remains a maintained source, but production ownership belongs to the dedicated genetics publisher.
+          grep -Fq '| `/seeds/` and `/seeds/*` | Dedicated genetics library publisher |' docs/DTFSEEDS_PRODUCTION_OWNERSHIP.md
+          grep -Fq 'genetics publisher the sole Seeds-route owner' docs/DTFSEEDS_PRODUCTION_OWNERSHIP.md
+
           ! grep -Eq 'page_slugs=.*\b(games|high-iq)\b|required_files=.*\b(games|high-iq)\b' scripts/apply-wordpress-public-content.sh
 
           test -s site/public-route-patch/games/index.html
           test -s site/public-route-patch/games/high-iq/index.html
           grep -Fq 'https://dtfseeds.com/games/' site/public-route-patch/games/index.html
           grep -Fq 'https://dtfseeds.com/games/high-iq/' site/public-route-patch/games/high-iq/index.html
+
+          # Article publishing must never become a second canonical-page writer.
+          ! grep -Fq 'workflow_run:' .github/workflows/wordpress-public-content-cleanup.yml
+          ! grep -Fq 'apply-wordpress-public-content-rest.mjs' .github/workflows/wordpress-public-content-cleanup.yml
+          ! grep -Fq 'site/wordpress/pages/**' .github/workflows/wordpress-public-content-cleanup.yml
 
       - name: Enforce canonical WordPress front-page routing
         shell: bash
@@ -89,7 +103,7 @@ jobs:
           grep -Fq 'option update page_on_front' scripts/apply-wordpress-public-content.sh
 
           grep -Fq "verify_page '/' 'Genetics, cultivation education, practical tools, and original cannabis games.'" .github/workflows/wordpress-public-pages-deploy.yml
-          grep -Fq "verify_page '/' 'Genetics, cultivation education, practical tools, and original cannabis games.'" .github/workflows/wordpress-public-content-cleanup.yml
+          grep -Fq "verify_page '/' 'Genetics first. Cultivation science behind it.'" .github/workflows/wordpress-canonical-production.yml
 
       - name: Validate owner-only reconciliation command guard
         shell: bash
