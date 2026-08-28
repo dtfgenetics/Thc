@@ -15,12 +15,25 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: {node-version: '22'}
-      - run: node games/grow-room-bingo/scripts/validate-data.mjs
-      - run: node --check site/public-route-patch/games/grow-room-bingo/app.js
-      - shell: bash
+      - name: Validate prompt data
+        run: node games/grow-room-bingo/scripts/validate-data.mjs
+      - name: Test six-character card-code contract
+        run: node games/grow-room-bingo/test/card-code.test.mjs
+      - name: Validate browser JavaScript syntax
+        run: |
+          node --check site/public-route-patch/games/grow-room-bingo/app.js
+          node --check site/public-route-patch/games/grow-room-bingo/code-utils.mjs
+      - name: Verify canonical and public code contract match
+        run: cmp games/grow-room-bingo/code-utils.mjs site/public-route-patch/games/grow-room-bingo/code-utils.mjs
+      - name: Verify public route and release boundary
+        shell: bash
         run: |
           set -euo pipefail
-          test -s site/public-route-patch/games/grow-room-bingo/index.html
-          test -s site/public-route-patch/games/grow-room-bingo/bingo.css
-          grep -Fq 'https://dtfseeds.com/games/grow-room-bingo/' site/public-route-patch/games/grow-room-bingo/index.html
+          root=site/public-route-patch/games/grow-room-bingo
+          test -s "$root/index.html"
+          test -s "$root/bingo.css"
+          test -s "$root/data/prompts.json"
+          grep -Fq 'https://dtfseeds.com/games/grow-room-bingo/' "$root/index.html"
+          grep -Fq 'maxlength="6"' "$root/index.html"
+          grep -Fq 'pattern="[A-HJ-NP-Z2-9]{6}"' "$root/index.html"
           grep -Fq 'deploymentRegistered": false' games/grow-room-bingo/game.json
