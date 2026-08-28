@@ -100,6 +100,64 @@ async function mapLimit(items, limit, task) {
   return output;
 }
 
+const runtimeJsonProbes = {
+  'high-iq': [
+    { path: 'data/manifest.json', validate: (data) => data?.datasetVersion === '2.2' && data?.questionCount === 80 && data?.sourceCount === 50 }
+  ],
+  'high-life': [
+    { path: 'data/events.json', validate: (data) => Array.isArray(data) && data.length === 18 }
+  ],
+  'grower-conversations': [
+    { path: 'data/prompt-bank.json', validate: (data) => data?.cardCount === 96 && Object.keys(data?.categories || {}).length === 8 }
+  ],
+  'seed-man-platformer': [
+    { path: 'data/level-01.json', validate: (data) => data?.id === 'sprout-run' && data?.pickups?.length === 8 }
+  ],
+  'strain-showdown': [
+    { path: 'data/families.json', validate: (data) => Array.isArray(data) && data.length === 8 },
+    ...['kush', 'haze', 'skunk', 'gas', 'cookies', 'fruit', 'purple', 'frost'].map((family) => ({
+      path: `data/roster/${family}.json`,
+      validate: (data) => Array.isArray(data) && data.length === 12
+    }))
+  ]
+};
+
+async function fetchJsonProbe(pageUrl, probe) {
+  const url = new URL(probe.path, pageUrl);
+  url.searchParams.set('dtf_game_data_audit', Date.now().toString());
+  const response = await fetchWithTimeout(url.href, { attempts: 2, timeoutMs: 10_000 });
+  if (!response.ok) return { path: probe.path, problem: `HTTP ${response.status}` };
+  if (!/application\/json/i.test(response.headers.get('content-type') || '')) {
+    return { path: probe.path, problem: `unexpected content-type ${response.headers.get('content-type') || '<missing>'}` };
+  }
+  try {
+    const data = await response.json();
+    return { path: probe.path, data, problem: probe.validate(data) ? null : 'unexpected JSON payload' };
+  } catch (error) {
+    return { path: probe.path, problem: `invalid JSON (${errorDetail(error)})` };
+  }
+}
+
+async function auditRuntimeJson(game, pageUrl) {
+  const configured = runtimeJsonProbes[game.id] || [];
+  const results = await mapLimit(configured, 6, (probe) => fetchJsonProbe(pageUrl, probe));
+
+  if (game.id === 'high-iq') {
+    const manifest = results.find((result) => result.path === 'data/manifest.json');
+    if (manifest?.data && !manifest.problem) {
+      const chunks = [...(manifest.data.questionChunks || []), ...(manifest.data.sourceChunks || [])];
+      const chunkResults = await mapLimit(chunks, 6, (filename) => fetchJsonProbe(pageUrl, {
+        path: `data/${filename}`,
+        validate: (data) => Array.isArray(data) && data.length > 0
+      }));
+      results.push(...chunkResults);
+    }
+  }
+
+  const problems = results.filter((result) => result.problem).map((result) => `${result.path} (${result.problem})`);
+  return { checked: results.length, problems };
+}
+
 function validateHubLinks(html, sourceLabel) {
   const problems = [];
   for (const game of games) {
@@ -260,16 +318,19 @@ async function auditLiveGame(game) {
     const brokenAssets = assetProblems.filter(Boolean);
     if (brokenAssets.length) problems.push(`broken same-origin assets: ${brokenAssets.join(', ')}`);
 
+    const readiness = await auditRuntimeJson(game, finalUrl.href);
+    if (readiness.problems.length) problems.push(`broken runtime data: ${readiness.problems.join(', ')}`);
+
     if (game.status === 'multiplayer') {
       if (!/(create|join|room|match|session)/i.test(html)) problems.push('multiplayer route lacks create/join/session UI markers');
     } else if (!/(<script\b|<button\b|<canvas\b|<form\b)/i.test(html)) {
       problems.push('play-now route exposes no obvious interactive runtime marker');
     }
 
-    results.push({ id: game.id, route: game.route, status: response.status, assetsChecked: assets.length, problems });
+    results.push({ id: game.id, route: game.route, status: response.status, assetsChecked: assets.length, runtimeDataChecked: readiness.checked, problems });
   } catch (error) {
     problems.push(errorDetail(error));
-    results.push({ id: game.id, route: game.route, status: null, assetsChecked: 0, problems });
+    results.push({ id: game.id, route: game.route, status: null, assetsChecked: 0, runtimeDataChecked: 0, problems });
   }
   if (problems.length) failures.push({ id: game.id, route: game.route, problems });
 }
@@ -307,7 +368,7 @@ fs.writeFileSync('game-route-audit.json', JSON.stringify({
 
 console.log(`Checked ${games.length} public game routes in ${isPullRequest ? 'candidate-source' : 'production-live'} mode.`);
 for (const result of results) {
-  console.log(`${result.problems.length ? 'FAIL' : 'PASS'} ${result.route} — ${result.status} — source: ${result.sourceRoot || 'external'} — assets checked: ${result.assetsChecked}${result.problems.length ? ` — ${result.problems.join('; ')}` : ''}`);
+  console.log(`${result.problems.length ? 'FAIL' : 'PASS'} ${result.route} — ${result.status} — source: ${result.sourceRoot || 'external'} — assets checked: ${result.assetsChecked} — runtime data checked: ${result.runtimeDataChecked || 0}${result.problems.length ? ` — ${result.problems.join('; ')}` : ''}`);
 }
 for (const failure of failures.filter((item) => item.id === 'game-hub')) console.error(`FAIL ${failure.route} — ${failure.problems.join('; ')}`);
 
