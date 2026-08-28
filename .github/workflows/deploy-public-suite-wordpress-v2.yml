@@ -264,7 +264,10 @@ jobs:
             https://dtfseeds.com/atlas/root-system/rhizosphere/ \
             https://dtfseeds.com/atlas/downloads/; do
             echo "Checking $url"
-            curl -fsSL --retry 5 --retry-delay 6 "$url" | grep -Eiq 'THC Living Plant Atlas|Rhizosphere|Field Cards|Root System'
+            body="$(curl -fsSL --retry 5 --retry-delay 6 \
+              -H 'Cache-Control: no-cache, no-store, max-age=0' \
+              "${url}?dtf_atlas_verify=${GITHUB_RUN_ID}")"
+            grep -Eiq 'THC Living Plant Atlas|Rhizosphere|Field Cards|Root System' <<<"$body"
           done
 
       - name: Verify current public application surfaces
@@ -272,9 +275,12 @@ jobs:
         run: |
           set -euo pipefail
           check() {
-            local url="$1" marker="$2"
+            local url="$1" marker="$2" body
             echo "Checking $url"
-            curl -fsSL --retry 5 --retry-delay 5 -H 'Cache-Control: no-cache, no-store, max-age=0' "$url?dtf_suite_verify=${GITHUB_RUN_ID}" | grep -Fqi "$marker"
+            body="$(curl -fsSL --retry 5 --retry-delay 5 \
+              -H 'Cache-Control: no-cache, no-store, max-age=0' \
+              "$url?dtf_suite_verify=${GITHUB_RUN_ID}")"
+            grep -Fqi "$marker" <<<"$body"
           }
           check 'https://dtfseeds.com/games/' '15 playable browser games'
           check 'https://dtfseeds.com/games/high-iq/' 'Build your High IQ run'
