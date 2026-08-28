@@ -12,6 +12,7 @@ const games = nav.games.filter((game) => game.public && game.route);
 const failures = [];
 const results = [];
 const isPullRequest = process.env.GITHUB_EVENT_NAME === 'pull_request';
+const dtfRepo = 'dtfgenetics/Thc';
 
 function absolute(base, value) {
   try { return new URL(value, base); } catch { return null; }
@@ -34,7 +35,7 @@ function assetsFromHtml(html, pageUrl) {
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-function networkErrorDetail(error) {
+function errorDetail(error) {
   if (!(error instanceof Error)) return String(error);
   const cause = error.cause;
   if (cause && typeof cause === 'object') {
@@ -46,14 +47,8 @@ function networkErrorDetail(error) {
 }
 
 async function fetchWithTimeout(url, options = {}) {
-  const {
-    attempts = 3,
-    timeoutMs = 15_000,
-    headers = {},
-    ...fetchOptions
-  } = options;
+  const { attempts = 3, timeoutMs = 15_000, headers = {}, ...fetchOptions } = options;
   let lastError = null;
-
   for (let attempt = 1; attempt <= attempts; attempt += 1) {
     try {
       const response = await fetch(url, {
@@ -61,34 +56,29 @@ async function fetchWithTimeout(url, options = {}) {
         ...fetchOptions,
         signal: AbortSignal.timeout(timeoutMs),
         headers: {
-          'user-agent': 'DTFSeeds-Game-Route-QA/1.3',
+          'user-agent': 'DTFSeeds-Game-Route-QA/1.4',
           'cache-control': 'no-cache, no-store, max-age=0',
           pragma: 'no-cache',
           ...headers
         }
       });
-      const retryableStatus = response.status === 429 || response.status >= 500;
-      if (!retryableStatus || attempt === attempts) return response;
+      const retryable = response.status === 429 || response.status >= 500;
+      if (!retryable || attempt === attempts) return response;
       await response.body?.cancel().catch(() => {});
-      await sleep(400 * attempt);
     } catch (error) {
       lastError = error;
       if (attempt === attempts) break;
-      await sleep(400 * attempt);
     }
+    await sleep(400 * attempt);
   }
-
-  throw new Error(`fetch failed after ${attempts} attempts (${networkErrorDetail(lastError)})`);
+  throw new Error(`fetch failed after ${attempts} attempts (${errorDetail(lastError)})`);
 }
 
 async function assetOk(url) {
   let response = await fetchWithTimeout(url, { method: 'HEAD', attempts: 2, timeoutMs: 10_000 });
   if (response.status === 405 || response.status === 403) {
     response = await fetchWithTimeout(url, {
-      method: 'GET',
-      attempts: 2,
-      timeoutMs: 10_000,
-      headers: { range: 'bytes=0-0' }
+      method: 'GET', attempts: 2, timeoutMs: 10_000, headers: { range: 'bytes=0-0' }
     });
   }
   return { ok: response.ok, status: response.status };
@@ -110,8 +100,8 @@ function validateHubLinks(html, sourceLabel) {
 }
 
 function walkFiles(root) {
+  if (!fs.existsSync(root)) return [];
   const files = [];
-  if (!fs.existsSync(root)) return files;
   for (const entry of fs.readdirSync(root, { withFileTypes: true })) {
     const full = path.join(root, entry.name);
     if (entry.isDirectory()) files.push(...walkFiles(full));
@@ -123,23 +113,52 @@ function walkFiles(root) {
 function checkSyntax(file) {
   const ext = path.extname(file).toLowerCase();
   if (!['.js', '.mjs', '.php'].includes(ext)) return null;
-  const command = ext === '.php' ? 'php' : process.execPath;
-  const args = ext === '.php' ? ['-l', file] : ['--check', file];
-  const run = spawnSync(command, args, { encoding: 'utf8' });
-  if (run.error) return `${path.relative('.', file)} syntax check could not run: ${run.error.message}`;
-  if (run.status !== 0) return `${path.relative('.', file)} syntax error: ${(run.stderr || run.stdout || '').trim()}`;
+  const run = ext === '.php'
+    ? spawnSync('php', ['-l', file], { encoding: 'utf8' })
+    : spawnSync(process.execPath, ['--check', file], { encoding: 'utf8' });
+  if (run.error) return `${file} syntax check could not run: ${run.error.message}`;
+  if (run.status !== 0) return `${file} syntax error: ${(run.stderr || run.stdout || '').trim()}`;
   return null;
 }
 
-function localPathForPublicUrl(url) {
-  if (url.origin !== new URL(BASE).origin) return null;
-  const pathname = decodeURIComponent(url.pathname);
-  if (!pathname.startsWith('/games/') && !pathname.startsWith('/assets/') && !pathname.startsWith('/puzzles/')) return null;
-  const clean = pathname.replace(/^\/+/, '');
-  const candidate = path.join('site/public-route-patch', clean);
-  if (fs.existsSync(candidate)) return candidate;
-  const rootCandidate = path.join('site/public-route-patch', clean.replace(/^puzzles\//, '../puzzles/'));
-  return fs.existsSync(rootCandidate) ? rootCandidate : candidate;
+function routeRootFor(game) {
+  const slug = game.route.replace(/^\/games\//, '').replace(/\/$/, '');
+  return path.join('site/public-route-patch/games', slug);
+}
+
+function sourceInfo(game, app) {
+  const routeRoot = routeRootFor(game);
+  const isLocalRepo = app?.repository === dtfRepo;
+  const sourceRoot = isLocalRepo && app?.sourcePath ? app.sourcePath : routeRoot;
+  const candidates = [
+    path.join(routeRoot, 'index.html'),
+    path.join(sourceRoot, 'index.html'),
+    path.join(sourceRoot, 'public', 'index.html')
+  ];
+  return {
+    routeRoot,
+    sourceRoot,
+    indexPath: candidates.find((candidate) => fs.existsSync(candidate)) || null,
+    isLocalRepo
+  };
+}
+
+function checkRouteAssets(html, game, routeRoot) {
+  if (!fs.existsSync(path.join(routeRoot, 'index.html'))) return { checked: 0, problems: [] };
+  const assets = assetsFromHtml(html, new URL(game.route, BASE).href);
+  const missing = [];
+  for (const asset of assets) {
+    const pathname = decodeURIComponent(asset.pathname);
+    if (!pathname.startsWith(game.route)) continue;
+    const relative = pathname.slice(game.route.length).replace(/^\/+/, '');
+    if (!relative) continue;
+    const candidate = path.join(routeRoot, relative);
+    if (!fs.existsSync(candidate)) missing.push(asset.pathname);
+  }
+  return {
+    checked: assets.length,
+    problems: missing.length ? [`missing candidate same-route assets: ${missing.join(', ')}`] : []
+  };
 }
 
 function auditCandidateGame(game) {
@@ -148,45 +167,53 @@ function auditCandidateGame(game) {
   if (!app) problems.push('missing deployment registry entry');
   else {
     if (app.route !== game.route) problems.push(`deployment route mismatch: ${app.route || '<none>'}`);
-    if (['not-deployable', 'in-development', 'preproduction'].includes(app.status)) problems.push(`deployment status is not public-ready: ${app.status}`);
+    if (['not-deployable', 'in-development', 'preproduction'].includes(app.status)) {
+      problems.push(`deployment status is not public-ready: ${app.status}`);
+    }
   }
 
-  const routeSlug = game.route.replace(/^\/games\//, '').replace(/\/$/, '');
-  const routeRoot = path.join('site/public-route-patch/games', routeSlug);
-  const indexPath = path.join(routeRoot, 'index.html');
-
-  if (!fs.existsSync(indexPath)) {
-    if (!app || app.repository === 'dtfgenetics/Thc') problems.push(`missing candidate route source: ${indexPath}`);
-    else if (!app.repository || app.repository === 'dtfgenetics/Thc') problems.push('external runtime repository is not identified');
-    results.push({ id: game.id, route: game.route, status: 'candidate-external', assetsChecked: 0, problems });
+  const source = sourceInfo(game, app);
+  if (!source.indexPath) {
+    if (source.isLocalRepo || !app) {
+      problems.push(`missing candidate index in registered source: ${source.sourceRoot}`);
+    } else if (!app.repository) {
+      problems.push('external runtime repository is not identified');
+    }
+    const status = source.isLocalRepo ? 'candidate-local-missing' : 'candidate-external';
+    results.push({ id: game.id, route: game.route, status, assetsChecked: 0, problems });
     if (problems.length) failures.push({ id: game.id, route: game.route, problems });
     return;
   }
 
-  const html = fs.readFileSync(indexPath, 'utf8');
+  const html = fs.readFileSync(source.indexPath, 'utf8');
   if (html.length < 180) problems.push(`candidate HTML payload too small (${html.length} bytes)`);
   if (!/<title\b[^>]*>[^<]+<\/title>/i.test(html)) problems.push('candidate route missing document title');
-  if (/email@email\.com|\+123456789|Needed from owner|Reserved strain card/i.test(html)) problems.push('candidate route contains stale placeholder content');
+  if (/email@email\.com|\+123456789|Needed from owner|Reserved strain card/i.test(html)) {
+    problems.push('candidate route contains stale placeholder content');
+  }
   if (game.status === 'multiplayer') {
     if (!/(create|join|room|match|session)/i.test(html)) problems.push('candidate multiplayer route lacks create/join/session UI markers');
-  } else if (!/(<script\b|<button\b|<canvas\b|<form\b)/i.test(html)) {
+  } else if (!/(<script\b|<button\b|<canvas\b|<form\b|id=["']root["'])/i.test(html)) {
     problems.push('candidate play-now route exposes no obvious interactive runtime marker');
   }
 
-  const assets = assetsFromHtml(html, new URL(game.route, BASE).href);
-  const missingAssets = [];
-  for (const asset of assets) {
-    const local = localPathForPublicUrl(asset);
-    if (local && !fs.existsSync(local)) missingAssets.push(asset.pathname);
-  }
-  if (missingAssets.length) problems.push(`missing candidate same-origin assets: ${missingAssets.join(', ')}`);
+  const assetAudit = checkRouteAssets(html, game, source.routeRoot);
+  problems.push(...assetAudit.problems);
 
-  for (const file of walkFiles(routeRoot)) {
+  const syntaxRoot = fs.existsSync(source.sourceRoot) ? source.sourceRoot : source.routeRoot;
+  for (const file of walkFiles(syntaxRoot)) {
     const syntaxProblem = checkSyntax(file);
     if (syntaxProblem) problems.push(syntaxProblem);
   }
 
-  results.push({ id: game.id, route: game.route, status: 'candidate-source', assetsChecked: assets.length, problems });
+  results.push({
+    id: game.id,
+    route: game.route,
+    status: source.isLocalRepo ? 'candidate-source' : 'candidate-external-mirror',
+    sourceRoot: syntaxRoot,
+    assetsChecked: assetAudit.checked,
+    problems
+  });
   if (problems.length) failures.push({ id: game.id, route: game.route, problems });
 }
 
@@ -212,7 +239,7 @@ async function auditLiveGame(game) {
         const check = await assetOk(asset.href);
         if (!check.ok) brokenAssets.push(`${asset.pathname} (${check.status})`);
       } catch (error) {
-        brokenAssets.push(`${asset.pathname} (${networkErrorDetail(error)})`);
+        brokenAssets.push(`${asset.pathname} (${errorDetail(error)})`);
       }
     }
     if (brokenAssets.length) problems.push(`broken same-origin assets: ${brokenAssets.join(', ')}`);
@@ -225,7 +252,7 @@ async function auditLiveGame(game) {
 
     results.push({ id: game.id, route: game.route, status: response.status, assetsChecked: assets.length, problems });
   } catch (error) {
-    problems.push(networkErrorDetail(error));
+    problems.push(errorDetail(error));
     results.push({ id: game.id, route: game.route, status: null, assetsChecked: 0, problems });
   }
   if (problems.length) failures.push({ id: game.id, route: game.route, problems });
@@ -237,7 +264,7 @@ if (isPullRequest) {
   try {
     validateHubLinks(fs.readFileSync(hubPath, 'utf8'), hubPath);
   } catch (error) {
-    failures.push({ id: 'game-hub', route: hubPath, problems: [`candidate hub source unavailable: ${networkErrorDetail(error)}`] });
+    failures.push({ id: 'game-hub', route: hubPath, problems: [`candidate hub source unavailable: ${errorDetail(error)}`] });
   }
 } else {
   for (const game of games) await auditLiveGame(game);
@@ -249,7 +276,7 @@ if (isPullRequest) {
     if (!response.ok) failures.push({ id: 'game-hub', route: '/games/', problems: [`HTTP ${response.status}`] });
     validateHubLinks(html, '/games/');
   } catch (error) {
-    failures.push({ id: 'game-hub', route: '/games/', problems: [networkErrorDetail(error)] });
+    failures.push({ id: 'game-hub', route: '/games/', problems: [errorDetail(error)] });
   }
 }
 
@@ -262,7 +289,9 @@ fs.writeFileSync('game-route-audit.json', JSON.stringify({
 }, null, 2));
 
 console.log(`Checked ${games.length} public game routes in ${isPullRequest ? 'candidate-source' : 'production-live'} mode.`);
-for (const result of results) console.log(`${result.problems.length ? 'FAIL' : 'PASS'} ${result.route} — ${result.status} — assets checked: ${result.assetsChecked}${result.problems.length ? ` — ${result.problems.join('; ')}` : ''}`);
+for (const result of results) {
+  console.log(`${result.problems.length ? 'FAIL' : 'PASS'} ${result.route} — ${result.status} — source: ${result.sourceRoot || 'external'} — assets checked: ${result.assetsChecked}${result.problems.length ? ` — ${result.problems.join('; ')}` : ''}`);
+}
 for (const failure of failures.filter((item) => item.id === 'game-hub')) console.error(`FAIL ${failure.route} — ${failure.problems.join('; ')}`);
 
 if (failures.length) {
