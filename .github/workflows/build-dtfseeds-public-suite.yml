@@ -27,7 +27,7 @@ permissions:
 
 concurrency:
   group: dtfseeds-public-suite
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   build:
@@ -110,6 +110,24 @@ jobs:
           php -l site/public-route-patch/games/bud-or-bluff/deck.php
           node games/bud-or-bluff/test/online-lobby-v2.test.mjs
           test -s site/public-route-patch/games/bud-or-bluff/index.html
+
+      - name: Validate promoted Terpocalypse and PhenoQuest routes
+        run: |
+          set -euo pipefail
+          node --check site/public-route-patch/games/terpocalypse/main.js
+          node --check site/public-route-patch/games/terpocalypse/game-data.js
+          test -s site/public-route-patch/games/terpocalypse/index.html
+          test -s site/public-route-patch/games/terpocalypse/styles.css
+          grep -Fq 'LEVEL 01 · THE VEG LAB' site/public-route-patch/games/terpocalypse/index.html
+          test -s site/public-route-patch/games/phenoquest/index.html
+          test -s site/public-route-patch/games/phenoquest/game.js
+          test -s site/public-route-patch/games/phenoquest/lineage-runtime.js
+          test -s site/public-route-patch/games/phenoquest/style.css
+          test -s site/public-route-patch/games/phenoquest/build-meta.json
+          grep -Fq '"selfContained": true' site/public-route-patch/games/phenoquest/build-meta.json
+          grep -Fq '15 playable browser games' site/public-route-patch/games/index.html
+          grep -Fq '/games/terpocalypse/' site/public-route-patch/games/index.html
+          grep -Fq '/games/phenoquest/' site/public-route-patch/games/index.html
 
       - name: Validate Burn Buds multiplayer game
         run: |
@@ -238,6 +256,8 @@ jobs:
               "seedMan": "$GITHUB_SHA",
               "strainShowdown": "$GITHUB_SHA",
               "budOrBluff": "$GITHUB_SHA",
+              "terpocalypse": "$GITHUB_SHA",
+              "phenoQuest": "$GITHUB_SHA",
               "burnBuds": "$GITHUB_SHA",
               "highLand": "$GITHUB_SHA",
               "growLens": "$GITHUB_SHA",
@@ -282,6 +302,15 @@ jobs:
             release/games/bud-or-bluff/app-v2.js
             release/games/bud-or-bluff/api-v2.php
             release/games/bud-or-bluff/deck.php
+            release/games/terpocalypse/index.html
+            release/games/terpocalypse/main.js
+            release/games/terpocalypse/game-data.js
+            release/games/terpocalypse/styles.css
+            release/games/phenoquest/index.html
+            release/games/phenoquest/game.js
+            release/games/phenoquest/lineage-runtime.js
+            release/games/phenoquest/style.css
+            release/games/phenoquest/build-meta.json
             release/games/protect-the-plants/index.html
             release/games/protect-the-plants/app.js
             release/games/protect-the-plants/api.php
@@ -303,12 +332,16 @@ jobs:
           grep -Fq '/games/seed-man-platformer/' release/games/seed-man-platformer/index.html
           grep -Fq '/games/strain-showdown/' release/games/strain-showdown/index.html
           grep -Fq '/games/bud-or-bluff/' release/games/bud-or-bluff/index.html
+          grep -Fq 'LEVEL 01 · THE VEG LAB' release/games/terpocalypse/index.html
+          grep -Fq 'The Living Seed Vault' release/games/phenoquest/index.html
+          grep -Fq '"selfContained": true' release/games/phenoquest/build-meta.json
           grep -Fq '/games/protect-the-plants/' release/games/protect-the-plants/index.html
           grep -Fq '/games/high-land/' release/games/high-land/index.html
           grep -Fq '/games/weedopolis/' release/games/weedopolis/index.html
           grep -Fq '/games/crossword/' release/games/crossword/index.html
           grep -Fq '/games/who-took-it/' release/games/who-took-it/index.html
           grep -Fq '/thc-grow-doc/' release/thc-grow-doc/index.html
+          grep -Fq '15 playable browser games' release/games/index.html
 
           ! grep -RFiq 'email@email.com' release
           ! grep -RFiq '+123456789' release
@@ -327,6 +360,8 @@ jobs:
             echo '- /games/seed-man-platformer/ (browser vertical slice)'
             echo '- /games/strain-showdown/ (solo card-battle prototype)'
             echo '- /games/bud-or-bluff/ (multiplayer party game)'
+            echo '- /games/terpocalypse/ (validated browser vertical slice)'
+            echo '- /games/phenoquest/ (self-contained canonical RPG vertical slice)'
             echo '- /games/protect-the-plants/ (Burn Buds multiplayer strategy)'
             echo '- /games/high-land/'
             echo '- /games/weedopolis/'
@@ -366,11 +401,11 @@ jobs:
               `Build result: **${process.env.JOB_STATUS}**`,
               '',
               process.env.JOB_STATUS === 'success'
-                ? 'The complete DTFSeeds public suite built and validated successfully. A 30-day immutable artifact is attached to this workflow run and is ready for the production deployer once Hostinger SSH is available.'
+                ? 'The complete DTFSeeds public suite built and validated successfully. A 30-day immutable artifact is attached to this workflow run and is ready for the production deployer.'
                 : 'The public-suite package did not complete successfully. Inspect this workflow run before attempting production deployment.',
               '',
-              'Build scope: High IQ, High Life, Grower Conversations, Seed Man, Strain Showdown, Bud or Bluff, Burn Buds, High Land, Weedopolis, THC Crossword, Who Took It?, GrowLens, THC Grow Doc, Game Hub, Tools, Projects, and puzzle data.',
-              'No Hostinger mutation is performed by this build-only workflow.'
+              'Build scope: High IQ, High Life, Grower Conversations, Seed Man, Strain Showdown, Bud or Bluff, Terpocalypse, PhenoQuest, Burn Buds, High Land, Weedopolis, THC Crossword, Who Took It?, GrowLens, THC Grow Doc, Game Hub, Tools, Projects, and puzzle data.',
+              'No production mutation is performed by this build-only workflow.'
             ].join('\n');
             await github.rest.issues.createComment({
               owner: context.repo.owner,
