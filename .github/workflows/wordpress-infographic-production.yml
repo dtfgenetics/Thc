@@ -30,7 +30,7 @@ permissions:
 
 concurrency:
   group: dtfseeds-wordpress-infographics-production
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   preflight:
@@ -44,6 +44,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Report protected publisher launch
+        continue-on-error: true
         uses: actions/github-script@v7
         with:
           script: |
@@ -147,6 +148,7 @@ jobs:
           echo "created=$(node -p "require(process.argv[1]).created" "$BULK_IMPORT_REPORT")" >> "$GITHUB_OUTPUT"
           echo "updated=$(node -p "require(process.argv[1]).updated" "$BULK_IMPORT_REPORT")" >> "$GITHUB_OUTPUT"
           echo "reused=$(node -p "require(process.argv[1]).reused" "$BULK_IMPORT_REPORT")" >> "$GITHUB_OUTPUT"
+          echo "quarantined=$(node -p "require(process.argv[1]).quarantined || 0" "$BULK_IMPORT_REPORT")" >> "$GITHUB_OUTPUT"
 
       - name: Persist imported image binaries in canonical source
         id: canonical
@@ -371,6 +373,7 @@ jobs:
 
       - name: Report infographic publication to control issue
         if: always()
+        continue-on-error: true
         uses: actions/github-script@v7
         env:
           JOB_STATUS: ${{ job.status }}
@@ -379,6 +382,7 @@ jobs:
           CREATED_COUNT: ${{ steps.intake.outputs.created }}
           UPDATED_COUNT: ${{ steps.intake.outputs.updated }}
           INTAKE_REUSED_COUNT: ${{ steps.intake.outputs.reused }}
+          QUARANTINED_COUNT: ${{ steps.intake.outputs.quarantined }}
           CANONICAL_COMMIT: ${{ steps.canonical.outputs.commit }}
           QUALITY_OUTCOME: ${{ steps.quality.outcome }}
           MEDIA_OUTCOME: ${{ steps.publish_media.outcome }}
@@ -413,6 +417,7 @@ jobs:
                 `New canonical image files: **${process.env.CREATED_COUNT || '0'}**`,
                 `Intentional replacements: **${process.env.UPDATED_COUNT || '0'}**`,
                 `Canonical image files reused: **${process.env.INTAKE_REUSED_COUNT || '0'}**`,
+                `Remote queue items quarantined: **${process.env.QUARANTINED_COUNT || '0'}**`,
                 `Canonical image commit: ${process.env.CANONICAL_COMMIT ? `\`${process.env.CANONICAL_COMMIT}\`` : 'none required'}`,
                 `Infographic quality gate: **${process.env.QUALITY_OUTCOME || 'not-run'}**`,
                 `Eligible media synchronization: **${process.env.MEDIA_OUTCOME || 'not-run'}**`,
@@ -433,6 +438,6 @@ jobs:
                 `Outdoor field metrics: **${process.env.OUTDOOR_METRICS || 'not-run'}**`,
                 '',
                 'Target: https://dtfseeds.com/learn/infographics/',
-                'Canonical architecture: queued remote images are imported first; topic literature is published first; the complete THC Outdoor field-measurement curriculum is assembled and appended immediately after that canonical write; finished infographics remain subject-mapped and searchable.'
+                'Canonical architecture: queued remote images are imported first; unavailable queue items are quarantined with evidence instead of blocking already-valid canonical education assets; topic literature is published first; the complete THC Outdoor field-measurement curriculum is assembled and appended immediately after that canonical write; finished infographics remain subject-mapped and searchable.'
               ].join('\n')
             });
