@@ -30,7 +30,7 @@ jobs:
       WC_CONSUMER_KEY: ${{ secrets.WC_CONSUMER_KEY }}
       WC_CONSUMER_SECRET: ${{ secrets.WC_CONSUMER_SECRET }}
       CONTENT_DIR: ${{ github.workspace }}/site/wordpress/pages
-      BACKUP_ROOT: ${{ runner.temp }}/wordpress-public-page-backups
+      BACKUP_ROOT: /tmp/wordpress-public-page-backups
       NODE_OPTIONS: --dns-result-order=ipv4first
     steps:
       - uses: actions/checkout@v4
