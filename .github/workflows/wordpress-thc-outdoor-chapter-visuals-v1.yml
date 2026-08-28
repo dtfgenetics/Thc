@@ -1,0 +1,158 @@
+name: Publish THC Outdoor Chapter Visuals V1
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'site/wordpress/education/outdoor-v6-chapter-visuals-v1.json'
+      - 'scripts/publish-wordpress-outdoor-chapter-visuals-v1.mjs'
+      - '.github/workflows/wordpress-thc-outdoor-chapter-visuals-v1.yml'
+  workflow_run:
+    workflows:
+      - Publish Outdoor V6 Visual Atlas
+      - Publish Harvest and Outdoor V6
+    types: [completed]
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: thc-outdoor-chapter-visuals-v1
+  cancel-in-progress: true
+
+env:
+  WP_SITE_URL: https://dtfseeds.com
+  NODE_OPTIONS: --dns-result-order=ipv4first
+
+jobs:
+  publish:
+    name: Attach eight THC infographics to Outdoor V6 chapters
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: production
+    env:
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      APPLY_OUTDOOR_CHAPTER_VISUALS: 'true'
+      OUTDOOR_CHAPTER_VISUALS_MANIFEST: site/wordpress/education/outdoor-v6-chapter-visuals-v1.json
+      BACKUP_ROOT: /tmp/thc-outdoor-chapter-visuals-v1
+
+    steps:
+      - name: Check out production source
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate chapter visual source
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
+          node --check scripts/publish-wordpress-outdoor-chapter-visuals-v1.mjs
+          node - <<'NODE'
+          const fs=require('fs');
+          const m=JSON.parse(fs.readFileSync('site/wordpress/education/outdoor-v6-chapter-visuals-v1.json','utf8'));
+          const ids=['site-sun','hardening-transplant','water-rootzone','wind-support','rain-flower-risk','pests-wildlife','pollen-sex','season-microclimate'];
+          if(m.brand!=='THC — Teaching Healthy Cultivation'||m.route!=='/learn/outdoor/'||m.items?.length!==8) throw new Error('Unexpected THC Outdoor chapter visual manifest boundary.');
+          if(new Set(m.items.map(x=>x.chapterId)).size!==8||ids.some(id=>!m.items.some(x=>x.chapterId===id))) throw new Error('Eight stable Outdoor V6 chapter IDs are required exactly once.');
+          for(const item of m.items){
+            if(!fs.existsSync(`site/wordpress/assets/infographics/${item.file}`)) throw new Error(`Missing canonical infographic: ${item.file}`);
+            if(/strain[_ -]?card|draft|quarantine|legacy/i.test(item.file)) throw new Error(`Unsafe Outdoor infographic mapping: ${item.file}`);
+          }
+          console.log('Validated eight THC Outdoor V6 chapter infographics.');
+          NODE
+
+      - name: Publish chapter visuals and verify WordPress
+        id: publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$BACKUP_ROOT"
+          node scripts/publish-wordpress-outdoor-chapter-visuals-v1.mjs | tee "$RUNNER_TEMP/thc-outdoor-chapter-visuals-v1.log"
+          report="$BACKUP_ROOT/report.json"
+          test -s "$report"
+          [[ "$(node -p "require(process.argv[1]).chapterVisuals" "$report")" = '8' ]]
+          [[ "$(node -p "require(process.argv[1]).chapters" "$report")" = '8' ]]
+          [[ "$(node -p "require(process.argv[1]).lessons" "$report")" = '32' ]]
+          [[ "$(node -p "require(process.argv[1]).visitorVerified" "$report")" = 'true' ]]
+          echo "media=$(node -p "require(process.argv[1]).wordpressMedia.length" "$report")" >> "$GITHUB_OUTPUT"
+
+      - name: Independently verify public Outdoor chapter placement
+        id: verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          body="$RUNNER_TEMP/thc-outdoor-chapter-visuals-v1.html"
+          ok=0
+          for attempt in 1 2 3 4 5 6 7 8; do
+            curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+              --header 'Cache-Control: no-cache, no-store, max-age=0' \
+              --header 'Pragma: no-cache' \
+              "$WP_SITE_URL/learn/outdoor/?thc_outcv1_verify=${GITHUB_RUN_ID}-${attempt}" --output "$body"
+            if [[ "$(grep -Fo 'data-outdoor-chapter-visual=' "$body" | wc -l | tr -d ' ')" = '8' ]]; then ok=1; break; fi
+            sleep 6
+          done
+          [[ "$ok" -eq 1 ]]
+          [[ "$(grep -Fo 'data-hov6-chapter=' "$body" | wc -l | tr -d ' ')" = '8' ]]
+          [[ "$(grep -Fo 'class="hov6-lesson"' "$body" | wc -l | tr -d ' ')" = '32' ]]
+          grep -Fq 'THC · Teaching Healthy Cultivation' "$body"
+          for id in site-sun hardening-transplant water-rootzone wind-support rain-flower-risk pests-wildlife pollen-sex season-microclimate; do
+            grep -Fq "data-outdoor-chapter-visual=\"$id\"" "$body"
+          done
+          for file in \
+            Outdoor_01_Site_Selection_and_Seasonal_Sun \
+            Outdoor_02_Hardening_Off_and_Transplant_Establishment \
+            Outdoor_03_Water_Irrigation_and_Root_Zone_Balance \
+            Outdoor_04_Wind_Support_and_Canopy_Architecture \
+            Outdoor_05_Rain_Humidity_and_Flower_Disease_Risk \
+            Outdoor_06_Pests_Scouting_and_Wildlife_Pressure \
+            Outdoor_07_Sex_Expression_Pollen_Drift_and_Seed_Set_Investigation \
+            Outdoor_08_Season_Records_Microclimate_and_Contingency_Planning; do
+            grep -Fqi "${file//_/-}" "$body" || grep -Fqi "$file" "$body"
+          done
+
+      - name: Upload publication evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: thc-outdoor-chapter-visuals-v1-${{ github.run_id }}
+          path: |
+            /tmp/thc-outdoor-chapter-visuals-v1
+            ${{ runner.temp }}/thc-outdoor-chapter-visuals-v1.log
+            ${{ runner.temp }}/thc-outdoor-chapter-visuals-v1.html
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report Outdoor chapter visual result
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          STATUS: ${{ job.status }}
+          PUBLISH: ${{ steps.publish.outcome }}
+          VERIFY: ${{ steps.verify.outcome }}
+          MEDIA: ${{ steps.publish.outputs.media }}
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner:context.repo.owner,
+              repo:context.repo.repo,
+              issue_number:46,
+              body:[
+                '## THC Outdoor V6 chapter visuals','',
+                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                `Result: **${process.env.STATUS}**`,
+                `WordPress publication: **${process.env.PUBLISH || 'not-run'}**`,
+                `Independent visitor verification: **${process.env.VERIFY || 'not-run'}**`,
+                `Dedicated chapter infographics resolved from WordPress media: **${process.env.MEDIA || '0'} / 8**`,'',
+                'The eight completed THC Outdoor chapter-level infographics are attached directly to their matching Outdoor V6 curriculum chapters. The eleven narrower THC-OUT production briefs remain separate open artwork targets and are not falsely marked complete.'
+              ].join('\n')
+            });
