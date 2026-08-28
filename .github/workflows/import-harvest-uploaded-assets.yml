@@ -35,12 +35,11 @@ jobs:
         with:
           node-version: 22
 
-      - name: Download and checksum approved Harvest assets
+      - name: Verify canonical reviewed Harvest assets
         shell: bash
         run: |
           set -euo pipefail
           out='site/wordpress/assets/infographics'
-          mkdir -p "$out"
           files=(
             'THC-HARV-01_harvest_readiness_indicators.jpg'
             'THC-HARV-02_harvest_trichome_maturity_interpretation.jpg'
@@ -57,56 +56,19 @@ jobs:
             'THC-HARV-15_drying_room_sensor_placement.jpg'
             'THC-HARV-16_drying_room_airflow_mapping.jpg'
           )
-          urls=(
-            'https://cdn.shopify.com/s/files/1/0664/2542/1885/files/THC-HARV-01_harvest_readiness_indicators.jpg?v=1787825276'
-            'https://cdn.shopify.com/s/files/1/0664/2542/1885/files/THC-HARV-02_harvest_trichome_maturity_interpretation.jpg?v=1787825286'
-            'https://cdn.shopify.com/s/files/1/0664/2542/1885/files/THC-HARV-03_harvest_handling_workflow.jpg?v=1787825295'
-            'https://cdn.shopify.com/s/files/1/0664/2542/1885/files/THC-HARV-04_bud_washing_overview.jpg?v=1787825306'
-            'https://cdn.shopify.com/s/files/1/0664/2542/1885/files/THC-HARV-05_drying_environment_fundamentals.jpg?v=1787851009'
-            'https://cdn.shopify.com/s/files/1/0664/2542/1885/files/THC-HARV-06_drying_failure_modes.jpg?v=1787851015'
-            'https://cdn.shopify.com/s/files/1/0664/2542/1885/files/THC-HARV-08_curing_workflow_moisture_equalization.jpg?v=1787850620'
-            'https://cdn.shopify.com/s/files/1/0664/2542/1885/files/THC-HARV-09_storage_environment_light_heat_oxygen_moisture.jpg?v=1787850630'
-            'https://cdn.shopify.com/s/files/1/0664/2542/1885/files/THC-HARV-10_post_harvest_degradation_pathways.jpg?v=1787850640'
-            'https://cdn.shopify.com/s/files/1/0664/2542/1885/files/THC-HARV-11_harvest_wet_trim_vs_dry_trim_process_choices.jpg?v=1787850652'
-            'https://cdn.shopify.com/s/files/1/0664/2542/1885/files/THC-HARV-12_post_harvest_quality_control_checklist.jpg?v=1787850664'
-            'https://cdn.shopify.com/s/files/1/0664/2542/1885/files/THC-HARV-14_harvest_resin_contamination_comparison.jpg?v=1787850674'
-            'https://cdn.shopify.com/s/files/1/0664/2542/1885/files/THC-HARV-15_drying_room_sensor_placement.jpg?v=1787850687'
-            'https://cdn.shopify.com/s/files/1/0664/2542/1885/files/THC-HARV-16_drying_room_airflow_mapping.jpg?v=1787850697'
-          )
-          hashes=(
-            '602886525a9958010d40c971bc6d7975fdeb4f493d57f0d088f62b773d7bb56e'
-            'fdc376ba6d27044c275c32f98b01ed24196e0c009abb144192cebcc2e8f7ca12'
-            '50a0466b44fc26fa5d3b6eba10714fde797e53d5e4a66ca114906597301aecf6'
-            'ebee432c5a57b349e0fa27852e47084298bbee306d798799e525c02d5c7e06d5'
-            '340981530325535504f79115eeb87b0eecb6da4811f167d35ec80f7428012a31'
-            '3bf9c6845aafa031b5bbbbdec53529caf9e8a77b7c5a8ae078c207dafe171558'
-            'b0e9a58d47d9a62b2290e205c7ef9fb7458cc59c3540c5cbd96a0ae90c48eb45'
-            'e9bd0d9adf9df2cbfb6bcb1f7ee20bf6d3fe4dce0e79e0b090009e0706d5b9bb'
-            '94e80c5765f641bd9f67896e5a65aed4d95877a5b4a19ad69c130f74e54c564d'
-            'cc14b4985aae954dc5b33e4d39bf5b82e1309820535cb6fe4b3c5f730c3e8a16'
-            '74b75e2a9be8a2262ca2ad6a84006a833290493f5199d6234fddf9ed66af272f'
-            '46ed7a9b145daba66ac420279f4160f116b69e9bf98dfa5011ef395fc47936ab'
-            '9f33741985be5009602040eba0e9333ba6f040b7dab43e6d65fcb960b1f689ad'
-            'f7fd652468a0397a3517e534e495c7162d18adc6a6418077df8f3c0c88c21daf'
-          )
-          [[ "${#files[@]}" -eq "${#urls[@]}" && "${#files[@]}" -eq "${#hashes[@]}" ]]
-          for i in "${!files[@]}"; do
-            echo "Fetching ${files[$i]}"
-            curl -4 --location --fail --silent --show-error --retry 4 --retry-delay 2 \
-              "${urls[$i]}" -o "$out/${files[$i]}"
-            test -s "$out/${files[$i]}"
-            file "$out/${files[$i]}" | grep -qi 'JPEG image data'
-            actual="$(sha256sum "$out/${files[$i]}" | awk '{print $1}')"
-            [[ "$actual" == "${hashes[$i]}" ]] || {
-              echo "Checksum mismatch for ${files[$i]}: $actual" >&2
-              exit 1
-            }
+          for file_name in "${files[@]}"; do
+            path="$out/$file_name"
+            test -s "$path" || { echo "Missing canonical Harvest asset: $path" >&2; exit 1; }
+            file "$path" | grep -qi 'JPEG image data' || { echo "Canonical Harvest asset is not JPEG: $path" >&2; exit 1; }
+            size="$(stat -c '%s' "$path")"
+            [[ "$size" -ge 100000 ]] || { echo "Canonical Harvest asset is unexpectedly small: $path ($size bytes)" >&2; exit 1; }
+            echo "Verified canonical asset: $file_name ($size bytes)"
           done
           rm -rf site/wordpress/education/upload-staging/harvest-v2
           rm -rf site/wordpress/education/upload-staging/harvest-2026-08-26
           printf '%s\n' "${files[@]}" > "$RUNNER_TEMP/harvest-files.txt"
 
-      - name: Commit canonical image assets
+      - name: Commit canonical cleanup when needed
         id: commit
         shell: bash
         run: |
@@ -115,22 +77,22 @@ jobs:
           git config user.email 'actions@users.noreply.github.com'
           git add site/wordpress/assets/infographics site/wordpress/education/upload-staging
           if git diff --cached --quiet; then
-            echo 'No repository changes required.'
+            echo 'Canonical Harvest assets already current.'
             echo 'changed=false' >> "$GITHUB_OUTPUT"
           else
-            git commit -m 'Publish expanded Harvest education infographics'
+            git commit -m 'Clean Harvest education upload staging'
             git push origin HEAD:main
             echo 'changed=true' >> "$GITHUB_OUTPUT"
             echo "commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Confirm canonical files after commit
+      - name: Confirm canonical files after cleanup
         shell: bash
         run: |
           set -euo pipefail
-          while read -r file; do
-            test -s "site/wordpress/assets/infographics/$file"
-            file "site/wordpress/assets/infographics/$file" | grep -qi 'JPEG image data'
+          while read -r file_name; do
+            test -s "site/wordpress/assets/infographics/$file_name"
+            file "site/wordpress/assets/infographics/$file_name" | grep -qi 'JPEG image data'
           done < "$RUNNER_TEMP/harvest-files.txt"
 
       - name: Publish canonical infographic library and subject placements
@@ -222,8 +184,8 @@ jobs:
             const body = [
               '## Expanded Harvest education image publication', '',
               `Status: **${process.env.STATUS}**`,
-              `Canonical asset commit created: **${process.env.COMMIT_CHANGED || 'false'}**`,
-              `Asset commit: ${process.env.ASSET_COMMIT ? `\`${process.env.ASSET_COMMIT}\`` : 'existing canonical files reused'}`,
+              `Canonical cleanup commit created: **${process.env.COMMIT_CHANGED || 'false'}**`,
+              `Cleanup commit: ${process.env.ASSET_COMMIT ? `\`${process.env.ASSET_COMMIT}\`` : 'canonical files already current'}`,
               `WordPress publication: **${process.env.PUBLISH || 'not-run'}**`,
               `Live visitor verification: **${process.env.VERIFY || 'not-run'}**`,
               `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
