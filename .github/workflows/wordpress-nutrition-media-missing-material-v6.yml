@@ -1,0 +1,140 @@
+name: Publish Nutrition Media Missing Material V6
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'site/wordpress/education/nutrition-media-missing-material-v6.json'
+      - 'scripts/publish-wordpress-nutrition-media-missing-material-v6.mjs'
+      - '.github/workflows/wordpress-nutrition-media-missing-material-v6.yml'
+  workflow_run:
+    workflows:
+      - Publish Nutrition Media V6 Visual Atlas
+    types: [completed]
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-nutrition-media-missing-material-v6
+  cancel-in-progress: true
+
+env:
+  WP_SITE_URL: https://dtfseeds.com
+  NODE_OPTIONS: --dns-result-order=ipv4first
+
+jobs:
+  publish:
+    name: Publish ten Nutrition Media deep labs
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    environment: production
+    env:
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      APPLY_NUTRITION_MEDIA_MISSING_V6: 'true'
+      NUTRITION_MEDIA_MISSING_V6_PATH: site/wordpress/education/nutrition-media-missing-material-v6.json
+      BACKUP_ROOT: /tmp/dtf-nutrition-media-missing-v6
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate missing material package
+        id: validate
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
+          node --check scripts/publish-wordpress-nutrition-media-missing-material-v6.mjs
+          node - <<'NODE'
+          const fs=require('fs');
+          const p=JSON.parse(fs.readFileSync('site/wordpress/education/nutrition-media-missing-material-v6.json','utf8'));
+          if(p.id!=='nutrition-media-missing-material-v6'||p.modules?.length!==10) throw new Error('Expected exactly ten Nutrition & Media missing-material modules.');
+          const ids=p.modules.map(x=>x.id);
+          if(new Set(ids).size!==10) throw new Error('Module IDs must be unique.');
+          for(const m of p.modules){
+            for(const k of ['mechanism','measureFirst','interpretationLimits','commonMistakes']) if(!Array.isArray(m[k])||m[k].length<3) throw new Error(`${m.id}: ${k} incomplete`);
+            if(!m.fieldExercise||!m.visualBrief||!m.learningOutcome) throw new Error(`${m.id}: missing required teaching field`);
+          }
+          console.log(`Validated modules: ${ids.join(', ')}`);
+          NODE
+
+      - name: Publish and verify ten deep labs
+        id: publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/publish-wordpress-nutrition-media-missing-material-v6.mjs | tee "$RUNNER_TEMP/nutrition-media-missing-v6.log"
+          test -s nutrition-media-missing-material-v6-report.json
+          cp nutrition-media-missing-material-v6-report.json "$RUNNER_TEMP/report.json"
+          echo "modules=$(node -p "require(process.argv[1]).modules" "$RUNNER_TEMP/report.json")" >> "$GITHUB_OUTPUT"
+
+      - name: Independent visitor verification
+        id: verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          body="$RUNNER_TEMP/nutrition-media-missing-v6.html"
+          ok=0
+          for attempt in 1 2 3 4 5 6 7 8; do
+            curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+              --header 'Cache-Control: no-cache, no-store, max-age=0' \
+              --header 'Pragma: no-cache' \
+              "$WP_SITE_URL/learn/nutrition-media/?dtf_nm6m_verify=${GITHUB_RUN_ID}-${attempt}" --output "$body"
+            if grep -Fqi 'data-dtf-nutrition-media-missing-v6="true"' "$body"; then ok=1; break; fi
+            sleep 5
+          done
+          [[ "$ok" -eq 1 ]]
+          [[ "$(grep -Fo 'data-nm6m-module=' "$body" | wc -l | tr -d ' ')" = '10' ]]
+          [[ "$(grep -Fo 'data-nm6-chapter=' "$body" | wc -l | tr -d ' ')" = '8' ]]
+          [[ "$(grep -Fo 'class="nm6-lesson"' "$body" | wc -l | tr -d ' ')" = '32' ]]
+          [[ "$(grep -Fo 'class="sv6v-card"' "$body" | wc -l | tr -d ' ')" = '25' ]]
+          grep -Fqi 'data-dtf-nutrition-media-v6="true"' "$body"
+          grep -Fqi 'data-dtf-subject-visuals-v6="nutrition-media-v6"' "$body"
+          grep -Fqi 'data-dtf-topic="nutrition-media"' "$body"
+          grep -Fqi 'data-dtf-learning-v4="topic-nutrition-media"' "$body"
+
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nutrition-media-missing-material-v6-${{ github.run_id }}
+          path: |
+            /tmp/dtf-nutrition-media-missing-v6
+            nutrition-media-missing-material-v6-report.json
+            ${{ runner.temp }}/nutrition-media-missing-v6.log
+            ${{ runner.temp }}/nutrition-media-missing-v6.html
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report production result
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          STATUS: ${{ job.status }}
+          VALIDATE: ${{ steps.validate.outcome }}
+          PUBLISH: ${{ steps.publish.outcome }}
+          VERIFY: ${{ steps.verify.outcome }}
+          MODULES: ${{ steps.publish.outputs.modules }}
+        with:
+          script: |
+            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body:[
+              '## Nutrition & Media V6 missing material closure','',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Result: **${process.env.STATUS}**`,
+              `Package validation: **${process.env.VALIDATE || 'not-run'}**`,
+              `WordPress publication: **${process.env.PUBLISH || 'not-run'}**`,
+              `Visitor verification: **${process.env.VERIFY || 'not-run'}**`,
+              `Deep nutrition/measurement labs: **${process.env.MODULES || '0'}**`,'',
+              'This layer closes the ten instructional gaps behind the Nutrition & Media visual-production targets: nitrogen forms and pH drift, phosphorus chemistry, cation competition, calcium transport, magnesium/sulfur, micronutrients and chelation, nutrient interactions, elemental formulation and stock compatibility, sampling methods, and differential diagnosis/CAPA. It preserves the existing 8-chapter/32-lesson curriculum and 25-card visual atlas. Purpose-built mechanism diagrams remain separately tracked until exact reviewed artwork is produced.'
+            ].join('\n')});
