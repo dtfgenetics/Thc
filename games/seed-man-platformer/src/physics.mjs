@@ -27,6 +27,8 @@ export function createPlayer(spawn) {
     collected: [],
     deaths: 0,
     finished: false,
+    finishBlocked: false,
+    missingPickups: 0,
     state: 'idle'
   };
 }
@@ -57,13 +59,23 @@ function respawn(player) {
   player.vy = 0;
   player.grounded = false;
   player.deaths += 1;
+  player.finishBlocked = false;
   player.state = 'hurt';
+}
+
+function pickupRequirement(level) {
+  const explicit = Number(level?.requiredPickups);
+  if (Number.isInteger(explicit) && explicit >= 0) return explicit;
+  return Array.isArray(level?.pickups) ? level.pickups.length : 0;
 }
 
 export function stepPlayer(inputPlayer, input, level, dt, config = DEFAULTS) {
   const player = JSON.parse(JSON.stringify(inputPlayer));
   if (player.finished) return player;
   const step = Math.min(Math.max(dt, 0), 1 / 20);
+  const requiredPickups = pickupRequirement(level);
+  player.finishBlocked = false;
+  player.missingPickups = Math.max(0, requiredPickups - player.collected.length);
 
   player.jumpBuffer = input.jumpPressed ? config.jumpBuffer : Math.max(0, player.jumpBuffer - step);
   player.coyote = player.grounded ? config.coyoteTime : Math.max(0, player.coyote - step);
@@ -88,6 +100,7 @@ export function stepPlayer(inputPlayer, input, level, dt, config = DEFAULTS) {
   for (const pickup of level.pickups) {
     if (!player.collected.includes(pickup.id) && overlaps(player, pickup)) player.collected.push(pickup.id);
   }
+  player.missingPickups = Math.max(0, requiredPickups - player.collected.length);
 
   if (level.checkpoint && overlaps(player, level.checkpoint)) {
     player.checkpoint = { x: level.checkpoint.respawnX, y: level.checkpoint.respawnY };
@@ -98,8 +111,16 @@ export function stepPlayer(inputPlayer, input, level, dt, config = DEFAULTS) {
     return player;
   }
 
-  if (level.finish && overlaps(player, level.finish)) {
+  if (level.finish && player.x + player.width >= level.finish.x) {
+    if (player.missingPickups > 0) {
+      player.x = Math.min(player.x, level.finish.x - player.width);
+      player.vx = 0;
+      player.finishBlocked = true;
+      player.state = 'finish-blocked';
+      return player;
+    }
     player.finished = true;
+    player.finishBlocked = false;
     player.vx = 0;
     player.vy = 0;
     player.state = 'finish';
