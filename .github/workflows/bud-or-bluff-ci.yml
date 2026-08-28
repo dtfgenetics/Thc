@@ -38,6 +38,8 @@ jobs:
           php -l site/public-route-patch/games/bud-or-bluff/api.php
           php -l site/public-route-patch/games/bud-or-bluff/api-v2.php
           php -l site/public-route-patch/games/bud-or-bluff/deck.php
+      - name: Verify keyboard shortcut visibility safety
+        run: node games/bud-or-bluff/test/keyboard-v1.test.mjs
       - name: Exercise original 10-player simultaneous lobby
         run: node games/bud-or-bluff/test/online-lobby.test.mjs
       - name: Exercise hardened 10-player lobby and rematch flow
