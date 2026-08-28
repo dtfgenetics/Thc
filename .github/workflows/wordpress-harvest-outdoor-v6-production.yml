@@ -8,9 +8,11 @@ on:
       - 'site/wordpress/education/outdoor-v6.json'
       - 'site/wordpress/education/outdoor-quantification-v1.json'
       - 'site/wordpress/education/outdoor-quantification/**'
+      - 'site/wordpress/education/outdoor-applied-v1.json'
       - 'scripts/publish-wordpress-harvest-outdoor-v6-final.mjs'
       - 'scripts/assemble-outdoor-quantification-v1.mjs'
       - 'scripts/enhance-wordpress-outdoor-quantification-v1.mjs'
+      - 'scripts/publish-wordpress-outdoor-applied-v1.mjs'
       - '.github/workflows/wordpress-harvest-outdoor-v6-production.yml'
   push:
     branches: [main]
@@ -19,9 +21,11 @@ on:
       - 'site/wordpress/education/outdoor-v6.json'
       - 'site/wordpress/education/outdoor-quantification-v1.json'
       - 'site/wordpress/education/outdoor-quantification/**'
+      - 'site/wordpress/education/outdoor-applied-v1.json'
       - 'scripts/publish-wordpress-harvest-outdoor-v6-final.mjs'
       - 'scripts/assemble-outdoor-quantification-v1.mjs'
       - 'scripts/enhance-wordpress-outdoor-quantification-v1.mjs'
+      - 'scripts/publish-wordpress-outdoor-applied-v1.mjs'
       - '.github/workflows/wordpress-harvest-outdoor-v6-production.yml'
   workflow_dispatch:
   workflow_run:
@@ -43,7 +47,7 @@ env:
 
 jobs:
   validate:
-    name: Validate Harvest, Outdoor and complete quantification packages
+    name: Validate Harvest, Outdoor and complete field-learning packages
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -76,18 +80,25 @@ jobs:
           [[ "$metrics" -ge 100 ]]
           grep -Fq 'outdoor-quantification-v1' "$RUNNER_TEMP/outdoor-quantification-v1-validation.json"
 
+          node --check scripts/publish-wordpress-outdoor-applied-v1.mjs
+          node scripts/publish-wordpress-outdoor-applied-v1.mjs --validate-only | tee "$RUNNER_TEMP/outdoor-applied-v1-validation.json"
+          grep -Fq '"modules": 5' "$RUNNER_TEMP/outdoor-applied-v1-validation.json"
+          grep -Fq '"lessons": 20' "$RUNNER_TEMP/outdoor-applied-v1-validation.json"
+          grep -Fq 'outdoor-applied-v1' "$RUNNER_TEMP/outdoor-applied-v1-validation.json"
+
   publish:
-    name: Publish and verify Harvest, Outdoor and complete field measurement layer
+    name: Publish and verify Harvest, Outdoor and complete field-learning layers
     needs: validate
     if: ${{ github.event_name != 'pull_request' && (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success') }}
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 40
     environment: production
     env:
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
       APPLY_HARVEST_OUTDOOR_V6: 'true'
       APPLY_OUTDOOR_QUANT_V1: 'true'
+      APPLY_OUTDOOR_APPLIED_V1: 'true'
       BACKUP_ROOT: /tmp/dtf-harvest-outdoor-v6-final
     steps:
       - uses: actions/checkout@v4
@@ -112,6 +123,8 @@ jobs:
           [[ "$metrics" -ge 100 ]]
           node --check scripts/enhance-wordpress-outdoor-quantification-v1.mjs
           node scripts/enhance-wordpress-outdoor-quantification-v1.mjs --validate-only
+          node --check scripts/publish-wordpress-outdoor-applied-v1.mjs
+          node scripts/publish-wordpress-outdoor-applied-v1.mjs --validate-only
 
       - name: Publish both V6 subject expansions
         id: publish
@@ -149,6 +162,23 @@ jobs:
           [[ "$(node -p "require(process.argv[1]).validation.subtopics" "$report")" = '32' ]]
           [[ "$(node -p "require(process.argv[1]).validation.metrics" "$report")" -ge 100 ]]
 
+      - name: Publish Outdoor applied decision modules
+        id: publish_applied
+        shell: bash
+        run: |
+          set -euo pipefail
+          applied_root="/tmp/dtf-outdoor-applied-v1"
+          mkdir -p "$applied_root"
+          BACKUP_ROOT="$applied_root" node scripts/publish-wordpress-outdoor-applied-v1.mjs | tee "$RUNNER_TEMP/outdoor-applied-v1-publish.log"
+          report="$(find "$applied_root" -name report.json -type f -print -quit)"
+          test -n "$report"
+          test -s "$report"
+          echo "report=$report" >> "$GITHUB_OUTPUT"
+          echo "modules=$(node -p "require(process.argv[1]).validation.modules" "$report")" >> "$GITHUB_OUTPUT"
+          echo "lessons=$(node -p "require(process.argv[1]).validation.lessons" "$report")" >> "$GITHUB_OUTPUT"
+          [[ "$(node -p "require(process.argv[1]).validation.modules" "$report")" = '5' ]]
+          [[ "$(node -p "require(process.argv[1]).validation.lessons" "$report")" = '20' ]]
+
       - name: Verify fresh visitor Harvest page
         id: verify_harvest
         shell: bash
@@ -170,7 +200,7 @@ jobs:
           grep -Fq 'data-dtf-learning-v4="topic-harvest-postharvest"' "$body"
           grep -Fq 'Harvest &amp; post-harvest, taught as a measurable process.' "$body"
 
-      - name: Verify fresh visitor Outdoor page and complete field measurement layer
+      - name: Verify fresh visitor Outdoor page and complete field-learning layers
         id: verify_outdoor
         shell: bash
         run: |
@@ -181,7 +211,7 @@ jobs:
             curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
               --header 'Cache-Control: no-cache, no-store, max-age=0' --header 'Pragma: no-cache' \
               "$WP_SITE_URL/learn/outdoor/?dtf_hov6_verify=${GITHUB_RUN_ID}-${attempt}" --output "$body"
-            if grep -Fq 'data-dtf-outdoor-v6="true"' "$body" && grep -Fq 'data-dtf-outdoor-quantification-v1="true"' "$body"; then ok=1; break; fi
+            if grep -Fq 'data-dtf-outdoor-v6="true"' "$body" && grep -Fq 'data-dtf-outdoor-quantification-v1="true"' "$body" && grep -Fq 'data-thc-outdoor-applied-v1="true"' "$body"; then ok=1; break; fi
             sleep 6
           done
           [[ "$ok" -eq 1 ]]
@@ -189,12 +219,17 @@ jobs:
           [[ "$(grep -Fo 'class="hov6-lesson"' "$body" | wc -l | tr -d ' ')" = '32' ]]
           [[ "$(grep -Fo 'data-oqv1-chapter=' "$body" | wc -l | tr -d ' ')" = '8' ]]
           [[ "$(grep -Fo 'data-oqv1-subtopic=' "$body" | wc -l | tr -d ' ')" = '32' ]]
+          [[ "$(grep -Fo 'data-oav1-module=' "$body" | wc -l | tr -d ' ')" = '5' ]]
           grep -Fq 'data-dtf-topic="outdoor"' "$body"
           grep -Fq 'data-dtf-learning-v4="topic-outdoor"' "$body"
           grep -Fq 'Outdoor cultivation, built around weather, roots, risk and records.' "$body"
           grep -Fq 'Turn outdoor observations into evidence.' "$body"
+          grep -Fq 'Make outdoor decisions from evidence, not recipes.' "$body"
           for chapter in site-sun hardening-transplant water-rootzone wind-support rain-flower-risk pests-wildlife pollen-sex season-microclimate; do
             grep -Fq "data-oqv1-chapter=\"$chapter\"" "$body"
+          done
+          for module in rootzone-systems photoperiod-season weather-contingency canopy-access-airflow harvest-weather; do
+            grep -Fq "data-oav1-module=\"$module\"" "$body"
           done
 
       - name: Upload publication and rollback evidence
@@ -205,9 +240,11 @@ jobs:
           path: |
             /tmp/dtf-harvest-outdoor-v6-final
             /tmp/dtf-outdoor-quantification-v1
+            /tmp/dtf-outdoor-applied-v1
             ${{ runner.temp }}/outdoor-quantification-assembly.json
             ${{ runner.temp }}/harvest-outdoor-v6-publish.log
             ${{ runner.temp }}/outdoor-quantification-v1-publish.log
+            ${{ runner.temp }}/outdoor-applied-v1-publish.log
             ${{ runner.temp }}/harvest-postharvest-v6-live.html
             ${{ runner.temp }}/outdoor-v6-live.html
           if-no-files-found: warn
@@ -221,6 +258,7 @@ jobs:
           VALIDATE: ${{ steps.validate.outcome }}
           PUBLISH: ${{ steps.publish.outcome }}
           QUANT_PUBLISH: ${{ steps.publish_quant.outcome }}
+          APPLIED_PUBLISH: ${{ steps.publish_applied.outcome }}
           HARVEST_VERIFY: ${{ steps.verify_harvest.outcome }}
           OUTDOOR_VERIFY: ${{ steps.verify_outdoor.outcome }}
           SUBJECTS: ${{ steps.publish.outputs.subjects }}
@@ -231,6 +269,8 @@ jobs:
           QUANT_SECTIONS: ${{ steps.publish_quant.outputs.sections }}
           QUANT_SUBTOPICS: ${{ steps.publish_quant.outputs.subtopics }}
           QUANT_METRICS: ${{ steps.publish_quant.outputs.metrics }}
+          APPLIED_MODULES: ${{ steps.publish_applied.outputs.modules }}
+          APPLIED_LESSONS: ${{ steps.publish_applied.outputs.lessons }}
         with:
           script: |
             const body=[
@@ -240,6 +280,7 @@ jobs:
               `Package validation: **${process.env.VALIDATE || 'not-run'}**`,
               `WordPress publication: **${process.env.PUBLISH || 'not-run'}**`,
               `Outdoor quantification publication: **${process.env.QUANT_PUBLISH || 'not-run'}**`,
+              `Outdoor applied-guide publication: **${process.env.APPLIED_PUBLISH || 'not-run'}**`,
               `Harvest visitor verification: **${process.env.HARVEST_VERIFY || 'not-run'}**`,
               `Outdoor visitor verification: **${process.env.OUTDOOR_VERIFY || 'not-run'}**`,
               `Published subjects: **${process.env.SUBJECTS || '0'}**`,
@@ -249,8 +290,10 @@ jobs:
               `Quality-gated visual targets: **${process.env.VISUAL_TARGETS || '0'}**`,
               `Quantified Outdoor field labs: **${process.env.QUANT_SECTIONS || '0'}**`,
               `Quantified Outdoor subtopics: **${process.env.QUANT_SUBTOPICS || '0'}**`,
-              `Field metrics: **${process.env.QUANT_METRICS || '0'}**`, '',
-              'Existing V3 subject ownership and V4 guided-learning layers are preserved. The complete eight-chapter quantification layer is assembled from source-controlled chapter files, published with worksheets and decision rules, and visitor-verified.'
+              `Field metrics: **${process.env.QUANT_METRICS || '0'}**`,
+              `Applied Outdoor modules: **${process.env.APPLIED_MODULES || '0'}**`,
+              `Applied Outdoor lessons: **${process.env.APPLIED_LESSONS || '0'}**`, '',
+              'Existing V3 subject ownership and V4 guided-learning layers are preserved. The complete eight-chapter quantification layer is assembled from source-controlled chapter files, and the THC applied decision guide adds root-zone, photoperiod, weather, canopy and harvest-weather decision modules. All layers are visitor-verified before success.'
             ].join('\n');
             for (const issue_number of [46,126]) {
               await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number,body});
