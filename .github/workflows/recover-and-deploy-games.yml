@@ -1,5 +1,7 @@
 name: Recover DTFSeeds Game Deploy Lock and Resume
 
+# This workflow is intentionally re-triggerable by edits to itself so a newly added
+# recovery workflow can be activated by a subsequent main-branch push.
 on:
   workflow_dispatch:
   push:
