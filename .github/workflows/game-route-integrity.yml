@@ -4,6 +4,14 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '29 8 * * *'
+  pull_request:
+    paths:
+      - data/public-navigation.json
+      - site/deployment/public-apps.json
+      - site/public-route-patch/games/**
+      - scripts/validate-public-navigation.mjs
+      - scripts/audit-game-route-integrity.mjs
+      - .github/workflows/game-route-integrity.yml
   push:
     branches: [main]
     paths:
@@ -19,7 +27,7 @@ permissions:
   issues: write
 
 concurrency:
-  group: dtf-game-route-integrity
+  group: dtf-game-route-integrity-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -69,22 +77,27 @@ jobs:
           retention-days: 30
 
       - name: Report result to production issue
-        if: always()
+        if: always() && github.event_name != 'pull_request'
+        continue-on-error: true
         uses: actions/github-script@v7
         env:
           JOB_STATUS: ${{ job.status }}
         with:
           script: |
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: 46,
-              body: [
-                '## DTF game-route integrity',
-                '',
-                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-                `Result: **${process.env.JOB_STATUS}**`,
-                '',
-                'This gate validates the canonical button registry, every public game route, same-origin scripts/styles/images referenced by each game page, multiplayer UI markers, and every Game Hub link. Development-only projects are rejected if they receive a public route.'
-              ].join('\n')
-            });
+            try {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: 46,
+                body: [
+                  '## DTF game-route integrity',
+                  '',
+                  `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                  `Result: **${process.env.JOB_STATUS}**`,
+                  '',
+                  'This gate validates the canonical button registry, every public game route, same-origin scripts/styles/images referenced by each game page, multiplayer UI markers, and every Game Hub link. Development-only projects are rejected if they receive a public route.'
+                ].join('\n')
+              });
+            } catch (error) {
+              core.warning(`Could not post game-route result to issue #46: ${error.message}`);
+            }
