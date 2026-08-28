@@ -77,6 +77,7 @@ jobs:
 
       - name: Report deployment handoff to issue 46
         if: always()
+        continue-on-error: true
         uses: actions/github-script@v7
         env:
           OBSERVE_STATUS: ${{ job.status }}
