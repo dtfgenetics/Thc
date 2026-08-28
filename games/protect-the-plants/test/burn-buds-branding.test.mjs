@@ -46,6 +46,8 @@ for (const marker of [
   assert.ok(app.includes(marker), `Missing native Burn Buds runtime marker: ${marker}`);
 }
 
+assert.ok(app.includes("routeSummary.hidden=true"), 'Successful app startup must hide the static route summary to prevent a duplicate visible title.');
+
 for (const forbidden of [
   '<strong>Protect the Plants</strong>',
   'Defend your garden. Scout theirs.',
