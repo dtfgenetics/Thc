@@ -1,0 +1,45 @@
+name: Burn Buds Targeting CI
+
+on:
+  pull_request:
+    paths:
+      - 'games/protect-the-plants/test/targeting-v1.test.mjs'
+      - 'site/public-route-patch/games/protect-the-plants/targeting-v1.js'
+      - 'site/public-route-patch/games/protect-the-plants/targeting-v1.css'
+      - 'site/public-route-patch/games/protect-the-plants/index.html'
+      - '.github/workflows/burn-buds-targeting-ci.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'games/protect-the-plants/test/targeting-v1.test.mjs'
+      - 'site/public-route-patch/games/protect-the-plants/targeting-v1.js'
+      - 'site/public-route-patch/games/protect-the-plants/targeting-v1.css'
+      - 'site/public-route-patch/games/protect-the-plants/index.html'
+      - '.github/workflows/burn-buds-targeting-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  targeting-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check targeting helper syntax
+        run: node --check site/public-route-patch/games/protect-the-plants/targeting-v1.js
+      - name: Verify targeting UX contract
+        run: node games/protect-the-plants/test/targeting-v1.test.mjs
+      - name: Verify production page integration
+        run: |
+          set -euo pipefail
+          root=site/public-route-patch/games/protect-the-plants
+          test -s "$root/targeting-v1.js"
+          test -s "$root/targeting-v1.css"
+          grep -Fq './targeting-v1.css' "$root/index.html"
+          grep -Fq './targeting-v1.js' "$root/index.html"
+          grep -Fq 'https://dtfseeds.com/games/protect-the-plants/' "$root/index.html"
