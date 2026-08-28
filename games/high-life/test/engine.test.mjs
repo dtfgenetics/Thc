@@ -31,6 +31,23 @@ state.resources.cash = 0;
 assert.equal(legalActions(state).find((a) => a.id === 'build').allowed, false);
 assert.throws(() => takeTurn(state, 'build', events), /Not enough/);
 
+const paperTrail = events.find((event) => event.id === 'm-paperwork');
+let mitigationState = createGame({ seed: 11 });
+mitigationState.eraIndex = 1;
+mitigationState.resources.compliance = 4;
+const mitigated = takeTurn(mitigationState, 'network', [paperTrail]);
+assert.equal(mitigated.history[0].event.mitigation, 'Your records were already organized.');
+assert.equal(mitigated.resources.compliance, 5, 'threshold preparedness should mitigate damage based on the pre-event state');
+
+const coop = events.find((event) => event.id === 'm-coop');
+let selfQualifyingState = createGame({ seed: 12 });
+selfQualifyingState.eraIndex = 1;
+selfQualifyingState.resources.reputation = 7;
+const notSelfQualified = takeTurn(selfQualifyingState, 'learn', [coop]);
+assert.equal(notSelfQualified.resources.reputation, 8);
+assert.equal(notSelfQualified.history[0].event.mitigation, null, 'event effects must not make their own mitigation eligible');
+assert.equal(notSelfQualified.history[0].event.resourceChange.cash, 0, 'ineligible co-op mitigation must not grant the cash bonus');
+
 const strategies = {
   knowledge: ['learn', 'document', 'network', 'genetics'],
   builder: ['build', 'network', 'learn', 'brand'],
