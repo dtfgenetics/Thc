@@ -1,0 +1,39 @@
+name: Grow Room Bingo CI
+on:
+  push:
+    paths: ['games/grow-room-bingo/**','site/public-route-patch/games/grow-room-bingo/**','.github/workflows/grow-room-bingo-ci.yml']
+  pull_request:
+    paths: ['games/grow-room-bingo/**','site/public-route-patch/games/grow-room-bingo/**','.github/workflows/grow-room-bingo-ci.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - name: Validate prompt data
+        run: node games/grow-room-bingo/scripts/validate-data.mjs
+      - name: Test six-character card-code contract
+        run: node games/grow-room-bingo/test/card-code.test.mjs
+      - name: Validate browser JavaScript syntax
+        run: |
+          node --check site/public-route-patch/games/grow-room-bingo/app.js
+          node --check site/public-route-patch/games/grow-room-bingo/code-utils.mjs
+      - name: Verify canonical and public code contract match
+        run: cmp games/grow-room-bingo/code-utils.mjs site/public-route-patch/games/grow-room-bingo/code-utils.mjs
+      - name: Verify public route and release boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          root=site/public-route-patch/games/grow-room-bingo
+          test -s "$root/index.html"
+          test -s "$root/bingo.css"
+          test -s "$root/data/prompts.json"
+          grep -Fq 'https://dtfseeds.com/games/grow-room-bingo/' "$root/index.html"
+          grep -Fq 'maxlength="6"' "$root/index.html"
+          grep -Fq 'pattern="[A-HJ-NP-Z2-9]{6}"' "$root/index.html"
+          grep -Fq 'deploymentRegistered": false' games/grow-room-bingo/game.json
