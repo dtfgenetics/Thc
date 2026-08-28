@@ -1,0 +1,38 @@
+name: Terpocalypse CI
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - site/public-route-patch/games/terpocalypse/**
+      - games/terpocalypse-integration/**
+      - .github/workflows/terpocalypse-ci.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: terpocalypse-ci
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Validate The Veg Lab browser prototype
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate production package
+        run: node games/terpocalypse-integration/validate.mjs
+      - name: Check JavaScript syntax
+        run: |
+          node --check site/public-route-patch/games/terpocalypse/main.js
+          node --check site/public-route-patch/games/terpocalypse/game-data.js
+      - name: Verify no external runtime dependencies
+        run: |
+          set -euo pipefail
+          ! grep -R -E "https?://.*\\.(js|css)" site/public-route-patch/games/terpocalypse --include='*.html' --include='*.js' --include='*.css'
