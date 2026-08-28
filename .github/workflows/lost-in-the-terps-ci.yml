@@ -1,0 +1,26 @@
+name: Lost in the Terps CI
+on:
+  push:
+    paths: ['games/lost-in-the-terps/**','site/public-route-patch/games/lost-in-the-terps/**','.github/workflows/lost-in-the-terps-ci.yml']
+  pull_request:
+    paths: ['games/lost-in-the-terps/**','site/public-route-patch/games/lost-in-the-terps/**','.github/workflows/lost-in-the-terps-ci.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - run: node games/lost-in-the-terps/scripts/validate-data.mjs
+      - run: node --check site/public-route-patch/games/lost-in-the-terps/app.js
+      - shell: bash
+        run: |
+          set -euo pipefail
+          test -s site/public-route-patch/games/lost-in-the-terps/index.html
+          test -s site/public-route-patch/games/lost-in-the-terps/terps.css
+          grep -Fq 'https://dtfseeds.com/games/lost-in-the-terps/' site/public-route-patch/games/lost-in-the-terps/index.html
+          grep -Fq 'deploymentRegistered": false' games/lost-in-the-terps/game.json
