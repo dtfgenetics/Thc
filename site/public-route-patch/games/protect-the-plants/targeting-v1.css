@@ -1,0 +1,8 @@
+.burn-target-readout{display:grid;grid-template-columns:auto minmax(70px,auto) 1fr;align-items:center;gap:8px 12px;margin:10px 0 14px;padding:10px 12px;border:1px solid rgba(139,208,157,.28);border-radius:12px;background:rgba(7,20,13,.72);box-shadow:inset 0 1px 0 rgba(255,255,255,.025)}
+.burn-target-readout>span{font-size:.68rem;font-weight:900;letter-spacing:.12em;color:#8fd1a2}
+.burn-target-readout>strong{min-width:74px;font-size:1.05rem;letter-spacing:.03em;color:#f2f7ef}
+.burn-target-readout>small{color:#abc1b0;line-height:1.35}
+.board .cell[data-fire].target-preview{position:relative;z-index:3;outline:2px solid rgba(239,194,91,.86);outline-offset:-2px;box-shadow:0 0 0 2px rgba(239,194,91,.2),0 0 18px rgba(239,194,91,.34)}
+.board .cell[data-fire].can-fire:focus-visible{z-index:4;outline:3px solid #f1c45b;outline-offset:-2px;box-shadow:0 0 0 3px rgba(10,24,15,.92),0 0 20px rgba(241,196,91,.42)}
+.board .cell[data-fire][aria-disabled="true"]:focus{outline:none}
+@media(max-width:720px){.burn-target-readout{grid-template-columns:auto 1fr;gap:6px 10px}.burn-target-readout>small{grid-column:1/-1}.burn-target-readout>strong{justify-self:end}}
