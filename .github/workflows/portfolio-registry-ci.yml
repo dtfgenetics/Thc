@@ -21,6 +21,7 @@ on:
       - 'site/public-route-patch/games/high-iq/**'
       - 'site/public-route-patch/games/high-life/**'
       - 'site/public-route-patch/games/grower-conversations/**'
+      - 'site/public-route-patch/games/strain-showdown/**'
       - 'site/public-route-patch/games/seed-man-platformer/**'
       - 'site/public-route-patch/games/protect-the-plants/**'
       - 'docs/**SOURCE_OF_TRUTH.md'
@@ -46,6 +47,7 @@ on:
       - 'site/public-route-patch/games/high-iq/**'
       - 'site/public-route-patch/games/high-life/**'
       - 'site/public-route-patch/games/grower-conversations/**'
+      - 'site/public-route-patch/games/strain-showdown/**'
       - 'site/public-route-patch/games/seed-man-platformer/**'
       - 'site/public-route-patch/games/protect-the-plants/**'
       - 'docs/**SOURCE_OF_TRUTH.md'
@@ -84,6 +86,9 @@ jobs:
           node --check site/public-route-patch/games/protect-the-plants/app.js
           php -l site/public-route-patch/games/protect-the-plants/api.php
           node games/strain-showdown/scripts/validate-roster.mjs
+          node games/strain-showdown/test/engine.test.mjs
+          node games/strain-showdown/scripts/simulate-balance.mjs --seeds=4
+          node games/strain-showdown/scripts/validate-browser-build.mjs
           node games/seed-man-platformer/test/physics.test.mjs
 
       - name: Verify canonical project statuses match deployment states
@@ -107,10 +112,10 @@ jobs:
           expect(project('cannabis-fleet-battle')?.status === 'server-engine-alpha', 'Fleet Battle registry state drift');
           expect(app('cannabis-fleet-battle')?.runtime === 'server-engine' && app('cannabis-fleet-battle')?.status === 'server-engine-alpha', 'Fleet Battle deployment state drift');
 
-          expect(app('protect-the-plants')?.runtime === 'static-php' && app('protect-the-plants')?.status === 'ready-to-package', 'Protect the Plants deployment state drift');
+          expect(app('protect-the-plants')?.runtime === 'static-php' && app('protect-the-plants')?.status === 'ready-to-package', 'Burn Buds deployment state drift');
 
-          expect(project('strain-showdown')?.status === 'roster-data-alpha', 'Strain Showdown registry state drift');
-          expect(app('strain-showdown')?.runtime === 'roster-data' && app('strain-showdown')?.status === 'roster-data-alpha', 'Strain Showdown deployment state drift');
+          expect(project('strain-showdown')?.status === 'browser-prototype', 'Strain Showdown registry state drift');
+          expect(app('strain-showdown')?.runtime === 'static' && app('strain-showdown')?.status === 'ready-to-package', 'Strain Showdown deployment state drift');
 
           expect(project('seed-man-platformer')?.status === 'browser-vertical-slice', 'Seed Man registry state drift');
           expect(app('seed-man-platformer')?.runtime === 'static-canvas2d' && app('seed-man-platformer')?.status === 'ready-to-package', 'Seed Man deployment state drift');
@@ -120,7 +125,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for route in high-iq high-life grower-conversations seed-man-platformer protect-the-plants; do
+          for route in high-iq high-life grower-conversations strain-showdown seed-man-platformer protect-the-plants; do
             test -s "site/public-route-patch/games/$route/index.html"
             grep -Fqi 'rel="canonical"' "site/public-route-patch/games/$route/index.html"
             grep -Fqi 'name="description"' "site/public-route-patch/games/$route/index.html"
@@ -131,7 +136,7 @@ jobs:
           test -s site/public-route-patch/games/protect-the-plants/plant.svg
           test -s site/public-route-patch/projects/index.html
           grep -Fq 'Cannabis Fleet Battle' site/public-route-patch/projects/index.html
-          grep -Fq 'Strain Showdown' site/public-route-patch/projects/index.html
+          grep -Fq 'Strain Showdown' site/public-route-patch/games/index.html
           grep -Fq 'Burn Buds' site/public-route-patch/games/index.html
 
       - name: Validate High IQ legacy fallback boundary

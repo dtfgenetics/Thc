@@ -12,9 +12,50 @@
     "3": {"label": "Elite", "countPerFamily": 2, "stage": 3, "summonRule": "sacrifice-one-same-family-stage-2"}
   },
   "coreRosterCount": 96,
-  "browserPrototype": {"route":"/games/strain-showdown/","mode":"solo-vs-cpu","lanes":3,"startingGarden":20,"maxRounds":18,"familyPassives":8,"effectPolicy":"prototype-family-passives-only-until-final-card-effects-are-approved"},
-  "machineData": {"manifest":"games/strain-showdown/data/roster-manifest.json","familyDirectory":"games/strain-showdown/data/roster","validator":"node games/strain-showdown/scripts/validate-roster.mjs","browserValidator":"node games/strain-showdown/scripts/validate-browser-build.mjs","engineTest":"node games/strain-showdown/test/engine.test.mjs","cards":96,"cardsPerFamily":12,"uniqueNamesRequired":true,"uniqueIdsRequired":true},
-  "familyIdentity": {"kush":"high-vigor","haze":"balanced-slight-power","skunk":"disruption","gas":"high-power","cookies":"flexible","fruit":"recovery-advantage","purple":"defensive-recovery","frost":"protection-evolution"},
+  "browserPrototype": {
+    "route": "/games/strain-showdown/",
+    "mode": "solo-vs-cpu",
+    "lanes": 3,
+    "startingGarden": 20,
+    "maxRounds": 18,
+    "familyPassives": 8,
+    "effectPolicy": "prototype-family-passives-only-until-final-card-effects-are-approved"
+  },
+  "machineData": {
+    "manifest": "games/strain-showdown/data/roster-manifest.json",
+    "familyDirectory": "games/strain-showdown/data/roster",
+    "validator": "node games/strain-showdown/scripts/validate-roster.mjs",
+    "browserValidator": "node games/strain-showdown/scripts/validate-browser-build.mjs",
+    "engineTest": "node games/strain-showdown/test/engine.test.mjs",
+    "balanceSimulator": "node games/strain-showdown/scripts/simulate-balance.mjs --seeds=8",
+    "cards": 96,
+    "cardsPerFamily": 12,
+    "uniqueNamesRequired": true,
+    "uniqueIdsRequired": true
+  },
+  "familyIdentity": {
+    "kush": "high-vigor",
+    "haze": "balanced-slight-power",
+    "skunk": "disruption",
+    "gas": "high-power",
+    "cookies": "flexible",
+    "fruit": "recovery-advantage",
+    "purple": "defensive-recovery",
+    "frost": "protection-evolution"
+  },
   "dtfGeneticsCards": ["Blue Mango", "Mango Bubbles", "Blue Bubblegum", "Blueberry Butcher"],
-  "releaseGates": {"complete-card-schema":true,"roster-filled":true,"roster-integrity-ci":true,"effect-text-complete":false,"effect-validation":false,"balance-simulation":false,"rules-playtest":false,"browser-prototype":true,"art-rights-cleared":false,"print-proof-approved":false}
+  "releaseGates": {
+    "complete-card-schema": true,
+    "roster-filled": true,
+    "roster-integrity-ci": true,
+    "battle-engine-tested": true,
+    "browser-prototype": true,
+    "balance-simulation-tooling": true,
+    "effect-text-complete": false,
+    "effect-validation": false,
+    "balance-approved": false,
+    "rules-playtest": false,
+    "art-rights-cleared": false,
+    "print-proof-approved": false
+  }
 }
