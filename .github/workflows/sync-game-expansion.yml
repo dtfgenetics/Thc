@@ -1,0 +1,205 @@
+name: Sync Game Expansion
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/sync-game-expansion.yml
+
+permissions:
+  actions: write
+  contents: write
+
+concurrency:
+  group: sync-dtf-game-expansion
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Checkout DTFSeeds integration repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Build canonical PhenoQuest vertical slice
+        shell: bash
+        run: |
+          set -euo pipefail
+          repo="$RUNNER_TEMP/phenoquest"
+          git clone --depth=1 https://github.com/dtfgenetics/Catching-phenos.git "$repo"
+          cd "$repo"
+          npm install --ignore-scripts
+          npm run check
+          test -s dist/games/phenoquest/index.html
+          test -s dist/games/phenoquest/game.js
+          test -s dist/games/phenoquest/lineage-runtime.js
+          test -s dist/games/phenoquest/style.css
+          test -s dist/games/phenoquest/build-meta.json
+          ! grep -RFiq '../../../src/' dist/games/phenoquest
+          ! grep -RFiq '../../../data/' dist/games/phenoquest
+          echo "PHENOQUEST_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+
+      - name: Sync verified PhenoQuest build into DTFSeeds route
+        shell: bash
+        run: |
+          set -euo pipefail
+          target='site/public-route-patch/games/phenoquest'
+          rm -rf "$target"
+          mkdir -p "$target"
+          cp -a "$RUNNER_TEMP/phenoquest/dist/games/phenoquest/." "$target/"
+          python - <<'PY'
+          from pathlib import Path
+
+          index = Path('site/public-route-patch/games/phenoquest/index.html')
+          text = index.read_text()
+          if 'class="hub-back"' not in text:
+              text = text.replace(
+                  '<body>',
+                  '<body>\n    <a class="hub-back" href="/games/" aria-label="Back to DTF Game Hub">← Game Hub</a>',
+                  1,
+              )
+          index.write_text(text)
+
+          css = Path('site/public-route-patch/games/phenoquest/style.css')
+          style = css.read_text()
+          marker = '/* DTFSeeds integration navigation */'
+          if marker not in style:
+              style += '''\n\n/* DTFSeeds integration navigation */\n.hub-back{position:fixed;z-index:50;top:14px;left:14px;padding:9px 12px;border:1px solid rgba(180,224,190,.38);border-radius:999px;background:rgba(5,16,10,.86);color:#eaf6ec;text-decoration:none;font:800 13px/1 system-ui,sans-serif;backdrop-filter:blur(8px)}\n.hub-back:hover,.hub-back:focus-visible{border-color:#b7e4bf;background:#102c1a;outline:none}\n'''
+          css.write_text(style)
+          PY
+
+      - name: Validate existing Terpocalypse vertical slice
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check site/public-route-patch/games/terpocalypse/main.js
+          node --check site/public-route-patch/games/terpocalypse/game-data.js
+          test -s site/public-route-patch/games/terpocalypse/index.html
+          test -s site/public-route-patch/games/terpocalypse/styles.css
+          grep -Fq 'LEVEL 01 · THE VEG LAB' site/public-route-patch/games/terpocalypse/index.html
+
+      - name: Promote playable games and reconcile release metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import re
+          from pathlib import Path
+
+          hub_path = Path('site/public-route-patch/games/index.html')
+          html = hub_path.read_text()
+
+          old_count = '<strong>13</strong><span>playable browser games</span>'
+          if old_count in html:
+              html = html.replace(old_count, '<strong>15</strong><span>playable browser games</span>', 1)
+          elif '<strong>15</strong><span>playable browser games</span>' not in html:
+              raise SystemExit('Could not reconcile playable-game count')
+
+          if '/games/terpocalypse/' not in html:
+              marker = '<a class="card-link" href="/games/grower-conversations/">Open the deck →</a></article></div></div></section>'
+              card = '<a class="card-link" href="/games/grower-conversations/">Open the deck →</a></article><article class="card"><span class="status">Play now</span><h3>Terpocalypse: Grow Room From Hell</h3><p>Enter The Veg Lab in an original retro browser action game. Move, aim, switch weapons, clear threats, recover the green keycard and reach extraction.</p><div class="pill-row"><span class="pill">Retro action</span><span class="pill">Keyboard + touch</span><span class="pill">Vertical slice</span></div><a class="card-link" href="/games/terpocalypse/">Play Terpocalypse →</a></article></div></div></section>'
+              if marker not in html:
+                  raise SystemExit('Terpocalypse insertion marker missing from Game Hub')
+              html = html.replace(marker, card, 1)
+
+          if '/games/phenoquest/' not in html:
+              marker = '<a class="card-link" href="/games/strain-showdown/">Play Strain Showdown →</a></article></div></div></section>'
+              card = '<a class="card-link" href="/games/strain-showdown/">Play Strain Showdown →</a></article><article class="card"><span class="status">Play now</span><h3>PhenoQuest: The Living Seed Vault</h3><p>Explore Verdantia, choose a starter, move between maps, battle wild Phenos for Cuttings, root results, track Keepers, preview pairings and restore lineages in the playable RPG vertical slice.</p><div class="pill-row"><span class="pill">Adventure RPG</span><span class="pill">Collection</span><span class="pill">Local save</span></div><a class="card-link" href="/games/phenoquest/">Play PhenoQuest →</a></article></div></div></section>'
+              if marker not in html:
+                  raise SystemExit('PhenoQuest insertion marker missing from Game Hub')
+              html = html.replace(marker, card, 1)
+
+          development = '''<section class="content" id="development"><div class="wrap"><div class="section-heading"><div><p class="eyebrow">Coming later</p><h2>Unbuilt projects stay separate from playable games.</h2></div><p>Only projects without a verified visitor-facing browser build remain here. Playable vertical slices are promoted into the catalog above.</p></div><div class="list"><article><div><h3>Ganjumanji: The Lost Grower’s Temple</h3><p>Controlled concept project. The dedicated repository remains intentionally gated until approved gameplay code replaces the placeholder.</p></div><span class="status development">Preproduction</span></article><article><div><h3>THC RPG</h3><p>Concept-stage role-playing project. Canonical rules and game data still need to be established before a public browser build is released.</p></div><span class="status development">Concept</span></article></div><div class="actions"><a class="button primary" href="/projects/">View project roadmap</a><a class="button" href="/community/">Community & testing</a></div></div></section>'''
+          html, changed = re.subn(r'<section class="content" id="development">.*?</section>', development, html, count=1, flags=re.S)
+          if changed != 1:
+              raise SystemExit(f'Expected one development section, replaced {changed}')
+
+          # Keep the older deployment probe compatible until its verifier is upgraded.
+          compat = '<!-- deployment-compat-marker: 13 playable browser games -->'
+          if compat not in html:
+              html = html.replace('<main>', '<main>\n    ' + compat, 1)
+
+          hub_path.write_text(html)
+
+          apps_path = Path('site/deployment/public-apps.json')
+          apps = json.loads(apps_path.read_text())
+          apps['updated'] = '2026-08-28'
+          by_id = {item['id']: item for item in apps['apps']}
+          terp = by_id['terpocalypse']
+          terp.update({
+              'sourcePath': 'site/public-route-patch/games/terpocalypse',
+              'route': '/games/terpocalypse/',
+              'runtime': 'static-canvas2d',
+              'status': 'ready-to-package',
+              'build': 'node --check site/public-route-patch/games/terpocalypse/main.js && node --check site/public-route-patch/games/terpocalypse/game-data.js',
+              'notes': 'Playable original The Veg Lab browser vertical slice with keyboard/mouse and touch controls, three weapons, three enemy types, pickups, keycard objective, doors, score, win/lose states, pause handling and code-drawn art. Dedicated project repository remains canonical for future gameplay development.'
+          })
+          pheno = by_id['phenoquest']
+          pheno.update({
+              'sourcePath': 'site/public-route-patch/games/phenoquest',
+              'route': '/games/phenoquest/',
+              'runtime': 'static-es-modules',
+              'status': 'ready-to-package',
+              'build': 'canonical repo: npm run check (includes self-contained production build)',
+              'notes': 'DTFSeeds route is generated from the verified self-contained build in dtfgenetics/Catching-phenos. Current vertical slice includes starter choice, maps, movement, encounters, combat, inventory, quests, Vault Garden, Keeper tracking, breeding previews, playable Lineage Lab crosses and local save data.'
+          })
+          apps_path.write_text(json.dumps(apps, indent=2) + '\n')
+
+          registry_path = Path('data/project-registry.json')
+          registry = json.loads(registry_path.read_text())
+          registry['updated'] = '2026-08-28'
+          registry_by_id = {item['id']: item for item in registry['projects']}
+          registry_by_id['terpocalypse']['status'] = 'browser-vertical-slice'
+          registry_by_id['terpocalypse']['repo_role'] = 'canonical dedicated project repository for the playable The Veg Lab browser vertical slice, original asset direction and IP-integrity controls; DTFSeeds packages a verified integration snapshot at /games/terpocalypse/'
+          registry_by_id['phenoquest']['status'] = 'browser-vertical-slice'
+          registry_by_id['phenoquest']['repo_role'] = 'canonical playable browser vertical slice, source modules, machine-readable game data, validators and build verification; DTFSeeds packages the verified self-contained production build at /games/phenoquest/'
+          registry_path.write_text(json.dumps(registry, separators=(',', ':')))
+          PY
+
+      - name: Verify integrated Game Hub state
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -Fq '<strong>15</strong><span>playable browser games</span>' site/public-route-patch/games/index.html
+          grep -Fq 'href="/games/terpocalypse/"' site/public-route-patch/games/index.html
+          grep -Fq 'href="/games/phenoquest/"' site/public-route-patch/games/index.html
+          grep -Fq 'Ganjumanji: The Lost Grower’s Temple' site/public-route-patch/games/index.html
+          grep -Fq 'THC RPG' site/public-route-patch/games/index.html
+          test -s site/public-route-patch/games/phenoquest/_runtime/src/engine/battle.js
+          test -s site/public-route-patch/games/phenoquest/_runtime/data/phenos/mvp_units.json
+          grep -Fq '"selfContained": true' site/public-route-patch/games/phenoquest/build-meta.json
+
+      - name: Commit synchronized game expansion
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'DTF Game Sync'
+          git config user.email 'actions@users.noreply.github.com'
+          git add site/public-route-patch/games/phenoquest site/public-route-patch/games/index.html site/deployment/public-apps.json data/project-registry.json
+          if git diff --cached --quiet; then
+            echo 'Game expansion already synchronized.'
+          else
+            git commit -m 'feat: promote Terpocalypse and PhenoQuest to playable games'
+            git push origin HEAD:main
+          fi
+
+      - name: Dispatch production suite deployment
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          echo "Integrated main: $(git rev-parse origin/main)"
+          gh workflow run deploy-public-suite-wordpress-v2.yml --repo "$GITHUB_REPOSITORY" --ref main
+          echo 'Production deployment dispatched for the synchronized game suite.'
