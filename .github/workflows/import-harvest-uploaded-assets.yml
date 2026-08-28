@@ -24,7 +24,7 @@ jobs:
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME || secrets.WORDPRESS_USERNAME || secrets.WP_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD || secrets.WORDPRESS_APP_PASSWORD || secrets.WP_APPLICATION_PASSWORD }}
       INFOGRAPHIC_DIR: ${{ github.workspace }}/site/wordpress/assets/infographics
-      BACKUP_ROOT: ${{ runner.temp }}/dtf-harvest-upload
+      BACKUP_ROOT: /tmp/dtf-harvest-upload
     steps:
       - uses: actions/checkout@v4
         with:
@@ -199,7 +199,7 @@ jobs:
         with:
           name: harvest-upload-${{ github.run_id }}
           path: |
-            ${{ runner.temp }}/dtf-harvest-upload
+            /tmp/dtf-harvest-upload
             ${{ runner.temp }}/harvest-infographic-publish.log
             ${{ runner.temp }}/harvest-live.html
             ${{ runner.temp }}/infographics-live.html
@@ -209,6 +209,7 @@ jobs:
 
       - name: Report publication result
         if: always()
+        continue-on-error: true
         uses: actions/github-script@v7
         env:
           STATUS: ${{ job.status }}
