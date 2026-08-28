@@ -52,7 +52,7 @@ const manifest = {
   }
 };
 
-const readme = `# ${title}\n\nProduction target: **dtfseeds.com**\n\nThis directory is the canonical working source for the game while it is owned by \`dtfgenetics/Thc\`. The scaffold is intentionally **not public and not deployable** until the release gates are completed.\n\n## Structure\n\n- \`src/\` — game logic and browser/runtime code\n- \`data/\` — machine-readable game data\n- \`test/\` — deterministic/unit/integration tests\n- \`docs/\` — rules, architecture, QA notes, and handoff documentation\n- \`game.json\` — local game status and implementation contract\n\n## Before publishing\n\n1. Add the project to \`data/project-registry.json\` if it is not already registered.\n2. Build and test the game from this canonical source.\n3. Add the public runtime under \`site/public-route-patch/games/${id}/\` only when it is visitor-ready.\n4. Add or update the deployment entry in \`site/deployment/public-apps.json\`.\n5. Run \`npm run games:verify\` and the game-specific tests.\n6. Open a PR; do not bypass verification for production game changes.\n\nSee \`docs/GAME_DEVELOPMENT_WORKFLOW.md\` for the full dtfseeds.com workflow.\n`;
+const readme = `# ${title}\n\nProduction target: **dtfseeds.com**\n\nThis directory is the canonical working source for the game while it is owned by \`dtfgenetics/Thc\`. The scaffold is intentionally **not public and not deployable** until the release gates are completed.\n\n## Structure\n\n- \`src/\` — game logic and browser/runtime code\n- \`data/\` — machine-readable game data\n- \`test/\` — deterministic/unit/integration tests\n- \`docs/\` — rules, architecture, QA notes, and handoff documentation\n- \`game.json\` — local game status and implementation contract\n\n## Before publishing\n\n1. Add the project to \`data/project-registry.json\` if it is not already registered.\n2. Build and test the game from this canonical source.\n3. Add the public runtime under \`site/public-route-patch/games/${id}/\` only when it is visitor-ready.\n4. Add or update the deployment entry in \`site/deployment/public-apps.json\`.\n5. Run \`npm run games:preflight\` and the game-specific tests.\n6. Open a PR; do not bypass verification for production game changes.\n\nSee \`docs/GAME_DEVELOPMENT_WORKFLOW.md\` for the full dtfseeds.com workflow.\n`;
 
 fs.writeFileSync(path.join(gameDir, 'game.json'), `${JSON.stringify(manifest, null, 2)}\n`);
 fs.writeFileSync(path.join(gameDir, 'README.md'), readme);
@@ -63,4 +63,4 @@ fs.writeFileSync(path.join(gameDir, 'docs', '.gitkeep'), '');
 
 console.log(`Created games/${id}/`);
 console.log('The game is NOT registered for deployment. Build and verify it first.');
-console.log('Next: update data/project-registry.json, then run npm run games:verify.');
+console.log('Next: run npm run games:status, update data/project-registry.json, then run npm run games:preflight.');
