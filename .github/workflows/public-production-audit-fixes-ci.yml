@@ -8,6 +8,7 @@ on:
       - 'site/wordpress/mu-plugins/dtf-shop-seo-meta.php'
       - 'scripts/deploy-wordpress-public-audit-fixes.mjs'
       - 'scripts/install-wordpress-shop-seo-meta.mjs'
+      - 'scripts/install-wordpress-shop-seo-meta-core.mjs'
       - '.github/workflows/public-production-audit-fixes-ci.yml'
       - '.github/workflows/wordpress-public-audit-fixes-production.yml'
 
@@ -30,6 +31,7 @@ jobs:
           set -euo pipefail
           node --check scripts/deploy-wordpress-public-audit-fixes.mjs
           node --check scripts/install-wordpress-shop-seo-meta.mjs
+          node --check scripts/install-wordpress-shop-seo-meta-core.mjs
           php -l site/wordpress/mu-plugins/dtf-shop-seo-meta.php
           grep -Fq "is_shop" site/wordpress/mu-plugins/dtf-shop-seo-meta.php
           grep -Fq 'DTF Genetics Seeds & Current Releases' site/wordpress/mu-plugins/dtf-shop-seo-meta.php
@@ -64,8 +66,9 @@ jobs:
           grep -Fq "['games/protect-the-plants/index.html', 'site/public-route-patch/games/protect-the-plants/index.html']" scripts/deploy-wordpress-public-audit-fixes.mjs
           grep -Fq "['projects/index.html', 'site/public-route-patch/projects/index.html']" scripts/deploy-wordpress-public-audit-fixes.mjs
           grep -Fq "\$allowed = ['games/protect-the-plants/index.html', 'projects/index.html'];" scripts/deploy-wordpress-public-audit-fixes.mjs
-          grep -Fq "WPMU_PLUGIN_DIR . '/dtf-shop-seo-meta.php'" scripts/install-wordpress-shop-seo-meta.mjs
+          grep -Fq "await import('./install-wordpress-shop-seo-meta-core.mjs')" scripts/install-wordpress-shop-seo-meta.mjs
+          grep -Fq "WPMU_PLUGIN_DIR . '/dtf-shop-seo-meta.php'" scripts/install-wordpress-shop-seo-meta-core.mjs
           grep -Fq '/rollback' scripts/deploy-wordpress-public-audit-fixes.mjs
-          grep -Fq '/rollback' scripts/install-wordpress-shop-seo-meta.mjs
+          grep -Fq '/rollback' scripts/install-wordpress-shop-seo-meta-core.mjs
           grep -Fq '/finalize' scripts/deploy-wordpress-public-audit-fixes.mjs
-          grep -Fq '/finalize' scripts/install-wordpress-shop-seo-meta.mjs
+          grep -Fq '/finalize' scripts/install-wordpress-shop-seo-meta-core.mjs
