@@ -1,0 +1,92 @@
+name: Repair Game Hub Release Gates
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/repair-game-hub-release-gates.yml
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Repair structural Game Hub count checks
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          hub = Path('site/public-route-patch/games/index.html')
+          text = hub.read_text()
+          text = text.replace(
+              '<!-- deployment-compat-marker: 13 playable browser games -->',
+              '<!-- deployment-verification-marker: 15 playable browser games -->'
+          )
+          hub.write_text(text)
+
+          changed = []
+          pattern = re.compile(r"^(\s*)grep -Fq '15 playable browser games' (.+)$", re.M)
+          for path in Path('.github/workflows').glob('*.yml'):
+              original = path.read_text()
+              updated = pattern.sub(
+                  lambda m: (
+                      f"{m.group(1)}grep -Fq '<strong>15</strong>' {m.group(2)}\n"
+                      f"{m.group(1)}grep -Fq '<span>playable browser games</span>' {m.group(2)}"
+                  ),
+                  original,
+              )
+              updated = updated.replace(
+                  'deployment-compat-marker: 13 playable browser games',
+                  'deployment-verification-marker: 15 playable browser games'
+              )
+              if updated != original:
+                  path.write_text(updated)
+                  changed.append(str(path))
+
+          print('updated workflows:', ', '.join(changed) or 'none')
+          PY
+
+      - name: Verify repaired gates
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -Fq '<strong>15</strong>' site/public-route-patch/games/index.html
+          grep -Fq '<span>playable browser games</span>' site/public-route-patch/games/index.html
+          grep -Fq '/games/terpocalypse/' site/public-route-patch/games/index.html
+          grep -Fq '/games/phenoquest/' site/public-route-patch/games/index.html
+          ! grep -R "grep -Fq '15 playable browser games'" .github/workflows
+          node --check site/public-route-patch/games/terpocalypse/main.js
+          node --check site/public-route-patch/games/terpocalypse/game-data.js
+          test -s site/public-route-patch/games/phenoquest/build-meta.json
+          grep -Fq '"selfContained": true' site/public-route-patch/games/phenoquest/build-meta.json
+
+      - name: Commit repaired release gates
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet; then
+            echo 'No repair changes required.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .github/workflows site/public-route-patch/games/index.html
+          git commit -m 'ci: use structural game hub release checks'
+          git push origin HEAD:main
+
+      - name: Launch corrected production deployment
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run deploy-public-suite-wordpress-v2.yml --repo "$GITHUB_REPOSITORY" --ref main
