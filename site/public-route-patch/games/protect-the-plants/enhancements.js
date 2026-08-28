@@ -1,9 +1,12 @@
 (() => {
-  const PREF_KEY = 'protectPlantsUxV2';
+  const PREF_KEY = 'burnBudsUxV3';
+  const LEGACY_PREF_KEY = 'protectPlantsUxV2';
   const defaultPrefs = { sound: true, haptics: true, confirmShots: false };
   let prefs = { ...defaultPrefs };
   try {
-    prefs = { ...defaultPrefs, ...JSON.parse(localStorage.getItem(PREF_KEY) || '{}') };
+    const stored = localStorage.getItem(PREF_KEY) || localStorage.getItem(LEGACY_PREF_KEY) || '{}';
+    prefs = { ...defaultPrefs, ...JSON.parse(stored) };
+    if (!localStorage.getItem(PREF_KEY) && stored !== '{}') localStorage.setItem(PREF_KEY, stored);
   } catch {}
 
   let audioCtx = null;
@@ -63,7 +66,7 @@
     } else if (name === 'lost') {
       tone(190, 0.12, 0, 'sawtooth', 0.03);
       tone(140, 0.18, 0.09, 'triangle', 0.025);
-      tone(95, 0.22, 0.18, 'sine', 0.02);
+      tone(95, 0.22, 0.18, 0, 'sine', 0.02);
     } else if (name === 'turn') {
       tone(520, 0.08, 0, 'sine', 0.024);
       tone(660, 0.09, 0.08, 'sine', 0.022);
@@ -121,11 +124,11 @@
     }
     lastTurnPlayerId = snapshot.turnPlayerId || null;
     if (snapshot.status === 'playing' && snapshot.turnPlayerId === identity?.playerId) {
-      document.title = '● Your Turn · Protect the Plants';
+      document.title = '● Your Turn · Burn Buds';
     } else if (snapshot.status === 'finished') {
-      document.title = `${snapshot.winnerId === identity?.playerId ? 'Victory' : 'Match Over'} · Protect the Plants`;
+      document.title = `${snapshot.winnerId === identity?.playerId ? 'Victory' : 'Match Over'} · Burn Buds`;
     } else {
-      document.title = 'Protect the Plants | DTF Genetics';
+      document.title = 'Burn Buds | DTF Genetics';
     }
   }
 
@@ -159,7 +162,7 @@
       <form method="dialog" class="ptp-dialog-card">
         <div class="ptp-dialog-head">
           <div>
-            <small>PROTECT THE PLANTS</small>
+            <small>BURN BUDS</small>
             <h2>How to Play & Game Settings</h2>
           </div>
           <button class="ptp-icon-btn" value="close" aria-label="Close">×</button>
@@ -168,10 +171,10 @@
           <section>
             <h3>Quick rules</h3>
             <ol>
-              <li>Hide all five plant formations on your 15×15 garden.</li>
-              <li>Players alternate scouting one opponent plot per turn.</li>
-              <li>A hit stays marked. A full formation is revealed when every plot in it is found.</li>
-              <li>Find all five opposing formations to protect your garden and win.</li>
+              <li>Hide all five cannabis-leaf formations on your 15×15 stash grid.</li>
+              <li>Players alternate firing on one opponent cell per turn.</li>
+              <li>A hit stays marked. A full formation burns when every cell in it is hit.</li>
+              <li>Burn all five opposing formations before your stash is destroyed.</li>
             </ol>
           </section>
           <section>
@@ -180,14 +183,14 @@
               <li><kbd>R</kbd> rotate the selected formation.</li>
               <li><kbd>U</kbd> undo the latest placement.</li>
               <li><kbd>C</kbd> clear placement and start over.</li>
-              <li>Arrow keys move board focus; <kbd>Enter</kbd> activates a focused plot.</li>
+              <li>Arrow keys move board focus; <kbd>Enter</kbd> activates a focused cell.</li>
             </ul>
           </section>
         </div>
         <div class="ptp-setting-list">
           <label><span><strong>Sound effects</strong><small>Generated in-browser; no audio files or downloads.</small></span><input type="checkbox" data-ptp-pref="sound"></label>
           <label><span><strong>Haptic feedback</strong><small>Uses your device vibration API when supported.</small></span><input type="checkbox" data-ptp-pref="haptics"></label>
-          <label><span><strong>Confirm scouting taps</strong><small>Tap a target once to aim, then again to fire. Helps prevent mobile mis-taps.</small></span><input type="checkbox" data-ptp-pref="confirmShots"></label>
+          <label><span><strong>Confirm firing taps</strong><small>Tap a target once to aim, then again to fire. Helps prevent mobile mis-taps.</small></span><input type="checkbox" data-ptp-pref="confirmShots"></label>
         </div>
         <div class="ptp-dialog-actions"><button class="btn primary" value="close">Done</button></div>
       </form>`;
@@ -304,24 +307,24 @@
     const rows = state.events.slice(-12).reverse().map(ev => {
       const mine = ev.byPlayerId === state.me?.id;
       let label = 'UPDATE';
-      let text = 'Garden state updated.';
+      let text = 'Battle state updated.';
       let cls = '';
       if (ev.type === 'scout') {
         label = ev.hit ? 'HIT' : 'MISS';
-        text = `${mine ? 'You' : 'Opponent'} scouted ${coord(ev.row, ev.col)}: ${ev.hit ? 'HIT' : 'MISS'}.`;
+        text = `${mine ? 'You' : 'Opponent'} fired on ${coord(ev.row, ev.col)}: ${ev.hit ? 'HIT' : 'MISS'}.`;
         cls = ev.hit ? 'hit' : 'miss';
       } else if (ev.type === 'formation-lost') {
         const spec = FORMATIONS.find(f => f.id === ev.formationId);
-        label = 'FORMATION FOUND';
-        text = `${mine ? 'You' : 'Opponent'} found ${spec?.name || 'a full formation'}.`;
+        label = 'BUDS BURNED';
+        text = `${mine ? 'You' : 'Opponent'} burned ${spec?.name || 'a full formation'}.`;
         cls = 'lost';
       } else if (ev.type === 'game-finished') {
         label = 'GAME OVER';
-        text = ev.winnerId === state.me?.id ? 'You protected the garden and won.' : 'Opponent protected the garden.';
+        text = ev.winnerId === state.me?.id ? 'You burned every opposing bud and won.' : 'Opponent burned every opposing bud.';
         cls = 'lost';
       } else if (ev.type === 'placement') {
-        label = 'READY';
-        text = `${mine ? 'You' : 'Opponent'} locked a garden.`;
+        label = 'STASH READY';
+        text = `${mine ? 'You' : 'Opponent'} locked a stash.`;
       } else if (ev.type === 'rematch-requested') {
         label = 'REMATCH';
         text = `${mine ? 'You' : 'Opponent'} requested another round.`;
@@ -425,10 +428,10 @@
   async function shareInvite() {
     if (!state?.code) return;
     const url = `${location.origin}${location.pathname}?room=${state.code}`;
-    const text = `Join my Protect the Plants game — room ${state.code}`;
+    const text = `Join my Burn Buds game — room ${state.code}`;
     if (navigator.share) {
       try {
-        await navigator.share({ title: 'Protect the Plants', text, url });
+        await navigator.share({ title: 'Burn Buds', text, url });
         return;
       } catch (err) {
         if (err?.name === 'AbortError') return;
@@ -584,7 +587,7 @@
     armedShotUntil = now + 4000;
     cell.classList.add('ptp-shot-armed');
     const [row, col] = key.split(',').map(Number);
-    toast(`Target ${coord(row, col)} armed — tap again to scout.`);
+    toast(`Target ${coord(row, col)} armed — tap again to fire.`);
     vibrate(18);
   }, true);
 
