@@ -68,6 +68,28 @@ jobs:
           NODE
           done
 
+      - name: Verify Learn infographic changes select WordPress and Education only
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'DTF Gateway CI'
+          git config user.email 'gateway-ci@localhost'
+          base="$(git rev-parse HEAD)"
+          mkdir -p site/public-route-patch/learn/infographics
+          printf 'gateway routing test\n' > site/public-route-patch/learn/infographics/__gateway-routing-test.txt
+          git add site/public-route-patch/learn/infographics/__gateway-routing-test.txt
+          git commit -m 'test gateway learn infographic routing' >/dev/null
+          node scripts/plan-dtfseeds-release.mjs --mode=auto --base="$base" --head=HEAD > "$RUNNER_TEMP/learn-infographic.json"
+          node - <<'NODE' "$RUNNER_TEMP/learn-infographic.json"
+          const fs=require('fs');
+          const plan=JSON.parse(fs.readFileSync(process.argv[2],'utf8'));
+          if(plan.forceFull) throw new Error('ordinary Learn infographic changes should not force all lanes');
+          if(plan.lanes.wordpress !== true) throw new Error('Learn infographic change did not select WordPress');
+          if(plan.lanes.education !== true) throw new Error('Learn infographic change did not select Education');
+          if(plan.lanes.publicSuite !== false) throw new Error('Learn infographic change incorrectly selected Public Suite');
+          NODE
+          git reset --hard "$base" >/dev/null
+
       - name: Verify gateway changes force reconciliation
         if: github.event_name == 'pull_request'
         shell: bash
