@@ -2,21 +2,18 @@
     $targets = [
         'games/index.html','games/dtf-route.css','games/high-land','games/high-iq','games/high-life',
         'games/grower-conversations','games/seed-man-platformer','games/weedopolis','games/crossword','games/who-took-it',
-        'games/strain-match','games/lost-in-the-terps','growlens','thc-grow-doc','tools','projects','puzzles'
+        'growlens','thc-grow-doc','tools','projects','puzzles'
     ];
     $required = [
         'games/index.html','games/high-land/index.html','games/high-iq/index.html','games/high-life/index.html',
         'games/grower-conversations/index.html','games/seed-man-platformer/index.html','games/weedopolis/index.html',
         'games/crossword/index.html','games/who-took-it/index.html','growlens/index.html','thc-grow-doc/index.html',
-        'thc-grow-doc/api/visual-observations.php','tools/index.html','projects/index.html','puzzles/current.json',
-        'games/strain-match/index.html','games/strain-match/app.js','games/strain-match/strain-match.css','games/strain-match/data/decks.json',
-        'games/lost-in-the-terps/index.html','games/lost-in-the-terps/app.js','games/lost-in-the-terps/terps.css','games/lost-in-the-terps/data/puzzles.json'
+        'thc-grow-doc/api/visual-observations.php','tools/index.html','projects/index.html','puzzles/current.json'
     ];
     $exact_files = ['games/index.html','games/dtf-route.css'];
     $prefixes = [
         'games/high-land/','games/high-iq/','games/high-life/','games/grower-conversations/','games/seed-man-platformer/',
-        'games/weedopolis/','games/crossword/','games/who-took-it/','growlens/','thc-grow-doc/','tools/','projects/','puzzles/',
-        'games/strain-match/','games/lost-in-the-terps/'
+        'games/weedopolis/','games/crossword/','games/who-took-it/','growlens/','thc-grow-doc/','tools/','projects/','puzzles/'
     ];
 
     $state_key = static fn($id) => 'dtf_suite_state_' . $id;
