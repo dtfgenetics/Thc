@@ -1,0 +1,222 @@
+name: DTFSeeds Production Gateway
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Release lane to publish
+        required: true
+        default: full
+        type: choice
+        options:
+          - full
+          - publicSuite
+          - wordpress
+          - education
+  push:
+    branches: [main]
+
+permissions:
+  actions: write
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-production-gateway
+  cancel-in-progress: false
+
+jobs:
+  plan:
+    name: Plan production release
+    runs-on: ubuntu-latest
+    outputs:
+      deploy: ${{ steps.plan.outputs.deploy }}
+      public_suite: ${{ steps.plan.outputs.public_suite }}
+      wordpress: ${{ steps.plan.outputs.wordpress }}
+      education: ${{ steps.plan.outputs.education }}
+      plan: ${{ steps.plan.outputs.plan }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Build route-aware release plan
+        id: plan
+        env:
+          RELEASE_MODE: ${{ github.event_name == 'workflow_dispatch' && inputs.mode || 'auto' }}
+          RELEASE_BASE: ${{ github.event_name == 'push' && github.event.before || '' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/plan-dtfseeds-release.mjs --mode="$RELEASE_MODE" --base="$RELEASE_BASE" --head="$GITHUB_SHA"
+
+      - name: Record release plan
+        shell: bash
+        run: |
+          {
+            echo '## DTFSeeds release plan'
+            echo
+            echo '- Source: `${{ github.sha }}`'
+            echo '- Event: `${{ github.event_name }}`'
+            echo '- Public Suite: `${{ steps.plan.outputs.public_suite }}`'
+            echo '- WordPress: `${{ steps.plan.outputs.wordpress }}`'
+            echo '- Education: `${{ steps.plan.outputs.education }}`'
+            echo
+            echo '```json'
+            echo '${{ steps.plan.outputs.plan }}'
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  deploy:
+    name: Publish planned lanes in one queue
+    needs: plan
+    if: needs.plan.outputs.deploy == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    environment: production
+    env:
+      GH_TOKEN: ${{ github.token }}
+      EXPECTED_SOURCE_SHA: ${{ github.sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 2
+          persist-credentials: false
+
+      - name: Refuse stale queued release
+        id: freshness
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "${GITHUB_EVENT_NAME}" != "push" ]]; then
+            echo 'current=true' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git fetch --quiet origin main
+          latest="$(git rev-parse origin/main)"
+          if [[ "$latest" == "$GITHUB_SHA" ]]; then
+            echo 'current=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'current=false' >> "$GITHUB_OUTPUT"
+            echo "Skipping superseded release $GITHUB_SHA; latest main is $latest. The newer gateway run owns deployment."
+          fi
+
+      - name: Publish canonical WordPress lane
+        if: steps.freshness.outputs.current == 'true' && needs.plan.outputs.wordpress == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash scripts/run-workflow-and-wait.sh wordpress-canonical-production.yml
+
+      - name: Publish education lane
+        if: steps.freshness.outputs.current == 'true' && needs.plan.outputs.education == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash scripts/run-workflow-and-wait.sh deploy-thc-learning-center-expansion-v1.yml
+
+      - name: Publish public application and game lane
+        if: steps.freshness.outputs.current == 'true' && needs.plan.outputs.public_suite == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash scripts/run-workflow-and-wait.sh deploy-public-suite-wordpress-v2.yml
+
+      - name: Verify WordPress production surfaces independently
+        if: steps.freshness.outputs.current == 'true' && needs.plan.outputs.wordpress == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          check() {
+            local path="$1" marker="$2"
+            curl -4 -fsSL --retry 5 --retry-delay 4 \
+              -H 'Cache-Control: no-cache, no-store, max-age=0' \
+              "https://dtfseeds.com${path}?dtf_gateway=${GITHUB_RUN_ID}" | grep -Fqi "$marker"
+          }
+          check '/' 'Genetics first. Cultivation science behind it.'
+          check '/learn/' 'Learn the plant as a connected system.'
+          check '/community/' 'Join the official DTF / Teaching Healthy Cultivation Discord'
+
+      - name: Verify education production surfaces independently
+        if: steps.freshness.outputs.current == 'true' && needs.plan.outputs.education == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          for route in plant-health cultivation-science symptoms tools sources; do
+            body="$(curl -4 -fsSL --retry 5 --retry-delay 4 -H 'Cache-Control: no-cache, no-store, max-age=0' "https://dtfseeds.com/learn/$route/?dtf_gateway=${GITHUB_RUN_ID}")"
+            grep -Fqi 'Teaching Healthy Cultivation' <<<"$body"
+            ! grep -Fqi 'Reserved strain card' <<<"$body"
+          done
+
+      - name: Verify game and application production surfaces independently
+        if: steps.freshness.outputs.current == 'true' && needs.plan.outputs.public_suite == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          check() {
+            local path="$1" marker="$2"
+            curl -4 -fsSL --retry 5 --retry-delay 4 \
+              -H 'Cache-Control: no-cache, no-store, max-age=0' \
+              "https://dtfseeds.com${path}?dtf_gateway=${GITHUB_RUN_ID}" | grep -Fqi "$marker"
+          }
+          check '/games/' '15 playable browser games'
+          check '/games/high-iq/' 'Build your High IQ run'
+          check '/games/strain-showdown/' 'Eight play styles. One showdown.'
+          check '/games/terpocalypse/' 'LEVEL 01 · THE VEG LAB'
+          check '/games/phenoquest/' 'The Living Seed Vault'
+          check '/growlens/' 'GrowLens'
+          check '/thc-grow-doc/' 'Grow Doc'
+
+      - name: Record authoritative release result
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo '## DTFSeeds production gateway'
+            echo
+            echo "- Gateway revision: $GITHUB_SHA"
+            echo "- Superseded: ${{ steps.freshness.outputs.current != 'true' }}"
+            echo "- Planned WordPress lane: ${{ needs.plan.outputs.wordpress }}"
+            echo "- Planned education lane: ${{ needs.plan.outputs.education }}"
+            echo "- Planned Public Suite lane: ${{ needs.plan.outputs.public_suite }}"
+            echo '- Production success is determined by publishing steps plus fresh public verification; issue comments are advisory only.'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Mirror result to release ledger without blocking production
+        if: always()
+        continue-on-error: true
+        uses: actions/github-script@v7
+        env:
+          STATUS: ${{ job.status }}
+          PLAN: ${{ needs.plan.outputs.plan }}
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 220,
+              body: [
+                '## DTFSeeds production gateway',
+                '',
+                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                `Source: \`${context.sha}\``,
+                `Authoritative gateway result: **${process.env.STATUS}**`,
+                '',
+                `Plan: \`${process.env.PLAN}\``,
+                '',
+                'Release reporting is deliberately non-blocking. Publication and fresh public verification decide success.'
+              ].join('\n')
+            });
+
+  no_deploy:
+    name: No production-owned changes
+    needs: plan
+    if: needs.plan.outputs.deploy != 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo 'No production-owned paths changed; no deployment was required.'
