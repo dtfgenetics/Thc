@@ -13,6 +13,7 @@ on:
       - 'data/project-registry.json'
       - 'scripts/verify-game-workspace.mjs'
       - 'scripts/create-game-scaffold.mjs'
+      - 'scripts/game-status.mjs'
       - 'docs/GAME_DEVELOPMENT_WORKFLOW.md'
       - 'package.json'
       - '.github/workflows/game-workspace-ci.yml'
@@ -27,6 +28,7 @@ on:
       - 'data/project-registry.json'
       - 'scripts/verify-game-workspace.mjs'
       - 'scripts/create-game-scaffold.mjs'
+      - 'scripts/game-status.mjs'
       - 'docs/GAME_DEVELOPMENT_WORKFLOW.md'
       - 'package.json'
       - '.github/workflows/game-workspace-ci.yml'
@@ -51,8 +53,8 @@ jobs:
         with:
           node-version: 22
 
-      - name: Verify dtfseeds.com game workspace
-        run: npm run games:verify
+      - name: Show dtfseeds.com game ownership and routes
+        run: npm run games:status
 
-      - name: Verify cross-game polish contracts
-        run: node games/test/cross-game-polish.test.mjs
+      - name: Run unified game preflight
+        run: npm run games:preflight
