@@ -15,7 +15,7 @@ env:
   WP_SITE_URL: https://dtfseeds.com
   NODE_OPTIONS: --dns-result-order=ipv4first
   INFOGRAPHIC_DIR: ${{ github.workspace }}/site/wordpress/assets/infographics
-  BACKUP_ROOT: ${{ runner.temp }}/dtf-remote-infographic-intake
+  BACKUP_ROOT: /tmp/dtf-remote-infographic-intake
 
 jobs:
   publish:
@@ -175,6 +175,6 @@ jobs:
           name: remote-infographic-intake-${{ github.run_id }}
           path: |
             /tmp/dtf-remote-intake-files.txt
-            ${{ runner.temp }}/dtf-remote-infographic-intake
+            /tmp/dtf-remote-infographic-intake
           if-no-files-found: warn
           retention-days: 30
