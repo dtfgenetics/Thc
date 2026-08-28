@@ -9,8 +9,9 @@ const outputDir = process.env.INFOGRAPHIC_SOURCE_DIR || join(root, 'site/wordpre
 const reportPath = process.env.BULK_IMPORT_REPORT || join(root, '.tmp/infographic-bulk-import-report.json');
 const concurrency = Math.max(1, Math.min(8, Number.parseInt(process.env.BULK_IMPORT_CONCURRENCY || '4', 10) || 4));
 const maxBytes = Math.max(1_000_000, Number.parseInt(process.env.BULK_IMPORT_MAX_BYTES || String(30 * 1024 * 1024), 10));
+const requireAllRemoteAssets = /^(1|true|yes)$/i.test(process.env.BULK_IMPORT_REQUIRE_ALL || 'false');
 const allowedExtensions = new Set(['.png', '.jpg', '.jpeg', '.webp', '.gif']);
-const userAgent = 'DTFSeeds-Bulk-Infographic-Importer/1.0';
+const userAgent = 'DTFSeeds-Bulk-Infographic-Importer/1.1';
 
 function sha256(bytes) {
   return createHash('sha256').update(bytes).digest('hex');
@@ -39,19 +40,31 @@ function validateFilename(value) {
   return ext;
 }
 
+function remoteError(asset, message, status = 0) {
+  const error = new Error(`Failed to download ${asset.sourceUrl}: ${message}`);
+  error.status = status;
+  return error;
+}
+
 async function fetchBytes(asset) {
   const url = new URL(asset.sourceUrl);
   if (url.protocol !== 'https:') throw new Error(`sourceUrl must use HTTPS: ${asset.sourceUrl}`);
 
   let lastError = null;
-  for (let attempt = 1; attempt <= 3; attempt += 1) {
+  for (let attempt = 1; attempt <= 4; attempt += 1) {
     try {
       const response = await fetch(url, {
         redirect: 'follow',
         headers: { 'User-Agent': userAgent, Accept: 'image/*,*/*;q=0.8' },
         signal: AbortSignal.timeout(120_000)
       });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      if (!response.ok) {
+        const retryable = response.status === 408 || response.status === 429 || response.status >= 500;
+        lastError = remoteError(asset, `HTTP ${response.status}`, response.status);
+        if (!retryable || attempt === 4) throw lastError;
+        await sleep(Math.min(8000, attempt * 1800));
+        continue;
+      }
       const length = Number.parseInt(response.headers.get('content-length') || '0', 10);
       if (length > maxBytes) throw new Error(`Content-Length ${length} exceeds ${maxBytes} byte limit`);
       const bytes = Buffer.from(await response.arrayBuffer());
@@ -60,25 +73,75 @@ async function fetchBytes(asset) {
       return bytes;
     } catch (error) {
       lastError = error;
-      if (attempt < 3) await sleep(attempt * 1500);
+      const status = Number(error?.status || 0);
+      const retryable = status === 0 || status === 408 || status === 429 || status >= 500;
+      if (!retryable || attempt === 4) break;
+      await sleep(Math.min(8000, attempt * 1800));
     }
   }
-  throw new Error(`Failed to download ${asset.sourceUrl}: ${lastError?.message || 'unknown error'}`);
+  throw remoteError(asset, lastError?.message || 'unknown error', Number(lastError?.status || 0));
+}
+
+async function readExistingCanonical(destination, ext, asset) {
+  try {
+    const existing = await readFile(destination);
+    assertImageMagic(existing, ext, asset.filename);
+    const digest = sha256(existing);
+    if (asset.sha256 && String(asset.sha256).toLowerCase() !== digest) {
+      throw new Error(`Existing canonical SHA-256 mismatch for ${asset.filename}: expected ${asset.sha256}, got ${digest}`);
+    }
+    return { bytes: existing, digest };
+  } catch (error) {
+    if (error?.code === 'ENOENT') return null;
+    throw error;
+  }
 }
 
 async function importAsset(asset) {
   const ext = validateFilename(asset.filename);
-  const bytes = await fetchBytes(asset);
+  const destination = join(outputDir, asset.filename);
+  let bytes;
+  try {
+    bytes = await fetchBytes(asset);
+  } catch (error) {
+    const existing = await readExistingCanonical(destination, ext, asset).catch(() => null);
+    if (existing) {
+      return {
+        filename: asset.filename,
+        sourceUrl: asset.sourceUrl,
+        sha256: existing.digest,
+        bytes: existing.bytes.length,
+        action: 'reused',
+        remoteUnavailable: true,
+        warning: error?.message || String(error)
+      };
+    }
+    return {
+      filename: asset.filename,
+      sourceUrl: asset.sourceUrl,
+      action: 'quarantined',
+      remoteUnavailable: true,
+      error: error?.message || String(error)
+    };
+  }
+
   assertImageMagic(bytes, ext, asset.filename);
   const digest = sha256(bytes);
   if (asset.sha256 && String(asset.sha256).toLowerCase() !== digest) {
-    throw new Error(`SHA-256 mismatch for ${asset.filename}: expected ${asset.sha256}, got ${digest}`);
+    return {
+      filename: asset.filename,
+      sourceUrl: asset.sourceUrl,
+      sha256: digest,
+      bytes: bytes.length,
+      action: 'quarantined',
+      error: `SHA-256 mismatch: expected ${asset.sha256}, got ${digest}`
+    };
   }
 
-  const destination = join(outputDir, asset.filename);
   let existingHash = null;
   try {
     const existing = await readFile(destination);
+    assertImageMagic(existing, ext, asset.filename);
     existingHash = sha256(existing);
   } catch (error) {
     if (error?.code !== 'ENOENT') throw error;
@@ -88,7 +151,14 @@ async function importAsset(asset) {
     return { filename: asset.filename, sourceUrl: asset.sourceUrl, sha256: digest, bytes: bytes.length, action: 'reused' };
   }
   if (existingHash && asset.replace !== true) {
-    throw new Error(`Refusing to replace existing ${asset.filename}; set replace=true only for an intentional replacement`);
+    return {
+      filename: asset.filename,
+      sourceUrl: asset.sourceUrl,
+      sha256: digest,
+      bytes: bytes.length,
+      action: 'quarantined',
+      error: `Refusing to replace existing ${asset.filename}; set replace=true only for an intentional replacement`
+    };
   }
 
   const temp = `${destination}.tmp-${process.pid}-${Date.now()}`;
@@ -109,7 +179,16 @@ async function mapConcurrent(items, limit, fn) {
     while (true) {
       const index = cursor++;
       if (index >= items.length) return;
-      results[index] = await fn(items[index], index);
+      try {
+        results[index] = await fn(items[index], index);
+      } catch (error) {
+        results[index] = {
+          filename: items[index]?.filename || null,
+          sourceUrl: items[index]?.sourceUrl || null,
+          action: 'quarantined',
+          error: error?.message || String(error)
+        };
+      }
     }
   });
   await Promise.all(workers);
@@ -132,16 +211,28 @@ for (const asset of assets) {
 }
 
 const imported = await mapConcurrent(assets, concurrency, importAsset);
+const quarantined = imported.filter((item) => item.action === 'quarantined');
 const report = {
   schemaVersion: 1,
   batchId: manifest.batchId || null,
   manifestPath,
   outputDir,
+  status: quarantined.length ? 'partial' : 'complete',
   requestedAssets: assets.length,
   created: imported.filter((item) => item.action === 'created').length,
   updated: imported.filter((item) => item.action === 'updated').length,
   reused: imported.filter((item) => item.action === 'reused').length,
+  quarantined: quarantined.length,
+  requireAllRemoteAssets,
   assets: imported
 };
 await writeFile(reportPath, `${JSON.stringify(report, null, 2)}\n`);
 console.log(JSON.stringify(report, null, 2));
+
+if (quarantined.length) {
+  console.warn(`Quarantined ${quarantined.length} unavailable or invalid remote infographic asset(s); canonical assets and the remaining education pipeline may continue.`);
+  for (const item of quarantined) console.warn(`- ${item.filename || '<unknown>'}: ${item.error || 'unavailable'}`);
+  if (requireAllRemoteAssets) {
+    throw new Error(`Bulk infographic intake requires every remote asset, but ${quarantined.length} asset(s) were quarantined.`);
+  }
+}
