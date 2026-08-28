@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "id": "plant-health-ipm-missing-material-v6",
+  "title": "Plant Health & IPM — Missing Material Pack",
+  "updatedAt": "2026-08-28",
+  "purpose": "Close the five remaining high-value instructional gaps in Plant Health & IPM with evidence-first diagnostic and verification labs.",
+  "modules": [
+    {
+      "id": "ipm-scouting-route-thresholds",
+      "title": "Scouting Route, Sticky Cards & Trend Thresholds",
+      "sourceIds": ["IPM-S1", "IPM-S4"],
+      "learningOutcome": "Design repeatable scouting that preserves sample units, plant locations and trends so escalation decisions are based on crop-specific evidence rather than one universal pest count.",
+      "mechanism": ["Scouting is a sampling system: route, plants inspected, leaf surfaces, traps and timing determine what can be detected.", "Sticky cards are useful for mobile stages of some pests but do not replace direct plant inspection for mites, eggs, root problems or diseases.", "Thresholds become useful when a defined sample unit is tracked over time and combined with crop stage, rate of increase, natural enemies and damage risk."],
+      "measureFirst": ["Define a fixed room route and representative plant positions.", "Record plants, leaves, canopy layers and traps inspected per scouting event.", "Use the same count unit across dates.", "Map hot spots instead of reporting only a room average.", "Record crop stage, beneficial activity and intervention timing with each count."],
+      "interpretationLimits": ["A sticky-card count does not estimate every pest population equally well.", "One universal action threshold is not transferable across crop stages and production systems.", "Low counts can still be important for systemic pathogens or high-risk stock plants."],
+      "commonMistakes": ["Changing the scouting route every week.", "Inspecting only upper leaf surfaces.", "Mixing counts from different sample units.", "Treating a single trap spike as proof of whole-room infestation."],
+      "fieldExercise": "Create a room map with a fixed scouting route, permanent trap IDs and representative plant positions. Complete three scouting rounds using identical sample units, graph the counts and identify which locations are stable, increasing or declining.",
+      "visualBrief": "Room map with fixed route, plant sample points, underside inspections, sticky-card positions, repeated count table and a trend-based escalation example that avoids one universal threshold."
+    },
+    {
+      "id": "small-pest-identification-comparison",
+      "title": "Russet Mites, Broad Mites, Aphids & Small-Pest Evidence",
+      "sourceIds": ["IPM-S4"],
+      "learningOutcome": "Separate major small arthropod pests by organism scale, plant location, direct evidence and characteristic-but-nonspecific damage.",
+      "mechanism": ["Hemp russet mites and broad mites are much smaller than common spider mites and may require higher magnification to confirm.", "Cannabis aphids are larger and can leave direct evidence such as colonies, cast skins or honeydew.", "Distorted, bronzed or chlorotic tissue can also result from nutrient, environmental or root stress, so damage pattern alone is not diagnostic."],
+      "measureFirst": ["Inspect symptomatic and nearby apparently healthy tissue.", "Use magnification appropriate to the suspected organism.", "Record eggs, mobile stages, cast skins, honeydew or webbing when present.", "Map plant location and tissue age.", "Preserve images with scale and magnification method."],
+      "interpretationLimits": ["Absence in one small sample does not prove the crop is pest-free.", "Damage can remain after the pest population declines.", "Plant symptoms overlap strongly among mites and abiotic disorders."],
+      "commonMistakes": ["Diagnosing russet mites from leaf curl alone.", "Using insufficient magnification.", "Treating aphid honeydew as a disease sign without finding insects.", "Sampling only the most damaged leaf."],
+      "fieldExercise": "Collect or review standardized images from symptomatic meristems, leaf undersides and nearby healthy tissue. Record magnification and list direct evidence for and against russet mite, broad mite, aphid and an abiotic look-alike.",
+      "visualBrief": "Scale-aware comparison of hemp russet mite, broad mite and cannabis aphid with preferred plant locations, direct evidence and symptom look-alikes."
+    },
+    {
+      "id": "powdery-mildew-botrytis-comparison",
+      "title": "Powdery Mildew vs Botrytis: Evidence & Disease Cycle",
+      "sourceIds": ["IPM-S1"],
+      "learningOutcome": "Distinguish visible foliar powdery mildew from Botrytis infection in dense or damaged flower tissue and connect each disease to its epidemiology and microclimate.",
+      "mechanism": ["Powdery mildew commonly produces visible superficial colonies on susceptible tissue while spread occurs through inoculum movement and repeated infection.", "Botrytis often exploits damaged, senescing or dense flower tissue where local moisture conditions can differ from room averages.", "Disease management must address the pathogen, susceptible host tissue and environmental conditions rather than only remove visible symptoms."],
+      "measureFirst": ["Document lesion or colony location and progression.", "Inspect internal flower tissue when Botrytis is suspected.", "Record condensation, canopy density and local airflow context.", "Map affected plants and connected propagation history.", "Use microscopy or laboratory confirmation when the diagnosis affects major crop decisions."],
+      "interpretationLimits": ["Room-average RH cannot prove the microclimate inside dense flowers.", "White residue is not always powdery mildew.", "Brown flower tissue can have non-Botrytis causes including mechanical injury and senescence."],
+      "commonMistakes": ["Treating one infected leaf as the entire powdery-mildew problem.", "Inspecting only flower exteriors for Botrytis.", "Ignoring stock-plant and sanitation pathways.", "Using visual appearance as laboratory-level confirmation."],
+      "fieldExercise": "Build a side-by-side case sheet for one foliar white-residue case and one flower-browning case. Record direct evidence, microclimate, spread pattern and the next confirmation step before assigning a disease label.",
+      "visualBrief": "Side-by-side powdery mildew and Botrytis disease-cycle diagram showing tissue location, direct evidence, spore movement, microclimate and confirmation boundaries."
+    },
+    {
+      "id": "hlvd-transmission-testing-traceback",
+      "title": "HLVd Transmission, Sampling, Testing & Traceback",
+      "sourceIds": ["IPM-S1", "IPM-S2", "IPM-S3"],
+      "learningOutcome": "Manage HLVd as a systemic and potentially asymptomatic stock-health risk using traceable sampling, testing, contact-network traceback and containment.",
+      "mechanism": ["HLVd can persist with mild or inconsistent visible symptoms, making visual screening insufficient for high-value mother stock.", "Mechanical sap transmission can occur through high-contact operations such as cutting, pruning and propagation when contaminated tools or hands connect plants.", "A positive result has network implications because clones, shared mother stock and shared tools can connect apparently separate plants."],
+      "measureFirst": ["Maintain unique IDs linking mothers and clone batches.", "Use a declared tissue-sampling protocol and preserve sample identity to the laboratory result.", "Record high-contact tools and work areas.", "Trace positives backward to source stock and forward to derived clones.", "Separate suspect material while the exposure network is evaluated."],
+      "interpretationLimits": ["A visually healthy plant is not proof of a negative HLVd status.", "A laboratory result is only as traceable as the sample identity and chain of custody.", "One negative sample may not resolve uncertainty if sampling quality or timing is poor."],
+      "commonMistakes": ["Certifying mother stock by appearance alone.", "Losing mother-to-clone lineage records.", "Treating one positive plant as isolated before traceback.", "Using inconsistent sampling locations without documentation."],
+      "fieldExercise": "Draw a mother-to-clone relationship map for a hypothetical positive HLVd result. Add shared tools and work areas, then prioritize which connected plants require isolation, resampling or review first.",
+      "visualBrief": "Systemic-pathogen workflow from asymptomatic mother stock through mechanical contact and clone relationships to sampling, laboratory testing, positive-result traceback and containment."
+    },
+    {
+      "id": "resistance-compatibility-verification",
+      "title": "Resistance Management, Biological Compatibility & Verification",
+      "sourceIds": ["IPM-S1", "IPM-S4"],
+      "learningOutcome": "Plan compatible IPM tactics, preserve legal label boundaries, reduce repeated selection pressure and verify whether an intervention actually changed pest or disease pressure.",
+      "mechanism": ["Repeated use of the same control pressure can favor resistant survivors in pest or pathogen populations.", "Biological controls can be disrupted by incompatible products, timing or environmental conditions even when each tactic is individually valid.", "An application is not evidence of control; pre-treatment baseline and post-treatment scouting are required to estimate effect and recurrence."],
+      "measureFirst": ["Confirm target identity before choosing a control tactic.", "Keep legal label status and jurisdictional restrictions separate from efficacy claims.", "Record mode-of-action group where applicable without publishing unsafe mixing instructions.", "Document beneficial organisms present or released and potential compatibility conflicts.", "Use the same scouting unit before and after treatment and schedule a recurrence check."],
+      "interpretationLimits": ["Product legality and permitted uses vary by jurisdiction.", "Observed decline after treatment may also reflect pest life cycle or environment.", "Resistance management requires product- and target-specific guidance beyond a generic rotation rule."],
+      "commonMistakes": ["Repeating one tactic because it worked once.", "Applying a product without checking biological-control compatibility.", "Calling an intervention successful without post-treatment counts.", "Confusing legal permission with guaranteed efficacy."],
+      "fieldExercise": "Take one archived pest-management event and reconstruct the baseline, selected tactic, biological-control context, legal label check, post-treatment count and recurrence result. Identify what evidence is missing for a confident effectiveness conclusion.",
+      "visualBrief": "IPM planning matrix separating legal-label boundary, target identity, mode-of-action rotation, biological compatibility, coverage/timing, baseline, post-treatment scouting and recurrence prevention."
+    }
+  ]
+}
