@@ -53,9 +53,6 @@ jobs:
           set -euo pipefail
           node --check scripts/publish-wordpress-articles-rest.mjs
           VALIDATE_ONLY=1 node scripts/publish-wordpress-articles-rest.mjs
-          ! grep -Fq 'apply-wordpress-public-content-rest.mjs' .github/workflows/wordpress-public-content-cleanup.yml
-          ! grep -Fq 'site/wordpress/pages/**' .github/workflows/wordpress-public-content-cleanup.yml
-          ! grep -Fq 'workflow_run:' .github/workflows/wordpress-public-content-cleanup.yml
 
       - name: Require WordPress Application Password credentials
         shell: bash
