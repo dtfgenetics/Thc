@@ -196,6 +196,7 @@ jobs:
 
       - name: Report topic-literature publication to issue 46
         if: always()
+        continue-on-error: true
         uses: actions/github-script@v7
         env:
           JOB_STATUS: ${{ job.status }}
