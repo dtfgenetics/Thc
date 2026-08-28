@@ -1,6 +1,16 @@
 # DTF / THC game source index
 
+Production target: **https://dtfseeds.com**
+
 This directory contains game projects that are owned directly by the DTF master repository. Standalone game repositories remain canonical where the portfolio registry assigns them separately.
+
+## Fast workflow
+
+- Create a safe, non-deployable scaffold: `npm run games:new -- <game-id> "Game Title"`
+- Verify game ownership, manifests, routes, source paths, and deployment metadata: `npm run games:verify`
+- Full workflow: `docs/GAME_DEVELOPMENT_WORKFLOW.md`
+
+New game scaffolds are intentionally not published automatically. A game reaches dtfseeds.com only after its ownership, public runtime, deployment entry, tests, and PR checks are complete.
 
 ## Source-controlled here
 
