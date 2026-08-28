@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07110c">
+  <meta name="description" content="Play Mystery Strain, a deterministic yes/no deduction game from DTF Genetics using original fictional cultivar profiles and optional Wild Card rules.">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <link rel="canonical" href="https://dtfseeds.com/games/mystery-strain/">
+  <link rel="stylesheet" href="/games/dtf-route.css">
+  <link rel="stylesheet" href="./mystery-strain.css">
+  <title>Mystery Strain | Deduction Game | DTF Genetics</title>
+</head>
+<body>
+  <main class="mystery-shell">
+    <a class="back" href="/games/">← DTF Game Hub</a>
+    <header class="hero">
+      <p class="eyebrow">DTF Genetics · Deduction lab</p>
+      <h1>Mystery <span>Strain</span></h1>
+      <p class="lede">A hidden fictional cultivar profile is in the case file. Ask useful yes/no questions, eliminate candidates, then name the mystery before your guesses run out.</p>
+      <p id="load-status" class="load-status" aria-live="polite">Loading deduction data…</p>
+    </header>
+
+    <section id="setup-panel" class="setup-grid" hidden aria-labelledby="setup-heading">
+      <div class="panel setup-panel">
+        <h2 id="setup-heading">Open a case</h2>
+        <div class="setup-controls">
+          <div class="code-row">
+            <label>Case code
+              <input id="case-code" maxlength="6" pattern="[A-HJ-NP-Z2-9]{6}" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-describedby="code-help">
+            </label>
+            <span id="code-help" class="visually-hidden">Use six characters: letters except I and O, or digits 2 through 9.</span>
+            <button id="random-case" class="control ghost" type="button">New code</button>
+          </div>
+          <label class="wild-toggle">
+            <input id="wild-card" type="checkbox">
+            <span><strong>Enable Wild Card</strong><small>The case code deterministically selects one disclosed modifier: Foggy Jar, Extra Sniff, or Risky Read.</small></span>
+          </label>
+          <div class="button-row">
+            <button id="start-game" class="control primary" type="button">Start Mystery</button>
+            <button id="share-case" class="control" type="button">Copy challenge</button>
+          </div>
+        </div>
+      </div>
+      <aside class="panel fiction-card">
+        <strong>Original game data</strong>
+        <p>All cultivar names and trait profiles in this game are fictional. The deduction roster is designed for gameplay and is not presented as real-world cultivar science or product information.</p>
+        <p>Same case code + same Wild Card setting = same hidden profile and modifier, so friends can compare deduction paths fairly.</p>
+      </aside>
+    </section>
+
+    <section id="game-panel" class="game-panel" hidden aria-labelledby="mystery-heading">
+      <h2 id="mystery-heading" tabindex="-1">Active mystery</h2>
+      <div class="stats" aria-label="Mystery progress">
+        <div class="stat"><span>Case</span><strong id="case-readout">—</strong></div>
+        <div class="stat"><span>Questions left</span><strong id="questions-left">—</strong></div>
+        <div class="stat"><span>Guesses left</span><strong id="guesses-left">—</strong></div>
+        <div class="stat"><span>Candidates</span><strong id="candidates-left">—</strong></div>
+      </div>
+      <aside id="modifier-card" class="panel modifier-card" hidden></aside>
+
+      <div class="game-grid">
+        <div>
+          <section class="panel" aria-labelledby="questions-heading">
+            <div class="section-title"><h2 id="questions-heading">Ask a question</h2><small>Only useful questions remain available</small></div>
+            <div id="question-groups"></div>
+          </section>
+          <section class="panel" style="margin-top:15px" aria-labelledby="clues-heading">
+            <div class="section-title"><h2 id="clues-heading">Clue log</h2><small>YES · NO · UNKNOWN</small></div>
+            <div id="clue-log" class="clue-log"></div>
+          </section>
+        </div>
+        <section class="panel" aria-labelledby="candidates-heading">
+          <div class="section-title"><h2 id="candidates-heading">Make a guess</h2><small>Wrong guesses are removed</small></div>
+          <div id="candidate-grid" class="candidate-grid"></div>
+        </section>
+      </div>
+    </section>
+
+    <section id="result-panel" class="panel result-panel" hidden aria-labelledby="result-title">
+      <p class="eyebrow">Case result</p>
+      <h2 id="result-title">Mystery result</h2>
+      <div id="secret-name" class="secret">—</div>
+      <p id="result-copy"></p>
+      <p id="score" class="load-status"></p>
+      <div class="result-actions">
+        <button id="play-same" class="control primary" type="button">Replay same case</button>
+        <button id="play-new" class="control" type="button">New case</button>
+      </div>
+    </section>
+
+    <p id="announce" class="announce" aria-live="polite" aria-atomic="true"></p>
+  </main>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
