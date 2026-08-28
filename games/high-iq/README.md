@@ -61,6 +61,16 @@ node --check site/public-route-patch/games/high-iq/app-v3.js
 node --check site/public-route-patch/games/high-iq/game-core.mjs
 ```
 
+For the real-browser gate, install the workspace plus Chromium and run:
+
+```bash
+npm ci
+npx playwright install chromium
+node games/high-iq/test/browser-smoke.mjs
+```
+
+The browser smoke test serves `site/public-route-patch` locally, loads the complete production bank in Chromium, completes a five-question challenge through the results screen, verifies explanations/sources/history, checks for browser console/page errors, and performs a 390×844 mobile overflow check.
+
 A DTF-hosted v3 release requires:
 
 1. Canonical data validation passes.
@@ -68,8 +78,9 @@ A DTF-hosted v3 release requires:
 3. Deterministic gameplay-core tests pass.
 4. Runtime smoke validation proves every JavaScript UI selector has a matching production DOM element and all data chunks load to the expected totals.
 5. Browser source syntax checks pass.
-6. The packaged route contains `app-v3.js`, `game-core.mjs`, both High IQ CSS layers, all data chunks, a crawlable H1, unique title, description, and canonical URL.
-7. Production verification confirms `https://dtfseeds.com/games/high-iq/` serves the v3 shell and all v2.2 JSON chunks as JSON.
-8. The legacy external URL remains rollback-only evidence until the self-hosted route is stable.
+6. The WordPress game-route package contains `app-v3.js`, `game-core.mjs`, both High IQ CSS layers, all data chunks, a crawlable H1, unique title, description, and canonical URL.
+7. Chromium completes an actual High IQ run on desktop and loads without horizontal overflow at the tested mobile viewport.
+8. Production verification confirms `https://dtfseeds.com/games/high-iq/` serves the v3 shell and all v2.2 JSON chunks as JSON.
+9. The legacy external URL remains rollback-only evidence until the self-hosted route is stable.
 
 See `game.json` for the machine-readable feature/integration contract and `data/manifest.json` for the controlled dataset contract.
