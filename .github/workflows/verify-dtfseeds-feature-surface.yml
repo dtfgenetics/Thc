@@ -47,7 +47,7 @@ jobs:
                 -o "$body" -w '%{http_code}' \
                 -H 'Cache-Control: no-cache, no-store, max-age=0' \
                 -H 'Pragma: no-cache' \
-                -H 'User-Agent: DTFSeeds-Feature-Audit/2.2' \
+                -H 'User-Agent: DTFSeeds-Feature-Audit/2.3' \
                 "$SITE${path}?dtf_feature_audit=${token}" || printf '000')"
               final_url="$(curl -4 -sS -L -o /dev/null -w '%{url_effective}' \
                 --connect-timeout 15 --max-time 45 \
@@ -78,8 +78,11 @@ jobs:
           check_route '/games/grower-conversations/' 'Grower Conversations' 'game'
           check_route '/games/high-land/' 'High Land' 'game'
           check_route '/games/weedopolis/' 'Weedopolis' 'game'
+          check_route '/games/strain-showdown/' 'Strain Showdown' 'game'
           check_route '/games/crossword/' 'Crossword' 'game'
           check_route '/games/who-took-it/' 'Who Took It' 'game'
+          check_route '/games/protect-the-plants/' 'Burn Buds' 'multiplayer'
+          check_route '/games/bud-or-bluff/' 'Bud or Bluff' 'multiplayer'
           check_route '/games/thc-u-know/' 'THC U Know' 'multiplayer'
           check_route '/games/kush-kings-chess/' 'Kush Kings' 'multiplayer'
 
@@ -91,11 +94,12 @@ jobs:
             echo 'DTF_ROWS_EOF'
           } >> "$GITHUB_OUTPUT"
           cat "$out"
-          [[ "$total" -eq 15 ]] || { echo "Expected 15 routes, audited $total" >&2; exit 1; }
-          exit 0
+          [[ "$total" -eq 18 ]] || { echo "Expected 18 routes, audited $total" >&2; exit 1; }
+          [[ "$failures" -eq 0 ]] || { echo "$failures advertised production route(s) failed verification" >&2; exit 1; }
 
       - name: Report feature surface audit
         if: always()
+        continue-on-error: true
         uses: actions/github-script@v7
         env:
           ROWS: ${{ steps.live.outputs.rows }}
@@ -111,25 +115,29 @@ jobs:
             });
             const total = Number(process.env.TOTAL || 0);
             const failures = Number(process.env.FAILURES || 0);
-            const complete = total === 15 && rows.length === 15;
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: 46,
-              body: [
-                '## DTFSeeds feature surface audit',
-                '',
-                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-                `Audit execution: **${process.env.AUDIT_OUTCOME || 'unknown'}**`,
-                `Routes audited: **${total}/15**`,
-                `Report completeness: **${complete ? 'complete' : 'INCOMPLETE'}**`,
-                `Advertised routes failing current-content checks: **${failures}**`,
-                '',
-                '| Type | Route | HTTP | Marker | Bytes | Result | Final URL |',
-                '|---|---|---:|---|---:|---|---|',
-                ...(rows.length ? rows : ['| - | - | ? | ? | ? | **MISSING/BROKEN** | - |']),
-                '',
-                'Read-only fresh-runner audit. It includes both public multiplayer routes and checks the current visual-system hub headlines rather than retired copy.'
-              ].join('\n')
-            });
-            if (!complete) core.setFailed(`Feature audit report is incomplete: ${total}/15 routes, ${rows.length} rows.`);
+            const complete = total === 18 && rows.length === 18;
+            try {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: 46,
+                body: [
+                  '## DTFSeeds feature surface audit',
+                  '',
+                  `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                  `Audit execution: **${process.env.AUDIT_OUTCOME || 'unknown'}**`,
+                  `Routes audited: **${total}/18**`,
+                  `Report completeness: **${complete ? 'complete' : 'INCOMPLETE'}**`,
+                  `Advertised routes failing current-content checks: **${failures}**`,
+                  '',
+                  '| Type | Route | HTTP | Marker | Bytes | Result | Final URL |',
+                  '|---|---|---:|---|---:|---|---|',
+                  ...(rows.length ? rows : ['| - | - | ? | ? | ? | **MISSING/BROKEN** | - |']),
+                  '',
+                  'Read-only fresh-runner audit. It includes all currently advertised public game routes and checks the current visual-system hub headlines rather than retired copy.'
+                ].join('\n')
+              });
+            } catch (error) {
+              core.warning(`Could not post feature-surface result to issue #46: ${error.message}`);
+            }
+            if (!complete) core.setFailed(`Feature audit report is incomplete: ${total}/18 routes, ${rows.length} rows.`);
