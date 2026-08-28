@@ -1,0 +1,129 @@
+{
+  "schemaVersion": 1,
+  "id": "nutrition-media-missing-material-v6",
+  "title": "Nutrition & Media — Missing Material Pack",
+  "updatedAt": "2026-08-28",
+  "purpose": "Close the ten remaining high-value instructional gaps in Nutrition & Media without turning the section into a universal feed chart, product guide, or symptom-only diagnosis system.",
+  "modules": [
+    {
+      "id": "nitrogen-forms-ph-drift",
+      "title": "Nitrate, Ammonium & Root-Zone pH Drift",
+      "encyclopediaIds": ["THC-ENC-122", "THC-ENC-132", "THC-ENC-133"],
+      "learningOutcome": "Separate total nitrogen from nitrogen form and explain why nitrate/ammonium balance can change rhizosphere pH direction without creating one universal ratio.",
+      "mechanism": ["Plants acquire nitrogen mainly as nitrate and ammonium in many cultivation systems, but the two forms enter assimilation and charge-balance processes differently.", "Nitrate-dominant and ammonium-heavy uptake can drive different directional pH effects around roots, while alkalinity, nitrification, substrate buffering, irrigation and total dose also shape the observed root-zone trend.", "A measured pH change therefore cannot be attributed to nitrogen form alone unless water chemistry, fertilizer composition and root-zone method are controlled."],
+      "measureFirst": ["Record total elemental N plus nitrate-N and ammonium-N separately.", "Trend input pH and root-zone pH using declared methods rather than one isolated reading.", "Keep alkalinity, substrate, irrigation fraction, EC and temperature with the pH trend.", "Record growth rate, leaf condition and root health before changing N form.", "Preserve the exact fertilizer analysis and batch calculation."],
+      "interpretationLimits": ["Published cannabis N-form responses are genotype-, stage- and system-specific.", "Root-zone pH can move for reasons unrelated to nitrogen form, including alkalinity, lime, nitrification and decomposition.", "A ratio that performs well in one substrate cannot be assumed to transfer to another."],
+      "commonMistakes": ["Treating ammonium as automatically faster or better.", "Changing N form while simultaneously changing total N and EC.", "Blaming every pH drift on fertilizer without checking alkalinity and buffering.", "Using one reservoir pH number as proof of root-zone chemistry."],
+      "fieldExercise": "Take one current fertilizer program and document total N, nitrate-N and ammonium-N from the guaranteed analysis or formulation record. Plot input pH and root-zone pH across several irrigations while keeping the sampling method constant. Annotate water-source, substrate and irrigation changes before interpreting the trend.",
+      "visualBrief": "Mechanism diagram separating total nitrogen from nitrate and ammonium, showing uptake/assimilation paths, directional rhizosphere pH effects, and parallel influences from alkalinity, nitrification and buffering."
+    },
+    {
+      "id": "phosphorus-availability-precipitation",
+      "title": "Phosphorus Availability, Adsorption & Precipitation",
+      "encyclopediaIds": ["THC-ENC-123", "THC-ENC-132", "THC-ENC-139"],
+      "learningOutcome": "Explain why phosphorus can be present yet poorly available and distinguish pH/speciation, surface retention and precipitation from simple under-dosing.",
+      "mechanism": ["Phosphorus is supplied mainly as phosphate species whose proportions shift with pH.", "Phosphate can become less available through adsorption to surfaces or precipitation with calcium, iron or other ions depending on chemistry and concentration.", "Increasing phosphorus concentration does not guarantee greater uptake when root health, pH, precipitation or antagonistic chemistry is limiting."],
+      "measureFirst": ["Record elemental P rather than relying only on P2O5 label values.", "Keep pH, EC, calcium/iron context and source-water chemistry with the formulation.", "Inspect stock-solution compatibility and any visible precipitate without assuming every cloudiness event has the same cause.", "Use tissue or solution analysis when the consequence of an adjustment is significant.", "Separate input chemistry from root-zone extraction results."],
+      "interpretationLimits": ["One universal cannabis phosphorus optimum is not supported across all genotypes, media and stages.", "Visible deficiency-like symptoms are not specific to phosphorus.", "Precipitation risk depends on concentration, pH, mixing order and ion composition, not one ingredient name."],
+      "commonMistakes": ["Treating reproductive importance as proof that more phosphorus improves flowering.", "Ignoring oxide-to-element conversion on fertilizer labels.", "Responding to purple coloration with phosphorus before checking genetics, temperature and roots.", "Combining concentrated incompatible stocks and blaming the crop later."],
+      "fieldExercise": "Convert the phosphorus guarantee from one fertilizer into elemental P and record the final solution basis. Review pH, Ca and Fe sources and the stock-mixing sequence. Compare the calculated input with root-zone/tissue evidence before deciding whether phosphorus supply is actually limiting.",
+      "visualBrief": "Chemistry diagram showing phosphate speciation with pH, adsorption to media surfaces, and precipitation pathways with calcium/iron while explicitly avoiding a universal cannabis pH target band."
+    },
+    {
+      "id": "potassium-cation-competition",
+      "title": "Potassium & Cation Competition",
+      "encyclopediaIds": ["THC-ENC-124", "THC-ENC-125", "THC-ENC-126", "THC-ENC-140"],
+      "learningOutcome": "Interpret potassium as an essential osmotic and enzymatic ion while recognizing that high cation supply can alter acquisition of calcium, magnesium and ammonium.",
+      "mechanism": ["Potassium supports osmotic regulation, stomatal function, enzyme activation and charge balance while remaining largely ionic in plant tissues.", "K, Ca, Mg and ammonium can influence each other's root acquisition through concentration, transporter behavior and total ionic strength.", "The practical question is not one ideal ratio but whether absolute elemental supply, root conditions and plant demand are balanced."],
+      "measureFirst": ["Calculate elemental K, Ca, Mg and ammonium-N in the final delivered solution.", "Record source-water Ca/Mg and total EC.", "Pair chemistry with root-zone water status because salinity changes uptake conditions.", "Map symptom tissue age and progression rather than labeling marginal burn automatically as potassium.", "Use repeatable root-zone or tissue methods for significant corrections."],
+      "interpretationLimits": ["Cation interactions are concentration- and context-dependent rather than fixed antagonism ratios.", "Visual symptoms overlap with salinity, roots and environmental stress.", "Published nutrient responses from one cannabis cultivar should not become universal ratios."],
+      "commonMistakes": ["Treating high K as a universal flower-quality strategy.", "Changing K without recalculating total EC and other cations.", "Calling every Ca/Mg symptom a potassium lockout.", "Comparing fertilizer ratios while ignoring absolute elemental concentration."],
+      "fieldExercise": "Build a simple cation inventory for one feed plus source water: K, Ca, Mg and ammonium-N. Compare absolute concentrations and EC across two batches or stages, then review plant and root-zone evidence before proposing any ratio change.",
+      "visualBrief": "Root-interface diagram showing K, Ca, Mg and ammonium competing within a total salinity context, with transporter selectivity and plant demand rather than a simplistic lockout arrow chart."
+    },
+    {
+      "id": "calcium-transport-demand",
+      "title": "Calcium Supply vs Transport to Growing Tissue",
+      "encyclopediaIds": ["THC-ENC-125", "THC-ENC-131", "THC-ENC-090"],
+      "learningOutcome": "Distinguish calcium concentration in solution from calcium delivery to expanding tissues through healthy roots and xylem flow.",
+      "mechanism": ["Calcium supports cell walls, membranes and signaling and is poorly redistributed from older tissues after deposition.", "Growing tissues depend heavily on continuing root acquisition and xylem delivery, which are influenced by roots, water flow, salinity and local transpiration.", "A feed can contain adequate calcium while local transport remains constrained by root injury, saturated media, high EC or environmental conditions."],
+      "measureFirst": ["Inventory total calcium from source water and fertilizer.", "Inspect roots, water status and root-zone EC before adding a calcium supplement.", "Record symptom location with emphasis on newly expanding tissues.", "Review leaf temperature, RH/VPD and airflow as transport context.", "Use tissue analysis when repeated symptoms persist despite apparently adequate supply."],
+      "interpretationLimits": ["Localized calcium disorders are not explained by concentration alone.", "Cannabis-specific tissue sufficiency ranges remain method- and cultivar-limited.", "Increasing calcium can increase salinity or disturb other cations when transport is the actual problem."],
+      "commonMistakes": ["Assuming every distorted new leaf means the solution lacks calcium.", "Adding Cal-Mag without calculating existing Ca and Mg.", "Ignoring saturated or diseased roots.", "Judging recovery from damaged old tissue instead of new growth."],
+      "fieldExercise": "For a crop showing suspected calcium stress, document Ca supply from water and fertilizer, root condition, root-zone EC/moisture, environmental measurements and tissue location. Write two competing hypotheses—supply limitation and transport limitation—and list evidence that would distinguish them.",
+      "visualBrief": "Whole-plant calcium transport diagram showing root acquisition, xylem movement, transpiration-linked delivery, poor remobilization, expanding sinks and several ways adequate solution Ca can fail to reach local tissue."
+    },
+    {
+      "id": "magnesium-sulfur-functions",
+      "title": "Magnesium Mobility & Sulfur Assimilation",
+      "encyclopediaIds": ["THC-ENC-126", "THC-ENC-127", "THC-ENC-131"],
+      "learningOutcome": "Separate magnesium and sulfur biology, mobility and symptom patterns instead of treating both as generic secondary nutrients.",
+      "mechanism": ["Magnesium contributes to chlorophyll but also supports enzymes, ribosomes and phosphate-energy metabolism and is relatively mobile within the plant.", "Sulfur is commonly acquired as sulfate and assimilated into sulfur-containing amino acids, proteins, glutathione and cofactors.", "Their visual shortage patterns and root-zone chemistry differ, so one combined supplement response is not a diagnosis."],
+      "measureFirst": ["Calculate Mg and sulfate/S inputs from both water and fertilizer.", "Record tissue age and symptom geometry.", "Check K, Ca, ammonium, pH and EC because they change interpretation.", "Keep root condition and recent irrigation history with symptom records.", "Use tissue analysis for persistent or economically significant cases."],
+      "interpretationLimits": ["Older-leaf interveinal chlorosis is not unique to Mg.", "Sulfur function does not prove predictable aroma or terpene changes from extra sulfate.", "Element mobility classifications are useful guides, not absolute symptom rules."],
+      "commonMistakes": ["Calling any interveinal chlorosis magnesium deficiency.", "Assuming sulfur supplementation automatically improves aroma.", "Ignoring source-water Mg or sulfate.", "Changing several cations together so the response cannot be interpreted."],
+      "fieldExercise": "Create a paired Mg/S input inventory from the current water report and fertilizer program. Map observed symptoms by tissue age and pattern, then list at least three competing explanations before deciding whether either element is actually limiting.",
+      "visualBrief": "Paired infographic contrasting magnesium mobility/chlorophyll/enzyme roles with sulfate uptake and sulfur-amino-acid assimilation, including distinct tissue-location cues and evidence limits."
+    },
+    {
+      "id": "micronutrient-ph-chelation",
+      "title": "Micronutrient Availability, pH & Chelation",
+      "encyclopediaIds": ["THC-ENC-128", "THC-ENC-129", "THC-ENC-130", "THC-ENC-132"],
+      "learningOutcome": "Treat micronutrients as distinct elements with different chemistry, mobility and toxicity margins rather than one generic trace package.",
+      "mechanism": ["Fe, Mn, Zn, Cu, Mo, B, Cl and Ni have different biological functions and do not respond identically to pH or root-zone chemistry.", "Chelates can help maintain selected metal ions in soluble forms, but chelate identity, pH, competition and root uptake still matter.", "Because required amounts are small, formulation error, source-water background and contamination can become major parts of total delivery."],
+      "measureFirst": ["Record individual elemental micronutrient doses, not only the product name.", "Keep water analysis for B, Cl, Fe, Mn and other relevant constituents where available.", "Record chelate identity for iron or other chelated metals.", "Verify scale resolution, stock volume, injector ratio and final dilution.", "Use laboratory evidence when a trace-element correction carries toxicity risk."],
+      "interpretationLimits": ["Simple pH availability charts are qualitative teaching aids, not universal response curves.", "Young-leaf chlorosis or distortion can arise from roots, salinity, pests and environment as well as micronutrients.", "Toxicity margins vary by element, medium, stage and genotype."],
+      "commonMistakes": ["Treating all micronutrients as one pH-response group.", "Adding a broad trace mix to fix one suspected element.", "Ignoring background chloride or boron in source water.", "Making trace stock solutions with inadequate scale precision."],
+      "fieldExercise": "Audit one micronutrient stock from label to final delivered elemental concentration. Record chelate identity where relevant, compare with source-water background, and identify which analytical or plant evidence would justify an adjustment.",
+      "visualBrief": "Evidence-aware matrix for Fe, Mn, Zn, Cu, Mo, B, Cl and Ni showing distinct functions, relative mobility, chemistry/chelation context and narrow deficiency-toxicity margins without one universal pH band."
+    },
+    {
+      "id": "nutrient-interactions-antagonism",
+      "title": "Nutrient Interactions Without a 'Lockout' Myth",
+      "encyclopediaIds": ["THC-ENC-131", "THC-ENC-134", "THC-ENC-140"],
+      "learningOutcome": "Replace the vague word lockout with testable mechanisms such as competition, precipitation, salinity, root injury, pH-driven speciation or delivery failure.",
+      "mechanism": ["Nutrient availability can be reduced by chemical precipitation, adsorption, transporter competition, high total salinity, poor root respiration, abnormal pH or inadequate water delivery.", "Different mechanisms can create similar plant symptoms but require different corrections.", "The term lockout is useful only if it is replaced by a specific mechanism that can be measured or tested."],
+      "measureFirst": ["Map symptom location and chronology.", "Verify delivered formulation and irrigation uniformity.", "Measure root-zone pH/EC with a declared method and inspect roots.", "Review water chemistry and incompatible-stock risk.", "Change the smallest justified variable and verify new growth before escalating."],
+      "interpretationLimits": ["Visual symptoms rarely identify one interaction mechanism by themselves.", "Pairwise nutrient-ratio charts often ignore absolute dose and salinity.", "Multiple stresses can operate simultaneously, so evidence may support more than one contributing cause."],
+      "commonMistakes": ["Calling any unexplained deficiency symptom lockout.", "Flushing before identifying whether salinity is actually elevated.", "Adding more of the visually suspected nutrient without checking roots and pH.", "Changing pH, EC, irrigation and supplements at the same time."],
+      "fieldExercise": "Take one recent nutrient-like symptom case and rewrite the diagnosis without using the word lockout. List at least four candidate mechanisms, the measurement that would test each one, and the smallest safe corrective experiment.",
+      "visualBrief": "Mechanism-first interaction map separating competition, precipitation, pH/speciation, salinity/osmotic stress, root hypoxia/disease and delivery failure, all converging on reduced acquisition without a generic lockout label."
+    },
+    {
+      "id": "elemental-formulation-stock-compatibility",
+      "title": "From Product Label to Elemental Formula & Compatible Stocks",
+      "encyclopediaIds": ["THC-ENC-135", "THC-ENC-136", "THC-ENC-137", "THC-ENC-139"],
+      "learningOutcome": "Translate guaranteed analysis into defined elemental delivery and verify dilution and compatibility without relying on bottle ratios or meter ppm as formulation units.",
+      "mechanism": ["Fertilizer labels may report oxide-equivalent P2O5/K2O, elemental nutrients, percentages by mass or liquid density-dependent concentrations.", "Stock concentration, injector ratio and final batch volume determine delivered elemental concentration.", "Concentrated stocks can precipitate when incompatible ions meet before adequate dilution, reducing availability and potentially damaging equipment."],
+      "measureFirst": ["Retain the original guaranteed analysis and product lot.", "Convert oxide-equivalent values to elemental basis when required and state units.", "Record stock mass/volume, final stock volume, injector ratio and final delivered volume.", "Keep mixing order and stock separation rules documented from manufacturer or validated procedures.", "Verify final EC and, when needed, laboratory ion concentration rather than inferring from a ppm pen."],
+      "interpretationLimits": ["This lab teaches calculation structure, not a universal nutrient recipe or hazardous chemical handling procedure.", "Density and purity can matter for liquid concentrates; label data must be used as supplied.", "Visible clarity does not prove every ion remains fully available or correctly dosed."],
+      "commonMistakes": ["Confusing P2O5/K2O with elemental P/K.", "Using meter-derived ppm as fertilizer formulation concentration.", "Forgetting injector dilution when calculating final dose.", "Mixing incompatible concentrated stocks together before dilution."],
+      "fieldExercise": "Choose one current fertilizer product and document the full chain: guaranteed analysis → elemental basis → stock concentration → injector or batch dilution → final elemental concentration. Have a second calculation independently reproduce the result before using it as a reference.",
+      "visualBrief": "Calculation-and-mixing workflow linking guaranteed analysis, oxide-to-element conversion, stock preparation, injector ratio, final volume, elemental mg/L and compatibility checkpoints, with a clear separation between math and product-specific safety instructions."
+    },
+    {
+      "id": "root-zone-tissue-sampling-methods",
+      "title": "Root-Zone & Tissue Sampling Methods",
+      "encyclopediaIds": ["THC-ENC-132", "THC-ENC-134", "THC-ENC-138"],
+      "learningOutcome": "Select one repeatable root-zone or tissue method and understand why results from different extraction and sampling protocols cannot share one reference range.",
+      "mechanism": ["Runoff, pour-through, slurry/dilution extracts and saturated-media extracts sample different solution fractions and dilution states.", "Tissue results depend on organ, node, age, contamination, washing, stage, time and laboratory method.", "Method-specific values are useful when procedures are consistent; comparing unlike methods can create false trends."],
+      "measureFirst": ["Record the exact root-zone extraction or collection protocol.", "Keep pre-irrigation, wait time, dilution ratio, collection volume and temperature where applicable.", "For tissue, define organ/node/age, plant count, handling and laboratory.", "Use replicates and healthy comparison plants where practical.", "Preserve chain-of-custody and resampling date for consequential decisions."],
+      "interpretationLimits": ["Casual runoff is convenient but strongly pathway-dependent.", "Generic tissue sufficiency ranges may not be validated for the same cultivar, stage or laboratory method.", "One sample cannot establish spatial or temporal consistency."],
+      "commonMistakes": ["Comparing runoff EC directly to a 1:2 or saturated-media extract reference.", "Changing tissue sample position between dates.", "Sampling only the most damaged plant and calling it representative.", "Ignoring recent irrigation or foliar contamination."],
+      "fieldExercise": "Write a one-page sampling SOP for the method currently used in your crop. Include sample identity, timing, preparation, instrument/lab, units and acceptance logic. Repeat it on a second date and compare only like-with-like results.",
+      "visualBrief": "Side-by-side workflow comparing runoff, pour-through, slurry/dilution, saturated-media extract and tissue sampling with distinct sample fractions, dilution/timing variables and a strong warning not to exchange method-specific reference ranges."
+    },
+    {
+      "id": "nutrition-differential-capa",
+      "title": "Nutrition Differential Diagnosis & CAPA Loop",
+      "encyclopediaIds": ["THC-ENC-131", "THC-ENC-138", "THC-ENC-140"],
+      "learningOutcome": "Move from symptom geometry to a bounded hypothesis, smallest justified correction and effectiveness check instead of treating a deficiency chart as proof.",
+      "mechanism": ["Nutrient-like symptoms overlap with salinity, root disease, hypoxia, drought, heat, light stress, pests and normal senescence.", "Tissue age, spatial distribution, chronology, root condition, delivery and analytical measurements narrow the differential.", "Corrective and preventive action is strongest when one primary variable is changed, the response is defined in advance and effectiveness is checked on new growth and system measurements."],
+      "measureFirst": ["Photograph whole plant, affected tissue and population distribution.", "Map old/new tissue, symmetry, veins/margins and progression.", "Verify irrigation delivery, roots, pH/EC and recent environmental changes.", "Review formulation and water chemistry before adding supplements.", "Define the expected recovery signal and recheck date before applying the correction."],
+      "interpretationLimits": ["Necrotic tissue cannot become healthy again, so recovery should be judged on halted progression and new growth.", "More than one cause can coexist.", "A response after a change supports the hypothesis but does not always prove a single causal mechanism."],
+      "commonMistakes": ["Diagnosing from one leaf photograph.", "Changing several nutrients and environment settings simultaneously.", "Judging success because damaged leaves look unchanged.", "Failing to record the baseline before the correction."],
+      "fieldExercise": "Take one real or archived nutrition case and create a differential table with evidence for and against at least four causes. Choose one low-risk corrective action, define the expected new-growth and measurement response, and schedule an effectiveness review.",
+      "visualBrief": "Decision tree from symptom geometry and tissue age through irrigation/delivery, roots, pH/EC, environment and analytical evidence to the smallest justified correction, recheck interval and CAPA effectiveness decision."
+    }
+  ]
+}
