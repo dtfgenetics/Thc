@@ -1,0 +1,26 @@
+name: Grow Room Bingo CI
+on:
+  push:
+    paths: ['games/grow-room-bingo/**','site/public-route-patch/games/grow-room-bingo/**','.github/workflows/grow-room-bingo-ci.yml']
+  pull_request:
+    paths: ['games/grow-room-bingo/**','site/public-route-patch/games/grow-room-bingo/**','.github/workflows/grow-room-bingo-ci.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - run: node games/grow-room-bingo/scripts/validate-data.mjs
+      - run: node --check site/public-route-patch/games/grow-room-bingo/app.js
+      - shell: bash
+        run: |
+          set -euo pipefail
+          test -s site/public-route-patch/games/grow-room-bingo/index.html
+          test -s site/public-route-patch/games/grow-room-bingo/bingo.css
+          grep -Fq 'https://dtfseeds.com/games/grow-room-bingo/' site/public-route-patch/games/grow-room-bingo/index.html
+          grep -Fq 'deploymentRegistered": false' games/grow-room-bingo/game.json
