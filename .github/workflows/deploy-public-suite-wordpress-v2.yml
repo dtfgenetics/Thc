@@ -131,6 +131,9 @@ jobs:
             games/index.html
             games/high-land/index.html
             games/high-iq/index.html
+            games/high-iq/app.js
+            games/high-iq/high-iq.css
+            games/high-iq/data/manifest.json
             games/high-life/index.html
             games/grower-conversations/index.html
             games/seed-man-platformer/index.html
@@ -156,6 +159,7 @@ jobs:
           for file in "${required[@]}"; do
             test -s "$suite_root/$file" || { echo "Missing required release file: $file" >&2; exit 1; }
           done
+          node games/high-iq/scripts/validate-public-runtime.mjs
           echo "root=$suite_root" >> "$GITHUB_OUTPUT"
 
       - name: Package current app-only WordPress archive
@@ -186,6 +190,10 @@ jobs:
                   'thc-grow-doc/index.html',
                   'games/protect-the-plants/index.html',
                   'games/bud-or-bluff/index.html',
+                  'games/high-iq/index.html',
+                  'games/high-iq/app.js',
+                  'games/high-iq/high-iq.css',
+                  'games/high-iq/data/manifest.json',
               }
               missing=required-set(names)
               assert not missing, f'missing deploy archive assets: {sorted(missing)}'
@@ -238,10 +246,32 @@ jobs:
             curl -fsSL --retry 5 --retry-delay 5 -H 'Cache-Control: no-cache, no-store, max-age=0' "$url?dtf_suite_verify=${GITHUB_RUN_ID}" | grep -Fqi "$marker"
           }
           check 'https://dtfseeds.com/games/' '10 playable browser games'
+          check 'https://dtfseeds.com/games/high-iq/' 'Build your High IQ run'
           check 'https://dtfseeds.com/games/protect-the-plants/' 'Protect the Plants'
           check 'https://dtfseeds.com/games/bud-or-bluff/' 'Bud or Bluff'
           check 'https://dtfseeds.com/growlens/' 'GrowLens'
           check 'https://dtfseeds.com/thc-grow-doc/' 'Grow Doc'
+          node --input-type=module <<'NODE'
+          const base = 'https://dtfseeds.com/games/high-iq/data';
+          const bust = `dtf_suite_verify=${process.env.GITHUB_RUN_ID}`;
+          async function getJson(path) {
+            const response = await fetch(`${base}/${path}?${bust}`, { headers: { 'Cache-Control': 'no-cache, no-store, max-age=0', Accept: 'application/json' } });
+            if (!response.ok) throw new Error(`${path} returned ${response.status}`);
+            const text = await response.text();
+            if (!text.trim().match(/^[\[{]/)) throw new Error(`${path} returned non-JSON content`);
+            return JSON.parse(text);
+          }
+          const manifest = await getJson('manifest.json');
+          if (manifest.datasetVersion !== '2.2' || manifest.questionCount !== 80 || manifest.sourceCount !== 50) {
+            throw new Error(`Unexpected High IQ manifest: ${JSON.stringify(manifest)}`);
+          }
+          let questions = 0;
+          for (const chunk of manifest.questionChunks) questions += (await getJson(chunk)).length;
+          let sources = 0;
+          for (const chunk of manifest.sourceChunks) sources += (await getJson(chunk)).length;
+          if (questions !== 80 || sources !== 50) throw new Error(`High IQ live bank incomplete: ${questions} questions, ${sources} sources`);
+          console.log(`High IQ live bank verified: v${manifest.datasetVersion}, ${questions} questions, ${sources} sources`);
+          NODE
 
       - name: Dispatch independent feature-surface verification
         if: always()
@@ -261,5 +291,6 @@ jobs:
             echo "- Build run: ${{ steps.current_build.outputs.run_id }}"
             echo "- Transactional publication: ${{ steps.publish.outcome }}"
             echo "- Atlas verification: ${{ steps.live_atlas.outcome }}"
+            echo '- High IQ verification requires the upgraded challenge console plus the complete v2.2 80-question / 50-source production bank.'
             echo '- WordPress-owned /, /learn/, and /blog/ remain outside this app-only transaction.'
           } >> "$GITHUB_STEP_SUMMARY"
