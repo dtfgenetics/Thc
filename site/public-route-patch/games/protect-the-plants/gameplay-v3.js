@@ -169,9 +169,7 @@
   function remainingOpponentFormations(){
     if(typeof state==='undefined'||!state?.opponent)return 5;
     const revealedBurned=Array.isArray(state.opponent.fleet)?state.opponent.fleet.length:0;
-    return state.status==='finished'&&state.winnerId!==state.me?.id
-      ?Math.max(0,5-revealedBurned)
-      :Math.max(0,5-revealedBurned);
+    return Math.max(0,5-revealedBurned);
   }
 
   function renderTelemetry(){
