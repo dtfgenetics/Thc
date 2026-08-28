@@ -32,13 +32,53 @@ jobs:
         run: |
           set -euo pipefail
           root=site/public-route-patch/games/protect-the-plants
-          for asset in index.html app.js api.php styles.css burn-buds.css burn-buds-branding.js plant.svg sw.js; do
+          for asset in index.html app.js api.php presence.php styles.css burn-buds.css burn-buds-branding.js gameplay-v3.css gameplay-v3.js plant.svg sw.js; do
             test -s "$root/$asset"
           done
           node --check "$root/burn-buds-branding.js"
+          node --check "$root/gameplay-v3.js"
           node --check "$root/sw.js"
           php -l "$root/api.php"
+          php -l "$root/presence.php"
           node games/protect-the-plants/test/burn-buds-branding.test.mjs
+          node games/protect-the-plants/test/burn-buds-gameplay-v3.test.mjs
+
+      - name: Exercise authenticated opponent presence
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$GITHUB_WORKSPACE/site/public-route-patch/games/protect-the-plants"
+          php -S 127.0.0.1:8766 -t "$root" >"$RUNNER_TEMP/burn-buds-presence.log" 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+
+          for n in {1..30}; do
+            if curl -fsS 'http://127.0.0.1:8766/index.html' >/dev/null; then break; fi
+            sleep .2
+          done
+
+          api='http://127.0.0.1:8766/api.php'
+          presence='http://127.0.0.1:8766/presence.php'
+          create="$(curl --fail-with-body -sS -H 'Content-Type: application/json' -X POST "$api?action=create" --data '{"name":"Presence A"}')"
+          code="$(jq -er '.code' <<<"$create")"
+          p1="$(jq -er '.playerId' <<<"$create")"
+          t1="$(jq -er '.token' <<<"$create")"
+          join="$(curl --fail-with-body -sS -H 'Content-Type: application/json' -X POST "$api?action=join" --data "$(jq -nc --arg code "$code" '{name:"Presence B",code:$code}')")"
+          p2="$(jq -er '.playerId' <<<"$join")"
+          t2="$(jq -er '.token' <<<"$join")"
+
+          first="$(curl --fail-with-body -sS -H "X-Player-Id: $p1" -H "X-Player-Token: $t1" "$presence?code=$code")"
+          jq -e '.opponent != null and .opponent.online == false and .opponent.lastSeenAt == null' <<<"$first" >/dev/null
+
+          second="$(curl --fail-with-body -sS -H "X-Player-Id: $p2" -H "X-Player-Token: $t2" "$presence?code=$code")"
+          jq -e '.opponent != null and .serverTime > 0' <<<"$second" >/dev/null
+
+          live="$(curl --fail-with-body -sS -H "X-Player-Id: $p1" -H "X-Player-Token: $t1" "$presence?code=$code")"
+          jq -e '.opponent.online == true and (.opponent.lastSeenAt|type) == "number"' <<<"$live" >/dev/null
+
+          status="$(curl -sS -o /dev/null -w '%{http_code}' -H "X-Player-Id: $p1" -H 'X-Player-Token: bad-token' "$presence?code=$code")"
+          test "$status" = 401
+          echo 'Burn Buds authenticated presence smoke passed.'
 
       - name: Validate product identity and compatibility
         shell: bash
@@ -49,6 +89,8 @@ jobs:
           grep -Fq '>Burn Buds</h1>' "$root/index.html"
           grep -Fq './burn-buds.css' "$root/index.html"
           grep -Fq './burn-buds-branding.js' "$root/index.html"
+          grep -Fq './gameplay-v3.css' "$root/index.html"
+          grep -Fq './gameplay-v3.js' "$root/index.html"
           grep -Fq 'BUD BURNED!' "$root/index.html"
           grep -Fq 'Burn Buds' site/public-route-patch/games/index.html
           grep -Fq 'Play Burn Buds' site/public-route-patch/games/index.html
@@ -56,6 +98,9 @@ jobs:
           grep -Fq "const apiUrl='./api.php'" "$root/app.js"
           grep -Fq 'burn-buds-branding.js' "$root/sw.js"
           grep -Fq 'burn-buds.css' "$root/sw.js"
+          grep -Fq 'gameplay-v3.js' "$root/sw.js"
+          grep -Fq 'gameplay-v3.css' "$root/sw.js"
+          grep -Fq 'presence.php' "$root/gameplay-v3.js"
           grep -Fq 'Cannabis leaf game piece' "$root/plant.svg"
           ! grep -Fqi 'potted cannabis plant' "$root/plant.svg"
           jq -e '.title == "Burn Buds" and .legacyTitle == "Protect the Plants" and .route == "/games/protect-the-plants/" and .status == "playable-beta"' games/protect-the-plants/game.json >/dev/null

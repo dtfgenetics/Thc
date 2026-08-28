@@ -122,6 +122,6 @@ assert.ok(index.includes('BUD BURNED!'));
 assert.ok(index.includes('./burn-buds-branding.js'));
 assert.ok(index.includes('./burn-buds.css'));
 assert.ok(branding.includes("const PRODUCT='Burn Buds'"));
-assert.ok(serviceWorker.includes('ptp-shell-v2-burn-buds-native-20260827'));
+assert.ok(serviceWorker.includes('ptp-shell-v3-burn-buds-presence-20260827'));
 
 console.log('Burn Buds native branding, migration, cache, and multiplayer contract checks passed.');
