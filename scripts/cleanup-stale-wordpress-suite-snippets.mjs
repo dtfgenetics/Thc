@@ -19,7 +19,7 @@ async function request(path,{method='GET',json,allow=[],retryServer=true,headers
     try{
       const response=await fetch(`${siteUrl}${path}`,{method,headers:{Authorization:auth,Accept:'application/json','Cache-Control':'no-cache, no-store, max-age=0',Pragma:'no-cache','User-Agent':'DTFSeeds-Stale-Suite-Bridge-Cleanup/1.8',...(json!==undefined?{'Content-Type':'application/json'}:{}),...headers},body:json!==undefined?JSON.stringify(json):undefined,redirect:'follow',signal:AbortSignal.timeout(45000)});
       const text=await response.text();let body=text;try{body=text?JSON.parse(text):null}catch{}
-      if(retryServer&&(response.status>=500||response.status===429)&&attempt<attempts){
+      if(retryServer&&!allow.includes(response.status)&&(response.status>=500||response.status===429)&&attempt<attempts){
         const delay=Math.min(15000,2000*attempt+Math.floor(Math.random()*750));
         console.warn(`Cleanup request ${method} ${path} returned HTTP ${response.status}; retrying ${attempt}/${attempts} after ${delay}ms.`);
         await sleep(delay);continue;
