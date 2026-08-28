@@ -1,0 +1,172 @@
+{
+  "schemaVersion": 1,
+  "categoryId": "evidence-measurement",
+  "route": "/learn/research-methods/",
+  "curriculumFile": "site/wordpress/education/evidence-measurement-v6.json",
+  "visualMapFile": "site/wordpress/education/evidence-measurement-v6-visual-map.json",
+  "artDirection": {
+    "style": "academic studio-quality cultivation measurement education; cream/neutral background; crisp scientific diagrams; natural plant color where plants are shown; restrained green and gold accents; no yellow cast; no decorative clutter",
+    "masterCanvas": {"widthPx":2550,"heightPx":3300,"dpi":300,"orientation":"portrait"},
+    "textPolicy": "Use short labels, equations, legends and concise callouts. Do not bake paragraph text into the image.",
+    "accuracyPolicy": "Every diagram must distinguish observation from interpretation and method from result. Never imply that extra decimal places equal accuracy or that one sample proves a population claim.",
+    "accessibilityPolicy": "Do not rely on color alone. Every comparison needs text labels, shapes, line styles or position cues, plus descriptive alt text and caption.",
+    "copyrightPolicy": "Create original educational artwork. Source material constrains concepts and terminology; do not reproduce published figures.",
+    "reviewPolicy": "Artwork remains brief-approved-artwork-needed until scientific QA, visual QA, label/spelling QA, accessibility QA and page-placement QA all pass."
+  },
+  "evidenceSources": [
+    {
+      "id":"EVM-S1",
+      "type":"measurement guideline",
+      "citation":"Guidelines for measuring and reporting environmental parameters for experiments in greenhouses. 2015.",
+      "pmcid":"PMC4567830",
+      "supports":["accuracy and precision terminology","calibration and instrumentation records","sensor placement","units and environmental measurement reporting"]
+    },
+    {
+      "id":"EVM-S3",
+      "type":"scientific-method reference",
+      "citation":"Core experimental-design principles used by the Evidence & Measurement V6 curriculum.",
+      "supports":["replication","randomization","controls","confounding","predefined outcomes","uncertainty-aware interpretation"]
+    },
+    {
+      "id":"EVM-S4",
+      "type":"instrument-quality reference",
+      "citation":"Greenhouse measurement guidance for pH, EC, radiation, temperature, humidity, CO2 and airflow instrumentation.",
+      "supports":["calibration","reference checks","sensor drift","instrument maintenance","placement metadata"]
+    }
+  ],
+  "briefs": [
+    {
+      "id":"THC-EVM-01",
+      "gapId":"accuracy-precision-resolution-uncertainty",
+      "queueTitle":"Accuracy, Precision, Resolution & Uncertainty",
+      "masterFilename":"THC-EVM-01_accuracy_precision_resolution_uncertainty.png",
+      "productionStatus":"brief-approved-artwork-needed",
+      "primaryMessage":"Accuracy, precision, resolution and uncertainty are different properties. A display can be highly repeatable or show many decimal places while still being biased or uncertain.",
+      "layout":[
+        "Top title band: ACCURACY, PRECISION, RESOLUTION & UNCERTAINTY",
+        "Four target-style panels: accurate + precise; accurate + imprecise; precise + biased; imprecise + biased",
+        "Instrument display inset contrasting fine display resolution with a wider stated accuracy specification",
+        "Uncertainty bar example around a measured value",
+        "Bottom decision strip: Measure → Compare to reference → Report supported digits → Preserve uncertainty"
+      ],
+      "requiredLabels":["Accuracy","Precision","Bias","Resolution","Uncertainty","Reference value","Repeated measurements","Supported significant digits"],
+      "requiredCallouts":["Repeatable does not automatically mean correct","More decimal places do not prove accuracy","Report uncertainty appropriate to the method"],
+      "forbiddenClaims":["Do not present precision and accuracy as synonyms","Do not imply instrument resolution equals measurement accuracy","Do not imply uncertainty can be removed entirely by repeated measurements"],
+      "sourceIds":["EVM-S1","EVM-S4"],
+      "altText":"Educational target-style comparison of accuracy and precision, plus an instrument display example showing that resolution and decimal places do not equal accuracy, with a simple uncertainty interval.",
+      "caption":"Measurement quality depends on accuracy, precision, bias, resolution and uncertainty. Extra digits are not evidence that the underlying measurement is more correct.",
+      "qa":{"scientific":["All four accuracy/precision combinations are correct","Bias is explicitly distinguished from random spread","Resolution is not labeled as accuracy"],"visual":["Targets remain readable at mobile size","No interpretation depends on color alone","Neutral background and no yellow cast"],"spelling":["accuracy","precision","resolution","uncertainty","bias"],"placement":["Evidence V6 chapter accuracy-precision-calibration","/learn/research-methods/","Infographic library category evidence-measurement"]}
+    },
+    {
+      "id":"THC-EVM-02",
+      "gapId":"calibration-drift-reference-check",
+      "queueTitle":"Calibration, Sensor Drift & Reference Cross-Check",
+      "masterFilename":"THC-EVM-02_calibration_drift_reference_check.png",
+      "productionStatus":"brief-approved-artwork-needed",
+      "primaryMessage":"Calibration and reference checks connect sensor output to known standards and reveal drift before crop decisions are based on bad data.",
+      "layout":[
+        "Top title band: CALIBRATION, DRIFT & REFERENCE CHECKS",
+        "Left workflow: inspect/clean → known standard → pre-check reading → adjustment if method allows → post-check → log",
+        "Center time-series showing gradual sensor drift away from a maintained reference",
+        "Right paired-sensor cross-check showing persistent offset versus random noise",
+        "Bottom calibration record strip with date, standard, temperature, pre/post deviation, operator and maintenance"
+      ],
+      "requiredLabels":["Known standard","Reference sensor","Pre-check","Post-check","Drift","Offset","Calibration log","Maintenance","Operator","Date/time"],
+      "requiredCallouts":["Calibration is part of the measurement method","A stable wrong reading is still wrong","Investigate persistent offsets before changing crop settings"],
+      "forbiddenClaims":["Do not imply every sensor can or should be manually adjusted","Do not prescribe one universal calibration interval","Do not show a reference sensor as infallible"],
+      "sourceIds":["EVM-S1","EVM-S4"],
+      "altText":"Measurement workflow showing inspection, known-standard calibration, post-check verification, long-term sensor drift compared with a maintained reference, and the fields needed in a calibration log.",
+      "caption":"Reference checks and calibration help separate real environmental change from sensor drift, contamination, aging or persistent instrument offset.",
+      "qa":{"scientific":["Pre-check and post-check are separated","Reference comparison is shown as quality control rather than proof of truth","No universal interval is stated"],"visual":["Workflow direction is unambiguous","Drift and offset are distinguishable without color","Calibration-log fields remain legible"],"spelling":["calibration","reference","deviation","maintenance","drift"],"placement":["Evidence V6 chapter accuracy-precision-calibration","/learn/research-methods/","Infographic library category evidence-measurement"]}
+    },
+    {
+      "id":"THC-EVM-03",
+      "gapId":"sensor-placement-spatial-grid",
+      "queueTitle":"Sensor Placement, Canopy Grid & Representative Sampling",
+      "masterFilename":"THC-EVM-03_sensor_placement_spatial_grid.png",
+      "productionStatus":"brief-approved-artwork-needed",
+      "primaryMessage":"Sensor location is part of the measurement definition. Repeatable spatial grids reveal canopy gradients that one convenient sensor or room average can hide.",
+      "layout":[
+        "Top-down grow-room/canopy plan with coordinate grid and labeled sample points",
+        "Side elevation showing canopy height, above-canopy, within-canopy and biased wall/fixture/HVAC positions",
+        "Raw-value grid example retained beside a derived heat-map style summary",
+        "Small sampling panel contrasting fixed sentinel points with randomized plant/leaf sampling",
+        "Bottom metadata strip: coordinate, height, stage, timestamp, nearby source/obstruction"
+      ],
+      "requiredLabels":["Representative position","Biased position","Canopy plane","Height","Coordinate grid","Raw values","Sentinel location","Random sample","Nearby equipment"],
+      "requiredCallouts":["A room average can hide hotspots and dead zones","Reuse the same grid after system changes","Keep raw grid values, not only a heat map"],
+      "forbiddenClaims":["Do not present one sensor location as universally correct for every variable","Do not imply a heat map is raw data","Do not use unlabeled decorative sensor icons"],
+      "sourceIds":["EVM-S1","EVM-S3"],
+      "altText":"Top-down and side-view cultivation measurement diagram showing a repeatable canopy sensor grid, representative and biased locations, raw spatial values, sentinel points and randomized sampling positions.",
+      "caption":"Sensor placement and sampling geometry determine what is measured. A documented spatial grid exposes gradients and makes before-after comparisons repeatable.",
+      "qa":{"scientific":["Position and height are treated as method metadata","Raw values are retained separately from visual interpolation","Sentinel and random sampling are distinguished"],"visual":["Top-down and side-view geometry are easy to separate","All coordinates and height cues are readable","No color-only interpretation"],"spelling":["representative","coordinate","sentinel","randomized","canopy"],"placement":["Evidence V6 chapter sensor-placement-spatial-sampling","/learn/research-methods/","Infographic library category evidence-measurement"]}
+    },
+    {
+      "id":"THC-EVM-04",
+      "gapId":"baseline-control-randomization",
+      "queueTitle":"Baseline, Control, Treatment, Randomization & Position Effects",
+      "masterFilename":"THC-EVM-04_baseline_control_randomization.png",
+      "productionStatus":"brief-approved-artwork-needed",
+      "primaryMessage":"A useful cultivation trial defines a pre-change baseline, a comparison group, treatment assignment and position strategy before the outcome is interpreted.",
+      "layout":[
+        "Top timeline: baseline period → assignment → intervention → observation window → recheck/decision",
+        "Bench map contrasting confounded left-versus-right treatment placement with randomized or blocked placement",
+        "Control and treatment plants shown under the same measurement schedule",
+        "Confounder callout showing simultaneous light, irrigation and nutrient changes destroying attribution",
+        "Bottom rule strip: one major learning variable when practical; document emergency stacked changes as attribution-limited"
+      ],
+      "requiredLabels":["Baseline","Control","Treatment","Randomization","Blocking","Position effect","Confounder","Outcome","Recheck"],
+      "requiredCallouts":["Before-after alone is weaker than a contemporaneous control","Position can masquerade as treatment","Stacked changes limit causal attribution"],
+      "forbiddenClaims":["Do not imply every production decision requires a formal randomized trial","Do not imply randomization eliminates every source of bias","Do not present correlation as a treatment effect"],
+      "sourceIds":["EVM-S3"],
+      "altText":"Cultivation experiment diagram showing a baseline-to-treatment timeline, control and treatment groups, confounded bench placement versus randomized or blocked placement, and how multiple simultaneous changes limit causal interpretation.",
+      "caption":"Baselines, controls and treatment assignment make cultivation comparisons more interpretable. Position effects and stacked changes can otherwise masquerade as treatment responses.",
+      "qa":{"scientific":["Baseline and contemporaneous control are distinguished","Randomization and blocking are presented accurately","Confounding from stacked changes is explicit"],"visual":["Timeline and bench layout can be understood independently","Control/treatment distinction does not rely on color only","Mobile text remains concise"],"spelling":["baseline","control","treatment","randomization","confounder"],"placement":["Evidence V6 chapter baseline-controls-change-isolation","/learn/research-methods/","Infographic library category evidence-measurement"]}
+    },
+    {
+      "id":"THC-EVM-05",
+      "gapId":"standardized-imaging-scoring",
+      "queueTitle":"Standardized Imaging, Scale & Scoring Anchors",
+      "masterFilename":"THC-EVM-05_standardized_imaging_scoring.png",
+      "productionStatus":"brief-approved-artwork-needed",
+      "primaryMessage":"Diagnostic images become comparable evidence only when identity, tissue location, scale, lighting, capture conditions and scoring rules are standardized.",
+      "layout":[
+        "Top title band: STANDARDIZED IMAGING & SCORING",
+        "Three-shot capture set: whole plant overview, affected-organ context, close detail with physical scale",
+        "Good-versus-poor lighting comparison showing neutral white balance versus colored/blurple or filtered image",
+        "Metadata card: plant ID, cultivar, date/time, node/tissue, camera/magnification, lighting, original filename",
+        "Anchored 1–5 ordinal scoring strip with written definitions for each level",
+        "Bottom reminder: observation field separate from diagnosis/hypothesis field"
+      ],
+      "requiredLabels":["Plant ID","Overview","Context","Close-up","Scale reference","Neutral white balance","Unedited original","Tissue location","Scoring anchor","Observation","Interpretation"],
+      "requiredCallouts":["Color shifts can create or hide symptoms","Keep the unedited original","A score is reproducible only when its anchors are defined"],
+      "forbiddenClaims":["Do not imply a photograph alone proves a diagnosis","Do not recommend cosmetic filters","Do not show a 1–5 scale without written anchors"],
+      "sourceIds":["EVM-S3"],
+      "altText":"Standardized cultivation imaging protocol showing whole-plant, tissue-context and close-up photographs with scale, neutral lighting, metadata fields, unedited-original retention and an anchored ordinal scoring rubric.",
+      "caption":"Consistent capture conditions, identity, scale and scoring anchors make images useful for comparison. Observation should be recorded separately from diagnosis or interpretation.",
+      "qa":{"scientific":["Observation and interpretation are visibly separated","White balance is framed as a comparability issue","Ordinal anchors are defined rather than just numbered"],"visual":["Photography sequence reads clearly","Good/poor image example does not depend on hue alone","Scale reference is obvious"],"spelling":["magnification","white balance","observation","interpretation","ordinal"],"placement":["Evidence V6 chapter imaging-observation-scoring","/learn/research-methods/","Diagnostic Index and GrowLens cross-reference after approval"]}
+    },
+    {
+      "id":"THC-EVM-06",
+      "gapId":"replication-uncertainty-evidence-chain",
+      "queueTitle":"Replication, Uncertainty, Correlation & Evidence Chain",
+      "masterFilename":"THC-EVM-06_replication_uncertainty_evidence_chain.png",
+      "productionStatus":"brief-approved-artwork-needed",
+      "primaryMessage":"Repeated measurements, independent biological replicates, uncertainty and causal reasoning determine how strongly cultivation evidence can support a conclusion.",
+      "layout":[
+        "Top-left comparison: five leaves on one plant = technical/subsample evidence versus five independent plants = biological replication",
+        "Top-right distribution plot showing individual values, mean/median and spread rather than a single bar",
+        "Center correlation panel showing two variables moving together with three explanations: A causes B, B causes A, third factor influences both",
+        "Bottom evidence chain: raw observation → method/metadata → comparison → interpretation + uncertainty → bounded action → recheck",
+        "Confidence marker showing low/medium/high confidence tied to evidence quality, not visual certainty"
+      ],
+      "requiredLabels":["Experimental unit","Biological replicate","Technical replicate / subsample","Sample size","Spread","Correlation","Confounder","Uncertainty","Confidence","Recheck"],
+      "requiredCallouts":["Multiple leaves on one plant are not multiple independent plants","Correlation alone does not establish cause","Uncertainty should change confidence and the next test"],
+      "forbiddenClaims":["Do not imply more observations automatically fix biased sampling","Do not imply statistical significance equals practical importance","Do not imply correlation proves causation"],
+      "sourceIds":["EVM-S3"],
+      "altText":"Statistical-thinking diagram comparing biological and technical replication, showing individual-data spread, alternative explanations for correlation, and an evidence chain from raw observation through uncertainty-aware action and recheck.",
+      "caption":"Replication, sample structure, spread and uncertainty determine how strongly evidence supports a conclusion. Correlation alone cannot identify cause.",
+      "qa":{"scientific":["Experimental units and subsamples are distinguished correctly","Individual values and spread are retained","Correlation panel includes third-variable/confounder explanation"],"visual":["Evidence chain has a clear direction","Replication examples are visually distinct","Confidence is not encoded by color alone"],"spelling":["replication","experimental unit","correlation","confounder","uncertainty"],"placement":["Evidence V6 chapter uncertainty-replication-statistical-thinking","/learn/research-methods/","Infographic library category evidence-measurement"]}
+    }
+  ]
+}
