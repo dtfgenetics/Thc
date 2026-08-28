@@ -73,6 +73,7 @@ jobs:
 
       - name: Report workflow registration to issue 46
         if: always() && github.event_name != 'schedule'
+        continue-on-error: true
         uses: actions/github-script@v7
         env:
           PREFLIGHT_STATUS: ${{ job.status }}
