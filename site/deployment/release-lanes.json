@@ -6,7 +6,13 @@
   "fullReleasePaths": [
     "site/deployment/release-lanes.json",
     "scripts/plan-dtfseeds-release.mjs",
-    ".github/workflows/dtfseeds-production-gateway.yml"
+    "scripts/run-workflow-and-wait.sh",
+    ".github/workflows/dtfseeds-production-gateway.yml",
+    ".github/workflows/wordpress-canonical-watch.yml",
+    ".github/workflows/wordpress-canonical-deploy.yml",
+    ".github/workflows/wordpress-canonical-production.yml",
+    ".github/workflows/deploy-public-suite-wordpress-v2.yml",
+    ".github/workflows/deploy-thc-learning-center-expansion-v1.yml"
   ],
   "lanes": {
     "publicSuite": {
