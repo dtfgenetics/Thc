@@ -32,13 +32,16 @@ jobs:
         run: |
           set -euo pipefail
           root=site/public-route-patch/games/protect-the-plants
-          for asset in index.html app.js api.php styles.css burn-buds.css burn-buds-branding.js plant.svg sw.js; do
+          for asset in index.html app.js api.php presence.php styles.css burn-buds.css burn-buds-branding.js gameplay-v3.css gameplay-v3.js plant.svg sw.js; do
             test -s "$root/$asset"
           done
           node --check "$root/burn-buds-branding.js"
+          node --check "$root/gameplay-v3.js"
           node --check "$root/sw.js"
           php -l "$root/api.php"
+          php -l "$root/presence.php"
           node games/protect-the-plants/test/burn-buds-branding.test.mjs
+          node games/protect-the-plants/test/burn-buds-gameplay-v3.test.mjs
 
       - name: Validate product identity and compatibility
         shell: bash
@@ -49,6 +52,8 @@ jobs:
           grep -Fq '>Burn Buds</h1>' "$root/index.html"
           grep -Fq './burn-buds.css' "$root/index.html"
           grep -Fq './burn-buds-branding.js' "$root/index.html"
+          grep -Fq './gameplay-v3.css' "$root/index.html"
+          grep -Fq './gameplay-v3.js' "$root/index.html"
           grep -Fq 'BUD BURNED!' "$root/index.html"
           grep -Fq 'Burn Buds' site/public-route-patch/games/index.html
           grep -Fq 'Play Burn Buds' site/public-route-patch/games/index.html
@@ -56,6 +61,9 @@ jobs:
           grep -Fq "const apiUrl='./api.php'" "$root/app.js"
           grep -Fq 'burn-buds-branding.js' "$root/sw.js"
           grep -Fq 'burn-buds.css' "$root/sw.js"
+          grep -Fq 'gameplay-v3.js' "$root/sw.js"
+          grep -Fq 'gameplay-v3.css' "$root/sw.js"
+          grep -Fq 'presence.php' "$root/gameplay-v3.js"
           grep -Fq 'Cannabis leaf game piece' "$root/plant.svg"
           ! grep -Fqi 'potted cannabis plant' "$root/plant.svg"
           jq -e '.title == "Burn Buds" and .legacyTitle == "Protect the Plants" and .route == "/games/protect-the-plants/" and .status == "playable-beta"' games/protect-the-plants/game.json >/dev/null
