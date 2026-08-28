@@ -61,8 +61,12 @@ try {
 
     if (index === 0) {
       const progressBefore = await page.locator('#progress-text').innerText();
+      const sourceDrawer = page.locator('#answer-feedback .source-drawer');
+      await sourceDrawer.locator('summary').click();
+      assert.equal(await sourceDrawer.getAttribute('open'), '');
       const sourceLink = page.locator('#answer-sources a').first();
       await sourceLink.focus();
+      assert.equal(await sourceLink.evaluate((element) => document.activeElement === element), true);
       const keyboardResult = await sourceLink.evaluate((element) => {
         const event = new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true });
         const allowed = element.dispatchEvent(event);
