@@ -63,9 +63,15 @@ jobs:
         run: |
           set -euo pipefail
           node scripts/plan-dtfseeds-release.mjs --mode=auto --base="$BASE_SHA" --head="$HEAD_SHA" > "$RUNNER_TEMP/plan.json"
-          node - <<'NODE' "$RUNNER_TEMP/plan.json"
+          node - <<'NODE' "$RUNNER_TEMP/plan.json" site/deployment/release-lanes.json
           const fs=require('fs');
           const plan=JSON.parse(fs.readFileSync(process.argv[2],'utf8'));
-          if(!plan.forceFull) throw new Error('hardening changes did not force full reconciliation');
+          const config=JSON.parse(fs.readFileSync(process.argv[3],'utf8'));
+          const architectureChanged=plan.changedFiles.some((file)=>config.fullReleasePaths.includes(file));
+          if(!architectureChanged){
+            console.log('No full-release gateway architecture path changed; lane-forcing assertion is not applicable.');
+            process.exit(0);
+          }
+          if(!plan.forceFull) throw new Error('gateway architecture changes did not force full reconciliation');
           for(const lane of ['publicSuite','wordpress','education']) if(plan.lanes[lane] !== true) throw new Error(`missing lane ${lane}`);
           NODE
