@@ -13,7 +13,7 @@ const publicMarker = 'Source-controlled release';
 if (!username || !password) throw new Error('WP_API_USERNAME and WP_API_PASSWORD are required');
 
 const auth = `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`;
-const headers = { Authorization: auth, Accept: 'application/json', 'User-Agent': 'DTFSeeds-Learning-Expansion-Publisher/1.1' };
+const headers = { Authorization: auth, Accept: 'application/json', 'User-Agent': 'DTFSeeds-Learning-Expansion-Publisher/1.2' };
 const stamp = new Date().toISOString().replace(/[-:.]/g, '').replace('Z', 'Z');
 const backupDir = join(backupRoot, `learning-expansion-${stamp}`);
 await mkdir(backupDir, { recursive: true });
@@ -35,22 +35,39 @@ const forbiddenStrings = [
   'Rainbow_Bubblegum_F1_Regular_DTF_Strain_Card'
 ];
 
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const retryableStatus = new Set([408, 425, 429, 500, 502, 503, 504]);
+
 async function request(path, options = {}) {
-  const response = await fetch(`${siteUrl}${path}`, {
-    ...options,
-    headers: {
-      ...headers,
-      ...(options.body ? { 'Content-Type': 'application/json' } : {}),
-      ...(options.headers || {})
-    },
-    redirect: 'follow',
-    signal: AbortSignal.timeout(60_000)
-  });
-  const text = await response.text();
-  let body = null;
-  try { body = text ? JSON.parse(text) : null; } catch { body = text; }
-  if (!response.ok) throw new Error(`${options.method || 'GET'} ${path} failed (${response.status}): ${typeof body === 'string' ? body.slice(0, 500) : JSON.stringify(body).slice(0, 500)}`);
-  return body;
+  let lastError = null;
+  for (let attempt = 1; attempt <= 6; attempt++) {
+    try {
+      const response = await fetch(`${siteUrl}${path}`, {
+        ...options,
+        headers: {
+          ...headers,
+          ...(options.body ? { 'Content-Type': 'application/json' } : {}),
+          ...(options.headers || {})
+        },
+        redirect: 'follow',
+        signal: AbortSignal.timeout(60_000)
+      });
+      const text = await response.text();
+      let body = null;
+      try { body = text ? JSON.parse(text) : null; } catch { body = text; }
+      if (response.ok) return body;
+      const message = `${options.method || 'GET'} ${path} failed (${response.status}): ${typeof body === 'string' ? body.slice(0, 500) : JSON.stringify(body).slice(0, 500)}`;
+      if (!retryableStatus.has(response.status) || attempt === 6) throw new Error(message);
+      lastError = new Error(message);
+    } catch (error) {
+      lastError = error;
+      if (attempt === 6) break;
+    }
+    const delay = Math.min(20_000, 1500 * (2 ** (attempt - 1)));
+    console.warn(`WordPress request retry ${attempt}/6 for ${path} after ${lastError?.message || 'transient error'}; waiting ${delay}ms`);
+    await sleep(delay);
+  }
+  throw lastError || new Error(`${options.method || 'GET'} ${path} failed after retries`);
 }
 
 function extract(html, pattern, label) {
@@ -126,28 +143,36 @@ for (const result of results) {
   let ok = false;
   let html = '';
   let lastStatus = 0;
+  let lastError = '';
   for (let attempt = 1; attempt <= 12; attempt++) {
-    const response = await fetch(`${result.url}?dtf_expansion=${Date.now()}-${attempt}`, {
-      headers: {
-        'Cache-Control': 'no-cache, no-store, max-age=0',
-        Pragma: 'no-cache',
-        'User-Agent': 'DTFSeeds-Learning-Expansion-Publisher/1.1'
-      },
-      redirect: 'follow',
-      signal: AbortSignal.timeout(60_000)
-    });
-    lastStatus = response.status;
-    html = await response.text();
-    if (response.ok && html.includes('Teaching Healthy Cultivation') && html.includes(publicMarker)) {
-      ok = true;
-      break;
+    try {
+      const response = await fetch(`${result.url}?dtf_expansion=${Date.now()}-${attempt}`, {
+        headers: {
+          'Cache-Control': 'no-cache, no-store, max-age=0',
+          Pragma: 'no-cache',
+          'User-Agent': 'DTFSeeds-Learning-Expansion-Publisher/1.2'
+        },
+        redirect: 'follow',
+        signal: AbortSignal.timeout(60_000)
+      });
+      lastStatus = response.status;
+      html = await response.text();
+      lastError = '';
+      if (response.ok && html.includes('Teaching Healthy Cultivation') && html.includes(publicMarker)) {
+        ok = true;
+        break;
+      }
+    } catch (error) {
+      lastError = error?.message || String(error);
+      console.warn(`Visitor verification retry ${attempt}/12 for ${result.url}: ${lastError}`);
     }
-    await new Promise((resolve) => setTimeout(resolve, 5000));
+    await sleep(Math.min(15_000, 3000 + attempt * 1500));
   }
   if (!ok) {
     const observed = {
       url: result.url,
       status: lastStatus,
+      lastError,
       hasThcIdentity: html.includes('Teaching Healthy Cultivation'),
       hasPublicMarker: html.includes(publicMarker),
       hasSourceCommentMarker: html.includes(sourceMarker),
