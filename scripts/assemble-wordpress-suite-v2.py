@@ -204,6 +204,34 @@ payload = replace_once(
     "Protect the Plants live verification",
 )
 
+# Bud or Bluff and the newly playable browser games are approved app-owned
+# routes. Add them only after the canonical deployer hash passes so the fixed
+# WordPress boundary remains fail-closed and reviewable.
+payload = replace_once(
+    payload,
+    b"'games/grower-conversations','games/seed-man-platformer','games/protect-the-plants','games/weedopolis'",
+    b"'games/grower-conversations','games/seed-man-platformer','games/bud-or-bluff','games/strain-showdown','games/terpocalypse','games/protect-the-plants','games/weedopolis'",
+    "new playable game target allowlist",
+)
+payload = replace_once(
+    payload,
+    b"'games/grower-conversations/index.html','games/seed-man-platformer/index.html','games/protect-the-plants/index.html','games/protect-the-plants/api.php','games/weedopolis/index.html'",
+    b"'games/grower-conversations/index.html','games/seed-man-platformer/index.html','games/bud-or-bluff/index.html','games/bud-or-bluff/app-v2.js','games/bud-or-bluff/styles.css','games/bud-or-bluff/v2.css','games/bud-or-bluff/api-v2.php','games/strain-showdown/index.html','games/strain-showdown/app.js','games/strain-showdown/engine.mjs','games/strain-showdown/styles.css','games/strain-showdown/data/cards.json','games/terpocalypse/index.html','games/terpocalypse/main.js','games/terpocalypse/game-data.js','games/terpocalypse/styles.css','games/protect-the-plants/index.html','games/protect-the-plants/api.php','games/weedopolis/index.html'",
+    "new playable game required-file list",
+)
+payload = replace_once(
+    payload,
+    b"'games/high-land/','games/high-iq/','games/high-life/','games/grower-conversations/','games/seed-man-platformer/',\n        'games/protect-the-plants/','games/weedopolis/'",
+    b"'games/high-land/','games/high-iq/','games/high-life/','games/grower-conversations/','games/seed-man-platformer/',\n        'games/bud-or-bluff/','games/strain-showdown/','games/terpocalypse/','games/protect-the-plants/','games/weedopolis/'",
+    "new playable game prefix allowlist",
+)
+payload = replace_once(
+    payload,
+    b"['/games/seed-man-platformer/', 'Seed Man'], ['/games/grower-conversations/', 'Grower Conversations'], ['/games/protect-the-plants/', 'Protect the Plants'], ['/games/high-land/', 'High Land'],",
+    b"['/games/seed-man-platformer/', 'Seed Man'], ['/games/grower-conversations/', 'Grower Conversations'], ['/games/bud-or-bluff/', 'Bud or Bluff'], ['/games/strain-showdown/', 'Strain Showdown'], ['/games/terpocalypse/', 'Terpocalypse'], ['/games/protect-the-plants/', 'Protect the Plants'], ['/games/high-land/', 'High Land'],",
+    "new playable game live verification",
+)
+
 payload = replace_once(
     payload,
     b"['/games/', 'Original cannabis games built to play, learn, compete, and share.']",
