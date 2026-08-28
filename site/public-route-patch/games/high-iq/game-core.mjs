@@ -87,6 +87,23 @@ export function shouldIgnoreQuizShortcutTarget(target = {}) {
   return ['a', 'input', 'select', 'textarea', 'summary'].includes(tagName);
 }
 
+function isQuizShortcutKey(key) {
+  const normalized = String(key || '').toUpperCase();
+  return normalized === 'ENTER' || ['A', 'B', 'C', 'D', '1', '2', '3', '4'].includes(normalized);
+}
+
+if (typeof document !== 'undefined') {
+  // This listener is registered while app-v3 imports the core module, before
+  // the quiz-wide shortcut listener is installed. It only stops later document
+  // shortcut handlers; it does not prevent the focused control's native action.
+  document.addEventListener('keydown', (event) => {
+    const quizPanel = document.querySelector('#quiz-panel');
+    if (!quizPanel || quizPanel.hidden || !isQuizShortcutKey(event.key)) return;
+    if (!shouldIgnoreQuizShortcutTarget(document.activeElement)) return;
+    event.stopImmediatePropagation();
+  });
+}
+
 export function rankForPercent(percent) {
   if (percent >= 92) return 'High IQ Master';
   if (percent >= 82) return 'Advanced';
