@@ -53,3 +53,6 @@ jobs:
 
       - name: Verify dtfseeds.com game workspace
         run: npm run games:verify
+
+      - name: Verify cross-game polish contracts
+        run: node games/test/cross-game-polish.test.mjs
