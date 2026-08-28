@@ -1,4 +1,4 @@
-name: Protect the Plants CI
+name: Burn Buds Multiplayer Compatibility CI
 
 on:
   pull_request:
@@ -34,7 +34,7 @@ jobs:
       - name: Validate PHP API
         run: php -l site/public-route-patch/games/protect-the-plants/api.php
 
-      - name: Validate manifest and deployable route
+      - name: Validate Burn Buds manifest and compatibility route
         run: |
           set -euo pipefail
           root=site/public-route-patch/games/protect-the-plants
@@ -44,8 +44,9 @@ jobs:
             manifest.webmanifest sw.js; do
             test -s "$root/$asset"
           done
-          jq -e '.name == "Protect the Plants" and .display == "standalone" and .start_url == "./" and .scope == "./"' "$root/manifest.webmanifest" >/dev/null
+          jq -e '.name == "Burn Buds" and .short_name == "Burn Buds" and .display == "standalone" and .start_url == "./" and .scope == "./"' "$root/manifest.webmanifest" >/dev/null
           grep -Fq 'https://dtfseeds.com/games/protect-the-plants/' "$root/index.html"
+          grep -Fq "const PRODUCT='Burn Buds'" "$root/app.js"
           grep -Fq './api.php' "$root/app.js"
           grep -Fq './visual-fixes.css' "$root/index.html"
           grep -Fq './enhancements.css' "$root/index.html"
@@ -98,7 +99,6 @@ jobs:
           started="$(curl "${post[@]}" "${json[@]}" -H "X-Player-Id: $p2" -H "X-Player-Token: $t2" -X POST "$api?action=place&code=$code" --data "$place")"
           jq -e --arg p1 "$p1" '.status == "playing" and .round == 1 and .turnPlayerId == $p1 and (.events|length) >= 1' <<<"$started" >/dev/null
 
-          # Sink all five formations while player B deliberately misses between player A turns.
           shots=('0 0' '0 1' '0 2' '0 3' '0 4' '2 0' '2 1' '2 2' '2 3' '4 0' '4 1' '4 2' '6 0' '6 1' '6 2' '8 0' '8 1')
           miss_row=14
           miss_col=14
@@ -121,8 +121,7 @@ jobs:
           rematch2="$(curl "${post[@]}" "${json[@]}" -H "X-Player-Id: $p2" -H "X-Player-Token: $t2" -X POST "$api?action=rematch&code=$code" --data '{}')"
           jq -e '.status == "placement" and .round == 2 and .me.ready == false and .opponent.ready == false and (.events|map(select(.type=="rematch-started"))|length)==1' <<<"$rematch2" >/dev/null
 
-          # Replant and verify round-two starter alternates to player B.
           curl "${post[@]}" "${json[@]}" -H "X-Player-Id: $p1" -H "X-Player-Token: $t1" -X POST "$api?action=place&code=$code" --data "$place" >/dev/null
           round2="$(curl "${post[@]}" "${json[@]}" -H "X-Player-Id: $p2" -H "X-Player-Token: $t2" -X POST "$api?action=place&code=$code" --data "$place")"
           jq -e --arg p2 "$p2" '.status == "playing" and .round == 2 and .turnPlayerId == $p2' <<<"$round2" >/dev/null
-          echo 'Protect the Plants V2 local multiplayer/rematch smoke passed.'
+          echo 'Burn Buds local multiplayer/rematch compatibility smoke passed.'
