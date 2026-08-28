@@ -154,6 +154,34 @@ payload = replace_once(
     "authenticated deployment publisher plus token",
 )
 
+# Some Hostinger/PHP configurations authenticate the Application Password but
+# omit non-standard HTTP headers before the REST request reaches WordPress.
+# Preserve the header as the primary transport and accept the same unguessable
+# per-run token from a request parameter as a narrowly scoped fallback.
+payload = replace_once(
+    payload,
+    b"""        $supplied = (string) $request->get_header('x-dtf-suite-token');
+        return (current_user_can('edit_pages') || get_current_user_id() > 0) && $supplied !== '' && hash_equals($token, $supplied);
+""",
+    b"""        $supplied = (string) $request->get_header('x-dtf-suite-token');
+        if ($supplied === '') $supplied = (string) $request->get_param('_dtf_suite_token');
+        return (current_user_can('edit_pages') || get_current_user_id() > 0) && $supplied !== '' && hash_equals($token, $supplied);
+""",
+    "Hostinger deployment-token request-parameter fallback",
+)
+payload = replace_once(
+    payload,
+    b"`/wp-json/dtf-suite/v2/state/${deploymentId}`",
+    b"`/wp-json/dtf-suite/v2/state/${deploymentId}?_dtf_suite_token=${encodeURIComponent(suiteToken)}`",
+    "deployment state token query fallback",
+)
+payload = replace_once(
+    payload,
+    b"json: { deployment_id: deploymentId, ...payload }",
+    b"json: { deployment_id: deploymentId, _dtf_suite_token: suiteToken, ...payload }",
+    "deployment write token body fallback",
+)
+
 # Guarded customer-shell release adjustments. These intentionally happen only
 # after the canonical base payload hash is verified, and each source shape must
 # appear exactly once so drift fails closed instead of silently broadening the
