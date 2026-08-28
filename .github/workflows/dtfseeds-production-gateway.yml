@@ -110,7 +110,9 @@ jobs:
           fi
 
       - name: Stage canonical WordPress lane
-        if: steps.freshness.outputs.current == 'true' && needs.plan.outputs.wordpress == 'true'
+        id: wp_stage
+        if: always() && steps.freshness.outputs.current == 'true' && needs.plan.outputs.wordpress == 'true'
+        continue-on-error: true
         shell: bash
         run: |
           set -euo pipefail
@@ -121,25 +123,39 @@ jobs:
           fi
 
       - name: Join trusted WordPress production handoff
-        if: steps.freshness.outputs.current == 'true' && needs.plan.outputs.wordpress == 'true'
+        id: wp_production
+        if: always() && steps.freshness.outputs.current == 'true' && needs.plan.outputs.wordpress == 'true' && steps.wp_stage.outcome == 'success'
+        continue-on-error: true
         shell: bash
         run: |
           set -euo pipefail
           bash scripts/run-workflow-and-wait.sh wordpress-canonical-production.yml --join-only
 
       - name: Publish education lane
-        if: steps.freshness.outputs.current == 'true' && needs.plan.outputs.education == 'true'
+        id: education_publish
+        if: always() && steps.freshness.outputs.current == 'true' && needs.plan.outputs.education == 'true'
+        continue-on-error: true
         shell: bash
         run: |
           set -euo pipefail
-          if [[ "$NORMAL_PUSH" == 'true' ]]; then
-            bash scripts/run-workflow-and-wait.sh deploy-thc-learning-center-expansion-v1.yml --join-existing
-          else
-            bash scripts/run-workflow-and-wait.sh deploy-thc-learning-center-expansion-v1.yml
-          fi
+          run_lane() {
+            if [[ "$NORMAL_PUSH" == 'true' ]]; then
+              bash scripts/run-workflow-and-wait.sh deploy-thc-learning-center-expansion-v1.yml --join-existing
+            else
+              bash scripts/run-workflow-and-wait.sh deploy-thc-learning-center-expansion-v1.yml
+            fi
+          }
+          for attempt in 1 2 3; do
+            if run_lane; then exit 0; fi
+            [[ "$attempt" -eq 3 ]] && exit 1
+            sleep $((attempt * 12))
+            NORMAL_PUSH=false
+          done
 
       - name: Publish public application and game lane
-        if: steps.freshness.outputs.current == 'true' && needs.plan.outputs.public_suite == 'true'
+        id: public_publish
+        if: always() && steps.freshness.outputs.current == 'true' && needs.plan.outputs.public_suite == 'true'
+        continue-on-error: true
         shell: bash
         run: |
           set -euo pipefail
@@ -150,13 +166,15 @@ jobs:
           fi
 
       - name: Verify WordPress production surfaces independently
-        if: steps.freshness.outputs.current == 'true' && needs.plan.outputs.wordpress == 'true'
+        id: wp_verify
+        if: always() && steps.freshness.outputs.current == 'true' && needs.plan.outputs.wordpress == 'true' && steps.wp_production.outcome == 'success'
+        continue-on-error: true
         shell: bash
         run: |
           set -euo pipefail
           check() {
             local path="$1" marker="$2"
-            curl -4 -fsSL --retry 5 --retry-delay 4 \
+            curl -4 -fsSL --retry 5 --retry-all-errors --retry-delay 4 \
               -H 'Cache-Control: no-cache, no-store, max-age=0' \
               "https://dtfseeds.com${path}?dtf_gateway=${GITHUB_RUN_ID}" | grep -Fqi "$marker"
           }
@@ -165,24 +183,28 @@ jobs:
           check '/community/' 'Join the official DTF / Teaching Healthy Cultivation Discord'
 
       - name: Verify education production surfaces independently
-        if: steps.freshness.outputs.current == 'true' && needs.plan.outputs.education == 'true'
+        id: education_verify
+        if: always() && steps.freshness.outputs.current == 'true' && needs.plan.outputs.education == 'true' && steps.education_publish.outcome == 'success'
+        continue-on-error: true
         shell: bash
         run: |
           set -euo pipefail
           for route in plant-health cultivation-science symptoms tools sources; do
-            body="$(curl -4 -fsSL --retry 5 --retry-delay 4 -H 'Cache-Control: no-cache, no-store, max-age=0' "https://dtfseeds.com/learn/$route/?dtf_gateway=${GITHUB_RUN_ID}")"
+            body="$(curl -4 -fsSL --retry 5 --retry-all-errors --retry-delay 4 -H 'Cache-Control: no-cache, no-store, max-age=0' "https://dtfseeds.com/learn/$route/?dtf_gateway=${GITHUB_RUN_ID}")"
             grep -Fqi 'Teaching Healthy Cultivation' <<<"$body"
             ! grep -Fqi 'Reserved strain card' <<<"$body"
           done
 
       - name: Verify game and application production surfaces independently
-        if: steps.freshness.outputs.current == 'true' && needs.plan.outputs.public_suite == 'true'
+        id: public_verify
+        if: always() && steps.freshness.outputs.current == 'true' && needs.plan.outputs.public_suite == 'true' && steps.public_publish.outcome == 'success'
+        continue-on-error: true
         shell: bash
         run: |
           set -euo pipefail
           check() {
             local path="$1" marker="$2"
-            curl -4 -fsSL --retry 5 --retry-delay 4 \
+            curl -4 -fsSL --retry 5 --retry-all-errors --retry-delay 4 \
               -H 'Cache-Control: no-cache, no-store, max-age=0' \
               "https://dtfseeds.com${path}?dtf_gateway=${GITHUB_RUN_ID}" | grep -Fqi "$marker"
           }
@@ -191,6 +213,8 @@ jobs:
           check '/games/strain-showdown/' 'Eight play styles. One showdown.'
           check '/games/terpocalypse/' 'LEVEL 01 · THE VEG LAB'
           check '/games/phenoquest/' 'The Living Seed Vault'
+          check '/games/strain-match/' 'Strain Match'
+          check '/games/lost-in-the-terps/' 'Lost in the Terps'
           check '/growlens/' 'GrowLens'
           check '/thc-grow-doc/' 'Grow Doc'
 
@@ -204,8 +228,11 @@ jobs:
             echo "- Gateway revision: $GITHUB_SHA"
             echo "- Superseded: ${{ steps.freshness.outputs.current != 'true' }}"
             echo "- Planned WordPress lane: ${{ needs.plan.outputs.wordpress }}"
+            echo "- WordPress stage/production/verify: ${{ steps.wp_stage.outcome }}/${{ steps.wp_production.outcome }}/${{ steps.wp_verify.outcome }}"
             echo "- Planned education lane: ${{ needs.plan.outputs.education }}"
+            echo "- Education publish/verify: ${{ steps.education_publish.outcome }}/${{ steps.education_verify.outcome }}"
             echo "- Planned Public Suite lane: ${{ needs.plan.outputs.public_suite }}"
+            echo "- Public Suite publish/verify: ${{ steps.public_publish.outcome }}/${{ steps.public_verify.outcome }}"
             echo '- Production success is determined by publishing steps plus fresh public verification; issue comments are advisory only.'
           } >> "$GITHUB_STEP_SUMMARY"
 
@@ -227,13 +254,52 @@ jobs:
                 '',
                 `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
                 `Source: \`${context.sha}\``,
-                `Authoritative gateway result: **${process.env.STATUS}**`,
+                `Coordinator status before final enforcement: **${process.env.STATUS}**`,
                 '',
                 `Plan: \`${process.env.PLAN}\``,
                 '',
                 'Release reporting is deliberately non-blocking. Publication and fresh public verification decide success.'
               ].join('\n')
             });
+
+      - name: Enforce authoritative lane outcomes
+        if: always() && steps.freshness.outputs.current == 'true'
+        shell: bash
+        env:
+          WANT_WORDPRESS: ${{ needs.plan.outputs.wordpress }}
+          WANT_EDUCATION: ${{ needs.plan.outputs.education }}
+          WANT_PUBLIC: ${{ needs.plan.outputs.public_suite }}
+          WP_STAGE: ${{ steps.wp_stage.outcome }}
+          WP_PRODUCTION: ${{ steps.wp_production.outcome }}
+          WP_VERIFY: ${{ steps.wp_verify.outcome }}
+          EDU_PUBLISH: ${{ steps.education_publish.outcome }}
+          EDU_VERIFY: ${{ steps.education_verify.outcome }}
+          PUBLIC_PUBLISH: ${{ steps.public_publish.outcome }}
+          PUBLIC_VERIFY: ${{ steps.public_verify.outcome }}
+        run: |
+          set -euo pipefail
+          failures=0
+          require_success() {
+            local lane="$1" phase="$2" outcome="$3"
+            if [[ "$outcome" != 'success' ]]; then
+              echo "$lane $phase outcome was '$outcome', expected success" >&2
+              failures=$((failures + 1))
+            fi
+          }
+          if [[ "$WANT_WORDPRESS" == 'true' ]]; then
+            require_success WordPress stage "$WP_STAGE"
+            require_success WordPress production "$WP_PRODUCTION"
+            require_success WordPress verification "$WP_VERIFY"
+          fi
+          if [[ "$WANT_EDUCATION" == 'true' ]]; then
+            require_success Education publication "$EDU_PUBLISH"
+            require_success Education verification "$EDU_VERIFY"
+          fi
+          if [[ "$WANT_PUBLIC" == 'true' ]]; then
+            require_success Public-Suite publication "$PUBLIC_PUBLISH"
+            require_success Public-Suite verification "$PUBLIC_VERIFY"
+          fi
+          [[ "$failures" -eq 0 ]]
 
   no_deploy:
     name: No production-owned changes
