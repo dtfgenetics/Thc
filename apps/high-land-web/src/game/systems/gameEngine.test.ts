@@ -224,7 +224,7 @@ describe('game engine', () => {
     expect(next.players[2].positionIndex).toBe(0);
   });
 
-  it('supports reverse turn order', () => {
+  it('supports reverse turn order for full rounds', () => {
     const state = createInitialGame(3);
     const reverseCard: ActionCard = {
       id: 'test-reverse',
@@ -234,11 +234,46 @@ describe('game engine', () => {
     };
     const reversed = applyActionCard(state, reverseCard);
     expect(reversed.turnDirection).toBe(-1);
-    expect(reversed.reverseTurnsRemaining).toBe(2);
+    expect(reversed.reverseTurnsRemaining).toBe(6);
     expect(reversed.currentPlayerIndex).toBe(2);
 
     const next = rollCurrentTurn(reversed, () => 0);
     expect(next.currentPlayerIndex).toBe(1);
+    expect(next.reverseTurnsRemaining).toBe(5);
+  });
+
+  it('keeps Reverse Rotation reversed through one complete table round', () => {
+    const state = createInitialGame(4);
+    const reverseCard: ActionCard = {
+      id: 'card-023',
+      title: 'Reverse Rotation',
+      text: 'Turn order reverses for one round.',
+      effect: { type: 'reverse_turn_order', turns: 1 }
+    };
+
+    let next = applyActionCard(state, reverseCard);
+    expect(next.currentPlayerIndex).toBe(3);
+    expect(next.turnDirection).toBe(-1);
+    expect(next.reverseTurnsRemaining).toBe(4);
+
+    next = rollCurrentTurn(next, () => 0);
+    expect(next.currentPlayerIndex).toBe(2);
+    expect(next.turnDirection).toBe(-1);
+    expect(next.reverseTurnsRemaining).toBe(3);
+
+    next = rollCurrentTurn(next, () => 0);
+    expect(next.currentPlayerIndex).toBe(1);
+    expect(next.turnDirection).toBe(-1);
+    expect(next.reverseTurnsRemaining).toBe(2);
+
+    next = rollCurrentTurn(next, () => 0);
+    expect(next.currentPlayerIndex).toBe(0);
+    expect(next.turnDirection).toBe(-1);
     expect(next.reverseTurnsRemaining).toBe(1);
+
+    next = rollCurrentTurn(next, () => 0);
+    expect(next.currentPlayerIndex).toBe(1);
+    expect(next.turnDirection).toBe(1);
+    expect(next.reverseTurnsRemaining).toBe(0);
   });
 });
