@@ -1,0 +1,65 @@
+name: Validate DTFSeeds Release Hardening
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate hardened release sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/plan-dtfseeds-release.mjs
+          node --check scripts/publish-wordpress-learning-center-expansion-v1.mjs
+          bash -n scripts/run-workflow-and-wait.sh
+          python -m py_compile scripts/package-public-suite-wordpress.py scripts/assemble-wordpress-suite-v2.py
+          grep -Fq 'Enforce authoritative lane outcomes' .github/workflows/dtfseeds-production-gateway.yml
+          grep -Fq 'cancel-in-progress: false' .github/workflows/wordpress-canonical-production.yml
+          grep -A2 -F 'Report production result to issue 46' .github/workflows/wordpress-canonical-production.yml | grep -Fq 'continue-on-error: true'
+
+      - name: Assemble and inspect transactional Public Suite bridge
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/assemble-wordpress-suite-v2.py "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          node --check "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          grep -Fq 'games/strain-match' "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          grep -Fq 'games/lost-in-the-terps' "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          grep -Fq 'games/strain-match' scripts/package-public-suite-wordpress.py
+          grep -Fq 'games/lost-in-the-terps' scripts/package-public-suite-wordpress.py
+
+      - name: Verify all release lanes remain selected for gateway architecture changes
+        if: github.event_name == 'pull_request'
+        shell: bash
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          node scripts/plan-dtfseeds-release.mjs --mode=auto --base="$BASE_SHA" --head="$HEAD_SHA" > "$RUNNER_TEMP/plan.json"
+          node - <<'NODE' "$RUNNER_TEMP/plan.json"
+          const fs=require('fs');
+          const plan=JSON.parse(fs.readFileSync(process.argv[2],'utf8'));
+          if(!plan.forceFull) throw new Error('hardening changes did not force full reconciliation');
+          for(const lane of ['publicSuite','wordpress','education']) if(plan.lanes[lane] !== true) throw new Error(`missing lane ${lane}`);
+          NODE

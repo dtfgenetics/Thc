@@ -76,17 +76,17 @@ if [[ "$watch_status" -eq 0 ]]; then
   exit 0
 fi
 
-# A status/reporting outage must never turn a successful publication into a failed release.
-# Only tolerate a failed child when every failed step is clearly advisory reporting/summary work.
+# Reporting/ledger outages must never veto a successful publication. Any other
+# failed, cancelled, timed-out, stale, or startup-failed step is authoritative.
 details="$(gh run view "$run_id" --json jobs)"
 critical_failures="$(jq '[
   .jobs[].steps[]?
-  | select(.conclusion == "failure")
+  | select(.conclusion == "failure" or .conclusion == "cancelled" or .conclusion == "timed_out" or .conclusion == "action_required" or .conclusion == "startup_failure" or .conclusion == "stale")
   | select((.name | ascii_downcase | test("report|comment|summary|ledger|notification")) | not)
 ] | length' <<<"$details")"
 report_failures="$(jq '[
   .jobs[].steps[]?
-  | select(.conclusion == "failure")
+  | select(.conclusion == "failure" or .conclusion == "cancelled" or .conclusion == "timed_out" or .conclusion == "action_required" or .conclusion == "startup_failure" or .conclusion == "stale")
   | select(.name | ascii_downcase | test("report|comment|summary|ledger|notification"))
 ] | length' <<<"$details")"
 
@@ -96,6 +96,6 @@ if [[ "$critical_failures" -eq 0 && "$report_failures" -gt 0 ]]; then
   exit 0
 fi
 
-echo "Child workflow $workflow had $critical_failures critical failed step(s); refusing to mask the failure." >&2
+echo "Child workflow $workflow had $critical_failures critical failed/cancelled step(s); refusing to mask the failure." >&2
 gh run view "$run_id" --log-failed || true
 exit 1
