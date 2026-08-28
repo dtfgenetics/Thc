@@ -29,15 +29,17 @@
         <span>Sprouts <strong id="sprout-count">0 / 8</strong></span>
         <span>Falls <strong id="death-count">0</strong></span>
         <span>Time <strong id="time-count">0.0s</strong></span>
+        <span>Best <strong id="best-count">—</strong></span>
+        <button id="pause" type="button" aria-pressed="false">Pause</button>
         <button id="restart" type="button">Restart</button>
       </div>
-      <canvas id="game" width="960" height="540" tabindex="0" aria-label="Seed Man game canvas. Use left and right arrows or A and D to move, and Space, W, or Up Arrow to jump."></canvas>
+      <canvas id="game" width="960" height="540" tabindex="0" aria-label="Seed Man game canvas. Use left and right arrows or A and D to move, Space, W, or Up Arrow to jump, and P to pause."></canvas>
       <div class="touch-controls" aria-label="Touch controls">
         <button type="button" data-control="left" aria-label="Move left">◀</button>
         <button type="button" data-control="right" aria-label="Move right">▶</button>
         <button type="button" data-control="jump" class="jump" aria-label="Jump">JUMP</button>
       </div>
-      <p class="controls">Keyboard: A/D or ←/→ to move · Space/W/↑ to jump. Touch controls appear below the game.</p>
+      <p class="controls">Keyboard: A/D or ←/→ to move · Space/W/↑ to jump · P to pause. Touch controls appear below the game. Leaving the tab pauses the run automatically.</p>
     </section>
 
     <section class="panel" id="finish-panel" hidden>
@@ -49,7 +51,7 @@
 
     <section class="panel">
       <h2>Vertical-slice status</h2>
-      <p>This prototype proves the original movement, collision, checkpoint, hazard, collectible, camera, keyboard, and touch-control systems. The current Seed Man is drawn with simple Canvas2D primitives so gameplay remains independent from unfinished production sprite art.</p>
+      <p>This prototype proves the original movement, collision, checkpoint, hazard, collectible, camera, keyboard, touch-control, pause, and local personal-best systems. The current Seed Man is drawn with simple Canvas2D primitives so gameplay remains independent from unfinished production sprite art.</p>
     </section>
   </main>
 
