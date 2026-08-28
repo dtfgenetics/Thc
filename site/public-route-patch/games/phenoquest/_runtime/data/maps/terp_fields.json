@@ -1,0 +1,43 @@
+{
+  "id": "terp_fields",
+  "displayName": "Terp Fields",
+  "width": 20,
+  "height": 14,
+  "startPosition": { "x": 1, "y": 6 },
+  "tileset": "terp_fields_placeholder",
+  "defaultWeather": "clear_bloom",
+  "cueZones": [
+    { "id": "sunny_patch", "cue": "light_exposure", "x": 4, "y": 4, "w": 4, "h": 3 },
+    { "id": "aroma_ridge", "cue": "airflow", "x": 10, "y": 2, "w": 5, "h": 3 },
+    { "id": "terp_creek", "cue": "moisture", "x": 6, "y": 9, "w": 6, "h": 2 },
+    { "id": "vault_flower", "cue": "vault_energy", "x": 16, "y": 10, "w": 2, "h": 2 }
+  ],
+  "encounterZones": [
+    { "id": "field_grass", "x": 3, "y": 3, "w": 12, "h": 8, "encounterTable": "terp_fields" }
+  ],
+  "transitions": [
+    {
+      "id": "to_seedling_town",
+      "x": 0,
+      "y": 6,
+      "targetMap": "seedling_town",
+      "targetPosition": { "x": 14, "y": 6 }
+    },
+    {
+      "id": "to_aroma_trial",
+      "x": 18,
+      "y": 3,
+      "targetMap": "aroma_trial_greenhouse",
+      "targetPosition": { "x": 5, "y": 9 },
+      "requiresFlag": "signal_clamp_cleared"
+    }
+  ],
+  "objects": [
+    {
+      "id": "signal_clamp",
+      "x": 15,
+      "y": 6,
+      "interactionFlag": "signal_clamp_active"
+    }
+  ]
+}

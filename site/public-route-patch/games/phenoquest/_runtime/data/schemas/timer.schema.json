@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TimerRecord",
+  "type": "object",
+  "required": ["id", "recipeId", "startTimestamp", "durationSeconds", "status"],
+  "properties": {
+    "id": { "type": "string" },
+    "recipeId": { "type": "string" },
+    "startTimestamp": { "type": "integer" },
+    "durationSeconds": { "type": "integer" },
+    "status": {
+      "type": "string",
+      "enum": ["active", "ready", "claimed", "cancelled"]
+    },
+    "inputTags": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "weatherAtStart": { "type": "string" },
+    "cueAtStart": { "type": "string" }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,62 @@
+[
+  {
+    "id": "gas_goblin",
+    "displayName": "Gas Goblin",
+    "description": "A risky Gas-class attacker with high Power and lower Stability.",
+    "classes": ["gas"],
+    "rarity": "uncommon",
+    "region": "terp_fields",
+    "temperament": "aggressive",
+    "baseStats": { "vigor": 20, "power": 10, "terps": 5, "roots": 4, "speed": 6, "stability": 4 },
+    "recipe": { "materialsRequired": 4, "demoSeconds": 60, "fullSeconds": 900, "preferredWeather": ["lockout_static"], "preferredCues": ["light_exposure"] },
+    "traits": ["diesel_burst", "wild_structure", "unstable_power", "keeper_cut"],
+    "markers": { "TERP": "normal", "ROOT": "low", "RESIN": "normal", "VIGOR": "normal", "SPEED": "normal", "COLOR": "normal", "STABILITY": "low", "ECHO": "locked" },
+    "abilities": ["diesel_burst", "pressure_lunge"],
+    "lineage": { "branch": "gas_archive", "compatible": ["frostling"], "futureResults": ["frost_goblin"] }
+  },
+  {
+    "id": "skunkrat",
+    "displayName": "Skunkrat",
+    "description": "A disruptive Skunk-class wild unit that teaches status pressure.",
+    "classes": ["skunk"],
+    "rarity": "common",
+    "region": "terp_fields",
+    "temperament": "proud",
+    "baseStats": { "vigor": 17, "power": 5, "terps": 7, "roots": 5, "speed": 8, "stability": 6 },
+    "recipe": { "materialsRequired": 3, "demoSeconds": 30, "fullSeconds": 300, "preferredWeather": ["sweet_wind"], "preferredCues": ["airflow"] },
+    "traits": ["loud_scent", "stress_spray", "quick_escape", "keeper_cut"],
+    "markers": { "TERP": "high", "ROOT": "normal", "RESIN": "low", "VIGOR": "normal", "SPEED": "high", "COLOR": "normal", "STABILITY": "normal", "ECHO": "locked" },
+    "abilities": ["skunk_spray", "darting_bite"],
+    "lineage": { "branch": "skunk_archive", "compatible": ["terp_toad"], "futureResults": [] }
+  },
+  {
+    "id": "terp_toad",
+    "displayName": "Terp Toad",
+    "description": "A Fruit/Skunk hybrid wild unit with sticky tempo control.",
+    "classes": ["fruit", "skunk"],
+    "rarity": "uncommon",
+    "region": "terp_fields",
+    "temperament": "hungry",
+    "baseStats": { "vigor": 21, "power": 6, "terps": 8, "roots": 6, "speed": 5, "stability": 6 },
+    "recipe": { "materialsRequired": 4, "demoSeconds": 60, "fullSeconds": 900, "preferredWeather": ["sweet_wind"], "preferredCues": ["moisture"] },
+    "traits": ["sticky_terps", "moist_skin", "hybrid_vigor", "keeper_cut"],
+    "markers": { "TERP": "high", "ROOT": "normal", "RESIN": "low", "VIGOR": "normal", "SPEED": "normal", "COLOR": "normal", "STABILITY": "normal", "ECHO": "locked" },
+    "abilities": ["sticky_tongue", "aroma_bubble"],
+    "lineage": { "branch": "fruit_archive", "compatible": ["mango_puff", "skunkrat"], "futureResults": ["mango_toadlet"] }
+  },
+  {
+    "id": "lockout_leech",
+    "displayName": "Lockout Leech",
+    "description": "An enemy-only artificial unit used by Team Lockout in the first Signal Clamp event.",
+    "classes": ["synthetic", "pest"],
+    "rarity": "synthetic",
+    "region": "terp_fields",
+    "temperament": "unstable",
+    "baseStats": { "vigor": 22, "power": 7, "terps": 2, "roots": 5, "speed": 5, "stability": 3 },
+    "recipe": { "materialsRequired": 999, "demoSeconds": 0, "fullSeconds": 0, "preferredWeather": ["lockout_static"], "preferredCues": ["vault_energy"] },
+    "traits": ["stability_drain", "locked_out", "static_body"],
+    "markers": { "TERP": "low", "ROOT": "normal", "RESIN": "low", "VIGOR": "normal", "SPEED": "normal", "COLOR": "unstable", "STABILITY": "low", "ECHO": "locked" },
+    "abilities": ["lockout_clamp", "drain_pulse"],
+    "lineage": { "branch": "synthetic_archive", "compatible": [], "futureResults": [] }
+  }
+]

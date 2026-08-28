@@ -1,0 +1,122 @@
+[
+  {
+    "id": "bright_expression",
+    "displayName": "Bright Expression",
+    "weather": "clear_bloom",
+    "cue": "light_exposure",
+    "category": "stable",
+    "statModifiers": { "stability": 1 },
+    "visualLayer": "soft_glow",
+    "rewardTag": "clear_tag"
+  },
+  {
+    "id": "aroma_glow",
+    "displayName": "Aroma Glow",
+    "weather": "sweet_wind",
+    "cue": "light_exposure",
+    "category": "aroma",
+    "statModifiers": { "terps": 2 },
+    "visualLayer": "glow_overlay",
+    "rewardTag": "aroma_tag"
+  },
+  {
+    "id": "signal_burn",
+    "displayName": "Signal Burn",
+    "weather": "lockout_static",
+    "cue": "light_exposure",
+    "category": "unstable",
+    "statModifiers": { "power": 1, "stability": -2 },
+    "visualLayer": "red_static",
+    "rewardTag": "static_tag"
+  },
+  {
+    "id": "clean_air",
+    "displayName": "Clean Air",
+    "weather": "clear_bloom",
+    "cue": "airflow",
+    "category": "stable",
+    "statModifiers": { "speed": 1 },
+    "visualLayer": "wind_lines",
+    "rewardTag": "clear_tag"
+  },
+  {
+    "id": "sweet_drift",
+    "displayName": "Sweet Drift",
+    "weather": "sweet_wind",
+    "cue": "airflow",
+    "category": "aroma",
+    "statModifiers": { "terps": 1, "speed": 1 },
+    "visualLayer": "mist_overlay",
+    "rewardTag": "aroma_tag"
+  },
+  {
+    "id": "static_gust",
+    "displayName": "Static Gust",
+    "weather": "lockout_static",
+    "cue": "airflow",
+    "category": "unstable",
+    "statModifiers": { "speed": 1, "stability": -1 },
+    "visualLayer": "static_lines",
+    "rewardTag": "static_tag"
+  },
+  {
+    "id": "balanced_moisture",
+    "displayName": "Balanced Moisture",
+    "weather": "clear_bloom",
+    "cue": "moisture",
+    "category": "stable",
+    "statModifiers": { "vigor": 1 },
+    "visualLayer": "dew_overlay",
+    "rewardTag": "clear_tag"
+  },
+  {
+    "id": "aroma_mist",
+    "displayName": "Aroma Mist",
+    "weather": "sweet_wind",
+    "cue": "moisture",
+    "category": "aroma",
+    "statModifiers": { "terps": 1, "vigor": 1 },
+    "visualLayer": "mist_overlay",
+    "rewardTag": "aroma_tag"
+  },
+  {
+    "id": "static_damp",
+    "displayName": "Static Damp",
+    "weather": "lockout_static",
+    "cue": "moisture",
+    "category": "unstable",
+    "statModifiers": { "roots": 1, "stability": -1 },
+    "visualLayer": "dark_dew",
+    "rewardTag": "static_tag"
+  },
+  {
+    "id": "echo_pulse",
+    "displayName": "Echo Pulse",
+    "weather": "clear_bloom",
+    "cue": "vault_energy",
+    "category": "vault",
+    "statModifiers": { "stability": 2 },
+    "visualLayer": "gold_pulse",
+    "rewardTag": "echo_tag"
+  },
+  {
+    "id": "aroma_echo",
+    "displayName": "Aroma Echo",
+    "weather": "sweet_wind",
+    "cue": "vault_energy",
+    "category": "vault",
+    "statModifiers": { "terps": 2, "stability": 1 },
+    "visualLayer": "green_gold_pulse",
+    "rewardTag": "echo_tag"
+  },
+  {
+    "id": "corrupt_echo",
+    "displayName": "Corrupt Echo",
+    "weather": "lockout_static",
+    "cue": "vault_energy",
+    "category": "corrupt",
+    "statModifiers": { "power": 2, "stability": -3 },
+    "visualLayer": "red_gold_glitch",
+    "rewardTag": "corrupt_tag"
+  }
+]

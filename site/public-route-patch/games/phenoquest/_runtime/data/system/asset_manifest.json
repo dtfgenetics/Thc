@@ -1,0 +1,116 @@
+{
+  "project": "PhenoQuest: The Living Seed Vault",
+  "version": "0.1.0",
+  "status": "scaffold",
+  "rules": {
+    "imageFormat": "png",
+    "transparentSprites": true,
+    "audioFormats": ["mp3", "wav"],
+    "namingStyle": "lowercase_snake_case",
+    "noFranchiseReferences": true
+  },
+  "spriteTargets": [
+    {
+      "id": "player_vault_runner",
+      "type": "player",
+      "status": "needed",
+      "targetPath": "public/games/phenoquest/assets/sprites/player/player_vault_runner.png",
+      "notes": "Walking sheet for placeholder player character."
+    },
+    {
+      "id": "professor_calyx",
+      "type": "npc",
+      "status": "needed",
+      "targetPath": "public/games/phenoquest/assets/sprites/npcs/professor_calyx.png",
+      "notes": "Mentor NPC."
+    },
+    {
+      "id": "nova",
+      "type": "npc",
+      "status": "needed",
+      "targetPath": "public/games/phenoquest/assets/sprites/npcs/nova.png",
+      "notes": "Rival NPC."
+    },
+    {
+      "id": "team_lockout_grunt",
+      "type": "npc",
+      "status": "needed",
+      "targetPath": "public/games/phenoquest/assets/sprites/npcs/team_lockout_grunt.png",
+      "notes": "Early enemy NPC."
+    },
+    {
+      "id": "mango_puff",
+      "type": "pheno",
+      "status": "needed",
+      "targetPath": "public/games/phenoquest/assets/sprites/phenos/mango_puff.png",
+      "notes": "Starter and field unit."
+    },
+    {
+      "id": "kush_cub",
+      "type": "pheno",
+      "status": "needed",
+      "targetPath": "public/games/phenoquest/assets/sprites/phenos/kush_cub.png",
+      "notes": "Starter unit."
+    },
+    {
+      "id": "frostling",
+      "type": "pheno",
+      "status": "needed",
+      "targetPath": "public/games/phenoquest/assets/sprites/phenos/frostling.png",
+      "notes": "Starter unit."
+    },
+    {
+      "id": "terp_toad",
+      "type": "pheno",
+      "status": "needed",
+      "targetPath": "public/games/phenoquest/assets/sprites/phenos/terp_toad.png",
+      "notes": "Early field unit."
+    }
+  ],
+  "tilesetTargets": [
+    {
+      "id": "seedling_town_tileset",
+      "status": "needed",
+      "targetPath": "public/games/phenoquest/assets/tilesets/seedling_town.png"
+    },
+    {
+      "id": "terp_fields_tileset",
+      "status": "needed",
+      "targetPath": "public/games/phenoquest/assets/tilesets/terp_fields.png"
+    }
+  ],
+  "uiTargets": [
+    {
+      "id": "battle_panel_frame",
+      "status": "needed",
+      "targetPath": "public/games/phenoquest/assets/ui/battle_panel_frame.png"
+    },
+    {
+      "id": "phenolog_frame",
+      "status": "needed",
+      "targetPath": "public/games/phenoquest/assets/ui/phenolog_frame.png"
+    },
+    {
+      "id": "vault_garden_frame",
+      "status": "needed",
+      "targetPath": "public/games/phenoquest/assets/ui/vault_garden_frame.png"
+    }
+  ],
+  "audioTargets": [
+    {
+      "id": "title_theme",
+      "status": "needed",
+      "targetPath": "public/games/phenoquest/assets/audio/title_theme.mp3"
+    },
+    {
+      "id": "field_loop",
+      "status": "needed",
+      "targetPath": "public/games/phenoquest/assets/audio/field_loop.mp3"
+    },
+    {
+      "id": "combat_loop",
+      "status": "needed",
+      "targetPath": "public/games/phenoquest/assets/audio/combat_loop.mp3"
+    }
+  ]
+}

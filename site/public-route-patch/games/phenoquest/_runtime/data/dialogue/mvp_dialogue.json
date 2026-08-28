@@ -1,0 +1,91 @@
+[
+  {
+    "id": "calyx_intro",
+    "speaker": "Professor Calyx",
+    "lines": [
+      "You made it. Good. The Vault has been flickering again.",
+      "Verdantia needs a new Vault Runner, and today that means you."
+    ],
+    "choices": [
+      {
+        "id": "ask_vault",
+        "label": "What is the Vault?",
+        "next": "calyx_vault_explain",
+        "setsFlag": "asked_about_vault"
+      },
+      {
+        "id": "ask_field",
+        "label": "Where should I go first?",
+        "next": "calyx_field_explain",
+        "setsFlag": "asked_about_first_field"
+      },
+      {
+        "id": "ready",
+        "label": "I am ready.",
+        "next": "calyx_starter_choice",
+        "setsFlag": "accepted_vault_runner_role"
+      }
+    ]
+  },
+  {
+    "id": "calyx_vault_explain",
+    "speaker": "Professor Calyx",
+    "lines": [
+      "The Living Seed Vault remembers every branch Verdantia almost lost.",
+      "When you restore a line, the Vault wakes another piece of the world."
+    ],
+    "next": "calyx_intro"
+  },
+  {
+    "id": "calyx_field_explain",
+    "speaker": "Professor Calyx",
+    "lines": [
+      "Start in Terp Fields. Watch the weather, read the cues, and do not rush the first result.",
+      "A good Vault Runner learns from the field before forcing the field to answer."
+    ],
+    "next": "calyx_intro"
+  },
+  {
+    "id": "calyx_starter_choice",
+    "speaker": "Professor Calyx",
+    "lines": [
+      "These three companions come from old Vault stock.",
+      "Choose carefully. Your first partner will shape how you learn the field."
+    ],
+    "choiceType": "starter"
+  },
+  {
+    "id": "nova_intro",
+    "speaker": "Nova",
+    "lines": [
+      "So Calyx picked you too? Great. Try not to slow me down.",
+      "I am going to find the strongest line in Verdantia."
+    ]
+  },
+  {
+    "id": "pike_first_event",
+    "speaker": "Pike",
+    "lines": [
+      "Step away from the Vault Tag.",
+      "Wild variety is inefficient. Control is the future."
+    ],
+    "setsFlag": "signal_clamp_active"
+  },
+  {
+    "id": "luma_trial_start",
+    "speaker": "Aroma Keeper Luma",
+    "lines": [
+      "This Trial is not about force. It is about reading expression.",
+      "Observe the clues, identify the true signal, then prove your bond in battle."
+    ],
+    "requiresQuest": "aroma_trial"
+  },
+  {
+    "id": "demo_ending",
+    "speaker": "Living Seed Vault",
+    "lines": [
+      "One branch awakened.",
+      "Many lineages remain."
+    ]
+  }
+]

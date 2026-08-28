@@ -1,0 +1,30 @@
+{
+  "id": "greenhouse",
+  "displayName": "Professor Calyx Greenhouse",
+  "width": 10,
+  "height": 10,
+  "startPosition": { "x": 5, "y": 9 },
+  "tileset": "greenhouse_placeholder",
+  "transitions": [
+    {
+      "id": "to_seedling_town",
+      "x": 5,
+      "y": 9,
+      "targetMap": "seedling_town",
+      "targetPosition": { "x": 7, "y": 5 }
+    }
+  ],
+  "npcs": [
+    {
+      "id": "professor_calyx",
+      "x": 5,
+      "y": 3,
+      "dialogueId": "calyx_starter_choice"
+    }
+  ],
+  "objects": [
+    { "id": "starter_pod_1", "x": 3, "y": 5, "starterSlot": 1 },
+    { "id": "starter_pod_2", "x": 5, "y": 5, "starterSlot": 2 },
+    { "id": "starter_pod_3", "x": 7, "y": 5, "starterSlot": 3 }
+  ]
+}

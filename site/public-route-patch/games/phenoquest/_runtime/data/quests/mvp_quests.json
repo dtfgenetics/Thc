@@ -1,0 +1,83 @@
+[
+  {
+    "id": "choose_your_echo",
+    "title": "Choose Your Echo",
+    "giver": "professor_calyx",
+    "location": "greenhouse",
+    "objectives": ["choose_starter"],
+    "rewards": ["starter_unit", "phenolog_unlock"],
+    "nextQuest": "first_field_test"
+  },
+  {
+    "id": "first_field_test",
+    "title": "First Field Test",
+    "giver": "professor_calyx",
+    "location": "training_patch",
+    "objectives": ["complete_tutorial_battle"],
+    "rewards": ["seed_credits_50"],
+    "nextQuest": "stolen_vault_tag"
+  },
+  {
+    "id": "stolen_vault_tag",
+    "title": "The Stolen Vault Tag",
+    "giver": "professor_calyx",
+    "location": "seedling_town",
+    "objectives": ["watch_lockout_event", "enter_terp_fields"],
+    "rewards": ["terp_fields_access"],
+    "nextQuest": "first_material"
+  },
+  {
+    "id": "first_material",
+    "title": "First Field Material",
+    "giver": "professor_calyx",
+    "location": "terp_fields",
+    "objectives": ["battle_wild_unit", "earn_material"],
+    "rewards": ["recipe_progress"],
+    "nextQuest": "root_first_unit"
+  },
+  {
+    "id": "root_first_unit",
+    "title": "Root the First Unit",
+    "giver": "professor_calyx",
+    "location": "vault_garden",
+    "objectives": ["collect_required_materials", "start_timer", "claim_result"],
+    "rewards": ["rooted_unit", "vault_progress_10"],
+    "nextQuest": "nova_challenge"
+  },
+  {
+    "id": "nova_challenge",
+    "title": "Nova's Challenge",
+    "giver": "nova",
+    "location": "terp_fields",
+    "objectives": ["defeat_nova"],
+    "rewards": ["seed_credits_100"],
+    "nextQuest": "signal_clamp"
+  },
+  {
+    "id": "signal_clamp",
+    "title": "Signal Clamp Trouble",
+    "giver": "professor_calyx",
+    "location": "signal_clamp_clearing",
+    "objectives": ["find_signal_clamp", "defeat_pike"],
+    "rewards": ["vault_tag_fragment"],
+    "nextQuest": "aroma_trial"
+  },
+  {
+    "id": "aroma_trial",
+    "title": "Aroma Trial",
+    "giver": "aroma_keeper_luma",
+    "location": "aroma_trial_greenhouse",
+    "objectives": ["solve_expression_puzzle", "defeat_trial_keeper"],
+    "rewards": ["terp_seal", "fruit_branch_restored"],
+    "nextQuest": "demo_complete"
+  },
+  {
+    "id": "demo_complete",
+    "title": "One Branch Awakened",
+    "giver": "system",
+    "location": "living_seed_vault",
+    "objectives": ["view_demo_ending"],
+    "rewards": ["demo_complete_flag"],
+    "nextQuest": null
+  }
+]

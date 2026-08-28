@@ -1,0 +1,156 @@
+[
+  {
+    "id": "mango_mist",
+    "displayName": "Mango Mist",
+    "class": "fruit",
+    "category": "special",
+    "power": 5,
+    "cost": 1,
+    "accuracy": 95,
+    "effect": "small_chance_aroma_bonus",
+    "description": "A light aroma-style burst that can improve expression rewards."
+  },
+  {
+    "id": "quick_sprout",
+    "displayName": "Quick Sprout",
+    "class": "fruit",
+    "category": "strike",
+    "power": 4,
+    "cost": 0,
+    "accuracy": 100,
+    "effect": "priority_small",
+    "description": "A fast basic action."
+  },
+  {
+    "id": "dense_guard",
+    "displayName": "Dense Guard",
+    "class": "kush",
+    "category": "guard",
+    "power": 0,
+    "cost": 0,
+    "accuracy": 100,
+    "effect": "raise_defense_restore_stability",
+    "description": "Defensive stance that restores Stability."
+  },
+  {
+    "id": "root_bump",
+    "displayName": "Root Bump",
+    "class": "kush",
+    "category": "strike",
+    "power": 5,
+    "cost": 0,
+    "accuracy": 95,
+    "effect": "none",
+    "description": "Reliable physical action."
+  },
+  {
+    "id": "trichome_spark",
+    "displayName": "Trichome Spark",
+    "class": "frost",
+    "category": "special",
+    "power": 6,
+    "cost": 1,
+    "accuracy": 90,
+    "effect": "crit_bonus_small",
+    "description": "A bright Frost-class hit with a small critical bonus."
+  },
+  {
+    "id": "resin_guard",
+    "displayName": "Resin Guard",
+    "class": "frost",
+    "category": "guard",
+    "power": 0,
+    "cost": 1,
+    "accuracy": 100,
+    "effect": "shield_next_hit",
+    "description": "Protects against the next incoming hit."
+  },
+  {
+    "id": "diesel_burst",
+    "displayName": "Diesel Burst",
+    "class": "gas",
+    "category": "special",
+    "power": 8,
+    "cost": 2,
+    "accuracy": 85,
+    "effect": "self_stability_down",
+    "description": "High-force action with a Stability cost."
+  },
+  {
+    "id": "pressure_lunge",
+    "displayName": "Pressure Lunge",
+    "class": "gas",
+    "category": "strike",
+    "power": 6,
+    "cost": 1,
+    "accuracy": 90,
+    "effect": "none",
+    "description": "A direct pressure action for Gas-class units."
+  },
+  {
+    "id": "skunk_spray",
+    "displayName": "Skunk Spray",
+    "class": "skunk",
+    "category": "status",
+    "power": 3,
+    "cost": 1,
+    "accuracy": 90,
+    "effect": "lower_target_terps",
+    "description": "Disrupts the target's special output."
+  },
+  {
+    "id": "darting_bite",
+    "displayName": "Darting Bite",
+    "class": "skunk",
+    "category": "strike",
+    "power": 5,
+    "cost": 0,
+    "accuracy": 95,
+    "effect": "none",
+    "description": "A quick basic strike for Skunk-class units."
+  },
+  {
+    "id": "sticky_tongue",
+    "displayName": "Sticky Tongue",
+    "class": "fruit",
+    "category": "status",
+    "power": 4,
+    "cost": 1,
+    "accuracy": 90,
+    "effect": "lower_target_speed",
+    "description": "Slows the target."
+  },
+  {
+    "id": "aroma_bubble",
+    "displayName": "Aroma Bubble",
+    "class": "fruit",
+    "category": "special",
+    "power": 5,
+    "cost": 1,
+    "accuracy": 95,
+    "effect": "small_chance_aroma_bonus",
+    "description": "A hybrid special action with light expression synergy."
+  },
+  {
+    "id": "lockout_clamp",
+    "displayName": "Lockout Clamp",
+    "class": "synthetic",
+    "category": "status",
+    "power": 0,
+    "cost": 1,
+    "accuracy": 85,
+    "effect": "block_items_one_turn",
+    "description": "Prevents item use for a short time."
+  },
+  {
+    "id": "drain_pulse",
+    "displayName": "Drain Pulse",
+    "class": "synthetic",
+    "category": "special",
+    "power": 5,
+    "cost": 1,
+    "accuracy": 90,
+    "effect": "target_stability_down",
+    "description": "A synthetic pressure action that targets Stability."
+  }
+]

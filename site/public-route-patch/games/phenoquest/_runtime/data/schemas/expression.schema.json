@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ExpressionState",
+  "type": "object",
+  "required": ["id", "displayName", "weather", "cue", "category", "statModifiers"],
+  "properties": {
+    "id": { "type": "string" },
+    "displayName": { "type": "string" },
+    "weather": { "type": "string" },
+    "cue": { "type": "string" },
+    "category": { "type": "string" },
+    "statModifiers": {
+      "type": "object",
+      "properties": {
+        "vigor": { "type": "integer" },
+        "power": { "type": "integer" },
+        "terps": { "type": "integer" },
+        "roots": { "type": "integer" },
+        "speed": { "type": "integer" },
+        "stability": { "type": "integer" }
+      },
+      "additionalProperties": false
+    },
+    "visualLayer": { "type": "string" },
+    "rewardTag": { "type": "string" },
+    "notes": { "type": "string" }
+  },
+  "additionalProperties": false
+}

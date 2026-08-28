@@ -1,0 +1,31 @@
+{
+  "id": "aroma_trial_greenhouse",
+  "displayName": "Aroma Trial Greenhouse",
+  "width": 12,
+  "height": 10,
+  "startPosition": { "x": 5, "y": 9 },
+  "tileset": "aroma_trial_placeholder",
+  "transitions": [
+    {
+      "id": "to_terp_fields",
+      "x": 5,
+      "y": 9,
+      "targetMap": "terp_fields",
+      "targetPosition": { "x": 18, "y": 4 }
+    }
+  ],
+  "npcs": [
+    {
+      "id": "aroma_keeper_luma",
+      "x": 6,
+      "y": 3,
+      "dialogueId": "luma_trial_start"
+    }
+  ],
+  "trial": {
+    "id": "aroma_trial",
+    "requiresQuest": "aroma_trial",
+    "puzzleType": "expression_identification",
+    "successFlag": "aroma_trial_complete"
+  }
+}

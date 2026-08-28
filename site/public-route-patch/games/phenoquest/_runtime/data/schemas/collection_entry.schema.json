@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CollectionEntry",
+  "type": "object",
+  "required": ["speciesId", "seen", "battled", "materialsOwned", "materialsRequired", "recipeUnlocked", "rootedCount", "vaultProgress"],
+  "properties": {
+    "speciesId": { "type": "string" },
+    "seen": { "type": "boolean" },
+    "battled": { "type": "boolean" },
+    "materialsOwned": { "type": "integer" },
+    "materialsRequired": { "type": "integer" },
+    "recipeUnlocked": { "type": "boolean" },
+    "rootedCount": { "type": "integer" },
+    "knownTraits": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "knownExpressions": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "keeperFound": { "type": "boolean" },
+    "vaultProgress": { "type": "integer" }
+  },
+  "additionalProperties": false
+}

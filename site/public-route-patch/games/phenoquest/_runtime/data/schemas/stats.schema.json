@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Stats",
+  "type": "object",
+  "required": ["vigor", "power", "terps", "roots", "speed", "stability"],
+  "properties": {
+    "vigor": { "type": "integer" },
+    "power": { "type": "integer" },
+    "terps": { "type": "integer" },
+    "roots": { "type": "integer" },
+    "speed": { "type": "integer" },
+    "stability": { "type": "integer" }
+  },
+  "additionalProperties": false
+}

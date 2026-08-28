@@ -1,0 +1,96 @@
+{
+  "project": "PhenoQuest: The Living Seed Vault",
+  "version": "0.1.0",
+  "mechanics": [
+    {
+      "id": "starter_selection",
+      "status": "wired_mvp",
+      "goal": "Let player choose the first team unit and start progression.",
+      "dataFiles": ["data/phenos/mvp_units.json", "data/starter_slots.json"],
+      "engineFiles": ["src/engine/starter-selection.js", "src/engine/game-state.js"],
+      "uiFiles": ["src/ui/starter-selection-ui.js"],
+      "browserFiles": ["public/games/phenoquest/game.js"]
+    },
+    {
+      "id": "map_movement",
+      "status": "wired_placeholder",
+      "goal": "Render placeholder maps and move the player marker with transitions and cue updates.",
+      "dataFiles": ["data/maps/seedling_town.json", "data/maps/terp_fields.json", "data/maps/greenhouse.json", "data/maps/aroma_trial_greenhouse.json"],
+      "engineFiles": ["src/engine/maps.js", "src/engine/movement.js"],
+      "uiFiles": ["src/ui/map-ui.js", "src/ui/movement-ui.js"],
+      "browserFiles": ["public/games/phenoquest/game.js"]
+    },
+    {
+      "id": "map_interaction",
+      "status": "engine_ready",
+      "goal": "Resolve NPC and object interactions from player position and facing direction.",
+      "dataFiles": ["data/maps/seedling_town.json", "data/dialogue/mvp_dialogue.json"],
+      "engineFiles": ["src/engine/interactions.js", "src/engine/dialogue-runner.js"],
+      "uiFiles": ["src/ui/interaction-ui.js", "src/ui/dialogue-box-ui.js"],
+      "browserFiles": ["public/games/phenoquest/game.js"]
+    },
+    {
+      "id": "environment_expression",
+      "status": "mvp_data_wired",
+      "goal": "Resolve weather plus cue into expression behavior and reward tags.",
+      "dataFiles": ["data/weather/weather_states.json", "data/expressions/expression_matrix_mvp.json"],
+      "engineFiles": ["src/engine/weather.js", "src/engine/expression.js"],
+      "uiFiles": ["src/ui/weather-ui.js"],
+      "browserFiles": ["public/games/phenoquest/game.js"]
+    },
+    {
+      "id": "encounter_combat_reward",
+      "status": "wired_mvp",
+      "goal": "Roll encounters, resolve simple combat, award field material.",
+      "dataFiles": ["data/encounters/terp_fields.json", "data/moves/mvp_abilities.json"],
+      "engineFiles": ["src/engine/encounters.js", "src/engine/battle.js", "src/engine/battle-rewards.js", "src/engine/combat-ai.js", "src/engine/status-effects.js"],
+      "uiFiles": ["src/ui/encounter-ui.js", "src/ui/combat-ui.js"],
+      "browserFiles": ["public/games/phenoquest/game.js"]
+    },
+    {
+      "id": "timer_result_loop",
+      "status": "wired_mvp",
+      "goal": "Spend material, start timer, claim result, save to Vault Garden.",
+      "dataFiles": ["data/phenos/mvp_units.json", "data/phenos/mvp_units_extra.json"],
+      "engineFiles": ["src/engine/timers.js", "src/engine/result-timers.js", "src/engine/result-factory.js"],
+      "uiFiles": ["src/ui/recipe-ui.js", "src/ui/vault-garden-ui.js"],
+      "browserFiles": ["public/games/phenoquest/game.js"]
+    },
+    {
+      "id": "phenolog_collection",
+      "status": "wired_mvp",
+      "goal": "Track seen, battled, material, result count, traits, expressions, and Vault progress.",
+      "dataFiles": [],
+      "engineFiles": ["src/engine/collection.js"],
+      "uiFiles": ["src/ui/collection-ui.js", "src/ui/phenolog-ui.js"],
+      "browserFiles": ["public/games/phenoquest/game.js"]
+    },
+    {
+      "id": "breeding_genotype_preview",
+      "status": "read_only_preview",
+      "goal": "Preview future pairing routes from team and Vault Garden candidates.",
+      "dataFiles": ["data/breeding/genotype_markers.json", "data/breeding/pairing_rules_mvp.json", "data/breeding/result_units_mvp.json"],
+      "engineFiles": ["src/engine/breeding.js", "src/engine/genotype.js", "src/engine/progression.js"],
+      "uiFiles": ["src/ui/breeding-ui.js", "src/ui/lineage-lab-ui.js"],
+      "browserFiles": ["public/games/phenoquest/game.js"]
+    },
+    {
+      "id": "lineage_lab_timers",
+      "status": "engine_ready",
+      "goal": "Create, refresh, and resolve timed Lineage Lab batches into Vault Garden result units.",
+      "dataFiles": ["data/breeding/pairing_rules_mvp.json", "data/breeding/result_units_mvp.json"],
+      "engineFiles": ["src/engine/lineage-timers.js", "src/engine/lineage-result-factory.js"],
+      "uiFiles": ["src/ui/vault-garden-ui.js"],
+      "browserFiles": []
+    },
+    {
+      "id": "quest_progression",
+      "status": "partial_hooks",
+      "goal": "Advance player rank, flags, and region unlocks as systems complete.",
+      "dataFiles": ["data/quests/mvp_quests.json"],
+      "engineFiles": ["src/engine/quest-events.js", "src/engine/progression.js"],
+      "uiFiles": ["src/ui/quest-ui.js"],
+      "browserFiles": ["public/games/phenoquest/game.js"]
+    }
+  ]
+}

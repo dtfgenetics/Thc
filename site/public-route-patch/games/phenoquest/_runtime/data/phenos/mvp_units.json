@@ -1,0 +1,47 @@
+[
+  {
+    "id": "mango_puff",
+    "displayName": "Mango Puff",
+    "description": "A fast Fruit-class starter with bright aroma-style expression potential.",
+    "classes": ["fruit"],
+    "rarity": "common",
+    "region": "terp_fields",
+    "temperament": "curious",
+    "baseStats": { "vigor": 18, "power": 6, "terps": 9, "roots": 4, "speed": 9, "stability": 7 },
+    "recipe": { "materialsRequired": 3, "demoSeconds": 30, "fullSeconds": 300, "preferredWeather": ["sweet_wind"], "preferredCues": ["airflow", "light_exposure"] },
+    "traits": ["sweet_terp", "fast_growth", "juicy_burst", "keeper_cut"],
+    "markers": { "TERP": "high", "ROOT": "low", "RESIN": "low", "VIGOR": "normal", "SPEED": "high", "COLOR": "rare", "STABILITY": "normal", "ECHO": "locked" },
+    "abilities": ["mango_mist", "quick_sprout"],
+    "lineage": { "branch": "fruit_archive", "compatible": ["terp_toad", "frostling"], "futureResults": ["mango_toadlet", "frosted_mango"] }
+  },
+  {
+    "id": "kush_cub",
+    "displayName": "Kush Cub",
+    "description": "A steady Kush-class starter with strong defensive balance and high Stability potential.",
+    "classes": ["kush"],
+    "rarity": "common",
+    "region": "seedling_town",
+    "temperament": "loyal",
+    "baseStats": { "vigor": 24, "power": 6, "terps": 4, "roots": 9, "speed": 4, "stability": 9 },
+    "recipe": { "materialsRequired": 3, "demoSeconds": 30, "fullSeconds": 300, "preferredWeather": ["clear_bloom"], "preferredCues": ["vault_energy"] },
+    "traits": ["deep_roots", "dense_frame", "calm_guard", "keeper_cut"],
+    "markers": { "TERP": "low", "ROOT": "high", "RESIN": "normal", "VIGOR": "high", "SPEED": "low", "COLOR": "normal", "STABILITY": "high", "ECHO": "locked" },
+    "abilities": ["dense_guard", "root_bump"],
+    "lineage": { "branch": "root_archive", "compatible": ["mango_puff"], "futureResults": [] }
+  },
+  {
+    "id": "frostling",
+    "displayName": "Frostling",
+    "description": "A rare Frost-class starter with shield, critical, and Echo potential.",
+    "classes": ["frost"],
+    "rarity": "rare",
+    "region": "seedling_town",
+    "temperament": "shy",
+    "baseStats": { "vigor": 20, "power": 7, "terps": 6, "roots": 6, "speed": 6, "stability": 8 },
+    "recipe": { "materialsRequired": 5, "demoSeconds": 120, "fullSeconds": 1800, "preferredWeather": ["clear_bloom"], "preferredCues": ["vault_energy"] },
+    "traits": ["crystal_coat", "heavy_resin", "cold_guard", "keeper_cut"],
+    "markers": { "TERP": "normal", "ROOT": "normal", "RESIN": "high", "VIGOR": "normal", "SPEED": "normal", "COLOR": "rare", "STABILITY": "high", "ECHO": "rare" },
+    "abilities": ["trichome_spark", "resin_guard"],
+    "lineage": { "branch": "frost_archive", "compatible": ["gas_goblin", "mango_puff"], "futureResults": ["frost_goblin", "frosted_mango"] }
+  }
+]

@@ -1,0 +1,50 @@
+[
+  {
+    "id": "TERP",
+    "displayName": "Terp Expression",
+    "description": "Controls aroma-style result bonuses and expression flavor.",
+    "values": ["low", "normal", "high"]
+  },
+  {
+    "id": "ROOT",
+    "displayName": "Root Structure",
+    "description": "Controls defensive and stability-style result bonuses.",
+    "values": ["low", "normal", "high"]
+  },
+  {
+    "id": "RESIN",
+    "displayName": "Resin Output",
+    "description": "Controls shield, frost, and premium result potential.",
+    "values": ["low", "normal", "high"]
+  },
+  {
+    "id": "VIGOR",
+    "displayName": "Vigor Pattern",
+    "description": "Controls durability and growth strength.",
+    "values": ["low", "normal", "high"]
+  },
+  {
+    "id": "SPEED",
+    "displayName": "Speed Pattern",
+    "description": "Controls movement in combat order and fast-result tendencies.",
+    "values": ["low", "normal", "high"]
+  },
+  {
+    "id": "COLOR",
+    "displayName": "Color Expression",
+    "description": "Controls rare visual expression and collector value.",
+    "values": ["normal", "rare", "unstable"]
+  },
+  {
+    "id": "STABILITY",
+    "displayName": "Stability Pattern",
+    "description": "Controls reliability, timer quality, and Keeper chance.",
+    "values": ["low", "normal", "high"]
+  },
+  {
+    "id": "ECHO",
+    "displayName": "Vault Echo",
+    "description": "Controls story-linked potential and special result branches.",
+    "values": ["locked", "open", "rare"]
+  }
+]

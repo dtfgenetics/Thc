@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "BaseUnit",
+  "type": "object",
+  "required": ["id", "displayName", "classes", "rarity", "region"],
+  "properties": {
+    "id": { "type": "string" },
+    "displayName": { "type": "string" },
+    "description": { "type": "string" },
+    "classes": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1,
+      "maxItems": 2
+    },
+    "rarity": { "type": "string" },
+    "region": { "type": "string" },
+    "temperament": { "type": "string" }
+  },
+  "additionalProperties": false
+}

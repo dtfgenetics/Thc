@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="PhenoQuest: The Living Seed Vault — explore Verdantia, battle for cuttings, root clones, find keeper traits, and restore genetic lineages." />
+    <meta name="theme-color" content="#102418" />
+    <title>PhenoQuest: The Living Seed Vault</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <a class="hub-back" href="/games/" aria-label="Back to DTF Game Hub">← Game Hub</a>
+    <main id="app" class="game-shell">
+      <section class="title-card">
+        <p class="eyebrow">DTF Seeds Game Hub</p>
+        <h1>PhenoQuest</h1>
+        <h2>The Living Seed Vault</h2>
+        <p class="tagline">Collect the Whole Garden.</p>
+        <button id="start-button" type="button">Start Demo</button>
+      </section>
+
+      <section id="game-panel" class="panel hidden" aria-live="polite">
+        <h2 id="panel-title">Seedling Town Demo</h2>
+        <p id="panel-copy">Loading game data...</p>
+        <button id="reset-save-button" type="button">Reset Save</button>
+        <div id="quest-panel"></div>
+        <div id="weather-panel"></div>
+        <div id="starter-selection"></div>
+        <p id="map-label" class="map-label"></p>
+        <div id="map-preview"></div>
+        <div id="movement-controls"></div>
+        <div id="interaction-panel"></div>
+        <div id="dialogue-panel"></div>
+        <div id="encounter-controls"></div>
+        <div id="encounter-result"></div>
+        <div id="combat-panel"></div>
+        <div id="recipe-panel"></div>
+        <div id="inventory-panel"></div>
+        <div id="vault-garden-panel"></div>
+        <div id="breeding-panel"></div>
+        <div id="lineage-lab-panel"></div>
+        <div id="collection-panel"></div>
+        <div id="phenolog-panel"></div>
+        <pre id="debug-output"></pre>
+      </section>
+    </main>
+
+    <script src="./game.js" type="module"></script>
+    <script src="./lineage-runtime.js" type="module"></script>
+  </body>
+</html>

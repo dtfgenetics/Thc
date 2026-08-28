@@ -1,0 +1,41 @@
+[
+  {
+    "id": "clear_bloom",
+    "displayName": "Clear Bloom",
+    "description": "Default calm weather. Balanced encounter and result behavior.",
+    "weight": 50,
+    "cueBias": ["light_exposure", "vault_energy"],
+    "modifiers": {
+      "stability": 1,
+      "speed": 0,
+      "terps": 0,
+      "roots": 0
+    }
+  },
+  {
+    "id": "sweet_wind",
+    "displayName": "Sweet Wind",
+    "description": "Aroma-heavy weather that favors Fruit and Skunk expression patterns.",
+    "weight": 30,
+    "cueBias": ["airflow", "moisture"],
+    "modifiers": {
+      "stability": 0,
+      "speed": 1,
+      "terps": 1,
+      "roots": 0
+    }
+  },
+  {
+    "id": "lockout_static",
+    "displayName": "Lockout Static",
+    "description": "Unstable interference weather. Higher risk, stronger reward tags, and more synthetic pressure.",
+    "weight": 20,
+    "cueBias": ["vault_energy", "light_exposure"],
+    "modifiers": {
+      "stability": -1,
+      "speed": 0,
+      "terps": 0,
+      "roots": -1
+    }
+  }
+]

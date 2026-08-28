@@ -1,0 +1,43 @@
+{
+  "id": "seedling_town",
+  "displayName": "Seedling Town",
+  "width": 16,
+  "height": 12,
+  "startPosition": { "x": 5, "y": 8 },
+  "tileset": "seedling_town_placeholder",
+  "transitions": [
+    {
+      "id": "to_terp_fields",
+      "x": 15,
+      "y": 6,
+      "targetMap": "terp_fields",
+      "targetPosition": { "x": 1, "y": 6 },
+      "requiresFlag": "terp_fields_access"
+    },
+    {
+      "id": "to_greenhouse",
+      "x": 7,
+      "y": 4,
+      "targetMap": "greenhouse",
+      "targetPosition": { "x": 5, "y": 9 }
+    }
+  ],
+  "npcs": [
+    {
+      "id": "professor_calyx",
+      "x": 7,
+      "y": 5,
+      "dialogueId": "calyx_intro"
+    },
+    {
+      "id": "nova",
+      "x": 10,
+      "y": 7,
+      "dialogueId": "nova_intro"
+    }
+  ],
+  "blocked": [
+    { "x": 0, "y": 0 },
+    { "x": 1, "y": 0 }
+  ]
+}

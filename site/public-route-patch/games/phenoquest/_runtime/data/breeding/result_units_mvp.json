@@ -1,0 +1,35 @@
+[
+  {
+    "id": "mango_toadlet",
+    "displayName": "Mango Toadlet",
+    "description": "A future pairing result preview that blends Fruit speed with sticky field control.",
+    "classes": ["fruit", "skunk"],
+    "rarity": "future_result",
+    "sourceRule": "mango_puff_x_terp_toad",
+    "baseStats": { "vigor": 22, "power": 6, "terps": 9, "roots": 6, "speed": 7, "stability": 7 },
+    "traits": ["sweet_terp", "sticky_terps", "hybrid_vigor", "keeper_cut"],
+    "markers": { "TERP": "high", "ROOT": "normal", "RESIN": "low", "VIGOR": "normal", "SPEED": "normal", "COLOR": "normal", "STABILITY": "normal", "ECHO": "locked" }
+  },
+  {
+    "id": "frosted_mango",
+    "displayName": "Frosted Mango",
+    "description": "A future pairing result preview that blends Fruit expression with Frost resin traits.",
+    "classes": ["fruit", "frost"],
+    "rarity": "future_result",
+    "sourceRule": "mango_puff_x_frostling",
+    "baseStats": { "vigor": 21, "power": 7, "terps": 9, "roots": 6, "speed": 7, "stability": 8 },
+    "traits": ["sweet_terp", "crystal_coat", "rare_color", "keeper_cut"],
+    "markers": { "TERP": "high", "ROOT": "normal", "RESIN": "high", "VIGOR": "normal", "SPEED": "normal", "COLOR": "rare", "STABILITY": "high", "ECHO": "locked" }
+  },
+  {
+    "id": "frost_goblin",
+    "displayName": "Frost Goblin",
+    "description": "A future pairing result preview that blends Frost resin with Gas pressure.",
+    "classes": ["frost", "gas"],
+    "rarity": "future_result",
+    "sourceRule": "frostling_x_gas_goblin",
+    "baseStats": { "vigor": 22, "power": 9, "terps": 6, "roots": 5, "speed": 6, "stability": 5 },
+    "traits": ["heavy_resin", "diesel_burst", "unstable_power", "keeper_cut"],
+    "markers": { "TERP": "normal", "ROOT": "low", "RESIN": "high", "VIGOR": "normal", "SPEED": "normal", "COLOR": "rare", "STABILITY": "low", "ECHO": "locked" }
+  }
+]

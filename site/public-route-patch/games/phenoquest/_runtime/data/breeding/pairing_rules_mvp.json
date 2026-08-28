@@ -1,0 +1,56 @@
+[
+  {
+    "id": "mango_puff_x_terp_toad",
+    "parentA": "mango_puff",
+    "parentB": "terp_toad",
+    "resultPool": ["mango_toadlet"],
+    "requiredRank": "field_scout",
+    "requiredRegion": "terp_fields",
+    "chanceWeights": {
+      "stable": 70,
+      "strong": 25,
+      "keeper_candidate": 5
+    },
+    "markerBias": {
+      "TERP": "high",
+      "SPEED": "normal",
+      "STABILITY": "normal"
+    }
+  },
+  {
+    "id": "mango_puff_x_frostling",
+    "parentA": "mango_puff",
+    "parentB": "frostling",
+    "resultPool": ["frosted_mango"],
+    "requiredRank": "garden_keeper",
+    "requiredRegion": "frost_peak",
+    "chanceWeights": {
+      "stable": 55,
+      "strong": 35,
+      "keeper_candidate": 10
+    },
+    "markerBias": {
+      "TERP": "high",
+      "RESIN": "high",
+      "COLOR": "rare"
+    }
+  },
+  {
+    "id": "frostling_x_gas_goblin",
+    "parentA": "frostling",
+    "parentB": "gas_goblin",
+    "resultPool": ["frost_goblin"],
+    "requiredRank": "garden_keeper",
+    "requiredRegion": "gas_cave",
+    "chanceWeights": {
+      "stable": 50,
+      "strong": 35,
+      "keeper_candidate": 15
+    },
+    "markerBias": {
+      "RESIN": "high",
+      "VIGOR": "normal",
+      "STABILITY": "low"
+    }
+  }
+]

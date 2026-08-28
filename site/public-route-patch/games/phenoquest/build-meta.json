@@ -1,0 +1,12 @@
+{
+  "project": "PhenoQuest: The Living Seed Vault",
+  "route": "/games/phenoquest/",
+  "runtime": "static-es-modules",
+  "packageRoot": "games/phenoquest",
+  "selfContained": true,
+  "browserEntries": [
+    "game.js",
+    "lineage-runtime.js"
+  ],
+  "generatedBy": "npm run build"
+}

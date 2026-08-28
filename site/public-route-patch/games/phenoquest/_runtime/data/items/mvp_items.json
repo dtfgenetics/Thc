@@ -1,0 +1,42 @@
+[
+  {
+    "id": "seed_pouch",
+    "displayName": "Seed Pouch",
+    "category": "recipe_tool",
+    "price": 50,
+    "effect": "basic_recipe_support",
+    "description": "Basic tool used for early Rooted Clone recipes."
+  },
+  {
+    "id": "aroma_jar",
+    "displayName": "Aroma Jar",
+    "category": "recipe_boost",
+    "price": 100,
+    "effect": "boost_aroma_expression",
+    "description": "Improves aroma-style expression outcomes during timer results."
+  },
+  {
+    "id": "stability_tea",
+    "displayName": "Stability Tea",
+    "category": "care_item",
+    "price": 90,
+    "effect": "restore_stability",
+    "description": "Restores Stability in battle or the Vault Garden."
+  },
+  {
+    "id": "root_tonic",
+    "displayName": "Root Tonic",
+    "category": "care_item",
+    "price": 75,
+    "effect": "restore_vigor",
+    "description": "Restores Vigor during early battles."
+  },
+  {
+    "id": "vault_shard",
+    "displayName": "Vault Shard",
+    "category": "key_material",
+    "price": 0,
+    "effect": "restore_vault_progress",
+    "description": "Story-linked material used to repair Vault progress."
+  }
+]

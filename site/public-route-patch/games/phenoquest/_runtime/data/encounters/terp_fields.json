@@ -1,0 +1,72 @@
+{
+  "regionId": "terp_fields",
+  "displayName": "Terp Fields",
+  "defaultWeather": "clear_bloom",
+  "weatherOptions": ["clear_bloom", "sweet_wind", "lockout_static"],
+  "cueZones": [
+    {
+      "id": "sunny_patch",
+      "displayName": "Sunny Patch",
+      "cue": "light_exposure"
+    },
+    {
+      "id": "aroma_ridge",
+      "displayName": "Aroma Ridge",
+      "cue": "airflow"
+    },
+    {
+      "id": "terp_creek",
+      "displayName": "Terp Creek",
+      "cue": "moisture"
+    },
+    {
+      "id": "vault_flower",
+      "displayName": "Hidden Vault Flower",
+      "cue": "vault_energy"
+    }
+  ],
+  "encounters": [
+    {
+      "speciesId": "mango_puff",
+      "weight": 35,
+      "weather": ["clear_bloom", "sweet_wind"],
+      "cues": ["light_exposure", "airflow"],
+      "minLevel": 2,
+      "maxLevel": 4
+    },
+    {
+      "speciesId": "skunkrat",
+      "weight": 20,
+      "weather": ["sweet_wind", "lockout_static"],
+      "cues": ["airflow"],
+      "minLevel": 2,
+      "maxLevel": 5
+    },
+    {
+      "speciesId": "terp_toad",
+      "weight": 18,
+      "weather": ["clear_bloom", "sweet_wind"],
+      "cues": ["moisture"],
+      "minLevel": 3,
+      "maxLevel": 5
+    },
+    {
+      "speciesId": "gas_goblin",
+      "weight": 8,
+      "weather": ["lockout_static"],
+      "cues": ["light_exposure"],
+      "minLevel": 4,
+      "maxLevel": 6
+    },
+    {
+      "speciesId": "lockout_leech",
+      "weight": 0,
+      "weather": ["lockout_static"],
+      "cues": ["vault_energy"],
+      "minLevel": 5,
+      "maxLevel": 5,
+      "storyOnly": true,
+      "storyFlag": "signal_clamp_active"
+    }
+  ]
+}
