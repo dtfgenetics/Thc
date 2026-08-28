@@ -9,12 +9,15 @@ on:
       - 'site/wordpress/education/outdoor-quantification-v1.json'
       - 'site/wordpress/education/outdoor-quantification/**'
       - 'site/wordpress/education/outdoor-applied-v1.json'
+      - 'site/wordpress/education/topic-literature.json'
+      - 'scripts/rebuild-wordpress-learning-experience-v3.mjs'
+      - 'scripts/run-learning-v3-production.mjs'
+      - 'scripts/enhance-wordpress-learning-v4.mjs'
+      - 'scripts/enhance-wordpress-topic-expansions-v4.mjs'
       - 'scripts/publish-wordpress-harvest-outdoor-v6-final.mjs'
       - 'scripts/assemble-outdoor-quantification-v1.mjs'
       - 'scripts/enhance-wordpress-outdoor-quantification-v1.mjs'
       - 'scripts/publish-wordpress-outdoor-applied-v1.mjs'
-      - 'scripts/enhance-wordpress-learning-v4.mjs'
-      - 'scripts/enhance-wordpress-topic-expansions-v4.mjs'
       - '.github/workflows/wordpress-harvest-outdoor-v6-production.yml'
   push:
     branches: [main]
@@ -24,6 +27,10 @@ on:
       - 'site/wordpress/education/outdoor-quantification-v1.json'
       - 'site/wordpress/education/outdoor-quantification/**'
       - 'site/wordpress/education/outdoor-applied-v1.json'
+      - 'scripts/rebuild-wordpress-learning-experience-v3.mjs'
+      - 'scripts/run-learning-v3-production.mjs'
+      - 'scripts/enhance-wordpress-learning-v4.mjs'
+      - 'scripts/enhance-wordpress-topic-expansions-v4.mjs'
       - 'scripts/publish-wordpress-harvest-outdoor-v6-final.mjs'
       - 'scripts/assemble-outdoor-quantification-v1.mjs'
       - 'scripts/enhance-wordpress-outdoor-quantification-v1.mjs'
@@ -60,6 +67,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          node --check scripts/rebuild-wordpress-learning-experience-v3.mjs
+          node --check scripts/run-learning-v3-production.mjs
+          grep -Fq "'outdoor-cultivation': [['outdoor', 'site'], ['outdoor', 'cultivation'], ['microclimate'], ['hardening', 'off']]" scripts/run-learning-v3-production.mjs
+          grep -Fq "'outdoor-cultivation': [['outdoor'], ['life', 'cycle'], ['plant', 'anatomy']]" scripts/run-learning-v3-production.mjs
+
           node --check scripts/enhance-wordpress-learning-v4.mjs
           node --check scripts/enhance-wordpress-topic-expansions-v4.mjs
           node --check scripts/publish-wordpress-harvest-outdoor-v6-final.mjs
@@ -90,7 +102,7 @@ jobs:
     needs: validate
     if: ${{ github.event_name != 'pull_request' && (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success') }}
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 50
     environment: production
     env:
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
@@ -114,6 +126,22 @@ jobs:
           grep -Fq '"sections": 8' "$RUNNER_TEMP/quant-assembly.json"
           grep -Fq '"subtopics": 32' "$RUNNER_TEMP/quant-assembly.json"
           [[ "$(node -p "require(process.argv[1]).metrics" "$RUNNER_TEMP/quant-assembly.json")" -ge 100 ]]
+
+      - name: Restore V3 learning ownership with strict Outdoor media selection
+        id: v3
+        env:
+          APPLY_LEARNING_V3: 'true'
+          BACKUP_ROOT: /tmp/dtf-learning-v3-self-heal
+          CANONICAL_TOPIC_LITERATURE_PATH: site/wordpress/education/topic-literature.json
+          NORMALIZED_TOPIC_LITERATURE_PATH: /tmp/dtf-topic-literature-v3-normalized.json
+          LEARNING_V3_PUBLISHER_PATH: scripts/rebuild-wordpress-learning-experience-v3.mjs
+          NORMALIZED_LEARNING_V3_PUBLISHER_PATH: /tmp/rebuild-wordpress-learning-experience-v3-normalized.mjs
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$BACKUP_ROOT"
+          node scripts/run-learning-v3-production.mjs | tee "$RUNNER_TEMP/learning-v3-self-heal.log"
+          grep -Fq "'outdoor-cultivation': [['outdoor', 'site'], ['outdoor', 'cultivation'], ['microclimate'], ['hardening', 'off']]" scripts/run-learning-v3-production.mjs
 
       - name: Restore V4 guided-learning ownership before V6 publication
         id: v4
@@ -183,17 +211,22 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          learn="$RUNNER_TEMP/learn-live.html"
           harvest="$RUNNER_TEMP/harvest-live.html"
           outdoor="$RUNNER_TEMP/outdoor-live.html"
           ok=0
           for attempt in 1 2 3 4 5 6 7 8 9 10; do
             curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
               --header 'Cache-Control: no-cache, no-store, max-age=0' --header 'Pragma: no-cache' \
+              "$WP_SITE_URL/learn/?thc_complete=${GITHUB_RUN_ID}-${attempt}" -o "$learn"
+            curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+              --header 'Cache-Control: no-cache, no-store, max-age=0' --header 'Pragma: no-cache' \
               "$WP_SITE_URL/learn/harvest-postharvest/?thc_complete=${GITHUB_RUN_ID}-${attempt}" -o "$harvest"
             curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
               --header 'Cache-Control: no-cache, no-store, max-age=0' --header 'Pragma: no-cache' \
               "$WP_SITE_URL/learn/outdoor/?thc_complete=${GITHUB_RUN_ID}-${attempt}" -o "$outdoor"
-            if grep -Fq 'data-dtf-harvest-postharvest-v6="true"' "$harvest" && \
+            if grep -Fq 'data-dtf-layout="learn-v3"' "$learn" && \
+               grep -Fq 'data-dtf-harvest-postharvest-v6="true"' "$harvest" && \
                grep -Fq 'data-dtf-outdoor-v6="true"' "$outdoor" && \
                grep -Fq 'data-dtf-outdoor-quantification-v1="true"' "$outdoor" && \
                grep -Fq 'data-thc-outdoor-applied-v1="true"' "$outdoor"; then ok=1; break; fi
@@ -223,6 +256,7 @@ jobs:
         with:
           name: complete-outdoor-learning-${{ github.run_id }}
           path: |
+            /tmp/dtf-learning-v3-self-heal
             /tmp/dtf-learning-v4-self-heal
             /tmp/dtf-harvest-outdoor-v6-final
             /tmp/dtf-outdoor-quantification-v1
@@ -231,6 +265,7 @@ jobs:
             ${{ runner.temp }}/v6-publish.log
             ${{ runner.temp }}/quant-publish.log
             ${{ runner.temp }}/applied-publish.log
+            ${{ runner.temp }}/learn-live.html
             ${{ runner.temp }}/harvest-live.html
             ${{ runner.temp }}/outdoor-live.html
           if-no-files-found: warn
@@ -241,6 +276,7 @@ jobs:
         uses: actions/github-script@v7
         env:
           STATUS: ${{ job.status }}
+          V3: ${{ steps.v3.outcome }}
           V4: ${{ steps.v4.outcome }}
           V6: ${{ steps.v6.outcome }}
           QUANT: ${{ steps.quant.outcome }}
@@ -252,11 +288,16 @@ jobs:
               '## THC Outdoor complete learning-stack publication','',
               `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
               `Result: **${process.env.STATUS}**`,
+              `V3 learning ownership self-heal: **${process.env.V3 || 'not-run'}**`,
               `V4 guided-learning self-heal: **${process.env.V4 || 'not-run'}**`,
               `V6 core curriculum: **${process.env.V6 || 'not-run'}**`,
               `8 field labs / 32 quantified subtopics: **${process.env.QUANT || 'not-run'}**`,
               `5 applied modules / 20 lessons: **${process.env.APPLIED || 'not-run'}**`,
               `Cache-busted visitor verification: **${process.env.VERIFY || 'not-run'}**`,'',
-              'The production lane now restores its guided-learning prerequisite before publishing Outdoor V6, then publishes the complete measurement and applied-decision layers and verifies the public page.'
+              'The production lane restores V3 and V4 ownership before publishing Outdoor V6, then publishes the complete measurement and applied-decision layers and verifies the public page.'
             ].join('\n');
-            for (const issue_number of [46,126]) await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number,body});
+            try {
+              await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:126,body});
+            } catch (error) {
+              core.warning(`Could not post non-critical issue report: ${error.message}`);
+            }
