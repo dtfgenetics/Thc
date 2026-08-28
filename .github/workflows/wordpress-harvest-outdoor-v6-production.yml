@@ -12,6 +12,7 @@ on:
       - 'site/wordpress/education/topic-literature.json'
       - 'scripts/rebuild-wordpress-learning-experience-v3.mjs'
       - 'scripts/run-learning-v3-production.mjs'
+      - 'scripts/verify-wordpress-outdoor-owner-prerequisites.mjs'
       - 'scripts/enhance-wordpress-learning-v4.mjs'
       - 'scripts/enhance-wordpress-topic-expansions-v4.mjs'
       - 'scripts/publish-wordpress-harvest-outdoor-v6-final.mjs'
@@ -29,6 +30,7 @@ on:
       - 'site/wordpress/education/outdoor-applied-v1.json'
       - 'scripts/rebuild-wordpress-learning-experience-v3.mjs'
       - 'scripts/run-learning-v3-production.mjs'
+      - 'scripts/verify-wordpress-outdoor-owner-prerequisites.mjs'
       - 'scripts/enhance-wordpress-learning-v4.mjs'
       - 'scripts/enhance-wordpress-topic-expansions-v4.mjs'
       - 'scripts/publish-wordpress-harvest-outdoor-v6-final.mjs'
@@ -69,6 +71,7 @@ jobs:
           set -euo pipefail
           node --check scripts/rebuild-wordpress-learning-experience-v3.mjs
           node --check scripts/run-learning-v3-production.mjs
+          node --check scripts/verify-wordpress-outdoor-owner-prerequisites.mjs
           grep -Fq "'outdoor-cultivation': [['outdoor', 'site'], ['outdoor', 'cultivation'], ['microclimate'], ['hardening', 'off']]" scripts/run-learning-v3-production.mjs
           grep -Fq "'outdoor-cultivation': [['outdoor'], ['life', 'cycle'], ['plant', 'anatomy']]" scripts/run-learning-v3-production.mjs
 
@@ -127,7 +130,7 @@ jobs:
           grep -Fq '"subtopics": 32' "$RUNNER_TEMP/quant-assembly.json"
           [[ "$(node -p "require(process.argv[1]).metrics" "$RUNNER_TEMP/quant-assembly.json")" -ge 100 ]]
 
-      - name: Restore V3 learning ownership with strict Outdoor media selection
+      - name: Restore and verify exact V3 prerequisites for Outdoor
         id: v3
         env:
           APPLY_LEARNING_V3: 'true'
@@ -140,8 +143,16 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p "$BACKUP_ROOT"
+          set +e
           node scripts/run-learning-v3-production.mjs | tee "$RUNNER_TEMP/learning-v3-self-heal.log"
+          v3_exit=${PIPESTATUS[0]}
+          set -e
+          if [[ "$v3_exit" -ne 0 ]]; then
+            echo "::warning::Full V3 publisher returned $v3_exit; checking the exact WordPress ownership prerequisites needed by Outdoor before deciding whether to stop."
+          fi
           grep -Fq "'outdoor-cultivation': [['outdoor', 'site'], ['outdoor', 'cultivation'], ['microclimate'], ['hardening', 'off']]" scripts/run-learning-v3-production.mjs
+          node scripts/verify-wordpress-outdoor-owner-prerequisites.mjs | tee "$RUNNER_TEMP/outdoor-owner-prerequisites.json"
+          grep -Fq '"valid": true' "$RUNNER_TEMP/outdoor-owner-prerequisites.json"
 
       - name: Restore V4 guided-learning ownership before V6 publication
         id: v4
@@ -249,6 +260,10 @@ jobs:
           for module in rootzone-systems photoperiod-season weather-contingency canopy-access-airflow harvest-weather; do
             grep -Fq "data-oav1-module=\"$module\"" "$outdoor"
           done
+          if grep -Eqi 'Mystery[_ ]Line|Rainbow[_ ]Bubblegum.*Strain[_ ]Card' "$outdoor"; then
+            echo 'Outdoor page still exposes genetics strain-card references.' >&2
+            exit 1
+          fi
 
       - name: Upload rollback and verification evidence
         if: always()
@@ -262,6 +277,7 @@ jobs:
             /tmp/dtf-outdoor-quantification-v1
             /tmp/dtf-outdoor-applied-v1
             ${{ runner.temp }}/*self-heal.log
+            ${{ runner.temp }}/outdoor-owner-prerequisites.json
             ${{ runner.temp }}/v6-publish.log
             ${{ runner.temp }}/quant-publish.log
             ${{ runner.temp }}/applied-publish.log
@@ -288,13 +304,13 @@ jobs:
               '## THC Outdoor complete learning-stack publication','',
               `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
               `Result: **${process.env.STATUS}**`,
-              `V3 learning ownership self-heal: **${process.env.V3 || 'not-run'}**`,
+              `Exact V3 prerequisites: **${process.env.V3 || 'not-run'}**`,
               `V4 guided-learning self-heal: **${process.env.V4 || 'not-run'}**`,
               `V6 core curriculum: **${process.env.V6 || 'not-run'}**`,
               `8 field labs / 32 quantified subtopics: **${process.env.QUANT || 'not-run'}**`,
               `5 applied modules / 20 lessons: **${process.env.APPLIED || 'not-run'}**`,
               `Cache-busted visitor verification: **${process.env.VERIFY || 'not-run'}**`,'',
-              'The production lane restores V3 and V4 ownership before publishing Outdoor V6, then publishes the complete measurement and applied-decision layers and verifies the public page.'
+              'The Outdoor production lane validates the exact WordPress owners needed by this stack, publishes V4 and V6, then publishes the complete measurement and applied-decision layers and verifies the public page.'
             ].join('\n');
             try {
               await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:126,body});
