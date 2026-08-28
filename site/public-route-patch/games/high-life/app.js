@@ -1,5 +1,6 @@
 import { ACTIONS, ERA_LENGTH, MAX_TURNS, calculateLegacyScore, createGame, currentEra, legalActions, takeTurn } from './engine.mjs';
 
+const SAVE_KEY = 'dtf-high-life-save-v1';
 const eraLabels = { underground: 'Underground Era', medical: 'Medical Era', legal: 'Legal Era' };
 const resourceLabels = {
   reputation: 'Reputation', cash: 'Cash', knowledge: 'Knowledge', assets: 'Assets',
@@ -12,7 +13,8 @@ let state = null;
 const ui = {
   load: document.querySelector('#load-status'), setup: document.querySelector('#setup-panel'), game: document.querySelector('#game-panel'),
   results: document.querySelector('#results-panel'), name: document.querySelector('#player-name'), seed: document.querySelector('#seed'),
-  start: document.querySelector('#start-game'), eraName: document.querySelector('#era-name'), turn: document.querySelector('#turn-label'),
+  start: document.querySelector('#start-game'), resume: document.querySelector('#resume-game'), discard: document.querySelector('#discard-save'),
+  saveStatus: document.querySelector('#save-status'), eraName: document.querySelector('#era-name'), turn: document.querySelector('#turn-label'),
   progress: document.querySelector('#era-progress'), resources: document.querySelector('#resource-grid'), score: document.querySelector('#score-preview'),
   actions: document.querySelector('#action-grid'), eventPanel: document.querySelector('#event-panel'), eventTitle: document.querySelector('#event-title'),
   eventText: document.querySelector('#event-text'), mitigation: document.querySelector('#event-mitigation'), delta: document.querySelector('#turn-delta'),
@@ -33,6 +35,42 @@ function resourceCards(resources, target) {
 
 function formatDelta(delta) {
   return Object.entries(delta).map(([key, value]) => `${value > 0 ? '+' : ''}${value} ${resourceLabels[key] || key}`);
+}
+
+function readSave() {
+  try {
+    const payload = JSON.parse(localStorage.getItem(SAVE_KEY) || 'null');
+    const saved = payload?.state;
+    if (!saved || payload.version !== 1 || saved.complete || !Number.isInteger(saved.turn) || saved.turn < 0 || saved.turn >= MAX_TURNS || !saved.resources) return null;
+    return payload;
+  } catch {
+    return null;
+  }
+}
+
+function refreshSaveControls() {
+  const payload = readSave();
+  const hasSave = Boolean(payload);
+  ui.resume.hidden = !hasSave;
+  ui.discard.hidden = !hasSave;
+  ui.saveStatus.hidden = !hasSave;
+  if (!hasSave) return;
+  const saved = payload.state;
+  const era = eraLabels[currentEra(saved)] || 'Career';
+  ui.saveStatus.textContent = `Saved career: ${saved.playerName || 'Grower'} · ${era} · turn ${Math.min(saved.turn + 1, MAX_TURNS)} of ${MAX_TURNS}.`;
+}
+
+function saveGame() {
+  if (!state || state.complete) {
+    localStorage.removeItem(SAVE_KEY);
+    refreshSaveControls();
+    return;
+  }
+  try {
+    localStorage.setItem(SAVE_KEY, JSON.stringify({ version: 1, savedAt: Date.now(), state }));
+  } catch (error) {
+    console.warn('High Life autosave unavailable.', error);
+  }
 }
 
 function render() {
@@ -58,6 +96,7 @@ function render() {
 
 function resolveTurn(actionId) {
   state = takeTurn(state, actionId, events);
+  saveGame();
   const record = state.history.at(-1);
   ui.eventTitle.textContent = record.event.title;
   ui.eventText.textContent = record.event.text;
@@ -85,11 +124,14 @@ function resolveTurn(actionId) {
 function continueGame() {
   ui.eventPanel.hidden = true;
   if (state.complete) return showResults();
+  saveGame();
   render();
   document.querySelector('#choices-title').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function showResults() {
+  localStorage.removeItem(SAVE_KEY);
+  refreshSaveControls();
   ui.game.hidden = true;
   ui.results.hidden = false;
   ui.resultTitle.textContent = `${state.playerName}'s Legacy`;
@@ -100,11 +142,31 @@ function showResults() {
   ui.results.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
+function enterGame(nextState) {
+  state = nextState;
+  ui.setup.hidden = true;
+  ui.results.hidden = true;
+  ui.game.hidden = false;
+  ui.eventPanel.hidden = true;
+  render();
+  saveGame();
+}
+
 function startGame() {
   const seed = Number.parseInt(ui.seed.value, 10) || 1;
-  state = createGame({ seed, playerName: ui.name.value });
-  ui.setup.hidden = true; ui.results.hidden = true; ui.game.hidden = false; ui.eventPanel.hidden = true;
-  render();
+  enterGame(createGame({ seed, playerName: ui.name.value }));
+}
+
+function resumeGame() {
+  const payload = readSave();
+  if (!payload) return refreshSaveControls();
+  enterGame(payload.state);
+  document.querySelector('#choices-title').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function discardSave() {
+  localStorage.removeItem(SAVE_KEY);
+  refreshSaveControls();
 }
 
 async function load() {
@@ -113,8 +175,9 @@ async function load() {
     if (!response.ok) throw new Error(`events HTTP ${response.status}`);
     events = await response.json();
     if (!Array.isArray(events) || events.length !== 18) throw new Error('event data is incomplete');
-    ui.load.textContent = 'Prototype data ready · 18 era events · deterministic engine';
+    ui.load.textContent = 'Prototype data ready · 18 era events · deterministic engine · autosave enabled';
     ui.setup.hidden = false;
+    refreshSaveControls();
   } catch (error) {
     console.error(error);
     ui.load.textContent = 'High Life prototype data could not be loaded.';
@@ -122,6 +185,8 @@ async function load() {
 }
 
 ui.start.addEventListener('click', startGame);
+ui.resume.addEventListener('click', resumeGame);
+ui.discard.addEventListener('click', discardSave);
 ui.continue.addEventListener('click', continueGame);
-ui.again.addEventListener('click', () => { ui.results.hidden = true; ui.setup.hidden = false; });
+ui.again.addEventListener('click', () => { ui.results.hidden = true; ui.setup.hidden = false; refreshSaveControls(); });
 load();
