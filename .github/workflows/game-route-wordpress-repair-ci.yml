@@ -32,14 +32,21 @@ jobs:
           node --check scripts/repair-game-routes-via-wordpress.mjs
           node --check scripts/audit-game-route-integrity.mjs
           node --check scripts/validate-public-navigation.mjs
+          node --check site/public-route-patch/games/high-iq/app-v3.js
+          node --check site/public-route-patch/games/high-iq/game-core.mjs
           node games/high-iq/scripts/validate-data.mjs
+          node games/high-iq/test/game-core.test.mjs
+          node games/high-iq/test/runtime-smoke.mjs
           node games/grower-conversations/scripts/validate-prompt-bank.mjs
 
           test -s site/public-route-patch/games/index.html
           test -s site/public-route-patch/games/dtf-route.css
           test -s site/public-route-patch/games/high-iq/index.html
           test -s site/public-route-patch/games/high-iq/app.js
+          test -s site/public-route-patch/games/high-iq/app-v3.js
+          test -s site/public-route-patch/games/high-iq/game-core.mjs
           test -s site/public-route-patch/games/high-iq/high-iq.css
+          test -s site/public-route-patch/games/high-iq/high-iq-v3.css
           test -s site/public-route-patch/games/high-iq/data/manifest.json
           test -s site/public-route-patch/games/grower-conversations/index.html
           test -s site/public-route-patch/games/grower-conversations/app.js
@@ -73,7 +80,9 @@ jobs:
           ! grep -Fqi 'implementation gates' site/public-route-patch/games/index.html
           grep -Fq 'href="/games/dtf-route.css"' site/public-route-patch/games/high-iq/index.html
           grep -Fq 'href="./high-iq.css"' site/public-route-patch/games/high-iq/index.html
-          grep -Fq 'src="./app.js"' site/public-route-patch/games/high-iq/index.html
+          grep -Fq 'href="./high-iq-v3.css"' site/public-route-patch/games/high-iq/index.html
+          grep -Fq 'src="./app-v3.js"' site/public-route-patch/games/high-iq/index.html
+          grep -Fq "Today's Daily 10" site/public-route-patch/games/high-iq/index.html
           grep -Fq 'href="./grower-conversations.css"' site/public-route-patch/games/grower-conversations/index.html
           grep -Fq 'src="./app.js"' site/public-route-patch/games/grower-conversations/index.html
 
