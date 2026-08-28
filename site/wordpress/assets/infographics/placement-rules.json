@@ -12,9 +12,10 @@
       "draft",
       "quarantine",
       "superseded",
-      "progress dashboard"
+      "progress dashboard",
+      ".webp"
     ],
-    "notes": "The canonical GitHub directory is the publication boundary. Drive remains a source/archive workspace; duplicates and unresolved intake copies are not separately published. Topic pages reuse one canonical WordPress media item instead of creating duplicates."
+    "notes": "The canonical GitHub directory is the publication boundary. Drive remains a source/archive workspace; duplicates and unresolved intake copies are not separately published. Topic pages reuse one canonical WordPress media item instead of creating duplicates. WebP source files remain in the repository but are excluded from direct WordPress publication because this production WordPress endpoint has rejected WebP uploads; publish a PNG/JPEG canonical copy instead."
   },
   "featuredMediaPreference": [
     "Cannabis_Plant_Anatomy_Infographic",
