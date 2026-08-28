@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "site": "https://dtfseeds.com",
   "sourceOfTruth": "dtfgenetics/Thc",
-  "updated": "2026-08-26",
+  "updated": "2026-08-27",
   "apps": [
     {
       "id": "high-land",
@@ -119,7 +119,7 @@
     },
     {
       "id": "protect-the-plants",
-      "title": "Protect the Plants",
+      "title": "Burn Buds",
       "repository": "dtfgenetics/Thc",
       "sourcePath": "site/public-route-patch/games/protect-the-plants",
       "canonicalDataPath": "games/protect-the-plants",
@@ -128,7 +128,7 @@
       "status": "ready-to-package",
       "build": "node --check site/public-route-patch/games/protect-the-plants/app.js && php -l site/public-route-patch/games/protect-the-plants/api.php",
       "machineData": {"board":"15x15","players":2,"formations":5,"storage":"wordpress-transients","networkAuthority":"php-server"},
-      "notes": "Self-hosted two-player hidden-garden strategy game with animated potted-plant placement, authenticated room sessions, hidden opponent state, server-authoritative turns, active-game recovery, room chat, mobile board tabs, same-origin PHP API, and WordPress transient persistence. No external Node host is required."
+      "notes": "Burn Buds is the public identity of the tested two-player hidden-grid strategy game. The legacy protect-the-plants route and machine ID remain intentionally stable for active-room, invite-link, persistence, and WordPress compatibility. It includes authenticated room sessions, hidden opponent state, server-authoritative turns, active-game recovery, room chat, mobile board tabs, same-origin PHP API, WordPress transient persistence, leaf formations, and burn feedback."
     },
     {
       "id": "thc-u-know",
@@ -179,12 +179,14 @@
       "id": "strain-showdown",
       "title": "Strain Showdown",
       "repository": "dtfgenetics/Thc",
-      "sourcePath": "games/strain-showdown",
-      "runtime": "roster-data",
-      "status": "roster-data-alpha",
-      "build": "node games/strain-showdown/scripts/validate-roster.mjs",
-      "machineData": {"cards":96,"families":8,"cardsPerFamily":12,"tiers":{"base":6,"select":4,"elite":2}},
-      "notes": "Full 96-card machine roster is committed and validated for unique IDs/names, tier progression, family stat identity, and DTF Genetics catalog cross-links. Final effects, battle rules, balance, and browser runtime remain open."
+      "sourcePath": "site/public-route-patch/games/strain-showdown",
+      "canonicalDataPath": "games/strain-showdown",
+      "route": "/games/strain-showdown/",
+      "runtime": "static",
+      "status": "ready-to-package",
+      "build": "node games/strain-showdown/scripts/validate-roster.mjs && node games/strain-showdown/test/engine.test.mjs && node games/strain-showdown/scripts/simulate-balance.mjs --seeds=8 && node games/strain-showdown/scripts/validate-browser-build.mjs",
+      "machineData": {"cards":96,"families":8,"cardsPerFamily":12,"lanes":3,"mode":"solo-vs-cpu","startingGarden":20,"maxRounds":18,"familyPassives":8,"tiers":{"base":6,"select":4,"elite":2}},
+      "notes": "Self-hosted playable browser prototype with a tested deterministic three-lane battle engine, CPU rival, Base/Select/Elite evolution, eight family passives, Focus economy, Garden health, 96-card canonical roster synchronization, result tracking, and deterministic balance simulation tooling. Final per-card effects, balance approval, human rules playtesting, final art, and print proof remain open release gates."
     },
     {
       "id": "cannabis-fleet-battle",
