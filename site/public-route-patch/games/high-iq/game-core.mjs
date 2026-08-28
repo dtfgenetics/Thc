@@ -81,6 +81,12 @@ export function balancedSample(items, count, seedText = `${Date.now()}-${Math.ra
   return seededShuffle(selected, `${rngSeed}|final-order`);
 }
 
+export function shouldIgnoreQuizShortcutTarget(target = {}) {
+  const tagName = String(target.tagName || '').toLowerCase();
+  if (target.isContentEditable) return true;
+  return ['a', 'input', 'select', 'textarea', 'summary'].includes(tagName);
+}
+
 export function rankForPercent(percent) {
   if (percent >= 92) return 'High IQ Master';
   if (percent >= 82) return 'Advanced';
