@@ -7,6 +7,8 @@ on:
       - scripts/import-wordpress-infographic-remote-batch.mjs
       - scripts/apply-wordpress-public-content-rest.mjs
       - .github/workflows/wordpress-public-content-cleanup.yml
+      - .github/workflows/wordpress-public-content-ci.yml
+      - .github/workflows/wordpress-infographic-production.yml
       - .github/workflows/wordpress-content-resilience-ci.yml
 
 permissions:
@@ -44,6 +46,17 @@ jobs:
           grep -Fq 'continue-on-error: true' .github/workflows/wordpress-public-content-cleanup.yml
           grep -Fq 'retryTransient' scripts/apply-wordpress-public-content-rest.mjs
           grep -Fq "dns.setDefaultResultOrder('ipv4first')" scripts/apply-wordpress-public-content-rest.mjs
+
+          # Production infographic publication must serialize instead of canceling an active mutation.
+          grep -Fq 'group: dtfseeds-wordpress-infographics-production' .github/workflows/wordpress-infographic-production.yml
+          grep -Fq 'cancel-in-progress: false' .github/workflows/wordpress-infographic-production.yml
+          grep -Fq 'Remote queue items quarantined:' .github/workflows/wordpress-infographic-production.yml
+          count="$(grep -Fc 'continue-on-error: true' .github/workflows/wordpress-infographic-production.yml)"
+          [[ "$count" -ge 2 ]] || { echo 'Infographic launch/final reporting must both be advisory.' >&2; exit 1; }
+
+          # CI must reflect the current dedicated Seeds ownership and article-only workflow boundary.
+          grep -Fq 'Dedicated genetics library publisher' .github/workflows/wordpress-public-content-ci.yml
+          grep -Fq "! grep -Eq \"\\['seeds'" .github/workflows/wordpress-public-content-ci.yml
 
       - name: Prove unavailable infographic URLs are quarantined without blocking canonical assets
         shell: bash
