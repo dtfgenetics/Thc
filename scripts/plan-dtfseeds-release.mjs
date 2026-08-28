@@ -46,7 +46,13 @@ if (files.some((file) => file.startsWith('site/wordpress/assets/infographics/'))
   lanes.education = true;
 }
 
-// Public-route education files remain WordPress-owned and must never be deployed by the game/static worker.
+// The public Learn infographic library is WordPress-owned content even though its source package lives under the public-route tree.
+if (files.some((file) => file.startsWith('site/public-route-patch/learn/infographics/'))) {
+  lanes.wordpress = true;
+  lanes.education = true;
+}
+
+// Other public-route education files remain WordPress-owned and must never be deployed by the game/static worker.
 if (files.some((file) => file.startsWith('site/public-route-patch/learn/'))) {
   lanes.education = true;
 }
