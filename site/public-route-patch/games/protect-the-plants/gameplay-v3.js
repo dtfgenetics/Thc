@@ -82,18 +82,23 @@
       :`<span class="burn-presence away" title="${esc(formatLastSeen(lastPresence.opponent.lastSeenAt))}"><i></i>Reconnecting</span>`;
   }
 
+  function updateSlot(slot,html){
+    if(slot.innerHTML!==html)slot.innerHTML=html;
+  }
+
   function renderPresence(){
+    const html=presenceMarkup();
     const opponentHud=document.querySelector('.opponent-hud');
     if(opponentHud){
       let slot=opponentHud.querySelector('.burn-presence-slot');
       if(!slot){slot=document.createElement('span');slot.className='burn-presence-slot';opponentHud.appendChild(slot)}
-      slot.innerHTML=presenceMarkup();
+      updateSlot(slot,html);
     }
     const active=document.querySelector('.active-card .active-meta');
     if(active){
       let slot=active.querySelector('.burn-presence-slot');
       if(!slot){slot=document.createElement('span');slot.className='burn-presence-slot';active.appendChild(slot)}
-      slot.innerHTML=presenceMarkup();
+      updateSlot(slot,html);
     }
   }
 
@@ -117,6 +122,11 @@
     presenceTimer=setInterval(fetchPresence,document.hidden?12000:5000);
   }
 
+  function setTurnBanner(banner,className,html){
+    if(banner.className!==className)banner.className=className;
+    if(banner.innerHTML!==html)banner.innerHTML=html;
+  }
+
   function applyTurnState(){
     const mine=Boolean(typeof state!=='undefined'&&state?.status==='playing'&&state.turnPlayerId===state.me?.id);
     const theirs=Boolean(typeof state!=='undefined'&&state?.status==='playing'&&state.turnPlayerId!==state.me?.id);
@@ -128,18 +138,18 @@
     if(!banner){banner=document.createElement('div');banner.className='burn-turn-banner';playZone.prepend(banner)}
     if(typeof state==='undefined'||!state){banner.remove();return}
     if(state.status==='playing'){
-      banner.className=`burn-turn-banner ${mine?'fire':'hold'}`;
-      banner.innerHTML=mine?'<strong>YOUR TURN</strong><span>Pick a cell and fire.</span>':'<strong>OPPONENT TURN</strong><span>Your stash is under fire.</span>';
+      if(mine)setTurnBanner(banner,'burn-turn-banner fire','<strong>YOUR TURN</strong><span>Pick a cell and fire.</span>');
+      else setTurnBanner(banner,'burn-turn-banner hold','<strong>OPPONENT TURN</strong><span>Your stash is under fire.</span>');
     }else if(state.status==='placement'){
-      banner.className='burn-turn-banner setup';
-      banner.innerHTML='<strong>SET YOUR STASH</strong><span>Place all five formations, then lock in.</span>';
+      setTurnBanner(banner,'burn-turn-banner setup','<strong>SET YOUR STASH</strong><span>Place all five formations, then lock in.</span>');
     }else banner.remove();
   }
 
   function staggerBurnedFormation(){
     document.querySelectorAll('.cell.lost .plant-token').forEach(token=>{
       const segment=Number(token.dataset.segment||0);
-      token.style.setProperty('--burn-delay',`${Math.min(segment,5)*85}ms`);
+      const delay=`${Math.min(segment,5)*85}ms`;
+      if(token.style.getPropertyValue('--burn-delay')!==delay)token.style.setProperty('--burn-delay',delay);
     });
   }
 
@@ -177,7 +187,10 @@
 
   document.addEventListener('visibilitychange',restartPresencePolling);
   window.addEventListener('online',restartPresencePolling);
-  window.addEventListener('offline',renderPresence);
+  window.addEventListener('offline',()=>{
+    if(lastPresence?.opponent)lastPresence={...lastPresence,opponent:{...lastPresence.opponent,online:false}};
+    renderPresence();
+  });
   restartPresencePolling();
   enhance();
 })();
