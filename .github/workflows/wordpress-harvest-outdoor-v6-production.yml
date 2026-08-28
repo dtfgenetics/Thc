@@ -7,7 +7,9 @@ on:
       - 'site/wordpress/education/harvest-postharvest-v6.json'
       - 'site/wordpress/education/outdoor-v6.json'
       - 'site/wordpress/education/outdoor-quantification-v1.json'
+      - 'site/wordpress/education/outdoor-quantification/**'
       - 'scripts/publish-wordpress-harvest-outdoor-v6-final.mjs'
+      - 'scripts/assemble-outdoor-quantification-v1.mjs'
       - 'scripts/enhance-wordpress-outdoor-quantification-v1.mjs'
       - '.github/workflows/wordpress-harvest-outdoor-v6-production.yml'
   push:
@@ -16,7 +18,9 @@ on:
       - 'site/wordpress/education/harvest-postharvest-v6.json'
       - 'site/wordpress/education/outdoor-v6.json'
       - 'site/wordpress/education/outdoor-quantification-v1.json'
+      - 'site/wordpress/education/outdoor-quantification/**'
       - 'scripts/publish-wordpress-harvest-outdoor-v6-final.mjs'
+      - 'scripts/assemble-outdoor-quantification-v1.mjs'
       - 'scripts/enhance-wordpress-outdoor-quantification-v1.mjs'
       - '.github/workflows/wordpress-harvest-outdoor-v6-production.yml'
   workflow_dispatch:
@@ -39,7 +43,7 @@ env:
 
 jobs:
   validate:
-    name: Validate Harvest, Outdoor and quantification packages
+    name: Validate Harvest, Outdoor and complete quantification packages
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -57,14 +61,23 @@ jobs:
           grep -Fq 'harvest-postharvest-v6' "$RUNNER_TEMP/harvest-outdoor-v6-validation.json"
           grep -Fq 'outdoor-v6' "$RUNNER_TEMP/harvest-outdoor-v6-validation.json"
 
+          node --check scripts/assemble-outdoor-quantification-v1.mjs
+          node scripts/assemble-outdoor-quantification-v1.mjs --write | tee "$RUNNER_TEMP/outdoor-quantification-assembly.json"
+          grep -Fq '"sections": 8' "$RUNNER_TEMP/outdoor-quantification-assembly.json"
+          grep -Fq '"subtopics": 32' "$RUNNER_TEMP/outdoor-quantification-assembly.json"
+          metrics="$(node -p "require(process.argv[1]).metrics" "$RUNNER_TEMP/outdoor-quantification-assembly.json")"
+          [[ "$metrics" -ge 100 ]]
+
           node --check scripts/enhance-wordpress-outdoor-quantification-v1.mjs
           node scripts/enhance-wordpress-outdoor-quantification-v1.mjs --validate-only | tee "$RUNNER_TEMP/outdoor-quantification-v1-validation.json"
-          grep -Fq '"subtopics": 4' "$RUNNER_TEMP/outdoor-quantification-v1-validation.json"
-          grep -Fq '"metrics": 15' "$RUNNER_TEMP/outdoor-quantification-v1-validation.json"
+          grep -Fq '"sections": 8' "$RUNNER_TEMP/outdoor-quantification-v1-validation.json"
+          grep -Fq '"subtopics": 32' "$RUNNER_TEMP/outdoor-quantification-v1-validation.json"
+          metrics="$(node -p "require(process.argv[1]).metrics" "$RUNNER_TEMP/outdoor-quantification-v1-validation.json")"
+          [[ "$metrics" -ge 100 ]]
           grep -Fq 'outdoor-quantification-v1' "$RUNNER_TEMP/outdoor-quantification-v1-validation.json"
 
   publish:
-    name: Publish and verify Harvest, Outdoor and field measurement layer
+    name: Publish and verify Harvest, Outdoor and complete field measurement layer
     needs: validate
     if: ${{ github.event_name != 'pull_request' && (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success') }}
     runs-on: ubuntu-latest
@@ -82,7 +95,7 @@ jobs:
         with:
           node-version: 22
 
-      - name: Confirm production credentials and package
+      - name: Confirm production credentials and assemble complete package
         id: validate
         shell: bash
         run: |
@@ -91,6 +104,12 @@ jobs:
           : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
           node --check scripts/publish-wordpress-harvest-outdoor-v6-final.mjs
           node scripts/publish-wordpress-harvest-outdoor-v6-final.mjs --validate-only
+          node --check scripts/assemble-outdoor-quantification-v1.mjs
+          node scripts/assemble-outdoor-quantification-v1.mjs --write | tee "$RUNNER_TEMP/outdoor-quantification-assembly.json"
+          grep -Fq '"sections": 8' "$RUNNER_TEMP/outdoor-quantification-assembly.json"
+          grep -Fq '"subtopics": 32' "$RUNNER_TEMP/outdoor-quantification-assembly.json"
+          metrics="$(node -p "require(process.argv[1]).metrics" "$RUNNER_TEMP/outdoor-quantification-assembly.json")"
+          [[ "$metrics" -ge 100 ]]
           node --check scripts/enhance-wordpress-outdoor-quantification-v1.mjs
           node scripts/enhance-wordpress-outdoor-quantification-v1.mjs --validate-only
 
@@ -111,7 +130,7 @@ jobs:
           echo "sources=$(node -p "require(process.argv[1]).totals.sources" "$report")" >> "$GITHUB_OUTPUT"
           echo "visual_targets=$(node -p "require(process.argv[1]).totals.visualTargets" "$report")" >> "$GITHUB_OUTPUT"
 
-      - name: Publish Outdoor section 1 quantification layer
+      - name: Publish all eight Outdoor quantification field labs
         id: publish_quant
         shell: bash
         run: |
@@ -126,6 +145,9 @@ jobs:
           echo "sections=$(node -p "require(process.argv[1]).validation.sections" "$report")" >> "$GITHUB_OUTPUT"
           echo "subtopics=$(node -p "require(process.argv[1]).validation.subtopics" "$report")" >> "$GITHUB_OUTPUT"
           echo "metrics=$(node -p "require(process.argv[1]).validation.metrics" "$report")" >> "$GITHUB_OUTPUT"
+          [[ "$(node -p "require(process.argv[1]).validation.sections" "$report")" = '8' ]]
+          [[ "$(node -p "require(process.argv[1]).validation.subtopics" "$report")" = '32' ]]
+          [[ "$(node -p "require(process.argv[1]).validation.metrics" "$report")" -ge 100 ]]
 
       - name: Verify fresh visitor Harvest page
         id: verify_harvest
@@ -148,7 +170,7 @@ jobs:
           grep -Fq 'data-dtf-learning-v4="topic-harvest-postharvest"' "$body"
           grep -Fq 'Harvest &amp; post-harvest, taught as a measurable process.' "$body"
 
-      - name: Verify fresh visitor Outdoor page and field measurement layer
+      - name: Verify fresh visitor Outdoor page and complete field measurement layer
         id: verify_outdoor
         shell: bash
         run: |
@@ -165,12 +187,15 @@ jobs:
           [[ "$ok" -eq 1 ]]
           [[ "$(grep -Fo 'data-hov6-chapter=' "$body" | wc -l | tr -d ' ')" = '8' ]]
           [[ "$(grep -Fo 'class="hov6-lesson"' "$body" | wc -l | tr -d ' ')" = '32' ]]
-          [[ "$(grep -Fo 'data-oqv1-subtopic=' "$body" | wc -l | tr -d ' ')" = '4' ]]
+          [[ "$(grep -Fo 'data-oqv1-chapter=' "$body" | wc -l | tr -d ' ')" = '8' ]]
+          [[ "$(grep -Fo 'data-oqv1-subtopic=' "$body" | wc -l | tr -d ' ')" = '32' ]]
           grep -Fq 'data-dtf-topic="outdoor"' "$body"
           grep -Fq 'data-dtf-learning-v4="topic-outdoor"' "$body"
           grep -Fq 'Outdoor cultivation, built around weather, roots, risk and records.' "$body"
           grep -Fq 'Turn outdoor observations into evidence.' "$body"
-          grep -Fq 'data-oqv1-chapter="site-sun"' "$body"
+          for chapter in site-sun hardening-transplant water-rootzone wind-support rain-flower-risk pests-wildlife pollen-sex season-microclimate; do
+            grep -Fq "data-oqv1-chapter=\"$chapter\"" "$body"
+          done
 
       - name: Upload publication and rollback evidence
         if: always()
@@ -180,6 +205,7 @@ jobs:
           path: |
             /tmp/dtf-harvest-outdoor-v6-final
             /tmp/dtf-outdoor-quantification-v1
+            ${{ runner.temp }}/outdoor-quantification-assembly.json
             ${{ runner.temp }}/harvest-outdoor-v6-publish.log
             ${{ runner.temp }}/outdoor-quantification-v1-publish.log
             ${{ runner.temp }}/harvest-postharvest-v6-live.html
@@ -221,10 +247,10 @@ jobs:
               `New focused lessons: **${process.env.LESSONS || '0'}**`,
               `Evidence references: **${process.env.SOURCES || '0'}**`,
               `Quality-gated visual targets: **${process.env.VISUAL_TARGETS || '0'}**`,
-              `Quantified Outdoor sections: **${process.env.QUANT_SECTIONS || '0'}**`,
+              `Quantified Outdoor field labs: **${process.env.QUANT_SECTIONS || '0'}**`,
               `Quantified Outdoor subtopics: **${process.env.QUANT_SUBTOPICS || '0'}**`,
               `Field metrics: **${process.env.QUANT_METRICS || '0'}**`, '',
-              'Existing V3 subject ownership and V4 guided-learning layers are preserved. The quantification layer is independently marked, source-controlled and visitor-verified.'
+              'Existing V3 subject ownership and V4 guided-learning layers are preserved. The complete eight-chapter quantification layer is assembled from source-controlled chapter files, published with worksheets and decision rules, and visitor-verified.'
             ].join('\n');
             for (const issue_number of [46,126]) {
               await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number,body});
