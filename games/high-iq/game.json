@@ -2,7 +2,7 @@
   "id": "high-iq",
   "title": "High IQ — Test Higher Cognition",
   "category": "knowledge-game",
-  "status": "self-hosted-browser-build",
+  "status": "v3-production-readiness",
   "provider": "DTF Genetics / GitHub",
   "public_url": "https://dtfseeds.com/games/high-iq/",
   "website_route": "/games/high-iq/",
@@ -16,23 +16,40 @@
     "questions": 80,
     "sources": 50,
     "validation": "node games/high-iq/scripts/validate-data.mjs",
+    "publicRuntimeValidation": "node games/high-iq/test/runtime-smoke.mjs",
+    "gameCoreTests": "node games/high-iq/test/game-core.test.mjs",
     "provenance": "High_IQ_Master_Production_Workbook_v2_2.xlsx"
   },
   "browserSource": {
     "html": "site/public-route-patch/games/high-iq/index.html",
-    "script": "site/public-route-patch/games/high-iq/app.js",
-    "styles": "site/public-route-patch/games/high-iq/high-iq.css",
-    "runtime": "static-es-module",
+    "script": "site/public-route-patch/games/high-iq/app-v3.js",
+    "core": "site/public-route-patch/games/high-iq/game-core.mjs",
+    "baseStyles": "site/public-route-patch/games/high-iq/high-iq.css",
+    "v3Styles": "site/public-route-patch/games/high-iq/high-iq-v3.css",
+    "legacyScript": "site/public-route-patch/games/high-iq/app.js",
+    "runtime": "static-es-modules",
     "features": [
       "category-filter",
       "difficulty-filter",
+      "balanced-question-mix",
+      "random-question-mix",
+      "deterministic-daily-10",
       "variable-session-length",
-      "randomized-question-order",
       "difficulty-weighted-scoring",
+      "live-accuracy-and-streak",
       "answer-explanations",
       "context-notes",
-      "source-links",
-      "keyboard-answer-selection"
+      "source-links-and-metadata",
+      "missed-question-review",
+      "practice-missed-session",
+      "local-run-history",
+      "personal-best",
+      "score-sharing",
+      "knowledge-coverage-map",
+      "keyboard-answer-selection",
+      "reduced-motion-support",
+      "forced-colors-support",
+      "retryable-data-health-state"
     ]
   },
   "integration": {
@@ -40,6 +57,8 @@
     "legacy_mode": "external-rollback-only",
     "runtime_data_ready": true,
     "runtime_source_ready": true,
+    "v3_gameplay_ready": true,
+    "v3_ci_gates_ready": true,
     "production_route_verified": false
   }
 }
