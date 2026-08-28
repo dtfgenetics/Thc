@@ -89,7 +89,7 @@ jobs:
       INFOGRAPHIC_PLACEMENT_CONFIG: ${{ github.workspace }}/site/wordpress/assets/infographics/placement-rules.json
       INFOGRAPHIC_EXCLUSIONS: ${{ github.workspace }}/site/wordpress/assets/infographics/infographic-exclusions.json
       BULK_INFOGRAPHIC_MANIFEST: ${{ github.workspace }}/site/wordpress/imports/infographic-bulk-import.json
-      BULK_IMPORT_REPORT: ${{ runner.temp }}/infographic-bulk-import-report.json
+      BULK_IMPORT_REPORT: /tmp/infographic-bulk-import-report.json
       TOPIC_LITERATURE_CONFIG: ${{ github.workspace }}/site/wordpress/education/topic-literature.json
       BACKUP_ROOT: /tmp/wordpress-infographic-backups
     steps:
@@ -365,7 +365,7 @@ jobs:
           name: wordpress-infographic-production-${{ github.run_id }}
           path: |
             /tmp/wordpress-infographic-backups
-            ${{ runner.temp }}/infographic-bulk-import-report.json
+            /tmp/infographic-bulk-import-report.json
           if-no-files-found: warn
           retention-days: 30
 
