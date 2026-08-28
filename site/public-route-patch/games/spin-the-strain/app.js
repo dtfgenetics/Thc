@@ -61,25 +61,23 @@ function wheelGradient(count) {
     const end = ((index + 1) * size).toFixed(4);
     stops.push(`${colors[index % colors.length]} ${start}% ${end}%`);
   }
-  return `conic-gradient(from -90deg, ${stops.join(',')})`;
+  return `conic-gradient(${stops.join(',')})`;
 }
 
 function renderWheel() {
   const entries = entriesForMode(data, state.mode);
+  const segmentAngle = 360 / entries.length;
   ui.wheel.replaceChildren();
   ui.wheel.style.background = wheelGradient(entries.length);
-  ui.wheel.style.setProperty('--segment-count', String(entries.length));
   entries.forEach((entry, index) => {
     const label = document.createElement('span');
     label.className = 'segment-label';
-    label.style.setProperty('--segment-index', String(index));
+    label.style.setProperty('--segment-angle', `${(index + 0.5) * segmentAngle}deg`);
     label.textContent = entry.label;
     label.title = entry.label;
     ui.wheel.append(label);
   });
-  const offset = state.lastResult
-    ? 360 - (state.lastResult.index + 0.5) * (360 / entries.length)
-    : 0;
+  const offset = state.lastResult ? 360 - (state.lastResult.index + 0.5) * segmentAngle : 0;
   ui.wheel.style.transform = `rotate(${state.spinCount * 1080 + offset}deg)`;
 }
 
@@ -151,6 +149,7 @@ function resetWheel(code, mode) {
   clearTimeout(revealTimer);
   spinning = false;
   state = createWheel({ code, mode }, data);
+  ui.wheelStage.setAttribute('aria-busy', 'false');
   setCode(state.code);
   history.replaceState(null, '', challengeUrl());
   render();
@@ -162,8 +161,8 @@ function startSpin() {
   ui.result.classList.remove('revealed');
   state = spinWheel(state, data);
   history.replaceState(null, '', challengeUrl());
-  render();
   ui.wheelStage.setAttribute('aria-busy', 'true');
+  render();
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   revealTimer = setTimeout(() => {
     spinning = false;
