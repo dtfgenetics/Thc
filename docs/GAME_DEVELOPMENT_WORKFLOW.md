@@ -15,19 +15,42 @@ Do not create a second competing registry.
 - `site/public-route-patch/games/<game-id>/` contains self-hosted visitor-facing runtimes that are packaged into dtfseeds.com.
 - Standalone canonical game repositories remain standalone when `data/project-registry.json` assigns ownership there.
 
+## Fast operator commands
+
+Use these from the repository root before deciding where to edit:
+
+```bash
+npm run games:status
+```
+
+This prints the canonical owner/status for every registered game and every `/games/.../` route currently registered for dtfseeds.com. For machine-readable output use:
+
+```bash
+node scripts/game-status.mjs --json
+```
+
+Before opening or merging a game PR, run:
+
+```bash
+npm run games:preflight
+```
+
+`games:preflight` is the single shared gate for workspace integrity, public navigation integrity, and cross-game polish checks. Game-specific tests/builds still run in addition to this command.
+
 ## Standard change path
 
-1. Create a branch from current `main`.
+1. Run `npm run games:status` and identify the canonical owner before editing.
+2. Create a branch from current `main`.
    - New work: `feature/game-<id>-<short-change>`
    - Fixes: `fix/game-<id>-<short-fix>`
-2. Change only the canonical game source and any required public runtime/deployment metadata.
-3. Run the game-specific tests/build.
-4. Run `npm run games:verify` from the repository root.
-5. Open a pull request into `main`.
-6. Let Game workspace CI and any game-specific CI finish successfully.
-7. Merge only after required checks pass.
-8. Use the existing dtfseeds.com WordPress/Hostinger deployment workflow for production.
-9. Run the live-site audit/route verification after deployment.
+3. Change only the canonical game source and any required public runtime/deployment metadata.
+4. Run the game-specific tests/build.
+5. Run `npm run games:preflight` from the repository root.
+6. Open a pull request into `main`.
+7. Let Game workspace CI and any game-specific CI finish successfully.
+8. Merge only after required checks pass.
+9. Use the existing dtfseeds.com WordPress/Hostinger deployment workflow for production.
+10. Run the live-site audit/route verification after deployment.
 
 This keeps editing fast while preventing one game change from silently breaking another route.
 
@@ -61,12 +84,12 @@ Before the game can be published:
 4. If self-hosted by the DTF master repo, place the public runtime at `site/public-route-patch/games/<id>/`.
 5. Add/update the app entry in `site/deployment/public-apps.json` with route, runtime, status, source path, and build command.
 6. Set the route in `game.json` when a real route exists.
-7. Run `npm run games:verify` and the game-specific tests.
+7. Run the game-specific tests and `npm run games:preflight`.
 8. Open a PR.
 
 ## Editing an existing game
 
-First identify ownership in `data/project-registry.json`.
+First identify ownership with `npm run games:status` or directly in `data/project-registry.json`.
 
 ### Game owned by `dtfgenetics/Thc`
 
@@ -86,6 +109,8 @@ Only update `site/deployment/public-apps.json` or integration files here when th
 
 ## What Game workspace CI checks
 
+Game workspace CI logs the current ownership/route inventory with `npm run games:status`, then runs `npm run games:preflight`.
+
 `npm run games:verify` fails the PR for structural problems that can break production, including:
 
 - deployment manifest no longer targets `https://dtfseeds.com`
@@ -97,6 +122,8 @@ Only update `site/deployment/public-apps.json` or integration files here when th
 - packaged local browser routes missing `index.html`
 - missing local source-of-truth documents
 - malformed `game.json` IDs or routes
+
+`games:preflight` also validates public navigation and runs the shared cross-game polish contract.
 
 Non-blocking warnings identify older game folders that do not yet have the preferred README/game manifest structure.
 
