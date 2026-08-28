@@ -1,5 +1,6 @@
 import { createPlayer, stepPlayer } from './physics.mjs';
 
+const BEST_KEY = 'dtf-seed-man-best-v1';
 const canvas = document.querySelector('#game');
 const ctx = canvas.getContext('2d');
 const ui = {
@@ -7,7 +8,9 @@ const ui = {
   sprouts: document.querySelector('#sprout-count'),
   deaths: document.querySelector('#death-count'),
   time: document.querySelector('#time-count'),
+  best: document.querySelector('#best-count'),
   restart: document.querySelector('#restart'),
+  pause: document.querySelector('#pause'),
   finish: document.querySelector('#finish-panel'),
   summary: document.querySelector('#finish-summary'),
   again: document.querySelector('#play-again')
@@ -20,19 +23,54 @@ let accumulator = 0;
 let previous = 0;
 let cameraX = 0;
 let running = false;
+let paused = false;
 const STEP = 1 / 60;
 const input = { left: false, right: false, jumpHeld: false, jumpQueued: false };
+
+function readBest() {
+  const value = Number.parseFloat(localStorage.getItem(BEST_KEY) || '');
+  return Number.isFinite(value) && value > 0 ? value : null;
+}
+
+function clearInput() {
+  input.left = false;
+  input.right = false;
+  input.jumpHeld = false;
+  input.jumpQueued = false;
+}
+
+function syncPauseButton() {
+  ui.pause.textContent = paused ? 'Resume' : 'Pause';
+  ui.pause.setAttribute('aria-pressed', String(paused));
+  ui.pause.disabled = !level || !player || Boolean(player.finished);
+}
 
 function reset() {
   if (!level) return;
   player = createPlayer(level.spawn);
   elapsed = 0;
   accumulator = 0;
+  previous = 0;
   cameraX = 0;
+  paused = false;
   running = true;
+  clearInput();
   ui.finish.hidden = true;
+  syncPauseButton();
   updateHud();
   canvas.focus({ preventScroll: true });
+}
+
+function togglePause(forcePause = null) {
+  if (!level || !player || player.finished) return;
+  const nextPaused = forcePause === null ? !paused : Boolean(forcePause);
+  if (nextPaused === paused) return;
+  paused = nextPaused;
+  running = !paused;
+  previous = 0;
+  clearInput();
+  syncPauseButton();
+  if (!paused) canvas.focus({ preventScroll: true });
 }
 
 function queueJump() {
@@ -42,7 +80,13 @@ function queueJump() {
 
 function keyState(event, down) {
   const key = event.key.toLowerCase();
+  if (down && key === 'p' && !event.repeat) {
+    event.preventDefault();
+    togglePause();
+    return;
+  }
   if (['arrowleft','arrowright','arrowup',' ','a','d','w'].includes(key)) event.preventDefault();
+  if (paused) return;
   if (key === 'arrowleft' || key === 'a') input.left = down;
   if (key === 'arrowright' || key === 'd') input.right = down;
   if (key === 'arrowup' || key === 'w' || key === ' ') {
@@ -52,11 +96,16 @@ function keyState(event, down) {
 }
 window.addEventListener('keydown', (event) => keyState(event, true), { passive: false });
 window.addEventListener('keyup', (event) => keyState(event, false), { passive: false });
+window.addEventListener('blur', clearInput);
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden && running) togglePause(true);
+});
 
 for (const button of document.querySelectorAll('[data-control]')) {
   const control = button.dataset.control;
   const press = (event) => {
     event.preventDefault();
+    if (paused) return;
     if (control === 'jump') queueJump();
     else input[control] = true;
   };
@@ -75,6 +124,8 @@ function updateHud() {
   ui.sprouts.textContent = `${player?.collected.length || 0} / ${level?.pickups.length || 0}`;
   ui.deaths.textContent = String(player?.deaths || 0);
   ui.time.textContent = `${elapsed.toFixed(1)}s`;
+  const best = readBest();
+  ui.best.textContent = best ? `${best.toFixed(1)}s` : '—';
 }
 
 function worldRect(rect, fill, stroke = null) {
@@ -196,8 +247,14 @@ function render() {
 
 function finishGame() {
   running = false;
+  paused = false;
+  syncPauseButton();
+  const previousBest = readBest();
+  const newBest = previousBest === null || elapsed < previousBest;
+  if (newBest) localStorage.setItem(BEST_KEY, String(elapsed));
+  updateHud();
   ui.finish.hidden = false;
-  ui.summary.textContent = `${player.collected.length} of ${level.pickups.length} sprouts collected · ${player.deaths} falls · ${elapsed.toFixed(1)} seconds.`;
+  ui.summary.textContent = `${player.collected.length} of ${level.pickups.length} sprouts collected · ${player.deaths} falls · ${elapsed.toFixed(1)} seconds.${newBest ? ' New personal best!' : ''}`;
 }
 
 function frame(timeMs) {
@@ -227,7 +284,7 @@ async function load() {
     if (!response.ok) throw new Error(`level HTTP ${response.status}`);
     level = await response.json();
     if (level.worldWidth !== 2600 || level.pickups.length !== 8) throw new Error('level contract mismatch');
-    ui.load.textContent = 'Level ready · 8 sprouts · checkpoint enabled';
+    ui.load.textContent = 'Level ready · 8 sprouts · checkpoint enabled · personal best saved locally';
     reset();
   } catch (error) {
     console.error(error);
@@ -236,6 +293,7 @@ async function load() {
 }
 
 ui.restart.addEventListener('click', reset);
+ui.pause.addEventListener('click', () => togglePause());
 ui.again.addEventListener('click', reset);
 requestAnimationFrame(frame);
 load();
