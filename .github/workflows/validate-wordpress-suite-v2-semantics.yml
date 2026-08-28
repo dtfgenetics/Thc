@@ -88,7 +88,7 @@ jobs:
             'app-only WordPress ownership boundary': 'Home and Learn are WordPress-owned and are verified independently after this app-only transaction.' in text,
             'current games marker': 'Pick what is playable. See what is coming next.' in text,
             'current tools marker': 'Measure it. Document it. Diagnose with context.' in text,
-            'current projects marker': 'What is live, what is growing, and where it belongs.' in text,
+            'durable projects marker': 'DTF Projects' in text,
             'Protect the Plants route': "['/games/protect-the-plants/', 'Protect the Plants']" in text,
             'Protect the Plants API gate': '/games/protect-the-plants/api.php?action=active' in text,
           }
@@ -98,17 +98,22 @@ jobs:
           PY
       - name: Report v2 semantic gate
         if: always()
+        continue-on-error: true
         uses: actions/github-script@v7
         env:
           STATUS: ${{ job.status }}
         with:
           script: |
-            await github.rest.issues.createComment({
-              owner: context.repo.owner, repo: context.repo.repo, issue_number: 46,
-              body: [
-                '## Hardened WordPress suite v2 semantic gate','',
-                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-                `Commit: \`${context.sha}\``, `Result: **${process.env.STATUS}**`,'',
-                'This read-only gate reassembles the canonical v2 source by SHA-256, validates Node and embedded PHP syntax, rejects malformed REST registration, requires every v2 endpoint, verifies authenticated publisher capability plus the one-time token, archive safety, transaction recovery, Code Snippets safe-mode cleanup, app-only WordPress ownership boundaries, current gateway markers, and the Protect the Plants route/API gate.'
-              ].join('\n')
-            });
+            try {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner, repo: context.repo.repo, issue_number: 220,
+                body: [
+                  '## Hardened WordPress suite v2 semantic gate','',
+                  `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                  `Commit: \`${context.sha}\``, `Result: **${process.env.STATUS}**`,'',
+                  'This read-only gate reassembles the canonical v2 source by SHA-256, validates Node and embedded PHP syntax, rejects malformed REST registration, requires every v2 endpoint, verifies authenticated publisher capability plus the one-time token, archive safety, transaction recovery, Code Snippets safe-mode cleanup, app-only WordPress ownership boundaries, durable live-route markers, and the Protect the Plants route/API gate.'
+                ].join('\n')
+              });
+            } catch (error) {
+              core.warning(`Could not post v2 semantic-gate result: ${error.message}`);
+            }
