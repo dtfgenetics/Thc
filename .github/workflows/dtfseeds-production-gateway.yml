@@ -55,6 +55,8 @@ jobs:
           node scripts/plan-dtfseeds-release.mjs --mode="$RELEASE_MODE" --base="$RELEASE_BASE" --head="$GITHUB_SHA"
 
       - name: Record release plan
+        env:
+          RELEASE_PLAN: ${{ steps.plan.outputs.plan }}
         shell: bash
         run: |
           {
@@ -67,12 +69,12 @@ jobs:
             echo '- Education: `${{ steps.plan.outputs.education }}`'
             echo
             echo '```json'
-            echo '${{ steps.plan.outputs.plan }}'
+            printf '%s\n' "$RELEASE_PLAN"
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
 
   deploy:
-    name: Publish planned lanes in one queue
+    name: Publish planned lanes through one coordinator
     needs: plan
     if: needs.plan.outputs.deploy == 'true'
     runs-on: ubuntu-latest
@@ -81,6 +83,7 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
       EXPECTED_SOURCE_SHA: ${{ github.sha }}
+      NORMAL_PUSH: ${{ github.event_name == 'push' }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -106,26 +109,45 @@ jobs:
             echo "Skipping superseded release $GITHUB_SHA; latest main is $latest. The newer gateway run owns deployment."
           fi
 
-      - name: Publish canonical WordPress lane
+      - name: Stage canonical WordPress lane
         if: steps.freshness.outputs.current == 'true' && needs.plan.outputs.wordpress == 'true'
         shell: bash
         run: |
           set -euo pipefail
-          bash scripts/run-workflow-and-wait.sh wordpress-canonical-production.yml
+          if [[ "$NORMAL_PUSH" == 'true' ]]; then
+            bash scripts/run-workflow-and-wait.sh wordpress-canonical-deploy.yml --join-existing
+          else
+            bash scripts/run-workflow-and-wait.sh wordpress-canonical-deploy.yml
+          fi
+
+      - name: Join trusted WordPress production handoff
+        if: steps.freshness.outputs.current == 'true' && needs.plan.outputs.wordpress == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash scripts/run-workflow-and-wait.sh wordpress-canonical-production.yml --join-only
 
       - name: Publish education lane
         if: steps.freshness.outputs.current == 'true' && needs.plan.outputs.education == 'true'
         shell: bash
         run: |
           set -euo pipefail
-          bash scripts/run-workflow-and-wait.sh deploy-thc-learning-center-expansion-v1.yml
+          if [[ "$NORMAL_PUSH" == 'true' ]]; then
+            bash scripts/run-workflow-and-wait.sh deploy-thc-learning-center-expansion-v1.yml --join-existing
+          else
+            bash scripts/run-workflow-and-wait.sh deploy-thc-learning-center-expansion-v1.yml
+          fi
 
       - name: Publish public application and game lane
         if: steps.freshness.outputs.current == 'true' && needs.plan.outputs.public_suite == 'true'
         shell: bash
         run: |
           set -euo pipefail
-          bash scripts/run-workflow-and-wait.sh deploy-public-suite-wordpress-v2.yml
+          if [[ "$NORMAL_PUSH" == 'true' ]]; then
+            bash scripts/run-workflow-and-wait.sh deploy-public-suite-wordpress-v2.yml --join-existing
+          else
+            bash scripts/run-workflow-and-wait.sh deploy-public-suite-wordpress-v2.yml
+          fi
 
       - name: Verify WordPress production surfaces independently
         if: steps.freshness.outputs.current == 'true' && needs.plan.outputs.wordpress == 'true'
