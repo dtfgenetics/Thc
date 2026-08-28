@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { balancedSample, createRng, hashString, rankForPercent, seededShuffle } from '../../../site/public-route-patch/games/high-iq/game-core.mjs';
+import { balancedSample, createRng, hashString, rankForPercent, seededShuffle, shouldIgnoreQuizShortcutTarget } from '../../../site/public-route-patch/games/high-iq/game-core.mjs';
 
 assert.equal(hashString('High IQ'), hashString('High IQ'));
 assert.notEqual(hashString('High IQ'), hashString('High IQ!'));
@@ -27,6 +27,13 @@ assert.equal(new Set(sampleA).size, 10);
 const sampleAll = balancedSample(items, 99, 'all');
 assert.equal(sampleAll.length, items.length);
 assert.equal(new Set(sampleAll.map((item) => item.id)).size, items.length);
+
+assert.equal(shouldIgnoreQuizShortcutTarget({ tagName: 'A' }), true);
+assert.equal(shouldIgnoreQuizShortcutTarget({ tagName: 'SUMMARY' }), true);
+assert.equal(shouldIgnoreQuizShortcutTarget({ tagName: 'SELECT' }), true);
+assert.equal(shouldIgnoreQuizShortcutTarget({ tagName: 'BUTTON' }), false);
+assert.equal(shouldIgnoreQuizShortcutTarget({ tagName: 'H2' }), false);
+assert.equal(shouldIgnoreQuizShortcutTarget({ tagName: 'DIV', isContentEditable: true }), true);
 
 assert.equal(rankForPercent(100), 'High IQ Master');
 assert.equal(rankForPercent(92), 'High IQ Master');
