@@ -17,7 +17,14 @@ for(const marker of [
   'cell.tabIndex=-1',
   'next.tabIndex=0',
   "state.turnPlayerId===state.me?.id",
-  "event?.type==='scout'"
+  "event?.type==='scout'",
+  'let firePending=false',
+  'function setFirePending(next)',
+  "document.body.classList.toggle('burn-fire-pending',firePending)",
+  "cell.setAttribute('aria-busy',String(firePending))",
+  'event.stopImmediatePropagation()',
+  "if(action==='fire')setFirePending(true)",
+  "finally{if(action==='fire')setFirePending(false)}"
 ]){
   assert.ok(js.includes(marker),`Missing targeting behavior marker: ${marker}`);
 }
