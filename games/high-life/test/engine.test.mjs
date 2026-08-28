@@ -46,7 +46,7 @@ selfQualifyingState.resources.reputation = 7;
 const notSelfQualified = takeTurn(selfQualifyingState, 'learn', [coop]);
 assert.equal(notSelfQualified.resources.reputation, 8);
 assert.equal(notSelfQualified.history[0].event.mitigation, null, 'event effects must not make their own mitigation eligible');
-assert.equal(notSelfQualified.history[0].event.resourceChange.cash, 0, 'ineligible co-op mitigation must not grant the cash bonus');
+assert.equal(notSelfQualified.history[0].event.resourceChange.cash ?? 0, 0, 'ineligible co-op mitigation must not grant the cash bonus');
 
 const strategies = {
   knowledge: ['learn', 'document', 'network', 'genetics'],
