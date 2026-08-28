@@ -30,7 +30,7 @@ jobs:
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME || secrets.WORDPRESS_USERNAME || secrets.WP_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD || secrets.WORDPRESS_APP_PASSWORD || secrets.WP_APPLICATION_PASSWORD }}
       APPLY_GALLERY_V2: 'true'
-      BACKUP_ROOT: ${{ runner.temp }}/dtf-gallery-v2
+      BACKUP_ROOT: /tmp/dtf-gallery-v2
 
     steps:
       - name: Checkout trusted main
@@ -102,6 +102,7 @@ jobs:
 
       - name: Report Gallery production result
         if: always()
+        continue-on-error: true
         uses: actions/github-script@v7
         env:
           STATUS: ${{ job.status }}
