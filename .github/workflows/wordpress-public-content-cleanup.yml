@@ -1,4 +1,4 @@
-name: Publish THC Content and Reconcile DTFSeeds Pages
+name: Publish THC Articles to WordPress
 
 on:
   workflow_dispatch:
@@ -8,18 +8,12 @@ on:
         required: true
         default: all
         type: string
-  workflow_run:
-    workflows:
-      - Stage DTFSeeds WordPress Canonical Deployment
-    types: [completed]
   push:
     branches:
       - main
     paths:
       - site/wordpress/articles/**
-      - site/wordpress/pages/**
       - scripts/publish-wordpress-articles-rest.mjs
-      - scripts/apply-wordpress-public-content-rest.mjs
       - .github/workflows/wordpress-public-content-cleanup.yml
   schedule:
     - cron: '7,37 * * * *'
@@ -34,7 +28,7 @@ concurrency:
 
 jobs:
   publish:
-    name: Publish THC articles and reconcile canonical pages
+    name: Publish validated THC articles
     runs-on: ubuntu-latest
     timeout-minutes: 20
     environment: production
@@ -43,7 +37,7 @@ jobs:
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME || secrets.WORDPRESS_USERNAME || secrets.WP_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD || secrets.WORDPRESS_APP_PASSWORD || secrets.WP_APPLICATION_PASSWORD }}
       ARTICLE_DIR: ${{ github.workspace }}/site/wordpress/articles
-      BACKUP_ROOT: /tmp/wordpress-thc-article-backups
+      BACKUP_ROOT: ${{ runner.temp }}/wordpress-thc-article-backups
       NODE_OPTIONS: --dns-result-order=ipv4first
     steps:
       - name: Check out trusted main with history
@@ -51,32 +45,17 @@ jobs:
         with:
           ref: main
           fetch-depth: 0
+          persist-credentials: false
 
-      - name: Require successful canonical handoff for workflow-run trigger
-        if: github.event_name == 'workflow_run'
-        shell: bash
-        run: |
-          set -euo pipefail
-          [[ "${{ github.event.workflow_run.conclusion }}" == "success" ]]
-
-      - name: Validate publishers and content packages
+      - name: Validate article publisher and packages
         shell: bash
         run: |
           set -euo pipefail
           node --check scripts/publish-wordpress-articles-rest.mjs
-          node --check scripts/apply-wordpress-public-content-rest.mjs
           VALIDATE_ONLY=1 node scripts/publish-wordpress-articles-rest.mjs
-          for slug in home seeds learn community shop gallery about contact; do
-            test -s "site/wordpress/pages/$slug.html"
-            grep -Fq '<h1' "site/wordpress/pages/$slug.html"
-          done
-          test ! -e site/wordpress/pages/games.html
-          test ! -e site/wordpress/pages/high-iq.html
-          ! grep -Fq "['games'," scripts/apply-wordpress-public-content-rest.mjs
-          ! grep -Fq "['high-iq'," scripts/apply-wordpress-public-content-rest.mjs
-          grep -Fq 'front-page-settings-before.json' scripts/apply-wordpress-public-content-rest.mjs
-          grep -Fq "show_on_front: 'page'" scripts/apply-wordpress-public-content-rest.mjs
-          grep -Fq 'page_on_front: expectedFrontPageId' scripts/apply-wordpress-public-content-rest.mjs
+          ! grep -Fq 'apply-wordpress-public-content-rest.mjs' .github/workflows/wordpress-public-content-cleanup.yml
+          ! grep -Fq 'site/wordpress/pages/**' .github/workflows/wordpress-public-content-cleanup.yml
+          ! grep -Fq 'workflow_run:' .github/workflows/wordpress-public-content-cleanup.yml
 
       - name: Require WordPress Application Password credentials
         shell: bash
@@ -87,7 +66,7 @@ jobs:
             exit 1
           fi
 
-      - name: Select publication scope
+      - name: Select article publication scope
         id: scope
         shell: bash
         env:
@@ -97,13 +76,6 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p "$BACKUP_ROOT"
-
-          if [[ "${{ github.event_name }}" == "workflow_run" ]]; then
-            echo "mode=none" >> "$GITHUB_OUTPUT"
-            echo "slugs=none" >> "$GITHUB_OUTPUT"
-            echo "Workflow-run handoff: skip article publication and reconcile canonical pages only."
-            exit 0
-          fi
 
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             if [[ "$REQUESTED_SLUG" == "all" ]]; then
@@ -122,7 +94,6 @@ jobs:
           fi
 
           changed_file="$RUNNER_TEMP/changed-thc-articles.txt"
-
           if [[ "${{ github.event_name }}" == "schedule" ]]; then
             git log --since='90 minutes ago' --name-only --pretty=format: -- 'site/wordpress/articles/*.json' \
               | grep '^site/wordpress/articles/.*\.json$' \
@@ -135,7 +106,6 @@ jobs:
             if [[ -z "$BEFORE_SHA" || "$BEFORE_SHA" =~ ^0+$ ]]; then
               BEFORE_SHA="${CURRENT_SHA}^"
             fi
-
             git diff --diff-filter=AM --name-only "$BEFORE_SHA" "$CURRENT_SHA" -- 'site/wordpress/articles/*.json' \
               | grep -v '/article.schema.json$' \
               | while IFS= read -r path; do
@@ -157,14 +127,17 @@ jobs:
           echo "Changed article packages: $slugs"
 
       - name: Publish all articles
+        id: publish_all
         if: steps.scope.outputs.mode == 'all'
         run: node scripts/publish-wordpress-articles-rest.mjs
 
       - name: Publish requested article
+        id: publish_single
         if: steps.scope.outputs.mode == 'single'
         run: node scripts/publish-wordpress-articles-rest.mjs
 
       - name: Publish changed articles
+        id: publish_changed
         if: steps.scope.outputs.mode == 'changed'
         shell: bash
         run: |
@@ -183,103 +156,35 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
-      - name: Reconcile canonical WordPress pages and front page
-        id: pages
-        shell: bash
-        env:
-          CONTENT_DIR: ${{ github.workspace }}/site/wordpress/pages
-          BACKUP_ROOT: ${{ runner.temp }}/wordpress-public-page-backups
-        run: |
-          set -euo pipefail
-          node scripts/apply-wordpress-public-content-rest.mjs
-          backup_dir="$(cat "$BACKUP_ROOT/wordpress-rest-backup-path.txt")"
-          summary="$backup_dir/deployment-summary.json"
-          mutations="$(node -p "require(process.argv[1]).mutationCount" "$summary")"
-          changed_pages="$(node -p "require(process.argv[1]).changedPages" "$summary")"
-          echo "mutations=$mutations" >> "$GITHUB_OUTPUT"
-          echo "changed_pages=$changed_pages" >> "$GITHUB_OUTPUT"
-          echo "Canonical page/front-page mutations: $mutations; changed pages: $changed_pages"
-
-      - name: Verify canonical pages on production
-        shell: bash
-        run: |
-          set -euo pipefail
-          verify_page() {
-            local path="$1"
-            local required="$2"
-            local body="$RUNNER_TEMP/canonical-$(echo "$path" | tr '/?' '__').html"
-            local ok=0
-            for attempt in 1 2 3 4 5 6; do
-              curl -4 --fail --silent --show-error --location \
-                --header 'Cache-Control: no-cache' \
-                "https://dtfseeds.com${path}?dtf_reconcile=${GITHUB_RUN_ID}-${attempt}" \
-                --output "$body"
-              if grep -Fqi -- "$required" "$body"; then
-                ok=1
-                break
-              fi
-              sleep 10
-            done
-            [[ "$ok" -eq 1 ]]
-            for forbidden in \
-              'Reserved strain card' \
-              'staged for verified' \
-              'being rebuilt' \
-              'email@email.com' \
-              '+123456789'; do
-              ! grep -Fqi -- "$forbidden" "$body"
-            done
-          }
-
-          verify_page '/' 'Genetics, cultivation education, practical tools, and original cannabis games.'
-          verify_page '/seeds/' 'Genetics built through selection, observation, and documentation.'
-          verify_page '/learn/' 'Read the yellow-leaves diagnostic guide'
-          verify_page '/community/' 'Join the official DTF / Teaching Healthy Cultivation Discord'
-          verify_page '/contact/' 'Join the official DTF / Teaching Healthy Cultivation Discord'
-
-      - name: Upload canonical-page rollback metadata when needed
-        if: always() && (steps.pages.outputs.mutations != '0' || steps.pages.outcome != 'success')
-        uses: actions/upload-artifact@v4
-        with:
-          name: wordpress-public-pages-backup-${{ github.run_id }}
-          path: ${{ runner.temp }}/wordpress-public-page-backups
-          if-no-files-found: warn
-          retention-days: 30
-
-      - name: Report publication and page reconciliation outcome to issue 46
+      - name: Report article publication outcome
         if: always()
+        continue-on-error: true
         uses: actions/github-script@v7
         env:
           MODE: ${{ steps.scope.outputs.mode }}
           SLUGS: ${{ steps.scope.outputs.slugs }}
-          PAGE_MUTATIONS: ${{ steps.pages.outputs.mutations }}
-          PAGE_CHANGED: ${{ steps.pages.outputs.changed_pages }}
           JOB_STATUS: ${{ job.status }}
         with:
           script: |
-            const sourceRun = context.eventName === 'workflow_run'
-              ? context.payload.workflow_run?.html_url
-              : 'not a workflow-run handoff';
             const body = [
-              '## THC WordPress publication and canonical-page reconciliation',
+              '## THC WordPress article publication',
               '',
               `Status: **${process.env.JOB_STATUS}**`,
               `Event: **${context.eventName}**`,
-              `Source handoff: ${sourceRun}`,
               `Article mode: \`${process.env.MODE || 'unknown'}\``,
               `Articles: \`${process.env.SLUGS || 'unknown'}\``,
-              `Canonical page/front-page mutations: **${process.env.PAGE_MUTATIONS || 'not-run'}**`,
-              `Canonical pages changed: **${process.env.PAGE_CHANGED || 'not-run'}**`,
               `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
               '',
-              'Canonical WordPress scope: Home, Seeds, Learn, Community, Shop, Gallery, About, Contact.',
-              'The canonical Home page is enforced as the WordPress front page served at `/`.',
-              'Static game routes remain outside WordPress ownership.',
+              'This workflow owns article publication only. Canonical Home/Learn/Community/Shop/Gallery/About/Contact page reconciliation is owned by the serialized DTFSeeds WordPress production pipeline.',
               'No credential values are included in this report.'
             ].join('\n');
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: 46,
-              body
-            });
+            try {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: 220,
+                body
+              });
+            } catch (error) {
+              core.warning(`Could not post article publication result: ${error.message}`);
+            }
