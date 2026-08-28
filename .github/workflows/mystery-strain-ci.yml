@@ -1,0 +1,53 @@
+name: Mystery Strain CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'games/mystery-strain/**'
+      - 'site/public-route-patch/games/mystery-strain/**'
+      - '.github/workflows/mystery-strain-ci.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'games/mystery-strain/**'
+      - 'site/public-route-patch/games/mystery-strain/**'
+      - '.github/workflows/mystery-strain-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate fictional roster and public data copy
+        run: node games/mystery-strain/scripts/validate-data.mjs
+      - name: Run deterministic deduction rules tests
+        run: node games/mystery-strain/test/engine.test.mjs
+      - name: Validate browser JavaScript syntax
+        run: |
+          node --check site/public-route-patch/games/mystery-strain/app.js
+          node --check site/public-route-patch/games/mystery-strain/engine.mjs
+      - name: Verify canonical and public engine match
+        run: cmp games/mystery-strain/src/engine.mjs site/public-route-patch/games/mystery-strain/engine.mjs
+      - name: Verify public route and release boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          root=site/public-route-patch/games/mystery-strain
+          test -s "$root/index.html"
+          test -s "$root/app.js"
+          test -s "$root/engine.mjs"
+          test -s "$root/mystery-strain.css"
+          test -s "$root/data/strains.json"
+          grep -Fq 'https://dtfseeds.com/games/mystery-strain/' "$root/index.html"
+          grep -Fqi 'fictional' "$root/index.html"
+          grep -Fq 'type="module" src="./app.js"' "$root/index.html"
+          grep -Fq 'deploymentRegistered": false' games/mystery-strain/game.json
