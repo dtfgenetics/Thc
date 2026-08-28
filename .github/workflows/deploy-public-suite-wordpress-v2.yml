@@ -96,6 +96,7 @@ jobs:
           node --check "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
           grep -Fq "get_param('_dtf_suite_token')" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
           grep -Fq '_dtf_suite_token: suiteToken' "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          ! grep -Fq 'current_user_can(' "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
           python - <<'PY'
           import os, pathlib, re
           text=(pathlib.Path(os.environ['RUNNER_TEMP'])/'deploy-public-suite-v2.mjs').read_text()

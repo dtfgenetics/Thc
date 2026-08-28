@@ -141,12 +141,12 @@ base_actual = hashlib.sha256(payload).hexdigest()
 if base_actual != EXPECTED_SHA256:
     raise SystemExit(f"v2 deployer fragment SHA-256 mismatch: expected {EXPECTED_SHA256}, got {base_actual}")
 
-# The production Application Password already authenticates the deployment
-# publisher to WordPress. Some Application Password identities do not expose
-# edit_pages through custom REST permission callbacks even though they can
-# publish through the narrowly scoped APIs used here. Keep the capability test
-# when WordPress exposes it, while allowing the authenticated identity fallback.
-# Every temporary endpoint still requires the unguessable per-run 256-bit token.
+# Creating and activating the temporary bridge remains protected by the
+# production Application Password. Hostinger does not rehydrate that WordPress
+# user inside this custom route's permission callback, so the bridge endpoints
+# use their unguessable per-run 256-bit bearer token as the complete permission
+# check. The bridge remains temporary, allowlisted, size-limited, transactional,
+# backed up before each swap, and rollback-capable.
 payload = replace_once(
     payload,
     b"current_user_can('manage_options')",
@@ -154,10 +154,9 @@ payload = replace_once(
     "authenticated deployment publisher plus token",
 )
 
-# Some Hostinger/PHP configurations authenticate the Application Password but
-# omit non-standard HTTP headers before the REST request reaches WordPress.
-# Preserve the header as the primary transport and accept the same unguessable
-# per-run token from a request parameter as a narrowly scoped fallback.
+# Hostinger also omits non-standard HTTP headers on this route. Preserve the
+# header as the primary transport and accept the same token from a request
+# parameter as the production-compatible fallback.
 payload = replace_once(
     payload,
     b"""        $supplied = (string) $request->get_header('x-dtf-suite-token');
@@ -165,7 +164,7 @@ payload = replace_once(
 """,
     b"""        $supplied = (string) $request->get_header('x-dtf-suite-token');
         if ($supplied === '') $supplied = (string) $request->get_param('_dtf_suite_token');
-        return (current_user_can('edit_pages') || get_current_user_id() > 0) && $supplied !== '' && hash_equals($token, $supplied);
+        return $supplied !== '' && hash_equals($token, $supplied);
 """,
     "Hostinger deployment-token request-parameter fallback",
 )
