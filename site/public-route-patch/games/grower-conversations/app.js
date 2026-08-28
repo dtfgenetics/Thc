@@ -49,12 +49,15 @@ function materialize(bank) {
   return result;
 }
 
+function matchesActiveFilters(card) {
+  if (!card) return false;
+  if (ui.category.value !== 'all' && card.category !== ui.category.value) return false;
+  if (ui.depth.value !== 'all' && card.depth !== ui.depth.value) return false;
+  return true;
+}
+
 function pool() {
-  return cards.filter((card) => {
-    if (ui.category.value !== 'all' && card.category !== ui.category.value) return false;
-    if (ui.depth.value !== 'all' && card.depth !== ui.depth.value) return false;
-    return true;
-  });
+  return cards.filter(matchesActiveFilters);
 }
 
 function remaining() {
@@ -86,13 +89,15 @@ function readSession() {
 
 function updateStatus() {
   const filtered = pool();
-  const available = remaining();
-  ui.status.textContent = `${available.length} unused of ${filtered.length} matching cards · ${used.size} used · progress saved on this device.`;
+  const available = filtered.filter((card) => !used.has(card.id));
+  const usedMatching = filtered.length - available.length;
+  ui.status.textContent = `${available.length} unused of ${filtered.length} matching cards · ${usedMatching} used in this view · progress saved on this device.`;
   ui.next.disabled = filtered.length === 0;
   ui.next.textContent = available.length === 0 && filtered.length > 0 ? 'Reset and draw' : current ? 'Next prompt' : 'Draw a prompt';
 }
 
 function renderCurrent() {
+  ui.copy.disabled = !current;
   if (!current) {
     ui.categoryText.textContent = 'Ready';
     ui.depthText.textContent = 'Mixed deck';
@@ -104,6 +109,13 @@ function renderCurrent() {
   ui.depthText.textContent = current.depth;
   ui.number.textContent = current.id.toUpperCase();
   ui.prompt.textContent = current.prompt;
+}
+
+function syncCurrentToFilters() {
+  if (current && !matchesActiveFilters(current)) current = null;
+  renderCurrent();
+  updateStatus();
+  saveSession();
 }
 
 function draw() {
@@ -165,6 +177,7 @@ function restoreSession() {
   if (payload.category === 'all' || Object.hasOwn(categoryLabels, payload.category)) ui.category.value = payload.category;
   if (['all', 'easy', 'reflective', 'technical'].includes(payload.depth)) ui.depth.value = payload.depth;
   current = cards.find((card) => card.id === payload.currentId) || null;
+  if (current && !matchesActiveFilters(current)) current = null;
   renderCurrent();
   updateStatus();
   saveSession();
@@ -192,6 +205,6 @@ ui.next.addEventListener('click', draw);
 ui.reset.addEventListener('click', resetUsed);
 ui.shuffle.addEventListener('click', shuffleDeck);
 ui.copy.addEventListener('click', copyPrompt);
-ui.category.addEventListener('change', () => { updateStatus(); saveSession(); });
-ui.depth.addEventListener('change', () => { updateStatus(); saveSession(); });
+ui.category.addEventListener('change', syncCurrentToFilters);
+ui.depth.addEventListener('change', syncCurrentToFilters);
 load();
