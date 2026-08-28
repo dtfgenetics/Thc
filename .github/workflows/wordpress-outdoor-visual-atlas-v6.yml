@@ -6,7 +6,9 @@ on:
     branches: [main]
     paths:
       - 'site/wordpress/education/outdoor-v6-visual-map.json'
+      - 'site/wordpress/education/outdoor-v6-chapter-visuals-v1.json'
       - 'scripts/publish-wordpress-outdoor-visuals-v6.mjs'
+      - 'scripts/publish-wordpress-outdoor-chapter-visuals-v1.mjs'
       - 'scripts/fix-harvest-outdoor-v6-owner-markers.mjs'
       - 'scripts/publish-wordpress-harvest-outdoor-v6-final.mjs'
       - '.github/workflows/wordpress-outdoor-visual-atlas-v6.yml'
@@ -60,11 +62,13 @@ jobs:
           : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
           : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
           node --check scripts/publish-wordpress-outdoor-visuals-v6.mjs
+          node --check scripts/publish-wordpress-outdoor-chapter-visuals-v1.mjs
           node --check scripts/fix-harvest-outdoor-v6-owner-markers.mjs
           node --check scripts/publish-wordpress-harvest-outdoor-v6-final.mjs
           node - <<'NODE'
           const fs=require('fs');
           const m=JSON.parse(fs.readFileSync('site/wordpress/education/outdoor-v6-visual-map.json','utf8'));
+          const cv=JSON.parse(fs.readFileSync('site/wordpress/education/outdoor-v6-chapter-visuals-v1.json','utf8'));
           const c=JSON.parse(fs.readFileSync('site/wordpress/education/outdoor-v6.json','utf8'));
           const ids=['site-sun','hardening-transplant','water-rootzone','wind-support','rain-flower-risk','pests-wildlife','pollen-sex','season-microclimate'];
           const groups=Object.keys(m.chapters||{});
@@ -74,11 +78,17 @@ jobs:
           if(m.curriculumId!=='outdoor-v6'||m.route!=='/learn/outdoor/'||groups.length!==8||ids.some(id=>!groups.includes(id))) throw new Error('Outdoor visual map chapter boundary changed unexpectedly.');
           if(visuals!==12) throw new Error(`Expected 12 approved supporting visuals, found ${visuals}.`);
           if(!Array.isArray(m.gaps)||m.gaps.length!==11||m.gaps.some(x=>x.status!=='artwork-needed'||!/^THC-OUT-\d{2}$/.test(x.id))) throw new Error('Outdoor THC-OUT production gap boundary changed unexpectedly.');
+          if(cv.id!=='outdoor-v6-chapter-visuals-v1'||cv.route!=='/learn/outdoor/'||cv.brand!=='THC — Teaching Healthy Cultivation'||cv.items?.length!==8) throw new Error('Outdoor chapter visual manifest boundary changed unexpectedly.');
+          if(new Set(cv.items.map(x=>x.chapterId)).size!==8||ids.some(id=>!cv.items.some(x=>x.chapterId===id))) throw new Error('Eight stable Outdoor chapter infographic mappings are required exactly once.');
           for(const item of Object.values(m.chapters).flat()){
             if(/draft|quarantine|superseded|legacy|qa[-_ ]?required/i.test(item.file||'')) throw new Error(`Unsafe mapped asset ${item.file}`);
             if(!fs.existsSync(`site/wordpress/assets/infographics/${item.file}`)) throw new Error(`Mapped asset missing: ${item.file}`);
           }
-          console.log(`Validated Outdoor V6: ${c.chapters.length} chapters, ${lessons} lessons, ${groups.length} atlas groups, ${visuals} supporting visuals, ${m.gaps.length} THC-OUT gaps.`);
+          for(const item of cv.items){
+            if(/draft|quarantine|superseded|legacy|qa[-_ ]?required|strain[_ -]?card/i.test(item.file||'')) throw new Error(`Unsafe chapter infographic ${item.file}`);
+            if(!fs.existsSync(`site/wordpress/assets/infographics/${item.file}`)) throw new Error(`Chapter infographic missing: ${item.file}`);
+          }
+          console.log(`Validated Outdoor V6: ${c.chapters.length} chapters, ${lessons} lessons, ${groups.length} atlas groups, ${visuals} supporting visuals, ${cv.items.length} chapter infographics, ${m.gaps.length} THC-OUT gaps.`);
           NODE
 
       - name: Restore and verify canonical Outdoor V6 owner
@@ -89,7 +99,6 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p "$BACKUP_ROOT"
-          # Normalize the older shared publisher in this isolated runner only.
           node scripts/fix-harvest-outdoor-v6-owner-markers.mjs | tee "$RUNNER_TEMP/outdoor-v6-owner-normalize.log"
           node scripts/publish-wordpress-harvest-outdoor-v6-final.mjs --validate-only | tee "$RUNNER_TEMP/outdoor-v6-owner-validate.log"
           node scripts/publish-wordpress-harvest-outdoor-v6-final.mjs | tee "$RUNNER_TEMP/outdoor-v6-owner-restore.log"
@@ -129,6 +138,25 @@ jobs:
           echo "fallbacks=$(node -p "require(process.argv[1]).canonicalFallbacks" "$report")" >> "$GITHUB_OUTPUT"
           echo "gaps=$(node -p "require(process.argv[1]).unresolvedGaps.length" "$report")" >> "$GITHUB_OUTPUT"
 
+      - name: Attach eight THC infographics to matching Outdoor chapters
+        id: chapters
+        shell: bash
+        env:
+          APPLY_OUTDOOR_CHAPTER_VISUALS: 'true'
+          OUTDOOR_CHAPTER_VISUALS_MANIFEST: site/wordpress/education/outdoor-v6-chapter-visuals-v1.json
+          BACKUP_ROOT: /tmp/thc-outdoor-chapter-visuals-v1
+        run: |
+          set -euo pipefail
+          mkdir -p "$BACKUP_ROOT"
+          node scripts/publish-wordpress-outdoor-chapter-visuals-v1.mjs | tee "$RUNNER_TEMP/thc-outdoor-chapter-visuals-v1.log"
+          report="$BACKUP_ROOT/report.json"
+          test -s "$report"
+          [[ "$(node -p "require(process.argv[1]).chapterVisuals" "$report")" = '8' ]]
+          [[ "$(node -p "require(process.argv[1]).chapters" "$report")" = '8' ]]
+          [[ "$(node -p "require(process.argv[1]).lessons" "$report")" = '32' ]]
+          [[ "$(node -p "require(process.argv[1]).visitorVerified" "$report")" = 'true' ]]
+          echo "chapter_visuals=$(node -p "require(process.argv[1]).chapterVisuals" "$report")" >> "$GITHUB_OUTPUT"
+
       - name: Independently verify Outdoor atlas visitor surface
         id: verify
         shell: bash
@@ -141,19 +169,22 @@ jobs:
               --header 'Cache-Control: no-cache, no-store, max-age=0' \
               --header 'Pragma: no-cache' \
               "$WP_SITE_URL/learn/outdoor/?dtf_outv6_verify=${GITHUB_RUN_ID}-${attempt}" --output "$body"
-            if grep -Fqi 'data-dtf-outdoor-visuals-v6="true"' "$body"; then ok=1; break; fi
+            if grep -Fqi 'data-dtf-outdoor-visuals-v6="true"' "$body" && [[ "$(grep -Fo 'data-outdoor-chapter-visual=' "$body" | wc -l | tr -d ' ')" = '8' ]]; then ok=1; break; fi
             sleep 6
           done
           [[ "$ok" -eq 1 ]]
           [[ "$(grep -Fo 'class="outv6-card"' "$body" | wc -l | tr -d ' ')" = '12' ]]
           [[ "$(grep -Fo 'data-outv6-group=' "$body" | wc -l | tr -d ' ')" = '8' ]]
           [[ "$(grep -Fo 'class="outv6-gap"' "$body" | wc -l | tr -d ' ')" = '11' ]]
+          [[ "$(grep -Fo 'data-outdoor-chapter-visual=' "$body" | wc -l | tr -d ' ')" = '8' ]]
           [[ "$(grep -Fo 'data-hov6-chapter=' "$body" | wc -l | tr -d ' ')" = '8' ]]
           [[ "$(grep -Fo 'class="hov6-lesson"' "$body" | wc -l | tr -d ' ')" = '32' ]]
           grep -Fqi 'data-dtf-outdoor-v6="true"' "$body"
           grep -Fqi 'data-dtf-topic="outdoor-cultivation"' "$body"
           grep -Fqi 'data-dtf-learning-v4="topic-outdoor-cultivation"' "$body"
+          grep -Fq 'THC · Teaching Healthy Cultivation' "$body"
           for id in THC-OUT-01 THC-OUT-02 THC-OUT-03 THC-OUT-04 THC-OUT-05 THC-OUT-06 THC-OUT-07 THC-OUT-08 THC-OUT-09 THC-OUT-10 THC-OUT-11; do grep -Fqi "data-outv6-gap=\"$id\"" "$body"; done
+          for id in site-sun hardening-transplant water-rootzone wind-support rain-flower-risk pests-wildlife pollen-sex season-microclimate; do grep -Fq "data-outdoor-chapter-visual=\"$id\"" "$body"; done
 
       - name: Upload Outdoor atlas evidence
         if: always()
@@ -163,9 +194,11 @@ jobs:
           path: |
             /tmp/dtf-outdoor-v6-atlas-restore
             /tmp/dtf-outdoor-visuals-v6
+            /tmp/thc-outdoor-chapter-visuals-v1
             ${{ runner.temp }}/outdoor-v6-owner-*.log
             ${{ runner.temp }}/outdoor-v6-owner-restored.html
             ${{ runner.temp }}/outdoor-visual-atlas-v6.log
+            ${{ runner.temp }}/thc-outdoor-chapter-visuals-v1.log
             ${{ runner.temp }}/outdoor-visual-atlas-v6.html
           if-no-files-found: warn
           retention-days: 30
@@ -178,12 +211,14 @@ jobs:
           VALIDATE: ${{ steps.validate.outcome }}
           RESTORE: ${{ steps.restore.outcome }}
           PUBLISH: ${{ steps.publish.outcome }}
+          CHAPTERS: ${{ steps.chapters.outcome }}
           VERIFY: ${{ steps.verify.outcome }}
           VISUALS: ${{ steps.publish.outputs.visuals }}
           GROUPS: ${{ steps.publish.outputs.groups }}
           WP_MEDIA: ${{ steps.publish.outputs.wordpress_media }}
           FALLBACKS: ${{ steps.publish.outputs.fallbacks }}
           GAPS: ${{ steps.publish.outputs.gaps }}
+          CHAPTER_VISUALS: ${{ steps.chapters.outputs.chapter_visuals }}
         with:
           script: |
             await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body:[
@@ -193,11 +228,13 @@ jobs:
               `Mapping validation: **${process.env.VALIDATE || 'not-run'}**`,
               `V6 curriculum owner restoration: **${process.env.RESTORE || 'not-run'}**`,
               `WordPress atlas publication: **${process.env.PUBLISH || 'not-run'}**`,
+              `THC chapter infographic placement: **${process.env.CHAPTERS || 'not-run'}**`,
               `Visitor verification: **${process.env.VERIFY || 'not-run'}**`,
               `Verified supporting visual cards: **${process.env.VISUALS || '0'}**`,
+              `Dedicated chapter infographics: **${process.env.CHAPTER_VISUALS || '0'} / 8**`,
               `Chapter groups: **${process.env.GROUPS || '0'}**`,
               `WordPress-media resolutions: **${process.env.WP_MEDIA || '0'}**`,
               `Canonical GitHub fallbacks: **${process.env.FALLBACKS || '0'}**`,
               `Purpose-built THC-OUT artwork gaps: **${process.env.GAPS || '0'}**`,'',
-              'This workflow is self-healing against education-layer drift: it normalizes the canonical Outdoor owner in its isolated runner, restores and verifies the approved 8-chapter/32-lesson Outdoor V6 curriculum, then attaches the visual atlas. Eleven evidence-aware Outdoor originals remain explicitly queued rather than being replaced with generic cannabis imagery.'
+              'The proven Outdoor production workflow now restores the 8-chapter/32-lesson V6 curriculum, attaches the 12 supporting atlas visuals, embeds the eight finished THC chapter-level infographics inside their matching chapters, and keeps all eleven narrower THC-OUT originals explicitly queued until their dedicated artwork is complete.'
             ].join('\n')});
