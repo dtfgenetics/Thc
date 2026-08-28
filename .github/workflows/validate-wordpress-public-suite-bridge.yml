@@ -13,8 +13,7 @@ on:
 
 permissions:
   contents: read
-  actions: read
-  issues: write
+  actions: write
 
 concurrency:
   group: validate-wordpress-public-suite-bridge
@@ -23,10 +22,8 @@ concurrency:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     env:
-      SOURCE_RUN: '32670204724'
-      SOURCE_ARTIFACT: dtfseeds-public-suite-03ebe6aa87a148de28dcc10b23a3d4ea37a8587e
       GH_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v4
@@ -61,41 +58,42 @@ jobs:
           PY
           php -l "$RUNNER_TEMP/dtf-suite-v2-snippet.php"
 
+      - name: Build current public suite fixture
+        id: current_build
+        shell: bash
+        run: |
+          set -euo pipefail
+          run_url="$(gh workflow run build-dtfseeds-public-suite.yml --ref main)"
+          run_id="${run_url##*/}"
+          [[ "$run_id" =~ ^[0-9]+$ ]] || { echo "Could not parse public-suite build run from: $run_url" >&2; exit 1; }
+          echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+          gh run watch "$run_id" --exit-status
+
       - name: Download current fully validated app fixture
         shell: bash
         run: |
           set -euo pipefail
-          rm -rf "$RUNNER_TEMP/source-suite"
-          mkdir -p "$RUNNER_TEMP/source-suite"
-          gh run download "$SOURCE_RUN" --repo "$GITHUB_REPOSITORY" --name "$SOURCE_ARTIFACT" --dir "$RUNNER_TEMP/source-suite"
-          test -s "$RUNNER_TEMP/source-suite/games/index.html"
-          test -s "$RUNNER_TEMP/source-suite/games/high-land/index.html"
-          test -s "$RUNNER_TEMP/source-suite/games/protect-the-plants/index.html"
-          test -s "$RUNNER_TEMP/source-suite/games/protect-the-plants/api.php"
-          test -s "$RUNNER_TEMP/source-suite/growlens/index.html"
-          test -s "$RUNNER_TEMP/source-suite/thc-grow-doc/index.html"
-
-      - name: Overlay current static customer shell onto fixture
-        shell: bash
-        run: |
-          set -euo pipefail
-          install -d "$RUNNER_TEMP/source-suite/games"
-          cp site/public-route-patch/games/index.html "$RUNNER_TEMP/source-suite/games/index.html"
-          cp site/public-route-patch/games/dtf-route.css "$RUNNER_TEMP/source-suite/games/dtf-route.css"
-          cp site/public-route-patch/games/dtf-shell.css "$RUNNER_TEMP/source-suite/games/dtf-shell.css"
-          rm -rf "$RUNNER_TEMP/source-suite/tools" "$RUNNER_TEMP/source-suite/projects"
-          cp -a site/public-route-patch/tools "$RUNNER_TEMP/source-suite/tools"
-          cp -a site/public-route-patch/projects "$RUNNER_TEMP/source-suite/projects"
-          test -s "$RUNNER_TEMP/source-suite/games/dtf-shell.css"
-          grep -Fq 'Pick what is playable. See what is coming next.' "$RUNNER_TEMP/source-suite/games/index.html"
-          grep -Fq 'Measure it. Document it. Diagnose with context.' "$RUNNER_TEMP/source-suite/tools/index.html"
-          grep -Fq 'What is live, what is growing, and where it belongs.' "$RUNNER_TEMP/source-suite/projects/index.html"
+          rm -rf "$RUNNER_TEMP/suite-download"
+          mkdir -p "$RUNNER_TEMP/suite-download"
+          gh run download "${{ steps.current_build.outputs.run_id }}" --repo "$GITHUB_REPOSITORY" --dir "$RUNNER_TEMP/suite-download"
+          build_json="$(find "$RUNNER_TEMP/suite-download" -type f -name dtf-build.json -print -quit)"
+          [[ -n "$build_json" ]] || { echo 'Current artifact does not contain dtf-build.json.' >&2; exit 1; }
+          suite_root="$(dirname "$build_json")"
+          echo "SUITE_ROOT=$suite_root" >> "$GITHUB_ENV"
+          test -s "$suite_root/games/index.html"
+          test -s "$suite_root/games/high-land/index.html"
+          test -s "$suite_root/games/high-iq/app-v3.js"
+          test -s "$suite_root/games/protect-the-plants/api.php"
+          test -s "$suite_root/games/terpocalypse/main.js"
+          test -s "$suite_root/games/phenoquest/build-meta.json"
+          grep -Fq '"selfContained": true' "$suite_root/games/phenoquest/build-meta.json"
+          grep -Fq '15 playable browser games' "$suite_root/games/index.html"
 
       - name: Build protected WordPress app-only archive
         shell: bash
         run: |
           set -euo pipefail
-          python scripts/package-public-suite-wordpress.py "$RUNNER_TEMP/source-suite" "$RUNNER_TEMP/dtf-public-suite-wordpress.zip" | tee "$RUNNER_TEMP/package-summary.json"
+          python scripts/package-public-suite-wordpress.py "$SUITE_ROOT" "$RUNNER_TEMP/dtf-public-suite-wordpress.zip" | tee "$RUNNER_TEMP/package-summary.json"
           test -s "$RUNNER_TEMP/dtf-public-suite-wordpress.zip"
 
       - name: Assert archive ownership and integrity contract
@@ -112,9 +110,12 @@ jobs:
               forbidden = [n for n in names if n == 'index.html' or n.startswith('learn/') or n.startswith('blog/')]
               assert not forbidden, forbidden
               required = [
-                  'games/index.html','games/dtf-shell.css','games/high-land/index.html','games/high-iq/index.html','games/high-life/index.html',
-                  'games/grower-conversations/index.html','games/seed-man-platformer/index.html','games/protect-the-plants/index.html',
-                  'games/protect-the-plants/api.php','games/weedopolis/index.html','games/crossword/index.html','games/who-took-it/index.html',
+                  'games/index.html','games/dtf-shell.css','games/high-land/index.html','games/high-iq/index.html','games/high-iq/app-v3.js',
+                  'games/high-life/index.html','games/grower-conversations/index.html','games/seed-man-platformer/index.html',
+                  'games/protect-the-plants/index.html','games/protect-the-plants/api.php','games/bud-or-bluff/index.html',
+                  'games/strain-showdown/index.html','games/terpocalypse/index.html','games/terpocalypse/main.js',
+                  'games/phenoquest/index.html','games/phenoquest/game.js','games/phenoquest/lineage-runtime.js','games/phenoquest/build-meta.json',
+                  'games/weedopolis/index.html','games/crossword/index.html','games/who-took-it/index.html',
                   'growlens/index.html','thc-grow-doc/index.html','thc-grow-doc/api/visual-observations.php','tools/index.html','projects/index.html','puzzles/current.json'
               ]
               for path in required: assert path in names, path
@@ -141,9 +142,11 @@ jobs:
           path = pathlib.Path(os.environ['RUNNER_TEMP']) / 'deploy-public-suite-via-wordpress-v2.mjs'
           text = path.read_text()
           checks = {
-              'authenticated publisher authorization': "current_user_can('edit_pages')" in text,
-              'obsolete administrator capability removed': "current_user_can('manage_options')" not in text,
-              'one-time token comparison': 'hash_equals($token, $supplied)' in text,
+              'token-only temporary publisher authorization': "return $supplied !== '' && hash_equals($token, $supplied);" in text,
+              'WordPress capability dependency removed from bridge': 'current_user_can(' not in text,
+              'request-parameter token fallback': "get_param('_dtf_suite_token')" in text,
+              'unique deployment REST namespace': "register_rest_route('dtf-suite/v2-${deploymentId}'" in text,
+              'unique client REST namespace': '/wp-json/dtf-suite/v2-${deploymentId}/' in text,
               'server deployment lock': 'dtf_suite_deploy_lock' in text,
               'whole archive hash': 'Whole-archive SHA-256 mismatch.' in text,
               'duplicate ZIP rejection': 'Duplicate ZIP entry rejected.' in text,
@@ -153,9 +156,9 @@ jobs:
               'prepared mutation phase': "'phase'=>'prepared'" in text,
               'backup-moved mutation phase': "$state['current']['phase'] = 'backup_moved'" in text,
               'new-placed mutation phase': "'phase'=>'new_placed'" in text,
-              'rollback endpoint': "register_rest_route('dtf-suite/v2', '/rollback'" in text,
-              'abort endpoint': "register_rest_route('dtf-suite/v2', '/abort'" in text,
-              'finalize endpoint': "register_rest_route('dtf-suite/v2', '/finalize'" in text,
+              'rollback endpoint': "register_rest_route('dtf-suite/v2-${deploymentId}', '/rollback'" in text,
+              'abort endpoint': "register_rest_route('dtf-suite/v2-${deploymentId}', '/abort'" in text,
+              'finalize endpoint': "register_rest_route('dtf-suite/v2-${deploymentId}', '/finalize'" in text,
               'ambiguous commit polling': 'Polling persisted server state before any recovery action.' in text,
               'app-only WordPress ownership boundary': 'Home and Learn are WordPress-owned and are verified independently after this app-only transaction.' in text,
               'current Games verification': 'Pick what is playable. See what is coming next.' in text,
@@ -163,6 +166,10 @@ jobs:
               'current Projects verification': 'What is live, what is growing, and where it belongs.' in text,
               'unified shell allowlist': 'games/dtf-shell.css' in text,
               'Protect the Plants deployment scope': 'games/protect-the-plants' in text,
+              'Bud or Bluff deployment scope': 'games/bud-or-bluff' in text,
+              'Strain Showdown deployment scope': 'games/strain-showdown' in text,
+              'Terpocalypse deployment scope': 'games/terpocalypse' in text,
+              'PhenoQuest deployment scope': 'games/phenoquest' in text,
               'Protect the Plants API gate': '/games/protect-the-plants/api.php?action=active' in text,
               'forbidden root static path check': "name === 'index.html'" in text,
               'forbidden learn static path check': "strpos($name, 'learn/')" in text,
@@ -188,24 +195,14 @@ jobs:
 
       - name: Report bridge validation
         if: always()
-        uses: actions/github-script@v7
-        env:
-          STATUS: ${{ job.status }}
-        with:
-          script: |
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: 46,
-              body: [
-                '## No-SSH WordPress public-suite bridge validation',
-                '',
-                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-                `Commit: \`${context.sha}\``,
-                `Result: **${process.env.STATUS}**`,
-                '',
-                'Checks: canonical v2 assembly, Node/PHP syntax, a current fully validated app fixture plus the current Games/Tools/Projects shell, app-only archive creation, Protect the Plants PHP packaging, per-file SHA-256 verification, duplicate/manifest/path ownership checks, authenticated publisher plus one-time-token authorization, current live markers, and transaction locking/recovery/rollback/abort/finalize controls.',
-                '',
-                'This workflow is non-mutating. Production publication remains a separate protected transaction.'
-              ].join('\n')
-            });
+        shell: bash
+        run: |
+          {
+            echo '## WordPress Public Suite Bridge Validation'
+            echo
+            echo "- Commit: $GITHUB_SHA"
+            echo "- Result: ${{ job.status }}"
+            echo "- Current-suite build run: ${{ steps.current_build.outputs.run_id }}"
+            echo '- Fixture is generated from current main; no pinned stale artifact is used.'
+            echo '- Validation covers the unique per-deployment REST namespace, one-time bearer token, transactional rollback controls, current game routes, archive integrity, and WordPress-owned route exclusions.'
+          } >> "$GITHUB_STEP_SUMMARY"
