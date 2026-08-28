@@ -1,9 +1,14 @@
 (()=>{
-  const HISTORY_KEY='ptpMatchHistoryV2';
+  const HISTORY_KEY='burnBudsMatchHistoryV3';
+  const LEGACY_HISTORY_KEY='ptpMatchHistoryV2';
   let recordedKey='';
 
   function getHistory(){
-    try{return JSON.parse(localStorage.getItem(HISTORY_KEY)||'[]')}catch{return []}
+    try{
+      const stored=localStorage.getItem(HISTORY_KEY)||localStorage.getItem(LEGACY_HISTORY_KEY)||'[]';
+      if(!localStorage.getItem(HISTORY_KEY)&&stored!=='[]')localStorage.setItem(HISTORY_KEY,stored);
+      return JSON.parse(stored)
+    }catch{return []}
   }
   function saveHistory(items){localStorage.setItem(HISTORY_KEY,JSON.stringify(items.slice(0,10)))}
   function esc(value=''){return String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
@@ -21,14 +26,14 @@
     const stage=document.querySelector('.lobby-stage');if(!stage||stage.querySelector('.ptp-history-panel'))return;
     const history=getHistory();if(!history.length)return;
     const panel=document.createElement('section');panel.className='ornament-panel ptp-history-panel';
-    panel.innerHTML=`<h2 class="panel-title">Recent Matches</h2><div class="ptp-history-list">${history.slice(0,5).map(item=>`<div class="ptp-history-row ${item.won?'win':'loss'}"><span class="ptp-history-icon">${item.won?'🌿':'✹'}</span><div><strong>${item.won?'Garden Protected':'Garden Lost'}</strong><small>vs ${esc(item.opponent)} · Round ${item.round}</small></div><div class="ptp-history-stat"><strong>${item.accuracy}%</strong><small>${item.hits}/${item.shots} hits</small></div></div>`).join('')}</div>`;
+    panel.innerHTML=`<h2 class="panel-title">Recent Matches</h2><div class="ptp-history-list">${history.slice(0,5).map(item=>`<div class="ptp-history-row ${item.won?'win':'loss'}"><span class="ptp-history-icon">${item.won?'🔥':'✹'}</span><div><strong>${item.won?'Opponent Buds Burned':'Your Buds Burned'}</strong><small>vs ${esc(item.opponent)} · Round ${item.round}</small></div><div class="ptp-history-stat"><strong>${item.accuracy}%</strong><small>${item.hits}/${item.shots} hits</small></div></div>`).join('')}</div>`;
     stage.append(panel);
   }
 
   function injectQuickChat(){
     const form=document.querySelector('#chatForm');if(!form||form.parentElement.querySelector('.ptp-quick-chat'))return;
     const row=document.createElement('div');row.className='ptp-quick-chat';
-    row.innerHTML='<button type="button" data-ptp-quick="Nice hit 🌿">Nice hit</button><button type="button" data-ptp-quick="Good shot 🎯">Good shot</button><button type="button" data-ptp-quick="GG 🔥">GG</button>';
+    row.innerHTML='<button type="button" data-ptp-quick="Nice hit 🔥">Nice hit</button><button type="button" data-ptp-quick="Good shot 🎯">Good shot</button><button type="button" data-ptp-quick="GG 🔥">GG</button>';
     form.before(row);
   }
 
@@ -40,8 +45,8 @@
   async function shareResult(){
     if(typeof state==='undefined'||!state)return;
     const won=state.winnerId===state.me?.id;const me=state.me?.stats||{};const shots=Number(me.shots||0),hits=Number(me.hits||0),accuracy=shots?Math.round(hits/shots*100):0;
-    const text=`${won?'I protected my garden':'Good game'} in Protect the Plants — ${hits}/${shots} hits (${accuracy}% accuracy).`;
-    const url=`${location.origin}${location.pathname}`;const data={title:'Protect the Plants',text,url};
+    const text=`${won?'I burned every opposing bud':'Good game'} in Burn Buds — ${hits}/${shots} hits (${accuracy}% accuracy).`;
+    const url=`${location.origin}${location.pathname}`;const data={title:'Burn Buds',text,url};
     try{
       if(navigator.share)await navigator.share(data);
       else{await navigator.clipboard.writeText(`${text} ${url}`);toast('Result copied.')}
