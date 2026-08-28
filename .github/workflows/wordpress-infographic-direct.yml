@@ -39,8 +39,8 @@ jobs:
       INFOGRAPHIC_PLACEMENT_CONFIG: ${{ github.workspace }}/site/wordpress/assets/infographics/placement-rules.json
       INFOGRAPHIC_EXCLUSIONS: ${{ github.workspace }}/site/wordpress/assets/infographics/infographic-exclusions.json
       BULK_INFOGRAPHIC_MANIFEST: ${{ github.workspace }}/site/wordpress/imports/infographic-bulk-import.json
-      BULK_IMPORT_REPORT: ${{ runner.temp }}/infographic-bulk-import-report.json
-      BACKUP_ROOT: ${{ runner.temp }}/wordpress-infographic-direct-backups
+      BULK_IMPORT_REPORT: /tmp/infographic-bulk-import-report.json
+      BACKUP_ROOT: /tmp/wordpress-infographic-direct-backups
       NODE_OPTIONS: --dns-result-order=ipv4first
 
     steps:
@@ -169,8 +169,8 @@ jobs:
         with:
           name: bulk-infographic-production-${{ github.run_id }}
           path: |
-            ${{ runner.temp }}/wordpress-infographic-direct-backups
-            ${{ runner.temp }}/infographic-bulk-import-report.json
+            /tmp/wordpress-infographic-direct-backups
+            /tmp/infographic-bulk-import-report.json
             ${{ runner.temp }}/infographics-live.html
           if-no-files-found: warn
           retention-days: 30
