@@ -1,0 +1,70 @@
+name: Recover DTFSeeds Game Deploy Lock and Resume
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/recover-and-deploy-games.yml
+      - scripts/recover-untouched-wordpress-suite-lock.mjs
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: recover-dtfseeds-game-deploy-lock
+  cancel-in-progress: false
+
+jobs:
+  recover-and-resume:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: production
+    env:
+      GH_TOKEN: ${{ github.token }}
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+    steps:
+      - name: Checkout current main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate guarded recovery script
+        run: node --check scripts/recover-untouched-wordpress-suite-lock.mjs
+
+      - name: Recover only an untouched suite lock
+        id: recover
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/recover-untouched-wordpress-suite-lock.mjs | tee "$RUNNER_TEMP/lock-recovery.json"
+          grep -Eq '"ok"[[:space:]]*:[[:space:]]*true' "$RUNNER_TEMP/lock-recovery.json"
+
+      - name: Dispatch protected WordPress V2 deployment
+        id: deploy
+        shell: bash
+        run: |
+          set -euo pipefail
+          run_url="$(gh workflow run deploy-public-suite-wordpress-v2.yml --ref main)"
+          run_id="${run_url##*/}"
+          [[ "$run_id" =~ ^[0-9]+$ ]] || { echo "Could not parse deployment run from: $run_url" >&2; exit 1; }
+          echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+          echo "Dispatched protected production deployment run: $run_id"
+
+      - name: Summary
+        run: |
+          {
+            echo '## DTFSeeds Game Deployment Recovery'
+            echo
+            echo '- Guarded untouched-lock recovery passed.'
+            echo '- No touched/deploying transaction is eligible for automatic lock removal.'
+            echo "- Protected WordPress V2 deployment run: ${{ steps.deploy.outputs.run_id }}"
+          } >> "$GITHUB_STEP_SUMMARY"
