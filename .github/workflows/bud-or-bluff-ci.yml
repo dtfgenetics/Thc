@@ -33,6 +33,8 @@ jobs:
         run: |
           node --check site/public-route-patch/games/bud-or-bluff/app.js
           node --check site/public-route-patch/games/bud-or-bluff/app-v2.js
+          node --check site/public-route-patch/games/bud-or-bluff/player-pref-v1.js
+          node --check site/public-route-patch/games/bud-or-bluff/keyboard-v1.js
           php -l site/public-route-patch/games/bud-or-bluff/api.php
           php -l site/public-route-patch/games/bud-or-bluff/api-v2.php
           php -l site/public-route-patch/games/bud-or-bluff/deck.php
@@ -47,8 +49,11 @@ jobs:
           test -s site/public-route-patch/games/bud-or-bluff/v2.css
           test -s site/public-route-patch/games/bud-or-bluff/app-v2.js
           test -s site/public-route-patch/games/bud-or-bluff/api-v2.php
+          test -s site/public-route-patch/games/bud-or-bluff/keyboard-v1.js
           grep -Fq 'https://dtfseeds.com/games/bud-or-bluff/' site/public-route-patch/games/bud-or-bluff/index.html
           grep -Fq 'v2.css' site/public-route-patch/games/bud-or-bluff/index.html
           grep -Fq 'app-v2.js' site/public-route-patch/games/bud-or-bluff/index.html
+          grep -Fq 'keyboard-v1.js' site/public-route-patch/games/bud-or-bluff/index.html
           grep -Fq "const API = 'api-v2.php'" site/public-route-patch/games/bud-or-bluff/app-v2.js
+          grep -Fq "Keyboard: 1 = BUD · 2 = BLUFF · D = Double Hit" site/public-route-patch/games/bud-or-bluff/keyboard-v1.js
           ! grep -Fq "'answer'=>'BUD'" site/public-route-patch/games/bud-or-bluff/index.html
