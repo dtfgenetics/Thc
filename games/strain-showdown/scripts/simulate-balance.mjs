@@ -130,7 +130,7 @@ const report = families.map((family) => {
 });
 
 const payload = {
-  ruleset: "0.2.0",
+  ruleset: "0.2.1",
   seedsPerOrderedMatchup: seedsPerMatchup,
   totalGames,
   averageRounds: Number((totalRounds / totalGames).toFixed(2)),
