@@ -2,6 +2,7 @@
   const GRID_SIZE=15;
   let syncQueued=false;
   let activeCoord='';
+  let firePending=false;
 
   function coordinate(row,col){
     return `${String.fromCharCode(65+Number(row))}${Number(col)+1}`;
@@ -51,6 +52,7 @@
   function cellStatus(cell){
     if(cell.classList.contains('hit'))return'HIT';
     if(cell.classList.contains('miss'))return'MISS';
+    if(firePending)return'LOCKED';
     if(cell.classList.contains('can-fire')&&isMyTurn())return'AVAILABLE';
     return'LOCKED';
   }
@@ -71,12 +73,18 @@
       setReadout(card,'RESULT',parsed.coord,'Already fired here · HIT.');
     }else if(status==='MISS'){
       setReadout(card,'RESULT',parsed.coord,'Already fired here · MISS.');
+    }else if(firePending){
+      setReadout(card,'FIRING',parsed.coord,'Shot sent · waiting for the server result.');
     }else{
       setReadout(card,'LOCKED',parsed.coord,'Targeting is locked until your turn.');
     }
   }
 
   function defaultReadout(card){
+    if(firePending){
+      setReadout(card,'FIRING','…','Shot sent · waiting for the server result.');
+      return;
+    }
     if(typeof state==='undefined'||!state){
       setReadout(card,'TARGET','—','Join a room to begin targeting.');
       return;
@@ -104,6 +112,7 @@
   }
 
   function availableCells(card){
+    if(firePending)return[];
     return [...card.querySelectorAll('.cell[data-fire]')].filter(cell=>cell.classList.contains('can-fire'));
   }
 
@@ -120,6 +129,7 @@
       const canFire=status==='AVAILABLE';
       cell.setAttribute('aria-label',`${parsed.coord}, ${status.toLowerCase()}`);
       cell.setAttribute('aria-disabled',String(!canFire));
+      cell.setAttribute('aria-busy',String(firePending));
       cell.setAttribute('aria-keyshortcuts','ArrowUp ArrowDown ArrowLeft ArrowRight Enter Space');
       cell.tabIndex=-1;
     }
@@ -147,6 +157,12 @@
     });
   }
 
+  function setFirePending(next){
+    firePending=Boolean(next);
+    document.body.classList.toggle('burn-fire-pending',firePending);
+    queueSync();
+  }
+
   function findDirectionalTarget(card,current,key){
     const parsed=parseCell(current);
     if(!parsed)return null;
@@ -168,7 +184,7 @@
     const cell=event.target.closest?.('.board-card .cell[data-fire]');
     if(!cell)return;
     const card=enemyCard();
-    if(!card||!card.contains(cell))return;
+    if(!card||!card.contains(cell)||firePending)return;
     const next=findDirectionalTarget(card,cell,event.key);
     if(!next)return;
     event.preventDefault();
@@ -191,7 +207,31 @@
   });
 
   const root=document.querySelector('#app');
-  if(root)new MutationObserver(queueSync).observe(root,{childList:true,subtree:true});
+  if(root){
+    root.addEventListener('click',event=>{
+      const cell=event.target.closest?.('.cell[data-fire]');
+      if(!cell)return;
+      if(firePending){
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        return;
+      }
+      if(cell.classList.contains('can-fire')&&isMyTurn())setFirePending(true);
+    },true);
+    new MutationObserver(queueSync).observe(root,{childList:true,subtree:true});
+  }
+
+  if(typeof api==='function'&&!api.__burnTargetLock){
+    const previousApi=api;
+    const wrapped=async function(action,options={}){
+      if(action==='fire')setFirePending(true);
+      try{return await previousApi(action,options)}
+      finally{if(action==='fire')setFirePending(false)}
+    };
+    wrapped.__burnTargetLock=true;
+    api=wrapped;
+  }
+
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)queueSync()});
   window.addEventListener('online',queueSync);
   queueSync();
