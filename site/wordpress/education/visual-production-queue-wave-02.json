@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "name": "THC Education Visual Production Queue — Wave 02",
+  "purpose": "Next production wave after the initial Harvest and Outdoor sets. Prioritizes diagnostic photography, measurement, lighting, IPM, and advanced post-harvest visuals.",
+  "designStandard": {
+    "format": "full-sheet infographic",
+    "visualStyle": "photorealistic academic studio imagery with restrained scientific overlays",
+    "minimumMaster": "2400x3000 PNG or equivalent high-resolution portrait master",
+    "branding": "THC — Teaching Healthy Cultivation + dtfseeds.com; branding secondary to education",
+    "rules": [
+      "No yellow cast",
+      "No generic flat-vector-only composition",
+      "No universal numeric targets without context and evidence",
+      "Prefer short labels, diagnostic comparisons, workflow panels and measurement diagrams",
+      "Spell-check all baked-in text before publication",
+      "Keep observational evidence separate from interpretation"
+    ]
+  },
+  "items": [
+    {"id":"THC-HARV-17","category":"harvest-postharvest","title":"Trichome Sampling & Microscope Technique","status":"artwork-needed","priority":1,"purpose":"Show calyx vs sugar-leaf sampling, multiple flower locations, consistent magnification/lighting, and why a single sample can mislead."},
+    {"id":"THC-HARV-18","category":"harvest-postharvest","title":"Harvest Contamination Triage","status":"artwork-needed","priority":1,"purpose":"Photoreal comparison of normal resin, loose debris, insect residue, suspected mildew, rot and mold with inspect/segregate decision logic."},
+    {"id":"THC-HARV-19","category":"harvest-postharvest","title":"Moisture Migration During Drying","status":"artwork-needed","priority":1,"purpose":"Explain surface-to-interior moisture gradients and why exterior feel alone is an incomplete drying endpoint."},
+    {"id":"THC-HARV-20","category":"harvest-postharvest","title":"Drying Curve & Endpoint Measurement","status":"artwork-needed","priority":1,"purpose":"Show time, mass loss, moisture content, water activity and stability as complementary process observations rather than a single folk endpoint."},
+    {"id":"THC-HARV-21","category":"harvest-postharvest","title":"How to Measure Water Activity","status":"artwork-needed","priority":1,"purpose":"Show representative sampling, sample cup loading, equilibration, temperature awareness, repeated readings and batch variability."},
+    {"id":"THC-HARV-22","category":"harvest-postharvest","title":"Packaging & Container Properties","status":"artwork-needed","priority":2,"purpose":"Compare light barrier, moisture barrier, oxygen exchange, headspace and physical protection without declaring one container universally best."},
+    {"id":"THC-HARV-23","category":"harvest-postharvest","title":"Post-Harvest Laboratory Testing","status":"artwork-needed","priority":2,"purpose":"Explain representative batch sampling for cannabinoids, terpenes, water activity/moisture and microbial testing."},
+    {"id":"THC-HARV-24","category":"harvest-postharvest","title":"Batch Traceability & Harvest Records","status":"artwork-needed","priority":2,"purpose":"Show batch ID, cultivar, harvest time, trim method, drying zone, environmental trends, curing/storage records and deviations."},
+    {"id":"THC-HARV-25","category":"harvest-postharvest","title":"Fresh-Frozen vs Dried/Cured Pathways","status":"artwork-needed","priority":2,"purpose":"Branch the workflow clearly between material preserved for fresh-frozen processing and material intended for controlled drying/curing."},
+
+    {"id":"THC-LIGHT-02","category":"lighting","title":"PPFD: Measuring Photon Density","status":"artwork-needed","priority":1,"purpose":"Photoreal canopy measurement map explaining PPFD, sensor orientation, measurement grid and uneven fixture output."},
+    {"id":"THC-LIGHT-03","category":"lighting","title":"DLI: Light Accumulated Over a Day","status":"artwork-needed","priority":1,"purpose":"Connect PPFD and photoperiod to daily light integral with visually clear examples and contextualized calculations."},
+    {"id":"THC-LIGHT-04","category":"lighting","title":"PAR, Photons & Plant Response","status":"artwork-needed","priority":1,"purpose":"Explain PAR as a measurement range and distinguish photon quantity from spectrum and plant response."},
+    {"id":"THC-LIGHT-05","category":"lighting","title":"Canopy Light Uniformity Mapping","status":"artwork-needed","priority":1,"purpose":"Show multi-point PPFD mapping, hot spots, edge falloff, fixture height and canopy geometry."},
+    {"id":"THC-LIGHT-06","category":"lighting","title":"Light Stress: Observation vs Diagnosis","status":"artwork-needed","priority":1,"purpose":"Compare bleaching, leaf-angle changes, heat stress and unrelated look-alikes while reinforcing multi-signal diagnosis."},
+    {"id":"THC-LIGHT-07","category":"lighting","title":"Photoperiod & Dark-Period Integrity","status":"artwork-needed","priority":2,"purpose":"Explain timers, uninterrupted dark periods, light leaks and measurement without overgeneralizing cultivar responses."},
+    {"id":"THC-LIGHT-08","category":"lighting","title":"Spectrum: What Changes and What Does Not","status":"artwork-needed","priority":2,"purpose":"Explain spectral distribution, morphology-related responses and why spectrum does not replace adequate photon delivery."},
+    {"id":"THC-LIGHT-09","category":"lighting","title":"Fixture Height, Coverage & Tradeoffs","status":"artwork-needed","priority":2,"purpose":"Visualize intensity, footprint, uniformity and heat-management tradeoffs as fixture distance changes."},
+    {"id":"THC-LIGHT-10","category":"lighting","title":"Light Measurement Errors","status":"artwork-needed","priority":2,"purpose":"Show common errors including tilted sensors, smartphone-only estimates, too few sample points and measuring above rather than at canopy."},
+
+    {"id":"THC-IPM-05","category":"plant-health-ipm","title":"Scouting Pattern: Where to Look First","status":"artwork-needed","priority":1,"purpose":"Photoreal plant inspection sequence covering leaf undersides, new growth, stems, media surface and sticky-card context."},
+    {"id":"THC-IPM-06","category":"plant-health-ipm","title":"Spider Mite Identification","status":"artwork-needed","priority":1,"purpose":"Macro comparison of mites, eggs, stippling, webbing and non-mite look-alikes."},
+    {"id":"THC-IPM-07","category":"plant-health-ipm","title":"Thrips Identification","status":"artwork-needed","priority":1,"purpose":"Macro comparison of adults/larvae, feeding scars, frass and common look-alikes."},
+    {"id":"THC-IPM-08","category":"plant-health-ipm","title":"Fungus Gnats: Adults, Larvae & Root-Zone Context","status":"artwork-needed","priority":1,"purpose":"Show life stages, sticky-card adults, larvae near media and why adult counts alone do not quantify root injury."},
+    {"id":"THC-IPM-09","category":"plant-health-ipm","title":"Powdery Mildew vs Residue","status":"artwork-needed","priority":1,"purpose":"Photoreal diagnostic comparison of powdery mildew, mineral/spray residue, trichomes and dust."},
+    {"id":"THC-IPM-10","category":"plant-health-ipm","title":"Botrytis / Bud Rot Progression","status":"artwork-needed","priority":1,"purpose":"Show external warning signs, internal flower damage and segregation logic without implying visual inspection proves microbiological safety."},
+    {"id":"THC-IPM-11","category":"plant-health-ipm","title":"Root Health: Normal vs Stressed","status":"artwork-needed","priority":2,"purpose":"Compare healthy roots with low-oxygen, physical damage, salt-stress and disease-like appearances while avoiding single-image diagnosis."},
+    {"id":"THC-IPM-12","category":"plant-health-ipm","title":"Differential Diagnosis Decision Tree","status":"artwork-needed","priority":1,"purpose":"Route symptoms through location, pattern, environment, irrigation, roots, pH/EC, pest evidence and progression before assigning a likely cause."},
+
+    {"id":"THC-MEAS-02","category":"research-measurement","title":"Measurement Quality: Accuracy, Precision & Resolution","status":"artwork-needed","priority":1,"purpose":"Explain the three concepts using cultivation instruments and repeated measurements."},
+    {"id":"THC-MEAS-03","category":"research-measurement","title":"Representative Sampling","status":"artwork-needed","priority":1,"purpose":"Show why measurements from one leaf, bud, pot or canopy point may not represent an entire plant or batch."},
+    {"id":"THC-MEAS-04","category":"research-measurement","title":"Calibration & Verification","status":"artwork-needed","priority":1,"purpose":"Show calibration/reference checks for pH, EC, temperature/RH and light instruments without implying all sensors use the same procedure."},
+    {"id":"THC-MEAS-05","category":"research-measurement","title":"Trend Data vs One-Time Readings","status":"artwork-needed","priority":1,"purpose":"Demonstrate how time-series data reveals drift, cycling and transient events that a single reading can miss."},
+    {"id":"THC-MEAS-06","category":"research-measurement","title":"Observation → Hypothesis → Test → Compare","status":"artwork-needed","priority":2,"purpose":"Teach a simple evidence workflow for cultivation troubleshooting rather than immediate causal claims."},
+    {"id":"THC-MEAS-07","category":"research-measurement","title":"Confounding Variables in Grow Experiments","status":"artwork-needed","priority":2,"purpose":"Visualize how genetics, environment, irrigation, plant size and measurement timing can distort a comparison."},
+    {"id":"THC-MEAS-08","category":"research-measurement","title":"Cultivation Recordkeeping That Supports Diagnosis","status":"artwork-needed","priority":2,"purpose":"Show a concise log structure for environmental data, irrigation, pH/EC, plant observations, interventions and outcomes."}
+  ]
+}
