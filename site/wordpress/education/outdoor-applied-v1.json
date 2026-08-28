@@ -1,0 +1,304 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-08-28",
+  "id": "outdoor-applied-v1",
+  "route": "/learn/outdoor/",
+  "title": "Outdoor Cultivation — Applied Decision Guide",
+  "purpose": "Extend the core Outdoor curriculum with practical decision frameworks for root-zone system choice, natural photoperiod and seasonal development, weather contingencies, canopy access and airflow, and harvest-weather risk. The guide teaches learners what to inspect, record, compare and verify before acting instead of reducing outdoor cultivation to fixed recipes.",
+  "evidenceBoundary": "Cannabis-specific evidence is used where available for field irrigation response, flowering behavior, disease and harvest-associated microbial risk. Transferable horticulture guidance is used for raised-bed/root-zone and weather-response principles. Cultivar, latitude, soil, irrigation system, plant size and local weather can change outcomes; this guide therefore avoids universal spacing, irrigation volume, flowering-date, frost, trichome-percentage or harvest-timing prescriptions.",
+  "sourceRefs": [
+    {
+      "id": "A1",
+      "type": "university extension / field research",
+      "citation": "Roseberg R. Optimum irrigation for CBD-type hemp plants in the field. Oregon State University Extension Service, EM 9571. 2024.",
+      "supports": "Field cannabis/hemp water response depends on plant type, density, irrigation method and climate; irrigation decisions should be site-specific rather than based on one universal amount."
+    },
+    {
+      "id": "A2",
+      "type": "university extension",
+      "citation": "University of Minnesota Extension. Raised bed gardens.",
+      "supports": "Raised beds can mitigate compacted or limited topsoil but can dry differently from surrounding ground; soil testing and physical root-zone properties should guide amendments and management."
+    },
+    {
+      "id": "A3",
+      "type": "peer-reviewed",
+      "citation": "Comparative genomics of flowering behavior in Cannabis sativa. 2023. PMCID: PMC10421669.",
+      "supports": "Flowering behavior differs among genotypes and is associated with adaptation to latitude, supporting cultivar- and location-specific seasonal observations."
+    },
+    {
+      "id": "A4",
+      "type": "peer-reviewed",
+      "citation": "Photoperiodic Flowering Response of Essential Oil, Grain, and Fiber Hemp (Cannabis sativa L.) Cultivars. 2021. PMCID: PMC8367441.",
+      "supports": "Critical photoperiod responses vary among Cannabis cultivars; outdoor flowering should not be reduced to one universal day-length threshold."
+    },
+    {
+      "id": "A5",
+      "type": "peer-reviewed",
+      "citation": "Longer Photoperiod Substantially Increases Indoor-Grown Cannabis Yield and Quality: A Study of Two High-THC Cultivars Grown under 12 h vs. 13 h Days. 2024. PMCID: PMC10857075.",
+      "supports": "Cannabis flowering responses can remain cultivar-dependent even near commonly used flowering photoperiods, reinforcing the need to observe actual developmental response rather than assume one trigger."
+    },
+    {
+      "id": "A6",
+      "type": "peer-reviewed review",
+      "citation": "Emerging diseases of Cannabis sativa and sustainable management. 2021. PMCID: PMC8451794.",
+      "supports": "Moisture, humidity, susceptible tissue and pathogen presence interact in cannabis disease development; integrated prevention and sanitation are preferable to weather-only diagnosis."
+    },
+    {
+      "id": "A7",
+      "type": "peer-reviewed field study",
+      "citation": "Microbial hazards during harvesting and processing at an outdoor United States cannabis farm. 2018. PMCID: PMC6314012.",
+      "supports": "Outdoor cannabis harvesting and handling can involve substantial fungal and bacterial exposure, including Botrytis, supporting clean handling and separation of suspect material."
+    },
+    {
+      "id": "A8",
+      "type": "university extension",
+      "citation": "Penn State Extension. Hardening Transplants. 2026.",
+      "supports": "Plants moved from protected conditions benefit from gradual acclimation to outdoor light, wind and temperature variation; weather should be considered during transition."
+    }
+  ],
+  "modules": [
+    {
+      "id": "rootzone-systems",
+      "number": 1,
+      "title": "Choose the Root-Zone System Before You Amend It",
+      "learnerQuestion": "Should this plant be in native ground, a raised bed, or a container system, and what evidence supports that choice?",
+      "sourceIds": ["A1", "A2"],
+      "lessons": [
+        {
+          "title": "Compare in-ground, raised-bed and container constraints",
+          "coreIdea": "The root-zone system changes water storage, drainage, temperature buffering, physical root volume and how quickly management mistakes appear. No one system is universally best.",
+          "inspect": "Document native soil depth and texture, compaction, drainage after rain, available rooting area, container volume if used, water access and whether roots will be exposed to unusually rapid heating or drying.",
+          "decision": "Choose the system that resolves the site's limiting factor without creating a larger one. For example, a raised bed can help where native soil is compacted, but the altered root zone may require closer water monitoring.",
+          "avoid": "Do not choose a container or raised bed only because it is visually tidy, and do not assume in-ground soil is automatically more stable without inspecting drainage and compaction."
+        },
+        {
+          "title": "Test before adding amendments",
+          "coreIdea": "Amendments should solve a measured physical or chemical limitation. Repeatedly adding compost, lime, fertilizer or other inputs without a baseline can create new imbalances.",
+          "inspect": "Use a representative soil or media sample where appropriate; record pH, salinity/EC context, organic matter or nutrient data if available, texture, drainage behavior and prior amendment history.",
+          "decision": "Prioritize corrections tied to measured constraints and recheck after meaningful changes. Separate fertility problems from drainage, aeration and irrigation problems before adding nutrients.",
+          "avoid": "Do not treat leaf color alone as proof of a soil nutrient deficiency, and do not copy another grower's amendment rate into a different soil without testing."
+        },
+        {
+          "title": "Track compaction, infiltration and ponding as separate problems",
+          "coreIdea": "Slow infiltration at the surface, compacted layers below the surface and low-area ponding can look similar after a storm but can require different corrections.",
+          "inspect": "After rainfall or irrigation, record where water enters, where it runs, where it remains, how long the surface stays saturated and whether a dense layer resists probing below the surface.",
+          "decision": "Match the response to the observed pathway: protect soil structure, redirect runoff, improve the planting position or change the root-zone system when the physical limitation cannot be corrected safely in place.",
+          "avoid": "Do not infer deep drainage from a dry surface or assume ponding is solved simply by reducing irrigation when rainfall and topography are the main drivers."
+        },
+        {
+          "title": "Design irrigation around the root volume that exists now",
+          "coreIdea": "Outdoor root systems and canopy demand change through the season. A watering footprint that worked after transplant can become too small later.",
+          "inspect": "Check moisture at multiple distances and depths, emitter or hose coverage, source flow, runoff, infiltration and plant response at comparable times.",
+          "decision": "Expand or redistribute the wetting pattern when observations show active roots are extending beyond the original irrigated area; adjust frequency from root-zone response rather than calendar alone.",
+          "avoid": "Do not equate irrigation runtime with water reaching the whole active root zone, and do not assume recorded rainfall fully recharged it."
+        }
+      ],
+      "fieldChecklist": [
+        "root-zone system and dimensions",
+        "native soil or media description",
+        "post-rain drainage observations",
+        "compaction or restrictive-layer observations",
+        "soil/media test date and sample location",
+        "irrigation wetting-pattern check",
+        "root-zone temperature/moisture notes when conditions are extreme",
+        "changes made and follow-up result"
+      ]
+    },
+    {
+      "id": "photoperiod-season",
+      "number": 2,
+      "title": "Natural Photoperiod, Latitude & Seasonal Development",
+      "learnerQuestion": "How is this genotype actually responding to changing day length and local season conditions?",
+      "sourceIds": ["A3", "A4", "A5"],
+      "lessons": [
+        {
+          "title": "Treat flowering response as genotype-specific",
+          "coreIdea": "Cannabis genotypes do not all initiate or progress through flowering at the same natural day length. Latitude of adaptation and cultivar genetics matter.",
+          "inspect": "Record cultivar/genotype identity, latitude, transplant or emergence date, first visible preflower, first clear reproductive transition and subsequent flower-development checkpoints.",
+          "decision": "Build expectations from the plant's observed response in the local season and from documented history for that genotype rather than using one assumed calendar date.",
+          "avoid": "Do not teach that all photoperiod cultivars begin flowering at exactly 12 hours of daylight."
+        },
+        {
+          "title": "Separate day length from usable light",
+          "coreIdea": "Photoperiod describes light-versus-dark duration; it does not describe total photosynthetic light received. Shade, clouds and seasonal solar angle can change light quantity independently of day length.",
+          "inspect": "Record sunrise/sunset or modeled day length separately from direct-sun windows, shade interruptions and optional PAR/DLI measurements.",
+          "decision": "Use photoperiod observations to understand developmental timing and light measurements to understand light quantity; do not substitute one for the other.",
+          "avoid": "Do not convert hours of direct sun directly into DLI without intensity data."
+        },
+        {
+          "title": "Map stray night light as a site variable",
+          "coreIdea": "Artificial light from security fixtures, windows, roads or neighboring properties can alter the natural dark period at some plant positions, but effect depends on intensity, spectrum, timing and genotype.",
+          "inspect": "After dark, inspect from the canopy position and record light-source direction, duration, consistency and whether only part of the canopy is exposed.",
+          "decision": "If development differs spatially, compare exposed and shielded canopy zones before assuming genetics or nutrition caused the difference.",
+          "avoid": "Do not label every distant light source as harmful without measuring or comparing exposure."
+        },
+        {
+          "title": "Use seasonal records to choose genetics next year",
+          "coreIdea": "A genotype that consistently finishes too late for the local disease or frost window may be a poor location fit even if its indoor description looks attractive.",
+          "inspect": "Record developmental dates, weather during late flower, disease events, storm/frost conflicts, harvest date and whether maturity goals were reached before major seasonal risk.",
+          "decision": "Use multi-season records to compare genotype fit and choose earlier-, later- or day-neutral material based on the actual site and goals.",
+          "avoid": "Do not treat catalog flowering duration as a guaranteed outdoor calendar finish date."
+        }
+      ],
+      "fieldChecklist": [
+        "latitude and site ID",
+        "genotype/cultivar identity",
+        "emergence or transplant date",
+        "first preflower observation",
+        "first clear reproductive transition",
+        "day length at checkpoints",
+        "direct-sun/shade notes",
+        "stray-light map",
+        "late-season weather conflicts",
+        "final harvest timing and maturity notes"
+      ]
+    },
+    {
+      "id": "weather-contingency",
+      "number": 3,
+      "title": "Heat, Cold, Wind, Hail & Storm Contingencies",
+      "learnerQuestion": "What changes before, during and after a weather event, and which intervention is justified by the observed risk?",
+      "sourceIds": ["A1", "A6", "A8"],
+      "lessons": [
+        {
+          "title": "Heat events combine atmospheric and root-zone stress",
+          "coreIdea": "High air temperature, strong radiation, wind, low humidity and a hot or dry root zone can combine to raise water demand faster than roots can supply it.",
+          "inspect": "Record forecast conditions, canopy exposure, root-zone moisture at depth, root-zone/container temperature where practical, morning versus afternoon turgor and overnight recovery.",
+          "decision": "Prioritize reliable root-zone water and reducing avoidable root-zone heating; judge interventions from recovery and measured moisture rather than reflexively increasing fertilizer or watering frequency.",
+          "avoid": "Do not diagnose every hot-afternoon droop as underwatering without checking the root zone and recovery pattern."
+        },
+        {
+          "title": "Cold and frost risk are site-specific",
+          "coreIdea": "Air drainage, slope, wind shelter, plant position, soil heat storage and forecast uncertainty can make actual canopy conditions differ from the nearest weather station.",
+          "inspect": "Track local forecast, a canopy-level minimum-temperature reading if available, low spots, frost deposition patterns and cultivar developmental stage.",
+          "decision": "Use local measurements and the value/sensitivity of the crop to decide whether temporary protection or accelerated harvest assessment is warranted.",
+          "avoid": "Do not present one calendar frost date or one temperature as a universal safe/unsafe threshold for every site and genotype."
+        },
+        {
+          "title": "Prepare structural support before wind and hail",
+          "coreIdea": "Weather response is more effective when weak branches, overloaded ties, loose supports and exposed canopy edges are corrected before the event.",
+          "inspect": "Before severe weather, inspect anchors, tie contact points, branch leverage, flower mass, trellis tension, drainage routes and objects that could strike the canopy.",
+          "decision": "Reinforce load paths without cinching stems; after the event, triage broken, abraded or contaminated tissue and document which support points failed.",
+          "avoid": "Do not wait until peak wind to make major structural changes that require moving or stressing the plant."
+        },
+        {
+          "title": "Post-storm inspection should separate damage types",
+          "coreIdea": "Wilt, torn foliage, stem cracks, saturated roots, wind abrasion and early disease symptoms can appear together after severe weather but require different responses.",
+          "inspect": "Photograph canopy zones, inspect stems and support points, check root-zone saturation, note standing water, inspect flowers after wet events and record recovery over the next observation period.",
+          "decision": "Address structural hazards and drainage first, isolate suspect disease tissue, then reassess plant function after immediate weather stress has passed before making nutrient changes.",
+          "avoid": "Do not respond to all storm damage with a broad fertilizer or pesticide treatment."
+        }
+      ],
+      "fieldChecklist": [
+        "forecast and event start/end",
+        "local minimum/maximum temperature if measured",
+        "wind direction and exposure",
+        "rainfall and root-zone saturation notes",
+        "pre-event support inspection",
+        "post-event breakage/abrasion map",
+        "flower wetness/drying observations",
+        "intervention performed",
+        "24–48 hour recovery notes",
+        "lesson for future contingency planning"
+      ]
+    },
+    {
+      "id": "canopy-access-airflow",
+      "number": 4,
+      "title": "Canopy Spacing, Access & Airflow Outdoors",
+      "learnerQuestion": "Can the canopy intercept light, dry after wet events, be inspected, and carry wind/flower load without creating inaccessible high-risk zones?",
+      "sourceIds": ["A1", "A6"],
+      "lessons": [
+        {
+          "title": "Spacing is a system variable, not one magic distance",
+          "coreIdea": "Plant spacing changes canopy overlap, access, water demand, light interception, airflow and disease opportunity; ideal spacing depends on plant architecture, training, climate and production goals.",
+          "inspect": "Measure actual canopy width, gap or overlap between plants, access-lane width, irrigation reach, shaded interior zones and post-rain drying pattern.",
+          "decision": "Use the observed mature canopy footprint and ability to inspect/manage the crop to refine future spacing and training decisions.",
+          "avoid": "Do not publish one universal plant-to-plant spacing as correct for every genotype and outdoor system."
+        },
+        {
+          "title": "Design access before the canopy closes",
+          "coreIdea": "A crop that cannot be inspected from multiple sides makes early pest, disease, support and irrigation problems harder to detect.",
+          "inspect": "Map walking/scouting lanes, reach to interior stems and emitters, ability to inspect lower canopy, and whether support lines block safe movement.",
+          "decision": "Preserve enough access for repeatable scouting, support maintenance and sanitary removal of suspect tissue as plants expand.",
+          "avoid": "Do not sacrifice all access space for maximum canopy area if it prevents inspection and response."
+        },
+        {
+          "title": "Judge airflow by drying and canopy behavior",
+          "coreIdea": "Airflow outdoors is variable and directional. The useful question is not simply whether the site feels windy, but whether dense canopy zones exchange air and dry after dew or rain.",
+          "inspect": "Record prevailing wind, sheltered canopy pockets, leaf movement in interior zones and comparative drying times after representative wet events.",
+          "decision": "Adjust support geometry, selective canopy density or future spacing when the same zones repeatedly stay wet or still longer than surrounding canopy.",
+          "avoid": "Do not assume exposed outer leaves prove the flower interior has adequate air exchange."
+        },
+        {
+          "title": "Coordinate pruning, support and disease prevention",
+          "coreIdea": "Removing foliage changes light distribution, wind load, branch exposure and drying. Structural and plant-health effects should be evaluated together.",
+          "inspect": "Before and after a canopy change, record branch support, shaded tissue, overlapping/rubbing branches, drying pattern and any exposed tender tissue.",
+          "decision": "Make staged, purposeful canopy changes tied to access, structure or repeated moisture problems rather than routine heavy defoliation by calendar.",
+          "avoid": "Do not remove large amounts of healthy foliage solely because an indoor schedule says to do so."
+        }
+      ],
+      "fieldChecklist": [
+        "canopy width and overlap",
+        "scouting/access lanes",
+        "support/tie inspection",
+        "interior versus exterior drying time",
+        "prevailing wind direction",
+        "repeated sheltered wet zones",
+        "branch rubbing or abrasion",
+        "canopy changes performed",
+        "post-change structural response",
+        "post-change disease/scouting observations"
+      ]
+    },
+    {
+      "id": "harvest-weather",
+      "number": 5,
+      "title": "Harvest Windows, Weather Risk & Clean Handling",
+      "learnerQuestion": "When maturity, disease risk and forecast conflict, what evidence supports harvesting now versus continuing maturation?",
+      "sourceIds": ["A6", "A7"],
+      "lessons": [
+        {
+          "title": "Harvest readiness is multi-signal",
+          "coreIdea": "Calendar age, flower appearance, trichome observations, cultivar history, aroma/resin development and plant health each provide context; no single visual percentage should be treated as a universal maturity rule.",
+          "inspect": "Record genotype, days since visible flowering began, representative flower development, magnified trichome observations from comparable locations, overall plant health and prior harvest history for the same line when available.",
+          "decision": "Use repeated, representative maturity observations together with the production goal and risk forecast; document uncertainty instead of presenting a single sign as definitive.",
+          "avoid": "Do not teach a universal 'harvest at X% amber' rule or diagnose readiness from sugar-leaf trichomes alone."
+        },
+        {
+          "title": "Weather risk can change the value of waiting",
+          "coreIdea": "The benefit of additional maturation must be weighed against forecast rain, prolonged humidity, frost, wind or other events and the current susceptibility of the flowers.",
+          "inspect": "Track forecast sequence, prior wetting/drying events, flower density, any disease history, support condition and current maturity evidence.",
+          "decision": "Escalate inspection frequency as weather risk rises; compare the likely value of additional maturation with the consequence of losing healthy tissue to a foreseeable event.",
+          "avoid": "Do not wait for an idealized calendar date while ignoring rapidly changing plant-health risk."
+        },
+        {
+          "title": "Inspect and segregate suspect material during harvest",
+          "coreIdea": "Harvest is also a sanitation event. Suspect mold, rot, dead tissue or contamination should not be mixed through healthy flowers or handled with the same dirty tools without cleaning.",
+          "inspect": "Before cutting, inspect dense interior flowers and previously wet or damaged zones; mark suspect plants/branches and prepare separate handling paths.",
+          "decision": "Harvest healthy and suspect material separately as appropriate, clean tools and contact surfaces, and document where symptoms were found for post-season analysis.",
+          "avoid": "Do not assume drying or curing will make visibly moldy material safe or restore compromised tissue."
+        },
+        {
+          "title": "Record the harvest so next season improves",
+          "coreIdea": "A harvest date without environmental and maturity context cannot teach much. A useful record links genotype, maturity evidence, weather, disease pressure and post-harvest outcome.",
+          "inspect": "Record harvest date/time, plant/lot ID, maturity observations, preceding weather, flower wetness, disease findings, handling notes and later dry/cure quality observations.",
+          "decision": "Compare records across plants and seasons to refine genotype selection, site fit, training, disease prevention and future harvest-window decisions.",
+          "avoid": "Do not reduce end-of-season notes to yield alone; preserve the conditions that explain why the outcome occurred."
+        }
+      ],
+      "fieldChecklist": [
+        "plant/lot and genotype ID",
+        "flowering-development start estimate",
+        "representative maturity observations",
+        "magnification method/location",
+        "recent rain/dew/drying history",
+        "forecast risk",
+        "disease/suspect-tissue map",
+        "harvest date and time",
+        "tool/surface sanitation notes",
+        "post-harvest quality and loss observations"
+      ]
+    }
+  ]
+}
