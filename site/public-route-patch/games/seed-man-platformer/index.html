@@ -20,8 +20,8 @@
     <section class="hero">
       <p class="eyebrow">Seed Man · Original browser vertical slice</p>
       <h1>Sprout Run</h1>
-      <p class="lede">Guide Seed Man across an original greenhouse-inspired obstacle course, collect eight sprouts, activate the checkpoint, and reach the Dream the Future flag.</p>
-      <p id="load-status" class="status">Loading level…</p>
+      <p class="lede">Guide Seed Man across an original greenhouse-inspired obstacle course, collect all eight sprouts, activate the checkpoint, and reach the Dream the Future flag.</p>
+      <p id="load-status" class="status" role="status" aria-live="polite" aria-atomic="true">Loading level…</p>
     </section>
 
     <section class="game-shell" aria-label="Seed Man platformer">
@@ -33,13 +33,13 @@
         <button id="pause" type="button" aria-pressed="false">Pause</button>
         <button id="restart" type="button">Restart</button>
       </div>
-      <canvas id="game" width="960" height="540" tabindex="0" aria-label="Seed Man game canvas. Use left and right arrows or A and D to move, Space, W, or Up Arrow to jump, and P to pause."></canvas>
+      <canvas id="game" width="960" height="540" tabindex="0" aria-label="Seed Man game canvas. Collect all eight sprouts, then reach the finish flag. Use left and right arrows or A and D to move, Space, W, or Up Arrow to jump, and P to pause."></canvas>
       <div class="touch-controls" aria-label="Touch controls">
         <button type="button" data-control="left" aria-label="Move left">◀</button>
         <button type="button" data-control="right" aria-label="Move right">▶</button>
         <button type="button" data-control="jump" class="jump" aria-label="Jump">JUMP</button>
       </div>
-      <p class="controls">Keyboard: A/D or ←/→ to move · Space/W/↑ to jump · P to pause. Touch controls appear below the game. Leaving the tab pauses the run automatically.</p>
+      <p class="controls">Objective: collect all 8 sprouts before the finish flag unlocks. Keyboard: A/D or ←/→ to move · Space/W/↑ to jump · P to pause. Touch controls appear below the game. Leaving the tab pauses the run automatically.</p>
     </section>
 
     <section class="panel" id="finish-panel" hidden>
@@ -51,7 +51,7 @@
 
     <section class="panel">
       <h2>Vertical-slice status</h2>
-      <p>This prototype proves the original movement, collision, checkpoint, hazard, collectible, camera, keyboard, touch-control, pause, and local personal-best systems. The current Seed Man is drawn with simple Canvas2D primitives so gameplay remains independent from unfinished production sprite art.</p>
+      <p>This prototype proves the original movement, collision, checkpoint, hazard, collectible, gated finish, camera, keyboard, touch-control, pause, and local personal-best systems. The current Seed Man is drawn with simple Canvas2D primitives so gameplay remains independent from unfinished production sprite art.</p>
     </section>
   </main>
 

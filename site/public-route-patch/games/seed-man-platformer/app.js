@@ -32,6 +32,17 @@ function readBest() {
   return Number.isFinite(value) && value > 0 ? value : null;
 }
 
+function requiredSprouts() {
+  const explicit = Number(level?.requiredPickups);
+  if (Number.isInteger(explicit) && explicit >= 0) return explicit;
+  return level?.pickups?.length || 0;
+}
+
+function setObjectiveStatus(text, state = 'progress') {
+  if (ui.load.textContent !== text) ui.load.textContent = text;
+  if (ui.load.dataset.state !== state) ui.load.dataset.state = state;
+}
+
 function clearInput() {
   input.left = false;
   input.right = false;
@@ -121,11 +132,25 @@ for (const button of document.querySelectorAll('[data-control]')) {
 }
 
 function updateHud() {
-  ui.sprouts.textContent = `${player?.collected.length || 0} / ${level?.pickups.length || 0}`;
+  const collected = player?.collected.length || 0;
+  const required = requiredSprouts();
+  const remaining = Math.max(0, required - collected);
+  ui.sprouts.textContent = `${collected} / ${required}`;
   ui.deaths.textContent = String(player?.deaths || 0);
   ui.time.textContent = `${elapsed.toFixed(1)}s`;
   const best = readBest();
   ui.best.textContent = best ? `${best.toFixed(1)}s` : '—';
+
+  if (!level || !player) return;
+  if (player.finished) {
+    setObjectiveStatus(`Run complete · all ${required} sprouts collected · Dream the Future reached!`, 'complete');
+  } else if (player.finishBlocked) {
+    setObjectiveStatus(`Flag locked · collect ${remaining} more sprout${remaining === 1 ? '' : 's'} before finishing.`, 'blocked');
+  } else if (remaining === 0) {
+    setObjectiveStatus(`All ${required} sprouts collected · reach the Dream the Future flag!`, 'ready');
+  } else {
+    setObjectiveStatus(`Collect ${remaining} more sprout${remaining === 1 ? '' : 's'} · checkpoint enabled · personal best saved locally`, 'progress');
+  }
 }
 
 function worldRect(rect, fill, stroke = null) {
@@ -202,10 +227,21 @@ function drawCheckpoint() {
 }
 
 function drawFinish() {
-  const f = level.finish; const x = f.x - cameraX;
-  ctx.strokeStyle = '#28482f'; ctx.lineWidth = 6; ctx.beginPath(); ctx.moveTo(x + 10, f.y + f.height); ctx.lineTo(x + 10, f.y); ctx.stroke();
-  ctx.fillStyle = '#10291d'; ctx.fillRect(x + 13, f.y + 3, 35, 22);
-  ctx.fillStyle = '#c8f36a'; ctx.font = 'bold 9px system-ui'; ctx.fillText('DTF', x + 20, f.y + 18);
+  const f = level.finish;
+  const x = f.x - cameraX;
+  const remaining = Math.max(0, requiredSprouts() - player.collected.length);
+  const ready = remaining === 0;
+  ctx.strokeStyle = ready ? '#28482f' : '#5d432e';
+  ctx.lineWidth = 6;
+  ctx.beginPath();
+  ctx.moveTo(x + 10, f.y + f.height);
+  ctx.lineTo(x + 10, f.y);
+  ctx.stroke();
+  ctx.fillStyle = ready ? '#10291d' : '#6b4c2c';
+  ctx.fillRect(x + 13, f.y + 3, 48, 24);
+  ctx.fillStyle = ready ? '#c8f36a' : '#ffe1a0';
+  ctx.font = 'bold 8px system-ui';
+  ctx.fillText(ready ? 'DTF READY' : `${remaining} LEFT`, x + 17, f.y + 18);
 }
 
 function drawSeedMan() {
@@ -254,7 +290,7 @@ function finishGame() {
   if (newBest) localStorage.setItem(BEST_KEY, String(elapsed));
   updateHud();
   ui.finish.hidden = false;
-  ui.summary.textContent = `${player.collected.length} of ${level.pickups.length} sprouts collected · ${player.deaths} falls · ${elapsed.toFixed(1)} seconds.${newBest ? ' New personal best!' : ''}`;
+  ui.summary.textContent = `${player.collected.length} of ${requiredSprouts()} sprouts collected · ${player.deaths} falls · ${elapsed.toFixed(1)} seconds.${newBest ? ' New personal best!' : ''}`;
 }
 
 function frame(timeMs) {
@@ -283,12 +319,12 @@ async function load() {
     const response = await fetch('./data/level-01.json', { credentials: 'same-origin' });
     if (!response.ok) throw new Error(`level HTTP ${response.status}`);
     level = await response.json();
-    if (level.worldWidth !== 2600 || level.pickups.length !== 8) throw new Error('level contract mismatch');
-    ui.load.textContent = 'Level ready · 8 sprouts · checkpoint enabled · personal best saved locally';
+    if (level.worldWidth !== 2600 || level.pickups.length !== 8 || level.requiredPickups !== 8 || level.requiredPickups !== level.pickups.length) throw new Error('level contract mismatch');
+    setObjectiveStatus(`Collect all ${level.requiredPickups} sprouts · checkpoint enabled · personal best saved locally`, 'progress');
     reset();
   } catch (error) {
     console.error(error);
-    ui.load.textContent = 'The Seed Man level could not be loaded.';
+    setObjectiveStatus('The Seed Man level could not be loaded.', 'error');
   }
 }
 
