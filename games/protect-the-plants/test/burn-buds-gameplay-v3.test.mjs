@@ -32,6 +32,12 @@ for (const marker of [
   'Pick a cell and fire.',
   'Your stash is under fire.',
   'BURNED!',
+  'function shotStats(shots)',
+  'function remainingOwnFormations()',
+  'function remainingOpponentFormations()',
+  'className=\'burn-telemetry\'',
+  'Live battle statistics',
+  '% accuracy',
   "replace('You already scouted that plot.','You already fired at that cell.')"
 ]) {
   assert.ok(gameplay.includes(marker), `Missing Burn Buds gameplay marker: ${marker}`);
@@ -40,6 +46,7 @@ for (const marker of [
 for (const marker of [
   '.burn-presence.online',
   '.burn-turn-banner.fire',
+  '.burn-telemetry',
   '.burn-my-turn',
   '.burn-opponent-turn',
   '.burn-burst',
@@ -70,4 +77,4 @@ for (const forbidden of [
   assert.ok(!presence.includes(forbidden), `Presence endpoint leaks or weakens auth: ${forbidden}`);
 }
 
-console.log('Burn Buds gameplay v3 presence, targeting, and burn feedback checks passed.');
+console.log('Burn Buds gameplay v3 presence, telemetry, targeting, and burn feedback checks passed.');

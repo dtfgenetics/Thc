@@ -145,6 +145,54 @@
     }else banner.remove();
   }
 
+  function shotStats(shots){
+    const list=Array.isArray(shots)?shots:[];
+    const hits=list.filter(shot=>Boolean(shot?.hit)).length;
+    return{shots:list.length,hits,accuracy:list.length?Math.round(hits/list.length*100):0};
+  }
+
+  function formationIsBurned(formation,shotsReceived){
+    if(!formation||!Array.isArray(formation.cells)||!formation.cells.length)return false;
+    const hitCells=new Set((Array.isArray(shotsReceived)?shotsReceived:[])
+      .filter(shot=>shot?.hit)
+      .map(shot=>`${shot.row}:${shot.col}`));
+    return formation.cells.every(cell=>hitCells.has(`${cell.row}:${cell.col}`));
+  }
+
+  function remainingOwnFormations(){
+    if(typeof state==='undefined'||!state?.me)return 5;
+    const fleet=Array.isArray(state.me.fleet)?state.me.fleet:[];
+    const burned=fleet.filter(formation=>formationIsBurned(formation,state.me.shotsReceived)).length;
+    return Math.max(0,5-burned);
+  }
+
+  function remainingOpponentFormations(){
+    if(typeof state==='undefined'||!state?.opponent)return 5;
+    const revealedBurned=Array.isArray(state.opponent.fleet)?state.opponent.fleet.length:0;
+    return Math.max(0,5-revealedBurned);
+  }
+
+  function renderTelemetry(){
+    const playZone=document.querySelector('.play-zone');
+    if(!playZone)return;
+    let strip=playZone.querySelector('.burn-telemetry');
+    if(typeof state==='undefined'||!state||!['playing','finished'].includes(state.status)){
+      if(strip)strip.remove();
+      return;
+    }
+    if(!strip){
+      strip=document.createElement('div');
+      strip.className='burn-telemetry';
+      strip.setAttribute('aria-label','Live battle statistics');
+      const banner=playZone.querySelector('.burn-turn-banner');
+      if(banner)banner.after(strip);else playZone.prepend(strip);
+    }
+    const mine=shotStats(state.me?.shots);
+    const theirs=shotStats(state.opponent?.shots);
+    const html=`<section><span class="burn-telemetry-label">YOU</span><strong>${remainingOwnFormations()}</strong><small>buds left</small><b>${mine.hits}/${mine.shots}</b><small>${mine.accuracy}% accuracy</small></section><i aria-hidden="true">VS</i><section><span class="burn-telemetry-label">OPPONENT</span><strong>${remainingOpponentFormations()}</strong><small>buds left</small><b>${theirs.hits}/${theirs.shots}</b><small>${theirs.accuracy}% accuracy</small></section>`;
+    updateSlot(strip,html);
+  }
+
   function staggerBurnedFormation(){
     document.querySelectorAll('.cell.lost .plant-token').forEach(token=>{
       const segment=Number(token.dataset.segment||0);
@@ -157,6 +205,7 @@
     rewriteSystemCopy();
     renderPresence();
     applyTurnState();
+    renderTelemetry();
     staggerBurnedFormation();
     ensureBurnFx();
   }
