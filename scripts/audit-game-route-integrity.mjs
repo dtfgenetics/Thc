@@ -28,23 +28,65 @@ function assetsFromHtml(html, pageUrl) {
     .slice(0, 30);
 }
 
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+function networkErrorDetail(error) {
+  if (!(error instanceof Error)) return String(error);
+  const cause = error.cause;
+  if (cause && typeof cause === 'object') {
+    const code = 'code' in cause ? String(cause.code) : '';
+    const message = 'message' in cause ? String(cause.message) : '';
+    if (code || message) return [code, message].filter(Boolean).join(': ');
+  }
+  return error.message || error.name;
+}
+
 async function fetchWithTimeout(url, options = {}) {
-  return fetch(url, {
-    redirect: 'follow',
-    signal: AbortSignal.timeout(20_000),
-    headers: {
-      'user-agent': 'DTFSeeds-Game-Route-QA/1.0',
-      'cache-control': 'no-cache, no-store, max-age=0',
-      pragma: 'no-cache',
-      ...(options.headers || {})
-    },
-    ...options
-  });
+  const {
+    attempts = 3,
+    timeoutMs = 15_000,
+    headers = {},
+    ...fetchOptions
+  } = options;
+  let lastError = null;
+
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try {
+      const response = await fetch(url, {
+        redirect: 'follow',
+        ...fetchOptions,
+        signal: AbortSignal.timeout(timeoutMs),
+        headers: {
+          'user-agent': 'DTFSeeds-Game-Route-QA/1.1',
+          'cache-control': 'no-cache, no-store, max-age=0',
+          pragma: 'no-cache',
+          ...headers
+        }
+      });
+      const retryableStatus = response.status === 429 || response.status >= 500;
+      if (!retryableStatus || attempt === attempts) return response;
+      await response.body?.cancel().catch(() => {});
+      await sleep(400 * attempt);
+    } catch (error) {
+      lastError = error;
+      if (attempt === attempts) break;
+      await sleep(400 * attempt);
+    }
+  }
+
+  throw new Error(`fetch failed after ${attempts} attempts (${networkErrorDetail(lastError)})`);
 }
 
 async function assetOk(url) {
-  let response = await fetchWithTimeout(url, { method: 'HEAD' });
-  if (response.status === 405 || response.status === 403) response = await fetchWithTimeout(url, { method: 'GET', headers: { range: 'bytes=0-0' } });
+  let response = await fetchWithTimeout(url, { method: 'HEAD', attempts: 2, timeoutMs: 10_000 });
+  if (response.status === 405 || response.status === 403) {
+    response = await fetchWithTimeout(url, {
+      method: 'GET',
+      attempts: 2,
+      timeoutMs: 10_000,
+      headers: { range: 'bytes=0-0' }
+    });
+  }
   return { ok: response.ok, status: response.status };
 }
 
@@ -70,7 +112,7 @@ for (const game of games) {
         const check = await assetOk(asset.href);
         if (!check.ok) brokenAssets.push(`${asset.pathname} (${check.status})`);
       } catch (error) {
-        brokenAssets.push(`${asset.pathname} (${error instanceof Error ? error.message : String(error)})`);
+        brokenAssets.push(`${asset.pathname} (${networkErrorDetail(error)})`);
       }
     }
     if (brokenAssets.length) problems.push(`broken same-origin assets: ${brokenAssets.join(', ')}`);
@@ -83,7 +125,7 @@ for (const game of games) {
 
     results.push({ id: game.id, route: game.route, status: response.status, assetsChecked: assets.length, problems });
   } catch (error) {
-    problems.push(error instanceof Error ? error.message : String(error));
+    problems.push(networkErrorDetail(error));
     results.push({ id: game.id, route: game.route, status: null, assetsChecked: 0, problems });
   }
 
@@ -103,7 +145,7 @@ try {
     if (game.route && (html.includes(`href="${game.route}"`) || html.includes(`href='${game.route}'`))) failures.push({ id: 'game-hub', route: '/games/', problems: [`development-only game linked publicly: ${game.id}`] });
   }
 } catch (error) {
-  failures.push({ id: 'game-hub', route: '/games/', problems: [error instanceof Error ? error.message : String(error)] });
+  failures.push({ id: 'game-hub', route: '/games/', problems: [networkErrorDetail(error)] });
 }
 
 fs.writeFileSync('game-route-audit.json', JSON.stringify({ generatedAt: new Date().toISOString(), gamesChecked: games.length, results, failures }, null, 2));
