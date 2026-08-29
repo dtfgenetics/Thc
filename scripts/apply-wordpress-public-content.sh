@@ -24,10 +24,10 @@ command -v "$WP_BIN" >/dev/null
 [[ -f "$WORDPRESS_PATH/wp-config.php" ]]
 [[ -d "$CONTENT_DIR" ]]
 
-# WordPress owns only the editorial/root pages below. /games/ and
-# /games/high-iq/ are deployed by the static application suite and must not be
-# required to exist as WordPress pages.
-required_files=(home seeds learn community shop gallery about contact)
+# WordPress owns only the editorial/root pages below. /seeds/ and /seeds/*
+# belong exclusively to the dedicated genetics publisher. /games/ and
+# /games/high-iq/ belong to the static public application suite.
+required_files=(home learn community shop gallery about contact blog)
 for slug in "${required_files[@]}"; do
   file="$CONTENT_DIR/$slug.html"
   [[ -s "$file" ]] || { echo "Missing or empty content file: $file"; exit 1; }
@@ -40,7 +40,9 @@ for forbidden in \
   "Needed from owner" \
   "Tool-ready rebuild" \
   "Use this page for" \
-  "staged for"; do
+  "staged for" \
+  "email@email.com" \
+  "+123456789"; do
   if grep -RFiq -- "$forbidden" "$CONTENT_DIR"; then
     echo "Forbidden staging phrase found in public content: $forbidden"
     exit 1
@@ -71,16 +73,16 @@ resolve_page_id() {
   printf '%s' "$ids"
 }
 
-page_slugs=(home seeds learn community shop gallery about contact)
+page_slugs=(home learn community shop gallery about contact blog)
 page_titles=(
   "DTF Genetics | Dream the Future"
-  "Seeds / Genetics"
   "Teaching Healthy Cultivation"
   "Community"
   "Shop"
   "Gallery"
   "About DTF Genetics"
   "Contact DTF Genetics"
+  "DTF Field Notes & Updates"
 )
 
 declare -A PAGE_IDS=()
@@ -118,21 +120,22 @@ else
   echo "WordPress front page already points to canonical /home/ page ID $expected_page_on_front."
 fi
 
-# Remove the obsolete public blog only when WordPress confirms that the configured
-# posts page is the known /blog/ page. This avoids changing an unrelated archive.
+# `/blog/` is canonical editorial content. If WordPress still treats that page
+# as the posts index, detach page_for_posts while preserving publication.
 page_for_posts="$("$WP_BIN" --path="$WORDPRESS_PATH" option get page_for_posts 2>/dev/null || echo 0)"
 if [[ "$page_for_posts" =~ ^[0-9]+$ ]] && (( page_for_posts > 0 )); then
   posts_page_slug="$("$WP_BIN" --path="$WORDPRESS_PATH" post get "$page_for_posts" --field=post_name 2>/dev/null || true)"
   if [[ "$posts_page_slug" == "blog" ]]; then
-    "$WP_BIN" --path="$WORDPRESS_PATH" post get "$page_for_posts" --format=json > "$BACKUP_DIR/pages/blog.json"
+    "$WP_BIN" --path="$WORDPRESS_PATH" post get "$page_for_posts" --format=json > "$BACKUP_DIR/pages/blog-posts-page-before.json"
     "$WP_BIN" --path="$WORDPRESS_PATH" option update page_for_posts 0
-    "$WP_BIN" --path="$WORDPRESS_PATH" post update "$page_for_posts" --post_status=draft --porcelain
-    echo "Disabled obsolete /blog/ posts page (post ID $page_for_posts)."
+    confirmed_page_for_posts="$("$WP_BIN" --path="$WORDPRESS_PATH" option get page_for_posts 2>/dev/null || echo 0)"
+    [[ "$confirmed_page_for_posts" == "0" ]]
+    echo "Detached canonical /blog/ page ID ${PAGE_IDS[blog]} from the WordPress posts index while preserving publication."
   else
-    echo "Configured posts page is not /blog/; legacy blog setting left unchanged."
+    echo "Configured posts page is not /blog/; posts-index setting left unchanged."
   fi
 else
-  echo "No configured posts page found; legacy blog setting left unchanged."
+  echo "No configured posts page found; canonical /blog/ remains published."
 fi
 
 legacy_titles=(
@@ -159,4 +162,4 @@ echo "Content cleanup completed."
 echo "Rollback source: $BACKUP_DIR/database.sql"
 echo "Page-level JSON backups: $BACKUP_DIR/pages"
 echo "Front-page setting backups: $BACKUP_DIR/show-on-front.txt and $BACKUP_DIR/page-on-front.txt"
-echo "No game directories, plugins, themes, users, products, orders, or media files were changed."
+echo "No game directories, genetics routes, plugins, themes, users, products, orders, or media files were changed."

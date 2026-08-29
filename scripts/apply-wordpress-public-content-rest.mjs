@@ -18,7 +18,7 @@ const headers = {
   Authorization: authHeader,
   'Content-Type': 'application/json',
   Accept: 'application/json',
-  'User-Agent': 'DTFSeeds-Content-Deployment/1.6'
+  'User-Agent': 'DTFSeeds-Content-Deployment/1.7'
 };
 
 // WordPress owns the editorial/root pages below. /seeds/ and /seeds/* are
@@ -31,7 +31,8 @@ const pageDefinitions = [
   ['shop', 'Shop'],
   ['gallery', 'Gallery'],
   ['about', 'About DTF Genetics'],
-  ['contact', 'Contact DTF Genetics']
+  ['contact', 'Contact DTF Genetics'],
+  ['blog', 'DTF Field Notes & Updates']
 ];
 
 const legacyPostTitles = [
@@ -46,7 +47,9 @@ const forbiddenPhrases = [
   'Needed from owner',
   'Tool-ready rebuild',
   'Use this page for',
-  'staged for'
+  'staged for',
+  'email@email.com',
+  '+123456789'
 ];
 
 function normalizeText(value = '') {
@@ -287,30 +290,33 @@ try {
   throw new Error(`Front-page reconciliation failed: ${error.message}`);
 }
 
-// Remove the obsolete posts page only when WordPress confirms that it is the
-// configured posts page and its slug is exactly "blog".
+// `/blog/` is a canonical editorial page. If WordPress is still treating that
+// page as the posts index, detach page_for_posts while preserving the page as
+// published canonical content.
 try {
+  const blogItem = prepared.find((item) => item.slug === 'blog');
+  if (!blogItem?.page?.id) throw new Error('Canonical Blog page ID is unavailable');
+
   const settings = await request('/wp-json/wp/v2/settings');
   await writeFile(join(backupDir, 'settings-before.json'), `${JSON.stringify(settings.body, null, 2)}\n`, 'utf8');
   const postsPageId = Number(settings.body?.page_for_posts || 0);
   if (postsPageId > 0) {
     const postsPage = await request(`/wp-json/wp/v2/pages/${postsPageId}?context=edit`);
     if (postsPage.body?.slug === 'blog') {
-      await writeFile(join(backupDir, 'pages', 'blog.json'), `${JSON.stringify(postsPage.body, null, 2)}\n`, 'utf8');
-      await request('/wp-json/wp/v2/settings', {
+      await writeFile(join(backupDir, 'pages', 'blog-posts-page-before.json'), `${JSON.stringify(postsPage.body, null, 2)}\n`, 'utf8');
+      const updatedSettings = await request('/wp-json/wp/v2/settings', {
         method: 'POST',
         body: JSON.stringify({ page_for_posts: 0 })
       });
-      await request(`/wp-json/wp/v2/pages/${postsPageId}`, {
-        method: 'POST',
-        body: JSON.stringify({ status: 'draft' })
-      });
+      if (Number(updatedSettings.body?.page_for_posts || 0) !== 0) {
+        throw new Error('WordPress did not detach /blog/ from page_for_posts');
+      }
       auxiliaryMutations += 1;
-      console.log(`Disabled obsolete /blog/ posts page (page ID ${postsPageId})`);
+      console.log(`Detached canonical /blog/ page ID ${blogItem.page.id} from the WordPress posts index while preserving publication.`);
     }
   }
 } catch (error) {
-  console.warn(`Legacy blog-page cleanup skipped safely: ${error.message}`);
+  throw new Error(`Canonical Blog ownership reconciliation failed: ${error.message}`);
 }
 
 for (const title of legacyPostTitles) {
