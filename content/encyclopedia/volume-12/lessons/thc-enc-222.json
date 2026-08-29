@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-222",
+  "number":222,
+  "title":"Bulbous Glandular Trichomes",
+  "objective":"Identify bulbous glandular trichomes and explain what their size, distribution, and detected chemistry do and do not establish about whole-flower cannabinoid production.",
+  "terms":[
+    {"term":"bulbous trichome","definition":"A very small glandular trichome with a small secretory head supported by a short basal structure."},
+    {"term":"glandular head","definition":"The secretory portion of a glandular trichome containing specialized cells and an associated storage region."},
+    {"term":"epidermal surface","definition":"The outer cellular surface of a plant organ from which trichomes arise."},
+    {"term":"microscopy resolution","definition":"The ability of an imaging system to distinguish closely spaced or very small structures as separate objects."},
+    {"term":"developmental class","definition":"A defined category used to distinguish trichomes by morphology and stage rather than treating every gland as equivalent."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Bulbous glandular trichomes are the smallest commonly described secretory trichomes on cannabis. They have a small glandular head and very short base and can occur on vegetative as well as reproductive surfaces.",
+    "Their small size creates a classification problem. Under low magnification, bulbous trichomes can be missed or confused with young capitate forms, non-glandular structures, droplets, dust, or other surface features. Tissue preparation, focus, lighting, and viewing angle can change apparent morphology.",
+    "Cannabis microscopy literature recognizes bulbous structures as a distinct glandular class, but boundaries between small developmental forms are not equally clear in every organ or imaging method. A declared morphological key and calibrated imaging are therefore necessary for reproducible counts.",
+    "Chemical analysis of isolated cannabis trichome fractions has detected cannabinoids in more than one glandular class. That establishes secretory capability but does not establish the percentage contribution of bulbous trichomes to total flower chemistry.",
+    "Whole-flower cannabinoid output depends on much more than the presence of one gland type: density, gland volume, secretory activity, tissue biomass, developmental stage, genotype, metabolite concentration, and sampling method all contribute."
+  ],
+  "cultivationRelevance":[
+    "Use adequate microscopy before classifying very small glandular structures; do not rely on unaided visual appearance.",
+    "Keep bulbous counts separate from capitate-sessile and capitate-stalked counts when comparing tissues or developmental stages.",
+    "Do not use apparent bulbous-trichome abundance as a potency or harvest-maturity test.",
+    "Retain representative images so classification decisions can be audited or re-scored when a sampling method changes."
+  ],
+  "measureAndRecord":[
+    {"field":"Tissue context","requirement":"Record organ, surface, position, plant identity, and developmental stage."},
+    {"field":"Imaging","requirement":"Record microscope, magnification, calibration, focus method, illumination, and image quality."},
+    {"field":"Classification","requirement":"Record the morphological criteria used to call a structure bulbous and note uncertain or excluded objects separately."},
+    {"field":"Density","requirement":"Report count per calibrated area or another explicit denominator rather than count per arbitrary image."},
+    {"field":"Chemical evidence","requirement":"If chemistry is measured, record isolation method, fraction identity, analytes, analytical platform, recovery, and denominator."
+    }
+  ],
+  "misconceptions":[
+    "Bulbous trichomes contain no specialized metabolites.",
+    "Every tiny clear dot on a cannabis surface is a bulbous trichome.",
+    "A low-magnification image can always distinguish bulbous from young capitate forms.",
+    "Counting bulbous trichomes predicts whole-flower cannabinoid concentration.",
+    "One trichome class can be interpreted without recording the tissue and developmental stage."
+  ],
+  "evidenceLimits":[
+    "Bulbous cannabis trichomes are recognized anatomically, but their small dimensions make field classification method-sensitive. Isolated-trichome chemistry supports metabolic activity in multiple gland classes, while the quantitative contribution of bulbous glands to whole-flower cannabinoid yield requires additional mass, secretion-volume, and representative chemical measurements."
+  ],
+  "crossLinks":"THC-ENC-221 for trichome initiation; THC-ENC-223–225 for larger glandular classes and secretory anatomy; THC-ENC-226 for density sampling; THC-ENC-240 for analytical claims discipline.",
+  "sourceNotes":[
+    "Punja ZK, Sutton DB, Kim T. (2023). Journal of Cannabis Research 5:12. Direct microscopy recognized bulbous and capitate glandular forms while documenting developmental and genotype-dependent variability in cannabis inflorescences.",
+    "Andre CM, Hausman JF, Guerriero G. (2016). Cannabis sativa: The Plant of the Thousand and One Molecules. Frontiers in Plant Science 7:19. Reviews recognized hemp trichome classes including bulbous, capitate-sessile, and capitate-stalked forms and summarizes cannabinoid localization literature.",
+    "Happyana N et al. (2013). Analysis of cannabinoids in laser-microdissected trichomes of medicinal Cannabis sativa using LCMS and cryogenic NMR. Phytochemistry 87:51–59. Detected major cannabinoids in isolated capitate classes; isolated-fraction findings do not quantify bulbous contribution to whole flower."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 12 batch 01 controlled web derivative","driveSourceDocumentId":"1mrad4SysYqoD1-Z8A7ibF9PcnvRjs5qiPIOseYGRtUI","evidenceControl":"direct_sources_plus_controlled_manuscript","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_bulbous_trichome_anatomy","releaseTimeReview":"completed_2026-08-29_classification_and_non_potency_claims","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"bulbous-glandular-trichomes",
+  "route":"/encyclopedia/bulbous-glandular-trichomes"
+}
