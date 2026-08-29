@@ -64,7 +64,7 @@ jobs:
           if (game.status !== 'browser-vertical-slice') throw new Error('unexpected game status');
           if (game.route !== '/games/root-cause/') throw new Error('unexpected route');
           if (game.releaseGates.rulesTested !== true) throw new Error('rules suite must be recorded as tested');
-          if (game.releaseGates.deploymentRegistered !== false) throw new Error('deploymentRegistered must remain false until catalog/deployment registration is merged');
+          if (game.releaseGates.deploymentRegistered !== true) throw new Error('deploymentRegistered must be true after canonical registry reconciliation');
           if (game.releaseGates.browserTested !== false) throw new Error('browserTested must remain false until browser QA is completed');
           if (game.releaseGates.mobileTested !== false) throw new Error('mobileTested must remain false until mobile QA is completed');
           if (game.releaseGates.accessibilityReviewed !== false) throw new Error('accessibilityReviewed must remain false until review is completed');
