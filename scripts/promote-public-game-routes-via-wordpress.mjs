@@ -7,7 +7,9 @@ if (!username || !password) throw new Error('WordPress credentials are required.
 
 const auth = `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`;
 const repairToken = crypto.randomBytes(32).toString('hex');
+const promotionNamespace = `dtf-game-promotion/v1-${crypto.randomBytes(8).toString('hex')}`;
 const tokenLiteral = JSON.stringify(repairToken);
+const namespaceLiteral = JSON.stringify(promotionNamespace);
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 let snippetId = null;
 let pluginId = 'code-snippets/code-snippets';
@@ -105,9 +107,11 @@ async function ensureSnippetApi() {
 const snippetCode = String.raw`
 add_action('rest_api_init', function () {
     $token = ${tokenLiteral};
+    $namespace = ${namespaceLiteral};
     $permission = static function (WP_REST_Request $request) use ($token) {
         $supplied = (string) $request->get_header('x-dtf-game-promotion-token');
-        return current_user_can('manage_options') && $supplied !== '' && hash_equals($token, $supplied);
+        if ($supplied === '') $supplied = (string) $request->get_param('_dtf_game_promotion_token');
+        return $supplied !== '' && hash_equals($token, $supplied);
     };
 
     $targets = [
@@ -156,7 +160,7 @@ add_action('rest_api_init', function () {
         return rest_ensure_response(['ok' => true, 'restored' => $restored]);
     };
 
-    register_rest_route('dtf-game-promotion/v1', '/apply', [
+    register_rest_route($namespace, '/apply', [
         'methods' => 'POST',
         'permission_callback' => $permission,
         'callback' => static function () use ($targets, $backup_key, $safe_path, $state_key, $restore_all) {
@@ -218,13 +222,13 @@ add_action('rest_api_init', function () {
         },
     ]);
 
-    register_rest_route('dtf-game-promotion/v1', '/rollback', [
+    register_rest_route($namespace, '/rollback', [
         'methods' => 'POST',
         'permission_callback' => $permission,
         'callback' => static function () use ($restore_all) { return $restore_all(); },
     ]);
 
-    register_rest_route('dtf-game-promotion/v1', '/finalize', [
+    register_rest_route($namespace, '/finalize', [
         'methods' => 'POST',
         'permission_callback' => $permission,
         'callback' => static function () use ($targets, $backup_key, $state_key) {
@@ -237,9 +241,10 @@ add_action('rest_api_init', function () {
 `.trim();
 
 async function callPromotion(endpoint) {
-  return wpRequest(`/wp-json/dtf-game-promotion/v1/${endpoint}`, {
+  return wpRequest(`/wp-json/${promotionNamespace}/${endpoint}`, {
     method: 'POST',
     headers: { 'X-DTF-Game-Promotion-Token': repairToken },
+    json: { _dtf_game_promotion_token: repairToken },
   });
 }
 
@@ -327,7 +332,7 @@ try {
 
   const finalized = await callPromotion('finalize');
   if (finalized.body?.ok !== true) throw new Error(`Route promotion finalization failed: ${JSON.stringify(finalized.body).slice(0, 700)}`);
-  console.log(JSON.stringify({ ok: true, routePromotion: 'finalized', changed: result.body.changed || [], already: result.body.already || [] }));
+  console.log(JSON.stringify({ ok: true, routePromotion: 'finalized', namespace: promotionNamespace, changed: result.body.changed || [], already: result.body.already || [] }));
 } catch (error) {
   if (snippetId && applied) {
     try {
