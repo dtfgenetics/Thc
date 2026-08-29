@@ -25,7 +25,7 @@ env:
 
 concurrency:
   group: dtfseeds-learning-experience-v3
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   publish:
@@ -156,8 +156,9 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
-      - name: Report learning hierarchy deployment to issue 46
+      - name: Report learning hierarchy deployment
         if: always()
+        continue-on-error: true
         uses: actions/github-script@v7
         env:
           STATUS: ${{ job.status }}
@@ -189,4 +190,8 @@ jobs:
               'The publisher runs after both canonical WordPress production and the THC infographic publisher so this hierarchy remains the final customer-facing layer.',
               'The publisher creates rollback snapshots, preserves the WooCommerce archive style injection, attempts a LiteSpeed cache flush, and performs cache-busted visitor verification on Home, Learn, Shop, and all subject routes.'
             ].join('\n');
-            await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: 46, body });
+            try {
+              await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: 220, body });
+            } catch (error) {
+              core.warning(`Learning V3 advisory report could not be posted: ${error.message}`);
+            }
