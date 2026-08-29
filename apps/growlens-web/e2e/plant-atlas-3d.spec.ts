@@ -41,7 +41,8 @@ test.describe('THC Living Plant Atlas 3D', () => {
     await page.goto(atlasPath);
     await expect(page.locator('[data-system-grid] .system-card')).toHaveCount(16);
     await page.locator('[data-atlas-search]').fill('pollen');
-    await expect(page.locator('[data-system-grid] .system-card')).not.toHaveCount(0);
-    await expect(page.getByText('Reproductive Biology', { exact: true })).toBeVisible();
+    const reproductiveCard = page.locator('[data-system-grid] .system-card[href="/atlas/reproductive-biology/"]');
+    await expect(reproductiveCard).toBeVisible();
+    await expect(reproductiveCard).toContainText('Sex, Pollen, Fertilization & Seed');
   });
 });
