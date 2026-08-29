@@ -71,7 +71,6 @@ const registry = readJson(registryPath);
 const publicApps = readJson(publicAppsPath);
 const originalRegistry = JSON.stringify(registry);
 const originalPublicApps = JSON.stringify(publicApps);
-const originalManifests = new Map(gameRecords.map(({ manifestPath }) => [manifestPath, fs.readFileSync(manifestPath, 'utf8')]));
 
 const registryIds = new Set(registry.projects.map((project) => project.id));
 const appIds = new Set(publicApps.apps.map((app) => app.id));
@@ -82,7 +81,7 @@ const addedApps = [];
 const registeredManifests = [];
 
 for (const record of gameRecords) {
-  const { manifest, manifestPath, publicRoute } = record;
+  const { manifest, publicRoute } = record;
   const id = manifest.id;
 
   if (!registryIds.has(id)) {
@@ -134,9 +133,6 @@ for (const record of gameRecords) {
   }
 }
 
-registry.updated = today;
-publicApps.updated = today;
-
 const registryIdsAfter = registry.projects.map((project) => project.id);
 const appIdsAfter = publicApps.apps.map((app) => app.id);
 if (new Set(registryIdsAfter).size !== registryIdsAfter.length) throw new Error('Project registry contains duplicate ids after reconciliation.');
@@ -144,14 +140,15 @@ if (new Set(appIdsAfter).size !== appIdsAfter.length) throw new Error('Public ap
 const publicRoutes = publicApps.apps.filter((app) => app.route).map((app) => app.route);
 if (new Set(publicRoutes).size !== publicRoutes.length) throw new Error('Public app registry contains duplicate routes after reconciliation.');
 
-const nextRegistry = JSON.stringify(registry);
-const nextPublicApps = `${JSON.stringify(publicApps, null, 2)}\n`;
-const changed = nextRegistry !== originalRegistry
+// A check must report semantic registry drift, not a date-only difference. The
+// old implementation assigned `updated = today` before comparison, making every
+// clean registry look dirty whenever its last real update was on an earlier day.
+const structuralChanged = JSON.stringify(registry) !== originalRegistry
   || JSON.stringify(publicApps) !== originalPublicApps
   || registeredManifests.length > 0;
 
 if (checkOnly) {
-  if (changed) {
+  if (structuralChanged) {
     console.error('Local game release registries are out of sync.');
     console.error({ addedProjects, addedApps, registeredManifests });
     process.exit(1);
@@ -160,6 +157,13 @@ if (checkOnly) {
   process.exit(0);
 }
 
+if (structuralChanged) {
+  registry.updated = today;
+  publicApps.updated = today;
+}
+
+const nextRegistry = JSON.stringify(registry);
+const nextPublicApps = `${JSON.stringify(publicApps, null, 2)}\n`;
 fs.writeFileSync(registryPath, nextRegistry);
 fs.writeFileSync(publicAppsPath, nextPublicApps);
 for (const record of gameRecords) {
