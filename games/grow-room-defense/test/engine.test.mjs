@@ -68,7 +68,7 @@ assert.equal(perfect.totalDamage, 0);
 assert.deepEqual(perfect.lanes.map((lane) => lane.health), [100, 100, 100]);
 assert.ok(perfect.score > 300);
 
-let doomed = createGame({ code: 'LOS842' }, data);
+let doomed = createGame({ code: 'LST842' }, data);
 const activeId = doomed.lastSpawn.threatId;
 const activeDef = threatById.get(activeId);
 for (const lane of doomed.lanes) {
