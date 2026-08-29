@@ -2,11 +2,21 @@ name: Validate WordPress Suite V2 Semantics
 
 on:
   workflow_dispatch:
+  pull_request:
+    paths:
+      - scripts/assemble-wordpress-suite-v2.py
+      - scripts/wordpress_suite_registry_patch.py
+      - scripts/wordpress-suite-v2/**
+      - site/deployment/public-apps.json
+      - .github/workflows/validate-wordpress-suite-v2-semantics.yml
+      - .github/wordpress-suite-v2-semantics-trigger.txt
   push:
     branches: [main]
     paths:
       - scripts/assemble-wordpress-suite-v2.py
+      - scripts/wordpress_suite_registry_patch.py
       - scripts/wordpress-suite-v2/**
+      - site/deployment/public-apps.json
       - .github/workflows/validate-wordpress-suite-v2-semantics.yml
       - .github/wordpress-suite-v2-semantics-trigger.txt
 
@@ -15,7 +25,7 @@ permissions:
   issues: write
 
 concurrency:
-  group: validate-wordpress-suite-v2-semantics
+  group: validate-wordpress-suite-v2-semantics-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -25,7 +35,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: main
           persist-credentials: false
       - uses: actions/setup-node@v4
         with:
@@ -38,6 +47,7 @@ jobs:
         run: |
           set -euo pipefail
           python scripts/assemble-wordpress-suite-v2.py "$RUNNER_TEMP/dtf-suite-v2.mjs"
+          python scripts/wordpress_suite_registry_patch.py "$RUNNER_TEMP/dtf-suite-v2.mjs"
           node --check "$RUNNER_TEMP/dtf-suite-v2.mjs"
           python - <<'PY'
           import os, pathlib, re
@@ -56,12 +66,16 @@ jobs:
           import os, pathlib
           text=(pathlib.Path(os.environ['RUNNER_TEMP'])/'dtf-suite-v2.mjs').read_text()
           endpoints=['/state/(?P<id>[a-f0-9]{24})','/init','/chunk','/commit','/rollback','/abort','/finalize']
+          namespace='dtf-suite/v2-${deploymentId}'
           checks={
             'no malformed REST registrar': 'register__rest_route' not in text,
-            'all seven v2 REST endpoints': all(("register_rest_route('dtf-suite/v2', '"+endpoint+"'") in text for endpoint in endpoints),
-            'authenticated publisher authorization': "current_user_can('edit_pages')" in text,
-            'obsolete administrator capability removed': "current_user_can('manage_options')" not in text,
-            'one-time token': 'hash_equals($token, $supplied)' in text,
+            'all seven per-deployment v2 REST endpoints': all((f"register_rest_route('{namespace}', '{endpoint}'") in text for endpoint in endpoints),
+            'per-deployment client namespace': '/wp-json/dtf-suite/v2-${deploymentId}/' in text,
+            'temporary bridge capability callback removed': 'current_user_can(' not in text,
+            'one-time token comparison': 'hash_equals($token, $supplied)' in text,
+            'header token transport': "get_header('x-dtf-suite-token')" in text,
+            'request-param token fallback': "get_param('_dtf_suite_token')" in text,
+            'client token body fallback': '_dtf_suite_token: suiteToken' in text,
             'server lock': 'dtf_suite_deploy_lock' in text,
             'whole archive sha256': 'Whole-archive SHA-256 mismatch.' in text,
             'duplicate zip rejection': 'Duplicate ZIP entry rejected.' in text,
@@ -72,9 +86,9 @@ jobs:
             'backup moved state persisted': "$state['current']['phase'] = 'backup_moved'" in text,
             'new placed state persisted': "'phase'=>'new_placed'" in text,
             'restore current interrupted target': '$restore_record($current, $backup_dir)' in text,
-            'rollback endpoint': "register_rest_route('dtf-suite/v2', '/rollback'" in text,
-            'abort endpoint': "register_rest_route('dtf-suite/v2', '/abort'" in text,
-            'finalize endpoint': "register_rest_route('dtf-suite/v2', '/finalize'" in text,
+            'rollback endpoint': f"register_rest_route('{namespace}', '/rollback'" in text,
+            'abort endpoint': f"register_rest_route('{namespace}', '/abort'" in text,
+            'finalize endpoint': f"register_rest_route('{namespace}', '/finalize'" in text,
             'stale touched lock refused': 'dtf_stale_touched_lock' in text,
             'ambiguous commit polls state': 'Polling persisted server state before any recovery action.' in text,
             'failure recovery reads state': 'async function recoverFailure()' in text and 'const state = await getState();' in text,
@@ -87,7 +101,7 @@ jobs:
             'blog static forbidden': "strpos($name, 'blog/')" in text,
             'app-only WordPress ownership boundary': 'Home and Learn are WordPress-owned and are verified independently after this app-only transaction.' in text,
             'current games marker': 'Pick what is playable. See what is coming next.' in text,
-            'current tools marker': 'Measure it. Document it. Diagnose with context.' in text,
+            'current tools marker': 'Grow with records. Diagnose with evidence.' in text,
             'durable projects marker': 'DTF Projects' in text,
             'Protect the Plants route': "['/games/protect-the-plants/', 'Protect the Plants']" in text,
             'Protect the Plants API gate': '/games/protect-the-plants/api.php?action=active' in text,
@@ -111,7 +125,7 @@ jobs:
                   '## Hardened WordPress suite v2 semantic gate','',
                   `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
                   `Commit: \`${context.sha}\``, `Result: **${process.env.STATUS}**`,'',
-                  'This read-only gate reassembles the canonical v2 source by SHA-256, validates Node and embedded PHP syntax, rejects malformed REST registration, requires every v2 endpoint, verifies authenticated publisher capability plus the one-time token, archive safety, transaction recovery, Code Snippets safe-mode cleanup, app-only WordPress ownership boundaries, durable live-route markers, and the Protect the Plants route/API gate.'
+                  'This read-only gate reassembles the hash-pinned v2 source, validates registry parity, Node and embedded PHP syntax, requires all seven per-deployment REST endpoints, verifies the unguessable per-run token transports without a capability-dependent custom-route callback, and checks archive safety, transaction recovery, Code Snippets safe-mode cleanup, app-only WordPress ownership boundaries, durable live-route markers, and the Protect the Plants route/API gate.'
                 ].join('\n')
               });
             } catch (error) {
