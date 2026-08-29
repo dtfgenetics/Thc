@@ -1,0 +1,76 @@
+name: Harvest Hustle CI
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - games/harvest-hustle/**
+      - site/public-route-patch/games/harvest-hustle/**
+      - .github/workflows/harvest-hustle-ci.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate shift data and public copy
+        run: node games/harvest-hustle/scripts/validate-data.mjs
+
+      - name: Run deterministic shift engine tests
+        run: node games/harvest-hustle/test/engine.test.mjs
+
+      - name: Validate browser JavaScript syntax
+        run: |
+          node --check site/public-route-patch/games/harvest-hustle/app.js
+          node --check site/public-route-patch/games/harvest-hustle/engine.mjs
+
+      - name: Verify canonical and public engine match
+        run: cmp games/harvest-hustle/src/engine.mjs site/public-route-patch/games/harvest-hustle/engine.mjs
+
+      - name: Verify route, arcade asset and interaction contracts
+        run: |
+          node - <<'NODE'
+          const fs = require('fs');
+          const html = fs.readFileSync('site/public-route-patch/games/harvest-hustle/index.html','utf8');
+          const css = fs.readFileSync('site/public-route-patch/games/harvest-hustle/harvest-hustle.css','utf8');
+          const app = fs.readFileSync('site/public-route-patch/games/harvest-hustle/app.js','utf8');
+          const requireText = (source, text, label) => {
+            if (!source.includes(text)) throw new Error(`missing ${label}: ${text}`);
+          };
+          requireText(html, '<link rel="canonical" href="https://dtfseeds.com/games/harvest-hustle/">', 'canonical route');
+          requireText(html, '<script type="module" src="./app.js"></script>', 'module entrypoint');
+          requireText(html, 'Game boundary:', 'content boundary');
+          requireText(app, 'let running = false;', 'delayed shift start');
+          requireText(app, "document.addEventListener('visibilitychange'", 'hidden-tab clock pause');
+          requireText(app, 'Number(event.key) - 1', 'station keyboard shortcuts');
+          requireText(app, 'data.stations?.length !== 4', 'station data contract');
+          requireText(app, 'data.shiftSeconds !== 75', 'shift duration contract');
+          requireText(css, '.conveyor-art', 'conveyor artwork');
+          requireText(css, '.batch-art', 'batch crate artwork');
+          requireText(css, '.station-button', 'station card artwork');
+          requireText(css, '@media(prefers-reduced-motion:reduce)', 'reduced-motion support');
+          if (app.includes('ui.code.disabled')) throw new Error('shift code input must remain available for reset/replay');
+          NODE
+
+      - name: Verify truthful release boundary
+        run: |
+          node - <<'NODE'
+          const fs = require('fs');
+          const game = JSON.parse(fs.readFileSync('games/harvest-hustle/game.json','utf8'));
+          if (game.status !== 'browser-vertical-slice') throw new Error('unexpected game status');
+          if (game.route !== '/games/harvest-hustle/') throw new Error('unexpected route');
+          if (game.releaseGates.rulesTested !== true) throw new Error('deterministic rules suite must be recorded as tested');
+          if (game.releaseGates.browserTested !== false) throw new Error('browserTested must remain false until browser QA is actually completed');
+          if (game.releaseGates.mobileTested !== false) throw new Error('mobileTested must remain false until mobile QA is actually completed');
+          if (game.releaseGates.accessibilityReviewed !== false) throw new Error('accessibilityReviewed must remain false until review is actually completed');
+          if (game.releaseGates.deploymentRegistered !== false) throw new Error('unreviewed game must not be production registered');
+          NODE
