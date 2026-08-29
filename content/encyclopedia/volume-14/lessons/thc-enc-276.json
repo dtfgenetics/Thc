@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-276",
+  "number":276,
+  "title":"Water Alkalinity and Sodium Problems",
+  "objective":"Distinguish irrigation-water pH, alkalinity, hardness, salinity, sodium, chloride, and bicarbonate so long-term root-zone chemistry is diagnosed from a complete water analysis rather than one meter reading.",
+  "terms":[
+    {"term":"alkalinity","definition":"The acid-neutralizing capacity of water, commonly contributed by bicarbonate, carbonate, and related bases and often reported as mg/L CaCO3 equivalent."},
+    {"term":"hardness","definition":"A water-quality measure primarily reflecting dissolved calcium and magnesium, often expressed as CaCO3 equivalent."},
+    {"term":"bicarbonate","definition":"HCO3−, a common dissolved ion that can contribute substantially to irrigation-water alkalinity."},
+    {"term":"sodium adsorption ratio","definition":"A calculated relationship among sodium, calcium, and magnesium used to evaluate sodium-related soil structural risk in appropriate mineral-soil contexts."},
+    {"term":"source water","definition":"The untreated or incoming water supply used to prepare irrigation or nutrient solution."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Water pH and alkalinity answer different questions. pH describes the current acid-base state measured under a defined method; alkalinity describes how strongly the water can neutralize added acid and resist pH change. A water source can therefore have an apparently acceptable pH yet enough bicarbonate/carbonate alkalinity to drive root-zone pH upward over repeated irrigation.",
+    "Hardness is also distinct from alkalinity. Hardness commonly reflects calcium and magnesium. Hard water and high-alkalinity water often occur together because of geology, but neither measurement can be substituted for the other.",
+    "Sodium and chloride require ion-specific interpretation. Sodium contributes to salinity and can compete with other cations; in mineral soils, high sodium relative to calcium and magnesium can also damage aggregate structure and permeability. Chloride can accumulate to toxic concentrations in sensitive crops or recirculating systems. These effects depend on crop, substrate, leaching, reuse, concentration, and exposure duration.",
+    "Conventional sodium-based water softening can reduce calcium/magnesium hardness while increasing sodium. For plant production, 'softened' is therefore not synonymous with safer irrigation water. The final ion composition matters more than the household label applied to the water source.",
+    "Penn State greenhouse guidance recommends interpreting pH, alkalinity, hardness, EC, sodium, chloride and other ions together and emphasizes periodic accredited laboratory analysis. Published general concern ranges are crop-production screening tools, not cannabis-specific injury thresholds."
+  ],
+  "cultivationRelevance":[
+    "Obtain a complete source-water analysis rather than relying on pH or EC alone, especially when the same water is used repeatedly in small-volume media, hydroponics, or recirculating systems.",
+    "Track root-zone pH and EC trends over time because fertilizer composition, crop uptake, media buffering, irrigation frequency, leaching, and recirculation determine how source-water chemistry is expressed around roots.",
+    "If water has been softened, blended, filtered, or otherwise treated, sample the actual water entering the irrigation system and record the treatment configuration.",
+    "Treat corrective water chemistry as a qualified system-management task. This lesson does not prescribe acid, treatment-media, membrane, or blending rates; product instructions, safety requirements, water testing, and system-specific calculations govern implementation."
+  ],
+  "measureAndRecord":[
+    {"field":"Source identification","requirement":"Record source, date, seasonal changes, treatment or blending, and whether the sample represents raw water or the water actually delivered to the irrigation system."},
+    {"field":"Core chemistry","requirement":"Record laboratory pH, alkalinity, EC/TDS method, hardness, calcium, magnesium, sodium, chloride, bicarbonate/carbonate, and other reported ions relevant to the system."},
+    {"field":"Root-zone trend","requirement":"Record root-zone pH and EC using a defined sampling/extraction method, plus irrigation frequency, drainage/leaching, recirculation, and media type."},
+    {"field":"Plant response","requirement":"Record genotype/stage, water use, root condition, chlorosis or margin injury, tissue analysis when justified, and spatial distribution of symptoms."},
+    {"field":"Change control","requirement":"Record any water-treatment or source change, the resulting chemistry, and whether root-zone trends and new growth improve without creating a new imbalance."
+    }
+  ],
+  "misconceptions":[
+    "Water pH and alkalinity are the same measurement.",
+    "Hard water is always harmful to plants.",
+    "Softened water is automatically safer for irrigation.",
+    "Low source-water EC rules out sodium or chloride problems.",
+    "One acceptable tap-water reading predicts long-term root-zone chemistry."
+  ],
+  "evidenceLimits":[
+    "General greenhouse and irrigation-water guidelines provide useful screening ranges, but cannabis-specific tolerance depends on genotype, substrate, fertilizer program, leaching, recirculation, developmental stage, and exposure duration. General alkalinity, hardness, sodium, chloride, and SAR guidance should not be converted into universal cannabis limits without system-specific validation."
+  ],
+  "crossLinks":"THC-ENC-274 for salinity/osmotic stress; THC-ENC-275 for pH-driven nutrient availability; THC-ENC-081–100 for water chemistry and environmental control; THC-ENC-041–060 for root-zone media chemistry.",
+  "sourceNotes":[
+    "Penn State Extension (2025), A Water Quality Toolkit for Greenhouse and Nursery Production. Distinguishes pH, alkalinity, hardness, and EC and recommends regular water analysis and record keeping.",
+    "Penn State Extension, Interpreting Irrigation Water Tests (updated 2022 with 2007–2025 testing context). Recommends evaluating pH, alkalinity, conductivity, hardness, chloride, and sodium together and explains sodium problems associated with sodium-based softening and mineral-soil structure.",
+    "Controlled Volume 14 manuscript v1.0 requires pH, alkalinity, hardness, salinity, sodium, chloride, bicarbonate, fertilizer, media buffering, leaching, recirculation, crop uptake, and time to remain separate diagnostic variables."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 14 batch 04 controlled web derivative","driveSourceDocumentId":"1mbN8hq4g6jZUgW0bkwZBSXotPqZ7c184kOya5SqdtJA","evidenceControl":"controlled_manuscript_plus_current_official_greenhouse_irrigation_water_quality_guidance","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"irrigation_water_alkalinity_hardness_sodium_chloride_and_root_zone_chemistry","releaseTimeReview":"completed_2026-08-29_pH_alkalinity_hardness_and_sodium_separation_no_universal_cannabis_thresholds","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"water-alkalinity-and-sodium-problems",
+  "route":"/encyclopedia/water-alkalinity-and-sodium-problems"
+}
