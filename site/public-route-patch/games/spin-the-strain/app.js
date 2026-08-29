@@ -106,7 +106,7 @@ function renderHistory() {
   }
   for (const result of [...state.history].reverse()) {
     const item = document.createElement('li');
-    item.innerHTML = `<span>#${result.spinNumber}</span><div><strong>${escapeHtml(result.label)}</strong><small>${escapeHtml(result.category)}</small></div>`;
+    item.innerHTML = `<span>#${result.spinNumber}</span><div><strong>${escapeHtml(result.label)}</strong><small>${escapeHtml(result.category)} · cycle ${result.cycleNumber} · ${result.cyclePosition}/${result.cycleSize}</small></div>`;
     ui.history.append(item);
   }
 }
@@ -123,12 +123,13 @@ function renderResult() {
     ui.result.classList.remove('revealed');
     ui.category.textContent = 'READY';
     ui.label.textContent = 'Spin the wheel';
-    ui.detail.textContent = 'Every entry in this mode has equal weight.';
+    ui.detail.textContent = 'All 18 entries appear once before this mode starts a new cycle.';
     return;
   }
-  ui.category.textContent = state.lastResult.category;
-  ui.label.textContent = state.lastResult.label;
-  ui.detail.textContent = state.lastResult.detail;
+  const result = state.lastResult;
+  ui.category.textContent = `${result.category} · CYCLE ${result.cycleNumber} ${result.cyclePosition}/${result.cycleSize}`;
+  ui.label.textContent = result.label;
+  ui.detail.textContent = result.detail;
 }
 
 function render() {
@@ -170,7 +171,7 @@ function startSpin() {
     ui.result.classList.add('revealed');
     render();
     const result = state.lastResult;
-    ui.announce.textContent = `Spin ${result.spinNumber}: ${result.label}. ${result.detail}`;
+    ui.announce.textContent = `Spin ${result.spinNumber}: ${result.label}. Cycle ${result.cycleNumber}, ${result.cyclePosition} of ${result.cycleSize}. ${result.detail}`;
   }, reduced ? 0 : 1650);
 }
 
@@ -178,7 +179,7 @@ ui.modes.addEventListener('click', (event) => {
   const button = event.target.closest('button[data-mode]');
   if (!button || spinning || button.dataset.mode === state.mode) return;
   resetWheel(state.code, button.dataset.mode);
-  ui.announce.textContent = `${currentMode().title} selected. Spin history reset.`;
+  ui.announce.textContent = `${currentMode().title} selected. Spin history and no-repeat cycle reset.`;
 });
 ui.code.addEventListener('input', () => setCode(ui.code.value));
 ui.code.addEventListener('keydown', (event) => {
@@ -188,7 +189,7 @@ ui.code.addEventListener('keydown', (event) => {
     return;
   }
   resetWheel(ui.code.value, state.mode);
-  ui.announce.textContent = `Wheel ${state.code} loaded.`;
+  ui.announce.textContent = `Wheel ${state.code} loaded. No-repeat cycle reset.`;
 });
 ui.random.addEventListener('click', () => {
   resetWheel(randomCode(), state.mode);
@@ -219,7 +220,7 @@ async function load() {
     const code = isValidWheelCode(requestedCode) ? requestedCode : randomCode();
     state = createWheel({ code, mode }, data);
     setCode(code);
-    ui.load.textContent = '3 equal-weight wheels · 54 prompts · deterministic share codes';
+    ui.load.textContent = '3 wheels · 18-entry no-repeat cycles · deterministic share codes';
     render();
   } catch (error) {
     console.error(error);
