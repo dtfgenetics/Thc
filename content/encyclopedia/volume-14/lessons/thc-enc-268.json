@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-268",
+  "number":268,
+  "title":"Heat Stress",
+  "objective":"Diagnose cannabis heat stress using tissue temperature, duration, radiation, transpiration, roots, and functional response rather than room-air temperature alone.",
+  "terms":[
+    {"term":"leaf temperature","definition":"The actual temperature of leaf tissue, which can differ from surrounding air because of radiation, transpiration, convection, and leaf properties."},
+    {"term":"thermal duration","definition":"The time that tissue remains at a particular temperature or above a defined threshold."},
+    {"term":"transpirational cooling","definition":"Cooling associated with evaporation of water from leaves."},
+    {"term":"dark respiration","definition":"Cellular respiration measured without photosynthetic carbon fixation; respiration commonly increases with temperature over a physiological range."},
+    {"term":"thermal acclimation","definition":"Physiological adjustment that changes plant response to temperature after prior exposure."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Heat stress occurs when tissue temperature and exposure duration exceed the plant's capacity to maintain metabolism, membranes, proteins, water balance, reproduction, and repair. Air temperature is only one input because radiation can warm leaves above air while transpiration and airflow can cool them.",
+    "Cannabis photosynthetic temperature response is genotype-dependent. In comparative work across drug- and fiber-type Cannabis sativa varieties, estimated photosynthetic optima varied from about 25 °C to 30–35 °C depending on variety, and photosynthesis declined at 40 °C relative to each variety's optimum while respiration increased. These are experimental responses, not universal injury thresholds.",
+    "Earlier controlled gas-exchange work also showed strong interaction between PPFD and temperature: photosynthesis and water-use efficiency responded differently as both variables increased, while transpiration continued rising under high light and temperature. Heat diagnosis therefore must include radiation and plant-water status rather than temperature in isolation.",
+    "Warm root zones add another mechanism because oxygen solubility in water falls as temperature rises while root and microbial respiratory demand can increase. Shoot heat symptoms can therefore coexist with root oxygen limitation, salinity, drought, or disease.",
+    "Curling, wilt, bleaching, marginal necrosis, slowed growth, reduced gas exchange, or reproductive injury are nonspecific. Similar top-canopy symptoms can result from high light, water limitation, salinity, fan exposure, or chemical injury."
+  ],
+  "cultivationRelevance":[
+    "Measure leaf temperature and duration in affected zones instead of relying only on the room thermostat.",
+    "Map radiation/light, airflow, irrigation/root status, and fixture or HVAC failures alongside heat symptoms.",
+    "Correct failed environmental or water-delivery systems while avoiding abrupt secondary stress from extreme cold/dry air or large simultaneous changes.",
+    "Use recovery of gas exchange, turgor, root function, reproductive development, and normal new growth as stronger evidence than appearance of old injured tissue."
+  ],
+  "measureAndRecord":[
+    {"field":"Temperature exposure","requirement":"Record air, leaf, root-zone, solution, fixture/surface temperatures; sensor/instrument; peak/minimum; duration; and rate of change."},
+    {"field":"Radiation and demand","requirement":"Record PPFD/DLI, photoperiod, RH/VPD method, airflow, CO2 context, and time of day."},
+    {"field":"Water/root status","requirement":"Record irrigation, substrate moisture, drainage, EC/pH, root condition, root-zone temperature, and water-use changes."},
+    {"field":"Functional response","requirement":"Record wilt/curl/necrosis distribution plus gas exchange, chlorophyll fluorescence, or growth/reproductive response where methods are available."},
+    {"field":"Recovery","requirement":"Record time to renewed turgor/function, new-growth quality, persistent injury, and recurrence after conditions normalize."
+    }
+  ],
+  "misconceptions":[
+    "A warm room automatically means the plants are heat-stressed.",
+    "Air temperature equals leaf temperature.",
+    "There is one universal cannabis heat-injury temperature.",
+    "Increasing humidity always fixes heat stress.",
+    "Top-canopy curl or bleaching proves heat rather than high light, roots, water, or chemical injury."
+  ],
+  "evidenceLimits":[
+    "Cannabis temperature-response studies use specific genotypes, growth conditions, leaf ages, exposure durations, and gas-exchange protocols. Their photosynthetic optima and declines cannot be converted directly into a universal injury temperature for all tissues, stages, or cultivation systems."
+  ],
+  "crossLinks":"THC-ENC-266 for water-demand wilt; THC-ENC-269 for chilling; THC-ENC-270 for high-light interaction; THC-ENC-272 for humidity/transpiration; THC-ENC-273 for root hypoxia.",
+  "sourceNotes":[
+    "Chandra S et al. (2008). Photosynthetic response of Cannabis sativa L. to variations in photosynthetic photon flux densities, temperature and CO2 conditions. Physiology and Molecular Biology of Plants 14:299–306. Demonstrated interactive temperature/light effects on cannabis gas exchange and water-use efficiency.",
+    "Chandra S et al. (2011). Temperature response of photosynthesis in different drug and fiber varieties of Cannabis sativa L. Demonstrated variety-dependent photosynthetic temperature optima and different declines at 40 °C.",
+    "Controlled Volume 14 manuscript v1.0 requires tissue temperature, duration, radiation, water/root status, and competing causes rather than one room-temperature threshold."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 14 batch 02 controlled web derivative","driveSourceDocumentId":"1mbN8hq4g6jZUgW0bkwZBSXotPqZ7c184kOya5SqdtJA","evidenceControl":"controlled_manuscript_plus_direct_cannabis_temperature_and_gas_exchange_sources","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_heat_stress_tissue_temperature_duration_and_differential","releaseTimeReview":"completed_2026-08-29_genotype_temperature_response_and_no_universal_threshold_boundary","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"heat-stress",
+  "route":"/encyclopedia/heat-stress"
+}
