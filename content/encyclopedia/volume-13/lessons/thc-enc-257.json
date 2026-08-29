@@ -1,0 +1,55 @@
+{
+  "id":"THC-ENC-257",
+  "number":257,
+  "title":"Oxidation, Packaging, and Storage",
+  "objective":"Explain how oxygen, light, temperature, time, package properties, and compound-specific chemistry reshape stored cannabis while rejecting simple claims that one package or atmosphere preserves every volatile and cannabinoid equally.",
+  "terms":[
+    {"term":"oxidation","definition":"Chemical transformation involving electron loss or oxygen-related reaction that can alter cannabinoids, terpenes, and other metabolites."},
+    {"term":"modified atmosphere packaging","definition":"Packaging in which the gas composition surrounding the product is intentionally altered from normal air."},
+    {"term":"oxygen transmission","definition":"Movement of oxygen through a packaging material over time under defined conditions."},
+    {"term":"headspace","definition":"The gas volume inside a sealed package above or around the stored material."},
+    {"term":"relative abundance","definition":"The fraction of a measured profile represented by one analyte, which can change even when that analyte does not increase in absolute amount."}
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Stored cannabis is chemically dynamic. Volatile compounds can evaporate, oxidize, partition into package headspace, interact with packaging, or transform into other products, while acidic cannabinoids can decarboxylate and other cannabinoid changes can occur with time and environmental exposure.",
+    "Packaging influences storage through gas exchange, light transmission, sorption, headspace volume, seal integrity, and moisture behavior. A container name such as glass, polymer, or mylar does not by itself define those properties; the actual package system and storage conditions matter.",
+    "A 2024 cannabis study comparing nitrogen-modified atmosphere packaging with normal atmospheric packaging across five chemovars found no universal preservation advantage for total cannabinoids or total aromatic compounds. Individual volatile compounds behaved differently: some losses were reduced under nitrogen while other compounds declined or shifted differently, showing that package-atmosphere effects are analyte-specific.",
+    "Another 2024 cannabis study comparing drying and storage conditions found that storage in glass bottles better retained the initial volatile profile than the studied open-air tray and closed HDPE-box conditions, while cannabinoid transformations still occurred. This demonstrates a tradeoff: preserving one chemical feature does not guarantee preservation of every other feature.",
+    "Oxidation products can be informative but are not one-to-one clocks. Caryophyllene oxide, CBN, or another transformation product can be influenced by precursor abundance, oxygen, light, heat, time, matrix chemistry, and analytical method; their presence does not reveal a unique storage history."
+  ],
+  "cultivationRelevance":[
+    "Define the storage objective before judging packaging: volatile retention, cannabinoid-acid preservation, microbial control, moisture stability, physical protection, and shelf life are related but not identical outcomes.",
+    "Record package material, closure, headspace, gas treatment, fill level, light exposure, temperature, and storage duration when comparing stored lots.",
+    "Measure absolute concentrations of relevant compounds over time instead of inferring preservation from relative profile percentages or aroma alone.",
+    "Validate a packaging strategy with the actual chemovar and product form because individual terpenes and cannabinoids can respond differently."
+  ],
+  "measureAndRecord":[
+    {"field":"Package system","requirement":"Record material, barrier specification if known, closure type, package volume, fill mass, headspace, seal condition, and light transmission context."},
+    {"field":"Atmosphere","requirement":"Record ambient air or modified gas composition, flushing method, oxygen measurement where available, and whether the package was reopened during storage."},
+    {"field":"Storage environment","requirement":"Record temperature, light exposure, duration, moisture/water-activity context, and location/sensor information."},
+    {"field":"Chemistry over time","requirement":"Use repeated time points and the same analytical method to track parent compounds and relevant transformation products in absolute units."},
+    {"field":"Product state","requirement":"Record whole versus ground material, flower size, dry/cured state, lot identity, and handling before each sample."
+    }
+  ],
+  "misconceptions":[
+    "Nitrogen packaging preserves every terpene better than air.",
+    "Glass automatically preserves all cannabinoids and terpenes best under every condition.",
+    "A higher relative percentage after storage means that compound was created during storage.",
+    "CBN is a simple one-to-one measure of how much THC was lost.",
+    "One oxidation product can reveal the exact age or storage history of a cannabis sample."
+  ],
+  "evidenceLimits":[
+    "Direct cannabis storage studies demonstrate package-, atmosphere-, chemovar-, and analyte-specific changes. Their results should not be generalized into one universally superior package. Long-term commercial shelf-life conclusions require product-specific stability studies with defined package properties, storage conditions, sampling intervals, and validated analytical methods."
+  ],
+  "crossLinks":"THC-ENC-236 for cannabinoid degradation; THC-ENC-250 for beta-caryophyllene oxidation context; THC-ENC-256 for drying/volatile loss; THC-ENC-258 for analytical variation; THC-ENC-341 onward for harvest/postharvest.",
+  "sourceNotes":[
+    "MacLaughlin LL, MacDonald MT. (2024). Is nitrogen-modified atmosphere packaging a tool for retention of volatile terpenes and cannabinoids in stored Cannabis sativa inflorescence? Journal of Cannabis Research 6:42. Found no universal MAP advantage for totals and demonstrated compound-specific responses across five chemovars and multiple storage times.",
+    "Spadafora ND et al. (2024). The influence of drying and storage conditions on the volatilome and cannabinoid content of Cannabis sativa L. inflorescences. Analytical and Bioanalytical Chemistry 416:3797–3809. Demonstrated storage-condition effects on the volatile profile and cannabinoid transformations.",
+    "Controlled Volume 13 manuscript v1.0 requires package material, atmosphere, compound-specific change, oxidation markers, sensory quality, and universal shelf-life claims to remain separate evidence levels."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 13 batch 04 controlled web derivative","driveSourceDocumentId":"1Vh_CkUFTN9eqsXiuH53pD1tMDyBo2zxDTIXOd_vQlgw","evidenceControl":"controlled_manuscript_plus_direct_cannabis_storage_MAP_and_volatilome_sources","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_storage_oxidation_packaging_and_stability_claim_boundaries","releaseTimeReview":"completed_2026-08-29_storage_MAP_compound_specificity_and_marker_boundaries","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"oxidation-packaging-and-storage",
+  "route":"/encyclopedia/oxidation-packaging-and-storage"
+}

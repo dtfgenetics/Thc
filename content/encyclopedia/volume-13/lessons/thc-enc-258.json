@@ -1,0 +1,55 @@
+{
+  "id":"THC-ENC-258",
+  "number":258,
+  "title":"Terpene Sampling and Analytical Variation",
+  "objective":"Teach that a reported cannabis terpene profile is the result of both biological composition and a measurement chain including sampling, preparation, extraction or headspace conditions, chromatography, standards, calibration, and data processing.",
+  "terms":[
+    {"term":"representative sample","definition":"A sample collected according to a defined plan intended to reflect the population or lot about which a conclusion will be made."},
+    {"term":"headspace analysis","definition":"Measurement of volatile compounds present in the gas phase above a sample under specified conditions."},
+    {"term":"solvent extraction","definition":"Transfer of analytes from plant material into a solvent before instrumental analysis."},
+    {"term":"matrix effect","definition":"Influence of other sample components on analyte recovery, response, or measurement."},
+    {"term":"limit of quantification","definition":"The lowest analyte amount or concentration that a validated method can quantify with stated performance."}
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "A laboratory terpene result is not a direct reading of an entire plant or batch. It begins with a physical sample whose tissue position, size, developmental state, grinding, storage, and representativeness can change the material entering the analytical method.",
+    "Cannabis terpenes can be measured with headspace techniques, solvent extraction, GC-FID, GC-MS, GC-MS/MS, and other approaches. These methods do not necessarily interrogate the same chemical fraction. Headspace methods emphasize compounds entering the gas phase under specified conditions, while solvent extraction can change recovery and can expose the sample to additional preparation losses or transformations.",
+    "A validated static-headspace GC-MS/MS method quantifying 93 cannabis terpenoids showed that sample preparation and extraction significantly changed the observed chemical fingerprint compared with untreated flower. The same work found relatively stable profile patterns for pronounced terpenoids across dates while absolute concentrations could vary with aging.",
+    "Compound identity also depends on chromatographic resolution, spectral evidence, authentic standards, isomer definitions, and sometimes chiral separation. A generic label such as 'pinene' or 'limonene' may conceal isomeric or stereochemical information that the analytical method did not resolve.",
+    "Method-to-method or lab-to-lab disagreement is not automatically evidence that one laboratory is wrong. Sampling error, moisture basis, calibration, analyte list, standards, extraction, headspace conditions, integration rules, and uncertainty can all produce legitimate differences that must be reconciled before biological conclusions are made."
+  ],
+  "cultivationRelevance":[
+    "Use a written sampling plan when comparing plants, treatments, harvest stages, or lots; do not select only the most aromatic or visually developed flower unless that is the defined target population.",
+    "Keep tissue position, sample mass, fresh/dry basis, grinding, container, storage interval, and preparation consistent across comparisons.",
+    "When tracking change over time, use the same laboratory and validated method when possible, and preserve raw units plus moisture basis instead of comparing only rounded label percentages.",
+    "Treat values near detection or quantification limits differently from robust major peaks, and preserve nondetect versus not-tested distinctions."
+  ],
+  "measureAndRecord":[
+    {"field":"Sampling plan","requirement":"Record target population/lot, number of plants or units, sampling locations, tissue/flower positions, mass, randomization or compositing method, and replicate structure."},
+    {"field":"Sample state","requirement":"Record fresh/dry basis, moisture or water activity when relevant, grinding/homogenization, container, storage temperature, and elapsed time before analysis."},
+    {"field":"Analytical method","requirement":"Record headspace/extraction method, instrument, column, temperature program, standards, internal standards, calibration range, and analyte list."},
+    {"field":"Identification and quantitation","requirement":"Record retention/spectral evidence, isomer/stereochemical resolution, LOD/LOQ, recovery, precision, uncertainty, and result units."},
+    {"field":"Data interpretation","requirement":"Preserve absolute concentration separately from percent-of-profile values and document normalization or moisture corrections before comparing datasets."
+    }
+  ],
+  "misconceptions":[
+    "A terpene certificate is the exact chemistry of every flower in the lot.",
+    "All laboratories measure the same terpene fraction in the same way.",
+    "Grinding and extraction cannot change a volatile profile.",
+    "A nondetect proves a compound is completely absent.",
+    "Two different lab values can be compared biologically without checking sampling, units, method, and moisture basis."
+  ],
+  "evidenceLimits":[
+    "Validated cannabis analytical methods demonstrate substantial method and preparation effects, but no single analytical platform is universally best for every question. Defensible interpretation requires matching the method to the question and keeping sampling uncertainty distinct from instrumental precision."
+  ],
+  "crossLinks":"THC-ENC-239–240 for maturity and cannabinoid sampling; THC-ENC-256–257 for drying/storage effects; THC-ENC-259 for chemovar classification; THC-ENC-401 onward for measurement and research skills.",
+  "sourceNotes":[
+    "Tandem Mass Spectrometric Quantification of 93 Terpenoids in Cannabis Using Static Headspace Injections. Analytical Chemistry (2019), DOI 10.1021/acs.analchem.9b02844. Validated SHS-GC-MS/MS for 93 terpenoids and demonstrated significant sample-preparation/extraction effects on cannabis chemical fingerprints.",
+    "Characterization of chemotype-dependent terpenoids profile in cannabis by headspace GC-TOF-MS and related validated headspace methods demonstrate method-specific profiling across cannabis chemovars and support explicit reporting of preparation, standards, and analytical conditions.",
+    "Controlled Volume 13 manuscript v1.0 requires biological variation, sampling variation, extraction/headspace behavior, analytical uncertainty, and laboratory disagreement to remain distinct evidence levels."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 13 batch 04 controlled web derivative","driveSourceDocumentId":"1Vh_CkUFTN9eqsXiuH53pD1tMDyBo2zxDTIXOd_vQlgw","evidenceControl":"controlled_manuscript_plus_validated_cannabis_terpenoid_analytical_sources","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_terpene_sampling_method_validation_and_uncertainty","releaseTimeReview":"completed_2026-08-29_sampling_preparation_headspace_extraction_and_lab_comparison_boundaries","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"terpene-sampling-and-analytical-variation",
+  "route":"/encyclopedia/terpene-sampling-and-analytical-variation"
+}

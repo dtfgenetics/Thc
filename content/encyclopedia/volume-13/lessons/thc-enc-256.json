@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-256",
+  "number":256,
+  "title":"Temperature, Airflow, and Volatile Loss",
+  "objective":"Explain how temperature, moisture removal, gas exchange, exposure time, and compound volatility interact during cannabis drying without reducing volatile preservation to one universal temperature, humidity, or airflow recipe.",
+  "terms":[
+    {"term":"volatilization","definition":"Transfer of a compound from condensed plant material into the gas phase."},
+    {"term":"vapor pressure","definition":"A temperature-dependent measure related to a compound's tendency to enter the gas phase."},
+    {"term":"mass transfer","definition":"Movement of water or volatile compounds from inside plant material through boundary layers into surrounding air."},
+    {"term":"drying rate","definition":"The rate at which moisture is removed from plant material under specified conditions."},
+    {"term":"boundary layer","definition":"A thin region of relatively slow-moving air adjacent to a surface that influences heat and mass transfer."}
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Cannabis drying removes water while a chemically diverse volatilome remains present in glandular and plant tissues. Volatile loss can occur through evaporation, diffusion, oxidation, physical disruption, and other transformations, so preservation is governed by more than temperature alone.",
+    "Increasing temperature generally increases molecular motion and vapor pressure and can accelerate both water removal and volatile loss, but actual retention depends on compound identity, tissue structure, exposure time, atmosphere, moisture state, and the drying technology. Direct cannabis/hemp studies show that terpene responses differ by compound and drying method rather than following one universal retention curve.",
+    "Air movement changes the boundary layer around plant material and therefore changes heat and mass transfer. More air exchange can speed moisture removal while also maintaining a concentration gradient that favors movement of volatile molecules away from the material. Airflow therefore has competing process effects and should be treated as a measured drying variable, not simply 'more is better' or 'less preserves terpenes.'",
+    "Controlled-atmosphere medicinal-cannabis experiments found cultivar- and compound-specific terpene preservation across atmospheric, nitrogen-rich, and mixed-gas drying treatments. In the studied chemovars, beta-myrcene was more sensitive than several other monoterpenes, illustrating why one total-terpene number can conceal selective losses.",
+    "Recent cannabis volatilome work comparing freeze and tray drying also found that drying method changed the volatile profile. Low process temperature alone did not guarantee preservation of every volatile, reinforcing that temperature, pressure, water removal mechanism, time, and matrix disruption interact."
+  ],
+  "cultivationRelevance":[
+    "Track drying conditions as time-series process data rather than relying on one room set point or one elapsed-day rule.",
+    "Treat temperature, humidity or water activity, airflow, load density, flower size, and drying time as interacting variables when comparing postharvest outcomes.",
+    "If aroma preservation is a goal, compare absolute concentrations of multiple volatile classes before and after drying instead of using smell or total-terpene percentage alone.",
+    "Avoid transferring an optimum drying protocol from one chemovar, chamber design, flower size, or analytical method to every cannabis crop without local validation."
+  ],
+  "measureAndRecord":[
+    {"field":"Environmental time series","requirement":"Record temperature and relative humidity or water activity context throughout drying, including sensor location, calibration, sampling interval, and spatial variation."},
+    {"field":"Air movement","requirement":"Record fan configuration or measured air velocity where available, air-exchange strategy, rack/loading geometry, and whether air directly impinges on flowers."},
+    {"field":"Material state","requirement":"Record cultivar, inflorescence size, wet mass, dry mass, stem/leaf trimming state, load density, and starting/final moisture or water activity."},
+    {"field":"Volatile chemistry","requirement":"Record pre- and post-dry samples using the same preparation, analytical method, standards, units, and biological replication."},
+    {"field":"Process duration","requirement":"Record elapsed drying time and the criterion used to determine endpoint rather than assuming a fixed number of days represents the same material state."
+    }
+  ],
+  "misconceptions":[
+    "There is one scientifically proven drying temperature and humidity that is optimal for every cannabis cultivar.",
+    "Cold drying automatically preserves every volatile compound.",
+    "More airflow always improves quality.",
+    "Slower drying always preserves more terpenes.",
+    "A higher post-dry relative terpene percentage proves that the plant gained terpenes during drying."
+  ],
+  "evidenceLimits":[
+    "Controlled cannabis and hemp studies demonstrate strong effects of drying technology and atmosphere on volatile retention, but airflow is rarely isolated as a single factor in commercial-flower experiments. Mechanistic statements about airflow therefore rest on heat/mass-transfer principles plus cannabis drying observations and should not be converted into a universal operational recipe without direct validation."
+  ],
+  "crossLinks":"THC-ENC-255 for developmental aroma change; THC-ENC-257 for oxidation and storage; THC-ENC-258 for analytical variation; THC-ENC-341 onward for harvest/postharvest topics.",
+  "sourceNotes":[
+    "Spadafora ND et al. (2024). The influence of drying and storage conditions on the volatilome and cannabinoid content of Cannabis sativa L. inflorescences. Analytical and Bioanalytical Chemistry 416:3797–3809. Compared freeze and tray drying and showed drying/storage method-dependent changes in the cannabis volatilome.",
+    "In Pursuit of Optimal Quality: Cultivar-Specific Drying Approaches for Medicinal Cannabis (2024). Direct controlled-atmosphere drying experiments demonstrated cultivar- and compound-specific terpene retention rather than one universal drying response.",
+    "Relationship between Total Antioxidant Capacity, Cannabinoids and Terpenoids in Hops and Cannabis (2023). Compared cannabis drying methods and documented method-dependent terpene losses, including greater loss in the hotter microwave-assisted hot-air treatment than freeze drying in the studied material.",
+    "Controlled Volume 13 manuscript v1.0 requires drying physics, volatile retention, microbial risk, sensory quality, and universal protocol claims to remain separate evidence levels."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 13 batch 04 controlled web derivative","driveSourceDocumentId":"1Vh_CkUFTN9eqsXiuH53pD1tMDyBo2zxDTIXOd_vQlgw","evidenceControl":"controlled_manuscript_plus_direct_cannabis_drying_and_volatilome_sources","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_drying_temperature_airflow_mass_transfer_and_volatile_retention","releaseTimeReview":"completed_2026-08-29_drying_physics_compound_specificity_and_universal_recipe_boundaries","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"temperature-airflow-and-volatile-loss",
+  "route":"/encyclopedia/temperature-airflow-and-volatile-loss"
+}

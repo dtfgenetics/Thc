@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-259",
+  "number":259,
+  "title":"Chemovar Classification Beyond Strain Names",
+  "objective":"Explain why measured chemical profiles provide a more defensible description of cannabis material than broad Indica/Hybrid/Sativa labels or strain names, while preserving the difference between chemotype, genotype, pedigree, phenotype, and product identity.",
+  "terms":[
+    {"term":"chemovar","definition":"A chemically characterized plant variety or grouping defined by measured metabolite features rather than by a broad vernacular label alone."},
+    {"term":"chemotype","definition":"A chemical phenotype or category based on the presence, abundance, or ratios of selected metabolites."},
+    {"term":"genotype","definition":"The genetic constitution of an organism or the allelic state at specified loci."},
+    {"term":"pedigree","definition":"A documented record of ancestry or parentage."},
+    {"term":"multivariate profile","definition":"A dataset interpreted using multiple measured variables together rather than a single analyte."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Commercial cannabis is commonly described with Indica, Hybrid, Sativa, and named-strain labels, but these labels do not consistently correspond to reproducible chemical categories. They can carry historical, marketing, morphological, or consumer meanings that should not be treated as laboratory measurements.",
+    "A large US analysis of 89,923 commercial cannabis samples from six states identified reproducible chemical clusters using cannabinoid and terpene data. The study found that Indica/Hybrid/Sativa labels were poorly or inconsistently aligned with underlying chemistry, demonstrating that those commercial categories are weak substitutes for measured composition.",
+    "Named strains can show more chemical consistency than random naming would predict in some datasets, but the same name is not perfectly uniform across producers or samples. A strain name therefore cannot prove genotype, pedigree, chemistry, or expected effect without supporting records and measurements.",
+    "Chemovar classification is strongest when the variables, analytical method, sampling frame, scaling, clustering or classification method, and validation set are explicitly defined. A chemovar is not an immutable natural species category; it is a defensible grouping for a stated chemical question and dataset.",
+    "Chemistry also does not replace genetics. Similar chemical profiles can arise from genetically different plants, and genetically related plants can diverge chemically because development and environment influence phenotype. Genotype, pedigree, chemotype, morphology, and sensory phenotype should remain linked but separately measured records."
+  ],
+  "cultivationRelevance":[
+    "Use stable plant IDs, clone/seed provenance, pedigree records, and replicated chemistry rather than a strain name alone when selecting parents or comparing production lots.",
+    "For phenotype selection, define the actual chemical traits of interest—such as cannabinoid ratios and a reproducible volatile profile—rather than selecting by Indica/Sativa label.",
+    "Repeat chemistry across plants, positions, harvests, or environments before calling a profile stable.",
+    "When communicating publicly, describe measured chemistry directly and avoid promising effects from broad category labels."
+  ],
+  "measureAndRecord":[
+    {"field":"Identity records","requirement":"Record unique plant/lot ID, propagation source, clone or seed lot, breeder/source claim, pedigree documentation, and chain of custody separately from commercial name."},
+    {"field":"Chemistry","requirement":"Record cannabinoid and volatile analytes, units, sample plan, laboratory/method, date, developmental/postharvest state, and replicate."},
+    {"field":"Classification method","requirement":"Record variables included, transformations/scaling, distance or model method, cluster definitions, training/validation procedure, and uncertainty."},
+    {"field":"Genetic evidence","requirement":"When genotype or parentage is claimed, record the actual marker, sequencing, fingerprinting, or controlled-cross evidence rather than inferring genetics from chemistry."},
+    {"field":"Label comparison","requirement":"Keep commercial label, chemical cluster, sensory description, and effect report as separate fields so agreement or disagreement can be tested."
+    }
+  ],
+  "misconceptions":[
+    "Indica, Hybrid, and Sativa labels reliably define distinct chemical classes in commercial cannabis.",
+    "Two samples with the same strain name are chemically and genetically identical.",
+    "A terpene profile proves pedigree.",
+    "A chemovar cluster is the same thing as a botanical species or genetic lineage.",
+    "Chemistry alone guarantees a specific human effect."
+  ],
+  "evidenceLimits":[
+    "Large commercial datasets strongly support chemistry-based description over broad Indica/Hybrid/Sativa labels for measured material, but chemovar boundaries depend on the sampled population, analyte panel, method, and statistical model. Chemical clustering does not by itself establish genetic ancestry or predict a uniform clinical effect."
+  ],
+  "crossLinks":"THC-ENC-005 for botanical nomenclature and identity claims; THC-ENC-141–160 for genetics/chemotype; THC-ENC-245 for TPS genetics; THC-ENC-258 for analytical variation; THC-ENC-260 for effect claims.",
+  "sourceNotes":[
+    "Smith CJ et al. (2022). The phytochemical diversity of commercial Cannabis in the United States. PLOS ONE 17:e0267498. Analyzed 89,923 commercial samples from six states and found reproducible chemical clusters but poor/inconsistent alignment of Indica/Hybrid/Sativa labels with measured chemistry.",
+    "Chemical Composition of Commercial Cannabis and related cannabis chemotaxonomy studies demonstrate substantial within-name and between-producer chemical variation and support explicit chemistry-based reporting rather than vernacular categories alone.",
+    "Controlled Volume 13 manuscript v1.0 requires commercial name, botanical identity, pedigree, genotype, chemotype, sensory phenotype, and human-effect claims to remain distinct evidence levels."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 13 batch 04 controlled web derivative","driveSourceDocumentId":"1Vh_CkUFTN9eqsXiuH53pD1tMDyBo2zxDTIXOd_vQlgw","evidenceControl":"controlled_manuscript_plus_large_commercial_cannabis_chemotaxonomy_sources","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_chemovar_classification_identity_genetics_and_effect_boundaries","releaseTimeReview":"completed_2026-08-29_commercial_labels_chemistry_clusters_strain_names_and_identity_boundaries","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"chemovar-classification-beyond-strain-names",
+  "route":"/encyclopedia/chemovar-classification-beyond-strain-names"
+}

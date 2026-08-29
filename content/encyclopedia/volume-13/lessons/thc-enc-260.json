@@ -1,0 +1,57 @@
+{
+  "id":"THC-ENC-260",
+  "number":260,
+  "title":"Entourage Claims: Evidence, Uncertainty, and Responsible Language",
+  "objective":"Evaluate cannabis 'entourage effect' claims by naming the compounds, dose, route, endpoint, model, and evidence level instead of treating entourage as one established mechanism or a universal property of whole-plant products.",
+  "terms":[
+    {"term":"entourage effect","definition":"A broad and inconsistently used hypothesis that multiple cannabis constituents may interact to alter biological or subjective effects compared with one constituent alone."},
+    {"term":"pharmacodynamic interaction","definition":"An interaction in which one compound changes the biological effect of another without necessarily changing its concentration in the body."},
+    {"term":"pharmacokinetic interaction","definition":"An interaction in which one compound changes the absorption, distribution, metabolism, or elimination of another."},
+    {"term":"synergy","definition":"An interaction in which a combined effect exceeds a defined expectation for the individual components; the mathematical definition must be specified."},
+    {"term":"evidence level","definition":"The type and strength of support for a claim, such as receptor assay, cell model, animal study, observational human data, or controlled human trial."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "'Entourage effect' is not one experimentally defined mechanism. It has been used for proposed cannabinoid-cannabinoid, terpene-cannabinoid, lipid-cannabinoid, pharmacokinetic, pharmacodynamic, sensory, and whole-extract interactions. A scientifically testable claim must therefore specify which constituents interact, at what dose and route, against which comparator, and for which endpoint.",
+    "Some proposed mechanisms have failed under direct testing. A 2020 study of myrcene, alpha-pinene, beta-pinene, beta-caryophyllene, and limonene found no evidence that these terpenoids, alone or in mixtures, meaningfully modified THC, CBD, or 2-AG signaling through CB1 or CB2 in the tested receptor assays, apart from a possible weak beta-caryophyllene/CB2 interaction. This rules against that particular receptor-level explanation; it does not prove that no interaction can occur by any mechanism.",
+    "Other specific interactions have human evidence. In a 2024 randomized double-blind study of 20 healthy adults who intermittently used cannabis, vaporized D-limonene alone did not differ from placebo on measured pharmacodynamic outcomes, while the highest tested D-limonene condition with 30 mg THC reduced selected THC-related anxiety/paranoia ratings compared with THC alone. D-limonene did not meaningfully alter THC pharmacokinetics in that study. This is evidence for a specific dose-route-endpoint interaction, not proof of a universal whole-plant entourage effect.",
+    "Systematic and scoping reviews continue to find heterogeneous and limited evidence across proposed cannabis interactions. Differences in extract composition, constituent dose, administration route, outcome, study design, and terminology make broad generalization difficult.",
+    "Plant chemistry cannot establish interaction by itself. Co-occurrence of THC and a terpene in flower, a correlation between compounds, a shared aroma, or a consumer report does not demonstrate additivity, antagonism, synergy, mechanism, or clinical benefit. Those require experimental designs that compare components and combinations directly."
+  ],
+  "cultivationRelevance":[
+    "When describing a chemovar or breeding target, report the measured constituent profile without converting co-occurrence into an effect claim.",
+    "Use terms such as 'contains,' 'associated with,' 'tested in,' 'reduced in this trial,' or 'mechanism not established' instead of saying a terpene 'boosts THC' unless the specific evidence supports that wording.",
+    "Separate selection for aroma/chemistry from selection for a claimed human outcome; the latter requires controlled exposure research beyond plant production data.",
+    "Preserve lot-specific chemistry because interaction studies depend on actual dose and composition, not the strain name alone."
+  ],
+  "measureAndRecord":[
+    {"field":"Interaction claim","requirement":"Name every relevant compound/extract, dose or concentration, ratio, route, timing, comparator, endpoint, and proposed mechanism."},
+    {"field":"Evidence model","requirement":"Label evidence as biochemical/receptor, cell, animal, observational human, randomized controlled human, systematic review, or other clearly defined level."},
+    {"field":"Effect model","requirement":"State whether the claim concerns additivity, antagonism, potentiation, synergy, pharmacokinetics, pharmacodynamics, sensory perception, or another defined interaction."},
+    {"field":"Statistics and uncertainty","requirement":"Record sample size, effect estimate, interval or variability, multiplicity context, replication, and whether the finding was prespecified or exploratory."},
+    {"field":"Translation boundary","requirement":"State explicitly when a result from isolated compounds, vaporized doses, receptor assays, or extracts cannot be transferred directly to whole flower or every cannabis product."
+    }
+  ],
+  "misconceptions":[
+    "The entourage effect is a single proven mechanism.",
+    "Because one receptor assay found no terpene interaction, all cannabis constituent interactions are impossible.",
+    "Because one human D-limonene study found a specific interaction, every limonene-rich cultivar will produce the same effect.",
+    "Two compounds occurring together in cannabis proves synergy.",
+    "A terpene profile can predict a person's clinical response without dose- and product-specific human evidence."
+  ],
+  "evidenceLimits":[
+    "The evidence base supports neither a blanket dismissal nor a blanket confirmation of all claims grouped under 'entourage effect.' Some specific mechanisms have negative evidence, some constituent combinations have emerging positive evidence for defined endpoints, and many proposed interactions remain untested or inadequately replicated. Responsible language must stay specific to compounds, dose, route, model, endpoint, and study quality."
+  ],
+  "crossLinks":"THC-ENC-246–251 for individual terpene chemistry; THC-ENC-258 for analytical variation; THC-ENC-259 for chemistry-based classification; THC-ENC-401 onward for research design and evidence interpretation.",
+  "sourceNotes":[
+    "Finlay DB et al. (2020). Terpenoids From Cannabis Do Not Mediate an Entourage Effect by Acting at Cannabinoid Receptors. Frontiers in Pharmacology 11:359. Tested five common cannabis terpenoids and found no support for direct modulation of THC/CBD/2-AG at CB1/CB2 under the studied conditions, with a possible weak beta-caryophyllene/CB2 exception.",
+    "Spindle TR et al. (2024). Vaporized D-limonene selectively mitigates the acute anxiogenic effects of delta-9-tetrahydrocannabinol in healthy adults who intermittently use cannabis. Drug and Alcohol Dependence 257:111267. Randomized double-blind human study showing a specific anxiolytic interaction at the highest tested THC + D-limonene condition without a meaningful THC pharmacokinetic change.",
+    "Recent systematic/scoping reviews of the cannabis entourage literature conclude that broad terpene/cannabinoid synergy remains insufficiently established and call for better controlled, composition-defined human studies.",
+    "Controlled Volume 13 manuscript v1.0 requires co-occurrence, receptor mechanism, pharmacokinetic interaction, pharmacodynamic interaction, synergy, observational response, and clinical benefit to remain separate evidence levels."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 13 batch 04 controlled web derivative","driveSourceDocumentId":"1Vh_CkUFTN9eqsXiuH53pD1tMDyBo2zxDTIXOd_vQlgw","evidenceControl":"controlled_manuscript_plus_receptor_assay_human_RCT_and_review_evidence","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_entourage_interaction_mechanism_human_evidence_and_claim_language","releaseTimeReview":"completed_2026-08-29_entourage_specificity_negative_mechanism_and_positive_RCT_boundaries","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"entourage-claims-evidence-uncertainty-and-responsible-language",
+  "route":"/encyclopedia/entourage-claims-evidence-uncertainty-and-responsible-language"
+}
