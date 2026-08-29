@@ -1,0 +1,109 @@
+name: Commit validated 25-game non-workflow surfaces
+
+on:
+  push:
+    branches:
+      - release/reconcile-local-games
+    paths:
+      - .github/workflows/commit-validated-25-game-surfaces.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  commit-surfaces:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: release/reconcile-local-games
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Apply validated non-workflow promotion
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+
+          def replace_once(path, old, new, label):
+              p=Path(path); text=p.read_text(); count=text.count(old)
+              if count != 1:
+                  raise SystemExit(f'{path}: expected exactly one {label}, found {count}')
+              p.write_text(text.replace(old,new,1))
+
+          replace_once('scripts/assemble-wordpress-suite-v2.py', 'import pathlib\nimport sys\n', 'import pathlib\nimport subprocess\nimport sys\n', 'subprocess import anchor')
+          replace_once(
+              'scripts/assemble-wordpress-suite-v2.py',
+              '''final_actual = hashlib.sha256(payload).hexdigest()\nOUTPUT.parent.mkdir(parents=True, exist_ok=True)\nOUTPUT.write_bytes(payload)\nprint(f"assembled={OUTPUT} bytes={len(payload)} base_sha256={base_actual} sha256={final_actual}")''',
+              '''pre_expansion_sha = hashlib.sha256(payload).hexdigest()\nOUTPUT.parent.mkdir(parents=True, exist_ok=True)\nOUTPUT.write_bytes(payload)\nsubprocess.run([\n    sys.executable,\n    str(pathlib.Path(__file__).resolve().parent / "expand-wordpress-suite-registered-games.py"),\n    str(OUTPUT),\n], check=True)\nfinal_actual = hashlib.sha256(OUTPUT.read_bytes()).hexdigest()\nprint(f"assembled={OUTPUT} bytes={OUTPUT.stat().st_size} base_sha256={base_actual} pre_expansion_sha256={pre_expansion_sha} sha256={final_actual}")''',
+              'assembler output expansion tail',
+          )
+
+          hub=Path('site/public-route-patch/games/index.html')
+          html=hub.read_text()
+          for old,new,label in [
+              ('<!-- deployment-verification-marker: 15 playable browser games -->','<!-- deployment-verification-marker: 25 playable browser games -->','hub verification marker'),
+              ('<strong>15</strong><span>playable browser games</span>','<strong>25</strong><span>playable browser games</span>','hub playable count'),
+              ('<a href="#multiplayer">Multiplayer</a><a href="#development">Development</a>','<a href="#multiplayer">Multiplayer</a><a href="#new-releases">New releases</a><a href="#development">Development</a>','hub quicknav release link'),
+          ]:
+              if html.count(old) != 1: raise SystemExit(f'hub {label} anchor drifted')
+              html=html.replace(old,new,1)
+          release_section='''    <section class="content soft" id="new-releases"><div class="wrap"><div class="section-heading"><div><p class="eyebrow">New releases</p><h2>The missing-game slate is now playable.</h2></div><p>Ten tested browser games moved from the tracked build slate into the public catalog. Each route remains independently testable and uses its own self-hosted runtime.</p></div><div class="grid four"><article class="card"><span class="status">Play now</span><h3>Strain Match</h3><p>Match cannabis concepts, strain families, terpene profiles and cultivation knowledge across deterministic memory decks.</p><a class="card-link" href="/games/strain-match/">Play Strain Match →</a></article><article class="card"><span class="status">Play now</span><h3>Grow Room Bingo / Bongwater Bingo</h3><p>Generate deterministic event and community bingo cards from shareable six-character codes.</p><a class="card-link" href="/games/grow-room-bingo/">Play Bingo →</a></article><article class="card"><span class="status">Play now</span><h3>Lost in the Terps</h3><p>Search themed word-grid missions built around terpene, grow-room and cannabis vocabulary.</p><a class="card-link" href="/games/lost-in-the-terps/">Play Lost in the Terps →</a></article><article class="card"><span class="status">Play now</span><h3>Mystery Strain</h3><p>Use yes/no trait clues to identify fictional mystery cultivars through a deduction engine.</p><a class="card-link" href="/games/mystery-strain/">Play Mystery Strain →</a></article><article class="card"><span class="status">Play now</span><h3>Spin the Strain</h3><p>Spin a deterministic event wheel for strain picks, trivia, challenges and community prompts.</p><a class="card-link" href="/games/spin-the-strain/">Spin the Strain →</a></article><article class="card"><span class="status">Play now</span><h3>Grow Room Defense</h3><p>Protect three plant lanes by matching fictional pest and pathogen threats with the correct IPM counterplay.</p><a class="card-link" href="/games/grow-room-defense/">Play Grow Room Defense →</a></article><article class="card"><span class="status">Play now</span><h3>Harvest Hustle</h3><p>Run a timed four-station harvest arcade shift, route batches correctly and build a clean score streak.</p><a class="card-link" href="/games/harvest-hustle/">Play Harvest Hustle →</a></article><article class="card"><span class="status">Play now</span><h3>Trichome Trials</h3><p>Judge five blind fictional entries across seven scorecard categories and compare your calls with benchmark evidence.</p><a class="card-link" href="/games/trichome-trials/">Play Trichome Trials →</a></article><article class="card"><span class="status">Play now</span><h3>Pheno Draft</h3><p>Draft fictional parent cards, generate phenotype choices and build a line toward a deterministic objective across six rounds.</p><a class="card-link" href="/games/pheno-draft/">Play Pheno Draft →</a></article><article class="card"><span class="status">Play now</span><h3>High Lines</h3><p>Color four original interactive line-art scenes, find hidden bonuses and share deterministic scene challenges.</p><a class="card-link" href="/games/high-lines/">Play High Lines →</a></article></div></div></section>\n'''
+          anchor='    <section class="content dark" id="multiplayer">'
+          if html.count(anchor) != 1 or 'id="new-releases"' in html: raise SystemExit('hub release insertion anchor drifted')
+          hub.write_text(html.replace(anchor, release_section+anchor,1))
+
+          projects=Path('site/public-route-patch/projects/index.html')
+          text=projects.read_text()
+          for old,new,label in [
+              ('<!-- 15 public browser games | dtf-release-fingerprint: projects-public-games-15-v2 -->','<!-- 25 public browser games | dtf-release-fingerprint: projects-public-games-25-v3 -->','projects fingerprint'),
+              ('<strong>15</strong><span>public browser games</span>','<strong>25</strong><span>public browser games</span>','projects count'),
+          ]:
+              if text.count(old) != 1: raise SystemExit(f'projects {label} anchor drifted')
+              text=text.replace(old,new,1)
+          project_cards='''          <article class="card"><span class="status">Play now</span><h3>Strain Match</h3><p>Educational deterministic memory and concept matching.</p><a class="card-link" href="/games/strain-match/">Play →</a></article>\n          <article class="card"><span class="status">Play now</span><h3>Grow Room Bingo / Bongwater Bingo</h3><p>Shareable deterministic community bingo cards.</p><a class="card-link" href="/games/grow-room-bingo/">Play →</a></article>\n          <article class="card"><span class="status">Play now</span><h3>Lost in the Terps</h3><p>Themed cannabis and terpene word-search missions.</p><a class="card-link" href="/games/lost-in-the-terps/">Play →</a></article>\n          <article class="card"><span class="status">Play now</span><h3>Mystery Strain</h3><p>Yes/no fictional cultivar deduction game.</p><a class="card-link" href="/games/mystery-strain/">Play →</a></article>\n          <article class="card"><span class="status">Play now</span><h3>Spin the Strain</h3><p>Deterministic strain, trivia and event wheel.</p><a class="card-link" href="/games/spin-the-strain/">Play →</a></article>\n          <article class="card"><span class="status">Play now</span><h3>Grow Room Defense</h3><p>Three-lane IPM defense and counterplay game.</p><a class="card-link" href="/games/grow-room-defense/">Play →</a></article>\n          <article class="card"><span class="status">Play now</span><h3>Harvest Hustle</h3><p>Timed harvest-station routing arcade game.</p><a class="card-link" href="/games/harvest-hustle/">Play →</a></article>\n          <article class="card"><span class="status">Play now</span><h3>Trichome Trials</h3><p>Seven-category blind judging scorecard game.</p><a class="card-link" href="/games/trichome-trials/">Play →</a></article>\n          <article class="card"><span class="status">Play now</span><h3>Pheno Draft</h3><p>Six-round fictional genetics draft-builder.</p><a class="card-link" href="/games/pheno-draft/">Play →</a></article>\n          <article class="card"><span class="status">Play now</span><h3>High Lines</h3><p>Interactive coloring, hidden-object and creative activity game.</p><a class="card-link" href="/games/high-lines/">Play →</a></article>\n'''
+          pheno='''          <article class="card"><span class="status">Play now</span><h3>PhenoQuest: The Living Seed Vault</h3><p>Genetics adventure with phenotype, breeding and Vault Garden systems.</p><a class="card-link" href="/games/phenoquest/">Play →</a></article>\n'''
+          if text.count(pheno) != 1: raise SystemExit('projects PhenoQuest anchor drifted')
+          projects.write_text(text.replace(pheno,pheno+project_cards,1))
+
+          replace_once('scripts/reconcile-public-static-route-ownership.mjs', "const projectsFingerprint = 'dtf-release-fingerprint: projects-public-games-15-v2';", "const projectsFingerprint = 'dtf-release-fingerprint: projects-public-games-25-v3';", 'projects ownership fingerprint')
+          replace_once('scripts/reconcile-public-static-route-ownership.mjs', "    'PhenoQuest: The Living Seed Vault',\n", "    'PhenoQuest: The Living Seed Vault',\n    'High Lines',\n    'Pheno Draft',\n", 'projects marker list')
+
+          scope=Path('docs/DTF_GAME_SCOPE_MASTER.md'); s=scope.read_text()
+          s=s.replace('The current Game Hub exposes 15 playable browser games:', 'The current Game Hub exposes 25 playable browser games:')
+          anchor='15. Kush Kings Chess\n'
+          promoted='''\n16. Strain Match\n17. Grow Room Bingo / Bongwater Bingo\n18. Lost in the Terps\n19. Mystery Strain\n20. Spin the Strain\n21. Grow Room Defense\n22. Harvest Hustle\n23. Trichome Trials\n24. Pheno Draft\n25. High Lines\n'''
+          if s.count(anchor)!=1: raise SystemExit('scope catalog anchor drifted')
+          s=s.replace(anchor,anchor+promoted,1)
+          s=s.replace('## Missing outlined game slate','## Promoted missing-game slate')
+          s=s.replace('These previously outlined titles are part of the DTFSeeds game scope and must remain tracked until either shipped or explicitly retired:', 'These previously outlined titles are now implemented as tested browser routes and registered in the DTFSeeds public deployment contract:')
+          s=s.replace('## Build order','## Completed build order')
+          scope.write_text(s)
+          PY
+      - name: Validate promoted sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile scripts/assemble-wordpress-suite-v2.py scripts/expand-wordpress-suite-registered-games.py scripts/package-public-suite-wordpress.py
+          grep -Fq '25 playable browser games' site/public-route-patch/games/index.html
+          grep -Fq 'projects-public-games-25-v3' site/public-route-patch/projects/index.html
+          npm run games:release-check
+      - name: Commit only non-workflow release surfaces
+        shell: bash
+        run: |
+          set -euo pipefail
+          find scripts -type d -name __pycache__ -prune -exec rm -rf {} +
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add scripts/assemble-wordpress-suite-v2.py scripts/reconcile-public-static-route-ownership.mjs site/public-route-patch/games/index.html site/public-route-patch/projects/index.html docs/DTF_GAME_SCOPE_MASTER.md
+          git diff --cached --quiet && { echo 'Already committed'; exit 0; }
+          git commit -m 'Promote 25-game public catalog and package source [release-surface-sync]'
+          git push origin HEAD:release/reconcile-local-games
