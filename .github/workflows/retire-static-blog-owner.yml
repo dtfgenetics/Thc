@@ -1,0 +1,180 @@
+name: Retire Static DTFSeeds Blog Owner
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/retire-static-blog-owner.yml
+      - .github/workflows/dtfseeds-public-route-repair.yml
+      - site/public-route-patch/blog/**
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dtfseeds-blog-route-ownership-retirement
+  cancel-in-progress: false
+
+jobs:
+  retire:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: production
+    env:
+      SSH_HOST: ${{ secrets.HOSTINGER_HOST || secrets.SSH_HOST || secrets.SFTP_HOST }}
+      SSH_USER: ${{ secrets.HOSTINGER_USER || secrets.HOSTINGER_SSH_USER || secrets.SSH_USER || secrets.SFTP_USER }}
+      SSH_PORT: ${{ secrets.HOSTINGER_PORT || secrets.SSH_PORT || secrets.SFTP_PORT }}
+      SSH_PRIVATE_KEY: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY || secrets.HOSTINGER_SSH_KEY || secrets.SSH_PRIVATE_KEY || secrets.DEPLOY_KEY }}
+      SSH_KNOWN_HOSTS: ${{ secrets.HOSTINGER_KNOWN_HOSTS || secrets.SSH_KNOWN_HOSTS }}
+      SITE_ROOT: ${{ vars.HOSTINGER_WORDPRESS_PATH || vars.WORDPRESS_PATH || vars.WP_PATH }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate retirement source contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          test ! -e .github/workflows/dtfseeds-public-route-repair.yml
+          test ! -e site/public-route-patch/blog/index.html
+          test -s site/wordpress/pages/blog.html
+          grep -Fq 'DTF Field Notes &amp; Updates' site/wordpress/pages/blog.html
+          grep -Fq 'Follow what we are learning, building, and releasing.' site/wordpress/pages/blog.html
+
+      - name: Configure verified Hostinger SSH access
+        shell: bash
+        run: |
+          set -euo pipefail
+          SSH_HOST="${SSH_HOST:-147.93.42.1}"
+          SSH_PORT="${SSH_PORT:-22}"
+          : "${SSH_USER:?Missing Hostinger SSH user}"
+          : "${SSH_PRIVATE_KEY:?Missing Hostinger SSH private key}"
+          [[ "$SSH_PORT" =~ ^[0-9]+$ ]]
+          echo "SSH_HOST=$SSH_HOST" >> "$GITHUB_ENV"
+          echo "SSH_PORT=$SSH_PORT" >> "$GITHUB_ENV"
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          if [[ -n "${SSH_KNOWN_HOSTS:-}" ]]; then
+            printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          else
+            ssh-keyscan -p "$SSH_PORT" -H "$SSH_HOST" > ~/.ssh/known_hosts
+          fi
+          test -s ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+
+      - name: Locate dtfseeds.com WordPress root
+        id: root
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -n "${SITE_ROOT:-}" ]]; then
+            root="$SITE_ROOT"
+          else
+            root="$(ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" 'bash -s' <<'REMOTE'
+          set -euo pipefail
+          while IFS= read -r config; do
+            directory="$(dirname "$config")"
+            if command -v wp >/dev/null 2>&1; then
+              home_url="$(wp --path="$directory" option get home --skip-plugins --skip-themes 2>/dev/null || true)"
+              case "${home_url%/}" in
+                https://dtfseeds.com|http://dtfseeds.com|https://www.dtfseeds.com|http://www.dtfseeds.com)
+                  printf '%s\n' "$directory"
+                  exit 0
+                  ;;
+              esac
+            fi
+          done < <(find "$HOME" -maxdepth 8 -type f -name wp-config.php -print 2>/dev/null)
+          exit 1
+          REMOTE
+          )"
+          fi
+          [[ -n "$root" ]]
+          [[ "$root" =~ ^[A-Za-z0-9_./-]+$ ]]
+          [[ "$root" != "/" ]]
+          [[ "$root" != *".."* ]]
+          echo "path=$root" >> "$GITHUB_OUTPUT"
+
+      - name: Retire physical Blog owner with automatic rollback
+        shell: bash
+        env:
+          ROOT: ${{ steps.root.outputs.path }}
+        run: |
+          set -euo pipefail
+          stamp="$(date -u +%Y%m%dT%H%M%SZ)"
+          backup="$(ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" "ROOT='$ROOT' STAMP='$stamp' bash -s" <<'REMOTE'
+          set -euo pipefail
+          command -v wp >/dev/null
+
+          blog_id="$(wp --path="$ROOT" post list --post_type=page --name=blog --field=ID --format=ids 2>/dev/null || true)"
+          [[ "$blog_id" =~ ^[0-9]+$ ]] || { echo 'Canonical WordPress Blog page could not be resolved.' >&2; exit 1; }
+          blog_content="$(wp --path="$ROOT" post get "$blog_id" --field=post_content 2>/dev/null)"
+          grep -Fq 'DTF Field Notes &amp; Updates' <<<"$blog_content"
+          grep -Fq 'Follow what we are learning, building, and releasing.' <<<"$blog_content"
+
+          posts_page="$(wp --path="$ROOT" option get page_for_posts 2>/dev/null || echo 0)"
+          if [[ "$posts_page" == "$blog_id" ]]; then
+            wp --path="$ROOT" option update page_for_posts 0 >/dev/null
+          fi
+
+          backup=''
+          if [[ -d "$ROOT/blog" ]]; then
+            index="$ROOT/blog/index.html"
+            [[ -f "$index" ]] || { echo 'Physical /blog exists without an index.html; refusing automatic retirement.' >&2; exit 1; }
+            if ! grep -Eiq 'Cannabis Culture Insights|email@email\.com|DTF Genetics Education \| Blog Moved|old DTF Genetics blog has moved' "$index"; then
+              echo 'Physical /blog/index.html does not match a known legacy DTF Blog fingerprint; refusing automatic retirement.' >&2
+              exit 1
+            fi
+            backup="$HOME/dtfseeds-blog-route-backups/blog-$STAMP"
+            mkdir -p "$(dirname "$backup")"
+            mv "$ROOT/blog" "$backup"
+            echo "Retired legacy physical Blog directory to $backup" >&2
+          else
+            echo 'No physical /blog directory remains; WordPress already owns the route at the filesystem layer.' >&2
+          fi
+
+          wp --path="$ROOT" rewrite flush --hard >/dev/null 2>&1 || true
+          wp --path="$ROOT" cache flush >/dev/null 2>&1 || true
+          wp --path="$ROOT" eval 'do_action("litespeed_purge_all");' >/dev/null 2>&1 || true
+          printf '%s\n' "$backup"
+          REMOTE
+          )"
+
+          rollback() {
+            if [[ -n "$backup" ]]; then
+              echo 'Live Blog verification failed; restoring retired physical Blog directory.' >&2
+              ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" "ROOT='$ROOT' BACKUP='$backup' bash -s" <<'REMOTE'
+              set -euo pipefail
+              if [[ -d "$BACKUP" && ! -e "$ROOT/blog" ]]; then
+                mv "$BACKUP" "$ROOT/blog"
+              fi
+              if command -v wp >/dev/null 2>&1; then
+                wp --path="$ROOT" cache flush >/dev/null 2>&1 || true
+                wp --path="$ROOT" eval 'do_action("litespeed_purge_all");' >/dev/null 2>&1 || true
+              fi
+              REMOTE
+            fi
+          }
+          trap rollback ERR
+
+          verify_blog() {
+            local url="$1" body headers status
+            body="$(mktemp)"
+            headers="$(mktemp)"
+            status="$(curl -fsS --retry 5 --retry-delay 3 \
+              --output "$body" --dump-header "$headers" --write-out '%{http_code}' \
+              -H 'Cache-Control: no-cache, no-store, max-age=0' "$url")"
+            [[ "$status" == '200' ]]
+            ! grep -Eiq '^location:' "$headers"
+            grep -Fq 'DTF Field Notes &amp; Updates' "$body"
+            grep -Fq 'Follow what we are learning, building, and releasing.' "$body"
+            ! grep -Fqi 'email@email.com' "$body"
+            ! grep -Fqi '+123456789' "$body"
+            ! grep -Fqi 'Cannabis Culture Insights' "$body"
+            rm -f "$body" "$headers"
+          }
+
+          verify_blog "https://dtfseeds.com/blog/?dtf_blog_owner=${GITHUB_RUN_ID}"
+          verify_blog 'https://dtfseeds.com/blog/'
+          trap - ERR
+          echo "Canonical WordPress Blog owns /blog/. Reversible server backup: ${backup:-none needed}"
