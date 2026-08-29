@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-202",
+  "number":202,
+  "title":"Critical Night Length and Photoperiod Response",
+  "objective":"Explain cannabis photoperiodism using cultivar-specific response thresholds, uninterrupted dark-period signaling, and measured flowering endpoints instead of treating 12/12 as a universal biological constant.",
+  "terms":[
+    {"term":"photoperiod","definition":"The duration of light and darkness in a repeating daily cycle."},
+    {"term":"critical photoperiod","definition":"A genotype- and endpoint-specific daylength near which reproductive response changes strongly; it is not one fixed value for the species."},
+    {"term":"night interruption","definition":"Light received during an intended dark period that can alter photoperiodic signaling even when total daily light exposure changes only slightly."},
+    {"term":"quantitative short-day response","definition":"A flowering response in which shorter days generally promote or accelerate reproduction but sensitivity and threshold vary among genotypes."},
+    {"term":"entrainment","definition":"Synchronization of internal circadian rhythms to recurring environmental cues such as light and darkness."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Many cannabis genotypes behave as quantitative short-day plants: shortening daylength generally promotes reproductive development, but the response curve and effective threshold differ among cultivars.",
+    "Controlled studies have measured substantial cultivar variation. Research on hemp found critical photoperiods ranging across different daylengths, with some cultivars showing large flowering changes from differences as small as 15 minutes near their response threshold.",
+    "A study of ten indoor drug-type cultivars found flowering initiation in all tested cultivars through 14 hours of light, while responses at 15 hours varied and some initiated floral structures without normal continued development. Therefore, the daylength that permits initiation is not necessarily the daylength that optimizes mature floral production.",
+    "Photoperiodic sensing depends on the timing pattern of light and darkness, not only on summed hours. Stray light or night interruption can delay or alter flowering in sensitive genotypes, so dark-period integrity is an experimental and production variable.",
+    "The common 12-hour light/12-hour dark flowering schedule is a robust horticultural convention for many photoperiod-sensitive cultivars, but it should not be described as the single natural or physiological critical threshold for Cannabis sativa."
+  ],
+  "cultivationRelevance":[
+    "Treat photoperiod as a measured environmental variable: verify actual timer behavior and investigate stray light when flowering response is unexpectedly delayed or uneven.",
+    "Use cultivar-specific records when evaluating whether a longer flowering photoperiod is appropriate; do not generalize a response from another cultivar or production system.",
+    "Distinguish the goal of rapid, synchronized flower initiation from the different goal of maximizing mature floral biomass or quality.",
+    "When testing photoperiod, hold other lighting variables as consistently as possible and record DLI because changing daylength also changes daily photon exposure unless PPFD is adjusted."
+  ],
+  "measureAndRecord":[
+    {"field":"Light schedule","requirement":"Record actual light-on and light-off times and verify them independently of the programmed timer when possible."},
+    {"field":"Dark integrity","requirement":"Inspect for indicator lights, door leaks, fixture afterglow, or other night interruptions and measure low light when equipment permits."},
+    {"field":"Flowering endpoint","requirement":"Define the morphological criterion used to score initiation and keep it constant across treatments."},
+    {"field":"DLI context","requirement":"Record PPFD and photoperiod so daily light integral can be calculated when comparing daylength treatments."},
+    {"field":"Cultivar response","requirement":"Track days to initiation, continued inflorescence development, stretch, and later harvest outcomes separately."
+    }
+  ],
+  "misconceptions":[
+    "Every cannabis cultivar has an exact 12-hour critical daylength.",
+    "Only total hours of darkness matter; the timing and interruption of darkness do not.",
+    "If a plant initiates flowers under a long photoperiod, that photoperiod must also maximize mature flower yield.",
+    "A 15-minute photoperiod difference is biologically irrelevant.",
+    "Photoperiod can be compared fairly without accounting for the associated change in daily light integral."
+  ],
+  "evidenceLimits":[
+    "Published critical-photoperiod estimates depend on cultivar, endpoint, light intensity, experiment duration, and environmental conditions. Night-interruption sensitivity also varies. This lesson therefore presents response principles and measurement requirements rather than one universal flowering schedule."
+  ],
+  "crossLinks":"THC-ENC-101–120 for photoperiod, PPFD, DLI, and light measurement; THC-ENC-201 for reproductive transition; THC-ENC-203 for day-neutral/autoflowering behavior; THC-ENC-206 for early-flower elongation.",
+  "sourceNotes":[
+    "Zhang M et al. (2021). Photoperiodic Flowering Response of Essential Oil, Grain, and Fiber Hemp (Cannabis sativa L.) Cultivars. Frontiers in Plant Science. Demonstrated strong cultivar variation and threshold sensitivity near critical photoperiods.",
+    "Ahrens A, Llewellyn D, Zheng Y. (2023). Is Twelve Hours Really the Optimum Photoperiod for Promoting Flowering in Indoor-Grown Cultivars of Cannabis sativa? Plants 12(14):2605. Demonstrated flowering initiation through 14 h in all ten tested cultivars and cultivar-dependent responses at longer photoperiods.",
+    "The 12/12 schedule is described as a common production convention rather than a universal species constant."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 11 batch 01 controlled web derivative","evidenceControl":"current_topic_secondary_review_complete","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_photoperiod_and_crop_lighting","releaseTimeReview":"completed_2026-08-29_photoperiod_threshold_and_dark_period_claims","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"critical-night-length-and-photoperiod-response",
+  "route":"/encyclopedia/critical-night-length-and-photoperiod-response"
+}
