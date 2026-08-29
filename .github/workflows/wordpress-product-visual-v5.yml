@@ -81,6 +81,7 @@ jobs:
           retention-days: 30
       - name: Report product visual deployment
         if: always()
+        continue-on-error: true
         uses: actions/github-script@v7
         env:
           STATUS: ${{ job.status }}
