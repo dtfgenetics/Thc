@@ -3,13 +3,6 @@ name: Reconcile DTF Homepage Release Visuals
 on:
   workflow_call:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - scripts/fix-wordpress-home-release-visuals.mjs
-      - scripts/wordpress-transient-fetch-bootstrap.mjs
-      - site/wordpress/products/strain-card-images.json
-      - .github/workflows/wordpress-home-release-visuals.yml
 
 permissions:
   contents: read
@@ -133,9 +126,7 @@ jobs:
           script: |
             const source = context.eventName === 'workflow_call'
               ? 'Learning Experience V3 reusable-workflow handoff'
-              : context.eventName === 'push'
-                ? `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/commit/${context.sha}`
-                : 'manual dispatch';
+              : 'manual dispatch';
             const body = [
               '## Homepage release-card visual reconciliation',
               '',
