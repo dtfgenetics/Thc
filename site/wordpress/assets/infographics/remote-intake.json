@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "purpose": "Archive of reviewed THC educational images formerly sourced from private Google Drive URLs.",
-  "workflowStatus": "retired-private-drive-links",
+  "purpose": "Controlled intake of reviewed THC educational images sourced from Google Drive.",
+  "workflowStatus": "drive-direct-download-probe",
   "policy": {
     "allowedExtensions": [".png", ".jpg", ".jpeg"],
     "rejectWebp": true,
     "publishOnlyEnabled": true,
     "destinationDirectory": "site/wordpress/assets/infographics",
-    "notes": "Private Google Drive URLs are intentionally disabled because GitHub Actions cannot authenticate to them. Approved assets are promoted through direct canonical repository intake instead."
+    "notes": "Only explicitly enabled entries may be imported. Draft, review-required, QA-required, superseded, dashboard, mood-board, historical-proof, and quarantine assets remain excluded from public publication."
   },
   "entries": [
     {"filename":"THC_Growing_Factors_Cultivation_Foundations.jpg","url":"https://drive.usercontent.google.com/download?id=17BWVLFNuJNz2BKKgoZl8Cjm91sZQuckQ&export=download&confirm=t","enabled":false,"source":"Google Drive approved asset; superseded by direct canonical intake"},
@@ -18,6 +18,7 @@
     {"filename":"THC_Root_Zone_Mycorrhizae_Nutrition.jpg","url":"https://drive.usercontent.google.com/download?id=1DmaiJUzkyX4FYrc1NAdiozH5zudQEXVj&export=download&confirm=t","enabled":false,"source":"Google Drive approved asset; superseded by direct canonical intake"},
     {"filename":"THC_Plant_Training_Canopy.jpg","url":"https://drive.usercontent.google.com/download?id=1ohuggG-K8Mn0cHslOWON07aEAVcFywxu&export=download&confirm=t","enabled":false,"source":"Google Drive approved asset; superseded by direct canonical intake"},
     {"filename":"THC_Nutrient_Deficiencies_Diagnosis.jpg","url":"https://drive.usercontent.google.com/download?id=1YiG5q_uwCl0T2yo7OQqDGoLeMTOPk6Ti&export=download&confirm=t","enabled":false,"source":"Google Drive approved asset; superseded by direct canonical intake"},
-    {"filename":"THC_Seed_Anatomy_Germination.jpg","url":"https://drive.usercontent.google.com/download?id=1DaxzFIVh9cgBCAkoW8-qhlUCOKdZEzbM&export=download&confirm=t","enabled":false,"source":"Google Drive approved asset; superseded by direct canonical intake"}
+    {"filename":"THC_Seed_Anatomy_Germination.jpg","url":"https://drive.usercontent.google.com/download?id=1DaxzFIVh9cgBCAkoW8-qhlUCOKdZEzbM&export=download&confirm=t","enabled":false,"source":"Google Drive approved asset; superseded by direct canonical intake"},
+    {"filename":"THC-HARV-03_harvest_handling_workflow.jpg","url":"https://drive.google.com/uc?export=download&id=1m-tZDTbeHwb4cJvjm7lzmg6F6XaS8RDQ","enabled":true,"source":"Google Drive current production candidate; direct-download probe"}
   ]
 }
