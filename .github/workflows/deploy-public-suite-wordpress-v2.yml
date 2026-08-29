@@ -18,6 +18,7 @@ on:
       - site/deployment/public-apps.json
       - scripts/package-public-suite-wordpress.py
       - scripts/assemble-wordpress-suite-v2.py
+      - scripts/promote-public-game-routes-via-wordpress.mjs
       - scripts/wordpress-suite-v2/**
 
 permissions:
@@ -62,6 +63,7 @@ jobs:
           : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
           python -m py_compile scripts/package-public-suite-wordpress.py scripts/assemble-wordpress-suite-v2.py
           node --check scripts/cleanup-stale-wordpress-suite-snippets.mjs
+          node --check scripts/promote-public-game-routes-via-wordpress.mjs
           python scripts/assemble-wordpress-suite-v2.py "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
           python - <<'PY'
           import os
@@ -254,6 +256,13 @@ jobs:
           node "$RUNNER_TEMP/deploy-public-suite-v2.mjs" "$DTF_SUITE_ARCHIVE" | tee "$RUNNER_TEMP/deploy-result.log"
           grep -Eq '"ok"[[:space:]]*:[[:space:]]*true' "$RUNNER_TEMP/deploy-result.log"
 
+      - name: Promote canonical public game routes
+        id: promote_routes
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/promote-public-game-routes-via-wordpress.mjs
+
       - name: Verify Atlas live routes
         id: live_atlas
         shell: bash
@@ -354,6 +363,7 @@ jobs:
             echo "- Trigger commit: $GITHUB_SHA"
             echo "- Build run: ${{ steps.current_build.outputs.run_id }}"
             echo "- Transactional publication: ${{ steps.publish.outcome }}"
+            echo "- Game route promotion: ${{ steps.promote_routes.outcome }}"
             echo "- Atlas verification: ${{ steps.live_atlas.outcome }}"
             echo '- Game Hub verification requires 15 playable browser games, including Terpocalypse and PhenoQuest.'
             echo '- PhenoQuest must package as a verified self-contained canonical build.'
