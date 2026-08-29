@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 700" role="img" aria-labelledby="title desc">
+  <title id="title">Seed City coloring scene</title>
+  <desc id="desc">A playful night-city skyline of rounded seed-inspired towers, greenhouse, billboard, tram, rooftop garden, and three hidden objects.</desc>
+  <style>
+    .region{fill:#fbfaf4;stroke:#151b18;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+    .detail{fill:none;stroke:#151b18;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+    .thin{stroke-width:3}.hidden{fill:#fbfaf4;stroke:#151b18;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;cursor:pointer}
+  </style>
+
+  <rect class="region" data-region="sky" x="18" y="18" width="964" height="664" rx="34"/>
+  <g class="region" data-region="moon">
+    <circle cx="154" cy="126" r="57"/>
+    <path class="detail thin" d="M126 107C144 93 163 94 179 107M137 145C154 155 171 153 183 143"/>
+  </g>
+  <g class="region" data-region="cloud">
+    <path d="M670 110C688 78 729 73 755 98C775 72 823 79 833 111C866 108 887 128 882 156H681C653 154 648 124 670 110Z"/>
+  </g>
+
+  <g class="region" data-region="tower-left">
+    <path d="M92 492V286C92 221 133 176 188 176C243 176 284 221 284 286V492Z"/>
+    <path class="detail thin" d="M124 293H252M124 348H252M124 403H252M151 231H225M188 204V462"/>
+    <circle class="detail thin" cx="151" cy="321" r="11"/><circle class="detail thin" cx="225" cy="375" r="11"/>
+  </g>
+
+  <g class="region" data-region="tower-center">
+    <path d="M346 492V222C346 131 405 79 500 79C595 79 654 131 654 222V492Z"/>
+    <path class="detail thin" d="M389 228H611M389 291H611M389 354H611M389 417H611M436 137H564M500 110V466"/>
+    <path class="detail thin" d="M418 198C451 166 549 166 582 198"/>
+  </g>
+
+  <g class="region" data-region="tower-right">
+    <path d="M716 492V287C716 221 758 174 814 174C870 174 912 221 912 287V492Z"/>
+    <path class="detail thin" d="M748 293H880M748 350H880M748 407H880M777 230H851M814 203V462"/>
+    <circle class="detail thin" cx="776" cy="322" r="11"/><circle class="detail thin" cx="851" cy="378" r="11"/>
+  </g>
+
+  <g class="region" data-region="greenhouse">
+    <path d="M261 492V392L319 344L377 392V492Z"/>
+    <path class="detail thin" d="M319 344V492M261 392H377M278 410H360M278 448H360"/>
+  </g>
+
+  <g class="region" data-region="billboard">
+    <rect x="658" y="342" width="114" height="75" rx="8"/>
+    <path class="detail thin" d="M677 417V492M754 417V492M681 380H748M714 358V401"/>
+  </g>
+
+  <g class="region" data-region="roof-garden">
+    <path d="M385 164H615V205H385Z"/>
+    <path d="M416 164C415 137 431 119 450 120C470 121 480 141 474 164M474 164C472 132 491 111 514 113C536 115 546 137 540 164M540 164C539 140 553 124 571 124C590 125 600 142 595 164"/>
+    <path class="detail thin" d="M445 163V137M507 163V129M566 163V140"/>
+  </g>
+
+  <path class="region" data-region="road" d="M18 516C181 482 337 514 501 541C657 566 808 567 982 524V682H18Z"/>
+  <path class="detail" d="M18 566C185 534 336 561 493 586C656 612 824 608 982 568"/>
+  <path class="detail thin" d="M80 606L164 590M246 585L334 593M420 606L508 620M604 627L692 626M783 617L868 603"/>
+
+  <g class="region" data-region="tram">
+    <path d="M338 529H612Q639 529 648 556L659 592H322L331 555Q337 529 338 529Z"/>
+    <rect x="365" y="548" width="56" height="25" rx="5"/>
+    <rect x="436" y="548" width="56" height="25" rx="5"/>
+    <rect x="507" y="548" width="56" height="25" rx="5"/>
+    <circle cx="378" cy="596" r="17"/><circle cx="603" cy="596" r="17"/>
+    <path class="detail thin" d="M449 529L466 497H529L547 529"/>
+  </g>
+
+  <path class="detail thin" d="M95 503H907M54 247L81 260M928 238L953 224M68 191L88 181M906 190L930 203"/>
+
+  <g class="hidden" data-hidden="sprout" transform="translate(303 430)">
+    <path d="M0 18V-4M0-4C-18-5-24-18-23-29C-9-31-1-23 0-8M0-4C17-4 24-17 23-28C9-31 2-22 0-8" fill="none"/>
+  </g>
+  <g class="hidden" data-hidden="star" transform="translate(552 259)">
+    <path d="M0-14L4-5L15-4L7 3L9 14L0 9L-9 14L-7 3L-15-4L-4-5Z"/>
+  </g>
+  <g class="hidden" data-hidden="ladybug" transform="translate(575 146)">
+    <circle cx="0" cy="0" r="10"/>
+    <path class="detail thin" d="M0-9V9M-7-4H7M-7 4H7"/>
+  </g>
+</svg>
