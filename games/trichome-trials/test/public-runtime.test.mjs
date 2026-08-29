@@ -4,9 +4,7 @@ import fs from 'node:fs';
 const html = fs.readFileSync('site/public-route-patch/games/trichome-trials/index.html', 'utf8');
 const app = fs.readFileSync('site/public-route-patch/games/trichome-trials/app.js', 'utf8');
 const visual = fs.readFileSync('site/public-route-patch/games/trichome-trials/trichome-trials-v2.css', 'utf8');
-const core = JSON.parse(fs.readFileSync('games/trichome-trials/data/core.json', 'utf8'));
-const entries = [1, 2, 3, 4].flatMap((pack) => JSON.parse(fs.readFileSync(`games/trichome-trials/data/entries-${pack}.json`, 'utf8')));
-const canonical = { ...core, entries };
+const canonical = JSON.parse(fs.readFileSync('games/trichome-trials/data/trials.json', 'utf8'));
 
 assert.match(html, /<script id="trichome-trials-data" type="application\/json">/);
 assert.match(html, /<script defer src="\.\/app\.js"><\/script>/);
@@ -17,7 +15,7 @@ assert.match(html, /id="scorecard-progress"/);
 const embeddedMatch = html.match(/<script id="trichome-trials-data" type="application\/json">([\s\S]*?)<\/script>/);
 assert.ok(embeddedMatch, 'embedded judging data must be present');
 const embedded = JSON.parse(embeddedMatch[1]);
-assert.deepEqual(embedded, canonical, 'public embedded judging data must exactly match canonical split packs');
+assert.deepEqual(embedded, canonical, 'public embedded judging data must exactly match the canonical trials deck');
 
 assert.doesNotMatch(app, /^\s*import\s/m, 'public runtime must not depend on browser ES-module imports');
 assert.doesNotMatch(app, /fetch\s*\(/, 'public runtime must not depend on browser-time JSON fetches');
