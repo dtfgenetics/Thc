@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-199",
+  "number":199,
+  "title":"Recovery Assessment and Stop Criteria",
+  "objective":"Evaluate plant recovery after canopy training with repeatable observations and define stop criteria that prevent repeated stress from being mistaken for productive training.",
+  "terms":[
+    {"term":"recovery","definition":"Return toward stable water status, active growth, structural function, and normal development after an intervention or injury."},
+    {"term":"stop criterion","definition":"A predefined observation or threshold that indicates an intervention should not be repeated or intensified."},
+    {"term":"turgor","definition":"Cellular water pressure that contributes to leaf and shoot firmness."},
+    {"term":"necrosis","definition":"Death of plant tissue, often visible as dry, darkened, collapsed, or discolored areas."},
+    {"term":"growth resumption","definition":"Renewed measurable expansion of shoots, leaves, or other organs after stress."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Recovery is multidimensional. A plant can regain leaf turgor quickly while stem wounds, vascular disruption, or growth suppression continue for longer, so one visual sign should not define complete recovery.",
+    "Training creates a cost that varies with tissue removed or damaged, plant water status, developmental stage, environment, root function, and genotype. Repeating an intervention before measurable recovery can compound that cost.",
+    "Useful recovery indicators include restored leaf posture, resumed shoot expansion, stable water uptake, wound closure without expanding necrosis, and recovery of stem support. None of these alone proves that final yield or quality is unaffected.",
+    "Progressive wilt above an injury, expanding discoloration, stem collapse, persistent growth arrest, exposed or rotting tissue, and suspected pathogen entry are reasons to stop additional stress and reassess plant health.",
+    "Predefined stop criteria reduce confirmation bias. They prevent a grower from continuing a favored training method simply because earlier effort has already been invested."
+  ],
+  "cultivationRelevance":[
+    "Record plant condition before training so post-treatment changes have a baseline.",
+    "Delay additional high-stress treatment until the plant shows sustained rather than momentary recovery.",
+    "Use conservative stop criteria for young, weak, recently transplanted, water-stressed, root-compromised, or reproductively transitioning plants.",
+    "When a treatment repeatedly causes poor recovery in a cultivar or system, treat that record as evidence to modify the method rather than as a reason to push harder."
+  ],
+  "measureAndRecord":[
+    {"field":"Baseline","requirement":"Record leaf posture, visible vigor, current growth rate or shoot length, irrigation behavior, and any pre-existing injury before treatment."},
+    {"field":"Early recovery","requirement":"Check turgor, leaf angle, branch position, and visible injury at consistent intervals after treatment."},
+    {"field":"Growth resumption","requirement":"Measure new shoot or leaf expansion from a marked reference point rather than relying only on appearance."},
+    {"field":"Wound status","requirement":"Record closure, swelling, cracking, discoloration, necrosis, odor, structural weakness, and whether support remains necessary."},
+    {"field":"Stop criteria","requirement":"Predetermine conditions such as persistent wilt, progressive necrosis, split stems, continued collapse, stalled growth, or suspected infection that end or postpone further training."
+    }
+  ],
+  "misconceptions":[
+    "If leaves stand back up, the plant is fully recovered.",
+    "Visible stress proves a training treatment is working.",
+    "More frequent stress automatically creates a stronger plant.",
+    "A plant that survives an intervention experienced no meaningful cost.",
+    "Stop criteria are unnecessary when a training method worked previously."
+  ],
+  "evidenceLimits":[
+    "Cannabis-specific quantitative recovery thresholds for every training method are not established. This lesson applies plant stress, wound, and growth-measurement principles to create observable decision rules; it does not prescribe a universal recovery duration or guarantee that apparent recovery eliminates later effects."
+  ],
+  "crossLinks":"THC-ENC-181–198 for canopy interventions; THC-ENC-192 for wound recovery; THC-ENC-200 for measurement and interpretation; plant-health lessons for diagnosing persistent symptoms.",
+  "sourceNotes":[
+    "General plant stress and wound-physiology literature supports separating water-status recovery, wound repair, and growth resumption as distinct processes.",
+    "Cannabis architecture and training research supports genotype-, timing-, and system-dependent responses rather than a fixed recovery schedule.",
+    "Stop criteria are presented as a risk-management framework and should be calibrated to the plant, intervention, and production context."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 10 batch 03 controlled web derivative","evidenceControl":"current_topic_secondary_review_complete","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"plant_stress_physiology_and_cannabis_horticulture","releaseTimeReview":"completed_2026-08-29_recovery_markers_and_stop_criteria","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"recovery-assessment-and-stop-criteria",
+  "route":"/encyclopedia/recovery-assessment-and-stop-criteria"
+}
