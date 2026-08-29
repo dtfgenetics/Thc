@@ -8,6 +8,7 @@ on:
       - scripts/rebuild-wordpress-learning-experience-v3.mjs
       - scripts/run-learning-v3-production.mjs
       - scripts/rebuild-wordpress-shared-shell-v3.mjs
+      - scripts/improve-wordpress-learning-v4.mjs
       - site/wordpress/education/topic-literature.json
       - .github/workflows/wordpress-learning-experience-v3-production.yml
   workflow_run:
@@ -25,14 +26,14 @@ env:
 
 concurrency:
   group: dtfseeds-learning-experience-v3
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   publish:
     name: Publish responsive shell Home Learn and THC subject hierarchy
     if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 40
     environment: production
     env:
       WP_SITE_URL: https://dtfseeds.com
@@ -59,13 +60,17 @@ jobs:
           test -s scripts/rebuild-wordpress-learning-experience-v3.mjs
           test -s scripts/run-learning-v3-production.mjs
           test -s scripts/rebuild-wordpress-shared-shell-v3.mjs
+          test -s scripts/improve-wordpress-learning-v4.mjs
           test -s site/wordpress/education/topic-literature.json
           node --check scripts/rebuild-wordpress-learning-experience-v3.mjs
           node --check scripts/run-learning-v3-production.mjs
           node --check scripts/rebuild-wordpress-shared-shell-v3.mjs
+          node --check scripts/improve-wordpress-learning-v4.mjs
           grep -Fq 'dtf-strain-card-blue-mango-f2-regular' scripts/run-learning-v3-production.mjs
           grep -Fq 'dtf-strain-card-blue-mango-f2-feminized' scripts/run-learning-v3-production.mjs
           grep -Fq 'dtf-strain-card-blue-bubblegum-f1-regular' scripts/run-learning-v3-production.mjs
+          grep -Fq 'data-dtf-learning-map="v4"' scripts/improve-wordpress-learning-v4.mjs
+          grep -Fq 'Start with the question you are trying to answer.' scripts/improve-wordpress-learning-v4.mjs
           node -e "const fs=require('fs'); const x=JSON.parse(fs.readFileSync('site/wordpress/education/topic-literature.json','utf8')); if(!Array.isArray(x.topics)||x.topics.length<10) process.exit(1); console.log('Canonical topics:',x.topics.length)"
 
       - name: Publish responsive shared header and footer
@@ -86,6 +91,17 @@ jobs:
           mkdir -p "$BACKUP_ROOT"
           node scripts/run-learning-v3-production.mjs | tee /tmp/dtf-learning-v3-output.json
 
+      - name: Apply connected Learning V4 map after canonical Learn publication
+        id: hierarchy
+        shell: bash
+        env:
+          APPLY_LEARNING_V4: 'true'
+          BACKUP_ROOT: /tmp/dtf-learning-v4-final
+        run: |
+          set -euo pipefail
+          mkdir -p "$BACKUP_ROOT"
+          node scripts/improve-wordpress-learning-v4.mjs | tee /tmp/dtf-learning-v4-final-output.json
+
       - name: Verify live shared shell and learning routes
         id: verify
         shell: bash
@@ -104,18 +120,45 @@ jobs:
           grep -Fq '/growlens/' scripts/rebuild-wordpress-learning-experience-v3.mjs
           grep -Fq '/thc-grow-doc/' scripts/rebuild-wordpress-learning-experience-v3.mjs
           grep -Fq '/gallery/' scripts/rebuild-wordpress-learning-experience-v3.mjs
+
           for route in / /learn/ /shop/; do
             body="$RUNNER_TEMP/shell-$(echo "$route" | tr '/' '_' | tr -cd '[:alnum:]_').html"
             ok=0
             for attempt in 1 2 3 4 5; do
               curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
                 --header 'Cache-Control: no-cache, no-store, max-age=0' \
+                --header 'Pragma: no-cache' \
                 "https://dtfseeds.com${route}?dtf_shell_v3=${GITHUB_RUN_ID}-${attempt}" --output "$body"
               if grep -Fq 'data-dtf-shell="header-v3"' "$body" && grep -Fq 'data-dtf-shell="footer-v3"' "$body"; then ok=1; break; fi
               sleep 5
             done
             test "$ok" -eq 1
           done
+
+          learn_body="$RUNNER_TEMP/learn-connected-v4.html"
+          ok=0
+          for attempt in 1 2 3 4 5 6 7 8; do
+            curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+              --header 'Cache-Control: no-cache, no-store, max-age=0' \
+              --header 'Pragma: no-cache' \
+              "https://dtfseeds.com/learn/?dtf_learning_owner=${GITHUB_RUN_ID}-${attempt}" --output "$learn_body"
+            if \
+              grep -Fq 'data-dtf-layout="learn-v3"' "$learn_body" && \
+              grep -Fq 'dtf-learning-v4' "$learn_body" && \
+              grep -Fq 'data-dtf-learning-map="v4"' "$learn_body" && \
+              grep -Fq 'Start with the question you are trying to answer.' "$learn_body" && \
+              grep -Fq 'See how the systems connect before you go deep.' "$learn_body" && \
+              grep -Fq 'Three systems explain most downstream decisions.' "$learn_body"; then
+              ok=1
+              break
+            fi
+            sleep 6
+          done
+          [[ "$ok" -eq 1 ]] || {
+            echo 'Canonical Learn page did not expose the connected Learning V4 hierarchy.' >&2
+            grep -oiE 'Start with the question[^<]{0,100}|See how the systems[^<]{0,100}|Three systems explain[^<]{0,100}' "$learn_body" | head -30 >&2 || true
+            exit 1
+          }
 
           home_body="$RUNNER_TEMP/home-reviewed-genetics.html"
           ok=0
@@ -148,10 +191,13 @@ jobs:
           path: |
             /tmp/dtf-learning-v3
             /tmp/dtf-learning-v3-output.json
+            /tmp/dtf-learning-v4-final
+            /tmp/dtf-learning-v4-final-output.json
             /tmp/dtf-topic-literature-v3-normalized.json
             /tmp/dtf-shared-shell-v3
             /tmp/dtf-shared-shell-v3-output.json
             ${{ runner.temp }}/shell-*.html
+            ${{ runner.temp }}/learn-connected-v4.html
             ${{ runner.temp }}/home-reviewed-genetics.html
           if-no-files-found: warn
           retention-days: 30
@@ -163,6 +209,7 @@ jobs:
           STATUS: ${{ job.status }}
           SHELL_OUTCOME: ${{ steps.shell.outcome }}
           PUBLISH_OUTCOME: ${{ steps.publish.outcome }}
+          HIERARCHY_OUTCOME: ${{ steps.hierarchy.outcome }}
           VERIFY_OUTCOME: ${{ steps.verify.outcome }}
         with:
           script: |
@@ -179,14 +226,13 @@ jobs:
               `Overall: **${process.env.STATUS}**`,
               `Responsive shared shell: **${process.env.SHELL_OUTCOME || 'not reached'}**`,
               `Learning publication: **${process.env.PUBLISH_OUTCOME || 'not reached'}**`,
+              `Connected Learning V4 map: **${process.env.HIERARCHY_OUTCOME || 'not reached'}**`,
               `Live verification: **${process.env.VERIFY_OUTCOME || 'not reached'}**`,
               `Source: ${source}`,
               '',
-              'Scope: responsive shared header/footer, Home, Learn, and every canonical THC subject page from site/wordpress/education/topic-literature.json.',
-              'Visual hierarchy: the Home hero and current-release positions now require reviewed DTF strain-card media; foundation subjects remain featured; specialized subjects remain compact; individual subject pages use literature-first section cards plus supporting visuals.',
-              'Mobile navigation is a single horizontal rail instead of a multi-row wrapped header. Footer routes secondary destinations to Community, Gallery, About, Contact, and Discord.',
-              'Canonical topic titles are normalized into stable layout aliases before publication so source IDs can evolve without breaking customer-facing routes.',
-              'The publisher runs after both canonical WordPress production and the THC infographic publisher so this hierarchy remains the final customer-facing layer.',
-              'The publisher creates rollback snapshots, preserves the WooCommerce archive style injection, attempts a LiteSpeed cache flush, and performs cache-busted visitor verification on Home, Learn, Shop, and all subject routes.'
+              'Scope: responsive shared header/footer, Home, Learn, every canonical THC subject page, and the final connected learning map.',
+              'Learn hierarchy: choose a goal first, see how plant → environment → root zone → management → plant health → finish connect, then enter the foundation and specialized subject libraries.',
+              'The queue is serialized instead of canceling in-progress final-owner publications, so a newer workflow_run cannot silently remove the final Learn write.',
+              'The publisher creates rollback snapshots, attempts a LiteSpeed cache flush, and performs cache-busted visitor verification on Home, Learn, Shop, and all subject routes.'
             ].join('\n');
             await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: 46, body });
