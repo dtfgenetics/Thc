@@ -7,6 +7,7 @@
   <meta name="description" content="Harvest Hustle is a fast deterministic DTF Genetics browser time-management game with fictional batches and arcade workstations.">
   <link rel="canonical" href="https://dtfseeds.com/games/harvest-hustle/">
   <link rel="stylesheet" href="./harvest-hustle.css">
+  <link rel="stylesheet" href="./harvest-hustle-v2.css">
   <title>Harvest Hustle | DTF Games</title>
 </head>
 <body>
@@ -25,8 +26,11 @@
         <p class="eyebrow">Arcade shift challenge</p>
         <h1 id="game-title">Harvest Hustle</h1>
         <p class="lede">Pick a batch, hit the right station, build your combo, and finish as many fictional orders as you can before the shift clock runs out.</p>
+        <div class="hero-badges" aria-label="Game features">
+          <span>75-second runs</span><span>Deterministic codes</span><span>Touch + keyboard</span>
+        </div>
       </div>
-      <p id="load-status" class="status-chip" role="status">Loading shift data…</p>
+      <p id="load-status" class="status-chip" role="status">Preparing shift…</p>
     </section>
 
     <section class="score-strip" aria-label="Shift status">
@@ -35,7 +39,10 @@
       <div class="stat"><span>Combo</span><strong id="combo-stat">x0</strong></div>
       <div class="stat"><span>Batches</span><strong id="completed-stat">0</strong></div>
       <div class="stat"><span>Mistakes</span><strong id="mistakes-stat">0</strong></div>
-      <button id="start-shift" class="start-button" type="button" disabled>Start Shift</button>
+      <button id="start-shift" class="start-button" type="button" disabled aria-pressed="false">Start Shift</button>
+      <div class="shift-progress" aria-label="Shift time remaining" role="progressbar" aria-valuemin="0" aria-valuemax="75" aria-valuenow="75">
+        <span id="shift-progress-fill"></span>
+      </div>
     </section>
 
     <section class="arcade-grid">
@@ -54,6 +61,7 @@
           <span class="lamp lamp-b"></span>
           <span class="fan-art"><i></i><i></i><i></i></span>
           <span class="conveyor-art"></span>
+          <span class="bay-status">READY</span>
         </div>
 
         <div id="queue" class="batch-grid" aria-label="Batch queue"></div>
@@ -70,12 +78,13 @@
             <p class="eyebrow">Workstations</p>
             <h2 id="stations-title">Send selected batch</h2>
           </div>
+          <span class="control-state" id="control-state">READY</span>
         </div>
         <div id="selected-batch" class="selected-batch">
           <strong>No batch selected.</strong><span>Choose a batch from the conveyor.</span>
         </div>
         <div id="stations" class="station-grid"></div>
-        <p class="shortcut-note">Keyboard: press <kbd>1</kbd>–<kbd>4</kbd> for the matching station while the shift is running.</p>
+        <p class="shortcut-note">Keyboard: <kbd>Q</kbd>–<kbd>R</kbd> select batches · <kbd>1</kbd>–<kbd>4</kbd> run stations · the shift button pauses/resumes.</p>
       </aside>
     </section>
 
@@ -92,7 +101,7 @@
           <input id="shift-code" class="code-input" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="6" aria-describedby="code-help">
           <button id="new-code" class="secondary-button" type="button">New</button>
         </div>
-        <p id="code-help" class="help-text">Press Enter to load the code. The timer waits until you press Start Shift.</p>
+        <p id="code-help" class="help-text">Press Enter to load the code. Pause the shift before changing codes.</p>
         <button id="share-shift" class="primary-button" type="button">Copy challenge link</button>
       </article>
 
@@ -122,6 +131,7 @@
   </main>
 
   <p id="announce" class="sr-only" aria-live="assertive"></p>
-  <script type="module" src="./app.js"></script>
+  <script id="harvest-shift-data" type="application/json">{"schemaVersion":1,"shiftSeconds":75,"queueSize":4,"stations":[{"id":"tag","label":"Tag Station","short":"TAG","mark":"T","description":"Match the batch ticket before it moves on."},{"id":"trim","label":"Trim Table","short":"TRIM","mark":"✂","description":"A fast arcade sorting step; no real-world trim method is represented."},{"id":"rack","label":"Rack Bay","short":"RACK","mark":"R","description":"Move the game batch to its next visual staging slot."},{"id":"pack","label":"Pack Bench","short":"PACK","mark":"P","description":"Finish the fictional order and bank its score."}],"batches":[{"id":"blue-orbit","label":"Blue Orbit","theme":"Berry","value":120,"patience":18,"steps":["tag","trim","rack","pack"]},{"id":"mango-circuit","label":"Mango Circuit","theme":"Tropical","value":110,"patience":16,"steps":["tag","rack","trim","pack"]},{"id":"velvet-kush","label":"Velvet Kush","theme":"Earth","value":135,"patience":20,"steps":["tag","trim","pack"]},{"id":"solar-skunk","label":"Solar Skunk","theme":"Citrus","value":105,"patience":15,"steps":["tag","rack","pack"]},{"id":"grape-static","label":"Grape Static","theme":"Fruit","value":125,"patience":18,"steps":["tag","trim","rack","pack"]},{"id":"frost-compass","label":"Frost Compass","theme":"Frost","value":145,"patience":21,"steps":["tag","rack","trim","pack"]},{"id":"ruby-engine","label":"Ruby Engine","theme":"Gas","value":130,"patience":17,"steps":["tag","trim","pack"]},{"id":"cloud-nectar","label":"Cloud Nectar","theme":"Floral","value":115,"patience":19,"steps":["tag","rack","pack"]},{"id":"lime-foundry","label":"Lime Foundry","theme":"Citrus","value":140,"patience":16,"steps":["tag","trim","rack","pack"]},{"id":"night-orchard","label":"Night Orchard","theme":"Fruit","value":150,"patience":22,"steps":["tag","rack","trim","pack"]},{"id":"ember-grove","label":"Ember Grove","theme":"Earth","value":100,"patience":14,"steps":["tag","trim","pack"]},{"id":"dawn-haze","label":"Dawn Haze","theme":"Floral","value":155,"patience":20,"steps":["tag","trim","rack","pack"]}]}</script>
+  <script defer src="./app.js"></script>
 </body>
 </html>

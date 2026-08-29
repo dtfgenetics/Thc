@@ -28,6 +28,9 @@ jobs:
       - name: Run deterministic shift engine tests
         run: node games/harvest-hustle/test/engine.test.mjs
 
+      - name: Run production runtime and arcade UI regression tests
+        run: node games/harvest-hustle/test/public-runtime.test.mjs
+
       - name: Validate browser JavaScript syntax
         run: |
           node --check site/public-route-patch/games/harvest-hustle/app.js
@@ -42,23 +45,32 @@ jobs:
           const fs = require('fs');
           const html = fs.readFileSync('site/public-route-patch/games/harvest-hustle/index.html','utf8');
           const css = fs.readFileSync('site/public-route-patch/games/harvest-hustle/harvest-hustle.css','utf8');
+          const visual = fs.readFileSync('site/public-route-patch/games/harvest-hustle/harvest-hustle-v2.css','utf8');
           const app = fs.readFileSync('site/public-route-patch/games/harvest-hustle/app.js','utf8');
           const requireText = (source, text, label) => {
             if (!source.includes(text)) throw new Error(`missing ${label}: ${text}`);
           };
           requireText(html, '<link rel="canonical" href="https://dtfseeds.com/games/harvest-hustle/">', 'canonical route');
-          requireText(html, '<script type="module" src="./app.js"></script>', 'module entrypoint');
+          requireText(html, '<script defer src="./app.js"></script>', 'classic deferred entrypoint');
+          requireText(html, 'id="harvest-shift-data"', 'embedded canonical game data');
+          requireText(html, 'harvest-hustle-v2.css', 'arcade visual layer');
           requireText(html, 'Game boundary:', 'content boundary');
           requireText(app, 'let running = false;', 'delayed shift start');
           requireText(app, "document.addEventListener('visibilitychange'", 'hidden-tab clock pause');
           requireText(app, 'Number(event.key) - 1', 'station keyboard shortcuts');
-          requireText(app, 'data.stations?.length !== 4', 'station data contract');
-          requireText(app, 'data.shiftSeconds !== 75', 'shift duration contract');
+          requireText(app, 'payload?.stations?.length !== 4', 'station data contract');
+          requireText(app, 'payload?.shiftSeconds !== 75', 'shift duration contract');
+          requireText(app, "running ? 'Pause Shift'", 'pause control');
+          requireText(app, 'ui.code.disabled = running', 'safe live reset lock');
           requireText(css, '.conveyor-art', 'conveyor artwork');
           requireText(css, '.batch-art', 'batch crate artwork');
           requireText(css, '.station-button', 'station card artwork');
-          requireText(css, '@media(prefers-reduced-motion:reduce)', 'reduced-motion support');
-          if (app.includes('ui.code.disabled')) throw new Error('shift code input must remain available for reset/replay');
+          requireText(visual, '.shift-progress', 'live time progress');
+          requireText(visual, '.station-button.next-station', 'next-station visual feedback');
+          requireText(visual, '@media(max-width:640px)', 'mobile control layout');
+          requireText(visual, '@media(prefers-reduced-motion:reduce)', 'reduced-motion support');
+          if (/^\s*import\s/m.test(app)) throw new Error('public runtime regressed to browser module imports');
+          if (/fetch\s*\(/.test(app)) throw new Error('public runtime regressed to browser-time JSON fetch');
           NODE
 
       - name: Verify truthful release boundary
