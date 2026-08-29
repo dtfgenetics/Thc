@@ -1,5 +1,5 @@
 name: Retire Static DTFSeeds Blog Owner
-# The follow-up touch intentionally triggers this now-registered one-time ownership handoff.
+# This workflow is intentionally triggered by a normal main-branch PR merge after registration.
 
 on:
   workflow_dispatch:
