@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-203",
+  "number":203,
+  "title":"Autoflowering and Day-Neutral Phenotypes",
+  "objective":"Explain autoflowering cannabis as a genetically influenced reduction in photoperiod dependence, distinguish day-neutral behavior from fixed-age flowering, and document developmental timing without relying on seed-label assumptions.",
+  "terms":[
+    {"term":"autoflowering","definition":"A cannabis phenotype in which reproductive development proceeds with substantially less dependence on short-day photoperiod cues than in strongly photoperiod-sensitive types."},
+    {"term":"day-neutral","definition":"A practical flowering category describing plants whose reproductive transition is comparatively insensitive to daylength within the tested range; it does not mean environment has no effect on flowering."},
+    {"term":"photoperiod insensitivity","definition":"Reduced change in flowering behavior when daylength changes, relative to more photoperiod-sensitive genotypes."},
+    {"term":"flowering-time locus","definition":"A genomic region containing genetic variation associated with differences in reproductive timing or photoperiod response."},
+    {"term":"developmental age","definition":"The plant's progression through growth and maturation states, influenced by chronological age, genotype, and environment."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Autoflowering cannabis is best understood as genetically influenced flowering behavior with reduced dependence on a short-day trigger. It is not evidence that flowering begins on one universal number of days after germination.",
+    "Genome-wide and comparative-genomics studies support heritable differences in flowering behavior and have identified genomic regions associated with autoflowering or flowering-time variation. Modern 2026 work across a large accession panel also identified markers that separated autoflowering material from photoperiod-sensitive classes.",
+    "Day-neutral is a response category, not a statement that light, temperature, water status, nutrition, root restriction, or stress cannot influence developmental rate and plant size.",
+    "Autoflowering populations are genetically diverse. Breeding history and introgression mean two cultivars marketed as autos can differ substantially in vegetative duration, architecture, final size, and reproductive progression.",
+    "Because reproductive timing is less controllable through photoperiod alone, developmental observations are more informative than assuming a plant can be held indefinitely in vegetative growth by extending daylength."
+  ],
+  "cultivationRelevance":[
+    "Record actual developmental events for each cultivar rather than planning every intervention from a breeder's estimated day count.",
+    "Use conservative training and transplant decisions when recovery time is uncertain because photoperiod changes may not postpone reproduction predictably.",
+    "Do not diagnose an auto as defective solely because it flowers earlier or later than another auto cultivar; verify genetics, environment, and plant health first.",
+    "For breeding or research, preserve source identity and phenotype records because the label 'autoflower' alone does not describe the strength or genetic basis of day-neutral behavior."
+  ],
+  "measureAndRecord":[
+    {"field":"Developmental timeline","requirement":"Record germination/emergence, first mature nodes, first preflowers, obvious reproductive transition, and later flower stages by date."},
+    {"field":"Photoperiod context","requirement":"Record the actual light/dark schedule even for day-neutral material so environmental exposure remains traceable."},
+    {"field":"Architecture","requirement":"Track plant height, node number, branch development, and canopy width at repeated developmental checkpoints."},
+    {"field":"Stress history","requirement":"Record transplanting, root restriction, major training, irrigation stress, and other events that may alter growth rate around reproductive transition."},
+    {"field":"Genetic identity","requirement":"Maintain cultivar, seed lot, breeder/source, generation where known, and plant-level identifiers instead of treating all autos as one biological type."
+    }
+  ],
+  "misconceptions":[
+    "Every autoflower begins flowering on the same day after germination.",
+    "Day-neutral means environmental conditions cannot alter flowering time or plant size.",
+    "All autoflowering cultivars share one identical genetic mutation.",
+    "Long days can always keep an autoflower plant vegetative indefinitely.",
+    "An autoflower label is enough information to predict architecture, maturity, or training tolerance."
+  ],
+  "evidenceLimits":[
+    "The genetic architecture of autoflowering is still being refined. Published studies support heritable flowering classes and candidate loci, but marker associations, inheritance patterns, and phenotype definitions can differ among populations. A commercial cultivar label should not be treated as a molecular diagnosis."
+  ],
+  "crossLinks":"THC-ENC-141–160 for genetics and phenotype; THC-ENC-198 for training autos versus photoperiod plants; THC-ENC-201–202 for reproductive transition and photoperiod response; THC-ENC-204 for developmental maturity.",
+  "sourceNotes":[
+    "Petit J et al. / related flowering-time GWAS work summarized in Genetic Architecture of Flowering Time and Sex Determination in Hemp (Cannabis sativa L.) supports heritable quantitative flowering variation and day-neutral phenotypes.",
+    "Kurtz LE et al. (2023). Comparative genomics of flowering behavior in Cannabis sativa. Frontiers in Plant Science. Reviews genetic divergence associated with autoflowering and cautions that inheritance remains incompletely resolved.",
+    "Integrating temporal morphophysiological and genomic markers for precise classification of flowering time in cannabis (2026). A 145-accession study reported distinct developmental trajectories and autoflower-associated genomic markers, reinforcing that flowering class is measurable rather than a fixed-day rule."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 11 batch 01 controlled web derivative","evidenceControl":"current_topic_secondary_review_complete","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_flowering_genetics","releaseTimeReview":"completed_2026-08-29_autoflower_genetics_and_non_fixed_age_claims","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"autoflowering-and-day-neutral-phenotypes",
+  "route":"/encyclopedia/autoflowering-and-day-neutral-phenotypes"
+}
