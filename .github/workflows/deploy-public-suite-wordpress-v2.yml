@@ -314,7 +314,7 @@ jobs:
             fi
             rm -f "$body" "$headers"
           }
-          check 'https://dtfseeds.com/games/' '15 playable browser games'
+          check 'https://dtfseeds.com/games/' '25 playable browser games'
           check 'https://dtfseeds.com/projects/' '15 public browser games'
           check 'https://dtfseeds.com/games/high-iq/' 'Build your High IQ run'
           check 'https://dtfseeds.com/games/strain-showdown/' 'Eight play styles. One showdown.'
@@ -322,6 +322,7 @@ jobs:
           check 'https://dtfseeds.com/games/bud-or-bluff/' 'Bud or Bluff'
           check 'https://dtfseeds.com/games/terpocalypse/' 'LEVEL 01 · THE VEG LAB'
           check 'https://dtfseeds.com/games/phenoquest/' 'The Living Seed Vault'
+          check 'https://dtfseeds.com/games/who-took-it/' 'The stash is short.'
           check 'https://dtfseeds.com/growlens/' 'GrowLens'
           check 'https://dtfseeds.com/thc-grow-doc/' 'Grow Doc'
           node --input-type=module <<'NODE'
@@ -365,7 +366,8 @@ jobs:
             echo "- Transactional publication: ${{ steps.publish.outcome }}"
             echo "- Game route promotion: ${{ steps.promote_routes.outcome }}"
             echo "- Atlas verification: ${{ steps.live_atlas.outcome }}"
-            echo '- Game Hub verification requires 15 playable browser games, including Terpocalypse and PhenoQuest.'
+            echo '- Game Hub verification requires 25 playable browser games, including Terpocalypse and PhenoQuest.'
+            echo '- Who Took It verification requires the current case-board edition marker and its own canonical public route.'
             echo '- PhenoQuest must package as a verified self-contained canonical build.'
             echo '- Terpocalypse must package validated browser runtime JavaScript from the integration snapshot.'
             echo '- High IQ verification requires the upgraded challenge console plus the complete v2.2 80-question / 50-source production bank.'
