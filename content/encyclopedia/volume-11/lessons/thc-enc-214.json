@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-214",
+  "number":214,
+  "title":"Pollen Collection, Drying, and Storage",
+  "objective":"Explain why cannabis pollen storage depends on developmental stage, moisture management, temperature, packaging, and validated viability testing, and distinguish evidence-backed preservation from casual short-term handling folklore.",
+  "terms":[
+    {"term":"desiccation","definition":"Controlled removal of moisture from biological material before storage."},
+    {"term":"cryopreservation","definition":"Storage at extremely low temperature to slow or stop biological deterioration for long-term preservation."},
+    {"term":"hygroscopic","definition":"Able to absorb water from the surrounding air; a relevant property because pollen water status can change rapidly during handling."},
+    {"term":"freeze-thaw cycle","definition":"One sequence of freezing and subsequent warming that can expose stored material to temperature and moisture stress."},
+    {"term":"viability assay","definition":"A defined test used to estimate whether stored pollen remains functionally capable of germination or other reproductive activity."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Cannabis pollen longevity depends on more than cold temperature. Developmental stage at collection, water content, desiccation method, storage temperature, container integrity, and handling after removal from storage all affect later function.",
+    "Gaudet and colleagues developed a cannabis pollen germination assay and demonstrated that pollen collected at different growth stages differed in longevity. They also reported a cryopreservation method combining pollen with baked whole-wheat flour, vacuum desiccation, and liquid-nitrogen storage that retained measurable germination after four months.",
+    "That successful laboratory protocol should not be simplified into 'freeze pollen and it lasts indefinitely.' Storage methods are system-specific, and the published study itself measured viability rather than assuming it from storage temperature.",
+    "Moisture control is central because pollen can be damaged by inappropriate hydration or condensation. Warming a cold container while it is open can expose the material to humid air and change its water status before use or testing.",
+    "Stored pollen should be treated as a biological sample with a history. A useful label includes pollen-parent identity, collection date, developmental stage, preparation method, storage condition, and viability result where available."
+  ],
+  "cultivationRelevance":[
+    "Separate short-term pollen handling from validated long-term preservation; the same container and temperature assumptions should not automatically be used for both.",
+    "Use small, clearly labeled storage units when practical so one needed sample can be accessed without repeatedly warming the entire pollen collection.",
+    "Avoid declaring stored pollen 'good' solely because it looks dry or unchanged; verify function with a consistent germination or reproductive test when the result matters.",
+    "Keep storage records tied to the pollen-parent ID so preserved material cannot become genetically anonymous."
+  ],
+  "measureAndRecord":[
+    {"field":"Pollen identity","requirement":"Record pollen-parent accession or clone ID, source branch or plant, and collection date."},
+    {"field":"Collection stage","requirement":"Record visible flower/anther stage and whether pollen was freshly shed or collected from previously opened structures."},
+    {"field":"Preparation","requirement":"Record drying/desiccation method, carrier or diluent if used, duration, and container type."},
+    {"field":"Storage conditions","requirement":"Record storage temperature, location, start date, packaging, and any known temperature excursions or freeze-thaw events."},
+    {"field":"Viability checks","requirement":"Record assay method, test date, sample age, and result; do not mix results from different methods without noting the methodological change."
+    }
+  ],
+  "misconceptions":[
+    "Any cannabis pollen placed in a freezer will remain viable indefinitely.",
+    "Dry-looking pollen necessarily has the correct moisture content for storage.",
+    "Cold storage makes developmental stage at collection irrelevant.",
+    "A storage recipe proven in one laboratory guarantees the same result in every freezer and container system.",
+    "Stored pollen does not need a parent ID if the container is visually recognizable."
+  ],
+  "evidenceLimits":[
+    "Direct cannabis pollen-preservation research supports defined germination assays and successful cryogenic storage under a specific preparation protocol. It does not establish unlimited shelf life for ordinary household freezing, universal drying targets, or equivalence among storage systems. Public guidance therefore focuses on documented sample history and post-storage viability testing."
+  ],
+  "crossLinks":"THC-ENC-207–208 for pollen development and viability; THC-ENC-213 for parent identity; THC-ENC-215 for containment; THC-ENC-220 for seed and reproductive records.",
+  "sourceNotes":[
+    "Gaudet D, Yadav NS, Sorokin A, Bilichak A, Kovalchuk I. (2020). Development and Optimization of a Germination Assay and Long-Term Storage for Cannabis sativa Pollen. Plants 9(5):665. Demonstrated developmental-stage differences in pollen longevity and retained germination after four months in a specific cryopreservation protocol.",
+    "Methods for characterizing pollen fitness in Cannabis sativa L. PLOS ONE (2022). Reinforces that pollen condition should be assessed with explicit fitness or germination methods rather than appearance alone.",
+    "Public wording does not present the published cryopreservation protocol as proof of indefinite viability under ordinary freezer storage."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 11 batch 03 controlled web derivative","evidenceControl":"current_topic_secondary_review_complete","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_pollen_preservation","releaseTimeReview":"completed_2026-08-29_storage_method_and_non_indefinite_viability_claims","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"pollen-collection-drying-and-storage",
+  "route":"/encyclopedia/pollen-collection-drying-and-storage"
+}

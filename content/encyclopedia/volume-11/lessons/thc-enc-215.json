@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-215",
+  "number":215,
+  "title":"Pollen Containment and Decontamination",
+  "objective":"Treat cannabis pollen control as a source-pathway-recipient problem, explain why airflow and handling can spread grains beyond the source plant, and establish evidence-bounded containment and cleanup records without claiming a perfect universal decontamination method.",
+  "terms":[
+    {"term":"containment","definition":"Measures used to reduce movement of pollen from a defined source into unintended spaces or onto unintended recipient flowers."},
+    {"term":"cross-contamination","definition":"Unintended transfer of pollen from one plant, batch, room, tool, garment, or handling event to another."},
+    {"term":"source-pathway-recipient model","definition":"A risk framework that identifies where pollen originates, how it can move, and which receptive plants or materials could be exposed."},
+    {"term":"particulate capture","definition":"Removal of airborne particles by filters, collectors, settling, or other physical mechanisms."},
+    {"term":"verification","definition":"Evidence collected after a control step to confirm that the intended condition was achieved or that residual risk is acceptably low."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Cannabis pollen is a mobile biological particle. Once shed, grains can move through outdoor wind, indoor ventilation, fans, pressure differences, worker movement, tools, clothing, containers, and direct contact with flowering plants.",
+    "Containment is strongest when it starts before anthesis and acts on several pathways at once. Removing or isolating a source after widespread pollen release cannot erase exposure that has already occurred.",
+    "Air filtration and particle capture can reduce airborne pollen, but filter performance depends on the actual airflow path, sealing, loading, maintenance, and particle capture characteristics. A nominal filter specification does not prove that a room or crop is pollen-free.",
+    "Surface cleanup is different from biological inactivation. Physical removal of visible dust can reduce contamination, but cannabis-specific data defining one universally reliable surface disinfectant, exposure time, or cleanup recipe for pollen are limited.",
+    "Because absolute zero pollen is difficult to demonstrate, high-value seedless production and controlled breeding should combine prevention, directional workflow, segregation of pollen-handling materials, cleaning, environmental records, and later outcome verification."
+  ],
+  "cultivationRelevance":[
+    "Design work flow so pollen handling occurs after clean-crop tasks or in a separate area, reducing the chance that workers carry grains back toward receptive plants.",
+    "Identify shared fans, ducts, doorways, clothing, tools, carts, containers, and work surfaces as potential pathways rather than focusing only on the pollen-producing plant.",
+    "Keep dedicated or clearly segregated pollen-handling materials where parentage or seedless production matters.",
+    "After a suspected contamination event, document the exposure zone and continue seed scouting instead of assuming one cleanup action restored zero risk."
+  ],
+  "measureAndRecord":[
+    {"field":"Source inventory","requirement":"Record pollen-producing plants or samples, anthesis stage, handling dates, and rooms or zones where pollen was open."},
+    {"field":"Pathway map","requirement":"Record airflow direction, fans, vents, doorways, shared tools, clothing movement, and transfer routes between pollen and pollen-exclusion areas."},
+    {"field":"Control actions","requirement":"Record isolation, filtration, cleaning, material segregation, workflow changes, and dates rather than relying on undocumented routine practice."},
+    {"field":"Breach log","requirement":"Record spills, unexpected anthesis, open containers, ventilation failures, or unauthorized movement that could have spread pollen."},
+    {"field":"Outcome verification","requirement":"Use later seed incidence, pollen monitoring where available, and cross records to evaluate control performance; do not equate a visually clean room with proven zero pollen."
+    }
+  ],
+  "misconceptions":[
+    "Removing the male plant after pollen shed eliminates the pollination risk that already occurred.",
+    "A closed door guarantees pollen containment.",
+    "A high-efficiency filter automatically proves the crop space is pollen-free.",
+    "If no yellow dust is visible, there is no residual pollen risk.",
+    "One universal cleaning chemical or wipe procedure has been proven to eliminate viable cannabis pollen from every surface."
+  ],
+  "evidenceLimits":[
+    "Cannabis pollen dispersal, airborne capture methods, and pollen viability are directly studied, but controlled cannabis-specific comparisons of complete room-decontamination protocols are limited. This lesson therefore recommends multiple barriers, documented workflow control, and verification rather than claiming a single universal inactivation recipe."
+  ],
+  "crossLinks":"THC-ENC-207–209 for pollen source, viability, and transport; THC-ENC-212 for seedless production; THC-ENC-213–214 for controlled pollination and stored pollen; THC-ENC-217 for intersex pollen risk.",
+  "sourceNotes":[
+    "Nimmala M, Ross SD, Foroutan H. (2024). Cannabis pollen dispersal across the United States. Scientific Reports 14:20605. Demonstrates meteorology-dependent airborne cannabis pollen transport and supports pathway-based rather than fixed-distance risk control.",
+    "Wizenberg SB, Weis AE, Campbell LG. (2020). Comparing methods for controlled capture and quantification of pollen in Cannabis sativa. Applications in Plant Sciences 8:e11389. Provides cannabis-specific evidence that airborne pollen can be deliberately captured and quantified with defined methods.",
+    "Oregon State University Extension's hemp pollination guidance identifies wind, insects, and mechanical transfer as pollen pathways and emphasizes incompatibility between nearby seed-producing and pollen-exclusion systems without mitigation."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 11 batch 03 controlled web derivative","evidenceControl":"current_topic_secondary_review_complete","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_pollen_containment_and_cross_contamination","releaseTimeReview":"completed_2026-08-29_multi_pathway_containment_and_non_universal_decontamination_claims","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"pollen-containment-and-decontamination",
+  "route":"/encyclopedia/pollen-containment-and-decontamination"
+}
