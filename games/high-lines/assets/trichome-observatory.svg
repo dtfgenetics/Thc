@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 700" role="img" aria-labelledby="title desc">
+  <title id="title">Trichome Observatory coloring scene</title>
+  <desc id="desc">A fantasy glass observatory with a telescope, moon, planet, giant trichome forms, console deck, and three hidden objects.</desc>
+  <style>
+    .region{fill:#fbfaf4;stroke:#151b18;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+    .detail{fill:none;stroke:#151b18;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+    .thin{stroke-width:3}.hidden{fill:#fbfaf4;stroke:#151b18;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;cursor:pointer}
+  </style>
+
+  <rect class="region" data-region="space" x="18" y="18" width="964" height="664" rx="34"/>
+  <path class="region" data-region="dome" d="M95 475V331C95 161 264 75 500 75C736 75 905 161 905 331V475Z"/>
+  <path class="detail thin" d="M500 76V475M215 180L785 475M785 180L215 475M100 331H900M158 239H842"/>
+
+  <path class="region" data-region="platform" d="M115 475H885L832 548H168Z"/>
+  <path class="detail thin" d="M166 500H834M195 522H805"/>
+  <path class="region" data-region="floor" d="M168 548H832L928 682H72Z"/>
+  <path class="detail thin" d="M500 548V682M310 548L247 682M690 548L753 682M132 610H868"/>
+
+  <g class="region" data-region="telescope">
+    <path d="M380 263L562 203L591 278L405 335Z"/>
+    <ellipse cx="575" cy="240" rx="28" ry="42" transform="rotate(-18 575 240)"/>
+    <path d="M439 322L474 337L430 488H389Z"/>
+    <path d="M492 314L527 306L575 488H533Z"/>
+    <circle cx="466" cy="321" r="21"/>
+    <path class="detail thin" d="M411 284L564 233M423 306L576 254"/>
+  </g>
+
+  <g class="region" data-region="moon">
+    <circle cx="218" cy="182" r="68"/>
+    <circle class="detail thin" cx="190" cy="164" r="13"/>
+    <circle class="detail thin" cx="236" cy="202" r="18"/>
+    <path class="detail thin" d="M171 214C202 226 239 221 264 199"/>
+  </g>
+
+  <g class="region" data-region="planet">
+    <circle cx="771" cy="189" r="55"/>
+    <path d="M695 196C716 160 810 141 849 169C866 181 858 197 834 207C789 225 724 226 699 211C691 206 690 201 695 196Z"/>
+    <path class="detail thin" d="M741 158C764 171 786 172 806 160"/>
+  </g>
+
+  <g class="region" data-region="trichome-left">
+    <path d="M231 491C237 426 239 371 258 326C269 298 291 278 314 279C337 280 355 301 351 327C347 350 325 370 301 372C292 413 294 451 300 491Z"/>
+    <circle cx="316" cy="268" r="39"/>
+    <path class="detail thin" d="M268 348C287 357 307 356 325 345"/>
+  </g>
+  <g class="region" data-region="trichome-center">
+    <path d="M456 491C459 410 459 345 483 292C497 261 519 246 542 251C568 257 580 284 567 307C557 326 536 337 517 337C505 387 509 437 519 491Z"/>
+    <circle cx="545" cy="236" r="47"/>
+    <path class="detail thin" d="M491 315C511 326 535 324 552 310"/>
+  </g>
+  <g class="region" data-region="trichome-right">
+    <path d="M676 491C681 432 680 390 695 353C706 327 724 309 746 312C769 315 783 338 774 359C766 378 748 390 729 389C721 423 724 455 734 491Z"/>
+    <circle cx="750" cy="299" r="36"/>
+    <path class="detail thin" d="M705 369C722 377 741 375 756 365"/>
+  </g>
+
+  <g class="region" data-region="console">
+    <path d="M637 412H825L850 487H615Z"/>
+    <rect x="663" y="432" width="56" height="25" rx="5"/>
+    <circle cx="754" cy="445" r="10"/>
+    <circle cx="789" cy="445" r="10"/>
+    <path class="detail thin" d="M650 469H824"/>
+  </g>
+
+  <path class="detail thin" d="M351 123L362 151M372 112L389 135M635 116L625 145M660 127L645 152M563 110L571 135M429 122L421 148"/>
+
+  <g class="hidden" data-hidden="comet" transform="translate(662 172) rotate(-18)">
+    <circle cx="0" cy="0" r="9"/>
+    <path d="M-10-4L-38-18M-11 1L-42 0M-9 6L-35 19" fill="none"/>
+  </g>
+  <g class="hidden" data-hidden="seed" transform="translate(182 428) rotate(25)">
+    <ellipse cx="0" cy="0" rx="10" ry="16"/>
+    <path class="detail thin" d="M0-12C5-4 5 4 0 12"/>
+  </g>
+  <g class="hidden" data-hidden="lens" transform="translate(801 504)">
+    <circle cx="0" cy="0" r="11"/>
+    <circle class="detail thin" cx="0" cy="0" r="5"/>
+    <path d="M8 8L22 22" fill="none"/>
+  </g>
+</svg>
