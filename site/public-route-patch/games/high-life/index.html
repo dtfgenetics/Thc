@@ -2,13 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>High Life: From Bagseed to Legacy | DTF Genetics</title>
   <meta name="description" content="Play the High Life browser prototype, a branching cannabis-industry life-path game spanning Underground, Medical, and Legal eras.">
   <meta name="robots" content="index,follow,max-image-preview:large">
   <meta name="theme-color" content="#10291d">
   <link rel="canonical" href="https://dtfseeds.com/games/high-life/">
   <link rel="stylesheet" href="./high-life.css">
+  <link rel="stylesheet" href="./high-life-v2.css">
 </head>
 <body>
   <header class="site-header">
@@ -18,26 +19,35 @@
 
   <main>
     <section class="hero">
-      <p class="eyebrow">High Life · Browser prototype</p>
+      <p class="eyebrow">High Life · Career strategy game</p>
       <h1>From Bagseed to Legacy</h1>
       <p class="lede">Build a career through three changing eras. Every turn you choose where to invest your time, then a seeded era event tests the strengths and weaknesses of the path you built.</p>
-      <p class="status" id="load-status">Loading deterministic game data…</p>
+      <div class="hero-badges" aria-label="Game features"><span>18 turns</span><span>3 eras</span><span>Seeded events</span><span>Autosave + exact resume</span></div>
+      <p class="status" id="load-status">Preparing career data…</p>
     </section>
 
     <section class="setup panel" id="setup-panel" hidden>
-      <h2>Start a career</h2>
+      <div class="section-title"><div><p class="eyebrow">NEW CAREER</p><h2>Start a career</h2></div><span class="setup-chip">18 TURN RUN</span></div>
       <label>Grower name <input id="player-name" maxlength="40" value="Grower"></label>
       <label>Seed <input id="seed" type="number" min="1" max="4294967295" value="420"></label>
-      <p class="hint">The same seed plus the same choices produces the same event sequence, which makes balance testing reproducible. In-progress careers autosave on this device.</p>
+      <p class="hint">The same seed plus the same choices produces the same event sequence, which makes alternate career paths comparable. In-progress careers autosave on this device.</p>
       <div class="actions">
         <button class="primary" id="start-game">Begin Underground Era</button>
         <button id="resume-game" type="button" hidden>Resume saved career</button>
         <button id="discard-save" type="button" hidden>Discard save</button>
       </div>
-      <p id="save-status" class="hint" hidden></p>
+      <p id="save-status" class="hint save-status" hidden></p>
     </section>
 
     <section id="game-panel" hidden>
+      <nav class="era-roadmap" aria-label="Career era progress">
+        <div data-era="underground"><span>01</span><strong>Underground</strong><small>Turns 1–6</small></div>
+        <i></i>
+        <div data-era="medical"><span>02</span><strong>Medical</strong><small>Turns 7–12</small></div>
+        <i></i>
+        <div data-era="legal"><span>03</span><strong>Legal</strong><small>Turns 13–18</small></div>
+      </nav>
+
       <div class="dashboard">
         <article class="panel era-card">
           <p class="eyebrow">Current era</p>
@@ -48,13 +58,13 @@
         <article class="panel score-card"><p class="eyebrow">Projected legacy</p><strong id="score-preview">0</strong><span>points</span></article>
       </div>
 
-      <section class="panel" aria-labelledby="resources-title">
-        <h2 id="resources-title">Your resources</h2>
+      <section class="panel resource-panel" aria-labelledby="resources-title">
+        <div class="section-title"><div><p class="eyebrow">CAREER BOARD</p><h2 id="resources-title">Your resources</h2></div><span class="resource-hint">Balance matters</span></div>
         <div class="resource-grid" id="resource-grid"></div>
       </section>
 
-      <section class="panel" aria-labelledby="choices-title">
-        <h2 id="choices-title">Choose this turn</h2>
+      <section class="panel action-panel" aria-labelledby="choices-title">
+        <div class="section-title"><div><p class="eyebrow">NEXT MOVE</p><h2 id="choices-title">Choose this turn</h2></div><span class="choice-state">1 ACTION</span></div>
         <p class="hint">No single resource wins by itself. Era transitions reward preparation, while events can expose neglected systems.</p>
         <div class="action-grid" id="action-grid"></div>
       </section>
@@ -87,6 +97,8 @@
   </main>
 
   <footer><p><strong>DTF Genetics</strong> · Dream the Future</p><p>Adults only. This is a fictional strategy game, not legal, business, financial, or cultivation advice.</p></footer>
-  <script type="module" src="./app.js"></script>
+  <p id="announce" class="sr-only" aria-live="assertive"></p>
+  <script id="high-life-events" type="application/json">[{"id":"u-privacy","era":"underground","title":"Keep It Quiet","text":"A privacy scare forces you to slow down and tighten routines.","effects":{"cash":-1,"reputation":-1},"mitigation":{"resource":"operations","minimum":3,"label":"Strong routines limited the damage.","effects":{"reputation":1}}},{"id":"u-mentor","era":"underground","title":"Old-Head Advice","text":"A trusted mentor shares hard-earned lessons.","effects":{"knowledge":2,"reputation":1}},{"id":"u-scarcity","era":"underground","title":"Supply Run","text":"Scarce equipment costs more than expected.","effects":{"cash":-2},"mitigation":{"resource":"assets","minimum":2,"label":"Your existing gear softened the shortage.","effects":{"cash":1}}},{"id":"u-genetics","era":"underground","title":"Keeper Found","text":"A standout plant earns attention and a place in your notes.","effects":{"genetics":2,"reputation":1}},{"id":"u-community","era":"underground","title":"Community Favor","text":"You help another grower and the relationship comes back around.","effects":{"reputation":2,"cash":1}},{"id":"u-improvise","era":"underground","title":"Make It Work","text":"Improvisation keeps the project moving, but it costs time.","effects":{"operations":1,"cash":-1},"mitigation":{"resource":"knowledge","minimum":4,"label":"Knowledge turned the workaround into a clean solution.","effects":{"cash":1}}},{"id":"m-patient","era":"medical","title":"Patient Referral","text":"Reliable results bring a patient-focused referral.","effects":{"reputation":2,"cash":2}},{"id":"m-paperwork","era":"medical","title":"Paper Trail","text":"New documentation expectations expose weak record keeping.","effects":{"cash":-1,"compliance":-1},"mitigation":{"resource":"compliance","minimum":4,"label":"Your records were already organized.","effects":{"compliance":2,"cash":1}}},{"id":"m-testing","era":"medical","title":"Testing Day","text":"Testing gives you useful feedback on consistency.","effects":{"knowledge":2,"compliance":1}},{"id":"m-coop","era":"medical","title":"Co-op Opportunity","text":"A small collaboration opens access to better tools.","effects":{"assets":1,"reputation":1},"mitigation":{"resource":"reputation","minimum":8,"label":"Your reputation improves the deal.","effects":{"cash":2}}},{"id":"m-change","era":"medical","title":"Rules Shift","text":"A fast policy change creates extra work.","effects":{"operations":-1,"cash":-1},"mitigation":{"resource":"compliance","minimum":5,"label":"Compliance readiness keeps the change manageable.","effects":{"operations":1,"cash":1}}},{"id":"m-training","era":"medical","title":"Training Session","text":"A formal workshop upgrades your process.","effects":{"knowledge":1,"operations":2,"cash":-1}},{"id":"l-partner","era":"legal","title":"Brand Partnership","text":"A compatible partner expands your reach.","effects":{"brand":2,"cash":2},"mitigation":{"resource":"reputation","minimum":10,"label":"Strong reputation makes the partnership more valuable.","effects":{"brand":1}}},{"id":"l-market","era":"legal","title":"Market Compression","text":"Crowded shelves pressure margins.","effects":{"cash":-2,"brand":-1},"mitigation":{"resource":"brand","minimum":5,"label":"A recognizable brand protects part of your demand.","effects":{"cash":2,"brand":1}}},{"id":"l-audit","era":"legal","title":"Compliance Review","text":"A routine review tests how professional the operation has become.","effects":{"cash":-1},"mitigation":{"resource":"compliance","minimum":6,"label":"Clean records turn the review into a confidence boost.","effects":{"reputation":2,"cash":1}}},{"id":"l-scale","era":"legal","title":"Scale Decision","text":"A measured expansion creates more productive capacity.","effects":{"assets":2,"operations":1,"cash":-2}},{"id":"l-award","era":"legal","title":"Community Recognition","text":"Years of documented work earn public recognition.","effects":{"reputation":3,"brand":1}},{"id":"l-legacy","era":"legal","title":"Teach the Next Grower","text":"Sharing what you learned strengthens the legacy beyond your own operation.","effects":{"reputation":2,"knowledge":1,"brand":1}}]</script>
+  <script defer src="./app.js"></script>
 </body>
 </html>
