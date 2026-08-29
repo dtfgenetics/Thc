@@ -1,0 +1,95 @@
+:root{
+  --tt-ice:#dff7ed;
+  --tt-glow:0 0 28px rgba(183,239,223,.14);
+  --tt-gold-glow:0 0 26px rgba(239,200,111,.16);
+}
+
+.hero{position:relative;overflow:hidden;background:linear-gradient(140deg,rgba(20,40,28,.98),rgba(9,18,12,.98) 62%,rgba(28,22,36,.94))}
+.hero::after{content:"";position:absolute;right:-7rem;top:-9rem;width:26rem;height:26rem;border-radius:50%;background:radial-gradient(circle,rgba(223,247,237,.12),transparent 68%);pointer-events:none}
+.hero>div,.hero .status-chip{position:relative;z-index:1}
+.hero-badges{display:flex;flex-wrap:wrap;gap:.42rem;margin-top:1rem}
+.hero-badges span{padding:.34rem .56rem;border:1px solid rgba(223,247,237,.17);border-radius:999px;background:rgba(4,13,8,.44);color:#d8e8de;font-size:.68rem;font-weight:820}
+.status-chip{border-color:rgba(223,247,237,.18);box-shadow:var(--tt-glow)}
+
+.scorecard-heading{align-items:flex-start}
+.scorecard-meta{display:grid;gap:.65rem;justify-items:end}
+.scorecard-progress{display:inline-flex;align-items:center;justify-content:center;min-width:116px;padding:.42rem .62rem;border:1px solid rgba(239,200,111,.26);border-radius:999px;background:#11150f;color:var(--gold);font-size:.7rem;font-weight:900;letter-spacing:.04em}
+.scorecard-progress.complete{border-color:rgba(185,239,107,.45);color:var(--lime);box-shadow:0 0 18px rgba(185,239,107,.1)}
+
+.score-row{position:relative;transition:border-color .16s ease,background .16s ease,box-shadow .16s ease,transform .16s ease}
+.score-row.unreviewed{border-color:rgba(239,200,111,.34);background:linear-gradient(180deg,rgba(39,31,17,.52),rgba(13,20,14,.96))}
+.score-row.reviewed{border-color:rgba(130,185,145,.34);background:linear-gradient(180deg,rgba(19,36,25,.82),rgba(11,19,13,.97))}
+.score-row.reviewed::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:999px;background:linear-gradient(180deg,var(--lime),#7eb68c)}
+.score-label-top{display:flex;align-items:center;justify-content:space-between;gap:.65rem}
+.review-state{padding:.2rem .38rem;border-radius:.34rem;background:#221c10;color:#d9b95d;font-size:.56rem;font-weight:950;letter-spacing:.1em}
+.score-row.reviewed .review-state{background:#14251a;color:#a9dcad}
+
+.score-stepper{display:grid;grid-template-columns:44px 62px 44px;align-items:center;justify-content:center;gap:.35rem;margin-bottom:.42rem}
+.score-stepper button{width:44px;height:44px;border:1px solid #4c6654;border-radius:.65rem;background:linear-gradient(180deg,#1c2b20,#101a13);color:var(--ink);font-size:1.45rem;font-weight:900;cursor:pointer;touch-action:manipulation}
+.score-stepper button:hover:not(:disabled){border-color:var(--lime);box-shadow:0 0 16px rgba(185,239,107,.1)}
+.score-stepper output{display:grid;place-items:center;min-height:48px;border:1px solid rgba(239,200,111,.42);border-radius:.72rem;background:#17150d;color:var(--gold);font-size:1.65rem;font-weight:950;box-shadow:var(--tt-gold-glow)}
+.score-control input[type="range"]{height:28px;background:transparent;accent-color:var(--lime)}
+.score-control input[type="range"]::-webkit-slider-runnable-track{height:9px;border-radius:999px;background:linear-gradient(90deg,var(--lime) 0 var(--score),#263228 var(--score) 100%)}
+.score-control input[type="range"]::-webkit-slider-thumb{width:24px;height:24px;margin-top:-7.5px;border:3px solid #102014;border-radius:50%;background:var(--gold);box-shadow:0 0 0 2px rgba(239,200,111,.28);-webkit-appearance:none}
+.score-control input[type="range"]::-moz-range-track{height:9px;border-radius:999px;background:#263228}
+.score-control input[type="range"]::-moz-range-progress{height:9px;border-radius:999px;background:var(--lime)}
+.score-control input[type="range"]::-moz-range-thumb{width:20px;height:20px;border:3px solid #102014;border-radius:50%;background:var(--gold)}
+
+.confidence-button{min-height:38px;transition:transform .14s ease,border-color .14s ease,background .14s ease}
+.confidence-button[aria-pressed="true"]{box-shadow:0 0 18px rgba(239,200,111,.12)}
+.submit-button{min-height:58px;font-size:1rem;transition:transform .16s ease,box-shadow .16s ease}
+.submit-button:not(:disabled):hover{transform:translateY(-2px);box-shadow:0 13px 30px rgba(0,0,0,.2),0 0 24px rgba(185,239,107,.13)}
+.submit-button:disabled{opacity:.48}
+
+.review-panel:not([hidden]){animation:ttReveal .3s ease}
+.benchmark-row{transition:border-color .16s ease,background .16s ease}
+.benchmark-row.diff-0{box-shadow:inset 3px 0 0 var(--lime)}
+.benchmark-row.diff-1{box-shadow:inset 3px 0 0 var(--gold)}
+.benchmark-row.confident{border-color:rgba(239,200,111,.48)}
+
+.sample-visual{box-shadow:inset 0 0 45px rgba(0,0,0,.28),var(--tt-glow)}
+.frost-field i{filter:drop-shadow(0 0 3px rgba(223,247,237,.62))}
+.reviewing .sample-panel{opacity:.78}
+
+@keyframes ttReveal{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+@media(max-width:820px){
+  .scorecard-heading{display:grid;gap:1rem}
+  .scorecard-meta{justify-items:start;width:100%}
+  .scale-key{width:100%}
+}
+
+@media(max-width:640px){
+  .game-shell{width:min(100% - .8rem,1240px);padding-top:.7rem}
+  .site-bar{min-height:60px;padding:.65rem .75rem}
+  .brand-mark{width:2.25rem;height:2.25rem}
+  .brand small{display:none}
+  .hero{display:grid;padding:1.05rem;border-radius:1rem}
+  h1{font-size:clamp(2.45rem,16vw,4rem);max-width:none}
+  .hero-badges{gap:.3rem}.hero-badges span{font-size:.6rem}
+  .score-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .trial-grid{grid-template-columns:1fr}
+  .judge-panel{padding:.75rem}
+  .score-row{grid-template-columns:1fr;gap:.7rem;padding:.82rem}
+  .score-label p{font-size:.78rem}
+  .score-stepper{grid-template-columns:52px 70px 52px}
+  .score-stepper button{width:52px;height:52px;font-size:1.6rem}
+  .score-stepper output{min-height:52px;font-size:1.8rem}
+  .score-control input[type="range"]{height:36px}
+  .confidence-button{min-height:44px;width:100%}
+  .submit-button,.next-button{width:100%;min-height:58px}
+  .lower-grid{grid-template-columns:1fr}
+  .rules-grid{grid-template-columns:1fr}
+  .benchmark-row{grid-template-columns:1fr;gap:.6rem}
+  .score-pair{justify-content:flex-start;flex-wrap:wrap}
+}
+
+@media(max-width:390px){
+  .score-stepper{grid-template-columns:48px 64px 48px}
+  .score-stepper button{width:48px;height:48px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .review-panel:not([hidden]){animation:none}
+  .score-row,.confidence-button,.submit-button{transition:none!important}
+}
