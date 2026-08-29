@@ -1,0 +1,80 @@
+.family-meta-row{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:8px}
+.runtime-strip{display:inline-flex;width:max-content;max-width:100%;padding:.55rem .8rem;border:1px solid rgba(86,208,110,.24);border-radius:999px;background:rgba(86,208,110,.06);color:#bfe9c8;font-size:.78rem;font-weight:800}
+
+body[data-battle-turn="cpu"] .hand-panel{border-color:rgba(255,107,107,.18);background:linear-gradient(180deg,rgba(255,107,107,.035),rgba(255,255,255,.02))}
+body[data-battle-turn="cpu"] .hand{opacity:.66;filter:saturate(.72)}
+body[data-battle-turn="cpu"] .turn-badge.cpu{box-shadow:0 0 0 4px rgba(255,107,107,.06),0 0 28px rgba(255,107,107,.13)}
+body[data-battle-turn="player"] .player-summary{box-shadow:inset 0 0 0 1px rgba(86,208,110,.08),0 0 30px rgba(86,208,110,.04)}
+
+.arena[data-selecting="true"] .player-grid .lane:not(.valid-target){opacity:.46;filter:saturate(.6)}
+.arena[data-selecting="true"] .player-grid .lane.valid-target{transform:translateY(-2px);background:rgba(86,208,110,.055)}
+.lane.valid-target .empty-lane{color:#8ff0a1;text-shadow:0 0 16px rgba(86,208,110,.3)}
+
+.hand .card[aria-disabled="true"]{cursor:not-allowed}
+.hand .card.unplayable{opacity:.42;filter:saturate(.55)}
+.hand .card.unplayable:hover{transform:none}
+.hand .card.unplayable::after{content:"NOT PLAYABLE";position:absolute;left:10px;right:10px;bottom:10px;padding:.32rem .42rem;border:1px solid rgba(255,255,255,.1);border-radius:999px;background:rgba(5,10,8,.82);color:#aab8af;text-align:center;font-size:.58rem;font-weight:950;letter-spacing:.1em;z-index:4}
+.hand .card.selected{outline-width:3px;box-shadow:0 0 0 5px rgba(86,208,110,.07),0 20px 45px rgba(70,216,106,.2)}
+
+#restartButton{min-height:38px;padding:.45rem .68rem;border:1px solid transparent;border-radius:9px;transition:background .15s,border-color .15s,color .15s}
+#restartButton:hover{border-color:rgba(255,255,255,.1);background:rgba(255,255,255,.04)}
+#restartButton:not(:disabled){touch-action:manipulation}
+#restartButton[aria-pressed="true"]{border-color:rgba(255,107,107,.5);color:#ffb0b0;background:rgba(255,107,107,.08)}
+
+.card,.lane,.family-choice,.primary-button,.ghost-button,.icon-button,#restartButton{-webkit-tap-highlight-color:transparent}
+.card:focus-visible,.lane:focus-visible,.family-choice:focus-visible,.primary-button:focus-visible,.ghost-button:focus-visible,.icon-button:focus-visible,#restartButton:focus-visible{outline:3px solid #e7c36b;outline-offset:3px}
+
+@media(max-width:760px){
+  .showdown-shell{padding-inline:10px}
+  .game-header{grid-template-columns:1fr;gap:12px;padding-bottom:16px}
+  .hub-link,.header-actions{justify-self:stretch}
+  .brand-lockup{text-align:left}
+  .header-actions{display:grid;grid-template-columns:1fr 1fr}
+  .header-actions button{min-height:46px}
+  .family-meta-row{align-items:stretch}
+  .record-strip,.runtime-strip{width:100%;justify-content:center;text-align:center}
+  .family-grid{grid-template-columns:1fr 1fr;gap:9px}
+  .family-choice{min-height:178px;padding:14px;border-radius:18px}
+  .family-choice .family-name{font-size:1.25rem}
+  .family-choice p{min-height:0;font-size:.84rem}
+  .scoreboard{grid-template-columns:1fr 1fr;gap:8px}
+  .round-core{grid-column:1/-1;grid-row:1;min-width:0;padding:10px}
+  .cpu-summary{grid-column:1;grid-row:2}
+  .player-summary{grid-column:2;grid-row:2}
+  .fighter-summary{padding:11px;border-radius:16px}
+  .fighter-summary>strong{font-size:1rem;margin-bottom:.45rem}
+  .meter-row{grid-template-columns:1fr auto}
+  .meter-row>span{display:none}
+  .garden-meter{grid-column:1/-1;grid-row:2}
+  .mini-stats{gap:6px;flex-wrap:wrap;font-size:.68rem}
+  .passive-ribbon{grid-template-columns:1fr;gap:7px}
+  .passive-ribbon>div:last-child{text-align:left}
+  .arena{padding:10px;border-radius:20px;overflow-x:auto}
+  .lane-grid{min-width:680px;gap:8px}
+  .lane{min-height:222px;padding:7px;border-radius:16px}
+  .card{width:min(100%,205px);border-radius:16px}
+  .hand-panel,.battle-feed{padding:10px;border-radius:16px}
+  .hand-head{align-items:flex-start;flex-direction:column}
+  .turn-actions{width:100%;display:grid;grid-template-columns:1fr 1fr}
+  .turn-actions button{min-height:48px}
+  .hand{margin-inline:-2px;gap:9px;scroll-padding-left:2px}
+  .hand .card{min-width:min(78vw,230px);min-height:230px}
+  .attack-button{min-height:46px}
+  .feed-head{align-items:center}
+  #restartButton{min-height:44px}
+  .rules-grid{grid-template-columns:1fr}
+}
+
+@media(max-width:430px){
+  .family-grid{grid-template-columns:1fr}
+  .family-choice{min-height:0}
+  .scoreboard{grid-template-columns:1fr 1fr}
+  .fighter-summary .side-label{font-size:.6rem}
+  .player-summary{text-align:left}
+  .player-summary .mini-stats{justify-content:flex-start}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .arena[data-selecting="true"] .player-grid .lane.valid-target{transform:none}
+  .hand .card.selected{transform:none}
+}
