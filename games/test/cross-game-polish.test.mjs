@@ -12,7 +12,9 @@ includes('site/public-route-patch/games/high-life/app.js', [
   "dtf-high-life-save-v1",
   'function resumeGame()',
   'function discardSave()',
-  'saveGame();'
+  'saveGame({ pendingEvent: true })',
+  'saveGame({ pendingEvent: false })',
+  'renderTurnResolution(state.history.at(-1))'
 ]);
 includes('site/public-route-patch/games/high-life/index.html', [
   'id="resume-game"',
