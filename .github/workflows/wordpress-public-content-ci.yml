@@ -39,7 +39,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          expected=(home seeds learn community shop gallery about contact)
+          expected=(home seeds learn community shop gallery about contact blog)
           for slug in "${expected[@]}"; do
             file="site/wordpress/pages/$slug.html"
             test -s "$file"
@@ -61,9 +61,13 @@ jobs:
         run: |
           set -euo pipefail
 
-          for slug in home seeds learn community shop gallery about contact; do
+          for slug in home seeds learn community shop gallery about contact blog; do
             grep -Eq "['\"]$slug['\"]" scripts/apply-wordpress-public-content-rest.mjs
           done
+
+          grep -Fq "['blog', 'DTF Field Notes & Updates']" scripts/apply-wordpress-public-content-rest.mjs
+          grep -Fq 'page_for_posts: 0' scripts/apply-wordpress-public-content-rest.mjs
+          grep -Fq 'while preserving publication' scripts/apply-wordpress-public-content-rest.mjs
 
           ! grep -Eq "\['games',[[:space:]]*'|\['high-iq',[[:space:]]*'" scripts/apply-wordpress-public-content-rest.mjs
           ! grep -Eq 'page_slugs=.*\b(games|high-iq)\b|required_files=.*\b(games|high-iq)\b' scripts/apply-wordpress-public-content.sh
