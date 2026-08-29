@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 1,
+  "palette": [
+    {"id":"forest","label":"Forest","hex":"#276749"},
+    {"id":"mint","label":"Mint","hex":"#7FD49A"},
+    {"id":"violet","label":"Violet","hex":"#7B61B9"},
+    {"id":"berry","label":"Berry","hex":"#C84C86"},
+    {"id":"gold","label":"Gold","hex":"#E6B84A"},
+    {"id":"sky","label":"Sky","hex":"#6DB7E5"},
+    {"id":"coral","label":"Coral","hex":"#E87862"},
+    {"id":"cream","label":"Cream","hex":"#EFE8D6"}
+  ],
+  "scenes": [
+    {
+      "id":"neon-grow-room",
+      "title":"Neon Grow Room",
+      "description":"A futuristic indoor garden packed with lights, ducts, pots, leaves, and geometric wall panels.",
+      "asset":"assets/neon-grow-room.svg",
+      "regions":["backdrop","floor","tent-left","tent-right","plant-left","plant-center","plant-right","lamp","pots","duct"],
+      "hiddenObjects":[
+        {"id":"seed","label":"Tiny seed"},
+        {"id":"ladybug","label":"Ladybug"},
+        {"id":"moon","label":"Crescent moon"}
+      ],
+      "prompts":[
+        "Give every plant a different color family, then make the room itself surprisingly calm.",
+        "Use only four palette colors and make the lighting feel louder than the plants.",
+        "Build a warm-to-cool gradient from the left side of the room to the right."
+      ]
+    },
+    {
+      "id":"cloud-garden",
+      "title":"Cloud Garden",
+      "description":"A fantasy garden floating above soft hills with oversized leaves, flowers, clouds, and a winding path.",
+      "asset":"assets/cloud-garden.svg",
+      "regions":["sky","cloud-left","cloud-right","hill-back","hill-front","pond","leaf-left","leaf-right","flower","path","arch"],
+      "hiddenObjects":[
+        {"id":"star","label":"Tiny star"},
+        {"id":"key","label":"Garden key"},
+        {"id":"seed","label":"Hidden seed"}
+      ],
+      "prompts":[
+        "Color the garden like sunrise reached the ground before it reached the clouds.",
+        "Make the giant leaves opposites: one loud, one quiet.",
+        "Use the path as the visual anchor and let every other region orbit around it."
+      ]
+    },
+    {
+      "id":"trichome-observatory",
+      "title":"Trichome Observatory",
+      "description":"A glass observatory where giant trichome forms rise around a telescope, moon, planet, and control deck.",
+      "asset":"assets/trichome-observatory.svg",
+      "regions":["space","dome","platform","telescope","moon","planet","trichome-left","trichome-center","trichome-right","console","floor"],
+      "hiddenObjects":[
+        {"id":"comet","label":"Mini comet"},
+        {"id":"seed","label":"Floating seed"},
+        {"id":"lens","label":"Spare lens"}
+      ],
+      "prompts":[
+        "Use the trichomes as three different light sources and color the room around them.",
+        "Make the observatory feel like a midnight postcard with one bright accent color.",
+        "Treat the moon and planet as rivals: give each its own palette family."
+      ]
+    },
+    {
+      "id":"seed-city",
+      "title":"Seed City",
+      "description":"A playful skyline of seed-shaped towers, a greenhouse, tram line, rooftop garden, and curved city road.",
+      "asset":"assets/seed-city.svg",
+      "regions":["sky","moon","tower-left","tower-center","tower-right","road","greenhouse","billboard","cloud","roof-garden","tram"],
+      "hiddenObjects":[
+        {"id":"sprout","label":"Tiny sprout"},
+        {"id":"star","label":"Window star"},
+        {"id":"ladybug","label":"Rooftop ladybug"}
+      ],
+      "prompts":[
+        "Make each tower belong to a different neighborhood while keeping one shared city color.",
+        "Color the road and tram first, then use them to decide every building color.",
+        "Create a nighttime city without using the darkest palette color on the sky."
+      ]
+    }
+  ]
+}
