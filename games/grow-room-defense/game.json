@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "grow-room-defense",
+  "title": "Grow Room Defense",
+  "type": "browser-game",
+  "status": "browser-vertical-slice",
+  "route": "/games/grow-room-defense/",
+  "productionTarget": "https://dtfseeds.com",
+  "implementation": {
+    "data": "games/grow-room-defense/data/ipm.json",
+    "engine": "games/grow-room-defense/src/engine.mjs",
+    "validator": "games/grow-room-defense/scripts/validate-data.mjs",
+    "publicRoute": "site/public-route-patch/games/grow-room-defense/"
+  },
+  "releaseGates": {
+    "rulesTested": false,
+    "browserTested": false,
+    "mobileTested": false,
+    "accessibilityReviewed": false,
+    "originalArtCleared": true,
+    "deploymentRegistered": false
+  }
+}
