@@ -9,6 +9,8 @@ import {
   shiftRank
 } from './engine.mjs';
 
+const BATCH_KEYS = ['q', 'w', 'e', 'r'];
+
 const ui = {
   load: document.querySelector('#load-status'),
   timer: document.querySelector('#time-stat'),
@@ -90,6 +92,20 @@ function ensureSelection() {
   if (!selectedBatch()) selectedInstanceId = state?.queue[0]?.instanceId ?? null;
 }
 
+function selectBatchByIndex(index, announce = true) {
+  const batch = state?.queue[index];
+  if (!batch) return false;
+  selectedInstanceId = batch.instanceId;
+  renderQueue();
+  renderSelected();
+  renderStations();
+  if (announce) {
+    const definition = batchById.get(batch.batchId);
+    ui.announce.textContent = `${definition?.label ?? 'Batch'} selected. Next station ${stationById.get(expectedStationId(batch, data))?.label ?? 'unknown'}.`;
+  }
+  return true;
+}
+
 function renderStats() {
   ui.timer.textContent = `${state.timeRemaining}s`;
   ui.score.textContent = String(state.score);
@@ -123,27 +139,30 @@ function batchArt(definition) {
 function renderQueue() {
   ensureSelection();
   ui.queue.replaceChildren();
-  for (const batch of state.queue) {
+  state.queue.forEach((batch, index) => {
     const definition = batchById.get(batch.batchId);
-    if (!definition) continue;
+    if (!definition) return;
     const expected = stationById.get(expectedStationId(batch, data));
+    const shortcut = BATCH_KEYS[index] ?? null;
     const button = document.createElement('button');
     button.type = 'button';
     button.className = `batch-card${batch.instanceId === selectedInstanceId ? ' selected' : ''}${batch.quality <= 60 ? ' stressed' : ''}`;
     button.dataset.batch = batch.instanceId;
     button.setAttribute('aria-pressed', String(batch.instanceId === selectedInstanceId));
+    if (shortcut) button.setAttribute('aria-keyshortcuts', shortcut.toUpperCase());
     const patienceLabel = batch.patienceRemaining >= 0 ? `${batch.patienceRemaining}s buffer` : `${Math.abs(batch.patienceRemaining)}s late`;
+    const shortcutLabel = shortcut ? ` · ${shortcut.toUpperCase()}` : '';
     button.innerHTML = `
       ${batchArt(definition)}
       <span class="batch-copy">
-        <span class="batch-topline"><strong>${escapeHtml(definition.label)}</strong><small>${escapeHtml(definition.theme)}</small></span>
+        <span class="batch-topline"><strong>${escapeHtml(definition.label)}</strong><small>${escapeHtml(definition.theme)}${shortcutLabel}</small></span>
         <span class="quality-line"><span>Quality ${batch.quality}%</span><span>${escapeHtml(patienceLabel)}</span></span>
         <span class="quality-track"><span style="width:${batch.quality}%"></span></span>
         <span class="step-track">${stepTrack(batch, definition)}</span>
         <span class="next-step">NEXT · ${escapeHtml(expected?.label ?? 'Complete')}</span>
       </span>`;
     ui.queue.append(button);
-  }
+  });
 }
 
 function renderSelected() {
@@ -154,7 +173,9 @@ function renderSelected() {
   }
   const definition = batchById.get(batch.batchId);
   const expected = stationById.get(expectedStationId(batch, data));
-  ui.selected.innerHTML = `<strong>${escapeHtml(definition?.label ?? batch.batchId)}</strong><span>Next station: ${escapeHtml(expected?.label ?? 'Complete')} · Quality ${batch.quality}%</span>`;
+  const queueIndex = state.queue.findIndex((candidate) => candidate.instanceId === batch.instanceId);
+  const shortcut = BATCH_KEYS[queueIndex]?.toUpperCase();
+  ui.selected.innerHTML = `<strong>${escapeHtml(definition?.label ?? batch.batchId)}</strong><span>Next station: ${escapeHtml(expected?.label ?? 'Complete')} · Quality ${batch.quality}%${shortcut ? ` · Batch key ${shortcut}` : ''}</span>`;
 }
 
 function renderStations() {
@@ -182,7 +203,7 @@ function renderFeedback() {
   }
   if (!state.lastAction) {
     ui.feedback.className = 'feedback-card';
-    ui.feedback.innerHTML = `<span class="feedback-kicker">READY</span><strong>${running ? 'Match the selected batch to its NEXT station.' : 'Choose a batch, then start the shift.'}</strong><p>Correct moves build combo. A wrong station costs time and game quality.</p>`;
+    ui.feedback.innerHTML = `<span class="feedback-kicker">READY</span><strong>${running ? 'Match the selected batch to its NEXT station.' : 'Choose a batch, then start the shift.'}</strong><p>Use Q/W/E/R to select conveyor batches and 1–4 to send the selected batch to a station.</p>`;
     return;
   }
   const action = state.lastAction;
@@ -269,7 +290,7 @@ ui.start.addEventListener('click', () => {
   running = true;
   startClock();
   render();
-  ui.announce.textContent = `Shift started. ${state.timeRemaining} seconds on the clock.`;
+  ui.announce.textContent = `Shift started. ${state.timeRemaining} seconds on the clock. Use Q W E R for batches and 1 through 4 for stations.`;
 });
 
 ui.queue.addEventListener('click', (event) => {
@@ -293,10 +314,18 @@ document.addEventListener('keydown', (event) => {
   if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
   const target = event.target;
   if (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement || target instanceof HTMLSelectElement) return;
-  const index = Number(event.key) - 1;
-  if (index >= 0 && index < data?.stations?.length) {
+
+  const batchIndex = BATCH_KEYS.indexOf(event.key.toLowerCase());
+  if (batchIndex >= 0 && batchIndex < (state?.queue.length ?? 0)) {
     event.preventDefault();
-    runStation(data.stations[index].id);
+    selectBatchByIndex(batchIndex);
+    return;
+  }
+
+  const stationIndex = Number(event.key) - 1;
+  if (stationIndex >= 0 && stationIndex < data?.stations?.length) {
+    event.preventDefault();
+    runStation(data.stations[stationIndex].id);
   }
 });
 
@@ -351,7 +380,7 @@ async function load() {
     selectedInstanceId = state.queue[0]?.instanceId ?? null;
     setCode(code);
     window.history.replaceState(null, '', challengeUrl());
-    ui.load.textContent = '75-second arcade shift · 4 stations · deterministic batch queue';
+    ui.load.textContent = '75-second arcade shift · Q/W/E/R batches · 1–4 stations';
     render();
   } catch (error) {
     console.error(error);
