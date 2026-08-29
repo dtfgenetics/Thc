@@ -1,5 +1,4 @@
-# release-reconcile-trigger: 2026-08-29-2
-name: Promote missing-slate release surfaces branch
+name: Validate missing-slate release branch
 
 on:
   push:
@@ -7,192 +6,49 @@ on:
       - release/reconcile-local-games
     paths:
       - .github/workflows/promote-missing-slate-release-surfaces-branch.yml
+      - data/public-navigation.json
+      - scripts/assemble-wordpress-suite-v2.py
+      - scripts/expand-wordpress-suite-registered-games.py
+      - scripts/reconcile-local-game-release-registry.mjs
+      - site/public-route-patch/games/**
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  promote:
+  validate:
     runs-on: ubuntu-latest
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
         with:
           ref: release/reconcile-local-games
-          fetch-depth: 0
+          fetch-depth: 1
+          persist-credentials: false
+
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: '22'
+
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
-      - name: Apply guarded 25-game release promotion
+      - name: Validate registered game release state without mutating Git history
         shell: bash
         run: |
           set -euo pipefail
-          python - <<'PY'
-          from pathlib import Path
-
-          def replace_once(path, old, new, label):
-              p=Path(path); text=p.read_text(); count=text.count(old)
-              if count != 1:
-                  raise SystemExit(f'{path}: expected exactly one {label}, found {count}')
-              p.write_text(text.replace(old,new,1))
-
-          # Every bridge assembly automatically inherits registered local game scope.
-          replace_once('scripts/assemble-wordpress-suite-v2.py', 'import pathlib\nimport sys\n', 'import pathlib\nimport subprocess\nimport sys\n', 'subprocess import anchor')
-          replace_once(
-              'scripts/assemble-wordpress-suite-v2.py',
-              '''final_actual = hashlib.sha256(payload).hexdigest()\nOUTPUT.parent.mkdir(parents=True, exist_ok=True)\nOUTPUT.write_bytes(payload)\nprint(f"assembled={OUTPUT} bytes={len(payload)} base_sha256={base_actual} sha256={final_actual}")''',
-              '''pre_expansion_sha = hashlib.sha256(payload).hexdigest()\nOUTPUT.parent.mkdir(parents=True, exist_ok=True)\nOUTPUT.write_bytes(payload)\nsubprocess.run([\n    sys.executable,\n    str(pathlib.Path(__file__).resolve().parent / "expand-wordpress-suite-registered-games.py"),\n    str(OUTPUT),\n], check=True)\nfinal_actual = hashlib.sha256(OUTPUT.read_bytes()).hexdigest()\nprint(f"assembled={OUTPUT} bytes={OUTPUT.stat().st_size} base_sha256={base_actual} pre_expansion_sha256={pre_expansion_sha} sha256={final_actual}")''',
-              'assembler output expansion tail',
-          )
-
-          # Promote the Game Hub from 15 to 25 distinct playable games.
-          hub=Path('site/public-route-patch/games/index.html')
-          html=hub.read_text()
-          for old,new,label in [
-              ('<!-- deployment-verification-marker: 15 playable browser games -->','<!-- deployment-verification-marker: 25 playable browser games -->','hub verification marker'),
-              ('<strong>15</strong><span>playable browser games</span>','<strong>25</strong><span>playable browser games</span>','hub playable count'),
-              ('<a href="#multiplayer">Multiplayer</a><a href="#development">Development</a>','<a href="#multiplayer">Multiplayer</a><a href="#new-releases">New releases</a><a href="#development">Development</a>','hub quicknav release link'),
-          ]:
-              count=html.count(old)
-              if count != 1: raise SystemExit(f'hub: expected one {label}, found {count}')
-              html=html.replace(old,new,1)
-          release_section='''    <section class="content soft" id="new-releases"><div class="wrap"><div class="section-heading"><div><p class="eyebrow">New releases</p><h2>The missing-game slate is now playable.</h2></div><p>Ten tested browser games moved from the tracked build slate into the public catalog. Each route remains independently testable and uses its own self-hosted runtime.</p></div><div class="grid four"><article class="card"><span class="status">Play now</span><h3>Strain Match</h3><p>Match cannabis concepts, strain families, terpene profiles and cultivation knowledge across deterministic memory decks.</p><a class="card-link" href="/games/strain-match/">Play Strain Match →</a></article><article class="card"><span class="status">Play now</span><h3>Grow Room Bingo / Bongwater Bingo</h3><p>Generate deterministic event and community bingo cards from shareable six-character codes.</p><a class="card-link" href="/games/grow-room-bingo/">Play Bingo →</a></article><article class="card"><span class="status">Play now</span><h3>Lost in the Terps</h3><p>Search themed word-grid missions built around terpene, grow-room and cannabis vocabulary.</p><a class="card-link" href="/games/lost-in-the-terps/">Play Lost in the Terps →</a></article><article class="card"><span class="status">Play now</span><h3>Mystery Strain</h3><p>Use yes/no trait clues to identify fictional mystery cultivars through a deduction engine.</p><a class="card-link" href="/games/mystery-strain/">Play Mystery Strain →</a></article><article class="card"><span class="status">Play now</span><h3>Spin the Strain</h3><p>Spin a deterministic event wheel for strain picks, trivia, challenges and community prompts.</p><a class="card-link" href="/games/spin-the-strain/">Spin the Strain →</a></article><article class="card"><span class="status">Play now</span><h3>Grow Room Defense</h3><p>Protect three plant lanes by matching fictional pest and pathogen threats with the correct IPM counterplay.</p><a class="card-link" href="/games/grow-room-defense/">Play Grow Room Defense →</a></article><article class="card"><span class="status">Play now</span><h3>Harvest Hustle</h3><p>Run a timed four-station harvest arcade shift, route batches correctly and build a clean score streak.</p><a class="card-link" href="/games/harvest-hustle/">Play Harvest Hustle →</a></article><article class="card"><span class="status">Play now</span><h3>Trichome Trials</h3><p>Judge five blind fictional entries across seven scorecard categories and compare your calls with benchmark evidence.</p><a class="card-link" href="/games/trichome-trials/">Play Trichome Trials →</a></article><article class="card"><span class="status">Play now</span><h3>Pheno Draft</h3><p>Draft fictional parent cards, generate phenotype choices and build a line toward a deterministic objective across six rounds.</p><a class="card-link" href="/games/pheno-draft/">Play Pheno Draft →</a></article><article class="card"><span class="status">Play now</span><h3>High Lines</h3><p>Color four original interactive line-art scenes, find hidden bonuses and share deterministic scene challenges.</p><a class="card-link" href="/games/high-lines/">Play High Lines →</a></article></div></div></section>\n'''
-          anchor='    <section class="content dark" id="multiplayer">'
-          if html.count(anchor) != 1: raise SystemExit('hub multiplayer insertion anchor drifted')
-          if 'id="new-releases"' in html: raise SystemExit('hub new-releases section already exists unexpectedly')
-          html=html.replace(anchor, release_section+anchor,1)
-          hub.write_text(html)
-
-          # Promote the Projects catalog and release fingerprint to the same 25-game state.
-          projects=Path('site/public-route-patch/projects/index.html')
-          text=projects.read_text()
-          for old,new,label in [
-              ('<!-- 15 public browser games | dtf-release-fingerprint: projects-public-games-15-v2 -->','<!-- 25 public browser games | dtf-release-fingerprint: projects-public-games-25-v3 -->','projects fingerprint'),
-              ('<strong>15</strong><span>public browser games</span>','<strong>25</strong><span>public browser games</span>','projects count'),
-          ]:
-              if text.count(old) != 1: raise SystemExit(f'projects: {label} anchor drifted')
-              text=text.replace(old,new,1)
-          project_cards='''          <article class="card"><span class="status">Play now</span><h3>Strain Match</h3><p>Educational deterministic memory and concept matching.</p><a class="card-link" href="/games/strain-match/">Play →</a></article>\n          <article class="card"><span class="status">Play now</span><h3>Grow Room Bingo / Bongwater Bingo</h3><p>Shareable deterministic community bingo cards.</p><a class="card-link" href="/games/grow-room-bingo/">Play →</a></article>\n          <article class="card"><span class="status">Play now</span><h3>Lost in the Terps</h3><p>Themed cannabis and terpene word-search missions.</p><a class="card-link" href="/games/lost-in-the-terps/">Play →</a></article>\n          <article class="card"><span class="status">Play now</span><h3>Mystery Strain</h3><p>Yes/no fictional cultivar deduction game.</p><a class="card-link" href="/games/mystery-strain/">Play →</a></article>\n          <article class="card"><span class="status">Play now</span><h3>Spin the Strain</h3><p>Deterministic strain, trivia and event wheel.</p><a class="card-link" href="/games/spin-the-strain/">Play →</a></article>\n          <article class="card"><span class="status">Play now</span><h3>Grow Room Defense</h3><p>Three-lane IPM defense and counterplay game.</p><a class="card-link" href="/games/grow-room-defense/">Play →</a></article>\n          <article class="card"><span class="status">Play now</span><h3>Harvest Hustle</h3><p>Timed harvest-station routing arcade game.</p><a class="card-link" href="/games/harvest-hustle/">Play →</a></article>\n          <article class="card"><span class="status">Play now</span><h3>Trichome Trials</h3><p>Seven-category blind judging scorecard game.</p><a class="card-link" href="/games/trichome-trials/">Play →</a></article>\n          <article class="card"><span class="status">Play now</span><h3>Pheno Draft</h3><p>Six-round fictional genetics draft-builder.</p><a class="card-link" href="/games/pheno-draft/">Play →</a></article>\n          <article class="card"><span class="status">Play now</span><h3>High Lines</h3><p>Interactive coloring, hidden-object and creative activity game.</p><a class="card-link" href="/games/high-lines/">Play →</a></article>\n'''
-          pheno='''          <article class="card"><span class="status">Play now</span><h3>PhenoQuest: The Living Seed Vault</h3><p>Genetics adventure with phenotype, breeding and Vault Garden systems.</p><a class="card-link" href="/games/phenoquest/">Play →</a></article>\n'''
-          if text.count(pheno) != 1: raise SystemExit('projects PhenoQuest insertion anchor drifted')
-          text=text.replace(pheno, pheno+project_cards,1)
-          projects.write_text(text)
-
-          # Post-deploy Projects ownership must recognize the new static fingerprint.
-          replace_once('scripts/reconcile-public-static-route-ownership.mjs', "const projectsFingerprint = 'dtf-release-fingerprint: projects-public-games-15-v2';", "const projectsFingerprint = 'dtf-release-fingerprint: projects-public-games-25-v3';", 'projects ownership fingerprint')
-          replace_once('scripts/reconcile-public-static-route-ownership.mjs', "    'PhenoQuest: The Living Seed Vault',\n", "    'PhenoQuest: The Living Seed Vault',\n    'High Lines',\n    'Pheno Draft',\n", 'projects promoted marker list')
-
-          # Route-serving integrity follows the same 25-game fingerprint.
-          p=Path('.github/workflows/public-route-serving-integrity.yml'); s=p.read_text()
-          s=s.replace('projects-public-games-15-v2','projects-public-games-25-v3')
-          s=s.replace('<strong>15</strong><span>public browser games</span>','<strong>25</strong><span>public browser games</span>')
-          p.write_text(s)
-
-          # Public-suite build must fingerprint the promoted Hub and verify registry synchronization.
-          replace_once('.github/workflows/build-dtfseeds-public-suite.yml', "grep -Fq '15 playable browser games' site/public-route-patch/games/index.html", "grep -Fq '25 playable browser games' site/public-route-patch/games/index.html\n          npm run games:release-check", 'public-suite game count check')
-
-          # Deployment fixture and ZIP verification derive registered game indices from public-apps.json.
-          deploy=Path('.github/workflows/deploy-public-suite-wordpress-v2.yml'); s=deploy.read_text()
-          old='''          for file in "${required[@]}"; do\n            test -s "$suite_root/$file" || { echo "Missing required release file: $file" >&2; exit 1; }\n          done\n          node --check "$suite_root/games/terpocalypse/main.js"'''
-          new='''          for file in "${required[@]}"; do\n            test -s "$suite_root/$file" || { echo "Missing required release file: $file" >&2; exit 1; }\n          done\n          node - <<'NODE' "$suite_root"\n          const fs=require('fs'), path=require('path');\n          const root=process.argv[2];\n          const registry=JSON.parse(fs.readFileSync('site/deployment/public-apps.json','utf8'));\n          const apps=registry.apps.filter((app)=>app.repository==='dtfgenetics/Thc' && app.runtime==='static' && app.status==='ready-to-package' && String(app.route||'').startsWith('/games/'));\n          for(const app of apps){\n            const rel=app.route.replace(/^\\//,'')+'index.html';\n            const full=path.join(root,rel);\n            if(!fs.existsSync(full) || fs.statSync(full).size===0) throw new Error(`Missing registered game release file: ${rel}`);\n          }\n          console.log(`Validated ${apps.length} registered local static game indices in suite artifact.`);\n          NODE\n          node --check "$suite_root/games/terpocalypse/main.js"'''
-          if s.count(old)!=1: raise SystemExit('deploy fixture validation anchor drifted')
-          s=s.replace(old,new,1)
-          old='''              }\n              missing=required-set(names)'''
-          new='''              }\n              registry=json.load(open('site/deployment/public-apps.json'))\n              required.update(\n                  app['route'].strip('/') + '/index.html'\n                  for app in registry['apps']\n                  if app.get('repository') == 'dtfgenetics/Thc'\n                  and app.get('runtime') == 'static'\n                  and app.get('status') == 'ready-to-package'\n                  and str(app.get('route','')).startswith('/games/')\n              )\n              missing=required-set(names)'''
-          if s.count(old)!=1: raise SystemExit('deploy ZIP required-set anchor drifted')
-          s=s.replace(old,new,1)
-          s=s.replace("check 'https://dtfseeds.com/games/' '15 playable browser games'","check 'https://dtfseeds.com/games/' '25 playable browser games'",1)
-          s=s.replace("check 'https://dtfseeds.com/projects/' '15 public browser games'","check 'https://dtfseeds.com/projects/' '25 public browser games'",1)
-          live_anchor="          check 'https://dtfseeds.com/games/phenoquest/' 'The Living Seed Vault'\n"
-          live_loop='''          check 'https://dtfseeds.com/games/phenoquest/' 'The Living Seed Vault'\n          while IFS=$'\\t' read -r route marker; do\n            check "https://dtfseeds.com${route}" "$marker"\n          done < <(node - <<'NODE'\n          const fs=require('fs');\n          const registry=JSON.parse(fs.readFileSync('site/deployment/public-apps.json','utf8'));\n          for(const app of registry.apps){\n            if(app.repository==='dtfgenetics/Thc' && app.runtime==='static' && app.status==='ready-to-package' && String(app.route||'').startsWith('/games/')){\n              process.stdout.write(`${app.route}\\t${app.title}\\n`);\n            }\n          }\n          NODE\n          )\n'''
-          if s.count(live_anchor)!=1: raise SystemExit('deploy live-game verification anchor drifted')
-          s=s.replace(live_anchor,live_loop,1)
-          s=s.replace('Game Hub verification requires 15 playable browser games','Game Hub verification requires 25 playable browser games',1)
-          deploy.write_text(s)
-
-          # Production gateway independently verifies all registered local static game routes.
-          gateway=Path('.github/workflows/dtfseeds-production-gateway.yml'); s=gateway.read_text()
-          if s.count("check '/games/' '15 playable browser games'")!=1: raise SystemExit('gateway Hub count anchor drifted')
-          s=s.replace("check '/games/' '15 playable browser games'","check '/games/' '25 playable browser games'",1)
-          anchor="          check '/games/lost-in-the-terps/' 'Lost in the Terps'\n"
-          loop='''          check '/games/lost-in-the-terps/' 'Lost in the Terps'\n          while IFS=$'\\t' read -r route marker; do\n            check "$route" "$marker"\n          done < <(node - <<'NODE'\n          const fs=require('fs');\n          const registry=JSON.parse(fs.readFileSync('site/deployment/public-apps.json','utf8'));\n          for(const app of registry.apps){\n            if(app.repository==='dtfgenetics/Thc' && app.runtime==='static' && app.status==='ready-to-package' && String(app.route||'').startsWith('/games/')){\n              process.stdout.write(`${app.route}\\t${app.title}\\n`);\n            }\n          }\n          NODE\n          )\n'''
-          if s.count(anchor)!=1: raise SystemExit('gateway registered-game verification anchor drifted')
-          s=s.replace(anchor,loop,1)
-          gateway.write_text(s)
-
-          # Hardened PR validation proves every registered game enters both bridge and package scope.
-          hard=Path('.github/workflows/dtfseeds-release-hardening-ci.yml'); s=hard.read_text()
-          anchor="          grep -Fq 'games/lost-in-the-terps' scripts/package-public-suite-wordpress.py\n"
-          addition='''          grep -Fq 'games/lost-in-the-terps' scripts/package-public-suite-wordpress.py\n          grep -Fq 'registered_local_game_targets' scripts/package-public-suite-wordpress.py\n          python - <<'PY' "$RUNNER_TEMP/deploy-public-suite-v2.mjs"\n          import json, pathlib, sys\n          text=pathlib.Path(sys.argv[1]).read_text()\n          registry=json.loads(pathlib.Path('site/deployment/public-apps.json').read_text())\n          apps=[app for app in registry['apps'] if app.get('repository')=='dtfgenetics/Thc' and app.get('runtime')=='static' and app.get('status')=='ready-to-package' and str(app.get('route','')).startswith('/games/')]\n          for app in apps:\n              target=app['route'].strip('/')\n              assert target in text, target\n              assert app['route'] in text, app['route']\n          print(f'validated registered bridge coverage for {len(apps)} local static games')\n          PY\n'''
-          if s.count(anchor)!=1: raise SystemExit('release hardening package anchor drifted')
-          s=s.replace(anchor,addition,1)
-          hard.write_text(s)
-
-          # Bridge validator uses the 25-game fixture and dynamically requires registered indices in the ZIP.
-          bridge=Path('.github/workflows/validate-wordpress-public-suite-bridge.yml'); s=bridge.read_text()
-          if s.count("grep -Fq '15 playable browser games' \"$suite_root/games/index.html\"")!=1: raise SystemExit('bridge Hub count anchor drifted')
-          s=s.replace("grep -Fq '15 playable browser games' \"$suite_root/games/index.html\"","grep -Fq '25 playable browser games' \"$suite_root/games/index.html\"",1)
-          anchor="""              ]\n              for path in required: assert path in names, path"""
-          dynamic="""              ]\n              registry=json.load(open('site/deployment/public-apps.json'))\n              required += [\n                  app['route'].strip('/') + '/index.html'\n                  for app in registry['apps']\n                  if app.get('repository') == 'dtfgenetics/Thc'\n                  and app.get('runtime') == 'static'\n                  and app.get('status') == 'ready-to-package'\n                  and str(app.get('route','')).startswith('/games/')\n              ]\n              for path in required: assert path in names, path"""
-          if s.count(anchor)!=1: raise SystemExit('bridge archive required list anchor drifted')
-          s=s.replace(anchor,dynamic,1)
-          bridge.write_text(s)
-
-          # One-shot sync/repair tools must never downgrade the promoted Hub back to 15.
-          sync=Path('.github/workflows/sync-game-expansion.yml'); s=sync.read_text()
-          s=s.replace("old_count = '<strong>13</strong><span>playable browser games</span>'","old_count = '<strong>13</strong><span>playable browser games</span>'")
-          s=s.replace("html = html.replace(old_count, '<strong>15</strong><span>playable browser games</span>', 1)","html = html.replace(old_count, '<strong>25</strong><span>playable browser games</span>', 1)")
-          s=s.replace("elif '<strong>15</strong><span>playable browser games</span>' not in html:","elif '<strong>25</strong><span>playable browser games</span>' not in html:")
-          s=s.replace("grep -Fq '<strong>15</strong><span>playable browser games</span>' site/public-route-patch/games/index.html","grep -Fq '<strong>25</strong><span>playable browser games</span>' site/public-route-patch/games/index.html")
-          sync.write_text(s)
-
-          repair=Path('.github/workflows/repair-game-hub-release-gates.yml'); s=repair.read_text()
-          s=s.replace('deployment-verification-marker: 15 playable browser games','deployment-verification-marker: 25 playable browser games')
-          s=s.replace("grep -Fq '15 playable browser games'","grep -Fq '25 playable browser games'")
-          s=s.replace('<strong>15</strong>','<strong>25</strong>')
-          repair.write_text(s)
-
-          # Keep the durable scope ledger aligned with the promoted public catalog.
-          scope=Path('docs/DTF_GAME_SCOPE_MASTER.md'); s=scope.read_text()
-          s=s.replace('The current Game Hub exposes 15 playable browser games:', 'The current Game Hub exposes 25 playable browser games:')
-          promoted='''\n16. Strain Match\n17. Grow Room Bingo / Bongwater Bingo\n18. Lost in the Terps\n19. Mystery Strain\n20. Spin the Strain\n21. Grow Room Defense\n22. Harvest Hustle\n23. Trichome Trials\n24. Pheno Draft\n25. High Lines\n'''
-          anchor='15. Kush Kings Chess\n'
-          if s.count(anchor)!=1: raise SystemExit('scope public catalog anchor drifted')
-          s=s.replace(anchor,anchor+promoted,1)
-          s=s.replace('## Missing outlined game slate','## Promoted missing-game slate')
-          s=s.replace('These previously outlined titles are part of the DTFSeeds game scope and must remain tracked until either shipped or explicitly retired:', 'These previously outlined titles are now implemented as tested browser routes and registered in the DTFSeeds public deployment contract:')
-          s=s.replace('## Build order','## Completed build order')
-          scope.write_text(s)
-          PY
-
-      - name: Validate promoted release sources
-        shell: bash
-        run: |
-          set -euo pipefail
-          python -m py_compile scripts/package-public-suite-wordpress.py scripts/assemble-wordpress-suite-v2.py scripts/expand-wordpress-suite-registered-games.py
+          npm run games:release-check
           python scripts/assemble-wordpress-suite-v2.py "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
           node --check "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          grep -Fq '25 playable browser games' site/public-route-patch/games/index.html
           grep -Fq 'games/high-lines' "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
           grep -Fq 'games/pheno-draft' "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
-          grep -Fq '25 playable browser games' site/public-route-patch/games/index.html
-          grep -Fq 'projects-public-games-25-v3' site/public-route-patch/projects/index.html
-          npm run games:release-check
 
-      - name: Commit promoted release surfaces
+      - name: Confirm validation did not generate tracked changes
         shell: bash
         run: |
           set -euo pipefail
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add scripts site/public-route-patch .github/workflows docs/DTF_GAME_SCOPE_MASTER.md
-          if git diff --cached --quiet; then
-            echo 'Release surfaces already promoted.'
-            exit 0
-          fi
-          git commit -m 'Promote registered missing-slate games through public suite [release-surface-sync]'
-          git push origin HEAD:release/reconcile-local-games
+          git status --short
+          test -z "$(git status --porcelain --untracked-files=no)"
