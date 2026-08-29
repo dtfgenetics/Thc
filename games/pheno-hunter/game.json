@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "pheno-hunter",
+  "title": "Pheno Hunter",
+  "type": "browser-game",
+  "status": "browser-vertical-slice",
+  "route": "/games/pheno-hunter/",
+  "productionTarget": "https://dtfseeds.com",
+  "implementation": {
+    "data": "games/pheno-hunter/data/phenos.json",
+    "engine": "games/pheno-hunter/src/engine.mjs",
+    "validator": "games/pheno-hunter/scripts/validate-data.mjs",
+    "publicRoute": "site/public-route-patch/games/pheno-hunter/"
+  },
+  "releaseGates": {
+    "rulesTested": true,
+    "browserTested": false,
+    "mobileTested": false,
+    "accessibilityReviewed": false,
+    "originalArtCleared": true,
+    "deploymentRegistered": false
+  }
+}

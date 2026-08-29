@@ -1,0 +1,71 @@
+name: Pheno Hunter CI
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - games/pheno-hunter/**
+      - site/public-route-patch/games/pheno-hunter/**
+      - .github/workflows/pheno-hunter-ci.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate candidate bank and public copy
+        run: node games/pheno-hunter/scripts/validate-data.mjs
+
+      - name: Run deterministic scouting engine tests
+        run: node games/pheno-hunter/test/engine.test.mjs
+
+      - name: Validate browser JavaScript syntax
+        run: |
+          node --check site/public-route-patch/games/pheno-hunter/app.js
+          node --check site/public-route-patch/games/pheno-hunter/engine.mjs
+
+      - name: Verify canonical and public engine match
+        run: cmp games/pheno-hunter/src/engine.mjs site/public-route-patch/games/pheno-hunter/engine.mjs
+
+      - name: Verify route and interaction contracts
+        run: |
+          node - <<'NODE'
+          const fs = require('fs');
+          const html = fs.readFileSync('site/public-route-patch/games/pheno-hunter/index.html','utf8');
+          const css = fs.readFileSync('site/public-route-patch/games/pheno-hunter/pheno-hunter.css','utf8');
+          const app = fs.readFileSync('site/public-route-patch/games/pheno-hunter/app.js','utf8');
+          const requireText = (source, text, label) => {
+            if (!source.includes(text)) throw new Error(`missing ${label}: ${text}`);
+          };
+          requireText(html, '<link rel="canonical" href="https://dtfseeds.com/games/pheno-hunter/">', 'canonical route');
+          requireText(html, '<script type="module" src="./app.js"></script>', 'module entrypoint');
+          requireText(html, 'Content boundary:', 'content boundary');
+          requireText(app, 'data.candidates?.length !== 18', 'candidate contract');
+          requireText(app, 'data.briefs?.length !== 6', 'brief contract');
+          requireText(app, 'SHORTLIST_LIMIT', 'shortlist contract');
+          requireText(css, '.plant-avatar', 'original plant renderer');
+          requireText(css, '@media(prefers-reduced-motion:reduce)', 'reduced motion');
+          NODE
+
+      - name: Verify truthful release boundary
+        run: |
+          node - <<'NODE'
+          const fs = require('fs');
+          const game = JSON.parse(fs.readFileSync('games/pheno-hunter/game.json','utf8'));
+          if (game.status !== 'browser-vertical-slice') throw new Error('unexpected game status');
+          if (game.route !== '/games/pheno-hunter/') throw new Error('unexpected route');
+          if (game.releaseGates.rulesTested !== true) throw new Error('rules suite must be recorded as tested');
+          if (game.releaseGates.deploymentRegistered !== true) throw new Error('deploymentRegistered must be true after canonical registry reconciliation');
+          if (game.releaseGates.browserTested !== false) throw new Error('browserTested must remain false until browser QA is completed');
+          if (game.releaseGates.mobileTested !== false) throw new Error('mobileTested must remain false until mobile QA is completed');
+          if (game.releaseGates.accessibilityReviewed !== false) throw new Error('accessibilityReviewed must remain false until review is completed');
+          NODE
