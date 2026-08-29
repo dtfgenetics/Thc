@@ -52,10 +52,12 @@ export function batchIdForIndex(code, index, data) {
   requireData(data);
   if (!Number.isInteger(index) || index < 0) throw new Error('Batch index must be a non-negative integer.');
   const length = data.batches.length;
-  let selected = hash(`${code}:batch:${index}`) % length;
-  if (index > 0) {
-    const previous = hash(`${code}:batch:${index - 1}`) % length;
-    if (selected === previous) selected = (selected + 1) % length;
+  let selected = 0;
+  let previous = -1;
+  for (let cursor = 0; cursor <= index; cursor += 1) {
+    selected = hash(`${code}:batch:${cursor}`) % length;
+    if (length > 1 && selected === previous) selected = (selected + 1) % length;
+    previous = selected;
   }
   return data.batches[selected].id;
 }
