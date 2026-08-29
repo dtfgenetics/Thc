@@ -1,0 +1,57 @@
+{
+  "id":"THC-ENC-225",
+  "number":225,
+  "title":"Secretory Disk Cells and the Storage Cavity",
+  "objective":"Trace cannabinoid precursor formation across secretory-cell compartments and explain how cannabis glandular trichomes export and store specialized metabolites in an extracellular cavity without treating that cavity as a passive container.",
+  "terms":[
+    {"term":"secretory disk cell","definition":"A metabolically specialized cell in the glandular trichome head that contributes to cannabinoid and terpene biosynthesis and export."},
+    {"term":"plastid","definition":"A plant organelle; specialized non-photosynthetic plastids in cannabis secretory cells contribute to isoprenoid precursor metabolism."},
+    {"term":"cytosol","definition":"The fluid cellular compartment outside membrane-bound organelles where important polyketide-pathway reactions occur."},
+    {"term":"apoplast","definition":"The extracellular continuum of plant cell walls and spaces outside the plasma membrane."},
+    {"term":"storage cavity","definition":"The extracellular, cuticle-bounded compartment above the secretory disk where resinous specialized metabolites accumulate."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Cannabis capitate glandular heads contain a disk of specialized secretory cells beneath a large extracellular storage cavity. The cavity develops as cell-wall and cuticular domains remodel and separate, creating space for resin accumulation while secretory tissues remain beneath it.",
+    "Cannabinoid biosynthesis is spatially compartmentalized. Modern ultrastructural and enzyme-localization studies support plastid involvement in the isoprenoid branch and cytosolic involvement in the polyketide branch, followed by prenylation to form CBGA and extracellular or cell-wall-associated oxidocyclase activity toward the storage cavity.",
+    "THCA synthase has been detected in the storage-cavity contents and localized toward the trichome cell-surface wall facing the cavity. This supports a model in which secretory cells export not only metabolites but also pathway enzyme activity into the extracellular secretory environment.",
+    "The storage cavity is not a chemically inert bag. Cavity formation, cuticle integrity, cell-wall architecture, oxygen availability, secretory-cell condition, developmental stage, temperature, damage, and postharvest handling affect what is present and what is recovered from the glandular head.",
+    "Subcellular pathway maps are evidence models that continue to be refined. Some precursor transport steps, metabolite trafficking, and compartment boundaries are less completely resolved than the major enzymatic pathway itself."
+  ],
+  "cultivationRelevance":[
+    "Treat secretory-head integrity and sample history as variables when interpreting isolated-trichome or cavity chemistry.",
+    "Do not extrapolate concentrations measured in a microdissected gland or cavity sample directly to whole dried flower percentage.",
+    "When comparing gland chemistry, record gland type, tissue, developmental state, damage, and collection method so anatomical differences are not mistaken for treatment effects.",
+    "Use pathway compartmentation to explain plant biology, not as a justification for untested supplements or claims that one cultivation input forces a specific pathway step."
+  ],
+  "measureAndRecord":[
+    {"field":"Gland identity","requirement":"Record trichome class, tissue position, plant ID, developmental state, head integrity, and evidence of leakage or collapse."},
+    {"field":"Collection method","requirement":"Record microdissection, cavity sampling, isolated gland fraction, whole tissue, or other sampling method plus recovered mass or volume."},
+    {"field":"Cellular evidence","requirement":"Record microscopy, immunolocalization, transcript, protein, or enzyme method and which compartment or structure was actually measured."},
+    {"field":"Chemical panel","requirement":"Record precursors, cannabinoid acids, neutral cannabinoids, terpenoids, or other analytes with the analytical platform and standards used."},
+    {"field":"Denominator and controls","requirement":"Record fresh/dry mass, area, volume, gland count, recovery controls, contamination controls, and uncertainty as appropriate."
+    }
+  ],
+  "misconceptions":[
+    "Cannabinoids are synthesized uniformly throughout cannabis flower tissue.",
+    "All cannabinoid-pathway enzymes operate in one undifferentiated cellular compartment.",
+    "The storage cavity is only a passive bag and has no developmental or structural biology.",
+    "Cannabinoid concentration in one isolated cavity equals the laboratory percentage for whole dried flower.",
+    "A ruptured or senescent gland represents the same active secretory state as an intact developing gland."
+  ],
+  "evidenceLimits":[
+    "Cannabis secretory-disk anatomy, extracellular cavity formation, polarized organelle organization, and extracellular-facing THCA synthase localization are directly supported. Exact trafficking routes for every precursor, enzyme, and metabolite remain incompletely resolved, so pathway diagrams should distinguish established localization from proposed transport."
+  ],
+  "crossLinks":"THC-ENC-221–224 for trichome development and gland classes; THC-ENC-227–233 for cannabinoid precursor and synthase pathways; THC-ENC-234–236 for chemical transformation; THC-ENC-240 for sampling and claims discipline.",
+  "sourceNotes":[
+    "Livingston SJ et al. (2022). A polarized supercell produces specialized metabolites in cannabis trichomes. Current Biology 32:4040–4051.e5. Cryofixation, electron microscopy, and immunogold labeling demonstrated polarized secretory-cell architecture, non-photosynthetic plastid specialization, membrane-contact networks, and THCAS localization at the cavity-facing cell wall.",
+    "Sirikantaramas S et al. (2005). Tetrahydrocannabinolic acid synthase, the enzyme controlling marijuana psychoactivity, is secreted into the storage cavity of the glandular trichomes. Plant and Cell Physiology 46(9):1578–1582. Detected THCAS expression/activity in glandular trichomes and storage-cavity contents.",
+    "Livingston SJ et al. (2021). Cannabis Glandular Trichome Cell Walls Undergo Remodeling to Store Specialized Metabolites. Plant Physiology. Documented developmental remodeling and separation of wall domains during extracellular storage-cavity biogenesis.",
+    "The controlled Volume 12 manuscript explicitly treats transport steps and some subcellular boundaries as unresolved rather than settled fact."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 12 batch 01 controlled web derivative","driveSourceDocumentId":"1mrad4SysYqoD1-Z8A7ibF9PcnvRjs5qiPIOseYGRtUI","evidenceControl":"direct_primary_sources_plus_controlled_manuscript","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_secretory_cell_compartmentation_and_storage_cavity","releaseTimeReview":"completed_2026-08-29_localization_cavity_and_transport_uncertainty_claims","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"secretory-disk-cells-and-the-storage-cavity",
+  "route":"/encyclopedia/secretory-disk-cells-and-the-storage-cavity"
+}

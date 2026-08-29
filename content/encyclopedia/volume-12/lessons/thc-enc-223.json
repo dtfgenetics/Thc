@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-223",
+  "number":223,
+  "title":"Capitate-Sessile Trichomes",
+  "objective":"Describe capitate-sessile morphology and distinguish gland classification, developmental transition, and metabolic function without assuming every sessile gland is simply an immature stalked gland.",
+  "terms":[
+    {"term":"capitate-sessile trichome","definition":"A glandular trichome with a prominent secretory head supported by a very short base rather than an elongated multicellular stalk."},
+    {"term":"secretory disk","definition":"The organized group of secretory cells at the base of a glandular head."},
+    {"term":"glandular head","definition":"The secretory head region associated with a cuticle-bounded storage cavity."},
+    {"term":"developmental transition","definition":"A change from one recognizable developmental morphology to another over time."},
+    {"term":"tissue context","definition":"The organ, surface, position, and developmental state in which a structure is observed."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Capitate-sessile trichomes have a visible glandular head with secretory cells but lack the conspicuous elongated multicellular stalk of mature capitate-stalked trichomes. They occur on cannabis leaves and reproductive tissues, with abundance varying by organ, surface, genotype, and developmental stage.",
+    "Direct flower-development studies show that many sessile-appearing glands on young bracts are associated with later stalk formation as the bract matures. In the 2023 Punja study, sessile-capitate trichomes predominated earlier while stalked-capitate forms became more abundant later, supporting a developmental relationship on those floral tissues.",
+    "That relationship is not equivalent to saying every sessile gland on every cannabis organ becomes stalked. Developmental fate can differ by tissue, genotype, and gland population, and mature leaves can retain sessile glandular structures.",
+    "Capitate-sessile trichomes are metabolically active. Laser-microdissection and spectroscopy have detected major cannabinoids in both capitate-sessile and capitate-stalked trichomes, although abundance, gland size, secretion volume, and chemical profile can differ.",
+    "Apparent stalk height can be altered by viewing angle, surface curvature, tissue preparation, collapse, or incomplete resolution. Classification therefore requires calibrated morphology and tissue context rather than a casual visual label."
+  ],
+  "cultivationRelevance":[
+    "Preserve separate counts for sessile and stalked glands when comparing developmental stages or treatments.",
+    "Record the organ and surface because a sessile gland on a leaf should not automatically be interpreted using a bract-development sequence.",
+    "Use matched chemistry when testing whether trichome class is associated with metabolite profile; morphology alone does not establish concentration.",
+    "Retain images and calibration so ambiguous sessile-versus-young-stalked classifications can be reviewed."
+  ],
+  "measureAndRecord":[
+    {"field":"Sample context","requirement":"Record plant ID, organ, surface, branch/node or inflorescence position, and developmental date."},
+    {"field":"Morphology","requirement":"Record head diameter, stalk/base height where resolved, and the declared threshold or key used for sessile classification."},
+    {"field":"Density","requirement":"Count sessile and stalked structures separately per calibrated area and report excluded/ambiguous glands."},
+    {"field":"Secretory anatomy","requirement":"When resolution permits, record disk-cell organization, cavity condition, and head integrity without inferring chemistry from morphology alone."},
+    {"field":"Matched chemistry","requirement":"Record isolated-fraction or tissue chemistry, analytical method, stage, and denominator when comparing metabolic function."
+    }
+  ],
+  "misconceptions":[
+    "Capitate-sessile trichomes are chemically inactive.",
+    "Every sessile trichome inevitably becomes capitate-stalked.",
+    "Every gland without an obvious stalk is the same developmental class.",
+    "A field microscope can classify all sessile structures without calibration or tissue context.",
+    "Sessile-trichome counts alone predict whole-flower cannabinoid concentration."
+  ],
+  "evidenceLimits":[
+    "The developmental relationship between sessile-appearing and stalked glands is directly supported on maturing cannabis bracts, but it should not be generalized to every gland population or organ. Destructive preparation, surface geometry, and imaging resolution can change apparent stalk morphology."
+  ],
+  "crossLinks":"THC-ENC-221–222 for initiation and bulbous glands; THC-ENC-224 for capitate-stalked trichomes; THC-ENC-225 for secretory-cell/cavity anatomy; THC-ENC-226 for reproducible trichome sampling.",
+  "sourceNotes":[
+    "Punja ZK, Sutton DB, Kim T. (2023). Journal of Cannabis Research 5:12. Observed sessile-capitate predominance at earlier flower development and increased stalked-capitate abundance at later stages in two genotypes, while noting that not all sessile-capitate glands progress to stalked forms.",
+    "Happyana N et al. (2013). Phytochemistry 87:51–59. LCMS and cryogenic NMR of laser-microdissected cannabis trichomes confirmed major cannabinoids in capitate-sessile and capitate-stalked fractions.",
+    "The controlled Volume 12 source requires classification by calibrated morphology and prevents chemical conclusions from gland class alone."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 12 batch 01 controlled web derivative","driveSourceDocumentId":"1mrad4SysYqoD1-Z8A7ibF9PcnvRjs5qiPIOseYGRtUI","evidenceControl":"direct_primary_sources_plus_controlled_manuscript","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_capitate_sessile_trichome_anatomy","releaseTimeReview":"completed_2026-08-29_developmental_relationship_and_classification_limits","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"capitate-sessile-trichomes",
+  "route":"/encyclopedia/capitate-sessile-trichomes"
+}
