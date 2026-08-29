@@ -1,11 +1,13 @@
 import { expect, test } from '@playwright/test';
 
+const atlasPath = '/atlas/index.html';
+
 test.describe('THC Living Plant Atlas 3D', () => {
   test('renders the WebGL specimen and connects structures to deep Atlas modules', async ({ page }) => {
     const errors: string[] = [];
     page.on('pageerror', (error) => errors.push(error.message));
 
-    await page.goto('/atlas/', { waitUntil: 'domcontentloaded' });
+    await page.goto(atlasPath, { waitUntil: 'domcontentloaded' });
 
     await expect(page.getByRole('heading', { name: 'The Living Plant Atlas' })).toBeVisible();
     await expect(page.getByText('3D anatomy explorer')).toBeVisible();
@@ -36,7 +38,7 @@ test.describe('THC Living Plant Atlas 3D', () => {
   });
 
   test('keeps the complete educational system library available beside the 3D experience', async ({ page }) => {
-    await page.goto('/atlas/');
+    await page.goto(atlasPath);
     await expect(page.locator('[data-system-grid] .system-card')).toHaveCount(16);
     await page.locator('[data-atlas-search]').fill('pollen');
     await expect(page.locator('[data-system-grid] .system-card')).not.toHaveCount(0);
