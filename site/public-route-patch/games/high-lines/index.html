@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>High Lines | DTF Genetics</title>
+  <meta name="description" content="Color original DTF Genetics line-art scenes, find hidden objects, and share deterministic High Lines scene codes.">
+  <link rel="canonical" href="https://dtfseeds.com/games/high-lines/">
+  <link rel="stylesheet" href="./high-lines.css">
+</head>
+<body>
+  <a class="skip-link" href="#art-mount">Skip to coloring board</a>
+  <main class="game-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">DTF GENETICS · CREATIVE GAME LAB</p>
+        <h1>HIGH LINES</h1>
+        <p class="intro">Color the line art. Find the hidden bonuses. Follow the prompt—or ignore it and make the scene yours.</p>
+      </div>
+      <div class="top-mark" aria-hidden="true"><span>HL</span><i></i></div>
+    </header>
+
+    <section class="codebar" aria-label="Scene controls">
+      <label class="code-field">
+        <span>Scene code</span>
+        <input id="scene-code" maxlength="6" inputmode="text" autocomplete="off" spellcheck="false" aria-describedby="scene-code-help">
+      </label>
+      <p id="scene-code-help" class="sr-only">Enter a six-character scene code and press Enter to reproduce the same scene, prompt, and palette order.</p>
+      <button id="new-scene" type="button">New Scene</button>
+      <button id="share-scene" type="button">Share</button>
+      <span id="load-status" class="load-status">Loading scene set…</span>
+    </section>
+
+    <section class="workspace">
+      <aside class="activity-rail" aria-label="High Lines tools">
+        <section class="rail-card scene-card">
+          <p class="eyebrow">CURRENT SCENE</p>
+          <h2 id="scene-title">Loading…</h2>
+          <p id="scene-description">Preparing original line art.</p>
+        </section>
+
+        <section id="creative-prompt" class="rail-card prompt-card"></section>
+
+        <section class="rail-card palette-card" aria-labelledby="palette-title">
+          <div class="rail-heading">
+            <div>
+              <p class="eyebrow">PALETTE</p>
+              <h2 id="palette-title">Pick a fill</h2>
+            </div>
+          </div>
+          <div id="palette" class="palette-grid"></div>
+          <p class="shortcut-copy"><kbd>1</kbd>–<kbd>8</kbd> picks colors when focus is outside the board.</p>
+        </section>
+
+        <section class="rail-card tool-card" aria-label="Artwork tools">
+          <button id="undo-fill" type="button" disabled>Undo Fill <kbd>U</kbd></button>
+          <button id="reset-art" type="button">Reset Artwork</button>
+        </section>
+
+        <section class="rail-card progress-card" aria-labelledby="progress-title">
+          <div class="rail-heading">
+            <div>
+              <p class="eyebrow">PROGRESS</p>
+              <h2 id="progress-title">Scene run</h2>
+            </div>
+            <strong id="progress-text">0%</strong>
+          </div>
+          <div class="progress-track" aria-hidden="true"><span id="progress-fill"></span></div>
+          <div class="mini-stats">
+            <div><span>Colored</span><strong id="colored-stat">0 / 0</strong></div>
+            <div><span>Hidden</span><strong id="hidden-stat">0 / 3</strong></div>
+            <div><span>Score</span><strong id="score-stat">0</strong></div>
+          </div>
+        </section>
+
+        <section class="rail-card hunt-card" aria-labelledby="hunt-title">
+          <p class="eyebrow">HIDDEN HUNT</p>
+          <h2 id="hunt-title">Find all three</h2>
+          <ol id="hidden-list" class="hidden-list"></ol>
+        </section>
+      </aside>
+
+      <section class="playfield" aria-labelledby="board-title">
+        <div class="playfield-header">
+          <div>
+            <p class="eyebrow">COLORING BOARD</p>
+            <h2 id="board-title">Tap or focus a region to fill it</h2>
+          </div>
+          <p>On the board, use <kbd>Enter</kbd> or <kbd>Space</kbd> to activate a focused region or hidden bonus.</p>
+        </div>
+        <div id="art-mount" class="art-mount" tabindex="-1" aria-label="Interactive High Lines coloring board">
+          <div class="art-loading" aria-hidden="true"><span></span><strong>Drawing scene…</strong></div>
+        </div>
+        <div id="activity-status" class="activity-status">
+          <span>ACTIVITY RUN</span>
+          <strong>Color every region and find all three bonuses.</strong>
+          <p>Recoloring is free. Only unique colored regions and hidden finds add progress.</p>
+        </div>
+      </section>
+    </section>
+
+    <aside class="boundary-note">
+      <strong>Game boundary:</strong> High Lines is a creative coloring/activity game. Its plant, garden, and grow-room imagery is illustrative and does not provide cultivation parameters, chemical instructions, equipment settings, potency claims, or consumption guidance.
+    </aside>
+
+    <nav class="footer-nav" aria-label="Game navigation">
+      <a href="/games/">Back to Games</a>
+      <a href="/">DTFSeeds.com</a>
+    </nav>
+    <p id="announce" class="sr-only" aria-live="assertive"></p>
+  </main>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

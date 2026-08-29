@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 700" role="img" aria-labelledby="title desc">
+  <title id="title">Cloud Garden coloring scene</title>
+  <desc id="desc">A fantasy garden of floating clouds, rolling hills, a pond, giant leaves, a flower arch, and three hidden objects.</desc>
+  <style>
+    .region{fill:#fbfaf4;stroke:#151b18;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+    .detail{fill:none;stroke:#151b18;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+    .thin{stroke-width:3}.hidden{fill:#fbfaf4;stroke:#151b18;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;cursor:pointer}
+  </style>
+  <rect class="region" data-region="sky" x="18" y="18" width="964" height="664" rx="34"/>
+
+  <g class="region" data-region="cloud-left">
+    <path d="M70 160C88 123 132 113 164 138C183 103 241 107 250 151C289 148 312 172 306 204H86C55 201 47 174 70 160Z"/>
+  </g>
+  <g class="region" data-region="cloud-right">
+    <path d="M694 128C716 91 767 91 792 124C816 100 864 112 870 148C906 145 931 168 923 199H706C671 194 667 153 694 128Z"/>
+  </g>
+
+  <path class="region" data-region="hill-back" d="M18 395C120 315 220 327 318 383C423 290 565 293 672 386C781 315 884 332 982 396V682H18Z"/>
+  <path class="region" data-region="hill-front" d="M18 500C121 431 231 433 332 506C430 443 565 445 665 510C781 431 888 440 982 505V682H18Z"/>
+
+  <path class="region" data-region="pond" d="M352 545C390 511 459 501 525 512C589 522 629 552 619 581C606 619 526 638 448 622C379 608 326 582 352 545Z"/>
+  <path class="detail thin" d="M382 556C430 536 489 538 533 550M426 595C473 608 533 602 571 581"/>
+
+  <path class="region" data-region="path" d="M505 682C489 634 472 606 467 570C463 536 478 502 495 464C512 426 518 395 515 362L574 361C576 406 564 447 543 484C524 519 516 550 523 582C532 622 557 650 584 682Z"/>
+  <path class="detail thin" d="M492 621L550 618M479 562L522 562M491 497L545 497M510 427L565 427"/>
+
+  <g class="region" data-region="leaf-left">
+    <path d="M159 548C92 472 98 369 181 279C252 369 252 468 180 548Z"/>
+    <path class="detail" d="M180 535V304M178 356L133 395M179 403L225 367M179 452L128 484M179 481L224 451"/>
+  </g>
+  <g class="region" data-region="leaf-right">
+    <path d="M816 552C747 475 751 373 834 284C909 371 907 472 835 552Z"/>
+    <path class="detail" d="M835 538V309M833 362L786 400M834 407L879 373M834 458L782 489M834 486L882 455"/>
+  </g>
+
+  <g class="region" data-region="flower">
+    <circle cx="690" cy="432" r="24"/>
+    <ellipse cx="690" cy="386" rx="23" ry="42"/>
+    <ellipse cx="733" cy="411" rx="23" ry="42" transform="rotate(58 733 411)"/>
+    <ellipse cx="724" cy="461" rx="23" ry="42" transform="rotate(118 724 461)"/>
+    <ellipse cx="657" cy="461" rx="23" ry="42" transform="rotate(62 657 461)"/>
+    <ellipse cx="648" cy="411" rx="23" ry="42" transform="rotate(120 648 411)"/>
+    <path class="detail" d="M690 474V568M690 525C663 505 641 512 627 535M691 544C717 523 738 528 753 549"/>
+  </g>
+
+  <g class="region" data-region="arch">
+    <path d="M314 510V345C314 255 386 201 474 201H536C624 201 696 255 696 345V510H650V347C650 284 598 247 535 247H475C412 247 360 284 360 347V510Z"/>
+    <path class="detail thin" d="M337 319C390 299 422 281 455 231M673 319C620 299 590 280 556 231M337 374C391 354 423 332 455 249M673 374C617 353 588 332 555 249"/>
+  </g>
+
+  <path class="detail thin" d="M85 585C155 568 224 572 288 604M716 594C785 566 864 568 929 605"/>
+  <path class="detail thin" d="M402 159C424 141 447 141 466 158M539 143C559 126 581 127 599 144"/>
+
+  <g class="hidden" data-hidden="star" transform="translate(389 120)">
+    <path d="M0-16L5-5L17-4L8 4L11 16L0 10L-11 16L-8 4L-17-4L-5-5Z"/>
+  </g>
+  <g class="hidden" data-hidden="key" transform="translate(279 541) rotate(-22)">
+    <circle cx="-12" cy="0" r="10"/>
+    <path d="M-2 0H27M16 0V10M24 0V7" fill="none"/>
+  </g>
+  <g class="hidden" data-hidden="seed" transform="translate(769 520) rotate(18)">
+    <ellipse cx="0" cy="0" rx="10" ry="16"/>
+    <path class="detail thin" d="M0-12C5-4 5 4 0 12"/>
+  </g>
+</svg>

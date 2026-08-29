@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 700" role="img" aria-labelledby="title desc">
+  <title id="title">Neon Grow Room coloring scene</title>
+  <desc id="desc">A black-line futuristic grow room with three large plants, two wall tents, a hanging lamp, pots, ducting, and three hidden objects.</desc>
+  <style>
+    .region{fill:#fbfaf4;stroke:#151b18;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+    .detail{fill:none;stroke:#151b18;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+    .thin{stroke-width:3}
+    .hidden{fill:#fbfaf4;stroke:#151b18;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;cursor:pointer}
+  </style>
+
+  <rect class="region" data-region="backdrop" x="18" y="18" width="964" height="664" rx="34"/>
+  <path class="region" data-region="floor" d="M18 500 L982 500 L982 682 L18 682 Z"/>
+  <path class="detail thin" d="M70 545H930M110 600H890M170 652H830"/>
+  <path class="detail thin" d="M210 500L115 682M395 500L355 682M605 500L650 682M790 500L885 682"/>
+
+  <g class="region" data-region="tent-left">
+    <path d="M70 170 Q70 145 95 145 H285 Q310 145 310 170 V445 H70 Z"/>
+    <path class="detail" d="M105 180V420M275 180V420M105 205H275M105 395H275"/>
+    <path class="detail thin" d="M178 205V395"/>
+  </g>
+  <g class="region" data-region="tent-right">
+    <path d="M690 170 Q690 145 715 145 H905 Q930 145 930 170 V445 H690 Z"/>
+    <path class="detail" d="M725 180V420M895 180V420M725 205H895M725 395H895"/>
+    <path class="detail thin" d="M812 205V395"/>
+  </g>
+
+  <g class="region" data-region="duct">
+    <path d="M120 92 H395 Q430 92 430 127 V150 H382 V133 Q382 126 375 126 H120 Z"/>
+    <path d="M880 92 H605 Q570 92 570 127 V150 H618 V133 Q618 126 625 126 H880 Z"/>
+    <path class="detail thin" d="M160 92V126M205 92V126M250 92V126M295 92V126M340 92V126M840 92V126M795 92V126M750 92V126M705 92V126M660 92V126"/>
+  </g>
+
+  <g class="region" data-region="lamp">
+    <rect x="405" y="76" width="190" height="86" rx="18"/>
+    <path class="detail" d="M442 162L425 213H575L558 162"/>
+    <path class="detail thin" d="M445 116H555M475 76V50M525 76V50"/>
+  </g>
+
+  <g class="region" data-region="pots">
+    <path d="M356 517H454L437 618H373Z"/>
+    <path d="M454 505H556L540 626H470Z"/>
+    <path d="M556 517H654L637 618H573Z"/>
+    <path class="detail thin" d="M367 543H447M465 532H547M567 543H647"/>
+  </g>
+
+  <g class="region" data-region="plant-left">
+    <path d="M402 520V342"/>
+    <ellipse cx="356" cy="405" rx="54" ry="18" transform="rotate(-30 356 405)"/>
+    <ellipse cx="445" cy="400" rx="55" ry="18" transform="rotate(28 445 400)"/>
+    <ellipse cx="372" cy="356" rx="50" ry="17" transform="rotate(-48 372 356)"/>
+    <ellipse cx="431" cy="350" rx="51" ry="17" transform="rotate(45 431 350)"/>
+    <ellipse cx="402" cy="320" rx="18" ry="58"/>
+    <path class="detail thin" d="M402 430L357 405M402 425L445 400M402 390L372 356M402 385L431 350M402 376V320"/>
+  </g>
+
+  <g class="region" data-region="plant-center">
+    <path d="M505 508V283"/>
+    <ellipse cx="447" cy="385" rx="66" ry="20" transform="rotate(-26 447 385)"/>
+    <ellipse cx="565" cy="382" rx="66" ry="20" transform="rotate(26 565 382)"/>
+    <ellipse cx="457" cy="327" rx="58" ry="19" transform="rotate(-48 457 327)"/>
+    <ellipse cx="554" cy="323" rx="58" ry="19" transform="rotate(48 554 323)"/>
+    <ellipse cx="505" cy="270" rx="20" ry="72"/>
+    <path class="detail thin" d="M505 438L447 385M505 435L565 382M505 385L457 327M505 382L554 323M505 365V270"/>
+  </g>
+
+  <g class="region" data-region="plant-right">
+    <path d="M605 520V344"/>
+    <ellipse cx="560" cy="409" rx="53" ry="18" transform="rotate(-29 560 409)"/>
+    <ellipse cx="650" cy="405" rx="54" ry="18" transform="rotate(30 650 405)"/>
+    <ellipse cx="575" cy="361" rx="49" ry="17" transform="rotate(-46 575 361)"/>
+    <ellipse cx="635" cy="355" rx="50" ry="17" transform="rotate(45 635 355)"/>
+    <ellipse cx="605" cy="322" rx="18" ry="57"/>
+    <path class="detail thin" d="M605 435L560 409M605 432L650 405M605 395L575 361M605 391L635 355M605 378V322"/>
+  </g>
+
+  <path class="detail thin" d="M340 238H660M355 253H645M90 470H295M705 470H910"/>
+  <circle class="detail thin" cx="500" cy="210" r="10"/>
+  <path class="detail thin" d="M500 220V248M486 234H514"/>
+
+  <g class="hidden" data-hidden="seed" transform="translate(334 580) rotate(22)">
+    <ellipse cx="0" cy="0" rx="11" ry="17"/>
+    <path class="detail thin" d="M0-13C5-5 5 5 0 13"/>
+  </g>
+  <g class="hidden" data-hidden="ladybug" transform="translate(636 370)">
+    <circle cx="0" cy="0" r="11"/>
+    <path class="detail thin" d="M0-10V10M-8-5H8M-8 5H8"/>
+  </g>
+  <g class="hidden" data-hidden="moon" transform="translate(858 205)">
+    <path d="M15-19A23 23 0 1 0 15 19A18 18 0 1 1 15-19Z"/>
+  </g>
+</svg>
