@@ -1,0 +1,55 @@
+name: Verify Weedopolis Live
+
+on:
+  workflow_run:
+    workflows: ["Deploy DTFSeeds Public Suite via WordPress V2"]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-weedopolis-live
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Verify full Weedopolis browser game is live
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://dtfseeds.com/games/weedopolis/'
+          bust="weedopolis_verify=${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          html="$(mktemp)"
+          headers="$(mktemp)"
+          status="$(curl -fsS --retry 5 --retry-delay 5 \
+            --output "$html" \
+            --dump-header "$headers" \
+            --write-out '%{http_code}' \
+            -H 'Cache-Control: no-cache, no-store, max-age=0' \
+            "${base}?${bust}")"
+          test "$status" = '200'
+          ! grep -Eiq '^location:' "$headers"
+          grep -Fq 'Start a game' "$html"
+          grep -Fq 'id="board"' "$html"
+          grep -Fq 'js/weedopolis-engine.js' "$html"
+          grep -Fq 'js/weedopolis-ui.js' "$html"
+          ! grep -Fq 'The playable development build is loading.' "$html"
+
+          for asset in \
+            styles.css \
+            js/weedopolis-edition.js \
+            js/weedopolis-engine.js \
+            js/weedopolis-ui.js; do
+            echo "Checking ${base}${asset}"
+            curl -fsS --retry 5 --retry-delay 5 \
+              -H 'Cache-Control: no-cache, no-store, max-age=0' \
+              "${base}${asset}?${bust}" >/dev/null
+          done
+
+          echo 'Full Weedopolis playable browser build is live.'
