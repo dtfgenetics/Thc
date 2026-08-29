@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-261",
+  "number":261,
+  "title":"A Diagnostic Workflow: Pattern Before Product",
+  "objective":"Use a repeatable cannabis plant-diagnostic workflow that begins with pattern, history, measurements, and competing explanations before selecting or evaluating a corrective action.",
+  "terms":[
+    {"term":"symptom","definition":"A visible or measurable plant response to injury, stress, disease, or altered development; a symptom is not itself the cause."},
+    {"term":"sign","definition":"Direct physical evidence of a causal organism or agent, such as an insect, fungal structure, residue, or damaged component."},
+    {"term":"incidence","definition":"The proportion or count of plants or organs affected within a defined population."},
+    {"term":"severity","definition":"The degree of injury or disease on an affected plant, organ, or area using a defined scale."},
+    {"term":"differential diagnosis","definition":"A ranked set of plausible causes evaluated against observations and discriminating evidence."}
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Yellowing, necrosis, curl, wilt, stunting, distortion, and reduced growth are responses shared by many mechanisms. Water status, roots, mineral supply, salinity, pH, light, temperature, chemicals, pests, pathogens, genetics, and combinations can converge on similar visible symptoms.",
+    "Pattern is diagnostic evidence because causes act through space and time. Record which plants, cultivars, ages, organs, canopy layers, irrigation zones, fixtures, fans, benches, and time periods are affected. A uniform pattern after a shared event can support an abiotic hypothesis, while clustered or progressive patterns can support local environmental, delivery, pest, or disease hypotheses; neither pattern alone proves cause.",
+    "Plant-diagnostic guidance from extension systems emphasizes plant identity, site and management history, symptom progression, distribution, signs, and representative sampling before diagnosis. Cannabis adds system-specific variables such as high-intensity lighting, controlled-environment gradients, fertigation, diverse substrates, dense canopies, and chemically sensitive post-treatment decisions, but the reasoning sequence remains the same.",
+    "A defensible workflow moves from observation to ranked hypotheses, then to measurements or samples that discriminate among them. Corrective action should target the most supported mechanism while preserving enough evidence to test whether the diagnosis was right.",
+    "Improvement after a treatment does not automatically prove the original diagnosis. Plants can improve because several variables changed at once, because a temporary stress ended, because damaged tissue was removed, or because the treatment affected a different limiting factor than expected. Verification requires predefined endpoints and normal new growth, not retrospective certainty."
+  ],
+  "cultivationRelevance":[
+    "Before changing inputs, photograph and map the crop, preserve environmental and irrigation logs, compare affected and unaffected plants, and inspect roots plus both leaf surfaces.",
+    "Correct immediate equipment, electrical, worker-safety, water-loss, or life-safety hazards promptly while keeping the biological diagnosis open.",
+    "Freeze unnecessary simultaneous changes when safe so that the response to one primary corrective action can be interpreted.",
+    "Escalate to appropriate laboratory or specialist diagnosis when disease signs, residues, unexplained recurrence, or high-value crop decisions cannot be resolved from field evidence."
+  ],
+  "measureAndRecord":[
+    {"field":"Case identity","requirement":"Assign case/date/zone IDs and record genotype or cultivar, plant age, propagation source, and first detection."},
+    {"field":"Pattern","requirement":"Record incidence, severity, symptom vocabulary, plant/organ age, canopy position, spatial distribution, progression, and matched unaffected controls."},
+    {"field":"Root-zone evidence","requirement":"Record roots, irrigation delivery, substrate moisture, drainage, pH, EC, source water, nutrient recipe, and recent changes with method and location."},
+    {"field":"Environment","requirement":"Record air and leaf temperature, RH/VPD method, light, airflow, CO2 context where relevant, equipment state, and excursions rather than daily averages alone."},
+    {"field":"Biotic/chemical evidence","requirement":"Record pests, signs, magnified observations, recent sprays/cleaners/fertilizers, equipment history, samples, and laboratory results where used."},
+    {"field":"Hypothesis and verification","requirement":"Rank competing explanations, state the discriminating test or action, define stop/acceptance criteria, and document response plus recurrence."
+    }
+  ],
+  "misconceptions":[
+    "A symptom chart can identify the exact cause from one leaf.",
+    "The most common cause is automatically the correct cause.",
+    "A nutrient-looking symptom should be treated with fertilizer before roots, pH, EC, water, light, and disease are checked.",
+    "If a plant improves after treatment, the original diagnosis is proven.",
+    "Abiotic and biotic problems cannot occur at the same time."
+  ],
+  "evidenceLimits":[
+    "Diagnostic confidence depends on data quality, representative sampling, the completeness of competing explanations, and whether a proposed cause predicts the observed spatial and temporal pattern. Some cases remain multifactorial or inconclusive, and laboratory confirmation may be necessary."
+  ],
+  "crossLinks":"THC-ENC-041–060 for roots/media; THC-ENC-081–100 for water/environment; THC-ENC-101–120 for lighting; THC-ENC-121–140 for mineral nutrition; THC-ENC-181–200 for training injury; THC-ENC-281–340 for pests/diseases/IPM; THC-ENC-401–420 for measurement and evidence.",
+  "sourceNotes":[
+    "Penn State Extension. Diagnosing a Plant Problem 101 (updated 2025) and Overview of Plant Diagnostics (updated 2025). These sources emphasize progression, pattern, cultural history, signs versus symptoms, whole-plant inspection, and representative samples rather than diagnosis from one symptom.",
+    "Penn State Extension. Solving the Case of Crop Disorders: The Role of Patterns in Diagnosis (updated 2024). Provides pattern-based abiotic/biotic differential reasoning while noting that complexes and exceptions occur.",
+    "Controlled Volume 14 manuscript v1.0 establishes the pattern-before-product workflow and requires uncertainty, negative evidence, samples, controlled corrective action, and verification to remain explicit."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 14 batch 01 controlled web derivative","driveSourceDocumentId":"1mbN8hq4g6jZUgW0bkwZBSXotPqZ7c184kOya5SqdtJA","evidenceControl":"controlled_manuscript_plus_current_extension_diagnostic_sources","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_plant_diagnostics_pattern_history_sampling_and_verification","releaseTimeReview":"completed_2026-08-29_pattern_before_product_and_diagnostic_uncertainty_boundaries","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"a-diagnostic-workflow-pattern-before-product",
+  "route":"/encyclopedia/a-diagnostic-workflow-pattern-before-product"
+}
