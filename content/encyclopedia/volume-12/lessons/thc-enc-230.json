@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-230",
+  "number":230,
+  "title":"THCA Synthase and THCA Formation",
+  "objective":"Explain THCA synthase as the cannabinoid oxidocyclase that converts CBGA to THCA, while separating functional enzyme evidence, synthase-locus genotype, expression, tissue chemistry, and measured chemotype.",
+  "terms":[
+    {"term":"THCA synthase","definition":"A Cannabis sativa cannabinoid oxidocyclase that catalyzes oxidative cyclization of cannabigerolic acid to tetrahydrocannabinolic acid."},
+    {"term":"oxidocyclase","definition":"An enzyme that couples oxidation with formation of a ring structure in its substrate."},
+    {"term":"CBGA","definition":"Cannabigerolic acid, a central pentyl cannabinoid-acid precursor used by several cannabinoid oxidocyclases."},
+    {"term":"THCA","definition":"Tetrahydrocannabinolic acid, the major acidic precursor of neutral THC in many THC-dominant cannabis tissues."},
+    {"term":"functional allele","definition":"A gene sequence demonstrated or strongly supported to encode an active biological product in the relevant context."},
+    {"term":"pseudogene","definition":"A gene-related sequence that has lost or lacks normal protein-coding function, although exact status requires sequence and expression evidence."}
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "THCA synthase catalyzes oxidative cyclization of CBGA to THCA. Direct cloning and heterologous-expression work established the enzyme-substrate relationship: functional THCAS converts CBGA into the acidic cannabinoid THCA rather than directly producing neutral THC.",
+    "Living cannabis tissues generally accumulate cannabinoid acids in glandular trichomes. Neutral THC can increase later through non-enzymatic decarboxylation during drying, storage, heating, or some analytical conditions, so THCA biosynthesis and THC formation must not be treated as the same reaction.",
+    "Cannabis cannabinoid-oxidocyclase loci contain closely related sequences, including THCAS, CBDAS, CBCAS-related genes, homologs, and pseudogene-like copies. Modern chromosome-level work shows that the chemotype-determining region is structurally complex and repetitive. A PCR signal or short marker that resembles THCAS therefore does not by itself prove that a functional THCAS enzyme is present or active.",
+    "Functional synthase genotype strongly constrains major cannabinoid-acid ratios, but measured THCA concentration is a quantitative phenotype. Precursor supply, gene expression, trichome development, tissue distribution, flowering stage, environment, biomass, handling, moisture basis, sampling, and analytical method can all alter the reported concentration.",
+    "Genetic markers can be useful predictors when validated in the population for which they were developed. Their performance can decline in unrelated germplasm because recombination, structural variation, sequence divergence, or marker placement can break the assumed relationship between marker and functional synthase."
+  ],
+  "cultivationRelevance":[
+    "Use synthase genetics to describe inherited chemotype potential, not to substitute for chemical testing of a specific crop or batch.",
+    "When comparing genotypes, measure THCA together with CBGA, CBDA and other relevant acids so pathway balance is visible rather than inferred from one analyte.",
+    "Keep tissue, inflorescence position, developmental stage, moisture basis, and laboratory method consistent before attributing a THCA difference to genetics or cultivation.",
+    "Do not infer legal compliance, potency, maturity, or harvest timing from a THCAS marker alone."
+  ],
+  "measureAndRecord":[
+    {"field":"Genetic identity","requirement":"Record plant identity, pedigree or accession, assay type, marker or sequence coordinates, reference assembly where relevant, allele/haplotype interpretation, and validation population."},
+    {"field":"Functional evidence","requirement":"Distinguish sequence similarity from intact coding sequence, expression, protein detection, purified or heterologous enzyme activity, and in-plant chemistry."},
+    {"field":"Cannabinoid chemistry","requirement":"Record THCA, THC, CBGA, CBDA and other relevant analytes; extraction and analytical method; standards; moisture basis; replicate; detection limits; and uncertainty."},
+    {"field":"Biological context","requirement":"Record tissue, plant and inflorescence position, developmental stage, trichome state, environment, and treatment history."},
+    {"field":"Claim boundary","requirement":"State whether the result supports gene presence, predicted functionality, expression, enzyme activity, chemotype ratio, or measured concentration; do not collapse these into one claim."}
+  ],
+  "misconceptions":[
+    "THCA synthase makes neutral THC directly inside the living plant.",
+    "Any THCAS-like DNA sequence must encode an active THCA synthase.",
+    "A positive THCAS marker guarantees a specific THCA percentage.",
+    "Cultivar name alone establishes the functional THCAS genotype.",
+    "More THCAS copies automatically cause proportionally higher THCA concentration."
+  ],
+  "evidenceLimits":[
+    "The catalytic conversion of CBGA to THCA by THCA synthase is established by direct biochemical and heterologous-expression evidence. Translating sequence data into crop-level THCA concentration is more complex because cannabinoid-oxidocyclase regions contain closely related and structurally variable sequences, and because absolute concentration depends on development, tissue, environment, sampling, and analysis. Marker performance is therefore population- and assay-specific rather than universally deterministic."
+  ],
+  "crossLinks":"THC-ENC-227–229 for precursor supply, olivetolic acid, and CBGA formation; THC-ENC-231–233 for CBDA, CBCA, and alternate side-chain pathways; THC-ENC-234–240 for acid/neutral chemistry, degradation, development, and analytical claims; THC-ENC-141–160 for genetics and chemotype.",
+  "sourceNotes":[
+    "Sirikantaramas S et al. (2004). The gene controlling marijuana psychoactivity: molecular cloning and heterologous expression of delta1-tetrahydrocannabinolic acid synthase from Cannabis sativa L. Journal of Biological Chemistry 279:39767–39774. Directly established THCAS as an enzyme catalyzing oxidative cyclization of CBGA to THCA.",
+    "Grassa CJ et al. (2018). A physical and genetic map of Cannabis sativa identifies extensive rearrangements at the THC/CBD acid synthase loci. Genome Research 28:833–842. Demonstrated a large repetitive, structurally rearranged region containing THCAS/CBDAS-related chemotype loci and emphasized the complexity of genotype interpretation.",
+    "The Structure of the Chemotype Determining Locus in Cannabis sativa (2026). Chromosome-level comparative analysis further resolves the cannabinoid oxidocyclase locus as a structurally complex region containing THCAS or CBDAS together with related oxidocyclase genes and pseudogenes; functional-gene interpretation requires locus-scale evidence rather than a short similarity call.",
+    "Cannabis marker studies report that chemotype prediction can be strong in some populations but weaker when markers are transferred across unrelated germplasm, supporting population-specific validation before genetic prediction is used as a chemical claim."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 12 batch 02 controlled web derivative","driveSourceDocumentId":"1mrad4SysYqoD1-Z8A7ibF9PcnvRjs5qiPIOseYGRtUI","evidenceControl":"controlled_manuscript_plus_direct_THCAS_biochemistry_and_modern_chemotype_locus_genomics","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_THCAS_biochemistry_genomics_and_chemotype_interpretation","releaseTimeReview":"completed_2026-08-29_THCAS_function_locus_complexity_marker_and_non_potency_claims","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"thca-synthase-and-thca-formation",
+  "route":"/encyclopedia/thca-synthase-and-thca-formation"
+}
