@@ -8,6 +8,8 @@ on:
       - .github/workflows/wordpress-infographic-production.yml
       - .github/workflows/wordpress-learning-experience-v3-production.yml
       - .github/workflows/wordpress-home-release-visuals.yml
+      - .github/workflows/wordpress-visual-polish-v3-post-canonical.yml
+      - .github/workflows/wordpress-home-genetics-art.yml
       - .github/workflows/wordpress-canonical-watch.yml
       - .github/workflows/wordpress-production-topology-ci.yml
   push:
@@ -17,6 +19,8 @@ on:
       - .github/workflows/wordpress-infographic-production.yml
       - .github/workflows/wordpress-learning-experience-v3-production.yml
       - .github/workflows/wordpress-home-release-visuals.yml
+      - .github/workflows/wordpress-visual-polish-v3-post-canonical.yml
+      - .github/workflows/wordpress-home-genetics-art.yml
       - .github/workflows/wordpress-canonical-watch.yml
       - .github/workflows/wordpress-production-topology-ci.yml
 
@@ -40,6 +44,8 @@ jobs:
           infographics='.github/workflows/wordpress-infographic-production.yml'
           learning='.github/workflows/wordpress-learning-experience-v3-production.yml'
           home='.github/workflows/wordpress-home-release-visuals.yml'
+          legacy_visual='.github/workflows/wordpress-visual-polish-v3-post-canonical.yml'
+          legacy_genetics='.github/workflows/wordpress-home-genetics-art.yml'
           watch='.github/workflows/wordpress-canonical-watch.yml'
 
           grep -Fq -- '- Stage DTFSeeds WordPress Canonical Deployment' "$canonical"
@@ -58,9 +64,19 @@ jobs:
 
           grep -Fq -- '- Publish DTFSeeds Learning Experience V3' "$home"
 
+          for legacy in "$legacy_visual" "$legacy_genetics"; do
+            if grep -Fq 'workflow_run:' "$legacy" || grep -Fq 'push:' "$legacy"; then
+              echo "Legacy WordPress writer must remain manual-only: $legacy" >&2
+              exit 1
+            fi
+            grep -Fq 'workflow_dispatch:' "$legacy"
+          done
+
+          grep -Fq 'continue-on-error: true' "$legacy_genetics"
+
           if grep -Fq 'issue_number: 46' "$watch"; then
             echo 'Canonical preflight reporting must not depend on saturated issue #46.' >&2
             exit 1
           fi
 
-          echo 'Verified production order: staging -> canonical -> infographics -> learning -> final home visuals.'
+          echo 'Verified production order: staging -> canonical -> infographics -> learning -> final home visuals; legacy visual writers are manual-only.'
