@@ -6,6 +6,7 @@ import { GameRulesPanel } from './ui/GameRulesPanel';
 import { DevPanel } from './ui/DevPanel';
 import { PlayerSetupForm, type PlayerSetupMode, type PlayerSetupSubmit } from './ui/PlayerSetupForm';
 import { RoomLobby } from './ui/RoomLobby';
+import { WinnerModal } from './ui/WinnerModal';
 import {
   addLocalTestPlayerMode,
   createTransportRoomMode,
@@ -50,6 +51,7 @@ export default function App() {
   const [previewCardIndex, setPreviewCardIndex] = useState<number | null>(null);
   const [cardAnimationNonce, setCardAnimationNonce] = useState(0);
   const [diceAnimating, setDiceAnimating] = useState(false);
+  const [isRoomLoading, setIsRoomLoading] = useState(false);
   const [moveAnnouncement, setMoveAnnouncement] = useState<string | null>(null);
   const [statusMessage, setStatusMessage] = useState(() =>
     initialInviteRoomCode ? `Invite detected for room ${initialInviteRoomCode}. Enter your player name to join.` : 'Choose local play, create a room, or join a room.'
@@ -134,6 +136,7 @@ export default function App() {
     }
 
     if (setup.mode === 'create_room') {
+      setIsRoomLoading(true);
       try {
         const result = await createTransportRoomMode(setup.playerName, setup.playerCount, roomTransport);
         setRoomMode(result.room, result.localPlayerId, result.localPlayerName, result.inviteUrl, result.playerCount);
@@ -141,11 +144,14 @@ export default function App() {
         setStatusMessage(roomTransportMode === 'website' ? `Room ${result.room.code} is online and ready for players.` : `Room ${result.room.code} created for local testing.`);
       } catch (error) {
         setStatusMessage(error instanceof Error ? error.message : 'Could not create a High Land room. Local Play is still available.');
+      } finally {
+        setIsRoomLoading(false);
       }
       return;
     }
 
     if (setup.mode === 'join_room') {
+      setIsRoomLoading(true);
       try {
         const result = await joinTransportRoomMode(setup.roomCode ?? '', setup.playerName, roomTransport);
         setRoomMode(result.room, result.localPlayerId, result.localPlayerName, result.inviteUrl, result.playerCount);
@@ -153,6 +159,8 @@ export default function App() {
         setStatusMessage(`Joined room ${result.room.code}. Waiting for the host to start.`);
       } catch (error) {
         setStatusMessage(getRoomErrorMessage(error));
+      } finally {
+        setIsRoomLoading(false);
       }
     }
   }
@@ -336,6 +344,7 @@ export default function App() {
             initialRoomCode={screenMode === 'join_room' ? initialInviteRoomCode : null}
             initialPlayerName={localPlayerName ?? ''}
             defaultPlayerCount={playerCount}
+            isLoading={isRoomLoading}
             onCancel={() => setScreenMode('landing')}
             onSubmit={handleSetupSubmit}
           />
@@ -441,6 +450,14 @@ export default function App() {
         effectApplied={previewHitCard === null && liveHitCard !== null}
         onDismiss={dismissHitCard}
       />
+
+      {winner && gameStarted ? (
+        <WinnerModal
+          winner={winner}
+          canRestart={canRestartNow}
+          onRestart={restart}
+        />
+      ) : null}
     </main>
   );
 }

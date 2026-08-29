@@ -333,6 +333,12 @@ h2 {
 .player-chip.active {
   outline: 2px solid rgba(250, 204, 21, 0.86);
   background: rgba(250, 204, 21, 0.12);
+  animation: chipPulse 2.2s ease-in-out infinite;
+}
+
+@keyframes chipPulse {
+  0%, 100% { outline-color: rgba(250, 204, 21, 0.9); box-shadow: none; }
+  50% { outline-color: rgba(250, 204, 21, 0.35); box-shadow: 0 0 12px rgba(250, 204, 21, 0.18); }
 }
 
 .token-dot {
@@ -528,10 +534,148 @@ h2 {
   to { box-shadow: 0 28px 110px rgba(0, 0, 0, 0.65), 0 0 36px rgba(250, 204, 21, 0.62); }
 }
 
+/* ── Loading spinner ─────────────────────────────────────────── */
+.btn-spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2.5px solid rgba(17, 24, 39, 0.35);
+  border-top-color: #111827;
+  border-radius: 999px;
+  animation: spin 0.7s linear infinite;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Winner overlay ──────────────────────────────────────────── */
+.winner-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: grid;
+  place-items: center;
+  padding: 1.2rem;
+  background: rgba(2, 6, 23, 0.88);
+  backdrop-filter: blur(14px);
+  animation: hitOverlayIn 280ms ease-out both;
+  overflow: hidden;
+}
+
+.winner-card {
+  position: relative;
+  width: min(92vw, 460px);
+  border: 3px solid #facc15;
+  border-radius: 32px;
+  padding: 2rem 1.6rem;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(250, 204, 21, 0.16), transparent 55%),
+    rgba(15, 23, 42, 0.98);
+  box-shadow: 0 32px 120px rgba(0, 0, 0, 0.7);
+  text-align: center;
+  display: grid;
+  gap: 1rem;
+  animation: hitCardPop 500ms cubic-bezier(0.18, 1.35, 0.32, 1) both;
+}
+
+.winner-trophy {
+  width: 72px;
+  height: 72px;
+  border-radius: 999px;
+  margin: 0 auto;
+  display: grid;
+  place-items: center;
+  font-size: 2rem;
+  animation: winnerBounce 1.8s ease-in-out infinite;
+}
+
+@keyframes winnerBounce {
+  0%, 100% { transform: translateY(0) scale(1); }
+  45% { transform: translateY(-6px) scale(1.06); }
+}
+
+.winner-name {
+  margin: 0;
+  font-size: clamp(2rem, 9vw, 3rem);
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+
+.winner-phrase {
+  margin: 0;
+  color: #94a3b8;
+  font-size: 0.98rem;
+  line-height: 1.5;
+}
+
+.winner-badges {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.winner-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.38rem 0.78rem;
+  border-radius: 999px;
+  background: rgba(250, 204, 21, 0.13);
+  color: #fde68a;
+  font-size: 0.8rem;
+  font-weight: 900;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.winner-actions {
+  margin-top: 0.25rem;
+}
+
+.winner-restart-btn {
+  width: 100%;
+  min-height: 56px;
+  font-size: 1.1rem;
+  letter-spacing: 0.04em;
+}
+
+/* Falling leaf rain */
+.winner-leaves {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.winner-leaf {
+  position: absolute;
+  top: -2rem;
+  animation: leafFall linear infinite;
+  user-select: none;
+}
+
+@keyframes leafFall {
+  0%   { transform: translateY(-40px) rotate(0deg); opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 0.7; }
+  100% { transform: translateY(105vh) rotate(540deg); opacity: 0; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .dice-display.rolling .dice-face,
   .card-reveal,
-  .hit-card {
+  .hit-card,
+  .winner-overlay,
+  .winner-card,
+  .winner-trophy,
+  .winner-leaf,
+  .player-chip.active,
+  .btn-spinner {
     animation: none;
   }
 }
@@ -569,5 +713,85 @@ h2 {
 
   .roll-button {
     width: 100%;
+  }
+}
+
+/* ── Mobile: touch-size improvements ──────────────────────────── */
+@media (max-width: 680px) {
+  .app-shell {
+    padding: 0.6rem;
+    gap: 0.6rem;
+  }
+
+  h1 {
+    font-size: clamp(1.5rem, 7vw, 2.2rem);
+  }
+
+  .title-card,
+  .controls-card,
+  .message-card,
+  .players-card,
+  .board-controls-card {
+    padding: 0.85rem;
+    border-radius: 18px;
+  }
+
+  button {
+    padding: 0.88rem 1rem;
+    font-size: 0.95rem;
+  }
+
+  /* Bigger roll button on phones — primary tap target */
+  .roll-button {
+    min-height: 72px;
+    font-size: 1.25rem;
+    border-radius: 18px;
+  }
+
+  .dice-display {
+    min-height: 80px;
+  }
+
+  .dice-face {
+    width: 56px;
+    height: 56px;
+    flex: 0 0 56px;
+  }
+
+  /* Stack player chips to single column on very small screens */
+  .players-card {
+    grid-template-columns: 1fr;
+  }
+
+  .player-chip {
+    padding: 0.6rem 0.75rem;
+  }
+
+  /* Winner modal full-width on phones */
+  .winner-card {
+    width: 96vw;
+    padding: 1.5rem 1.1rem;
+    border-radius: 24px;
+  }
+
+  .winner-name {
+    font-size: clamp(1.6rem, 9vw, 2.4rem);
+  }
+
+  .winner-trophy {
+    width: 60px;
+    height: 60px;
+    font-size: 1.6rem;
+  }
+
+  /* Hit card modal full-width on phones */
+  .hit-card {
+    width: 96vw;
+    padding: 0.9rem;
+  }
+
+  /* Status message breathing room */
+  .message-card {
+    padding: 0.75rem 0.85rem;
   }
 }

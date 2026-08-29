@@ -18,6 +18,7 @@ type PlayerSetupFormProps = {
   initialRoomCode?: string | null;
   initialPlayerName?: string;
   defaultPlayerCount?: number;
+  isLoading?: boolean;
   onSubmit: (value: PlayerSetupSubmit) => void;
   onCancel?: () => void;
 };
@@ -29,6 +30,7 @@ export function PlayerSetupForm({
   initialRoomCode = null,
   initialPlayerName = '',
   defaultPlayerCount = 2,
+  isLoading = false,
   onSubmit,
   onCancel
 }: PlayerSetupFormProps) {
@@ -101,8 +103,15 @@ export function PlayerSetupForm({
       {submitted && !roomCodeValid ? <p className="form-error">Enter a valid 4-8 character room code.</p> : null}
 
       <div className="button-row">
-        <button className="primary" type="submit">{getSubmitLabel(mode)}</button>
-        {onCancel ? <button onClick={onCancel} type="button">Cancel</button> : null}
+        <button className="primary" disabled={isLoading} type="submit">
+          {isLoading ? <span className="btn-spinner" aria-label="Loading" /> : null}
+          {isLoading ? 'Connecting…' : getSubmitLabel(mode)}
+        </button>
+        {onCancel ? (
+          <button disabled={isLoading} onClick={onCancel} type="button">
+            Cancel
+          </button>
+        ) : null}
       </div>
     </form>
   );
