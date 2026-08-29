@@ -63,10 +63,10 @@ jobs:
           const fs=require('fs');
           const publisher=fs.readFileSync('scripts/rebuild-wordpress-learning-experience-v3.mjs','utf8');
           const releaseBlock=`const releaseImages = {
-  mangoRegular: chooseMedia(media, [['flower', 'anatomy'], ['trichome']], used) || fallbackHero,
-  mangoFem: chooseMedia(media, [['trichome'], ['flower']], used) || fallbackHero,
-  bubblegum: chooseMedia(media, [['sex', 'expression'], ['genetics']], used) || fallbackHero
-};`;
+            mangoRegular: chooseMedia(media, [['flower', 'anatomy'], ['trichome']], used) || fallbackHero,
+            mangoFem: chooseMedia(media, [['trichome'], ['flower']], used) || fallbackHero,
+            bubblegum: chooseMedia(media, [['sex', 'expression'], ['genetics']], used) || fallbackHero
+          };`;
           const hero=`<div class="hero-media">${'${'}img(fallbackHero, 'DTF Genetics and Teaching Healthy Cultivation plant science', { ratio: '1/1', eager: true })}</div>`;
           const releaseCss='.v3 .release img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover}';
           if(!publisher.includes(releaseBlock)) throw new Error('V3 release-image patch target drifted.');
