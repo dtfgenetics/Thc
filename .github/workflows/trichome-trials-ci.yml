@@ -1,0 +1,80 @@
+name: Trichome Trials CI
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - games/trichome-trials/**
+      - site/public-route-patch/games/trichome-trials/**
+      - .github/workflows/trichome-trials-ci.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate judging deck and split public packs
+        run: node games/trichome-trials/scripts/validate-data.mjs
+
+      - name: Run deterministic judging engine tests
+        run: node games/trichome-trials/test/engine.test.mjs
+
+      - name: Validate browser JavaScript syntax
+        run: |
+          node --check site/public-route-patch/games/trichome-trials/app.js
+          node --check site/public-route-patch/games/trichome-trials/engine.mjs
+
+      - name: Verify canonical and public engine match
+        run: cmp games/trichome-trials/src/engine.mjs site/public-route-patch/games/trichome-trials/engine.mjs
+
+      - name: Verify route, scorecard and visual asset contracts
+        run: |
+          node - <<'NODE'
+          const fs = require('fs');
+          const html = fs.readFileSync('site/public-route-patch/games/trichome-trials/index.html','utf8');
+          const css = fs.readFileSync('site/public-route-patch/games/trichome-trials/trichome-trials.css','utf8');
+          const frost = fs.readFileSync('site/public-route-patch/games/trichome-trials/frost-layout.css','utf8');
+          const app = fs.readFileSync('site/public-route-patch/games/trichome-trials/app.js','utf8');
+          const requireText = (source, text, label) => {
+            if (!source.includes(text)) throw new Error(`missing ${label}: ${text}`);
+          };
+          requireText(html, '<link rel="canonical" href="https://dtfseeds.com/games/trichome-trials/">', 'canonical route');
+          requireText(html, '<link rel="stylesheet" href="./frost-layout.css">', 'frost layout asset');
+          requireText(html, '<script type="module" src="./app.js"></script>', 'module entrypoint');
+          requireText(html, 'Game boundary:', 'fictional content boundary');
+          requireText(app, "loadJson('./data/core.json')", 'split deck core loader');
+          requireText(app, "loadJson('./data/entries-4.json')", 'final public entry pack');
+          requireText(app, 'data.roundsPerRun !== 5', 'five-round browser contract');
+          requireText(app, 'data.categories?.length !== 7', 'seven-category browser contract');
+          requireText(app, 'data.entries?.length !== 12', '12-entry browser contract');
+          requireText(app, 'type="range" min="1" max="10" step="1"', '1–10 score control');
+          requireText(css, '.sample-visual', 'fictional sample artwork');
+          requireText(css, '.loupe', 'loupe artwork');
+          requireText(css, '.accuracy-ring', 'accuracy meter artwork');
+          requireText(css, '@media(prefers-reduced-motion:reduce)', 'reduced-motion support');
+          requireText(frost, '.frost-field i:nth-child(28)', 'full frost placement map');
+          if (app.includes("loadJson('./data/trials.json')")) throw new Error('browser must use validated split public packs, not a nonexistent monolith');
+          NODE
+
+      - name: Verify truthful release boundary
+        run: |
+          node - <<'NODE'
+          const fs = require('fs');
+          const game = JSON.parse(fs.readFileSync('games/trichome-trials/game.json','utf8'));
+          if (game.status !== 'browser-vertical-slice') throw new Error('unexpected game status');
+          if (game.route !== '/games/trichome-trials/') throw new Error('unexpected route');
+          if (game.releaseGates.rulesTested !== false) throw new Error('rulesTested must remain false until this deterministic suite passes');
+          if (game.releaseGates.browserTested !== false) throw new Error('browserTested must remain false until browser QA is actually completed');
+          if (game.releaseGates.mobileTested !== false) throw new Error('mobileTested must remain false until mobile QA is actually completed');
+          if (game.releaseGates.accessibilityReviewed !== false) throw new Error('accessibilityReviewed must remain false until review is actually completed');
+          if (game.releaseGates.deploymentRegistered !== false) throw new Error('unreviewed game must not be production registered');
+          NODE
