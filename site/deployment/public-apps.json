@@ -67,7 +67,7 @@
     },
     {
       "id": "high-iq",
-      "title": "High IQ \u2014 Test Higher Cognition",
+      "title": "High IQ — Test Higher Cognition",
       "repository": "dtfgenetics/Thc",
       "sourcePath": "site/public-route-patch/games/high-iq",
       "canonicalDataPath": "games/high-iq/data",
@@ -212,7 +212,7 @@
         "networkAuthority": "php-server",
         "transport": "polling"
       },
-      "notes": "Self-hosted 2\u201310 player online party game with six-character rooms, simultaneous server-authoritative BUD/BLUFF voting, hidden answers until reveal, Double Hit scoring, lobby lock/settings, chat, reconnectable sessions, vote-split reveal stats, rematches, host transfer, and same-origin PHP persistence."
+      "notes": "Self-hosted 2–10 player online party game with six-character rooms, simultaneous server-authoritative BUD/BLUFF voting, hidden answers until reveal, Double Hit scoring, lobby lock/settings, chat, reconnectable sessions, vote-split reveal stats, rematches, host transfer, and same-origin PHP persistence."
     },
     {
       "id": "strain-showdown",
@@ -335,6 +335,126 @@
       "runtime": "duplicate-archive-pointer",
       "status": "do-not-develop",
       "notes": "Compatibility/archive pointer only. Canonical implementation is dtfgenetics/thc-discord-bot-for-music-."
+    },
+    {
+      "id": "grow-room-bingo",
+      "title": "Grow Room Bingo / Bongwater Bingo",
+      "repository": "dtfgenetics/Thc",
+      "sourcePath": "site/public-route-patch/games/grow-room-bingo",
+      "canonicalDataPath": "games/grow-room-bingo",
+      "route": "/games/grow-room-bingo/",
+      "runtime": "static",
+      "status": "ready-to-package",
+      "build": "node games/grow-room-bingo/scripts/validate-data.mjs && node --check site/public-route-patch/games/grow-room-bingo/app.js",
+      "notes": "Self-hosted browser-vertical-slice registered from its tested canonical game manifest. Browser, mobile, accessibility, and production-route verification remain separate release gates."
+    },
+    {
+      "id": "grow-room-defense",
+      "title": "Grow Room Defense",
+      "repository": "dtfgenetics/Thc",
+      "sourcePath": "site/public-route-patch/games/grow-room-defense",
+      "canonicalDataPath": "games/grow-room-defense",
+      "route": "/games/grow-room-defense/",
+      "runtime": "static",
+      "status": "ready-to-package",
+      "build": "node games/grow-room-defense/scripts/validate-data.mjs && node games/grow-room-defense/test/engine.test.mjs && node --check site/public-route-patch/games/grow-room-defense/app.js && node --check site/public-route-patch/games/grow-room-defense/engine.mjs",
+      "notes": "Self-hosted browser-vertical-slice registered from its tested canonical game manifest. Browser, mobile, accessibility, and production-route verification remain separate release gates."
+    },
+    {
+      "id": "harvest-hustle",
+      "title": "Harvest Hustle",
+      "repository": "dtfgenetics/Thc",
+      "sourcePath": "site/public-route-patch/games/harvest-hustle",
+      "canonicalDataPath": "games/harvest-hustle",
+      "route": "/games/harvest-hustle/",
+      "runtime": "static",
+      "status": "ready-to-package",
+      "build": "node games/harvest-hustle/scripts/validate-data.mjs && node games/harvest-hustle/test/engine.test.mjs && node --check site/public-route-patch/games/harvest-hustle/app.js && node --check site/public-route-patch/games/harvest-hustle/engine.mjs",
+      "notes": "Self-hosted browser-vertical-slice registered from its tested canonical game manifest. Browser, mobile, accessibility, and production-route verification remain separate release gates."
+    },
+    {
+      "id": "high-lines",
+      "title": "High Lines",
+      "repository": "dtfgenetics/Thc",
+      "sourcePath": "site/public-route-patch/games/high-lines",
+      "canonicalDataPath": "games/high-lines",
+      "route": "/games/high-lines/",
+      "runtime": "static",
+      "status": "ready-to-package",
+      "build": "node games/high-lines/scripts/validate-data.mjs && node games/high-lines/test/engine.test.mjs && node --check site/public-route-patch/games/high-lines/app.js && node --check site/public-route-patch/games/high-lines/engine.mjs",
+      "notes": "Self-hosted browser-vertical-slice registered from its tested canonical game manifest. Browser, mobile, accessibility, and production-route verification remain separate release gates."
+    },
+    {
+      "id": "lost-in-the-terps",
+      "title": "Lost in the Terps",
+      "repository": "dtfgenetics/Thc",
+      "sourcePath": "site/public-route-patch/games/lost-in-the-terps",
+      "canonicalDataPath": "games/lost-in-the-terps",
+      "route": "/games/lost-in-the-terps/",
+      "runtime": "static",
+      "status": "ready-to-package",
+      "build": "node games/lost-in-the-terps/scripts/validate-data.mjs && node --check site/public-route-patch/games/lost-in-the-terps/app.js",
+      "notes": "Self-hosted browser-vertical-slice registered from its tested canonical game manifest. Browser, mobile, accessibility, and production-route verification remain separate release gates."
+    },
+    {
+      "id": "mystery-strain",
+      "title": "Mystery Strain",
+      "repository": "dtfgenetics/Thc",
+      "sourcePath": "site/public-route-patch/games/mystery-strain",
+      "canonicalDataPath": "games/mystery-strain",
+      "route": "/games/mystery-strain/",
+      "runtime": "static",
+      "status": "ready-to-package",
+      "build": "node games/mystery-strain/scripts/validate-data.mjs && node games/mystery-strain/test/engine.test.mjs && node --check site/public-route-patch/games/mystery-strain/app.js && node --check site/public-route-patch/games/mystery-strain/engine.mjs",
+      "notes": "Self-hosted browser-vertical-slice registered from its tested canonical game manifest. Browser, mobile, accessibility, and production-route verification remain separate release gates."
+    },
+    {
+      "id": "pheno-draft",
+      "title": "Pheno Draft",
+      "repository": "dtfgenetics/Thc",
+      "sourcePath": "site/public-route-patch/games/pheno-draft",
+      "canonicalDataPath": "games/pheno-draft",
+      "route": "/games/pheno-draft/",
+      "runtime": "static",
+      "status": "ready-to-package",
+      "build": "node games/pheno-draft/scripts/validate-data.mjs && node games/pheno-draft/test/engine.test.mjs && node --check site/public-route-patch/games/pheno-draft/app.js && node --check site/public-route-patch/games/pheno-draft/engine.mjs",
+      "notes": "Self-hosted browser-vertical-slice registered from its tested canonical game manifest. Browser, mobile, accessibility, and production-route verification remain separate release gates."
+    },
+    {
+      "id": "spin-the-strain",
+      "title": "Spin the Strain",
+      "repository": "dtfgenetics/Thc",
+      "sourcePath": "site/public-route-patch/games/spin-the-strain",
+      "canonicalDataPath": "games/spin-the-strain",
+      "route": "/games/spin-the-strain/",
+      "runtime": "static",
+      "status": "ready-to-package",
+      "build": "node games/spin-the-strain/scripts/validate-data.mjs && node games/spin-the-strain/test/engine.test.mjs && node --check site/public-route-patch/games/spin-the-strain/app.js && node --check site/public-route-patch/games/spin-the-strain/engine.mjs",
+      "notes": "Self-hosted browser-vertical-slice registered from its tested canonical game manifest. Browser, mobile, accessibility, and production-route verification remain separate release gates."
+    },
+    {
+      "id": "strain-match",
+      "title": "Strain Match",
+      "repository": "dtfgenetics/Thc",
+      "sourcePath": "site/public-route-patch/games/strain-match",
+      "canonicalDataPath": "games/strain-match",
+      "route": "/games/strain-match/",
+      "runtime": "static",
+      "status": "ready-to-package",
+      "build": "node games/strain-match/scripts/validate-data.mjs && node --check site/public-route-patch/games/strain-match/app.js",
+      "notes": "Self-hosted browser-vertical-slice registered from its tested canonical game manifest. Browser, mobile, accessibility, and production-route verification remain separate release gates."
+    },
+    {
+      "id": "trichome-trials",
+      "title": "Trichome Trials",
+      "repository": "dtfgenetics/Thc",
+      "sourcePath": "site/public-route-patch/games/trichome-trials",
+      "canonicalDataPath": "games/trichome-trials",
+      "route": "/games/trichome-trials/",
+      "runtime": "static",
+      "status": "ready-to-package",
+      "build": "node games/trichome-trials/scripts/validate-data.mjs && node games/trichome-trials/test/engine.test.mjs && node --check site/public-route-patch/games/trichome-trials/app.js && node --check site/public-route-patch/games/trichome-trials/engine.mjs",
+      "notes": "Self-hosted browser-vertical-slice registered from its tested canonical game manifest. Browser, mobile, accessibility, and production-route verification remain separate release gates."
     }
   ]
 }
