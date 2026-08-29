@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-217",
+  "number":217,
+  "title":"Reproductive Stress and Intersex Monitoring",
+  "objective":"Explain cannabis sex-expression plasticity and intersex reproductive structures as a genotype-by-development-by-environment phenomenon, and establish monitoring records that distinguish observation from unsupported single-cause claims.",
+  "terms":[
+    {"term":"intersex expression","definition":"Production of reproductive structures associated with both sexual phenotypes on the same individual or reproductive system; terminology and underlying mechanisms vary across cannabis material."},
+    {"term":"sexual plasticity","definition":"The capacity of reproductive sex expression to change in response to genetic, hormonal, developmental, or environmental influences."},
+    {"term":"staminate structure","definition":"A pollen-producing male reproductive structure."},
+    {"term":"pistillate structure","definition":"A female reproductive structure bearing pollen-receiving and ovule-containing tissues."},
+    {"term":"genotype-by-environment interaction","definition":"A situation in which genetic backgrounds respond differently to the same environmental conditions."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Cannabis is commonly dioecious, but sex expression is plastic. Current reviews describe reproductive phenotype as the outcome of genetic architecture, hormonal signaling, developmental stage, chemical treatment, and environmental conditions rather than a single on/off environmental switch.",
+    "A 2026 review of cannabis hermaphroditism concluded that genotype, treatment regime, developmental stage, and environmental conditions interact to shape sexual phenotype. This means an observed intersex event should not automatically be attributed to one stress without comparative evidence.",
+    "Ethylene and gibberellin signaling are important components of cannabis sex expression. Controlled chemical manipulation of these pathways can intentionally alter reproductive phenotype, demonstrating that hormonal regulation is biologically capable of changing sex expression.",
+    "Unintended pollen-producing structures on otherwise pistillate plants matter because viable pollen can fertilize receptive flowers and compromise seedless production or controlled parentage. Detection therefore needs to continue during reproductive development rather than ending after initial plant sex is identified.",
+    "Environmental stress is discussed in cannabis literature as a possible contributor to sex instability, but cultivars differ in susceptibility and many reported stress rules lack controlled cultivar-wide validation. Monitoring should record the actual environment and phenotype rather than relying on folklore such as one specific stress always causing hermaphroditism."
+  ],
+  "cultivationRelevance":[
+    "Continue reproductive scouting after initial sex identification, especially where pollen exclusion or controlled breeding is important.",
+    "Record the exact structure and its plant/branch location instead of using a vague whole-plant 'herm' label that loses developmental information.",
+    "When a possible trigger is suspected, compare environmental records, genotype history, and neighboring plants before assigning causation.",
+    "Treat any confirmed pollen-producing structure as a potential pollen source and connect the observation to the pollen-containment records for that crop."
+  ],
+  "measureAndRecord":[
+    {"field":"Plant identity","requirement":"Record genotype, clone or seed accession, plant ID, and known prior observations of reproductive instability."},
+    {"field":"Structure observation","requirement":"Record date, node/branch/inflorescence location, developmental stage, structure type, abundance, and photographs where possible."},
+    {"field":"Environment","requirement":"Record photoperiod interruptions, temperature, water status, major root-zone changes, pruning or injury, disease pressure, and other notable events without presuming one event caused the phenotype."},
+    {"field":"Pollen risk","requirement":"Record whether the structure reached anthesis or released visible pollen and which receptive plants or zones could have been exposed."},
+    {"field":"Follow-up","requirement":"Record subsequent recurrence, removal/isolation action, seed incidence, and whether related plants show the same phenotype."
+    }
+  ],
+  "misconceptions":[
+    "Every intersex cannabis flower is caused by light leaks.",
+    "A genetically female plant can never produce pollen-producing structures.",
+    "One stressful event proves the cause of an intersex phenotype.",
+    "Sex inspection only matters before flowering begins.",
+    "All genotypes have the same probability of reproductive instability under the same environment."
+  ],
+  "evidenceLimits":[
+    "Cannabis sex-expression plasticity and hormonal control are well supported, and a growing literature addresses environmental and genetic contributors to intersex expression. However, causal thresholds for individual environmental stressors are not established across all cultivars. Public guidance therefore emphasizes repeated phenotyping and environmental records instead of universal trigger rules."
+  ],
+  "crossLinks":"THC-ENC-141–160 for genetics and sex; THC-ENC-207 for male floral development; THC-ENC-212 and THC-ENC-215 for pollen exclusion/containment; THC-ENC-220 for reproductive records.",
+  "sourceNotes":[
+    "Hermaphroditism in Cannabis sativa L.: Impacts, Inducers, and Industry Implications. Plants 2026, 15(11):1643. Reviews genomic, hormonal, developmental, treatment, and environmental contributions to cannabis sex-expression instability and emphasizes their interaction.",
+    "Alter H et al. (2024). Inflorescence development in female cannabis plants is mediated by photoperiod and gibberellin. Horticulture Research 11(11):uhae245. Provides direct cannabis evidence that photoperiod and gibberellin signaling strongly alter reproductive architecture and development.",
+    "Public wording avoids assigning a single-cause diagnosis to intersex expression from one environmental observation."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 11 batch 04 controlled web derivative","evidenceControl":"current_topic_secondary_review_complete","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_sex_expression_and_intersex_monitoring","releaseTimeReview":"completed_2026-08-29_multifactor_sex_expression_and_non_single_cause_stress_claims","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"reproductive-stress-and-intersex-monitoring",
+  "route":"/encyclopedia/reproductive-stress-and-intersex-monitoring"
+}
