@@ -19,6 +19,8 @@ jobs:
         run: node games/grow-room-bingo/scripts/validate-data.mjs
       - name: Test six-character card-code contract
         run: node games/grow-room-bingo/test/card-code.test.mjs
+      - name: Test self-contained public runtime contract
+        run: node games/grow-room-bingo/test/public-runtime.test.mjs
       - name: Validate browser JavaScript syntax
         run: |
           node --check site/public-route-patch/games/grow-room-bingo/app.js
@@ -36,4 +38,14 @@ jobs:
           grep -Fq 'https://dtfseeds.com/games/grow-room-bingo/' "$root/index.html"
           grep -Fq 'maxlength="6"' "$root/index.html"
           grep -Fq 'pattern="[A-HJ-NP-Z2-9]{6}"' "$root/index.html"
+          grep -Fq 'id="bingo-data"' "$root/index.html"
+          grep -Fq '<script src="./app.js" defer></script>' "$root/index.html"
+          if grep -Fq 'type="module"' "$root/index.html"; then
+            echo 'Grow Room Bingo must not depend on module MIME handling in production.' >&2
+            exit 1
+          fi
+          if grep -Fq "fetch('./data/prompts.json'" "$root/app.js"; then
+            echo 'Grow Room Bingo must not fetch prompt JSON at runtime.' >&2
+            exit 1
+          fi
           grep -Fq 'deploymentRegistered": true' games/grow-room-bingo/game.json
