@@ -9,8 +9,10 @@ on:
       - 'scripts/run-learning-v3-production.mjs'
       - 'scripts/reconcile-wordpress-learning-v3-ownership.mjs'
       - '.github/workflows/wordpress-home-genetics-art.yml'
+      - '.github/workflows/homepage-reviewed-genetics-art-production.yml'
       - '.github/workflows/wordpress-home-release-visuals.yml'
       - '.github/workflows/wordpress-learning-experience-v3-production.yml'
+      - '.github/workflows/wordpress-learning-final-owner.yml'
       - '.github/workflows/homepage-genetics-v2-ci.yml'
   workflow_dispatch:
 
@@ -53,14 +55,30 @@ jobs:
           grep -Fq 'data-dtf-topic=' scripts/reconcile-wordpress-learning-v3-ownership.mjs
 
           legacy='.github/workflows/wordpress-home-genetics-art.yml'
-          final_owner='.github/workflows/wordpress-home-release-visuals.yml'
+          reviewed_recovery='.github/workflows/homepage-reviewed-genetics-art-production.yml'
+          home_owner='.github/workflows/wordpress-home-release-visuals.yml'
           learning='.github/workflows/wordpress-learning-experience-v3-production.yml'
+          learning_final='.github/workflows/wordpress-learning-final-owner.yml'
+
           grep -Fq 'workflow_dispatch:' "$legacy"
           ! grep -Fq 'workflow_run:' "$legacy"
           ! grep -Fq 'push:' "$legacy"
           grep -Fq 'continue-on-error: true' "$legacy"
-          grep -Fq 'workflow_call:' "$final_owner"
-          ! grep -Fq 'workflow_run:' "$final_owner"
+
+          grep -Fq 'workflow_dispatch:' "$reviewed_recovery"
+          ! grep -Fq 'workflow_run:' "$reviewed_recovery"
+          ! grep -Fq 'push:' "$reviewed_recovery"
+          grep -Fq 'continue-on-error: true' "$reviewed_recovery"
+          grep -Fq 'issue_number: 220' "$reviewed_recovery"
+          ! grep -Fq 'issue_number:46' "$reviewed_recovery"
+          ! grep -Fq 'issue_number: 46' "$reviewed_recovery"
+
+          grep -Fq 'workflow_call:' "$home_owner"
+          ! grep -Fq 'workflow_run:' "$home_owner"
+          grep -Fq 'scripts/fix-wordpress-home-release-visuals.mjs' "$home_owner"
+          grep -Fq 'Purge Hostinger LiteSpeed cache' "$home_owner"
+          grep -Fq 'Verify visitor-facing homepage release artwork' "$home_owner"
+
           grep -Fq 'uses: ./.github/workflows/wordpress-home-release-visuals.yml' "$learning"
           grep -Fq 'secrets: inherit' "$learning"
           grep -Fq 'Check whether V3 shared shell is already live' "$learning"
@@ -68,14 +86,19 @@ jobs:
           grep -Fq 'Reconcile WordPress Learning subject ownership' "$learning"
           grep -Fq 'Verify stored Learning ownership and markers' "$learning"
           grep -Fq 'scripts/reconcile-wordpress-learning-v3-ownership.mjs' "$learning"
-          grep -Fq 'scripts/fix-wordpress-home-release-visuals.mjs' "$final_owner"
-          grep -Fq 'Purge Hostinger LiteSpeed cache' "$final_owner"
-          grep -Fq 'Verify visitor-facing homepage release artwork' "$final_owner"
+
+          grep -Fq -- '- Publish THC Topic Literature to WordPress Production' "$learning_final"
+          ! grep -Fq -- '- Publish DTFSeeds Learning Experience V3' "$learning_final"
+          grep -Fq 'cancel-in-progress: false' "$learning_final"
+          grep -Fq 'Run exact Home release-card final owner' "$learning_final"
+          grep -Fq 'uses: ./.github/workflows/wordpress-home-release-visuals.yml' "$learning_final"
+          grep -Fq 'secrets: inherit' "$learning_final"
+
           grep -Fq 'Blue Mango F2 Regular DTF Genetics strain card' "$legacy"
           grep -Fq 'Blue Mango F2 Feminized DTF Genetics strain card' "$legacy"
           grep -Fq 'Blue Bubblegum F1 Regular DTF Genetics strain card' "$legacy"
           grep -Fq 'Mango Bubbles F1 Regular DTF Genetics strain card' "$legacy"
-          echo 'Homepage genetics ownership validated: Learning V3 preserves hierarchical namespace peers, recovers only #1284-retired Encyclopedia pages, verifies stored markers, and calls final Home release visuals as a reusable workflow.'
+          echo 'Homepage genetics ownership validated: Learning V3 remains hierarchy-aware, Topic Literature has one downstream finalizer, automatic legacy Home mutation is retired, and the exact release-card owner runs at the end of the serialized Learning chain.'
 
       - name: Prove V3 runtime patch still matches canonical publisher
         shell: bash
