@@ -1,0 +1,58 @@
+{
+  "id":"THC-ENC-280",
+  "number":280,
+  "title":"Sampling, Corrective Action, and Verification",
+  "objective":"Design representative diagnostic samples, controlled corrective actions, acceptance criteria, and follow-up measurements that test the leading hypothesis without erasing evidence or overstating certainty.",
+  "terms":[
+    {"term":"sampling unit","definition":"The defined plant, organ, root zone, container, irrigation zone, or other unit from which an observation or specimen is collected."},
+    {"term":"representative sample","definition":"A specimen or set of specimens selected to answer the diagnostic question without relying only on the most extreme visible damage."},
+    {"term":"affected/unaffected pair","definition":"Matched samples from symptomatic and apparently normal material selected to improve diagnostic contrast while controlling age, position, environment, or treatment where possible."},
+    {"term":"chain of custody","definition":"A documented record of sample identity, collection, possession, handling, storage, transfer, and analysis."},
+    {"term":"verification","definition":"Predefined follow-up evidence used to determine whether a corrective action changed the expected mechanism and outcome."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "A diagnostic sample must represent the question. One detached damaged leaf can omit root condition, media chemistry, irrigation distribution, spatial pattern, healthy comparison tissue, disease signs, and the developmental sequence that produced the symptom.",
+    "Plant diagnostic laboratories commonly request whole plants including roots when practical, transition tissue between healthy and declining areas, multiple symptom stages, and photographs of both affected and unaffected plants. These practices preserve information needed to distinguish primary causes from secondary colonizers or advanced tissue death.",
+    "Corrective action is also part of the experiment. When safe and feasible, changing one primary variable at a time preserves causal information better than making multiple large changes simultaneously. A plant can improve after a broad reset while the original diagnosis remains unproven.",
+    "Verification must be defined before the result is known. Existing necrosis generally will not heal; stronger endpoints include halted progression, normal new growth, stabilized pH/EC or environmental values, restored water use, corrected spatial distribution, negative or resolved diagnostics, and absence of recurrence over an appropriate observation period.",
+    "Some cases remain inconclusive. A disciplined diagnostic record should preserve alternative explanations, negative findings, superseded hypotheses, failed corrections, and uncertainty rather than converting one unresolved incident into a universal cultivation rule."
+  ],
+  "cultivationRelevance":[
+    "Assign a case ID before collecting samples so photographs, plant locations, root-zone measurements, laboratory submissions, actions, and follow-up observations remain connected.",
+    "Where practical, collect matched affected and unaffected material of similar age and position and include roots/media or irrigation-zone context when the suspected mechanism involves the root system.",
+    "Define the leading hypothesis, alternatives, discriminating measurement, stop criteria, expected response, and observation period before implementing a corrective action.",
+    "Close a case only when the predefined evidence supports closure; otherwise record it as unresolved, partially supported, or superseded and preserve the raw record."
+  ],
+  "measureAndRecord":[
+    {"field":"Case definition","requirement":"Record case ID, crop/genotype, stage, location, first detection, incidence, severity, timeline, leading hypotheses, alternatives, and immediate safety or equipment hazards."},
+    {"field":"Sampling frame","requirement":"Record sampling units, affected/unaffected comparisons, plant/organ age and position, roots/media included, specimen IDs, photographs, and why each sample answers the diagnostic question."},
+    {"field":"Sample custody","requirement":"Record collector, date/time, location, labeling, handling, storage, transfers, laboratory/requested test, method when known, and result linked to the sample ID."},
+    {"field":"Corrective action","requirement":"Record the mechanism targeted, exact variable changed in the secured case record, responsible person, start time, controls/comparisons, stop criteria, and competing variables intentionally held stable."},
+    {"field":"Verification and closure","requirement":"Record acceptance criteria, observation period, symptom progression, new growth, water use, root-zone/environment trend, laboratory follow-up, recurrence, preventive action, uncertainty, and final case disposition."
+    }
+  ],
+  "misconceptions":[
+    "Sending one damaged leaf is a complete diagnostic sample.",
+    "The most severely damaged tissue is always the best laboratory specimen.",
+    "Changing everything at once is the fastest way to prove the cause.",
+    "A temporary visual improvement proves the original diagnosis.",
+    "A diagnostic case must always end with one certain cause."
+  ],
+  "evidenceLimits":[
+    "Sampling quality limits diagnostic quality. Laboratory tests answer specific questions under specific methods and can produce false-negative, false-positive, incidental, or noncausal findings when specimens, timing, target selection, or interpretation are poor. Verification cannot recover evidence erased by undocumented changes, so unresolved cases should remain explicitly unresolved."
+  ],
+  "crossLinks":"THC-ENC-261 for the diagnostic workflow; THC-ENC-262–279 for symptom and abiotic differentials; THC-ENC-281–340 for pests/diseases/IPM; THC-ENC-401–420 for measurement, experimental design, and evidence quality.",
+  "sourceNotes":[
+    "Texas A&M AgriLife Texas Plant Disease Diagnostic Lab, Plant Sampling (current 2026 page). Recommends representative specimens, whole plants including roots when practical, multiple symptom stages, photographs, and specimen-type-specific submission methods.",
+    "NC State Extension, Diagnostics — Submitting Samples. Recommends healthy and damaged comparison tissue, older and new growth, intact stems, and healthy/diseased roots with surrounding soil rather than isolated leaves alone.",
+    "Penn State Extension, Your Plants Look Sick? Now What? and Overview of Plant Diagnostics. Emphasizes representative samples, good specimen selection, visual limitations, and laboratory confirmation when field diagnosis remains uncertain.",
+    "Texas A&M diagnostic guidance notes that dead tissue can be overrun by secondary organisms and that transition tissue between healthy and declining areas often provides better diagnostic evidence.",
+    "Controlled Volume 14 manuscript v1.0 requires case IDs, representative sampling, affected/unaffected comparison, chain of custody, controlled corrective action, predefined acceptance criteria, recurrence checks, CAPA-style documentation, and preserved uncertainty."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 14 batch 04 controlled web derivative","driveSourceDocumentId":"1mbN8hq4g6jZUgW0bkwZBSXotPqZ7c184kOya5SqdtJA","evidenceControl":"controlled_manuscript_plus_current_official_plant_diagnostic_sampling_submission_and_verification_guidance","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"diagnostic_sampling_chain_of_custody_corrective_action_verification_and_case_closure","releaseTimeReview":"completed_2026-08-29_representative_sampling_and_predefined_verification_boundary","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"sampling-corrective-action-and-verification",
+  "route":"/encyclopedia/sampling-corrective-action-and-verification"
+}
