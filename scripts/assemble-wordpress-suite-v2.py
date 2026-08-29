@@ -336,6 +336,13 @@ payload = replace_once(
     "WordPress GET transport retry window",
 )
 
+# Keep the server-side allowlist synchronized with the canonical registry after
+# the hash-pinned bridge and all guarded fixed-route adjustments have passed.
+# The helper admits only exact local static game routes with source/route parity;
+# it never introduces a broad games/ wildcard.
+from wordpress_suite_registry_patch import patch_payload
+payload = patch_payload(payload, pathlib.Path(__file__).resolve().parents[1])
+
 final_actual = hashlib.sha256(payload).hexdigest()
 OUTPUT.parent.mkdir(parents=True, exist_ok=True)
 OUTPUT.write_bytes(payload)
