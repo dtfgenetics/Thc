@@ -1,0 +1,57 @@
+{
+  "id":"THC-ENC-239",
+  "number":239,
+  "title":"Trichome Color as a Subjective Field Indicator",
+  "objective":"Use trichome color as a documented morphological observation while preventing unsupported claims that clear, cloudy, amber, or brown appearance directly measures cannabinoid concentration or defines a universal harvest point.",
+  "terms":[
+    {"term":"color class","definition":"A predeclared visual category such as clear, cloudy, amber, or brown used to score trichome appearance under specified imaging conditions."},
+    {"term":"observer bias","definition":"Systematic differences introduced by how people select, classify, or interpret observations."},
+    {"term":"white balance","definition":"A camera or imaging adjustment that changes how colors are rendered relative to the illumination source."},
+    {"term":"autofluorescence","definition":"Light emitted naturally by biological material after excitation at another wavelength, used in some microscopy studies as an additional structural or developmental signal."},
+    {"term":"senescence","definition":"Developmentally associated decline in cellular or structural function with age."},
+    {"term":"dehiscence","definition":"Opening, rupture, or structural separation that releases or exposes stored material."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Cannabis glandular heads can appear clear, cloudy, white, yellow, amber, or brown as secretion, cuticle properties, internal material, senescence, damage, drying, illumination, and optical settings change. Color is therefore a visual phenotype, not a direct chemical assay.",
+    "A 2023 cannabis microscopy study associated maturation of stalked-capitate heads with brown color development, reduced UV autofluorescence, senescence, dehiscence, collapse, and other structural changes in the tested genotypes. The same study also demonstrated asynchronous development, meaning different maturity states coexist on the same bract.",
+    "Color classification is sensitive to tissue choice, fresh versus dried state, magnification, focus, background, light source, camera exposure, and white balance. These sources of variation can shift an observer's category even when the underlying chemistry has not been measured.",
+    "Amber or brown appearance does not directly quantify THC, THCA, CBN, or any complete cannabinoid profile. THC degradation and CBN formation are condition-dependent chemical processes, and trichome browning can also accompany biological senescence or physical damage.",
+    "A local visual staging system can be useful when its tissue, imaging procedure, scoring rules, observer agreement, and matched chemistry have been validated. Without that validation, a percentage of amber trichomes is an observation, not a universal harvest prescription."
+  ],
+  "cultivationRelevance":[
+    "If trichome color is used for field staging, sample the same defined flower tissue and canopy positions over time rather than switching between sugar leaves and bracts.",
+    "Standardize magnification, illumination, imaging settings, and color categories, and retain photographs so scoring can be audited.",
+    "Use multiple fields and biological samples because asynchronous trichome development makes a single microscope view a poor whole-plant summary.",
+    "Validate visual categories against chemical testing and the actual harvest objective before using them as a decision threshold."
+  ],
+  "measureAndRecord":[
+    {"field":"Sample identity","requirement":"Record plant, branch/inflorescence position, organ and surface, developmental date, and fresh/dried state."},
+    {"field":"Imaging","requirement":"Record microscope or lens, magnification, light source, exposure, white balance, background, focus method, and image files."},
+    {"field":"Scoring","requirement":"Define color classes before counting, record number of heads per class, ambiguous/damaged heads, number of fields, observer, and inter-observer agreement where possible."},
+    {"field":"Matched chemistry","requirement":"When color is linked to cannabinoid status, record position-matched chemical sample identity, method, acidic/neutral profile, moisture basis, replicate, and uncertainty."},
+    {"field":"Decision rule","requirement":"State whether color is being used descriptively, as a validated local stage indicator, or as one component of a broader harvest decision."
+    }
+  ],
+  "misconceptions":[
+    "Cloudy trichomes always contain maximum THC.",
+    "Amber color directly measures CBN percentage.",
+    "A fixed amber-trichome percentage defines the best harvest point for every genotype.",
+    "Sugar-leaf trichomes are automatically representative of flower-bract trichomes.",
+    "One microscope image defines the maturity of an entire plant or crop."
+  ],
+  "evidenceLimits":[
+    "Cannabis microscopy supports relationships among trichome development, color, autofluorescence, senescence, and morphology in studied genotypes, but it does not establish a universal color-to-cannabinoid conversion. Imaging conditions and observer rules affect classification, and chemistry varies by tissue, position, development, and storage. Color can support a validated local staging system; it cannot replace chemical analysis."
+  ],
+  "crossLinks":"THC-ENC-221–226 for trichome anatomy, maturation, and sampling; THC-ENC-236 for chemical degradation; THC-ENC-238 for developmental accumulation; THC-ENC-240 for chemical sampling and claims discipline.",
+  "sourceNotes":[
+    "Punja ZK, Sutton DB, Kim T. (2023). Glandular trichome development, morphology, and maturation are influenced by plant age and genotype in high-THC cannabis inflorescences. Journal of Cannabis Research 5:12. Reported brown color development with reduced UV autofluorescence, senescence, dehiscence, asynchronous maturation, and drying-related morphology changes in the studied material.",
+    "Milay L et al. (2020). Metabolic Profiling of Cannabis Secondary Metabolites for Evaluation of Optimal Postharvest Storage Conditions. Demonstrated condition-dependent cannabinoid change after harvest, reinforcing that color cannot be equated directly with one degradation product.",
+    "The controlled Volume 12 manuscript explicitly restricts trichome color to a subjective field observation unless tissue, imaging, scoring, and matched chemistry have been locally validated."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 12 batch 04 controlled web derivative","driveSourceDocumentId":"1mrad4SysYqoD1-Z8A7ibF9PcnvRjs5qiPIOseYGRtUI","evidenceControl":"controlled_manuscript_plus_direct_cannabis_trichome_maturation_and_storage_chemistry_sources","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_trichome_color_maturation_and_chemical_claim_boundaries","releaseTimeReview":"completed_2026-08-29_color_imaging_observer_and_non_chemical_assay_claims","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"trichome-color-as-a-subjective-field-indicator",
+  "route":"/encyclopedia/trichome-color-as-a-subjective-field-indicator"
+}
