@@ -46,8 +46,9 @@ jobs:
           test -s site/public-route-patch/games/index.html
           test -s site/public-route-patch/games/dtf-route.css
           test -s site/public-route-patch/games/high-iq/index.html
-          test -s site/public-route-patch/games/high-iq/app.js
+          test -s site/public-route-patch/games/high-iq/app-v3.js
           test -s site/public-route-patch/games/high-iq/high-iq.css
+          test -s site/public-route-patch/games/high-iq/high-iq-v3.css
           test -s site/public-route-patch/games/high-iq/data/manifest.json
           test -s site/public-route-patch/games/grower-conversations/index.html
           test -s site/public-route-patch/games/grower-conversations/app.js
@@ -55,6 +56,8 @@ jobs:
           test -s site/public-route-patch/games/grower-conversations/data/prompt-bank.json
           grep -Fq 'Pick what is playable. See what is coming next.' site/public-route-patch/games/index.html
           grep -Fq '25 playable browser games' site/public-route-patch/games/index.html
+          grep -Fq 'src="./app-v3.js"' site/public-route-patch/games/high-iq/index.html
+          ! grep -Fq 'src="./app.js"' site/public-route-patch/games/high-iq/index.html
           ! grep -Fqi 'server-engine alpha' site/public-route-patch/games/index.html
           ! grep -Fqi 'implementation gates' site/public-route-patch/games/index.html
 
@@ -84,12 +87,38 @@ jobs:
           test -n "${WP_API_USERNAME:-}"
           test -n "${WP_API_PASSWORD:-}"
 
+      - name: Prepare publisher with current High IQ v3 contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          publisher="$RUNNER_TEMP/repair-game-routes-via-wordpress.mjs"
+          node - "$publisher" <<'NODE'
+          const fs = require('node:fs');
+          const output = process.argv[2];
+          let source = fs.readFileSync('scripts/repair-game-routes-via-wordpress.mjs', 'utf8');
+          const replacements = [
+            [
+              `['/games/high-iq/', ['/games/dtf-route.css', './high-iq.css', './app.js'], ['/assets/dtf-gateway-v2.css']]`,
+              `['/games/high-iq/', ['/games/dtf-route.css', './high-iq.css', './app-v3.js'], ['/assets/dtf-gateway-v2.css']]`,
+            ],
+            [`'/games/high-iq/app.js',`, `'/games/high-iq/app-v3.js',`],
+          ];
+          for (const [before, after] of replacements) {
+            if (!source.includes(before)) throw new Error(`Expected publisher marker missing: ${before}`);
+            source = source.replace(before, after);
+          }
+          fs.writeFileSync(output, source);
+          NODE
+          node --check "$publisher"
+          grep -Fq "./app-v3.js" "$publisher"
+          grep -Fq "/games/high-iq/app-v3.js" "$publisher"
+
       - name: Execute rollback-safe game-route transaction
         id: repair
         shell: bash
         run: |
           set -euo pipefail
-          node scripts/repair-game-routes-via-wordpress.mjs | tee "$RUNNER_TEMP/game-route-transaction.log"
+          node "$RUNNER_TEMP/repair-game-routes-via-wordpress.mjs" | tee "$RUNNER_TEMP/game-route-transaction.log"
 
       - name: Independent visitor verification after transaction finalization
         id: verify
@@ -113,7 +142,7 @@ jobs:
           }
 
           verify_page '/games/' 'Pick what is playable. See what is coming next.' 'server-engine alpha' "$evidence/games.html"
-          verify_page '/games/high-iq/' './high-iq.css' '/assets/dtf-gateway-v2.css' "$evidence/high-iq.html"
+          verify_page '/games/high-iq/' './app-v3.js' '/assets/dtf-gateway-v2.css' "$evidence/high-iq.html"
           verify_page '/games/grower-conversations/' './grower-conversations.css' '/assets/dtf-gateway-v2.css' "$evidence/grower-conversations.html"
 
           grep -Fqi '25 playable browser games' "$evidence/games.html"
@@ -121,13 +150,16 @@ jobs:
           grep -Fqi 'href="/games/high-lines/"' "$evidence/games.html"
           grep -Fqi 'href="/seeds/"' "$evidence/games.html"
           grep -Fqi 'href="/shop/"' "$evidence/games.html"
-          grep -Fqi './app.js' "$evidence/high-iq.html"
+          grep -Fqi './high-iq.css' "$evidence/high-iq.html"
+          grep -Fqi './high-iq-v3.css' "$evidence/high-iq.html"
+          grep -Fqi './app-v3.js' "$evidence/high-iq.html"
           grep -Fqi './app.js' "$evidence/grower-conversations.html"
 
           for asset in \
             '/games/dtf-route.css' \
             '/games/high-iq/high-iq.css' \
-            '/games/high-iq/app.js' \
+            '/games/high-iq/high-iq-v3.css' \
+            '/games/high-iq/app-v3.js' \
             '/games/high-iq/data/manifest.json' \
             '/games/grower-conversations/grower-conversations.css' \
             '/games/grower-conversations/app.js' \
