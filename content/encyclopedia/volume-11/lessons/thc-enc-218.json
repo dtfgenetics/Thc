@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-218",
+  "number":218,
+  "title":"Reversion and Reflowering Biology",
+  "objective":"Explain how photoperiod-sensitive cannabis can reverse aspects of inflorescence development after return to long days, distinguish morphological reversion from a simple clock reset, and frame later reflowering as a new developmental transition influenced by plant history.",
+  "terms":[
+    {"term":"reversion","definition":"A reversal from a reproductive architectural state toward a vegetative or long-day growth pattern after a change in developmental signals."},
+    {"term":"reflowering","definition":"Renewed reproductive development after a plant that had entered flowering returns to conditions that again support reproductive growth."},
+    {"term":"photoperiodic reversibility","definition":"The capacity of a developmental response to change when day/night signaling conditions are changed rather than remaining permanently committed."},
+    {"term":"inflorescence disassembly","definition":"Loss of the compact reproductive architecture as internodes and shoots resume elongation under conditions favoring long-day growth."},
+    {"term":"developmental history","definition":"The prior sequence of growth states and environmental signals that can influence a plant's later structure and response."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Direct cannabis experiments published in 2024 demonstrate that aspects of female inflorescence development are reversible. Plants returned from short-day to long-day conditions showed increased internode elongation, inflorescence disassembly, and resumption of long-day growth patterns.",
+    "The same study associated this architectural reversal with increased gibberellin GA4 and auxin levels in the shoot apex, while sustained short-day conditions supported the condensed flowering architecture. These results connect reversion to regulated developmental physiology rather than treating it as random malformed growth.",
+    "Reversion does not erase the plant's developmental history. Existing flowers and inflorescence tissues may senesce or remain while newly produced shoots adopt altered leaf, node, and branching patterns before more typical vegetative morphology returns.",
+    "If a reverted photoperiod-sensitive plant is later exposed again to a reproductive photoperiod, it can transition again toward flowering. The timing and architecture of that reflowering can differ from a never-flowered plant because plant size, age, branch structure, reserves, previous reproductive tissue, and stress history are different.",
+    "Autoflower/day-neutral genetics should not be assumed to follow the same reversible photoperiod response as strongly photoperiod-sensitive material. Their flowering control differs genetically, so reversion and reflowering claims must identify the plant type being discussed."
+  ],
+  "cultivationRelevance":[
+    "Use reversion as a developmental concept, not as a promise that a flowering plant will quickly return to its original vegetative form.",
+    "Record photoperiod changes and structural observations when preserving or studying a flowering genotype through reversion.",
+    "Expect heterogeneous shoots during transition and evaluate new growth over time rather than diagnosing every unusual leaf as disease.",
+    "When comparing a reflowered plant with a first-flower control, treat developmental history as a major experimental variable."
+  ],
+  "measureAndRecord":[
+    {"field":"Photoperiod history","requirement":"Record exact dates and light/dark schedules for entry into flowering, return to long days, and any later return to reproductive conditions."},
+    {"field":"Architecture","requirement":"Record internode length, branch emergence, leaf-form changes, and persistence or senescence of old floral tissue at defined intervals."},
+    {"field":"Plant identity","requirement":"Record genotype/clone and whether the material is photoperiod-sensitive, autoflower/day-neutral, or not yet characterized."},
+    {"field":"Recovery context","requirement":"Record pruning, root-zone changes, plant health, environmental stress, and other interventions that could alter the apparent reversion response."},
+    {"field":"Reflowering response","requirement":"Record date of renewed reproductive conditions and the timing/location of new inflorescence development separately from surviving old flowers."
+    }
+  ],
+  "misconceptions":[
+    "Revegetation instantly converts every existing flower back into a vegetative shoot.",
+    "A reverted plant returns to exactly the same developmental state it had before flowering.",
+    "Odd leaf shapes during reversion automatically indicate disease or mutation.",
+    "Every cannabis genotype responds to long days after flowering in the same way.",
+    "A reflowered plant can be compared with a first-flower plant without accounting for developmental history."
+  ],
+  "evidenceLimits":[
+    "Photoperiod-driven reversal of cannabis inflorescence architecture is directly demonstrated in controlled research, but the magnitude, timing, and horticultural performance of reversion and subsequent reflowering across diverse modern cultivars are not fully characterized. Public wording therefore avoids universal recovery times or yield claims."
+  ],
+  "crossLinks":"THC-ENC-193 for reproductive reversion in the training context; THC-ENC-201–203 for flowering control; THC-ENC-206 for early-flower elongation; THC-ENC-219 for senescence and maturity.",
+  "sourceNotes":[
+    "Alter H et al. (2024). Inflorescence development in female cannabis plants is mediated by photoperiod and gibberellin. Horticulture Research 11(11):uhae245. Directly showed that returning short-day plants to long days increased GA4/auxin, disassembled inflorescence architecture, increased internode elongation, and restored long-day growth patterns.",
+    "The same study shows continuous short-day exposure was required to maintain typical condensed inflorescence architecture in the tested material, supporting a reversible photoperiod-regulated morphogenic model.",
+    "Public wording does not infer universal revegetation speed, cloning success, or yield advantages from the controlled photoperiod study."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 11 batch 04 controlled web derivative","evidenceControl":"current_topic_secondary_review_complete","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_reversion_and_reflowering","releaseTimeReview":"completed_2026-08-29_photoperiod_reversibility_and_non_universal_recovery_claims","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"reversion-and-reflowering-biology",
+  "route":"/encyclopedia/reversion-and-reflowering-biology"
+}
