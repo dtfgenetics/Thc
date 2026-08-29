@@ -14,7 +14,7 @@ on:
       - package.json
       - .github/workflows/game-release-integrity.yml
   workflow_run:
-    workflows: ["DTFSeeds Production Gateway"]
+    workflows: ["Deploy DTFSeeds Public Suite via WordPress V2"]
     types: [completed]
   workflow_dispatch:
 
