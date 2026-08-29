@@ -1,0 +1,58 @@
+{
+  "id":"THC-ENC-240",
+  "number":240,
+  "title":"Cannabinoid Sampling, Testing, and Claims Discipline",
+  "objective":"Build defensible cannabinoid claims from representative sampling, documented chain of custody, validated analysis, uncertainty, and language that does not overgeneralize a laboratory result beyond the submitted sample.",
+  "terms":[
+    {"term":"target population","definition":"The full material, plants, lot, or batch that a sampling result is intended to represent."},
+    {"term":"increment","definition":"An individual portion collected from a defined location and combined or analyzed under a sampling plan."},
+    {"term":"composite sample","definition":"A sample formed by combining multiple increments according to a declared procedure to better represent a target population."},
+    {"term":"chain of custody","definition":"Documented control of sample identity, possession, transfer, condition, and handling from collection through analysis."},
+    {"term":"measurement uncertainty","definition":"Quantified doubt associated with a measurement result under the stated method and conditions."},
+    {"term":"claim","definition":"A statement inferred from evidence; its scope should not exceed the population, method, precision, and conditions actually supported."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "A cannabinoid laboratory result describes the submitted sample under a specific preparation and analytical method. It does not automatically establish the exact composition of every flower, plant, container, or future time point in the source batch.",
+    "Cannabis flower is heterogeneous. Inflorescence position can affect cannabinoid composition, and a 2025 greenhouse study found substantial total-THC variation within strata, among top/middle/bottom positions, and among plants from the same cultivar batches. Representative sampling is therefore part of the measurement, not merely a logistics step.",
+    "USP-oriented cannabis quality guidance emphasizes representative sampling from the full inflorescence batch and warns that selectively collecting only upper flowers can overestimate cannabinoid content. Trichome loss, resin adhesion, sample grinding, moisture, homogenization, and transport can also change what reaches the laboratory.",
+    "Analytical results require method context: acidic and neutral analytes, calculated totals, extraction, calibration, standards, limits of detection and quantitation, moisture basis, replicate precision, and measurement uncertainty. Results from different laboratories or methods are not automatically interchangeable.",
+    "Independent retail audits demonstrate why controlled claims matter. A 2025 Colorado study found that flower THC labels were less often within the study's ±15% accuracy criterion than concentrate labels, illustrating that sampling, product heterogeneity, testing, and labeling systems can produce meaningful disagreement. This market-specific result should not be generalized as a universal error rate."
+  ],
+  "cultivationRelevance":[
+    "Define the target population before collecting samples: one flower, one plant, a room, a harvest lot, or a packaged batch are different populations and require different sampling designs.",
+    "Use randomized, systematic, or stratified increments across relevant positions rather than selecting only the most resinous or visually attractive flowers.",
+    "Preserve sample identity, container, condition, collection time, transport, hold time, preparation, and chain of custody so a result can be traced and repeated.",
+    "Write claims at the level actually supported—for example, 'the submitted composite measured X under method Y' rather than implying all plants or future packages are chemically identical."
+  ],
+  "measureAndRecord":[
+    {"field":"Target population","requirement":"Define the batch/lot/plant population, boundaries, size, material form, and decision the result is intended to support."},
+    {"field":"Sampling plan","requirement":"Record number, mass, and location of increments; randomization/stratification rule; tissue included; composite procedure; excluded material; collector; date/time; and retained samples."},
+    {"field":"Chain of custody","requirement":"Record unique sample ID, container, seal where used, transfers, storage/transport conditions, hold time, and any deviations."},
+    {"field":"Laboratory method","requirement":"Record laboratory, method/platform, analytes, extraction, homogenization, standards, calibration, LOD/LOQ, replicate or QC results, moisture basis, and measurement uncertainty."},
+    {"field":"Reporting","requirement":"Separate directly measured acidic/neutral values from calculated totals, state the formula used, distinguish concentration from total yield, and document the exact claim/decision made from the result."
+    }
+  ],
+  "misconceptions":[
+    "A certificate of analysis proves every item in the batch is chemically identical.",
+    "The highest-testing flower is the correct value for a production batch.",
+    "One top-cola sample automatically represents middle and lower flowers.",
+    "Results from different laboratories and methods are directly interchangeable without reconciliation.",
+    "A labeled potency number has no sampling or measurement uncertainty."
+  ],
+  "evidenceLimits":[
+    "Cannabis-specific studies establish meaningful within-plant, between-plant, position, extraction, and market-label variability, while pharmacopeial guidance emphasizes representative sampling. The exact sampling plan, acceptance limits, uncertainty treatment, and legal action rules remain jurisdiction- and program-specific. This lesson provides measurement and claims discipline, not regulatory certification."
+  ],
+  "crossLinks":"THC-ENC-226 for trichome sampling; THC-ENC-234–239 for cannabinoid chemistry, degradation, G×E, development, and field observations; THC-ENC-401–420 for measurement, experimental design, uncertainty, and research literacy.",
+  "sourceNotes":[
+    "Sarrafpour S et al. (2020). Cannabis Inflorescence for Medical Purposes: USP Considerations for Quality Attributes. Journal of Natural Products 83:1334–1351. Recommends representative batch sampling and identifies upper-flower selection and trichome/resin handling as sources of sampling bias.",
+    "Namdar D et al. (2018). Variation in cannabinoid and terpenoid composition by inflorescence position and extraction method. Industrial Crops and Products 113:376–382. Demonstrated positional and methodological variation relevant to representative chemical sampling.",
+    "Variability of total THC in greenhouse cultivated dried Cannabis (Scientific Reports, 2025). Quantified substantial within-stratum, top/middle/bottom, and plant-to-plant potency variability, illustrating limits of single-sample representation.",
+    "Giordano G et al. (2025). Accuracy of labeled THC potency across flower and concentrate cannabis products. Scientific Reports 15:20822. Independent Colorado retail audit found product-type-dependent disagreement between labeled and observed THC; the study is market-specific and supports rigorous sampling/testing rather than a universal labeling-error estimate."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 12 batch 04 controlled web derivative","driveSourceDocumentId":"1mrad4SysYqoD1-Z8A7ibF9PcnvRjs5qiPIOseYGRtUI","evidenceControl":"controlled_manuscript_plus_USP_sampling_spatial_variability_recent_flower_variability_and_label_audit_sources","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_sampling_analytical_testing_uncertainty_and_claims","releaseTimeReview":"completed_2026-08-29_representative_sampling_chain_of_custody_uncertainty_and_market_specific_claims","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"cannabinoid-sampling-testing-and-claims-discipline",
+  "route":"/encyclopedia/cannabinoid-sampling-testing-and-claims-discipline"
+}
