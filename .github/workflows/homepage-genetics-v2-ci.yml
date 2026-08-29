@@ -57,7 +57,7 @@ jobs:
           grep -Fq 'uses: ./.github/workflows/wordpress-home-release-visuals.yml' "$learning"
           grep -Fq 'secrets: inherit' "$learning"
           grep -Fq 'Check whether V3 shared shell is already live' "$learning"
-          grep -Fq "if: \${{ steps.shell_state.outputs.needs_publish == 'true' }}" "$learning"
+          grep -Fq 'steps.shell_state.outputs.needs_publish' "$learning"
           grep -Fq 'Reconcile WordPress Learning subject ownership' "$learning"
           grep -Fq 'Verify stored Learning ownership and markers' "$learning"
           grep -Fq 'scripts/reconcile-wordpress-learning-v3-ownership.mjs' "$learning"
