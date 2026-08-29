@@ -1,0 +1,285 @@
+name: Produce Final Core THC Infographic Gaps
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - scripts/render-thc-core-gap-posters.py
+      - scripts/render-thc-scientific-posters.py
+      - scripts/run-thc-scientific-posters-normalized.py
+      - site/wordpress/education/visual-production-plans/core-gap-posters-v1.json
+      - .github/workflows/wordpress-core-gap-poster-production.yml
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: dtfseeds-wordpress-infographics-production
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Render, publish, and verify thirteen final core posters
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    environment: production
+    env:
+      NODE_OPTIONS: --dns-result-order=ipv4first
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      INFOGRAPHIC_SOURCE_DIR: ${{ github.workspace }}/site/wordpress/assets/infographics
+      INFOGRAPHIC_DIR: ${{ github.workspace }}/.tmp/eligible-infographics
+      INFOGRAPHIC_PLACEMENT_CONFIG: ${{ github.workspace }}/site/wordpress/assets/infographics/placement-rules.json
+      INFOGRAPHIC_EXCLUSIONS: ${{ github.workspace }}/site/wordpress/assets/infographics/infographic-exclusions.json
+      INFOGRAPHIC_LEARNING_GUIDES: ${{ github.workspace }}/site/wordpress/assets/infographics/infographic-learning-guides.json
+      TOPIC_LITERATURE_CONFIG: /tmp/dtf-topic-literature-expanded.json
+      BACKUP_ROOT: /tmp/wordpress-core-gap-posters
+      POSTER_RENDER_REPORT: /tmp/thc-core-gap-poster-render.json
+      POSTER_PLAN: ${{ github.workspace }}/site/wordpress/education/visual-production-plans/core-gap-posters-v1.json
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate final core poster inputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
+          python -m py_compile \
+            scripts/render-thc-scientific-posters.py \
+            scripts/run-thc-scientific-posters-normalized.py \
+            scripts/render-thc-core-gap-posters.py
+          node --check scripts/stage-eligible-infographics.mjs
+          node --check scripts/deploy-wordpress-infographic-library-rest.mjs
+          node --check scripts/assemble-topic-literature-expansions.mjs
+          node --check scripts/publish-wordpress-topic-literature.mjs
+          node --check scripts/flush-hostinger-litespeed-mcp.mjs
+          node - "$POSTER_PLAN" <<'NODE'
+          const fs = require('fs');
+          const p = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
+          if (p.assetCount !== 13 || !Array.isArray(p.assets) || p.assets.length !== 13) throw new Error('Expected exactly thirteen final poster briefs');
+          const names = new Set();
+          for (const asset of p.assets) {
+            if (asset.status !== 'ready-for-render' || !asset.id || !asset.topicId || !asset.title || !asset.filename.endsWith('.png')) throw new Error(`Incomplete poster: ${JSON.stringify(asset)}`);
+            if (!Array.isArray(asset.requiredPanels) || asset.requiredPanels.length < 5) throw new Error(`Thin poster brief: ${asset.id}`);
+            if (names.has(asset.filename)) throw new Error(`Duplicate filename: ${asset.filename}`);
+            names.add(asset.filename);
+          }
+          console.log(`Validated ${p.assets.length} final full-sheet poster briefs.`);
+          NODE
+
+      - name: Install deterministic raster renderer
+        run: python -m pip install --disable-pip-version-check --no-cache-dir 'Pillow==11.3.0'
+
+      - name: Render thirteen 2550x3300 300-DPI posters
+        id: render
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/render-thc-core-gap-posters.py | tee /tmp/thc-core-gap-poster-render.log
+          test -s "$POSTER_RENDER_REPORT"
+          python - "$POSTER_RENDER_REPORT" "$POSTER_PLAN" <<'PY'
+          import json, os, sys
+          from PIL import Image
+          report = json.load(open(sys.argv[1], encoding='utf-8'))
+          plan = json.load(open(sys.argv[2], encoding='utf-8'))
+          expected = {a['filename'] for a in plan['assets']}
+          got = {os.path.basename(r['path']) for r in report.get('results', [])}
+          if report.get('posterCount') != 13 or got != expected:
+              raise SystemExit(f'Poster set mismatch. expected={sorted(expected)} got={sorted(got)}')
+          for item in report['results']:
+              path = item['path']
+              with Image.open(path) as im:
+                  if im.size != (2550, 3300) or im.format != 'PNG': raise SystemExit(f'Invalid poster {path}: {im.format} {im.size}')
+                  dpi = im.info.get('dpi', (0, 0))
+                  if min(dpi) < 295: raise SystemExit(f'Poster DPI below target: {path} {dpi}')
+              if os.path.getsize(path) < 250000: raise SystemExit(f'Poster unexpectedly small: {path}')
+          print('All thirteen exact poster binaries passed set, dimensions, PNG, DPI, and minimum-size validation.')
+          PY
+          echo "poster_count=13" >> "$GITHUB_OUTPUT"
+
+      - name: Persist exact poster set in canonical source
+        id: canonical
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'DTF Core Poster Publisher'
+          git config user.email 'actions@users.noreply.github.com'
+          while IFS= read -r name; do git add "site/wordpress/assets/infographics/$name"; done < <(node -e "const p=require(process.argv[1]); for(const a of p.assets) console.log(a.filename)" "$POSTER_PLAN")
+          if git diff --cached --quiet; then
+            echo 'changed=false' >> "$GITHUB_OUTPUT"
+          else
+            git commit -m 'Publish final core THC infographic gap pack'
+            if ! git push origin HEAD:main; then
+              git pull --rebase origin main
+              git push origin HEAD:main
+            fi
+            echo 'changed=true' >> "$GITHUB_OUTPUT"
+            echo "commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Stage finished infographics and require all thirteen exact posters
+        id: quality
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/stage-eligible-infographics.mjs
+          report="$BACKUP_ROOT/infographic-quality-gate.json"
+          eligible="$(node -p "require(process.argv[1]).eligibleImageCount" "$report")"
+          while IFS= read -r name; do
+            test -s "$INFOGRAPHIC_DIR/$name" || { echo "New poster was removed by the quality gate: $name" >&2; exit 1; }
+          done < <(node -e "const p=require(process.argv[1]); for(const a of p.assets) console.log(a.filename)" "$POSTER_PLAN")
+          echo "eligible_count=$eligible" >> "$GITHUB_OUTPUT"
+          echo "All thirteen final posters survived the canonical exclusion/quality policy."
+
+      - name: Upload or reuse canonical WordPress infographic media
+        id: media
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/deploy-wordpress-infographic-library-rest.mjs
+          backup_dir="$(cat "$BACKUP_ROOT/wordpress-infographic-backup-path.txt")"
+          result="$backup_dir/deployment-result.json"
+          echo "uploaded=$(node -p "require(process.argv[1]).uploadedMediaCount" "$result")" >> "$GITHUB_OUTPUT"
+          echo "reused=$(node -p "require(process.argv[1]).reusedMediaCount" "$result")" >> "$GITHUB_OUTPUT"
+
+      - name: Assemble complete thirteen-subject curriculum
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/assemble-topic-literature-expansions.mjs --write "$TOPIC_LITERATURE_CONFIG" | tee /tmp/thc-core-gap-expanded-literature.json
+          node - "$TOPIC_LITERATURE_CONFIG" <<'NODE'
+          const d=require(process.argv[2]);
+          if(d.topics.length!==13) throw new Error('Expected 13 topics');
+          for(const t of d.topics) if(!Array.isArray(t.sections)||t.sections.length<8) throw new Error(`${t.id} below eight sections`);
+          NODE
+
+      - name: Publish complete curriculum and guided infographic library
+        id: literature
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --import ./scripts/wordpress-transient-fetch-bootstrap.mjs scripts/publish-wordpress-topic-literature.mjs
+          backup_dir="$(cat "$BACKUP_ROOT/topic-literature-backup-path.txt")"
+          report="$backup_dir/topic-literature-report.json"
+          echo "cards=$(node -p "require(process.argv[1]).eligibleInfographics" "$report")" >> "$GITHUB_OUTPUT"
+          echo "topics=$(node -p "require(process.argv[1]).topicPages.length" "$report")" >> "$GITHUB_OUTPUT"
+
+      - name: Purge Hostinger LiteSpeed cache
+        shell: bash
+        run: |
+          set -euo pipefail
+          ok=0
+          for attempt in 1 2 3; do
+            if node scripts/flush-hostinger-litespeed-mcp.mjs | tee -a /tmp/thc-core-gap-cache-flush.log; then ok=1; break; fi
+            sleep $((attempt * 4))
+          done
+          [[ "$ok" -eq 1 ]]
+          sleep 5
+
+      - name: Verify exact poster set on the public guided library
+        id: verify
+        env:
+          EXPECTED_CARDS: ${{ steps.literature.outputs.cards }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          library="$RUNNER_TEMP/core-gap-library.html"
+          ok=0
+          for attempt in 1 2 3 4 5 6 7 8 9 10; do
+            if curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+              --header 'Cache-Control: no-cache, no-store, max-age=0' --header 'Pragma: no-cache' \
+              "https://dtfseeds.com/learn/infographics/?dtf_core_gap=${GITHUB_RUN_ID}-${attempt}-$(date +%s%N)" --output "$library" \
+              && grep -Fqi 'Use the library as a learning system' "$library"; then ok=1; break; fi
+            sleep 7
+          done
+          [[ "$ok" -eq 1 ]] || { echo 'Could not verify public infographic library after cache purge' >&2; exit 1; }
+
+          while IFS=$'\t' read -r filename title; do
+            # WordPress cleanLabel removes the leading THC- prefix and filename punctuation,
+            # so a distinctive title phrase is the stable public marker.
+            marker="$(echo "$title" | tr '→&:' '   ' | tr -s ' ')"
+            first_three="$(echo "$marker" | awk '{print $1" "$2" "$3}')"
+            grep -Fqi "$first_three" "$library" || { echo "Poster missing from public library: $title" >&2; exit 1; }
+          done < <(node -e "const p=require(process.argv[1]); for(const a of p.assets) console.log(a.filename+'\t'+a.title)" "$POSTER_PLAN")
+
+          cards="$(grep -Eo '<article class="thc-visual-card thc-library-card"' "$library" | wc -l | tr -d ' ')"
+          [[ "$cards" -eq "$EXPECTED_CARDS" ]] || { echo "Publisher reported $EXPECTED_CARDS cards; public library shows $cards" >&2; exit 1; }
+          echo "cards=$cards" >> "$GITHUB_OUTPUT"
+
+      - name: Verify final thin-subject routes contain new poster labels
+        shell: bash
+        run: |
+          set -euo pipefail
+          verify_route() {
+            local route="$1" marker="$2" body="$RUNNER_TEMP/${route//\//-}.html"
+            curl -4 --fail --silent --show-error --location --retry 3 --retry-delay 3 \
+              --header 'Cache-Control: no-cache, no-store, max-age=0' \
+              "https://dtfseeds.com/learn/${route}/?dtf_core_gap=${GITHUB_RUN_ID}-$(date +%s%N)" --output "$body"
+            grep -Fqi "$marker" "$body" || { echo "Missing $marker on $route" >&2; exit 1; }
+          }
+          verify_route 'lifecycle-propagation' 'Seed Vigor Storage'
+          verify_route 'environment-vpd' 'Sensor Placement Dew'
+          verify_route 'lighting' 'Fixture Height Uniformity'
+          verify_route 'water-ph-ec' 'pH vs Alkalinity'
+          verify_route 'ipm' 'Scouting Differential Diagnosis'
+          verify_route 'training-canopy' 'Apical Dominance Branch'
+          verify_route 'outdoor' 'Outdoor Site Microclimate'
+          verify_route 'research-methods' 'Metadata Time Series'
+
+      - name: Upload final poster evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: core-gap-posters-${{ github.run_id }}
+          path: |
+            /tmp/thc-core-gap-poster-render.json
+            /tmp/thc-core-gap-poster-render.log
+            /tmp/thc-core-gap-expanded-literature.json
+            /tmp/thc-core-gap-cache-flush.log
+            /tmp/wordpress-core-gap-posters
+            ${{ runner.temp }}/core-gap-library.html
+            ${{ runner.temp }}/*.html
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report final core infographic expansion
+        if: always()
+        continue-on-error: true
+        uses: actions/github-script@v7
+        env:
+          STATUS: ${{ job.status }}
+          POSTERS: ${{ steps.render.outputs.poster_count }}
+          ELIGIBLE: ${{ steps.quality.outputs.eligible_count }}
+          UPLOADED: ${{ steps.media.outputs.uploaded }}
+          REUSED: ${{ steps.media.outputs.reused }}
+          CARDS: ${{ steps.verify.outputs.cards }}
+        with:
+          script: |
+            const body = [
+              '## Final core infographic gap pack', '',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Overall: **${process.env.STATUS}**`,
+              `Rendered exact posters: **${process.env.POSTERS || '0'} / 13**`,
+              `Eligible canonical infographic assets: **${process.env.ELIGIBLE || 'not-run'}**`,
+              `WordPress media uploaded/reused: **${process.env.UPLOADED || '0'} / ${process.env.REUSED || '0'}**`,
+              `Public guided-library cards: **${process.env.CARDS || 'not-run'}**`, '',
+              'The gate validates exact generated filenames and exact public poster markers; it does not weaken exclusions or assume a stale total-library count.'
+            ].join('\n');
+            try { await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: 220, body }); }
+            catch (error) { core.warning(`Core poster report could not be posted: ${error.message}`); }
