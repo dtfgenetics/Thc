@@ -1,0 +1,110 @@
+name: Deploy THC Encyclopedia Volume 10 Batch 03
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'content/encyclopedia/volume-10/lessons/thc-enc-191.json'
+      - 'content/encyclopedia/volume-10/lessons/thc-enc-192.json'
+      - 'content/encyclopedia/volume-10/lessons/thc-enc-193.json'
+      - 'content/encyclopedia/volume-10/lessons/thc-enc-194.json'
+      - 'content/encyclopedia/volume-10/lessons/thc-enc-195.json'
+      - 'content/encyclopedia/volume-10/lessons/thc-enc-196.json'
+      - 'content/encyclopedia/volume-10/lessons/thc-enc-197.json'
+      - 'content/encyclopedia/volume-10/lessons/thc-enc-198.json'
+      - 'content/encyclopedia/volume-10/lessons/thc-enc-199.json'
+      - 'content/encyclopedia/volume-10/lessons/thc-enc-200.json'
+      - 'site/wordpress/education/encyclopedia/volume10-batch03.json'
+      - 'scripts/validate-encyclopedia-release-control.mjs'
+      - 'scripts/publish-wordpress-encyclopedia-canonical-batch.mjs'
+      - '.github/workflows/deploy-thc-encyclopedia-volume10-batch03.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dtfseeds-thc-encyclopedia-volume10-batch03
+  cancel-in-progress: false
+
+jobs:
+  validate-and-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: production
+    env:
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      ENCYCLOPEDIA_BATCH_FILE: site/wordpress/education/encyclopedia/volume10-batch03.json
+      BACKUP_ROOT: /tmp/dtf-encyclopedia-volume10-batch03
+
+    steps:
+      - name: Checkout canonical production repo
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate controlled batch and publisher
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/validate-encyclopedia-release-control.mjs
+          node --check scripts/publish-wordpress-encyclopedia-canonical-batch.mjs
+          node scripts/validate-encyclopedia-release-control.mjs "$ENCYCLOPEDIA_BATCH_FILE"
+          test -n "${WP_API_USERNAME:-}"
+          test -n "${WP_API_PASSWORD:-}"
+          for n in $(seq 191 200); do
+            f=$(printf 'content/encyclopedia/volume-10/lessons/thc-enc-%03d.json' "$n")
+            test -s "$f"
+            grep -Fq "\"id\":\"THC-ENC-$(printf '%03d' "$n")\"" "$f"
+          done
+
+      - name: Publish controlled lessons and rebuild encyclopedia index
+        id: publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/publish-wordpress-encyclopedia-canonical-batch.mjs | tee "$RUNNER_TEMP/encyclopedia-volume10-batch03-publish.json"
+          echo "outcome=success" >> "$GITHUB_OUTPUT"
+
+      - name: Fresh anonymous production verification
+        id: live
+        shell: bash
+        run: |
+          set -euo pipefail
+          index="$RUNNER_TEMP/live-encyclopedia-index.html"
+          curl -4 --fail --silent --show-error --location --retry 5 --retry-delay 3 \
+            -H 'Cache-Control: no-cache, no-store, max-age=0' -H 'Pragma: no-cache' \
+            "https://dtfseeds.com/learn/encyclopedia/?dtf_ency=${GITHUB_RUN_ID}" -o "$index"
+          grep -Fqi 'Cannabis Plant Science Encyclopedia' "$index"
+          for n in $(seq 191 200); do
+            id=$(printf 'THC-ENC-%03d' "$n")
+            slug=$(printf 'thc-enc-%03d' "$n")
+            body="$RUNNER_TEMP/live-${slug}.html"
+            curl -4 --fail --silent --show-error --location --retry 5 --retry-delay 3 \
+              -H 'Cache-Control: no-cache, no-store, max-age=0' -H 'Pragma: no-cache' \
+              "https://dtfseeds.com/learn/encyclopedia/${slug}/?dtf_ency=${GITHUB_RUN_ID}" -o "$body"
+            grep -Fqi "$id" "$body"
+            grep -Fqi 'Controlled education content' "$body"
+            grep -Fqi "/learn/encyclopedia/${slug}/" "$index"
+          done
+          echo "outcome=success" >> "$GITHUB_OUTPUT"
+
+      - name: Upload rollback and publication evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dtf-encyclopedia-volume10-batch03-${{ github.run_id }}
+          path: |
+            /tmp/dtf-encyclopedia-volume10-batch03
+            ${{ runner.temp }}/encyclopedia-volume10-batch03-publish.json
+            ${{ runner.temp }}/live-encyclopedia-index.html
+            ${{ runner.temp }}/live-thc-enc-*.html
+          if-no-files-found: warn
+          retention-days: 30
