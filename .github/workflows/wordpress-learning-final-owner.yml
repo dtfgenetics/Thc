@@ -1,0 +1,225 @@
+name: Finalize THC Learning Ownership
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/wordpress-learning-final-owner.yml
+      - scripts/publish-wordpress-topic-literature.mjs
+      - scripts/flush-hostinger-litespeed-mcp.mjs
+      - scripts/wordpress-ipv4-fetch-bootstrap.mjs
+      - scripts/wordpress-transient-fetch-bootstrap.mjs
+      - site/wordpress/education/topic-literature.json
+      - site/wordpress/assets/infographics/infographic-learning-guides.json
+      - site/wordpress/assets/infographics/placement-rules.json
+      - site/wordpress/assets/infographics/infographic-exclusions.json
+  workflow_run:
+    workflows:
+      - Publish DTFSeeds Learning Experience V3
+      - Publish THC Topic Literature to WordPress Production
+    types: [completed]
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-wordpress-learning-final-owner
+  cancel-in-progress: false
+
+jobs:
+  finalize:
+    name: Republish, purge cache, and verify guided learning
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    environment: production
+    env:
+      NODE_OPTIONS: --dns-result-order=ipv4first
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      BACKUP_ROOT: /tmp/wordpress-learning-final-owner
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate final-owner inputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
+          node --check scripts/publish-wordpress-topic-literature.mjs
+          node --check scripts/flush-hostinger-litespeed-mcp.mjs
+          node --check scripts/wordpress-ipv4-fetch-bootstrap.mjs
+          node --check scripts/wordpress-transient-fetch-bootstrap.mjs
+          node - <<'NODE'
+          const fs = require('fs');
+          const guides = JSON.parse(fs.readFileSync('site/wordpress/assets/infographics/infographic-learning-guides.json', 'utf8'));
+          const topics = JSON.parse(fs.readFileSync('site/wordpress/education/topic-literature.json', 'utf8'));
+          if (!Array.isArray(guides.guides) || guides.guides.length < 10) process.exit(1);
+          if (!Array.isArray(guides.learningPaths) || guides.learningPaths.length < 4) process.exit(1);
+          if (!Array.isArray(topics.topics) || topics.topics.length < 10) process.exit(1);
+          console.log(`Validated ${guides.guides.length} study guides, ${guides.learningPaths.length} learning paths, and ${topics.topics.length} literature topics.`);
+          NODE
+
+      - name: Reclaim canonical education pages
+        id: publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$BACKUP_ROOT"
+          node \
+            --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs \
+            --import ./scripts/wordpress-transient-fetch-bootstrap.mjs \
+            scripts/publish-wordpress-topic-literature.mjs | tee /tmp/learning-final-owner-publish.json
+          backup_dir="$(cat "$BACKUP_ROOT/topic-literature-backup-path.txt")"
+          report="$backup_dir/topic-literature-report.json"
+          echo "expected_cards=$(node -p "require(process.argv[1]).eligibleInfographics" "$report")" >> "$GITHUB_OUTPUT"
+          echo "topic_count=$(node -p "require(process.argv[1]).topicPages.length" "$report")" >> "$GITHUB_OUTPUT"
+          echo "learning_paths=$(node -p "require(process.argv[1]).learningPathCount" "$report")" >> "$GITHUB_OUTPUT"
+          echo "study_guides=$(node -p "require(process.argv[1]).studyGuideCount" "$report")" >> "$GITHUB_OUTPUT"
+
+      - name: Purge Hostinger LiteSpeed cache
+        id: cache
+        shell: bash
+        run: |
+          set -euo pipefail
+          node \
+            --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs \
+            --import ./scripts/wordpress-transient-fetch-bootstrap.mjs \
+            scripts/flush-hostinger-litespeed-mcp.mjs | tee /tmp/learning-final-owner-cache.json
+
+      - name: Verify public guided-learning owner
+        id: verify
+        env:
+          EXPECTED_CARDS: ${{ steps.publish.outputs.expected_cards }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          fetch_until_all() {
+            local url="$1"
+            local body="$2"
+            shift 2
+            local ok=0
+            for attempt in 1 2 3 4 5 6 7 8 9 10; do
+              if curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+                --header 'Cache-Control: no-cache, no-store, max-age=0' \
+                --header 'Pragma: no-cache' \
+                "${url}?dtf_final_owner=${GITHUB_RUN_ID}-${attempt}-$(date +%s%N)" \
+                --output "$body"; then
+                ok=1
+                for marker in "$@"; do
+                  if ! grep -Fqi "$marker" "$body"; then ok=0; break; fi
+                done
+                if [[ "$ok" -eq 1 ]]; then return 0; fi
+              fi
+              sleep 7
+            done
+            echo "Final-owner verification failed for $url" >&2
+            for marker in "$@"; do
+              if ! grep -Fqi "$marker" "$body" 2>/dev/null; then echo "Missing marker: $marker" >&2; fi
+            done
+            return 1
+          }
+
+          library="$RUNNER_TEMP/final-owner-infographics.html"
+          fetch_until_all \
+            'https://dtfseeds.com/learn/infographics/' \
+            "$library" \
+            'Searchable Infographic Library' \
+            'Use the library as a learning system' \
+            'Choose a learning path' \
+            'thc-infographic-topic' \
+            'Study question:'
+
+          cards="$(grep -Eo '<article class="thc-visual-card thc-library-card"' "$library" | wc -l | tr -d ' ')"
+          [[ "$cards" -eq "$EXPECTED_CARDS" ]] || {
+            echo "Expected $EXPECTED_CARDS guided infographic cards, found $cards" >&2
+            exit 1
+          }
+
+          for route in \
+            plant-biology genetics-breeding lifecycle-propagation environment-vpd \
+            lighting water-ph-ec nutrition-media ipm training-canopy harvest-postharvest \
+            outdoor research-methods plant-science-reference; do
+            page="$RUNNER_TEMP/final-owner-${route}.html"
+            fetch_until_all \
+              "https://dtfseeds.com/learn/${route}/" \
+              "$page" \
+              'Literature first:' \
+              'How to study' \
+              'Questions to answer' \
+              'Measurements and context to record' \
+              'Common interpretation trap' \
+              'Infographics for'
+            sections="$(grep -Eo 'class="thc-section"' "$page" | wc -l | tr -d ' ')"
+            [[ "$sections" -ge 4 ]] || {
+              echo "Expected at least four literature sections on $route; found $sections" >&2
+              exit 1
+            }
+          done
+
+          echo "live_card_count=$cards" >> "$GITHUB_OUTPUT"
+          echo "guided_learning_ready=true" >> "$GITHUB_OUTPUT"
+
+      - name: Upload final-owner rollback evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: wordpress-learning-final-owner-${{ github.run_id }}
+          path: |
+            /tmp/wordpress-learning-final-owner
+            /tmp/learning-final-owner-publish.json
+            /tmp/learning-final-owner-cache.json
+            ${{ runner.temp }}/final-owner-*.html
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report final learning ownership
+        if: always()
+        continue-on-error: true
+        uses: actions/github-script@v7
+        env:
+          STATUS: ${{ job.status }}
+          PUBLISH_OUTCOME: ${{ steps.publish.outcome }}
+          CACHE_OUTCOME: ${{ steps.cache.outcome }}
+          VERIFY_OUTCOME: ${{ steps.verify.outcome }}
+          CARD_COUNT: ${{ steps.verify.outputs.live_card_count }}
+          TOPIC_COUNT: ${{ steps.publish.outputs.topic_count }}
+          LEARNING_PATHS: ${{ steps.publish.outputs.learning_paths }}
+          STUDY_GUIDES: ${{ steps.publish.outputs.study_guides }}
+        with:
+          script: |
+            const source = context.eventName === 'workflow_run'
+              ? `${context.payload.workflow_run?.name || 'workflow'} (${context.payload.workflow_run?.conclusion || 'unknown'})`
+              : context.eventName;
+            const body = [
+              '## THC Learning final owner',
+              '',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Trigger: **${source}**`,
+              `Overall: **${process.env.STATUS}**`,
+              `Canonical republish: **${process.env.PUBLISH_OUTCOME || 'not-run'}**`,
+              `LiteSpeed purge: **${process.env.CACHE_OUTCOME || 'not-run'}**`,
+              `Visitor verification: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
+              `Guided infographic cards: **${process.env.CARD_COUNT || 'not-run'}**`,
+              `Literature topics: **${process.env.TOPIC_COUNT || 'not-run'}**`,
+              `Learning paths: **${process.env.LEARNING_PATHS || 'not-run'}**`,
+              `Study guides: **${process.env.STUDY_GUIDES || 'not-run'}**`,
+              '',
+              'This workflow is the final WordPress owner for THC Learning. It runs after both Learning V3 and Topic Literature completion, including failed Learning V3 runs, then republishes the canonical literature-first pages, purges Hostinger/LiteSpeed, and requires the guided-learning markers visitor-side.'
+            ].join('\n');
+            try {
+              await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: 220, body });
+            } catch (error) {
+              core.warning(`Final-owner advisory report could not be posted: ${error.message}`);
+            }

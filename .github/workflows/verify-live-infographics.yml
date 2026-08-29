@@ -1,16 +1,10 @@
 name: Verify Live THC Infographics
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - .github/workflows/verify-live-infographics.yml
-      - site/wordpress/assets/infographics/**
-      - site/public-route-patch/learn/infographics/**
   workflow_dispatch:
   workflow_run:
     workflows:
-      - Publish THC Infographics to WordPress Production
+      - Finalize THC Learning Ownership
     types: [completed]
 
 permissions:
@@ -26,208 +20,187 @@ jobs:
     if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 15
+
     steps:
       - uses: actions/checkout@v4
         with:
           ref: main
           fetch-depth: 0
 
-      - name: Probe live library and rendered WordPress media
+      - name: Probe guided library over IPv4
         id: probe
-        shell: python
+        shell: bash
         run: |
-          import html
-          import json
-          import pathlib
-          import time
-          import urllib.error
-          import urllib.parse
-          import urllib.request
-          from html.parser import HTMLParser
+          set -euo pipefail
+          page_url='https://dtfseeds.com/learn/infographics/'
+          body="$RUNNER_TEMP/live-infographics.html"
 
-          page_url = 'https://dtfseeds.com/learn/infographics/'
-          accepted_headings = ('Searchable Infographic Library', 'THC Infographic Library')
-          guided_markers = {
-              'learning_system': 'Use the library as a learning system',
-              'learning_paths': 'Choose a learning path',
-              'topic_filter': 'thc-infographic-topic',
-              'study_questions': 'Study question:',
+          fetch_library() {
+            local ok=0
+            for attempt in 1 2 3 4 5 6 7 8; do
+              if curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+                --header 'Cache-Control: no-cache, no-store, max-age=0' \
+                --header 'Pragma: no-cache' \
+                "${page_url}?verify=${GITHUB_RUN_ID}-${attempt}-$(date +%s%N)" \
+                --output "$body"; then
+                if \
+                  grep -Fqi 'Searchable Infographic Library' "$body" && \
+                  grep -Fqi 'Use the library as a learning system' "$body" && \
+                  grep -Fqi 'Choose a learning path' "$body" && \
+                  grep -Fqi 'thc-infographic-topic' "$body" && \
+                  grep -Fqi 'Study question:' "$body"; then
+                  ok=1
+                  break
+                fi
+              fi
+              sleep 7
+            done
+            [[ "$ok" -eq 1 ]]
           }
 
-          def fetch(url):
-              request = urllib.request.Request(url, headers={
-                  'User-Agent': 'Mozilla/5.0 THC-Live-Verification/2.5',
-                  'Cache-Control': 'no-cache, no-store, max-age=0',
-                  'Pragma': 'no-cache',
-              })
-              try:
-                  with urllib.request.urlopen(request, timeout=30) as response:
-                      body = response.read()
-                      return {
-                          'ok': 200 <= response.status < 300,
-                          'status': response.status,
-                          'content_type': response.headers.get('Content-Type', ''),
-                          'bytes': len(body),
-                          'body': body,
-                          'final_url': response.geturl(),
-                      }
-              except urllib.error.HTTPError as exc:
-                  return {'ok': False, 'status': exc.code, 'content_type': '', 'bytes': 0, 'body': b'', 'final_url': url}
-              except Exception as exc:
-                  return {'ok': False, 'status': None, 'content_type': '', 'bytes': 0, 'body': b'', 'final_url': url, 'error': str(exc)}
+          fetch_library || {
+            echo 'Guided infographic library markers did not become visitor-facing.' >&2
+            exit 1
+          }
+
+          python3 - "$body" "$RUNNER_TEMP/live-infographic-media.txt" "$RUNNER_TEMP/live-infographic-parse.json" <<'PY'
+          import html
+          import json
+          import re
+          import sys
+          from html.parser import HTMLParser
+          from urllib.parse import unquote, urljoin
+
+          html_path, media_path, report_path = sys.argv[1:]
+          page_url = 'https://dtfseeds.com/learn/infographics/'
+          text = open(html_path, encoding='utf-8').read()
 
           class LibraryParser(HTMLParser):
               def __init__(self):
                   super().__init__(convert_charrefs=True)
                   self.in_card = False
-                  self.card_depth = 0
-                  self.anchor_stack = []
-                  self.cards = []
+                  self.depth = 0
                   self.current = None
+                  self.cards = []
 
               def handle_starttag(self, tag, attrs):
-                  attr = dict(attrs)
-                  classes = set(attr.get('class', '').split())
+                  attrs = dict(attrs)
+                  classes = set(attrs.get('class', '').split())
                   if tag == 'article' and 'thc-library-card' in classes and not self.in_card:
                       self.in_card = True
-                      self.card_depth = 1
-                      self.current = {'href': '', 'src': ''}
+                      self.depth = 1
+                      self.current = {'text': [], 'urls': []}
                       return
                   if not self.in_card:
                       return
                   if tag == 'article':
-                      self.card_depth += 1
-                  elif tag == 'a':
-                      href = html.unescape(attr.get('href', ''))
-                      self.anchor_stack.append(href)
-                  elif tag == 'img' and self.current is not None:
-                      self.current['src'] = html.unescape(attr.get('src', ''))
-                      if self.anchor_stack:
-                          self.current['href'] = self.anchor_stack[-1]
-
-              def handle_startendtag(self, tag, attrs):
-                  self.handle_starttag(tag, attrs)
+                      self.depth += 1
+                  for key in ('src', 'href'):
+                      value = attrs.get(key)
+                      if value:
+                          self.current['urls'].append(html.unescape(unquote(value)))
 
               def handle_endtag(self, tag):
                   if not self.in_card:
                       return
-                  if tag == 'a' and self.anchor_stack:
-                      self.anchor_stack.pop()
-                  elif tag == 'article':
-                      self.card_depth -= 1
-                      if self.card_depth == 0:
-                          if self.current:
-                              self.cards.append(self.current)
+                  if tag == 'article':
+                      self.depth -= 1
+                      if self.depth == 0:
+                          self.cards.append(self.current)
                           self.in_card = False
                           self.current = None
-                          self.anchor_stack.clear()
 
-          page = None
-          text = ''
-          heading_found = False
-          guided_marker_state = {key: False for key in guided_markers}
-          guided_learning_ready = False
-          for attempt in range(1, 7):
-              page = fetch(f'{page_url}?verify={int(time.time())}-{attempt}')
-              text = page['body'].decode('utf-8', errors='ignore')
-              heading_found = any(marker in text for marker in accepted_headings)
-              guided_marker_state = {key: marker in text for key, marker in guided_markers.items()}
-              guided_learning_ready = all(guided_marker_state.values())
-              if page['ok'] and heading_found and guided_learning_ready and 'wp-content/uploads/' in text:
-                  break
-              if attempt < 6:
-                  time.sleep(10)
+              def handle_data(self, data):
+                  if self.in_card and self.current is not None:
+                      self.current['text'].append(data)
 
           parser = LibraryParser()
           parser.feed(text)
           cards = parser.cards
-          card_media = []
+          if len(cards) < 70:
+              raise SystemExit(f'Expected at least 70 infographic cards; found {len(cards)}')
+
+          forbidden = re.compile(r'(thc[\s_/-]*enc[\s_/-]*001[\s_/-]*vis|v04[\s_/-]*sup|pdf[\s_/-]*pages)', re.I)
+          media = []
           seen = set()
           for card in cards:
-              for key in ('src', 'href'):
-                  value = card.get(key, '')
-                  if '/wp-content/uploads/' not in value:
-                      continue
-                  absolute = urllib.parse.urljoin(page_url, value)
+              text_blob = ' '.join(' '.join(card['text']).split())
+              url_blob = ' '.join(card['urls'])
+              if forbidden.search(text_blob + ' ' + url_blob) or text_blob.strip().lower() == 'page 01':
+                  raise SystemExit(f'Excluded support/reference card found: {(text_blob + " " + url_blob)[:500]}')
+              chosen = next((u for u in card['urls'] if '/wp-content/uploads/' in u), '')
+              if chosen:
+                  absolute = urljoin(page_url, chosen)
                   if absolute not in seen:
                       seen.add(absolute)
-                      card_media.append(absolute)
+                      media.append(absolute)
 
-          preview_urls = []
-          seen_preview = set()
-          for card in cards:
-              selected = ''
-              for key in ('src', 'href'):
-                  value = card.get(key, '')
-                  if '/wp-content/uploads/' in value:
-                      selected = value
-                      break
-              if not selected:
-                  continue
-              absolute = urllib.parse.urljoin(page_url, selected)
-              if absolute not in seen_preview:
-                  seen_preview.add(absolute)
-                  preview_urls.append(absolute)
+          if len(media) < 70:
+              raise SystemExit(f'Expected at least 70 distinct rendered WordPress media URLs; found {len(media)}')
 
-          sample_urls = preview_urls[:20]
-          media_results = []
-          for url in sample_urls:
-              result = fetch(url)
-              content_type = (result.get('content_type') or '').lower()
-              media_results.append({
-                  'url': url,
-                  'ok': bool(result['ok'] and result['bytes'] >= 1000 and content_type.startswith('image/')),
-                  'status': result['status'],
-                  'content_type': result.get('content_type', ''),
-                  'bytes': result['bytes'],
-                  'final_url': result.get('final_url'),
-                  'error': result.get('error'),
-              })
-
-          live_media_count = sum(1 for item in media_results if item['ok'])
-          production_ready = bool(
-              page
-              and page['ok']
-              and heading_found
-              and guided_learning_ready
-              and len(cards) >= 70
-              and len(card_media) >= 70
-              and len(sample_urls) >= 10
-              and live_media_count == len(sample_urls)
-          )
+          with open(media_path, 'w', encoding='utf-8') as fh:
+              for url in media[:20]:
+                  fh.write(url + '\n')
 
           report = {
-              'verified_at_utc': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
-              'page_url': page_url,
-              'page_http_status': page.get('status') if page else None,
-              'page_final_url': page.get('final_url') if page else None,
-              'page_bytes': page.get('bytes') if page else 0,
-              'page_has_infographic_heading': heading_found,
-              'guided_learning_ready': guided_learning_ready,
-              'guided_learning_markers': guided_marker_state,
-              'rendered_infographic_card_count': len(cards),
-              'rendered_wordpress_media_url_count': len(card_media),
-              'sampled_rendered_media_count': len(sample_urls),
-              'sampled_rendered_media_live': live_media_count,
-              'sampled_rendered_media': media_results,
-              'production_ready': production_ready,
+              'card_count': len(cards),
+              'media_url_count': len(media),
+              'sample_count': min(20, len(media)),
+              'guided_learning_ready': True
+          }
+          open(report_path, 'w', encoding='utf-8').write(json.dumps(report, indent=2) + '\n')
+          print(json.dumps(report, indent=2))
+          PY
+
+          sample_total=0
+          sample_live=0
+          while IFS= read -r media_url; do
+            [[ -n "$media_url" ]] || continue
+            sample_total=$((sample_total + 1))
+            sample_file="$RUNNER_TEMP/media-${sample_total}.bin"
+            meta="$(curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+              --output "$sample_file" \
+              --write-out '%{http_code}|%{content_type}|%{size_download}' \
+              "$media_url" || true)"
+            IFS='|' read -r status content_type size_download <<< "$meta"
+            if [[ "$status" =~ ^2[0-9][0-9]$ ]] && [[ "$content_type" == image/* ]] && [[ "${size_download:-0}" -ge 1000 ]]; then
+              sample_live=$((sample_live + 1))
+            else
+              echo "Image sample failed: $media_url status=$status type=$content_type bytes=$size_download" >&2
+            fi
+          done < "$RUNNER_TEMP/live-infographic-media.txt"
+
+          [[ "$sample_total" -ge 10 ]] || {
+            echo "Expected at least 10 image samples; found $sample_total" >&2
+            exit 1
+          }
+          [[ "$sample_live" -eq "$sample_total" ]] || {
+            echo "Only $sample_live/$sample_total infographic samples were live images." >&2
+            exit 1
           }
 
-          pathlib.Path('docs/LIVE_INFOGRAPHIC_STATUS.json').write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')
-          with open(__import__('os').environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as output:
-              output.write(f"production_ready={'true' if production_ready else 'false'}\n")
-              output.write(f"guided_learning_ready={'true' if guided_learning_ready else 'false'}\n")
-              output.write(f"page_status={report['page_http_status']}\n")
-              output.write(f"card_count={len(cards)}\n")
-              output.write(f"rendered_count={len(card_media)}\n")
-              output.write(f"sample_live={live_media_count}\n")
-              output.write(f"sample_total={len(sample_urls)}\n")
+          card_count="$(python3 -c "import json;print(json.load(open('$RUNNER_TEMP/live-infographic-parse.json'))['card_count'])")"
+          media_count="$(python3 -c "import json;print(json.load(open('$RUNNER_TEMP/live-infographic-parse.json'))['media_url_count'])")"
+
+          python3 - "$RUNNER_TEMP/live-infographic-parse.json" "$sample_live" "$sample_total" > docs/LIVE_INFOGRAPHIC_STATUS.json <<'PY'
+          import json, sys, time
+          report = json.load(open(sys.argv[1], encoding='utf-8'))
+          report.update({
+              'verified_at_utc': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
+              'page_url': 'https://dtfseeds.com/learn/infographics/',
+              'sampled_rendered_media_live': int(sys.argv[2]),
+              'sampled_rendered_media_count': int(sys.argv[3]),
+              'production_ready': True
+          })
           print(json.dumps(report, indent=2))
-          if not production_ready:
-              missing = [key for key, present in guided_marker_state.items() if not present]
-              if missing:
-                  print(f'Missing guided-learning markers: {missing}')
-              raise SystemExit('Live infographic verification failed; see docs/LIVE_INFOGRAPHIC_STATUS.json output above.')
+          PY
+
+          echo "production_ready=true" >> "$GITHUB_OUTPUT"
+          echo "guided_learning_ready=true" >> "$GITHUB_OUTPUT"
+          echo "card_count=$card_count" >> "$GITHUB_OUTPUT"
+          echo "rendered_count=$media_count" >> "$GITHUB_OUTPUT"
+          echo "sample_live=$sample_live" >> "$GITHUB_OUTPUT"
+          echo "sample_total=$sample_total" >> "$GITHUB_OUTPUT"
 
       - name: Upload independent verification evidence
         if: always()
@@ -246,7 +219,6 @@ jobs:
           PROBE_OUTCOME: ${{ steps.probe.outcome }}
           PRODUCTION_READY: ${{ steps.probe.outputs.production_ready }}
           GUIDED_LEARNING_READY: ${{ steps.probe.outputs.guided_learning_ready }}
-          PAGE_STATUS: ${{ steps.probe.outputs.page_status }}
           CARD_COUNT: ${{ steps.probe.outputs.card_count }}
           RENDERED_COUNT: ${{ steps.probe.outputs.rendered_count }}
           SAMPLE_LIVE: ${{ steps.probe.outputs.sample_live }}
@@ -260,14 +232,12 @@ jobs:
               `Probe outcome: **${process.env.PROBE_OUTCOME || 'unknown'}**`,
               `Production ready: **${process.env.PRODUCTION_READY || 'false'}**`,
               `Guided learning controls live: **${process.env.GUIDED_LEARNING_READY || 'false'}**`,
-              `Library HTTP status: **${process.env.PAGE_STATUS || 'unknown'}**`,
               `Rendered infographic cards: **${process.env.CARD_COUNT || '0'}**`,
-              `Rendered card media URLs found: **${process.env.RENDERED_COUNT || '0'}**`,
+              `Rendered WordPress media URLs: **${process.env.RENDERED_COUNT || '0'}**`,
               `Sampled infographic previews live: **${process.env.SAMPLE_LIVE || '0'}/${process.env.SAMPLE_TOTAL || '0'}**`,
               '',
-              'Required guided-learning markers: learning-system introduction, learning paths, subject filter, and study questions on infographic cards.',
-              'Target: https://dtfseeds.com/learn/infographics/',
-              'Evidence is uploaded as a workflow artifact. The verifier intentionally does not commit generated status files back to main, preventing verification from recursively retriggering production workflows.'
+              'The probe uses curl over forced IPv4, validates learning-system introduction, learning paths, subject filtering, study questions, finished-card count, exclusion rules, and live image responses.',
+              'Target: https://dtfseeds.com/learn/infographics/'
             ].join('\n');
             try {
               await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: 220, body });
