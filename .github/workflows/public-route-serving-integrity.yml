@@ -1,0 +1,84 @@
+name: Reconcile DTFSeeds Public Route Serving
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows:
+      - Deploy DTFSeeds Public Suite via WordPress V2
+    types: [completed]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dtfseeds-public-route-serving-integrity
+  cancel-in-progress: false
+
+jobs:
+  reconcile:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.head_branch == 'main' &&
+       (github.event.workflow_run.conclusion == 'success' || github.event.workflow_run.conclusion == 'failure'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: production
+    env:
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+    steps:
+      - name: Checkout the deployed source revision
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || 'main' }}
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate guarded serving-integrity scripts
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
+          node --check scripts/promote-public-game-routes-via-wordpress.mjs
+          node --check scripts/reconcile-public-static-route-ownership.mjs
+          grep -Fq 'dtf-release-fingerprint: projects-public-games-15-v2' site/public-route-patch/projects/index.html
+          grep -Fq '<strong>15</strong><span>public browser games</span>' site/public-route-patch/projects/index.html
+
+      - name: Reassert canonical game redirect rules
+        shell: bash
+        run: node scripts/promote-public-game-routes-via-wordpress.mjs
+
+      - name: Reconcile static Projects ownership and purge visitor cache
+        shell: bash
+        run: node scripts/reconcile-public-static-route-ownership.mjs
+
+      - name: Verify ordinary visitor URLs without cache-busting query strings
+        shell: bash
+        run: |
+          set -euo pipefail
+          check_direct() {
+            local url="$1" marker="$2" body headers status
+            body="$(mktemp)"
+            headers="$(mktemp)"
+            status="$(curl -fsS --retry 4 --retry-delay 3 \
+              --output "$body" --dump-header "$headers" --write-out '%{http_code}' \
+              -H 'Cache-Control: no-cache, no-store, max-age=0' \
+              "$url")"
+            [[ "$status" == '200' ]] || { echo "$url returned HTTP $status" >&2; cat "$headers" >&2; exit 1; }
+            ! grep -Eiq '^location:' "$headers" || { echo "$url unexpectedly redirected" >&2; cat "$headers" >&2; exit 1; }
+            grep -Fq "$marker" "$body" || { echo "$url is missing $marker" >&2; exit 1; }
+            rm -f "$body" "$headers"
+          }
+          check_direct 'https://dtfseeds.com/projects/' 'dtf-release-fingerprint: projects-public-games-15-v2'
+          check_direct 'https://dtfseeds.com/games/bud-or-bluff/' 'Create lobby'
+
+          headers="$(mktemp)"
+          status="$(curl -sS --output /dev/null --dump-header "$headers" --write-out '%{http_code}' 'https://dtfseeds.com/games/future-slots/')"
+          [[ "$status" == '301' || "$status" == '302' ]]
+          grep -Eiq '^location: .*\/games\/?' "$headers"
+          rm -f "$headers"
