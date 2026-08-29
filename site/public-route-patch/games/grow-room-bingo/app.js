@@ -1,5 +1,7 @@
 const CARD_CODE_LENGTH = 6;
 const CARD_CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+const SAVE_VERSION = 1;
+const SAVE_PREFIX = 'dtf-bingo-card-v1:';
 
 function normalizeCardCode(value) {
   const allowed = new Set(CARD_CODE_ALPHABET);
@@ -26,12 +28,22 @@ const markedEl = document.querySelector('#marked');
 const linesEl = document.querySelector('#lines');
 const bestEl = document.querySelector('#best');
 const announce = document.querySelector('#announce');
+const newButton = document.querySelector('#new');
+const copyButton = document.querySelector('#copy');
+
+const clearButton = document.createElement('button');
+clearButton.id = 'clear-marks';
+clearButton.type = 'button';
+clearButton.textContent = 'Clear marks';
+copyButton.parentNode.insertBefore(clearButton, copyButton);
 
 let data;
 let mode = 'grow-room';
 let code = '';
 let cells = [];
 let marked = new Set([12]);
+let clearArmedUntil = 0;
+let clearResetTimer = null;
 
 function readEmbeddedData() {
   const node = document.querySelector('#bingo-data');
@@ -73,9 +85,7 @@ function randomCode() {
   if (globalThis.crypto?.getRandomValues) {
     globalThis.crypto.getRandomValues(values);
   } else {
-    for (let index = 0; index < values.length; index += 1) {
-      values[index] = Math.floor(Math.random() * 0xffffffff);
-    }
+    for (let index = 0; index < values.length; index += 1) values[index] = Math.floor(Math.random() * 0xffffffff);
   }
   return [...values].map((number) => CARD_CODE_ALPHABET[number % CARD_CODE_ALPHABET.length]).join('');
 }
@@ -112,7 +122,7 @@ function bestKey() {
 
 function readBest() {
   try {
-    const value = Number(localStorage.getItem(bestKey()) || 0);
+    const value = Number(globalThis.localStorage?.getItem(bestKey()) || 0);
     return Number.isFinite(value) && value >= 0 ? value : 0;
   } catch {
     return 0;
@@ -120,15 +130,59 @@ function readBest() {
 }
 
 function writeBest(value) {
+  try { globalThis.localStorage?.setItem(bestKey(), String(value)); } catch {}
+}
+
+function saveKey(cardMode = mode, cardCode = code) {
+  return `${SAVE_PREFIX}${cardMode}:${cardCode}`;
+}
+
+function validMarkedIndex(index) {
+  return Number.isInteger(index) && index >= 0 && index < 25;
+}
+
+function readSavedMarks(cardMode = mode, cardCode = code) {
   try {
-    localStorage.setItem(bestKey(), String(value));
-  } catch {}
+    const raw = globalThis.localStorage?.getItem(saveKey(cardMode, cardCode));
+    if (!raw) return { marks: new Set([12]), restored: false };
+    const payload = JSON.parse(raw);
+    if (payload?.version !== SAVE_VERSION || payload.mode !== cardMode || payload.code !== cardCode || !Array.isArray(payload.marked)) {
+      throw new Error('Saved bingo card is invalid.');
+    }
+    const unique = [...new Set(payload.marked)];
+    if (unique.some((index) => !validMarkedIndex(index))) throw new Error('Saved bingo marks are invalid.');
+    const marks = new Set(unique);
+    marks.add(12);
+    return { marks, restored: marks.size > 1 };
+  } catch (error) {
+    console.warn('Discarding invalid bingo save.', error);
+    try { globalThis.localStorage?.removeItem(saveKey(cardMode, cardCode)); } catch {}
+    return { marks: new Set([12]), restored: false };
+  }
+}
+
+function persistMarks() {
+  try {
+    const payload = { version: SAVE_VERSION, mode, code, marked: [...marked].sort((a, b) => a - b) };
+    if (marked.size <= 1) globalThis.localStorage?.removeItem(saveKey());
+    else globalThis.localStorage?.setItem(saveKey(), JSON.stringify(payload));
+  } catch (error) {
+    console.warn('Bingo autosave unavailable.', error);
+  }
+}
+
+function removeSavedMarks() {
+  try { globalThis.localStorage?.removeItem(saveKey()); } catch {}
 }
 
 function safeReplaceUrl() {
-  try {
-    history.replaceState(null, '', `?mode=${encodeURIComponent(mode)}&card=${encodeURIComponent(code)}`);
-  } catch {}
+  try { globalThis.history?.replaceState?.(null, '', `?mode=${encodeURIComponent(mode)}&card=${encodeURIComponent(code)}`); } catch {}
+}
+
+function updateCellAccessibility(element, index) {
+  if (index === 12) return;
+  const state = marked.has(index) ? 'marked' : 'not marked';
+  element.setAttribute('aria-label', `Bingo square ${index + 1}: ${element.textContent}. ${state}.`);
 }
 
 function update() {
@@ -138,12 +192,17 @@ function update() {
   const nextBest = Math.max(readBest(), completed.length);
   writeBest(nextBest);
   bestEl.textContent = String(nextBest);
+  board.classList.toggle('has-bingo', completed.length > 0);
   board.querySelectorAll('.cell').forEach((element, index) => {
     element.classList.toggle('line', completed.some((pattern) => pattern.includes(index)));
+    updateCellAccessibility(element, index);
   });
+  clearButton.disabled = marked.size <= 1;
   announce.textContent = completed.length
-    ? `BINGO! ${completed.length} completed line${completed.length === 1 ? '' : 's'}.`
-    : 'Mark a square when it happens.';
+    ? `BINGO! ${completed.length} completed line${completed.length === 1 ? '' : 's'}. Progress saved on this device.`
+    : marked.size > 1
+      ? 'Card progress saved on this device.'
+      : 'Mark a square when it happens.';
 }
 
 function render() {
@@ -158,15 +217,20 @@ function render() {
       button.classList.add('free');
       button.disabled = true;
       button.setAttribute('aria-pressed', 'true');
+      button.setAttribute('aria-label', 'Center free space, marked.');
     } else {
       const prompt = cells[promptIndex++];
       if (!prompt?.text) throw new Error('A bingo square is missing prompt text.');
       button.textContent = prompt.text;
       button.setAttribute('aria-pressed', String(marked.has(index)));
+      updateCellAccessibility(button, index);
       button.addEventListener('click', () => {
         if (marked.has(index)) marked.delete(index);
         else marked.add(index);
         button.setAttribute('aria-pressed', String(marked.has(index)));
+        button.classList.remove('mark-pop');
+        requestAnimationFrame(() => button.classList.add('mark-pop'));
+        persistMarks();
         update();
       });
     }
@@ -175,17 +239,47 @@ function render() {
   update();
 }
 
+function clearClearArm() {
+  clearArmedUntil = 0;
+  clearTimeout(clearResetTimer);
+  clearResetTimer = null;
+  clearButton.textContent = 'Clear marks';
+  clearButton.removeAttribute('data-armed');
+}
+
+function clearMarks() {
+  if (marked.size <= 1) return;
+  const now = Date.now();
+  if (now > clearArmedUntil) {
+    clearArmedUntil = now + 3500;
+    clearButton.textContent = 'Confirm clear';
+    clearButton.dataset.armed = 'true';
+    announce.textContent = 'Tap Confirm clear within 3.5 seconds to erase this card’s saved marks.';
+    clearTimeout(clearResetTimer);
+    clearResetTimer = setTimeout(clearClearArm, 3600);
+    return;
+  }
+  marked = new Set([12]);
+  removeSavedMarks();
+  clearClearArm();
+  render();
+  announce.textContent = 'Marks cleared for this card.';
+}
+
 function loadCard(nextCode) {
   const normalized = normalizeCardCode(nextCode);
   if (!isValidCardCode(normalized)) return false;
+  clearClearArm();
   code = normalized;
   codeInput.value = code;
   codeInput.setAttribute('aria-invalid', 'false');
   codeReadout.textContent = code;
   cells = makeCard(code);
-  marked = new Set([12]);
+  const saved = readSavedMarks(mode, code);
+  marked = saved.marks;
   render();
   safeReplaceUrl();
+  if (saved.restored) announce.textContent = `Saved progress restored for card ${code}.`;
   return true;
 }
 
@@ -225,8 +319,9 @@ function renderModes() {
   }
 }
 
-document.querySelector('#new').addEventListener('click', () => loadCard(randomCode()));
+newButton.addEventListener('click', () => loadCard(randomCode()));
 document.querySelector('#load').addEventListener('click', loadEnteredCode);
+clearButton.addEventListener('click', clearMarks);
 codeInput.addEventListener('input', () => {
   codeInput.value = normalizeCardCode(codeInput.value);
   codeInput.setAttribute('aria-invalid', String(codeInput.value.length > 0 && !isValidCardCode(codeInput.value)));
@@ -234,7 +329,7 @@ codeInput.addEventListener('input', () => {
 codeInput.addEventListener('keydown', (event) => {
   if (event.key === 'Enter') loadEnteredCode();
 });
-document.querySelector('#copy').addEventListener('click', async () => {
+copyButton.addEventListener('click', async () => {
   const url = `${location.origin}${location.pathname}?mode=${encodeURIComponent(mode)}&card=${encodeURIComponent(code)}`;
   const text = `Grow Room Bingo card ${code} · mode ${mode}\n${url}`;
   try {
