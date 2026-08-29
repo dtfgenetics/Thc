@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-271",
+  "number":271,
+  "title":"Low-Light Etiolation and Stretch",
+  "objective":"Explain elongation under insufficient or poorly distributed light and distinguish true etiolation from shade avoidance, genotype, temperature effects, crowding, and normal developmental transition.",
+  "terms":[
+    {"term":"etiolation","definition":"A developmental syndrome produced by darkness or extremely low light, typically involving elongated weak shoots, limited chlorophyll, and altered leaf development."},
+    {"term":"shade avoidance","definition":"A regulated architectural response to signals of neighboring vegetation or canopy shade, often involving internode and petiole elongation."},
+    {"term":"internode","definition":"The stem segment between two successive nodes."},
+    {"term":"red:far-red ratio","definition":"The ratio of red to far-red radiation in a defined spectral measurement, used as one indicator of phytochrome-related shade signaling."},
+    {"term":"daily light integral","definition":"The cumulative photosynthetic photon exposure received per unit area over a day."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "True etiolation is most accurately reserved for development in darkness or extremely low light. The 'stretch' seen in indoor cannabis more often combines photon supply, canopy geometry, spectral signaling, temperature, plant density, genotype, and developmental stage rather than one single low-light mechanism.",
+    "In a controlled vegetative cannabis study spanning approximately 135 to 1,430 µmol·m⁻²·s⁻¹ canopy PPFD, internode length decreased linearly as light intensity increased, while stem thickness and aboveground dry mass increased toward asymptotes. Lower-light plants were generally more open and elongated, but the authors explicitly framed the preferred architecture as genotype- and production-scenario dependent.",
+    "Shade signaling and carbon limitation are related but not identical. A plant can elongate because neighboring tissue changes spectral cues before total daily photons become severely limiting, while a genuinely low DLI can also constrain photosynthesis, root growth, stem diameter, and leaf development.",
+    "Long internodes do not by themselves diagnose low-light injury. Genetics, warm temperatures, flowering transition, plant spacing, pruning history, and red:far-red conditions can all alter elongation. Measurement must therefore separate plant form from the environmental mechanism proposed to explain it.",
+    "A correction that abruptly raises light can create a new acclimation problem. The diagnostic goal is to establish whether photon quantity, distribution, spectrum, density, or development is limiting before changing fixture output."
+  ],
+  "cultivationRelevance":[
+    "Measure PPFD and DLI across the actual canopy, including lower and edge zones, rather than using fixture wattage or a single center reading.",
+    "Track internode length by node and developmental stage so normal transition growth is distinguishable from progressive elongation under a persistent light or spacing problem.",
+    "Review plant density, neighboring canopy, fixture geometry, spectrum method, temperature, and pruning history before calling a tall phenotype light-starved.",
+    "When increasing light, record the rate and timing of change and watch new growth rather than expecting existing elongated internodes to shorten."
+  ],
+  "measureAndRecord":[
+    {"field":"Photon environment","requirement":"Record calibrated PPFD grid, DLI, photoperiod, fixture settings, canopy distance, and the spectral method if red:far-red is being interpreted."},
+    {"field":"Architecture","requirement":"Record node number, internode length by node, stem diameter, plant height, branch number, leaf area or canopy spread, and plant density."},
+    {"field":"Development","requirement":"Record clone/seed origin, genotype, vegetative or reproductive transition stage, pruning/training history, and age."},
+    {"field":"Environment","requirement":"Record air and leaf temperature, RH/VPD method, airflow, CO2 context, and crowding or neighboring canopy."},
+    {"field":"Response","requirement":"After a supported correction, record new internode length, stem growth, leaf development, and whether elongation stabilizes without new high-light injury."
+    }
+  ],
+  "misconceptions":[
+    "Every tall cannabis plant is light-starved.",
+    "Long internodes prove low PPFD without considering genotype or flowering transition.",
+    "Adding more blue light always fixes stretch.",
+    "Low light affects only plant height and not carbon balance, roots, or stem development.",
+    "Existing stretched internodes should shorten after the environment is corrected."
+  ],
+  "evidenceLimits":[
+    "The strongest cannabis evidence for vegetative light-intensity effects comes from specific genotypes and production systems. No universal internode length or PPFD defines low-light injury, and red:far-red responses depend on spectrum measurement, genotype, density, temperature, and stage."
+  ],
+  "crossLinks":"THC-ENC-270 for high-light injury; THC-ENC-101–120 for lighting and photobiology; THC-ENC-196–197 for canopy density and light distribution; THC-ENC-195 for training across reproductive transition.",
+  "sourceNotes":[
+    "Light intensity can be used to modify the growth and morphological characteristics of cannabis during the vegetative stage of indoor production (Industrial Crops and Products, 2022). Clonal cannabis grown across approximately 135–1,430 µmol·m⁻²·s⁻¹ PPFD showed decreasing internode length with increasing light and broad architecture changes.",
+    "Supplemental greenhouse lighting increased the water use efficiency, crop growth, and cutting production in Cannabis sativa (Frontiers in Plant Science, 2024). Demonstrated that architecture responses can differ among traits and lighting contexts.",
+    "Controlled Volume 14 manuscript v1.0 requires true etiolation, shade avoidance, photon quantity, spectral signaling, genotype, crowding, temperature, and developmental transition to remain separate diagnostic explanations."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 14 batch 03 controlled web derivative","driveSourceDocumentId":"1mbN8hq4g6jZUgW0bkwZBSXotPqZ7c184kOya5SqdtJA","evidenceControl":"controlled_manuscript_plus_direct_cannabis_vegetative_light_architecture_sources","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_low_light_shade_architecture_photomorphogenesis","releaseTimeReview":"completed_2026-08-29_no_universal_stretch_threshold_and_true_etiolation_boundary","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"low-light-etiolation-and-stretch",
+  "route":"/encyclopedia/low-light-etiolation-and-stretch"
+}
