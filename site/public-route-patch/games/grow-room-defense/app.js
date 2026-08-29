@@ -229,7 +229,6 @@ function render() {
   renderLanes();
   renderFeedback();
   renderHistory();
-  ui.code.disabled = state.status !== 'playing';
 }
 
 function resetGame(code) {
