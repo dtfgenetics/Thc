@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "shiftSeconds": 75,
+  "queueSize": 4,
+  "stations": [
+    {"id":"tag","label":"Tag Station","short":"TAG","mark":"T","description":"Match the batch ticket before it moves on."},
+    {"id":"trim","label":"Trim Table","short":"TRIM","mark":"✂","description":"A fast arcade sorting step; no real-world trim method is represented."},
+    {"id":"rack","label":"Rack Bay","short":"RACK","mark":"R","description":"Move the game batch to its next visual staging slot."},
+    {"id":"pack","label":"Pack Bench","short":"PACK","mark":"P","description":"Finish the fictional order and bank its score."}
+  ],
+  "batches": [
+    {"id":"blue-orbit","label":"Blue Orbit","theme":"Berry","value":120,"patience":18,"steps":["tag","trim","rack","pack"]},
+    {"id":"mango-circuit","label":"Mango Circuit","theme":"Tropical","value":110,"patience":16,"steps":["tag","rack","trim","pack"]},
+    {"id":"velvet-kush","label":"Velvet Kush","theme":"Earth","value":135,"patience":20,"steps":["tag","trim","pack"]},
+    {"id":"solar-skunk","label":"Solar Skunk","theme":"Citrus","value":105,"patience":15,"steps":["tag","rack","pack"]},
+    {"id":"grape-static","label":"Grape Static","theme":"Fruit","value":125,"patience":18,"steps":["tag","trim","rack","pack"]},
+    {"id":"frost-compass","label":"Frost Compass","theme":"Frost","value":145,"patience":21,"steps":["tag","rack","trim","pack"]},
+    {"id":"ruby-engine","label":"Ruby Engine","theme":"Gas","value":130,"patience":17,"steps":["tag","trim","pack"]},
+    {"id":"cloud-nectar","label":"Cloud Nectar","theme":"Floral","value":115,"patience":19,"steps":["tag","rack","pack"]},
+    {"id":"lime-foundry","label":"Lime Foundry","theme":"Citrus","value":140,"patience":16,"steps":["tag","trim","rack","pack"]},
+    {"id":"night-orchard","label":"Night Orchard","theme":"Fruit","value":150,"patience":22,"steps":["tag","rack","trim","pack"]},
+    {"id":"ember-grove","label":"Ember Grove","theme":"Earth","value":100,"patience":14,"steps":["tag","trim","pack"]},
+    {"id":"dawn-haze","label":"Dawn Haze","theme":"Floral","value":155,"patience":20,"steps":["tag","trim","rack","pack"]}
+  ]
+}
