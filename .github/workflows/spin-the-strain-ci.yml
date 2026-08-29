@@ -64,6 +64,6 @@ jobs:
           const game = JSON.parse(fs.readFileSync('games/spin-the-strain/game.json','utf8'));
           if (game.status !== 'browser-vertical-slice') throw new Error('unexpected game status');
           if (game.route !== '/games/spin-the-strain/') throw new Error('unexpected route');
-          if (game.releaseGates.deploymentRegistered !== false) throw new Error('unreviewed game must not be production registered');
+          if (game.releaseGates.deploymentRegistered !== true) throw new Error('deploymentRegistered must stay true once the game is registered in the DTFSeeds public app contract');
           if (game.releaseGates.browserTested !== false) throw new Error('browserTested must remain false until browser QA is actually completed');
           NODE
