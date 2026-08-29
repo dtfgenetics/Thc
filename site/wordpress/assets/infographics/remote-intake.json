@@ -1,15 +1,15 @@
 {
   "schemaVersion": 1,
-  "purpose": "Controlled intake of reviewed THC educational images sourced from Google Drive.",
-  "workflowStatus": "drive-direct-download-probe-clean-runner",
+  "purpose": "Controlled provenance record for reviewed THC educational images sourced from Google Drive.",
+  "workflowStatus": "canonical-reconciliation",
   "policy": {
     "allowedExtensions": [".png", ".jpg", ".jpeg"],
     "rejectWebp": true,
     "publishOnlyEnabled": true,
     "destinationDirectory": "site/wordpress/assets/infographics",
-    "notes": "Single clean-runner probe of a confirmed missing 300-DPI master. Draft, review-required, QA-required, superseded, dashboard, mood-board, historical-proof, and quarantine assets remain excluded."
+    "notes": "Direct private-Drive transport is disabled because Google returns HTML/auth responses instead of image bytes. Draft, review-required, QA-required, superseded, dashboard, mood-board, historical-proof, and quarantine assets remain excluded from public publication."
   },
   "entries": [
-    {"filename":"THC-C008_Infographic_Flower_Anatomy_Reproduction_300dpi.png","url":"https://drive.google.com/uc?export=download&id=16ZxZlXWgxCw1ysg-CKIJp9D4rDQIvMlL","enabled":true,"source":"Google Drive 300-DPI production master"}
+    {"filename":"THC-C008_Infographic_Flower_Anatomy_Reproduction_300dpi.png","url":"https://drive.google.com/uc?export=download&id=16ZxZlXWgxCw1ysg-CKIJp9D4rDQIvMlL","enabled":false,"source":"Google Drive 300-DPI production master; direct-download probe failed safely; reconcile via Git-resident source or direct canonical transfer"}
   ]
 }
