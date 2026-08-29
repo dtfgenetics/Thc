@@ -4,11 +4,15 @@ import { pathToFileURL } from 'node:url';
 
 // Canonical owner-chain trigger: V3 base owners -> V4 guided learning -> subject V6 finalizers.
 const sourcePath = process.env.CANONICAL_TOPIC_LITERATURE_PATH || 'site/wordpress/education/topic-literature.json';
+const guidePath = process.env.INFOGRAPHIC_LEARNING_GUIDES || 'site/wordpress/assets/infographics/infographic-learning-guides.json';
 const normalizedPath = process.env.NORMALIZED_TOPIC_LITERATURE_PATH || '/tmp/dtf-topic-literature-v3-normalized.json';
 const publisherPath = process.env.LEARNING_V3_PUBLISHER_PATH || 'scripts/rebuild-wordpress-learning-experience-v3.mjs';
 const normalizedPublisherPath = process.env.NORMALIZED_LEARNING_V3_PUBLISHER_PATH || '/tmp/rebuild-wordpress-learning-experience-v3-normalized.mjs';
 const source = JSON.parse(await readFile(sourcePath, 'utf8'));
+const learning = JSON.parse(await readFile(guidePath, 'utf8'));
 if (!Array.isArray(source?.topics) || !source.topics.length) throw new Error('Canonical topic literature is empty');
+if (!Array.isArray(learning?.guides) || learning.guides.length < 10) throw new Error('Infographic learning guide catalog is incomplete');
+const guideById = new Map(learning.guides.map(guide => [guide.id, guide]));
 
 const rules = [
   { id: 'plant-biology', terms: ['plant biology'] },
@@ -27,19 +31,34 @@ const rules = [
 
 const used = new Set();
 const topics = source.topics.map(topic => {
+  const guide = guideById.get(topic.id);
+  if (!guide) throw new Error(`Canonical topic ${topic.id} has no infographic learning guide`);
+  if (!guide.whyItMatters || !guide.commonTrap || !Array.isArray(guide.studyQuestions) || guide.studyQuestions.length < 3 || !Array.isArray(guide.measurements) || guide.measurements.length < 3) {
+    throw new Error(`Infographic learning guide ${topic.id} is incomplete`);
+  }
+  const studySection = {
+    heading: `How to study ${topic.title}`,
+    paragraphs: [guide.whyItMatters, `Common interpretation trap: ${guide.commonTrap}`],
+    checkpoints: [
+      ...guide.studyQuestions.map(question => `Question: ${question}`),
+      ...guide.measurements.slice(0, 5).map(measurement => `Record: ${measurement}`)
+    ]
+  };
+  const enriched = { ...topic, sections: [studySection, ...(topic.sections || [])] };
   const hay = `${topic.id || ''} ${topic.title || ''}`.toLowerCase();
   const rule = rules.find(candidate => !used.has(candidate.id) && candidate.terms.some(term => hay.includes(term)));
-  if (!rule) return topic;
+  if (!rule) return enriched;
   used.add(rule.id);
-  return { ...topic, id: rule.id, canonicalSourceId: topic.id };
+  return { ...enriched, id: rule.id, canonicalSourceId: topic.id };
 });
 
 const required = ['plant-biology','genetics-breeding','lifecycle-propagation','environment-vpd','lighting','water-root-zone','nutrition-media','training-canopy','plant-health-ipm','harvest-postharvest','outdoor-cultivation','evidence-measurement'];
 const ids = new Set(topics.map(topic => topic.id));
 const missing = required.filter(id => !ids.has(id));
 if (missing.length) throw new Error(`Could not normalize required THC topics: ${missing.join(', ')}`);
+if (topics.some(topic => !Array.isArray(topic.sections) || !topic.sections[0]?.heading?.startsWith('How to study '))) throw new Error('Learning V3 normalized topics are missing study-guide sections');
 
-await writeFile(normalizedPath, `${JSON.stringify({ ...source, normalizedFor: 'learning-v3', topics }, null, 2)}\n`);
+await writeFile(normalizedPath, `${JSON.stringify({ ...source, normalizedFor: 'learning-v3', studyGuides: true, topics }, null, 2)}\n`);
 process.env.TOPIC_LITERATURE_PATH = normalizedPath;
 
 // Subject hero images are intentionally strict. A polished branded subject panel is preferable
