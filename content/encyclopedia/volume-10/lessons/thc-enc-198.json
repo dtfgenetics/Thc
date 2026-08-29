@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-198",
+  "number":198,
+  "title":"Training Autos Versus Photoperiod Plants",
+  "objective":"Compare canopy-training decisions in autoflowering and photoperiod-sensitive cannabis by developmental timing, recovery opportunity, genotype, and measurable plant response rather than fixed calendar rules.",
+  "terms":[
+    {"term":"autoflowering","definition":"A cannabis phenotype in which reproductive development is comparatively less dependent on a short-day photoperiod and more strongly linked to developmental age and genotype."},
+    {"term":"photoperiod-sensitive","definition":"A phenotype in which daylength and especially uninterrupted night length strongly influence reproductive transition."},
+    {"term":"recovery window","definition":"The period available for a plant to resume active growth after an intervention before later developmental demands limit compensation."},
+    {"term":"developmental clock","definition":"The genotype- and environment-dependent progression through plant developmental states; it is not a literal fixed timer."},
+    {"term":"training intensity","definition":"The combined severity, frequency, and tissue disruption produced by canopy-management interventions."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Photoperiod-sensitive plants can often be maintained in vegetative conditions by controlling daylength, allowing the grower to extend vegetative development before inducing flowering. This can provide more scheduling flexibility for recovery from structural training.",
+    "Autoflowering or day-neutral plants transition toward reproduction with less dependence on a short-day cue. Because the grower has less ability to postpone reproductive development through photoperiod alone, time lost to severe stress can consume a larger fraction of the available vegetative growth period.",
+    "Autoflowering is not a guarantee of a fixed flowering day. Genetic background, environment, plant vigor, container/root-zone conditions, and stress can shift visible developmental timing.",
+    "Low-injury methods such as gentle positioning may impose less recovery cost than topping, severe bending, or major defoliation, but treatment response still varies by genotype and plant condition.",
+    "The scientifically useful comparison is not 'autos cannot be trained' versus 'train them exactly like photos.' It is whether a specific plant has enough vigor and developmental time to recover from a defined intervention."
+  ],
+  "cultivationRelevance":[
+    "For autoflowering material, prioritize early observation and conservative interventions when the benefit is uncertain because lost growth time may be difficult to recover.",
+    "For photoperiod-sensitive plants, do not confuse the ability to extend vegetative duration with unlimited tolerance for repeated injury.",
+    "Use developmental stage and current vigor rather than plant age alone when deciding whether additional training is appropriate.",
+    "Keep cultivar-specific records; autoflowering and photoperiod categories contain substantial genetic and architectural variation."
+  ],
+  "measureAndRecord":[
+    {"field":"Phenology","requirement":"Record genotype/cultivar, germination or propagation date, first preflowers, visible reproductive transition, and major training dates."},
+    {"field":"Intervention severity","requirement":"Describe whether treatment involved positioning, tying, topping, stem injury, or leaf removal and how much tissue was affected."},
+    {"field":"Recovery","requirement":"Track leaf turgor, new shoot expansion, height/width change, and days until active growth resumes."},
+    {"field":"Developmental overlap","requirement":"Record whether recovery occurred before, during, or after visible reproductive transition rather than assuming a universal week number."},
+    {"field":"Outcome","requirement":"Compare canopy area, harvest mass, and quality using equivalent plants and consistent normalization when evaluating a training method."
+    }
+  ],
+  "misconceptions":[
+    "Autoflowering plants cannot be trained at all.",
+    "Autoflowering plants should always receive the same high-stress training schedule as photoperiod plants.",
+    "Every autoflower begins flowering on one fixed day after germination.",
+    "Photoperiod plants can recover indefinitely from repeated stress because vegetative time can be extended.",
+    "A training result from one autoflower cultivar applies to all day-neutral genetics."
+  ],
+  "evidenceLimits":[
+    "Cannabis genetics and flowering research supports a biological distinction between photoperiod-sensitive and day-neutral/autoflowering reproductive behavior. Direct trials comparing standardized training intensities across matched auto and photoperiod cultivars remain limited, so no universal topping date, node count, or recovery interval is established."
+  ],
+  "crossLinks":"THC-ENC-181–197 for canopy interventions; THC-ENC-199 for recovery assessment; THC-ENC-201–204 for reproductive transition, photoperiod response, autoflowering, and maturity.",
+  "sourceNotes":[
+    "Cannabis flowering and genetic literature supports the distinction between photoperiod-responsive and day-neutral/autoflowering phenotypes; this distinction does not imply identical timing among all cultivars.",
+    "Cannabis architecture studies support genotype- and treatment-dependent canopy responses rather than universal training prescriptions.",
+    "The practical recovery-window concept is presented as a decision framework, not as a fixed number of days."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 10 batch 03 controlled web derivative","evidenceControl":"current_topic_secondary_review_complete","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_flowering_genetics_and_horticulture","releaseTimeReview":"completed_2026-08-29_auto_photo_training_and_non_universal_timing_claims","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"training-autos-versus-photoperiod-plants",
+  "route":"/encyclopedia/training-autos-versus-photoperiod-plants"
+}

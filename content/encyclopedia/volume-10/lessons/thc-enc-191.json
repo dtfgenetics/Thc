@@ -1,0 +1,55 @@
+{
+  "id":"THC-ENC-191",
+  "number":191,
+  "title":"Leaf Tucking and Non-Destructive Canopy Adjustment",
+  "objective":"Use leaf tucking as a reversible canopy adjustment, understand what it can and cannot change, and document whether repositioning improves access to light, airflow, or inspection without unnecessary leaf removal.",
+  "terms":[
+    {"term":"leaf tucking","definition":"Temporary repositioning of an intact leaf or petiole beneath or around nearby shoots or support material rather than removing the leaf."},
+    {"term":"petiole","definition":"The stalk that connects a leaf blade to the stem."},
+    {"term":"canopy porosity","definition":"The amount and distribution of open space that permits light and air movement through a canopy."},
+    {"term":"source leaf","definition":"A photosynthetically active leaf that exports carbohydrates to other plant organs."},
+    {"term":"reversible intervention","definition":"A treatment that can be changed or undone with little permanent tissue loss when performed without injury."}
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Leaf tucking changes leaf position, not leaf number. The tucked leaf generally remains photosynthetically active, so the intervention redistributes local shading while preserving source tissue.",
+    "Leaves and petioles continually adjust orientation in response to light, gravity, growth, and neighboring organs. A tucked leaf may therefore move back toward an exposed position as the canopy grows.",
+    "Repositioning one leaf can increase direct light to a nearby shoot while reducing light on another surface. The useful question is not whether a site looks brighter, but how whole-canopy light distribution changes.",
+    "Tucking can also open a small inspection or airflow corridor, but it does not replace adequate plant spacing, air exchange, or broader canopy management when congestion is severe.",
+    "Direct controlled cannabis research specifically comparing leaf tucking treatments is limited. The practice is best treated as a low-injury, testable canopy adjustment rather than a proven yield-enhancement technique."
+  ],
+  "cultivationRelevance":[
+    "Use tucking when the goal can be met by repositioning healthy foliage instead of removing it.",
+    "Avoid sharply folding, crushing, or trapping petioles against rigid supports; tissue damage changes a non-destructive intervention into a wound.",
+    "Recheck tucked leaves as shoots elongate because canopy geometry can change quickly.",
+    "Compare the same canopy locations before and after treatment when deciding whether tucking meaningfully improved light access or inspection."
+  ],
+  "measureAndRecord":[
+    {"field":"Reason for adjustment","requirement":"Record whether the target was light access, inspection access, airflow, or avoiding unnecessary defoliation."},
+    {"field":"Canopy position","requirement":"Identify the branch, node, or mapped canopy zone where the leaf was repositioned."},
+    {"field":"Leaf condition","requirement":"Record petiole angle, visible pinching, tearing, discoloration, or loss of turgor after adjustment."},
+    {"field":"Light response","requirement":"When a meter is available, repeat PPFD readings at the same target location before and after adjustment under the same fixture and dimming state."},
+    {"field":"Persistence","requirement":"Note whether the leaf remained positioned, returned toward its original orientation, or required repeated adjustment."
+    }
+  ],
+  "misconceptions":[
+    "Leaf tucking permanently fixes canopy shading.",
+    "A tucked leaf stops contributing photosynthesis.",
+    "Any flower site exposed to direct light must increase final yield.",
+    "Leaf tucking can compensate for poor plant spacing or inadequate air exchange.",
+    "Leaf tucking has a universal schedule that applies to every cultivar and growth stage."
+  ],
+  "evidenceLimits":[
+    "Controlled cannabis trials isolating leaf tucking as a treatment are scarce. Physiological interpretation relies mainly on established leaf-function and canopy-light principles plus cannabis canopy studies that examine architecture more broadly. No universal yield benefit, frequency, or timing rule is established."
+  ],
+  "crossLinks":"THC-ENC-061–080 for photosynthesis and source-sink physiology; THC-ENC-101–120 for canopy light; THC-ENC-190 for defoliation; THC-ENC-194–200 for canopy spacing, depth, airflow, recovery, and measurement.",
+  "sourceNotes":[
+    "Danziger N, Bernstein N. (2021). Shape Matters: Plant Architecture Affects Chemical Uniformity in Large-Size Medical Cannabis Plants. Plants 10(9):1834. Supports the importance of architecture and canopy position; it is not a leaf-tucking trial.",
+    "General plant-physiology literature on leaf orientation, source leaves, and canopy light interception is used as mechanistic context where cannabis-specific treatment evidence is absent.",
+    "No source is used to claim that leaf tucking alone guarantees increased yield or quality."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 10 batch 03 controlled web derivative","evidenceControl":"current_topic_secondary_review_complete","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"canopy_physiology_and_cannabis_horticulture","releaseTimeReview":"completed_2026-08-29_reversible_intervention_and_non_universal_claims","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"leaf-tucking-and-non-destructive-canopy-adjustment",
+  "route":"/encyclopedia/leaf-tucking-and-non-destructive-canopy-adjustment"
+}

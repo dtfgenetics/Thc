@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-195",
+  "number":195,
+  "title":"Canopy Depth and Light Attenuation",
+  "objective":"Measure how light decreases through a cannabis canopy and use canopy depth, PPFD profiles, and tissue response to distinguish productive leaf area from deeply shaded growth.",
+  "terms":[
+    {"term":"canopy depth","definition":"The vertical distance from the top of the photosynthetically active canopy to its lower functional foliage."},
+    {"term":"light attenuation","definition":"The reduction in photon flux as light is intercepted, absorbed, reflected, or scattered by leaves and other plant surfaces."},
+    {"term":"PPFD","definition":"Photosynthetic photon flux density: the number of photosynthetically active photons arriving at a surface each second, typically expressed in micromoles per square meter per second."},
+    {"term":"extinction coefficient","definition":"A canopy-model parameter describing how rapidly light is attenuated with increasing leaf area; it depends on leaf angle, arrangement, and optical properties and is not a universal cannabis constant."},
+    {"term":"sunfleck","definition":"A brief localized increase in light within a shaded canopy caused by gaps or changing geometry."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Light typically declines with depth because upper leaves intercept part of the incoming radiation before it can reach lower layers. The decline is not a simple fixed percentage per node or per centimeter.",
+    "Leaf angle, leaf-area density, branch arrangement, fixture geometry, side lighting, reflective surfaces, and plant movement all influence the light profile. Two canopies of equal height can therefore have very different internal photon distributions.",
+    "Canopy-light models often describe attenuation with exponential relationships related to cumulative leaf area. These models are useful concepts, but their coefficients must be measured or justified for the actual canopy rather than copied as universal cannabis values.",
+    "Deeply shaded leaves may contribute less net carbon gain while continuing to transpire and occupy space. However, visual shade alone does not prove that a leaf is a net carbon cost; physiological thresholds vary with acclimation, leaf age, environment, and genotype.",
+    "A vertical PPFD profile paired with canopy geometry and final tissue measurements is more informative than a single top-canopy reading when evaluating training, density, or lighting changes."
+  ],
+  "cultivationRelevance":[
+    "Measure representative top, middle, and lower canopy positions using the same grid and fixture settings when comparing treatments.",
+    "Avoid using one PPFD value measured at canopy top to describe the entire plant light environment.",
+    "Use depth measurements together with leaf and branch distribution to decide whether training, spacing, or selective removal is actually improving light access.",
+    "Re-map the canopy after major growth, training, or fixture changes because the internal light field is dynamic."
+  ],
+  "measureAndRecord":[
+    {"field":"Canopy boundaries","requirement":"Define the top and lower functional canopy boundaries and record total depth at repeatable mapped locations."},
+    {"field":"Vertical PPFD profile","requirement":"Measure photon flux at standardized depths or height bands with fixture output, photoperiod state, and sensor orientation held constant."},
+    {"field":"Canopy geometry","requirement":"Record plant height, width, branch distribution, major gaps, and obvious leaf-density differences that may explain light patterns."},
+    {"field":"Repeated mapping","requirement":"Repeat measurements after training, canopy closure, or major stretch using the same coordinates whenever possible."},
+    {"field":"Outcome linkage","requirement":"If evaluating production response, associate mapped canopy zones with harvest position, dry mass, or quality samples without claiming causation from correlation alone."
+    }
+  ],
+  "misconceptions":[
+    "Cannabis light intensity drops by one fixed percentage at every node.",
+    "Canopy height alone determines light penetration.",
+    "A bright top-canopy PPFD reading proves that lower leaves receive adequate light.",
+    "Every shaded leaf should be removed.",
+    "A single light-attenuation coefficient applies to all cultivars, training systems, and fixtures."
+  ],
+  "evidenceLimits":[
+    "Cannabis canopy and lighting studies support strong vertical and positional differences in light environment and crop response, but internal profiles depend on architecture and production system. This lesson does not establish a universal productive canopy depth or a fixed PPFD cutoff for leaf removal."
+  ],
+  "crossLinks":"THC-ENC-101–120 for light measurement and photobiology; THC-ENC-194 for spacing and closure; THC-ENC-196 for canopy orientation; THC-ENC-200 for mapping and yield interpretation.",
+  "sourceNotes":[
+    "Danziger N, Bernstein N. (2021). Shape Matters: Plant Architecture Affects Chemical Uniformity in Large-Size Medical Cannabis Plants. Plants 10(9):1834. Supports positional and architecture-related differences within large cannabis plants.",
+    "Peer-reviewed cannabis lighting studies support measuring photon environment and crop response across controlled conditions; their treatment-specific PPFD results are not converted here into a universal canopy-depth rule.",
+    "General canopy-radiation literature provides the conceptual basis for leaf-area-dependent attenuation and extinction coefficients."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 10 batch 03 controlled web derivative","evidenceControl":"current_topic_secondary_review_complete","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"canopy_physics_and_cannabis_lighting","releaseTimeReview":"completed_2026-08-29_light_attenuation_and_measurement_claims","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"canopy-depth-and-light-attenuation",
+  "route":"/encyclopedia/canopy-depth-and-light-attenuation"
+}

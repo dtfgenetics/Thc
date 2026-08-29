@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-200",
+  "number":200,
+  "title":"Canopy Measurements, Maps, and Yield Interpretation",
+  "objective":"Build repeatable canopy maps and connect geometry, light, interventions, and harvest measurements without confusing correlation, yield per plant, and yield per area.",
+  "terms":[
+    {"term":"canopy map","definition":"A spatial record of plant or crop measurements tied to defined positions within the canopy or production area."},
+    {"term":"sampling grid","definition":"A set of repeatable measurement coordinates used to reduce selective sampling and improve comparability over time."},
+    {"term":"normalization","definition":"Expressing a measurement relative to a defined denominator such as plant count, floor area, canopy area, time, or energy input."},
+    {"term":"correlation","definition":"An association between variables that does not by itself demonstrate that one variable caused the other."},
+    {"term":"replication","definition":"Independent repeated experimental units that allow treatment variation to be distinguished from ordinary biological or environmental variation."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Canopy management changes a three-dimensional structure. Measurements of height, width, depth, occupancy, shoot distribution, and light are therefore more informative when tied to repeatable coordinates rather than collected from whichever location looks representative.",
+    "A PPFD map describes the photon field at the time and geometry measured. It does not automatically predict yield because leaves differ in orientation, acclimation, duration of exposure, temperature, water status, and developmental role.",
+    "Yield per plant and yield per unit area answer different questions. Higher individual-plant yield can coexist with lower area productivity when plant density differs, and the reverse can also occur.",
+    "Before-and-after observations on one plant can document change but cannot isolate treatment causation from growth, time, environment, or other interventions. Strong treatment claims require suitable controls, replication, and consistent measurement.",
+    "A useful canopy record links intervention dates to mapped geometry, light, microclimate, recovery, and harvest position. The goal is a traceable evidence chain, not simply collecting more numbers."
+  ],
+  "cultivationRelevance":[
+    "Create a fixed grid or named canopy zones and reuse them for measurements through the crop cycle.",
+    "Record fixture settings, sensor height/orientation, and environmental conditions with every light map so later readings are comparable.",
+    "Separate plant-level and area-level performance when comparing spacing or training systems.",
+    "Use untreated controls or matched comparison plants when practical before concluding that a canopy intervention caused an observed outcome."
+  ],
+  "measureAndRecord":[
+    {"field":"Geometry map","requirement":"Record canopy footprint, height, depth, branch or shoot distribution, and the coordinates or zones used for repeat measurements."},
+    {"field":"Light map","requirement":"Record PPFD on a defined grid with fixture state, sensor orientation, measurement height or depth, and date/time."},
+    {"field":"Intervention log","requirement":"Record topping, bending, tying, defoliation, spacing changes, support changes, and other canopy interventions by date and mapped location."},
+    {"field":"Harvest map","requirement":"When studying canopy effects, preserve harvest position or zone identity through wet handling, drying, weighing, and sampling."},
+    {"field":"Normalization","requirement":"Report clearly whether outcomes are per plant, per floor area, per canopy area, per unit time, or per unit energy; do not mix denominators across comparisons."
+    }
+  ],
+  "misconceptions":[
+    "One center-canopy PPFD reading represents the entire crop.",
+    "The plant with the highest yield always belongs to the most productive spacing system.",
+    "A correlation between higher light and heavier flowers proves light alone caused the difference.",
+    "Before-and-after measurements on one plant are equivalent to a replicated experiment.",
+    "More measurements automatically create better evidence even when locations and methods are inconsistent."
+  ],
+  "evidenceLimits":[
+    "This lesson provides a measurement and interpretation framework rather than universal cannabis performance thresholds. Sensor uncertainty, spatial variation, genotype, environment, sample handling, and experimental design all affect conclusions. Strong causal claims require controls and independent replication beyond ordinary crop records."
+  ],
+  "crossLinks":"THC-ENC-101–120 for light measurement; THC-ENC-181–199 for canopy interventions; Evidence & Measurement lessons for calibration, replication, controls, uncertainty, and claim evaluation.",
+  "sourceNotes":[
+    "Cannabis architecture and lighting research supports spatial measurement of canopy position, photon environment, and crop outcomes rather than reliance on single-point observations.",
+    "NIST experimental-design and measurement principles support the distinctions among repeatability, replication, controls, calibration, uncertainty, and causal interpretation used in this lesson.",
+    "Area-normalized and plant-normalized yield are treated as separate metrics because they answer different production questions."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 10 batch 03 controlled web derivative","evidenceControl":"current_topic_secondary_review_complete","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"experimental_design_measurement_and_cannabis_horticulture","releaseTimeReview":"completed_2026-08-29_sampling_normalization_and_causal_claims","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"canopy-measurements-maps-and-yield-interpretation",
+  "route":"/encyclopedia/canopy-measurements-maps-and-yield-interpretation"
+}
