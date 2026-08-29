@@ -38,6 +38,7 @@ let state = null;
 let sceneById = new Map();
 let colorById = new Map();
 let loadedSceneId = null;
+let sceneLoadToken = 0;
 
 function escapeHtml(value = '') {
   return String(value).replace(/[&<>"']/g, (character) => ({
@@ -120,17 +121,29 @@ function decorateSvg(svg) {
 }
 
 async function loadSceneAsset() {
+  const requestToken = ++sceneLoadToken;
   const scene = currentScene();
   if (!scene) throw new Error('High Lines scene definition is missing.');
-  const response = await fetch(`./${scene.asset}`, { cache: 'no-store', credentials: 'same-origin' });
-  if (!response.ok) throw new Error(`Scene SVG HTTP ${response.status}`);
-  const text = await response.text();
-  const doc = new DOMParser().parseFromString(text, 'image/svg+xml');
-  if (doc.querySelector('parsererror')) throw new Error('Scene SVG could not be parsed.');
-  const svg = doc.documentElement;
-  if (svg.localName !== 'svg' || svg.querySelector('script, foreignObject')) throw new Error('Scene SVG failed the safe-inline contract.');
-  loadedSceneId = scene.id;
-  decorateSvg(document.importNode(svg, true));
+  const requestedSceneId = scene.id;
+
+  try {
+    const response = await fetch(`./${scene.asset}`, { cache: 'no-store', credentials: 'same-origin' });
+    if (!response.ok) throw new Error(`Scene SVG HTTP ${response.status}`);
+    const text = await response.text();
+    if (requestToken !== sceneLoadToken || !state || state.sceneId !== requestedSceneId) return;
+
+    const doc = new DOMParser().parseFromString(text, 'image/svg+xml');
+    if (doc.querySelector('parsererror')) throw new Error('Scene SVG could not be parsed.');
+    const svg = doc.documentElement;
+    if (svg.localName !== 'svg' || svg.querySelector('script, foreignObject')) throw new Error('Scene SVG failed the safe-inline contract.');
+    if (requestToken !== sceneLoadToken || state.sceneId !== requestedSceneId) return;
+
+    loadedSceneId = requestedSceneId;
+    decorateSvg(document.importNode(svg, true));
+  } catch (error) {
+    if (requestToken !== sceneLoadToken || !state || state.sceneId !== requestedSceneId) return;
+    throw error;
+  }
 }
 
 function renderPalette() {
