@@ -75,7 +75,10 @@ jobs:
         run: |
           set -euo pipefail
           verify() {
-            local path="$1" marker="$2" body="$RUNNER_TEMP/$(echo "$path" | tr '/?' '__').html" ok=0
+            local path="$1"
+            local marker="$2"
+            local body="$RUNNER_TEMP/$(echo "$path" | tr '/?' '__').html"
+            local ok=0
             for attempt in 1 2 3 4 5 6 7 8; do
               curl -4 -fsSL --retry 2 --retry-delay 2 \
                 -H 'Cache-Control: no-cache, no-store, max-age=0' \
@@ -134,4 +137,4 @@ jobs:
             echo 'Learning V4 is applied after the V3 cascade so its connected learning map remains the final Learn-page structure.'
           } >> "$GITHUB_STEP_SUMMARY"
 
-# Production trigger: 2026-08-28 current Learn V3 learning-map hotfix
+# Production trigger: 2026-08-28 fixed cache-busted V3/Learning V4 verifier
