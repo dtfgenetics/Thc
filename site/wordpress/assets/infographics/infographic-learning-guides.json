@@ -1,0 +1,148 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Study guidance for the Teaching Healthy Cultivation infographic library and subject pages. This content adds context without turning a visual into a diagnosis or a universal target chart.",
+  "libraryPrinciples": [
+    "Start with the biological or management question, not with a product or presumed diagnosis.",
+    "Use an infographic to build a mental model, then read the companion literature before changing a cultivation practice.",
+    "Pair visual observations with measurements, plant stage, location, history, and change over time.",
+    "When evidence conflicts, preserve the uncertainty and collect the missing information instead of forcing a conclusion."
+  ],
+  "learningPaths": [
+    {
+      "title": "Diagnose a plant problem",
+      "summary": "Move from symptom description to evidence without treating leaf appearance as proof.",
+      "topicIds": ["plant-health-ipm", "plant-biology", "water-ph-ec", "environment-vpd"],
+      "steps": ["Map where the symptom appears.", "Check plant stage and tissue function.", "Measure the root zone and environment.", "Compare biotic and abiotic explanations before acting."]
+    },
+    {
+      "title": "Build a stable indoor environment",
+      "summary": "Connect light, temperature, humidity, leaf conditions, airflow, water demand, and canopy structure.",
+      "topicIds": ["environment-vpd", "lighting", "water-ph-ec", "training-canopy"],
+      "steps": ["Map light at the crop plane.", "Measure climate across the canopy, not at one convenient point.", "Relate evaporative demand to irrigation and root capacity.", "Recheck the map as canopy height and density change."]
+    },
+    {
+      "title": "Understand the root zone",
+      "summary": "Study water, oxygen, media structure, pH, EC, mineral supply, roots, and biology as one system.",
+      "topicIds": ["plant-biology", "water-ph-ec", "nutrition-media", "plant-health-ipm"],
+      "steps": ["Describe the medium and container.", "Track irrigation and drainage.", "Measure pH and EC with a defined sampling method.", "Inspect roots and plant response before changing nutrition."]
+    },
+    {
+      "title": "Improve harvest quality",
+      "summary": "Treat harvest, drying, curing, storage, and contamination prevention as a connected quality chain.",
+      "topicIds": ["harvest-postharvest", "plant-biology", "environment-vpd", "research-measurement"],
+      "steps": ["Define maturity observations and sampling method.", "Control handling and contamination risk.", "Record drying environment and product condition.", "Use repeatable measurements to compare finished batches."]
+    },
+    {
+      "title": "Breed and document responsibly",
+      "summary": "Connect inheritance, phenotype, environment, controlled reproduction, population decisions, and evidence quality.",
+      "topicIds": ["genetics-breeding", "lifecycle-propagation", "research-measurement", "plant-biology"],
+      "steps": ["Define traits in observable or measurable terms.", "Preserve parent and population identity.", "Record the environment in which traits were expressed.", "Separate source-reported lineage from directly observed evidence."]
+    }
+  ],
+  "guides": [
+    {
+      "id": "plant-biology",
+      "whyItMatters": "Plant anatomy and physiology explain why a symptom in one organ can originate from a different part of the plant. Understanding tissue function makes later diagnosis and cultivation decisions more defensible.",
+      "studyQuestions": ["Which organ and tissue are involved?", "What function should that tissue be performing?", "Is the change local, systemic, developmental, or progressive?"],
+      "measurements": ["plant stage", "symptom location and distribution", "root condition", "leaf and air temperature", "light and water context"],
+      "commonTrap": "Naming a deficiency, disease, or stress from color alone before identifying the affected tissue and the system that supports it.",
+      "connectedTopicIds": ["lifecycle-propagation", "environment-vpd", "water-ph-ec", "plant-health-ipm"]
+    },
+    {
+      "id": "genetics-breeding",
+      "whyItMatters": "Breeding claims are only as useful as the identity, population, environment, selection criteria, and records behind them. Genetics explains potential; phenotype records show how that potential was expressed.",
+      "studyQuestions": ["What exactly is the target trait?", "How much variation exists in the evaluated population?", "Was the phenotype repeated across siblings, generations, or environments?"],
+      "measurements": ["plant and cross identity", "population size", "trait measurements", "selection decisions", "environment during evaluation"],
+      "commonTrap": "Treating a cultivar name, one exceptional plant, or an F-generation label as proof of uniformity, stability, or measured genetic identity.",
+      "connectedTopicIds": ["lifecycle-propagation", "plant-biology", "research-measurement"]
+    },
+    {
+      "id": "lifecycle-propagation",
+      "whyItMatters": "The plant's needs and vulnerabilities change with developmental stage. Propagation succeeds when water balance, roots, light, sanitation, and environment match the biology of seeds, seedlings, cuttings, and transitioning plants.",
+      "studyQuestions": ["What developmental stage is the plant actually in?", "Is root capacity keeping pace with leaf area and demand?", "What changed during the transition into the current stage?"],
+      "measurements": ["stage and chronological age", "emergence or rooting date", "root development", "light and climate", "survival and establishment rate"],
+      "commonTrap": "Managing by calendar age alone instead of developmental readiness, root function, and plant response.",
+      "connectedTopicIds": ["plant-biology", "environment-vpd", "water-ph-ec", "genetics-breeding"]
+    },
+    {
+      "id": "environment-vpd",
+      "whyItMatters": "Temperature, humidity, leaf temperature, airflow, ventilation, moisture removal, and carbon dioxide interact. Environmental numbers are most useful when they represent the conditions the canopy actually experiences.",
+      "studyQuestions": ["Where is the sensor relative to the canopy?", "How different are leaf and air temperatures?", "What happens during lights-on, lights-off, irrigation, and equipment transitions?"],
+      "measurements": ["air temperature", "relative humidity", "leaf temperature", "VPD method", "airflow or equipment state", "CO2 where applicable"],
+      "commonTrap": "Treating one room-average VPD value as a diagnosis or as a universal growth setting without plant, leaf-temperature, water, and spatial context.",
+      "connectedTopicIds": ["lighting", "water-ph-ec", "training-canopy", "plant-health-ipm"]
+    },
+    {
+      "id": "lighting",
+      "whyItMatters": "Plants respond to photons delivered across time and space, not to fixture wattage or a single center reading. Lighting decisions change photosynthesis, morphology, heat load, water demand, and canopy uniformity.",
+      "studyQuestions": ["What PPFD reaches different parts of the crop plane?", "What daily light dose follows from the actual photoperiod?", "Does the symptom pattern correspond to measured exposure?"],
+      "measurements": ["PPFD grid", "photoperiod", "DLI", "fixture height and layout", "canopy height", "leaf temperature"],
+      "commonTrap": "Using fixture wattage, manufacturer claims, or one central PPFD reading as a substitute for a measured canopy light map.",
+      "connectedTopicIds": ["environment-vpd", "training-canopy", "plant-biology", "water-ph-ec"]
+    },
+    {
+      "id": "water-ph-ec",
+      "whyItMatters": "Water quality, irrigation, pH, EC, drainage, and sampling shape the chemical and physical environment around roots. Each measurement answers a different question and needs a defined method.",
+      "studyQuestions": ["Where did this water or root-zone sample come from?", "What does the meter actually measure?", "How do irrigation timing, drainage, and plant demand change the reading?"],
+      "measurements": ["source-water pH and EC", "alkalinity or water analysis where relevant", "irrigation volume and timing", "root-zone or runoff method", "meter calibration status"],
+      "commonTrap": "Using pH, EC, PPM, hardness, and alkalinity as if they were interchangeable or assuming one runoff sample describes the entire root zone.",
+      "connectedTopicIds": ["nutrition-media", "plant-biology", "environment-vpd", "plant-health-ipm"]
+    },
+    {
+      "id": "nutrition-media",
+      "whyItMatters": "Mineral supply, media structure, water, oxygen, exchange chemistry, roots, and microbes operate together. Nutrition problems cannot be understood reliably from a bottle recipe or a symptom chart alone.",
+      "studyQuestions": ["Is the element absent, unavailable, antagonized, or simply not the primary cause?", "What are the medium's water and air properties?", "What changed in feed, roots, irrigation, or environment before the symptom?"],
+      "measurements": ["feed composition and dose", "EC and pH", "media and container", "irrigation and drainage", "root observations", "plant response in new growth"],
+      "commonTrap": "Adding more fertilizer immediately when restricted uptake, salinity, root stress, irrigation, temperature, or disease could produce a similar visual pattern.",
+      "connectedTopicIds": ["water-ph-ec", "plant-biology", "plant-health-ipm", "research-measurement"]
+    },
+    {
+      "id": "plant-health-ipm",
+      "whyItMatters": "Integrated pest management combines prevention, repeatable scouting, identification, evidence, compatible controls, and follow-up. It is a decision system, not a spray schedule.",
+      "studyQuestions": ["What is the spatial pattern and rate of progression?", "What direct evidence supports a pest, pathogen, or abiotic explanation?", "How will success be measured after an intervention?"],
+      "measurements": ["mapped plant or bench location", "trap or organism counts where useful", "severity and progression", "environment and root-zone data", "before-and-after photographs"],
+      "commonTrap": "Treating a close-up symptom photograph as sufficient identification and intervening before preserving evidence or checking abiotic alternatives.",
+      "connectedTopicIds": ["plant-biology", "environment-vpd", "water-ph-ec", "nutrition-media"]
+    },
+    {
+      "id": "training-canopy",
+      "whyItMatters": "Training changes plant architecture, light distribution, airflow, support needs, recovery demand, and future management access. The method matters less than the plant response and the canopy objective.",
+      "studyQuestions": ["What canopy problem is the training action meant to solve?", "Can the plant recover before the next major stress or stage transition?", "Did the change improve light distribution, access, and airflow?"],
+      "measurements": ["canopy height and width", "branch and node position", "PPFD distribution", "recovery time", "airflow or humidity pockets", "support requirements"],
+      "commonTrap": "Copying a training schedule without accounting for cultivar structure, plant vigor, recovery, available space, or the actual lighting system.",
+      "connectedTopicIds": ["plant-biology", "lighting", "environment-vpd", "lifecycle-propagation"]
+    },
+    {
+      "id": "harvest-postharvest",
+      "whyItMatters": "Quality can be lost after the plant is cut. Harvest assessment, handling, drying, moisture control, curing, storage, and contamination prevention form one continuous post-harvest system.",
+      "studyQuestions": ["How was maturity sampled and recorded?", "What temperature, humidity, time, and product condition occurred during drying?", "How will finished material be protected from excess moisture, heat, oxygen, light, and contamination?"],
+      "measurements": ["maturity observations", "drying temperature and RH", "time and product condition", "water activity or other appropriate moisture measurement", "storage conditions"],
+      "commonTrap": "Using one trichome photograph or a fixed number of drying days as a universal endpoint without sampling method, environment, product condition, and quality checks.",
+      "connectedTopicIds": ["plant-biology", "environment-vpd", "research-measurement", "plant-health-ipm"]
+    },
+    {
+      "id": "outdoor",
+      "whyItMatters": "Outdoor cultivation is driven by local weather, sun, soil or media, water, wind, pests, wildlife, pollen, and seasonal change. Decisions need site-specific observations rather than indoor assumptions moved outside.",
+      "studyQuestions": ["What does this specific site receive across the day and season?", "Which weather events create the largest crop risks?", "How are observations being converted into repeatable site records?"],
+      "measurements": ["sun exposure and shade timing", "temperature and humidity", "rain and irrigation", "wind exposure", "soil or root-zone condition", "pest and wildlife observations"],
+      "commonTrap": "Relying on a regional forecast or generic calendar without measuring the crop's actual microclimate, soil or media, exposure, and seasonal constraints.",
+      "connectedTopicIds": ["environment-vpd", "water-ph-ec", "plant-health-ipm", "research-measurement"]
+    },
+    {
+      "id": "research-measurement",
+      "whyItMatters": "Reliable cultivation knowledge depends on defined questions, repeatable methods, representative sampling, records, comparison, and uncertainty. Better measurement reduces confident but unsupported conclusions.",
+      "studyQuestions": ["What exact claim or question is being tested?", "How was the observation or measurement collected?", "What alternative explanations, missing data, or sources of bias remain?"],
+      "measurements": ["method and instrument identity", "sampling location and timing", "raw observations", "replicates or repeated observations", "changes and outcomes"],
+      "commonTrap": "Confusing precision with accuracy, correlation with causation, or one successful run with a general rule.",
+      "connectedTopicIds": ["plant-health-ipm", "genetics-breeding", "outdoor", "general-reference"]
+    },
+    {
+      "id": "general-reference",
+      "whyItMatters": "Some visuals connect several plant-science subjects and are most useful as reference maps. Their value comes from showing relationships that should then be followed into the narrower subject pages.",
+      "studyQuestions": ["Which system in this reference is closest to the current question?", "What variables connect the systems shown?", "Which subject page contains the deeper explanation and measurement method?"],
+      "measurements": ["the measurements specified by the linked subject", "plant stage", "location and timing", "recent management history"],
+      "commonTrap": "Using a broad reference diagram as if it were a complete protocol or diagnosis instead of a map to the more specific evidence and literature.",
+      "connectedTopicIds": ["plant-biology", "research-measurement", "plant-health-ipm"]
+    }
+  ]
+}
