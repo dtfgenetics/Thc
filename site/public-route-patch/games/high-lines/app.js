@@ -10,6 +10,12 @@ import {
   selectColor,
   undoFill
 } from './engine.mjs';
+import {
+  experienceSavePayload,
+  hasSavedProgress,
+  restoreExperience,
+  saveKeyForCode
+} from './persistence.mjs';
 
 const ui = {
   load: document.querySelector('#load-status'),
@@ -39,6 +45,7 @@ let sceneById = new Map();
 let colorById = new Map();
 let loadedSceneId = null;
 let sceneLoadToken = 0;
+let restoredOnLoad = false;
 
 function escapeHtml(value = '') {
   return String(value).replace(/[&<>"']/g, (character) => ({
@@ -73,6 +80,42 @@ function currentScene() {
 
 function currentColor() {
   return colorById.get(state.selectedColorId);
+}
+
+function removeSavedExperience(code) {
+  try {
+    localStorage.removeItem(saveKeyForCode(code));
+  } catch (error) {
+    console.warn('High Lines save cleanup failed.', error);
+  }
+}
+
+function persistExperience() {
+  if (!state) return;
+  try {
+    const payload = experienceSavePayload(state);
+    const key = saveKeyForCode(state.code);
+    if (hasSavedProgress(payload)) localStorage.setItem(key, JSON.stringify(payload));
+    else localStorage.removeItem(key);
+  } catch (error) {
+    console.warn('High Lines autosave failed.', error);
+  }
+}
+
+function experienceForCode(code) {
+  const fresh = createExperience({ code }, data);
+  try {
+    const key = saveKeyForCode(fresh.code);
+    const raw = localStorage.getItem(key);
+    if (!raw) return { experience: fresh, restored: false };
+    const payload = JSON.parse(raw);
+    const restored = restoreExperience(payload, data);
+    return { experience: restored, restored: hasSavedProgress(payload) };
+  } catch (error) {
+    console.warn('Discarding invalid High Lines save.', error);
+    removeSavedExperience(fresh.code);
+    return { experience: fresh, restored: false };
+  }
 }
 
 function paintRegionElement(element) {
@@ -183,10 +226,10 @@ function renderStats() {
   ui.undo.disabled = state.undoStack.length === 0;
   if (progress.complete) {
     ui.status.className = 'activity-status complete';
-    ui.status.innerHTML = `<span>SCENE COMPLETE</span><strong>${escapeHtml(currentScene().title)} finished at ${state.score} points.</strong><p>Try another scene code for a different drawing, prompt, and palette order.</p>`;
+    ui.status.innerHTML = `<span>SCENE COMPLETE</span><strong>${escapeHtml(currentScene().title)} finished at ${state.score} points.</strong><p>Progress is saved on this device. Try another scene code for a different drawing, prompt, and palette order.</p>`;
   } else {
     ui.status.className = 'activity-status';
-    ui.status.innerHTML = '<span>ACTIVITY RUN</span><strong>Color every region and find all three bonuses.</strong><p>Recoloring is free. Only unique colored regions and hidden finds add progress.</p>';
+    ui.status.innerHTML = '<span>ACTIVITY RUN</span><strong>Color every region and find all three bonuses.</strong><p>Progress autosaves on this device. Recoloring is free; only unique colored regions and hidden finds add progress.</p>';
   }
 }
 
@@ -233,15 +276,17 @@ function activateTarget(target) {
       if (state.foundHidden.includes(hiddenId)) return;
       const item = currentScene().hiddenObjects.find((candidate) => candidate.id === hiddenId);
       state = findHiddenObject(state, hiddenId, data);
+      persistExperience();
       render();
-      ui.announce.textContent = `${item?.label ?? 'Hidden object'} found. ${state.score} points.`;
+      ui.announce.textContent = `${item?.label ?? 'Hidden object'} found. ${state.score} points. Progress saved.`;
       return;
     }
     const region = target.closest?.('[data-region]');
     if (!region) return;
     state = fillRegion(state, region.dataset.region, state.selectedColorId, data);
+    persistExperience();
     render();
-    ui.announce.textContent = `${humanize(region.dataset.region)} colored ${currentColor().label}.`;
+    ui.announce.textContent = `${humanize(region.dataset.region)} colored ${currentColor().label}. Progress saved.`;
   } catch (error) {
     console.error(error);
     ui.announce.textContent = error.message;
@@ -257,6 +302,7 @@ ui.palette.addEventListener('click', (event) => {
   const button = event.target.closest('button[data-color]');
   if (!button) return;
   state = selectColor(state, button.dataset.color, data);
+  persistExperience();
   renderPalette();
   refreshSvgState();
   ui.announce.textContent = `${currentColor().label} selected.`;
@@ -264,14 +310,16 @@ ui.palette.addEventListener('click', (event) => {
 
 ui.undo.addEventListener('click', () => {
   state = undoFill(state, data);
+  persistExperience();
   render();
-  ui.announce.textContent = 'Last fill undone.';
+  ui.announce.textContent = 'Last fill undone. Progress saved.';
 });
 
 ui.reset.addEventListener('click', () => {
   state = resetArtwork(state, data);
+  removeSavedExperience(state.code);
   render();
-  ui.announce.textContent = 'Artwork reset.';
+  ui.announce.textContent = 'Artwork and saved progress reset for this scene code.';
 });
 
 ui.code.addEventListener('input', () => setCode(ui.code.value));
@@ -308,6 +356,7 @@ document.addEventListener('keydown', (event) => {
     if (!colorId) return;
     event.preventDefault();
     state = selectColor(state, colorId, data);
+    persistExperience();
     renderPalette();
     refreshSvgState();
     ui.announce.textContent = `${currentColor().label} selected.`;
@@ -320,11 +369,15 @@ document.addEventListener('keydown', (event) => {
 });
 
 function resetExperience(code) {
-  state = createExperience({ code }, data);
+  const loaded = experienceForCode(code);
+  state = loaded.experience;
+  restoredOnLoad = loaded.restored;
   loadedSceneId = null;
   window.history.replaceState(null, '', challengeUrl());
   render({ reloadAsset: true });
-  ui.announce.textContent = `${currentScene().title} loaded with scene code ${state.code}.`;
+  ui.announce.textContent = loaded.restored
+    ? `${currentScene().title} restored from saved progress for scene code ${state.code}.`
+    : `${currentScene().title} loaded with scene code ${state.code}.`;
 }
 
 function handleLoadError(error) {
@@ -345,10 +398,15 @@ async function load() {
     colorById = new Map(data.palette.map((color) => [color.id, color]));
     const requested = normalizeSceneCode(new URLSearchParams(location.search).get('lines'));
     const code = isValidSceneCode(requested) ? requested : randomCode();
-    state = createExperience({ code }, data);
+    const loaded = experienceForCode(code);
+    state = loaded.experience;
+    restoredOnLoad = loaded.restored;
     window.history.replaceState(null, '', challengeUrl());
-    ui.load.textContent = '4 original line-art scenes · 43 fillable regions · 12 hidden bonuses';
+    ui.load.textContent = loaded.restored
+      ? 'Saved progress restored · local autosave active'
+      : '4 original scenes · local autosave active · 12 hidden bonuses';
     render({ reloadAsset: true });
+    if (restoredOnLoad) ui.announce.textContent = `Saved progress restored for ${currentScene().title}.`;
   } catch (error) {
     handleLoadError(error);
     ui.load.textContent = 'High Lines could not load its scene data.';
