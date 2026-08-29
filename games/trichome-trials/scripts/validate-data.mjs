@@ -2,11 +2,15 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
 const canonicalPath = new URL('../data/trials.json', import.meta.url);
-const publicPath = new URL('../../../site/public-route-patch/games/trichome-trials/data/trials.json', import.meta.url);
+const publicRoot = new URL('../../../site/public-route-patch/games/trichome-trials/data/', import.meta.url);
 const canonical = JSON.parse(fs.readFileSync(canonicalPath, 'utf8'));
-const publicCopy = JSON.parse(fs.readFileSync(publicPath, 'utf8'));
+const publicCore = JSON.parse(fs.readFileSync(new URL('core.json', publicRoot), 'utf8'));
+const publicEntries = [1,2,3,4].flatMap((pack) =>
+  JSON.parse(fs.readFileSync(new URL(`entries-${pack}.json`, publicRoot), 'utf8'))
+);
+const publicCopy = { ...publicCore, entries: publicEntries };
 
-assert.deepEqual(publicCopy, canonical, 'Public Trichome Trials data must exactly match canonical data.');
+assert.deepEqual(publicCopy, canonical, 'Reconstructed public Trichome Trials data must exactly match canonical data.');
 assert.equal(canonical.schemaVersion, 1);
 assert.equal(canonical.roundsPerRun, 5);
 
@@ -19,7 +23,7 @@ for (const category of canonical.categories) {
   assert.ok(category.rubric?.trim());
 }
 
-assert.ok(canonical.entries.length >= 10, 'Trichome Trials needs at least 10 fictional judging entries.');
+assert.equal(canonical.entries.length, 12, 'Trichome Trials should ship with the full 12-entry judging deck.');
 const ids = canonical.entries.map((entry) => entry.id);
 assert.equal(new Set(ids).size, ids.length, 'Entry IDs must be unique.');
 const codeNames = canonical.entries.map((entry) => entry.codeName);
