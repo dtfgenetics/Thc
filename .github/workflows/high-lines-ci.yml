@@ -57,9 +57,11 @@ jobs:
           need(app, "if (/^[1-8]$/.test(event.key))", 'palette keyboard shortcuts');
           need(app, "event.key === 'u' || event.key === 'U'", 'undo keyboard shortcut');
           need(app, "'[data-hidden],[data-region]'", 'keyboard SVG targets');
-          need(css, '.playfield-shell', 'playfield-first layout');
+          need(css, '.playfield{', 'playfield-first layout');
           need(css, '.high-lines-svg', 'interactive SVG styling');
           need(css, '@media(prefers-reduced-motion:reduce)', 'reduced-motion support');
+          const staleGuards = (app.match(/requestToken !== sceneLoadToken/g) || []).length;
+          if (staleGuards < 3) throw new Error('scene load must guard stale success, pre-render state, and failure paths');
           NODE
 
       - name: Verify truthful release boundary
