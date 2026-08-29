@@ -44,20 +44,21 @@ function splitOpeningDeck(cards, family, rng) {
 
 function createSide(cards, family, rng) {
   const { hand, deck } = splitOpeningDeck(cards, family, rng);
-  return { family, garden: STARTING_GARDEN, focus: 3, maxFocus: 3, nextFocusPenalty: 0, hand, deck, lanes: Array(LANES).fill(null), flags: {}, stats: { cardsPlayed: 0, evolutions: 0, attacks: 0, damage: 0, cardsLost: 0 } };
+  return { family, garden: STARTING_GARDEN, focus: 3, maxFocus: 3, nextFocusPenalty: 0, turnsStarted: 0, hand, deck, lanes: Array(LANES).fill(null), flags: {}, stats: { cardsPlayed: 0, evolutions: 0, attacks: 0, damage: 0, cardsLost: 0 } };
 }
 
 export function createGame({ cards, playerFamily, cpuFamily, seed = Date.now(), startingActor = "player" }) {
   const rng = seededRandom(seed);
-  if (!['player', 'cpu'].includes(startingActor)) throw new Error(`Unknown starting actor: ${startingActor}`);
+  if (!["player", "cpu"].includes(startingActor)) throw new Error(`Unknown starting actor: ${startingActor}`);
   if (playerFamily === cpuFamily) {
     const options = [...new Set(cards.map((card) => card.family))].filter((family) => family !== playerFamily);
     cpuFamily = options[Math.floor(rng() * options.length)];
   }
-  const state = { version: "0.2.0", seed, round: 1, turn: startingActor, winner: null, reason: null, player: createSide(cards, playerFamily, rng), cpu: createSide(cards, cpuFamily, rng), log: [] };
+  const state = { version: "0.2.1", seed, round: 1, turn: startingActor, winner: null, reason: null, player: createSide(cards, playerFamily, rng), cpu: createSide(cards, cpuFamily, rng), log: [] };
   pushLog(state, `Showdown begins: ${playerFamily.toUpperCase()} vs ${cpuFamily.toUpperCase()}.`);
   drawCard(state, "player");
   drawCard(state, "cpu");
+  state[startingActor].turnsStarted = 1;
   return state;
 }
 
@@ -118,7 +119,7 @@ export function attack(state, actor, laneIndex) {
 
 export function drawCard(state, actor) { const [selfKey] = sideKeys(actor); const side = state[selfKey]; if (!side.deck.length) return null; const card = side.deck.shift(); side.hand.push(card); return card; }
 function recoverPurple(side) { if (side.family !== "purple") return null; const damaged = side.lanes.map((unit, index) => ({ unit, index })).filter(({ unit }) => unit && unit.currentVigor < unit.maxVigor).sort((a, b) => (a.unit.currentVigor / a.unit.maxVigor) - (b.unit.currentVigor / b.unit.maxVigor))[0]; if (!damaged) return null; damaged.unit.currentVigor = Math.min(damaged.unit.maxVigor, damaged.unit.currentVigor + 2); return damaged.unit.name; }
-function startTurn(state, actor) { const side = state[actor]; side.maxFocus = Math.min(6, 3 + Math.floor((state.round - 1) / 2)); side.focus = Math.max(0, side.maxFocus - side.nextFocusPenalty); side.nextFocusPenalty = 0; side.flags = {}; side.lanes.forEach((unit) => { if (unit) unit.exhausted = false; }); drawCard(state, actor); }
+function startTurn(state, actor) { const side = state[actor]; side.maxFocus = Math.min(6, 3 + Math.floor((state.round - 1) / 2)); side.focus = Math.max(0, side.maxFocus - side.nextFocusPenalty); side.nextFocusPenalty = 0; side.flags = {}; side.lanes.forEach((unit) => { if (unit) unit.exhausted = false; }); if (side.turnsStarted > 0) drawCard(state, actor); side.turnsStarted += 1; }
 
 export function endTurn(state, actor) {
   if (state.winner) return { ok: false, reason: "Game is over." }; if (state.turn !== actor) return { ok: false, reason: "Not this side's turn." };
