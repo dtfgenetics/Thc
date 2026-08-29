@@ -1,0 +1,57 @@
+{
+  "id":"THC-ENC-279",
+  "number":279,
+  "title":"Spray, Residue, and Foliar-Burn Investigations",
+  "objective":"Investigate foliar injury from droplets, deposits, salts, oils, adjuvants, mixtures, light, drying conditions, drift, and equipment contamination without re-exposing the production crop or diagnosing from residue appearance alone.",
+  "terms":[
+    {"term":"foliar burn","definition":"Visible injury to leaf tissue associated with a foliar exposure or condition, often expressed as spotting, bleaching, necrosis, margin injury, or tissue collapse."},
+    {"term":"spray pattern","definition":"The spatial distribution of droplets or deposited material produced by application equipment and movement through a crop."},
+    {"term":"deposit","definition":"Material remaining on a plant surface after droplets, aerosols, dust, or dissolved solids reach and dry on tissue."},
+    {"term":"tank contamination","definition":"Unintended carryover of chemical material from previous equipment use, incomplete cleaning, plumbing dead space, or contaminated components."},
+    {"term":"residue analysis","definition":"Laboratory measurement used to identify or quantify specified chemical residues under a defined validated method."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Foliar injury can occur when deposited material damages the cuticle or cells, concentrates as water evaporates, interacts with light or heat, remains wet long enough to change tissue exposure, or contains an incompatible product, salt, oil, adjuvant, contaminant, or mixture. Root uptake and vapor exposure can create different spatial and developmental patterns.",
+    "Pattern reconstruction is central to the investigation. Droplet-sized spots, lower- versus upper-surface concentration, pass-edge bands, nozzle overlap, protected leaves, fan or doorway gradients, and untreated controls can connect injury to an exposure route without identifying the chemical by appearance alone.",
+    "Visible residue is not equivalent to plant injury or chemical identity. A white, oily, crystalline, dusty, or sticky deposit can be inactive carrier, mineral salt, dried water residue, biological material, active chemical, or contamination. Laboratory analysis may be required when identity, residue status, crop disposition, or safety matters.",
+    "Environmental and equipment conditions can modify injury: plant water status, tissue age, temperature, radiation, humidity, drying rate, spray volume, droplet size, water chemistry, formulation, prior tank contents, hose or filter carryover, and equipment cleaning can all change exposure.",
+    "Reapplying a suspected material to the production crop is a poor diagnostic test because it can increase injury, alter residue status, and erase the original exposure pattern. Preserve evidence and compare treated, untreated, affected, and unaffected material instead."
+  ],
+  "cultivationRelevance":[
+    "Freeze nonessential repeat foliar applications when spray injury is plausible and preserve the original crop pattern for documentation.",
+    "Keep the current label, SDS, product lot, mixing record, water source, tank history, nozzle/equipment identity, environmental log, and treated-area map together as one incident record.",
+    "Photograph both leaf surfaces, canopy position, pass boundaries, protected tissue, equipment zones, and unaffected comparisons before removing material for sampling.",
+    "Separate plant-diagnostic conclusions from residue, worker-safety, consumer-safety, or regulatory decisions; those may require accredited laboratory methods or qualified authorities."
+  ],
+  "measureAndRecord":[
+    {"field":"Exposure record","requirement":"Record product/formulation, lot, current label, mixture components, source water, tank and line history, equipment cleaning, application time, treated area, and operator/equipment identifiers."},
+    {"field":"Environmental state","requirement":"Record air and leaf temperature, RH, light state, airflow, plant water status, drying time, and nearby activities during and after exposure."},
+    {"field":"Pattern map","requirement":"Record droplet/spot size, leaf surface, canopy position, overlap or pass edges, protected tissue, gradients, treated/untreated controls, and timing of symptom development."},
+    {"field":"Samples","requirement":"Label plant tissue, residue swabs or other samples with unique IDs, location, time, collector, storage/handling information, and requested analytical question when laboratory testing is justified."},
+    {"field":"Outcome","requirement":"Record new-growth recovery, progression, laboratory results, crop disposition, and whether the final cause remains confirmed, probable, possible, or unresolved."
+    }
+  ],
+  "misconceptions":[
+    "Visible white residue always means salt burn.",
+    "A legal foliar product cannot injure a crop.",
+    "Droplet-shaped injury identifies the exact product that caused it.",
+    "Reapplying the suspected spray is the best way to confirm the diagnosis.",
+    "A foliar-burn investigation is complete without mixture, equipment, water, and environmental records."
+  ],
+  "evidenceLimits":[
+    "Foliar injury appearance is not chemically specific. Residue identity and regulatory interpretation may require validated accredited analysis and review of current labels, registrations, worker-safety requirements, and jurisdictional crop rules. This lesson does not recommend any pesticide or foliar-treatment product, rate, tank mixture, or application procedure."
+  ],
+  "crossLinks":"THC-ENC-261 for diagnostic workflow; THC-ENC-264–265 for injury vocabulary; THC-ENC-277 for chemical phytotoxicity; THC-ENC-280 for sampling and verification.",
+  "sourceNotes":[
+    "Penn State Extension, Bedding Plant Diseases — Phytotoxicity (current page, 2025). Documents foliar injury patterns, overlap effects, additives, and application-condition effects.",
+    "Penn State Extension, Introduction to Weeds and Herbicides — Evaluating Herbicide Injury. Supports using field pattern, history, temperature, moisture, wind, overlap, drift, and equipment-related evidence when reconstructing chemical injury.",
+    "Penn State Extension, Herbicide Drift and Drift Related Damage (updated 2025). Reinforces off-target movement and the need to interpret environmental conditions and application history.",
+    "Controlled Volume 14 manuscript v1.0 requires preserving mixture, equipment, water, environment, treated/untreated pattern, residue uncertainty, and current-label boundaries."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 14 batch 04 controlled web derivative","driveSourceDocumentId":"1mbN8hq4g6jZUgW0bkwZBSXotPqZ7c184kOya5SqdtJA","evidenceControl":"controlled_manuscript_plus_current_official_foliar_phytotoxicity_drift_and_application_pattern_guidance","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"spray_residue_foliar_burn_exposure_reconstruction_and_laboratory_boundary","releaseTimeReview":"completed_2026-08-29_no_reapplication_test_or_visual_residue_identity_claim","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"spray-residue-and-foliar-burn-investigations",
+  "route":"/encyclopedia/spray-residue-and-foliar-burn-investigations"
+}
