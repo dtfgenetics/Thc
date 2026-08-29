@@ -70,7 +70,11 @@ jobs:
           grep -Fq "['/projects/', 'DTF Projects']" "$RUNNER_TEMP/dtf-suite-v2.mjs"
           ! grep -Fq "['/projects/', 'What is live, what is growing, and where it belongs.']" "$RUNNER_TEMP/dtf-suite-v2.mjs"
 
+      # A pull request can validate the route plan and deployer, but it cannot
+      # require production to already contain the code that has not merged yet.
+      # Keep the live audit for explicit workflow_dispatch runs after deployment.
       - name: Audit current public registry from fresh runner
+        if: github.event_name != 'pull_request'
         shell: bash
         env:
           DTF_FEATURE_REPORT: ${{ runner.temp }}/dtf-feature-surface.json
