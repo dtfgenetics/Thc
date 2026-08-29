@@ -1,0 +1,55 @@
+{
+  "id":"THC-ENC-194",
+  "number":194,
+  "title":"Plant Spacing and Canopy Closure",
+  "objective":"Connect plant spacing, branch spread, canopy closure, light interception, access, and disease risk so spacing decisions are based on measurable canopy development rather than plant-count rules alone.",
+  "terms":[
+    {"term":"plant spacing","definition":"The center-to-center distance and spatial arrangement between neighboring plants."},
+    {"term":"canopy closure","definition":"The stage at which foliage from neighboring plants substantially occupies the available horizontal growing area."},
+    {"term":"plant density","definition":"The number of plants grown per unit floor or ground area."},
+    {"term":"ground cover","definition":"The proportion of production area covered by the vertical projection of plant foliage."},
+    {"term":"self-shading","definition":"Reduction in light reaching leaves or shoots because other organs of the same or neighboring plants intercept that light first."}
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Spacing determines how quickly neighboring canopies interact. Wider spacing delays overlap; closer spacing can increase early area occupancy but also increases competition for light, air movement, root-zone resources, and physical access.",
+    "Canopy closure is a developmental outcome, not a fixed calendar date. Cultivar architecture, container or root-zone volume, vegetative duration, training, light environment, and plant vigor all influence when the available area becomes occupied.",
+    "Increasing plant density can raise yield per unit area up to a system-dependent point even while yield per individual plant falls. These are different metrics and should not be substituted for one another.",
+    "As foliage overlap increases, lower and interior leaves generally receive less light and local humidity can remain elevated for longer. Dense closure can therefore change both carbon gain and disease-conducive microclimates.",
+    "The useful spacing target is the density that matches the production objective while preserving adequate light distribution, airflow, inspection access, structural support, and root-zone capacity. There is no single ideal spacing for cannabis."
+  ],
+  "cultivationRelevance":[
+    "Plan spacing from expected mature canopy width and the intended training system rather than from container diameter alone.",
+    "Preserve working and scouting access where plant health inspection, irrigation maintenance, or structural support requires it.",
+    "If closure occurs earlier than planned, measure internal light and airflow before assuming that more foliage per area is beneficial.",
+    "When comparing densities, report yield per area as well as yield per plant so the interpretation matches the production question."
+  ],
+  "measureAndRecord":[
+    {"field":"Layout","requirement":"Record plant count, center-to-center spacing, row spacing where applicable, and total productive floor or ground area."},
+    {"field":"Canopy footprint","requirement":"Measure canopy width in consistent directions or estimate mapped ground cover at repeated dates."},
+    {"field":"Closure date","requirement":"Define a repeatable criterion for substantial canopy overlap and record when it occurs rather than using a visual impression alone."},
+    {"field":"Interior conditions","requirement":"Record light readings, airflow observations, and temperature or relative humidity at representative interior and edge positions when instruments are available."},
+    {"field":"Outcome normalization","requirement":"Report final yield by plant and by unit area, using the same harvest and dry-weight method across treatments."
+    }
+  ],
+  "misconceptions":[
+    "More plants per area always produce more usable yield.",
+    "Canopy closure should occur on the same day for every cultivar.",
+    "Yield per plant is enough to compare different plant densities.",
+    "A completely filled floor area proves that light is being used efficiently throughout the canopy.",
+    "Container size alone determines correct plant spacing."
+  ],
+  "evidenceLimits":[
+    "Cannabis density studies demonstrate strong interactions among genotype, architecture, production duration, lighting, and management. Results from one facility or cultivar cannot define a universal plants-per-area target. This lesson emphasizes comparable measurements and competing objectives rather than a fixed spacing recipe."
+  ],
+  "crossLinks":"THC-ENC-181–193 for architecture and training; THC-ENC-195 for canopy depth; THC-ENC-197 for airflow; THC-ENC-200 for canopy mapping and yield interpretation.",
+  "sourceNotes":[
+    "Peer-reviewed cannabis production studies examining density, architecture, and light distribution support evaluating both individual-plant and area-based responses; treatment optima remain system dependent.",
+    "Danziger N, Bernstein N. (2021). Shape Matters: Plant Architecture Affects Chemical Uniformity in Large-Size Medical Cannabis Plants. Plants 10(9):1834. Supports architecture and canopy-position effects.",
+    "General crop-canopy literature is used for ground cover, closure, competition, and area-based yield concepts."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 10 batch 03 controlled web derivative","evidenceControl":"current_topic_secondary_review_complete","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"crop_density_and_cannabis_horticulture","releaseTimeReview":"completed_2026-08-29_density_metrics_and_non_universal_spacing_claims","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"plant-spacing-and-canopy-closure",
+  "route":"/encyclopedia/plant-spacing-and-canopy-closure"
+}
