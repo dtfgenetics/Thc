@@ -42,7 +42,7 @@ jobs:
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
       BACKUP_ROOT: /tmp/dtf-potleaf-site-icon
-      DTF_ICON_CACHE_VERSION: v3-20260823
+      DTF_ICON_CACHE_VERSION: v4-20260829
 
     steps:
       - uses: actions/checkout@v4
