@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>High Lines | DTF Genetics</title>
-  <meta name="description" content="Color original DTF Genetics line-art scenes, find hidden objects, and share deterministic High Lines scene codes.">
+  <meta name="description" content="Color original DTF Genetics line-art scenes, find hidden objects, autosave local progress, and share deterministic High Lines scene codes.">
   <link rel="canonical" href="https://dtfseeds.com/games/high-lines/">
   <link rel="stylesheet" href="./high-lines.css">
 </head>
@@ -15,7 +15,7 @@
       <div>
         <p class="eyebrow">DTF GENETICS · CREATIVE GAME LAB</p>
         <h1>HIGH LINES</h1>
-        <p class="intro">Color the line art. Find the hidden bonuses. Follow the prompt—or ignore it and make the scene yours.</p>
+        <p class="intro">Color the line art. Find the hidden bonuses. Your progress autosaves on this device, so the same scene code can pick up where you left off.</p>
       </div>
       <div class="top-mark" aria-hidden="true"><span>HL</span><i></i></div>
     </header>
@@ -25,7 +25,7 @@
         <span>Scene code</span>
         <input id="scene-code" maxlength="6" inputmode="text" autocomplete="off" spellcheck="false" aria-describedby="scene-code-help">
       </label>
-      <p id="scene-code-help" class="sr-only">Enter a six-character scene code and press Enter to reproduce the same scene, prompt, and palette order.</p>
+      <p id="scene-code-help" class="sr-only">Enter a six-character scene code and press Enter to reproduce the same scene, prompt, and palette order. Saved progress for that code is restored from this device when available.</p>
       <button id="new-scene" type="button">New Scene</button>
       <button id="share-scene" type="button">Share</button>
       <span id="load-status" class="load-status">Loading scene set…</span>
@@ -94,7 +94,7 @@
         <div id="activity-status" class="activity-status">
           <span>ACTIVITY RUN</span>
           <strong>Color every region and find all three bonuses.</strong>
-          <p>Recoloring is free. Only unique colored regions and hidden finds add progress.</p>
+          <p>Progress autosaves locally. Reset Artwork clears both the board and the saved progress for this scene code.</p>
         </div>
       </section>
     </section>

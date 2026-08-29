@@ -28,15 +28,21 @@ jobs:
       - name: Run deterministic High Lines engine tests
         run: node games/high-lines/test/engine.test.mjs
 
+      - name: Run High Lines persistence tests
+        run: node games/high-lines/test/persistence.test.mjs
+
       - name: Validate browser JavaScript syntax
         run: |
           node --check site/public-route-patch/games/high-lines/app.js
           node --check site/public-route-patch/games/high-lines/engine.mjs
+          node --check site/public-route-patch/games/high-lines/persistence.mjs
 
-      - name: Verify canonical and public engine match
-        run: cmp games/high-lines/src/engine.mjs site/public-route-patch/games/high-lines/engine.mjs
+      - name: Verify canonical and public rules modules match
+        run: |
+          cmp games/high-lines/src/engine.mjs site/public-route-patch/games/high-lines/engine.mjs
+          cmp games/high-lines/src/persistence.mjs site/public-route-patch/games/high-lines/persistence.mjs
 
-      - name: Verify route, interaction and race-safety contracts
+      - name: Verify route, interaction, persistence and race-safety contracts
         run: |
           node - <<'NODE'
           const fs = require('fs');
@@ -48,7 +54,14 @@ jobs:
           };
           need(html, '<link rel="canonical" href="https://dtfseeds.com/games/high-lines/">', 'canonical route');
           need(html, '<script type="module" src="./app.js"></script>', 'module entrypoint');
+          need(html, 'Progress autosaves locally.', 'autosave disclosure');
           need(html, 'Game boundary:', 'content boundary');
+          need(app, "from './persistence.mjs'", 'persistence module import');
+          need(app, 'localStorage.setItem', 'local autosave write');
+          need(app, 'localStorage.getItem', 'local autosave read');
+          need(app, 'localStorage.removeItem', 'local autosave reset');
+          need(app, 'restoreExperience(', 'validated save restoration');
+          need(app, 'experienceSavePayload(', 'validated save serialization');
           need(app, 'let sceneLoadToken = 0;', 'scene load token');
           need(app, 'const requestToken = ++sceneLoadToken;', 'load token increment');
           need(app, 'requestToken !== sceneLoadToken', 'stale response guard');
