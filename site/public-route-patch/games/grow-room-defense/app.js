@@ -1,10 +1,204 @@
-import {
-  DEFENSE_ALPHABET,
-  applyAction,
-  createGame,
-  isValidDefenseCode,
-  normalizeDefenseCode
-} from './engine.mjs';
+const DEFENSE_CODE_LENGTH = 6;
+const DEFENSE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+const MAX_ROUNDS = 12;
+const INITIAL_HEALTH = 100;
+
+function clone(value) {
+  return JSON.parse(JSON.stringify(value));
+}
+
+function hash(value) {
+  let result = 2166136261;
+  for (const character of String(value)) {
+    result ^= character.charCodeAt(0);
+    result = Math.imul(result, 16777619);
+  }
+  return result >>> 0;
+}
+
+function normalizeDefenseCode(value) {
+  const allowed = new Set(DEFENSE_ALPHABET);
+  return String(value ?? '')
+    .trim()
+    .toUpperCase()
+    .split('')
+    .filter((character) => allowed.has(character))
+    .join('')
+    .slice(0, DEFENSE_CODE_LENGTH);
+}
+
+function isValidDefenseCode(value) {
+  return normalizeDefenseCode(value).length === DEFENSE_CODE_LENGTH;
+}
+
+function requireData(data) {
+  if (!data?.lanes?.length || !data?.threats?.length || !data?.tools?.length) {
+    throw new Error('Grow Room Defense data is required.');
+  }
+}
+
+function threatMap(data) {
+  return new Map(data.threats.map((threat) => [threat.id, threat]));
+}
+
+function toolMap(data) {
+  return new Map(data.tools.map((tool) => [tool.id, tool]));
+}
+
+function spawnThreat(inputState, data) {
+  const state = clone(inputState);
+  if (state.status !== 'playing') return state;
+  const aliveLanes = state.lanes.filter((lane) => lane.health > 0);
+  if (!aliveLanes.length) return state;
+
+  const threat = data.threats[hash(`${state.code}:threat:${state.round}`) % data.threats.length];
+  const lane = aliveLanes[hash(`${state.code}:lane:${state.round}`) % aliveLanes.length];
+  const target = state.lanes.find((candidate) => candidate.id === lane.id);
+  const instance = {
+    instanceId: `${state.round}-${lane.id}-${threat.id}`,
+    threatId: threat.id,
+    pressure: threat.pressure,
+    maxPressure: threat.pressure,
+    spawnedRound: state.round
+  };
+  target.threats.push(instance);
+  state.lastSpawn = {
+    round: state.round,
+    laneId: lane.id,
+    threatId: threat.id,
+    instanceId: instance.instanceId
+  };
+  return state;
+}
+
+function counterQuality(threat, tool) {
+  const matchIndex = threat.weaknesses.findIndex((weakness) => tool.strengths.includes(weakness));
+  if (matchIndex === 0) return 'strong';
+  if (matchIndex > 0) return 'supportive';
+  return 'mismatch';
+}
+
+function counterPower(threat, tool) {
+  const quality = counterQuality(threat, tool);
+  if (quality === 'strong') return tool.power + 1;
+  if (quality === 'supportive') return Math.max(1, tool.power - 1);
+  return 0;
+}
+
+function createGame({ code } = {}, data) {
+  requireData(data);
+  const normalized = normalizeDefenseCode(code);
+  if (!isValidDefenseCode(normalized)) throw new Error('A six-character defense code is required.');
+
+  const state = {
+    schemaVersion: 1,
+    code: normalized,
+    round: 1,
+    maxRounds: MAX_ROUNDS,
+    status: 'playing',
+    score: 0,
+    resolved: 0,
+    totalDamage: 0,
+    lanes: data.lanes.map((lane) => ({
+      id: lane.id,
+      label: lane.label,
+      plant: lane.plant,
+      health: INITIAL_HEALTH,
+      threats: []
+    })),
+    lastSpawn: null,
+    lastAction: null,
+    history: []
+  };
+
+  return spawnThreat(state, data);
+}
+
+function applyAction(inputState, { toolId, laneId, instanceId } = {}, data) {
+  requireData(data);
+  const state = clone(inputState);
+  if (state.status !== 'playing') throw new Error('This defense run is already complete.');
+
+  const lane = state.lanes.find((candidate) => candidate.id === laneId);
+  if (!lane) throw new Error(`Unknown lane: ${laneId}`);
+  if (lane.health <= 0) throw new Error('That plant bench has already been lost.');
+
+  const tool = toolMap(data).get(toolId);
+  if (!tool) throw new Error(`Unknown defense tool: ${toolId}`);
+
+  const threats = threatMap(data);
+  const targetIndex = instanceId
+    ? lane.threats.findIndex((candidate) => candidate.instanceId === instanceId)
+    : (lane.threats.length ? 0 : -1);
+  if (instanceId && targetIndex < 0) throw new Error('That threat is no longer active on this bench.');
+  const target = targetIndex >= 0 ? lane.threats[targetIndex] : null;
+  let quality = 'empty';
+  let reduction = 0;
+  let resolvedThreat = null;
+  let targetThreatId = null;
+  let targetInstanceId = null;
+
+  if (target) {
+    const threat = threats.get(target.threatId);
+    if (!threat) throw new Error(`Unknown active threat: ${target.threatId}`);
+    targetThreatId = threat.id;
+    targetInstanceId = target.instanceId;
+    quality = counterQuality(threat, tool);
+    reduction = Math.min(target.pressure, counterPower(threat, tool));
+    target.pressure -= reduction;
+
+    if (quality === 'strong') state.score += reduction * 15;
+    else if (quality === 'supportive') state.score += reduction * 8;
+
+    if (target.pressure <= 0) {
+      resolvedThreat = threat.id;
+      lane.threats.splice(targetIndex, 1);
+      state.resolved += 1;
+      state.score += 25;
+    }
+  }
+
+  let damageThisRound = 0;
+  for (const plantLane of state.lanes) {
+    if (plantLane.health <= 0) continue;
+    for (const active of plantLane.threats) {
+      const threat = threats.get(active.threatId);
+      if (!threat) continue;
+      const scaledDamage = Math.max(1, Math.ceil(threat.damage * (active.pressure / active.maxPressure)));
+      plantLane.health = Math.max(0, plantLane.health - scaledDamage);
+      damageThisRound += scaledDamage;
+    }
+  }
+  state.totalDamage += damageThisRound;
+
+  state.lastAction = {
+    round: state.round,
+    laneId,
+    toolId,
+    threatId: targetThreatId,
+    instanceId: targetInstanceId,
+    quality,
+    reduction,
+    resolvedThreat,
+    damage: damageThisRound
+  };
+  state.history.push(state.lastAction);
+
+  const totalHealth = state.lanes.reduce((sum, plantLane) => sum + plantLane.health, 0);
+  if (totalHealth <= 0) {
+    state.status = 'lost';
+    return state;
+  }
+
+  if (state.round >= state.maxRounds) {
+    state.status = 'won';
+    state.score += totalHealth;
+    return state;
+  }
+
+  state.round += 1;
+  return spawnThreat(state, data);
+}
 
 const ui = {
   load: document.querySelector('#load-status'),
@@ -37,15 +231,71 @@ function escapeHtml(value = '') {
   }[character]));
 }
 
+function readEmbeddedData() {
+  const node = document.querySelector('#grow-room-defense-data');
+  if (!node) throw new Error('Embedded defense data is missing.');
+  const parsed = JSON.parse(node.textContent || '{}');
+  validateData(parsed);
+  return parsed;
+}
+
+function validateData(candidate) {
+  if (candidate?.schemaVersion !== 1) throw new Error('Grow Room Defense data contract mismatch');
+  if (!Array.isArray(candidate.lanes) || candidate.lanes.length !== 3) throw new Error('expected three plant benches');
+  if (!Array.isArray(candidate.threats) || candidate.threats.length !== 8) throw new Error('expected eight pressure types');
+  if (!Array.isArray(candidate.tools) || candidate.tools.length !== 7) throw new Error('expected seven IPM tools');
+
+  const laneIds = new Set();
+  for (const lane of candidate.lanes) {
+    if (!lane?.id || !lane?.label || !lane?.plant) throw new Error('a plant bench is incomplete');
+    if (laneIds.has(lane.id)) throw new Error(`duplicate plant bench id: ${lane.id}`);
+    laneIds.add(lane.id);
+  }
+
+  const toolIds = new Set();
+  const strengthIds = new Set();
+  for (const tool of candidate.tools) {
+    if (!tool?.id || !tool?.label || !tool?.mark || !tool?.description || !Number.isFinite(tool.power) || tool.power < 1 || !Array.isArray(tool.strengths) || !tool.strengths.length) {
+      throw new Error('an IPM tool is incomplete');
+    }
+    if (toolIds.has(tool.id)) throw new Error(`duplicate IPM tool id: ${tool.id}`);
+    toolIds.add(tool.id);
+    for (const strength of tool.strengths) strengthIds.add(strength);
+  }
+
+  const threatIds = new Set();
+  for (const threat of candidate.threats) {
+    if (!threat?.id || !threat?.label || !threat?.mark || !threat?.category || !threat?.lesson || !Number.isFinite(threat.pressure) || threat.pressure < 1 || !Number.isFinite(threat.damage) || threat.damage < 1 || !Array.isArray(threat.weaknesses) || !threat.weaknesses.length) {
+      throw new Error('a threat definition is incomplete');
+    }
+    if (threatIds.has(threat.id)) throw new Error(`duplicate threat id: ${threat.id}`);
+    threatIds.add(threat.id);
+    for (const weakness of threat.weaknesses) {
+      if (!strengthIds.has(weakness)) throw new Error(`${threat.label} references unsupported weakness ${weakness}`);
+    }
+    if (!candidate.tools.some((tool) => tool.strengths.includes(threat.weaknesses[0]) && tool.power + 1 >= threat.pressure)) {
+      throw new Error(`${threat.label} has no strong counter able to clear fresh pressure`);
+    }
+  }
+}
+
 function randomCode() {
-  const values = new Uint32Array(6);
-  crypto.getRandomValues(values);
+  const values = new Uint32Array(DEFENSE_CODE_LENGTH);
+  if (globalThis.crypto?.getRandomValues) {
+    globalThis.crypto.getRandomValues(values);
+  } else {
+    for (let index = 0; index < values.length; index += 1) values[index] = Math.floor(Math.random() * 0xffffffff);
+  }
   return [...values].map((number) => DEFENSE_ALPHABET[number % DEFENSE_ALPHABET.length]).join('');
 }
 
 function challengeUrl() {
   const params = new URLSearchParams({ defense: state.code });
   return `${location.origin}${location.pathname}?${params}`;
+}
+
+function safeReplaceUrl() {
+  try { window.history.replaceState(null, '', challengeUrl()); } catch {}
 }
 
 function setCode(value) {
@@ -87,11 +337,15 @@ function pressurePips(active) {
   return `<span class="pressure-meter" aria-label="Pressure ${active.pressure} of ${active.maxPressure}">${pips}</span>`;
 }
 
-function renderThreat(active, laneId, tool) {
+function renderThreat(active, laneId, tool, laneAlive) {
   const threat = threatById.get(active.threatId);
   if (!threat) return '';
-  const disabled = !tool || state.status !== 'playing' ? 'disabled' : '';
-  const action = tool ? `Use ${tool.label} on ${threat.label}` : `Select a tool to target ${threat.label}`;
+  const disabled = !tool || !laneAlive || state.status !== 'playing' ? 'disabled' : '';
+  const action = !laneAlive
+    ? `${threat.label} remains on a lost bench and cannot be targeted`
+    : tool
+      ? `Use ${tool.label} on ${threat.label}`
+      : `Select a tool to target ${threat.label}`;
   return `
     <button type="button" class="threat-card threat-target" data-lane="${escapeHtml(laneId)}" data-instance="${escapeHtml(active.instanceId)}" ${disabled} aria-label="${escapeHtml(action)}. Pressure ${active.pressure} of ${active.maxPressure}.">
       <span class="threat-mark">${escapeHtml(threat.mark)}</span>
@@ -120,12 +374,13 @@ function renderLanes() {
   ui.lanes.replaceChildren();
 
   for (const lane of state.lanes) {
+    const laneAlive = lane.health > 0;
     const section = document.createElement('section');
-    section.className = `lane-card${lane.health <= 0 ? ' lost' : ''}`;
+    section.className = `lane-card${laneAlive ? '' : ' lost'}`;
     const threatMarkup = lane.threats.length
-      ? lane.threats.map((active) => renderThreat(active, lane.id, tool)).join('')
+      ? lane.threats.map((active) => renderThreat(active, lane.id, tool, laneAlive)).join('')
       : '<p class="clear-lane">No active pressure.</p>';
-    const actionLabel = tool ? `Deploy ${tool.label} to bench` : 'Select a tool first';
+    const actionLabel = !laneAlive ? 'Bench lost' : tool ? `Deploy ${tool.label} to bench` : 'Select a tool first';
     section.innerHTML = `
       <div class="lane-heading">
         <div><span>${escapeHtml(lane.label)}</span><strong>${escapeHtml(lane.plant)}</strong></div>
@@ -134,7 +389,7 @@ function renderLanes() {
       <div class="health-track" aria-label="${escapeHtml(lane.plant)} health ${lane.health} percent"><span style="width:${lane.health}%"></span></div>
       ${plantArt()}
       <div class="threat-stack">${threatMarkup}</div>
-      <button type="button" class="deploy-button" data-lane="${escapeHtml(lane.id)}" ${!tool || lane.health <= 0 || state.status !== 'playing' ? 'disabled' : ''}>${escapeHtml(actionLabel)}</button>`;
+      <button type="button" class="deploy-button" data-lane="${escapeHtml(lane.id)}" ${!tool || !laneAlive || state.status !== 'playing' ? 'disabled' : ''}>${escapeHtml(actionLabel)}</button>`;
     ui.lanes.append(section);
   }
 }
@@ -237,7 +492,7 @@ function resetGame(code) {
   state = createGame({ code }, data);
   selectedToolId = null;
   setCode(state.code);
-  window.history.replaceState(null, '', challengeUrl());
+  safeReplaceUrl();
   render();
 }
 
@@ -251,7 +506,7 @@ function playAction(laneId, instanceId = null) {
     ui.announce.textContent = `${qualityCopy(action)[0]}. ${threat ? `${threat.label}. ` : ''}${action.damage} total damage this round. Round ${state.round} of ${state.maxRounds}.`;
   } catch (error) {
     console.error(error);
-    ui.announce.textContent = error.message;
+    ui.announce.textContent = error instanceof Error ? error.message : String(error);
   }
 }
 
@@ -271,7 +526,7 @@ ui.lanes.addEventListener('click', (event) => {
     playAction(threatButton.dataset.lane, threatButton.dataset.instance);
     return;
   }
-  const benchButton = event.target.closest('button[data-lane]');
+  const benchButton = event.target.closest('button.deploy-button[data-lane]');
   if (!benchButton) return;
   playAction(benchButton.dataset.lane);
 });
@@ -280,6 +535,7 @@ ui.code.addEventListener('input', () => setCode(ui.code.value));
 ui.code.addEventListener('keydown', (event) => {
   if (event.key !== 'Enter') return;
   if (!isValidDefenseCode(ui.code.value)) {
+    ui.code.setAttribute('aria-invalid', 'true');
     ui.announce.textContent = 'Enter a complete six-character defense code.';
     return;
   }
@@ -296,6 +552,7 @@ ui.share.addEventListener('click', async () => {
   const url = challengeUrl();
   const text = `Grow Room Defense · code ${state.code}\n${url}`;
   try {
+    if (!navigator.clipboard?.writeText) throw new Error('Clipboard API unavailable.');
     await navigator.clipboard.writeText(text);
     ui.announce.textContent = 'Defense challenge copied.';
   } catch {
@@ -303,14 +560,9 @@ ui.share.addEventListener('click', async () => {
   }
 });
 
-async function load() {
+function load() {
   try {
-    const response = await fetch('./data/ipm.json', { cache: 'no-store', credentials: 'same-origin' });
-    if (!response.ok) throw new Error(`IPM data HTTP ${response.status}`);
-    data = await response.json();
-    if (data.schemaVersion !== 1 || data.lanes?.length !== 3 || data.threats?.length !== 8 || data.tools?.length !== 7) {
-      throw new Error('Grow Room Defense data contract mismatch');
-    }
+    data = readEmbeddedData();
     threatById = new Map(data.threats.map((threat) => [threat.id, threat]));
     toolById = new Map(data.tools.map((tool) => [tool.id, tool]));
     laneById = new Map(data.lanes.map((lane) => [lane.id, lane]));
@@ -319,12 +571,12 @@ async function load() {
     const code = isValidDefenseCode(requested) ? requested : randomCode();
     state = createGame({ code }, data);
     setCode(code);
-    window.history.replaceState(null, '', challengeUrl());
+    safeReplaceUrl();
     ui.load.textContent = '12 deterministic rounds · 8 threats · 7 IPM tools · priority targeting';
     render();
   } catch (error) {
     console.error(error);
-    ui.load.textContent = 'Grow Room Defense could not load its game data.';
+    ui.load.textContent = `Grow Room Defense could not load its game data. ${error instanceof Error ? error.message : String(error)}`;
   }
 }
 
