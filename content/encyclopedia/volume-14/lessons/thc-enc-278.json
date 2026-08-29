@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-278",
+  "number":278,
+  "title":"Mechanical Damage and Training Injury",
+  "objective":"Identify compression, tearing, abrasion, girdling, impact, wind, trellis, tie, and training injury and distinguish mechanical damage from disease or other abiotic disorders using contact geometry, vascular function, progression, and recovery.",
+  "terms":[
+    {"term":"abrasion","definition":"Surface injury caused by rubbing or scraping that removes or damages epidermal tissue."},
+    {"term":"girdling","definition":"Constriction or removal of tissue around much or all of an organ circumference, potentially impairing vascular transport and structural integrity."},
+    {"term":"lodging","definition":"Loss of normal upright support through bending, leaning, or structural failure of stems or roots."},
+    {"term":"vascular continuity","definition":"Functional connection of xylem and phloem pathways across an injured region."},
+    {"term":"wound compartmentalization","definition":"Plant responses that isolate, seal, or reorganize tissue around injury rather than recreating the original structure exactly."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Mechanical injury can remove epidermis, crush cortex, compress vascular tissue, split stems, crease petioles, abrade leaves, constrict expanding organs, or break roots. Immediate appearance ranges from obvious tears to subtle compression that becomes visible later as wilt, necrosis, weak growth, or failure under load.",
+    "Contact geometry often provides strong evidence. Fans, doors, workers, tools, trellises, ties, container edges, transport, animals, wind, and intentional training can create repeated scars, directional abrasion, pinch points, or injuries aligned with supports and workflow paths.",
+    "Plants can seal and reorganize wounded tissue, but healing does not mean the organ returns to its original anatomy. Swelling or callus-like tissue can coexist with reduced vascular continuity, altered flexibility, internal splitting, or a persistent mechanical weak point.",
+    "Cannabis architecture studies show that pruning and structural manipulation can substantially alter canopy form and chemical distribution, with genotype-dependent outcomes. Those experiments support treating training as a real architectural intervention, but they do not establish that intentional tissue damage is harmless or that a swollen repair site becomes stronger than intact stem.",
+    "Mechanical wounds can also become entry points or stress sites for secondary biological problems. Expanding necrosis, decay, odor, tissue softening, sporulation, vascular discoloration, or progressive collapse after the original event should reopen the differential for infection or additional root/environmental causes."
+  ],
+  "cultivationRelevance":[
+    "Map the injury to a plausible contact source before diagnosing disease from a scar or elongated lesion.",
+    "Stabilize damaged load-bearing branches, remove constricting ties or repeated contact hazards, and keep the wound observable so progression can be distinguished from stable repair.",
+    "Record training, transport, trellis installation, fan changes, worker access, and storm or impact events because the causal event may precede visible decline.",
+    "Judge recovery by distal turgor, new growth, structural stability, vascular function proxies, and absence of progressive decay—not by swelling alone."
+  ],
+  "measureAndRecord":[
+    {"field":"Injury geometry","requirement":"Record organ, location, length/circumference involved, abrasion/tear/compression/girdling pattern, contact surface, direction, and photographs from multiple angles."},
+    {"field":"Event history","requirement":"Record training, tie, trellis, fan, transport, impact, wind, handling, tool, or animal events and the interval between event and symptom detection."},
+    {"field":"Function","requirement":"Record distal turgor, leaf/branch growth, stem support, bending or cracking, water-use changes, and signs that vascular continuity may be impaired."},
+    {"field":"Secondary differential","requirement":"Record expanding necrosis, odor, soft rot, discoloration, pest/pathogen evidence, root status, and environmental stresses that could compound the wound."},
+    {"field":"Recovery","requirement":"Record support used, hazard removal, wound progression, new growth, structural outcome under increasing load, and final disposition."
+    }
+  ],
+  "misconceptions":[
+    "Training injury is harmless whenever a branch remains attached.",
+    "A swollen repair site is always stronger than intact stem.",
+    "Mechanical damage cannot lead to secondary infection.",
+    "Every elongated stem lesion is a pathogen.",
+    "Visible healing proves full internal vascular recovery."
+  ],
+  "evidenceLimits":[
+    "External appearance cannot quantify internal vascular loss or future load-bearing strength. Cannabis-specific controlled studies isolate architecture treatments more often than wound biomechanics, so severe or high-value cases may require destructive inspection, imaging, or specialist evaluation."
+  ],
+  "crossLinks":"THC-ENC-181–200 for training/canopy architecture; THC-ENC-264 for necrosis; THC-ENC-277 for chemical injury; THC-ENC-281–340 for pest and disease differentials.",
+  "sourceNotes":[
+    "Danziger N, Bernstein N. (2021). Plant architecture manipulation increases cannabinoid standardization in drug-type medical cannabis. Industrial Crops and Products 167:113528. Demonstrates genotype-specific consequences of architecture manipulation; it is not evidence that wounding is universally beneficial or structurally harmless.",
+    "Danziger N, Bernstein N. (2021). Shape Matters: Plant Architecture Affects Chemical Uniformity in Large-Size Medical Cannabis Plants. Plants 10(9):1834. Supports architecture and canopy-position context.",
+    "Controlled Volume 10 and Volume 14 evidence registers use general plant wound biology for compartmentalization, vascular continuity, mechanical load, and recovery where cannabis-specific wound-biomechanics trials are limited."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 14 batch 04 controlled web derivative","driveSourceDocumentId":"1mbN8hq4g6jZUgW0bkwZBSXotPqZ7c184kOya5SqdtJA","evidenceControl":"controlled_manuscript_plus_cannabis_architecture_manipulation_and_general_plant_wound_mechanics","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_training_mechanical_injury_wound_recovery_and_secondary_infection_differential","releaseTimeReview":"completed_2026-08-29_no_swelling_equals_strength_or_attachment_equals_recovery_claim","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"mechanical-damage-and-training-injury",
+  "route":"/encyclopedia/mechanical-damage-and-training-injury"
+}
