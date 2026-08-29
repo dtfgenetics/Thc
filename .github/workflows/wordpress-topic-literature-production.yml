@@ -6,6 +6,7 @@ on:
     branches: [main]
     paths:
       - scripts/publish-wordpress-topic-literature.mjs
+      - scripts/wordpress-transient-fetch-bootstrap.mjs
       - site/wordpress/education/topic-literature.json
       - site/wordpress/assets/infographics/placement-rules.json
       - site/wordpress/assets/infographics/infographic-exclusions.json
@@ -23,7 +24,7 @@ permissions:
 
 concurrency:
   group: dtfseeds-wordpress-topic-literature-production
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   publish:
@@ -53,6 +54,7 @@ jobs:
         run: |
           set -euo pipefail
           node --check scripts/publish-wordpress-topic-literature.mjs
+          node --check scripts/wordpress-transient-fetch-bootstrap.mjs
           node -e "const d=require('./site/wordpress/education/topic-literature.json'); if(d.schemaVersion<1||!Array.isArray(d.topics)||d.topics.length<10) process.exit(1); for(const t of d.topics){if(!t.id||!t.route||!t.title||!Array.isArray(t.sections)||t.sections.length<4) process.exit(1)}"
           node -e "const e=require('./site/wordpress/assets/infographics/infographic-exclusions.json'); if(!e.neverUseOnInfographicSurfaces||!e.excludePathFragments?.includes('pdf-pages/')) process.exit(1)"
           test -n "${WP_API_USERNAME:-}"
@@ -64,7 +66,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          node scripts/publish-wordpress-topic-literature.mjs
+          node --import ./scripts/wordpress-transient-fetch-bootstrap.mjs scripts/publish-wordpress-topic-literature.mjs
           backup_dir="$(cat "$BACKUP_ROOT/topic-literature-backup-path.txt")"
           report="$backup_dir/topic-literature-report.json"
           echo "topic_count=$(node -p "require(process.argv[1]).topicPages.length" "$report")" >> "$GITHUB_OUTPUT"
@@ -194,7 +196,7 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
-      - name: Report topic-literature publication to issue 46
+      - name: Report topic-literature publication
         if: always()
         continue-on-error: true
         uses: actions/github-script@v7
@@ -210,25 +212,25 @@ jobs:
           LIVE_IMAGE_COUNT: ${{ steps.verify.outputs.live_image_count }}
         with:
           script: |
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: 46,
-              body: [
-                '## THC literature-first topic publication',
-                '',
-                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-                `Trigger: **${context.eventName}**`,
-                `Overall: **${process.env.JOB_STATUS}**`,
-                `Validation: **${process.env.VALIDATE_OUTCOME || 'not-run'}**`,
-                `WordPress publication: **${process.env.PUBLISH_OUTCOME || 'not-run'}**`,
-                `Visitor-facing verification: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
-                `Companion-literature topic pages: **${process.env.TOPIC_COUNT || 'not-run'}**`,
-                `Finished infographic media retained: **${process.env.ELIGIBLE_COUNT || 'not-run'}**`,
-                `Simple/reference media excluded from infographic reuse: **${process.env.EXCLUDED_COUNT || 'not-run'}**`,
-                `Infographic library page ID: **${process.env.LIBRARY_PAGE_ID || 'not-run'}**`,
-                `Infographic images observed on live searchable library: **${process.env.LIVE_IMAGE_COUNT || 'not-run'}**`,
-                '',
-                'Architecture: companion literature is canonical and now automatically reclaims final ownership after visual and Learning V3 publishers. Finished infographics live inside their designated topic pages and in the searchable infographic index. Simple supporting images and PDF page extractions are excluded from infographic surfaces.'
-              ].join('\n')
-            });
+            const body = [
+              '## THC literature-first topic publication',
+              '',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Trigger: **${context.eventName}**`,
+              `Overall: **${process.env.JOB_STATUS}**`,
+              `Validation: **${process.env.VALIDATE_OUTCOME || 'not-run'}**`,
+              `WordPress publication: **${process.env.PUBLISH_OUTCOME || 'not-run'}**`,
+              `Visitor-facing verification: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
+              `Companion-literature topic pages: **${process.env.TOPIC_COUNT || 'not-run'}**`,
+              `Finished infographic media retained: **${process.env.ELIGIBLE_COUNT || 'not-run'}**`,
+              `Simple/reference media excluded from infographic reuse: **${process.env.EXCLUDED_COUNT || 'not-run'}**`,
+              `Infographic library page ID: **${process.env.LIBRARY_PAGE_ID || 'not-run'}**`,
+              `Infographic images observed on live searchable library: **${process.env.LIVE_IMAGE_COUNT || 'not-run'}**`,
+              '',
+              'Architecture: companion literature is canonical and automatically reclaims final ownership after visual and Learning V3 publishers. Finished infographics live inside their designated topic pages and in the searchable infographic index. Simple supporting images and PDF page extractions are excluded from infographic surfaces.'
+            ].join('\n');
+            try {
+              await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: 220, body });
+            } catch (error) {
+              core.warning(`Topic-literature advisory report could not be posted: ${error.message}`);
+            }

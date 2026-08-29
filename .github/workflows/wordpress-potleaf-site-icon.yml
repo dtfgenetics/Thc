@@ -26,7 +26,7 @@ permissions:
 
 concurrency:
   group: dtf-potleaf-site-icon
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   publish:
@@ -140,8 +140,9 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
-      - name: Report result to issue 46
+      - name: Report potleaf publication result
         if: always()
+        continue-on-error: true
         uses: actions/github-script@v7
         env:
           JOB_STATUS: ${{ job.status }}
@@ -153,22 +154,22 @@ jobs:
           SOURCE_URL: ${{ steps.publish.outputs.source_url }}
         with:
           script: |
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: 46,
-              body: [
-                '## DTF potleaf favicon regression guard',
-                '',
-                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-                `Result: **${process.env.JOB_STATUS}**`,
-                `WordPress potleaf setting: **${process.env.PUBLISH_OUTCOME || 'not-run'}**`,
-                `Fresh visitor favicon verification: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
-                `Potleaf media ID: **${process.env.MEDIA_ID || 'not-run'}**`,
-                `Version: **${process.env.CACHE_VERSION || 'not-run'}**`,
-                `Media slug: **${process.env.MEDIA_SLUG || 'not-run'}**`,
-                `Versioned source URL: ${process.env.SOURCE_URL || 'not-run'}`,
-                '',
-                'The guard now reapplies the cannabis-leaf icon after WordPress visual/presentation production workflows so older site-icon media cannot silently replace it again. Success also requires every favicon and Apple touch icon declaration in the public head to use the current versioned potleaf asset.'
-              ].join('\n')
-            });
+            const body = [
+              '## DTF potleaf favicon regression guard',
+              '',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Result: **${process.env.JOB_STATUS}**`,
+              `WordPress potleaf setting: **${process.env.PUBLISH_OUTCOME || 'not-run'}**`,
+              `Fresh visitor favicon verification: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
+              `Potleaf media ID: **${process.env.MEDIA_ID || 'not-run'}**`,
+              `Version: **${process.env.CACHE_VERSION || 'not-run'}**`,
+              `Media slug: **${process.env.MEDIA_SLUG || 'not-run'}**`,
+              `Versioned source URL: ${process.env.SOURCE_URL || 'not-run'}`,
+              '',
+              'The guard reapplies the cannabis-leaf icon after WordPress visual/presentation production workflows so older site-icon media cannot silently replace it again. Success also requires every favicon and Apple touch icon declaration in the public head to use the current versioned potleaf asset.'
+            ].join('\n');
+            try {
+              await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: 220, body });
+            } catch (error) {
+              core.warning(`Potleaf advisory report could not be posted: ${error.message}`);
+            }
