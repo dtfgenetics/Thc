@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-209",
+  "number":209,
+  "title":"Pollen Release, Transport, and Deposition",
+  "objective":"Explain how cannabis pollen moves from anthers through air to receiving surfaces, distinguish local contamination from long-distance atmospheric transport, and replace fixed isolation-distance claims with risk-based monitoring.",
+  "terms":[
+    {"term":"anemophily","definition":"Wind-mediated pollination, in which pollen is transported primarily through air movement rather than by an animal pollinator."},
+    {"term":"deposition","definition":"Removal of airborne particles such as pollen from the atmosphere onto plant surfaces, soil, structures, or other surfaces."},
+    {"term":"dispersal kernel","definition":"A distribution describing how the probability or amount of dispersed material changes with distance from its source."},
+    {"term":"turbulence","definition":"Irregular air motion that can mix and transport airborne particles vertically and horizontally."},
+    {"term":"source strength","definition":"The amount of material released from a source over a defined time."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Cannabis is primarily wind pollinated. Once mature anthers release pollen, grains can be carried by ventilation or natural wind and later deposited on receptive flowers or other surfaces.",
+    "Pollen concentration generally declines with distance from a source, but the decline is not a simple fixed-radius boundary. Source size, release height, atmospheric stability, turbulence, wind direction, terrain, vegetation, buildings, and weather alter transport and deposition.",
+    "Large-scale modeling published in 2024 showed that cannabis pollen can participate in long-range atmospheric transport and that seasonal and meteorological conditions influence dispersal. The study supports treating cross-pollination risk as a probability distribution rather than a guaranteed safe distance.",
+    "Indoor and greenhouse systems create their own transport networks. Fans, pressure differences, worker movement, clothing, tools, filters, doors, and shared air paths can move pollen independently of outdoor field distance.",
+    "Deposition does not prove fertilization. A grain must reach a compatible receptive stigma while retaining sufficient function to germinate and complete the subsequent reproductive process."
+  ],
+  "cultivationRelevance":[
+    "Map likely airflow paths when pollen exclusion or controlled breeding matters; distance alone is not a complete containment strategy.",
+    "Treat pollen-producing rooms, plants, tools, clothing, and ventilation paths as possible sources during active pollen shed.",
+    "Use wind direction and timing records for outdoor reproductive work instead of assuming a single universal isolation radius.",
+    "Separate evidence of airborne or deposited pollen from evidence of successful seed set when diagnosing unintended pollination."
+  ],
+  "measureAndRecord":[
+    {"field":"Source condition","requirement":"Record the number and approximate size of pollen-producing plants, stage of anthesis, and duration of active pollen shed."},
+    {"field":"Air movement","requirement":"Record fan status or outdoor wind direction and speed when available, plus major ventilation or pressure changes."},
+    {"field":"Spatial layout","requirement":"Record source and recipient locations, separation distance, barriers, doorways, vents, and major airflow paths."},
+    {"field":"Weather or room conditions","requirement":"Record temperature, relative humidity, precipitation or wetting events, and other conditions likely to affect release and transport."},
+    {"field":"Outcome","requirement":"Record deposited pollen observations separately from later seed set or confirmed parentage."
+    }
+  ],
+  "misconceptions":[
+    "Cannabis pollen falls straight down near the male plant.",
+    "There is one universal isolation distance beyond which cross-pollination is impossible.",
+    "Only outdoor wind can spread cannabis pollen.",
+    "Finding pollen on a surface proves that fertilization occurred.",
+    "A room without visible pollen dust is necessarily free of pollen risk."
+  ],
+  "evidenceLimits":[
+    "Long-range cannabis pollen transport is supported by atmospheric modeling and reported observations, but field-to-field fertilization probability at a particular site depends on local source strength, weather, topography, recipient phenology, and pollen viability. This lesson therefore avoids a universal safe-distance number."
+  ],
+  "crossLinks":"THC-ENC-207 for anthesis; THC-ENC-208 for pollen viability; THC-ENC-210–213 for receptivity, fertilization, and controlled pollination; THC-ENC-215 for containment and decontamination.",
+  "sourceNotes":[
+    "Nimmala M, Ross SD, Foroutan H. (2024). Cannabis pollen dispersal across the United States. Scientific Reports 14:20605. Modeled seasonal and spatial windborne cannabis pollen transport and emphasized meteorological control of dispersal.",
+    "The 2024 paper discusses reported cross-pollination over kilometer scales and long-distance atmospheric transport evidence, but those observations are not equivalent to a universal fertilization distance for every crop or site.",
+    "Public guidance uses source-pathway-recipient reasoning rather than presenting one isolation radius as guaranteed containment."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 11 batch 02 controlled web derivative","evidenceControl":"current_topic_secondary_review_complete","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_pollen_dispersal_and_containment","releaseTimeReview":"completed_2026-08-29_non_universal_isolation_distance_and_transport_claims","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"pollen-release-transport-and-deposition",
+  "route":"/encyclopedia/pollen-release-transport-and-deposition"
+}
