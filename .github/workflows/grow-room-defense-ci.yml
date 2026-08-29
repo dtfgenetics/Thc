@@ -28,6 +28,9 @@ jobs:
       - name: Run deterministic defense engine tests
         run: node games/grow-room-defense/test/engine.test.mjs
 
+      - name: Test self-contained public runtime
+        run: node games/grow-room-defense/test/public-runtime.test.mjs
+
       - name: Validate browser JavaScript syntax
         run: |
           node --check site/public-route-patch/games/grow-room-defense/app.js
@@ -47,14 +50,19 @@ jobs:
             if (!source.includes(text)) throw new Error(`missing ${label}: ${text}`);
           };
           requireText(html, '<link rel="canonical" href="https://dtfseeds.com/games/grow-room-defense/">', 'canonical route');
-          requireText(html, '<script type="module" src="./app.js"></script>', 'module entrypoint');
+          requireText(html, 'id="grow-room-defense-data"', 'embedded IPM data');
+          requireText(html, '<script src="./app.js" defer></script>', 'classic deferred entrypoint');
           requireText(html, 'Education boundary:', 'education boundary');
-          requireText(app, 'data.lanes?.length !== 3', 'lane contract');
-          requireText(app, 'data.threats?.length !== 8', 'threat contract');
-          requireText(app, 'data.tools?.length !== 7', 'tool contract');
+          requireText(app, 'expected three plant benches', 'lane contract');
+          requireText(app, 'expected eight pressure types', 'threat contract');
+          requireText(app, 'expected seven IPM tools', 'tool contract');
           requireText(app, 'class="plant-art"', 'CSS plant renderer');
+          requireText(app, 'function renderThreat(active, laneId, tool, laneAlive)', 'dead bench targeting guard');
+          requireText(app, "const laneAlive = lane.health > 0", 'lane health targetability');
           requireText(css, '.plant-art', 'plant asset styles');
           requireText(css, '@media(prefers-reduced-motion:reduce)', 'reduced-motion support');
+          if (html.includes('type="module"')) throw new Error('Grow Room Defense must not depend on module MIME handling');
+          if (app.includes("fetch('./data/ipm.json'")) throw new Error('Grow Room Defense must not fetch IPM data at runtime');
           if (app.includes('ui.code.disabled')) throw new Error('replay code input must remain available after game over');
           NODE
 
