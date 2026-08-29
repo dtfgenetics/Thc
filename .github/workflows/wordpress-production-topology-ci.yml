@@ -11,6 +11,7 @@ on:
       - .github/workflows/wordpress-visual-polish-v3-post-canonical.yml
       - .github/workflows/wordpress-home-genetics-art.yml
       - .github/workflows/wordpress-canonical-watch.yml
+      - .github/workflows/verify-live-infographics.yml
       - .github/workflows/wordpress-production-topology-ci.yml
   push:
     branches: [main]
@@ -22,6 +23,7 @@ on:
       - .github/workflows/wordpress-visual-polish-v3-post-canonical.yml
       - .github/workflows/wordpress-home-genetics-art.yml
       - .github/workflows/wordpress-canonical-watch.yml
+      - .github/workflows/verify-live-infographics.yml
       - .github/workflows/wordpress-production-topology-ci.yml
 
 permissions:
@@ -47,6 +49,7 @@ jobs:
           legacy_visual='.github/workflows/wordpress-visual-polish-v3-post-canonical.yml'
           legacy_genetics='.github/workflows/wordpress-home-genetics-art.yml'
           watch='.github/workflows/wordpress-canonical-watch.yml'
+          verify_infographics='.github/workflows/verify-live-infographics.yml'
 
           grep -Fq -- '- Stage DTFSeeds WordPress Canonical Deployment' "$canonical"
 
@@ -62,7 +65,12 @@ jobs:
             exit 1
           fi
 
-          grep -Fq -- '- Publish DTFSeeds Learning Experience V3' "$home"
+          grep -Fq 'uses: ./.github/workflows/wordpress-home-release-visuals.yml' "$learning"
+          grep -Fq 'workflow_call:' "$home"
+          if grep -Fq 'workflow_run:' "$home"; then
+            echo 'Final Home visuals must be called as a reusable workflow, not as a fourth workflow_run hop.' >&2
+            exit 1
+          fi
 
           for legacy in "$legacy_visual" "$legacy_genetics"; do
             if grep -Fq 'workflow_run:' "$legacy" || grep -Fq 'push:' "$legacy"; then
@@ -79,4 +87,11 @@ jobs:
             exit 1
           fi
 
-          echo 'Verified production order: staging -> canonical -> infographics -> learning -> final home visuals; legacy visual writers are manual-only.'
+          if grep -Fq 'git push origin HEAD:main' "$verify_infographics"; then
+            echo 'Independent live infographic verification must not mutate main and retrigger production.' >&2
+            exit 1
+          fi
+          grep -Fq 'actions/upload-artifact@v4' "$verify_infographics"
+          grep -Fq 'issue_number: 220' "$verify_infographics"
+
+          echo 'Verified production order: staging -> canonical -> infographics -> learning -> reusable final Home owner; legacy writers are manual-only and live verification is non-mutating.'
