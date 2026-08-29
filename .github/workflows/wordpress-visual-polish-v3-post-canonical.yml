@@ -2,14 +2,6 @@ name: Apply DTFSeeds Visual V3 After Canonical Production
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/wordpress-visual-polish-v3-post-canonical.yml'
-      - 'scripts/improve-wordpress-learning-v4.mjs'
-  workflow_run:
-    workflows: ['Publish DTFSeeds WordPress Production']
-    types: [completed]
 
 permissions:
   contents: read
@@ -23,8 +15,6 @@ env:
 
 jobs:
   v3:
-    if: >-
-      github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     environment: production
@@ -135,7 +125,5 @@ jobs:
             echo "- Learning V4 hierarchy: **${LEARNING:-not-run}**"
             echo "- Live visual verification: **${VERIFY:-not-run}**"
             echo
-            echo 'Learning V4 relocates the goal chooser ahead of the subject catalog and adds the connected six-stage learning map after the final V3 polish layer.'
+            echo 'Legacy V3 is manual-only. Automatic WordPress production ownership is staging -> canonical -> infographics -> Learning V3 -> final Home release visuals.'
           } >> "$GITHUB_STEP_SUMMARY"
-
-# Production trigger: 2026-08-28 target final post-polish Learn structure

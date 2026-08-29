@@ -11,6 +11,7 @@ on:
       - site/public-route-patch/projects/**
       - scripts/validate-public-game-release-integrity.mjs
       - scripts/promote-public-game-routes-via-wordpress.mjs
+      - scripts/flush-hostinger-litespeed-mcp.mjs
       - package.json
       - .github/workflows/game-release-integrity.yml
   workflow_run:
@@ -44,11 +45,14 @@ jobs:
       - name: Validate public game release contract
         run: npm run verify:release-integrity
 
-      - name: Syntax-check production route promotion
-        run: node --check scripts/promote-public-game-routes-via-wordpress.mjs
+      - name: Syntax-check production route finalization
+        run: |
+          set -euo pipefail
+          node --check scripts/promote-public-game-routes-via-wordpress.mjs
+          node --check scripts/flush-hostinger-litespeed-mcp.mjs
 
   production-integrity:
-    name: Promote routes and verify production identity
+    name: Promote routes purge cache and verify production identity
     needs: static-integrity
     if: >-
       (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success') ||
@@ -80,6 +84,41 @@ jobs:
 
       - name: Remove stale redirects from promoted public game routes
         run: node scripts/promote-public-game-routes-via-wordpress.mjs
+
+      - name: Purge Hostinger LiteSpeed after route promotion
+        run: node scripts/flush-hostinger-litespeed-mcp.mjs
+
+      - name: Verify bare Bud or Bluff route is not cached as a redirect
+        shell: bash
+        run: |
+          set -euo pipefail
+          body="$RUNNER_TEMP/bud-or-bluff-bare.html"
+          headers="$RUNNER_TEMP/bud-or-bluff-bare.headers"
+          ok=0
+          for attempt in 1 2 3 4 5 6; do
+            : > "$body"
+            : > "$headers"
+            status="$(curl -4 -sS --retry 2 --retry-delay 2 \
+              --output "$body" \
+              --dump-header "$headers" \
+              --write-out '%{http_code}' \
+              -H 'User-Agent: DTFSeeds-Bare-Game-Route-Verify/1.0' \
+              'https://dtfseeds.com/games/bud-or-bluff/')"
+            if [[ "$status" == '200' ]] && \
+               ! grep -Eiq '^location:' "$headers" && \
+               grep -Fqi 'Bud or Bluff' "$body" && \
+               grep -Fqi 'Create lobby' "$body"; then
+              ok=1
+              break
+            fi
+            echo "Bare Bud or Bluff attempt $attempt did not converge (status=$status)." >&2
+            cat "$headers" >&2 || true
+            sleep 5
+          done
+          [[ "$ok" -eq 1 ]] || {
+            echo 'Bare /games/bud-or-bluff/ is still redirected or stale after post-promotion cache purge.' >&2
+            exit 1
+          }
 
       - name: Verify every ready public game resolves as its own page
         run: npm run verify:release-integrity:live

@@ -2,21 +2,6 @@ name: Finalize DTFSeeds Home Genetics Art
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/wordpress-home-genetics-art.yml'
-      - 'scripts/finalize-wordpress-home-genetics-art.mjs'
-  workflow_run:
-    workflows:
-      - Publish DTFSeeds Learning Experience V3
-      - Rebuild DTFSeeds WordPress Visual Site
-      - Publish DTFSeeds WordPress Production
-      - Reconcile DTFSeeds WordPress Pages On Command
-      - Rebuild DTFSeeds Visual Site On Command
-      - Force DTF Visual + Favicon Production
-      - Recreate Codex WordPress Production Path
-    types: [completed]
 
 permissions:
   contents: read
@@ -31,7 +16,6 @@ env:
 
 jobs:
   finalize-home-art:
-    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     environment: production
@@ -95,6 +79,7 @@ jobs:
           echo 'outcome=success' >> "$GITHUB_OUTPUT"
       - name: Report Home genetics artwork
         if: always()
+        continue-on-error: true
         uses: actions/github-script@v7
         env:
           STATUS: ${{ job.status }}
@@ -109,6 +94,10 @@ jobs:
               `Genetics visual write: **${process.env.APPLY || 'not-completed'}**`,
               `Live verification: **${process.env.VERIFY || 'not-completed'}**`,
               '',
-              'This finalizer is the last Home genetics layer after every workflow that can rebuild the customer-facing visual site. It restores the premium three-card hero, Mango Bubbles genetics feature, and the three reviewed current-release strain cards so generic education media cannot overwrite product artwork.'
+              'This legacy finalizer is manual-only. Automatic Home release artwork is owned by Reconcile DTF Homepage Release Visuals at the end of the serialized WordPress production chain.'
             ].join('\n');
-            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body});
+            try {
+              await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body});
+            } catch (error) {
+              core.warning(`Homepage Genetics V2 advisory report could not be posted: ${error.message}`);
+            }

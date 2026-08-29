@@ -5,8 +5,10 @@ on:
     branches: [main]
     paths:
       - 'scripts/finalize-wordpress-home-genetics-art.mjs'
+      - 'scripts/fix-wordpress-home-release-visuals.mjs'
       - 'scripts/run-learning-v3-production.mjs'
       - '.github/workflows/wordpress-home-genetics-art.yml'
+      - '.github/workflows/wordpress-home-release-visuals.yml'
       - '.github/workflows/wordpress-learning-experience-v3-production.yml'
       - '.github/workflows/homepage-genetics-v2-ci.yml'
   workflow_dispatch:
@@ -29,6 +31,7 @@ jobs:
         run: |
           set -euo pipefail
           node --check scripts/finalize-wordpress-home-genetics-art.mjs
+          node --check scripts/fix-wordpress-home-release-visuals.mjs
           node --check scripts/run-learning-v3-production.mjs
           grep -Fq 'data-dtf-home-genetics-v2' scripts/finalize-wordpress-home-genetics-art.mjs
           grep -Fq 'Current releases, shown with the real strain cards.' scripts/finalize-wordpress-home-genetics-art.mjs
@@ -36,24 +39,22 @@ jobs:
           grep -Fq 'dtf-strain-card-blue-mango-f2-feminized' scripts/run-learning-v3-production.mjs
           grep -Fq 'dtf-strain-card-blue-bubblegum-f1-regular' scripts/run-learning-v3-production.mjs
           grep -Fq 'dtf-strain-card-mango-bubbles-f1-regular' scripts/finalize-wordpress-home-genetics-art.mjs
-          for producer in \
-            'Publish DTFSeeds Learning Experience V3' \
-            'Rebuild DTFSeeds WordPress Visual Site' \
-            'Publish DTFSeeds WordPress Production' \
-            'Reconcile DTFSeeds WordPress Pages On Command' \
-            'Rebuild DTFSeeds Visual Site On Command' \
-            'Force DTF Visual + Favicon Production' \
-            'Recreate Codex WordPress Production Path'; do
-            grep -Fq -- "- $producer" .github/workflows/wordpress-home-genetics-art.yml || {
-              echo "Homepage reviewed-card finalizer is not subscribed to visual producer: $producer" >&2
-              exit 1
-            }
-          done
-          grep -Fq -- "- '.github/workflows/wordpress-home-genetics-art.yml'" .github/workflows/wordpress-home-genetics-art.yml
-          grep -Fq 'Blue Mango F2 Regular DTF Genetics strain card' .github/workflows/wordpress-home-genetics-art.yml
-          grep -Fq 'Blue Mango F2 Feminized DTF Genetics strain card' .github/workflows/wordpress-home-genetics-art.yml
-          grep -Fq 'Blue Bubblegum F1 Regular DTF Genetics strain card' .github/workflows/wordpress-home-genetics-art.yml
-          grep -Fq 'Mango Bubbles F1 Regular DTF Genetics strain card' .github/workflows/wordpress-home-genetics-art.yml
+
+          legacy='.github/workflows/wordpress-home-genetics-art.yml'
+          final_owner='.github/workflows/wordpress-home-release-visuals.yml'
+          grep -Fq 'workflow_dispatch:' "$legacy"
+          ! grep -Fq 'workflow_run:' "$legacy"
+          ! grep -Fq 'push:' "$legacy"
+          grep -Fq 'continue-on-error: true' "$legacy"
+          grep -Fq -- '- Publish DTFSeeds Learning Experience V3' "$final_owner"
+          grep -Fq 'scripts/fix-wordpress-home-release-visuals.mjs' "$final_owner"
+          grep -Fq 'Purge Hostinger LiteSpeed cache' "$final_owner"
+          grep -Fq 'Verify visitor-facing homepage release artwork' "$final_owner"
+          grep -Fq 'Blue Mango F2 Regular DTF Genetics strain card' "$legacy"
+          grep -Fq 'Blue Mango F2 Feminized DTF Genetics strain card' "$legacy"
+          grep -Fq 'Blue Bubblegum F1 Regular DTF Genetics strain card' "$legacy"
+          grep -Fq 'Mango Bubbles F1 Regular DTF Genetics strain card' "$legacy"
+          echo 'Homepage genetics ownership validated: Learning V3 -> final Home release visuals; legacy finalizer manual-only.'
 
       - name: Prove V3 runtime patch still matches canonical publisher
         shell: bash
