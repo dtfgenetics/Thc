@@ -6,9 +6,9 @@ import {
   guessStrain,
   isValidCaseCode,
   normalizeCaseCode,
-  questionOptions,
   questionsLeft
 } from './engine.mjs';
+import { rankedQuestionOptions } from './analysis.mjs';
 
 const ui = {
   load: document.querySelector('#load-status'),
@@ -86,7 +86,7 @@ function renderModifier() {
 function renderQuestions() {
   ui.questions.replaceChildren();
   if (state.status !== 'playing') return;
-  const available = questionsLeft(state) > 0 ? questionOptions(state, data) : [];
+  const available = questionsLeft(state) > 0 ? rankedQuestionOptions(state, data) : [];
   const groups = new Map();
   for (const question of available) {
     if (!groups.has(question.group)) groups.set(question.group, []);
@@ -114,9 +114,10 @@ function renderQuestions() {
     for (const question of questions) {
       const button = document.createElement('button');
       button.type = 'button';
-      button.className = 'question-card';
+      button.className = `question-card${question.bestSplit ? ' best-split' : ''}`;
       button.dataset.question = question.id;
-      button.innerHTML = `<strong>${escapeHtml(question.prompt)}</strong><small>Splits ${question.yesCount} yes / ${question.noCount} no</small>`;
+      button.setAttribute('aria-label', `${question.prompt}. Splits ${question.yesCount} yes and ${question.noCount} no. Information ${question.informationScore} percent${question.bestSplit ? '. Best current split.' : '.'}`);
+      button.innerHTML = `<strong>${escapeHtml(question.prompt)}</strong><small>Splits ${question.yesCount} yes / ${question.noCount} no · <span class="info-score">Information ${question.informationScore}%${question.bestSplit ? ' · BEST SPLIT' : ''}</span></small>`;
       grid.append(button);
     }
     section.append(grid);
@@ -171,7 +172,7 @@ function showResult() {
     ui.resultCopy.textContent = 'You used all available guesses. Replay the same case to test a different question path.';
     ui.score.textContent = 'No score recorded';
   }
-  ui.result.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  ui.result.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
 }
 
 function renderGame() {
@@ -190,7 +191,7 @@ function enterGame(nextState) {
   ui.game.hidden = false;
   history.replaceState(null, '', challengeUrl());
   renderGame();
-  ui.announce.textContent = `Case ${state.code} started with ${state.candidates.length} candidates.`;
+  ui.announce.textContent = `Case ${state.code} started with ${state.candidates.length} candidates. Questions are ranked by information split.`;
   document.querySelector('#mystery-heading')?.focus({ preventScroll: true });
 }
 
@@ -276,7 +277,7 @@ async function load() {
     const requested = normalizeCaseCode(params.get('case'));
     setCode(isValidCaseCode(requested) ? requested : randomCode());
     ui.wild.checked = params.get('wild') === '1';
-    ui.load.textContent = '20 fictional profiles · 12 deduction questions · deterministic case codes';
+    ui.load.textContent = '20 fictional profiles · information-ranked questions · deterministic case codes';
     ui.setup.hidden = false;
     if (isValidCaseCode(requested)) startFromControls();
   } catch (error) {
