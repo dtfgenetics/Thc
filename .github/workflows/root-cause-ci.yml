@@ -1,0 +1,71 @@
+name: Root Cause CI
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - games/root-cause/**
+      - site/public-route-patch/games/root-cause/**
+      - .github/workflows/root-cause-ci.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate case bank and public copy
+        run: node games/root-cause/scripts/validate-data.mjs
+
+      - name: Run deterministic deduction engine tests
+        run: node games/root-cause/test/engine.test.mjs
+
+      - name: Validate browser JavaScript syntax
+        run: |
+          node --check site/public-route-patch/games/root-cause/app.js
+          node --check site/public-route-patch/games/root-cause/engine.mjs
+
+      - name: Verify canonical and public engine match
+        run: cmp games/root-cause/src/engine.mjs site/public-route-patch/games/root-cause/engine.mjs
+
+      - name: Verify route and interaction contracts
+        run: |
+          node - <<'NODE'
+          const fs = require('fs');
+          const html = fs.readFileSync('site/public-route-patch/games/root-cause/index.html','utf8');
+          const css = fs.readFileSync('site/public-route-patch/games/root-cause/root-cause.css','utf8');
+          const app = fs.readFileSync('site/public-route-patch/games/root-cause/app.js','utf8');
+          const requireText = (source, text, label) => {
+            if (!source.includes(text)) throw new Error(`missing ${label}: ${text}`);
+          };
+          requireText(html, '<link rel="canonical" href="https://dtfseeds.com/games/root-cause/">', 'canonical route');
+          requireText(html, '<script type="module" src="./app.js"></script>', 'module entrypoint');
+          requireText(html, 'Education boundary:', 'education boundary');
+          requireText(app, 'data.cases?.length !== 12', 'case contract');
+          requireText(app, 'data.diagnoses?.length !== 12', 'diagnosis contract');
+          requireText(app, 'MAX_INSPECTIONS', 'inspection limit');
+          requireText(css, '.plant-visual', 'original plant renderer');
+          requireText(css, '@media(prefers-reduced-motion:reduce)', 'reduced motion');
+          NODE
+
+      - name: Verify truthful release boundary
+        run: |
+          node - <<'NODE'
+          const fs = require('fs');
+          const game = JSON.parse(fs.readFileSync('games/root-cause/game.json','utf8'));
+          if (game.status !== 'browser-vertical-slice') throw new Error('unexpected game status');
+          if (game.route !== '/games/root-cause/') throw new Error('unexpected route');
+          if (game.releaseGates.rulesTested !== true) throw new Error('rules suite must be recorded as tested');
+          if (game.releaseGates.deploymentRegistered !== false) throw new Error('deploymentRegistered must remain false until catalog/deployment registration is merged');
+          if (game.releaseGates.browserTested !== false) throw new Error('browserTested must remain false until browser QA is completed');
+          if (game.releaseGates.mobileTested !== false) throw new Error('mobileTested must remain false until mobile QA is completed');
+          if (game.releaseGates.accessibilityReviewed !== false) throw new Error('accessibilityReviewed must remain false until review is completed');
+          NODE

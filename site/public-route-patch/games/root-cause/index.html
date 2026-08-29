@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#07110c">
+  <meta name="description" content="Root Cause is a cultivation diagnostics deduction game from DTF Games.">
+  <link rel="canonical" href="https://dtfseeds.com/games/root-cause/">
+  <link rel="stylesheet" href="./root-cause.css">
+  <title>Root Cause | DTF Games</title>
+</head>
+<body>
+  <a class="skip-link" href="#game">Skip to game</a>
+  <header class="site-bar">
+    <a class="brand" href="/games/" aria-label="Back to DTF Games"><span class="brand-mark">DTF</span><span><strong>DTF Games</strong><small>Dream the Future</small></span></a>
+    <a class="hub-link" href="/games/">Game Hub</a>
+  </header>
+
+  <main id="game" class="game-shell">
+    <section class="hero" aria-labelledby="game-title">
+      <div><p class="eyebrow">Cultivation deduction lab</p><h1 id="game-title">Root Cause</h1><p class="lede">Read the plant, inspect the evidence, and identify the actual problem before a look-alike symptom sends you the wrong direction.</p></div>
+      <p id="load-status" class="status-chip" role="status">Loading case files…</p>
+    </section>
+
+    <section class="hud" aria-label="Run status">
+      <div><span>Case</span><strong id="round-stat">1 / 6</strong></div>
+      <div><span>Score</span><strong id="score-stat">0</strong></div>
+      <div><span>Solved</span><strong id="solved-stat">0</strong></div>
+      <div><span>Inspections</span><strong id="inspection-stat">0 / 2</strong></div>
+    </section>
+
+    <section class="lab-grid">
+      <div class="case-column">
+        <section class="case-card" aria-labelledby="case-title">
+          <div class="case-heading"><div><p id="case-stage" class="eyebrow">Case file</p><h2 id="case-title">Opening file…</h2></div><span class="case-badge">ROOT // ANALYSIS</span></div>
+          <p id="case-summary" class="case-summary"></p>
+          <div id="environment" class="environment-strip" aria-label="Environment readings"></div>
+          <div class="monitor-grid">
+            <div id="plant-visual" class="plant-visual" data-visual="normal" aria-hidden="true">
+              <div class="lamp"><span></span></div><div class="beam"></div>
+              <div class="pot"><span class="soil"></span><span class="stem"></span><span class="leaf leaf-a"></span><span class="leaf leaf-b"></span><span class="leaf leaf-c"></span><span class="leaf leaf-d"></span><span class="leaf leaf-e"></span></div>
+              <div class="scanline"></div>
+            </div>
+            <div><p class="panel-label">Observed symptoms</p><ul id="symptoms" class="symptom-list"></ul></div>
+          </div>
+        </section>
+
+        <section class="evidence-card" aria-labelledby="evidence-title">
+          <div class="section-heading"><div><p class="eyebrow">Evidence log</p><h2 id="evidence-title">What the inspections found</h2></div><span id="guess-status" class="mini-status">2 guesses available</span></div>
+          <div id="evidence" class="evidence-list"><p class="empty-state">No inspections yet. You may diagnose immediately for maximum points.</p></div>
+        </section>
+
+        <section id="feedback" class="feedback-card" aria-live="polite"><span class="feedback-kicker">CASE OPEN</span><strong>Start with the pattern, not a single leaf.</strong><p>Run up to two inspections or make a diagnosis now.</p></section>
+        <button id="next-case" type="button" class="primary-button next-button" hidden>Next case</button>
+      </div>
+
+      <aside class="control-column">
+        <section class="control-card" aria-labelledby="inspection-title"><p class="eyebrow">Inspection tray</p><h2 id="inspection-title">Choose what to verify</h2><p class="help-text">Each inspection costs 10 potential points for this case. Maximum two.</p><div id="inspections" class="action-grid"></div></section>
+        <section class="control-card" aria-labelledby="diagnosis-title"><p class="eyebrow">Differential diagnosis</p><h2 id="diagnosis-title">Name the root cause</h2><p class="help-text">You get two guesses. A wrong first guess costs 25 potential points.</p><div id="diagnoses" class="diagnosis-grid"></div></section>
+        <section class="control-card code-card" aria-labelledby="code-title"><p class="eyebrow">Case code</p><h2 id="code-title">Replay this run</h2><label for="case-code">Six-character code</label><div class="code-row"><input id="case-code" maxlength="6" autocomplete="off" autocapitalize="characters" spellcheck="false"><button id="new-code" type="button" class="secondary-button">New</button></div><p class="help-text">Enter loads the exact same six cases and option order.</p><button id="share-run" type="button" class="primary-button">Copy challenge link</button></section>
+        <section class="control-card" aria-labelledby="history-title"><p class="eyebrow">Run log</p><h2 id="history-title">Resolved cases</h2><ol id="history" class="history-list"><li class="empty-state">Completed cases will appear here.</li></ol></section>
+      </aside>
+    </section>
+
+    <section class="rules-card" aria-labelledby="rules-title"><p class="eyebrow">Diagnostic rule</p><h2 id="rules-title">Verify conditions before correcting symptoms.</h2><div class="rules-grid"><p><strong>Observe:</strong> location, timing, posture, color, and which leaves are affected can matter as much as the symptom itself.</p><p><strong>Inspect:</strong> use measurements and comparisons to separate look-alike causes.</p><p><strong>Diagnose:</strong> choose the explanation that fits the whole pattern, not just one clue.</p></div><p class="education-note">Education boundary: plant symptoms can overlap. This game teaches broad diagnostic reasoning and does not replace direct measurement, lab testing, or product-label directions.</p></section>
+  </main>
+  <p id="announce" class="sr-only" aria-live="assertive"></p>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
