@@ -31,6 +31,9 @@ jobs:
       - name: Run High Lines persistence tests
         run: node games/high-lines/test/persistence.test.mjs
 
+      - name: Run production runtime and zoom UI regression tests
+        run: node games/high-lines/test/public-runtime.test.mjs
+
       - name: Validate browser JavaScript syntax
         run: |
           node --check site/public-route-patch/games/high-lines/app.js
@@ -48,18 +51,21 @@ jobs:
           const fs = require('fs');
           const html = fs.readFileSync('site/public-route-patch/games/high-lines/index.html','utf8');
           const css = fs.readFileSync('site/public-route-patch/games/high-lines/high-lines.css','utf8');
+          const visual = fs.readFileSync('site/public-route-patch/games/high-lines/high-lines-v2.css','utf8');
           const app = fs.readFileSync('site/public-route-patch/games/high-lines/app.js','utf8');
           const need = (source, text, label) => {
             if (!source.includes(text)) throw new Error(`missing ${label}: ${text}`);
           };
           need(html, '<link rel="canonical" href="https://dtfseeds.com/games/high-lines/">', 'canonical route');
-          need(html, '<script type="module" src="./app.js"></script>', 'module entrypoint');
+          need(html, '<script defer src="./app.js"></script>', 'classic deferred entrypoint');
+          need(html, 'id="high-lines-data"', 'embedded canonical scene data');
           need(html, 'Progress autosaves locally.', 'autosave disclosure');
           need(html, 'Game boundary:', 'content boundary');
-          need(app, "from './persistence.mjs'", 'persistence module import');
-          need(app, 'localStorage.setItem', 'local autosave write');
-          need(app, 'localStorage.getItem', 'local autosave read');
-          need(app, 'localStorage.removeItem', 'local autosave reset');
+          need(html, 'id="zoom-out"', 'zoom-out control');
+          need(html, 'id="zoom-in"', 'zoom-in control');
+          need(app, 'globalThis.localStorage?.setItem', 'guarded local autosave write');
+          need(app, 'globalThis.localStorage?.getItem', 'guarded local autosave read');
+          need(app, 'globalThis.localStorage?.removeItem', 'guarded local autosave reset');
           need(app, 'restoreExperience(', 'validated save restoration');
           need(app, 'experienceSavePayload(', 'validated save serialization');
           need(app, 'let sceneLoadToken = 0;', 'scene load token');
@@ -67,14 +73,24 @@ jobs:
           need(app, 'requestToken !== sceneLoadToken', 'stale response guard');
           need(app, 'state.sceneId !== requestedSceneId', 'scene identity guard');
           need(app, "svg.querySelector('script, foreignObject')", 'safe inline SVG contract');
+          need(app, 'for (let attempt = 1; attempt <= 2; attempt += 1)', 'scene SVG retry');
+          need(app, 'Confirm Reset', 'destructive reset guard');
+          need(app, 'const MAX_ZOOM = 2.5', 'zoom ceiling');
           need(app, "if (/^[1-8]$/.test(event.key))", 'palette keyboard shortcuts');
           need(app, "event.key === 'u' || event.key === 'U'", 'undo keyboard shortcut');
           need(app, "'[data-hidden],[data-region]'", 'keyboard SVG targets');
           need(css, '.playfield{', 'playfield-first layout');
           need(css, '.high-lines-svg', 'interactive SVG styling');
-          need(css, '@media(prefers-reduced-motion:reduce)', 'reduced-motion support');
+          need(visual, '.board-controls', 'zoom control layout');
+          need(visual, 'overflow:auto', 'zoom board scrolling');
+          need(visual, 'touch-action:pan-x pan-y', 'mobile board pan support');
+          need(visual, '#reset-art.reset-armed', 'destructive reset visual');
+          need(visual, '@media(max-width:650px)', 'mobile controls');
+          need(visual, '@media(prefers-reduced-motion:reduce)', 'reduced-motion support');
           const staleGuards = (app.match(/requestToken !== sceneLoadToken/g) || []).length;
           if (staleGuards < 3) throw new Error('scene load must guard stale success, pre-render state, and failure paths');
+          if (/^\s*import\s/m.test(app)) throw new Error('public startup regressed to browser module imports');
+          if (/fetch\(['"]\.\/data\/scenes\.json/.test(app)) throw new Error('public startup regressed to runtime scene-metadata fetch');
           NODE
 
       - name: Verify truthful release boundary
