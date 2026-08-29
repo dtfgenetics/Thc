@@ -13,7 +13,7 @@ if(!['reconcile','verify'].includes(mode)) throw new Error(`Unsupported LEARNING
 if(!username||!password) throw new Error('WP_API_USERNAME and WP_API_PASSWORD are required');
 
 const auth=`Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`;
-const headers={Authorization:auth,Accept:'application/json','User-Agent':'DTFSeeds-Learning-V3-Ownership/1.0'};
+const headers={Authorization:auth,Accept:'application/json','User-Agent':'DTFSeeds-Learning-V3-Ownership/1.1'};
 const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 const rendered=value=>typeof value==='string'?value:(value?.raw||value?.rendered||'');
 const normalizePath=value=>{
@@ -110,6 +110,22 @@ async function requireSinglePublishedSlug(slug,label){
   return candidates[0];
 }
 
+async function retireNoncanonicalDuplicates(candidates,canonical,route,label){
+  const extras=candidates.filter(candidate=>Number(candidate.id)!==Number(canonical.id));
+  if(!extras.length) return canonical;
+  const unsafe=extras.filter(candidate=>normalizePath(candidate.link)===route);
+  if(unsafe.length) throw new Error(`${label} has more than one exact published owner for ${route}: ${JSON.stringify(candidates.map(page=>({id:page.id,parent:page.parent,link:page.link,status:page.status})))}`);
+  if(mode!=='reconcile') throw new Error(`${label} has duplicate published slug owners while verifying: ${JSON.stringify(candidates.map(page=>({id:page.id,parent:page.parent,link:page.link,status:page.status})))}`);
+  for(const duplicate of extras){
+    await updatePage(duplicate,{status:'draft'},`${label}-retire-duplicate`);
+  }
+  const remaining=await pagesBySlug(routeSlug(route));
+  if(remaining.length!==1||Number(remaining[0].id)!==Number(canonical.id)){
+    throw new Error(`${label} duplicate retirement did not converge to canonical page ${canonical.id}: ${JSON.stringify(remaining.map(page=>({id:page.id,parent:page.parent,link:page.link,status:page.status})))}`);
+  }
+  return remaining[0];
+}
+
 const results=[];
 let learnCandidates=await pagesBySlug('learn');
 let learn;
@@ -120,7 +136,7 @@ if(learnCandidates.length===0){
 }else{
   const exact=learnCandidates.filter(page=>normalizePath(page.link)==='/learn/');
   if(exact.length!==1) throw new Error(`Learn root has ambiguous published ownership: ${JSON.stringify(learnCandidates.map(page=>({id:page.id,parent:page.parent,link:page.link})))}`);
-  throw new Error(`Learn root has duplicate published slug owners even though page ${exact[0].id} owns /learn/; refusing nondeterministic V3 lookup.`);
+  learn=await retireNoncanonicalDuplicates(learnCandidates,exact[0],'/learn/','Learn root');
 }
 
 if(mode==='reconcile'&&(Number(learn.parent)!==0||learn.slug!=='learn'||learn.status!=='publish')){
@@ -146,8 +162,11 @@ for(const topic of source.topics){
   }else{
     const exact=candidates.filter(candidate=>normalizePath(candidate.link)===route);
     const details=candidates.map(candidate=>({id:candidate.id,parent:candidate.parent,link:candidate.link,status:candidate.status}));
-    if(exact.length===1) throw new Error(`${topic.id} has duplicate published slug owners; page ${exact[0].id} owns ${route}, but V3 lookup would remain nondeterministic: ${JSON.stringify(details)}`);
-    throw new Error(`${topic.id} has ambiguous published slug owners for ${slug}: ${JSON.stringify(details)}`);
+    if(exact.length===1){
+      page=await retireNoncanonicalDuplicates(candidates,exact[0],route,topic.id);
+    }else{
+      throw new Error(`${topic.id} has ambiguous published slug owners for ${slug}: ${JSON.stringify(details)}`);
+    }
   }
 
   if(mode==='reconcile'&&(Number(page.parent)!==Number(learn.id)||page.slug!==slug||page.status!=='publish')){
@@ -158,7 +177,7 @@ for(const topic of source.topics){
   page=await pageById(page.id);
   if(Number(page.parent)!==Number(learn.id)) throw new Error(`${topic.id} page ${page.id} parent is ${page.parent}; expected Learn ${learn.id}`);
   if(page.slug!==slug) throw new Error(`${topic.id} page ${page.id} slug is ${page.slug}; expected ${slug}`);
-  if(normalizePath(page.link)!==route) throw new Error(`${topic.id} page ${page.id} permalink is ${page.link}; expected ${siteUrl}${route}`);
+  if(normalizePath(page.link)!==route) throw new Error(`${topic.id} page ${page.id} permalink is ${page.link}, expected ${siteUrl}${route}`);
   const marker=`data-dtf-topic="${topic.id}"`;
   if(mode==='verify'&&!rendered(page.content).includes(marker)) throw new Error(`${topic.id} page ${page.id} is missing stored marker ${marker}`);
   results.push({kind:'topic',topicId:topic.id,id:page.id,slug,parent:page.parent,route,storedMarker:mode==='verify'});
