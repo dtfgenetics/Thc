@@ -1,0 +1,81 @@
+name: Validate WordPress Suite Registry Parity
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - scripts/assemble-wordpress-suite-v2.py
+      - scripts/wordpress_suite_registry_patch.py
+      - scripts/wordpress-suite-v2/**
+      - site/deployment/public-apps.json
+      - .github/workflows/wordpress-suite-registry-parity.yml
+  push:
+    branches: [main]
+    paths:
+      - scripts/assemble-wordpress-suite-v2.py
+      - scripts/wordpress_suite_registry_patch.py
+      - scripts/wordpress-suite-v2/**
+      - site/deployment/public-apps.json
+      - .github/workflows/wordpress-suite-registry-parity.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: wordpress-suite-registry-parity-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Assemble registry-synchronized bridge
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile scripts/assemble-wordpress-suite-v2.py scripts/wordpress_suite_registry_patch.py
+          python scripts/assemble-wordpress-suite-v2.py "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          python scripts/wordpress_suite_registry_patch.py "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          node --check "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+
+      - name: Lint embedded WordPress bridge
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import os, pathlib, re
+          path = pathlib.Path(os.environ['RUNNER_TEMP']) / 'deploy-public-suite-v2.mjs'
+          text = path.read_text()
+          match = re.search(r"const snippetCode = String\.raw`(.*?)`\.trim\(\);", text, re.S)
+          assert match, 'embedded PHP snippet not found'
+          php = match.group(1).replace('${tokenLiteral}', "'0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'")
+          assert "$prefixes = ['games/']" not in php, 'unsafe broad games/ prefix found'
+          assert "'learn'" not in re.search(r"\$targets\s*=\s*\[(.*?)\];", php, re.S).group(1)
+          assert "'blog'" not in re.search(r"\$targets\s*=\s*\[(.*?)\];", php, re.S).group(1)
+          out = pathlib.Path(os.environ['RUNNER_TEMP']) / 'dtf-suite-v2.php'
+          out.write_text('<?php\n' + php + '\n')
+          PY
+          php -l "$RUNNER_TEMP/dtf-suite-v2.php"
+
+      - name: Report registry-backed scope
+        shell: bash
+        run: |
+          {
+            echo '## WordPress Suite registry parity'
+            echo
+            echo '- Canonical bridge hash check: passed before registry expansion.'
+            echo '- Registry-derived targets: exact local static ready-to-package game routes only.'
+            echo '- Broad games/ wildcard: forbidden.'
+            echo '- Embedded PHP syntax: valid.'
+          } >> "$GITHUB_STEP_SUMMARY"
