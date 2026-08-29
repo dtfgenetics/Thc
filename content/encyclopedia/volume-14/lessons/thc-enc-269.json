@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-269",
+  "number":269,
+  "title":"Cold and Chilling Stress",
+  "objective":"Distinguish chronic cool growth, chilling, freezing, cold-root effects, condensation, and cold-plus-light injury in cannabis without treating one temperature or the absence of frost as a universal diagnostic threshold.",
+  "terms":[
+    {"term":"chilling stress","definition":"Physiological impairment caused by low temperature above the freezing point in a temperature-sensitive plant or tissue."},
+    {"term":"freezing injury","definition":"Damage associated with ice formation and related dehydration or membrane disruption in plant tissues."},
+    {"term":"cold acclimation","definition":"Physiological adjustment caused by prior cool exposure that can alter later cold response; the direction and magnitude depend on genotype, stage, and acclimation regime."},
+    {"term":"photoinhibition","definition":"Reduction in photosynthetic capacity when absorbed light exceeds the capacity for photochemistry, protective dissipation, and repair."},
+    {"term":"electrolyte leakage","definition":"A laboratory measure of membrane injury based on ions leaking from damaged cells into surrounding solution."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Low temperature slows enzyme reactions, membrane transport, root growth, respiration, water uptake, and photosynthetic repair. Chilling injury can therefore occur above freezing, while freezing injury involves additional risks associated with ice formation and cellular dehydration.",
+    "Cannabis cold response is genotype-, age-, tissue-, duration-, and acclimation-dependent. A controlled hemp study using FINOLA and AutoCBD found that cultivar and plant age altered physiological cold response, and the tested 10-day acclimation treatment at 10 °C did not consistently protect plants; in several outcomes it acted as an additional stress rather than a beneficial hardening treatment.",
+    "In that same study, whole plants exposed to short -0.5 °C events and detached leaves exposed to progressively colder temperatures did not support one simple threshold across all measures. Detached leaves showed much greater damage at -8 °C than at -2 or -4 °C, but those detached-leaf results are not universal field or production thresholds for intact plants.",
+    "Cold and light interact. Carbon metabolism and photosystem repair slow at low temperature while absorbed radiation can remain high, increasing the risk of excess excitation and photoinhibition. A cold leaf under substantial light can therefore be stressed even when the light level would be tolerated at warmer tissue temperatures.",
+    "Cold surfaces can also approach dew point and develop condensation, creating a separate wetness and disease-risk pathway. Droop, discoloration, nutrient-like patterns, marginal necrosis, delayed rooting, and reproductive injury are nonspecific and must be interpreted with temperature history, light, roots, water status, and biological evidence."
+  ],
+  "cultivationRelevance":[
+    "Review minimum temperature, exposure duration, cooling and rewarming rate, and plant stage rather than relying on the daily average or frost/no-frost distinction.",
+    "Measure root-zone and irrigation-solution temperature as well as air and leaf temperature because cold roots can remain functionally impaired after room air warms.",
+    "Coordinate light exposure with recovery after chilling instead of assuming that immediately returning to maximum light is always benign.",
+    "Map cold-air supply, exterior walls, floor zones, irrigation lines, door events, and condensation patterns when injury is spatially uneven."
+  ],
+  "measureAndRecord":[
+    {"field":"Thermal history","requirement":"Record air, leaf, root-zone, and solution minimums; duration; cooling/rewarming rate; sensor location; and calibration."},
+    {"field":"Plant context","requirement":"Record genotype, plant age, organ/tissue, developmental stage, acclimation history, and whether symptoms were immediate or delayed."},
+    {"field":"Light and wetness","requirement":"Record PPFD/DLI, photoperiod, leaf temperature, RH/dew-point context, condensation or leaf wetness, and timing relative to cold exposure."},
+    {"field":"Root/water response","requirement":"Record substrate moisture, irrigation, roots, water use, pH/EC, and recovery after root-zone temperature normalizes."},
+    {"field":"Functional injury","requirement":"When available, record standardized chlorophyll fluorescence or electrolyte-leakage methods alongside visible injury and new-growth recovery."
+    }
+  ],
+  "misconceptions":[
+    "No frost means no cold injury occurred.",
+    "One temperature is the universal cannabis cold-damage threshold.",
+    "Purple foliage proves phosphorus deficiency rather than a possible temperature-related or genetic pigment response.",
+    "Cold acclimation always makes cannabis more cold tolerant.",
+    "Warm room air instantly restores chilled roots and photosynthetic repair."
+  ],
+  "evidenceLimits":[
+    "Direct cannabis/hemp cold studies demonstrate strong genotype-, age-, tissue-, acclimation-, intensity-, and duration-dependence. Experimental temperatures from detached leaves or specific hemp cultivars should not be converted into universal injury thresholds for all cannabis germplasm or production systems."
+  ],
+  "crossLinks":"THC-ENC-268 for heat stress; THC-ENC-270 for cold-light interaction and photoinhibition; THC-ENC-272 for dew point/humidity; THC-ENC-273 for root function; THC-ENC-253 for pigment interpretation.",
+  "sourceNotes":[
+    "Effects of Cold Temperature and Acclimation on Cold Tolerance and Cannabinoid Profiles of Cannabis sativa L. (Hemp) (Horticulturae, 2022). Direct hemp study of cultivar, age, acclimation, repeated cold exposure, chlorophyll fluorescence, electrolyte leakage, biomass, and cannabinoid responses.",
+    "Lipidomic remodeling in Cannabis sativa L. under cold tolerance (Industrial Crops and Products, 2025). Direct hemp evidence that 4 °C cold stress alters growth, photosynthetic function, protective responses, and membrane-lipid remodeling.",
+    "Controlled Volume 14 manuscript v1.0 requires chilling, freezing, acclimation, cold roots, light interaction, and condensation to remain distinct diagnostic mechanisms and explicitly rejects broad Indica/Sativa cold-tolerance categories."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 14 batch 02 controlled web derivative","driveSourceDocumentId":"1mbN8hq4g6jZUgW0bkwZBSXotPqZ7c184kOya5SqdtJA","evidenceControl":"controlled_manuscript_plus_direct_hemp_cold_stress_and_lipidomic_sources","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_cold_chilling_freezing_acclimation_and_light_interaction","releaseTimeReview":"completed_2026-08-29_cold_response_genotype_age_acclimation_and_no_universal_threshold_boundary","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"cold-and-chilling-stress",
+  "route":"/encyclopedia/cold-and-chilling-stress"
+}

@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-267",
+  "number":267,
+  "title":"Oedema and Water-Imbalance Disorders",
+  "objective":"Recognize oedema as a physiological water-imbalance hypothesis and distinguish blistering or corking from pests, pathogens, spray deposits, salts, and other injury.",
+  "terms":[
+    {"term":"oedema","definition":"A noninfectious physiological disorder in which water uptake and tissue water relations contribute to blistering, swelling, or later corky injury."},
+    {"term":"intumescence","definition":"Abnormal swelling or proliferation of epidermal or subepidermal cells, sometimes used for blister-like physiological disorders."},
+    {"term":"transpiration imbalance","definition":"A condition in which root water uptake and delivery exceed or fail to match the capacity for water loss and safe tissue accommodation."},
+    {"term":"corking","definition":"Formation of dry, cork-like protective tissue following injury or abnormal development."},
+    {"term":"dew point","definition":"The temperature at which air of a given moisture content reaches saturation and condensation can occur."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Oedema is a physiological disorder associated with water entering tissues faster than it can be safely accommodated or lost under the prevailing environmental conditions. Early lesions can appear translucent or water-soaked and may later become corky, brown, scabby, or raised.",
+    "Conditions that can favor water-imbalance disorders in greenhouse crops include wet or warm root zones combined with low light, cool leaves, high humidity, weak air movement, or abrupt environmental transitions that reduce transpiration relative to uptake.",
+    "Direct cannabis-specific oedema research is limited. The mechanistic framework is therefore transferred cautiously from greenhouse-crop physiology and should be treated as a hypothesis requiring local evidence rather than a cannabis-specific certainty.",
+    "Oedema-like blisters and corking can resemble broad/russet mite injury, bacterial or fungal lesions, spray deposits, salt crystals, trichome damage, abrasion, or other disorders. Magnified examination, distribution, exposure history, and progression are necessary for differential diagnosis.",
+    "The disorder is noninfectious, but damaged tissues can coexist with pests or disease. A physiological diagnosis should not stop biological inspection when lesions continue expanding or other signs appear."
+  ],
+  "cultivationRelevance":[
+    "Inspect both leaf surfaces and growing points with magnification before labeling corky or blistered tissue as oedema.",
+    "Review irrigation timing, root-zone moisture and temperature, lights-off transitions, leaf/air temperature, humidity, dew-point margin, airflow, and leaf wetness together.",
+    "Correct the supported environmental or water-balance mechanism rather than treating oedema as a fungus by default.",
+    "Track newly formed leaves after environmental stabilization because established corking may remain visible."
+  ],
+  "measureAndRecord":[
+    {"field":"Lesion stage","requirement":"Record translucent blistering, swelling, rupture, corking, browning, surface location, leaf age, and standardized images."},
+    {"field":"Water/root-zone context","requirement":"Record irrigation time, substrate moisture, drainage, root-zone temperature, root condition, and wet-period duration."},
+    {"field":"Leaf-air environment","requirement":"Record leaf and air temperature, RH, dew point/VPD method, light state, airflow, surface wetness, and transitions around symptom onset."},
+    {"field":"Differential inspection","requirement":"Record magnified pest findings, pathogen signs, spray/residue history, salts/deposits, and matched unaffected tissue."},
+    {"field":"Verification","requirement":"Record whether new lesions stop appearing after the supported environmental correction and whether new growth develops normally."
+    }
+  ],
+  "misconceptions":[
+    "Oedema is a contagious fungal disease.",
+    "Oedema happens only because too much water was applied once.",
+    "Any corky spot proves oedema.",
+    "High humidity alone diagnoses oedema.",
+    "Cannabis-specific oedema thresholds are already well established."
+  ],
+  "evidenceLimits":[
+    "The uptake-versus-transpiration mechanism is well established in greenhouse plant physiology, but direct cannabis oedema data are sparse. Cannabis diagnosis should therefore preserve cross-species transfer uncertainty and actively exclude mite, pathogen, spray, salt, and mechanical differentials."
+  ],
+  "crossLinks":"THC-ENC-265–266 for distortion/wilt; THC-ENC-272 for humidity/transpiration; THC-ENC-273 for root-zone oxygen; THC-ENC-279 for spray/residue investigation; THC-ENC-281–300 for mite/pest differentials.",
+  "sourceNotes":[
+    "Penn State Extension current greenhouse oedema/edema guidance provides the physiological uptake-transpiration and corking framework used here; cross-species transfer to cannabis is explicitly qualified.",
+    "Controlled Volume 14 manuscript v1.0 identifies cannabis oedema research as limited and requires pest, pathogen, spray, and environmental differentials rather than image-only diagnosis.",
+    "Cannabis water/environment source registers support paired root-zone and leaf-air measurements rather than RH or irrigation volume in isolation."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 14 batch 02 controlled web derivative","driveSourceDocumentId":"1mbN8hq4g6jZUgW0bkwZBSXotPqZ7c184kOya5SqdtJA","evidenceControl":"controlled_manuscript_plus_qualified_greenhouse_oedema_physiology","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_oedema_water_balance_and_differential_diagnosis","releaseTimeReview":"completed_2026-08-29_oedema_cross_species_transfer_and_differential_boundaries","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"oedema-and-water-imbalance-disorders",
+  "route":"/encyclopedia/oedema-and-water-imbalance-disorders"
+}

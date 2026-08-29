@@ -1,0 +1,57 @@
+{
+  "id":"THC-ENC-270",
+  "number":270,
+  "title":"High-Light and Photoinhibition Injury",
+  "objective":"Separate high photon exposure, leaf heating, reversible photoprotection, sustained photoinhibition, bleaching, and other top-canopy injuries using measured light, temperature, plant-water status, acclimation, and functional evidence.",
+  "terms":[
+    {"term":"photoinhibition","definition":"A sustained reduction in photosynthetic capacity when light-related damage or down-regulation exceeds repair and recovery."},
+    {"term":"photoprotection","definition":"Protective processes that dissipate or redirect excess absorbed energy and reduce damage to photosynthetic machinery."},
+    {"term":"nonphotochemical quenching","definition":"Regulated dissipation of excess absorbed light energy as heat within the photosynthetic apparatus."},
+    {"term":"Fv/Fm","definition":"A chlorophyll-fluorescence ratio commonly used to estimate maximum PSII photochemical efficiency after standardized dark adaptation."},
+    {"term":"photooxidative stress","definition":"Oxidative stress associated with excess excitation and reactive oxygen chemistry under light."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "High-light stress develops when absorbed excitation exceeds the combined capacity for photochemistry, regulated energy dissipation, antioxidant protection, and repair. Plants can acclimate by changing leaf structure, pigment pools, photoprotection, photosynthetic capacity, and canopy architecture, so high PPFD is not automatically injury.",
+    "Direct indoor cannabis work exposed flowering plants to canopy-level PPFDs spanning approximately 120 to 1,800 µmol·m⁻²·s⁻¹. Dry inflorescence yield increased linearly across that range in the studied environment, while upper-leaf photosynthesis saturated at lower local PPFD. The result demonstrates substantial whole-canopy acclimation and does not support a universal 'light burn' threshold below 1,800 PPFD.",
+    "Tolerance is conditional. CO2 availability, water supply, root function, nutrient status, leaf age, spectrum, photoperiod, temperature, airflow, developmental stage, and the rate of transition into a brighter environment all change how a given photon load is experienced.",
+    "Photon stress and heat injury must be separated. A leaf can receive high PPFD without overheating, or it can experience damaging temperature at a more moderate PPFD. Bleaching, upward cupping, chlorosis, necrosis, slowed growth, or warm top leaves are therefore not specific evidence of photoinhibition.",
+    "Chlorophyll fluorescence can strengthen a diagnosis when measured correctly, but Fv/Fm and related metrics depend on dark-adaptation protocol, leaf age, measurement timing, instrument settings, and the type of stress. A low value indicates impaired photosystem performance under the protocol; it does not identify the causal stress by itself."
+  ],
+  "cultivationRelevance":[
+    "Map PPFD at canopy height and affected leaf positions rather than relying on fixture wattage, hanging height, or one center measurement.",
+    "Measure leaf temperature and review root-water, CO2, nutrient, airflow, and environmental conditions before labeling top-canopy symptoms as light burn.",
+    "When changing intensity substantially, record the transition rate and compare new-growth response so acclimation effects are distinguishable from chronic injury.",
+    "Use fluorescence or gas-exchange measurements as supporting functional evidence only when the protocol is controlled and comparable."
+  ],
+  "measureAndRecord":[
+    {"field":"Photon exposure","requirement":"Record calibrated PPFD/ePPFD method, DLI, photoperiod, spectrum where relevant, fixture settings, spatial grid, and leaf/canopy position."},
+    {"field":"Temperature and demand","requirement":"Record leaf/air temperature, RH/VPD method, airflow, CO2 context, and time of day at affected and unaffected positions."},
+    {"field":"Root and water status","requirement":"Record irrigation, substrate moisture, drainage, roots, pH/EC, salinity context, and water-use changes."},
+    {"field":"Functional measurements","requirement":"If using Fv/Fm, gas exchange, chlorophyll index, or other physiology tools, record dark adaptation, leaf age, protocol, instrument, timing, and controls."},
+    {"field":"Transition and recovery","requirement":"Record previous light level, date/rate of change, symptom onset, new-growth response, and whether symptoms halt after the supported correction."
+    }
+  ],
+  "misconceptions":[
+    "Any top-canopy bleaching proves light burn.",
+    "There is one universal cannabis PPFD injury threshold.",
+    "Leaf photosynthetic saturation means whole-plant yield cannot increase with additional light.",
+    "High PPFD and heat stress are the same mechanism.",
+    "Fv/Fm alone identifies the cause of plant stress."
+  ],
+  "evidenceLimits":[
+    "Controlled cannabis studies demonstrate substantial acclimation and productivity at high PPFD under supported environments, but those results do not establish that every genotype, stage, CO2 level, root system, or environmental combination can tolerate the same exposure. Injury diagnosis remains conditional on duration, acclimation, temperature, water/root status, spectrum, and method."
+  ],
+  "crossLinks":"THC-ENC-268–269 for temperature interactions; THC-ENC-271 for low-light elongation; THC-ENC-272 for transpiration context; THC-ENC-101–120 for lighting/photobiology; THC-ENC-197 for canopy light distribution.",
+  "sourceNotes":[
+    "Rodriguez-Morrison V et al. (2021). Cannabis Yield, Potency, and Leaf Photosynthesis Respond Differently to Increasing Light Levels in an Indoor Environment. Frontiers in Plant Science 12:646020. Flowering cannabis was grown across approximately 120–1,800 µmol·m⁻²·s⁻¹ canopy PPFD; yield increased linearly to the highest treatment while leaf photosynthesis saturated earlier.",
+    "Light intensity can be used to modify the growth and morphological characteristics of cannabis during the vegetative stage of indoor production (Industrial Crops and Products, 2022). Vegetative cannabis showed broad morphological acclimation across approximately 135–1,430 µmol·m⁻²·s⁻¹ PPFD.",
+    "Vegetative and reproductive stage lighting interactions on flower yield, water use efficiency, terpenes, and cannabinoids of Cannabis sativa (2025). Demonstrated stage- and program-dependent crop responses to supplemental lighting rather than a single intensity rule.",
+    "Controlled Volume 14 manuscript v1.0 requires photon exposure, heat, CO2, water, roots, nutrients, leaf age, spectrum, photoperiod, acclimation, and fluorescence protocol to remain separate parts of the differential."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 14 batch 02 controlled web derivative","driveSourceDocumentId":"1mbN8hq4g6jZUgW0bkwZBSXotPqZ7c184kOya5SqdtJA","evidenceControl":"controlled_manuscript_plus_direct_cannabis_high_light_and_lighting_interaction_sources","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_high_light_photoinhibition_heat_and_fluorescence_differential","releaseTimeReview":"completed_2026-08-29_high_PPFD_acclimation_and_no_universal_light_burn_threshold_boundary","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"high-light-and-photoinhibition-injury",
+  "route":"/encyclopedia/high-light-and-photoinhibition-injury"
+}
