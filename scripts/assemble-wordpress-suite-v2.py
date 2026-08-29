@@ -8,7 +8,7 @@ import sys
 # Canonical SHA-256 of the executable v2 deployer after the long-lived guarded
 # source normalizations below. Customer-shell release adjustments are applied
 # only after this base hash passes and each adjustment must match exactly once.
-EXPECTED_SHA256 = "94d88c054dfe9a6c4ed3304b5d553d38a67f06df31b5472ecfc21d05aaf60eb5"
+EXPECTED_SHA256 = "c932d001a580ee186f07312f1a7eb6949a2478623fca5e9e837c7c0fde75e145"
 PART_DIR = pathlib.Path(__file__).resolve().parent / "wordpress-suite-v2"
 OUTPUT = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else "deploy-public-suite-via-wordpress-v2.mjs")
 

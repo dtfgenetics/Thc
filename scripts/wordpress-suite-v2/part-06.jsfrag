@@ -4,13 +4,71 @@ r app-only DTFSeeds suite deployment without SSH.',
   snippetId = Number(created.body?.id || 0); if (!snippetId) throw new Error('Temporary deployment snippet was created without an ID.');
   await wpRequest(`/wp-json/code-snippets/v1/snippets/${snippetId}/activate`, { method: 'POST' });
 
+  async function restoreFinalizeBridge() {
+    let plugin = await queryCodeSnippetsPlugin();
+    if (!plugin) {
+      plugin = await installCodeSnippetsNative();
+      installedByDeploy = true;
+    }
+    if (plugin?.plugin) pluginRestId = plugin.plugin;
+    if (plugin?.status !== 'active') {
+      const activated = await setPluginStatus(pluginRestId, 'active');
+      if (activated.body?.plugin) pluginRestId = activated.body.plugin;
+      if (!pluginWasActive) activatedByDeploy = true;
+    }
+    if (!(await waitForSnippetApi())) throw new Error('Code Snippets REST API did not recover for deployment finalization.');
+
+    let bridgeExists = false;
+    if (snippetId) {
+      const current = await wpGetRetry(`/wp-json/code-snippets/v1/snippets/${snippetId}`, { allow: [404] });
+      bridgeExists = current.ok;
+    }
+    if (!bridgeExists) {
+      const replacement = await wpRequest('/wp-json/code-snippets/v1/snippets', { method: 'POST', json: {
+        name: `DTF Public Suite Deploy V2 ${process.env.GITHUB_RUN_ID || Date.now()} Finalize Recovery`,
+        desc: 'Temporary authenticated recovery bridge used only to finalize a live-verified DTFSeeds suite deployment.',
+        code: snippetCode, tags: ['dtf-deploy', 'temporary', 'finalize-recovery'], scope: 'global', priority: 1, active: false, network: false,
+      }});
+      snippetId = Number(replacement.body?.id || 0);
+      if (!snippetId) throw new Error('Finalize recovery bridge was created without an ID.');
+    }
+    await wpRequest(`/wp-json/code-snippets/v1/snippets/${snippetId}/activate`, { method: 'POST', allow: [400] });
+
+    for (let attempt = 1; attempt <= 12; attempt++) {
+      const state = await getState();
+      if (state?.status) return;
+      await sleep(700 + attempt * 350);
+    }
+    throw new Error('Recovered deployment bridge did not expose persisted transaction state.');
+  }
+
+  async function finalizeWithBridgeRecovery() {
+    try {
+      return await postSuite('finalize');
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      if (!/\(404\)|rest_no_route/i.test(message)) throw error;
+      console.warn(`Finalize bridge disappeared after live verification; restoring the authenticated bridge before retry: ${message}`);
+      await restoreFinalizeBridge();
+      return postSuite('finalize');
+    }
+  }
+
   await uploadArchive();
   await commitWithRecovery();
   await flushHostingerCacheBestEffort();
   await verifyLive();
-  const final = await postSuite('finalize');
-  if (final.body?.ok !== true) throw new Error(`Finalize failed: ${JSON.stringify(final.body).slice(0, 600)}`);
-  console.log(JSON.stringify({ ok: true, deploymentId, archiveBytes, archiveSha256, verifiedRoutes: liveChecks.length + 3 }));
+
+  let finalization = 'finalized';
+  try {
+    const final = await finalizeWithBridgeRecovery();
+    if (final.body?.ok !== true) throw new Error(`Finalize failed: ${JSON.stringify(final.body).slice(0, 600)}`);
+  } catch (error) {
+    finalization = 'deferred';
+    console.warn(`Production content passed live verification, but transaction cleanup is deferred to the next stale-state recovery pass: ${error instanceof Error ? error.message : String(error)}`);
+  }
+
+  console.log(JSON.stringify({ ok: true, deploymentId, archiveBytes, archiveSha256, verifiedRoutes: liveChecks.length + 3, finalization }));
 } catch (error) {
   try { await recoverFailure(); }
   catch (recoveryError) { console.error(`AUTOMATIC RECOVERY FAILED: ${recoveryError.message}`); }
