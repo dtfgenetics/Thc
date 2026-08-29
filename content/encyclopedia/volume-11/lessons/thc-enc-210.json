@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-210",
+  "number":210,
+  "title":"Female Floral Development and Stigma Receptivity",
+  "objective":"Describe development of pistillate cannabis flowers, explain the role of stigmas in receiving pollen, and separate visible stigma appearance from direct proof of reproductive receptivity or whole-flower maturity.",
+  "terms":[
+    {"term":"pistillate flower","definition":"A female reproductive flower containing the structures that receive pollen and enclose the ovule."},
+    {"term":"stigma","definition":"The pollen-receiving surface of the pistil where compatible pollen can adhere and begin germination."},
+    {"term":"style","definition":"The tissue connecting the stigma region with the ovary in flowering plants and providing a route for pollen-tube growth."},
+    {"term":"ovary","definition":"The basal reproductive structure containing the ovule that can develop into a seed after successful fertilization."},
+    {"term":"receptivity","definition":"The physiological state in which a stigma can support compatible pollen adhesion, hydration, germination, and subsequent pollen-tube growth."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Female cannabis flowers are small pistillate flowers grouped within the inflorescence. Their exposed stigmatic branches are the structures most readily seen by growers, but they are only one part of a reproductive unit that also includes enclosed ovarian and ovular tissues.",
+    "Successful pollination begins when compatible viable pollen reaches a stigma under suitable physiological conditions. Adhesion and germination are followed by pollen-tube growth toward the ovule before fertilization can occur.",
+    "Stigma receptivity is a physiological trait, not simply a color category. Browning, curling, or age-related change can accompany development, pollination, injury, environmental exposure, or senescence, so visual stigma appearance alone cannot prove whether fertilization has occurred.",
+    "Reproductive development is asynchronous across an inflorescence. Newly formed pistillate flowers can coexist with older flowers, meaning one branch or flower cluster may contain different receptivity and developmental states at the same time.",
+    "Cannabis-specific quantitative data defining a universal receptivity window across cultivars are limited. Controlled breeding therefore benefits from documenting flower age, pollination date, pollen source, and later seed set rather than assuming one fixed number of days."
+  ],
+  "cultivationRelevance":[
+    "Use visible stigma emergence as a developmental observation, not as a stand-alone chemical-maturity or harvest indicator.",
+    "For controlled crosses, label the specific branch or inflorescence and record the pollination date so later seed development can be tied to a known reproductive event.",
+    "When investigating unintended seeds, consider overlapping cohorts of newly formed and older flowers because receptive tissue may have been present over an extended period.",
+    "Avoid diagnosing successful fertilization solely from rapid stigma darkening; follow later ovary and seed development."
+  ],
+  "measureAndRecord":[
+    {"field":"Flower stage","requirement":"Record newly emerged pistillate flowers, abundant fresh stigmas, older stigmas, and visible post-pollination or senescence changes separately."},
+    {"field":"Location","requirement":"Record branch, node, and inflorescence position because flower cohorts can differ within one plant."},
+    {"field":"Pollination timing","requirement":"For controlled crosses, record exact date and parent identifier associated with pollen application or exposure."},
+    {"field":"Environmental context","requirement":"Record temperature, humidity, water stress, and major environmental events that could alter floral condition or stigma appearance."},
+    {"field":"Outcome confirmation","requirement":"Use later ovary enlargement, seed development, and parentage records where needed rather than treating stigma color change as proof of fertilization."
+    }
+  ],
+  "misconceptions":[
+    "White stigmas always mean maximum receptivity and brown stigmas always mean zero receptivity.",
+    "Stigma color alone can prove that a flower was pollinated.",
+    "All pistillate flowers in one cannabis inflorescence are the same developmental age.",
+    "Visible stigma emergence is a reliable stand-alone harvest-maturity test.",
+    "Cannabis has one universal stigma-receptivity window that applies to every genotype and environment."
+  ],
+  "evidenceLimits":[
+    "Cannabis pistillate morphology and the general angiosperm sequence from pollen receipt through pollen-tube growth are well established, but cultivar-resolved cannabis studies defining precise stigma-receptivity windows are limited. Public wording therefore avoids a universal day count or color rule and emphasizes known pollination dates and later seed-development evidence."
+  ],
+  "crossLinks":"THC-ENC-204–205 for preflowers and inflorescence architecture; THC-ENC-208–209 for pollen viability and transport; THC-ENC-211 for fertilization; THC-ENC-213 for controlled pollination; THC-ENC-219 for senescence and maturity indicators.",
+  "sourceNotes":[
+    "Punja ZK and colleagues' cannabis floral morphology work documents pistillate reproductive structures and seed formation after pollen exposure, providing cannabis-specific context for female floral development.",
+    "Cannabis pollen-fitness research demonstrates that successful reproduction requires functionally competent pollen rather than visible pollen alone; stigma receipt is therefore only one stage in the sequence leading to seed formation.",
+    "Because direct cultivar-wide cannabis stigma-receptivity timing datasets remain limited, this lesson relies on conservative flowering-plant reproductive biology for mechanism and avoids fixed timing claims."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 11 batch 02 controlled web derivative","evidenceControl":"current_topic_secondary_review_complete","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_female_floral_biology_and_receptivity","releaseTimeReview":"completed_2026-08-29_stigma_appearance_and_non_universal_receptivity_window","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"female-floral-development-and-stigma-receptivity",
+  "route":"/encyclopedia/female-floral-development-and-stigma-receptivity"
+}

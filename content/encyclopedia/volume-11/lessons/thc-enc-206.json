@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-206",
+  "number":206,
+  "title":"Early-Flower Stretch and Internode Elongation",
+  "objective":"Explain the temporary increase in stem and internode elongation that can accompany the early reproductive transition, separate that response from later inflorescence condensation, and measure cultivar-specific stretch instead of relying on a universal multiplier.",
+  "terms":[
+    {"term":"stretch","definition":"A cultivation term for increased stem, branch, or internode elongation commonly observed around the transition into reproductive development."},
+    {"term":"internode","definition":"The stem segment between two successive nodes."},
+    {"term":"elongation","definition":"Increase in organ length produced primarily by cell expansion together with continued growth and development."},
+    {"term":"gibberellin","definition":"A class of plant hormones involved in processes that include stem elongation and developmental regulation."},
+    {"term":"inflorescence condensation","definition":"Reduction in spacing among newly developing reproductive nodes and flowers that contributes to a compact floral cluster."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Early flowering can include a transient period of rapid elongation rather than an immediate stop in vegetative growth. Recent controlled work in one commercial cannabis cultivar found a first short-day phase with accelerated elongation of young internodes followed by reduced elongation of newly formed internodes as a condensed inflorescence developed.",
+    "The response depends on which internodes were already present, which were expanding at the photoperiod transition, and which formed later. Treating whole-plant height change as if every internode responded identically hides this developmental pattern.",
+    "Photoperiod can influence architecture through hormonal and developmental signaling. In the cited single-cultivar study, short-day inflorescence development was associated with lower gibberellin and auxin levels at the shoot apex, while return to long days promoted renewed elongation and loss of condensed inflorescence architecture.",
+    "The magnitude and duration of stretch are not fixed species constants. Genotype, starting plant size, light environment, temperature, density, root-zone conditions, training history, and developmental state can all alter final height and internode length.",
+    "A taller plant is not automatically more productive. Excessive elongation can change light distribution, support requirements, and canopy uniformity, while insufficient extension can also affect spatial organization. The useful measurement is architecture relative to the intended production system."
+  ],
+  "cultivationRelevance":[
+    "Measure plant and branch dimensions before the reproductive transition so later height change has a real baseline.",
+    "Plan support and fixture clearance from cultivar records and observed growth rate rather than using a universal 'double' or 'triple' stretch rule.",
+    "Track individual internodes or marked shoots when diagnosing unusual elongation because total plant height cannot reveal which developmental tissues changed most.",
+    "Avoid changing several major variables at once during early flower if the goal is to learn what caused an architecture change."
+  ],
+  "measureAndRecord":[
+    {"field":"Baseline architecture","requirement":"Record plant height, representative branch lengths, selected internode lengths, and canopy width immediately before the reproductive treatment."},
+    {"field":"Repeated elongation","requirement":"Measure the same marked stems or internodes at consistent intervals through early flowering rather than estimating stretch from memory."},
+    {"field":"Photoperiod and light","requirement":"Record actual daylength, PPFD or fixture setting, and DLI context where available because light schedule and photon exposure can change together."},
+    {"field":"Environmental context","requirement":"Record temperature, humidity, spacing, root-zone condition, and major training events that could modify elongation."},
+    {"field":"Calculated response","requirement":"Report absolute height change and percent change from baseline; do not generalize one plant's ratio as a cultivar or species constant."
+    }
+  ],
+  "misconceptions":[
+    "Every cannabis plant doubles or triples in height after flowering begins.",
+    "Stretch means all internodes elongate by the same amount.",
+    "The photoperiod change immediately stops vegetative elongation.",
+    "More stretch automatically produces more flower yield.",
+    "One cultivar's early-flower elongation timeline can be used as a universal calendar for all cannabis."
+  ],
+  "evidenceLimits":[
+    "Controlled mechanistic work describing a two-phase elongation response has been demonstrated in a limited cultivar context and should not be converted into a universal day-by-day cannabis schedule. Broader production observations support strong genotype and environment effects on architecture. This lesson therefore emphasizes repeated measurements and developmental position rather than a fixed stretch multiplier."
+  ],
+  "crossLinks":"THC-ENC-181–200 for canopy architecture and measurement; THC-ENC-201–205 for reproductive transition and inflorescence development; THC-ENC-218 for reversion and reflowering biology.",
+  "sourceNotes":[
+    "Spitzer-Rimon B and colleagues. Inflorescence development in female cannabis plants is mediated by photoperiod and gibberellin. Horticulture Research. Controlled experiments in one commercial cultivar showed an early short-day elongation phase followed by reduced elongation of newly formed internodes and condensed inflorescence development.",
+    "The same study found return to long-day conditions increased elongation and disrupted condensed inflorescence architecture, supporting a developmental rather than purely calendar-based interpretation of stretch.",
+    "Because the study was cultivar-specific, its exact day numbers and hormone responses are not presented as universal production thresholds."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 11 batch 02 controlled web derivative","evidenceControl":"current_topic_secondary_review_complete","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_reproductive_architecture_and_physiology","releaseTimeReview":"completed_2026-08-29_early_flower_elongation_and_non_universal_stretch_claims","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"early-flower-stretch-and-internode-elongation",
+  "route":"/encyclopedia/early-flower-stretch-and-internode-elongation"
+}
