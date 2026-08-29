@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Pheno Draft | DTF Genetics</title>
+  <meta name="description" content="Build a fictional genetics line through six deterministic card-draft rounds in Pheno Draft by DTF Genetics.">
+  <link rel="canonical" href="https://dtfseeds.com/games/pheno-draft/">
+  <link rel="stylesheet" href="./pheno-draft.css">
+</head>
+<body>
+  <a class="skip-link" href="#game">Skip to Pheno Draft</a>
+  <main id="game" class="game-shell">
+    <header class="hero-panel">
+      <div>
+        <p class="eyebrow">DTF GENETICS · GAME LAB</p>
+        <h1>PHENO DRAFT</h1>
+        <p class="hero-copy">Draft fictional parent cards. Compare generated phenotypes. Keep one line moving through six deterministic rounds.</p>
+      </div>
+      <div class="hero-mark" aria-hidden="true"><span>PD</span><i></i></div>
+    </header>
+
+    <section class="run-toolbar" aria-label="Run controls">
+      <label class="code-field">
+        <span>Run code</span>
+        <input id="run-code" maxlength="6" inputmode="text" autocomplete="off" spellcheck="false" aria-describedby="code-help">
+      </label>
+      <p id="code-help" class="sr-only">Enter a six-character code and press Enter to load the same deterministic run.</p>
+      <button id="new-run" type="button">New Run</button>
+      <button id="share-run" type="button">Share Run</button>
+      <span id="load-status" class="load-status">Loading card deck…</span>
+    </section>
+
+    <section class="stat-strip" aria-label="Run statistics">
+      <div><span>Round</span><strong id="round-stat">—</strong></div>
+      <div><span>Score</span><strong id="score-stat">—</strong></div>
+      <div><span>Objective Fit</span><strong id="fit-stat">—</strong></div>
+      <div><span>Refreshes</span><strong id="refresh-stat">—</strong></div>
+    </section>
+
+    <section class="dashboard-grid">
+      <article id="objective-card" class="objective-panel panel"></article>
+      <article id="run-result" class="result-panel waiting panel"></article>
+    </section>
+
+    <section class="line-stage" aria-labelledby="line-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">ACTIVE LINE</p>
+          <h2 id="line-title">Current keeper</h2>
+        </div>
+        <p>Priority traits are highlighted according to this run’s objective.</p>
+      </div>
+      <div id="current-line" class="current-line"></div>
+    </section>
+
+    <section class="draft-stage" aria-labelledby="phase-title">
+      <div class="section-heading choice-heading">
+        <div>
+          <p class="eyebrow">DRAFT TABLE</p>
+          <h2 id="phase-title">Preparing draft…</h2>
+          <p id="phase-copy">Loading deterministic choices.</p>
+        </div>
+        <button id="refresh-draft" class="refresh-button" type="button" hidden>Refresh Draft</button>
+      </div>
+
+      <div id="selected-parent" class="selected-parent panel" hidden></div>
+      <div id="choices" class="choice-grid" aria-live="polite"></div>
+      <p class="shortcut-note"><kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> choose a card · <kbd>R</kbd> refreshes the parent draft when available.</p>
+    </section>
+
+    <section class="archive-section" aria-labelledby="archive-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">RUN ARCHIVE</p>
+          <h2 id="archive-title">Selected line history</h2>
+        </div>
+        <p>Each kept phenotype becomes the starting line for the next round.</p>
+      </div>
+      <ol id="archive" class="archive-list"></ol>
+    </section>
+
+    <aside class="boundary-note">
+      <strong>Game boundary:</strong> Every card, trait value, objective, line name, and phenotype result is fictional game data. Pheno Draft does not provide real-world breeding probabilities, potency claims, cultivation parameters, chemical instructions, or production guidance.
+    </aside>
+
+    <nav class="footer-nav" aria-label="Game navigation">
+      <a href="/games/">Back to Games</a>
+      <a href="/">DTFSeeds.com</a>
+    </nav>
+
+    <p id="announce" class="sr-only" aria-live="assertive"></p>
+  </main>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
