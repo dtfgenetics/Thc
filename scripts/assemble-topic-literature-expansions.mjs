@@ -30,6 +30,9 @@ const result = structuredClone(base);
 const topicById = new Map(result.topics.map((topic) => [topic.id, topic]));
 const mergeReport = [];
 const seenExpansionTopics = new Set();
+const referenceKey = (reference) => typeof reference === 'string'
+  ? `string:${reference.trim()}`
+  : `json:${JSON.stringify(reference)}`;
 
 for (const { path, catalog } of expansionCatalogs) {
   for (const expansion of catalog.expansions) {
@@ -57,7 +60,15 @@ for (const { path, catalog } of expansionCatalogs) {
 
     topic.keywords = [...new Set([...(topic.keywords || []), ...(expansion.keywords || [])])];
     if (Array.isArray(expansion.references) && expansion.references.length) {
-      topic.references = [...(topic.references || []), ...expansion.references];
+      const references = [...(topic.references || [])];
+      const seenReferences = new Set(references.map(referenceKey));
+      for (const reference of expansion.references) {
+        const key = referenceKey(reference);
+        if (seenReferences.has(key)) continue;
+        references.push(reference);
+        seenReferences.add(key);
+      }
+      topic.references = references;
     }
 
     const minimum = Number(expansion.minimumSectionsAfterMerge || 0);
