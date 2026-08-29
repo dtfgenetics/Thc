@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import hashlib
 import pathlib
+import subprocess
 import sys
 
 # Canonical SHA-256 of the executable v2 deployer after the long-lived guarded
@@ -343,7 +344,13 @@ payload = replace_once(
 from wordpress_suite_registry_patch import patch_payload
 payload = patch_payload(payload, pathlib.Path(__file__).resolve().parents[1])
 
-final_actual = hashlib.sha256(payload).hexdigest()
+pre_expansion_sha = hashlib.sha256(payload).hexdigest()
 OUTPUT.parent.mkdir(parents=True, exist_ok=True)
 OUTPUT.write_bytes(payload)
-print(f"assembled={OUTPUT} bytes={len(payload)} base_sha256={base_actual} sha256={final_actual}")
+subprocess.run([
+    sys.executable,
+    str(pathlib.Path(__file__).resolve().parent / "expand-wordpress-suite-registered-games.py"),
+    str(OUTPUT),
+], check=True)
+final_actual = hashlib.sha256(OUTPUT.read_bytes()).hexdigest()
+print(f"assembled={OUTPUT} bytes={OUTPUT.stat().st_size} base_sha256={base_actual} pre_expansion_sha256={pre_expansion_sha} sha256={final_actual}")

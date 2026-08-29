@@ -6,7 +6,7 @@ This file is the durable scope ledger for DTF Genetics games. A title should not
 
 ## Public playable catalog
 
-The current Game Hub exposes 15 playable browser games:
+The current Game Hub exposes 25 playable browser games:
 
 1. High IQ — Test Higher Cognition
 2. High Land: The Sweet Escape
@@ -24,14 +24,25 @@ The current Game Hub exposes 15 playable browser games:
 14. THC U Know
 15. Kush Kings Chess
 
+16. Strain Match
+17. Grow Room Bingo / Bongwater Bingo
+18. Lost in the Terps
+19. Mystery Strain
+20. Spin the Strain
+21. Grow Room Defense
+22. Harvest Hustle
+23. Trichome Trials
+24. Pheno Draft
+25. High Lines
+
 ## Existing controlled development projects
 
 - **Ganjumanji: The Lost Grower’s Temple** — dedicated repository; keep gated until its own approved playable implementation is ready.
 - **THC RPG** — dedicated project; do not replace it with a competing implementation inside this repository.
 
-## Missing outlined game slate
+## Promoted missing-game slate
 
-These previously outlined titles are part of the DTFSeeds game scope and must remain tracked until either shipped or explicitly retired:
+These previously outlined titles are now implemented as tested browser routes and registered in the DTFSeeds public deployment contract:
 
 1. **Strain Match** — educational memory/matching game. Match terms with families, terpene profiles, cultivation symptoms, breeding/seed concepts, or tool uses.
 2. **Grow Room Bingo / Bongwater Bingo** — event/community bingo using recurring grower and sesh moments.
@@ -50,7 +61,7 @@ These earlier concepts are preserved as a secondary backlog rather than silently
 
 These are not automatically approved production titles. Promote them into the missing outlined slate only after mechanics and ownership are locked.
 
-## Build order
+## Completed build order
 
 Priority favors complete playable loops over placeholder pages:
 

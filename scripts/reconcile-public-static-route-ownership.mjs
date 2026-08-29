@@ -7,7 +7,7 @@ if (!username || !password) throw new Error('WordPress credentials are required.
 
 const auth = `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`;
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-const projectsFingerprint = 'dtf-release-fingerprint: projects-public-games-15-v2';
+const projectsFingerprint = 'dtf-release-fingerprint: projects-public-games-25-v3';
 const staleProjectsFingerprint = 'Projects is the roadmap for DTF Genetics.';
 let mcpSession = '';
 let projectPageBackup = null;
@@ -148,6 +148,8 @@ async function verifyStaticProjectsIndex() {
     'Strain Showdown',
     'Terpocalypse: Grow Room From Hell',
     'PhenoQuest: The Living Seed Vault',
+    'High Lines',
+    'Pheno Draft',
   ], [staleProjectsFingerprint]);
 }
 
