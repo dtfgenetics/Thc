@@ -455,6 +455,18 @@
       "status": "ready-to-package",
       "build": "node games/trichome-trials/scripts/validate-data.mjs && node games/trichome-trials/test/engine.test.mjs && node --check site/public-route-patch/games/trichome-trials/app.js && node --check site/public-route-patch/games/trichome-trials/engine.mjs",
       "notes": "Self-hosted browser-vertical-slice registered from its tested canonical game manifest. Browser, mobile, accessibility, and production-route verification remain separate release gates."
+    },
+    {
+      "id": "root-cause",
+      "title": "Root Cause",
+      "repository": "dtfgenetics/Thc",
+      "sourcePath": "site/public-route-patch/games/root-cause",
+      "canonicalDataPath": "games/root-cause",
+      "route": "/games/root-cause/",
+      "runtime": "static",
+      "status": "ready-to-package",
+      "build": "node games/root-cause/scripts/validate-data.mjs && node games/root-cause/test/engine.test.mjs && node --check site/public-route-patch/games/root-cause/app.js && node --check site/public-route-patch/games/root-cause/engine.mjs",
+      "notes": "Self-hosted browser-vertical-slice registered from its tested canonical game manifest. Browser, mobile, accessibility, and production-route verification remain separate release gates."
     }
   ]
 }
