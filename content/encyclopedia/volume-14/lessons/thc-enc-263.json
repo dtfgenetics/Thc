@@ -1,0 +1,57 @@
+{
+  "id":"THC-ENC-263",
+  "number":263,
+  "title":"Chlorosis Patterns",
+  "objective":"Describe cannabis chlorosis accurately and use uniform, interveinal, marginal, mottled, localized, and developmental patterns to build competing hypotheses instead of naming a deficiency from color alone.",
+  "terms":[
+    {"term":"chlorosis","definition":"Reduced green pigmentation, commonly reflecting reduced chlorophyll abundance or altered chloroplast function."},
+    {"term":"interveinal chlorosis","definition":"Yellowing between veins while veins remain relatively greener than surrounding tissue."},
+    {"term":"mottling","definition":"Irregular patches of contrasting color without one uniform distribution pattern."},
+    {"term":"vein clearing","definition":"Relative loss of green color along veins or vein-adjacent tissue, a symptom that can occur in several biotic and abiotic conditions."},
+    {"term":"senescence","definition":"Programmed age-related decline involving nutrient remobilization, chlorophyll loss, and other metabolic changes."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Chlorosis is an observation of reduced green pigmentation, not a nutrient diagnosis. It can arise from altered chlorophyll synthesis, chloroplast injury, nutrient limitation or imbalance, senescence, root dysfunction, salinity, water stress, excessive radiation, cold, chemical injury, pests, pathogens, or interacting causes.",
+    "Pattern vocabulary improves diagnostic precision. Uniform yellowing, interveinal yellowing, marginal bands, irregular mottling, sharply localized bleaching, vein-associated changes, and whole-leaf senescence have different distributions and therefore support different hypothesis sets.",
+    "Direct controlled medical-cannabis nutrition studies show that nitrogen, phosphorus, and potassium supply can alter growth, chlorophyll-related traits, mineral composition, morphology, and physiology. The magnitude and visible response depend on genotype, supply level, stage, and experimental system, so those studies do not validate a universal photo-based deficiency chart.",
+    "Root-zone problems can create nutrient-like chlorosis without inadequate fertilizer in the reservoir. pH, salinity, hypoxia, damaged roots, irrigation nonuniformity, antagonistic ion relationships, or disease can reduce acquisition or transport even when total nutrient supply appears adequate.",
+    "Color itself is method-sensitive. Camera white balance, illumination, leaf angle, chlorophyll-meter placement, tissue age, and anthocyanin or senescence pigments can alter the observed phenotype. Standardized imaging or chlorophyll measurements can improve tracking but still do not identify cause alone."
+  ],
+  "cultivationRelevance":[
+    "Classify the chlorosis pattern before naming a nutrient and record where it began on the plant.",
+    "Check roots, irrigation delivery, pH, EC, source water, temperature, light, pests, and disease signs before adding fertilizer.",
+    "Use tissue and solution/media analysis when the crop decision is important, and interpret tissue values against stage, sampling method, and appropriate reference context.",
+    "Track whether normal green new growth resumes after a supported correction rather than expecting damaged or senescent tissue to fully reverse."
+  ],
+  "measureAndRecord":[
+    {"field":"Color pattern","requirement":"Record uniform, interveinal, marginal, mottled, localized, or vein-associated pattern plus affected percentage using standardized images where possible."},
+    {"field":"Tissue position","requirement":"Record node, leaf age, canopy position, symmetry, orientation, and progression to new or old tissues."},
+    {"field":"Root-zone context","requirement":"Record roots, irrigation, pH/EC with method, nutrient recipe, water chemistry, substrate, moisture, drainage, and recent changes."},
+    {"field":"Environment and biology","requirement":"Record light, leaf/air/root temperature, humidity/water status, magnified pest inspection, and pathogen signs or diagnostics."},
+    {"field":"Analytical confirmation","requirement":"When used, record tissue/media/solution sampling method, lab method, units, reference range or comparator, and biological replication."
+    }
+  ],
+  "misconceptions":[
+    "Interveinal chlorosis always identifies magnesium deficiency.",
+    "Yellowing always means the plant needs more fertilizer.",
+    "Green veins rule out root or environmental causes.",
+    "Lower-leaf chlorosis is always nitrogen deficiency.",
+    "A tissue nutrient concentration can be interpreted without stage, sampling, contamination, and method context."
+  ],
+  "evidenceLimits":[
+    "Visual chlorosis has low diagnostic specificity. Direct cannabis nutrition experiments support nutrient-responsive chlorophyll and growth changes, but real production symptoms can be multifactorial and require root-zone, environmental, tissue, and biological evidence before a cause-specific conclusion."
+  ],
+  "crossLinks":"THC-ENC-261–262 for diagnostic workflow/location; THC-ENC-121–140 for nutrition; THC-ENC-253 for pigmentation; THC-ENC-275 for pH-driven unavailability; THC-ENC-281–320 for pest/disease differentials.",
+  "sourceNotes":[
+    "Saloner A, Bernstein N. (2020). Response of Medical Cannabis to Nitrogen Supply Under Long Photoperiod. Frontiers in Plant Science 11:572293. Direct cannabis evidence for supply-dependent growth, chlorophyll/physiology, and ionomic responses.",
+    "Shiponi S, Bernstein N. (2021). The Highs and Lows of P Supply in Medical Cannabis. Frontiers in Plant Science 12:657323. Direct cannabis evidence for phosphorus-dependent morphology, physiology, root-zone pH, and nutrient interactions.",
+    "Saloner A, Sacks MM, Bernstein N. (2019). Response of Medical Cannabis Genotypes to K Supply Under Long Photoperiod. Frontiers in Plant Science 10:1369. Demonstrates genotype- and K-supply-dependent responses rather than a universal visual symptom rule.",
+    "Controlled Volume 14 manuscript v1.0 requires visual nutrient patterns to remain hypotheses pending roots, pH, EC, delivery, tissue/media tests, and competing-cause review."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 14 batch 01 controlled web derivative","driveSourceDocumentId":"1mbN8hq4g6jZUgW0bkwZBSXotPqZ7c184kOya5SqdtJA","evidenceControl":"controlled_manuscript_plus_direct_cannabis_NPK_response_sources","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_chlorosis_nutrition_root_zone_and_differential_diagnosis","releaseTimeReview":"completed_2026-08-29_chlorosis_pattern_and_photo_key_boundaries","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"chlorosis-patterns",
+  "route":"/encyclopedia/chlorosis-patterns"
+}
