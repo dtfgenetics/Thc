@@ -1,0 +1,54 @@
+{
+  "id":"THC-ENC-247",
+  "number":247,
+  "title":"Limonene",
+  "objective":"Explain limonene identity, stereochemistry, cannabis biosynthesis, oxidation, analytical context, and why citrus aroma or human effects cannot be inferred from one limonene value.",
+  "terms":[
+    {"term":"limonene","definition":"A cyclic monoterpene that occurs in cannabis and many other plants."},
+    {"term":"enantiomer","definition":"One of two non-superimposable mirror-image forms of a chiral molecule."},
+    {"term":"chirality","definition":"A molecular property in which mirror-image forms are not identical in three-dimensional space."},
+    {"term":"oxidation product","definition":"A compound formed when the parent molecule undergoes oxidative chemical change."},
+    {"term":"chiral analysis","definition":"An analytical method capable of separating or distinguishing enantiomers."}
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Limonene is a cyclic monoterpene found in cannabis volatile profiles. Direct cannabis enzyme work functionally characterized a CsTPS whose major product was (-)-limonene and which also produced minor alpha-pinene, camphene, beta-pinene, and myrcene.",
+    "Limonene is chiral. Enantiomers can differ in odor character, while routine non-chiral terpene methods may report a combined or unspecified limonene result. Analytical capability therefore matters when stereochemical identity is part of the claim.",
+    "Limonene can decline or transform during exposure to oxygen, light, heat, handling, and storage. A basic terpene panel may quantify the parent compound without capturing every oxidation product.",
+    "A citrus-like aroma can involve limonene but can also arise from mixtures containing other terpenes, aldehydes, esters, sulfur compounds, and additional volatiles. Chemical concentration and sensory contribution are not interchangeable.",
+    "Plant limonene concentration does not by itself establish mood, medical effect, cultivar identity, or quality. Those claims require separate sensory, pharmacological, genetic, or clinical evidence."
+  ],
+  "cultivationRelevance":[
+    "Record whether the analytical method resolves limonene enantiomers or reports a non-chiral total.",
+    "Keep storage time, temperature, package, light exposure, and preparation consistent when comparing limonene across samples.",
+    "Do not use a lemon or citrus descriptor as a substitute for chemical analysis.",
+    "Do not translate limonene concentration into a guaranteed human effect."
+  ],
+  "measureAndRecord":[
+    {"field":"Analyte identity","requirement":"Record limonene designation, stereochemical capability, authentic standard, retention or spectral evidence, and reporting units."},
+    {"field":"Sample context","requirement":"Record plant/lot identity, tissue, position, developmental stage, fresh/dry state, and preparation."},
+    {"field":"Handling and storage","requirement":"Record container, oxygen/light exposure, time, temperature, grinding, drying, and cure history."},
+    {"field":"Analytical method","requirement":"Record headspace or extraction method, chromatographic conditions, calibration, replicate, recovery, and uncertainty."},
+    {"field":"Sensory context","requirement":"When aroma is studied, retain blinded panel method and descriptors separately from chemical abundance."}
+  ],
+  "misconceptions":[
+    "All limonene is chemically and sensorially identical.",
+    "A lemon smell proves limonene is high.",
+    "Limonene concentration predicts mood or medical effect.",
+    "A limonene value can be compared across any analytical method without qualification.",
+    "One limonene result proves cultivar identity."
+  ],
+  "evidenceLimits":[
+    "Cannabis-specific enzyme and profile evidence supports limonene biosynthesis and occurrence. Routine testing may not resolve enantiomers or all oxidation products, and sensory or clinical interpretation requires evidence beyond a non-chiral concentration result."
+  ],
+  "crossLinks":"THC-ENC-243 for monoterpenes; THC-ENC-245 for terpene-synthase genetics; THC-ENC-256–258 for volatile loss, storage, and analysis; THC-ENC-259 for chemovar classification.",
+  "sourceNotes":[
+    "Booth JK, Page JE, Bohlmann J. (2017). Terpene synthases from Cannabis sativa. PLOS ONE 12:e0173911. Functionally characterized a limonene-dominant cannabis terpene synthase and documented limonene in inflorescence profiles.",
+    "Validated cannabis GC methods demonstrate that limonene reporting depends on standards, chromatographic method, and sample preparation; chiral identity requires specialized separation beyond routine non-chiral panels.",
+    "Controlled Volume 13 manuscript v1.0 requires limonene chemistry, citrus aroma, oxidation, and human-effect claims to remain distinct."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 13 batch 02 controlled web derivative","driveSourceDocumentId":"1Vh_CkUFTN9eqsXiuH53pD1tMDyBo2zxDTIXOd_vQlgw","evidenceControl":"controlled_manuscript_plus_direct_cannabis_TPS_and_analytical_sources","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_limonene_stereochemistry_analytics_and_claim_boundaries","releaseTimeReview":"completed_2026-08-29_limonene_function_chirality_oxidation_and_effect_boundaries","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"limonene",
+  "route":"/encyclopedia/limonene"
+}
