@@ -27,7 +27,7 @@ jobs:
           bust="dtf_sprout_smoke=${GITHUB_RUN_ID}"
           index_body="$(mktemp)"
           index_headers="$(mktemp)"
-          app_body="$(mktemp)"
+          app_body="$(mktemp --suffix=.js)"
           app_headers="$(mktemp)"
           trap 'rm -f "$index_body" "$index_headers" "$app_body" "$app_headers"' EXIT
 
