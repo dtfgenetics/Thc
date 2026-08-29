@@ -90,6 +90,7 @@ jobs:
 
           grep -Fq -- '- scripts/wordpress-ipv4-fetch-bootstrap.mjs' "$learning"
           grep -Fq 'node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/rebuild-wordpress-shared-shell-v3.mjs' "$learning"
+          node --check "$ipv4_bootstrap"
           grep -Fq 'family: 4' "$ipv4_bootstrap"
           grep -Fq 'https.request' "$ipv4_bootstrap"
 
