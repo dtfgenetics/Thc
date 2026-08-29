@@ -36,8 +36,11 @@ jobs:
           set -euo pipefail
           node --check scripts/apply-wordpress-public-content-rest.mjs
 
-          expected=(home seeds learn community shop gallery about contact)
-          for slug in "${expected[@]}"; do
+          # The source directory intentionally still carries seeds.html because the
+          # dedicated genetics publisher consumes it. Generic WordPress publishing
+          # owns the remaining editorial pages, including the canonical Blog.
+          expected_sources=(home seeds learn community shop gallery about contact blog)
+          for slug in "${expected_sources[@]}"; do
             file="site/wordpress/pages/$slug.html"
             test -s "$file"
             grep -Fq '<h1' "$file"
@@ -47,15 +50,20 @@ jobs:
           test ! -e site/wordpress/pages/high-iq.html
 
           actual="$(find site/wordpress/pages -maxdepth 1 -type f -name '*.html' -printf '%f\n' | sed 's/\.html$//' | sort | paste -sd, -)"
-          expected_sorted="$(printf '%s\n' "${expected[@]}" | sort | paste -sd, -)"
+          expected_sorted="$(printf '%s\n' "${expected_sources[@]}" | sort | paste -sd, -)"
           [[ "$actual" == "$expected_sorted" ]] || {
-            echo "Unexpected WordPress page ownership. Expected: $expected_sorted; actual: $actual" >&2
+            echo "Unexpected WordPress page source set. Expected: $expected_sorted; actual: $actual" >&2
             exit 1
           }
 
-          if grep -Fq "['games'," scripts/apply-wordpress-public-content-rest.mjs || \
-             grep -Fq "['high-iq'," scripts/apply-wordpress-public-content-rest.mjs; then
-            echo 'Static game routes must not be required as WordPress pages.' >&2
+          for slug in home learn community shop gallery about contact blog; do
+            grep -Eq "['\"]$slug['\"]" scripts/apply-wordpress-public-content-rest.mjs
+          done
+          grep -Fq "['blog', 'DTF Field Notes & Updates']" scripts/apply-wordpress-public-content-rest.mjs
+          grep -Fq 'page_for_posts: 0' scripts/apply-wordpress-public-content-rest.mjs
+
+          if grep -Eq "\['seeds',[[:space:]]*'|\['games',[[:space:]]*'|\['high-iq',[[:space:]]*'" scripts/apply-wordpress-public-content-rest.mjs; then
+            echo 'Seeds and static game routes must not be owned by the generic WordPress publisher.' >&2
             exit 1
           fi
 
@@ -97,6 +105,9 @@ jobs:
           grep -Fq '/yellow-leaves/' site/wordpress/pages/learn.html
           grep -Fq '/thc-grow-doc/' site/wordpress/pages/learn.html
           grep -Fq '/growlens/' site/wordpress/pages/learn.html
+          grep -Fq 'DTF Field Notes &amp; Updates' site/wordpress/pages/blog.html
+          grep -Fq 'Follow what we are learning, building, and releasing.' site/wordpress/pages/blog.html
+          grep -Fq 'Game Hub' site/wordpress/pages/blog.html
 
       - name: Report validation stage to issue 46
         if: always()
@@ -114,7 +125,7 @@ jobs:
               `Validation result: **${process.env.VALIDATION_STATUS}**`,
               '',
               process.env.VALIDATION_STATUS === 'success'
-                ? 'The canonical eight-page WordPress package passed pre-deployment validation. The protected production deployment job may now proceed.'
+                ? 'The canonical eight-page WordPress publisher passed pre-deployment validation. Seeds remains delegated to the genetics release family. The protected production deployment job may now proceed.'
                 : 'The canonical WordPress package failed before the protected deployment stage. Inspect this run; no production WordPress mutation was attempted by the deploy job.',
               '',
               'No credential values are included in this report.'
@@ -207,10 +218,11 @@ jobs:
           }
 
           verify_page '/' 'Genetics, cultivation education, practical tools, and original cannabis games.'
-          verify_page '/seeds/' 'Genetics built through selection, observation, and documentation.'
           verify_page '/learn/' 'Read the yellow-leaves diagnostic guide'
           verify_page '/community/' 'Join the official DTF / Teaching Healthy Cultivation Discord'
           verify_page '/contact/' 'Join the official DTF / Teaching Healthy Cultivation Discord'
+          verify_page '/blog/' 'DTF Field Notes &amp; Updates'
+          verify_page '/blog/' 'Follow what we are learning, building, and releasing.'
 
       - name: Upload page-level rollback package
         if: always()
@@ -240,10 +252,11 @@ jobs:
               `Page mutations: **${process.env.MUTATIONS || 'unknown'}**`,
               `Pages changed: **${process.env.CHANGED_PAGES || 'unknown'}**`,
               '',
-              'Scope: Home, Seeds, Learn, Community, Shop, Gallery, About, and Contact.',
+              'Scope: Home, Learn, Community, Shop, Gallery, About, Contact, and Blog.',
+              'Seeds remains exclusively owned by the genetics release family.',
               'The canonical `home` page is also enforced as the WordPress front page served at `/`.',
               'Static `/games/` and `/games/high-iq/` routes are intentionally absent from WordPress source ownership.',
-              'Verified live targets: Home, Seeds, Learn gateway, Community, Contact.',
+              'Verified live targets: Home, Learn gateway, Community, Contact, and Blog.',
               'No credential values are included in this report.'
             ].join('\n');
             await github.rest.issues.createComment({
