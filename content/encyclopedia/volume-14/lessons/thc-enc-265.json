@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-265",
+  "number":265,
+  "title":"Leaf Curling, Cupping, and Distortion",
+  "objective":"Classify cannabis leaf-shape changes and connect them to differential growth, turgor, exposure, injury, pests, root function, and development without treating 'clawing' or 'tacoing' as cause-specific diagnoses.",
+  "terms":[
+    {"term":"epinasty","definition":"Downward curvature of an organ caused by differential growth or turgor between its surfaces or sides."},
+    {"term":"hyponasty","definition":"Upward movement or curvature of an organ caused by differential growth or turgor."},
+    {"term":"cupping","definition":"Curvature of a leaf blade that produces a cup-like shape."},
+    {"term":"distortion","definition":"Abnormal shape or asymmetry resulting from altered development, growth, turgor, injury, or obstruction."},
+    {"term":"differential growth","definition":"Unequal cell expansion or growth rates among regions of an organ, producing curvature or deformation."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Leaf shape changes when opposite surfaces, margins, veins, petioles, or expanding regions grow or maintain turgor differently. Upward cupping, downward curvature, rolling, twisting, puckering, blistering, narrow new growth, and asymmetric blades should be recorded as separate observations rather than collapsed into slang labels.",
+    "Possible drivers include high radiation and leaf temperature, high atmospheric demand, root-zone hypoxia or water imbalance, salinity, nutrient imbalance, chemical exposure, spray injury, mechanical restriction, broad or russet mites, viruses, genetic variants, and normal developmental transitions. Many of these mechanisms overlap visually.",
+    "Young leaves preserve developmental history. A short stress or exposure during primordium formation or early expansion can become visible later even after the original condition has ended. Persistent causes, in contrast, continue altering subsequently formed tissue.",
+    "Downward curvature is sometimes associated in grower practice with high nitrogen supply, but curvature itself is not a nitrogen assay. Direct cannabis nutrition work shows supply-dependent morphology and physiology, yet root, water, salinity, chemical, pest, and environmental causes must remain in the differential.",
+    "Spatial pattern helps discriminate causes: fan- or fixture-facing leaves, one spray pass, one irrigation zone, one genotype, only expanding tips, or only lower shaded tissue each support different tests. Magnified examination of growing points and undersides is essential when mite injury is plausible."
+  ],
+  "cultivationRelevance":[
+    "Replace 'claw' or 'taco' as the sole record with direction, symmetry, leaf age, petiole angle, blistering, twisting, and which tissue first changed.",
+    "Inspect growing points and undersides with magnification before assigning distorted new growth to nutrition or environment alone.",
+    "Review root-zone water/oxygen, pH/EC, temperature, light, VPD context, recent sprays or chemical drift, and physical contact patterns.",
+    "Track the sequence of new leaves after a controlled correction because previously distorted tissue may remain misshapen after the causal condition is removed."
+  ],
+  "measureAndRecord":[
+    {"field":"Shape vocabulary","requirement":"Record upward/downward curvature, rolling, twisting, puckering, blistering, narrow growth, asymmetry, petiole angle, and severity with standardized images."},
+    {"field":"Developmental position","requirement":"Record node, leaf age/expansion state, meristem involvement, whether old or new tissues are affected, and progression through subsequent leaves."},
+    {"field":"Environmental/root context","requirement":"Record leaf/air/root temperature, light, RH/VPD method, airflow, irrigation/moisture, roots, pH/EC, salinity context, and nutrient history."},
+    {"field":"Biotic inspection","requirement":"Record magnification method and findings on growing points and undersides, pest signs, disease signs, and laboratory results where needed."},
+    {"field":"Exposure history","requirement":"Record recent spray/cleaning/chemical events, drift possibility, equipment contact, ties/trellis, fan/fixture geometry, and timing."
+    }
+  ],
+  "misconceptions":[
+    "Downturned leaves always prove excess nitrogen.",
+    "Upward taco leaves always prove heat or light burn.",
+    "Distorted new growth can be diagnosed without inspecting pests.",
+    "A plant that remains distorted after conditions improve is still being actively injured.",
+    "One leaf-shape term is specific enough to identify a corrective product."
+  ],
+  "evidenceLimits":[
+    "Leaf-shape vocabulary improves records but remains low-specificity evidence. Cause-specific diagnosis requires developmental timing, spatial pattern, magnified pest inspection, root-zone/environmental measurements, exposure history, and sometimes laboratory confirmation."
+  ],
+  "crossLinks":"THC-ENC-261–264 for diagnostic workflow and symptom vocabulary; THC-ENC-267–272 for water/environmental imbalances; THC-ENC-277–279 for chemical/mechanical/spray injury; THC-ENC-281–300 for arthropod pests; THC-ENC-301–320 for diseases/viroids.",
+  "sourceNotes":[
+    "Controlled Volume 14 manuscript v1.0 treats curl, cup, claw, epinasty, hyponasty, twisting, and blistering as observations arising from differential growth/turgor rather than as single-cause diagnoses.",
+    "Direct medical-cannabis nitrogen, phosphorus, and potassium studies establish nutrient-supply effects on morphology and physiology but do not validate slang leaf-shape keys as nutrient-specific tests.",
+    "Penn State Extension diagnostic guidance supports use of plant/site history, pattern, signs, and competing explanations because insects, pathogens, environment, and management can produce overlapping symptoms."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 14 batch 01 controlled web derivative","driveSourceDocumentId":"1mbN8hq4g6jZUgW0bkwZBSXotPqZ7c184kOya5SqdtJA","evidenceControl":"controlled_manuscript_plus_cannabis_nutrition_and_current_diagnostic_sources","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_leaf_curl_cupping_distortion_and_differential_diagnosis","releaseTimeReview":"completed_2026-08-29_shape_vocabulary_developmental_history_and_pest_differential_boundaries","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"leaf-curling-cupping-and-distortion",
+  "route":"/encyclopedia/leaf-curling-cupping-and-distortion"
+}
