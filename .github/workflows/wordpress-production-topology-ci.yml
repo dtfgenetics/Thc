@@ -1,0 +1,66 @@
+name: Validate WordPress Production Topology
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - .github/workflows/wordpress-canonical-production.yml
+      - .github/workflows/wordpress-infographic-production.yml
+      - .github/workflows/wordpress-learning-experience-v3-production.yml
+      - .github/workflows/wordpress-home-release-visuals.yml
+      - .github/workflows/wordpress-canonical-watch.yml
+      - .github/workflows/wordpress-production-topology-ci.yml
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/wordpress-canonical-production.yml
+      - .github/workflows/wordpress-infographic-production.yml
+      - .github/workflows/wordpress-learning-experience-v3-production.yml
+      - .github/workflows/wordpress-home-release-visuals.yml
+      - .github/workflows/wordpress-canonical-watch.yml
+      - .github/workflows/wordpress-production-topology-ci.yml
+
+permissions:
+  contents: read
+
+jobs:
+  topology:
+    name: Enforce single-owner WordPress production chain
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify ordered production handoffs
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          canonical='.github/workflows/wordpress-canonical-production.yml'
+          infographics='.github/workflows/wordpress-infographic-production.yml'
+          learning='.github/workflows/wordpress-learning-experience-v3-production.yml'
+          home='.github/workflows/wordpress-home-release-visuals.yml'
+          watch='.github/workflows/wordpress-canonical-watch.yml'
+
+          grep -Fq -- '- Stage DTFSeeds WordPress Canonical Deployment' "$canonical"
+
+          grep -Fq -- '- Publish DTFSeeds WordPress Production' "$infographics"
+          if grep -Fq -- '- Stage DTFSeeds WordPress Canonical Deployment' "$infographics"; then
+            echo 'Infographic production must not run directly from canonical staging.' >&2
+            exit 1
+          fi
+
+          grep -Fq -- '- Publish THC Infographics to WordPress Production' "$learning"
+          if grep -Fq -- '- Publish DTFSeeds WordPress Production' "$learning"; then
+            echo 'Learning V3 must have one upstream workflow handoff, not a parallel canonical trigger.' >&2
+            exit 1
+          fi
+
+          grep -Fq -- '- Publish DTFSeeds Learning Experience V3' "$home"
+
+          if grep -Fq 'issue_number: 46' "$watch"; then
+            echo 'Canonical preflight reporting must not depend on saturated issue #46.' >&2
+            exit 1
+          fi
+
+          echo 'Verified production order: staging -> canonical -> infographics -> learning -> final home visuals.'
