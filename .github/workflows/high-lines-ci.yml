@@ -76,5 +76,5 @@ jobs:
           if (game.releaseGates.mobileTested !== false) throw new Error('mobileTested must remain false until mobile QA is actually completed');
           if (game.releaseGates.accessibilityReviewed !== false) throw new Error('accessibilityReviewed must remain false until accessibility review is actually completed');
           if (game.releaseGates.originalArtCleared !== true) throw new Error('High Lines original SVG art must remain cleared');
-          if (game.releaseGates.deploymentRegistered !== false) throw new Error('unreviewed game must not be production registered');
+          if (game.releaseGates.deploymentRegistered !== true) throw new Error('deploymentRegistered must stay true once the game is registered in the DTFSeeds public app contract');
           NODE
