@@ -5,9 +5,12 @@ import {
   createTrial,
   isValidTrialCode,
   judgeRank,
-  normalizeTrialCode,
-  submitScorecard
+  normalizeTrialCode
 } from './engine.mjs';
+import {
+  MAX_CONFIDENCE_CALLS,
+  submitConfidentScorecard
+} from './confidence.mjs';
 
 const ui = {
   load: document.querySelector('#load-status'),
@@ -32,6 +35,7 @@ let data = null;
 let state = null;
 let entryById = new Map();
 let draftScores = {};
+let confidenceIds = new Set();
 
 function escapeHtml(value = '') {
   return String(value).replace(/[&<>"']/g, (character) => ({
@@ -62,6 +66,7 @@ function challengeUrl() {
 
 function resetDraft() {
   draftScores = Object.fromEntries(data.categories.map((category) => [category.id, 5]));
+  confidenceIds = new Set();
 }
 
 function visualMarkup(entry) {
@@ -124,8 +129,14 @@ function renderScorecard() {
     const row = document.createElement('div');
     row.className = 'score-row';
     const value = draftScores[category.id] ?? 5;
+    const confident = confidenceIds.has(category.id);
+    const confidenceDisabled = !judging || (!confident && confidenceIds.size >= MAX_CONFIDENCE_CALLS);
     row.innerHTML = `
-      <div class="score-label"><label for="score-${escapeHtml(category.id)}">${escapeHtml(category.label)}</label><p>${escapeHtml(category.rubric)}</p></div>
+      <div class="score-label">
+        <label for="score-${escapeHtml(category.id)}">${escapeHtml(category.label)}</label>
+        <button type="button" class="confidence-button" data-confidence="${escapeHtml(category.id)}" aria-pressed="${confident}" ${confidenceDisabled ? 'disabled' : ''}>${confident ? 'Confident ✓' : 'Mark confident'}</button>
+        <p>${escapeHtml(category.rubric)}</p>
+      </div>
       <div class="score-control">
         <output id="value-${escapeHtml(category.id)}" for="score-${escapeHtml(category.id)}">${value}</output>
         <input id="score-${escapeHtml(category.id)}" data-category="${escapeHtml(category.id)}" type="range" min="1" max="10" step="1" value="${value}" ${judging ? '' : 'disabled'} aria-label="${escapeHtml(category.label)} score, 1 to 10">
@@ -135,12 +146,26 @@ function renderScorecard() {
   }
   ui.submit.disabled = !judging;
   ui.submit.hidden = state.status === 'complete';
+  if (judging) {
+    const remaining = MAX_CONFIDENCE_CALLS - confidenceIds.size;
+    ui.submit.textContent = `Submit scorecard · ${confidenceIds.size}/${MAX_CONFIDENCE_CALLS} confidence calls`;
+    ui.submit.setAttribute('aria-description', `${remaining} confidence call${remaining === 1 ? '' : 's'} still available.`);
+  } else {
+    ui.submit.textContent = 'Submit scorecard';
+    ui.submit.removeAttribute('aria-description');
+  }
 }
 
 function differenceLabel(difference) {
   if (difference === 0) return 'EXACT';
   if (difference === 1) return 'NEAR';
   return `OFF ${difference}`;
+}
+
+function confidenceLabel(result, categoryId) {
+  const call = result.confidenceCalls?.[categoryId];
+  if (!call) return '';
+  return `<span class="confidence-chip">CONF +${call.bonus}</span>`;
 }
 
 function renderReview() {
@@ -166,13 +191,14 @@ function renderReview() {
   ui.review.innerHTML = `
     <div class="review-summary">
       <span class="accuracy-ring" style="--accuracy:${result.accuracy}"><strong>${result.accuracy}%</strong><small>ACCURACY</small></span>
-      <div><p class="eyebrow">Benchmark reveal</p><h2>+${result.points} points</h2><p>${result.exactCount} exact · ${result.nearCount} near · total error ${result.totalError}</p></div>
+      <div><p class="eyebrow">Benchmark reveal</p><h2>+${result.points} points</h2><p>${result.exactCount} exact · ${result.nearCount} near · total error ${result.totalError}</p>${result.confidenceBonus ? `<p class="confidence-summary">Confidence bonus +${result.confidenceBonus}</p>` : '<p class="confidence-summary">No confidence bonus this round.</p>'}</div>
     </div>
     <div class="benchmark-grid">
       ${data.categories.map((category) => {
         const score = result.categories[category.id];
-        return `<article class="benchmark-row diff-${Math.min(score.difference, 3)}">
-          <div><span>${escapeHtml(category.short)}</span><strong>${escapeHtml(category.label)}</strong></div>
+        const confident = result.confidenceIds?.includes(category.id);
+        return `<article class="benchmark-row diff-${Math.min(score.difference, 3)}${confident ? ' confident' : ''}">
+          <div><span>${escapeHtml(category.short)}</span><strong>${escapeHtml(category.label)}</strong>${confidenceLabel(result, category.id)}</div>
           <div class="score-pair"><span>You <b>${score.player}</b></span><span>Bench <b>${score.benchmark}</b></span><em>${differenceLabel(score.difference)}</em></div>
           <p>${escapeHtml(entry.notes[category.id])}</p>
         </article>`;
@@ -194,7 +220,8 @@ function renderHistory() {
   for (const result of [...state.history].reverse()) {
     const entry = entryById.get(result.entryId);
     const item = document.createElement('li');
-    item.innerHTML = `<span>R${result.round}</span><div><strong>${escapeHtml(entry?.label ?? result.entryId)}</strong><small>${result.accuracy}% accuracy · +${result.points} · ${result.exactCount} exact</small></div>`;
+    const confidence = result.confidenceBonus ? ` · conf +${result.confidenceBonus}` : '';
+    item.innerHTML = `<span>R${result.round}</span><div><strong>${escapeHtml(entry?.label ?? result.entryId)}</strong><small>${result.accuracy}% accuracy · +${result.points} · ${result.exactCount} exact${confidence}</small></div>`;
     ui.history.append(item);
   }
 }
@@ -218,6 +245,25 @@ function resetTrial(code) {
   render();
 }
 
+ui.scorecard.addEventListener('click', (event) => {
+  const button = event.target.closest('button[data-confidence]');
+  if (!button || state.status !== 'judging') return;
+  const categoryId = button.dataset.confidence;
+  if (confidenceIds.has(categoryId)) {
+    confidenceIds.delete(categoryId);
+  } else if (confidenceIds.size < MAX_CONFIDENCE_CALLS) {
+    confidenceIds.add(categoryId);
+  } else {
+    ui.announce.textContent = `You can mark at most ${MAX_CONFIDENCE_CALLS} confidence calls per round.`;
+    return;
+  }
+  renderScorecard();
+  const category = data.categories.find((item) => item.id === categoryId);
+  ui.announce.textContent = confidenceIds.has(categoryId)
+    ? `${category?.label ?? categoryId} marked confident. ${confidenceIds.size} of ${MAX_CONFIDENCE_CALLS} confidence calls used.`
+    : `${category?.label ?? categoryId} confidence call removed.`;
+});
+
 ui.scorecard.addEventListener('input', (event) => {
   const input = event.target.closest('input[data-category]');
   if (!input || state.status !== 'judging') return;
@@ -230,10 +276,10 @@ ui.scorecard.addEventListener('input', (event) => {
 ui.submit.addEventListener('click', () => {
   if (state.status !== 'judging') return;
   try {
-    state = submitScorecard(state, draftScores, data);
+    state = submitConfidentScorecard(state, draftScores, [...confidenceIds], data);
     render();
     ui.review.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
-    ui.announce.textContent = `Scorecard submitted. ${state.lastResult.accuracy} percent accuracy, ${state.lastResult.exactCount} exact category calls.`;
+    ui.announce.textContent = `Scorecard submitted. ${state.lastResult.accuracy} percent accuracy, ${state.lastResult.exactCount} exact calls, ${state.lastResult.confidenceBonus} confidence bonus points.`;
   } catch (error) {
     console.error(error);
     ui.announce.textContent = error.message;
@@ -248,7 +294,7 @@ ui.next.addEventListener('click', () => {
   document.querySelector('#sample-panel')?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
   ui.announce.textContent = state.status === 'complete'
     ? `Trial complete. Rank ${judgeRank(state)}, average accuracy ${averageAccuracy(state)} percent.`
-    : `Round ${state.round}. New blind sample ready.`;
+    : `Round ${state.round}. New blind sample ready. Confidence calls reset.`;
 });
 
 ui.code.addEventListener('input', () => setCode(ui.code.value));
@@ -304,7 +350,7 @@ async function load() {
     resetDraft();
     setCode(code);
     window.history.replaceState(null, '', challengeUrl());
-    ui.load.textContent = '5 blind rounds · 7 judging categories · 12 fictional entries';
+    ui.load.textContent = '5 blind rounds · 7 categories · 2 confidence calls per round';
     render();
   } catch (error) {
     console.error(error);
