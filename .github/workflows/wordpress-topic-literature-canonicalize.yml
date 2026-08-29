@@ -1,0 +1,99 @@
+name: Canonicalize Expanded THC Topic Literature
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - site/wordpress/education/topic-literature.json
+      - site/wordpress/education/topic-literature-expansions.json
+      - site/wordpress/education/topic-literature-expansions-core-v1.json
+      - scripts/assemble-topic-literature-expansions.mjs
+      - .github/workflows/wordpress-topic-literature-canonicalize.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: dtfseeds-topic-literature-canonicalize
+  cancel-in-progress: false
+
+jobs:
+  canonicalize:
+    name: Promote all thirteen subject expansions into canonical source
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Assemble and validate complete curriculum
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/assemble-topic-literature-expansions.mjs
+          node scripts/assemble-topic-literature-expansions.mjs --write "$RUNNER_TEMP/topic-literature-canonical.json" | tee "$RUNNER_TEMP/topic-literature-canonical-report.json"
+          node - "$RUNNER_TEMP/topic-literature-canonical.json" <<'NODE'
+          const fs = require('fs');
+          const data = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
+          if (!Array.isArray(data.topics) || data.topics.length !== 13) throw new Error(`Expected 13 canonical topics, found ${data.topics?.length || 0}`);
+          for (const topic of data.topics) {
+            if (!Array.isArray(topic.sections) || topic.sections.length < 8) throw new Error(`${topic.id} has only ${topic.sections?.length || 0} sections`);
+          }
+          const byId = new Map(data.topics.map(topic => [topic.id, topic]));
+          if ((byId.get('lighting')?.sections?.length || 0) < 9) throw new Error('Lighting must retain at least 9 sections');
+          if ((byId.get('research-measurement')?.sections?.length || 0) < 9) throw new Error('Research & Measurement must retain at least 9 sections');
+          const plant = byId.get('plant-biology');
+          if (!plant?.sections?.some(section => section.heading === 'Water potential, osmosis, and turgor')) throw new Error('Plant Biology expansion marker is missing');
+          console.log(JSON.stringify(Object.fromEntries(data.topics.map(topic => [topic.id, topic.sections.length])), null, 2));
+          NODE
+
+      - name: Promote expanded curriculum to canonical topic literature
+        id: promote
+        shell: bash
+        run: |
+          set -euo pipefail
+          target='site/wordpress/education/topic-literature.json'
+          if cmp -s "$RUNNER_TEMP/topic-literature-canonical.json" "$target"; then
+            echo 'changed=false' >> "$GITHUB_OUTPUT"
+            echo 'Canonical topic literature already contains every expansion.'
+            exit 0
+          fi
+          cp "$RUNNER_TEMP/topic-literature-canonical.json" "$target"
+          git config user.name 'DTF Education Canonicalizer'
+          git config user.email 'actions@users.noreply.github.com'
+          git add "$target"
+          git commit -m 'Promote complete THC curriculum to canonical topic literature'
+          if ! git push origin HEAD:main; then
+            git pull --rebase origin main
+            node scripts/assemble-topic-literature-expansions.mjs --write "$target"
+            git add "$target"
+            git commit --amend --no-edit
+            git push origin HEAD:main
+          fi
+          echo 'changed=true' >> "$GITHUB_OUTPUT"
+          echo "commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Verify canonical source cannot downgrade subject depth
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git show origin/main:site/wordpress/education/topic-literature.json > "$RUNNER_TEMP/topic-literature-origin-main.json"
+          node - "$RUNNER_TEMP/topic-literature-origin-main.json" <<'NODE'
+          const fs = require('fs');
+          const data = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
+          if (data.topics.length !== 13) throw new Error('Canonical source lost a subject');
+          for (const topic of data.topics) {
+            if (topic.sections.length < 8) throw new Error(`Canonical downgrade detected: ${topic.id}=${topic.sections.length}`);
+          }
+          const byId = new Map(data.topics.map(topic => [topic.id, topic]));
+          if (byId.get('lighting').sections.length < 9 || byId.get('research-measurement').sections.length < 9) throw new Error('Expanded thin-subject depth was not preserved');
+          console.log('Canonical topic literature is locked at the complete 13-subject depth floor.');
+          NODE
