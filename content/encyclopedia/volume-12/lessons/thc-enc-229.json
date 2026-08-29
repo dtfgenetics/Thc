@@ -1,0 +1,57 @@
+{
+  "id":"THC-ENC-229",
+  "number":229,
+  "title":"CBGA as a Central Cannabinoid-Acid Precursor",
+  "objective":"Explain formation of CBGA by prenylation of olivetolic acid with geranyl diphosphate and use branch-point language precisely without claiming that every detected cannabinoid is a direct CBGA product.",
+  "terms":[
+    {"term":"CBGA","definition":"Cannabigerolic acid, a central pentyl cannabinoid-acid intermediate formed by prenylation of olivetolic acid with geranyl diphosphate."},
+    {"term":"prenylation","definition":"Enzymatic transfer of an isoprenoid group such as geranyl from a donor such as GPP onto an acceptor molecule."},
+    {"term":"aromatic prenyltransferase","definition":"An enzyme that transfers an isoprenoid group to an aromatic acceptor; cannabis CsPT enzymes can catalyze CBGA formation."},
+    {"term":"branch point","definition":"A metabolic intermediate that can be directed into more than one downstream pathway."},
+    {"term":"residual precursor","definition":"A measurable precursor pool remaining after or alongside downstream conversion."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "CBGA forms when an aromatic prenyltransferase couples olivetolic acid from the polyketide branch with geranyl diphosphate from the isoprenoid branch. This reaction joins the two major precursor streams before cannabinoid-acid oxidocyclases generate prominent downstream products.",
+    "The CBGA-forming reaction was demonstrated biochemically in cannabis extracts as geranylpyrophosphate:olivetolate geranyltransferase activity. Later pathway reconstruction identified functional cannabis prenyltransferases including CsPT4 that can produce CBGA from olivetolic acid and GPP in heterologous systems.",
+    "CBGA is a central substrate for major pentyl cannabinoid-acid synthases, including THCA synthase, CBDA synthase, and CBCA-forming activity. The amount directed into each branch depends on functional enzyme complement, expression, substrate access, compartmentation, development, and other pathway properties.",
+    "Calling CBGA the 'mother of all cannabinoids' is chemically convenient but biologically imprecise. Varin cannabinoids use alternate side-chain precursor chemistry; some minor compounds arise through additional enzymatic, non-enzymatic, degradative, or rearrangement routes; and detection of a cannabinoid does not prove direct formation from CBGA.",
+    "A high residual CBGA measurement can have multiple explanations, including inherited pathway balance, low or altered downstream synthase activity, developmental stage, tissue distribution, or sampling. It should not automatically be interpreted as an immature harvest."
+  ],
+  "cultivationRelevance":[
+    "Interpret CBGA alongside downstream cannabinoid acids, genotype, tissue position, and developmental stage rather than as a stand-alone maturity marker.",
+    "Avoid supplement claims that assume more olivetolic acid or GPP will produce proportional CBGA or downstream cannabinoids in intact plants.",
+    "When studying pathway balance, measure both branch-point and downstream compounds so accumulation is not confused with increased formation.",
+    "Use validated chemical analysis to characterize high-CBGA material; cultivar names or visual trichome traits do not establish a CBGA-rich chemotype."
+  ],
+  "measureAndRecord":[
+    {"field":"Biological identity","requirement":"Record genotype/pedigree, tissue, plant and inflorescence position, developmental stage, and environmental treatment."},
+    {"field":"CBGA chemistry","requirement":"Record CBGA concentration, moisture basis, extraction and analytical method, standards, replicate, detection/quantitation limits, and uncertainty."},
+    {"field":"Branch products","requirement":"Record THCA, CBDA, CBCA and relevant alternate cannabinoid acids together with CBGA where pathway balance is interpreted."},
+    {"field":"Prenyltransferase evidence","requirement":"Record gene/allele identity, expression, localization, or enzyme assay and distinguish in-plant data from heterologous reconstruction."},
+    {"field":"Rate interpretation","requirement":"Do not equate CBGA pool size with formation rate unless time-course or flux evidence supports the claim."
+    }
+  ],
+  "misconceptions":[
+    "Every cannabinoid detected in cannabis is a direct enzymatic product of CBGA.",
+    "High CBGA always means the crop was harvested too early.",
+    "More GPP and olivetolic acid automatically produce proportional CBGA in a plant.",
+    "A CBGA-rich result identifies which prenyltransferase or downstream synthase is active without genetic or enzyme evidence.",
+    "Residual CBGA concentration directly measures cannabinoid-pathway flux."
+  ],
+  "evidenceLimits":[
+    "CBGA formation from olivetolic acid and GPP is strongly supported by biochemical and heterologous pathway studies, including functional cannabis prenyltransferases. Which prenyltransferase contributes most under every intact-plant genotype and developmental condition, and how branch-point pool size relates quantitatively to flux, remain more complex than a single universal model."
+  ],
+  "crossLinks":"THC-ENC-227–228 for precursor branches and olivetolic acid; THC-ENC-230–233 for downstream synthases and alternate side chains; THC-ENC-237–240 for chemotype, development, and analytical claims.",
+  "sourceNotes":[
+    "Fellermeier M, Zenk MH. (1998). Prenylation of olivetolate by a hemp transferase yields cannabigerolic acid, the precursor of tetrahydrocannabinol. FEBS Letters 427:283–285. Demonstrated cannabis olivetolate geranyltransferase activity producing CBGA from olivetolic acid and GPP.",
+    "Luo X et al. (2019). Complete biosynthesis of cannabinoids and their unnatural analogues in yeast. Nature 567:123–126. Reconstructed major cannabinoid pathways and identified functional cannabis aromatic prenyltransferase activity including CsPT4 for CBGA biosynthesis.",
+    "Tanaya R et al. (2024). Substrate-Dependent Alteration in the C- and O-Prenylation Specificities of Cannabis Prenyltransferase. Biological & Pharmaceutical Bulletin. Confirms CsPT4 as a CBGA-forming aromatic prenyltransferase while documenting broader substrate behavior.",
+    "The controlled Volume 12 source restricts the phrase 'mother of all cannabinoids' because alternate precursors, transformations, and minor pathways make it an oversimplification."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 12 batch 02 controlled web derivative","driveSourceDocumentId":"1mrad4SysYqoD1-Z8A7ibF9PcnvRjs5qiPIOseYGRtUI","evidenceControl":"controlled_manuscript_plus_direct_and_heterologous_prenyltransferase_sources","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_CBGA_biosynthesis_and_branch_point_interpretation","releaseTimeReview":"completed_2026-08-29_branch_point_alternate_pathway_and_non_maturity_claims","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"cbga-as-a-central-cannabinoid-acid-precursor",
+  "route":"/encyclopedia/cbga-as-a-central-cannabinoid-acid-precursor"
+}
