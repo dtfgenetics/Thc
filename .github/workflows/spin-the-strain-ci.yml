@@ -28,6 +28,9 @@ jobs:
       - name: Run deterministic wheel engine tests
         run: node games/spin-the-strain/test/engine.test.mjs
 
+      - name: Test self-contained public runtime
+        run: node games/spin-the-strain/test/public-runtime.test.mjs
+
       - name: Validate browser JavaScript syntax
         run: |
           node --check site/public-route-patch/games/spin-the-strain/app.js
@@ -48,12 +51,16 @@ jobs:
             if (!source.includes(text)) throw new Error(`missing ${label}: ${text}`);
           };
           requireText(html, '<link rel="canonical" href="https://dtfseeds.com/games/spin-the-strain/">', 'canonical route');
-          requireText(html, '<script type="module" src="./app.js"></script>', 'module entrypoint');
+          requireText(html, 'id="spin-the-strain-data"', 'embedded wheel data');
+          requireText(html, '<script src="./app.js" defer></script>', 'classic deferred entrypoint');
           requireText(app, 'const segmentAngle = 360 / entries.length;', 'dynamic segment angle');
           requireText(app, "label.style.setProperty('--segment-angle'", 'segment angle handoff');
           requireText(app, '360 - (state.lastResult.index + 0.5) * segmentAngle', 'top-pointer landing calculation');
-          requireText(app, 'data.entries?.length !== 54', 'runtime data contract');
+          requireText(app, "ui.category.textContent = 'SPINNING'", 'hidden result during spin');
+          requireText(app, 'function validateData(candidate)', 'runtime data contract');
           requireText(css, 'var(--segment-angle) - 90deg', 'top-axis label alignment');
+          if (html.includes('type="module"')) throw new Error('Spin the Strain must not depend on module MIME handling');
+          if (app.includes("fetch('./data/wheels.json'")) throw new Error('Spin the Strain must not fetch wheel data at runtime');
           if (css.includes('var(--segment-index)')) throw new Error('stale segment-index renderer contract remains');
           NODE
 
