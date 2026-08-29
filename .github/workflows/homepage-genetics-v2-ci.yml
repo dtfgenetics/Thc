@@ -7,6 +7,7 @@ on:
       - 'scripts/finalize-wordpress-home-genetics-art.mjs'
       - 'scripts/fix-wordpress-home-release-visuals.mjs'
       - 'scripts/run-learning-v3-production.mjs'
+      - 'scripts/reconcile-wordpress-learning-v3-ownership.mjs'
       - '.github/workflows/wordpress-home-genetics-art.yml'
       - '.github/workflows/wordpress-home-release-visuals.yml'
       - '.github/workflows/wordpress-learning-experience-v3-production.yml'
@@ -33,12 +34,16 @@ jobs:
           node --check scripts/finalize-wordpress-home-genetics-art.mjs
           node --check scripts/fix-wordpress-home-release-visuals.mjs
           node --check scripts/run-learning-v3-production.mjs
+          node --check scripts/reconcile-wordpress-learning-v3-ownership.mjs
           grep -Fq 'data-dtf-home-genetics-v2' scripts/finalize-wordpress-home-genetics-art.mjs
           grep -Fq 'Current releases, shown with the real strain cards.' scripts/finalize-wordpress-home-genetics-art.mjs
           grep -Fq 'dtf-strain-card-blue-mango-f2-regular' scripts/run-learning-v3-production.mjs
           grep -Fq 'dtf-strain-card-blue-mango-f2-feminized' scripts/run-learning-v3-production.mjs
           grep -Fq 'dtf-strain-card-blue-bubblegum-f1-regular' scripts/run-learning-v3-production.mjs
           grep -Fq 'dtf-strain-card-mango-bubbles-f1-regular' scripts/finalize-wordpress-home-genetics-art.mjs
+          grep -Fq 'exactly one published WordPress owner' scripts/reconcile-wordpress-learning-v3-ownership.mjs
+          grep -Fq 'data-dtf-layout="learn-v3"' scripts/reconcile-wordpress-learning-v3-ownership.mjs
+          grep -Fq 'data-dtf-topic=' scripts/reconcile-wordpress-learning-v3-ownership.mjs
 
           legacy='.github/workflows/wordpress-home-genetics-art.yml'
           final_owner='.github/workflows/wordpress-home-release-visuals.yml'
@@ -51,6 +56,11 @@ jobs:
           ! grep -Fq 'workflow_run:' "$final_owner"
           grep -Fq 'uses: ./.github/workflows/wordpress-home-release-visuals.yml' "$learning"
           grep -Fq 'secrets: inherit' "$learning"
+          grep -Fq 'Check whether V3 shared shell is already live' "$learning"
+          grep -Fq 'steps.shell_state.outputs.needs_publish' "$learning"
+          grep -Fq 'Reconcile WordPress Learning subject ownership' "$learning"
+          grep -Fq 'Verify stored Learning ownership and markers' "$learning"
+          grep -Fq 'scripts/reconcile-wordpress-learning-v3-ownership.mjs' "$learning"
           grep -Fq 'scripts/fix-wordpress-home-release-visuals.mjs' "$final_owner"
           grep -Fq 'Purge Hostinger LiteSpeed cache' "$final_owner"
           grep -Fq 'Verify visitor-facing homepage release artwork' "$final_owner"
@@ -58,7 +68,7 @@ jobs:
           grep -Fq 'Blue Mango F2 Feminized DTF Genetics strain card' "$legacy"
           grep -Fq 'Blue Bubblegum F1 Regular DTF Genetics strain card' "$legacy"
           grep -Fq 'Mango Bubbles F1 Regular DTF Genetics strain card' "$legacy"
-          echo 'Homepage genetics ownership validated: Learning V3 calls final Home release visuals as a reusable workflow; legacy finalizer remains manual-only.'
+          echo 'Homepage genetics ownership validated: Learning V3 public-checks the shared shell, reconciles single-owner Learn subjects, verifies stored markers, and calls final Home release visuals as a reusable workflow.'
 
       - name: Prove V3 runtime patch still matches canonical publisher
         shell: bash
