@@ -6,6 +6,7 @@ on:
     branches: [main]
     paths:
       - 'scripts/normalize-wordpress-premium-page-titles.mjs'
+      - 'scripts/wordpress-transient-fetch-bootstrap.mjs'
       - '.github/workflows/wordpress-premium-title-normalization.yml'
   workflow_run:
     workflows:
@@ -18,7 +19,7 @@ permissions:
 
 concurrency:
   group: dtfseeds-editorial-wordpress-title-normalization
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   normalize:
@@ -46,6 +47,7 @@ jobs:
           test -n "${WP_API_USERNAME:-}"
           test -n "${WP_API_PASSWORD:-}"
           node --check scripts/normalize-wordpress-premium-page-titles.mjs
+          node --check scripts/wordpress-transient-fetch-bootstrap.mjs
       - name: Normalize editorial page title hierarchies
         id: normalize
         shell: bash
@@ -53,7 +55,7 @@ jobs:
           APPLY_PREMIUM_TITLE_NORMALIZATION: 'true'
         run: |
           set -euo pipefail
-          node scripts/normalize-wordpress-premium-page-titles.mjs | tee "$RUNNER_TEMP/premium-title-result.json"
+          node --import ./scripts/wordpress-transient-fetch-bootstrap.mjs scripts/normalize-wordpress-premium-page-titles.mjs | tee "$RUNNER_TEMP/premium-title-result.json"
           echo 'outcome=success' >> "$GITHUB_OUTPUT"
       - name: Verify live editorial pages retain designed hero and suppression CSS
         id: verify
@@ -88,6 +90,7 @@ jobs:
           retention-days: 30
       - name: Report title hierarchy normalization
         if: always()
+        continue-on-error: true
         uses: actions/github-script@v7
         env:
           STATUS: ${{ job.status }}
@@ -95,18 +98,18 @@ jobs:
           VERIFY: ${{ steps.verify.outputs.outcome }}
         with:
           script: |
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: 46,
-              body: [
-                '## Editorial WordPress page-title hierarchy',
-                '',
-                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-                `Result: **${process.env.STATUS}**`,
-                `Scoped normalization: **${process.env.NORMALIZE || 'not-completed'}**`,
-                `Live verification: **${process.env.VERIFY || 'not-completed'}**`,
-                '',
-                'Scope is intentionally limited to Community and Gallery. V3 owns Home/Learn and V4 owns Genetics/Shop, so this workflow no longer rewrites pages controlled by those visual systems.'
-              ].join('\n')
-            });
+            const body = [
+              '## Editorial WordPress page-title hierarchy',
+              '',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Result: **${process.env.STATUS}**`,
+              `Scoped normalization: **${process.env.NORMALIZE || 'not-completed'}**`,
+              `Live verification: **${process.env.VERIFY || 'not-completed'}**`,
+              '',
+              'Scope is intentionally limited to Community and Gallery. V3 owns Home/Learn and V4 owns Genetics/Shop, so this workflow no longer rewrites pages controlled by those visual systems.'
+            ].join('\n');
+            try {
+              await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: 220, body });
+            } catch (error) {
+              core.warning(`Editorial-title advisory report could not be posted: ${error.message}`);
+            }
