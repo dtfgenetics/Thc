@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "spin-the-strain",
+  "title": "Spin the Strain",
+  "type": "browser-game",
+  "status": "browser-vertical-slice",
+  "route": "/games/spin-the-strain/",
+  "productionTarget": "https://dtfseeds.com",
+  "implementation": {
+    "data": "games/spin-the-strain/data/wheels.json",
+    "engine": "games/spin-the-strain/src/engine.mjs",
+    "validator": "games/spin-the-strain/scripts/validate-data.mjs",
+    "publicRoute": "site/public-route-patch/games/spin-the-strain/"
+  },
+  "releaseGates": {
+    "rulesTested": true,
+    "browserTested": false,
+    "mobileTested": false,
+    "accessibilityReviewed": false,
+    "originalArtCleared": true,
+    "deploymentRegistered": false
+  }
+}
