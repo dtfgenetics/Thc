@@ -13,7 +13,7 @@ if(!['reconcile','verify'].includes(mode)) throw new Error(`Unsupported LEARNING
 if(!username||!password) throw new Error('WP_API_USERNAME and WP_API_PASSWORD are required');
 
 const auth=`Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`;
-const headers={Authorization:auth,Accept:'application/json','User-Agent':'DTFSeeds-Learning-V3-Ownership/1.0'};
+const headers={Authorization:auth,Accept:'application/json','User-Agent':'DTFSeeds-Learning-V3-Ownership/1.1'};
 const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 const rendered=value=>typeof value==='string'?value:(value?.raw||value?.rendered||'');
 const normalizePath=value=>{
@@ -68,8 +68,33 @@ async function pageById(id){
   return request(`/wp-json/wp/v2/pages/${encodeURIComponent(id)}?context=edit`);
 }
 
-async function createPage(slug,title,parent){
-  if(!apply) throw new Error(`Missing published page ${slug}; APPLY_LEARNING_V3_OWNERSHIP is not true`);
+function routeSlug(route){
+  return normalizePath(route).split('/').filter(Boolean).pop()||'';
+}
+
+function pageSummary(page){
+  return {id:page.id,parent:Number(page.parent||0),slug:page.slug,link:page.link,status:page.status};
+}
+
+// "exactly one published WordPress owner" means exactly one owner inside the canonical parent
+// namespace / exact route. WordPress legitimately permits the same leaf slug under other parents.
+function canonicalMatches(candidates,parent,route){
+  const expectedParent=Number(parent||0);
+  const expectedRoute=normalizePath(route);
+  return candidates.filter(page=>Number(page.parent||0)===expectedParent||normalizePath(page.link)===expectedRoute);
+}
+
+async function requireCanonicalPage(slug,label,parent,route){
+  const candidates=await pagesBySlug(slug);
+  const canonical=canonicalMatches(candidates,parent,route);
+  if(canonical.length!==1){
+    throw new Error(`${label} must have exactly one published WordPress owner in canonical namespace ${normalizePath(route)} under parent ${parent}; found ${canonical.length}. All same-slug pages: ${JSON.stringify(candidates.map(pageSummary))}`);
+  }
+  return {page:canonical[0],namespacePeers:candidates.filter(page=>page.id!==canonical[0].id).map(pageSummary)};
+}
+
+async function createPage(slug,title,parent,route){
+  if(!apply) throw new Error(`Missing canonical published page ${route}; APPLY_LEARNING_V3_OWNERSHIP is not true`);
   try{
     return await request('/wp-json/wp/v2/pages',{
       method:'POST',
@@ -77,9 +102,9 @@ async function createPage(slug,title,parent){
       body:JSON.stringify({slug,title,parent,status:'publish',content:''})
     });
   }catch(error){
-    const recovered=await pagesBySlug(slug);
+    const recovered=canonicalMatches(await pagesBySlug(slug),parent,route);
     if(recovered.length===1) return recovered[0];
-    throw new Error(`Create ${slug} was ambiguous and could not be recovered safely: ${error.message}`);
+    throw new Error(`Create ${route} was ambiguous and could not be recovered safely: ${error.message}`);
   }
 }
 
@@ -97,71 +122,56 @@ async function updatePage(page,payload,label){
   });
 }
 
-function routeSlug(route){
-  return normalizePath(route).split('/').filter(Boolean).pop()||'';
-}
-
-async function requireSinglePublishedSlug(slug,label){
-  const candidates=await pagesBySlug(slug);
-  if(candidates.length!==1){
-    const details=candidates.map(page=>({id:page.id,parent:page.parent,link:page.link,status:page.status}));
-    throw new Error(`${label} must have exactly one published WordPress owner for slug ${slug}; found ${candidates.length}: ${JSON.stringify(details)}`);
-  }
-  return candidates[0];
-}
-
 const results=[];
+const learnRoute='/learn/';
 let learnCandidates=await pagesBySlug('learn');
+let learnCanonical=canonicalMatches(learnCandidates,0,learnRoute);
 let learn;
-if(learnCandidates.length===0){
-  learn=await createPage('learn','Teaching Healthy Cultivation',0);
-}else if(learnCandidates.length===1){
-  learn=learnCandidates[0];
+if(learnCanonical.length===0){
+  learn=await createPage('learn','Teaching Healthy Cultivation',0,learnRoute);
+}else if(learnCanonical.length===1){
+  learn=learnCanonical[0];
 }else{
-  const exact=learnCandidates.filter(page=>normalizePath(page.link)==='/learn/');
-  if(exact.length!==1) throw new Error(`Learn root has ambiguous published ownership: ${JSON.stringify(learnCandidates.map(page=>({id:page.id,parent:page.parent,link:page.link})))}`);
-  throw new Error(`Learn root has duplicate published slug owners even though page ${exact[0].id} owns /learn/; refusing nondeterministic V3 lookup.`);
+  throw new Error(`Learn root has multiple canonical published owners: ${JSON.stringify(learnCanonical.map(pageSummary))}`);
 }
 
 if(mode==='reconcile'&&(Number(learn.parent)!==0||learn.slug!=='learn'||learn.status!=='publish')){
   learn=await updatePage(learn,{parent:0,slug:'learn',status:'publish'},'learn');
 }
-learn=await requireSinglePublishedSlug('learn','Learn root');
-learn=await pageById(learn.id);
+let learnResolved=await requireCanonicalPage('learn','Learn root',0,learnRoute);
+learn=await pageById(learnResolved.page.id);
 if(Number(learn.parent)!==0) throw new Error(`Learn root ${learn.id} still has parent ${learn.parent}`);
-if(normalizePath(learn.link)!=='/learn/') throw new Error(`Learn root ${learn.id} permalink is ${learn.link}, expected ${siteUrl}/learn/`);
+if(normalizePath(learn.link)!==learnRoute) throw new Error(`Learn root ${learn.id} permalink is ${learn.link}, expected ${siteUrl}${learnRoute}`);
 if(mode==='verify'&&!rendered(learn.content).includes('data-dtf-layout="learn-v3"')) throw new Error(`Learn root ${learn.id} is missing stored learn-v3 marker`);
-results.push({kind:'learn',id:learn.id,slug:'learn',parent:learn.parent,route:'/learn/',storedMarker:mode==='verify'});
+results.push({kind:'learn',id:learn.id,slug:'learn',parent:learn.parent,route:learnRoute,storedMarker:mode==='verify',namespacePeers:learnResolved.namespacePeers});
 
 for(const topic of source.topics){
   const route=normalizePath(topic.route||'');
   const slug=routeSlug(route);
   if(!slug) throw new Error(`Topic ${topic.id} has no usable route`);
   let candidates=await pagesBySlug(slug);
+  let canonical=canonicalMatches(candidates,learn.id,route);
   let page;
-  if(candidates.length===0){
-    page=await createPage(slug,topic.title||topic.id,learn.id);
-  }else if(candidates.length===1){
-    page=candidates[0];
+  if(canonical.length===0){
+    page=await createPage(slug,topic.title||topic.id,learn.id,route);
+  }else if(canonical.length===1){
+    page=canonical[0];
   }else{
-    const exact=candidates.filter(candidate=>normalizePath(candidate.link)===route);
-    const details=candidates.map(candidate=>({id:candidate.id,parent:candidate.parent,link:candidate.link,status:candidate.status}));
-    if(exact.length===1) throw new Error(`${topic.id} has duplicate published slug owners; page ${exact[0].id} owns ${route}, but V3 lookup would remain nondeterministic: ${JSON.stringify(details)}`);
-    throw new Error(`${topic.id} has ambiguous published slug owners for ${slug}: ${JSON.stringify(details)}`);
+    throw new Error(`${topic.id} has multiple canonical published owners for ${route}: ${JSON.stringify(canonical.map(pageSummary))}`);
   }
 
   if(mode==='reconcile'&&(Number(page.parent)!==Number(learn.id)||page.slug!==slug||page.status!=='publish')){
     page=await updatePage(page,{parent:learn.id,slug,status:'publish'},topic.id);
   }
 
-  page=await requireSinglePublishedSlug(slug,topic.id);
-  page=await pageById(page.id);
+  const resolved=await requireCanonicalPage(slug,topic.id,learn.id,route);
+  page=await pageById(resolved.page.id);
   if(Number(page.parent)!==Number(learn.id)) throw new Error(`${topic.id} page ${page.id} parent is ${page.parent}; expected Learn ${learn.id}`);
   if(page.slug!==slug) throw new Error(`${topic.id} page ${page.id} slug is ${page.slug}; expected ${slug}`);
   if(normalizePath(page.link)!==route) throw new Error(`${topic.id} page ${page.id} permalink is ${page.link}; expected ${siteUrl}${route}`);
   const marker=`data-dtf-topic="${topic.id}"`;
   if(mode==='verify'&&!rendered(page.content).includes(marker)) throw new Error(`${topic.id} page ${page.id} is missing stored marker ${marker}`);
-  results.push({kind:'topic',topicId:topic.id,id:page.id,slug,parent:page.parent,route,storedMarker:mode==='verify'});
+  results.push({kind:'topic',topicId:topic.id,id:page.id,slug,parent:page.parent,route,storedMarker:mode==='verify',namespacePeers:resolved.namespacePeers});
 }
 
 const report={generatedAt:new Date().toISOString(),siteUrl,mode,apply,topicPath,learnPageId:learn.id,topicCount:source.topics.length,results};
