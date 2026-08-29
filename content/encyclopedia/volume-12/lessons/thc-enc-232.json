@@ -1,0 +1,57 @@
+{
+  "id":"THC-ENC-232",
+  "number":232,
+  "title":"CBCA Synthase and Minor Pathways",
+  "objective":"Place CBCA formation and minor cannabinoid pathways within an evidence hierarchy so compound detection, synthase sequence, enzyme activity, and non-enzymatic transformation are not treated as interchangeable proof.",
+  "terms":[
+    {"term":"CBCA","definition":"Cannabichromenic acid, an acidic cannabinoid formed from CBGA by CBCA-forming oxidocyclase activity."},
+    {"term":"CBCAS","definition":"Cannabichromenic-acid synthase, a cannabinoid oxidocyclase capable of converting CBGA toward CBCA."},
+    {"term":"enzyme promiscuity","definition":"The ability of an enzyme to act on more than one substrate or generate more than one product under some conditions."},
+    {"term":"minor cannabinoid","definition":"A cannabinoid occurring at lower abundance than dominant compounds in the declared sample; low abundance does not identify its biosynthetic mechanism."},
+    {"term":"analytical artifact","definition":"A signal or apparent compound identity produced or altered by sampling, preparation, instrument response, contamination, or data processing rather than faithfully representing the original tissue."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "CBCA-forming oxidocyclase activity converts CBGA toward cannabichromenic acid. Genetic and biochemical work identified a cannabis CBCAS gene and characterized catalytic activity, placing CBCA formation within the same broader oxidocyclase family as THCAS and CBDAS.",
+    "Cannabinoid oxidocyclases are evolutionarily related and can show product promiscuity in recombinant systems. Modern structure-function and ancestral-enzyme studies demonstrate that some oxidocyclase variants can generate mixtures of THCA, CBDA, CBCA, or other cannabinoid products rather than acting as perfectly exclusive one-product enzymes.",
+    "The presence of a minor cannabinoid does not by itself identify a dedicated biosynthetic gene. Low-level compounds can reflect dedicated enzyme activity, promiscuous enzymes, alternate precursors, developmental state, oxidation, decarboxylation, isomerization, photochemistry, storage, or analytical artifacts.",
+    "Cannabis synthase regions contain closely related genes and pseudogene-like sequences, which complicates annotation from sequence similarity alone. Functional claims should prioritize direct enzyme assays, validated expression and chemistry, and complete locus context over a short similarity match.",
+    "Chemical identification also has an evidence hierarchy. Retention time, authentic standards, mass spectra, fragmentation, quantitation limits, and replicate behavior matter when a rare or low-level cannabinoid is used to support a biological claim."
+  ],
+  "cultivationRelevance":[
+    "Treat CBCA and other minor cannabinoids as measured chemical traits rather than assuming they reveal one dedicated active gene.",
+    "When comparing minor-cannabinoid profiles, control tissue, developmental stage, position, storage, extraction, and analytical method because low-level signals are especially vulnerable to confounding.",
+    "Avoid breeding or marketing claims that describe a rare cannabinoid as genetically fixed without replicated inheritance, locus evidence, and validated chemistry.",
+    "Preserve unexpected minor peaks and investigate them with standards or orthogonal analytical evidence instead of automatically naming them from a library match."
+  ],
+  "measureAndRecord":[
+    {"field":"Compound identity","requirement":"Record authentic standard where available, retention data, mass-spectral or other orthogonal evidence, concentration, detection/quantitation limits, and uncertainty."},
+    {"field":"Biological sample","requirement":"Record genotype, tissue, plant and inflorescence position, developmental stage, harvest state, storage, and extraction method."},
+    {"field":"Synthase evidence","requirement":"Record gene or allele identity, locus context, expression, recombinant or purified-enzyme assay, substrates, products, and controls."},
+    {"field":"Mechanism class","requirement":"State whether a proposed origin is directly demonstrated enzymatic activity, association, heterologous reconstruction, chemical transformation, or inference."},
+    {"field":"Replicate and contamination control","requirement":"Retain blanks, standards, replicate samples, carryover checks, and raw data sufficient to audit a low-level analyte claim."
+    }
+  ],
+  "misconceptions":[
+    "Every minor cannabinoid has one known dedicated synthase.",
+    "Detecting CBCA alone proves a particular CBCAS allele is functional.",
+    "THCAS, CBDAS, and CBCAS are perfectly product-exclusive under every biochemical condition.",
+    "Every low-level chromatographic peak is a true plant metabolite.",
+    "A rare-cannabinoid result from one sample is enough to define a stable cultivar trait."
+  ],
+  "evidenceLimits":[
+    "CBCAS function is supported by genetic and catalytic studies, but the biosynthetic origin of many minor cannabinoids remains incomplete or partly non-enzymatic. Recombinant and ancestral-enzyme work also shows oxidocyclase promiscuity, so pathway diagrams should distinguish dominant activity from absolute specificity and should not assign a dedicated enzyme without direct evidence."
+  ],
+  "crossLinks":"THC-ENC-229–231 for CBGA, THCAS, and CBDAS; THC-ENC-233 for alternate side-chain cannabinoids; THC-ENC-234–236 for acid/neutral conversion and degradation; THC-ENC-240 for analytical claims discipline.",
+  "sourceNotes":[
+    "Grassa CJ et al. (2018). A physical and genetic map of Cannabis sativa identifies extensive rearrangements at the THC/CBD acid synthase loci. Genome Research 28:833–842. Identified the gene encoding CBCA synthase and characterized catalytic activity.",
+    "Zirpel B et al. (2018). Elucidation of structure-function relationship of THCA and CBDA synthase from Cannabis sativa L. Demonstrated that recombinant THCAS and CBDAS variants can generate multiple cannabinoid products including CBCA, supporting product-promiscuity boundaries.",
+    "Resurrected Ancestral Cannabis Enzymes Unveil the Origin and Functional Evolution of Cannabinoid Synthases (2025/2026 publication record). Ancestral oxidocyclase reconstruction found early promiscuous enzymes capable of producing THCA, CBDA, and CBCA, supporting an evolutionary model of later subfunctionalization.",
+    "The controlled Volume 12 manuscript requires minor-pathway claims to distinguish dedicated enzyme evidence, promiscuous catalysis, alternate precursors, chemical transformation, and analytical uncertainty."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 12 batch 03 controlled web derivative","driveSourceDocumentId":"1mrad4SysYqoD1-Z8A7ibF9PcnvRjs5qiPIOseYGRtUI","evidenceControl":"controlled_manuscript_plus_CBCAS_mapping_recombinant_promiscuity_and_oxidocyclase_evolution_sources","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_CBCAS_minor_pathways_and_analytical_identity","releaseTimeReview":"completed_2026-08-29_CBCAS_function_promiscuity_and_minor_pathway_claims","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"cbca-synthase-and-minor-pathways",
+  "route":"/encyclopedia/cbca-synthase-and-minor-pathways"
+}
