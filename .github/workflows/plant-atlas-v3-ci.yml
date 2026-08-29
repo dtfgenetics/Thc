@@ -1,0 +1,45 @@
+name: Validate THC Living Plant Atlas V3
+
+on:
+  pull_request:
+    paths:
+      - apps/growlens-web/public/atlas/**
+      - site/public-route-patch/atlas/**
+      - scripts/validate-plant-atlas-v3.mjs
+      - .github/workflows/plant-atlas-v3-ci.yml
+      - scripts/package-public-suite-wordpress.py
+  push:
+    branches: [main]
+    paths:
+      - apps/growlens-web/public/atlas/**
+      - site/public-route-patch/atlas/**
+      - scripts/validate-plant-atlas-v3.mjs
+      - .github/workflows/plant-atlas-v3-ci.yml
+      - scripts/package-public-suite-wordpress.py
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate Atlas JavaScript syntax
+        run: |
+          node --check apps/growlens-web/public/atlas/atlas-v3.js
+          node --check apps/growlens-web/public/atlas/module.js
+          node --check site/public-route-patch/atlas/atlas-v3.js
+          node --check site/public-route-patch/atlas/module.js
+          node --check scripts/validate-plant-atlas-v3.mjs
+      - name: Validate Atlas content, routes, mirrors, and deployment ownership
+        run: node scripts/validate-plant-atlas-v3.mjs
+      - name: Verify public-suite packaging still includes Atlas recursively
+        run: |
+          grep -Fq '"atlas",' scripts/package-public-suite-wordpress.py
+          grep -Fq '"assets/images/atlas",' scripts/package-public-suite-wordpress.py
+          grep -Fq '"atlas/index.html",' scripts/package-public-suite-wordpress.py
