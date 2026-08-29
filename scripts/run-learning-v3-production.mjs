@@ -127,5 +127,32 @@ if (!publisher.includes(originalHomeHero) && !publisher.includes(reviewedHomeHer
 }
 publisher = publisher.replace(originalHomeHero, reviewedHomeHero);
 
+// WordPress/LiteSpeed can briefly serve the pre-write topic page after the REST update. Keep the
+// visitor-facing requirement strict, but poll cache-busted public HTML before treating propagation
+// delay as a failed publication.
+const publicCheckPattern = /async function publicCheck\(path, marker\) \{[\s\S]*?\n\}\n\nconst home =/;
+if (!publicCheckPattern.test(publisher)) {
+  throw new Error('Could not locate the Learning V3 visitor verifier; refusing an unreviewed runtime patch.');
+}
+const resilientPublicCheck = [
+  'async function publicCheck(path, marker) {',
+  '  let last = { path, status: 0, marker, markerFound: false, bytes: 0 };',
+  '  for (let attempt = 1; attempt <= 7; attempt += 1) {',
+  "    const url = `${siteUrl}${path}${path.includes('?') ? '&' : '?'}dtf_v3=${Date.now()}-${crypto.randomBytes(3).toString('hex')}-${attempt}`;",
+  '    try {',
+  "      const response = await fetch(url, { redirect: 'follow', headers: { 'Cache-Control': 'no-cache, no-store, max-age=0', Pragma: 'no-cache', 'User-Agent': 'DTFSeeds-Learning-V3-Verify/1.1' }, signal: AbortSignal.timeout(45_000) });",
+  '      const html = await response.text();',
+  '      last = { path, status: response.status, marker, markerFound: html.includes(marker), bytes: html.length, attempt };',
+  '      if (last.status === 200 && last.markerFound) return last;',
+  '    } catch (error) {',
+  "      last = { path, status: 0, marker, markerFound: false, bytes: 0, attempt, error: error instanceof Error ? error.message : String(error) };",
+  '    }',
+  '    if (attempt < 7) await sleep(Math.min(7000, 1500 + attempt * 850));',
+  '  }',
+  '  return last;',
+  '}'
+].join('\n');
+publisher = publisher.replace(publicCheckPattern, `${resilientPublicCheck}\n\nconst home =`);
+
 await writeFile(normalizedPublisherPath, publisher);
 await import(pathToFileURL(normalizedPublisherPath).href);
