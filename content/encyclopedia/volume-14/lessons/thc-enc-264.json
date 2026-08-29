@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-264",
+  "number":264,
+  "title":"Necrosis, Scorching, and Margin Injury",
+  "objective":"Differentiate cannabis dead-tissue patterns by boundary, tissue age, exposure, water relation, root-zone history, chemical history, and progression rather than diagnosing every brown tip or margin as nutrient burn.",
+  "terms":[
+    {"term":"necrosis","definition":"Irreversible death of plant cells or tissue."},
+    {"term":"scorch","definition":"A descriptive term for dry, browned, or dead tissue commonly associated with excessive heat, radiation, desiccation, salts, or chemical injury but not specific to one mechanism."},
+    {"term":"margin injury","definition":"Damage concentrated at or near the leaf edge."},
+    {"term":"lesion","definition":"A localized area of visibly altered or damaged tissue; lesions can be abiotic or biotic in origin."},
+    {"term":"advancing margin","definition":"The visible boundary between damaged and apparently healthy tissue used to track progression over time."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Necrosis is tissue death, not a cause. It can begin at tips, margins, interveinal regions, isolated spots, contact surfaces, vascularly supplied sectors, wounds, or entire organs depending on where the damaging mechanism acts and how injury progresses.",
+    "Leaf tips and margins can be vulnerable when water delivery, root function, osmotic conditions, transpiration demand, heat, or ion accumulation become limiting. Similar edge injury can also follow chemical contact, spray concentration during drying, fan desiccation, fixture or hot-surface contact, cold injury, mechanical abrasion, pests, or pathogens.",
+    "The geometry of dead tissue is diagnostic evidence. Symmetric margin burn across many plants suggests a different hypothesis set than round droplet-sized spots, a one-sided fan-facing injury, a sharply bounded contact lesion, or irregular expanding lesions with visible pathogen signs.",
+    "Dead tissue cannot become living green tissue again. A successful correction is therefore judged by halted progression, stable roots and environment, and normal new growth rather than by expecting the necrotic area to reverse.",
+    "Necrotic lesions can be colonized secondarily after abiotic injury, and pathogens can also create primary necrosis. The presence of dead tissue alone cannot distinguish primary chemical/environmental injury from infectious disease."
+  ],
+  "cultivationRelevance":[
+    "Mark lesion boundaries and date standardized photographs so progression can be distinguished from static old damage.",
+    "Review irrigation, EC/pH, water chemistry, leaf temperature, light distribution, airflow, recent sprays/cleaning, and physical contact before assigning a cause.",
+    "Inspect both leaf surfaces, petioles, stems, roots, and nearby unaffected plants; preserve suspect tissue for diagnostics when lesions expand or show signs of infection.",
+    "Judge recovery by the absence of new injury and the quality of newly formed tissue, not by cosmetic changes in dead areas."
+  ],
+  "measureAndRecord":[
+    {"field":"Lesion geometry","requirement":"Record tip, margin, interveinal, spot, contact, sector, or whole-organ pattern; size; border; symmetry; leaf surface; and progression."},
+    {"field":"Tissue context","requirement":"Record leaf age, node, canopy position, orientation, nearby contact points, fixture/fan geometry, and whether distal tissues remain turgid."},
+    {"field":"Water/root-zone context","requirement":"Record substrate moisture distribution, irrigation, drainage, roots, pH/EC method, source water, salinity indicators, and temperature."},
+    {"field":"Exposure history","requirement":"Record light/leaf temperature, airflow, cold/heat events, spray or chemical history, cleaning, worker/equipment contact, and timing relative to symptom onset."},
+    {"field":"Biotic differential","requirement":"Record pest/sign inspection, lesion expansion, sporulation/exudate where present, laboratory diagnostics, and matched unaffected controls."
+    }
+  ],
+  "misconceptions":[
+    "Brown tips always mean nutrient burn.",
+    "Crisp leaf margins always prove underwatering.",
+    "A high EC reading proves the necrosis was caused by fertilizer concentration.",
+    "Necrotic tissue should turn green after the correction.",
+    "Dead spots are automatically fungal disease."
+  ],
+  "evidenceLimits":[
+    "Necrosis is a common endpoint shared by many abiotic and biotic mechanisms. Pattern, exposure history, root-zone evidence, progression, and diagnostics can increase confidence, but internal vascular injury or pathogen identity may require destructive inspection or laboratory testing."
+  ],
+  "crossLinks":"THC-ENC-261–263 for diagnostic workflow/chlorosis; THC-ENC-266 for water-related wilt; THC-ENC-268–270 for heat/cold/light injury; THC-ENC-274 for salinity; THC-ENC-277–279 for chemical/mechanical/spray injury; THC-ENC-301–320 for disease differentials.",
+  "sourceNotes":[
+    "Penn State Extension current plant-diagnostic guidance emphasizes symptom progression, spatial pattern, cultural history, and signs versus symptoms when differentiating abiotic and infectious causes.",
+    "Controlled Volume 14 source register integrates direct cannabis nutrient/root-zone evidence with plant-water, salinity, temperature, lighting, phytotoxicity, and wound literature to treat tip and margin injury as nonspecific endpoints rather than single-cause markers.",
+    "Controlled Volume 14 manuscript v1.0 requires containment of new injury and normal new growth as recovery criteria because necrotic tissue itself is irreversible."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 14 batch 01 controlled web derivative","driveSourceDocumentId":"1mbN8hq4g6jZUgW0bkwZBSXotPqZ7c184kOya5SqdtJA","evidenceControl":"controlled_manuscript_plus_extension_root_zone_environmental_and_injury_differential_sources","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_necrosis_scorch_margin_injury_and_differential_diagnosis","releaseTimeReview":"completed_2026-08-29_necrosis_endpoint_progression_and_recovery_boundaries","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"necrosis-scorching-and-margin-injury",
+  "route":"/encyclopedia/necrosis-scorching-and-margin-injury"
+}
