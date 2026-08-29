@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "id": "high-lines",
+  "title": "High Lines",
+  "type": "browser-game",
+  "status": "browser-vertical-slice",
+  "route": "/games/high-lines/",
+  "productionTarget": "https://dtfseeds.com",
+  "implementation": {
+    "data": "games/high-lines/data/scenes.json",
+    "engine": "games/high-lines/src/engine.mjs",
+    "assets": "games/high-lines/assets/",
+    "validator": "games/high-lines/scripts/validate-data.mjs",
+    "publicRoute": "site/public-route-patch/games/high-lines/"
+  },
+  "releaseGates": {
+    "rulesTested": false,
+    "browserTested": false,
+    "mobileTested": false,
+    "accessibilityReviewed": false,
+    "originalArtCleared": true,
+    "deploymentRegistered": false
+  }
+}
