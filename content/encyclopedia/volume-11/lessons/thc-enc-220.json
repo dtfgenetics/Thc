@@ -1,0 +1,54 @@
+{
+  "id":"THC-ENC-220",
+  "number":220,
+  "title":"Reproductive Records and Seed-Batch Documentation",
+  "objective":"Build a traceable reproductive record from parent identity and pollination through seed harvest, testing, storage, and progeny evaluation so biological observations remain connected to the correct seed lot.",
+  "terms":[
+    {"term":"accession","definition":"A uniquely identified genetic resource or plant material maintained with associated origin and history records."},
+    {"term":"seed lot","definition":"A defined quantity of seed maintained under one identity and documented handling history."},
+    {"term":"chain of identity","definition":"The continuous linkage of labels and records that preserves the identity of biological material as it moves through collection, handling, storage, testing, and use."},
+    {"term":"provenance","definition":"Documented origin and history of a biological sample or genetic resource."},
+    {"term":"traceability","definition":"The ability to reconstruct the origin, handling, testing, and movement of a sample or lot from retained records."}
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Reproductive data are only useful when they remain attached to the correct biological material. In cannabis, pollen mobility, heterozygosity, asynchronous seed maturation, and repeated handling steps make chain-of-identity errors a major source of avoidable uncertainty.",
+    "A complete breeding record distinguishes the seed parent from the pollen parent and links both to stable plant or accession identifiers. The cross record then follows the pollination event into seed maturation, harvest, cleaning, storage, germination testing, and progeny evaluation.",
+    "Seed-lot documentation should separate measured results from descriptive observations. Germination percentage, sample size, test date, storage temperature, seed count, and analytical results are measurements; labels such as 'good seeds,' 'stable,' or 'vigorous' are interpretations unless the criteria are explicitly defined.",
+    "Versioned records matter when a cross is repeated. Two seed batches from the same named parents but different pollination dates, pollen preparations, environments, or harvests are not automatically interchangeable experimental material and should retain distinct lot identifiers.",
+    "Traceability strengthens future breeding decisions because phenotypes can be connected back to a defined cross and seed lot. It also exposes uncertainty: if parent identity, contamination history, or sample continuity is unknown, the record should say so rather than silently converting uncertainty into pedigree fact."
+  ],
+  "cultivationRelevance":[
+    "Create the cross and lot identifiers before material begins moving between pollination, harvest, cleaning, storage, and germination stages.",
+    "Use redundant physical and digital labels so the loss of one tag or notebook entry does not erase the identity of a seed batch.",
+    "Keep repeated crosses and separate harvest dates as separate lots until there is a documented reason to combine them.",
+    "Record uncertainty explicitly; a pedigree with an unknown pollen exposure is more useful than a confident but unsupported parent label."
+  ],
+  "measureAndRecord":[
+    {"field":"Parent identities","requirement":"Record stable seed-parent and pollen-parent accession/clone IDs, source, and any relevant generation or pedigree designation."},
+    {"field":"Cross event","requirement":"Record unique cross ID, pollination date, pollen batch, receiving branch/plant, operator, containment method, and known contamination risks."},
+    {"field":"Seed harvest","requirement":"Record harvest date, source plant/branch, seed-lot ID, maturity observations, seed count or weight, and cleaning or sorting steps."},
+    {"field":"Storage","requirement":"Record container, storage location, temperature/humidity conditions where known, start date, movements, and subsamples removed."},
+    {"field":"Quality testing","requirement":"Record germination/viability method, sample size, date, result, laboratory or operator, and any treatment used before testing."},
+    {"field":"Progeny evaluation","requirement":"Link germinated plants back to the seed-lot ID and record population size, selection decisions, phenotype measurements, and retained/discarded individuals."}
+  ],
+  "misconceptions":[
+    "A strain name is enough information to preserve a breeding population's identity.",
+    "Two seed batches from the same parents are automatically the same experimental lot.",
+    "A successful germination test proves parentage.",
+    "Once seed is packaged, the pollination and harvest records are no longer needed.",
+    "Missing parentage or contamination information should be filled in from memory so the pedigree looks complete."
+  ],
+  "evidenceLimits":["Record systems do not eliminate biological variation or prove parentage by themselves. They preserve what was observed and intended. Molecular parentage testing, seed-quality testing, and chemical analysis answer different questions and should be linked to the lot record when used rather than being replaced by labels or recollection."],
+  "crossLinks":"THC-ENC-213 for controlled pollination and parent identity; THC-ENC-214 for stored pollen; THC-ENC-216 for seed maturation; THC-ENC-217 for reproductive-event logging; THC-ENC-381–400 for breeding and genetic conservation; THC-ENC-401–420 for measurement and research skills.",
+  "sourceNotes":[
+    "Cannabis pollen, seed-maturity, and breeding literature consistently shows that developmental stage, handling history, genotype, and environment influence reproductive outcomes; traceable lot records are required to separate those variables in later evaluation.",
+    "Yılmaz G, Yıldırım C, Gür ND. (2025). Determination of Germination and Emergence Performance of Hemp (Cannabis sativa L.) Seeds at Different Maturity Stages. Demonstrates why maturity state should be recorded rather than inferred after harvest.",
+    "Gaudet D et al. (2020). Development and Optimization of a Germination Assay and Long-Term Storage for Cannabis sativa Pollen. Demonstrates the importance of sample stage, preparation, storage history, and explicit viability testing in reproductive records.",
+    "Public documentation guidance distinguishes recorded identity from genetically verified parentage and keeps uncertainty visible."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 11 batch 04 controlled web derivative","evidenceControl":"current_topic_secondary_review_complete","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_reproductive_records_and_seed_lot_traceability","releaseTimeReview":"completed_2026-08-29_chain_of_identity_measurement_and_uncertainty_controls","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"reproductive-records-and-seed-batch-documentation",
+  "route":"/encyclopedia/reproductive-records-and-seed-batch-documentation"
+}
