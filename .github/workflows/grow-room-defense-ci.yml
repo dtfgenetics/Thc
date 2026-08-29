@@ -1,0 +1,70 @@
+name: Grow Room Defense CI
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - games/grow-room-defense/**
+      - site/public-route-patch/games/grow-room-defense/**
+      - .github/workflows/grow-room-defense-ci.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate IPM game data and public copy
+        run: node games/grow-room-defense/scripts/validate-data.mjs
+
+      - name: Run deterministic defense engine tests
+        run: node games/grow-room-defense/test/engine.test.mjs
+
+      - name: Validate browser JavaScript syntax
+        run: |
+          node --check site/public-route-patch/games/grow-room-defense/app.js
+          node --check site/public-route-patch/games/grow-room-defense/engine.mjs
+
+      - name: Verify canonical and public engine match
+        run: cmp games/grow-room-defense/src/engine.mjs site/public-route-patch/games/grow-room-defense/engine.mjs
+
+      - name: Verify route, asset and interaction contracts
+        run: |
+          node - <<'NODE'
+          const fs = require('fs');
+          const html = fs.readFileSync('site/public-route-patch/games/grow-room-defense/index.html','utf8');
+          const css = fs.readFileSync('site/public-route-patch/games/grow-room-defense/grow-room-defense.css','utf8');
+          const app = fs.readFileSync('site/public-route-patch/games/grow-room-defense/app.js','utf8');
+          const requireText = (source, text, label) => {
+            if (!source.includes(text)) throw new Error(`missing ${label}: ${text}`);
+          };
+          requireText(html, '<link rel="canonical" href="https://dtfseeds.com/games/grow-room-defense/">', 'canonical route');
+          requireText(html, '<script type="module" src="./app.js"></script>', 'module entrypoint');
+          requireText(html, 'Education boundary:', 'education boundary');
+          requireText(app, 'data.lanes?.length !== 3', 'lane contract');
+          requireText(app, 'data.threats?.length !== 8', 'threat contract');
+          requireText(app, 'data.tools?.length !== 7', 'tool contract');
+          requireText(app, 'class="plant-art"', 'CSS plant renderer');
+          requireText(css, '.plant-art', 'plant asset styles');
+          requireText(css, '@media(prefers-reduced-motion:reduce)', 'reduced-motion support');
+          if (app.includes('ui.code.disabled')) throw new Error('replay code input must remain available after game over');
+          NODE
+
+      - name: Verify truthful release boundary
+        run: |
+          node - <<'NODE'
+          const fs = require('fs');
+          const game = JSON.parse(fs.readFileSync('games/grow-room-defense/game.json','utf8'));
+          if (game.status !== 'browser-vertical-slice') throw new Error('unexpected game status');
+          if (game.route !== '/games/grow-room-defense/') throw new Error('unexpected route');
+          if (game.releaseGates.deploymentRegistered !== false) throw new Error('unreviewed game must not be production registered');
+          if (game.releaseGates.browserTested !== false) throw new Error('browserTested must remain false until browser QA is actually completed');
+          NODE
