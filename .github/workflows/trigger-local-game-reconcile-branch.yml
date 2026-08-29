@@ -1,0 +1,26 @@
+name: Trigger local-game reconciliation branch
+
+on:
+  push:
+    branches:
+      - release/reconcile-local-games
+    paths:
+      - .github/workflows/trigger-local-game-reconcile-branch.yml
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch guarded 25-game promotion at latest release branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh workflow run promote-missing-slate-release-surfaces-branch.yml \
+            --repo "$GITHUB_REPOSITORY" \
+            --ref release/reconcile-local-games
