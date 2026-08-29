@@ -111,6 +111,7 @@ jobs:
 
       - name: Report validation stage to issue 46
         if: always()
+        continue-on-error: true
         uses: actions/github-script@v7
         env:
           VALIDATION_STATUS: ${{ job.status }}
@@ -235,6 +236,7 @@ jobs:
 
       - name: Report production page deployment to issue 46
         if: always()
+        continue-on-error: true
         uses: actions/github-script@v7
         env:
           MUTATIONS: ${{ steps.publish.outputs.mutations }}
