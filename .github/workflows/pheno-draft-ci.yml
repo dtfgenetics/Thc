@@ -70,7 +70,7 @@ jobs:
           const game = JSON.parse(fs.readFileSync('games/pheno-draft/game.json','utf8'));
           if (game.status !== 'browser-vertical-slice') throw new Error('unexpected game status');
           if (game.route !== '/games/pheno-draft/') throw new Error('unexpected route');
-          if (game.releaseGates.rulesTested !== false) throw new Error('rulesTested must remain false until CI proves the deterministic rules suite');
+          if (game.releaseGates.rulesTested !== true) throw new Error('rulesTested must remain true after the deterministic rules suite passed');
           if (game.releaseGates.browserTested !== false) throw new Error('browserTested must remain false until browser QA is actually completed');
           if (game.releaseGates.mobileTested !== false) throw new Error('mobileTested must remain false until mobile QA is actually completed');
           if (game.releaseGates.accessibilityReviewed !== false) throw new Error('accessibilityReviewed must remain false until review is actually completed');
