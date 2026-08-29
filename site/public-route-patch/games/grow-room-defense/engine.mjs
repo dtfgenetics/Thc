@@ -118,7 +118,7 @@ export function activeThreats(state) {
   return state.lanes.flatMap((lane) => lane.threats.map((threat) => ({ ...threat, laneId: lane.id })));
 }
 
-export function applyAction(inputState, { toolId, laneId } = {}, data) {
+export function applyAction(inputState, { toolId, laneId, instanceId } = {}, data) {
   requireData(data);
   const state = clone(inputState);
   if (state.status !== 'playing') throw new Error('This defense run is already complete.');
@@ -131,16 +131,22 @@ export function applyAction(inputState, { toolId, laneId } = {}, data) {
   if (!tool) throw new Error(`Unknown defense tool: ${toolId}`);
 
   const threats = threatMap(data);
-  const target = lane.threats[0] ?? null;
+  const targetIndex = instanceId
+    ? lane.threats.findIndex((candidate) => candidate.instanceId === instanceId)
+    : (lane.threats.length ? 0 : -1);
+  if (instanceId && targetIndex < 0) throw new Error('That threat is no longer active on this bench.');
+  const target = targetIndex >= 0 ? lane.threats[targetIndex] : null;
   let quality = 'empty';
   let reduction = 0;
   let resolvedThreat = null;
   let targetThreatId = null;
+  let targetInstanceId = null;
 
   if (target) {
     const threat = threats.get(target.threatId);
     if (!threat) throw new Error(`Unknown active threat: ${target.threatId}`);
     targetThreatId = threat.id;
+    targetInstanceId = target.instanceId;
     quality = counterQuality(threat, tool);
     reduction = Math.min(target.pressure, counterPower(threat, tool));
     target.pressure -= reduction;
@@ -150,7 +156,7 @@ export function applyAction(inputState, { toolId, laneId } = {}, data) {
 
     if (target.pressure <= 0) {
       resolvedThreat = threat.id;
-      lane.threats.shift();
+      lane.threats.splice(targetIndex, 1);
       state.resolved += 1;
       state.score += 25;
     }
@@ -174,6 +180,7 @@ export function applyAction(inputState, { toolId, laneId } = {}, data) {
     laneId,
     toolId,
     threatId: targetThreatId,
+    instanceId: targetInstanceId,
     quality,
     reduction,
     resolvedThreat,
