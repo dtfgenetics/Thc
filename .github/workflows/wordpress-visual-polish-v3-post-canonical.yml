@@ -13,7 +13,6 @@ on:
 
 permissions:
   contents: read
-  issues: write
 
 concurrency:
   group: dtfseeds-wordpress-v3-post-canonical
@@ -89,13 +88,15 @@ jobs:
           verify '/' 'dtf-v3-spotlight'
           verify '/learn/' 'dtf-learning-v4'
           learn="$RUNNER_TEMP/_learn_.html"
-          grep -Fqi 'Start with the kind of answer you need.' "$learn"
-          grep -Fqi 'Build understanding in connected layers.' "$learn"
-          grep -Fqi '/learn/start-here/' "$learn"
-          grep -Fqi '/thc-grow-doc/' "$learn"
-          grep -Fqi '/learn/encyclopedia/' "$learn"
-          grep -Fqi '/learn/infographics/' "$learn"
+          grep -Fqi 'Start with the question you are trying to answer.' "$learn"
+          grep -Fqi 'See how the subjects connect before you go deep.' "$learn"
+          grep -Fqi 'data-dtf-learning-map="v4"' "$learn"
+          grep -Fqi '/learn/plant-biology/' "$learn"
+          grep -Fqi '/learn/environment-vpd/' "$learn"
           grep -Fqi '/learn/water-ph-ec/' "$learn"
+          grep -Fqi '/learn/training-canopy/' "$learn"
+          grep -Fqi '/learn/ipm/' "$learn"
+          grep -Fqi '/learn/harvest-postharvest/' "$learn"
           home="$RUNNER_TEMP/_.html"
           grep -Fqi 'dtf-shell-header' "$home"
           grep -Fqi 'dtf-shell-footer' "$home"
@@ -112,28 +113,25 @@ jobs:
             ${{ runner.temp }}/dtf-v3-post-canonical
           if-no-files-found: warn
           retention-days: 30
-      - name: Report V3 post-canonical result
+      - name: Summarize V3 post-canonical result
         if: always()
-        continue-on-error: true
-        uses: actions/github-script@v7
         env:
           STATUS: ${{ job.status }}
           APPLY: ${{ steps.apply.outcome }}
           CASCADE: ${{ steps.cascade.outcome }}
           LEARNING: ${{ steps.learning.outcome }}
           VERIFY: ${{ steps.verify.outcome }}
-        with:
-          script: |
-            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body:[
-              '## DTFSeeds V3 post-canonical visual deployment','',
-              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-              `Result: **${process.env.STATUS}**`,
-              `V3 presentation write: **${process.env.APPLY || 'not-run'}**`,
-              `Final cascade ordering: **${process.env.CASCADE || 'not-run'}**`,
-              `Learning V4 hierarchy: **${process.env.LEARNING || 'not-run'}**`,
-              `Live visual verification: **${process.env.VERIFY || 'not-run'}**`,
-              '',
-              'This workflow runs after the canonical WordPress publisher so the canonical rebuild cannot overwrite the final V3 visitor-facing visual layer. Learning V4 is applied after the V3 cascade so its guided hierarchy remains the final Learn-page structure.'
-            ].join('\n')});
+        run: |
+          {
+            echo '## DTFSeeds V3 post-canonical visual deployment'
+            echo
+            echo "- Result: **${STATUS}**"
+            echo "- V3 presentation write: **${APPLY:-not-run}**"
+            echo "- Final cascade ordering: **${CASCADE:-not-run}**"
+            echo "- Learning V4 hierarchy: **${LEARNING:-not-run}**"
+            echo "- Live visual verification: **${VERIFY:-not-run}**"
+            echo
+            echo 'Learning V4 is applied after the V3 cascade so its connected learning map remains the final Learn-page structure.'
+          } >> "$GITHUB_STEP_SUMMARY"
 
-# Production trigger: 2026-08-28 align Tools and final Learn hierarchy
+# Production trigger: 2026-08-28 current Learn V3 learning-map hotfix
