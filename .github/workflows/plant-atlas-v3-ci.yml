@@ -32,14 +32,19 @@ jobs:
       - name: Validate Atlas JavaScript syntax
         run: |
           node --check apps/growlens-web/public/atlas/atlas-v3.js
+          node --check apps/growlens-web/public/atlas/atlas-3d.js
           node --check apps/growlens-web/public/atlas/module.js
           node --check site/public-route-patch/atlas/atlas-v3.js
+          node --check site/public-route-patch/atlas/atlas-3d.js
           node --check site/public-route-patch/atlas/module.js
           node --check scripts/validate-plant-atlas-v3.mjs
-      - name: Validate Atlas content, routes, mirrors, and deployment ownership
+      - name: Validate Atlas content, 3D interaction, routes, mirrors, and deployment ownership
         run: node scripts/validate-plant-atlas-v3.mjs
-      - name: Verify public-suite packaging still includes Atlas recursively
+      - name: Verify public-suite packaging requires the interactive Atlas runtime
         run: |
           grep -Fq '"atlas",' scripts/package-public-suite-wordpress.py
           grep -Fq '"assets/images/atlas",' scripts/package-public-suite-wordpress.py
           grep -Fq '"atlas/index.html",' scripts/package-public-suite-wordpress.py
+          grep -Fq '"atlas/atlas-3d.js",' scripts/package-public-suite-wordpress.py
+          grep -Fq '"atlas/atlas-v3.js",' scripts/package-public-suite-wordpress.py
+          grep -Fq '"atlas/data/systems.json",' scripts/package-public-suite-wordpress.py
