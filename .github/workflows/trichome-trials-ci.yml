@@ -72,7 +72,7 @@ jobs:
           const game = JSON.parse(fs.readFileSync('games/trichome-trials/game.json','utf8'));
           if (game.status !== 'browser-vertical-slice') throw new Error('unexpected game status');
           if (game.route !== '/games/trichome-trials/') throw new Error('unexpected route');
-          if (game.releaseGates.rulesTested !== false) throw new Error('rulesTested must remain false until this deterministic suite passes');
+          if (game.releaseGates.rulesTested !== true) throw new Error('deterministic rules suite must be recorded as tested');
           if (game.releaseGates.browserTested !== false) throw new Error('browserTested must remain false until browser QA is actually completed');
           if (game.releaseGates.mobileTested !== false) throw new Error('mobileTested must remain false until mobile QA is actually completed');
           if (game.releaseGates.accessibilityReviewed !== false) throw new Error('accessibilityReviewed must remain false until review is actually completed');
