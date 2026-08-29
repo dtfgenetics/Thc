@@ -278,7 +278,7 @@ payload = replace_once(
 payload = replace_once(
     payload,
     b"['/tools/', 'Practical tools built around observation, records, and evidence.']",
-    b"['/tools/', 'Measure it. Document it. Diagnose with context.']",
+    b"['/tools/', 'Grow with records. Diagnose with evidence.']",
     "Tools live-verification marker",
 )
 payload = replace_once(
