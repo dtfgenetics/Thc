@@ -1,0 +1,174 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Additive literature modules for subjects that need more depth without replacing the canonical base catalog.",
+  "updated": "2026-08-29",
+  "expansions": [
+    {
+      "topicId": "lighting",
+      "minimumSectionsAfterMerge": 9,
+      "keywords": [
+        "quantum sensor",
+        "spectroradiometer",
+        "cosine response",
+        "light map",
+        "coefficient of variation",
+        "light response curve",
+        "photoinhibition",
+        "dynamic lighting",
+        "extended PAR",
+        "ePAR"
+      ],
+      "sections": [
+        {
+          "heading": "From single readings to canopy light maps",
+          "paragraphs": [
+            "A single PPFD value answers a local question at one position and one moment. A canopy-level lighting assessment uses a defined measurement grid so the center, edges, fixture-overlap zones, and height differences are represented. The grid spacing, sensor orientation, crop-plane height, fixture state, and surrounding reflective surfaces should be recorded because changing any of them can change the map.",
+            "Summaries such as the mean, minimum, maximum, range, and coefficient of variation can describe the distribution, but no one statistic replaces the map. Two canopies can have the same average PPFD while differing greatly in low-light and high-light zones, which can produce different leaf temperatures, water demand, morphology, and growth patterns."
+          ],
+          "checkpoints": [
+            "Define the measurement grid before collecting values.",
+            "Keep sensor height, orientation, and fixture state consistent across the grid.",
+            "Preserve the individual readings instead of storing only an average.",
+            "Re-map after major changes in canopy height, fixture position, or room geometry."
+          ]
+        },
+        {
+          "heading": "DLI is an integral, not a complete prescription",
+          "paragraphs": [
+            "Daily light integral adds the photosynthetic photon flux received over time. Under constant PPFD, DLI can be calculated from PPFD and photoperiod, but equal DLI does not guarantee identical plant responses. The same daily photon total can be delivered with different intensities, photoperiods, interruptions, or fluctuations, and plants can respond differently because photosynthesis, stomatal behavior, acclimation, morphology, and photoperiodic signaling are time-dependent processes.",
+            "This is why DLI is best used as a daily exposure metric rather than a universal recipe. When comparing lighting strategies, record PPFD distribution, photoperiod, timing pattern, spectrum, crop stage, and environment in addition to the final DLI."
+          ],
+          "checkpoints": [
+            "Keep the actual photoperiod beside every DLI value.",
+            "Do not assume two treatments with equal DLI are biologically equivalent.",
+            "Document whether light was constant, stepped, intermittent, or dynamically controlled.",
+            "Compare plant response with both daily dose and delivery pattern."
+          ]
+        },
+        {
+          "heading": "Sensor choice, spectral response, and measurement limits",
+          "paragraphs": [
+            "A quantum sensor estimates photon flux over a defined spectral response and is appropriate for many PPFD measurements, but instruments are not interchangeable. Cosine response, calibration, spectral response, temperature sensitivity, diffuser cleanliness, orientation, and sensor age can affect measurements. A sensor designed around conventional photosynthetically active radiation may not fully characterize ultraviolet or far-red treatments.",
+            "When the research question depends on spectral distribution rather than total photon flux, a spectroradiometer or another wavelength-resolved instrument may be needed. The measurement record should identify the instrument and what spectral range it actually measures instead of treating every light meter as equivalent."
+          ],
+          "checkpoints": [
+            "Record sensor make, model, calibration status, and spectral range.",
+            "Keep the sensing surface level and unobstructed when the method requires it.",
+            "Use wavelength-resolved measurements for claims about spectrum.",
+            "Do not compare readings from different instrument types without checking their response characteristics."
+          ]
+        },
+        {
+          "heading": "Light-response curves, acclimation, and photoinhibition",
+          "paragraphs": [
+            "Net photosynthesis generally rises as photon flux increases from darkness, passes the light-compensation region, and eventually approaches a saturation region where another process becomes limiting. The location and shape of this response are not fixed constants for an entire species; leaf age, previous light environment, carbon dioxide, temperature, water status, nutrition, and genetics can shift the response.",
+            "When absorbed light exceeds the capacity for productive photochemistry, plants dissipate excess excitation through protective processes such as non-photochemical quenching. Persistent excess can contribute to photoinhibition and photo-oxidative stress. Diagnosing this requires more than a bright-light reading: exposure pattern, leaf temperature, water status, spatial symptoms, and recovery after a controlled change strengthen the interpretation."
+          ],
+          "checkpoints": [
+            "Treat published saturation values as context-specific measurements, not universal thresholds.",
+            "Compare high-light symptoms with leaf temperature and water status.",
+            "Distinguish short-term protective energy dissipation from persistent injury.",
+            "Track whether new growth and photosynthetic performance recover after a controlled exposure change."
+          ]
+        }
+      ],
+      "references": [
+        {
+          "title": "How the Distribution of Photon Delivery Impacts Crops in Indoor Plant Environments: A Review",
+          "year": 2023,
+          "doi": "10.3390/su15054645",
+          "note": "Reviews equal-DLI treatments delivered through different intensity and photoperiod schedules and shows that delivery pattern can alter crop response."
+        },
+        {
+          "title": "Light emitting diode (LED) lights for the improvement of plant performance and production: A comprehensive review",
+          "year": 2024,
+          "doi": "10.1016/j.crbiot.2024.100184",
+          "note": "Reviews interactions among light quantity, spectrum, photoperiod, plant development, and environmental factors."
+        },
+        {
+          "title": "Daily Light Integral Defined",
+          "organization": "Michigan State University",
+          "note": "Foundational extension explanation of DLI as accumulated photosynthetic light."
+        }
+      ]
+    },
+    {
+      "topicId": "research-measurement",
+      "minimumSectionsAfterMerge": 9,
+      "keywords": [
+        "control treatment",
+        "randomization",
+        "blocking",
+        "effect size",
+        "variability",
+        "time series",
+        "metadata",
+        "reproducibility",
+        "data integrity",
+        "confounding"
+      ],
+      "sections": [
+        {
+          "heading": "Controls, randomization, and blocking",
+          "paragraphs": [
+            "A comparison becomes easier to interpret when it includes an appropriate control or reference condition. The control establishes what happened without the tested change under the same general period and environment. Without it, a before-and-after difference can be confused with normal plant development, weather, equipment drift, or another simultaneous change.",
+            "Randomization reduces systematic placement bias by preventing the researcher from intentionally or unintentionally assigning one treatment to the most favorable positions. Blocking can improve comparisons when a known gradient exists, such as distance from a light source, irrigation zone, bench position, or outdoor slope. Treatments are then compared within blocks that share similar background conditions."
+          ],
+          "checkpoints": [
+            "Define the control or reference condition before the trial starts.",
+            "Randomize treatment assignment when the design allows it.",
+            "Use blocks when a known spatial or environmental gradient could confound the treatment.",
+            "Record the assignment method so the design can be audited later."
+          ]
+        },
+        {
+          "heading": "Effect size, variability, and practical importance",
+          "paragraphs": [
+            "A difference between treatments has at least two separate questions: how large is the observed effect, and how uncertain is that estimate? Reporting only whether a statistical test crosses a threshold can hide the size and variability of the response. Raw measurements, treatment summaries, spread, sample size, and an interval estimate provide more information about what the data can support.",
+            "Practical importance is also contextual. A small average change may matter if it is repeatable, inexpensive, and linked to an important outcome, while a larger but highly variable change may be unreliable. The decision should connect magnitude, uncertainty, biological meaning, cost, risk, and repeatability rather than reducing evidence to one p-value."
+          ],
+          "checkpoints": [
+            "Report the direction and magnitude of the observed difference.",
+            "Keep variability and sample size beside treatment averages.",
+            "Separate statistical evidence from biological or operational importance.",
+            "Preserve null and negative findings so future decisions are not biased toward memorable successes."
+          ]
+        },
+        {
+          "heading": "Time series, baselines, and change attribution",
+          "paragraphs": [
+            "Plant systems change through time even when management is stable. A useful baseline therefore contains enough observations to show the normal direction and variability before an intervention. One measurement immediately before and one immediately after a change can miss delayed responses, daily cycles, sensor noise, acclimation, and developmental trends.",
+            "Time-series records are strongest when measurement timing and methods remain consistent and when important external events are timestamped. Irrigation, pruning, transplanting, equipment changes, environmental excursions, pest treatments, and developmental transitions can all alter the trajectory and should be visible on the same timeline."
+          ],
+          "checkpoints": [
+            "Collect a meaningful baseline before changing the system when possible.",
+            "Keep sampling time and method consistent across the comparison.",
+            "Timestamp interventions and environmental excursions.",
+            "Look for sustained trajectory changes rather than reacting to one noisy point."
+          ]
+        },
+        {
+          "heading": "Reproducibility, metadata, and data integrity",
+          "paragraphs": [
+            "A result is more useful when another person can understand how it was produced. Metadata should preserve plant or batch identity, location, date and time, developmental stage, treatment definition, instrument, calibration state, units, sampling method, environmental context, and any deviations from the planned method. This information often determines whether two datasets can legitimately be compared.",
+            "Data integrity means preserving raw observations, corrections, exclusions, and transformations transparently. Do not silently overwrite a surprising value because it looks wrong. Flag it, investigate the instrument or method, repeat the measurement when appropriate, and retain the original record with the reason for any exclusion or correction."
+          ],
+          "checkpoints": [
+            "Use stable IDs for plants, treatments, samples, and instruments.",
+            "Preserve raw data before calculations or cleaning.",
+            "Document exclusions and corrections instead of deleting their history.",
+            "Store enough method detail that a later reader can reproduce the measurement."
+          ]
+        }
+      ],
+      "references": [
+        {
+          "title": "How to do research on your farm",
+          "organization": "University of Minnesota Extension",
+          "reviewed": 2022,
+          "note": "Extension guidance emphasizing controls, randomization, true replication, avoidance of pseudoreplication, and limits on extrapolation."
+        }
+      ]
+    }
+  ]
+}
