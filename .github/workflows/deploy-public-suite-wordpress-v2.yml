@@ -7,6 +7,7 @@ on:
     paths:
       - .github/deploy-public-suite-v2-trigger.txt
       - .github/workflows/deploy-public-suite-wordpress-v2.yml
+      - .github/workflows/game-release-integrity.yml
       - apps/high-land-web/**
       - apps/growlens-web/**
       - games/high-iq/**
@@ -275,14 +276,37 @@ jobs:
         run: |
           set -euo pipefail
           check() {
-            local url="$1" marker="$2" body
+            local url="$1" marker="$2" body headers status
             echo "Checking $url"
-            body="$(curl -fsSL --retry 5 --retry-delay 5 \
+            body="$(mktemp)"
+            headers="$(mktemp)"
+            status="$(curl -fsS --retry 5 --retry-delay 5 \
+              --output "$body" \
+              --dump-header "$headers" \
+              --write-out '%{http_code}' \
               -H 'Cache-Control: no-cache, no-store, max-age=0' \
               "$url?dtf_suite_verify=${GITHUB_RUN_ID}")"
-            grep -Fqi "$marker" <<<"$body"
+            if [[ "$status" != "200" ]]; then
+              echo "Expected HTTP 200 from $url, received $status" >&2
+              cat "$headers" >&2
+              rm -f "$body" "$headers"
+              return 1
+            fi
+            if grep -Eiq '^location:' "$headers"; then
+              echo "Refusing redirected public application route: $url" >&2
+              cat "$headers" >&2
+              rm -f "$body" "$headers"
+              return 1
+            fi
+            if ! grep -Fqi "$marker" "$body"; then
+              echo "Expected marker '$marker' was not found at $url" >&2
+              rm -f "$body" "$headers"
+              return 1
+            fi
+            rm -f "$body" "$headers"
           }
           check 'https://dtfseeds.com/games/' '15 playable browser games'
+          check 'https://dtfseeds.com/projects/' '15 public browser games'
           check 'https://dtfseeds.com/games/high-iq/' 'Build your High IQ run'
           check 'https://dtfseeds.com/games/strain-showdown/' 'Eight play styles. One showdown.'
           check 'https://dtfseeds.com/games/protect-the-plants/' 'Protect the Plants'
@@ -336,5 +360,6 @@ jobs:
             echo '- Terpocalypse must package validated browser runtime JavaScript from the integration snapshot.'
             echo '- High IQ verification requires the upgraded challenge console plus the complete v2.2 80-question / 50-source production bank.'
             echo '- Strain Showdown verification requires the packaged browser runtime, synchronized 96-card roster, and live three-lane game route.'
+            echo '- Public application checks require HTTP 200 without redirects and include the current Projects release-count fingerprint.'
             echo '- WordPress-owned /, /learn/, and /blog/ remain outside this app-only transaction.'
           } >> "$GITHUB_STEP_SUMMARY"
