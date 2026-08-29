@@ -233,6 +233,7 @@ jobs:
 
       - name: Report independent verification to issue 46
         if: always()
+        continue-on-error: true
         uses: actions/github-script@v7
         env:
           PROBE_OUTCOME: ${{ steps.probe.outcome }}
