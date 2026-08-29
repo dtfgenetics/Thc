@@ -6,6 +6,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/wordpress-visual-polish-v3-post-canonical.yml'
+      - 'scripts/improve-wordpress-learning-v4.mjs'
   workflow_run:
     workflows: ['Publish DTFSeeds WordPress Production']
     types: [completed]
@@ -47,6 +48,7 @@ jobs:
           test -n "${WP_API_PASSWORD:-}"
           node --check scripts/polish-wordpress-visual-site-v3.mjs
           node --check scripts/fix-wordpress-visual-polish-v3-cascade.mjs
+          node --check scripts/improve-wordpress-learning-v4.mjs
       - name: Apply V3 after canonical WordPress publication
         id: apply
         env:
@@ -61,7 +63,15 @@ jobs:
         run: |
           set -euo pipefail
           node scripts/fix-wordpress-visual-polish-v3-cascade.mjs
-      - name: Verify live V3 presentation
+      - name: Improve Learn information hierarchy
+        id: learning
+        env:
+          APPLY_LEARNING_V4: 'true'
+          BACKUP_ROOT: ${{ runner.temp }}/dtf-v3-post-canonical/learning-v4
+        run: |
+          set -euo pipefail
+          node scripts/improve-wordpress-learning-v4.mjs
+      - name: Verify live V3 presentation and Learning V4 hierarchy
         id: verify
         run: |
           set -euo pipefail
@@ -74,22 +84,32 @@ jobs:
               if grep -Fqi 'dtf-visual-polish-v3' "$body" && grep -Fqi "$marker" "$body"; then ok=1; break; fi
               sleep 7
             done
-            [[ "$ok" -eq 1 ]] || { echo "V3 not visible on $path" >&2; exit 1; }
+            [[ "$ok" -eq 1 ]] || { echo "Required visual layer not visible on $path: $marker" >&2; exit 1; }
           }
           verify '/' 'dtf-v3-spotlight'
-          verify '/learn/' 'Learn the plant as a connected system.'
+          verify '/learn/' 'dtf-learning-v4'
+          learn="$RUNNER_TEMP/_learn_.html"
+          grep -Fqi 'Start with the kind of answer you need.' "$learn"
+          grep -Fqi 'Build understanding in connected layers.' "$learn"
+          grep -Fqi '/learn/start-here/' "$learn"
+          grep -Fqi '/thc-grow-doc/' "$learn"
+          grep -Fqi '/learn/encyclopedia/' "$learn"
+          grep -Fqi '/learn/infographics/' "$learn"
+          grep -Fqi '/learn/water-ph-ec/' "$learn"
           home="$RUNNER_TEMP/_.html"
           grep -Fqi 'dtf-shell-header' "$home"
           grep -Fqi 'dtf-shell-footer' "$home"
           grep -Fqi 'DTF Genetics cannabis leaf' "$home"
           grep -Fqi '/games/' "$home"
           grep -Fqi '/tools/' "$home"
-      - name: Upload V3 rollback package
+      - name: Upload V3 and Learning V4 rollback package
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: dtf-v3-post-canonical-backup-${{ github.run_id }}
-          path: ${{ runner.temp }}/dtf-v3-post-canonical
+          path: |
+            /tmp/dtf-v3-post-canonical
+            ${{ runner.temp }}/dtf-v3-post-canonical
           if-no-files-found: warn
           retention-days: 30
       - name: Report V3 post-canonical result
@@ -100,6 +120,7 @@ jobs:
           STATUS: ${{ job.status }}
           APPLY: ${{ steps.apply.outcome }}
           CASCADE: ${{ steps.cascade.outcome }}
+          LEARNING: ${{ steps.learning.outcome }}
           VERIFY: ${{ steps.verify.outcome }}
         with:
           script: |
@@ -109,9 +130,10 @@ jobs:
               `Result: **${process.env.STATUS}**`,
               `V3 presentation write: **${process.env.APPLY || 'not-run'}**`,
               `Final cascade ordering: **${process.env.CASCADE || 'not-run'}**`,
-              `Live V3 verification: **${process.env.VERIFY || 'not-run'}**`,
+              `Learning V4 hierarchy: **${process.env.LEARNING || 'not-run'}**`,
+              `Live visual verification: **${process.env.VERIFY || 'not-run'}**`,
               '',
-              'This workflow runs after the canonical WordPress publisher so the canonical rebuild cannot overwrite the final V3 visitor-facing visual layer.'
+              'This workflow runs after the canonical WordPress publisher so the canonical rebuild cannot overwrite the final V3 visitor-facing visual layer. Learning V4 is applied after the V3 cascade so its guided hierarchy remains the final Learn-page structure.'
             ].join('\n')});
 
-# Production trigger: 2026-08-23 restore V3 ownership before final Learn hierarchy
+# Production trigger: 2026-08-28 align Tools and final Learn hierarchy
