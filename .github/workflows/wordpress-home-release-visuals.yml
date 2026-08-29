@@ -73,48 +73,53 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          node - <<'NODE'
+          body="$RUNNER_TEMP/home-release-visuals-public.html"
+          result="$RUNNER_TEMP/home-release-visuals-public-result.json"
+          : > "$result"
+          ok=0
+
+          for attempt in 1 2 3 4 5 6 7 8; do
+            if curl -4 --fail --silent --show-error --location \
+              --retry 2 --retry-delay 2 \
+              --connect-timeout 20 --max-time 45 \
+              --header 'Cache-Control: no-cache, no-store, max-age=0' \
+              --header 'Pragma: no-cache' \
+              --header 'User-Agent: DTFSeeds-Release-Visual-Verify/1.2' \
+              "$WP_SITE_URL/?dtf_release_visuals=${GITHUB_RUN_ID}-${attempt}-$(date +%s%N)" \
+              --output "$body"; then
+              if node - "$body" "$attempt" > "$result" <<'NODE'
           const fs = require('node:fs');
-          const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-          (async () => {
-            const registry = JSON.parse(fs.readFileSync('site/wordpress/products/strain-card-images.json', 'utf8'));
-            let last = null;
-            for (let attempt = 1; attempt <= 8; attempt += 1) {
-              const url = `https://dtfseeds.com/?dtf_release_visuals=${Date.now()}-${attempt}`;
-              try {
-                const response = await fetch(url, {
-                  headers: {
-                    'Cache-Control': 'no-cache, no-store, max-age=0',
-                    Pragma: 'no-cache',
-                    'User-Agent': 'DTFSeeds-Release-Visual-Verify/1.1'
-                  },
-                  redirect: 'follow',
-                  signal: AbortSignal.timeout(45_000)
-                });
-                const html = await response.text();
-                const start = html.indexOf('Current releases');
-                const end = html.indexOf('Teaching Healthy Cultivation', start + 1);
-                const section = start >= 0 && end > start ? html.slice(start, end) : '';
-                const classCount = (section.match(/dtf-release-card-image/g) || []).length;
-                const routesOk = registry.cards.every((card) => section.includes(`/product/${card.productSlug}/`));
-                const altOk = registry.cards.every((card) => section.includes(card.altText));
-                const portraitOk = section.includes('aspect-ratio:2/3') && section.includes('object-fit:contain');
-                last = { attempt, status: response.status, classCount, routesOk, altOk, portraitOk };
-                if (response.ok && classCount === registry.cards.length && routesOk && altOk && portraitOk) {
-                  console.log(`Verified ${registry.cards.length} exact portrait strain cards on public homepage on attempt ${attempt}.`);
-                  return;
-                }
-              } catch (error) {
-                last = { attempt, error: error instanceof Error ? error.message : String(error) };
-              }
-              if (attempt < 8) await sleep(Math.min(8000, 1500 + attempt * 900));
-            }
-            throw new Error(`Homepage release artwork did not converge after cache purge: ${JSON.stringify(last)}`);
-          })().catch((error) => {
-            console.error(error);
-            process.exit(1);
-          });
+          const html = fs.readFileSync(process.argv[2], 'utf8');
+          const attempt = Number(process.argv[3]);
+          const registry = JSON.parse(fs.readFileSync('site/wordpress/products/strain-card-images.json', 'utf8'));
+          const start = html.indexOf('Current releases');
+          const end = html.indexOf('Teaching Healthy Cultivation', start + 1);
+          const section = start >= 0 && end > start ? html.slice(start, end) : '';
+          const classCount = (section.match(/dtf-release-card-image/g) || []).length;
+          const routesOk = registry.cards.every(card => section.includes(`/product/${card.productSlug}/`));
+          const altOk = registry.cards.every(card => section.includes(card.altText));
+          const portraitOk = section.includes('aspect-ratio:2/3') && section.includes('object-fit:contain');
+          const headingOk = section.includes('Current releases, shown with the real strain cards.');
+          const result = { attempt, bytes: html.length, sectionBytes: section.length, classCount, routesOk, altOk, portraitOk, headingOk };
+          console.log(JSON.stringify(result));
+          if (!(classCount === registry.cards.length && routesOk && altOk && portraitOk && headingOk)) process.exit(1);
           NODE
+              then
+                cat "$result"
+                ok=1
+                break
+              fi
+            fi
+            cat "$result" 2>/dev/null || true
+            if [[ "$attempt" -lt 8 ]]; then sleep $((attempt + 2)); fi
+          done
+
+          [[ "$ok" -eq 1 ]] || {
+            echo 'Homepage release artwork did not converge after cache purge using the IPv4 visitor path.' >&2
+            cat "$result" >&2 || true
+            grep -oiE 'Current releases[^<]{0,180}|Blue Mango[^<]{0,180}|Blue Bubblegum[^<]{0,180}|dtf-release-card-image' "$body" | head -80 >&2 || true
+            exit 1
+          }
 
       - name: Report homepage release visual reconciliation
         if: always()
@@ -125,7 +130,7 @@ jobs:
         with:
           script: |
             const source = context.eventName === 'workflow_call'
-              ? 'Learning Experience V3 reusable-workflow handoff'
+              ? 'serialized Learning final-owner reusable handoff'
               : 'manual dispatch';
             const body = [
               '## Homepage release-card visual reconciliation',
@@ -134,7 +139,7 @@ jobs:
               `Result: **${process.env.STATUS}**`,
               `Source: ${source}`,
               '',
-              'This final-owner guard is called directly from Learning Experience V3, maps the three current homepage release cards to the exact reviewed WordPress strain-card media from strain-card-images.json, preserves the 2:3 portrait artwork without cropping, purges Hostinger/LiteSpeed, and polls the cache-busted public homepage until the final artwork is visible or the strict verification window expires.'
+              'This final-owner guard maps the three current homepage release cards to the exact reviewed WordPress strain-card media from strain-card-images.json, preserves the 2:3 portrait artwork without cropping, purges Hostinger/LiteSpeed, and verifies the cache-busted public homepage over the same IPv4 curl visitor path used by the production learning verifiers.'
             ].join('\n');
             try {
               await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: 220, body });
