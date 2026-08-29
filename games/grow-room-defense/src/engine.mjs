@@ -80,7 +80,7 @@ export function counterQuality(threat, tool) {
 
 export function counterPower(threat, tool) {
   const quality = counterQuality(threat, tool);
-  if (quality === 'strong') return tool.power;
+  if (quality === 'strong') return tool.power + 1;
   if (quality === 'supportive') return Math.max(1, tool.power - 1);
   return 0;
 }
