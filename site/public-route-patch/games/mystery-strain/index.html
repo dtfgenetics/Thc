@@ -9,6 +9,7 @@
   <link rel="canonical" href="https://dtfseeds.com/games/mystery-strain/">
   <link rel="stylesheet" href="/games/dtf-route.css">
   <link rel="stylesheet" href="./mystery-strain.css">
+  <link rel="stylesheet" href="./analysis.css">
   <title>Mystery Strain | Deduction Game | DTF Genetics</title>
 </head>
 <body>
@@ -17,7 +18,7 @@
     <header class="hero">
       <p class="eyebrow">DTF Genetics · Deduction lab</p>
       <h1>Mystery <span>Strain</span></h1>
-      <p class="lede">A hidden fictional cultivar profile is in the case file. Ask useful yes/no questions, eliminate candidates, then name the mystery before your guesses run out.</p>
+      <p class="lede">A hidden fictional cultivar profile is in the case file. Ask useful yes/no questions, compare their information splits, eliminate candidates, then name the mystery before your guesses run out.</p>
       <p id="load-status" class="load-status" aria-live="polite">Loading deduction data…</p>
     </header>
 
@@ -62,7 +63,7 @@
       <div class="game-grid">
         <div>
           <section class="panel" aria-labelledby="questions-heading">
-            <div class="section-title"><h2 id="questions-heading">Ask a question</h2><small>Only useful questions remain available</small></div>
+            <div class="section-title"><h2 id="questions-heading">Ask a question</h2><small>Best Split marks the most even current yes/no division; every useful question remains playable</small></div>
             <div id="question-groups"></div>
           </section>
           <section class="panel" style="margin-top:15px" aria-labelledby="clues-heading">
