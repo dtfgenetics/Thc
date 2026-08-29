@@ -35,10 +35,8 @@ r app-only DTFSeeds suite deployment without SSH.',
     await wpRequest(`/wp-json/code-snippets/v1/snippets/${snippetId}/activate`, { method: 'POST', allow: [400] });
 
     for (let attempt = 1; attempt <= 12; attempt++) {
-      const state = await wpRequest(`/wp-json/dtf-suite/v2/state/${deploymentId}`, {
-        headers: { 'X-DTF-Suite-Token': suiteToken }, allow: [404],
-      });
-      if (state.ok) return;
+      const state = await getState();
+      if (state?.status) return;
       await sleep(700 + attempt * 350);
     }
     throw new Error('Recovered deployment bridge did not expose persisted transaction state.');
