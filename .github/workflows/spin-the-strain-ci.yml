@@ -1,0 +1,62 @@
+name: Spin the Strain CI
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - games/spin-the-strain/**
+      - site/public-route-patch/games/spin-the-strain/**
+      - .github/workflows/spin-the-strain-ci.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate wheel data and public copy
+        run: node games/spin-the-strain/scripts/validate-data.mjs
+
+      - name: Run deterministic wheel engine tests
+        run: node games/spin-the-strain/test/engine.test.mjs
+
+      - name: Validate browser JavaScript syntax
+        run: |
+          node --check site/public-route-patch/games/spin-the-strain/app.js
+          node --check site/public-route-patch/games/spin-the-strain/engine.mjs
+
+      - name: Verify canonical and public engine match
+        shell: bash
+        run: cmp games/spin-the-strain/src/engine.mjs site/public-route-patch/games/spin-the-strain/engine.mjs
+
+      - name: Verify route assets and wheel geometry contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s site/public-route-patch/games/spin-the-strain/index.html
+          test -s site/public-route-patch/games/spin-the-strain/spin-the-strain.css
+          grep -Fq '<link rel="canonical" href="https://dtfseeds.com/games/spin-the-strain/">' site/public-route-patch/games/spin-the-strain/index.html
+          grep -Fq 'script type="module" src="./app.js"' site/public-route-patch/games/spin-the-strain/index.html
+          grep -Fq 'var(--segment-index)*20deg + 10deg' site/public-route-patch/games/spin-the-strain/spin-the-strain.css
+          grep -Fq 'data.entries?.length !== 54' site/public-route-patch/games/spin-the-strain/app.js
+
+      - name: Verify truthful release boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          node - <<'NODE'
+          const fs = require('fs');
+          const game = JSON.parse(fs.readFileSync('games/spin-the-strain/game.json','utf8'));
+          if (game.status !== 'browser-vertical-slice') throw new Error('unexpected game status');
+          if (game.route !== '/games/spin-the-strain/') throw new Error('unexpected route');
+          if (game.releaseGates.deploymentRegistered !== false) throw new Error('unreviewed game must not be production registered');
+          if (game.releaseGates.browserTested !== false) throw new Error('browserTested must remain false until browser QA is actually completed');
+          NODE
