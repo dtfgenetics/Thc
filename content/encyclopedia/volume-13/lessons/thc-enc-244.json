@@ -1,0 +1,57 @@
+{
+  "id":"THC-ENC-244",
+  "number":244,
+  "title":"Sesquiterpenes",
+  "objective":"Explain cannabis sesquiterpenes as C15 isoprenoids commonly derived from farnesyl diphosphate, with emphasis on lower volatility, multiproduct synthases, postharvest relative-abundance shifts, and analytical identity.",
+  "terms":[
+    {"term":"sesquiterpene","definition":"A C15 isoprenoid commonly formed from farnesyl diphosphate by sesquiterpene synthases."},
+    {"term":"FPP","definition":"Farnesyl diphosphate, a fifteen-carbon prenyl diphosphate used by sesquiterpene synthases and other cellular pathways."},
+    {"term":"oxygenated sesquiterpene","definition":"A sesquiterpene derivative containing oxygen, which can arise enzymatically or through later oxidation and transformation."},
+    {"term":"beta-caryophyllene","definition":"A common cannabis sesquiterpene produced by functionally characterized cannabis terpene synthases."},
+    {"term":"alpha-humulene","definition":"A cannabis sesquiterpene often formed with beta-caryophyllene by multiproduct synthases."},
+    {"term":"coelution","definition":"Insufficient chromatographic separation in which two or more compounds emerge together or overlap, complicating identification or quantitation."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Sesquiterpenes are fifteen-carbon isoprenoids commonly produced when sesquiterpene synthases act on farnesyl diphosphate. Direct cannabis enzyme work has characterized synthases that produce beta-caryophyllene, alpha-humulene, and additional sesquiterpene products found in cannabis resin.",
+    "Cannabis terpene synthases can be multiproduct enzymes. A single sesquiterpene synthase may generate a dominant product together with several minor products, while similar compounds can arise from more than one enzyme or genetic background.",
+    "Because sesquiterpenes are generally larger and less volatile than many monoterpenes, their relative abundance can appear to increase during drying or storage as lighter compounds are preferentially lost. A higher relative percentage after harvest does not prove new biosynthesis.",
+    "Sesquiterpenes can also oxidize or rearrange, producing oxygenated derivatives such as caryophyllene oxide and other products. Sample age, oxygen exposure, temperature, light, grinding, and packaging influence the profile recovered by analysis.",
+    "Analytical identity requires adequate chromatographic separation and appropriate standards or spectral evidence. Similar retention behavior and coelution can obscure individual sesquiterpenes when methods are not sufficiently selective."
+  ],
+  "cultivationRelevance":[
+    "Report absolute or clearly normalized sesquiterpene quantities together with sample state so postharvest relative-percentage changes are not mistaken for increased biosynthesis.",
+    "Use authentic standards and adequate chromatographic resolution when distinguishing beta-caryophyllene, alpha-humulene, oxygenated products, and other C15 compounds.",
+    "Control genotype, tissue, position, developmental stage, drying, storage, and preparation when comparing sesquiterpene profiles.",
+    "Interpret sesquiterpene retention together with monoterpene loss and total volatile mass rather than relying on percentage alone."
+  ],
+  "measureAndRecord":[
+    {"field":"Sample context","requirement":"Record genotype, tissue/position, developmental stage, fresh/dry state, drying method, storage, and sample preparation."},
+    {"field":"Compound identity","requirement":"Record analyte/isomer, authentic standard or spectral evidence, retention information, chromatographic resolution, and uncertainty."},
+    {"field":"Quantity","requirement":"Record absolute concentration or clearly defined relative value and total volatile mass or internal-standard recovery when possible."},
+    {"field":"Transformation","requirement":"Record oxygen/light exposure and relevant oxidation products so parent-compound decline and derivative formation can be distinguished."},
+    {"field":"Genetic evidence","requirement":"When a synthase claim is made, record gene/transcript identity, recombinant product spectrum, tissue expression, and whether the enzyme is single- or multiproduct."
+    }
+  ],
+  "misconceptions":[
+    "Sesquiterpenes are nonvolatile and cannot influence aroma.",
+    "Beta-caryophyllene and alpha-humulene always occur in a fixed ratio.",
+    "A larger post-dry sesquiterpene percentage proves additional biosynthesis after harvest.",
+    "Every sesquiterpene is produced by one unique single-product gene.",
+    "A GC library match alone always proves sesquiterpene identity."
+  ],
+  "evidenceLimits":[
+    "Functional cannabis synthase studies establish production of major sesquiterpenes and demonstrate multiproduct enzymes, but final tissue and headspace profiles also reflect genotype, expression, precursor allocation, volatility, oxidation, postharvest handling, and analytical method. Relative percentages can be misleading when other compounds are selectively lost."
+  ],
+  "crossLinks":"THC-ENC-242 for FPP and isoprenoid pathways; THC-ENC-245 for TPS genetics; THC-ENC-250–251 for caryophyllene, humulene, and minor terpenes; THC-ENC-256–258 for volatile loss, storage, and analytical variation.",
+  "sourceNotes":[
+    "Booth JK, Page JE, Bohlmann J. (2017). Terpene synthases from Cannabis sativa. PLOS ONE 12:e0173911. Functionally characterized cannabis sesquiterpene synthases, including enzymes producing beta-caryophyllene and alpha-humulene, and documented multiproduct behavior.",
+    "Allen KD et al. (2019). Genomic characterization of the complete terpene synthase gene family from Cannabis sativa. PLOS ONE 14:e0222363. Provides broader TPS gene-family and terpene-profile context.",
+    "Controlled Volume 13 manuscript v1.0 requires fresh/dry state, absolute versus relative abundance, oxidation, standards, and analytical context to accompany sesquiterpene claims."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 13 batch 01 controlled web derivative","driveSourceDocumentId":"1Vh_CkUFTN9eqsXiuH53pD1tMDyBo2zxDTIXOd_vQlgw","evidenceControl":"controlled_manuscript_plus_functional_cannabis_sesquiterpene_synthase_and_TPS_genome_sources","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_sesquiterpene_biochemistry_and_analytical_identity","releaseTimeReview":"completed_2026-08-29_C15_multiproduct_relative_abundance_and_oxidation_claims","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"sesquiterpenes",
+  "route":"/encyclopedia/sesquiterpenes"
+}
