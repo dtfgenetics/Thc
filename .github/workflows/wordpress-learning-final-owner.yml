@@ -6,20 +6,16 @@ on:
     branches: [main]
     paths:
       - .github/workflows/wordpress-learning-final-owner.yml
-      - .github/workflows/wordpress-home-release-visuals.yml
       - scripts/publish-wordpress-topic-literature.mjs
       - scripts/assemble-topic-literature-expansions.mjs
       - scripts/flush-hostinger-litespeed-mcp.mjs
       - scripts/wordpress-transient-fetch-bootstrap.mjs
-      - scripts/fix-wordpress-home-release-visuals.mjs
       - site/wordpress/education/topic-literature.json
       - site/wordpress/education/topic-literature-expansions.json
       - site/wordpress/education/topic-literature-expansions-core-v1.json
-      - site/wordpress/education/visual-production-plans/**
       - site/wordpress/assets/infographics/infographic-learning-guides.json
       - site/wordpress/assets/infographics/placement-rules.json
       - site/wordpress/assets/infographics/infographic-exclusions.json
-      - site/wordpress/products/strain-card-images.json
   workflow_run:
     workflows:
       - Publish THC Topic Literature to WordPress Production
@@ -36,6 +32,7 @@ concurrency:
 jobs:
   finalize:
     name: Republish, purge cache, and verify guided learning
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 40
     environment: production
@@ -44,19 +41,22 @@ jobs:
       WP_SITE_URL: https://dtfseeds.com
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      TOPIC_LITERATURE_CONFIG: ${{ github.workspace }}/site/wordpress/education/topic-literature.json
       BACKUP_ROOT: /tmp/wordpress-learning-final-owner
-      EXPANDED_LITERATURE: /tmp/dtf-topic-literature-expanded.json
+      VALIDATED_EXPANSION: /tmp/dtf-topic-literature-expanded-validation.json
 
     steps:
       - uses: actions/checkout@v4
         with:
           ref: main
+          fetch-depth: 0
 
       - uses: actions/setup-node@v4
         with:
           node-version: 22
 
-      - name: Validate final-owner inputs
+      - name: Validate canonical complete curriculum
+        id: validate
         shell: bash
         run: |
           set -euo pipefail
@@ -66,55 +66,37 @@ jobs:
           node --check scripts/assemble-topic-literature-expansions.mjs
           node --check scripts/flush-hostinger-litespeed-mcp.mjs
           node --check scripts/wordpress-transient-fetch-bootstrap.mjs
-          node - <<'NODE'
-          const fs = require('fs');
-          const guides = JSON.parse(fs.readFileSync('site/wordpress/assets/infographics/infographic-learning-guides.json', 'utf8'));
-          const topics = JSON.parse(fs.readFileSync('site/wordpress/education/topic-literature.json', 'utf8'));
-          const primary = JSON.parse(fs.readFileSync('site/wordpress/education/topic-literature-expansions.json', 'utf8'));
-          const core = JSON.parse(fs.readFileSync('site/wordpress/education/topic-literature-expansions-core-v1.json', 'utf8'));
-          const plan = JSON.parse(fs.readFileSync('site/wordpress/education/visual-production-plans/lighting-research-v1.json', 'utf8'));
-          if (!Array.isArray(guides.guides) || guides.guides.length < 10) process.exit(1);
-          if (!Array.isArray(guides.learningPaths) || guides.learningPaths.length < 4) process.exit(1);
-          if (!Array.isArray(topics.topics) || topics.topics.length !== 13) process.exit(1);
-          if (!Array.isArray(primary.expansions) || primary.expansions.length !== 2) process.exit(1);
-          if (!Array.isArray(core.expansions) || core.expansions.length !== 11) process.exit(1);
-          const ids = new Set([...primary.expansions, ...core.expansions].map(row => row.topicId));
-          if (ids.size !== 13) throw new Error(`Expected expansion ownership for all 13 topics; found ${ids.size}`);
-          if (!Array.isArray(plan.assets) || plan.assets.length < 8) process.exit(1);
-          if (plan.assets.some(asset => asset.status !== 'ready-for-render' || !asset.title || !asset.topicId || !Array.isArray(asset.requiredPanels) || asset.requiredPanels.length < 5)) process.exit(1);
-          console.log(`Validated ${guides.guides.length} study guides, ${guides.learningPaths.length} learning paths, ${topics.topics.length} literature topics, ${ids.size} topic expansions, and ${plan.assets.length} first-wave visual briefs.`);
-          NODE
 
-      - name: Assemble additive literature expansions
-        id: expand
-        shell: bash
-        run: |
-          set -euo pipefail
-          node scripts/assemble-topic-literature-expansions.mjs --write "$EXPANDED_LITERATURE" | tee /tmp/learning-final-owner-expansion.json
-          test -s "$EXPANDED_LITERATURE"
-          node - "$EXPANDED_LITERATURE" <<'NODE'
+          node scripts/assemble-topic-literature-expansions.mjs --write "$VALIDATED_EXPANSION" >/tmp/learning-final-owner-expansion.json
+          node - "$TOPIC_LITERATURE_CONFIG" "$VALIDATED_EXPANSION" <<'NODE'
           const fs = require('fs');
-          const data = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
-          const byId = new Map(data.topics.map(topic => [topic.id, topic]));
-          if (byId.size !== 13) throw new Error(`Expected 13 canonical topics, found ${byId.size}`);
+          const canonical = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
+          const assembled = JSON.parse(fs.readFileSync(process.argv[3], 'utf8'));
+          if (!Array.isArray(canonical.topics) || canonical.topics.length !== 13) throw new Error(`Expected 13 canonical topics, found ${canonical.topics?.length || 0}`);
+          if (!Array.isArray(assembled.topics) || assembled.topics.length !== 13) throw new Error('Expansion assembly lost a canonical topic');
+          const byId = new Map(canonical.topics.map(topic => [topic.id, topic]));
           for (const [id, topic] of byId) {
-            if (!Array.isArray(topic.sections) || topic.sections.length < 8) {
-              throw new Error(`${id} did not reach eight literature sections`);
-            }
+            if (!Array.isArray(topic.sections) || topic.sections.length < 8) throw new Error(`${id} has only ${topic.sections?.length || 0} canonical sections`);
           }
           for (const id of ['lighting', 'research-measurement']) {
-            if (byId.get(id).sections.length < 9) throw new Error(`${id} did not retain its nine-section advanced depth`);
+            if ((byId.get(id)?.sections?.length || 0) < 9) throw new Error(`${id} must retain at least nine sections`);
           }
-          console.log(JSON.stringify(Object.fromEntries([...byId].map(([id, topic]) => [id, topic.sections.length])), null, 2));
+          const plant = byId.get('plant-biology');
+          if (!plant?.sections?.some(section => section.heading === 'Water potential, osmosis, and turgor')) throw new Error('Plant Biology depth marker is missing from canonical source');
+          const assembledById = new Map(assembled.topics.map(topic => [topic.id, topic]));
+          for (const [id, topic] of byId) {
+            if ((assembledById.get(id)?.sections?.length || 0) !== topic.sections.length) throw new Error(`Canonical source is not expansion-idempotent for ${id}`);
+          }
+          const minimum = Math.min(...canonical.topics.map(topic => topic.sections.length));
+          console.log(JSON.stringify({minimum, lighting: byId.get('lighting').sections.length, research: byId.get('research-measurement').sections.length}, null, 2));
           NODE
-          echo "minimum_sections=$(node -e "const d=require(process.argv[1]); console.log(Math.min(...d.topics.map(t=>t.sections.length)))" "$EXPANDED_LITERATURE")" >> "$GITHUB_OUTPUT"
-          echo "lighting_sections=$(node -p "require(process.argv[1]).topics.find(t=>t.id==='lighting').sections.length" "$EXPANDED_LITERATURE")" >> "$GITHUB_OUTPUT"
-          echo "research_sections=$(node -p "require(process.argv[1]).topics.find(t=>t.id==='research-measurement').sections.length" "$EXPANDED_LITERATURE")" >> "$GITHUB_OUTPUT"
+
+          echo "minimum_sections=$(node -p "Math.min(...require(process.argv[1]).topics.map(t=>t.sections.length))" "$TOPIC_LITERATURE_CONFIG")" >> "$GITHUB_OUTPUT"
+          echo "lighting_sections=$(node -p "require(process.argv[1]).topics.find(t=>t.id==='lighting').sections.length" "$TOPIC_LITERATURE_CONFIG")" >> "$GITHUB_OUTPUT"
+          echo "research_sections=$(node -p "require(process.argv[1]).topics.find(t=>t.id==='research-measurement').sections.length" "$TOPIC_LITERATURE_CONFIG")" >> "$GITHUB_OUTPUT"
 
       - name: Reclaim canonical education pages
         id: publish
-        env:
-          TOPIC_LITERATURE_CONFIG: ${{ env.EXPANDED_LITERATURE }}
         shell: bash
         run: |
           set -euo pipefail
@@ -124,10 +106,21 @@ jobs:
             scripts/publish-wordpress-topic-literature.mjs | tee /tmp/learning-final-owner-publish.json
           backup_dir="$(cat "$BACKUP_ROOT/topic-literature-backup-path.txt")"
           report="$backup_dir/topic-literature-report.json"
+          test -s "$report"
           echo "expected_cards=$(node -p "require(process.argv[1]).eligibleInfographics" "$report")" >> "$GITHUB_OUTPUT"
           echo "topic_count=$(node -p "require(process.argv[1]).topicPages.length" "$report")" >> "$GITHUB_OUTPUT"
           echo "learning_paths=$(node -p "require(process.argv[1]).learningPathCount" "$report")" >> "$GITHUB_OUTPUT"
           echo "study_guides=$(node -p "require(process.argv[1]).studyGuideCount" "$report")" >> "$GITHUB_OUTPUT"
+          node - "$report" <<'NODE'
+          const report = require(process.argv[2]);
+          if (report.topicPages.length !== 13) throw new Error(`Expected 13 topic pages, found ${report.topicPages.length}`);
+          if (report.eligibleInfographics < 117) throw new Error(`Finished infographic floor regressed: ${report.eligibleInfographics}`);
+          if (report.learningPathCount < 5) throw new Error(`Learning path floor regressed: ${report.learningPathCount}`);
+          if (report.studyGuideCount < 13) throw new Error(`Study guide floor regressed: ${report.studyGuideCount}`);
+          for (const topic of report.topicPages) {
+            if ((topic.literatureSections || 0) < 8) throw new Error(`${topic.id} published only ${topic.literatureSections || 0} literature sections`);
+          }
+          NODE
 
       - name: Purge Hostinger LiteSpeed cache
         id: cache
@@ -143,13 +136,10 @@ jobs:
             fi
             sleep $((attempt * 4))
           done
-          [[ "$ok" -eq 1 ]] || {
-            echo 'LiteSpeed cache purge failed after retries.' >&2
-            exit 1
-          }
+          [[ "$ok" -eq 1 ]] || { echo 'LiteSpeed cache purge failed after retries.' >&2; exit 1; }
           sleep 5
 
-      - name: Verify public guided-learning owner
+      - name: Verify public complete learning owner
         id: verify
         env:
           EXPECTED_CARDS: ${{ steps.publish.outputs.expected_cards }}
@@ -166,7 +156,7 @@ jobs:
               if curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
                 --header 'Cache-Control: no-cache, no-store, max-age=0' \
                 --header 'Pragma: no-cache' \
-                "${url}?dtf_final_owner=${GITHUB_RUN_ID}-${attempt}-$(date +%s%N)" \
+                "${url}?dtf_learning_owner=${GITHUB_RUN_ID}-${attempt}-$(date +%s%N)" \
                 --output "$body"; then
                 ok=1
                 for marker in "$@"; do
@@ -176,7 +166,7 @@ jobs:
               fi
               sleep 7
             done
-            echo "Final-owner verification failed for $url" >&2
+            echo "Learning final-owner verification failed for $url" >&2
             for marker in "$@"; do
               if ! grep -Fqi "$marker" "$body" 2>/dev/null; then echo "Missing marker: $marker" >&2; fi
             done
@@ -194,15 +184,53 @@ jobs:
             'Study question:'
 
           cards="$(grep -Eo '<article class="thc-visual-card thc-library-card"' "$library" | wc -l | tr -d ' ')"
-          [[ "$cards" -eq "$EXPECTED_CARDS" ]] || {
-            echo "Expected $EXPECTED_CARDS guided infographic cards, found $cards" >&2
-            exit 1
-          }
+          [[ "$cards" -eq "$EXPECTED_CARDS" ]] || { echo "Expected $EXPECTED_CARDS guided infographic cards, found $cards" >&2; exit 1; }
+          [[ "$cards" -ge 117 ]] || { echo "Public infographic floor regressed below 117: $cards" >&2; exit 1; }
 
-          for route in \
-            plant-biology genetics-breeding lifecycle-propagation environment-vpd \
-            lighting water-ph-ec nutrition-media ipm training-canopy harvest-postharvest \
-            outdoor research-methods plant-science-reference; do
+          poster_stems=(
+            'THC-EVID-01_Observation_Measurement_Inference_Full_Sheet_Infographic'
+            'THC-EVID-02_Replication_Subsampling_Research_Full_Sheet_Infographic'
+            'THC-EVID-03_Controls_Randomization_Blocking_Evidence_Full_Sheet_Infographic'
+            'THC-EVID-04_Measurement_Quality_Uncertainty_Full_Sheet_Infographic'
+            'THC-LIGHT-01_PPFD_DLI_Photoperiod_Full_Sheet_Infographic'
+            'THC-LIGHT-02_Lighting_Canopy_PPFD_Mapping_Full_Sheet_Infographic'
+            'THC-LIGHT-03_Light_Sensors_Spectrum_Measurement_Full_Sheet_Infographic'
+            'THC-LIGHT-04_Lighting_Response_Photoinhibition_Full_Sheet_Infographic'
+            'THC-LIFE-01_Seed_Vigor_Storage_Germination_Testing_Full_Sheet_Infographic'
+            'THC-LIFE-02_Cutting_Rooting_Hardening_Establishment_Full_Sheet_Infographic'
+            'THC-ENV-01_Sensor_Placement_Dew_Point_Canopy_Microclimates_Full_Sheet_Infographic'
+            'THC-LIGHT-05_Fixture_Height_Uniformity_Edge_Loss_Full_Sheet_Infographic'
+            'THC-WATER-01_pH_vs_Alkalinity_Buffering_Full_Sheet_Infographic'
+            'THC-WATER-02_EC_PPM_TDS_Irrigation_Dryback_Full_Sheet_Infographic'
+            'THC-IPM-01_Scouting_Differential_Diagnosis_Action_Threshold_Full_Sheet_Infographic'
+            'THC-TRAIN-01_Apical_Dominance_Branch_Response_Full_Sheet_Infographic'
+            'THC-TRAIN-02_Wound_Recovery_Stress_Stacking_Full_Sheet_Infographic'
+            'THC-TRAIN-03_Canopy_Geometry_Support_Airflow_PPFD_Full_Sheet_Infographic'
+            'THC-OUT-01_Outdoor_Site_Microclimate_Mapping_Full_Sheet_Infographic'
+            'THC-OUT-02_Weather_Risk_Wind_Rain_Drainage_Pollen_Full_Sheet_Infographic'
+            'THC-EVID-05_Metadata_Time_Series_Reproducibility_Full_Sheet_Infographic'
+          )
+          for stem in "${poster_stems[@]}"; do
+            grep -Fqi "$stem" "$library" || { echo "New full-sheet poster missing from public library: $stem" >&2; exit 1; }
+          done
+
+          declare -A markers=(
+            [plant-biology]='Water potential, osmosis, and turgor'
+            [genetics-breeding]='Qualitative traits, quantitative traits, and heritability'
+            [lifecycle-propagation]='Seed storage, viability, and vigor'
+            [environment-vpd]='Boundary layers and canopy air movement'
+            [lighting]='DLI is an integral, not a complete prescription'
+            [water-ph-ec]='Alkalinity, bicarbonate, and pH stability'
+            [nutrition-media]='Nutrient forms, transport to roots, and uptake'
+            [ipm]='Scouting design, sampling, and action thresholds'
+            [training-canopy]='Apical dominance, branch architecture, and training response'
+            [harvest-postharvest]='Harvest maturity is a sampling problem'
+            [outdoor]='Map the site microclimate before managing the crop'
+            [research-methods]='Reproducibility, metadata, and data integrity'
+            [plant-science-reference]='Units, conversions, and significant figures'
+          )
+
+          for route in "${!markers[@]}"; do
             page="$RUNNER_TEMP/final-owner-${route}.html"
             fetch_until_all \
               "https://dtfseeds.com/learn/${route}/" \
@@ -212,58 +240,19 @@ jobs:
               'Questions to answer' \
               'Measurements and context to record' \
               'Common interpretation trap' \
-              'Infographics for'
+              'Infographics for' \
+              "${markers[$route]}"
             sections="$(grep -Eo 'class="thc-section"' "$page" | wc -l | tr -d ' ')"
-            [[ "$sections" -ge 8 ]] || {
-              echo "Expected at least eight literature sections on $route; found $sections" >&2
-              exit 1
-            }
+            [[ "$sections" -ge 8 ]] || { echo "Expected >=8 literature sections on $route; found $sections" >&2; exit 1; }
+            if [[ "$route" == lighting || "$route" == research-methods ]]; then
+              [[ "$sections" -ge 9 ]] || { echo "Expected >=9 advanced sections on $route; found $sections" >&2; exit 1; }
+            fi
           done
-
-          declare -A required_markers=(
-            [plant-biology]='Water potential, osmosis, and turgor'
-            [genetics-breeding]='Qualitative traits, quantitative traits, and heritability'
-            [lifecycle-propagation]='Seed storage, viability, and vigor'
-            [environment-vpd]='Boundary layers and canopy air movement'
-            [lighting]='From single readings to canopy light maps'
-            [water-ph-ec]='Alkalinity, bicarbonate, and pH stability'
-            [nutrition-media]='Nutrient forms, transport to roots, and uptake'
-            [ipm]='Scouting design, sampling, and action thresholds'
-            [training-canopy]='Apical dominance, branch architecture, and training response'
-            [harvest-postharvest]='Harvest maturity is a sampling problem'
-            [outdoor]='Map the site microclimate before managing the crop'
-            [research-methods]='Controls, randomization, and blocking'
-            [plant-science-reference]='Units, conversions, and significant figures'
-          )
-          for route in "${!required_markers[@]}"; do
-            page="$RUNNER_TEMP/final-owner-${route}.html"
-            grep -Fqi "${required_markers[$route]}" "$page" || {
-              echo "Core curriculum marker missing on $route: ${required_markers[$route]}" >&2
-              exit 1
-            }
-          done
-
-          lighting="$RUNNER_TEMP/final-owner-lighting.html"
-          research="$RUNNER_TEMP/final-owner-research-methods.html"
-          for marker in \
-            'DLI is an integral, not a complete prescription' \
-            'Sensor choice, spectral response, and measurement limits' \
-            'Light-response curves, acclimation, and photoinhibition'; do
-            grep -Fqi "$marker" "$lighting" || { echo "Lighting expansion missing: $marker" >&2; exit 1; }
-          done
-          for marker in \
-            'Effect size, variability, and practical importance' \
-            'Time series, baselines, and change attribution' \
-            'Reproducibility, metadata, and data integrity'; do
-            grep -Fqi "$marker" "$research" || { echo "Research expansion missing: $marker" >&2; exit 1; }
-          done
-          [[ "$(grep -Eo 'class="thc-section"' "$lighting" | wc -l | tr -d ' ')" -ge 9 ]]
-          [[ "$(grep -Eo 'class="thc-section"' "$research" | wc -l | tr -d ' ')" -ge 9 ]]
 
           echo "live_card_count=$cards" >> "$GITHUB_OUTPUT"
           echo "guided_learning_ready=true" >> "$GITHUB_OUTPUT"
 
-      - name: Upload final-owner rollback evidence
+      - name: Upload Learning final-owner evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -271,20 +260,20 @@ jobs:
           path: |
             /tmp/wordpress-learning-final-owner
             /tmp/learning-final-owner-expansion.json
-            /tmp/dtf-topic-literature-expanded.json
+            /tmp/dtf-topic-literature-expanded-validation.json
             /tmp/learning-final-owner-publish.json
             /tmp/learning-final-owner-cache.json
             ${{ runner.temp }}/final-owner-*.html
           if-no-files-found: warn
           retention-days: 30
 
-      - name: Report final learning ownership
+      - name: Report final Learning ownership
         if: always()
         continue-on-error: true
         uses: actions/github-script@v7
         env:
           STATUS: ${{ job.status }}
-          EXPAND_OUTCOME: ${{ steps.expand.outcome }}
+          VALIDATE_OUTCOME: ${{ steps.validate.outcome }}
           PUBLISH_OUTCOME: ${{ steps.publish.outcome }}
           CACHE_OUTCOME: ${{ steps.cache.outcome }}
           VERIFY_OUTCOME: ${{ steps.verify.outcome }}
@@ -292,9 +281,9 @@ jobs:
           TOPIC_COUNT: ${{ steps.publish.outputs.topic_count }}
           LEARNING_PATHS: ${{ steps.publish.outputs.learning_paths }}
           STUDY_GUIDES: ${{ steps.publish.outputs.study_guides }}
-          MINIMUM_SECTIONS: ${{ steps.expand.outputs.minimum_sections }}
-          LIGHTING_SECTIONS: ${{ steps.expand.outputs.lighting_sections }}
-          RESEARCH_SECTIONS: ${{ steps.expand.outputs.research_sections }}
+          MINIMUM_SECTIONS: ${{ steps.validate.outputs.minimum_sections }}
+          LIGHTING_SECTIONS: ${{ steps.validate.outputs.lighting_sections }}
+          RESEARCH_SECTIONS: ${{ steps.validate.outputs.research_sections }}
         with:
           script: |
             const source = context.eventName === 'workflow_run'
@@ -306,7 +295,7 @@ jobs:
               `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
               `Trigger: **${source}**`,
               `Overall: **${process.env.STATUS}**`,
-              `Literature expansion assembly: **${process.env.EXPAND_OUTCOME || 'not-run'}**`,
+              `Canonical curriculum validation: **${process.env.VALIDATE_OUTCOME || 'not-run'}**`,
               `Canonical republish: **${process.env.PUBLISH_OUTCOME || 'not-run'}**`,
               `LiteSpeed purge: **${process.env.CACHE_OUTCOME || 'not-run'}**`,
               `Visitor verification: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
@@ -314,21 +303,14 @@ jobs:
               `Literature topics: **${process.env.TOPIC_COUNT || 'not-run'}**`,
               `Learning paths: **${process.env.LEARNING_PATHS || 'not-run'}**`,
               `Study guides: **${process.env.STUDY_GUIDES || 'not-run'}**`,
-              `Minimum literature sections on any subject: **${process.env.MINIMUM_SECTIONS || 'not-run'}**`,
-              `Lighting literature sections: **${process.env.LIGHTING_SECTIONS || 'not-run'}**`,
-              `Research/Measurement literature sections: **${process.env.RESEARCH_SECTIONS || 'not-run'}**`,
+              `Minimum literature sections per subject: **${process.env.MINIMUM_SECTIONS || 'not-run'}**`,
+              `Lighting sections: **${process.env.LIGHTING_SECTIONS || 'not-run'}**`,
+              `Research sections: **${process.env.RESEARCH_SECTIONS || 'not-run'}**`,
               '',
-              'This workflow is the single downstream THC Learning finalizer. It assembles all 13 additive curricula, republishes canonical literature-first pages, purges Hostinger/LiteSpeed, verifies an eight-section minimum on every subject, then hands off to the exact homepage release-card owner.'
+              'This workflow owns only THC Learning finalization. Homepage release visuals are verified by their independent production workflow and cannot change this Learning result.'
             ].join('\n');
             try {
-              await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: 220, body });
+              await github.rest.issues.createComment({owner: context.repo.owner, repo: context.repo.repo, issue_number: 182, body});
             } catch (error) {
-              core.warning(`Final-owner advisory report could not be posted: ${error.message}`);
+              core.warning(`Learning final-owner report could not be posted: ${error.message}`);
             }
-
-  finalize_home:
-    name: Run exact Home release-card final owner
-    needs: finalize
-    if: ${{ needs.finalize.result == 'success' }}
-    uses: ./.github/workflows/wordpress-home-release-visuals.yml
-    secrets: inherit
