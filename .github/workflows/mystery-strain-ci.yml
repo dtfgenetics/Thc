@@ -31,13 +31,18 @@ jobs:
         run: node games/mystery-strain/scripts/validate-data.mjs
       - name: Run deterministic deduction rules tests
         run: node games/mystery-strain/test/engine.test.mjs
+      - name: Run information-ranking tests
+        run: node games/mystery-strain/test/analysis.test.mjs
       - name: Validate browser JavaScript syntax
         run: |
           node --check site/public-route-patch/games/mystery-strain/app.js
           node --check site/public-route-patch/games/mystery-strain/engine.mjs
-      - name: Verify canonical and public engine match
-        run: cmp games/mystery-strain/src/engine.mjs site/public-route-patch/games/mystery-strain/engine.mjs
-      - name: Verify public route and release boundary
+          node --check site/public-route-patch/games/mystery-strain/analysis.mjs
+      - name: Verify canonical and public rules modules match
+        run: |
+          cmp games/mystery-strain/src/engine.mjs site/public-route-patch/games/mystery-strain/engine.mjs
+          cmp games/mystery-strain/src/analysis.mjs site/public-route-patch/games/mystery-strain/analysis.mjs
+      - name: Verify public route, ranking and release boundary
         shell: bash
         run: |
           set -euo pipefail
@@ -45,9 +50,18 @@ jobs:
           test -s "$root/index.html"
           test -s "$root/app.js"
           test -s "$root/engine.mjs"
+          test -s "$root/analysis.mjs"
           test -s "$root/mystery-strain.css"
+          test -s "$root/analysis.css"
           test -s "$root/data/strains.json"
           grep -Fq 'https://dtfseeds.com/games/mystery-strain/' "$root/index.html"
           grep -Fqi 'fictional' "$root/index.html"
+          grep -Fq 'Best Split' "$root/index.html"
+          grep -Fq './analysis.css' "$root/index.html"
           grep -Fq 'type="module" src="./app.js"' "$root/index.html"
+          grep -Fq "from './analysis.mjs'" "$root/app.js"
+          grep -Fq 'rankedQuestionOptions(state, data)' "$root/app.js"
+          grep -Fq 'Information ${question.informationScore}%' "$root/app.js"
+          grep -Fq 'BEST SPLIT' "$root/app.js"
+          grep -Fq '.question-card.best-split' "$root/analysis.css"
           grep -Fq 'deploymentRegistered": true' games/mystery-strain/game.json
