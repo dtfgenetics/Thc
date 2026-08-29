@@ -1,0 +1,54 @@
+{
+  "schemaVersion": "1.0.0",
+  "volumeId": "THC-ENC-V11",
+  "number": 11,
+  "title": "Flowering and Reproduction",
+  "route": "/encyclopedia/volume-11-flowering-and-reproduction",
+  "version": "source-controlled",
+  "status": "active-controlled-production",
+  "sourceControl": {
+    "controlledCatalogueVersion": "Master Content Map v1.1",
+    "sourceTitle": "THC Cannabis Encyclopedia — Volume 11: Flowering & Reproduction",
+    "sourceState": "production_in_progress",
+    "rule": "Preserve controlled lesson IDs and titles; distinguish observed cannabis evidence from broader plant-development mechanisms and do not convert cultivar-specific flowering responses into universal schedules."
+  },
+  "audience": [
+    "home growers",
+    "professional cultivators",
+    "breeders",
+    "students",
+    "educators",
+    "plant-science readers"
+  ],
+  "educationalBoundary": "Lawful cultivation and plant science only. This volume does not provide medical advice, current jurisdiction-specific legal advice, pesticide directions, or equipment-specific safety instructions.",
+  "controlledLessonRange": {"start":201,"end":220},
+  "controlledTitles": [
+    {"id":"THC-ENC-201","title":"Vegetative-to-Reproductive Transition"},
+    {"id":"THC-ENC-202","title":"Critical Night Length and Photoperiod Response"},
+    {"id":"THC-ENC-203","title":"Autoflowering and Day-Neutral Phenotypes"},
+    {"id":"THC-ENC-204","title":"Preflowers and Developmental Maturity"},
+    {"id":"THC-ENC-205","title":"Inflorescence Architecture"},
+    {"id":"THC-ENC-206","title":"Early-Flower Stretch and Internode Elongation"},
+    {"id":"THC-ENC-207","title":"Male Floral Development and Anthesis"},
+    {"id":"THC-ENC-208","title":"Pollen Grain Structure and Viability"},
+    {"id":"THC-ENC-209","title":"Pollen Release, Transport, and Deposition"},
+    {"id":"THC-ENC-210","title":"Female Floral Development and Stigma Receptivity"},
+    {"id":"THC-ENC-211","title":"Fertilization and Early Embryo Development"},
+    {"id":"THC-ENC-212","title":"Seedless Flower Production as Pollen Exclusion"},
+    {"id":"THC-ENC-213","title":"Controlled Pollination and Parent Identity"},
+    {"id":"THC-ENC-214","title":"Pollen Collection, Drying, and Storage"},
+    {"id":"THC-ENC-215","title":"Pollen Containment and Decontamination"},
+    {"id":"THC-ENC-216","title":"Seed Maturation and Harvest"},
+    {"id":"THC-ENC-217","title":"Reproductive Stress and Intersex Monitoring"},
+    {"id":"THC-ENC-218","title":"Reversion and Reflowering Biology"},
+    {"id":"THC-ENC-219","title":"Flower Senescence and Maturity Indicators"},
+    {"id":"THC-ENC-220","title":"Reproductive Records and Seed-Batch Documentation"}
+  ],
+  "lessonPaths": [
+    "lessons/thc-enc-201.json",
+    "lessons/thc-enc-202.json",
+    "lessons/thc-enc-203.json",
+    "lessons/thc-enc-204.json",
+    "lessons/thc-enc-205.json"
+  ]
+}
