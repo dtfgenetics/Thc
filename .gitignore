@@ -13,6 +13,12 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+# Python-generated files must never enter release-surface commits.
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
 # Supabase local runtime and secrets
 supabase/.branches/
 supabase/.temp/
