@@ -37,18 +37,25 @@ jobs:
         shell: bash
         run: cmp games/spin-the-strain/src/engine.mjs site/public-route-patch/games/spin-the-strain/engine.mjs
 
-      - name: Verify route assets and renderer geometry contract
+      - name: Verify route assets, no-repeat rules and renderer geometry contract
         run: |
           node - <<'NODE'
           const fs = require('fs');
           const html = fs.readFileSync('site/public-route-patch/games/spin-the-strain/index.html','utf8');
           const css = fs.readFileSync('site/public-route-patch/games/spin-the-strain/spin-the-strain.css','utf8');
           const app = fs.readFileSync('site/public-route-patch/games/spin-the-strain/app.js','utf8');
+          const engine = fs.readFileSync('games/spin-the-strain/src/engine.mjs','utf8');
           const requireText = (source, text, label) => {
             if (!source.includes(text)) throw new Error(`missing ${label}: ${text}`);
           };
           requireText(html, '<link rel="canonical" href="https://dtfseeds.com/games/spin-the-strain/">', 'canonical route');
           requireText(html, '<script type="module" src="./app.js"></script>', 'module entrypoint');
+          requireText(html, 'all 18 entries have appeared', 'full-cycle rule disclosure');
+          requireText(engine, 'cycleSeenEntryIds', 'cycle membership state');
+          requireText(engine, 'cycleNumber', 'cycle number state');
+          requireText(engine, 'unseenEntries', 'unseen-entry selection pool');
+          requireText(app, 'result.cyclePosition', 'cycle progress rendering');
+          requireText(app, 'result.cycleSize', 'cycle size rendering');
           requireText(app, 'const segmentAngle = 360 / entries.length;', 'dynamic segment angle');
           requireText(app, "label.style.setProperty('--segment-angle'", 'segment angle handoff');
           requireText(app, '360 - (state.lastResult.index + 0.5) * segmentAngle', 'top-pointer landing calculation');
@@ -64,6 +71,7 @@ jobs:
           const game = JSON.parse(fs.readFileSync('games/spin-the-strain/game.json','utf8'));
           if (game.status !== 'browser-vertical-slice') throw new Error('unexpected game status');
           if (game.route !== '/games/spin-the-strain/') throw new Error('unexpected route');
+          if (game.releaseGates.rulesTested !== true) throw new Error('rulesTested must remain true after deterministic cycle tests pass');
           if (game.releaseGates.deploymentRegistered !== true) throw new Error('deploymentRegistered must stay true once the game is registered in the DTFSeeds public app contract');
           if (game.releaseGates.browserTested !== false) throw new Error('browserTested must remain false until browser QA is actually completed');
           NODE
