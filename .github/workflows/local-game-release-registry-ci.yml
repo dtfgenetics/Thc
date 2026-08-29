@@ -1,0 +1,30 @@
+name: Local Game Release Registry CI
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - games/**/game.json
+      - data/project-registry.json
+      - site/deployment/public-apps.json
+      - scripts/reconcile-local-game-release-registry.mjs
+      - package.json
+      - .github/workflows/local-game-release-registry-ci.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify generated release registry is synchronized
+        env:
+          RELEASE_REGISTRY_DATE: '2026-08-28'
+        run: npm run games:release-check
