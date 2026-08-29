@@ -31,6 +31,9 @@ jobs:
       - name: Run parent projection tests
         run: node games/pheno-draft/test/projection.test.mjs
 
+      - name: Run production runtime and comparison UI regression tests
+        run: node games/pheno-draft/test/public-runtime.test.mjs
+
       - name: Validate browser JavaScript syntax
         run: |
           node --check site/public-route-patch/games/pheno-draft/app.js
@@ -48,28 +51,36 @@ jobs:
           const fs = require('fs');
           const html = fs.readFileSync('site/public-route-patch/games/pheno-draft/index.html','utf8');
           const css = fs.readFileSync('site/public-route-patch/games/pheno-draft/pheno-draft.css','utf8');
+          const visual = fs.readFileSync('site/public-route-patch/games/pheno-draft/pheno-draft-v2.css','utf8');
           const app = fs.readFileSync('site/public-route-patch/games/pheno-draft/app.js','utf8');
           const requireText = (source, text, label) => {
             if (!source.includes(text)) throw new Error(`missing ${label}: ${text}`);
           };
           requireText(html, '<link rel="canonical" href="https://dtfseeds.com/games/pheno-draft/">', 'canonical route');
-          requireText(html, '<script type="module" src="./app.js"></script>', 'module entrypoint');
+          requireText(html, '<script defer src="./app.js"></script>', 'classic deferred entrypoint');
+          requireText(html, 'id="pheno-draft-data"', 'embedded canonical card data');
+          requireText(html, 'pheno-draft-v2.css', 'comparison visual layer');
           requireText(html, 'Game boundary:', 'content boundary');
-          requireText(app, 'data.rounds !== 6', 'round contract');
-          requireText(app, 'data.refreshTokens !== 2', 'refresh contract');
-          requireText(app, 'data.traits?.length !== 7', 'trait contract');
-          requireText(app, 'data.goals?.length !== 6', 'goal contract');
-          requireText(app, 'data.cards?.length !== 20', 'card contract');
+          requireText(app, 'payload?.rounds !== 6', 'round contract');
+          requireText(app, 'payload?.refreshTokens !== 2', 'refresh contract');
+          requireText(app, 'payload?.traits?.length !== 7', 'trait contract');
+          requireText(app, 'payload?.goals?.length !== 6', 'goal contract');
+          requireText(app, 'payload?.cards?.length !== 20', 'card contract');
           requireText(app, "['1', '2', '3'].includes(event.key)", '1-3 keyboard choice shortcuts');
           requireText(app, "event.key === 'r' || event.key === 'R'", 'refresh keyboard shortcut');
-          requireText(app, "from './projection.mjs'", 'projection module import');
           requireText(app, 'projectionSummary(', 'parent projection rendering');
-          requireText(app, 'Projected cross', 'projection disclosure label');
+          requireText(app, 'Confirm New Run', 'in-progress restart guard');
+          requireText(app, 'let actionLocked = false;', 'rapid-action lock');
           requireText(css, '.seed-emblem', 'seed card artwork');
           requireText(css, '.helix', 'genome artwork');
           requireText(css, '.trait-track', 'trait meter artwork');
-          requireText(css, '@media(prefers-reduced-motion:reduce)', 'reduced-motion support');
-          if (app.includes('ui.code.disabled')) throw new Error('run code input must remain available after completion');
+          requireText(visual, '.round-track', 'round progress artwork');
+          requireText(visual, '.parent-card.projected-up', 'projection trend state');
+          requireText(visual, '.pheno-card.declining', 'phenotype comparison state');
+          requireText(visual, 'scroll-snap-type:x mandatory', 'mobile comparison carousel');
+          requireText(visual, '@media(prefers-reduced-motion:reduce)', 'reduced-motion support');
+          if (/^\s*import\s/m.test(app)) throw new Error('public runtime regressed to browser module imports');
+          if (/fetch\s*\(/.test(app)) throw new Error('public runtime regressed to browser-time JSON fetch');
           NODE
 
       - name: Verify truthful release boundary
@@ -81,7 +92,7 @@ jobs:
           if (game.route !== '/games/pheno-draft/') throw new Error('unexpected route');
           if (game.releaseGates.rulesTested !== true) throw new Error('rulesTested must remain true after the deterministic rules suite passed');
           if (game.releaseGates.browserTested !== false) throw new Error('browserTested must remain false until browser QA is actually completed');
-          if (game.releaseGates.mobileTested !== false) throw new Error('mobileTested must remain false until mobile QA is actually completed');
+          if (game.releaseGates.mobileTested !== false) throw new Error('mobileTested must remain false until browser QA is actually completed');
           if (game.releaseGates.accessibilityReviewed !== false) throw new Error('accessibilityReviewed must remain false until review is actually completed');
           if (game.releaseGates.deploymentRegistered !== true) throw new Error('deploymentRegistered must stay true once the game is registered in the DTFSeeds public app contract');
           NODE
