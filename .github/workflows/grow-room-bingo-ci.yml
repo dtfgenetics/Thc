@@ -36,4 +36,4 @@ jobs:
           grep -Fq 'https://dtfseeds.com/games/grow-room-bingo/' "$root/index.html"
           grep -Fq 'maxlength="6"' "$root/index.html"
           grep -Fq 'pattern="[A-HJ-NP-Z2-9]{6}"' "$root/index.html"
-          grep -Fq 'deploymentRegistered": false' games/grow-room-bingo/game.json
+          grep -Fq 'deploymentRegistered": true' games/grow-room-bingo/game.json
