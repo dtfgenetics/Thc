@@ -44,7 +44,7 @@ jobs:
           test -s site/public-route-patch/games/spin-the-strain/index.html
           test -s site/public-route-patch/games/spin-the-strain/spin-the-strain.css
           grep -Fq '<link rel="canonical" href="https://dtfseeds.com/games/spin-the-strain/">' site/public-route-patch/games/spin-the-strain/index.html
-          grep -Fq 'script type="module" src="./app.js"' site/public-route-patch/games/spin-the-strain/index.html
+          grep -Fq '<script type="module" src="./app.js"></script>' site/public-route-patch/games/spin-the-strain/index.html
           grep -Fq 'var(--segment-index)*20deg - 80deg' site/public-route-patch/games/spin-the-strain/spin-the-strain.css
           grep -Fq '360 - (state.lastResult.index + 0.5) * (360 / entries.length)' site/public-route-patch/games/spin-the-strain/app.js
           grep -Fq 'data.entries?.length !== 54' site/public-route-patch/games/spin-the-strain/app.js
