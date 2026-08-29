@@ -1,0 +1,58 @@
+{
+  "id":"THC-ENC-235",
+  "number":235,
+  "title":"Decarboxylation Chemistry",
+  "objective":"Explain cannabinoid-acid decarboxylation as matrix-, time-, temperature-, atmosphere-, and method-dependent chemistry without turning the lesson into an operational processing recipe.",
+  "terms":[
+    {"term":"decarboxylation","definition":"Chemical loss of a carboxyl group as carbon dioxide, converting an acidic cannabinoid into its corresponding neutral form."},
+    {"term":"kinetics","definition":"The study of how reaction rate changes with time and conditions."},
+    {"term":"rate constant","definition":"A parameter describing reaction rate under a specified kinetic model and experimental condition."},
+    {"term":"activation energy","definition":"A kinetic parameter describing the temperature sensitivity of a reaction pathway."},
+    {"term":"matrix","definition":"The physical and chemical material surrounding the analyte, such as intact trichome secretion, dried inflorescence, or an extract, which can alter observed reaction behavior."},
+    {"term":"mass balance","definition":"Accounting for starting material, products, and measurable losses rather than assuming disappearance of one compound equals formation of one specific product."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Decarboxylation removes the carboxyl group from an acidic cannabinoid and releases carbon dioxide, producing the corresponding neutral cannabinoid. Heat can accelerate the reaction, but observed behavior also depends on time, moisture, particle size, matrix, atmosphere, vessel, oxygen exposure, and analytical method.",
+    "Controlled cannabinoid studies have reported exponential concentration-versus-time behavior consistent with first-order or pseudo-first-order models under the conditions tested. THCA, CBDA, and CBGA do not necessarily share identical rate constants or product recovery.",
+    "The disappearance of an acidic cannabinoid is not always matched by equal recovery of the expected neutral product. Side reactions, oxidation, isomerization, volatilization, adsorption, incomplete extraction, and analytes outside the measured panel can disrupt a simple one-to-one mass balance.",
+    "Matrix matters. Secretory-cavity material, dried inflorescence, ground plant material, and extracts can show different decarboxylation behavior because heat transfer, oxygen exposure, water activity, surface area, and surrounding compounds differ.",
+    "Kinetic parameters are experiment-specific. A temperature, rate constant, or time relationship measured in one matrix and instrument configuration should not be treated as a universal recipe for another material or process."
+  ],
+  "cultivationRelevance":[
+    "Use decarboxylation chemistry to interpret changes between fresh, dried, stored, and analyzed samples rather than assuming every neutral-cannabinoid increase occurred in the living plant.",
+    "When investigating postharvest conversion, preserve matched starting material and time-point samples so acid loss, neutral formation, and degradants can be tracked together.",
+    "Separate scientific kinetics from operational processing instructions; lawful manufacturing parameters require process-specific engineering, safety, product, and regulatory validation.",
+    "Avoid comparing decarboxylation studies unless matrix, moisture, atmosphere, analytical method, and sampling design are comparable."
+  ],
+  "measureAndRecord":[
+    {"field":"Starting material","requirement":"Record matrix, tissue or extract identity, mass, moisture, particle state, starting acidic/neutral cannabinoid profile, and homogenization."},
+    {"field":"Exposure conditions","requirement":"Record measured sample temperature, elapsed time, atmosphere/headspace, vessel, oxygen/light exposure, and relevant process conditions without substituting set point for actual sample condition."},
+    {"field":"Time series","requirement":"Record multiple validated sampling points sufficient to evaluate a kinetic model rather than inferring rate from only start and finish values."},
+    {"field":"Chemical balance","requirement":"Measure acidic cannabinoids, expected neutral products, and relevant degradants where possible, and report unexplained loss rather than forcing closure."},
+    {"field":"Analytical method","requirement":"Record platform, extraction, standards, calibration, detection limits, replicate, and uncertainty because analysis can itself alter or obscure acid/neutral balance."
+    }
+  ],
+  "misconceptions":[
+    "Decarboxylation is instantaneous at one universal temperature.",
+    "All cannabinoid acids decarboxylate at the same rate.",
+    "Every molecule of lost acid appears as the expected neutral cannabinoid.",
+    "Kinetics measured in an extract transfer directly to intact flower.",
+    "More intense heating always increases recoverable neutral cannabinoid."
+  ],
+  "evidenceLimits":[
+    "Controlled studies establish that cannabinoid-acid decarboxylation is condition- and matrix-dependent and can often be modeled kinetically within a defined experiment. They do not justify one universal operational temperature or time. Product recovery and degradation pathways vary among cannabinoids, matrices, atmospheres, and analytical methods, so process claims require material-specific validation."
+  ],
+  "crossLinks":"THC-ENC-234 for acidic versus neutral cannabinoids; THC-ENC-236 for oxidation and degradation; THC-ENC-238–240 for developmental accumulation, field indicators, and testing claims; THC-ENC-341–360 for postharvest science.",
+  "sourceNotes":[
+    "Wang M et al. (2016). Decarboxylation Study of Acidic Cannabinoids. Cannabis and Cannabinoid Research 1:262–271. Reported first- or pseudo-first-order behavior under tested conditions and different rate behavior for THCA, CBDA, and CBGA, with incomplete product recovery for some analytes.",
+    "Comparison of decarboxylation rates of acidic cannabinoids between secretory cavity contents and air-dried inflorescence extracts in Cannabis sativa 'Cherry Wine' (2024). Directly demonstrated matrix-dependent decarboxylation behavior between trichome-cavity material and dried-flower extracts.",
+    "Thermo-chemical conversion kinetics of cannabinoid acids in hemp (2024). Supports reaction-, matrix-, temperature-, and time-specific kinetic interpretation rather than a single universal conversion rule.",
+    "The controlled Volume 12 manuscript authorizes chemistry and evidence limits only; it explicitly withholds operational decarboxylation recipes."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 12 batch 03 controlled web derivative","driveSourceDocumentId":"1mrad4SysYqoD1-Z8A7ibF9PcnvRjs5qiPIOseYGRtUI","evidenceControl":"controlled_manuscript_plus_direct_decarboxylation_kinetics_and_matrix_comparison_sources","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabinoid_decarboxylation_kinetics_and_matrix_effects","releaseTimeReview":"completed_2026-08-29_kinetics_matrix_mass_balance_and_no_recipe_boundary","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"decarboxylation-chemistry",
+  "route":"/encyclopedia/decarboxylation-chemistry"
+}

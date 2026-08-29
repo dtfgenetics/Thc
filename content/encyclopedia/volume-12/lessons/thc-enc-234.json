@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-234",
+  "number":234,
+  "title":"Acidic Versus Neutral Cannabinoids",
+  "objective":"Distinguish biosynthesized cannabinoid acids from neutral cannabinoids and interpret laboratory totals without treating acidic and neutral measurements as chemically interchangeable.",
+  "terms":[
+    {"term":"acidic cannabinoid","definition":"A cannabinoid retaining a carboxyl group, such as THCA, CBDA, CBGA, or CBCA, and commonly accumulated by living cannabis glandular trichomes."},
+    {"term":"neutral cannabinoid","definition":"The corresponding non-carboxylated cannabinoid, such as THC or CBD, formed largely after decarboxylation of its acidic precursor."},
+    {"term":"decarboxylation","definition":"Loss of a carboxyl group with release of carbon dioxide, converting an acidic cannabinoid to a lower-molecular-mass neutral form."},
+    {"term":"mass-conversion factor","definition":"A molecular-mass correction used when estimating neutral-equivalent potential from an acidic precursor."},
+    {"term":"analytical platform","definition":"The measurement system, such as liquid or gas chromatography, whose chemistry and sample handling affect which cannabinoid forms are directly measured."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Living cannabis glandular trichomes predominantly accumulate cannabinoid acids such as THCA, CBDA, CBGA, and CBCA. Neutral THC, CBD, and related cannabinoids can be present at lower levels and can increase later as acids decarboxylate during drying, storage, heating, processing, or some analytical conditions.",
+    "Acidic and neutral forms are different molecules with different molecular masses. Their concentrations therefore should not be added directly as if one unit of acid becomes one equal-mass unit of neutral cannabinoid. Total-potential calculations use a declared molecular-mass correction to account for carbon dioxide loss.",
+    "Analytical method matters. Liquid-chromatography methods can separate and quantify acidic and neutral cannabinoids directly under appropriately validated conditions, whereas gas-chromatography inlets can promote decarboxylation and may report neutral-equivalent values unless derivatization or other controls are used.",
+    "A label such as 'total THC' or 'total CBD' is a calculated reporting convention, not a single molecule. The underlying acidic value, neutral value, calculation convention, moisture basis, and uncertainty should remain available for interpretation.",
+    "Method and jurisdiction can define totals differently. Scientific reporting should therefore state the actual analytes measured and the exact calculation rather than assuming every laboratory or regulatory program uses the same convention."
+  ],
+  "cultivationRelevance":[
+    "Keep acidic and neutral results visible when comparing living, freshly harvested, dried, stored, or otherwise handled plant material.",
+    "Do not compare laboratories or time points unless sample preparation, moisture basis, analytical platform, and total-cannabinoid calculations are harmonized or explicitly reconciled.",
+    "Use acid/neutral profiles to diagnose postharvest transformation only when matched samples and handling records support the comparison.",
+    "Do not describe an acidic cannabinoid concentration as if it were already the same mass of neutral cannabinoid."
+  ],
+  "measureAndRecord":[
+    {"field":"Analyte panel","requirement":"Report acidic and neutral cannabinoids separately before any calculated total is presented."},
+    {"field":"Analytical method","requirement":"Record LC, GC, or other platform; sample preparation; derivatization if used; standards; calibration; detection limits; and validation status."},
+    {"field":"Calculation","requirement":"Record the exact total-potential formula and mass-conversion factor used rather than only the final total."},
+    {"field":"Sample basis","requirement":"Record tissue, harvest state, moisture basis, sample mass, homogenization, storage, and replicate."},
+    {"field":"Uncertainty","requirement":"Record measurement uncertainty or relevant precision metrics and avoid presenting calculated totals with unsupported precision."
+    }
+  ],
+  "misconceptions":[
+    "Raw or living flower contains only neutral THC or CBD.",
+    "THCA and THC percentages can simply be added with no mass correction.",
+    "Every laboratory measures total THC in exactly the same way.",
+    "A gas-chromatography result and a liquid-chromatography acid/neutral profile are automatically interchangeable.",
+    "A calculated total is the same thing as a directly measured single analyte."
+  ],
+  "evidenceLimits":[
+    "The acid-to-neutral relationship is chemically well established, but reported totals depend on validated analytical method, sample preparation, moisture basis, and calculation convention. Regulatory formulas and reporting requirements can change by jurisdiction, so scientific interpretation should preserve the underlying measured analytes rather than relying on a label alone."
+  ],
+  "crossLinks":"THC-ENC-229–233 for cannabinoid-acid biosynthesis; THC-ENC-235 for decarboxylation kinetics; THC-ENC-236 for degradation; THC-ENC-240 for sampling, laboratory testing, and claims discipline.",
+  "sourceNotes":[
+    "Wang M et al. (2016). Decarboxylation Study of Acidic Cannabinoids. Cannabis and Cannabinoid Research 1:262–271. Demonstrated time- and temperature-dependent conversion of THCA, CBDA, and CBGA and quantified acid/neutral relationships under controlled analytical conditions.",
+    "Cannabis analytical-method literature consistently distinguishes liquid-chromatography measurement of acidic and neutral forms from gas-chromatography workflows that can induce decarboxylation without appropriate method controls.",
+    "The controlled Volume 12 manuscript requires acidic and neutral results, calculation method, moisture basis, and analytical platform to remain explicit in cannabinoid claims."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 12 batch 03 controlled web derivative","driveSourceDocumentId":"1mrad4SysYqoD1-Z8A7ibF9PcnvRjs5qiPIOseYGRtUI","evidenceControl":"controlled_manuscript_plus_decarboxylation_and_analytical_method_sources","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabinoid_acid_neutral_analytical_reporting","releaseTimeReview":"completed_2026-08-29_acid_neutral_mass_correction_and_method_claims","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"acidic-versus-neutral-cannabinoids",
+  "route":"/encyclopedia/acidic-versus-neutral-cannabinoids"
+}
