@@ -1,0 +1,341 @@
+name: Produce Lighting and Evidence Infographics
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - scripts/render-thc-scientific-posters.py
+      - site/wordpress/education/visual-production-plans/lighting-research-v1.json
+      - .github/workflows/wordpress-lighting-evidence-poster-production.yml
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: dtfseeds-wordpress-infographics-production
+  cancel-in-progress: false
+
+jobs:
+  produce:
+    name: Render, publish, and verify eight full-sheet scientific posters
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    environment: production
+    env:
+      NODE_OPTIONS: --dns-result-order=ipv4first
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      INFOGRAPHIC_SOURCE_DIR: ${{ github.workspace }}/site/wordpress/assets/infographics
+      INFOGRAPHIC_DIR: ${{ github.workspace }}/.tmp/eligible-infographics
+      INFOGRAPHIC_PLACEMENT_CONFIG: ${{ github.workspace }}/site/wordpress/assets/infographics/placement-rules.json
+      INFOGRAPHIC_EXCLUSIONS: ${{ github.workspace }}/site/wordpress/assets/infographics/infographic-exclusions.json
+      INFOGRAPHIC_LEARNING_GUIDES: ${{ github.workspace }}/site/wordpress/assets/infographics/infographic-learning-guides.json
+      TOPIC_LITERATURE_CONFIG: /tmp/dtf-topic-literature-expanded.json
+      BACKUP_ROOT: /tmp/wordpress-lighting-evidence-posters
+      POSTER_RENDER_REPORT: /tmp/thc-lighting-evidence-poster-render.json
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate renderer and production inputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
+          python -m py_compile scripts/render-thc-scientific-posters.py
+          node --check scripts/stage-eligible-infographics.mjs
+          node --check scripts/deploy-wordpress-infographic-library-rest.mjs
+          node --check scripts/assemble-topic-literature-expansions.mjs
+          node --check scripts/publish-wordpress-topic-literature.mjs
+          node --check scripts/flush-hostinger-litespeed-mcp.mjs
+          node - <<'NODE'
+          const fs = require('fs');
+          const plan = JSON.parse(fs.readFileSync('site/wordpress/education/visual-production-plans/lighting-research-v1.json', 'utf8'));
+          if (!Array.isArray(plan.assets) || plan.assets.length !== 8) throw new Error('Expected exactly eight poster briefs');
+          if (plan.assets.some(x => x.status !== 'ready-for-render' || !x.title || !x.topicId || (x.requiredPanels || []).length < 5)) {
+            throw new Error('Poster production plan is incomplete');
+          }
+          console.log(`Validated ${plan.assets.length} render-ready full-sheet poster briefs.`);
+          NODE
+
+      - name: Install deterministic raster renderer
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check --no-cache-dir 'Pillow==11.3.0'
+
+      - name: Render eight 2550x3300 scientific posters
+        id: render
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/render-thc-scientific-posters.py | tee /tmp/thc-poster-render.log
+          test -s "$POSTER_RENDER_REPORT"
+          python - "$POSTER_RENDER_REPORT" <<'PY'
+          import json, os, sys
+          from PIL import Image
+          report = json.load(open(sys.argv[1], encoding='utf-8'))
+          if report.get('posterCount') != 8:
+              raise SystemExit(f"Expected 8 rendered posters, got {report.get('posterCount')}")
+          for item in report['results']:
+              path = item['path']
+              if not os.path.exists(path):
+                  raise SystemExit(f'Missing rendered poster: {path}')
+              with Image.open(path) as im:
+                  if im.size != (2550, 3300) or im.format != 'PNG':
+                      raise SystemExit(f'Invalid poster {path}: {im.format} {im.size}')
+              if os.path.getsize(path) < 250000:
+                  raise SystemExit(f'Poster is unexpectedly small: {path}')
+          print('All eight poster binaries passed dimension, format, and minimum-size checks.')
+          PY
+          echo "poster_count=$(node -p "require(process.argv[1]).posterCount" "$POSTER_RENDER_REPORT")" >> "$GITHUB_OUTPUT"
+
+      - name: Persist rendered posters in canonical infographic source
+        id: canonical
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'DTF Scientific Poster Publisher'
+          git config user.email 'actions@users.noreply.github.com'
+          git add \
+            site/wordpress/assets/infographics/THC-LIGHT-0*_*.png \
+            site/wordpress/assets/infographics/THC-EVID-0*_*.png
+          if git diff --cached --quiet; then
+            echo 'changed=false' >> "$GITHUB_OUTPUT"
+          else
+            git commit -m 'Render Lighting and Evidence full-sheet infographics'
+            if ! git push origin HEAD:main; then
+              git pull --rebase origin main
+              git push origin HEAD:main
+            fi
+            echo 'changed=true' >> "$GITHUB_OUTPUT"
+            echo "commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Stage canonical finished infographic assets
+        id: quality
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$BACKUP_ROOT"
+          node scripts/stage-eligible-infographics.mjs
+          report="$BACKUP_ROOT/infographic-quality-gate.json"
+          echo "source_count=$(node -p "require(process.argv[1]).sourceImageCount" "$report")" >> "$GITHUB_OUTPUT"
+          echo "eligible_count=$(node -p "require(process.argv[1]).eligibleImageCount" "$report")" >> "$GITHUB_OUTPUT"
+          echo "excluded_count=$(node -p "require(process.argv[1]).excludedImageCount" "$report")" >> "$GITHUB_OUTPUT"
+          for id in THC-LIGHT-01 THC-LIGHT-02 THC-LIGHT-03 THC-LIGHT-04 THC-EVID-01 THC-EVID-02 THC-EVID-03 THC-EVID-04; do
+            find "$INFOGRAPHIC_DIR" -type f -name "${id}_*.png" -print -quit | grep -q . || {
+              echo "Rendered poster did not survive infographic staging: $id" >&2
+              exit 1
+            }
+          done
+
+      - name: Upload or reuse WordPress infographic media
+        id: media
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/deploy-wordpress-infographic-library-rest.mjs
+          backup_dir="$(cat "$BACKUP_ROOT/wordpress-infographic-backup-path.txt")"
+          result="$backup_dir/deployment-result.json"
+          echo "uploaded=$(node -p "require(process.argv[1]).uploadedMediaCount" "$result")" >> "$GITHUB_OUTPUT"
+          echo "reused=$(node -p "require(process.argv[1]).reusedMediaCount" "$result")" >> "$GITHUB_OUTPUT"
+
+      - name: Assemble expanded Lighting and Research literature
+        id: expand
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/assemble-topic-literature-expansions.mjs --write "$TOPIC_LITERATURE_CONFIG" | tee /tmp/thc-poster-expanded-literature.json
+          node - "$TOPIC_LITERATURE_CONFIG" <<'NODE'
+          const fs = require('fs');
+          const data = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
+          const byId = new Map(data.topics.map(t => [t.id, t]));
+          if ((byId.get('lighting')?.sections || []).length < 9) throw new Error('Lighting expansion is not assembled');
+          if ((byId.get('research-measurement')?.sections || []).length < 9) throw new Error('Research/Measurement expansion is not assembled');
+          NODE
+
+      - name: Publish expanded companion literature and guided library
+        id: literature
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --import ./scripts/wordpress-transient-fetch-bootstrap.mjs scripts/publish-wordpress-topic-literature.mjs
+          backup_dir="$(cat "$BACKUP_ROOT/topic-literature-backup-path.txt")"
+          report="$backup_dir/topic-literature-report.json"
+          echo "gallery_count=$(node -p "require(process.argv[1]).eligibleInfographics" "$report")" >> "$GITHUB_OUTPUT"
+          echo "topic_count=$(node -p "require(process.argv[1]).topicPages.length" "$report")" >> "$GITHUB_OUTPUT"
+          echo "learning_paths=$(node -p "require(process.argv[1]).learningPathCount" "$report")" >> "$GITHUB_OUTPUT"
+          echo "study_guides=$(node -p "require(process.argv[1]).studyGuideCount" "$report")" >> "$GITHUB_OUTPUT"
+
+      - name: Purge Hostinger LiteSpeed cache
+        id: cache
+        shell: bash
+        run: |
+          set -euo pipefail
+          ok=0
+          : > /tmp/thc-poster-cache-flush.log
+          for attempt in 1 2 3; do
+            if node scripts/flush-hostinger-litespeed-mcp.mjs | tee -a /tmp/thc-poster-cache-flush.log; then
+              ok=1
+              break
+            fi
+            sleep $((attempt * 4))
+          done
+          [[ "$ok" -eq 1 ]] || { echo 'LiteSpeed purge failed after retries.' >&2; exit 1; }
+          sleep 5
+
+      - name: Verify eight posters on public guided-learning pages
+        id: verify
+        env:
+          EXPECTED_CARD_COUNT: ${{ steps.literature.outputs.gallery_count }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          fetch_until() {
+            local url="$1" body="$2" marker="$3" ok=0
+            for attempt in 1 2 3 4 5 6 7 8 9 10; do
+              if curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+                --header 'Cache-Control: no-cache, no-store, max-age=0' \
+                --header 'Pragma: no-cache' \
+                "${url}?dtf_science_posters=${GITHUB_RUN_ID}-${attempt}-$(date +%s%N)" --output "$body"; then
+                if grep -Fqi "$marker" "$body"; then ok=1; break; fi
+              fi
+              sleep 7
+            done
+            [[ "$ok" -eq 1 ]] || { echo "Missing '$marker' at $url" >&2; exit 1; }
+          }
+
+          library="$RUNNER_TEMP/lighting-evidence-library.html"
+          lighting="$RUNNER_TEMP/lighting-topic.html"
+          research="$RUNNER_TEMP/research-topic.html"
+          fetch_until 'https://dtfseeds.com/learn/infographics/' "$library" 'Searchable Infographic Library'
+          fetch_until 'https://dtfseeds.com/learn/lighting/' "$lighting" 'From single readings to canopy light maps'
+          fetch_until 'https://dtfseeds.com/learn/research-methods/' "$research" 'Controls, randomization, and blocking'
+
+          grep -Fqi 'Use the library as a learning system' "$library"
+          grep -Fqi 'Choose a learning path' "$library"
+          grep -Fqi 'thc-infographic-topic' "$library"
+          grep -Fqi 'Study question:' "$library"
+
+          for title in \
+            'PPFD DLI Photoperiod Full Sheet Infographic' \
+            'Lighting Canopy PPFD Mapping Full Sheet Infographic' \
+            'Light Sensors Spectrum Measurement Full Sheet Infographic' \
+            'Lighting Response Photoinhibition Full Sheet Infographic'; do
+            grep -Fqi "$title" "$library" || { echo "Lighting poster missing from public library: $title" >&2; exit 1; }
+            grep -Fqi "$title" "$lighting" || { echo "Lighting poster missing from Lighting topic: $title" >&2; exit 1; }
+          done
+          for title in \
+            'Observation Measurement Inference Full Sheet Infographic' \
+            'Replication Subsampling Research Full Sheet Infographic' \
+            'Controls Randomization Blocking Evidence Full Sheet Infographic' \
+            'Measurement Quality Uncertainty Full Sheet Infographic'; do
+            grep -Fqi "$title" "$library" || { echo "Evidence poster missing from public library: $title" >&2; exit 1; }
+            grep -Fqi "$title" "$research" || { echo "Evidence poster missing from Research topic: $title" >&2; exit 1; }
+          done
+
+          cards="$(grep -Eo '<article class="thc-visual-card thc-library-card"' "$library" | wc -l | tr -d ' ')"
+          [[ "$cards" -eq "$EXPECTED_CARD_COUNT" ]] || {
+            echo "Expected $EXPECTED_CARD_COUNT public cards, found $cards" >&2
+            exit 1
+          }
+          [[ "$cards" -ge 104 ]] || {
+            echo "Expected the finished library to reach at least 104 cards after the eight-poster batch; found $cards" >&2
+            exit 1
+          }
+
+          python - "$library" <<'PY'
+          import re, sys, urllib.parse, subprocess
+          body = open(sys.argv[1], encoding='utf-8').read()
+          urls = []
+          for match in re.findall(r'https?://[^"\'<> ]+wp-content/uploads/[^"\'<> ]+\.png', body, re.I):
+              url = urllib.parse.unquote(match).replace('&amp;', '&')
+              if any(key in url.lower() for key in ('thc-light-0', 'thc-evid-0')) and url not in urls:
+                  urls.append(url)
+          if len(urls) < 8:
+              raise SystemExit(f'Expected eight rendered poster URLs; found {len(urls)}')
+          for url in urls[:8]:
+              meta = subprocess.check_output(['curl','-4','--fail','--silent','--show-error','--location','--write-out','%{http_code}|%{content_type}|%{size_download}','--output','/tmp/poster-check.bin',url], text=True)
+              status, content_type, size = meta.split('|')
+              if not status.startswith('2') or not content_type.startswith('image/') or int(float(size)) < 250000:
+                  raise SystemExit(f'Poster media failed: {url} {meta}')
+          print(f'Verified {len(urls[:8])} full-size public poster media responses.')
+          PY
+
+          echo "public_card_count=$cards" >> "$GITHUB_OUTPUT"
+          echo 'poster_batch_live=true' >> "$GITHUB_OUTPUT"
+
+      - name: Upload render, rollback, and verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighting-evidence-posters-${{ github.run_id }}
+          path: |
+            /tmp/thc-lighting-evidence-poster-render.json
+            /tmp/thc-poster-render.log
+            /tmp/thc-poster-expanded-literature.json
+            /tmp/thc-poster-cache-flush.log
+            /tmp/wordpress-lighting-evidence-posters
+            ${{ runner.temp }}/lighting-evidence-library.html
+            ${{ runner.temp }}/lighting-topic.html
+            ${{ runner.temp }}/research-topic.html
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report scientific poster production
+        if: always()
+        continue-on-error: true
+        uses: actions/github-script@v7
+        env:
+          STATUS: ${{ job.status }}
+          RENDER: ${{ steps.render.outcome }}
+          CANONICAL: ${{ steps.canonical.outcome }}
+          QUALITY: ${{ steps.quality.outcome }}
+          MEDIA: ${{ steps.media.outcome }}
+          LITERATURE: ${{ steps.literature.outcome }}
+          CACHE: ${{ steps.cache.outcome }}
+          VERIFY: ${{ steps.verify.outcome }}
+          POSTERS: ${{ steps.render.outputs.poster_count }}
+          UPLOADED: ${{ steps.media.outputs.uploaded }}
+          REUSED: ${{ steps.media.outputs.reused }}
+          CARDS: ${{ steps.verify.outputs.public_card_count }}
+        with:
+          script: |
+            const body = [
+              '## Lighting + Evidence scientific poster production',
+              '',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Overall: **${process.env.STATUS}**`,
+              `Rendered full-sheet posters: **${process.env.POSTERS || '0'}**`,
+              `Renderer: **${process.env.RENDER || 'not-run'}**`,
+              `Canonical binary commit: **${process.env.CANONICAL || 'not-run'}**`,
+              `Infographic quality staging: **${process.env.QUALITY || 'not-run'}**`,
+              `WordPress media: **${process.env.MEDIA || 'not-run'}** (uploaded ${process.env.UPLOADED || '0'}, reused ${process.env.REUSED || '0'})`,
+              `Expanded literature republish: **${process.env.LITERATURE || 'not-run'}**`,
+              `LiteSpeed purge: **${process.env.CACHE || 'not-run'}**`,
+              `Visitor verification: **${process.env.VERIFY || 'not-run'}**`,
+              `Public finished infographic cards: **${process.env.CARDS || 'not-run'}**`,
+              '',
+              'The posters are deterministic 2550×3300 PNGs assembled from reviewed DTF/THC source visuals plus source-controlled scientific diagrams and typography. Supporting reference images remain excluded as standalone infographic cards.'
+            ].join('\n');
+            try {
+              await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: 220, body });
+            } catch (error) {
+              core.warning(`Poster production report could not be posted: ${error.message}`);
+            }
