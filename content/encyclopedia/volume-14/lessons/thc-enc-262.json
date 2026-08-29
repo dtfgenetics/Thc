@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-262",
+  "number":262,
+  "title":"Symptom Distribution by Plant Age and Location",
+  "objective":"Interpret cannabis symptom position through tissue age, nutrient mobility, vascular supply, exposure, and canopy microclimate without treating location as proof of one cause.",
+  "terms":[
+    {"term":"source-sink relation","definition":"The relationship between tissues that export assimilates or nutrients and tissues that import them for growth or storage."},
+    {"term":"nutrient mobility","definition":"The degree to which an element can be redistributed within a plant after uptake; mobility varies by element and context."},
+    {"term":"canopy layer","definition":"A defined vertical or spatial region of the plant canopy with its own light, temperature, humidity, and airflow environment."},
+    {"term":"exposure pattern","definition":"The spatial arrangement of injury relative to light, airflow, spray, irrigation, contact, or another environmental source."},
+    {"term":"matched control","definition":"An unaffected comparison plant or organ selected to be as similar as possible in age, genotype, position, and environment."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Tissue age and plant position influence symptom expression because leaves and growing points differ in expansion rate, photosynthetic demand, nutrient remobilization, vascular connection, transpiration, light exposure, temperature, and cumulative injury history.",
+    "Older leaves can show senescence, remobilization of mobile elements, accumulated salt or physical injury, lower-canopy shading, or long exposure to root-zone problems. Expanding leaves can show deformation or chlorosis when developing tissues cannot obtain or use required resources, but age-location patterns are not element-specific diagnoses.",
+    "The common mobile-versus-immobile nutrient framework is useful for hypothesis generation, not as a universal photographic key. Element mobility, root supply, transpiration, genotype, developmental stage, salinity, pH, water status, and interacting deficiencies can alter the expected pattern.",
+    "Location also records exposure. Upper leaves can receive more radiation, warmer leaf temperatures, spray interception, or fixture-related stress; edge plants can receive stronger fan jets or dry air; lower foliage can remain shaded, older, wetter, or more exposed to splash and dense-canopy microclimates.",
+    "The strongest diagnostic use of position comes from comparison: map affected versus unaffected plants and compare matched-age tissues within and across delivery and environmental zones. A vertical or directional pattern should narrow hypotheses, not end the investigation."
+  ],
+  "cultivationRelevance":[
+    "Photograph the whole plant before close-up leaves so canopy position and distribution are preserved.",
+    "Compare matched leaf ages and nodes from affected and unaffected plants rather than submitting one extreme leaf as the entire case.",
+    "Map irrigation emitters, fixture geometry, fan direction, bench edges, doors, and spray passes against the symptom pattern.",
+    "Use tissue/root-zone testing and environmental history to challenge a nutrient-mobility hypothesis before changing the nutrient recipe."
+  ],
+  "measureAndRecord":[
+    {"field":"Plant and tissue age","requirement":"Record propagation age, developmental stage, node/branch, leaf expansion class, and whether symptoms began on old, mature, expanding, or meristematic tissue."},
+    {"field":"Canopy position","requirement":"Record height, orientation, distance to fixtures/fans/walls, shaded or exposed status, and neighboring plant conditions."},
+    {"field":"Pattern progression","requirement":"Record first affected tissue, direction of progression, symmetry, new-growth response, and whether the pattern follows irrigation, airflow, light, or treatment zones."},
+    {"field":"Supporting tests","requirement":"Record pH/EC/root state, tissue or media analysis, emitter output, relevant environment by location, and magnified pest/disease inspection."},
+    {"field":"Matched controls","requirement":"Select and record unaffected plants or organs of similar genotype, age, and position to distinguish local exposure from whole-system change."
+    }
+  ],
+  "misconceptions":[
+    "Symptoms on old leaves always identify a mobile-nutrient deficiency.",
+    "Symptoms on new leaves always identify calcium or iron deficiency.",
+    "Top-canopy injury proves excessive light.",
+    "Lower-leaf yellowing proves nitrogen deficiency.",
+    "A symptom's location is more important than roots, environment, history, and progression."
+  ],
+  "evidenceLimits":[
+    "Position and tissue age are high-value diagnostic observations but have low cause specificity by themselves. Plant mobility rules and canopy patterns must be interpreted with substrate, root, environmental, chemical, pest, pathogen, and developmental evidence."
+  ],
+  "crossLinks":"THC-ENC-261 for diagnostic workflow; THC-ENC-263–265 for symptom vocabulary; THC-ENC-121–140 for mineral nutrition; THC-ENC-196–200 for canopy environment/measurement; THC-ENC-281–340 for biotic differentials.",
+  "sourceNotes":[
+    "Penn State Extension current diagnostic guidance emphasizes whole-plant and site patterns, affected versus unaffected comparisons, and management history rather than isolated symptoms.",
+    "Saloner A, Bernstein N. (2020); Shiponi S, Bernstein N. (2021); and Saloner A, Sacks MM, Bernstein N. (2019) provide direct medical-cannabis evidence that nitrogen, phosphorus, and potassium responses are genotype-, supply-, growth-, and tissue-context dependent rather than universal photo keys.",
+    "Controlled Volume 14 manuscript v1.0 explicitly treats mobile-versus-immobile nutrient rules and canopy position as hypotheses requiring root-zone, environmental, historical, and biological evidence."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 14 batch 01 controlled web derivative","driveSourceDocumentId":"1mbN8hq4g6jZUgW0bkwZBSXotPqZ7c184kOya5SqdtJA","evidenceControl":"controlled_manuscript_plus_extension_and_direct_cannabis_nutrition_sources","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_symptom_distribution_tissue_age_mobility_and_exposure_patterns","releaseTimeReview":"completed_2026-08-29_age_location_mobility_and_exposure_diagnostic_boundaries","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"symptom-distribution-by-plant-age-and-location",
+  "route":"/encyclopedia/symptom-distribution-by-plant-age-and-location"
+}
