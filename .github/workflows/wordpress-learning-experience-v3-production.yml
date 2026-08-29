@@ -93,7 +93,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p "$BACKUP_ROOT"
-          node scripts/run-learning-v3-production.mjs | tee /tmp/dtf-learning-v3-output.json
+          node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/run-learning-v3-production.mjs | tee /tmp/dtf-learning-v3-output.json
 
       - name: Verify live shared shell and learning routes
         id: verify
@@ -197,7 +197,7 @@ jobs:
               'Mobile navigation is a single horizontal rail instead of a multi-row wrapped header. Footer routes secondary destinations to Community, Gallery, About, Contact, and Discord.',
               'Canonical topic titles are normalized into stable layout aliases before publication so source IDs can evolve without breaking customer-facing routes.',
               'The publisher runs after the THC infographic publisher, which is the single upstream production handoff for the final Learning layer.',
-              'Shared-shell WordPress REST calls are forced over IPv4 on GitHub runners to avoid the recurring Hostinger IPv6-unreachable/IPv4 timeout aggregate failure.',
+              'Shared-shell and Learning hierarchy WordPress REST calls are forced over IPv4 on GitHub runners to avoid the recurring Hostinger IPv6-unreachable/IPv4 timeout aggregate failure.',
               'After Learning verifies, the final Home release-card reconciler is invoked as a reusable workflow so the production chain does not exceed GitHub workflow_run depth limits.',
               'The publisher creates rollback snapshots, preserves the WooCommerce archive style injection, attempts a LiteSpeed cache flush, and performs cache-busted visitor verification on Home, Learn, Shop, and all subject routes.'
             ].join('\n');
