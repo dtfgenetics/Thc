@@ -15,12 +15,28 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: {node-version: '22'}
-      - run: node games/lost-in-the-terps/scripts/validate-data.mjs
-      - run: node --check site/public-route-patch/games/lost-in-the-terps/app.js
-      - shell: bash
+      - name: Validate canonical and public puzzle data
+        run: node games/lost-in-the-terps/scripts/validate-data.mjs
+      - name: Test self-contained public runtime
+        run: node games/lost-in-the-terps/test/public-runtime.test.mjs
+      - name: Validate browser runtime syntax and route contract
+        shell: bash
         run: |
           set -euo pipefail
-          test -s site/public-route-patch/games/lost-in-the-terps/index.html
-          test -s site/public-route-patch/games/lost-in-the-terps/terps.css
-          grep -Fq 'https://dtfseeds.com/games/lost-in-the-terps/' site/public-route-patch/games/lost-in-the-terps/index.html
+          root=site/public-route-patch/games/lost-in-the-terps
+          node --check "$root/app.js"
+          test -s "$root/index.html"
+          test -s "$root/terps.css"
+          test -s "$root/data/puzzles.json"
+          grep -Fq 'https://dtfseeds.com/games/lost-in-the-terps/' "$root/index.html"
+          grep -Fq 'id="terps-puzzle-data"' "$root/index.html"
+          grep -Fq '<script src="./app.js" defer></script>' "$root/index.html"
+          if grep -Fq 'type="module"' "$root/index.html"; then
+            echo 'Lost in the Terps must not depend on module MIME handling in production.' >&2
+            exit 1
+          fi
+          if grep -Fq "fetch('./data/puzzles.json'" "$root/app.js"; then
+            echo 'Lost in the Terps must not fetch puzzle JSON at runtime.' >&2
+            exit 1
+          fi
           grep -Fq 'deploymentRegistered": true' games/lost-in-the-terps/game.json
