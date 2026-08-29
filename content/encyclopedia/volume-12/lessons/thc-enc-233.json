@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-233",
+  "number":233,
+  "title":"Varin Cannabinoids and Alternate Precursors",
+  "objective":"Explain propyl-side-chain varin cannabinoids through alternate starter substrates and inherited pathway variation without treating THCV or CBDV as degradation products of their pentyl analogs.",
+  "terms":[
+    {"term":"varin cannabinoid","definition":"A cannabinoid homolog with a three-carbon propyl side chain, such as THCVA, THCV, CBDVA, or CBDV."},
+    {"term":"pentyl side chain","definition":"A five-carbon alkyl side chain characteristic of major cannabinoids derived through the olivetolic-acid branch."},
+    {"term":"propyl side chain","definition":"A three-carbon alkyl side chain characteristic of varin cannabinoids."},
+    {"term":"butanoyl-CoA","definition":"A short-chain acyl-CoA proposed and demonstrated in reconstructed systems as a starter precursor for the propyl-cannabinoid branch."},
+    {"term":"divarinic acid","definition":"A propyl-side-chain resorcylic acid intermediate analogous to olivetolic acid in the varin pathway."},
+    {"term":"CBGVA","definition":"Cannabigerovarinic acid, a propyl-side-chain cannabinoid-acid precursor that can feed downstream varin oxidocyclase products."}
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Major pentyl cannabinoids contain a five-carbon side chain, whereas varin cannabinoids such as THCVA and CBDVA contain a three-carbon propyl side chain. The difference originates upstream in precursor chemistry rather than by shortening THC or CBD after they are formed.",
+    "Reconstructed cannabinoid pathways support an alternate precursor route in which shorter acyl starters such as butanoyl-CoA contribute to divarinic-acid-type intermediates, which can be prenylated to CBGVA and then used by cannabinoid oxidocyclases to form varin acids.",
+    "Cannabinoid-pathway enzymes can show substrate flexibility, so the amount of pentyl versus propyl product depends on precursor availability, enzyme compatibility, expression, tissue, and genotype rather than one universal conversion rule.",
+    "Inheritance studies in cannabis found complex segregation of alkyl side-chain composition rather than a simple one-gene universal model. Linkage, epistasis, background genotype, and pathway interactions can all affect the observed C3:C5 cannabinoid profile.",
+    "Varin acids remain acidic plant products. Neutral THCV and CBDV can increase later through decarboxylation, so varin biosynthesis and neutral-product formation should be reported separately."
+  ],
+  "cultivationRelevance":[
+    "Treat varin abundance as a measured chemotype trait and select breeding parents from replicated chemical data rather than cultivar-name folklore.",
+    "Measure both propyl and pentyl cannabinoid acids and neutrals so a high varin percentage is not confused with high absolute varin yield.",
+    "Use offspring segregation and validated markers when studying inheritance; do not assume a marker transfers unchanged across unrelated breeding populations.",
+    "Control tissue, developmental stage, environment, moisture basis, and analytical method before comparing C3:C5 ratios among plants."
+  ],
+  "measureAndRecord":[
+    {"field":"Chemical profile","requirement":"Record THCVA, THCV, CBDVA, CBDV, CBGVA and corresponding pentyl cannabinoids with absolute concentrations, ratios, method, standards, moisture basis, replicate, and uncertainty."},
+    {"field":"Genetic identity","requirement":"Record pedigree, accession or genotype, synthase markers or sequence data where used, and the population in which marker performance was validated."},
+    {"field":"Developmental context","requirement":"Record tissue, plant and flower position, developmental stage, harvest state, storage, and environmental treatment."},
+    {"field":"Inheritance study","requirement":"Record parental chemotypes, family structure, population size, segregation data, statistical model, and departures from simple Mendelian expectations."},
+    {"field":"Pathway evidence","requirement":"Distinguish direct plant chemistry from reconstructed-pathway or enzyme-substrate evidence when describing alternate precursor routes."
+    }
+  ],
+  "misconceptions":[
+    "THCV is produced by degrading or shortening THC.",
+    "CBDV is simply old or degraded CBD.",
+    "One recessive gene universally controls every varin cannabinoid.",
+    "A high percentage of a varin compound guarantees high total varin yield.",
+    "Cultivar name alone establishes a stable C3-dominant chemotype."
+  ],
+  "evidenceLimits":[
+    "Reconstructed pathways and cannabis segregation studies strongly support alternate starter chemistry and inherited control of alkyl side-chain composition, but the relative contribution of precursor supply, linked loci, synthase specificity, and regulatory genes is population- and genotype-dependent. Marker transfer and simplified monogenic explanations require validation rather than assumption."
+  ],
+  "crossLinks":"THC-ENC-227–229 for precursor branches and CBGA; THC-ENC-230–232 for cannabinoid oxidocyclases; THC-ENC-234–236 for acid/neutral conversion and degradation; THC-ENC-237 for genotype-by-environment effects.",
+  "sourceNotes":[
+    "Welling MT et al. (2019). Complex Patterns of Cannabinoid Alkyl Side-Chain Inheritance in Cannabis. Scientific Reports 9:11421. Found non-simple segregation of C3/C5 alkyl cannabinoid composition and interactions with synthase-genotype background.",
+    "Luo X et al. (2019). Complete biosynthesis of cannabinoids and their unnatural analogues in yeast. Nature 567:123–126. Reconstructed pentyl and varin cannabinoid pathways and demonstrated alternate short-chain precursor use in engineered systems.",
+    "The controlled Volume 12 manuscript requires propyl and pentyl homologs to be reported as separate biosynthetic branches and prohibits describing THCV or CBDV as degradation products of THC or CBD."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 12 batch 03 controlled web derivative","driveSourceDocumentId":"1mrad4SysYqoD1-Z8A7ibF9PcnvRjs5qiPIOseYGRtUI","evidenceControl":"controlled_manuscript_plus_varin_pathway_reconstruction_and_cannabis_inheritance_sources","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_varin_biosynthesis_and_alkyl_side_chain_inheritance","releaseTimeReview":"completed_2026-08-29_alternate_precursor_inheritance_and_non_degradation_claims","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"varin-cannabinoids-and-alternate-precursors",
+  "route":"/encyclopedia/varin-cannabinoids-and-alternate-precursors"
+}
