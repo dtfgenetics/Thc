@@ -1,0 +1,109 @@
+name: WordPress Content Resilience Qualification
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - scripts/import-wordpress-infographic-remote-batch.mjs
+      - scripts/apply-wordpress-public-content-rest.mjs
+      - .github/workflows/wordpress-public-content-cleanup.yml
+      - .github/workflows/wordpress-public-content-ci.yml
+      - .github/workflows/wordpress-infographic-production.yml
+      - .github/workflows/wordpress-content-resilience-ci.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: wordpress-content-resilience-ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  qualify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate JavaScript and single-writer ownership
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/import-wordpress-infographic-remote-batch.mjs
+          node --check scripts/apply-wordpress-public-content-rest.mjs
+          node --check scripts/publish-wordpress-articles-rest.mjs
+          grep -Fq "node scripts/apply-wordpress-public-content-rest.mjs" .github/workflows/wordpress-canonical-production.yml
+          ! grep -Fq 'workflow_run:' .github/workflows/wordpress-public-content-cleanup.yml
+          ! grep -Fq 'apply-wordpress-public-content-rest.mjs' .github/workflows/wordpress-public-content-cleanup.yml
+          ! grep -Fq 'site/wordpress/pages/**' .github/workflows/wordpress-public-content-cleanup.yml
+          grep -Fq 'issue_number: 220' .github/workflows/wordpress-public-content-cleanup.yml
+          grep -Fq 'continue-on-error: true' .github/workflows/wordpress-public-content-cleanup.yml
+          grep -Fq 'retryTransient' scripts/apply-wordpress-public-content-rest.mjs
+          grep -Fq "dns.setDefaultResultOrder('ipv4first')" scripts/apply-wordpress-public-content-rest.mjs
+
+          # Production infographic publication must serialize instead of canceling an active mutation.
+          grep -Fq 'group: dtfseeds-wordpress-infographics-production' .github/workflows/wordpress-infographic-production.yml
+          grep -Fq 'cancel-in-progress: false' .github/workflows/wordpress-infographic-production.yml
+          grep -Fq 'Remote queue items quarantined:' .github/workflows/wordpress-infographic-production.yml
+          count="$(grep -Fc 'continue-on-error: true' .github/workflows/wordpress-infographic-production.yml)"
+          [[ "$count" -ge 2 ]] || { echo 'Infographic launch/final reporting must both be advisory.' >&2; exit 1; }
+
+          # CI must reflect the current dedicated Seeds ownership and article-only workflow boundary.
+          grep -Fq 'Dedicated genetics library publisher' .github/workflows/wordpress-public-content-ci.yml
+          grep -Fq "! grep -Eq \"\\['seeds'" .github/workflows/wordpress-public-content-ci.yml
+
+      - name: Prove unavailable infographic URLs are quarantined without blocking canonical assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/infographic-source"
+          cat > "$RUNNER_TEMP/manifest.json" <<'JSON'
+          {
+            "schemaVersion": 1,
+            "batchId": "ci-quarantine-test",
+            "assets": [
+              {
+                "filename": "Unavailable_Remote_Infographic.png",
+                "sourceUrl": "http://invalid.example/unavailable.png"
+              }
+            ]
+          }
+          JSON
+          BULK_INFOGRAPHIC_MANIFEST="$RUNNER_TEMP/manifest.json" \
+          INFOGRAPHIC_SOURCE_DIR="$RUNNER_TEMP/infographic-source" \
+          BULK_IMPORT_REPORT="$RUNNER_TEMP/report.json" \
+          node scripts/import-wordpress-infographic-remote-batch.mjs
+          node - <<'NODE'
+          const fs = require('fs');
+          const report = JSON.parse(fs.readFileSync(process.env.RUNNER_TEMP + '/report.json', 'utf8'));
+          if (report.status !== 'partial') throw new Error(`Expected partial status, got ${report.status}`);
+          if (report.requestedAssets !== 1 || report.quarantined !== 1) throw new Error('Unavailable asset was not quarantined exactly once.');
+          if (report.created !== 0 || report.updated !== 0 || report.reused !== 0) throw new Error('Unavailable asset was incorrectly reported as imported.');
+          if (report.assets?.[0]?.action !== 'quarantined') throw new Error('Per-asset quarantine evidence is missing.');
+          console.log('Unavailable remote source is quarantined while the importer exits successfully for the remaining pipeline.');
+          NODE
+
+      - name: Prove strict intake can still fail closed
+        shell: bash
+        run: |
+          set -euo pipefail
+          if BULK_IMPORT_REQUIRE_ALL=true \
+             BULK_INFOGRAPHIC_MANIFEST="$RUNNER_TEMP/manifest.json" \
+             INFOGRAPHIC_SOURCE_DIR="$RUNNER_TEMP/strict-source" \
+             BULK_IMPORT_REPORT="$RUNNER_TEMP/strict-report.json" \
+             node scripts/import-wordpress-infographic-remote-batch.mjs; then
+            echo 'Strict infographic intake unexpectedly accepted a quarantined remote asset.' >&2
+            exit 1
+          fi
+          node - <<'NODE'
+          const fs = require('fs');
+          const report = JSON.parse(fs.readFileSync(process.env.RUNNER_TEMP + '/strict-report.json', 'utf8'));
+          if (report.quarantined !== 1 || report.requireAllRemoteAssets !== true) throw new Error('Strict quarantine evidence is incomplete.');
+          console.log('Strict mode fails closed after writing quarantine evidence.');
+          NODE

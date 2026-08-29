@@ -204,6 +204,7 @@ jobs:
 
       - name: Report genetics production result
         if: always()
+        continue-on-error: true
         uses: actions/github-script@v7
         env:
           JOB_STATUS: ${{ job.status }}
@@ -227,4 +228,8 @@ jobs:
               'Authoritative production writer: image-backed seed-line catalog, cross-checked against stable pedigree and commerce registries.',
               'Target: https://dtfseeds.com/seeds/'
             ].join('\n');
-            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body});
+            try {
+              await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:220,body});
+            } catch (error) {
+              core.warning(`Could not post genetics production result: ${error.message}`);
+            }
