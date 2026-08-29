@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>Seed Man: Sprout Run | DTF Genetics</title>
-  <meta name="description" content="Play Seed Man: Sprout Run, an original DTF Genetics browser platformer vertical slice with keyboard and touch controls.">
+  <meta name="description" content="Play Seed Man: Sprout Run, an original DTF Genetics browser platformer with double jump, power-ups, checkpoints, keyboard controls, and touch controls.">
   <meta name="robots" content="index,follow,max-image-preview:large">
   <meta name="theme-color" content="#10291d">
   <link rel="canonical" href="https://dtfseeds.com/games/seed-man-platformer/">
@@ -18,28 +18,38 @@
 
   <main>
     <section class="hero">
-      <p class="eyebrow">Seed Man · Original browser vertical slice</p>
+      <p class="eyebrow">Seed Man · Greenhouse Gauntlet</p>
       <h1>Sprout Run</h1>
-      <p class="lede">Guide Seed Man across an original greenhouse-inspired obstacle course, collect all eight sprouts, activate the checkpoint, and reach the Dream the Future flag.</p>
-      <p id="load-status" class="status" role="status" aria-live="polite" aria-atomic="true">Loading level…</p>
+      <p class="lede">Run a three-stage greenhouse gauntlet that is three times longer than the original course. Collect all 24 sprouts, use double jumps and power-ups, activate three checkpoints, and reach the Dream the Future flag.</p>
+      <p id="load-status" class="status" role="status" aria-live="polite" aria-atomic="true">Loading expanded level…</p>
     </section>
 
     <section class="game-shell" aria-label="Seed Man platformer">
       <div class="hud" aria-live="polite">
-        <span>Sprouts <strong id="sprout-count">0 / 8</strong></span>
+        <span>Sprouts <strong id="sprout-count">0 / 24</strong></span>
+        <span>Progress <strong id="progress-count">0%</strong></span>
+        <span>Jumps <strong id="jump-count">2 jumps ready</strong></span>
+        <span>Power <strong id="power-count">None</strong></span>
         <span>Falls <strong id="death-count">0</strong></span>
         <span>Time <strong id="time-count">0.0s</strong></span>
         <span>Best <strong id="best-count">—</strong></span>
         <button id="pause" type="button" aria-pressed="false">Pause</button>
         <button id="restart" type="button">Restart</button>
       </div>
-      <canvas id="game" width="960" height="540" tabindex="0" aria-label="Seed Man game canvas. Collect all eight sprouts, then reach the finish flag. Use left and right arrows or A and D to move, Space, W, or Up Arrow to jump, and P to pause."></canvas>
+      <canvas id="game" width="960" height="540" tabindex="0" aria-label="Seed Man game canvas. Collect all 24 sprouts and reach the finish flag. Use left and right arrows or A and D to move. Press Space, W, or Up Arrow once to jump and again in mid-air to double jump. Press P to pause."></canvas>
       <div class="touch-controls" aria-label="Touch controls">
         <button type="button" data-control="left" aria-label="Move left">◀</button>
         <button type="button" data-control="right" aria-label="Move right">▶</button>
-        <button type="button" data-control="jump" class="jump" aria-label="Jump">JUMP</button>
+        <button type="button" data-control="jump" class="jump" aria-label="Jump or double jump">JUMP ×2</button>
       </div>
-      <p class="controls">Objective: collect all 8 sprouts before the finish flag unlocks. Keyboard: A/D or ←/→ to move · Space/W/↑ to jump · P to pause. Touch controls appear below the game. Leaving the tab pauses the run automatically.</p>
+      <p class="controls"><strong>Double jump:</strong> press jump again after leaving the ground. <strong>Power-ups:</strong> gold = speed, green = high jump, purple = sprout magnet, blue = hazard shield. Keyboard: A/D or ←/→ · Space/W/↑ · P pause. Touch controls appear below the game. Leaving the tab pauses automatically.</p>
+    </section>
+
+    <section class="feature-strip" aria-label="Sprout Run features">
+      <article><strong>3× longer</strong><span>7,800 px course</span></article>
+      <article><strong>Double jump</strong><span>One mid-air jump every landing</span></article>
+      <article><strong>7 power-ups</strong><span>Speed, jump, magnet, shield</span></article>
+      <article><strong>3 checkpoints</strong><span>Progressive respawn points</span></article>
     </section>
 
     <section class="panel" id="finish-panel" hidden>
@@ -50,54 +60,124 @@
     </section>
 
     <section class="panel">
-      <h2>Vertical-slice status</h2>
-      <p>This prototype proves the original movement, collision, checkpoint, hazard, collectible, gated finish, camera, keyboard, touch-control, pause, and local personal-best systems. The current Seed Man is drawn with simple Canvas2D primitives so gameplay remains independent from unfinished production sprite art.</p>
+      <h2>How the power-ups work</h2>
+      <div class="power-guide">
+        <p><strong>Speed Boost</strong> temporarily increases run speed.</p>
+        <p><strong>High Jump</strong> temporarily increases both normal and double-jump height.</p>
+        <p><strong>Sprout Magnet</strong> pulls nearby sprouts into your collection radius.</p>
+        <p><strong>Hazard Shield</strong> absorbs one spike or hazard hit and bounces Seed Man clear.</p>
+      </div>
     </section>
   </main>
 
-  <footer><p><strong>DTF Genetics</strong> · Dream the Future</p><p>Original DTF game prototype. No third-party level layouts or character assets are used.</p></footer>
+  <footer><p><strong>DTF Genetics</strong> · Dream the Future</p><p>Original DTF browser game. No third-party level layouts or character assets are used.</p></footer>
   <script id="seed-man-level" type="application/json">
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "id": "sprout-run",
-  "name": "Sprout Run",
-  "worldWidth": 2600,
+  "name": "Sprout Run: Greenhouse Gauntlet",
+  "worldWidth": 7800,
   "worldHeight": 540,
-  "requiredPickups": 8,
-  "spawn": {
-    "x": 80,
-    "y": 390
-  },
+  "requiredPickups": 24,
+  "spawn": {"x": 80, "y": 390},
   "platforms": [
-    {"x": 0, "y": 480, "width": 520, "height": 60},
-    {"x": 620, "y": 480, "width": 430, "height": 60},
-    {"x": 1130, "y": 480, "width": 520, "height": 60},
-    {"x": 1760, "y": 480, "width": 840, "height": 60},
-    {"x": 300, "y": 390, "width": 150, "height": 24},
-    {"x": 700, "y": 370, "width": 150, "height": 24},
-    {"x": 940, "y": 300, "width": 150, "height": 24},
-    {"x": 1240, "y": 365, "width": 180, "height": 24},
-    {"x": 1510, "y": 300, "width": 150, "height": 24},
-    {"x": 1850, "y": 380, "width": 180, "height": 24},
-    {"x": 2110, "y": 315, "width": 170, "height": 24}
+    {"x":0,"y":480,"width":600,"height":60},
+    {"x":700,"y":480,"width":480,"height":60},
+    {"x":1270,"y":480,"width":630,"height":60},
+    {"x":2020,"y":480,"width":560,"height":60},
+    {"x":2700,"y":480,"width":550,"height":60},
+    {"x":3370,"y":480,"width":550,"height":60},
+    {"x":4040,"y":480,"width":640,"height":60},
+    {"x":4810,"y":480,"width":550,"height":60},
+    {"x":5480,"y":480,"width":620,"height":60},
+    {"x":6230,"y":480,"width":550,"height":60},
+    {"x":6900,"y":480,"width":540,"height":60},
+    {"x":7530,"y":480,"width":270,"height":60},
+
+    {"x":280,"y":390,"width":170,"height":24},
+    {"x":790,"y":365,"width":165,"height":24},
+    {"x":1030,"y":300,"width":170,"height":24},
+    {"x":1400,"y":390,"width":180,"height":24},
+    {"x":1660,"y":315,"width":180,"height":24},
+    {"x":2130,"y":370,"width":190,"height":24},
+    {"x":2390,"y":300,"width":180,"height":24},
+
+    {"x":2810,"y":380,"width":190,"height":24},
+    {"x":3070,"y":305,"width":185,"height":24},
+    {"x":3480,"y":390,"width":180,"height":24},
+    {"x":3740,"y":315,"width":190,"height":24},
+    {"x":4250,"y":365,"width":190,"height":24},
+    {"x":4500,"y":285,"width":180,"height":24},
+
+    {"x":4920,"y":390,"width":180,"height":24},
+    {"x":5180,"y":310,"width":180,"height":24},
+    {"x":5620,"y":395,"width":190,"height":24},
+    {"x":5880,"y":300,"width":185,"height":24},
+    {"x":6350,"y":370,"width":190,"height":24},
+    {"x":6600,"y":285,"width":180,"height":24},
+    {"x":7070,"y":360,"width":190,"height":24},
+    {"x":7320,"y":270,"width":180,"height":24}
   ],
   "hazards": [
-    {"x": 520, "y": 500, "width": 100, "height": 40},
-    {"x": 1050, "y": 500, "width": 80, "height": 40},
-    {"x": 1650, "y": 500, "width": 110, "height": 40}
+    {"x":600,"y":500,"width":100,"height":40},
+    {"x":1180,"y":500,"width":90,"height":40},
+    {"x":1900,"y":500,"width":120,"height":40},
+    {"x":2580,"y":500,"width":120,"height":40},
+    {"x":3250,"y":500,"width":120,"height":40},
+    {"x":3920,"y":500,"width":120,"height":40},
+    {"x":4680,"y":500,"width":130,"height":40},
+    {"x":5360,"y":500,"width":120,"height":40},
+    {"x":6100,"y":500,"width":130,"height":40},
+    {"x":6780,"y":500,"width":120,"height":40},
+    {"x":7440,"y":500,"width":90,"height":40},
+    {"x":1530,"y":452,"width":54,"height":28},
+    {"x":3560,"y":452,"width":58,"height":28},
+    {"x":5710,"y":452,"width":58,"height":28},
+    {"x":7130,"y":452,"width":58,"height":28}
   ],
   "pickups": [
-    {"id": "sprout-01", "x": 350, "y": 345, "width": 22, "height": 22},
-    {"id": "sprout-02", "x": 750, "y": 325, "width": 22, "height": 22},
-    {"id": "sprout-03", "x": 995, "y": 255, "width": 22, "height": 22},
-    {"id": "sprout-04", "x": 1320, "y": 320, "width": 22, "height": 22},
-    {"id": "sprout-05", "x": 1565, "y": 255, "width": 22, "height": 22},
-    {"id": "sprout-06", "x": 1930, "y": 335, "width": 22, "height": 22},
-    {"id": "sprout-07", "x": 2180, "y": 270, "width": 22, "height": 22},
-    {"id": "sprout-08", "x": 2440, "y": 425, "width": 22, "height": 22}
+    {"id":"sprout-01","x":335,"y":345,"width":22,"height":22},
+    {"id":"sprout-02","x":845,"y":320,"width":22,"height":22},
+    {"id":"sprout-03","x":1090,"y":255,"width":22,"height":22},
+    {"id":"sprout-04","x":1455,"y":345,"width":22,"height":22},
+    {"id":"sprout-05","x":1718,"y":270,"width":22,"height":22},
+    {"id":"sprout-06","x":2195,"y":325,"width":22,"height":22},
+    {"id":"sprout-07","x":2450,"y":255,"width":22,"height":22},
+    {"id":"sprout-08","x":2530,"y":425,"width":22,"height":22},
+
+    {"id":"sprout-09","x":2870,"y":335,"width":22,"height":22},
+    {"id":"sprout-10","x":3130,"y":260,"width":22,"height":22},
+    {"id":"sprout-11","x":3300,"y":425,"width":22,"height":22},
+    {"id":"sprout-12","x":3535,"y":345,"width":22,"height":22},
+    {"id":"sprout-13","x":3800,"y":270,"width":22,"height":22},
+    {"id":"sprout-14","x":4310,"y":320,"width":22,"height":22},
+    {"id":"sprout-15","x":4560,"y":240,"width":22,"height":22},
+    {"id":"sprout-16","x":4725,"y":425,"width":22,"height":22},
+
+    {"id":"sprout-17","x":4980,"y":345,"width":22,"height":22},
+    {"id":"sprout-18","x":5240,"y":265,"width":22,"height":22},
+    {"id":"sprout-19","x":5680,"y":350,"width":22,"height":22},
+    {"id":"sprout-20","x":5940,"y":255,"width":22,"height":22},
+    {"id":"sprout-21","x":6410,"y":325,"width":22,"height":22},
+    {"id":"sprout-22","x":6660,"y":240,"width":22,"height":22},
+    {"id":"sprout-23","x":7130,"y":315,"width":22,"height":22},
+    {"id":"sprout-24","x":7380,"y":225,"width":22,"height":22}
   ],
-  "checkpoint": {"x": 1370, "y": 420, "width": 50, "height": 60, "respawnX": 1380, "respawnY": 400},
-  "finish": {"x": 2510, "y": 390, "width": 50, "height": 90}
+  "powerups": [
+    {"id":"power-speed-1","type":"speed","x":1128,"y":255,"width":28,"height":28,"duration":8},
+    {"id":"power-shield-1","type":"shield","x":2310,"y":425,"width":28,"height":28},
+    {"id":"power-magnet-1","type":"magnet","x":3165,"y":260,"width":28,"height":28,"duration":11},
+    {"id":"power-jump-1","type":"jump","x":4545,"y":240,"width":28,"height":28,"duration":10},
+    {"id":"power-speed-2","type":"speed","x":5275,"y":265,"width":28,"height":28,"duration":8},
+    {"id":"power-shield-2","type":"shield","x":6460,"y":325,"width":28,"height":28},
+    {"id":"power-magnet-2","type":"magnet","x":7168,"y":315,"width":28,"height":28,"duration":11}
+  ],
+  "checkpoints": [
+    {"id":"checkpoint-1","x":2480,"y":420,"width":50,"height":60,"respawnX":2460,"respawnY":400},
+    {"id":"checkpoint-2","x":5050,"y":420,"width":50,"height":60,"respawnX":5030,"respawnY":400},
+    {"id":"checkpoint-3","x":7040,"y":420,"width":50,"height":60,"respawnX":7020,"respawnY":400}
+  ],
+  "finish": {"x":7720,"y":390,"width":50,"height":90}
 }
   </script>
   <script src="./app.js" defer></script>
