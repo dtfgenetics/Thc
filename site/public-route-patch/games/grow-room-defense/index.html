@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#07120c">
+  <meta name="description" content="Grow Room Defense is a turn-based IPM strategy game from DTF Games.">
+  <link rel="canonical" href="https://dtfseeds.com/games/grow-room-defense/">
+  <link rel="stylesheet" href="./grow-room-defense.css">
+  <title>Grow Room Defense | DTF Games</title>
+</head>
+<body>
+  <a class="skip-link" href="#game">Skip to game</a>
+  <header class="site-bar">
+    <a class="brand" href="/games/" aria-label="Back to DTF Games">
+      <span class="brand-mark" aria-hidden="true">DTF</span>
+      <span><strong>DTF Games</strong><small>Dream the Future</small></span>
+    </a>
+    <a class="hub-link" href="/games/">Game Hub</a>
+  </header>
+
+  <main id="game" class="game-shell">
+    <section class="hero" aria-labelledby="game-title">
+      <div>
+        <p class="eyebrow">Turn-based IPM strategy</p>
+        <h1 id="game-title">Grow Room Defense</h1>
+        <p class="lede">Read the pressure, choose a defense tool, and protect all three benches through twelve deterministic rounds.</p>
+      </div>
+      <p id="load-status" class="status-chip" role="status">Loading defense data…</p>
+    </section>
+
+    <section class="hud" aria-label="Defense run status">
+      <div><span>Round</span><strong id="round-stat">1 / 12</strong></div>
+      <div><span>Score</span><strong id="score-stat">0</strong></div>
+      <div><span>Resolved</span><strong id="resolved-stat">0</strong></div>
+      <div><span>Damage</span><strong id="damage-stat">0</strong></div>
+    </section>
+
+    <section class="play-layout">
+      <div class="board-column">
+        <section class="board-card" aria-labelledby="board-title">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Grow tent</p>
+              <h2 id="board-title">Plant benches</h2>
+            </div>
+            <p id="wave-status" class="wave-status">New pressure incoming.</p>
+          </div>
+          <div id="lanes" class="lanes"></div>
+        </section>
+
+        <section id="feedback" class="feedback-card" aria-live="polite">
+          <span class="feedback-kicker">DEFENSE READY</span>
+          <strong>Select a tool, then deploy it to a bench.</strong>
+          <p>Strong counters can stop a fresh threat before it causes damage. Supportive counters reduce pressure but may not finish the job.</p>
+        </section>
+      </div>
+
+      <aside class="side-column">
+        <section class="tools-card" aria-labelledby="tools-title">
+          <div class="section-heading compact">
+            <div>
+              <p class="eyebrow">Defense tray</p>
+              <h2 id="tools-title">IPM tools</h2>
+            </div>
+          </div>
+          <div id="tools" class="tool-grid" role="group" aria-label="Choose a defense tool"></div>
+          <div id="selected-tool" class="selected-tool">No tool selected.</div>
+        </section>
+
+        <section class="code-card" aria-labelledby="code-title">
+          <p class="eyebrow">Challenge code</p>
+          <h2 id="code-title">Replay this pressure</h2>
+          <label for="defense-code">Six-character defense code</label>
+          <div class="code-row">
+            <input id="defense-code" maxlength="6" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-describedby="code-help">
+            <button id="new-code" type="button" class="secondary-button">New</button>
+          </div>
+          <p id="code-help" class="help-text">Press Enter after typing a full code to restart with that exact threat sequence.</p>
+          <button id="share-run" type="button" class="primary-button">Copy challenge link</button>
+        </section>
+
+        <section class="history-card" aria-labelledby="history-title">
+          <p class="eyebrow">Run log</p>
+          <h2 id="history-title">Recent actions</h2>
+          <ol id="history" class="history-list"><li class="empty-state">Your defense choices will appear here.</li></ol>
+        </section>
+      </aside>
+    </section>
+
+    <section class="rules-card" aria-labelledby="rules-title">
+      <p class="eyebrow">Strategy guide</p>
+      <h2 id="rules-title">Observe first. Match the response.</h2>
+      <div class="rules-grid">
+        <p><strong>Strong:</strong> the tool matches the threat’s primary game weakness and can clear fresh pressure before damage.</p>
+        <p><strong>Supportive:</strong> the tool is useful to the broader IPM response but usually leaves pressure behind.</p>
+        <p><strong>Mismatch:</strong> the tool does not address that game pressure. Unresolved threats keep damaging their bench each round.</p>
+      </div>
+      <p class="education-note">Education boundary: this game teaches broad IPM concepts only. It does not provide pesticide recipes, mixing rates, application rates, or treatment instructions.</p>
+    </section>
+  </main>
+
+  <p id="announce" class="sr-only" aria-live="assertive"></p>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
