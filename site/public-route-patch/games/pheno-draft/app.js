@@ -9,6 +9,7 @@ import {
   selectParent,
   selectPhenotype
 } from './engine.mjs';
+import { projectionSummary } from './projection.mjs';
 
 const ui = {
   load: document.querySelector('#load-status'),
@@ -85,19 +86,29 @@ function seedArt(line) {
   </div>`;
 }
 
-function lineCard(line, { heading = 'Current Line', action = '', actionValue = '', cardClass = '' } = {}) {
+function lineCard(line, {
+  heading = 'Current Line',
+  action = '',
+  actionValue = '',
+  actionShortcut = '',
+  cardClass = '',
+  fitLabel = '',
+  footer = ''
+} = {}) {
   const fit = goalFit(line, currentGoal(), data);
+  const displayedFit = fitLabel || `${fit}% fit`;
   const actionMarkup = action
-    ? `<button type="button" class="card-action" data-choice="${escapeHtml(actionValue)}">${escapeHtml(action)}</button>`
+    ? `<button type="button" class="card-action" data-choice="${escapeHtml(actionValue)}"${actionShortcut ? ` aria-keyshortcuts="${escapeHtml(actionShortcut)}"` : ''}>${escapeHtml(action)}</button>`
     : '';
   return `<article class="genetics-card ${cardClass}" style="--line-hue:${Number(line.hue ?? 150)}">
-    <div class="card-topline"><span>${escapeHtml(heading)}</span><b>${fit}% fit</b></div>
+    <div class="card-topline"><span>${escapeHtml(heading)}</span><b>${escapeHtml(displayedFit)}</b></div>
     ${seedArt(line)}
     <div class="card-copy">
       <strong>${escapeHtml(line.label)}</strong>
       <small>${escapeHtml(line.family ?? '')}</small>
     </div>
     ${traitRows(line, { compact: true })}
+    ${footer}
     ${actionMarkup}
   </article>`;
 }
@@ -110,6 +121,13 @@ function parentAsLine(card) {
     hue: card.hue,
     traits: card.traits
   };
+}
+
+function projectionFooter(card) {
+  const summary = projectionSummary(state.currentLine, card, currentGoal(), data);
+  const sign = summary.delta > 0 ? '+' : '';
+  const tone = summary.delta >= 0 ? 'positive' : 'negative';
+  return `<div class="fit-delta ${tone}"><strong>Projected cross ${summary.fit}%</strong><span>${sign}${summary.delta}% vs current line · midpoint estimate, hidden phenotypes vary</span></div>`;
 }
 
 function renderStats() {
@@ -134,24 +152,32 @@ function renderObjective() {
 }
 
 function renderCurrent() {
-  ui.current.innerHTML = lineCard(state.currentLine, { heading: state.currentLine.generation ? `Generation ${state.currentLine.generation}` : 'Founder Line' });
+  ui.current.innerHTML = lineCard(state.currentLine, {
+    heading: state.currentLine.generation ? `Generation ${state.currentLine.generation}` : 'Founder Line'
+  });
 }
 
 function renderDraftChoices() {
   ui.phaseTitle.textContent = `Round ${state.round}: Draft a parent`;
-  ui.phaseCopy.textContent = 'Choose one of three fictional parent cards. Your selected cross will generate three phenotype cards.';
+  ui.phaseCopy.textContent = 'Choose one parent. Projection shows the trait midpoint against your objective; the three actual phenotype cards stay hidden until you commit.';
   ui.selectedParent.hidden = true;
   ui.refresh.hidden = false;
   ui.refresh.disabled = state.refreshesRemaining <= 0;
   ui.refresh.textContent = `Refresh Draft (${state.refreshesRemaining})`;
+  ui.refresh.setAttribute('aria-keyshortcuts', 'R');
   ui.choices.className = 'choice-grid draft-grid';
   ui.choices.innerHTML = state.offers.map((id, index) => {
     const card = cardById.get(id);
-    return lineCard(parentAsLine(card), {
+    const parentLine = parentAsLine(card);
+    const parentFit = goalFit(parentLine, currentGoal(), data);
+    return lineCard(parentLine, {
       heading: `Parent ${index + 1}`,
       action: `Cross with ${card.label}`,
       actionValue: card.id,
-      cardClass: 'parent-card'
+      actionShortcut: String(index + 1),
+      cardClass: 'parent-card',
+      fitLabel: `Parent ${parentFit}%`,
+      footer: projectionFooter(card)
     });
   }).join('');
 }
@@ -159,7 +185,7 @@ function renderDraftChoices() {
 function renderPhenotypeChoices() {
   const parent = cardById.get(state.selectedParentId);
   ui.phaseTitle.textContent = `Round ${state.round}: Keep one phenotype`;
-  ui.phaseCopy.textContent = 'Compare all three generated cards against the run objective, then keep one line for the next round.';
+  ui.phaseCopy.textContent = 'The hidden variance is now revealed. Compare the three generated cards against the objective, then keep one line for the next round.';
   ui.refresh.hidden = true;
   ui.selectedParent.hidden = false;
   ui.selectedParent.innerHTML = `<span class="panel-kicker">SELECTED PARENT</span><strong>${escapeHtml(parent.label)}</strong><span>${escapeHtml(parent.family)}</span>`;
@@ -168,13 +194,15 @@ function renderPhenotypeChoices() {
     const fit = goalFit(line, currentGoal(), data);
     const delta = fit - state.currentFit;
     const deltaCopy = delta > 0 ? `+${delta}` : String(delta);
-    const card = lineCard(line, {
+    const footer = `<div class="fit-delta ${delta >= 0 ? 'positive' : 'negative'}">${deltaCopy}% vs current line</div>`;
+    return lineCard(line, {
       heading: `Phenotype ${String.fromCharCode(65 + index)}`,
       action: `Keep ${line.label}`,
       actionValue: line.lineId,
-      cardClass: delta > 0 ? 'pheno-card improving' : 'pheno-card'
+      actionShortcut: String(index + 1),
+      cardClass: delta > 0 ? 'pheno-card improving' : 'pheno-card',
+      footer
     });
-    return card.replace('</article>', `<div class="fit-delta ${delta >= 0 ? 'positive' : 'negative'}">${deltaCopy}% vs current line</div></article>`);
   }).join('');
 }
 
@@ -220,7 +248,7 @@ function renderResult() {
   ui.result.innerHTML = `
     <span class="panel-kicker">FINAL RANK</span>
     <strong>${escapeHtml(runRank(state, data))}</strong>
-    <p>${state.currentLine.label} finished at <b>${state.currentFit}% objective fit</b> with <b>${state.score} points</b>.</p>
+    <p>${escapeHtml(state.currentLine.label)} finished at <b>${state.currentFit}% objective fit</b> with <b>${state.score} points</b>.</p>
     <div class="rank-badge" aria-hidden="true"><span>PD</span></div>`;
 }
 
@@ -240,15 +268,23 @@ function resetRun(code) {
   render();
 }
 
+function chooseVisibleCard(index) {
+  if (!state || state.status !== 'playing') return;
+  const buttons = [...ui.choices.querySelectorAll('button[data-choice]')];
+  const button = buttons[index];
+  if (button) button.click();
+}
+
 ui.choices.addEventListener('click', (event) => {
   const button = event.target.closest('button[data-choice]');
   if (!button || state.status !== 'playing') return;
   try {
     if (state.phase === 'draft') {
       const card = cardById.get(button.dataset.choice);
+      const projection = projectionSummary(state.currentLine, card, currentGoal(), data);
       state = selectParent(state, button.dataset.choice, data);
       render();
-      ui.announce.textContent = `${card.label} selected. Three phenotype cards are ready.`;
+      ui.announce.textContent = `${card.label} selected. Projected cross was ${projection.fit} percent fit; three actual phenotype cards are now revealed.`;
     } else if (state.phase === 'phenotype') {
       const chosen = state.phenotypes.find((line) => line.lineId === button.dataset.choice);
       state = selectPhenotype(state, button.dataset.choice, data);
@@ -312,12 +348,8 @@ document.addEventListener('keydown', (event) => {
     return;
   }
   if (!['1', '2', '3'].includes(event.key) || state?.status !== 'playing') return;
-  const buttons = [...ui.choices.querySelectorAll('button[data-choice]')];
-  const button = buttons[Number(event.key) - 1];
-  if (button) {
-    event.preventDefault();
-    button.click();
-  }
+  event.preventDefault();
+  chooseVisibleCard(Number(event.key) - 1);
 });
 
 async function load() {
@@ -335,7 +367,7 @@ async function load() {
     const code = isValidRunCode(requested) ? requested : randomCode();
     state = createRun({ code }, data);
     window.history.replaceState(null, '', challengeUrl());
-    ui.load.textContent = '6 rounds · 20 fictional parent cards · 7 traits · 2 refreshes';
+    ui.load.textContent = '6 rounds · projected crosses · hidden phenotype variance · 2 refreshes';
     render();
   } catch (error) {
     console.error(error);
