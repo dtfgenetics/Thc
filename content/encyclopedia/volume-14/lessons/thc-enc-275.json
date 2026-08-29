@@ -1,0 +1,58 @@
+{
+  "id":"THC-ENC-275",
+  "number":275,
+  "title":"pH-Driven Nutrient Unavailability",
+  "objective":"Explain how root-zone pH can alter nutrient chemical form, solubility, exchange, microbial processes, and uptake while avoiding universal availability charts or visual deficiency diagnosis.",
+  "terms":[
+    {"term":"pH","definition":"A logarithmic measure related to hydrogen-ion activity in a solution or extraction under a defined method."},
+    {"term":"rhizosphere","definition":"The root-influenced zone where roots, water, ions, microbes, gases, and surfaces interact."},
+    {"term":"nutrient availability","definition":"The fraction and chemical form of an element that can potentially reach and be acquired by roots under the existing chemical and biological conditions."},
+    {"term":"precipitation","definition":"Formation of a poorly soluble solid from dissolved ions, reducing the dissolved fraction available in solution."},
+    {"term":"chelation","definition":"Binding of a metal ion by an organic ligand, which can alter solubility, transport, and chemical availability."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Root-zone pH changes nutrient chemistry by altering ionic forms, solubility, mineral precipitation, surface charge, exchange reactions, microbial transformations, and membrane transport. The practical consequence depends on the growing system, water chemistry, fertilizer form, media buffering, roots, temperature, and time.",
+    "A single 'nutrient availability by pH' chart is therefore a teaching simplification, not a diagnostic instrument. Soil, peat, coco, rockwool, recirculating solution, and drain-to-waste systems can behave differently at the same measured pH because buffering, ion composition, oxygen, and extraction methods differ.",
+    "Roots can actively change their local chemical environment. Uptake of different nitrogen forms, root exudation, fertilizer reactions, microbial activity, and source-water alkalinity can shift rhizosphere pH even when the incoming solution was initially adjusted correctly.",
+    "Direct medical-cannabis phosphorus work showed that phosphorus supply changed leachate pH and interacted with calcium, magnesium, manganese, and other elements while also altering plant physiology. Separate controlled cannabis deficiency and nutrition studies show that visible symptoms and tissue concentrations depend on element supply, genotype, stage, and system rather than one universal photo key.",
+    "An out-of-range pH can contribute to deficiency or toxicity, but yellowing, interveinal chlorosis, necrosis, or slow growth do not prove pH as the cause. Meter error, sampling method, salinity, root damage, water distribution, nutrient antagonism, pathogens, and actual fertilizer concentration must remain in the differential."
+  ],
+  "cultivationRelevance":[
+    "Calibrate the pH meter and define exactly what was sampled—input solution, drain, substrate extract, pore water, recirculating reservoir, or soil/media slurry—before interpreting a number.",
+    "Compare input and root-zone trends over time instead of correcting from one isolated measurement.",
+    "Review alkalinity, fertilizer nitrogen form, EC, root condition, irrigation distribution, and media buffering before assuming a pH adjustment alone will solve a nutrient symptom.",
+    "Use tissue or media analysis when the decision is important, and judge correction by stable root-zone chemistry plus normal new growth rather than recovery of already damaged tissue."
+  ],
+  "measureAndRecord":[
+    {"field":"pH method","requirement":"Record sample type, extraction or collection method, meter and electrode, calibration standards, temperature, time after sampling, and location."},
+    {"field":"Root-zone chemistry","requirement":"Record input and root-zone pH trend, EC, alkalinity, major ions, fertilizer composition and nitrogen forms, and media/substrate type."},
+    {"field":"Plant and roots","requirement":"Record genotype, stage, root condition, symptom pattern by tissue age/location, water use, and tissue analysis when justified."},
+    {"field":"Delivery context","requirement":"Record irrigation frequency, drainage or recirculation, source water, emitter uniformity, and any recent acid/base, fertilizer, or water-source change."},
+    {"field":"Verification","requirement":"Record chemistry after correction, new-growth response, symptom progression, recurrence, and whether competing causes were excluded or remain unresolved."
+    }
+  ],
+  "misconceptions":[
+    "pH measures how much acid is stored in water.",
+    "One universal nutrient-availability chart predicts every cannabis root zone.",
+    "A visual nutrient symptom proves pH lockout.",
+    "Correct incoming-solution pH guarantees correct rhizosphere pH.",
+    "Correcting pH should make already damaged leaves return to normal."
+  ],
+  "evidenceLimits":[
+    "Useful pH operating ranges are system-specific and should not be treated as universal injury or availability thresholds. Cannabis studies often hold pH within narrow experimental ranges while varying nutrients, so many published results clarify interactions without directly defining the full pH response surface for every genotype and substrate."
+  ],
+  "crossLinks":"THC-ENC-263 for chlorosis; THC-ENC-274 for salinity; THC-ENC-276 for alkalinity and sodium; THC-ENC-041–060 for roots/media chemistry; THC-ENC-121–140 for mineral nutrition.",
+  "sourceNotes":[
+    "Shiponi S, Bernstein N. (2021). The Highs and Lows of P Supply in Medical Cannabis: Effects on Cannabinoids, the Ionome, and Morpho-Physiology. Frontiers in Plant Science 12:657323. Direct medical-cannabis evidence linking phosphorus supply with leachate pH, physiology, and multi-element interactions.",
+    "Foliar Symptomology, Nutrient Content, Yield, and Secondary Metabolite Variability of Cannabis Grown Hydroponically with Different Single-Element Nutrient Deficiencies (Plants, 2023). Demonstrates system- and element-specific symptomology rather than a universal photo diagnosis.",
+    "Effect of augmented nutrient composition and fertigation system on biomass yield and cannabinoid content of medicinal cannabis cultivation (Frontiers in Plant Science, 2024). Reinforces root-zone pH as one component of nutrient availability whose consequences depend on fertigation system and nutrient composition.",
+    "Elevated root-zone P and nutrient concentration do not increase yield or cannabinoids in medical cannabis (Frontiers in Plant Science, 2025). Supports separating root-zone nutrient concentration from assumptions that more nutrient input necessarily improves crop performance.",
+    "Controlled Volume 14 manuscript v1.0 requires pH method, media/system, alkalinity, EC, fertilizer form, roots, delivery, tissue analysis, and competing causes to remain explicit."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 14 batch 03 controlled web derivative","driveSourceDocumentId":"1mbN8hq4g6jZUgW0bkwZBSXotPqZ7c184kOya5SqdtJA","evidenceControl":"controlled_manuscript_plus_direct_medical_cannabis_phosphorus_deficiency_and_root_zone_nutrition_sources","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_root_zone_pH_nutrient_availability_and_diagnostic_method","releaseTimeReview":"completed_2026-08-29_no_universal_pH_availability_chart_or_visual_lockout_diagnosis_boundary","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"ph-driven-nutrient-unavailability",
+  "route":"/encyclopedia/ph-driven-nutrient-unavailability"
+}

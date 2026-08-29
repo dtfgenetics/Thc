@@ -1,0 +1,58 @@
+{
+  "id":"THC-ENC-274",
+  "number":274,
+  "title":"Salinity and Osmotic Stress",
+  "objective":"Separate total soluble-salt effects, osmotic stress, ion-specific toxicity, alkalinity, and nutrient imbalance using measured EC, ion composition, water status, root condition, and genotype/stage context.",
+  "terms":[
+    {"term":"salinity","definition":"The concentration and composition of dissolved salts in water or the root zone."},
+    {"term":"electrical conductivity","definition":"A method-dependent measure of a solution's ability to conduct electrical current, commonly used as a proxy for total dissolved ionic concentration."},
+    {"term":"osmotic potential","definition":"The component of water potential created by dissolved solutes; more concentrated solutions generally make water uptake energetically more difficult."},
+    {"term":"ion toxicity","definition":"Direct injury caused when a specific ion accumulates to a harmful concentration in tissues or the root environment."},
+    {"term":"salt accumulation","definition":"Progressive buildup of dissolved ions in the root zone when inputs, concentration by water removal, and removal by drainage or uptake are unbalanced."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Salinity can reduce water uptake even when media are wet because dissolved salts lower the water potential of the root-zone solution. Roots must maintain a favorable water-potential gradient to acquire water, so osmotic stress can produce wilt, slowed growth, and reduced water use without physical drought.",
+    "Salinity is not one mechanism. Sodium and chloride can become specifically toxic or alter nutrient balance, while carbonate and bicarbonate salts can combine osmotic and ion stress with pH and alkalinity effects. Electrical conductivity reports bulk ionic concentration but does not identify which ions created it.",
+    "Cannabis and hemp responses are strongly treatment- and genotype-dependent. Drug-type cannabis exposed to NaCl in controlled hydroponic work showed growth and physiological stress responses, while broader hemp studies show cultivar differences in germination, seedling performance, osmotic-stress tolerance, and transpiration efficiency.",
+    "Recent fiber-hemp work using saline irrigation also found that increasing salinity changed biomass and mineral composition, with stronger effects at higher irrigation EC treatments. Those results reinforce the mechanism but do not create universal crop thresholds for every genotype, substrate, stage, or irrigation method.",
+    "Visual symptoms such as wilt, dark foliage, chlorosis, tip or margin injury, root decline, and reduced growth overlap with drought, heat, nutrient imbalance, pH problems, and root disease. A high EC reading can support a salinity hypothesis only when the extraction method, sampling position, water content, and ion source are known."
+  ],
+  "cultivationRelevance":[
+    "Define the EC method before comparing values. Input solution, substrate extract, pore water, runoff, drain, and recirculating-reservoir EC answer different questions and should not be treated as interchangeable.",
+    "Review source water, fertilizer recipe, sodium/chloride/bicarbonate, irrigation uniformity, drainage, reuse, and concentration by dryback before assuming high EC means excess fertilizer alone.",
+    "Compare affected and unaffected zones and measure roots and water status because salinity can mimic both drought and nutrient disorders.",
+    "Use controlled corrective changes and verify with trend data rather than reacting to one runoff or drain measurement."
+  ],
+  "measureAndRecord":[
+    {"field":"EC and method","requirement":"Record input, root-zone, and drainage/recirculation EC with extraction or sampling method, meter, calibration, temperature compensation, location, and timing."},
+    {"field":"Ion composition","requirement":"Record sodium, chloride, bicarbonate/carbonate, calcium, magnesium, potassium and other relevant ions when available, plus source-water and fertilizer contributions."},
+    {"field":"Water state","requirement":"Record substrate water content or mass, irrigation frequency/volume, dryback, drainage fraction, recirculation, and spatial uniformity."},
+    {"field":"Plant and roots","requirement":"Record genotype, developmental stage, root condition, water use, tissue ion analysis when justified, growth rate, chlorosis, wilt, and tip/margin injury."},
+    {"field":"Correction and trend","requirement":"Record the supported corrective action, changes in EC/ion trend, water use, new growth, root condition, and recurrence."
+    }
+  ],
+  "misconceptions":[
+    "High EC always means too much fertilizer.",
+    "One runoff EC value describes the entire root zone.",
+    "Flushing once removes salts uniformly from every root-zone pocket.",
+    "All cannabis cultivars tolerate the same salinity.",
+    "A wet substrate rules out osmotic water stress."
+  ],
+  "evidenceLimits":[
+    "Published cannabis/hemp salinity treatments use specific salts, concentrations or ECs, genotypes, stages, durations, and root systems. Those experimental values should not be converted directly into universal irrigation-water or root-zone injury thresholds without matching method and crop context."
+  ],
+  "crossLinks":"THC-ENC-266 for wilt; THC-ENC-273 for root-zone hypoxia; THC-ENC-275 for pH-driven availability; THC-ENC-276 for alkalinity and sodium; THC-ENC-081–100 for water chemistry and EC.",
+  "sourceNotes":[
+    "Aquaponic and Hydroponic Solutions Modulate NaCl-Induced Stress in Drug-Type Cannabis sativa L. (Frontiers in Plant Science, 2020). Direct drug-type cannabis evidence for NaCl stress under controlled hydroponic conditions.",
+    "Hu H et al. (2018, 2019). Hemp germination and seedling responses to salt type and concentration, Industrial Crops and Products. Demonstrated cultivar-, stage-, salt-type-, concentration-, and alkaline-salt-dependent responses.",
+    "Blandinières H et al. (2021). Ranking 26 European hemp cultivars for osmotic stress tolerance and transpiration efficiency. Industrial Crops and Products 170:113774. Demonstrated substantial genetic variation in osmotic-stress response.",
+    "Effect of saline irrigation and plant-based biostimulant application on fiber hemp growth and phytocannabinoid composition (Frontiers in Plant Science, 2024). Demonstrated salinity-level-dependent biomass, mineral, and phytocannabinoid responses in the studied hemp system.",
+    "Controlled Volume 14 manuscript v1.0 requires salinity, osmotic stress, ion-specific toxicity, alkalinity, EC method, water content, roots, genotype, and developmental stage to remain separate evidence fields."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 14 batch 03 controlled web derivative","driveSourceDocumentId":"1mbN8hq4g6jZUgW0bkwZBSXotPqZ7c184kOya5SqdtJA","evidenceControl":"controlled_manuscript_plus_direct_drug_type_cannabis_and_hemp_salinity_osmotic_stress_sources","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_salinity_osmotic_ion_toxicity_and_ec_method_differential","releaseTimeReview":"completed_2026-08-29_no_universal_salinity_threshold_and_method_specific_ec_boundary","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"salinity-and-osmotic-stress",
+  "route":"/encyclopedia/salinity-and-osmotic-stress"
+}
