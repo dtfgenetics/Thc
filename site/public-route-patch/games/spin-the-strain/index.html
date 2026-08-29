@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0f2418">
+  <meta name="description" content="Spin the Strain is a deterministic DTF Genetics wheel game with strain, grow challenge, and community modes.">
+  <link rel="canonical" href="https://dtfseeds.com/games/spin-the-strain/">
+  <link rel="stylesheet" href="./spin-the-strain.css">
+  <title>Spin the Strain | DTF Games</title>
+</head>
+<body>
+  <a class="skip-link" href="#game">Skip to game</a>
+  <header class="site-bar">
+    <a class="brand" href="/games/" aria-label="Back to DTF Games">
+      <span class="brand-mark" aria-hidden="true">DTF</span>
+      <span><strong>DTF Games</strong><small>Dream the Future</small></span>
+    </a>
+    <a class="hub-link" href="/games/">Game Hub</a>
+  </header>
+
+  <main id="game" class="game-shell">
+    <section class="hero" aria-labelledby="game-title">
+      <div>
+        <p class="eyebrow">Community wheel game</p>
+        <h1 id="game-title">Spin the Strain</h1>
+        <p class="lede">Pick a wheel, share the six-character code, and reproduce the exact same spin sequence with friends.</p>
+      </div>
+      <p id="load-status" class="status-chip" role="status">Loading wheel data…</p>
+    </section>
+
+    <section class="mode-panel" aria-labelledby="mode-heading">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Choose a wheel</p>
+          <h2 id="mode-heading">Game mode</h2>
+        </div>
+        <div id="mode-tabs" class="mode-tabs" role="group" aria-label="Wheel modes"></div>
+      </div>
+    </section>
+
+    <section class="play-grid">
+      <article class="wheel-card" aria-labelledby="mode-title">
+        <div class="wheel-copy">
+          <p class="eyebrow">Current wheel</p>
+          <h2 id="mode-title">Strain Picker</h2>
+          <p id="mode-description">Loading mode…</p>
+        </div>
+
+        <div id="wheel-stage" class="wheel-stage" aria-busy="false">
+          <div class="pointer" aria-hidden="true"></div>
+          <div id="wheel" class="wheel" aria-hidden="true"></div>
+          <button id="spin" class="spin-button" type="button">SPIN</button>
+        </div>
+
+        <div id="result-card" class="result-card" aria-live="polite">
+          <span id="result-category" class="result-category">READY</span>
+          <strong id="result-label">Spin the wheel</strong>
+          <p id="result-detail">Every entry in this mode has equal weight.</p>
+        </div>
+      </article>
+
+      <aside class="control-column" aria-label="Wheel controls and history">
+        <section class="control-card">
+          <div class="section-heading compact">
+            <div>
+              <p class="eyebrow">Challenge code</p>
+              <h2>Share this wheel</h2>
+            </div>
+            <span class="counter"><strong id="spin-count">0</strong> spins</span>
+          </div>
+
+          <label class="code-label" for="wheel-code">Six-character wheel code</label>
+          <div class="code-row">
+            <input id="wheel-code" class="code-input" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="6" aria-describedby="code-help">
+            <button id="new-code" class="secondary-button" type="button">New</button>
+          </div>
+          <p id="code-help" class="help-text">Press Enter after typing a complete code to reset this mode to that shared sequence.</p>
+          <button id="share-wheel" class="primary-button" type="button">Copy challenge link</button>
+        </section>
+
+        <section class="history-card" aria-labelledby="history-title">
+          <div class="section-heading compact">
+            <div>
+              <p class="eyebrow">Session</p>
+              <h2 id="history-title">Spin history</h2>
+            </div>
+          </div>
+          <ol id="history" class="history-list">
+            <li class="empty-state">Spin results will appear here.</li>
+          </ol>
+        </section>
+      </aside>
+    </section>
+
+    <section class="rules-card" aria-labelledby="rules-title">
+      <p class="eyebrow">How it works</p>
+      <h2 id="rules-title">Equal odds. Reproducible sessions.</h2>
+      <div class="rules-grid">
+        <p><strong>1. Pick a mode.</strong> Strain Picker, Grow Challenge, and Community Wildcard each use their own equal-weight wheel.</p>
+        <p><strong>2. Spin.</strong> The selected result comes from the deterministic game engine, not animation timing.</p>
+        <p><strong>3. Share the code.</strong> The same mode and code reproduce the same sequence. Immediate duplicate results are prevented.</p>
+      </div>
+    </section>
+  </main>
+
+  <p id="announce" class="sr-only" aria-live="assertive"></p>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
