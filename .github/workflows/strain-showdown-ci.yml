@@ -42,10 +42,15 @@ jobs:
         run: node games/strain-showdown/test/engine.test.mjs
       - name: Simulate deterministic family matchups
         run: node games/strain-showdown/scripts/simulate-balance.mjs --seeds=32 --assert-balanced
+      - name: Test production roster bundle and battle-shell isolation
+        run: node games/strain-showdown/test/public-runtime.test.mjs
       - name: Validate public runtime
         run: |
           set -euo pipefail
           node games/strain-showdown/scripts/validate-browser-build.mjs
           node --check site/public-route-patch/games/strain-showdown/app.js
           node --check site/public-route-patch/games/strain-showdown/engine.mjs
+          node --check games/strain-showdown/scripts/build-browser-bundle.mjs
           cmp games/strain-showdown/src/engine.mjs site/public-route-patch/games/strain-showdown/engine.mjs
+          test -s site/public-route-patch/games/strain-showdown/data/browser-bundle.json
+          test -s site/public-route-patch/games/strain-showdown/runtime-v2.css
