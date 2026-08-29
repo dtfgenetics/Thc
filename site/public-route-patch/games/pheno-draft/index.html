@@ -2,11 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>Pheno Draft | DTF Genetics</title>
   <meta name="description" content="Build a fictional genetics line through six deterministic card-draft rounds in Pheno Draft by DTF Genetics.">
   <link rel="canonical" href="https://dtfseeds.com/games/pheno-draft/">
   <link rel="stylesheet" href="./pheno-draft.css">
+  <link rel="stylesheet" href="./pheno-draft-v2.css">
 </head>
 <body>
   <a class="skip-link" href="#game">Skip to Pheno Draft</a>
@@ -16,6 +17,7 @@
         <p class="eyebrow">DTF GENETICS · GAME LAB</p>
         <h1>PHENO DRAFT</h1>
         <p class="hero-copy">Draft fictional parent cards. Compare generated phenotypes. Keep one line moving through six deterministic rounds.</p>
+        <div class="hero-badges" aria-label="Game features"><span>6 rounds</span><span>20 parent cards</span><span>2 refreshes</span><span>Deterministic codes</span></div>
       </div>
       <div class="hero-mark" aria-hidden="true"><span>PD</span><i></i></div>
     </header>
@@ -28,7 +30,7 @@
       <p id="code-help" class="sr-only">Enter a six-character code and press Enter to load the same deterministic run.</p>
       <button id="new-run" type="button">New Run</button>
       <button id="share-run" type="button">Share Run</button>
-      <span id="load-status" class="load-status">Loading card deck…</span>
+      <span id="load-status" class="load-status" role="status">Preparing card deck…</span>
     </section>
 
     <section class="stat-strip" aria-label="Run statistics">
@@ -36,6 +38,7 @@
       <div><span>Score</span><strong id="score-stat">—</strong></div>
       <div><span>Objective Fit</span><strong id="fit-stat">—</strong></div>
       <div><span>Refreshes</span><strong id="refresh-stat">—</strong></div>
+      <div class="round-track" aria-label="Draft round progress" role="progressbar" aria-valuemin="1" aria-valuemax="6" aria-valuenow="1"><span id="round-progress-fill"></span></div>
     </section>
 
     <section class="dashboard-grid">
@@ -45,10 +48,7 @@
 
     <section class="line-stage" aria-labelledby="line-title">
       <div class="section-heading">
-        <div>
-          <p class="eyebrow">ACTIVE LINE</p>
-          <h2 id="line-title">Current keeper</h2>
-        </div>
+        <div><p class="eyebrow">ACTIVE LINE</p><h2 id="line-title">Current keeper</h2></div>
         <p>Priority traits are highlighted according to this run’s objective.</p>
       </div>
       <div id="current-line" class="current-line"></div>
@@ -61,7 +61,7 @@
           <h2 id="phase-title">Preparing draft…</h2>
           <p id="phase-copy">Loading deterministic choices.</p>
         </div>
-        <button id="refresh-draft" class="refresh-button" type="button" hidden>Refresh Draft</button>
+        <div class="draft-actions"><span id="phase-state" class="phase-state">DRAFT</span><button id="refresh-draft" class="refresh-button" type="button" hidden>Refresh Draft</button></div>
       </div>
 
       <div id="selected-parent" class="selected-parent panel" hidden></div>
@@ -71,26 +71,19 @@
 
     <section class="archive-section" aria-labelledby="archive-title">
       <div class="section-heading">
-        <div>
-          <p class="eyebrow">RUN ARCHIVE</p>
-          <h2 id="archive-title">Selected line history</h2>
-        </div>
+        <div><p class="eyebrow">RUN ARCHIVE</p><h2 id="archive-title">Selected line history</h2></div>
         <p>Each kept phenotype becomes the starting line for the next round.</p>
       </div>
       <ol id="archive" class="archive-list"></ol>
     </section>
 
-    <aside class="boundary-note">
-      <strong>Game boundary:</strong> Every card, trait value, objective, line name, and phenotype result is fictional game data. Pheno Draft does not provide real-world breeding probabilities, potency claims, cultivation parameters, chemical instructions, or production guidance.
-    </aside>
+    <aside class="boundary-note"><strong>Game boundary:</strong> Every card, trait value, objective, line name, and phenotype result is fictional game data. Pheno Draft does not provide real-world breeding probabilities, potency claims, cultivation parameters, chemical instructions, or production guidance.</aside>
 
-    <nav class="footer-nav" aria-label="Game navigation">
-      <a href="/games/">Back to Games</a>
-      <a href="/">DTFSeeds.com</a>
-    </nav>
-
+    <nav class="footer-nav" aria-label="Game navigation"><a href="/games/">Back to Games</a><a href="/">DTFSeeds.com</a></nav>
     <p id="announce" class="sr-only" aria-live="assertive"></p>
   </main>
-  <script type="module" src="./app.js"></script>
+
+  <script id="pheno-draft-data" type="application/json">{"schemaVersion":1,"rounds":6,"refreshTokens":2,"traits":[{"id":"vigor","label":"Vigor"},{"id":"resin","label":"Resin"},{"id":"aroma","label":"Aroma"},{"id":"color","label":"Color"},{"id":"structure","label":"Structure"},{"id":"speed","label":"Speed"},{"id":"stability","label":"Stability"}],"goals":[{"id":"resin-reserve","label":"Resin Reserve","description":"Favor resin expression while keeping the line steady and vigorous.","weights":{"vigor":1,"resin":3,"aroma":1,"color":0,"structure":0,"speed":0,"stability":2}},{"id":"flavor-spectrum","label":"Flavor Spectrum","description":"Push aroma and color while protecting enough stability to keep the run balanced.","weights":{"vigor":0,"resin":1,"aroma":3,"color":2,"structure":0,"speed":0,"stability":1}},{"id":"fast-finish","label":"Fast Finish","description":"Prioritize speed, vigor, and stability over flashy secondary traits.","weights":{"vigor":2,"resin":0,"aroma":0,"color":0,"structure":1,"speed":3,"stability":2}},{"id":"show-bench","label":"Show Bench","description":"Build toward color, structure, and resin for a strong visual scorecard.","weights":{"vigor":0,"resin":2,"aroma":1,"color":3,"structure":2,"speed":0,"stability":1}},{"id":"workhorse","label":"Workhorse","description":"Favor vigor and stability with enough structure to hold the line together.","weights":{"vigor":3,"resin":0,"aroma":0,"color":0,"structure":2,"speed":1,"stability":3}},{"id":"balanced-line","label":"Balanced Line","description":"Reward broad strength across every trait instead of one extreme specialty.","weights":{"vigor":1,"resin":1,"aroma":1,"color":1,"structure":1,"speed":1,"stability":1}}],"cards":[{"id":"cobalt-orchard","label":"Cobalt Orchard","family":"Berry","hue":218,"traits":{"vigor":7,"resin":8,"aroma":7,"color":9,"structure":6,"speed":5,"stability":7}},{"id":"nectar-forge","label":"Nectar Forge","family":"Tropical","hue":36,"traits":{"vigor":8,"resin":6,"aroma":9,"color":7,"structure":6,"speed":7,"stability":5}},{"id":"velvet-static","label":"Velvet Static","family":"Purple","hue":286,"traits":{"vigor":5,"resin":8,"aroma":7,"color":10,"structure":8,"speed":4,"stability":8}},{"id":"prism-grove","label":"Prism Grove","family":"Floral","hue":322,"traits":{"vigor":6,"resin":7,"aroma":9,"color":9,"structure":7,"speed":5,"stability":6}},{"id":"frost-relay","label":"Frost Relay","family":"Frost","hue":192,"traits":{"vigor":7,"resin":10,"aroma":5,"color":6,"structure":7,"speed":6,"stability":7}},{"id":"ember-bloom","label":"Ember Bloom","family":"Earth","hue":12,"traits":{"vigor":9,"resin":6,"aroma":5,"color":8,"structure":8,"speed":6,"stability":8}},{"id":"citrus-nova","label":"Citrus Nova","family":"Citrus","hue":56,"traits":{"vigor":8,"resin":5,"aroma":10,"color":6,"structure":5,"speed":8,"stability":5}},{"id":"midnight-loom","label":"Midnight Loom","family":"Purple","hue":250,"traits":{"vigor":5,"resin":9,"aroma":6,"color":10,"structure":9,"speed":3,"stability":9}},{"id":"berry-circuit","label":"Berry Circuit","family":"Berry","hue":338,"traits":{"vigor":7,"resin":7,"aroma":9,"color":8,"structure":6,"speed":7,"stability":6}},{"id":"copper-haze","label":"Copper Haze","family":"Haze","hue":28,"traits":{"vigor":8,"resin":6,"aroma":8,"color":7,"structure":5,"speed":6,"stability":4}},{"id":"marble-kush","label":"Marble Kush","family":"Kush","hue":104,"traits":{"vigor":7,"resin":9,"aroma":6,"color":7,"structure":9,"speed":4,"stability":9}},{"id":"lunar-skunk","label":"Lunar Skunk","family":"Skunk","hue":162,"traits":{"vigor":9,"resin":7,"aroma":8,"color":5,"structure":7,"speed":8,"stability":7}},{"id":"aurora-jam","label":"Aurora Jam","family":"Fruit","hue":312,"traits":{"vigor":6,"resin":7,"aroma":10,"color":9,"structure":5,"speed":6,"stability":6}},{"id":"pine-signal","label":"Pine Signal","family":"Pine","hue":132,"traits":{"vigor":9,"resin":6,"aroma":8,"color":5,"structure":8,"speed":7,"stability":8}},{"id":"grape-atlas","label":"Grape Atlas","family":"Fruit","hue":274,"traits":{"vigor":6,"resin":8,"aroma":9,"color":10,"structure":7,"speed":4,"stability":7}},{"id":"cloud-diesel","label":"Cloud Diesel","family":"Gas","hue":202,"traits":{"vigor":8,"resin":8,"aroma":7,"color":5,"structure":6,"speed":7,"stability":6}},{"id":"jade-engine","label":"Jade Engine","family":"Green","hue":148,"traits":{"vigor":10,"resin":5,"aroma":5,"color":6,"structure":8,"speed":8,"stability":9}},{"id":"ruby-comet","label":"Ruby Comet","family":"Red","hue":352,"traits":{"vigor":7,"resin":7,"aroma":7,"color":10,"structure":6,"speed":9,"stability":5}},{"id":"silver-canopy","label":"Silver Canopy","family":"Frost","hue":186,"traits":{"vigor":8,"resin":9,"aroma":6,"color":6,"structure":9,"speed":5,"stability":8}},{"id":"golden-current","label":"Golden Current","family":"Citrus","hue":46,"traits":{"vigor":7,"resin":6,"aroma":9,"color":8,"structure":7,"speed":8,"stability":7}}]}</script>
+  <script defer src="./app.js"></script>
 </body>
 </html>

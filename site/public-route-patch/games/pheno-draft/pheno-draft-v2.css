@@ -1,0 +1,83 @@
+:root{
+  --pd-glow:0 0 26px rgba(119,227,142,.14);
+  --pd-gold-glow:0 0 26px rgba(243,201,105,.15);
+}
+
+.hero-panel{background:linear-gradient(145deg,rgba(19,35,29,.97),rgba(8,18,14,.96) 62%,rgba(27,22,13,.94))}
+.hero-badges{display:flex;flex-wrap:wrap;gap:.42rem;margin-top:1rem}
+.hero-badges span{padding:.34rem .56rem;border:1px solid rgba(119,227,142,.18);border-radius:999px;background:rgba(6,14,10,.54);color:#d8e6dc;font-size:.67rem;font-weight:820}
+.hero-mark{box-shadow:inset 0 0 0 7px rgba(255,255,255,.025),var(--pd-gold-glow)}
+
+.stat-strip{position:relative;padding-bottom:10px}
+.round-track{position:absolute!important;left:0;right:0;bottom:0;height:6px!important;padding:0!important;border:0!important;border-radius:999px!important;background:#19271f!important;overflow:hidden}
+.round-track>span{display:block;width:0;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--green),var(--gold));box-shadow:0 0 14px rgba(119,227,142,.28);transition:width .24s ease}
+.fit-strong #fit-stat{color:var(--green);text-shadow:0 0 18px rgba(119,227,142,.35)}
+
+.draft-actions{display:flex;align-items:center;gap:.55rem}
+.phase-state{padding:.38rem .55rem;border:1px solid #476653;border-radius:.45rem;background:#0a1510;color:#b9c9c0;font:900 .62rem ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em}
+.phase-phenotype .phase-state{border-color:rgba(243,201,105,.45);color:var(--gold);box-shadow:var(--pd-gold-glow)}
+
+.genetics-card{transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease,filter .16s ease}
+.genetics-card:hover{transform:translateY(-3px)}
+.parent-card.projected-up{box-shadow:inset 0 3px 0 rgba(119,227,142,.72),0 18px 40px rgba(0,0,0,.2)}
+.parent-card.projected-down{box-shadow:inset 0 3px 0 rgba(255,141,130,.55),0 18px 40px rgba(0,0,0,.2)}
+.parent-card.projected-flat{box-shadow:inset 0 3px 0 rgba(243,201,105,.48),0 18px 40px rgba(0,0,0,.2)}
+.pheno-card.improving{border-color:rgba(119,227,142,.66);box-shadow:0 0 0 1px rgba(119,227,142,.22),0 18px 45px rgba(32,110,63,.2),var(--pd-glow)}
+.pheno-card.declining{border-color:rgba(255,141,130,.38)}
+.pheno-card.even{border-color:rgba(243,201,105,.35)}
+.final-card{border-color:rgba(243,201,105,.7);box-shadow:var(--pd-gold-glow),0 18px 45px rgba(0,0,0,.28)}
+
+.fit-delta{display:grid;gap:.18rem;min-height:48px;padding:.48rem .55rem;border-radius:.6rem;background:rgba(0,0,0,.16)}
+.fit-delta strong{font-size:.8rem}
+.fit-delta span{font-size:.65rem;color:var(--muted);font-weight:700}
+.fit-delta.positive{border:1px solid rgba(119,227,142,.22)}
+.fit-delta.negative{border:1px solid rgba(255,141,130,.2)}
+.fit-delta.neutral{color:var(--gold);border:1px solid rgba(243,201,105,.2)}
+.card-action{min-height:50px;font-size:.86rem;position:relative;z-index:2}
+.card-action:active:not(:disabled){transform:translateY(1px) scale(.99)}
+
+.selected-parent{border-color:rgba(243,201,105,.4);box-shadow:var(--pd-gold-glow)}
+.selected-parent:before{content:"CROSS LOCKED";font-size:.58rem;font-weight:950;letter-spacing:.12em;color:var(--gold)}
+
+.archive-list li{transition:border-color .14s ease,background .14s ease}
+.archive-up{border-color:rgba(119,227,142,.28)!important;background:linear-gradient(90deg,rgba(119,227,142,.07),#0c1713 45%)!important}
+.archive-down{border-color:rgba(255,141,130,.22)!important;background:linear-gradient(90deg,rgba(255,141,130,.05),#0c1713 45%)!important}
+.archive-even{border-color:rgba(243,201,105,.2)!important}
+
+#new-run.restart-armed{border-color:rgba(255,141,130,.7);background:#4a201c;color:#ffd8d3;box-shadow:0 0 18px rgba(255,141,130,.12)}
+.result-panel.waiting strong{display:block;margin-top:.2rem}
+.result-panel.complete{box-shadow:var(--pd-gold-glow)}
+.run-complete .round-track>span{background:linear-gradient(90deg,var(--green),var(--gold),#fff1b8)}
+
+@media(max-width:900px){
+  .choice-grid{grid-template-columns:repeat(3,minmax(260px,1fr));overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:.45rem;margin-inline:-2px;padding-inline:2px}
+  .genetics-card{scroll-snap-align:start;min-height:390px}
+  .current-line .genetics-card{min-height:0}
+}
+
+@media(max-width:640px){
+  .game-shell{width:min(100% - .75rem,1220px)}
+  .hero-panel{padding:1rem}
+  h1{font-size:clamp(2.6rem,18vw,4.4rem)}
+  .hero-badges{gap:.3rem}.hero-badges span{font-size:.6rem}
+  .run-toolbar{position:sticky;top:.35rem;z-index:20;background:rgba(13,25,21,.96);backdrop-filter:blur(10px);box-shadow:0 8px 22px rgba(0,0,0,.18)}
+  .stat-strip{gap:.42rem}.stat-strip>div{padding:.65rem .72rem}.stat-strip strong{font-size:1.28rem}
+  .draft-actions{display:grid;width:100%;margin-top:.75rem}.phase-state{text-align:center}.refresh-button{margin:0}
+  .choice-grid{grid-template-columns:repeat(3,minmax(82vw,1fr));gap:.7rem}
+  .genetics-card{min-height:420px;padding:.72rem}
+  .genetic-art{height:105px}
+  .card-action{min-height:56px;font-size:.9rem}
+  .trait-label{font-size:.72rem}.trait-track{height:7px}
+  .fit-delta{min-height:54px}
+  .selected-parent{position:sticky;top:8.5rem;z-index:10;background:rgba(13,25,21,.96);backdrop-filter:blur(8px)}
+  .archive-list li{padding:.75rem}
+}
+
+@media(max-width:390px){
+  .choice-grid{grid-template-columns:repeat(3,minmax(88vw,1fr))}
+  .run-toolbar button{min-height:48px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .round-track>span,.genetics-card,.archive-list li,.card-action{transition:none!important}
+}
