@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#11180f">
+  <meta name="description" content="Harvest Hustle is a fast deterministic DTF Genetics browser time-management game with fictional batches and arcade workstations.">
+  <link rel="canonical" href="https://dtfseeds.com/games/harvest-hustle/">
+  <link rel="stylesheet" href="./harvest-hustle.css">
+  <title>Harvest Hustle | DTF Games</title>
+</head>
+<body>
+  <a class="skip-link" href="#game">Skip to game</a>
+  <header class="site-bar">
+    <a class="brand" href="/games/" aria-label="Back to DTF Games">
+      <span class="brand-mark" aria-hidden="true">DTF</span>
+      <span><strong>DTF Games</strong><small>Dream the Future</small></span>
+    </a>
+    <a class="hub-link" href="/games/">Game Hub</a>
+  </header>
+
+  <main id="game" class="game-shell">
+    <section class="hero" aria-labelledby="game-title">
+      <div>
+        <p class="eyebrow">Arcade shift challenge</p>
+        <h1 id="game-title">Harvest Hustle</h1>
+        <p class="lede">Pick a batch, hit the right station, build your combo, and finish as many fictional orders as you can before the shift clock runs out.</p>
+      </div>
+      <p id="load-status" class="status-chip" role="status">Loading shift data…</p>
+    </section>
+
+    <section class="score-strip" aria-label="Shift status">
+      <div class="stat timer-stat"><span>Time</span><strong id="time-stat">75s</strong></div>
+      <div class="stat"><span>Score</span><strong id="score-stat">0</strong></div>
+      <div class="stat"><span>Combo</span><strong id="combo-stat">x0</strong></div>
+      <div class="stat"><span>Batches</span><strong id="completed-stat">0</strong></div>
+      <div class="stat"><span>Mistakes</span><strong id="mistakes-stat">0</strong></div>
+      <button id="start-shift" class="start-button" type="button" disabled>Start Shift</button>
+    </section>
+
+    <section class="arcade-grid">
+      <article class="room-panel" aria-labelledby="queue-title">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Conveyor queue</p>
+            <h2 id="queue-title">Choose a batch</h2>
+          </div>
+          <span class="room-light" aria-hidden="true">SHIFT BAY 04</span>
+        </div>
+
+        <div class="room-stage" aria-hidden="true">
+          <span class="ceiling-rail"></span>
+          <span class="lamp lamp-a"></span>
+          <span class="lamp lamp-b"></span>
+          <span class="fan-art"><i></i><i></i><i></i></span>
+          <span class="conveyor-art"></span>
+        </div>
+
+        <div id="queue" class="batch-grid" aria-label="Batch queue"></div>
+        <div id="feedback" class="feedback-card" aria-live="polite">
+          <span class="feedback-kicker">READY</span>
+          <strong>Choose a batch, then start the shift.</strong>
+          <p>Correct moves build combo. A wrong station costs time and game quality.</p>
+        </div>
+      </article>
+
+      <aside class="station-panel" aria-labelledby="stations-title">
+        <div class="panel-heading compact">
+          <div>
+            <p class="eyebrow">Workstations</p>
+            <h2 id="stations-title">Send selected batch</h2>
+          </div>
+        </div>
+        <div id="selected-batch" class="selected-batch">
+          <strong>No batch selected.</strong><span>Choose a batch from the conveyor.</span>
+        </div>
+        <div id="stations" class="station-grid"></div>
+        <p class="shortcut-note">Keyboard: press <kbd>1</kbd>–<kbd>4</kbd> for the matching station while the shift is running.</p>
+      </aside>
+    </section>
+
+    <section class="lower-grid">
+      <article class="control-card">
+        <div class="panel-heading compact">
+          <div>
+            <p class="eyebrow">Shift code</p>
+            <h2>Replay the same queue</h2>
+          </div>
+        </div>
+        <label for="shift-code">Six-character shift code</label>
+        <div class="code-row">
+          <input id="shift-code" class="code-input" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="6" aria-describedby="code-help">
+          <button id="new-code" class="secondary-button" type="button">New</button>
+        </div>
+        <p id="code-help" class="help-text">Press Enter to load the code. The timer waits until you press Start Shift.</p>
+        <button id="share-shift" class="primary-button" type="button">Copy challenge link</button>
+      </article>
+
+      <article class="history-card" aria-labelledby="history-title">
+        <div class="panel-heading compact">
+          <div>
+            <p class="eyebrow">Shift tape</p>
+            <h2 id="history-title">Recent actions</h2>
+          </div>
+        </div>
+        <ol id="history" class="history-list">
+          <li class="empty-state">Shift actions will appear here.</li>
+        </ol>
+      </article>
+    </section>
+
+    <section class="rules-card" aria-labelledby="rules-title">
+      <p class="eyebrow">How it works</p>
+      <h2 id="rules-title">Fast choices, fictional workflow.</h2>
+      <div class="rules-grid">
+        <p><strong>Select a batch.</strong> Each ticket shows its next arcade station and current game quality.</p>
+        <p><strong>Match the station.</strong> Correct actions cost one game-second and build combo. Wrong stations cost three seconds and quality.</p>
+        <p><strong>Beat the clock.</strong> Finish batches for value bonuses before the 75-second shift ends. The same code reproduces the same queue.</p>
+      </div>
+      <p class="boundary"><strong>Game boundary:</strong> station names are stylized mechanics only. This game does not provide real-world harvest, drying, processing, chemical, equipment-setting, or consumption instructions.</p>
+    </section>
+  </main>
+
+  <p id="announce" class="sr-only" aria-live="assertive"></p>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
