@@ -14,6 +14,7 @@ on:
       - scripts/fix-wordpress-home-release-visuals.mjs
       - site/wordpress/education/topic-literature.json
       - site/wordpress/education/topic-literature-expansions.json
+      - site/wordpress/education/topic-literature-expansions-core-v1.json
       - site/wordpress/education/visual-production-plans/**
       - site/wordpress/assets/infographics/infographic-learning-guides.json
       - site/wordpress/assets/infographics/placement-rules.json
@@ -36,7 +37,7 @@ jobs:
   finalize:
     name: Republish, purge cache, and verify guided learning
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 40
     environment: production
     env:
       NODE_OPTIONS: --dns-result-order=ipv4first
@@ -69,15 +70,19 @@ jobs:
           const fs = require('fs');
           const guides = JSON.parse(fs.readFileSync('site/wordpress/assets/infographics/infographic-learning-guides.json', 'utf8'));
           const topics = JSON.parse(fs.readFileSync('site/wordpress/education/topic-literature.json', 'utf8'));
-          const expansions = JSON.parse(fs.readFileSync('site/wordpress/education/topic-literature-expansions.json', 'utf8'));
+          const primary = JSON.parse(fs.readFileSync('site/wordpress/education/topic-literature-expansions.json', 'utf8'));
+          const core = JSON.parse(fs.readFileSync('site/wordpress/education/topic-literature-expansions-core-v1.json', 'utf8'));
           const plan = JSON.parse(fs.readFileSync('site/wordpress/education/visual-production-plans/lighting-research-v1.json', 'utf8'));
           if (!Array.isArray(guides.guides) || guides.guides.length < 10) process.exit(1);
           if (!Array.isArray(guides.learningPaths) || guides.learningPaths.length < 4) process.exit(1);
-          if (!Array.isArray(topics.topics) || topics.topics.length < 10) process.exit(1);
-          if (!Array.isArray(expansions.expansions) || expansions.expansions.length < 2) process.exit(1);
+          if (!Array.isArray(topics.topics) || topics.topics.length !== 13) process.exit(1);
+          if (!Array.isArray(primary.expansions) || primary.expansions.length !== 2) process.exit(1);
+          if (!Array.isArray(core.expansions) || core.expansions.length !== 11) process.exit(1);
+          const ids = new Set([...primary.expansions, ...core.expansions].map(row => row.topicId));
+          if (ids.size !== 13) throw new Error(`Expected expansion ownership for all 13 topics; found ${ids.size}`);
           if (!Array.isArray(plan.assets) || plan.assets.length < 8) process.exit(1);
           if (plan.assets.some(asset => asset.status !== 'ready-for-render' || !asset.title || !asset.topicId || !Array.isArray(asset.requiredPanels) || asset.requiredPanels.length < 5)) process.exit(1);
-          console.log(`Validated ${guides.guides.length} study guides, ${guides.learningPaths.length} learning paths, ${topics.topics.length} literature topics, ${expansions.expansions.length} expansions, and ${plan.assets.length} visual briefs.`);
+          console.log(`Validated ${guides.guides.length} study guides, ${guides.learningPaths.length} learning paths, ${topics.topics.length} literature topics, ${ids.size} topic expansions, and ${plan.assets.length} first-wave visual briefs.`);
           NODE
 
       - name: Assemble additive literature expansions
@@ -91,14 +96,18 @@ jobs:
           const fs = require('fs');
           const data = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
           const byId = new Map(data.topics.map(topic => [topic.id, topic]));
-          for (const id of ['lighting', 'research-measurement']) {
-            const topic = byId.get(id);
-            if (!topic || !Array.isArray(topic.sections) || topic.sections.length < 9) {
-              throw new Error(`${id} did not reach nine literature sections`);
+          if (byId.size !== 13) throw new Error(`Expected 13 canonical topics, found ${byId.size}`);
+          for (const [id, topic] of byId) {
+            if (!Array.isArray(topic.sections) || topic.sections.length < 8) {
+              throw new Error(`${id} did not reach eight literature sections`);
             }
           }
-          console.log(`Expanded Lighting to ${byId.get('lighting').sections.length} sections and Research/Measurement to ${byId.get('research-measurement').sections.length} sections.`);
+          for (const id of ['lighting', 'research-measurement']) {
+            if (byId.get(id).sections.length < 9) throw new Error(`${id} did not retain its nine-section advanced depth`);
+          }
+          console.log(JSON.stringify(Object.fromEntries([...byId].map(([id, topic]) => [id, topic.sections.length])), null, 2));
           NODE
+          echo "minimum_sections=$(node -e "const d=require(process.argv[1]); console.log(Math.min(...d.topics.map(t=>t.sections.length)))" "$EXPANDED_LITERATURE")" >> "$GITHUB_OUTPUT"
           echo "lighting_sections=$(node -p "require(process.argv[1]).topics.find(t=>t.id==='lighting').sections.length" "$EXPANDED_LITERATURE")" >> "$GITHUB_OUTPUT"
           echo "research_sections=$(node -p "require(process.argv[1]).topics.find(t=>t.id==='research-measurement').sections.length" "$EXPANDED_LITERATURE")" >> "$GITHUB_OUTPUT"
 
@@ -205,8 +214,31 @@ jobs:
               'Common interpretation trap' \
               'Infographics for'
             sections="$(grep -Eo 'class="thc-section"' "$page" | wc -l | tr -d ' ')"
-            [[ "$sections" -ge 4 ]] || {
-              echo "Expected at least four literature sections on $route; found $sections" >&2
+            [[ "$sections" -ge 8 ]] || {
+              echo "Expected at least eight literature sections on $route; found $sections" >&2
+              exit 1
+            }
+          done
+
+          declare -A required_markers=(
+            [plant-biology]='Water potential, osmosis, and turgor'
+            [genetics-breeding]='Qualitative traits, quantitative traits, and heritability'
+            [lifecycle-propagation]='Seed storage, viability, and vigor'
+            [environment-vpd]='Boundary layers and canopy air movement'
+            [lighting]='From single readings to canopy light maps'
+            [water-ph-ec]='Alkalinity, bicarbonate, and pH stability'
+            [nutrition-media]='Nutrient forms, transport to roots, and uptake'
+            [ipm]='Scouting design, sampling, and action thresholds'
+            [training-canopy]='Apical dominance, branch architecture, and training response'
+            [harvest-postharvest]='Harvest maturity is a sampling problem'
+            [outdoor]='Map the site microclimate before managing the crop'
+            [research-methods]='Controls, randomization, and blocking'
+            [plant-science-reference]='Units, conversions, and significant figures'
+          )
+          for route in "${!required_markers[@]}"; do
+            page="$RUNNER_TEMP/final-owner-${route}.html"
+            grep -Fqi "${required_markers[$route]}" "$page" || {
+              echo "Core curriculum marker missing on $route: ${required_markers[$route]}" >&2
               exit 1
             }
           done
@@ -214,14 +246,12 @@ jobs:
           lighting="$RUNNER_TEMP/final-owner-lighting.html"
           research="$RUNNER_TEMP/final-owner-research-methods.html"
           for marker in \
-            'From single readings to canopy light maps' \
             'DLI is an integral, not a complete prescription' \
             'Sensor choice, spectral response, and measurement limits' \
             'Light-response curves, acclimation, and photoinhibition'; do
             grep -Fqi "$marker" "$lighting" || { echo "Lighting expansion missing: $marker" >&2; exit 1; }
           done
           for marker in \
-            'Controls, randomization, and blocking' \
             'Effect size, variability, and practical importance' \
             'Time series, baselines, and change attribution' \
             'Reproducibility, metadata, and data integrity'; do
@@ -262,6 +292,7 @@ jobs:
           TOPIC_COUNT: ${{ steps.publish.outputs.topic_count }}
           LEARNING_PATHS: ${{ steps.publish.outputs.learning_paths }}
           STUDY_GUIDES: ${{ steps.publish.outputs.study_guides }}
+          MINIMUM_SECTIONS: ${{ steps.expand.outputs.minimum_sections }}
           LIGHTING_SECTIONS: ${{ steps.expand.outputs.lighting_sections }}
           RESEARCH_SECTIONS: ${{ steps.expand.outputs.research_sections }}
         with:
@@ -283,10 +314,11 @@ jobs:
               `Literature topics: **${process.env.TOPIC_COUNT || 'not-run'}**`,
               `Learning paths: **${process.env.LEARNING_PATHS || 'not-run'}**`,
               `Study guides: **${process.env.STUDY_GUIDES || 'not-run'}**`,
+              `Minimum literature sections on any subject: **${process.env.MINIMUM_SECTIONS || 'not-run'}**`,
               `Lighting literature sections: **${process.env.LIGHTING_SECTIONS || 'not-run'}**`,
               `Research/Measurement literature sections: **${process.env.RESEARCH_SECTIONS || 'not-run'}**`,
               '',
-              'This workflow is the single downstream THC Learning finalizer. It runs after Topic Literature, assembles additive curriculum, republishes canonical literature-first pages, purges Hostinger/LiteSpeed, verifies the guided-learning markers, then hands off to the exact homepage release-card owner.'
+              'This workflow is the single downstream THC Learning finalizer. It assembles all 13 additive curricula, republishes canonical literature-first pages, purges Hostinger/LiteSpeed, verifies an eight-section minimum on every subject, then hands off to the exact homepage release-card owner.'
             ].join('\n');
             try {
               await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: 220, body });
