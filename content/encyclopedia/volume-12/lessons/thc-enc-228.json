@@ -1,0 +1,57 @@
+{
+  "id":"THC-ENC-228",
+  "number":228,
+  "title":"Olivetolic Acid Formation",
+  "objective":"Describe formation of the olivetolic-acid polyketide nucleus through tetraketide synthase and olivetolic acid cyclase, and distinguish established enzyme chemistry from unresolved intact-plant pathway control.",
+  "terms":[
+    {"term":"olivetolic acid","definition":"The pentyl alkylresorcinolic acid that supplies the aromatic polyketide portion of major pentyl cannabinoids."},
+    {"term":"tetraketide synthase","definition":"A cannabis type III polyketide synthase, abbreviated TKS, that condenses hexanoyl-CoA with three malonyl-CoA units to form a linear tetraketide precursor."},
+    {"term":"olivetolic acid cyclase","definition":"The cannabis enzyme OAC that directs cyclization of the linear tetraketide intermediate to olivetolic acid."},
+    {"term":"malonyl-CoA","definition":"An activated three-carbon extender substrate repeatedly used by polyketide synthases."},
+    {"term":"aldol cyclization","definition":"A carbon-carbon bond-forming ring-closure reaction; OAC directs a specific intramolecular aldol cyclization during olivetolic-acid formation."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Olivetolic acid provides the aromatic polyketide nucleus used to form major pentyl cannabinoids. Its carbon skeleton is assembled from hexanoyl-CoA plus three malonyl-CoA extender units by the cannabis type III polyketide synthase commonly called tetraketide synthase.",
+    "TKS alone does not efficiently produce olivetolic acid because its linear polyketide intermediate can cyclize into alternative products. In 2012, Gagne and colleagues identified olivetolic acid cyclase from cannabis glandular-trichome transcriptomes and showed that TKS plus OAC is required to direct the characteristic C2-C7 aldol cyclization with carboxylate retention that forms olivetolic acid.",
+    "Structural work later resolved OAC as an unusual plant polyketide cyclase with a hydrophobic pocket and active-site geometry suited to the pentyl tetraketide substrate. This provides direct mechanistic evidence for cyclization rather than treating OAC as a pathway annotation inferred only from sequence.",
+    "The TKS/OAC reaction establishes a biochemical pathway step, but it does not prove that olivetolic-acid formation is the single rate-limiting step in intact cannabis trichomes. Precursor supply, enzyme abundance, localization, transport, competing reactions, prenylation, downstream synthases, secretion, and storage all interact.",
+    "Olivetolic-acid concentration is therefore not equivalent to cannabinoid-production rate. A pool can accumulate because formation increased, because downstream consumption decreased, or because transport and compartmentation changed."
+  ],
+  "cultivationRelevance":[
+    "Use the TKS/OAC sequence to explain plant biochemistry and genetic targets, not to justify untested additives claimed to 'feed' olivetolic acid or force potency.",
+    "When evaluating a treatment hypothesis, measure the proposed intermediate or enzyme evidence and downstream cannabinoids under controlled conditions instead of inferring pathway activation from plant appearance.",
+    "Keep genotype and developmental stage fixed when comparing pathway measurements because trichome abundance and pathway expression change through flowering.",
+    "Separate concentration from flux and total production; one olivetolic-acid measurement cannot identify which pathway step controls the final cannabinoid amount."
+  ],
+  "measureAndRecord":[
+    {"field":"Biological sample","requirement":"Record genotype, tissue or trichome fraction, developmental stage, plant position, fresh/dry state, and biological replicate."},
+    {"field":"TKS/OAC evidence","requirement":"Record transcript, protein, purified/recombinant enzyme, localization, or activity assay and the controls used."},
+    {"field":"Substrates/products","requirement":"Record hexanoyl-CoA, malonyl-CoA, olivetolic acid, side products, substrate concentrations, reaction conditions, and analytical standards where enzyme chemistry is measured."},
+    {"field":"Downstream pathway","requirement":"Record CBGA and major cannabinoid acids if an intact-plant change in olivetolic-acid production is being linked to final cannabinoids."},
+    {"field":"Rate claim","requirement":"Use a time course, isotope/flux experiment, enzyme kinetics, or another direct rate measurement rather than inferring rate from one pool size."
+    }
+  ],
+  "misconceptions":[
+    "Olivetolic acid forms spontaneously from hexanoate in cannabis trichomes.",
+    "Tetraketide synthase alone performs all chemistry needed to make olivetolic acid efficiently.",
+    "OAC is known only from computer prediction rather than direct biochemical evidence.",
+    "Increasing OAC expression alone guarantees higher flower cannabinoid concentration.",
+    "A larger olivetolic-acid pool proves faster cannabinoid biosynthesis."
+  ],
+  "evidenceLimits":[
+    "TKS/OAC function and OAC catalytic mechanism are strongly supported by purified-enzyme biochemistry and structural studies. Their quantitative control over cannabinoid flux in intact cannabis plants is less resolved. Engineered or cell-free systems establish biochemical capability but should not be converted into field-crop rate-limit claims without direct plant evidence."
+  ],
+  "crossLinks":"THC-ENC-227 for hexanoyl-CoA precursor supply; THC-ENC-229 for prenylation of olivetolic acid to CBGA; THC-ENC-225 for compartmentation; THC-ENC-237–238 for genotype/environment and developmental accumulation.",
+  "sourceNotes":[
+    "Gagne SJ, Stout JM, Liu E, Boubakir Z, Clark SM, Page JE. (2012). Identification of olivetolic acid cyclase from Cannabis sativa reveals a unique catalytic route to plant polyketides. PNAS 109:12811–12816. Demonstrated that cannabis TKS requires OAC to direct formation of olivetolic acid from the linear tetraketide intermediate.",
+    "Yang X et al. (2016). Structural basis for olivetolic acid formation by a polyketide cyclase from Cannabis sativa. FEBS Journal. Resolved OAC apo and OAC-bound structures and identified active-site features supporting its C2-C7 aldol cyclization mechanism.",
+    "Stout JM et al. (2012). The Plant Journal 71:353–365. Established the hexanoyl-CoA precursor context feeding the polyketide branch.",
+    "The controlled Volume 12 source explicitly separates established enzyme chemistry from unknown intact-crop control coefficients."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 12 batch 02 controlled web derivative","driveSourceDocumentId":"1mrad4SysYqoD1-Z8A7ibF9PcnvRjs5qiPIOseYGRtUI","evidenceControl":"controlled_manuscript_plus_direct_OAC_biochemistry_and_structure","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_olivetolic_acid_biosynthesis","releaseTimeReview":"completed_2026-08-29_TKS_OAC_mechanism_and_non_rate_limiting_claims","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"olivetolic-acid-formation",
+  "route":"/encyclopedia/olivetolic-acid-formation"
+}
