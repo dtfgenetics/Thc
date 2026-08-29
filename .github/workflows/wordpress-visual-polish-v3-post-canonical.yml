@@ -91,8 +91,9 @@ jobs:
           verify '/' 'dtf-v3-spotlight'
           verify '/learn/' 'dtf-learning-v4'
           learn="$RUNNER_TEMP/_learn_.html"
-          grep -Fqi 'Start with the question you are trying to answer.' "$learn"
+          grep -Fqi 'Different goals need different starting points.' "$learn"
           grep -Fqi 'See how the subjects connect before you go deep.' "$learn"
+          grep -Fqi 'Explore the system behind your question.' "$learn"
           grep -Fqi 'data-dtf-learning-map="v4"' "$learn"
           grep -Fqi '/learn/plant-biology/' "$learn"
           grep -Fqi '/learn/environment-vpd/' "$learn"
@@ -134,7 +135,7 @@ jobs:
             echo "- Learning V4 hierarchy: **${LEARNING:-not-run}**"
             echo "- Live visual verification: **${VERIFY:-not-run}**"
             echo
-            echo 'Learning V4 is applied after the V3 cascade so its connected learning map remains the final Learn-page structure.'
+            echo 'Learning V4 relocates the goal chooser ahead of the subject catalog and adds the connected six-stage learning map after the final V3 polish layer.'
           } >> "$GITHUB_STEP_SUMMARY"
 
-# Production trigger: 2026-08-28 fixed cache-busted V3/Learning V4 verifier
+# Production trigger: 2026-08-28 target final post-polish Learn structure
