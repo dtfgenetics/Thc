@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-213",
+  "number":213,
+  "title":"Controlled Pollination and Parent Identity",
+  "objective":"Explain controlled pollination as a parentage-control process, distinguish seed parent from pollen parent, and establish the labeling and record practices needed to preserve cross identity from pollination through harvested seed.",
+  "terms":[
+    {"term":"seed parent","definition":"The plant bearing the ovules and ultimately the harvested seeds; often called the female or maternal parent in a cross."},
+    {"term":"pollen parent","definition":"The plant or defined pollen source contributing the male gametes to a cross."},
+    {"term":"controlled pollination","definition":"A pollination event in which the intended pollen source and receiving flowers are deliberately defined and protected from unintended pollen as far as practicable."},
+    {"term":"cross identifier","definition":"A unique code linking a pollination event to its parent identities, date, plant or branch location, and resulting seed lot."},
+    {"term":"parentage verification","definition":"Use of records, genetic markers, or other validated evidence to confirm that offspring arose from the intended parents."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "A cannabis seed carries genetic contributions from both the seed parent and pollen parent. Controlled breeding therefore depends on knowing which pollen source reached which reproductive tissue, not simply on knowing which plants were present in a room or field.",
+    "Cannabis produces abundant, mobile pollen and can be highly heterozygous. Unintended pollen can create progeny whose ancestry differs from the breeder's label, while even correctly made crosses can segregate widely because parent identity does not guarantee uniform offspring phenotype.",
+    "Controlled pollination is a chain-of-identity problem: parent selection, pollen collection, receiving-flower identification, exclusion of competing pollen, cross labeling, seed maturation, harvest, cleaning, packaging, and later germination records must all preserve the same cross identifier.",
+    "Physical labels and written records are stronger when they are redundant. A branch tag alone can be lost; a notebook entry alone can become ambiguous. Cross IDs should therefore be repeated on plant labels, pollination records, harvested seed containers, and digital records.",
+    "When parentage has high scientific or commercial importance, molecular markers can provide an additional verification layer. Genetic confirmation does not replace accurate field records, but it can detect labeling errors or unintended pollen contributions that visual inspection cannot."
+  ],
+  "cultivationRelevance":[
+    "Assign the cross identifier before pollen is applied so the pollination event begins with an established record rather than being reconstructed later.",
+    "Keep seed-parent and pollen-parent fields separate; reversing the parent order changes the biological meaning of the cross even when the same two genotypes are involved.",
+    "Preserve the cross identifier when seeds move from the plant to drying, cleaning, counting, storage, germination testing, and progeny evaluation.",
+    "Treat unexpected seed or progeny traits as a reason to audit parentage and records rather than immediately assuming a new mutation."
+  ],
+  "measureAndRecord":[
+    {"field":"Cross ID","requirement":"Use one unique identifier that appears on the plant or branch label, pollination record, harvest container, cleaned seed lot, and later germination/progeny records."},
+    {"field":"Parent identity","requirement":"Record seed-parent accession or clone ID and pollen-parent accession or clone ID as separate fields."},
+    {"field":"Pollination event","requirement":"Record date, receiving branch or inflorescence, pollen source batch, operator, and any containment method used."},
+    {"field":"Contamination controls","requirement":"Record other pollen sources present, isolation conditions, cleaning events, airflow status, and any breach or uncertainty."},
+    {"field":"Seed-lot continuity","requirement":"Record harvest date, seed count or weight, cleaning and storage container ID, and any sample removed for germination or parentage testing."
+    }
+  ],
+  "misconceptions":[
+    "If only two parent plants were intended, every resulting seed must belong to that cross.",
+    "The order of the two parent names does not matter.",
+    "A labeled seed packet proves parentage by itself.",
+    "Uniform-looking seeds indicate genetically uniform offspring.",
+    "Once seeds are harvested, pollination records are no longer important."
+  ],
+  "evidenceLimits":[
+    "Controlled pollination can greatly improve parentage confidence, but physical containment cannot prove genetic identity by itself. Cannabis pollen mobility and heterozygosity make documentation especially important. Where exact parentage is critical, validated molecular testing can supplement but not replace chain-of-identity records."
+  ],
+  "crossLinks":"THC-ENC-208–211 for pollen viability, transport, receptivity, and fertilization; THC-ENC-214–215 for pollen storage and containment; THC-ENC-216 for seed maturation; THC-ENC-220 for reproductive and seed-batch documentation.",
+  "sourceNotes":[
+    "Cannabis breeding and pollen-dispersal literature consistently treats controlled pollen transfer and exclusion of unintended pollen as central to seed parentage. Modern genomic studies also document substantial heterozygosity within Cannabis sativa populations, reinforcing that cross identity and progeny uniformity are separate concepts.",
+    "Wizenberg SB, Weis AE, Campbell LG. (2020). Comparing methods for controlled capture and quantification of pollen in Cannabis sativa. Applications in Plant Sciences 8:e11389. Provides cannabis-specific methods context for controlled pollen handling and measurement.",
+    "Public wording emphasizes traceable parent identity and does not imply that controlled pollination alone is equivalent to DNA-confirmed parentage."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 11 batch 03 controlled web derivative","evidenceControl":"current_topic_secondary_review_complete","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_controlled_pollination_and_parentage","releaseTimeReview":"completed_2026-08-29_parent_order_chain_of_identity_and_parentage_limits","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"controlled-pollination-and-parent-identity",
+  "route":"/encyclopedia/controlled-pollination-and-parent-identity"
+}
