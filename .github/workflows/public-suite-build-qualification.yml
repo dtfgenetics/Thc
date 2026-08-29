@@ -1,0 +1,46 @@
+name: Public Suite Build Qualification
+
+on:
+  pull_request:
+    paths:
+      - apps/high-land-web/**
+      - apps/growlens-web/**
+      - games/**
+      - site/public-route-patch/**
+      - site/deployment/public-apps.json
+      - data/public-navigation.json
+      - .github/workflows/build-dtfseeds-public-suite.yml
+      - .github/workflows/public-suite-build-qualification.yml
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: public-suite-build-qualification-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  qualify:
+    name: Dispatch and verify branch public-suite build
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    env:
+      GH_TOKEN: ${{ github.token }}
+      HEAD_REF: ${{ github.event.pull_request.head.ref }}
+    steps:
+      - name: Dispatch branch build and require success
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$HEAD_REF"
+          run_url="$(gh workflow run build-dtfseeds-public-suite.yml \
+            --repo "$GITHUB_REPOSITORY" \
+            --ref "$HEAD_REF")"
+          run_id="${run_url##*/}"
+          [[ "$run_id" =~ ^[0-9]+$ ]] || {
+            echo "Could not parse public-suite build run from: $run_url" >&2
+            exit 1
+          }
+          echo "Dispatched branch public-suite build: $run_url"
+          gh run watch "$run_id" --repo "$GITHUB_REPOSITORY" --exit-status
