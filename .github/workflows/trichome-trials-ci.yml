@@ -31,6 +31,9 @@ jobs:
       - name: Run confidence-call scoring tests
         run: node games/trichome-trials/test/confidence.test.mjs
 
+      - name: Run production runtime and scorecard UX regression tests
+        run: node games/trichome-trials/test/public-runtime.test.mjs
+
       - name: Validate browser JavaScript syntax
         run: |
           node --check site/public-route-patch/games/trichome-trials/app.js
@@ -50,6 +53,7 @@ jobs:
           const css = fs.readFileSync('site/public-route-patch/games/trichome-trials/trichome-trials.css','utf8');
           const frost = fs.readFileSync('site/public-route-patch/games/trichome-trials/frost-layout.css','utf8');
           const confidence = fs.readFileSync('site/public-route-patch/games/trichome-trials/confidence.css','utf8');
+          const visual = fs.readFileSync('site/public-route-patch/games/trichome-trials/trichome-trials-v2.css','utf8');
           const app = fs.readFileSync('site/public-route-patch/games/trichome-trials/app.js','utf8');
           const requireText = (source, text, label) => {
             if (!source.includes(text)) throw new Error(`missing ${label}: ${text}`);
@@ -57,27 +61,33 @@ jobs:
           requireText(html, '<link rel="canonical" href="https://dtfseeds.com/games/trichome-trials/">', 'canonical route');
           requireText(html, '<link rel="stylesheet" href="./frost-layout.css">', 'frost layout asset');
           requireText(html, '<link rel="stylesheet" href="./confidence.css">', 'confidence style asset');
+          requireText(html, 'trichome-trials-v2.css', 'scorecard visual layer');
           requireText(html, 'Confidence calls:', 'confidence instructions');
-          requireText(html, '<script type="module" src="./app.js"></script>', 'module entrypoint');
+          requireText(html, '<script defer src="./app.js"></script>', 'classic deferred entrypoint');
+          requireText(html, 'id="trichome-trials-data"', 'embedded canonical judging data');
           requireText(html, 'Game boundary:', 'fictional content boundary');
-          requireText(app, "from './confidence.mjs'", 'confidence module import');
           requireText(app, 'MAX_CONFIDENCE_CALLS', 'confidence call limit');
           requireText(app, 'submitConfidentScorecard(', 'confidence scorer usage');
-          requireText(app, 'aria-pressed=', 'confidence toggle state');
-          requireText(app, "loadJson('./data/core.json')", 'split deck core loader');
-          requireText(app, "loadJson('./data/entries-4.json')", 'final public entry pack');
-          requireText(app, 'data.roundsPerRun !== 5', 'five-round browser contract');
-          requireText(app, 'data.categories?.length !== 7', 'seven-category browser contract');
-          requireText(app, 'data.entries?.length !== 12', '12-entry browser contract');
+          requireText(app, 'let touchedIds = new Set();', 'reviewed-category gate');
+          requireText(app, 'button[data-score-step][data-category]', 'tap score stepper');
+          requireText(app, 'ui.submit.disabled = !judging || !allReviewed', 'complete scorecard submit gate');
+          requireText(app, 'payload?.roundsPerRun !== 5', 'five-round browser contract');
+          requireText(app, 'payload?.categories?.length !== 7', 'seven-category browser contract');
+          requireText(app, 'payload?.entries?.length !== 12', '12-entry browser contract');
           requireText(app, 'type="range" min="1" max="10" step="1"', '1–10 score control');
           requireText(css, '.sample-visual', 'fictional sample artwork');
           requireText(css, '.loupe', 'loupe artwork');
           requireText(css, '.accuracy-ring', 'accuracy meter artwork');
-          requireText(css, '@media(prefers-reduced-motion:reduce)', 'reduced-motion support');
           requireText(frost, '.frost-field i:nth-child(28)', 'full frost placement map');
           requireText(confidence, '.confidence-button[aria-pressed="true"]', 'confidence selected state');
           requireText(confidence, '.confidence-chip', 'confidence review marker');
-          if (app.includes("loadJson('./data/trials.json')")) throw new Error('browser must use validated split public packs, not a nonexistent monolith');
+          requireText(visual, '.score-stepper', 'mobile score stepper styles');
+          requireText(visual, '.score-row.unreviewed', 'unreviewed score state');
+          requireText(visual, '@media(max-width:640px)', 'mobile layout');
+          requireText(visual, '@media(prefers-reduced-motion:reduce)', 'reduced-motion support');
+          if (/^\s*import\s/m.test(app)) throw new Error('public runtime regressed to browser module imports');
+          if (/fetch\s*\(/.test(app)) throw new Error('public runtime regressed to browser-time JSON fetch');
+          if (/CSS\.escape/.test(app)) throw new Error('public runtime regressed to CSS.escape dependency');
           NODE
 
       - name: Verify truthful release boundary
