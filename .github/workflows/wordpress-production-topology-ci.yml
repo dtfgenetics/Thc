@@ -9,6 +9,7 @@ on:
       - .github/workflows/wordpress-learning-experience-v3-production.yml
       - .github/workflows/wordpress-home-release-visuals.yml
       - .github/workflows/wordpress-canonical-watch.yml
+      - .github/workflows/verify-live-infographics.yml
       - .github/workflows/wordpress-production-topology-ci.yml
   push:
     branches: [main]
@@ -18,6 +19,7 @@ on:
       - .github/workflows/wordpress-learning-experience-v3-production.yml
       - .github/workflows/wordpress-home-release-visuals.yml
       - .github/workflows/wordpress-canonical-watch.yml
+      - .github/workflows/verify-live-infographics.yml
       - .github/workflows/wordpress-production-topology-ci.yml
 
 permissions:
@@ -41,6 +43,7 @@ jobs:
           learning='.github/workflows/wordpress-learning-experience-v3-production.yml'
           home='.github/workflows/wordpress-home-release-visuals.yml'
           watch='.github/workflows/wordpress-canonical-watch.yml'
+          verify_infographics='.github/workflows/verify-live-infographics.yml'
 
           grep -Fq -- '- Stage DTFSeeds WordPress Canonical Deployment' "$canonical"
 
@@ -56,11 +59,21 @@ jobs:
             exit 1
           fi
 
-          grep -Fq -- '- Publish DTFSeeds Learning Experience V3' "$home"
+          grep -Fq 'uses: ./.github/workflows/wordpress-home-release-visuals.yml' "$learning"
+          grep -Fq 'workflow_call:' "$home"
+          if grep -Fq 'workflow_run:' "$home"; then
+            echo 'Final Home visuals must be called as a reusable workflow, not as a fourth workflow_run hop.' >&2
+            exit 1
+          fi
 
           if grep -Fq 'issue_number: 46' "$watch"; then
             echo 'Canonical preflight reporting must not depend on saturated issue #46.' >&2
             exit 1
           fi
 
-          echo 'Verified production order: staging -> canonical -> infographics -> learning -> final home visuals.'
+          if grep -Fq 'git push origin HEAD:main' "$verify_infographics"; then
+            echo 'Independent live infographic verification must not mutate main and retrigger production.' >&2
+            exit 1
+          fi
+
+          echo 'Verified production order: staging -> canonical -> infographics -> learning -> reusable final Home owner.'
