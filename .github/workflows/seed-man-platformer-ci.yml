@@ -29,6 +29,8 @@ jobs:
           node-version: 22
       - name: Test platformer physics and level interactions
         run: node games/seed-man-platformer/test/physics.test.mjs
+      - name: Test self-contained public runtime
+        run: node games/seed-man-platformer/test/public-runtime.test.mjs
       - name: Validate browser JavaScript syntax
         run: |
           node --check site/public-route-patch/games/seed-man-platformer/app.js
@@ -53,4 +55,6 @@ jobs:
           grep -Fq 'https://dtfseeds.com/games/seed-man-platformer/' "$route/index.html"
           grep -Fqi 'rel="canonical"' "$route/index.html"
           grep -Fqi 'name="description"' "$route/index.html"
+          grep -Fq 'id="seed-man-level"' "$route/index.html"
+          grep -Fq '<script src="./app.js" defer></script>' "$route/index.html"
           grep -Fq 'No third-party level layouts or character assets are used.' "$route/index.html"
