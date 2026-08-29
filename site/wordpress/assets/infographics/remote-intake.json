@@ -1,15 +1,17 @@
 {
   "schemaVersion": 1,
-  "purpose": "Controlled provenance record for reviewed THC educational images sourced from Google Drive.",
-  "workflowStatus": "canonical-reconciliation",
+  "purpose": "Controlled intake of reviewed THC educational images from public production source URLs preserved in repository history.",
+  "workflowStatus": "historical-public-source-recovery",
   "policy": {
     "allowedExtensions": [".png", ".jpg", ".jpeg"],
     "rejectWebp": true,
     "publishOnlyEnabled": true,
     "destinationDirectory": "site/wordpress/assets/infographics",
-    "notes": "Direct private-Drive transport is disabled because Google returns HTML/auth responses instead of image bytes. Draft, review-required, QA-required, superseded, dashboard, mood-board, historical-proof, and quarantine assets remain excluded from public publication."
+    "notes": "Use only repo-recorded public production URLs for assets already marked curated/approved. Keep rejected, draft, review-required, QA-required, superseded, dashboard, mood-board, historical-proof, and quarantine assets disabled."
   },
   "entries": [
-    {"filename":"THC-C008_Infographic_Flower_Anatomy_Reproduction_300dpi.png","url":"https://drive.google.com/uc?export=download&id=16ZxZlXWgxCw1ysg-CKIJp9D4rDQIvMlL","enabled":false,"source":"Google Drive 300-DPI production master; direct-download probe failed safely; reconcile via Git-resident source or direct canonical transfer"}
+    {"filename":"THC-C008_Infographic_Flower_Anatomy_Reproduction_300dpi.png","url":"https://drive.google.com/uc?export=download&id=16ZxZlXWgxCw1ysg-CKIJp9D4rDQIvMlL","enabled":false,"source":"Current Drive master remains quarantined because prior C008 production asset was explicitly rejected"},
+    {"filename":"THC-C009_Infographic_Trichomes_Secretory_Biology.jpg","url":"https://lh7-rt.googleusercontent.com/slidesz/AGV_vUfWP2Eh7tAP_lmJwI5R6KGLjM_ZkIp88n7dD0ySVV9h7apRDsFx2AoQqdk4Fl1jQMLyZzMba8HmrZLNr0RA8l-TDkb1z0WV1e0tbs5RyjcfZaFdT0Pa3De3SIGRVKW6D9pQZyNHPTGeDjzaZ_i7gZiXIcZ3sviIuiK2bDoHmEfwtvBdQl0=s2048?key=lg45Hmb4blp2Xie114N2ZQ","enabled":false,"source":"Explicitly rejected in curated manifest/history"},
+    {"filename":"THC-C010_Companion_Photosynthesis_Light_Response.jpg","url":"https://lh7-rt.googleusercontent.com/slidesz/AGV_vUfZQqmUrdWdoukDoPU1MdWUfe1LJfZWKEHN3gu3XA9YqCNZiCEU4jc692xYGl9PVOdEq8er5fSy_yRwfa5OE-2-hOi3mRUQdLDe_0y0fc4qJzIB9o8qdOoGzBPyPEasXLHgvdpg2zfYDtCsYn8KQSBQsMmhToKIWXFbo7qfUcRQWoEFz2kg=s2048?key=lg45Hmb4blp2Xie114N2ZQ","enabled":true,"source":"Repo-recorded curated production source; approved in import-curated-2026-08-19.json"}
   ]
 }
