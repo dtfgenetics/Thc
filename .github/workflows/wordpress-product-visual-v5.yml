@@ -76,7 +76,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: dtf-product-visual-v5-${{ github.run_id }}
-          path: ${{ runner.temp }}/dtf-product-visual-v5
+          path: /tmp/dtf-product-visual-v5
           if-no-files-found: warn
           retention-days: 30
       - name: Report product visual deployment
