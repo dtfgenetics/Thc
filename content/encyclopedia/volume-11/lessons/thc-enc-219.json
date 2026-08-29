@@ -1,0 +1,53 @@
+{
+  "id":"THC-ENC-219",
+  "number":219,
+  "title":"Flower Senescence and Maturity Indicators",
+  "objective":"Explain cannabis flower maturation and senescence as overlapping developmental processes, evaluate stigma and trichome appearance as useful but imperfect indicators, and prioritize genotype-specific measurement when harvest chemistry matters.",
+  "terms":[
+    {"term":"senescence","definition":"A regulated aging process involving progressive changes in cellular function, structure, metabolism, and eventual tissue decline."},
+    {"term":"glandular trichome","definition":"A specialized epidermal structure whose secretory head accumulates resin containing cannabinoids, terpenoids, and other metabolites."},
+    {"term":"capitate-stalked trichome","definition":"A prominent glandular trichome type on cannabis flowers with a secretory head elevated on a stalk."},
+    {"term":"maturity indicator","definition":"An observation or measurement used to estimate developmental state; an indicator is not necessarily a direct measure of chemical composition."},
+    {"term":"harvest window","definition":"A practical interval during which a crop is considered suitable for harvest according to defined quality, chemistry, seed, legal, or production objectives."}
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Cannabis inflorescences mature through coordinated but asynchronous changes in flowers, bracts, stigmas, glandular trichomes, metabolites, and supporting tissues. Different flowers and trichomes on the same inflorescence can occupy different developmental states at the same time.",
+    "Direct microscopy studies show that capitate-stalked trichomes change during flower development and senescence. In tested genotypes, maturation was associated with visible head-color changes, altered autofluorescence, head shrinkage or collapse, and eventual dehiscence, while genotype and plant age affected trichome number and developmental state.",
+    "The familiar clear-to-milky-to-amber trichome sequence has biological basis as a maturation-associated phenotype, but it is not a universal chemical meter. Cannabis research shows substantial genotype-dependent differences in the timing and distribution of these phenotypes, and trichomes continue to form asynchronously on developing bracts.",
+    "Stigma color is also an imperfect proxy. A 2025 study found that most of 25 tested genotypes reached cannabinoid concentration peaks at later, mostly-to-fully amber stigma stages, but several genotypes peaked earlier. That makes stigma transition a useful approximate developmental cue in many cases, not a universal rule for peak chemistry.",
+    "When cannabinoid or terpene targets matter, analytical testing and repeated standardized sampling provide stronger evidence than calendar age, stigma color, or a small number of visually selected trichomes. The desired harvest point can also differ depending on whether the objective is chemistry, seed maturity, disease avoidance, morphology, or another production goal."
+  ],
+  "cultivationRelevance":[
+    "Inspect representative floral tissue at consistent positions and magnification instead of selecting only the most amber or most resinous-looking area.",
+    "Treat stigma and trichome appearance as developmental observations that can inform sampling, not as substitutes for laboratory chemistry when precise cannabinoid targets matter.",
+    "Track changes across multiple dates so maturation is interpreted as a trajectory rather than one snapshot.",
+    "Keep harvest criteria tied to the actual production objective; the visually oldest flower is not automatically the optimal harvest point for every goal."
+  ],
+  "measureAndRecord":[
+    {"field":"Flower age","requirement":"Record the reference used for developmental age, such as date of short-day transition, first visible inflorescence, or another defined event."},
+    {"field":"Sampling position","requirement":"Record plant, branch, inflorescence position, and floral tissue sampled so repeated observations are comparable."},
+    {"field":"Trichome phenotype","requirement":"At defined magnification, record approximate proportions or counts of clear/translucent, cloudy/milky, amber/brown, collapsed, and missing heads rather than one selected trichome."},
+    {"field":"Stigma phenotype","requirement":"Record stigma-color distribution with photographs or a repeatable scoring method, recognizing that color alone is not a direct cannabinoid assay."},
+    {"field":"Analytical result","requirement":"When chemistry drives harvest decisions, record sample date, laboratory/method, analytes, concentrations, moisture basis if relevant, and the plant/tissue represented."}
+  ],
+  "misconceptions":[
+    "A single amber-trichome percentage guarantees the same cannabinoid profile in every cultivar.",
+    "All trichomes on a cannabis flower mature at the same time.",
+    "Brown stigmas prove that cannabinoid concentration has peaked.",
+    "Calendar week alone is a precise biological maturity measurement.",
+    "More amber always means better quality regardless of the harvest objective."
+  ],
+  "evidenceLimits":["Cannabis-specific research supports developmental changes in trichome morphology and color and shows that stigma-color stages can correlate with cannabinoid trajectories. However, genotype, tissue position, environment, ongoing formation of new flowers/trichomes, sampling method, and analytical objective prevent one visual threshold from serving as a universal harvest rule."],
+  "crossLinks":"THC-ENC-205 for inflorescence architecture; THC-ENC-210 for stigma biology; THC-ENC-216 for seed maturity; THC-ENC-221–240 for trichomes and cannabinoids; THC-ENC-341–360 for harvest and postharvest science.",
+  "sourceNotes":[
+    "Punja ZK et al. (2023). Glandular trichome development, morphology, and maturation are influenced by plant age and genotype in high THC-containing cannabis (Cannabis sativa L.) inflorescences. Journal of Cannabis Research 5:12. Documents asynchronous trichome development, genotype/age effects, browning, senescence, collapse, and postharvest morphological changes.",
+    "Characterization of trichome phenotypes to assess maturation and flower development in Cannabis sativa L. by automatic trichome gland analysis. Smart Agricultural Technology 3 (2023):100111. Quantified clear, milky, and brown gland-head phenotypes across flowering time and multiple strains.",
+    "Determination of Optimal Harvest Time in Cannabis sativa L. Based upon Stigma Color Transition (2025). Compared stigma-color stages with LC-MS cannabinoid measurements across 25 genotypes and found the visual rule useful as an approximation for many, but not all, genotypes.",
+    "Public wording does not equate trichome or stigma color with a universal chemical endpoint."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 11 batch 04 controlled web derivative","evidenceControl":"current_topic_secondary_review_complete","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_flower_maturation_and_harvest_indicators","releaseTimeReview":"completed_2026-08-29_visual_maturity_indicators_and_non_universal_harvest_thresholds","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"flower-senescence-and-maturity-indicators",
+  "route":"/encyclopedia/flower-senescence-and-maturity-indicators"
+}

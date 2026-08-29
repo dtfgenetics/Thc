@@ -5,21 +5,14 @@
   "title": "Flowering and Reproduction",
   "route": "/encyclopedia/volume-11-flowering-and-reproduction",
   "version": "source-controlled",
-  "status": "active-controlled-production",
+  "status": "controlled-production-complete",
   "sourceControl": {
     "controlledCatalogueVersion": "Master Content Map v1.1",
     "sourceTitle": "THC Cannabis Encyclopedia — Volume 11: Flowering & Reproduction",
-    "sourceState": "production_in_progress",
+    "sourceState": "volume_complete",
     "rule": "Preserve controlled lesson IDs and titles; distinguish observed cannabis evidence from broader plant-development mechanisms and do not convert cultivar-specific flowering responses into universal schedules."
   },
-  "audience": [
-    "home growers",
-    "professional cultivators",
-    "breeders",
-    "students",
-    "educators",
-    "plant-science readers"
-  ],
+  "audience": ["home growers","professional cultivators","breeders","students","educators","plant-science readers"],
   "educationalBoundary": "Lawful cultivation and plant science only. This volume does not provide medical advice, current jurisdiction-specific legal advice, pesticide directions, or equipment-specific safety instructions.",
   "controlledLessonRange": {"start":201,"end":220},
   "controlledTitles": [
@@ -45,20 +38,9 @@
     {"id":"THC-ENC-220","title":"Reproductive Records and Seed-Batch Documentation"}
   ],
   "lessonPaths": [
-    "lessons/thc-enc-201.json",
-    "lessons/thc-enc-202.json",
-    "lessons/thc-enc-203.json",
-    "lessons/thc-enc-204.json",
-    "lessons/thc-enc-205.json",
-    "lessons/thc-enc-206.json",
-    "lessons/thc-enc-207.json",
-    "lessons/thc-enc-208.json",
-    "lessons/thc-enc-209.json",
-    "lessons/thc-enc-210.json",
-    "lessons/thc-enc-211.json",
-    "lessons/thc-enc-212.json",
-    "lessons/thc-enc-213.json",
-    "lessons/thc-enc-214.json",
-    "lessons/thc-enc-215.json"
+    "lessons/thc-enc-201.json","lessons/thc-enc-202.json","lessons/thc-enc-203.json","lessons/thc-enc-204.json","lessons/thc-enc-205.json",
+    "lessons/thc-enc-206.json","lessons/thc-enc-207.json","lessons/thc-enc-208.json","lessons/thc-enc-209.json","lessons/thc-enc-210.json",
+    "lessons/thc-enc-211.json","lessons/thc-enc-212.json","lessons/thc-enc-213.json","lessons/thc-enc-214.json","lessons/thc-enc-215.json",
+    "lessons/thc-enc-216.json","lessons/thc-enc-217.json","lessons/thc-enc-218.json","lessons/thc-enc-219.json","lessons/thc-enc-220.json"
   ]
 }
