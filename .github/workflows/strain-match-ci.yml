@@ -36,4 +36,4 @@ jobs:
           test -s site/public-route-patch/games/strain-match/strain-match.css
           grep -Fq 'rel="canonical" href="https://dtfseeds.com/games/strain-match/"' site/public-route-patch/games/strain-match/index.html
           grep -Fq 'Strain Match' site/public-route-patch/games/strain-match/index.html
-          grep -Fq 'deploymentRegistered": false' games/strain-match/game.json
+          grep -Fq 'deploymentRegistered": true' games/strain-match/game.json
