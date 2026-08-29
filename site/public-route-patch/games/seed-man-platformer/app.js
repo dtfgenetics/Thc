@@ -1,8 +1,143 @@
-import { createPlayer, stepPlayer } from './physics.mjs';
+'use strict';
+
+const PLAYER_SIZE = Object.freeze({ width: 34, height: 46 });
+const DEFAULTS = Object.freeze({
+  moveSpeed: 250,
+  jumpSpeed: 520,
+  gravity: 1450,
+  maxFallSpeed: 900,
+  coyoteTime: 0.09,
+  jumpBuffer: 0.1
+});
+
+function overlaps(a, b) {
+  return a.x < b.x + b.width && a.x + a.width > b.x && a.y < b.y + b.height && a.y + a.height > b.y;
+}
+
+function createPlayer(spawn) {
+  return {
+    x: spawn.x,
+    y: spawn.y,
+    width: PLAYER_SIZE.width,
+    height: PLAYER_SIZE.height,
+    vx: 0,
+    vy: 0,
+    grounded: false,
+    coyote: 0,
+    jumpBuffer: 0,
+    checkpoint: { x: spawn.x, y: spawn.y },
+    collected: [],
+    deaths: 0,
+    finished: false,
+    finishBlocked: false,
+    missingPickups: 0,
+    state: 'idle'
+  };
+}
+
+function solidCollisionX(player, platform) {
+  if (!overlaps(player, platform)) return;
+  if (player.vx > 0) player.x = platform.x - player.width;
+  else if (player.vx < 0) player.x = platform.x + platform.width;
+  player.vx = 0;
+}
+
+function solidCollisionY(player, platform) {
+  if (!overlaps(player, platform)) return;
+  if (player.vy > 0) {
+    player.y = platform.y - player.height;
+    player.vy = 0;
+    player.grounded = true;
+  } else if (player.vy < 0) {
+    player.y = platform.y + platform.height;
+    player.vy = 0;
+  }
+}
+
+function respawn(player) {
+  player.x = player.checkpoint.x;
+  player.y = player.checkpoint.y;
+  player.vx = 0;
+  player.vy = 0;
+  player.grounded = false;
+  player.deaths += 1;
+  player.finishBlocked = false;
+  player.state = 'hurt';
+}
+
+function pickupRequirement(level) {
+  const explicit = Number(level?.requiredPickups);
+  if (Number.isInteger(explicit) && explicit >= 0) return explicit;
+  return Array.isArray(level?.pickups) ? level.pickups.length : 0;
+}
+
+function stepPlayer(inputPlayer, inputState, gameLevel, dt, config = DEFAULTS) {
+  const nextPlayer = JSON.parse(JSON.stringify(inputPlayer));
+  if (nextPlayer.finished) return nextPlayer;
+  const step = Math.min(Math.max(dt, 0), 1 / 20);
+  const requiredPickups = pickupRequirement(gameLevel);
+  nextPlayer.finishBlocked = false;
+  nextPlayer.missingPickups = Math.max(0, requiredPickups - nextPlayer.collected.length);
+
+  nextPlayer.jumpBuffer = inputState.jumpPressed ? config.jumpBuffer : Math.max(0, nextPlayer.jumpBuffer - step);
+  nextPlayer.coyote = nextPlayer.grounded ? config.coyoteTime : Math.max(0, nextPlayer.coyote - step);
+
+  const direction = (inputState.right ? 1 : 0) - (inputState.left ? 1 : 0);
+  nextPlayer.vx = direction * config.moveSpeed;
+  if (nextPlayer.jumpBuffer > 0 && nextPlayer.coyote > 0) {
+    nextPlayer.vy = -config.jumpSpeed;
+    nextPlayer.grounded = false;
+    nextPlayer.coyote = 0;
+    nextPlayer.jumpBuffer = 0;
+  }
+
+  nextPlayer.x += nextPlayer.vx * step;
+  for (const platform of gameLevel.platforms) solidCollisionX(nextPlayer, platform);
+
+  nextPlayer.grounded = false;
+  nextPlayer.vy = Math.min(config.maxFallSpeed, nextPlayer.vy + config.gravity * step);
+  nextPlayer.y += nextPlayer.vy * step;
+  for (const platform of gameLevel.platforms) solidCollisionY(nextPlayer, platform);
+
+  for (const pickup of gameLevel.pickups) {
+    if (!nextPlayer.collected.includes(pickup.id) && overlaps(nextPlayer, pickup)) nextPlayer.collected.push(pickup.id);
+  }
+  nextPlayer.missingPickups = Math.max(0, requiredPickups - nextPlayer.collected.length);
+
+  if (gameLevel.checkpoint && overlaps(nextPlayer, gameLevel.checkpoint)) {
+    nextPlayer.checkpoint = { x: gameLevel.checkpoint.respawnX, y: gameLevel.checkpoint.respawnY };
+  }
+
+  if (gameLevel.hazards.some((hazard) => overlaps(nextPlayer, hazard)) || nextPlayer.y > gameLevel.worldHeight + 160) {
+    respawn(nextPlayer);
+    return nextPlayer;
+  }
+
+  if (gameLevel.finish && nextPlayer.x + nextPlayer.width >= gameLevel.finish.x) {
+    if (nextPlayer.missingPickups > 0) {
+      nextPlayer.x = Math.min(nextPlayer.x, gameLevel.finish.x - nextPlayer.width);
+      nextPlayer.vx = 0;
+      nextPlayer.finishBlocked = true;
+      nextPlayer.state = 'finish-blocked';
+      return nextPlayer;
+    }
+    nextPlayer.finished = true;
+    nextPlayer.finishBlocked = false;
+    nextPlayer.vx = 0;
+    nextPlayer.vy = 0;
+    nextPlayer.state = 'finish';
+    return nextPlayer;
+  }
+
+  if (!nextPlayer.grounded) nextPlayer.state = nextPlayer.vy < 0 ? 'jump' : 'fall';
+  else if (Math.abs(nextPlayer.vx) > 1) nextPlayer.state = 'run';
+  else nextPlayer.state = 'idle';
+  return nextPlayer;
+}
 
 const BEST_KEY = 'dtf-seed-man-best-v1';
 const canvas = document.querySelector('#game');
-const ctx = canvas.getContext('2d');
+const ctx = canvas?.getContext('2d');
 const ui = {
   load: document.querySelector('#load-status'),
   sprouts: document.querySelector('#sprout-count'),
@@ -28,8 +163,30 @@ const STEP = 1 / 60;
 const input = { left: false, right: false, jumpHeld: false, jumpQueued: false };
 
 function readBest() {
-  const value = Number.parseFloat(localStorage.getItem(BEST_KEY) || '');
-  return Number.isFinite(value) && value > 0 ? value : null;
+  try {
+    const value = Number.parseFloat(window.localStorage.getItem(BEST_KEY) || '');
+    return Number.isFinite(value) && value > 0 ? value : null;
+  } catch (error) {
+    console.warn('Seed Man personal best storage is unavailable.', error);
+    return null;
+  }
+}
+
+function writeBest(value) {
+  try {
+    window.localStorage.setItem(BEST_KEY, String(value));
+  } catch (error) {
+    console.warn('Seed Man personal best could not be saved.', error);
+  }
+}
+
+function focusCanvas() {
+  if (!canvas) return;
+  try {
+    canvas.focus({ preventScroll: true });
+  } catch {
+    canvas.focus();
+  }
 }
 
 function requiredSprouts() {
@@ -39,6 +196,7 @@ function requiredSprouts() {
 }
 
 function setObjectiveStatus(text, state = 'progress') {
+  if (!ui.load) return;
   if (ui.load.textContent !== text) ui.load.textContent = text;
   if (ui.load.dataset.state !== state) ui.load.dataset.state = state;
 }
@@ -51,6 +209,7 @@ function clearInput() {
 }
 
 function syncPauseButton() {
+  if (!ui.pause) return;
   ui.pause.textContent = paused ? 'Resume' : 'Pause';
   ui.pause.setAttribute('aria-pressed', String(paused));
   ui.pause.disabled = !level || !player || Boolean(player.finished);
@@ -66,10 +225,10 @@ function reset() {
   paused = false;
   running = true;
   clearInput();
-  ui.finish.hidden = true;
+  if (ui.finish) ui.finish.hidden = true;
   syncPauseButton();
   updateHud();
-  canvas.focus({ preventScroll: true });
+  focusCanvas();
 }
 
 function togglePause(forcePause = null) {
@@ -81,7 +240,7 @@ function togglePause(forcePause = null) {
   previous = 0;
   clearInput();
   syncPauseButton();
-  if (!paused) canvas.focus({ preventScroll: true });
+  if (!paused) focusCanvas();
 }
 
 function queueJump() {
@@ -117,6 +276,7 @@ for (const button of document.querySelectorAll('[data-control]')) {
   const press = (event) => {
     event.preventDefault();
     if (paused) return;
+    try { button.setPointerCapture?.(event.pointerId); } catch {}
     if (control === 'jump') queueJump();
     else input[control] = true;
   };
@@ -124,6 +284,9 @@ for (const button of document.querySelectorAll('[data-control]')) {
     event.preventDefault();
     if (control === 'jump') input.jumpHeld = false;
     else input[control] = false;
+    try {
+      if (button.hasPointerCapture?.(event.pointerId)) button.releasePointerCapture(event.pointerId);
+    } catch {}
   };
   button.addEventListener('pointerdown', press);
   button.addEventListener('pointerup', release);
@@ -135,11 +298,11 @@ function updateHud() {
   const collected = player?.collected.length || 0;
   const required = requiredSprouts();
   const remaining = Math.max(0, required - collected);
-  ui.sprouts.textContent = `${collected} / ${required}`;
-  ui.deaths.textContent = String(player?.deaths || 0);
-  ui.time.textContent = `${elapsed.toFixed(1)}s`;
+  if (ui.sprouts) ui.sprouts.textContent = `${collected} / ${required}`;
+  if (ui.deaths) ui.deaths.textContent = String(player?.deaths || 0);
+  if (ui.time) ui.time.textContent = `${elapsed.toFixed(1)}s`;
   const best = readBest();
-  ui.best.textContent = best ? `${best.toFixed(1)}s` : '—';
+  if (ui.best) ui.best.textContent = best ? `${best.toFixed(1)}s` : '—';
 
   if (!level || !player) return;
   if (player.finished) {
@@ -273,6 +436,7 @@ function drawSeedMan() {
 }
 
 function render() {
+  if (!ctx || !canvas || !level || !player) return;
   drawBackground();
   drawPlatforms();
   level.pickups.forEach(drawPickup);
@@ -287,10 +451,12 @@ function finishGame() {
   syncPauseButton();
   const previousBest = readBest();
   const newBest = previousBest === null || elapsed < previousBest;
-  if (newBest) localStorage.setItem(BEST_KEY, String(elapsed));
+  if (newBest) writeBest(elapsed);
   updateHud();
-  ui.finish.hidden = false;
-  ui.summary.textContent = `${player.collected.length} of ${requiredSprouts()} sprouts collected · ${player.deaths} falls · ${elapsed.toFixed(1)} seconds.${newBest ? ' New personal best!' : ''}`;
+  if (ui.finish) ui.finish.hidden = false;
+  if (ui.summary) {
+    ui.summary.textContent = `${player.collected.length} of ${requiredSprouts()} sprouts collected · ${player.deaths} falls · ${elapsed.toFixed(1)} seconds.${newBest ? ' New personal best!' : ''}`;
+  }
 }
 
 function frame(timeMs) {
@@ -310,26 +476,52 @@ function frame(timeMs) {
     cameraX += (targetCamera - cameraX) * .12;
     updateHud();
   }
-  if (level && player) render();
-  requestAnimationFrame(frame);
+  render();
+  window.requestAnimationFrame(frame);
 }
 
-async function load() {
+function readEmbeddedLevel() {
+  const node = document.querySelector('#seed-man-level');
+  if (!node) throw new Error('embedded level data missing');
+  return JSON.parse(node.textContent || '');
+}
+
+function validateLevel(candidate) {
+  if (
+    !candidate ||
+    candidate.id !== 'sprout-run' ||
+    candidate.worldWidth !== 2600 ||
+    candidate.worldHeight !== 540 ||
+    !Array.isArray(candidate.platforms) ||
+    !Array.isArray(candidate.hazards) ||
+    !Array.isArray(candidate.pickups) ||
+    candidate.pickups.length !== 8 ||
+    candidate.requiredPickups !== 8 ||
+    candidate.requiredPickups !== candidate.pickups.length ||
+    !candidate.spawn ||
+    !candidate.checkpoint ||
+    !candidate.finish
+  ) {
+    throw new Error('level contract mismatch');
+  }
+  return candidate;
+}
+
+function load() {
   try {
-    const response = await fetch('./data/level-01.json', { credentials: 'same-origin' });
-    if (!response.ok) throw new Error(`level HTTP ${response.status}`);
-    level = await response.json();
-    if (level.worldWidth !== 2600 || level.pickups.length !== 8 || level.requiredPickups !== 8 || level.requiredPickups !== level.pickups.length) throw new Error('level contract mismatch');
+    if (!canvas || !ctx) throw new Error('canvas 2D context unavailable');
+    level = validateLevel(readEmbeddedLevel());
     setObjectiveStatus(`Collect all ${level.requiredPickups} sprouts · checkpoint enabled · personal best saved locally`, 'progress');
     reset();
   } catch (error) {
-    console.error(error);
-    setObjectiveStatus('The Seed Man level could not be loaded.', 'error');
+    console.error('Sprout Run failed to initialize.', error);
+    running = false;
+    setObjectiveStatus('The Seed Man level could not be loaded. Reload the page to retry.', 'error');
   }
 }
 
-ui.restart.addEventListener('click', reset);
-ui.pause.addEventListener('click', () => togglePause());
-ui.again.addEventListener('click', reset);
-requestAnimationFrame(frame);
+ui.restart?.addEventListener('click', reset);
+ui.pause?.addEventListener('click', () => togglePause());
+ui.again?.addEventListener('click', reset);
+window.requestAnimationFrame(frame);
 load();
