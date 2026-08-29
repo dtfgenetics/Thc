@@ -30,145 +30,473 @@ if (!supportsWebGL) {
 } else {
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const isTouch = window.matchMedia('(pointer: coarse)').matches;
-
   const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true, powerPreference: 'high-performance' });
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.05;
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isTouch ? 1.35 : 1.75));
+  renderer.toneMappingExposure = 1.08;
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isTouch ? 1.3 : 1.7));
 
   const scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2(0x07151b, 0.035);
-  const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 50);
-  camera.position.set(5.5, 3.8, 7.9);
+  scene.fog = new THREE.FogExp2(0x07151b, 0.032);
+  const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 60);
+  const homeCamera = new THREE.Vector3(5.7, 3.9, 8.25);
+  const homeTarget = new THREE.Vector3(0, 2.05, 0);
+  camera.position.copy(homeCamera);
 
   const controls = new OrbitControls(camera, canvas);
   controls.enableDamping = true;
   controls.dampingFactor = 0.065;
   controls.enablePan = false;
-  controls.minDistance = 4.4;
-  controls.maxDistance = 11.5;
-  controls.minPolarAngle = 0.42;
-  controls.maxPolarAngle = 1.62;
-  controls.target.set(0, 2.1, 0);
+  controls.minDistance = 3.4;
+  controls.maxDistance = 12;
+  controls.minPolarAngle = 0.36;
+  controls.maxPolarAngle = 1.7;
+  controls.target.copy(homeTarget);
   controls.autoRotate = !reducedMotion;
-  controls.autoRotateSpeed = 0.38;
+  controls.autoRotateSpeed = 0.34;
 
-  scene.add(new THREE.HemisphereLight(0xbdefff, 0x17351f, 2.0));
-  const key = new THREE.DirectionalLight(0xf1ffe7, 3.4); key.position.set(4, 8, 5); scene.add(key);
-  const rim = new THREE.PointLight(0x46dfff, 18, 18, 2); rim.position.set(-5, 4.5, -4); scene.add(rim);
-  const warm = new THREE.PointLight(0xf1bc61, 10, 12, 2); warm.position.set(4, 2.5, 2); scene.add(warm);
+  scene.add(new THREE.HemisphereLight(0xcaf5ff, 0x142d1b, 2.15));
+  const key = new THREE.DirectionalLight(0xf4ffe9, 3.5); key.position.set(4.5, 8.2, 5.4); scene.add(key);
+  const fill = new THREE.DirectionalLight(0x6fb7ff, 1.25); fill.position.set(-5, 3, 4); scene.add(fill);
+  const rim = new THREE.PointLight(0x46dfff, 17, 18, 2); rim.position.set(-5, 5, -4); scene.add(rim);
+  const warm = new THREE.PointLight(0xf1b96a, 9, 12, 2); warm.position.set(4, 2.4, 2.2); scene.add(warm);
 
-  const plant = new THREE.Group(); plant.rotation.y = -0.24; scene.add(plant);
-  const ground = new THREE.Mesh(new THREE.CircleGeometry(2.8, 64), new THREE.MeshStandardMaterial({ color: 0x06191e, roughness: 1, transparent: true, opacity: 0.85 }));
-  ground.rotation.x = -Math.PI / 2; ground.position.y = -0.06; scene.add(ground);
-  const ring = new THREE.Mesh(new THREE.RingGeometry(2.25, 2.28, 96), new THREE.MeshBasicMaterial({ color: 0x2ca7c0, transparent: true, opacity: 0.32, side: THREE.DoubleSide }));
-  ring.rotation.x = -Math.PI / 2; ring.position.y = -0.045; scene.add(ring);
+  const plant = new THREE.Group();
+  plant.rotation.y = -0.2;
+  scene.add(plant);
+
+  const ground = new THREE.Mesh(
+    new THREE.CircleGeometry(2.9, 72),
+    new THREE.MeshStandardMaterial({ color: 0x06191e, roughness: 1, transparent: true, opacity: 0.86 })
+  );
+  ground.rotation.x = -Math.PI / 2;
+  ground.position.y = -0.055;
+  scene.add(ground);
+
+  const soilHalo = new THREE.Mesh(
+    new THREE.RingGeometry(2.3, 2.33, 96),
+    new THREE.MeshBasicMaterial({ color: 0x2ca7c0, transparent: true, opacity: 0.28, side: THREE.DoubleSide })
+  );
+  soilHalo.rotation.x = -Math.PI / 2;
+  soilHalo.position.y = -0.04;
+  scene.add(soilHalo);
 
   const materials = {
-    stem: new THREE.MeshStandardMaterial({ color: 0x5d8f50, roughness: 0.72 }),
-    stemHover: new THREE.MeshStandardMaterial({ color: 0xa8e47e, emissive: 0x214417, emissiveIntensity: 0.8, roughness: 0.55 }),
-    root: new THREE.MeshStandardMaterial({ color: 0xd6c7a6, roughness: 0.9 }),
-    rootHover: new THREE.MeshStandardMaterial({ color: 0xffe5aa, emissive: 0x4d3514, emissiveIntensity: 0.8, roughness: 0.7 }),
-    leaf: new THREE.MeshStandardMaterial({ color: 0x3e8e4e, roughness: 0.7, side: THREE.DoubleSide }),
-    leafHover: new THREE.MeshStandardMaterial({ color: 0x78d96f, emissive: 0x164d1b, emissiveIntensity: 1, roughness: 0.55, side: THREE.DoubleSide }),
-    flower: new THREE.MeshStandardMaterial({ color: 0x79a85a, roughness: 0.82 }),
-    flowerHover: new THREE.MeshStandardMaterial({ color: 0xb9dd79, emissive: 0x41551c, emissiveIntensity: 0.9, roughness: 0.65 }),
-    node: new THREE.MeshStandardMaterial({ color: 0x9aca70, roughness: 0.55 }),
-    nodeHover: new THREE.MeshStandardMaterial({ color: 0xe3ff9a, emissive: 0x48651d, emissiveIntensity: 0.9, roughness: 0.45 }),
-    resin: new THREE.MeshStandardMaterial({ color: 0xd7f4df, emissive: 0x5ee7df, emissiveIntensity: 1.3, roughness: 0.25 }),
-    resinHover: new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0x63f6ff, emissiveIntensity: 2.2, roughness: 0.12 }),
-    reproductive: new THREE.MeshStandardMaterial({ color: 0xf1b06c, emissive: 0x6e3212, emissiveIntensity: 0.4, roughness: 0.65 }),
-    reproductiveHover: new THREE.MeshStandardMaterial({ color: 0xffd199, emissive: 0xcf6b2d, emissiveIntensity: 1, roughness: 0.45 })
+    stem: new THREE.MeshStandardMaterial({ color: 0x587f49, roughness: 0.76, metalness: 0.02 }),
+    stemHover: new THREE.MeshStandardMaterial({ color: 0xa9e780, emissive: 0x244818, emissiveIntensity: 0.9, roughness: 0.52 }),
+    root: new THREE.MeshStandardMaterial({ color: 0xd8c9aa, roughness: 0.9 }),
+    rootHover: new THREE.MeshStandardMaterial({ color: 0xffe6ae, emissive: 0x5b3d18, emissiveIntensity: 0.7, roughness: 0.7 }),
+    leaf: new THREE.MeshStandardMaterial({ color: 0x347e43, roughness: 0.7, side: THREE.DoubleSide }),
+    leafHover: new THREE.MeshStandardMaterial({ color: 0x75d56e, emissive: 0x164d1b, emissiveIntensity: 0.95, roughness: 0.52, side: THREE.DoubleSide }),
+    flower: new THREE.MeshStandardMaterial({ color: 0x6f9c50, roughness: 0.83 }),
+    flowerHover: new THREE.MeshStandardMaterial({ color: 0xb5d873, emissive: 0x3c511a, emissiveIntensity: 0.9, roughness: 0.62 }),
+    node: new THREE.MeshStandardMaterial({ color: 0x9acb72, roughness: 0.56 }),
+    nodeHover: new THREE.MeshStandardMaterial({ color: 0xe1ff99, emissive: 0x46601c, emissiveIntensity: 0.9, roughness: 0.42 }),
+    resin: new THREE.MeshStandardMaterial({ color: 0xe8fbec, emissive: 0x5fe7df, emissiveIntensity: 1.25, roughness: 0.2 }),
+    resinHover: new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0x65f7ff, emissiveIntensity: 2.15, roughness: 0.1 }),
+    reproductive: new THREE.MeshStandardMaterial({ color: 0xf0a66f, emissive: 0x6b2f14, emissiveIntensity: 0.4, roughness: 0.62 }),
+    reproductiveHover: new THREE.MeshStandardMaterial({ color: 0xffd0a0, emissive: 0xd4662d, emissiveIntensity: 1.05, roughness: 0.4 })
   };
 
   const semantic = new Map();
   const pickables = [];
-  function tag(group, meta, baseMaterial, hoverMaterial) {
-    group.userData.meta = meta; group.userData.baseMaterial = baseMaterial; group.userData.hoverMaterial = hoverMaterial; semantic.set(meta.id, group);
-    group.traverse((object) => { if (object.isMesh) { object.userData.semanticGroup = group; pickables.push(object); } });
+  function tag(group, meta, hoverMaterial) {
+    group.userData.meta = meta;
+    group.userData.hoverMaterial = hoverMaterial;
+    semantic.set(meta.id, group);
+    group.traverse((object) => {
+      if (!object.isMesh) return;
+      object.userData.semanticGroup = group;
+      object.userData.semanticBaseMaterial = object.material;
+      pickables.push(object);
+    });
     return group;
   }
+  function setHighlighted(group, highlighted) {
+    if (!group) return;
+    group.traverse((object) => {
+      if (!object.isMesh || !object.userData.semanticBaseMaterial) return;
+      object.material = highlighted ? group.userData.hoverMaterial : object.userData.semanticBaseMaterial;
+    });
+  }
   function cylinderBetween(a, b, radius, material, radialSegments = 12) {
-    const start = new THREE.Vector3(...a), end = new THREE.Vector3(...b), direction = new THREE.Vector3().subVectors(end, start);
-    const mesh = new THREE.Mesh(new THREE.CylinderGeometry(radius, radius * 1.08, direction.length(), radialSegments), material);
+    const start = new THREE.Vector3(...a);
+    const end = new THREE.Vector3(...b);
+    const direction = new THREE.Vector3().subVectors(end, start);
+    const mesh = new THREE.Mesh(new THREE.CylinderGeometry(radius * 0.82, radius, direction.length(), radialSegments), material);
     mesh.position.copy(start).add(end).multiplyScalar(0.5);
     mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction.clone().normalize());
     return mesh;
   }
-  function leafGeometry(length = 0.92, width = 0.23) {
-    const shape = new THREE.Shape(); shape.moveTo(0, 0); shape.bezierCurveTo(width * 0.75, length * 0.22, width, length * 0.6, 0, length); shape.bezierCurveTo(-width, length * 0.6, -width * 0.75, length * 0.22, 0, 0);
-    const geometry = new THREE.ShapeGeometry(shape, 10); geometry.translate(0, -length * 0.06, 0); return geometry;
+  function tubeBetween(points, radius, material, tubularSegments = 12) {
+    const curve = new THREE.CatmullRomCurve3(points.map((point) => new THREE.Vector3(...point)));
+    return new THREE.Mesh(new THREE.TubeGeometry(curve, tubularSegments, radius, 6, false), material);
   }
-  function fanLeaf(position, scale, yaw, pitch = -0.55) {
+  function serratedLeafletGeometry(length = 0.96, width = 0.19, teeth = 8) {
+    const shape = new THREE.Shape();
+    shape.moveTo(0, 0);
+    const side = [];
+    const samples = teeth * 2;
+    for (let i = 1; i <= samples; i += 1) {
+      const t = i / (samples + 1);
+      const envelope = Math.sin(Math.PI * t);
+      const tooth = i % 2 === 0 ? 0.7 : 1;
+      side.push([width * envelope * tooth, length * t]);
+    }
+    for (const [x, y] of side) shape.lineTo(x, y);
+    shape.lineTo(0, length);
+    for (let i = side.length - 1; i >= 0; i -= 1) shape.lineTo(-side[i][0], side[i][1]);
+    shape.lineTo(0, 0);
+    const geometry = new THREE.ShapeGeometry(shape);
+    geometry.computeVertexNormals();
+    return geometry;
+  }
+  function fanLeaf(position, scale, yaw, pitch = -0.58, roll = 0) {
     const fan = new THREE.Group();
-    [-1.02, -0.62, -0.28, 0, 0.28, 0.62, 1.02].forEach((angle, index) => {
-      const leaflet = new THREE.Mesh(leafGeometry(0.95 - Math.abs(index - 3) * 0.055, 0.19), materials.leaf); leaflet.rotation.z = angle; leaflet.position.y = -0.03; fan.add(leaflet);
+    fan.add(cylinderBetween([0, -0.3, 0], [0, 0.06, 0], 0.018, materials.leaf, 7));
+    const angles = [-1.06, -0.69, -0.33, 0, 0.33, 0.69, 1.06];
+    angles.forEach((angle, index) => {
+      const distance = Math.abs(index - 3);
+      const leaflet = new THREE.Mesh(
+        serratedLeafletGeometry(1.02 - distance * 0.07, 0.195 - distance * 0.008, 8),
+        materials.leaf
+      );
+      leaflet.rotation.z = angle;
+      leaflet.rotation.x = (distance % 2 ? 0.035 : -0.025);
+      leaflet.position.y = 0.02;
+      fan.add(leaflet);
     });
-    fan.position.set(...position); fan.scale.setScalar(scale); fan.rotation.set(pitch, yaw, 0); return fan;
+    fan.position.set(...position);
+    fan.scale.setScalar(scale);
+    fan.rotation.set(pitch, yaw, roll);
+    return fan;
   }
-  function flowerCluster(position, scale = 1) {
-    const cluster = new THREE.Group(), geo = new THREE.IcosahedronGeometry(0.22, 1);
-    [[0,0,0],[0.13,0.18,0.03],[-0.13,0.16,-0.03],[0.07,0.34,-0.04],[-0.08,0.32,0.06],[0,0.48,0]].forEach(([x,y,z], i) => {
-      const bud = new THREE.Mesh(geo, materials.flower); bud.position.set(x,y,z); bud.scale.set(1 - i * 0.04, 1.25, 0.95); cluster.add(bud);
+  function flowerCluster(position, scale = 1, twist = 0) {
+    const cluster = new THREE.Group();
+    const bractGeo = new THREE.SphereGeometry(0.16, 12, 9);
+    const layers = [
+      [0, 0, 0, 1.05], [0.13, 0.14, 0.04, 0.96], [-0.13, 0.15, -0.04, 0.96],
+      [0.1, 0.3, -0.05, 0.89], [-0.1, 0.31, 0.05, 0.89], [0, 0.45, 0, 0.83],
+      [0.07, 0.55, 0.02, 0.7], [-0.06, 0.56, -0.03, 0.7]
+    ];
+    layers.forEach(([x, y, z, s], index) => {
+      const bract = new THREE.Mesh(bractGeo, materials.flower);
+      bract.position.set(x, y, z);
+      bract.scale.set(0.72 * s, 1.2 * s, 0.82 * s);
+      bract.rotation.z = (index % 2 ? 1 : -1) * 0.18;
+      cluster.add(bract);
     });
-    cluster.position.set(...position); cluster.scale.setScalar(scale); return cluster;
+    for (let i = 0; i < 5; i += 1) {
+      const sugarLeaf = new THREE.Mesh(serratedLeafletGeometry(0.43, 0.085, 5), materials.flower);
+      sugarLeaf.rotation.z = (i / 5) * Math.PI * 2;
+      sugarLeaf.rotation.x = -0.72;
+      sugarLeaf.position.set(Math.cos(i * 1.25) * 0.09, 0.26 + (i % 2) * 0.12, Math.sin(i * 1.25) * 0.08);
+      sugarLeaf.scale.setScalar(0.78);
+      cluster.add(sugarLeaf);
+    }
+    cluster.position.set(...position);
+    cluster.scale.setScalar(scale);
+    cluster.rotation.y = twist;
+    return cluster;
+  }
+  function addStigmas(group, position, scale = 1, count = 6) {
+    for (let i = 0; i < count; i += 1) {
+      const angle = (i / count) * Math.PI * 2 + 0.25;
+      const start = [position[0] + Math.cos(angle) * 0.08 * scale, position[1] + 0.26 * scale, position[2] + Math.sin(angle) * 0.07 * scale];
+      const mid = [position[0] + Math.cos(angle) * 0.16 * scale, position[1] + (0.39 + (i % 2) * 0.05) * scale, position[2] + Math.sin(angle) * 0.13 * scale];
+      const end = [position[0] + Math.cos(angle) * 0.25 * scale, position[1] + (0.49 + (i % 3) * 0.03) * scale, position[2] + Math.sin(angle) * 0.2 * scale];
+      group.add(tubeBetween([start, mid, end], 0.009 * scale, materials.reproductive, 8));
+    }
+  }
+  function addTrichome(group, base, scale = 1) {
+    const stalk = cylinderBetween(base, [base[0], base[1] + 0.075 * scale, base[2]], 0.008 * scale, materials.resin, 6);
+    group.add(stalk);
+    const head = new THREE.Mesh(new THREE.SphereGeometry(0.025 * scale, 8, 6), materials.resin);
+    head.position.set(base[0], base[1] + 0.085 * scale, base[2]);
+    group.add(head);
   }
 
   const roots = new THREE.Group();
-  [[[0,0.08,0],[0,-0.9,0],0.075],[[0,-0.35,0],[-0.72,-1.12,0.22],0.046],[[0,-0.42,0],[0.74,-1.08,-0.25],0.043],[[-0.32,-0.72,0.11],[-1.13,-1.35,0.4],0.026],[[0.35,-0.68,-0.12],[1.18,-1.31,-0.42],0.025],[[0,-0.78,0],[0.16,-1.58,0.16],0.033],[[-0.63,-1.02,0.22],[-0.91,-1.55,-0.12],0.018],[[0.69,-1,-0.24],[0.95,-1.52,0.12],0.018],[[0.13,-1.34,0.13],[-0.24,-1.8,0.26],0.016]].forEach(([a,b,r]) => roots.add(cylinderBetween(a,b,r,materials.root,10)));
-  plant.add(tag(roots,{ id:'root-system', label:'Root system', route:'/atlas/root-system/', copy:'Anchorage, water and mineral uptake, oxygen-demanding respiration, and rhizosphere exchange begin here.' },materials.root,materials.rootHover));
+  const rootSegments = [
+    [[0,0.08,0],[0,-0.92,0],0.078], [[0,-0.26,0],[-0.54,-0.8,0.16],0.052], [[0,-0.3,0],[0.58,-0.82,-0.2],0.05],
+    [[-0.36,-0.62,0.12],[-1.05,-1.2,0.38],0.032], [[0.39,-0.62,-0.15],[1.12,-1.18,-0.42],0.031],
+    [[0,-0.78,0],[0.16,-1.55,0.15],0.036], [[-0.78,-1.02,0.3],[-1.2,-1.58,0.08],0.019],
+    [[0.82,-1.01,-0.34],[1.25,-1.54,-0.07],0.019], [[0.13,-1.31,0.12],[-0.28,-1.82,0.29],0.017],
+    [[-0.54,-0.82,0.18],[-0.35,-1.43,-0.33],0.017], [[0.59,-0.83,-0.19],[0.42,-1.45,0.34],0.017]
+  ];
+  rootSegments.forEach(([a, b, r]) => roots.add(cylinderBetween(a, b, r, materials.root, 9)));
+  const fineRootBases = [
+    [-0.78,-1.02,0.3],[-0.62,-0.93,0.23],[-0.44,-0.8,0.16],[0.73,-0.96,-0.3],[0.55,-0.82,-0.2],[0.18,-1.36,0.14],[-0.12,-1.44,0.2]
+  ];
+  fineRootBases.forEach((base, i) => {
+    for (let j = 0; j < 3; j += 1) {
+      const side = i % 2 ? 1 : -1;
+      const end = [base[0] + side * (0.28 + j * 0.13), base[1] - 0.23 - j * 0.11, base[2] + (j - 1) * 0.18];
+      roots.add(cylinderBetween(base, end, 0.008 + j * 0.0015, materials.root, 6));
+    }
+  });
+  plant.add(tag(roots, {
+    id: 'root-system', label: 'Root system', route: '/atlas/root-system/',
+    copy: 'Primary and lateral roots branch into fine absorbing roots that anchor the plant, acquire water and ions, respire, and interact with the rhizosphere.'
+  }, materials.rootHover));
 
-  const stem = new THREE.Group(); stem.add(cylinderBetween([0,0,0],[0.02,4.7,0],0.085,materials.stem,14));
-  plant.add(tag(stem,{ id:'stem-vascular', label:'Stem & vascular system', route:'/atlas/stem-vascular/', copy:'The stem supports the canopy while xylem and phloem connect roots, leaves, meristems, and flowers.' },materials.stem,materials.stemHover));
+  const stem = new THREE.Group();
+  stem.add(cylinderBetween([0,0,0],[0.02,4.72,0],0.087,materials.stem,14));
+  const branchDefs = [
+    { origin:[0.01,1.43,0], end:[-1.35,2.02,0.14] }, { origin:[0.01,1.5,0], end:[1.38,2.08,-0.13] },
+    { origin:[0.01,2.24,0], end:[-1.22,2.88,-0.18] }, { origin:[0.01,2.3,0], end:[1.24,2.94,0.18] },
+    { origin:[0.01,3.0,0], end:[-0.96,3.6,0.15] }, { origin:[0.01,3.06,0], end:[0.99,3.65,-0.15] },
+    { origin:[0.01,3.63,0], end:[-0.67,4.12,-0.1] }, { origin:[0.01,3.7,0], end:[0.7,4.18,0.12] }
+  ];
+  branchDefs.forEach(({ origin, end }, index) => {
+    stem.add(cylinderBetween(origin, end, 0.043 - index * 0.0015, materials.stem, 9));
+    const twigStart = [end[0] * 0.72, origin[1] + (end[1] - origin[1]) * 0.72, end[2] * 0.72];
+    const twigEnd = [end[0] * 1.05, end[1] + 0.23, end[2] * 1.05];
+    stem.add(cylinderBetween(twigStart, twigEnd, 0.024, materials.stem, 7));
+  });
+  plant.add(tag(stem, {
+    id: 'stem-vascular', label: 'Stem & vascular system', route: '/atlas/stem-vascular/',
+    copy: 'The main stem and branches form a continuous vascular skeleton. Xylem moves water and minerals; phloem redistributes sugars and other assimilates among sources and sinks.'
+  }, materials.stemHover));
 
-  const branchDefs = [{y:1.45,end:[-1.28,2,0.12]},{y:1.5,end:[1.34,2.05,-0.12]},{y:2.25,end:[-1.18,2.85,-0.18]},{y:2.3,end:[1.2,2.9,0.18]},{y:3,end:[-0.92,3.55,0.15]},{y:3.05,end:[0.95,3.6,-0.15]},{y:3.62,end:[-0.64,4.06,-0.1]},{y:3.68,end:[0.66,4.12,0.12]}];
-  const branches = new THREE.Group(); branchDefs.forEach(({y,end}) => branches.add(cylinderBetween([0.01,y,0],end,0.042,materials.stem,10))); plant.add(branches);
+  const nodes = new THREE.Group();
+  [1.43,2.25,3.02,3.65].forEach((y) => {
+    const node = new THREE.Mesh(new THREE.SphereGeometry(0.125, 16, 10), materials.node);
+    node.position.set(0.01,y,0);
+    node.scale.set(1.25,0.72,1.1);
+    nodes.add(node);
+  });
+  plant.add(tag(nodes, {
+    id: 'nodes-branching', label: 'Nodes, meristems & branching', route: '/atlas/nodes-branching/',
+    copy: 'Nodes carry leaves, branches, and axillary meristems. Their spacing and bud activity reveal how growth regulators and environment shape plant architecture.'
+  }, materials.nodeHover));
 
-  const nodes = new THREE.Group(); [1.45,2.27,3.03,3.65].forEach((y) => { const n = new THREE.Mesh(new THREE.SphereGeometry(0.13,18,12),materials.node); n.position.set(0.01,y,0); nodes.add(n); });
-  plant.add(tag(nodes,{ id:'nodes-branching', label:'Nodes, meristems & branching', route:'/atlas/nodes-branching/', copy:'Nodes anchor leaves and axillary buds. Meristems generate new tissues and determine branching architecture.' },materials.node,materials.nodeHover));
-
+  const leafSpecs = [
+    [[-1.22,1.97,0.12],0.79,-1.08,-0.67,-0.08], [[1.26,2.03,-0.1],0.79,1.08,-0.6,0.08],
+    [[-1.08,2.83,-0.18],0.7,-1.03,-0.62,-0.06], [[1.1,2.89,0.18],0.7,1.03,-0.57,0.06],
+    [[-0.86,3.52,0.15],0.61,-0.98,-0.58,-0.05], [[0.89,3.57,-0.15],0.61,0.98,-0.54,0.05],
+    [[-0.56,4.06,-0.1],0.49,-0.9,-0.54,-0.04], [[0.58,4.12,0.1],0.49,0.9,-0.5,0.04]
+  ];
   const leaves = new THREE.Group();
-  [[[-1.18,1.98,0.1],0.78,-1.1],[[1.22,2.02,-0.1],0.78,1.1],[[-1.05,2.82,-0.18],0.68,-1.05],[[1.07,2.87,0.18],0.68,1.05],[[-0.83,3.5,0.15],0.58,-1],[[0.86,3.55,-0.15],0.58,1],[[-0.54,4.02,-0.1],0.46,-0.92],[[0.56,4.08,0.1],0.46,0.92]].forEach(([position,scale,yaw],i) => leaves.add(fanLeaf(position,scale,yaw,-0.68 + (i % 2) * 0.12)));
-  plant.add(tag(leaves,{ id:'leaf-module', label:'Fan leaves', route:'/atlas/leaf-module/', copy:'Leaves capture light, fix carbon, regulate gas exchange, and drive much of the transpiration stream.' },materials.leaf,materials.leafHover));
+  leafSpecs.forEach(([position,scale,yaw,pitch,roll]) => leaves.add(fanLeaf(position,scale,yaw,pitch,roll)));
+  plant.add(tag(leaves, {
+    id: 'leaf-module', label: 'Fan leaves', route: '/atlas/leaf-module/',
+    copy: 'Serrated leaflets connect through petioles to the vascular system. Leaves capture light, fix carbon, regulate gas exchange, and drive most of the transpiration stream.'
+  }, materials.leafHover));
 
-  const flowers = new THREE.Group(); [[[0.01,4.62,0],1.18],[[-0.88,3.52,0.14],0.75],[[0.91,3.58,-0.14],0.75],[[-1.12,2.82,-0.16],0.58],[[1.14,2.88,0.16],0.58]].forEach(([position,scale]) => flowers.add(flowerCluster(position,scale)));
-  plant.add(tag(flowers,{ id:'flower-anatomy', label:'Flowers & inflorescences', route:'/atlas/flower-anatomy/', copy:'Reproductive structures include bracts, stigmas, anthers, floral meristems, and dense glandular surfaces.' },materials.flower,materials.flowerHover));
+  const flowerSpecs = [
+    [[0.01,4.56,0],1.18,0], [[-0.9,3.54,0.14],0.76,-0.25], [[0.93,3.6,-0.14],0.76,0.3],
+    [[-1.14,2.84,-0.16],0.59,-0.45], [[1.16,2.9,0.16],0.59,0.4]
+  ];
+  const flowers = new THREE.Group();
+  flowerSpecs.forEach(([position,scale,twist]) => flowers.add(flowerCluster(position,scale,twist)));
+  plant.add(tag(flowers, {
+    id: 'flower-anatomy', label: 'Flowers & inflorescences', route: '/atlas/flower-anatomy/',
+    copy: 'Layered bracts, sugar leaves, stigmas, and dense glandular surfaces form the visible inflorescence. Floral structure changes through pollination and maturation.'
+  }, materials.flowerHover));
 
-  const reproductive = new THREE.Group(); [[-0.18,3.05,0.05],[0.19,3.66,-0.03],[-0.16,2.28,-0.05]].forEach((p) => { const preflower = new THREE.Mesh(new THREE.SphereGeometry(0.085,16,10),materials.reproductive); preflower.position.set(...p); preflower.scale.set(0.7,1.55,0.7); reproductive.add(preflower); });
-  plant.add(tag(reproductive,{ id:'reproductive-biology', label:'Reproductive sites', route:'/atlas/reproductive-biology/', copy:'Preflowers and floral organs reveal sex expression, pollen biology, fertilization, and seed-development pathways.' },materials.reproductive,materials.reproductiveHover));
+  const reproductive = new THREE.Group();
+  flowerSpecs.forEach(([position,scale]) => addStigmas(reproductive, position, scale, scale > 1 ? 10 : 6));
+  [[-0.16,3.02,0.04],[0.17,3.67,-0.03],[-0.15,2.26,-0.04]].forEach((position) => {
+    const preflower = new THREE.Mesh(new THREE.SphereGeometry(0.082, 14, 9), materials.reproductive);
+    preflower.position.set(...position);
+    preflower.scale.set(0.62,1.5,0.65);
+    reproductive.add(preflower);
+  });
+  plant.add(tag(reproductive, {
+    id: 'reproductive-biology', label: 'Reproductive structures', route: '/atlas/reproductive-biology/',
+    copy: 'Stigmas and preflowers connect visible floral anatomy to sex expression, pollen reception, fertilization, embryo development, and seed formation.'
+  }, materials.reproductiveHover));
 
-  const resin = new THREE.Group(), resinGeo = new THREE.SphereGeometry(0.026,10,8);
-  for (let i=0;i<38;i+=1) { const point = new THREE.Mesh(resinGeo,materials.resin), theta=(i/38)*Math.PI*2, band=i%7, radius=0.2+(band%3)*0.045; point.position.set(Math.cos(theta)*radius,4.88+(band-3)*0.07,Math.sin(theta)*radius); resin.add(point); }
-  plant.add(tag(resin,{ id:'trichomes-resin', label:'Trichomes & resin glands', route:'/atlas/trichomes-resin/', copy:'Glandular trichomes are specialized epidermal structures with stalks, secretory cells, gland heads, and stored metabolites.' },materials.resin,materials.resinHover));
+  const resin = new THREE.Group();
+  flowerSpecs.forEach(([position,scale], flowerIndex) => {
+    const count = flowerIndex === 0 ? 28 : 10;
+    for (let i = 0; i < count; i += 1) {
+      const angle = (i / count) * Math.PI * 2 + flowerIndex * 0.4;
+      const layer = i % 5;
+      const radius = (0.12 + layer * 0.025) * scale;
+      const base = [
+        position[0] + Math.cos(angle) * radius,
+        position[1] + (0.12 + layer * 0.085) * scale,
+        position[2] + Math.sin(angle) * radius
+      ];
+      addTrichome(resin, base, Math.max(0.62, scale * 0.8));
+    }
+  });
+  plant.add(tag(resin, {
+    id: 'trichomes-resin', label: 'Glandular trichomes', route: '/atlas/trichomes-resin/',
+    copy: 'Each modeled gland has a stalk and gland head. Real glandular trichomes differ by form, tissue location, developmental stage, and secretory activity.'
+  }, materials.resinHover));
 
-  branches.traverse((object) => { if (object.isMesh) { object.userData.semanticGroup = stem; pickables.push(object); } });
+  const raycaster = new THREE.Raycaster();
+  raycaster.params.Line = { threshold: 0.08 };
+  const pointer = new THREE.Vector2(2,2);
+  let hovered = null;
+  let selected = null;
+  let pointerDown = null;
+  let cameraGoal = null;
+  let targetGoal = null;
 
-  const raycaster = new THREE.Raycaster(), pointer = new THREE.Vector2(2,2);
-  let hovered = null, selected = null, pointerDown = null;
-  function setGroupMaterial(group, material) { group.traverse((object) => { if (object.isMesh && object.material !== material) object.material = material; }); }
-  function restore(group) { if (group) setGroupMaterial(group, selected === group ? group.userData.hoverMaterial : group.userData.baseMaterial); }
-  function describe(group, mode='hover') {
-    const meta = group?.userData?.meta; if (!meta) return;
-    if (tooltip) { tooltip.innerHTML = `<strong>${meta.label}</strong><span>${mode === 'hover' ? 'Click to open this Atlas module' : 'Selected anatomy'}</span>`; tooltip.hidden = false; }
-    if (inspector) { inspectorKicker.textContent = mode === 'hover' ? '3D structure' : 'Selected structure'; inspectorTitle.textContent = meta.label; inspectorCopy.textContent = meta.copy; inspectorLink.href = meta.route; inspectorLink.textContent = `Open ${meta.label} →`; inspector.classList.add('active'); }
+  function restore(group) {
+    if (!group || group === selected) return;
+    setHighlighted(group, false);
   }
-  function clearHover() { if (hovered) restore(hovered); hovered = null; if (tooltip) tooltip.hidden = true; canvas.style.cursor = 'grab'; }
-  function pointerToCanvas(event) { const rect = canvas.getBoundingClientRect(); pointer.x=((event.clientX-rect.left)/rect.width)*2-1; pointer.y=-((event.clientY-rect.top)/rect.height)*2+1; }
-  function hitTest(event) { pointerToCanvas(event); raycaster.setFromCamera(pointer,camera); return raycaster.intersectObjects(pickables,false).find((hit)=>hit.object.userData.semanticGroup)?.object.userData.semanticGroup || null; }
+  function describe(group, mode = 'hover') {
+    const meta = group?.userData?.meta;
+    if (!meta) return;
+    if (tooltip) {
+      tooltip.innerHTML = `<strong>${meta.label}</strong><span>${mode === 'hover' ? 'Click to open this Atlas module' : 'Selected structure · use the link for details'}</span>`;
+      tooltip.hidden = false;
+    }
+    if (inspector) {
+      inspectorKicker.textContent = mode === 'hover' ? '3D plant structure' : 'Selected structure';
+      inspectorTitle.textContent = meta.label;
+      inspectorCopy.textContent = meta.copy;
+      inspectorLink.href = meta.route;
+      inspectorLink.textContent = `Open ${meta.label} →`;
+      inspector.classList.add('active');
+    }
+  }
+  function pointerToCanvas(event) {
+    const rect = canvas.getBoundingClientRect();
+    pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+    pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+  }
+  function hitTest(event) {
+    pointerToCanvas(event);
+    raycaster.setFromCamera(pointer, camera);
+    const hit = raycaster.intersectObjects(pickables, false).find((entry) => entry.object.userData.semanticGroup);
+    return hit?.object.userData.semanticGroup || null;
+  }
+  function clearHover() {
+    if (hovered && hovered !== selected) setHighlighted(hovered, false);
+    hovered = null;
+    if (tooltip) tooltip.hidden = true;
+    canvas.style.cursor = 'grab';
+  }
+  function focusSystem(id) {
+    const group = semantic.get(id);
+    if (!group) return;
+    if (selected && selected !== group) setHighlighted(selected, false);
+    selected = group;
+    setHighlighted(group, true);
+    describe(group, 'selected');
+    const box = new THREE.Box3().setFromObject(group);
+    const center = box.getCenter(new THREE.Vector3());
+    const sphere = box.getBoundingSphere(new THREE.Sphere());
+    const viewDirection = camera.position.clone().sub(controls.target).normalize();
+    const distance = THREE.MathUtils.clamp(Math.max(3.3, sphere.radius * 4.2), 3.3, 6.8);
+    cameraGoal = center.clone().add(viewDirection.multiplyScalar(distance));
+    targetGoal = center;
+    if (reducedMotion) {
+      camera.position.copy(cameraGoal);
+      controls.target.copy(targetGoal);
+      cameraGoal = null;
+      targetGoal = null;
+    }
+  }
 
-  canvas.addEventListener('pointerdown',(event)=>{ pointerDown={x:event.clientX,y:event.clientY}; controls.autoRotate=false; });
-  canvas.addEventListener('pointermove',(event)=>{ if(isTouch)return; const next=hitTest(event); if(next===hovered)return; if(hovered)restore(hovered); hovered=next; if(hovered){setGroupMaterial(hovered,hovered.userData.hoverMaterial);describe(hovered,'hover');canvas.style.cursor='pointer';}else{if(tooltip)tooltip.hidden=true;canvas.style.cursor='grab';} });
-  canvas.addEventListener('pointerleave',clearHover);
-  canvas.addEventListener('pointerup',(event)=>{ if(!pointerDown)return; const moved=Math.hypot(event.clientX-pointerDown.x,event.clientY-pointerDown.y); pointerDown=null; if(moved>7)return; const group=hitTest(event); if(!group)return; if(selected&&selected!==group)restore(selected); selected=group; setGroupMaterial(selected,selected.userData.hoverMaterial); describe(selected,'selected'); if(selected.userData.meta.route)window.location.assign(selected.userData.meta.route); });
+  controls.addEventListener('start', () => {
+    controls.autoRotate = false;
+    cameraGoal = null;
+    targetGoal = null;
+  });
+  canvas.addEventListener('pointerdown', (event) => {
+    pointerDown = { x: event.clientX, y: event.clientY };
+    controls.autoRotate = false;
+    cameraGoal = null;
+    targetGoal = null;
+  });
+  canvas.addEventListener('pointermove', (event) => {
+    if (isTouch) return;
+    const next = hitTest(event);
+    if (next === hovered) return;
+    if (hovered && hovered !== selected) setHighlighted(hovered, false);
+    hovered = next;
+    if (hovered) {
+      setHighlighted(hovered, true);
+      describe(hovered, 'hover');
+      canvas.style.cursor = 'pointer';
+    } else {
+      if (tooltip) tooltip.hidden = true;
+      canvas.style.cursor = 'grab';
+    }
+  });
+  canvas.addEventListener('pointerleave', clearHover);
+  canvas.addEventListener('pointerup', (event) => {
+    if (!pointerDown) return;
+    const moved = Math.hypot(event.clientX - pointerDown.x, event.clientY - pointerDown.y);
+    pointerDown = null;
+    if (moved > 7) return;
+    const group = hitTest(event);
+    if (!group) return;
+    if (selected && selected !== group) setHighlighted(selected, false);
+    selected = group;
+    setHighlighted(selected, true);
+    describe(selected, 'selected');
+    const route = selected.userData.meta?.route;
+    if (route) window.location.assign(route);
+  });
 
-  function focusSystem(id){ const group=semantic.get(id); if(!group)return; if(selected&&selected!==group)restore(selected); selected=group;setGroupMaterial(group,group.userData.hoverMaterial);describe(group,'selected');const center=new THREE.Box3().setFromObject(group).getCenter(new THREE.Vector3());controls.target.lerp(center,reducedMotion?1:0.72); }
-  focusButtons.forEach((button)=>button.addEventListener('click',()=>{controls.autoRotate=false;focusSystem(button.dataset.plantFocus);focusButtons.forEach((item)=>item.classList.toggle('active',item===button));}));
-  resetButton?.addEventListener('click',()=>{controls.autoRotate=!reducedMotion;camera.position.set(5.5,3.8,7.9);controls.target.set(0,2.1,0);if(selected)restore(selected);selected=null;focusButtons.forEach((item)=>item.classList.remove('active'));inspector?.classList.remove('active');});
+  focusButtons.forEach((button) => button.addEventListener('click', () => {
+    controls.autoRotate = false;
+    focusSystem(button.dataset.plantFocus);
+    focusButtons.forEach((item) => item.classList.toggle('active', item === button));
+  }));
+  resetButton?.addEventListener('click', () => {
+    controls.autoRotate = !reducedMotion;
+    if (selected) setHighlighted(selected, false);
+    if (hovered && hovered !== selected) setHighlighted(hovered, false);
+    selected = null;
+    hovered = null;
+    focusButtons.forEach((item) => item.classList.remove('active'));
+    if (tooltip) tooltip.hidden = true;
+    inspector?.classList.remove('active');
+    if (reducedMotion) {
+      camera.position.copy(homeCamera);
+      controls.target.copy(homeTarget);
+      cameraGoal = null;
+      targetGoal = null;
+    } else {
+      cameraGoal = homeCamera.clone();
+      targetGoal = homeTarget.clone();
+    }
+  });
 
-  function resize(){ const rect=host.getBoundingClientRect(), width=Math.max(1,rect.width), height=Math.max(420,rect.height);renderer.setSize(width,height,false);camera.aspect=width/height;camera.updateProjectionMatrix(); }
-  const observer=new ResizeObserver(resize);observer.observe(host);resize();
-  let active=true;const visibility=new IntersectionObserver(([entry])=>{active=Boolean(entry?.isIntersecting);},{rootMargin:'180px'});visibility.observe(host);
-  renderer.setAnimationLoop(()=>{if(!active)return;controls.update();resin.rotation.y+=reducedMotion?0:0.0014;renderer.render(scene,camera);});
-  window.addEventListener('pagehide',()=>{renderer.setAnimationLoop(null);observer.disconnect();visibility.disconnect();controls.dispose();renderer.dispose();},{once:true});
+  function resize() {
+    const rect = host.getBoundingClientRect();
+    const width = Math.max(1, rect.width);
+    const height = Math.max(420, rect.height);
+    renderer.setSize(width, height, false);
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+  }
+  const observer = new ResizeObserver(resize);
+  observer.observe(host);
+  resize();
+
+  let active = true;
+  const visibility = new IntersectionObserver(([entry]) => { active = Boolean(entry?.isIntersecting); }, { rootMargin: '180px' });
+  visibility.observe(host);
+  renderer.setAnimationLoop(() => {
+    if (!active) return;
+    if (cameraGoal && targetGoal) {
+      camera.position.lerp(cameraGoal, 0.075);
+      controls.target.lerp(targetGoal, 0.09);
+      if (camera.position.distanceTo(cameraGoal) < 0.025 && controls.target.distanceTo(targetGoal) < 0.02) {
+        cameraGoal = null;
+        targetGoal = null;
+      }
+    }
+    controls.update();
+    renderer.render(scene, camera);
+  });
+
+  window.addEventListener('pagehide', () => {
+    renderer.setAnimationLoop(null);
+    observer.disconnect();
+    visibility.disconnect();
+    controls.dispose();
+    renderer.dispose();
+  }, { once: true });
 }
