@@ -27,15 +27,22 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+
       - name: Run deterministic rules and balance tests
         run: node games/high-life/test/engine.test.mjs
+
       - name: Run autosave recovery tests
         run: node games/high-life/test/save-state.test.mjs
+
+      - name: Run production runtime and exact-resume regression tests
+        run: node games/high-life/test/public-runtime.test.mjs
+
       - name: Validate browser JavaScript syntax
         run: |
           node --check site/public-route-patch/games/high-life/app.js
           node --check site/public-route-patch/games/high-life/engine.mjs
           node --check site/public-route-patch/games/high-life/save-state.mjs
+
       - name: Verify canonical and public runtime copies match
         shell: bash
         run: |
@@ -43,14 +50,43 @@ jobs:
           cmp games/high-life/src/engine.mjs site/public-route-patch/games/high-life/engine.mjs
           cmp games/high-life/src/save-state.mjs site/public-route-patch/games/high-life/save-state.mjs
           cmp games/high-life/data/events.json site/public-route-patch/games/high-life/data/events.json
-      - name: Verify public route contract
+
+      - name: Verify public route and career UI contract
         shell: bash
         run: |
           set -euo pipefail
-          test -s site/public-route-patch/games/high-life/index.html
-          test -s site/public-route-patch/games/high-life/app.js
-          test -s site/public-route-patch/games/high-life/high-life.css
-          grep -Fq '<h1>From Bagseed to Legacy</h1>' site/public-route-patch/games/high-life/index.html
-          grep -Fq 'https://dtfseeds.com/games/high-life/' site/public-route-patch/games/high-life/index.html
-          grep -Fqi 'rel="canonical"' site/public-route-patch/games/high-life/index.html
-          grep -Fqi 'name="description"' site/public-route-patch/games/high-life/index.html
+          root=site/public-route-patch/games/high-life
+          test -s "$root/index.html"
+          test -s "$root/app.js"
+          test -s "$root/high-life.css"
+          test -s "$root/high-life-v2.css"
+          grep -Fq '<h1>From Bagseed to Legacy</h1>' "$root/index.html"
+          grep -Fq 'https://dtfseeds.com/games/high-life/' "$root/index.html"
+          grep -Fqi 'rel="canonical"' "$root/index.html"
+          grep -Fqi 'name="description"' "$root/index.html"
+          grep -Fq '<script id="high-life-events" type="application/json">' "$root/index.html"
+          grep -Fq '<script defer src="./app.js"></script>' "$root/index.html"
+          grep -Fq 'class="era-roadmap"' "$root/index.html"
+          grep -Fq 'high-life-v2.css' "$root/index.html"
+          grep -Fq 'const SAVE_VERSION = 2;' "$root/app.js"
+          grep -Fq 'pendingEvent: Boolean(pendingEvent)' "$root/app.js"
+          grep -Fq 'renderTurnResolution(state.history.at(-1))' "$root/app.js"
+          grep -Fq 'saveGame({ pendingEvent: true })' "$root/app.js"
+          grep -Fq 'saveGame({ pendingEvent: false })' "$root/app.js"
+          grep -Fq 'Confirm New Career' "$root/app.js"
+          grep -Fq 'Confirm Discard' "$root/app.js"
+          grep -Fq 'globalThis.localStorage?.getItem' "$root/app.js"
+          grep -Fq 'globalThis.localStorage?.setItem' "$root/app.js"
+          grep -Fq 'globalThis.localStorage?.removeItem' "$root/app.js"
+          grep -Fq '.era-roadmap' "$root/high-life-v2.css"
+          grep -Fq '.resource-meter' "$root/high-life-v2.css"
+          grep -Fq '.danger-arm' "$root/high-life-v2.css"
+          grep -Fq '@media(max-width:650px)' "$root/high-life-v2.css"
+          if grep -Eq '^\s*import\s' "$root/app.js"; then
+            echo 'public High Life runtime regressed to browser module imports' >&2
+            exit 1
+          fi
+          if grep -Eq 'fetch\s*\(' "$root/app.js"; then
+            echo 'public High Life runtime regressed to browser-time event fetch' >&2
+            exit 1
+          fi
