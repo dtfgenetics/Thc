@@ -47,10 +47,16 @@ jobs:
 
           page_url = 'https://dtfseeds.com/learn/infographics/'
           accepted_headings = ('Searchable Infographic Library', 'THC Infographic Library')
+          guided_markers = {
+              'learning_system': 'Use the library as a learning system',
+              'learning_paths': 'Choose a learning path',
+              'topic_filter': 'thc-infographic-topic',
+              'study_questions': 'Study question:',
+          }
 
           def fetch(url):
               request = urllib.request.Request(url, headers={
-                  'User-Agent': 'Mozilla/5.0 THC-Live-Verification/2.4',
+                  'User-Agent': 'Mozilla/5.0 THC-Live-Verification/2.5',
                   'Cache-Control': 'no-cache, no-store, max-age=0',
                   'Pragma': 'no-cache',
               })
@@ -119,11 +125,15 @@ jobs:
           page = None
           text = ''
           heading_found = False
+          guided_marker_state = {key: False for key in guided_markers}
+          guided_learning_ready = False
           for attempt in range(1, 7):
               page = fetch(f'{page_url}?verify={int(time.time())}-{attempt}')
               text = page['body'].decode('utf-8', errors='ignore')
               heading_found = any(marker in text for marker in accepted_headings)
-              if page['ok'] and heading_found and 'wp-content/uploads/' in text:
+              guided_marker_state = {key: marker in text for key, marker in guided_markers.items()}
+              guided_learning_ready = all(guided_marker_state.values())
+              if page['ok'] and heading_found and guided_learning_ready and 'wp-content/uploads/' in text:
                   break
               if attempt < 6:
                   time.sleep(10)
@@ -179,6 +189,7 @@ jobs:
               page
               and page['ok']
               and heading_found
+              and guided_learning_ready
               and len(cards) >= 70
               and len(card_media) >= 70
               and len(sample_urls) >= 10
@@ -192,6 +203,8 @@ jobs:
               'page_final_url': page.get('final_url') if page else None,
               'page_bytes': page.get('bytes') if page else 0,
               'page_has_infographic_heading': heading_found,
+              'guided_learning_ready': guided_learning_ready,
+              'guided_learning_markers': guided_marker_state,
               'rendered_infographic_card_count': len(cards),
               'rendered_wordpress_media_url_count': len(card_media),
               'sampled_rendered_media_count': len(sample_urls),
@@ -203,6 +216,7 @@ jobs:
           pathlib.Path('docs/LIVE_INFOGRAPHIC_STATUS.json').write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')
           with open(__import__('os').environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as output:
               output.write(f"production_ready={'true' if production_ready else 'false'}\n")
+              output.write(f"guided_learning_ready={'true' if guided_learning_ready else 'false'}\n")
               output.write(f"page_status={report['page_http_status']}\n")
               output.write(f"card_count={len(cards)}\n")
               output.write(f"rendered_count={len(card_media)}\n")
@@ -210,6 +224,9 @@ jobs:
               output.write(f"sample_total={len(sample_urls)}\n")
           print(json.dumps(report, indent=2))
           if not production_ready:
+              missing = [key for key, present in guided_marker_state.items() if not present]
+              if missing:
+                  print(f'Missing guided-learning markers: {missing}')
               raise SystemExit('Live infographic verification failed; see docs/LIVE_INFOGRAPHIC_STATUS.json output above.')
 
       - name: Upload independent verification evidence
@@ -228,6 +245,7 @@ jobs:
         env:
           PROBE_OUTCOME: ${{ steps.probe.outcome }}
           PRODUCTION_READY: ${{ steps.probe.outputs.production_ready }}
+          GUIDED_LEARNING_READY: ${{ steps.probe.outputs.guided_learning_ready }}
           PAGE_STATUS: ${{ steps.probe.outputs.page_status }}
           CARD_COUNT: ${{ steps.probe.outputs.card_count }}
           RENDERED_COUNT: ${{ steps.probe.outputs.rendered_count }}
@@ -241,11 +259,13 @@ jobs:
               `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
               `Probe outcome: **${process.env.PROBE_OUTCOME || 'unknown'}**`,
               `Production ready: **${process.env.PRODUCTION_READY || 'false'}**`,
+              `Guided learning controls live: **${process.env.GUIDED_LEARNING_READY || 'false'}**`,
               `Library HTTP status: **${process.env.PAGE_STATUS || 'unknown'}**`,
               `Rendered infographic cards: **${process.env.CARD_COUNT || '0'}**`,
               `Rendered card media URLs found: **${process.env.RENDERED_COUNT || '0'}**`,
               `Sampled infographic previews live: **${process.env.SAMPLE_LIVE || '0'}/${process.env.SAMPLE_TOTAL || '0'}**`,
               '',
+              'Required guided-learning markers: learning-system introduction, learning paths, subject filter, and study questions on infographic cards.',
               'Target: https://dtfseeds.com/learn/infographics/',
               'Evidence is uploaded as a workflow artifact. The verifier intentionally does not commit generated status files back to main, preventing verification from recursively retriggering production workflows.'
             ].join('\n');
