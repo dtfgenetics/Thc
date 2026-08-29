@@ -1,0 +1,55 @@
+{
+  "id":"THC-ENC-221",
+  "number":221,
+  "title":"Trichome Initiation and Development",
+  "objective":"Explain glandular trichome initiation as epidermal cell-fate and organ-development processes influenced by tissue, genotype, plant age, and developmental state.",
+  "terms":[
+    {"term":"trichome","definition":"An epidermal outgrowth of a plant surface; trichomes may be glandular or non-glandular."},
+    {"term":"glandular trichome","definition":"A trichome containing specialized secretory cells that produce and store specialized metabolites."},
+    {"term":"initiation","definition":"The developmental commitment of selected epidermal cells to begin trichome formation."},
+    {"term":"morphogenesis","definition":"The coordinated development of cell shape, organization, and organ structure."},
+    {"term":"secretory disk cell","definition":"A specialized cell within the glandular head that contributes to cannabinoid and terpene biosynthesis and secretion."}
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Trichomes are epidermal outgrowths that begin when selected epidermal cells adopt a specialized developmental fate. Cannabis glandular trichomes subsequently differentiate structural and secretory regions including a basal attachment, a short or elongated support, a disk of secretory cells, and a cuticle-bounded extracellular storage cavity.",
+    "Initiation, head enlargement, stalk elongation, secretion, maturation, senescence, collapse, and dehiscence are distinct developmental events. Direct microscopy of female cannabis bracts shows asynchronous development, meaning young, mature, senescing, and damaged glandular heads can coexist on the same tissue at one sampling date.",
+    "Plant age and genotype alter trichome abundance and morphology. In a 2023 microscopy study of two high-THC genotypes, capitate-trichome numbers, stalk length, head development, and maturation patterns differed across genotype and flower age, and drying altered postharvest trichome morphology.",
+    "A cannabis R2R3-MYB transcription factor, CsMIXTA, is highly expressed in flower and isolated trichome tissue. Heterologous overexpression in tobacco increased glandular trichome density and size, supporting a regulatory role in glandular-trichome development while not proving that CsMIXTA alone determines trichome density in intact cannabis.",
+    "Trichome initiation and chemical output are related but not interchangeable traits. A plant can differ in trichome number, developmental stage, head size, secretory activity, tissue biomass, and cannabinoid concentration, so visible density alone cannot establish total cannabinoid production."
+  ],
+  "cultivationRelevance":[
+    "Stage the tissue and trichome rather than labeling an entire flower as uniformly mature.",
+    "Use comparable organs, positions, developmental dates, and imaging methods when testing genotype or treatment effects on trichome density or morphology.",
+    "Separate structural observations from chemical measurements; visible gland abundance does not by itself establish potency or total cannabinoid yield.",
+    "Preserve fresh-versus-postharvest status because drying and handling can change head shape, integrity, and apparent density."
+  ],
+  "measureAndRecord":[
+    {"field":"Sample identity","requirement":"Record genotype, plant ID, organ, surface, branch/node position, and developmental milestone."},
+    {"field":"Imaging method","requirement":"Record microscope type, magnification, calibration, illumination, image field, and fresh or postharvest state."},
+    {"field":"Developmental class","requirement":"Record trichome type plus young, enlarging, mature, senescing, collapsed, damaged, or dehisced state using a declared classification key."},
+    {"field":"Morphology","requirement":"Record density using an explicit denominator plus head diameter, stalk length, and other dimensions when measurable."},
+    {"field":"Matched chemistry","requirement":"When linking morphology to cannabinoids, record the matched tissue sample, analytical method, moisture basis, analytes, and uncertainty."
+    }
+  ],
+  "misconceptions":[
+    "All trichomes on a cannabis flower appear and mature at the same time.",
+    "Every visible hair on cannabis is a cannabinoid-producing gland.",
+    "Trichome density is controlled by one gene or one cultivation input.",
+    "More visible trichomes automatically means higher cannabinoid concentration.",
+    "A dried trichome image can be treated as identical to the living preharvest structure."
+  ],
+  "evidenceLimits":[
+    "Cannabis trichome developmental stages are directly observed, but classification boundaries can depend on microscopy, tissue preparation, genotype, and organ. CsMIXTA evidence includes strong expression and heterologous functional data; direct causal control of intact-crop trichome density by one transcription factor remains incompletely resolved."
+  ],
+  "crossLinks":"THC-ENC-001–020 for flower and trichome anatomy; THC-ENC-141–160 for genetics and chemotype; THC-ENC-201–220 for reproductive development; THC-ENC-222–226 for glandular-trichome classes and sampling; THC-ENC-237–240 for chemistry, maturity, and claims discipline.",
+  "sourceNotes":[
+    "Punja ZK, Sutton DB, Kim T. (2023). Glandular trichome development, morphology, and maturation are influenced by plant age and genotype in high THC-containing cannabis inflorescences. Journal of Cannabis Research 5:12. Direct light/SEM observations of two genotypes across flowering documented asynchronous trichome development, genotype and age effects, and postharvest morphological change.",
+    "Haiden SR et al. (2022). Overexpression of CsMIXTA, a Transcription Factor from Cannabis sativa, Increases Glandular Trichome Density in Tobacco Leaves. Plants 11(11):1519. Provides cannabis gene-expression evidence plus heterologous functional evidence, not intact-cannabis single-gene causation.",
+    "The controlled Volume 12 manuscript requires separation of morphology, secretion, tissue chemistry, whole-plant yield, and commercial potency."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 12 batch 01 controlled web derivative","driveSourceDocumentId":"1mrad4SysYqoD1-Z8A7ibF9PcnvRjs5qiPIOseYGRtUI","evidenceControl":"direct_primary_sources_plus_controlled_manuscript","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_trichome_development_and_regulation","releaseTimeReview":"completed_2026-08-29_morphology_density_and_gene_causation_claims","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"trichome-initiation-and-development",
+  "route":"/encyclopedia/trichome-initiation-and-development"
+}
