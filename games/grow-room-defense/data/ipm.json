@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "disclaimer": "Grow Room Defense teaches broad integrated pest management concepts through fictionalized game pressure. It does not provide pesticide mixing, application rates, or treatment instructions.",
+  "lanes": [
+    {"id":"left","label":"Left Bench","plant":"Plant A"},
+    {"id":"center","label":"Center Bench","plant":"Plant B"},
+    {"id":"right","label":"Right Bench","plant":"Plant C"}
+  ],
+  "threats": [
+    {"id":"aphid-colony","label":"Aphid Colony","mark":"AP","category":"Sap feeder","pressure":2,"damage":7,"weaknesses":["beneficials","inspection","sanitation"],"lesson":"Early scouting and biological or sanitation-based IPM responses can help keep small colonies from becoming larger problems."},
+    {"id":"fungus-gnat-pressure","label":"Fungus Gnat Pressure","mark":"FG","category":"Root-zone pest","pressure":2,"damage":6,"weaknesses":["sticky-trap","moisture","sanitation"],"lesson":"Adult monitoring and root-zone moisture management are useful parts of a broader fungus gnat IPM plan."},
+    {"id":"spider-mite-pressure","label":"Spider Mite Pressure","mark":"SM","category":"Leaf pest","pressure":3,"damage":9,"weaknesses":["beneficials","inspection","environment"],"lesson":"Frequent underside-of-leaf scouting and environmental awareness help catch mite pressure before severe damage develops."},
+    {"id":"thrips-pressure","label":"Thrips Pressure","mark":"TH","category":"Leaf pest","pressure":3,"damage":8,"weaknesses":["sticky-trap","beneficials","inspection"],"lesson":"Monitoring cards, close plant inspection, and biological controls can all play roles in thrips IPM."},
+    {"id":"powdery-mildew-risk","label":"Powdery Mildew Risk","mark":"PM","category":"Foliar disease","pressure":2,"damage":8,"weaknesses":["airflow","sanitation","environment"],"lesson":"Canopy airflow, environmental monitoring, and sanitation are important prevention-focused disease-management tools."},
+    {"id":"botrytis-risk","label":"Botrytis Risk","mark":"BR","category":"Flower disease","pressure":3,"damage":10,"weaknesses":["airflow","sanitation","environment"],"lesson":"Dense, stagnant, humid canopy zones deserve close attention because prevention and early removal of affected material are important disease-management concepts."},
+    {"id":"shore-fly-pressure","label":"Shore Fly Pressure","mark":"SF","category":"Moisture-associated pest","pressure":2,"damage":5,"weaknesses":["sticky-trap","moisture","sanitation"],"lesson":"Persistent surface moisture and organic buildup can support nuisance populations, so monitoring and moisture discipline matter."},
+    {"id":"unknown-leaf-damage","label":"Unknown Leaf Damage","mark":"??","category":"Diagnosis challenge","pressure":2,"damage":7,"weaknesses":["inspection","sanitation","environment"],"lesson":"Observation should come before diagnosis. Record symptoms, location, progression, and environment before deciding what the problem is."}
+  ],
+  "tools": [
+    {"id":"inspect","label":"Scout & Inspect","mark":"SC","power":1,"strengths":["inspection"],"description":"Use observation first: inspect plant surfaces, symptom location, and progression before jumping to a diagnosis."},
+    {"id":"airflow","label":"Airflow & Spacing","mark":"AF","power":2,"strengths":["airflow"],"description":"Improve canopy air movement and reduce stagnant microclimates as a prevention-focused environmental tactic."},
+    {"id":"sanitation","label":"Sanitation Reset","mark":"SN","power":2,"strengths":["sanitation"],"description":"Remove debris and keep tools and work areas clean to reduce avoidable pest and disease carryover."},
+    {"id":"sticky-trap","label":"Monitoring Cards","mark":"MC","power":2,"strengths":["sticky-trap"],"description":"Use monitoring cards as a detection and trend tool for flying pest pressure."},
+    {"id":"beneficials","label":"Beneficial Predators","mark":"BP","power":3,"strengths":["beneficials"],"description":"Represent biological-control organisms matched to a target pest as part of an IPM program."},
+    {"id":"moisture","label":"Moisture Management","mark":"MM","power":2,"strengths":["moisture"],"description":"Review irrigation timing and persistent surface moisture rather than treating every root-zone problem as a nutrient problem."},
+    {"id":"environment","label":"Environment Check","mark":"EC","power":2,"strengths":["environment"],"description":"Review temperature, humidity, airflow, and canopy microclimates for conditions that can amplify pressure."}
+  ]
+}
