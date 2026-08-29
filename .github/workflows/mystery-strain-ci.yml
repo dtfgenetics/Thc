@@ -33,24 +33,27 @@ jobs:
         run: node games/mystery-strain/test/engine.test.mjs
       - name: Run information-ranking tests
         run: node games/mystery-strain/test/analysis.test.mjs
-      - name: Test self-contained public runtime
+      - name: Test self-contained public runtime and guess confirmation
         run: node games/mystery-strain/test/public-runtime.test.mjs
       - name: Validate browser JavaScript syntax
         run: |
           node --check site/public-route-patch/games/mystery-strain/app.js
+          node --check site/public-route-patch/games/mystery-strain/guess-confirm-v2.js
           node --check site/public-route-patch/games/mystery-strain/engine.mjs
           node --check site/public-route-patch/games/mystery-strain/analysis.mjs
       - name: Verify canonical and public rules modules match
         run: |
           cmp games/mystery-strain/src/engine.mjs site/public-route-patch/games/mystery-strain/engine.mjs
           cmp games/mystery-strain/src/analysis.mjs site/public-route-patch/games/mystery-strain/analysis.mjs
-      - name: Verify public route, ranking and release boundary
+      - name: Verify public route, ranking, protected guesses and release boundary
         shell: bash
         run: |
           set -euo pipefail
           root=site/public-route-patch/games/mystery-strain
           test -s "$root/index.html"
           test -s "$root/app.js"
+          test -s "$root/guess-confirm-v2.js"
+          test -s "$root/guess-confirm-v2.css"
           test -s "$root/engine.mjs"
           test -s "$root/analysis.mjs"
           test -s "$root/mystery-strain.css"
@@ -60,12 +63,17 @@ jobs:
           grep -Fqi 'fictional' "$root/index.html"
           grep -Fq 'Best Split' "$root/index.html"
           grep -Fq './analysis.css' "$root/index.html"
+          grep -Fq './guess-confirm-v2.css' "$root/index.html"
           grep -Fq 'id="mystery-strain-data"' "$root/index.html"
           grep -Fq '<script src="./app.js" defer></script>' "$root/index.html"
+          grep -Fq '<script src="./guess-confirm-v2.js" defer></script>' "$root/index.html"
           grep -Fq 'rankedQuestionOptions(state, data)' "$root/app.js"
           grep -Fq 'Information ${question.informationScore}%' "$root/app.js"
           grep -Fq 'BEST SPLIT' "$root/app.js"
           grep -Fq '.question-card.best-split' "$root/analysis.css"
+          grep -Fq 'event.stopImmediatePropagation()' "$root/guess-confirm-v2.js"
+          grep -Fq 'Confirm Guess' "$root/guess-confirm-v2.js"
+          grep -Fq '.candidate-card.guess-selected' "$root/guess-confirm-v2.css"
           if grep -Fq 'type="module"' "$root/index.html"; then
             echo 'Mystery Strain must not depend on module MIME handling in production.' >&2
             exit 1
