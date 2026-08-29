@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-201",
+  "number":201,
+  "title":"Vegetative-to-Reproductive Transition",
+  "objective":"Recognize the cannabis transition from vegetative growth toward reproductive development as a staged, genotype- and environment-dependent process rather than a single instant caused by a calendar date or one light-cycle change.",
+  "terms":[
+    {"term":"phase transition","definition":"A developmental shift in which meristems and newly produced organs change from predominantly vegetative growth toward reproductive development."},
+    {"term":"floral induction","definition":"The signaling process that makes a meristem competent or committed to reproductive development."},
+    {"term":"floral initiation","definition":"The developmental formation of floral primordia or recognizable flower structures after induction."},
+    {"term":"anthesis","definition":"The stage at which a flower is functionally open or mature for reproduction; its visible expression differs between male and female flowers."},
+    {"term":"phenology","definition":"The timing and sequence of recurring developmental events such as preflower appearance, reproductive transition, anthesis, and senescence."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Cannabis reproductive development is not one instantaneous switch. Induction, floral initiation, visible flower development, inflorescence expansion, anthesis, fertilization, and maturation are separable stages.",
+    "Photoperiod-sensitive genotypes commonly accelerate reproductive development when daylength becomes sufficiently short, but internal developmental age and genotype also influence the response. Solitary flowers can appear before a dense terminal inflorescence develops.",
+    "Experiments with modern drug-type cultivars show substantial variation in flowering response. In one ten-cultivar study, all tested cultivars initiated flowering under photoperiods from 12 through 14 hours of light, while some also initiated at 15 hours without continuing normal floral development. This demonstrates why initiation and full reproductive development should not be treated as identical endpoints.",
+    "The transition often overlaps with continued stem and internode elongation. Vegetative and reproductive processes can therefore occur at the same time during early flowering rather than replacing one another cleanly.",
+    "Temperature, light intensity and daily light integral, root-zone condition, plant age, stress, and previous propagation history can modify growth around the transition even when photoperiod is the dominant flowering signal."
+  ],
+  "cultivationRelevance":[
+    "Record the date of the photoperiod change separately from the date of first visible reproductive structures; they are not the same biological event.",
+    "Use consistent morphological criteria when comparing cultivars or treatments, such as first solitary flowers, defined stigma counts at the shoot apex, or another documented endpoint.",
+    "Expect cultivar-dependent transition speed and avoid diagnosing a plant as abnormal solely because it does not match another cultivar's schedule.",
+    "Avoid stacking major environmental or training changes during transition unless the purpose is clear, because multiple simultaneous changes make later interpretation difficult."
+  ],
+  "measureAndRecord":[
+    {"field":"Starting state","requirement":"Record plant age or propagation date, cultivar, plant size, and whether solitary preflowers were already present before the reproductive treatment."},
+    {"field":"Photoperiod","requirement":"Record actual light-on and light-off times, measured dark-period interruptions if known, and the date the schedule changed."},
+    {"field":"First visible response","requirement":"Define and record the first reproductive marker used, such as paired stigmas or staminate structures at a mapped node or shoot apex."},
+    {"field":"Transition progression","requirement":"Track internode elongation, new floral sites, inflorescence expansion, and days from treatment to each defined developmental stage."},
+    {"field":"Environment","requirement":"Record representative temperature, humidity, light intensity, irrigation/root-zone observations, and unusual stress events during the transition."
+    }
+  ],
+  "misconceptions":[
+    "The day a timer changes is the exact biological start of flowering.",
+    "Visible preflowers prove that the whole plant has completed the reproductive transition.",
+    "All photoperiod-sensitive cannabis cultivars require exactly the same daylength to initiate flowering.",
+    "Once flowering begins, vegetative elongation immediately stops.",
+    "Flower initiation and full inflorescence development are interchangeable measurements."
+  ],
+  "evidenceLimits":[
+    "Cannabis flowering studies demonstrate substantial genotype and protocol dependence. Definitions of flowering onset are not perfectly standardized across the literature, so comparisons should state the morphological endpoint used. Photoperiod treatments tested in one cultivar set should not be converted into a universal critical daylength for all cannabis."
+  ],
+  "crossLinks":"THC-ENC-202 for photoperiod response; THC-ENC-203 for autoflowering; THC-ENC-204 for preflowers and maturity; THC-ENC-205–220 for reproductive structures, pollination, seed formation, and records.",
+  "sourceNotes":[
+    "Ahrens A, Llewellyn D, Zheng Y. (2023). Is Twelve Hours Really the Optimum Photoperiod for Promoting Flowering in Indoor-Grown Cultivars of Cannabis sativa? Plants 12(14):2605. Ten cultivars showed cultivar-dependent initiation and early-flower responses across 12–15 h photoperiods.",
+    "Spitzer-Rimon B et al. (2019). Architecture and Florogenesis in Female Cannabis sativa Plants. Frontiers in Plant Science 10:350. Supports separating solitary flower development, photoperiod response, and inflorescence development.",
+    "Kurtz LE et al. (2023). Comparative genomics of flowering behavior in Cannabis sativa. Frontiers in Plant Science. Supports genetic variation in flowering behavior and the distinction between photoperiod-sensitive and autoflowering types."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 11 batch 01 controlled web derivative","evidenceControl":"current_topic_secondary_review_complete","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_flowering_and_development","releaseTimeReview":"completed_2026-08-29_stage_definitions_and_non_universal_flowering_claims","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"vegetative-to-reproductive-transition",
+  "route":"/encyclopedia/vegetative-to-reproductive-transition"
+}
