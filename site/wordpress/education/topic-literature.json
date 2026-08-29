@@ -7,13 +7,137 @@
       "route": "/learn/plant-biology/",
       "title": "Plant Biology & Anatomy",
       "summary": "Understand the cannabis plant as an integrated biological system: cells and tissues become organs, organs exchange resources, and whole-plant behavior emerges from transport, signaling, development, and environment.",
-      "keywords": ["plant anatomy", "cells", "tissues", "roots", "stems", "leaves", "flowers", "trichomes", "xylem", "phloem", "stomata", "photosynthesis", "respiration", "transpiration"],
+      "keywords": [
+        "plant anatomy",
+        "cells",
+        "tissues",
+        "roots",
+        "stems",
+        "leaves",
+        "flowers",
+        "trichomes",
+        "xylem",
+        "phloem",
+        "stomata",
+        "photosynthesis",
+        "respiration",
+        "transpiration",
+        "water potential",
+        "osmosis",
+        "turgor",
+        "source sink",
+        "meristem",
+        "plant hormones",
+        "tropism",
+        "allocation"
+      ],
       "sections": [
-        {"heading":"From cells to the whole plant","paragraphs":["A plant is not a collection of independent parts. Meristematic tissues generate new organs; vascular tissues connect roots and shoots; epidermal tissues regulate exchange with the environment; and photosynthetic tissues capture light energy and carbon. When a visible symptom appears on one organ, the cause may originate somewhere else in this connected system.","Cannabis follows the same core anatomical rules as other flowering plants. Learning those rules makes cultivation observations more useful because the grower can ask which tissue is affected, what that tissue normally does, and what upstream processes could have changed its function."],"checkpoints":["Identify the affected organ and tissue before naming a disorder.","Separate structure from function: what does the tissue normally do?","Ask whether the observed change is local or systemic."]},
-        {"heading":"Roots, stems, and long-distance transport","paragraphs":["Roots anchor the plant and explore the root environment for water and mineral ions. Young root tips contain zones of cell division, elongation, and differentiation. Root hairs increase contact with the surrounding solution, while lateral roots expand the architecture of the root system. Oxygen availability, water content, temperature, physical resistance, and root health all influence how effectively this system functions.","Xylem transports water and dissolved minerals primarily from roots toward transpiring tissues. Phloem distributes sugars and other transported compounds between source and sink tissues. These pathways are living components of a dynamic plant, so water status, leaf demand, root condition, stem injury, and developmental stage can change transport patterns."],"checkpoints":["Inspect roots as well as leaves when diagnosing whole-plant symptoms.","Record irrigation and root-zone conditions when transport problems are suspected.","Treat stem damage as a possible transport problem, not only a structural blemish."]},
-        {"heading":"Leaves, stomata, photosynthesis, and respiration","paragraphs":["Leaves balance light capture, carbon dioxide uptake, water loss, heat exchange, and defense. Stomata are adjustable pores controlled by guard cells. Their behavior responds to water status, light, carbon dioxide, humidity, temperature, hormones, and other signals. A leaf therefore cannot be interpreted from color alone; its surrounding environment and water supply matter.","Photosynthesis converts light energy into chemical energy and fixes carbon into compounds that support growth. Respiration releases usable energy from stored carbon and occurs day and night. Net growth reflects the balance between carbon gained, carbon respired, and carbon allocated to different tissues."],"checkpoints":["Measure the light and climate the leaf actually experiences.","Do not treat photosynthesis as a simple on/off response to brighter light.","Consider respiration and night temperature when interpreting growth rate."]},
-        {"heading":"Flowers, reproduction, and trichomes","paragraphs":["Cannabis reproductive anatomy includes sex expression, floral organs, pollen production, stigmas, ovules, bracts, and developing seed. Reproductive development changes the plant's resource allocation and creates structures with different biological roles than vegetative leaves and stems.","Trichomes are epidermal structures with several forms and functions. Glandular trichomes are important sites of specialized metabolite production, but trichome appearance is only one part of plant maturity and quality assessment. Sampling location, magnification, lighting, plant condition, and cultivar can change what the observer sees."],"checkpoints":["Distinguish reproductive structures correctly before making breeding or harvest decisions.","Record where and how trichomes were observed.","Use multiple maturity indicators rather than one photograph or color cue."]},
-        {"heading":"How to use anatomy in diagnosis","paragraphs":["Anatomy becomes practical when it guides the order of observation. Start with location: old leaves, new leaves, roots, stems, flowers, or the entire plant. Then describe pattern, distribution, progression, and tissue function. Add measurements and recent management history before assigning a cause.","This approach reduces false certainty. Different stresses can create similar colors, spots, curling, wilting, or slow growth. A biological model helps narrow possibilities without pretending that a visual symptom is proof."],"checkpoints":["Locate, describe, contextualize, measure, compare, and track.","Photograph the whole plant and close details, not just one damaged leaf.","Recheck the plant after a change to verify the interpretation."]}
+        {
+          "heading": "From cells to the whole plant",
+          "paragraphs": [
+            "A plant is not a collection of independent parts. Meristematic tissues generate new organs; vascular tissues connect roots and shoots; epidermal tissues regulate exchange with the environment; and photosynthetic tissues capture light energy and carbon. When a visible symptom appears on one organ, the cause may originate somewhere else in this connected system.",
+            "Cannabis follows the same core anatomical rules as other flowering plants. Learning those rules makes cultivation observations more useful because the grower can ask which tissue is affected, what that tissue normally does, and what upstream processes could have changed its function."
+          ],
+          "checkpoints": [
+            "Identify the affected organ and tissue before naming a disorder.",
+            "Separate structure from function: what does the tissue normally do?",
+            "Ask whether the observed change is local or systemic."
+          ]
+        },
+        {
+          "heading": "Roots, stems, and long-distance transport",
+          "paragraphs": [
+            "Roots anchor the plant and explore the root environment for water and mineral ions. Young root tips contain zones of cell division, elongation, and differentiation. Root hairs increase contact with the surrounding solution, while lateral roots expand the architecture of the root system. Oxygen availability, water content, temperature, physical resistance, and root health all influence how effectively this system functions.",
+            "Xylem transports water and dissolved minerals primarily from roots toward transpiring tissues. Phloem distributes sugars and other transported compounds between source and sink tissues. These pathways are living components of a dynamic plant, so water status, leaf demand, root condition, stem injury, and developmental stage can change transport patterns."
+          ],
+          "checkpoints": [
+            "Inspect roots as well as leaves when diagnosing whole-plant symptoms.",
+            "Record irrigation and root-zone conditions when transport problems are suspected.",
+            "Treat stem damage as a possible transport problem, not only a structural blemish."
+          ]
+        },
+        {
+          "heading": "Leaves, stomata, photosynthesis, and respiration",
+          "paragraphs": [
+            "Leaves balance light capture, carbon dioxide uptake, water loss, heat exchange, and defense. Stomata are adjustable pores controlled by guard cells. Their behavior responds to water status, light, carbon dioxide, humidity, temperature, hormones, and other signals. A leaf therefore cannot be interpreted from color alone; its surrounding environment and water supply matter.",
+            "Photosynthesis converts light energy into chemical energy and fixes carbon into compounds that support growth. Respiration releases usable energy from stored carbon and occurs day and night. Net growth reflects the balance between carbon gained, carbon respired, and carbon allocated to different tissues."
+          ],
+          "checkpoints": [
+            "Measure the light and climate the leaf actually experiences.",
+            "Do not treat photosynthesis as a simple on/off response to brighter light.",
+            "Consider respiration and night temperature when interpreting growth rate."
+          ]
+        },
+        {
+          "heading": "Flowers, reproduction, and trichomes",
+          "paragraphs": [
+            "Cannabis reproductive anatomy includes sex expression, floral organs, pollen production, stigmas, ovules, bracts, and developing seed. Reproductive development changes the plant's resource allocation and creates structures with different biological roles than vegetative leaves and stems.",
+            "Trichomes are epidermal structures with several forms and functions. Glandular trichomes are important sites of specialized metabolite production, but trichome appearance is only one part of plant maturity and quality assessment. Sampling location, magnification, lighting, plant condition, and cultivar can change what the observer sees."
+          ],
+          "checkpoints": [
+            "Distinguish reproductive structures correctly before making breeding or harvest decisions.",
+            "Record where and how trichomes were observed.",
+            "Use multiple maturity indicators rather than one photograph or color cue."
+          ]
+        },
+        {
+          "heading": "How to use anatomy in diagnosis",
+          "paragraphs": [
+            "Anatomy becomes practical when it guides the order of observation. Start with location: old leaves, new leaves, roots, stems, flowers, or the entire plant. Then describe pattern, distribution, progression, and tissue function. Add measurements and recent management history before assigning a cause.",
+            "This approach reduces false certainty. Different stresses can create similar colors, spots, curling, wilting, or slow growth. A biological model helps narrow possibilities without pretending that a visual symptom is proof."
+          ],
+          "checkpoints": [
+            "Locate, describe, contextualize, measure, compare, and track.",
+            "Photograph the whole plant and close details, not just one damaged leaf.",
+            "Recheck the plant after a change to verify the interpretation."
+          ]
+        },
+        {
+          "heading": "Water potential, osmosis, and turgor",
+          "paragraphs": [
+            "Water movement through plant tissues is driven by gradients in water potential rather than by a plant simply pulling water upward as one undivided column. Solutes, pressure, gravity, and the properties of cell walls and membranes influence local water status. Across living membranes, osmosis changes cell volume and pressure as water moves toward regions with lower water potential.",
+            "Turgor pressure supports expanding cells and many soft tissues. Loss of turgor can appear as wilting, but the cause can lie in the root zone, xylem transport, excessive evaporative demand, damaged tissue, or disease. A wilted appearance therefore describes plant water status; it does not by itself identify why water supply and demand became unbalanced."
+          ],
+          "checkpoints": [
+            "Separate visible wilting from the cause of the water imbalance.",
+            "Compare root-zone moisture with canopy demand before changing irrigation.",
+            "Record whether symptoms recover during lower-demand periods.",
+            "Use leaf, air, and root-zone context together when investigating water stress."
+          ]
+        },
+        {
+          "heading": "Meristems, source–sink relationships, and allocation",
+          "paragraphs": [
+            "Meristems contain actively dividing cells that generate new roots, shoots, leaves, and reproductive structures. As organs develop, their role in the plant carbon economy changes. Mature photosynthetic leaves often act as sources of transported sugars, while growing tips, roots, developing flowers, and seeds can act as sinks that import carbon and nutrients.",
+            "Source and sink strength are dynamic. Defoliation, pruning, root restriction, flowering, seed development, light distribution, temperature, and injury can shift where resources are produced and used. This is why removing tissue or changing canopy architecture can alter growth beyond the exact location that was cut."
+          ],
+          "checkpoints": [
+            "Identify which organs are actively growing when interpreting resource demand.",
+            "Treat major pruning as a whole-plant allocation change, not only a shape change.",
+            "Track new growth after an intervention to see where the plant reallocates resources.",
+            "Do not assume every mature leaf and growing tip has the same source or sink role."
+          ]
+        },
+        {
+          "heading": "Plant hormones, signaling, and tropic responses",
+          "paragraphs": [
+            "Plant development is coordinated by interacting signaling networks that include auxins, cytokinins, gibberellins, abscisic acid, ethylene, jasmonates, salicylates, and other signals. These molecules do not behave as simple one-hormone switches. Their effects depend on tissue, developmental stage, concentration, transport, environmental context, and interactions with other signals.",
+            "Directional growth responses such as phototropism and gravitropism emerge from sensing plus unequal growth across tissues. Wounding, drought, flooding, temperature, pathogens, and reproductive development also change signaling. Practical interpretation should focus on the observed developmental response and the conditions that preceded it rather than assigning a complex phenotype to one hormone without evidence."
+          ],
+          "checkpoints": [
+            "Describe the growth response before proposing a signaling mechanism.",
+            "Record the developmental stage and recent environmental changes.",
+            "Avoid one-hormone explanations for complex whole-plant behavior.",
+            "Use repeated observations to distinguish temporary adjustment from lasting developmental change."
+          ]
+        }
+      ],
+      "references": [
+        {
+          "title": "Plant Physiology and Development",
+          "organization": "Sinauer/Oxford University Press",
+          "note": "General reference for plant water relations, source–sink biology, hormones, and development."
+        }
       ]
     },
     {
@@ -21,13 +145,137 @@
       "route": "/learn/genetics-breeding/",
       "title": "Genetics & Breeding",
       "summary": "Learn how inherited variation, environment, selection, reproduction, provenance, and recordkeeping shape a breeding population without confusing a name or lineage claim with measured genetic identity.",
-      "keywords": ["genetics", "breeding", "genotype", "phenotype", "inheritance", "selection", "pollination", "filial", "F1", "F2", "sex expression", "provenance", "phenotyping"],
+      "keywords": [
+        "genetics",
+        "breeding",
+        "genotype",
+        "phenotype",
+        "inheritance",
+        "selection",
+        "pollination",
+        "filial",
+        "F1",
+        "F2",
+        "sex expression",
+        "provenance",
+        "phenotyping",
+        "quantitative trait",
+        "heritability",
+        "selection differential",
+        "inbreeding",
+        "outcrossing",
+        "genetic drift",
+        "bottleneck",
+        "maternal effect",
+        "genomic verification"
+      ],
       "sections": [
-        {"heading":"Genotype, phenotype, and environment","paragraphs":["Genotype is the inherited genetic constitution of an organism; phenotype is the observable outcome produced by genotype interacting with environment and development. A trait seen in one plant under one set of conditions does not automatically predict how all related plants will perform elsewhere.","Breeding decisions become stronger when traits are defined in measurable terms and evaluated across enough individuals and environments to distinguish repeatable inheritance from temporary environmental effects."],"checkpoints":["Define each target trait before selection.","Record the environment in which a phenotype was measured.","Avoid treating one exceptional individual as proof of population stability."]},
-        {"heading":"Variation, inheritance, and filial generations","paragraphs":["Sexual reproduction reshuffles inherited variation. F1, F2, and later filial labels describe generational relationships, not guaranteed uniformity or quality. Segregation can reveal hidden variation in later generations, while selection changes which alleles and trait combinations are carried forward.","Simple Mendelian models are useful teaching tools for some loci, but many cultivation traits are quantitative, polygenic, environment-sensitive, or influenced by developmental timing. Breeding records should reflect that complexity."],"checkpoints":["Use generation labels precisely.","Separate observed ratios from expected textbook ratios.","Keep population size and selection intensity in the breeding record."]},
-        {"heading":"Sex expression and reproduction","paragraphs":["Cannabis commonly shows separate male and female reproductive forms, but sex expression can be more complex. Genetic background, developmental state, and environmental stress may all affect observed expression. A single appearance should be documented carefully rather than generalized to an entire line.","Controlled pollination requires identity control, timing, isolation, labeling, and records. Pollen movement can occur unintentionally, so breeding work must distinguish intended crosses from uncertain seed set."],"checkpoints":["Label parents and pollination events at the time they occur.","Document unexpected sex expression and surrounding conditions.","Keep uncertain parentage marked as uncertain rather than filling gaps with assumptions."]},
-        {"heading":"Selection, population size, and repeatability","paragraphs":["Selection works on variation that is present in a population. Selecting for one trait can unintentionally shift correlated traits, and severe selection in a very small population can reduce useful diversity. The appropriate population size depends on the breeding goal, trait architecture, available space, and acceptable uncertainty.","Repeatability matters more than attractive labels. Evaluation across siblings, generations, and repeated environments helps show whether a trait is reliably transmitted."],"checkpoints":["Record why each plant was kept or removed.","Preserve raw measurements in addition to final rankings.","Re-test important traits before describing them as fixed or stable."]},
-        {"heading":"Provenance and responsible lineage claims","paragraphs":["Cultivar names, trade names, breeder records, and community histories can be valuable provenance, but they are not the same thing as genomic verification. A responsible record distinguishes source-reported lineage from directly observed traits and laboratory evidence.","Good documentation protects future breeding decisions. Preserve source, date, generation or clone status, parent identifiers, selection notes, photographs, and uncertainty. This makes the breeding story auditable instead of dependent on memory."],"checkpoints":["Label source-reported claims as source-reported.","Maintain unique plant and cross identifiers.","Keep original records even when a later interpretation changes."]}
+        {
+          "heading": "Genotype, phenotype, and environment",
+          "paragraphs": [
+            "Genotype is the inherited genetic constitution of an organism; phenotype is the observable outcome produced by genotype interacting with environment and development. A trait seen in one plant under one set of conditions does not automatically predict how all related plants will perform elsewhere.",
+            "Breeding decisions become stronger when traits are defined in measurable terms and evaluated across enough individuals and environments to distinguish repeatable inheritance from temporary environmental effects."
+          ],
+          "checkpoints": [
+            "Define each target trait before selection.",
+            "Record the environment in which a phenotype was measured.",
+            "Avoid treating one exceptional individual as proof of population stability."
+          ]
+        },
+        {
+          "heading": "Variation, inheritance, and filial generations",
+          "paragraphs": [
+            "Sexual reproduction reshuffles inherited variation. F1, F2, and later filial labels describe generational relationships, not guaranteed uniformity or quality. Segregation can reveal hidden variation in later generations, while selection changes which alleles and trait combinations are carried forward.",
+            "Simple Mendelian models are useful teaching tools for some loci, but many cultivation traits are quantitative, polygenic, environment-sensitive, or influenced by developmental timing. Breeding records should reflect that complexity."
+          ],
+          "checkpoints": [
+            "Use generation labels precisely.",
+            "Separate observed ratios from expected textbook ratios.",
+            "Keep population size and selection intensity in the breeding record."
+          ]
+        },
+        {
+          "heading": "Sex expression and reproduction",
+          "paragraphs": [
+            "Cannabis commonly shows separate male and female reproductive forms, but sex expression can be more complex. Genetic background, developmental state, and environmental stress may all affect observed expression. A single appearance should be documented carefully rather than generalized to an entire line.",
+            "Controlled pollination requires identity control, timing, isolation, labeling, and records. Pollen movement can occur unintentionally, so breeding work must distinguish intended crosses from uncertain seed set."
+          ],
+          "checkpoints": [
+            "Label parents and pollination events at the time they occur.",
+            "Document unexpected sex expression and surrounding conditions.",
+            "Keep uncertain parentage marked as uncertain rather than filling gaps with assumptions."
+          ]
+        },
+        {
+          "heading": "Selection, population size, and repeatability",
+          "paragraphs": [
+            "Selection works on variation that is present in a population. Selecting for one trait can unintentionally shift correlated traits, and severe selection in a very small population can reduce useful diversity. The appropriate population size depends on the breeding goal, trait architecture, available space, and acceptable uncertainty.",
+            "Repeatability matters more than attractive labels. Evaluation across siblings, generations, and repeated environments helps show whether a trait is reliably transmitted."
+          ],
+          "checkpoints": [
+            "Record why each plant was kept or removed.",
+            "Preserve raw measurements in addition to final rankings.",
+            "Re-test important traits before describing them as fixed or stable."
+          ]
+        },
+        {
+          "heading": "Provenance and responsible lineage claims",
+          "paragraphs": [
+            "Cultivar names, trade names, breeder records, and community histories can be valuable provenance, but they are not the same thing as genomic verification. A responsible record distinguishes source-reported lineage from directly observed traits and laboratory evidence.",
+            "Good documentation protects future breeding decisions. Preserve source, date, generation or clone status, parent identifiers, selection notes, photographs, and uncertainty. This makes the breeding story auditable instead of dependent on memory."
+          ],
+          "checkpoints": [
+            "Label source-reported claims as source-reported.",
+            "Maintain unique plant and cross identifiers.",
+            "Keep original records even when a later interpretation changes."
+          ]
+        },
+        {
+          "heading": "Qualitative traits, quantitative traits, and heritability",
+          "paragraphs": [
+            "Some traits can be strongly influenced by one or a few loci and may form distinct classes, while many agronomic traits vary continuously because numerous loci and environmental effects contribute to the phenotype. Height, yield, flowering time, architecture, aroma intensity, and stress response are examples of traits that often need quantitative measurement rather than simple present-or-absent scoring.",
+            "Heritability describes how much of the observed variation in a particular population and environment is associated with genetic differences. It is not a permanent percentage attached to a cultivar or trait. Changing the population, environment, measurement method, or range of conditions can change the estimate and the response to selection."
+          ],
+          "checkpoints": [
+            "Define whether a trait is scored categorically or measured quantitatively.",
+            "Keep environment and population identity attached to any heritability statement.",
+            "Use replicated measurements for traits that fluctuate strongly with environment.",
+            "Do not translate a heritability estimate directly into certainty about one individual."
+          ]
+        },
+        {
+          "heading": "Inbreeding, outcrossing, drift, and population bottlenecks",
+          "paragraphs": [
+            "Breeding changes allele frequencies through selection, mating structure, and chance. Repeated mating among close relatives can increase homozygosity and expose recessive alleles, while outcrossing can introduce new variation and alter trait combinations. Neither approach is automatically superior; the useful strategy depends on the breeding objective and the genetic material available.",
+            "Small populations are especially vulnerable to genetic drift, where allele frequencies change by chance. A severe bottleneck can permanently remove useful variation even when the surviving plants look acceptable. Population size, the number of selected parents, and the contribution of each parent should therefore be part of the breeding record."
+          ],
+          "checkpoints": [
+            "Record the number of candidate and selected parents each generation.",
+            "Track whether one parent contributes disproportionately to the next population.",
+            "Preserve backup seed or clones before narrowing a valuable population aggressively.",
+            "Distinguish intentional selection from variation lost simply because the population was small."
+          ]
+        },
+        {
+          "heading": "Parent-of-origin effects, seed lots, and genomic evidence",
+          "paragraphs": [
+            "Reciprocal crosses can differ because the seed develops within maternal tissue and because cytoplasmic genomes, seed provisioning, epigenetic state, and maternal environment can influence early phenotype. These effects do not invalidate Mendelian inheritance; they add biological context that can matter when comparing seed lots or reciprocal breeding designs.",
+            "Genomic testing can provide evidence about relatedness, identity, diversity, or specific markers, but the conclusion is limited by the markers, reference population, laboratory method, and question being asked. A commercial lineage name is not equivalent to a genomic identity result, and a genomic similarity result does not replace phenotype evaluation."
+          ],
+          "checkpoints": [
+            "Keep the direction of a cross explicit rather than treating reciprocal crosses as identical.",
+            "Record seed-lot harvest date, parent IDs, storage history, and germination performance.",
+            "State exactly what a genetic test measured before using it to support a lineage claim.",
+            "Keep genomic, pedigree, and phenotype evidence as separate but complementary records."
+          ]
+        }
+      ],
+      "references": [
+        {
+          "title": "Introduction to Quantitative Genetics",
+          "organization": "Longman",
+          "note": "Foundational framework for quantitative traits, heritability, drift, and selection."
+        }
       ]
     },
     {
@@ -35,13 +283,135 @@
       "route": "/learn/lifecycle-propagation/",
       "title": "Lifecycle & Propagation",
       "summary": "Follow the plant from seed or cutting through establishment, vegetative development, reproductive transition, maturation, and propagation while matching management decisions to developmental stage.",
-      "keywords": ["seed", "germination", "seedling", "clone", "cloning", "propagation", "vegetative", "flowering", "transplant", "hardening", "mother plant", "life cycle"],
+      "keywords": [
+        "seed",
+        "germination",
+        "seedling",
+        "clone",
+        "cloning",
+        "propagation",
+        "vegetative",
+        "flowering",
+        "transplant",
+        "hardening",
+        "mother plant",
+        "life cycle",
+        "seed vigor",
+        "seed storage",
+        "adventitious roots",
+        "acclimation",
+        "transplant shock",
+        "root shoot balance",
+        "flower induction"
+      ],
       "sections": [
-        {"heading":"Seed biology and germination","paragraphs":["The structure commonly called a cannabis seed is botanically an achene containing an embryo and stored reserves. Successful germination requires a living embryo plus suitable moisture, oxygen, and temperature. Excess water can be as problematic as insufficient water because saturated conditions can limit oxygen and encourage decay.","Germination is a developmental process, not a single moment. Radicle emergence begins the transition into an actively growing seedling whose needs change rapidly as roots expand and photosynthetic leaves develop."],"checkpoints":["Track batch identity, date, method, temperature, and emergence.","Keep the medium moist but not waterlogged.","Separate germination success from later seedling survival."]},
-        {"heading":"Seedling establishment","paragraphs":["Young seedlings have small root systems, limited reserves, and relatively little leaf area. Their environment should support root development and steady photosynthesis without forcing excessive water loss or nutrient stress. Seedling stretch, discoloration, stalled roots, damping-off, and mechanical weakness should be interpreted with light, moisture, airflow, and sanitation together.","Establishment ends gradually as the plant develops a larger functional root system and multiple true leaves. Calendar age alone is a poor release criterion."],"checkpoints":["Judge readiness by plant development, not days alone.","Inspect root-zone moisture and drainage.","Increase environmental demand gradually as leaf area and roots expand."]},
-        {"heading":"Clonal propagation","paragraphs":["A cutting begins without its own established root system. Its immediate challenge is maintaining water balance while wound responses and adventitious roots develop. Cutting quality, sanitation, humidity, temperature, light, media condition, and mother-plant health all influence success.","Clones preserve much of the donor plant's genetic identity, but they do not freeze its physiological condition. Disease, pests, epigenetic state, accumulated stress, and handling can differ among cuttings and over time."],"checkpoints":["Use clean tools and traceable mother stock.","Record cutting date, source plant, media, environment, and rooting evidence.","Do not release weak or symptomatic clones simply because roots are present."]},
-        {"heading":"Vegetative growth and transition","paragraphs":["Vegetative growth expands roots, stems, branches, and leaves. Internode length, branching pattern, leaf area, stem strength, and root capacity respond to genetics and environment. Training decisions during this stage alter architecture and future light distribution.","The transition into reproductive development changes growth priorities. Photoperiod-sensitive plants respond to day-length signaling and uninterrupted dark periods, while developmental timing in autoflowering lines is controlled differently. Management should follow the biology of the specific plant rather than a generic calendar."],"checkpoints":["Record developmental stage along with chronological age.","Verify timer and dark-period integrity where photoperiod is used.","Avoid major simultaneous changes that make later responses difficult to interpret."]},
-        {"heading":"Maturation, senescence, and propagation records","paragraphs":["Late-stage plants change resource allocation and may show normal developmental senescence alongside stress symptoms. The task is to separate expected maturation from root-zone, environmental, nutritional, pest, or disease problems.","A complete lifecycle record links identity, stage, environment, irrigation, nutrition, interventions, photographs, and outcomes. These records improve future propagation and allow growers to compare cycles instead of relying on memory."],"checkpoints":["Do not label every late-leaf color change as a deficiency.","Keep propagation and crop records connected to the same plant identity system.","Use completed cycles to revise future stage-specific targets."]}
+        {
+          "heading": "Seed biology and germination",
+          "paragraphs": [
+            "The structure commonly called a cannabis seed is botanically an achene containing an embryo and stored reserves. Successful germination requires a living embryo plus suitable moisture, oxygen, and temperature. Excess water can be as problematic as insufficient water because saturated conditions can limit oxygen and encourage decay.",
+            "Germination is a developmental process, not a single moment. Radicle emergence begins the transition into an actively growing seedling whose needs change rapidly as roots expand and photosynthetic leaves develop."
+          ],
+          "checkpoints": [
+            "Track batch identity, date, method, temperature, and emergence.",
+            "Keep the medium moist but not waterlogged.",
+            "Separate germination success from later seedling survival."
+          ]
+        },
+        {
+          "heading": "Seedling establishment",
+          "paragraphs": [
+            "Young seedlings have small root systems, limited reserves, and relatively little leaf area. Their environment should support root development and steady photosynthesis without forcing excessive water loss or nutrient stress. Seedling stretch, discoloration, stalled roots, damping-off, and mechanical weakness should be interpreted with light, moisture, airflow, and sanitation together.",
+            "Establishment ends gradually as the plant develops a larger functional root system and multiple true leaves. Calendar age alone is a poor release criterion."
+          ],
+          "checkpoints": [
+            "Judge readiness by plant development, not days alone.",
+            "Inspect root-zone moisture and drainage.",
+            "Increase environmental demand gradually as leaf area and roots expand."
+          ]
+        },
+        {
+          "heading": "Clonal propagation",
+          "paragraphs": [
+            "A cutting begins without its own established root system. Its immediate challenge is maintaining water balance while wound responses and adventitious roots develop. Cutting quality, sanitation, humidity, temperature, light, media condition, and mother-plant health all influence success.",
+            "Clones preserve much of the donor plant's genetic identity, but they do not freeze its physiological condition. Disease, pests, epigenetic state, accumulated stress, and handling can differ among cuttings and over time."
+          ],
+          "checkpoints": [
+            "Use clean tools and traceable mother stock.",
+            "Record cutting date, source plant, media, environment, and rooting evidence.",
+            "Do not release weak or symptomatic clones simply because roots are present."
+          ]
+        },
+        {
+          "heading": "Vegetative growth and transition",
+          "paragraphs": [
+            "Vegetative growth expands roots, stems, branches, and leaves. Internode length, branching pattern, leaf area, stem strength, and root capacity respond to genetics and environment. Training decisions during this stage alter architecture and future light distribution.",
+            "The transition into reproductive development changes growth priorities. Photoperiod-sensitive plants respond to day-length signaling and uninterrupted dark periods, while developmental timing in autoflowering lines is controlled differently. Management should follow the biology of the specific plant rather than a generic calendar."
+          ],
+          "checkpoints": [
+            "Record developmental stage along with chronological age.",
+            "Verify timer and dark-period integrity where photoperiod is used.",
+            "Avoid major simultaneous changes that make later responses difficult to interpret."
+          ]
+        },
+        {
+          "heading": "Maturation, senescence, and propagation records",
+          "paragraphs": [
+            "Late-stage plants change resource allocation and may show normal developmental senescence alongside stress symptoms. The task is to separate expected maturation from root-zone, environmental, nutritional, pest, or disease problems.",
+            "A complete lifecycle record links identity, stage, environment, irrigation, nutrition, interventions, photographs, and outcomes. These records improve future propagation and allow growers to compare cycles instead of relying on memory."
+          ],
+          "checkpoints": [
+            "Do not label every late-leaf color change as a deficiency.",
+            "Keep propagation and crop records connected to the same plant identity system.",
+            "Use completed cycles to revise future stage-specific targets."
+          ]
+        },
+        {
+          "heading": "Seed storage, viability, and vigor",
+          "paragraphs": [
+            "A seed lot can contain viable seeds that differ in vigor. Viability asks whether a seed can germinate under suitable conditions; vigor describes how rapidly and uniformly seeds establish across a wider range of conditions. Age, moisture, temperature, oxygen exposure, physical damage, pathogens, and the original maturity of the seed can influence both.",
+            "Storage should therefore be evaluated as a preservation problem rather than a calendar guarantee. Cool, dry, stable conditions generally slow deterioration, but the best evidence is periodic germination testing with traceable subsamples. A declining emergence rate, slower emergence, or weaker seedlings may reveal deterioration before a seed lot fails completely."
+          ],
+          "checkpoints": [
+            "Keep seed-lot identity and storage history together.",
+            "Test a representative subsample instead of judging a lot from one seed.",
+            "Record emergence timing as well as final germination percentage.",
+            "Separate germination failure from post-emergence seedling loss."
+          ]
+        },
+        {
+          "heading": "Adventitious rooting and acclimation of cuttings",
+          "paragraphs": [
+            "A fresh cutting must remain hydrated while cells near the wound reorganize and adventitious roots initiate. Leaf area, cutting maturity, carbohydrate reserves, hormones, temperature, oxygen, humidity, sanitation, light, and media moisture all affect the balance between water loss and root formation. Excess saturation can reduce oxygen around the developing root zone even when the leaves appear well hydrated.",
+            "Once roots form, the cutting must acclimate from a high-humidity propagation environment to conditions that demand more transpiration and root water uptake. Sudden humidity reduction, strong light, high leaf temperature, or dry media can overwhelm a small new root system. Hardening should therefore follow evidence of root function, not just the first visible root."
+          ],
+          "checkpoints": [
+            "Record donor plant, cutting date, media, environment, and first rooting evidence.",
+            "Reduce humidity and increase light gradually as root capacity develops.",
+            "Inspect both root mass and new shoot growth before calling a clone established.",
+            "Quarantine weak or symptomatic propagation material rather than normalizing poor starts."
+          ]
+        },
+        {
+          "heading": "Transplant shock, root–shoot balance, and stage transitions",
+          "paragraphs": [
+            "Transplanting disturbs the relationship between roots and shoots. Root handling, changes in media water retention, container geometry, temperature, light, and humidity can temporarily reduce water uptake while the existing leaf area continues to lose water. A plant that was stable before transplant can therefore wilt or stall without the new medium being inherently unsuitable.",
+            "Stage transitions are safest when major stresses are separated enough to observe recovery. Transplanting, aggressive training, large nutrition changes, major light increases, and photoperiod changes performed at once make it difficult to identify which factor caused a response. A staged approach preserves diagnostic clarity and gives roots and shoots time to re-establish balance."
+          ],
+          "checkpoints": [
+            "Record root condition and media moisture at transplant.",
+            "Avoid stacking several major environmental and structural changes on the same day.",
+            "Use new growth and water-use recovery as establishment indicators.",
+            "Track the plant through the transition instead of relying on a fixed recovery-day rule."
+          ]
+        }
+      ],
+      "references": [
+        {
+          "title": "Home Propagation of Houseplants",
+          "organization": "University of Missouri Extension",
+          "reviewed": 2026,
+          "note": "Practical reference for cutting sanitation, humidity, rooting media, and post-rooting acclimation."
+        }
       ]
     },
     {
@@ -49,13 +419,135 @@
       "route": "/learn/environment-vpd/",
       "title": "Environment & VPD",
       "summary": "Understand temperature, humidity, vapor pressure deficit, leaf temperature, airflow, ventilation, moisture removal, carbon dioxide, and sensor placement as interacting environmental measurements rather than isolated target numbers.",
-      "keywords": ["VPD", "humidity", "relative humidity", "temperature", "leaf temperature", "airflow", "ventilation", "CO2", "dew point", "condensation", "climate", "sensor"],
+      "keywords": [
+        "VPD",
+        "humidity",
+        "relative humidity",
+        "temperature",
+        "leaf temperature",
+        "airflow",
+        "ventilation",
+        "CO2",
+        "dew point",
+        "condensation",
+        "climate",
+        "sensor",
+        "boundary layer",
+        "air speed",
+        "sensor accuracy",
+        "calibration",
+        "psychrometrics",
+        "moisture load",
+        "radiation temperature",
+        "control loop"
+      ],
       "sections": [
-        {"heading":"Air temperature and leaf temperature","paragraphs":["Air temperature describes the surrounding air, while leaf temperature describes plant tissue. The two may differ because of radiation, transpiration, airflow, fixture heat, and water status. That difference matters when estimating the vapor conditions the leaf actually experiences.","Room averages can hide hot tops, cool corners, boundary layers, and transition spikes. Environmental mapping is therefore more useful than a single convenient sensor."],"checkpoints":["Record sensor location and height.","Measure leaf temperature when using leaf-based VPD calculations.","Map multiple canopy zones before trusting a room average."]},
-        {"heading":"Relative humidity, vapor pressure, and VPD","paragraphs":["Relative humidity is the amount of water vapor in air relative to the maximum possible at that temperature. Because saturation capacity changes strongly with temperature, the same relative humidity can represent different absolute vapor conditions at different temperatures.","Vapor pressure deficit describes the difference between saturation vapor pressure and actual vapor pressure. It is useful for describing evaporative demand, but it is not a diagnosis and not a universal growth dial. Plant stage, root water supply, light, cultivar, leaf temperature, airflow, and acclimation all influence response."],"checkpoints":["Use temperature and RH from the same representative zone.","State whether a VPD value is air-based or leaf-based.","Do not diagnose a plant from VPD alone."]},
-        {"heading":"Air movement versus air exchange","paragraphs":["Air movement within a canopy disrupts stagnant boundary layers and helps make temperature and humidity more uniform. Air exchange or mechanical dehumidification removes accumulated moisture and heat from the controlled space. A fan that moves humid air around is not automatically removing that humidity.","Excessive localized air speed can also increase water loss or cause mechanical stress. The goal is a stable, measured canopy environment rather than maximum fan output."],"checkpoints":["Distinguish circulation from ventilation and dehumidification.","Inspect hidden canopy zones for stagnant humid pockets.","Check for direct high-speed airflow on vulnerable tissue."]},
-        {"heading":"Dew point, condensation, and transitions","paragraphs":["Condensation occurs when a surface falls below the dew point of surrounding air. Rapid lights-off temperature drops, cold walls, ducts, irrigation surfaces, and dense flowers can create local condensation risk even when the room-average RH seems acceptable.","Transitions matter because plants and surfaces have thermal inertia. Monitoring only steady daytime values can miss the conditions in which moisture accumulates."],"checkpoints":["Review lights-on and lights-off transition data.","Inspect cool surfaces and dense canopy interiors.","Respond to condensation as a moisture-management and disease-risk signal."]},
-        {"heading":"CO2, alarms, and environmental records","paragraphs":["Carbon dioxide affects photosynthesis, but enrichment is only meaningful in the context of adequate light, healthy plants, suitable temperature, nutrition, and controlled air exchange. Worker safety must be separated from crop optimization; appropriate safety monitoring and procedures are required where enrichment is used.","A useful environmental record preserves timestamped temperature, humidity, CO2 where applicable, equipment state, irrigation events, alarms, and plant observations. Trends and transitions are often more informative than a single reading."],"checkpoints":["Keep worker-safety monitoring independent from crop assumptions.","Record equipment state when investigating excursions.","Review trends, not just daily minimum and maximum values."]}
+        {
+          "heading": "Air temperature and leaf temperature",
+          "paragraphs": [
+            "Air temperature describes the surrounding air, while leaf temperature describes plant tissue. The two may differ because of radiation, transpiration, airflow, fixture heat, and water status. That difference matters when estimating the vapor conditions the leaf actually experiences.",
+            "Room averages can hide hot tops, cool corners, boundary layers, and transition spikes. Environmental mapping is therefore more useful than a single convenient sensor."
+          ],
+          "checkpoints": [
+            "Record sensor location and height.",
+            "Measure leaf temperature when using leaf-based VPD calculations.",
+            "Map multiple canopy zones before trusting a room average."
+          ]
+        },
+        {
+          "heading": "Relative humidity, vapor pressure, and VPD",
+          "paragraphs": [
+            "Relative humidity is the amount of water vapor in air relative to the maximum possible at that temperature. Because saturation capacity changes strongly with temperature, the same relative humidity can represent different absolute vapor conditions at different temperatures.",
+            "Vapor pressure deficit describes the difference between saturation vapor pressure and actual vapor pressure. It is useful for describing evaporative demand, but it is not a diagnosis and not a universal growth dial. Plant stage, root water supply, light, cultivar, leaf temperature, airflow, and acclimation all influence response."
+          ],
+          "checkpoints": [
+            "Use temperature and RH from the same representative zone.",
+            "State whether a VPD value is air-based or leaf-based.",
+            "Do not diagnose a plant from VPD alone."
+          ]
+        },
+        {
+          "heading": "Air movement versus air exchange",
+          "paragraphs": [
+            "Air movement within a canopy disrupts stagnant boundary layers and helps make temperature and humidity more uniform. Air exchange or mechanical dehumidification removes accumulated moisture and heat from the controlled space. A fan that moves humid air around is not automatically removing that humidity.",
+            "Excessive localized air speed can also increase water loss or cause mechanical stress. The goal is a stable, measured canopy environment rather than maximum fan output."
+          ],
+          "checkpoints": [
+            "Distinguish circulation from ventilation and dehumidification.",
+            "Inspect hidden canopy zones for stagnant humid pockets.",
+            "Check for direct high-speed airflow on vulnerable tissue."
+          ]
+        },
+        {
+          "heading": "Dew point, condensation, and transitions",
+          "paragraphs": [
+            "Condensation occurs when a surface falls below the dew point of surrounding air. Rapid lights-off temperature drops, cold walls, ducts, irrigation surfaces, and dense flowers can create local condensation risk even when the room-average RH seems acceptable.",
+            "Transitions matter because plants and surfaces have thermal inertia. Monitoring only steady daytime values can miss the conditions in which moisture accumulates."
+          ],
+          "checkpoints": [
+            "Review lights-on and lights-off transition data.",
+            "Inspect cool surfaces and dense canopy interiors.",
+            "Respond to condensation as a moisture-management and disease-risk signal."
+          ]
+        },
+        {
+          "heading": "CO2, alarms, and environmental records",
+          "paragraphs": [
+            "Carbon dioxide affects photosynthesis, but enrichment is only meaningful in the context of adequate light, healthy plants, suitable temperature, nutrition, and controlled air exchange. Worker safety must be separated from crop optimization; appropriate safety monitoring and procedures are required where enrichment is used.",
+            "A useful environmental record preserves timestamped temperature, humidity, CO2 where applicable, equipment state, irrigation events, alarms, and plant observations. Trends and transitions are often more informative than a single reading."
+          ],
+          "checkpoints": [
+            "Keep worker-safety monitoring independent from crop assumptions.",
+            "Record equipment state when investigating excursions.",
+            "Review trends, not just daily minimum and maximum values."
+          ]
+        },
+        {
+          "heading": "Boundary layers and canopy air movement",
+          "paragraphs": [
+            "Every leaf is surrounded by a thin boundary layer of air that can differ from the bulk room air. Leaf size, orientation, surface structure, air speed, canopy density, and buoyancy influence boundary-layer thickness. Thicker boundary layers resist heat, water-vapor, and carbon-dioxide exchange; stronger air movement usually reduces that resistance up to the point where excessive local air speed creates other stresses.",
+            "This explains why a room can have acceptable average temperature and humidity while dense canopy interiors behave differently. Air movement should be evaluated at plant height and within the canopy, not inferred from fan wattage or visible leaf movement at one location."
+          ],
+          "checkpoints": [
+            "Measure or at least compare air movement in canopy interiors and edges.",
+            "Do not use one exposed sensor to represent sheltered leaf zones automatically.",
+            "Look for persistent humidity pockets after irrigation and lights-off.",
+            "Reduce direct high-speed jets before increasing total fan output blindly."
+          ]
+        },
+        {
+          "heading": "Sensor accuracy, placement, calibration, and drift",
+          "paragraphs": [
+            "Environmental control is only as trustworthy as the measurements feeding it. Sensors have accuracy limits, response times, calibration requirements, aging effects, and placement biases. A temperature or humidity sensor near a wall, humidifier discharge, dehumidifier outlet, light fixture, doorway, or irrigation emitter may accurately report its local microclimate while poorly representing the crop.",
+            "Comparing several sensors side by side under the same stable condition can reveal offsets and drift. A useful record includes make, model, location, height, calibration or comparison date, and any correction applied. Apparent room instability should not be diagnosed before checking whether the measurement system itself changed."
+          ],
+          "checkpoints": [
+            "Map sensor locations and heights in the cultivation space.",
+            "Cross-check sensors periodically under the same condition.",
+            "Preserve raw values and document any correction factors.",
+            "Investigate sensor drift before changing environmental setpoints aggressively."
+          ]
+        },
+        {
+          "heading": "Moisture loads, psychrometrics, and control transitions",
+          "paragraphs": [
+            "Plants, wet media, irrigation events, humidification, outside air, and standing water all add moisture to a controlled environment. Cooling can remove sensible heat while increasing relative humidity, and dehumidification often adds sensible heat back to the room. These coupled heat-and-moisture effects are why temperature and humidity equipment should be interpreted as one control system.",
+            "Transitions expose weaknesses that steady-state averages hide. Lights-off reduces radiant load and can lower leaf and surface temperatures while transpiration and stored moisture remain. Irrigation can add a short moisture pulse. Door openings and ventilation can change both temperature and humidity quickly. Trend data across these events is more informative than isolated daily averages."
+          ],
+          "checkpoints": [
+            "Timestamp irrigation, lights-on/off, HVAC, and dehumidifier state changes.",
+            "Compare dew point and surface temperature when condensation is possible.",
+            "Track recovery time after moisture and heat disturbances.",
+            "Evaluate cooling and dehumidification together rather than as independent controls."
+          ]
+        }
+      ],
+      "references": [
+        {
+          "title": "Controlled Environment Agriculture resources",
+          "organization": "Cornell University",
+          "note": "CEA framework linking horticulture, environmental control, lighting, and engineering."
+        }
       ]
     },
     {
@@ -63,13 +555,161 @@
       "route": "/learn/lighting/",
       "title": "Lighting",
       "summary": "Connect photons, PPFD, DLI, photoperiod, spectrum, fixture layout, canopy uniformity, leaf response, and measurement so lighting decisions are based on the crop plane rather than wattage or marketing claims.",
-      "keywords": ["lighting", "PPFD", "DLI", "PAR", "photoperiod", "spectrum", "LED", "photon", "uniformity", "light stress", "fixture"],
+      "keywords": [
+        "lighting",
+        "PPFD",
+        "DLI",
+        "PAR",
+        "photoperiod",
+        "spectrum",
+        "LED",
+        "photon",
+        "uniformity",
+        "light stress",
+        "fixture",
+        "quantum sensor",
+        "spectroradiometer",
+        "cosine response",
+        "light map",
+        "coefficient of variation",
+        "light response curve",
+        "photoinhibition",
+        "dynamic lighting",
+        "extended PAR",
+        "ePAR"
+      ],
       "sections": [
-        {"heading":"Light quantity: PPF, PPFD, and DLI","paragraphs":["Photosynthetic photon flux describes photons emitted by a source, while photosynthetic photon flux density describes photon flux arriving at an area of the crop. Daily light integral combines representative PPFD with photoperiod to describe the total daily photon dose.","These terms answer different questions. Fixture output does not tell you how evenly photons reach the canopy, and one center PPFD measurement does not describe edge performance or the full day."],"checkpoints":["Measure PPFD at the crop plane.","Use a grid rather than one center reading.","Calculate DLI from actual photoperiod and representative intensity."]},
-        {"heading":"Uniformity, distance, and canopy geometry","paragraphs":["Light intensity changes with distance, fixture optics, overlap, reflective boundaries, canopy shape, and neighboring fixtures. A flat measurement plane can be useful, but real canopies have height and leaf-angle variation.","Uniformity is important because highly uneven light can create different growth rates, water demand, tissue temperature, and quality across the same crop. Fixture placement should be evaluated as a system."],"checkpoints":["Map edge, center, and overlap zones.","Re-measure after canopy height changes.","Do not assume a manufacturer's hanging-height recommendation matches every room."]},
-        {"heading":"Photoperiod and dark-period integrity","paragraphs":["Photoperiod controls the duration of daily light exposure and, in photoperiod-sensitive plants, contributes to flowering signals. The timing system, dark-period integrity, controller reliability, and unintended light interruptions should be treated as measurable parts of cultivation.","Photoperiod also changes DLI even when PPFD stays the same. Adjusting light duration and intensity simultaneously can therefore change both developmental signaling and total photon dose."],"checkpoints":["Verify timer behavior rather than assuming the programmed schedule occurred.","Inspect for unintended dark-period light.","Record photoperiod with every DLI calculation."]},
-        {"heading":"Spectrum and plant response","paragraphs":["Plants detect and use different wavelengths for photosynthesis and signaling. Spectrum can influence morphology and development, but responses depend on intensity, photoperiod, cultivar, stage, and the rest of the environment. Spectrum labels alone do not predict yield or quality.","Ultraviolet and far-red discussions require careful definitions because wavelength bands, dose, timing, and safety differ. Claims should be tied to the exact treatment and evidence rather than broad color names."],"checkpoints":["Record spectrum source and treatment details when comparing results.","Separate photosynthetic photon quantity from signaling effects.","Use appropriate eye and skin safety practices around hazardous wavelengths."]},
-        {"heading":"Diagnosing light-related stress","paragraphs":["Light stress can overlap visually with heat, water, nutrient, and root-zone problems. Bleaching, curling, altered leaf angle, slowed growth, localized top-canopy damage, or unusual pigmentation should be compared with measured PPFD, leaf temperature, environment, irrigation, and spatial distribution.","The strongest evidence is a pattern that corresponds to exposure and changes predictably after a controlled correction. Avoid changing multiple major variables at once when trying to learn from the response."],"checkpoints":["Compare symptoms with the PPFD map.","Measure leaf temperature in the affected zone.","Make controlled changes and track response over time."]}
+        {
+          "heading": "Light quantity: PPF, PPFD, and DLI",
+          "paragraphs": [
+            "Photosynthetic photon flux describes photons emitted by a source, while photosynthetic photon flux density describes photon flux arriving at an area of the crop. Daily light integral combines representative PPFD with photoperiod to describe the total daily photon dose.",
+            "These terms answer different questions. Fixture output does not tell you how evenly photons reach the canopy, and one center PPFD measurement does not describe edge performance or the full day."
+          ],
+          "checkpoints": [
+            "Measure PPFD at the crop plane.",
+            "Use a grid rather than one center reading.",
+            "Calculate DLI from actual photoperiod and representative intensity."
+          ]
+        },
+        {
+          "heading": "Uniformity, distance, and canopy geometry",
+          "paragraphs": [
+            "Light intensity changes with distance, fixture optics, overlap, reflective boundaries, canopy shape, and neighboring fixtures. A flat measurement plane can be useful, but real canopies have height and leaf-angle variation.",
+            "Uniformity is important because highly uneven light can create different growth rates, water demand, tissue temperature, and quality across the same crop. Fixture placement should be evaluated as a system."
+          ],
+          "checkpoints": [
+            "Map edge, center, and overlap zones.",
+            "Re-measure after canopy height changes.",
+            "Do not assume a manufacturer's hanging-height recommendation matches every room."
+          ]
+        },
+        {
+          "heading": "Photoperiod and dark-period integrity",
+          "paragraphs": [
+            "Photoperiod controls the duration of daily light exposure and, in photoperiod-sensitive plants, contributes to flowering signals. The timing system, dark-period integrity, controller reliability, and unintended light interruptions should be treated as measurable parts of cultivation.",
+            "Photoperiod also changes DLI even when PPFD stays the same. Adjusting light duration and intensity simultaneously can therefore change both developmental signaling and total photon dose."
+          ],
+          "checkpoints": [
+            "Verify timer behavior rather than assuming the programmed schedule occurred.",
+            "Inspect for unintended dark-period light.",
+            "Record photoperiod with every DLI calculation."
+          ]
+        },
+        {
+          "heading": "Spectrum and plant response",
+          "paragraphs": [
+            "Plants detect and use different wavelengths for photosynthesis and signaling. Spectrum can influence morphology and development, but responses depend on intensity, photoperiod, cultivar, stage, and the rest of the environment. Spectrum labels alone do not predict yield or quality.",
+            "Ultraviolet and far-red discussions require careful definitions because wavelength bands, dose, timing, and safety differ. Claims should be tied to the exact treatment and evidence rather than broad color names."
+          ],
+          "checkpoints": [
+            "Record spectrum source and treatment details when comparing results.",
+            "Separate photosynthetic photon quantity from signaling effects.",
+            "Use appropriate eye and skin safety practices around hazardous wavelengths."
+          ]
+        },
+        {
+          "heading": "Diagnosing light-related stress",
+          "paragraphs": [
+            "Light stress can overlap visually with heat, water, nutrient, and root-zone problems. Bleaching, curling, altered leaf angle, slowed growth, localized top-canopy damage, or unusual pigmentation should be compared with measured PPFD, leaf temperature, environment, irrigation, and spatial distribution.",
+            "The strongest evidence is a pattern that corresponds to exposure and changes predictably after a controlled correction. Avoid changing multiple major variables at once when trying to learn from the response."
+          ],
+          "checkpoints": [
+            "Compare symptoms with the PPFD map.",
+            "Measure leaf temperature in the affected zone.",
+            "Make controlled changes and track response over time."
+          ]
+        },
+        {
+          "heading": "From single readings to canopy light maps",
+          "paragraphs": [
+            "A single PPFD value answers a local question at one position and one moment. A canopy-level lighting assessment uses a defined measurement grid so the center, edges, fixture-overlap zones, and height differences are represented. The grid spacing, sensor orientation, crop-plane height, fixture state, and surrounding reflective surfaces should be recorded because changing any of them can change the map.",
+            "Summaries such as the mean, minimum, maximum, range, and coefficient of variation can describe the distribution, but no one statistic replaces the map. Two canopies can have the same average PPFD while differing greatly in low-light and high-light zones, which can produce different leaf temperatures, water demand, morphology, and growth patterns."
+          ],
+          "checkpoints": [
+            "Define the measurement grid before collecting values.",
+            "Keep sensor height, orientation, and fixture state consistent across the grid.",
+            "Preserve the individual readings instead of storing only an average.",
+            "Re-map after major changes in canopy height, fixture position, or room geometry."
+          ]
+        },
+        {
+          "heading": "DLI is an integral, not a complete prescription",
+          "paragraphs": [
+            "Daily light integral adds the photosynthetic photon flux received over time. Under constant PPFD, DLI can be calculated from PPFD and photoperiod, but equal DLI does not guarantee identical plant responses. The same daily photon total can be delivered with different intensities, photoperiods, interruptions, or fluctuations, and plants can respond differently because photosynthesis, stomatal behavior, acclimation, morphology, and photoperiodic signaling are time-dependent processes.",
+            "This is why DLI is best used as a daily exposure metric rather than a universal recipe. When comparing lighting strategies, record PPFD distribution, photoperiod, timing pattern, spectrum, crop stage, and environment in addition to the final DLI."
+          ],
+          "checkpoints": [
+            "Keep the actual photoperiod beside every DLI value.",
+            "Do not assume two treatments with equal DLI are biologically equivalent.",
+            "Document whether light was constant, stepped, intermittent, or dynamically controlled.",
+            "Compare plant response with both daily dose and delivery pattern."
+          ]
+        },
+        {
+          "heading": "Sensor choice, spectral response, and measurement limits",
+          "paragraphs": [
+            "A quantum sensor estimates photon flux over a defined spectral response and is appropriate for many PPFD measurements, but instruments are not interchangeable. Cosine response, calibration, spectral response, temperature sensitivity, diffuser cleanliness, orientation, and sensor age can affect measurements. A sensor designed around conventional photosynthetically active radiation may not fully characterize ultraviolet or far-red treatments.",
+            "When the research question depends on spectral distribution rather than total photon flux, a spectroradiometer or another wavelength-resolved instrument may be needed. The measurement record should identify the instrument and what spectral range it actually measures instead of treating every light meter as equivalent."
+          ],
+          "checkpoints": [
+            "Record sensor make, model, calibration status, and spectral range.",
+            "Keep the sensing surface level and unobstructed when the method requires it.",
+            "Use wavelength-resolved measurements for claims about spectrum.",
+            "Do not compare readings from different instrument types without checking their response characteristics."
+          ]
+        },
+        {
+          "heading": "Light-response curves, acclimation, and photoinhibition",
+          "paragraphs": [
+            "Net photosynthesis generally rises as photon flux increases from darkness, passes the light-compensation region, and eventually approaches a saturation region where another process becomes limiting. The location and shape of this response are not fixed constants for an entire species; leaf age, previous light environment, carbon dioxide, temperature, water status, nutrition, and genetics can shift the response.",
+            "When absorbed light exceeds the capacity for productive photochemistry, plants dissipate excess excitation through protective processes such as non-photochemical quenching. Persistent excess can contribute to photoinhibition and photo-oxidative stress. Diagnosing this requires more than a bright-light reading: exposure pattern, leaf temperature, water status, spatial symptoms, and recovery after a controlled change strengthen the interpretation."
+          ],
+          "checkpoints": [
+            "Treat published saturation values as context-specific measurements, not universal thresholds.",
+            "Compare high-light symptoms with leaf temperature and water status.",
+            "Distinguish short-term protective energy dissipation from persistent injury.",
+            "Track whether new growth and photosynthetic performance recover after a controlled exposure change."
+          ]
+        }
+      ],
+      "references": [
+        {
+          "title": "How the Distribution of Photon Delivery Impacts Crops in Indoor Plant Environments: A Review",
+          "year": 2023,
+          "doi": "10.3390/su15054645",
+          "note": "Reviews equal-DLI treatments delivered through different intensity and photoperiod schedules and shows that delivery pattern can alter crop response."
+        },
+        {
+          "title": "Light emitting diode (LED) lights for the improvement of plant performance and production: A comprehensive review",
+          "year": 2024,
+          "doi": "10.1016/j.crbiot.2024.100184",
+          "note": "Reviews interactions among light quantity, spectrum, photoperiod, plant development, and environmental factors."
+        },
+        {
+          "title": "Daily Light Integral Defined",
+          "organization": "Michigan State University",
+          "note": "Foundational extension explanation of DLI as accumulated photosynthetic light."
+        }
       ]
     },
     {
@@ -77,13 +717,134 @@
       "route": "/learn/water-ph-ec/",
       "title": "Water, pH & EC",
       "summary": "Use source-water chemistry, pH, electrical conductivity, alkalinity, irrigation, runoff, dryback, sampling, and calibrated meters to understand the root environment instead of relying on isolated numbers.",
-      "keywords": ["water", "pH", "EC", "PPM", "TDS", "alkalinity", "hardness", "irrigation", "runoff", "dryback", "salinity", "meter calibration"],
+      "keywords": [
+        "water",
+        "pH",
+        "EC",
+        "PPM",
+        "TDS",
+        "alkalinity",
+        "hardness",
+        "irrigation",
+        "runoff",
+        "dryback",
+        "salinity",
+        "meter calibration",
+        "bicarbonate",
+        "buffer capacity",
+        "conductivity",
+        "TDS conversion",
+        "irrigation frequency",
+        "substrate water content",
+        "leaching fraction"
+      ],
       "sections": [
-        {"heading":"Source water is the starting material","paragraphs":["Water can carry dissolved minerals, alkalinity, sodium, chloride, disinfectants, and other constituents that affect nutrient preparation and root-zone chemistry. A pH reading alone cannot describe this composition.","Source water should be characterized with the measurements relevant to the cultivation system. Changes over season or source can matter, so records need dates and methods rather than one permanent label such as tap or filtered."],"checkpoints":["Record the water source and date.","Separate pH, alkalinity, hardness, and EC instead of treating them as interchangeable.","Re-test when the source or treatment changes."]},
-        {"heading":"What pH does and does not tell you","paragraphs":["pH describes hydrogen-ion activity on a logarithmic scale. It influences chemical speciation, solubility, surface charge, and biological processes, but it does not directly tell you how much of each nutrient is present or whether roots are healthy.","Nutrient-availability charts are simplified teaching tools. Real availability depends on medium, concentration, ion interactions, alkalinity, root biology, temperature, oxygen, and time. A pH value is context, not a complete diagnosis."],"checkpoints":["Record where the pH sample came from.","Do not use a pH chart as proof of a deficiency.","Check meter calibration before acting on an unexpected reading."]},
-        {"heading":"EC, PPM, and salinity","paragraphs":["Electrical conductivity estimates the ability of a solution to conduct electricity and is strongly influenced by dissolved ions. It is useful for tracking solution strength and changes, but it does not identify which ions are present.","PPM or TDS displays on many meters are calculated from EC using a conversion factor. Different meter scales can therefore show different PPM values for the same solution. Preserving the original EC and temperature context avoids conversion confusion."],"checkpoints":["Record EC directly when possible.","Document any PPM conversion scale.","Do not infer nutrient balance from total EC alone."]},
-        {"heading":"Irrigation, drainage, runoff, and dryback","paragraphs":["Irrigation determines how water and dissolved ions move through the root environment. Container size, media porosity, plant size, root density, temperature, humidity, and light all affect water use. A fixed volume or schedule can become inappropriate as these variables change.","Runoff and dryback measurements can be useful when their method is defined. A runoff sample is not identical to the solution surrounding every root, and different dryback sensors or weighing methods may not be directly comparable."],"checkpoints":["Define exactly how runoff or dryback was measured.","Track irrigation timing and volume with plant response.","Inspect roots and media rather than relying on runoff numbers alone."]},
-        {"heading":"Sampling and meter quality","paragraphs":["Measurement quality depends on calibration, probe condition, temperature compensation, sample handling, contamination control, and consistent sampling location. False precision from an unmaintained meter can create worse decisions than a clearly uncertain observation.","When troubleshooting, preserve the raw reading, sample type, method, meter identity, calibration status, and time. That makes comparisons meaningful and allows questionable data to be identified later."],"checkpoints":["Use fresh appropriate calibration standards.","Rinse and maintain probes according to manufacturer instructions.","Record method and sample type alongside every important reading."]}
+        {
+          "heading": "Source water is the starting material",
+          "paragraphs": [
+            "Water can carry dissolved minerals, alkalinity, sodium, chloride, disinfectants, and other constituents that affect nutrient preparation and root-zone chemistry. A pH reading alone cannot describe this composition.",
+            "Source water should be characterized with the measurements relevant to the cultivation system. Changes over season or source can matter, so records need dates and methods rather than one permanent label such as tap or filtered."
+          ],
+          "checkpoints": [
+            "Record the water source and date.",
+            "Separate pH, alkalinity, hardness, and EC instead of treating them as interchangeable.",
+            "Re-test when the source or treatment changes."
+          ]
+        },
+        {
+          "heading": "What pH does and does not tell you",
+          "paragraphs": [
+            "pH describes hydrogen-ion activity on a logarithmic scale. It influences chemical speciation, solubility, surface charge, and biological processes, but it does not directly tell you how much of each nutrient is present or whether roots are healthy.",
+            "Nutrient-availability charts are simplified teaching tools. Real availability depends on medium, concentration, ion interactions, alkalinity, root biology, temperature, oxygen, and time. A pH value is context, not a complete diagnosis."
+          ],
+          "checkpoints": [
+            "Record where the pH sample came from.",
+            "Do not use a pH chart as proof of a deficiency.",
+            "Check meter calibration before acting on an unexpected reading."
+          ]
+        },
+        {
+          "heading": "EC, PPM, and salinity",
+          "paragraphs": [
+            "Electrical conductivity estimates the ability of a solution to conduct electricity and is strongly influenced by dissolved ions. It is useful for tracking solution strength and changes, but it does not identify which ions are present.",
+            "PPM or TDS displays on many meters are calculated from EC using a conversion factor. Different meter scales can therefore show different PPM values for the same solution. Preserving the original EC and temperature context avoids conversion confusion."
+          ],
+          "checkpoints": [
+            "Record EC directly when possible.",
+            "Document any PPM conversion scale.",
+            "Do not infer nutrient balance from total EC alone."
+          ]
+        },
+        {
+          "heading": "Irrigation, drainage, runoff, and dryback",
+          "paragraphs": [
+            "Irrigation determines how water and dissolved ions move through the root environment. Container size, media porosity, plant size, root density, temperature, humidity, and light all affect water use. A fixed volume or schedule can become inappropriate as these variables change.",
+            "Runoff and dryback measurements can be useful when their method is defined. A runoff sample is not identical to the solution surrounding every root, and different dryback sensors or weighing methods may not be directly comparable."
+          ],
+          "checkpoints": [
+            "Define exactly how runoff or dryback was measured.",
+            "Track irrigation timing and volume with plant response.",
+            "Inspect roots and media rather than relying on runoff numbers alone."
+          ]
+        },
+        {
+          "heading": "Sampling and meter quality",
+          "paragraphs": [
+            "Measurement quality depends on calibration, probe condition, temperature compensation, sample handling, contamination control, and consistent sampling location. False precision from an unmaintained meter can create worse decisions than a clearly uncertain observation.",
+            "When troubleshooting, preserve the raw reading, sample type, method, meter identity, calibration status, and time. That makes comparisons meaningful and allows questionable data to be identified later."
+          ],
+          "checkpoints": [
+            "Use fresh appropriate calibration standards.",
+            "Rinse and maintain probes according to manufacturer instructions.",
+            "Record method and sample type alongside every important reading."
+          ]
+        },
+        {
+          "heading": "Alkalinity, bicarbonate, and pH stability",
+          "paragraphs": [
+            "Water pH describes hydrogen-ion activity at the moment of measurement, while alkalinity describes the water's capacity to neutralize acid, commonly associated with bicarbonate and carbonate species. Two water sources can have similar pH and very different alkalinity, so they can behave differently after fertilizer is mixed or after repeated irrigation through a substrate.",
+            "High alkalinity can gradually push substrate pH upward, while very low alkalinity provides little buffering and can allow pH to move rapidly. Managing this requires source-water analysis and an understanding of the crop and substrate system rather than chasing a reservoir pH number without knowing the buffering load."
+          ],
+          "checkpoints": [
+            "Keep alkalinity separate from pH in water records.",
+            "Use a laboratory or validated test when alkalinity materially affects management.",
+            "Track substrate or root-zone pH trends over repeated irrigations.",
+            "Do not infer alkalinity from EC alone."
+          ]
+        },
+        {
+          "heading": "EC, PPM/TDS conversions, and meter calibration",
+          "paragraphs": [
+            "Electrical conductivity measures how readily a solution conducts electrical current and is influenced by the concentration and mobility of dissolved ions. PPM or TDS values displayed by many handheld meters are often calculated from EC using a manufacturer-selected conversion factor rather than measured by directly weighing dissolved solids.",
+            "Because different conversion factors can turn the same EC into different displayed PPM values, cultivation records are easier to compare when EC and units are preserved. Temperature compensation, probe cleanliness, calibration solution, range, and sample temperature also matter. Extra digits on a screen do not guarantee extra accuracy."
+          ],
+          "checkpoints": [
+            "Record EC with units even when a meter also displays PPM/TDS.",
+            "Document the meter's conversion scale if PPM is used.",
+            "Calibrate with appropriate standards and rinse probes between samples.",
+            "Do not compare EC values collected with different methods without noting the method."
+          ]
+        },
+        {
+          "heading": "Irrigation frequency, root-zone water content, and dryback",
+          "paragraphs": [
+            "The same daily irrigation volume can produce different root-zone conditions when delivered as one large event or several smaller events. Container size, media water-holding capacity, air-filled porosity, root density, drainage, plant size, temperature, humidity, and light all affect how quickly the root zone moves from wet toward dry.",
+            "Dryback is therefore a measured change in water content or container mass over time, not a universal percentage target that applies across every medium and stage. Useful irrigation records pair event volume and timing with drainage, root-zone measurements, plant response, and environmental demand."
+          ],
+          "checkpoints": [
+            "Define how root-zone water status is being measured.",
+            "Record irrigation event size and frequency separately from daily total.",
+            "Compare dryback patterns with light and environmental demand.",
+            "Change one irrigation variable at a time when diagnosing root-zone response."
+          ]
+        }
+      ],
+      "references": [
+        {
+          "title": "Greenhouse irrigation water quality and alkalinity guidance",
+          "organization": "University Extension systems",
+          "note": "General greenhouse-water framework distinguishing pH, alkalinity, EC, and substrate effects."
+        }
       ]
     },
     {
@@ -91,13 +852,136 @@
       "route": "/learn/nutrition-media/",
       "title": "Nutrition & Media",
       "summary": "Understand essential elements, root-zone chemistry, nutrient interactions, media physical properties, cation exchange, organic matter, microbes, and feeding records as one system rather than a list of bottle recipes.",
-      "keywords": ["nutrition", "NPK", "macronutrients", "micronutrients", "media", "soil", "coco", "hydroponics", "CEC", "amendments", "microbes", "mycorrhizae", "fertilizer"],
+      "keywords": [
+        "nutrition",
+        "NPK",
+        "macronutrients",
+        "micronutrients",
+        "media",
+        "soil",
+        "coco",
+        "hydroponics",
+        "CEC",
+        "amendments",
+        "microbes",
+        "mycorrhizae",
+        "fertilizer",
+        "ion uptake",
+        "mass flow",
+        "diffusion",
+        "cation exchange capacity",
+        "buffering",
+        "air-filled porosity",
+        "water-holding capacity",
+        "substrate structure"
+      ],
       "sections": [
-        {"heading":"Essential elements and plant function","paragraphs":["Plants require essential mineral elements in different amounts. Nitrogen, phosphorus, potassium, calcium, magnesium, sulfur, and micronutrients participate in structures, enzymes, energy transfer, osmotic regulation, signaling, and many other processes. Required amount is not a measure of importance; micronutrients are essential even though the plant needs less of them.","Element roles overlap and interact. A symptom attributed to one element can also appear when uptake is restricted by roots, water status, pH, salinity, temperature, antagonism, or disease."],"checkpoints":["Use tissue location and progression as clues, not proof.","Check root and environmental conditions before increasing fertilizer.","Keep product composition and actual dose in the record."]},
-        {"heading":"Root-zone chemistry and nutrient interactions","paragraphs":["The root zone contains water, dissolved ions, exchange surfaces, gases, organic compounds, roots, and microorganisms. Nutrient concentration in the feed is only one part of what roots experience.","Ions can compete or interact, media can buffer some nutrients, and pH can change chemical form and surface behavior. High total salt concentration can impair water uptake even when every required nutrient is technically present."],"checkpoints":["Interpret EC with water status and media condition.","Avoid correcting one suspected nutrient without checking interacting conditions.","Compare feed, root-zone observations, and plant response over time."]},
-        {"heading":"Media physical properties","paragraphs":["Soil, peat-based mixes, coco coir, rockwool, perlite blends, and water-culture systems differ in porosity, water retention, air-filled pore space, buffering, decomposition, and management. The name of a medium is not enough; particle size, container geometry, compaction, root occupancy, and irrigation practice modify its behavior.","A medium should provide roots with an appropriate balance of water, oxygen, physical support, and chemical conditions. Overwatering is better understood as a mismatch between water application, drainage, oxygen diffusion, and plant use than as a fixed number of irrigations."],"checkpoints":["Describe the medium and container together.","Observe drainage and root condition.","Adjust irrigation as roots and canopy size change."]},
-        {"heading":"CEC, organic matter, and biological activity","paragraphs":["Cation exchange capacity describes the ability of negatively charged surfaces to retain and exchange positively charged ions. It is influenced by clay minerals and organic matter and behaves differently across media. CEC is a buffering property, not a direct score of media quality.","Organic matter contributes physical, chemical, and biological functions as it decomposes and transforms. Microorganisms can participate in nutrient cycling and root interactions, but product claims about microbes or biostimulants should be evaluated by organism, formulation, viability, environment, and evidence rather than broad labels."],"checkpoints":["Do not compare CEC numbers without considering method and material.","Treat microbial products as biological inputs with storage and compatibility requirements.","Separate demonstrated effects from marketing claims."]},
-        {"heading":"Building useful nutrition records","paragraphs":["A useful feed record includes water source, product names and formulations, amounts, mixing order, final volume, EC, pH, temperature where relevant, irrigation volume, runoff or root-zone method if used, plant stage, and observed response. This turns feeding from a recipe into an experiment that can be improved.","When a problem appears, resist the urge to stack corrections. Identify the strongest evidence, make the smallest defensible change, and observe the response long enough to learn from it."],"checkpoints":["Keep the exact product formulation with each record.","Change one major variable at a time when possible.","Track new growth separately from tissue that was already damaged."]}
+        {
+          "heading": "Essential elements and plant function",
+          "paragraphs": [
+            "Plants require essential mineral elements in different amounts. Nitrogen, phosphorus, potassium, calcium, magnesium, sulfur, and micronutrients participate in structures, enzymes, energy transfer, osmotic regulation, signaling, and many other processes. Required amount is not a measure of importance; micronutrients are essential even though the plant needs less of them.",
+            "Element roles overlap and interact. A symptom attributed to one element can also appear when uptake is restricted by roots, water status, pH, salinity, temperature, antagonism, or disease."
+          ],
+          "checkpoints": [
+            "Use tissue location and progression as clues, not proof.",
+            "Check root and environmental conditions before increasing fertilizer.",
+            "Keep product composition and actual dose in the record."
+          ]
+        },
+        {
+          "heading": "Root-zone chemistry and nutrient interactions",
+          "paragraphs": [
+            "The root zone contains water, dissolved ions, exchange surfaces, gases, organic compounds, roots, and microorganisms. Nutrient concentration in the feed is only one part of what roots experience.",
+            "Ions can compete or interact, media can buffer some nutrients, and pH can change chemical form and surface behavior. High total salt concentration can impair water uptake even when every required nutrient is technically present."
+          ],
+          "checkpoints": [
+            "Interpret EC with water status and media condition.",
+            "Avoid correcting one suspected nutrient without checking interacting conditions.",
+            "Compare feed, root-zone observations, and plant response over time."
+          ]
+        },
+        {
+          "heading": "Media physical properties",
+          "paragraphs": [
+            "Soil, peat-based mixes, coco coir, rockwool, perlite blends, and water-culture systems differ in porosity, water retention, air-filled pore space, buffering, decomposition, and management. The name of a medium is not enough; particle size, container geometry, compaction, root occupancy, and irrigation practice modify its behavior.",
+            "A medium should provide roots with an appropriate balance of water, oxygen, physical support, and chemical conditions. Overwatering is better understood as a mismatch between water application, drainage, oxygen diffusion, and plant use than as a fixed number of irrigations."
+          ],
+          "checkpoints": [
+            "Describe the medium and container together.",
+            "Observe drainage and root condition.",
+            "Adjust irrigation as roots and canopy size change."
+          ]
+        },
+        {
+          "heading": "CEC, organic matter, and biological activity",
+          "paragraphs": [
+            "Cation exchange capacity describes the ability of negatively charged surfaces to retain and exchange positively charged ions. It is influenced by clay minerals and organic matter and behaves differently across media. CEC is a buffering property, not a direct score of media quality.",
+            "Organic matter contributes physical, chemical, and biological functions as it decomposes and transforms. Microorganisms can participate in nutrient cycling and root interactions, but product claims about microbes or biostimulants should be evaluated by organism, formulation, viability, environment, and evidence rather than broad labels."
+          ],
+          "checkpoints": [
+            "Do not compare CEC numbers without considering method and material.",
+            "Treat microbial products as biological inputs with storage and compatibility requirements.",
+            "Separate demonstrated effects from marketing claims."
+          ]
+        },
+        {
+          "heading": "Building useful nutrition records",
+          "paragraphs": [
+            "A useful feed record includes water source, product names and formulations, amounts, mixing order, final volume, EC, pH, temperature where relevant, irrigation volume, runoff or root-zone method if used, plant stage, and observed response. This turns feeding from a recipe into an experiment that can be improved.",
+            "When a problem appears, resist the urge to stack corrections. Identify the strongest evidence, make the smallest defensible change, and observe the response long enough to learn from it."
+          ],
+          "checkpoints": [
+            "Keep the exact product formulation with each record.",
+            "Change one major variable at a time when possible.",
+            "Track new growth separately from tissue that was already damaged."
+          ]
+        },
+        {
+          "heading": "Nutrient forms, transport to roots, and uptake",
+          "paragraphs": [
+            "Plants acquire mineral nutrients primarily as ions dissolved in the soil or substrate solution. Ions reach root surfaces through combinations of mass flow with water, diffusion down concentration gradients, and root interception as roots explore new volume. The importance of each pathway differs among nutrients and growing systems.",
+            "Uptake then depends on membrane transport, root energy status, oxygen, temperature, water availability, pH, ion competition, root health, and plant demand. A nutrient can be present in the fertilizer solution yet still fail to reach or enter roots efficiently. This is why symptom correction should investigate transport and root conditions as well as formulation."
+          ],
+          "checkpoints": [
+            "Separate nutrient supply from nutrient availability and uptake.",
+            "Inspect root health and oxygen conditions before assuming the feed lacks an element.",
+            "Record pH, EC, irrigation, and temperature with nutrition observations.",
+            "Confirm improvement in new growth after a correction rather than relying on old damaged tissue."
+          ]
+        },
+        {
+          "heading": "Cation exchange capacity and chemical buffering",
+          "paragraphs": [
+            "Cation exchange capacity describes the amount of positively charged ions a material can reversibly hold on negatively charged exchange sites. Clay minerals and organic matter often contribute substantial exchange capacity, while many inert substrates have far less. The practical effect is that media differ in how strongly they buffer changes in cation composition and pH-related chemistry.",
+            "CEC is not a direct measure of fertility and does not tell which ions occupy the exchange sites. Base saturation, substrate pH, irrigation chemistry, fertilizer form, organic matter, and root activity all influence the system. A high or low CEC is therefore a property to manage around, not a universal quality score."
+          ],
+          "checkpoints": [
+            "Identify the actual substrate before applying soil-based CEC assumptions.",
+            "Do not equate high CEC with adequate nutrient supply.",
+            "Track irrigation chemistry because repeated inputs can change exchange conditions.",
+            "Use laboratory substrate analysis when exchange chemistry is central to a diagnosis."
+          ]
+        },
+        {
+          "heading": "Media physical properties: water, air, structure, and roots",
+          "paragraphs": [
+            "A root-zone medium must hold enough water to bridge irrigation intervals while retaining enough air-filled pore space for root respiration. Particle size distribution, compaction, decomposition, container height, root growth, and repeated wetting can alter the balance between water-filled and air-filled pores over time.",
+            "Two substrates with the same ingredient list can behave differently if particle size, processing, packing, or container geometry differs. Physical behavior should be evaluated with irrigation response, drainage, container mass or moisture measurements, and root observations rather than inferred from the bag label alone."
+          ],
+          "checkpoints": [
+            "Record substrate composition and container geometry together.",
+            "Watch how drainage and dryback change as roots fill the container.",
+            "Avoid compressing media in a way that eliminates useful pore space.",
+            "Investigate chronic root problems as physical as well as chemical problems."
+          ]
+        }
+      ],
+      "references": [
+        {
+          "title": "Greenhouse and nursery substrate physical-property guidance",
+          "organization": "Land-grant university extension",
+          "note": "General reference for air-filled porosity, water-holding capacity, and container effects."
+        }
       ]
     },
     {
@@ -105,13 +989,135 @@
       "route": "/learn/ipm/",
       "title": "Plant Health & IPM",
       "summary": "Use mapped scouting, sanitation, pest and pathogen identification, abiotic-versus-biotic reasoning, prevention, biological controls, and lawful interventions to make plant-health decisions from evidence.",
-      "keywords": ["IPM", "pests", "mites", "insects", "disease", "pathogens", "deficiency", "toxicity", "sanitation", "biosecurity", "beneficial insects", "diagnosis", "scouting"],
+      "keywords": [
+        "IPM",
+        "pests",
+        "mites",
+        "insects",
+        "disease",
+        "pathogens",
+        "deficiency",
+        "toxicity",
+        "sanitation",
+        "biosecurity",
+        "beneficial insects",
+        "diagnosis",
+        "scouting",
+        "sampling",
+        "action threshold",
+        "differential diagnosis",
+        "beneficial organism",
+        "resistance management",
+        "mode of action"
+      ],
       "sections": [
-        {"heading":"Integrated pest management starts with prevention","paragraphs":["IPM combines prevention, monitoring, identification, thresholds or decision criteria, compatible controls, and follow-up. It is not simply a list of products to spray. Clean plant material, sanitation, exclusion, quarantine, environmental management, and routine scouting reduce the chance that an outbreak becomes established.","A strong program also protects evidence. Cleaning or treating before documenting the organism and distribution can make a later diagnosis harder."],"checkpoints":["Inspect incoming plant material before it joins the main crop.","Use clean-to-suspect workflow.","Document before treating when it is safe to do so."]},
-        {"heading":"Scouting and spatial patterns","paragraphs":["Scouting becomes more useful when locations are mapped and revisited consistently. Record plant or bench identity, tissue inspected, organism or symptom, severity, photographs, trap counts when used, and environmental context.","Spatial patterns help separate possibilities. Problems concentrated near an intake, wet corner, hot fixture zone, irrigation line, or recently handled group can reveal causal clues that a close-up image alone cannot show."],"checkpoints":["Use a repeatable map or plant ID system.","Photograph both the symptom and its position in the crop.","Track progression, not just presence."]},
-        {"heading":"Abiotic versus biotic diagnosis","paragraphs":["Nutrient problems, water stress, light stress, temperature injury, chemical injury, pests, and diseases can overlap visually. Start by describing the pattern: which leaves, which plants, which zones, how fast, and after what recent changes.","Then look for direct evidence such as insects, mites, frass, webbing, spores, lesions, root damage, odors, meter data, environmental excursions, or a reproducible connection to an input. A diagnosis should get stronger as independent evidence converges."],"checkpoints":["List plausible abiotic and biotic alternatives.","Seek direct evidence before naming a pest or disease.","Use appropriate laboratory testing when consequences justify it."]},
-        {"heading":"Biological controls and compatible interventions","paragraphs":["Predatory mites, parasitoids, microbial controls, sanitation, physical removal, environmental adjustments, and labeled pesticides can all have roles depending on the confirmed problem and production context. Compatibility, timing, life stage, residual effects, crop stage, and jurisdiction matter.","Pesticide labels and local law control legal use. No generic internet schedule can replace the exact registered label or professional requirements applicable to the site."],"checkpoints":["Identify the target and life stage before choosing a control.","Check compatibility among biological and chemical controls.","Follow the exact label and applicable law for pesticide use."]},
-        {"heading":"Verification and corrective action","paragraphs":["Treatment is not the end of IPM. Re-scout the same mapped locations, compare counts or severity, inspect new growth, and determine whether the intervention worked. Recurring problems call for root-cause analysis: source plants, sanitation gaps, environmental conditions, workflow, or incomplete control.","Corrective and preventive action should change the system that allowed the problem, not only suppress the visible outbreak."],"checkpoints":["Define how success will be measured before intervention.","Reinspect on a planned schedule.","Document prevention changes after an outbreak."]}
+        {
+          "heading": "Integrated pest management starts with prevention",
+          "paragraphs": [
+            "IPM combines prevention, monitoring, identification, thresholds or decision criteria, compatible controls, and follow-up. It is not simply a list of products to spray. Clean plant material, sanitation, exclusion, quarantine, environmental management, and routine scouting reduce the chance that an outbreak becomes established.",
+            "A strong program also protects evidence. Cleaning or treating before documenting the organism and distribution can make a later diagnosis harder."
+          ],
+          "checkpoints": [
+            "Inspect incoming plant material before it joins the main crop.",
+            "Use clean-to-suspect workflow.",
+            "Document before treating when it is safe to do so."
+          ]
+        },
+        {
+          "heading": "Scouting and spatial patterns",
+          "paragraphs": [
+            "Scouting becomes more useful when locations are mapped and revisited consistently. Record plant or bench identity, tissue inspected, organism or symptom, severity, photographs, trap counts when used, and environmental context.",
+            "Spatial patterns help separate possibilities. Problems concentrated near an intake, wet corner, hot fixture zone, irrigation line, or recently handled group can reveal causal clues that a close-up image alone cannot show."
+          ],
+          "checkpoints": [
+            "Use a repeatable map or plant ID system.",
+            "Photograph both the symptom and its position in the crop.",
+            "Track progression, not just presence."
+          ]
+        },
+        {
+          "heading": "Abiotic versus biotic diagnosis",
+          "paragraphs": [
+            "Nutrient problems, water stress, light stress, temperature injury, chemical injury, pests, and diseases can overlap visually. Start by describing the pattern: which leaves, which plants, which zones, how fast, and after what recent changes.",
+            "Then look for direct evidence such as insects, mites, frass, webbing, spores, lesions, root damage, odors, meter data, environmental excursions, or a reproducible connection to an input. A diagnosis should get stronger as independent evidence converges."
+          ],
+          "checkpoints": [
+            "List plausible abiotic and biotic alternatives.",
+            "Seek direct evidence before naming a pest or disease.",
+            "Use appropriate laboratory testing when consequences justify it."
+          ]
+        },
+        {
+          "heading": "Biological controls and compatible interventions",
+          "paragraphs": [
+            "Predatory mites, parasitoids, microbial controls, sanitation, physical removal, environmental adjustments, and labeled pesticides can all have roles depending on the confirmed problem and production context. Compatibility, timing, life stage, residual effects, crop stage, and jurisdiction matter.",
+            "Pesticide labels and local law control legal use. No generic internet schedule can replace the exact registered label or professional requirements applicable to the site."
+          ],
+          "checkpoints": [
+            "Identify the target and life stage before choosing a control.",
+            "Check compatibility among biological and chemical controls.",
+            "Follow the exact label and applicable law for pesticide use."
+          ]
+        },
+        {
+          "heading": "Verification and corrective action",
+          "paragraphs": [
+            "Treatment is not the end of IPM. Re-scout the same mapped locations, compare counts or severity, inspect new growth, and determine whether the intervention worked. Recurring problems call for root-cause analysis: source plants, sanitation gaps, environmental conditions, workflow, or incomplete control.",
+            "Corrective and preventive action should change the system that allowed the problem, not only suppress the visible outbreak."
+          ],
+          "checkpoints": [
+            "Define how success will be measured before intervention.",
+            "Reinspect on a planned schedule.",
+            "Document prevention changes after an outbreak."
+          ]
+        },
+        {
+          "heading": "Scouting design, sampling, and action thresholds",
+          "paragraphs": [
+            "Scouting is strongest when it follows a repeatable route and sampling method. Looking only at obviously damaged plants overestimates some problems while missing early infestations elsewhere. A defined pattern across benches, rooms, or outdoor zones helps reveal distribution, hotspots, and change through time.",
+            "An action threshold is a decision point, not simply the first detection of an organism. The appropriate threshold depends on crop stage, organism, damage potential, rate of increase, available controls, market tolerance, and risk. Even when a formal economic threshold is unavailable, preserving counts and severity makes decisions more consistent than reacting from memory."
+          ],
+          "checkpoints": [
+            "Use the same scouting route and sampling units over time.",
+            "Record zeros as well as positive detections.",
+            "Separate organism presence from plant damage severity.",
+            "Define the decision trigger before the problem becomes severe when possible."
+          ]
+        },
+        {
+          "heading": "Differential diagnosis: biotic versus abiotic injury",
+          "paragraphs": [
+            "Pests, pathogens, nutrient disorders, root stress, irrigation problems, temperature injury, light stress, chemical injury, and mechanical damage can overlap visually. A useful differential diagnosis ranks plausible causes and asks which observations would support or weaken each one instead of jumping from symptom to label.",
+            "Spatial pattern is powerful evidence. A problem that follows an irrigation zone, fan path, spray pattern, lamp footprint, bench edge, or root-zone condition may point toward an abiotic driver. A spreading cluster associated with organisms, signs, spores, webbing, frass, lesions, or transmission patterns may support a biotic explanation."
+          ],
+          "checkpoints": [
+            "Photograph whole-plant and room-scale distribution, not only close-ups.",
+            "Preserve specimens or magnified evidence before treatment when practical.",
+            "Compare the symptom map with irrigation, light, airflow, and spray maps.",
+            "Keep more than one plausible cause until discriminating evidence is collected."
+          ]
+        },
+        {
+          "heading": "Resistance management and compatible control programs",
+          "paragraphs": [
+            "Repeatedly exposing a pest or pathogen population to the same mode of action can select for resistant individuals. Resistance management reduces that selection pressure through integrated nonchemical controls, accurate timing, label-compliant use, and rotation among effective modes of action when appropriate.",
+            "Biological control adds another compatibility question. Some pesticides, residues, environmental conditions, or application methods can harm beneficial organisms. A control program should therefore consider the target, life stage, beneficial species, residual activity, environmental requirements, and reintroduction timing rather than adding tactics independently."
+          ],
+          "checkpoints": [
+            "Record active ingredient and mode-of-action group, not only product name.",
+            "Follow the pesticide label and all legal crop-use restrictions.",
+            "Check compatibility with beneficial organisms before application.",
+            "Measure post-treatment population change to verify that the tactic worked."
+          ]
+        }
+      ],
+      "references": [
+        {
+          "title": "Scouting 101: catch problems early, grow happier plants",
+          "organization": "University of Minnesota Extension",
+          "year": 2025,
+          "note": "Current extension example emphasizing routine scouting and early detection."
+        }
       ]
     },
     {
@@ -119,13 +1125,132 @@
       "route": "/learn/training-canopy/",
       "title": "Training & Canopy Management",
       "summary": "Use plant architecture, apical dominance, light distribution, airflow, recovery, support, and crop goals to understand LST, topping, pruning, SCROG, mainlining, and other canopy-management techniques.",
-      "keywords": ["training", "canopy", "LST", "HST", "topping", "pruning", "SCROG", "mainlining", "apical dominance", "branching", "support"],
+      "keywords": [
+        "training",
+        "canopy",
+        "LST",
+        "HST",
+        "topping",
+        "pruning",
+        "SCROG",
+        "mainlining",
+        "apical dominance",
+        "branching",
+        "support",
+        "branch architecture",
+        "wound response",
+        "recovery",
+        "canopy uniformity",
+        "branch angle",
+        "light distribution"
+      ],
       "sections": [
-        {"heading":"Why plants respond to training","paragraphs":["Training changes geometry. Bending, pruning, topping, and branch positioning alter which growing points receive light, how hormones and resources are distributed, and how the canopy occupies space. The biological response depends on plant vigor, stage, genetics, environment, and the severity of the intervention.","Training does not create energy; it redistributes plant structure and access to the light environment. The useful question is whether the new architecture improves the crop objective enough to justify stress, labor, and recovery time."],"checkpoints":["Define the canopy goal before choosing a technique.","Train only plants healthy enough to recover.","Record the intervention date and affected branches."]},
-        {"heading":"Low-stress positioning and support","paragraphs":["Low-stress training generally uses gradual bending or positioning rather than major tissue removal. Ties, clips, trellis, and support structures can spread growth into available horizontal space and keep tops at more similar heights.","Attachments must be checked as stems thicken. A support that was safe when installed can constrict tissue later, and sharp bends can still damage vascular tissue if forced too quickly."],"checkpoints":["Inspect tie points as stems expand.","Avoid crushing or sharply kinking stems.","Re-map light after the canopy shape changes."]},
-        {"heading":"Topping, pruning, and higher-stress methods","paragraphs":["Topping removes an active shoot tip and changes apical dominance, allowing other growing points to become more competitive. Pruning removes selected tissue to change structure, airflow, access, or resource allocation. Higher-stress bending intentionally damages or deforms stems and requires careful recovery.","The response is not identical in every plant. Timing, disease risk, sanitation, vigor, and the amount of tissue removed matter more than following a rigid diagram."],"checkpoints":["Use clean tools for tissue removal.","Avoid stacking severe training with other major stresses.","Watch the damaged area for recovery and infection."]},
-        {"heading":"SCROG, spacing, and canopy uniformity","paragraphs":["A screen can guide branches into a broad plane, but the screen itself does not guarantee uniform light or airflow. Branch density, leaf area, fixture distribution, access beneath the screen, and late stretch all affect the final canopy.","Canopy management should be evaluated with PPFD maps, environmental measurements, inspection access, and plant health rather than appearance alone."],"checkpoints":["Preserve access for scouting and irrigation service.","Measure light across the trained canopy.","Inspect interior humidity and airflow as density increases."]},
-        {"heading":"Recovery and aftercare","paragraphs":["After training, observe water demand, leaf posture, wound condition, new growth, and environmental stability. A temporary response can be normal, but persistent wilting, discoloration, stem collapse, or stalled growth indicates the plant has not recovered as expected.","Photographs before and after training create useful evidence for future decisions. Over repeated cycles, the grower can compare whether a technique actually improved uniformity, workflow, or crop outcome."],"checkpoints":["Document before and after canopy structure.","Give the plant time to show a response before another major intervention.","Compare outcomes across cycles, not just individual impressive plants."]}
+        {
+          "heading": "Why plants respond to training",
+          "paragraphs": [
+            "Training changes geometry. Bending, pruning, topping, and branch positioning alter which growing points receive light, how hormones and resources are distributed, and how the canopy occupies space. The biological response depends on plant vigor, stage, genetics, environment, and the severity of the intervention.",
+            "Training does not create energy; it redistributes plant structure and access to the light environment. The useful question is whether the new architecture improves the crop objective enough to justify stress, labor, and recovery time."
+          ],
+          "checkpoints": [
+            "Define the canopy goal before choosing a technique.",
+            "Train only plants healthy enough to recover.",
+            "Record the intervention date and affected branches."
+          ]
+        },
+        {
+          "heading": "Low-stress positioning and support",
+          "paragraphs": [
+            "Low-stress training generally uses gradual bending or positioning rather than major tissue removal. Ties, clips, trellis, and support structures can spread growth into available horizontal space and keep tops at more similar heights.",
+            "Attachments must be checked as stems thicken. A support that was safe when installed can constrict tissue later, and sharp bends can still damage vascular tissue if forced too quickly."
+          ],
+          "checkpoints": [
+            "Inspect tie points as stems expand.",
+            "Avoid crushing or sharply kinking stems.",
+            "Re-map light after the canopy shape changes."
+          ]
+        },
+        {
+          "heading": "Topping, pruning, and higher-stress methods",
+          "paragraphs": [
+            "Topping removes an active shoot tip and changes apical dominance, allowing other growing points to become more competitive. Pruning removes selected tissue to change structure, airflow, access, or resource allocation. Higher-stress bending intentionally damages or deforms stems and requires careful recovery.",
+            "The response is not identical in every plant. Timing, disease risk, sanitation, vigor, and the amount of tissue removed matter more than following a rigid diagram."
+          ],
+          "checkpoints": [
+            "Use clean tools for tissue removal.",
+            "Avoid stacking severe training with other major stresses.",
+            "Watch the damaged area for recovery and infection."
+          ]
+        },
+        {
+          "heading": "SCROG, spacing, and canopy uniformity",
+          "paragraphs": [
+            "A screen can guide branches into a broad plane, but the screen itself does not guarantee uniform light or airflow. Branch density, leaf area, fixture distribution, access beneath the screen, and late stretch all affect the final canopy.",
+            "Canopy management should be evaluated with PPFD maps, environmental measurements, inspection access, and plant health rather than appearance alone."
+          ],
+          "checkpoints": [
+            "Preserve access for scouting and irrigation service.",
+            "Measure light across the trained canopy.",
+            "Inspect interior humidity and airflow as density increases."
+          ]
+        },
+        {
+          "heading": "Recovery and aftercare",
+          "paragraphs": [
+            "After training, observe water demand, leaf posture, wound condition, new growth, and environmental stability. A temporary response can be normal, but persistent wilting, discoloration, stem collapse, or stalled growth indicates the plant has not recovered as expected.",
+            "Photographs before and after training create useful evidence for future decisions. Over repeated cycles, the grower can compare whether a technique actually improved uniformity, workflow, or crop outcome."
+          ],
+          "checkpoints": [
+            "Document before and after canopy structure.",
+            "Give the plant time to show a response before another major intervention.",
+            "Compare outcomes across cycles, not just individual impressive plants."
+          ]
+        },
+        {
+          "heading": "Apical dominance, branch architecture, and training response",
+          "paragraphs": [
+            "Shoot architecture emerges from the activity of the main apex, axillary buds, internode growth, hormones, light signals, and genetics. Removing or bending a dominant shoot can redistribute growth among lateral branches, but the magnitude and timing of that response vary among plants and developmental stages.",
+            "Training is therefore most useful when it begins with an architectural objective such as lowering the canopy, increasing lateral occupancy, improving light distribution, creating access, or supporting future flower mass. A named technique is not the objective by itself."
+          ],
+          "checkpoints": [
+            "Define the canopy objective before cutting or bending.",
+            "Record node and branch positions before major structural changes.",
+            "Track which branches accelerate after apical control changes.",
+            "Do not assume two cultivars will respond identically to the same training schedule."
+          ]
+        },
+        {
+          "heading": "Wound response, recovery, and stress stacking",
+          "paragraphs": [
+            "Topping, pruning, breakage, supercropping, and defoliation create wounds and remove photosynthetic or transport tissue. Plants respond through sealing, defense signaling, vascular repair around injured areas, redistribution of growth, and replacement of lost leaf area. Recovery speed depends on vigor, root function, environment, disease pressure, and the severity of the intervention.",
+            "Stress stacking occurs when several demanding interventions are applied before recovery from the previous one. Heavy pruning followed immediately by transplanting, a large light increase, irrigation change, or reproductive transition can make the plant response difficult to interpret. Separating major interventions improves both recovery and diagnostic clarity."
+          ],
+          "checkpoints": [
+            "Use clean tools and inspect wounds for splitting or infection.",
+            "Wait for observable recovery before stacking another major stress when possible.",
+            "Record the date and severity of structural interventions.",
+            "Use new growth rate and leaf posture as recovery evidence rather than a fixed-day rule."
+          ]
+        },
+        {
+          "heading": "Canopy geometry, support, airflow, and measurable uniformity",
+          "paragraphs": [
+            "A canopy is a three-dimensional structure. Height variation, branch spacing, leaf overlap, flower position, support netting, and fixture geometry determine which tissues receive light and air. A flat-looking canopy from the aisle can still contain shaded pockets, local high-light zones, and stagnant humid interiors.",
+            "Canopy quality can be measured instead of judged only by appearance. Height range, occupied area, PPFD map, internal humidity, access lanes, branch support, and the fraction of productive sites within the target crop plane can all be tracked. These measurements turn training from a style preference into a testable management strategy."
+          ],
+          "checkpoints": [
+            "Measure canopy height at multiple positions.",
+            "Map light again after major training changes.",
+            "Inspect airflow and humidity inside dense foliage.",
+            "Install support before branches are overloaded whenever possible."
+          ]
+        }
+      ],
+      "references": [
+        {
+          "title": "Plant architecture and pruning principles",
+          "organization": "Horticultural science literature",
+          "note": "General basis for apical control, branch response, wound recovery, and canopy management."
+        }
       ]
     },
     {
@@ -133,13 +1258,132 @@
       "route": "/learn/harvest-postharvest/",
       "title": "Harvest & Post-Harvest",
       "summary": "Connect maturity assessment, harvest handling, drying, water activity, curing, storage, sanitation, and quality preservation while recognizing that moisture control and microbial safety require measurement rather than folklore.",
-      "keywords": ["harvest", "drying", "curing", "water activity", "storage", "trichomes", "maturity", "post-harvest", "bud wash", "quality", "mold"],
+      "keywords": [
+        "harvest",
+        "drying",
+        "curing",
+        "water activity",
+        "storage",
+        "trichomes",
+        "maturity",
+        "post-harvest",
+        "bud wash",
+        "quality",
+        "mold",
+        "maturity sampling",
+        "drying kinetics",
+        "equilibrium moisture",
+        "oxidation",
+        "temperature",
+        "packaging"
+      ],
       "sections": [
-        {"heading":"Maturity is multi-signal","paragraphs":["Harvest maturity is influenced by cultivar, reproductive development, floral appearance, trichome development, plant health, intended use, and production constraints. No single trichome photograph or calendar day can represent every plant in a canopy.","Sampling method matters. Observations should be taken from defined tissues and locations with consistent magnification and lighting so changes can be compared over time."],"checkpoints":["Sample more than one representative location.","Record magnification and tissue observed.","Combine maturity indicators instead of using one color threshold."]},
-        {"heading":"Harvest handling and sanitation","paragraphs":["Harvest creates wounds and exposes plant material to handling surfaces, tools, workers, and the surrounding environment. Clean workflow, traceable lots, controlled contact surfaces, and prompt movement into the drying process reduce avoidable contamination and confusion.","If washing or other post-harvest handling is used, its purpose, water quality, process, and drying implications should be defined. Additional moisture without adequate removal can create new risk."],"checkpoints":["Keep lots and plant identity traceable.","Use clean tools and surfaces.","Do not add wet handling without a plan for rapid controlled moisture removal."]},
-        {"heading":"Drying as moisture transfer","paragraphs":["Drying is the controlled movement of water from plant tissue into surrounding air. Air temperature, humidity, air movement, load density, flower structure, initial moisture, and room capacity interact. Aggressive surface drying can produce a different moisture gradient than slow uniform drying.","Room readings alone do not prove the condition inside dense plant material. Product measurements and inspection are necessary to understand when drying is complete enough for the next stage."],"checkpoints":["Monitor the drying room and representative product.","Avoid direct high-speed airflow that unevenly dries surfaces.","Track time and conditions as a curve rather than one endpoint."]},
-        {"heading":"Water activity and curing","paragraphs":["Water activity measures the availability of water for physical, chemical, and microbial processes and is different from total moisture content. It can provide more useful safety and stability context than subjective feel alone when measured correctly with suitable equipment.","Curing should not be used to rescue inadequately dried or contaminated product. Containers, headspace, temperature, moisture distribution, and handling practices affect stability. Persistent condensation or off-odors require investigation rather than routine burping folklore."],"checkpoints":["Use calibrated appropriate instruments when water activity is part of the process.","Do not seal obviously wet material hoping curing will correct it.","Investigate condensation and odor changes promptly."]},
-        {"heading":"Storage and quality preservation","paragraphs":["Light, oxygen, heat, moisture, physical damage, and time can change stored material. Stable storage begins with appropriately dried clean product and suitable containers rather than trying to control every problem after packaging.","Post-harvest records should connect lot identity, harvest date, drying conditions, measurements, packaging, storage conditions, and any quality observations. This allows changes to be traced back to process conditions."],"checkpoints":["Protect stored material from heat and unnecessary light.","Keep storage lots traceable.","Recheck condition during storage rather than assuming packaging guarantees stability."]}
+        {
+          "heading": "Maturity is multi-signal",
+          "paragraphs": [
+            "Harvest maturity is influenced by cultivar, reproductive development, floral appearance, trichome development, plant health, intended use, and production constraints. No single trichome photograph or calendar day can represent every plant in a canopy.",
+            "Sampling method matters. Observations should be taken from defined tissues and locations with consistent magnification and lighting so changes can be compared over time."
+          ],
+          "checkpoints": [
+            "Sample more than one representative location.",
+            "Record magnification and tissue observed.",
+            "Combine maturity indicators instead of using one color threshold."
+          ]
+        },
+        {
+          "heading": "Harvest handling and sanitation",
+          "paragraphs": [
+            "Harvest creates wounds and exposes plant material to handling surfaces, tools, workers, and the surrounding environment. Clean workflow, traceable lots, controlled contact surfaces, and prompt movement into the drying process reduce avoidable contamination and confusion.",
+            "If washing or other post-harvest handling is used, its purpose, water quality, process, and drying implications should be defined. Additional moisture without adequate removal can create new risk."
+          ],
+          "checkpoints": [
+            "Keep lots and plant identity traceable.",
+            "Use clean tools and surfaces.",
+            "Do not add wet handling without a plan for rapid controlled moisture removal."
+          ]
+        },
+        {
+          "heading": "Drying as moisture transfer",
+          "paragraphs": [
+            "Drying is the controlled movement of water from plant tissue into surrounding air. Air temperature, humidity, air movement, load density, flower structure, initial moisture, and room capacity interact. Aggressive surface drying can produce a different moisture gradient than slow uniform drying.",
+            "Room readings alone do not prove the condition inside dense plant material. Product measurements and inspection are necessary to understand when drying is complete enough for the next stage."
+          ],
+          "checkpoints": [
+            "Monitor the drying room and representative product.",
+            "Avoid direct high-speed airflow that unevenly dries surfaces.",
+            "Track time and conditions as a curve rather than one endpoint."
+          ]
+        },
+        {
+          "heading": "Water activity and curing",
+          "paragraphs": [
+            "Water activity measures the availability of water for physical, chemical, and microbial processes and is different from total moisture content. It can provide more useful safety and stability context than subjective feel alone when measured correctly with suitable equipment.",
+            "Curing should not be used to rescue inadequately dried or contaminated product. Containers, headspace, temperature, moisture distribution, and handling practices affect stability. Persistent condensation or off-odors require investigation rather than routine burping folklore."
+          ],
+          "checkpoints": [
+            "Use calibrated appropriate instruments when water activity is part of the process.",
+            "Do not seal obviously wet material hoping curing will correct it.",
+            "Investigate condensation and odor changes promptly."
+          ]
+        },
+        {
+          "heading": "Storage and quality preservation",
+          "paragraphs": [
+            "Light, oxygen, heat, moisture, physical damage, and time can change stored material. Stable storage begins with appropriately dried clean product and suitable containers rather than trying to control every problem after packaging.",
+            "Post-harvest records should connect lot identity, harvest date, drying conditions, measurements, packaging, storage conditions, and any quality observations. This allows changes to be traced back to process conditions."
+          ],
+          "checkpoints": [
+            "Protect stored material from heat and unnecessary light.",
+            "Keep storage lots traceable.",
+            "Recheck condition during storage rather than assuming packaging guarantees stability."
+          ]
+        },
+        {
+          "heading": "Harvest maturity is a sampling problem",
+          "paragraphs": [
+            "Maturity does not occur uniformly across every flower or trichome on a plant. Light exposure, flower position, cultivar, tissue age, stress, and sampling location can change what is observed. A close-up chosen from one convenient flower can therefore overstate how representative that maturity signal is.",
+            "A better harvest assessment defines where samples are taken, what structures are evaluated, the magnification and lighting used, and which additional indicators are considered. Repeating the same sampling method over several dates produces a maturity trend rather than a one-image decision."
+          ],
+          "checkpoints": [
+            "Sample multiple representative flower positions.",
+            "Record magnification, lighting, and tissue location.",
+            "Use the same sampling method across dates.",
+            "Combine trichome observations with whole-plant and flower-development context."
+          ]
+        },
+        {
+          "heading": "Drying kinetics, moisture gradients, and water activity",
+          "paragraphs": [
+            "Drying removes water from plant material through coupled movement inside the tissue and evaporation from the surface. Temperature, relative humidity, air movement, flower size, density, trim state, loading, and spacing affect the rate. The outside can feel dry while moisture remains in denser interior tissue, creating gradients that later redistribute.",
+            "Water activity measures the availability of water for chemical and microbial processes rather than total water content alone. It can support post-harvest decisions when measured correctly, but a single reading should be paired with sampling method, equilibration, instrument calibration, and batch variability."
+          ],
+          "checkpoints": [
+            "Track drying environment continuously rather than only once per day.",
+            "Sample more than one location in a batch.",
+            "Allow the measurement method to equilibrate as required by the instrument.",
+            "Treat odor, feel, and stem behavior as observations, not substitutes for controlled moisture measurements."
+          ]
+        },
+        {
+          "heading": "Storage: temperature, oxygen, light, moisture, and packaging",
+          "paragraphs": [
+            "Finished plant material continues to change during storage. Heat can accelerate chemical reactions, oxygen can support oxidation, light can drive photochemical change, and excess moisture can increase microbial risk. Very dry conditions can also alter texture and volatile retention. Packaging controls exchange with the surrounding environment but cannot correct contaminated or improperly dried material.",
+            "Storage quality is therefore a chain that begins before packaging. A useful record includes batch identity, initial condition, container type, fill level, storage temperature, light exposure, opening frequency, and periodic quality or moisture checks. Comparing those records across batches is more informative than assuming one container or fixed cure duration is universally optimal."
+          ],
+          "checkpoints": [
+            "Package only material that has completed an appropriate drying and quality check.",
+            "Keep storage away from unnecessary heat and light.",
+            "Record batch and packaging date so changes can be traced.",
+            "Investigate unusual moisture or odor immediately rather than sealing the batch and waiting."
+          ]
+        }
+      ],
+      "references": [
+        {
+          "title": "Water activity and post-harvest quality principles",
+          "organization": "Food and horticultural post-harvest science",
+          "note": "General scientific basis for moisture availability, drying, and storage risk."
+        }
       ]
     },
     {
@@ -147,13 +1391,133 @@
       "route": "/learn/outdoor/",
       "title": "Outdoor Cultivation",
       "summary": "Plan around site, sun, season, soil and media, water, wind, rain, wildlife, pests, pollen drift, microclimates, hardening, and local constraints instead of treating outdoor growing as indoor growing without walls.",
-      "keywords": ["outdoor", "site selection", "sun", "season", "hardening", "transplant", "rain", "wind", "wildlife", "pollen drift", "microclimate", "irrigation"],
+      "keywords": [
+        "outdoor",
+        "site selection",
+        "sun",
+        "season",
+        "hardening",
+        "transplant",
+        "rain",
+        "wind",
+        "wildlife",
+        "pollen drift",
+        "microclimate",
+        "irrigation",
+        "solar exposure",
+        "soil drainage",
+        "weather station",
+        "wind load",
+        "rain risk",
+        "smoke"
+      ],
       "sections": [
-        {"heading":"Site selection and microclimate","paragraphs":["Outdoor sites differ in solar exposure, shading, slope, drainage, wind, reflected heat, cold-air pooling, surrounding vegetation, water access, security, and neighbor impacts. Local microclimate can differ substantially from regional weather reports.","Observe the site across the day and season. A location that looks sunny at one hour may lose direct light later, and a low area can remain wet or cool after nearby ground has dried."],"checkpoints":["Map direct sun and shade through the day.","Identify drainage paths and low spots.","Record prevailing wind and sheltered humid zones."]},
-        {"heading":"Hardening and transplanting","paragraphs":["Plants raised indoors or under protected conditions may need gradual acclimation to brighter sunlight, wind, temperature variation, and lower humidity. Sudden exposure can exceed the capacity of leaves formed under the previous environment.","Transplant success depends on root condition, soil or media preparation, water status, handling, weather, and aftercare. The goal is to minimize unnecessary root damage while helping the plant establish into the new environment."],"checkpoints":["Increase outdoor exposure progressively.","Avoid transplanting severely stressed or root-damaged plants when possible.","Monitor water status closely during establishment."]},
-        {"heading":"Water, soil, mulch, and root environment","paragraphs":["Outdoor root zones are influenced by soil texture, structure, organic matter, drainage, compaction, temperature, rainfall, irrigation, and living organisms. Large containers behave differently from field soil and can dry rapidly in wind and heat.","Mulch can reduce evaporation and moderate surface temperature, but it also changes moisture patterns and habitat near the soil surface. Irrigation decisions should follow the actual root environment, not a fixed calendar."],"checkpoints":["Know whether the crop is in field soil, raised bed, or container media.","Check moisture at relevant root depth.","Adjust irrigation after rainfall and weather changes."]},
-        {"heading":"Wind, rain, wildlife, and physical support","paragraphs":["Wind can strengthen plants when moderate but can also increase water loss, tear leaves, break branches, and damage heavy flowers. Rain can relieve irrigation demand while also increasing wetness duration and disease risk in dense canopies.","Support systems should anticipate late-season plant mass and storms. Wildlife and physical damage require site-specific exclusion strategies that do not create new hazards or trap moisture around the crop."],"checkpoints":["Plan structural support before branches become heavy.","Inspect after storms rather than waiting for symptoms.","Track extended flower wetness and dense-canopy moisture."]},
-        {"heading":"Pollen, pests, smoke, and seasonal records","paragraphs":["Outdoor plants are exposed to insects, airborne spores, pollen, dust, smoke, and other regional conditions that cannot be controlled as tightly as an indoor room. Pollen drift can affect seed production at distances that make absolute isolation difficult to guarantee.","A seasonal record combining weather, irrigation, scouting, phenology, interventions, photographs, and harvest outcomes becomes a local cultivation calendar. Repeated years are more informative than generic regional dates."],"checkpoints":["Scout routinely even when plants look healthy from a distance.","Document unusual smoke, dust, or weather events.","Build future calendars from local observations and plant development."]}
+        {
+          "heading": "Site selection and microclimate",
+          "paragraphs": [
+            "Outdoor sites differ in solar exposure, shading, slope, drainage, wind, reflected heat, cold-air pooling, surrounding vegetation, water access, security, and neighbor impacts. Local microclimate can differ substantially from regional weather reports.",
+            "Observe the site across the day and season. A location that looks sunny at one hour may lose direct light later, and a low area can remain wet or cool after nearby ground has dried."
+          ],
+          "checkpoints": [
+            "Map direct sun and shade through the day.",
+            "Identify drainage paths and low spots.",
+            "Record prevailing wind and sheltered humid zones."
+          ]
+        },
+        {
+          "heading": "Hardening and transplanting",
+          "paragraphs": [
+            "Plants raised indoors or under protected conditions may need gradual acclimation to brighter sunlight, wind, temperature variation, and lower humidity. Sudden exposure can exceed the capacity of leaves formed under the previous environment.",
+            "Transplant success depends on root condition, soil or media preparation, water status, handling, weather, and aftercare. The goal is to minimize unnecessary root damage while helping the plant establish into the new environment."
+          ],
+          "checkpoints": [
+            "Increase outdoor exposure progressively.",
+            "Avoid transplanting severely stressed or root-damaged plants when possible.",
+            "Monitor water status closely during establishment."
+          ]
+        },
+        {
+          "heading": "Water, soil, mulch, and root environment",
+          "paragraphs": [
+            "Outdoor root zones are influenced by soil texture, structure, organic matter, drainage, compaction, temperature, rainfall, irrigation, and living organisms. Large containers behave differently from field soil and can dry rapidly in wind and heat.",
+            "Mulch can reduce evaporation and moderate surface temperature, but it also changes moisture patterns and habitat near the soil surface. Irrigation decisions should follow the actual root environment, not a fixed calendar."
+          ],
+          "checkpoints": [
+            "Know whether the crop is in field soil, raised bed, or container media.",
+            "Check moisture at relevant root depth.",
+            "Adjust irrigation after rainfall and weather changes."
+          ]
+        },
+        {
+          "heading": "Wind, rain, wildlife, and physical support",
+          "paragraphs": [
+            "Wind can strengthen plants when moderate but can also increase water loss, tear leaves, break branches, and damage heavy flowers. Rain can relieve irrigation demand while also increasing wetness duration and disease risk in dense canopies.",
+            "Support systems should anticipate late-season plant mass and storms. Wildlife and physical damage require site-specific exclusion strategies that do not create new hazards or trap moisture around the crop."
+          ],
+          "checkpoints": [
+            "Plan structural support before branches become heavy.",
+            "Inspect after storms rather than waiting for symptoms.",
+            "Track extended flower wetness and dense-canopy moisture."
+          ]
+        },
+        {
+          "heading": "Pollen, pests, smoke, and seasonal records",
+          "paragraphs": [
+            "Outdoor plants are exposed to insects, airborne spores, pollen, dust, smoke, and other regional conditions that cannot be controlled as tightly as an indoor room. Pollen drift can affect seed production at distances that make absolute isolation difficult to guarantee.",
+            "A seasonal record combining weather, irrigation, scouting, phenology, interventions, photographs, and harvest outcomes becomes a local cultivation calendar. Repeated years are more informative than generic regional dates."
+          ],
+          "checkpoints": [
+            "Scout routinely even when plants look healthy from a distance.",
+            "Document unusual smoke, dust, or weather events.",
+            "Build future calendars from local observations and plant development."
+          ]
+        },
+        {
+          "heading": "Map the site microclimate before managing the crop",
+          "paragraphs": [
+            "Regional weather data is useful background, but the crop experiences a site-specific microclimate. Slope, aspect, nearby buildings, tree lines, soil moisture, elevation, wind exposure, reflective surfaces, and shade can change temperature, humidity, solar exposure, frost risk, and drying time over short distances.",
+            "A basic site map can record sun and shade through the day, low spots where cool air or water collects, prevailing winds, irrigation zones, access, and nearby pollen or pest sources. Repeating observations across the season turns the site into a measured environment rather than a generic outdoor location."
+          ],
+          "checkpoints": [
+            "Record sunrise-to-sunset shade changes at several dates.",
+            "Identify drainage lows and wind-exposed edges.",
+            "Place weather sensors where they represent the crop rather than a convenient wall or roof.",
+            "Update the map as surrounding vegetation and canopy size change."
+          ]
+        },
+        {
+          "heading": "Soil structure, drainage, irrigation, and root-zone variability",
+          "paragraphs": [
+            "Outdoor root zones are spatially variable. Soil texture, compaction, organic matter, depth, stones, slope, previous land use, and drainage can change within one field or garden. A single soil sample or one irrigation emitter does not automatically describe the entire root environment.",
+            "Irrigation strategy should account for infiltration rate, root depth, evaporation, rainfall, slope, emitter uniformity, and the water-holding behavior of the soil or container medium. Persistent wet zones and chronically dry zones can coexist in the same planting, so root-zone diagnosis benefits from several observation points."
+          ],
+          "checkpoints": [
+            "Sample soil or root-zone conditions from more than one representative location.",
+            "Check irrigation distribution rather than assuming emitters deliver equally.",
+            "Record rainfall separately from irrigation volume.",
+            "Watch how long different zones remain saturated after heavy rain."
+          ]
+        },
+        {
+          "heading": "Wind, rain, smoke, pollen, and severe-weather risk",
+          "paragraphs": [
+            "Outdoor plants face episodic events that do not fit a stable indoor setpoint. Strong wind can break branches and increase water loss; prolonged rain can saturate roots and keep flowers wet; smoke and dust can deposit particles; hail can wound tissue; and external pollen can move long distances under favorable conditions.",
+            "Risk management begins before the event with support, drainage, spacing, clean access, weather monitoring, and realistic contingency plans. After an event, document what actually happened before making broad conclusions. A storm-damaged plant may show mechanical injury, root stress, pathogen risk, and nutrient changes at the same time."
+          ],
+          "checkpoints": [
+            "Inspect support and drainage before forecast severe weather.",
+            "Document event timing, rainfall, wind, and visible injury.",
+            "Keep unintended seed set or pollen exposure recorded as uncertain when the source is unknown.",
+            "Separate smoke or dust deposition from claims about internal plant chemistry unless tested."
+          ]
+        }
+      ],
+      "references": [
+        {
+          "title": "Field microclimate and soil-water measurement principles",
+          "organization": "Land-grant university extension",
+          "note": "General basis for site mapping, drainage, irrigation, and weather-risk management."
+        }
       ]
     },
     {
@@ -161,13 +1525,150 @@
       "route": "/learn/research-methods/",
       "title": "Evidence, Measurement & Research",
       "summary": "Learn to separate observation from conclusion, choose measurements that answer the actual question, understand replication and sampling, audit claims, preserve uncertainty, and build cultivation records that can be compared.",
-      "keywords": ["evidence", "research", "measurement", "sampling", "replication", "subsampling", "claim audit", "observation", "records", "uncertainty", "method"],
+      "keywords": [
+        "evidence",
+        "research",
+        "measurement",
+        "sampling",
+        "replication",
+        "subsampling",
+        "claim audit",
+        "observation",
+        "records",
+        "uncertainty",
+        "method",
+        "control treatment",
+        "randomization",
+        "blocking",
+        "effect size",
+        "variability",
+        "time series",
+        "metadata",
+        "reproducibility",
+        "data integrity",
+        "confounding"
+      ],
       "sections": [
-        {"heading":"Evidence is claim-specific","paragraphs":["Evidence is strong only in relation to a particular claim. A photograph can show visible appearance, but it may not identify a hidden cause. A laboratory test can quantify a sample, but it may not represent the whole crop. A controlled experiment can estimate an effect under its tested conditions, but extrapolation beyond those conditions introduces uncertainty.","The first step in evaluating a claim is therefore to state exactly what is being claimed and what evidence would distinguish it from reasonable alternatives."],"checkpoints":["Write the claim in one testable sentence.","List plausible alternative explanations.","Match evidence type to the claim rather than to convenience."]},
-        {"heading":"Observation, measurement, and inference","paragraphs":["Observation describes what was seen or recorded. Measurement assigns values using a defined method. Inference is the interpretation drawn from those observations and measurements. Keeping these layers separate prevents confident conclusions from becoming disguised as raw facts.","For cultivation records, preserve original values and photographs before summarizing them. A later analyst should be able to see what was actually measured."],"checkpoints":["Label observations separately from interpretations.","Preserve raw values and units.","Record instrument, method, time, and location."]},
-        {"heading":"Sampling, replication, and pseudoreplication","paragraphs":["A sample should represent the population or condition about which a claim is made. Multiple measurements from the same plant or container can improve precision for that unit but are not necessarily independent biological replicates.","Replication captures independent experimental units. Subsampling captures variation within an experimental unit. Confusing the two can make evidence appear stronger than it is."],"checkpoints":["Identify the true experimental unit.","Distinguish biological replicates from repeated readings.","Describe how sample locations were selected."]},
-        {"heading":"Measurement quality and uncertainty","paragraphs":["Every measurement has limitations. Calibration, resolution, sensor placement, sample handling, drift, environmental interference, and operator technique can affect results. More decimal places do not automatically mean more accuracy.","Useful records include units, method, calibration state, and uncertainty when known. When uncertainty is not quantified, it should still be acknowledged in interpretation."],"checkpoints":["Use appropriate calibration and quality-control checks.","Do not report precision the method cannot support.","Repeat suspicious measurements before building a major decision on them."]},
-        {"heading":"Claim auditing and monitored decisions","paragraphs":["A claim audit asks who made the claim, what exactly was tested, what controls and comparisons were used, whether the result was replicated, whether the statistics answer the question, and how closely the evidence matches the intended cultivation context.","Cultivation decisions can use the same discipline. Record baseline conditions, make a defined change, specify what response would count as improvement or harm, and monitor the result. This turns everyday management into a learning system without pretending that every grow is a formal experiment."],"checkpoints":["Record the baseline before changing the system.","Define expected response and observation window.","Keep negative and null results instead of only memorable successes."]}
+        {
+          "heading": "Evidence is claim-specific",
+          "paragraphs": [
+            "Evidence is strong only in relation to a particular claim. A photograph can show visible appearance, but it may not identify a hidden cause. A laboratory test can quantify a sample, but it may not represent the whole crop. A controlled experiment can estimate an effect under its tested conditions, but extrapolation beyond those conditions introduces uncertainty.",
+            "The first step in evaluating a claim is therefore to state exactly what is being claimed and what evidence would distinguish it from reasonable alternatives."
+          ],
+          "checkpoints": [
+            "Write the claim in one testable sentence.",
+            "List plausible alternative explanations.",
+            "Match evidence type to the claim rather than to convenience."
+          ]
+        },
+        {
+          "heading": "Observation, measurement, and inference",
+          "paragraphs": [
+            "Observation describes what was seen or recorded. Measurement assigns values using a defined method. Inference is the interpretation drawn from those observations and measurements. Keeping these layers separate prevents confident conclusions from becoming disguised as raw facts.",
+            "For cultivation records, preserve original values and photographs before summarizing them. A later analyst should be able to see what was actually measured."
+          ],
+          "checkpoints": [
+            "Label observations separately from interpretations.",
+            "Preserve raw values and units.",
+            "Record instrument, method, time, and location."
+          ]
+        },
+        {
+          "heading": "Sampling, replication, and pseudoreplication",
+          "paragraphs": [
+            "A sample should represent the population or condition about which a claim is made. Multiple measurements from the same plant or container can improve precision for that unit but are not necessarily independent biological replicates.",
+            "Replication captures independent experimental units. Subsampling captures variation within an experimental unit. Confusing the two can make evidence appear stronger than it is."
+          ],
+          "checkpoints": [
+            "Identify the true experimental unit.",
+            "Distinguish biological replicates from repeated readings.",
+            "Describe how sample locations were selected."
+          ]
+        },
+        {
+          "heading": "Measurement quality and uncertainty",
+          "paragraphs": [
+            "Every measurement has limitations. Calibration, resolution, sensor placement, sample handling, drift, environmental interference, and operator technique can affect results. More decimal places do not automatically mean more accuracy.",
+            "Useful records include units, method, calibration state, and uncertainty when known. When uncertainty is not quantified, it should still be acknowledged in interpretation."
+          ],
+          "checkpoints": [
+            "Use appropriate calibration and quality-control checks.",
+            "Do not report precision the method cannot support.",
+            "Repeat suspicious measurements before building a major decision on them."
+          ]
+        },
+        {
+          "heading": "Claim auditing and monitored decisions",
+          "paragraphs": [
+            "A claim audit asks who made the claim, what exactly was tested, what controls and comparisons were used, whether the result was replicated, whether the statistics answer the question, and how closely the evidence matches the intended cultivation context.",
+            "Cultivation decisions can use the same discipline. Record baseline conditions, make a defined change, specify what response would count as improvement or harm, and monitor the result. This turns everyday management into a learning system without pretending that every grow is a formal experiment."
+          ],
+          "checkpoints": [
+            "Record the baseline before changing the system.",
+            "Define expected response and observation window.",
+            "Keep negative and null results instead of only memorable successes."
+          ]
+        },
+        {
+          "heading": "Controls, randomization, and blocking",
+          "paragraphs": [
+            "A comparison becomes easier to interpret when it includes an appropriate control or reference condition. The control establishes what happened without the tested change under the same general period and environment. Without it, a before-and-after difference can be confused with normal plant development, weather, equipment drift, or another simultaneous change.",
+            "Randomization reduces systematic placement bias by preventing the researcher from intentionally or unintentionally assigning one treatment to the most favorable positions. Blocking can improve comparisons when a known gradient exists, such as distance from a light source, irrigation zone, bench position, or outdoor slope. Treatments are then compared within blocks that share similar background conditions."
+          ],
+          "checkpoints": [
+            "Define the control or reference condition before the trial starts.",
+            "Randomize treatment assignment when the design allows it.",
+            "Use blocks when a known spatial or environmental gradient could confound the treatment.",
+            "Record the assignment method so the design can be audited later."
+          ]
+        },
+        {
+          "heading": "Effect size, variability, and practical importance",
+          "paragraphs": [
+            "A difference between treatments has at least two separate questions: how large is the observed effect, and how uncertain is that estimate? Reporting only whether a statistical test crosses a threshold can hide the size and variability of the response. Raw measurements, treatment summaries, spread, sample size, and an interval estimate provide more information about what the data can support.",
+            "Practical importance is also contextual. A small average change may matter if it is repeatable, inexpensive, and linked to an important outcome, while a larger but highly variable change may be unreliable. The decision should connect magnitude, uncertainty, biological meaning, cost, risk, and repeatability rather than reducing evidence to one p-value."
+          ],
+          "checkpoints": [
+            "Report the direction and magnitude of the observed difference.",
+            "Keep variability and sample size beside treatment averages.",
+            "Separate statistical evidence from biological or operational importance.",
+            "Preserve null and negative findings so future decisions are not biased toward memorable successes."
+          ]
+        },
+        {
+          "heading": "Time series, baselines, and change attribution",
+          "paragraphs": [
+            "Plant systems change through time even when management is stable. A useful baseline therefore contains enough observations to show the normal direction and variability before an intervention. One measurement immediately before and one immediately after a change can miss delayed responses, daily cycles, sensor noise, acclimation, and developmental trends.",
+            "Time-series records are strongest when measurement timing and methods remain consistent and when important external events are timestamped. Irrigation, pruning, transplanting, equipment changes, environmental excursions, pest treatments, and developmental transitions can all alter the trajectory and should be visible on the same timeline."
+          ],
+          "checkpoints": [
+            "Collect a meaningful baseline before changing the system when possible.",
+            "Keep sampling time and method consistent across the comparison.",
+            "Timestamp interventions and environmental excursions.",
+            "Look for sustained trajectory changes rather than reacting to one noisy point."
+          ]
+        },
+        {
+          "heading": "Reproducibility, metadata, and data integrity",
+          "paragraphs": [
+            "A result is more useful when another person can understand how it was produced. Metadata should preserve plant or batch identity, location, date and time, developmental stage, treatment definition, instrument, calibration state, units, sampling method, environmental context, and any deviations from the planned method. This information often determines whether two datasets can legitimately be compared.",
+            "Data integrity means preserving raw observations, corrections, exclusions, and transformations transparently. Do not silently overwrite a surprising value because it looks wrong. Flag it, investigate the instrument or method, repeat the measurement when appropriate, and retain the original record with the reason for any exclusion or correction."
+          ],
+          "checkpoints": [
+            "Use stable IDs for plants, treatments, samples, and instruments.",
+            "Preserve raw data before calculations or cleaning.",
+            "Document exclusions and corrections instead of deleting their history.",
+            "Store enough method detail that a later reader can reproduce the measurement."
+          ]
+        }
+      ],
+      "references": [
+        {
+          "title": "How to do research on your farm",
+          "organization": "University of Minnesota Extension",
+          "reviewed": 2022,
+          "note": "Extension guidance emphasizing controls, randomization, true replication, avoidance of pseudoreplication, and limits on extrapolation."
+        }
       ]
     },
     {
@@ -175,14 +1676,142 @@
       "route": "/learn/plant-science-reference/",
       "title": "Plant Science Reference",
       "summary": "Use this cross-topic reference to connect biology, environment, root-zone science, measurement, and cultivation terminology when a concept spans several specialized subject pages.",
-      "keywords": ["plant science", "reference", "glossary", "cultivation science", "systems thinking", "measurement", "diagnosis", "terminology"],
+      "keywords": [
+        "plant science",
+        "reference",
+        "glossary",
+        "cultivation science",
+        "systems thinking",
+        "measurement",
+        "diagnosis",
+        "terminology",
+        "units",
+        "SI",
+        "conversion",
+        "significant figures",
+        "system map",
+        "causal chain",
+        "recordkeeping",
+        "metadata",
+        "uncertainty language"
+      ],
       "sections": [
-        {"heading":"Think in interacting systems","paragraphs":["Plant outcomes emerge from genetics, developmental stage, light, temperature, humidity, carbon dioxide, water, roots, nutrients, pests, disease pressure, and management history. Isolating one variable can be useful for learning, but real cultivation decisions usually require several layers of context.","A systems approach asks what changed, where the effect appears, which processes connect the change to the symptom, and what independent evidence can confirm or reject that explanation."],"checkpoints":["Record recent changes before diagnosing.","Connect symptoms to plausible biological mechanisms.","Look for independent confirming evidence."]},
-        {"heading":"Use definitions precisely","paragraphs":["Terms such as pH, EC, VPD, DLI, cultivar, genotype, phenotype, deficiency, toxicity, disease, and stress have specific meanings. Loose terminology creates apparent disagreement and can lead to incorrect actions.","When two sources use the same word differently, compare their definitions and measurement methods before comparing their numbers."],"checkpoints":["Define unfamiliar or disputed terms.","Keep units and measurement methods with values.","Do not compare metrics that were produced by incompatible methods."]},
-        {"heading":"Separate target ranges from biological laws","paragraphs":["Cultivation guides often publish target ranges. These can be useful starting points, but most are operational recommendations rather than universal biological thresholds. Cultivar, stage, equipment, medium, measurement method, and production goal can shift the useful operating range.","Treat a target as a hypothesis to be monitored. The plant and the measurements should confirm that the system is working."],"checkpoints":["Record the source of each target.","Know whether the target is evidence-based, manufacturer guidance, or local practice.","Change targets when repeatable plant evidence justifies it."]},
-        {"heading":"Build diagnostic evidence in layers","paragraphs":["Start with visual location and pattern, then add stage, recent changes, environment, root-zone measurements, irrigation history, pest evidence, and appropriate tests. This reduces the chance that a visually familiar symptom becomes an automatic diagnosis.","Use comparison plants or unaffected zones whenever possible. Differences within the same room can reveal more than a generic image from the internet."],"checkpoints":["Compare affected and unaffected plants.","Keep whole-plant and close-up photographs.","Track progression after any correction."]},
-        {"heading":"Connect to the deeper library","paragraphs":["This reference page is a bridge, not a substitute for the specialized literature. Use the dedicated subject pages for anatomy, genetics, lifecycle, environment, lighting, water chemistry, nutrition, IPM, canopy management, harvest, outdoor cultivation, and research methods.","The infographic library should be used as a visual index into those subjects. Finished infographics reinforce the literature; supporting images belong inside the relevant lesson rather than being promoted as stand-alone infographics."],"checkpoints":["Open the dedicated topic page for detailed context.","Use infographics as summaries, not complete instructions.","Follow source and evidence links when a decision depends on a precise claim."]}
+        {
+          "heading": "Think in interacting systems",
+          "paragraphs": [
+            "Plant outcomes emerge from genetics, developmental stage, light, temperature, humidity, carbon dioxide, water, roots, nutrients, pests, disease pressure, and management history. Isolating one variable can be useful for learning, but real cultivation decisions usually require several layers of context.",
+            "A systems approach asks what changed, where the effect appears, which processes connect the change to the symptom, and what independent evidence can confirm or reject that explanation."
+          ],
+          "checkpoints": [
+            "Record recent changes before diagnosing.",
+            "Connect symptoms to plausible biological mechanisms.",
+            "Look for independent confirming evidence."
+          ]
+        },
+        {
+          "heading": "Use definitions precisely",
+          "paragraphs": [
+            "Terms such as pH, EC, VPD, DLI, cultivar, genotype, phenotype, deficiency, toxicity, disease, and stress have specific meanings. Loose terminology creates apparent disagreement and can lead to incorrect actions.",
+            "When two sources use the same word differently, compare their definitions and measurement methods before comparing their numbers."
+          ],
+          "checkpoints": [
+            "Define unfamiliar or disputed terms.",
+            "Keep units and measurement methods with values.",
+            "Do not compare metrics that were produced by incompatible methods."
+          ]
+        },
+        {
+          "heading": "Separate target ranges from biological laws",
+          "paragraphs": [
+            "Cultivation guides often publish target ranges. These can be useful starting points, but most are operational recommendations rather than universal biological thresholds. Cultivar, stage, equipment, medium, measurement method, and production goal can shift the useful operating range.",
+            "Treat a target as a hypothesis to be monitored. The plant and the measurements should confirm that the system is working."
+          ],
+          "checkpoints": [
+            "Record the source of each target.",
+            "Know whether the target is evidence-based, manufacturer guidance, or local practice.",
+            "Change targets when repeatable plant evidence justifies it."
+          ]
+        },
+        {
+          "heading": "Build diagnostic evidence in layers",
+          "paragraphs": [
+            "Start with visual location and pattern, then add stage, recent changes, environment, root-zone measurements, irrigation history, pest evidence, and appropriate tests. This reduces the chance that a visually familiar symptom becomes an automatic diagnosis.",
+            "Use comparison plants or unaffected zones whenever possible. Differences within the same room can reveal more than a generic image from the internet."
+          ],
+          "checkpoints": [
+            "Compare affected and unaffected plants.",
+            "Keep whole-plant and close-up photographs.",
+            "Track progression after any correction."
+          ]
+        },
+        {
+          "heading": "Connect to the deeper library",
+          "paragraphs": [
+            "This reference page is a bridge, not a substitute for the specialized literature. Use the dedicated subject pages for anatomy, genetics, lifecycle, environment, lighting, water chemistry, nutrition, IPM, canopy management, harvest, outdoor cultivation, and research methods.",
+            "The infographic library should be used as a visual index into those subjects. Finished infographics reinforce the literature; supporting images belong inside the relevant lesson rather than being promoted as stand-alone infographics."
+          ],
+          "checkpoints": [
+            "Open the dedicated topic page for detailed context.",
+            "Use infographics as summaries, not complete instructions.",
+            "Follow source and evidence links when a decision depends on a precise claim."
+          ]
+        },
+        {
+          "heading": "Units, conversions, and significant figures",
+          "paragraphs": [
+            "Cultivation data becomes unreliable quickly when values lose their units. Temperature, EC, concentration, light, volume, mass, pressure, and area each have multiple commonly used unit systems. A number copied without its unit can become meaningless or dangerous when another person assumes a different scale.",
+            "Conversions should preserve the precision supported by the original measurement. A calculator can produce many decimal places, but the instrument and sampling method determine meaningful precision. Records should keep the original value and unit alongside any converted value so mistakes can be traced."
+          ],
+          "checkpoints": [
+            "Write units beside every measured value.",
+            "Preserve the original measurement before converting.",
+            "Do not report more precision than the instrument supports.",
+            "State whether percentages are by mass, volume, area, or another basis when ambiguity is possible."
+          ]
+        },
+        {
+          "heading": "Build system maps before changing variables",
+          "paragraphs": [
+            "Plant responses emerge from interacting systems. Light changes leaf temperature and photosynthetic demand; environment changes transpiration; irrigation changes root-zone oxygen and chemistry; root health changes nutrient and water uptake; canopy architecture changes light and humidity distribution. A system map makes these connections explicit before a single variable is blamed.",
+            "The map does not need to predict every outcome. Its purpose is to reveal plausible pathways, missing measurements, and variables that may move together. When a change is made, the map helps decide what else should be observed so downstream effects are not mistaken for unrelated problems."
+          ],
+          "checkpoints": [
+            "List the variable you plan to change and the systems it directly touches.",
+            "Identify at least one downstream measurement to track.",
+            "Mark unknown links instead of inventing certainty.",
+            "Update the map when observations contradict the original model."
+          ]
+        },
+        {
+          "heading": "Recordkeeping, metadata, and uncertainty language",
+          "paragraphs": [
+            "A cultivation record is useful only when the observation can be placed in context. Plant identity, date and time, stage, location, instrument or method, units, environment, recent management events, and the observer's notes form the metadata that make later comparison possible.",
+            "Language should reflect evidence quality. Terms such as observed, measured, suspected, consistent with, confirmed by, source-reported, and unknown communicate different levels of certainty. Writing the uncertainty explicitly prevents a tentative interpretation from becoming an unquestioned fact after it is copied into later notes."
+          ],
+          "checkpoints": [
+            "Use stable IDs for plants, batches, samples, rooms, and instruments.",
+            "Keep raw observations separate from interpretation fields.",
+            "Use certainty language consistently across the education system.",
+            "Preserve corrections and changed interpretations instead of silently overwriting history."
+          ]
+        }
+      ],
+      "references": [
+        {
+          "title": "SI unit and measurement reporting principles",
+          "organization": "NIST",
+          "note": "General reference for units, conversions, precision, and measurement communication."
+        }
       ]
     }
-  ]
+  ],
+  "expansionMetadata": {
+    "assembledAt": "2026-08-29T16:37:44.737Z",
+    "sources": [
+      "/home/runner/work/Thc/Thc/site/wordpress/education/topic-literature-expansions.json",
+      "/home/runner/work/Thc/Thc/site/wordpress/education/topic-literature-expansions-core-v1.json"
+    ],
+    "topicsExpanded": 13,
+    "minimumSectionsPerTopic": 8
+  }
 }
