@@ -1,0 +1,57 @@
+{
+  "id":"THC-ENC-277",
+  "number":277,
+  "title":"Chemical Phytotoxicity",
+  "objective":"Investigate suspected chemical injury by reconstructing source, route, formulation, mixture, exposure pattern, environment, tissue state, and timing without treating visual symptoms as proof or authorizing chemical use.",
+  "terms":[
+    {"term":"phytotoxicity","definition":"Plant injury caused by a chemical substance, formulation, concentration, mixture, residue, gas, or chemical condition."},
+    {"term":"nontarget injury","definition":"Damage to a plant that was not intended to receive the causal chemical exposure."},
+    {"term":"drift","definition":"Movement of spray droplets, particles, or vapor away from the intended treatment area."},
+    {"term":"formulation","definition":"The manufactured combination of active ingredient and other components that determines how a product is delivered and behaves."},
+    {"term":"adjuvant","definition":"A material added to a spray or formulation to alter spreading, wetting, penetration, retention, drift behavior, or another application property."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Chemical phytotoxicity can arise from pesticides, fertilizers, disinfectants, cleaning residues, pH-adjustment chemicals, contaminated water, gases, drift, incompatible mixtures, excessive concentration, or equipment carryover. The same visible endpoint can therefore originate from very different chemical mechanisms and exposure routes.",
+    "Injury pattern is evidence, not identity. Contact exposure can produce spotting, bleaching, margin death, localized necrosis, or tissue collapse; absorbed chemicals can produce distortion, stunting, root injury, or delayed developmental effects. Uniform timing after a shared event can strengthen an exposure hypothesis without identifying the compound responsible.",
+    "Official extension guidance emphasizes that chemical injury can overlap with nutrient disorders, drought, disease, insects, and weather injury. Field or bench patterns—such as overlap bands, drift gradients, edge effects, or equipment-related repetition—can help reconstruct exposure but still require product and environmental history.",
+    "Plant response depends on more than the active ingredient. Formulation, carrier, adjuvant, mixture compatibility, water quality, tissue age, plant water status, temperature, light, humidity, drying time, route, equipment condition, and previous tank contents can change injury severity.",
+    "A product's legal registration or natural origin does not guarantee zero phytotoxicity under every crop and condition. Conversely, distorted leaves do not prove herbicide drift without exposure evidence. The diagnostic task is to preserve the record and narrow the mechanism rather than guess from appearance."
+  ],
+  "cultivationRelevance":[
+    "Stop repeat exposure when a shared chemical event is a credible cause and preserve the production area as evidence rather than reapplying a material to test the theory.",
+    "Retain current product labels, SDSs, lot or batch information, mixing and equipment-cleaning records, water-source information, environmental logs, treated/untreated maps, and representative plant samples.",
+    "Separate plant diagnosis from worker, consumer, residue, and regulatory decisions. Those questions may require qualified safety personnel, regulators, accredited laboratories, or product manufacturers.",
+    "This lesson does not recommend pesticide, fertilizer, disinfectant, acid/base, plant-growth-regulator, or foliar-product selection, rates, mixtures, or application procedures. Current labels and jurisdictional requirements govern lawful use."
+  ],
+  "measureAndRecord":[
+    {"field":"Exposure source","requirement":"Record product or suspected source, formulation, lot/batch, current label, SDS, water source, mixture components, equipment identity, and cleaning history."},
+    {"field":"Time and route","requirement":"Record application or exposure time, route, treated area, neighboring activities, ventilation, drift/vapor possibility, irrigation route, and interval to symptom onset."},
+    {"field":"Environment","requirement":"Record temperature, RH, light, airflow, plant water status, developmental stage, drying conditions, and other relevant operating states during and after exposure."},
+    {"field":"Pattern","requirement":"Map affected and unaffected plants, boundaries, gradients, overlap bands, droplet/contact patterns, root-zone zones, and protected tissue."},
+    {"field":"Evidence and response","requirement":"Preserve photographs, samples, untreated controls where available, analytical results, new-growth response, progression, and final disposition without rewriting uncertain exposure history as confirmed cause."
+    }
+  ],
+  "misconceptions":[
+    "A natural product cannot be phytotoxic.",
+    "A legal product cannot injure cannabis.",
+    "Leaf distortion alone proves herbicide drift.",
+    "The active ingredient is the only part of a spray that affects injury risk.",
+    "Improvement after one corrective action proves the suspected chemical caused the original symptoms."
+  ],
+  "evidenceLimits":[
+    "Visual phytotoxicity patterns are rarely compound-specific. Chemical identity, residue status, legal compliance, worker exposure, and crop disposition can require specialized or accredited analysis. Product labels, registrations, SDSs, and jurisdictional rules are release-date-sensitive sources and must be reviewed at the time of any real-world implementation."
+  ],
+  "crossLinks":"THC-ENC-261 for diagnostic workflow; THC-ENC-264–265 for necrosis and distortion; THC-ENC-279 for spray/residue investigations; THC-ENC-281–340 for biotic differentials; THC-ENC-401–420 for evidence and measurement.",
+  "sourceNotes":[
+    "University of Missouri Extension, Preventing and Managing Plant Diseases — Phytotoxicity. Defines phytotoxicity as chemical injury and emphasizes nontarget exposure through air, water, or soil and overlap with other abiotic/biotic problems.",
+    "Penn State Extension, Bedding Plant Diseases — Phytotoxicity (current page, 2025). Documents spotting, margin death, stunting, delayed development, overlap-pattern injury, and the influence of additives and application conditions.",
+    "Penn State Extension, Herbicide Drift and Drift Related Damage (updated 2025) and diagnostic pattern guidance. Supports preserving spatial pattern, weather, history, and off-target exposure evidence rather than diagnosing drift from leaf appearance alone.",
+    "Controlled Volume 14 manuscript v1.0 prohibits chemical-use authorization and requires current labels, registrations, SDSs, worker-safety rules, residue requirements, samples, and alternative diagnoses to remain explicit."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 14 batch 04 controlled web derivative","driveSourceDocumentId":"1mbN8hq4g6jZUgW0bkwZBSXotPqZ7c184kOya5SqdtJA","evidenceControl":"controlled_manuscript_plus_current_official_extension_phytotoxicity_and_drift_diagnostic_guidance","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"chemical_phytotoxicity_exposure_reconstruction_residue_safety_and_regulatory_differential","releaseTimeReview":"completed_2026-08-29_no_chemical_authorization_and_pattern_not_identity_boundary","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"chemical-phytotoxicity",
+  "route":"/encyclopedia/chemical-phytotoxicity"
+}
