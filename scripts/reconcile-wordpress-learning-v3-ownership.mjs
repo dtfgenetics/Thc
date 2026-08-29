@@ -13,13 +13,15 @@ if(!['reconcile','verify'].includes(mode)) throw new Error(`Unsupported LEARNING
 if(!username||!password) throw new Error('WP_API_USERNAME and WP_API_PASSWORD are required');
 
 const auth=`Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`;
-const headers={Authorization:auth,Accept:'application/json','User-Agent':'DTFSeeds-Learning-V3-Ownership/1.1'};
+const headers={Authorization:auth,Accept:'application/json','User-Agent':'DTFSeeds-Learning-V3-Ownership/1.2'};
 const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 const rendered=value=>typeof value==='string'?value:(value?.raw||value?.rendered||'');
 const normalizePath=value=>{
   const path=new URL(value||'/',siteUrl).pathname.replace(/\/{2,}/g,'/');
   return path==='/'?'/':`${path.replace(/\/$/,'')}/`;
 };
+const unsafeRetirementStart=Date.parse('2026-08-29T15:18:00Z');
+const unsafeRetirementEnd=Date.parse('2026-08-29T15:19:00Z');
 
 await mkdir(backupRoot,{recursive:true});
 const source=JSON.parse(await readFile(topicPath,'utf8'));
@@ -59,8 +61,9 @@ async function request(path,options={}){
   throw lastError;
 }
 
-async function pagesBySlug(slug){
-  const body=await request(`/wp-json/wp/v2/pages?slug=${encodeURIComponent(slug)}&context=edit&status=publish&per_page=100`);
+async function pagesBySlug(slug,statuses=['publish']){
+  const status=encodeURIComponent(statuses.join(','));
+  const body=await request(`/wp-json/wp/v2/pages?slug=${encodeURIComponent(slug)}&context=edit&status=${status}&per_page=100`);
   return Array.isArray(body)?body:[];
 }
 
@@ -68,8 +71,39 @@ async function pageById(id){
   return request(`/wp-json/wp/v2/pages/${encodeURIComponent(id)}?context=edit`);
 }
 
-async function createPage(slug,title,parent){
-  if(!apply) throw new Error(`Missing published page ${slug}; APPLY_LEARNING_V3_OWNERSHIP is not true`);
+function routeSlug(route){
+  return normalizePath(route).split('/').filter(Boolean).pop()||'';
+}
+
+function pageSummary(page){
+  return {id:page.id,parent:Number(page.parent||0),slug:page.slug,link:page.link,status:page.status,modified_gmt:page.modified_gmt||null};
+}
+
+function modifiedEpoch(page){
+  const value=page?.modified_gmt||page?.modified||'';
+  if(!value) return NaN;
+  return Date.parse(/[zZ]|[+-]\d\d:\d\d$/.test(value)?value:`${value}Z`);
+}
+
+// "exactly one published WordPress owner" means exactly one owner inside the canonical parent
+// namespace / exact route. WordPress legitimately permits the same leaf slug under other parents.
+function canonicalMatches(candidates,parent,route){
+  const expectedParent=Number(parent||0);
+  const expectedRoute=normalizePath(route);
+  return candidates.filter(page=>Number(page.parent||0)===expectedParent||normalizePath(page.link)===expectedRoute);
+}
+
+async function requireCanonicalPage(slug,label,parent,route){
+  const candidates=await pagesBySlug(slug);
+  const canonical=canonicalMatches(candidates,parent,route);
+  if(canonical.length!==1){
+    throw new Error(`${label} must have exactly one published WordPress owner in canonical namespace ${normalizePath(route)} under parent ${parent}; found ${canonical.length}. All same-slug pages: ${JSON.stringify(candidates.map(pageSummary))}`);
+  }
+  return {page:canonical[0],namespacePeers:candidates.filter(page=>page.id!==canonical[0].id).map(pageSummary)};
+}
+
+async function createPage(slug,title,parent,route){
+  if(!apply) throw new Error(`Missing canonical published page ${route}; APPLY_LEARNING_V3_OWNERSHIP is not true`);
   try{
     return await request('/wp-json/wp/v2/pages',{
       method:'POST',
@@ -77,9 +111,9 @@ async function createPage(slug,title,parent){
       body:JSON.stringify({slug,title,parent,status:'publish',content:''})
     });
   }catch(error){
-    const recovered=await pagesBySlug(slug);
+    const recovered=canonicalMatches(await pagesBySlug(slug),parent,route);
     if(recovered.length===1) return recovered[0];
-    throw new Error(`Create ${slug} was ambiguous and could not be recovered safely: ${error.message}`);
+    throw new Error(`Create ${route} was ambiguous and could not be recovered safely: ${error.message}`);
   }
 }
 
@@ -97,93 +131,86 @@ async function updatePage(page,payload,label){
   });
 }
 
-function routeSlug(route){
-  return normalizePath(route).split('/').filter(Boolean).pop()||'';
+async function isEncyclopediaPeer(page,learnId){
+  if(!page?.parent) return false;
+  const parent=await pageById(page.parent);
+  return parent?.slug==='encyclopedia'&&Number(parent.parent||0)===Number(learnId);
 }
 
-async function requireSinglePublishedSlug(slug,label){
-  const candidates=await pagesBySlug(slug);
-  if(candidates.length!==1){
-    const details=candidates.map(page=>({id:page.id,parent:page.parent,link:page.link,status:page.status}));
-    throw new Error(`${label} must have exactly one published WordPress owner for slug ${slug}; found ${candidates.length}: ${JSON.stringify(details)}`);
+// PR #286 briefly treated globally duplicated leaf slugs as invalid and drafted the noncanonical
+// page during Learning V3 #1284 (ownership step 15:18:16Z-15:18:33Z). Hierarchical WordPress pages
+// may legitimately reuse a slug, so recover only draft Encyclopedia peers modified inside that exact
+// unsafe window. Older intentional drafts and pages outside /learn/encyclopedia/ are never touched.
+async function recoverUnsafeEncyclopediaPeers(slug,learnId){
+  if(mode!=='reconcile'||!apply) return [];
+  const candidates=await pagesBySlug(slug,['publish','draft']);
+  const restored=[];
+  for(const candidate of candidates){
+    if(candidate.status!=='draft') continue;
+    const modified=modifiedEpoch(candidate);
+    if(!Number.isFinite(modified)||modified<unsafeRetirementStart||modified>unsafeRetirementEnd) continue;
+    if(!(await isEncyclopediaPeer(candidate,learnId))) continue;
+    const restoredPage=await updatePage(candidate,{status:'publish'},`${slug}-restore-unsafe-encyclopedia-peer`);
+    restored.push(pageSummary(restoredPage));
   }
-  return candidates[0];
-}
-
-async function retireNoncanonicalDuplicates(candidates,canonical,route,label){
-  const extras=candidates.filter(candidate=>Number(candidate.id)!==Number(canonical.id));
-  if(!extras.length) return canonical;
-  const unsafe=extras.filter(candidate=>normalizePath(candidate.link)===route);
-  if(unsafe.length) throw new Error(`${label} has more than one exact published owner for ${route}: ${JSON.stringify(candidates.map(page=>({id:page.id,parent:page.parent,link:page.link,status:page.status})))}`);
-  if(mode!=='reconcile') throw new Error(`${label} has duplicate published slug owners while verifying: ${JSON.stringify(candidates.map(page=>({id:page.id,parent:page.parent,link:page.link,status:page.status})))}`);
-  for(const duplicate of extras){
-    await updatePage(duplicate,{status:'draft'},`${label}-retire-duplicate`);
-  }
-  const remaining=await pagesBySlug(routeSlug(route));
-  if(remaining.length!==1||Number(remaining[0].id)!==Number(canonical.id)){
-    throw new Error(`${label} duplicate retirement did not converge to canonical page ${canonical.id}: ${JSON.stringify(remaining.map(page=>({id:page.id,parent:page.parent,link:page.link,status:page.status})))}`);
-  }
-  return remaining[0];
+  return restored;
 }
 
 const results=[];
+const learnRoute='/learn/';
 let learnCandidates=await pagesBySlug('learn');
+let learnCanonical=canonicalMatches(learnCandidates,0,learnRoute);
 let learn;
-if(learnCandidates.length===0){
-  learn=await createPage('learn','Teaching Healthy Cultivation',0);
-}else if(learnCandidates.length===1){
-  learn=learnCandidates[0];
+if(learnCanonical.length===0){
+  learn=await createPage('learn','Teaching Healthy Cultivation',0,learnRoute);
+}else if(learnCanonical.length===1){
+  learn=learnCanonical[0];
 }else{
-  const exact=learnCandidates.filter(page=>normalizePath(page.link)==='/learn/');
-  if(exact.length!==1) throw new Error(`Learn root has ambiguous published ownership: ${JSON.stringify(learnCandidates.map(page=>({id:page.id,parent:page.parent,link:page.link})))}`);
-  learn=await retireNoncanonicalDuplicates(learnCandidates,exact[0],'/learn/','Learn root');
+  throw new Error(`Learn root has multiple canonical published owners: ${JSON.stringify(learnCanonical.map(pageSummary))}`);
 }
 
 if(mode==='reconcile'&&(Number(learn.parent)!==0||learn.slug!=='learn'||learn.status!=='publish')){
   learn=await updatePage(learn,{parent:0,slug:'learn',status:'publish'},'learn');
 }
-learn=await requireSinglePublishedSlug('learn','Learn root');
-learn=await pageById(learn.id);
+let learnResolved=await requireCanonicalPage('learn','Learn root',0,learnRoute);
+learn=await pageById(learnResolved.page.id);
 if(Number(learn.parent)!==0) throw new Error(`Learn root ${learn.id} still has parent ${learn.parent}`);
-if(normalizePath(learn.link)!=='/learn/') throw new Error(`Learn root ${learn.id} permalink is ${learn.link}, expected ${siteUrl}/learn/`);
+if(normalizePath(learn.link)!==learnRoute) throw new Error(`Learn root ${learn.id} permalink is ${learn.link}, expected ${siteUrl}${learnRoute}`);
 if(mode==='verify'&&!rendered(learn.content).includes('data-dtf-layout="learn-v3"')) throw new Error(`Learn root ${learn.id} is missing stored learn-v3 marker`);
-results.push({kind:'learn',id:learn.id,slug:'learn',parent:learn.parent,route:'/learn/',storedMarker:mode==='verify'});
+results.push({kind:'learn',id:learn.id,slug:'learn',parent:learn.parent,route:learnRoute,storedMarker:mode==='verify',namespacePeers:learnResolved.namespacePeers,restoredUnsafePeers:[]});
 
 for(const topic of source.topics){
   const route=normalizePath(topic.route||'');
   const slug=routeSlug(route);
   if(!slug) throw new Error(`Topic ${topic.id} has no usable route`);
+  const restoredUnsafePeers=await recoverUnsafeEncyclopediaPeers(slug,learn.id);
   let candidates=await pagesBySlug(slug);
+  let canonical=canonicalMatches(candidates,learn.id,route);
   let page;
-  if(candidates.length===0){
-    page=await createPage(slug,topic.title||topic.id,learn.id);
-  }else if(candidates.length===1){
-    page=candidates[0];
+  if(canonical.length===0){
+    page=await createPage(slug,topic.title||topic.id,learn.id,route);
+  }else if(canonical.length===1){
+    page=canonical[0];
   }else{
-    const exact=candidates.filter(candidate=>normalizePath(candidate.link)===route);
-    const details=candidates.map(candidate=>({id:candidate.id,parent:candidate.parent,link:candidate.link,status:candidate.status}));
-    if(exact.length===1){
-      page=await retireNoncanonicalDuplicates(candidates,exact[0],route,topic.id);
-    }else{
-      throw new Error(`${topic.id} has ambiguous published slug owners for ${slug}: ${JSON.stringify(details)}`);
-    }
+    throw new Error(`${topic.id} has multiple canonical published owners for ${route}: ${JSON.stringify(canonical.map(pageSummary))}`);
   }
 
   if(mode==='reconcile'&&(Number(page.parent)!==Number(learn.id)||page.slug!==slug||page.status!=='publish')){
     page=await updatePage(page,{parent:learn.id,slug,status:'publish'},topic.id);
   }
 
-  page=await requireSinglePublishedSlug(slug,topic.id);
-  page=await pageById(page.id);
+  const resolved=await requireCanonicalPage(slug,topic.id,learn.id,route);
+  page=await pageById(resolved.page.id);
   if(Number(page.parent)!==Number(learn.id)) throw new Error(`${topic.id} page ${page.id} parent is ${page.parent}; expected Learn ${learn.id}`);
   if(page.slug!==slug) throw new Error(`${topic.id} page ${page.id} slug is ${page.slug}; expected ${slug}`);
-  if(normalizePath(page.link)!==route) throw new Error(`${topic.id} page ${page.id} permalink is ${page.link}, expected ${siteUrl}${route}`);
+  if(normalizePath(page.link)!==route) throw new Error(`${topic.id} page ${page.id} permalink is ${page.link}; expected ${siteUrl}${route}`);
   const marker=`data-dtf-topic="${topic.id}"`;
   if(mode==='verify'&&!rendered(page.content).includes(marker)) throw new Error(`${topic.id} page ${page.id} is missing stored marker ${marker}`);
-  results.push({kind:'topic',topicId:topic.id,id:page.id,slug,parent:page.parent,route,storedMarker:mode==='verify'});
+  results.push({kind:'topic',topicId:topic.id,id:page.id,slug,parent:page.parent,route,storedMarker:mode==='verify',namespacePeers:resolved.namespacePeers,restoredUnsafePeers});
 }
 
-const report={generatedAt:new Date().toISOString(),siteUrl,mode,apply,topicPath,learnPageId:learn.id,topicCount:source.topics.length,results};
+const restoredUnsafePeerCount=results.reduce((sum,item)=>sum+(item.restoredUnsafePeers?.length||0),0);
+const report={generatedAt:new Date().toISOString(),siteUrl,mode,apply,topicPath,learnPageId:learn.id,topicCount:source.topics.length,restoredUnsafePeerCount,results};
 const reportPath=join(backupRoot,`learning-v3-ownership-${mode}.json`);
 await writeFile(reportPath,`${JSON.stringify(report,null,2)}\n`);
 console.log(JSON.stringify(report,null,2));
