@@ -50,6 +50,73 @@
       <button id="play-again" class="primary-control" type="button">Play this deck again</button>
     </section>
   </main>
-  <script type="module" src="./app.js"></script>
+  <script id="strain-match-data" type="application/json">
+{
+  "schemaVersion": 1,
+  "decks": [
+    {
+      "id": "terpenes",
+      "title": "Terpene Signals",
+      "description": "Match common terpene names with widely associated aroma notes.",
+      "pairs": [
+        {"id":"myrcene","term":"Myrcene","clue":"Earthy / musky","note":"Myrcene is commonly described with earthy, musky, and herbal aroma notes."},
+        {"id":"limonene","term":"Limonene","clue":"Citrus","note":"Limonene is strongly associated with citrus-like aroma."},
+        {"id":"pinene","term":"Pinene","clue":"Pine","note":"Alpha- and beta-pinene are associated with pine and resinous aromas."},
+        {"id":"linalool","term":"Linalool","clue":"Floral","note":"Linalool is commonly described as floral, soft, and lavender-like."},
+        {"id":"caryophyllene","term":"Caryophyllene","clue":"Peppery / spicy","note":"Beta-caryophyllene is widely associated with black-pepper and spice notes."},
+        {"id":"terpinolene","term":"Terpinolene","clue":"Fresh herbal / floral","note":"Terpinolene can present fresh, herbal, floral, and lightly citrus-like notes."},
+        {"id":"humulene","term":"Humulene","clue":"Woody / hoppy","note":"Humulene is associated with woody, earthy, and hop-like aroma."},
+        {"id":"ocimene","term":"Ocimene","clue":"Sweet / herbal","note":"Ocimene is often described as sweet, herbal, and fresh."}
+      ]
+    },
+    {
+      "id": "plant-problems",
+      "title": "Plant Problem Clues",
+      "description": "Match a cultivation problem with a typical diagnostic clue. Real diagnosis should use multiple observations, not one symptom alone.",
+      "pairs": [
+        {"id":"nitrogen-deficiency","term":"Nitrogen deficiency","clue":"Older leaves yellow first","note":"Mobile nitrogen is commonly remobilized from older tissue, so lower/older leaves often pale first."},
+        {"id":"magnesium-deficiency","term":"Magnesium deficiency","clue":"Interveinal chlorosis on older leaves","note":"Magnesium is mobile; deficiency often appears as interveinal yellowing on older leaves."},
+        {"id":"iron-deficiency","term":"Iron deficiency","clue":"New growth yellows first","note":"Iron is relatively immobile, so deficiency symptoms commonly appear in young growth first."},
+        {"id":"potassium-deficiency","term":"Potassium deficiency","clue":"Leaf-edge scorch / necrosis","note":"Potassium deficiency can progress from marginal chlorosis to scorched or necrotic leaf edges."},
+        {"id":"overwatering","term":"Overwatering / low root-zone oxygen","clue":"Droop with persistently saturated medium","note":"Persistently saturated media can reduce root-zone oxygen and contribute to drooping and poor uptake."},
+        {"id":"underwatering","term":"Underwatering","clue":"Limp plant + unusually dry medium","note":"Water deficit commonly produces loss of turgor while the root medium is unusually dry/light."},
+        {"id":"spider-mites","term":"Spider mites","clue":"Fine stippling + possible webbing","note":"Spider-mite feeding often causes fine stippling; heavier populations may produce visible webbing."},
+        {"id":"powdery-mildew","term":"Powdery mildew","clue":"White powdery surface patches","note":"Powdery mildew typically appears as white powdery colonies on leaf surfaces."}
+      ]
+    },
+    {
+      "id": "breeding",
+      "title": "Seeds & Breeding",
+      "description": "Match common genetics and seed terms to concise definitions.",
+      "pairs": [
+        {"id":"regular-seeds","term":"Regular seeds","clue":"Can produce male or female plants","note":"Regular seed populations are not bred specifically to eliminate male offspring."},
+        {"id":"feminized-seeds","term":"Feminized seeds","clue":"Bred for a very high proportion of female plants","note":"Feminized seed production uses female pollen sources so offspring are overwhelmingly female under normal conditions."},
+        {"id":"autoflower","term":"Autoflower","clue":"Flowering is driven primarily by age","note":"Autoflowering plants initiate flowering largely according to developmental age rather than a strict photoperiod trigger."},
+        {"id":"photoperiod","term":"Photoperiod","clue":"Flowering responds to day/night length","note":"Photoperiod cannabis flowering is strongly regulated by the duration of uninterrupted darkness."},
+        {"id":"clone","term":"Clone","clue":"Vegetative genetic copy","note":"A clone is propagated vegetatively from a donor plant and is genetically very similar to that donor barring mutation."},
+        {"id":"phenotype","term":"Phenotype","clue":"Observable expression","note":"Phenotype is the observable expression produced by genotype interacting with environment."},
+        {"id":"genotype","term":"Genotype","clue":"Genetic makeup","note":"Genotype refers to the inherited genetic constitution underlying potential traits."},
+        {"id":"backcross","term":"Backcross","clue":"Cross offspring back to a parent/recurrent line","note":"A backcross mates offspring back to a parent or genetically similar recurrent parent to recover selected background traits."}
+      ]
+    },
+    {
+      "id": "tools",
+      "title": "Grow Tools",
+      "description": "Match common cultivation tools with what they measure or help accomplish.",
+      "pairs": [
+        {"id":"ph-meter","term":"pH meter","clue":"Acidity / alkalinity","note":"A calibrated pH meter estimates hydrogen-ion activity on the pH scale."},
+        {"id":"ec-meter","term":"EC meter","clue":"Electrical conductivity","note":"EC is used as a practical proxy for total dissolved ionic concentration in nutrient solution."},
+        {"id":"hygrometer","term":"Hygrometer","clue":"Relative humidity","note":"A hygrometer measures humidity; many grow-room devices combine humidity and temperature sensors."},
+        {"id":"ppfd-meter","term":"PPFD / quantum meter","clue":"Photosynthetic photon flux density","note":"A quantum sensor can measure PPFD in micromoles of photons per square meter per second."},
+        {"id":"loupe","term":"Jeweler’s loupe / microscope","clue":"Close trichome inspection","note":"Magnification helps inspect trichome heads and small pest or tissue details."},
+        {"id":"trellis","term":"Trellis net","clue":"Canopy support and training","note":"A trellis supports branches and can help distribute canopy growth across available space."},
+        {"id":"sticky-card","term":"Sticky monitoring card","clue":"Monitor flying pest pressure","note":"Sticky cards are monitoring tools for adult flying pests; they are not a complete IPM program by themselves."},
+        {"id":"timer","term":"Timer / controller","clue":"Repeat a lighting schedule","note":"Timers and controllers automate consistent on/off schedules for lighting and other equipment."}
+      ]
+    }
+  ]
+}
+  </script>
+  <script src="./app.js" defer></script>
 </body>
 </html>

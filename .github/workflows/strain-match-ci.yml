@@ -27,6 +27,8 @@ jobs:
           node-version: '22'
       - name: Validate canonical and public game data
         run: node games/strain-match/scripts/validate-data.mjs
+      - name: Test self-contained public runtime
+        run: node games/strain-match/test/public-runtime.test.mjs
       - name: Validate browser runtime syntax and route contract
         shell: bash
         run: |
@@ -36,4 +38,14 @@ jobs:
           test -s site/public-route-patch/games/strain-match/strain-match.css
           grep -Fq 'rel="canonical" href="https://dtfseeds.com/games/strain-match/"' site/public-route-patch/games/strain-match/index.html
           grep -Fq 'Strain Match' site/public-route-patch/games/strain-match/index.html
+          grep -Fq 'id="strain-match-data"' site/public-route-patch/games/strain-match/index.html
+          grep -Fq '<script src="./app.js" defer></script>' site/public-route-patch/games/strain-match/index.html
+          if grep -Fq 'type="module"' site/public-route-patch/games/strain-match/index.html; then
+            echo 'Strain Match must not depend on module MIME handling in production.' >&2
+            exit 1
+          fi
+          if grep -Fq "fetch('./data/decks.json'" site/public-route-patch/games/strain-match/app.js; then
+            echo 'Strain Match must not fetch deck JSON at runtime.' >&2
+            exit 1
+          fi
           grep -Fq 'deploymentRegistered": true' games/strain-match/game.json
