@@ -78,8 +78,8 @@ jobs:
           cat > "$RUNNER_TEMP/remote-manifest.json" <<'JSON'
           {
             "schemaVersion": 1,
-            "batchId": "ci-empty-approved-remote",
-            "assets": []
+            "purpose": "ci-empty-approved-remote",
+            "entries": []
           }
           JSON
           BULK_INFOGRAPHIC_MANIFEST="$RUNNER_TEMP/manifest.json" \
