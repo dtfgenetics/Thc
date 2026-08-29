@@ -40,8 +40,11 @@ jobs:
           grep -Fq 'dtf-strain-card-blue-mango-f2-regular' scripts/run-learning-v3-production.mjs
           grep -Fq 'dtf-strain-card-blue-mango-f2-feminized' scripts/run-learning-v3-production.mjs
           grep -Fq 'dtf-strain-card-blue-bubblegum-f1-regular' scripts/run-learning-v3-production.mjs
+          grep -Fq 'WordPress hierarchical pages may legitimately reuse a leaf slug under different parents.' scripts/run-learning-v3-production.mjs
+          grep -Fq 'Number(page.parent || 0) === Number(parent || 0)' scripts/run-learning-v3-production.mjs
           grep -Fq 'dtf-strain-card-mango-bubbles-f1-regular' scripts/finalize-wordpress-home-genetics-art.mjs
           grep -Fq 'exactly one published WordPress owner' scripts/reconcile-wordpress-learning-v3-ownership.mjs
+          grep -Fq 'namespacePeers' scripts/reconcile-wordpress-learning-v3-ownership.mjs
           grep -Fq 'data-dtf-layout="learn-v3"' scripts/reconcile-wordpress-learning-v3-ownership.mjs
           grep -Fq 'data-dtf-topic=' scripts/reconcile-wordpress-learning-v3-ownership.mjs
 
@@ -68,7 +71,7 @@ jobs:
           grep -Fq 'Blue Mango F2 Feminized DTF Genetics strain card' "$legacy"
           grep -Fq 'Blue Bubblegum F1 Regular DTF Genetics strain card' "$legacy"
           grep -Fq 'Mango Bubbles F1 Regular DTF Genetics strain card' "$legacy"
-          echo 'Homepage genetics ownership validated: Learning V3 public-checks the shared shell, reconciles single-owner Learn subjects, verifies stored markers, and calls final Home release visuals as a reusable workflow.'
+          echo 'Homepage genetics ownership validated: Learning V3 public-checks the shared shell, resolves hierarchical pages by parent namespace, verifies stored markers, and calls final Home release visuals as a reusable workflow.'
 
       - name: Prove V3 runtime patch still matches canonical publisher
         shell: bash
@@ -77,6 +80,14 @@ jobs:
           node <<'NODE'
           const fs=require('fs');
           const publisher=fs.readFileSync('scripts/rebuild-wordpress-learning-experience-v3.mjs','utf8');
+          const pageLookup=`async function getPage(slug) {
+            const { body } = await request(\`/wp-json/wp/v2/pages?slug=\${encodeURIComponent(slug)}&context=edit&per_page=10\`);
+            return Array.isArray(body) ? body[0] || null : null;
+          }
+
+          async function ensurePage(slug, title, parent = 0) {
+            const existing = await getPage(slug);
+            if (existing) return existing;`;
           const releaseBlock=`const releaseImages = {
             mangoRegular: chooseMedia(media, [['flower', 'anatomy'], ['trichome']], used) || fallbackHero,
             mangoFem: chooseMedia(media, [['trichome'], ['flower']], used) || fallbackHero,
@@ -84,10 +95,11 @@ jobs:
           };`;
           const hero=`<div class="hero-media">${'${'}img(fallbackHero, 'DTF Genetics and Teaching Healthy Cultivation plant science', { ratio: '1/1', eager: true })}</div>`;
           const releaseCss='.v3 .release img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover}';
+          if(!publisher.includes(pageLookup)) throw new Error('V3 global-slug page lookup patch target drifted.');
           if(!publisher.includes(releaseBlock)) throw new Error('V3 release-image patch target drifted.');
           if(!publisher.includes(hero)) throw new Error('V3 Home hero patch target drifted.');
           if(!publisher.includes(releaseCss)) throw new Error('V3 release CSS patch target drifted.');
-          console.log('Learning V3 reviewed-genetics patch targets are stable.');
+          console.log('Learning V3 parent-namespace and reviewed-genetics patch targets are stable.');
           NODE
 
       - name: Regression-test premium post-V3 matchers
