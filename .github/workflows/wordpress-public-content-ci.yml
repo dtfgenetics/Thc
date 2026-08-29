@@ -56,7 +56,7 @@ jobs:
             exit 1
           }
 
-      - name: Enforce WordPress and static route ownership
+      - name: Enforce WordPress route ownership
         shell: bash
         run: |
           set -euo pipefail
@@ -72,10 +72,10 @@ jobs:
           ! grep -Eq "\['games',[[:space:]]*'|\['high-iq',[[:space:]]*'" scripts/apply-wordpress-public-content-rest.mjs
           ! grep -Eq 'page_slugs=.*\b(games|high-iq)\b|required_files=.*\b(games|high-iq)\b' scripts/apply-wordpress-public-content.sh
 
-          test -s site/public-route-patch/games/index.html
-          test -s site/public-route-patch/games/high-iq/index.html
-          grep -Fq 'https://dtfseeds.com/games/' site/public-route-patch/games/index.html
-          grep -Fq 'https://dtfseeds.com/games/high-iq/' site/public-route-patch/games/high-iq/index.html
+          # Static game route identity belongs to Validate DTFSeeds Route Ownership.
+          # This workflow only asserts that WordPress does not claim those routes.
+          test ! -e site/wordpress/pages/games.html
+          test ! -e site/wordpress/pages/high-iq.html
 
       - name: Enforce canonical WordPress front-page routing
         shell: bash
