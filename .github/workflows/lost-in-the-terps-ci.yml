@@ -23,4 +23,4 @@ jobs:
           test -s site/public-route-patch/games/lost-in-the-terps/index.html
           test -s site/public-route-patch/games/lost-in-the-terps/terps.css
           grep -Fq 'https://dtfseeds.com/games/lost-in-the-terps/' site/public-route-patch/games/lost-in-the-terps/index.html
-          grep -Fq 'deploymentRegistered": false' games/lost-in-the-terps/game.json
+          grep -Fq 'deploymentRegistered": true' games/lost-in-the-terps/game.json

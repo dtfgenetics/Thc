@@ -3,6 +3,9 @@
 
 The package intentionally excludes the WordPress-owned root and /learn/ routes so a
 static suite deployment cannot recreate the shadowing incident fixed on 2026-08-21.
+Registered local static game routes are derived from the canonical public-app registry
+so a tested game cannot be registered for deployment and then silently omitted from
+the WordPress archive by a stale hand-maintained allowlist.
 """
 from __future__ import annotations
 
@@ -19,6 +22,7 @@ if len(sys.argv) != 3:
 
 root = Path(sys.argv[1]).resolve()
 out = Path(sys.argv[2]).resolve()
+repo_root = Path(__file__).resolve().parents[1]
 if not root.is_dir():
     raise SystemExit(f"release directory not found: {root}")
 
@@ -49,6 +53,31 @@ allowed = [
     "atlas",
     "assets/images/atlas",
 ]
+
+public_apps_path = repo_root / "site" / "deployment" / "public-apps.json"
+public_apps = json.loads(public_apps_path.read_text())
+registered_local_game_targets: list[str] = []
+for app in public_apps.get("apps", []):
+    source = str(app.get("sourcePath") or "").rstrip("/")
+    route = str(app.get("route") or "")
+    if (
+        app.get("repository") == "dtfgenetics/Thc"
+        and app.get("runtime") == "static"
+        and app.get("status") == "ready-to-package"
+        and source.startswith("site/public-route-patch/games/")
+        and route.startswith("/games/")
+        and route.endswith("/")
+    ):
+        target = route.strip("/")
+        if target.count("/") != 1 or not target.startswith("games/"):
+            raise SystemExit(f"unsafe registered local game route: {route}")
+        registered_local_game_targets.append(target)
+        if target not in allowed:
+            allowed.append(target)
+
+if len(registered_local_game_targets) != len(set(registered_local_game_targets)):
+    raise SystemExit("duplicate registered local game targets in public-app registry")
+
 required = [
     "games/index.html",
     "games/dtf-shell.css",
@@ -129,6 +158,11 @@ required = [
     "atlas/downloads/index.html",
     "assets/images/atlas/root-system/rhizosphere-microbe-interaction.svg",
 ]
+for target in registered_local_game_targets:
+    index_path = f"{target}/index.html"
+    if index_path not in required:
+        required.append(index_path)
+
 for rel in required:
     path = root / rel
     if not path.is_file() or path.stat().st_size == 0:
@@ -176,6 +210,7 @@ manifest = {
     "purpose": "dtfseeds-public-apps-only",
     "wordPressOwnedRoutesExcluded": ["/", "/learn/", "/blog/"],
     "targets": allowed,
+    "registeredLocalGameTargets": sorted(registered_local_game_targets),
     "required": required,
     "fileCount": len(files),
     "uncompressedBytes": sum(int(meta["size"]) for meta in files.values()),
@@ -204,5 +239,6 @@ summary = {
     "fileCount": len(files),
     "uncompressedBytes": manifest["uncompressedBytes"],
     "targets": allowed,
+    "registeredLocalGameTargets": sorted(registered_local_game_targets),
 }
 print(json.dumps(summary, separators=(",", ":")))

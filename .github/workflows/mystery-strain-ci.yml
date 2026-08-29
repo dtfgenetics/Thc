@@ -50,4 +50,4 @@ jobs:
           grep -Fq 'https://dtfseeds.com/games/mystery-strain/' "$root/index.html"
           grep -Fqi 'fictional' "$root/index.html"
           grep -Fq 'type="module" src="./app.js"' "$root/index.html"
-          grep -Fq 'deploymentRegistered": false' games/mystery-strain/game.json
+          grep -Fq 'deploymentRegistered": true' games/mystery-strain/game.json

@@ -15,6 +15,8 @@
     "games:status": "node scripts/game-status.mjs",
     "games:verify": "node scripts/verify-game-workspace.mjs",
     "games:preflight": "npm run games:verify && npm run verify:navigation && npm run verify:release-integrity && node games/test/cross-game-polish.test.mjs",
+    "games:reconcile-release": "node scripts/reconcile-local-game-release-registry.mjs",
+    "games:release-check": "node scripts/reconcile-local-game-release-registry.mjs --check && npm run games:preflight",
     "import:infographics:bulk": "node scripts/import-wordpress-infographic-remote-batch.mjs",
     "dev": "npm run dev:high-land",
     "build": "npm run build:high-land",
