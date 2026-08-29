@@ -33,6 +33,8 @@ jobs:
         run: node games/mystery-strain/test/engine.test.mjs
       - name: Run information-ranking tests
         run: node games/mystery-strain/test/analysis.test.mjs
+      - name: Test self-contained public runtime
+        run: node games/mystery-strain/test/public-runtime.test.mjs
       - name: Validate browser JavaScript syntax
         run: |
           node --check site/public-route-patch/games/mystery-strain/app.js
@@ -58,10 +60,18 @@ jobs:
           grep -Fqi 'fictional' "$root/index.html"
           grep -Fq 'Best Split' "$root/index.html"
           grep -Fq './analysis.css' "$root/index.html"
-          grep -Fq 'type="module" src="./app.js"' "$root/index.html"
-          grep -Fq "from './analysis.mjs'" "$root/app.js"
+          grep -Fq 'id="mystery-strain-data"' "$root/index.html"
+          grep -Fq '<script src="./app.js" defer></script>' "$root/index.html"
           grep -Fq 'rankedQuestionOptions(state, data)' "$root/app.js"
           grep -Fq 'Information ${question.informationScore}%' "$root/app.js"
           grep -Fq 'BEST SPLIT' "$root/app.js"
           grep -Fq '.question-card.best-split' "$root/analysis.css"
+          if grep -Fq 'type="module"' "$root/index.html"; then
+            echo 'Mystery Strain must not depend on module MIME handling in production.' >&2
+            exit 1
+          fi
+          if grep -Fq "fetch('./data/strains.json'" "$root/app.js"; then
+            echo 'Mystery Strain must not fetch data JSON at runtime.' >&2
+            exit 1
+          fi
           grep -Fq 'deploymentRegistered": true' games/mystery-strain/game.json
