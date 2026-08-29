@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-207",
+  "number":207,
+  "title":"Male Floral Development and Anthesis",
+  "objective":"Identify the progression of staminate cannabis flowers toward anthesis and pollen release, document male reproductive timing accurately, and separate visible floral maturity from assumptions about pollen quantity or viability.",
+  "terms":[
+    {"term":"staminate flower","definition":"A male reproductive flower that bears stamens and anthers producing pollen."},
+    {"term":"anther","definition":"The pollen-producing portion of a stamen."},
+    {"term":"anthesis","definition":"The stage when a flower opens and its reproductive structures become functionally exposed; in male cannabis this includes opening of staminate flowers and anther presentation associated with pollen release."},
+    {"term":"dehiscence","definition":"Opening of an anther or other structure to release its contents, including pollen grains."},
+    {"term":"pollen shed","definition":"Release of pollen from mature anthers into the surrounding environment."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Male cannabis inflorescences contain clusters of staminate flowers. As these flowers mature, their perianth opens, stamens become exposed, and anthers dehisce to release pollen.",
+    "Floral development is asynchronous across a plant. Some staminate flowers can be releasing pollen while younger flowers in the same inflorescence remain closed, so one observation should not be treated as the reproductive state of the entire plant.",
+    "Published cannabis observations show large pollen release from mature male flowers and report morning-biased anther opening or pollen release in some conditions, but the exact daily timing depends on genotype and environment and remains incompletely characterized.",
+    "Visible anther maturity does not by itself establish pollen viability. Pollen can differ in germination capacity with developmental stage, handling, water status, temperature, and time after collection.",
+    "Because cannabis is wind pollinated, anthesis has consequences beyond the individual male flower. Once viable pollen is shed, air movement can transport grains away from the source and expose unintended female plants."
+  ],
+  "cultivationRelevance":[
+    "When pollen exclusion matters, scout male or pollen-producing structures before obvious yellow pollen deposits appear; containment decisions made after widespread dehiscence may be too late.",
+    "Use a repeated flowering-stage record rather than one 'male flowering date' because anthesis progresses across multiple flowers and days.",
+    "For breeding records, distinguish the date of first open staminate flower from the date of first observed pollen shed and from the collection date.",
+    "Do not infer pollen quality from color or quantity alone; use an appropriate germination or viability method when viability is a research or preservation question."
+  ],
+  "measureAndRecord":[
+    {"field":"Development stage","requirement":"Record closed floral clusters, visibly expanding staminate flowers, first open flowers, exposed anthers, and first observed pollen release as separate events."},
+    {"field":"Plant position","requirement":"Record branch and inflorescence location because reproductive development may not be synchronized across the plant."},
+    {"field":"Time context","requirement":"Record date and time of day for anthesis and pollen-shed observations when studying release patterns."},
+    {"field":"Environment","requirement":"Record temperature, relative humidity, airflow, precipitation or irrigation contact, and other conditions that may affect anther opening or pollen movement."},
+    {"field":"Pollen testing","requirement":"If pollen is collected for research or breeding, record collection stage and keep viability/germination results separate from visual maturity observations."
+    }
+  ],
+  "misconceptions":[
+    "All male flowers on a cannabis plant open and shed pollen at the same time.",
+    "A closed pollen sac and an open pollen-shedding flower represent the same reproductive stage.",
+    "Large visible pollen release proves that every grain is viable.",
+    "Cannabis pollen is released at one universal clock time every day.",
+    "A male plant is not a pollination risk until pollen is visibly coating nearby leaves."
+  ],
+  "evidenceLimits":[
+    "Cannabis staminate morphology and pollen release are documented, but detailed diurnal anthesis studies across modern cultivars remain limited. Timing observations from individual experiments or production systems should not be converted into a universal daily pollen-release schedule. Pollen quantity and pollen viability are separate traits."
+  ],
+  "crossLinks":"THC-ENC-141–160 for sex expression; THC-ENC-204 for early reproductive identification; THC-ENC-208 for pollen structure and viability; THC-ENC-209 for transport and deposition; THC-ENC-215 for containment and decontamination.",
+  "sourceNotes":[
+    "Punja ZK et al. (2020). Hermaphroditism in Marijuana (Cannabis sativa L.) Inflorescences—Impact on Floral Morphology, Seed Formation, Progeny Sex Ratios, and Genetic Variation. Frontiers in Plant Science 11:718. Documents staminate flower and anther development and substantial pollen release from mature structures.",
+    "Nimmala M, Ross SD, Foroutan H. (2024). Cannabis pollen dispersal across the United States. Scientific Reports 14:20605. Reviews cannabis pollen production, wind dispersal, and limited evidence on diurnal release timing.",
+    "Gaudet D et al. (2020). Development and Optimization of a Germination Assay and Long-Term Storage for Cannabis sativa Pollen. Plants 9:665. Demonstrates that pollen developmental stage and measured germination are relevant to viability assessment."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 11 batch 02 controlled web derivative","evidenceControl":"current_topic_secondary_review_complete","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_male_floral_biology_and_pollen_science","releaseTimeReview":"completed_2026-08-29_anthesis_staging_and_non_universal_release_timing","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"male-floral-development-and-anthesis",
+  "route":"/encyclopedia/male-floral-development-and-anthesis"
+}
