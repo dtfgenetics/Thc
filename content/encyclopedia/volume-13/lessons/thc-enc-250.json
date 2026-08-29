@@ -1,0 +1,55 @@
+{
+  "id":"THC-ENC-250",
+  "number":250,
+  "title":"Beta-Caryophyllene",
+  "objective":"Explain beta-caryophyllene as a cannabis sesquiterpene, its relationship with alpha-humulene and oxidation products, and the boundary between plant-profile evidence and receptor or health claims.",
+  "terms":[
+    {"term":"beta-caryophyllene","definition":"A bicyclic sesquiterpene commonly detected in cannabis inflorescences."},
+    {"term":"alpha-humulene","definition":"A related sesquiterpene that can be produced with beta-caryophyllene by the same cannabis terpene synthase."},
+    {"term":"caryophyllene oxide","definition":"An oxygenated product associated with oxidation of beta-caryophyllene."},
+    {"term":"sesquiterpene","definition":"A fifteen-carbon terpene commonly derived from farnesyl diphosphate."},
+    {"term":"relative abundance","definition":"The proportion of one analyte compared with other measured compounds rather than its absolute mass or concentration."}
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Beta-caryophyllene is a common cannabis sesquiterpene. Direct enzyme work functionally characterized CsTPS9FN, which produced beta-caryophyllene and alpha-humulene from FPP, demonstrating that the two compounds can share one biosynthetic enzyme.",
+    "In the Finola material studied by Booth and colleagues, beta-caryophyllene and alpha-humulene occurred in a strong relationship similar to the product ratio of the characterized enzyme. Broader genomic and market-profile work also found a strong correlation, but this is evidence for a biological relationship rather than a universal fixed ratio across all cannabis material.",
+    "Beta-caryophyllene can decline during storage and can undergo oxidation to caryophyllene oxide and other products. A rise in relative percentage after drying or storage does not prove new biosynthesis because lighter monoterpenes or other constituents may have been lost faster.",
+    "Validated cannabis analytical methods commonly quantify beta-caryophyllene and may include caryophyllene oxide. Method, sample form, storage history, and whether results are absolute or relative affect interpretation.",
+    "Beta-caryophyllene has separate pharmacological literature, including receptor activity, but detecting it in flower does not establish delivered dose, clinical effect, safety, or synergy with cannabinoids. Plant chemistry and pharmacology are different evidence levels."
+  ],
+  "cultivationRelevance":[
+    "Report beta-caryophyllene with alpha-humulene and oxidation products when the question concerns profile stability or pathway interpretation.",
+    "Distinguish absolute concentration from relative percentage before claiming that caryophyllene increased after harvest.",
+    "Keep storage, sample form, preparation, and analytical method consistent when comparing caryophyllene across lots or time points.",
+    "Keep receptor, medical, and synergy statements out of plant-profile conclusions unless separately supported by appropriate evidence."
+  ],
+  "measureAndRecord":[
+    {"field":"Analytes","requirement":"Record beta-caryophyllene, alpha-humulene, caryophyllene oxide where measured, units, standards, and identification evidence."},
+    {"field":"Sample context","requirement":"Record plant/lot identity, tissue, position, stage, fresh/dry state, and preparation."},
+    {"field":"Storage and handling","requirement":"Record package, oxygen/light exposure, whole/ground form, temperature, time, and drying/cure history."},
+    {"field":"Quantitation","requirement":"State absolute concentration or relative percentage, calibration method, replicate, recovery, and uncertainty."},
+    {"field":"Profile context","requirement":"Retain the broader mono- and sesquiterpene profile so selective loss is distinguishable from apparent proportional increase."}
+  ],
+  "misconceptions":[
+    "Beta-caryophyllene proves a cannabis product has a medical effect.",
+    "Caryophyllene oxide means the sample was intentionally processed.",
+    "Beta-caryophyllene and alpha-humulene must occur in one fixed ratio in every cultivar.",
+    "A higher post-dry caryophyllene percentage proves the plant synthesized more after harvest.",
+    "Detecting beta-caryophyllene proves cannabinoid synergy."
+  ],
+  "evidenceLimits":[
+    "Cannabis-specific enzyme, genomic, profile, storage, and analytical evidence supports beta-caryophyllene occurrence, shared biosynthesis with alpha-humulene in characterized CsTPS, and postharvest change. Ratio stability is not universal, and plant concentration cannot substitute for exposure, pharmacokinetics, receptor-level interpretation, or clinical evidence."
+  ],
+  "crossLinks":"THC-ENC-244 for sesquiterpenes; THC-ENC-245 for terpene-synthase genetics; THC-ENC-251 for humulene and minor terpenes; THC-ENC-257–258 for storage and analytical variation; THC-ENC-260 for entourage-claim evidence levels.",
+  "sourceNotes":[
+    "Booth JK, Page JE, Bohlmann J. (2017). Terpene synthases from Cannabis sativa. PLOS ONE 12:e0173911. Functionally characterized CsTPS9FN as a beta-caryophyllene/alpha-humulene synthase and compared its product ratio with Finola inflorescence profiles.",
+    "Allen KD et al. (2019). Genomic characterization of the complete terpene synthase gene family from Cannabis sativa. PLOS ONE 14:e0222363. Reported strong beta-caryophyllene/alpha-humulene correlation across a larger market-sample dataset while documenting wider TPS diversity.",
+    "Milay L et al. (2020). Metabolic Profiling of Cannabis Secondary Metabolites for Evaluation of Optimal Postharvest Storage Conditions. Frontiers in Plant Science 11:583605. Demonstrated storage-related beta-caryophyllene decline under studied conditions.",
+    "Controlled Volume 13 manuscript v1.0 requires plant occurrence, oxidation, receptor activity, exposure, and clinical-effect claims to remain separate evidence levels."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 13 batch 02 controlled web derivative","driveSourceDocumentId":"1Vh_CkUFTN9eqsXiuH53pD1tMDyBo2zxDTIXOd_vQlgw","evidenceControl":"controlled_manuscript_plus_direct_cannabis_TPS_genomic_storage_and_analytical_sources","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_beta_caryophyllene_biosynthesis_storage_analytics_and_pharmacology_boundary","releaseTimeReview":"completed_2026-08-29_caryophyllene_humulene_ratio_oxidation_storage_and_effect_boundaries","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"beta-caryophyllene",
+  "route":"/encyclopedia/beta-caryophyllene"
+}
