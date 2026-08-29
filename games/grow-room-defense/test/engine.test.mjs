@@ -55,6 +55,38 @@ assert.equal(afterMismatch.lastAction.quality, 'mismatch');
 assert.equal(afterMismatch.lastAction.reduction, 0);
 assert.ok(afterMismatch.totalDamage > 0);
 
+const priorityState = createGame({ code: 'PRY842' }, data);
+const priorityLane = priorityState.lanes.find((lane) => lane.id === priorityState.lastSpawn.laneId);
+const secondThreatDef = data.threats.find((threat) => threat.id !== priorityState.lastSpawn.threatId);
+const secondInstance = {
+  instanceId: `forced-${priorityLane.id}-${secondThreatDef.id}`,
+  threatId: secondThreatDef.id,
+  pressure: secondThreatDef.pressure,
+  maxPressure: secondThreatDef.pressure,
+  spawnedRound: priorityState.round
+};
+priorityLane.threats.push(secondInstance);
+const originalFirstInstance = priorityLane.threats[0].instanceId;
+const priorityTool = bestToolsForThreat(secondThreatDef.id, data).find((choice) => choice.quality === 'strong');
+assert.ok(priorityTool);
+const beforePriority = structuredClone(priorityState);
+const afterPriority = applyAction(priorityState, {
+  toolId: priorityTool.toolId,
+  laneId: priorityLane.id,
+  instanceId: secondInstance.instanceId
+}, data);
+assert.deepEqual(priorityState, beforePriority, 'Targeted actions must not mutate their input state.');
+assert.equal(afterPriority.lastAction.instanceId, secondInstance.instanceId);
+assert.equal(afterPriority.lastAction.threatId, secondThreatDef.id);
+assert.equal(afterPriority.lastAction.resolvedThreat, secondThreatDef.id);
+assert.ok(afterPriority.lanes.find((lane) => lane.id === priorityLane.id).threats.some((threat) => threat.instanceId === originalFirstInstance), 'Resolving a later target must preserve the earlier active threat.');
+assert.ok(!afterPriority.lanes.find((lane) => lane.id === priorityLane.id).threats.some((threat) => threat.instanceId === secondInstance.instanceId), 'The chosen target should be removed when fully resolved.');
+assert.throws(() => applyAction(priorityState, {
+  toolId: priorityTool.toolId,
+  laneId: priorityLane.id,
+  instanceId: 'missing-threat-instance'
+}, data), /no longer active/);
+
 let perfect = createGame({ code: 'PER842' }, data);
 while (perfect.status === 'playing') {
   const spawn = perfect.lastSpawn;

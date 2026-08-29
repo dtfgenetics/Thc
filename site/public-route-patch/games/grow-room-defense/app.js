@@ -87,18 +87,20 @@ function pressurePips(active) {
   return `<span class="pressure-meter" aria-label="Pressure ${active.pressure} of ${active.maxPressure}">${pips}</span>`;
 }
 
-function renderThreat(active) {
+function renderThreat(active, laneId, tool) {
   const threat = threatById.get(active.threatId);
   if (!threat) return '';
+  const disabled = !tool || state.status !== 'playing' ? 'disabled' : '';
+  const action = tool ? `Use ${tool.label} on ${threat.label}` : `Select a tool to target ${threat.label}`;
   return `
-    <div class="threat-card">
+    <button type="button" class="threat-card threat-target" data-lane="${escapeHtml(laneId)}" data-instance="${escapeHtml(active.instanceId)}" ${disabled} aria-label="${escapeHtml(action)}. Pressure ${active.pressure} of ${active.maxPressure}.">
       <span class="threat-mark">${escapeHtml(threat.mark)}</span>
-      <div class="threat-copy">
+      <span class="threat-copy">
         <strong>${escapeHtml(threat.label)}</strong>
         <small>${escapeHtml(threat.category)}</small>
         ${pressurePips(active)}
-      </div>
-    </div>`;
+      </span>
+    </button>`;
 }
 
 function plantArt() {
@@ -121,9 +123,9 @@ function renderLanes() {
     const section = document.createElement('section');
     section.className = `lane-card${lane.health <= 0 ? ' lost' : ''}`;
     const threatMarkup = lane.threats.length
-      ? lane.threats.map(renderThreat).join('')
+      ? lane.threats.map((active) => renderThreat(active, lane.id, tool)).join('')
       : '<p class="clear-lane">No active pressure.</p>';
-    const actionLabel = tool ? `Deploy ${tool.label}` : 'Select a tool first';
+    const actionLabel = tool ? `Deploy ${tool.label} to bench` : 'Select a tool first';
     section.innerHTML = `
       <div class="lane-heading">
         <div><span>${escapeHtml(lane.label)}</span><strong>${escapeHtml(lane.plant)}</strong></div>
@@ -154,10 +156,10 @@ function renderTools() {
 function renderSelectedTool() {
   const tool = selectedTool();
   if (!tool) {
-    ui.selectedTool.innerHTML = '<strong>No tool selected.</strong><span>Choose one defense tool, then deploy it to a bench.</span>';
+    ui.selectedTool.innerHTML = '<strong>No tool selected.</strong><span>Choose one defense tool, then target a specific threat or deploy to a bench.</span>';
     return;
   }
-  ui.selectedTool.innerHTML = `<strong>${escapeHtml(tool.label)}</strong><span>${escapeHtml(tool.description)}</span>`;
+  ui.selectedTool.innerHTML = `<strong>${escapeHtml(tool.label)}</strong><span>${escapeHtml(tool.description)} Select a threat card to prioritize it.</span>`;
 }
 
 function qualityCopy(action) {
@@ -170,7 +172,7 @@ function qualityCopy(action) {
 function renderFeedback() {
   if (!state.lastAction) {
     ui.feedback.className = 'feedback-card';
-    ui.feedback.innerHTML = '<span class="feedback-kicker">DEFENSE READY</span><strong>Select a tool, then deploy it to a bench.</strong><p>Strong counters can stop a fresh threat before it causes damage. Supportive counters reduce pressure but may not finish the job.</p>';
+    ui.feedback.innerHTML = '<span class="feedback-kicker">DEFENSE READY</span><strong>Select a tool, then choose the pressure you want to prioritize.</strong><p>Threat cards are direct targets. The bench button remains a quick action and uses the oldest active threat on that bench.</p>';
     return;
   }
 
@@ -239,21 +241,10 @@ function resetGame(code) {
   render();
 }
 
-ui.tools.addEventListener('click', (event) => {
-  const button = event.target.closest('button[data-tool]');
-  if (!button || state?.status !== 'playing') return;
-  selectedToolId = button.dataset.tool;
-  renderTools();
-  renderSelectedTool();
-  renderLanes();
-  ui.announce.textContent = `${selectedTool().label} selected. Choose a plant bench.`;
-});
-
-ui.lanes.addEventListener('click', (event) => {
-  const button = event.target.closest('button[data-lane]');
-  if (!button || !selectedToolId || state.status !== 'playing') return;
+function playAction(laneId, instanceId = null) {
+  if (!selectedToolId || state.status !== 'playing') return;
   try {
-    state = applyAction(state, { toolId: selectedToolId, laneId: button.dataset.lane }, data);
+    state = applyAction(state, { toolId: selectedToolId, laneId, instanceId }, data);
     const action = state.lastAction;
     render();
     const threat = action.threatId ? threatById.get(action.threatId) : null;
@@ -262,6 +253,27 @@ ui.lanes.addEventListener('click', (event) => {
     console.error(error);
     ui.announce.textContent = error.message;
   }
+}
+
+ui.tools.addEventListener('click', (event) => {
+  const button = event.target.closest('button[data-tool]');
+  if (!button || state?.status !== 'playing') return;
+  selectedToolId = button.dataset.tool;
+  renderTools();
+  renderSelectedTool();
+  renderLanes();
+  ui.announce.textContent = `${selectedTool().label} selected. Choose a specific threat or a plant bench.`;
+});
+
+ui.lanes.addEventListener('click', (event) => {
+  const threatButton = event.target.closest('button[data-instance][data-lane]');
+  if (threatButton) {
+    playAction(threatButton.dataset.lane, threatButton.dataset.instance);
+    return;
+  }
+  const benchButton = event.target.closest('button[data-lane]');
+  if (!benchButton) return;
+  playAction(benchButton.dataset.lane);
 });
 
 ui.code.addEventListener('input', () => setCode(ui.code.value));
@@ -308,7 +320,7 @@ async function load() {
     state = createGame({ code }, data);
     setCode(code);
     window.history.replaceState(null, '', challengeUrl());
-    ui.load.textContent = '12 deterministic rounds · 8 threats · 7 IPM tools';
+    ui.load.textContent = '12 deterministic rounds · 8 threats · 7 IPM tools · priority targeting';
     render();
   } catch (error) {
     console.error(error);
