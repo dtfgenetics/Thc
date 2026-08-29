@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-196",
+  "number":196,
+  "title":"Horizontal Versus Vertical Canopies",
+  "objective":"Compare horizontal and vertically distributed canopy architectures by light interception, access, support, airflow, and measurement needs rather than assuming one geometry is universally superior.",
+  "terms":[
+    {"term":"horizontal canopy","definition":"A canopy managed so much of its productive foliage and shoot tips occupy a relatively shallow height band across floor area."},
+    {"term":"vertical canopy","definition":"A canopy in which productive foliage and shoots are intentionally distributed across a larger vertical dimension."},
+    {"term":"lighting geometry","definition":"The spatial relationship among light sources, plant surfaces, angles, distances, and surrounding reflective surfaces."},
+    {"term":"projected canopy area","definition":"The area occupied by the canopy when viewed from a defined direction, commonly from above for horizontal systems."},
+    {"term":"surface-to-volume relationship","definition":"The relationship between exposed canopy surface and the three-dimensional volume occupied by foliage and branches."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Canopy geometry changes which leaves face the dominant light field. A shallow horizontal canopy can place many shoot tips at similar distance from overhead fixtures, while a vertical canopy requires lighting and measurement strategies that account for a larger height range or side-facing surfaces.",
+    "Uniform height does not guarantee uniform photon exposure. Fixture layout, overlap, leaf angle, branch density, wall reflections, edge effects, and plant-to-plant variation can still create substantial spatial differences.",
+    "Vertical distribution can increase usable plant surface in some layouts, but it can also create deeper shaded zones, more complex structural support, and harder-to-measure light fields if illumination is not matched to the geometry.",
+    "Architecture also affects labor and plant-health access. A geometry that uses space efficiently but prevents inspection, airflow, irrigation service, or safe support may perform poorly as a whole system.",
+    "The relevant comparison is system performance per defined area, volume, energy input, labor, or other objective. There is no biological rule that makes horizontal or vertical cannabis canopies universally best."
+  ],
+  "cultivationRelevance":[
+    "Choose canopy geometry together with lighting geometry rather than shaping plants first and trying to correct a mismatched light field later.",
+    "Map representative interior, edge, upper, and lower positions because each architecture creates different sampling risks.",
+    "Include access and support requirements when comparing systems; productive area that cannot be inspected or maintained has hidden costs.",
+    "Use the same normalization basis—such as dry yield per productive area or per unit energy—when making a fair comparison."
+  ],
+  "measureAndRecord":[
+    {"field":"Geometry","requirement":"Record canopy height, width, depth, productive surface orientation, and the floor or wall area allocated to the crop."},
+    {"field":"Lighting layout","requirement":"Document fixture positions, distances, dimming state, side lighting if used, and reflective boundaries."},
+    {"field":"Photon mapping","requirement":"Collect PPFD measurements on a grid matched to the actual plant surfaces, not only on a horizontal plane when the productive canopy is vertical."},
+    {"field":"Access and support","requirement":"Record trellis or support complexity, inspection access, and recurring labor needed to maintain the architecture."},
+    {"field":"Outcome normalization","requirement":"Report dry yield and quality against clearly stated area, volume, time, and energy denominators when comparing canopy systems."
+    }
+  ],
+  "misconceptions":[
+    "A flat canopy always receives perfectly uniform light.",
+    "Vertical growing automatically creates more usable yield from the same lighting power.",
+    "Canopy geometry can be evaluated independently of fixture geometry.",
+    "The system with the most visible plant surface is automatically the most efficient.",
+    "One architecture is inherently best for every cultivar and production objective."
+  ],
+  "evidenceLimits":[
+    "Cannabis architecture research supports strong effects of plant shape and canopy position, but direct standardized comparisons of every horizontal and vertical production geometry are limited. System-specific lighting, density, cultivar, labor, and support differences prevent a universal ranking."
+  ],
+  "crossLinks":"THC-ENC-101–120 for lighting; THC-ENC-181–195 for training, spacing, and canopy depth; THC-ENC-197 for airflow; THC-ENC-200 for canopy maps and normalized outcomes.",
+  "sourceNotes":[
+    "Danziger N, Bernstein N. (2021). Shape Matters: Plant Architecture Affects Chemical Uniformity in Large-Size Medical Cannabis Plants. Plants 10(9):1834. Supports the importance of architecture and within-canopy position.",
+    "Cannabis lighting literature supports matching photon measurements to crop geometry; treatment-specific results are not generalized into a universal horizontal-versus-vertical recommendation.",
+    "General controlled-environment horticulture literature provides system-level context for surface orientation, lighting geometry, and area-normalized comparisons."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 10 batch 03 controlled web derivative","evidenceControl":"current_topic_secondary_review_complete","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"canopy_architecture_and_controlled_environment_horticulture","releaseTimeReview":"completed_2026-08-29_geometry_and_normalized_comparison_claims","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"horizontal-versus-vertical-canopies",
+  "route":"/encyclopedia/horizontal-versus-vertical-canopies"
+}
