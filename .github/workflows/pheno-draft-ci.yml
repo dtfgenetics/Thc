@@ -1,0 +1,78 @@
+name: Pheno Draft CI
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - games/pheno-draft/**
+      - site/public-route-patch/games/pheno-draft/**
+      - .github/workflows/pheno-draft-ci.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate card data and public copy
+        run: node games/pheno-draft/scripts/validate-data.mjs
+
+      - name: Run deterministic Pheno Draft engine tests
+        run: node games/pheno-draft/test/engine.test.mjs
+
+      - name: Validate browser JavaScript syntax
+        run: |
+          node --check site/public-route-patch/games/pheno-draft/app.js
+          node --check site/public-route-patch/games/pheno-draft/engine.mjs
+
+      - name: Verify canonical and public engine match
+        run: cmp games/pheno-draft/src/engine.mjs site/public-route-patch/games/pheno-draft/engine.mjs
+
+      - name: Verify route, card asset and interaction contracts
+        run: |
+          node - <<'NODE'
+          const fs = require('fs');
+          const html = fs.readFileSync('site/public-route-patch/games/pheno-draft/index.html','utf8');
+          const css = fs.readFileSync('site/public-route-patch/games/pheno-draft/pheno-draft.css','utf8');
+          const app = fs.readFileSync('site/public-route-patch/games/pheno-draft/app.js','utf8');
+          const requireText = (source, text, label) => {
+            if (!source.includes(text)) throw new Error(`missing ${label}: ${text}`);
+          };
+          requireText(html, '<link rel="canonical" href="https://dtfseeds.com/games/pheno-draft/">', 'canonical route');
+          requireText(html, '<script type="module" src="./app.js"></script>', 'module entrypoint');
+          requireText(html, 'Game boundary:', 'content boundary');
+          requireText(app, 'data.rounds !== 6', 'round contract');
+          requireText(app, 'data.refreshTokens !== 2', 'refresh contract');
+          requireText(app, 'data.traits?.length !== 7', 'trait contract');
+          requireText(app, 'data.goals?.length !== 6', 'goal contract');
+          requireText(app, 'data.cards?.length !== 20', 'card contract');
+          requireText(app, "['1', '2', '3'].includes(event.key)", '1-3 keyboard choice shortcuts');
+          requireText(app, "event.key === 'r' || event.key === 'R'", 'refresh keyboard shortcut');
+          requireText(css, '.seed-emblem', 'seed card artwork');
+          requireText(css, '.helix', 'genome artwork');
+          requireText(css, '.trait-track', 'trait meter artwork');
+          requireText(css, '@media(prefers-reduced-motion:reduce)', 'reduced-motion support');
+          if (app.includes('ui.code.disabled')) throw new Error('run code input must remain available after completion');
+          NODE
+
+      - name: Verify truthful release boundary
+        run: |
+          node - <<'NODE'
+          const fs = require('fs');
+          const game = JSON.parse(fs.readFileSync('games/pheno-draft/game.json','utf8'));
+          if (game.status !== 'browser-vertical-slice') throw new Error('unexpected game status');
+          if (game.route !== '/games/pheno-draft/') throw new Error('unexpected route');
+          if (game.releaseGates.rulesTested !== true) throw new Error('rulesTested must remain true after the deterministic rules suite passed');
+          if (game.releaseGates.browserTested !== false) throw new Error('browserTested must remain false until browser QA is actually completed');
+          if (game.releaseGates.mobileTested !== false) throw new Error('mobileTested must remain false until mobile QA is actually completed');
+          if (game.releaseGates.accessibilityReviewed !== false) throw new Error('accessibilityReviewed must remain false until review is actually completed');
+          if (game.releaseGates.deploymentRegistered !== false) throw new Error('unreviewed game must not be production registered');
+          NODE
