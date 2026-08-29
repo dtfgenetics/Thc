@@ -6,11 +6,13 @@ const movesEl = document.querySelector('#moves');
 const timeEl = document.querySelector('#time');
 const pairsEl = document.querySelector('#pairs');
 const bestEl = document.querySelector('#best');
+const streakEl = document.querySelector('#streak');
 const learnNote = document.querySelector('#learn-note');
 const restartButton = document.querySelector('#restart');
 const playAgainButton = document.querySelector('#play-again');
 const completePanel = document.querySelector('#complete');
 const completeCopy = document.querySelector('#complete-copy');
+const roundStatus = document.querySelector('#round-status');
 
 let data;
 let activeDeck;
@@ -19,8 +21,15 @@ let openCards = [];
 let locked = false;
 let moves = 0;
 let matches = 0;
-let startedAt = null;
+let streak = 0;
+let bestStreak = 0;
+let roundStarted = false;
+let elapsedMs = 0;
+let runningSince = null;
 let timerId = null;
+let roundToken = 0;
+let restartArmedUntil = 0;
+let restartResetTimer = null;
 
 function readEmbeddedData() {
   const node = document.querySelector('#strain-match-data');
@@ -28,9 +37,7 @@ function readEmbeddedData() {
   const parsed = JSON.parse(node.textContent || '{}');
   if (!Array.isArray(parsed.decks) || !parsed.decks.length) throw new Error('Strain Match data contains no decks.');
   for (const deck of parsed.decks) {
-    if (!deck?.id || !deck?.title || !Array.isArray(deck.pairs) || deck.pairs.length < 2) {
-      throw new Error('A Strain Match deck is incomplete.');
-    }
+    if (!deck?.id || !deck?.title || !Array.isArray(deck.pairs) || deck.pairs.length < 2) throw new Error('A Strain Match deck is incomplete.');
     const pairIds = new Set();
     for (const pair of deck.pairs) {
       if (!pair?.id || !pair?.term || !pair?.clue || !pair?.note) throw new Error(`${deck.title} contains an incomplete pair.`);
@@ -51,7 +58,8 @@ function shuffle(items) {
 }
 
 const formatTime = (seconds) => `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
-const elapsedSeconds = () => startedAt ? Math.floor((Date.now() - startedAt) / 1000) : 0;
+const elapsedMilliseconds = () => elapsedMs + (runningSince === null ? 0 : Math.max(0, Date.now() - runningSince));
+const elapsedSeconds = () => Math.floor(elapsedMilliseconds() / 1000);
 const bestKey = () => `dtf-strain-match-best-${activeDeck.id}`;
 
 function isValidResult(value) {
@@ -60,7 +68,7 @@ function isValidResult(value) {
 
 function readBest() {
   try {
-    const value = JSON.parse(localStorage.getItem(bestKey()) || 'null');
+    const value = JSON.parse(globalThis.localStorage?.getItem(bestKey()) || 'null');
     return isValidResult(value) ? value : null;
   } catch {
     return null;
@@ -76,7 +84,7 @@ function isBetterResult(candidate, current) {
 function writeBest(result) {
   const current = readBest();
   const next = isBetterResult(result, current) ? result : current;
-  try { localStorage.setItem(bestKey(), JSON.stringify(next)); } catch {}
+  try { globalThis.localStorage?.setItem(bestKey(), JSON.stringify(next)); } catch {}
   return next;
 }
 
@@ -84,19 +92,44 @@ function updateScore() {
   movesEl.textContent = String(moves);
   timeEl.textContent = formatTime(elapsedSeconds());
   pairsEl.textContent = `${matches} / ${activeDeck.pairs.length}`;
+  if (streakEl) streakEl.textContent = String(streak);
   const best = readBest();
   bestEl.textContent = best ? `${best.moves} moves · ${formatTime(best.time)}` : '—';
 }
 
-function startTimer() {
-  if (startedAt) return;
-  startedAt = Date.now();
+function ensureTimerTicking() {
+  if (timerId !== null) return;
   timerId = window.setInterval(updateScore, 500);
 }
 
-function stopTimer() {
+function startTimer() {
+  if (!roundStarted) roundStarted = true;
+  if (runningSince !== null || document.hidden) return;
+  runningSince = Date.now();
+  ensureTimerTicking();
+  if (roundStatus) roundStatus.textContent = 'Round live';
+}
+
+function pauseTimer(reason = 'paused') {
+  if (runningSince !== null) {
+    elapsedMs += Math.max(0, Date.now() - runningSince);
+    runningSince = null;
+  }
   if (timerId !== null) window.clearInterval(timerId);
   timerId = null;
+  updateScore();
+  if (roundStatus && roundStarted && matches < activeDeck.pairs.length) roundStatus.textContent = reason;
+}
+
+function resumeTimer() {
+  if (!roundStarted || matches >= activeDeck.pairs.length || runningSince !== null || document.hidden) return;
+  runningSince = Date.now();
+  ensureTimerTicking();
+  if (roundStatus) roundStatus.textContent = 'Round live';
+}
+
+function stopTimer() {
+  pauseTimer('Round complete');
 }
 
 function buildCards(deck) {
@@ -104,6 +137,10 @@ function buildCards(deck) {
     { key: `${pair.id}-term`, pairId: pair.id, kind: 'term', text: pair.term, note: pair.note },
     { key: `${pair.id}-clue`, pairId: pair.id, kind: 'clue', text: pair.clue, note: pair.note }
   ]));
+}
+
+function escapeHtml(value) {
+  return String(value).replace(/[&<>'"]/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[character]));
 }
 
 function renderBoard() {
@@ -121,8 +158,31 @@ function renderBoard() {
   }
 }
 
-function escapeHtml(value) {
-  return String(value).replace(/[&<>'"]/g, (character) => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[character]));
+function clearRestartArm() {
+  restartArmedUntil = 0;
+  clearTimeout(restartResetTimer);
+  restartResetTimer = null;
+  restartButton.textContent = 'Shuffle & restart';
+  restartButton.removeAttribute('data-armed');
+}
+
+function requestRestart() {
+  const hasProgress = roundStarted && matches < activeDeck.pairs.length && (moves > 0 || openCards.length > 0 || matches > 0);
+  if (!hasProgress) {
+    resetRound();
+    return;
+  }
+  const now = Date.now();
+  if (now > restartArmedUntil) {
+    restartArmedUntil = now + 3500;
+    restartButton.textContent = 'Confirm restart';
+    restartButton.dataset.armed = 'true';
+    if (roundStatus) roundStatus.textContent = 'Restart armed';
+    clearTimeout(restartResetTimer);
+    restartResetTimer = setTimeout(clearRestartArm, 3600);
+    return;
+  }
+  resetRound();
 }
 
 function reveal(card, button) {
@@ -138,28 +198,37 @@ function reveal(card, button) {
   const [first, second] = openCards;
   const isMatch = first.card.pairId === second.card.pairId && first.card.kind !== second.card.kind;
   if (isMatch) {
-    first.button.classList.add('matched');
-    second.button.classList.add('matched');
+    first.button.classList.add('matched', 'match-pop');
+    second.button.classList.add('matched', 'match-pop');
     first.button.disabled = true;
     second.button.disabled = true;
     openCards = [];
     matches += 1;
-    learnNote.textContent = first.card.note;
+    streak += 1;
+    bestStreak = Math.max(bestStreak, streak);
+    learnNote.textContent = `${streak > 1 ? `${streak}× streak · ` : ''}${first.card.note}`;
+    if (roundStatus) roundStatus.textContent = streak > 1 ? `${streak}× match streak` : 'Pair matched';
     updateScore();
     if (matches === activeDeck.pairs.length) finishRound();
     return;
   }
 
+  streak = 0;
   locked = true;
+  const token = roundToken;
   const mismatched = [...openCards];
   openCards = [];
+  for (const entry of mismatched) entry.button.classList.add('mismatch');
+  if (roundStatus) roundStatus.textContent = 'No match';
   window.setTimeout(() => {
+    if (token !== roundToken) return;
     for (const entry of mismatched) {
-      entry.button.classList.remove('revealed');
+      entry.button.classList.remove('revealed', 'mismatch');
       entry.button.setAttribute('aria-label', 'Hidden Strain Match card');
       entry.button.setAttribute('aria-pressed', 'false');
     }
     locked = false;
+    if (roundStatus) roundStatus.textContent = 'Round live';
     updateScore();
   }, 650);
   updateScore();
@@ -170,8 +239,9 @@ function finishRound() {
   const result = { moves, time: elapsedSeconds() };
   const best = writeBest(result);
   updateScore();
-  completeCopy.textContent = `Solved ${matches} pairs in ${moves} moves and ${formatTime(result.time)}. Best: ${best.moves} moves · ${formatTime(best.time)}.`;
+  completeCopy.textContent = `Solved ${matches} pairs in ${moves} moves and ${formatTime(result.time)}. Best streak: ${bestStreak}. Best result: ${best.moves} moves · ${formatTime(best.time)}.`;
   completePanel.hidden = false;
+  board.classList.add('round-complete');
   const reducedMotion = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
   completePanel.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'nearest' });
 }
@@ -185,14 +255,22 @@ function selectDeck(deckId) {
 }
 
 function resetRound() {
-  stopTimer();
-  startedAt = null;
+  roundToken += 1;
+  pauseTimer('Ready');
+  roundStarted = false;
+  elapsedMs = 0;
+  runningSince = null;
   moves = 0;
   matches = 0;
+  streak = 0;
+  bestStreak = 0;
   openCards = [];
   locked = false;
+  clearRestartArm();
   completePanel.hidden = true;
+  board.classList.remove('round-complete');
   learnNote.textContent = 'Solve a pair to reveal a quick learning note.';
+  if (roundStatus) roundStatus.textContent = 'Ready';
   cards = buildCards(activeDeck);
   renderBoard();
   updateScore();
@@ -212,8 +290,13 @@ function renderDeckPicker() {
   }
 }
 
-restartButton.addEventListener('click', resetRound);
+restartButton.addEventListener('click', requestRestart);
 playAgainButton.addEventListener('click', resetRound);
+document.addEventListener('visibilitychange', () => {
+  if (!roundStarted || matches >= activeDeck.pairs.length) return;
+  if (document.hidden) pauseTimer('Timer paused while hidden');
+  else resumeTimer();
+});
 
 try {
   data = readEmbeddedData();
