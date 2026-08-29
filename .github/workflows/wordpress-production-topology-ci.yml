@@ -90,6 +90,7 @@ jobs:
 
           grep -Fq -- '- scripts/wordpress-ipv4-fetch-bootstrap.mjs' "$learning"
           grep -Fq 'node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/rebuild-wordpress-shared-shell-v3.mjs' "$learning"
+          grep -Fq 'node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/run-learning-v3-production.mjs' "$learning"
           node --check "$ipv4_bootstrap"
           grep -Fq 'family: 4' "$ipv4_bootstrap"
           grep -Fq 'https.request' "$ipv4_bootstrap"
@@ -116,4 +117,4 @@ jobs:
           grep -Fq 'actions/upload-artifact@v4' "$verify_infographics"
           grep -Fq 'issue_number: 220' "$verify_infographics"
 
-          echo 'Verified production order: staging -> canonical -> infographics -> learning -> reusable final Home owner; Home is reusable/manual-only, shared-shell REST is IPv4-forced, legacy writers are manual-only, and live verification is non-mutating.'
+          echo 'Verified production order: staging -> canonical -> infographics -> learning -> reusable final Home owner; Home is reusable/manual-only, all Learning WordPress REST publication uses IPv4, legacy writers are manual-only, and live verification is non-mutating.'
