@@ -6,19 +6,21 @@ on:
     branches: [main]
     paths:
       - .github/workflows/wordpress-learning-final-owner.yml
+      - .github/workflows/wordpress-home-release-visuals.yml
       - scripts/publish-wordpress-topic-literature.mjs
       - scripts/assemble-topic-literature-expansions.mjs
       - scripts/flush-hostinger-litespeed-mcp.mjs
       - scripts/wordpress-transient-fetch-bootstrap.mjs
+      - scripts/fix-wordpress-home-release-visuals.mjs
       - site/wordpress/education/topic-literature.json
       - site/wordpress/education/topic-literature-expansions.json
       - site/wordpress/education/visual-production-plans/**
       - site/wordpress/assets/infographics/infographic-learning-guides.json
       - site/wordpress/assets/infographics/placement-rules.json
       - site/wordpress/assets/infographics/infographic-exclusions.json
+      - site/wordpress/products/strain-card-images.json
   workflow_run:
     workflows:
-      - Publish DTFSeeds Learning Experience V3
       - Publish THC Topic Literature to WordPress Production
     types: [completed]
 
@@ -284,10 +286,17 @@ jobs:
               `Lighting literature sections: **${process.env.LIGHTING_SECTIONS || 'not-run'}**`,
               `Research/Measurement literature sections: **${process.env.RESEARCH_SECTIONS || 'not-run'}**`,
               '',
-              'This workflow is the final WordPress owner for THC Learning. It assembles additive curriculum, republishes the canonical literature-first pages, purges Hostinger/LiteSpeed, and requires the guided-learning and expanded-subject markers visitor-side.'
+              'This workflow is the single downstream THC Learning finalizer. It runs after Topic Literature, assembles additive curriculum, republishes canonical literature-first pages, purges Hostinger/LiteSpeed, verifies the guided-learning markers, then hands off to the exact homepage release-card owner.'
             ].join('\n');
             try {
               await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: 220, body });
             } catch (error) {
               core.warning(`Final-owner advisory report could not be posted: ${error.message}`);
             }
+
+  finalize_home:
+    name: Run exact Home release-card final owner
+    needs: finalize
+    if: ${{ needs.finalize.result == 'success' }}
+    uses: ./.github/workflows/wordpress-home-release-visuals.yml
+    secrets: inherit

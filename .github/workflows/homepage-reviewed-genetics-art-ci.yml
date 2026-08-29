@@ -7,8 +7,12 @@ on:
       - '.github/workflows/homepage-reviewed-genetics-art-ci.yml'
       - '.github/workflows/homepage-reviewed-genetics-art-production.yml'
       - '.github/workflows/wordpress-home-genetics-art.yml'
+      - '.github/workflows/wordpress-home-release-visuals.yml'
+      - '.github/workflows/wordpress-learning-final-owner.yml'
       - '.github/workflows/homepage-genetics-v2-ci.yml'
       - 'scripts/finalize-wordpress-home-genetics-art.mjs'
+      - 'scripts/fix-wordpress-home-release-visuals.mjs'
+      - 'site/wordpress/products/strain-card-images.json'
 
 permissions:
   contents: read
@@ -24,36 +28,51 @@ jobs:
         with:
           node-version: 22
 
-      - name: Validate finalizer and production workflow contracts
+      - name: Validate serialized production ownership contracts
         shell: bash
         run: |
           set -euo pipefail
           node --check scripts/finalize-wordpress-home-genetics-art.mjs
+          node --check scripts/fix-wordpress-home-release-visuals.mjs
+
+          manual=.github/workflows/homepage-reviewed-genetics-art-production.yml
+          exact_owner=.github/workflows/wordpress-home-release-visuals.yml
+          learning_final=.github/workflows/wordpress-learning-final-owner.yml
+
           for identity in \
             'dtf-strain-card-blue-mango-f2-regular' \
             'dtf-strain-card-blue-mango-f2-feminized' \
             'dtf-strain-card-blue-bubblegum-f1-regular' \
             'dtf-strain-card-mango-bubbles-f1-regular'; do
             grep -Fq "$identity" scripts/finalize-wordpress-home-genetics-art.mjs
-            grep -Fq "$identity" .github/workflows/homepage-reviewed-genetics-art-production.yml
+            grep -Fq "$identity" "$manual"
           done
-          for producer in \
-            'Publish DTFSeeds Learning Experience V3' \
-            'Rebuild DTFSeeds WordPress Visual Site' \
-            'Publish DTFSeeds WordPress Production' \
-            'Reconcile DTFSeeds WordPress Pages On Command' \
-            'Rebuild DTFSeeds Visual Site On Command' \
-            'Force DTF Visual + Favicon Production' \
-            'Recreate Codex WordPress Production Path'; do
-            grep -Fq -- "- $producer" .github/workflows/homepage-reviewed-genetics-art-production.yml || {
-              echo "Fresh Home genetics production workflow is missing upstream producer: $producer" >&2
-              exit 1
-            }
-          done
-          grep -Fq -- "- '.github/workflows/homepage-reviewed-genetics-art-production.yml'" .github/workflows/homepage-reviewed-genetics-art-production.yml
-          grep -Fq "APPLY_HOME_GENETICS_ART: 'true'" .github/workflows/homepage-reviewed-genetics-art-production.yml
+
+          grep -Fq 'workflow_dispatch:' "$manual"
+          ! grep -Fq 'workflow_run:' "$manual"
+          ! grep -Fq 'push:' "$manual"
+          grep -Fq 'continue-on-error: true' "$manual"
+          grep -Fq 'issue_number: 220' "$manual"
+          ! grep -Fq 'issue_number: 46' "$manual"
+          ! grep -Fq 'issue_number:46' "$manual"
+
+          grep -Fq 'workflow_call:' "$exact_owner"
+          ! grep -Fq 'workflow_run:' "$exact_owner"
+          grep -Fq 'scripts/fix-wordpress-home-release-visuals.mjs' "$exact_owner"
+          grep -Fq 'Verify visitor-facing homepage release artwork' "$exact_owner"
+          grep -Fq 'Purge Hostinger LiteSpeed cache' "$exact_owner"
+
+          grep -Fq -- '- Publish THC Topic Literature to WordPress Production' "$learning_final"
+          ! grep -Fq -- '- Publish DTFSeeds Learning Experience V3' "$learning_final"
+          grep -Fq 'Run exact Home release-card final owner' "$learning_final"
+          grep -Fq 'uses: ./.github/workflows/wordpress-home-release-visuals.yml' "$learning_final"
+          grep -Fq 'secrets: inherit' "$learning_final"
+          grep -Fq 'cancel-in-progress: false' "$learning_final"
+
+          grep -Fq "APPLY_HOME_GENETICS_ART: 'true'" "$manual"
           grep -Fq 'Current releases, shown with the real strain cards.' scripts/finalize-wordpress-home-genetics-art.mjs
           grep -Fq 'aspect-ratio:2/3' scripts/finalize-wordpress-home-genetics-art.mjs
+          echo 'Automatic reviewed Home mutation is retired; exact release-card ownership is serialized after final Learning publication.'
 
       - name: Validate both supported homepage layout contracts
         shell: bash
@@ -84,18 +103,26 @@ jobs:
           grep -Fq '/product/10-regular-f2-blue-mango-seeds/' "$source"
           grep -Fq '/product/10-feminized-f2-blue-mango-x/' "$source"
           grep -Fq '/product/10-reg-f1-blueberry-bubblegum/' "$source"
-          echo 'Current visual builder markup is covered by the reviewed-genetics finalizer.'
+          echo 'Current visual builder markup remains recognized by Home recovery tooling.'
 
       - name: Reject education media as release-card completion criteria
         shell: bash
         run: |
           set -euo pipefail
-          file=.github/workflows/homepage-reviewed-genetics-art-production.yml
-          grep -Fq 'Blue Mango F2 Regular DTF Genetics strain card' "$file"
-          grep -Fq 'Blue Mango F2 Feminized DTF Genetics strain card' "$file"
-          grep -Fq 'Blue Bubblegum F1 Regular DTF Genetics strain card' "$file"
-          grep -Fq 'Mango Bubbles F1 Regular DTF Genetics strain card' "$file"
-          grep -Fq 'Cannabis Sex Expression and Chromosome Combinations' "$file"
-          grep -Fq 'Flower Anatomy Reproduction' "$file"
-          grep -Fq 'Education artwork remains in current-release region' "$file"
+          registry=site/wordpress/products/strain-card-images.json
+          owner=.github/workflows/wordpress-home-release-visuals.yml
+          node - "$registry" <<'NODE'
+          const fs=require('fs');
+          const data=JSON.parse(fs.readFileSync(process.argv[2],'utf8'));
+          if(!Array.isArray(data.cards)||data.cards.length!==3) throw new Error('Expected exactly three reviewed current-release cards');
+          for(const card of data.cards){
+            if(!card.altText?.includes('DTF Genetics strain card')) throw new Error(`Unreviewed card alt text: ${card.altText}`);
+            if(Number(card.expectedWidth)!==1024||Number(card.expectedHeight)!==1536) throw new Error(`Unexpected card dimensions for ${card.registryId}`);
+          }
+          console.log('Reviewed current-release registry is exact and portrait-oriented.');
+          NODE
+          grep -Fq 'classCount === registry.cards.length' "$owner"
+          grep -Fq 'routesOk' "$owner"
+          grep -Fq 'altOk' "$owner"
+          grep -Fq 'portraitOk' "$owner"
           echo 'Reviewed Homepage Genetics Art protection contract verified.'
