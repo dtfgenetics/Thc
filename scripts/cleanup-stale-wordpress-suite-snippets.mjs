@@ -17,7 +17,7 @@ async function request(path,{method='GET',json,allow=[],retryServer=true,headers
   const attempts=retryServer?8:1;
   for(let attempt=1;attempt<=attempts;attempt++){
     try{
-      const response=await fetch(`${siteUrl}${path}`,{method,headers:{Authorization:auth,Accept:'application/json','Cache-Control':'no-cache, no-store, max-age=0',Pragma:'no-cache','User-Agent':'DTFSeeds-Stale-Suite-Bridge-Cleanup/1.8',...(json!==undefined?{'Content-Type':'application/json'}:{}),...headers},body:json!==undefined?JSON.stringify(json):undefined,redirect:'follow',signal:AbortSignal.timeout(45000)});
+      const response=await fetch(`${siteUrl}${path}`,{method,headers:{Authorization:auth,Accept:'application/json','Cache-Control':'no-cache, no-store, max-age=0',Pragma:'no-cache','User-Agent':'DTFSeeds-Stale-Suite-Bridge-Cleanup/1.9',...(json!==undefined?{'Content-Type':'application/json'}:{}),...headers},body:json!==undefined?JSON.stringify(json):undefined,redirect:'follow',signal:AbortSignal.timeout(45000)});
       const text=await response.text();let body=text;try{body=text?JSON.parse(text):null}catch{}
       if(retryServer&&!allow.includes(response.status)&&(response.status>=500||response.status===429)&&attempt<attempts){
         const delay=Math.min(15000,2000*attempt+Math.floor(Math.random()*750));
@@ -147,6 +147,7 @@ async function inspectCurrentLock(){
   }
 }
 
+let activeSuiteNamespace='dtf-suite/v2';
 async function findTrustedRecoveryBridge(candidates){
   const ordered=[...candidates].sort((a,b)=>Number(b?.id||0)-Number(a?.id||0));
   for(const candidate of ordered){
@@ -158,12 +159,15 @@ async function findTrustedRecoveryBridge(candidates){
     if(required.some(marker=>!code.includes(marker)))continue;
     const tokenMatch=code.match(/\$token\s*=\s*["']([a-f0-9]{64})["']\s*;/i);
     if(!tokenMatch)continue;
-    return{id,name,token:tokenMatch[1]};
+    const namespaceMatch=code.match(/dtf-suite\/v2-[a-f0-9]{24}/i);
+    activeSuiteNamespace=namespaceMatch?.[0]||'dtf-suite/v2';
+    console.log(`Using trusted recovery bridge namespace ${activeSuiteNamespace} from snippet ${id}.`);
+    return{id,name,token:tokenMatch[1],namespace:activeSuiteNamespace};
   }
   return null;
 }
 async function suiteRequest(token,path,{method='GET',json,allow=[]}={}){
-  return request(`/wp-json/dtf-suite/v2${path}`,{method,json,allow,headers:{'X-DTF-Suite-Token':token}});
+  return request(`/wp-json/${activeSuiteNamespace}${path}`,{method,json,allow,headers:{'X-DTF-Suite-Token':token}});
 }
 async function waitForRecoveryBridge(token,probeId){
   for(let attempt=1;attempt<=12;attempt++){
@@ -184,9 +188,6 @@ async function clearTransaction(token,id,state){
   if(['deployed','rolled_back'].includes(String(state.status))){
     r=await suiteRequest(token,'/finalize',{method:'POST',json:{deployment_id:id}});
   }else{
-    // Abort is intentionally transaction-aware: when production targets were
-    // touched it invokes the bridge's persisted rollback routine first, then
-    // removes the old workspace and lock. Untouched uploads are simply cleaned.
     r=await suiteRequest(token,'/abort',{method:'POST',json:{deployment_id:id}});
   }
   if(r.body?.ok!==true)throw new Error(`Recovery for transaction ${id} was not confirmed: ${JSON.stringify(r.body).slice(0,500)}`);
@@ -201,7 +202,7 @@ async function recoverStaleTransactionIfPresent(candidates){
   const activate=await request(`/wp-json/code-snippets/v1/snippets/${bridge.id}/activate`,{method:'POST',allow:[400]});
   if(!activate.ok&&activate.status!==400)throw new Error(`Could not activate trusted recovery bridge ${bridge.id}.`);
   try{
-    if(!(await waitForRecoveryBridge(bridge.token,probeId)))throw new Error(`Trusted recovery bridge ${bridge.id} did not expose its protected REST routes.`);
+    if(!(await waitForRecoveryBridge(bridge.token,probeId)))throw new Error(`Trusted recovery bridge ${bridge.id} did not expose its protected REST routes at ${activeSuiteNamespace}.`);
     let init=await suiteRequest(bridge.token,'/init',{method:'POST',allow:[409],json:{deployment_id:probeId,archive_bytes:1,archive_sha256:'0'.repeat(64)}});
     let recovered=null;
     if(!init.ok){
@@ -224,7 +225,7 @@ async function recoverStaleTransactionIfPresent(candidates){
       }
       if(code==='dtf_locked')await assertNoOtherActivePublisher();
       const state=await readTransactionState(bridge.token,staleId);
-      if(!state||!state.status)throw new Error(`Transaction ${staleId} could not be read through the trusted rollback bridge.`);
+      if(!state||!state.status)throw new Error(`Transaction ${staleId} could not be read through the trusted rollback bridge ${activeSuiteNamespace}.`);
       const recoveredStatus=await clearTransaction(bridge.token,staleId,state);
       recovered={deploymentId:staleId,priorStatus:String(state?.status||''),recoveryStatus:recoveredStatus,legacyLockInspected:Boolean(inspected)};
       console.log(`Recovered stale Public Suite transaction ${staleId} from status=${state?.status||'unknown'} via ${recoveredStatus}.`);
@@ -235,7 +236,7 @@ async function recoverStaleTransactionIfPresent(candidates){
     if(aborted.body?.ok!==true)throw new Error('Could not remove the clean lock-probe transaction.');
     const probeAfter=await readTransactionState(bridge.token,probeId);
     if(probeAfter&&probeAfter.status)throw new Error('Lock-probe transaction still has persisted state after abort.');
-    return{checked:true,recovered,bridgeId:bridge.id,probeCleaned:true};
+    return{checked:true,recovered,bridgeId:bridge.id,bridgeNamespace:activeSuiteNamespace,probeCleaned:true};
   }finally{
     const result=await neutralizeSnippet(bridge.id,false).catch(async()=>neutralizeSnippet(bridge.id,true));
     if(result.state!=='absent'&&result.state!=='inactive'&&result.state!=='trashed-inactive')throw new Error(`Trusted recovery bridge ${bridge.id} was not neutralized after recovery.`);
