@@ -25,6 +25,29 @@ node -e "const m=require('./site/wordpress/imports/infographic-bulk-import.json'
 test -n "${WP_API_USERNAME:-}"
 test -n "${WP_API_PASSWORD:-}"
 
+# One-time direct binary intake. ChatGPT may commit split ZIP parts when private
+# source URLs cannot be fetched by GitHub Actions. The runner reconstructs the
+# archive, validates its digest, extracts only approved JPEGs into the canonical
+# source directory, and removes the temporary parts before the normal source
+# commit/publish stage below.
+INTAKE_DIR="$INFOGRAPHIC_SOURCE_DIR/intake"
+INTAKE_PREFIX="$INTAKE_DIR/approved-intake-20260828.zip.part-"
+if compgen -G "${INTAKE_PREFIX}*" >/dev/null; then
+  echo '== Reconstruct approved direct intake bundle =='
+  BUNDLE_TMP="$(mktemp /tmp/dtf-approved-intake.XXXXXX.zip)"
+  mapfile -t intake_parts < <(find "$INTAKE_DIR" -maxdepth 1 -type f -name 'approved-intake-20260828.zip.part-*' | sort)
+  test "${#intake_parts[@]}" -eq 4
+  cat "${intake_parts[@]}" > "$BUNDLE_TMP"
+  echo '9c29127eadba03e25f304426378860a4da7a2e0d2059b3745aea5375213cf2aa  '"$BUNDLE_TMP" | sha256sum -c -
+  unzip -t "$BUNDLE_TMP" >/dev/null
+  extracted_count="$(unzip -Z1 "$BUNDLE_TMP" | grep -Eci '\.jpe?g$')"
+  test "$extracted_count" -eq 9
+  unzip -jo "$BUNDLE_TMP" '*.jpg' '*.jpeg' -d "$INFOGRAPHIC_SOURCE_DIR" >/dev/null
+  rm -f "${intake_parts[@]}" "$BUNDLE_TMP"
+  rmdir "$INTAKE_DIR" 2>/dev/null || true
+  echo "Approved direct intake extracted: $extracted_count images"
+fi
+
 echo '== Import queued remote image batch =='
 node scripts/import-wordpress-infographic-remote-batch.mjs
 
@@ -79,12 +102,12 @@ if (fs.existsSync(manifestPath)) {
 }
 NODE
 
-# Persist downloaded or repaired source binaries before publication.
+# Persist downloaded, directly imported, or repaired source binaries before publication.
 git config user.name 'DTF Bulk Image Publisher'
 git config user.email 'actions@users.noreply.github.com'
 git add -A site/wordpress/assets/infographics
 if ! git diff --cached --quiet; then
-  git commit -m 'Repair canonical THC infographic binaries'
+  git commit -m 'Promote approved THC infographic intake to canonical assets'
   git pull --rebase origin main
   git push origin HEAD:main
 fi
