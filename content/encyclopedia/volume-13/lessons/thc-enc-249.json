@@ -1,0 +1,54 @@
+{
+  "id":"THC-ENC-249",
+  "number":249,
+  "title":"Linalool",
+  "objective":"Describe linalool as an oxygenated monoterpene with stereochemical, biosynthetic, analytical, and sensory complexity while keeping plant chemistry separate from cultivar or human-effect claims.",
+  "terms":[
+    {"term":"linalool","definition":"An oxygenated monoterpene alcohol detected in cannabis and many other aromatic plants."},
+    {"term":"oxygenated monoterpene","definition":"A ten-carbon terpene-derived compound containing oxygen in its molecular structure."},
+    {"term":"enantiomer","definition":"One of two mirror-image forms of a chiral molecule that are not superimposable."},
+    {"term":"volatile capture","definition":"A sampling process used to collect compounds entering the gas phase for analysis."},
+    {"term":"odor descriptor","definition":"A sensory term used to describe perceived aroma rather than a direct chemical measurement."}
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Linalool is an oxygenated monoterpene found in some cannabis volatile profiles. Its abundance varies among genotypes and samples and can be minor even when its sensory contribution is of interest.",
+    "Linalool is chiral, so stereoisomers can differ in sensory character. Routine non-chiral cannabis terpene panels may quantify linalool without resolving stereochemical identity.",
+    "Measured linalool depends on tissue, developmental stage, fresh or dried state, volatile-capture method, extraction, storage, and oxidation. Oxygenated volatiles can change after harvest, so a measured value is not necessarily identical to the intact-flower state at harvest.",
+    "Floral or lavender-like descriptions are mixture-level sensory observations. Linalool is widespread across plant species and is not a cannabis identity marker or proof of a specific lineage.",
+    "Plant concentration does not establish a relaxing, therapeutic, or clinical effect. Dose, route, exposure, pharmacology, and controlled human evidence are separate questions."
+  ],
+  "cultivationRelevance":[
+    "Use validated standards and report whether the method is chiral or non-chiral when stereochemistry matters.",
+    "Keep sample state, drying, storage, and volatile-capture conditions consistent across comparisons.",
+    "Do not infer lineage, quality, or effect from linalool alone.",
+    "Pair chemistry with blinded sensory data when the educational question concerns floral aroma."
+  ],
+  "measureAndRecord":[
+    {"field":"Analyte identity","requirement":"Record linalool designation, stereochemical capability, standard, retention/spectral evidence, and units."},
+    {"field":"Sample context","requirement":"Record plant/lot ID, tissue, position, developmental stage, fresh/dry state, and preparation."},
+    {"field":"Analytical method","requirement":"Record headspace or extraction conditions, instrument/column, calibration, recovery, replicate, and uncertainty."},
+    {"field":"Postharvest context","requirement":"Record drying, storage, package, temperature, light exposure, and time before analysis."},
+    {"field":"Sensory context","requirement":"If floral descriptors are evaluated, record blinded panel method, coding, intensity, descriptors, and replicate separately from chemistry."}
+  ],
+  "misconceptions":[
+    "Linalool is unique to lavender or cannabis.",
+    "Any floral aroma means linalool is dominant.",
+    "Linalool percentage predicts a relaxing clinical response.",
+    "A non-chiral linalool result proves which enantiomer is present.",
+    "One linalool result can prove cultivar identity."
+  ],
+  "evidenceLimits":[
+    "Cannabis analytical literature supports linalool occurrence, but stereochemical resolution, exact biosynthetic attribution in a given genotype, and sensory contribution require method-specific evidence. Human-effect claims require exposure and clinical evidence beyond plant chemistry."
+  ],
+  "crossLinks":"THC-ENC-243 for monoterpenes; THC-ENC-245 for terpene-synthase genetics; THC-ENC-247–248 for stereochemical analytical context; THC-ENC-258 for sampling variation; THC-ENC-260 for interaction/effect claims.",
+  "sourceNotes":[
+    "Validated cannabis GC terpene methods include linalool among quantified analytes and demonstrate the need for authentic standards and controlled analytical conditions.",
+    "Booth JK, Page JE, Bohlmann J. (2017). Terpene synthases from Cannabis sativa. PLOS ONE 12:e0173911. Provides the direct cannabis TPS framework and volatile-profile context within which individual oxygenated monoterpenes should be interpreted.",
+    "Controlled Volume 13 manuscript v1.0 requires linalool chemistry, stereochemistry, sensory descriptors, cultivar identity, and human-effect claims to remain distinct evidence levels."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 13 batch 02 controlled web derivative","driveSourceDocumentId":"1Vh_CkUFTN9eqsXiuH53pD1tMDyBo2zxDTIXOd_vQlgw","evidenceControl":"controlled_manuscript_plus_cannabis_analytical_and_TPS_context_sources","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_linalool_stereochemistry_analytics_and_claim_boundaries","releaseTimeReview":"completed_2026-08-29_linalool_occurrence_chirality_sampling_and_effect_boundaries","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"linalool",
+  "route":"/encyclopedia/linalool"
+}

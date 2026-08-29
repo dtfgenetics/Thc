@@ -1,0 +1,54 @@
+{
+  "id":"THC-ENC-248",
+  "number":248,
+  "title":"Alpha-Pinene and Beta-Pinene",
+  "objective":"Distinguish alpha-pinene and beta-pinene as separate bicyclic monoterpenes and explain their biosynthetic, stereochemical, analytical, and sensory context in cannabis.",
+  "terms":[
+    {"term":"alpha-pinene","definition":"A bicyclic monoterpene isomer detected in cannabis and many other aromatic plants."},
+    {"term":"beta-pinene","definition":"A distinct bicyclic monoterpene isomer related to, but not interchangeable with, alpha-pinene."},
+    {"term":"isomer","definition":"A compound sharing a molecular formula with another compound but differing in structure."},
+    {"term":"enantiomer","definition":"One of two non-superimposable mirror-image molecular forms."},
+    {"term":"coelution","definition":"Insufficient chromatographic separation that causes two compounds to emerge from a column together or nearly together."}
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Alpha-pinene and beta-pinene are distinct bicyclic monoterpenes. Both occur in cannabis volatile profiles, and each can exist in stereochemical forms that may require specialized analysis to resolve.",
+    "Direct cannabis enzyme work showed that characterized CsTPS enzymes can produce alpha-pinene, beta-pinene, and additional monoterpenes in different proportions. One alpha-pinene-dominant CsTPS also generated smaller amounts of beta-pinene, myrcene, limonene, beta-phellandrene, and another tentatively identified monoterpene.",
+    "Because pinenes can occur as coproducts of multiproduct terpene synthases, a measured pinene value does not map uniquely to one gene or one biosynthetic route.",
+    "Analytical separation matters. Alpha- and beta-pinene should not be collapsed into a generic pinene value when the method can distinguish them, and chiral claims require a method that actually resolves stereoisomers.",
+    "Pine-like aroma can involve pinenes but is not a quantitative assay. Sensory perception depends on mixture composition, headspace abundance, thresholds, and additional odor-active compounds."
+  ],
+  "cultivationRelevance":[
+    "Report alpha-pinene and beta-pinene separately when the analytical method supports that distinction.",
+    "Retain authentic standards, chromatographic resolution, sample preparation, and storage context for meaningful comparisons.",
+    "Do not infer cultivar identity, quality, or human effect from one pinene concentration.",
+    "Use sensory descriptors as observations, not as substitutes for chemical measurement."
+  ],
+  "measureAndRecord":[
+    {"field":"Analyte identity","requirement":"Record alpha- or beta-pinene, stereochemical designation when resolved, standard, retention/spectral evidence, and reporting units."},
+    {"field":"Resolution","requirement":"Document column/method, peak separation, coelution risk, and whether stereochemical separation was performed."},
+    {"field":"Sample context","requirement":"Record plant/lot identity, tissue, position, stage, fresh/dry state, and preparation."},
+    {"field":"Handling","requirement":"Record drying, storage, container, time, temperature, grinding, and exposure before analysis."},
+    {"field":"Sensory context","requirement":"If pine-like aroma is scored, record blinded panel design and descriptors separately from analytical concentration."}
+  ],
+  "misconceptions":[
+    "Alpha-pinene and beta-pinene are interchangeable names for the same compound.",
+    "A pine smell proves a high pinene percentage.",
+    "A pinene result identifies one unique terpene-synthase gene.",
+    "Pinene concentration proves cultivar identity or effect.",
+    "A combined pinene value provides the same information as resolved alpha- and beta-pinene measurements."
+  ],
+  "evidenceLimits":[
+    "Cannabis-specific enzyme and analytical evidence supports the occurrence and biosynthesis of alpha- and beta-pinene, but gene-to-product relationships can be multiproduct and method-dependent. Stereochemical identity and sensory contribution require additional specialized evidence."
+  ],
+  "crossLinks":"THC-ENC-243 for monoterpenes; THC-ENC-245 for TPS genetics; THC-ENC-247 for limonene/chirality context; THC-ENC-258 for analytical variation; THC-ENC-259 for chemovar classification.",
+  "sourceNotes":[
+    "Booth JK, Page JE, Bohlmann J. (2017). Terpene synthases from Cannabis sativa. PLOS ONE 12:e0173911. Functionally characterized cannabis terpene synthases producing alpha-pinene, beta-pinene, and related coproducts.",
+    "Milay L et al. (2020). Metabolic Profiling of Cannabis Secondary Metabolites for Evaluation of Optimal Postharvest Storage Conditions. Frontiers in Plant Science 11:583605. Demonstrated storage-dependent decline in alpha-pinene under studied conditions.",
+    "Controlled Volume 13 manuscript v1.0 requires alpha/beta identity, stereochemistry, chromatographic resolution, sensory description, and human-effect claims to remain separate."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 13 batch 02 controlled web derivative","driveSourceDocumentId":"1Vh_CkUFTN9eqsXiuH53pD1tMDyBo2zxDTIXOd_vQlgw","evidenceControl":"controlled_manuscript_plus_direct_cannabis_TPS_storage_and_analytical_sources","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_pinene_isomer_stereochemistry_analytics_and_claim_boundaries","releaseTimeReview":"completed_2026-08-29_pinene_function_isomer_resolution_storage_and_effect_boundaries","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"alpha-pinene-and-beta-pinene",
+  "route":"/encyclopedia/alpha-pinene-and-beta-pinene"
+}

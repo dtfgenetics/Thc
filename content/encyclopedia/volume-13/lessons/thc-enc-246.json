@@ -1,0 +1,54 @@
+{
+  "id":"THC-ENC-246",
+  "number":246,
+  "title":"Myrcene",
+  "objective":"Describe beta-myrcene as a common cannabis monoterpene while separating biosynthesis, measured abundance, aroma description, cultivar labels, and human-effect claims.",
+  "terms":[
+    {"term":"beta-myrcene","definition":"An acyclic monoterpene commonly detected in cannabis inflorescence volatile profiles."},
+    {"term":"acyclic monoterpene","definition":"A ten-carbon terpene without a ring structure."},
+    {"term":"terpene synthase","definition":"An enzyme that converts a prenyl diphosphate precursor into one or more terpene products."},
+    {"term":"headspace","definition":"The gas phase above a sample in which emitted volatile compounds can be measured."},
+    {"term":"oxidation","definition":"Chemical reaction involving electron loss or oxygen-related transformation that can change a volatile compound over time."}
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Beta-myrcene is an acyclic monoterpene and is often one of the major terpenes measured in cannabis inflorescences, although its abundance varies widely among genotypes and samples.",
+    "Direct cannabis enzyme work identified more than one CsTPS capable of producing myrcene. Some characterized synthases produced myrcene as the only detectable product under the assay conditions, while another produced myrcene together with alpha-pinene, limonene, sabinene, and beta-pinene. Therefore, a myrcene peak does not identify one unique causal gene.",
+    "Measured myrcene depends on biological context and analytical method. Tissue position, developmental stage, drying, storage, grinding, headspace conditions, extraction, and volatile loss can change its measured concentration or relative rank.",
+    "Earthy, herbal, or musky descriptors are sensory approximations rather than unique chemical fingerprints. Aroma is a mixture-level property, and myrcene is not unique to cannabis.",
+    "Plant chemistry alone does not establish sedation, medical effect, cultivar identity, or quality. Those claims require different evidence than detecting or quantifying myrcene in flower."
+  ],
+  "cultivationRelevance":[
+    "Report myrcene with sample state, tissue position, developmental stage, method, and units rather than treating one percentage as a permanent cultivar property.",
+    "Protect comparative samples from inconsistent heat, grinding, open-air exposure, and storage history when volatile retention is part of the question.",
+    "Do not classify a plant as indica or sativa from myrcene concentration alone.",
+    "Separate chemical measurements from sensory descriptions and from human-effect claims."
+  ],
+  "measureAndRecord":[
+    {"field":"Sample identity","requirement":"Record plant or lot ID, genotype/provenance, tissue, branch or flower position, developmental stage, and fresh/dry state."},
+    {"field":"Analytical method","requirement":"Record headspace or extraction method, preparation, standard, calibration, units, replicate, and uncertainty."},
+    {"field":"Handling","requirement":"Record grinding, container, temperature, time, drying, cure, and storage history before analysis."},
+    {"field":"Profile context","requirement":"Record myrcene alongside the broader volatile profile rather than interpreting it in isolation."},
+    {"field":"Sensory data","requirement":"If aroma is evaluated, record blinded sample coding, panel method, descriptors, intensity scale, and replicate separately from chemistry."}
+  ],
+  "misconceptions":[
+    "High myrcene makes a cannabis sample an indica.",
+    "High myrcene guarantees a sedating effect.",
+    "An earthy odor proves myrcene is the dominant volatile.",
+    "One myrcene result permanently defines a cultivar.",
+    "One myrcene peak identifies one unique terpene-synthase gene."
+  ],
+  "evidenceLimits":[
+    "Cannabis-specific evidence supports myrcene occurrence and multiple functionally characterized synthases capable of producing it. Final flower concentration remains genotype-, development-, environment-, handling-, and method-dependent. Human-effect or clinical claims cannot be inferred from plant concentration alone."
+  ],
+  "crossLinks":"THC-ENC-243 for monoterpenes; THC-ENC-245 for terpene-synthase genetics; THC-ENC-251 for minor terpene interpretation; THC-ENC-258 for sampling and analytical variation; THC-ENC-259 for chemovar classification.",
+  "sourceNotes":[
+    "Booth JK, Page JE, Bohlmann J. (2017). Terpene synthases from Cannabis sativa. PLOS ONE 12:e0173911. Functionally characterized several CsTPS enzymes that produced myrcene and documented myrcene among major Finola inflorescence monoterpenes.",
+    "Allen KD et al. (2019). Genomic characterization of the complete terpene synthase gene family from Cannabis sativa. PLOS ONE 14:e0222363. Showed broad market-sample variation in beta-myrcene and the wider TPS-family context.",
+    "Controlled Volume 13 manuscript v1.0 requires myrcene chemistry, sensory description, cultivar labeling, and human-effect claims to remain separate evidence levels."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 13 batch 02 controlled web derivative","driveSourceDocumentId":"1Vh_CkUFTN9eqsXiuH53pD1tMDyBo2zxDTIXOd_vQlgw","evidenceControl":"controlled_manuscript_plus_direct_cannabis_TPS_and_profile_sources","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_myrcene_biosynthesis_analytics_and_claim_boundaries","releaseTimeReview":"completed_2026-08-29_myrcene_function_profile_sampling_and_effect_boundaries","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"myrcene",
+  "route":"/encyclopedia/myrcene"
+}
