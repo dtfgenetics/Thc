@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-273",
+  "number":273,
+  "title":"Root-Zone Hypoxia",
+  "objective":"Explain oxygen limitation in roots and distinguish hypoxia from pathogens, salinity, drought, temperature injury, and nutrient deficiency using root-zone state, duration, aeration, and plant response.",
+  "terms":[
+    {"term":"hypoxia","definition":"An oxygen level low enough to limit normal aerobic metabolism in the affected tissue or root-zone environment."},
+    {"term":"anoxia","definition":"An extreme condition in which oxygen is essentially absent from the affected environment or tissue."},
+    {"term":"oxygen diffusion","definition":"Movement of oxygen down a concentration gradient; diffusion through water is far slower than through air-filled pore space."},
+    {"term":"water-filled pore space","definition":"The fraction of substrate pore volume occupied by water rather than air, which strongly affects gas exchange."},
+    {"term":"dissolved oxygen","definition":"Molecular oxygen present in water or nutrient solution, commonly measured as concentration or percent saturation under a specified temperature."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Roots require oxygen for aerobic respiration, membrane maintenance, active transport, growth, and defense. When pore spaces remain water-filled or a solution is poorly aerated, oxygen supply can fall behind respiratory demand because oxygen moves much more slowly through water than through air.",
+    "Hypoxia is therefore a supply-versus-demand problem, not simply a synonym for 'too much water.' Saturation duration, substrate structure, root density, solution temperature, microbial respiration, irrigation frequency, compaction, and gas exchange all change how quickly oxygen becomes limiting.",
+    "As oxygen becomes limiting, roots lose energy available for active transport and normal membrane function. Water and mineral uptake can decline even while the root zone is physically wet, which is why hypoxic plants can wilt or display nutrient-like symptoms.",
+    "Root discoloration, odor, sloughing, wilt, and stunting are not specific to hypoxia. Oxygen stress can weaken tissue and coexist with Pythium-like organisms or other root pathogens, but brown roots alone do not distinguish abiotic oxygen limitation from infection, salinity, temperature injury, chemical damage, or natural pigmentation.",
+    "Direct cannabis hydroponic studies routinely control aeration and dissolved oxygen, but the literature does not establish one universal cannabis injury threshold across solution temperature, genotype, developmental stage, root mass, or system design. Diagnosis therefore requires the actual root-zone history and competing explanations."
+  ],
+  "cultivationRelevance":[
+    "Inspect drainage, saturation duration, root-zone temperature, root density, irrigation distribution, and aeration before adding fertilizer to a plant showing wet-media wilt or nutrient-like symptoms.",
+    "Use dissolved-oxygen measurements only with temperature, calibration, sampling location, and timing documented; one bulk-solution value may not represent oxygen inside dense roots or saturated substrate pockets.",
+    "Compare affected and unaffected root zones and preserve samples when root disease remains plausible rather than treating brown color or odor as proof of a pathogen.",
+    "Verify recovery through new root and shoot function, normalized water use, stable root-zone conditions, and halted symptom progression rather than expecting damaged roots or leaves to return to their original appearance."
+  ],
+  "measureAndRecord":[
+    {"field":"Water-filled state","requirement":"Record substrate mass/VWC or solution level, saturation duration, drainage, compaction, irrigation events, and spatial variation."},
+    {"field":"Oxygen context","requirement":"Record dissolved oxygen when applicable with meter, calibration, temperature, sampling location, aeration equipment, and timing."},
+    {"field":"Root environment","requirement":"Record root-zone and solution temperature, pH/EC, root density, color, texture, odor, fine-root condition, and container or channel geometry."},
+    {"field":"Competing causes","requirement":"Record pathogen diagnostics where justified, salinity, chemical exposure, irrigation uniformity, drought history, and recent equipment failures."},
+    {"field":"Plant response","requirement":"Record wilt timing, water use, growth rate, nutrient-like symptoms, root recovery, new growth, and recurrence after controlled correction."
+    }
+  ],
+  "misconceptions":[
+    "Overwatering is simply applying too many milliliters.",
+    "Wet roots cannot be water-stressed.",
+    "Brown roots prove Pythium.",
+    "One dissolved-oxygen number defines root health everywhere in the system.",
+    "Adding more nutrients corrects nutrient-like symptoms caused by oxygen-limited roots."
+  ],
+  "evidenceLimits":[
+    "Plant hypoxia mechanisms are well established, but cannabis-specific root oxygen thresholds remain system- and protocol-dependent. Hydroponic studies that maintain high dissolved oxygen demonstrate the importance of oxygen control without defining a universal injury value for every substrate, root density, temperature, or genotype."
+  ],
+  "crossLinks":"THC-ENC-266 for wet-versus-dry wilt; THC-ENC-272 for transpiration demand; THC-ENC-274 for salinity; THC-ENC-041–060 for roots and media; THC-ENC-281–340 for biological root and disease differentials.",
+  "sourceNotes":[
+    "Loreti E, Perata P. (2020). The Many Facets of Hypoxia in Plants. Plants 9:745. Establishes oxygen-sensing, respiratory, waterlogging, and survival mechanisms used here for root hypoxia physiology.",
+    "Aquaponic and Hydroponic Solutions Modulate NaCl-Induced Stress in Drug-Type Cannabis sativa L. (Frontiers in Plant Science, 2020). The cannabis DWC system maintained dissolved oxygen near 7.8 mg·L⁻¹, illustrating explicit oxygen control in hydroponic cannabis research rather than an injury-threshold experiment.",
+    "Controlled Volume 14 manuscript v1.0 requires oxygen supply, saturation duration, temperature, roots, salinity, pathogens, irrigation distribution, and dissolved-oxygen method to remain separate diagnostic variables."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 14 batch 03 controlled web derivative","driveSourceDocumentId":"1mbN8hq4g6jZUgW0bkwZBSXotPqZ7c184kOya5SqdtJA","evidenceControl":"controlled_manuscript_plus_general_plant_hypoxia_mechanisms_and_direct_cannabis_hydroponic_oxygen_control_context","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_root_zone_hypoxia_pathogen_salinity_and_water_differential","releaseTimeReview":"completed_2026-08-29_no_universal_dissolved_oxygen_injury_threshold_boundary","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"root-zone-hypoxia",
+  "route":"/encyclopedia/root-zone-hypoxia"
+}
