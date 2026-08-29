@@ -1,0 +1,171 @@
+{
+  "schemaVersion": 1,
+  "batchId": "lighting-research-v1-2026-08-29",
+  "purpose": "Production-ready briefs for the two thinnest THC infographic subjects. Each brief is designed as a complete full-sheet teaching visual, not a simple reference panel.",
+  "qualityStandard": {
+    "orientation": "portrait full-sheet",
+    "minimumTargetPixels": "2550x3300",
+    "preferredPrintDensity": "300 DPI",
+    "visualStyle": "academic studio-quality botanical imagery plus precise scientific diagrams; cream and deep-green system; no yellow tint",
+    "text": "all labels must be readable, correctly spelled, scientifically accurate, and independently QA-checked",
+    "exclusions": [
+      "simple vector-only poster",
+      "decorative cannabis smoke or lifestyle imagery",
+      "invented optimum values",
+      "fake citations",
+      "unlabeled axes or units",
+      "single-panel reference art presented as an infographic"
+    ]
+  },
+  "assets": [
+    {
+      "id": "THC-LIGHT-01",
+      "topicId": "lighting",
+      "title": "PPFD, DLI & Photoperiod",
+      "status": "ready-for-render",
+      "teachingGoal": "Show the difference between source output, crop-plane photon density, daily photon dose, and delivery schedule without implying that equal DLI guarantees equal biology.",
+      "requiredPanels": [
+        "PPF versus PPFD versus DLI definitions with correct units",
+        "DLI = PPFD × photoperiod × 0.0036 for constant PPFD and hours",
+        "fixture to crop-plane measurement diagram",
+        "three equal-DLI schedule examples labeled as mathematically equal daily dose but not necessarily biologically equivalent",
+        "measurement checklist: grid, height, photoperiod, canopy change",
+        "context box: spectrum, leaf temperature, stage, environment, canopy geometry"
+      ],
+      "sourceNotes": [
+        "Michigan State University: Daily Light Integral Defined",
+        "Sustainability 2023, 15, 4645; DOI 10.3390/su15054645",
+        "Current Research in Biotechnology 2024, 7, 100184; DOI 10.1016/j.crbiot.2024.100184"
+      ]
+    },
+    {
+      "id": "THC-LIGHT-02",
+      "topicId": "lighting",
+      "title": "How to Map Canopy Light",
+      "status": "ready-for-render",
+      "teachingGoal": "Teach why a measurement grid is more informative than a single center PPFD reading and how to preserve measurement context.",
+      "requiredPanels": [
+        "top-down realistic canopy with numbered measurement grid",
+        "center, edge, overlap, and height examples",
+        "mean, minimum, maximum, range, and coefficient-of-variation concepts without prescribing a universal target",
+        "sensor orientation and crop-plane height diagram",
+        "before and after canopy-height change comparison",
+        "common error panel: changing sensor height or angle between readings"
+      ],
+      "sourceNotes": [
+        "Use quantum-sensor manufacturer calibration concepts only as measurement context, not product endorsement",
+        "Interpret uniformity statistics together with the spatial map"
+      ]
+    },
+    {
+      "id": "THC-LIGHT-03",
+      "topicId": "lighting",
+      "title": "Light Sensors: What Are You Actually Measuring?",
+      "status": "ready-for-render",
+      "teachingGoal": "Differentiate photon-flux measurement from wavelength-resolved spectral measurement and expose major measurement limitations.",
+      "requiredPanels": [
+        "quantum sensor versus spectroradiometer comparison",
+        "spectral-response concept graphic",
+        "cosine-response concept graphic",
+        "PAR 400–700 nm as the conventional PPFD band, with separate note that UV and far-red questions may require different measurement approaches",
+        "calibration, cleanliness, orientation, temperature, and sensor-age checklist",
+        "warning: different instruments can disagree because they measure differently"
+      ],
+      "sourceNotes": [
+        "Frontiers in Photobiology 2024 discussion of PAR sensors, DLI, and wavelength-resolved spectral measurement",
+        "Avoid presenting emerging ePAR definitions as settled universal practice"
+      ]
+    },
+    {
+      "id": "THC-LIGHT-04",
+      "topicId": "lighting",
+      "title": "Light-Response Curves, Saturation & Photoinhibition",
+      "status": "ready-for-render",
+      "teachingGoal": "Explain why more photons do not create a simple linear growth response and how acclimation and other limiting factors change interpretation.",
+      "requiredPanels": [
+        "conceptual net-photosynthesis versus PPFD curve with compensation and saturation regions",
+        "leaf acclimation comparison",
+        "protective energy dissipation and non-photochemical quenching concept",
+        "persistent excess-light and photoinhibition concept",
+        "confounder checklist: leaf temperature, water status, CO2, nutrition, stage, genetics",
+        "diagnostic evidence flow from spatial pattern to controlled correction to recovery"
+      ],
+      "sourceNotes": [
+        "Sustainability 2023, 15, 4645 photobiology overview",
+        "Do not print a universal cannabis saturation threshold"
+      ]
+    },
+    {
+      "id": "THC-EVID-01",
+      "topicId": "research-measurement",
+      "title": "Observation → Measurement → Inference",
+      "status": "ready-for-render",
+      "teachingGoal": "Teach users to separate what was seen, what was quantified, and what conclusion is being proposed.",
+      "requiredPanels": [
+        "three-layer evidence stack: observation, measurement, inference",
+        "worked plant-health example where leaf discoloration is an observation rather than a diagnosis",
+        "raw data and units panel",
+        "alternative-explanations branch",
+        "evidence-strength ladder based on claim specificity, not a universal ranking of methods",
+        "footer workflow: locate, describe, contextualize, measure, compare, track"
+      ],
+      "sourceNotes": [
+        "Keep causal language bounded by the evidence shown"
+      ]
+    },
+    {
+      "id": "THC-EVID-02",
+      "topicId": "research-measurement",
+      "title": "Replication vs Subsampling",
+      "status": "ready-for-render",
+      "teachingGoal": "Make the experimental unit visually obvious and prevent repeated readings from being mistaken for independent biological replication.",
+      "requiredPanels": [
+        "diagram of multiple leaves measured on one plant versus independent plants receiving treatment",
+        "experimental unit definition",
+        "subsample definition",
+        "pseudoreplication warning",
+        "simple nested-data diagram",
+        "planning checklist: unit, treatment assignment, replicate count, sampling locations"
+      ],
+      "sourceNotes": [
+        "University of Minnesota Extension on-farm research guidance: real replicates versus pseudoreplicates"
+      ]
+    },
+    {
+      "id": "THC-EVID-03",
+      "topicId": "research-measurement",
+      "title": "Controls, Randomization & Blocking",
+      "status": "ready-for-render",
+      "teachingGoal": "Show how comparison design reduces confounding from position and background gradients.",
+      "requiredPanels": [
+        "control versus treatment comparison",
+        "bad layout: all treatments assigned to one side of a light or irrigation gradient",
+        "better randomized layout",
+        "blocked layout across a known environmental gradient",
+        "confounding explanation",
+        "audit checklist: control, randomization method, block definition, assignment record"
+      ],
+      "sourceNotes": [
+        "University of Minnesota Extension on-farm research guidance: control treatments, randomization, replication, and field variability"
+      ]
+    },
+    {
+      "id": "THC-EVID-04",
+      "topicId": "research-measurement",
+      "title": "Measurement Quality & Uncertainty",
+      "status": "ready-for-render",
+      "teachingGoal": "Explain calibration, resolution, repeatability, uncertainty, metadata, and why extra decimal places are not the same as accuracy.",
+      "requiredPanels": [
+        "measurement chain from true condition to sensor to recorded value to interpretation",
+        "accuracy versus precision concept without fake numerical data",
+        "calibration and drift timeline",
+        "repeat suspicious reading decision tree",
+        "metadata checklist: instrument, unit, calibration, time, location, sample method",
+        "data-integrity rule: preserve raw value and document corrections rather than silently overwriting"
+      ],
+      "sourceNotes": [
+        "General measurement-science principles; avoid claiming a precision level that the instrument does not support"
+      ]
+    }
+  ]
+}

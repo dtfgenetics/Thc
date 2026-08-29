@@ -7,9 +7,12 @@ on:
     paths:
       - .github/workflows/wordpress-learning-final-owner.yml
       - scripts/publish-wordpress-topic-literature.mjs
+      - scripts/assemble-topic-literature-expansions.mjs
       - scripts/flush-hostinger-litespeed-mcp.mjs
       - scripts/wordpress-transient-fetch-bootstrap.mjs
       - site/wordpress/education/topic-literature.json
+      - site/wordpress/education/topic-literature-expansions.json
+      - site/wordpress/education/visual-production-plans/**
       - site/wordpress/assets/infographics/infographic-learning-guides.json
       - site/wordpress/assets/infographics/placement-rules.json
       - site/wordpress/assets/infographics/infographic-exclusions.json
@@ -39,6 +42,7 @@ jobs:
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
       BACKUP_ROOT: /tmp/wordpress-learning-final-owner
+      EXPANDED_LITERATURE: /tmp/dtf-topic-literature-expanded.json
 
     steps:
       - uses: actions/checkout@v4
@@ -56,20 +60,50 @@ jobs:
           : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
           : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
           node --check scripts/publish-wordpress-topic-literature.mjs
+          node --check scripts/assemble-topic-literature-expansions.mjs
           node --check scripts/flush-hostinger-litespeed-mcp.mjs
           node --check scripts/wordpress-transient-fetch-bootstrap.mjs
           node - <<'NODE'
           const fs = require('fs');
           const guides = JSON.parse(fs.readFileSync('site/wordpress/assets/infographics/infographic-learning-guides.json', 'utf8'));
           const topics = JSON.parse(fs.readFileSync('site/wordpress/education/topic-literature.json', 'utf8'));
+          const expansions = JSON.parse(fs.readFileSync('site/wordpress/education/topic-literature-expansions.json', 'utf8'));
+          const plan = JSON.parse(fs.readFileSync('site/wordpress/education/visual-production-plans/lighting-research-v1.json', 'utf8'));
           if (!Array.isArray(guides.guides) || guides.guides.length < 10) process.exit(1);
           if (!Array.isArray(guides.learningPaths) || guides.learningPaths.length < 4) process.exit(1);
           if (!Array.isArray(topics.topics) || topics.topics.length < 10) process.exit(1);
-          console.log(`Validated ${guides.guides.length} study guides, ${guides.learningPaths.length} learning paths, and ${topics.topics.length} literature topics.`);
+          if (!Array.isArray(expansions.expansions) || expansions.expansions.length < 2) process.exit(1);
+          if (!Array.isArray(plan.assets) || plan.assets.length < 8) process.exit(1);
+          if (plan.assets.some(asset => asset.status !== 'ready-for-render' || !asset.title || !asset.topicId || !Array.isArray(asset.requiredPanels) || asset.requiredPanels.length < 5)) process.exit(1);
+          console.log(`Validated ${guides.guides.length} study guides, ${guides.learningPaths.length} learning paths, ${topics.topics.length} literature topics, ${expansions.expansions.length} expansions, and ${plan.assets.length} visual briefs.`);
           NODE
+
+      - name: Assemble additive literature expansions
+        id: expand
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/assemble-topic-literature-expansions.mjs --write "$EXPANDED_LITERATURE" | tee /tmp/learning-final-owner-expansion.json
+          test -s "$EXPANDED_LITERATURE"
+          node - "$EXPANDED_LITERATURE" <<'NODE'
+          const fs = require('fs');
+          const data = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
+          const byId = new Map(data.topics.map(topic => [topic.id, topic]));
+          for (const id of ['lighting', 'research-measurement']) {
+            const topic = byId.get(id);
+            if (!topic || !Array.isArray(topic.sections) || topic.sections.length < 9) {
+              throw new Error(`${id} did not reach nine literature sections`);
+            }
+          }
+          console.log(`Expanded Lighting to ${byId.get('lighting').sections.length} sections and Research/Measurement to ${byId.get('research-measurement').sections.length} sections.`);
+          NODE
+          echo "lighting_sections=$(node -p "require(process.argv[1]).topics.find(t=>t.id==='lighting').sections.length" "$EXPANDED_LITERATURE")" >> "$GITHUB_OUTPUT"
+          echo "research_sections=$(node -p "require(process.argv[1]).topics.find(t=>t.id==='research-measurement').sections.length" "$EXPANDED_LITERATURE")" >> "$GITHUB_OUTPUT"
 
       - name: Reclaim canonical education pages
         id: publish
+        env:
+          TOPIC_LITERATURE_CONFIG: ${{ env.EXPANDED_LITERATURE }}
         shell: bash
         run: |
           set -euo pipefail
@@ -175,6 +209,25 @@ jobs:
             }
           done
 
+          lighting="$RUNNER_TEMP/final-owner-lighting.html"
+          research="$RUNNER_TEMP/final-owner-research-methods.html"
+          for marker in \
+            'From single readings to canopy light maps' \
+            'DLI is an integral, not a complete prescription' \
+            'Sensor choice, spectral response, and measurement limits' \
+            'Light-response curves, acclimation, and photoinhibition'; do
+            grep -Fqi "$marker" "$lighting" || { echo "Lighting expansion missing: $marker" >&2; exit 1; }
+          done
+          for marker in \
+            'Controls, randomization, and blocking' \
+            'Effect size, variability, and practical importance' \
+            'Time series, baselines, and change attribution' \
+            'Reproducibility, metadata, and data integrity'; do
+            grep -Fqi "$marker" "$research" || { echo "Research expansion missing: $marker" >&2; exit 1; }
+          done
+          [[ "$(grep -Eo 'class="thc-section"' "$lighting" | wc -l | tr -d ' ')" -ge 9 ]]
+          [[ "$(grep -Eo 'class="thc-section"' "$research" | wc -l | tr -d ' ')" -ge 9 ]]
+
           echo "live_card_count=$cards" >> "$GITHUB_OUTPUT"
           echo "guided_learning_ready=true" >> "$GITHUB_OUTPUT"
 
@@ -185,6 +238,8 @@ jobs:
           name: wordpress-learning-final-owner-${{ github.run_id }}
           path: |
             /tmp/wordpress-learning-final-owner
+            /tmp/learning-final-owner-expansion.json
+            /tmp/dtf-topic-literature-expanded.json
             /tmp/learning-final-owner-publish.json
             /tmp/learning-final-owner-cache.json
             ${{ runner.temp }}/final-owner-*.html
@@ -197,6 +252,7 @@ jobs:
         uses: actions/github-script@v7
         env:
           STATUS: ${{ job.status }}
+          EXPAND_OUTCOME: ${{ steps.expand.outcome }}
           PUBLISH_OUTCOME: ${{ steps.publish.outcome }}
           CACHE_OUTCOME: ${{ steps.cache.outcome }}
           VERIFY_OUTCOME: ${{ steps.verify.outcome }}
@@ -204,6 +260,8 @@ jobs:
           TOPIC_COUNT: ${{ steps.publish.outputs.topic_count }}
           LEARNING_PATHS: ${{ steps.publish.outputs.learning_paths }}
           STUDY_GUIDES: ${{ steps.publish.outputs.study_guides }}
+          LIGHTING_SECTIONS: ${{ steps.expand.outputs.lighting_sections }}
+          RESEARCH_SECTIONS: ${{ steps.expand.outputs.research_sections }}
         with:
           script: |
             const source = context.eventName === 'workflow_run'
@@ -215,6 +273,7 @@ jobs:
               `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
               `Trigger: **${source}**`,
               `Overall: **${process.env.STATUS}**`,
+              `Literature expansion assembly: **${process.env.EXPAND_OUTCOME || 'not-run'}**`,
               `Canonical republish: **${process.env.PUBLISH_OUTCOME || 'not-run'}**`,
               `LiteSpeed purge: **${process.env.CACHE_OUTCOME || 'not-run'}**`,
               `Visitor verification: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
@@ -222,8 +281,10 @@ jobs:
               `Literature topics: **${process.env.TOPIC_COUNT || 'not-run'}**`,
               `Learning paths: **${process.env.LEARNING_PATHS || 'not-run'}**`,
               `Study guides: **${process.env.STUDY_GUIDES || 'not-run'}**`,
+              `Lighting literature sections: **${process.env.LIGHTING_SECTIONS || 'not-run'}**`,
+              `Research/Measurement literature sections: **${process.env.RESEARCH_SECTIONS || 'not-run'}**`,
               '',
-              'This workflow is the final WordPress owner for THC Learning. It runs after both Learning V3 and Topic Literature completion, including failed Learning V3 runs, then republishes the canonical literature-first pages, purges Hostinger/LiteSpeed, and requires the guided-learning markers visitor-side.'
+              'This workflow is the final WordPress owner for THC Learning. It assembles additive curriculum, republishes the canonical literature-first pages, purges Hostinger/LiteSpeed, and requires the guided-learning and expanded-subject markers visitor-side.'
             ].join('\n');
             try {
               await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: 220, body });
