@@ -21,7 +21,7 @@ on:
       - .github/workflows/wordpress-infographic-production.yml
   workflow_run:
     workflows:
-      - Stage DTFSeeds WordPress Canonical Deployment
+      - Publish DTFSeeds WordPress Production
     types: [completed]
 
 permissions:

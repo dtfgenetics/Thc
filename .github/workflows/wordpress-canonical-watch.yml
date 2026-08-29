@@ -71,7 +71,7 @@ jobs:
           set -euo pipefail
           APPLY_WOOCOMMERCE_CHANGES=false node scripts/reconcile-woocommerce-products.mjs
 
-      - name: Report workflow registration to issue 46
+      - name: Report workflow registration to advisory issue 220
         if: always() && github.event_name != 'schedule'
         continue-on-error: true
         uses: actions/github-script@v7
@@ -107,9 +107,13 @@ jobs:
               '',
               'This workflow intentionally accesses no production credentials and performs no WooCommerce writes. It validates the trusted `main` WordPress package, the infographic media publisher, the authenticated presentation probe syntax, genetics-to-store route consistency, pinned product identities, and the backup/rollback WooCommerce reconciliation package. The protected production workflows own all writes.'
             ].join('\n');
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: 46,
-              body
-            });
+            try {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: 220,
+                body
+              });
+            } catch (error) {
+              core.warning(`Canonical preflight advisory report could not be posted: ${error.message}`);
+            }

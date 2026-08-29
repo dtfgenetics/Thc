@@ -12,7 +12,6 @@ on:
       - .github/workflows/wordpress-learning-experience-v3-production.yml
   workflow_run:
     workflows:
-      - Publish DTFSeeds WordPress Production
       - Publish THC Infographics to WordPress Production
     types: [completed]
 
@@ -187,7 +186,7 @@ jobs:
               'Visual hierarchy: the Home hero and current-release positions now require reviewed DTF strain-card media; foundation subjects remain featured; specialized subjects remain compact; individual subject pages use literature-first section cards plus supporting visuals.',
               'Mobile navigation is a single horizontal rail instead of a multi-row wrapped header. Footer routes secondary destinations to Community, Gallery, About, Contact, and Discord.',
               'Canonical topic titles are normalized into stable layout aliases before publication so source IDs can evolve without breaking customer-facing routes.',
-              'The publisher runs after both canonical WordPress production and the THC infographic publisher so this hierarchy remains the final customer-facing layer.',
+              'The publisher runs after the THC infographic publisher, which is the single upstream production handoff for the final Learning layer.',
               'The publisher creates rollback snapshots, preserves the WooCommerce archive style injection, attempts a LiteSpeed cache flush, and performs cache-busted visitor verification on Home, Learn, Shop, and all subject routes.'
             ].join('\n');
             try {

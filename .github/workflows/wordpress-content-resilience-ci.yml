@@ -75,7 +75,15 @@ jobs:
             ]
           }
           JSON
+          cat > "$RUNNER_TEMP/remote-manifest.json" <<'JSON'
+          {
+            "schemaVersion": 1,
+            "purpose": "ci-empty-approved-remote",
+            "entries": []
+          }
+          JSON
           BULK_INFOGRAPHIC_MANIFEST="$RUNNER_TEMP/manifest.json" \
+          REMOTE_INFOGRAPHIC_MANIFEST="$RUNNER_TEMP/remote-manifest.json" \
           INFOGRAPHIC_SOURCE_DIR="$RUNNER_TEMP/infographic-source" \
           BULK_IMPORT_REPORT="$RUNNER_TEMP/report.json" \
           node scripts/import-wordpress-infographic-remote-batch.mjs
@@ -95,6 +103,7 @@ jobs:
           set -euo pipefail
           if BULK_IMPORT_REQUIRE_ALL=true \
              BULK_INFOGRAPHIC_MANIFEST="$RUNNER_TEMP/manifest.json" \
+             REMOTE_INFOGRAPHIC_MANIFEST="$RUNNER_TEMP/remote-manifest.json" \
              INFOGRAPHIC_SOURCE_DIR="$RUNNER_TEMP/strict-source" \
              BULK_IMPORT_REPORT="$RUNNER_TEMP/strict-report.json" \
              node scripts/import-wordpress-infographic-remote-batch.mjs; then
