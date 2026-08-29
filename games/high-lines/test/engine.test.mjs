@@ -17,12 +17,13 @@ import {
 const data = JSON.parse(fs.readFileSync(new URL('../data/scenes.json', import.meta.url), 'utf8'));
 const sceneById = new Map(data.scenes.map((scene) => [scene.id, scene]));
 
-assert.equal(normalizeSceneCode('hi-l8 42'), 'HIL842');
-assert.equal(isValidSceneCode('HIL84'), false);
-assert.equal(isValidSceneCode('HIL842'), true);
+assert.equal(normalizeSceneCode('hj-l8 42'), 'HJL842');
+assert.equal(normalizeSceneCode('hi-l8 42'), 'HL842', 'Ambiguous I is intentionally excluded from scene codes.');
+assert.equal(isValidSceneCode('HJL84'), false);
+assert.equal(isValidSceneCode('HJL842'), true);
 
-const first = createExperience({ code: 'HIL842' }, data);
-const repeated = createExperience({ code: 'hil842' }, data);
+const first = createExperience({ code: 'HJL842' }, data);
+const repeated = createExperience({ code: 'hjl842' }, data);
 assert.deepEqual(first, repeated, 'Same code must reproduce the same scene, prompt, and palette order.');
 assert.equal(first.paletteOrder.length, data.palette.length);
 assert.equal(new Set(first.paletteOrder).size, data.palette.length);
@@ -74,7 +75,7 @@ assert.equal(foundAgain.foundHidden.length, 1, 'Hidden-object score must be idem
 assert.equal(foundAgain.score, 35);
 assert.throws(() => findHiddenObject(first, 'missing-hidden', data), /Unknown hidden object/);
 
-let complete = createExperience({ code: 'HIL842' }, data);
+let complete = createExperience({ code: 'HJL842' }, data);
 const completeScene = sceneById.get(complete.sceneId);
 for (let index = 0; index < completeScene.regions.length; index += 1) {
   complete = fillRegion(complete, completeScene.regions[index], complete.paletteOrder[index % complete.paletteOrder.length], data);
