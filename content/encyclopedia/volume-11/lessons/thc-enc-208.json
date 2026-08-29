@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-208",
+  "number":208,
+  "title":"Pollen Grain Structure and Viability",
+  "objective":"Explain cannabis pollen as the male gametophyte, distinguish structural integrity from functional viability, and show why germination-based measurements are more informative than appearance alone.",
+  "terms":[
+    {"term":"pollen grain","definition":"The male gametophyte released from the anther that carries the cells required for sexual fertilization."},
+    {"term":"exine","definition":"The resistant outer wall of a pollen grain."},
+    {"term":"germination","definition":"The initiation of pollen-tube growth after a viable pollen grain is placed under suitable conditions."},
+    {"term":"viability","definition":"The capacity of pollen to remain alive and function in a way compatible with fertilization; different assays estimate different aspects of that capacity."},
+    {"term":"bicellular pollen","definition":"Pollen shed with a vegetative cell and a generative cell; cannabis pollen has been documented in this state."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Cannabis pollen is a living male gametophyte, not inert dust. Gaudet and colleagues documented bicellular Cannabis sativa pollen and developed an in-vitro germination assay that directly measures pollen-tube emergence under defined conditions.",
+    "Pollen appearance, stain uptake, non-abortion, and in-vitro germination are related but not interchangeable measurements. Later cannabis work comparing pollen-fitness methods found that different assays can produce different estimates, so a single visual or staining result should not be labeled absolute fertility.",
+    "Developmental stage matters. Cannabis pollen collected at different growth stages has shown different germination longevity, indicating that collection timing can influence measured performance even before storage conditions are considered.",
+    "Pollen rapidly responds to water status, temperature, handling, and time after release. Structural integrity can persist after functional germination capacity has declined, which is why visible grains are not proof of reproductive competence.",
+    "A pollen germination percentage is method-dependent. Medium composition, incubation conditions, scoring rules, sample size, and pollen age all affect the result and must accompany the number if it is being used scientifically."
+  ],
+  "cultivationRelevance":[
+    "Treat visible pollen as a potential pollination risk even when its viability has not been measured, because visual inspection cannot reliably identify nonfunctional grains.",
+    "For breeding or preservation work, record developmental stage and collection conditions before interpreting germination results.",
+    "Use the same validated assay and scoring method when comparing pollen samples; switching methods can create apparent differences that come from the test rather than the pollen.",
+    "Do not use pollen color, apparent abundance, or texture as substitutes for a functional viability measurement."
+  ],
+  "measureAndRecord":[
+    {"field":"Collection stage","requirement":"Record the developmental condition of the staminate flowers and whether pollen was collected before, during, or after active dehiscence."},
+    {"field":"Sample age","requirement":"Record elapsed time between collection and testing or storage."},
+    {"field":"Assay method","requirement":"Record germination medium or other viability method, incubation conditions, scoring definition, and microscope magnification where relevant."},
+    {"field":"Sample size","requirement":"Record the approximate number of grains scored and the number or percentage classified as germinated or viable."},
+    {"field":"Storage history","requirement":"Record temperature, drying/desiccation treatment, container, duration, and freeze-thaw events for stored pollen."
+    }
+  ],
+  "misconceptions":[
+    "Yellow or abundant pollen is automatically highly viable.",
+    "If a pollen grain looks intact under a microscope it must be capable of fertilization.",
+    "Every pollen-viability test measures the same biological property.",
+    "Cannabis pollen from every developmental stage has the same storage life.",
+    "A germination percentage can be interpreted without knowing the assay conditions."
+  ],
+  "evidenceLimits":[
+    "Cannabis pollen germination and several fitness assays are directly documented, but laboratory germination is still a proxy for successful fertilization under whole-plant conditions. Assay-specific values should not be converted into universal fertility thresholds, and storage performance depends strongly on preparation and method."
+  ],
+  "crossLinks":"THC-ENC-207 for male floral development and anthesis; THC-ENC-209 for pollen transport; THC-ENC-210–211 for female receptivity and fertilization; THC-ENC-214 for collection and storage.",
+  "sourceNotes":[
+    "Gaudet D, Yadav NS, Sorokin A, Bilichak A, Kovalchuk I. (2020). Development and Optimization of a Germination Assay and Long-Term Storage for Cannabis sativa Pollen. Plants 9(5):665. Identified bicellular cannabis pollen and developed a functional germination assay; pollen developmental stage affected longevity.",
+    "Methods for characterizing pollen fitness in Cannabis sativa L. PLOS ONE (2022). Compared pollen non-abortion, viability, and germination approaches and emphasized that different assays do not necessarily produce equivalent estimates.",
+    "Public wording separates visible morphology from functional germination and avoids presenting one laboratory assay percentage as a universal fertility cutoff."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 11 batch 02 controlled web derivative","evidenceControl":"current_topic_secondary_review_complete","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_pollen_structure_and_viability","releaseTimeReview":"completed_2026-08-29_assay_method_and_non_visual_viability_claims","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"pollen-grain-structure-and-viability",
+  "route":"/encyclopedia/pollen-grain-structure-and-viability"
+}
