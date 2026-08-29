@@ -65,6 +65,52 @@ process.env.TOPIC_LITERATURE_PATH = normalizedPath;
 // to a visually impressive but misleading image (for example a seedling card on Lighting or a
 // root-pathogen diagram on a general water/pH/EC page).
 let publisher = await readFile(publisherPath, 'utf8');
+
+// WordPress hierarchical pages may legitimately reuse a leaf slug under different parents.
+// Resolve V3 pages by parent namespace instead of taking the first global slug match. This keeps
+// /learn/training-canopy/ separate from /learn/encyclopedia/training-canopy/ and makes every
+// canonical Learning write deterministic without deleting or rewriting encyclopedia pages.
+const originalPageLookup = `async function getPage(slug) {
+  const { body } = await request(\`/wp-json/wp/v2/pages?slug=\${encodeURIComponent(slug)}&context=edit&per_page=10\`);
+  return Array.isArray(body) ? body[0] || null : null;
+}
+
+async function ensurePage(slug, title, parent = 0) {
+  const existing = await getPage(slug);
+  if (existing) return existing;
+  if (!apply) return { id: null, slug, title: { rendered: title }, content: { rendered: '' }, parent };
+  const { body } = await request('/wp-json/wp/v2/pages', {
+    method: 'POST',
+    body: JSON.stringify({ slug, title, parent, status: 'publish', content: '' })
+  });
+  if (!body?.id) throw new Error(\`Could not create page \${slug}\`);
+  return body;
+}`;
+const parentAwarePageLookup = `async function getPages(slug) {
+  const { body } = await request(\`/wp-json/wp/v2/pages?slug=\${encodeURIComponent(slug)}&context=edit&status=publish&per_page=100\`);
+  return Array.isArray(body) ? body : [];
+}
+
+async function ensurePage(slug, title, parent = 0) {
+  const candidates = await getPages(slug);
+  const owned = candidates.filter(page => Number(page.parent || 0) === Number(parent || 0));
+  if (owned.length > 1) {
+    throw new Error(\`Page \${slug} has multiple published owners under parent \${parent}: \${JSON.stringify(owned.map(page => ({ id: page.id, parent: page.parent, link: page.link })))}\`);
+  }
+  if (owned.length === 1) return owned[0];
+  if (!apply) return { id: null, slug, title: { rendered: title }, content: { rendered: '' }, parent };
+  const { body } = await request('/wp-json/wp/v2/pages', {
+    method: 'POST',
+    body: JSON.stringify({ slug, title, parent, status: 'publish', content: '' })
+  });
+  if (!body?.id) throw new Error(\`Could not create page \${slug} under parent \${parent}\`);
+  return body;
+}`;
+if (!publisher.includes(originalPageLookup) && !publisher.includes(parentAwarePageLookup)) {
+  throw new Error('Could not locate the Learning V3 page lookup; refusing an unreviewed parent-namespace patch.');
+}
+publisher = publisher.replace(originalPageLookup, parentAwarePageLookup);
+
 const selectorPatches = [
   {
     name: 'lighting',
