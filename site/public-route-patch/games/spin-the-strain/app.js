@@ -105,6 +105,7 @@ let data = null;
 let state = null;
 let spinning = false;
 let revealTimer = null;
+let spinGeneration = 0;
 
 function readEmbeddedData() {
   const node = document.querySelector('#spin-the-strain-data');
@@ -144,9 +145,7 @@ function randomCode() {
   if (globalThis.crypto?.getRandomValues) {
     globalThis.crypto.getRandomValues(values);
   } else {
-    for (let index = 0; index < values.length; index += 1) {
-      values[index] = Math.floor(Math.random() * 0xffffffff);
-    }
+    for (let index = 0; index < values.length; index += 1) values[index] = Math.floor(Math.random() * 0xffffffff);
   }
   return [...values].map((number) => WHEEL_ALPHABET[number % WHEEL_ALPHABET.length]).join('');
 }
@@ -166,7 +165,7 @@ function challengeUrl() {
 }
 
 function safeReplaceUrl() {
-  try { history.replaceState(null, '', challengeUrl()); } catch {}
+  try { globalThis.history?.replaceState?.(null, '', challengeUrl()); } catch {}
 }
 
 function prefersReducedMotion() {
@@ -175,7 +174,7 @@ function prefersReducedMotion() {
 }
 
 function wheelGradient(count) {
-  const colors = ['var(--seg-a)','var(--seg-b)','var(--seg-c)','var(--seg-d)','var(--seg-e)','var(--seg-f)'];
+  const colors = ['var(--seg-a)', 'var(--seg-b)', 'var(--seg-c)', 'var(--seg-d)', 'var(--seg-e)', 'var(--seg-f)'];
   const size = 100 / count;
   const stops = [];
   for (let index = 0; index < count; index += 1) {
@@ -184,6 +183,10 @@ function wheelGradient(count) {
     stops.push(`${colors[index % colors.length]} ${start}% ${end}%`);
   }
   return `conic-gradient(${stops.join(',')})`;
+}
+
+function compactCategory(category) {
+  return String(category || '').replace(/[^A-Za-z0-9]/g, '').slice(0, 3).toUpperCase() || '•';
 }
 
 function renderWheel() {
@@ -196,7 +199,8 @@ function renderWheel() {
     label.className = 'segment-label';
     label.style.setProperty('--segment-angle', `${(index + 0.5) * segmentAngle}deg`);
     label.textContent = entry.label;
-    label.title = entry.label;
+    label.dataset.short = compactCategory(entry.category);
+    label.title = `${entry.label} · ${entry.category}`;
     ui.wheel.append(label);
   });
   const offset = state.lastResult ? 360 - (state.lastResult.index + 0.5) * segmentAngle : 0;
@@ -277,9 +281,14 @@ function render() {
   renderHistory();
 }
 
-function resetWheel(code, mode) {
-  window.clearTimeout(revealTimer);
+function cancelPendingReveal() {
+  spinGeneration += 1;
+  if (revealTimer !== null) window.clearTimeout(revealTimer);
   revealTimer = null;
+}
+
+function resetWheel(code, mode) {
+  cancelPendingReveal();
   spinning = false;
   state = createWheel({ code, mode }, data);
   ui.wheelStage.setAttribute('aria-busy', 'false');
@@ -288,8 +297,8 @@ function resetWheel(code, mode) {
   render();
 }
 
-function finishSpin() {
-  if (!state?.lastResult) return;
+function finishSpin(generation) {
+  if (generation !== spinGeneration || !spinning || !state?.lastResult) return;
   spinning = false;
   revealTimer = null;
   ui.wheelStage.setAttribute('aria-busy', 'false');
@@ -300,12 +309,14 @@ function finishSpin() {
 
 function startSpin() {
   if (spinning || !state) return;
+  cancelPendingReveal();
+  const generation = spinGeneration;
   spinning = true;
   state = spinWheel(state, data);
   safeReplaceUrl();
   ui.wheelStage.setAttribute('aria-busy', 'true');
   render();
-  revealTimer = window.setTimeout(finishSpin, prefersReducedMotion() ? 0 : 1650);
+  revealTimer = window.setTimeout(() => finishSpin(generation), prefersReducedMotion() ? 0 : 1650);
 }
 
 ui.modes.addEventListener('click', (event) => {
@@ -342,10 +353,20 @@ ui.share.addEventListener('click', async () => {
   }
 });
 
+document.addEventListener('keydown', (event) => {
+  const target = event.target;
+  if (target instanceof Element && target.closest('input,textarea,select,button,a,[contenteditable="true"]')) return;
+  if ((event.key === 's' || event.key === 'S') && !event.altKey && !event.ctrlKey && !event.metaKey) {
+    event.preventDefault();
+    startSpin();
+  }
+});
+
 document.addEventListener('visibilitychange', () => {
-  if (document.hidden || !spinning) return;
-  window.clearTimeout(revealTimer);
-  finishSpin();
+  if (!document.hidden || !spinning) return;
+  const generation = spinGeneration;
+  if (revealTimer !== null) window.clearTimeout(revealTimer);
+  finishSpin(generation);
 });
 
 function load() {
@@ -359,7 +380,7 @@ function load() {
     state = createWheel({ code, mode }, data);
     setCode(code);
     safeReplaceUrl();
-    ui.load.textContent = '3 equal-weight wheels · 54 prompts · deterministic share codes';
+    ui.load.textContent = '3 equal-weight wheels · 54 prompts · deterministic share codes · S to spin';
     render();
   } catch (error) {
     console.error(error);
