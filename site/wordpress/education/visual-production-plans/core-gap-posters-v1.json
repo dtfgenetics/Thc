@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-08-29",
+  "purpose": "Final deterministic full-sheet infographic pack for subjects that remained visually thin after the Lighting/Evidence wave. These are finished production specifications, not reference-image reclassification.",
+  "assetCount": 13,
+  "quality": {
+    "width": 2550,
+    "height": 3300,
+    "dpi": 300,
+    "format": "PNG",
+    "minimumBytes": 250000,
+    "rules": [
+      "Exact source-controlled typography; no AI-rendered text.",
+      "Use reviewed WordPress education imagery only as supporting context.",
+      "Every poster contains a new explanatory diagram plus measurement or diagnostic guidance.",
+      "Support/reference images remain excluded from standalone infographic counts.",
+      "No universal cultivar-specific target is asserted where evidence is context dependent."
+    ]
+  },
+  "assets": [
+    {"id":"THC-LIFE-01","topicId":"lifecycle-propagation","title":"Seed Vigor, Storage & Germination Testing","filename":"THC-LIFE-01_Seed_Vigor_Storage_Germination_Testing_Full_Sheet_Infographic.png","requiredPanels":["viability vs vigor","storage drivers","representative sampling","emergence timing","interpretation limits"],"status":"ready-for-render"},
+    {"id":"THC-LIFE-02","topicId":"lifecycle-propagation","title":"Cutting Rooting → Hardening → Establishment","filename":"THC-LIFE-02_Cutting_Rooting_Hardening_Establishment_Full_Sheet_Infographic.png","requiredPanels":["cutting water balance","root initiation","root function","humidity transition","establishment evidence"],"status":"ready-for-render"},
+    {"id":"THC-ENV-01","topicId":"environment-vpd","title":"Sensor Placement, Dew Point & Canopy Microclimates","filename":"THC-ENV-01_Sensor_Placement_Dew_Point_Canopy_Microclimates_Full_Sheet_Infographic.png","requiredPanels":["bulk air vs leaf zone","placement bias","dew point","sensor comparison","transition logging"],"status":"ready-for-render"},
+    {"id":"THC-LIGHT-05","topicId":"lighting","title":"Fixture Height, Uniformity & Edge Loss","filename":"THC-LIGHT-05_Fixture_Height_Uniformity_Edge_Loss_Full_Sheet_Infographic.png","requiredPanels":["crop plane","uniformity map","edge falloff","fixture overlap","remap triggers"],"status":"ready-for-render"},
+    {"id":"THC-WATER-01","topicId":"water-ph-ec","title":"pH vs Alkalinity: Why Buffering Matters","filename":"THC-WATER-01_pH_vs_Alkalinity_Buffering_Full_Sheet_Infographic.png","requiredPanels":["pH definition","alkalinity definition","bicarbonate load","buffer behavior","root-zone trend"],"status":"ready-for-render"},
+    {"id":"THC-WATER-02","topicId":"water-ph-ec","title":"EC, PPM/TDS & Irrigation Dryback Measurement","filename":"THC-WATER-02_EC_PPM_TDS_Irrigation_Dryback_Full_Sheet_Infographic.png","requiredPanels":["EC measurement","PPM conversion","meter calibration","event frequency","dryback context"],"status":"ready-for-render"},
+    {"id":"THC-IPM-01","topicId":"plant-health-ipm","title":"Scouting Map → Differential Diagnosis → Action Threshold","filename":"THC-IPM-01_Scouting_Differential_Diagnosis_Action_Threshold_Full_Sheet_Infographic.png","requiredPanels":["repeatable route","zero counts","spatial pattern","biotic vs abiotic","decision threshold"],"status":"ready-for-render"},
+    {"id":"THC-TRAIN-01","topicId":"training-canopy","title":"Apical Dominance & Branch Response","filename":"THC-TRAIN-01_Apical_Dominance_Branch_Response_Full_Sheet_Infographic.png","requiredPanels":["main apex","axillary buds","bend vs remove","response tracking","genetic variation"],"status":"ready-for-render"},
+    {"id":"THC-TRAIN-02","topicId":"training-canopy","title":"Wound Recovery & Stress Stacking","filename":"THC-TRAIN-02_Wound_Recovery_Stress_Stacking_Full_Sheet_Infographic.png","requiredPanels":["wound event","repair response","recovery evidence","stress stacking","sanitation"],"status":"ready-for-render"},
+    {"id":"THC-TRAIN-03","topicId":"training-canopy","title":"Canopy Geometry, Support, Airflow & PPFD","filename":"THC-TRAIN-03_Canopy_Geometry_Support_Airflow_PPFD_Full_Sheet_Infographic.png","requiredPanels":["height range","support","internal airflow","PPFD map","uniformity measurement"],"status":"ready-for-render"},
+    {"id":"THC-OUT-01","topicId":"outdoor","title":"Outdoor Site Microclimate Mapping","filename":"THC-OUT-01_Outdoor_Site_Microclimate_Mapping_Full_Sheet_Infographic.png","requiredPanels":["sun path","shade","wind","drainage lows","sensor location"],"status":"ready-for-render"},
+    {"id":"THC-OUT-02","topicId":"outdoor","title":"Weather Risk: Wind, Rain, Drainage & Pollen/Particulates","filename":"THC-OUT-02_Weather_Risk_Wind_Rain_Drainage_Pollen_Full_Sheet_Infographic.png","requiredPanels":["wind load","rain wetness","drainage","pollen uncertainty","post-event documentation"],"status":"ready-for-render"},
+    {"id":"THC-EVID-05","topicId":"research-measurement","title":"Metadata, Time Series & Reproducibility","filename":"THC-EVID-05_Metadata_Time_Series_Reproducibility_Full_Sheet_Infographic.png","requiredPanels":["stable IDs","time series","intervention timestamps","raw data","reproducible metadata"],"status":"ready-for-render"}
+  ]
+}
