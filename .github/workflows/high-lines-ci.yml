@@ -71,7 +71,7 @@ jobs:
           const game = JSON.parse(fs.readFileSync('games/high-lines/game.json','utf8'));
           if (game.status !== 'browser-vertical-slice') throw new Error('unexpected game status');
           if (game.route !== '/games/high-lines/') throw new Error('unexpected route');
-          if (game.releaseGates.rulesTested !== false) throw new Error('rulesTested must remain false until CI proves the deterministic rules and asset suite');
+          if (game.releaseGates.rulesTested !== true) throw new Error('rulesTested must stay true after dedicated deterministic rules and asset CI passes');
           if (game.releaseGates.browserTested !== false) throw new Error('browserTested must remain false until browser QA is actually completed');
           if (game.releaseGates.mobileTested !== false) throw new Error('mobileTested must remain false until mobile QA is actually completed');
           if (game.releaseGates.accessibilityReviewed !== false) throw new Error('accessibilityReviewed must remain false until accessibility review is actually completed');
