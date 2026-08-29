@@ -1,21 +1,11 @@
-import {
-  SCENE_ALPHABET,
-  createExperience,
-  fillRegion,
-  findHiddenObject,
-  isValidSceneCode,
-  normalizeSceneCode,
-  progressForState,
-  resetArtwork,
-  selectColor,
-  undoFill
-} from './engine.mjs';
-import {
-  experienceSavePayload,
-  hasSavedProgress,
-  restoreExperience,
-  saveKeyForCode
-} from './persistence.mjs';
+const SCENE_CODE_LENGTH = 6;
+const SCENE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+const MAX_UNDO = 60;
+const SAVE_SCHEMA_VERSION = 1;
+const SAVE_KEY_PREFIX = 'dtf-high-lines:v1:';
+const MIN_ZOOM = 1;
+const MAX_ZOOM = 2.5;
+const ZOOM_STEP = 0.25;
 
 const ui = {
   load: document.querySelector('#load-status'),
@@ -28,6 +18,10 @@ const ui = {
   palette: document.querySelector('#palette'),
   undo: document.querySelector('#undo-fill'),
   reset: document.querySelector('#reset-art'),
+  zoomOut: document.querySelector('#zoom-out'),
+  zoomIn: document.querySelector('#zoom-in'),
+  zoomReset: document.querySelector('#zoom-reset'),
+  zoomLevel: document.querySelector('#zoom-level'),
   art: document.querySelector('#art-mount'),
   progress: document.querySelector('#progress-fill'),
   progressText: document.querySelector('#progress-text'),
@@ -46,26 +40,248 @@ let colorById = new Map();
 let loadedSceneId = null;
 let sceneLoadToken = 0;
 let restoredOnLoad = false;
+let zoom = 1;
+let resetArmed = false;
+let resetTimer = null;
+
+function clone(value) {
+  return JSON.parse(JSON.stringify(value));
+}
+
+function hash(value) {
+  let result = 2166136261;
+  for (const character of String(value)) {
+    result ^= character.charCodeAt(0);
+    result = Math.imul(result, 16777619);
+  }
+  return result >>> 0;
+}
+
+function requireData(payload) {
+  if (!Array.isArray(payload?.palette) || !Array.isArray(payload?.scenes) || payload.palette.length < 2 || !payload.scenes.length) throw new Error('High Lines scene data is required.');
+}
+
+function sceneMap(payload) {
+  return new Map(payload.scenes.map((scene) => [scene.id, scene]));
+}
+
+function paletteMap(payload) {
+  return new Map(payload.palette.map((color) => [color.id, color]));
+}
+
+function normalizeSceneCode(value) {
+  const allowed = new Set(SCENE_ALPHABET);
+  return String(value ?? '').trim().toUpperCase().split('').filter((character) => allowed.has(character)).join('').slice(0, SCENE_CODE_LENGTH);
+}
+
+function isValidSceneCode(value) {
+  return normalizeSceneCode(value).length === SCENE_CODE_LENGTH;
+}
+
+function paletteForCode(code, payload) {
+  requireData(payload);
+  const start = hash(`${code}:palette`) % payload.palette.length;
+  return payload.palette.map((_, index) => payload.palette[(start + index) % payload.palette.length].id);
+}
+
+function scoreExperience(inputState, payload) {
+  requireData(payload);
+  const scene = sceneMap(payload).get(inputState.sceneId);
+  if (!scene) return 0;
+  const colored = scene.regions.filter((regionId) => Boolean(inputState.fills?.[regionId])).length;
+  const found = scene.hiddenObjects.filter((item) => inputState.foundHidden?.includes(item.id)).length;
+  const complete = colored === scene.regions.length && found === scene.hiddenObjects.length;
+  return (colored * 10) + (found * 35) + (complete ? 100 : 0);
+}
+
+function progressForState(inputState, payload) {
+  requireData(payload);
+  const scene = sceneMap(payload).get(inputState.sceneId);
+  if (!scene) return { colored: 0, totalRegions: 0, found: 0, totalHidden: 0, percent: 0, complete: false };
+  const colored = scene.regions.filter((regionId) => Boolean(inputState.fills?.[regionId])).length;
+  const found = scene.hiddenObjects.filter((item) => inputState.foundHidden?.includes(item.id)).length;
+  const total = scene.regions.length + scene.hiddenObjects.length;
+  const done = colored + found;
+  return {
+    colored,
+    totalRegions: scene.regions.length,
+    found,
+    totalHidden: scene.hiddenObjects.length,
+    percent: total ? Math.round((done / total) * 100) : 0,
+    complete: colored === scene.regions.length && found === scene.hiddenObjects.length
+  };
+}
+
+function createExperience({ code } = {}, payload) {
+  requireData(payload);
+  const normalized = normalizeSceneCode(code);
+  if (!isValidSceneCode(normalized)) throw new Error('A six-character High Lines scene code is required.');
+  const scene = payload.scenes[hash(`${normalized}:scene`) % payload.scenes.length];
+  const promptIndex = hash(`${normalized}:${scene.id}:prompt`) % scene.prompts.length;
+  const paletteOrder = paletteForCode(normalized, payload);
+  return {
+    schemaVersion: 1,
+    code: normalized,
+    sceneId: scene.id,
+    promptIndex,
+    prompt: scene.prompts[promptIndex],
+    paletteOrder,
+    selectedColorId: paletteOrder[0],
+    fills: {},
+    foundHidden: [],
+    undoStack: [],
+    score: 0,
+    complete: false
+  };
+}
+
+function finalize(inputState, payload) {
+  const progress = progressForState(inputState, payload);
+  inputState.score = scoreExperience(inputState, payload);
+  inputState.complete = progress.complete;
+  return inputState;
+}
+
+function selectColor(inputState, colorId, payload) {
+  requireData(payload);
+  if (!paletteMap(payload).has(colorId)) throw new Error(`Unknown palette color: ${colorId}`);
+  const next = clone(inputState);
+  next.selectedColorId = colorId;
+  return next;
+}
+
+function fillRegion(inputState, regionId, colorId, payload) {
+  requireData(payload);
+  const next = clone(inputState);
+  const scene = sceneMap(payload).get(next.sceneId);
+  if (!scene) throw new Error(`Unknown scene: ${next.sceneId}`);
+  if (!scene.regions.includes(regionId)) throw new Error(`Unknown region: ${regionId}`);
+  if (!paletteMap(payload).has(colorId)) throw new Error(`Unknown palette color: ${colorId}`);
+  const previousColorId = next.fills[regionId] ?? null;
+  if (previousColorId === colorId) return finalize(next, payload);
+  next.undoStack.push({ regionId, previousColorId, colorId });
+  next.undoStack = next.undoStack.slice(-MAX_UNDO);
+  next.fills[regionId] = colorId;
+  next.selectedColorId = colorId;
+  return finalize(next, payload);
+}
+
+function undoFill(inputState, payload) {
+  requireData(payload);
+  const next = clone(inputState);
+  const action = next.undoStack.pop();
+  if (!action) return finalize(next, payload);
+  if (action.previousColorId) next.fills[action.regionId] = action.previousColorId;
+  else delete next.fills[action.regionId];
+  return finalize(next, payload);
+}
+
+function findHiddenObject(inputState, hiddenId, payload) {
+  requireData(payload);
+  const next = clone(inputState);
+  const scene = sceneMap(payload).get(next.sceneId);
+  if (!scene) throw new Error(`Unknown scene: ${next.sceneId}`);
+  if (!scene.hiddenObjects.some((item) => item.id === hiddenId)) throw new Error(`Unknown hidden object: ${hiddenId}`);
+  if (!next.foundHidden.includes(hiddenId)) next.foundHidden.push(hiddenId);
+  return finalize(next, payload);
+}
+
+function resetArtwork(inputState, payload) {
+  requireData(payload);
+  const next = clone(inputState);
+  next.fills = {};
+  next.foundHidden = [];
+  next.undoStack = [];
+  next.score = 0;
+  next.complete = false;
+  return next;
+}
+
+function saveKeyForCode(code) {
+  const normalized = normalizeSceneCode(code);
+  if (!isValidSceneCode(normalized)) throw new Error('A valid High Lines scene code is required for persistence.');
+  return `${SAVE_KEY_PREFIX}${normalized}`;
+}
+
+function experienceSavePayload(inputState) {
+  if (!inputState || !isValidSceneCode(inputState.code)) throw new Error('A valid High Lines state is required for persistence.');
+  return {
+    schemaVersion: SAVE_SCHEMA_VERSION,
+    code: normalizeSceneCode(inputState.code),
+    selectedColorId: inputState.selectedColorId,
+    fills: { ...(inputState.fills ?? {}) },
+    foundHidden: [...(inputState.foundHidden ?? [])]
+  };
+}
+
+function restoreExperience(payload, sourceData) {
+  if (!payload || payload.schemaVersion !== SAVE_SCHEMA_VERSION) throw new Error('Unsupported High Lines save payload.');
+  const code = normalizeSceneCode(payload.code);
+  if (!isValidSceneCode(code)) throw new Error('Saved High Lines scene code is invalid.');
+  let next = createExperience({ code }, sourceData);
+  const scene = sourceData.scenes.find((candidate) => candidate.id === next.sceneId);
+  if (!scene) throw new Error('Saved High Lines scene no longer exists.');
+  const paletteIds = new Set(sourceData.palette.map((color) => color.id));
+  const regionIds = new Set(scene.regions);
+  const hiddenIds = new Set(scene.hiddenObjects.map((item) => item.id));
+  if (payload.selectedColorId != null) {
+    if (!paletteIds.has(payload.selectedColorId)) throw new Error('Saved High Lines color is invalid.');
+    next = selectColor(next, payload.selectedColorId, sourceData);
+  }
+  const fills = payload.fills ?? {};
+  if (!fills || typeof fills !== 'object' || Array.isArray(fills)) throw new Error('Saved High Lines fills are invalid.');
+  for (const [regionId, colorId] of Object.entries(fills)) {
+    if (!regionIds.has(regionId)) throw new Error(`Saved High Lines region is invalid: ${regionId}`);
+    if (!paletteIds.has(colorId)) throw new Error(`Saved High Lines fill color is invalid: ${colorId}`);
+    next = fillRegion(next, regionId, colorId, sourceData);
+  }
+  const foundHidden = payload.foundHidden ?? [];
+  if (!Array.isArray(foundHidden) || new Set(foundHidden).size !== foundHidden.length) throw new Error('Saved High Lines hidden-object list is invalid.');
+  for (const hiddenId of foundHidden) {
+    if (!hiddenIds.has(hiddenId)) throw new Error(`Saved High Lines hidden object is invalid: ${hiddenId}`);
+    next = findHiddenObject(next, hiddenId, sourceData);
+  }
+  next.undoStack = [];
+  return next;
+}
+
+function hasSavedProgress(payload) {
+  return Boolean(payload && (Object.keys(payload.fills ?? {}).length || (payload.foundHidden ?? []).length));
+}
 
 function escapeHtml(value = '') {
-  return String(value).replace(/[&<>"']/g, (character) => ({
-    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-  }[character]));
+  return String(value).replace(/[&<>"']/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character]));
 }
 
 function humanize(value) {
   return String(value).replace(/-/g, ' ').replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
 
+function validateData(payload) {
+  if (payload?.schemaVersion !== 1 || payload?.palette?.length !== 8 || payload?.scenes?.length !== 4) throw new Error('High Lines scene data contract mismatch.');
+  const colorIds = new Set(payload.palette.map((color) => color.id));
+  const sceneIds = new Set(payload.scenes.map((scene) => scene.id));
+  if (colorIds.size !== 8 || sceneIds.size !== 4) throw new Error('High Lines data contains duplicate IDs.');
+  for (const scene of payload.scenes) {
+    if (!scene.asset?.endsWith('.svg') || !scene.regions?.length || scene.hiddenObjects?.length !== 3 || scene.prompts?.length !== 3) throw new Error(`${scene.id} has an invalid scene contract.`);
+    if (new Set(scene.regions).size !== scene.regions.length) throw new Error(`${scene.id} contains duplicate regions.`);
+  }
+}
+
 function randomCode() {
-  const values = new Uint32Array(6);
-  crypto.getRandomValues(values);
+  const values = new Uint32Array(SCENE_CODE_LENGTH);
+  if (globalThis.crypto?.getRandomValues) globalThis.crypto.getRandomValues(values);
+  else for (let index = 0; index < values.length; index += 1) values[index] = Math.floor(Math.random() * 0xffffffff);
   return [...values].map((number) => SCENE_ALPHABET[number % SCENE_ALPHABET.length]).join('');
 }
 
 function challengeUrl() {
   const params = new URLSearchParams({ lines: state.code });
   return `${location.origin}${location.pathname}?${params}`;
+}
+
+function replaceChallengeUrl() {
+  try { globalThis.history?.replaceState?.(null, '', challengeUrl()); } catch { /* optional browser feature */ }
 }
 
 function setCode(value) {
@@ -83,11 +299,8 @@ function currentColor() {
 }
 
 function removeSavedExperience(code) {
-  try {
-    localStorage.removeItem(saveKeyForCode(code));
-  } catch (error) {
-    console.warn('High Lines save cleanup failed.', error);
-  }
+  try { globalThis.localStorage?.removeItem(saveKeyForCode(code)); }
+  catch (error) { console.warn('High Lines save cleanup failed.', error); }
 }
 
 function persistExperience() {
@@ -95,8 +308,8 @@ function persistExperience() {
   try {
     const payload = experienceSavePayload(state);
     const key = saveKeyForCode(state.code);
-    if (hasSavedProgress(payload)) localStorage.setItem(key, JSON.stringify(payload));
-    else localStorage.removeItem(key);
+    if (hasSavedProgress(payload)) globalThis.localStorage?.setItem(key, JSON.stringify(payload));
+    else globalThis.localStorage?.removeItem(key);
   } catch (error) {
     console.warn('High Lines autosave failed.', error);
   }
@@ -106,11 +319,10 @@ function experienceForCode(code) {
   const fresh = createExperience({ code }, data);
   try {
     const key = saveKeyForCode(fresh.code);
-    const raw = localStorage.getItem(key);
+    const raw = globalThis.localStorage?.getItem(key);
     if (!raw) return { experience: fresh, restored: false };
     const payload = JSON.parse(raw);
-    const restored = restoreExperience(payload, data);
-    return { experience: restored, restored: hasSavedProgress(payload) };
+    return { experience: restoreExperience(payload, data), restored: hasSavedProgress(payload) };
   } catch (error) {
     console.warn('Discarding invalid High Lines save.', error);
     removeSavedExperience(fresh.code);
@@ -124,13 +336,30 @@ function paintRegionElement(element) {
   element.dataset.colored = colorId ? 'true' : 'false';
 }
 
+function applyZoom() {
+  zoom = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, zoom));
+  const svg = ui.art.querySelector('svg');
+  if (svg) {
+    svg.style.width = `${Math.round(zoom * 100)}%`;
+    svg.style.maxHeight = 'none';
+  }
+  ui.zoomLevel.value = `${Math.round(zoom * 100)}%`;
+  ui.zoomOut.disabled = zoom <= MIN_ZOOM;
+  ui.zoomIn.disabled = zoom >= MAX_ZOOM;
+}
+
+function setZoom(nextZoom, { announce = true } = {}) {
+  zoom = Math.round(Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, nextZoom)) * 4) / 4;
+  applyZoom();
+  if (announce) ui.announce.textContent = `Board zoom ${Math.round(zoom * 100)} percent.`;
+}
+
 function decorateSvg(svg) {
   const scene = currentScene();
   svg.classList.add('high-lines-svg');
   svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
   svg.removeAttribute('width');
   svg.removeAttribute('height');
-
   for (const element of svg.querySelectorAll('[data-region]')) {
     const regionId = element.dataset.region;
     element.setAttribute('role', 'button');
@@ -138,7 +367,6 @@ function decorateSvg(svg) {
     element.setAttribute('aria-label', `Color ${humanize(regionId)} with ${currentColor()?.label ?? 'selected color'}`);
     paintRegionElement(element);
   }
-
   for (const element of svg.querySelectorAll('[data-hidden]')) {
     const hiddenId = element.dataset.hidden;
     const found = state.foundHidden.includes(hiddenId);
@@ -149,7 +377,6 @@ function decorateSvg(svg) {
     element.style.opacity = found ? '0.28' : '';
     if (found) element.style.pointerEvents = 'none';
   }
-
   svg.addEventListener('click', handleArtActivation);
   svg.addEventListener('keydown', (event) => {
     if (event.key !== 'Enter' && event.key !== ' ') return;
@@ -159,8 +386,23 @@ function decorateSvg(svg) {
     activateTarget(target);
   });
   ui.art.replaceChildren(svg);
-
   if (scene) ui.art.setAttribute('aria-label', `${scene.title} interactive coloring board`);
+  applyZoom();
+}
+
+async function fetchSceneText(asset) {
+  let lastError = null;
+  for (let attempt = 1; attempt <= 2; attempt += 1) {
+    try {
+      const response = await fetch(`./${asset}`, { cache: 'no-store', credentials: 'same-origin' });
+      if (!response.ok) throw new Error(`Scene SVG HTTP ${response.status}`);
+      return await response.text();
+    } catch (error) {
+      lastError = error;
+      if (attempt < 2) await new Promise((resolve) => window.setTimeout(resolve, 180));
+    }
+  }
+  throw lastError ?? new Error('Scene SVG could not load.');
 }
 
 async function loadSceneAsset() {
@@ -168,19 +410,14 @@ async function loadSceneAsset() {
   const scene = currentScene();
   if (!scene) throw new Error('High Lines scene definition is missing.');
   const requestedSceneId = scene.id;
-
   try {
-    const response = await fetch(`./${scene.asset}`, { cache: 'no-store', credentials: 'same-origin' });
-    if (!response.ok) throw new Error(`Scene SVG HTTP ${response.status}`);
-    const text = await response.text();
+    const text = await fetchSceneText(scene.asset);
     if (requestToken !== sceneLoadToken || !state || state.sceneId !== requestedSceneId) return;
-
     const doc = new DOMParser().parseFromString(text, 'image/svg+xml');
     if (doc.querySelector('parsererror')) throw new Error('Scene SVG could not be parsed.');
     const svg = doc.documentElement;
     if (svg.localName !== 'svg' || svg.querySelector('script, foreignObject')) throw new Error('Scene SVG failed the safe-inline contract.');
     if (requestToken !== sceneLoadToken || state.sceneId !== requestedSceneId) return;
-
     loadedSceneId = requestedSceneId;
     decorateSvg(document.importNode(svg, true));
   } catch (error) {
@@ -224,6 +461,7 @@ function renderStats() {
   ui.hidden.textContent = `${progress.found} / ${progress.totalHidden}`;
   ui.score.textContent = String(state.score);
   ui.undo.disabled = state.undoStack.length === 0;
+  document.body.classList.toggle('scene-complete', progress.complete);
   if (progress.complete) {
     ui.status.className = 'activity-status complete';
     ui.status.innerHTML = `<span>SCENE COMPLETE</span><strong>${escapeHtml(currentScene().title)} finished at ${state.score} points.</strong><p>Progress is saved on this device. Try another scene code for a different drawing, prompt, and palette order.</p>`;
@@ -255,6 +493,7 @@ function refreshSvgState() {
     element.style.opacity = found ? '0.28' : '';
     element.style.pointerEvents = found ? 'none' : '';
   }
+  applyZoom();
 }
 
 function render({ reloadAsset = false } = {}) {
@@ -289,13 +528,21 @@ function activateTarget(target) {
     ui.announce.textContent = `${humanize(region.dataset.region)} colored ${currentColor().label}. Progress saved.`;
   } catch (error) {
     console.error(error);
-    ui.announce.textContent = error.message;
+    ui.announce.textContent = error instanceof Error ? error.message : String(error);
   }
 }
 
 function handleArtActivation(event) {
   const target = event.target.closest?.('[data-hidden],[data-region]');
   if (target) activateTarget(target);
+}
+
+function disarmReset() {
+  resetArmed = false;
+  window.clearTimeout(resetTimer);
+  resetTimer = null;
+  ui.reset.classList.remove('reset-armed');
+  ui.reset.textContent = 'Reset Artwork';
 }
 
 ui.palette.addEventListener('click', (event) => {
@@ -316,11 +563,25 @@ ui.undo.addEventListener('click', () => {
 });
 
 ui.reset.addEventListener('click', () => {
+  const progress = progressForState(state, data);
+  if ((progress.colored > 0 || progress.found > 0) && !resetArmed) {
+    resetArmed = true;
+    ui.reset.classList.add('reset-armed');
+    ui.reset.textContent = 'Confirm Reset';
+    resetTimer = window.setTimeout(disarmReset, 4500);
+    ui.announce.textContent = 'Reset will erase this scene code’s saved artwork. Press Confirm Reset to continue.';
+    return;
+  }
   state = resetArtwork(state, data);
   removeSavedExperience(state.code);
+  disarmReset();
   render();
   ui.announce.textContent = 'Artwork and saved progress reset for this scene code.';
 });
+
+ui.zoomOut.addEventListener('click', () => setZoom(zoom - ZOOM_STEP));
+ui.zoomIn.addEventListener('click', () => setZoom(zoom + ZOOM_STEP));
+ui.zoomReset.addEventListener('click', () => setZoom(1));
 
 ui.code.addEventListener('input', () => setCode(ui.code.value));
 ui.code.addEventListener('keydown', (event) => {
@@ -329,7 +590,12 @@ ui.code.addEventListener('keydown', (event) => {
     ui.announce.textContent = 'Enter a complete six-character High Lines scene code.';
     return;
   }
-  resetExperience(ui.code.value);
+  const requested = normalizeSceneCode(ui.code.value);
+  if (requested === state.code) {
+    ui.announce.textContent = `Scene ${state.code} is already loaded.`;
+    return;
+  }
+  resetExperience(requested);
 });
 
 ui.newScene.addEventListener('click', () => resetExperience(randomCode()));
@@ -338,6 +604,7 @@ ui.share.addEventListener('click', async () => {
   const url = challengeUrl();
   const text = `High Lines · ${currentScene().title} · code ${state.code}\n${url}`;
   try {
+    if (!navigator.clipboard?.writeText) throw new Error('Clipboard unavailable');
     await navigator.clipboard.writeText(text);
     ui.announce.textContent = 'High Lines scene challenge copied.';
   } catch {
@@ -346,7 +613,7 @@ ui.share.addEventListener('click', async () => {
 });
 
 function shortcutTarget(target) {
-  return target instanceof Element && Boolean(target.closest('input, textarea, select, button, a, [contenteditable="true"], [data-region], [data-hidden]'));
+  return typeof Element !== 'undefined' && target instanceof Element && Boolean(target.closest('input, textarea, select, button, a, [contenteditable="true"], [data-region], [data-hidden]'));
 }
 
 document.addEventListener('keydown', (event) => {
@@ -369,31 +636,30 @@ document.addEventListener('keydown', (event) => {
 });
 
 function resetExperience(code) {
+  disarmReset();
   const loaded = experienceForCode(code);
   state = loaded.experience;
   restoredOnLoad = loaded.restored;
   loadedSceneId = null;
-  window.history.replaceState(null, '', challengeUrl());
+  zoom = 1;
+  replaceChallengeUrl();
+  ui.art.innerHTML = '<div class="art-loading" aria-hidden="true"><span></span><strong>Drawing scene…</strong></div>';
   render({ reloadAsset: true });
-  ui.announce.textContent = loaded.restored
-    ? `${currentScene().title} restored from saved progress for scene code ${state.code}.`
-    : `${currentScene().title} loaded with scene code ${state.code}.`;
+  ui.announce.textContent = loaded.restored ? `${currentScene().title} restored from saved progress for scene code ${state.code}.` : `${currentScene().title} loaded with scene code ${state.code}.`;
 }
 
 function handleLoadError(error) {
   console.error(error);
   ui.art.innerHTML = '<div class="art-error"><strong>Scene artwork could not load.</strong><span>Try a new scene code or reload the page.</span></div>';
-  ui.announce.textContent = error.message;
+  ui.announce.textContent = error instanceof Error ? error.message : String(error);
 }
 
-async function load() {
+function load() {
   try {
-    const response = await fetch('./data/scenes.json', { cache: 'no-store', credentials: 'same-origin' });
-    if (!response.ok) throw new Error(`High Lines data HTTP ${response.status}`);
-    data = await response.json();
-    if (data.schemaVersion !== 1 || data.palette?.length !== 8 || data.scenes?.length !== 4) {
-      throw new Error('High Lines scene data contract mismatch.');
-    }
+    const embedded = document.querySelector('#high-lines-data');
+    if (!embedded?.textContent) throw new Error('Embedded High Lines data is missing.');
+    data = JSON.parse(embedded.textContent);
+    validateData(data);
     sceneById = new Map(data.scenes.map((scene) => [scene.id, scene]));
     colorById = new Map(data.palette.map((color) => [color.id, color]));
     const requested = normalizeSceneCode(new URLSearchParams(location.search).get('lines'));
@@ -401,16 +667,15 @@ async function load() {
     const loaded = experienceForCode(code);
     state = loaded.experience;
     restoredOnLoad = loaded.restored;
-    window.history.replaceState(null, '', challengeUrl());
-    ui.load.textContent = loaded.restored
-      ? 'Saved progress restored · local autosave active'
-      : '4 original scenes · local autosave active · 12 hidden bonuses';
+    replaceChallengeUrl();
+    ui.load.textContent = loaded.restored ? 'Saved progress restored · local autosave active' : 'Ready · 4 scenes · autosave · zoomable board';
     render({ reloadAsset: true });
     if (restoredOnLoad) ui.announce.textContent = `Saved progress restored for ${currentScene().title}.`;
   } catch (error) {
     handleLoadError(error);
-    ui.load.textContent = 'High Lines could not load its scene data.';
+    ui.load.textContent = 'High Lines could not initialize.';
   }
 }
 
+window.addEventListener('pagehide', () => window.clearTimeout(resetTimer));
 load();
