@@ -1,0 +1,57 @@
+{
+  "id":"THC-ENC-227",
+  "number":227,
+  "title":"Primary Precursors: Hexanoate and Geranyl Diphosphate",
+  "objective":"Explain the fatty-acid/polyketide and plastidial isoprenoid precursor branches that converge in cannabinoid biosynthesis while separating precursor presence from pathway flux or cultivation claims.",
+  "terms":[
+    {"term":"hexanoate","definition":"A six-carbon fatty acid precursor that can be activated to hexanoyl-CoA for the pentyl cannabinoid polyketide branch."},
+    {"term":"hexanoyl-CoA","definition":"The coenzyme-A-activated six-carbon starter used by the cannabis tetraketide synthase pathway."},
+    {"term":"acyl-activating enzyme","definition":"An enzyme that converts an organic acid such as hexanoate into an activated acyl-CoA thioester."},
+    {"term":"geranyl diphosphate","definition":"A ten-carbon isoprenoid intermediate, abbreviated GPP, used in cannabinoid prenylation and monoterpene biosynthesis."},
+    {"term":"MEP pathway","definition":"The plastidial 2-C-methyl-D-erythritol-4-phosphate pathway that supplies isoprenoid building blocks for compounds including GPP."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Major pentyl cannabinoids have mixed biosynthetic origin. Their aromatic polyketide portion begins with the short-chain fatty-acid branch, while the prenyl portion is supplied by an isoprenoid branch that produces geranyl diphosphate.",
+    "Direct cannabis work detected hexanoyl-CoA in female flowers and identified CsAAE1 as a highly trichome-enriched acyl-activating enzyme capable of converting hexanoate and related short-chain fatty acids to acyl-CoA products. Its cytosolic localization and expression support a role supplying hexanoyl-CoA to the cannabinoid pathway.",
+    "The upstream biological origin of all hexanoate used by intact cannabis trichomes is less completely resolved. Expression patterns support fatty-acid oxygenation and cleavage routes as plausible contributors, but evidence for a proposed source pathway should be distinguished from direct measurement of the activated hexanoyl-CoA pool.",
+    "The GPP branch derives from plastidial isoprenoid metabolism. Cannabis glandular-trichome transcriptomes show strong expression of genes supporting the MEP/GPP pathway, and modern trichome ultrastructure supports specialized plastid participation in the cannabinoid/terpene precursor network.",
+    "A precursor pool is not the same as metabolic flux. Hexanoyl-CoA or GPP abundance at one time point does not reveal how rapidly carbon is entering cannabinoids, how much is diverted to other products, or which downstream reaction is controlling final accumulation."
+  ],
+  "cultivationRelevance":[
+    "Use precursor biology to understand pathway structure rather than as a justification for feeding hexanoate, acetate, sugars, or terpene precursors to force cannabinoid production.",
+    "When comparing treatments, measure the relevant precursor, pathway expression or enzyme evidence, and downstream cannabinoid output instead of assuming that a supplied nutrient became pathway substrate.",
+    "Remember that GPP participates in other specialized-metabolite pathways, including monoterpene production; increasing one pool does not guarantee proportional cannabinoid output.",
+    "Separate concentration from total production by measuring tissue biomass as well as chemical concentration where treatment effects are being evaluated."
+  ],
+  "measureAndRecord":[
+    {"field":"Sample context","requirement":"Record genotype, tissue or isolated trichome fraction, developmental stage, plant position, fresh/dry basis, and environmental treatment."},
+    {"field":"Precursor measurement","requirement":"Record hexanoate, hexanoyl-CoA, GPP or related intermediates, extraction/recovery method, analytical platform, standard, denominator, and uncertainty."},
+    {"field":"Pathway evidence","requirement":"Record transcript, protein, localization, or enzyme assay method for CsAAE, GPPS/MEP-pathway genes, and downstream enzymes when relevant."},
+    {"field":"Flux evidence","requirement":"If pathway rate is claimed, record isotope labeling, time-course, turnover, or another direct flux approach rather than inferring flux from one concentration measurement."},
+    {"field":"Products","requirement":"Record olivetolic acid, CBGA, major cannabinoid acids, relevant terpenoids, biomass, and sampling stage where precursor-product relationships are being tested."
+    }
+  ],
+  "misconceptions":[
+    "Feeding hexanoate directly guarantees higher cannabinoid production.",
+    "More GPP automatically increases every cannabinoid and terpene.",
+    "A high precursor concentration proves a high pathway rate.",
+    "The precursor branch has one universally proven rate-limiting step in field-grown cannabis.",
+    "Because cannabinoids contain carbon from fatty-acid and isoprenoid metabolism, adding more carbon or fertilizer automatically drives the pathway."
+  ],
+  "evidenceLimits":[
+    "Hexanoyl-CoA occurrence, CsAAE1 biochemical activity/expression, GPP-pathway expression, and trichome compartmentation are supported by direct cannabis studies. Upstream hexanoate origin and control of pathway flux in intact plants remain less completely resolved. Heterologous pathway engineering proves biochemical capability but does not establish the limiting step in a cultivated plant."
+  ],
+  "crossLinks":"THC-ENC-225 for secretory-cell compartmentation; THC-ENC-228 for olivetolic-acid formation; THC-ENC-229 for OA/GPP prenylation to CBGA; THC-ENC-241–260 for shared terpenoid precursor biology; THC-ENC-401–420 for flux and measurement concepts.",
+  "sourceNotes":[
+    "Stout JM, Boubakir Z, Ambrose SJ, Purves RW, Page JE. (2012). The hexanoyl-CoA precursor for cannabinoid biosynthesis is formed by an acyl-activating enzyme in Cannabis sativa trichomes. The Plant Journal 71:353–365. Directly measured hexanoyl-CoA in cannabis tissues and provided biochemical, expression, and localization evidence for CsAAE1.",
+    "Livingston SJ et al. (2020). Cannabis glandular trichomes alter morphology and metabolite content during flower maturation. The Plant Journal. Trichome transcriptomes showed enrichment of the MEP/GPP and olivetolic-acid precursor pathways and coordinated expression of cannabinoid-pathway genes.",
+    "Livingston SJ et al. (2022). A polarized supercell produces specialized metabolites in cannabis trichomes. Current Biology 32:4040–4051.e5. Ultrastructural and enzyme-localization evidence supports specialized plastid participation and polarized pathway compartmentation.",
+    "The controlled Volume 12 source explicitly prohibits converting pathway ingredients or precursor pools into unsupported fertilizer or potency-enhancement claims."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 12 batch 02 controlled web derivative","driveSourceDocumentId":"1mrad4SysYqoD1-Z8A7ibF9PcnvRjs5qiPIOseYGRtUI","evidenceControl":"controlled_manuscript_plus_direct_precursor_and_trichome_sources","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_cannabinoid_precursor_biochemistry","releaseTimeReview":"completed_2026-08-29_precursor_pool_flux_and_non_additive_claims","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"primary-precursors-hexanoate-and-geranyl-diphosphate",
+  "route":"/encyclopedia/primary-precursors-hexanoate-and-geranyl-diphosphate"
+}
