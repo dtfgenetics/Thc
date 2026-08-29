@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-255",
+  "number":255,
+  "title":"Aroma Development Across Flower Maturation",
+  "objective":"Explain how cannabis volatile profiles can change across flower maturation while rejecting a universal peak-aroma week or one visual maturity cue as a chemical measurement.",
+  "terms":[
+    {"term":"phenological stage","definition":"A defined developmental stage of the plant or inflorescence rather than simply elapsed calendar time."},
+    {"term":"volatile profile","definition":"The measured identity and abundance pattern of compounds capable of entering the gas phase under specified sampling conditions."},
+    {"term":"developmental trajectory","definition":"The pattern of biological or chemical change measured across successive stages or time points."},
+    {"term":"headspace profile","definition":"The volatile compounds measured in the gas phase above a sample under defined conditions."},
+    {"term":"maturity marker","definition":"An observation or measurement used to describe developmental state; no marker is automatically a direct measurement of every chemical trait."}
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Cannabis flower aroma is dynamic because inflorescence tissues, glandular trichomes, terpene pathways, sulfur volatiles, and postharvest chemistry do not all follow one shared developmental curve.",
+    "In Finola flowers sampled from approximately three to eight weeks after flowering onset, direct profiling found substantial plant-to-plant variation and no simple developmental trend for individual terpenes, although the balance of total monoterpenes relative to sesquiterpenes changed with inflorescence development.",
+    "Other hemp studies sampled multiple phenological stages and found stage-dependent changes in essential-oil yield and composition. Because those studies used particular genotypes, field conditions, dried material, and hydrodistilled essential oil, their optimum stages cannot be transferred directly to fresh high-THC flower or every production system.",
+    "Prenylated volatile sulfur compounds followed a different pattern in one controlled cannabis study: concentrations increased late in flowering, reached a measured maximum during curing, and then declined during storage. This shows why a terpene-only timeline cannot represent the whole aroma system.",
+    "Trichome morphology and flower appearance also change with plant age and genotype, but visual trichome color, stigma color, calendar week, and aroma intensity are not interchangeable with a measured volatile profile. A defensible harvest-aroma study samples chemistry directly at defined stages."
+  ],
+  "cultivationRelevance":[
+    "Define flowering stage biologically and record the date convention used; 'week 6' is ambiguous without flowering-onset criteria and genotype context.",
+    "Sample the same flower positions and tissue types repeatedly or use a preplanned destructive sampling design to avoid position effects being mistaken for maturation effects.",
+    "When aroma is a selection target, pair repeated chemical sampling with blinded sensory evaluation rather than relying on calendar week or visual trichomes alone.",
+    "Keep harvest, drying, curing, and storage phases separate because postharvest transformations can continue changing the measured volatilome."
+  ],
+  "measureAndRecord":[
+    {"field":"Developmental stage","requirement":"Record flowering-onset definition, days/weeks from that reference, phenological descriptors, genotype, and plant ID."},
+    {"field":"Sampling position","requirement":"Record branch, inflorescence position, tissue type, sample mass, replicate, and whether sampling is longitudinal or destructive."},
+    {"field":"Volatile chemistry","requirement":"Record headspace/extraction method, standards, units, complete analyte panel, detection limits, and absolute versus relative abundance."},
+    {"field":"Morphology","requirement":"Record stigma and trichome observations, flower development, and standardized images as separate maturity observations rather than chemical proxies."},
+    {"field":"Postharvest transition","requirement":"Record harvest time, drying, curing, packaging, temperature, oxygen/light exposure, and storage interval so plant development is not confounded with postharvest change."}
+  ],
+  "misconceptions":[
+    "Cannabis terpenes universally peak in one specific flowering week.",
+    "Amber trichomes prove the aroma profile is at its maximum.",
+    "The strongest-smelling day must have the highest total terpene concentration.",
+    "All volatile classes rise and fall together during maturation.",
+    "An optimum phenological stage measured in one hemp essential-oil study is a universal harvest rule for all cannabis."
+  ],
+  "evidenceLimits":[
+    "Direct cannabis and hemp studies demonstrate developmental changes in terpene class balance, essential-oil composition, glandular trichome morphology, and sulfur volatiles, but the trajectories vary by genotype, chemical class, sampling method, environment, and postharvest state. No single universal peak-aroma week is supported across cannabis."
+  ],
+  "crossLinks":"THC-ENC-221–225 for trichome development; THC-ENC-238–239 for developmental accumulation and visual maturity limits; THC-ENC-252 for VSC development; THC-ENC-256–258 for postharvest volatile loss and measurement.",
+  "sourceNotes":[
+    "Booth JK, Page JE, Bohlmann J. (2017). Terpene synthases from Cannabis sativa. PLOS ONE 12:e0173911. Profiled Finola pistillate flowers across approximately 3–8 weeks after flowering onset; individual terpenes did not show one simple developmental trend, while terpene-class balance changed.",
+    "Pieracci Y et al. (2023). The phenological stage of hemp inflorescences affects essential oil yield and its chemical composition. Industrial Crops and Products 197:116605. Demonstrated genotype- and phenology-dependent essential-oil yield/composition across five stages in two industrial hemp varieties.",
+    "Oswald IWH et al. (2021). Identification of a New Family of Prenylated Volatile Sulfur Compounds in Cannabis. ACS Omega 6:31667–31676. Tracked sulfur volatiles through late flowering, curing, and storage.",
+    "Punja ZK, Sutton DB, Kim E. (2023). Glandular trichome development, morphology, and maturation are influenced by plant age and genotype in high THC-containing cannabis inflorescences. Journal of Cannabis Research 5:15. Demonstrated age- and genotype-dependent trichome development from 3–8 weeks of flowering.",
+    "Controlled Volume 13 manuscript v1.0 requires calendar time, phenology, morphology, volatile chemistry, sensory intensity, and harvest-quality claims to remain separate evidence levels."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 13 batch 03 controlled web derivative","driveSourceDocumentId":"1Vh_CkUFTN9eqsXiuH53pD1tMDyBo2zxDTIXOd_vQlgw","evidenceControl":"controlled_manuscript_plus_direct_cannabis_and_hemp_developmental_volatile_sources","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_flower_maturation_volatilome_trichome_and_harvest_claim_boundaries","releaseTimeReview":"completed_2026-08-29_maturation_terpene_VSC_trichome_and_universal_peak_boundaries","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"aroma-development-across-flower-maturation",
+  "route":"/encyclopedia/aroma-development-across-flower-maturation"
+}
