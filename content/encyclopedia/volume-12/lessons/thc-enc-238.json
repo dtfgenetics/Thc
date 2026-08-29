@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-238",
+  "number":238,
+  "title":"Developmental Stage and Cannabinoid Accumulation",
+  "objective":"Track cannabinoid accumulation through flowering while separating developmental stage, tissue position, concentration, total content, trichome turnover, and postharvest change.",
+  "terms":[
+    {"term":"developmental trajectory","definition":"The pattern of change in a biological trait across defined stages or time points."},
+    {"term":"accumulation","definition":"Net increase in the amount of a compound within a defined tissue or biological unit over time."},
+    {"term":"concentration","definition":"Amount of an analyte per declared mass or volume of sampled material."},
+    {"term":"total content","definition":"Absolute amount of an analyte within a defined tissue, flower, plant, or other unit."},
+    {"term":"senescence","definition":"Developmentally regulated decline in cellular or tissue function associated with aging."},
+    {"term":"spatial gradient","definition":"Systematic variation in a trait across positions within a plant or inflorescence."}
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Flower development is dynamic: new glandular trichomes initiate, existing glands expand and secrete, floral biomass accumulates, and older heads can senesce, collapse, dehisce, or detach. A cannabinoid result at one date is therefore a snapshot of several concurrent processes.",
+    "Cannabinoid concentration and total cannabinoid content can follow different trajectories. Concentration can rise while biomass is still accumulating, plateau while total content continues to increase, or decline because of dilution, trichome loss, chemical transformation, disease, seed development, or changing tissue composition.",
+    "Cannabis inflorescences develop asynchronously. Microscopy has demonstrated young, mature, and senescing trichomes on the same bract, while chemical studies show positional variation among inflorescences. A changing sample location across weeks can therefore create a false developmental trend.",
+    "Recent stage-resolved work in a CBDA-dominant medicinal cannabis cultivar found that the highest observed CBDA concentration did not coincide exactly with the visually latest maturity stage. The result supports using chemical time series together with defined developmental traits rather than assuming a universal color threshold or harvest week.",
+    "The maximum observed cannabinoid percentage is not automatically the optimal harvest point for every objective. Total yield, disease risk, seed status, flower quality, postharvest stability, and intended research or production endpoints may peak at different times."
+  ],
+  "cultivationRelevance":[
+    "Define a reproducible flowering milestone and fixed sampling positions before building a cannabinoid accumulation curve.",
+    "Use matched plants or a destructive-sampling design that accounts for plant-to-plant variation when repeated sampling of the same flower is impossible.",
+    "Measure flower biomass or total analyte content alongside concentration when deciding whether a developmental change reflects more chemical production or only a change in denominator.",
+    "Avoid universal harvest-week or trichome-color rules; validate a local staging system against chemistry and the production objective."
+  ],
+  "measureAndRecord":[
+    {"field":"Developmental stage","requirement":"Record a defined flowering milestone, chronological date, days from induction where relevant, and macroscopic or microscopic stage criteria."},
+    {"field":"Sampling position","requirement":"Record plant, branch, node or inflorescence position, exterior/interior tissue, organ composition, and a fixed selection rule across time points."},
+    {"field":"Biomass and moisture","requirement":"Record fresh/dry mass as appropriate, moisture basis, sample mass, and total flower or plant biomass when total cannabinoid production is interpreted."},
+    {"field":"Trichome state","requirement":"Record gland class, density or developmental observations using a declared imaging method and distinguish fresh from dried morphology."},
+    {"field":"Chemical time series","requirement":"Record acidic and neutral cannabinoids, analytical method, replicate, uncertainty, and relevant disease, pollination, seed, or storage status at every time point."}
+  ],
+  "misconceptions":[
+    "Cannabinoid concentration increases continuously until harvest.",
+    "The week with the highest cannabinoid percentage always gives the highest total cannabinoid yield.",
+    "Every flower on a plant follows the same chemical accumulation curve.",
+    "The latest-looking trichomes always identify the chemically optimal harvest point.",
+    "One developmental curve can be transferred unchanged to every genotype and environment."
+  ],
+  "evidenceLimits":[
+    "Cannabinoid developmental trajectories are genotype-, tissue-, environment-, and method-specific. Direct microscopy establishes asynchronous trichome maturation, spatial studies establish positional chemical variation, and newer stage-resolved datasets show that visual and chemical maxima need not coincide. These findings support measured local trajectories, not a universal harvest week or universal color percentage."
+  ],
+  "crossLinks":"THC-ENC-221–226 for trichome development and sampling; THC-ENC-234–237 for cannabinoid chemistry, degradation, and environment; THC-ENC-239 for color observations; THC-ENC-240 for sampling and testing claims.",
+  "sourceNotes":[
+    "Punja ZK, Sutton DB, Kim T. (2023). Glandular trichome development, morphology, and maturation are influenced by plant age and genotype in high-THC cannabis inflorescences. Journal of Cannabis Research 5:12. Demonstrated asynchronous trichome formation, genotype/age effects, senescence, and drying-related morphology changes.",
+    "Namdar D et al. (2018). Variation in cannabinoid and terpenoid composition by inflorescence position and extraction method. Industrial Crops and Products 113:376–382. Demonstrated spatial chemical gradients relevant to longitudinal sampling.",
+    "Integrating trichome traits, CBDA accumulation, and hyperspectral signatures for harvest-stage assessment in CBDA-dominant medicinal cannabis (2026). Stage-resolved work linked morphology and chemistry while showing that peak observed CBDA concentration and visually later maturity criteria were not identical endpoints.",
+    "The controlled Volume 12 manuscript prohibits universal harvest-week claims and requires concentration, total content, tissue position, and developmental stage to remain separate."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 12 batch 04 controlled web derivative","driveSourceDocumentId":"1mrad4SysYqoD1-Z8A7ibF9PcnvRjs5qiPIOseYGRtUI","evidenceControl":"controlled_manuscript_plus_trichome_development_spatial_chemistry_and_stage_resolved_cannabinoid_sources","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_developmental_cannabinoid_accumulation_and_harvest_stage_interpretation","releaseTimeReview":"completed_2026-08-29_stage_position_concentration_total_content_and_non_universal_harvest_claims","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"developmental-stage-and-cannabinoid-accumulation",
+  "route":"/encyclopedia/developmental-stage-and-cannabinoid-accumulation"
+}

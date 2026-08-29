@@ -1,0 +1,57 @@
+{
+  "id":"THC-ENC-236",
+  "number":236,
+  "title":"Oxidation and Cannabinoid Degradation",
+  "objective":"Explain postharvest cannabinoid change as a network of decarboxylation, oxidation, photochemistry, isomerization, matrix effects, and analytical loss rather than a one-step THC-to-CBN clock.",
+  "terms":[
+    {"term":"oxidation","definition":"Chemical change involving loss of electrons or increased bonding to oxygen; cannabinoids can undergo multiple oxidative transformations during storage."},
+    {"term":"degradation","definition":"Chemical loss or transformation of a parent compound into one or more products through chemical or physical processes."},
+    {"term":"photochemistry","definition":"Chemical reactions initiated or accelerated by absorbed light."},
+    {"term":"isomerization","definition":"Conversion of a molecule into another form with the same molecular formula but different structural arrangement."},
+    {"term":"CBN","definition":"Cannabinol, one measurable cannabinoid associated with oxidative aging of THC-containing material but not a complete accounting of all THC loss."},
+    {"term":"stability study","definition":"A time-series experiment conducted under controlled storage conditions to measure how a defined material changes."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "After harvest, cannabinoid profiles can change through decarboxylation, oxidation, photochemical reactions, isomerization, and other transformations. Light, oxygen exposure, temperature, moisture, time, particle size, grinding, solvent, packaging, and trichome damage can alter reaction rates and measured profiles.",
+    "THC can decline while CBN increases, but loss of THC should not be assumed to equal one-to-one formation of CBN. Storage studies show that reaction stoichiometry depends on conditions and that parent-cannabinoid loss can involve additional products that may not be included in a routine analytical panel.",
+    "A one-year controlled cannabis storage study found substantial condition-dependent changes in phytocannabinoid profiles and showed that whole versus ground inflorescences can behave differently. Grinding changes surface area and exposure, so sample form is part of the stability condition rather than a trivial preparation detail.",
+    "A four-year study of stored marijuana and hashish found that temperature and light both altered THC degradation and CBN formation, with light affecting not only rate but also the relationship between THC loss and CBN formation. That result argues against using CBN alone as a universal age meter across storage conditions.",
+    "Chemical stability cannot be inferred from visual appearance or intact-looking trichomes. A defensible shelf-life or stability claim requires retained samples, defined storage conditions, repeated analytical measurements, and a declared acceptance criterion."
+  ],
+  "cultivationRelevance":[
+    "Record postharvest storage and handling before comparing cannabinoid results across dates, because chemistry can change after the plant is harvested.",
+    "Keep whole and ground material, packaging type, headspace, light exposure, temperature, humidity or moisture condition, and storage duration explicit in stability comparisons.",
+    "Do not use CBN concentration alone to estimate product age or to claim that a specific amount of THC has degraded without matrix- and condition-specific validation.",
+    "Use time-series analytical testing rather than visual inspection when a stability or retention claim matters."
+  ],
+  "measureAndRecord":[
+    {"field":"Material identity","requirement":"Record batch, genotype or product, whole/ground/extract state, mass, moisture, and starting cannabinoid profile."},
+    {"field":"Storage conditions","requirement":"Record container, barrier properties where known, headspace, light exposure, temperature, relative humidity or water activity where relevant, and duration."},
+    {"field":"Time series","requirement":"Use multiple planned intervals and retained samples rather than a single before/after comparison when estimating degradation behavior."},
+    {"field":"Chemical panel","requirement":"Measure acidic and neutral parent cannabinoids plus relevant degradation products and report compounds outside the panel as unaccounted mass rather than assuming one-to-one conversion."},
+    {"field":"Analytical controls","requirement":"Record extraction, platform, standards, calibration, replicate, uncertainty, and any sample preparation that could itself change chemistry."
+    }
+  ],
+  "misconceptions":[
+    "All lost THC becomes measurable CBN.",
+    "CBN percentage is a universal clock for cannabis age.",
+    "Cold storage stops every chemical reaction.",
+    "Grinding is chemically irrelevant to storage stability.",
+    "An intact-looking trichome guarantees unchanged cannabinoid chemistry."
+  ],
+  "evidenceLimits":[
+    "Cannabis storage studies demonstrate strong effects of time, temperature, light, sample form, and matrix, but degradation networks and reaction rates are condition-specific. CBN can be a useful measured degradation product in some THC-rich materials, yet it does not universally close the mass balance or provide a transferable age estimate. Product-specific stability claims require product-specific studies."
+  ],
+  "crossLinks":"THC-ENC-234–235 for acid/neutral chemistry and decarboxylation; THC-ENC-237–240 for environment, development, field indicators, and claims discipline; THC-ENC-341–360 for harvest and postharvest science.",
+  "sourceNotes":[
+    "Milay L et al. (2020). Metabolic Profiling of Cannabis Secondary Metabolites for Evaluation of Optimal Postharvest Storage Conditions. Frontiers in Plant Science 11:583605. One-year study comparing whole/ground inflorescences and extracts under multiple temperatures; demonstrated time-, matrix-, and sample-form-dependent cannabinoid changes.",
+    "Trofin IG et al. (2019). The role of time and storage conditions on the composition of hashish and marijuana samples: a four-year study. Demonstrated first-order-like THC degradation/CBN formation under tested conditions and showed that light and temperature altered the conversion relationship.",
+    "The controlled Volume 12 manuscript requires degradation claims to preserve mass-balance uncertainty and prohibits treating amber color, THC loss, or CBN alone as a universal chemical clock."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 12 batch 04 controlled web derivative","driveSourceDocumentId":"1mrad4SysYqoD1-Z8A7ibF9PcnvRjs5qiPIOseYGRtUI","evidenceControl":"controlled_manuscript_plus_longitudinal_cannabis_storage_and_degradation_sources","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabinoid_storage_stability_and_degradation_chemistry","releaseTimeReview":"completed_2026-08-29_storage_matrix_light_temperature_and_non_CBN_clock_claims","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"oxidation-and-cannabinoid-degradation",
+  "route":"/encyclopedia/oxidation-and-cannabinoid-degradation"
+}

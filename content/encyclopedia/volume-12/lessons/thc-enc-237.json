@@ -1,0 +1,57 @@
+{
+  "id":"THC-ENC-237",
+  "number":237,
+  "title":"Genetics Versus Environment in Cannabinoid Profiles",
+  "objective":"Separate inherited chemotype potential from environment, development, biomass, sampling, and analytical effects when interpreting cannabinoid profiles.",
+  "terms":[
+    {"term":"genotype","definition":"The inherited genetic constitution of a plant at specified loci or genome-wide."},
+    {"term":"environment","definition":"The physical and biological conditions experienced by a plant, including light, temperature, water status, nutrition, and production system."},
+    {"term":"genotype-by-environment interaction","definition":"A condition in which genotypes respond differently across environments, so relative phenotypic performance depends on the tested environment."},
+    {"term":"chemotype","definition":"A reproducible chemical phenotype defined using declared analytes, tissue, stage, sampling, and analytical conditions."},
+    {"term":"concentration","definition":"Amount of an analyte per declared mass or volume of sampled material."},
+    {"term":"total yield","definition":"Total amount of an analyte produced by a defined tissue, plant, area, or crop; concentration and biomass both contribute."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Functional cannabinoid-synthase genetics strongly influences the major ratio of cannabinoid acids, but absolute concentration is a quantitative phenotype. Trichome development, precursor supply, tissue biomass, flowering stage, and many environmental variables can change the measured amount.",
+    "Controlled hemp experiments demonstrate that genotype can interact with daylength, temperature, and nitrogen. In one tropical/subtropical study, varieties differed in phenology and growth responses, and cannabinoid concentrations changed with daylength and environmental conditions. These responses were not identical across genotypes.",
+    "Environmental or management treatments can change biomass and concentration in different directions. A higher cannabinoid percentage does not necessarily mean a plant produced a greater total mass of cannabinoid if flower biomass fell, and a lower percentage does not necessarily mean total production fell if biomass increased sufficiently.",
+    "Sampling can mimic an environmental effect. Cannabis cannabinoid composition differs with inflorescence position, and extraction or analytical method can also change measured values. Position, tissue composition, moisture, and method must therefore be controlled before assigning a difference to a cultivation treatment.",
+    "Commercial cultivar names are weak genotype controls unless identity is independently established. Replicated clones, verified seed-family identities, or genomic records provide stronger evidence when genotype-by-environment responses are being tested."
+  ],
+  "cultivationRelevance":[
+    "Use replicated genotypes and randomized or blocked comparisons when testing environmental effects on cannabinoid traits.",
+    "Report both cannabinoid concentration and flower biomass or total cannabinoid amount when a treatment could affect plant size or yield.",
+    "Keep tissue, canopy position, developmental stage, moisture basis, harvest timing, and laboratory method consistent across treatments.",
+    "Treat a treatment response as germplasm- and environment-specific until it has been replicated across additional genotypes and conditions."
+  ],
+  "measureAndRecord":[
+    {"field":"Genetic identity","requirement":"Record clone, accession, pedigree, seed family, or genomic identifier and the number of independent biological replicates."},
+    {"field":"Environment/treatment","requirement":"Record light/photoperiod, temperature, water status, nutrition, density, production system, and any manipulated factor with appropriate controls."},
+    {"field":"Development","requirement":"Record flowering milestone, chronological date, plant and inflorescence position, tissue composition, and visible stress or disease."},
+    {"field":"Chemical endpoints","requirement":"Report acidic and neutral concentrations, moisture basis, analytical method, replicate, and uncertainty together with flower biomass or total-content calculations where relevant."},
+    {"field":"Analysis","requirement":"State experimental unit, randomization/blocking, statistical model, genotype and environment terms, interaction term where tested, and effect size with uncertainty."
+    }
+  ],
+  "misconceptions":[
+    "Genetics determines cannabinoid concentration completely.",
+    "Environment can convert any genotype into any chemotype.",
+    "A higher cannabinoid percentage proves the plant synthesized more cannabinoid overall.",
+    "One genotype's response to a treatment is universal cultivation advice.",
+    "Plants sold under the same cultivar name are automatically equivalent genotype controls."
+  ],
+  "evidenceLimits":[
+    "Genotype, environment, and their interaction can influence cannabinoid traits, but effect sizes apply to the germplasm, developmental stages, and environments actually tested. Major acid ratios can be strongly genetically constrained while absolute concentrations remain environmentally and method dependent. Generalization requires replication rather than transfer of a single treatment result."
+  ],
+  "crossLinks":"THC-ENC-141–160 for genetics and chemotype; THC-ENC-221–240 for trichome and cannabinoid biology; THC-ENC-101–140 for light and nutrition; THC-ENC-401–420 for experimental design and measurement.",
+  "sourceNotes":[
+    "De Prato L et al. (2022). The cannabinoid profile and growth of hemp (Cannabis sativa L.) is influenced by tropical daylengths and temperatures, genotype and nitrogen nutrition. Industrial Crops and Products 178:114605. Controlled experiments demonstrated genotype-specific responses in phenology, biomass, and cannabinoid concentrations across daylength, temperature, and nitrogen conditions.",
+    "Namdar D et al. (2018). Variation in the compositions of cannabinoid and terpenoids in Cannabis sativa derived from inflorescence position along the stem and extraction methods. Industrial Crops and Products 113:376–382. Demonstrated position- and method-dependent chemical variation relevant to controlling sampling confounds.",
+    "The controlled Volume 12 manuscript requires concentration to remain separate from total cannabinoid yield and requires genotype-by-environment claims to identify tested germplasm, environment, sampling, and analytical method."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 12 batch 04 controlled web derivative","driveSourceDocumentId":"1mrad4SysYqoD1-Z8A7ibF9PcnvRjs5qiPIOseYGRtUI","evidenceControl":"controlled_manuscript_plus_direct_cannabis_GxE_and_spatial_sampling_sources","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_genotype_environment_cannabinoid_profiles","releaseTimeReview":"completed_2026-08-29_GxE_concentration_total_yield_and_sampling_claims","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"genetics-versus-environment-in-cannabinoid-profiles",
+  "route":"/encyclopedia/genetics-versus-environment-in-cannabinoid-profiles"
+}
