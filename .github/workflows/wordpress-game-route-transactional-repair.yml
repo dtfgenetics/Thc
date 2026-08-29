@@ -6,6 +6,10 @@ on:
     branches: [main]
     paths:
       - scripts/repair-game-routes-via-wordpress.mjs
+      - site/public-route-patch/games/index.html
+      - site/public-route-patch/games/dtf-route.css
+      - site/public-route-patch/games/high-iq/**
+      - site/public-route-patch/games/grower-conversations/**
       - .github/workflows/wordpress-game-route-transactional-repair.yml
 
 permissions:
@@ -50,6 +54,7 @@ jobs:
           test -s site/public-route-patch/games/grower-conversations/grower-conversations.css
           test -s site/public-route-patch/games/grower-conversations/data/prompt-bank.json
           grep -Fq 'Pick what is playable. See what is coming next.' site/public-route-patch/games/index.html
+          grep -Fq '25 playable browser games' site/public-route-patch/games/index.html
           ! grep -Fqi 'server-engine alpha' site/public-route-patch/games/index.html
           ! grep -Fqi 'implementation gates' site/public-route-patch/games/index.html
 
@@ -111,6 +116,9 @@ jobs:
           verify_page '/games/high-iq/' './high-iq.css' '/assets/dtf-gateway-v2.css' "$evidence/high-iq.html"
           verify_page '/games/grower-conversations/' './grower-conversations.css' '/assets/dtf-gateway-v2.css' "$evidence/grower-conversations.html"
 
+          grep -Fqi '25 playable browser games' "$evidence/games.html"
+          grep -Fqi 'href="/games/strain-match/"' "$evidence/games.html"
+          grep -Fqi 'href="/games/high-lines/"' "$evidence/games.html"
           grep -Fqi 'href="/seeds/"' "$evidence/games.html"
           grep -Fqi 'href="/shop/"' "$evidence/games.html"
           grep -Fqi './app.js' "$evidence/high-iq.html"

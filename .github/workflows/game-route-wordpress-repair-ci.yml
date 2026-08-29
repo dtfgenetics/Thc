@@ -76,6 +76,7 @@ jobs:
           ! grep -Fq "wp-config.php" "$file"
 
           grep -Fq 'Pick what is playable. See what is coming next.' site/public-route-patch/games/index.html
+          grep -Fq '25 playable browser games' site/public-route-patch/games/index.html
           ! grep -Fqi 'server-engine alpha' site/public-route-patch/games/index.html
           ! grep -Fqi 'implementation gates' site/public-route-patch/games/index.html
           grep -Fq 'href="/games/dtf-route.css"' site/public-route-patch/games/high-iq/index.html
@@ -85,6 +86,20 @@ jobs:
           grep -Fq "Today's Daily 10" site/public-route-patch/games/high-iq/index.html
           grep -Fq 'href="./grower-conversations.css"' site/public-route-patch/games/grower-conversations/index.html
           grep -Fq 'src="./app.js"' site/public-route-patch/games/grower-conversations/index.html
+
+      - name: Ensure production workflow publishes owned source changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          file=.github/workflows/wordpress-game-route-transactional-repair.yml
+          test -s "$file"
+          grep -Fq 'site/public-route-patch/games/index.html' "$file"
+          grep -Fq 'site/public-route-patch/games/dtf-route.css' "$file"
+          grep -Fq 'site/public-route-patch/games/high-iq/**' "$file"
+          grep -Fq 'site/public-route-patch/games/grower-conversations/**' "$file"
+          grep -Fq "grep -Fqi '25 playable browser games'" "$file"
+          grep -Fq 'href="/games/strain-match/"' "$file"
+          grep -Fq 'href="/games/high-lines/"' "$file"
 
       - name: Ensure production workflow uses WordPress-only credentials
         shell: bash
