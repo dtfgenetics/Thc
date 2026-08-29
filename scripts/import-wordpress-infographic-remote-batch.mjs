@@ -4,13 +4,14 @@ import { basename, extname, join } from 'node:path';
 import process from 'node:process';
 
 const root = process.cwd();
-const manifestPath = process.env.BULK_INFOGRAPHIC_MANIFEST || join(root, 'site/wordpress/imports/infographic-bulk-import.json');
+const bulkManifestPath = process.env.BULK_INFOGRAPHIC_MANIFEST || join(root, 'site/wordpress/imports/infographic-bulk-import.json');
+const remoteManifestPath = process.env.REMOTE_INFOGRAPHIC_MANIFEST || join(root, 'site/wordpress/assets/infographics/remote-intake.json');
 const outputDir = process.env.INFOGRAPHIC_SOURCE_DIR || join(root, 'site/wordpress/assets/infographics');
 const reportPath = process.env.BULK_IMPORT_REPORT || join(root, '.tmp/infographic-bulk-import-report.json');
 const concurrency = Math.max(1, Math.min(8, Number.parseInt(process.env.BULK_IMPORT_CONCURRENCY || '4', 10) || 4));
 const maxBytes = Math.max(1_000_000, Number.parseInt(process.env.BULK_IMPORT_MAX_BYTES || String(30 * 1024 * 1024), 10));
 const allowedExtensions = new Set(['.png', '.jpg', '.jpeg', '.webp', '.gif']);
-const userAgent = 'DTFSeeds-Bulk-Infographic-Importer/1.0';
+const userAgent = 'DTFSeeds-Bulk-Infographic-Importer/1.1';
 
 function sha256(bytes) {
   return createHash('sha256').update(bytes).digest('hex');
@@ -44,7 +45,7 @@ async function fetchBytes(asset) {
   if (url.protocol !== 'https:') throw new Error(`sourceUrl must use HTTPS: ${asset.sourceUrl}`);
 
   let lastError = null;
-  for (let attempt = 1; attempt <= 3; attempt += 1) {
+  for (let attempt = 1; attempt <= 4; attempt += 1) {
     try {
       const response = await fetch(url, {
         redirect: 'follow',
@@ -60,7 +61,7 @@ async function fetchBytes(asset) {
       return bytes;
     } catch (error) {
       lastError = error;
-      if (attempt < 3) await sleep(attempt * 1500);
+      if (attempt < 4) await sleep(attempt * 1500);
     }
   }
   throw new Error(`Failed to download ${asset.sourceUrl}: ${lastError?.message || 'unknown error'}`);
@@ -85,7 +86,7 @@ async function importAsset(asset) {
   }
 
   if (existingHash === digest) {
-    return { filename: asset.filename, sourceUrl: asset.sourceUrl, sha256: digest, bytes: bytes.length, action: 'reused' };
+    return { filename: asset.filename, sourceUrl: asset.sourceUrl, sha256: digest, bytes: bytes.length, action: 'reused', intake: asset.intake };
   }
   if (existingHash && asset.replace !== true) {
     throw new Error(`Refusing to replace existing ${asset.filename}; set replace=true only for an intentional replacement`);
@@ -99,7 +100,7 @@ async function importAsset(asset) {
   });
   const written = await stat(destination);
   if (written.size !== bytes.length) throw new Error(`Write verification failed for ${asset.filename}`);
-  return { filename: asset.filename, sourceUrl: asset.sourceUrl, sha256: digest, bytes: bytes.length, action: existingHash ? 'updated' : 'created' };
+  return { filename: asset.filename, sourceUrl: asset.sourceUrl, sha256: digest, bytes: bytes.length, action: existingHash ? 'updated' : 'created', intake: asset.intake };
 }
 
 async function mapConcurrent(items, limit, fn) {
@@ -116,31 +117,74 @@ async function mapConcurrent(items, limit, fn) {
   return results;
 }
 
+async function readJson(path, required = true) {
+  try {
+    return JSON.parse(await readFile(path, 'utf8'));
+  } catch (error) {
+    if (!required && error?.code === 'ENOENT') return null;
+    throw error;
+  }
+}
+
+function normalizeBulkManifest(manifest) {
+  if (manifest.schemaVersion !== 1) throw new Error(`Unsupported bulk infographic manifest schemaVersion: ${manifest.schemaVersion}`);
+  if (!Array.isArray(manifest.assets)) throw new Error('Bulk infographic manifest must contain an assets array');
+  return manifest.assets
+    .filter((asset) => asset && asset.enabled !== false)
+    .map((asset) => ({ ...asset, intake: 'bulk' }));
+}
+
+function normalizeRemoteManifest(manifest) {
+  if (!manifest) return [];
+  if (manifest.schemaVersion !== 1) throw new Error(`Unsupported remote infographic manifest schemaVersion: ${manifest.schemaVersion}`);
+  if (!Array.isArray(manifest.entries)) throw new Error('Remote infographic manifest must contain an entries array');
+  return manifest.entries
+    .filter((entry) => entry && entry.enabled !== false)
+    .map((entry) => ({
+      filename: entry.filename,
+      sourceUrl: entry.url,
+      sha256: entry.sha256,
+      replace: entry.replace,
+      intake: 'approved-remote'
+    }));
+}
+
 await mkdir(outputDir, { recursive: true });
 await mkdir(join(root, '.tmp'), { recursive: true });
-const manifest = JSON.parse(await readFile(manifestPath, 'utf8'));
-if (manifest.schemaVersion !== 1) throw new Error(`Unsupported bulk infographic manifest schemaVersion: ${manifest.schemaVersion}`);
-if (!Array.isArray(manifest.assets)) throw new Error('Bulk infographic manifest must contain an assets array');
 
-const assets = manifest.assets.filter((asset) => asset && asset.enabled !== false);
+const bulkManifest = await readJson(bulkManifestPath);
+const remoteManifest = await readJson(remoteManifestPath, false);
+const assets = [
+  ...normalizeBulkManifest(bulkManifest),
+  ...normalizeRemoteManifest(remoteManifest)
+];
+
 const seen = new Set();
 for (const asset of assets) {
-  if (!asset.sourceUrl || !asset.filename) throw new Error('Every enabled asset requires sourceUrl and filename');
-  if (seen.has(asset.filename)) throw new Error(`Duplicate filename in bulk import manifest: ${asset.filename}`);
-  seen.add(asset.filename);
+  if (!asset.sourceUrl || !asset.filename) throw new Error('Every enabled asset requires sourceUrl/url and filename');
+  const key = asset.filename.toLowerCase();
+  if (seen.has(key)) throw new Error(`Duplicate filename across intake manifests: ${asset.filename}`);
+  seen.add(key);
   validateFilename(asset.filename);
 }
 
 const imported = await mapConcurrent(assets, concurrency, importAsset);
 const report = {
-  schemaVersion: 1,
-  batchId: manifest.batchId || null,
-  manifestPath,
+  schemaVersion: 2,
+  batchIds: {
+    bulk: bulkManifest.batchId || null,
+    approvedRemote: remoteManifest?.purpose || null
+  },
+  manifests: {
+    bulk: bulkManifestPath,
+    approvedRemote: remoteManifest ? remoteManifestPath : null
+  },
   outputDir,
   requestedAssets: assets.length,
   created: imported.filter((item) => item.action === 'created').length,
   updated: imported.filter((item) => item.action === 'updated').length,
   reused: imported.filter((item) => item.action === 'reused').length,
+  approvedRemoteAssets: imported.filter((item) => item.intake === 'approved-remote').length,
   assets: imported
 };
 await writeFile(reportPath, `${JSON.stringify(report, null, 2)}\n`);
