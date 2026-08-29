@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-272",
+  "number":272,
+  "title":"Humidity and Transpiration Imbalance",
+  "objective":"Diagnose humidity-related problems through vapor pressure, leaf temperature, root supply, airflow, wetness, and developmental response rather than relative humidity alone.",
+  "terms":[
+    {"term":"relative humidity","definition":"The amount of water vapor in air expressed relative to the saturation amount at the same temperature."},
+    {"term":"vapor pressure deficit","definition":"The difference between saturation vapor pressure and actual vapor pressure under a defined temperature basis."},
+    {"term":"leaf VPD","definition":"A vapor-pressure difference estimated using leaf temperature and surrounding air humidity rather than air temperature alone."},
+    {"term":"boundary layer","definition":"The thin region of relatively slow-moving air adjacent to a leaf surface that influences heat and vapor transfer."},
+    {"term":"dew point","definition":"The temperature at which air with a given moisture content reaches saturation and condensation can begin."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Relative humidity is temperature dependent and does not by itself describe plant water demand. Transpiration depends on the vapor-pressure difference between leaf and air together with radiation, stomatal conductance, boundary-layer resistance, leaf area, airflow, and the root system's ability to replace lost water.",
+    "The same room RH can correspond to different plant conditions when leaf temperature differs across canopy positions. Warm illuminated leaves can experience a larger vapor-pressure gradient than the surrounding air calculation suggests, while cold leaves or surfaces can approach dew point and develop local condensation even when average room RH is below 100 percent.",
+    "Very low evaporative demand can reduce transpiration and drying and can contribute to physiological disorders such as oedema in susceptible tissues. Very high evaporative demand can increase hydraulic load and contribute to wilt, curl, stomatal restriction, or margin injury when root and vascular supply cannot keep pace.",
+    "A recent controlled study in one CBD-dominant Cannabis sativa genotype compared low and very high canopy RH during flowering and reported delayed flowering development and reduced cannabinoid concentrations under the high-RH treatment. That result demonstrates that RH/VPD can materially affect cannabis development, but it does not define a universal cannabis VPD target across genotypes, stages, or facilities.",
+    "A VPD chart is therefore a calculation aid, not a diagnosis. Root moisture, root temperature, leaf temperature, radiation, air movement, acclimation, and wetness history must remain part of the differential."
+  ],
+  "cultivationRelevance":[
+    "Pair air temperature and RH with leaf-temperature measurements when diagnosing transpiration problems; do not assume air VPD equals leaf VPD.",
+    "Map canopy pockets, corners, supply-air zones, dense interiors, and lights-off transitions where humidity, airflow, temperature, or dew-point margin may differ from the room average.",
+    "Check irrigation, root condition, substrate moisture, drainage, and root-zone temperature before treating curl or wilt as an atmospheric problem alone.",
+    "Record surface wetness and condensation separately from RH because disease risk and tissue exposure depend on actual wetness, not just a room percentage."
+  ],
+  "measureAndRecord":[
+    {"field":"Air state","requirement":"Record calibrated air temperature and RH at defined canopy locations and intervals, with sensor type, placement, and logging period."},
+    {"field":"Leaf state","requirement":"Record leaf temperature on affected and unaffected leaves and document the leaf-VPD calculation method if used."},
+    {"field":"Air movement and radiation","requirement":"Record airflow pattern, fan/supply-air relationship, PPFD or radiation context, canopy density, and time relative to lights on/off."},
+    {"field":"Root supply","requirement":"Record irrigation timing, substrate moisture or mass, drainage, root condition, root-zone temperature, pH/EC, and water-use trend."},
+    {"field":"Wetness and response","requirement":"Record dew point, cold surfaces, visible condensation or leaf wetness, symptom timing, developmental stage, and response after controlled correction."
+    }
+  ],
+  "misconceptions":[
+    "High RH automatically means the crop is overwatered.",
+    "Low RH directly proves nutrient burn or calcium deficiency.",
+    "One VPD chart can diagnose plant water status.",
+    "Room VPD and leaf VPD are always the same.",
+    "A single RH target applies to every genotype and growth stage."
+  ],
+  "evidenceLimits":[
+    "Cannabis humidity studies remain genotype-, stage-, and protocol-specific. RH and VPD effects interact with temperature, radiation, airflow, roots, water status, and developmental timing, so published treatment ranges should not be converted into universal production or injury thresholds."
+  ],
+  "crossLinks":"THC-ENC-267 for oedema; THC-ENC-266 for wilt; THC-ENC-268–270 for temperature and light interactions; THC-ENC-081–100 for environmental control and water relations.",
+  "sourceNotes":[
+    "Elevated relative humidity significantly decreases cannabinoid concentrations while delaying flowering development in Cannabis sativa L. (2025). A controlled CBD-dominant genotype study compared low RH with 78–98% RH and documented developmental and compositional effects; the result is genotype- and protocol-specific.",
+    "Controlled Volume 05 and Volume 14 evidence registers require RH, air/leaf temperature, VPD method, dew point, airflow, radiation, root water status, and wetness to remain separate measurements.",
+    "General stomatal and hydraulic literature supports distinguishing temperature-driven from humidity-driven VPD changes because similar calculated VPD can arise from physiologically different thermal and hydraulic conditions."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 14 batch 03 controlled web derivative","driveSourceDocumentId":"1mbN8hq4g6jZUgW0bkwZBSXotPqZ7c184kOya5SqdtJA","evidenceControl":"controlled_manuscript_plus_direct_cannabis_relative_humidity_flowering_evidence_and_general_vpd_physiology","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_humidity_vpd_transpiration_dew_point_differential","releaseTimeReview":"completed_2026-08-29_no_universal_vpd_target_and_leaf_temperature_boundary","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"humidity-and-transpiration-imbalance",
+  "route":"/encyclopedia/humidity-and-transpiration-imbalance"
+}
