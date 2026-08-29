@@ -1,0 +1,55 @@
+{
+  "id":"THC-ENC-254",
+  "number":254,
+  "title":"Phenolics and Antioxidant Defense",
+  "objective":"Explain cannabis phenolic chemistry and antioxidant-defense concepts while distinguishing in-plant redox biology from extract-based antioxidant assays and human-health claims.",
+  "terms":[
+    {"term":"phenolic compound","definition":"A broad class of plant metabolites containing one or more phenolic chemical groups, including phenolic acids, flavonoids, and related compounds."},
+    {"term":"reactive oxygen species","definition":"Reactive oxygen-containing molecules formed during normal metabolism and increased by some environmental stresses."},
+    {"term":"redox homeostasis","definition":"The regulated balance between production and removal or control of oxidizing and reducing chemical species in cells."},
+    {"term":"DPPH/ABTS assay","definition":"In-vitro chemical assays that estimate radical-scavenging behavior of an extract under defined laboratory conditions."},
+    {"term":"FRAP assay","definition":"An in-vitro assay that estimates ferric-ion reducing capacity under specified conditions."}
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Cannabis tissues contain diverse phenolic compounds, including phenolic acids, flavonoids, cannflavins, lignanamides, and related polyphenols. Their abundance depends on genotype, tissue, developmental state, environment, extraction, and analytical method.",
+    "Plants continuously generate reactive oxygen species as part of metabolism and signaling. Redox homeostasis is maintained by interacting enzymatic and nonenzymatic systems; phenolic metabolites can participate in chemical redox reactions, but they are only one part of the plant antioxidant network.",
+    "Cannabis and hemp extract studies commonly use DPPH, ABTS, FRAP, total-phenolic, and total-flavonoid assays. These are operational laboratory measurements: they answer different chemical questions and can give different rankings for the same plant materials.",
+    "A 2026 comparison of four hemp cultivars found significant effects of both cultivar and plant part on total phenolic content and antioxidant-assay results. Leaves ranked higher in some radical-scavenging assays while inflorescences ranked higher in ferric-reducing capacity, illustrating why the word antioxidant is not one universal measurement.",
+    "Antioxidant activity measured in an extract does not prove equivalent activity inside an intact cannabis plant, after consumption, or in a human clinical outcome. Extraction efficiency, dose, metabolism, bioavailability, and biological context are separate evidence levels."
+  ],
+  "cultivationRelevance":[
+    "Treat pigment or phenolic changes as part of a broader stress and developmental record rather than as a stand-alone diagnosis.",
+    "When comparing phenolic measurements, standardize tissue, developmental stage, drying, extraction solvent, extraction time, and analytical assay.",
+    "Do not use a high DPPH, ABTS, FRAP, or total-phenolic value as proof that a plant is healthier, more potent, more stress-tolerant, or medically superior.",
+    "For plant-stress questions, pair chemistry with environmental records, growth measurements, visible symptoms, and—when available—physiological or enzyme measurements."
+  ],
+  "measureAndRecord":[
+    {"field":"Plant context","requirement":"Record genotype, plant ID, tissue, developmental stage, canopy position, visible stress, and relevant environmental conditions."},
+    {"field":"Extraction","requirement":"Record fresh/dry state, drying history, sample mass, grinding, solvent composition, extraction time, temperature, and solid-to-liquid ratio."},
+    {"field":"Assay identity","requirement":"Record DPPH, ABTS, FRAP, Folin-Ciocalteu, or other method explicitly, including calibration standard and result units."},
+    {"field":"Replicates and uncertainty","requirement":"Record biological and technical replicates, blanks, controls, variability, and statistical comparison."},
+    {"field":"Claim level","requirement":"Label results as extract chemistry, plant physiology, cell/animal evidence, or human evidence so conclusions do not cross evidence levels."
+    }
+  ],
+  "misconceptions":[
+    "Antioxidant is one single measurable property.",
+    "A high total-phenolic value identifies which phenolic compounds are present.",
+    "Strong DPPH or ABTS activity proves the intact plant has superior stress tolerance.",
+    "An extract antioxidant result proves a human health benefit.",
+    "Purple color automatically means higher antioxidant capacity."
+  ],
+  "evidenceLimits":[
+    "Cannabis-specific studies document phenolic diversity and assay-dependent antioxidant behavior, but chemical scavenging/reducing assays are not interchangeable with in-planta stress tolerance or clinical efficacy. Mechanistic plant-defense claims require physiological evidence beyond total phenolics or extract assays."
+  ],
+  "crossLinks":"THC-ENC-253 for flavonoids and pigments; THC-ENC-255 for maturation; THC-ENC-261 onward for diagnostics/abiotic disorders; THC-ENC-401 onward for measurement and research skills.",
+  "sourceNotes":[
+    "Antioxidant Capacity of Hemp (Cannabis sativa L.) Leaves and Inflorescences (2026). Compared DPPH, ABTS, FRAP, and total phenolics across four cultivars and demonstrated strong assay-, tissue-, and cultivar-dependence.",
+    "Feature-Based Molecular Network-Assisted Cannabinoid and Flavonoid Profiling of Cannabis sativa Leaves and Their Antioxidant Properties (2024). Profiled diverse cannabis leaf metabolites and evaluated multiple in-vitro antioxidant assays across many samples.",
+    "Controlled Volume 13 manuscript v1.0 requires plant redox biology, extract assay results, compound identity, stress tolerance, and human-health claims to remain separate evidence levels."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 13 batch 03 controlled web derivative","driveSourceDocumentId":"1Vh_CkUFTN9eqsXiuH53pD1tMDyBo2zxDTIXOd_vQlgw","evidenceControl":"controlled_manuscript_plus_cannabis_phenolic_profile_and_multiassay_sources","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_phenolics_redox_assays_and_claim_boundaries","releaseTimeReview":"completed_2026-08-29_phenolics_assay_specificity_plant_defense_and_health_boundaries","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"phenolics-and-antioxidant-defense",
+  "route":"/encyclopedia/phenolics-and-antioxidant-defense"
+}

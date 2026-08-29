@@ -1,0 +1,54 @@
+{
+  "id":"THC-ENC-251",
+  "number":251,
+  "title":"Humulene, Ocimene, Terpinolene, and Minor Terpenes",
+  "objective":"Interpret humulene, ocimene, terpinolene, and other lower-abundance terpenes as parts of a multicomponent cannabis volatile profile rather than isolated predictors of aroma, lineage, quality, or effect.",
+  "terms":[
+    {"term":"alpha-humulene","definition":"A sesquiterpene commonly detected with beta-caryophyllene in cannabis and producible by the same characterized cannabis terpene synthase."},
+    {"term":"beta-ocimene","definition":"An acyclic monoterpene detected in cannabis inflorescence volatile profiles."},
+    {"term":"terpinolene","definition":"A cyclic monoterpene that can be prominent in some cannabis profiles and minor in others."},
+    {"term":"minor terpene","definition":"A context-dependent analytical description for a terpene present at lower abundance than major compounds in a particular sample or method, not a distinct biological class."},
+    {"term":"mixture effect","definition":"A property of a multicomponent chemical or sensory mixture that cannot be assigned to one constituent solely from its concentration."}
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Cannabis inflorescences contain many terpenes beyond the compounds usually listed as the largest peaks. In direct Finola flower profiling, terpinolene and (E)-beta-ocimene were among abundant monoterpenes, while alpha-humulene was among abundant sesquiterpenes; individual plants still showed substantial variation.",
+    "Direct enzyme work showed that alpha-humulene and beta-caryophyllene can be coproducts of one characterized cannabis sesquiterpene synthase. Other cannabis terpene synthases are multiproduct enzymes as well, so a minor peak cannot automatically be mapped to one unique gene.",
+    "The label minor is analytical and sample-specific. A compound can be minor by mass yet relevant to headspace or sensory perception if its volatility and odor threshold make it noticeable, while a larger tissue peak may contribute less to perceived aroma.",
+    "Modern cannabis aroma work shows that nonterpenoid volatiles can distinguish aroma groups that ordinary terpene panels do not explain. Therefore, a list of minor terpenes is not a complete aroma fingerprint.",
+    "Concentration of humulene, ocimene, terpinolene, or another minor terpene does not establish cultivar identity, indica/sativa category, product quality, or a specific human effect."
+  ],
+  "cultivationRelevance":[
+    "Retain the full measured volatile panel and absolute units when possible instead of reporting only the top three compounds.",
+    "Compare the same tissue, developmental stage, preparation, and analytical method before interpreting a compound as increasing, decreasing, major, or minor.",
+    "Do not remove low-abundance compounds from a sensory investigation solely because their mass fraction is small.",
+    "Treat recurring multi-compound patterns as hypotheses for chemovar or sensory work, not as proof of pedigree or effect."
+  ],
+  "measureAndRecord":[
+    {"field":"Full profile","requirement":"Record identified monoterpenes, sesquiterpenes, oxygenated products, units, detection limits, and unresolved peaks rather than only dominant analytes."},
+    {"field":"Sample context","requirement":"Record genotype/provenance, plant or lot ID, tissue, flower position, developmental stage, and fresh/dry state."},
+    {"field":"Method","requirement":"Record preparation, headspace or extraction conditions, chromatographic method, standards, calibration, and replicate."},
+    {"field":"Absolute versus relative","requirement":"Preserve absolute concentration separately from percent-of-profile values so proportional shifts are not mistaken for synthesis or loss."},
+    {"field":"Sensory pairing","requirement":"If aroma is studied, record blinded descriptors and intensity independently from chemical rank."}
+  ],
+  "misconceptions":[
+    "Minor terpene means biologically unimportant.",
+    "The largest terpene peak must dominate aroma.",
+    "Humulene always occurs in one fixed ratio with beta-caryophyllene.",
+    "A terpinolene- or ocimene-rich result proves a named lineage.",
+    "A standard terpene panel captures every compound important to cannabis aroma."
+  ],
+  "evidenceLimits":[
+    "Direct cannabis profiling and enzyme studies support the occurrence and biosynthetic context of humulene, ocimene, terpinolene, and many additional terpenes. Sensory importance depends on the complete volatile mixture and thresholds, while lineage and human-effect claims require evidence beyond one or several terpene measurements."
+  ],
+  "crossLinks":"THC-ENC-243–245 for terpene classes and synthases; THC-ENC-250 for beta-caryophyllene/alpha-humulene; THC-ENC-252 for sulfur volatiles; THC-ENC-258 for analytical variation; THC-ENC-259 for chemovar classification.",
+  "sourceNotes":[
+    "Booth JK, Page JE, Bohlmann J. (2017). Terpene synthases from Cannabis sativa. PLOS ONE 12:e0173911. Profiled Finola flowers across early-to-mid flowering and functionally characterized multi-product cannabis terpene synthases, including a beta-caryophyllene/alpha-humulene synthase.",
+    "Oswald IWH et al. (2023). Minor, Nonterpenoid Volatile Compounds Drive the Aroma Differences of Exotic Cannabis. ACS Omega. Demonstrated that important aroma differences can be associated with low-abundance nonterpenoid volatiles not represented by conventional terpene narratives.",
+    "Controlled Volume 13 manuscript v1.0 requires minor-terpene abundance, headspace contribution, sensory importance, lineage, and effect claims to remain separate evidence levels."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 13 batch 03 controlled web derivative","driveSourceDocumentId":"1Vh_CkUFTN9eqsXiuH53pD1tMDyBo2zxDTIXOd_vQlgw","evidenceControl":"controlled_manuscript_plus_direct_cannabis_TPS_profile_and_aroma_sources","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_minor_terpenes_profile_sensory_and_claim_boundaries","releaseTimeReview":"completed_2026-08-29_minor_terpene_abundance_biosynthesis_and_aroma_boundaries","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"humulene-ocimene-terpinolene-and-minor-terpenes",
+  "route":"/encyclopedia/humulene-ocimene-terpinolene-and-minor-terpenes"
+}

@@ -1,0 +1,54 @@
+{
+  "id":"THC-ENC-252",
+  "number":252,
+  "title":"Volatile Sulfur Compounds",
+  "objective":"Explain volatile sulfur compounds as low-abundance, high-impact contributors to some cannabis aromas and show why standard terpene panels do not capture the full volatilome.",
+  "terms":[
+    {"term":"volatile sulfur compound","definition":"A sulfur-containing molecule sufficiently volatile to enter the gas phase and contribute to odor or headspace chemistry."},
+    {"term":"thiol","definition":"An organosulfur compound containing a sulfhydryl group, written chemically as -SH."},
+    {"term":"3-methyl-2-butene-1-thiol","definition":"A prenylated thiol identified as a major contributor to characteristic skunk-like odor in studied cannabis samples."},
+    {"term":"odor threshold","definition":"The concentration range at which a compound becomes detectable by smell under specified conditions."},
+    {"term":"sulfur-selective detection","definition":"Analytical detection designed to respond selectively or sensitively to sulfur-containing compounds."}
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Cannabis aroma is not explained by terpenes alone. Comprehensive two-dimensional gas chromatography with sulfur-selective detection identified a family of prenylated volatile sulfur compounds in cannabis, with 3-methyl-2-butene-1-thiol strongly associated with the characteristic skunk-like aroma in the studied set.",
+    "Odor impact is not determined only by mass abundance. Sulfur compounds can be sensorially important at low concentrations, so absence from a conventional terpene report does not establish absence from the headspace or absence of sensory relevance.",
+    "In one controlled greenhouse study, the identified prenylated sulfur compounds rose substantially during the final weeks of flowering, reached their highest measured levels during curing, and then fell rapidly during subsequent storage. That pattern was study-specific evidence, not a universal timetable for every genotype or postharvest system.",
+    "Later work identified additional low-abundance nonterpenoid volatile compounds, including sulfur-containing molecules, that help distinguish citrus, tropical, savory, chemical, and other aroma groups. This reinforces that a standard terpene panel is an incomplete model of cannabis odor.",
+    "Sulfur odorants can transform through oxidation, storage, extraction, or other chemistry. A detected sulfur compound, or a skunk-like aroma, does not by itself establish freshness, quality, cultivar identity, contamination, or health effect."
+  ],
+  "cultivationRelevance":[
+    "Do not diagnose sulfur-like aroma as a terpene trait without chemical evidence.",
+    "When aroma development is the question, record flowering stage, harvest date, drying, curing, storage time, package, temperature, and oxygen exposure.",
+    "Use sulfur-sensitive or sufficiently comprehensive volatile methods when sulfur compounds are part of the hypothesis; a routine terpene panel may miss them.",
+    "Separate desirable plant-produced sulfur volatiles from off-odors caused by microbial, nutrient, environmental, or postharvest problems using evidence rather than smell alone."
+  ],
+  "measureAndRecord":[
+    {"field":"Volatile method","requirement":"Record sampling method, GC configuration, mass-spectral and sulfur-selective detection where used, standards, detection limits, and units."},
+    {"field":"Sample stage","requirement":"Record genotype, plant/lot ID, flower position, flowering stage, harvest date, fresh/dry/cured state, and replicate."},
+    {"field":"Postharvest history","requirement":"Record drying and curing conditions, container, storage temperature, light, oxygen exposure, and elapsed time."},
+    {"field":"Sensory observation","requirement":"Record blinded odor descriptors and intensity separately from chemical identification and concentration."},
+    {"field":"Alternative causes","requirement":"If an off-odor is suspected, record visible disease, moisture history, microbial testing, substrate/root-zone observations, and other competing explanations."}
+  ],
+  "misconceptions":[
+    "Skunky cannabis aroma is caused by a skunky terpene.",
+    "A compound absent from the terpene panel is absent from the flower aroma.",
+    "The strongest-smelling compound must be the most abundant compound by mass.",
+    "Any sulfur smell proves contamination or a cultivation defect.",
+    "One VSC concentration defines freshness, quality, or cultivar identity."
+  ],
+  "evidenceLimits":[
+    "Direct cannabis studies support prenylated VSCs and other minor nonterpenoid volatiles as important odorants in studied samples. Their abundance and sensory importance vary with genotype, stage, analytical method, and postharvest history. Health, quality, and universal maturity claims require separate evidence."
+  ],
+  "crossLinks":"THC-ENC-251 for minor terpene context; THC-ENC-255 for maturation; THC-ENC-256–258 for volatile loss, storage, and analysis; THC-ENC-259 for chemovar classification.",
+  "sourceNotes":[
+    "Oswald IWH et al. (2021). Identification of a New Family of Prenylated Volatile Sulfur Compounds in Cannabis Revealed by Comprehensive Two-Dimensional Gas Chromatography. ACS Omega 6:31667–31676. Identified prenylated VSCs, associated 3-methyl-2-butene-1-thiol with skunk-like aroma, and tracked VSCs through flowering, curing, and storage.",
+    "Oswald IWH et al. (2023). Minor, Nonterpenoid Volatile Compounds Drive the Aroma Differences of Exotic Cannabis. ACS Omega. Demonstrated that diverse low-abundance nonterpenoid compounds can explain aroma differences not captured by dominant terpene profiles.",
+    "Controlled Volume 13 manuscript v1.0 requires sulfur-compound presence, odor contribution, maturity, quality, contamination, and health claims to remain separate evidence levels."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 13 batch 03 controlled web derivative","driveSourceDocumentId":"1Vh_CkUFTN9eqsXiuH53pD1tMDyBo2zxDTIXOd_vQlgw","evidenceControl":"controlled_manuscript_plus_direct_cannabis_VSC_and_aroma_sources","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_VSC_chemistry_sensory_development_and_claim_boundaries","releaseTimeReview":"completed_2026-08-29_VSC_identity_odor_development_storage_and_diagnostic_boundaries","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"volatile-sulfur-compounds",
+  "route":"/encyclopedia/volatile-sulfur-compounds"
+}

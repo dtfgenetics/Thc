@@ -1,0 +1,54 @@
+{
+  "id":"THC-ENC-253",
+  "number":253,
+  "title":"Flavonoids and Pigments",
+  "objective":"Explain cannabis flavonoids, anthocyanin pigmentation, and cannflavins while separating visible color from cannabinoid potency, lineage, quality, and human-health claims.",
+  "terms":[
+    {"term":"flavonoid","definition":"A large class of phenolic plant metabolites with roles that can include pigmentation, signaling, and responses to environmental stress."},
+    {"term":"anthocyanin","definition":"A water-soluble flavonoid pigment class commonly responsible for red, purple, and blue coloration in plant tissues."},
+    {"term":"vacuole","definition":"A membrane-bound plant-cell compartment in which many anthocyanin pigments accumulate."},
+    {"term":"cannflavin","definition":"A prenylated flavonoid reported from Cannabis sativa, including cannflavin A and cannflavin B."},
+    {"term":"pigment phenotype","definition":"The observable color pattern of a plant tissue produced by pigment composition together with cellular and environmental context."}
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Cannabis synthesizes flavonoids in addition to cannabinoids and terpenes. Cannflavin A and cannflavin B are prenylated cannabis flavonoids that have been isolated and structurally characterized, while other flavonoids and phenolic compounds occur across leaves and inflorescences.",
+    "Red and purple cannabis pigmentation can result from anthocyanin accumulation. A 2024 cannabis study comparing differently pigmented varieties linked anthocyanin abundance with variation and expression in canonical flavonoid-pathway genes including 4CL, CHS, F3H, F3'H, FLS, DFR, ANS, and OMT.",
+    "Visible pigment depends on more than genotype. Development, tissue type, light exposure, temperature, nutrient status, cellular pH, vacuolar chemistry, and senescence can influence anthocyanin production or appearance. Therefore, color is a phenotype, not a direct assay of one metabolite pathway.",
+    "Anthocyanin coloration and cannabinoid biosynthesis are distinct chemical traits. Purple or red tissue does not prove greater THC, CBD, terpene content, trichome maturity, stress tolerance, or product quality.",
+    "Flavonoids can be measured by targeted chromatography or broader profiling, while total-flavonoid colorimetric assays collapse chemically different molecules into an operational estimate. A colorimetric total is not equivalent to identifying individual flavonoids."
+  ],
+  "cultivationRelevance":[
+    "Record tissue type, developmental stage, canopy position, temperature, light, and visible color before linking a pigment change to genetics or environment.",
+    "Use targeted chemical analysis if the question concerns anthocyanins, cannflavins, or another specific flavonoid rather than relying on flower color.",
+    "Do not use purple coloration as a harvest, potency, quality, or cultivar-authentication test.",
+    "When comparing pigmentation across plants, standardize lighting and imaging conditions because camera exposure and white balance can alter apparent color."
+  ],
+  "measureAndRecord":[
+    {"field":"Pigment phenotype","requirement":"Record tissue, plant/lot ID, developmental stage, canopy position, standardized image conditions, and a defined color scale when used."},
+    {"field":"Environment","requirement":"Record temperature, light regime, nutrient/root-zone context, and relevant stress observations surrounding pigment development."},
+    {"field":"Chemical identity","requirement":"For individual flavonoid claims, record extraction, chromatographic/mass-spectral method, authentic standard or identification level, and units."},
+    {"field":"Total-flavonoid assay","requirement":"If a colorimetric total is used, record reagent chemistry, calibration standard, extraction method, and report it as an assay-specific equivalent rather than an individual-compound concentration."},
+    {"field":"Separate traits","requirement":"Record cannabinoids, terpenes, pigments, and sensory traits as separate measurements rather than inferring one from another."}
+  ],
+  "misconceptions":[
+    "Purple cannabis is automatically more potent.",
+    "Anthocyanin color proves a plant is mature and ready to harvest.",
+    "All cannabis flavonoids are unique to cannabis.",
+    "A total-flavonoid assay identifies the exact flavonoids present.",
+    "Color alone proves cultivar identity or quality."
+  ],
+  "evidenceLimits":[
+    "Cannabis-specific studies support cannflavins, diverse flavonoids, anthocyanin accumulation, and pigmentation-pathway genetics. Visible color remains an integrated phenotype and cannot establish cannabinoid potency, harvest maturity, sensory quality, or human-health effect without separate measurements."
+  ],
+  "crossLinks":"THC-ENC-254 for phenolics and antioxidant assays; THC-ENC-255 for maturation; THC-ENC-238–239 for developmental/trichome maturity context; THC-ENC-259 for chemistry-based classification.",
+  "sourceNotes":[
+    "Vanhoenacker G et al. (2004). NMR assignments of the major cannabinoids and cannabiflavonoids isolated from flowers of Cannabis sativa. Phytochemical Analysis 15:375–378. Structurally characterized cannflavin A and cannflavin B among isolated cannabis constituents.",
+    "Leaf pigmentation in Cannabis sativa: Characterization of anthocyanin biosynthesis in colorful Cannabis varieties (2024). Characterized anthocyanins and related phenolics across differently pigmented cannabis varieties and linked accumulation with expression of canonical flavonoid-pathway genes.",
+    "Controlled Volume 13 manuscript v1.0 requires visible color, individual pigment chemistry, total-flavonoid assays, potency, lineage, and health claims to remain separate evidence levels."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 13 batch 03 controlled web derivative","driveSourceDocumentId":"1Vh_CkUFTN9eqsXiuH53pD1tMDyBo2zxDTIXOd_vQlgw","evidenceControl":"controlled_manuscript_plus_direct_cannabis_flavonoid_and_anthocyanin_sources","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_flavonoid_pigment_genetics_and_claim_boundaries","releaseTimeReview":"completed_2026-08-29_cannflavin_anthocyanin_color_and_potency_boundaries","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"flavonoids-and-pigments",
+  "route":"/encyclopedia/flavonoids-and-pigments"
+}
