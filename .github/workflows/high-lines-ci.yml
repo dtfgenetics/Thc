@@ -1,0 +1,78 @@
+name: High Lines CI
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - games/high-lines/**
+      - site/public-route-patch/games/high-lines/**
+      - .github/workflows/high-lines-ci.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate High Lines data and SVG assets
+        run: node games/high-lines/scripts/validate-data.mjs
+
+      - name: Run deterministic High Lines engine tests
+        run: node games/high-lines/test/engine.test.mjs
+
+      - name: Validate browser JavaScript syntax
+        run: |
+          node --check site/public-route-patch/games/high-lines/app.js
+          node --check site/public-route-patch/games/high-lines/engine.mjs
+
+      - name: Verify canonical and public engine match
+        run: cmp games/high-lines/src/engine.mjs site/public-route-patch/games/high-lines/engine.mjs
+
+      - name: Verify route, interaction and race-safety contracts
+        run: |
+          node - <<'NODE'
+          const fs = require('fs');
+          const html = fs.readFileSync('site/public-route-patch/games/high-lines/index.html','utf8');
+          const css = fs.readFileSync('site/public-route-patch/games/high-lines/high-lines.css','utf8');
+          const app = fs.readFileSync('site/public-route-patch/games/high-lines/app.js','utf8');
+          const need = (source, text, label) => {
+            if (!source.includes(text)) throw new Error(`missing ${label}: ${text}`);
+          };
+          need(html, '<link rel="canonical" href="https://dtfseeds.com/games/high-lines/">', 'canonical route');
+          need(html, '<script type="module" src="./app.js"></script>', 'module entrypoint');
+          need(html, 'Game boundary:', 'content boundary');
+          need(app, 'let sceneLoadToken = 0;', 'scene load token');
+          need(app, 'const requestToken = ++sceneLoadToken;', 'load token increment');
+          need(app, 'requestToken !== sceneLoadToken', 'stale response guard');
+          need(app, 'state.sceneId !== requestedSceneId', 'scene identity guard');
+          need(app, "svg.querySelector('script, foreignObject')", 'safe inline SVG contract');
+          need(app, "if (/^[1-8]$/.test(event.key))", 'palette keyboard shortcuts');
+          need(app, "event.key === 'u' || event.key === 'U'", 'undo keyboard shortcut');
+          need(app, "'[data-hidden],[data-region]'", 'keyboard SVG targets');
+          need(css, '.playfield-shell', 'playfield-first layout');
+          need(css, '.high-lines-svg', 'interactive SVG styling');
+          need(css, '@media(prefers-reduced-motion:reduce)', 'reduced-motion support');
+          NODE
+
+      - name: Verify truthful release boundary
+        run: |
+          node - <<'NODE'
+          const fs = require('fs');
+          const game = JSON.parse(fs.readFileSync('games/high-lines/game.json','utf8'));
+          if (game.status !== 'browser-vertical-slice') throw new Error('unexpected game status');
+          if (game.route !== '/games/high-lines/') throw new Error('unexpected route');
+          if (game.releaseGates.rulesTested !== false) throw new Error('rulesTested must remain false until CI proves the deterministic rules and asset suite');
+          if (game.releaseGates.browserTested !== false) throw new Error('browserTested must remain false until browser QA is actually completed');
+          if (game.releaseGates.mobileTested !== false) throw new Error('mobileTested must remain false until mobile QA is actually completed');
+          if (game.releaseGates.accessibilityReviewed !== false) throw new Error('accessibilityReviewed must remain false until accessibility review is actually completed');
+          if (game.releaseGates.originalArtCleared !== true) throw new Error('High Lines original SVG art must remain cleared');
+          if (game.releaseGates.deploymentRegistered !== false) throw new Error('unreviewed game must not be production registered');
+          NODE
