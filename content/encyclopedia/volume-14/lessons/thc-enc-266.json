@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-266",
+  "number":266,
+  "title":"Wilting With Wet Versus Dry Media",
+  "objective":"Separate water-supply shortage, excessive atmospheric demand, hydraulic interruption, root dysfunction, and wet-root-zone uptake failure when cannabis wilts.",
+  "terms":[
+    {"term":"wilting","definition":"Loss of tissue turgor expressed as drooping or collapse when water supply to cells does not keep pace with loss or hydraulic continuity is impaired."},
+    {"term":"turgor","definition":"Pressure of cell contents against cell walls that contributes to tissue rigidity."},
+    {"term":"hydraulic conductance","definition":"The capacity of a soil-plant pathway to transport water under a water-potential gradient."},
+    {"term":"hypoxia","definition":"Oxygen availability below that required for normal aerobic root metabolism."},
+    {"term":"vapor demand","definition":"Atmospheric demand for water from leaves, influenced by leaf-to-air vapor-pressure difference, radiation, airflow, and stomatal behavior."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Wilting occurs when tissue water delivery does not keep pace with loss or when the hydraulic pathway from substrate to leaf is impaired. Dry substrate can reduce available water and hydraulic conductivity, but visibly wet substrate does not guarantee functional water uptake.",
+    "Wet-root-zone wilt can occur when roots are oxygen-limited, diseased, cold, saline, physically damaged, or poorly distributed relative to the wet zone. Root respiration and membrane transport require oxygen and metabolic energy, so saturation can reduce uptake even while water is abundant around roots.",
+    "One substrate-moisture reading can miss strong spatial gradients. Channeling can leave portions of a root ball dry while a probe or saucer appears wet; saturation can persist low in a container while the upper root zone dries. Container mass, multiple-position sensors, or validated substrate-water measurements improve interpretation.",
+    "High radiation, warm leaves, strong airflow, and high leaf-to-air vapor-pressure demand can cause transient loss of turgor even when stored water is adequate. Recovery timing, leaf temperature, stomatal behavior, root condition, and substrate measurements help separate excessive demand from inadequate supply.",
+    "Cannabis water-use and gas-exchange responses change with light, temperature, CO2, genotype, and developmental state. No single visual wilt pattern or one substrate-moisture threshold diagnoses the cause across production systems."
+  ],
+  "cultivationRelevance":[
+    "Do not automatically irrigate every wilted plant; first determine whether the root zone is dry, saturated, unevenly wetted, saline, cold, or otherwise impaired.",
+    "Compare affected and unaffected containers by mass or calibrated substrate measurement and inspect emitter output plus drainage paths.",
+    "Record leaf and root-zone temperature, light, RH/VPD context, airflow, and time of day so temporary high-demand wilt is not confused with chronic root failure.",
+    "Inspect roots and escalate pathogen testing when wet-media wilt persists, roots decline, or symptoms recur after hydraulic conditions are corrected."
+  ],
+  "measureAndRecord":[
+    {"field":"Substrate water state","requirement":"Record container mass, VWC or water-potential method, multiple positions when possible, irrigation timing, drainage, and dryback trajectory."},
+    {"field":"Root-zone condition","requirement":"Record root color/texture, odor, temperature, saturation duration, pH/EC, salinity context, and pathogen diagnostics where warranted."},
+    {"field":"Atmospheric demand","requirement":"Record light, leaf/air temperature, RH/VPD method, airflow, time of day, and whether plants recover as demand falls."},
+    {"field":"Hydraulic response","requirement":"Record wilt score, petiole/leaf angle, new growth, water use, and response to one controlled corrective action."},
+    {"field":"Delivery uniformity","requirement":"Measure emitter output, distribution, runoff/drainage, blocked channels, and whether affected plants share one irrigation zone."
+    }
+  ],
+  "misconceptions":[
+    "Wilt always means the plant needs more water.",
+    "Wet media proves roots have access to usable water.",
+    "One moisture-probe reading represents the entire root ball.",
+    "Midday wilt always proves irrigation failure.",
+    "Adding more nutrient solution is harmless when the diagnosis is uncertain."
+  ],
+  "evidenceLimits":[
+    "Plant water status is dynamic and system-dependent. Container moisture, leaf appearance, water potential, gas exchange, root oxygen, and drainage each answer different questions; no single measurement provides a complete diagnosis."
+  ],
+  "crossLinks":"THC-ENC-261 for diagnostic workflow; THC-ENC-267 and 273 for water imbalance/hypoxia; THC-ENC-081–100 for water/environment; THC-ENC-274 for salinity; THC-ENC-301–320 for root-disease differentials.",
+  "sourceNotes":[
+    "Chandra S et al. (2008). Photosynthetic response of Cannabis sativa L. to variations in PPFD, temperature and CO2 conditions. Demonstrated interacting cannabis gas-exchange and water-use responses to light and temperature rather than one fixed demand state.",
+    "Controlled Volume 14 and prior water-relations source registers treat wilt as a hydraulic supply-demand symptom requiring substrate, root, atmospheric, and delivery measurements.",
+    "General root hypoxia literature supports impaired aerobic metabolism and uptake in saturated root zones; cannabis-specific oxygen thresholds remain system-specific."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 14 batch 02 controlled web derivative","driveSourceDocumentId":"1mbN8hq4g6jZUgW0bkwZBSXotPqZ7c184kOya5SqdtJA","evidenceControl":"controlled_manuscript_plus_cannabis_gas_exchange_and_plant_water_relations","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_wilt_water_supply_root_function_and_atmospheric_demand","releaseTimeReview":"completed_2026-08-29_wet_dry_media_wilt_and_hydraulic_differential_boundaries","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"wilting-with-wet-versus-dry-media",
+  "route":"/encyclopedia/wilting-with-wet-versus-dry-media"
+}
