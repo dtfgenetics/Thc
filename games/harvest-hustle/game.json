@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "harvest-hustle",
+  "title": "Harvest Hustle",
+  "type": "browser-game",
+  "status": "browser-vertical-slice",
+  "route": "/games/harvest-hustle/",
+  "productionTarget": "https://dtfseeds.com",
+  "implementation": {
+    "data": "games/harvest-hustle/data/shift.json",
+    "engine": "games/harvest-hustle/src/engine.mjs",
+    "validator": "games/harvest-hustle/scripts/validate-data.mjs",
+    "publicRoute": "site/public-route-patch/games/harvest-hustle/"
+  },
+  "releaseGates": {
+    "rulesTested": false,
+    "browserTested": false,
+    "mobileTested": false,
+    "accessibilityReviewed": false,
+    "originalArtCleared": true,
+    "deploymentRegistered": false
+  }
+}
