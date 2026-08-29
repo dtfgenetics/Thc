@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0b130d">
+  <meta name="description" content="Trichome Trials is a deterministic DTF Genetics judging and scorecard browser game with fictional evidence packets.">
+  <link rel="canonical" href="https://dtfseeds.com/games/trichome-trials/">
+  <link rel="stylesheet" href="./trichome-trials.css">
+  <link rel="stylesheet" href="./frost-layout.css">
+  <title>Trichome Trials | DTF Games</title>
+</head>
+<body>
+  <a class="skip-link" href="#game">Skip to game</a>
+  <header class="site-bar">
+    <a class="brand" href="/games/" aria-label="Back to DTF Games">
+      <span class="brand-mark" aria-hidden="true">DTF</span>
+      <span><strong>DTF Games</strong><small>Dream the Future</small></span>
+    </a>
+    <a class="hub-link" href="/games/">Game Hub</a>
+  </header>
+
+  <main id="game" class="game-shell">
+    <section class="hero" aria-labelledby="game-title">
+      <div>
+        <p class="eyebrow">Blind judging challenge</p>
+        <h1 id="game-title">Trichome Trials</h1>
+        <p class="lede">Read the evidence packet, score seven categories from 1–10, then reveal the hidden benchmark and see how consistent your judging really is.</p>
+      </div>
+      <p id="load-status" class="status-chip" role="status">Loading judging deck…</p>
+    </section>
+
+    <section class="score-strip" aria-label="Trial status">
+      <div class="stat"><span>Round</span><strong id="round-stat">1 / 5</strong></div>
+      <div class="stat"><span>Points</span><strong id="points-stat">0</strong></div>
+      <div class="stat"><span>Avg accuracy</span><strong id="accuracy-stat">0%</strong></div>
+      <div class="stat"><span>Exact calls</span><strong id="exact-stat">0</strong></div>
+    </section>
+
+    <section class="trial-grid">
+      <article id="sample-panel" class="sample-panel" aria-label="Current fictional judging sample">
+        <div class="loading-panel">Preparing blind sample…</div>
+      </article>
+
+      <article class="evidence-panel" aria-labelledby="evidence-title">
+        <div class="panel-heading">
+          <div><p class="eyebrow">Evidence packet</p><h2 id="evidence-title">Seven observations</h2></div>
+          <span class="clipboard-mark" aria-hidden="true">07</span>
+        </div>
+        <ol id="evidence-list" class="evidence-list">
+          <li class="empty-state">Loading observations…</li>
+        </ol>
+      </article>
+    </section>
+
+    <section class="judge-panel" aria-labelledby="scorecard-title">
+      <div class="panel-heading scorecard-heading">
+        <div>
+          <p class="eyebrow">Judge scorecard</p>
+          <h2 id="scorecard-title">Score every category 1–10</h2>
+        </div>
+        <div class="scale-key" aria-hidden="true"><span>1 DEVELOPING</span><span>5 SOLID</span><span>10 BENCHMARK</span></div>
+      </div>
+      <div id="scorecard" class="scorecard"></div>
+      <button id="submit-card" class="submit-button" type="button" disabled>Submit scorecard</button>
+    </section>
+
+    <section id="benchmark-review" class="review-panel" aria-live="polite" hidden></section>
+    <button id="next-round" class="next-button" type="button" hidden>Next sample</button>
+
+    <section class="lower-grid">
+      <article class="control-card">
+        <div class="panel-heading compact"><div><p class="eyebrow">Trial code</p><h2>Replay the same five samples</h2></div></div>
+        <label for="trial-code">Six-character trial code</label>
+        <div class="code-row">
+          <input id="trial-code" class="code-input" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="6" aria-describedby="code-help">
+          <button id="new-code" class="secondary-button" type="button">New</button>
+        </div>
+        <p id="code-help" class="help-text">Press Enter to reset the trial to this deterministic five-entry sequence.</p>
+        <button id="share-trial" class="primary-button" type="button">Copy challenge link</button>
+      </article>
+
+      <article class="history-card" aria-labelledby="history-title">
+        <div class="panel-heading compact"><div><p class="eyebrow">Judge ledger</p><h2 id="history-title">Submitted rounds</h2></div></div>
+        <ol id="trial-history" class="history-list"><li class="empty-state">Submitted scorecards will appear here.</li></ol>
+      </article>
+    </section>
+
+    <section class="rules-card" aria-labelledby="rules-title">
+      <p class="eyebrow">How to judge</p>
+      <h2 id="rules-title">Consistency beats guessing.</h2>
+      <div class="rules-grid">
+        <p><strong>Read first.</strong> Each evidence line maps in order to Structure, Resin, Terps, Yield, Color, Documentation, and Problem Solving.</p>
+        <p><strong>Score the packet.</strong> Use the same 1–10 standard every round. Exact benchmark calls and one-point misses earn bonus points.</p>
+        <p><strong>Review the reveal.</strong> After submission, compare your score with the hidden benchmark explanation before advancing.</p>
+      </div>
+      <p class="boundary"><strong>Game boundary:</strong> all entries, visuals, observations, and benchmark scores are fictional. Trichome Trials does not provide potency claims, consumption guidance, chemical instructions, or step-by-step cultivation/processing procedures.</p>
+    </section>
+  </main>
+
+  <p id="announce" class="sr-only" aria-live="assertive"></p>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
