@@ -8,6 +8,7 @@ on:
     paths:
       - site/wordpress/imports/infographic-bulk-import.json
       - site/wordpress/assets/infographics/**
+      - scripts/decode-inline-infographic-b64.mjs
       - scripts/import-wordpress-infographic-remote-batch.mjs
       - scripts/publish-wordpress-image-backlog.sh
       - .github/workflows/bulk-image-production.yml
@@ -49,6 +50,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
+
+      - name: Decode inline approved image intake
+        shell: bash
+        run: node scripts/decode-inline-infographic-b64.mjs
 
       - name: Publish missing images and verify public site
         shell: bash
