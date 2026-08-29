@@ -6,7 +6,8 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/wordpress-visual-polish-v3-post-canonical.yml'
-      - 'scripts/improve-wordpress-learning-v4.mjs'
+      - 'scripts/polish-wordpress-visual-site-v3.mjs'
+      - 'scripts/fix-wordpress-visual-polish-v3-cascade.mjs'
   workflow_run:
     workflows: ['Publish DTFSeeds WordPress Production']
     types: [completed]
@@ -47,7 +48,6 @@ jobs:
           test -n "${WP_API_PASSWORD:-}"
           node --check scripts/polish-wordpress-visual-site-v3.mjs
           node --check scripts/fix-wordpress-visual-polish-v3-cascade.mjs
-          node --check scripts/improve-wordpress-learning-v4.mjs
       - name: Apply V3 after canonical WordPress publication
         id: apply
         env:
@@ -62,15 +62,7 @@ jobs:
         run: |
           set -euo pipefail
           node scripts/fix-wordpress-visual-polish-v3-cascade.mjs
-      - name: Improve Learn information hierarchy
-        id: learning
-        env:
-          APPLY_LEARNING_V4: 'true'
-          BACKUP_ROOT: ${{ runner.temp }}/dtf-v3-post-canonical/learning-v4
-        run: |
-          set -euo pipefail
-          node scripts/improve-wordpress-learning-v4.mjs
-      - name: Verify live V3 presentation and Learning V4 hierarchy
+      - name: Verify live V3 presentation
         id: verify
         run: |
           set -euo pipefail
@@ -82,6 +74,7 @@ jobs:
             for attempt in 1 2 3 4 5 6 7 8; do
               curl -4 -fsSL --retry 2 --retry-delay 2 \
                 -H 'Cache-Control: no-cache, no-store, max-age=0' \
+                -H 'Pragma: no-cache' \
                 "$WP_SITE_URL${path}?dtf_v3_post=${GITHUB_RUN_ID}-${attempt}" -o "$body"
               if grep -Fqi 'dtf-visual-polish-v3' "$body" && grep -Fqi "$marker" "$body"; then ok=1; break; fi
               sleep 7
@@ -89,32 +82,18 @@ jobs:
             [[ "$ok" -eq 1 ]] || { echo "Required visual layer not visible on $path: $marker" >&2; exit 1; }
           }
           verify '/' 'dtf-v3-spotlight'
-          verify '/learn/' 'dtf-learning-v4'
-          learn="$RUNNER_TEMP/_learn_.html"
-          grep -Fqi 'Different goals need different starting points.' "$learn"
-          grep -Fqi 'See how the subjects connect before you go deep.' "$learn"
-          grep -Fqi 'Explore the system behind your question.' "$learn"
-          grep -Fqi 'data-dtf-learning-map="v4"' "$learn"
-          grep -Fqi '/learn/plant-biology/' "$learn"
-          grep -Fqi '/learn/environment-vpd/' "$learn"
-          grep -Fqi '/learn/water-ph-ec/' "$learn"
-          grep -Fqi '/learn/training-canopy/' "$learn"
-          grep -Fqi '/learn/ipm/' "$learn"
-          grep -Fqi '/learn/harvest-postharvest/' "$learn"
           home="$RUNNER_TEMP/_.html"
           grep -Fqi 'dtf-shell-header' "$home"
           grep -Fqi 'dtf-shell-footer' "$home"
           grep -Fqi 'DTF Genetics cannabis leaf' "$home"
           grep -Fqi '/games/' "$home"
           grep -Fqi '/tools/' "$home"
-      - name: Upload V3 and Learning V4 rollback package
+      - name: Upload V3 rollback package
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: dtf-v3-post-canonical-backup-${{ github.run_id }}
-          path: |
-            /tmp/dtf-v3-post-canonical
-            ${{ runner.temp }}/dtf-v3-post-canonical
+          path: /tmp/dtf-v3-post-canonical
           if-no-files-found: warn
           retention-days: 30
       - name: Summarize V3 post-canonical result
@@ -123,7 +102,6 @@ jobs:
           STATUS: ${{ job.status }}
           APPLY: ${{ steps.apply.outcome }}
           CASCADE: ${{ steps.cascade.outcome }}
-          LEARNING: ${{ steps.learning.outcome }}
           VERIFY: ${{ steps.verify.outcome }}
         run: |
           {
@@ -132,10 +110,9 @@ jobs:
             echo "- Result: **${STATUS}**"
             echo "- V3 presentation write: **${APPLY:-not-run}**"
             echo "- Final cascade ordering: **${CASCADE:-not-run}**"
-            echo "- Learning V4 hierarchy: **${LEARNING:-not-run}**"
             echo "- Live visual verification: **${VERIFY:-not-run}**"
             echo
-            echo 'Learning V4 relocates the goal chooser ahead of the subject catalog and adds the connected six-stage learning map after the final V3 polish layer.'
+            echo 'Learn-specific hierarchy is intentionally owned by the serialized Learning Experience publisher, which runs after this legacy V3 layer and the Learn finalizer.'
           } >> "$GITHUB_STEP_SUMMARY"
 
-# Production trigger: 2026-08-28 target final post-polish Learn structure
+# Production trigger: 2026-08-29 keep Learn hierarchy in its canonical owner
