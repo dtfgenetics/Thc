@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-197",
+  "number":197,
+  "title":"Airflow Through Dense Canopies",
+  "objective":"Explain how canopy density alters air movement, leaf boundary layers, humidity, and drying, then use mapped observations to identify stagnant zones without treating stronger fan speed as the universal solution.",
+  "terms":[
+    {"term":"boundary layer","definition":"A thin layer of relatively still air adjacent to a leaf surface that influences heat, water-vapor, and gas exchange."},
+    {"term":"air velocity","definition":"The speed and direction of moving air at a defined location."},
+    {"term":"vapor-pressure gradient","definition":"The difference in water-vapor pressure between a leaf and the surrounding air that contributes to transpiration."},
+    {"term":"leaf wetness duration","definition":"The amount of time liquid water remains on a leaf or floral surface."},
+    {"term":"stagnant zone","definition":"A canopy region with weak air exchange relative to surrounding areas, allowing heat or moisture to persist."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Leaves slow and redirect moving air. As canopy density increases, external air motion can be strongly attenuated inside foliage even when air movement feels substantial above the canopy.",
+    "Air motion reduces the thickness of leaf boundary layers, which can alter sensible heat transfer, carbon-dioxide exchange, and transpiration. The response is linked to leaf temperature, stomatal behavior, humidity, and water status rather than fan speed alone.",
+    "Dense or poorly mixed canopy zones can retain higher local humidity and remain wet longer after irrigation splash, condensation, or foliar moisture. Extended moisture persistence can increase disease risk when a susceptible host and pathogen are also present.",
+    "Excessive localized air velocity can deform leaves, increase mechanical stress, or create uneven transpiration demand. The goal is distributed air exchange without persistent dead zones or damaging direct blast.",
+    "Room-level temperature and relative humidity sensors do not necessarily represent the microclimate inside a dense canopy. Measurements should include representative interior positions when canopy health is the question."
+  ],
+  "cultivationRelevance":[
+    "Evaluate airflow inside the canopy, not only at fan outlets or above plant tops.",
+    "Use plant spacing, branch arrangement, selective canopy management, circulation, and room air exchange as a system rather than relying on a single stronger fan.",
+    "After watering, foliar contact, or a humidity event, inspect how quickly interior surfaces dry compared with exposed edges.",
+    "Adjust airflow cautiously when leaves show persistent fluttering, edge damage, localized dehydration, or other signs of excessive mechanical exposure."
+  ],
+  "measureAndRecord":[
+    {"field":"Airflow map","requirement":"Record air movement or measured velocity at canopy top, edge, middle, and interior positions using the same fan and room settings."},
+    {"field":"Microclimate","requirement":"Measure temperature and relative humidity at representative interior and ambient locations with sensors allowed to equilibrate."},
+    {"field":"Moisture persistence","requirement":"Record where condensation, splash, or other surface moisture persists longest and the approximate drying interval."},
+    {"field":"Canopy density","requirement":"Document plant spacing, canopy depth, closure, and major congested zones that may explain weak circulation."},
+    {"field":"Plant response","requirement":"Track leaf posture, localized drying, mechanical damage, and disease observations after airflow changes."
+    }
+  ],
+  "misconceptions":[
+    "If leaves at the canopy top are moving, airflow is adequate everywhere.",
+    "More fan speed is always better.",
+    "Room relative humidity accurately describes humidity inside every dense canopy zone.",
+    "Airflow alone prevents fungal disease.",
+    "A dense canopy and a well-mixed canopy are the same thing."
+  ],
+  "evidenceLimits":[
+    "Canopy aerodynamics and leaf boundary-layer processes are well established in plant science, while cannabis-specific airflow thresholds and disease-risk cutoffs vary with architecture, environment, cultivar, and measurement method. This lesson does not prescribe a universal fan speed or air-velocity target."
+  ],
+  "crossLinks":"THC-ENC-141–160 for plant-water relations and humidity; THC-ENC-194–196 for spacing and canopy geometry; THC-ENC-199 for stop criteria; plant-health/IPM lessons for disease scouting.",
+  "sourceNotes":[
+    "General plant micrometeorology and controlled-environment horticulture literature supports boundary-layer, canopy-airflow, and leaf-wetness concepts.",
+    "Cannabis architecture studies support the relevance of canopy density and within-canopy position but do not establish a single airflow prescription for all production systems.",
+    "Disease risk is presented through the host-pathogen-environment framework; airflow is one environmental factor rather than a guarantee of prevention."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 10 batch 03 controlled web derivative","evidenceControl":"current_topic_secondary_review_complete","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"plant_micrometeorology_and_cannabis_horticulture","releaseTimeReview":"completed_2026-08-29_airflow_microclimate_and_non_universal_thresholds","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"airflow-through-dense-canopies",
+  "route":"/encyclopedia/airflow-through-dense-canopies"
+}
