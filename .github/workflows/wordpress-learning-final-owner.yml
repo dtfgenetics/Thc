@@ -8,7 +8,6 @@ on:
       - .github/workflows/wordpress-learning-final-owner.yml
       - scripts/publish-wordpress-topic-literature.mjs
       - scripts/flush-hostinger-litespeed-mcp.mjs
-      - scripts/wordpress-ipv4-fetch-bootstrap.mjs
       - scripts/wordpress-transient-fetch-bootstrap.mjs
       - site/wordpress/education/topic-literature.json
       - site/wordpress/assets/infographics/infographic-learning-guides.json
@@ -58,7 +57,6 @@ jobs:
           : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
           node --check scripts/publish-wordpress-topic-literature.mjs
           node --check scripts/flush-hostinger-litespeed-mcp.mjs
-          node --check scripts/wordpress-ipv4-fetch-bootstrap.mjs
           node --check scripts/wordpress-transient-fetch-bootstrap.mjs
           node - <<'NODE'
           const fs = require('fs');
@@ -77,7 +75,6 @@ jobs:
           set -euo pipefail
           mkdir -p "$BACKUP_ROOT"
           node \
-            --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs \
             --import ./scripts/wordpress-transient-fetch-bootstrap.mjs \
             scripts/publish-wordpress-topic-literature.mjs | tee /tmp/learning-final-owner-publish.json
           backup_dir="$(cat "$BACKUP_ROOT/topic-literature-backup-path.txt")"
@@ -92,10 +89,20 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          node \
-            --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs \
-            --import ./scripts/wordpress-transient-fetch-bootstrap.mjs \
-            scripts/flush-hostinger-litespeed-mcp.mjs | tee /tmp/learning-final-owner-cache.json
+          : > /tmp/learning-final-owner-cache.json
+          ok=0
+          for attempt in 1 2 3; do
+            if node scripts/flush-hostinger-litespeed-mcp.mjs | tee -a /tmp/learning-final-owner-cache.json; then
+              ok=1
+              break
+            fi
+            sleep $((attempt * 4))
+          done
+          [[ "$ok" -eq 1 ]] || {
+            echo 'LiteSpeed cache purge failed after retries.' >&2
+            exit 1
+          }
+          sleep 5
 
       - name: Verify public guided-learning owner
         id: verify
