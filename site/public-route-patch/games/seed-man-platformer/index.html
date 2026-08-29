@@ -56,6 +56,50 @@
   </main>
 
   <footer><p><strong>DTF Genetics</strong> · Dream the Future</p><p>Original DTF game prototype. No third-party level layouts or character assets are used.</p></footer>
-  <script type="module" src="./app.js"></script>
+  <script id="seed-man-level" type="application/json">
+{
+  "schemaVersion": 1,
+  "id": "sprout-run",
+  "name": "Sprout Run",
+  "worldWidth": 2600,
+  "worldHeight": 540,
+  "requiredPickups": 8,
+  "spawn": {
+    "x": 80,
+    "y": 390
+  },
+  "platforms": [
+    {"x": 0, "y": 480, "width": 520, "height": 60},
+    {"x": 620, "y": 480, "width": 430, "height": 60},
+    {"x": 1130, "y": 480, "width": 520, "height": 60},
+    {"x": 1760, "y": 480, "width": 840, "height": 60},
+    {"x": 300, "y": 390, "width": 150, "height": 24},
+    {"x": 700, "y": 370, "width": 150, "height": 24},
+    {"x": 940, "y": 300, "width": 150, "height": 24},
+    {"x": 1240, "y": 365, "width": 180, "height": 24},
+    {"x": 1510, "y": 300, "width": 150, "height": 24},
+    {"x": 1850, "y": 380, "width": 180, "height": 24},
+    {"x": 2110, "y": 315, "width": 170, "height": 24}
+  ],
+  "hazards": [
+    {"x": 520, "y": 500, "width": 100, "height": 40},
+    {"x": 1050, "y": 500, "width": 80, "height": 40},
+    {"x": 1650, "y": 500, "width": 110, "height": 40}
+  ],
+  "pickups": [
+    {"id": "sprout-01", "x": 350, "y": 345, "width": 22, "height": 22},
+    {"id": "sprout-02", "x": 750, "y": 325, "width": 22, "height": 22},
+    {"id": "sprout-03", "x": 995, "y": 255, "width": 22, "height": 22},
+    {"id": "sprout-04", "x": 1320, "y": 320, "width": 22, "height": 22},
+    {"id": "sprout-05", "x": 1565, "y": 255, "width": 22, "height": 22},
+    {"id": "sprout-06", "x": 1930, "y": 335, "width": 22, "height": 22},
+    {"id": "sprout-07", "x": 2180, "y": 270, "width": 22, "height": 22},
+    {"id": "sprout-08", "x": 2440, "y": 425, "width": 22, "height": 22}
+  ],
+  "checkpoint": {"x": 1370, "y": 420, "width": 50, "height": 60, "respawnX": 1380, "respawnY": 400},
+  "finish": {"x": 2510, "y": 390, "width": 50, "height": 90}
+}
+  </script>
+  <script src="./app.js" defer></script>
 </body>
 </html>
