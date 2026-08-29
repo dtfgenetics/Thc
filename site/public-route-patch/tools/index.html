@@ -4,28 +4,111 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>DTF Cultivation Tools | GrowLens & Grow Doc</title>
-  <meta name="description" content="Use DTF Genetics cultivation tools: GrowLens for grow management and Grow Doc for structured plant-health evidence, connected to Teaching Healthy Cultivation." />
+  <meta name="description" content="Track a grow with THC GrowLens, investigate plant-health evidence with THC Grow Doc, and connect both workflows to Teaching Healthy Cultivation." />
   <meta name="robots" content="index,follow,max-image-preview:large" />
-  <meta name="theme-color" content="#081b11" />
+  <meta name="theme-color" content="#07170f" />
   <link rel="canonical" href="https://dtfseeds.com/tools/" />
-  <link rel="stylesheet" href="/assets/dtf-gateway-v2.css" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="DTF Genetics" />
   <meta property="og:title" content="DTF Cultivation Tools | GrowLens & Grow Doc" />
-  <meta property="og:description" content="Track the grow with GrowLens, investigate plant-health evidence with Grow Doc, and connect both workflows to Teaching Healthy Cultivation." />
+  <meta property="og:description" content="Record what happened, diagnose with evidence, and use Teaching Healthy Cultivation to understand the system behind the observation." />
   <meta property="og:url" content="https://dtfseeds.com/tools/" />
+  <style id="dtf-tools-v4">
+    :root{--forest:#07170f;--forest-2:#0b2417;--forest-3:#123622;--leaf:#26784a;--brass:#d7b965;--brass-soft:#eadcaa;--cream:#f6f2e8;--paper:#fffdf7;--ink:#112b1c;--muted:#5f7065;--line:#d8e1d8;--shadow:0 18px 48px rgba(17,43,28,.10)}
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:var(--cream);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.6}
+    a{color:inherit}
+    .wrap{width:min(1260px,calc(100% - 42px));margin:0 auto}
+    .site-header{position:relative;z-index:40;background:var(--forest);border-bottom:1px solid rgba(255,255,255,.12);color:#fff}
+    .site-header-inner{width:min(1260px,calc(100% - 42px));margin:auto;min-height:70px;display:flex;gap:26px;align-items:center;justify-content:space-between}
+    .brand{display:flex;flex-direction:column;text-decoration:none;font-weight:900;line-height:1.05;letter-spacing:-.02em}
+    .brand span{margin-top:5px;color:var(--brass);font-size:.61rem;letter-spacing:.14em;text-transform:uppercase}
+    .primary-nav{display:flex;align-items:center;gap:3px;flex-wrap:wrap}
+    .primary-nav a{padding:9px 11px;color:#e4eee7;text-decoration:none;font-weight:760;border-radius:10px}
+    .primary-nav a:hover,.primary-nav a[aria-current="page"]{background:rgba(255,255,255,.08);color:#fff}
+    .primary-nav .shop-link{margin-left:4px;background:var(--brass);color:var(--forest);padding-inline:16px;font-weight:900}
+    main{overflow:hidden}
+    .hero{position:relative;isolation:isolate;background:radial-gradient(circle at 78% 12%,rgba(215,185,101,.25),transparent 28%),radial-gradient(circle at 8% 92%,rgba(66,139,88,.19),transparent 31%),linear-gradient(135deg,#06140d 0%,#0b2517 55%,#103520 100%);color:#fff;padding:clamp(74px,9vw,122px) 0 clamp(86px,9vw,116px)}
+    .hero:before{content:"";position:absolute;inset:0;z-index:-1;opacity:.15;background-image:linear-gradient(rgba(255,255,255,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.055) 1px,transparent 1px);background-size:48px 48px;mask-image:linear-gradient(to bottom,black,transparent 92%)}
+    .hero:after{content:"";position:absolute;width:430px;height:430px;border:1px solid rgba(234,220,170,.22);border-radius:50%;right:-170px;top:-170px;box-shadow:0 0 0 70px rgba(234,220,170,.035),0 0 0 140px rgba(234,220,170,.02);z-index:-1}
+    .hero-grid{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(330px,.88fr);gap:clamp(38px,6vw,80px);align-items:center}
+    .eyebrow{margin:0 0 12px;color:var(--brass);font-size:.73rem;font-weight:900;letter-spacing:.16em;text-transform:uppercase}
+    h1,h2,h3,p{margin-top:0}
+    h1{margin-bottom:24px;max-width:850px;font-size:clamp(3rem,6.6vw,6.5rem);line-height:.9;letter-spacing:-.058em;text-wrap:balance}
+    .lede{max-width:740px;margin-bottom:0;color:#d6e6dc;font-size:clamp(1.05rem,1.5vw,1.22rem);line-height:1.78}
+    .actions{display:flex;gap:11px;flex-wrap:wrap;margin-top:30px}
+    .button{display:inline-flex;align-items:center;justify-content:center;min-height:49px;padding:12px 20px;border:1px solid rgba(255,255,255,.28);border-radius:14px;background:rgba(255,255,255,.07);color:#fff;text-decoration:none;font-weight:900;transition:transform .18s ease,box-shadow .18s ease,background .18s ease}
+    .button:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(0,0,0,.18)}
+    .button.primary{border-color:#e4ca7d;background:linear-gradient(180deg,#e0c575,var(--brass));color:#102415}
+    .hero-panel{position:relative;padding:18px;border:1px solid rgba(255,255,255,.15);border-radius:28px;background:rgba(255,255,255,.055);backdrop-filter:blur(10px);box-shadow:0 32px 65px rgba(0,0,0,.22)}
+    .hero-panel:before{content:"";position:absolute;inset:-18px 24px 24px -18px;border:1px solid rgba(234,220,170,.38);border-radius:32px;z-index:-1}
+    .hero-panel h2{margin:4px 6px 15px;font-size:1rem;color:#f1dfaa;letter-spacing:.08em;text-transform:uppercase}
+    .workflow-stack{display:grid;gap:8px}
+    .workflow-stack article{display:grid;grid-template-columns:42px 1fr;gap:14px;align-items:start;padding:17px;border-radius:17px;background:rgba(5,22,13,.56);border:1px solid rgba(255,255,255,.10)}
+    .workflow-stack b{display:grid;place-items:center;width:42px;height:42px;border-radius:12px;background:rgba(215,185,101,.12);color:#f1d77f;font-size:.92rem}
+    .workflow-stack strong{display:block;margin-bottom:3px;font-size:1rem}
+    .workflow-stack span{display:block;color:#bcd1c2;font-size:.89rem;line-height:1.5}
+    .quickbar{position:relative;z-index:8;margin-top:-34px}
+    .quicknav{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;padding:10px;border:1px solid rgba(17,43,28,.10);border-radius:18px;background:rgba(255,253,247,.93);backdrop-filter:blur(16px);box-shadow:0 22px 52px rgba(17,43,28,.14)}
+    .quicknav a{padding:15px 12px;border-radius:12px;text-align:center;text-decoration:none;font-weight:850;color:var(--ink)}
+    .quicknav a:hover{background:#edf3ec;color:var(--leaf)}
+    .section{padding:clamp(66px,8vw,106px) 0;border-top:1px solid rgba(17,43,28,.07)}
+    .section.soft{background:linear-gradient(180deg,#edf3ec 0%,var(--cream) 100%)}
+    .section.dark{background:radial-gradient(circle at 14% 10%,rgba(215,185,101,.11),transparent 30%),linear-gradient(145deg,var(--forest),var(--forest-2) 58%,#143a25);color:#fff;border-top:0}
+    .section-heading{display:flex;justify-content:space-between;align-items:end;gap:38px;margin-bottom:34px}
+    .section-heading>div{max-width:790px}.section-heading>p{max-width:500px;margin:0;color:var(--muted);line-height:1.75}
+    .section.dark .section-heading>p{color:#c5d7ca}
+    h2{margin-bottom:0;font-size:clamp(2.35rem,4.4vw,4.25rem);line-height:.96;letter-spacing:-.052em;text-wrap:balance}
+    h3{letter-spacing:-.025em}
+    .tool-chooser{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+    .tool-feature{position:relative;min-height:420px;padding:clamp(26px,4vw,42px);border:1px solid rgba(17,43,28,.11);border-radius:26px;background:var(--paper);box-shadow:var(--shadow);overflow:hidden}
+    .tool-feature:after{content:"";position:absolute;width:230px;height:230px;border:1px solid rgba(38,120,74,.15);border-radius:50%;right:-92px;bottom:-110px;box-shadow:0 0 0 42px rgba(38,120,74,.035)}
+    .tool-feature .label{display:inline-block;margin-bottom:20px;color:var(--leaf);font-size:.72rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase}
+    .tool-feature h3{margin-bottom:13px;font-size:clamp(2rem,3.2vw,3.25rem);line-height:1}
+    .tool-feature>p{max-width:650px;color:var(--muted);font-size:1.03rem;line-height:1.72}
+    .feature-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px 18px;margin:25px 0 0;padding:0;list-style:none}
+    .feature-list li{position:relative;padding-left:18px;color:#385143;font-weight:720}
+    .feature-list li:before{content:"";position:absolute;left:0;top:.66em;width:7px;height:7px;border-radius:50%;background:var(--brass)}
+    .text-link{position:relative;z-index:1;display:inline-flex;margin-top:26px;color:var(--leaf);text-decoration:none;font-weight:900}
+    .text-link:hover{text-decoration:underline}
+    .section.dark .text-link{color:#ecd586}
+    .flow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px;counter-reset:flow}
+    .flow article{counter-increment:flow;position:relative;padding:28px 24px 24px;border:1px solid rgba(17,43,28,.10);border-radius:21px;background:rgba(255,253,247,.94);box-shadow:0 8px 24px rgba(17,43,28,.05)}
+    .flow article:before{content:counter(flow);display:grid;place-items:center;width:40px;height:40px;margin-bottom:21px;border-radius:12px;background:linear-gradient(180deg,var(--forest-3),var(--forest));color:#efd786;font-weight:900;box-shadow:0 8px 22px rgba(7,23,15,.14)}
+    .flow h3{margin-bottom:8px;font-size:1.25rem}.flow p{margin:0;color:var(--muted)}
+    .split{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(36px,6vw,76px);align-items:center}
+    .split-copy>p:not(.eyebrow){color:var(--muted);font-size:1.04rem;line-height:1.78}
+    .section.dark .split-copy>p:not(.eyebrow){color:#c7d9cd}
+    .measure-panel{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    .measure-panel article{min-height:150px;padding:23px;border-radius:19px;background:var(--paper);border:1px solid rgba(17,43,28,.10);box-shadow:0 10px 30px rgba(17,43,28,.06)}
+    .measure-panel strong{display:block;margin-bottom:8px;font-size:1.08rem}.measure-panel p{margin:0;color:var(--muted);font-size:.92rem}
+    .evidence-board{padding:17px;border-radius:25px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.14);box-shadow:0 24px 55px rgba(0,0,0,.16)}
+    .evidence-board article{display:grid;grid-template-columns:34px 1fr;gap:13px;padding:17px;border-bottom:1px solid rgba(255,255,255,.09)}
+    .evidence-board article:last-child{border-bottom:0}.evidence-board b{color:#ead17f}.evidence-board strong{display:block;margin-bottom:3px}.evidence-board span{display:block;color:#c4d6c9;font-size:.91rem}
+    .learn-rail{display:grid;grid-template-columns:1.35fr repeat(3,minmax(0,.72fr));gap:14px}
+    .learn-rail article{min-height:225px;display:flex;flex-direction:column;justify-content:flex-end;padding:28px;border:1px solid rgba(17,43,28,.10);border-radius:24px;background:var(--paper);box-shadow:0 10px 30px rgba(17,43,28,.06)}
+    .learn-rail article:first-child{background:linear-gradient(135deg,#0a2316,#163c27);color:#fff;border-color:transparent}
+    .learn-rail article:nth-child(3){background:linear-gradient(145deg,#f2e7c7,#e1c97f)}
+    .learn-rail h3{margin-bottom:8px;font-size:1.35rem}.learn-rail p{margin-bottom:0;color:var(--muted)}
+    .learn-rail article:first-child p{color:#c9dacf}.learn-rail article:first-child .text-link{color:#edd68d}
+    .community-callout{display:grid;grid-template-columns:1.2fr .8fr;gap:30px;align-items:center;padding:32px;border-radius:26px;background:var(--paper);border:1px solid rgba(17,43,28,.1);box-shadow:var(--shadow)}
+    .community-callout p{margin:8px 0 0;color:var(--muted)}
+    .community-callout .actions{justify-content:flex-end;margin-top:0}.community-callout .button{border-color:#c5d5c8;background:#edf3ec;color:var(--ink)}.community-callout .button.primary{border-color:#d8bc67;background:var(--brass);color:var(--forest)}
+    footer{background:var(--forest);color:#dfe9e2}
+    .footer-inner{width:min(1260px,calc(100% - 42px));margin:auto;padding:48px 0 26px;display:grid;grid-template-columns:1.3fr .7fr .7fr;gap:32px}
+    .footer-inner p{max-width:470px;color:#aebfb3}.footer-links{display:flex;flex-direction:column;gap:9px}.footer-links strong{color:#fff}.footer-links a{color:#dfe9e2}.copyright{grid-column:1/-1;padding-top:22px;border-top:1px solid rgba(255,255,255,.11);color:#8fa698;font-size:.88rem}
+    @media(max-width:980px){.hero-grid,.split,.community-callout{grid-template-columns:1fr}.hero-panel{max-width:720px}.quicknav{grid-template-columns:repeat(3,minmax(0,1fr))}.tool-chooser{grid-template-columns:1fr}.flow{grid-template-columns:repeat(2,minmax(0,1fr))}.learn-rail{grid-template-columns:repeat(2,minmax(0,1fr))}.section-heading{align-items:flex-start;flex-direction:column}.community-callout .actions{justify-content:flex-start}.footer-inner{grid-template-columns:1fr 1fr}}
+    @media(max-width:680px){.wrap,.site-header-inner,.footer-inner{width:min(100% - 28px,1260px)}.site-header-inner{padding:12px 0;align-items:flex-start}.primary-nav{gap:0}.primary-nav a{padding:8px}.hero{padding:60px 0 72px}.hero h1{font-size:clamp(2.65rem,14vw,4.2rem)}.hero-panel:before{display:none}.quickbar{margin-top:0;padding-top:14px}.quicknav,.flow,.measure-panel,.learn-rail,.footer-inner{grid-template-columns:1fr}.feature-list{grid-template-columns:1fr}.actions .button{width:100%}.tool-feature{min-height:0}.section{padding:56px 0}.community-callout{padding:24px}.copyright{grid-column:1}.primary-nav .shop-link{margin-left:0}}
+  </style>
 </head>
 <body>
+  <!-- dtf-tools-v4: visual hierarchy aligned with the DTF WordPress V3 presentation -->
   <header class="site-header">
     <div class="site-header-inner">
       <a class="brand" href="/" aria-label="DTF Genetics home">DTF Genetics <span>Dream the Future</span></a>
-      <nav class="primary-nav" aria-label="Primary">
-        <a href="/seeds/">Genetics</a>
-        <a href="/learn/">Learn</a>
-        <a aria-current="page" href="/tools/">Tools</a>
-        <a href="/games/">Games</a>
-        <a href="/community/">Community</a>
-        <a class="shop-link" href="/shop/">Shop</a>
+      <nav class="primary-nav" aria-label="Primary navigation">
+        <a href="/seeds/">Genetics</a><a href="/learn/">Learn</a><a aria-current="page" href="/tools/">Tools</a><a href="/games/">Games</a><a href="/community/">Community</a><a class="shop-link" href="/shop/">Shop</a>
       </nav>
     </div>
   </header>
@@ -35,85 +118,67 @@
       <div class="wrap hero-grid">
         <div>
           <p class="eyebrow">DTF Cultivation Tools</p>
-          <h1>Measure it. Document it. Diagnose with context.</h1>
-          <p class="lede">The tool system has two clear jobs: GrowLens organizes the grow and its measurements; Grow Doc structures plant-health evidence and plausible causes. Teaching Healthy Cultivation explains the science behind both.</p>
-          <div class="actions">
-            <a class="button primary" href="/growlens/">Open GrowLens</a>
-            <a class="button" href="/thc-grow-doc/">Open Grow Doc</a>
-            <a class="button" href="/learn/start-here/">Learn the fundamentals</a>
+          <h1>Grow with records. Diagnose with evidence.</h1>
+          <p class="lede">Use THC GrowLens to capture what happened, THC Grow Doc to investigate plant-health problems in context, and Teaching Healthy Cultivation to understand the biology and measurements behind the decision.</p>
+          <div class="actions"><a class="button primary" href="/growlens/">Open GrowLens</a><a class="button" href="/thc-grow-doc/">Open Grow Doc</a><a class="button" href="/learn/">Open Learning Center</a></div>
+        </div>
+        <aside class="hero-panel" aria-label="Connected cultivation workflow">
+          <h2>One connected workflow</h2>
+          <div class="workflow-stack">
+            <article><b>01</b><div><strong>Track</strong><span>Plant identity, stage, environment, irrigation, feeding, tasks and photos.</span></div></article>
+            <article><b>02</b><div><strong>Measure</strong><span>Use repeatable environmental and root-zone observations instead of memory.</span></div></article>
+            <article><b>03</b><div><strong>Diagnose</strong><span>Compare symptoms, context, recent changes, evidence and plausible causes.</span></div></article>
+            <article><b>04</b><div><strong>Learn & verify</strong><span>Check the supporting science, make a defensible change, then track the response.</span></div></article>
           </div>
-        </div>
-        <div class="hero-panel" aria-label="Tool roles">
-          <div><strong>GrowLens</strong><span>Records, environment, tasks, feeding, irrigation, photos and reports.</span></div>
-          <div><strong>Grow Doc</strong><span>Symptoms, context, evidence, differentials and reference support.</span></div>
-          <div><strong>THC Education</strong><span>Plant science, measurement and cultivation reference.</span></div>
+        </aside>
+      </div>
+    </section>
+
+    <div class="wrap quickbar"><nav class="quicknav" aria-label="Tool shortcuts"><a href="#choose-tool">Choose a tool</a><a href="#workflow">Workflow</a><a href="#measure">Measure</a><a href="#diagnose">Diagnose</a><a href="#learn">Learn</a></nav></div>
+
+    <section class="section" id="choose-tool">
+      <div class="wrap">
+        <div class="section-heading"><div><p class="eyebrow">Choose by job</p><h2>Two tools. Two clear responsibilities.</h2></div><p>Records and diagnosis support each other, but they are not the same job. Keeping them separate makes both applications easier to understand and keeps evidence tied to the grow that produced it.</p></div>
+        <div class="tool-chooser">
+          <article class="tool-feature"><span class="label">Grow management</span><h3>THC GrowLens</h3><p>Use GrowLens as the working record for the crop: plants, spaces, diary events, recurring tasks, environmental readings, VPD and DLI work, irrigation, feeding, photos, harvest records, reports and exports.</p><ul class="feature-list"><li>Plants & spaces</li><li>Environment</li><li>VPD & DLI</li><li>Irrigation & feeding</li><li>Tasks & timelines</li><li>Photos & reports</li></ul><a class="text-link" href="/growlens/">Open GrowLens →</a></article>
+          <article class="tool-feature"><span class="label">Plant-health evidence</span><h3>THC Grow Doc</h3><p>Use Grow Doc when something looks wrong. Combine multiple images or video with plant stage, symptom pattern, environment, root-zone information, recent changes and other observations to compare plausible causes.</p><ul class="feature-list"><li>Multi-view media</li><li>Symptom context</li><li>Differentials</li><li>Evidence for & against</li><li>Missing-evidence prompts</li><li>Reference support</li></ul><a class="text-link" href="/thc-grow-doc/">Open Grow Doc →</a></article>
         </div>
       </div>
     </section>
 
-    <div class="wrap quickbar">
-      <nav class="quicknav" aria-label="Tool shortcuts">
-        <a href="/growlens/">Track a Grow</a>
-        <a href="/thc-grow-doc/">Diagnose</a>
-        <a href="/learn/search/">Search Education</a>
-        <a href="/learn/infographics/">Visual Library</a>
-        <a href="/community/">Community</a>
-      </nav>
-    </div>
-
-    <section class="content">
+    <section class="section soft" id="workflow">
       <div class="wrap">
-        <div class="section-heading"><div><p class="eyebrow">Core applications</p><h2>Pick the tool by the job you need done.</h2></div><p>Separating records from diagnosis keeps each application easier to understand and makes the next action obvious.</p></div>
-        <div class="grid two">
-          <article class="card">
-            <span class="status">Grow management</span>
-            <h3>THC GrowLens</h3>
-            <p>Manage grow spaces and plants, keep diary timelines, schedule recurring tasks, record temperature and humidity, work with VPD and DLI, map the canopy, track irrigation and feeding, attach photos, record harvests, and export reports.</p>
-            <div class="pill-row"><span class="pill">Plants & spaces</span><span class="pill">VPD & DLI</span><span class="pill">Tasks</span><span class="pill">Reports</span></div>
-            <a class="card-link" href="/growlens/">Open GrowLens →</a>
-          </article>
-          <article class="card">
-            <span class="status">Plant-health evidence</span>
-            <h3>THC Grow Doc</h3>
-            <p>Combine multiple images or video with grow context, symptom pattern, measurements, recent changes and other observations. Grow Doc ranks differentials and shows evidence for and against each possibility rather than treating one photo as proof.</p>
-            <div class="pill-row"><span class="pill">Images & video</span><span class="pill">Differentials</span><span class="pill">Confidence</span><span class="pill">References</span></div>
-            <a class="card-link" href="/thc-grow-doc/">Open Grow Doc →</a>
-          </article>
-        </div>
+        <div class="section-heading"><div><p class="eyebrow">Connected workflow</p><h2>Record first. Investigate second. Verify over time.</h2></div><p>A useful diagnosis starts before the symptom appears because good records preserve the environmental, irrigation and management context that is easy to forget later.</p></div>
+        <div class="flow"><article><h3>Build the record</h3><p>Identify the plant and stage, then keep environment, irrigation, feeding, tasks and images attached to the timeline.</p></article><article><h3>Notice the change</h3><p>Describe where the symptom started, its pattern, how fast it is progressing and what changed recently.</p></article><article><h3>Compare causes</h3><p>Bring the relevant evidence into Grow Doc and keep more than one plausible explanation in the differential.</p></article><article><h3>Test the interpretation</h3><p>Use the subject literature, make the smallest defensible correction, then track new growth and progression.</p></article></div>
       </div>
     </section>
 
-    <section class="content soft">
-      <div class="wrap">
-        <div class="section-heading"><div><p class="eyebrow">Connected workflow</p><h2>Use the tools in the right order.</h2></div><p>A good record improves diagnosis; a good diagnosis points to the right subject literature; the next observation tests whether the interpretation was useful.</p></div>
-        <div class="journey">
-          <article><strong>1 · Record</strong><p>Capture plant identity, stage, environment, irrigation, feeding, changes and photos in GrowLens.</p></article>
-          <article><strong>2 · Investigate</strong><p>When a problem appears, move the relevant evidence into Grow Doc and compare plausible causes.</p></article>
-          <article><strong>3 · Learn & verify</strong><p>Open the matching THC subject page, make the smallest defensible correction, then track new growth and progression.</p></article>
-        </div>
+    <section class="section" id="measure">
+      <div class="wrap split">
+        <div class="split-copy"><p class="eyebrow">Measure before guessing</p><h2>Make the grow observable.</h2><p>A number without context is not a diagnosis, but repeatable measurements make trends visible. GrowLens gives those readings a place beside plant stage, irrigation, tasks, photos and crop events so the record can explain what changed.</p><div class="actions"><a class="button primary" href="/growlens/">Track a grow</a><a class="button" style="color:var(--ink);border-color:#c9d8cc;background:#fff" href="/learn/sops/">Measurement SOPs</a></div></div>
+        <div class="measure-panel" aria-label="GrowLens measurement areas"><article><strong>Environment</strong><p>Keep temperature and humidity observations tied to the room, plant stage and timeline.</p></article><article><strong>Light</strong><p>Use PPFD and DLI concepts alongside photoperiod and crop response.</p></article><article><strong>Root zone</strong><p>Record irrigation, feeding and relevant pH/EC observations where the system supports them.</p></article><article><strong>Progress</strong><p>Photos, notes, tasks, harvest records and exports preserve change over time.</p></article></div>
       </div>
     </section>
 
-    <section class="content dark">
-      <div class="wrap">
-        <div class="section-heading"><div><p class="eyebrow">Reference system</p><h2>Go directly to the supporting science.</h2></div><p>The tools are entry points into the broader Teaching Healthy Cultivation system, not isolated apps.</p></div>
-        <div class="grid four">
-          <article class="card"><h3>Start Here</h3><p>Build the core mental model before chasing isolated grow tips.</p><a class="card-link" href="/learn/start-here/">Start learning →</a></article>
-          <article class="card"><h3>Academy</h3><p>Follow structured course pathways and progress through connected subjects.</p><a class="card-link" href="/learn/academy/">Open Academy →</a></article>
-          <article class="card"><h3>Encyclopedia</h3><p>Use deeper reference entries when you need more detail and scientific context.</p><a class="card-link" href="/learn/encyclopedia/">Browse Encyclopedia →</a></article>
-          <article class="card"><h3>Visual Library</h3><p>Use finished diagrams and infographics when a visual explanation is the fastest route.</p><a class="card-link" href="/learn/infographics/">Browse visuals →</a></article>
-        </div>
+    <section class="section dark" id="diagnose">
+      <div class="wrap split">
+        <div class="evidence-board" aria-label="Grow Doc evidence model"><article><b>01</b><div><strong>Describe the symptom</strong><span>Location, distribution, color, shape, texture, damage pattern and progression.</span></div></article><article><b>02</b><div><strong>Add crop context</strong><span>Plant stage, medium or system, irrigation, environment, recent changes and pest evidence.</span></div></article><article><b>03</b><div><strong>Compare differentials</strong><span>Look at evidence that supports and conflicts with each plausible cause.</span></div></article><article><b>04</b><div><strong>Find what is missing</strong><span>Use the uncertainty to decide which observation or measurement would be most useful next.</span></div></article></div>
+        <div class="split-copy"><p class="eyebrow">Diagnose with context</p><h2>A photo is evidence. It is not proof by itself.</h2><p>Plant-health symptoms often overlap. Grow Doc is designed around structured evidence and differential reasoning so a leaf color or spot pattern does not automatically become a nutrient, pest or disease diagnosis.</p><div class="actions"><a class="button primary" href="/thc-grow-doc/">Start in Grow Doc</a><a class="button" href="/yellow-leaves/">Read the yellow-leaves guide</a><a class="button" href="/learn/ipm/">Plant Health & IPM</a></div></div>
       </div>
+    </section>
+
+    <section class="section" id="learn">
+      <div class="wrap">
+        <div class="section-heading"><div><p class="eyebrow">Teaching Healthy Cultivation</p><h2>Use the learning depth that matches the question.</h2></div><p>The tools should hand visitors into the education system at the right depth instead of making them restart their search from a general landing page.</p></div>
+        <div class="learn-rail"><article><h3>Start Here</h3><p>Build a connected foundation in plant biology, environment, light, water, roots, plant health and records.</p><a class="text-link" href="/learn/start-here/">Start the foundation →</a></article><article><h3>Subject Library</h3><p>Jump directly into the system you are working with.</p><a class="text-link" href="/learn/">Browse subjects →</a></article><article><h3>Visual Library</h3><p>Use detailed diagrams and full-sheet infographics when a visual explanation is faster.</p><a class="text-link" href="/learn/infographics/">Browse visuals →</a></article><article><h3>Encyclopedia</h3><p>Go deeper when the decision needs reference-level plant science and cultivation context.</p><a class="text-link" href="/learn/encyclopedia/">Open Encyclopedia →</a></article></div>
+      </div>
+    </section>
+
+    <section class="section soft">
+      <div class="wrap"><div class="community-callout"><div><p class="eyebrow">Questions need context</p><h3>Bring the record with you.</h3><p>When asking the community for plant-health help, include whole-plant photos, close-ups, plant stage, medium or system, irrigation information, environment and relevant measurements when available.</p></div><div class="actions"><a class="button primary" href="https://discord.gg/xJbUeHFPMt" target="_blank" rel="noopener noreferrer">Join Discord</a><a class="button" href="/community/">Community page</a></div></div></div>
     </section>
   </main>
 
-  <footer>
-    <div class="footer-inner">
-      <div><a class="brand" href="/">DTF Genetics <span>Dream the Future</span></a><p>Documented genetics, cultivation education, practical tools, original games, and community.</p></div>
-      <div class="footer-links"><strong>Explore</strong><a href="/seeds/">Genetics</a><a href="/learn/">Learn</a><a href="/tools/">Tools</a><a href="/games/">Games</a><a href="/shop/">Shop</a></div>
-      <div class="footer-links"><strong>Learn & connect</strong><a href="/learn/start-here/">Start Here</a><a href="/learn/infographics/">Visual Library</a><a href="/community/">Community</a><a href="/contact/">Contact</a><a href="https://discord.gg/xJbUeHFPMt" target="_blank" rel="noopener noreferrer">Discord</a></div>
-      <div class="copyright">© 2026 DTF Genetics · Adults only. Follow applicable local laws.</div>
-    </div>
-  </footer>
+  <footer><div class="footer-inner"><div><a class="brand" href="/">DTF Genetics <span>Dream the Future</span></a><p>Documented genetics, Teaching Healthy Cultivation, practical grow tools, original games, and community projects in one home.</p></div><div class="footer-links"><strong>Explore</strong><a href="/seeds/">Genetics</a><a href="/learn/">Learn</a><a href="/tools/">Tools</a><a href="/games/">Games</a><a href="/shop/">Shop</a></div><div class="footer-links"><strong>Learn & connect</strong><a href="/learn/start-here/">Start Here</a><a href="/learn/infographics/">Visual Library</a><a href="/community/">Community</a><a href="/contact/">Contact</a><a href="https://discord.gg/xJbUeHFPMt" target="_blank" rel="noopener noreferrer">Discord</a></div><div class="copyright">© 2026 DTF Genetics · Dream the Future · Adults only. Follow applicable local laws.</div></div></footer>
 </body>
 </html>
