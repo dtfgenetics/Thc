@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-211",
+  "number":211,
+  "title":"Fertilization and Early Embryo Development",
+  "objective":"Follow the reproductive sequence from compatible pollen germination through pollen-tube growth, fertilization, embryo and endosperm initiation, and early seed development without treating pollen contact as equivalent to completed fertilization.",
+  "terms":[
+    {"term":"pollen tube","definition":"A tubular extension produced by a germinating pollen grain that grows through female reproductive tissues toward the ovule."},
+    {"term":"fertilization","definition":"Fusion of male and female gametes, initiating the embryo in sexual reproduction."},
+    {"term":"double fertilization","definition":"The angiosperm process in which one sperm cell contributes to the embryo while another contributes to endosperm formation."},
+    {"term":"embryo","definition":"The developing new plant formed after fertilization."},
+    {"term":"endosperm","definition":"Seed tissue formed through the second fertilization event in flowering plants and involved in supporting embryo development."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Pollination and fertilization are separate events. Pollination places pollen on a receptive stigma; successful reproduction still requires pollen hydration and germination, pollen-tube growth, gamete delivery, fertilization, and continued seed development.",
+    "Cannabis is a flowering plant and follows the angiosperm pattern of double fertilization. The resulting embryo and supporting seed tissues develop inside the fertilized ovule while surrounding maternal tissues form the mature seed covering and associated fruit structures.",
+    "Not every deposited pollen grain produces a seed. Pollen viability, compatibility, stigma condition, pollen-tube performance, ovule status, environment, genotype, and later embryo survival can all affect the final outcome.",
+    "After successful fertilization, the maternal inflorescence shifts reproductive investment toward developing seeds. Cannabis research comparing fertilized and unfertilized flowers has documented major changes in secondary-metabolite accumulation after fertilization, demonstrating that fertilization is a whole-flower developmental transition rather than a cosmetic event.",
+    "Early seed formation should be described developmentally rather than by a universal calendar. Flowers within one inflorescence can be pollinated at different times, and seed development can therefore be asynchronous."
+  ],
+  "cultivationRelevance":[
+    "When diagnosing accidental seed formation, distinguish probable pollen exposure from confirmed developing seeds and record the timing of both observations.",
+    "For breeding records, preserve the identity of the seed parent, pollen parent, pollination date, and treated branch or inflorescence so seed development can be traced to a defined cross.",
+    "Do not assume that every visible pollen deposit will create a seed or that failure to see immediate changes means fertilization did not occur.",
+    "Use later seed-development observations rather than stigma appearance alone when confirming reproductive success."
+  ],
+  "measureAndRecord":[
+    {"field":"Pollination event","requirement":"Record date, parent identities, branch or inflorescence location, and whether exposure was controlled or unintended."},
+    {"field":"Pollen condition","requirement":"Record source, collection age, storage history, and viability result if measured."},
+    {"field":"Female stage","requirement":"Record flower cohort and visible stigma condition at the time of exposure without treating appearance as a direct receptivity assay."},
+    {"field":"Development follow-up","requirement":"Record subsequent ovary or seed enlargement, seed count where appropriate, and aborted or undeveloped structures separately."},
+    {"field":"Environmental context","requirement":"Record temperature, humidity, water stress, and major plant-health events that could influence reproductive development."
+    }
+  ],
+  "misconceptions":[
+    "Pollen touching a stigma means fertilization is complete.",
+    "Every viable pollen grain that lands on a female flower becomes a seed.",
+    "All seeds in one cannabis inflorescence begin developing on the same day.",
+    "Stigma darkening is direct proof that an embryo has formed.",
+    "Seed development is independent of the physiological condition of the maternal plant."
+  ],
+  "evidenceLimits":[
+    "The cellular sequence of double fertilization is established flowering-plant biology, while detailed cannabis-specific time courses for pollen-tube growth and embryo stages across modern cultivars remain limited. This lesson therefore explains the conserved mechanism without assigning universal hour-by-hour or day-by-day cannabis timing."
+  ],
+  "crossLinks":"THC-ENC-208–210 for pollen viability, transport, and female receptivity; THC-ENC-212 for seedless production; THC-ENC-213 for controlled pollination; THC-ENC-216 for seed maturation.",
+  "sourceNotes":[
+    "Lipson Feder C et al. (2021). Fertilization Following Pollination Predominantly Decreases Phytocannabinoids Accumulation and Alters the Accumulation of Terpenoids in Cannabis Inflorescences. Frontiers in Plant Science 12:753847. Provides direct cannabis evidence that successful pollination/fertilization changes subsequent inflorescence development and chemistry.",
+    "Cannabis-specific pollen studies establish functional germination as a prerequisite distinct from simple grain presence; general angiosperm reproductive biology provides the conserved double-fertilization mechanism.",
+    "Exact pollen-tube and embryo-stage timing is not presented as universal because cultivar-resolved cannabis developmental datasets remain sparse."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 11 batch 03 controlled web derivative","evidenceControl":"current_topic_secondary_review_complete","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_fertilization_and_seed_development","releaseTimeReview":"completed_2026-08-29_pollination_vs_fertilization_and_non_universal_timing","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"fertilization-and-early-embryo-development",
+  "route":"/encyclopedia/fertilization-and-early-embryo-development"
+}
