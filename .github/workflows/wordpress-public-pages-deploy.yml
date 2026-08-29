@@ -106,7 +106,7 @@ jobs:
           grep -Fq '/thc-grow-doc/' site/wordpress/pages/learn.html
           grep -Fq '/growlens/' site/wordpress/pages/learn.html
           grep -Fq 'DTF Field Notes &amp; Updates' site/wordpress/pages/blog.html
-          grep -Fq 'Field notes, release updates, and practical grow knowledge' site/wordpress/pages/blog.html
+          grep -Fq 'Follow what we are learning, building, and releasing.' site/wordpress/pages/blog.html
           grep -Fq 'Game Hub' site/wordpress/pages/blog.html
 
       - name: Report validation stage to issue 46
@@ -222,7 +222,7 @@ jobs:
           verify_page '/community/' 'Join the official DTF / Teaching Healthy Cultivation Discord'
           verify_page '/contact/' 'Join the official DTF / Teaching Healthy Cultivation Discord'
           verify_page '/blog/' 'DTF Field Notes &amp; Updates'
-          verify_page '/blog/' 'Field notes, release updates, and practical grow knowledge'
+          verify_page '/blog/' 'Follow what we are learning, building, and releasing.'
 
       - name: Upload page-level rollback package
         if: always()
