@@ -1,0 +1,235 @@
+{
+  "schemaVersion": 1,
+  "diagnoses": [
+    {"id":"underwatering","label":"Underwatering","family":"Water balance"},
+    {"id":"overwatering","label":"Overwatering","family":"Water balance"},
+    {"id":"low-root-oxygen","label":"Low Root-Zone Oxygen","family":"Root zone"},
+    {"id":"high-vpd","label":"High VPD Stress","family":"Environment"},
+    {"id":"low-vpd","label":"Low VPD / Excess Humidity","family":"Environment"},
+    {"id":"light-stress","label":"Excess Light Stress","family":"Lighting"},
+    {"id":"insufficient-light","label":"Insufficient Light","family":"Lighting"},
+    {"id":"ph-drift","label":"Root-Zone pH Drift","family":"Root zone"},
+    {"id":"salt-buildup","label":"Salt Buildup","family":"Root zone"},
+    {"id":"nitrogen-shortage","label":"Nitrogen Shortage","family":"Nutrition"},
+    {"id":"excess-nitrogen","label":"Excess Nitrogen","family":"Nutrition"},
+    {"id":"cold-root-zone","label":"Cold Root Zone","family":"Environment"}
+  ],
+  "cases": [
+    {
+      "id":"dryback-dive",
+      "title":"The Afternoon Collapse",
+      "stage":"Vegetative",
+      "summary":"A vigorous plant looks fine after lights-on, then repeatedly loses turgor late in the light period.",
+      "environment":["Air 79°F","RH 49%","Pot feels unusually light"],
+      "symptoms":["Leaves hang softly instead of clawing","Top growth recovers quickly after irrigation","No standing runoff or sour odor"],
+      "diagnosisId":"underwatering",
+      "distractorIds":["overwatering","high-vpd","salt-buildup"],
+      "visual":"droop",
+      "inspections":[
+        {"id":"lift-pot","label":"Lift the container","result":"The root ball is much lighter than comparable plants at the same point in the cycle."},
+        {"id":"check-media","label":"Check media moisture","result":"The upper and middle root zone are both dry; moisture is not lingering deep in the container."},
+        {"id":"inspect-leaf","label":"Inspect leaf posture","result":"Petiole and blade both droop softly, with no dark clawing at the tips."},
+        {"id":"review-irrigation","label":"Review irrigation timing","result":"The last irrigation interval was longer than the recent plant demand pattern."}
+      ],
+      "explanation":"The strongest pattern is a root ball that has dried beyond the plant's current demand. The key clue is rapid recovery after irrigation combined with a genuinely light, dry container."
+    },
+    {
+      "id":"heavy-pot",
+      "title":"The Never-Dry Pot",
+      "stage":"Early flower",
+      "summary":"A plant remains limp for days even though the surface looks moist and irrigation has been frequent.",
+      "environment":["Air 77°F","RH 58%","Container stays heavy"],
+      "symptoms":["Lower leaves yellow slowly","Growth rate has stalled","Media remains wet between irrigations"],
+      "diagnosisId":"overwatering",
+      "distractorIds":["underwatering","nitrogen-shortage","low-vpd"],
+      "visual":"heavy",
+      "inspections":[
+        {"id":"lift-pot","label":"Lift the container","result":"The container is still heavy long after the previous irrigation."},
+        {"id":"check-media","label":"Probe media moisture","result":"Moisture remains high through most of the root zone rather than only near the surface."},
+        {"id":"check-schedule","label":"Review irrigation log","result":"Irrigations have been scheduled by the clock even when the container had not dried back."},
+        {"id":"inspect-roots","label":"Inspect accessible roots","result":"Visible roots look pale and stressed, but there is no evidence of a dry root ball."}
+      ],
+      "explanation":"Persistent saturation and a heavy container point to excess irrigation frequency. The broad lesson is to match irrigation timing to root-zone conditions rather than a rigid clock."
+    },
+    {
+      "id":"airless-zone",
+      "title":"The Suffocating Bench",
+      "stage":"Vegetative",
+      "summary":"Plants in one bench are slowing down despite adequate moisture and otherwise stable room conditions.",
+      "environment":["Air 76°F","RH 55%","Dense water-holding media"],
+      "symptoms":["Roots are slow to colonize the lower pot","Leaves appear dull and slightly drooped","Problem is worst in containers with poor drainage"],
+      "diagnosisId":"low-root-oxygen",
+      "distractorIds":["overwatering","ph-drift","cold-root-zone"],
+      "visual":"root",
+      "inspections":[
+        {"id":"drainage","label":"Inspect drainage","result":"Drain holes clear slowly and the lower media remains saturated well after the upper zone begins drying."},
+        {"id":"roots","label":"Inspect root distribution","result":"Most healthy roots are concentrated near the upper, better-aerated portion of the container."},
+        {"id":"media","label":"Compare media structure","result":"Affected pots are noticeably denser and less porous than the healthy control pots."},
+        {"id":"temperature","label":"Check root-zone temperature","result":"Root-zone temperature is normal, so chilling is not the strongest explanation."}
+      ],
+      "explanation":"The pattern is low oxygen availability in a dense, persistently wet root zone. Saturation may contribute, but the diagnostic focus is the poor air-water balance around the roots."
+    },
+    {
+      "id":"dry-air-sprint",
+      "title":"The Fast-Drying Canopy",
+      "stage":"Mid flower",
+      "summary":"The room is warm and very dry. Plants transpire hard and leaf edges begin to curl upward during peak light.",
+      "environment":["Air 82°F","RH 36%","Strong air movement"],
+      "symptoms":["Leaf edges taco upward","Containers dry much faster than last week","Symptoms intensify during the hottest hours"],
+      "diagnosisId":"high-vpd",
+      "distractorIds":["underwatering","light-stress","salt-buildup"],
+      "visual":"taco",
+      "inspections":[
+        {"id":"environment","label":"Review temperature and RH","result":"The temperature/RH combination produces a substantially drier air demand than the room had previously."},
+        {"id":"timing","label":"Compare symptom timing","result":"Curling peaks when temperature rises and RH falls, then eases after the environment moderates."},
+        {"id":"light","label":"Compare by light intensity","result":"Plants at similar intensity but in a more humid zone show less stress."},
+        {"id":"media","label":"Check root-zone moisture","result":"The media is drying quickly, but several plants show stress before the root zone is fully dry."}
+      ],
+      "explanation":"The strongest common driver is excessive atmospheric drying demand. High VPD can increase transpiration pressure even before the root zone is completely dry."
+    },
+    {
+      "id":"humid-pocket",
+      "title":"The Damp Corner",
+      "stage":"Late flower",
+      "summary":"One corner of the room stays humid and still while the rest of the canopy looks normal.",
+      "environment":["Air 75°F","RH 72% in corner","Weak local air exchange"],
+      "symptoms":["Leaf surfaces stay soft and slow to dry","Growth feels less vigorous in the corner","Issue maps to a humid microclimate"],
+      "diagnosisId":"low-vpd",
+      "distractorIds":["overwatering","insufficient-light","cold-root-zone"],
+      "visual":"humid",
+      "inspections":[
+        {"id":"sensor","label":"Move a sensor into the canopy","result":"Canopy-level RH in the affected pocket is much higher than the room-average sensor reports."},
+        {"id":"airflow","label":"Check air movement","result":"Leaves barely move in the affected corner while adjacent zones have visible circulation."},
+        {"id":"light","label":"Compare light level","result":"Light level is similar to nearby healthy plants, making low light a weaker fit."},
+        {"id":"pot","label":"Compare pot weight","result":"Affected and healthy containers have similar moisture status."}
+      ],
+      "explanation":"A localized humid, stagnant microclimate is the defining pattern. The lesson is to diagnose conditions at canopy level rather than relying only on a room-average reading."
+    },
+    {
+      "id":"bleached-top",
+      "title":"The Pale Summit",
+      "stage":"Flower stretch",
+      "summary":"Only the tallest tops directly under the fixture become pale and stressed after the light was lowered.",
+      "environment":["Air 78°F","RH 52%","Fixture recently lowered"],
+      "symptoms":["Paling is concentrated at the highest tops","Leaf edges near the fixture curl upward","Lower canopy remains normally colored"],
+      "diagnosisId":"light-stress",
+      "distractorIds":["nitrogen-shortage","high-vpd","ph-drift"],
+      "visual":"bleach",
+      "inspections":[
+        {"id":"map","label":"Map symptoms against fixture position","result":"The strongest bleaching forms a clear hotspot directly under the most intense part of the fixture."},
+        {"id":"history","label":"Review recent changes","result":"Symptoms began shortly after the fixture height was reduced."},
+        {"id":"lower-canopy","label":"Inspect lower leaves","result":"Lower and shaded leaves remain healthy rather than showing a whole-plant nutrient pattern."},
+        {"id":"environment","label":"Check room climate","result":"Temperature and RH are stable enough that atmospheric stress alone does not explain the hotspot pattern."}
+      ],
+      "explanation":"A top-only hotspot that follows a recent intensity increase strongly supports excess light stress. Spatial pattern is often more useful than a single leaf color."
+    },
+    {
+      "id":"stretch-city",
+      "title":"The Long Internodes",
+      "stage":"Vegetative",
+      "summary":"A group of young plants is stretching, leaning, and making wide internodes despite otherwise healthy color.",
+      "environment":["Air 77°F","RH 61%","Fixture output reduced"],
+      "symptoms":["Long internodes","Thin stems lean toward the brightest side","Leaf color remains generally healthy"],
+      "diagnosisId":"insufficient-light",
+      "distractorIds":["nitrogen-shortage","high-vpd","cold-root-zone"],
+      "visual":"stretch",
+      "inspections":[
+        {"id":"intensity","label":"Compare light intensity","result":"The affected tray is receiving substantially less light than the neighboring healthy tray."},
+        {"id":"direction","label":"Observe plant direction","result":"Stems consistently lean toward the brighter edge of the room."},
+        {"id":"nutrition","label":"Compare leaf color","result":"Leaves are not showing the progressive lower-leaf yellowing expected from a strong nitrogen shortage."},
+        {"id":"temperature","label":"Check root-zone temperature","result":"The root zone is within the same range as the healthy tray."}
+      ],
+      "explanation":"Stretch plus directional leaning and confirmed low intensity point to insufficient light. The pattern is architectural, not simply a color symptom."
+    },
+    {
+      "id":"drifting-zone",
+      "title":"The Mixed Deficiency Look",
+      "stage":"Vegetative",
+      "summary":"Several nutrient-like symptoms appear at once even though the feed recipe has not changed and reservoir strength looks normal.",
+      "environment":["Air 78°F","RH 56%","Feed EC stable"],
+      "symptoms":["Interveinal paling on some leaves","Slow new growth","Multiple deficiency-like patterns appear together"],
+      "diagnosisId":"ph-drift",
+      "distractorIds":["nitrogen-shortage","salt-buildup","low-root-oxygen"],
+      "visual":"mottle",
+      "inspections":[
+        {"id":"root-ph","label":"Check root-zone pH trend","result":"Recent root-zone readings have drifted well outside the grower's usual target range."},
+        {"id":"feed","label":"Verify fresh input","result":"Fresh input strength is consistent with the established recipe rather than obviously underfed."},
+        {"id":"pattern","label":"Compare symptom pattern","result":"The symptoms do not follow one clean nutrient-deficiency progression; several availability patterns overlap."},
+        {"id":"salts","label":"Check concentration trend","result":"Concentration has not risen enough to make salt accumulation the primary signal."}
+      ],
+      "explanation":"When several availability-like symptoms appear together, verify root-zone conditions before adding more nutrients. Here, the strongest evidence is the documented pH drift."
+    },
+    {
+      "id":"crusty-runoff",
+      "title":"The Rising Concentration",
+      "stage":"Mid flower",
+      "summary":"Plants receive the same feed strength as before, but the root zone is getting progressively more concentrated and leaf tips are burning.",
+      "environment":["Air 79°F","RH 48%","Frequent small irrigations"],
+      "symptoms":["Burnt leaf tips","Darkening margins on older leaves","Root-zone concentration trend keeps rising"],
+      "diagnosisId":"salt-buildup",
+      "distractorIds":["excess-nitrogen","high-vpd","ph-drift"],
+      "visual":"tipburn",
+      "inspections":[
+        {"id":"trend","label":"Review EC trend","result":"Root-zone or runoff concentration has climbed across several irrigations instead of returning toward baseline."},
+        {"id":"surface","label":"Inspect media surface","result":"A light mineral crust is visible around high-evaporation areas of the container."},
+        {"id":"feed","label":"Check fresh solution","result":"Fresh input is not unusually strong, so the concentration increase is occurring in the root zone."},
+        {"id":"nitrogen","label":"Inspect leaf posture","result":"Leaves do not show the uniform dark-green clawing expected from excess nitrogen as the main issue."}
+      ],
+      "explanation":"The decisive clue is a rising root-zone concentration over time despite stable input. That accumulation pattern is more informative than tip burn alone."
+    },
+    {
+      "id":"bottom-up-yellow",
+      "title":"The Fading Lower Deck",
+      "stage":"Late vegetative",
+      "summary":"Older lower leaves are gradually paling while newer growth stays greener and the root zone is otherwise behaving normally.",
+      "environment":["Air 77°F","RH 57%","Normal irrigation rhythm"],
+      "symptoms":["Yellowing begins on older lower leaves","New growth remains comparatively green","No tip burn or severe clawing"],
+      "diagnosisId":"nitrogen-shortage",
+      "distractorIds":["ph-drift","overwatering","insufficient-light"],
+      "visual":"yellow",
+      "inspections":[
+        {"id":"progression","label":"Trace symptom progression","result":"The paling consistently begins on older leaves and moves upward over time."},
+        {"id":"root-zone","label":"Check root-zone conditions","result":"Moisture rhythm and pH trend are stable enough that root dysfunction is a weaker explanation."},
+        {"id":"light","label":"Compare canopy positions","result":"Lower leaves fade even where light exposure differs, so simple shading does not fully explain the pattern."},
+        {"id":"history","label":"Review nutrition history","result":"The crop has recently increased growth rate without a corresponding change in nitrogen supply."}
+      ],
+      "explanation":"A mobile-nutrient pattern beginning on older leaves, paired with otherwise stable root-zone conditions, supports a nitrogen shortage in this game case."
+    },
+    {
+      "id":"dark-claw",
+      "title":"The Dark Hook",
+      "stage":"Vegetative",
+      "summary":"Plants are very dark green and leaf tips hook downward even though the media is not waterlogged.",
+      "environment":["Air 78°F","RH 55%","Media dries normally"],
+      "symptoms":["Unusually dark foliage","Downward clawing at leaf tips","New growth is slower and softer"],
+      "diagnosisId":"excess-nitrogen",
+      "distractorIds":["overwatering","salt-buildup","low-root-oxygen"],
+      "visual":"claw",
+      "inspections":[
+        {"id":"color","label":"Compare foliage color","result":"Affected plants are noticeably darker than healthy reference plants of the same cultivar and age."},
+        {"id":"moisture","label":"Check container moisture","result":"Containers are drying normally and are not persistently saturated."},
+        {"id":"feed-history","label":"Review recent feed changes","result":"Nitrogen-containing inputs were increased shortly before the dark clawing appeared."},
+        {"id":"concentration","label":"Review EC trend","result":"Overall concentration is elevated only modestly; the strongest unique clue is the nitrogen-heavy change plus dark clawing."}
+      ],
+      "explanation":"Dark green foliage plus downward tip clawing after a nitrogen-heavy change supports excess nitrogen more strongly than simple overwatering in this case."
+    },
+    {
+      "id":"cold-feet",
+      "title":"The Chilled Root Zone",
+      "stage":"Seedling / early veg",
+      "summary":"A floor-level tray grows slowly each morning even though the room air warms quickly after lights-on.",
+      "environment":["Air 75°F","RH 63%","Containers sit on a cold slab"],
+      "symptoms":["Morning growth is sluggish","Root zone warms hours after room air","Problem is strongest on floor-level containers"],
+      "diagnosisId":"cold-root-zone",
+      "distractorIds":["low-root-oxygen","insufficient-light","ph-drift"],
+      "visual":"cold",
+      "inspections":[
+        {"id":"root-temp","label":"Measure root-zone temperature","result":"The media is much colder than the room air during the first hours after lights-on."},
+        {"id":"elevation","label":"Compare elevated containers","result":"Plants raised off the slab maintain warmer media and are growing faster under the same light."},
+        {"id":"drainage","label":"Inspect drainage","result":"Drainage is acceptable, so persistent saturation is not the primary difference between trays."},
+        {"id":"light","label":"Compare light level","result":"Light intensity is similar across the affected and healthy trays."}
+      ],
+      "explanation":"The spatial and timing pattern tracks cold media rather than room air. Root-zone temperature can differ substantially from the headline room temperature."
+    }
+  ]
+}
