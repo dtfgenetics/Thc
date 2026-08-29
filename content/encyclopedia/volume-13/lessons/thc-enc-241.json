@@ -1,0 +1,57 @@
+{
+  "id":"THC-ENC-241",
+  "number":241,
+  "title":"Primary Versus Secondary Metabolism",
+  "objective":"Distinguish primary metabolism from specialized metabolism while showing that terpene, cannabinoid, flavonoid, phenolic, pigment, and volatile production remains integrated with carbon supply, energy, development, tissue identity, and plant function.",
+  "terms":[
+    {"term":"primary metabolism","definition":"Core metabolic processes broadly required for growth, maintenance, reproduction, and cellular function, including photosynthesis, respiration, central carbon metabolism, amino-acid, lipid, and nucleotide synthesis."},
+    {"term":"specialized metabolism","definition":"Genetically programmed metabolism that produces lineage-, tissue-, or condition-enriched compounds involved in ecological interactions, protection, signaling, pigmentation, aroma, or other specialized functions."},
+    {"term":"precursor","definition":"A molecule used as starting material or intermediate in formation of another compound."},
+    {"term":"metabolic flux","definition":"The rate at which material moves through a metabolic pathway under defined conditions."},
+    {"term":"allocation","definition":"Distribution of carbon, energy, nutrients, and biosynthetic capacity among competing biological processes."},
+    {"term":"volatile","definition":"A compound with sufficient vapor pressure to enter the gas phase under relevant conditions."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Primary metabolism includes processes broadly required for plant growth and maintenance, such as photosynthesis, respiration, central carbohydrate metabolism, amino-acid synthesis, lipid metabolism, and nucleotide production. Specialized metabolism draws on many of the same carbon skeletons, ATP, reducing power, cofactors, and precursor pools to produce compounds with ecological, protective, signaling, pigmentation, and aroma functions.",
+    "Cannabinoids, terpenoids, flavonoids, many phenolics, pigments, and numerous aroma-active compounds are specialized metabolites. The older label 'secondary metabolite' does not mean these compounds are metabolic waste or biologically unimportant; many are tightly regulated by genotype, tissue identity, developmental stage, glandular trichome biology, light, and stress signaling.",
+    "Cannabis glandular trichomes illustrate the integration of central and specialized metabolism. Direct transcriptome and enzyme studies show strong expression of isoprenoid and terpene-pathway machinery in resin-producing tissues, while cannabinoid and terpene pathways draw on carbon and isoprenoid precursors also used elsewhere in plant metabolism.",
+    "More precursor does not automatically mean more end product. Enzyme abundance and kinetics, pathway branch points, compartmentation, precursor transport, sink capacity, secretion, tissue biomass, volatilization, and degradation all affect the measured outcome.",
+    "A treatment can raise metabolite concentration while reducing flower biomass, or can raise total metabolite production without raising concentration. Concentration and total mass therefore answer different biological and production questions."
+  ],
+  "cultivationRelevance":[
+    "Evaluate specialized-metabolite claims together with growth, flower biomass, developmental stage, stress or injury, and total metabolite output rather than interpreting concentration alone.",
+    "Do not treat carbon supplements, sugar products, nutrients, or stress treatments as direct pathway shortcuts without controlled evidence showing the claimed metabolic effect.",
+    "When comparing treatments, control genotype, tissue, position, developmental stage, moisture basis, and analytical method before attributing a chemical difference to metabolism.",
+    "Preserve null and adverse results because stress-associated chemical changes can occur alongside reduced growth, injury, or quality."
+  ],
+  "measureAndRecord":[
+    {"field":"Biological identity","requirement":"Record genotype, plant, tissue, organ position, developmental stage, and relevant trichome or gland state."},
+    {"field":"Growth context","requirement":"Record biomass, growth rate or yield endpoint, water and nutrient status, environmental history, and visible stress or injury."},
+    {"field":"Metabolites","requirement":"Record precursor and end-product concentrations where measured, absolute or total yield where relevant, sample basis, extraction, standards, and uncertainty."},
+    {"field":"Mechanistic evidence","requirement":"Distinguish metabolite concentration from pathway flux, transcript abundance, protein abundance, enzyme activity, isotope tracing, and inferred allocation."},
+    {"field":"Claim boundary","requirement":"State whether the evidence supports a chemical difference, a biological mechanism, or a crop-level production effect; do not treat these as interchangeable."
+    }
+  ],
+  "misconceptions":[
+    "Secondary metabolites are waste products or leftovers from primary metabolism.",
+    "More plant stress always increases desirable specialized metabolites.",
+    "Adding a pathway precursor guarantees more cannabinoids or aroma compounds.",
+    "A higher metabolite percentage proves the plant invested more total carbon in that pathway.",
+    "Specialized metabolism operates independently of photosynthesis, respiration, nutrients, and development."
+  ],
+  "evidenceLimits":[
+    "The conceptual distinction between primary and specialized metabolism is useful, but plant pathways are interconnected and dynamically regulated. Tissue concentration is not a direct measurement of pathway flux or metabolic investment. Cannabis-specific mechanistic evidence is strongest for selected trichome, cannabinoid, and terpene pathways, while many allocation relationships remain incompletely resolved in intact crops."
+  ],
+  "crossLinks":"THC-ENC-061–080 for whole-plant metabolism and signaling; THC-ENC-121–140 for nutrition and root-zone chemistry; THC-ENC-221–240 for trichomes and cannabinoid biosynthesis; THC-ENC-242–260 for terpenes and other specialized metabolites; THC-ENC-401–420 for measurement and research literacy.",
+  "sourceNotes":[
+    "Controlled Volume 13 manuscript — THC Cannabis Encyclopedia: Terpenes, Volatiles, and Other Secondary Metabolites v1.0 — establishes the primary-versus-specialized metabolism teaching boundary and requires concentration to remain separate from total metabolite yield.",
+    "Booth JK, Page JE, Bohlmann J. (2017). Terpene synthases from Cannabis sativa. PLOS ONE 12:e0173911. Direct cannabis trichome transcriptome and enzyme work demonstrates integration of upstream isoprenoid metabolism with specialized terpene production in resin-producing tissues.",
+    "General plant specialized-metabolism literature supports use of 'specialized metabolism' rather than interpreting 'secondary' as nonessential or waste; cannabis-specific causal allocation coefficients remain pathway- and context-dependent."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 13 batch 01 controlled web derivative","driveSourceDocumentId":"1Vh_CkUFTN9eqsXiuH53pD1tMDyBo2zxDTIXOd_vQlgw","evidenceControl":"controlled_manuscript_plus_direct_cannabis_trichome_terpene_pathway_evidence","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"plant_specialized_metabolism_and_cannabis_biochemistry","releaseTimeReview":"completed_2026-08-29_primary_specialized_metabolism_concentration_flux_and_total_yield_boundaries","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"primary-versus-secondary-metabolism",
+  "route":"/encyclopedia/primary-versus-secondary-metabolism"
+}

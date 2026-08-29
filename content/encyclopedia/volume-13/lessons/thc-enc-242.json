@@ -1,0 +1,58 @@
+{
+  "id":"THC-ENC-242",
+  "number":242,
+  "title":"Isoprenoid Precursors and Terpene Biosynthesis",
+  "objective":"Explain how plastidial MEP and cytosolic mevalonate pathways supply five-carbon isoprenoid units and prenyl diphosphates for cannabis terpene biosynthesis without treating cellular compartments as perfectly isolated pools.",
+  "terms":[
+    {"term":"isoprenoid","definition":"A broad class of compounds assembled from five-carbon isoprene-derived building units."},
+    {"term":"IPP","definition":"Isopentenyl diphosphate, a five-carbon activated isoprenoid building block."},
+    {"term":"DMAPP","definition":"Dimethylallyl diphosphate, an isomeric five-carbon activated building block used with IPP to form larger prenyl diphosphates."},
+    {"term":"MEP pathway","definition":"The methylerythritol-phosphate pathway, a plastid-localized route that produces IPP and DMAPP in plants."},
+    {"term":"mevalonate pathway","definition":"A predominantly cytosolic plant pathway that produces IPP and DMAPP from acetyl-CoA-derived intermediates."},
+    {"term":"GPP","definition":"Geranyl diphosphate, a ten-carbon prenyl diphosphate used by monoterpene synthases and also involved in cannabinoid biosynthesis."},
+    {"term":"FPP","definition":"Farnesyl diphosphate, a fifteen-carbon prenyl diphosphate used by sesquiterpene synthases and other cellular pathways."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Plant terpenes are constructed from five-carbon isoprenoid units. In cannabis, direct transcriptome work identifies genes for both the plastidial methylerythritol-phosphate pathway and the cytosolic mevalonate pathway in tissues associated with terpene production.",
+    "The plastidial MEP pathway converts pyruvate and glyceraldehyde-3-phosphate through a multistep sequence to IPP and DMAPP. These units feed geranyl diphosphate formation, which supplies the carbon skeleton used by many monoterpene synthases and is also a precursor input to cannabinoid biosynthesis.",
+    "The cytosolic mevalonate pathway converts acetyl-CoA-derived intermediates to IPP and then DMAPP. These building units contribute to farnesyl diphosphate formation, a major substrate for sesquiterpene synthases as well as sterol and other isoprenoid metabolism.",
+    "The common textbook distinction—MEP/GPP for monoterpenes and mevalonate/FPP for sesquiterpenes—is useful but not an absolute wall. Plants can exchange isoprenoid intermediates across compartments, and precursor allocation depends on enzyme localization, developmental state, tissue, transport, and metabolic demand.",
+    "Terpene synthases diversify GPP, FPP, and related prenyl diphosphates into many carbon skeletons. A synthase may form one dominant product or a mixture of products, and later oxidation, rearrangement, conjugation, emission, or degradation can further alter the measured volatile profile."
+  ],
+  "cultivationRelevance":[
+    "Teach terpene biosynthesis as a branched, compartmentalized network rather than a direct response to supplying sugar, carbon, or one nutrient.",
+    "When a treatment is claimed to alter terpene synthesis, measure the volatile products and crop endpoints directly; precursor-pathway involvement alone does not establish increased output.",
+    "Keep genotype, tissue, developmental stage, trichome state, and environmental conditions controlled when comparing terpene profiles because pathway expression and precursor allocation are context dependent.",
+    "Do not infer pathway flux from one precursor concentration or one transcript measurement."
+  ],
+  "measureAndRecord":[
+    {"field":"Biological context","requirement":"Record genotype, tissue/trichome fraction, developmental stage, plant position, and environmental treatment."},
+    {"field":"Precursor evidence","requirement":"Record whether IPP/DMAPP, GPP, FPP, or upstream intermediates were directly measured, inferred, or assessed by isotope/flux methods."},
+    {"field":"Pathway expression","requirement":"Record transcript, protein, or enzyme-activity method and distinguish abundance from metabolic flux."},
+    {"field":"Product spectrum","requirement":"Measure individual mono- and sesquiterpenes with declared standards, analytical method, sample state, and uncertainty."},
+    {"field":"Production endpoint","requirement":"Record tissue biomass and absolute volatile output when distinguishing concentration from total production."
+    }
+  ],
+  "misconceptions":[
+    "Monoterpenes and sesquiterpenes come from one identical undifferentiated cellular precursor pool.",
+    "MEP and mevalonate pathways never exchange intermediates in plants.",
+    "More GPP automatically increases every monoterpene and cannabinoid.",
+    "One terpene synthase always makes one product.",
+    "Higher photosynthesis guarantees higher terpene concentration."
+  ],
+  "evidenceLimits":[
+    "Cannabis transcriptome and functional-enzyme studies establish MEP/mevalonate pathway genes and GPP/FPP-dependent terpene synthases, but intact-plant precursor exchange and flux control remain incompletely resolved. Compartment labels describe predominant pathway organization rather than perfectly isolated pools, and precursor abundance should not be interpreted as a direct measure of final terpene production."
+  ],
+  "crossLinks":"THC-ENC-061–080 for central metabolism; THC-ENC-227 for GPP in cannabinoid precursor supply; THC-ENC-243–245 for mono-/sesquiterpenes and terpene synthases; THC-ENC-401–420 for flux, experimental design, and analytical interpretation.",
+  "sourceNotes":[
+    "Booth JK, Page JE, Bohlmann J. (2017). Terpene synthases from Cannabis sativa. PLOS ONE 12:e0173911. Cannabis trichome transcriptomics identified MEP- and mevalonate-pathway genes plus GPPS/FPPS genes; functional CsTPS assays linked GPP and FPP to major mono- and sesquiterpene products.",
+    "Controlled Volume 13 manuscript v1.0 requires the MEP/GPP and mevalonate/FPP framework while explicitly retaining precursor exchange, compartmentation, developmental context, and pathway-flux uncertainty.",
+    "General plant isoprenoid literature supports cross-compartment exchange of five-carbon precursors; the quantitative extent of that exchange in intact cannabis tissues remains unresolved."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 13 batch 01 controlled web derivative","driveSourceDocumentId":"1Vh_CkUFTN9eqsXiuH53pD1tMDyBo2zxDTIXOd_vQlgw","evidenceControl":"controlled_manuscript_plus_direct_cannabis_isoprenoid_transcriptome_and_TPS_function_sources","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_isoprenoid_pathway_terpene_biosynthesis","releaseTimeReview":"completed_2026-08-29_MEP_mevalonate_GPP_FPP_compartment_and_flux_claims","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"isoprenoid-precursors-and-terpene-biosynthesis",
+  "route":"/encyclopedia/isoprenoid-precursors-and-terpene-biosynthesis"
+}

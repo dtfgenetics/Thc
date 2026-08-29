@@ -1,0 +1,57 @@
+{
+  "id":"THC-ENC-243",
+  "number":243,
+  "title":"Monoterpenes",
+  "objective":"Describe cannabis monoterpenes as volatile C10 isoprenoids while separating tissue concentration, headspace abundance, chemical identity, odor threshold, and sensory perception.",
+  "terms":[
+    {"term":"monoterpene","definition":"A C10 isoprenoid commonly formed from geranyl diphosphate by monoterpene synthases."},
+    {"term":"hydrocarbon monoterpene","definition":"A monoterpene containing only carbon and hydrogen, such as myrcene, limonene, pinene, ocimene, or terpinolene."},
+    {"term":"oxygenated monoterpene","definition":"A monoterpene derivative containing oxygen, such as linalool or certain terpene alcohols, oxides, ketones, and aldehydes."},
+    {"term":"volatility","definition":"A compound's tendency to enter the gas phase under specified conditions."},
+    {"term":"headspace","definition":"The gas phase above or around a sample from which volatile compounds can be measured."},
+    {"term":"odor threshold","definition":"The concentration or exposure level at which an odorant becomes detectable under a defined sensory method; thresholds vary by compound, matrix, and observer population."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Monoterpenes are ten-carbon isoprenoids commonly formed when cannabis monoterpene synthases act on geranyl diphosphate. Functionally characterized cannabis enzymes produce major monoterpenes including beta-myrcene, (E)-beta-ocimene, limonene, and alpha-pinene, demonstrating that multiple distinct carbon skeletons can arise from the same general precursor class.",
+    "Cannabis monoterpenes include hydrocarbon compounds such as myrcene, limonene, pinenes, ocimenes, and terpinolene as well as oxygenated compounds such as linalool. Their identity and relative abundance vary widely among genotypes and samples.",
+    "Monoterpenes often contribute strongly to headspace because many are comparatively volatile. However, tissue concentration and headspace abundance are different measurements. Partitioning into air depends on vapor pressure, matrix, sample temperature, surface area, equilibration, container, and analytical method.",
+    "Chemical abundance is also not identical to odor importance. A lower-concentration compound can strongly influence perception if its odor threshold is low, while a relatively abundant compound can contribute less strongly under a particular mixture and sensory context.",
+    "Monoterpene profiles can shift with genotype, tissue and inflorescence position, developmental stage, environment, drying, grinding, storage, oxidation, and selective loss. Relative percentage can rise even when absolute mass falls if other volatiles are lost faster."
+  ],
+  "cultivationRelevance":[
+    "Report individual monoterpenes and sample method rather than using total-terpene percentage as a complete aroma description.",
+    "Protect analytical samples from uncontrolled heat, prolonged open-air exposure, unnecessary grinding, and leaky containers when the goal is to characterize a native volatile profile.",
+    "Use the same tissue, position, fresh/dry state, preparation, and analytical method when comparing plants or treatments.",
+    "Do not infer sensory intensity, cultivar identity, or human effect from the most abundant monoterpene alone."
+  ],
+  "measureAndRecord":[
+    {"field":"Sample identity","requirement":"Record genotype, plant, tissue, inflorescence position, developmental stage, fresh/dry state, and storage history."},
+    {"field":"Analytical mode","requirement":"State whether the result comes from headspace, HS-SPME, solvent extraction, distillate, or another matrix/method and record preparation and equilibration conditions."},
+    {"field":"Compound identity","requirement":"Record analyte name, isomer/stereochemical resolution where relevant, authentic standard or identification confidence, calibration, detection limits, and uncertainty."},
+    {"field":"Quantity","requirement":"Record absolute concentration or clearly defined normalized value and distinguish tissue concentration from headspace abundance and relative percent."},
+    {"field":"Sensory evidence","requirement":"When aroma is discussed, record panel method, coding/blinding, descriptors, intensity scale, and whether odor thresholds or odor-activity concepts were actually evaluated."
+    }
+  ],
+  "misconceptions":[
+    "All monoterpenes smell citrus-like.",
+    "The most abundant monoterpene defines the complete cannabis aroma.",
+    "A solvent-extract percentage equals what a person smells in headspace.",
+    "A rising relative percentage after drying proves new terpene biosynthesis after harvest.",
+    "One dominant monoterpene identifies a cultivar or predicts a human effect."
+  ],
+  "evidenceLimits":[
+    "Direct cannabis enzyme studies establish biosynthesis of several major monoterpenes, but sensory perception depends on mixtures, vapor-phase behavior, thresholds, sample state, and individual observers. Analytical methods interrogate different pools, so headspace, extract, and tissue concentrations should not be treated as interchangeable measures of aroma."
+  ],
+  "crossLinks":"THC-ENC-242 for isoprenoid precursor pathways; THC-ENC-245 for terpene-synthase genetics; THC-ENC-246–251 for individual and minor terpenes; THC-ENC-255–258 for maturation, volatile loss, storage, and analytical variation.",
+  "sourceNotes":[
+    "Booth JK, Page JE, Bohlmann J. (2017). Terpene synthases from Cannabis sativa. PLOS ONE 12:e0173911. Functionally characterized cannabis monoterpene synthases producing myrcene, ocimene, limonene, pinene and other products and documented trichome-enriched terpene-pathway expression.",
+    "Allen KD et al. (2019). Genomic characterization of the complete terpene synthase gene family from Cannabis sativa. PLOS ONE 14:e0222363. Documents broad terpene-profile variation and genomic TPS diversity.",
+    "Controlled Volume 13 manuscript v1.0 requires tissue composition, headspace abundance, sensory perception, and human response to remain separate evidence levels."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 13 batch 01 controlled web derivative","driveSourceDocumentId":"1Vh_CkUFTN9eqsXiuH53pD1tMDyBo2zxDTIXOd_vQlgw","evidenceControl":"controlled_manuscript_plus_functional_cannabis_monoterpene_synthase_and_TPS_genome_sources","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_monoterpene_biochemistry_analytical_and_sensory_boundaries","releaseTimeReview":"completed_2026-08-29_monoterpene_tissue_headspace_abundance_and_sensory_claims","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"monoterpenes",
+  "route":"/encyclopedia/monoterpenes"
+}
