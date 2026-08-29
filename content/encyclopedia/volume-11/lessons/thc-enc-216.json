@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-216",
+  "number":216,
+  "title":"Seed Maturation and Harvest",
+  "objective":"Explain cannabis seed maturation as an asynchronous developmental process, distinguish visual maturity from tested seed quality, and establish harvest and sampling records that preserve reproductive history.",
+  "terms":[
+    {"term":"physiological maturity","definition":"A developmental state in which a seed has substantially completed accumulation of reserves and acquired the capacity for normal germination, although exact indicators vary by crop and genotype."},
+    {"term":"asynchronous maturation","definition":"Development in which seeds on the same plant or inflorescence do not reach equivalent maturity at the same time."},
+    {"term":"seed coat","definition":"Protective maternal tissue surrounding the embryo and internal seed tissues."},
+    {"term":"germination percentage","definition":"The proportion of tested seeds that produce normal germination under the stated test conditions."},
+    {"term":"seed lot","definition":"A defined batch of seed kept under one identity and handling history for testing, storage, or distribution."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Cannabis seed maturation is not perfectly synchronized across an inflorescence. Seed-bearing hemp literature describes successive maturation along the reproductive structure, so mature, semi-mature, and immature seeds can coexist at one harvest date.",
+    "A 2025 Cannabis sativa study directly compared seeds collected at different maturity stages for germination and emergence performance, reinforcing that maturity stage affects later seed performance and should not be treated as a purely cosmetic distinction.",
+    "As seeds develop, reserve accumulation, embryo development, moisture status, and seed-coat characteristics change. External color and firmness can be useful field observations, but they do not by themselves measure germination capacity, vigor, genetic identity, or freedom from damage.",
+    "Harvest timing for a seed crop is therefore a compromise between allowing late seeds to mature and avoiding excessive loss, shattering, weathering, predation, disease, or deterioration of earlier mature seed. The optimal compromise depends on genotype, environment, production system, and the intended use of the seed.",
+    "Seed quality should be evaluated after harvest with defined sampling and testing. A representative germination or viability test is more informative than judging an entire seed lot from a few large or dark seeds."
+  ],
+  "cultivationRelevance":[
+    "Inspect multiple positions on a seeded plant rather than assuming one seed represents the maturity of the entire crop.",
+    "Keep controlled-cross seed separate by cross ID and harvest unit so asynchronous harvest or later cleaning does not erase parentage records.",
+    "Dry and handle harvested seed in a way that avoids unnecessary physical injury and preserves its documented lot identity.",
+    "Use germination or viability testing to characterize stored breeding seed instead of relying only on seed color, striping, size, or hardness."
+  ],
+  "measureAndRecord":[
+    {"field":"Pollination reference","requirement":"Link each harvested seed lot to the cross ID, seed parent, pollen parent, and pollination date or exposure window when known."},
+    {"field":"Maturity sampling","requirement":"Record observations from several inflorescence positions and distinguish mature, semi-mature, visibly immature, damaged, and aborted seed."},
+    {"field":"Harvest date","requirement":"Record date, plant or branch identifier, environmental conditions, and whether harvest was single-pass or staggered."},
+    {"field":"Postharvest handling","requirement":"Record drying interval, cleaning method, container ID, and storage start date."},
+    {"field":"Seed-quality test","requirement":"Record sample size, germination or viability method, test conditions, date, and result separately from visual grading."
+    }
+  ],
+  "misconceptions":[
+    "All cannabis seeds on one plant mature at the same time.",
+    "Dark or striped seeds are automatically viable while pale seeds are automatically dead.",
+    "A hard seed coat proves the embryo will germinate normally.",
+    "One seed opened or germinated successfully proves the quality of the entire lot.",
+    "A single universal number of days after pollination defines mature seed for every cannabis genotype and environment."
+  ],
+  "evidenceLimits":[
+    "Direct seed-maturity studies in Cannabis sativa are less extensive than in major seed crops, and much of the available harvest literature concerns industrial hemp seed production. Those data support asynchronous maturation and maturity-dependent seed performance, but they do not justify one universal harvest percentage, color rule, or days-after-pollination threshold for all drug-type and hemp genetics."
+  ],
+  "crossLinks":"THC-ENC-211 for fertilization and embryo initiation; THC-ENC-213 for parent identity; THC-ENC-220 for seed-lot documentation; THC-ENC-021–040 for seed and germination fundamentals.",
+  "sourceNotes":[
+    "Yılmaz G, Yıldırım C, Gür ND. (2025). Determination of Germination and Emergence Performance of Hemp (Cannabis sativa L.) Seeds at Different Maturity Stages. Turkish Journal of Agriculture - Food Science and Technology 13(1):175–180. Directly compared mature, semi-mature, and immature cannabis seed performance.",
+    "Review of Seed Hemp (Cannabis sativa L.) Harvesting Techniques and the Challenges of Harvesting Technologies for This Crop. Agronomy (2026). Describes successive/asynchronous seed maturation within hemp inflorescences and the harvest compromise it creates.",
+    "Public wording does not turn industrial-hemp harvest percentages into a universal maturity prescription for all cannabis seed crops."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 11 batch 04 controlled web derivative","evidenceControl":"current_topic_secondary_review_complete","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_seed_maturation_and_quality","releaseTimeReview":"completed_2026-08-29_asynchronous_seed_maturity_and_non_universal_harvest_claims","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"seed-maturation-and-harvest",
+  "route":"/encyclopedia/seed-maturation-and-harvest"
+}
