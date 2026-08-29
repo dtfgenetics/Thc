@@ -52,6 +52,8 @@ export function createWheel({ code, mode = 'strain-picker' } = {}, data) {
     code: normalized,
     mode,
     spinCount: 0,
+    cycleNumber: 1,
+    cycleSeenEntryIds: [],
     lastEntryId: null,
     lastResult: null,
     history: []
@@ -62,20 +64,37 @@ export function spinWheel(inputState, data) {
   const state = clone(inputState);
   const { entries } = requireMode(data, state.mode);
   const spinNumber = state.spinCount + 1;
-  let index = hash(`${state.code}:${state.mode}:${spinNumber}`) % entries.length;
-  if (entries.length > 1 && entries[index].id === state.lastEntryId) index = (index + 1) % entries.length;
-  const entry = entries[index];
+  let seen = new Set(state.cycleSeenEntryIds ?? []);
+
+  if (seen.size >= entries.length) {
+    state.cycleNumber = Number(state.cycleNumber ?? 1) + 1;
+    state.cycleSeenEntryIds = [];
+    seen = new Set();
+  }
+
+  const unseenEntries = entries.filter((entry) => !seen.has(entry.id));
+  if (!unseenEntries.length) throw new Error('Wheel cycle could not find an unseen entry.');
+  const cycleNumber = Number(state.cycleNumber ?? 1);
+  const unseenIndex = hash(`${state.code}:${state.mode}:cycle:${cycleNumber}:spin:${spinNumber}`) % unseenEntries.length;
+  const entry = unseenEntries[unseenIndex];
+  const index = entries.findIndex((candidate) => candidate.id === entry.id);
+  const cyclePosition = state.cycleSeenEntryIds.length + 1;
   const result = {
     spinNumber,
     index,
     entryId: entry.id,
     label: entry.label,
     detail: entry.detail,
-    category: entry.category
+    category: entry.category,
+    cycleNumber,
+    cyclePosition,
+    cycleSize: entries.length
   };
+
   state.spinCount = spinNumber;
   state.lastEntryId = entry.id;
   state.lastResult = result;
+  state.cycleSeenEntryIds.push(entry.id);
   state.history.push(result);
   if (state.history.length > MAX_HISTORY) state.history = state.history.slice(-MAX_HISTORY);
   return state;
