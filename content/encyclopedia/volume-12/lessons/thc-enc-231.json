@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-231",
+  "number":231,
+  "title":"CBDA Synthase and CBDA Formation",
+  "objective":"Describe CBDA synthase as a cannabinoid oxidocyclase that converts CBGA to CBDA and distinguish functional synthase evidence, inherited chemotype potential, and measured CBD-dominant chemistry.",
+  "terms":[
+    {"term":"CBDA synthase","definition":"A Cannabis sativa cannabinoid oxidocyclase that catalyzes conversion of cannabigerolic acid to cannabidiolic acid."},
+    {"term":"CBDAS","definition":"The gene encoding CBDA synthase; interpretation requires attention to functional sequence, locus context, and assay design."},
+    {"term":"CBDA","definition":"Cannabidiolic acid, an acidic cannabinoid that is a major product in many CBD-dominant cannabis tissues."},
+    {"term":"chemotype","definition":"A reproducible chemical phenotype defined by the relative or absolute abundance of specified metabolites under declared sampling and analytical conditions."},
+    {"term":"homolog","definition":"A related gene or protein sequence derived from common ancestry; sequence similarity does not guarantee identical catalytic function."}
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "CBDA synthase converts CBGA to CBDA through oxidative cyclization. Purified-enzyme and recombinant-expression studies established CBGA as the preferred biosynthetic substrate and demonstrated that CBDAS is closely related structurally and functionally to THCA synthase.",
+    "Living cannabis tissues primarily accumulate acidic cannabinoids in glandular trichomes. Neutral CBD is formed largely through non-enzymatic decarboxylation of CBDA during drying, storage, heating, or analytical conditions, so CBDAS should not be described as an enzyme that directly produces neutral CBD.",
+    "CBDAS and THCAS occur in a structurally complex cannabinoid-oxidocyclase region with related genes and pseudogene-like sequences. Functional alleles and their expression strongly influence the ratio of CBDA to THCA, but short-marker presence alone is not equivalent to proven enzyme activity.",
+    "A CBD-dominant chemotype does not mean that THCA or other cannabinoid acids are absent. Ratios, absolute concentrations, tissue, developmental stage, environment, sampling position, moisture basis, and analytical method all affect the measured profile.",
+    "Genetic prediction is most defensible when the assay has been validated in the germplasm under study and is then confirmed by chemical analysis. Marker performance can change across unrelated populations or structurally different synthase haplotypes."
+  ],
+  "cultivationRelevance":[
+    "Use CBDAS genetics as evidence of inherited chemotype potential, then confirm plant or batch chemistry analytically.",
+    "Measure CBDA, CBD, THCA, THC, and CBGA together when characterizing CBD-dominant material so competing and residual pathway products remain visible.",
+    "Control tissue identity, flower position, developmental stage, moisture basis, and laboratory method before comparing absolute CBDA concentration across plants or treatments.",
+    "Do not use a CBDAS marker alone as proof of legal compliance, zero-THCA status, potency, or harvest maturity."
+  ],
+  "measureAndRecord":[
+    {"field":"Genetic evidence","requirement":"Record plant identity, assay type, marker or sequence coordinates, reference assembly or haplotype where relevant, allele interpretation, and validation population."},
+    {"field":"Functional evidence","requirement":"Distinguish intact coding sequence, transcript expression, protein evidence, enzyme assay, and tissue chemistry rather than combining them into one statement."},
+    {"field":"Chemical profile","requirement":"Record CBGA, CBDA, CBD, THCA, THC and other relevant analytes, analytical platform, standards, moisture basis, replicate, and uncertainty."},
+    {"field":"Sample context","requirement":"Record tissue, plant and inflorescence position, developmental stage, environmental treatment, harvest state, storage, and preparation."},
+    {"field":"Claim type","requirement":"State whether the evidence supports predicted genotype, functional synthase activity, chemotype ratio, or measured concentration."
+    }
+  ],
+  "misconceptions":[
+    "CBDAS converts THCA into CBDA.",
+    "CBDA synthase directly produces neutral CBD in the living plant.",
+    "A CBD-dominant plant cannot contain measurable THCA.",
+    "A positive CBDAS marker guarantees a specific CBD percentage or regulatory classification.",
+    "Cultivar name is sufficient evidence of CBDAS genotype or chemical profile."
+  ],
+  "evidenceLimits":[
+    "The biochemical function of CBDA synthase is established by purified-enzyme and recombinant-expression work. Translating CBDAS genotype into absolute crop concentration remains conditional because synthase-locus structure, expression, precursor supply, trichome development, environment, tissue sampling, and analytical method all contribute to the measured phenotype."
+  ],
+  "crossLinks":"THC-ENC-229–230 for CBGA and THCA synthase; THC-ENC-232–233 for CBCA and alternate side-chain pathways; THC-ENC-234–240 for acid/neutral chemistry, development, and analytical claims; THC-ENC-141–160 for genetics and chemotype.",
+  "sourceNotes":[
+    "Taura F et al. (1996). Purification and characterization of cannabidiolic-acid synthase from Cannabis sativa L. Demonstrated purified CBDA synthase activity converting CBGA predominantly to CBDA.",
+    "Taura F et al. (2007). Cannabidiolic-acid synthase, the chemotype-determining enzyme in the fiber-type Cannabis sativa. FEBS Letters 581:2929–2934. Cloned and biochemically characterized recombinant CBDAS as a covalently flavinylated oxidase closely related to THCAS.",
+    "Grassa CJ et al. (2018). A physical and genetic map of Cannabis sativa identifies extensive rearrangements at the THC/CBD acid synthase loci. Genome Research 28:833–842. Provides genomic context for the structurally complex THCAS/CBDAS chemotype region.",
+    "The controlled Volume 12 manuscript requires genetic predictions to remain separate from measured chemistry and prohibits treating CBD-dominance as proof that THCA is absent."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Volume 12 batch 03 controlled web derivative","driveSourceDocumentId":"1mrad4SysYqoD1-Z8A7ibF9PcnvRjs5qiPIOseYGRtUI","evidenceControl":"controlled_manuscript_plus_direct_CBDAS_biochemistry_and_synthase_locus_genomics","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_CBDAS_biochemistry_genomics_and_chemotype_interpretation","releaseTimeReview":"completed_2026-08-29_CBDAS_function_marker_and_non_compliance_claims","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-29","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"cbda-synthase-and-cbda-formation",
+  "route":"/encyclopedia/cbda-synthase-and-cbda-formation"
+}
