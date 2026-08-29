@@ -76,6 +76,40 @@ if [[ "$watch_status" -eq 0 ]]; then
   exit 0
 fi
 
+# A workflow_run can be cancelled by GitHub's concurrency queue before a job is
+# created when a newer same-source trigger supersedes it. Join modes should
+# follow that authoritative replacement instead of treating the empty run as a
+# publication failure. Runs that created jobs remain authoritative and are
+# evaluated normally below.
+if [[ "$mode" != "dispatch" ]]; then
+  run_meta="$(gh run view "$run_id" --json conclusion,jobs)"
+  run_conclusion="$(jq -r '.conclusion // empty' <<<"$run_meta")"
+  run_job_count="$(jq '.jobs | length' <<<"$run_meta")"
+  if [[ "$run_conclusion" == "cancelled" && "$run_job_count" -eq 0 ]]; then
+    superseding_id=""
+    for attempt in $(seq 1 30); do
+      candidate_id="$(find_same_sha_run)"
+      if [[ -n "$candidate_id" && "$candidate_id" != "$run_id" ]]; then
+        superseding_id="$candidate_id"
+        break
+      fi
+      sleep 2
+    done
+    if [[ -n "$superseding_id" ]]; then
+      echo "Child run $run_id was cancelled before jobs started; following superseding same-source run $superseding_id."
+      run_id="$superseding_id"
+      set +e
+      gh run watch "$run_id" --exit-status
+      watch_status=$?
+      set -e
+      if [[ "$watch_status" -eq 0 ]]; then
+        echo "$run_id"
+        exit 0
+      fi
+    fi
+  fi
+fi
+
 # Reporting/ledger outages must never veto a successful publication. Any other
 # failed, cancelled, timed-out, stale, or startup-failed step is authoritative.
 details="$(gh run view "$run_id" --json jobs)"
