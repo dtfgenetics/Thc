@@ -1,6 +1,9 @@
+import dns from 'node:dns';
 import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import { basename, join, resolve } from 'node:path';
 import process from 'node:process';
+
+dns.setDefaultResultOrder('ipv4first');
 
 const siteUrl = (process.env.WP_SITE_URL || 'https://dtfseeds.com').replace(/\/$/, '');
 const username = process.env.WP_API_USERNAME || process.env.WORDPRESS_USERNAME || process.env.WP_USERNAME || '';
@@ -26,6 +29,18 @@ const forbiddenPhrases = [
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function isTransientError(error) {
+  const status = Number(error?.status || 0);
+  if (status === 408 || status === 425 || status === 429 || status >= 500) return true;
+  if (error instanceof TypeError || error?.name === 'TimeoutError' || error?.name === 'AbortError') return true;
+  const codes = new Set(['ETIMEDOUT', 'ECONNRESET', 'ECONNREFUSED', 'EAI_AGAIN', 'ENETUNREACH', 'UND_ERR_CONNECT_TIMEOUT', 'UND_ERR_SOCKET']);
+  return codes.has(error?.code) || codes.has(error?.cause?.code) || (Array.isArray(error?.cause?.errors) && error.cause.errors.some((item) => codes.has(item?.code)));
 }
 
 function escapeHtml(value) {
@@ -165,46 +180,86 @@ const headers = {
   Authorization: authHeader,
   'Content-Type': 'application/json',
   Accept: 'application/json',
-  'User-Agent': 'DTF-THC-Article-Publisher/1.1'
+  'User-Agent': 'DTF-THC-Article-Publisher/1.2'
 };
 
 async function request(path, options = {}) {
-  const response = await fetch(`${siteUrl}${path}`, {
-    ...options,
-    headers: { ...headers, ...(options.headers || {}) },
-    redirect: 'follow',
-    signal: AbortSignal.timeout(25_000)
-  });
-  const text = await response.text();
-  let body = null;
-  if (text) {
+  const method = String(options.method || 'GET').toUpperCase();
+  const retryTransient = options.retryTransient ?? (method === 'GET');
+  const attempts = Math.max(1, Number(options.attempts || (retryTransient ? 8 : 1)));
+  const fetchOptions = { ...options };
+  delete fetchOptions.retryTransient;
+  delete fetchOptions.attempts;
+  let lastError = null;
+
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
     try {
-      body = JSON.parse(text);
-    } catch {
-      body = { raw: text.slice(0, 1500) };
+      const response = await fetch(`${siteUrl}${path}`, {
+        ...fetchOptions,
+        headers: { ...headers, ...(fetchOptions.headers || {}) },
+        redirect: 'follow',
+        signal: AbortSignal.timeout(25_000)
+      });
+      const text = await response.text();
+      let body = null;
+      if (text) {
+        try {
+          body = JSON.parse(text);
+        } catch {
+          body = { raw: text.slice(0, 1500) };
+        }
+      }
+      if (!response.ok) {
+        const code = body?.code ? ` (${body.code})` : '';
+        const message = body?.message ? `: ${body.message}` : '';
+        const error = new Error(`WordPress request ${path} returned HTTP ${response.status}${code}${message}`);
+        error.status = response.status;
+        throw error;
+      }
+      return body;
+    } catch (error) {
+      lastError = error;
+      if (!retryTransient || !isTransientError(error) || attempt >= attempts) throw error;
+      const delay = Math.min(15_000, 1200 + attempt * 1400);
+      console.warn(`Transient WordPress ${method} failure ${attempt}/${attempts} for ${path}: ${error?.message || error}; retrying in ${delay}ms.`);
+      await sleep(delay);
     }
   }
-  if (!response.ok) {
-    const code = body?.code ? ` (${body.code})` : '';
-    const message = body?.message ? `: ${body.message}` : '';
-    throw new Error(`WordPress request ${path} returned HTTP ${response.status}${code}${message}`);
-  }
-  return body;
+  throw lastError || new Error(`WordPress request ${path} failed.`);
 }
 
-async function ensureTerm(endpoint, name) {
+async function findExactTerm(endpoint, name) {
   const params = new URLSearchParams({ search: name, context: 'edit', per_page: '100' });
   const found = await request(`/wp-json/wp/v2/${endpoint}?${params}`);
   assert(Array.isArray(found), `Unexpected ${endpoint} search response for '${name}'`);
   const exact = found.filter((term) => String(term.name || '').toLowerCase() === name.toLowerCase());
   if (exact.length > 1) throw new Error(`Multiple ${endpoint} terms exactly match '${name}'`);
-  if (exact.length === 1) return exact[0].id;
-  const created = await request(`/wp-json/wp/v2/${endpoint}`, {
-    method: 'POST',
-    body: JSON.stringify({ name })
-  });
-  assert(created?.id, `WordPress did not confirm creation of ${endpoint} '${name}'`);
-  return created.id;
+  return exact[0] || null;
+}
+
+async function ensureTerm(endpoint, name) {
+  const existing = await findExactTerm(endpoint, name);
+  if (existing) return existing.id;
+
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    try {
+      const created = await request(`/wp-json/wp/v2/${endpoint}`, {
+        method: 'POST',
+        body: JSON.stringify({ name }),
+        retryTransient: false
+      });
+      assert(created?.id, `WordPress did not confirm creation of ${endpoint} '${name}'`);
+      return created.id;
+    } catch (error) {
+      if (!isTransientError(error)) throw error;
+      console.warn(`Create response for ${endpoint} '${name}' was ambiguous: ${error.message}. Checking exact term before retry.`);
+      const observed = await findExactTerm(endpoint, name);
+      if (observed) return observed.id;
+      if (attempt >= 3) throw error;
+      await sleep(attempt * 2500);
+    }
+  }
+  throw new Error(`Could not safely ensure ${endpoint} '${name}'`);
 }
 
 async function getPostBySlug(slug) {
@@ -213,6 +268,40 @@ async function getPostBySlug(slug) {
   assert(Array.isArray(posts), `Unexpected post response for '${slug}'`);
   if (posts.length > 1) throw new Error(`Expected at most one WordPress post for slug '${slug}'; found ${posts.length}`);
   return posts[0] || null;
+}
+
+async function saveArticle(article, existing, payload) {
+  if (existing) {
+    return request(`/wp-json/wp/v2/posts/${existing.id}`, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+      retryTransient: true
+    });
+  }
+
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    try {
+      return await request('/wp-json/wp/v2/posts', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+        retryTransient: false
+      });
+    } catch (error) {
+      if (!isTransientError(error)) throw error;
+      console.warn(`Create response for article '${article.slug}' was ambiguous: ${error.message}. Checking exact slug before retry.`);
+      const observed = await getPostBySlug(article.slug);
+      if (observed) {
+        return request(`/wp-json/wp/v2/posts/${observed.id}`, {
+          method: 'POST',
+          body: JSON.stringify(payload),
+          retryTransient: true
+        });
+      }
+      if (attempt >= 3) throw error;
+      await sleep(attempt * 2500);
+    }
+  }
+  throw new Error(`Could not safely publish article '${article.slug}'`);
 }
 
 await mkdir(join(backupDir, 'posts'), { recursive: true });
@@ -245,8 +334,7 @@ for (const article of articles) {
     tags: tagIds
   };
 
-  const endpoint = existing ? `/wp-json/wp/v2/posts/${existing.id}` : '/wp-json/wp/v2/posts';
-  const saved = await request(endpoint, { method: 'POST', body: JSON.stringify(payload) });
+  const saved = await saveArticle(article, existing, payload);
   assert(saved?.id && saved?.slug === article.slug, `WordPress did not confirm '${article.slug}'`);
 
   const result = {

@@ -1,6 +1,9 @@
+import dns from 'node:dns';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import process from 'node:process';
+
+dns.setDefaultResultOrder('ipv4first');
 
 const siteUrl = (process.env.WP_SITE_URL || 'https://dtfseeds.com').replace(/\/$/, '');
 const username = process.env.WP_API_USERNAME || '';
@@ -18,7 +21,7 @@ const headers = {
   Authorization: authHeader,
   'Content-Type': 'application/json',
   Accept: 'application/json',
-  'User-Agent': 'DTFSeeds-Content-Deployment/1.7'
+  'User-Agent': 'DTFSeeds-Content-Deployment/1.8'
 };
 
 // WordPress owns the editorial/root pages below. /seeds/ and /seeds/* are
@@ -64,28 +67,71 @@ function editableContent(page) {
   return normalizeText(page?.content?.raw || page?.content?.rendered || '');
 }
 
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function isTransientError(error) {
+  const status = Number(error?.status || 0);
+  if (status === 408 || status === 425 || status === 429 || status >= 500) return true;
+  if (error instanceof TypeError || error?.name === 'TimeoutError' || error?.name === 'AbortError') return true;
+  const codes = new Set([
+    'ETIMEDOUT',
+    'ECONNRESET',
+    'ECONNREFUSED',
+    'EAI_AGAIN',
+    'ENETUNREACH',
+    'UND_ERR_CONNECT_TIMEOUT',
+    'UND_ERR_SOCKET'
+  ]);
+  return codes.has(error?.code) ||
+    codes.has(error?.cause?.code) ||
+    (Array.isArray(error?.cause?.errors) && error.cause.errors.some((item) => codes.has(item?.code)));
+}
+
 async function request(path, options = {}) {
-  const response = await fetch(`${siteUrl}${path}`, {
-    ...options,
-    headers: { ...headers, ...(options.headers || {}) },
-    redirect: 'follow',
-    signal: AbortSignal.timeout(20_000)
-  });
-  const text = await response.text();
-  let body = null;
-  if (text) {
+  const method = String(options.method || 'GET').toUpperCase();
+  const retryTransient = options.retryTransient ?? (method === 'GET');
+  const attempts = Math.max(1, Number(options.attempts || (retryTransient ? 8 : 1)));
+  const fetchOptions = { ...options };
+  delete fetchOptions.retryTransient;
+  delete fetchOptions.attempts;
+  let lastError = null;
+
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
     try {
-      body = JSON.parse(text);
-    } catch {
-      body = { raw: text.slice(0, 1000) };
+      const response = await fetch(`${siteUrl}${path}`, {
+        ...fetchOptions,
+        headers: { ...headers, ...(fetchOptions.headers || {}) },
+        redirect: 'follow',
+        signal: AbortSignal.timeout(25_000)
+      });
+      const text = await response.text();
+      let body = null;
+      if (text) {
+        try {
+          body = JSON.parse(text);
+        } catch {
+          body = { raw: text.slice(0, 1000) };
+        }
+      }
+      if (!response.ok) {
+        const code = body?.code ? ` (${body.code})` : '';
+        const message = body?.message ? `: ${body.message}` : '';
+        const error = new Error(`WordPress request ${path} returned HTTP ${response.status}${code}${message}`);
+        error.status = response.status;
+        throw error;
+      }
+      return { response, body };
+    } catch (error) {
+      lastError = error;
+      if (!retryTransient || !isTransientError(error) || attempt >= attempts) throw error;
+      const delay = Math.min(15_000, 1200 + attempt * 1400);
+      console.warn(`Transient WordPress ${method} failure ${attempt}/${attempts} for ${path}: ${error?.message || error}; retrying in ${delay}ms.`);
+      await sleep(delay);
     }
   }
-  if (!response.ok) {
-    const code = body?.code ? ` (${body.code})` : '';
-    const message = body?.message ? `: ${body.message}` : '';
-    throw new Error(`WordPress request ${path} returned HTTP ${response.status}${code}${message}`);
-  }
-  return { response, body };
+  throw lastError || new Error(`WordPress request ${path} failed.`);
 }
 
 async function getPublishedPageBySlug(slug) {
@@ -99,19 +145,43 @@ async function getPublishedPageBySlug(slug) {
 }
 
 async function createPage(slug, title, content) {
-  const { body } = await request('/wp-json/wp/v2/pages', {
-    method: 'POST',
-    body: JSON.stringify({ slug, title, content, status: 'publish' })
-  });
-  if (!body?.id) throw new Error(`WordPress did not return an ID while creating /${slug}/`);
-  if (body?.status !== 'publish') throw new Error(`WordPress did not publish newly created /${slug}/`);
-  return body;
+  const payload = JSON.stringify({ slug, title, content, status: 'publish' });
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    try {
+      const { body } = await request('/wp-json/wp/v2/pages', {
+        method: 'POST',
+        body: payload,
+        retryTransient: false
+      });
+      if (!body?.id) throw new Error(`WordPress did not return an ID while creating /${slug}/`);
+      if (body?.status !== 'publish') throw new Error(`WordPress did not publish newly created /${slug}/`);
+      return body;
+    } catch (error) {
+      if (!isTransientError(error)) throw error;
+      console.warn(`Create response for /${slug}/ was ambiguous: ${error.message}. Checking the canonical slug before any retry.`);
+      const observed = await getPublishedPageBySlug(slug);
+      if (observed) {
+        if (
+          editableTitle(observed) !== normalizeText(title) ||
+          editableContent(observed) !== normalizeText(content) ||
+          observed.status !== 'publish'
+        ) {
+          return updatePage(observed, title, content);
+        }
+        return observed;
+      }
+      if (attempt >= 3) throw error;
+      await sleep(attempt * 2500);
+    }
+  }
+  throw new Error(`Could not safely create /${slug}/`);
 }
 
 async function updatePage(page, title, content) {
   const { body } = await request(`/wp-json/wp/v2/pages/${page.id}`, {
     method: 'POST',
-    body: JSON.stringify({ title, content, status: 'publish' })
+    body: JSON.stringify({ title, content, status: 'publish' }),
+    retryTransient: true
   });
   if (!body?.id || body.id !== page.id) throw new Error(`WordPress did not confirm page ${page.id}`);
   return body;
@@ -130,7 +200,8 @@ async function draftExactLegacyPost(title) {
     await writeFile(join(backupDir, `legacy-post-${post.id}.json`), `${JSON.stringify(post, null, 2)}\n`, 'utf8');
     await request(`/wp-json/wp/v2/posts/${post.id}`, {
       method: 'POST',
-      body: JSON.stringify({ status: 'draft' })
+      body: JSON.stringify({ status: 'draft' }),
+      retryTransient: true
     });
     drafted += 1;
     console.log(`Drafted obsolete generated post: ${title} (post ID ${post.id})`);
@@ -271,7 +342,8 @@ try {
       body: JSON.stringify({
         show_on_front: 'page',
         page_on_front: expectedFrontPageId
-      })
+      }),
+      retryTransient: true
     });
 
     if (
@@ -306,7 +378,8 @@ try {
       await writeFile(join(backupDir, 'pages', 'blog-posts-page-before.json'), `${JSON.stringify(postsPage.body, null, 2)}\n`, 'utf8');
       const updatedSettings = await request('/wp-json/wp/v2/settings', {
         method: 'POST',
-        body: JSON.stringify({ page_for_posts: 0 })
+        body: JSON.stringify({ page_for_posts: 0 }),
+        retryTransient: true
       });
       if (Number(updatedSettings.body?.page_for_posts || 0) !== 0) {
         throw new Error('WordPress did not detach /blog/ from page_for_posts');
