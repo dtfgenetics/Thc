@@ -3,9 +3,14 @@
 const PLAYER_SIZE = { width: 34, height: 46 };
 const DEFAULTS = Object.freeze({
   moveSpeed: 270,
+  groundAcceleration: 2600,
+  groundDeceleration: 3200,
+  airAcceleration: 1600,
+  airDeceleration: 700,
   jumpSpeed: 640,
   doubleJumpSpeed: 590,
   gravity: 1450,
+  jumpCutGravityMultiplier: 2.35,
   maxFallSpeed: 900,
   coyoteTime: 0.11,
   jumpBuffer: 0.12,
@@ -18,6 +23,12 @@ const DEFAULTS = Object.freeze({
 
 function overlaps(a, b) {
   return a.x < b.x + b.width && a.x + a.width > b.x && a.y < b.y + b.height && a.y + a.height > b.y;
+}
+
+function approach(current, target, maxDelta) {
+  if (current < target) return Math.min(target, current + maxDelta);
+  if (current > target) return Math.max(target, current - maxDelta);
+  return target;
 }
 
 function centerDistance(a, b) {
@@ -141,7 +152,10 @@ function stepPlayer(inputPlayer, input, level, dt, config = DEFAULTS) {
   const speedMultiplier = player.power.speedTimer > 0 ? config.speedBoostMultiplier : 1;
   const jumpMultiplier = player.power.jumpTimer > 0 ? config.jumpBoostMultiplier : 1;
   const direction = (input.right ? 1 : 0) - (input.left ? 1 : 0);
-  player.vx = direction * config.moveSpeed * speedMultiplier;
+  const targetVx = direction * config.moveSpeed * speedMultiplier;
+  const acceleration = player.grounded ? config.groundAcceleration : config.airAcceleration;
+  const deceleration = player.grounded ? config.groundDeceleration : config.airDeceleration;
+  player.vx = approach(player.vx, targetVx, (direction === 0 ? deceleration : acceleration) * step);
 
   let jumped = false;
   if (player.jumpBuffer > 0 && player.coyote > 0) {
@@ -166,7 +180,9 @@ function stepPlayer(inputPlayer, input, level, dt, config = DEFAULTS) {
   for (const platform of level.platforms) solidCollisionX(player, platform);
 
   player.grounded = false;
-  player.vy = Math.min(config.maxFallSpeed, player.vy + config.gravity * step);
+  const jumpCut = !jumped && input.jumpHeld === false && player.vy < 0;
+  const gravityMultiplier = jumpCut ? config.jumpCutGravityMultiplier : 1;
+  player.vy = Math.min(config.maxFallSpeed, player.vy + config.gravity * gravityMultiplier * step);
   player.y += player.vy * step;
   for (const platform of level.platforms) solidCollisionY(player, platform, config);
 
@@ -226,6 +242,8 @@ function stepPlayer(inputPlayer, input, level, dt, config = DEFAULTS) {
 }
 
 const BEST_KEY = 'dtf-seed-man-best-v1';
+const CAMERA_FOLLOW_RATE = 7.7;
+const CAMERA_LOOK_AHEAD_SECONDS = 0.18;
 const canvas = document.querySelector('#game');
 const ctx = canvas?.getContext('2d');
 const ui = {
@@ -365,6 +383,7 @@ function keyState(event, down) {
     else if (!down) input.jumpHeld = false;
   }
 }
+
 window.addEventListener('keydown', (event) => keyState(event, true), { passive: false });
 window.addEventListener('keyup', (event) => keyState(event, false), { passive: false });
 window.addEventListener('blur', clearInput);
@@ -374,6 +393,10 @@ document.addEventListener('visibilitychange', () => {
 
 for (const button of document.querySelectorAll('[data-control]')) {
   const control = button.dataset.control;
+  const clearControl = () => {
+    if (control === 'jump') input.jumpHeld = false;
+    else input[control] = false;
+  };
   const press = (event) => {
     event.preventDefault();
     if (paused) return;
@@ -383,8 +406,7 @@ for (const button of document.querySelectorAll('[data-control]')) {
   };
   const release = (event) => {
     event.preventDefault();
-    if (control === 'jump') input.jumpHeld = false;
-    else input[control] = false;
+    clearControl();
     try {
       if (button.hasPointerCapture?.(event.pointerId)) button.releasePointerCapture(event.pointerId);
     } catch {}
@@ -392,7 +414,7 @@ for (const button of document.querySelectorAll('[data-control]')) {
   button.addEventListener('pointerdown', press);
   button.addEventListener('pointerup', release);
   button.addEventListener('pointercancel', release);
-  button.addEventListener('pointerleave', release);
+  button.addEventListener('lostpointercapture', clearControl);
 }
 
 function powerLabel() {
@@ -437,7 +459,7 @@ function updateHud() {
   } else if (remaining === 0) {
     setObjectiveStatus(`All ${required} sprouts collected · reach the Dream the Future flag!`, 'ready');
   } else {
-    setObjectiveStatus(`Collect ${remaining} more sprout${remaining === 1 ? '' : 's'} · double jump is always available · power-ups are optional`, 'progress');
+    setObjectiveStatus(`Collect ${remaining} more sprout${remaining === 1 ? '' : 's'} · tap jump for a short hop, hold for height · double jump available`, 'progress');
   }
 }
 
@@ -513,13 +535,17 @@ function drawPickup(pickup) {
   if (player.power.magnetTimer > 0 && centerDistance(player, pickup) <= DEFAULTS.magnetRadius * 1.5) {
     ctx.strokeStyle = '#7344bd88';
     ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.arc(0,0,18 + Math.sin(elapsed * 7) * 3,0,Math.PI*2); ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(0, 0, 18 + Math.sin(elapsed * 7) * 3, 0, Math.PI * 2);
+    ctx.stroke();
   }
   ctx.fillStyle = '#5a7e37';
   ctx.beginPath(); ctx.ellipse(-5, -3, 5, 10, -.55, 0, Math.PI * 2); ctx.fill();
   ctx.beginPath(); ctx.ellipse(5, -3, 5, 10, .55, 0, Math.PI * 2); ctx.fill();
   ctx.beginPath(); ctx.ellipse(0, -8, 5, 11, 0, 0, Math.PI * 2); ctx.fill();
-  ctx.strokeStyle = '#29451f'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(0, 2); ctx.lineTo(0, 9); ctx.stroke();
+  ctx.strokeStyle = '#29451f';
+  ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(0, 2); ctx.lineTo(0, 9); ctx.stroke();
   ctx.restore();
 }
 
@@ -539,13 +565,13 @@ function drawPowerup(powerup) {
   ctx.shadowColor = fill;
   ctx.shadowBlur = 12 + Math.sin(elapsed * 5) * 3;
   ctx.fillStyle = fill;
-  ctx.beginPath(); ctx.arc(0,0,13 + Math.sin(elapsed * 4) * 1.5,0,Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(0, 0, 13 + Math.sin(elapsed * 4) * 1.5, 0, Math.PI * 2); ctx.fill();
   ctx.shadowBlur = 0;
   ctx.fillStyle = '#10291d';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.font = '900 12px system-ui';
-  ctx.fillText(glyph,0,0);
+  ctx.fillText(glyph, 0, 0);
   ctx.restore();
 }
 
@@ -553,11 +579,15 @@ function drawCheckpoints() {
   for (const cp of checkpointsFor(level)) {
     const x = cp.x - cameraX;
     const active = player.checkpoint.id === cp.id;
-    ctx.strokeStyle = '#584c35'; ctx.lineWidth = 5; ctx.beginPath(); ctx.moveTo(x + 8, cp.y + cp.height); ctx.lineTo(x + 8, cp.y); ctx.stroke();
+    ctx.strokeStyle = '#584c35';
+    ctx.lineWidth = 5;
+    ctx.beginPath(); ctx.moveTo(x + 8, cp.y + cp.height); ctx.lineTo(x + 8, cp.y); ctx.stroke();
     ctx.fillStyle = active ? '#c8f36a' : '#f3c867';
     ctx.beginPath(); ctx.moveTo(x + 10, cp.y + 4); ctx.lineTo(x + 45, cp.y + 14); ctx.lineTo(x + 10, cp.y + 27); ctx.closePath(); ctx.fill();
     if (active) {
-      ctx.fillStyle = '#173522'; ctx.font = '900 10px system-ui'; ctx.fillText('SAVED', x + 12, cp.y - 7);
+      ctx.fillStyle = '#173522';
+      ctx.font = '900 10px system-ui';
+      ctx.fillText('SAVED', x + 12, cp.y - 7);
     }
   }
 }
@@ -569,10 +599,7 @@ function drawFinish() {
   const ready = remaining === 0;
   ctx.strokeStyle = ready ? '#28482f' : '#5d432e';
   ctx.lineWidth = 6;
-  ctx.beginPath();
-  ctx.moveTo(x + 10, f.y + f.height);
-  ctx.lineTo(x + 10, f.y);
-  ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(x + 10, f.y + f.height); ctx.lineTo(x + 10, f.y); ctx.stroke();
   ctx.fillStyle = ready ? '#10291d' : '#6b4c2c';
   ctx.fillRect(x + 13, f.y + 3, 55, 24);
   ctx.fillStyle = ready ? '#c8f36a' : '#ffe1a0';
@@ -586,13 +613,13 @@ function drawProgressRail() {
   const width = canvas.width - 360;
   const pct = Math.max(0, Math.min(1, player.x / level.finish.x));
   ctx.fillStyle = '#10291d88';
-  ctx.fillRect(x,y,width,8);
+  ctx.fillRect(x, y, width, 8);
   ctx.fillStyle = '#c8f36a';
-  ctx.fillRect(x,y,width * pct,8);
+  ctx.fillRect(x, y, width * pct, 8);
   for (const cp of checkpointsFor(level)) {
     const markerX = x + width * (cp.x / level.finish.x);
     ctx.fillStyle = player.checkpoint.id === cp.id ? '#f3c867' : '#f5f7f4';
-    ctx.beginPath(); ctx.arc(markerX,y + 4,4,0,Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(markerX, y + 4, 4, 0, Math.PI * 2); ctx.fill();
   }
 }
 
@@ -600,20 +627,33 @@ function drawSeedMan() {
   const x = player.x - cameraX;
   const y = player.y;
   const facing = player.vx < 0 ? -1 : 1;
-  ctx.save(); ctx.translate(x + player.width / 2, y + player.height / 2);
+  ctx.save();
+  ctx.translate(x + player.width / 2, y + player.height / 2);
 
   if (player.power.speedTimer > 0) {
-    ctx.strokeStyle = '#f3c86788'; ctx.lineWidth = 3;
-    for (let i = 0; i < 3; i += 1) { ctx.beginPath(); ctx.moveTo(-24 - i * 7, -8 + i * 8); ctx.lineTo(-10 - i * 5, -8 + i * 8); ctx.stroke(); }
+    ctx.strokeStyle = '#f3c86788';
+    ctx.lineWidth = 3;
+    for (let i = 0; i < 3; i += 1) {
+      ctx.beginPath();
+      ctx.moveTo(-24 - i * 7, -8 + i * 8);
+      ctx.lineTo(-10 - i * 5, -8 + i * 8);
+      ctx.stroke();
+    }
   }
   if (player.power.shieldCharges > 0 || player.power.invulnerableTimer > 0) {
-    ctx.strokeStyle = '#85d7ffcc'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(0,0,28 + Math.sin(elapsed * 8) * 2,0,Math.PI*2); ctx.stroke();
+    ctx.strokeStyle = '#85d7ffcc';
+    ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.arc(0, 0, 28 + Math.sin(elapsed * 8) * 2, 0, Math.PI * 2); ctx.stroke();
   }
   if (player.state === 'double-jump') {
-    ctx.strokeStyle = '#c8f36aaa'; ctx.lineWidth = 3; ctx.beginPath(); ctx.ellipse(0,23,24,7,0,0,Math.PI*2); ctx.stroke();
+    ctx.strokeStyle = '#c8f36aaa';
+    ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.ellipse(0, 23, 24, 7, 0, 0, Math.PI * 2); ctx.stroke();
   }
 
-  ctx.strokeStyle = '#1b211c'; ctx.lineWidth = 4; ctx.lineCap = 'round';
+  ctx.strokeStyle = '#1b211c';
+  ctx.lineWidth = 4;
+  ctx.lineCap = 'round';
   const limb = player.state === 'run' ? Math.sin(elapsed * 13) * 6 : 0;
   ctx.beginPath(); ctx.moveTo(-10, 7); ctx.lineTo(-17, 17 + limb); ctx.stroke();
   ctx.beginPath(); ctx.moveTo(10, 7); ctx.lineTo(17, 17 - limb); ctx.stroke();
@@ -629,9 +669,15 @@ function drawSeedMan() {
   ctx.fillStyle = '#1b211c';
   ctx.beginPath(); ctx.arc(-5, -4, 2, 0, Math.PI * 2); ctx.arc(5, -4, 2, 0, Math.PI * 2); ctx.fill();
   ctx.beginPath(); ctx.arc(0, 3, 6, .15, Math.PI - .15); ctx.stroke();
-  ctx.fillStyle = '#4b7f35'; ctx.strokeStyle = '#264822'; ctx.lineWidth = 2;
-  for (const [dx,dy,rot] of [[0,-23,0],[-7,-20,-.55],[7,-20,.55]]) {
-    ctx.save(); ctx.translate(dx,dy); ctx.rotate(rot); ctx.beginPath(); ctx.ellipse(0,0,4,9,0,0,Math.PI*2); ctx.fill(); ctx.stroke(); ctx.restore();
+  ctx.fillStyle = '#4b7f35';
+  ctx.strokeStyle = '#264822';
+  ctx.lineWidth = 2;
+  for (const [dx, dy, rot] of [[0,-23,0],[-7,-20,-.55],[7,-20,.55]]) {
+    ctx.save();
+    ctx.translate(dx, dy);
+    ctx.rotate(rot);
+    ctx.beginPath(); ctx.ellipse(0, 0, 4, 9, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    ctx.restore();
   }
   ctx.restore();
 }
@@ -649,11 +695,11 @@ function render() {
 
   if (paused) {
     ctx.fillStyle = '#06110c99';
-    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = '#f5f7f4';
     ctx.textAlign = 'center';
     ctx.font = '900 42px system-ui';
-    ctx.fillText('PAUSED',canvas.width / 2,canvas.height / 2);
+    ctx.fillText('PAUSED', canvas.width / 2, canvas.height / 2);
     ctx.textAlign = 'start';
   }
 }
@@ -672,6 +718,10 @@ function finishGame() {
   }
 }
 
+function cameraBlend(frameSeconds) {
+  return 1 - Math.exp(-CAMERA_FOLLOW_RATE * Math.max(0, frameSeconds));
+}
+
 function frame(timeMs) {
   if (!previous) previous = timeMs;
   const frameTime = Math.min((timeMs - previous) / 1000, .1);
@@ -680,14 +730,23 @@ function frame(timeMs) {
     accumulator += frameTime;
     elapsed += frameTime;
     while (accumulator >= STEP) {
-      player = stepPlayer(player, { left: input.left, right: input.right, jumpPressed: input.jumpQueued }, level, STEP);
+      player = stepPlayer(player, {
+        left: input.left,
+        right: input.right,
+        jumpPressed: input.jumpQueued,
+        jumpHeld: input.jumpHeld
+      }, level, STEP);
       input.jumpQueued = false;
       accumulator -= STEP;
       noteNewPowerup();
-      if (player.finished) { finishGame(); break; }
+      if (player.finished) {
+        finishGame();
+        break;
+      }
     }
-    const targetCamera = Math.max(0, Math.min(level.worldWidth - canvas.width, player.x - canvas.width * .34));
-    cameraX += (targetCamera - cameraX) * .12;
+    const lookAhead = Math.max(-90, Math.min(120, player.vx * CAMERA_LOOK_AHEAD_SECONDS));
+    const targetCamera = Math.max(0, Math.min(level.worldWidth - canvas.width, player.x + lookAhead - canvas.width * .34));
+    cameraX += (targetCamera - cameraX) * cameraBlend(frameTime);
     updateHud();
   }
   render();
@@ -715,7 +774,7 @@ function validateLevel(candidate) {
     candidate.pickups.length !== 24 ||
     candidate.requiredPickups !== 24 ||
     candidate.requiredPickups !== candidate.pickups.length ||
-    candidate.powerups.length < 6 ||
+    candidate.powerups.length < 7 ||
     candidate.checkpoints.length !== 3 ||
     !candidate.spawn ||
     !candidate.finish
@@ -729,7 +788,7 @@ function load() {
   try {
     if (!canvas || !ctx) throw new Error('canvas 2D context unavailable');
     level = validateLevel(readEmbeddedLevel());
-    setObjectiveStatus(`Collect all ${level.requiredPickups} sprouts · double jump enabled · ${level.powerups.length} power-ups · ${level.checkpoints.length} checkpoints`, 'progress');
+    setObjectiveStatus(`Collect all ${level.requiredPickups} sprouts · tap/hold jump control · double jump enabled · ${level.powerups.length} power-ups · ${level.checkpoints.length} checkpoints`, 'progress');
     reset();
   } catch (error) {
     console.error('Sprout Run failed to initialize.', error);
