@@ -1,0 +1,138 @@
+name: Publish Seed Man Production
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/publish-seed-man-production.yml
+      - scripts/publish-seed-man-route-via-wordpress.mjs
+      - site/public-route-patch/games/seed-man-platformer/**
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: publish-seed-man-production
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    environment: production
+    env:
+      GH_TOKEN: ${{ github.token }}
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate canonical r4 source
+        shell: bash
+        run: |
+          set -euo pipefail
+          root=site/public-route-patch/games/seed-man-platformer
+          required=(.htaccess index.html app.js canvas-compat-v1.js seed-man-production-art.js input-guard-v1.js seed-man.css physics.mjs data/level-01.json)
+          for file in "${required[@]}"; do test -s "$root/$file" || { echo "Missing $file" >&2; exit 1; }; done
+          grep -Fq 'Seed Man · Greenhouse Gauntlet' "$root/index.html"
+          grep -Fq '0 / 24' "$root/index.html"
+          grep -Fq 'JUMP ×2' "$root/index.html"
+          grep -Fq '20260830-r4' "$root/index.html"
+          ! grep -Fq 'Original browser vertical slice' "$root/index.html"
+          ! grep -Fq '0 / 8' "$root/index.html"
+          node --check "$root/app.js"
+          node --check "$root/canvas-compat-v1.js"
+          node --check "$root/seed-man-production-art.js"
+          node --check "$root/input-guard-v1.js"
+          node --check scripts/publish-seed-man-route-via-wordpress.mjs
+
+      - name: Atomically publish Seed Man route and purge caches
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/publish-seed-man-route-via-wordpress.mjs | tee "$RUNNER_TEMP/seed-man-publish.json"
+          grep -Eq '"server_verified"[[:space:]]*:[[:space:]]*true' "$RUNNER_TEMP/seed-man-publish.json"
+          grep -Eq '"release"[[:space:]]*:[[:space:]]*"20260830-r4"' "$RUNNER_TEMP/seed-man-publish.json"
+
+      - name: Verify origin and bare visitor URL
+        shell: bash
+        run: |
+          set -euo pipefail
+          url='https://dtfseeds.com/games/seed-man-platformer/'
+          verify_body() {
+            local body="$1"
+            grep -Fq 'Seed Man · Greenhouse Gauntlet' "$body"
+            grep -Fq '0 / 24' "$body"
+            grep -Fq 'JUMP ×2' "$body"
+            grep -Fq '20260830-r4' "$body"
+            ! grep -Fq 'Original browser vertical slice' "$body"
+            ! grep -Fq '0 / 8' "$body"
+          }
+
+          origin_ok=0
+          for attempt in {1..12}; do
+            body="$RUNNER_TEMP/origin.html"
+            headers="$RUNNER_TEMP/origin.headers"
+            curl -fsSL --retry 2 --retry-delay 2 -D "$headers" -o "$body" \
+              -H 'Cache-Control: no-cache, no-store, max-age=0' \
+              -H 'Pragma: no-cache' \
+              "${url}?dtf_seed_origin=${GITHUB_RUN_ID}-${attempt}"
+            if verify_body "$body"; then origin_ok=1; break; fi
+            sleep $((attempt * 2))
+          done
+          test "$origin_ok" = 1 || { echo 'Cache-busted origin still does not serve r4.' >&2; cat "$RUNNER_TEMP/origin.headers" >&2 || true; exit 1; }
+
+          bare_ok=0
+          for attempt in {1..12}; do
+            body="$RUNNER_TEMP/bare.html"
+            headers="$RUNNER_TEMP/bare.headers"
+            curl -fsSL --retry 2 --retry-delay 2 -D "$headers" -o "$body" "$url"
+            if verify_body "$body"; then bare_ok=1; break; fi
+            echo "Bare URL attempt $attempt still stale; response cache headers:"
+            grep -Ei '^(age|cache-control|cf-cache-status|x-litespeed-cache|x-litespeed-cache-control|x-cache|x-hostinger-cache):' "$headers" || true
+            sleep $((attempt * 3))
+          done
+          test "$bare_ok" = 1 || { echo 'Bare visitor URL still serves stale Seed Man after atomic publish and purge.' >&2; cat "$RUNNER_TEMP/bare.headers" >&2 || true; exit 1; }
+
+          for asset in app.js canvas-compat-v1.js seed-man-production-art.js input-guard-v1.js seed-man.css physics.mjs data/level-01.json; do
+            curl -fsSL --retry 4 --retry-delay 3 "${url}${asset}" -o "$RUNNER_TEMP/$(basename "$asset")"
+          done
+          grep -Fq 'seed-man-production-v1' "$RUNNER_TEMP/seed-man-production-art.js"
+          grep -Fq 'seed-man-locked-v1' "$RUNNER_TEMP/seed-man-production-art.js"
+          grep -Fq 'willReadFrequently' "$RUNNER_TEMP/canvas-compat-v1.js"
+          grep -Fq '"worldWidth": 7800' "$RUNNER_TEMP/level-01.json"
+          grep -Fq '"requiredPickups": 24' "$RUNNER_TEMP/level-01.json"
+
+      - name: Run live browser gameplay acceptance
+        shell: bash
+        run: |
+          set -euo pipefail
+          run_url="$(gh workflow run seed-man-live-browser-acceptance.yml --ref main)"
+          run_id="${run_url##*/}"
+          [[ "$run_id" =~ ^[0-9]+$ ]] || { echo "Could not parse browser acceptance run: $run_url" >&2; exit 1; }
+          echo "Live browser acceptance run: $run_id"
+          gh run watch "$run_id" --exit-status
+
+      - name: Production summary
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo '## Seed Man production publish'
+            echo
+            echo "- Source SHA: $GITHUB_SHA"
+            echo '- Release: `20260830-r4`'
+            echo '- Route: https://dtfseeds.com/games/seed-man-platformer/'
+            echo '- Publication method: atomic route replacement with server-side SHA-256 verification'
+            echo '- Cache handling: LiteSpeed URL purge + purge-all + WordPress cache flush'
+            echo '- Visitor verification: bare URL required to contain r4 markers and reject retired 8-sprout markers'
+          } >> "$GITHUB_STEP_SUMMARY"
