@@ -1,0 +1,4 @@
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteRule ^api-v2\.php$ api-v3.php [L]
+</IfModule>
