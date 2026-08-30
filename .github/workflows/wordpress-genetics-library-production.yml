@@ -16,6 +16,9 @@ on:
       - 'scripts/validate-genetics-library-coherence.mjs'
       - 'scripts/validate-genetics-commerce.mjs'
       - 'scripts/publish-wordpress-genetics-library-cdn.mjs'
+      - 'scripts/publish-wordpress-genetics-library-cdn-core.mjs'
+      - 'scripts/reconcile-wordpress-genetics-duplicate-pages.mjs'
+      - 'scripts/force-original-image-accept.mjs'
       - 'scripts/publish-woocommerce-strain-card-images-cdn.mjs'
       - 'scripts/audit-genetics-cdn-sources.mjs'
   workflow_run:
