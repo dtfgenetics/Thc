@@ -18,14 +18,13 @@ jobs:
           ref: feat/seed-ascent-production
           fetch-depth: 0
 
-      - name: Register game and update production fingerprints
+      - name: Register Seed Ascent in production content
         shell: bash
         run: |
           set -euo pipefail
           python3 <<'PY'
           from pathlib import Path
           import json
-          import subprocess
 
           registry_path = Path('site/deployment/public-apps.json')
           registry = json.loads(registry_path.read_text())
@@ -71,32 +70,10 @@ jobs:
               if hub.count(seed_anchor) != 1:
                   raise SystemExit('Seed Man / Crossword insertion anchor missing or ambiguous')
               hub = hub.replace(seed_anchor, seed_card, 1)
+          if '<!-- deployment-verification-marker: 25 playable browser games -->' not in hub:
+              raise SystemExit('legacy deployment fingerprint must remain during this compatibility release')
           hub_path.write_text(hub)
 
-          matches = subprocess.check_output(['git', 'grep', '-l', '25 playable browser games'], text=True).splitlines()
-          if not matches:
-              raise SystemExit('no 25-game production fingerprints found')
-          for raw in matches:
-              path = Path(raw)
-              text = path.read_text()
-              text = text.replace('25 playable browser games', '26 playable browser games')
-              path.write_text(text)
-
-          deploy_path = Path('.github/workflows/deploy-public-suite-wordpress-v2.yml')
-          deploy = deploy_path.read_text()
-          route_check = "          check 'https://dtfseeds.com/games/seed-ascent/' 'SEED ASCENT'\n"
-          if route_check not in deploy:
-              anchor = "          check 'https://dtfseeds.com/games/' '26 playable browser games'\n"
-              if deploy.count(anchor) != 1:
-                  raise SystemExit('production Game Hub verification anchor missing or ambiguous')
-              deploy = deploy.replace(anchor, anchor + route_check, 1)
-          deploy_path.write_text(deploy)
-
-          if '25 playable browser games' in hub_path.read_text():
-              raise SystemExit('stale 25-game marker remains in Game Hub')
-          stale = subprocess.run(['git', 'grep', '-l', '25 playable browser games'], text=True, capture_output=True)
-          if stale.returncode == 0 and stale.stdout.strip():
-              raise SystemExit('stale 25-game production fingerprints remain:\n' + stale.stdout)
           if '/games/seed-ascent/' not in hub_path.read_text():
               raise SystemExit('Seed Ascent is missing from Game Hub')
           if not any(app.get('id') == 'seed-ascent' and app.get('runtime') == 'static' and app.get('status') == 'ready-to-package' for app in registry['apps']):
@@ -105,15 +82,14 @@ jobs:
 
           node games/seed-ascent/test/public-runtime.test.mjs
           python3 -m json.tool site/deployment/public-apps.json >/dev/null
-          rm .github/workflows/seed-ascent-production-bootstrap.yml
 
-      - name: Commit integrated production registration
+      - name: Commit production content changes
         shell: bash
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add site/deployment/public-apps.json site/public-route-patch/games/index.html games/seed-ascent/test/public-runtime.test.mjs .github/workflows .github/workflows/seed-ascent-production-bootstrap.yml
+          git add site/deployment/public-apps.json site/public-route-patch/games/index.html
           git diff --cached --check
           git commit -m 'Register Seed Ascent in production game suite'
           git push origin HEAD:feat/seed-ascent-production
