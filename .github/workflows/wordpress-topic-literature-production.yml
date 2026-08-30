@@ -8,6 +8,7 @@ on:
       - scripts/publish-wordpress-topic-literature.mjs
       - scripts/publish-wordpress-infographics-canonical.sh
       - scripts/publish-wordpress-infographics-canonical-v2.sh
+      - scripts/publish-wordpress-infographics-resilient.sh
       - scripts/assemble-outdoor-quantification-v1.mjs
       - site/wordpress/education/topic-literature.json
       - site/wordpress/education/outdoor-quantification-v1.json
@@ -63,7 +64,7 @@ jobs:
           node-version: 22
 
       - name: Reassert the complete canonical infographic and literature state
-        run: bash scripts/publish-wordpress-infographics-canonical-v2.sh
+        run: bash scripts/publish-wordpress-infographics-resilient.sh
 
       - name: Upload final-owner evidence
         if: always()
@@ -75,5 +76,6 @@ jobs:
             /tmp/infographic-bulk-import-report.json
             ${{ runner.temp }}/infographic-library.html
             ${{ runner.temp }}/outdoor.html
+            ${{ runner.temp }}/infographic-transaction-attempt-*.log
           if-no-files-found: warn
           retention-days: 30
