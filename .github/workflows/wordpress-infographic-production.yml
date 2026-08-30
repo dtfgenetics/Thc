@@ -19,6 +19,7 @@ on:
       - scripts/assemble-outdoor-quantification-v1.mjs
       - scripts/enhance-wordpress-outdoor-quantification-v1.mjs
       - scripts/flush-hostinger-litespeed-mcp.mjs
+      - scripts/publish-wordpress-infographics-canonical.sh
       - .github/workflows/wordpress-infographic-production.yml
   workflow_run:
     workflows:
@@ -34,49 +35,6 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  preflight:
-    if: >-
-      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success') ||
-      github.event_name == 'workflow_dispatch' ||
-      github.event_name == 'push' ||
-      (github.event_name == 'issue_comment' &&
-       github.event.issue.number == 182 &&
-       github.event.comment.body == '/publish-infographics' &&
-       github.event.comment.user.login == github.repository_owner)
-    name: Expose protected infographic production run
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - name: Report protected publisher launch
-        continue-on-error: true
-        uses: actions/github-script@v7
-        with:
-          script: |
-            try {
-              const source = context.eventName === 'workflow_run'
-                ? context.payload.workflow_run?.html_url
-                : context.eventName === 'push'
-                  ? `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/commit/${context.sha}`
-                  : context.eventName === 'issue_comment'
-                    ? context.payload.comment?.html_url
-                    : 'manual dispatch';
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: 182,
-                body: [
-                  '## Protected THC infographic production started',
-                  '',
-                  `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-                  `Trigger: **${context.eventName}**`,
-                  `Source: ${source}`,
-                  'This run publishes the quality-gated asset set, purges the visitor cache, and fails closed unless every eligible infographic card is visible on the public library.'
-                ].join('\n')
-              });
-            } catch (error) {
-              core.warning(`Could not post infographic launch report: ${error.message}`);
-            }
-
   publish:
     if: >-
       (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success') ||
@@ -86,8 +44,7 @@ jobs:
        github.event.issue.number == 182 &&
        github.event.comment.body == '/publish-infographics' &&
        github.event.comment.user.login == github.repository_owner)
-    name: Publish and verify complete infographic asset set
-    needs: preflight
+    name: Canonical infographic publication transaction
     runs-on: ubuntu-latest
     timeout-minutes: 55
     environment: production
@@ -114,174 +71,11 @@ jobs:
         with:
           node-version: 22
 
-      - name: Validate publishers, source contracts, curriculum, and production access
+      - name: Publish the complete approved infographic set
         shell: bash
-        run: |
-          set -euo pipefail
-          node --check scripts/import-wordpress-infographic-remote-batch.mjs
-          node --check scripts/stage-eligible-infographics.mjs
-          node --check scripts/deploy-wordpress-infographic-library-rest.mjs
-          node --check scripts/publish-wordpress-topic-literature.mjs
-          node --check scripts/assemble-outdoor-quantification-v1.mjs
-          node --check scripts/enhance-wordpress-outdoor-quantification-v1.mjs
-          node --check scripts/flush-hostinger-litespeed-mcp.mjs
-          node -e "const m=require('./site/wordpress/imports/infographic-bulk-import.json'); if(m.schemaVersion!==1||!Array.isArray(m.assets)) process.exit(1)"
-          node -e "const c=require('./site/wordpress/assets/infographics/placement-rules.json'); if(c.schemaVersion<2||!c.primaryOverrides?.length) process.exit(1)"
-          node -e "const e=require('./site/wordpress/assets/infographics/infographic-exclusions.json'); if(!e.neverUseOnInfographicSurfaces||!e.excludePathFragments?.includes('pdf-pages/')) process.exit(1)"
-          node -e "const d=require('./site/wordpress/education/topic-literature.json'); if(!Array.isArray(d.topics)||d.topics.length<10||d.topics.some(t=>!Array.isArray(t.sections)||t.sections.length<4)) process.exit(1)"
-          node scripts/assemble-outdoor-quantification-v1.mjs --write > "$RUNNER_TEMP/outdoor-assembly.json"
-          node -e "const r=require(process.argv[1]); if(r.sections!==8||r.subtopics!==32||r.metrics<100) throw new Error('Outdoor curriculum contract failed')" "$RUNNER_TEMP/outdoor-assembly.json"
-          node scripts/enhance-wordpress-outdoor-quantification-v1.mjs --validate-only > "$RUNNER_TEMP/outdoor-validation.json"
-          node -e "const r=require(process.argv[1]); if(r.sections!==8||r.subtopics!==32||r.metrics<100) throw new Error('Outdoor publication contract failed')" "$RUNNER_TEMP/outdoor-validation.json"
-          test -n "${WP_API_USERNAME:-}"
-          test -n "${WP_API_PASSWORD:-}"
+        run: bash scripts/publish-wordpress-infographics-canonical.sh
 
-      - name: Import queued infographic images
-        shell: bash
-        run: |
-          set -euo pipefail
-          node scripts/import-wordpress-infographic-remote-batch.mjs
-          test -s "$BULK_IMPORT_REPORT"
-          quarantined="$(node -e "const r=require(process.argv[1]); process.stdout.write(String(r.quarantined || 0))" "$BULK_IMPORT_REPORT")"
-          echo "Remote queue items quarantined: $quarantined"
-
-      - name: Persist newly imported canonical image assets
-        shell: bash
-        run: |
-          set -euo pipefail
-          git config user.name 'DTF Bulk Image Publisher'
-          git config user.email 'actions@users.noreply.github.com'
-          git add site/wordpress/assets/infographics
-          if ! git diff --cached --quiet; then
-            git commit -m 'Import queued THC infographic assets'
-            git pull --rebase origin main
-            git push origin HEAD:main
-          fi
-
-      - name: Stage only eligible full-sheet infographics
-        id: quality
-        shell: bash
-        run: |
-          set -euo pipefail
-          node scripts/stage-eligible-infographics.mjs
-          report="$BACKUP_ROOT/infographic-quality-gate.json"
-          test -s "$report"
-          echo "source_count=$(node -p "require(process.argv[1]).sourceImageCount" "$report")" >> "$GITHUB_OUTPUT"
-          echo "eligible_count=$(node -p "require(process.argv[1]).eligibleImageCount" "$report")" >> "$GITHUB_OUTPUT"
-          echo "excluded_count=$(node -p "require(process.argv[1]).excludedImageCount" "$report")" >> "$GITHUB_OUTPUT"
-
-      - name: Normalize WebP media for WordPress
-        shell: bash
-        run: |
-          set -euo pipefail
-          if find "$INFOGRAPHIC_DIR" -type f -iname '*.webp' -print -quit | grep -q .; then
-            if ! command -v ffmpeg >/dev/null 2>&1; then
-              sudo apt-get update -qq
-              sudo apt-get install -y --no-install-recommends ffmpeg
-            fi
-            while IFS= read -r -d '' file; do
-              output="${file%.*}.png"
-              ffmpeg -hide_banner -loglevel error -y -i "$file" -frames:v 1 "$output"
-              test -s "$output"
-              rm "$file"
-            done < <(find "$INFOGRAPHIC_DIR" -type f -iname '*.webp' -print0)
-          fi
-
-      - name: Publish eligible media and topic mappings
-        id: media
-        shell: bash
-        run: |
-          set -euo pipefail
-          node scripts/deploy-wordpress-infographic-library-rest.mjs
-          backup_dir="$(cat "$BACKUP_ROOT/wordpress-infographic-backup-path.txt")"
-          result="$backup_dir/deployment-result.json"
-          test -s "$result"
-          echo "published_count=$(node -p "require(process.argv[1]).sourceImageCount" "$result")" >> "$GITHUB_OUTPUT"
-          echo "uploaded_count=$(node -p "require(process.argv[1]).uploadedMediaCount" "$result")" >> "$GITHUB_OUTPUT"
-          echo "reused_count=$(node -p "require(process.argv[1]).reusedMediaCount" "$result")" >> "$GITHUB_OUTPUT"
-
-      - name: Publish companion literature and searchable index
-        id: literature
-        shell: bash
-        run: |
-          set -euo pipefail
-          node scripts/publish-wordpress-topic-literature.mjs
-          backup_dir="$(cat "$BACKUP_ROOT/topic-literature-backup-path.txt")"
-          report="$backup_dir/topic-literature-report.json"
-          test -s "$report"
-          expected="$(node -p "require(process.argv[1]).eligibleInfographics" "$report")"
-          page_id="$(node -p "require(process.argv[1]).libraryPageId" "$report")"
-          [[ "$expected" -ge 117 ]] || { echo "Eligible WordPress infographic set regressed below 117: $expected" >&2; exit 1; }
-          echo "expected_cards=$expected" >> "$GITHUB_OUTPUT"
-          echo "page_id=$page_id" >> "$GITHUB_OUTPUT"
-
-      - name: Publish complete Outdoor field-measurement curriculum
-        env:
-          APPLY_OUTDOOR_QUANT_V1: 'true'
-          BACKUP_ROOT: /tmp/wordpress-infographic-backups/outdoor-quantification
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p "$BACKUP_ROOT"
-          node scripts/enhance-wordpress-outdoor-quantification-v1.mjs
-          report="$(find "$BACKUP_ROOT" -name report.json -type f -print -quit)"
-          test -n "$report"
-          node -e "const r=require(process.argv[1]); if(r.validation.sections!==8||r.validation.subtopics!==32||r.validation.metrics<100) throw new Error('Published Outdoor contract failed')" "$report"
-
-      - name: Purge Hostinger LiteSpeed before visitor verification
-        id: cache
-        shell: bash
-        run: |
-          set -euo pipefail
-          ok=0
-          for attempt in 1 2 3; do
-            if node scripts/flush-hostinger-litespeed-mcp.mjs; then
-              ok=1
-              break
-            fi
-            sleep $((attempt * 4))
-          done
-          [[ "$ok" -eq 1 ]] || { echo 'LiteSpeed cache purge failed after retries.' >&2; exit 1; }
-          sleep 5
-
-      - name: Verify every eligible infographic is visitor-facing
-        id: verify
-        env:
-          EXPECTED_CARDS: ${{ steps.literature.outputs.expected_cards }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          fetch_until() {
-            local url="$1" output="$2" marker="$3"
-            local ok=0
-            for attempt in 1 2 3 4 5 6 7 8 9 10; do
-              if curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
-                --connect-timeout 10 --max-time 60 \
-                -H 'Cache-Control: no-cache, no-store, max-age=0' \
-                -H 'Pragma: no-cache' \
-                "${url}?dtf_infographics=${GITHUB_RUN_ID}-${attempt}-$(date +%s%N)" -o "$output" && \
-                grep -Fqi "$marker" "$output"; then
-                ok=1
-                break
-              fi
-              sleep 6
-            done
-            [[ "$ok" -eq 1 ]] || { echo "Visitor route did not converge: $url" >&2; exit 1; }
-          }
-
-          library="$RUNNER_TEMP/infographic-library.html"
-          fetch_until 'https://dtfseeds.com/learn/infographics/' "$library" 'Searchable Infographic Library'
-          grep -Eqi '<img[^>]+wp-content/uploads/' "$library"
-          cards="$(grep -Eo '<article class="thc-visual-card thc-library-card"' "$library" | wc -l | tr -d ' ')"
-          [[ "$cards" -eq "$EXPECTED_CARDS" ]] || { echo "Expected $EXPECTED_CARDS public infographic cards, found $cards" >&2; exit 1; }
-          [[ "$cards" -ge 117 ]] || { echo "Public infographic floor regressed below 117: $cards" >&2; exit 1; }
-          ! grep -Eqi 'THC-ENC-001_VIS-|V04-SUP-|pdf-pages/' "$library" || { echo 'Reference-only/support assets leaked into the infographic library.' >&2; exit 1; }
-
-          outdoor="$RUNNER_TEMP/outdoor.html"
-          fetch_until 'https://dtfseeds.com/learn/encyclopedia/outdoor/' "$outdoor" 'Outdoor'
-          echo "live_card_count=$cards" >> "$GITHUB_OUTPUT"
-
-      - name: Upload infographic deployment evidence
+      - name: Upload canonical infographic publication evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -294,17 +88,12 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
-      - name: Report publication without affecting production result
+      - name: Report canonical publication result
         if: always()
         continue-on-error: true
         uses: actions/github-script@v7
         env:
           JOB_STATUS: ${{ job.status }}
-          SOURCE_COUNT: ${{ steps.quality.outputs.source_count }}
-          ELIGIBLE_COUNT: ${{ steps.quality.outputs.eligible_count }}
-          EXCLUDED_COUNT: ${{ steps.quality.outputs.excluded_count }}
-          WORDPRESS_COUNT: ${{ steps.literature.outputs.expected_cards }}
-          LIVE_COUNT: ${{ steps.verify.outputs.live_card_count }}
         with:
           script: |
             try {
@@ -313,19 +102,14 @@ jobs:
                 repo: context.repo.repo,
                 issue_number: 182,
                 body: [
-                  '## THC infographic production',
+                  '## Canonical THC infographic publication',
                   '',
                   `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
                   `Result: **${process.env.JOB_STATUS || 'see run'}**`,
-                  `Source images: **${process.env.SOURCE_COUNT || 'unknown'}**`,
-                  `Quality-gated full-sheet assets: **${process.env.ELIGIBLE_COUNT || 'unknown'}**`,
-                  `Reference/support assets intentionally excluded from infographic surfaces: **${process.env.EXCLUDED_COUNT || 'unknown'}**`,
-                  `Eligible WordPress infographic records: **${process.env.WORDPRESS_COUNT || 'unknown'}**`,
-                  `Visitor-facing infographic cards: **${process.env.LIVE_COUNT || 'not verified'}**`,
                   '',
-                  'The job now fails closed unless the public library contains exactly the eligible WordPress infographic set after a Hostinger/LiteSpeed purge.'
+                  'This is the authoritative WordPress infographic writer. It publishes the complete quality-gated set, rebuilds the searchable library, publishes Outdoor at /learn/outdoor/, purges Hostinger/LiteSpeed, and requires the public card count to equal the eligible WordPress record count.'
                 ].join('\n')
               });
             } catch (error) {
-              core.warning(`Could not post infographic report: ${error.message}`);
+              core.warning(`Could not post infographic result: ${error.message}`);
             }
