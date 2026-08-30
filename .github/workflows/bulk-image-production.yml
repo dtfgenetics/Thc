@@ -43,7 +43,7 @@ jobs:
           node-version: 22
 
       - name: Publish through the canonical single-writer transaction
-        run: bash scripts/publish-wordpress-infographics-canonical-v2.sh
+        run: bash scripts/publish-wordpress-infographics-resilient.sh
 
       - name: Upload publication audit
         if: always()
@@ -55,5 +55,6 @@ jobs:
             /tmp/infographic-bulk-import-report.json
             ${{ runner.temp }}/infographic-library.html
             ${{ runner.temp }}/outdoor.html
+            ${{ runner.temp }}/infographic-transaction-attempt-*.log
           if-no-files-found: warn
           retention-days: 30
