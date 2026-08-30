@@ -1,10 +1,17 @@
 #!/usr/bin/env python3
-"""Synchronize the hardened WordPress Public Suite bridge with public-apps.json.
+"""Synchronize and harden the WordPress Public Suite bridge.
 
 The canonical bridge remains hash-pinned. This module is applied only after that
-base hash passes. It derives only local, static, ready-to-package game routes
-from the canonical registry and widens the bridge with those exact directories.
-No wildcard games/ ownership is permitted.
+base hash passes. It performs two post-hash operations that must stay narrow:
+
+1. harden the upload/commit lease so the same untouched transaction can recover
+   when Hostinger/WordPress temporarily loses visibility of its option-backed
+   deployment lock between requests; and
+2. derive only local, static, ready-to-package game routes from the canonical
+   public-app registry and widen the bridge with those exact directories.
+
+No wildcard games/ ownership is permitted, and lock recovery is forbidden after
+live-target mutation has begun or when a different deployment owns the lock.
 """
 from __future__ import annotations
 
@@ -21,6 +28,90 @@ def _replace_once(payload: bytes, old: bytes, new: bytes, label: str) -> bytes:
     if count != 1:
         raise SystemExit(f"expected exactly one {label} anchor, found {count}")
     return payload.replace(old, new, 1)
+
+
+def _apply_upload_lock_recovery(payload: bytes) -> bytes:
+    """Allow safe lease recovery only before a deployment mutates live targets."""
+    old_chunk_prefix = b"""        'callback' => static function (WP_REST_Request $r) use ($safe_id, $safe_sha, $owns_lock, $state_key) {
+            $id = (string) $r->get_param('deployment_id');
+            $offset = (int) $r->get_param('offset');
+            $chunk_sha = strtolower((string) $r->get_param('chunk_sha256'));
+            $b64 = (string) $r->get_param('data_b64');
+            if (!$safe_id($id) || !$safe_sha($chunk_sha) || !$owns_lock($id)) return new WP_Error('dtf_bad_chunk', 'Invalid or unlocked chunk.', ['status' => 400]);
+            $state = get_option($state_key($id), []);
+            if (!is_array($state) || ($state['status'] ?? '') !== 'uploading') return new WP_Error('dtf_chunk_state', 'Deployment is not accepting chunks.', ['status' => 409]);
+"""
+    new_chunk_prefix = b"""        'callback' => static function (WP_REST_Request $r) use ($safe_id, $safe_sha, $owns_lock, $state_key, $lock_key) {
+            $id = (string) $r->get_param('deployment_id');
+            $offset = (int) $r->get_param('offset');
+            $chunk_sha = strtolower((string) $r->get_param('chunk_sha256'));
+            $b64 = (string) $r->get_param('data_b64');
+            if (!$safe_id($id) || !$safe_sha($chunk_sha)) return new WP_Error('dtf_bad_chunk', 'Invalid chunk metadata.', ['status' => 400]);
+            $state = get_option($state_key($id), []);
+            if (!is_array($state) || ($state['status'] ?? '') !== 'uploading') return new WP_Error('dtf_chunk_state', 'Deployment is not accepting chunks.', ['status' => 409]);
+            $lock_recovered = false;
+            if (!$owns_lock($id)) {
+                if (function_exists('wp_cache_delete')) wp_cache_delete($lock_key, 'options');
+                $lock = get_option($lock_key, []);
+                $lock_id = is_array($lock) ? (string) ($lock['id'] ?? '') : '';
+                $untouched = empty($state['current']) && (!is_array($state['applied'] ?? null) || count($state['applied']) === 0);
+                if (!$untouched) return new WP_Error('dtf_bad_chunk', 'Deployment lock was lost after mutation began.', ['status' => 409]);
+                if ($lock_id !== '' && $lock_id !== $id) return new WP_Error('dtf_bad_chunk', 'A different deployment owns the server lock.', ['status' => 409, 'lock_id' => $lock_id]);
+                if ($lock_id === '') {
+                    if (!add_option($lock_key, ['id' => $id, 'ts' => time()], '', false)) {
+                        if (function_exists('wp_cache_delete')) wp_cache_delete($lock_key, 'options');
+                        $lock = get_option($lock_key, []);
+                        if (!is_array($lock) || ($lock['id'] ?? '') !== $id) return new WP_Error('dtf_bad_chunk', 'Could not safely reacquire deployment lock.', ['status' => 409]);
+                    }
+                    $lock_recovered = true;
+                }
+            }
+            update_option($lock_key, ['id' => $id, 'ts' => time()], false);
+"""
+    payload = _replace_once(payload, old_chunk_prefix, new_chunk_prefix, "upload lock recovery")
+
+    old_chunk_tail = b"""            $state['uploaded_bytes'] = (int) filesize($part);
+            update_option($state_key($id), $state, false);
+            return rest_ensure_response(['ok'=>true,'uploaded_bytes'=>$state['uploaded_bytes']]);
+"""
+    new_chunk_tail = b"""            $state['uploaded_bytes'] = (int) filesize($part);
+            if ($lock_recovered) $state['lock_recovered_at'] = gmdate('c');
+            update_option($state_key($id), $state, false);
+            update_option($lock_key, ['id' => $id, 'ts' => time()], false);
+            return rest_ensure_response(['ok'=>true,'uploaded_bytes'=>$state['uploaded_bytes'],'lock_recovered'=>$lock_recovered]);
+"""
+    payload = _replace_once(payload, old_chunk_tail, new_chunk_tail, "upload lock lease refresh")
+
+    old_commit_prefix = b"""            $id = (string) $r->get_param('deployment_id');
+            if (!$safe_id($id) || !$owns_lock($id)) return new WP_Error('dtf_bad_commit', 'Invalid or unlocked deployment.', ['status' => 400]);
+            $state = get_option($state_key($id), []);
+            if (!is_array($state)) return new WP_Error('dtf_missing_state', 'Deployment state is missing.', ['status' => 404]);
+            if (($state['status'] ?? '') === 'deployed') return rest_ensure_response(['ok'=>true,'status'=>'deployed','recovered'=>true]);
+            if (($state['status'] ?? '') !== 'uploading') return new WP_Error('dtf_commit_state', 'Deployment cannot commit from current state.', ['status' => 409]);
+"""
+    new_commit_prefix = b"""            $id = (string) $r->get_param('deployment_id');
+            if (!$safe_id($id)) return new WP_Error('dtf_bad_commit', 'Invalid deployment identifier.', ['status' => 400]);
+            $state = get_option($state_key($id), []);
+            if (!is_array($state)) return new WP_Error('dtf_missing_state', 'Deployment state is missing.', ['status' => 404]);
+            if (($state['status'] ?? '') === 'deployed') return rest_ensure_response(['ok'=>true,'status'=>'deployed','recovered'=>true]);
+            if (($state['status'] ?? '') !== 'uploading') return new WP_Error('dtf_commit_state', 'Deployment cannot commit from current state.', ['status' => 409]);
+            if (!$owns_lock($id)) {
+                if (function_exists('wp_cache_delete')) wp_cache_delete($lock_key, 'options');
+                $lock = get_option($lock_key, []);
+                $lock_id = is_array($lock) ? (string) ($lock['id'] ?? '') : '';
+                $untouched = empty($state['current']) && (!is_array($state['applied'] ?? null) || count($state['applied']) === 0);
+                if (!$untouched) return new WP_Error('dtf_bad_commit', 'Deployment lock was lost after mutation began.', ['status' => 409]);
+                if ($lock_id !== '' && $lock_id !== $id) return new WP_Error('dtf_bad_commit', 'A different deployment owns the server lock.', ['status' => 409, 'lock_id' => $lock_id]);
+                if ($lock_id === '' && !add_option($lock_key, ['id' => $id, 'ts' => time()], '', false)) {
+                    if (function_exists('wp_cache_delete')) wp_cache_delete($lock_key, 'options');
+                    $lock = get_option($lock_key, []);
+                    if (!is_array($lock) || ($lock['id'] ?? '') !== $id) return new WP_Error('dtf_bad_commit', 'Could not safely reacquire deployment lock.', ['status' => 409]);
+                }
+            }
+            update_option($lock_key, ['id' => $id, 'ts' => time()], false);
+"""
+    payload = _replace_once(payload, old_commit_prefix, new_commit_prefix, "commit lock recovery")
+    return payload
 
 
 def registered_local_static_games(repo_root: pathlib.Path) -> list[str]:
@@ -62,6 +153,7 @@ def _array_values(payload: bytes, variable: bytes) -> set[str]:
 
 
 def patch_payload(payload: bytes, repo_root: pathlib.Path) -> bytes:
+    payload = _apply_upload_lock_recovery(payload)
     registry_targets = registered_local_static_games(repo_root)
 
     existing_targets = _array_values(payload, b"targets")
@@ -134,8 +226,20 @@ def validate_payload(payload: bytes, repo_root: pathlib.Path) -> dict[str, objec
         raise SystemExit("bridge/registry parity failure: " + ", ".join(missing))
     if "games/" in prefixes:
         raise SystemExit("unsafe broad games/ prefix is forbidden")
+
+    lock_markers = (
+        b"$lock_recovered = false;",
+        b"Could not safely reacquire deployment lock.",
+        b"'lock_recovered'=>$lock_recovered",
+        b"Invalid deployment identifier.",
+    )
+    absent_lock_markers = [marker.decode() for marker in lock_markers if marker not in payload]
+    if absent_lock_markers:
+        raise SystemExit("bridge upload-lock recovery missing: " + ", ".join(absent_lock_markers))
+
     return {
         "ok": True,
+        "lockRecovery": True,
         "registeredLocalStaticGames": registry_targets,
         "targets": len(targets),
         "required": len(required),
