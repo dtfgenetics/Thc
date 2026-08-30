@@ -1,0 +1,164 @@
+name: Audit Hostinger WordPress Route Shadows
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - .github/workflows/hostinger-wordpress-route-shadow-audit.yml
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/hostinger-wordpress-route-shadow-audit.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: hostinger-wordpress-route-shadow-audit
+  cancel-in-progress: false
+
+env:
+  BASE_URL: https://dtfseeds.com
+
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate audit remains read-only and narrowly scoped
+        shell: bash
+        run: |
+          set -euo pipefail
+          file='.github/workflows/hostinger-wordpress-route-shadow-audit.yml'
+          grep -Fq 'routes=(shop seeds community contact)' "$file"
+          grep -Fq 'find "$route" -maxdepth 2 -type f' "$file"
+          grep -Fq 'sha256sum' "$file"
+          grep -Fq 'dtf-home' "$file"
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          text = Path('.github/workflows/hostinger-wordpress-route-shadow-audit.yml').read_text()
+          # Inspect only the production audit job so this guard does not match
+          # its own list of prohibited mutation commands.
+          production = text.split('\n  audit:\n', 1)[1]
+          forbidden = re.compile(r'(^|[;&|]\s*)(rm\s+-|mv\s+|rsync\b|scp\b)|file_put_contents|unlink\(', re.M)
+          match = forbidden.search(production)
+          if match:
+              raise SystemExit(f'Read-only audit contains a prohibited mutation command: {match.group(0)!r}')
+          PY
+
+  audit:
+    if: github.event_name != 'pull_request'
+    needs: contract
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: growlens-production
+    env:
+      SSH_HOST: ${{ secrets.HOSTINGER_SSH_HOST }}
+      SSH_PORT: ${{ secrets.HOSTINGER_SSH_PORT }}
+      SSH_USER: ${{ secrets.HOSTINGER_SSH_USER }}
+      SSH_PRIVATE_KEY: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY }}
+      SSH_KNOWN_HOSTS: ${{ secrets.HOSTINGER_SSH_KNOWN_HOSTS }}
+      GROWLENS_PATH: ${{ secrets.HOSTINGER_GROWLENS_PATH }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Validate protected Hostinger connection settings
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${SSH_HOST:?HOSTINGER_SSH_HOST is required}"
+          : "${SSH_USER:?HOSTINGER_SSH_USER is required}"
+          : "${SSH_PRIVATE_KEY:?HOSTINGER_SSH_PRIVATE_KEY is required}"
+          : "${SSH_KNOWN_HOSTS:?HOSTINGER_SSH_KNOWN_HOSTS is required}"
+          : "${GROWLENS_PATH:?HOSTINGER_GROWLENS_PATH is required}"
+          SSH_PORT="${SSH_PORT:-22}"
+          [[ "$SSH_PORT" =~ ^[0-9]+$ ]]
+          case "$GROWLENS_PATH" in
+            */public_html/growlens) ;;
+            *) echo 'GrowLens path must end in /public_html/growlens' >&2; exit 1 ;;
+          esac
+          SITE_ROOT="${GROWLENS_PATH%/growlens}"
+          [[ "$SITE_ROOT" == */public_html ]]
+          [[ "$SITE_ROOT" != *'..'* ]]
+          echo "SSH_PORT=$SSH_PORT" >> "$GITHUB_ENV"
+          echo "SITE_ROOT=$SITE_ROOT" >> "$GITHUB_ENV"
+
+      - name: Configure verified SSH connection
+        shell: bash
+        run: |
+          set -euo pipefail
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+          test -s ~/.ssh/known_hosts
+
+      - name: Read physical route state without mutations
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/route-shadow-audit"
+          ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" "ROOT='$SITE_ROOT' bash -s" > "$RUNNER_TEMP/route-shadow-audit/filesystem.txt" <<'REMOTE'
+          set -euo pipefail
+          cd "$ROOT"
+          routes=(shop seeds community contact)
+          for route in "${routes[@]}"; do
+            echo "=== $route ==="
+            if [[ -e "$route" || -L "$route" ]]; then
+              if [[ -d "$route" ]]; then kind=directory; elif [[ -f "$route" ]]; then kind=file; else kind=other; fi
+              printf 'exists=yes kind=%s\n' "$kind"
+              find "$route" -maxdepth 2 -type f -printf '%P\t%s bytes\n' | sort | head -100
+              if [[ -f "$route/index.html" ]]; then
+                printf 'index_sha256='; sha256sum "$route/index.html" | awk '{print $1}'
+                printf 'index_size='; wc -c < "$route/index.html" | tr -d ' '; echo
+                printf 'static_shell_marker='; if grep -Fq 'assets/dtf-home/dtf-home.css' "$route/index.html"; then echo yes; else echo no; fi
+                printf 'age_gate_marker='; if grep -Fq 'Adult visitors only' "$route/index.html"; then echo yes; else echo no; fi
+                printf 'wordpress_marker='; if grep -Fq '/wp-content/' "$route/index.html"; then echo yes; else echo no; fi
+                printf 'title='; grep -Eio '<title>[^<]+</title>' "$route/index.html" 2>/dev/null | head -1 || true
+              fi
+            else
+              echo 'exists=no'
+            fi
+          done
+          echo '=== root-htaccess-route-lines ==='
+          if [[ -f .htaccess ]]; then
+            grep -Ein '(^|[^a-z])(shop|seeds|community|contact)([^a-z]|$)|DirectoryIndex|RewriteRule' .htaccess | head -200 || true
+          else
+            echo 'root .htaccess missing'
+          fi
+          REMOTE
+          cat "$RUNNER_TEMP/route-shadow-audit/filesystem.txt"
+
+      - name: Capture public route fingerprints
+        shell: bash
+        run: |
+          set -euo pipefail
+          for route in shop seeds community contact; do
+            body="$RUNNER_TEMP/route-shadow-audit/${route}.html"
+            headers="$RUNNER_TEMP/route-shadow-audit/${route}.headers"
+            status="$(curl -4 --silent --show-error --max-redirs 0 \
+              --connect-timeout 15 --max-time 60 \
+              --output "$body" --dump-header "$headers" --write-out '%{http_code}' \
+              -H 'Cache-Control: no-cache, no-store, max-age=0' \
+              -H 'Pragma: no-cache' \
+              "$BASE_URL/$route/?dtf_route_shadow_audit=${GITHUB_RUN_ID}")"
+            printf '%s\tHTTP %s\tbytes=%s\tstatic_shell=%s\n' \
+              "$route" "$status" "$(wc -c < "$body" | tr -d ' ')" \
+              "$(grep -Fq 'assets/dtf-home/dtf-home.css' "$body" && echo yes || echo no)" \
+              | tee -a "$RUNNER_TEMP/route-shadow-audit/public-summary.txt"
+          done
+          cat "$RUNNER_TEMP/route-shadow-audit/public-summary.txt"
+
+      - name: Upload route ownership evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hostinger-wordpress-route-shadow-audit-${{ github.run_id }}
+          path: ${{ runner.temp }}/route-shadow-audit
+          if-no-files-found: warn
+          retention-days: 30
