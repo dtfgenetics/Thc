@@ -16,7 +16,7 @@
   let restored = 0;
   let lost = 0;
 
-  proto.getContext = function patchedGetContext(type, attributes) {
+  function patchedGetContext(type, attributes) {
     if (this.id !== 'game' || type !== '2d') {
       return nativeGetContext.call(this, type, attributes);
     }
@@ -37,7 +37,9 @@
     if (!gameContext) gameContext = nativeGetContext.call(this, type, attributes);
     if (!gameContext) gameContext = nativeGetContext.call(this, type);
     return gameContext;
-  };
+  }
+
+  proto.getContext = patchedGetContext;
 
   const redraw = () => {
     window.requestAnimationFrame(() => {
@@ -69,33 +71,11 @@
   window.addEventListener('resize', redraw, { passive: true });
 
   // app.js is a deferred classic script loaded immediately after this file.
-  // Restore the native prototype after deferred scripts have initialized so the
-  // compatibility request is scoped to Sprout Run rather than the whole page.
+  // Restore the native prototype after deferred scripts initialize so the
+  // compatibility request stays scoped to Sprout Run rather than the page.
   window.addEventListener('DOMContentLoaded', () => {
     if (proto.getContext === patchedGetContext) proto.getContext = nativeGetContext;
   }, { once: true });
-
-  function patchedGetContext(type, attributes) {
-    if (this.id !== 'game' || type !== '2d') {
-      return nativeGetContext.call(this, type, attributes);
-    }
-    const preferred = {
-      ...(attributes || {}),
-      alpha: false,
-      desynchronized: false,
-      willReadFrequently: true,
-    };
-    try {
-      gameContext = nativeGetContext.call(this, type, preferred);
-    } catch (error) {
-      console.warn('Sprout Run software Canvas2D request failed; retrying default context.', error);
-    }
-    if (!gameContext) gameContext = nativeGetContext.call(this, type, attributes);
-    if (!gameContext) gameContext = nativeGetContext.call(this, type);
-    return gameContext;
-  }
-
-  proto.getContext = patchedGetContext;
 
   window.__SPROUT_CANVAS_COMPAT__ = Object.freeze({
     version: VERSION,
