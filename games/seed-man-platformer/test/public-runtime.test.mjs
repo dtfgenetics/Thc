@@ -22,7 +22,7 @@ assert.equal(canonicalLevel.checkpoints.length, 3);
 assert.ok(canonicalLevel.powerups.length >= 7);
 
 assert.doesNotMatch(html, /<script[^>]+type=["']module["']/i, 'public runtime must not depend on module-script MIME handling');
-assert.match(html, /<script\s+src=["']\.\/app\.js["']\s+defer><\/script>/i, 'public runtime should use one deferred classic script');
+assert.match(html, /<script\s+src=["']\.\/app\.js\?v=[^"']+["']\s+defer><\/script>/i, 'public runtime should use a versioned deferred classic script');
 assert.match(html, /JUMP ×2/, 'touch UI must advertise the double-jump control');
 assert.match(html, /id=["']power-count["']/, 'HUD must expose active power-up state');
 assert.match(html, /id=["']jump-count["']/, 'HUD must expose double-jump readiness');
