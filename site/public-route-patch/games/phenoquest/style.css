@@ -13,6 +13,13 @@
   box-sizing: border-box;
 }
 
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
 body {
   margin: 0;
   min-height: 100vh;
@@ -22,6 +29,9 @@ body {
 }
 
 .game-shell {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   min-height: 100vh;
   display: grid;
   place-items: center;
@@ -31,6 +41,8 @@ body {
 .title-card,
 .panel {
   width: min(720px, 100%);
+  max-width: 100%;
+  min-width: 0;
   border: 2px solid rgba(224, 184, 79, 0.55);
   background: linear-gradient(180deg, rgba(35, 51, 31, 0.95), rgba(23, 36, 22, 0.98));
   border-radius: 24px;
@@ -47,14 +59,17 @@ body {
 }
 
 h1 {
-  font-size: clamp(3rem, 10vw, 6rem);
+  max-width: 100%;
+  font-size: clamp(2.65rem, 10vw, 6rem);
   line-height: 0.9;
   margin: 0;
+  overflow-wrap: anywhere;
 }
 
 h2 {
   margin: 8px 0 16px;
   color: var(--accent);
+  overflow-wrap: anywhere;
 }
 
 .tagline,
@@ -65,6 +80,7 @@ h2 {
 
 button {
   appearance: none;
+  max-width: 100%;
   border: 0;
   background: var(--gold);
   color: #1c1404;
@@ -81,12 +97,13 @@ button:focus-visible {
 
 .starter-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr));
   gap: 16px;
   margin: 24px 0;
 }
 
 .starter-card {
+  min-width: 0;
   display: grid;
   gap: 8px;
   text-align: left;
@@ -106,9 +123,11 @@ button:focus-visible {
 .starter-card span,
 .starter-card small {
   color: var(--muted);
+  overflow-wrap: anywhere;
 }
 
 .result-card {
+  min-width: 0;
   display: grid;
   gap: 8px;
   margin: 24px 0;
@@ -129,11 +148,15 @@ button:focus-visible {
   display: grid;
   grid-template-columns: repeat(var(--map-width), var(--tile-size));
   gap: 2px;
-  overflow: auto;
+  overflow-x: auto;
+  overflow-y: hidden;
+  width: 100%;
   max-width: 100%;
+  min-width: 0;
   padding: 10px;
   border-radius: 14px;
   background: rgba(0, 0, 0, 0.25);
+  overscroll-behavior-inline: contain;
 }
 
 .map-tile {
@@ -171,6 +194,8 @@ button:focus-visible {
 
 .movement-controls {
   display: grid;
+  max-width: 100%;
+  min-width: 0;
   justify-items: center;
   gap: 8px;
   margin: 16px 0;
@@ -178,6 +203,7 @@ button:focus-visible {
 
 .movement-controls div {
   display: flex;
+  max-width: 100%;
   gap: 8px;
 }
 
@@ -187,6 +213,7 @@ button:focus-visible {
 
 .encounter-controls {
   display: grid;
+  min-width: 0;
   gap: 6px;
   margin: 18px 0;
 }
@@ -202,7 +229,9 @@ button:focus-visible {
 }
 
 pre {
+  max-width: 100%;
   white-space: pre-wrap;
+  overflow-wrap: anywhere;
   background: rgba(0, 0, 0, 0.28);
   padding: 16px;
   border-radius: 14px;
@@ -210,6 +239,13 @@ pre {
   overflow: auto;
 }
 
+@media (max-width:640px) {
+  .game-shell { padding: 12px; }
+  .title-card,
+  .panel { padding: 20px; }
+  .movement-controls div { flex-wrap: wrap; justify-content: center; }
+  .movement-controls button { min-width: 68px; }
+}
 
 /* DTFSeeds integration navigation */
 .hub-back{position:fixed;z-index:50;top:14px;left:14px;padding:9px 12px;border:1px solid rgba(180,224,190,.38);border-radius:999px;background:rgba(5,16,10,.86);color:#eaf6ec;text-decoration:none;font:800 13px/1 system-ui,sans-serif;backdrop-filter:blur(8px)}
