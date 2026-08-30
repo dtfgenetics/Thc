@@ -83,7 +83,7 @@ jobs:
             await page.screenshot({ path: path.join(out, `${name}.png`), fullPage: true });
             fs.writeFileSync(path.join(out, `${name}.json`), JSON.stringify({ result, errors }, null, 2));
             console.log(name, JSON.stringify({ result, errors }, null, 2));
-            if (result.release !== '20260830-r3') throw new Error(`${name}: wrong live release ${result.release}`);
+            if (result.release !== '20260830-r4') throw new Error(`${name}: wrong live release ${result.release}`);
             if (!result.canvasPresent || !result.rect || result.rect.width < 100 || result.rect.height < 50) throw new Error(`${name}: canvas is not visibly sized`);
             if ((result.samples?.opaque || 0) < 1000 || (result.samples?.nonSky || 0) < 300) throw new Error(`${name}: canvas pixel output appears blank/unrendered`);
             if (name === 'android' && result.innerWidth > 430) throw new Error(`android: mobile layout viewport not active (${result.innerWidth}px)`);
