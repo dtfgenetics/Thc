@@ -1,0 +1,87 @@
+name: Purge Public Suite Cache
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - scripts/purge-wordpress-litespeed-cache.mjs
+      - .github/workflows/purge-public-suite-cache.yml
+      - site/public-route-patch/games/seed-man-platformer/.htaccess
+  workflow_run:
+    workflows: ["Deploy DTFSeeds Public Suite via WordPress V2"]
+    types: [completed]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: purge-dtfseeds-public-suite-cache
+  cancel-in-progress: false
+
+jobs:
+  purge:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: production
+    env:
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate cache purge helper
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
+          node --check scripts/purge-wordpress-litespeed-cache.mjs
+
+      - name: Purge LiteSpeed and WordPress caches
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/purge-wordpress-litespeed-cache.mjs | tee "$RUNNER_TEMP/cache-purge.json"
+          grep -Eq '"ok"[[:space:]]*:[[:space:]]*true' "$RUNNER_TEMP/cache-purge.json"
+
+      - name: Verify Sprout Run bare URL is current
+        shell: bash
+        run: |
+          set -euo pipefail
+          url='https://dtfseeds.com/games/seed-man-platformer/'
+          body="$RUNNER_TEMP/sprout-run.html"
+          headers="$RUNNER_TEMP/sprout-run.headers"
+          ok=0
+          for attempt in {1..12}; do
+            status="$(curl -sS --location --output "$body" --dump-header "$headers" --write-out '%{http_code}' "$url" || true)"
+            if [[ "$status" == '200' ]] \
+              && grep -Fq 'Seed Man · Greenhouse Gauntlet' "$body" \
+              && grep -Fq '0 / 24' "$body" \
+              && grep -Fq '20260830-r4' "$body" \
+              && grep -Fq 'canvas-compat-v1.js?v=20260830-r4' "$body" \
+              && ! grep -Fqi 'Original browser vertical slice' "$body" \
+              && ! grep -Fq '0 / 8' "$body"; then
+              ok=1
+              break
+            fi
+            echo "Bare URL still stale on attempt $attempt (HTTP $status)."
+            sleep $((attempt * 3))
+          done
+          echo '--- response headers ---'
+          cat "$headers"
+          if [[ "$ok" != '1' ]]; then
+            echo 'Sprout Run bare URL did not converge on the r4 release after explicit cache purge.' >&2
+            grep -E 'Original browser vertical slice|Greenhouse Gauntlet|0 / 8|0 / 24|20260830-r[0-9]+' "$body" || true
+            exit 1
+          fi
+          echo 'Sprout Run bare URL serves the r4 cache-safe release.'
