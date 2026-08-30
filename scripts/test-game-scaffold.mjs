@@ -26,6 +26,7 @@ try {
     'src/simulation/state.mjs',
     'src/render/README.md',
     'src/ui/README.md',
+    'src/ui/game-ui.css',
     'src/assets/manifest.json',
     'test/smoke.test.mjs'
   ];
@@ -34,9 +35,26 @@ try {
   const manifest = JSON.parse(fs.readFileSync(path.join(gameRoot, 'game.json'), 'utf8'));
   assert.equal(manifest.schemaVersion, 2);
   assert.equal(manifest.architecture, 'dtf-browser-game-v1');
+  assert.equal(manifest.uiStandard, 'dtf-game-ui-v1');
   assert.equal(manifest.route, null);
   assert.equal(manifest.releaseGates.deploymentRegistered, false);
+  assert.equal(manifest.releaseGates.visualPolishReviewed, false);
+  assert.equal(manifest.releaseGates.responsiveHudTested, false);
   assert.equal(manifest.implementation.publicRoute, null);
+  assert.equal(manifest.implementation.uiTheme, `games/${id}/src/ui/game-ui.css`);
+
+  const uiCss = fs.readFileSync(path.join(gameRoot, 'src', 'ui', 'game-ui.css'), 'utf8');
+  assert.match(uiCss, /--game-touch:\s*44px/);
+  assert.match(uiCss, /\.dtf-game-layout/);
+  assert.match(uiCss, /\.dtf-game-playfield/);
+  assert.match(uiCss, /\[data-primary-action\]/);
+  assert.match(uiCss, /env\(safe-area-inset-bottom\)/);
+  assert.match(uiCss, /prefers-reduced-motion/);
+
+  const uiReadme = fs.readFileSync(path.join(gameRoot, 'src', 'ui', 'README.md'), 'utf8');
+  assert.match(uiReadme, /playfield first/i);
+  assert.match(uiReadme, /primary action/i);
+  assert.match(uiReadme, /GAME_UI_STANDARD\.md/);
 
   const smoke = spawnSync(process.execPath, [path.join(gameRoot, 'test', 'smoke.test.mjs')], {
     cwd: tempRoot,
