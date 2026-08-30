@@ -6,6 +6,8 @@ on:
     paths:
       - scripts/import-wordpress-infographic-remote-batch.mjs
       - scripts/apply-wordpress-public-content-rest.mjs
+      - scripts/apply-wordpress-public-content-owned-routes.mjs
+      - .github/workflows/wordpress-canonical-production.yml
       - .github/workflows/wordpress-public-content-cleanup.yml
       - .github/workflows/wordpress-public-content-ci.yml
       - .github/workflows/wordpress-infographic-production.yml
@@ -37,8 +39,13 @@ jobs:
           set -euo pipefail
           node --check scripts/import-wordpress-infographic-remote-batch.mjs
           node --check scripts/apply-wordpress-public-content-rest.mjs
+          node --check scripts/apply-wordpress-public-content-owned-routes.mjs
           node --check scripts/publish-wordpress-articles-rest.mjs
-          grep -Fq "node scripts/apply-wordpress-public-content-rest.mjs" .github/workflows/wordpress-canonical-production.yml
+          # Automatic canonical production must use the ownership-preserving
+          # writer. The broad reconciler remains available for explicit/manual
+          # maintenance, but must not become the automatic Home/Learn writer.
+          grep -Fq "node scripts/apply-wordpress-public-content-owned-routes.mjs" .github/workflows/wordpress-canonical-production.yml
+          ! grep -Fq "node scripts/apply-wordpress-public-content-rest.mjs" .github/workflows/wordpress-canonical-production.yml
           ! grep -Fq 'workflow_run:' .github/workflows/wordpress-public-content-cleanup.yml
           ! grep -Fq 'apply-wordpress-public-content-rest.mjs' .github/workflows/wordpress-public-content-cleanup.yml
           ! grep -Fq 'site/wordpress/pages/**' .github/workflows/wordpress-public-content-cleanup.yml

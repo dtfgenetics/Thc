@@ -149,18 +149,24 @@ jobs:
             local path="$1"
             local required="$2"
             local minimum="$3"
-            local key body ok count
+            local key body ok count curl_status
             key="$(echo "$path" | tr '/?' '__')"
             body="$RUNNER_TEMP/wp-production-${key}.html"
             ok=0
             count=0
             for attempt in 1 2 3 4 5 6 7 8; do
-              curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+              if curl -4 --fail --silent --show-error --location --retry 2 --retry-all-errors --retry-delay 2 \
+                --connect-timeout 15 --max-time 60 \
                 --header 'Cache-Control: no-cache, no-store, max-age=0' \
                 --header 'Pragma: no-cache' \
                 "$WP_SITE_URL${path}?dtf_wp_production=${GITHUB_RUN_ID}-${attempt}" \
-                --output "$body"
-              if grep -Fqi -- "$required" "$body"; then ok=1; break; fi
+                --output "$body"; then
+                if grep -Fqi -- "$required" "$body"; then ok=1; break; fi
+                echo "Canonical WordPress verification returned without required marker on $path attempt $attempt; retrying." >&2
+              else
+                curl_status=$?
+                echo "Canonical WordPress verification transport failure on $path attempt $attempt (curl $curl_status); retrying." >&2
+              fi
               sleep 8
             done
             if [[ "$ok" -ne 1 ]]; then
@@ -193,8 +199,9 @@ jobs:
             echo "$path verified with $count WordPress-hosted image references"
           }
 
-          # Home is read-only here because Learning V3 owns its automatic visual handoff.
-          verify_page '/' 'Genetics first. Cultivation science behind it.' 8
+          # The public root is owned by the Public Suite overlay. Learning V3 owns
+          # the WordPress Home body at /home/, so verify the WordPress route there.
+          verify_page '/home/' 'Genetics first. Cultivation science behind it.' 8
           verify_page '/shop/' 'dtf-commerce-archive-style' 2
           verify_page '/community/' 'Join the official DTF / Teaching Healthy Cultivation Discord' 0
           verify_page '/contact/' 'Join the official DTF / Teaching Healthy Cultivation Discord' 0
@@ -209,24 +216,24 @@ jobs:
             grep -Fqi "$route" "$shop_body" || { echo "Reviewed product route missing from live Shop archive: $route" >&2; exit 1; }
           done
 
-      - name: Verify browser icon and URL social image on live homepage
+      - name: Verify browser icon and URL social image on WordPress Home
         id: url_image
         shell: bash
         run: |
           set -euo pipefail
-          body="$RUNNER_TEMP/wp-production-_.html"
+          body="$RUNNER_TEMP/wp-production-_home_.html"
           node - <<'NODE' "$body"
           const fs=require('fs');
           const path=process.argv[2];
           const html=fs.readFileSync(path,'utf8');
-          if(/\/assets\/dtf-home\/dtf-mark\.svg/i.test(html)) throw new Error('Old static favicon remains live.');
-          if(/\/wp-content\/uploads\/2025\/07\/1000007006-1024x450\.png/i.test(html)) throw new Error('Old 2025 social preview image remains live.');
+          if(/\/assets\/dtf-home\/dtf-mark\.svg/i.test(html)) throw new Error('Old static favicon remains on WordPress Home.');
+          if(/\/wp-content\/uploads\/2025\/07\/1000007006-1024x450\.png/i.test(html)) throw new Error('Old 2025 social preview image remains on WordPress Home.');
           const iconTags=[...html.matchAll(/<link\b[^>]*rel=["'][^"']*icon[^"']*["'][^>]*>/gi)].map(m=>m[0]);
-          if(!iconTags.some(tag=>/wp-content\/uploads\//i.test(tag))) throw new Error(`No WordPress-controlled live favicon found: ${iconTags.slice(0,4).join(' ')}`);
+          if(!iconTags.some(tag=>/wp-content\/uploads\//i.test(tag))) throw new Error(`No WordPress-controlled favicon found on WordPress Home: ${iconTags.slice(0,4).join(' ')}`);
           const ogTags=[...html.matchAll(/<meta\b[^>]*property=["']og:image["'][^>]*>/gi)].map(m=>m[0]);
-          if(!ogTags.length) throw new Error('No live og:image meta tag found.');
-          if(!ogTags.some(tag=>/dtf-potleaf-512\.png/i.test(tag))) throw new Error(`og:image is not the controlled DTF brand media: ${ogTags.join(' ')}`);
-          console.log('Live favicon and og:image use current DTF-controlled media.');
+          if(!ogTags.length) throw new Error('No og:image meta tag found on WordPress Home.');
+          if(!ogTags.some(tag=>/dtf-potleaf-512\.png/i.test(tag))) throw new Error(`WordPress Home og:image is not the controlled DTF brand media: ${ogTags.join(' ')}`);
+          console.log('WordPress Home favicon and og:image use current DTF-controlled media.');
           NODE
 
       - name: Reconcile canonical WooCommerce product copy and categories
@@ -295,9 +302,14 @@ jobs:
               `WooCommerce Shop archive styling: **${process.env.SHOP_ARCHIVE_OUTCOME || 'not-run'}**`,
               `Cannabis-leaf Site Icon media ID: **${process.env.SITE_ICON || 'not-run'}**`,
               `Live owned-surface verification: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
-              `Live favicon + URL social image verification: **${process.env.URL_IMAGE_OUTCOME || 'not-run'}**`,
+              `WordPress Home favicon + URL social image verification: **${process.env.URL_IMAGE_OUTCOME || 'not-run'}**`,
               `WooCommerce reconciliation: **${process.env.COMMERCE_RECONCILE_OUTCOME || 'not-run'}**`,
               `WooCommerce rollback: **${process.env.COMMERCE_ROLLBACK_OUTCOME || 'not-needed'}**`, '',
-              'Production scope: canonical non-Learn WordPress editorial pages, WooCommerce presentation, current brand imagery, and fresh visitor verification. Home and Learn content are preserved here and finalized by the downstream Learning Experience V3 owner.'
+              'Production scope: canonical non-Learn WordPress editorial pages, WooCommerce presentation, current brand imagery, and fresh visitor verification. The public root belongs to the Public Suite overlay; WordPress Home and Learn bodies are preserved here and finalized by the downstream Learning Experience V3 owner.'
             ].join('\n');
-            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body});
+            await core.summary.addRaw(body).write();
+            try {
+              await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body});
+            } catch (error) {
+              core.warning(`Could not post canonical production result to issue #46: ${error.message}`);
+            }

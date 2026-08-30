@@ -109,8 +109,11 @@ jobs:
           grep -Fq 'option update show_on_front page' scripts/apply-wordpress-public-content.sh
           grep -Fq 'option update page_on_front' scripts/apply-wordpress-public-content.sh
 
+          # The standalone/public-pages workflow still owns its public-root proof.
           grep -Fq "verify_page '/' 'Genetics, cultivation education, practical tools, and original cannabis games.'" .github/workflows/wordpress-public-pages-deploy.yml
-          grep -Fq "verify_page '/' 'Genetics first. Cultivation science behind it.'" .github/workflows/wordpress-canonical-production.yml
+          # The canonical WordPress lane verifies the preserved WordPress Home at
+          # /home/ because the Public Suite overlay owns the public root.
+          grep -Fq "verify_page '/home/' 'Genetics first. Cultivation science behind it.'" .github/workflows/wordpress-canonical-production.yml
 
       - name: Validate owner-only reconciliation command guard
         shell: bash
