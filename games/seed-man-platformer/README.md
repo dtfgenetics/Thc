@@ -6,12 +6,15 @@ The **Seed Man Platformer** is an original browser-game project using DTF Geneti
 
 The canonical mascot remains a short, chubby oval seed with a simple face, three-leaf sprout, rubber-hose limbs, white gloves/shoes, thick outline, and flat 2D treatment. Game animation may pose the character for movement while preserving the locked silhouette and identity.
 
+The production browser route now uses an original Canvas2D vector character layer at `site/public-route-patch/games/seed-man-platformer/seed-man-production-art.js`. It identifies itself as `seed-man-production-v1` and implements the locked `seed-man-locked-v1` character contract. The renderer is separate from gameplay simulation so visual iteration cannot silently alter collision or movement physics.
+
 ## Canonical implementation
 
 - physics: `games/seed-man-platformer/src/physics.mjs`
 - level data: `games/seed-man-platformer/data/level-01.json`
 - metadata/release gates: `games/seed-man-platformer/game.json`
-- tests: `games/seed-man-platformer/test/`
+- browser acceptance: `games/seed-man-platformer/test/browser-smoke.mjs`
+- production character art: `site/public-route-patch/games/seed-man-platformer/seed-man-production-art.js`
 - self-hosted production route source: `site/public-route-patch/games/seed-man-platformer/`
 - public URL: `https://dtfseeds.com/games/seed-man-platformer/`
 
@@ -33,29 +36,32 @@ The expanded Sprout Run build includes:
 - JUMP ×2 mobile control
 - pause, guarded restart, local personal best, falls/time tracking, active-power HUD, and course-progress rail
 - keyboard focus ownership guard so gameplay controls do not break normal focused UI behavior
+- production Seed Man Canvas2D vector art with run, idle, airborne, double-jump, hurt, checkpoint, and shield feedback states
 
 ## Validation
 
-The dedicated workflow is `.github/workflows/seed-man-platformer-ci.yml` and must run:
+The dedicated workflow is `.github/workflows/seed-man-platformer-ci.yml` and runs:
 
 ```bash
 node games/seed-man-platformer/test/physics.test.mjs
 node games/seed-man-platformer/test/public-runtime.test.mjs
 node games/seed-man-platformer/test/input-guard.test.mjs
+node games/seed-man-platformer/test/browser-smoke.mjs
 ```
 
-It also syntax-checks the browser JavaScript and verifies that the canonical physics/level files match the public copies.
+The browser acceptance covers desktop and mobile viewports and verifies keyboard/touch movement, normal and double jump, pause/resume, sprout collection, power-up collection, checkpoint respawn, the 24-sprout finish gate, finish/restart, production character-art execution, console errors, and mobile horizontal overflow.
 
-Production verification is handled by `.github/workflows/seed-man-live-smoke.yml`. A live-success claim requires the cache-busted public route and required runtime assets to match the expanded 24-sprout build; an HTTP 200 by itself is not enough.
+Production verification is handled by `.github/workflows/seed-man-live-smoke.yml` plus `.github/workflows/seed-man-live-browser-acceptance.yml`. A live-success claim requires the cache-busted public route and required runtime assets to match the expanded 24-sprout build; an HTTP 200 by itself is not enough. The live smoke also requires the production character-art file and its version/contract markers.
 
 ## Current status
 
-`browser-expanded-level`
+`browser-production-art`
 
-Source physics, expanded level, double jump, power-ups, keyboard controls, touch-control implementation, and regression tests are established. The remaining release gates intentionally stay open until there is evidence for them:
+The expanded level, gameplay systems, production character-art layer, automated desktop acceptance, and automated mobile-browser acceptance are established. The production art is original DTF Canvas2D work and does not use third-party character assets or level layouts.
 
-- mobile playtest
-- final Seed Man sprite consistency review
-- original production art/audio clearance
+Two human QA gates intentionally remain open until there is direct evidence for them:
 
-Do not mark those gates complete from static tests or HTTP smoke checks alone.
+- a hands-on physical-device mobile playtest
+- a final visual consistency review of Seed Man in motion
+
+Audio is currently optional and not a gameplay blocker. Do not mark the two human QA gates complete from static checks, HTTP smoke tests, or headless-browser automation alone.
