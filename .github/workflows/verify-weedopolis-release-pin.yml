@@ -1,0 +1,75 @@
+name: Verify Weedopolis Release Pin
+
+on:
+  pull_request:
+    paths:
+      - site/public-route-patch/games/weedopolis/source-revision.txt
+      - .github/workflows/verify-weedopolis-release-pin.yml
+  push:
+    branches:
+      - main
+    paths:
+      - site/public-route-patch/games/weedopolis/source-revision.txt
+      - .github/workflows/verify-weedopolis-release-pin.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Build exact canonical Weedopolis revision
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Resolve pinned source
+        shell: bash
+        run: |
+          set -euo pipefail
+          revision_file="site/public-route-patch/games/weedopolis/source-revision.txt"
+          test -s "$revision_file"
+          repo_name="$(sed -n 's/^repository=//p' "$revision_file")"
+          revision="$(sed -n 's/^commit=//p' "$revision_file")"
+          test "$repo_name" = "dtfgenetics/Weedopolis-strain-Edition"
+          [[ "$revision" =~ ^[0-9a-f]{40}$ ]]
+          echo "WEEDOPOLIS_REPOSITORY=$repo_name" >> "$GITHUB_ENV"
+          echo "WEEDOPOLIS_REVISION=$revision" >> "$GITHUB_ENV"
+
+      - name: Fetch exact canonical revision
+        shell: bash
+        run: |
+          set -euo pipefail
+          repo="$RUNNER_TEMP/weedopolis"
+          git init "$repo"
+          cd "$repo"
+          git remote add origin "https://github.com/${WEEDOPOLIS_REPOSITORY}.git"
+          git fetch --depth=1 origin "$WEEDOPOLIS_REVISION"
+          git checkout --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "$WEEDOPOLIS_REVISION"
+
+      - name: Validate and build pinned Weedopolis
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP/weedopolis"
+          npm install --ignore-scripts
+          npm run validate
+          npm run check:preview
+          npm run build:preview
+          test -s dist/weedopolis/index.html
+          grep -Fq '/games/weedopolis/' dist/weedopolis/index.html
+          grep -Fq 'Weedopolis' dist/weedopolis/index.html
+
+      - name: Record verified release
+        shell: bash
+        run: |
+          set -euo pipefail
+          printf 'verified_repository=%s\nverified_commit=%s\n' \
+            "$WEEDOPOLIS_REPOSITORY" "$WEEDOPOLIS_REVISION" \
+            | tee weedopolis-release-verification.txt
