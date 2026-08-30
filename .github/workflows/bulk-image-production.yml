@@ -1,26 +1,21 @@
-# Canonical DTFSeeds bulk image production lane
-name: Publish DTFSeeds Image Backlog
+name: Publish DTFSeeds Image Backlog Manually
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - site/wordpress/imports/infographic-bulk-import.json
-      - site/wordpress/assets/infographics/**
-      - scripts/import-wordpress-infographic-remote-batch.mjs
-      - scripts/publish-wordpress-image-backlog.sh
-      - .github/workflows/bulk-image-production.yml
 
 permissions:
   contents: write
 
+# Emergency/manual compatibility lane only. Automatic asset changes are owned by
+# wordpress-infographic-production.yml so two workflows cannot overwrite the
+# same WordPress infographic library concurrently.
 concurrency:
-  group: dtfseeds-image-backlog-production
+  group: dtfseeds-wordpress-infographics-production
   cancel-in-progress: false
 
 jobs:
   publish:
+    name: Run canonical infographic transaction manually
     runs-on: ubuntu-latest
     timeout-minutes: 55
     environment: production
@@ -34,25 +29,21 @@ jobs:
       INFOGRAPHIC_PLACEMENT_CONFIG: ${{ github.workspace }}/site/wordpress/assets/infographics/placement-rules.json
       INFOGRAPHIC_EXCLUSIONS: ${{ github.workspace }}/site/wordpress/assets/infographics/infographic-exclusions.json
       BULK_INFOGRAPHIC_MANIFEST: ${{ github.workspace }}/site/wordpress/imports/infographic-bulk-import.json
-      REMOTE_INFOGRAPHIC_MANIFEST: ${{ github.workspace }}/site/wordpress/assets/infographics/remote-intake.json
       BULK_IMPORT_REPORT: /tmp/infographic-bulk-import-report.json
       TOPIC_LITERATURE_CONFIG: ${{ github.workspace }}/site/wordpress/education/topic-literature.json
       BACKUP_ROOT: /tmp/wordpress-infographic-backups
     steps:
-      - name: Check out production source
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           ref: main
           fetch-depth: 0
 
-      - name: Set up Node
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 22
 
-      - name: Publish missing images and verify public site
-        shell: bash
-        run: bash scripts/publish-wordpress-image-backlog.sh
+      - name: Publish through the canonical single-writer transaction
+        run: bash scripts/publish-wordpress-infographics-canonical.sh
 
       - name: Upload publication audit
         if: always()
@@ -62,6 +53,7 @@ jobs:
           path: |
             /tmp/wordpress-infographic-backups
             /tmp/infographic-bulk-import-report.json
-            /tmp/dtfseeds-infographic-library.html
+            ${{ runner.temp }}/infographic-library.html
+            ${{ runner.temp }}/outdoor.html
           if-no-files-found: warn
           retention-days: 30

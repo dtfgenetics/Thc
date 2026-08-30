@@ -1,40 +1,33 @@
-# Canonical reviewed remote infographic intake lane
-name: Publish Reviewed Remote Infographics
+name: Ingest Reviewed Remote Infographics
 
 on:
   workflow_dispatch:
   push:
     branches: [main]
     paths:
-      - 'site/wordpress/assets/infographics/remote-intake.json'
-      - '.github/workflows/wordpress-remote-infographic-intake.yml'
+      - site/wordpress/assets/infographics/remote-intake.json
+      - .github/workflows/wordpress-remote-infographic-intake.yml
 
 permissions:
   contents: write
 
-env:
-  WP_SITE_URL: https://dtfseeds.com
-  NODE_OPTIONS: --dns-result-order=ipv4first
-  INFOGRAPHIC_DIR: ${{ github.workspace }}/site/wordpress/assets/infographics
-  BACKUP_ROOT: /tmp/dtf-remote-infographic-intake
+# This lane owns remote -> repository ingestion only. It never writes WordPress.
+# Any newly committed canonical image automatically triggers the one authoritative
+# WordPress publisher in wordpress-infographic-production.yml.
+concurrency:
+  group: dtfseeds-infographic-source-intake
+  cancel-in-progress: false
 
 jobs:
-  publish:
+  ingest:
+    name: Validate and commit reviewed source assets
     runs-on: ubuntu-latest
-    timeout-minutes: 45
-    environment: production
-    env:
-      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME || secrets.WORDPRESS_USERNAME || secrets.WP_USERNAME }}
-      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD || secrets.WORDPRESS_APP_PASSWORD || secrets.WP_APPLICATION_PASSWORD }}
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
         with:
           ref: main
           fetch-depth: 0
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
 
       - name: Validate intake manifest
         shell: bash
@@ -48,21 +41,21 @@ jobs:
           entries = data.get('entries')
           assert isinstance(entries, list)
           seen = set()
+          enabled = 0
           for row in entries:
               if not row.get('enabled', True):
                   continue
+              enabled += 1
               fn = row.get('filename', '')
               url = row.get('url', '')
               assert re.fullmatch(r'[A-Za-z0-9._-]+\.(?:png|jpe?g)', fn, re.I), f'Invalid filename: {fn}'
               assert url.startswith('https://'), f'Only HTTPS URLs are allowed: {url}'
               assert fn.lower() not in seen, f'Duplicate filename: {fn}'
               seen.add(fn.lower())
-          print(f'Validated {len(seen)} enabled intake assets.')
+          print(f'Validated {enabled} enabled reviewed remote asset(s).')
           PY
-          : "${WP_API_USERNAME:?WordPress username missing}"
-          : "${WP_API_PASSWORD:?WordPress password missing}"
 
-      - name: Download reviewed assets
+      - name: Download reviewed source assets
         shell: bash
         run: |
           set -euo pipefail
@@ -77,18 +70,17 @@ jobs:
               if not row.get('enabled', True):
                   continue
               filename = row['filename']
-              url = row['url']
               dest = out / filename
-              print(f'Fetching {filename}')
+              print(f'Fetching reviewed source: {filename}')
               subprocess.run([
                   'curl','-4','--location','--fail','--silent','--show-error',
-                  '--retry','4','--retry-delay','2',url,'-o',str(dest)
+                  '--retry','4','--retry-delay','2',row['url'],'-o',str(dest)
               ], check=True)
               if dest.stat().st_size < 10000:
                   raise SystemExit(f'Asset too small or invalid: {filename}')
               downloaded.append(filename)
           pathlib.Path('/tmp/dtf-remote-intake-files.txt').write_text('\n'.join(downloaded) + ('\n' if downloaded else ''))
-          print(f'Downloaded {len(downloaded)} reviewed assets.')
+          print(f'Downloaded {len(downloaded)} reviewed source asset(s).')
           PY
 
       - name: Validate downloaded image formats
@@ -107,75 +99,26 @@ jobs:
             done < /tmp/dtf-remote-intake-files.txt
           fi
 
-      - name: Commit canonical assets
-        id: commit
+      - name: Commit canonical source assets
         shell: bash
         run: |
           set -euo pipefail
-          git config user.name 'DTF Education Asset Publisher'
+          git config user.name 'DTF Education Asset Intake'
           git config user.email 'actions@users.noreply.github.com'
           git add site/wordpress/assets/infographics
           if git diff --cached --quiet; then
-            echo 'changed=false' >> "$GITHUB_OUTPUT"
-            echo 'No new canonical files to commit.'
+            echo 'No new canonical source files to commit.'
           else
-            git commit -m 'Publish reviewed education infographic assets'
+            git commit -m 'Ingest reviewed education infographic assets'
+            git pull --rebase origin main
             git push origin HEAD:main
-            echo 'changed=true' >> "$GITHUB_OUTPUT"
-            echo "commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Publish WordPress media and placements
-        shell: bash
-        run: |
-          set -euo pipefail
-          node --check scripts/deploy-wordpress-infographic-library-rest.mjs
-          node scripts/deploy-wordpress-infographic-library-rest.mjs
-
-      - name: Rebuild literature-first subject pages and searchable library
-        shell: bash
-        run: |
-          set -euo pipefail
-          node --check scripts/publish-wordpress-topic-literature.mjs
-          node scripts/publish-wordpress-topic-literature.mjs
-
-      - name: Verify public infographic surfaces
-        shell: bash
-        run: |
-          set -euo pipefail
-          fetch_until() {
-            local url="$1" body="$2" marker="$3" ok=0
-            for attempt in 1 2 3 4 5 6 7 8; do
-              curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
-                -H 'Cache-Control: no-cache, no-store, max-age=0' \
-                -H 'Pragma: no-cache' \
-                "${url}?dtf_remote_intake=${GITHUB_RUN_ID}-${attempt}" -o "$body"
-              if grep -Fqi "$marker" "$body"; then ok=1; break; fi
-              sleep 8
-            done
-            [[ "$ok" -eq 1 ]]
-          }
-          library="$RUNNER_TEMP/infographic-library.html"
-          fetch_until 'https://dtfseeds.com/learn/infographics/' "$library" 'Searchable Infographic Library'
-          grep -Fqi 'thc-infographic-search' "$library"
-          if [[ -s /tmp/dtf-remote-intake-files.txt ]]; then
-            while read -r file; do
-              label="${file%.*}"
-              label="${label//_/ }"
-              grep -Fqi "$label" "$library" || {
-                echo "Published intake asset not found in public library: $file" >&2
-                exit 1
-              }
-            done < /tmp/dtf-remote-intake-files.txt
-          fi
-
-      - name: Upload audit evidence
+      - name: Upload intake evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: remote-infographic-intake-${{ github.run_id }}
-          path: |
-            /tmp/dtf-remote-intake-files.txt
-            /tmp/dtf-remote-infographic-intake
+          path: /tmp/dtf-remote-intake-files.txt
           if-no-files-found: warn
           retention-days: 30
