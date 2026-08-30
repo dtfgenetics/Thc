@@ -1,0 +1,895 @@
+/*
+ * High Land UI V2
+ *
+ * Presentation-only layer. Gameplay state, Phaser rendering, multiplayer,
+ * HIT-card logic, and stable E2E selectors remain untouched.
+ *
+ * Design goals:
+ * - board/playfield first
+ * - compact, readable HUD
+ * - one obvious primary action
+ * - secondary information visually de-emphasized
+ * - mobile-first controls with safe-area support
+ * - reusable DTF game visual language rather than generic dashboard cards
+ */
+
+:root {
+  --hl-bg: #07110c;
+  --hl-bg-deep: #030705;
+  --hl-surface: rgba(10, 24, 17, 0.88);
+  --hl-surface-strong: rgba(13, 31, 22, 0.96);
+  --hl-surface-soft: rgba(255, 255, 255, 0.055);
+  --hl-border: rgba(232, 255, 216, 0.13);
+  --hl-border-strong: rgba(217, 255, 121, 0.32);
+  --hl-text: #f5f7ef;
+  --hl-muted: #a8b6aa;
+  --hl-muted-strong: #cbd5cc;
+  --hl-lime: #c8ff62;
+  --hl-lime-strong: #a9ee35;
+  --hl-gold: #ffd869;
+  --hl-purple: #b890ff;
+  --hl-rose: #ff8ca3;
+  --hl-danger: #ff7c91;
+  --hl-radius-sm: 12px;
+  --hl-radius-md: 18px;
+  --hl-radius-lg: 26px;
+  --hl-shadow-soft: 0 16px 48px rgba(0, 0, 0, 0.28);
+  --hl-shadow-board: 0 28px 90px rgba(0, 0, 0, 0.48);
+  --hl-control-height: 48px;
+  color: var(--hl-text);
+  background: var(--hl-bg);
+}
+
+html {
+  background: var(--hl-bg-deep);
+}
+
+body {
+  color: var(--hl-text);
+  background:
+    radial-gradient(circle at 12% 6%, rgba(200, 255, 98, 0.11), transparent 30rem),
+    radial-gradient(circle at 84% 4%, rgba(184, 144, 255, 0.12), transparent 28rem),
+    linear-gradient(180deg, #0a1710 0%, var(--hl-bg) 42%, var(--hl-bg-deep) 100%);
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.28;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
+  background-size: 42px 42px;
+  mask-image: linear-gradient(to bottom, black, transparent 78%);
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button {
+  min-height: var(--hl-control-height);
+  border: 1px solid var(--hl-border);
+  border-radius: var(--hl-radius-sm);
+  padding: 0.72rem 1rem;
+  color: var(--hl-text);
+  background: rgba(255, 255, 255, 0.07);
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.04);
+  font-size: 0.9rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    background 160ms ease,
+    box-shadow 160ms ease;
+}
+
+button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  border-color: rgba(232, 255, 216, 0.25);
+  background: rgba(255, 255, 255, 0.105);
+}
+
+button:active:not(:disabled) {
+  transform: translateY(0) scale(0.985);
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+summary:focus-visible {
+  outline: 3px solid rgba(200, 255, 98, 0.68);
+  outline-offset: 3px;
+}
+
+button.primary {
+  border-color: rgba(200, 255, 98, 0.72);
+  color: #122006;
+  background: linear-gradient(135deg, var(--hl-lime) 0%, var(--hl-gold) 100%);
+  box-shadow:
+    0 10px 28px rgba(173, 242, 61, 0.2),
+    inset 0 1px rgba(255, 255, 255, 0.7);
+}
+
+button.primary:hover:not(:disabled) {
+  border-color: rgba(245, 255, 208, 0.9);
+  background: linear-gradient(135deg, #d7ff82 0%, #ffe28d 100%);
+  box-shadow:
+    0 14px 34px rgba(173, 242, 61, 0.28),
+    inset 0 1px rgba(255, 255, 255, 0.75);
+}
+
+button.selected {
+  border-color: rgba(200, 255, 98, 0.72);
+  color: #17240d;
+  background: var(--hl-lime);
+}
+
+input,
+select {
+  min-height: 50px;
+  border: 1px solid var(--hl-border);
+  border-radius: var(--hl-radius-sm);
+  padding: 0.75rem 0.9rem;
+  color: var(--hl-text);
+  background: rgba(1, 8, 4, 0.62);
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.025);
+  font-weight: 700;
+}
+
+input::placeholder {
+  color: #758178;
+}
+
+input:focus,
+select:focus {
+  border-color: rgba(200, 255, 98, 0.56);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(200, 255, 98, 0.11);
+}
+
+.app-shell {
+  width: min(100%, 1680px);
+  margin-inline: auto;
+  padding: clamp(0.72rem, 1.3vw, 1.25rem);
+  gap: clamp(0.75rem, 1.15vw, 1.1rem);
+}
+
+.title-card,
+.controls-card,
+.message-card,
+.players-card,
+.board-controls-card {
+  border-color: var(--hl-border);
+  border-radius: var(--hl-radius-lg);
+  color: var(--hl-text);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.028), rgba(255, 255, 255, 0)),
+    var(--hl-surface);
+  box-shadow: var(--hl-shadow-soft);
+  backdrop-filter: blur(18px) saturate(120%);
+}
+
+.title-card {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(1.35rem, 2.8vw, 2.35rem);
+  border-color: rgba(200, 255, 98, 0.2);
+  background:
+    radial-gradient(circle at 92% 10%, rgba(200, 255, 98, 0.14), transparent 16rem),
+    radial-gradient(circle at 70% 90%, rgba(184, 144, 255, 0.12), transparent 15rem),
+    linear-gradient(150deg, rgba(16, 40, 25, 0.98), rgba(8, 20, 14, 0.96));
+}
+
+.title-card::after {
+  content: '';
+  position: absolute;
+  right: -5rem;
+  bottom: -7rem;
+  width: 15rem;
+  height: 15rem;
+  border: 1px solid rgba(200, 255, 98, 0.16);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 2.8rem rgba(200, 255, 98, 0.025),
+    0 0 0 5.6rem rgba(184, 144, 255, 0.02);
+  pointer-events: none;
+}
+
+.eyebrow {
+  color: var(--hl-lime);
+  font-size: 0.7rem;
+  letter-spacing: 0.13em;
+}
+
+h1 {
+  max-width: 13ch;
+  font-size: clamp(2.2rem, 5vw, 4.5rem);
+  line-height: 0.92;
+  letter-spacing: -0.055em;
+  text-wrap: balance;
+}
+
+h2 {
+  letter-spacing: -0.035em;
+}
+
+.subtitle {
+  max-width: 58ch;
+  color: var(--hl-muted-strong);
+  font-size: clamp(0.96rem, 1.4vw, 1.06rem);
+  line-height: 1.62;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Landing / setup                                                            */
+/* -------------------------------------------------------------------------- */
+
+.app-shell:not(:has(.game-stage)) {
+  grid-template-columns: minmax(0, 1.08fr) minmax(330px, 0.92fr);
+  align-items: start;
+  min-height: 100svh;
+  padding-top: clamp(1rem, 4vh, 3rem);
+  padding-bottom: clamp(1rem, 4vh, 3rem);
+}
+
+.app-shell:not(:has(.game-stage)) .game-panel {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(330px, 0.92fr);
+  gap: clamp(0.8rem, 1.4vw, 1.2rem);
+  align-items: start;
+}
+
+.app-shell:not(:has(.game-stage)) .title-card {
+  grid-row: span 2;
+  min-height: min(66vh, 590px);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.app-shell:not(:has(.game-stage)) .controls-card,
+.app-shell:not(:has(.game-stage)) .room-lobby {
+  align-self: stretch;
+  padding: clamp(1.1rem, 2vw, 1.55rem);
+}
+
+.app-shell:not(:has(.game-stage)) .game-panel > .message-card:not([aria-label='Game rules']) {
+  grid-column: 2;
+  padding: 0.9rem 1rem;
+  border-radius: var(--hl-radius-md);
+  box-shadow: none;
+}
+
+.app-shell:not(:has(.game-stage)) .game-panel > [aria-label='Game rules'] {
+  grid-column: 2;
+  padding: 1rem 1.1rem;
+  border-radius: var(--hl-radius-md);
+  box-shadow: none;
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.app-shell:not(:has(.game-stage)) .game-panel > [aria-label='Game rules'] p {
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.controls-card .button-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+.controls-card .button-row .primary {
+  grid-column: 1 / -1;
+}
+
+.player-setup-form,
+.room-lobby {
+  border-color: var(--hl-border-strong);
+}
+
+.setup-field span {
+  color: var(--hl-muted);
+  font-size: 0.69rem;
+  letter-spacing: 0.1em;
+}
+
+.form-note {
+  color: #f9eaa7;
+  background: rgba(255, 216, 105, 0.08);
+}
+
+.form-error {
+  color: #ffd2da;
+  background: rgba(255, 124, 145, 0.1);
+}
+
+/* -------------------------------------------------------------------------- */
+/* In-game shell                                                              */
+/* -------------------------------------------------------------------------- */
+
+.app-shell:has(.game-stage) {
+  grid-template-columns: 1fr;
+  align-content: start;
+  min-height: 100svh;
+}
+
+.app-shell:has(.game-stage) .game-panel {
+  display: grid;
+  grid-template-columns: minmax(260px, auto) minmax(0, 1fr);
+  grid-template-areas:
+    'brand status'
+    'players players';
+  gap: 0.7rem;
+  min-width: 0;
+}
+
+.app-shell:has(.game-stage) .title-card {
+  grid-area: brand;
+  min-width: 260px;
+  padding: 0.82rem 1rem;
+  border-radius: var(--hl-radius-md);
+  box-shadow: none;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  background: var(--hl-surface-strong);
+}
+
+.app-shell:has(.game-stage) .title-card .eyebrow,
+.app-shell:has(.game-stage) .title-card .subtitle {
+  display: none;
+}
+
+.app-shell:has(.game-stage) .title-card h1 {
+  max-width: none;
+  font-size: clamp(1.05rem, 1.8vw, 1.35rem);
+  line-height: 1;
+  letter-spacing: -0.035em;
+}
+
+.app-shell:has(.game-stage) .game-panel > .message-card:not([aria-label='Game rules']) {
+  grid-area: status;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 0.65rem 0.85rem;
+  min-width: 0;
+  padding: 0.72rem 0.95rem;
+  border-radius: var(--hl-radius-md);
+  box-shadow: none;
+  background: rgba(15, 32, 23, 0.78);
+}
+
+.app-shell:has(.game-stage) .game-panel > .message-card:not([aria-label='Game rules']) strong {
+  color: var(--hl-lime);
+  font-size: 0.69rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.app-shell:has(.game-stage) .game-panel > .message-card:not([aria-label='Game rules']) p {
+  margin: 0;
+  overflow: hidden;
+  color: var(--hl-muted-strong);
+  font-size: 0.88rem;
+  font-weight: 750;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app-shell:has(.game-stage) .players-card {
+  grid-area: players;
+  display: flex;
+  grid-template-columns: none;
+  gap: 0.55rem;
+  max-height: none;
+  padding: 0.55rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  border-radius: var(--hl-radius-md);
+  box-shadow: none;
+  scrollbar-width: thin;
+  scroll-snap-type: x proximity;
+}
+
+.app-shell:has(.game-stage) .player-chip {
+  min-width: 178px;
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+  border: 1px solid var(--hl-border);
+  border-left: 4px solid;
+  border-radius: 13px;
+  padding: 0.55rem 0.65rem;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.app-shell:has(.game-stage) .player-chip strong {
+  font-size: 0.84rem;
+}
+
+.app-shell:has(.game-stage) .player-chip p {
+  max-width: 17ch;
+  color: var(--hl-muted);
+  font-size: 0.72rem;
+  line-height: 1.3;
+}
+
+.app-shell:has(.game-stage) .player-chip.active {
+  outline: 1px solid rgba(200, 255, 98, 0.48);
+  background: rgba(200, 255, 98, 0.085);
+  box-shadow: inset 0 0 0 1px rgba(200, 255, 98, 0.05);
+}
+
+.app-shell:has(.game-stage) .token-dot {
+  width: 14px;
+  height: 14px;
+  border-width: 1px;
+}
+
+/* Rules are useful before play, but during play they should not compete with the board. */
+.app-shell:has(.game-stage) .game-panel > [aria-label='Game rules'] {
+  display: none;
+}
+
+.game-stage {
+  grid-template-columns: minmax(0, 1fr) minmax(285px, 330px);
+  grid-template-areas: 'board controls';
+  gap: clamp(0.75rem, 1.15vw, 1rem);
+  align-items: start;
+}
+
+.board-wrap {
+  min-height: 0;
+  border-color: rgba(232, 255, 216, 0.1);
+  border-radius: var(--hl-radius-lg);
+  background:
+    radial-gradient(circle at 50% 8%, rgba(200, 255, 98, 0.06), transparent 35%),
+    rgba(1, 5, 3, 0.72);
+  box-shadow: var(--hl-shadow-board);
+}
+
+.phaser-board {
+  width: min(100%, calc((100svh - 10rem) * 1.333));
+  min-height: 0;
+}
+
+.phaser-board canvas {
+  max-height: calc(100svh - 10rem);
+  border-radius: 20px;
+  box-shadow: none;
+}
+
+.board-controls-card {
+  gap: 0.62rem;
+  top: clamp(0.72rem, 1.3vw, 1.25rem);
+  max-height: calc(100svh - 2 * clamp(0.72rem, 1.3vw, 1.25rem));
+  padding: 0.72rem;
+  border-radius: var(--hl-radius-lg);
+  border-color: var(--hl-border-strong);
+  background:
+    linear-gradient(180deg, rgba(200, 255, 98, 0.035), transparent 28%),
+    var(--hl-surface-strong);
+}
+
+.board-controls-card::-webkit-scrollbar {
+  width: 6px;
+}
+
+.board-controls-card::-webkit-scrollbar-thumb {
+  border-radius: 99px;
+  background: rgba(200, 255, 98, 0.22);
+}
+
+.turn-box,
+.dice-display,
+.dice-box {
+  min-height: 58px;
+  border: 1px solid var(--hl-border);
+  border-radius: 14px;
+  padding: 0.62rem 0.72rem;
+  background: var(--hl-surface-soft);
+}
+
+.turn-box {
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 0.18rem;
+}
+
+.turn-box span,
+.dice-readout span,
+.dice-box span,
+.card-readout span {
+  color: var(--hl-muted);
+  font-size: 0.64rem;
+  letter-spacing: 0.09em;
+}
+
+.turn-box strong {
+  font-size: 0.92rem;
+  line-height: 1.25;
+}
+
+.turn-box p {
+  margin: 0;
+  color: var(--hl-muted);
+  font-size: 0.74rem;
+}
+
+.dice-display {
+  min-height: 86px;
+  background:
+    radial-gradient(circle at 18% 50%, rgba(255, 216, 105, 0.12), transparent 7rem),
+    rgba(255, 255, 255, 0.045);
+}
+
+.dice-face {
+  width: 58px;
+  height: 58px;
+  flex-basis: 58px;
+  border: 2px solid #17200f;
+  border-radius: 13px;
+  background: #f3f5e9;
+  box-shadow:
+    inset 0 -4px rgba(15, 26, 15, 0.12),
+    0 10px 22px rgba(0, 0, 0, 0.28);
+}
+
+.dice-readout strong {
+  font-size: 1.45rem;
+}
+
+.dice-readout p {
+  color: #f4e7a8;
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
+.board-button-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.board-button-row .roll-button {
+  grid-column: 1 / -1;
+}
+
+.roll-button {
+  min-height: 62px;
+  border-radius: 15px;
+  font-size: 1.02rem;
+  letter-spacing: -0.015em;
+  box-shadow: 0 13px 32px rgba(173, 242, 61, 0.18);
+}
+
+.player-select {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0.4rem;
+  padding-bottom: 0.1rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.player-select::-webkit-scrollbar {
+  display: none;
+}
+
+.player-select button {
+  min-height: 38px;
+  flex: 0 0 auto;
+  padding: 0.5rem 0.65rem;
+  font-size: 0.72rem;
+}
+
+/* -------------------------------------------------------------------------- */
+/* HIT and winner presentation                                                */
+/* -------------------------------------------------------------------------- */
+
+.card-reveal,
+.winner-overlay {
+  background: rgba(1, 5, 3, 0.82);
+  backdrop-filter: blur(16px) saturate(115%);
+}
+
+.hit-card {
+  border: 1px solid rgba(255, 240, 171, 0.5);
+  border-radius: var(--hl-radius-lg);
+  padding: 1rem;
+  color: #17150c;
+  background:
+    radial-gradient(circle at 10% 8%, rgba(255, 255, 255, 0.68), transparent 10rem),
+    linear-gradient(145deg, #ffe78d 0%, #ffb1bd 49%, #c5a4ff 100%);
+  box-shadow:
+    0 30px 110px rgba(0, 0, 0, 0.7),
+    0 0 0 1px rgba(255, 255, 255, 0.18) inset;
+}
+
+.hit-label {
+  border-radius: 9px;
+  padding: 0.34rem 0.58rem;
+  background: #11170f;
+  letter-spacing: 0.12em;
+}
+
+.hit-card-close {
+  border-radius: var(--hl-radius-sm);
+  background: #10170f;
+}
+
+.winner-card {
+  border: 1px solid rgba(200, 255, 98, 0.44);
+  border-radius: var(--hl-radius-lg);
+  background:
+    radial-gradient(circle at 50% 0%, rgba(200, 255, 98, 0.13), transparent 55%),
+    var(--hl-surface-strong);
+}
+
+.winner-badge-pill {
+  border: 1px solid rgba(200, 255, 98, 0.12);
+  border-radius: 10px;
+  color: #edfbc6;
+  background: rgba(200, 255, 98, 0.075);
+}
+
+/* -------------------------------------------------------------------------- */
+/* Responsive                                                                 */
+/* -------------------------------------------------------------------------- */
+
+@media (max-width: 1100px) {
+  .app-shell:not(:has(.game-stage)),
+  .app-shell:not(:has(.game-stage)) .game-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .app-shell:not(:has(.game-stage)) .title-card {
+    grid-row: auto;
+    min-height: 360px;
+  }
+
+  .app-shell:not(:has(.game-stage)) .game-panel > .message-card:not([aria-label='Game rules']),
+  .app-shell:not(:has(.game-stage)) .game-panel > [aria-label='Game rules'] {
+    grid-column: 1;
+  }
+
+  .game-stage {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      'board'
+      'controls';
+  }
+
+  .phaser-board {
+    width: min(100%, 980px);
+  }
+
+  .phaser-board canvas {
+    max-height: none;
+  }
+
+  .board-controls-card {
+    position: static;
+    max-height: none;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+  }
+
+  .board-controls-card > .player-select,
+  .board-controls-card > .board-button-row {
+    grid-column: 1 / -1;
+  }
+
+  .board-controls-card > .dice-display {
+    min-height: 100%;
+  }
+}
+
+@media (max-width: 760px) {
+  :root {
+    --hl-radius-lg: 20px;
+    --hl-radius-md: 16px;
+  }
+
+  .app-shell {
+    padding:
+      0.55rem
+      max(0.55rem, env(safe-area-inset-right))
+      max(0.7rem, env(safe-area-inset-bottom))
+      max(0.55rem, env(safe-area-inset-left));
+  }
+
+  .app-shell:not(:has(.game-stage)) {
+    padding-top: 0.55rem;
+  }
+
+  .app-shell:not(:has(.game-stage)) .game-panel {
+    gap: 0.6rem;
+  }
+
+  .app-shell:not(:has(.game-stage)) .title-card {
+    min-height: 280px;
+    padding: 1.2rem;
+  }
+
+  h1 {
+    font-size: clamp(2.15rem, 11vw, 3.3rem);
+  }
+
+  .controls-card .button-row {
+    grid-template-columns: 1fr;
+  }
+
+  .controls-card .button-row .primary {
+    grid-column: auto;
+  }
+
+  .app-shell:has(.game-stage) .game-panel {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      'brand'
+      'status'
+      'players';
+    gap: 0.48rem;
+  }
+
+  .app-shell:has(.game-stage) .title-card {
+    min-width: 0;
+    padding: 0.7rem 0.82rem;
+  }
+
+  .app-shell:has(.game-stage) .game-panel > .message-card:not([aria-label='Game rules']) {
+    grid-template-columns: 1fr;
+    gap: 0.18rem;
+    padding: 0.6rem 0.75rem;
+  }
+
+  .app-shell:has(.game-stage) .game-panel > .message-card:not([aria-label='Game rules']) p {
+    white-space: normal;
+  }
+
+  .app-shell:has(.game-stage) .players-card {
+    margin-inline: -0.05rem;
+    padding: 0.4rem;
+  }
+
+  .app-shell:has(.game-stage) .player-chip {
+    min-width: 150px;
+    padding: 0.48rem 0.55rem;
+  }
+
+  .game-stage {
+    gap: 0.55rem;
+  }
+
+  .board-wrap {
+    border-radius: 17px;
+  }
+
+  .phaser-board canvas {
+    border-radius: 14px;
+  }
+
+  .board-controls-card {
+    grid-template-columns: 1fr;
+    gap: 0.48rem;
+    padding: 0.55rem;
+    border-radius: 18px;
+  }
+
+  .board-controls-card > .player-select,
+  .board-controls-card > .board-button-row {
+    grid-column: auto;
+  }
+
+  .turn-box {
+    min-height: 0;
+  }
+
+  .dice-display {
+    min-height: 78px;
+  }
+
+  .board-button-row {
+    position: sticky;
+    bottom: max(0.35rem, env(safe-area-inset-bottom));
+    z-index: 30;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin: 0.1rem -0.1rem -0.1rem;
+    padding: 0.45rem;
+    border: 1px solid rgba(232, 255, 216, 0.14);
+    border-radius: 16px;
+    background: rgba(6, 17, 11, 0.96);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.42);
+    backdrop-filter: blur(18px);
+  }
+
+  .board-button-row .roll-button {
+    grid-column: 1 / -1;
+    min-height: 64px;
+  }
+
+  .board-button-row button:not(.roll-button) {
+    min-height: 44px;
+    padding-inline: 0.4rem;
+    font-size: 0.72rem;
+  }
+
+  .hit-card,
+  .winner-card {
+    width: min(96vw, 520px);
+  }
+}
+
+@media (max-width: 420px) {
+  .app-shell {
+    padding-inline: 0.4rem;
+  }
+
+  .app-shell:not(:has(.game-stage)) .title-card {
+    min-height: 245px;
+  }
+
+  .app-shell:has(.game-stage) .player-chip {
+    min-width: 138px;
+  }
+
+  .player-chip p {
+    font-size: 0.68rem;
+  }
+
+  .board-button-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .board-button-row .roll-button {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (orientation: landscape) and (max-height: 690px) and (min-width: 760px) {
+  .app-shell:has(.game-stage) .game-panel {
+    grid-template-columns: 240px minmax(0, 1fr);
+  }
+
+  .app-shell:has(.game-stage) .players-card {
+    max-height: 56px;
+  }
+
+  .game-stage {
+    grid-template-columns: minmax(0, 1fr) 285px;
+  }
+
+  .phaser-board {
+    width: min(100%, calc((100svh - 7.4rem) * 1.333));
+  }
+
+  .phaser-board canvas {
+    max-height: calc(100svh - 7.4rem);
+  }
+
+  .board-controls-card {
+    max-height: calc(100svh - 1.2rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  button {
+    transition: none;
+  }
+
+  button:hover:not(:disabled),
+  button:active:not(:disabled) {
+    transform: none;
+  }
+}
