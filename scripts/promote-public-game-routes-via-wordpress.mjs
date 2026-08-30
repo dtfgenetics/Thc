@@ -111,7 +111,7 @@ RewriteRule ^learn/(academy|atlas|cultivation-science|glossary|plant-health|sear
 RewriteRule ^community/grow-offs(?:/(.*))?/?$ /dtf-content-overlay/community/grow-offs/$1 [L]
 RewriteRule ^games/seed-ascent(?:/(.*))?/?$ /dtf-content-overlay/games/seed-ascent/$1 [L]
 RewriteRule ^_next/static/(.*)$ /dtf-content-overlay/_next/static/$1 [L]
-RewriteRule ^seed-ascent\\.html$ /dtf-content-overlay/seed-ascent.html [L]
+RewriteRule ^seed-ascent\.html$ /dtf-content-overlay/seed-ascent.html [L]
 RewriteRule ^seed-ascent/(.*)$ /dtf-content-overlay/seed-ascent/$1 [L]`;
 const rootOverlayBase64 = Buffer.from(rootOverlayBlock, 'utf8').toString('base64');
 
@@ -172,6 +172,11 @@ add_action('rest_api_init', function () {
             $restored[] = $target['rel'];
         }
         update_option($state_key, ['status' => 'rolled-back', 'restored' => $restored, 'updated_at' => gmdate('c')], false);
+        if (function_exists('do_action')) do_action('litespeed_purge_all');
+        if (!headers_sent()) {
+            header('X-LiteSpeed-Purge: *');
+            header('X-LiteSpeed-Cache-Control: no-cache');
+        }
         if (function_exists('wp_cache_flush')) wp_cache_flush();
         clearstatcache();
         return rest_ensure_response(['ok' => true, 'restored' => $restored]);
@@ -260,6 +265,11 @@ add_action('rest_api_init', function () {
                 @chmod($tmp, (int) $item['backup']['mode']);
                 if (!@rename($tmp, $item['path'])) { @unlink($tmp); $restore_all(); return new WP_Error('dtf_route_commit', 'Could not commit route promotion; rollback attempted.', ['status' => 500, 'path' => $item['rel']]); }
                 $changed[] = $item['rel'];
+            }
+            if (function_exists('do_action')) do_action('litespeed_purge_all');
+            if (!headers_sent()) {
+                header('X-LiteSpeed-Purge: *');
+                header('X-LiteSpeed-Cache-Control: no-cache');
             }
             if (function_exists('wp_cache_flush')) wp_cache_flush();
             clearstatcache();
