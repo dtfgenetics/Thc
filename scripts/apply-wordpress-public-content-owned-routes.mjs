@@ -1,7 +1,8 @@
+import { createHash } from 'node:crypto';
 import dns from 'node:dns';
-import { cp, mkdtemp, writeFile } from 'node:fs/promises';
+import { cp, mkdir, mkdtemp, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import process from 'node:process';
 
 dns.setDefaultResultOrder('ipv4first');
@@ -10,6 +11,10 @@ const siteUrl = (process.env.WP_SITE_URL || 'https://dtfseeds.com').replace(/\/$
 const username = process.env.WP_API_USERNAME || '';
 const password = process.env.WP_API_PASSWORD || '';
 const sourceDir = process.env.CONTENT_DIR || '';
+const preservationReport = process.env.OWNED_ROUTE_PRESERVATION_REPORT || join(
+  process.env.BACKUP_ROOT || tmpdir(),
+  'owned-route-preservation.json'
+);
 
 if (!username || !password) throw new Error('WP_API_USERNAME and WP_API_PASSWORD are required');
 if (!sourceDir) throw new Error('CONTENT_DIR is required');
@@ -119,19 +124,45 @@ function rawContent(page) {
   throw new Error(`WordPress page ${page?.id || 'unknown'} did not expose editable content`);
 }
 
+function normalizedContent(content) {
+  return String(content || '').trim();
+}
+
+function sha256(content) {
+  return createHash('sha256').update(normalizedContent(content), 'utf8').digest('hex');
+}
+
 const ownedDir = await mkdtemp(join(tmpdir(), 'dtf-wordpress-owned-routes-'));
 await cp(sourceDir, ownedDir, { recursive: true });
+
+const preservation = {
+  schemaVersion: 1,
+  generatedAt: new Date().toISOString(),
+  siteUrl,
+  routes: {}
+};
 
 // Learning Experience V3 is the automatic owner of both Home and Learn.
 // Preserve the exact currently stored content while the broad WordPress lane
 // reconciles community, shop, gallery, about, contact, blog and front-page state.
 for (const slug of ['home', 'learn']) {
   const page = await getPage(slug);
-  const content = rawContent(page);
-  if (!content.trim()) throw new Error(`Refusing to preserve empty /${slug}/ content`);
-  await writeFile(join(ownedDir, `${slug}.html`), `${content.trim()}\n`, 'utf8');
-  console.log(`Preserved Learning-owned /${slug}/ content from WordPress page ${page.id}.`);
+  const content = normalizedContent(rawContent(page));
+  if (!content) throw new Error(`Refusing to preserve empty /${slug}/ content`);
+  preservation.routes[slug] = {
+    id: Number(page.id),
+    slug,
+    status: page.status || 'unknown',
+    contentLength: Buffer.byteLength(content, 'utf8'),
+    contentSha256: sha256(content)
+  };
+  await writeFile(join(ownedDir, `${slug}.html`), `${content}\n`, 'utf8');
+  console.log(`Preserved Learning-owned /${slug}/ content from WordPress page ${page.id} (${preservation.routes[slug].contentSha256}).`);
 }
+
+await mkdir(dirname(preservationReport), { recursive: true });
+await writeFile(preservationReport, `${JSON.stringify(preservation, null, 2)}\n`, 'utf8');
+console.log(`Ownership-preservation evidence: ${preservationReport}`);
 
 process.env.CONTENT_DIR = ownedDir;
 await import('./apply-wordpress-public-content-rest.mjs');
