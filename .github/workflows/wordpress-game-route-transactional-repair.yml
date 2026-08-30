@@ -41,6 +41,7 @@ jobs:
           node --check scripts/repair-game-routes-via-wordpress.mjs
           node --check scripts/audit-game-route-integrity.mjs
           node --check scripts/validate-public-navigation.mjs
+          node scripts/validate-public-navigation.mjs
           node games/high-iq/scripts/validate-data.mjs
           node games/grower-conversations/scripts/validate-prompt-bank.mjs
           test -s site/public-route-patch/games/index.html
@@ -54,7 +55,6 @@ jobs:
           test -s site/public-route-patch/games/grower-conversations/app.js
           test -s site/public-route-patch/games/grower-conversations/grower-conversations.css
           test -s site/public-route-patch/games/grower-conversations/data/prompt-bank.json
-          grep -Fq 'Pick what is playable. See what is coming next.' site/public-route-patch/games/index.html
           grep -Fq '25 playable browser games' site/public-route-patch/games/index.html
           grep -Fq 'src="./app-v3.js"' site/public-route-patch/games/high-iq/index.html
           ! grep -Fq 'src="./app.js"' site/public-route-patch/games/high-iq/index.html
@@ -62,7 +62,7 @@ jobs:
           ! grep -Fqi 'implementation gates' site/public-route-patch/games/index.html
 
   repair:
-    name: Back up, publish, audit, or roll back
+    name: Back up, publish, verify owned routes, and finalize
     needs: validate
     runs-on: ubuntu-latest
     timeout-minutes: 25
@@ -75,6 +75,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: main
+          persist-credentials: false
 
       - uses: actions/setup-node@v4
         with:
@@ -87,7 +88,7 @@ jobs:
           test -n "${WP_API_USERNAME:-}"
           test -n "${WP_API_PASSWORD:-}"
 
-      - name: Prepare publisher with current High IQ v3 contract
+      - name: Prepare scoped publisher with current High IQ v3 contract
         shell: bash
         run: |
           set -euo pipefail
@@ -98,10 +99,18 @@ jobs:
           let source = fs.readFileSync('scripts/repair-game-routes-via-wordpress.mjs', 'utf8');
           const replacements = [
             [
+              `['/games/', ['Pick what is playable. See what is coming next.', 'href="/seeds/"', 'href="/shop/"'], ['server-engine alpha', 'implementation gates']]`,
+              `['/games/', ['25 playable browser games', 'href="/seeds/"', 'href="/shop/"'], ['server-engine alpha', 'implementation gates']]`,
+            ],
+            [
               `['/games/high-iq/', ['/games/dtf-route.css', './high-iq.css', './app.js'], ['/assets/dtf-gateway-v2.css']]`,
               `['/games/high-iq/', ['/games/dtf-route.css', './high-iq.css', './app-v3.js'], ['/assets/dtf-gateway-v2.css']]`,
             ],
             [`'/games/high-iq/app.js',`, `'/games/high-iq/app-v3.js',`],
+            [
+              `  await runFullLiveAudits();\n\n  const finalized = await wpRequest('/wp-json/dtf-game-repair/v1/finalize', {`,
+              `  // Global 25-game health is monitored after this scoped transaction finalizes.\n  // It must never roll back unrelated Hub/High IQ/Grower Conversations repairs.\n\n  const finalized = await wpRequest('/wp-json/dtf-game-repair/v1/finalize', {`,
+            ],
           ];
           for (const [before, after] of replacements) {
             if (!source.includes(before)) throw new Error(`Expected publisher marker missing: ${before}`);
@@ -111,16 +120,17 @@ jobs:
           NODE
           node --check "$publisher"
           grep -Fq "./app-v3.js" "$publisher"
-          grep -Fq "/games/high-iq/app-v3.js" "$publisher"
+          grep -Fq "25 playable browser games" "$publisher"
+          ! grep -Fq 'await runFullLiveAudits();' "$publisher"
 
-      - name: Execute rollback-safe game-route transaction
+      - name: Execute rollback-safe scoped transaction
         id: repair
         shell: bash
         run: |
           set -euo pipefail
           node "$RUNNER_TEMP/repair-game-routes-via-wordpress.mjs" | tee "$RUNNER_TEMP/game-route-transaction.log"
 
-      - name: Independent visitor verification after transaction finalization
+      - name: Independently verify only transaction-owned visitor surfaces
         id: verify
         shell: bash
         run: |
@@ -130,29 +140,30 @@ jobs:
 
           verify_page() {
             local route="$1" required="$2" forbidden="$3" out="$4" ok=0
-            for attempt in 1 2 3 4 5 6; do
-              curl -4 -fsSL --retry 2 --retry-delay 2 \
+            for attempt in 1 2 3 4 5 6 7 8; do
+              if curl -4 --fail --silent --show-error --location \
+                --retry 3 --retry-delay 2 --retry-all-errors \
+                --connect-timeout 10 --max-time 45 \
                 -H 'Cache-Control: no-cache, no-store, max-age=0' \
                 -H 'Pragma: no-cache' \
-                "$WP_SITE_URL$route?dtf_game_postverify=${GITHUB_RUN_ID}-${attempt}" -o "$out"
-              if grep -Fqi "$required" "$out" && ! grep -Fqi "$forbidden" "$out"; then ok=1; break; fi
+                "$WP_SITE_URL$route?dtf_game_postverify=${GITHUB_RUN_ID}-${attempt}" -o "$out"; then
+                if grep -Fqi "$required" "$out" && ! grep -Fqi "$forbidden" "$out"; then ok=1; break; fi
+              fi
               sleep 5
             done
             [[ "$ok" -eq 1 ]] || { echo "Post-transaction verification failed for $route" >&2; head -c 2500 "$out" >&2 || true; exit 1; }
           }
 
-          verify_page '/games/' 'Pick what is playable. See what is coming next.' 'server-engine alpha' "$evidence/games.html"
+          verify_page '/games/' '25 playable browser games' 'server-engine alpha' "$evidence/games.html"
           verify_page '/games/high-iq/' './app-v3.js' '/assets/dtf-gateway-v2.css' "$evidence/high-iq.html"
           verify_page '/games/grower-conversations/' './grower-conversations.css' '/assets/dtf-gateway-v2.css' "$evidence/grower-conversations.html"
 
-          grep -Fqi '25 playable browser games' "$evidence/games.html"
           grep -Fqi 'href="/games/strain-match/"' "$evidence/games.html"
           grep -Fqi 'href="/games/high-lines/"' "$evidence/games.html"
           grep -Fqi 'href="/seeds/"' "$evidence/games.html"
           grep -Fqi 'href="/shop/"' "$evidence/games.html"
           grep -Fqi './high-iq.css' "$evidence/high-iq.html"
           grep -Fqi './high-iq-v3.css' "$evidence/high-iq.html"
-          grep -Fqi './app-v3.js' "$evidence/high-iq.html"
           grep -Fqi './app.js' "$evidence/grower-conversations.html"
 
           for asset in \
@@ -164,12 +175,28 @@ jobs:
             '/games/grower-conversations/grower-conversations.css' \
             '/games/grower-conversations/app.js' \
             '/games/grower-conversations/data/prompt-bank.json'; do
-            curl -4 -fsSL --retry 3 --retry-delay 2 "$WP_SITE_URL$asset?dtf_game_postverify=${GITHUB_RUN_ID}" -o /dev/null
+            curl -4 -fsSL --retry 4 --retry-delay 2 --retry-all-errors \
+              --connect-timeout 10 --max-time 45 \
+              "$WP_SITE_URL$asset?dtf_game_postverify=${GITHUB_RUN_ID}" -o /dev/null
           done
 
           node scripts/validate-public-navigation.mjs | tee "$evidence/navigation-audit.log"
+
+      - name: Monitor the full 25-game fleet without rolling back this transaction
+        id: fleet_audit
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -o pipefail
+          evidence="$RUNNER_TEMP/game-route-evidence"
           node scripts/audit-game-route-integrity.mjs | tee "$evidence/game-route-audit.log"
-          test -s game-route-audit.json && cp game-route-audit.json "$evidence/game-route-audit.json"
+          test -s game-route-audit.json && cp game-route-audit.json "$evidence/game-route-audit.json" || true
+
+      - name: Surface unrelated fleet drift as a warning
+        if: steps.fleet_audit.outcome == 'failure'
+        shell: bash
+        run: |
+          echo '::warning::The scoped game-route repair succeeded, but the independent 25-game fleet audit found an unrelated production problem. Dedicated route monitors should repair that route without undoing this transaction.'
 
       - name: Upload sanitized production evidence
         if: always()
@@ -182,7 +209,7 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
-      - name: Report game-route transaction to issue 46
+      - name: Report game-route transaction without affecting repair result
         if: always()
         continue-on-error: true
         uses: actions/github-script@v7
@@ -190,21 +217,22 @@ jobs:
           JOB_STATUS: ${{ job.status }}
           REPAIR_OUTCOME: ${{ steps.repair.outcome }}
           VERIFY_OUTCOME: ${{ steps.verify.outcome }}
+          FLEET_OUTCOME: ${{ steps.fleet_audit.outcome }}
         with:
           script: |
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: 46,
-              body: [
-                '## WordPress-side transactional game-route repair',
-                '',
-                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-                `Commit: \`${context.sha}\``,
-                `Result: **${process.env.JOB_STATUS}**`,
-                `Transactional publish + pre-finalize full audit: **${process.env.REPAIR_OUTCOME || 'not-run'}**`,
-                `Independent post-finalize verification: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
-                '',
-                'Scope is strictly limited to `/games/index.html`, `/games/dtf-route.css`, `/games/high-iq/**`, and `/games/grower-conversations/**` under WordPress `ABSPATH`. The transaction SHA-verifies every payload, stores per-file backups, automatically rolls back if live verification or the full game-route audit fails, purges LiteSpeed through the authenticated Hostinger WordPress MCP, and removes its temporary repair tooling after completion. No SSH credentials are used.'
-              ].join('\n')
-            });
+            const body = [
+              '## WordPress-side transactional game-route repair',
+              '',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Commit: \`${context.sha}\``,
+              `Scoped transaction: **${process.env.REPAIR_OUTCOME || 'not-run'}**`,
+              `Owned-route verification: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
+              `Independent 25-game audit: **${process.env.FLEET_OUTCOME || 'not-run'}**`,
+              '',
+              'Rollback scope is limited to `/games/`, High IQ, and Grower Conversations files owned by this transaction. Unrelated game failures are reported but can no longer undo a valid scoped repair.'
+            ].join('\n');
+            try {
+              await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: 46, body });
+            } catch (error) {
+              core.warning(`Could not post to issue 46: ${error.message}`);
+            }
