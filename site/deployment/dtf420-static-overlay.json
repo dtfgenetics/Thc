@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "canonicalOrigin": "https://dtfseeds.com",
+  "purpose": "dtfseeds-wordpress-child-route-overlay",
+  "routePrefixes": [
+    "learn/academy",
+    "learn/atlas",
+    "learn/cultivation-science",
+    "learn/glossary",
+    "learn/plant-health",
+    "learn/search",
+    "learn/sops",
+    "learn/sources",
+    "learn/symptoms",
+    "learn/tools",
+    "community/grow-offs",
+    "games/seed-ascent"
+  ],
+  "sharedPaths": [
+    "_next/static",
+    "seed-ascent",
+    "seed-ascent.html"
+  ],
+  "wordpressOwnedRoutes": [
+    "/",
+    "/learn/",
+    "/blog/",
+    "/journal/",
+    "/community/",
+    "/games/",
+    "/seeds/",
+    "/tools/"
+  ],
+  "requiredRoutes": [
+    "learn/academy/index.html",
+    "learn/atlas/index.html",
+    "learn/atlas/seed-germination/seed-anatomy/index.html",
+    "learn/cultivation-science/outdoor-site-and-sun-mapping/index.html",
+    "learn/glossary/index.html",
+    "learn/plant-health/two-spotted-spider-mite/index.html",
+    "learn/sops/ph-meter-calibration-and-measurement/index.html",
+    "learn/symptoms/lower-leaf-yellowing/index.html",
+    "learn/tools/plant-health-intake/index.html",
+    "community/grow-offs/solo-cup-grow-off/index.html",
+    "games/seed-ascent/index.html",
+    "seed-ascent.html",
+    "seed-ascent/engine.js",
+    "seed-ascent/levels.js",
+    "seed-ascent/styles.css"
+  ]
+}
