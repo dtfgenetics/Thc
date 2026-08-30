@@ -162,19 +162,64 @@ jobs:
           test -s apps/growlens-web/dist/index.html
           test -d apps/growlens-web/dist/api
 
-      - name: Build Weedopolis
+      - name: Build pinned Weedopolis
         shell: bash
         run: |
           set -euo pipefail
+          revision_file="site/public-route-patch/games/weedopolis/source-revision.txt"
+          test -s "$revision_file"
+          repo_name="$(sed -n 's/^repository=//p' "$revision_file")"
+          revision="$(sed -n 's/^commit=//p' "$revision_file")"
+          test "$repo_name" = "dtfgenetics/Weedopolis-strain-Edition"
+          [[ "$revision" =~ ^[0-9a-f]{40}$ ]]
+
           repo="$RUNNER_TEMP/weedopolis"
-          git clone --depth=1 https://github.com/dtfgenetics/Weedopolis-strain-Edition.git "$repo"
+          git init "$repo"
           cd "$repo"
+          git remote add origin "https://github.com/${repo_name}.git"
+          git fetch --depth=1 origin "$revision"
+          git checkout --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "$revision"
+
           npm install --ignore-scripts
           npm run validate
           npm run check:preview
           npm run build:preview
-          test -s dist/weedopolis/index.html
-          echo "WEEDOPOLIS_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+
+          required=(
+            dist/weedopolis/index.html
+            dist/weedopolis/styles.css
+            dist/weedopolis/approved-assets.css
+            dist/weedopolis/runtime-assets.css
+            dist/weedopolis/master-board-overlay.css
+            dist/weedopolis/js/weedopolis-edition.js
+            dist/weedopolis/js/weedopolis-master-overrides.js
+            dist/weedopolis/js/weedopolis-assets.js
+            dist/weedopolis/js/weedopolis-engine.js
+            dist/weedopolis/js/weedopolis-ui.js
+            dist/weedopolis/js/weedopolis-tests.js
+            dist/weedopolis/assets/board/weedopolis-master-board.webp
+          )
+          for file in "${required[@]}"; do test -s "$file"; done
+          grep -Fq 'data-ui-standard="premium-responsive-shell-v1"' dist/weedopolis/index.html
+          grep -Fq 'data-art-standard="weedopolis-v1-master"' dist/weedopolis/index.html
+          grep -Fq 'assets/board/weedopolis-master-board.webp' dist/weedopolis/master-board-overlay.css
+          node --check dist/weedopolis/js/weedopolis-edition.js
+          node --check dist/weedopolis/js/weedopolis-master-overrides.js
+          node --check dist/weedopolis/js/weedopolis-assets.js
+          node --check dist/weedopolis/js/weedopolis-engine.js
+          node --check dist/weedopolis/js/weedopolis-ui.js
+          node --check dist/weedopolis/js/weedopolis-tests.js
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const board = fs.readFileSync('dist/weedopolis/assets/board/weedopolis-master-board.webp');
+          if (board.length < 30000) throw new Error(`master board too small: ${board.length}`);
+          if (board.subarray(0,4).toString('ascii') !== 'RIFF' || board.subarray(8,12).toString('ascii') !== 'WEBP') {
+            throw new Error('master board failed RIFF/WEBP signature validation');
+          }
+          console.log(`Pinned Weedopolis master board verified: ${board.length} bytes`);
+          NODE
+          echo "WEEDOPOLIS_SHA=$revision" >> "$GITHUB_ENV"
 
       - name: Build THC Crossword
         shell: bash
@@ -322,6 +367,18 @@ jobs:
             release/games/protect-the-plants/app.js
             release/games/protect-the-plants/api.php
             release/games/weedopolis/index.html
+            release/games/weedopolis/styles.css
+            release/games/weedopolis/approved-assets.css
+            release/games/weedopolis/runtime-assets.css
+            release/games/weedopolis/master-board-overlay.css
+            release/games/weedopolis/js/weedopolis-edition.js
+            release/games/weedopolis/js/weedopolis-master-overrides.js
+            release/games/weedopolis/js/weedopolis-assets.js
+            release/games/weedopolis/js/weedopolis-engine.js
+            release/games/weedopolis/js/weedopolis-ui.js
+            release/games/weedopolis/js/weedopolis-tests.js
+            release/games/weedopolis/assets/board/weedopolis-master-board.webp
+            release/games/weedopolis/source-revision.txt
             release/games/crossword/index.html
             release/games/who-took-it/index.html
             release/growlens/index.html
@@ -345,6 +402,10 @@ jobs:
           grep -Fq '/games/protect-the-plants/' release/games/protect-the-plants/index.html
           grep -Fq '/games/high-land/' release/games/high-land/index.html
           grep -Fq '/games/weedopolis/' release/games/weedopolis/index.html
+          grep -Fq 'data-ui-standard="premium-responsive-shell-v1"' release/games/weedopolis/index.html
+          grep -Fq 'data-art-standard="weedopolis-v1-master"' release/games/weedopolis/index.html
+          grep -Fq "commit=$WEEDOPOLIS_SHA" release/games/weedopolis/source-revision.txt
+          grep -Fq "\"weedopolis\": \"$WEEDOPOLIS_SHA\"" release/dtf-build.json
           grep -Fq '/games/crossword/' release/games/crossword/index.html
           grep -Fq '/games/who-took-it/' release/games/who-took-it/index.html
           grep -Fq '/thc-grow-doc/' release/thc-grow-doc/index.html
@@ -372,7 +433,7 @@ jobs:
             echo '- /games/phenoquest/ (self-contained canonical RPG vertical slice)'
             echo '- /games/protect-the-plants/ (Burn Buds multiplayer strategy)'
             echo '- /games/high-land/'
-            echo '- /games/weedopolis/'
+            echo "- /games/weedopolis/ (pinned $WEEDOPOLIS_SHA)"
             echo '- /games/crossword/'
             echo '- /games/who-took-it/'
             echo '- /growlens/'
