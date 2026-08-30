@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - .github/workflows/wordpress-canonical-production.yml
+      - .github/workflows/wordpress-genetics-library-production.yml
       - .github/workflows/wordpress-infographic-production.yml
       - .github/workflows/wordpress-learning-experience-v3-production.yml
       - .github/workflows/wordpress-home-release-visuals.yml
@@ -14,12 +15,16 @@ on:
       - .github/workflows/verify-live-infographics.yml
       - .github/workflows/wordpress-production-topology-ci.yml
       - scripts/wordpress-ipv4-fetch-bootstrap.mjs
+      - scripts/flush-hostinger-litespeed-mcp.mjs
+      - scripts/purge-wordpress-litespeed-cache.mjs
+      - scripts/verify-wordpress-genetics-library-production.mjs
       - scripts/run-learning-v3-connected-production.sh
       - scripts/improve-wordpress-learning-v4.mjs
   push:
     branches: [main]
     paths:
       - .github/workflows/wordpress-canonical-production.yml
+      - .github/workflows/wordpress-genetics-library-production.yml
       - .github/workflows/wordpress-infographic-production.yml
       - .github/workflows/wordpress-learning-experience-v3-production.yml
       - .github/workflows/wordpress-home-release-visuals.yml
@@ -29,6 +34,9 @@ on:
       - .github/workflows/verify-live-infographics.yml
       - .github/workflows/wordpress-production-topology-ci.yml
       - scripts/wordpress-ipv4-fetch-bootstrap.mjs
+      - scripts/flush-hostinger-litespeed-mcp.mjs
+      - scripts/purge-wordpress-litespeed-cache.mjs
+      - scripts/verify-wordpress-genetics-library-production.mjs
       - scripts/run-learning-v3-connected-production.sh
       - scripts/improve-wordpress-learning-v4.mjs
 
@@ -49,6 +57,7 @@ jobs:
           set -euo pipefail
 
           canonical='.github/workflows/wordpress-canonical-production.yml'
+          genetics='.github/workflows/wordpress-genetics-library-production.yml'
           infographics='.github/workflows/wordpress-infographic-production.yml'
           learning='.github/workflows/wordpress-learning-experience-v3-production.yml'
           home='.github/workflows/wordpress-home-release-visuals.yml'
@@ -57,10 +66,35 @@ jobs:
           watch='.github/workflows/wordpress-canonical-watch.yml'
           verify_infographics='.github/workflows/verify-live-infographics.yml'
           ipv4_bootstrap='scripts/wordpress-ipv4-fetch-bootstrap.mjs'
+          genetics_verify='scripts/verify-wordpress-genetics-library-production.mjs'
+          cache_purge='scripts/purge-wordpress-litespeed-cache.mjs'
           learning_wrapper='scripts/run-learning-v3-connected-production.sh'
           learning_map='scripts/improve-wordpress-learning-v4.mjs'
 
           grep -Fq -- '- Stage DTFSeeds WordPress Canonical Deployment' "$canonical"
+
+          # Genetics is a dedicated /seeds/ owner. It may recover after any
+          # completed canonical run, but its acceptance must separate the
+          # authoritative WordPress record from public LiteSpeed convergence.
+          grep -Fq -- '- Publish DTFSeeds WordPress Production' "$genetics"
+          grep -Fq -- "- 'scripts/flush-hostinger-litespeed-mcp.mjs'" "$genetics"
+          grep -Fq -- "- 'scripts/purge-wordpress-litespeed-cache.mjs'" "$genetics"
+          grep -Fq -- "- 'scripts/verify-wordpress-genetics-library-production.mjs'" "$genetics"
+          grep -Fq "LITESPEED_PURGE_ALL: 'false'" "$genetics"
+          grep -Fq 'LITESPEED_PURGE_URLS_JSON="$purge_urls" node scripts/purge-wordpress-litespeed-cache.mjs' "$genetics"
+          grep -Fq 'node scripts/verify-wordpress-genetics-library-production.mjs' "$genetics"
+          node --check "$cache_purge"
+          node --check "$genetics_verify"
+          grep -Fq "do_action('litespeed_purge_url', \$url)" "$cache_purge"
+          grep -Fq 'Authoritative WordPress REST proof verified' "$genetics_verify"
+          grep -Fq 'public cache convergence failed' "$genetics_verify"
+
+          purge_line="$(grep -n 'LITESPEED_PURGE_URLS_JSON=.*purge-wordpress-litespeed-cache.mjs' "$genetics" | head -1 | cut -d: -f1)"
+          verify_line="$(grep -n 'node scripts/verify-wordpress-genetics-library-production.mjs' "$genetics" | head -1 | cut -d: -f1)"
+          [[ -n "$purge_line" && -n "$verify_line" && "$purge_line" -lt "$verify_line" ]] || {
+            echo 'Genetics must purge its explicit routes immediately before REST/public acceptance.' >&2
+            exit 1
+          }
 
           grep -Fq -- '- Publish DTFSeeds WordPress Production' "$infographics"
           if grep -Fq -- '- Stage DTFSeeds WordPress Canonical Deployment' "$infographics"; then
@@ -139,4 +173,4 @@ jobs:
           grep -Fq 'actions/upload-artifact@v4' "$verify_infographics"
           grep -Fq 'issue_number: 220' "$verify_infographics"
 
-          echo 'Verified production order: staging -> canonical -> infographics -> Learning V3 plus connected map -> reusable final Home owner; Topic Literature remains independently serialized, legacy writers are manual-only, and live infographic verification is non-mutating.'
+          echo 'Verified production order: staging -> canonical -> infographics -> Learning V3 plus connected map -> reusable final Home owner; Genetics remains the dedicated /seeds/ owner with REST-first/cache-convergence acceptance; Topic Literature remains independently serialized, legacy writers are manual-only, and live infographic verification is non-mutating.'
