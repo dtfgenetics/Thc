@@ -62,7 +62,7 @@ jobs:
           grep -Fq 'app-v2.js' site/public-route-patch/games/bud-or-bluff/index.html
           grep -Fq 'keyboard-v1.js' site/public-route-patch/games/bud-or-bluff/index.html
           grep -Fq "const API = 'api-v2.php'" site/public-route-patch/games/bud-or-bluff/app-v2.js
-          grep -Fq 'RewriteRule ^api-v2\\.php$ api-v3.php [L]' site/public-route-patch/games/bud-or-bluff/.htaccess
+          grep -Fq 'RewriteRule ^api-v2\.php$ api-v3.php [L]' site/public-route-patch/games/bud-or-bluff/.htaccess
           grep -Fq "X-DTF-Bud-Or-Bluff-Storage: durable-v3" site/public-route-patch/games/bud-or-bluff/api-v3.php
           grep -Fq "Keyboard: 1 = BUD · 2 = BLUFF · D = Double Hit" site/public-route-patch/games/bud-or-bluff/keyboard-v1.js
           ! grep -Fq "'answer'=>'BUD'" site/public-route-patch/games/bud-or-bluff/index.html
