@@ -5,6 +5,8 @@ const root = process.cwd();
 const errors = [];
 const warnings = [];
 const localRepo = 'dtfgenetics/Thc';
+const productionSite = 'https://dtfseeds.com';
+const modernArchitecture = 'dtf-browser-game-v1';
 
 function exists(rel) {
   return fs.existsSync(path.join(root, rel));
@@ -27,6 +29,12 @@ function requireString(obj, key, label) {
   if (!nonEmptyString(obj?.[key])) errors.push(`${label}: missing non-empty ${key}`);
 }
 
+function requireExistingPath(obj, key, label) {
+  requireString(obj, key, label);
+  const value = obj?.[key];
+  if (nonEmptyString(value) && !exists(value)) errors.push(`${label}: ${key} path does not exist: ${value}`);
+}
+
 function duplicateValues(items, key) {
   const seen = new Set();
   const duplicates = new Set();
@@ -46,8 +54,8 @@ if (!deployment || !portfolio) {
   process.exit(1);
 }
 
-if (deployment.site !== 'https://dtfseeds.com') {
-  errors.push(`site/deployment/public-apps.json: expected site https://dtfseeds.com, got '${deployment.site}'`);
+if (deployment.site !== productionSite) {
+  errors.push(`site/deployment/public-apps.json: expected site ${productionSite}, got '${deployment.site}'`);
 }
 if (deployment.sourceOfTruth !== localRepo) {
   errors.push(`site/deployment/public-apps.json: expected sourceOfTruth ${localRepo}, got '${deployment.sourceOfTruth}'`);
@@ -55,6 +63,8 @@ if (deployment.sourceOfTruth !== localRepo) {
 
 const apps = Array.isArray(deployment.apps) ? deployment.apps : [];
 const projects = Array.isArray(portfolio.projects) ? portfolio.projects : [];
+const appById = new Map(apps.filter((app) => nonEmptyString(app?.id)).map((app) => [app.id, app]));
+const projectById = new Map(projects.filter((project) => nonEmptyString(project?.id)).map((project) => [project.id, project]));
 
 for (const value of duplicateValues(apps, 'id')) errors.push(`public-apps: duplicate id '${value}'`);
 for (const value of duplicateValues(apps.filter((app) => nonEmptyString(app.route)), 'route')) {
@@ -135,12 +145,75 @@ if (fs.existsSync(gamesRoot)) {
 
     const manifest = loadJson(gameJson);
     if (!manifest) continue;
+    const label = gameJson;
+    const usesModernArchitecture = manifest.architecture === modernArchitecture;
+
     if (manifest.id !== entry.name) errors.push(`${gameJson}: id '${manifest.id}' must match folder '${entry.name}'`);
-    requireString(manifest, 'title', gameJson);
-    requireString(manifest, 'status', gameJson);
+    requireString(manifest, 'title', label);
+    requireString(manifest, 'status', label);
+
     if (nonEmptyString(manifest.route)) {
       if (!manifest.route.startsWith('/games/')) errors.push(`${gameJson}: game route must start with /games/`);
       if (!manifest.route.endsWith('/')) errors.push(`${gameJson}: game route must end with '/'`);
+      const app = appById.get(manifest.id);
+      if (app && nonEmptyString(app.route) && app.route !== manifest.route) {
+        errors.push(`${gameJson}: route '${manifest.route}' does not match deployment route '${app.route}'`);
+      } else if (!app) {
+        const message = `${gameJson}: declares public route '${manifest.route}' but has no same-id deployment entry`;
+        if (usesModernArchitecture) errors.push(message); else warnings.push(message);
+      }
+    }
+
+    // Existing manifests predate the current architecture contract and remain supported.
+    // The stricter checks are intentionally opt-in through the architecture marker emitted by games:new.
+    if (!usesModernArchitecture) continue;
+
+    if (Number(manifest.schemaVersion || 0) < 2) {
+      errors.push(`${gameJson}: architecture '${modernArchitecture}' requires schemaVersion >= 2`);
+    }
+    if (manifest.productionTarget !== productionSite) {
+      errors.push(`${gameJson}: productionTarget must be '${productionSite}'`);
+    }
+
+    const implementation = manifest.implementation;
+    if (!implementation || typeof implementation !== 'object' || Array.isArray(implementation)) {
+      errors.push(`${gameJson}: architecture '${modernArchitecture}' requires implementation object`);
+    } else {
+      for (const key of ['entry', 'simulation', 'renderer', 'ui', 'input', 'assets', 'data', 'tests']) {
+        requireExistingPath(implementation, key, `${gameJson} implementation`);
+      }
+      if (manifest.route) {
+        requireExistingPath(implementation, 'publicRoute', `${gameJson} implementation`);
+      } else if (implementation.publicRoute !== null) {
+        errors.push(`${gameJson}: non-public prototype must keep implementation.publicRoute null`);
+      }
+    }
+
+    if (!manifest.verification || typeof manifest.verification !== 'object' || Array.isArray(manifest.verification)) {
+      errors.push(`${gameJson}: architecture '${modernArchitecture}' requires verification object`);
+    } else {
+      requireString(manifest.verification, 'command', `${gameJson} verification`);
+      requireString(manifest.verification, 'workspacePreflight', `${gameJson} verification`);
+    }
+
+    const gates = manifest.releaseGates;
+    const requiredGates = ['rulesTested', 'browserTested', 'mobileTested', 'accessibilityReviewed', 'originalArtCleared', 'deploymentRegistered'];
+    if (!gates || typeof gates !== 'object' || Array.isArray(gates)) {
+      errors.push(`${gameJson}: architecture '${modernArchitecture}' requires releaseGates object`);
+    } else {
+      for (const key of requiredGates) {
+        if (typeof gates[key] !== 'boolean') errors.push(`${gameJson}: releaseGates.${key} must be boolean`);
+      }
+    }
+
+    const project = projectById.get(manifest.id);
+    if (project && project.type === 'game' && project.repo !== localRepo) {
+      errors.push(`${gameJson}: local modern source conflicts with canonical repository ownership '${project.repo}'`);
+    }
+
+    const app = appById.get(manifest.id);
+    if (app?.status === 'ready-to-package' && gates?.deploymentRegistered !== true) {
+      errors.push(`${gameJson}: ready-to-package modern game must set releaseGates.deploymentRegistered=true`);
     }
   }
 }
