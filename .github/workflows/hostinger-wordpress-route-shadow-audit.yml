@@ -108,7 +108,7 @@ jobs:
                 printf 'static_shell_marker='; if grep -Fq 'assets/dtf-home/dtf-home.css' "$route/index.html"; then echo yes; else echo no; fi
                 printf 'age_gate_marker='; if grep -Fq 'Adult visitors only' "$route/index.html"; then echo yes; else echo no; fi
                 printf 'wordpress_marker='; if grep -Fq '/wp-content/' "$route/index.html"; then echo yes; else echo no; fi
-                printf 'title='; grep -Eio '<title>[^<]+'</title' "$route/index.html" 2>/dev/null | head -1 || true
+                printf 'title='; grep -Eio '<title>[^<]+</title>' "$route/index.html" 2>/dev/null | head -1 || true
               fi
             else
               echo 'exists=no'
