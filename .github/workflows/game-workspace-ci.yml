@@ -17,7 +17,9 @@ on:
       - 'scripts/test-game-scaffold.mjs'
       - 'scripts/game-status.mjs'
       - 'scripts/test-game-status.mjs'
+      - 'scripts/setup-ai-tools.mjs'
       - 'scripts/setup-ai-tools.sh'
+      - 'scripts/setup-ai-tools.ps1'
       - 'docs/GAME_DEVELOPMENT_WORKFLOW.md'
       - 'docs/GAME_ARCHITECTURE_STANDARD.md'
       - 'AI_CONTEXT.md'
@@ -40,7 +42,9 @@ on:
       - 'scripts/test-game-scaffold.mjs'
       - 'scripts/game-status.mjs'
       - 'scripts/test-game-status.mjs'
+      - 'scripts/setup-ai-tools.mjs'
       - 'scripts/setup-ai-tools.sh'
+      - 'scripts/setup-ai-tools.ps1'
       - 'docs/GAME_DEVELOPMENT_WORKFLOW.md'
       - 'docs/GAME_ARCHITECTURE_STANDARD.md'
       - 'AI_CONTEXT.md'
@@ -69,8 +73,11 @@ jobs:
         with:
           node-version: 22
 
-      - name: Validate AI workspace setup script
-        run: bash -n scripts/setup-ai-tools.sh
+      - name: Validate AI workspace setup tooling
+        run: |
+          node --check scripts/setup-ai-tools.mjs
+          node scripts/setup-ai-tools.mjs --check
+          bash -n scripts/setup-ai-tools.sh
 
       - name: Show dtfseeds.com game ownership and routes
         run: npm run games:status
