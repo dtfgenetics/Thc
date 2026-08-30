@@ -6,7 +6,8 @@ This directory contains game projects that are owned directly by the DTF master 
 
 ## Fast workflow
 
-- Check ownership/routes before editing: `npm run games:status`
+- Check the full ownership/route inventory: `npm run games:status`
+- Before editing one game, resolve its exact owner and deploy contract: `npm run games:status -- --id <game-id>`
 - Create a safe, non-deployable scaffold: `npm run games:new -- <game-id> "Game Title"`
 - Verify the scaffold contract itself: `npm run games:scaffold-check`
 - Verify game ownership, manifests, routes, source paths, deployment metadata, navigation, and release integrity: `npm run games:preflight`
@@ -27,7 +28,7 @@ New schema-v2 scaffolds use the `dtf-browser-game-v1` contract:
 - machine-readable content stays in `data/`
 - deterministic and integration tests stay in `test/`
 
-Existing schema-v1 games remain supported. Upgrade them when meaningful game-specific work justifies the migration instead of doing a risky mass rewrite.
+Existing games remain supported regardless of older manifest schema shape. The stricter architecture checks are opt-in through the `dtf-browser-game-v1` marker emitted by the current scaffolder. Upgrade older games when meaningful game-specific work justifies the migration instead of doing a risky mass rewrite.
 
 ## Source-controlled here
 
