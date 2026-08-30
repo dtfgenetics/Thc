@@ -4,6 +4,8 @@ Production target: **https://dtfseeds.com**
 
 This standard keeps game development additive. New gameplay code should be able to grow without forcing a rewrite of routing, deployment, rendering, or shared site integration.
 
+Player-facing visual quality is defined separately in **`docs/GAME_UI_STANDARD.md`**. Architecture and UI standards are both required for new locally owned public games: this document defines ownership boundaries; the UI standard defines playfield hierarchy, responsive HUD behavior, touch controls, visual polish, and rendered-browser QA.
+
 ## Non-negotiable boundaries
 
 For new locally owned browser games, keep these concerns separate:
@@ -35,6 +37,7 @@ games/<id>/
       README.md
     ui/
       README.md
+      game-ui.css
     assets/
       manifest.json
   data/
@@ -44,7 +47,7 @@ games/<id>/
     ARCHITECTURE.md
 ```
 
-The scaffold is deliberately non-deployable. The visitor runtime is added only when a usable build exists.
+The scaffold is deliberately non-deployable. The visitor runtime is added only when a usable build exists. Its starter UI theme is also deliberately neutral: use it as a structural baseline, then give the real game a distinct art/material direction before release.
 
 ## Source-of-truth and deployment
 
@@ -103,6 +106,8 @@ Use the canvas/WebGL surface for the playfield when appropriate. Prefer DOM UI f
 
 Every public game must remain usable on mobile-width layouts and must not trap page scrolling/zooming except while the user is actively interacting with the playfield.
 
+New `dtf-browser-game-v1` scaffolds also declare `uiStandard: "dtf-game-ui-v1"` and include `src/ui/game-ui.css`. The starter CSS provides structural primitives for a playfield-first layout, compact HUD, touch-safe actions, safe-area handling, and reduced-motion support. Those primitives are not a finished art direction; replace the neutral theme with a game-specific visual system while preserving the behavior contract from `docs/GAME_UI_STANDARD.md`.
+
 ## Multiplayer contract
 
 For multiplayer games, the server owns hidden information, turn legality, scoring, room membership, and authoritative state transitions. Clients send intents and render server-approved state.
@@ -120,10 +125,13 @@ Before a new local game can be presented as playable on dtfseeds.com:
 5. Mobile interaction is checked.
 6. Accessibility-sensitive controls/text are reviewed.
 7. Art used in production is cleared/original.
-8. `site/deployment/public-apps.json` has a unique route and concrete verification/build command.
-9. `npm run games:preflight` passes.
-10. Production is deployed from `main` and the live route is verified afterward.
+8. The UI has a game-specific visual system and passes `docs/GAME_UI_STANDARD.md` browser QA; new scaffolds track this with `visualPolishReviewed` and `responsiveHudTested`.
+9. `site/deployment/public-apps.json` has a unique route and concrete verification/build command.
+10. `npm run games:preflight` passes.
+11. Production is deployed from `main` and the live route is verified afterward.
 
 ## Existing games
 
 Existing games are not required to be rewritten into this structure immediately. The workspace verifier keeps schema-v1 manifests compatible. When an older game receives a meaningful architecture refactor, migrate it to the current scaffold contract as part of that game-specific change rather than mixing a mass migration into unrelated gameplay work.
+
+For UI modernization, preserve working gameplay/state first and migrate the presentation layer game-by-game using `docs/GAME_UI_STANDARD.md`. High Land is the current reference for that approach.
