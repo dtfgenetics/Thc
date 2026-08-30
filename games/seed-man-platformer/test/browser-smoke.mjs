@@ -49,6 +49,15 @@ async function waitForGameReady(page) {
   });
 }
 
+async function assertProductionArt(page) {
+  const art = await page.evaluate(() => window.__SPROUT_ART__ || null);
+  assert.ok(art, 'Sprout Run production character art layer should be loaded.');
+  assert.equal(art.version, 'seed-man-production-v1');
+  assert.equal(art.renderer, 'canvas2d-vector');
+  assert.equal(art.characterContract, 'seed-man-locked-v1');
+  assert.equal(art.original, true, 'Production character art must be original DTF artwork.');
+}
+
 async function snapshot(page) {
   return page.evaluate(() => ({
     x: player.x,
@@ -87,6 +96,7 @@ async function runDesktopAcceptance(page) {
   const errors = collectErrors(page);
   await page.goto(GAME_URL, { waitUntil: 'networkidle' });
   await waitForGameReady(page);
+  await assertProductionArt(page);
 
   assert.match(await page.title(), /Seed Man: Sprout Run/i);
   assert.equal((await page.locator('#sprout-count').innerText()).trim(), '0 / 24');
@@ -213,6 +223,7 @@ async function runMobileAcceptance(page) {
   const errors = collectErrors(page);
   await page.goto(GAME_URL, { waitUntil: 'networkidle' });
   await waitForGameReady(page);
+  await assertProductionArt(page);
 
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   assert.ok(overflow <= 1, `Mobile layout overflows horizontally by ${overflow}px`);
@@ -271,6 +282,8 @@ try {
     url: GAME_URL,
     desktop: '1280x900',
     mobile: '390x844',
+    productionArtVersion: 'seed-man-production-v1',
+    productionCharacterContract: 'seed-man-locked-v1',
     keyboardMovement: true,
     keyboardDoubleJump: true,
     pauseResume: true,
