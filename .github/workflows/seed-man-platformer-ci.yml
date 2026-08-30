@@ -31,9 +31,12 @@ jobs:
         run: node games/seed-man-platformer/test/physics.test.mjs
       - name: Test self-contained public runtime
         run: node games/seed-man-platformer/test/public-runtime.test.mjs
+      - name: Test keyboard focus ownership
+        run: node games/seed-man-platformer/test/input-guard.test.mjs
       - name: Validate browser JavaScript syntax
         run: |
           node --check site/public-route-patch/games/seed-man-platformer/app.js
+          node --check site/public-route-patch/games/seed-man-platformer/input-guard-v1.js
           node --check site/public-route-patch/games/seed-man-platformer/physics.mjs
       - name: Verify public simulation copies match canonical source
         shell: bash
@@ -48,6 +51,7 @@ jobs:
           route=site/public-route-patch/games/seed-man-platformer
           test -s "$route/index.html"
           test -s "$route/app.js"
+          test -s "$route/input-guard-v1.js"
           test -s "$route/seed-man.css"
           test -s "$route/physics.mjs"
           test -s "$route/data/level-01.json"
@@ -57,4 +61,5 @@ jobs:
           grep -Fqi 'name="description"' "$route/index.html"
           grep -Fq 'id="seed-man-level"' "$route/index.html"
           grep -Fq '<script src="./app.js" defer></script>' "$route/index.html"
+          grep -Fq '<script src="./input-guard-v1.js" defer></script>' "$route/index.html"
           grep -Fq 'No third-party level layouts or character assets are used.' "$route/index.html"
