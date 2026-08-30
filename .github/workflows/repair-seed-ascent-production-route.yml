@@ -99,23 +99,18 @@ jobs:
                   raise SystemExit('verifyPromotion insertion point not found')
               text = text.replace(marker, helper + marker, 1)
 
-          old = """  // Seed Ascent is a Next wrapper around the dedicated static game runtime. Prove that
-          // the wrapper itself is live by requiring its iframe source rather than the generic
-          // education-page asset marker used above.
-          await verifyOwnPage('/games/seed-ascent/', '/seed-ascent.html');
+          start_marker = '  // Seed Ascent is a Next wrapper around the dedicated static game runtime. Prove that'
+          end_marker = "  const learnHub = await probe('/learn/');"
+          if start_marker in text:
+              start = text.index(start_marker)
+              end = text.index(end_marker, start)
+              replacement = """  // Seed Ascent is a dedicated Codex-built wrapper + static runtime. Verify the
+            // wrapper and every required runtime surface directly rather than applying the
+            // generic education-page absolute-origin marker to this game shell.
+            await verifySeedAscent();
 
-          const asset = await probe('/seed-ascent.html');
-          if (asset.response.status !== 200 || asset.response.headers.get('location') || !/Seed Ascent/i.test(asset.text)) {
-            throw new Error(`Seed Ascent public runtime asset did not resolve through overlay: HTTP ${asset.response.status}`);
-          }
           """
-          new = """  // Seed Ascent is a dedicated Codex-built wrapper + static runtime. Verify the
-          // wrapper and every required runtime surface directly rather than requiring the
-          // generic absolute-origin marker used by education overlay pages.
-          await verifySeedAscent();
-          """
-          if old in text:
-              text = text.replace(old, new, 1)
+              text = text[:start] + replacement + text[end:]
           elif 'await verifySeedAscent();' not in text:
               raise SystemExit('Seed Ascent verification block not found')
 
@@ -124,6 +119,7 @@ jobs:
           node --check scripts/promote-public-game-routes-via-wordpress.mjs
           grep -Fq 'async function verifySeedAscent()' scripts/promote-public-game-routes-via-wordpress.mjs
           grep -Fq "probe('/seed-ascent/engine.js')" scripts/promote-public-game-routes-via-wordpress.mjs
+          grep -Fq 'await verifySeedAscent();' scripts/promote-public-game-routes-via-wordpress.mjs
 
       - name: Reapply and finalize canonical Seed Ascent routing
         shell: bash
