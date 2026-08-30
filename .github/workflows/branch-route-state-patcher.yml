@@ -1,0 +1,47 @@
+name: Branch route-state patcher
+
+on:
+  push:
+    branches:
+      - 'fix/game-route-canonical-stale-scan-20260830'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/game-route-canonical-stale-scan-20260830
+          fetch-depth: 0
+      - name: Apply narrow promoter fix
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('scripts/promote-public-game-routes-via-wordpress.mjs')
+          s = p.read_text()
+          old = "                $desired_count = substr_count($content, $target['desired']);\n                $stale_matches = [];\n                foreach ($target['stale'] as $stale) {\n                    $count = substr_count($content, $stale);\n                    if ($count > 0) $stale_matches[] = ['marker' => $stale, 'count' => $count];\n                }\n                if ($desired_count === 1 && count($stale_matches) === 0) { $already[] = $target['rel']; continue; }\n"
+          new = "                $desired_count = substr_count($content, $target['desired']);\n                $stale_scan = $content;\n                if ($desired_count === 1) {\n                    $stale_scan = str_replace($target['desired'], '', $content, $desired_strip_count);\n                    if ($desired_strip_count !== 1) {\n                        return new WP_Error('dtf_route_canonical_scan', 'Canonical route block could not be isolated for stale-rule validation.', ['status' => 409, 'path' => $target['rel'], 'desired_count' => $desired_count]);\n                    }\n                }\n                $stale_matches = [];\n                foreach ($target['stale'] as $stale) {\n                    $count = substr_count($stale_scan, $stale);\n                    if ($count > 0) $stale_matches[] = ['marker' => $stale, 'count' => $count];\n                }\n                if ($desired_count === 1 && count($stale_matches) === 0) { $already[] = $target['rel']; continue; }\n"
+          n = s.count(old)
+          if n == 1:
+              p.write_text(s.replace(old, new, 1))
+          elif '$count = substr_count($stale_scan, $stale);' not in s:
+              raise SystemExit(f'unexpected promoter state: old block count={n}')
+          PY
+          node --check scripts/promote-public-game-routes-via-wordpress.mjs
+          grep -Fq '$count = substr_count($stale_scan, $stale);' scripts/promote-public-game-routes-via-wordpress.mjs
+      - name: Commit promoter change
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- scripts/promote-public-game-routes-via-wordpress.mjs; then exit 0; fi
+          git config user.name dtf-release-bot
+          git config user.email actions@users.noreply.github.com
+          git add scripts/promote-public-game-routes-via-wordpress.mjs
+          git commit -m 'Ignore canonical block when scanning stale route markers'
+          git push origin HEAD:fix/game-route-canonical-stale-scan-20260830
