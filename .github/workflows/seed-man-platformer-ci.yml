@@ -54,6 +54,9 @@ jobs:
         run: |
           set -euo pipefail
           route=site/public-route-patch/games/seed-man-platformer
+          release="$(sed -n 's/.*name="dtf-sprout-release" content="\([^"]*\)".*/\1/p' "$route/index.html" | head -n 1)"
+          [[ "$release" =~ ^[0-9]{8}-r[0-9]+$ ]] || { echo "Invalid Sprout release marker: $release" >&2; exit 1; }
+
           test -s "$route/index.html"
           test -s "$route/app.js"
           test -s "$route/seed-man-production-art.js"
@@ -70,14 +73,17 @@ jobs:
           grep -Fq '"worldWidth": 7800' "$route/index.html"
           grep -Fq '"requiredPickups": 24' "$route/index.html"
           grep -Fq 'JUMP ×2' "$route/index.html"
-          grep -Fq 'name="dtf-sprout-release" content="20260830-r3"' "$route/index.html"
-          grep -Fq '<script src="./app.js?v=20260830-r3" defer></script>' "$route/index.html"
-          grep -Fq '<script src="./seed-man-production-art.js?v=20260830-r3" defer></script>' "$route/index.html"
-          grep -Fq '<script src="./input-guard-v1.js?v=20260830-r3" defer></script>' "$route/index.html"
-          grep -Fq 'seed-man.css?v=20260830-r3' "$route/index.html"
+          grep -Fq "name=\"dtf-sprout-release\" content=\"${release}\"" "$route/index.html"
+          grep -Fq "<script src=\"./app.js?v=${release}\" defer></script>" "$route/index.html"
+          grep -Fq "<script src=\"./seed-man-production-art.js?v=${release}\" defer></script>" "$route/index.html"
+          grep -Fq "<script src=\"./input-guard-v1.js?v=${release}\" defer></script>" "$route/index.html"
+          grep -Fq "seed-man.css?v=${release}" "$route/index.html"
           grep -Fq 'seed-man-production-v1' "$route/seed-man-production-art.js"
           grep -Fq 'seed-man-locked-v1' "$route/seed-man-production-art.js"
           grep -Fq 'No third-party level layouts or character assets are used.' "$route/index.html"
+          ! grep -Fqi 'collect all eight sprouts' "$route/index.html"
+          ! grep -Fq '0 / 8' "$route/index.html"
+          echo "Sprout Run source contract validated for ${release}."
       - name: Install browser-test dependencies
         run: |
           npm ci
