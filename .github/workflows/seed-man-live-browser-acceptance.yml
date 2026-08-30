@@ -5,6 +5,12 @@ on:
     workflows: ["Seed Man Sprout Run Live Smoke"]
     types: [completed]
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/seed-man-live-browser-acceptance.yml'
+      - 'games/seed-man-platformer/test/browser-smoke.mjs'
+      - 'games/seed-man-platformer/test/gameplay-v2-smoke.mjs'
 
 permissions:
   contents: read
@@ -31,7 +37,8 @@ jobs:
         env:
           SPROUT_GAME_URL: https://dtfseeds.com/games/seed-man-platformer/
         run: |
-          # This workflow is intentionally deployment-gated. Source changes are
-          # exercised by Seed Man CI; live acceptance must not race publication.
+          # Live acceptance judges DOM/game readiness rather than network-idle;
+          # game pages may legitimately keep network work open.
           sed -i "s/waitUntil: 'networkidle'/waitUntil: 'domcontentloaded'/g" games/seed-man-platformer/test/browser-smoke.mjs
           node games/seed-man-platformer/test/browser-smoke.mjs
+          node games/seed-man-platformer/test/gameplay-v2-smoke.mjs
