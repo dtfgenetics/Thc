@@ -5,10 +5,6 @@ on:
     workflows: ["Deploy DTFSeeds Public Suite via WordPress V2"]
     types: [completed]
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/seed-man-live-smoke.yml'
 
 permissions:
   contents: read
@@ -19,61 +15,119 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Verify Sprout Run live runtime
+      - name: Verify expanded Sprout Run live runtime
         shell: bash
         run: |
           set -euo pipefail
 
-          bust="dtf_sprout_smoke=${GITHUB_RUN_ID}"
-          index_body="$(mktemp)"
-          index_headers="$(mktemp)"
-          app_body="$(mktemp --suffix=.js)"
-          app_headers="$(mktemp)"
-          trap 'rm -f "$index_body" "$index_headers" "$app_body" "$app_headers"' EXIT
+          base='https://dtfseeds.com/games/seed-man-platformer/'
+          bust="dtf_sprout_smoke=${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
 
-          fetch_no_redirect() {
-            local url="$1" body="$2" headers="$3" status
-            status="$(curl -sS --retry 5 --retry-delay 3 \
+          fetch_asset() {
+            local rel="$1" body headers status type
+            body="$(mktemp)"
+            headers="$(mktemp)"
+            status="$(curl -sS --connect-timeout 10 --max-time 30 \
               --output "$body" \
               --dump-header "$headers" \
               --write-out '%{http_code}' \
               -H 'Cache-Control: no-cache, no-store, max-age=0' \
-              "${url}?${bust}")"
-            if [[ "$status" != "200" ]]; then
-              echo "Expected HTTP 200 from $url, received $status" >&2
-              cat "$headers" >&2
+              "${base}${rel}?${bust}")"
+            type="$(awk 'BEGIN{IGNORECASE=1} /^content-type:/{gsub(/\r/,""); sub(/^[^:]+:[[:space:]]*/,""); print; exit}' "$headers")"
+            echo "${rel:-/} -> HTTP ${status} ${type:-unknown-content-type} bytes=$(wc -c < "$body")" >&2
+            if [[ "$status" != '200' ]]; then
+              echo "FAILED_ASSET=${rel:-/}" >&2
+              head -c 500 "$body" >&2 || true
+              rm -f "$body" "$headers"
               return 1
             fi
             if grep -Eiq '^location:' "$headers"; then
-              echo "Refusing redirected Sprout Run asset: $url" >&2
+              echo "Unexpected redirect for ${rel:-/}" >&2
               cat "$headers" >&2
+              rm -f "$body" "$headers"
               return 1
             fi
+            cat "$body"
+            rm -f "$body" "$headers"
           }
 
-          fetch_no_redirect 'https://dtfseeds.com/games/seed-man-platformer/' "$index_body" "$index_headers"
-          grep -Fq '<h1>Sprout Run</h1>' "$index_body"
-          grep -Fq 'id="seed-man-level"' "$index_body"
-          grep -Fq '"id": "sprout-run"' "$index_body"
-          grep -Fq '"requiredPickups": 8' "$index_body"
-          grep -Fq '<script src="./app.js" defer></script>' "$index_body"
-          if grep -Fq 'type="module"' "$index_body"; then
+          html="$(fetch_asset '')"
+
+          for marker in \
+            '<h1>Sprout Run</h1>' \
+            'Greenhouse Gauntlet' \
+            'id="seed-man-level"' \
+            '"schemaVersion": 2' \
+            '"id": "sprout-run"' \
+            '"worldWidth": 7800' \
+            '"requiredPickups": 24' \
+            '0 / 24' \
+            'JUMP ×2' \
+            '7 power-ups' \
+            '3 checkpoints' \
+            '<script src="./app.js" defer></script>' \
+            '<script src="./input-guard-v1.js" defer></script>'; do
+            grep -Fq "$marker" <<<"$html" || { echo "Missing Sprout Run production marker: $marker" >&2; exit 1; }
+          done
+
+          for stale in \
+            'collect all eight sprouts' \
+            'Sprouts 0 / 8' \
+            'Objective: collect all 8 sprouts' \
+            'Original browser vertical slice'; do
+            if grep -Fqi "$stale" <<<"$html"; then
+              echo "Stale Sprout Run fingerprint still live: $stale" >&2
+              exit 1
+            fi
+          done
+
+          if grep -Fq 'type="module"' <<<"$html"; then
             echo 'Sprout Run regressed to a module-script dependency.' >&2
             exit 1
           fi
 
-          fetch_no_redirect 'https://dtfseeds.com/games/seed-man-platformer/app.js' "$app_body" "$app_headers"
-          node --check "$app_body"
-          grep -Fq 'function readEmbeddedLevel()' "$app_body"
-          grep -Fq 'function stepPlayer(' "$app_body"
-          grep -Fq "const BEST_KEY = 'dtf-seed-man-best-v1';" "$app_body"
-          if grep -Eq '^[[:space:]]*import[[:space:]]' "$app_body"; then
+          app="$(fetch_asset 'app.js')"
+          printf '%s' "$app" > "$RUNNER_TEMP/sprout-app.js"
+          node --check "$RUNNER_TEMP/sprout-app.js"
+          for marker in \
+            'moveSpeed: 270' \
+            'jumpSpeed: 640' \
+            'doubleJumpSpeed: 590' \
+            'maxAirJumps: 1' \
+            'speedBoostMultiplier: 1.35' \
+            'jumpBoostMultiplier: 1.18' \
+            'magnetRadius: 145' \
+            'shieldInvulnerability: 1.05' \
+            'function readEmbeddedLevel()' \
+            'function stepPlayer('; do
+            grep -Fq "$marker" <<<"$app" || { echo "Missing app.js production marker: $marker" >&2; exit 1; }
+          done
+          if grep -Eq '^[[:space:]]*import[[:space:]]' <<<"$app"; then
             echo 'Sprout Run app.js regressed to a browser module import.' >&2
             exit 1
           fi
-          if grep -Fq "fetch('./data/level-01.json" "$app_body"; then
+          if grep -Fq "fetch('./data/level-01.json" <<<"$app"; then
             echo 'Sprout Run app.js regressed to a runtime level fetch.' >&2
             exit 1
           fi
 
-          echo 'Sprout Run live route and self-contained runtime passed.'
+          guard="$(fetch_asset 'input-guard-v1.js')"
+          printf '%s' "$guard" > "$RUNNER_TEMP/sprout-input-guard.js"
+          node --check "$RUNNER_TEMP/sprout-input-guard.js"
+
+          css="$(fetch_asset 'seed-man.css')"
+          grep -Fq 'touch-controls' <<<"$css"
+
+          level="$(fetch_asset 'data/level-01.json')"
+          node -e '
+            const level = JSON.parse(process.argv[1]);
+            if (level.schemaVersion !== 2) throw new Error(`schemaVersion=${level.schemaVersion}`);
+            if (level.worldWidth !== 7800) throw new Error(`worldWidth=${level.worldWidth}`);
+            if (level.requiredPickups !== 24) throw new Error(`requiredPickups=${level.requiredPickups}`);
+            if (!Array.isArray(level.pickups) || level.pickups.length !== 24) throw new Error(`pickups=${level.pickups?.length}`);
+            if (!Array.isArray(level.powerups) || level.powerups.length !== 7) throw new Error(`powerups=${level.powerups?.length}`);
+            if (!Array.isArray(level.checkpoints) || level.checkpoints.length !== 3) throw new Error(`checkpoints=${level.checkpoints?.length}`);
+            if (!Array.isArray(level.hazards) || level.hazards.length !== 15) throw new Error(`hazards=${level.hazards?.length}`);
+          ' "$level"
+
+          echo 'Expanded Sprout Run live route, runtime, level data, controls, and release fingerprints passed.'
