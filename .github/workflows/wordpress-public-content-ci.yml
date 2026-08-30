@@ -111,9 +111,13 @@ jobs:
 
           # The standalone/public-pages workflow still owns its public-root proof.
           grep -Fq "verify_page '/' 'Genetics, cultivation education, practical tools, and original cannabis games.'" .github/workflows/wordpress-public-pages-deploy.yml
-          # The canonical WordPress lane verifies the preserved WordPress Home at
-          # /home/ because the Public Suite overlay owns the public root.
-          grep -Fq "verify_page '/home/' 'Genetics first. Cultivation science behind it.'" .github/workflows/wordpress-canonical-production.yml
+
+          # Public Home is served by the Public Suite overlay. The canonical
+          # WordPress lane may preserve Home through REST, but must not treat the
+          # public /home/ URL as proof of the WordPress page body.
+          ! grep -Fq "verify_page '/home/'" .github/workflows/wordpress-canonical-production.yml
+          grep -Fq 'Verify preserved WordPress Home brand media through REST' .github/workflows/wordpress-canonical-production.yml
+          grep -Fq 'wp-json/wp/v2/pages?slug=home&context=edit&per_page=10' .github/workflows/wordpress-canonical-production.yml
 
       - name: Validate owner-only reconciliation command guard
         shell: bash
