@@ -273,7 +273,7 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
-      - name: Report production result
+      - name: Report production result to issue 46
         if: always()
         continue-on-error: true
         uses: actions/github-script@v7
