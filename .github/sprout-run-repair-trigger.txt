@@ -1,7 +1,7 @@
-Deploy Sprout Run cache-proof production release 20260830-r3.
+Reconcile the canonical Sprout Run production release from the source-owned release marker.
 
-Expected live release: Greenhouse Gauntlet, 7,800 px world, 24 sprouts, JUMP ×2, 7 power-ups, 3 checkpoints, 15 hazard zones, seed-man-production-v1, seed-man-locked-v1.
+Current source release: 20260830-r4. Expected live edition: Greenhouse Gauntlet, 7,800 px world, 24 sprouts, JUMP ×2, 7 power-ups, 3 checkpoints, 15 hazard zones, seed-man-production-v1, seed-man-locked-v1.
 
-The public HTML must reference versioned runtime assets app.js?v=20260830-r3, seed-man-production-art.js?v=20260830-r3, input-guard-v1.js?v=20260830-r3, and seed-man.css?v=20260830-r3 so previously cached browser assets cannot blank the canvas.
+The repair workflow must derive the release identifier from site/public-route-patch/games/seed-man-platformer/index.html and require all versioned runtime assets to use that same identifier. Do not hard-code an older release in CI, registry repair, live checks, or production status.
 
 Do not report success unless the normal live route rejects the retired 8-sprout vertical-slice fingerprints and passes live browser rendering plus desktop/mobile acceptance.
