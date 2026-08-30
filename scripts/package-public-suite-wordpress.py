@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
 """Build an allowlisted DTFSeeds public-app archive for WordPress-mediated deployment.
 
-The package intentionally excludes the WordPress-owned root and /learn/ routes so a
+The package intentionally excludes the WordPress-owned root and direct /learn/ routes so a
 static suite deployment cannot recreate the shadowing incident fixed on 2026-08-21.
+Dtf420 child routes are built from its current main branch, verified against a reviewed
+cross-repository ownership contract, and staged below /dtf-content-overlay/ for a later
+atomic promotion step. The transactional publisher therefore never receives direct
+ownership of /learn/, /community/, /games/, or the site root.
 Registered local static game routes are derived from the canonical public-app registry
 so a tested game cannot be registered for deployment and then silently omitted from
 the WordPress archive by a stale hand-maintained allowlist.
@@ -14,6 +18,7 @@ import json
 import os
 from pathlib import Path, PurePosixPath
 import stat
+import subprocess
 import sys
 import zipfile
 
@@ -25,6 +30,24 @@ out = Path(sys.argv[2]).resolve()
 repo_root = Path(__file__).resolve().parents[1]
 if not root.is_dir():
     raise SystemExit(f"release directory not found: {root}")
+
+# Build the reviewed Dtf420 child-route export into an isolated staging namespace.
+# Direct WordPress-owned paths remain forbidden below when the archive is assembled.
+subprocess.run(
+    [sys.executable, str(repo_root / "scripts" / "stage-dtf420-static-overlay.py"), str(root)],
+    check=True,
+)
+
+overlay_manifest_path = root / "dtf-content-overlay" / "overlay-manifest.json"
+if not overlay_manifest_path.is_file() or overlay_manifest_path.stat().st_size == 0:
+    raise SystemExit("Dtf420 overlay staging did not produce overlay-manifest.json")
+overlay_manifest = json.loads(overlay_manifest_path.read_text())
+if overlay_manifest.get("canonicalOrigin") != "https://dtfseeds.com":
+    raise SystemExit("Dtf420 staged overlay has the wrong canonical origin")
+if overlay_manifest.get("repository") != "dtfgenetics/Dtf420":
+    raise SystemExit("Dtf420 staged overlay has the wrong source repository")
+if not str(overlay_manifest.get("commit") or "").isalnum() or len(str(overlay_manifest.get("commit") or "")) != 40:
+    raise SystemExit("Dtf420 staged overlay does not record a 40-character source revision")
 
 allowed = [
     "games/index.html",
@@ -52,6 +75,7 @@ allowed = [
     "puzzles",
     "atlas",
     "assets/images/atlas",
+    "dtf-content-overlay",
 ]
 
 public_apps_path = repo_root / "site" / "deployment" / "public-apps.json"
@@ -162,6 +186,19 @@ required = [
     "atlas/root-system/rhizosphere/index.html",
     "atlas/downloads/index.html",
     "assets/images/atlas/root-system/rhizosphere-microbe-interaction.svg",
+    "dtf-content-overlay/overlay-manifest.json",
+    "dtf-content-overlay/learn/academy/index.html",
+    "dtf-content-overlay/learn/atlas/seed-germination/seed-anatomy/index.html",
+    "dtf-content-overlay/learn/cultivation-science/outdoor-site-and-sun-mapping/index.html",
+    "dtf-content-overlay/learn/glossary/index.html",
+    "dtf-content-overlay/learn/plant-health/two-spotted-spider-mite/index.html",
+    "dtf-content-overlay/learn/sops/ph-meter-calibration-and-measurement/index.html",
+    "dtf-content-overlay/learn/symptoms/lower-leaf-yellowing/index.html",
+    "dtf-content-overlay/learn/tools/plant-health-intake/index.html",
+    "dtf-content-overlay/community/grow-offs/solo-cup-grow-off/index.html",
+    "dtf-content-overlay/games/seed-ascent/index.html",
+    "dtf-content-overlay/seed-ascent.html",
+    "dtf-content-overlay/seed-ascent/engine.js",
 ]
 for target in registered_local_game_targets:
     index_path = f"{target}/index.html"
@@ -208,7 +245,7 @@ for item in allowed:
 
 for rel in files:
     if rel == "index.html" or rel.startswith("learn/") or rel.startswith("blog/"):
-        raise SystemExit(f"WordPress-owned route cannot be included in static app package: {rel}")
+        raise SystemExit(f"WordPress-owned route cannot be included directly in static app package: {rel}")
 
 manifest = {
     "schemaVersion": 1,
@@ -216,6 +253,13 @@ manifest = {
     "wordPressOwnedRoutesExcluded": ["/", "/learn/", "/blog/"],
     "targets": allowed,
     "registeredLocalGameTargets": sorted(registered_local_game_targets),
+    "dtf420Overlay": {
+        "repository": overlay_manifest["repository"],
+        "commit": overlay_manifest["commit"],
+        "canonicalOrigin": overlay_manifest["canonicalOrigin"],
+        "routePrefixes": overlay_manifest["routePrefixes"],
+        "sharedPaths": overlay_manifest["sharedPaths"],
+    },
     "required": required,
     "fileCount": len(files),
     "uncompressedBytes": sum(int(meta["size"]) for meta in files.values()),
@@ -245,5 +289,6 @@ summary = {
     "uncompressedBytes": manifest["uncompressedBytes"],
     "targets": allowed,
     "registeredLocalGameTargets": sorted(registered_local_game_targets),
+    "dtf420Overlay": manifest["dtf420Overlay"],
 }
 print(json.dumps(summary, separators=(",", ":")))
