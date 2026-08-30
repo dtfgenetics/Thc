@@ -1,0 +1,378 @@
+name: Deploy DTFSeeds Suite to Hostinger over SSH
+
+on:
+  workflow_dispatch:
+    inputs:
+      build_run_id:
+        description: "Successful Build DTFSeeds Public Suite run ID. Leave blank to use the latest successful main run."
+        required: false
+        type: string
+      scope:
+        description: "Production overlay to deploy"
+        required: true
+        default: games
+        type: choice
+        options:
+          - games
+          - public-suite
+      confirm:
+        description: "Type DEPLOY to allow production mutation"
+        required: true
+        type: string
+  pull_request:
+    paths:
+      - .github/workflows/deploy-dtfseeds-hostinger-ssh.yml
+      - scripts/deploy/hostinger-overlay.sh
+      - scripts/deploy/test-hostinger-overlay.sh
+      - docs/DTFSEEDS_HOSTINGER_SSH_DEPLOY.md
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: dtfseeds-hostinger-production
+  cancel-in-progress: false
+
+jobs:
+  validate-workflow:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate deployment scripts
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash -n scripts/deploy/hostinger-overlay.sh
+          bash -n scripts/deploy/test-hostinger-overlay.sh
+          bash scripts/deploy/test-hostinger-overlay.sh
+
+      - name: Validate deployment contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s .github/workflows/build-dtfseeds-public-suite.yml
+          test -s .github/workflows/deploy-dtfseeds-hostinger-ssh.yml
+          grep -Fq 'Upload public suite artifact' .github/workflows/build-dtfseeds-public-suite.yml
+          grep -Fq 'dtfseeds-public-suite-' .github/workflows/build-dtfseeds-public-suite.yml
+          grep -Fq '/games/bud-or-bluff/' site/public-route-patch/games/bud-or-bluff/index.html
+          grep -Fq '25 playable browser games' site/public-route-patch/games/index.html
+
+  deploy:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Require explicit production confirmation
+        shell: bash
+        env:
+          CONFIRM: ${{ inputs.confirm }}
+        run: |
+          set -euo pipefail
+          if [ "$CONFIRM" != "DEPLOY" ]; then
+            echo "::error::Production deployment refused. The confirm input must be exactly DEPLOY."
+            exit 1
+          fi
+
+      - name: Resolve validated public-suite build
+        id: source
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REQUESTED_RUN: ${{ inputs.build_run_id }}
+        run: |
+          set -euo pipefail
+          expected_workflow_id="$(gh api \
+            "/repos/${GITHUB_REPOSITORY}/actions/workflows/build-dtfseeds-public-suite.yml" \
+            --jq '.id')"
+
+          if [ -n "$REQUESTED_RUN" ]; then
+            run_id="$REQUESTED_RUN"
+          else
+            run_id="$(gh api \
+              -H 'Accept: application/vnd.github+json' \
+              "/repos/${GITHUB_REPOSITORY}/actions/workflows/build-dtfseeds-public-suite.yml/runs?branch=main&status=success&per_page=1" \
+              --jq '.workflow_runs[0].id')"
+          fi
+
+          [[ "$run_id" =~ ^[0-9]+$ ]] || {
+            echo "::error::Could not resolve a valid public-suite build run."
+            exit 1
+          }
+
+          run_json="$(gh api "/repos/${GITHUB_REPOSITORY}/actions/runs/${run_id}")"
+          conclusion="$(jq -r '.conclusion' <<<"$run_json")"
+          head_branch="$(jq -r '.head_branch' <<<"$run_json")"
+          head_sha="$(jq -r '.head_sha' <<<"$run_json")"
+          workflow_id="$(jq -r '.workflow_id' <<<"$run_json")"
+
+          if [ "$workflow_id" != "$expected_workflow_id" ] || \
+             [ "$conclusion" != "success" ] || \
+             [ "$head_branch" != "main" ] || \
+             ! [[ "$head_sha" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "::error::Run ${run_id} is not a successful Build DTFSeeds Public Suite run from main."
+            echo "workflow_id=${workflow_id} expected=${expected_workflow_id} conclusion=${conclusion} branch=${head_branch} sha=${head_sha}"
+            exit 1
+          fi
+
+          artifact_name="dtfseeds-public-suite-${head_sha}"
+          artifacts_json="$(gh api "/repos/${GITHUB_REPOSITORY}/actions/runs/${run_id}/artifacts?per_page=100")"
+          artifact_count="$(jq --arg name "$artifact_name" '[.artifacts[] | select(.name == $name and .expired == false)] | length' <<<"$artifacts_json")"
+          if [ "$artifact_count" != "1" ]; then
+            echo "::error::Expected exactly one non-expired artifact named ${artifact_name}; found ${artifact_count}."
+            exit 1
+          fi
+
+          echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+          echo "head_sha=$head_sha" >> "$GITHUB_OUTPUT"
+          echo "artifact_name=$artifact_name" >> "$GITHUB_OUTPUT"
+
+      - name: Download immutable public-suite artifact
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: ${{ steps.source.outputs.run_id }}
+          name: ${{ steps.source.outputs.artifact_name }}
+          path: release
+
+      - name: Validate downloaded release before transport
+        shell: bash
+        env:
+          SOURCE_SHA: ${{ steps.source.outputs.head_sha }}
+        run: |
+          set -euo pipefail
+          required=(
+            release/dtf-build.json
+            release/games/index.html
+            release/games/bud-or-bluff/index.html
+            release/games/bud-or-bluff/app-v2.js
+            release/games/bud-or-bluff/api-v2.php
+            release/games/high-iq/index.html
+            release/games/high-land/index.html
+            release/games/weedopolis/index.html
+          )
+          for file in "${required[@]}"; do
+            test -s "$file"
+          done
+          grep -Fq '25 playable browser games' release/games/index.html
+          grep -Fq '/games/bud-or-bluff/' release/games/bud-or-bluff/index.html
+          SOURCE_SHA="$SOURCE_SHA" node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const manifest = JSON.parse(fs.readFileSync('release/dtf-build.json', 'utf8'));
+          if (manifest.master !== process.env.SOURCE_SHA) {
+            throw new Error(`release master ${manifest.master} does not match ${process.env.SOURCE_SHA}`);
+          }
+          NODE
+
+      - name: Check Hostinger SSH configuration
+        shell: bash
+        env:
+          SSH_HOST: ${{ secrets.HOSTINGER_SSH_HOST }}
+          SSH_USER: ${{ secrets.HOSTINGER_SSH_USER }}
+          SSH_KEY: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.HOSTINGER_SSH_KNOWN_HOSTS }}
+          PUBLIC_ROOT: ${{ secrets.HOSTINGER_PUBLIC_ROOT }}
+        run: |
+          set -euo pipefail
+          missing=0
+          [ -n "$SSH_HOST" ] || { echo "::error::Missing HOSTINGER_SSH_HOST"; missing=1; }
+          [ -n "$SSH_USER" ] || { echo "::error::Missing HOSTINGER_SSH_USER"; missing=1; }
+          [ -n "$SSH_KEY" ] || { echo "::error::Missing HOSTINGER_SSH_PRIVATE_KEY"; missing=1; }
+          [ -n "$SSH_KNOWN_HOSTS" ] || { echo "::error::Missing HOSTINGER_SSH_KNOWN_HOSTS"; missing=1; }
+          [ -n "$PUBLIC_ROOT" ] || { echo "::error::Missing HOSTINGER_PUBLIC_ROOT"; missing=1; }
+          [ "$missing" -eq 0 ] || exit 1
+          [[ "$PUBLIC_ROOT" == /*/public_html ]] || {
+            echo "::error::HOSTINGER_PUBLIC_ROOT must be an absolute path ending in /public_html."
+            exit 1
+          }
+
+      - name: Prepare SSH transport
+        shell: bash
+        env:
+          SSH_KEY: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.HOSTINGER_SSH_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          install -d -m 700 "$HOME/.ssh"
+          printf '%s\n' "$SSH_KEY" > "$HOME/.ssh/dtf_hostinger"
+          chmod 600 "$HOME/.ssh/dtf_hostinger"
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+          chmod 600 "$HOME/.ssh/known_hosts"
+
+      - name: Build scoped deployment payload
+        shell: bash
+        env:
+          SCOPE: ${{ inputs.scope }}
+          SOURCE_SHA: ${{ steps.source.outputs.head_sha }}
+        run: |
+          set -euo pipefail
+          rm -rf payload
+          mkdir -p payload
+
+          if [ "$SCOPE" = "games" ]; then
+            cp -a release/games payload/games
+            cp -a release/dtf-build.json payload/dtf-build.json
+          elif [ "$SCOPE" = "public-suite" ]; then
+            allowed=(
+              assets
+              atlas
+              blog
+              explore-dtf-genetics-your-destination-for-cannabis-themed-apparel-and-art
+              exploring-dtf-genetics-a-hub-for-cannabis-art-and-gardening-tools
+              games
+              learn
+              projects
+              tools
+              growlens
+              thc-grow-doc
+              puzzles
+              dtf-build.json
+            )
+            for item in "${allowed[@]}"; do
+              if [ -e "release/$item" ]; then
+                cp -a "release/$item" payload/
+              fi
+            done
+            required=(assets games learn projects tools growlens thc-grow-doc puzzles dtf-build.json)
+            for item in "${required[@]}"; do
+              [ -e "payload/$item" ] || {
+                echo "::error::Public-suite payload is missing required item: $item"
+                exit 1
+              }
+            done
+          else
+            echo "::error::Unknown deployment scope: $SCOPE"
+            exit 1
+          fi
+
+          test -s payload/games/index.html
+          test -s payload/games/bud-or-bluff/index.html
+          test -s payload/games/bud-or-bluff/api-v2.php
+          printf '%s\n' "$SOURCE_SHA" > payload/.dtf-source-sha
+          tar -C payload -czf "dtfseeds-${SOURCE_SHA}.tgz" .
+
+      - name: Upload release archive to Hostinger
+        shell: bash
+        env:
+          SSH_HOST: ${{ secrets.HOSTINGER_SSH_HOST }}
+          SSH_USER: ${{ secrets.HOSTINGER_SSH_USER }}
+          SSH_PORT: ${{ secrets.HOSTINGER_SSH_PORT }}
+          SOURCE_SHA: ${{ steps.source.outputs.head_sha }}
+        run: |
+          set -euo pipefail
+          port="${SSH_PORT:-65002}"
+          ssh_opts=(-i "$HOME/.ssh/dtf_hostinger" -p "$port" -o BatchMode=yes -o StrictHostKeyChecking=yes)
+          ssh "${ssh_opts[@]}" "$SSH_USER@$SSH_HOST" 'mkdir -p "$HOME/.dtf-deploy/incoming"'
+          scp -i "$HOME/.ssh/dtf_hostinger" -P "$port" -o BatchMode=yes -o StrictHostKeyChecking=yes \
+            "dtfseeds-${SOURCE_SHA}.tgz" \
+            "$SSH_USER@$SSH_HOST:.dtf-deploy/incoming/dtfseeds-${SOURCE_SHA}.tgz"
+
+      - name: Back up current routes and activate release
+        id: activate
+        shell: bash
+        env:
+          SSH_HOST: ${{ secrets.HOSTINGER_SSH_HOST }}
+          SSH_USER: ${{ secrets.HOSTINGER_SSH_USER }}
+          SSH_PORT: ${{ secrets.HOSTINGER_SSH_PORT }}
+          PUBLIC_ROOT: ${{ secrets.HOSTINGER_PUBLIC_ROOT }}
+          SOURCE_SHA: ${{ steps.source.outputs.head_sha }}
+          SCOPE: ${{ inputs.scope }}
+        run: |
+          set -euo pipefail
+          port="${SSH_PORT:-65002}"
+          ssh_opts=(-i "$HOME/.ssh/dtf_hostinger" -p "$port" -o BatchMode=yes -o StrictHostKeyChecking=yes)
+          incoming=".dtf-deploy/incoming/dtfseeds-${SOURCE_SHA}.tgz"
+          printf -v remote_cmd 'bash -s -- activate %q %q %q %q' "$PUBLIC_ROOT" "$SOURCE_SHA" "$SCOPE" "$incoming"
+
+          remote_output="$(ssh "${ssh_opts[@]}" "$SSH_USER@$SSH_HOST" "$remote_cmd" < scripts/deploy/hostinger-overlay.sh)"
+          printf '%s\n' "$remote_output"
+          backup_id="$(printf '%s\n' "$remote_output" | sed -n 's/^backup_id=//p' | tail -n 1)"
+          [ -n "$backup_id" ] || {
+            echo "::error::Activation completed without returning a backup id."
+            exit 1
+          }
+          echo "backup_id=$backup_id" >> "$GITHUB_OUTPUT"
+
+      - name: Smoke-test public routes after deployment
+        shell: bash
+        env:
+          SOURCE_SHA: ${{ steps.source.outputs.head_sha }}
+          SCOPE: ${{ inputs.scope }}
+        run: |
+          set -euo pipefail
+          cache_bust="dtf-deploy=${SOURCE_SHA}"
+
+          curl -fsSL --retry 3 --retry-delay 2 \
+            "https://dtfseeds.com/games/?${cache_bust}" \
+            -o /tmp/dtf-games.html
+          grep -Fq '25 playable browser games' /tmp/dtf-games.html
+
+          effective="$(curl -fsSL --retry 3 --retry-delay 2 \
+            -o /tmp/dtf-bob.html \
+            -w '%{url_effective}' \
+            "https://dtfseeds.com/games/bud-or-bluff/?${cache_bust}")"
+          case "$effective" in
+            *'/games/bud-or-bluff/'*) ;;
+            *)
+              echo "::error::Bud or Bluff resolved to the wrong public route: $effective"
+              exit 1
+              ;;
+          esac
+          grep -Fiq 'Bud or Bluff' /tmp/dtf-bob.html
+
+          curl -fsSL --retry 3 --retry-delay 2 \
+            "https://dtfseeds.com/dtf-build.json?${cache_bust}" \
+            -o /tmp/dtf-build.json
+          grep -Fq "\"master\": \"$SOURCE_SHA\"" /tmp/dtf-build.json
+
+          if [ "$SCOPE" = "public-suite" ]; then
+            for route in learn tools projects games/high-iq games/high-land games/weedopolis; do
+              curl -fsSL --retry 3 --retry-delay 2 \
+                "https://dtfseeds.com/${route}/?${cache_bust}" \
+                -o /dev/null
+            done
+          fi
+
+      - name: Roll back automatically if post-deploy verification fails
+        if: ${{ failure() && steps.activate.outcome == 'success' && steps.activate.outputs.backup_id != '' }}
+        shell: bash
+        env:
+          SSH_HOST: ${{ secrets.HOSTINGER_SSH_HOST }}
+          SSH_USER: ${{ secrets.HOSTINGER_SSH_USER }}
+          SSH_PORT: ${{ secrets.HOSTINGER_SSH_PORT }}
+          PUBLIC_ROOT: ${{ secrets.HOSTINGER_PUBLIC_ROOT }}
+          BACKUP_ID: ${{ steps.activate.outputs.backup_id }}
+          SCOPE: ${{ inputs.scope }}
+        run: |
+          set -euo pipefail
+          port="${SSH_PORT:-65002}"
+          ssh_opts=(-i "$HOME/.ssh/dtf_hostinger" -p "$port" -o BatchMode=yes -o StrictHostKeyChecking=yes)
+          printf -v remote_cmd 'bash -s -- rollback %q %q %q' "$PUBLIC_ROOT" "$BACKUP_ID" "$SCOPE"
+          ssh "${ssh_opts[@]}" "$SSH_USER@$SSH_HOST" "$remote_cmd" < scripts/deploy/hostinger-overlay.sh
+          curl -fsSL --retry 3 --retry-delay 2 "https://dtfseeds.com/games/?dtf-rollback=${BACKUP_ID}" -o /dev/null
+          echo "::warning::Post-deploy verification failed, so the previous route set was restored from backup ${BACKUP_ID}."
+
+      - name: Deployment summary
+        if: always()
+        shell: bash
+        env:
+          RUN_ID: ${{ steps.source.outputs.run_id }}
+          SOURCE_SHA: ${{ steps.source.outputs.head_sha }}
+          SCOPE: ${{ inputs.scope }}
+          BACKUP_ID: ${{ steps.activate.outputs.backup_id }}
+        run: |
+          {
+            echo '## Hostinger SSH deployment path'
+            echo ''
+            echo "- Source build run: ${RUN_ID:-unresolved}"
+            echo "- Source SHA: ${SOURCE_SHA:-unresolved}"
+            echo "- Scope: ${SCOPE:-unknown}"
+            echo "- Backup ID: ${BACKUP_ID:-not-created}"
+            echo '- Transport: SSH/SCP with pinned known_hosts'
+            echo '- Activation: validated route overlay with server-side rollback manifest'
+            echo '- Safety: activation errors restore immediately; smoke-test failures trigger automatic rollback'
+          } >> "$GITHUB_STEP_SUMMARY"
