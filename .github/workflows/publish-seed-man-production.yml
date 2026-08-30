@@ -37,13 +37,19 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Validate canonical Seed Man source and resolve release
+      - name: Validate complete Seed Man release bundle
         shell: bash
         run: |
           set -euo pipefail
           root=site/public-route-patch/games/seed-man-platformer
-          required=(.htaccess index.html app.js canvas-compat-v1.js seed-man-production-art.js input-guard-v1.js seed-man.css physics.mjs data/level-01.json)
-          for file in "${required[@]}"; do test -s "$root/$file" || { echo "Missing $file" >&2; exit 1; }; done
+          required=(
+            .htaccess index.html app.js canvas-compat-v1.js campaign-v1.js
+            seed-man-production-art.js gameplay-v2.js input-guard-v1.js seed-man.css
+            physics.mjs data/campaign.json data/level-01.json
+          )
+          for file in "${required[@]}"; do
+            test -s "$root/$file" || { echo "Missing $file" >&2; exit 1; }
+          done
 
           release="$(sed -n 's/.*name="dtf-sprout-release" content="\([^"]*\)".*/\1/p' "$root/index.html" | head -n 1)"
           [[ "$release" =~ ^[0-9]{8}-r[0-9]+$ ]] || { echo "Invalid Sprout Run release marker: $release" >&2; exit 1; }
@@ -52,42 +58,33 @@ jobs:
           grep -Fq 'Seed Man · Greenhouse Gauntlet' "$root/index.html"
           grep -Fq '0 / 24' "$root/index.html"
           grep -Fq 'JUMP ×2' "$root/index.html"
+          grep -Fq 'stomp pests from above' "$root/index.html"
+          grep -Fq "./gameplay-v2.js?v=$release" "$root/index.html"
+          grep -Fq "./campaign-v1.js?v=$release" "$root/index.html"
           grep -Fq "name=\"dtf-sprout-release\" content=\"$release\"" "$root/index.html"
           ! grep -Fq 'Original browser vertical slice' "$root/index.html"
           ! grep -Fq '0 / 8' "$root/index.html"
+
           node --check "$root/app.js"
           node --check "$root/canvas-compat-v1.js"
+          node --check "$root/campaign-v1.js"
           node --check "$root/seed-man-production-art.js"
+          node --check "$root/gameplay-v2.js"
           node --check "$root/input-guard-v1.js"
           node --check scripts/publish-seed-man-route-via-wordpress.mjs
 
-      - name: Prepare release-aware atomic publisher
-        shell: bash
-        run: |
-          set -euo pipefail
-          publisher="$RUNNER_TEMP/publish-seed-man-route-via-wordpress.mjs"
-          node - "$SPROUT_RELEASE" "$publisher" <<'NODE'
-          const fs = require('node:fs');
-          const release = process.argv[2];
-          const output = process.argv[3];
-          let source = fs.readFileSync('scripts/publish-seed-man-route-via-wordpress.mjs', 'utf8');
-          const matches = [...source.matchAll(/20\d{6}-r\d+/g)].map(m => m[0]);
-          const unique = [...new Set(matches)];
-          if (unique.length !== 1) throw new Error(`Expected exactly one publisher release template, found: ${unique.join(', ')}`);
-          const template = unique[0];
-          if (template !== release) source = source.split(template).join(release);
-          if (!source.includes(release)) throw new Error(`Release ${release} was not applied to publisher.`);
-          fs.writeFileSync(output, source);
-          console.log(`Prepared Seed Man publisher ${template} -> ${release}`);
-          NODE
-          node --check "$publisher"
-          grep -Fq "$SPROUT_RELEASE" "$publisher"
+          grep -Fq 'sprout-run-gameplay-v2' "$root/gameplay-v2.js"
+          grep -Fq 'movingPlatformDefs' "$root/gameplay-v2.js"
+          grep -Fq 'pestDefs' "$root/gameplay-v2.js"
+          grep -Fq 'bouncePads' "$root/gameplay-v2.js"
+          grep -Fq 'sprout-campaign-v1' "$root/campaign-v1.js"
+          grep -Fq '"id": "sprout-run-campaign"' "$root/data/campaign.json"
 
-      - name: Atomically publish Seed Man route and purge caches
+      - name: Atomically publish complete route and purge caches
         shell: bash
         run: |
           set -euo pipefail
-          node "$RUNNER_TEMP/publish-seed-man-route-via-wordpress.mjs" | tee "$RUNNER_TEMP/seed-man-publish.json"
+          node scripts/publish-seed-man-route-via-wordpress.mjs | tee "$RUNNER_TEMP/seed-man-publish.json"
           node - "$RUNNER_TEMP/seed-man-publish.json" "$SPROUT_RELEASE" <<'NODE'
           const fs = require('node:fs');
           const text = fs.readFileSync(process.argv[2], 'utf8');
@@ -95,9 +92,12 @@ jobs:
           const result = JSON.parse(text.slice(start));
           if (result.server_verified !== true) throw new Error('Server-side SHA verification did not pass.');
           if (result.release !== process.argv[3]) throw new Error(`Published ${result.release}; expected ${process.argv[3]}`);
+          if (!result.files?.['gameplay-v2.js']) throw new Error('gameplay-v2.js was not published.');
+          if (!result.files?.['campaign-v1.js']) throw new Error('campaign-v1.js was not published.');
+          if (!result.files?.['data/campaign.json']) throw new Error('data/campaign.json was not published.');
           NODE
 
-      - name: Verify origin and bare visitor URL
+      - name: Verify current release on visitor route and assets
         shell: bash
         run: |
           set -euo pipefail
@@ -107,55 +107,58 @@ jobs:
             grep -Fq 'Seed Man · Greenhouse Gauntlet' "$body"
             grep -Fq '0 / 24' "$body"
             grep -Fq 'JUMP ×2' "$body"
+            grep -Fq 'stomp pests from above' "$body"
+            grep -Fq "./gameplay-v2.js?v=$SPROUT_RELEASE" "$body"
+            grep -Fq "./campaign-v1.js?v=$SPROUT_RELEASE" "$body"
             grep -Fq "name=\"dtf-sprout-release\" content=\"$SPROUT_RELEASE\"" "$body"
             ! grep -Fq 'Original browser vertical slice' "$body"
             ! grep -Fq '0 / 8' "$body"
           }
 
-          fetch_page() {
-            local target="$1" body="$2" headers="$3"
-            curl -4 --fail --silent --show-error --location \
-              --retry 6 --retry-delay 3 --retry-all-errors \
+          ok=0
+          for attempt in {1..15}; do
+            body="$RUNNER_TEMP/live.html"
+            headers="$RUNNER_TEMP/live.headers"
+            if curl -4 --fail --silent --show-error --location \
+              --retry 3 --retry-delay 2 --retry-all-errors \
               --connect-timeout 10 --max-time 45 \
               -D "$headers" -o "$body" \
               -H 'Cache-Control: no-cache, no-store, max-age=0' \
-              -H 'Pragma: no-cache' \
-              "$target"
-          }
-
-          origin_ok=0
-          for attempt in {1..12}; do
-            body="$RUNNER_TEMP/origin.html"
-            headers="$RUNNER_TEMP/origin.headers"
-            if fetch_page "${url}?dtf_seed_origin=${GITHUB_RUN_ID}-${attempt}" "$body" "$headers" && verify_body "$body"; then origin_ok=1; break; fi
+              -H 'Pragma: no-cache' "$url" && verify_body "$body"; then
+              ok=1
+              break
+            fi
+            echo "Visitor URL attempt $attempt is still stale."
+            grep -Ei '^(age|cache-control|cf-cache-status|x-litespeed-cache|x-litespeed-cache-control|x-cache|x-hostinger-cache):' "$headers" || true
             sleep $((attempt * 2))
           done
-          test "$origin_ok" = 1 || { echo "Cache-busted origin still does not serve $SPROUT_RELEASE." >&2; cat "$RUNNER_TEMP/origin.headers" >&2 || true; exit 1; }
+          test "$ok" = 1 || { echo 'Public Seed Man route did not update.' >&2; cat "$RUNNER_TEMP/live.headers" >&2 || true; exit 1; }
 
-          bare_ok=0
-          for attempt in {1..12}; do
-            body="$RUNNER_TEMP/bare.html"
-            headers="$RUNNER_TEMP/bare.headers"
-            if fetch_page "${url}?dtf_seed_bare=${GITHUB_RUN_ID}-${attempt}" "$body" "$headers" && verify_body "$body"; then bare_ok=1; break; fi
-            echo "Bare URL attempt $attempt still stale or unreachable; cache headers:"
-            grep -Ei '^(age|cache-control|cf-cache-status|x-litespeed-cache|x-litespeed-cache-control|x-cache|x-hostinger-cache):' "$headers" || true
-            sleep $((attempt * 3))
-          done
-          test "$bare_ok" = 1 || { echo 'Bare visitor URL still serves stale Seed Man after atomic publish and purge.' >&2; cat "$RUNNER_TEMP/bare.headers" >&2 || true; exit 1; }
-
-          for asset in app.js canvas-compat-v1.js seed-man-production-art.js input-guard-v1.js seed-man.css physics.mjs data/level-01.json; do
+          assets=(
+            app.js canvas-compat-v1.js campaign-v1.js seed-man-production-art.js
+            gameplay-v2.js input-guard-v1.js seed-man.css physics.mjs
+            data/campaign.json data/level-01.json
+          )
+          for asset in "${assets[@]}"; do
+            outfile="$RUNNER_TEMP/$(echo "$asset" | tr '/' '_')"
             curl -4 --fail --silent --show-error --location \
-              --retry 6 --retry-delay 3 --retry-all-errors \
+              --retry 4 --retry-delay 2 --retry-all-errors \
               --connect-timeout 10 --max-time 45 \
-              "${url}${asset}?dtf_seed_asset=${GITHUB_RUN_ID}" -o "$RUNNER_TEMP/$(basename "$asset")"
+              "${url}${asset}?release=${SPROUT_RELEASE}-${GITHUB_RUN_ID}" -o "$outfile"
           done
-          grep -Fq 'seed-man-production-v1' "$RUNNER_TEMP/seed-man-production-art.js"
-          grep -Fq 'seed-man-locked-v1' "$RUNNER_TEMP/seed-man-production-art.js"
-          grep -Fq 'willReadFrequently' "$RUNNER_TEMP/canvas-compat-v1.js"
-          grep -Fq '"worldWidth": 7800' "$RUNNER_TEMP/level-01.json"
-          grep -Fq '"requiredPickups": 24' "$RUNNER_TEMP/level-01.json"
 
-      - name: Run live browser gameplay acceptance after publish
+          grep -Fq 'sprout-run-gameplay-v2' "$RUNNER_TEMP/gameplay-v2.js"
+          grep -Fq 'movingPlatformDefs' "$RUNNER_TEMP/gameplay-v2.js"
+          grep -Fq 'pestDefs' "$RUNNER_TEMP/gameplay-v2.js"
+          grep -Fq 'bouncePads' "$RUNNER_TEMP/gameplay-v2.js"
+          grep -Fq 'sprout-campaign-v1' "$RUNNER_TEMP/campaign-v1.js"
+          grep -Fq 'seed-man-production-v1' "$RUNNER_TEMP/seed-man-production-art.js"
+          grep -Fq 'willReadFrequently' "$RUNNER_TEMP/canvas-compat-v1.js"
+          grep -Fq '"worldWidth": 7800' "$RUNNER_TEMP/data_level-01.json"
+          grep -Fq '"requiredPickups": 24' "$RUNNER_TEMP/data_level-01.json"
+          grep -Fq '"id": "sprout-run-campaign"' "$RUNNER_TEMP/data_campaign.json"
+
+      - name: Run live browser gameplay acceptance
         shell: bash
         run: |
           set -euo pipefail
@@ -175,7 +178,8 @@ jobs:
             echo "- Source SHA: $GITHUB_SHA"
             echo "- Release: \`$SPROUT_RELEASE\`"
             echo '- Route: https://dtfseeds.com/games/seed-man-platformer/'
-            echo '- Publication method: atomic route replacement with server-side SHA-256 verification'
-            echo '- Cache handling: LiteSpeed URL purge + purge-all + WordPress cache flush'
-            echo '- Visitor verification: current source release marker required; retired 8-sprout markers rejected'
+            echo '- Bundle: gameplay v2 + campaign runtime + current level data'
+            echo '- Publication: atomic replacement with SHA-256 verification'
+            echo '- Cache: LiteSpeed route purge + purge-all + WordPress cache flush'
+            echo '- Live gate: current release and gameplay-v2 markers required; retired 8-sprout build rejected'
           } >> "$GITHUB_STEP_SUMMARY"
