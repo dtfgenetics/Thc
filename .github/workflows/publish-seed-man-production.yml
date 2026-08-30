@@ -136,3 +136,5 @@ jobs:
             echo '- Cache handling: LiteSpeed URL purge + purge-all + WordPress cache flush'
             echo '- Visitor verification: bare URL required to contain r4 markers and reject retired 8-sprout markers'
           } >> "$GITHUB_STEP_SUMMARY"
+
+# Production trigger 2026-08-30T10:05 America/Chicago
