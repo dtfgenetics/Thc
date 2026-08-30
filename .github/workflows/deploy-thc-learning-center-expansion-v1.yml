@@ -3,13 +3,10 @@ name: Deploy THC Education Expansion V1
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - 'scripts/build-public-learning-center-expansion-v1.mjs'
-      - 'scripts/publish-wordpress-learning-center-expansion-v1.mjs'
-      - 'scripts/update-wordpress-learn-expansion-v1.mjs'
-      - '.github/workflows/deploy-thc-learning-center-expansion-v1.yml'
+  workflow_run:
+    workflows:
+      - Publish DTFSeeds WordPress Production
+    types: [completed]
   issue_comment:
     types: [created]
 
@@ -17,13 +14,15 @@ permissions:
   contents: read
   issues: write
 
+# Share the canonical WordPress production lane so no workflow can rebuild /learn/
+# while the education expansion is attaching and verifying its child routes.
 concurrency:
-  group: dtfseeds-thc-education-expansion-v1
+  group: dtfseeds-wordpress-production
   cancel-in-progress: false
 
 jobs:
   deploy:
-    if: ${{ github.event_name != 'issue_comment' || (github.event.issue.number == 220 && github.event.comment.body == '/deploy-thc-education-v1') }}
+    if: ${{ (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success') && (github.event_name != 'issue_comment' || (github.event.issue.number == 220 && github.event.comment.body == '/deploy-thc-education-v1')) }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     environment: production
@@ -82,7 +81,7 @@ jobs:
           node scripts/publish-wordpress-learning-center-expansion-v1.mjs | tee "$RUNNER_TEMP/education-expansion-publish.json"
           echo "outcome=success" >> "$GITHUB_OUTPUT"
 
-      - name: Add expansion routes to Learn hub
+      - name: Attach expansion routes after canonical Learn rebuild
         id: navigation
         shell: bash
         run: |
