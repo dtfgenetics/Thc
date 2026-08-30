@@ -17,7 +17,7 @@ async function request(path,{method='GET',json,allow=[],retryServer=true,headers
   const attempts=retryServer?8:1;
   for(let attempt=1;attempt<=attempts;attempt++){
     try{
-      const response=await fetch(`${siteUrl}${path}`,{method,headers:{Authorization:auth,Accept:'application/json','Cache-Control':'no-cache, no-store, max-age=0',Pragma:'no-cache','User-Agent':'DTFSeeds-Stale-Suite-Bridge-Cleanup/1.9',...(json!==undefined?{'Content-Type':'application/json'}:{}),...headers},body:json!==undefined?JSON.stringify(json):undefined,redirect:'follow',signal:AbortSignal.timeout(45000)});
+      const response=await fetch(`${siteUrl}${path}`,{method,headers:{Authorization:auth,Accept:'application/json','Cache-Control':'no-cache, no-store, max-age=0',Pragma:'no-cache','User-Agent':'DTFSeeds-Stale-Suite-Bridge-Cleanup/2.0',...(json!==undefined?{'Content-Type':'application/json'}:{}),...headers},body:json!==undefined?JSON.stringify(json):undefined,redirect:'follow',signal:AbortSignal.timeout(45000)});
       const text=await response.text();let body=text;try{body=text?JSON.parse(text):null}catch{}
       if(retryServer&&!allow.includes(response.status)&&(response.status>=500||response.status===429)&&attempt<attempts){
         const delay=Math.min(15000,2000*attempt+Math.floor(Math.random()*750));
@@ -147,6 +147,68 @@ async function inspectCurrentLock(){
   }
 }
 
+async function clearOrphanLockSafely(expectedId,minimumAgeSeconds=120){
+  if(!/^[a-f0-9]{24}$/.test(expectedId))throw new Error(`Refusing invalid orphan lock id: ${expectedId}`);
+  if(!Number.isFinite(minimumAgeSeconds)||minimumAgeSeconds<120)throw new Error('Orphan-lock minimum age may not be below 120 seconds.');
+  const token=crypto.randomBytes(32).toString('hex');
+  const suffix=crypto.randomBytes(6).toString('hex');
+  const namespace=`dtf-suite-orphan-lock-cleaner-${suffix}/v1`;
+  const tokenLiteral=JSON.stringify(token);
+  const namespaceLiteral=JSON.stringify(namespace);
+  const expectedLiteral=JSON.stringify(expectedId);
+  const ageLiteral=Math.floor(minimumAgeSeconds);
+  const code=String.raw`add_action('rest_api_init', function () {
+    $token = ${tokenLiteral};
+    $namespace = ${namespaceLiteral};
+    $expected_id = ${expectedLiteral};
+    $minimum_age = ${ageLiteral};
+    $permission = static function (WP_REST_Request $request) use ($token) {
+        $supplied = (string) $request->get_header('x-dtf-recovery-token');
+        if ($supplied === '') $supplied = (string) $request->get_param('_dtf_recovery_token');
+        return $supplied !== '' && hash_equals($token, $supplied);
+    };
+    register_rest_route($namespace, '/clear', [
+        'methods' => 'POST',
+        'permission_callback' => $permission,
+        'callback' => static function () use ($expected_id, $minimum_age) {
+            $lock = get_option('dtf_suite_deploy_lock', []);
+            $id = is_array($lock) ? (string) ($lock['id'] ?? '') : '';
+            $ts = is_array($lock) ? (int) ($lock['ts'] ?? 0) : 0;
+            if ($id === '' || !preg_match('/^[a-f0-9]{24}$/', $id)) return new WP_Error('dtf_orphan_lock_invalid', 'The deployment lock is missing or invalid.', ['status' => 409]);
+            if (!hash_equals($expected_id, $id)) return new WP_Error('dtf_orphan_lock_changed', 'The deployment lock changed after inspection.', ['status' => 409, 'lock_id' => $id]);
+            $age = $ts > 0 ? max(0, time() - $ts) : -1;
+            if ($age < $minimum_age) return new WP_Error('dtf_orphan_lock_recent', 'The deployment lock is too recent to clear.', ['status' => 409, 'age_seconds' => $age]);
+            $sentinel = '__dtf_state_missing_9a78b82c__';
+            $state = get_option('dtf_suite_state_' . $id, $sentinel);
+            if ($state !== $sentinel) return new WP_Error('dtf_orphan_state_exists', 'Transaction state appeared after inspection; refusing orphan-lock deletion.', ['status' => 409]);
+            if (!delete_option('dtf_suite_deploy_lock')) return new WP_Error('dtf_orphan_lock_delete', 'The orphan deployment lock could not be deleted.', ['status' => 500]);
+            if (function_exists('wp_cache_flush')) wp_cache_flush();
+            $after = get_option('dtf_suite_deploy_lock', []);
+            $after_id = is_array($after) ? (string) ($after['id'] ?? '') : '';
+            if ($after_id === $id) return new WP_Error('dtf_orphan_lock_persisted', 'The orphan deployment lock remained after deletion.', ['status' => 500]);
+            return rest_ensure_response(['ok' => true, 'status' => 'orphan_lock_cleared', 'deployment_id' => $id, 'age_seconds' => $age]);
+        },
+    ]);
+});`;
+  const created=await request('/wp-json/code-snippets/v1/snippets',{method:'POST',json:{name:`DTF Suite Orphan Lock Cleaner ${currentRunId||suffix}`,desc:'Temporary token-protected cleaner that deletes only a previously inspected old deployment lock when its transaction-state option is still absent.',code,tags:['dtf-deploy-cleanup','temporary','orphan-lock'],scope:'global',priority:1,active:false,network:false}});
+  const id=Number(item(created.body)?.id||0);
+  if(!Number.isInteger(id)||id<=0)throw new Error('Orphan-lock cleaner was created without a numeric snippet ID.');
+  try{
+    const activated=await request(`/wp-json/code-snippets/v1/snippets/${id}/activate`,{method:'POST',allow:[400]});
+    if(!activated.ok&&activated.status!==400)throw new Error(`Could not activate orphan-lock cleaner snippet ${id}.`);
+    const path=`/wp-json/${namespace}/clear?_dtf_recovery_token=${encodeURIComponent(token)}`;
+    for(let attempt=1;attempt<=15;attempt++){
+      const r=await request(path,{method:'POST',allow:[404,409],headers:{'X-DTF-Recovery-Token':token}}).catch(()=>null);
+      if(r?.ok&&r.body?.ok===true)return String(r.body?.status||'orphan_lock_cleared');
+      if(r&&r.status===409)throw new Error(`Orphan-lock cleanup was rejected after revalidation: ${JSON.stringify(r.body).slice(0,500)}`);
+      await sleep(700+attempt*300);
+    }
+    throw new Error(`Orphan-lock cleaner ${id} did not expose its protected cleanup route.`);
+  }finally{
+    await discardSnippetBestEffort(id);
+  }
+}
+
 let activeSuiteNamespace='dtf-suite/v2';
 async function findTrustedRecoveryBridge(candidates){
   const ordered=[...candidates].sort((a,b)=>Number(b?.id||0)-Number(a?.id||0));
@@ -209,6 +271,7 @@ async function recoverStaleTransactionIfPresent(candidates){
       const code=String(init.body?.code||'');
       let staleId=String(init.body?.data?.deployment_id||'');
       let inspected=null;
+      let orphanCleared=false;
       if(init.status===409&&code==='dtf_locked'&&!/^[a-f0-9]{24}$/.test(staleId)){
         await assertNoOtherActivePublisher();
         inspected=await inspectCurrentLock();
@@ -216,20 +279,33 @@ async function recoverStaleTransactionIfPresent(candidates){
         const age=Number(inspected?.lock?.age_seconds);
         if(!/^[a-f0-9]{24}$/.test(staleId))throw new Error(`Read-only lock inspector returned an invalid deployment ID: ${staleId||'(missing)'}.`);
         if(!Number.isFinite(age)||age<120)throw new Error(`Refusing to recover a lock only ${Number.isFinite(age)?age:'unknown'} seconds old.`);
-        if(!inspected?.state?.status)throw new Error(`Lock ${staleId} has no persisted transaction state; refusing destructive inference.`);
-        if(inspected.state.id&&String(inspected.state.id)!==staleId)throw new Error(`Lock/state ID mismatch: lock=${staleId} state=${inspected.state.id}.`);
-        console.log(`Identified serialized orphan lock ${staleId}: age=${age}s status=${inspected.state.status} current=${Boolean(inspected.state.current_present)} applied=${Number(inspected.state.applied_count||0)} uploaded=${Number(inspected.state.uploaded_bytes||0)}/${Number(inspected.state.archive_bytes||0)}.`);
+        if(inspected.state?.id&&String(inspected.state.id)!==staleId)throw new Error(`Lock/state ID mismatch: lock=${staleId} state=${inspected.state.id}.`);
+        if(!inspected?.state?.status){
+          await assertNoOtherActivePublisher();
+          const recoveryStatus=await clearOrphanLockSafely(staleId,120);
+          const after=await inspectCurrentLock();
+          if(String(after?.lock?.id||'')===staleId)throw new Error(`Orphan lock ${staleId} remained after guarded cleanup.`);
+          recovered={deploymentId:staleId,priorStatus:'missing-state-orphan-lock',recoveryStatus,legacyLockInspected:true};
+          orphanCleared=true;
+          console.log(`Cleared orphan Public Suite lock ${staleId}: age=${age}s, no persisted state, no competing publisher.`);
+        }else{
+          console.log(`Identified serialized orphan lock ${staleId}: age=${age}s status=${inspected.state.status} current=${Boolean(inspected.state.current_present)} applied=${Number(inspected.state.applied_count||0)} uploaded=${Number(inspected.state.uploaded_bytes||0)}/${Number(inspected.state.archive_bytes||0)}.`);
+        }
       }
-      if(init.status!==409||!['dtf_stale_touched_lock','dtf_locked'].includes(code)||!/^[a-f0-9]{24}$/.test(staleId)){
-        throw new Error(`Deployment lock is not safely recoverable: HTTP ${init.status} ${code||'unknown'}.`);
+      if(orphanCleared){
+        init=await suiteRequest(bridge.token,'/init',{method:'POST',json:{deployment_id:probeId,archive_bytes:1,archive_sha256:'0'.repeat(64)}});
+      }else{
+        if(init.status!==409||!['dtf_stale_touched_lock','dtf_locked'].includes(code)||!/^[a-f0-9]{24}$/.test(staleId)){
+          throw new Error(`Deployment lock is not safely recoverable: HTTP ${init.status} ${code||'unknown'}.`);
+        }
+        if(code==='dtf_locked')await assertNoOtherActivePublisher();
+        const state=await readTransactionState(bridge.token,staleId);
+        if(!state||!state.status)throw new Error(`Transaction ${staleId} could not be read through the trusted rollback bridge ${activeSuiteNamespace}.`);
+        const recoveredStatus=await clearTransaction(bridge.token,staleId,state);
+        recovered={deploymentId:staleId,priorStatus:String(state?.status||''),recoveryStatus:recoveredStatus,legacyLockInspected:Boolean(inspected)};
+        console.log(`Recovered stale Public Suite transaction ${staleId} from status=${state?.status||'unknown'} via ${recoveredStatus}.`);
+        init=await suiteRequest(bridge.token,'/init',{method:'POST',json:{deployment_id:probeId,archive_bytes:1,archive_sha256:'0'.repeat(64)}});
       }
-      if(code==='dtf_locked')await assertNoOtherActivePublisher();
-      const state=await readTransactionState(bridge.token,staleId);
-      if(!state||!state.status)throw new Error(`Transaction ${staleId} could not be read through the trusted rollback bridge ${activeSuiteNamespace}.`);
-      const recoveredStatus=await clearTransaction(bridge.token,staleId,state);
-      recovered={deploymentId:staleId,priorStatus:String(state?.status||''),recoveryStatus:recoveredStatus,legacyLockInspected:Boolean(inspected)};
-      console.log(`Recovered stale Public Suite transaction ${staleId} from status=${state?.status||'unknown'} via ${recoveredStatus}.`);
-      init=await suiteRequest(bridge.token,'/init',{method:'POST',json:{deployment_id:probeId,archive_bytes:1,archive_sha256:'0'.repeat(64)}});
     }
     if(init.body?.ok!==true)throw new Error(`Post-recovery lock probe did not acquire a clean transaction: ${JSON.stringify(init.body).slice(0,500)}`);
     const aborted=await suiteRequest(bridge.token,'/abort',{method:'POST',json:{deployment_id:probeId}});
