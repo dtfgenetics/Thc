@@ -156,20 +156,27 @@ jobs:
         run: |
           set -euo pipefail
           fetch_page() {
-            local path="$1" required="$2" min_images="$3" safe body ok count
+            local path="$1" required="$2" min_images="$3" safe body ok count curl_status
             safe="$(echo "$path" | tr '/?' '__')"
             body="$RUNNER_TEMP/genetics-${safe}.html"
             ok=0
             for attempt in 1 2 3 4 5 6 7 8; do
-              curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+              if curl -4 --fail --silent --show-error --location \
+                --connect-timeout 15 --max-time 60 \
+                --retry 2 --retry-all-errors --retry-delay 2 \
                 --header 'Cache-Control: no-cache, no-store, max-age=0' \
                 --header 'Pragma: no-cache' \
                 "$WP_SITE_URL${path}?dtf_genetics_verify=${GITHUB_RUN_ID}-${attempt}" \
-                --output "$body"
-              if grep -Fqi -- "$required" "$body"; then ok=1; break; fi
+                --output "$body"; then
+                if grep -Fqi -- "$required" "$body"; then ok=1; break; fi
+                echo "Live genetics verification attempt $attempt returned without required marker on $path; retrying." >&2
+              else
+                curl_status=$?
+                echo "Live genetics verification transport failure on $path attempt $attempt (curl $curl_status); retrying." >&2
+              fi
               sleep 6
             done
-            [[ "$ok" -eq 1 ]] || { echo "Missing required text on $path: $required" >&2; exit 1; }
+            [[ "$ok" -eq 1 ]] || { echo "Missing required text on $path after 8 verification attempts: $required" >&2; exit 1; }
             count="$(grep -o '/wp-content/uploads/' "$body" | wc -l | tr -d ' ')"
             [[ "$count" -ge "$min_images" ]] || { echo "$path exposes $count WordPress images; expected at least $min_images" >&2; exit 1; }
             echo "$path verified with $count WordPress image references"
