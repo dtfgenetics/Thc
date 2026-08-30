@@ -1,6 +1,9 @@
+import dns from 'node:dns';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import process from 'node:process';
+
+dns.setDefaultResultOrder('ipv4first');
 
 const SELF_TEST = process.argv.includes('--self-test');
 const TARGET_WIDTH = 768;
@@ -205,18 +208,56 @@ const backupDir = join(backupRoot, `responsive-images-${stamp}`);
 await mkdir(backupDir, { recursive: true });
 const literature = JSON.parse(await readFile(literaturePath, 'utf8'));
 
-async function request(path, options = {}) {
-  const response = await fetch(`${siteUrl}${path}`, {
-    ...options,
-    headers: { ...headers, ...(options.headers || {}) },
-    redirect: 'follow',
-    signal: AbortSignal.timeout(60_000)
-  });
-  const text = await response.text();
-  let body = null;
-  try { body = text ? JSON.parse(text) : null; } catch { body = text; }
-  if (!response.ok) throw new Error(`${options.method || 'GET'} ${path} failed (${response.status}): ${typeof body === 'string' ? body.slice(0, 500) : JSON.stringify(body).slice(0, 500)}`);
-  return body;
+const transientStatuses = new Set([408, 425, 429, 500, 502, 503, 504]);
+const transientCodes = new Set(['ETIMEDOUT', 'ECONNRESET', 'ECONNREFUSED', 'EAI_AGAIN', 'ENETUNREACH', 'EHOSTUNREACH', 'UND_ERR_CONNECT_TIMEOUT', 'UND_ERR_HEADERS_TIMEOUT', 'UND_ERR_SOCKET']);
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+function errorCode(error) {
+  return error?.code || error?.cause?.code || error?.cause?.errors?.find?.((entry) => entry?.code)?.code || '';
+}
+
+function isTransientError(error) {
+  const status = Number(error?.status || 0);
+  return transientStatuses.has(status)
+    || error instanceof TypeError
+    || error?.name === 'TimeoutError'
+    || error?.name === 'AbortError'
+    || transientCodes.has(errorCode(error));
+}
+
+function retryDelay(attempt) {
+  return Math.min(12_000, 1200 + attempt * 1800);
+}
+
+async function request(path, options = {}, attempts = 8) {
+  const method = String(options.method || 'GET').toUpperCase();
+  let lastError = null;
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try {
+      const response = await fetch(`${siteUrl}${path}`, {
+        ...options,
+        headers: { ...headers, ...(options.headers || {}) },
+        redirect: 'follow',
+        signal: AbortSignal.timeout(60_000)
+      });
+      const text = await response.text();
+      let body = null;
+      try { body = text ? JSON.parse(text) : null; } catch { body = text; }
+      if (!response.ok) {
+        const error = new Error(`${method} ${path} failed (${response.status}): ${typeof body === 'string' ? body.slice(0, 500) : JSON.stringify(body).slice(0, 500)}`);
+        error.status = response.status;
+        throw error;
+      }
+      return body;
+    } catch (error) {
+      lastError = error;
+      if (!isTransientError(error) || attempt >= attempts) throw error;
+      const delay = retryDelay(attempt);
+      console.warn(`[responsive-education-retry] ${method} ${path} failed with ${errorCode(error) || error?.name || error?.status || 'transient error'}; retrying ${attempt}/${attempts} in ${delay}ms`);
+      await sleep(delay);
+    }
+  }
+  throw lastError || new Error(`${method} ${path} failed after ${attempts} attempts`);
 }
 
 async function getLearn() {
