@@ -1,6 +1,10 @@
 name: Verify Weedopolis Live
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/verify-weedopolis-live.yml
   workflow_run:
     workflows: ["Deploy DTFSeeds Public Suite via WordPress V2"]
     types: [completed]
@@ -15,7 +19,7 @@ concurrency:
 
 jobs:
   verify:
-    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -36,7 +40,6 @@ jobs:
           test "$status" = '200'
           ! grep -Eiq '^location:' "$headers"
 
-          # Positive fingerprints for the approved structure + V1 master runtime.
           grep -Fq 'Start Weedopolis' "$html"
           grep -Fq 'id="board"' "$html"
           grep -Fq 'data-ui-standard="premium-responsive-shell-v1"' "$html"
@@ -51,7 +54,6 @@ jobs:
           grep -Fq 'runtime-assets.css' "$html"
           grep -Fq 'master-board-overlay.css' "$html"
 
-          # Negative fingerprints for the retired lightweight/V2 paths.
           ! grep -Fq 'The playable development build is loading.' "$html"
           ! grep -Fq 'Weedopolis V2' "$html"
           ! grep -Fq 'hex board' "$html"
