@@ -1,0 +1,14 @@
+{
+  "name": "@dtfgenetics/seed-man-platformer",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Build boundary for the Seed Man: Sprout Run Three.js world renderer prototype.",
+  "scripts": {
+    "test:three-world": "node test/three-world-state.test.mjs",
+    "verify:three-import": "node -e \"import('./src/render/three-world.mjs').then((m)=>{if(typeof m.createThreeWorldRenderer!=='function')process.exit(1)})\""
+  },
+  "dependencies": {
+    "three": "0.185.1"
+  }
+}
