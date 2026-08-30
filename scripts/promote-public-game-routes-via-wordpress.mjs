@@ -114,13 +114,18 @@ RewriteRule ^_next/static/(.*)$ /dtf-content-overlay/_next/static/$1 [L]
 RewriteRule ^seed-ascent\\.html$ /dtf-content-overlay/seed-ascent.html [L]
 RewriteRule ^seed-ascent/(.*)$ /dtf-content-overlay/seed-ascent/$1 [L]`;
 const rootOverlayBase64 = Buffer.from(rootOverlayBlock, 'utf8').toString('base64');
+const gamesOverlayBlock = `# DTFSeeds managed game-directory child-route overlay v2
+RewriteRule ^seed-ascent(?:/(.*))?/?$ /dtf-content-overlay/games/seed-ascent/$1 [L]
+RewriteRule ^(?:future-slots)(?:/|$) /games/ [R=301,L]`;
+const gamesOverlayBase64 = Buffer.from(gamesOverlayBlock, 'utf8').toString('base64');
 
 const snippetCode = String.raw`
 add_action('rest_api_init', function () {
     $token = ${tokenLiteral};
     $namespace = ${namespaceLiteral};
     $root_overlay = base64_decode(${JSON.stringify(rootOverlayBase64)}, true);
-    if (!is_string($root_overlay) || $root_overlay === '') return;
+    $games_overlay = base64_decode(${JSON.stringify(gamesOverlayBase64)}, true);
+    if (!is_string($root_overlay) || $root_overlay === '' || !is_string($games_overlay) || $games_overlay === '') return;
     $permission = static function (WP_REST_Request $request) use ($token) {
         $supplied = (string) $request->get_header('x-dtf-route-promotion-token');
         if ($supplied === '') $supplied = (string) $request->get_param('_dtf_route_promotion_token');
@@ -139,8 +144,9 @@ add_action('rest_api_init', function () {
         ],
         [
             'rel' => 'games/.htaccess',
-            'desired' => 'RewriteRule ^(?:future-slots)(?:/|$) /games/ [R=301,L]',
+            'desired' => $games_overlay,
             'stale' => [
+                'RewriteRule ^(?:future-slots)(?:/|$) /games/ [R=301,L]',
                 'RewriteRule ^(?:future-slots|bud-or-bluff)(?:/|$) /games/ [R=301,L]',
                 'RewriteRule ^(?:future-slots|high-iq|bud-or-bluff|grower-conversations)(?:/|$) /games/ [R=301,L]',
             ],
