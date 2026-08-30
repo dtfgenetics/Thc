@@ -25,15 +25,18 @@ jobs:
           bust="dtf_sprout_smoke=${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
 
           fetch_asset() {
-            local rel="$1" body headers status type
+            local rel="$1" body headers status type sep url
             body="$(mktemp)"
             headers="$(mktemp)"
+            sep='?'
+            [[ "$rel" == *'?'* ]] && sep='&'
+            url="${base}${rel}${sep}${bust}"
             status="$(curl -sS --connect-timeout 10 --max-time 30 \
               --output "$body" \
               --dump-header "$headers" \
               --write-out '%{http_code}' \
               -H 'Cache-Control: no-cache, no-store, max-age=0' \
-              "${base}${rel}?${bust}")"
+              "$url")"
             type="$(awk 'BEGIN{IGNORECASE=1} /^content-type:/{gsub(/\r/,""); sub(/^[^:]+:[[:space:]]*/,""); print; exit}' "$headers")"
             echo "${rel:-/} -> HTTP ${status} ${type:-unknown-content-type} bytes=$(wc -c < "$body")" >&2
             if [[ "$status" != '200' ]]; then
@@ -90,7 +93,7 @@ jobs:
             exit 1
           fi
 
-          app="$(fetch_asset "app.js&release=${release}")"
+          app="$(fetch_asset "app.js?v=${release}")"
           printf '%s' "$app" > "$RUNNER_TEMP/sprout-app.js"
           node --check "$RUNNER_TEMP/sprout-app.js"
           for marker in \
@@ -115,7 +118,7 @@ jobs:
             exit 1
           fi
 
-          art="$(fetch_asset "seed-man-production-art.js&release=${release}")"
+          art="$(fetch_asset "seed-man-production-art.js?v=${release}")"
           printf '%s' "$art" > "$RUNNER_TEMP/sprout-production-art.js"
           node --check "$RUNNER_TEMP/sprout-production-art.js"
           for marker in \
@@ -127,11 +130,11 @@ jobs:
             grep -Fq "$marker" <<<"$art" || { echo "Missing production-art marker: $marker" >&2; exit 1; }
           done
 
-          guard="$(fetch_asset "input-guard-v1.js&release=${release}")"
+          guard="$(fetch_asset "input-guard-v1.js?v=${release}")"
           printf '%s' "$guard" > "$RUNNER_TEMP/sprout-input-guard.js"
           node --check "$RUNNER_TEMP/sprout-input-guard.js"
 
-          css="$(fetch_asset "seed-man.css&release=${release}")"
+          css="$(fetch_asset "seed-man.css?v=${release}")"
           grep -Fq 'touch-controls' <<<"$css"
 
           level="$(fetch_asset 'data/level-01.json')"
