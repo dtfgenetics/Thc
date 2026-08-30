@@ -6,6 +6,9 @@ on:
     paths:
       - 'games/seed-man-platformer/**'
       - 'site/public-route-patch/games/seed-man-platformer/**'
+      - 'scripts/publish-seed-man-route-via-wordpress.mjs'
+      - 'scripts/publish-seed-man-current-release.mjs'
+      - '.github/workflows/publish-seed-man-production.yml'
       - '.github/workflows/seed-man-platformer-ci.yml'
       - '.github/workflows/seed-man-live-browser-acceptance.yml'
   pull_request:
@@ -13,6 +16,9 @@ on:
     paths:
       - 'games/seed-man-platformer/**'
       - 'site/public-route-patch/games/seed-man-platformer/**'
+      - 'scripts/publish-seed-man-route-via-wordpress.mjs'
+      - 'scripts/publish-seed-man-current-release.mjs'
+      - '.github/workflows/publish-seed-man-production.yml'
       - '.github/workflows/seed-man-platformer-ci.yml'
       - '.github/workflows/seed-man-live-browser-acceptance.yml'
   workflow_dispatch:
@@ -36,7 +42,7 @@ jobs:
         run: node games/seed-man-platformer/test/public-runtime.test.mjs
       - name: Test keyboard focus ownership
         run: node games/seed-man-platformer/test/input-guard.test.mjs
-      - name: Validate browser JavaScript syntax
+      - name: Validate browser and publisher JavaScript syntax
         run: |
           node --check site/public-route-patch/games/seed-man-platformer/canvas-compat-v1.js
           node --check site/public-route-patch/games/seed-man-platformer/app.js
@@ -44,6 +50,22 @@ jobs:
           node --check site/public-route-patch/games/seed-man-platformer/input-guard-v1.js
           node --check site/public-route-patch/games/seed-man-platformer/physics.mjs
           node --check games/seed-man-platformer/test/browser-smoke.mjs
+          node --check scripts/publish-seed-man-route-via-wordpress.mjs
+          node --check scripts/publish-seed-man-current-release.mjs
+      - name: Dry-run current release binding into atomic publisher
+        shell: bash
+        run: |
+          set -euo pipefail
+          output="$(SEED_MAN_PUBLISH_DRY_RUN=1 node scripts/publish-seed-man-current-release.mjs)"
+          echo "$output"
+          node -e '
+            const body = JSON.parse(process.argv[1]);
+            if (body.ok !== true || body.dryRun !== true) throw new Error("dynamic publisher dry run did not succeed");
+            if (!/^\d{8}-r\d+$/.test(body.release)) throw new Error(`invalid resolved release ${body.release}`);
+            if (body.templateReleaseMatches < 1) throw new Error("publisher template placeholder was not found");
+            if (body.generatedReleaseMatches < body.templateReleaseMatches) throw new Error("not every publisher template marker was rebound");
+            if (body.staleTemplateReleaseRemaining !== false) throw new Error("stale publisher release marker remains after binding");
+          ' "$output"
       - name: Verify public simulation copies match canonical source
         shell: bash
         run: |
