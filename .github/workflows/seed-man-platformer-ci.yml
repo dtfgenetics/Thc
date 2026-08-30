@@ -30,6 +30,10 @@ jobs:
         with:
           node-version: 22
           cache: npm
+      - name: Install Seed Man Three.js renderer dependency
+        run: npm install --prefix games/seed-man-platformer --ignore-scripts --no-audit --no-fund
+      - name: Verify Three.js renderer module import
+        run: npm run --prefix games/seed-man-platformer verify:three-import
       - name: Test platformer physics and level interactions
         run: node games/seed-man-platformer/test/physics.test.mjs
       - name: Test campaign foundation contract
