@@ -67,7 +67,7 @@
     },
     {
       "id": "high-iq",
-      "title": "High IQ \u2014 Test Higher Cognition",
+      "title": "High IQ — Test Higher Cognition",
       "repository": "dtfgenetics/Thc",
       "sourcePath": "site/public-route-patch/games/high-iq",
       "canonicalDataPath": "games/high-iq/data",
@@ -121,7 +121,7 @@
     },
     {
       "id": "seed-man-platformer",
-      "title": "Seed Man: Sprout Run \u2014 Greenhouse Gauntlet",
+      "title": "Seed Man: Sprout Run — Greenhouse Gauntlet",
       "repository": "dtfgenetics/Thc",
       "sourcePath": "site/public-route-patch/games/seed-man-platformer",
       "canonicalDataPath": "games/seed-man-platformer",
@@ -142,6 +142,24 @@
         "characterContract": "seed-man-locked-v1"
       },
       "notes": "Canonical self-hosted Greenhouse Gauntlet production build. Publishes the 7,800 px 24-sprout course with double jump, seven power-ups, three checkpoints, fifteen hazard zones, keyboard/touch controls, gated finish, and original production Canvas2D Seed Man art. The retired 2,600 px eight-sprout vertical slice must never be republished."
+    },
+    {
+      "id": "seed-ascent",
+      "title": "Seed Ascent",
+      "repository": "dtfgenetics/Thc",
+      "sourcePath": "site/public-route-patch/games/seed-ascent",
+      "canonicalDataPath": "games/seed-ascent",
+      "route": "/games/seed-ascent/",
+      "runtime": "static",
+      "status": "ready-to-package",
+      "build": "node games/seed-ascent/test/public-runtime.test.mjs",
+      "machineData": {
+        "mode": "endless-platformer",
+        "doubleJump": true,
+        "persistentBestScore": true,
+        "touchControls": true
+      },
+      "notes": "Self-hosted responsive Canvas2D endless-climb game with procedural and bouncy platforms, gems, stompable pests, keyboard/pointer controls, corrected camera tracking, crossing-based landing collision, and local best-score persistence."
     },
     {
       "id": "protect-the-plants",
@@ -217,7 +235,7 @@
         "networkAuthority": "php-server",
         "transport": "polling"
       },
-      "notes": "Self-hosted 2\u201310 player online party game with six-character rooms, simultaneous server-authoritative BUD/BLUFF voting, hidden answers until reveal, Double Hit scoring, lobby lock/settings, chat, reconnectable sessions, vote-split reveal stats, rematches, host transfer, and same-origin PHP persistence."
+      "notes": "Self-hosted 2–10 player online party game with six-character rooms, simultaneous server-authoritative BUD/BLUFF voting, hidden answers until reveal, Double Hit scoring, lobby lock/settings, chat, reconnectable sessions, vote-split reveal stats, rematches, host transfer, and same-origin PHP persistence."
     },
     {
       "id": "strain-showdown",
