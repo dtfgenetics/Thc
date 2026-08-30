@@ -364,10 +364,14 @@ async function verifyPromotion() {
     '/learn/symptoms/lower-leaf-yellowing/',
     '/learn/tools/plant-health-intake/',
     '/community/grow-offs/solo-cup-grow-off/',
-    '/games/seed-ascent/',
   ]) {
     await verifyOwnPage(route);
   }
+
+  // Seed Ascent is a Next wrapper around the dedicated static game runtime. Prove that
+  // the wrapper itself is live by requiring its iframe source rather than the generic
+  // education-page asset marker used above.
+  await verifyOwnPage('/games/seed-ascent/', '/seed-ascent.html');
 
   const asset = await probe('/seed-ascent.html');
   if (asset.response.status !== 200 || asset.response.headers.get('location') || !/Seed Ascent/i.test(asset.text)) {
