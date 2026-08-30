@@ -20,11 +20,19 @@ function responseHeaders(raw) {
   return headers;
 }
 
+function requestBody(body) {
+  if (body == null) return null;
+  if (typeof body === 'string' || Buffer.isBuffer(body) || ArrayBuffer.isView(body)) return body;
+  if (body instanceof ArrayBuffer) return Buffer.from(body);
+  if (body instanceof URLSearchParams) return body.toString();
+  throw new TypeError(`wordpress-ipv4 fetch bootstrap does not support request body type ${body?.constructor?.name || typeof body}`);
+}
+
 function requestWithIpv4(url, init = {}, redirects = 0) {
   return new Promise((resolve, reject) => {
     const parsed = new URL(url);
     const method = String(init.method || 'GET').toUpperCase();
-    const body = init.body == null ? null : String(init.body);
+    const body = requestBody(init.body);
     const request = https.request(parsed, {
       method,
       family: 4,
