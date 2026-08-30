@@ -110,6 +110,7 @@ for (const app of apps) {
 }
 
 const localGameProjects = projects.filter((project) => project?.type === 'game' && project?.repo === localRepo);
+const localGameIds = new Set(localGameProjects.map((project) => project.id).filter(nonEmptyString));
 const appIds = new Set(apps.map((app) => app.id));
 
 for (const project of localGameProjects) {
@@ -137,11 +138,16 @@ if (fs.existsSync(gamesRoot)) {
     const readme = path.join(gameDir, 'README.md');
     const gameJson = path.join(gameDir, 'game.json');
 
-    if (!exists(readme)) warnings.push(`${gameDir}: missing README.md`);
+    // Shared test/support/integration directories may live under games/. Only registered
+    // locally owned game directories are required to carry a game.json when one is absent.
     if (!exists(gameJson)) {
+      if (!localGameIds.has(entry.name)) continue;
+      if (!exists(readme)) warnings.push(`${gameDir}: missing README.md`);
       warnings.push(`${gameDir}: missing game.json; add one when the project becomes an active DTF game implementation`);
       continue;
     }
+
+    if (!exists(readme)) warnings.push(`${gameDir}: missing README.md`);
 
     const manifest = loadJson(gameJson);
     if (!manifest) continue;
