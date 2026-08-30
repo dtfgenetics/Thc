@@ -3,6 +3,13 @@ import path from 'node:path';
 
 const root = process.cwd();
 const asJson = process.argv.includes('--json');
+const idFlag = process.argv.indexOf('--id');
+const requestedId = idFlag >= 0 ? (process.argv[idFlag + 1] || '').trim() : '';
+
+if (idFlag >= 0 && !requestedId) {
+  console.error('Usage: npm run games:status -- --id <game-id>');
+  process.exit(1);
+}
 
 function loadJson(rel) {
   const full = path.join(root, rel);
@@ -72,6 +79,53 @@ const summary = {
   routes
 };
 
+if (requestedId) {
+  const project = games.find((game) => game.id === requestedId) || null;
+  const route = routes.find((item) => item.id === requestedId) || null;
+  if (!project && !route) {
+    console.error(`Unknown game id: ${requestedId}`);
+    process.exit(1);
+  }
+
+  const detail = {
+    id: requestedId,
+    name: project?.name || route?.title || requestedId,
+    canonicalRepository: project?.repository || route?.repository || null,
+    sourceOfTruth: project?.sourceOfTruth || null,
+    projectStatus: project?.status || null,
+    publicRoute: route?.route || null,
+    deploymentStatus: route?.status || null,
+    runtime: route?.runtime || null,
+    packagedSourcePath: route?.sourcePath || null,
+    verificationCommand: route?.build || null,
+    integrationRepository: deployment.sourceOfTruth,
+    productionSite: deployment.site
+  };
+
+  if (asJson) {
+    console.log(JSON.stringify(detail, null, 2));
+    process.exit(0);
+  }
+
+  console.log(`# ${detail.name}`);
+  console.log(`ID: ${detail.id}`);
+  console.log(`Canonical repository: ${text(detail.canonicalRepository)}`);
+  console.log(`Source-of-truth: ${text(detail.sourceOfTruth)}`);
+  console.log(`Project status: ${text(detail.projectStatus)}`);
+  console.log(`Public route: ${text(detail.publicRoute)}`);
+  console.log(`Deployment status: ${text(detail.deploymentStatus)}`);
+  console.log(`Runtime: ${text(detail.runtime)}`);
+  console.log(`Packaged source path: ${text(detail.packagedSourcePath)}`);
+  console.log(`Verification/build: ${text(detail.verificationCommand)}`);
+  console.log('');
+  if (detail.canonicalRepository === deployment.sourceOfTruth) {
+    console.log('Edit the canonical local game/app source first; treat site/public-route-patch as the deployable runtime when applicable.');
+  } else {
+    console.log('Edit the standalone canonical repository first; update this integration repo only when the dtfseeds.com packaging contract changes.');
+  }
+  process.exit(0);
+}
+
 if (asJson) {
   console.log(JSON.stringify(summary, null, 2));
   process.exit(0);
@@ -84,6 +138,8 @@ console.log(`Game projects: ${summary.gameProjectCount} (${summary.locallyOwnedG
 console.log(`dtfseeds.com game routes: ${summary.publicGameRouteCount}`);
 console.log('');
 
+console.log('Tip: use `npm run games:status -- --id <game-id>` before editing a specific game.');
+console.log('');
 console.log('## Canonical game ownership');
 printTable(
   ['Game', 'ID', 'Status', 'Canonical repository', 'Source-of-truth'],
