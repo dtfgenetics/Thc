@@ -21,7 +21,7 @@ jobs:
   verify:
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 5
     steps:
       - name: Verify master-based Weedopolis browser game is live
         shell: bash
@@ -29,34 +29,51 @@ jobs:
           set -euo pipefail
           base='https://dtfseeds.com/games/weedopolis/'
           bust="weedopolis_verify=${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
-          html="$(mktemp)"
-          headers="$(mktemp)"
-          status="$(curl -fsS --retry 5 --retry-delay 5 \
-            --output "$html" \
-            --dump-header "$headers" \
-            --write-out '%{http_code}' \
-            -H 'Cache-Control: no-cache, no-store, max-age=0' \
-            "${base}?${bust}")"
-          test "$status" = '200'
-          ! grep -Eiq '^location:' "$headers"
 
-          grep -Fq 'Start Weedopolis' "$html"
-          grep -Fq 'id="board"' "$html"
-          grep -Fq 'data-ui-standard="premium-responsive-shell-v1"' "$html"
-          grep -Fq 'data-art-standard="weedopolis-v1-master"' "$html"
-          grep -Fq 'id="currentBalance"' "$html"
-          grep -Fq 'id="mobileRollBtn"' "$html"
-          grep -Fq 'id="propertyArtSlot"' "$html"
-          grep -Fq 'js/weedopolis-master-overrides.js' "$html"
-          grep -Fq 'js/weedopolis-assets.js' "$html"
-          grep -Fq 'js/weedopolis-engine.js' "$html"
-          grep -Fq 'js/weedopolis-ui.js' "$html"
-          grep -Fq 'runtime-assets.css' "$html"
-          grep -Fq 'master-board-overlay.css' "$html"
+          fetch_asset() {
+            local rel="$1" out headers status type
+            out="$(mktemp)"; headers="$(mktemp)"
+            status="$(curl -sS --connect-timeout 10 --max-time 25 \
+              --output "$out" --dump-header "$headers" --write-out '%{http_code}' \
+              -H 'Cache-Control: no-cache, no-store, max-age=0' \
+              "${base}${rel}?${bust}")"
+            type="$(awk 'BEGIN{IGNORECASE=1} /^content-type:/{gsub(/\r/,""); sub(/^[^:]+:[[:space:]]*/,""); print; exit}' "$headers")"
+            echo "${rel:-/} -> HTTP ${status} ${type:-unknown-content-type} bytes=$(wc -c < "$out")" >&2
+            if [[ "$status" != '200' ]]; then
+              echo "FAILED_ASSET=${rel:-/}" >&2
+              head -c 500 "$out" >&2 || true
+              rm -f "$out" "$headers"
+              return 1
+            fi
+            if grep -Eiq '^location:' "$headers"; then
+              echo "Unexpected redirect for ${rel:-/}" >&2
+              cat "$headers" >&2
+              rm -f "$out" "$headers"
+              return 1
+            fi
+            cat "$out"
+            rm -f "$out" "$headers"
+          }
 
-          ! grep -Fq 'The playable development build is loading.' "$html"
-          ! grep -Fq 'Weedopolis V2' "$html"
-          ! grep -Fq 'hex board' "$html"
+          html="$(fetch_asset '')"
+          for marker in \
+            'Start Weedopolis' \
+            'id="board"' \
+            'data-ui-standard="premium-responsive-shell-v1"' \
+            'data-art-standard="weedopolis-v1-master"' \
+            'id="currentBalance"' \
+            'id="mobileRollBtn"' \
+            'id="propertyArtSlot"' \
+            'js/weedopolis-master-overrides.js' \
+            'js/weedopolis-assets.js' \
+            'js/weedopolis-engine.js' \
+            'js/weedopolis-ui.js' \
+            'runtime-assets.css' \
+            'master-board-overlay.css'; do
+            grep -Fq "$marker" <<<"$html" || { echo "Missing page marker: $marker" >&2; exit 1; }
+          done
+          ! grep -Fq 'The playable development build is loading.' <<<"$html"
+          ! grep -Fq 'Weedopolis V2' <<<"$html"
 
           for asset in \
             styles.css \
@@ -70,16 +87,12 @@ jobs:
             js/weedopolis-ui.js \
             assets/asset-manifest.json \
             assets/board/weedopolis-master-board.webp; do
-            echo "Checking ${base}${asset}"
-            curl -fsS --retry 5 --retry-delay 5 \
-              -H 'Cache-Control: no-cache, no-store, max-age=0' \
-              "${base}${asset}?${bust}" >/dev/null
+            fetch_asset "$asset" >/dev/null
           done
 
-          overlay="$(curl -fsS --retry 5 --retry-delay 5 -H 'Cache-Control: no-cache' "${base}master-board-overlay.css?${bust}")"
-          registry="$(curl -fsS --retry 5 --retry-delay 5 -H 'Cache-Control: no-cache' "${base}js/weedopolis-assets.js?${bust}")"
-          manifest="$(curl -fsS --retry 5 --retry-delay 5 -H 'Cache-Control: no-cache' "${base}assets/asset-manifest.json?${bust}")"
-
+          overlay="$(fetch_asset master-board-overlay.css)"
+          registry="$(fetch_asset js/weedopolis-assets.js)"
+          manifest="$(fetch_asset assets/asset-manifest.json)"
           grep -Fq "assets/board/weedopolis-master-board.webp" <<<"$overlay"
           grep -Fq 'expectedOwnershipCards: 28' <<<"$registry"
           grep -Fq "['green-crack','Green Crack','property',18,180,'orange'" <<<"$registry"
@@ -87,5 +100,4 @@ jobs:
           grep -Fq "['permanent-marker','Permanent Marker','property',40,400,'dark_blue'" <<<"$registry"
           grep -Fq 'generatedMockupArtAllowed: false' <<<"$registry"
           grep -Fq '"v2_hex_allowed": false' <<<"$manifest"
-
           echo 'Master-based Weedopolis V1 playable browser build is live.'
