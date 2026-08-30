@@ -17,8 +17,15 @@ on:
       - 'scripts/test-game-scaffold.mjs'
       - 'scripts/game-status.mjs'
       - 'scripts/test-game-status.mjs'
+      - 'scripts/setup-ai-tools.mjs'
+      - 'scripts/setup-ai-tools.sh'
+      - 'scripts/setup-ai-tools.ps1'
       - 'docs/GAME_DEVELOPMENT_WORKFLOW.md'
       - 'docs/GAME_ARCHITECTURE_STANDARD.md'
+      - 'docs/AI_WORKSPACE_SETUP.md'
+      - 'AI_CONTEXT.md'
+      - 'AGENTS.md'
+      - 'CLAUDE.md'
       - 'package.json'
       - '.github/workflows/game-workspace-ci.yml'
   push:
@@ -36,8 +43,15 @@ on:
       - 'scripts/test-game-scaffold.mjs'
       - 'scripts/game-status.mjs'
       - 'scripts/test-game-status.mjs'
+      - 'scripts/setup-ai-tools.mjs'
+      - 'scripts/setup-ai-tools.sh'
+      - 'scripts/setup-ai-tools.ps1'
       - 'docs/GAME_DEVELOPMENT_WORKFLOW.md'
       - 'docs/GAME_ARCHITECTURE_STANDARD.md'
+      - 'docs/AI_WORKSPACE_SETUP.md'
+      - 'AI_CONTEXT.md'
+      - 'AGENTS.md'
+      - 'CLAUDE.md'
       - 'package.json'
       - '.github/workflows/game-workspace-ci.yml'
 
@@ -60,6 +74,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
+
+      - name: Validate AI workspace setup tooling
+        run: |
+          node --check scripts/setup-ai-tools.mjs
+          node scripts/setup-ai-tools.mjs --check
+          bash -n scripts/setup-ai-tools.sh
 
       - name: Show dtfseeds.com game ownership and routes
         run: npm run games:status

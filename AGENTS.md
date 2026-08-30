@@ -2,6 +2,10 @@
 
 These instructions apply to the entire `dtfgenetics/Thc` repository.
 
+## Repository orientation
+
+Read `AI_CONTEXT.md` for the current repository map, common commands, game ownership workflow, and AI-friendly change sequence. `AI_CONTEXT.md` is an orientation index only; this file, `CLAUDE.md`, route-owner documentation, and project-specific source-of-truth files remain authoritative when instructions conflict.
+
 ## Read before publishing or repairing dtfseeds.com
 
 For any task that asks to publish, deploy, push, move, synchronize, repair, or verify content, products, education, infographics, games, tools, or applications on `https://dtfseeds.com/`, read:
