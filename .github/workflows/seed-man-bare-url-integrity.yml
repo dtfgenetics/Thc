@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/seed-man-bare-url-integrity.yml'
+      - 'site/public-route-patch/games/seed-man-platformer/**'
   workflow_run:
     workflows: ["Deploy DTFSeeds Public Suite via WordPress V2"]
     types: [completed]
@@ -19,16 +20,27 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      - name: Checkout deployed source revision
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+
       - name: Verify normal visitor URL is current and cache-proof
         shell: bash
         run: |
           set -euo pipefail
           base='https://dtfseeds.com/games/seed-man-platformer/'
-          release='20260830-r3'
+          source_html='site/public-route-patch/games/seed-man-platformer/index.html'
+          test -s "$source_html"
+          release="$(sed -n 's/.*name="dtf-sprout-release" content="\([^"]*\)".*/\1/p' "$source_html" | head -n 1)"
+          [[ "$release" =~ ^[0-9]{8}-r[0-9]+$ ]] || {
+            echo "Unable to resolve the Sprout Run release marker from deployed source: $release" >&2
+            exit 1
+          }
+
           tmp="$(mktemp -d)"
           trap 'rm -rf "$tmp"' EXIT
 
-          # Intentionally do not add a cache-busting query string or no-cache headers to the page URL.
           curl -sS --location --connect-timeout 10 --max-time 30 "$base" -o "$tmp/index.html"
           test -s "$tmp/index.html"
 
@@ -38,11 +50,11 @@ jobs:
             'JUMP ×2' \
             '"worldWidth": 7800' \
             '"requiredPickups": 24' \
-            'name="dtf-sprout-release" content="20260830-r3"' \
-            '<script src="./app.js?v=20260830-r3" defer></script>' \
-            '<script src="./seed-man-production-art.js?v=20260830-r3" defer></script>' \
-            '<script src="./input-guard-v1.js?v=20260830-r3" defer></script>' \
-            'seed-man.css?v=20260830-r3'; do
+            "name=\"dtf-sprout-release\" content=\"${release}\"" \
+            "<script src=\"./app.js?v=${release}\" defer></script>" \
+            "<script src=\"./seed-man-production-art.js?v=${release}\" defer></script>" \
+            "<script src=\"./input-guard-v1.js?v=${release}\" defer></script>" \
+            "seed-man.css?v=${release}"; do
             grep -Fq "$marker" "$tmp/index.html" || { echo "Bare public URL is stale/mismatched; missing: $marker" >&2; exit 1; }
           done
 
@@ -68,4 +80,4 @@ jobs:
           grep -Fq 'seed-man-production-v1' "$tmp/seed-man-production-art.js"
           grep -Fq 'seed-man-locked-v1' "$tmp/seed-man-production-art.js"
 
-          echo 'Bare Sprout Run URL and versioned runtime assets are serving the Greenhouse Gauntlet production bundle.'
+          echo "Bare Sprout Run URL and versioned runtime assets are serving the ${release} Greenhouse Gauntlet production bundle."

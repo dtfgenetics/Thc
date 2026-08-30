@@ -15,13 +15,24 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
+      - name: Checkout deployed source revision
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+
       - name: Verify expanded Sprout Run live runtime
         shell: bash
         run: |
           set -euo pipefail
 
           base='https://dtfseeds.com/games/seed-man-platformer/'
-          release='20260830-r3'
+          source_html='site/public-route-patch/games/seed-man-platformer/index.html'
+          test -s "$source_html"
+          release="$(sed -n 's/.*name="dtf-sprout-release" content="\([^"]*\)".*/\1/p' "$source_html" | head -n 1)"
+          [[ "$release" =~ ^[0-9]{8}-r[0-9]+$ ]] || {
+            echo "Unable to resolve the Sprout Run release marker from deployed source: $release" >&2
+            exit 1
+          }
           bust="dtf_sprout_smoke=${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
 
           fetch_asset() {
@@ -69,11 +80,11 @@ jobs:
             'JUMP ×2' \
             '7 power-ups' \
             '3 checkpoints' \
-            'name="dtf-sprout-release" content="20260830-r3"' \
-            '<script src="./app.js?v=20260830-r3" defer></script>' \
-            '<script src="./seed-man-production-art.js?v=20260830-r3" defer></script>' \
-            '<script src="./input-guard-v1.js?v=20260830-r3" defer></script>' \
-            'seed-man.css?v=20260830-r3'; do
+            "name=\"dtf-sprout-release\" content=\"${release}\"" \
+            "<script src=\"./app.js?v=${release}\" defer></script>" \
+            "<script src=\"./seed-man-production-art.js?v=${release}\" defer></script>" \
+            "<script src=\"./input-guard-v1.js?v=${release}\" defer></script>" \
+            "seed-man.css?v=${release}"; do
             grep -Fq "$marker" <<<"$html" || { echo "Missing Sprout Run production marker: $marker" >&2; exit 1; }
           done
 
@@ -81,7 +92,8 @@ jobs:
             'collect all eight sprouts' \
             'Sprouts 0 / 8' \
             'Objective: collect all 8 sprouts' \
-            'Original browser vertical slice'; do
+            'Original browser vertical slice' \
+            'simple Canvas2D primitives'; do
             if grep -Fqi "$stale" <<<"$html"; then
               echo "Stale Sprout Run fingerprint still live: $stale" >&2
               exit 1
@@ -122,10 +134,10 @@ jobs:
           printf '%s' "$art" > "$RUNNER_TEMP/sprout-production-art.js"
           node --check "$RUNNER_TEMP/sprout-production-art.js"
           for marker in \
-            "seed-man-production-v1" \
-            "seed-man-locked-v1" \
+            'seed-man-production-v1' \
+            'seed-man-locked-v1' \
             "renderer: 'canvas2d-vector'" \
-            "original: true" \
+            'original: true' \
             'drawSeedMan = drawSeedManProduction'; do
             grep -Fq "$marker" <<<"$art" || { echo "Missing production-art marker: $marker" >&2; exit 1; }
           done
@@ -149,4 +161,4 @@ jobs:
             if (!Array.isArray(level.hazards) || level.hazards.length !== 15) throw new Error(`hazards=${level.hazards?.length}`);
           ' "$level"
 
-          echo 'Expanded Sprout Run live route, cache-proof assets, production Seed Man art, runtime, level data, controls, and release fingerprints passed.'
+          echo "Expanded Sprout Run ${release} live route, cache-proof assets, production art, runtime, level data and controls passed."
