@@ -2,16 +2,19 @@
 """Synchronize and harden the WordPress Public Suite bridge.
 
 The canonical bridge remains hash-pinned. This module is applied only after that
-base hash passes. It performs two post-hash operations that must stay narrow:
+base hash passes. It performs three narrow post-hash operations:
 
 1. harden the upload/commit lease so the same untouched transaction can recover
    when Hostinger/WordPress temporarily loses visibility of its option-backed
-   deployment lock between requests; and
+   deployment lock between requests;
 2. derive only local, static, ready-to-package game routes from the canonical
-   public-app registry and widen the bridge with those exact directories.
+   public-app registry and widen the bridge with those exact directories; and
+3. allow one isolated Dtf420 staging namespace (`dtf-content-overlay`) that can
+   never directly claim `/learn`, `/community`, `/games`, or the site root.
 
-No wildcard games/ ownership is permitted, and lock recovery is forbidden after
-live-target mutation has begun or when a different deployment owns the lock.
+No wildcard games/ or learn/ ownership is permitted, and lock recovery is
+forbidden after live-target mutation has begun or when a different deployment
+owns the lock.
 """
 from __future__ import annotations
 
@@ -21,6 +24,9 @@ import re
 import sys
 
 SAFE_TARGET = re.compile(r"^games/[a-z0-9][a-z0-9-]*$")
+OVERLAY_TARGET = "dtf-content-overlay"
+OVERLAY_REQUIRED = "dtf-content-overlay/overlay-manifest.json"
+OVERLAY_PREFIX = "dtf-content-overlay/"
 
 
 def _replace_once(payload: bytes, old: bytes, new: bytes, label: str) -> bytes:
@@ -114,6 +120,38 @@ def _apply_upload_lock_recovery(payload: bytes) -> bytes:
     return payload
 
 
+def _apply_overlay_staging_scope(payload: bytes) -> bytes:
+    """Permit only the isolated overlay staging directory, never direct child routes."""
+    targets = _array_values(payload, b"targets")
+    if OVERLAY_TARGET not in targets:
+        payload = _replace_once(
+            payload,
+            b"        'games/index.html','games/dtf-route.css','games/dtf-shell.css','games/high-land'",
+            b"        'games/index.html','games/dtf-route.css','games/dtf-shell.css','dtf-content-overlay','games/high-land'",
+            "Dtf420 overlay staging target",
+        )
+
+    required = _array_values(payload, b"required")
+    if OVERLAY_REQUIRED not in required:
+        payload = _replace_once(
+            payload,
+            b"        'games/index.html','games/dtf-shell.css','games/high-land/index.html'",
+            b"        'games/index.html','games/dtf-shell.css','dtf-content-overlay/overlay-manifest.json','games/high-land/index.html'",
+            "Dtf420 overlay required manifest",
+        )
+
+    prefixes = _array_values(payload, b"prefixes")
+    if OVERLAY_PREFIX not in prefixes:
+        payload = _replace_once(
+            payload,
+            b"        'games/high-land/','games/high-iq/'",
+            b"        'dtf-content-overlay/','games/high-land/','games/high-iq/'",
+            "Dtf420 overlay staging prefix",
+        )
+
+    return payload
+
+
 def registered_local_static_games(repo_root: pathlib.Path) -> list[str]:
     registry_path = repo_root / "site" / "deployment" / "public-apps.json"
     registry = json.loads(registry_path.read_text())
@@ -154,6 +192,7 @@ def _array_values(payload: bytes, variable: bytes) -> set[str]:
 
 def patch_payload(payload: bytes, repo_root: pathlib.Path) -> bytes:
     payload = _apply_upload_lock_recovery(payload)
+    payload = _apply_overlay_staging_scope(payload)
     registry_targets = registered_local_static_games(repo_root)
 
     existing_targets = _array_values(payload, b"targets")
@@ -200,9 +239,11 @@ def patch_payload(payload: bytes, repo_root: pathlib.Path) -> bytes:
         if f"{target}/" not in prefixes:
             raise SystemExit(f"bridge prefix missing after registry patch: {target}/")
 
-    if "games/" in prefixes:
-        raise SystemExit("unsafe broad games/ prefix is forbidden")
-    for forbidden in ("index.html", "learn", "blog"):
+    if OVERLAY_TARGET not in targets or OVERLAY_REQUIRED not in required or OVERLAY_PREFIX not in prefixes:
+        raise SystemExit("isolated Dtf420 overlay staging scope is missing from bridge")
+    if "games/" in prefixes or "learn/" in prefixes:
+        raise SystemExit("unsafe broad game/learn prefix is forbidden")
+    for forbidden in ("index.html", "learn", "blog", "community", "games"):
         if forbidden in targets:
             raise SystemExit(f"WordPress-owned target entered bridge: {forbidden}")
 
@@ -222,10 +263,17 @@ def validate_payload(payload: bytes, repo_root: pathlib.Path) -> dict[str, objec
             missing.append(f"{target}/index.html")
         if f"{target}/" not in prefixes:
             missing.append(f"{target}/")
+    for value, collection in (
+        (OVERLAY_TARGET, targets),
+        (OVERLAY_REQUIRED, required),
+        (OVERLAY_PREFIX, prefixes),
+    ):
+        if value not in collection:
+            missing.append(value)
     if missing:
         raise SystemExit("bridge/registry parity failure: " + ", ".join(missing))
-    if "games/" in prefixes:
-        raise SystemExit("unsafe broad games/ prefix is forbidden")
+    if "games/" in prefixes or "learn/" in prefixes:
+        raise SystemExit("unsafe broad game/learn prefix is forbidden")
 
     lock_markers = (
         b"$lock_recovered = false;",
@@ -240,6 +288,7 @@ def validate_payload(payload: bytes, repo_root: pathlib.Path) -> dict[str, objec
     return {
         "ok": True,
         "lockRecovery": True,
+        "dtf420OverlayStaging": True,
         "registeredLocalStaticGames": registry_targets,
         "targets": len(targets),
         "required": len(required),
