@@ -1,0 +1,199 @@
+name: Repair Seed Ascent Production Route
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/repair-seed-ascent-production-route.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: seed-ascent-production-route-repair
+  cancel-in-progress: false
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+    steps:
+      - name: Checkout current main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Require WordPress production credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured}"
+
+      - name: Patch Seed Ascent verification to match the Codex wrapper and runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('scripts/promote-public-game-routes-via-wordpress.mjs')
+          text = path.read_text()
+          marker = 'async function verifyPromotion() {'
+          if 'async function verifySeedAscent() {' not in text:
+              helper = r'''async function verifySeedAscent() {
+            let last = '';
+            for (let attempt = 1; attempt <= 8; attempt += 1) {
+              try {
+                const [wrapper, launcher, engine, levels, styles] = await Promise.all([
+                  probe('/games/seed-ascent/'),
+                  probe('/seed-ascent.html'),
+                  probe('/seed-ascent/engine.js'),
+                  probe('/seed-ascent/levels.js'),
+                  probe('/seed-ascent/styles.css'),
+                ]);
+                const wrapperOk = wrapper.response.status === 200
+                  && !wrapper.response.headers.get('location')
+                  && /Seed Ascent/i.test(wrapper.text)
+                  && wrapper.text.includes('/seed-ascent.html')
+                  && !/https?:\/\/(?:www\.)?dtf420\.com/i.test(wrapper.text);
+                const launcherOk = launcher.response.status === 200
+                  && !launcher.response.headers.get('location')
+                  && /Seed Ascent/i.test(launcher.text)
+                  && launcher.text.includes('id="game"')
+                  && launcher.text.includes('/seed-ascent/levels.js')
+                  && launcher.text.includes('/seed-ascent/engine.js');
+                const engineOk = engine.response.status === 200
+                  && !engine.response.headers.get('location')
+                  && engine.text.includes('__seedAscentDebug')
+                  && engine.text.includes('doubleUsed');
+                const levelsOk = levels.response.status === 200
+                  && !levels.response.headers.get('location')
+                  && levels.text.includes('SEED_ASCENT_LEVELS');
+                const stylesOk = styles.response.status === 200
+                  && !styles.response.headers.get('location')
+                  && styles.text.length > 500;
+                last = `wrapper=${wrapper.response.status}/${wrapperOk} launcher=${launcher.response.status}/${launcherOk} engine=${engine.response.status}/${engineOk} levels=${levels.response.status}/${levelsOk} styles=${styles.response.status}/${stylesOk}`;
+                if (wrapperOk && launcherOk && engineOk && levelsOk && stylesOk) return;
+              } catch (error) {
+                last = error instanceof Error ? error.message : String(error);
+              }
+              await sleep(1000 + attempt * 700);
+            }
+            throw new Error(`Seed Ascent route/runtime verification failed after promotion (${last}).`);
+          }
+
+          '''
+              if marker not in text:
+                  raise SystemExit('verifyPromotion insertion point not found')
+              text = text.replace(marker, helper + marker, 1)
+
+          old = """  // Seed Ascent is a Next wrapper around the dedicated static game runtime. Prove that
+          // the wrapper itself is live by requiring its iframe source rather than the generic
+          // education-page asset marker used above.
+          await verifyOwnPage('/games/seed-ascent/', '/seed-ascent.html');
+
+          const asset = await probe('/seed-ascent.html');
+          if (asset.response.status !== 200 || asset.response.headers.get('location') || !/Seed Ascent/i.test(asset.text)) {
+            throw new Error(`Seed Ascent public runtime asset did not resolve through overlay: HTTP ${asset.response.status}`);
+          }
+          """
+          new = """  // Seed Ascent is a dedicated Codex-built wrapper + static runtime. Verify the
+          // wrapper and every required runtime surface directly rather than requiring the
+          // generic absolute-origin marker used by education overlay pages.
+          await verifySeedAscent();
+          """
+          if old in text:
+              text = text.replace(old, new, 1)
+          elif 'await verifySeedAscent();' not in text:
+              raise SystemExit('Seed Ascent verification block not found')
+
+          path.write_text(text)
+          PY
+          node --check scripts/promote-public-game-routes-via-wordpress.mjs
+          grep -Fq 'async function verifySeedAscent()' scripts/promote-public-game-routes-via-wordpress.mjs
+          grep -Fq "probe('/seed-ascent/engine.js')" scripts/promote-public-game-routes-via-wordpress.mjs
+
+      - name: Reapply and finalize canonical Seed Ascent routing
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/promote-public-game-routes-via-wordpress.mjs | tee "$RUNNER_TEMP/seed-ascent-route-promotion.json"
+          grep -Eq '"ok"[[:space:]]*:[[:space:]]*true' "$RUNNER_TEMP/seed-ascent-route-promotion.json"
+
+      - name: Verify bare live Seed Ascent route and runtime files
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          const origin = 'https://dtfseeds.com';
+          const checks = [
+            ['/games/seed-ascent/', ['Seed Ascent', '/seed-ascent.html']],
+            ['/seed-ascent.html', ['Seed Ascent', 'id="game"', '/seed-ascent/levels.js', '/seed-ascent/engine.js']],
+            ['/seed-ascent/engine.js', ['__seedAscentDebug', 'doubleUsed']],
+            ['/seed-ascent/levels.js', ['SEED_ASCENT_LEVELS']],
+            ['/seed-ascent/styles.css', []],
+          ];
+          for (const [route, markers] of checks) {
+            const response = await fetch(origin + route, {
+              redirect: 'manual',
+              headers: {
+                'user-agent': 'DTFSeeds-Seed-Ascent-Production-Proof/1.0',
+                'cache-control': 'no-cache, no-store, max-age=0',
+                pragma: 'no-cache',
+              },
+              signal: AbortSignal.timeout(45000),
+            });
+            const text = await response.text();
+            if (response.status !== 200 || response.headers.get('location')) {
+              throw new Error(`${route} did not resolve directly: HTTP ${response.status} ${response.headers.get('location') || ''}`);
+            }
+            for (const marker of markers) {
+              if (!text.includes(marker)) throw new Error(`${route} is missing required marker ${marker}`);
+            }
+            if (route.endsWith('.css') && text.length < 500) throw new Error(`${route} CSS payload is unexpectedly small`);
+            console.log(`Verified ${route} (${text.length} bytes)`);
+          }
+          NODE
+
+      - name: Persist the verified promoter fix on main
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- scripts/promote-public-game-routes-via-wordpress.mjs; then
+            echo 'Promoter already contains the verified Seed Ascent checks.'
+            exit 0
+          fi
+          git config user.name 'dtf-release-bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add scripts/promote-public-game-routes-via-wordpress.mjs
+          git commit -m 'Fix Seed Ascent production route verification'
+          git pull --rebase origin main
+          if ! git push origin HEAD:main; then
+            echo '::warning::Seed Ascent is live, but automatic persistence of the verifier patch was blocked. The repair workflow remains available.'
+          fi
+
+      - name: Production proof summary
+        shell: bash
+        run: |
+          {
+            echo '## Seed Ascent production route repaired'
+            echo
+            echo '- Canonical route: https://dtfseeds.com/games/seed-ascent/'
+            echo '- Wrapper: verified HTTP 200 with Seed Ascent iframe source'
+            echo '- Launcher: verified HTTP 200'
+            echo '- Engine: verified HTTP 200 with Seed Ascent runtime markers'
+            echo '- Levels: verified HTTP 200 with campaign data marker'
+            echo '- Styles: verified HTTP 200 with non-empty production stylesheet'
+          } >> "$GITHUB_STEP_SUMMARY"
