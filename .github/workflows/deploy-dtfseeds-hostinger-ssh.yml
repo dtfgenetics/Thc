@@ -22,6 +22,8 @@ on:
   pull_request:
     paths:
       - .github/workflows/deploy-dtfseeds-hostinger-ssh.yml
+      - scripts/deploy/hostinger-overlay.sh
+      - scripts/deploy/test-hostinger-overlay.sh
       - docs/DTFSEEDS_HOSTINGER_SSH_DEPLOY.md
 
 permissions:
@@ -38,6 +40,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Validate deployment scripts
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash -n scripts/deploy/hostinger-overlay.sh
+          bash -n scripts/deploy/test-hostinger-overlay.sh
+          bash scripts/deploy/test-hostinger-overlay.sh
+
       - name: Validate deployment contract
         shell: bash
         run: |
@@ -54,6 +65,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
+      - uses: actions/checkout@v4
+
       - name: Require explicit production confirmation
         shell: bash
         env:
@@ -61,7 +74,7 @@ jobs:
         run: |
           set -euo pipefail
           if [ "$CONFIRM" != "DEPLOY" ]; then
-            echo 'Production deployment refused: confirm input must be exactly DEPLOY.' >&2
+            echo "::error::Production deployment refused. The confirm input must be exactly DEPLOY."
             exit 1
           fi
 
@@ -73,6 +86,10 @@ jobs:
           REQUESTED_RUN: ${{ inputs.build_run_id }}
         run: |
           set -euo pipefail
+          expected_workflow_id="$(gh api \
+            "/repos/${GITHUB_REPOSITORY}/actions/workflows/build-dtfseeds-public-suite.yml" \
+            --jq '.id')"
+
           if [ -n "$REQUESTED_RUN" ]; then
             run_id="$REQUESTED_RUN"
           else
@@ -82,30 +99,45 @@ jobs:
               --jq '.workflow_runs[0].id')"
           fi
 
-          test -n "$run_id"
-          conclusion="$(gh api "/repos/${GITHUB_REPOSITORY}/actions/runs/${run_id}" --jq '.conclusion')"
-          event="$(gh api "/repos/${GITHUB_REPOSITORY}/actions/runs/${run_id}" --jq '.event')"
-          head_branch="$(gh api "/repos/${GITHUB_REPOSITORY}/actions/runs/${run_id}" --jq '.head_branch')"
-          head_sha="$(gh api "/repos/${GITHUB_REPOSITORY}/actions/runs/${run_id}" --jq '.head_sha')"
-          workflow_name="$(gh api "/repos/${GITHUB_REPOSITORY}/actions/runs/${run_id}" --jq '.name')"
+          [[ "$run_id" =~ ^[0-9]+$ ]] || {
+            echo "::error::Could not resolve a valid public-suite build run."
+            exit 1
+          }
 
-          if [ "$workflow_name" != 'Build DTFSeeds Public Suite' ] || [ "$conclusion" != 'success' ] || [ "$head_branch" != 'main' ]; then
-            echo "Refusing deploy: run ${run_id} is not a successful Build DTFSeeds Public Suite run from main." >&2
-            echo "name=${workflow_name} conclusion=${conclusion} event=${event} branch=${head_branch} sha=${head_sha}" >&2
+          run_json="$(gh api "/repos/${GITHUB_REPOSITORY}/actions/runs/${run_id}")"
+          conclusion="$(jq -r '.conclusion' <<<"$run_json")"
+          head_branch="$(jq -r '.head_branch' <<<"$run_json")"
+          head_sha="$(jq -r '.head_sha' <<<"$run_json")"
+          workflow_id="$(jq -r '.workflow_id' <<<"$run_json")"
+
+          if [ "$workflow_id" != "$expected_workflow_id" ] || \
+             [ "$conclusion" != "success" ] || \
+             [ "$head_branch" != "main" ] || \
+             ! [[ "$head_sha" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "::error::Run ${run_id} is not a successful Build DTFSeeds Public Suite run from main."
+            echo "workflow_id=${workflow_id} expected=${expected_workflow_id} conclusion=${conclusion} branch=${head_branch} sha=${head_sha}"
+            exit 1
+          fi
+
+          artifact_name="dtfseeds-public-suite-${head_sha}"
+          artifacts_json="$(gh api "/repos/${GITHUB_REPOSITORY}/actions/runs/${run_id}/artifacts?per_page=100")"
+          artifact_count="$(jq --arg name "$artifact_name" '[.artifacts[] | select(.name == $name and .expired == false)] | length' <<<"$artifacts_json")"
+          if [ "$artifact_count" != "1" ]; then
+            echo "::error::Expected exactly one non-expired artifact named ${artifact_name}; found ${artifact_count}."
             exit 1
           fi
 
           echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
           echo "head_sha=$head_sha" >> "$GITHUB_OUTPUT"
+          echo "artifact_name=$artifact_name" >> "$GITHUB_OUTPUT"
 
       - name: Download immutable public-suite artifact
         uses: actions/download-artifact@v4
         with:
           github-token: ${{ github.token }}
           run-id: ${{ steps.source.outputs.run_id }}
-          pattern: dtfseeds-public-suite-*
+          name: ${{ steps.source.outputs.artifact_name }}
           path: release
-          merge-multiple: true
 
       - name: Validate downloaded release before transport
         shell: bash
@@ -123,10 +155,18 @@ jobs:
             release/games/high-land/index.html
             release/games/weedopolis/index.html
           )
-          for file in "${required[@]}"; do test -s "$file"; done
+          for file in "${required[@]}"; do
+            test -s "$file"
+          done
           grep -Fq '25 playable browser games' release/games/index.html
           grep -Fq '/games/bud-or-bluff/' release/games/bud-or-bluff/index.html
-          grep -Fq "\"master\": \"$SOURCE_SHA\"" release/dtf-build.json
+          SOURCE_SHA="$SOURCE_SHA" node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const manifest = JSON.parse(fs.readFileSync('release/dtf-build.json', 'utf8'));
+          if (manifest.master !== process.env.SOURCE_SHA) {
+            throw new Error(`release master ${manifest.master} does not match ${process.env.SOURCE_SHA}`);
+          }
+          NODE
 
       - name: Check Hostinger SSH configuration
         shell: bash
@@ -139,16 +179,16 @@ jobs:
         run: |
           set -euo pipefail
           missing=0
-          for name in SSH_HOST SSH_USER SSH_KEY SSH_KNOWN_HOSTS PUBLIC_ROOT; do
-            if [ -z "${!name:-}" ]; then
-              echo "Missing required GitHub Actions secret: ${name/HOSTINGER_/HOSTINGER_}" >&2
-              missing=1
-            fi
-          done
-          if [ "$missing" -ne 0 ]; then
-            echo 'Hostinger deployment path is installed, but production credentials are not configured.' >&2
+          [ -n "$SSH_HOST" ] || { echo "::error::Missing HOSTINGER_SSH_HOST"; missing=1; }
+          [ -n "$SSH_USER" ] || { echo "::error::Missing HOSTINGER_SSH_USER"; missing=1; }
+          [ -n "$SSH_KEY" ] || { echo "::error::Missing HOSTINGER_SSH_PRIVATE_KEY"; missing=1; }
+          [ -n "$SSH_KNOWN_HOSTS" ] || { echo "::error::Missing HOSTINGER_SSH_KNOWN_HOSTS"; missing=1; }
+          [ -n "$PUBLIC_ROOT" ] || { echo "::error::Missing HOSTINGER_PUBLIC_ROOT"; missing=1; }
+          [ "$missing" -eq 0 ] || exit 1
+          [[ "$PUBLIC_ROOT" == /*/public_html ]] || {
+            echo "::error::HOSTINGER_PUBLIC_ROOT must be an absolute path ending in /public_html."
             exit 1
-          fi
+          }
 
       - name: Prepare SSH transport
         shell: bash
@@ -173,10 +213,10 @@ jobs:
           rm -rf payload
           mkdir -p payload
 
-          if [ "$SCOPE" = 'games' ]; then
+          if [ "$SCOPE" = "games" ]; then
             cp -a release/games payload/games
             cp -a release/dtf-build.json payload/dtf-build.json
-          elif [ "$SCOPE" = 'public-suite' ]; then
+          elif [ "$SCOPE" = "public-suite" ]; then
             allowed=(
               assets
               atlas
@@ -193,15 +233,25 @@ jobs:
               dtf-build.json
             )
             for item in "${allowed[@]}"; do
-              if [ -e "release/$item" ]; then cp -a "release/$item" payload/; fi
+              if [ -e "release/$item" ]; then
+                cp -a "release/$item" payload/
+              fi
+            done
+            required=(assets games learn projects tools growlens thc-grow-doc puzzles dtf-build.json)
+            for item in "${required[@]}"; do
+              [ -e "payload/$item" ] || {
+                echo "::error::Public-suite payload is missing required item: $item"
+                exit 1
+              }
             done
           else
-            echo "Unknown deploy scope: $SCOPE" >&2
+            echo "::error::Unknown deployment scope: $SCOPE"
             exit 1
           fi
 
           test -s payload/games/index.html
           test -s payload/games/bud-or-bluff/index.html
+          test -s payload/games/bud-or-bluff/api-v2.php
           printf '%s\n' "$SOURCE_SHA" > payload/.dtf-source-sha
           tar -C payload -czf "dtfseeds-${SOURCE_SHA}.tgz" .
 
@@ -235,73 +285,17 @@ jobs:
           set -euo pipefail
           port="${SSH_PORT:-65002}"
           ssh_opts=(-i "$HOME/.ssh/dtf_hostinger" -p "$port" -o BatchMode=yes -o StrictHostKeyChecking=yes)
-          remote_cmd="$(printf 'bash -s -- %q %q %q' "$PUBLIC_ROOT" "$SOURCE_SHA" "$SCOPE")"
+          incoming=".dtf-deploy/incoming/dtfseeds-${SOURCE_SHA}.tgz"
+          printf -v remote_cmd 'bash -s -- activate %q %q %q %q' "$PUBLIC_ROOT" "$SOURCE_SHA" "$SCOPE" "$incoming"
 
-          ssh "${ssh_opts[@]}" "$SSH_USER@$SSH_HOST" "$remote_cmd" <<'REMOTE'
-          set -euo pipefail
-          public_root="${1%/}"
-          source_sha="$2"
-          scope="$3"
-          incoming="$HOME/.dtf-deploy/incoming/dtfseeds-${source_sha}.tgz"
-          deploy_root="$HOME/.dtf-deploy"
-          stage_parent="$(dirname "$public_root")"
-          stage="$stage_parent/.dtf-stage-${source_sha}"
-          backup_id="$(date -u +%Y%m%dT%H%M%SZ)-${source_sha:0:12}-${scope}"
-          backup="$deploy_root/backups/$backup_id"
-
-          test -d "$public_root"
-          test -s "$incoming"
-          rm -rf "$stage"
-          mkdir -p "$stage" "$backup"
-          tar -xzf "$incoming" -C "$stage"
-
-          test -s "$stage/games/index.html"
-          test -s "$stage/games/bud-or-bluff/index.html"
-          test -s "$stage/games/bud-or-bluff/api-v2.php"
-          test -s "$stage/.dtf-source-sha"
-          test "$(cat "$stage/.dtf-source-sha")" = "$source_sha"
-
-          if [ "$scope" = 'games' ]; then
-            items=(games dtf-build.json)
-          else
-            items=(
-              assets
-              atlas
-              blog
-              explore-dtf-genetics-your-destination-for-cannabis-themed-apparel-and-art
-              exploring-dtf-genetics-a-hub-for-cannabis-art-and-gardening-tools
-              games
-              learn
-              projects
-              tools
-              growlens
-              thc-grow-doc
-              puzzles
-              dtf-build.json
-            )
-          fi
-
-          for item in "${items[@]}"; do
-            [ -e "$stage/$item" ] || continue
-            if [ -e "$public_root/$item" ] || [ -L "$public_root/$item" ]; then
-              mv "$public_root/$item" "$backup/$item"
-            fi
-            mv "$stage/$item" "$public_root/$item"
-          done
-
-          printf '%s\n' "$source_sha" > "$public_root/.dtf-deployed-sha"
-          printf '%s\n' "$scope" > "$public_root/.dtf-deployed-scope"
-          printf '%s\n' "$backup_id" > "$public_root/.dtf-last-backup"
-
-          test -s "$public_root/games/index.html"
-          test -s "$public_root/games/bud-or-bluff/index.html"
-          test -s "$public_root/games/bud-or-bluff/api-v2.php"
-          grep -Fq '25 playable browser games' "$public_root/games/index.html"
-
-          rm -rf "$stage"
-          rm -f "$incoming"
-          echo "backup_id=$backup_id"
-          REMOTE
+          remote_output="$(ssh "${ssh_opts[@]}" "$SSH_USER@$SSH_HOST" "$remote_cmd" < scripts/deploy/hostinger-overlay.sh)"
+          printf '%s\n' "$remote_output"
+          backup_id="$(printf '%s\n' "$remote_output" | sed -n 's/^backup_id=//p' | tail -n 1)"
+          [ -n "$backup_id" ] || {
+            echo "::error::Activation completed without returning a backup id."
+            exit 1
+          }
+          echo "backup_id=$backup_id" >> "$GITHUB_OUTPUT"
 
       - name: Smoke-test public routes after deployment
         shell: bash
@@ -310,25 +304,57 @@ jobs:
           SCOPE: ${{ inputs.scope }}
         run: |
           set -euo pipefail
+          cache_bust="dtf-deploy=${SOURCE_SHA}"
 
-          hub_url="https://dtfseeds.com/games/?dtf-deploy=${SOURCE_SHA}"
-          bob_url="https://dtfseeds.com/games/bud-or-bluff/?dtf-deploy=${SOURCE_SHA}"
-
-          curl -fsSL --retry 3 --retry-delay 2 "$hub_url" -o /tmp/dtf-games.html
+          curl -fsSL --retry 3 --retry-delay 2 \
+            "https://dtfseeds.com/games/?${cache_bust}" \
+            -o /tmp/dtf-games.html
           grep -Fq '25 playable browser games' /tmp/dtf-games.html
 
-          effective="$(curl -fsSL --retry 3 --retry-delay 2 -o /tmp/dtf-bob.html -w '%{url_effective}' "$bob_url")"
+          effective="$(curl -fsSL --retry 3 --retry-delay 2 \
+            -o /tmp/dtf-bob.html \
+            -w '%{url_effective}' \
+            "https://dtfseeds.com/games/bud-or-bluff/?${cache_bust}")"
           case "$effective" in
-            *'/games/bud-or-bluff/'*|*'/games/bud-or-bluff/?'*) ;;
-            *) echo "Bud or Bluff resolved to the wrong public route: $effective" >&2; exit 1 ;;
+            *'/games/bud-or-bluff/'*) ;;
+            *)
+              echo "::error::Bud or Bluff resolved to the wrong public route: $effective"
+              exit 1
+              ;;
           esac
           grep -Fiq 'Bud or Bluff' /tmp/dtf-bob.html
 
-          if [ "$SCOPE" = 'public-suite' ]; then
+          curl -fsSL --retry 3 --retry-delay 2 \
+            "https://dtfseeds.com/dtf-build.json?${cache_bust}" \
+            -o /tmp/dtf-build.json
+          grep -Fq "\"master\": \"$SOURCE_SHA\"" /tmp/dtf-build.json
+
+          if [ "$SCOPE" = "public-suite" ]; then
             for route in learn tools projects games/high-iq games/high-land games/weedopolis; do
-              curl -fsSL --retry 3 --retry-delay 2 "https://dtfseeds.com/${route}/?dtf-deploy=${SOURCE_SHA}" -o /dev/null
+              curl -fsSL --retry 3 --retry-delay 2 \
+                "https://dtfseeds.com/${route}/?${cache_bust}" \
+                -o /dev/null
             done
           fi
+
+      - name: Roll back automatically if post-deploy verification fails
+        if: ${{ failure() && steps.activate.outcome == 'success' && steps.activate.outputs.backup_id != '' }}
+        shell: bash
+        env:
+          SSH_HOST: ${{ secrets.HOSTINGER_SSH_HOST }}
+          SSH_USER: ${{ secrets.HOSTINGER_SSH_USER }}
+          SSH_PORT: ${{ secrets.HOSTINGER_SSH_PORT }}
+          PUBLIC_ROOT: ${{ secrets.HOSTINGER_PUBLIC_ROOT }}
+          BACKUP_ID: ${{ steps.activate.outputs.backup_id }}
+          SCOPE: ${{ inputs.scope }}
+        run: |
+          set -euo pipefail
+          port="${SSH_PORT:-65002}"
+          ssh_opts=(-i "$HOME/.ssh/dtf_hostinger" -p "$port" -o BatchMode=yes -o StrictHostKeyChecking=yes)
+          printf -v remote_cmd 'bash -s -- rollback %q %q %q' "$PUBLIC_ROOT" "$BACKUP_ID" "$SCOPE"
+          ssh "${ssh_opts[@]}" "$SSH_USER@$SSH_HOST" "$remote_cmd" < scripts/deploy/hostinger-overlay.sh
+          curl -fsSL --retry 3 --retry-delay 2 "https://dtfseeds.com/games/?dtf-rollback=${BACKUP_ID}" -o /dev/null
+          echo "::warning::Post-deploy verification failed, so the previous route set was restored from backup ${BACKUP_ID}."
 
       - name: Deployment summary
         if: always()
@@ -337,6 +363,7 @@ jobs:
           RUN_ID: ${{ steps.source.outputs.run_id }}
           SOURCE_SHA: ${{ steps.source.outputs.head_sha }}
           SCOPE: ${{ inputs.scope }}
+          BACKUP_ID: ${{ steps.activate.outputs.backup_id }}
         run: |
           {
             echo '## Hostinger SSH deployment path'
@@ -344,7 +371,8 @@ jobs:
             echo "- Source build run: ${RUN_ID:-unresolved}"
             echo "- Source SHA: ${SOURCE_SHA:-unresolved}"
             echo "- Scope: ${SCOPE:-unknown}"
+            echo "- Backup ID: ${BACKUP_ID:-not-created}"
             echo '- Transport: SSH/SCP with pinned known_hosts'
-            echo '- Activation: route-level backup followed by replacement'
-            echo '- Public smoke test includes the Game Hub and Bud or Bluff direct route'
+            echo '- Activation: validated route overlay with server-side rollback manifest'
+            echo '- Safety: activation errors restore immediately; smoke-test failures trigger automatic rollback'
           } >> "$GITHUB_STEP_SUMMARY"

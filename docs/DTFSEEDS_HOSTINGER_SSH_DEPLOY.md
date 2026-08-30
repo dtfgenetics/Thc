@@ -2,72 +2,132 @@
 
 This is the independent production deployment path for the assembled DTFSeeds public suite.
 
-It exists because `.github/workflows/build-dtfseeds-public-suite.yml` builds and validates a complete release artifact but intentionally does not mutate production. The deploy workflow consumes one successful immutable build artifact and moves only an approved route overlay to Hostinger.
+The build workflow already creates and validates an immutable public-suite artifact. This deployment workflow consumes only one successful artifact from `main`, creates a scoped overlay, transfers it to Hostinger over SSH, activates it with rollback protection, and verifies the public routes.
 
-## Workflow
+## Files
 
-`.github/workflows/deploy-dtfseeds-hostinger-ssh.yml`
+- `.github/workflows/deploy-dtfseeds-hostinger-ssh.yml`
+- `scripts/deploy/hostinger-overlay.sh`
+- `scripts/deploy/test-hostinger-overlay.sh`
 
-The workflow is manual by design. A production run requires the exact confirmation value `DEPLOY`.
+The activation script is deliberately separate from the workflow YAML so its filesystem behavior can be tested without production credentials.
 
-Default scope: `games`
+## Safety model
 
-- replaces `/games/` from one already-validated public-suite artifact
-- includes the direct Bud or Bluff route and its PHP multiplayer endpoints
-- creates a server-side backup before replacing the route
-- smoke-tests the live Game Hub and Bud or Bluff after activation
+A production run is manual and requires the exact confirmation value `DEPLOY`.
 
-Expanded scope: `public-suite`
+Before any production mutation the workflow verifies:
 
-- deploys the approved release-tree routes used by the public suite: assets, Atlas, blog overlays, games, Learn, Projects, Tools, GrowLens, THC Grow Doc, puzzle data, and the two retained legacy editorial routes when present
-- does not deploy arbitrary top-level files from the artifact
-- does not replace WordPress core directories such as `wp-admin`, `wp-includes`, or `wp-content`
+1. the selected run belongs to `.github/workflows/build-dtfseeds-public-suite.yml`
+2. the run completed successfully on `main`
+3. the exact non-expired artifact `dtfseeds-public-suite-<SHA>` exists once
+4. `dtf-build.json` identifies the same source SHA
+5. the Game Hub and Bud or Bluff route/API files are present
+6. every required Hostinger secret is configured
+7. the configured public root is an absolute path ending in `/public_html`
+
+The deployer refuses `/`, arbitrary directories, incomplete packages, unsupported scopes, invalid SHAs, and unsafe rollback identifiers.
+
+## Default scope: `games`
+
+The first production proof replaces only the validated game overlay plus `dtf-build.json`.
+
+It includes the direct Bud or Bluff route and the PHP multiplayer endpoint. This is the safest first target because the public Bud or Bluff link has been observed redirecting back to the Game Hub even though the canonical game exists in the production package.
+
+## Expanded scope: `public-suite`
+
+After the games deployment proves the transport and rollback path, `public-suite` can deploy the approved route set:
+
+- assets
+- Atlas and blog overlays when present
+- games
+- Learn
+- Projects
+- Tools
+- GrowLens
+- THC Grow Doc
+- puzzle data
+- the retained legacy editorial routes when present
+- `dtf-build.json`
+
+It never replaces WordPress core directories such as `wp-admin`, `wp-includes`, or `wp-content`.
 
 ## Required GitHub Actions secrets
 
-Configure these repository secrets before the first production run:
+Configure these repository secrets:
 
-- `HOSTINGER_SSH_HOST` — the Hostinger SSH/SFTP host or FTP IP shown in hPanel
-- `HOSTINGER_SSH_USER` — the FTP/SSH username shown in hPanel
-- `HOSTINGER_SSH_PRIVATE_KEY` — private key matching an SSH/SFTP public key installed in Hostinger
-- `HOSTINGER_SSH_KNOWN_HOSTS` — pinned `known_hosts` line for the Hostinger SSH host
-- `HOSTINGER_PUBLIC_ROOT` — exact absolute website root copied from hPanel, for example `/home/u123456789/domains/dtfseeds.com/public_html`
-- `HOSTINGER_SSH_PORT` — optional; when omitted the workflow uses Hostinger Web/Cloud hosting port `65002`
+- `HOSTINGER_SSH_HOST`
+- `HOSTINGER_SSH_USER`
+- `HOSTINGER_SSH_PRIVATE_KEY`
+- `HOSTINGER_SSH_KNOWN_HOSTS`
+- `HOSTINGER_PUBLIC_ROOT`
+- `HOSTINGER_SSH_PORT` (optional; defaults to `65002`)
 
-Do not commit credentials, passwords, private keys, or host fingerprints to the repository.
+Use the exact values from Hostinger hPanel. Do not commit passwords, private keys, or host fingerprints.
 
-Hostinger documents port `65002` for Web/Cloud SSH/SFTP access and documents the default website root as the domain's `public_html` directory. Always copy the actual host, username, root path, and current host fingerprint from the account instead of guessing them.
+The SSH private key should be a dedicated deployment key that GitHub Actions can use non-interactively.
+
+## Activation and rollback
+
+The uploaded archive is extracted into a hidden staging directory next to `public_html`, so route moves and backups stay on the same hosting filesystem.
+
+Before replacing anything, the deployer:
+
+- validates the staged files
+- records every route it will touch in a manifest
+- records whether a previous version existed
+- backs up the prior deployment metadata
+
+During activation, any filesystem or validation error triggers an immediate in-script restoration from that manifest.
+
+After activation, GitHub verifies:
+
+- the Game Hub is reachable and contains the expected catalog marker
+- `/games/bud-or-bluff/` remains the effective route instead of redirecting to `/games/`
+- the page contains Bud or Bluff content
+- the live `dtf-build.json` identifies the deployed SHA
+- additional core routes respond when `public-suite` is selected
+
+If any public smoke test fails after activation, the workflow automatically invokes the rollback action and restores the previous route set.
+
+Backups live outside the public web root under the domain directory:
+
+`<domain-directory>/.dtf-backups/<backup-id>/`
+
+A failed new release is preserved inside its backup directory during rollback for diagnosis.
+
+## Local/CI test
+
+`bash scripts/deploy/test-hostinger-overlay.sh`
+
+The test uses a temporary fake `public_html` and proves:
+
+- a complete game package activates
+- the previous route is backed up
+- rollback restores the previous files and deployment metadata
+- an incomplete package is rejected before production mutation
+- an unsafe public-root path is rejected
+
+The PR validation workflow runs this test automatically whenever the deploy workflow, script, test, or documentation changes.
 
 ## First production run
 
-1. Confirm `Build DTFSeeds Public Suite` has a successful `main` run.
-2. Open `Deploy DTFSeeds Suite to Hostinger over SSH` in GitHub Actions.
-3. Use scope `games` for the first deployment.
-4. Leave `build_run_id` empty to consume the latest successful `main` package, or enter a specific successful build run ID to pin a known artifact.
-5. Type `DEPLOY` exactly.
-6. The workflow validates the source workflow/run/SHA, downloads the immutable artifact, validates required game files, creates a scoped payload, uploads it over SSH, backs up the existing route, activates the new route, and smoke-tests public URLs.
-
-The first live acceptance target is `/games/bud-or-bluff/`, because the current public route has been observed redirecting to `/games/` while the packaged canonical game exists in this repository.
-
-## Rollback
-
-Every deployment moves the previous route into a timestamped directory under:
-
-`$HOME/.dtf-deploy/backups/`
-
-The normal rollback path is to run the deployment workflow again with the `build_run_id` of the previous known-good public-suite artifact. This provides the same validation, backup, activation, and smoke-test behavior as a forward release.
-
-The server-side backup is an additional recovery copy, not the primary release selector.
-
-## Why SSH instead of a static host
-
-The public suite contains PHP-backed multiplayer/API routes, including Bud or Bluff and Burn Buds. A static-only deployment target would publish the HTML/JS while silently breaking those server endpoints. SSH/SFTP to the existing Hostinger PHP-capable web root preserves the runtime the suite expects.
+1. Merge only after the deployment validation and the repository release-hardening checks pass.
+2. Configure the Hostinger Actions secrets.
+3. Confirm `Build DTFSeeds Public Suite` has a successful `main` run.
+4. Open `Deploy DTFSeeds Suite to Hostinger over SSH`.
+5. Select `games`.
+6. Leave `build_run_id` blank for the newest successful `main` package, or enter a known-good build run ID.
+7. Type `DEPLOY`.
+8. Require the workflow to finish successfully, including public smoke tests.
+9. Verify Bud or Bluff and several additional game routes from a normal browser.
+10. Only then promote later runs to `public-suite`.
 
 ## Release discipline
 
-- Build and deployment are separate.
-- Only consume a successful `Build DTFSeeds Public Suite` run from `main`.
-- Never deploy a local unvalidated folder or an arbitrary branch archive.
-- Start with `games` until the direct-route smoke tests pass in production.
-- Expand to `public-suite` only after the independent path has proven it can deploy, back up, and verify the games overlay safely.
-- Treat a failed public smoke test as a failed deployment even when file transport succeeded.
+- Build and deployment remain separate.
+- Never deploy a local folder or arbitrary branch archive.
+- Deploy only a successful immutable public-suite artifact from `main`.
+- Keep active feature branches separate from frozen production candidates.
+- Treat transport success as insufficient; public smoke tests decide whether a release stays active.
+- A failed smoke test must leave production on the previous known route set.
