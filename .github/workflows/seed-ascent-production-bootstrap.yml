@@ -65,7 +65,8 @@ jobs:
           elif new_hero not in hub:
               raise SystemExit('Game Hub playable-count anchor missing')
 
-          seed_anchor = 'Play Seed Man →</a></article><article class="card"><span class="status">Play now</span><h3>THC Weekly Crossword'</n          seed_card = 'Play Seed Man →</a></article><article class="card"><span class="status">Play now</span><h3>Seed Ascent</h3><p>Climb an endless canopy, collect gems, stomp pests, hit bounce platforms, and recover risky jumps with a double jump.</p><div class="pill-row"><span class="pill">Platformer</span><span class="pill">Double jump</span><span class="pill">Touch controls</span></div><a class="card-link" href="/games/seed-ascent/">Play Seed Ascent →</a></article><article class="card"><span class="status">Play now</span><h3>THC Weekly Crossword'
+          seed_anchor = 'Play Seed Man →</a></article><article class="card"><span class="status">Play now</span><h3>THC Weekly Crossword'
+          seed_card = 'Play Seed Man →</a></article><article class="card"><span class="status">Play now</span><h3>Seed Ascent</h3><p>Climb an endless canopy, collect gems, stomp pests, hit bounce platforms, and recover risky jumps with a double jump.</p><div class="pill-row"><span class="pill">Platformer</span><span class="pill">Double jump</span><span class="pill">Touch controls</span></div><a class="card-link" href="/games/seed-ascent/">Play Seed Ascent →</a></article><article class="card"><span class="status">Play now</span><h3>THC Weekly Crossword'
           if '/games/seed-ascent/' not in hub:
               if hub.count(seed_anchor) != 1:
                   raise SystemExit('Seed Man / Crossword insertion anchor missing or ambiguous')
