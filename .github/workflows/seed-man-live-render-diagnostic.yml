@@ -31,6 +31,9 @@ jobs:
           const fs = require('fs');
           const path = require('path');
           const url = 'https://dtfseeds.com/games/seed-man-platformer/';
+          const sourceIndex = fs.readFileSync('site/public-route-patch/games/seed-man-platformer/index.html', 'utf8');
+          const expectedRelease = sourceIndex.match(/name="dtf-sprout-release" content="([^"]+)"/)?.[1];
+          if (!expectedRelease) throw new Error('Could not resolve source Sprout Run release.');
           const out = path.join(process.env.RUNNER_TEMP, 'sprout-render');
           fs.mkdirSync(out, { recursive: true });
 
@@ -46,6 +49,7 @@ jobs:
               const status = document.querySelector('#load-status');
               return status && /24/.test(status.textContent || '') && document.querySelector('#game');
             }, null, { timeout: 15000 });
+            await page.waitForFunction(() => Boolean(window.__SPROUT_GAMEPLAY_V2__?.snapshot));
             await page.waitForTimeout(500);
             const result = await page.evaluate(() => {
               const canvas = document.querySelector('#game');
@@ -64,6 +68,7 @@ jobs:
                 if (r > 100 && r > g * 1.15 && b < 120) brown++;
               }
               const style = getComputedStyle(canvas);
+              const gameplay = window.__SPROUT_GAMEPLAY_V2__?.snapshot?.() || null;
               return {
                 innerWidth: window.innerWidth,
                 innerHeight: window.innerHeight,
@@ -77,13 +82,21 @@ jobs:
                 release: document.querySelector('meta[name="dtf-sprout-release"]')?.content || null,
                 status: document.querySelector('#load-status')?.textContent,
                 art: window.__SPROUT_ART__ || null,
+                gameplayVersion: window.__SPROUT_GAMEPLAY_V2__?.version || null,
+                gameplay,
+                campaignVersion: window.__SPROUT_CAMPAIGN__?.version || null,
                 samples: { opaque, nonSky, dark, green, brown }
               };
             });
             await page.screenshot({ path: path.join(out, `${name}.png`), fullPage: true });
             fs.writeFileSync(path.join(out, `${name}.json`), JSON.stringify({ result, errors }, null, 2));
             console.log(name, JSON.stringify({ result, errors }, null, 2));
-            if (result.release !== '20260830-r4') throw new Error(`${name}: wrong live release ${result.release}`);
+            if (result.release !== expectedRelease) throw new Error(`${name}: wrong live release ${result.release}; expected ${expectedRelease}`);
+            if (result.gameplayVersion !== 'sprout-run-gameplay-v2') throw new Error(`${name}: gameplay-v2 runtime missing`);
+            if ((result.gameplay?.movingPlatforms?.length || 0) < 6) throw new Error(`${name}: moving platforms missing`);
+            if ((result.gameplay?.pests?.length || 0) < 8) throw new Error(`${name}: pests missing`);
+            if ((result.gameplay?.bouncePads?.length || 0) < 4) throw new Error(`${name}: boost pads missing`);
+            if (result.campaignVersion !== 'sprout-campaign-v1') throw new Error(`${name}: campaign runtime missing`);
             if (!result.canvasPresent || !result.rect || result.rect.width < 100 || result.rect.height < 50) throw new Error(`${name}: canvas is not visibly sized`);
             if ((result.samples?.opaque || 0) < 1000 || (result.samples?.nonSky || 0) < 300) throw new Error(`${name}: canvas pixel output appears blank/unrendered`);
             if (name === 'android' && result.innerWidth > 430) throw new Error(`android: mobile layout viewport not active (${result.innerWidth}px)`);
