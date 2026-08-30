@@ -53,6 +53,7 @@ jobs:
           set -euo pipefail
           node --check scripts/apply-wordpress-public-content-rest.mjs
           node --check scripts/apply-wordpress-public-content-owned-routes.mjs
+          node --check scripts/verify-wordpress-owned-route-preservation.mjs
           node --check scripts/audit-wordpress-commerce-rest.mjs
           node --check scripts/rebuild-wordpress-commerce-visuals.mjs
           node --check scripts/style-wordpress-woocommerce-archive.mjs
@@ -148,30 +149,14 @@ jobs:
           NODE
           echo "site_icon=$site_icon" >> "$GITHUB_OUTPUT"
 
-      - name: Verify preserved WordPress Home brand media through REST
-        id: home_brand
-        shell: bash
+      - name: Verify Learning-owned WordPress route preservation through REST
+        id: owned_routes
         env:
-          EXPECTED_SITE_ICON: ${{ steps.icon.outputs.site_icon }}
+          EXPECTED_HOME_FEATURED_MEDIA: ${{ steps.icon.outputs.site_icon }}
+        shell: bash
         run: |
           set -euo pipefail
-          auth="$(printf '%s:%s' "$WP_API_USERNAME" "$WP_API_PASSWORD" | base64 -w0)"
-          curl -4 --fail --silent --show-error --location --retry 4 --retry-all-errors --retry-delay 2 \
-            --connect-timeout 15 --max-time 60 \
-            -H "Authorization: Basic $auth" \
-            "$WP_SITE_URL/wp-json/wp/v2/pages?slug=home&context=edit&per_page=10" \
-            -o "$RUNNER_TEMP/wordpress-home.json"
-          node - <<'NODE' "$RUNNER_TEMP/wordpress-home.json" "$EXPECTED_SITE_ICON"
-          const fs=require('fs');
-          const pages=JSON.parse(fs.readFileSync(process.argv[2],'utf8'));
-          const expected=Number(process.argv[3] || 0);
-          if(!Array.isArray(pages) || pages.length !== 1) throw new Error(`Expected exactly one WordPress Home page; found ${Array.isArray(pages) ? pages.length : 'invalid response'}`);
-          const page=pages[0];
-          if(Number(page.featured_media || 0) !== expected) throw new Error(`WordPress Home featured_media ${page.featured_media || 0} does not match DTF site icon ${expected}`);
-          const content=page.content?.raw || page.content?.rendered || '';
-          if(!content.includes('Genetics first. Cultivation science behind it.')) throw new Error('Preserved WordPress Home content marker is missing from REST source.');
-          console.log(`WordPress Home page ${page.id} preserves Learning-owned content and DTF brand media ${expected}.`);
-          NODE
+          node scripts/verify-wordpress-owned-route-preservation.mjs
 
       - name: Verify live WordPress surfaces owned by this lane
         id: verify
@@ -296,7 +281,7 @@ jobs:
           PUBLISH_OUTCOME: ${{ steps.publish.outcome }}
           COMMERCE_VISUAL_OUTCOME: ${{ steps.commerce_visual.outcome }}
           SHOP_ARCHIVE_OUTCOME: ${{ steps.shop_archive.outcome }}
-          HOME_BRAND_OUTCOME: ${{ steps.home_brand.outcome }}
+          OWNED_ROUTES_OUTCOME: ${{ steps.owned_routes.outcome }}
           VERIFY_OUTCOME: ${{ steps.verify.outcome }}
           SITE_ICON: ${{ steps.icon.outputs.site_icon }}
           COMMERCE_RECONCILE_OUTCOME: ${{ steps.commerce_reconcile.outcome }}
@@ -313,11 +298,11 @@ jobs:
               `Commerce presentation + URL brand state: **${process.env.COMMERCE_VISUAL_OUTCOME || 'not-run'}**`,
               `WooCommerce Shop archive styling: **${process.env.SHOP_ARCHIVE_OUTCOME || 'not-run'}**`,
               `Cannabis-leaf Site Icon media ID: **${process.env.SITE_ICON || 'not-run'}**`,
-              `Preserved WordPress Home REST proof: **${process.env.HOME_BRAND_OUTCOME || 'not-run'}**`,
+              `Learning-owned Home/Learn hash preservation: **${process.env.OWNED_ROUTES_OUTCOME || 'not-run'}**`,
               `Live owned-surface verification: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
               `WooCommerce reconciliation: **${process.env.COMMERCE_RECONCILE_OUTCOME || 'not-run'}**`,
               `WooCommerce rollback: **${process.env.COMMERCE_ROLLBACK_OUTCOME || 'not-needed'}**`, '',
-              'Production scope: canonical non-Learn WordPress editorial pages, WooCommerce presentation, current brand imagery, and fresh visitor verification. Public Home belongs to the Public Suite overlay; WordPress Home and Learn bodies are preserved here and finalized by the downstream Learning Experience V3 owner.'
+              'Production scope: canonical non-Learn WordPress editorial pages, WooCommerce presentation, current brand imagery, and fresh visitor verification. Public Home belongs to the Public Suite overlay; WordPress Home and Learn bodies are hash-preserved here and finalized by the downstream Learning Experience V3 owner.'
             ].join('\n');
             await core.summary.addRaw(body).write();
             try {

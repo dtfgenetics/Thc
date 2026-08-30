@@ -1,8 +1,7 @@
 import { createHash } from 'node:crypto';
 import dns from 'node:dns';
-import { cp, mkdir, mkdtemp, writeFile } from 'node:fs/promises';
-import { tmpdir } from 'node:os';
-import { dirname, join } from 'node:path';
+import { readFile } from 'node:fs/promises';
+import { join } from 'node:path';
 import process from 'node:process';
 
 dns.setDefaultResultOrder('ipv4first');
@@ -10,20 +9,19 @@ dns.setDefaultResultOrder('ipv4first');
 const siteUrl = (process.env.WP_SITE_URL || 'https://dtfseeds.com').replace(/\/$/, '');
 const username = process.env.WP_API_USERNAME || '';
 const password = process.env.WP_API_PASSWORD || '';
-const sourceDir = process.env.CONTENT_DIR || '';
 const preservationReport = process.env.OWNED_ROUTE_PRESERVATION_REPORT || join(
-  process.env.BACKUP_ROOT || tmpdir(),
+  process.env.BACKUP_ROOT || '/tmp',
   'owned-route-preservation.json'
 );
+const expectedHomeFeaturedMedia = Number(process.env.EXPECTED_HOME_FEATURED_MEDIA || 0);
 
 if (!username || !password) throw new Error('WP_API_USERNAME and WP_API_PASSWORD are required');
-if (!sourceDir) throw new Error('CONTENT_DIR is required');
 
 const auth = `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`;
 const headers = {
   Authorization: auth,
   Accept: 'application/json',
-  'User-Agent': 'DTFSeeds-Ownership-Preserving-Reconcile/1.0'
+  'User-Agent': 'DTFSeeds-Owned-Route-Preservation-Verify/1.0'
 };
 
 const transientStatuses = new Set([408, 425, 429, 500, 502, 503, 504, 520, 522, 523, 524]);
@@ -63,7 +61,6 @@ function isTransientError(error) {
 
 async function requestJson(url, label) {
   let lastError;
-
   for (let attempt = 1; attempt <= 8; attempt += 1) {
     try {
       const response = await fetch(url, {
@@ -72,7 +69,6 @@ async function requestJson(url, label) {
         signal: AbortSignal.timeout(45_000)
       });
       const text = await response.text();
-
       if (!response.ok) {
         const error = new Error(`${label} (${response.status})`);
         error.status = response.status;
@@ -101,19 +97,7 @@ async function requestJson(url, label) {
       await wait(delayMs);
     }
   }
-
   throw lastError || new Error(`${label} failed after 8 attempts`);
-}
-
-async function getPage(slug) {
-  const pages = await requestJson(
-    `${siteUrl}/wp-json/wp/v2/pages?slug=${encodeURIComponent(slug)}&context=edit&per_page=10`,
-    `Could not read WordPress /${slug}/ before reconciliation`
-  );
-  if (!Array.isArray(pages) || pages.length !== 1) {
-    throw new Error(`Expected exactly one published WordPress owner for /${slug}/; found ${Array.isArray(pages) ? pages.length : 'invalid response'}`);
-  }
-  return pages[0];
 }
 
 function rawContent(page) {
@@ -132,37 +116,63 @@ function sha256(content) {
   return createHash('sha256').update(normalizedContent(content), 'utf8').digest('hex');
 }
 
-const ownedDir = await mkdtemp(join(tmpdir(), 'dtf-wordpress-owned-routes-'));
-await cp(sourceDir, ownedDir, { recursive: true });
-
-const preservation = {
-  schemaVersion: 1,
-  generatedAt: new Date().toISOString(),
-  siteUrl,
-  routes: {}
-};
-
-// Learning Experience V3 is the automatic owner of both Home and Learn.
-// Preserve the exact currently stored content while the broad WordPress lane
-// reconciles community, shop, gallery, about, contact, blog and front-page state.
-for (const slug of ['home', 'learn']) {
-  const page = await getPage(slug);
-  const content = normalizedContent(rawContent(page));
-  if (!content) throw new Error(`Refusing to preserve empty /${slug}/ content`);
-  preservation.routes[slug] = {
-    id: Number(page.id),
-    slug,
-    status: page.status || 'unknown',
-    contentLength: Buffer.byteLength(content, 'utf8'),
-    contentSha256: sha256(content)
-  };
-  await writeFile(join(ownedDir, `${slug}.html`), `${content}\n`, 'utf8');
-  console.log(`Preserved Learning-owned /${slug}/ content from WordPress page ${page.id} (${preservation.routes[slug].contentSha256}).`);
+const report = JSON.parse(await readFile(preservationReport, 'utf8'));
+if (report?.schemaVersion !== 1 || !report.routes || typeof report.routes !== 'object') {
+  throw new Error(`Invalid ownership-preservation report: ${preservationReport}`);
+}
+if (report.siteUrl !== siteUrl) {
+  throw new Error(`Ownership-preservation report site mismatch: ${report.siteUrl} != ${siteUrl}`);
 }
 
-await mkdir(dirname(preservationReport), { recursive: true });
-await writeFile(preservationReport, `${JSON.stringify(preservation, null, 2)}\n`, 'utf8');
-console.log(`Ownership-preservation evidence: ${preservationReport}`);
+const verified = [];
+for (const slug of ['home', 'learn']) {
+  const expected = report.routes[slug];
+  if (!expected || !Number.isInteger(expected.id) || !/^[a-f0-9]{64}$/.test(expected.contentSha256 || '')) {
+    throw new Error(`Ownership-preservation report is missing a valid /${slug}/ record`);
+  }
 
-process.env.CONTENT_DIR = ownedDir;
-await import('./apply-wordpress-public-content-rest.mjs');
+  const pages = await requestJson(
+    `${siteUrl}/wp-json/wp/v2/pages?slug=${encodeURIComponent(slug)}&context=edit&per_page=10`,
+    `Could not verify preserved WordPress /${slug}/ owner`
+  );
+  if (!Array.isArray(pages) || pages.length !== 1) {
+    throw new Error(`Expected exactly one WordPress /${slug}/ page after reconciliation; found ${Array.isArray(pages) ? pages.length : 'invalid response'}`);
+  }
+
+  const page = pages[0];
+  const content = normalizedContent(rawContent(page));
+  const actualSha256 = sha256(content);
+  const actualLength = Buffer.byteLength(content, 'utf8');
+
+  if (Number(page.id) !== expected.id) {
+    throw new Error(`WordPress /${slug}/ owner changed from page ${expected.id} to ${page.id}`);
+  }
+  if (page.status !== 'publish') {
+    throw new Error(`WordPress /${slug}/ page ${page.id} is not published: ${page.status}`);
+  }
+  if (!content) {
+    throw new Error(`WordPress /${slug}/ page ${page.id} became empty`);
+  }
+  if (actualSha256 !== expected.contentSha256 || actualLength !== expected.contentLength) {
+    throw new Error(`WordPress /${slug}/ content changed during canonical reconciliation: expected ${expected.contentSha256}/${expected.contentLength}, got ${actualSha256}/${actualLength}`);
+  }
+  if (slug === 'home' && expectedHomeFeaturedMedia > 0 && Number(page.featured_media || 0) !== expectedHomeFeaturedMedia) {
+    throw new Error(`WordPress Home featured_media ${page.featured_media || 0} does not match DTF brand media ${expectedHomeFeaturedMedia}`);
+  }
+
+  verified.push({
+    slug,
+    id: Number(page.id),
+    status: page.status,
+    contentLength: actualLength,
+    contentSha256: actualSha256,
+    featuredMedia: Number(page.featured_media || 0)
+  });
+}
+
+console.log(JSON.stringify({
+  verifiedAt: new Date().toISOString(),
+  siteUrl,
+  preservationReport,
+  routes: verified
+}, null, 2));
