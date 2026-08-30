@@ -1,0 +1,45 @@
+name: DTF Game Hub Live Browser Acceptance
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'games/test/live-game-hub-browser-audit.mjs'
+      - 'data/public-navigation.json'
+      - 'site/public-route-patch/games/**'
+      - '.github/workflows/game-hub-live-browser-audit.yml'
+  workflow_run:
+    workflows: ['Deploy DTFSeeds Public Suite via WordPress V2']
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  browser-acceptance:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout acceptance source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install workspace dependencies
+        run: npm ci
+
+      - name: Install Chromium
+        run: npx playwright install chromium
+
+      - name: Exercise every public game in production Chromium
+        env:
+          DTF_SITE: https://dtfseeds.com
+          DTF_GAME_BROWSER_TIMEOUT_MS: 20000
+        run: node games/test/live-game-hub-browser-audit.mjs
