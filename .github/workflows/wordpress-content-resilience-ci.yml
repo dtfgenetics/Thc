@@ -7,6 +7,7 @@ on:
       - scripts/import-wordpress-infographic-remote-batch.mjs
       - scripts/apply-wordpress-public-content-rest.mjs
       - scripts/apply-wordpress-public-content-owned-routes.mjs
+      - scripts/verify-wordpress-owned-route-preservation.mjs
       - .github/workflows/wordpress-canonical-production.yml
       - .github/workflows/wordpress-public-content-cleanup.yml
       - .github/workflows/wordpress-public-content-ci.yml
@@ -40,10 +41,8 @@ jobs:
           node --check scripts/import-wordpress-infographic-remote-batch.mjs
           node --check scripts/apply-wordpress-public-content-rest.mjs
           node --check scripts/apply-wordpress-public-content-owned-routes.mjs
+          node --check scripts/verify-wordpress-owned-route-preservation.mjs
           node --check scripts/publish-wordpress-articles-rest.mjs
-          # Automatic canonical production must use the ownership-preserving
-          # writer. The broad reconciler remains available for explicit/manual
-          # maintenance, but must not become the automatic Home/Learn writer.
           grep -Fq "node scripts/apply-wordpress-public-content-owned-routes.mjs" .github/workflows/wordpress-canonical-production.yml
           ! grep -Fq "node scripts/apply-wordpress-public-content-rest.mjs" .github/workflows/wordpress-canonical-production.yml
           ! grep -Fq 'workflow_run:' .github/workflows/wordpress-public-content-cleanup.yml
@@ -54,14 +53,20 @@ jobs:
           grep -Fq 'retryTransient' scripts/apply-wordpress-public-content-rest.mjs
           grep -Fq "dns.setDefaultResultOrder('ipv4first')" scripts/apply-wordpress-public-content-rest.mjs
 
-          # Production infographic publication must serialize instead of canceling an active mutation.
+          grep -Fq 'owned-route-preservation.json' scripts/apply-wordpress-public-content-owned-routes.mjs
+          grep -Fq 'contentSha256' scripts/apply-wordpress-public-content-owned-routes.mjs
+          grep -Fq "for (const slug of ['home', 'learn'])" scripts/verify-wordpress-owned-route-preservation.mjs
+          grep -Fq 'content changed during canonical reconciliation' scripts/verify-wordpress-owned-route-preservation.mjs
+          grep -Fq 'Verify Learning-owned WordPress route preservation through REST' .github/workflows/wordpress-canonical-production.yml
+          grep -Fq 'verify-wordpress-owned-route-preservation.mjs' .github/workflows/wordpress-canonical-production.yml
+          ! grep -Fq 'Genetics first. Cultivation science behind it.' .github/workflows/wordpress-canonical-production.yml
+
           grep -Fq 'group: dtfseeds-wordpress-infographics-production' .github/workflows/wordpress-infographic-production.yml
           grep -Fq 'cancel-in-progress: false' .github/workflows/wordpress-infographic-production.yml
           grep -Fq 'Remote queue items quarantined:' .github/workflows/wordpress-infographic-production.yml
           count="$(grep -Fc 'continue-on-error: true' .github/workflows/wordpress-infographic-production.yml)"
           [[ "$count" -ge 2 ]] || { echo 'Infographic launch/final reporting must both be advisory.' >&2; exit 1; }
 
-          # CI must reflect the current dedicated Seeds ownership and article-only workflow boundary.
           grep -Fq 'Dedicated genetics library publisher' .github/workflows/wordpress-public-content-ci.yml
           grep -Fq "! grep -Eq \"\\['seeds'" .github/workflows/wordpress-public-content-ci.yml
 
