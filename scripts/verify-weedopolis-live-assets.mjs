@@ -17,6 +17,7 @@ const textAssets = [
   { path: 'js/weedopolis-edition.js', minBytes: 3000 },
   { path: 'js/weedopolis-master-overrides.js', minBytes: 500 },
   { path: 'js/weedopolis-assets.js', minBytes: 1500 },
+  { path: 'js/weedopolis-approved-decks.js', minBytes: 5000, marker: 'webReady' },
   { path: 'js/weedopolis-engine.js', minBytes: 7000 },
   { path: 'js/weedopolis-ui.js', minBytes: 8000 },
   { path: 'js/weedopolis-tests.js', minBytes: 1000 },
@@ -34,6 +35,7 @@ const requiredHtmlMarkers = [
   'js/weedopolis-edition.js',
   'js/weedopolis-master-overrides.js',
   'js/weedopolis-assets.js',
+  'js/weedopolis-approved-decks.js',
   'js/weedopolis-engine.js',
   'js/weedopolis-ui.js',
   'js/weedopolis-tests.js',
@@ -75,6 +77,16 @@ async function fetchStrict(relative, accept = '*/*') {
   throw lastError || new Error(`Unable to fetch ${relative || 'index.html'}`);
 }
 
+async function verifyWebp(path, minBytes, label) {
+  const response = await fetchStrict(path, 'image/webp,image/*;q=0.8,*/*;q=0.1');
+  const bytes = Buffer.from(await response.arrayBuffer());
+  if (bytes.length < minBytes) throw new Error(`${label} is unexpectedly small: ${bytes.length} bytes`);
+  if (bytes.subarray(0, 4).toString('ascii') !== 'RIFF' || bytes.subarray(8, 12).toString('ascii') !== 'WEBP') {
+    throw new Error(`${label} failed RIFF/WEBP signature validation`);
+  }
+  results.push({ asset: path, bytes: bytes.length, ok: true, format: 'WEBP' });
+}
+
 const results = [];
 
 const htmlResponse = await fetchStrict('', 'text/html');
@@ -95,14 +107,9 @@ for (const asset of textAssets) {
   results.push({ asset: asset.path, bytes, ok: true });
 }
 
-const boardPath = 'assets/board/weedopolis-master-board.webp';
-const boardResponse = await fetchStrict(boardPath, 'image/webp,image/*;q=0.8,*/*;q=0.1');
-const board = Buffer.from(await boardResponse.arrayBuffer());
-if (board.length < 30000) throw new Error(`Master board is unexpectedly small: ${board.length} bytes`);
-if (board.subarray(0, 4).toString('ascii') !== 'RIFF' || board.subarray(8, 12).toString('ascii') !== 'WEBP') {
-  throw new Error('Master board failed RIFF/WEBP signature validation');
-}
-results.push({ asset: boardPath, bytes: board.length, ok: true, format: 'WEBP' });
+await verifyWebp('assets/board/weedopolis-master-board.webp', 30000, 'Master board');
+await verifyWebp('assets/property-cards/webp/autoflower.webp', 39000, 'AutoFlower ownership card');
+await verifyWebp('assets/decks/high-chance/high-chance-01.webp', 15000, 'High Chance #1 approved card');
 
 console.log(JSON.stringify({
   ok: true,
