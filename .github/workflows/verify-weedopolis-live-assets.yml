@@ -1,0 +1,62 @@
+name: Verify Weedopolis Live Assets
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - scripts/verify-weedopolis-live-assets.mjs
+      - .github/workflows/verify-weedopolis-live-assets.yml
+      - site/public-route-patch/games/weedopolis/source-revision.txt
+      - .github/workflows/build-dtfseeds-public-suite.yml
+  workflow_run:
+    workflows:
+      - Deploy DTFSeeds Public Suite via WordPress V2
+    types:
+      - completed
+  schedule:
+    - cron: '17 9 * * *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-weedopolis-live-assets-${{ github.event_name }}
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout verification source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || 'main' }}
+          persist-credentials: false
+
+      - name: Use Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate strict audit script
+        run: node --check scripts/verify-weedopolis-live-assets.mjs
+
+      - name: Verify Weedopolis route, runtime assets, and master board
+        env:
+          SITE: https://dtfseeds.com
+        run: node scripts/verify-weedopolis-live-assets.mjs
+
+      - name: Summarize verification
+        if: always()
+        run: |
+          {
+            echo '## Weedopolis live release verification'
+            echo
+            echo '- Canonical route: https://dtfseeds.com/games/weedopolis/'
+            echo '- Requires the premium responsive shell and V1 master-art markers.'
+            echo '- Requires all four production CSS files and all six core JavaScript files.'
+            echo '- Requires the live master board to be a nontrivial RIFF/WEBP asset.'
+            echo '- Runs for relevant PRs, after successful production-suite deployments, on demand, and daily.'
+          } >> "$GITHUB_STEP_SUMMARY"
