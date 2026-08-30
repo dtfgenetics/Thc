@@ -1,0 +1,112 @@
+name: Finalize DTFSeeds Connected Learn V4
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/improve-wordpress-learning-v4.mjs'
+      - '.github/workflows/wordpress-learning-v4-final-owner.yml'
+  workflow_run:
+    workflows: ['Finalize DTFSeeds Learn V3']
+    types: [completed]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dtfseeds-learning-v4-final-owner
+  cancel-in-progress: false
+
+env:
+  NODE_OPTIONS: --dns-result-order=ipv4first
+  WP_SITE_URL: https://dtfseeds.com
+
+jobs:
+  publish:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    environment: production
+    env:
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME || secrets.WORDPRESS_USERNAME || secrets.WP_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD || secrets.WORDPRESS_APP_PASSWORD || secrets.WP_APPLICATION_PASSWORD }}
+      APPLY_LEARNING_V3: 'true'
+      APPLY_LEARNING_V4: 'true'
+      BACKUP_ROOT: /tmp/dtf-learning-v4-final-owner
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate final Learn owner
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
+          node --check scripts/run-learning-v3-production.mjs
+          node --check scripts/improve-wordpress-learning-v4.mjs
+          grep -Fq 'data-dtf-layout="learn-v3"' scripts/rebuild-wordpress-learning-experience-v3.mjs
+          grep -Fq 'data-dtf-learning-map="v4"' scripts/improve-wordpress-learning-v4.mjs
+
+      - name: Restore canonical Learning Experience V3
+        id: base
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$BACKUP_ROOT"
+          node scripts/run-learning-v3-production.mjs | tee /tmp/dtf-learning-v4-final-owner-v3.json
+
+      - name: Apply connected Learning V4 map
+        id: map
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/improve-wordpress-learning-v4.mjs | tee /tmp/dtf-learning-v4-final-owner-map.json
+
+      - name: Verify final visitor-facing Learn hierarchy
+        id: verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          body="$RUNNER_TEMP/learn-v4-final.html"
+          ok=0
+          for attempt in 1 2 3 4 5 6 7 8; do
+            curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+              --header 'Cache-Control: no-cache, no-store, max-age=0' \
+              --header 'Pragma: no-cache' \
+              "$WP_SITE_URL/learn/?dtf_learning_v4_final=${GITHUB_RUN_ID}-${attempt}" --output "$body"
+            if \
+              grep -Fq 'data-dtf-layout="learn-v3"' "$body" && \
+              grep -Fq 'dtf-learning-v4' "$body" && \
+              grep -Fq 'data-dtf-learning-map="v4"' "$body" && \
+              grep -Fq 'Start with the question you are trying to answer.' "$body" && \
+              grep -Fq 'See how the systems connect before you go deep.' "$body" && \
+              grep -Fq 'Three systems explain most downstream decisions.' "$body"; then
+              ok=1
+              break
+            fi
+            sleep 6
+          done
+          [[ "$ok" -eq 1 ]] || { echo 'Connected Learn V4 final-owner verification failed.' >&2; head -c 5000 "$body" >&2 || true; exit 1; }
+
+      - name: Upload final-owner rollback package
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dtf-learning-v4-final-owner-${{ github.run_id }}
+          path: |
+            /tmp/dtf-learning-v3
+            /tmp/dtf-learning-v4-final-owner
+            /tmp/dtf-learning-v4-final-owner-v3.json
+            /tmp/dtf-learning-v4-final-owner-map.json
+            ${{ runner.temp }}/learn-v4-final.html
+          if-no-files-found: warn
+          retention-days: 30
+
+# Final Learn owner: canonical Learning V3 + connected V4 map after legacy V3 finalization.
