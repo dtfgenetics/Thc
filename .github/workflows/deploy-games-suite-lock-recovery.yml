@@ -1,0 +1,225 @@
+name: Deploy Games Suite with Lock Recovery
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - scripts/harden-wordpress-suite-lock.py
+      - .github/workflows/deploy-games-suite-lock-recovery.yml
+  push:
+    branches: [main]
+    paths:
+      - scripts/harden-wordpress-suite-lock.py
+      - .github/workflows/deploy-games-suite-lock-recovery.yml
+
+permissions:
+  actions: write
+  contents: read
+  issues: write
+
+concurrency:
+  group: deploy-dtfseeds-public-suite-wordpress-v2
+  cancel-in-progress: false
+
+jobs:
+  validate-hardened-publisher:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Assemble and validate hardened WordPress publisher
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile scripts/assemble-wordpress-suite-v2.py scripts/harden-wordpress-suite-lock.py scripts/package-public-suite-wordpress.py
+          python scripts/assemble-wordpress-suite-v2.py "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          python scripts/harden-wordpress-suite-lock.py "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          node --check "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          grep -Fq '$lock_recovered = false;' "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          grep -Fq 'Could not safely reacquire deployment lock.' "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          grep -Fq "update_option(\$lock_key, ['id' => \$id, 'ts' => time()], false);" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          python - <<'PY'
+          import os, pathlib, re
+          text=(pathlib.Path(os.environ['RUNNER_TEMP'])/'deploy-public-suite-v2.mjs').read_text()
+          m=re.search(r"const snippetCode = String\.raw`(.*?)`\.trim\(\);", text, re.S)
+          assert m, 'embedded PHP missing'
+          php=m.group(1).replace('${tokenLiteral}', "'0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'")
+          (pathlib.Path(os.environ['RUNNER_TEMP'])/'dtf-suite-v2-hardened.php').write_text('<?php\n'+php+'\n')
+          PY
+          php -l "$RUNNER_TEMP/dtf-suite-v2-hardened.php"
+
+  deploy-current-games-suite:
+    if: github.event_name != 'pull_request'
+    needs: validate-hardened-publisher
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    environment: production
+    env:
+      GH_TOKEN: ${{ github.token }}
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+    steps:
+      - name: Checkout current main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Assemble hardened publisher
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
+          node --check scripts/cleanup-stale-wordpress-suite-snippets.mjs
+          node --check scripts/promote-public-game-routes-via-wordpress.mjs
+          python scripts/assemble-wordpress-suite-v2.py "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          python scripts/harden-wordpress-suite-lock.py "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          node --check "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+
+      - name: Build current validated public suite
+        id: build
+        shell: bash
+        run: |
+          set -euo pipefail
+          run_url="$(gh workflow run build-dtfseeds-public-suite.yml --ref main)"
+          run_id="${run_url##*/}"
+          [[ "$run_id" =~ ^[0-9]+$ ]] || { echo "Could not parse build run from: $run_url" >&2; exit 1; }
+          echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+          echo "Current public-suite build run: $run_id"
+          gh run watch "$run_id" --exit-status
+
+      - name: Download validated suite artifact
+        id: suite
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf "$RUNNER_TEMP/suite-download"
+          mkdir -p "$RUNNER_TEMP/suite-download"
+          gh run download "${{ steps.build.outputs.run_id }}" --repo "$GITHUB_REPOSITORY" --dir "$RUNNER_TEMP/suite-download"
+          build_json="$(find "$RUNNER_TEMP/suite-download" -type f -name dtf-build.json -print -quit)"
+          [[ -n "$build_json" ]] || { echo 'Validated artifact does not contain dtf-build.json.' >&2; exit 1; }
+          suite_root="$(dirname "$build_json")"
+          test -s "$suite_root/games/index.html"
+          test -s "$suite_root/games/seed-man-platformer/index.html"
+          test -s "$suite_root/games/high-life/index.html"
+          test -s "$suite_root/games/strain-showdown/index.html"
+          test -s "$suite_root/games/bud-or-bluff/index.html"
+          test -s "$suite_root/games/grow-room-defense/index.html"
+          test -s "$suite_root/games/harvest-hustle/index.html"
+          test -s "$suite_root/games/trichome-trials/index.html"
+          test -s "$suite_root/games/pheno-draft/index.html"
+          test -s "$suite_root/games/high-lines/index.html"
+          grep -Fq 'JUMP ×2' "$suite_root/games/seed-man-platformer/index.html"
+          grep -Fq '7,800 px course' "$suite_root/games/seed-man-platformer/index.html"
+          echo "root=$suite_root" >> "$GITHUB_OUTPUT"
+
+      - name: Package complete app-owned production suite
+        id: package
+        shell: bash
+        env:
+          SUITE_ROOT: ${{ steps.suite.outputs.root }}
+        run: |
+          set -euo pipefail
+          archive="$RUNNER_TEMP/dtf-public-suite-wordpress-v2.zip"
+          python scripts/package-public-suite-wordpress.py "$SUITE_ROOT" "$archive" | tee "$RUNNER_TEMP/package-summary.json"
+          test -s "$archive"
+          echo "archive=$archive" >> "$GITHUB_OUTPUT"
+
+      - name: Recover stale transactions and temporary bridges
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/cleanup-stale-wordpress-suite-snippets.mjs | tee "$RUNNER_TEMP/stale-suite-bridge-cleanup.json"
+          grep -Eq '"ok"[[:space:]]*:[[:space:]]*true' "$RUNNER_TEMP/stale-suite-bridge-cleanup.json"
+
+      - name: Publish complete current suite
+        shell: bash
+        env:
+          DTF_SUITE_ARCHIVE: ${{ steps.package.outputs.archive }}
+        run: |
+          set -euo pipefail
+          node "$RUNNER_TEMP/deploy-public-suite-v2.mjs" "$DTF_SUITE_ARCHIVE" | tee "$RUNNER_TEMP/deploy-result.log"
+          grep -Eq '"ok"[[:space:]]*:[[:space:]]*true' "$RUNNER_TEMP/deploy-result.log"
+
+      - name: Promote canonical game routes
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/promote-public-game-routes-via-wordpress.mjs
+
+      - name: Verify every public game route without redirects
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE' > "$RUNNER_TEMP/public-game-routes.txt"
+          import fs from 'node:fs';
+          const nav = JSON.parse(fs.readFileSync('data/public-navigation.json', 'utf8'));
+          const games = nav.games.filter(game => game.public === true);
+          if (games.length !== 25) throw new Error(`Expected 25 public game routes, found ${games.length}.`);
+          for (const game of games) console.log(game.route);
+          NODE
+
+          while IFS= read -r route; do
+            echo "Checking $route"
+            body="$(mktemp)"
+            headers="$(mktemp)"
+            status="$(curl -sS --retry 5 --retry-delay 5 \
+              --output "$body" --dump-header "$headers" --write-out '%{http_code}' \
+              -H 'Cache-Control: no-cache, no-store, max-age=0' \
+              "https://dtfseeds.com${route}?dtf_games_deploy=${GITHUB_RUN_ID}")"
+            if [[ "$status" != "200" ]]; then
+              echo "Expected HTTP 200 from $route, received $status" >&2
+              cat "$headers" >&2
+              exit 1
+            fi
+            if grep -Eiq '^location:' "$headers"; then
+              echo "Refusing redirected game route: $route" >&2
+              cat "$headers" >&2
+              exit 1
+            fi
+            if [[ "$(wc -c < "$body")" -lt 400 ]]; then
+              echo "Game route returned implausibly small body: $route" >&2
+              exit 1
+            fi
+            if [[ "$route" != "/games/" ]] && grep -Fqi '25 playable browser games' "$body"; then
+              echo "Game route appears to be serving the Game Hub instead of its own application: $route" >&2
+              exit 1
+            fi
+            rm -f "$body" "$headers"
+          done < "$RUNNER_TEMP/public-game-routes.txt"
+
+          hub="$(curl -fsSL --retry 5 --retry-delay 5 -H 'Cache-Control: no-cache, no-store, max-age=0' "https://dtfseeds.com/games/?dtf_games_deploy=${GITHUB_RUN_ID}")"
+          grep -Fqi '25 playable browser games' <<<"$hub"
+
+          sprout="$(curl -fsSL --retry 5 --retry-delay 5 -H 'Cache-Control: no-cache, no-store, max-age=0' "https://dtfseeds.com/games/seed-man-platformer/?dtf_games_deploy=${GITHUB_RUN_ID}")"
+          grep -Fq 'JUMP ×2' <<<"$sprout"
+          grep -Fq '7,800 px course' <<<"$sprout"
+          grep -Fq '0 / 24' <<<"$sprout"
+
+      - name: Record deployed revision
+        shell: bash
+        run: |
+          {
+            echo '## Full Games Suite Deployment'
+            echo
+            echo "- Main revision: $(git rev-parse HEAD)"
+            echo "- Validated build run: ${{ steps.build.outputs.run_id }}"
+            echo '- Hardened transaction lease recovery: enabled'
+            echo '- Canonical public game routes verified: 25/25'
+            echo '- Sprout Run expanded build markers verified live'
+          } >> "$GITHUB_STEP_SUMMARY"
