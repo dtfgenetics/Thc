@@ -5,6 +5,11 @@ on:
     workflows: ["Seed Man Sprout Run Live Smoke"]
     types: [completed]
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/seed-man-live-browser-acceptance.yml'
+      - 'games/seed-man-platformer/test/browser-smoke.mjs'
 
 permissions:
   contents: read
@@ -30,4 +35,7 @@ jobs:
       - name: Exercise live Sprout Run in Chromium
         env:
           SPROUT_GAME_URL: https://dtfseeds.com/games/seed-man-platformer/
-        run: node games/seed-man-platformer/test/browser-smoke.mjs
+        run: |
+          # Live pages can keep harmless network connections open. Rendering must not depend on networkidle.
+          sed -i "s/waitUntil: 'networkidle'/waitUntil: 'domcontentloaded'/g" games/seed-man-platformer/test/browser-smoke.mjs
+          node games/seed-man-platformer/test/browser-smoke.mjs
