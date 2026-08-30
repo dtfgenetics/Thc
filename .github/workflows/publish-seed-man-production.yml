@@ -36,32 +36,56 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Validate canonical r4 source
+      - name: Validate canonical Seed Man source
         shell: bash
         run: |
           set -euo pipefail
           root=site/public-route-patch/games/seed-man-platformer
-          required=(.htaccess index.html app.js canvas-compat-v1.js seed-man-production-art.js input-guard-v1.js seed-man.css physics.mjs data/level-01.json)
+          release="$(sed -n 's/.*name="dtf-sprout-release" content="\([^"]*\)".*/\1/p' "$root/index.html" | head -n 1)"
+          [[ "$release" =~ ^[0-9]{8}-r[0-9]+$ ]] || { echo "Invalid Sprout release marker: $release" >&2; exit 1; }
+          echo "SEED_MAN_RELEASE=$release" >> "$GITHUB_ENV"
+
+          required=(.htaccess index.html app.js canvas-compat-v1.js campaign-v1.js seed-man-production-art.js input-guard-v1.js seed-man.css physics.mjs data/campaign.json data/level-01.json)
           for file in "${required[@]}"; do test -s "$root/$file" || { echo "Missing $file" >&2; exit 1; }; done
           grep -Fq 'Seed Man · Greenhouse Gauntlet' "$root/index.html"
           grep -Fq '0 / 24' "$root/index.html"
           grep -Fq 'JUMP ×2' "$root/index.html"
-          grep -Fq '20260830-r4' "$root/index.html"
+          grep -Fq "$release" "$root/index.html"
+          grep -Fq 'id="seed-man-campaign"' "$root/index.html"
+          grep -Fq '"id": "sprout-run-campaign"' "$root/data/campaign.json"
+          grep -Fq '"defaultLevelId": "sprout-run"' "$root/data/campaign.json"
           ! grep -Fq 'Original browser vertical slice' "$root/index.html"
           ! grep -Fq '0 / 8' "$root/index.html"
           node --check "$root/app.js"
           node --check "$root/canvas-compat-v1.js"
+          node --check "$root/campaign-v1.js"
           node --check "$root/seed-man-production-art.js"
           node --check "$root/input-guard-v1.js"
           node --check scripts/publish-seed-man-route-via-wordpress.mjs
+          SEED_MAN_PUBLISH_VALIDATE_ONLY=1 node scripts/publish-seed-man-route-via-wordpress.mjs | tee "$RUNNER_TEMP/seed-man-source-validation.json"
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          const result = JSON.parse(fs.readFileSync(process.env.RUNNER_TEMP + '/seed-man-source-validation.json', 'utf8'));
+          if (result.ok !== true || result.mode !== 'validate-only' || result.release !== process.env.SEED_MAN_RELEASE) {
+            throw new Error(`Seed Man local publisher validation failed: ${JSON.stringify(result)}`);
+          }
+          if (result.campaign !== 'sprout-run-campaign' || result.defaultLevelId !== 'sprout-run') {
+            throw new Error('Seed Man campaign publisher validation failed.');
+          }
+          NODE
 
       - name: Atomically publish Seed Man route and purge caches
         shell: bash
         run: |
           set -euo pipefail
           node scripts/publish-seed-man-route-via-wordpress.mjs | tee "$RUNNER_TEMP/seed-man-publish.json"
-          grep -Eq '"server_verified"[[:space:]]*:[[:space:]]*true' "$RUNNER_TEMP/seed-man-publish.json"
-          grep -Eq '"release"[[:space:]]*:[[:space:]]*"20260830-r4"' "$RUNNER_TEMP/seed-man-publish.json"
+          node --input-type=module - <<'NODE'
+          import fs from 'node:fs';
+          const result = JSON.parse(fs.readFileSync(process.env.RUNNER_TEMP + '/seed-man-publish.json', 'utf8'));
+          if (result.server_verified !== true || result.release !== process.env.SEED_MAN_RELEASE) {
+            throw new Error(`Seed Man publish did not verify current release: ${JSON.stringify(result)}`);
+          }
+          NODE
 
       - name: Verify origin and bare visitor URL
         shell: bash
@@ -73,7 +97,8 @@ jobs:
             grep -Fq 'Seed Man · Greenhouse Gauntlet' "$body"
             grep -Fq '0 / 24' "$body"
             grep -Fq 'JUMP ×2' "$body"
-            grep -Fq '20260830-r4' "$body"
+            grep -Fq "$SEED_MAN_RELEASE" "$body"
+            grep -Fq 'id="seed-man-campaign"' "$body"
             ! grep -Fq 'Original browser vertical slice' "$body"
             ! grep -Fq '0 / 8' "$body"
           }
@@ -89,7 +114,7 @@ jobs:
             if verify_body "$body"; then origin_ok=1; break; fi
             sleep $((attempt * 2))
           done
-          test "$origin_ok" = 1 || { echo 'Cache-busted origin still does not serve r4.' >&2; cat "$RUNNER_TEMP/origin.headers" >&2 || true; exit 1; }
+          test "$origin_ok" = 1 || { echo "Cache-busted origin still does not serve $SEED_MAN_RELEASE." >&2; cat "$RUNNER_TEMP/origin.headers" >&2 || true; exit 1; }
 
           bare_ok=0
           for attempt in {1..12}; do
@@ -103,14 +128,17 @@ jobs:
           done
           test "$bare_ok" = 1 || { echo 'Bare visitor URL still serves stale Seed Man after atomic publish and purge.' >&2; cat "$RUNNER_TEMP/bare.headers" >&2 || true; exit 1; }
 
-          for asset in app.js canvas-compat-v1.js seed-man-production-art.js input-guard-v1.js seed-man.css physics.mjs data/level-01.json; do
-            curl -fsSL --retry 4 --retry-delay 3 "${url}${asset}" -o "$RUNNER_TEMP/$(basename "$asset")"
+          for asset in app.js canvas-compat-v1.js campaign-v1.js seed-man-production-art.js input-guard-v1.js seed-man.css physics.mjs data/campaign.json data/level-01.json; do
+            output="$RUNNER_TEMP/$(echo "$asset" | tr '/' '-')"
+            curl -fsSL --retry 4 --retry-delay 3 "${url}${asset}" -o "$output"
           done
           grep -Fq 'seed-man-production-v1' "$RUNNER_TEMP/seed-man-production-art.js"
           grep -Fq 'seed-man-locked-v1' "$RUNNER_TEMP/seed-man-production-art.js"
           grep -Fq 'willReadFrequently' "$RUNNER_TEMP/canvas-compat-v1.js"
-          grep -Fq '"worldWidth": 7800' "$RUNNER_TEMP/level-01.json"
-          grep -Fq '"requiredPickups": 24' "$RUNNER_TEMP/level-01.json"
+          grep -Fq 'sprout-campaign-v1' "$RUNNER_TEMP/campaign-v1.js"
+          grep -Fq '"id": "sprout-run-campaign"' "$RUNNER_TEMP/data-campaign.json"
+          grep -Fq '"worldWidth": 7800' "$RUNNER_TEMP/data-level-01.json"
+          grep -Fq '"requiredPickups": 24' "$RUNNER_TEMP/data-level-01.json"
 
       - name: Run live browser gameplay acceptance
         shell: bash
@@ -130,11 +158,9 @@ jobs:
             echo '## Seed Man production publish'
             echo
             echo "- Source SHA: $GITHUB_SHA"
-            echo '- Release: `20260830-r4`'
+            echo "- Release: \`${SEED_MAN_RELEASE:-unknown}\`"
             echo '- Route: https://dtfseeds.com/games/seed-man-platformer/'
             echo '- Publication method: atomic route replacement with server-side SHA-256 verification'
             echo '- Cache handling: LiteSpeed URL purge + purge-all + WordPress cache flush'
-            echo '- Visitor verification: bare URL required to contain r4 markers and reject retired 8-sprout markers'
+            echo '- Visitor verification: bare URL must contain the current release and campaign markers and reject retired 8-sprout markers'
           } >> "$GITHUB_STEP_SUMMARY"
-
-# Production trigger 2026-08-30T10:05 America/Chicago
