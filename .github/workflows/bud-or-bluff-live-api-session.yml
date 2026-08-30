@@ -1,0 +1,27 @@
+name: Bud or Bluff Live API Session
+
+on:
+  push:
+    branches:
+      - repair/bud-or-bluff-production-persistence-20260830
+    paths:
+      - games/bud-or-bluff/test/live-api-session.test.mjs
+      - .github/workflows/bud-or-bluff-live-api-session.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  live-session:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Create and recover a production room
+        env:
+          BOB_SITE: https://dtfseeds.com
+        run: node games/bud-or-bluff/test/live-api-session.test.mjs
