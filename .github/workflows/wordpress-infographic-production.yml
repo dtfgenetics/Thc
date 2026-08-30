@@ -20,6 +20,7 @@ on:
       - scripts/enhance-wordpress-outdoor-quantification-v1.mjs
       - scripts/flush-hostinger-litespeed-mcp.mjs
       - scripts/publish-wordpress-infographics-canonical.sh
+      - scripts/publish-wordpress-infographics-canonical-v2.sh
       - .github/workflows/wordpress-infographic-production.yml
   workflow_run:
     workflows:
@@ -80,7 +81,7 @@ jobs:
 
       - name: Publish the complete approved infographic set
         shell: bash
-        run: bash scripts/publish-wordpress-infographics-canonical.sh
+        run: bash scripts/publish-wordpress-infographics-canonical-v2.sh
 
       - name: Upload canonical infographic publication evidence
         if: always()
@@ -92,6 +93,7 @@ jobs:
             /tmp/infographic-bulk-import-report.json
             ${{ runner.temp }}/infographic-library.html
             ${{ runner.temp }}/outdoor.html
+            ${{ runner.temp }}/outdoor-assembly.json
           if-no-files-found: warn
           retention-days: 30
 
@@ -114,7 +116,7 @@ jobs:
                   `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
                   `Result: **${process.env.JOB_STATUS || 'see run'}**`,
                   '',
-                  'This is the authoritative WordPress infographic writer. It publishes the complete quality-gated set, rebuilds the searchable library, publishes Outdoor at /learn/outdoor/, purges Hostinger/LiteSpeed, and requires the public card count to equal the eligible WordPress record count.'
+                  'This is the authoritative WordPress infographic writer. It assembles all completed Outdoor chapters first, publishes the complete quality-gated set, rebuilds the searchable library, publishes Outdoor at /learn/outdoor/, purges Hostinger/LiteSpeed, and requires the public card count to equal the eligible WordPress record count.'
                 ].join('\n')
               });
             } catch (error) {
