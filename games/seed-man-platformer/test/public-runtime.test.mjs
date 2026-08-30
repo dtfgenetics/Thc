@@ -34,7 +34,10 @@ assert.deepStrictEqual(JSON.parse(levelMatch[1]), canonicalLevel, 'embedded publ
 assert.doesNotMatch(app, /^\s*import\s/m, 'public app.js must be self-contained');
 assert.doesNotMatch(app, /fetch\s*\(/i, 'public app.js must not fetch runtime data');
 assert.match(app, /doubleJumpSpeed:\s*590/, 'public runtime must contain the stronger double jump');
+assert.match(app, /groundAcceleration:\s*2600/, 'public runtime must include progressive ground acceleration');
+assert.match(app, /jumpCutGravityMultiplier:\s*2\.35/, 'public runtime must include variable jump-height gravity');
 assert.match(app, /maxAirJumps:\s*1/, 'public runtime must preserve one mid-air jump');
+assert.match(app, /function\s+approach\s*\(/, 'public runtime must include acceleration/deceleration helper');
 assert.match(app, /function\s+collectPowerup\s*\(/, 'public runtime must include power-up collection');
 assert.match(app, /function\s+guardedReset\s*\(/, 'active runs should guard destructive restart');
 assert.match(app, /function\s+drawPowerup\s*\(/, 'power-ups must be visible in the canvas renderer');
@@ -42,6 +45,11 @@ assert.match(app, /function\s+drawProgressRail\s*\(/, 'expanded level needs visi
 assert.match(app, /function\s+readEmbeddedLevel\s*\(/, 'public runtime should read embedded level data');
 assert.match(app, /function\s+writeBest\s*\(/, 'public runtime should guard best-time persistence');
 assert.match(app, /function\s+focusCanvas\s*\(/, 'public runtime should guard canvas focus');
+assert.match(app, /function\s+cameraBlend\s*\(/, 'camera smoothing must be time-based rather than frame-count based');
+assert.match(app, /Math\.exp\(-CAMERA_FOLLOW_RATE/, 'camera smoothing should use elapsed frame time');
+assert.match(app, /jumpHeld:\s*input\.jumpHeld/, 'held jump state must reach the fixed-step physics runtime');
+assert.match(app, /lostpointercapture/, 'touch controls should clear held input when pointer capture actually ends');
+assert.doesNotMatch(app, /addEventListener\(['"]pointerleave['"]/, 'touch controls must not cancel movement merely because a captured pointer drifts outside the button');
 assert.match(css, /position:sticky/, 'mobile touch controls should remain reachable during the longer run');
 assert.match(css, /min-height:72px/, 'mobile touch targets should remain large enough for repeated double-jump input');
 
@@ -61,16 +69,20 @@ vm.runInContext(runtimeSource, sandbox, { filename: 'public-seed-man-physics.js'
 
 assert.equal(typeof sandbox.createPlayer, 'function');
 assert.equal(typeof sandbox.stepPlayer, 'function');
+assert.equal(typeof sandbox.approach, 'function');
 
 let canonicalPlayer = createCanonicalPlayer(canonicalLevel.spawn);
 let publicPlayer = sandbox.createPlayer(canonicalLevel.spawn);
 assert.deepStrictEqual(JSON.parse(JSON.stringify(publicPlayer)), canonicalPlayer, 'public createPlayer must match canonical runtime');
 
 for (let frame = 0; frame < 480; frame += 1) {
+  const jumpFrame = frame === 38 || frame === 52 || frame === 126 || frame === 141 || frame === 270 || frame === 286;
+  const releaseWindow = (frame >= 43 && frame < 52) || (frame >= 132 && frame < 141) || (frame >= 276 && frame < 286);
   const input = {
     left: false,
     right: frame < 450,
-    jumpPressed: frame === 38 || frame === 52 || frame === 126 || frame === 141 || frame === 270 || frame === 286
+    jumpPressed: jumpFrame,
+    jumpHeld: jumpFrame || !releaseWindow
   };
   canonicalPlayer = stepCanonicalPlayer(canonicalPlayer, input, canonicalLevel, 1 / 60);
   publicPlayer = sandbox.stepPlayer(publicPlayer, input, canonicalLevel, 1 / 60);

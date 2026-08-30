@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0">
   <meta name="dtf-sprout-release" content="20260830-r5">
   <title>Seed Man: Sprout Run | DTF Genetics</title>
-  <meta name="description" content="Play Seed Man: Sprout Run, an original DTF Genetics browser platformer with double jump, power-ups, checkpoints, keyboard controls, and touch controls.">
+  <meta name="description" content="Play Seed Man: Sprout Run, an original DTF Genetics browser platformer with variable jump height, double jump, power-ups, checkpoints, keyboard controls, and touch controls.">
   <meta name="robots" content="index,follow,max-image-preview:large">
   <meta name="theme-color" content="#10291d">
   <link rel="canonical" href="https://dtfseeds.com/games/seed-man-platformer/">
@@ -24,7 +24,7 @@
     <section class="hero">
       <p class="eyebrow">Seed Man · Greenhouse Gauntlet</p>
       <h1>Sprout Run</h1>
-      <p class="lede">Run a three-stage greenhouse gauntlet that is three times longer than the original course. Collect all 24 sprouts, use double jumps and power-ups, activate three checkpoints, and reach the Dream the Future flag.</p>
+      <p class="lede">Run a three-stage greenhouse gauntlet that is three times longer than the original course. Collect all 24 sprouts, use responsive short-hop/full-height jumps, double jumps and power-ups, activate three checkpoints, and reach the Dream the Future flag.</p>
       <p id="load-status" class="status" role="status" aria-live="polite" aria-atomic="true">Loading expanded level…</p>
     </section>
 
@@ -40,18 +40,18 @@
         <button id="pause" type="button" aria-pressed="false">Pause</button>
         <button id="restart" type="button">Restart</button>
       </div>
-      <canvas id="game" width="960" height="540" tabindex="0" aria-label="Seed Man game canvas. Collect all 24 sprouts and reach the finish flag. Use left and right arrows or A and D to move. Press Space, W, or Up Arrow once to jump and again in mid-air to double jump. Press P to pause."></canvas>
+      <canvas id="game" width="960" height="540" tabindex="0" aria-label="Seed Man game canvas. Collect all 24 sprouts and reach the finish flag. Use left and right arrows or A and D to move. Tap Space, W, or Up Arrow for a short hop, hold for full jump height, and press again in mid-air to double jump. Press P to pause."></canvas>
       <div class="touch-controls" aria-label="Touch controls">
         <button type="button" data-control="left" aria-label="Move left">◀</button>
         <button type="button" data-control="right" aria-label="Move right">▶</button>
         <button type="button" data-control="jump" class="jump" aria-label="Jump or double jump">JUMP ×2</button>
       </div>
-      <p class="controls"><strong>Double jump:</strong> press jump again after leaving the ground. <strong>Power-ups:</strong> gold = speed, green = high jump, purple = sprout magnet, blue = hazard shield. Keyboard: A/D or ←/→ · Space/W/↑ · P pause. Touch controls appear below the game. Leaving the tab pauses automatically.</p>
+      <p class="controls"><strong>Jump control:</strong> tap for a short hop or hold for full height; press jump again after leaving the ground to double jump. <strong>Power-ups:</strong> gold = speed, green = high jump, purple = sprout magnet, blue = hazard shield. Keyboard: A/D or ←/→ · Space/W/↑ · P pause. Touch controls stay captured until your finger lifts, even if it drifts outside a button. Leaving the tab pauses automatically.</p>
     </section>
 
     <section class="feature-strip" aria-label="Sprout Run features">
       <article><strong>3× longer</strong><span>7,800 px course</span></article>
-      <article><strong>Double jump</strong><span>One mid-air jump every landing</span></article>
+      <article><strong>Responsive jump</strong><span>Short hop, full jump, then double jump</span></article>
       <article><strong>7 power-ups</strong><span>Speed, jump, magnet, shield</span></article>
       <article><strong>3 checkpoints</strong><span>Progressive respawn points</span></article>
     </section>
@@ -184,33 +184,7 @@
   "finish": {"x":7720,"y":390,"width":50,"height":90}
 }
   </script>
-  <script id="seed-man-campaign" type="application/json">
-{
-  "schemaVersion": 1,
-  "id": "sprout-run-campaign",
-  "title": "Seed Man: Sprout Run",
-  "defaultLevelId": "sprout-run",
-  "worlds": [
-    {
-      "id": "world-01",
-      "title": "Greenhouse Gauntlet",
-      "order": 1,
-      "levels": [
-        {
-          "id": "sprout-run",
-          "title": "Sprout Run",
-          "order": 1,
-          "status": "playable",
-          "dataPath": "data/level-01.json",
-          "publicDataElementId": "seed-man-level"
-        }
-      ]
-    }
-  ]
-}
-  </script>
   <script src="./canvas-compat-v1.js?v=20260830-r5" defer></script>
-  <script src="./campaign-v1.js?v=20260830-r5" defer></script>
   <script src="./app.js?v=20260830-r5" defer></script>
   <script src="./seed-man-production-art.js?v=20260830-r5" defer></script>
   <script src="./input-guard-v1.js?v=20260830-r5" defer></script>

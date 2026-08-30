@@ -1,9 +1,14 @@
 export const PLAYER_SIZE = { width: 34, height: 46 };
 export const DEFAULTS = Object.freeze({
   moveSpeed: 270,
+  groundAcceleration: 2600,
+  groundDeceleration: 3200,
+  airAcceleration: 1600,
+  airDeceleration: 700,
   jumpSpeed: 640,
   doubleJumpSpeed: 590,
   gravity: 1450,
+  jumpCutGravityMultiplier: 2.35,
   maxFallSpeed: 900,
   coyoteTime: 0.11,
   jumpBuffer: 0.12,
@@ -16,6 +21,12 @@ export const DEFAULTS = Object.freeze({
 
 export function overlaps(a, b) {
   return a.x < b.x + b.width && a.x + a.width > b.x && a.y < b.y + b.height && a.y + a.height > b.y;
+}
+
+export function approach(current, target, maxDelta) {
+  if (current < target) return Math.min(target, current + maxDelta);
+  if (current > target) return Math.max(target, current - maxDelta);
+  return target;
 }
 
 function centerDistance(a, b) {
@@ -139,7 +150,10 @@ export function stepPlayer(inputPlayer, input, level, dt, config = DEFAULTS) {
   const speedMultiplier = player.power.speedTimer > 0 ? config.speedBoostMultiplier : 1;
   const jumpMultiplier = player.power.jumpTimer > 0 ? config.jumpBoostMultiplier : 1;
   const direction = (input.right ? 1 : 0) - (input.left ? 1 : 0);
-  player.vx = direction * config.moveSpeed * speedMultiplier;
+  const targetVx = direction * config.moveSpeed * speedMultiplier;
+  const acceleration = player.grounded ? config.groundAcceleration : config.airAcceleration;
+  const deceleration = player.grounded ? config.groundDeceleration : config.airDeceleration;
+  player.vx = approach(player.vx, targetVx, (direction === 0 ? deceleration : acceleration) * step);
 
   let jumped = false;
   if (player.jumpBuffer > 0 && player.coyote > 0) {
@@ -164,7 +178,9 @@ export function stepPlayer(inputPlayer, input, level, dt, config = DEFAULTS) {
   for (const platform of level.platforms) solidCollisionX(player, platform);
 
   player.grounded = false;
-  player.vy = Math.min(config.maxFallSpeed, player.vy + config.gravity * step);
+  const jumpCut = !jumped && input.jumpHeld === false && player.vy < 0;
+  const gravityMultiplier = jumpCut ? config.jumpCutGravityMultiplier : 1;
+  player.vy = Math.min(config.maxFallSpeed, player.vy + config.gravity * gravityMultiplier * step);
   player.y += player.vy * step;
   for (const platform of level.platforms) solidCollisionY(player, platform, config);
 
