@@ -339,6 +339,54 @@ async function verifyOwnPage(route, marker = '/_next/static/') {
   throw new Error(`Promoted DTFSeeds route failed verification: ${route} (${last})`);
 }
 
+async function verifySeedAscent() {
+  let last = '';
+  for (let attempt = 1; attempt <= 8; attempt += 1) {
+    try {
+      const wrapper = await probe('/games/seed-ascent/');
+      const launcher = await probe('/seed-ascent.html');
+      const engine = await probe('/seed-ascent/engine.js');
+      const levels = await probe('/seed-ascent/levels.js');
+      const styles = await probe('/seed-ascent/styles.css');
+
+      const wrapperOk = wrapper.response.status === 200
+        && !wrapper.response.headers.get('location')
+        && /Seed Ascent/i.test(wrapper.text)
+        && wrapper.text.includes('<iframe')
+        && wrapper.text.includes('/seed-ascent.html')
+        && wrapper.text.includes('/_next/static/')
+        && wrapper.text.includes('https://dtfseeds.com')
+        && !/https?:\/\/(?:www\.)?dtf420\.com/i.test(wrapper.text)
+        && !/wp-content|wp-includes|wordpress/i.test(wrapper.text);
+      const launcherOk = launcher.response.status === 200
+        && !launcher.response.headers.get('location')
+        && /Seed Ascent/i.test(launcher.text)
+        && launcher.text.includes('id="game"')
+        && launcher.text.includes('/seed-ascent/levels.js')
+        && launcher.text.includes('/seed-ascent/engine.js');
+      const engineOk = engine.response.status === 200
+        && !engine.response.headers.get('location')
+        && engine.text.includes('__seedAscentDebug')
+        && engine.text.includes('doubleUsed');
+      const levelsOk = levels.response.status === 200
+        && !levels.response.headers.get('location')
+        && levels.text.includes('SEED_ASCENT_LEVELS');
+      const stylesOk = styles.response.status === 200
+        && !styles.response.headers.get('location')
+        && styles.text.length > 500;
+
+      last = `wrapper=${wrapper.response.status}/${wrapperOk} launcher=${launcher.response.status}/${launcherOk} engine=${engine.response.status}/${engineOk} levels=${levels.response.status}/${levelsOk} styles=${styles.response.status}/${stylesOk}`;
+      if (wrapperOk && launcherOk && engineOk && levelsOk && stylesOk) return;
+      console.warn(`[seed-ascent-verify] attempt ${attempt}/8 did not converge: ${last}`);
+    } catch (error) {
+      last = error instanceof Error ? error.message : String(error);
+      console.warn(`[seed-ascent-verify] attempt ${attempt}/8 failed: ${last}`);
+    }
+    await sleep(1200 + attempt * 900);
+  }
+  throw new Error(`Seed Ascent wrapper/runtime verification failed after promotion (${last}).`);
+}
+
 async function verifyPromotion() {
   let budOk = false;
   let lastBud = '';
@@ -378,15 +426,10 @@ async function verifyPromotion() {
     await verifyOwnPage(route);
   }
 
-  // Seed Ascent is a Next wrapper around the dedicated static game runtime. Prove that
-  // the wrapper itself is live by requiring its iframe source rather than the generic
-  // education-page asset marker used above.
-  await verifyOwnPage('/games/seed-ascent/', '/seed-ascent.html');
-
-  const asset = await probe('/seed-ascent.html');
-  if (asset.response.status !== 200 || asset.response.headers.get('location') || !/Seed Ascent/i.test(asset.text)) {
-    throw new Error(`Seed Ascent public runtime asset did not resolve through overlay: HTTP ${asset.response.status}`);
-  }
+  // Seed Ascent is intentionally a Dtf420 Next.js wrapper around a dedicated
+  // standalone runtime. Verify those two ownership layers independently so a valid
+  // wrapper is never mistaken for the raw game canvas (or vice versa).
+  await verifySeedAscent();
 
   const learnHub = await probe('/learn/');
   if (learnHub.response.status !== 200 || learnHub.response.headers.get('location')) {
