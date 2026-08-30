@@ -41,7 +41,7 @@ jobs:
           : "${WP_API_USERNAME:?WP_API_USERNAME is not configured}"
           : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured}"
 
-      - name: Patch Seed Ascent verification to match the Codex wrapper and runtime
+      - name: Patch Seed Ascent canonical route to the verified standalone launcher
         shell: bash
         run: |
           set -euo pipefail
@@ -50,30 +50,35 @@ jobs:
 
           path = Path('scripts/promote-public-game-routes-via-wordpress.mjs')
           text = path.read_text()
+
+          old_rule = 'RewriteRule ^games/seed-ascent(?:/(.*))?/?$ /dtf-content-overlay/games/seed-ascent/$1 [L]'
+          new_rule = 'RewriteRule ^games/seed-ascent/?$ /dtf-content-overlay/seed-ascent.html [L]'
+          if old_rule in text:
+              text = text.replace(old_rule, new_rule, 1)
+          elif new_rule not in text:
+              raise SystemExit('Seed Ascent root rewrite rule not found')
+
           marker = 'async function verifyPromotion() {'
           if 'async function verifySeedAscent() {' not in text:
               helper = r'''async function verifySeedAscent() {
             let last = '';
             for (let attempt = 1; attempt <= 8; attempt += 1) {
               try {
-                const [wrapper, launcher, engine, levels, styles] = await Promise.all([
+                const [canonical, launcher, engine, levels, styles] = await Promise.all([
                   probe('/games/seed-ascent/'),
                   probe('/seed-ascent.html'),
                   probe('/seed-ascent/engine.js'),
                   probe('/seed-ascent/levels.js'),
                   probe('/seed-ascent/styles.css'),
                 ]);
-                const wrapperOk = wrapper.response.status === 200
-                  && !wrapper.response.headers.get('location')
-                  && /Seed Ascent/i.test(wrapper.text)
-                  && wrapper.text.includes('/seed-ascent.html')
-                  && !/https?:\/\/(?:www\.)?dtf420\.com/i.test(wrapper.text);
-                const launcherOk = launcher.response.status === 200
-                  && !launcher.response.headers.get('location')
-                  && /Seed Ascent/i.test(launcher.text)
-                  && launcher.text.includes('id="game"')
-                  && launcher.text.includes('/seed-ascent/levels.js')
-                  && launcher.text.includes('/seed-ascent/engine.js');
+                const gamePageOk = (item) => item.response.status === 200
+                  && !item.response.headers.get('location')
+                  && /Seed Ascent/i.test(item.text)
+                  && item.text.includes('id="game"')
+                  && item.text.includes('/seed-ascent/levels.js')
+                  && item.text.includes('/seed-ascent/engine.js');
+                const canonicalOk = gamePageOk(canonical);
+                const launcherOk = gamePageOk(launcher);
                 const engineOk = engine.response.status === 200
                   && !engine.response.headers.get('location')
                   && engine.text.includes('__seedAscentDebug')
@@ -84,8 +89,8 @@ jobs:
                 const stylesOk = styles.response.status === 200
                   && !styles.response.headers.get('location')
                   && styles.text.length > 500;
-                last = `wrapper=${wrapper.response.status}/${wrapperOk} launcher=${launcher.response.status}/${launcherOk} engine=${engine.response.status}/${engineOk} levels=${levels.response.status}/${levelsOk} styles=${styles.response.status}/${stylesOk}`;
-                if (wrapperOk && launcherOk && engineOk && levelsOk && stylesOk) return;
+                last = `canonical=${canonical.response.status}/${canonicalOk} launcher=${launcher.response.status}/${launcherOk} engine=${engine.response.status}/${engineOk} levels=${levels.response.status}/${levelsOk} styles=${styles.response.status}/${stylesOk}`;
+                if (canonicalOk && launcherOk && engineOk && levelsOk && stylesOk) return;
               } catch (error) {
                 last = error instanceof Error ? error.message : String(error);
               }
@@ -104,9 +109,9 @@ jobs:
           if start_marker in text:
               start = text.index(start_marker)
               end = text.index(end_marker, start)
-              replacement = """  // Seed Ascent is a dedicated Codex-built wrapper + static runtime. Verify the
-            // wrapper and every required runtime surface directly rather than applying the
-            // generic education-page absolute-origin marker to this game shell.
+              replacement = """  // Seed Ascent is served directly from the verified standalone launcher at the
+            // canonical game URL. This avoids an unnecessary iframe wrapper while retaining
+            // independent engine, level-data, and stylesheet verification.
             await verifySeedAscent();
 
           """
@@ -117,6 +122,7 @@ jobs:
           path.write_text(text)
           PY
           node --check scripts/promote-public-game-routes-via-wordpress.mjs
+          grep -Fq 'RewriteRule ^games/seed-ascent/?$ /dtf-content-overlay/seed-ascent.html [L]' scripts/promote-public-game-routes-via-wordpress.mjs
           grep -Fq 'async function verifySeedAscent()' scripts/promote-public-game-routes-via-wordpress.mjs
           grep -Fq "probe('/seed-ascent/engine.js')" scripts/promote-public-game-routes-via-wordpress.mjs
           grep -Fq 'await verifySeedAscent();' scripts/promote-public-game-routes-via-wordpress.mjs
@@ -135,7 +141,7 @@ jobs:
           node --input-type=module <<'NODE'
           const origin = 'https://dtfseeds.com';
           const checks = [
-            ['/games/seed-ascent/', ['Seed Ascent', '/seed-ascent.html']],
+            ['/games/seed-ascent/', ['Seed Ascent', 'id="game"', '/seed-ascent/levels.js', '/seed-ascent/engine.js']],
             ['/seed-ascent.html', ['Seed Ascent', 'id="game"', '/seed-ascent/levels.js', '/seed-ascent/engine.js']],
             ['/seed-ascent/engine.js', ['__seedAscentDebug', 'doubleUsed']],
             ['/seed-ascent/levels.js', ['SEED_ASCENT_LEVELS']],
@@ -168,16 +174,16 @@ jobs:
         run: |
           set -euo pipefail
           if git diff --quiet -- scripts/promote-public-game-routes-via-wordpress.mjs; then
-            echo 'Promoter already contains the verified Seed Ascent checks.'
+            echo 'Promoter already contains the verified Seed Ascent direct route.'
             exit 0
           fi
           git config user.name 'dtf-release-bot'
           git config user.email 'actions@users.noreply.github.com'
           git add scripts/promote-public-game-routes-via-wordpress.mjs
-          git commit -m 'Fix Seed Ascent production route verification'
+          git commit -m 'Serve Seed Ascent directly at canonical game route'
           git pull --rebase origin main
           if ! git push origin HEAD:main; then
-            echo '::warning::Seed Ascent is live, but automatic persistence of the verifier patch was blocked. The repair workflow remains available.'
+            echo '::warning::Seed Ascent is live, but automatic persistence of the promoter patch was blocked. The repair workflow remains available.'
           fi
 
       - name: Production proof summary
@@ -187,8 +193,8 @@ jobs:
             echo '## Seed Ascent production route repaired'
             echo
             echo '- Canonical route: https://dtfseeds.com/games/seed-ascent/'
-            echo '- Wrapper: verified HTTP 200 with Seed Ascent iframe source'
-            echo '- Launcher: verified HTTP 200'
+            echo '- Canonical launcher: verified HTTP 200 with live canvas and runtime references'
+            echo '- Standalone launcher: verified HTTP 200'
             echo '- Engine: verified HTTP 200 with Seed Ascent runtime markers'
             echo '- Levels: verified HTTP 200 with campaign data marker'
             echo '- Styles: verified HTTP 200 with non-empty production stylesheet'
