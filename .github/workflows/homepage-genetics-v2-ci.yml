@@ -7,6 +7,8 @@ on:
       - 'scripts/finalize-wordpress-home-genetics-art.mjs'
       - 'scripts/fix-wordpress-home-release-visuals.mjs'
       - 'scripts/run-learning-v3-production.mjs'
+      - 'scripts/run-learning-v3-connected-production.sh'
+      - 'scripts/improve-wordpress-learning-v4.mjs'
       - 'scripts/reconcile-wordpress-learning-v3-ownership.mjs'
       - '.github/workflows/wordpress-home-genetics-art.yml'
       - '.github/workflows/homepage-reviewed-genetics-art-production.yml'
@@ -36,7 +38,9 @@ jobs:
           node --check scripts/finalize-wordpress-home-genetics-art.mjs
           node --check scripts/fix-wordpress-home-release-visuals.mjs
           node --check scripts/run-learning-v3-production.mjs
+          node --check scripts/improve-wordpress-learning-v4.mjs
           node --check scripts/reconcile-wordpress-learning-v3-ownership.mjs
+          bash -n scripts/run-learning-v3-connected-production.sh
           grep -Fq 'data-dtf-home-genetics-v2' scripts/finalize-wordpress-home-genetics-art.mjs
           grep -Fq 'Current releases, shown with the real strain cards.' scripts/finalize-wordpress-home-genetics-art.mjs
           grep -Fq 'dtf-strain-card-blue-mango-f2-regular' scripts/run-learning-v3-production.mjs
@@ -59,6 +63,8 @@ jobs:
           home_owner='.github/workflows/wordpress-home-release-visuals.yml'
           learning='.github/workflows/wordpress-learning-experience-v3-production.yml'
           learning_final='.github/workflows/wordpress-learning-final-owner.yml'
+          learning_wrapper='scripts/run-learning-v3-connected-production.sh'
+          learning_map='scripts/improve-wordpress-learning-v4.mjs'
 
           grep -Fq 'workflow_dispatch:' "$legacy"
           ! grep -Fq 'workflow_run:' "$legacy"
@@ -86,19 +92,27 @@ jobs:
           grep -Fq 'Reconcile WordPress Learning subject ownership' "$learning"
           grep -Fq 'Verify stored Learning ownership and markers' "$learning"
           grep -Fq 'scripts/reconcile-wordpress-learning-v3-ownership.mjs' "$learning"
+          grep -Fq 'bash scripts/run-learning-v3-connected-production.sh' "$learning"
+
+          grep -Fq 'node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/run-learning-v3-production.mjs' "$learning_wrapper"
+          grep -Fq 'APPLY_LEARNING_V4=true' "$learning_wrapper"
+          grep -Fq 'node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/improve-wordpress-learning-v4.mjs' "$learning_wrapper"
+          grep -Fq 'data-dtf-layout="learn-v3"' "$learning_map"
+          grep -Fq 'data-dtf-learning-map="v4"' "$learning_map"
 
           grep -Fq -- '- Publish THC Topic Literature to WordPress Production' "$learning_final"
           ! grep -Fq -- '- Publish DTFSeeds Learning Experience V3' "$learning_final"
           grep -Fq 'cancel-in-progress: false' "$learning_final"
-          grep -Fq 'Run exact Home release-card final owner' "$learning_final"
-          grep -Fq 'uses: ./.github/workflows/wordpress-home-release-visuals.yml' "$learning_final"
-          grep -Fq 'secrets: inherit' "$learning_final"
+          if grep -Fq 'uses: ./.github/workflows/wordpress-home-release-visuals.yml' "$learning_final"; then
+            echo 'Topic Literature finalizer must not duplicate the Home release-card owner already invoked by Learning V3.' >&2
+            exit 1
+          fi
 
           grep -Fq 'Blue Mango F2 Regular DTF Genetics strain card' "$legacy"
           grep -Fq 'Blue Mango F2 Feminized DTF Genetics strain card' "$legacy"
           grep -Fq 'Blue Bubblegum F1 Regular DTF Genetics strain card' "$legacy"
           grep -Fq 'Mango Bubbles F1 Regular DTF Genetics strain card' "$legacy"
-          echo 'Homepage genetics ownership validated: Learning V3 remains hierarchy-aware, Topic Literature has one downstream finalizer, automatic legacy Home mutation is retired, and the exact release-card owner runs at the end of the serialized Learning chain.'
+          echo 'Homepage genetics ownership validated: Learning V3 owns its connected Learn map and the reusable final Home handoff; Topic Literature remains independently serialized; automatic legacy Home mutation is retired.'
 
       - name: Prove V3 runtime patch still matches canonical publisher
         shell: bash

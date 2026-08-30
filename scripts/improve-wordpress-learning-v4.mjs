@@ -11,16 +11,11 @@ const backupRoot = process.env.BACKUP_ROOT || '/tmp/dtf-learning-v4';
 if (!username || !password) throw new Error('WP_API_USERNAME and WP_API_PASSWORD are required');
 
 const auth = `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`;
-const headers = {
-  Authorization: auth,
-  Accept: 'application/json',
-  'User-Agent': 'DTFSeeds-Learning-Hierarchy/4.2'
-};
+const headers = { Authorization: auth, Accept: 'application/json', 'User-Agent': 'DTFSeeds-Learning-Hierarchy/4.3' };
 const stamp = new Date().toISOString().replace(/[-:.]/g, '').replace('Z', 'Z');
 const backupDir = join(backupRoot, `learning-v4-${stamp}`);
 await mkdir(backupDir, { recursive: true });
-
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 async function request(path, options = {}) {
   let lastError;
@@ -28,11 +23,7 @@ async function request(path, options = {}) {
     try {
       const response = await fetch(`${siteUrl}${path}`, {
         ...options,
-        headers: {
-          ...headers,
-          ...(options.body ? { 'Content-Type': 'application/json' } : {}),
-          ...(options.headers || {})
-        },
+        headers: { ...headers, ...(options.body ? { 'Content-Type': 'application/json' } : {}), ...(options.headers || {}) },
         redirect: 'follow',
         signal: AbortSignal.timeout(60_000)
       });
@@ -47,10 +38,7 @@ async function request(path, options = {}) {
       return body;
     } catch (error) {
       lastError = error;
-      if (attempt < 5) {
-        await sleep(1800 * attempt);
-        continue;
-      }
+      if (attempt < 5) await sleep(1800 * attempt);
     }
   }
   throw lastError;
@@ -80,38 +68,36 @@ function stripMarked(content, start, end) {
 const styleId = 'dtf-learning-v4';
 const startMarker = '<!-- DTF-LEARN-GUIDED-V4-START -->';
 const endMarker = '<!-- DTF-LEARN-GUIDED-V4-END -->';
-const goalHeading = 'Different goals need different starting points.';
-const subjectHeadingBefore = 'Go directly to the correct subject library.';
-const subjectHeadingAfter = 'Explore the system behind your question.';
-const mapHeading = 'See how the subjects connect before you go deep.';
+const goalHeading = 'Start with the question you are trying to answer.';
+const mapHeading = 'See how the systems connect before you go deep.';
 
 const styles = `<style id="${styleId}">
-.dtf-page .learning-map-v4{position:relative;overflow:hidden;background:linear-gradient(180deg,#f6f2e8 0%,#edf3ec 100%)}
-.dtf-page .learning-map-v4:after{content:"";position:absolute;width:360px;height:360px;right:-190px;bottom:-220px;border:1px solid rgba(194,157,59,.18);border-radius:50%;box-shadow:0 0 0 48px rgba(194,157,59,.035),0 0 0 96px rgba(194,157,59,.02);pointer-events:none}
-.dtf-page .learning-map-grid{position:relative;z-index:1;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin-top:12px}
-.dtf-page .learning-map-grid:before{content:"";position:absolute;left:7%;right:7%;top:29px;height:1px;background:linear-gradient(90deg,transparent,rgba(17,43,28,.2) 8%,rgba(17,43,28,.2) 92%,transparent)}
-.dtf-page .learning-map-step{position:relative;z-index:1;padding:0 8px 12px;text-align:center}
-.dtf-page .learning-map-step b{display:grid;place-items:center;width:58px;height:58px;margin:0 auto 16px;border-radius:17px;background:linear-gradient(180deg,#173b27,#07170f);color:#efd786;box-shadow:0 8px 22px rgba(7,23,15,.15);font-size:.82rem;letter-spacing:.04em}
-.dtf-page .learning-map-step h3{margin:0 0 7px;font-size:1.02rem;line-height:1.18;letter-spacing:-.02em}
-.dtf-page .learning-map-step p{margin:0;color:#5f7065;font-size:.87rem;line-height:1.55}
-.dtf-page .learning-map-step .dtf-text-link{display:inline-flex;margin-top:10px;font-size:.86rem}
-.dtf-page .learning-map-cue{position:relative;z-index:1;margin-top:30px;padding:18px 20px;border-left:4px solid #c29d3b;border-radius:0 14px 14px 0;background:#fffdf7;color:#344d3e;line-height:1.65;box-shadow:0 8px 24px rgba(17,43,28,.05)}
-@media(max-width:1020px){.dtf-page .learning-map-grid{grid-template-columns:repeat(3,minmax(0,1fr));row-gap:28px}.dtf-page .learning-map-grid:before{display:none}}
-@media(max-width:640px){.dtf-page .learning-map-grid{grid-template-columns:1fr;gap:20px}.dtf-page .learning-map-step{display:grid;grid-template-columns:58px 1fr;gap:0 15px;text-align:left;padding:0}.dtf-page .learning-map-step b{grid-row:1 / span 3;margin:0}.dtf-page .learning-map-step h3{margin:4px 0 5px}.dtf-page .learning-map-step p,.dtf-page .learning-map-step .dtf-text-link{grid-column:2}.dtf-page .learning-map-step .dtf-text-link{margin-top:7px}}
+.v3 .learning-map-v4{position:relative;overflow:hidden;background:linear-gradient(180deg,var(--v3-cream) 0%,var(--v3-soft) 100%)}
+.v3 .learning-map-v4:after{content:"";position:absolute;width:360px;height:360px;right:-190px;bottom:-220px;border:1px solid rgba(214,183,92,.2);border-radius:50%;box-shadow:0 0 0 48px rgba(214,183,92,.035),0 0 0 96px rgba(214,183,92,.02);pointer-events:none}
+.v3 .learning-map-grid{position:relative;z-index:1;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin-top:12px}
+.v3 .learning-map-grid:before{content:"";position:absolute;left:7%;right:7%;top:29px;height:1px;background:linear-gradient(90deg,transparent,rgba(16,43,26,.22) 8%,rgba(16,43,26,.22) 92%,transparent)}
+.v3 .learning-map-step{position:relative;z-index:1;padding:0 8px 12px;text-align:center}
+.v3 .learning-map-step b{display:grid;place-items:center;width:58px;height:58px;margin:0 auto 16px;border-radius:17px;background:linear-gradient(180deg,#173b27,var(--v3-deep));color:#efd786;box-shadow:0 8px 22px rgba(7,23,15,.15);font-size:.82rem;letter-spacing:.04em}
+.v3 .learning-map-step h3{margin:0 0 7px;font-size:1.02rem;line-height:1.18;letter-spacing:-.02em}
+.v3 .learning-map-step p{margin:0;color:var(--v3-muted);font-size:.87rem;line-height:1.55}
+.v3 .learning-map-step .v3-text-link{display:inline-flex;margin-top:10px;font-size:.86rem}
+.v3 .learning-map-cue{position:relative;z-index:1;margin-top:30px;padding:18px 20px;border-left:4px solid var(--v3-gold);border-radius:0 14px 14px 0;background:#fff;color:#344d3e;line-height:1.65;box-shadow:0 8px 24px rgba(17,43,28,.05)}
+@media(max-width:1020px){.v3 .learning-map-grid{grid-template-columns:repeat(3,minmax(0,1fr));row-gap:28px}.v3 .learning-map-grid:before{display:none}}
+@media(max-width:640px){.v3 .learning-map-grid{grid-template-columns:1fr;gap:20px}.v3 .learning-map-step{display:grid;grid-template-columns:58px 1fr;gap:0 15px;text-align:left;padding:0}.v3 .learning-map-step b{grid-row:1 / span 3;margin:0}.v3 .learning-map-step h3{margin:4px 0 5px}.v3 .learning-map-step p,.v3 .learning-map-step .v3-text-link{grid-column:2}.v3 .learning-map-step .v3-text-link{margin-top:7px}}
 </style>`;
 
-const guidedMarkup = `${startMarker}
-<section class="dtf-section learning-map-v4" id="learning-map" data-dtf-learning-map="v4"><div class="dtf-wrap">
-  <div class="dtf-heading"><div><p class="dtf-eyebrow">Learning map</p><h2>${mapHeading}</h2></div><p>Most cultivation questions move through the same connected chain: plant → environment → root zone → management → plant health → finish and improvement.</p></div>
-  <div class="learning-map-grid" aria-label="Teaching Healthy Cultivation learning sequence">
-    <article class="learning-map-step"><b>01</b><h3>Plant</h3><p>Biology, anatomy and lifecycle.</p><a class="dtf-text-link" href="/learn/plant-biology/">Plant biology <span aria-hidden="true">→</span></a></article>
-    <article class="learning-map-step"><b>02</b><h3>Environment</h3><p>Temperature, RH, VPD, airflow and light.</p><a class="dtf-text-link" href="/learn/environment-vpd/">Environment <span aria-hidden="true">→</span></a></article>
-    <article class="learning-map-step"><b>03</b><h3>Root zone</h3><p>Water, media, oxygen, pH and EC.</p><a class="dtf-text-link" href="/learn/water-ph-ec/">Root-zone science <span aria-hidden="true">→</span></a></article>
-    <article class="learning-map-step"><b>04</b><h3>Manage</h3><p>Propagation, training, canopy and records.</p><a class="dtf-text-link" href="/learn/training-canopy/">Crop management <span aria-hidden="true">→</span></a></article>
-    <article class="learning-map-step"><b>05</b><h3>Protect</h3><p>Prevention, scouting, diagnosis and IPM.</p><a class="dtf-text-link" href="/learn/ipm/">Plant health &amp; IPM <span aria-hidden="true">→</span></a></article>
-    <article class="learning-map-step"><b>06</b><h3>Finish &amp; improve</h3><p>Harvest, post-harvest, genetics and evidence.</p><a class="dtf-text-link" href="/learn/harvest-postharvest/">Harvest &amp; quality <span aria-hidden="true">→</span></a></article>
+const mapMarkup = `${startMarker}
+<section class="section learning-map-v4" id="learning-map" data-dtf-learning-map="v4"><div class="wrap">
+  <div class="heading"><div><p class="eyebrow">Learning map</p><h2>${mapHeading}</h2></div><p>Cultivation decisions are connected. Use this map to move from the plant itself into environment, roots, management, plant health, and finish quality without treating each topic like an isolated trick.</p></div>
+  <div class="learning-map-grid" aria-label="Teaching Healthy Cultivation connected learning map">
+    <article class="learning-map-step"><b>01</b><h3>Plant</h3><p>Biology, anatomy, lifecycle and plant response.</p><a class="v3-text-link" href="/learn/plant-biology/">Plant biology <span aria-hidden="true">→</span></a></article>
+    <article class="learning-map-step"><b>02</b><h3>Environment</h3><p>Temperature, RH, VPD, airflow, light and CO₂ context.</p><a class="v3-text-link" href="/learn/environment-vpd/">Environment <span aria-hidden="true">→</span></a></article>
+    <article class="learning-map-step"><b>03</b><h3>Root zone</h3><p>Water, media, oxygen, pH, EC and irrigation behavior.</p><a class="v3-text-link" href="/learn/water-ph-ec/">Root-zone science <span aria-hidden="true">→</span></a></article>
+    <article class="learning-map-step"><b>04</b><h3>Manage</h3><p>Propagation, training, canopy, stage work and records.</p><a class="v3-text-link" href="/learn/training-canopy/">Crop management <span aria-hidden="true">→</span></a></article>
+    <article class="learning-map-step"><b>05</b><h3>Protect</h3><p>Prevention, scouting, differential diagnosis and IPM.</p><a class="v3-text-link" href="/learn/ipm/">Plant health &amp; IPM <span aria-hidden="true">→</span></a></article>
+    <article class="learning-map-step"><b>06</b><h3>Finish &amp; improve</h3><p>Harvest, post-harvest, genetics, evidence and iteration.</p><a class="v3-text-link" href="/learn/harvest-postharvest/">Harvest &amp; quality <span aria-hidden="true">→</span></a></article>
   </div>
-  <div class="learning-map-cue"><strong>Use the map as a loop, not a one-way course.</strong> Enter where the question is, then move backward to the underlying system or forward to the next decision.</div>
+  <div class="learning-map-cue"><strong>Use this as a loop, not a checklist.</strong> Enter where your question is, move backward to the system that could be driving it, then move forward to the measurement or decision that tests your understanding.</div>
 </div></section>
 ${endMarker}`;
 
@@ -124,53 +110,42 @@ let content = raw(page.content);
 content = stripStyle(content, styleId);
 content = stripMarked(content, startMarker, endMarker);
 
-if (!content.includes('class="dtf-page"') || !content.includes('dtf-visual-polish-v3')) {
-  throw new Error('Current post-polish Learn layout markers were not found; refusing to modify an unknown page structure.');
+if (!content.includes('class="v3"') || !content.includes('data-dtf-layout="learn-v3"') || !content.includes('dtf-learning-v3-style')) {
+  throw new Error('Canonical Learning Experience V3 markers were not found; refusing to modify an unknown Learn layout.');
 }
 
 const goalHeadingAt = content.indexOf(goalHeading);
 if (goalHeadingAt < 0) throw new Error(`Learn goal heading was not found: ${goalHeading}`);
 const goalSectionStart = content.lastIndexOf('<section', goalHeadingAt);
 const goalSectionEnd = content.indexOf('</section>', goalHeadingAt);
-if (goalSectionStart < 0 || goalSectionEnd < 0 || goalSectionEnd <= goalSectionStart) {
-  throw new Error('Could not resolve the current Learn goal section boundaries.');
-}
+if (goalSectionStart < 0 || goalSectionEnd < 0 || goalSectionEnd <= goalSectionStart) throw new Error('Could not resolve the Learn goal chooser section.');
 const goalSectionEndExclusive = goalSectionEnd + '</section>'.length;
 const goalSection = content.slice(goalSectionStart, goalSectionEndExclusive);
-for (const anchor of ['dtf-section-soft', 'Choose a path', 'dtf-grid-4', '/learn/start-here/', '/thc-grow-doc/']) {
-  if (!goalSection.includes(anchor)) throw new Error(`Learn goal section is missing expected anchor: ${anchor}`);
+for (const anchor of ['Choose your goal', 'path-grid', '/learn/start-here/', '/thc-grow-doc/']) {
+  if (!goalSection.includes(anchor)) throw new Error(`Learn goal chooser is missing expected anchor: ${anchor}`);
 }
 
-content = `${content.slice(0, goalSectionStart)}${content.slice(goalSectionEndExclusive)}`;
+const foundationHeading = 'Three systems explain most downstream decisions.';
+const foundationAt = content.indexOf(foundationHeading, goalSectionEndExclusive);
+if (foundationAt < 0) throw new Error(`Foundation section was not found: ${foundationHeading}`);
+const foundationSectionStart = content.lastIndexOf('<section', foundationAt);
+if (foundationSectionStart < goalSectionEndExclusive) throw new Error('Foundation section resolved before the goal chooser ended.');
 
-content = content
-  .replace(`<p class="dtf-eyebrow">Explore by subject</p><h2>${subjectHeadingBefore}</h2>`, `<p class="dtf-eyebrow">Subject library</p><h2>${subjectHeadingAfter}</h2>`)
-  .replace('Every card below opens its own companion literature. Infographics support the subject pages; they are no longer the only destination.', 'Use these subject areas as a reference map. Start with the system closest to your question, then follow the connected measurements, biology, and management decisions.');
+content = `${styles}\n${content.slice(0, goalSectionEndExclusive)}\n${mapMarkup}\n${content.slice(goalSectionEndExclusive)}`;
 
-const quickbarStart = content.indexOf('<div class="dtf-wrap dtf-quickbar">');
-if (quickbarStart < 0) throw new Error('Learn quickbar was not found after the V3 polish step.');
-const quickbarEnd = content.indexOf('</nav></div>', quickbarStart);
-if (quickbarEnd < 0) throw new Error('Learn quickbar closing markup was not found.');
-const insertAt = quickbarEnd + '</nav></div>'.length;
-content = `${styles}\n${content.slice(0, insertAt)}\n${goalSection}\n${guidedMarkup}\n${content.slice(insertAt)}`;
-
-for (const required of [styleId, 'data-dtf-learning-map="v4"', goalHeading, mapHeading, subjectHeadingAfter, '/learn/plant-biology/', '/learn/environment-vpd/', '/learn/water-ph-ec/', '/learn/training-canopy/', '/learn/ipm/', '/learn/harvest-postharvest/']) {
+for (const required of [styleId, 'data-dtf-learning-map="v4"', goalHeading, mapHeading, foundationHeading, '/learn/plant-biology/', '/learn/environment-vpd/', '/learn/water-ph-ec/', '/learn/training-canopy/', '/learn/ipm/', '/learn/harvest-postharvest/']) {
   if (!content.includes(required)) throw new Error(`Learning V4 build is missing required marker: ${required}`);
 }
 
-const quickbarPosition = content.indexOf('dtf-quickbar');
 const goalPosition = content.indexOf(goalHeading);
 const mapPosition = content.indexOf(mapHeading);
-const subjectPosition = content.indexOf(subjectHeadingAfter);
-if (!(quickbarPosition < goalPosition && goalPosition < mapPosition && mapPosition < subjectPosition)) {
-  throw new Error(`Learning hierarchy order is invalid: quickbar=${quickbarPosition}, goal=${goalPosition}, map=${mapPosition}, subject=${subjectPosition}`);
+const foundationPosition = content.indexOf(foundationHeading);
+if (!(goalPosition < mapPosition && mapPosition < foundationPosition)) {
+  throw new Error(`Learning hierarchy order is invalid: goal=${goalPosition}, map=${mapPosition}, foundation=${foundationPosition}`);
 }
 
 if (apply) {
-  await request(`/wp-json/wp/v2/pages/${page.id}`, {
-    method: 'POST',
-    body: JSON.stringify({ content, status: 'publish' })
-  });
+  await request(`/wp-json/wp/v2/pages/${page.id}`, { method: 'POST', body: JSON.stringify({ content, status: 'publish' }) });
 
   let verified = false;
   for (let attempt = 1; attempt <= 8; attempt += 1) {
@@ -180,13 +155,13 @@ if (apply) {
       signal: AbortSignal.timeout(60_000)
     });
     const html = await response.text();
-    if (response.ok && html.includes(styleId) && html.includes('data-dtf-learning-map="v4"') && html.includes(goalHeading) && html.includes(mapHeading) && html.includes(subjectHeadingAfter) && html.includes('/learn/water-ph-ec/')) {
+    if (response.ok && html.includes('data-dtf-layout="learn-v3"') && html.includes(styleId) && html.includes('data-dtf-learning-map="v4"') && html.includes(goalHeading) && html.includes(mapHeading) && html.includes(foundationHeading)) {
       verified = true;
       break;
     }
     await sleep(3500);
   }
-  if (!verified) throw new Error('Live Learn page did not expose the Learning V4 hierarchy after publication.');
+  if (!verified) throw new Error('Live Learn page did not expose the canonical Learning V3 + connected Learning V4 map after publication.');
 }
 
 const report = {
@@ -197,10 +172,9 @@ const report = {
   pageId: page.id,
   sourceBytes: raw(page.content).length,
   outputBytes: content.length,
+  canonicalOwner: 'Learning Experience V3',
   guidedHierarchy: true,
-  layoutFingerprint: 'dtf-page + dtf-visual-polish-v3',
-  relocatedGoalChooser: true,
-  insertionAnchor: 'dtf-quickbar',
+  insertionAnchor: goalHeading,
   learningMapSteps: 6
 };
 await writeFile(join(backupDir, 'learning-v4-report.json'), `${JSON.stringify(report, null, 2)}\n`);

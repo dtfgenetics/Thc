@@ -8,6 +8,7 @@ on:
       - '.github/workflows/homepage-reviewed-genetics-art-production.yml'
       - '.github/workflows/wordpress-home-genetics-art.yml'
       - '.github/workflows/wordpress-home-release-visuals.yml'
+      - '.github/workflows/wordpress-learning-experience-v3-production.yml'
       - '.github/workflows/wordpress-learning-final-owner.yml'
       - '.github/workflows/homepage-genetics-v2-ci.yml'
       - 'scripts/finalize-wordpress-home-genetics-art.mjs'
@@ -37,6 +38,7 @@ jobs:
 
           manual=.github/workflows/homepage-reviewed-genetics-art-production.yml
           exact_owner=.github/workflows/wordpress-home-release-visuals.yml
+          learning=.github/workflows/wordpress-learning-experience-v3-production.yml
           learning_final=.github/workflows/wordpress-learning-final-owner.yml
 
           for identity in \
@@ -62,17 +64,22 @@ jobs:
           grep -Fq 'Verify visitor-facing homepage release artwork' "$exact_owner"
           grep -Fq 'Purge Hostinger LiteSpeed cache' "$exact_owner"
 
+          grep -Fq 'uses: ./.github/workflows/wordpress-home-release-visuals.yml' "$learning"
+          grep -Fq 'secrets: inherit' "$learning"
+          grep -Fq 'name: Run final Home visual owner' "$learning"
+
           grep -Fq -- '- Publish THC Topic Literature to WordPress Production' "$learning_final"
           ! grep -Fq -- '- Publish DTFSeeds Learning Experience V3' "$learning_final"
-          grep -Fq 'Run exact Home release-card final owner' "$learning_final"
-          grep -Fq 'uses: ./.github/workflows/wordpress-home-release-visuals.yml' "$learning_final"
-          grep -Fq 'secrets: inherit' "$learning_final"
           grep -Fq 'cancel-in-progress: false' "$learning_final"
+          if grep -Fq 'uses: ./.github/workflows/wordpress-home-release-visuals.yml' "$learning_final"; then
+            echo 'Topic Literature finalizer must not duplicate the final Home owner already invoked by Learning V3.' >&2
+            exit 1
+          fi
 
           grep -Fq "APPLY_HOME_GENETICS_ART: 'true'" "$manual"
           grep -Fq 'Current releases, shown with the real strain cards.' scripts/finalize-wordpress-home-genetics-art.mjs
           grep -Fq 'aspect-ratio:2/3' scripts/finalize-wordpress-home-genetics-art.mjs
-          echo 'Automatic reviewed Home mutation is retired; exact release-card ownership is serialized after final Learning publication.'
+          echo 'Automatic reviewed Home mutation is retired; the exact release-card owner is reusable/manual-only and is invoked once by canonical Learning V3.'
 
       - name: Validate both supported homepage layout contracts
         shell: bash

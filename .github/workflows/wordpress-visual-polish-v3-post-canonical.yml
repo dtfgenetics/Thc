@@ -37,7 +37,6 @@ jobs:
           test -n "${WP_API_PASSWORD:-}"
           node --check scripts/polish-wordpress-visual-site-v3.mjs
           node --check scripts/fix-wordpress-visual-polish-v3-cascade.mjs
-          node --check scripts/improve-wordpress-learning-v4.mjs
       - name: Apply V3 after canonical WordPress publication
         id: apply
         env:
@@ -52,59 +51,32 @@ jobs:
         run: |
           set -euo pipefail
           node scripts/fix-wordpress-visual-polish-v3-cascade.mjs
-      - name: Improve Learn information hierarchy
-        id: learning
-        env:
-          APPLY_LEARNING_V4: 'true'
-          BACKUP_ROOT: ${{ runner.temp }}/dtf-v3-post-canonical/learning-v4
-        run: |
-          set -euo pipefail
-          node scripts/improve-wordpress-learning-v4.mjs
-      - name: Verify live V3 presentation and Learning V4 hierarchy
+      - name: Verify live V3 presentation
         id: verify
         run: |
           set -euo pipefail
-          verify() {
-            local path="$1"
-            local marker="$2"
-            local body="$RUNNER_TEMP/$(echo "$path" | tr '/?' '__').html"
-            local ok=0
-            for attempt in 1 2 3 4 5 6 7 8; do
-              curl -4 -fsSL --retry 2 --retry-delay 2 \
-                -H 'Cache-Control: no-cache, no-store, max-age=0' \
-                "$WP_SITE_URL${path}?dtf_v3_post=${GITHUB_RUN_ID}-${attempt}" -o "$body"
-              if grep -Fqi 'dtf-visual-polish-v3' "$body" && grep -Fqi "$marker" "$body"; then ok=1; break; fi
-              sleep 7
-            done
-            [[ "$ok" -eq 1 ]] || { echo "Required visual layer not visible on $path: $marker" >&2; exit 1; }
-          }
-          verify '/' 'dtf-v3-spotlight'
-          verify '/learn/' 'dtf-learning-v4'
-          learn="$RUNNER_TEMP/_learn_.html"
-          grep -Fqi 'Different goals need different starting points.' "$learn"
-          grep -Fqi 'See how the subjects connect before you go deep.' "$learn"
-          grep -Fqi 'Explore the system behind your question.' "$learn"
-          grep -Fqi 'data-dtf-learning-map="v4"' "$learn"
-          grep -Fqi '/learn/plant-biology/' "$learn"
-          grep -Fqi '/learn/environment-vpd/' "$learn"
-          grep -Fqi '/learn/water-ph-ec/' "$learn"
-          grep -Fqi '/learn/training-canopy/' "$learn"
-          grep -Fqi '/learn/ipm/' "$learn"
-          grep -Fqi '/learn/harvest-postharvest/' "$learn"
-          home="$RUNNER_TEMP/_.html"
-          grep -Fqi 'dtf-shell-header' "$home"
-          grep -Fqi 'dtf-shell-footer' "$home"
-          grep -Fqi 'DTF Genetics cannabis leaf' "$home"
-          grep -Fqi '/games/' "$home"
-          grep -Fqi '/tools/' "$home"
-      - name: Upload V3 and Learning V4 rollback package
+          body="$RUNNER_TEMP/home.html"
+          ok=0
+          for attempt in 1 2 3 4 5 6 7 8; do
+            curl -4 -fsSL --retry 2 --retry-delay 2 \
+              -H 'Cache-Control: no-cache, no-store, max-age=0' \
+              -H 'Pragma: no-cache' \
+              "$WP_SITE_URL/?dtf_v3_post=${GITHUB_RUN_ID}-${attempt}" -o "$body"
+            if grep -Fqi 'dtf-visual-polish-v3' "$body" && grep -Fqi 'dtf-v3-spotlight' "$body"; then ok=1; break; fi
+            sleep 7
+          done
+          [[ "$ok" -eq 1 ]] || { echo 'Required V3 Home visual layer is not visible.' >&2; exit 1; }
+          grep -Fqi 'dtf-shell-header' "$body"
+          grep -Fqi 'dtf-shell-footer' "$body"
+          grep -Fqi 'DTF Genetics cannabis leaf' "$body"
+          grep -Fqi '/games/' "$body"
+          grep -Fqi '/tools/' "$body"
+      - name: Upload V3 rollback package
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: dtf-v3-post-canonical-backup-${{ github.run_id }}
-          path: |
-            /tmp/dtf-v3-post-canonical
-            ${{ runner.temp }}/dtf-v3-post-canonical
+          path: /tmp/dtf-v3-post-canonical
           if-no-files-found: warn
           retention-days: 30
       - name: Summarize V3 post-canonical result
@@ -113,7 +85,6 @@ jobs:
           STATUS: ${{ job.status }}
           APPLY: ${{ steps.apply.outcome }}
           CASCADE: ${{ steps.cascade.outcome }}
-          LEARNING: ${{ steps.learning.outcome }}
           VERIFY: ${{ steps.verify.outcome }}
         run: |
           {
@@ -122,8 +93,7 @@ jobs:
             echo "- Result: **${STATUS}**"
             echo "- V3 presentation write: **${APPLY:-not-run}**"
             echo "- Final cascade ordering: **${CASCADE:-not-run}**"
-            echo "- Learning V4 hierarchy: **${LEARNING:-not-run}**"
-            echo "- Live visual verification: **${VERIFY:-not-run}**"
+            echo "- Live Home visual verification: **${VERIFY:-not-run}**"
             echo
-            echo 'Legacy V3 is manual-only. Automatic WordPress production ownership is staging -> canonical -> infographics -> Learning V3 -> final Home release visuals.'
+            echo 'Legacy V3 is manual-only and no longer owns Learn. The serialized Learning Experience V3 workflow is the sole Learn writer and applies the connected learning map before success.'
           } >> "$GITHUB_STEP_SUMMARY"
