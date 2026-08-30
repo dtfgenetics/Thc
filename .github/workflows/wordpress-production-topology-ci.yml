@@ -14,6 +14,8 @@ on:
       - .github/workflows/verify-live-infographics.yml
       - .github/workflows/wordpress-production-topology-ci.yml
       - scripts/wordpress-ipv4-fetch-bootstrap.mjs
+      - scripts/run-learning-v3-connected-production.sh
+      - scripts/improve-wordpress-learning-v4.mjs
   push:
     branches: [main]
     paths:
@@ -27,6 +29,8 @@ on:
       - .github/workflows/verify-live-infographics.yml
       - .github/workflows/wordpress-production-topology-ci.yml
       - scripts/wordpress-ipv4-fetch-bootstrap.mjs
+      - scripts/run-learning-v3-connected-production.sh
+      - scripts/improve-wordpress-learning-v4.mjs
 
 permissions:
   contents: read
@@ -53,6 +57,8 @@ jobs:
           watch='.github/workflows/wordpress-canonical-watch.yml'
           verify_infographics='.github/workflows/verify-live-infographics.yml'
           ipv4_bootstrap='scripts/wordpress-ipv4-fetch-bootstrap.mjs'
+          learning_wrapper='scripts/run-learning-v3-connected-production.sh'
+          learning_map='scripts/improve-wordpress-learning-v4.mjs'
 
           grep -Fq -- '- Stage DTFSeeds WordPress Canonical Deployment' "$canonical"
 
@@ -89,8 +95,19 @@ jobs:
           done
 
           grep -Fq -- '- scripts/wordpress-ipv4-fetch-bootstrap.mjs' "$learning"
+          grep -Fq -- '- scripts/run-learning-v3-connected-production.sh' "$learning"
+          grep -Fq -- '- scripts/improve-wordpress-learning-v4.mjs' "$learning"
           grep -Fq 'node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/rebuild-wordpress-shared-shell-v3.mjs' "$learning"
-          grep -Fq 'node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/run-learning-v3-production.mjs' "$learning"
+          grep -Fq 'bash scripts/run-learning-v3-connected-production.sh' "$learning"
+
+          bash -n "$learning_wrapper"
+          grep -Fq 'node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/run-learning-v3-production.mjs' "$learning_wrapper"
+          grep -Fq 'APPLY_LEARNING_V4=true' "$learning_wrapper"
+          grep -Fq 'node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/improve-wordpress-learning-v4.mjs' "$learning_wrapper"
+          node --check "$learning_map"
+          grep -Fq 'data-dtf-layout="learn-v3"' "$learning_map"
+          grep -Fq 'data-dtf-learning-map="v4"' "$learning_map"
+
           node --check "$ipv4_bootstrap"
           grep -Fq 'family: 4' "$ipv4_bootstrap"
           grep -Fq 'https.request' "$ipv4_bootstrap"
@@ -102,6 +119,11 @@ jobs:
             fi
             grep -Fq 'workflow_dispatch:' "$legacy"
           done
+
+          if grep -Fq '/learn/' "$legacy_visual" || grep -Fq 'learn_body=' "$legacy_visual"; then
+            echo 'Legacy visual compatibility workflow must not mutate or verify Learn ownership.' >&2
+            exit 1
+          fi
 
           grep -Fq 'continue-on-error: true' "$legacy_genetics"
 
@@ -117,4 +139,4 @@ jobs:
           grep -Fq 'actions/upload-artifact@v4' "$verify_infographics"
           grep -Fq 'issue_number: 220' "$verify_infographics"
 
-          echo 'Verified production order: staging -> canonical -> infographics -> learning -> reusable final Home owner; Home is reusable/manual-only, all Learning WordPress REST publication uses IPv4, legacy writers are manual-only, and live verification is non-mutating.'
+          echo 'Verified production order: staging -> canonical -> infographics -> Learning V3 plus connected map -> reusable final Home owner; Topic Literature remains independently serialized, legacy writers are manual-only, and live infographic verification is non-mutating.'
