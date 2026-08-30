@@ -38,6 +38,7 @@ jobs:
         run: node games/seed-man-platformer/test/input-guard.test.mjs
       - name: Validate browser JavaScript syntax
         run: |
+          node --check site/public-route-patch/games/seed-man-platformer/canvas-compat-v1.js
           node --check site/public-route-patch/games/seed-man-platformer/app.js
           node --check site/public-route-patch/games/seed-man-platformer/seed-man-production-art.js
           node --check site/public-route-patch/games/seed-man-platformer/input-guard-v1.js
@@ -58,6 +59,7 @@ jobs:
           [[ "$release" =~ ^[0-9]{8}-r[0-9]+$ ]] || { echo "Invalid Sprout release marker: $release" >&2; exit 1; }
 
           test -s "$route/index.html"
+          test -s "$route/canvas-compat-v1.js"
           test -s "$route/app.js"
           test -s "$route/seed-man-production-art.js"
           test -s "$route/input-guard-v1.js"
@@ -73,11 +75,20 @@ jobs:
           grep -Fq '"worldWidth": 7800' "$route/index.html"
           grep -Fq '"requiredPickups": 24' "$route/index.html"
           grep -Fq 'JUMP ×2' "$route/index.html"
+          grep -Fq 'tap for a short hop' "$route/index.html"
           grep -Fq "name=\"dtf-sprout-release\" content=\"${release}\"" "$route/index.html"
+          grep -Fq "<script src=\"./canvas-compat-v1.js?v=${release}\" defer></script>" "$route/index.html"
           grep -Fq "<script src=\"./app.js?v=${release}\" defer></script>" "$route/index.html"
           grep -Fq "<script src=\"./seed-man-production-art.js?v=${release}\" defer></script>" "$route/index.html"
           grep -Fq "<script src=\"./input-guard-v1.js?v=${release}\" defer></script>" "$route/index.html"
           grep -Fq "seed-man.css?v=${release}" "$route/index.html"
+          grep -Fq "const RELEASE = '${release}';" "$route/canvas-compat-v1.js"
+          grep -Fq 'softwarePreferred: true' "$route/canvas-compat-v1.js"
+          grep -Fq 'groundAcceleration: 2600' "$route/app.js"
+          grep -Fq 'jumpCutGravityMultiplier: 2.35' "$route/app.js"
+          grep -Fq 'function cameraBlend(' "$route/app.js"
+          grep -Fq 'lostpointercapture' "$route/app.js"
+          ! grep -Fq "addEventListener('pointerleave'" "$route/app.js"
           grep -Fq 'seed-man-production-v1' "$route/seed-man-production-art.js"
           grep -Fq 'seed-man-locked-v1' "$route/seed-man-production-art.js"
           grep -Fq 'No third-party level layouts or character assets are used.' "$route/index.html"
