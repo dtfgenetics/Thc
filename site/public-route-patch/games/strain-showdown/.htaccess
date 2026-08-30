@@ -1,0 +1,4 @@
+# Strain Showdown uses native ES modules. Hostinger must not serve .js/.mjs as text/plain.
+<IfModule mod_mime.c>
+  AddType application/javascript .js .mjs
+</IfModule>
