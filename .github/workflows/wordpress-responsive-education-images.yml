@@ -1,6 +1,7 @@
 name: Enforce Responsive THC Education Images
 
-# Production diagnostic trigger: verifies edit-context persistence before public HTML.
+# Final education-image transform: validate on source pushes, mutate production only
+# after the downstream WordPress education owners have completed.
 on:
   workflow_dispatch:
   pull_request:
@@ -17,7 +18,7 @@ on:
       - .github/workflows/wordpress-responsive-education-images.yml
   workflow_run:
     workflows:
-      - Publish THC Infographics to WordPress Production
+      - Publish DTFSeeds Learning Experience V3
       - Publish THC Topic Literature to WordPress Production
       - Restore Canonical Lighting Infographic
     types: [completed]
@@ -28,7 +29,7 @@ permissions:
 
 concurrency:
   group: dtfseeds-responsive-education-images
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   validate:
@@ -52,8 +53,8 @@ jobs:
   apply:
     name: Optimize and verify WordPress education images
     if: >-
-      github.event_name != 'pull_request' &&
-      (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success')
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
     needs: validate
     runs-on: ubuntu-latest
     timeout-minutes: 25
@@ -108,11 +109,16 @@ jobs:
           library="$RUNNER_TEMP/responsive-infographic-library.html"
           ok=0
           for attempt in 1 2 3 4 5 6 7 8; do
-            curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+            curl -4 --fail --silent --show-error --location --retry 2 --retry-all-errors --retry-delay 2 \
+              --connect-timeout 15 --max-time 60 \
               --header 'Cache-Control: no-cache, no-store, max-age=0' \
               --header 'Pragma: no-cache' \
               "https://dtfseeds.com/learn/infographics/?dtf_responsive=${GITHUB_RUN_ID}-${attempt}" \
-              --output "$library"
+              --output "$library" || {
+                echo "Responsive visitor probe transport failure on attempt $attempt; retrying." >&2
+                sleep 8
+                continue
+              }
             if grep -Fqi 'Searchable Infographic Library' "$library" && \
                grep -Fqi 'srcset=' "$library" && \
                grep -Fqi 'sizes=' "$library" && \
@@ -120,10 +126,11 @@ jobs:
               ok=1
               break
             fi
+            echo "Responsive visitor probe returned pre-transform HTML on attempt $attempt; retrying." >&2
             sleep 8
           done
           [[ "$ok" -eq 1 ]] || {
-            echo 'Live infographic library did not expose responsive image attributes.' >&2
+            echo 'Live infographic library did not expose responsive image attributes after the final education writer completed.' >&2
             exit 1
           }
 
@@ -170,6 +177,7 @@ jobs:
               `Image tags changed in this run: **${process.env.CHANGED_COUNT || 'not-run'}**`,
               `Responsive image tags observed on live library: **${process.env.LIVE_RESPONSIVE_COUNT || 'not-run'}**`,
               '',
+              'Production ordering: this transform runs after the downstream education writer, so later Learning or topic publication cannot erase responsive attachment attributes.',
               'Full-resolution WordPress media remains the destination for Full-size links. Cards and topic-page previews use responsive attachment sizes.'
             ];
             await core.summary.addRaw(lines.join('\n')).write();
