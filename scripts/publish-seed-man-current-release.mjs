@@ -21,8 +21,21 @@ if (templateReleaseMatches < 1) {
 }
 
 const generated = template.replaceAll('20260830-r4', release);
-if (generated.includes('20260830-r4') || !generated.includes(release)) {
+const generatedReleaseMatches = [...generated.matchAll(new RegExp(release.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'))].length;
+if (generated.includes('20260830-r4') || generatedReleaseMatches < templateReleaseMatches) {
   throw new Error(`Failed to bind Seed Man publisher template to ${release}.`);
+}
+
+if (process.env.SEED_MAN_PUBLISH_DRY_RUN === '1') {
+  console.log(JSON.stringify({
+    ok: true,
+    dryRun: true,
+    release,
+    templateReleaseMatches,
+    generatedReleaseMatches,
+    staleTemplateReleaseRemaining: generated.includes('20260830-r4')
+  }, null, 2));
+  process.exit(0);
 }
 
 const generatedPath = path.join(os.tmpdir(), `dtf-seed-man-publisher-${process.pid}-${Date.now()}.mjs`);
