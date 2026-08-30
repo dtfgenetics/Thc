@@ -66,6 +66,7 @@ jobs:
             '7 power-ups' \
             '3 checkpoints' \
             '<script src="./app.js" defer></script>' \
+            '<script src="./seed-man-production-art.js" defer></script>' \
             '<script src="./input-guard-v1.js" defer></script>'; do
             grep -Fq "$marker" <<<"$html" || { echo "Missing Sprout Run production marker: $marker" >&2; exit 1; }
           done
@@ -111,6 +112,18 @@ jobs:
             exit 1
           fi
 
+          art="$(fetch_asset 'seed-man-production-art.js')"
+          printf '%s' "$art" > "$RUNNER_TEMP/sprout-production-art.js"
+          node --check "$RUNNER_TEMP/sprout-production-art.js"
+          for marker in \
+            "seed-man-production-v1" \
+            "seed-man-locked-v1" \
+            "renderer: 'canvas2d-vector'" \
+            "original: true" \
+            'drawSeedMan = drawSeedManProduction'; do
+            grep -Fq "$marker" <<<"$art" || { echo "Missing production-art marker: $marker" >&2; exit 1; }
+          done
+
           guard="$(fetch_asset 'input-guard-v1.js')"
           printf '%s' "$guard" > "$RUNNER_TEMP/sprout-input-guard.js"
           node --check "$RUNNER_TEMP/sprout-input-guard.js"
@@ -130,4 +143,4 @@ jobs:
             if (!Array.isArray(level.hazards) || level.hazards.length !== 15) throw new Error(`hazards=${level.hazards?.length}`);
           ' "$level"
 
-          echo 'Expanded Sprout Run live route, runtime, level data, controls, and release fingerprints passed.'
+          echo 'Expanded Sprout Run live route, production Seed Man art, runtime, level data, controls, and release fingerprints passed.'
