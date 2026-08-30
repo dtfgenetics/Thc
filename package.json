@@ -6,7 +6,7 @@
     "apps/*"
   ],
   "scripts": {
-    "ai:setup": "bash scripts/setup-ai-tools.sh",
+    "ai:setup": "node scripts/setup-ai-tools.mjs",
     "verify:connections": "node scripts/verify-connections.mjs",
     "verify:portfolio": "node scripts/validate-portfolio-registry.mjs",
     "verify:navigation": "node scripts/validate-public-navigation.mjs",
