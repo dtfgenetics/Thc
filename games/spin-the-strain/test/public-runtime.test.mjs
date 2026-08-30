@@ -20,7 +20,15 @@ assert.match(app, /function readEmbeddedData\(/, 'runtime must read embedded dat
 assert.match(app, /function validateData\(/, 'runtime must validate embedded data');
 assert.match(app, /function createWheel\(/, 'runtime must include deterministic wheel creation');
 assert.match(app, /function spinWheel\(/, 'runtime must include deterministic spin selection');
-assert.match(app, /entries\[index\]\.id === state\.lastEntryId/, 'runtime must preserve immediate duplicate prevention');
+assert.match(app, /cycleNumber:\s*1/, 'runtime must initialize cycle number');
+assert.match(app, /cycleSeenEntryIds:\s*\[\]/, 'runtime must initialize cycle membership state');
+assert.match(app, /const unseenEntries = entries\.filter/, 'runtime must select only from unseen entries inside a cycle');
+assert.match(app, /if \(seen\.size >= entries\.length\)/, 'runtime must start a new cycle only after exhausting the pool');
+assert.match(app, /state\.cycleSeenEntryIds\.push\(entry\.id\)/, 'runtime must record each result in the active cycle');
+assert.match(app, /cyclePosition/, 'runtime must expose cycle position');
+assert.match(app, /cycleSize/, 'runtime must expose cycle size');
+assert.match(app, /All 18 entries appear once before this mode starts a new cycle\./, 'ready state must disclose the no-repeat cycle rule');
+assert.match(app, /Cycle \$\{result\.cycleNumber\}, \$\{result\.cyclePosition\} of \$\{result\.cycleSize\}/, 'ARIA result announcement must include cycle progress');
 assert.match(app, /ui\.category\.textContent = 'SPINNING'/, 'result card must hide the selected result during animation');
 assert.match(app, /ui\.label\.textContent = 'Wheel in motion'/, 'spinning state must not leak the answer');
 assert.match(app, /let spinGeneration = 0;/, 'spin generation must isolate delayed reveal callbacks');
@@ -46,8 +54,8 @@ assert.match(css, /@media\(prefers-reduced-motion:reduce\)/);
 assert.equal(canonical.modes.length, 3, 'mode count changed unexpectedly');
 assert.equal(canonical.entries.length, 54, 'entry count changed unexpectedly');
 for (const mode of canonical.modes) {
-  assert.equal(canonical.entries.filter((entry) => entry.mode === mode.id).length, 18, `${mode.id} must retain 18 equal-weight entries`);
+  assert.equal(canonical.entries.filter((entry) => entry.mode === mode.id).length, 18, `${mode.id} must retain 18 cycle entries`);
 }
 assert.equal(new Set(canonical.entries.map((entry) => entry.id)).size, canonical.entries.length, 'wheel entry ids must remain unique');
 
-console.log('Spin the Strain public runtime, reveal isolation and mobile wheel regression checks passed.');
+console.log('Spin the Strain public runtime, no-repeat cycle, reveal isolation and mobile wheel regression checks passed.');

@@ -52,6 +52,8 @@ function createWheel({ code, mode = 'strain-picker' } = {}, data) {
     code: normalized,
     mode,
     spinCount: 0,
+    cycleNumber: 1,
+    cycleSeenEntryIds: [],
     lastEntryId: null,
     lastResult: null,
     history: []
@@ -62,20 +64,36 @@ function spinWheel(inputState, data) {
   const state = clone(inputState);
   const { entries } = requireMode(data, state.mode);
   const spinNumber = state.spinCount + 1;
-  let index = hash(`${state.code}:${state.mode}:${spinNumber}`) % entries.length;
-  if (entries.length > 1 && entries[index].id === state.lastEntryId) index = (index + 1) % entries.length;
-  const entry = entries[index];
+  let seen = new Set(state.cycleSeenEntryIds ?? []);
+
+  if (seen.size >= entries.length) {
+    state.cycleNumber = Number(state.cycleNumber ?? 1) + 1;
+    state.cycleSeenEntryIds = [];
+    seen = new Set();
+  }
+
+  const unseenEntries = entries.filter((entry) => !seen.has(entry.id));
+  if (!unseenEntries.length) throw new Error('Wheel cycle could not find an unseen entry.');
+  const cycleNumber = Number(state.cycleNumber ?? 1);
+  const unseenIndex = hash(`${state.code}:${state.mode}:cycle:${cycleNumber}:spin:${spinNumber}`) % unseenEntries.length;
+  const entry = unseenEntries[unseenIndex];
+  const index = entries.findIndex((candidate) => candidate.id === entry.id);
+  const cyclePosition = state.cycleSeenEntryIds.length + 1;
   const result = {
     spinNumber,
     index,
     entryId: entry.id,
     label: entry.label,
     detail: entry.detail,
-    category: entry.category
+    category: entry.category,
+    cycleNumber,
+    cyclePosition,
+    cycleSize: entries.length
   };
   state.spinCount = spinNumber;
   state.lastEntryId = entry.id;
   state.lastResult = result;
+  state.cycleSeenEntryIds.push(entry.id);
   state.history.push(result);
   if (state.history.length > MAX_HISTORY) state.history = state.history.slice(-MAX_HISTORY);
   return state;
@@ -136,7 +154,7 @@ function validateData(candidate) {
   }
 
   for (const mode of candidate.modes) {
-    if (entriesForMode(candidate, mode.id).length !== 18) throw new Error(`${mode.title} must contain exactly 18 equal-weight entries`);
+    if (entriesForMode(candidate, mode.id).length !== 18) throw new Error(`${mode.title} must contain exactly 18 cycle entries`);
   }
 }
 
@@ -238,7 +256,7 @@ function renderHistory() {
     const label = document.createElement('strong');
     const category = document.createElement('small');
     label.textContent = result.label;
-    category.textContent = result.category;
+    category.textContent = `${result.category} · cycle ${result.cycleNumber} · ${result.cyclePosition}/${result.cycleSize}`;
     copy.append(label, category);
     item.append(count, copy);
     ui.history.append(item);
@@ -258,13 +276,14 @@ function renderResult() {
     ui.result.classList.remove('revealed');
     ui.category.textContent = 'READY';
     ui.label.textContent = 'Spin the wheel';
-    ui.detail.textContent = 'Every entry in this mode has equal weight.';
+    ui.detail.textContent = 'All 18 entries appear once before this mode starts a new cycle.';
     return;
   }
+  const result = state.lastResult;
   ui.result.classList.add('revealed');
-  ui.category.textContent = state.lastResult.category;
-  ui.label.textContent = state.lastResult.label;
-  ui.detail.textContent = state.lastResult.detail;
+  ui.category.textContent = `${result.category} · CYCLE ${result.cycleNumber} ${result.cyclePosition}/${result.cycleSize}`;
+  ui.label.textContent = result.label;
+  ui.detail.textContent = result.detail;
 }
 
 function render() {
@@ -304,7 +323,7 @@ function finishSpin(generation) {
   ui.wheelStage.setAttribute('aria-busy', 'false');
   render();
   const result = state.lastResult;
-  ui.announce.textContent = `Spin ${result.spinNumber}: ${result.label}. ${result.detail}`;
+  ui.announce.textContent = `Spin ${result.spinNumber}: ${result.label}. Cycle ${result.cycleNumber}, ${result.cyclePosition} of ${result.cycleSize}. ${result.detail}`;
 }
 
 function startSpin() {
@@ -323,7 +342,7 @@ ui.modes.addEventListener('click', (event) => {
   const button = event.target.closest('button[data-mode]');
   if (!button || spinning || button.dataset.mode === state.mode) return;
   resetWheel(state.code, button.dataset.mode);
-  ui.announce.textContent = `${currentMode().title} selected. Spin history reset.`;
+  ui.announce.textContent = `${currentMode().title} selected. Spin history and no-repeat cycle reset.`;
 });
 ui.code.addEventListener('input', () => setCode(ui.code.value));
 ui.code.addEventListener('keydown', (event) => {
@@ -334,7 +353,7 @@ ui.code.addEventListener('keydown', (event) => {
     return;
   }
   resetWheel(ui.code.value, state.mode);
-  ui.announce.textContent = `Wheel ${state.code} loaded.`;
+  ui.announce.textContent = `Wheel ${state.code} loaded. No-repeat cycle reset.`;
 });
 ui.random.addEventListener('click', () => {
   resetWheel(randomCode(), state.mode);
@@ -380,7 +399,7 @@ function load() {
     state = createWheel({ code, mode }, data);
     setCode(code);
     safeReplaceUrl();
-    ui.load.textContent = '3 equal-weight wheels · 54 prompts · deterministic share codes · S to spin';
+    ui.load.textContent = '3 wheels · 18-entry no-repeat cycles · deterministic share codes · S to spin';
     render();
   } catch (error) {
     console.error(error);
