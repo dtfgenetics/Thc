@@ -39,6 +39,7 @@ jobs:
       - name: Validate browser JavaScript syntax
         run: |
           node --check site/public-route-patch/games/seed-man-platformer/app.js
+          node --check site/public-route-patch/games/seed-man-platformer/seed-man-production-art.js
           node --check site/public-route-patch/games/seed-man-platformer/input-guard-v1.js
           node --check site/public-route-patch/games/seed-man-platformer/physics.mjs
           node --check games/seed-man-platformer/test/browser-smoke.mjs
@@ -55,6 +56,7 @@ jobs:
           route=site/public-route-patch/games/seed-man-platformer
           test -s "$route/index.html"
           test -s "$route/app.js"
+          test -s "$route/seed-man-production-art.js"
           test -s "$route/input-guard-v1.js"
           test -s "$route/seed-man.css"
           test -s "$route/physics.mjs"
@@ -69,7 +71,10 @@ jobs:
           grep -Fq '"requiredPickups": 24' "$route/index.html"
           grep -Fq 'JUMP ×2' "$route/index.html"
           grep -Fq '<script src="./app.js" defer></script>' "$route/index.html"
+          grep -Fq '<script src="./seed-man-production-art.js" defer></script>' "$route/index.html"
           grep -Fq '<script src="./input-guard-v1.js" defer></script>' "$route/index.html"
+          grep -Fq 'seed-man-production-v1' "$route/seed-man-production-art.js"
+          grep -Fq 'seed-man-locked-v1' "$route/seed-man-production-art.js"
           grep -Fq 'No third-party level layouts or character assets are used.' "$route/index.html"
       - name: Install browser-test dependencies
         run: |
