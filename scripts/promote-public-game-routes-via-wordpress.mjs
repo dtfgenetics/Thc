@@ -111,7 +111,7 @@ RewriteRule ^learn/(academy|atlas|cultivation-science|glossary|plant-health|sear
 RewriteRule ^community/grow-offs(?:/(.*))?/?$ /dtf-content-overlay/community/grow-offs/$1 [L]
 RewriteRule ^games/seed-ascent(?:/(.*))?/?$ /dtf-content-overlay/games/seed-ascent/$1 [L]
 RewriteRule ^_next/static/(.*)$ /dtf-content-overlay/_next/static/$1 [L]
-RewriteRule ^seed-ascent\.html$ /dtf-content-overlay/seed-ascent.html [L]
+RewriteRule ^seed-ascent\\.html$ /dtf-content-overlay/seed-ascent.html [L]
 RewriteRule ^seed-ascent/(.*)$ /dtf-content-overlay/seed-ascent/$1 [L]`;
 const rootOverlayBase64 = Buffer.from(rootOverlayBlock, 'utf8').toString('base64');
 
