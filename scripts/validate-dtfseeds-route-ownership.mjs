@@ -3,8 +3,12 @@ import { readFile } from 'node:fs/promises';
 // This validator is intentionally lightweight so every ownership-affecting push can run it.
 const files = {
   canonicalPages: 'scripts/apply-wordpress-public-content-rest.mjs',
+  ownershipWrapper: 'scripts/apply-wordpress-public-content-owned-routes.mjs',
   commerceVisuals: 'scripts/rebuild-wordpress-commerce-visuals.mjs',
   canonicalWorkflow: '.github/workflows/wordpress-canonical-production.yml',
+  learningWorkflow: '.github/workflows/wordpress-learning-experience-v3-production.yml',
+  learningTransaction: 'scripts/run-learning-v3-connected-production.sh',
+  educationNavigation: 'scripts/update-wordpress-learn-expansion-v1.mjs',
   geneticsWorkflow: '.github/workflows/wordpress-genetics-library-production.yml'
 };
 
@@ -36,6 +40,55 @@ failIf(
   'Commerce visual publisher updates the Seeds page.'
 );
 
+// The broad canonical workflow must preserve the Learning-owned Home/Learn
+// content and must not invoke the old visual writer or gate /learn/ itself.
+failIf(
+  !/node scripts\/apply-wordpress-public-content-owned-routes\.mjs/m.test(content.canonicalWorkflow),
+  'Canonical WordPress workflow no longer uses the ownership-preserving reconciliation wrapper.'
+);
+failIf(
+  /node scripts\/apply-wordpress-public-content-rest\.mjs/m.test(content.canonicalWorkflow),
+  'Canonical WordPress workflow directly invokes the broad page writer instead of the ownership-preserving wrapper.'
+);
+failIf(
+  /node scripts\/rebuild-wordpress-visual-site\.mjs/m.test(content.canonicalWorkflow),
+  'Canonical WordPress workflow still invokes the legacy Home/Learn visual writer.'
+);
+failIf(
+  /verify_page\s+['"]\/learn\//m.test(content.canonicalWorkflow),
+  'Canonical WordPress workflow verifies /learn/ as if it owned the route.'
+);
+failIf(
+  !/for \(const slug of \['home', 'learn'\]\)/m.test(content.ownershipWrapper),
+  'Ownership-preserving reconciliation wrapper does not preserve both Home and Learn.'
+);
+
+// Education child publishers may observe the Learn root but must not write it.
+failIf(
+  /method:\s*['"]POST['"][\s\S]{0,300}\/wp-json\/wp\/v2\/pages/m.test(content.educationNavigation) ||
+    /\/wp-json\/wp\/v2\/pages\/\$\{/m.test(content.educationNavigation),
+  'Education expansion navigation compatibility step still writes the Learn root.'
+);
+failIf(
+  !/mutation:\s*['"]none['"]/m.test(content.educationNavigation),
+  'Education expansion navigation step is not explicitly read-only.'
+);
+
+// Learning V3 remains the automatic Learn owner and its serialized transaction
+// must carry both the connected map and expanded reference-system links.
+failIf(
+  !/bash scripts\/run-learning-v3-connected-production\.sh/m.test(content.learningWorkflow),
+  'Learning V3 workflow no longer invokes its connected owner transaction.'
+);
+failIf(
+  !/data-dtf-learning-expanded-reference=\\?"v1\\?"/m.test(content.learningTransaction),
+  'Learning V3 owner transaction no longer publishes expanded reference links.'
+);
+failIf(
+  !/Learn the plant as a connected system\./m.test(content.learningTransaction),
+  'Learning V3 owner transaction no longer carries the public Learn ownership fingerprint.'
+);
+
 // The broad canonical workflow should not make an obsolete Seeds-layout check
 // part of its own release gate; dedicated genetics production owns that proof.
 failIf(
@@ -62,5 +115,7 @@ if (failures.length) {
 console.log('DTFSeeds route ownership validation passed.');
 console.log('- /seeds/ is excluded from generic WordPress page reconciliation.');
 console.log('- commerce visual publishing does not fetch or update /seeds/.');
-console.log('- canonical WordPress verification does not claim /seeds/.');
+console.log('- canonical WordPress production preserves Home/Learn and does not claim /learn/.');
+console.log('- education child publishing cannot mutate the Learn root.');
+console.log('- Learning Experience V3 retains connected-map and expanded-reference ownership.');
 console.log('- the dedicated genetics workflow retains publisher + verification ownership.');
