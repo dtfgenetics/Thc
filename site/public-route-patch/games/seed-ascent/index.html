@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Seed Ascent | DTF Games</title>
+<meta name="description" content="Climb an endless canopy, collect gems, stomp pests, and chase a new high score in Seed Ascent." />
+<meta name="robots" content="index,follow" />
+<link rel="canonical" href="https://dtfseeds.com/games/seed-ascent/" />
+<style>
+*{box-sizing:border-box}html,body{margin:0;background:#071108;color:#e8f6e8;font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif}body{min-height:100dvh;padding:12px;display:grid;place-items:start center;overflow-x:hidden}.game{width:min(100%,780px);background:linear-gradient(145deg,#102313,#08160b);border:1px solid #2c5632;border-radius:24px;padding:14px;box-shadow:0 20px 60px #000a}.top{display:flex;justify-content:space-between;gap:12px;align-items:center;margin:0 4px 10px}.title{font-weight:900;color:#8cf29a;letter-spacing:.02em}.stats{display:flex;gap:12px;font-size:.85rem;color:#9fb5a2}.stats b{color:#ecffef}.frame{border:2px solid #2f6339;border-radius:18px;overflow:hidden;background:#071108}canvas{display:block;width:100%;height:auto;touch-action:none;user-select:none}.controls{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin-top:10px}.controls button{border:1px solid #3b6e44;background:#17381d;color:#effff0;padding:10px 16px;border-radius:12px;font-weight:800;font-size:.95rem;cursor:pointer;touch-action:none}.controls .primary{background:#3c8148}.controls .danger{background:#572d2d;border-color:#7b4343}.hint{text-align:center;color:#739079;font-size:.78rem;margin-top:8px}.back{display:inline-flex;margin:0 0 10px;color:#9fd4a8;text-decoration:none;font-weight:800;font-size:.85rem}@media(max-width:560px){body{padding:6px}.game{padding:8px;border-radius:16px}.top{align-items:flex-start}.title{font-size:.95rem}.stats{font-size:.7rem;gap:8px}.controls button{flex:1 1 22%;min-width:68px;padding:11px 8px}.hint{font-size:.7rem}}
+</style>
+</head>
+<body>
+<main class="game">
+  <a class="back" href="/games/">← Game Hub</a>
+  <div class="top"><div class="title">🌱 SEED ASCENT</div><div class="stats"><span>Score <b id="score">0</b></span><span>Best <b id="best">0</b></span><span>Gems <b id="gems">0</b></span></div></div>
+  <div class="frame"><canvas id="c" width="600" height="720" aria-label="Seed Ascent platform game"></canvas></div>
+  <div class="controls"><button class="primary" id="start">▶ Start</button><button id="left">← Left</button><button id="jump">↑ Jump</button><button id="right">Right →</button><button class="danger" id="reset">↻ Reset</button></div>
+  <div class="hint">Arrow keys / A D · Space / W / ↑ to jump · Double jump enabled</div>
+</main>
+<script>
+(()=>{
+const c=document.getElementById('c'),x=c.getContext('2d'),W=c.width,H=c.height,SY=H-150;
+const ui={score:document.getElementById('score'),best:document.getElementById('best'),gems:document.getElementById('gems')};
+const state={started:false,over:false,bonus:0,height:0,score:0,best:+localStorage.seedAscentBest||0,gems:0};
+const p={x:W/2-16,y:SY,w:32,h:32,vx:0,vy:0,jumps:0,on:false};
+const keys={left:false,right:false};let plats=[],gems=[],enemies=[],parts=[],clouds=[],cam=0,raf=0;
+const rnd=(a,b)=>a+Math.random()*(b-a),clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+function platform(y,starter=false){const w=starter?150:rnd(72,132),px=starter?W/2-w/2:rnd(22,W-w-22),type=!starter&&Math.random()<.13?'bounce':'normal',tufts=Array.from({length:Math.random()<.5?0:1+Math.floor(Math.random()*3)},()=>({o:rnd(10,w-10),h:rnd(5,10)}));plats.push({x:px,y,w,h:13,type,tufts});if(!starter&&Math.random()<.28)gems.push({x:px+w/2+rnd(-22,22),y:y-25,r:9,gold:Math.random()<.18,dead:false});if(!starter&&Math.random()<.1&&w>88)enemies.push({x:px+w/2,y:y-19,base:y-19,min:px+14,max:px+w-14,dir:Math.random()<.5?-1:1,s:rnd(.55,1.05),fast:Math.random()<.2,dead:false})}
+function cloudsInit(){clouds=Array.from({length:8},()=>({x:rnd(-80,W),y:rnd(20,H*.5),w:rnd(70,150),h:rnd(22,44),s:rnd(.08,.28),a:rnd(.05,.14)}))}
+function burst(px,py,color,n=12){for(let i=0;i<n;i++){const a=rnd(0,Math.PI*2),s=rnd(.8,3);parts.push({x:px,y:py,vx:Math.cos(a)*s,vy:Math.sin(a)*s-1,r:rnd(2,4),life:rnd(35,70),max:70,color})}}
+function reset(started=false){state.started=started;state.over=false;state.bonus=0;state.height=0;state.score=0;state.gems=0;p.x=W/2-16;p.y=SY;p.vx=p.vy=0;p.jumps=0;p.on=false;cam=0;plats=[];gems=[];enemies=[];parts=[];platform(H-58,true);for(let i=1;i<13;i++)platform(H-58-i*rnd(86,118));cloudsInit();sync()}
+function sync(){state.score=state.height+state.bonus;ui.score.textContent=state.score;ui.best.textContent=state.best;ui.gems.textContent=state.gems}
+function jump(){if(!state.started){reset(true);return}if(state.over){reset(true);return}if(p.jumps<2){p.vy=-12*(p.jumps?0.88:1);p.jumps++;p.on=false;burst(p.x+p.w/2,p.y+p.h,'#90f39c',p.jumps===2?10:5)}}
+function gameOver(){if(state.over)return;state.over=true;if(state.score>state.best){state.best=state.score;localStorage.seedAscentBest=state.best;burst(W/2,p.y,'#ffd84a',35)}sync()}
+function update(){if(!state.started||state.over)return;const prevBottom=p.y+p.h;p.vx=keys.left?-5:keys.right?5:p.vx*.78;p.vy=Math.min(10,p.vy+.5);p.x=clamp(p.x+p.vx,0,W-p.w);p.y+=p.vy;p.on=false;for(const q of plats){if(p.vy>0&&p.x+p.w>q.x+7&&p.x<q.x+q.w-7&&prevBottom<=q.y+2&&p.y+p.h>=q.y&&p.y+p.h<=q.y+q.h+18){p.y=q.y-p.h;p.vy=q.type==='bounce'?-15.5:0;p.on=true;p.jumps=0;if(q.type==='bounce')burst(p.x+p.w/2,p.y+p.h,'#85ff99',10)}}
+for(const g of gems){if(g.dead)continue;const dx=p.x+p.w/2-g.x,dy=p.y+p.h/2-g.y;if(Math.hypot(dx,dy)<g.r+20){g.dead=true;state.gems+=g.gold?5:1;state.bonus+=g.gold?12:3;burst(g.x,g.y,g.gold?'#ffd84a':'#8cf29a',18);sync()}}
+for(const e of enemies){if(e.dead)continue;e.x+=e.s*(e.fast?1.6:1)*e.dir;if(e.x<=e.min||e.x>=e.max){e.x=clamp(e.x,e.min,e.max);e.dir*=-1}const dx=p.x+p.w/2-e.x,dy=p.y+p.h/2-e.y;if(Math.abs(dx)<25&&Math.abs(dy)<24){if(p.vy>0&&p.y+p.h-e.y<17){e.dead=true;p.vy=-9.5;state.bonus+=6;burst(e.x,e.y,'#ff795f',20);sync()}else{gameOver();return}}}
+cam+=(H*.6-p.y-cam)*.08;if(p.y+cam>H+110){gameOver();return}let high=Math.min(...plats.map(q=>q.y));while(p.y<high+240){platform(high-rnd(86,120));high=Math.min(...plats.map(q=>q.y))}const cut=p.y+H*1.7;plats=plats.filter(q=>q.y<cut);gems=gems.filter(g=>g.y<cut&&!g.dead);enemies=enemies.filter(e=>e.y<cut&&!e.dead);for(const a of parts){a.x+=a.vx;a.y+=a.vy;a.vy+=.05;a.life--}parts=parts.filter(a=>a.life>0);for(const q of clouds){q.x+=q.s;if(q.x-q.w/2>W)q.x=-q.w/2}const h=Math.max(0,Math.floor((SY-p.y)/10));if(h>state.height){state.height=h;sync()}}
+function rr(px,py,w,h,r){x.beginPath();x.roundRect(px,py,w,h,r);x.fill()}
+function draw(){x.clearRect(0,0,W,H);let bg=x.createLinearGradient(0,0,0,H);bg.addColorStop(0,'#112b2b');bg.addColorStop(.55,'#12381f');bg.addColorStop(1,'#071108');x.fillStyle=bg;x.fillRect(0,0,W,H);for(const q of clouds){const y=q.y+cam*.08;x.globalAlpha=q.a;x.fillStyle='#fff';x.beginPath();x.ellipse(q.x,y,q.w/2,q.h/2,0,0,Math.PI*2);x.fill()}x.globalAlpha=1;
+for(const q of plats){const y=q.y+cam;if(y<-25||y>H+25)continue;x.shadowBlur=q.type==='bounce'?18:8;x.shadowColor=q.type==='bounce'?'#8cf29a':'#0008';x.fillStyle=q.type==='bounce'?'#3f9b52':'#286536';rr(q.x,y,q.w,q.h,6);x.shadowBlur=0;x.fillStyle='#72b778';x.fillRect(q.x+8,y+2,q.w-16,2);x.fillStyle='#4b9a58';for(const t of q.tufts){x.beginPath();x.moveTo(q.x+t.o,y);x.lineTo(q.x+t.o-3,y-t.h);x.lineTo(q.x+t.o+3,y-t.h*.7);x.fill()}}
+for(const g of gems){const y=g.y+cam;if(y<-20||y>H+20)continue;x.shadowBlur=16;x.shadowColor=g.gold?'#ffd84a':'#8cf29a';x.fillStyle=g.gold?'#ffd84a':'#8cf29a';x.beginPath();x.arc(g.x,y,g.r,0,Math.PI*2);x.fill();x.shadowBlur=0;x.fillStyle='#fff9';x.beginPath();x.arc(g.x-3,y-3,2.6,0,Math.PI*2);x.fill()}
+for(const e of enemies){const y=e.y+cam;x.fillStyle=e.fast?'#ff5e5e':'#c96f3e';x.beginPath();x.arc(e.x,y+9,12,0,Math.PI*2);x.fill();x.fillStyle='#fff';x.beginPath();x.arc(e.x-4,y+6,3,0,Math.PI*2);x.arc(e.x+4,y+6,3,0,Math.PI*2);x.fill();x.fillStyle='#222';x.beginPath();x.arc(e.x-4,y+7,1.4,0,Math.PI*2);x.arc(e.x+4,y+7,1.4,0,Math.PI*2);x.fill()}
+const py=p.y+cam;x.shadowBlur=20;x.shadowColor='#8cf29a55';let pg=x.createRadialGradient(p.x+8,py+7,2,p.x+16,py+16,22);pg.addColorStop(0,'#95ba79');pg.addColorStop(.6,'#557d3d');pg.addColorStop(1,'#29481c');x.fillStyle=pg;x.beginPath();x.ellipse(p.x+16,py+16,16,17,-.15,0,Math.PI*2);x.fill();x.shadowBlur=0;x.strokeStyle='#dfffd04d';x.lineWidth=2;x.beginPath();x.ellipse(p.x+16,py+16,7,13,-.15,0,Math.PI*2);x.stroke();if(!p.on){x.strokeStyle='#7ee68e';x.beginPath();x.moveTo(p.x+16,py+2);x.quadraticCurveTo(p.x+11,py-9,p.x+7,py-20);x.stroke();x.fillStyle='#7ee68e';x.beginPath();x.ellipse(p.x+3,py-21,7,4,-.4,0,Math.PI*2);x.fill();x.beginPath();x.ellipse(p.x+11,py-19,7,4,.4,0,Math.PI*2);x.fill()}
+for(const a of parts){x.globalAlpha=Math.max(0,a.life/a.max);x.fillStyle=a.color;x.beginPath();x.arc(a.x,a.y+cam,a.r,0,Math.PI*2);x.fill()}x.globalAlpha=1;x.fillStyle='#ffffff22';x.font='12px ui-monospace,monospace';x.fillText(`↑ ${Math.max(0,Math.floor((SY-p.y)/10))}m`,12,20);
+if(!state.started||state.over){x.fillStyle='#000b';x.fillRect(0,0,W,H);x.textAlign='center';x.fillStyle=state.over?'#ff8585':'#8cf29a';x.font='900 48px system-ui';x.fillText(state.over?'Game Over':'Seed Ascent',W/2,H/2-42);x.fillStyle='#e5f7e7';x.font='20px system-ui';x.fillText(state.over?`Score ${state.score}`:'Climb higher. Collect gems. Stomp pests.',W/2,H/2+8);x.fillStyle='#9fc7a4';x.font='16px system-ui';x.fillText(state.over?'Press Start or tap the game to retry':'Press Start or tap the game',W/2,H/2+52);x.textAlign='left'}}
+function loop(){update();draw();raf=requestAnimationFrame(loop)}
+function hold(id,key){const b=document.getElementById(id);const on=e=>{e.preventDefault();keys[key]=true;try{b.setPointerCapture(e.pointerId)}catch{}};const off=e=>{e?.preventDefault();keys[key]=false};b.addEventListener('pointerdown',on);['pointerup','pointercancel','lostpointercapture'].forEach(t=>b.addEventListener(t,off))}
+document.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key==='a')keys.left=true;if(e.key==='ArrowRight'||e.key==='d')keys.right=true;if(e.key===' '||e.key==='ArrowUp'||e.key==='w'){e.preventDefault();jump()}});document.addEventListener('keyup',e=>{if(e.key==='ArrowLeft'||e.key==='a')keys.left=false;if(e.key==='ArrowRight'||e.key==='d')keys.right=false});hold('left','left');hold('right','right');document.getElementById('jump').addEventListener('pointerdown',e=>{e.preventDefault();jump()});document.getElementById('start').onclick=()=>reset(true);document.getElementById('reset').onclick=()=>reset(false);c.addEventListener('pointerdown',e=>{e.preventDefault();jump()});window.addEventListener('blur',()=>keys.left=keys.right=false);reset(false);loop();
+})();
+</script>
+</body>
+</html>
