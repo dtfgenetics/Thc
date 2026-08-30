@@ -129,16 +129,49 @@ jobs:
         run: |
           set -euo pipefail
           auth="$(printf '%s:%s' "$WP_API_USERNAME" "$WP_API_PASSWORD" | base64 -w0)"
-          curl -4 --fail --silent --show-error --location -H "Authorization: Basic $auth" "$WP_SITE_URL/wp-json/wp/v2/settings?context=edit" -o "$RUNNER_TEMP/settings.json"
+          curl -4 --fail --silent --show-error --location --retry 4 --retry-all-errors --retry-delay 2 \
+            --connect-timeout 15 --max-time 60 \
+            -H "Authorization: Basic $auth" \
+            "$WP_SITE_URL/wp-json/wp/v2/settings?context=edit" \
+            -o "$RUNNER_TEMP/settings.json"
           site_icon="$(node -p "Number(require(process.argv[1]).site_icon || 0)" "$RUNNER_TEMP/settings.json")"
           [[ "$site_icon" -gt 0 ]]
-          curl -4 --fail --silent --show-error --location -H "Authorization: Basic $auth" "$WP_SITE_URL/wp-json/wp/v2/media/$site_icon?context=edit" -o "$RUNNER_TEMP/icon.json"
+          curl -4 --fail --silent --show-error --location --retry 4 --retry-all-errors --retry-delay 2 \
+            --connect-timeout 15 --max-time 60 \
+            -H "Authorization: Basic $auth" \
+            "$WP_SITE_URL/wp-json/wp/v2/media/$site_icon?context=edit" \
+            -o "$RUNNER_TEMP/icon.json"
           node - <<'NODE' "$RUNNER_TEMP/icon.json"
           const m=require(process.argv[2]);
           const text=`${m.title?.rendered||''} ${m.alt_text||''}`.toLowerCase();
           if(!text.includes('dtf genetics cannabis leaf')) throw new Error('WordPress Site Icon is not the DTF cannabis leaf');
           NODE
           echo "site_icon=$site_icon" >> "$GITHUB_OUTPUT"
+
+      - name: Verify preserved WordPress Home brand media through REST
+        id: home_brand
+        shell: bash
+        env:
+          EXPECTED_SITE_ICON: ${{ steps.icon.outputs.site_icon }}
+        run: |
+          set -euo pipefail
+          auth="$(printf '%s:%s' "$WP_API_USERNAME" "$WP_API_PASSWORD" | base64 -w0)"
+          curl -4 --fail --silent --show-error --location --retry 4 --retry-all-errors --retry-delay 2 \
+            --connect-timeout 15 --max-time 60 \
+            -H "Authorization: Basic $auth" \
+            "$WP_SITE_URL/wp-json/wp/v2/pages?slug=home&context=edit&per_page=10" \
+            -o "$RUNNER_TEMP/wordpress-home.json"
+          node - <<'NODE' "$RUNNER_TEMP/wordpress-home.json" "$EXPECTED_SITE_ICON"
+          const fs=require('fs');
+          const pages=JSON.parse(fs.readFileSync(process.argv[2],'utf8'));
+          const expected=Number(process.argv[3] || 0);
+          if(!Array.isArray(pages) || pages.length !== 1) throw new Error(`Expected exactly one WordPress Home page; found ${Array.isArray(pages) ? pages.length : 'invalid response'}`);
+          const page=pages[0];
+          if(Number(page.featured_media || 0) !== expected) throw new Error(`WordPress Home featured_media ${page.featured_media || 0} does not match DTF site icon ${expected}`);
+          const content=page.content?.raw || page.content?.rendered || '';
+          if(!content.includes('Genetics first. Cultivation science behind it.')) throw new Error('Preserved WordPress Home content marker is missing from REST source.');
+          console.log(`WordPress Home page ${page.id} preserves Learning-owned content and DTF brand media ${expected}.`);
+          NODE
 
       - name: Verify live WordPress surfaces owned by this lane
         id: verify
@@ -199,9 +232,8 @@ jobs:
             echo "$path verified with $count WordPress-hosted image references"
           }
 
-          # The public root is owned by the Public Suite overlay. Learning V3 owns
-          # the WordPress Home body at /home/, so verify the WordPress route there.
-          verify_page '/home/' 'Genetics first. Cultivation science behind it.' 8
+          # Public Home is served by the Public Suite overlay, so this lane does
+          # not assert its preserved WordPress Home body through public HTTP.
           verify_page '/shop/' 'dtf-commerce-archive-style' 2
           verify_page '/community/' 'Join the official DTF / Teaching Healthy Cultivation Discord' 0
           verify_page '/contact/' 'Join the official DTF / Teaching Healthy Cultivation Discord' 0
@@ -215,26 +247,6 @@ jobs:
             '/product/10-reg-f1-blueberry-bubblegum/'; do
             grep -Fqi "$route" "$shop_body" || { echo "Reviewed product route missing from live Shop archive: $route" >&2; exit 1; }
           done
-
-      - name: Verify browser icon and URL social image on WordPress Home
-        id: url_image
-        shell: bash
-        run: |
-          set -euo pipefail
-          body="$RUNNER_TEMP/wp-production-_home_.html"
-          node - <<'NODE' "$body"
-          const fs=require('fs');
-          const path=process.argv[2];
-          const html=fs.readFileSync(path,'utf8');
-          if(/\/assets\/dtf-home\/dtf-mark\.svg/i.test(html)) throw new Error('Old static favicon remains on WordPress Home.');
-          if(/\/wp-content\/uploads\/2025\/07\/1000007006-1024x450\.png/i.test(html)) throw new Error('Old 2025 social preview image remains on WordPress Home.');
-          const iconTags=[...html.matchAll(/<link\b[^>]*rel=["'][^"']*icon[^"']*["'][^>]*>/gi)].map(m=>m[0]);
-          if(!iconTags.some(tag=>/wp-content\/uploads\//i.test(tag))) throw new Error(`No WordPress-controlled favicon found on WordPress Home: ${iconTags.slice(0,4).join(' ')}`);
-          const ogTags=[...html.matchAll(/<meta\b[^>]*property=["']og:image["'][^>]*>/gi)].map(m=>m[0]);
-          if(!ogTags.length) throw new Error('No og:image meta tag found on WordPress Home.');
-          if(!ogTags.some(tag=>/dtf-potleaf-512\.png/i.test(tag))) throw new Error(`WordPress Home og:image is not the controlled DTF brand media: ${ogTags.join(' ')}`);
-          console.log('WordPress Home favicon and og:image use current DTF-controlled media.');
-          NODE
 
       - name: Reconcile canonical WooCommerce product copy and categories
         id: commerce_reconcile
@@ -284,8 +296,8 @@ jobs:
           PUBLISH_OUTCOME: ${{ steps.publish.outcome }}
           COMMERCE_VISUAL_OUTCOME: ${{ steps.commerce_visual.outcome }}
           SHOP_ARCHIVE_OUTCOME: ${{ steps.shop_archive.outcome }}
+          HOME_BRAND_OUTCOME: ${{ steps.home_brand.outcome }}
           VERIFY_OUTCOME: ${{ steps.verify.outcome }}
-          URL_IMAGE_OUTCOME: ${{ steps.url_image.outcome }}
           SITE_ICON: ${{ steps.icon.outputs.site_icon }}
           COMMERCE_RECONCILE_OUTCOME: ${{ steps.commerce_reconcile.outcome }}
           COMMERCE_ROLLBACK_OUTCOME: ${{ steps.commerce_rollback.outcome }}
@@ -301,11 +313,11 @@ jobs:
               `Commerce presentation + URL brand state: **${process.env.COMMERCE_VISUAL_OUTCOME || 'not-run'}**`,
               `WooCommerce Shop archive styling: **${process.env.SHOP_ARCHIVE_OUTCOME || 'not-run'}**`,
               `Cannabis-leaf Site Icon media ID: **${process.env.SITE_ICON || 'not-run'}**`,
+              `Preserved WordPress Home REST proof: **${process.env.HOME_BRAND_OUTCOME || 'not-run'}**`,
               `Live owned-surface verification: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
-              `WordPress Home favicon + URL social image verification: **${process.env.URL_IMAGE_OUTCOME || 'not-run'}**`,
               `WooCommerce reconciliation: **${process.env.COMMERCE_RECONCILE_OUTCOME || 'not-run'}**`,
               `WooCommerce rollback: **${process.env.COMMERCE_ROLLBACK_OUTCOME || 'not-needed'}**`, '',
-              'Production scope: canonical non-Learn WordPress editorial pages, WooCommerce presentation, current brand imagery, and fresh visitor verification. The public root belongs to the Public Suite overlay; WordPress Home and Learn bodies are preserved here and finalized by the downstream Learning Experience V3 owner.'
+              'Production scope: canonical non-Learn WordPress editorial pages, WooCommerce presentation, current brand imagery, and fresh visitor verification. Public Home belongs to the Public Suite overlay; WordPress Home and Learn bodies are preserved here and finalized by the downstream Learning Experience V3 owner.'
             ].join('\n');
             await core.summary.addRaw(body).write();
             try {
