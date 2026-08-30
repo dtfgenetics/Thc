@@ -7,6 +7,7 @@ on:
     paths:
       - .github/workflows/publish-seed-man-production.yml
       - scripts/publish-seed-man-route-via-wordpress.mjs
+      - scripts/publish-seed-man-current-release.mjs
       - site/public-route-patch/games/seed-man-platformer/**
 
 permissions:
@@ -36,7 +37,17 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Validate canonical r4 source
+      - name: Resolve canonical Seed Man release
+        shell: bash
+        run: |
+          set -euo pipefail
+          root=site/public-route-patch/games/seed-man-platformer
+          release="$(sed -n 's/.*name="dtf-sprout-release" content="\([^"]*\)".*/\1/p' "$root/index.html" | head -n 1)"
+          [[ "$release" =~ ^[0-9]{8}-r[0-9]+$ ]] || { echo "Invalid Sprout Run release marker: $release" >&2; exit 1; }
+          echo "SPROUT_RELEASE=$release" >> "$GITHUB_ENV"
+          echo "Canonical Sprout Run release: $release"
+
+      - name: Validate canonical source
         shell: bash
         run: |
           set -euo pipefail
@@ -46,7 +57,11 @@ jobs:
           grep -Fq 'Seed Man · Greenhouse Gauntlet' "$root/index.html"
           grep -Fq '0 / 24' "$root/index.html"
           grep -Fq 'JUMP ×2' "$root/index.html"
-          grep -Fq '20260830-r4' "$root/index.html"
+          grep -Fq "name=\"dtf-sprout-release\" content=\"${SPROUT_RELEASE}\"" "$root/index.html"
+          grep -Fq 'groundAcceleration: 2600' "$root/app.js"
+          grep -Fq 'jumpCutGravityMultiplier: 2.35' "$root/app.js"
+          grep -Fq 'function cameraBlend(' "$root/app.js"
+          grep -Fq 'lostpointercapture' "$root/app.js"
           ! grep -Fq 'Original browser vertical slice' "$root/index.html"
           ! grep -Fq '0 / 8' "$root/index.html"
           node --check "$root/app.js"
@@ -54,14 +69,19 @@ jobs:
           node --check "$root/seed-man-production-art.js"
           node --check "$root/input-guard-v1.js"
           node --check scripts/publish-seed-man-route-via-wordpress.mjs
+          node --check scripts/publish-seed-man-current-release.mjs
 
       - name: Atomically publish Seed Man route and purge caches
         shell: bash
         run: |
           set -euo pipefail
-          node scripts/publish-seed-man-route-via-wordpress.mjs | tee "$RUNNER_TEMP/seed-man-publish.json"
+          node scripts/publish-seed-man-current-release.mjs | tee "$RUNNER_TEMP/seed-man-publish.json"
           grep -Eq '"server_verified"[[:space:]]*:[[:space:]]*true' "$RUNNER_TEMP/seed-man-publish.json"
-          grep -Eq '"release"[[:space:]]*:[[:space:]]*"20260830-r4"' "$RUNNER_TEMP/seed-man-publish.json"
+          node -e '
+            const fs = require("fs");
+            const body = JSON.parse(fs.readFileSync(process.argv[1], "utf8"));
+            if (body.release !== process.env.SPROUT_RELEASE) throw new Error(`publisher returned ${body.release}; expected ${process.env.SPROUT_RELEASE}`);
+          ' "$RUNNER_TEMP/seed-man-publish.json"
 
       - name: Verify origin and bare visitor URL
         shell: bash
@@ -73,7 +93,8 @@ jobs:
             grep -Fq 'Seed Man · Greenhouse Gauntlet' "$body"
             grep -Fq '0 / 24' "$body"
             grep -Fq 'JUMP ×2' "$body"
-            grep -Fq '20260830-r4' "$body"
+            grep -Fq "name=\"dtf-sprout-release\" content=\"${SPROUT_RELEASE}\"" "$body"
+            grep -Fq 'tap for a short hop' "$body"
             ! grep -Fq 'Original browser vertical slice' "$body"
             ! grep -Fq '0 / 8' "$body"
           }
@@ -89,7 +110,7 @@ jobs:
             if verify_body "$body"; then origin_ok=1; break; fi
             sleep $((attempt * 2))
           done
-          test "$origin_ok" = 1 || { echo 'Cache-busted origin still does not serve r4.' >&2; cat "$RUNNER_TEMP/origin.headers" >&2 || true; exit 1; }
+          test "$origin_ok" = 1 || { echo "Cache-busted origin still does not serve ${SPROUT_RELEASE}." >&2; cat "$RUNNER_TEMP/origin.headers" >&2 || true; exit 1; }
 
           bare_ok=0
           for attempt in {1..12}; do
@@ -104,11 +125,16 @@ jobs:
           test "$bare_ok" = 1 || { echo 'Bare visitor URL still serves stale Seed Man after atomic publish and purge.' >&2; cat "$RUNNER_TEMP/bare.headers" >&2 || true; exit 1; }
 
           for asset in app.js canvas-compat-v1.js seed-man-production-art.js input-guard-v1.js seed-man.css physics.mjs data/level-01.json; do
-            curl -fsSL --retry 4 --retry-delay 3 "${url}${asset}" -o "$RUNNER_TEMP/$(basename "$asset")"
+            curl -fsSL --retry 4 --retry-delay 3 "${url}${asset}?v=${SPROUT_RELEASE}&dtf_seed_asset=${GITHUB_RUN_ID}" -o "$RUNNER_TEMP/$(basename "$asset")"
           done
           grep -Fq 'seed-man-production-v1' "$RUNNER_TEMP/seed-man-production-art.js"
           grep -Fq 'seed-man-locked-v1' "$RUNNER_TEMP/seed-man-production-art.js"
           grep -Fq 'willReadFrequently' "$RUNNER_TEMP/canvas-compat-v1.js"
+          grep -Fq "const RELEASE = '${SPROUT_RELEASE}';" "$RUNNER_TEMP/canvas-compat-v1.js"
+          grep -Fq 'groundAcceleration: 2600' "$RUNNER_TEMP/app.js"
+          grep -Fq 'jumpCutGravityMultiplier: 2.35' "$RUNNER_TEMP/app.js"
+          grep -Fq 'function cameraBlend(' "$RUNNER_TEMP/app.js"
+          grep -Fq 'lostpointercapture' "$RUNNER_TEMP/app.js"
           grep -Fq '"worldWidth": 7800' "$RUNNER_TEMP/level-01.json"
           grep -Fq '"requiredPickups": 24' "$RUNNER_TEMP/level-01.json"
 
@@ -130,11 +156,10 @@ jobs:
             echo '## Seed Man production publish'
             echo
             echo "- Source SHA: $GITHUB_SHA"
-            echo '- Release: `20260830-r4`'
+            echo "- Release: \`${SPROUT_RELEASE:-unresolved}\`"
             echo '- Route: https://dtfseeds.com/games/seed-man-platformer/'
             echo '- Publication method: atomic route replacement with server-side SHA-256 verification'
+            echo '- Release binding: derived from canonical `dtf-sprout-release` marker at runtime'
             echo '- Cache handling: LiteSpeed URL purge + purge-all + WordPress cache flush'
-            echo '- Visitor verification: bare URL required to contain r4 markers and reject retired 8-sprout markers'
+            echo '- Visitor verification: bare URL must contain the current release marker and reject retired 8-sprout markers'
           } >> "$GITHUB_STEP_SUMMARY"
-
-# Production trigger 2026-08-30T10:05 America/Chicago
