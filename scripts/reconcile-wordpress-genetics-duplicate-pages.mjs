@@ -1,8 +1,24 @@
+import dns from 'node:dns';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import process from 'node:process';
 
+dns.setDefaultResultOrder('ipv4first');
+
 const sleep=(ms)=>new Promise(resolve=>setTimeout(resolve,ms));
+const transientStatuses=new Set([408,425,429,500,502,503,504]);
+const transientCodes=new Set(['ETIMEDOUT','ECONNRESET','ECONNREFUSED','EAI_AGAIN','ENETUNREACH','EHOSTUNREACH','UND_ERR_CONNECT_TIMEOUT','UND_ERR_HEADERS_TIMEOUT','UND_ERR_SOCKET']);
+
+function errorCode(error){
+  return error?.code||error?.cause?.code||error?.cause?.errors?.find?.((entry)=>entry?.code)?.code||'';
+}
+function isTransientError(error){
+  const status=Number(error?.status||0);
+  return transientStatuses.has(status)||error instanceof TypeError||error?.name==='TimeoutError'||error?.name==='AbortError'||transientCodes.has(errorCode(error));
+}
+function retryDelay(attempt){
+  return Math.min(12_000,1200+(attempt*1800));
+}
 
 function contentText(page){
   return `${page?.content?.raw||''}\n${page?.content?.rendered||''}`;
@@ -51,7 +67,8 @@ export async function reconcileDuplicateGeneticsPages(){
   const backupDir=join(backupRoot,`duplicate-page-reconcile-${stamp}`);
   await mkdir(backupDir,{recursive:true});
 
-  async function request(path,options={},attempts=4){
+  async function request(path,options={},attempts=8){
+    const method=String(options.method||'GET').toUpperCase();
     let last;
     for(let attempt=1;attempt<=attempts;attempt+=1){
       try{
@@ -62,7 +79,7 @@ export async function reconcileDuplicateGeneticsPages(){
           headers:{
             Authorization:auth,
             Accept:'application/json',
-            'User-Agent':'DTFSeeds-Genetics-Duplicate-Reconciler/1.0',
+            'User-Agent':'DTFSeeds-Genetics-Duplicate-Reconciler/1.1',
             ...(options.body?{'Content-Type':'application/json'}:{}),
             ...(options.headers||{})
           }
@@ -70,11 +87,18 @@ export async function reconcileDuplicateGeneticsPages(){
         const text=await response.text();
         let body=null;
         try{body=text?JSON.parse(text):null;}catch{body={raw:text.slice(0,1200)};}
-        if(!response.ok) throw new Error(`${options.method||'GET'} ${path} failed (${response.status}): ${body?.message||body?.raw||'request failed'}`);
+        if(!response.ok){
+          const error=new Error(`${method} ${path} failed (${response.status}): ${body?.message||body?.raw||'request failed'}`);
+          error.status=response.status;
+          throw error;
+        }
         return body;
       }catch(error){
         last=error;
-        if(attempt<attempts) await sleep(attempt*1500);
+        if(!isTransientError(error)||attempt>=attempts) throw error;
+        const delay=retryDelay(attempt);
+        console.warn(`[genetics-duplicate-retry] ${method} ${path} failed with ${errorCode(error)||error?.name||error?.status||'transient error'}; retrying ${attempt}/${attempts} in ${delay}ms`);
+        await sleep(delay);
       }
     }
     throw last;
