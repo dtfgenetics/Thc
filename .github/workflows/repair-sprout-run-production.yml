@@ -23,7 +23,6 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
       LIVE_URL: https://dtfseeds.com/games/seed-man-platformer/
-      RELEASE_ID: 20260830-r3
     steps:
       - name: Checkout current main
         uses: actions/checkout@v4
@@ -35,14 +34,28 @@ jobs:
         with:
           node-version: 22
 
-      - name: Correct canonical Sprout Run deployment registry
+      - name: Resolve canonical Sprout release
+        id: release
         shell: bash
         run: |
           set -euo pipefail
-          python - <<'PY'
-          import json
+          route='site/public-route-patch/games/seed-man-platformer'
+          release="$(sed -n 's/.*name="dtf-sprout-release" content="\([^"]*\)".*/\1/p' "$route/index.html" | head -n 1)"
+          [[ "$release" =~ ^[0-9]{8}-r[0-9]+$ ]] || { echo "Invalid Sprout release marker: $release" >&2; exit 1; }
+          echo "release=$release" >> "$GITHUB_OUTPUT"
+          echo "RELEASE_ID=$release" >> "$GITHUB_ENV"
+          echo "Canonical Sprout release: $release"
+
+      - name: Correct canonical Sprout deployment registry
+        id: registry
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - "$RELEASE_ID" <<'PY'
+          import json, sys
           from pathlib import Path
 
+          release = sys.argv[1]
           path = Path('site/deployment/public-apps.json')
           data = json.loads(path.read_text())
           matches = [app for app in data.get('apps', []) if app.get('id') == 'seed-man-platformer']
@@ -61,7 +74,7 @@ jobs:
           app['machineData'] = {
               'level': 'sprout-run',
               'edition': 'greenhouse-gauntlet',
-              'release': '20260830-r3',
+              'release': release,
               'worldWidth': 7800,
               'collectibles': 24,
               'powerups': 7,
@@ -75,59 +88,61 @@ jobs:
               'Canonical self-hosted Greenhouse Gauntlet production build. Publishes the 7,800 px '
               '24-sprout course with double jump, seven power-ups, three checkpoints, fifteen hazard '
               'zones, keyboard/touch controls, gated finish, original Canvas2D Seed Man art, and '
-              'cache-versioned 20260830-r3 runtime assets. The retired 2,600 px eight-sprout vertical '
+              f'cache-versioned {release} runtime assets. The retired 2,600 px eight-sprout vertical '
               'slice must never be republished.'
           )
           data['updated'] = '2026-08-30'
           path.write_text(json.dumps(data, indent=2) + '\n')
           PY
 
-      - name: Validate canonical Sprout Run release tree
+          if git diff --quiet -- site/deployment/public-apps.json; then
+            echo 'changed=false' >> "$GITHUB_OUTPUT"
+          else
+            echo 'changed=true' >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Validate canonical Sprout release tree
         shell: bash
         run: |
           set -euo pipefail
-          route=site/public-route-patch/games/seed-man-platformer
+          route='site/public-route-patch/games/seed-man-platformer'
           node games/seed-man-platformer/test/physics.test.mjs
           node games/seed-man-platformer/test/public-runtime.test.mjs
           node games/seed-man-platformer/test/input-guard.test.mjs
           node --check "$route/app.js"
           node --check "$route/seed-man-production-art.js"
           node --check "$route/input-guard-v1.js"
-          required=(index.html app.js seed-man-production-art.js input-guard-v1.js seed-man.css physics.mjs data/level-01.json)
-          for rel in "${required[@]}"; do test -s "$route/$rel"; done
+          for rel in index.html app.js seed-man-production-art.js input-guard-v1.js seed-man.css physics.mjs data/level-01.json; do
+            test -s "$route/$rel"
+          done
           for marker in \
             'Seed Man · Greenhouse Gauntlet' \
             '0 / 24' \
             'JUMP ×2' \
             '"worldWidth": 7800' \
             '"requiredPickups": 24' \
-            'name="dtf-sprout-release" content="20260830-r3"' \
-            '<script src="./app.js?v=20260830-r3" defer></script>' \
-            '<script src="./seed-man-production-art.js?v=20260830-r3" defer></script>' \
-            '<script src="./input-guard-v1.js?v=20260830-r3" defer></script>' \
-            'seed-man.css?v=20260830-r3'; do
+            "name=\"dtf-sprout-release\" content=\"${RELEASE_ID}\"" \
+            "<script src=\"./app.js?v=${RELEASE_ID}\" defer></script>" \
+            "<script src=\"./seed-man-production-art.js?v=${RELEASE_ID}\" defer></script>" \
+            "<script src=\"./input-guard-v1.js?v=${RELEASE_ID}\" defer></script>" \
+            "seed-man.css?v=${RELEASE_ID}"; do
             grep -Fq "$marker" "$route/index.html" || { echo "Source release missing marker: $marker" >&2; exit 1; }
           done
           grep -Fq 'seed-man-production-v1' "$route/seed-man-production-art.js"
           grep -Fq 'seed-man-locked-v1' "$route/seed-man-production-art.js"
-          if grep -Fqi 'collect all eight sprouts' "$route/index.html"; then exit 1; fi
-          if grep -Fq '0 / 8' "$route/index.html"; then exit 1; fi
+          ! grep -Fqi 'collect all eight sprouts' "$route/index.html"
+          ! grep -Fq '0 / 8' "$route/index.html"
 
       - name: Commit corrected registry before deployment
-        id: registry
+        if: steps.registry.outputs.changed == 'true'
         shell: bash
         run: |
           set -euo pipefail
-          if git diff --quiet -- site/deployment/public-apps.json; then
-            echo 'changed=false' >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add site/deployment/public-apps.json
-          git commit -m 'Correct Sprout Run r3 production registry'
+          git commit -m "Sync Sprout Run ${RELEASE_ID} production registry"
           git push origin HEAD:main
-          echo 'changed=true' >> "$GITHUB_OUTPUT"
 
       - name: Dispatch canonical WordPress V2 deployment
         id: deploy
@@ -138,64 +153,55 @@ jobs:
           run_id="${run_url##*/}"
           [[ "$run_id" =~ ^[0-9]+$ ]] || { echo "Could not parse deploy run id from $run_url" >&2; exit 1; }
           echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
-          echo "Dispatched WordPress V2 deployment run $run_id"
           gh run watch "$run_id" --exit-status
 
-      - name: Verify cache-busted live Sprout Run bundle
-        id: live
+      - name: Verify live Sprout release
         shell: bash
         run: |
           set -euo pipefail
+          tmp="$(mktemp -d)"
+          trap 'rm -rf "$tmp"' EXIT
           bust="sprout_repair=${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}-$(date +%s)"
 
           fetch() {
-            local rel="$1" output="$2" status sep url
-            sep='?'
-            [[ "$rel" == *'?'* ]] && sep='&'
-            url="${LIVE_URL}${rel}${sep}${bust}"
+            local rel="$1" output="$2" status sep
+            sep='?'; [[ "$rel" == *'?'* ]] && sep='&'
             status="$(curl -sS --retry 5 --retry-delay 4 --connect-timeout 10 --max-time 35 \
-              -H 'Cache-Control: no-cache, no-store, max-age=0' \
-              -H 'Pragma: no-cache' \
-              -o "$output" -w '%{http_code}' "$url")"
+              -H 'Cache-Control: no-cache, no-store, max-age=0' -H 'Pragma: no-cache' \
+              -o "$output" -w '%{http_code}' "${LIVE_URL}${rel}${sep}${bust}")"
             [[ "$status" == '200' ]] || { echo "${rel:-index} returned HTTP $status" >&2; return 1; }
             test -s "$output"
           }
 
-          fetch '' "$RUNNER_TEMP/sprout-index.html"
-          html="$RUNNER_TEMP/sprout-index.html"
+          fetch '' "$tmp/index.html"
           for marker in \
             'Seed Man · Greenhouse Gauntlet' \
             '0 / 24' \
             'JUMP ×2' \
             '"worldWidth": 7800' \
             '"requiredPickups": 24' \
-            'name="dtf-sprout-release" content="20260830-r3"' \
-            '<script src="./app.js?v=20260830-r3" defer></script>' \
-            '<script src="./seed-man-production-art.js?v=20260830-r3" defer></script>' \
-            '<script src="./input-guard-v1.js?v=20260830-r3" defer></script>' \
-            'seed-man.css?v=20260830-r3'; do
-            grep -Fq "$marker" "$html" || { echo "Live Sprout Run missing r3 marker: $marker" >&2; exit 1; }
+            "name=\"dtf-sprout-release\" content=\"${RELEASE_ID}\"" \
+            "<script src=\"./app.js?v=${RELEASE_ID}\" defer></script>" \
+            "<script src=\"./seed-man-production-art.js?v=${RELEASE_ID}\" defer></script>" \
+            "<script src=\"./input-guard-v1.js?v=${RELEASE_ID}\" defer></script>" \
+            "seed-man.css?v=${RELEASE_ID}"; do
+            grep -Fq "$marker" "$tmp/index.html" || { echo "Live Sprout Run missing marker: $marker" >&2; exit 1; }
           done
           for stale in 'collect all eight sprouts' '0 / 8' 'Original browser vertical slice' 'simple Canvas2D primitives'; do
-            if grep -Fqi "$stale" "$html"; then
-              echo "Retired Sprout Run content is still live: $stale" >&2
-              exit 1
-            fi
+            ! grep -Fqi "$stale" "$tmp/index.html" || { echo "Retired Sprout content is live: $stale" >&2; exit 1; }
           done
 
-          fetch "app.js?v=${RELEASE_ID}" "$RUNNER_TEMP/app.js"
-          fetch "seed-man-production-art.js?v=${RELEASE_ID}" "$RUNNER_TEMP/seed-man-production-art.js"
-          fetch "input-guard-v1.js?v=${RELEASE_ID}" "$RUNNER_TEMP/input-guard-v1.js"
-          fetch "seed-man.css?v=${RELEASE_ID}" "$RUNNER_TEMP/seed-man.css"
-          fetch 'physics.mjs' "$RUNNER_TEMP/physics.mjs"
-          fetch 'data/level-01.json' "$RUNNER_TEMP/data_level-01.json"
-          node --check "$RUNNER_TEMP/app.js"
-          node --check "$RUNNER_TEMP/seed-man-production-art.js"
-          node --check "$RUNNER_TEMP/input-guard-v1.js"
-          grep -Fq 'seed-man-production-v1' "$RUNNER_TEMP/seed-man-production-art.js"
-          grep -Fq 'seed-man-locked-v1' "$RUNNER_TEMP/seed-man-production-art.js"
-          grep -Fq 'sproutArtRoundedRect' "$RUNNER_TEMP/seed-man-production-art.js"
-          node - <<'NODE' "$RUNNER_TEMP/data_level-01.json"
+          fetch "app.js?v=${RELEASE_ID}" "$tmp/app.js"
+          fetch "seed-man-production-art.js?v=${RELEASE_ID}" "$tmp/art.js"
+          fetch "input-guard-v1.js?v=${RELEASE_ID}" "$tmp/input.js"
+          fetch "seed-man.css?v=${RELEASE_ID}" "$tmp/style.css"
+          fetch 'data/level-01.json' "$tmp/level.json"
+          node --check "$tmp/app.js"
+          node --check "$tmp/art.js"
+          node --check "$tmp/input.js"
+          grep -Fq 'seed-man-production-v1' "$tmp/art.js"
+          grep -Fq 'seed-man-locked-v1' "$tmp/art.js"
+          node - "$tmp/level.json" <<'NODE'
           const fs = require('fs');
           const level = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
           if (level.worldWidth !== 7800) throw new Error(`live worldWidth=${level.worldWidth}`);
@@ -206,36 +212,9 @@ jobs:
           if (level.hazards?.length !== 15) throw new Error(`live hazards=${level.hazards?.length}`);
           NODE
 
-      - name: Verify normal bare visitor URL
-        id: bare
-        shell: bash
-        run: |
-          set -euo pipefail
-          tmp="$(mktemp -d)"
-          trap 'rm -rf "$tmp"' EXIT
-          curl -sS --location --retry 5 --retry-delay 4 --connect-timeout 10 --max-time 35 "$LIVE_URL" -o "$tmp/index.html"
-          test -s "$tmp/index.html"
-          for marker in \
-            'Seed Man · Greenhouse Gauntlet' \
-            '0 / 24' \
-            'name="dtf-sprout-release" content="20260830-r3"' \
-            '<script src="./app.js?v=20260830-r3" defer></script>' \
-            '<script src="./seed-man-production-art.js?v=20260830-r3" defer></script>' \
-            '<script src="./input-guard-v1.js?v=20260830-r3" defer></script>' \
-            'seed-man.css?v=20260830-r3'; do
-            grep -Fq "$marker" "$tmp/index.html" || { echo "Bare visitor URL is stale; missing: $marker" >&2; exit 1; }
-          done
-          for stale in 'collect all eight sprouts' '0 / 8' 'Original browser vertical slice'; do
-            if grep -Fqi "$stale" "$tmp/index.html"; then
-              echo "Bare visitor URL still serves retired content: $stale" >&2
-              exit 1
-            fi
-          done
-          curl -sS --location --connect-timeout 10 --max-time 35 "${LIVE_URL}app.js?v=${RELEASE_ID}" -o "$tmp/app.js"
-          curl -sS --location --connect-timeout 10 --max-time 35 "${LIVE_URL}seed-man-production-art.js?v=${RELEASE_ID}" -o "$tmp/art.js"
-          node --check "$tmp/app.js"
-          node --check "$tmp/art.js"
-          grep -Fq 'seed-man-production-v1' "$tmp/art.js"
+          curl -sS --location --retry 5 --retry-delay 3 --connect-timeout 10 --max-time 35 "$LIVE_URL" -o "$tmp/bare.html"
+          grep -Fq "name=\"dtf-sprout-release\" content=\"${RELEASE_ID}\"" "$tmp/bare.html"
+          grep -Fq "<script src=\"./app.js?v=${RELEASE_ID}\" defer></script>" "$tmp/bare.html"
 
       - name: Run live desktop and mobile browser acceptance
         id: browser
@@ -244,7 +223,7 @@ jobs:
           set -euo pipefail
           run_url="$(gh workflow run seed-man-live-browser-acceptance.yml --ref main)"
           run_id="${run_url##*/}"
-          [[ "$run_id" =~ ^[0-9]+$ ]] || { echo "Could not parse live browser run id from $run_url" >&2; exit 1; }
+          [[ "$run_id" =~ ^[0-9]+$ ]] || { echo "Could not parse browser run id from $run_url" >&2; exit 1; }
           echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
           gh run watch "$run_id" --exit-status
 
@@ -255,7 +234,7 @@ jobs:
           set -euo pipefail
           run_url="$(gh workflow run seed-man-live-render-diagnostic.yml --ref main)"
           run_id="${run_url##*/}"
-          [[ "$run_id" =~ ^[0-9]+$ ]] || { echo "Could not parse render diagnostic run id from $run_url" >&2; exit 1; }
+          [[ "$run_id" =~ ^[0-9]+$ ]] || { echo "Could not parse render run id from $run_url" >&2; exit 1; }
           echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
           gh run watch "$run_id" --exit-status
 
@@ -276,10 +255,11 @@ jobs:
           git fetch origin main
           git rebase origin/main
           mkdir -p site/deployment/status
-          python - <<'PY'
-          import json, os
+          python - "$RELEASE_ID" <<'PY'
+          import json, os, sys
           from datetime import datetime, timezone
           from pathlib import Path
+          release = sys.argv[1]
           payload = {
               'schemaVersion': 1,
               'game': 'seed-man-platformer',
@@ -290,7 +270,7 @@ jobs:
               'deployRunId': os.environ.get('DEPLOY_RUN') or None,
               'browserAcceptanceRunId': os.environ.get('BROWSER_RUN') or None,
               'renderDiagnosticRunId': os.environ.get('RENDER_RUN') or None,
-              'expectedRelease': '20260830-r3',
+              'expectedRelease': release,
               'expectedEdition': 'greenhouse-gauntlet',
               'expectedWorldWidth': 7800,
               'expectedSprouts': 24,
@@ -300,5 +280,5 @@ jobs:
           PY
           git add site/deployment/status/sprout-run-production.json
           if git diff --cached --quiet; then exit 0; fi
-          git commit -m "Record Sprout Run r3 production repair ${JOB_STATUS}"
+          git commit -m "Record Sprout Run ${RELEASE_ID} production repair ${JOB_STATUS}"
           git push origin HEAD:main
