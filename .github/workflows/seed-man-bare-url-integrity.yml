@@ -19,15 +19,16 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Verify normal uncached-looking visitor URL is current
+      - name: Verify normal visitor URL is current and cache-proof
         shell: bash
         run: |
           set -euo pipefail
           base='https://dtfseeds.com/games/seed-man-platformer/'
+          release='20260830-r3'
           tmp="$(mktemp -d)"
           trap 'rm -rf "$tmp"' EXIT
 
-          # Intentionally do not add a cache-busting query string or no-cache headers here.
+          # Intentionally do not add a cache-busting query string or no-cache headers to the page URL.
           curl -sS --location --connect-timeout 10 --max-time 30 "$base" -o "$tmp/index.html"
           test -s "$tmp/index.html"
 
@@ -37,9 +38,11 @@ jobs:
             'JUMP ×2' \
             '"worldWidth": 7800' \
             '"requiredPickups": 24' \
-            '<script src="./app.js" defer></script>' \
-            '<script src="./seed-man-production-art.js" defer></script>' \
-            '<script src="./input-guard-v1.js" defer></script>'; do
+            'name="dtf-sprout-release" content="20260830-r3"' \
+            '<script src="./app.js?v=20260830-r3" defer></script>' \
+            '<script src="./seed-man-production-art.js?v=20260830-r3" defer></script>' \
+            '<script src="./input-guard-v1.js?v=20260830-r3" defer></script>' \
+            'seed-man.css?v=20260830-r3'; do
             grep -Fq "$marker" "$tmp/index.html" || { echo "Bare public URL is stale/mismatched; missing: $marker" >&2; exit 1; }
           done
 
@@ -54,14 +57,15 @@ jobs:
             fi
           done
 
-          for rel in app.js seed-man-production-art.js input-guard-v1.js seed-man.css; do
-            curl -sS --location --connect-timeout 10 --max-time 30 "${base}${rel}" -o "$tmp/${rel//\//_}"
-            test -s "$tmp/${rel//\//_}"
-          done
+          curl -sS --location --connect-timeout 10 --max-time 30 "${base}app.js?v=${release}" -o "$tmp/app.js"
+          curl -sS --location --connect-timeout 10 --max-time 30 "${base}seed-man-production-art.js?v=${release}" -o "$tmp/seed-man-production-art.js"
+          curl -sS --location --connect-timeout 10 --max-time 30 "${base}input-guard-v1.js?v=${release}" -o "$tmp/input-guard-v1.js"
+          curl -sS --location --connect-timeout 10 --max-time 30 "${base}seed-man.css?v=${release}" -o "$tmp/seed-man.css"
+          for rel in app.js seed-man-production-art.js input-guard-v1.js seed-man.css; do test -s "$tmp/$rel"; done
           node --check "$tmp/app.js"
           node --check "$tmp/seed-man-production-art.js"
           node --check "$tmp/input-guard-v1.js"
           grep -Fq 'seed-man-production-v1' "$tmp/seed-man-production-art.js"
           grep -Fq 'seed-man-locked-v1' "$tmp/seed-man-production-art.js"
 
-          echo 'Bare Sprout Run URL and normal asset URLs are serving the Greenhouse Gauntlet production bundle.'
+          echo 'Bare Sprout Run URL and versioned runtime assets are serving the Greenhouse Gauntlet production bundle.'
