@@ -53,11 +53,7 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add site/public-route-patch/games/seed-man-platformer/index.html \
                   site/public-route-patch/games/seed-man-platformer/canvas-compat-v1.js \
-                  scripts/publish-seed-man-route-via-wordpress.mjs \
-                  .github/workflows/publish-seed-man-production.yml \
-                  .github/workflows/seed-man-platformer-ci.yml \
-                  .github/workflows/seed-man-live-browser-acceptance.yml \
-                  .github/workflows/seed-man-live-render-diagnostic.yml
+                  scripts/publish-seed-man-route-via-wordpress.mjs
           git commit -m 'Integrate Sprout Run gameplay v2 into production route'
           git pull --rebase origin main
           git push origin HEAD:main
