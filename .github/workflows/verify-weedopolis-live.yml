@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Verify full Weedopolis browser game is live
+      - name: Verify master-based Weedopolis browser game is live
         shell: bash
         run: |
           set -euo pipefail
@@ -35,21 +35,55 @@ jobs:
             "${base}?${bust}")"
           test "$status" = '200'
           ! grep -Eiq '^location:' "$headers"
-          grep -Fq 'Start a game' "$html"
+
+          # Positive fingerprints for the approved structure + V1 master runtime.
+          grep -Fq 'Start Weedopolis' "$html"
           grep -Fq 'id="board"' "$html"
+          grep -Fq 'data-ui-standard="premium-responsive-shell-v1"' "$html"
+          grep -Fq 'data-art-standard="weedopolis-v1-master"' "$html"
+          grep -Fq 'id="currentBalance"' "$html"
+          grep -Fq 'id="mobileRollBtn"' "$html"
+          grep -Fq 'id="propertyArtSlot"' "$html"
+          grep -Fq 'js/weedopolis-master-overrides.js' "$html"
+          grep -Fq 'js/weedopolis-assets.js' "$html"
           grep -Fq 'js/weedopolis-engine.js' "$html"
           grep -Fq 'js/weedopolis-ui.js' "$html"
+          grep -Fq 'runtime-assets.css' "$html"
+          grep -Fq 'master-board-overlay.css' "$html"
+
+          # Negative fingerprints for the retired lightweight/V2 paths.
           ! grep -Fq 'The playable development build is loading.' "$html"
+          ! grep -Fq 'Weedopolis V2' "$html"
+          ! grep -Fq 'hex board' "$html"
 
           for asset in \
             styles.css \
+            approved-assets.css \
+            runtime-assets.css \
+            master-board-overlay.css \
             js/weedopolis-edition.js \
+            js/weedopolis-master-overrides.js \
+            js/weedopolis-assets.js \
             js/weedopolis-engine.js \
-            js/weedopolis-ui.js; do
+            js/weedopolis-ui.js \
+            assets/asset-manifest.json \
+            assets/board/weedopolis-master-board.webp; do
             echo "Checking ${base}${asset}"
             curl -fsS --retry 5 --retry-delay 5 \
               -H 'Cache-Control: no-cache, no-store, max-age=0' \
               "${base}${asset}?${bust}" >/dev/null
           done
 
-          echo 'Full Weedopolis playable browser build is live.'
+          overlay="$(curl -fsS --retry 5 --retry-delay 5 -H 'Cache-Control: no-cache' "${base}master-board-overlay.css?${bust}")"
+          registry="$(curl -fsS --retry 5 --retry-delay 5 -H 'Cache-Control: no-cache' "${base}js/weedopolis-assets.js?${bust}")"
+          manifest="$(curl -fsS --retry 5 --retry-delay 5 -H 'Cache-Control: no-cache' "${base}assets/asset-manifest.json?${bust}")"
+
+          grep -Fq "assets/board/weedopolis-master-board.webp" <<<"$overlay"
+          grep -Fq 'expectedOwnershipCards: 28' <<<"$registry"
+          grep -Fq "['green-crack','Green Crack','property',18,180,'orange'" <<<"$registry"
+          grep -Fq "['og-kush','OG Kush','property',38,350,'dark_blue'" <<<"$registry"
+          grep -Fq "['permanent-marker','Permanent Marker','property',40,400,'dark_blue'" <<<"$registry"
+          grep -Fq 'generatedMockupArtAllowed: false' <<<"$registry"
+          grep -Fq '"v2_hex_allowed": false' <<<"$manifest"
+
+          echo 'Master-based Weedopolis V1 playable browser build is live.'
