@@ -34,6 +34,8 @@ jobs:
         run: node games/seed-man-platformer/test/physics.test.mjs
       - name: Test campaign foundation contract
         run: node games/seed-man-platformer/test/campaign.test.mjs
+      - name: Test Three.js world-state bridge
+        run: node games/seed-man-platformer/test/three-world-state.test.mjs
       - name: Test self-contained public runtime
         run: node games/seed-man-platformer/test/public-runtime.test.mjs
       - name: Test self-contained public campaign runtime
@@ -43,6 +45,9 @@ jobs:
       - name: Validate browser JavaScript syntax
         run: |
           node --check games/seed-man-platformer/src/campaign.mjs
+          node --check games/seed-man-platformer/src/render/three-world-state.mjs
+          node --check games/seed-man-platformer/src/render/three-world.mjs
+          node --check games/seed-man-platformer/test/three-world-state.test.mjs
           node --check games/seed-man-platformer/test/public-campaign.test.mjs
           node --check site/public-route-patch/games/seed-man-platformer/canvas-compat-v1.js
           node --check site/public-route-patch/games/seed-man-platformer/campaign-v1.js
