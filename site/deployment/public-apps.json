@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "site": "https://dtfseeds.com",
   "sourceOfTruth": "dtfgenetics/Thc",
-  "updated": "2026-08-28",
+  "updated": "2026-08-30",
   "apps": [
     {
       "id": "high-land",
@@ -67,7 +67,7 @@
     },
     {
       "id": "high-iq",
-      "title": "High IQ — Test Higher Cognition",
+      "title": "High IQ \u2014 Test Higher Cognition",
       "repository": "dtfgenetics/Thc",
       "sourcePath": "site/public-route-patch/games/high-iq",
       "canonicalDataPath": "games/high-iq/data",
@@ -121,22 +121,27 @@
     },
     {
       "id": "seed-man-platformer",
-      "title": "Seed Man: Sprout Run",
+      "title": "Seed Man: Sprout Run \u2014 Greenhouse Gauntlet",
       "repository": "dtfgenetics/Thc",
       "sourcePath": "site/public-route-patch/games/seed-man-platformer",
       "canonicalDataPath": "games/seed-man-platformer",
       "route": "/games/seed-man-platformer/",
       "runtime": "static-canvas2d",
       "status": "ready-to-package",
-      "build": "node games/seed-man-platformer/test/physics.test.mjs",
+      "build": "node games/seed-man-platformer/test/physics.test.mjs && node games/seed-man-platformer/test/public-runtime.test.mjs && node games/seed-man-platformer/test/input-guard.test.mjs",
       "machineData": {
         "level": "sprout-run",
-        "worldWidth": 2600,
-        "collectibles": 8,
-        "checkpointCount": 1,
-        "hazardZones": 3
+        "edition": "greenhouse-gauntlet",
+        "worldWidth": 7800,
+        "collectibles": 24,
+        "powerups": 7,
+        "checkpointCount": 3,
+        "hazardZones": 15,
+        "doubleJump": true,
+        "productionCharacterArt": "seed-man-production-v1",
+        "characterContract": "seed-man-locked-v1"
       },
-      "notes": "Original self-hosted browser vertical slice with tested movement/collision physics, keyboard/touch controls, checkpoint, hazards, collectibles, camera, finish state, and Canvas2D prototype art. Human mobile QA and final art/audio remain open."
+      "notes": "Canonical self-hosted Greenhouse Gauntlet production build. Publishes the 7,800 px 24-sprout course with double jump, seven power-ups, three checkpoints, fifteen hazard zones, keyboard/touch controls, gated finish, and original production Canvas2D Seed Man art. The retired 2,600 px eight-sprout vertical slice must never be republished."
     },
     {
       "id": "protect-the-plants",
@@ -212,7 +217,7 @@
         "networkAuthority": "php-server",
         "transport": "polling"
       },
-      "notes": "Self-hosted 2–10 player online party game with six-character rooms, simultaneous server-authoritative BUD/BLUFF voting, hidden answers until reveal, Double Hit scoring, lobby lock/settings, chat, reconnectable sessions, vote-split reveal stats, rematches, host transfer, and same-origin PHP persistence."
+      "notes": "Self-hosted 2\u201310 player online party game with six-character rooms, simultaneous server-authoritative BUD/BLUFF voting, hidden answers until reveal, Double Hit scoring, lobby lock/settings, chat, reconnectable sessions, vote-split reveal stats, rematches, host transfer, and same-origin PHP persistence."
     },
     {
       "id": "strain-showdown",
