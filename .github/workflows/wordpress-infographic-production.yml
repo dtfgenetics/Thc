@@ -21,6 +21,7 @@ on:
       - scripts/flush-hostinger-litespeed-mcp.mjs
       - scripts/publish-wordpress-infographics-canonical.sh
       - scripts/publish-wordpress-infographics-canonical-v2.sh
+      - scripts/publish-wordpress-infographics-resilient.sh
       - .github/workflows/wordpress-infographic-production.yml
   workflow_run:
     workflows:
@@ -81,7 +82,7 @@ jobs:
 
       - name: Publish the complete approved infographic set
         shell: bash
-        run: bash scripts/publish-wordpress-infographics-canonical-v2.sh
+        run: bash scripts/publish-wordpress-infographics-resilient.sh
 
       - name: Upload canonical infographic publication evidence
         if: always()
@@ -94,6 +95,7 @@ jobs:
             ${{ runner.temp }}/infographic-library.html
             ${{ runner.temp }}/outdoor.html
             ${{ runner.temp }}/outdoor-assembly.json
+            ${{ runner.temp }}/infographic-transaction-attempt-*.log
           if-no-files-found: warn
           retention-days: 30
 
@@ -116,7 +118,7 @@ jobs:
                   `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
                   `Result: **${process.env.JOB_STATUS || 'see run'}**`,
                   '',
-                  'This is the authoritative WordPress infographic writer. It assembles all completed Outdoor chapters first, publishes the complete quality-gated set, rebuilds the searchable library, publishes Outdoor at /learn/outdoor/, purges Hostinger/LiteSpeed, and requires the public card count to equal the eligible WordPress record count.'
+                  'This is the authoritative WordPress infographic writer. It assembles all completed Outdoor chapters first, retries only transient WordPress/Hostinger connectivity failures, publishes the complete quality-gated set, rebuilds the searchable library, publishes Outdoor at /learn/outdoor/, purges Hostinger/LiteSpeed, and requires the public card count to equal the eligible WordPress record count.'
                 ].join('\n')
               });
             } catch (error) {
