@@ -100,6 +100,22 @@ def main() -> None:
             if not target.is_file() or target.stat().st_size < 1:
                 raise SystemExit(f"staged Dtf420 required route is missing or empty: {rel}")
 
+        # Seed Ascent is a Next wrapper around the dedicated /seed-ascent.html runtime.
+        # The route reconciler verifies canonical ownership as well as the runtime link.
+        # Stamp that ownership into the staged wrapper so a correct HTTP 200 page cannot
+        # be rejected merely because the generated Next HTML used relative URLs only.
+        seed_wrapper = staging_root / "games" / "seed-ascent" / "index.html"
+        seed_html = seed_wrapper.read_text()
+        if "/seed-ascent.html" not in seed_html:
+            raise SystemExit("Seed Ascent wrapper no longer references /seed-ascent.html")
+        if contract["canonicalOrigin"] not in seed_html:
+            canonical_marker = f"<!-- dtf-canonical-origin: {contract['canonicalOrigin']} -->"
+            if "</head>" in seed_html:
+                seed_html = seed_html.replace("</head>", f"{canonical_marker}\n</head>", 1)
+            else:
+                seed_html = f"{canonical_marker}\n{seed_html}"
+            seed_wrapper.write_text(seed_html)
+
         metadata = {
             "schemaVersion": 1,
             "purpose": contract["purpose"],
