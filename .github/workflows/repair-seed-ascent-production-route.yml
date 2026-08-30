@@ -3,7 +3,7 @@ name: Apply route-state fix on repair branch
 on:
   push:
     branches:
-      - fix/game-route-canonical-stale-scan-20260830
+      - 'fix/game-route-canonical-stale-scan-20260830'
 
 permissions:
   contents: write
@@ -18,58 +18,38 @@ jobs:
           ref: fix/game-route-canonical-stale-scan-20260830
           fetch-depth: 0
 
-      - name: Patch canonical/stale route-state scan
+      - name: Patch canonical stale-marker scan
         shell: bash
         run: |
           set -euo pipefail
           python3 - <<'PY'
           from pathlib import Path
-
           path = Path('scripts/promote-public-game-routes-via-wordpress.mjs')
           text = path.read_text()
-          old = """                $desired_count = substr_count($content, $target['desired']);
-                $stale_matches = [];
-                foreach ($target['stale'] as $stale) {
-                    $count = substr_count($content, $stale);
-                    if ($count > 0) $stale_matches[] = ['marker' => $stale, 'count' => $count];
-                }
-                if ($desired_count === 1 && count($stale_matches) === 0) { $already[] = $target['rel']; continue; }
-"""
-          new = """                $desired_count = substr_count($content, $target['desired']);
-                $stale_scan = $content;
-                if ($desired_count === 1) {
-                    $stale_scan = str_replace($target['desired'], '', $content, $desired_strip_count);
-                    if ($desired_strip_count !== 1) {
-                        return new WP_Error('dtf_route_canonical_scan', 'Canonical route block could not be isolated for stale-rule validation.', ['status' => 409, 'path' => $target['rel'], 'desired_count' => $desired_count]);
-                    }
-                }
-                $stale_matches = [];
-                foreach ($target['stale'] as $stale) {
-                    $count = substr_count($stale_scan, $stale);
-                    if ($count > 0) $stale_matches[] = ['marker' => $stale, 'count' => $count];
-                }
-                if ($desired_count === 1 && count($stale_matches) === 0) { $already[] = $target['rel']; continue; }
-"""
-          if text.count(old) != 1:
-              raise SystemExit(f'Expected one route-state scan block, found {text.count(old)}')
+          old = "                $desired_count = substr_count($content, $target['desired']);\n                $stale_matches = [];\n                foreach ($target['stale'] as $stale) {\n                    $count = substr_count($content, $stale);\n                    if ($count > 0) $stale_matches[] = ['marker' => $stale, 'count' => $count];\n                }\n                if ($desired_count === 1 && count($stale_matches) === 0) { $already[] = $target['rel']; continue; }\n"
+          new = "                $desired_count = substr_count($content, $target['desired']);\n                $stale_scan = $content;\n                if ($desired_count === 1) {\n                    $stale_scan = str_replace($target['desired'], '', $content, $desired_strip_count);\n                    if ($desired_strip_count !== 1) {\n                        return new WP_Error('dtf_route_canonical_scan', 'Canonical route block could not be isolated for stale-rule validation.', ['status' => 409, 'path' => $target['rel'], 'desired_count' => $desired_count]);\n                    }\n                }\n                $stale_matches = [];\n                foreach ($target['stale'] as $stale) {\n                    $count = substr_count($stale_scan, $stale);\n                    if ($count > 0) $stale_matches[] = ['marker' => $stale, 'count' => $count];\n                }\n                if ($desired_count === 1 && count($stale_matches) === 0) { $already[] = $target['rel']; continue; }\n"
+          count = text.count(old)
+          if count != 1:
+              raise SystemExit(f'Expected one route-state scan block, found {count}')
           path.write_text(text.replace(old, new, 1))
           PY
-
           node --check scripts/promote-public-game-routes-via-wordpress.mjs
-          grep -Fq '$stale_scan = str_replace($target['"'"'desired'"'"'], '"'"''"'"', $content, $desired_strip_count);' scripts/promote-public-game-routes-via-wordpress.mjs
+          grep -Fq '$count = substr_count($stale_scan, $stale);' scripts/promote-public-game-routes-via-wordpress.mjs
 
+      - name: Self-test canonical and legacy states
+        shell: bash
+        run: |
+          set -euo pipefail
           python3 - <<'PY'
           desired = "# DTFSeeds managed game-directory child-route overlay v2\nRewriteRule ^seed-ascent(?:/(.*))?/?$ /dtf-content-overlay/games/seed-ascent/$1 [L]\nRewriteRule ^(?:future-slots)(?:/|$) /games/ [R=301,L]"
           stale = "RewriteRule ^(?:future-slots)(?:/|$) /games/ [R=301,L]"
           canonical = "RewriteEngine On\n" + desired + "\n"
-          assert canonical.count(desired) == 1
           outside = canonical.replace(desired, '', 1)
-          assert outside.count(stale) == 0, 'canonical block must not count its own retired-route rule as stale'
+          assert canonical.count(desired) == 1 and outside.count(stale) == 0
           legacy = "RewriteEngine On\n" + stale + "\n"
-          assert legacy.count(desired) == 0 and legacy.count(stale) == 1, 'known legacy route must remain migratable'
+          assert legacy.count(desired) == 0 and legacy.count(stale) == 1
           hostile = canonical + stale + "\n"
-          outside_hostile = hostile.replace(desired, '', 1)
-          assert outside_hostile.count(stale) == 1, 'extra stale rule outside canonical block must remain detectable'
+          assert hostile.replace(desired, '', 1).count(stale) == 1
           print('route-state self-test passed')
           PY
 
