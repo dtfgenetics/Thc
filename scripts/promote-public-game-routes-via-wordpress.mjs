@@ -232,9 +232,16 @@ add_action('rest_api_init', function () {
                 if ($content === false) return new WP_Error('dtf_route_read', 'Could not read route file.', ['status' => 500, 'path' => $target['rel']]);
 
                 $desired_count = substr_count($content, $target['desired']);
+                $stale_scan = $content;
+                if ($desired_count === 1) {
+                    $stale_scan = str_replace($target['desired'], '', $content, $desired_strip_count);
+                    if ($desired_strip_count !== 1) {
+                        return new WP_Error('dtf_route_canonical_scan', 'Canonical route block could not be isolated for stale-rule validation.', ['status' => 409, 'path' => $target['rel'], 'desired_count' => $desired_count]);
+                    }
+                }
                 $stale_matches = [];
                 foreach ($target['stale'] as $stale) {
-                    $count = substr_count($content, $stale);
+                    $count = substr_count($stale_scan, $stale);
                     if ($count > 0) $stale_matches[] = ['marker' => $stale, 'count' => $count];
                 }
                 if ($desired_count === 1 && count($stale_matches) === 0) { $already[] = $target['rel']; continue; }
