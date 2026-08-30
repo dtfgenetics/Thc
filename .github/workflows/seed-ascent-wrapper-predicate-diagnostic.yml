@@ -14,23 +14,40 @@ jobs:
   inspect:
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    env:
+      NODE_OPTIONS: --dns-result-order=ipv4first
     steps:
       - name: Inspect deployed Dtf420 Seed Ascent wrapper directly
         shell: bash
         run: |
           set -euo pipefail
           node --input-type=module <<'NODE'
-          const url = new URL('/dtf-content-overlay/games/seed-ascent/index.html', 'https://dtfseeds.com');
-          url.searchParams.set('dtf_wrapper_diag', `${Date.now()}-${Math.random().toString(16).slice(2)}`);
-          const response = await fetch(url, {
-            redirect: 'manual',
-            headers: {
-              'user-agent': 'DTFSeeds-Seed-Ascent-Wrapper-Diagnostic/1.0',
-              'cache-control': 'no-cache, no-store, max-age=0',
-              pragma: 'no-cache',
-            },
-            signal: AbortSignal.timeout(45000),
-          });
+          const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+          async function fetchWrapper() {
+            let last;
+            for (let attempt = 1; attempt <= 8; attempt += 1) {
+              try {
+                const url = new URL('/dtf-content-overlay/games/seed-ascent/index.html', 'https://dtfseeds.com');
+                url.searchParams.set('dtf_wrapper_diag', `${Date.now()}-${attempt}`);
+                return await fetch(url, {
+                  redirect: 'manual',
+                  headers: {
+                    'user-agent': 'DTFSeeds-Seed-Ascent-Wrapper-Diagnostic/1.1',
+                    'cache-control': 'no-cache, no-store, max-age=0',
+                    pragma: 'no-cache',
+                  },
+                  signal: AbortSignal.timeout(45000),
+                });
+              } catch (error) {
+                last = error;
+                console.warn(`fetch attempt ${attempt}/8 failed: ${error?.cause?.code || error?.code || error?.message || error}`);
+                if (attempt < 8) await sleep(1200 + attempt * 900);
+              }
+            }
+            throw last;
+          }
+
+          const response = await fetchWrapper();
           const text = await response.text();
           const checks = {
             status200: response.status === 200,
@@ -55,6 +72,6 @@ jobs:
             nextIndex: text.indexOf('/_next/static/'),
             retiredOriginMatches: [...text.matchAll(/https?:\/\/(?:www\.)?dtf420\.com/ig)].slice(0,5).map(m=>m[0]),
             wordpressMatches: [...text.matchAll(/.{0,80}(?:wp-content|wp-includes|wordpress).{0,80}/ig)].slice(0,5).map(m=>m[0]),
-            htmlStart: text.slice(0,1000),
+            htmlStart: text.slice(0,1400),
           }, null, 2));
           NODE
