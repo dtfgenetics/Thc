@@ -21,7 +21,8 @@
     "hazard-shield-powerup",
     "three-checkpoints",
     "course-progress-rail",
-    "guarded-restart"
+    "guarded-restart",
+    "threejs-world-renderer-prototype"
   ],
   "implementation": {
     "physics": "games/seed-man-platformer/src/physics.mjs",
@@ -30,6 +31,9 @@
     "browserAcceptance": "games/seed-man-platformer/test/browser-smoke.mjs",
     "publicRoute": "site/public-route-patch/games/seed-man-platformer",
     "productionCharacterArt": "site/public-route-patch/games/seed-man-platformer/seed-man-production-art.js",
+    "threeWorldStateBridge": "games/seed-man-platformer/src/render/three-world-state.mjs",
+    "threeWorldRendererPrototype": "games/seed-man-platformer/src/render/three-world.mjs",
+    "threeWorldTests": "games/seed-man-platformer/test/three-world-state.test.mjs",
     "fixedTimestepSeconds": 0.0166666667,
     "canvas": {"width": 960, "height": 540},
     "levelWorld": {"width": 7800, "height": 540},
@@ -47,12 +51,15 @@
     "touch-friendly-controls",
     "refresh-rate-independent-camera",
     "original-gameplay-assets",
-    "seed-man-character-contract"
+    "seed-man-character-contract",
+    "threejs-render-adapter-does-not-own-gameplay-state"
   ],
   "art": {
     "prototypeRenderer": "canvas2d-primitives",
     "productionRenderer": "canvas2d-vector",
     "productionRendererPath": "site/public-route-patch/games/seed-man-platformer/seed-man-production-art.js",
+    "worldRendererPrototype": "threejs-2.5d",
+    "worldRendererPrototypePath": "games/seed-man-platformer/src/render/three-world.mjs",
     "productionArtVersion": "seed-man-production-v1",
     "characterContract": "seed-man-locked-v1",
     "productionCharacterArtAssigned": true,
@@ -78,6 +85,8 @@
     "automated-mobile-browser-playtest": true,
     "production-character-art-runtime-tested": true,
     "original-production-art-cleared": true,
+    "threejs-world-state-bridge-tested": true,
+    "threejs-live-renderer-integrated": false,
     "mobile-playtest": false,
     "sprite-consistency-review": false,
     "optional-audio-added": false,
