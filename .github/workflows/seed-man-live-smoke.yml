@@ -21,6 +21,7 @@ jobs:
           set -euo pipefail
 
           base='https://dtfseeds.com/games/seed-man-platformer/'
+          release='20260830-r3'
           bust="dtf_sprout_smoke=${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
 
           fetch_asset() {
@@ -65,9 +66,11 @@ jobs:
             'JUMP ×2' \
             '7 power-ups' \
             '3 checkpoints' \
-            '<script src="./app.js" defer></script>' \
-            '<script src="./seed-man-production-art.js" defer></script>' \
-            '<script src="./input-guard-v1.js" defer></script>'; do
+            'name="dtf-sprout-release" content="20260830-r3"' \
+            '<script src="./app.js?v=20260830-r3" defer></script>' \
+            '<script src="./seed-man-production-art.js?v=20260830-r3" defer></script>' \
+            '<script src="./input-guard-v1.js?v=20260830-r3" defer></script>' \
+            'seed-man.css?v=20260830-r3'; do
             grep -Fq "$marker" <<<"$html" || { echo "Missing Sprout Run production marker: $marker" >&2; exit 1; }
           done
 
@@ -87,7 +90,7 @@ jobs:
             exit 1
           fi
 
-          app="$(fetch_asset 'app.js')"
+          app="$(fetch_asset "app.js&release=${release}")"
           printf '%s' "$app" > "$RUNNER_TEMP/sprout-app.js"
           node --check "$RUNNER_TEMP/sprout-app.js"
           for marker in \
@@ -112,7 +115,7 @@ jobs:
             exit 1
           fi
 
-          art="$(fetch_asset 'seed-man-production-art.js')"
+          art="$(fetch_asset "seed-man-production-art.js&release=${release}")"
           printf '%s' "$art" > "$RUNNER_TEMP/sprout-production-art.js"
           node --check "$RUNNER_TEMP/sprout-production-art.js"
           for marker in \
@@ -124,11 +127,11 @@ jobs:
             grep -Fq "$marker" <<<"$art" || { echo "Missing production-art marker: $marker" >&2; exit 1; }
           done
 
-          guard="$(fetch_asset 'input-guard-v1.js')"
+          guard="$(fetch_asset "input-guard-v1.js&release=${release}")"
           printf '%s' "$guard" > "$RUNNER_TEMP/sprout-input-guard.js"
           node --check "$RUNNER_TEMP/sprout-input-guard.js"
 
-          css="$(fetch_asset 'seed-man.css')"
+          css="$(fetch_asset "seed-man.css&release=${release}")"
           grep -Fq 'touch-controls' <<<"$css"
 
           level="$(fetch_asset 'data/level-01.json')"
@@ -143,4 +146,4 @@ jobs:
             if (!Array.isArray(level.hazards) || level.hazards.length !== 15) throw new Error(`hazards=${level.hazards?.length}`);
           ' "$level"
 
-          echo 'Expanded Sprout Run live route, production Seed Man art, runtime, level data, controls, and release fingerprints passed.'
+          echo 'Expanded Sprout Run live route, cache-proof assets, production Seed Man art, runtime, level data, controls, and release fingerprints passed.'
