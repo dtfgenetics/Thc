@@ -7,7 +7,7 @@ if (!username || !password) throw new Error('WordPress credentials are required.
 
 const auth = `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`;
 const repairToken = crypto.randomBytes(32).toString('hex');
-const promotionNamespace = `dtf-game-promotion/v1-${crypto.randomBytes(8).toString('hex')}`;
+const promotionNamespace = `dtf-route-promotion/v2-${crypto.randomBytes(8).toString('hex')}`;
 const tokenLiteral = JSON.stringify(repairToken);
 const namespaceLiteral = JSON.stringify(promotionNamespace);
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -30,13 +30,13 @@ async function wpRequest(path, { method = 'GET', json, headers = {}, allow = [] 
       ...headers,
     },
     body: json !== undefined ? JSON.stringify(json) : undefined,
-    signal: AbortSignal.timeout(30_000),
+    signal: AbortSignal.timeout(45_000),
   });
   const text = await response.text();
   let body = text;
   try { body = text ? JSON.parse(text) : null; } catch {}
   if (!response.ok && !allow.includes(response.status)) {
-    throw new Error(`WordPress ${method} ${path} failed (${response.status}): ${typeof body === 'string' ? body.slice(0, 800) : JSON.stringify(body).slice(0, 800)}`);
+    throw new Error(`WordPress ${method} ${path} failed (${response.status}): ${typeof body === 'string' ? body.slice(0, 900) : JSON.stringify(body).slice(0, 900)}`);
   }
   return { ok: response.ok, status: response.status, body };
 }
@@ -45,7 +45,7 @@ async function wpGetRetry(path, options = {}) {
   let lastError;
   for (let attempt = 1; attempt <= 6; attempt += 1) {
     try { return await wpRequest(path, { ...options, method: 'GET' }); }
-    catch (error) { lastError = error; await sleep(800 + attempt * 650); }
+    catch (error) { lastError = error; await sleep(900 + attempt * 700); }
   }
   throw lastError || new Error(`GET ${path} failed after retries.`);
 }
@@ -65,10 +65,11 @@ async function setPluginStatus(id, status) {
   return wpRequest(pluginEndpoint(id), { method: 'POST', json: { status } });
 }
 
-async function waitForSnippetApi() {
+async function waitForSnippetApi(safeMode = false) {
+  const suffix = safeMode ? '?snippets-safe-mode=1' : '';
   for (let attempt = 1; attempt <= 12; attempt += 1) {
     try {
-      const response = await wpGetRetry('/wp-json/code-snippets/v1/snippets/schema', { allow: [404] });
+      const response = await wpGetRetry(`/wp-json/code-snippets/v1/snippets/schema${suffix}`, { allow: [404, 500] });
       if (response.ok) return true;
     } catch {}
     await sleep(900 + attempt * 500);
@@ -82,7 +83,7 @@ async function ensureSnippetApi() {
   pluginWasActive = existing?.status === 'active';
   if (existing?.plugin) pluginId = existing.plugin;
 
-  const direct = await wpGetRetry('/wp-json/code-snippets/v1/snippets/schema', { allow: [404] });
+  const direct = await wpGetRetry('/wp-json/code-snippets/v1/snippets/schema', { allow: [404, 500] });
   if (direct.ok) return;
 
   let plugin = existing;
@@ -104,21 +105,34 @@ async function ensureSnippetApi() {
   if (!(await waitForSnippetApi())) throw new Error('Code Snippets REST API did not become available.');
 }
 
+const rootOverlayBlock = `# DTFSeeds managed application child-route overlay v1
+RewriteRule ^games/future-slots(?:/|$) /games/ [R=301,L]
+RewriteRule ^learn/(academy|atlas|cultivation-science|glossary|plant-health|search|sops|sources|symptoms|tools)(?:/(.*))?/?$ /dtf-content-overlay/learn/$1/$2 [L]
+RewriteRule ^community/grow-offs(?:/(.*))?/?$ /dtf-content-overlay/community/grow-offs/$1 [L]
+RewriteRule ^games/seed-ascent(?:/(.*))?/?$ /dtf-content-overlay/games/seed-ascent/$1 [L]
+RewriteRule ^_next/static/(.*)$ /dtf-content-overlay/_next/static/$1 [L]
+RewriteRule ^seed-ascent\\.html$ /dtf-content-overlay/seed-ascent.html [L]
+RewriteRule ^seed-ascent/(.*)$ /dtf-content-overlay/seed-ascent/$1 [L]`;
+const rootOverlayLiteral = JSON.stringify(rootOverlayBlock);
+
 const snippetCode = String.raw`
 add_action('rest_api_init', function () {
     $token = ${tokenLiteral};
     $namespace = ${namespaceLiteral};
+    $root_overlay = json_decode(${JSON.stringify(rootOverlayLiteral)}, true);
+    if (!is_string($root_overlay) || $root_overlay === '') return;
     $permission = static function (WP_REST_Request $request) use ($token) {
-        $supplied = (string) $request->get_header('x-dtf-game-promotion-token');
-        if ($supplied === '') $supplied = (string) $request->get_param('_dtf_game_promotion_token');
+        $supplied = (string) $request->get_header('x-dtf-route-promotion-token');
+        if ($supplied === '') $supplied = (string) $request->get_param('_dtf_route_promotion_token');
         return $supplied !== '' && hash_equals($token, $supplied);
     };
 
     $targets = [
         [
             'rel' => '.htaccess',
-            'desired' => 'RewriteRule ^games/(?:future-slots)(?:/|$) /games/ [R=301,L]',
+            'desired' => $root_overlay,
             'stale' => [
+                'RewriteRule ^games/(?:future-slots)(?:/|$) /games/ [R=301,L]',
                 'RewriteRule ^games/(?:future-slots|bud-or-bluff)(?:/|$) /games/ [R=301,L]',
                 'RewriteRule ^games/(?:future-slots|high-iq|bud-or-bluff|grower-conversations)(?:/|$) /games/ [R=301,L]',
             ],
@@ -132,23 +146,26 @@ add_action('rest_api_init', function () {
             ],
         ],
     ];
-    $state_key = 'dtf_public_game_route_promotion_state_v1';
-    $backup_key = static function ($rel) { return 'dtf_public_game_route_promotion_backup_' . md5($rel); };
+    $state_key = 'dtf_public_route_promotion_state_v2';
+    $backup_key = static function ($rel) { return 'dtf_public_route_promotion_backup_v2_' . md5($rel); };
     $root = trailingslashit(wp_normalize_path(ABSPATH));
     $safe_path = static function ($rel) use ($root) {
         $candidate = wp_normalize_path(ABSPATH . $rel);
         return strpos($candidate, $root) === 0 ? $candidate : false;
     };
 
+    $overlay_manifest = $safe_path('dtf-content-overlay/overlay-manifest.json');
+    if ($overlay_manifest === false || !is_file($overlay_manifest)) return;
+
     $restore_all = static function () use ($targets, $backup_key, $safe_path, $state_key) {
         $restored = [];
         foreach ($targets as $target) {
             $backup = get_option($backup_key($target['rel']));
-            if (!is_array($backup) || empty($backup['content_b64'])) continue;
+            if (!is_array($backup) || !array_key_exists('content_b64', $backup)) continue;
             $raw = base64_decode((string) $backup['content_b64'], true);
             $path = $safe_path($target['rel']);
             if ($raw === false || $path === false) return new WP_Error('dtf_restore_invalid', 'Stored route backup is invalid.', ['status' => 500]);
-            $tmp = $path . '.dtf-game-route-restore-' . wp_generate_uuid4();
+            $tmp = $path . '.dtf-route-restore-' . wp_generate_uuid4();
             if (file_put_contents($tmp, $raw, LOCK_EX) !== strlen($raw)) { @unlink($tmp); return new WP_Error('dtf_restore_stage', 'Could not stage route rollback.', ['status' => 500]); }
             @chmod($tmp, (int) ($backup['mode'] ?? 0644));
             if (!@rename($tmp, $path)) { @unlink($tmp); return new WP_Error('dtf_restore_commit', 'Could not commit route rollback.', ['status' => 500]); }
@@ -163,7 +180,36 @@ add_action('rest_api_init', function () {
     register_rest_route($namespace, '/apply', [
         'methods' => 'POST',
         'permission_callback' => $permission,
-        'callback' => static function () use ($targets, $backup_key, $safe_path, $state_key, $restore_all) {
+        'callback' => static function () use ($targets, $backup_key, $safe_path, $state_key, $restore_all, $overlay_manifest) {
+            $manifest_raw = file_get_contents($overlay_manifest);
+            $manifest = is_string($manifest_raw) ? json_decode($manifest_raw, true) : null;
+            $expected_routes = ['learn/academy','learn/atlas','learn/cultivation-science','learn/glossary','learn/plant-health','learn/search','learn/sops','learn/sources','learn/symptoms','learn/tools','community/grow-offs','games/seed-ascent'];
+            $expected_shared = ['_next/static','seed-ascent','seed-ascent.html'];
+            if (!is_array($manifest)
+                || ($manifest['canonicalOrigin'] ?? '') !== 'https://dtfseeds.com'
+                || ($manifest['repository'] ?? '') !== 'dtfgenetics/Dtf420'
+                || ($manifest['routePrefixes'] ?? null) !== $expected_routes
+                || ($manifest['sharedPaths'] ?? null) !== $expected_shared) {
+                return new WP_Error('dtf_overlay_manifest', 'Dtf420 overlay manifest does not match the approved production contract.', ['status' => 409]);
+            }
+            foreach ([
+                'dtf-content-overlay/learn/academy/index.html',
+                'dtf-content-overlay/learn/atlas/seed-germination/seed-anatomy/index.html',
+                'dtf-content-overlay/learn/cultivation-science/outdoor-site-and-sun-mapping/index.html',
+                'dtf-content-overlay/learn/plant-health/two-spotted-spider-mite/index.html',
+                'dtf-content-overlay/learn/sops/ph-meter-calibration-and-measurement/index.html',
+                'dtf-content-overlay/learn/symptoms/lower-leaf-yellowing/index.html',
+                'dtf-content-overlay/learn/tools/plant-health-intake/index.html',
+                'dtf-content-overlay/community/grow-offs/solo-cup-grow-off/index.html',
+                'dtf-content-overlay/games/seed-ascent/index.html',
+                'dtf-content-overlay/seed-ascent.html',
+            ] as $required) {
+                $path = $safe_path($required);
+                if ($path === false || !is_file($path) || filesize($path) < 1) {
+                    return new WP_Error('dtf_overlay_required', 'Dtf420 overlay is incomplete.', ['status' => 409, 'path' => $required]);
+                }
+            }
+
             $prepared = [];
             $already = [];
             foreach ($targets as $target) {
@@ -206,7 +252,7 @@ add_action('rest_api_init', function () {
 
             $changed = [];
             foreach ($prepared as $item) {
-                $tmp = $item['path'] . '.dtf-game-route-promote-' . wp_generate_uuid4();
+                $tmp = $item['path'] . '.dtf-route-promote-' . wp_generate_uuid4();
                 if (file_put_contents($tmp, $item['next'], LOCK_EX) !== strlen($item['next']) || !hash_equals(hash('sha256', $item['next']), (string) @hash_file('sha256', $tmp))) {
                     @unlink($tmp); $restore_all();
                     return new WP_Error('dtf_route_stage', 'Could not stage exact route promotion; rollback attempted.', ['status' => 500, 'path' => $item['rel']]);
@@ -217,8 +263,8 @@ add_action('rest_api_init', function () {
             }
             if (function_exists('wp_cache_flush')) wp_cache_flush();
             clearstatcache();
-            update_option($state_key, ['status' => 'applied', 'changed' => $changed, 'already' => $already, 'updated_at' => gmdate('c')], false);
-            return rest_ensure_response(['ok' => true, 'changed' => $changed, 'already' => $already]);
+            update_option($state_key, ['status' => 'applied', 'changed' => $changed, 'already' => $already, 'overlay_commit' => $manifest['commit'] ?? '', 'updated_at' => gmdate('c')], false);
+            return rest_ensure_response(['ok' => true, 'changed' => $changed, 'already' => $already, 'overlay_commit' => $manifest['commit'] ?? '']);
         },
     ]);
 
@@ -243,25 +289,44 @@ add_action('rest_api_init', function () {
 async function callPromotion(endpoint) {
   return wpRequest(`/wp-json/${promotionNamespace}/${endpoint}`, {
     method: 'POST',
-    headers: { 'X-DTF-Game-Promotion-Token': repairToken },
-    json: { _dtf_game_promotion_token: repairToken },
+    headers: { 'X-DTF-Route-Promotion-Token': repairToken },
+    json: { _dtf_route_promotion_token: repairToken },
   });
 }
 
 async function probe(route) {
   const url = new URL(route, siteUrl);
-  url.searchParams.set('dtf_game_promotion', `${Date.now()}-${crypto.randomBytes(4).toString('hex')}`);
+  url.searchParams.set('dtf_route_promotion', `${Date.now()}-${crypto.randomBytes(4).toString('hex')}`);
   const response = await fetch(url, {
     redirect: 'manual',
     headers: {
-      'user-agent': 'DTFSeeds-Game-Promotion/1.0',
+      'user-agent': 'DTFSeeds-Route-Promotion/2.0',
       'cache-control': 'no-cache, no-store, max-age=0',
       pragma: 'no-cache',
     },
-    signal: AbortSignal.timeout(30_000),
+    signal: AbortSignal.timeout(45_000),
   });
   const text = await response.text();
   return { response, text };
+}
+
+async function verifyOwnPage(route, marker = '/_next/static/') {
+  let last = '';
+  for (let attempt = 1; attempt <= 8; attempt += 1) {
+    try {
+      const { response, text } = await probe(route);
+      last = `HTTP ${response.status} ${response.headers.get('location') || ''}`;
+      if (response.status === 200
+          && !response.headers.get('location')
+          && text.includes(marker)
+          && text.includes('https://dtfseeds.com')
+          && !/https?:\/\/(?:www\.)?dtf420\.com/i.test(text)) return;
+    } catch (error) {
+      last = error instanceof Error ? error.message : String(error);
+    }
+    await sleep(1000 + attempt * 700);
+  }
+  throw new Error(`Promoted DTFSeeds route failed verification: ${route} (${last})`);
 }
 
 async function verifyPromotion() {
@@ -288,12 +353,42 @@ async function verifyPromotion() {
   if (![301, 302].includes(retired.response.status) || !location.includes('/games/')) {
     throw new Error(`future-slots retired route regression: HTTP ${retired.response.status} ${location || '<no location>'}`);
   }
+
+  for (const route of [
+    '/learn/academy/',
+    '/learn/atlas/seed-germination/seed-anatomy/',
+    '/learn/cultivation-science/outdoor-site-and-sun-mapping/',
+    '/learn/glossary/',
+    '/learn/plant-health/two-spotted-spider-mite/',
+    '/learn/sops/ph-meter-calibration-and-measurement/',
+    '/learn/symptoms/lower-leaf-yellowing/',
+    '/learn/tools/plant-health-intake/',
+    '/community/grow-offs/solo-cup-grow-off/',
+    '/games/seed-ascent/',
+  ]) {
+    await verifyOwnPage(route);
+  }
+
+  const asset = await probe('/seed-ascent.html');
+  if (asset.response.status !== 200 || asset.response.headers.get('location') || !/Seed Ascent/i.test(asset.text)) {
+    throw new Error(`Seed Ascent public runtime asset did not resolve through overlay: HTTP ${asset.response.status}`);
+  }
+
+  const learnHub = await probe('/learn/');
+  if (learnHub.response.status !== 200 || learnHub.response.headers.get('location')) {
+    throw new Error(`WordPress-owned /learn/ hub was not preserved: HTTP ${learnHub.response.status}`);
+  }
 }
 
 async function cleanup() {
   if (snippetId && !rollbackFailed) {
-    try { await wpRequest(`/wp-json/code-snippets/v1/snippets/${snippetId}/deactivate`, { method: 'POST', allow: [400, 404] }); } catch {}
-    try { await wpRequest(`/wp-json/code-snippets/v1/snippets/${snippetId}`, { method: 'DELETE', allow: [404] }); } catch {}
+    let suffix = '';
+    if (!(await waitForSnippetApi())) {
+      if (await waitForSnippetApi(true)) suffix = '?snippets-safe-mode=1';
+    }
+    try { await wpRequest(`/wp-json/code-snippets/v1/snippets/${snippetId}/deactivate${suffix}`, { method: 'POST', allow: [400, 404, 500] }); } catch {}
+    try { await wpRequest(`/wp-json/code-snippets/v1/snippets/${snippetId}${suffix}`, { method: 'DELETE', allow: [404, 500] }); } catch {}
+    try { await wpRequest(`/wp-json/code-snippets/v1/snippets/${snippetId}${suffix}`, { method: 'DELETE', allow: [404, 500] }); } catch {}
   }
   if (rollbackFailed) return;
   if (installedByRun && !pluginWasInstalled) {
@@ -310,10 +405,10 @@ try {
   const created = await wpRequest('/wp-json/code-snippets/v1/snippets', {
     method: 'POST',
     json: {
-      name: `DTF Public Game Route Promotion ${runId}`,
-      desc: 'Temporary authenticated and marker-gated removal of stale redirects for promoted public game routes.',
+      name: `DTF Public Route Promotion ${runId}`,
+      desc: 'Temporary authenticated promotion of canonical game routes and reviewed Dtf420 child-route rewrites.',
       code: snippetCode,
-      tags: ['dtf-release', 'temporary', 'game-routing'],
+      tags: ['dtf-release', 'temporary', 'route-promotion'],
       scope: 'global',
       priority: 1,
       active: false,
@@ -325,14 +420,22 @@ try {
   await wpRequest(`/wp-json/code-snippets/v1/snippets/${snippetId}/activate`, { method: 'POST' });
 
   const result = await callPromotion('apply');
-  if (result.body?.ok !== true) throw new Error(`Route promotion did not report success: ${JSON.stringify(result.body).slice(0, 700)}`);
+  if (result.body?.ok !== true) throw new Error(`Route promotion did not report success: ${JSON.stringify(result.body).slice(0, 900)}`);
   applied = true;
 
   await verifyPromotion();
 
   const finalized = await callPromotion('finalize');
   if (finalized.body?.ok !== true) throw new Error(`Route promotion finalization failed: ${JSON.stringify(finalized.body).slice(0, 700)}`);
-  console.log(JSON.stringify({ ok: true, routePromotion: 'finalized', namespace: promotionNamespace, changed: result.body.changed || [], already: result.body.already || [] }));
+  applied = false;
+  console.log(JSON.stringify({
+    ok: true,
+    routePromotion: 'finalized',
+    namespace: promotionNamespace,
+    overlayCommit: result.body.overlay_commit || '',
+    changed: result.body.changed || [],
+    already: result.body.already || [],
+  }));
 } catch (error) {
   if (snippetId && applied) {
     try {
