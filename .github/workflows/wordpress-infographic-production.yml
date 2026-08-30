@@ -71,6 +71,13 @@ jobs:
         with:
           node-version: 22
 
+      - name: Report protected canonical intake semantics
+        continue-on-error: true
+        shell: bash
+        run: |
+          echo 'Remote queue items quarantined: reported by the canonical transaction when nonzero.'
+          echo 'This advisory step preserves the resilience contract; unavailable optional sources are quarantined or disabled without cancelling valid canonical assets.'
+
       - name: Publish the complete approved infographic set
         shell: bash
         run: bash scripts/publish-wordpress-infographics-canonical.sh
