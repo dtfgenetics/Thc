@@ -92,11 +92,62 @@ async function tapKey(page, key) {
   await page.keyboard.up(key);
 }
 
+async function assertFeelMechanics(page) {
+  const feel = await page.evaluate(() => {
+    const idle = { left: false, right: false, jumpPressed: false, jumpHeld: false };
+
+    function settledPlayer() {
+      let testPlayer = createPlayer({ x: 100, y: 390 });
+      for (let i = 0; i < 60; i += 1) testPlayer = stepPlayer(testPlayer, idle, level, 1 / 60);
+      return testPlayer;
+    }
+
+    function jumpApex(holdFrames) {
+      let testPlayer = settledPlayer();
+      testPlayer = stepPlayer(testPlayer, { left: false, right: false, jumpPressed: true, jumpHeld: true }, level, 1 / 60);
+      let apex = testPlayer.y;
+      for (let frame = 0; frame < 45; frame += 1) {
+        testPlayer = stepPlayer(testPlayer, {
+          left: false,
+          right: false,
+          jumpPressed: false,
+          jumpHeld: frame < holdFrames
+        }, level, 1 / 60);
+        apex = Math.min(apex, testPlayer.y);
+      }
+      return apex;
+    }
+
+    const accelStart = settledPlayer();
+    const accelFirst = stepPlayer(accelStart, { left: false, right: true, jumpPressed: false, jumpHeld: false }, level, 1 / 60);
+    const fullApex = jumpApex(45);
+    const shortApex = jumpApex(3);
+    const blend60 = cameraBlend(1 / 60);
+    const blend120 = cameraBlend(1 / 120);
+
+    return {
+      accelFirstVx: accelFirst.vx,
+      moveSpeed: DEFAULTS.moveSpeed,
+      fullApex,
+      shortApex,
+      blend60,
+      blend120,
+      equivalent120Blend: 1 - ((1 - blend120) ** 2)
+    };
+  });
+
+  assert.ok(feel.accelFirstVx > 0 && feel.accelFirstVx < feel.moveSpeed, `Movement should accelerate into top speed, got first-frame vx=${feel.accelFirstVx}`);
+  assert.ok(feel.shortApex > feel.fullApex + 35, `Short hop should be meaningfully lower than held jump: full=${feel.fullApex}, short=${feel.shortApex}`);
+  assert.ok(Math.abs(feel.equivalent120Blend - feel.blend60) < 0.002, `Camera smoothing should be refresh-rate independent: 60Hz=${feel.blend60}, 120Hz-pair=${feel.equivalent120Blend}`);
+  return feel;
+}
+
 async function runDesktopAcceptance(page) {
   const errors = collectErrors(page);
   await page.goto(GAME_URL, { waitUntil: 'networkidle' });
   await waitForGameReady(page);
   await assertProductionArt(page);
+  const feel = await assertFeelMechanics(page);
 
   assert.match(await page.title(), /Seed Man: Sprout Run/i);
   assert.equal((await page.locator('#sprout-count').innerText()).trim(), '0 / 24');
@@ -216,7 +267,7 @@ async function runDesktopAcceptance(page) {
   assert.equal((await snapshot(page)).finished, false);
 
   assert.equal(errors.length, 0, `Desktop browser errors: ${errors.join(' | ')}`);
-  return { errors: errors.length };
+  return { errors: errors.length, feel };
 }
 
 async function runMobileAcceptance(page) {
@@ -239,6 +290,21 @@ async function runMobileAcceptance(page) {
   await rightButton.dispatchEvent('pointerup', { pointerId: 7, pointerType: 'touch', isPrimary: true });
   const afterTouchMove = await snapshot(page);
   assert.ok(afterTouchMove.x > beforeTouchMove.x + 25, `Touch movement did not advance Seed Man enough: ${beforeTouchMove.x} -> ${afterTouchMove.x}`);
+
+  await page.evaluate(() => {
+    player.x = 100;
+    player.y = 434;
+    player.vx = 0;
+    player.vy = 0;
+    player.grounded = true;
+  });
+  const beforeDriftMove = await snapshot(page);
+  await rightButton.dispatchEvent('pointerdown', { pointerId: 17, pointerType: 'touch', isPrimary: true });
+  await rightButton.dispatchEvent('pointerleave', { pointerId: 17, pointerType: 'touch', isPrimary: true });
+  await sleep(220);
+  const duringDriftMove = await snapshot(page);
+  await rightButton.dispatchEvent('pointerup', { pointerId: 17, pointerType: 'touch', isPrimary: true });
+  assert.ok(duringDriftMove.x > beforeDriftMove.x + 15, `Captured touch movement should continue after pointer drift: ${beforeDriftMove.x} -> ${duringDriftMove.x}`);
 
   await jumpButton.dispatchEvent('pointerdown', { pointerId: 8, pointerType: 'touch', isPrimary: true });
   await jumpButton.dispatchEvent('pointerup', { pointerId: 8, pointerType: 'touch', isPrimary: true });
@@ -284,6 +350,10 @@ try {
     mobile: '390x844',
     productionArtVersion: 'seed-man-production-v1',
     productionCharacterContract: 'seed-man-locked-v1',
+    acceleratedMovement: true,
+    variableJumpHeight: true,
+    frameRateIndependentCamera: true,
+    pointerCapturedTouchMovement: true,
     keyboardMovement: true,
     keyboardDoubleJump: true,
     pauseResume: true,
@@ -294,6 +364,8 @@ try {
     finishAndRestart: true,
     touchMovement: true,
     touchDoubleJump: true,
+    fullJumpApex: desktopResult.feel.fullApex,
+    shortHopApex: desktopResult.feel.shortApex,
     desktopConsoleErrors: desktopResult.errors,
     mobileConsoleErrors: mobileResult.errors,
     mobileOverflowPx: mobileResult.overflow

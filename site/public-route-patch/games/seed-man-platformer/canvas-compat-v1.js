@@ -7,7 +7,7 @@
  */
 (() => {
   const VERSION = 'sprout-canvas-compat-v1';
-  const RELEASE = '20260830-r4';
+  const RELEASE = '20260830-r5';
   const proto = window.HTMLCanvasElement?.prototype;
   const nativeGetContext = proto?.getContext;
   if (!proto || typeof nativeGetContext !== 'function') return;
