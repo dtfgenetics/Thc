@@ -15,6 +15,21 @@ function sproutArtPath(points) {
   ctx.stroke();
 }
 
+function sproutArtRoundedRect(x, y, width, height, radius) {
+  const r = Math.max(0, Math.min(radius, Math.abs(width) / 2, Math.abs(height) / 2));
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + width - r, y);
+  ctx.quadraticCurveTo(x + width, y, x + width, y + r);
+  ctx.lineTo(x + width, y + height - r);
+  ctx.quadraticCurveTo(x + width, y + height, x + width - r, y + height);
+  ctx.lineTo(x + r, y + height);
+  ctx.quadraticCurveTo(x, y + height, x, y + height - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
 function sproutArtLeaf(x, y, rotation, width = 8, height = 13) {
   ctx.save();
   ctx.translate(x, y);
@@ -57,8 +72,7 @@ function sproutArtShoe(x, y, rotation = 0) {
   ctx.fillStyle = '#ffffff';
   ctx.strokeStyle = '#171817';
   ctx.lineWidth = 2.2;
-  ctx.beginPath();
-  ctx.roundRect(-4.8, -2.6, 10.2, 5.8, 2.8);
+  sproutArtRoundedRect(-4.8, -2.6, 10.2, 5.8, 2.8);
   ctx.fill();
   ctx.stroke();
   ctx.restore();
