@@ -35,7 +35,18 @@ jobs:
           grep -Fq 'find "$route" -maxdepth 2 -type f' "$file"
           grep -Fq 'sha256sum' "$file"
           grep -Fq 'dtf-home' "$file"
-          ! grep -Eq 'rm[[:space:]]+-|mv[[:space:]]+|rsync|scp|file_put_contents|unlink\(' "$file"
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          text = Path('.github/workflows/hostinger-wordpress-route-shadow-audit.yml').read_text()
+          # Inspect only the production audit job so this guard does not match
+          # its own list of prohibited mutation commands.
+          production = text.split('\n  audit:\n', 1)[1]
+          forbidden = re.compile(r'(^|[;&|]\s*)(rm\s+-|mv\s+|rsync\b|scp\b)|file_put_contents|unlink\(', re.M)
+          match = forbidden.search(production)
+          if match:
+              raise SystemExit(f'Read-only audit contains a prohibited mutation command: {match.group(0)!r}')
+          PY
 
   audit:
     if: github.event_name != 'pull_request'
