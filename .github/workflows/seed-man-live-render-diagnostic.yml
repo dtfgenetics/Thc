@@ -33,9 +33,10 @@ jobs:
           const out = path.join(process.env.RUNNER_TEMP, 'sprout-render');
           fs.mkdirSync(out, { recursive: true });
 
-          async function inspect(name, viewport) {
+          async function inspect(name, contextOptions) {
             const browser = await chromium.launch({ headless: true });
-            const page = await browser.newPage({ viewportSize: viewport, deviceScaleFactor: 1 });
+            const context = await browser.newContext(contextOptions);
+            const page = await context.newPage();
             const errors = [];
             page.on('console', msg => { if (msg.type() === 'error') errors.push(msg.text()); });
             page.on('pageerror', err => errors.push(String(err)));
@@ -59,6 +60,8 @@ jobs:
               }
               const style = getComputedStyle(canvas);
               return {
+                innerWidth: window.innerWidth,
+                innerHeight: window.innerHeight,
                 canvasPresent: true,
                 width: canvas.width,
                 height: canvas.height,
@@ -67,7 +70,6 @@ jobs:
                 visibility: style.visibility,
                 opacity: style.opacity,
                 status: document.querySelector('#load-status')?.textContent,
-                player: window.player ? { x: window.player.x, y: window.player.y } : null,
                 art: window.__SPROUT_ART__ || null,
                 samples: { opaque, nonSky, dark, green, brown }
               };
@@ -77,13 +79,21 @@ jobs:
             console.log(name, JSON.stringify({ result, errors }, null, 2));
             if (!result.canvasPresent || !result.rect || result.rect.width < 100 || result.rect.height < 50) throw new Error(`${name}: canvas is not visibly sized`);
             if ((result.samples?.opaque || 0) < 1000 || (result.samples?.nonSky || 0) < 300) throw new Error(`${name}: canvas pixel output appears blank/unrendered`);
+            if (name === 'android' && result.innerWidth > 430) throw new Error(`android: mobile layout viewport not active (${result.innerWidth}px)`);
             if (errors.length) throw new Error(`${name}: console/page errors: ${errors.join(' | ')}`);
             await browser.close();
           }
 
           (async () => {
-            await inspect('desktop', { width: 1280, height: 900 });
-            await inspect('android', { width: 390, height: 844 });
+            await inspect('desktop', { viewport: { width: 1280, height: 900 }, deviceScaleFactor: 1 });
+            await inspect('android', {
+              viewport: { width: 390, height: 844 },
+              screen: { width: 390, height: 844 },
+              deviceScaleFactor: 2.75,
+              isMobile: true,
+              hasTouch: true,
+              userAgent: 'Mozilla/5.0 (Linux; Android 13; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Mobile Safari/537.36'
+            });
           })().catch(err => { console.error(err); process.exit(1); });
           NODE
       - name: Upload render evidence
