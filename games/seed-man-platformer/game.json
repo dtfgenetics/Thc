@@ -3,7 +3,7 @@
   "id": "seed-man-platformer",
   "title": "Seed Man: Sprout Run",
   "type": "browser-platformer",
-  "status": "browser-expanded-level",
+  "status": "browser-production-art",
   "route": "/games/seed-man-platformer/",
   "targetRuntime": "html5-browser-canvas2d",
   "input": ["keyboard", "touch"],
@@ -23,7 +23,9 @@
     "physics": "games/seed-man-platformer/src/physics.mjs",
     "level": "games/seed-man-platformer/data/level-01.json",
     "tests": "games/seed-man-platformer/test/physics.test.mjs",
+    "browserAcceptance": "games/seed-man-platformer/test/browser-smoke.mjs",
     "publicRoute": "site/public-route-patch/games/seed-man-platformer",
+    "productionCharacterArt": "site/public-route-patch/games/seed-man-platformer/seed-man-production-art.js",
     "fixedTimestepSeconds": 0.0166666667,
     "canvas": {"width": 960, "height": 540},
     "levelWorld": {"width": 7800, "height": 540},
@@ -44,7 +46,13 @@
   ],
   "art": {
     "prototypeRenderer": "canvas2d-primitives",
+    "productionRenderer": "canvas2d-vector",
+    "productionRendererPath": "site/public-route-patch/games/seed-man-platformer/seed-man-production-art.js",
+    "productionArtVersion": "seed-man-production-v1",
+    "characterContract": "seed-man-locked-v1",
+    "productionCharacterArtAssigned": true,
     "productionSpriteAssigned": false,
+    "originalProductionArtCleared": true,
     "thirdPartyCharacterAssets": false,
     "thirdPartyLevelLayouts": false
   },
@@ -57,8 +65,14 @@
     "powerups-tested": true,
     "keyboard-controls": true,
     "touch-controls-implemented": true,
+    "automated-desktop-browser-playtest": true,
+    "automated-mobile-browser-playtest": true,
+    "production-character-art-runtime-tested": true,
+    "original-production-art-cleared": true,
     "mobile-playtest": false,
     "sprite-consistency-review": false,
-    "original-audio-and-art-cleared": false
+    "optional-audio-added": false,
+    "original-audio-and-art-cleared": false,
+    "release-candidate": false
   }
 }
