@@ -71,7 +71,7 @@ const snippetCode = String.raw`
 add_action('rest_api_init', function () {
     $token = ${tokenLiteral};
     $namespace = ${namespaceLiteral};
-    $allowed = ['.htaccess','index.html','app.js','canvas-compat-v1.js','seed-man-production-art.js','input-guard-v1.js','seed-man.css','physics.mjs','data/level-01.json'];
+    $allowed = ['.htaccess','index.html','app.js','canvas-compat-v1.js','seed-man-production-art.js','gameplay-v2.js','input-guard-v1.js','seed-man.css','physics.mjs','data/level-01.json'];
     $remove_tree = static function ($dir) use (&$remove_tree) {
         if (!is_dir($dir)) return;
         $items = scandir($dir); if ($items === false) return;
