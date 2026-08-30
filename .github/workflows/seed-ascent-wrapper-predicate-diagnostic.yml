@@ -1,0 +1,60 @@
+name: Seed Ascent Wrapper Predicate Diagnostic
+
+on:
+  push:
+    branches:
+      - fix/seed-ascent-wrapper-predicate-20260830
+    paths:
+      - '.github/workflows/seed-ascent-wrapper-predicate-diagnostic.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Inspect deployed Dtf420 Seed Ascent wrapper directly
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          const url = new URL('/dtf-content-overlay/games/seed-ascent/index.html', 'https://dtfseeds.com');
+          url.searchParams.set('dtf_wrapper_diag', `${Date.now()}-${Math.random().toString(16).slice(2)}`);
+          const response = await fetch(url, {
+            redirect: 'manual',
+            headers: {
+              'user-agent': 'DTFSeeds-Seed-Ascent-Wrapper-Diagnostic/1.0',
+              'cache-control': 'no-cache, no-store, max-age=0',
+              pragma: 'no-cache',
+            },
+            signal: AbortSignal.timeout(45000),
+          });
+          const text = await response.text();
+          const checks = {
+            status200: response.status === 200,
+            noRedirect: !response.headers.get('location'),
+            seedAscentText: /Seed Ascent/i.test(text),
+            iframeTag: text.includes('<iframe'),
+            launcherRef: text.includes('/seed-ascent.html'),
+            nextStatic: text.includes('/_next/static/'),
+            canonicalOrigin: text.includes('https://dtfseeds.com'),
+            noRetiredOrigin: !/https?:\/\/(?:www\.)?dtf420\.com/i.test(text),
+            noWordPressMarkers: !/wp-content|wp-includes|wordpress/i.test(text),
+          };
+          console.log(JSON.stringify({
+            status: response.status,
+            location: response.headers.get('location') || '',
+            bytes: text.length,
+            checks,
+            all: Object.values(checks).every(Boolean),
+            launcherIndex: text.indexOf('/seed-ascent.html'),
+            canonicalIndex: text.indexOf('https://dtfseeds.com'),
+            iframeIndex: text.indexOf('<iframe'),
+            nextIndex: text.indexOf('/_next/static/'),
+            retiredOriginMatches: [...text.matchAll(/https?:\/\/(?:www\.)?dtf420\.com/ig)].slice(0,5).map(m=>m[0]),
+            wordpressMatches: [...text.matchAll(/.{0,80}(?:wp-content|wp-includes|wordpress).{0,80}/ig)].slice(0,5).map(m=>m[0]),
+            htmlStart: text.slice(0,1000),
+          }, null, 2));
+          NODE
