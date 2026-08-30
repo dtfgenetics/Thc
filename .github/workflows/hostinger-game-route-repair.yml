@@ -1,16 +1,10 @@
+# Legacy emergency fallback only.
+# The WordPress V2 transactional public-suite publisher is the canonical production path.
+# Run this workflow manually only when direct Hostinger route repair is intentionally required.
 name: Repair DTF Game Routes on Hostinger
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths:
-      - site/public-route-patch/games/index.html
-      - site/public-route-patch/games/dtf-route.css
-      - site/public-route-patch/games/high-iq/**
-      - site/public-route-patch/games/grower-conversations/**
-      - .github/workflows/hostinger-game-route-repair.yml
 
 permissions:
   contents: read
@@ -218,4 +212,5 @@ jobs:
           echo '## DTF Game Route Hostinger Repair' >> "$GITHUB_STEP_SUMMARY"
           echo "Revision: $GITHUB_SHA" >> "$GITHUB_STEP_SUMMARY"
           echo "Result: ${{ job.status }}" >> "$GITHUB_STEP_SUMMARY"
+          echo 'Mode: manual emergency fallback only. Canonical production publishing is handled by WordPress V2.' >> "$GITHUB_STEP_SUMMARY"
           echo 'Scope: /games/, /games/dtf-route.css, /games/high-iq/, /games/grower-conversations/ only.' >> "$GITHUB_STEP_SUMMARY"
