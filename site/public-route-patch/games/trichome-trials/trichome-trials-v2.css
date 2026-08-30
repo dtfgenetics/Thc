@@ -16,7 +16,7 @@
 .scorecard-progress{display:inline-flex;align-items:center;justify-content:center;min-width:116px;padding:.42rem .62rem;border:1px solid rgba(239,200,111,.26);border-radius:999px;background:#11150f;color:var(--gold);font-size:.7rem;font-weight:900;letter-spacing:.04em}
 .scorecard-progress.complete{border-color:rgba(185,239,107,.45);color:var(--lime);box-shadow:0 0 18px rgba(185,239,107,.1)}
 
-.score-row{position:relative;transition:border-color .16s ease,background .16s ease,box-shadow .16s ease,transform .16s ease}
+.score-row{position:relative;scroll-margin-top:92px;transition:border-color .16s ease,background .16s ease,box-shadow .16s ease,transform .16s ease}
 .score-row.unreviewed{border-color:rgba(239,200,111,.34);background:linear-gradient(180deg,rgba(39,31,17,.52),rgba(13,20,14,.96))}
 .score-row.reviewed{border-color:rgba(130,185,145,.34);background:linear-gradient(180deg,rgba(19,36,25,.82),rgba(11,19,13,.97))}
 .score-row.reviewed::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:999px;background:linear-gradient(180deg,var(--lime),#7eb68c)}
@@ -24,11 +24,16 @@
 .review-state{padding:.2rem .38rem;border-radius:.34rem;background:#221c10;color:#d9b95d;font-size:.56rem;font-weight:950;letter-spacing:.1em}
 .score-row.reviewed .review-state{background:#14251a;color:#a9dcad}
 
-.score-stepper{display:grid;grid-template-columns:44px 62px 44px;align-items:center;justify-content:center;gap:.35rem;margin-bottom:.42rem}
-.score-stepper button{width:44px;height:44px;border:1px solid #4c6654;border-radius:.65rem;background:linear-gradient(180deg,#1c2b20,#101a13);color:var(--ink);font-size:1.45rem;font-weight:900;cursor:pointer;touch-action:manipulation}
+/* Keep the stepper, slider, and scale labels in distinct rows. The older
+   two-column score-control rule squeezed the whole stepper into a 3rem column,
+   allowing the range input to sit over the +/- buttons. */
+.score-control{display:grid;grid-template-columns:minmax(0,1fr);gap:.45rem;align-items:center;min-width:0}
+.score-stepper{grid-column:1;position:relative;z-index:2;display:grid;grid-template-columns:44px 62px 44px;align-items:center;justify-content:start;gap:.35rem;width:max-content;max-width:100%;margin-bottom:.1rem}
+.score-stepper button{position:relative;z-index:2;width:44px;height:44px;border:1px solid #4c6654;border-radius:.65rem;background:linear-gradient(180deg,#1c2b20,#101a13);color:var(--ink);font-size:1.45rem;font-weight:900;cursor:pointer;touch-action:manipulation}
 .score-stepper button:hover:not(:disabled){border-color:var(--lime);box-shadow:0 0 16px rgba(185,239,107,.1)}
 .score-stepper output{display:grid;place-items:center;min-height:48px;border:1px solid rgba(239,200,111,.42);border-radius:.72rem;background:#17150d;color:var(--gold);font-size:1.65rem;font-weight:950;box-shadow:var(--tt-gold-glow)}
-.score-control input[type="range"]{height:28px;background:transparent;accent-color:var(--lime)}
+.score-control input[type="range"]{grid-column:1;position:relative;z-index:1;width:100%;min-width:0;height:28px;background:transparent;accent-color:var(--lime)}
+.scale-labels{grid-column:1!important;width:100%;margin-top:-.2rem}
 .score-control input[type="range"]::-webkit-slider-runnable-track{height:9px;border-radius:999px;background:linear-gradient(90deg,var(--lime) 0 var(--score),#263228 var(--score) 100%)}
 .score-control input[type="range"]::-webkit-slider-thumb{width:24px;height:24px;margin-top:-7.5px;border:3px solid #102014;border-radius:50%;background:var(--gold);box-shadow:0 0 0 2px rgba(239,200,111,.28);-webkit-appearance:none}
 .score-control input[type="range"]::-moz-range-track{height:9px;border-radius:999px;background:#263228}
@@ -70,7 +75,7 @@
   .score-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
   .trial-grid{grid-template-columns:1fr}
   .judge-panel{padding:.75rem}
-  .score-row{grid-template-columns:1fr;gap:.7rem;padding:.82rem}
+  .score-row{grid-template-columns:1fr;gap:.7rem;padding:.82rem;scroll-margin-top:72px}
   .score-label p{font-size:.78rem}
   .score-stepper{grid-template-columns:52px 70px 52px}
   .score-stepper button{width:52px;height:52px;font-size:1.6rem}
