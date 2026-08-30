@@ -1,0 +1,64 @@
+name: Seed Ascent Live Diagnostic
+
+on:
+  push:
+    branches:
+      - fix/seed-ascent-verifier-20260830
+    paths:
+      - '.github/workflows/seed-ascent-live-diagnostic.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Probe live Seed Ascent wrapper and runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          const origin = 'https://dtfseeds.com';
+          const routes = [
+            '/games/seed-ascent/',
+            '/seed-ascent.html',
+            '/seed-ascent/engine.js',
+            '/seed-ascent/levels.js',
+            '/seed-ascent/styles.css',
+          ];
+          for (const route of routes) {
+            const url = new URL(route, origin);
+            url.searchParams.set('dtf_seed_ascent_diag', `${Date.now()}-${Math.random().toString(16).slice(2)}`);
+            const response = await fetch(url, {
+              redirect: 'manual',
+              headers: {
+                'user-agent': 'DTFSeeds-Seed-Ascent-Diagnostic/1.0',
+                'cache-control': 'no-cache, no-store, max-age=0',
+                pragma: 'no-cache',
+              },
+              signal: AbortSignal.timeout(45000),
+            });
+            const text = await response.text();
+            const result = {
+              route,
+              status: response.status,
+              location: response.headers.get('location') || '',
+              bytes: text.length,
+              hasSeedAscentText: /Seed Ascent/i.test(text),
+              hasRelativeLauncher: /(?:src|href)=["']\/seed-ascent\.html(?:[?#][^"']*)?["']/i.test(text),
+              hasAbsoluteLauncher: /(?:src|href)=["']https:\/\/dtfseeds\.com\/seed-ascent\.html(?:[?#][^"']*)?["']/i.test(text),
+              hasLauncherSubstring: text.includes('/seed-ascent.html'),
+              hasCanonicalOrigin: text.includes('https://dtfseeds.com'),
+              hasCanonicalRoute: /https:\/\/dtfseeds\.com\/games\/seed-ascent\/?/i.test(text),
+              hasRetiredOrigin: /https?:\/\/(?:www\.)?dtf420\.com/i.test(text),
+              hasGameCanvas: text.includes('id="game"'),
+              hasEngineRef: text.includes('/seed-ascent/engine.js'),
+              hasLevelsRef: text.includes('/seed-ascent/levels.js'),
+              hasNextAssets: text.includes('/_next/static/'),
+              hasWordPressMarker: /wp-content|wp-includes|wordpress/i.test(text),
+            };
+            console.log(JSON.stringify(result));
+          }
+          NODE
