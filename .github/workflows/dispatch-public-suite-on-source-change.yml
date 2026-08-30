@@ -1,19 +1,11 @@
 name: Dispatch Public Suite on Source Change
 
+# Manual fallback only. Production pushes are coordinated by the DTFSeeds
+# Production Gateway and the protected Public Suite deploy workflow's own
+# path-filtered push trigger. Keeping a second push dispatcher here caused the
+# same source SHA to be published twice.
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - apps/high-land-web/**
-      - apps/growlens-web/**
-      - games/high-iq/**
-      - games/high-life/**
-      - games/grower-conversations/**
-      - games/seed-man-platformer/**
-      - site/public-route-patch/**
-      - site/deployment/public-apps.json
-      - .github/workflows/dispatch-public-suite-on-source-change.yml
 
 permissions:
   actions: write
@@ -48,7 +40,7 @@ jobs:
           echo "Protected Public Suite deployment run: $run_id"
           gh run watch "$run_id" --exit-status
 
-      - name: Report automatic Public Suite deployment
+      - name: Report manual Public Suite deployment
         if: always()
         uses: actions/github-script@v7
         env:
@@ -64,13 +56,13 @@ jobs:
               repo: context.repo.repo,
               issue_number: 46,
               body: [
-                '## Automatic Public Suite source deployment',
+                '## Manual Public Suite deployment',
                 '',
                 `Dispatcher: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
                 `Source commit: \`${context.sha}\``,
                 `Result: **${process.env.STATUS}**`,
                 `Protected deployment: ${run}`,
                 '',
-                'Public app and gateway source changes now automatically enter the validated no-SSH production path. The child workflow builds a fresh suite, publishes only allowlisted app/static routes through the transactional WordPress bridge, preserves WordPress ownership of canonical content routes, and runs independent live verification.'
+                'This workflow is a manual fallback. Normal source pushes are owned by the Production Gateway plus the protected Public Suite workflow push trigger, preventing duplicate same-SHA production publishes.'
               ].join('\n')
             });
