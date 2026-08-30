@@ -52,8 +52,8 @@ jobs:
         run: |
           set -euo pipefail
           node --check scripts/apply-wordpress-public-content-rest.mjs
+          node --check scripts/apply-wordpress-public-content-owned-routes.mjs
           node --check scripts/audit-wordpress-commerce-rest.mjs
-          node --check scripts/rebuild-wordpress-visual-site.mjs
           node --check scripts/rebuild-wordpress-commerce-visuals.mjs
           node --check scripts/style-wordpress-woocommerce-archive.mjs
           node --check scripts/reconcile-woocommerce-products.mjs
@@ -85,31 +85,16 @@ jobs:
         shell: bash
         run: node scripts/audit-wordpress-commerce-rest.mjs
 
-      - name: Reconcile canonical pages and front page
+      - name: Reconcile canonical editorial pages while preserving Learning-owned Home and Learn
         id: publish
         shell: bash
         run: |
           set -euo pipefail
-          node scripts/apply-wordpress-public-content-rest.mjs
+          node scripts/apply-wordpress-public-content-owned-routes.mjs
           backup_dir="$(cat "$BACKUP_ROOT/wordpress-rest-backup-path.txt")"
           summary="$backup_dir/deployment-summary.json"
           echo "mutations=$(node -p "require(process.argv[1]).mutationCount" "$summary")" >> "$GITHUB_OUTPUT"
           echo "changed_pages=$(node -p "require(process.argv[1]).changedPages" "$summary")" >> "$GITHUB_OUTPUT"
-
-      - name: Rebuild DTF visual brand shell, Home, and Learn
-        id: visual
-        env:
-          APPLY_VISUAL_REBUILD: 'true'
-          BACKUP_ROOT: /tmp/wordpress-production-backups/visual
-        shell: bash
-        run: |
-          set -euo pipefail
-          node scripts/rebuild-wordpress-visual-site.mjs
-          dir="$(cat "$BACKUP_ROOT/visual-rebuild-backup-path.txt")"
-          report="$dir/visual-rebuild-report.json"
-          echo "media_count=$(node -p "require(process.argv[1]).mediaCount" "$report")" >> "$GITHUB_OUTPUT"
-          echo "brand_id=$(node -p "require(process.argv[1]).brandMediaId" "$report")" >> "$GITHUB_OUTPUT"
-          echo "missing=$(node -p "require(process.argv[1]).missingSelections.join(',')" "$report")" >> "$GITHUB_OUTPUT"
 
       - name: Rebuild commerce presentation and URL brand state
         id: commerce_visual
@@ -155,7 +140,7 @@ jobs:
           NODE
           echo "site_icon=$site_icon" >> "$GITHUB_OUTPUT"
 
-      - name: Verify live visual WordPress pages and internal-link structure
+      - name: Verify live WordPress surfaces owned by this lane
         id: verify
         shell: bash
         run: |
@@ -208,25 +193,14 @@ jobs:
             echo "$path verified with $count WordPress-hosted image references"
           }
 
+          # Home is read-only here because Learning V3 owns its automatic visual handoff.
           verify_page '/' 'Genetics first. Cultivation science behind it.' 8
-          verify_page '/learn/' 'Learn the plant as a connected system.' 10
           verify_page '/shop/' 'dtf-commerce-archive-style' 2
           verify_page '/community/' 'Join the official DTF / Teaching Healthy Cultivation Discord' 0
           verify_page '/contact/' 'Join the official DTF / Teaching Healthy Cultivation Discord' 0
 
-          learn_body="$RUNNER_TEMP/wp-production-_learn_.html"
-          for route in \
-            '/learn/plant-biology/' \
-            '/learn/environment-vpd/' \
-            '/learn/lighting/' \
-            '/learn/water-ph-ec/' \
-            '/learn/nutrition-media/' \
-            '/learn/ipm/' \
-            '/learn/harvest-postharvest/' \
-            '/learn/genetics-breeding/'; do
-            grep -Fqi "$route" "$learn_body" || { echo "Subject route missing from live Learn page: $route" >&2; exit 1; }
-          done
-
+          # /learn/ is deliberately not mutated or gated here. The downstream
+          # Learning Experience V3 transaction is the sole automatic Learn owner.
           shop_body="$RUNNER_TEMP/wp-production-_shop_.html"
           for route in \
             '/product/10-regular-f2-blue-mango-seeds/' \
@@ -301,14 +275,11 @@ jobs:
           USER_PRESENT: ${{ steps.access.outputs.user_present }}
           PASSWORD_PRESENT: ${{ steps.access.outputs.password_present }}
           PUBLISH_OUTCOME: ${{ steps.publish.outcome }}
-          VISUAL_OUTCOME: ${{ steps.visual.outcome }}
           COMMERCE_VISUAL_OUTCOME: ${{ steps.commerce_visual.outcome }}
           SHOP_ARCHIVE_OUTCOME: ${{ steps.shop_archive.outcome }}
           VERIFY_OUTCOME: ${{ steps.verify.outcome }}
           URL_IMAGE_OUTCOME: ${{ steps.url_image.outcome }}
           SITE_ICON: ${{ steps.icon.outputs.site_icon }}
-          MEDIA_COUNT: ${{ steps.visual.outputs.media_count }}
-          MISSING: ${{ steps.visual.outputs.missing }}
           COMMERCE_RECONCILE_OUTCOME: ${{ steps.commerce_reconcile.outcome }}
           COMMERCE_ROLLBACK_OUTCOME: ${{ steps.commerce_rollback.outcome }}
         with:
@@ -319,17 +290,14 @@ jobs:
               `Protected job result: **${process.env.JOB_STATUS}**`,
               `WordPress username configured: **${process.env.USER_PRESENT || 'false'}**`,
               `WordPress application password configured: **${process.env.PASSWORD_PRESENT || 'false'}**`,
-              `Canonical page reconciliation: **${process.env.PUBLISH_OUTCOME || 'not-run'}**`,
-              `Home/Learn visual rebuild: **${process.env.VISUAL_OUTCOME || 'not-run'}**`,
+              `Ownership-preserving page reconciliation: **${process.env.PUBLISH_OUTCOME || 'not-run'}**`,
               `Commerce presentation + URL brand state: **${process.env.COMMERCE_VISUAL_OUTCOME || 'not-run'}**`,
               `WooCommerce Shop archive styling: **${process.env.SHOP_ARCHIVE_OUTCOME || 'not-run'}**`,
               `Cannabis-leaf Site Icon media ID: **${process.env.SITE_ICON || 'not-run'}**`,
-              `WordPress media indexed for visual composition: **${process.env.MEDIA_COUNT || 'not-run'}**`,
-              `Live visual + internal-link verification: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
+              `Live owned-surface verification: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
               `Live favicon + URL social image verification: **${process.env.URL_IMAGE_OUTCOME || 'not-run'}**`,
-              `Optional visual slots unmatched: **${process.env.MISSING || 'none'}**`,
               `WooCommerce reconciliation: **${process.env.COMMERCE_RECONCILE_OUTCOME || 'not-run'}**`,
               `WooCommerce rollback: **${process.env.COMMERCE_ROLLBACK_OUTCOME || 'not-needed'}**`, '',
-              'Production scope: canonical WordPress Home/Learn/community/shop presentation, WooCommerce release-card styling, current brand imagery, and cache-busted live verification. Genetics routes are owned and verified by the dedicated genetics publisher.'
+              'Production scope: canonical non-Learn WordPress editorial pages, WooCommerce presentation, current brand imagery, and fresh visitor verification. Home and Learn content are preserved here and finalized by the downstream Learning Experience V3 owner.'
             ].join('\n');
             await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body});
