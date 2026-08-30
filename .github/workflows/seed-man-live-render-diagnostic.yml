@@ -1,0 +1,95 @@
+name: Diagnose Sprout Run Live Rendering
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/seed-man-live-render-diagnostic.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  render-diagnostic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install browser dependencies
+        run: |
+          npm ci
+          npx playwright install chromium
+      - name: Inspect live canvas pixels and capture screenshots
+        run: |
+          node <<'NODE'
+          const { chromium } = require('playwright');
+          const fs = require('fs');
+          const path = require('path');
+          const url = 'https://dtfseeds.com/games/seed-man-platformer/';
+          const out = path.join(process.env.RUNNER_TEMP, 'sprout-render');
+          fs.mkdirSync(out, { recursive: true });
+
+          async function inspect(name, viewport) {
+            const browser = await chromium.launch({ headless: true });
+            const page = await browser.newPage({ viewportSize: viewport, deviceScaleFactor: 1 });
+            const errors = [];
+            page.on('console', msg => { if (msg.type() === 'error') errors.push(msg.text()); });
+            page.on('pageerror', err => errors.push(String(err)));
+            await page.goto(url, { waitUntil: 'networkidle' });
+            await page.waitForTimeout(1200);
+            const result = await page.evaluate(() => {
+              const canvas = document.querySelector('#game');
+              const rect = canvas?.getBoundingClientRect();
+              const ctx = canvas?.getContext('2d');
+              if (!canvas || !ctx) return { canvasPresent: !!canvas, context: !!ctx };
+              const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+              let opaque = 0, nonSky = 0, dark = 0, green = 0, brown = 0;
+              const stride = 4 * 16;
+              for (let i = 0; i < data.length; i += stride) {
+                const r = data[i], g = data[i+1], b = data[i+2], a = data[i+3];
+                if (a > 0) opaque++;
+                if (!(b > 180 && g > 160 && r > 120)) nonSky++;
+                if (r < 90 && g < 110 && b < 90) dark++;
+                if (g > r * 1.05 && g > b * 0.9) green++;
+                if (r > 100 && r > g * 1.15 && b < 120) brown++;
+              }
+              const style = getComputedStyle(canvas);
+              return {
+                canvasPresent: true,
+                width: canvas.width,
+                height: canvas.height,
+                rect: { width: rect.width, height: rect.height, top: rect.top, left: rect.left },
+                display: style.display,
+                visibility: style.visibility,
+                opacity: style.opacity,
+                status: document.querySelector('#load-status')?.textContent,
+                player: window.player ? { x: window.player.x, y: window.player.y } : null,
+                art: window.__SPROUT_ART__ || null,
+                samples: { opaque, nonSky, dark, green, brown }
+              };
+            });
+            await page.screenshot({ path: path.join(out, `${name}.png`), fullPage: true });
+            fs.writeFileSync(path.join(out, `${name}.json`), JSON.stringify({ result, errors }, null, 2));
+            console.log(name, JSON.stringify({ result, errors }, null, 2));
+            if (!result.canvasPresent || !result.rect || result.rect.width < 100 || result.rect.height < 50) throw new Error(`${name}: canvas is not visibly sized`);
+            if ((result.samples?.opaque || 0) < 1000 || (result.samples?.nonSky || 0) < 300) throw new Error(`${name}: canvas pixel output appears blank/unrendered`);
+            if (errors.length) throw new Error(`${name}: console/page errors: ${errors.join(' | ')}`);
+            await browser.close();
+          }
+
+          (async () => {
+            await inspect('desktop', { width: 1280, height: 900 });
+            await inspect('android', { width: 390, height: 844 });
+          })().catch(err => { console.error(err); process.exit(1); });
+          NODE
+      - name: Upload render evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sprout-run-render-diagnostic
+          path: ${{ runner.temp }}/sprout-render
+          if-no-files-found: error
