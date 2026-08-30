@@ -19,6 +19,9 @@ on:
       - 'scripts/publish-wordpress-genetics-library-cdn-core.mjs'
       - 'scripts/reconcile-wordpress-genetics-duplicate-pages.mjs'
       - 'scripts/force-original-image-accept.mjs'
+      - 'scripts/flush-hostinger-litespeed-mcp.mjs'
+      - 'scripts/purge-wordpress-litespeed-cache.mjs'
+      - 'scripts/verify-wordpress-genetics-library-production.mjs'
       - 'scripts/publish-woocommerce-strain-card-images-cdn.mjs'
       - 'scripts/audit-genetics-cdn-sources.mjs'
   workflow_run:
@@ -80,6 +83,9 @@ jobs:
           node --check scripts/publish-woocommerce-strain-card-images-cdn.mjs
           node --check scripts/audit-genetics-cdn-sources.mjs
           node --check scripts/validate-genetics-library-coherence.mjs
+          node --check scripts/flush-hostinger-litespeed-mcp.mjs
+          node --check scripts/purge-wordpress-litespeed-cache.mjs
+          node --check scripts/verify-wordpress-genetics-library-production.mjs
           node scripts/validate-genetics-library-coherence.mjs
           node scripts/validate-genetics-commerce.mjs
           node --input-type=module <<'NODE'
@@ -150,55 +156,29 @@ jobs:
           set -euo pipefail
           node scripts/publish-woocommerce-strain-card-images-cdn.mjs
 
-      - name: Verify live Seeds library and all catalog routes
-        id: verify
+      - name: Purge Genetics routes from LiteSpeed immediately before acceptance
+        id: purge
+        env:
+          LITESPEED_PURGE_ALL: 'false'
         shell: bash
         run: |
           set -euo pipefail
-          fetch_page() {
-            local path="$1" required="$2" min_images="$3" safe body ok count curl_status
-            safe="$(echo "$path" | tr '/?' '__')"
-            body="$RUNNER_TEMP/genetics-${safe}.html"
-            ok=0
-            for attempt in 1 2 3 4 5 6 7 8; do
-              if curl -4 --fail --silent --show-error --location \
-                --connect-timeout 15 --max-time 60 \
-                --retry 2 --retry-all-errors --retry-delay 2 \
-                --header 'Cache-Control: no-cache, no-store, max-age=0' \
-                --header 'Pragma: no-cache' \
-                "$WP_SITE_URL${path}?dtf_genetics_verify=${GITHUB_RUN_ID}-${attempt}" \
-                --output "$body"; then
-                if grep -Fqi -- "$required" "$body"; then ok=1; break; fi
-                echo "Live genetics verification attempt $attempt returned without required marker on $path; retrying." >&2
-              else
-                curl_status=$?
-                echo "Live genetics verification transport failure on $path attempt $attempt (curl $curl_status); retrying." >&2
-              fi
-              sleep 6
-            done
-            [[ "$ok" -eq 1 ]] || { echo "Missing required text on $path after 8 verification attempts: $required" >&2; exit 1; }
-            count="$(grep -o '/wp-content/uploads/' "$body" | wc -l | tr -d ' ')"
-            [[ "$count" -ge "$min_images" ]] || { echo "$path exposes $count WordPress images; expected at least $min_images" >&2; exit 1; }
-            echo "$path verified with $count WordPress image references"
-          }
-
-          line_count="$(node -p "require('./site/wordpress/products/seed-line-catalog.json').lines.length")"
-          fetch_page '/seeds/' 'DTF Genetics library' "$line_count"
-
-          node --input-type=module <<'NODE' > "$RUNNER_TEMP/genetics-routes.tsv"
+          purge_urls="$(node --input-type=module <<'NODE'
           import fs from 'node:fs';
-          const catalog=JSON.parse(fs.readFileSync('site/wordpress/products/seed-line-catalog.json','utf8'));
-          for(const line of catalog.lines) console.log(`${line.slug}\t${line.name}`);
+          const catalog=JSON.parse(fs.readFileSync(process.env.SEED_LINE_CATALOG,'utf8'));
+          console.log(JSON.stringify(['/seeds/', ...catalog.lines.map(line => `/seeds/${line.slug}/`)]));
           NODE
+          )"
+          LITESPEED_PURGE_URLS_JSON="$purge_urls" node scripts/purge-wordpress-litespeed-cache.mjs
 
-          while IFS=$'\t' read -r slug title; do
-            fetch_page "/seeds/$slug/" "$title" 1
-          done < "$RUNNER_TEMP/genetics-routes.tsv"
-
-          seeds="$RUNNER_TEMP/genetics-_seeds_.html"
-          while IFS=$'\t' read -r slug title; do
-            grep -Fqi "/seeds/$slug/" "$seeds" || { echo "Seeds library missing route /seeds/$slug/" >&2; exit 1; }
-          done < "$RUNNER_TEMP/genetics-routes.tsv"
+      - name: Verify authoritative Genetics REST state and public cache convergence
+        id: verify
+        env:
+          GENETICS_VERIFY_REPORT: /tmp/wordpress-genetics-production/genetics-production-verification.json
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/verify-wordpress-genetics-library-production.mjs
 
       - name: Upload genetics rollback/evidence package
         if: always()
@@ -220,6 +200,7 @@ jobs:
           JOB_STATUS: ${{ job.status }}
           LIBRARY_OUTCOME: ${{ steps.library.outcome }}
           PRODUCT_OUTCOME: ${{ steps.products.outcome }}
+          PURGE_OUTCOME: ${{ steps.purge.outcome }}
           VERIFY_OUTCOME: ${{ steps.verify.outcome }}
           LINE_COUNT: ${{ steps.library.outputs.line_count }}
           CARD_COUNT: ${{ steps.library.outputs.card_count }}
@@ -231,13 +212,16 @@ jobs:
               `Result: **${process.env.JOB_STATUS}**`,
               `Seeds library + line pages: **${process.env.LIBRARY_OUTCOME||'not-run'}**`,
               `WooCommerce reviewed card publication: **${process.env.PRODUCT_OUTCOME||'not-run'}**`,
-              `Live verification: **${process.env.VERIFY_OUTCOME||'not-run'}**`,
+              `Targeted LiteSpeed route purge: **${process.env.PURGE_OUTCOME||'not-run'}**`,
+              `Authoritative REST + public convergence: **${process.env.VERIFY_OUTCOME||'not-run'}**`,
               `Published line profiles: **${process.env.LINE_COUNT||'not-run'}**`,
               `Reviewed catalog cards: **${process.env.CARD_COUNT||'not-run'}**`,
               '',
               'Authoritative production writer: image-backed seed-line catalog, cross-checked against stable pedigree and commerce registries.',
+              'Acceptance contract: WordPress REST source must be correct first; then the explicitly purged public routes must converge.',
               'Target: https://dtfseeds.com/seeds/'
             ].join('\n');
+            await core.summary.addRaw(body).write();
             try {
               await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:220,body});
             } catch (error) {
