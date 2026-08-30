@@ -20,6 +20,20 @@ The production browser route uses an original Canvas2D vector character layer at
 
 The canonical simulation and level-data copies must remain synchronized with the public route. The public browser runtime is intentionally self-contained and must not depend on runtime module imports or a runtime fetch for level data.
 
+## Three.js world upgrade
+
+A Three.js 2.5D world renderer is being built as a render-only adapter around the existing platformer simulation. The goal is to add real scene depth, greenhouse geometry, lighting, fog, emissive hazards, depth-separated platforms, and camera-driven atmosphere without changing the locked Seed Man silhouette or making Three.js the source of truth for gameplay.
+
+The current foundation is intentionally not wired into the public route yet:
+
+- deterministic game-coordinate → Three.js world mapping: `src/render/three-world-state.mjs`
+- Three.js scene/camera/lighting/world adapter: `src/render/three-world.mjs`
+- deterministic bridge tests: `test/three-world-state.test.mjs`
+
+The Three.js renderer consumes serializable level/player/camera state. Physics, collision, collectible rules, checkpoint rules, finish gating, timers, and input remain outside Three.js. The locked flat Seed Man character can stay on the existing 2D character layer while the world behind him becomes 3D, preserving the established mascot contract and a Canvas fallback for devices where WebGL is unavailable.
+
+The next integration gate is a browser-tested progressive-enhancement layer on the public route. The existing Canvas2D production renderer remains authoritative until that browser integration passes desktop, mobile, WebGL-fallback, and live release checks.
+
 ## Current playable scope
 
 The expanded Sprout Run build includes:
@@ -50,12 +64,15 @@ The dedicated workflow is `.github/workflows/seed-man-platformer-ci.yml` and run
 
 ```bash
 node games/seed-man-platformer/test/physics.test.mjs
+node games/seed-man-platformer/test/campaign.test.mjs
+node games/seed-man-platformer/test/three-world-state.test.mjs
 node games/seed-man-platformer/test/public-runtime.test.mjs
+node games/seed-man-platformer/test/public-campaign.test.mjs
 node games/seed-man-platformer/test/input-guard.test.mjs
 node games/seed-man-platformer/test/browser-smoke.mjs
 ```
 
-The deterministic physics tests now verify progressive movement acceleration/deceleration and prove a released short hop has a materially lower apex than a held jump while preserving the full-height jump and double jump.
+The deterministic physics tests verify progressive movement acceleration/deceleration and prove a released short hop has a materially lower apex than a held jump while preserving the full-height jump and double jump. The Three.js bridge tests separately prove world scaling, camera mapping, platform/hazard/checkpoint/finish conversion, and player-follow visual state without importing gameplay state into Three.js objects.
 
 The browser acceptance covers desktop and mobile viewports and verifies keyboard/touch movement, normal and double jump, variable jump height, refresh-rate-independent camera interpolation, pause/resume, sprout collection, power-up collection, checkpoint respawn, the 24-sprout finish gate, finish/restart, production character-art execution, console errors, mobile horizontal overflow, and mobile pointer-drift behavior while controls are captured.
 
@@ -65,7 +82,7 @@ Production verification is handled by `.github/workflows/seed-man-live-smoke.yml
 
 `browser-production-art`
 
-The expanded level, gameplay systems, feel-v2 control improvements, production character-art layer, automated desktop acceptance, and automated mobile-browser acceptance are established in source. The production art is original DTF Canvas2D work and does not use third-party character assets or level layouts.
+The expanded level, gameplay systems, feel-v2 control improvements, production character-art layer, automated desktop acceptance, automated mobile-browser acceptance, and tested Three.js world-state foundation are established in source. The production art is original DTF Canvas2D work and does not use third-party character assets or level layouts. The Three.js world layer is still a source-level prototype until its progressive-enhancement public integration is browser-tested and released.
 
 Two human QA gates intentionally remain open until there is direct evidence for them:
 
