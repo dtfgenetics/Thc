@@ -113,13 +113,13 @@ RewriteRule ^games/seed-ascent(?:/(.*))?/?$ /dtf-content-overlay/games/seed-asce
 RewriteRule ^_next/static/(.*)$ /dtf-content-overlay/_next/static/$1 [L]
 RewriteRule ^seed-ascent\\.html$ /dtf-content-overlay/seed-ascent.html [L]
 RewriteRule ^seed-ascent/(.*)$ /dtf-content-overlay/seed-ascent/$1 [L]`;
-const rootOverlayLiteral = JSON.stringify(rootOverlayBlock);
+const rootOverlayBase64 = Buffer.from(rootOverlayBlock, 'utf8').toString('base64');
 
 const snippetCode = String.raw`
 add_action('rest_api_init', function () {
     $token = ${tokenLiteral};
     $namespace = ${namespaceLiteral};
-    $root_overlay = json_decode(${JSON.stringify(rootOverlayLiteral)}, true);
+    $root_overlay = base64_decode(${JSON.stringify(rootOverlayBase64)}, true);
     if (!is_string($root_overlay) || $root_overlay === '') return;
     $permission = static function (WP_REST_Request $request) use ($token) {
         $supplied = (string) $request->get_header('x-dtf-route-promotion-token');
