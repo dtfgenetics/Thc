@@ -1,0 +1,50 @@
+name: Verify Current DTFSeeds Public Suite Releases
+
+on:
+  pull_request:
+    paths:
+      - scripts/verify-live-public-suite-current-releases.mjs
+      - .github/workflows/public-suite-current-release-verification.yml
+  push:
+    branches: [main]
+    paths:
+      - scripts/verify-live-public-suite-current-releases.mjs
+      - .github/workflows/public-suite-current-release-verification.yml
+  workflow_dispatch:
+  workflow_run:
+    workflows: ['Deploy DTFSeeds Public Suite via WordPress V2']
+    types: [completed]
+
+permissions:
+  contents: read
+
+jobs:
+  script-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate release verifier syntax
+        run: node --check scripts/verify-live-public-suite-current-releases.mjs
+
+  live-current-releases:
+    if: >-
+      github.event_name == 'push' ||
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify omitted current public game releases
+        env:
+          DTF_SITE_URL: https://dtfseeds.com
+          DTF_LIVE_VERIFY_ATTEMPTS: '8'
+          DTF_LIVE_VERIFY_DELAY_MS: '6000'
+        run: node scripts/verify-live-public-suite-current-releases.mjs

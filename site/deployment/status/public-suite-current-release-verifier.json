@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-08-30",
+  "purpose": "production-current-release-verification",
+  "routes": [
+    "/games/high-land/",
+    "/games/high-life/",
+    "/games/grower-conversations/",
+    "/games/seed-man-platformer/",
+    "/games/weedopolis/",
+    "/games/crossword/"
+  ],
+  "script": "scripts/verify-live-public-suite-current-releases.mjs",
+  "workflow": ".github/workflows/public-suite-current-release-verification.yml"
+}
