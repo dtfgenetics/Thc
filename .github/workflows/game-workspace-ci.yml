@@ -14,8 +14,10 @@ on:
       - 'data/public-navigation.json'
       - 'scripts/verify-game-workspace.mjs'
       - 'scripts/create-game-scaffold.mjs'
+      - 'scripts/test-game-scaffold.mjs'
       - 'scripts/game-status.mjs'
       - 'docs/GAME_DEVELOPMENT_WORKFLOW.md'
+      - 'docs/GAME_ARCHITECTURE_STANDARD.md'
       - 'package.json'
       - '.github/workflows/game-workspace-ci.yml'
   push:
@@ -30,8 +32,10 @@ on:
       - 'data/public-navigation.json'
       - 'scripts/verify-game-workspace.mjs'
       - 'scripts/create-game-scaffold.mjs'
+      - 'scripts/test-game-scaffold.mjs'
       - 'scripts/game-status.mjs'
       - 'docs/GAME_DEVELOPMENT_WORKFLOW.md'
+      - 'docs/GAME_ARCHITECTURE_STANDARD.md'
       - 'package.json'
       - '.github/workflows/game-workspace-ci.yml'
 
