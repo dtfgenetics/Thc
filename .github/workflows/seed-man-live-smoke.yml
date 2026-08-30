@@ -78,9 +78,11 @@ jobs:
             '"requiredPickups": 24' \
             '0 / 24' \
             'JUMP ×2' \
+            'tap for a short hop' \
             '7 power-ups' \
             '3 checkpoints' \
             "name=\"dtf-sprout-release\" content=\"${release}\"" \
+            "<script src=\"./canvas-compat-v1.js?v=${release}\" defer></script>" \
             "<script src=\"./app.js?v=${release}\" defer></script>" \
             "<script src=\"./seed-man-production-art.js?v=${release}\" defer></script>" \
             "<script src=\"./input-guard-v1.js?v=${release}\" defer></script>" \
@@ -105,22 +107,45 @@ jobs:
             exit 1
           fi
 
+          compat="$(fetch_asset "canvas-compat-v1.js?v=${release}")"
+          printf '%s' "$compat" > "$RUNNER_TEMP/sprout-canvas-compat.js"
+          node --check "$RUNNER_TEMP/sprout-canvas-compat.js"
+          for marker in \
+            'sprout-canvas-compat-v1' \
+            "const RELEASE = '${release}';" \
+            'softwarePreferred: true'; do
+            grep -Fq "$marker" <<<"$compat" || { echo "Missing canvas compatibility marker: $marker" >&2; exit 1; }
+          done
+
           app="$(fetch_asset "app.js?v=${release}")"
           printf '%s' "$app" > "$RUNNER_TEMP/sprout-app.js"
           node --check "$RUNNER_TEMP/sprout-app.js"
           for marker in \
             'moveSpeed: 270' \
+            'groundAcceleration: 2600' \
+            'groundDeceleration: 3200' \
+            'airAcceleration: 1600' \
+            'airDeceleration: 700' \
             'jumpSpeed: 640' \
             'doubleJumpSpeed: 590' \
+            'jumpCutGravityMultiplier: 2.35' \
             'maxAirJumps: 1' \
             'speedBoostMultiplier: 1.35' \
             'jumpBoostMultiplier: 1.18' \
             'magnetRadius: 145' \
             'shieldInvulnerability: 1.05' \
+            'function approach(' \
+            'function cameraBlend(' \
+            'jumpHeld: input.jumpHeld' \
+            'lostpointercapture' \
             'function readEmbeddedLevel()' \
             'function stepPlayer('; do
             grep -Fq "$marker" <<<"$app" || { echo "Missing app.js production marker: $marker" >&2; exit 1; }
           done
+          if grep -Fq "addEventListener('pointerleave'" <<<"$app"; then
+            echo 'Sprout Run touch controls regressed to pointerleave cancellation.' >&2
+            exit 1
+          fi
           if grep -Eq '^[[:space:]]*import[[:space:]]' <<<"$app"; then
             echo 'Sprout Run app.js regressed to a browser module import.' >&2
             exit 1
@@ -161,4 +186,4 @@ jobs:
             if (!Array.isArray(level.hazards) || level.hazards.length !== 15) throw new Error(`hazards=${level.hazards?.length}`);
           ' "$level"
 
-          echo "Expanded Sprout Run ${release} live route, cache-proof assets, production art, runtime, level data and controls passed."
+          echo "Expanded Sprout Run ${release} live route, feel-v2 controls, cache-proof assets, production art, runtime and level data passed."
