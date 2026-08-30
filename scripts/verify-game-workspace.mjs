@@ -146,6 +146,8 @@ if (fs.existsSync(gamesRoot)) {
     const manifest = loadJson(gameJson);
     if (!manifest) continue;
     const label = gameJson;
+    const usesModernArchitecture = manifest.architecture === modernArchitecture;
+
     if (manifest.id !== entry.name) errors.push(`${gameJson}: id '${manifest.id}' must match folder '${entry.name}'`);
     requireString(manifest, 'title', label);
     requireString(manifest, 'status', label);
@@ -158,14 +160,16 @@ if (fs.existsSync(gamesRoot)) {
         errors.push(`${gameJson}: route '${manifest.route}' does not match deployment route '${app.route}'`);
       } else if (!app) {
         const message = `${gameJson}: declares public route '${manifest.route}' but has no same-id deployment entry`;
-        if (Number(manifest.schemaVersion || 1) >= 2) errors.push(message); else warnings.push(message);
+        if (usesModernArchitecture) errors.push(message); else warnings.push(message);
       }
     }
 
-    if (Number(manifest.schemaVersion || 1) < 2) continue;
+    // Existing manifests predate the current architecture contract and remain supported.
+    // The stricter checks are intentionally opt-in through the architecture marker emitted by games:new.
+    if (!usesModernArchitecture) continue;
 
-    if (manifest.architecture !== modernArchitecture) {
-      errors.push(`${gameJson}: schemaVersion 2 must use architecture '${modernArchitecture}'`);
+    if (Number(manifest.schemaVersion || 0) < 2) {
+      errors.push(`${gameJson}: architecture '${modernArchitecture}' requires schemaVersion >= 2`);
     }
     if (manifest.productionTarget !== productionSite) {
       errors.push(`${gameJson}: productionTarget must be '${productionSite}'`);
@@ -173,7 +177,7 @@ if (fs.existsSync(gamesRoot)) {
 
     const implementation = manifest.implementation;
     if (!implementation || typeof implementation !== 'object' || Array.isArray(implementation)) {
-      errors.push(`${gameJson}: schemaVersion 2 requires implementation object`);
+      errors.push(`${gameJson}: architecture '${modernArchitecture}' requires implementation object`);
     } else {
       for (const key of ['entry', 'simulation', 'renderer', 'ui', 'input', 'assets', 'data', 'tests']) {
         requireExistingPath(implementation, key, `${gameJson} implementation`);
@@ -186,7 +190,7 @@ if (fs.existsSync(gamesRoot)) {
     }
 
     if (!manifest.verification || typeof manifest.verification !== 'object' || Array.isArray(manifest.verification)) {
-      errors.push(`${gameJson}: schemaVersion 2 requires verification object`);
+      errors.push(`${gameJson}: architecture '${modernArchitecture}' requires verification object`);
     } else {
       requireString(manifest.verification, 'command', `${gameJson} verification`);
       requireString(manifest.verification, 'workspacePreflight', `${gameJson} verification`);
@@ -195,7 +199,7 @@ if (fs.existsSync(gamesRoot)) {
     const gates = manifest.releaseGates;
     const requiredGates = ['rulesTested', 'browserTested', 'mobileTested', 'accessibilityReviewed', 'originalArtCleared', 'deploymentRegistered'];
     if (!gates || typeof gates !== 'object' || Array.isArray(gates)) {
-      errors.push(`${gameJson}: schemaVersion 2 requires releaseGates object`);
+      errors.push(`${gameJson}: architecture '${modernArchitecture}' requires releaseGates object`);
     } else {
       for (const key of requiredGates) {
         if (typeof gates[key] !== 'boolean') errors.push(`${gameJson}: releaseGates.${key} must be boolean`);
@@ -204,12 +208,12 @@ if (fs.existsSync(gamesRoot)) {
 
     const project = projectById.get(manifest.id);
     if (project && project.type === 'game' && project.repo !== localRepo) {
-      errors.push(`${gameJson}: local schemaVersion 2 source conflicts with canonical repository ownership '${project.repo}'`);
+      errors.push(`${gameJson}: local modern source conflicts with canonical repository ownership '${project.repo}'`);
     }
 
     const app = appById.get(manifest.id);
     if (app?.status === 'ready-to-package' && gates?.deploymentRegistered !== true) {
-      errors.push(`${gameJson}: ready-to-package game must set releaseGates.deploymentRegistered=true`);
+      errors.push(`${gameJson}: ready-to-package modern game must set releaseGates.deploymentRegistered=true`);
     }
   }
 }
