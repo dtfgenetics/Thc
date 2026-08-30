@@ -7,6 +7,7 @@ on:
       - scripts/import-wordpress-infographic-remote-batch.mjs
       - scripts/apply-wordpress-public-content-rest.mjs
       - scripts/apply-wordpress-public-content-owned-routes.mjs
+      - scripts/verify-wordpress-owned-route-preservation.mjs
       - .github/workflows/wordpress-canonical-production.yml
       - .github/workflows/wordpress-public-content-cleanup.yml
       - .github/workflows/wordpress-public-content-ci.yml
@@ -40,6 +41,7 @@ jobs:
           node --check scripts/import-wordpress-infographic-remote-batch.mjs
           node --check scripts/apply-wordpress-public-content-rest.mjs
           node --check scripts/apply-wordpress-public-content-owned-routes.mjs
+          node --check scripts/verify-wordpress-owned-route-preservation.mjs
           node --check scripts/publish-wordpress-articles-rest.mjs
           # Automatic canonical production must use the ownership-preserving
           # writer. The broad reconciler remains available for explicit/manual
@@ -53,6 +55,16 @@ jobs:
           grep -Fq 'continue-on-error: true' .github/workflows/wordpress-public-content-cleanup.yml
           grep -Fq 'retryTransient' scripts/apply-wordpress-public-content-rest.mjs
           grep -Fq "dns.setDefaultResultOrder('ipv4first')" scripts/apply-wordpress-public-content-rest.mjs
+
+          # Home and Learn preservation must be proven by exact identity/content
+          # evidence instead of a brittle public copy marker.
+          grep -Fq 'owned-route-preservation.json' scripts/apply-wordpress-public-content-owned-routes.mjs
+          grep -Fq 'contentSha256' scripts/apply-wordpress-public-content-owned-routes.mjs
+          grep -Fq "for (const slug of ['home', 'learn'])" scripts/verify-wordpress-owned-route-preservation.mjs
+          grep -Fq 'content changed during canonical reconciliation' scripts/verify-wordpress-owned-route-preservation.mjs
+          grep -Fq 'Verify Learning-owned WordPress route preservation through REST' .github/workflows/wordpress-canonical-production.yml
+          grep -Fq 'verify-wordpress-owned-route-preservation.mjs' .github/workflows/wordpress-canonical-production.yml
+          ! grep -Fq 'Genetics first. Cultivation science behind it.' .github/workflows/wordpress-canonical-production.yml
 
           # Production infographic publication must serialize instead of canceling an active mutation.
           grep -Fq 'group: dtfseeds-wordpress-infographics-production' .github/workflows/wordpress-infographic-production.yml
