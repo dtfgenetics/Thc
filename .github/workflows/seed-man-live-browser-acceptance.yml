@@ -1,0 +1,33 @@
+name: Verify Sprout Run Live Browser Gameplay
+
+on:
+  workflow_run:
+    workflows: ["Seed Man Sprout Run Live Smoke"]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  browser-gameplay:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout verified Sprout Run source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install browser-test dependencies
+        run: |
+          npm ci
+          npx playwright install chromium
+      - name: Exercise live Sprout Run in Chromium
+        env:
+          SPROUT_GAME_URL: https://dtfseeds.com/games/seed-man-platformer/
+        run: node games/seed-man-platformer/test/browser-smoke.mjs
