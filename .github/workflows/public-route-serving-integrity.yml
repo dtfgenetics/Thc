@@ -7,8 +7,6 @@ on:
     paths:
       - .github/workflows/public-route-serving-integrity.yml
       - scripts/reconcile-public-static-route-ownership.mjs
-      - scripts/promote-public-game-routes-via-wordpress.mjs
-      - site/public-route-patch/projects/index.html
   workflow_run:
     workflows:
       - Deploy DTFSeeds Public Suite via WordPress V2
@@ -27,7 +25,7 @@ jobs:
       github.event_name == 'workflow_dispatch' ||
       github.event_name == 'push' ||
       (github.event.workflow_run.head_branch == 'main' &&
-       (github.event.workflow_run.conclusion == 'success' || github.event.workflow_run.conclusion == 'failure'))
+       github.event.workflow_run.conclusion == 'success')
     runs-on: ubuntu-latest
     timeout-minutes: 20
     environment: production
