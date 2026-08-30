@@ -44,7 +44,7 @@ jobs:
           node-version: 22
 
       - name: Publish through the canonical single-writer transaction
-        run: bash scripts/publish-wordpress-infographics-canonical.sh
+        run: bash scripts/publish-wordpress-infographics-canonical-v2.sh
 
       - name: Preserve publication evidence
         if: always()
