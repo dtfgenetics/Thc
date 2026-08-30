@@ -1,0 +1,12 @@
+# Sprout Run is actively deployed and must never be served as a stale mixed release.
+# Keep this rule scoped to /games/seed-man-platformer/ by placing it in this directory.
+<IfModule LiteSpeed>
+  RewriteEngine On
+  RewriteRule .* - [E=Cache-Control:no-cache]
+</IfModule>
+
+<IfModule mod_headers.c>
+  Header always set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
+  Header always set Pragma "no-cache"
+  Header always set Expires "0"
+</IfModule>
