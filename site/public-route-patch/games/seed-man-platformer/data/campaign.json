@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "sprout-run-campaign",
+  "title": "Seed Man: Sprout Run",
+  "defaultLevelId": "sprout-run",
+  "worlds": [
+    {
+      "id": "world-01",
+      "title": "Greenhouse Gauntlet",
+      "order": 1,
+      "levels": [
+        {
+          "id": "sprout-run",
+          "title": "Sprout Run",
+          "order": 1,
+          "status": "playable",
+          "dataPath": "data/level-01.json",
+          "publicDataElementId": "seed-man-level"
+        }
+      ]
+    }
+  ]
+}
