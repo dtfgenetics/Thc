@@ -8,7 +8,7 @@ const password = process.env.WP_API_PASSWORD || '';
 if (!username || !password) throw new Error('WordPress credentials are required.');
 
 const sourceRoot = path.resolve('site/public-route-patch/games/seed-man-platformer');
-const releaseFiles = ['.htaccess','index.html','app.js','canvas-compat-v1.js','seed-man-production-art.js','input-guard-v1.js','seed-man.css','physics.mjs','data/level-01.json'];
+const releaseFiles = ['.htaccess','index.html','app.js','canvas-compat-v1.js','seed-man-production-art.js','gameplay-v2.js','input-guard-v1.js','seed-man.css','physics.mjs','data/level-01.json'];
 const indexText = fs.readFileSync(path.join(sourceRoot, 'index.html'), 'utf8');
 for (const marker of ['Seed Man · Greenhouse Gauntlet','0 / 24','JUMP ×2','20260830-r4']) if (!indexText.includes(marker)) throw new Error(`Missing canonical marker: ${marker}`);
 for (const stale of ['Original browser vertical slice','0 / 8','collect all eight sprouts']) if (indexText.includes(stale)) throw new Error(`Retired marker remains: ${stale}`);
@@ -106,7 +106,7 @@ add_action('rest_api_init', function () {
             $idx=@file_get_contents($target.'/index.html');$verified=$verified&&is_string($idx)&&strpos($idx,'Seed Man · Greenhouse Gauntlet')!==false&&strpos($idx,'0 / 24')!==false&&strpos($idx,'20260830-r4')!==false&&strpos($idx,'Original browser vertical slice')===false&&strpos($idx,'0 / 8')===false;
             if(!$verified){$remove_tree($target);if($had)@rename($backup,$target);return new WP_Error('dtf_seed_verify','Server verification failed; rolled back.',['status'=>500]);}
             if($had)$remove_tree($backup);
-            foreach(['/games/seed-man-platformer/','/games/seed-man-platformer/index.html','/games/seed-man-platformer/app.js','/games/seed-man-platformer/canvas-compat-v1.js','/games/seed-man-platformer/seed-man-production-art.js','/games/seed-man-platformer/input-guard-v1.js','/games/seed-man-platformer/seed-man.css','/games/seed-man-platformer/physics.mjs','/games/seed-man-platformer/data/level-01.json'] as $url)do_action('litespeed_purge_url',$url);
+            foreach(['/games/seed-man-platformer/','/games/seed-man-platformer/index.html','/games/seed-man-platformer/app.js','/games/seed-man-platformer/canvas-compat-v1.js','/games/seed-man-platformer/seed-man-production-art.js','/games/seed-man-platformer/gameplay-v2.js','/games/seed-man-platformer/input-guard-v1.js','/games/seed-man-platformer/seed-man.css','/games/seed-man-platformer/physics.mjs','/games/seed-man-platformer/data/level-01.json'] as $url)do_action('litespeed_purge_url',$url);
             do_action('litespeed_purge_all'); if(!headers_sent())header('X-LiteSpeed-Purge: *'); if(function_exists('wp_cache_flush'))wp_cache_flush(); clearstatcache();
             return rest_ensure_response(['ok'=>true,'route'=>'/games/seed-man-platformer/','release'=>'20260830-r4','files'=>$written,'server_verified'=>true,'cache_purge_fired'=>true,'published_at'=>gmdate('c')]);
         }
