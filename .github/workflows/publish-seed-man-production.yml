@@ -15,7 +15,7 @@ permissions:
 
 concurrency:
   group: publish-seed-man-production
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   publish:
