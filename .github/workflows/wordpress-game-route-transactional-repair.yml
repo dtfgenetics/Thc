@@ -55,7 +55,7 @@ jobs:
           test -s site/public-route-patch/games/grower-conversations/app.js
           test -s site/public-route-patch/games/grower-conversations/grower-conversations.css
           test -s site/public-route-patch/games/grower-conversations/data/prompt-bank.json
-          grep -Fq '25 playable browser games' site/public-route-patch/games/index.html
+          grep -Fqi '25 playable browser games' site/public-route-patch/games/index.html
           grep -Fq 'src="./app-v3.js"' site/public-route-patch/games/high-iq/index.html
           ! grep -Fq 'src="./app.js"' site/public-route-patch/games/high-iq/index.html
           ! grep -Fqi 'server-engine alpha' site/public-route-patch/games/index.html
