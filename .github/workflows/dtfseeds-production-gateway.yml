@@ -208,7 +208,8 @@ jobs:
               -H 'Cache-Control: no-cache, no-store, max-age=0' \
               "https://dtfseeds.com${path}?dtf_gateway=${GITHUB_RUN_ID}" | grep -Fqi "$marker"
           }
-          check '/games/' '15 playable browser games'
+          check '/games/' '25 playable browser games'
+          check '/games/spin-the-strain/' 'All 18 entries appear once before this mode starts a new cycle.'
           check '/games/high-iq/' 'Build your High IQ run'
           check '/games/strain-showdown/' 'Eight play styles. One showdown.'
           check '/games/terpocalypse/' 'LEVEL 01 · THE VEG LAB'

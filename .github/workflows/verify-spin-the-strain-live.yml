@@ -1,0 +1,70 @@
+name: Verify Spin the Strain Live
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows:
+      - Deploy DTFSeeds Public Suite via WordPress V2
+    types:
+      - completed
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/verify-spin-the-strain-live.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-spin-the-strain-live
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'push' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Verify live Spin the Strain route and runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://dtfseeds.com/games/spin-the-strain'
+          fetch() {
+            curl -4 -fsSL --retry 5 --retry-all-errors --retry-delay 4 \
+              -H 'Cache-Control: no-cache, no-store, max-age=0' \
+              "$1?dtf_spin_live=${GITHUB_RUN_ID}"
+          }
+
+          html="$(fetch "$base/")"
+          grep -Fqi 'Spin the Strain' <<<"$html"
+          grep -Fqi 'All 18 entries appear once before this mode starts a new cycle.' <<<"$html"
+          grep -Fqi 'Complete cycles. Reproducible sessions.' <<<"$html"
+
+          app="$(fetch "$base/app.js")"
+          grep -Fq 'cycleSeenEntryIds' <<<"$app"
+          grep -Fq 'const unseenEntries = entries.filter' <<<"$app"
+          grep -Fq 'cyclePosition' <<<"$app"
+          grep -Fq 'cycleSize' <<<"$app"
+
+          engine="$(fetch "$base/engine.mjs")"
+          grep -Fq 'cycleSeenEntryIds' <<<"$engine"
+          grep -Fq 'const unseenEntries = entries.filter' <<<"$engine"
+
+          css="$(fetch "$base/spin-the-strain.css")"
+          grep -Fq '.segment-label::after' <<<"$css"
+          grep -Fq '@media(max-width:520px)' <<<"$css"
+
+          echo 'Spin the Strain live route, no-repeat runtime, engine, and mobile CSS verified.'
+
+      - name: Summarize verification
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo '## Spin the Strain live verification'
+            echo
+            echo '- Route: https://dtfseeds.com/games/spin-the-strain/'
+            echo '- Required behavior: 18-entry no-repeat deterministic cycles'
+            echo '- Runtime checks: public HTML, app.js, engine.mjs, mobile CSS'
+          } >> "$GITHUB_STEP_SUMMARY"
