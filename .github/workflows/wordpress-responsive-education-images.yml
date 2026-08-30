@@ -90,7 +90,23 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          node scripts/optimize-wordpress-infographic-page-images.mjs
+          success=0
+          for attempt in 1 2 3 4; do
+            echo "Responsive education image optimization attempt ${attempt}/4"
+            if node scripts/optimize-wordpress-infographic-page-images.mjs; then
+              success=1
+              break
+            fi
+            if [[ "$attempt" -lt 4 ]]; then
+              sleep_seconds=$((attempt * 8))
+              echo "WordPress request failed; retrying the idempotent optimizer in ${sleep_seconds}s."
+              sleep "$sleep_seconds"
+            fi
+          done
+          [[ "$success" -eq 1 ]] || {
+            echo 'Responsive education image optimization failed after four attempts.' >&2
+            exit 1
+          }
           backup_dir="$(cat "$BACKUP_ROOT/responsive-image-backup-path.txt")"
           report="$backup_dir/responsive-image-report.json"
           test -s "$report"
@@ -141,8 +157,39 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
-      - name: Report responsive image result
+      - name: Write responsive image result to job summary
         if: always()
+        shell: bash
+        env:
+          JOB_STATUS: ${{ job.status }}
+          OPTIMIZE_OUTCOME: ${{ steps.optimize.outcome }}
+          VERIFY_OUTCOME: ${{ steps.verify.outcome }}
+          MEDIA_COUNT: ${{ steps.optimize.outputs.media_count }}
+          PAGE_COUNT: ${{ steps.optimize.outputs.page_count }}
+          MATCHED_COUNT: ${{ steps.optimize.outputs.matched_count }}
+          RESPONSIVE_COUNT: ${{ steps.optimize.outputs.responsive_count }}
+          CHANGED_COUNT: ${{ steps.optimize.outputs.changed_count }}
+          LIVE_RESPONSIVE_COUNT: ${{ steps.verify.outputs.live_responsive_count }}
+        run: |
+          {
+            echo '## Responsive THC education image enforcement'
+            echo
+            echo "- Result: **${JOB_STATUS}**"
+            echo "- WordPress optimization: **${OPTIMIZE_OUTCOME:-not-run}**"
+            echo "- Fresh-visitor verification: **${VERIFY_OUTCOME:-not-run}**"
+            echo "- DTF education media discovered: **${MEDIA_COUNT:-not-run}**"
+            echo "- Education pages inspected: **${PAGE_COUNT:-not-run}**"
+            echo "- Image tags matched to canonical WordPress media: **${MATCHED_COUNT:-not-run}**"
+            echo "- Image tags with responsive attachment candidates: **${RESPONSIVE_COUNT:-not-run}**"
+            echo "- Image tags changed in this run: **${CHANGED_COUNT:-not-run}**"
+            echo "- Responsive image tags observed on live library: **${LIVE_RESPONSIVE_COUNT:-not-run}**"
+            echo
+            echo 'Full-resolution WordPress media remains the destination for Full-size links. Cards and topic-page previews use responsive attachment sizes.'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Report responsive image result to legacy issue
+        if: always()
+        continue-on-error: true
         uses: actions/github-script@v7
         env:
           JOB_STATUS: ${{ job.status }}
@@ -156,24 +203,28 @@ jobs:
           LIVE_RESPONSIVE_COUNT: ${{ steps.verify.outputs.live_responsive_count }}
         with:
           script: |
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: 46,
-              body: [
-                '## Responsive THC education image enforcement',
-                '',
-                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-                `Result: **${process.env.JOB_STATUS}**`,
-                `WordPress optimization: **${process.env.OPTIMIZE_OUTCOME || 'not-run'}**`,
-                `Fresh-visitor verification: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
-                `DTF education media discovered: **${process.env.MEDIA_COUNT || 'not-run'}**`,
-                `Education pages inspected: **${process.env.PAGE_COUNT || 'not-run'}**`,
-                `Image tags matched to canonical WordPress media: **${process.env.MATCHED_COUNT || 'not-run'}**`,
-                `Image tags with responsive attachment candidates: **${process.env.RESPONSIVE_COUNT || 'not-run'}**`,
-                `Image tags changed in this run: **${process.env.CHANGED_COUNT || 'not-run'}**`,
-                `Responsive image tags observed on live library: **${process.env.LIVE_RESPONSIVE_COUNT || 'not-run'}**`,
-                '',
-                'Full-resolution WordPress media remains the destination for Full-size links. Cards and topic-page previews use responsive attachment sizes.'
-              ].join('\n')
-            });
+            try {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: 46,
+                body: [
+                  '## Responsive THC education image enforcement',
+                  '',
+                  `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                  `Result: **${process.env.JOB_STATUS}**`,
+                  `WordPress optimization: **${process.env.OPTIMIZE_OUTCOME || 'not-run'}**`,
+                  `Fresh-visitor verification: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
+                  `DTF education media discovered: **${process.env.MEDIA_COUNT || 'not-run'}**`,
+                  `Education pages inspected: **${process.env.PAGE_COUNT || 'not-run'}**`,
+                  `Image tags matched to canonical WordPress media: **${process.env.MATCHED_COUNT || 'not-run'}**`,
+                  `Image tags with responsive attachment candidates: **${process.env.RESPONSIVE_COUNT || 'not-run'}**`,
+                  `Image tags changed in this run: **${process.env.CHANGED_COUNT || 'not-run'}**`,
+                  `Responsive image tags observed on live library: **${process.env.LIVE_RESPONSIVE_COUNT || 'not-run'}**`,
+                  '',
+                  'Full-resolution WordPress media remains the destination for Full-size links. Cards and topic-page previews use responsive attachment sizes.'
+                ].join('\n')
+              });
+            } catch (error) {
+              core.warning(`Legacy issue report was not written: ${error.message}`);
+            }
