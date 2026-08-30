@@ -7,7 +7,11 @@ on:
     paths:
       - scripts/publish-wordpress-topic-literature.mjs
       - scripts/publish-wordpress-infographics-canonical.sh
+      - scripts/publish-wordpress-infographics-canonical-v2.sh
+      - scripts/assemble-outdoor-quantification-v1.mjs
       - site/wordpress/education/topic-literature.json
+      - site/wordpress/education/outdoor-quantification-v1.json
+      - site/wordpress/education/outdoor-quantification/**
       - site/wordpress/assets/infographics/placement-rules.json
       - site/wordpress/assets/infographics/infographic-exclusions.json
       - .github/workflows/wordpress-topic-literature-production.yml
@@ -59,7 +63,7 @@ jobs:
           node-version: 22
 
       - name: Reassert the complete canonical infographic and literature state
-        run: bash scripts/publish-wordpress-infographics-canonical.sh
+        run: bash scripts/publish-wordpress-infographics-canonical-v2.sh
 
       - name: Upload final-owner evidence
         if: always()
