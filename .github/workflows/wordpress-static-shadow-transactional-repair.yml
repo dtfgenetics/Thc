@@ -13,7 +13,6 @@ on:
 
 permissions:
   contents: read
-  issues: write
 
 concurrency:
   group: dtfseeds-wordpress-static-shadow-transaction
@@ -52,6 +51,7 @@ jobs:
           bash -n scripts/run-static-shadow-repair-current-markers.sh
           grep -Fq 'Genetics first. Cultivation science behind it.' scripts/run-static-shadow-repair-current-markers.sh
           grep -Fq 'Learn the plant as a connected system.' scripts/run-static-shadow-repair-current-markers.sh
+          grep -Fq "return \$supplied !== '' && hash_equals(\$token, \$supplied);" scripts/run-static-shadow-repair-current-markers.sh
           grep -Fq 'node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs "$runner"' scripts/run-static-shadow-repair-current-markers.sh
           grep -Fq 'const responseBody = [204, 205, 304].includes(status) ? null : Buffer.concat(chunks);' scripts/wordpress-ipv4-fetch-bootstrap.mjs
 
@@ -110,30 +110,19 @@ jobs:
           verify '/learn/' 'Learn the plant as a connected system.'
           verify '/learn/infographics/' 'Visual plant science and cultivation library.'
 
-      - name: Report transactional repair
+      - name: Record transactional repair
         if: always()
-        uses: actions/github-script@v7
-        env:
-          JOB_STATUS: ${{ job.status }}
-          REPAIR_OUTCOME: ${{ steps.repair.outcome }}
-          VERIFY_OUTCOME: ${{ steps.verify.outcome }}
-        with:
-          script: |
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: 46,
-              body: [
-                '## WordPress-side transactional static-shadow repair',
-                '',
-                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-                `Result: **${process.env.JOB_STATUS}**`,
-                `Transactional repair: **${process.env.REPAIR_OUTCOME || 'not-run'}**`,
-                `Independent live verification: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
-                '',
-                'The repair is marker-gated, rollback-safe and idempotent after successful retirement. Route-cutover success is determined by canonical content presence and stale-content absence; media-count completeness is audited separately. No SSH credentials are required.'
-              ].join('\n')
-            });
+        shell: bash
+        run: |
+          {
+            echo '## WordPress-side transactional static-shadow repair'
+            echo
+            echo "- Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+            echo "- Transactional repair: ${{ steps.repair.outcome }}"
+            echo "- Independent live verification: ${{ steps.verify.outcome }}"
+            echo '- The temporary repair bridge uses a per-run 256-bit token; the production application-password account does not need manage_options.'
+            echo '- The repair remains marker-gated, backup-first, rollback-safe, and idempotent after successful retirement.'
+          } >> "$GITHUB_STEP_SUMMARY"
 
 # GET retries are limited to idempotent requests; mutating requests are never replayed automatically.
 # 2026-08-31 verified cutover: retire the fingerprinted stale root/Learn HTML shadows and verify current Learning V3 markers.
