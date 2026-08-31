@@ -1,0 +1,67 @@
+name: Content Preservation Contract
+
+on:
+  pull_request:
+    paths:
+      - 'content/**'
+      - 'configuration/content-preservation-policy.json'
+      - 'scripts/validate-append-only-content.mjs'
+      - '.github/workflows/content-preservation-contract.yml'
+      - '.agents/skills/dtfseeds-production-publishing/SKILL.md'
+      - 'docs/CONTENT_PRESERVATION_STANDARD.md'
+  push:
+    branches: [main]
+    paths:
+      - 'content/**'
+      - 'configuration/content-preservation-policy.json'
+      - 'scripts/validate-append-only-content.mjs'
+      - '.github/workflows/content-preservation-contract.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  preserve:
+    name: Preserve existing canonical content unless explicitly authorized
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Syntax-check preservation validator
+        run: node --check scripts/validate-append-only-content.mjs
+
+      - name: Resolve comparison range
+        id: refs
+        shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PUSH_BEFORE_SHA: ${{ github.event.before }}
+          HEAD_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          if [[ "$EVENT_NAME" == "pull_request" ]]; then
+            base="$PR_BASE_SHA"
+          else
+            base="$PUSH_BEFORE_SHA"
+            if [[ -z "$base" || "$base" =~ ^0+$ ]]; then
+              base="${HEAD_SHA}^"
+            fi
+          fi
+          git cat-file -e "$base^{commit}"
+          git cat-file -e "$HEAD_SHA^{commit}"
+          echo "base=$base" >> "$GITHUB_OUTPUT"
+          echo "head=$HEAD_SHA" >> "$GITHUB_OUTPUT"
+
+      - name: Enforce append-only canonical content
+        env:
+          CONTENT_BASE_REF: ${{ steps.refs.outputs.base }}
+          CONTENT_HEAD_REF: ${{ steps.refs.outputs.head }}
+        run: node scripts/validate-append-only-content.mjs
