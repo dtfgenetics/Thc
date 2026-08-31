@@ -11,6 +11,11 @@ if grep -Eq '^[[:space:]]+learn$' scripts/deploy/hostinger-overlay.sh; then
   exit 1
 fi
 
+# Learning writes must not be visitor-verified through a stale Hostinger cache.
+# The IPv4 fetch bootstrap marks successful WordPress mutations and requires a
+# LiteSpeed purge before the next anonymous public request.
+export DTF_REQUIRE_CACHE_CONVERGENCE=true
+
 node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/run-learning-v3-production.mjs | tee /tmp/dtf-learning-v3-output.json
 
 APPLY_LEARNING_V4=true \
