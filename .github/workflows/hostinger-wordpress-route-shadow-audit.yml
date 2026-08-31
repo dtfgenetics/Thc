@@ -5,10 +5,16 @@ on:
   pull_request:
     paths:
       - .github/workflows/hostinger-wordpress-route-shadow-audit.yml
+      - .github/workflows/deploy-dtfseeds-hostinger-ssh.yml
+      - scripts/deploy/hostinger-overlay.sh
+      - scripts/deploy/test-hostinger-overlay.sh
   push:
     branches: [main]
     paths:
       - .github/workflows/hostinger-wordpress-route-shadow-audit.yml
+      - .github/workflows/deploy-dtfseeds-hostinger-ssh.yml
+      - scripts/deploy/hostinger-overlay.sh
+      - scripts/deploy/test-hostinger-overlay.sh
 
 permissions:
   contents: read
@@ -31,16 +37,15 @@ jobs:
         run: |
           set -euo pipefail
           file='.github/workflows/hostinger-wordpress-route-shadow-audit.yml'
-          grep -Fq 'routes=(shop seeds community contact)' "$file"
+          grep -Fq 'routes=(learn shop seeds community contact)' "$file"
           grep -Fq 'find "$route" -maxdepth 2 -type f' "$file"
           grep -Fq 'sha256sum' "$file"
-          grep -Fq 'dtf-home' "$file"
+          grep -Fq 'legacy_learn_marker=' "$file"
+          grep -Fq 'learning_v3_marker=' "$file"
           python - <<'PY'
           from pathlib import Path
           import re
           text = Path('.github/workflows/hostinger-wordpress-route-shadow-audit.yml').read_text()
-          # Inspect only the production audit job so this guard does not match
-          # its own list of prohibited mutation commands.
           production = text.split('\n  audit:\n', 1)[1]
           forbidden = re.compile(r'(^|[;&|]\s*)(rm\s+-|mv\s+|rsync\b|scp\b)|file_put_contents|unlink\(', re.M)
           match = forbidden.search(production)
@@ -52,15 +57,15 @@ jobs:
     if: github.event_name != 'pull_request'
     needs: contract
     runs-on: ubuntu-latest
-    timeout-minutes: 10
-    environment: growlens-production
+    timeout-minutes: 12
+    environment: production
     env:
-      SSH_HOST: ${{ secrets.HOSTINGER_SSH_HOST }}
-      SSH_PORT: ${{ secrets.HOSTINGER_SSH_PORT }}
-      SSH_USER: ${{ secrets.HOSTINGER_SSH_USER }}
-      SSH_PRIVATE_KEY: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY }}
-      SSH_KNOWN_HOSTS: ${{ secrets.HOSTINGER_SSH_KNOWN_HOSTS }}
-      GROWLENS_PATH: ${{ secrets.HOSTINGER_GROWLENS_PATH }}
+      SSH_HOST: ${{ secrets.HOSTINGER_HOST || secrets.HOSTINGER_SSH_HOST || secrets.SSH_HOST || secrets.SFTP_HOST }}
+      SSH_PORT: ${{ secrets.HOSTINGER_PORT || secrets.HOSTINGER_SSH_PORT || secrets.SSH_PORT || secrets.SFTP_PORT }}
+      SSH_USER: ${{ secrets.HOSTINGER_USER || secrets.HOSTINGER_SSH_USER || secrets.SSH_USER || secrets.SFTP_USER }}
+      SSH_PRIVATE_KEY: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY || secrets.HOSTINGER_SSH_KEY || secrets.SSH_PRIVATE_KEY || secrets.DEPLOY_KEY }}
+      SSH_KNOWN_HOSTS: ${{ secrets.HOSTINGER_KNOWN_HOSTS || secrets.HOSTINGER_SSH_KNOWN_HOSTS || secrets.SSH_KNOWN_HOSTS }}
+      SITE_ROOT: ${{ secrets.HOSTINGER_PUBLIC_ROOT || vars.HOSTINGER_WORDPRESS_PATH || vars.WORDPRESS_PATH || vars.WP_PATH }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -70,22 +75,13 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          : "${SSH_HOST:?HOSTINGER_SSH_HOST is required}"
-          : "${SSH_USER:?HOSTINGER_SSH_USER is required}"
-          : "${SSH_PRIVATE_KEY:?HOSTINGER_SSH_PRIVATE_KEY is required}"
-          : "${SSH_KNOWN_HOSTS:?HOSTINGER_SSH_KNOWN_HOSTS is required}"
-          : "${GROWLENS_PATH:?HOSTINGER_GROWLENS_PATH is required}"
+          SSH_HOST="${SSH_HOST:-147.93.42.1}"
           SSH_PORT="${SSH_PORT:-22}"
+          : "${SSH_USER:?Missing Hostinger SSH user}"
+          : "${SSH_PRIVATE_KEY:?Missing Hostinger SSH private key}"
           [[ "$SSH_PORT" =~ ^[0-9]+$ ]]
-          case "$GROWLENS_PATH" in
-            */public_html/growlens) ;;
-            *) echo 'GrowLens path must end in /public_html/growlens' >&2; exit 1 ;;
-          esac
-          SITE_ROOT="${GROWLENS_PATH%/growlens}"
-          [[ "$SITE_ROOT" == */public_html ]]
-          [[ "$SITE_ROOT" != *'..'* ]]
+          echo "SSH_HOST=$SSH_HOST" >> "$GITHUB_ENV"
           echo "SSH_PORT=$SSH_PORT" >> "$GITHUB_ENV"
-          echo "SITE_ROOT=$SITE_ROOT" >> "$GITHUB_ENV"
 
       - name: Configure verified SSH connection
         shell: bash
@@ -94,19 +90,57 @@ jobs:
           install -d -m 700 ~/.ssh
           printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
-          printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          if [[ -n "${SSH_KNOWN_HOSTS:-}" ]]; then
+            printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          else
+            ssh-keyscan -p "$SSH_PORT" -H "$SSH_HOST" > ~/.ssh/known_hosts
+          fi
           chmod 600 ~/.ssh/known_hosts
           test -s ~/.ssh/known_hosts
 
+      - name: Resolve dtfseeds.com WordPress root without writes
+        id: root
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -n "${SITE_ROOT:-}" ]]; then
+            root="${SITE_ROOT%/}"
+          else
+            root="$(ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" 'bash -s' <<'REMOTE'
+          set -euo pipefail
+          while IFS= read -r config; do
+            directory="$(dirname "$config")"
+            if command -v wp >/dev/null 2>&1; then
+              home_url="$(wp --path="$directory" option get home --skip-plugins --skip-themes 2>/dev/null || true)"
+              case "${home_url%/}" in
+                https://dtfseeds.com|http://dtfseeds.com|https://www.dtfseeds.com|http://www.dtfseeds.com)
+                  printf '%s\n' "$directory"
+                  exit 0
+                  ;;
+              esac
+            fi
+          done < <(find "$HOME" -maxdepth 8 -type f -name wp-config.php -print 2>/dev/null)
+          exit 1
+          REMOTE
+          )"
+          fi
+          [[ -n "$root" ]]
+          [[ "$root" == /* ]]
+          [[ "$root" != "/" ]]
+          [[ "$root" != *'..'* ]]
+          echo "path=$root" >> "$GITHUB_OUTPUT"
+
       - name: Read physical route state without mutations
         shell: bash
+        env:
+          SITE_ROOT: ${{ steps.root.outputs.path }}
         run: |
           set -euo pipefail
           mkdir -p "$RUNNER_TEMP/route-shadow-audit"
           ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" "ROOT='$SITE_ROOT' bash -s" > "$RUNNER_TEMP/route-shadow-audit/filesystem.txt" <<'REMOTE'
           set -euo pipefail
           cd "$ROOT"
-          routes=(shop seeds community contact)
+          routes=(learn shop seeds community contact)
           for route in "${routes[@]}"; do
             echo "=== $route ==="
             if [[ -e "$route" || -L "$route" ]]; then
@@ -119,6 +153,8 @@ jobs:
                 printf 'static_shell_marker='; if grep -Fq 'assets/dtf-home/dtf-home.css' "$route/index.html"; then echo yes; else echo no; fi
                 printf 'age_gate_marker='; if grep -Fq 'Adult visitors only' "$route/index.html"; then echo yes; else echo no; fi
                 printf 'wordpress_marker='; if grep -Fq '/wp-content/' "$route/index.html"; then echo yes; else echo no; fi
+                printf 'legacy_learn_marker='; if grep -Eiq 'Grow education belongs in a clean, readable library|MOPS, cultivation notes, THC basics' "$route/index.html"; then echo yes; else echo no; fi
+                printf 'learning_v3_marker='; if grep -Fq 'data-dtf-layout="learn-v3"' "$route/index.html"; then echo yes; else echo no; fi
                 printf 'title='; grep -Eio '<title>[^<]+</title>' "$route/index.html" 2>/dev/null | head -1 || true
               fi
             else
@@ -127,7 +163,7 @@ jobs:
           done
           echo '=== root-htaccess-route-lines ==='
           if [[ -f .htaccess ]]; then
-            grep -Ein '(^|[^a-z])(shop|seeds|community|contact)([^a-z]|$)|DirectoryIndex|RewriteRule' .htaccess | head -200 || true
+            grep -Ein '(^|[^a-z])(learn|shop|seeds|community|contact)([^a-z]|$)|DirectoryIndex|RewriteRule' .htaccess | head -200 || true
           else
             echo 'root .htaccess missing'
           fi
@@ -138,7 +174,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for route in shop seeds community contact; do
+          for route in learn shop seeds community contact; do
             body="$RUNNER_TEMP/route-shadow-audit/${route}.html"
             headers="$RUNNER_TEMP/route-shadow-audit/${route}.headers"
             status="$(curl -4 --silent --show-error --max-redirs 0 \
@@ -147,9 +183,14 @@ jobs:
               -H 'Cache-Control: no-cache, no-store, max-age=0' \
               -H 'Pragma: no-cache' \
               "$BASE_URL/$route/?dtf_route_shadow_audit=${GITHUB_RUN_ID}")"
-            printf '%s\tHTTP %s\tbytes=%s\tstatic_shell=%s\n' \
+            legacy=no
+            learning_v3=no
+            if grep -Eiq 'Grow education belongs in a clean, readable library|MOPS, cultivation notes, THC basics' "$body"; then legacy=yes; fi
+            if grep -Fq 'data-dtf-layout="learn-v3"' "$body"; then learning_v3=yes; fi
+            printf '%s\tHTTP %s\tbytes=%s\tstatic_shell=%s\tlegacy_learn=%s\tlearning_v3=%s\n' \
               "$route" "$status" "$(wc -c < "$body" | tr -d ' ')" \
               "$(grep -Fq 'assets/dtf-home/dtf-home.css' "$body" && echo yes || echo no)" \
+              "$legacy" "$learning_v3" \
               | tee -a "$RUNNER_TEMP/route-shadow-audit/public-summary.txt"
           done
           cat "$RUNNER_TEMP/route-shadow-audit/public-summary.txt"

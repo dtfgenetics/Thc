@@ -19,12 +19,45 @@ make_archive() {
   rm -rf "$payload"
   mkdir -p "$payload/games/bud-or-bluff"
 
-  printf '%s\n' 'old-independent-marker' > /dev/null
   printf '%s\n' '25 playable browser games - replacement' > "$payload/games/index.html"
   printf '%s\n' '<title>Bud or Bluff</title>' > "$payload/games/bud-or-bluff/index.html"
   if [[ "$complete" == "yes" ]]; then
     printf '%s\n' '<?php echo "ok";' > "$payload/games/bud-or-bluff/api-v2.php"
   fi
+  printf '{"master":"%s"}\n' "$sha" > "$payload/dtf-build.json"
+  printf '%s\n' "$sha" > "$payload/.dtf-source-sha"
+  tar -C "$payload" -czf "$destination" .
+}
+
+make_public_suite_archive() {
+  local destination="$1"
+  local sha="$2"
+  local payload="$TMP/public-suite-$sha"
+  rm -rf "$payload"
+  mkdir -p \
+    "$payload/assets" \
+    "$payload/games/bud-or-bluff" \
+    "$payload/projects" \
+    "$payload/tools" \
+    "$payload/growlens" \
+    "$payload/thc-grow-doc" \
+    "$payload/puzzles" \
+    "$payload/learn/infographics"
+
+  printf '%s\n' 'asset replacement' > "$payload/assets/marker.txt"
+  printf '%s\n' '25 playable browser games - public suite replacement' > "$payload/games/index.html"
+  printf '%s\n' '<title>Bud or Bluff</title>' > "$payload/games/bud-or-bluff/index.html"
+  printf '%s\n' '<?php echo "ok";' > "$payload/games/bud-or-bluff/api-v2.php"
+  printf '%s\n' 'projects replacement' > "$payload/projects/index.html"
+  printf '%s\n' 'tools replacement' > "$payload/tools/index.html"
+  printf '%s\n' 'growlens replacement' > "$payload/growlens/index.html"
+  printf '%s\n' 'grow doc replacement' > "$payload/thc-grow-doc/index.html"
+  printf '%s\n' '{}' > "$payload/puzzles/current.json"
+
+  # Deliberately include a staged Learn tree. The deployer must ignore it so a
+  # public-suite release can never replace the Learning Experience owner.
+  printf '%s\n' 'staged learn content must never be activated' > "$payload/learn/infographics/index.html"
+
   printf '{"master":"%s"}\n' "$sha" > "$payload/dtf-build.json"
   printf '%s\n' "$sha" > "$payload/.dtf-source-sha"
   tar -C "$payload" -czf "$destination" .
@@ -74,4 +107,26 @@ if HOME="$TMP/home" bash "$DEPLOYER" activate "$UNSAFE_ROOT" "$UNSAFE_SHA" games
   fail "unsafe public root was accepted"
 fi
 
-echo "Hostinger overlay activation and rollback tests passed."
+# Regression: public-suite activation must preserve the Learning-owned route,
+# even when a stale artifact contains a learn/ tree.
+mkdir -p "$PUBLIC_ROOT/learn"
+printf '%s\n' 'canonical learning owner marker' > "$PUBLIC_ROOT/learn/owner-marker.txt"
+LEARN_BEFORE="$(sha256sum "$PUBLIC_ROOT/learn/owner-marker.txt" | awk '{print $1}')"
+
+SUITE_SHA="dddddddddddddddddddddddddddddddddddddddd"
+SUITE_ARCHIVE="$TMP/release-$SUITE_SHA.tgz"
+make_public_suite_archive "$SUITE_ARCHIVE" "$SUITE_SHA"
+SUITE_OUTPUT="$(HOME="$TMP/home" bash "$DEPLOYER" activate "$PUBLIC_ROOT" "$SUITE_SHA" public-suite "$SUITE_ARCHIVE")"
+SUITE_BACKUP_ID="$(printf '%s\n' "$SUITE_OUTPUT" | sed -n 's/^backup_id=//p')"
+[[ -n "$SUITE_BACKUP_ID" ]] || fail "public-suite activation did not return a backup id"
+LEARN_AFTER="$(sha256sum "$PUBLIC_ROOT/learn/owner-marker.txt" | awk '{print $1}')"
+[[ "$LEARN_BEFORE" == "$LEARN_AFTER" ]] || fail "public-suite activation changed the Learning-owned route"
+[[ ! -e "$PUBLIC_ROOT/learn/infographics/index.html" ]] || fail "staged Learn content was incorrectly activated"
+if grep -Eq '^learn\t' "$DOMAIN/.dtf-backups/$SUITE_BACKUP_ID/manifest.tsv"; then
+  fail "Learn entered the public-suite mutation manifest"
+fi
+
+HOME="$TMP/home" bash "$DEPLOYER" rollback "$PUBLIC_ROOT" "$SUITE_BACKUP_ID" public-suite >/dev/null
+[[ "$(sha256sum "$PUBLIC_ROOT/learn/owner-marker.txt" | awk '{print $1}')" == "$LEARN_BEFORE" ]] || fail "public-suite rollback changed the Learning-owned route"
+
+echo "Hostinger overlay activation, rollback, and Learn ownership tests passed."
