@@ -59,7 +59,8 @@ function requestWithIpv4(url, init = {}, redirects = 0) {
       const chunks = [];
       res.on('data', (chunk) => chunks.push(Buffer.from(chunk)));
       res.on('end', () => {
-        resolve(new Response(Buffer.concat(chunks), {
+        const responseBody = [204, 205, 304].includes(status) ? null : Buffer.concat(chunks);
+        resolve(new Response(responseBody, {
           status,
           statusText: res.statusMessage || '',
           headers: responseHeaders(res.headers)

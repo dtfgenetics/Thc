@@ -8,6 +8,7 @@ on:
       - scripts/repair-static-shadows-via-wordpress.mjs
       - scripts/run-static-shadow-repair-resilient.mjs
       - scripts/run-static-shadow-repair-current-markers.sh
+      - scripts/wordpress-ipv4-fetch-bootstrap.mjs
       - .github/workflows/wordpress-static-shadow-transactional-repair.yml
 
 permissions:
@@ -47,7 +48,12 @@ jobs:
           test -n "${WP_API_PASSWORD:-}"
           node --check scripts/repair-static-shadows-via-wordpress.mjs
           node --check scripts/run-static-shadow-repair-resilient.mjs
+          node --check scripts/wordpress-ipv4-fetch-bootstrap.mjs
           bash -n scripts/run-static-shadow-repair-current-markers.sh
+          grep -Fq 'Genetics first. Cultivation science behind it.' scripts/run-static-shadow-repair-current-markers.sh
+          grep -Fq 'Learn the plant as a connected system.' scripts/run-static-shadow-repair-current-markers.sh
+          grep -Fq 'node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs "$runner"' scripts/run-static-shadow-repair-current-markers.sh
+          grep -Fq 'const responseBody = [204, 205, 304].includes(status) ? null : Buffer.concat(chunks);' scripts/wordpress-ipv4-fetch-bootstrap.mjs
 
       - name: Execute transactional repair through authenticated WordPress
         id: repair
@@ -100,8 +106,8 @@ jobs:
             echo "$path verified; current canonical marker present, stale markers absent, WordPress media references=$media"
           }
 
-          verify '/' 'Genetics, cultivation education, practical tools, and original cannabis games.'
-          verify '/learn/' 'Understand the plant. Build the environment. Make better decisions.'
+          verify '/' 'Genetics first. Cultivation science behind it.'
+          verify '/learn/' 'Learn the plant as a connected system.'
           verify '/learn/infographics/' 'Visual plant science and cultivation library.'
 
       - name: Report transactional repair
@@ -130,4 +136,4 @@ jobs:
             });
 
 # GET retries are limited to idempotent requests; mutating requests are never replayed automatically.
-# 2026-08-22 visitor cutover refresh: retire any stale HTML shadows after the visual Learn/infographic rebuild.
+# 2026-08-31 verified cutover: retire the fingerprinted stale root/Learn HTML shadows and verify current Learning V3 markers.
