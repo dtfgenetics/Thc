@@ -59,6 +59,9 @@ jobs:
           grep -Fq 'dtfseeds-public-suite-' .github/workflows/build-dtfseeds-public-suite.yml
           grep -Fq '/games/bud-or-bluff/' site/public-route-patch/games/bud-or-bluff/index.html
           grep -Fq '25 playable browser games' site/public-route-patch/games/index.html
+          # /learn is Learning Experience-owned and must never enter this mutation lane.
+          ! grep -Eq '^[[:space:]]+learn$' scripts/deploy/hostinger-overlay.sh
+          ! grep -Eq 'required=\([^)]*learn' .github/workflows/deploy-dtfseeds-hostinger-ssh.yml
 
   deploy:
     if: github.event_name == 'workflow_dispatch'
@@ -217,6 +220,8 @@ jobs:
             cp -a release/games payload/games
             cp -a release/dtf-build.json payload/dtf-build.json
           elif [ "$SCOPE" = "public-suite" ]; then
+            # /learn is intentionally excluded: Learning Experience V3 is the
+            # sole production owner for that root and education has its own lane.
             allowed=(
               assets
               atlas
@@ -224,7 +229,6 @@ jobs:
               explore-dtf-genetics-your-destination-for-cannabis-themed-apparel-and-art
               exploring-dtf-genetics-a-hub-for-cannabis-art-and-gardening-tools
               games
-              learn
               projects
               tools
               growlens
@@ -237,13 +241,17 @@ jobs:
                 cp -a "release/$item" payload/
               fi
             done
-            required=(assets games learn projects tools growlens thc-grow-doc puzzles dtf-build.json)
+            required=(assets games projects tools growlens thc-grow-doc puzzles dtf-build.json)
             for item in "${required[@]}"; do
               [ -e "payload/$item" ] || {
                 echo "::error::Public-suite payload is missing required item: $item"
                 exit 1
               }
             done
+            [ ! -e payload/learn ] || {
+              echo "::error::Learning-owned /learn unexpectedly entered the public-suite payload."
+              exit 1
+            }
           else
             echo "::error::Unknown deployment scope: $SCOPE"
             exit 1
@@ -330,7 +338,7 @@ jobs:
           grep -Fq "\"master\": \"$SOURCE_SHA\"" /tmp/dtf-build.json
 
           if [ "$SCOPE" = "public-suite" ]; then
-            for route in learn tools projects games/high-iq games/high-land games/weedopolis; do
+            for route in tools projects games/high-iq games/high-land games/weedopolis; do
               curl -fsSL --retry 3 --retry-delay 2 \
                 "https://dtfseeds.com/${route}/?${cache_bust}" \
                 -o /dev/null
