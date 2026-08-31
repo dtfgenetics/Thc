@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "mode": "append_only_by_default",
+  "authorizationDirectory": "content/change-authorizations",
+  "collections": [
+    {
+      "id": "encyclopedia-lessons",
+      "description": "Canonical THC Plant Science Encyclopedia lesson records.",
+      "pathRegex": "^content/encyclopedia/volume-[0-9]+/lessons/thc-enc-[0-9]{3}\\.json$",
+      "identityField": "id",
+      "numberField": "number",
+      "idRegex": "^THC-ENC-([0-9]{3})$",
+      "allowAdd": true,
+      "requireAuthorizationFor": ["modify", "delete", "rename"]
+    }
+  ]
+}
