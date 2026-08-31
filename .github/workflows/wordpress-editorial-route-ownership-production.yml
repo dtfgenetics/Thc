@@ -1,0 +1,149 @@
+name: Reconcile DTFSeeds WordPress Editorial Route Ownership
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/wordpress-editorial-route-ownership-production.yml'
+      - 'scripts/reconcile-wordpress-editorial-route-ownership.mjs'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/wordpress-editorial-route-ownership-production.yml'
+      - 'scripts/reconcile-wordpress-editorial-route-ownership.mjs'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dtfseeds-wordpress-editorial-route-ownership
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate route ownership reconciler
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/reconcile-wordpress-editorial-route-ownership.mjs
+          grep -Fq 'RewriteRule ^$ index.php [L]' scripts/reconcile-wordpress-editorial-route-ownership.mjs
+          grep -Fq 'RewriteRule ^(?:home|seeds|learn|community|shop|gallery|about|contact|blog)/?$ index.php [L]' scripts/reconcile-wordpress-editorial-route-ownership.mjs
+          grep -Fq "'/learn/infographics/'" scripts/reconcile-wordpress-editorial-route-ownership.mjs
+          grep -Fq "'/community/grow-offs/solo-cup-grow-off/'" scripts/reconcile-wordpress-editorial-route-ownership.mjs
+          grep -Fq "'/games/'" scripts/reconcile-wordpress-editorial-route-ownership.mjs
+          grep -Fq 'rollback' scripts/reconcile-wordpress-editorial-route-ownership.mjs
+
+  production:
+    if: github.event_name != 'pull_request'
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: production
+    env:
+      NODE_OPTIONS: --dns-result-order=ipv4first
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      APPLY_ROUTE_OWNERSHIP_CHANGES: 'true'
+      BACKUP_ROOT: /tmp/wordpress-route-ownership-backups
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Require protected WordPress credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${WP_API_USERNAME:-}"
+          test -n "${WP_API_PASSWORD:-}"
+
+      - name: Reconcile exact editorial landing route ownership
+        id: ownership
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/reconcile-wordpress-editorial-route-ownership.mjs
+
+      - name: Verify visitor-facing route ownership independently
+        id: live_verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          verify() {
+            local path="$1" marker="$2" body
+            body="$(mktemp)"
+            for attempt in 1 2 3 4 5 6; do
+              if curl -4 -fsSL --retry 3 --retry-all-errors --retry-delay 2 \
+                --connect-timeout 15 --max-time 45 \
+                -H 'Cache-Control: no-cache, no-store, max-age=0' \
+                -H 'Pragma: no-cache' \
+                "https://dtfseeds.com${path}?dtf_editorial_verify=${GITHUB_RUN_ID}-${attempt}" \
+                -o "$body" && \
+                grep -Fqi "$marker" "$body" && \
+                ! grep -Fqi '/assets/dtf-home/dtf-home.css' "$body" && \
+                ! grep -Fqi 'email@email.com' "$body" && \
+                ! grep -Fqi '+123456789' "$body"; then
+                rm -f "$body"
+                return 0
+              fi
+              sleep 6
+            done
+            echo "Independent visitor verification failed for $path ($marker)." >&2
+            head -c 2500 "$body" >&2 || true
+            rm -f "$body"
+            return 1
+          }
+
+          verify '/' 'Genetics first. Cultivation science behind it.'
+          verify '/learn/' 'Learn the plant as a connected system.'
+          verify '/community/' 'Join the official DTF / Teaching Healthy Cultivation Discord'
+          verify '/shop/' 'dtf-commerce-archive-style'
+          verify '/blog/' 'DTF Field Notes'
+
+          child_check() {
+            local path="$1" marker="$2" body
+            body="$(curl -4 -fsSL --retry 5 --retry-all-errors --retry-delay 3 \
+              -H 'Cache-Control: no-cache, no-store, max-age=0' \
+              "https://dtfseeds.com${path}?dtf_editorial_child_verify=${GITHUB_RUN_ID}")"
+            grep -Fqi "$marker" <<<"$body"
+          }
+          child_check '/learn/infographics/' 'Infographic'
+          child_check '/learn/plant-health/' 'Teaching Healthy Cultivation'
+          child_check '/community/grow-offs/solo-cup-grow-off/' 'Solo Cup'
+          child_check '/games/' '25 playable browser games'
+
+      - name: Upload route ownership rollback evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: wordpress-editorial-route-ownership-${{ github.run_id }}
+          path: /tmp/wordpress-route-ownership-backups
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Record route ownership result
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo '## WordPress editorial route ownership'
+            echo
+            echo "- Source: $GITHUB_SHA"
+            echo "- Route reconciliation: ${{ steps.ownership.outcome }}"
+            echo "- Independent visitor verification: ${{ steps.live_verify.outcome }}"
+            echo '- Exact WordPress landing routes: /, /home/, /seeds/, /learn/, /community/, /shop/, /gallery/, /about/, /contact/, /blog/'
+            echo '- Preserved child owners checked: /learn/infographics/, /learn/plant-health/, /community/grow-offs/solo-cup-grow-off/, /games/'
+            echo '- Production mutation is backup-first and automatically rolled back when the reconciler live checks fail.'
+          } >> "$GITHUB_STEP_SUMMARY"
