@@ -4,6 +4,13 @@ set -euo pipefail
 learning_root="${BACKUP_ROOT:-/tmp/dtf-learning-v3}"
 map_root="${LEARNING_V4_BACKUP_ROOT:-/tmp/dtf-learning-v4-final}"
 
+# Learning Experience V3 is the sole /learn root writer. Refuse to publish if
+# the independent static Hostinger overlay ever regains that route.
+if grep -Eq '^[[:space:]]+learn$' scripts/deploy/hostinger-overlay.sh; then
+  echo 'Learning ownership violation: static Hostinger overlay contains /learn.' >&2
+  exit 1
+fi
+
 node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/run-learning-v3-production.mjs | tee /tmp/dtf-learning-v3-output.json
 
 APPLY_LEARNING_V4=true \
