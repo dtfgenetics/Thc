@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "id": "thc-encyclopedia-backfill-191-280-v1",
+  "description": "Ordered replay of publication-authorized encyclopedia batches that advanced in source control after the visitor-facing index stopped at THC-ENC-190.",
+  "expectedStartId": "THC-ENC-191",
+  "expectedEndId": "THC-ENC-280",
+  "batches": [
+    "site/wordpress/education/encyclopedia/volume10-batch03.json",
+    "site/wordpress/education/encyclopedia/volume11-batch01.json",
+    "site/wordpress/education/encyclopedia/volume11-batch02.json",
+    "site/wordpress/education/encyclopedia/volume11-batch03.json",
+    "site/wordpress/education/encyclopedia/volume11-batch04.json",
+    "site/wordpress/education/encyclopedia/volume12-batch01.json",
+    "site/wordpress/education/encyclopedia/volume12-batch02.json",
+    "site/wordpress/education/encyclopedia/volume12-batch03.json",
+    "site/wordpress/education/encyclopedia/volume12-batch04.json",
+    "site/wordpress/education/encyclopedia/volume13-batch01.json",
+    "site/wordpress/education/encyclopedia/volume13-batch02.json",
+    "site/wordpress/education/encyclopedia/volume13-batch03.json",
+    "site/wordpress/education/encyclopedia/volume13-batch04.json",
+    "site/wordpress/education/encyclopedia/volume14-batch01.json",
+    "site/wordpress/education/encyclopedia/volume14-batch02.json",
+    "site/wordpress/education/encyclopedia/volume14-batch03.json",
+    "site/wordpress/education/encyclopedia/volume14-batch04.json"
+  ],
+  "publicSentinels": [
+    "THC-ENC-191",
+    "THC-ENC-200",
+    "THC-ENC-220",
+    "THC-ENC-240",
+    "THC-ENC-260",
+    "THC-ENC-280"
+  ]
+}
