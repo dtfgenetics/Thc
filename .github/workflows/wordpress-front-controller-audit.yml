@@ -1,0 +1,100 @@
+name: Audit DTFSeeds WordPress Front Controller
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/wordpress-front-controller-audit.yml'
+      - 'scripts/audit-wordpress-front-controller.mjs'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/wordpress-front-controller-audit.yml'
+      - 'scripts/audit-wordpress-front-controller.mjs'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dtfseeds-wordpress-front-controller-audit
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate read-only audit contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/audit-wordpress-front-controller.mjs
+          grep -Fq "document_root" scripts/audit-wordpress-front-controller.mjs
+          grep -Fq "abspath" scripts/audit-wordpress-front-controller.mjs
+          grep -Fq "index_php" scripts/audit-wordpress-front-controller.mjs
+          grep -Fq "index_html" scripts/audit-wordpress-front-controller.mjs
+          grep -Fq "legacy_home_shell" scripts/audit-wordpress-front-controller.mjs
+          grep -Fq "legacy_learn_shell" scripts/audit-wordpress-front-controller.mjs
+          ! grep -Eq 'file_put_contents|@rename|@unlink|@chmod|fwrite\(' scripts/audit-wordpress-front-controller.mjs
+
+  production-audit:
+    if: github.event_name != 'pull_request'
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: production
+    env:
+      NODE_OPTIONS: --dns-result-order=ipv4first
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      ALLOW_TEMPORARY_AUDIT_BRIDGE: 'true'
+      AUDIT_ROOT: /tmp/wordpress-front-controller-audit
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Require protected WordPress credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${WP_API_USERNAME:-}"
+          test -n "${WP_API_PASSWORD:-}"
+
+      - name: Audit WordPress front controller and route shadows
+        id: audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/audit-wordpress-front-controller.mjs
+
+      - name: Summarize front-controller evidence
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo '## DTFSeeds WordPress front-controller audit'
+            echo
+            echo "- Source: $GITHUB_SHA"
+            echo "- Audit outcome: ${{ steps.audit.outcome }}"
+            echo '- Audit is filesystem read-only; the only temporary mutation is a token-protected Code Snippets REST bridge, removed in a finally block.'
+            echo '- Evidence fingerprints WordPress ABSPATH, HTTP DOCUMENT_ROOT, root index.php/index.html/.htaccess, and exact editorial route directories.'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload front-controller audit evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: wordpress-front-controller-audit-${{ github.run_id }}
+          path: /tmp/wordpress-front-controller-audit
+          if-no-files-found: warn
+          retention-days: 30
