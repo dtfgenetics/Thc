@@ -1,0 +1,228 @@
+name: Reconcile THC Encyclopedia Backfill 191-280
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'configuration/encyclopedia-backfill-191-280.json'
+      - 'scripts/validate-encyclopedia-backfill.mjs'
+      - 'scripts/backup-wordpress-encyclopedia-batch.mjs'
+      - 'scripts/rollback-wordpress-encyclopedia-batch.mjs'
+      - 'scripts/seal-wordpress-encyclopedia-topic-backup.mjs'
+      - 'scripts/rollback-wordpress-encyclopedia-topics.mjs'
+      - 'scripts/verify-wordpress-encyclopedia-backfill-live.mjs'
+      - '.github/workflows/wordpress-encyclopedia-backfill-production.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'configuration/encyclopedia-backfill-191-280.json'
+      - 'scripts/validate-encyclopedia-backfill.mjs'
+      - 'scripts/backup-wordpress-encyclopedia-batch.mjs'
+      - 'scripts/rollback-wordpress-encyclopedia-batch.mjs'
+      - 'scripts/seal-wordpress-encyclopedia-topic-backup.mjs'
+      - 'scripts/rollback-wordpress-encyclopedia-topics.mjs'
+      - 'scripts/verify-wordpress-encyclopedia-backfill-live.mjs'
+      - '.github/workflows/wordpress-encyclopedia-backfill-production.yml'
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: dtfseeds-encyclopedia-backfill-191-280
+  cancel-in-progress: false
+
+env:
+  BACKFILL_MANIFEST: configuration/encyclopedia-backfill-191-280.json
+  ENCYCLOPEDIA_TOPIC_FILE: configuration/encyclopedia-topics.json
+
+jobs:
+  validate:
+    name: Validate ordered encyclopedia backfill contract
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Syntax-check backfill tooling
+        run: |
+          set -euo pipefail
+          node --check scripts/validate-encyclopedia-backfill.mjs
+          node --check scripts/backup-wordpress-encyclopedia-batch.mjs
+          node --check scripts/rollback-wordpress-encyclopedia-batch.mjs
+          node --check scripts/seal-wordpress-encyclopedia-topic-backup.mjs
+          node --check scripts/rollback-wordpress-encyclopedia-topics.mjs
+          node --check scripts/verify-wordpress-encyclopedia-backfill-live.mjs
+          node --check scripts/publish-wordpress-encyclopedia-canonical-batch.mjs
+          node --check scripts/organize-wordpress-encyclopedia-topics.mjs
+          node --check scripts/purge-wordpress-litespeed-cache.mjs
+
+      - name: Validate authorized contiguous 191-280 replay
+        run: node scripts/validate-encyclopedia-backfill.mjs "$BACKFILL_MANIFEST"
+
+  backfill:
+    name: Backup, replay, organize, purge, and visitor-verify missing lessons
+    if: github.event_name != 'pull_request'
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    environment: production
+    env:
+      NODE_OPTIONS: --dns-result-order=ipv4first
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Require protected WordPress credentials
+        run: |
+          set -euo pipefail
+          [[ -n "${WP_API_USERNAME:-}" ]]
+          [[ -n "${WP_API_PASSWORD:-}" ]]
+
+      - name: Reconcile authorized encyclopedia backlog in order
+        id: reconcile
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          root="$RUNNER_TEMP/encyclopedia-backfill-191-280"
+          mkdir -p "$root"
+          echo 'completed=0' >> "$GITHUB_OUTPUT"
+          echo 'skipped=0' >> "$GITHUB_OUTPUT"
+          echo 'rollback_status=not-needed' >> "$GITHUB_OUTPUT"
+
+          mapfile -t batches < <(node - <<'NODE'
+          const fs=require('fs');
+          const m=JSON.parse(fs.readFileSync(process.env.BACKFILL_MANIFEST,'utf8'));
+          for(const path of m.batches) console.log(path);
+          NODE
+          )
+
+          purge_batch() {
+            local batch="$1"
+            local purge_json
+            purge_json="$(node - "$batch" <<'NODE'
+          const fs=require('fs');
+          const batch=JSON.parse(fs.readFileSync(process.argv[2],'utf8'));
+          const topics=JSON.parse(fs.readFileSync(process.env.ENCYCLOPEDIA_TOPIC_FILE,'utf8')).topics;
+          const ids=batch.lessonFiles.map(file=>JSON.parse(fs.readFileSync(file,'utf8')).id);
+          const nums=ids.map(id=>Number(id.match(/(\d{3})$/)[1]));
+          const topic=topics.find(t=>nums.every(n=>n>=t.range[0]&&n<=t.range[1]));
+          if(!topic) throw new Error(`No topic for ${batch.batch}`);
+          console.log(JSON.stringify([
+            '/learn/encyclopedia/',
+            `/learn/encyclopedia/${topic.slug}/`,
+            ...ids.map(id=>`/learn/encyclopedia/${id.toLowerCase()}/`)
+          ]));
+          NODE
+            )"
+            LITESPEED_PURGE_ALL=false LITESPEED_PURGE_URLS_JSON="$purge_json" node scripts/purge-wordpress-litespeed-cache.mjs
+          }
+
+          completed=0
+          skipped=0
+          for batch in "${batches[@]}"; do
+            name="$(node -p "require('./' + process.argv[1]).batch" "$batch")"
+            batch_root="$root/$name"
+            pre_dir="$batch_root/pre"
+            publish_root="$batch_root/publish"
+            topic_root="$batch_root/topics"
+            mkdir -p "$pre_dir" "$publish_root" "$topic_root"
+            echo "::group::Encyclopedia backfill $name"
+
+            if LIVE_VERIFY_ATTEMPTS=1 LIVE_VERIFY_DELAY_MS=0 node scripts/verify-wordpress-encyclopedia-backfill-live.mjs "$batch" >"$batch_root/preflight-live.log" 2>&1; then
+              echo "$name is already fully visitor-verified; skipping mutation."
+              skipped=$((skipped+1))
+              echo "skipped=$skipped" >> "$GITHUB_OUTPUT"
+              echo "::endgroup::"
+              continue
+            fi
+
+            node scripts/backup-wordpress-encyclopedia-batch.mjs "$batch" "$pre_dir" | tee "$batch_root/prebackup.log"
+            export ENCYCLOPEDIA_BATCH_FILE="$batch"
+
+            if ! BACKUP_ROOT="$publish_root" node scripts/publish-wordpress-encyclopedia-canonical-batch.mjs | tee "$batch_root/publish.log"; then
+              echo "Publisher failed for $name; restoring sealed pre-batch state." >&2
+              rollback_failed=0
+              node scripts/rollback-wordpress-encyclopedia-batch.mjs "$pre_dir" | tee "$batch_root/rollback-batch.log" || rollback_failed=1
+              purge_batch "$batch" >"$batch_root/rollback-purge.log" 2>&1 || true
+              [[ "$rollback_failed" -eq 0 ]] && echo 'rollback_status=completed' >> "$GITHUB_OUTPUT" || echo 'rollback_status=failed' >> "$GITHUB_OUTPUT"
+              exit 1
+            fi
+
+            if ! BACKUP_ROOT="$topic_root" node scripts/organize-wordpress-encyclopedia-topics.mjs | tee "$batch_root/topics.log"; then
+              echo "Topic organization failed for $name; organizer self-rollback ran, restoring batch state." >&2
+              rollback_failed=0
+              node scripts/rollback-wordpress-encyclopedia-batch.mjs "$pre_dir" | tee "$batch_root/rollback-batch.log" || rollback_failed=1
+              purge_batch "$batch" >"$batch_root/rollback-purge.log" 2>&1 || true
+              [[ "$rollback_failed" -eq 0 ]] && echo 'rollback_status=completed' >> "$GITHUB_OUTPUT" || echo 'rollback_status=failed' >> "$GITHUB_OUTPUT"
+              exit 1
+            fi
+
+            topic_dir="$(cat "$topic_root/latest-backup-path.txt")"
+            test -n "$topic_dir"
+            node scripts/seal-wordpress-encyclopedia-topic-backup.mjs "$topic_dir" | tee "$batch_root/topic-backup-seal.log"
+
+            if ! purge_batch "$batch" | tee "$batch_root/cache-purge.log"; then
+              echo "::warning::Targeted LiteSpeed purge failed for $name; visitor verification remains authoritative."
+            fi
+
+            if ! LIVE_VERIFY_ATTEMPTS=8 LIVE_VERIFY_DELAY_MS=7000 node scripts/verify-wordpress-encyclopedia-backfill-live.mjs "$batch" | tee "$batch_root/live-verify.log"; then
+              echo "Visitor verification failed for $name; rolling topic organization and batch publication back." >&2
+              rollback_failed=0
+              node scripts/rollback-wordpress-encyclopedia-topics.mjs "$topic_dir" | tee "$batch_root/rollback-topics.log" || rollback_failed=1
+              node scripts/rollback-wordpress-encyclopedia-batch.mjs "$pre_dir" | tee "$batch_root/rollback-batch.log" || rollback_failed=1
+              purge_batch "$batch" >"$batch_root/rollback-purge.log" 2>&1 || true
+              [[ "$rollback_failed" -eq 0 ]] && echo 'rollback_status=completed' >> "$GITHUB_OUTPUT" || echo 'rollback_status=failed' >> "$GITHUB_OUTPUT"
+              exit 1
+            fi
+
+            completed=$((completed+1))
+            echo "completed=$completed" >> "$GITHUB_OUTPUT"
+            echo "::endgroup::"
+          done
+
+          LIVE_VERIFY_ATTEMPTS=8 LIVE_VERIFY_DELAY_MS=7000 node scripts/verify-wordpress-encyclopedia-backfill-live.mjs "$BACKFILL_MANIFEST" | tee "$root/final-live-verification.log"
+          echo "completed=$completed" >> "$GITHUB_OUTPUT"
+          echo "skipped=$skipped" >> "$GITHUB_OUTPUT"
+
+      - name: Upload backfill backups and evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: thc-encyclopedia-backfill-191-280-${{ github.run_id }}
+          path: ${{ runner.temp }}/encyclopedia-backfill-191-280
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report encyclopedia backfill result to issue 46
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const success='${{ job.status }}'==='success';
+            const body=[
+              '## THC encyclopedia 191–280 production reconciliation',
+              '',
+              `- Result: **${success?'success':'failed'}**`,
+              '- Source range: **THC-ENC-191 through THC-ENC-280**',
+              '- Ordered batches: **17**',
+              `- Batches published this run: **${{ steps.reconcile.outputs.completed || 'unknown' }}**`,
+              `- Batches already fully live and skipped: **${{ steps.reconcile.outputs.skipped || 'unknown' }}**`,
+              `- Rollback: **${{ steps.reconcile.outputs.rollback_status || 'not-needed' }}**`,
+              `- Final visitor-facing verification: **${success?'passed':'not passed'}**`,
+              '- Acceptance includes public encyclopedia index, affected topic hubs, and sentinel article routes through THC-ENC-280.',
+              `- Source: https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`
+            ].join('\n');
+            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body});
