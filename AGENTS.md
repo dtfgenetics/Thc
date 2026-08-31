@@ -6,6 +6,17 @@ These instructions apply to the entire `dtfgenetics/Thc` repository.
 
 Read `AI_CONTEXT.md` for the current repository map, common commands, game ownership workflow, and AI-friendly change sequence. `AI_CONTEXT.md` is an orientation index only; this file, `CLAUDE.md`, route-owner documentation, and project-specific source-of-truth files remain authoritative when instructions conflict.
 
+## Read before GitHub or repository repair
+
+For any task that asks to audit, fix, repair, reconcile, merge, synchronize, push, manage, or finish repository work, including failed GitHub Actions, broken pushes, branch divergence, merge conflicts, dependency failures, or pull-request integration, read:
+
+1. `CLAUDE.md` - repository-wide safety, production-branch, and secret-handling rules.
+2. `.agents/skills/github-repo-manager/SKILL.md` - canonical repository-management, repair, CI, research-escalation, and integration workflow.
+3. The subsystem-specific skill/documentation for the code being changed.
+4. `.agents/skills/dtfseeds-production-publishing/SKILL.md` when the user also requests a live dtfseeds.com deployment.
+
+A repairable failure is not a stopping point. Diagnose the exact failure, research current authoritative sources when the first repair does not work or the problem is version-sensitive, apply the next evidence-based fix, retest, and continue until the requested state passes or a genuine external blocker is established.
+
 ## Read before publishing or repairing dtfseeds.com
 
 For any task that asks to publish, deploy, push, move, synchronize, repair, or verify content, products, education, infographics, games, tools, or applications on `https://dtfseeds.com/`, read:
