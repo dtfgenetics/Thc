@@ -167,6 +167,8 @@ jobs:
               -H 'Cache-Control: no-cache, no-store, max-age=0' "$url")"
             [[ "$status" == '200' ]]
             ! grep -Eiq '^location:' "$headers"
+            grep -Fq 'data-dtf-shell="header-v3"' "$body"
+            grep -Fq 'data-dtf-shell="footer-v3"' "$body"
             grep -Fq 'DTF Field Notes &amp; Updates' "$body"
             grep -Fq 'Follow what we are learning, building, and releasing.' "$body"
             ! grep -Fqi 'email@email.com' "$body"
