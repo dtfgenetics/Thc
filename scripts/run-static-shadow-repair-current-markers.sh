@@ -27,10 +27,15 @@ for old, new in replacements.items():
         raise SystemExit(f'Expected repair fragment not found: {old[:100]}')
     s = s.replace(old, new, 1)
 
-header_old = "      headers: { 'X-DTF-Repair-Token': repairToken },"
-header_new = "      json: { dtf_repair_token: repairToken },"
-if s.count(header_old) != 3:
-    raise SystemExit(f'Expected three remaining custom repair-token header calls, found {s.count(header_old)}')
+# After converting the state/recovery request above, exactly three mutating repair calls
+# must still use the legacy custom-header transport: retire, finalize, and rollback.
+# Match the call text itself rather than its indentation so formatting cannot create a
+# false-negative guard failure.
+header_old = "headers: { 'X-DTF-Repair-Token': repairToken }"
+header_new = "json: { dtf_repair_token: repairToken }"
+remaining = s.count(header_old)
+if remaining != 3:
+    raise SystemExit(f'Expected three remaining custom repair-token header calls, found {remaining}')
 s = s.replace(header_old, header_new)
 
 p.write_text(s)
