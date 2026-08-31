@@ -14,6 +14,8 @@ s = p.read_text()
 replacements = {
     "['/', 'Genetics. Plant science. Tools. Games. Community.']": "['/', 'Genetics first. Cultivation science behind it.']",
     "['/learn/', 'Explore by subject']": "['/learn/', 'Learn the plant as a connected system.']",
+    "        ['rel' => 'learn/infographics/index.html', 'markers' => ['being rebuilt', 'Reserved strain card', 'Tool-ready rebuild']],\n    ];": "        ['rel' => 'learn/infographics/index.html', 'markers' => ['being rebuilt', 'Reserved strain card', 'Tool-ready rebuild']],\n        ['rel' => 'seeds/index.html', 'markers' => ['DTF Genetics catalog pages built around strain identity and grow context.', 'Seed profiles, lineage language, product imagery, cultivation notes, and release details are organized for adult cultivators.']],\n    ];",
+    "    ['/learn/infographics/', 'Visual plant science and cultivation library.'],\n  ];": "    ['/learn/infographics/', 'Visual plant science and cultivation library.'],\n    ['/seeds/', 'DTF Genetics library'],\n  ];",
     "return current_user_can('manage_options') && $supplied !== '' && hash_equals($token, $supplied);": "return $supplied !== '' && hash_equals($token, $supplied);",
     "if (removedFiles.length < 1) {\n    throw new Error(`No known stale static shadow file was removed. Result: ${JSON.stringify(repair?.body || {}).slice(0, 900)}`);\n  }": "if (removedFiles.length < 1) {\n    console.warn(`No stale static shadow needed removal; continuing with visitor verification. Result: ${JSON.stringify(repair?.body || {}).slice(0, 900)}`);\n  }",
 }
@@ -31,4 +33,6 @@ node --check "$runner"
 # depending on manage_options for the application-password publishing account.
 grep -Fq "return \$supplied !== '' && hash_equals(\$token, \$supplied);" "$script"
 ! grep -Fq "current_user_can('manage_options') && \$supplied" "$script"
+grep -Fq "'rel' => 'seeds/index.html'" "$script"
+grep -Fq "['/seeds/', 'DTF Genetics library']" "$script"
 node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs "$runner"
