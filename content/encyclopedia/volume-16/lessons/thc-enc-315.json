@@ -1,0 +1,58 @@
+{
+  "id":"THC-ENC-315",
+  "number":315,
+  "title":"False Negatives, Composite Samples, and Test Timing",
+  "objective":"Interpret negative Cannabis pathogen tests as sample- and time-specific evidence, understand how tissue distribution, pathogen load, assay sensitivity, inhibitors, sampling error, pooling, and infection timing can produce false negatives, and design retesting decisions around biological risk rather than certainty language.",
+  "terms":[
+    {"term":"false negative","definition":"A negative test result obtained even though the target pathogen is present in the plant, sample population, or tested system."},
+    {"term":"limit of detection","definition":"The lowest target amount an assay can detect reliably under its validated conditions."},
+    {"term":"composite sample","definition":"A combined specimen made from material collected from multiple tissues or plants and tested as one analytical unit."},
+    {"term":"sampling error","definition":"Failure of the collected specimen to contain or represent the pathogen distribution that exists in the plant or population."},
+    {"term":"analytical sensitivity","definition":"The ability of a laboratory method to detect low quantities of its intended target under defined validation conditions."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "A negative pathogen result means the target was not detected in the tested specimen under that assay's conditions. It does not create absolute proof that the entire plant, propagation lot, room, or crop is pathogen-free.",
+    "False negatives can arise before or during analysis. Important causes include collecting a tissue with little or no pathogen, sampling too early after exposure, uneven within-plant distribution, low target concentration, degraded specimens, extraction failure or inhibitors, assay mismatch with pathogen variation, and errors in collection, labeling, or handling.",
+    "Cannabis HLVd research demonstrates the sampling problem directly. Viroid concentrations differ among genotypes, roots versus foliage, canopy positions, and days after infection. In some tested plants roots became detectable earlier or carried more target than upper leaves, while other genotypes showed different patterns. A tissue that tests negative at one time can therefore differ from another tissue or later sample from the same plant.",
+    "Composite sampling trades resolution for efficiency. Pooling can make population screening practical, but it can also dilute a low-positive specimen and prevents immediate identification of which component plant contributed a positive signal. Pool size, extraction method, assay validation, target biology, and retesting plan should therefore be defined rather than improvised.",
+    "Retesting is not automatically required after every negative result. It becomes more justified when exposure risk is high, symptoms persist, the first specimen was poorly chosen, the pathogen has known uneven distribution or latency, the assay was taken early, or the cost of missing infection is high."
+  ],
+  "cultivationRelevance":[
+    "Report negatives as 'not detected in this sample' with tissue, method, laboratory, and date rather than using the unqualified word 'clean.'",
+    "If a symptomatic or exposed plant tests negative, review the diagnostic question, tissue choice, disease stage, controls, sample integrity, and alternative diagnoses before simply repeating the identical sample.",
+    "Use composite samples only when the receiving laboratory has a validated pooling method or can specify acceptable pool size and follow-up testing; preserve individual plant identities behind every pooled specimen.",
+    "Define clearance or release decisions in advance: required pathogen panel, sample tissues, number of plants, testing interval, and response to discordant results should be part of the protocol rather than invented after a result arrives."
+  ],
+  "measureAndRecord":[
+    {"field":"Negative-result metadata","requirement":"Record pathogen target, assay, laboratory, tissue, plant ID or pool members, date, plant stage, symptom/exposure status, and quality-control notes."},
+    {"field":"Timing","requirement":"Record known or estimated exposure date and days between exposure, symptom onset, sampling, and any retest."},
+    {"field":"Pool design","requirement":"Record number of plants/tissues combined, contribution per source, pooling method, laboratory validation or instruction, and individual identities retained for follow-up."},
+    {"field":"Retest rationale","requirement":"State whether retesting is driven by high exposure, persistent symptoms, early timing, tissue-distribution concern, invalid controls, poor specimen integrity, or a formal clearance protocol."},
+    {"field":"Discordance","requirement":"When tests disagree, preserve all results and investigate method, tissue, timing, and biological explanations rather than deleting the inconvenient result."
+    }
+  ],
+  "misconceptions":[
+    "A negative PCR means the whole plant is guaranteed pathogen-free.",
+    "The same tissue is equally sensitive at every infection stage and in every genotype.",
+    "Pooling can only improve detection because more plants are represented.",
+    "Any positive after an earlier negative proves the laboratory made an error.",
+    "Repeating the identical poorly chosen sample is always the best response to diagnostic uncertainty."
+  ],
+  "evidenceLimits":[
+    "False-negative mechanisms are assay- and pathogen-specific. HLVd provides unusually detailed Cannabis evidence for tissue and temporal variation, but exact retest intervals, preferred tissues, pool sizes, and decision thresholds should come from the validated laboratory method and pathogen-specific evidence rather than a universal Cannabis rule."
+  ],
+  "crossLinks":"THC-ENC-310 for HLVd biology; THC-ENC-313 for latent/asymptomatic infection; THC-ENC-314 for specimen selection; THC-ENC-316–317 for transmission and reservoirs; THC-ENC-320 for diagnostic incident records.",
+  "sourceNotes":[
+    "Punja ZK, et al. Challenges to Cannabis sativa Production from Pathogens and Microbes—The Role of Molecular Diagnostics and Bioinformatics. Int J Mol Sci. 2024;25(1):14. PMID:38203190. https://pmc.ncbi.nlm.nih.gov/articles/PMC10779078/",
+    "Punja ZK, Scott C, Tso HH, Munz J, Buirs L. Transmission, Spread, Longevity and Management of Hop Latent Viroid. Plants. 2025;14(5):830. PMID:40094815. https://pmc.ncbi.nlm.nih.gov/articles/PMC11902214/",
+    "Cannabis genotypes display differences in the tissue distribution and levels of Hop latent viroid in leaves and roots following inoculation. Can J Plant Pathol. 2026. https://www.tandfonline.com/doi/full/10.1080/07060661.2026.2680120",
+    "A Novel, Precise and High-Throughput Technology for Viroid Detection in Cannabis (MFDetect). Viruses. 2023;15(7):1487. PMCID:PMC10385567. https://pmc.ncbi.nlm.nih.gov/articles/PMC10385567/",
+    "University of Missouri Extension. Plant Diagnostic Clinic: Guidelines for Collecting and Submitting Samples. Reviewed March 2026. https://extension.missouri.edu/publications/f260"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.0 controlled title plus evidence-reconciled web derivative","evidenceControl":"cannabis_HLVd_tissue_time_assay_variation_plus_current_diagnostic_sampling_principles","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"plant_pathogen_test_interpretation_sampling_statistics_and_cannabis_HLVd_diagnostics","releaseTimeReview":"completed_2026-09-01_negative_result_pooling_and_retest_boundaries_explicit","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"false-negatives-composite-samples-and-test-timing",
+  "route":"/encyclopedia/false-negatives-composite-samples-and-test-timing"
+}
