@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-326",
+  "number":326,
+  "title":"Cleaning Versus Disinfection",
+  "objective":"Separate physical removal of contamination from microbial inactivation so sanitation procedures are designed as validated sequences rather than treating a disinfectant application as a substitute for cleaning.",
+  "terms":[
+    {"term":"cleaning","definition":"Physical removal of soil, media, sap, plant debris, algae, biofilm, dust, and other contamination from a surface."},
+    {"term":"disinfection","definition":"A process intended to inactivate specified microorganisms on an inanimate surface under defined conditions after adequate preparation."},
+    {"term":"sanitation","definition":"A broader set of practices used to reduce pest and pathogen contamination, which can include cleaning, disinfection, waste removal, drying, and workflow controls."},
+    {"term":"organic matter","definition":"Plant, soil, media, sap, or other carbon-containing debris that can physically shield microbes or consume/inactivate some disinfectants."},
+    {"term":"sterilization","definition":"A much stricter process intended to eliminate all viable microorganisms; routine greenhouse cleaning or disinfection should not be called sterilization without a validated sterilizing process."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Cleaning and disinfection solve different problems. Cleaning removes material from a surface; disinfection attempts to inactivate susceptible microorganisms that remain under the conditions supported by the procedure or product label.",
+    "Greenhouse extension guidance consistently places cleaning before disinfection because residual soil, media, plant debris, sap, algae, and other organic matter can shield organisms or reduce the effectiveness of several disinfectants.",
+    "A visibly clean surface is not necessarily microbiologically clean, while a disinfectant applied to a visibly dirty surface has not necessarily reached or inactivated the target organism.",
+    "Surface material matters. Porous, cracked, rough, absorbent, or complex equipment can be harder to clean and disinfect than intact nonporous surfaces and may require a different validated process or replacement.",
+    "The words clean, sanitized, disinfected, and sterile should not be used interchangeably in records. The process actually completed and its verification should be documented."
+  ],
+  "cultivationRelevance":[
+    "Build sanitation SOPs as explicit sequences: remove debris, clean, rinse/dry where required, apply the validated disinfection step when indicated, meet the required contact condition, and store the item to prevent recontamination.",
+    "Prioritize crop-contact and propagation surfaces where sap, roots, media, water, and repeated handling create plausible transfer pathways.",
+    "Replace or redesign surfaces that cannot be adequately cleaned rather than compensating indefinitely with more chemical product.",
+    "Use current product labels and facility safety procedures for disinfectants; do not infer legal use, concentration, compatibility, or efficacy from a research paper alone."
+  ],
+  "measureAndRecord":[
+    {"field":"Contamination type","requirement":"Record visible soil, media, sap, plant debris, algae, biofilm, or other residue and the surface/material involved."},
+    {"field":"Cleaning method","requirement":"Record physical removal method, detergent or cleaning agent when used, rinse requirements, and completion status."},
+    {"field":"Disinfection method","requirement":"Record the validated SOP/product, target surface, label reference, preparation, contact condition, and compatibility constraints."},
+    {"field":"Status language","requirement":"Record whether an item is dirty, cleaned, disinfected, or otherwise processed; reserve sterile for a validated sterilization method."},
+    {"field":"Verification","requirement":"Record inspection or process checks and any failure that requires recleaning, reprocessing, repair, or replacement."
+    }
+  ],
+  "misconceptions":[
+    "Spraying disinfectant on dirt is the same as cleaning and disinfecting.",
+    "A surface that looks clean is sterile.",
+    "All disinfectants work equally well through organic matter.",
+    "One sanitation method is appropriate for every surface and pathogen.",
+    "Using a stronger-than-label mixture is automatically safer or more effective."
+  ],
+  "evidenceLimits":[
+    "The cleaning-before-disinfection principle is well supported in greenhouse sanitation, but exact microbial inactivation depends on the organism, surface, organic load, product formulation, concentration, temperature, contact time, and label directions. This lesson therefore teaches process logic rather than a universal chemical recipe."
+  ],
+  "crossLinks":"THC-ENC-325 for crop-contact sanitation; THC-ENC-327 for contact time and surface preparation; THC-ENC-328 for irrigation-system hygiene; THC-ENC-339 for sanitation corrective action.",
+  "sourceNotes":[
+    "UMass Amherst Greenhouse & Floriculture. Cleaning and Disinfecting the Greenhouse. Current fact sheet accessed 2026-09-01. https://www.umass.edu/agriculture-food-environment/greenhouse-floriculture/fact-sheets/cleaning-disinfecting-greenhouse",
+    "NC State Extension. Prevention and Management of Soilborne Diseases of Ornamental Plants and Vegetables in the Greenhouse. https://content.ces.ncsu.edu/prevention-and-management-of-soilborne-diseases-of-ornamental-plants-and-vegetables-in-the-greenhouse",
+    "Penn State Extension. Bedding Plant Diseases — preventing recontamination and cleaning before disinfestation. https://extension.psu.edu/bedding-plant-diseases"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.1 controlled title plus evidence-reconciled web derivative","evidenceControl":"current_greenhouse_cleaning_disinfection_process_guidance","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"greenhouse_sanitation_and_disinfection","releaseTimeReview":"completed_2026-09-01_cleaning_disinfection_sterilization_terms_separated","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"cleaning-versus-disinfection",
+  "route":"/encyclopedia/cleaning-versus-disinfection"
+}
