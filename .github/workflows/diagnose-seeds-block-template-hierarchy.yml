@@ -24,24 +24,26 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Validate read-only block-template diagnostic boundary
+      - name: Validate read-only native REST diagnostic boundary
         shell: bash
         run: |
           set -euo pipefail
           node --check scripts/diagnose-seeds-block-template-hierarchy-via-wordpress.mjs
-          ! grep -Eq 'wp_update_post|update_post_meta|delete_post_meta|set_post_thumbnail|file_put_contents|\bunlink\s*\(|\brename\s*\(|\brmdir\s*\(|\bmkdir\s*\(|wp_mkdir_p|ZipArchive' scripts/diagnose-seeds-block-template-hierarchy-via-wordpress.mjs
-          grep -Fq "get_block_template" scripts/diagnose-seeds-block-template-hierarchy-via-wordpress.mjs
-          grep -Fq "get_block_templates" scripts/diagnose-seeds-block-template-hierarchy-via-wordpress.mjs
+          grep -Fq "/wp-json/wp/v2/templates?context=edit" scripts/diagnose-seeds-block-template-hierarchy-via-wordpress.mjs
+          grep -Fq "/wp-json/wp/v2/template-parts?context=edit" scripts/diagnose-seeds-block-template-hierarchy-via-wordpress.mjs
           grep -Fq "page-seeds" scripts/diagnose-seeds-block-template-hierarchy-via-wordpress.mjs
           grep -Fq "core/post-content" scripts/diagnose-seeds-block-template-hierarchy-via-wordpress.mjs
-          grep -Fq "matching_database_template_posts" scripts/diagnose-seeds-block-template-hierarchy-via-wordpress.mjs
+          grep -Fq "inferred_selected_candidate_slug" scripts/diagnose-seeds-block-template-hierarchy-via-wordpress.mjs
           grep -Fq "DTF Genetics catalog pages built around strain identity and grow context." scripts/diagnose-seeds-block-template-hierarchy-via-wordpress.mjs
-          ! grep -Fq "console.log(snippetCode" scripts/diagnose-seeds-block-template-hierarchy-via-wordpress.mjs
+          ! grep -Fq "/wp-json/wp/v2/plugins" scripts/diagnose-seeds-block-template-hierarchy-via-wordpress.mjs
+          ! grep -Fq "/wp-json/code-snippets/" scripts/diagnose-seeds-block-template-hierarchy-via-wordpress.mjs
+          ! grep -Eq "method:[[:space:]]*['\"](POST|PUT|PATCH|DELETE)['\"]" scripts/diagnose-seeds-block-template-hierarchy-via-wordpress.mjs
+          ! grep -Eq 'wp_update_post|update_post_meta|delete_post_meta|set_post_thumbnail|file_put_contents|\bunlink\s*\(|\brename\s*\(|\brmdir\s*\(|\bmkdir\s*\(|wp_mkdir_p|ZipArchive' scripts/diagnose-seeds-block-template-hierarchy-via-wordpress.mjs
 
   diagnose-production:
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 10
     environment: production
     env:
       WP_SITE_URL: https://dtfseeds.com
@@ -62,7 +64,7 @@ jobs:
           set -euo pipefail
           test -n "${WP_API_USERNAME:-}"
           test -n "${WP_API_PASSWORD:-}"
-      - name: Run read-only Seeds block-template hierarchy diagnostic
+      - name: Run native REST Seeds block-template hierarchy diagnostic
         id: diagnostic
         shell: bash
         run: |
@@ -86,6 +88,7 @@ jobs:
             echo '## Seeds block-template hierarchy diagnostic'
             echo
             echo "- Diagnostic: ${{ steps.diagnostic.outcome }}"
-            echo '- Scope: read-only candidate block templates, matching template parts/database templates, block inventory, and active plugin slugs.'
-            echo '- Production page/template/file mutation: none.'
+            echo '- Transport: native authenticated WordPress templates and template-parts REST APIs.'
+            echo '- Scope: read-only page state, hierarchy candidates, template/part fingerprints, block inventory, and fresh public markers.'
+            echo '- Production page/template/plugin/file mutation: none.'
           } >> "$GITHUB_STEP_SUMMARY"
