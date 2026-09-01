@@ -22,6 +22,31 @@ const routes = [
     markers: ['content="20260830-r7"', '0 / 24', '7,800 px course']
   },
   {
+    path: '/games/phenoquest/',
+    markers: [
+      'PhenoQuest: The Living Seed Vault',
+      './experience-v2.css',
+      './experience-v2.js'
+    ],
+    assets: [
+      {
+        path: 'experience-v2.js',
+        markers: [
+          'deriveFirstSessionProgress',
+          'PhenoQuest guided first-session experience initialized.'
+        ]
+      },
+      {
+        path: 'experience-v2.css',
+        markers: ['.first-session-guide', 'prefers-reduced-motion']
+      },
+      {
+        path: '_runtime/src/engine/game-state.js',
+        markers: ['export function setStarterChoice', 'export function addStoredUnit']
+      }
+    ]
+  },
+  {
     path: '/games/weedopolis/',
     markers: ['Weedopolis']
   },
@@ -40,17 +65,36 @@ function extractStylesheets(html, pageUrl) {
   return matches.map((match) => new URL(match[1], pageUrl).toString());
 }
 
-async function fetchNoRedirect(url) {
-  const response = await fetch(url, {
+async function fetchNoRedirect(url, accept = 'text/html,application/xhtml+xml') {
+  return fetch(url, {
     redirect: 'manual',
     headers: {
       'Cache-Control': 'no-cache, no-store, max-age=0',
       Pragma: 'no-cache',
-      Accept: 'text/html,application/xhtml+xml'
+      Accept: accept
     },
     signal: AbortSignal.timeout(20000)
   });
-  return response;
+}
+
+function assertDirectSuccess(response, label) {
+  if (response.status >= 300 && response.status < 400) {
+    throw new Error(`${label} redirected with HTTP ${response.status} to ${response.headers.get('location') || '<unknown>'}`);
+  }
+  if (response.status !== 200) throw new Error(`${label} returned HTTP ${response.status}`);
+}
+
+async function verifyAsset(route, asset) {
+  const assetUrl = new URL(asset.path, `${baseUrl}${route.path}`);
+  assetUrl.searchParams.set('dtf_current_release_verify', String(runId));
+  const response = await fetchNoRedirect(assetUrl.toString(), '*/*');
+  assertDirectSuccess(response, `${route.path}${asset.path}`);
+  const body = await response.text();
+  for (const marker of asset.markers || []) {
+    if (!body.includes(marker)) {
+      throw new Error(`${route.path}${asset.path} is missing asset marker '${marker}'`);
+    }
+  }
 }
 
 async function verifyRoute(route) {
@@ -60,10 +104,7 @@ async function verifyRoute(route) {
   for (let attempt = 1; attempt <= attemptCount; attempt += 1) {
     try {
       const response = await fetchNoRedirect(url);
-      if (response.status >= 300 && response.status < 400) {
-        throw new Error(`redirected with HTTP ${response.status} to ${response.headers.get('location') || '<unknown>'}`);
-      }
-      if (response.status !== 200) throw new Error(`returned HTTP ${response.status}`);
+      assertDirectSuccess(response, route.path);
       const contentType = response.headers.get('content-type') || '';
       if (!contentType.toLowerCase().includes('text/html')) throw new Error(`returned unexpected content-type '${contentType}'`);
 
@@ -91,6 +132,10 @@ async function verifyRoute(route) {
           }
         }
         if (!matched) throw new Error(`stylesheets did not contain V2 markers: ${route.cssMarkers.join(', ')}`);
+      }
+
+      for (const asset of route.assets || []) {
+        await verifyAsset(route, asset);
       }
 
       console.log(`PASS ${route.path} (attempt ${attempt})`);
