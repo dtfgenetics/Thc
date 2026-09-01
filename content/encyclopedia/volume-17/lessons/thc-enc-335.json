@@ -1,0 +1,57 @@
+{
+  "id":"THC-ENC-335",
+  "number":335,
+  "title":"Mechanical and Physical Controls",
+  "objective":"Apply barriers, exclusion, trapping, removal, pruning, isolation, environmental or process-based physical methods, and other nonchemical interventions according to target biology, scale, crop stage, and measurable effectiveness.",
+  "terms":[
+    {"term":"mechanical control","definition":"Direct physical action used to remove, capture, destroy, separate, or otherwise reduce a pest, infected plant part, or transfer pathway."},
+    {"term":"physical control","definition":"Use of barriers, screens, traps, temperature, water, light, pressure, or other physical conditions or structures to prevent, suppress, detect, or remove a target when validated for the application."},
+    {"term":"exclusion barrier","definition":"A physical structure such as screening, netting, sealed entry, or cover that reduces pest access to a crop or production zone."},
+    {"term":"localized removal","definition":"Removal of affected insects, plant parts, plants, weeds, debris, or other reservoirs from a defined area to reduce pest or pathogen pressure."},
+    {"term":"verification","definition":"Follow-up monitoring that determines whether the physical or mechanical intervention actually reduced the target or changed exposure risk."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Mechanical and physical controls act without depending primarily on pesticide toxicity. Common greenhouse examples include hand removal, pruning, trapping, screens and barriers, weed removal, isolation, and other methods that directly change pest access or abundance.",
+    "A physical method must match the target life stage and pathway. Sticky traps can capture certain flying adults and support monitoring or suppression, but they do not eliminate eggs, larvae, mites, root pests, or pathogens that are not exposed to the trap.",
+    "Exclusion can prevent entry but introduces engineering tradeoffs. Fine insect screens can reduce movement of small flying pests while also restricting greenhouse airflow, so barrier selection must account for target pest size, ventilation, cooling, pressure, and maintenance.",
+    "Removal can reduce inoculum or pest abundance, but handling diseased or infested material can also spread sap, spores, arthropods, or debris if movement and sanitation are poorly controlled. Mechanical action therefore belongs inside the biosecurity workflow rather than outside it.",
+    "Physical treatments such as heat, irradiation, filtration, or other process technologies require target-specific validation and crop/equipment compatibility. Evidence that a process works in one matrix or against one organism should not be generalized into a universal Cannabis treatment."
+  ],
+  "cultivationRelevance":[
+    "Use hand removal, pruning, vacuuming, trapping, screens, barriers, or localized plant removal only where the target biology and production scale make the method practical and measurable.",
+    "Combine exclusion with inspection of incoming plants and materials because structural barriers cannot prevent pests carried in on clones, transplants, equipment, clothing, or containers.",
+    "Bag, contain, or route removed infested/diseased material according to the biological risk so the removal process does not redistribute the target through clean areas.",
+    "After a mechanical or physical intervention, rescout the same locations and comparable untreated risk areas when possible to determine whether abundance or symptoms changed."
+  ],
+  "measureAndRecord":[
+    {"field":"Target and life stage","requirement":"Record the pest, disease reservoir, or pathway addressed and which life stage or exposure route the intervention can realistically affect."},
+    {"field":"Method and coverage","requirement":"Record barrier/trap/removal/process type, placement, area or plants treated, duration, equipment settings where relevant, and any material compatibility constraints."},
+    {"field":"Removal handling","requirement":"Record containment, route, disposal or quarantine destination, and sanitation/reset steps used after removing affected material."},
+    {"field":"Engineering effect","requirement":"For screens or other structural controls, record airflow, temperature, humidity, access, or other operational effects that could change crop health or disease risk."},
+    {"field":"Effectiveness","requirement":"Record comparable follow-up counts, symptoms, trap data, or other target-specific evidence and whether repetition or escalation is needed."
+    }
+  ],
+  "misconceptions":[
+    "Sticky traps control every greenhouse pest life stage.",
+    "Physical control is automatically harmless to plants or workers.",
+    "The finest insect screen is always the best choice regardless of airflow.",
+    "Removing a diseased plant cannot spread the pathogen during handling.",
+    "A heat or other physical treatment validated for one pathogen automatically eliminates all Cannabis pathogens."
+  ],
+  "evidenceLimits":[
+    "Mechanical and physical-control efficacy is strongly target-, life-stage-, scale-, equipment-, and environment-dependent. Many techniques reduce rather than eradicate populations, and process-based physical treatments require validation for the organism, crop material, surface or water matrix, and operational conditions used."
+  ],
+  "crossLinks":"THC-ENC-329 for exclusion engineering; THC-ENC-331–333 for monitoring and decisions; THC-ENC-334 for cultural controls; THC-ENC-336 for biological controls; THC-ENC-338 for isolation/removal/waste handling.",
+  "sourceNotes":[
+    "University of Missouri Extension. Using Integrated Pest Management in Greenhouses and Herbaceous Nurseries. Includes physical/mechanical strategies, localized treatment, screening, scouting, and sanitation. https://extension.missouri.edu/publications/ipm1026",
+    "University of Missouri Extension. Insect Pests of Industrial Hemp in Missouri. Current page accessed 2026-09-01. Includes traps, row covers/netting, and mechanical/physical approaches in hemp IPM. https://extension.missouri.edu/publications/mx83",
+    "Cornell University Biological Control Program. Integrated Pest Management. Defines physical/mechanical controls within integrated pest management. https://biocontrol.entomology.cornell.edu/ipm.php",
+    "University of Florida IFAS Extension. Exclusion Methods for Managing Greenhouse Vegetable Pests. Current version accessed 2026-09-01. Evidence on insect screening and airflow tradeoffs. https://ask.ifas.ufl.edu/publication/IN730"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.1 controlled title plus evidence-reconciled web derivative","evidenceControl":"greenhouse_and_hemp_mechanical_physical_IPM_guidance_plus_exclusion_engineering_limits","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"mechanical_physical_IPM_controls","releaseTimeReview":"completed_2026-09-01_target_life_stage_engineering_and_process_validation_limits_explicit","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"mechanical-and-physical-controls",
+  "route":"/encyclopedia/mechanical-and-physical-controls"
+}
