@@ -1,0 +1,57 @@
+name: Apply Pheno Hunter touch target fix
+
+on:
+  push:
+    branches: [feature/pheno-hunter-vertical-slice]
+    paths:
+      - .github/workflows/pheno-hunter-touch-patch.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/pheno-hunter-vertical-slice
+          fetch-depth: 1
+
+      - name: Patch minimum touch target sizes
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path('site/public-route-patch/games/pheno-hunter/pheno-hunter.css')
+          css = path.read_text()
+
+          old_controls = '.scout-button,.shortlist-button,.shortlist-row button,.primary-button,.secondary-button{border:1px solid #315e40;'
+          new_controls = '.scout-button,.shortlist-button,.shortlist-row button,.primary-button,.secondary-button{min-height:44px;border:1px solid #315e40;'
+          if css.count(old_controls) != 1:
+              raise SystemExit(f'Expected one shared control selector, found {css.count(old_controls)}')
+          css = css.replace(old_controls, new_controls, 1)
+
+          old_input = '.code-row input{min-width:0;border:1px solid #315e40;'
+          new_input = '.code-row input{min-width:0;min-height:44px;border:1px solid #315e40;'
+          if css.count(old_input) != 1:
+              raise SystemExit(f'Expected one hunt-code input selector, found {css.count(old_input)}')
+          css = css.replace(old_input, new_input, 1)
+
+          path.write_text(css)
+          PY
+
+      - name: Verify patch contract
+        run: |
+          grep -Fq '.scout-button,.shortlist-button,.shortlist-row button,.primary-button,.secondary-button{min-height:44px;' site/public-route-patch/games/pheno-hunter/pheno-hunter.css
+          grep -Fq '.code-row input{min-width:0;min-height:44px;' site/public-route-patch/games/pheno-hunter/pheno-hunter.css
+
+      - name: Commit patch and remove one-run workflow
+        run: |
+          rm .github/workflows/pheno-hunter-touch-patch.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add site/public-route-patch/games/pheno-hunter/pheno-hunter.css .github/workflows/pheno-hunter-touch-patch.yml
+          git commit -m 'fix(pheno-hunter): enlarge mobile interaction targets'
+          git push origin HEAD:feature/pheno-hunter-vertical-slice
