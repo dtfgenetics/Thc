@@ -15,12 +15,13 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
 
       - name: Validate candidate bank and public copy
         run: node games/pheno-hunter/scripts/validate-data.mjs
@@ -32,6 +33,7 @@ jobs:
         run: |
           node --check site/public-route-patch/games/pheno-hunter/app.js
           node --check site/public-route-patch/games/pheno-hunter/engine.mjs
+          node --check games/pheno-hunter/test/browser-smoke.mjs
 
       - name: Verify canonical and public engine match
         run: cmp games/pheno-hunter/src/engine.mjs site/public-route-patch/games/pheno-hunter/engine.mjs
@@ -56,6 +58,14 @@ jobs:
           requireText(css, '@media(prefers-reduced-motion:reduce)', 'reduced motion');
           NODE
 
+      - name: Install browser-test dependencies
+        run: |
+          npm ci
+          npx playwright install chromium
+
+      - name: Run desktop mobile and accessibility acceptance
+        run: node games/pheno-hunter/test/browser-smoke.mjs
+
       - name: Verify truthful release boundary
         run: |
           node - <<'NODE'
@@ -65,7 +75,7 @@ jobs:
           if (game.route !== '/games/pheno-hunter/') throw new Error('unexpected route');
           if (game.releaseGates.rulesTested !== true) throw new Error('rules suite must be recorded as tested');
           if (game.releaseGates.deploymentRegistered !== true) throw new Error('deploymentRegistered must be true after canonical registry reconciliation');
-          if (game.releaseGates.browserTested !== false) throw new Error('browserTested must remain false until browser QA is completed');
-          if (game.releaseGates.mobileTested !== false) throw new Error('mobileTested must remain false until mobile QA is completed');
-          if (game.releaseGates.accessibilityReviewed !== false) throw new Error('accessibilityReviewed must remain false until review is completed');
+          if (game.releaseGates.browserTested !== true) throw new Error('browserTested must be true after Chromium gameplay acceptance');
+          if (game.releaseGates.mobileTested !== true) throw new Error('mobileTested must be true after the 390px touch acceptance');
+          if (game.releaseGates.accessibilityReviewed !== true) throw new Error('accessibilityReviewed must be true after keyboard, label, live-region, and reduced-motion review');
           NODE
