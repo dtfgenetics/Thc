@@ -1,0 +1,109 @@
+name: Repair Seeds Stale MU Override V2
+
+on:
+  pull_request:
+    paths:
+      - scripts/run-seeds-mu-repair-v2.mjs
+      - scripts/repair-seeds-mu-override.mjs
+      - .github/workflows/repair-seeds-mu-override-v2.yml
+      - .github/repair-seeds-mu-override-v2-trigger.txt
+  push:
+    branches: [main]
+    paths:
+      - .github/repair-seeds-mu-override-v2-trigger.txt
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dtfseeds-seeds-mu-override-repair-v2
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate corrected canonical-line verifier
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/run-seeds-mu-repair-v2.mjs
+          node --check scripts/repair-seeds-mu-override.mjs
+          for marker in \
+            'Berry Blue' \
+            'Berry Lemonade' \
+            'Zestberry' \
+            'Blue Bubblegum' \
+            'Blue Cali Glue' \
+            'Blue Mango' \
+            'Blue Mango BX1' \
+            'Mango Bubbles' \
+            'Blue Frequency' \
+            'Rainbow Bubblegum' \
+            'Mystery Line'; do
+            grep -Fq "$marker" scripts/run-seeds-mu-repair-v2.mjs
+          done
+          grep -Fq "DTF Genetics library" scripts/run-seeds-mu-repair-v2.mjs
+          grep -Fq "DTF Genetics catalog pages built around strain identity and grow context." scripts/run-seeds-mu-repair-v2.mjs
+          grep -Fq "Grow Notes" scripts/run-seeds-mu-repair-v2.mjs
+          grep -Fq "profileCount !== requiredSeedsMarkers.length" scripts/run-seeds-mu-repair-v2.mjs
+          grep -Fq "/dtf-seeds-mu-repair/v1/restore" scripts/run-seeds-mu-repair-v2.mjs
+          grep -Fq "a32f9a10a5f79580d665d8d2c4718993a9d4bc14070eb8a26a4a2386f8535a3c" scripts/repair-seeds-mu-override.mjs
+
+  repair-production:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: production
+    env:
+      WP_SITE_URL: https://dtfseeds.com
+      NODE_OPTIONS: --dns-result-order=ipv4first
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Require proven WordPress credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${WP_API_USERNAME:-}"
+          test -n "${WP_API_PASSWORD:-}"
+      - name: Disable confirmed stale MU override and prove 11-line Genetics library
+        id: repair
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/run-seeds-mu-repair-v2.mjs \
+            | tee "$RUNNER_TEMP/seeds-mu-override-repair-v2.json"
+          grep -Eq '"ok"[[:space:]]*:[[:space:]]*true' "$RUNNER_TEMP/seeds-mu-override-repair-v2.json"
+          grep -Eq '"profileCount"[[:space:]]*:[[:space:]]*11' "$RUNNER_TEMP/seeds-mu-override-repair-v2.json"
+      - name: Upload repair evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: seeds-mu-override-repair-v2-${{ github.run_id }}
+          path: ${{ runner.temp }}/seeds-mu-override-repair-v2.json
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Summarize repair status
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo '## Seeds MU override repair V2'
+            echo
+            echo "- Repair: ${{ steps.repair.outcome }}"
+            echo '- Live target remains protected by the confirmed SHA-256 gate.'
+            echo '- Success requires DTF Genetics library + all 11 canonical strain names on REST, /seeds/, and direct page_id=868.'
+            echo '- The stale catalog marker and Grow Notes card must be absent.'
+            echo '- Home and Learn collateral checks remain required.'
+            echo '- Automatic rollback remains enabled on any failed post-disable verification.'
+          } >> "$GITHUB_STEP_SUMMARY"
