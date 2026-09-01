@@ -1,0 +1,57 @@
+{
+  "id":"THC-ENC-306",
+  "number":306,
+  "title":"Rhizoctonia and Damping-Off Complexes",
+  "objective":"Treat damping-off as a seedling disease syndrome with multiple possible biological and abiotic causes; recognize where Rhizoctonia fits in the differential diagnosis; and use root, crown, seedling-pattern, and laboratory evidence before assigning a causal organism.",
+  "terms":[
+    {"term":"damping-off","definition":"Pre-emergence seed decay or post-emergence seedling collapse caused by one or more root- or stem-base pathogens under favorable conditions."},
+    {"term":"Rhizoctonia solani","definition":"A soilborne fungal species complex capable of causing damping-off, root rot, and stem-base disease in many crops and included in current hemp disease guidance as a potential damping-off organism."},
+    {"term":"pre-emergence damping-off","definition":"Seed or seedling death before emergence above the growing medium or soil surface."},
+    {"term":"post-emergence damping-off","definition":"Collapse after emergence, commonly associated with diseased hypocotyl, crown, or root tissues."},
+    {"term":"disease complex","definition":"A syndrome in which similar symptoms can be produced by multiple pathogens, environmental conditions, or interacting causes."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Damping-off is a syndrome rather than a single-pathogen diagnosis. Current hemp disease guidance lists Pythium/Globisporangium species, Fusarium species, Rhizoctonia solani, and potentially other organisms as causes or contributors to seed decay, root/crown rot, stunting, and seedling collapse.",
+    "Cannabis- and hemp-specific pathogenicity evidence is strongest for several Fusarium and Pythium species. Rhizoctonia is included in hemp diagnostic guidance and is biologically plausible as part of the damping-off complex, but the direct Cannabis-specific experimental literature is less developed. That evidence difference should be stated rather than hidden.",
+    "Pre-emergence loss can look like poor germination, while post-emergence disease can produce constricted or necrotic stem-base tissue, brown roots, stunting, and rapid collapse. Similar losses can also result from low seed vigor, saturated or oxygen-poor media, salinity, temperature stress, planting injury, or other root pathogens.",
+    "Damping-off risk is shaped by the interaction of inoculum, seed or cutting vigor, root-zone moisture and aeration, temperature, media or soil condition, sanitation history, and plant stage. No single environmental observation proves a pathogen is present.",
+    "Because mixed infections can occur, recovering one organism from a diseased seedling does not exclude another pathogen or an important abiotic contributor. Diagnosis is strongest when lesion pattern, organism recovery or molecular evidence, cohort distribution, and causal testing align."
+  ],
+  "cultivationRelevance":[
+    "Track seedling or cutting losses by propagation lot, tray, cultivar, media lot, irrigation zone, and date so a localized introduction can be distinguished from a general propagation-environment problem.",
+    "Inspect failed and newly symptomatic plants promptly, including hypocotyl, crown, and roots; severely decomposed tissue often contains secondary colonizers that make causal diagnosis harder.",
+    "Compare symptomatic and healthy seedlings from the same cohort and record media moisture, drainage, temperature, seed vigor, and handling history alongside pathogen testing.",
+    "Do not select a regulated disease-control product solely from the word 'damping-off'; organism identity, crop label, use site, and jurisdiction still govern lawful use."
+  ],
+  "measureAndRecord":[
+    {"field":"Cohort loss","requirement":"Record seeds planted or cuttings stuck, emerged/established plants, pre-emergence loss, post-emergence collapse, and dates."},
+    {"field":"Tissue pattern","requirement":"Record hypocotyl lesions, constriction, crown discoloration, root browning, root integrity, and representative photos."},
+    {"field":"Root-zone context","requirement":"Record media/soil lot, moisture status, drainage/aeration, temperature, irrigation history, salinity/EC context, and planting depth where relevant."},
+    {"field":"Diagnostic evidence","requirement":"Record culture, microscopy, molecular result, diagnostic-lab identification, tissue sampled, and confidence for Rhizoctonia, Fusarium, Pythium/Globisporangium, or other organisms."},
+    {"field":"Differential conclusion","requirement":"State confirmed, probable, possible, mixed, or unresolved causes and identify which observations support each conclusion."
+    }
+  ],
+  "misconceptions":[
+    "Damping-off is the name of one pathogen.",
+    "Every failed seed was killed by disease.",
+    "Rhizoctonia can be diagnosed from seedling collapse alone.",
+    "Wet media proves Pythium and dry media proves Rhizoctonia.",
+    "Finding one microbe means abiotic root stress and other pathogens can be ignored."
+  ],
+  "evidenceLimits":[
+    "Current Cannabis/hemp evidence supports a multi-organism damping-off framework, but the depth of direct pathogenicity evidence is not equal for every listed organism. Rhizoctonia should therefore remain a differential diagnosis unless specimen or laboratory evidence supports it in the affected crop."
+  ],
+  "crossLinks":"THC-ENC-301 for disease-cycle reasoning; THC-ENC-304 for Fusarium; THC-ENC-305 for Pythium/oomycetes; THC-ENC-273 for root-zone hypoxia; THC-ENC-314–317 for sampling and reservoirs.",
+  "sourceNotes":[
+    "Pacific Northwest Plant Disease Management Handbook. Hemp (Cannabis sativa)-Damping-off. Revised March 2026. Lists Pythium/Globisporangium, Fusarium, Rhizoctonia solani, and other organisms in the hemp damping-off complex. https://pnwhandbooks.org/plantdisease/host-disease/hemp-cannabis-sativa-damping",
+    "Khan MFR, et al. First Report of Damping-Off and Seedling Rot of Hemp (Cannabis sativa) Caused by Fusarium solani in North Dakota, U.S.A. Plant Disease. 2023;107(1). doi:10.1094/PDIS-12-21-2681-PDN. https://apsjournals.apsnet.org/doi/10.1094/PDIS-12-21-2681-PDN",
+    "Pitman TL, et al. First report of Pythium ultimum causing crown rot in greenhouse grown Cannabis sativa in California. Plant Disease. 2020. PMID:33337241. doi:10.1094/PDIS-10-20-2228-PDN. https://pubmed.ncbi.nlm.nih.gov/33337241/",
+    "Punja ZK. Emerging diseases of Cannabis sativa and sustainable management. Pest Manag Sci. 2021;77:3857-3870. PMID:33527549. doi:10.1002/ps.6307. https://pubmed.ncbi.nlm.nih.gov/33527549/"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.0 controlled title plus evidence-reconciled web derivative","evidenceControl":"2026_hemp_damping_off_guidance_plus_direct_cannabis_hemp_fusarium_and_pythium_pathogenicity","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_hemp_seedling_disease_and_rhizoctonia_differential","releaseTimeReview":"completed_2026-09-01_rhizoctonia_evidence_depth_and_multicausal_damping_off_boundaries_explicit","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"rhizoctonia-and-damping-off-complexes",
+  "route":"/encyclopedia/rhizoctonia-and-damping-off-complexes"
+}
