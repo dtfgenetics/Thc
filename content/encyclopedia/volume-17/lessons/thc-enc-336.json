@@ -1,0 +1,57 @@
+{
+  "id":"THC-ENC-336",
+  "number":336,
+  "title":"Biological Controls",
+  "objective":"Evaluate predators, parasitoids, entomopathogens, antagonistic microbes, and other biological controls as target- and strain-specific IPM tools whose laboratory activity, plant-level efficacy, compatibility, timing, and legal product status must be distinguished.",
+  "terms":[
+    {"term":"biological control","definition":"Use of living organisms or their biologically derived activity to suppress a pest or pathogen as part of an integrated management program."},
+    {"term":"natural enemy","definition":"A predator, parasitoid, pathogen, antagonist, or other organism that can reduce a target pest or pathogen population or activity."},
+    {"term":"in vitro efficacy","definition":"Activity demonstrated outside the intact plant, such as inhibition on culture media; it does not by itself establish crop-level control."},
+    {"term":"in planta efficacy","definition":"A measured effect demonstrated on living plants under defined experimental conditions."},
+    {"term":"strain specificity","definition":"The principle that efficacy and safety evidence for one microbial strain cannot automatically be generalized to every member of the same species or genus."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Biological control is an evidence-dependent IPM tactic rather than a guarantee of harmless or universal control. Performance depends on target identity and life stage, biological-control species or microbial strain, release or application timing, crop environment, compatibility with other interventions, and the route by which the agent reaches the target.",
+    "Cannabis-specific disease studies demonstrate why an evidence ladder matters. Balthazar and colleagues tested Bacillus and Pseudomonas strains against multiple Cannabis fungal pathogens and found strain-dependent activity; selected strains reduced Botrytis gray mold in planta, while earlier root-applied bacterial treatments from the same research program did not significantly control gray mold under a different Cannabis system. Route, strain, timing, and experimental design therefore change outcomes.",
+    "Dumigan and Deyholos found seed-inherited Bacilli in Cannabis accessions and documented antifungal activity from selected endophytes in vitro. That result supports biological potential, but organism presence or plate inhibition is not equivalent to field efficacy, product registration, or a recommendation to culture unknown microbes for crop application.",
+    "Biological arthropod control likewise depends on matching predator, parasitoid, or entomopathogen biology to pest species, life stage, temperature, humidity, crop architecture, pesticide residues, and release timing. Natural enemies should be monitored as part of the same scouting program used for the pest target.",
+    "A research organism is not automatically a legal commercial input. Microbial pesticide and other pesticide products remain subject to current registration, labeling, worker-safety, crop/use-site, and jurisdictional requirements; research efficacy cannot substitute for legal authorization."
+  ],
+  "cultivationRelevance":[
+    "Confirm the target pest/pathogen and life stage before selecting a biological control, and use supplier/label guidance plus current evidence rather than choosing by genus name alone.",
+    "Introduce or apply biological controls early enough for their biology to matter, then monitor both target abundance/disease and the natural enemy or antagonist response where measurable.",
+    "Review compatibility before combining biological controls with pesticides, disinfectants, environmental changes, or other practices that may kill, suppress, or displace the beneficial organism.",
+    "Use commercially supplied and legally authorized organisms/products under current handling and label requirements; do not treat uncontrolled DIY culturing of environmental microbes as equivalent to a characterized biological-control product."
+  ],
+  "measureAndRecord":[
+    {"field":"Target and evidence","requirement":"Record pest/pathogen identity, life stage or disease state, diagnostic confidence, and the evidence supporting the selected biological-control agent."},
+    {"field":"Agent identity","requirement":"Record species and, for microbes, strain or product identity when known; preserve supplier, lot/batch, receipt/storage information, and legal label/registration reference when applicable."},
+    {"field":"Deployment","requirement":"Record release/application date, rate or quantity according to lawful instructions, crop zone, target stage, environmental conditions, and repeated introductions when used."},
+    {"field":"Compatibility","requirement":"Record pesticides, sanitation agents, environmental changes, or other interventions that could affect the biological control and the compatibility source used."},
+    {"field":"Outcome","requirement":"Use comparable follow-up scouting, disease severity, target counts, natural-enemy observations, or diagnostic measures to determine whether the intervention worked."
+    }
+  ],
+  "misconceptions":[
+    "If one Bacillus strain works, every Bacillus product will work the same way.",
+    "In vitro inhibition proves production-scale Cannabis disease control.",
+    "A microbe naturally found inside Cannabis is automatically safe and beneficial to culture and apply.",
+    "Biological controls cannot be harmed by pesticide or sanitation programs.",
+    "A research strain with Cannabis efficacy is automatically a registered commercial product."
+  ],
+  "evidenceLimits":[
+    "Cannabis-specific biological-control research is growing but remains limited relative to many major crops. Results are often strain-, pathogen-, environment-, and experimental-system-specific. In vitro antagonism, plant-growth promotion, organism detection, and in planta disease suppression are different evidence levels and should not be collapsed into one efficacy claim."
+  ],
+  "crossLinks":"THC-ENC-321 for integrated control selection; THC-ENC-331–333 for monitoring and decisions; THC-ENC-334–335 for nonchemical controls; THC-ENC-337 for pesticide/biopesticide legal boundaries; THC-ENC-340 for program evaluation.",
+  "sourceNotes":[
+    "Balthazar C, Novinscak A, Cantin G, Joly DL, Filion M. Biocontrol Activity of Bacillus spp. and Pseudomonas spp. Against Botrytis cinerea and Other Cannabis Fungal Pathogens. Phytopathology. 2022;112(3):549-560. doi:10.1094/PHYTO-03-21-0128-R. https://pubmed.ncbi.nlm.nih.gov/34293909/",
+    "Balthazar C, St-Onge R, Léger G, Lamarre SG, Joly DL, Filion M. Pyoluteorin and 2,4-diacetylphloroglucinol are major contributors to Pseudomonas protegens Pf-5 biocontrol against Botrytis cinerea in cannabis. Front Microbiol. 2022;13:945498. https://pubmed.ncbi.nlm.nih.gov/36016777/",
+    "Dumigan CR, Deyholos MK. Cannabis Seedlings Inherit Seed-Borne Bioactive and Anti-Fungal Endophytic Bacilli. Plants. 2022;11(16):2127. https://pubmed.ncbi.nlm.nih.gov/36015430/",
+    "US Environmental Protection Agency. What is a Pesticide? Current 2026 guidance on products making pest-control claims and federal registration/minimum-risk boundaries. https://www.epa.gov/minimum-risk-pesticides/what-pesticide"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.1 controlled title plus evidence-reconciled web derivative","evidenceControl":"direct_cannabis_biological_control_experiments_plus_current_pesticide_regulatory_boundary","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_biological_control_and_IPM","releaseTimeReview":"completed_2026-09-01_in_vitro_in_planta_strain_product_and_legal_boundaries_explicit","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"biological-controls",
+  "route":"/encyclopedia/biological-controls"
+}
