@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-293",
+  "number":293,
+  "title":"Beet Leafhoppers and Virus Vectoring",
+  "objective":"Identify beet leafhopper risk in hemp by separating vector detection, host use, and Beet curly top virus confirmation, and use current hemp research to interpret vector presence without equating insect capture with disease.",
+  "terms":[
+    {"term":"beet leafhopper","definition":"Circulifer tenellus (also reported as Neoaliturus tenellus in recent literature), the recognized vector of Beet curly top virus."},
+    {"term":"BCTV","definition":"Beet curly top virus, a group of closely related curtoviruses capable of infecting hemp and many other plant species."},
+    {"term":"viruliferous","definition":"Carrying a transmissible plant virus and capable of inoculating a susceptible host under compatible conditions."},
+    {"term":"persistent transmission","definition":"A vector relationship in which the virus is retained for an extended period after acquisition and can be transmitted during later feeding."},
+    {"term":"vector competence","definition":"The biological ability of a particular vector population to acquire and transmit a pathogen; presence of the insect alone does not establish pathogen carriage."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Beet leafhopper is the recognized vector of Beet curly top virus, an important disease of hemp in parts of the western United States. Field research in New Mexico detected beet leafhoppers in and around hemp and confirmed BCTV infection in CBD, fiber, and grain hemp types under field conditions.",
+    "Vector detection and disease diagnosis are separate observations. A sticky-card or sweep-net capture confirms that a leafhopper was present, but does not show that the individual carried BCTV, fed long enough to inoculate a plant, or caused observed symptoms.",
+    "Current 2026 research adds an important boundary: beet leafhoppers were unable to survive on hemp beyond seven days in the reported experiments, indicating that hemp can be exposed to vector feeding without being a host on which the insect completes its life cycle. This helps explain why transient movement from surrounding vegetation can still matter epidemiologically.",
+    "BCTV in hemp is genetically diverse. A 2026 multistate study detected multiple strains and documented genotype-specific effects of infection. Symptom expression and crop impact therefore should not be reduced to one leafhopper count or one universal visual presentation.",
+    "Suspected curly-top disease should be confirmed with appropriate plant diagnostics when practical because upward leaf curl, chlorosis, stunting, and other symptoms can overlap with abiotic stress, herbicide injury, root problems, and other pathogens."
+  ],
+  "cultivationRelevance":[
+    "Use sticky cards or field sampling to track leafhopper movement while recording surrounding weeds/crops, wind events, field edges, and symptom onset separately.",
+    "Submit symptomatic plant tissue for BCTV testing when disease confirmation matters; do not diagnose curly top from the insect capture alone.",
+    "Map symptomatic plants and vector captures independently so spatial association can be evaluated rather than assumed.",
+    "Treat vector suppression, disease diagnosis, and regulated product authorization as distinct decisions governed by current evidence and law."
+  ],
+  "measureAndRecord":[
+    {"field":"Vector monitoring","requirement":"Record beet leafhopper counts by trap/sweep method, interval, location, field edge/interior, and identification confidence."},
+    {"field":"Plant symptoms","requirement":"Record leaf curl, vein changes, stunting, chlorosis, enations or other compatible signs, onset date, and affected growth stage."},
+    {"field":"Disease confirmation","requirement":"Record BCTV diagnostic method, laboratory result, sample date, and whether strain information was obtained."},
+    {"field":"Landscape context","requirement":"Record nearby hosts/weeds, crop boundaries, wind events, and timing of leafhopper movement."},
+    {"field":"Epidemiological confidence","requirement":"Separate vector present, vector viruliferous, plant infected, and causal linkage as distinct evidence states."
+    }
+  ],
+  "misconceptions":[
+    "Every beet leafhopper found near hemp carries BCTV.",
+    "A leafhopper capture proves a symptomatic plant has curly top.",
+    "Hemp must support a complete beet-leafhopper life cycle for BCTV transmission to occur.",
+    "All BCTV strains affect every hemp genotype identically.",
+    "Leaf curl alone is specific for BCTV."
+  ],
+  "evidenceLimits":[
+    "BCTV and beet leafhopper are directly documented in hemp, including multistate 2026 evidence, but infection risk depends on vector infection status, movement, feeding, virus strain, hemp genotype, plant age, and landscape context. Vector abundance should not be converted into a universal disease probability or treatment threshold."
+  ],
+  "crossLinks":"THC-ENC-281 for pest identification; THC-ENC-297–300 for sampling and records; THC-ENC-301–320 for viral disease diagnosis; THC-ENC-321–340 for IPM and biosecurity.",
+  "sourceNotes":[
+    "Creamer et al. (2023), Interactions of beet leafhopper, vector of beet curly top virus, and hemp in New Mexico, Environmental Entomology. Direct field and choice-test evidence in hemp. https://pubmed.ncbi.nlm.nih.gov/37478402/",
+    "Han et al. (2026), Beet Curly Top Virus Genetic Diversity, Impact on Cannabinoids, Potential Seed Transmission, and Vector Biology in Hemp, Phytopathology 116(5). Multistate hemp evidence; leafhoppers did not survive on hemp beyond seven days in the study. https://pubmed.ncbi.nlm.nih.gov/41563377/",
+    "University of Arizona Cooperative Extension, Beet Curly Top Virus in Industrial Hemp. Hemp symptom, susceptibility, and vector context. https://extension.arizona.edu/publication/beet-curly-top-virus-industrial-hemp"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.0 controlled title plus evidence-reconciled web derivative","evidenceControl":"direct_2023_and_2026_hemp_bctv_vector_research_plus_extension","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"beet_leafhopper_identification_vectoring_and_bctv_diagnostic_boundary","releaseTimeReview":"completed_2026-09-01_vector_capture_not_disease_diagnosis_and_current_2026_evidence","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"beet-leafhoppers-and-virus-vectoring",
+  "route":"/encyclopedia/beet-leafhoppers-and-virus-vectoring"
+}
