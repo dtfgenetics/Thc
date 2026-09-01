@@ -1,0 +1,57 @@
+{
+  "id":"THC-ENC-286",
+  "number":286,
+  "title":"Cannabis Aphids",
+  "objective":"Identify cannabis aphid, Phorodon cannabis, from life stage, colony pattern, honeydew, host association, and specimen characters while separating aphid presence from virus diagnosis or an automatic treatment decision.",
+  "terms":[
+    {"term":"Phorodon cannabis","definition":"Cannabis aphid, a phloem-feeding aphid specialized on Cannabis sativa and now established as an important pest of hemp and cannabis production."},
+    {"term":"siphunculi","definition":"Paired tube-like structures on the abdomen of aphids that are useful in identification and defense."},
+    {"term":"apterous","definition":"Wingless adult form commonly found in reproducing aphid colonies."},
+    {"term":"alate","definition":"Winged adult aphid form associated with dispersal and colonization of new plants."},
+    {"term":"honeydew","definition":"Sugar-rich liquid excreted by phloem-feeding insects that can leave sticky deposits and support sooty mold growth."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Cannabis aphid is directly documented as a damaging aphid of Cannabis sativa. Colonies can occur on leaves, stems, and especially developing inflorescences, and feeding removes phloem resources while honeydew can contaminate plant surfaces and support sooty mold.",
+    "Cannabis aphids occur as wingless and winged adults with multiple nymphal stages. Color varies from pale yellow-green through darker green, so color alone is unreliable. Species confirmation is stronger when host association is paired with microscopic characters such as body setae, antennal proportions, and siphunculus form.",
+    "High aphid abundance can be associated with yellowing, reduced vigor, wilting, sticky foliage, shed skins, and declining plant performance, but those symptoms are not specific. Direct aphid counts and colony distribution should therefore be recorded separately from plant-response symptoms.",
+    "Cannabis aphid can vector plant viruses under compatible conditions. Published work demonstrated efficient transmission of potato virus Y to hemp in controlled experiments. Finding the aphid does not prove that a plant is virus-infected; disease diagnosis still requires compatible symptoms, epidemiology, and diagnostic testing.",
+    "Recent Cannabis research also shows cultivar-dependent aphid performance and plant-defense responses, reinforcing that one population-growth rate or damage threshold should not be generalized across cultivars or production systems."
+  ],
+  "cultivationRelevance":[
+    "Inspect leaf undersides, stems, growing points, and flowers and distinguish live aphids from shed white exuviae.",
+    "Record honeydew, sooty mold, ants, natural enemies, winged versus wingless adults, and colony expansion as separate observations.",
+    "When virus-like symptoms occur, preserve plant and insect samples for appropriate diagnostic testing rather than inferring infection from vector presence.",
+    "Management selection must remain separate from identification and must follow current crop labels, jurisdictional law, worker-safety rules, residue requirements, and compatibility with beneficial organisms."
+  ],
+  "measureAndRecord":[
+    {"field":"Aphid abundance","requirement":"Record live nymphs and adults per defined leaf, shoot, flower, or plant sample and note winged versus wingless forms."},
+    {"field":"Colony location","requirement":"Record leaf surface, stem, growing point, flower, canopy position, propagation lot, and plant-to-plant spread."},
+    {"field":"Supporting signs","requirement":"Record honeydew, sooty mold, exuviae, ants, predators, parasitoid mummies, yellowing, wilting, and growth response."},
+    {"field":"Identification confidence","requirement":"Record magnification, specimen characters evaluated, tentative versus confirmed species, and whether specialist confirmation was obtained."},
+    {"field":"Disease differential","requirement":"Record virus-like symptoms, plant-test results if performed, vector abundance, and whether a causal link was actually confirmed."
+    }
+  ],
+  "misconceptions":[
+    "All aphids on cannabis are Phorodon cannabis.",
+    "A pale green aphid can be identified to species by color alone.",
+    "Honeydew proves a cannabis-aphid infestation rather than another phloem feeder.",
+    "Finding cannabis aphid proves the crop has a virus.",
+    "One action threshold or pesticide program applies to every cannabis production system."
+  ],
+  "evidenceLimits":[
+    "Cannabis aphid is well documented on Cannabis, but abundance, cultivar susceptibility, virus risk, natural-enemy activity, and economic injury vary across environments. Controlled virus-transmission and cultivar-response studies establish biological capability, not a universal field-level disease probability or treatment threshold."
+  ],
+  "crossLinks":"THC-ENC-281 for pest-identification workflow; THC-ENC-287 for other aphids; THC-ENC-297–300 for sampling, thresholds, biological control, and records; THC-ENC-301–320 for disease/vector differentials; THC-ENC-321–340 for IPM systems.",
+  "sourceNotes":[
+    "Life table analyses and feeding behaviors of cannabis aphid, cotton aphid, and green peach aphid on industrial hemp (2025). PubMed PMID 39826128. Direct comparative host-suitability and feeding study on hemp. https://pubmed.ncbi.nlm.nih.gov/39826128/",
+    "Nachappa et al. (2023), Assessing the adaptive role of cannabidiol in Cannabis sativa defense against cannabis aphids, Frontiers in Plant Science. Direct Cannabis aphid performance and plant-response study. https://pmc.ncbi.nlm.nih.gov/articles/PMC10616793/",
+    "Virus Infection and Host Plant Suitability Affect Feeding Behaviors of Cannabis Aphid, Environmental Entomology 51(2):322–331 (2022). Demonstrates controlled PVY transmission by Phorodon cannabis and supports the vector-not-diagnosis boundary. https://pubmed.ncbi.nlm.nih.gov/35243512/",
+    "Cranshaw et al. (2019), Developing Insect Pest Management Systems for Hemp in the United States, Journal of Integrated Pest Management 10(1):26. Establishes Cannabis aphid as a major U.S. hemp pest. https://academic.oup.com/jipm/article/10/1/26/5555744"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.0 controlled title plus evidence-reconciled web derivative","evidenceControl":"direct_cannabis_and_hemp_aphid_research_plus_peer_reviewed_hemp_pest_review","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_aphid_identification_injury_vector_and_sampling","releaseTimeReview":"completed_2026-09-01_vector_presence_not_disease_proof_and_no_universal_threshold","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"cannabis-aphids",
+  "route":"/encyclopedia/cannabis-aphids"
+}
