@@ -6,6 +6,19 @@ These instructions apply to the entire `dtfgenetics/Thc` repository.
 
 Read `AI_CONTEXT.md` for the current repository map, common commands, game ownership workflow, and AI-friendly change sequence. `AI_CONTEXT.md` is an orientation index only; this file, `CLAUDE.md`, route-owner documentation, and project-specific source-of-truth files remain authoritative when instructions conflict.
 
+## Parallel project isolation
+
+For new repository work, read `.agents/skills/parallel-project-manager/SKILL.md` and `docs/PARALLEL_PROJECT_WORKFLOW.md` before creating or switching branches.
+
+- Ordinary project work uses `project/<project-id>/<task>` in a dedicated Git worktree.
+- Do not switch a shared checkout between active projects when separate worktrees can be used.
+- Use `multi/<task>` when one change intentionally spans several projects.
+- Use `project/platform/<task>` for repository-wide integration, CI, deployment, and shared platform work.
+- Existing legacy branches remain supported; do not rewrite or abandon in-flight work merely to adopt the new naming model.
+- Parallel development is not limited. Only production writes that share the same live target may be serialized automatically to prevent overwrite races.
+- Before pushing an isolated project branch, run `npm run project:check`. The CI self-test also validates that the production checkpoint planner cannot lose rapid consecutive merges.
+- `npm run project:push` pushes/opens the PR. `npm run project:live` waits for PR checks, merges, and hands the resulting `main` revision to the existing automatic production gateway.
+
 ## Read before GitHub or repository repair
 
 For any task that asks to audit, fix, repair, reconcile, merge, synchronize, push, manage, or finish repository work, including failed GitHub Actions, broken pushes, branch divergence, merge conflicts, dependency failures, or pull-request integration, read:

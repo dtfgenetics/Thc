@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "description": "Flexible project-isolation rules for parallel development. Normal project branches stay in their own source lane; platform and multi-project branches intentionally allow cross-project work.",
+  "branching": {
+    "projectPrefix": "project/",
+    "multiPrefix": "multi/",
+    "platformProjectId": "platform",
+    "legacyBranches": "advisory"
+  },
+  "sharedPrefixes": [
+    ".github/",
+    ".agents/",
+    "docs/",
+    "scripts/project-lane-check.mjs",
+    "scripts/create-project-worktree.mjs",
+    "data/project-work-lanes.json",
+    "data/project-registry.json",
+    "package.json",
+    "package-lock.json",
+    "pnpm-lock.yaml",
+    "pnpm-workspace.yaml"
+  ],
+  "genericProjectPrefixes": [
+    "games/{id}/",
+    "apps/{id}/",
+    "apps/{id}-web/",
+    "site/public-route-patch/games/{id}/"
+  ],
+  "lanes": {
+    "platform": {
+      "unrestricted": true,
+      "description": "Repository/platform integration work that legitimately spans projects."
+    },
+    "website": {
+      "prefixes": [
+        "site/wordpress/",
+        "site/deployment/",
+        "site/public-route-patch/",
+        "scripts/wordpress-",
+        "scripts/rebuild-wordpress-",
+        "scripts/polish-wordpress-",
+        "scripts/style-wordpress-"
+      ]
+    },
+    "education": {
+      "prefixes": [
+        "content/",
+        "configuration/",
+        "assets/education/",
+        "site/wordpress/education/",
+        "site/public-route-patch/learn/",
+        "scripts/publish-wordpress-learning-",
+        "scripts/update-wordpress-learn-",
+        "scripts/build-public-learning-"
+      ]
+    },
+    "infographics": {
+      "prefixes": [
+        "assets/education/",
+        "site/wordpress/assets/infographics/",
+        "site/public-route-patch/learn/infographics/",
+        "scripts/import-wordpress-infographic-",
+        "scripts/deploy-wordpress-infographic-",
+        "scripts/publish-wordpress-infographic-"
+      ]
+    },
+    "high-land": {
+      "prefixes": [
+        "apps/high-land-web/",
+        "games/high-land/",
+        "site/public-route-patch/games/high-land/"
+      ]
+    },
+    "growlens": {
+      "prefixes": [
+        "apps/growlens-web/",
+        "site/public-route-patch/growlens/",
+        "site/public-route-patch/atlas/",
+        "site/public-route-patch/assets/"
+      ]
+    },
+    "high-iq": {
+      "prefixes": [
+        "games/high-iq/",
+        "site/public-route-patch/games/high-iq/"
+      ]
+    },
+    "high-life": {
+      "prefixes": [
+        "games/high-life/",
+        "site/public-route-patch/games/high-life/"
+      ]
+    },
+    "strain-showdown": {
+      "prefixes": [
+        "games/strain-showdown/",
+        "site/public-route-patch/games/strain-showdown/"
+      ]
+    },
+    "grower-conversations": {
+      "prefixes": [
+        "games/grower-conversations/",
+        "site/public-route-patch/games/grower-conversations/"
+      ]
+    },
+    "seed-man-platformer": {
+      "prefixes": [
+        "games/seed-man-platformer/",
+        "site/public-route-patch/games/seed-man-platformer/"
+      ]
+    }
+  }
+}
