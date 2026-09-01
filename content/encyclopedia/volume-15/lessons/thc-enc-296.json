@@ -1,0 +1,57 @@
+{
+  "id":"THC-ENC-296",
+  "number":296,
+  "title":"Ants, Wasps, and Secondary Pest Indicators",
+  "objective":"Interpret ants, wasps, and other conspicuous insects in hemp or cannabis as possible pests, natural enemies, scavengers, or indirect indicators, and confirm their ecological role before assigning damage or control significance.",
+  "terms":[
+    {"term":"secondary indicator","definition":"An organism or sign whose presence points to another condition, such as ants attracted to aphid honeydew, without itself proving the underlying diagnosis."},
+    {"term":"trophobiosis","definition":"A mutualistic interaction in which ants obtain honeydew from sap-feeding insects and may protect or tend those insects."},
+    {"term":"parasitoid wasp","definition":"A wasp whose immature stage develops in or on another arthropod and ultimately kills the host; many are important natural enemies of aphids, whiteflies, caterpillars, and other pests."},
+    {"term":"predatory wasp","definition":"A wasp that captures insect or other arthropod prey, often provisioning offspring with prey and contributing to natural biological control."},
+    {"term":"incidental organism","definition":"An organism present in or near the crop that is not feeding on or materially affecting the crop."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Ants and wasps are ecologically diverse, so their presence in a hemp or cannabis crop does not have one meaning. Some ants may directly damage plant crowns or seeds, some are attracted to honeydew-producing pests, and many wasps are predators or parasitoids that contribute to biological control.",
+    "Pavement ants have been documented damaging hemp at the crown in Utah extension observations. This is species- and context-specific evidence and should not be generalized to every ant found on a plant.",
+    "Aphid honeydew can attract ants. In that situation, ant activity may function as an indirect scouting clue for a sap-feeding colony. The correct follow-up is to inspect for aphids, whiteflies, scales, or other honeydew producers rather than calling the ants the primary pest by default.",
+    "Tiny parasitoid wasps are commonly captured on sticky cards and can be mistaken for small pest flies. Hemp aphid guidance specifically warns that winged aphids can be confused with fungus gnats and tiny aphid parasitoid wasps without magnification and experience.",
+    "Wasps also include important predators. Their occurrence can indicate active natural-enemy communities, but beneficial status should be based on identification and observed behavior rather than the word 'wasp' alone."
+  ],
+  "cultivationRelevance":[
+    "When ants are abundant, inspect plants for honeydew, aphids, whiteflies, scales, crown injury, nesting sites, and food sources before deciding whether ants are a pest or an indicator.",
+    "Preserve small wasp specimens from sticky cards or plants when identification matters so parasitoids are not accidentally counted as pests.",
+    "Record natural-enemy activity in the same scouting system as pest counts because predators and parasitoids affect population trend and action decisions.",
+    "Separate nuisance, beneficial, indicator, and damaging roles; regulated control decisions should be based on the confirmed role and current lawful label context."
+  ],
+  "measureAndRecord":[
+    {"field":"Organism identity","requirement":"Record ant/wasp taxon when possible, morphology, magnification, behavior, and identification confidence."},
+    {"field":"Associated pests","requirement":"Record honeydew, aphids, whiteflies, scales, caterpillars, parasitoid mummies, prey capture, and other associations."},
+    {"field":"Plant injury","requirement":"Record direct crown, root, leaf, seed, or flower injury separately from mere organism presence."},
+    {"field":"Nest or activity location","requirement":"Map soil/media nests, benches, field edges, plant crowns, sticky-card captures, and repeated movement pathways."},
+    {"field":"Ecological role","requirement":"Classify as confirmed pest, beneficial predator/parasitoid, scavenger, indirect indicator, incidental, or unresolved."
+    }
+  ],
+  "misconceptions":[
+    "Every ant on a cannabis plant is feeding on the plant.",
+    "Ants near aphids are proof that the ants caused the plant symptoms.",
+    "All wasps in a greenhouse are pests or hazards to the crop.",
+    "Every tiny dark insect on a sticky card should be counted as a pest fly.",
+    "A conspicuous insect is necessarily the cause of nearby plant injury."
+  ],
+  "evidenceLimits":[
+    "Hemp-specific evidence exists for pavement-ant injury and for aphid-associated natural enemies, but the broader ecological roles of ants and wasps vary by species and system. General natural-enemy biology is appropriate for interpretation while species-level crop significance requires direct identification and observation."
+  ],
+  "crossLinks":"THC-ENC-286–287 for aphids/honeydew; THC-ENC-289–290 for small-fly differentials; THC-ENC-297–300 for monitoring, thresholds, biocontrol, and records; THC-ENC-321–340 for IPM systems.",
+  "sourceNotes":[
+    "Utah State University Extension, Pavement Ants — Hemp. Documents Tetramorium caespitum crown feeding and associated hemp injury in a regional context. https://extension.usu.edu/planthealth/ipm/notes_ag/hemp-pavement-ants",
+    "NC State Extension, Cannabis Aphid in Industrial Hemp. Notes aphid honeydew can attract ants and documents parasitoid wasps and predators as aphid natural enemies. https://content.ces.ncsu.edu/cannabis-aphid-in-industrial-hemp",
+    "Colorado State University, Pest Management of Hemp in Enclosed Production — Cannabis Aphid. Warns that winged aphids can be confused with fungus gnats and tiny aphid parasitoid wasps on sticky traps. https://webdoc.agsci.colostate.edu/hempinsects/PDFs/Cannabis%20Aphid%20Management_.pdf",
+    "Missouri Extension, Biological control: Natural enemies can help manage pests (2026). Current extension overview of predators and parasitoids in IPM. https://extension.missouri.edu/news/biological-control-natural-enemies-can-help-manage-pests"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.0 controlled title plus evidence-reconciled web derivative","evidenceControl":"hemp_specific_ant_and_aphid_natural_enemy_extension_plus_current_general_biocontrol_context","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"ants_wasps_secondary_indicator_and_beneficial_role_identification","releaseTimeReview":"completed_2026-09-01_role_not_assumed_from_presence","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"ants-wasps-and-secondary-pest-indicators",
+  "route":"/encyclopedia/ants-wasps-and-secondary-pest-indicators"
+}
