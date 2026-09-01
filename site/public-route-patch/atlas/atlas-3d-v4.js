@@ -362,7 +362,7 @@ export async function bootPhotorealAtlas() {
   }
 
   function updateAnatomyLabel() {
-    if (!selected || anatomyLabel.hidden) return;
+    if (!selected) return;
     const anchor = labelAnchor(selected).clone();
     anchor.y += size.y * 0.045;
     anchor.project(camera);
@@ -370,6 +370,7 @@ export async function bootPhotorealAtlas() {
       anatomyLabel.hidden = true;
       return;
     }
+    anatomyLabel.hidden = false;
     const rect = canvas.getBoundingClientRect();
     const hostRect = host.getBoundingClientRect();
     anatomyLabel.style.left = `${rect.left - hostRect.left + (anchor.x * 0.5 + 0.5) * rect.width}px`;
