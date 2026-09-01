@@ -1,0 +1,63 @@
+name: Parallel Project Safety
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'project/**'
+      - 'multi/**'
+    paths-ignore:
+      - '**/*.md'
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: parallel-project-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  project-lane:
+    name: Verify project isolation
+    if: >-
+      github.event_name != 'pull_request' ||
+      startsWith(github.head_ref, 'project/') ||
+      startsWith(github.head_ref, 'multi/')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact change
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Test parallel project infrastructure
+        run: npm run project:test
+
+      - name: Verify project lane
+        env:
+          PROJECT_BRANCH: ${{ github.head_ref || github.ref_name }}
+          PROJECT_BASE: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+          PROJECT_HEAD: ${{ github.sha }}
+        run: node scripts/project-lane-check.mjs
+
+      - name: Explain release behavior
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo '## Parallel project model'
+            echo
+            echo '- `project/<id>/<task>` = isolated project work.'
+            echo '- `multi/<task>` = intentional cross-project work with no lane restriction.'
+            echo '- `project/platform/<task>` = repository/platform integration with no lane restriction.'
+            echo '- Merging to `main` keeps the existing route-aware production gateway; affected release lanes publish automatically.'
+            echo '- Rapid merges are accumulated from the last successful production checkpoint, so superseded queued runs cannot lose an earlier project release.'
+            echo '- Production operations that touch the same live WordPress resource remain serialized automatically to prevent overwrite races.'
+          } >> "$GITHUB_STEP_SUMMARY"
