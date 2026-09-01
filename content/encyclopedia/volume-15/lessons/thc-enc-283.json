@@ -1,0 +1,57 @@
+{
+  "id":"THC-ENC-283",
+  "number":283,
+  "title":"Hemp Russet Mites",
+  "objective":"Recognize hemp russet mite as a microscopic cannabis-associated eriophyid, distinguish its life form and injury from spider mites, broad mites, disease, and abiotic stress, and document confirmation at an evidence level appropriate to its minute size.",
+  "terms":[
+    {"term":"Aculops cannabicola","definition":"The hemp russet mite, a minute eriophyid mite associated with Cannabis sativa and capable of damaging greenhouse and field-grown hemp or cannabis."},
+    {"term":"eriophyid mite","definition":"A member of Eriophyoidea; adults are extremely small, elongate or wormlike, and unlike most adult mites have only two pairs of legs near the front of the body."},
+    {"term":"exuviae","definition":"Cast skins left after molting; large hemp russet mite populations can leave abundant pale or powder-like shed material on plant surfaces."},
+    {"term":"species-specific qPCR","definition":"A molecular assay designed to detect a DNA sequence diagnostic for a target species; one published assay has been developed for hemp russet mite detection."},
+    {"term":"host specificity","definition":"The degree to which an organism is restricted to one host species or a narrow host group; current hemp russet mite evidence indicates a strong association with Cannabis."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Hemp russet mite is far smaller than two-spotted spider mite. Extension and peer-reviewed sources describe adults at roughly two-tenths of a millimeter or less, with a pale, elongate, cigar-like body and only two pairs of legs. Early populations can therefore remain unnoticed with routine naked-eye scouting.",
+    "The mite feeds on cannabis leaf, stem, and reproductive tissues and does not make spider-mite webbing. Injury reported in hemp includes reduced leaf size, brittle or bronzed foliage, curling, yellowing or browning, stunting, and altered floral tissue at high densities. These symptoms overlap strongly with broad mite injury, nutrient or root problems, phytotoxicity, environmental stress, and infectious disease.",
+    "Published biology remains incomplete. Peer-reviewed work identifies important knowledge gaps in life history, crop damage relationships, and management efficacy. Depending on conditions, eriophyid generations can overlap rapidly, but exact development rates should not be presented as one universal cannabis schedule.",
+    "Direct confirmation is especially important because the organism is microscopic and can occupy protected sites near veins, trichomes, growing tissue, stems, and flowers. Higher-magnification microscopy can support morphological identification, while a published species-specific real-time PCR assay provides an additional laboratory detection method and was tested against common non-target hemp pests including two-spotted spider mite and western flower thrips.",
+    "Current evidence does not support a universal economic threshold or a simple symptom-to-treatment rule. Identification, abundance, crop stage, source of infested plant material, population trend, regulatory limits, and any control evidence must remain separate parts of the decision record."
+  ],
+  "cultivationRelevance":[
+    "When russet mite is suspected, sample the newest symptomatic tissue as well as nearby apparently healthy tissue and examine protected leaf, stem, and flower sites with appropriate magnification.",
+    "Use absence of webbing only as one differential clue; it does not prove hemp russet mite because broad mites and many non-mite causes also lack webbing.",
+    "Treat incoming cuttings or mother-stock history as epidemiological evidence and preserve lot or source relationships when multiple plants develop similar symptoms.",
+    "Escalate unresolved cases to diagnostic microscopy or molecular confirmation when species identity changes containment or management decisions. Any real-world pesticide use remains controlled by current labels and jurisdictional requirements."
+  ],
+  "measureAndRecord":[
+    {"field":"Specimen morphology","requirement":"Record magnification, body shape, approximate size, color, two-pair leg pattern when resolved, sample site, and whether a qualified identifier confirmed Aculops cannabicola."},
+    {"field":"Plant injury","requirement":"Record leaf size, bronzing, brittleness, curling, yellowing/browning, stem or flower involvement, exuviae, progression, and matched unaffected tissue."},
+    {"field":"Distribution","requirement":"Map plants, propagation lots, mother-stock relationships, indoor/outdoor zones, airflow or handling pathways, and whether density is localized or widespread."},
+    {"field":"Sampling or laboratory method","requirement":"Record direct microscopy, wash sample, mite-brush method, molecular assay if used, specimen count or detection result, date, and laboratory or observer."},
+    {"field":"Trend and verification","requirement":"Record repeated abundance or presence measures and new-growth response after a controlled change; do not use persistent old injury as a population measure."
+    }
+  ],
+  "misconceptions":[
+    "Hemp russet mites are large enough for reliable naked-eye scouting.",
+    "All mite infestations produce webbing.",
+    "Bronzing or leaf curl alone proves hemp russet mite.",
+    "The hemp russet mite life cycle and economic threshold are fully standardized for cannabis.",
+    "A negative casual hand-lens inspection rules out a low-density russet mite population."
+  ],
+  "evidenceLimits":[
+    "Hemp russet mite is directly documented on hemp/cannabis, but major uncertainties remain around life history under different production conditions, damage thresholds, population sampling, and control efficacy. Molecular detection can improve species confirmation but does not by itself establish pest density, causal contribution to every symptom, economic injury, or an appropriate management response."
+  ],
+  "crossLinks":"THC-ENC-281 for identification workflow; THC-ENC-282 for web-producing spider-mite differential; THC-ENC-284 for broad-mite distortion differential; THC-ENC-297–300 for sampling, thresholds, compatibility, and records; THC-ENC-301–320 for disease differentials; THC-ENC-321–340 for IPM and biosecurity.",
+  "sourceNotes":[
+    "Hayes C.B. et al. (2023), Biology and management of hemp russet mite (Acari: Eriophyidae), Journal of Economic Entomology 116(5):1706–1714. Direct hemp/cannabis biology research and explicit documentation of major biology, damage, and management knowledge gaps. https://pubmed.ncbi.nlm.nih.gov/37450624/",
+    "Development of a real-time PCR assay for detection of hemp russet mite (Aculops cannabicola) (2023). Reports a species-specific qPCR assay, detection across life stages, and specificity testing against common hemp pests. https://pubmed.ncbi.nlm.nih.gov/37535869/",
+    "NC State Extension, Hemp Russet Mite in Industrial Hemp. Describes minute body size, two pairs of legs, lack of webbing, injury overlap, microscopy-based confirmation, and absence of a research-based hemp threshold. https://content.ces.ncsu.edu/hemp-russet-mite-in-industrial-hemp",
+    "Colorado State University Agricultural Biology, Hemp russet mite. Provides current extension identification, protected-site behavior, injury, and high-magnification scouting context. https://agsci.colostate.edu/agbio/ipm-pests/29895-2/"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.0 controlled title plus evidence-reconciled web derivative","evidenceControl":"direct_peer_reviewed_hemp_russet_mite_biology_and_molecular_detection_plus_extension","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"hemp_russet_mite_identification_biology_sampling_and_differential_diagnosis","releaseTimeReview":"completed_2026-08-31_microscopic_confirmation_and_no_universal_threshold_boundary","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-31","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"hemp-russet-mites",
+  "route":"/encyclopedia/hemp-russet-mites"
+}
