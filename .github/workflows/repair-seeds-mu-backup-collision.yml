@@ -1,0 +1,109 @@
+name: Repair Seeds MU Backup Collision
+
+on:
+  pull_request:
+    paths:
+      - scripts/reconcile-seeds-mu-backup-collision.mjs
+      - .github/workflows/repair-seeds-mu-backup-collision.yml
+      - .github/repair-seeds-mu-backup-collision-trigger.txt
+  push:
+    branches: [main]
+    paths:
+      - .github/repair-seeds-mu-backup-collision-trigger.txt
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dtfseeds-seeds-mu-backup-collision
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate collision-preserving repair path
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/reconcile-seeds-mu-backup-collision.mjs
+          node --check scripts/repair-seeds-mu-override.mjs
+          grep -Fq 'a32f9a10a5f79580d665d8d2c4718993a9d4bc14070eb8a26a4a2386f8535a3c' scripts/reconcile-seeds-mu-backup-collision.mjs
+          grep -Fq 'dtf-homepage-override.php.dtf-disabled' scripts/reconcile-seeds-mu-backup-collision.mjs
+          grep -Fq '.dtf-archive-' scripts/reconcile-seeds-mu-backup-collision.mjs
+          grep -Fq '.disabled' scripts/reconcile-seeds-mu-backup-collision.mjs
+          grep -Fq 'hash_equals($backup_sha' scripts/reconcile-seeds-mu-backup-collision.mjs
+          grep -Fq '@rename($archive, $backup)' scripts/reconcile-seeds-mu-backup-collision.mjs
+          grep -Fq '/wp-json/code-snippets/v1/snippets/schema' scripts/reconcile-seeds-mu-backup-collision.mjs
+          ! grep -Fq '/wp-json/wp/v2/plugins?search=' scripts/reconcile-seeds-mu-backup-collision.mjs
+          ! grep -Eq '\bunlink\s*\(|\bdelete\s*\(' scripts/reconcile-seeds-mu-backup-collision.mjs
+          grep -Fq 'Open Mystery Line profile' scripts/repair-seeds-mu-override.mjs
+          grep -Fq '/dtf-seeds-mu-repair/v1/restore' scripts/repair-seeds-mu-override.mjs
+
+  repair-production:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    environment: production
+    env:
+      WP_SITE_URL: https://dtfseeds.com
+      NODE_OPTIONS: --dns-result-order=ipv4first
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Require proven WordPress credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${WP_API_USERNAME:-}"
+          test -n "${WP_API_PASSWORD:-}"
+      - name: Preserve existing disabled backup under verified archive name
+        id: collision
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/reconcile-seeds-mu-backup-collision.mjs \
+            | tee "$RUNNER_TEMP/seeds-mu-backup-collision.json"
+          grep -Eq '"ok"[[:space:]]*:[[:space:]]*true' "$RUNNER_TEMP/seeds-mu-backup-collision.json"
+      - name: Disable confirmed live MU override and prove Seeds convergence
+        id: repair
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/repair-seeds-mu-override.mjs \
+            | tee "$RUNNER_TEMP/seeds-mu-override-repair.json"
+          grep -Eq '"ok"[[:space:]]*:[[:space:]]*true' "$RUNNER_TEMP/seeds-mu-override-repair.json"
+          grep -Eq '"profileCount"[[:space:]]*:[[:space:]]*11' "$RUNNER_TEMP/seeds-mu-override-repair.json"
+      - name: Upload collision and repair evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: seeds-mu-collision-repair-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/seeds-mu-backup-collision.json
+            ${{ runner.temp }}/seeds-mu-override-repair.json
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Summarize collision-aware repair
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo '## Seeds MU collision-aware repair'
+            echo
+            echo "- Existing backup preservation: ${{ steps.collision.outcome }}"
+            echo "- Live override disable + public convergence: ${{ steps.repair.outcome }}"
+            echo '- Existing disabled backup is preserved under a hash-stamped non-PHP .disabled archive name; it is never deleted or overwritten.'
+            echo '- Live override remains protected by the exact confirmed SHA gate.'
+            echo '- Final success still requires all 11 canonical Seeds profiles on both public route forms, no stale catalog/Grow Notes markers, and healthy Home/Learn collateral checks.'
+            echo '- The live override is automatically restored if post-disable verification fails.'
+          } >> "$GITHUB_STEP_SUMMARY"
