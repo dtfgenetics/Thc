@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 1,
+  "id": "plant-health-emerging-pathogens-v1",
+  "topicId": "plant-health-ipm",
+  "route": "/learn/ipm/",
+  "title": "Emerging Cannabis Pathogens: Field & Propagation Signals",
+  "learningOutcome": "Recognize four documented cannabis or hemp pathogen problems that can resemble nutrient, environmental, or generic disease stress, then separate field observations from confirmation evidence before making containment or crop-management decisions.",
+  "evidenceBoundary": "These records summarize peer-reviewed Cannabis sativa or industrial-hemp reports. A symptom pattern alone does not identify a pathogen, prevalence differs by region and production system, and this pack does not provide pesticide prescriptions. Use laboratory confirmation and current local crop-protection rules when consequences justify intervention.",
+  "sourceRefs": [
+    {
+      "id": "EP-S1",
+      "type": "peer-reviewed disease note",
+      "citation": "Tang L, Song X, Zhang L, Wang J, Zhang S. First Report of Leaf Spot on Industrial Hemp (Cannabis sativa) Caused by Alternaria alternata in China. Plant Disease. 2021;105(10):3294.",
+      "doi": "10.1094/PDIS-01-21-0130-PDN",
+      "pmid": "33904327",
+      "url": "https://apsjournals.apsnet.org/doi/10.1094/PDIS-01-21-0130-PDN",
+      "supports": "Alternaria alternata leaf-spot symptoms, isolation, molecular identification, pathogenicity testing, and the limits of transferring one regional disease report to every crop."
+    },
+    {
+      "id": "EP-S2",
+      "type": "peer-reviewed short communication",
+      "citation": "Melgarejo TA, Chen LF, Rojas MR, Schilder A, Gilbertson RL. Curly Top Disease of Hemp (Cannabis sativa) in California Is Caused by Mild-Type Strains of Beet curly top virus Often in Mixed Infection. Plant Disease. 2022;106(12):3022-3026.",
+      "doi": "10.1094/PDIS-04-22-0856-SC",
+      "pmid": "35549320",
+      "url": "https://apsjournals.apsnet.org/doi/10.1094/PDIS-04-22-0856-SC",
+      "supports": "Beet curly top virus association with stunting, bushy growth, distorted upcurled yellowed leaves, mixed infections, multiplex PCR detection, and beet-leafhopper vector context in California hemp."
+    },
+    {
+      "id": "EP-S3",
+      "type": "peer-reviewed virology study",
+      "citation": "Hadad L, Luria N, Smith E, Sela N, Lachman O, Dombrovsky A. Lettuce Chlorosis Virus Disease: A New Threat to Cannabis Production. Viruses. 2019;11(9):802.",
+      "doi": "10.3390/v11090802",
+      "pmid": "31470681",
+      "pmcid": "PMC6784094",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6784094/",
+      "supports": "Lettuce chlorosis virus detection in cannabis, interveinal chlorosis and later yellowing/necrosis, Bemisia tabaci transmission, and propagation-shoot inoculum risk."
+    },
+    {
+      "id": "EP-S4",
+      "type": "peer-reviewed disease note",
+      "citation": "Grunwald D, Wijesinghege CW, Gordon T, Stansell Z, Ellison S. First Report of Tobacco Streak Virus in Cannabis sativa in New York. Plant Disease. 2024;108(5):1407.",
+      "doi": "10.1094/PDIS-09-23-1810-PDN",
+      "url": "https://apsjournals.apsnet.org/doi/10.1094/PDIS-09-23-1810-PDN",
+      "supports": "Tobacco streak virus confirmation in New York hemp with virus-like stunting and curled leaves, including serological and molecular confirmation rather than symptom-only diagnosis."
+    }
+  ],
+  "records": [
+    {
+      "id": "alternaria-leaf-spot",
+      "title": "Alternaria Leaf Spot",
+      "sourceIds": ["EP-S1"],
+      "concepts": ["Alternaria alternata", "leaf spot", "differential diagnosis"],
+      "summary": "A. alternata has been experimentally confirmed as a leaf-spot pathogen of industrial hemp. In the 2021 report, lesions began as small spots and developed into brown spots with light-yellow halos. That description is useful for recognition, but it is not specific enough to identify Alternaria without pathogen evidence.",
+      "whatToLookFor": "Map where lesions begin, whether spots enlarge or coalesce, halo color, tissue perforation, canopy distribution, cultivar or lot pattern, and the environmental timeline. Compare symptomatic and unaffected leaves rather than photographing only the worst lesion.",
+      "confirmation": "When identification matters, use a qualified plant-diagnostic laboratory or equivalent validated workflow. The cited report combined fungal isolation, morphology, sequence-based identification, pathogenicity testing, and reisolation; visual spotting alone did not establish the causal organism.",
+      "systemResponse": "Separate affected material when spread is plausible, remove heavily diseased debris through the established sanitation pathway, review leaf-wetness and splash pathways, and verify whether new-lesion incidence changes after system corrections. Any crop-protection product must be legal for the crop and location and used exactly according to its current label.",
+      "evidenceLimits": "The source is a first report from one greenhouse region in China. It establishes pathogenic capability in hemp but does not establish universal prevalence, a universal environmental threshold, or a universal control program."
+    },
+    {
+      "id": "beet-curly-top-virus",
+      "title": "Beet Curly Top Virus in Hemp",
+      "sourceIds": ["EP-S2"],
+      "concepts": ["BCTV", "beet leafhopper", "mixed infection"],
+      "summary": "Curly top disease was confirmed in California hemp and associated with mild-type strains of beet curly top virus. Documented plants included stunting, bushy architecture, distorted upcurled leaves, and yellowing, while other virus-like symptom groups were not strongly associated with BCTV.",
+      "whatToLookFor": "Record whole-plant architecture, direction of leaf curl, yellowing pattern, field or room distribution, nearby vector activity, and whether symptoms cluster by planting block or edge. Similar stress patterns can come from other viruses, root problems, herbicide injury, nutrition, or environmental stress.",
+      "confirmation": "Use a validated molecular diagnostic when BCTV is a consequential possibility. The California study used multiplex PCR and infectious-clone work to connect the virus to curly-top symptoms; mixed BCTV strain infection was also documented, so a single visual phenotype should not be overinterpreted.",
+      "systemResponse": "Treat vector exposure and infected-plant movement as epidemiology questions. Preserve traceability, document suspected vector pressure, isolate high-consequence suspect material when practical, and use local extension or diagnostic guidance for regional vector and disease decisions rather than assuming California field epidemiology applies unchanged indoors or elsewhere.",
+      "evidenceLimits": "The strongest cited evidence comes from California field hemp where beet leafhopper ecology is regionally important. The report does not create a universal cannabis action threshold or prove that every curled, yellow, or stunted plant has BCTV."
+    },
+    {
+      "id": "lettuce-chlorosis-virus",
+      "title": "Lettuce Chlorosis Virus in Cannabis",
+      "sourceIds": ["EP-S3"],
+      "concepts": ["LCV", "Bemisia tabaci", "propagation inoculum"],
+      "summary": "Lettuce chlorosis virus was confirmed in cannabis in Israel after plants showed symptoms that could be mistaken for nutrient stress. Documented progression included pale interveinal chlorosis on mature leaves, yellowing streaks, drooping or brittle foliage, and in later stages broader yellowing with occasional curling and necrosis.",
+      "whatToLookFor": "Do not classify interveinal chlorosis as nutrition-only until distribution, root-zone evidence, pest pressure, propagation history, and symptom progression are reviewed. Record whitefly presence, mother-plant relationships, clone batches, lower-to-middle canopy onset, and changes over time.",
+      "confirmation": "The cited study used next-generation sequencing and RT-PCR and demonstrated transmission by Bemisia tabaci MEAM1 whiteflies. Laboratory testing is the appropriate escalation when LCV is a material differential because symptom appearance overlaps common abiotic disorders.",
+      "systemResponse": "Protect clean propagation stock, prevent suspect shoots from silently feeding new clone batches, strengthen whitefly exclusion and scouting, and trace exposed material through mother-to-clone relationships. Verify outcomes with repeat observations or diagnostic testing instead of assuming visual recovery proves pathogen clearance.",
+      "evidenceLimits": "The peer-reviewed report documents cannabis infection and experimental whitefly transmission in Israel. Vector populations and disease pressure vary geographically, and the study should not be converted into an unsupported universal treatment or eradication claim."
+    },
+    {
+      "id": "tobacco-streak-virus",
+      "title": "Tobacco Streak Virus in Hemp",
+      "sourceIds": ["EP-S4"],
+      "concepts": ["TSV", "virus confirmation", "field surveillance"],
+      "summary": "Tobacco streak virus was confirmed in a small fraction of hemp germplasm showing virus-like symptoms in New York. The reported suspect plants showed stunting and curled leaves, demonstrating why uncommon viruses belong in the differential without making them the default explanation for nonspecific symptoms.",
+      "whatToLookFor": "Record symptom incidence across the planting, affected genetics, leaf curl or mosaic features, stunting, neighboring host plants, insect activity, and propagation relationships. A rare positive in one survey should encourage evidence gathering, not symptom matching by intuition.",
+      "confirmation": "Escalate unusual or spreading virus-like cases to a plant-diagnostic laboratory. The New York report used serological and PCR-based methods to verify TSV; this is materially stronger evidence than visual appearance alone.",
+      "systemResponse": "Preserve plant identity and contact history, isolate suspect high-value material when practical, avoid moving propagation material from unexplained symptomatic plants, and use confirmed diagnosis to decide the scope of traceback and sanitation. Manage vectors or alternate-host pathways only from locally applicable evidence.",
+      "evidenceLimits": "The New York finding involved less than one percent of plants in the reported field population. It proves occurrence in that context, not high prevalence across cannabis production or a universal causal role in curled or stunted plants."
+    }
+  ],
+  "knowledgeChecks": [
+    "Why can Alternaria leaf spot not be diagnosed from a brown lesion with a yellow halo alone?",
+    "Which observations make beet curly top virus a stronger or weaker differential in a specific crop?",
+    "Why can lettuce chlorosis virus be mistaken for a nutrition problem, and what evidence separates them?",
+    "What does the low incidence in the New York tobacco streak virus report mean for diagnosis?",
+    "Why should propagation relationships and vector observations be recorded when systemic or vector-borne pathogens are suspected?"
+  ],
+  "visualTargets": [
+    "Alternaria lesion progression versus major leaf-spot look-alikes",
+    "BCTV symptom and beet-leafhopper epidemiology map with regional-evidence warning",
+    "LCV symptom progression and whitefly/propagation transmission map",
+    "TSV diagnostic escalation card emphasizing low-incidence evidence",
+    "Systemic-pathogen differential workflow: symptoms to vector/propagation history to laboratory confirmation"
+  ]
+}
