@@ -1,8 +1,9 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "site": "https://dtfseeds.com",
   "reportIssue": 220,
-  "description": "Central release routing for the DTFSeeds production gateway. Source-only files are never copied to production unless an approved worker packages them into a public route.",
+  "productionCheckpointTag": "dtfseeds-production",
+  "description": "Central release routing for the DTFSeeds production gateway. Automatic releases diff from the last successfully deployed production checkpoint so rapid parallel merges cannot lose an earlier project's lane. Source-only files are never copied to production unless an approved worker packages them into a public route.",
   "fullReleasePaths": [
     "site/deployment/release-lanes.json",
     "scripts/plan-dtfseeds-release.mjs",
