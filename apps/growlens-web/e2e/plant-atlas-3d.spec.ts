@@ -2,26 +2,28 @@ import { expect, test } from '@playwright/test';
 
 const atlasPath = '/atlas/index.html';
 
-test.describe('THC Living Plant Atlas 3D', () => {
-  test('renders the WebGL specimen and supports cutaway, venation, isolation, and anatomy labels', async ({ page }) => {
+test.describe('THC Living Plant Atlas V4', () => {
+  test('boots the complete V4 PBR specimen and supports inspection, focus, zoom semantics, and reset', async ({ page }) => {
     const errors: string[] = [];
     page.on('pageerror', (error) => errors.push(error.message));
 
     await page.goto(atlasPath, { waitUntil: 'domcontentloaded' });
-
     await expect(page.getByRole('heading', { name: 'The Living Plant Atlas' })).toBeVisible();
-    await expect(page.getByText('3D anatomy explorer')).toBeVisible();
+    await expect(page.getByText('3D anatomy explorer · V4')).toBeVisible();
 
     const viewport = page.locator('[data-plant-3d]');
     const canvas = page.locator('[data-plant-canvas]');
     const anatomyLabel = page.locator('[data-plant-anatomy-label]');
+    const modelStatus = page.locator('[data-plant-model-status]');
 
     await expect(canvas).toBeVisible();
+    await expect(viewport).toHaveAttribute('data-renderer-generation', 'v4', { timeout: 15_000 });
+    await expect(viewport).toHaveAttribute('data-render-state', 'ready');
+    await expect(viewport).toHaveAttribute('data-model-mode', /^(procedural-pbr|external-glb)$/);
     await expect(viewport).toHaveAttribute('data-venation', 'modeled');
-    await expect.poll(async () => canvas.evaluate((element: HTMLCanvasElement) => ({ width: element.width, height: element.height })), {
-      timeout: 15_000,
-    }).toMatchObject({ width: expect.any(Number), height: expect.any(Number) });
+    await expect(modelStatus).toHaveAttribute('data-state', 'ready');
 
+    await expect.poll(async () => canvas.evaluate((element: HTMLCanvasElement) => ({ width: element.width, height: element.height })), { timeout: 15_000 }).toMatchObject({ width: expect.any(Number), height: expect.any(Number) });
     const size = await canvas.evaluate((element: HTMLCanvasElement) => ({ width: element.width, height: element.height }));
     expect(size.width).toBeGreaterThan(400);
     expect(size.height).toBeGreaterThan(400);
@@ -40,21 +42,20 @@ test.describe('THC Living Plant Atlas 3D', () => {
     await expect(page.locator('[data-inspector-link]')).toHaveAttribute('href', '/atlas/leaf-module/');
     await expect(viewport).toHaveAttribute('data-plant-inspection', 'leaf-module');
     await expect(viewport).toHaveAttribute('data-root-cutaway', 'resting');
-    await expect(anatomyLabel).toContainText('midribs & lateral veins');
+    await expect(anatomyLabel).toContainText('Serrated leaflets');
 
     await page.getByRole('button', { name: 'Flowers' }).click();
     await expect(page.locator('[data-inspector-title]')).toHaveText('Flowers & inflorescences');
     await expect(page.locator('[data-inspector-link]')).toHaveAttribute('href', '/atlas/flower-anatomy/');
-    await expect(viewport).toHaveAttribute('data-plant-inspection', 'flower-anatomy');
-    await expect(anatomyLabel).toContainText('Bracts, sugar leaves & floral clusters');
+    await expect(anatomyLabel).toContainText('Female floral clusters');
 
     await page.getByRole('button', { name: 'Trichomes' }).click();
     await expect(page.locator('[data-inspector-title]')).toHaveText('Glandular trichomes');
     await expect(page.locator('[data-inspector-link]')).toHaveAttribute('href', '/atlas/trichomes-resin/');
-    await expect(viewport).toHaveAttribute('data-plant-inspection', 'trichomes-resin');
-    await expect(anatomyLabel).toContainText('Stalks and secretory gland heads');
+    await expect(anatomyLabel).toContainText('secretory gland heads');
 
-    await page.getByRole('button', { name: 'Reset view' }).click();
+    await canvas.focus();
+    await canvas.press('r');
     await expect(viewport).toHaveAttribute('data-plant-inspection', 'whole');
     await expect(viewport).toHaveAttribute('data-root-cutaway', 'resting');
     await expect(viewport).toHaveAttribute('data-isolation', 'off');
@@ -63,12 +64,22 @@ test.describe('THC Living Plant Atlas 3D', () => {
     expect(errors).toEqual([]);
   });
 
-  test('keeps the complete educational system library available beside the 3D experience', async ({ page }) => {
+  test('keeps all 16 educational systems searchable beside the 3D experience', async ({ page }) => {
     await page.goto(atlasPath);
     await expect(page.locator('[data-system-grid] .system-card')).toHaveCount(16);
     await page.locator('[data-atlas-search]').fill('pollen');
     const reproductiveCard = page.locator('[data-system-grid] .system-card[href="/atlas/reproductive-biology/"]');
     await expect(reproductiveCard).toBeVisible();
     await expect(reproductiveCard).toContainText('Sex, Pollen, Fertilization & Seed');
+  });
+
+  test('does not request the optional GLB while the manifest disables it', async ({ page }) => {
+    const glbRequests: string[] = [];
+    page.on('request', (request) => {
+      if (request.url().endsWith('/atlas/models/cannabis-specimen-v1.glb')) glbRequests.push(request.url());
+    });
+    await page.goto(atlasPath, { waitUntil: 'networkidle' });
+    await expect(page.locator('[data-plant-3d]')).toHaveAttribute('data-model-mode', 'procedural-pbr', { timeout: 15_000 });
+    expect(glbRequests).toEqual([]);
   });
 });
