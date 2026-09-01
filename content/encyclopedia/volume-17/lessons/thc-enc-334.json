@@ -1,0 +1,57 @@
+{
+  "id":"THC-ENC-334",
+  "number":334,
+  "title":"Cultural Controls",
+  "objective":"Use crop, irrigation, fertility, sanitation, host, spacing, timing, weed, and environmental practices to make pest establishment and disease development less favorable while preserving plant health and documenting tradeoffs.",
+  "terms":[
+    {"term":"cultural control","definition":"A crop-management practice that changes the host, production environment, timing, resource availability, or habitat in ways that reduce pest or disease risk."},
+    {"term":"host susceptibility","definition":"The degree to which a cultivar, genotype, age, tissue, or physiological condition permits pest injury or disease development."},
+    {"term":"crop sanitation","definition":"Removal or management of plant debris, weeds, volunteer plants, infested material, contaminated media, algae, and other reservoirs that can support pest or pathogen persistence."},
+    {"term":"crop density","definition":"The number and arrangement of plants or plant parts within an area, influencing airflow, humidity, contact, scouting access, and pest/disease spread."},
+    {"term":"resource management","definition":"Adjustment of irrigation, fertility, substrate, environment, and related inputs so plant growth is supported without unnecessarily creating favorable pest or disease conditions."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Cultural controls reduce pest or disease pressure by changing production conditions rather than directly killing the target. In greenhouse IPM this can include sanitation, weed removal, clean planting material, irrigation and fertility management, spacing, crop sequencing, resistant or less-susceptible material when available, and environmental practices.",
+    "Plant vigor and pest risk do not always move in the same direction. For example, excessive nitrogen can produce soft growth favorable to some aphids and spider mites, while excessive moisture or poor drainage can favor root diseases. The goal is balanced crop management rather than deliberate plant stress.",
+    "Weeds, volunteer plants, pet plants, algae, and crop debris can function as pest, pathogen, or vector reservoirs. Removing them can reduce continuity between crop cycles and improve scouting visibility, but reservoir removal should be linked to the target biology rather than treated as proof of eradication.",
+    "Canopy density, irrigation timing, drainage, and air distribution can alter disease-conducive microclimates. These practices should be measured at crop level and adjusted to the disease risk and plant response rather than converted into one universal Cannabis spacing, RH, or dry-back prescription.",
+    "Cultural controls are preventive and cumulative. Their effect may be difficult to attribute to one action, so programs should preserve baseline scouting and environmental records and evaluate trends across crop cycles."
+  ],
+  "cultivationRelevance":[
+    "Start with clean or appropriately screened planting material and remove unmanaged weeds, volunteer plants, decaying debris, and other documented reservoirs inside and near production areas.",
+    "Match irrigation and drainage to plant demand and root-zone conditions so standing water, chronically saturated media, algae, or prolonged stress do not become recurring plant-health risks.",
+    "Manage fertility to crop need and measured substrate/tissue status rather than assuming more nitrogen or stronger feed always improves pest and disease resilience.",
+    "Use plant spacing, pruning, trellising, crop scheduling, and environmental control to improve scouting access and reduce disease-conducive microclimates where the biological risk justifies the tradeoff."
+  ],
+  "measureAndRecord":[
+    {"field":"Cultural risk factor","requirement":"Record the observed reservoir or condition being addressed, such as weeds, debris, excessive fertility, wet media, poor drainage, dense canopy, or susceptible incoming stock."},
+    {"field":"Intervention","requirement":"Record the cultural change, date, zone/crop affected, responsible person, and the biological rationale linking the practice to the target risk."},
+    {"field":"Crop response","requirement":"Record growth, stress, nutrition, irrigation, environmental, or quality effects so pest reduction is not achieved at unacceptable crop cost."},
+    {"field":"Plant-health response","requirement":"Use comparable scouting, symptom, disease-incidence, or diagnostic data before and after the change when practical."},
+    {"field":"Cycle review","requirement":"Record whether the practice should be standardized, modified, or discontinued in the next crop cycle based on measured outcomes."
+    }
+  ],
+  "misconceptions":[
+    "Cultural control means intentionally stressing plants so pests dislike them.",
+    "More fertilizer always makes plants more resistant to pests.",
+    "Removing weeds proves all pests or viruses they might carry are gone.",
+    "One spacing or irrigation schedule prevents every Cannabis disease.",
+    "Cultural controls cannot be evaluated because they are preventive."
+  ],
+  "evidenceLimits":[
+    "Cultural-control effects depend on pest/pathogen biology, cultivar, crop stage, substrate, climate, facility design, and the interaction among practices. Much greenhouse evidence is crop-general; Cannabis-specific environmental and disease literature supports the principles but does not establish one universal production recipe."
+  ],
+  "crossLinks":"THC-ENC-321 for the prevention hierarchy; THC-ENC-328–330 for irrigation, exclusion, and environmental risk; THC-ENC-331–333 for measurement and decisions; THC-ENC-335–337 for other control categories.",
+  "sourceNotes":[
+    "University of Missouri Extension. Using Integrated Pest Management in Greenhouses and Herbaceous Nurseries. Cultural practices include sanitation, proper watering/fertility, clean stock, weeds/debris removal, and avoiding excessive nitrogen. https://extension.missouri.edu/publications/ipm1026",
+    "Cornell University Biological Control Program. Integrated Pest Management. Lists cultural, physical/mechanical, biological, resistant-host, and chemical tactics as integrated control categories. https://biocontrol.entomology.cornell.edu/ipm.php",
+    "Cornell CALS. Pesticides and Pest Management. Current greenhouse guidance on pest identification, monitoring, weeds, and cultural/mechanical/physical controls. https://cals.cornell.edu/occupational-environmental-health-program/greenhouses/pesticides-and-pest-management",
+    "Buirs L, Punja ZK. Integrated Management of Pathogens and Microbes in Cannabis sativa L. under Greenhouse Conditions. Plants. 2024;13(6):786. Cannabis-specific environmental and cultural disease-management context. https://pmc.ncbi.nlm.nih.gov/articles/PMC10974757/"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.1 controlled title plus evidence-reconciled web derivative","evidenceControl":"greenhouse_cultural_IPM_guidance_plus_cannabis_specific_environmental_disease_management_context","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cultural_IPM_and_cannabis_crop_management","releaseTimeReview":"completed_2026-09-01_no_universal_stress_spacing_irrigation_or_fertility_recipe","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"cultural-controls",
+  "route":"/encyclopedia/cultural-controls"
+}
