@@ -18,7 +18,7 @@ on:
 
 permissions:
   actions: write
-  contents: read
+  contents: write
   issues: write
 
 concurrency:
@@ -38,7 +38,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 2
+          fetch-depth: 0
 
       - uses: actions/setup-node@v4
         with:
@@ -67,6 +67,7 @@ jobs:
             echo '- Public Suite: `${{ steps.plan.outputs.public_suite }}`'
             echo '- WordPress: `${{ steps.plan.outputs.wordpress }}`'
             echo '- Education: `${{ steps.plan.outputs.education }}`'
+            echo '- Automatic pushes include every production-owned change since the last successful `dtfseeds-production` checkpoint.'
             echo
             echo '```json'
             printf '%s\n' "$RELEASE_PLAN"
@@ -106,7 +107,7 @@ jobs:
             echo 'current=true' >> "$GITHUB_OUTPUT"
           else
             echo 'current=false' >> "$GITHUB_OUTPUT"
-            echo "Skipping superseded release $GITHUB_SHA; latest main is $latest. The newer gateway run owns deployment."
+            echo "Skipping superseded release $GITHUB_SHA; latest main is $latest. The newer gateway run owns deployment and will plan from the last successful production checkpoint."
           fi
 
       - name: Stage canonical WordPress lane
@@ -264,6 +265,7 @@ jobs:
             });
 
       - name: Enforce authoritative lane outcomes
+        id: enforce
         if: always() && steps.freshness.outputs.current == 'true'
         shell: bash
         env:
@@ -301,6 +303,45 @@ jobs:
             require_success Public-Suite verification "$PUBLIC_VERIFY"
           fi
           [[ "$failures" -eq 0 ]]
+
+      - name: Advance successful production checkpoint
+        if: >-
+          steps.freshness.outputs.current == 'true' &&
+          steps.enforce.outcome == 'success' &&
+          (github.event_name == 'push' || inputs.mode == 'full')
+        uses: actions/github-script@v7
+        env:
+          CHECKPOINT_TAG: dtfseeds-production
+        with:
+          script: |
+            const ref = `tags/${process.env.CHECKPOINT_TAG}`;
+            const sha = context.sha;
+            try {
+              await github.rest.git.getRef({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref
+              });
+              await github.rest.git.updateRef({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref,
+                sha,
+                force: true
+              });
+            } catch (error) {
+              if (error.status !== 404) throw error;
+              await github.rest.git.createRef({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: `refs/${ref}`,
+                sha
+              });
+            }
+            core.summary
+              .addHeading('Production checkpoint')
+              .addRaw(`Advanced ${process.env.CHECKPOINT_TAG} to ${sha}. Future automatic releases will include every production-owned change after this commit.`)
+              .write();
 
   no_deploy:
     name: No production-owned changes
