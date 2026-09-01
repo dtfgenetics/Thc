@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-298",
+  "number":298,
+  "title":"Action Thresholds and Crop-Value Context",
+  "objective":"Use action thresholds as evidence-based decision tools rather than universal pest numbers by linking monitoring data to crop stage, market, injury tolerance, pest biology, natural enemies, and local historical outcomes.",
+  "terms":[
+    {"term":"action threshold","definition":"A defined pest, injury, or risk level at which a management response is justified to prevent unacceptable damage or loss."},
+    {"term":"economic injury level","definition":"The pest density at which the value of expected damage equals the cost of preventing that damage; it is a conceptual and quantitative basis for many agricultural thresholds."},
+    {"term":"crop value","definition":"The economic or quality value at risk, which can vary by production goal, crop stage, market requirements, and usable plant part."},
+    {"term":"damage tolerance","definition":"The amount and type of pest injury that can be accepted without violating production, quality, regulatory, or economic goals."},
+    {"term":"dynamic threshold","definition":"A decision threshold adjusted as crop stage, pest pressure, natural enemies, environment, and market conditions change."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "An action threshold is not simply the first detection of a pest. It links a measured pest or injury level to the point at which intervention is justified by the expected consequences of allowing the population to continue.",
+    "Thresholds are context-dependent. UC IPM recommends developing numerical thresholds from consistent monitoring and comparing crop acceptability, management history, and price received. The same trap count can have different significance in early propagation, vegetative biomass production, flowering material, or a low-value border plant.",
+    "Hemp-specific thresholds remain incomplete for many pests. Extension guidance explicitly notes no established industrial-hemp threshold for several important taxa including two-spotted spider mite, cannabis aphid, and thrips. This absence should be recorded rather than filled with numbers borrowed uncritically from ornamental or vegetable crops.",
+    "Natural enemies and population trend modify risk. A stable pest count with increasing parasitoid activity can have a different forecast than the same count in a crop with no beneficial activity and rapid pest reproduction.",
+    "Threshold development improves through records. Standardized pest counts, injury ratings, crop stage, interventions, costs, and final crop outcome allow a production system to build local evidence over multiple cycles without pretending those local values are universal."
+  ],
+  "cultivationRelevance":[
+    "Use the same monitoring method and sampling effort when comparing a population to a locally defined threshold.",
+    "Record crop stage, production goal, affected tissue, natural enemies, pest trend, and quality tolerance alongside the number used for action.",
+    "When no validated Cannabis/hemp threshold exists, state that explicitly and use structured trend/risk reasoning rather than importing a number from another crop without qualification.",
+    "Do not treat an action threshold as pesticide authorization; the selected response remains a separate lawful IPM decision."
+  ],
+  "measureAndRecord":[
+    {"field":"Threshold metric","requirement":"Define pests per trap/week, pests per leaf, percent plants infested, damaged tissue percentage, beat-sample count, or other exact metric."},
+    {"field":"Crop context","requirement":"Record crop stage, production goal, market/quality requirement, affected tissue, plant value, and time remaining in the crop cycle."},
+    {"field":"Population context","requirement":"Record trend direction, pest life stages, hotspot distribution, natural enemies, and environmental conditions favoring increase or decline."},
+    {"field":"Decision and response","requirement":"Record threshold crossed/not crossed, action taken, date, rationale, and expected outcome."},
+    {"field":"Outcome","requirement":"Record subsequent pest trend, injury, crop quality, yield/value where available, and whether the threshold should be revised locally."
+    }
+  ],
+  "misconceptions":[
+    "The first pest found automatically means treatment is required.",
+    "A threshold published for one crop and market automatically applies to cannabis.",
+    "One pest count has the same meaning at every crop stage.",
+    "Natural enemies do not matter once a numerical threshold is written down.",
+    "An action threshold is the same thing as permission to use a pesticide."
+  ],
+  "evidenceLimits":[
+    "General IPM threshold theory is well established, but Cannabis/hemp-specific economic injury relationships remain incomplete for many pests and production goals. Local thresholds can be useful when built from standardized records, but they should be identified as local decision rules rather than universal biological constants."
+  ],
+  "crossLinks":"THC-ENC-281–296 for pest biology; THC-ENC-297 for standardized sampling; THC-ENC-299 for biological-control compatibility; THC-ENC-300 for records and trend analysis; THC-ENC-401–420 for measurement and evidence literacy.",
+  "sourceNotes":[
+    "UC Statewide IPM Program, Establishing Action Thresholds. Recommends quantitative thresholds based on consistent monitoring, crop acceptability, records, market conditions, and locally appropriate adjustment. https://ipm.ucanr.edu/agriculture/floriculture-and-ornamental-nurseries/establishing-treatment-thresholds/",
+    "Missouri Extension, Using Integrated Pest Management in Greenhouses and Herbaceous Nurseries. Connects routine scouting and population monitoring to action when pests can cause plant damage. https://extension.missouri.edu/publications/ipm1026",
+    "Utah State University Extension hemp pest guides and NC State hemp pest publications document absent or incomplete hemp-specific thresholds for multiple pests, supporting explicit uncertainty rather than borrowed universal numbers. https://extension.usu.edu/planthealth/ipm/notes_ag/faf-list-hemp and https://content.ces.ncsu.edu/twospotted-spider-mite-in-industrial-hemp"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.0 controlled title plus evidence-reconciled web derivative","evidenceControl":"current_university_ipm_threshold_framework_plus_hemp_specific_threshold_gaps","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"action_threshold_economic_injury_and_crop_value_decision_framework","releaseTimeReview":"completed_2026-09-01_no_borrowed_universal_cannabis_thresholds","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"action-thresholds-and-crop-value-context",
+  "route":"/encyclopedia/action-thresholds-and-crop-value-context"
+}

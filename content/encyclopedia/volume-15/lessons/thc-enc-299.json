@@ -1,0 +1,57 @@
+{
+  "id":"THC-ENC-299",
+  "number":299,
+  "title":"Biological Control Compatibility",
+  "objective":"Evaluate whether pest-management actions, prior residues, environmental conditions, and scouting tools are compatible with predators, parasitoids, and microbial biological-control agents without assuming that any product or beneficial organism is universally compatible.",
+  "terms":[
+    {"term":"biological control agent","definition":"A living predator, parasitoid, pathogen, or other organism intentionally or naturally contributing to pest suppression."},
+    {"term":"compatibility","definition":"The degree to which a management action can be used without unacceptable direct or indirect harm to a biological-control organism or program."},
+    {"term":"residual toxicity","definition":"Harm that remains after an application because active material persists on plants, containers, benches, structures, or other surfaces."},
+    {"term":"sublethal effect","definition":"An effect that does not immediately kill a beneficial organism but can reduce reproduction, development, longevity, prey-finding, emergence, or other performance."},
+    {"term":"selectivity","definition":"The degree to which a pest-management action affects the target while sparing non-target beneficial organisms."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Biological control succeeds only when the natural enemy is matched to the target pest and life stage and can survive the production environment. Predatory mites, parasitoid wasps, and generalist predators differ in prey range, temperature/humidity performance, establishment, and sensitivity to residues.",
+    "Pesticide compatibility is not a simple product-wide yes/no property. UConn Extension emphasizes that direct toxicity, persistent residues, loss of prey, repellency, impaired reproduction, altered sex ratio, reduced emergence, and shortened longevity can all disrupt beneficial organisms.",
+    "Prior applications matter. Residues on incoming plant material, benches, containers, greenhouse plastic, or crop tissue can interfere with a new biological-control program even when no fresh application is occurring.",
+    "Sticky cards can also interact with biological-control programs by capturing flying natural enemies. Monitoring remains necessary, but trap placement, density, and interpretation should account for beneficial captures rather than assuming every trapped insect is a pest.",
+    "Compatibility information changes by active ingredient, formulation, beneficial species, life stage, rate, application method, and residual age. Current side-effect databases, labels, supplier guidance, and local extension resources should be checked at the time of use rather than relying on a static universal compatibility list."
+  ],
+  "cultivationRelevance":[
+    "Identify the pest and beneficial species before designing a biological-control program; many agents are host- or stage-specific.",
+    "Review recent and incoming-plant pesticide history before releasing beneficial organisms and record unknown residue history as a risk factor.",
+    "Record beneficial captures on sticky cards and direct plant observations so monitoring data include natural-enemy establishment.",
+    "When any regulated product is considered, verify current lawful crop use and current beneficial side-effect data rather than relying on a historical compatibility claim."
+  ],
+  "measureAndRecord":[
+    {"field":"Beneficial organism","requirement":"Record species or functional group, release or natural-occurrence date, target pest/life stage, lot/source if purchased, and expected environmental range."},
+    {"field":"Pesticide/residue history","requirement":"Record active ingredient/product if known, application date, method, treated area, incoming plant history, and residual-compatibility source consulted."},
+    {"field":"Establishment","requirement":"Record beneficial adults/immatures, parasitoid mummies, predation signs, prey abundance, and repeated observations over time."},
+    {"field":"Environment","requirement":"Record temperature, humidity, light, crop structure, and other conditions relevant to the beneficial species."},
+    {"field":"Compatibility outcome","requirement":"Record survival, reproduction, prey suppression, unexpected mortality, trap capture, and any change after another management action."
+    }
+  ],
+  "misconceptions":[
+    "A pesticide labeled 'biological' is automatically safe for every beneficial organism.",
+    "If beneficial insects survive an application, compatibility is proven.",
+    "Old pesticide residues cannot affect a newly released natural enemy.",
+    "One biological-control agent works against every pest life stage.",
+    "Sticky cards capture only pests and never useful natural enemies."
+  ],
+  "evidenceLimits":[
+    "Greenhouse biological-control compatibility is well studied, but effects are species-, formulation-, rate-, residue-, environment-, and application-specific. Compatibility statements should therefore be tied to current authoritative information and should not be generalized into permanent product recommendations for cannabis."
+  ],
+  "crossLinks":"THC-ENC-281–296 for pest and natural-enemy identification; THC-ENC-297 for monitoring; THC-ENC-298 for action thresholds; THC-ENC-300 for records; THC-ENC-321–340 for broader IPM systems.",
+  "sourceNotes":[
+    "UConn Extension, Starting a Biological Control Program for Greenhouse Insect and Mite Pests, revised July 2024. Covers target matching, residue history, environmental planning, and compatibility review. https://ipm.cahnr.uconn.edu/ipm-starting-a-biological-control-program-for-greenhouse-insect-and-mite-pests/",
+    "UConn Extension, Some Factors Concerning Pesticide Compatibility with Biological Control Agents, latest revision 2024. Details direct and sublethal effects, residues, prey loss, and species-specific compatibility. https://ipm.cahnr.uconn.edu/ipm-some-factors-concerning-pesticide-compatibility-with-biological-control-agents/",
+    "Penn State Extension, Planning for Biological Control in Greenhouses (2026). Current guidance on matching natural enemies to pests/life stages, environmental performance, monitoring, and selective compatibility. https://extension.psu.edu/planning-for-biological-control-in-greenhouses",
+    "UC Statewide IPM, Biological Control and Natural Enemies of Invertebrates. Supports conserving natural enemies and recognizing pesticide-driven secondary pest outbreaks. https://ipm.ucanr.edu/home-and-landscape/biological-control-and-natural-enemies-of-invertebrates/"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.0 controlled title plus evidence-reconciled web derivative","evidenceControl":"current_university_greenhouse_biocontrol_compatibility_guidance","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"biological_control_pesticide_residue_and_monitoring_compatibility","releaseTimeReview":"completed_2026-09-01_no_static_universal_product_compatibility_claim","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"biological-control-compatibility",
+  "route":"/encyclopedia/biological-control-compatibility"
+}

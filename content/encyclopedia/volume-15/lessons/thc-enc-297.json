@@ -1,0 +1,57 @@
+{
+  "id":"THC-ENC-297",
+  "number":297,
+  "title":"Sticky Cards, Tap Tests, and Leaf Sampling",
+  "objective":"Use complementary pest-monitoring methods correctly by defining what sticky cards, tap or beat samples, direct leaf inspection, and root/media samples can and cannot measure, and standardize observations so trends are comparable over time.",
+  "terms":[
+    {"term":"sticky card","definition":"A colored adhesive monitoring surface used primarily to detect and trend flying adult insects; it does not directly sample attached immature stages or nonflying pests."},
+    {"term":"tap test","definition":"A standardized method in which plant tissue is tapped or shaken over a contrasting tray, paper, or container to dislodge mobile arthropods for counting or collection."},
+    {"term":"direct inspection","definition":"Visual or magnified examination of defined plant tissues for organisms, eggs, injury, exuviae, webbing, honeydew, frass, or other evidence."},
+    {"term":"sampling unit","definition":"The defined object or amount examined, such as one leaf, five flowers, one sticky card per week, or one root/media subsample."},
+    {"term":"sampling bias","definition":"A systematic difference between what is sampled and the true pest population, often caused by method, placement, timing, life stage, or canopy location."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "No single scouting method measures every pest or life stage. Sticky cards are useful for flying adults such as whiteflies, fungus gnats, shore flies, thrips, and winged aphids, while spider mites, russet mites, eggs, attached whitefly nymphs, and root aphids require direct tissue or root-zone sampling.",
+    "Tap or beat sampling can dislodge mobile aphids, thrips, mites, beetles, leafhoppers, and small predators, but results depend on how much plant tissue is struck, the force used, the surface beneath the plant, and the time of day. A method becomes useful for trend analysis only when it is repeated consistently.",
+    "Direct leaf inspection provides location and life-stage information that sticky cards cannot. Cannabis aphid guidance, for example, recommends individual leaf inspection or shaking over a tray, while yellow sticky cards are specifically useful for detecting winged dispersing adults.",
+    "Sticky-card placement matters. Cards near canopy height, doors, vents, propagation areas, or known hotspots can answer different questions, and moving them unpredictably makes week-to-week counts harder to interpret.",
+    "Monitoring data should be linked to date, crop stage, location, sampling effort, and method. Counts without a denominator—such as 'many thrips' with no number of cards, leaves, plants, or days—cannot support reliable trend comparisons."
+  ],
+  "cultivationRelevance":[
+    "Choose the sampling method based on the pest's biology and the life stage you need to detect rather than using one favorite method for every problem.",
+    "Use consistent card size, placement, exposure interval, plant sample size, canopy position, and magnification so counts can be compared across dates.",
+    "Preserve unknown organisms for identification instead of forcing all captures into preselected pest categories.",
+    "Record beneficial organisms and non-pest captures as well as pests so monitoring does not erase biological-control activity."
+  ],
+  "measureAndRecord":[
+    {"field":"Sticky cards","requirement":"Record card color/size, exact placement, canopy height, exposure dates, pest counts by taxon, beneficial/unknown captures, and card replacement interval."},
+    {"field":"Tap/beat samples","requirement":"Record plant tissue sampled, number of taps/shakes, collection surface, organisms counted, life stages, plant count, and time/date."},
+    {"field":"Direct leaf/flower inspection","requirement":"Record number of leaves/flowers, canopy position, upper/lower surface, magnification, organisms, eggs, and injury signs."},
+    {"field":"Root/media sampling","requirement":"Record substrate amount, root zone/location, organisms, life stages, moisture context, and sample number."},
+    {"field":"Comparability","requirement":"Document any method or placement change so apparent population shifts are not confused with sampling changes."
+    }
+  ],
+  "misconceptions":[
+    "Sticky cards measure the total pest population in a crop.",
+    "A card with no mites means mites are absent.",
+    "Tap-test counts can be compared even if the number of plants and taps changes each week.",
+    "A high sticky-card catch proves plant injury is severe.",
+    "Scouting only symptomatic plants provides an unbiased crop estimate."
+  ],
+  "evidenceLimits":[
+    "Greenhouse and hemp extension literature strongly supports multimethod scouting, but sampling efficiency differs among species, life stages, canopy structures, and environments. Monitoring methods should therefore be calibrated to the local system and used for consistent trend detection rather than treated as direct whole-crop population censuses."
+  ],
+  "crossLinks":"THC-ENC-281–296 for pest-specific biology; THC-ENC-298 for action thresholds; THC-ENC-299 for biocontrol compatibility; THC-ENC-300 for mapping and trend analysis; THC-ENC-401–420 for measurement and research literacy.",
+  "sourceNotes":[
+    "Missouri Extension, Using Integrated Pest Management in Greenhouses and Herbaceous Nurseries. Recommends colored sticky cards, visual inspection, life-stage recording, and routine scouting. https://extension.missouri.edu/publications/ipm1026",
+    "UConn IPM Greenhouse Publications. Current greenhouse scouting resources include sticky-card count forms, monitoring forms, and IPM scouting/decision resources. https://ipm.cahnr.uconn.edu/greenhouse-publications/",
+    "Colorado State University Agricultural Biology, Cannabis Aphid. Recommends shaking plants over trays or containers, direct leaf inspection, preserved specimens, and yellow sticky traps for winged adults. https://agsci.colostate.edu/agbio/ipm-pests/cannabis-aphid/",
+    "UC Statewide IPM, Establishing Action Thresholds. Defines quantitative monitoring examples including pests per trap, percent plants infested, and beat/shake samples. https://ipm.ucanr.edu/agriculture/floriculture-and-ornamental-nurseries/establishing-treatment-thresholds/"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.0 controlled title plus evidence-reconciled web derivative","evidenceControl":"hemp_specific_sampling_guidance_plus_current_university_greenhouse_ipm_monitoring","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"sticky_card_tap_test_leaf_and_root_sampling_methodology","releaseTimeReview":"completed_2026-09-01_sampling_unit_and_method_bias_explicit","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"sticky-cards-tap-tests-and-leaf-sampling",
+  "route":"/encyclopedia/sticky-cards-tap-tests-and-leaf-sampling"
+}
