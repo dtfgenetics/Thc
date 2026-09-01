@@ -1,0 +1,58 @@
+{
+  "id":"THC-ENC-337",
+  "number":337,
+  "title":"Pesticide Law, Label Compliance, and Resistance Management",
+  "objective":"Explain pesticide use as a regulated IPM decision in which current label directions, crop/use-site authorization, state requirements, worker and environmental protections, and resistance-management instructions govern use; efficacy evidence alone does not create legal permission.",
+  "terms":[
+    {"term":"pesticide label","definition":"The legally enforceable directions, precautions, use sites, rates, timing, protective requirements, and other conditions attached to or incorporated into a pesticide product's labeling."},
+    {"term":"use site","definition":"The crop, commodity, structure, area, or other site on which a pesticide is legally authorized for use under its current labeling and applicable law."},
+    {"term":"restricted-use pesticide","definition":"A pesticide classified for use only by certified applicators or persons under qualifying supervision when federal or state law so requires."},
+    {"term":"mode-of-action group","definition":"A resistance-management classification that groups pesticide active ingredients by a shared biochemical target or mode of action, commonly represented on labels using recognized group codes."},
+    {"term":"resistance management","definition":"Integrated practices intended to slow selection for heritable pest/pathogen resistance, including lawful label-directed use, avoiding unnecessary applications, integrating nonchemical controls, and following applicable mode-of-action guidance."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "In the United States, pesticide labels are legally enforceable. EPA states that labels define who may use a product and where, how, how much, and how often it may be used. A laboratory paper, extension recommendation, retailer listing, or prior crop experience does not override the current label.",
+    "Cannabis/hemp pesticide authorization is dynamic and product- and jurisdiction-specific. EPA continues to receive applications to expand pesticide uses on hemp, so historical statements that no products are registered for Cannabis/hemp should not be treated as a permanent current rule. The lawful decision must be made from the current product label, registration status, crop/use site, and applicable state or local requirements at the time of use.",
+    "Products making pesticidal claims are generally regulated as pesticides unless a specific exemption applies. Minimum-risk status under FIFRA section 25(b) does not mean all state requirements disappear; state regulation and allowable uses still require current review.",
+    "Resistance develops through selection when repeated exposure favors individuals or pathogen populations less sensitive to a control. EPA resistance-management guidance supports mode-of-action information and integrated practices to slow resistance, but rotating product brand names is not the same as rotating distinct modes of action.",
+    "Resistance management remains subordinate to the label. Application number, interval, seasonal maximum, crop stage, preharvest interval, reentry requirements, protective equipment, compatibility, environmental restrictions, and mode-of-action directions must be interpreted from the current legally applicable labeling rather than generalized into a Cannabis spray calendar."
+  ],
+  "cultivationRelevance":[
+    "Before any pesticide use, verify the exact product, current label/labeling, registration status, crop or use-site authorization, target pest, application method, jurisdiction, and worker/environmental requirements.",
+    "Use pesticide treatment only as one IPM option after identification, monitoring, prevention, and nonchemical controls have been considered; record why the intervention is justified.",
+    "For resistance management, track active ingredient and recognized mode-of-action group rather than relying on brand name, and follow label-specific limits and resistance statements.",
+    "Re-scout after treatment to measure effectiveness, preserve records of failures or phytotoxicity, and avoid repeating ineffective applications solely because the product was previously successful."
+  ],
+  "measureAndRecord":[
+    {"field":"Product identity","requirement":"Record full product name, EPA registration or other legal identifier when applicable, active ingredient(s), formulation, lot/batch if required by the program, and the label version/date consulted."},
+    {"field":"Authorization check","requirement":"Record crop/use site, target pest, jurisdictional authorization, applicator restrictions, and any state/local requirement used to confirm lawful use."},
+    {"field":"Application record","requirement":"Record date/time, zone/crop, applicator, method, labeled rate, volume/coverage where relevant, crop stage, weather/environmental conditions, and required worker-protection/reentry information."},
+    {"field":"Resistance record","requirement":"Record active ingredient, mode-of-action group when identified by current labeling/recognized guidance, prior same-group exposure, and the integrated resistance-management rationale."},
+    {"field":"Outcome","requirement":"Record comparable follow-up monitoring, efficacy, crop injury, natural-enemy effects, adverse events, and whether further action is justified."
+    }
+  ],
+  "misconceptions":[
+    "If a pesticide works on a pest in research, it is automatically legal to use on Cannabis.",
+    "A pesticide registered somewhere in the United States is automatically authorized on every Cannabis or hemp crop in every state.",
+    "Minimum-risk pesticide status means there are no state rules or label constraints.",
+    "Rotating brand names always prevents resistance.",
+    "Using a stronger rate than the label improves resistance management."
+  ],
+  "evidenceLimits":[
+    "Pesticide registrations, labels, hemp-use approvals, tolerances/exemptions, state requirements, and resistance-management language change over time. This lesson explains the decision framework and cannot substitute for checking the current legally applicable label and regulatory requirements for the exact product, crop/use site, target, applicator, and jurisdiction at the time of use."
+  ],
+  "crossLinks":"THC-ENC-321 and THC-ENC-333 for IPM decisions and thresholds; THC-ENC-334–336 for integrated nonchemical/biological options; THC-ENC-339 for treatment failures and corrective action; THC-ENC-340 for program auditing.",
+  "sourceNotes":[
+    "US Environmental Protection Agency. Introduction to Pesticide Labels. Updated 2026-06-02. Legally enforceable labeling and conditions of use. https://www.epa.gov/pesticide-labels/introduction-pesticide-labels",
+    "US Environmental Protection Agency. Pesticide Labels. Updated 2026-06-24. Current label resources. https://www.epa.gov/pesticide-labels",
+    "US Environmental Protection Agency. Prepublication Version of the Federal Register Notice on Receipt of Applications for Pesticide Use on Hemp. Updated 2026-07-06. Demonstrates ongoing hemp-use expansion activity. https://www.epa.gov/pesticides/prepublication-version-federal-register-notice-receipt-applications-pesticide-use-hemp",
+    "US Environmental Protection Agency. PRN 2017-1: Guidance for Pesticide Registrants on Pesticide Resistance Management Labeling. Updated 2025-12-02. https://www.epa.gov/pesticide-registration/prn-2017-1-guidance-pesticide-registrants-pesticide-resistance-management",
+    "US Environmental Protection Agency. What is a Pesticide? Updated 2026-01-29. Registration and minimum-risk boundary. https://www.epa.gov/minimum-risk-pesticides/what-pesticide"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.1 controlled title plus evidence-reconciled web derivative","evidenceControl":"current_2026_EPA_label_hemp_use_and_resistance_management_guidance","secondaryEvidenceReview":"complete_current_regulatory_source_check","externalReview":"pending_not_recorded","externalReviewType":"pesticide_law_hemp_cannabis_and_resistance_management","releaseTimeReview":"completed_2026-09-01_no_blanket_registration_claim_or_off_label_instruction","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"pesticide-law-label-compliance-and-resistance-management",
+  "route":"/encyclopedia/pesticide-law-label-compliance-and-resistance-management"
+}
