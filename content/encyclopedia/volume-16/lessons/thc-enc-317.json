@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-317",
+  "number":317,
+  "title":"Water, Media, and Facility Reservoirs",
+  "objective":"Evaluate irrigation water, recirculated nutrient solution, growing media, benches, gutters, emitters, debris, and other facility niches as possible pathogen reservoirs while separating environmental detection from proven plant infection or outbreak source attribution.",
+  "terms":[
+    {"term":"reservoir","definition":"A living host, substrate, water source, surface, debris, or environmental niche in which a pathogen can persist or from which inoculum may reach susceptible plants."},
+    {"term":"recirculating irrigation","definition":"A system in which drainage or nutrient solution is collected and reused, creating shared hydraulic connections among plants."},
+    {"term":"environmental sample","definition":"A specimen collected from water, media, surfaces, debris, equipment, or another non-plant source to test for a pathogen or microbial community."},
+    {"term":"source attribution","definition":"The process of linking an outbreak convincingly to a specific origin using timing, distribution, organism identity, and pathway evidence rather than detection alone."},
+    {"term":"inoculum pressure","definition":"The amount, frequency, and distribution of infectious material capable of contacting susceptible host tissue."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Cannabis root and systemic pathogens can move through shared production environments. Fusarium and Pythium root pathogens are associated with diseased roots and can be dispersed by water, while HLVd has been detected in recirculated nutrient solution and experimentally shown to spread plant-to-plant through root infection in hydroponic Cannabis.",
+    "A reservoir is not the same as a confirmed outbreak source. Detection of pathogen DNA, RNA, spores, or propagules in water, media, or a facility surface establishes presence in the sampled location; source attribution requires compatible timing, organism identity, exposure pathways, and infected recipients.",
+    "Growing media and plant debris can support survival or movement of root and stem pathogens, while benches, gutters, pots, emitters, floors, and handling areas can accumulate contaminated material. Persistence differs widely among fungi, oomycetes, bacteria, viruses, and viroids.",
+    "Recirculation can connect otherwise separate root systems and amplify consequences when an infectious agent enters the shared solution. Conversely, a positive reservoir sample does not prove all connected plants are infected, because exposure dose, root condition, genotype, contact time, and pathogen viability vary.",
+    "Environmental surveillance is most useful when paired with plant testing and a facility map. Repeated detections upstream of new plant cases provide stronger evidence than a single positive environmental swab collected after an outbreak is already widespread."
+  ],
+  "cultivationRelevance":[
+    "Map hydraulic connections, reservoirs, propagation tables, drainage return paths, media lots, benches, and plant movement before an outbreak so environmental results can be interpreted spatially.",
+    "When root disease or HLVd is suspected in a shared-water system, test affected plants and relevant water points under a defined sampling plan rather than using one reservoir result to label the entire crop.",
+    "Preserve media, irrigation, and sanitation-lot records so repeated disease can be compared across crop cycles and potential persistent niches can be investigated.",
+    "Use only validated and lawful water-treatment or sanitation methods; pathogen detection does not itself specify a safe concentration, contact time, or product."
+  ],
+  "measureAndRecord":[
+    {"field":"System map","requirement":"Document water source, reservoirs, return lines, emitters, benches/tables, drainage, media lots, and which plant groups share each connection."},
+    {"field":"Environmental sample","requirement":"Record exact location, material sampled, volume/area when relevant, date/time, collection method, assay, result, and controls."},
+    {"field":"Plant correlation","requirement":"Link environmental detections to plant IDs, symptom/test status, onset dates, and upstream/downstream position without assuming causation."},
+    {"field":"Persistence","requirement":"Record repeat sampling before and after crop removal or sanitation to determine whether detections persist, disappear, or recur."},
+    {"field":"Source-attribution confidence","requirement":"Classify each proposed reservoir as confirmed source, strongly supported, plausible, detected but unlinked, or unsupported."
+    }
+  ],
+  "misconceptions":[
+    "A positive water test means every plant sharing the water is infected.",
+    "A negative reservoir sample proves the system never contained the pathogen.",
+    "All pathogens survive equally well in water, media, and on dry surfaces.",
+    "Finding a pathogen on a bench after an outbreak proves the bench started the outbreak.",
+    "One generic sanitation treatment can be assumed effective for every reservoir and pathogen."
+  ],
+  "evidenceLimits":[
+    "Direct Cannabis evidence supports water-associated spread for important root pathogens and HLVd, but survival, infectious dose, sampling sensitivity, and reservoir importance are pathogen- and system-specific. Environmental nucleic-acid detection can persist without proving infectious viability."
+  ],
+  "crossLinks":"THC-ENC-305 for Pythium; THC-ENC-310 for HLVd; THC-ENC-316 for tools/clones; THC-ENC-314–315 for sampling/test interpretation; THC-ENC-328 for irrigation-line hygiene and THC-ENC-340 for program audit.",
+  "sourceNotes":[
+    "Buirs L, Punja ZK. Integrated Management of Pathogens and Microbes in Cannabis sativa L. under Greenhouse Conditions. Plants. 2024;13(6):786. PMID:38592798. https://pmc.ncbi.nlm.nih.gov/articles/PMC10974757/",
+    "Punja ZK, Scott C, Tso HH, Munz J, Buirs L. Transmission, Spread, Longevity and Management of Hop Latent Viroid. Plants. 2025;14(5):830. PMID:40094815. https://pmc.ncbi.nlm.nih.gov/articles/PMC11902214/",
+    "Punja ZK, et al. Challenges to Cannabis sativa Production from Pathogens and Microbes—The Role of Molecular Diagnostics and Bioinformatics. 2024. PMID:38203190. https://pmc.ncbi.nlm.nih.gov/articles/PMC10779078/"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.0 controlled title plus evidence-reconciled web derivative","evidenceControl":"direct_cannabis_HLVd_root_water_spread_plus_cannabis_root_pathogen_recirculation_and_environmental_monitoring_evidence","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_water_media_facility_pathogen_reservoir_epidemiology","releaseTimeReview":"completed_2026-09-01_environmental_detection_vs_source_attribution_boundary_explicit","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"water-media-and-facility-reservoirs",
+  "route":"/encyclopedia/water-media-and-facility-reservoirs"
+}

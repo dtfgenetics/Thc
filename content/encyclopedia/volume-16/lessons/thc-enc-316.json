@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-316",
+  "number":316,
+  "title":"Tool-Mediated and Clone-Mediated Transmission",
+  "objective":"Trace how pathogens can move with vegetative propagation, infected mother stock, sap-contaminated handling, pruning, and shared equipment while distinguishing demonstrated transmission routes from plausible but unconfirmed contact pathways.",
+  "terms":[
+    {"term":"mechanical transmission","definition":"Movement of an infectious agent through physical transfer of contaminated sap, tissue, tools, hands, equipment, or wounds rather than through a biological vector."},
+    {"term":"clonal transmission","definition":"Movement of a pathogen from an infected stock plant into vegetatively propagated cuttings or daughter plants."},
+    {"term":"mother stock","definition":"Plants maintained as sources of vegetative cuttings; their pathogen status can influence multiple downstream propagation cohorts."},
+    {"term":"fomite","definition":"An inanimate object that can carry infectious material between susceptible hosts when the pathogen remains viable and transfer conditions permit."},
+    {"term":"transmission chain","definition":"The documented sequence linking a pathogen source, transfer event or pathway, susceptible recipient, and subsequent infection evidence."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Vegetative propagation creates a direct biological link between Cannabis mother plants and daughter cuttings. Pathogens present in mother stock can therefore enter propagation cohorts even when the source plant has mild or no visible symptoms.",
+    "Cannabis studies and production observations have demonstrated spread of Fusarium from stock plants through cuttings into vegetatively propagated plants. HLVd has likewise been detected in asymptomatic stock plants and rooted cuttings, establishing clonal propagation as an important pathway for pathogen movement.",
+    "HLVd is mechanically transmissible in infectious sap. Controlled stem inoculation produces systemic infection, and the viroid can remain detectable for days in crushed leaf extracts and for weeks in dried infected plant material. These findings support concern about sap-contaminated handling, but contamination of a tool surface is not identical to proven transmission into every contacted plant.",
+    "Pruning, taking cuttings, defoliation, training, harvesting, and other repeated handling create wounds and opportunities for sap transfer. Fungal and bacterial pathogens can also move on contaminated tools, gloves, hands, debris, or equipment depending on pathogen survival and entry biology.",
+    "Transmission should be reconstructed from evidence: pathogen-positive source material, plausible contact timing, recipient exposure, compatible incubation, and subsequent detection. A shared tool or worker is a risk link, not automatic proof of the exact transmission event."
+  ],
+  "cultivationRelevance":[
+    "Keep mother/clone relationships traceable so positive stock plants can be linked to downstream cohorts without automatically classifying every daughter plant as infected.",
+    "Organize work to reduce movement from suspect or positive areas into pathogen-screened stock and record tool/equipment movement when an outbreak investigation is active.",
+    "Treat pruning and propagation equipment as potential transmission surfaces and use only validated, lawful sanitation procedures compatible with the equipment, pathogen, and facility safety requirements.",
+    "When a transmission route is suspected, compare exposed and unexposed plants and use laboratory results plus timing rather than relying on contact history alone."
+  ],
+  "measureAndRecord":[
+    {"field":"Propagation lineage","requirement":"Record mother ID, cutting date, clone batch, rooting location, destination, and pathogen-test status for source and daughter material."},
+    {"field":"Handling events","requirement":"Record pruning, cutting, training, defoliation, harvest, or other high-contact events and the equipment/work group involved when relevant to an investigation."},
+    {"field":"Tool movement","requirement":"Document movement between rooms, lots, or suspect/clean zones and the sanitation procedure used; avoid claiming sterilization unless the process is validated as such."},
+    {"field":"Transmission evidence","requirement":"Record source positivity, recipient exposure date, recipient testing, symptom onset, and alternative pathways."},
+    {"field":"Confidence","requirement":"Classify the route as demonstrated, strongly supported, plausible, weakly supported, or excluded based on the available evidence."
+    }
+  ],
+  "misconceptions":[
+    "A healthy-looking mother always produces pathogen-free clones.",
+    "If two plants were touched by the same tool, the tool definitely transmitted the disease.",
+    "Every Cannabis pathogen is mechanically transmissible in the same way.",
+    "Detectable pathogen RNA or DNA on a surface proves infectious transfer occurred.",
+    "Sanitation claims can be generalized across pathogens, products, contact times, and surfaces."
+  ],
+  "evidenceLimits":[
+    "Direct Cannabis evidence is strong for clonal spread of important pathogens such as Fusarium and HLVd and for mechanical infectivity of HLVd sap. Exact fomite survival, transfer efficiency, infectious dose, and sanitation efficacy vary by pathogen, material, surface, product, and contact conditions."
+  ],
+  "crossLinks":"THC-ENC-304 for Fusarium; THC-ENC-310 for HLVd; THC-ENC-313–315 for asymptomatic infection and testing; THC-ENC-317 for water/media reservoirs; THC-ENC-322–329 for biosecurity and sanitation systems.",
+  "sourceNotes":[
+    "Punja ZK, Scott C, Tso HH, Munz J, Buirs L. Transmission, Spread, Longevity and Management of Hop Latent Viroid. Plants. 2025;14(5):830. PMID:40094815. https://pmc.ncbi.nlm.nih.gov/articles/PMC11902214/",
+    "Buirs L, Punja ZK. Integrated Management of Pathogens and Microbes in Cannabis sativa L. under Greenhouse Conditions. Plants. 2024;13(6):786. PMID:38592798. https://pmc.ncbi.nlm.nih.gov/articles/PMC10974757/",
+    "Punja ZK, et al. Pathogens and Molds Affecting Production and Quality of Cannabis sativa L. Front Plant Sci. 2019. PMID:31681341. https://pmc.ncbi.nlm.nih.gov/articles/PMC6811654/"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.0 controlled title plus evidence-reconciled web derivative","evidenceControl":"direct_cannabis_HLVd_mechanical_clone_evidence_plus_cannabis_Fusarium_stock_cutting_spread","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_pathogen_transmission_and_propagation_biosecurity","releaseTimeReview":"completed_2026-09-01_contact_risk_vs_demonstrated_transmission_boundary_explicit","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"tool-mediated-and-clone-mediated-transmission",
+  "route":"/encyclopedia/tool-mediated-and-clone-mediated-transmission"
+}

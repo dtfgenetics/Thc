@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-320",
+  "number":320,
+  "title":"Disease Incident Records and Eradication Review",
+  "objective":"Document a Cannabis disease incident from first signal through diagnosis, containment, source/pathway analysis, corrective action, verification, and closure so conclusions remain traceable and future crop cycles can test whether the problem truly recurred or was resolved.",
+  "terms":[
+    {"term":"incident record","definition":"A time-linked record of a defined plant-health event including observations, affected units, evidence, actions, decisions, and outcomes."},
+    {"term":"case definition","definition":"A documented rule for what counts as confirmed, probable, suspect, exposed, or unaffected during an outbreak investigation."},
+    {"term":"containment","definition":"Actions intended to limit movement or exposure while diagnosis and source evaluation continue; containment is not proof that the pathogen has been eradicated."},
+    {"term":"corrective action","definition":"An action taken to address a detected problem or contributing cause, with a defined owner, timing, and verification method."},
+    {"term":"verification of effectiveness","definition":"Follow-up evidence used to determine whether an intervention reduced or eliminated the defined problem under the relevant conditions."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Disease incidents are easier to interpret when the evidence sequence is preserved: first symptom or positive test, case definition, plant and facility map, samples and results, suspected pathways, interventions, new cases over time, and final verification. Retrospective memory is much weaker than contemporaneous records.",
+    "Accurate diagnosis is central to integrated disease management. Cannabis greenhouse guidance recommends identifying disease hot spots, recording affected plant locations, and using diagnostic testing when the causal pathogen is unclear. These records allow later comparison among crop cycles and can reveal recurring sources or seasonal patterns.",
+    "Eradication is a strong claim. Removing symptomatic plants or obtaining one negative environmental sample does not prove an infectious agent has been eliminated from stock plants, propagation cohorts, water systems, media, debris, tools, facility niches, or asymptomatic hosts. Closure criteria should therefore be defined before the incident is closed.",
+    "A useful review separates root cause from contributing factors. Pathogen introduction, susceptible genotype, delayed detection, shared propagation, water movement, inadequate separation, environmental favorability, and sampling limitations can all contribute without being the single initiating cause.",
+    "Corrective and preventive actions should be tested against measurable outcomes. A change that is implemented but never verified is an action record, not evidence of effectiveness. Repeated disease in the next crop cycle should trigger review of the prior assumptions, source attribution, and closure criteria rather than simply repeating the same response."
+  ],
+  "cultivationRelevance":[
+    "Open an incident record when a defined trigger is met, such as a confirmed high-consequence pathogen, unusual cluster, repeated unexplained losses, or a facility threshold established by the operating program.",
+    "Map confirmed, probable, suspect, exposed, and unaffected plants separately; do not combine symptoms and test status into one category.",
+    "Record every material action with date, scope, rationale, responsible person or team, and verification plan so later review can determine what changed before incidence declined or recurred.",
+    "Close an incident only when pre-defined evidence supports containment or eradication status; preserve unresolved uncertainties and future surveillance requirements in the closure record."
+  ],
+  "measureAndRecord":[
+    {"field":"Incident header","requirement":"Record unique incident ID, discovery date/time, reporter, crop/room/field, genotype/lot, trigger, and current incident status."},
+    {"field":"Case map","requirement":"Define confirmed/probable/suspect/exposed/unaffected categories and maintain dated plant/location counts and maps as status changes."},
+    {"field":"Diagnostic evidence","requirement":"Link sample IDs, tissues, assays, laboratories, results, negatives, retests, organism identity, and diagnostic confidence."},
+    {"field":"Actions","requirement":"Record isolation/removal, workflow changes, sanitation, environmental or irrigation changes, testing, and other interventions with dates and scope; regulated products require applicable label/legal records."},
+    {"field":"Closure review","requirement":"Document source/pathway conclusion and confidence, corrective/preventive actions, verification data, remaining uncertainty, recurrence watch period, and criteria supporting closure."
+    }
+  ],
+  "misconceptions":[
+    "Removing all visibly sick plants proves the pathogen is eradicated.",
+    "The first positive plant must be the source of the outbreak.",
+    "A disease incident should contain only positive laboratory results; negatives and discarded hypotheses are irrelevant.",
+    "An intervention that was completed is automatically effective.",
+    "If disease returns in a later crop, it proves the same original source persisted."
+  ],
+  "evidenceLimits":[
+    "Incident management combines Cannabis-specific disease evidence with general greenhouse biosecurity and quality-record principles. The appropriate trigger, containment action, testing plan, closure criteria, and legal reporting obligation depend on the pathogen, production system, jurisdiction, crop value, and facility program."
+  ],
+  "crossLinks":"THC-ENC-301 for disease-cycle reasoning; THC-ENC-313–315 for pathogen status and test uncertainty; THC-ENC-316–317 for transmission/reservoir reconstruction; THC-ENC-319 for susceptibility; THC-ENC-321–340 for IPM and biosecurity; THC-ENC-413 for root-cause analysis/CAPA.",
+  "sourceNotes":[
+    "Buirs L, Punja ZK. Integrated Management of Pathogens and Microbes in Cannabis sativa L. under Greenhouse Conditions. Plants. 2024;13(6):786. PMID:38592798. Notes recording disease hot spots, diagnostic confirmation, sanitation, monitoring, and recurring crop-cycle risks. https://pmc.ncbi.nlm.nih.gov/articles/PMC10974757/",
+    "Penn State Extension. Assessing the Risk of Disease in Greenhouses. Updated 2025. Emphasizes scouting responsibility, treatment/environment records, records of recurring root/stem/cutting rots, damping-off, leaf spots, flower blights, and review of likely sources/resolution. https://extension.psu.edu/assessing-the-risk-of-disease-in-greenhouses",
+    "University of Missouri Extension. Plant Biosecurity Preparedness Plan for U.S. Agricultural Producers. Emphasizes operation maps/records, scouting, risk assessment, response procedures, mitigation, drills, and plan revision. https://extension.missouri.edu/publications/mp745"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.0 controlled title plus evidence-reconciled web derivative","evidenceControl":"cannabis_integrated_disease_management_plus_current_greenhouse_incident_record_and_biosecurity_principles","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"plant_disease_incident_management_records_and_verification","releaseTimeReview":"completed_2026-09-01_eradication_root_cause_and_verification_claim_boundaries_explicit","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"disease-incident-records-and-eradication-review",
+  "route":"/encyclopedia/disease-incident-records-and-eradication-review"
+}

@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-318",
+  "number":318,
+  "title":"Postharvest Microbes and Mycotoxin Context",
+  "objective":"Interpret postharvest Cannabis microbial contamination, total yeast and mold results, toxigenic fungal detection, and mycotoxin testing as related but distinct quality and safety measurements, and trace contamination across preharvest, harvest, drying, trimming, storage, and analytical stages.",
+  "terms":[
+    {"term":"total yeast and mold","definition":"A culture- or method-defined measure of viable or detectable yeast and mold burden; it does not identify every organism or establish mycotoxin content by itself."},
+    {"term":"mycotoxin","definition":"A toxic secondary metabolite produced by certain fungal strains under particular biological and environmental conditions; fungal presence does not guarantee toxin production."},
+    {"term":"toxigenic fungus","definition":"A fungal species or strain capable of producing one or more mycotoxins under suitable conditions, although capability and actual toxin production are separate questions."},
+    {"term":"postharvest colonization","definition":"Microbial growth or persistence on harvested plant material during handling, drying, curing, trimming, storage, or processing."},
+    {"term":"contaminant test","definition":"An analytical measurement for a defined hazard such as viable microbes, fungal DNA, specific mycotoxins, pesticides, metals, or other regulated analytes."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Cannabis inflorescences carry a complex mycobiome that can include pathogens, epiphytes, endophytes, and postharvest molds. Frequently discussed genera include Aspergillus, Penicillium, Fusarium, Mucor, and other fungi, but detection frequency and health significance depend on species or strain, viability, abundance, analytical method, product type, and jurisdictional standards.",
+    "Microbial load and mycotoxin concentration are not interchangeable measurements. A culture count can be elevated without a tested mycotoxin being present, while detecting a toxigenic fungal taxon does not prove that it produced toxin in the sampled material. Mycotoxin claims require toxin-specific analytical evidence.",
+    "Contamination can originate before harvest or increase during harvest and postharvest handling. Cannabis greenhouse research indicates that genotype, season, inflorescence microclimate, drying method, handling, and equipment sanitation can influence total yeast and mold levels.",
+    "Analytical approaches differ in what they measure. Culture-based methods estimate organisms capable of growth under the assay conditions, molecular methods can detect DNA from viable or nonviable organisms, and chromatographic or validated toxin-specific methods quantify defined chemical contaminants. Results should be interpreted within the method's scope.",
+    "Cannabis contaminant regulation remains jurisdiction dependent. A laboratory pass/fail threshold is a legal or programmatic criterion for a defined market and method; it should not be presented as a universal biological threshold, and requirements can change over time."
+  ],
+  "cultivationRelevance":[
+    "Trace a high postharvest microbial result backward through flowering-room observations, harvest lot, drying location/method, trim equipment, storage container, handling events, and sampling history rather than assuming contamination occurred at one stage.",
+    "Separate visible mold inspection, total yeast/mold enumeration, fungal identification, and mycotoxin analysis in records so one type of evidence is not substituted for another.",
+    "Preserve batch identities through harvest and postharvest processing so contaminated or suspect material can be investigated without losing the link to genotype, room, date, and handling conditions.",
+    "Use current jurisdiction-specific testing requirements and validated laboratory methods for compliance decisions; research findings do not replace the applicable contaminant standard."
+  ],
+  "measureAndRecord":[
+    {"field":"Batch identity","requirement":"Record cultivar/genotype, source room/area, harvest date, lot/batch ID, drying and trimming locations, storage container, and processing dates."},
+    {"field":"Visible condition","requirement":"Record visible mold, discoloration, odor change, tissue breakdown, foreign material, and photographs separately from laboratory results."},
+    {"field":"Microbial assay","requirement":"Record laboratory, method, sample preparation, total yeast/mold or organism result, units, detection/quantitation limits where supplied, and regulatory criterion if applicable."},
+    {"field":"Mycotoxin assay","requirement":"Record each toxin analyte, analytical method, result, units, detection/quantitation limits, and applicable legal/program limit separately from fungal identification."},
+    {"field":"Process investigation","requirement":"Record drying conditions/method, handling, equipment sanitation status, storage conditions, deviations, repeat results, and corrective actions."
+    }
+  ],
+  "misconceptions":[
+    "A high total yeast and mold count proves mycotoxins are present.",
+    "Detecting Aspergillus DNA proves viable Aspergillus or toxin production in the sample.",
+    "A batch that looks clean visually must pass microbial testing.",
+    "All postharvest contamination starts after harvest.",
+    "One jurisdiction's microbial or mycotoxin limit is a universal scientific threshold for all Cannabis products."
+  ],
+  "evidenceLimits":[
+    "Cannabis-specific microbial and mycotoxin data are expanding, but organism-toxin relationships, strain-level toxigenicity, analytical-method comparability, and regulatory thresholds vary. Public content should distinguish organism identity, viability, abundance, toxin production, chemical quantification, and legal compliance."
+  ],
+  "crossLinks":"THC-ENC-303 for Botrytis; THC-ENC-307 for Sclerotinia; THC-ENC-314–315 for sampling and test interpretation; THC-ENC-341–360 for harvest/postharvest science and THC-ENC-412 for laboratory result tracking.",
+  "sourceNotes":[
+    "Gwinn KD, Leung MCK, Stephens AB, Punja ZK. Fungal and mycotoxin contaminants in cannabis and hemp flowers: implications for consumer health and directions for further research. Front Microbiol. 2023. PMID:37928692. https://pubmed.ncbi.nlm.nih.gov/37928692/",
+    "Buirs L, Punja ZK. Integrated Management of Pathogens and Microbes in Cannabis sativa L. under Greenhouse Conditions. Plants. 2024;13(6):786. PMID:38592798. https://pmc.ncbi.nlm.nih.gov/articles/PMC10974757/",
+    "Cannabis Products and Contaminant Detection: Critical Review of Regulatory Oversight and Analytical Methodologies. 2026. PMID:41952362. https://pubmed.ncbi.nlm.nih.gov/41952362/"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.0 controlled title plus evidence-reconciled web derivative","evidenceControl":"cannabis_specific_mycobiome_postharvest_TYM_mycotoxin_and_2026_contaminant_method_review","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_postharvest_microbiology_and_contaminant_analytics","releaseTimeReview":"completed_2026-09-01_fungal_detection_viability_toxin_and_regulatory_threshold_boundaries_explicit","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"postharvest-microbes-and-mycotoxin-context",
+  "route":"/encyclopedia/postharvest-microbes-and-mycotoxin-context"
+}
