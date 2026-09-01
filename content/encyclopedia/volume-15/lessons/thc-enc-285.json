@@ -1,0 +1,57 @@
+{
+  "id":"THC-ENC-285",
+  "number":285,
+  "title":"Western Flower Thrips and Related Thrips",
+  "objective":"Identify western flower thrips and related thrips using life stage, body form, feeding injury, fecal evidence, tissue location, and specimen-level characters while distinguishing thrips injury from mites, abrasion, phytotoxicity, nutrient disorders, and plant disease.",
+  "terms":[
+    {"term":"Frankliniella occidentalis","definition":"Western flower thrips, a tiny, highly polyphagous thrips species documented on hemp and many greenhouse and field crops."},
+    {"term":"Thysanoptera","definition":"The insect order containing thrips; adults typically have narrow wings fringed with long hairs, while immature feeding stages are wingless."},
+    {"term":"larva","definition":"A wingless feeding immature stage of thrips; the first two immature stages feed on plant tissue, pollen, or other resources before nonfeeding prepupal and pupal stages."},
+    {"term":"prepupa and pupa","definition":"Later immature thrips stages that do not normally feed; in western flower thrips they commonly occur away from exposed feeding sites, often in protected material or soil depending on the host system."},
+    {"term":"orthotospovirus vector","definition":"A thrips capable of acquiring and transmitting certain plant viruses in the genus Orthotospovirus under compatible host-vector-virus conditions; vector presence alone does not establish plant infection."}
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Western flower thrips is documented on hemp, including flowers and pollen, while onion thrips and other thrips species can also occur on hemp. Because multiple thrips taxa can share a crop, a generic observation of 'thrips' should not automatically be converted into Frankliniella occidentalis without sufficient specimen evidence.",
+    "Adults are minute, elongate insects with narrow fringed wings; larvae are smaller and wingless. Eggs are inserted into plant tissue, the first two immature stages feed, and later prepupal and pupal stages are generally nonfeeding. Life-stage location therefore changes what a scout is likely to find on leaves, flowers, sticky cards, or protected sites.",
+    "Feeding injury can include pale flecks, silvery or scarred tissue, distorted developing leaves, and flower injury. Dark fecal spots near feeding scars are useful supporting evidence. These features are not species-specific and can overlap with mite feeding, abrasion, spray injury, residue, or other physiological and infectious disorders.",
+    "Western flower thrips can be separated from related species using microscopic characters including antennal, ocular, pronotal, and abdominal setae and comb structures. UF/IFAS identification guidance demonstrates why high-confidence species identification may require microscopy rather than body color or crop symptom alone.",
+    "Western flower thrips is an important vector of orthotospoviruses in many crops, but vector competence is a biological relationship among a particular thrips population, virus, host, and acquisition stage. Finding western flower thrips on cannabis or hemp does not prove that a virus is present or that observed symptoms are virus-caused."
+  ],
+  "cultivationRelevance":[
+    "Combine direct inspection of leaves, growing points, and flowers with a tap or shake sample and sticky-card records where appropriate; each method samples a different fraction of the population.",
+    "Collect actual specimens when species identity matters. Preserve magnified photographs or specimens with plant location, date, life stage, and sampling method so identification can be reviewed.",
+    "Record feeding scars and dark fecal spots separately from organism counts because established injury can remain after thrips have moved or declined.",
+    "Keep identification separate from control authorization. Any pesticide or biological-control decision must account for current crop labels, jurisdictional requirements, crop stage, residues, resistance, and compatibility with beneficial organisms."
+  ],
+  "measureAndRecord":[
+    {"field":"Life stage and morphology","requirement":"Record adults, larvae, prepupae or pupae when found, wing presence, body form and color, magnification, and whether diagnostic microscopic characters were evaluated."},
+    {"field":"Plant injury","requirement":"Record pale flecks, silvering or scarring, distortion, flower or growing-point involvement, dark fecal spots, progression, and matched unaffected tissue."},
+    {"field":"Sampling method","requirement":"Record leaves or flowers inspected, tap or shake-test method, sticky-card location and interval, specimen collection method, observer, and date."},
+    {"field":"Distribution and trend","requirement":"Map plant groups, propagation lots, flowers versus foliage, indoor/outdoor zones, repeated counts or ordinal density, and whether abundance is increasing, stable, or declining."},
+    {"field":"Differential and disease evidence","requirement":"Record mite inspection, spray or abrasion history, abiotic evidence, suspected virus symptoms, laboratory testing if performed, and the confidence level of both pest and disease identification."
+    }
+  ],
+  "misconceptions":[
+    "Any silvered cannabis leaf proves western flower thrips.",
+    "All thrips found on hemp are the same species.",
+    "Body color alone reliably separates western flower thrips from related thrips.",
+    "Finding a virus-vectoring thrips species proves the plant has a virus.",
+    "One universal thrips threshold or pesticide program applies to all hemp and cannabis production systems."
+  ],
+  "evidenceLimits":[
+    "Western flower thrips and related thrips are documented on hemp, but cannabis-specific economic thresholds, cultivar susceptibility, virus-vector relationships, and management outcomes are not standardized across systems. Detailed western flower thrips life-history and identification literature comes largely from other crops and greenhouse systems; those mechanisms are useful for diagnosis but should not be converted into universal cannabis thresholds or disease claims."
+  ],
+  "crossLinks":"THC-ENC-281 for identification workflow; THC-ENC-282–284 for mite differentials; THC-ENC-277 and 279 for phytotoxicity, spray, and residue differentials; THC-ENC-297–300 for sampling, thresholds, biological-control compatibility, and records; THC-ENC-301–320 for virus and disease differentials; THC-ENC-321–340 for IPM systems.",
+  "sourceNotes":[
+    "Utah State University Extension, Thrips — Hemp. Documents western flower thrips and onion thrips on field- and greenhouse-grown hemp, adult/larval morphology, feeding flecks or silvery scars with dark fecal spots, and states that no industrial-hemp threshold exists. https://extension.usu.edu/planthealth/ipm/notes_ag/hemp-thrips",
+    "Cranshaw W. et al. (2019), Developing Insect Pest Management Systems for Hemp in the United States: A Work in Progress, Journal of Integrated Pest Management 10(1):26. Reports onion thrips and western flower thrips from hemp and notes western flower thrips association with hemp flowers and pollen. https://academic.oup.com/jipm/article/10/1/26/5555744",
+    "UF/IFAS Extension, Pest Identification Guide: Western Flower Thrips Frankliniella occidentalis, reviewed April 10, 2025. Provides specimen-level identification guidance and life-stage imagery. https://ask.ifas.ufl.edu/publication/IN1127",
+    "UF/IFAS Extension, Western Flower Thrips (Frankliniella occidentalis). Describes life stages, fringed adult wings, nonfeeding prepupal/pupal stages, and microscopic characters needed to separate related species. https://ask.ifas.ufl.edu/publication/IN1089",
+    "Reitz S.R. et al. (2020), Invasion Biology, Ecology, and Management of Western Flower Thrips, Annual Review of Entomology 65:17–37. Reviews biology, invasiveness, orthotospovirus vectoring, resistance, and integrated-management evidence. https://doi.org/10.1146/annurev-ento-011019-024947"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.0 controlled title plus evidence-reconciled web derivative","evidenceControl":"direct_hemp_pest_review_plus_current_university_extension_identification_and_western_flower_thrips_review","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"western_flower_thrips_and_related_thrips_identification_injury_sampling_and_vector_boundary","releaseTimeReview":"completed_2026-08-31_species_identification_no_universal_hemp_threshold_and_vector_not_disease_proof","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-31","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"western-flower-thrips-and-related-thrips",
+  "route":"/encyclopedia/western-flower-thrips-and-related-thrips"
+}
