@@ -1,0 +1,57 @@
+{
+  "id":"THC-ENC-338",
+  "number":338,
+  "title":"Isolation, Removal, and Waste Handling",
+  "objective":"Use isolation, controlled removal, containment, traceability, and lawful waste handling to reduce exposure from suspect, infested, or diseased material without confusing containment decisions with diagnostic certainty.",
+  "terms":[
+    {"term":"isolation","definition":"Physical and procedural separation of suspect, exposed, infested, or diseased plants/material from lower-risk crop areas while status and disposition are evaluated."},
+    {"term":"rogueing","definition":"Intentional removal of individual plants or plant material from a crop because their pest, pathogen, or biosecurity risk justifies removal."},
+    {"term":"containment","definition":"Packaging, routing, handling, and access controls intended to keep pests, spores, sap, debris, or contaminated material from spreading during removal or storage."},
+    {"term":"disposition","definition":"The documented final handling decision for isolated or removed plants/material, such as release, continued hold, destruction, disposal, or another lawful destination."},
+    {"term":"waste traceability","definition":"Records linking removed plant material or waste to its crop zone, batch, reason for removal, handling route, and final disposition when relevant to plant-health investigation."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Isolation is a risk-control step, not a diagnosis. A plant with suspicious symptoms can be separated while identification is pending, reducing contact and movement opportunities without falsely declaring a confirmed causal agent.",
+    "Removal can reduce pest populations, reservoirs, or pathogen inoculum, but the act of removal can also spread material. Botrytis guidance recommends containing diseased plants and debris in closed bags during greenhouse removal to reduce spore dispersal, while bacterial-disease guidance emphasizes hand/glove sanitation when handling diseased material.",
+    "The appropriate scale of removal depends on biology and evidence. A localized arthropod infestation, a mechanically transmitted systemic pathogen, a root disease shared through irrigation, and an uncertain abiotic symptom do not justify identical removal rules.",
+    "Waste and cull routes are part of facility biosecurity. Moving suspect plants, media, debris, tools, or open waste containers through propagation or screened mother-stock areas can create unnecessary exposure even after a decision to discard the material has been made.",
+    "Final disposal rules vary with jurisdiction, pesticide residues, plant material status, waste type, and facility policy. Composting or other reuse of diseased material should not be represented as universally safe without target-specific process validation and legal review."
+  ],
+  "cultivationRelevance":[
+    "Mark and physically separate suspect plants or material when the potential consequence justifies containment while diagnostic evidence is gathered.",
+    "Plan removal from lower-risk to higher-risk areas and contain diseased/infested material before transport so sap, spores, insects, soil, or debris are not redistributed through clean zones.",
+    "Clean or change hands, gloves, tools, carts, containers, and other contact surfaces after handling suspect or removed material according to the applicable sanitation SOP.",
+    "Preserve plant/batch identity and removal reason so later diagnostic results or outbreak analysis can be linked to the correct source material and related plants."
+  ],
+  "measureAndRecord":[
+    {"field":"Isolation trigger","requirement":"Record observation, diagnostic confidence, pest/pathogen risk, crop zone, plant/batch identity, and why isolation or removal was chosen."},
+    {"field":"Containment","requirement":"Record packaging/container method, movement route, dedicated equipment, access restrictions, and steps used to prevent spill, sap, spore, insect, or debris release."},
+    {"field":"Removed quantity","requirement":"Record plant count, plant parts, media/waste volume or other relevant quantity and whether related material remained in production."},
+    {"field":"Disposition","requirement":"Record final lawful destination or destruction/disposal method, date, responsible person, and any pesticide-residue or jurisdictional constraint considered."},
+    {"field":"Follow-up","requirement":"Rescout exposed/adjacent plants and review diagnostic results so containment can be released, expanded, or closed based on evidence."
+    }
+  ],
+  "misconceptions":[
+    "Isolating a plant proves it has an infectious disease.",
+    "Once a diseased plant is pulled, there is no spread risk during transport.",
+    "Every positive or suspect plant requires whole-room destruction.",
+    "Any diseased crop waste is automatically safe to compost.",
+    "Waste handling is separate from the biosecurity program."
+  ],
+  "evidenceLimits":[
+    "Containment and removal recommendations depend on target biology, diagnostic confidence, crop value, exposure pathways, legal requirements, and facility design. Removal can reduce risk but does not prove eradication or establish the source of an outbreak. Waste disposition and composting requirements are jurisdiction- and process-specific."
+  ],
+  "crossLinks":"THC-ENC-322–325 for zoning and sanitation; THC-ENC-332–333 for diagnostic confidence and decision triggers; THC-ENC-335 for physical removal; THC-ENC-339 for corrective/preventive action; THC-ENC-340 for audit review.",
+  "sourceNotes":[
+    "University of Connecticut Integrated Pest Management. Botrytis Blight on Greenhouse Crops. Recommends disposing diseased plants/debris in a closed plastic trash bag to reduce spore spread during removal. https://ipm.cahnr.uconn.edu/botrytis-blight-on-greenhouse-crops/",
+    "UC Statewide IPM Program. Bacterial Leaf Spots, Blights, Cankers, and Rots. Current guidance includes rogueing diseased plants and sanitizing hands/using disposable gloves. https://ipm.ucanr.edu/agriculture/floriculture-and-ornamental-nurseries/bacterial-leaf-spots-blights-cankers-and-rots/",
+    "University of Missouri Extension. Sanitation for Plant Health and Pest Management. Current 2026 greenhouse/nursery sanitation context for crop debris and pathogen reservoirs.",
+    "US Environmental Protection Agency pesticide label resources. Any pesticide-treated plant material remains subject to applicable label and jurisdictional disposal requirements. https://www.epa.gov/pesticide-labels"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.1 controlled title plus evidence-reconciled web derivative","evidenceControl":"greenhouse_disease_containment_removal_and_current_label_disposal_boundary","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"plant_health_isolation_removal_and_waste","releaseTimeReview":"completed_2026-09-01_isolation_not_diagnosis_and_disposal_not_universal","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"isolation-removal-and-waste-handling",
+  "route":"/encyclopedia/isolation-removal-and-waste-handling"
+}
