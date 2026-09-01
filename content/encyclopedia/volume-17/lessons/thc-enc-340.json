@@ -1,0 +1,57 @@
+{
+  "id":"THC-ENC-340",
+  "number":340,
+  "title":"IPM Program Audit and Continuous Improvement",
+  "objective":"Audit an IPM program as a closed evidence loop by reviewing goals, prevention controls, scouting coverage, diagnostic quality, decisions, legal compliance, treatment outcomes, recurrence, CAPA, and trend data, then convert findings into measurable improvement priorities.",
+  "terms":[
+    {"term":"IPM program audit","definition":"A structured review of whether the planned IPM system is implemented, documented, legally compliant where applicable, and producing measurable plant-health outcomes."},
+    {"term":"leading indicator","definition":"A measure of prevention or process performance that may change before final crop damage, such as scouting completion, intake-screening compliance, sanitation verification, or repair closure time."},
+    {"term":"lagging indicator","definition":"An outcome measure observed after events occur, such as pest recurrence, disease incidence, crop loss, treatment failure, or repeated outbreak frequency."},
+    {"term":"trend review","definition":"Comparison of standardized records across time, zones, crops, or cycles to distinguish repeated patterns from isolated events."},
+    {"term":"continuous improvement","definition":"Repeated measurement, review, problem solving, standardization, and adjustment used to improve system performance rather than treating procedures as permanently finished."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "An IPM program is only as strong as its feedback loop. EPA IPM guidance and pesticide-applicator training emphasize monitoring, records, evaluation of results, prevention, and adjustment when control methods fail or create unintended effects.",
+    "Auditing should examine both implementation and outcomes. A facility can complete every scheduled scouting form yet still detect pests late if routes are unrepresentative, while a low pesticide-use count can reflect strong prevention or simply missed detection. Metrics require biological and operational context.",
+    "Useful program review combines leading indicators such as quarantine completion, sanitation checks, scouting coverage, diagnostic turnaround, screen repair, training, and CAPA closure with lagging indicators such as recurrence, incidence, crop injury, treatment efficacy, repeated hotspots, and loss.",
+    "Standardization makes trends interpretable. Trap locations, exposure intervals, sampling denominators, symptom scales, diagnostic confidence categories, treatment records, and environmental measurements should remain comparable enough that changes through time can be evaluated rather than obscured by changing methods.",
+    "Audit does not mean a zero-pest promise. The objective is evidence that the system detects risk appropriately, prevents avoidable introductions, responds lawfully and proportionately, learns from failures, protects crop/worker/environmental health, and improves measurable outcomes over time."
+  ],
+  "cultivationRelevance":[
+    "Review the program at defined intervals and after meaningful outbreaks, treatment failures, diagnostic surprises, repeated sanitation failures, or other events that reveal a system weakness.",
+    "Compare planned scouting and sanitation controls with actual completion and quality, not just whether a form exists.",
+    "Trend pest/disease detections by zone, crop stage, cultivar/genotype, source material, season, treatment, environmental condition, and recurrence where the records support those comparisons.",
+    "Convert audit findings into a short prioritized improvement list with owners, due dates, verification measures, and a later review date rather than producing an audit report that does not change the system."
+  ],
+  "measureAndRecord":[
+    {"field":"Prevention controls","requirement":"Review intake/quarantine, zoning, exclusion, sanitation, irrigation hygiene, environmental management, waste routes, maintenance, and training for completion, exceptions, failures, and verification evidence."},
+    {"field":"Monitoring and diagnostics","requirement":"Review route coverage, denominators, trap standardization, symptom/photo records, identification confidence, diagnostic escalation, laboratory turnaround, and unresolved findings."},
+    {"field":"Decision quality","requirement":"Review threshold/tolerance sources, treatment rationale, nonchemical/biological options considered, pesticide label/legal checks, resistance-management records, and whether uncertainty was documented."},
+    {"field":"Outcome metrics","requirement":"Trend recurrence, incidence/severity, pest abundance, treatment efficacy, crop injury, failed interventions, repeated hotspots, time to detection/containment, and other program-defined outcomes with appropriate context."},
+    {"field":"Improvement actions","requirement":"Record prioritized findings, action owner, deadline, success measure, CAPA linkage, status, verification result, and next program review date."
+    }
+  ],
+  "misconceptions":[
+    "An IPM audit is successful only when no pests are found.",
+    "Fewer pesticide applications automatically prove the IPM program improved.",
+    "A completed checklist proves the underlying scouting or sanitation task was effective.",
+    "Metrics are comparable even when sampling methods and denominators change every cycle.",
+    "An audit is complete when the report is written, even if no improvement actions are assigned or verified."
+  ],
+  "evidenceLimits":[
+    "No single audit score or metric set is validated for every Cannabis/hemp production system. Appropriate indicators depend on facility design, crop value, pest/pathogen profile, jurisdiction, production stage, available diagnostics, and program maturity. Metrics should support decisions and learning rather than become targets detached from biological outcomes."
+  ],
+  "crossLinks":"THC-ENC-321 for the IPM framework; THC-ENC-322–330 for prevention/biosecurity controls; THC-ENC-331–333 for monitoring and decisions; THC-ENC-334–338 for control/containment; THC-ENC-339 for CAPA and effectiveness verification.",
+  "sourceNotes":[
+    "US Environmental Protection Agency. Integrated Pest Management Principles. Current 2026 framework emphasizing monitoring, prevention, action thresholds, control selection, and evaluation. https://www.epa.gov/safepestcontrol/integrated-pest-management-ipm-principles",
+    "US Environmental Protection Agency. National Pesticide Applicator Certification Core Manual. Emphasizes recording and evaluating results of pest-management efforts and adjusting strategy when outcomes are inadequate. https://www.epa.gov/system/files/documents/2022-09/national-pesticide-applicator-cert-core-manual-2014.pdf",
+    "Oklahoma State University Extension. Integrated Pest Management in Commercial Greenhouses: An Overview of Principles and Practices. Prevention, monitoring, prompt action, documentation, and treatment efficacy as core program elements. https://extension.okstate.edu/fact-sheets/ipm-in-the-greenhouse-series-integrated-pest-management-in-commercial-greenhouses-an-overview-of-principles-and-practices",
+    "US Environmental Protection Agency. Continuous Improvement. Current agency framework describing routine measurement, problem solving, standard work, and regular review as elements of continuous improvement. https://www.epa.gov/lean/continuous-improvement"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.1 controlled title plus evidence-reconciled web derivative","evidenceControl":"current_IPM_record_evaluation_plus_continuous_improvement_principles","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"IPM_program_audit_and_continuous_improvement","releaseTimeReview":"completed_2026-09-01_no_universal_audit_score_or_zero_pest_claim","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"ipm-program-audit-and-continuous-improvement",
+  "route":"/encyclopedia/ipm-program-audit-and-continuous-improvement"
+}
