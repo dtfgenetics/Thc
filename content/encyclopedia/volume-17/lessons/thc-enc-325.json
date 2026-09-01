@@ -1,0 +1,57 @@
+{
+  "id":"THC-ENC-325",
+  "number":325,
+  "title":"Tool, Bench, and Container Sanitation",
+  "objective":"Distinguish physical cleaning from subsequent sanitation/disinfection and apply traceable surface-control practices to tools, benches, reusable containers, hose ends, and other crop-contact equipment without inventing universal chemical concentrations or contact times.",
+  "terms":[
+    {"term":"cleaning","definition":"Physical removal of soil, plant debris, sap, biofilm, organic matter, and other material from a surface before a subsequent sanitation or disinfection step when required."},
+    {"term":"disinfection","definition":"Use of a validated physical or chemical process to reduce or inactivate specified microorganisms on a cleaned surface under defined conditions."},
+    {"term":"organic load","definition":"Soil, plant sap, media, debris, or other organic material that can shield microorganisms or reduce the effectiveness of some disinfectants."},
+    {"term":"contact time","definition":"The period a disinfectant must remain in effective contact with the target surface as specified by the validated procedure or product label."},
+    {"term":"crop-contact surface","definition":"A tool, bench, tray, container, hose/nozzle, cart, or other item that can contact plants, roots, media, irrigation components, or contaminated material."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Greenhouse sanitation is not one step. Current extension guidance consistently separates removal of soil, plant material, media, algae, sap, and other organic debris from the subsequent use of an appropriate disinfectant or other validated sanitation process.",
+    "Organic matter can reduce the activity of several disinfectants, so applying a chemical to visibly dirty tools, benches, trays, or pots is not equivalent to a validated clean-and-disinfect procedure.",
+    "Crop-contact surfaces differ in cleanability. Smooth nonporous benches and containers are generally easier to clean and disinfect than porous wood, cracked plastics, worn surfaces, or equipment with inaccessible joints where debris and moisture accumulate.",
+    "Cannabis HLVd research shows that infectious sap can mechanically transmit the viroid through wounded stems and that contaminated production surfaces can contain detectable viroid RNA. These findings support rigorous sanitation around pruning/propagation while also requiring a distinction between surface detection and proven transmission from every contaminated surface.",
+    "Chemical identity alone does not determine efficacy. Concentration, formulation, organic load, temperature, surface compatibility, wet/contact time, pathogen biology, label directions, and worker-safety requirements all matter; therefore this lesson does not publish a universal Cannabis disinfectant recipe."
+  ],
+  "cultivationRelevance":[
+    "Remove visible plant material, media, soil, sap, algae, and other debris before applying a sanitation or disinfection procedure where required.",
+    "Prioritize pruning tools, propagation tools, benches, reusable trays/containers, carts, hose ends, and other repeated crop-contact surfaces according to their actual transfer risk.",
+    "Keep cleaned items separated from dirty or used items so storage does not immediately recontaminate them.",
+    "Use the current product label, equipment compatibility information, facility safety procedure, and pathogen-specific evidence for any chemical disinfectant rather than copying an unverified concentration or contact time."
+  ],
+  "measureAndRecord":[
+    {"field":"Surface/equipment ID","requirement":"Identify the tool, bench, container class, cart, hose/nozzle, or other crop-contact surface and the zones/crops it serves."},
+    {"field":"Cleaning step","requirement":"Record how visible soil, media, sap, plant debris, algae, or organic residue is removed before disinfection when applicable."},
+    {"field":"Disinfection procedure","requirement":"Record product/process, current label or validated SOP reference, preparation date when relevant, required contact condition, surface compatibility, and responsible worker."},
+    {"field":"Verification","requirement":"Record visual cleanliness, procedure completion, solution/process checks required by the SOP, and any failed or repeated sanitation event."},
+    {"field":"Storage/status","requirement":"Keep clean/ready items distinguishable from used/dirty items and record dedicated-zone equipment where cross-zone movement is restricted."
+    }
+  ],
+  "misconceptions":[
+    "Cleaning and disinfection are the same step.",
+    "More disinfectant is always more effective and safer.",
+    "A product that works on one pathogen, surface, and contact time is automatically effective for every Cannabis pathogen and material.",
+    "Visible cleanliness proves microbiological sterility.",
+    "Detectable pathogen nucleic acid on a bench proves that the bench infected a plant."
+  ],
+  "evidenceLimits":[
+    "Greenhouse sanitation principles are strong, but exact disinfectant efficacy is product-, pathogen-, surface-, concentration-, organic-load-, temperature-, and contact-time-dependent. Product labels and current legal/safety requirements govern use. Surface PCR detection may indicate contamination but does not alone establish viability or a completed transmission event."
+  ],
+  "crossLinks":"THC-ENC-316 for tool-mediated HLVd transmission; THC-ENC-322–324 for zoning, quarantine, and personnel controls; THC-ENC-326–327 for cleaning-versus-disinfection and contact time; THC-ENC-339 for corrective actions when sanitation verification fails.",
+  "sourceNotes":[
+    "UMass Amherst Greenhouse & Floriculture. Cleaning and Disinfecting the Greenhouse. Current fact sheet accessed 2026-09-01. https://www.umass.edu/agriculture-food-environment/greenhouse-floriculture/fact-sheets/cleaning-disinfecting-greenhouse",
+    "NC State Extension. Prevention and Management of Soilborne Diseases of Ornamental Plants and Vegetables in the Greenhouse. https://content.ces.ncsu.edu/prevention-and-management-of-soilborne-diseases-of-ornamental-plants-and-vegetables-in-the-greenhouse",
+    "Penn State Extension. Assessing the Risk of Disease in Greenhouses. https://extension.psu.edu/assessing-the-risk-of-disease-in-greenhouses",
+    "Punja ZK, Scott C, Tso HH, Munz J, Buirs L. Transmission, Spread, Longevity and Management of Hop Latent Viroid. Plants. 2025;14(5):830. https://pmc.ncbi.nlm.nih.gov/articles/PMC11902214/"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.1 controlled title plus evidence-reconciled web derivative","evidenceControl":"current_greenhouse_cleaning_disinfection_guidance_plus_direct_cannabis_HLVd_surface_and_mechanical_transmission_context","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"greenhouse_sanitation_and_cannabis_pathogen_control","releaseTimeReview":"completed_2026-09-01_no_universal_disinfectant_recipe_or_surface_detection_causality_claim","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"tool-bench-and-container-sanitation",
+  "route":"/encyclopedia/tool-bench-and-container-sanitation"
+}
