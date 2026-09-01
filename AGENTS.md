@@ -8,7 +8,7 @@ Read `AI_CONTEXT.md` for the current repository map, common commands, game owner
 
 ## Parallel project isolation
 
-For new repository work, read `docs/PARALLEL_PROJECT_WORKFLOW.md` before creating or switching branches.
+For new repository work, read `.agents/skills/parallel-project-manager/SKILL.md` and `docs/PARALLEL_PROJECT_WORKFLOW.md` before creating or switching branches.
 
 - Ordinary project work uses `project/<project-id>/<task>` in a dedicated Git worktree.
 - Do not switch a shared checkout between active projects when separate worktrees can be used.
