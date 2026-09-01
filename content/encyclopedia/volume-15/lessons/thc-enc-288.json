@@ -1,0 +1,57 @@
+{
+  "id":"THC-ENC-288",
+  "number":288,
+  "title":"Whiteflies",
+  "objective":"Identify whiteflies on hemp or cannabis from adults, immature stages, honeydew, and leaf-location evidence while distinguishing feeding injury from whitefly-transmitted disease and avoiding unsupported universal thresholds.",
+  "terms":[
+    {"term":"Aleyrodidae","definition":"The insect family containing whiteflies, small phloem-feeding hemipterans with mobile adults and mostly sessile immature stages."},
+    {"term":"Bemisia tabaci","definition":"A whitefly species complex that includes important greenhouse crop pests and vectors of multiple plant viruses; it has been documented feeding on Cannabis and transmitting lettuce chlorosis virus to cannabis in experiments."},
+    {"term":"crawler","definition":"The mobile first-instar whitefly nymph that settles on a feeding site before later immature stages become largely immobile."},
+    {"term":"puparium","definition":"The final immature whitefly stage from which the adult emerges; its morphology can aid species identification."},
+    {"term":"sooty mold","definition":"Dark fungal growth that develops on sugary honeydew deposited by phloem-feeding insects."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Whiteflies are documented pests of greenhouse-grown hemp and cannabis. Adults are small, bright white-winged insects typically found on leaf undersides, while eggs and flat, pale immature stages remain attached to leaves and can be overlooked without close inspection.",
+    "Both adults and nymphs feed from phloem and produce honeydew. Heavy infestations can be associated with yellowing, leaf decline, sticky foliage, and sooty mold, but these symptoms overlap with aphids and other stressors and should not substitute for direct organism evidence.",
+    "Bemisia tabaci has direct Cannabis disease relevance because controlled research demonstrated transmission of lettuce chlorosis virus to cannabis. Whitefly presence alone does not establish virus infection; compatible symptoms and plant diagnostics remain necessary.",
+    "Species-level whitefly identification can require immature-stage or molecular characters because visually similar whitefly taxa occur in greenhouse systems. A generic whitefly diagnosis is preferable to an unsupported Bemisia species assignment.",
+    "Extension sources report greenhouse hemp scouting thresholds in some regional programs, but threshold transfer across cultivars, markets, crop stages, and jurisdictions is not validated universally. This lesson therefore treats abundance and crop response as recorded decision inputs rather than one fixed cannabis threshold."
+  ],
+  "cultivationRelevance":[
+    "Inspect lower-leaf undersides for eggs and immature stages as well as adults; sticky cards are useful for adult detection but do not measure attached nymph density directly.",
+    "Differentiate whitefly adults from pale aphid exuviae and other small flying insects by direct observation and leaf-stage evidence.",
+    "When interveinal chlorosis or virus-like symptoms occur, separate whitefly identification from disease confirmation and use appropriate plant diagnostics.",
+    "Any control action must follow current crop labels, local law, worker-safety requirements, residue limits, and compatibility with beneficial organisms."
+  ],
+  "measureAndRecord":[
+    {"field":"Adult activity","requirement":"Record adults per sticky card interval or per standardized leaf-disturbance inspection and map hotspot location."},
+    {"field":"Immature stages","requirement":"Record eggs, crawlers, settled nymphs, and puparia per defined leaf area or leaf sample."},
+    {"field":"Leaf signs","requirement":"Record honeydew, sooty mold, yellowing, leaf drop, underside colony distribution, and matched unaffected leaves."},
+    {"field":"Species confidence","requirement":"Record whether identification is family-level, whitefly species complex, or laboratory-confirmed species."},
+    {"field":"Disease evidence","requirement":"Record virus-like symptoms and laboratory plant-test results independently of whitefly counts."
+    }
+  ],
+  "misconceptions":[
+    "All tiny white flying insects on cannabis are whiteflies.",
+    "Sticky-card adults alone describe the density of attached immature stages.",
+    "Whitefly feeding injury proves a whitefly-transmitted virus.",
+    "Every whitefly on cannabis is Bemisia tabaci.",
+    "One regional hemp threshold is universal for all cannabis production."
+  ],
+  "evidenceLimits":[
+    "Whiteflies are documented on greenhouse hemp and cannabis, and Bemisia tabaci has experimentally transmitted lettuce chlorosis virus to cannabis. However, whitefly species composition, cultivar susceptibility, disease prevalence, and economic thresholds vary among systems. Regional extension thresholds should not be presented as universal cannabis action levels."
+  ],
+  "crossLinks":"THC-ENC-281 for identification workflow; THC-ENC-286–287 for aphid differentials; THC-ENC-297–300 for sampling and thresholds; THC-ENC-301–320 for virus diagnostics; THC-ENC-321–340 for IPM systems.",
+  "sourceNotes":[
+    "Utah State University Extension, Whiteflies — Hemp. Documents greenhouse hemp hosts, life stages, honeydew, scouting, and regional threshold context. https://extension.usu.edu/planthealth/ipm/notes_ag/hemp-whiteflies",
+    "Cranshaw et al. (2019), Developing Insect Pest Management Systems for Hemp in the United States. Documents serious whitefly problems in indoor Cannabis production. https://academic.oup.com/jipm/article/10/1/26/5555744",
+    "Hadad et al. (2019), Lettuce Chlorosis Virus Disease: A New Threat to Cannabis Production, Viruses 11(9):802. Demonstrates Bemisia tabaci transmission of lettuce chlorosis virus to cannabis. https://pmc.ncbi.nlm.nih.gov/articles/PMC6784094/",
+    "Panthi et al. (2024), Arthropod and mollusk pests of hemp, Cannabis sativa, and their indoor management plan in Florida. https://academic.oup.com/jipm/article/15/1/1/7499162"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.0 controlled title plus evidence-reconciled web derivative","evidenceControl":"direct_cannabis_whitefly_vector_research_plus_hemp_extension_and_peer_reviewed_pest_review","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"whitefly_identification_injury_sampling_and_vector_boundary","releaseTimeReview":"completed_2026-09-01_vector_presence_not_disease_proof_and_threshold_not_universal","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"whiteflies",
+  "route":"/encyclopedia/whiteflies"
+}

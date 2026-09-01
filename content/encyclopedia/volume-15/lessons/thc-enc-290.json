@@ -1,0 +1,57 @@
+{
+  "id":"THC-ENC-290",
+  "number":290,
+  "title":"Shore Flies",
+  "objective":"Identify shore flies and separate their algae-associated nuisance biology from fungus-gnat root feeding, while documenting moisture, algae, fecal spotting, and possible pathogen-association evidence without assuming direct plant feeding.",
+  "terms":[
+    {"term":"Ephydridae","definition":"The fly family containing shore flies, many of which develop in wet habitats rich in algae or decaying organic matter."},
+    {"term":"Scatella","definition":"A shore-fly genus commonly encountered in greenhouse production."},
+    {"term":"algal mat","definition":"Visible growth of algae on wet media, benches, floors, drains, or other surfaces that can provide food and breeding habitat for shore flies."},
+    {"term":"frass","definition":"Insect fecal material; shore-fly adults can leave dark spots on leaves and surfaces."},
+    {"term":"breathing tube","definition":"A posterior respiratory structure present on shore-fly larvae and useful in distinguishing them from fungus-gnat larvae."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Shore flies are robust, dark greenhouse flies associated with algae, prolonged wet surfaces, and organic residues. Adults have short antennae and legs and dark wings with pale spots, a useful contrast with the delicate long-legged fungus-gnat adult.",
+    "Shore-fly adults and larvae feed primarily on algae and decaying organic matter rather than directly on crop tissue. Their presence therefore signals a wet, algae-supporting environment more reliably than it signals direct plant herbivory.",
+    "Larvae are pale, lack the distinct black head capsule typical of fungus-gnat larvae, and can have a posterior breathing tube. Adults can rest on leaves and deposit dark fecal spots, which can be mistaken for pest feeding or disease signs if the flies themselves are not identified.",
+    "Greenhouse literature has implicated shore flies in mechanical movement of some soilborne pathogens. This establishes a possible pathway under compatible conditions, not proof that a particular shore-fly population is transmitting disease in a cannabis crop.",
+    "Because algae and chronic surface wetness are central to shore-fly habitat, environmental records are part of the diagnosis. Adult fly counts without algae/moisture context can misrepresent the underlying production problem."
+  ],
+  "cultivationRelevance":[
+    "Differentiate shore flies from fungus gnats before assigning root-feeding risk; shore flies themselves are primarily algae feeders.",
+    "Inspect wet floors, benches, drains, media surfaces, and algae patches in addition to sticky cards and plant leaves.",
+    "Record fecal spotting separately from direct leaf injury and verify whether any actual feeding damage is present.",
+    "Treat any pathogen-transmission concern as a separate diagnostic question requiring disease evidence, not as an automatic consequence of seeing shore flies."
+  ],
+  "measureAndRecord":[
+    {"field":"Adult morphology","requirement":"Record robust body form, short antennae/legs, pale wing spots, magnification, and distinction from fungus gnats."},
+    {"field":"Larval evidence","requirement":"Record larvae near algae, absence of a distinct black head capsule, posterior breathing-tube features when visible, and sample location."},
+    {"field":"Habitat","requirement":"Map algae, puddling, irrigation runoff, wet media surfaces, drains, benches, and other persistent-moisture sites."},
+    {"field":"Plant-surface signs","requirement":"Record adult resting sites, fecal spots, and whether direct feeding injury is absent or present."},
+    {"field":"Disease context","requirement":"Record pathogen diagnosis or plant-test evidence independently of shore-fly abundance."
+    }
+  ],
+  "misconceptions":[
+    "Shore flies and fungus gnats are the same insect.",
+    "Shore-fly adults or larvae primarily feed on healthy crop roots.",
+    "Dark spots left by shore flies are necessarily plant lesions.",
+    "Shore-fly presence proves a soilborne pathogen is spreading.",
+    "Sticky-card capture alone identifies the moisture or algae source sustaining the population."
+  ],
+  "evidenceLimits":[
+    "Shore-fly biology and greenhouse pathogen-association research come mainly from ornamental and vegetable production rather than Cannabis-specific trials. Those mechanisms are appropriate for identification and environmental diagnosis, but should not be converted into a Cannabis-specific disease-risk percentage or treatment threshold."
+  ],
+  "crossLinks":"THC-ENC-281 for identification workflow; THC-ENC-289 for fungus-gnat differential; THC-ENC-297–300 for sticky cards and trend analysis; THC-ENC-301–320 for disease confirmation; THC-ENC-321–340 for sanitation and IPM systems.",
+  "sourceNotes":[
+    "Cornell Greenhouse Horticulture, Supplemental information for insect management guidelines — Shore Flies. Distinguishes shore flies from fungus gnats and documents algae-associated feeding and greenhouse scouting. https://greenhouse.cornell.edu/pests-diseases/guidelines/cornell-pesticide-guidelines-supplemental-information-insects/",
+    "UC Statewide IPM Program, Shore Fly. Morphology, algae/wet-surface habitat, and larval identification. https://ipm.ucanr.edu/agriculture/floriculture-and-ornamental-nurseries/shore-fly/",
+    "UConn IPM, Managing Shore Flies in the Greenhouse, updated 2026. Current greenhouse sanitation, moisture, algae, and monitoring context. https://ipm.cahnr.uconn.edu/managing-shore-flies-in-the-greenhouse/",
+    "UConn Extension, Managing Fungus Gnats and Shore Flies in Commercial Greenhouse Vegetable Transplant Production. Direct differential between shore-fly and fungus-gnat adults and larvae. https://extension.uconn.edu/publication/managing-fungus-gnats-and-shore-flies-in-commercial-greenhouse-vegetable-transplant-production/"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.0 controlled title plus evidence-reconciled web derivative","evidenceControl":"current_university_greenhouse_extension_with_cannabis_specific_limits","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"shore_fly_identification_algae_habitat_and_fungus_gnat_differential","releaseTimeReview":"completed_2026-09-01_algae_feeding_not_direct_crop_feeding_and_pathogen_not_assumed","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"shore-flies",
+  "route":"/encyclopedia/shore-flies"
+}

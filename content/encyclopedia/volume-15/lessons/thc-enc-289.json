@@ -1,0 +1,57 @@
+{
+  "id":"THC-ENC-289",
+  "number":289,
+  "title":"Fungus Gnats",
+  "objective":"Identify dark-winged fungus gnats by adult and larval morphology, separate nuisance adult activity from root-zone larval risk, and use moisture, media, and direct larval evidence to interpret plant injury.",
+  "terms":[
+    {"term":"Bradysia","definition":"A genus of dark-winged fungus gnats commonly encountered in greenhouses and indoor growing systems."},
+    {"term":"Sciaridae","definition":"The fly family containing dark-winged fungus gnats."},
+    {"term":"black head capsule","definition":"The distinct dark head of many fungus-gnat larvae, useful for separating them from shore-fly larvae."},
+    {"term":"Y-shaped wing vein","definition":"A characteristic forked wing-vein pattern visible on adult fungus gnats under magnification."},
+    {"term":"root-zone feeding","definition":"Larval feeding in growing media that is primarily on fungi and organic matter but can include tender roots and root hairs."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Fungus gnats are small, delicate, mosquito-like flies commonly associated with moist greenhouse or indoor growing media. Adults are mainly nuisance insects, while larvae live in media and feed on fungi, algae, decaying organic matter, and sometimes tender roots or root hairs.",
+    "Adult fungus gnats have long legs and antennae and can show a Y-shaped wing vein. Larvae are translucent to whitish and have a distinct black head capsule. These features help separate fungus gnats from shore flies, which are more robust as adults and whose larvae lack the same distinct black head capsule.",
+    "High larval densities can contribute to poor root performance, stunting, yellowing, or wilting, especially in young plants or persistently wet media. Those symptoms overlap strongly with root disease, overwatering, low oxygen, and nutritional problems, so direct larval evidence is required before assigning causation.",
+    "Moisture and organic residues strongly influence fungus-gnat habitat. Adult sticky-card captures indicate flying activity but do not directly measure larval density in media; larval sampling or baiting provides a more direct view of the damaging life stage.",
+    "Greenhouse literature also documents associations between fungus gnats and plant pathogens, but finding fungus gnats does not prove pathogen transmission or root disease in a particular crop."
+  ],
+  "cultivationRelevance":[
+    "Use sticky cards for adult trend detection and direct media or bait sampling for larvae; do not substitute one for the other.",
+    "Inspect moisture history, drainage, algae, organic residues, young-root condition, and root-disease evidence together.",
+    "Compare affected and unaffected containers or zones so chronic wetness and larval density can be separated from crop-wide symptoms.",
+    "Any biological or chemical control selection remains label-, crop-, jurisdiction-, and beneficial-compatibility dependent."
+  ],
+  "measureAndRecord":[
+    {"field":"Adult activity","requirement":"Record adults per sticky card and interval, card position, date, and hotspot distribution."},
+    {"field":"Larval evidence","requirement":"Record larvae per defined media sample or bait, black head capsule confirmation, depth/location, and date."},
+    {"field":"Media context","requirement":"Record moisture, drainage, algae, organic residue, media age, irrigation pattern, and root-zone oxygen concerns."},
+    {"field":"Plant response","requirement":"Record root condition, stunting, yellowing, wilting, and matched unaffected plants."},
+    {"field":"Disease differential","requirement":"Record root-pathogen testing or other disease evidence separately from fungus-gnat presence."
+    }
+  ],
+  "misconceptions":[
+    "Adult fungus gnats are the main root-feeding stage.",
+    "Every small dark fly in a greenhouse is a fungus gnat.",
+    "Sticky-card counts directly equal larval density in the growing medium.",
+    "Fungus gnats automatically mean a root pathogen is present.",
+    "Any yellowing in wet media is caused by fungus-gnat larvae."
+  ],
+  "evidenceLimits":[
+    "Fungus-gnat biology is well established in greenhouse and container crops, but Cannabis-specific injury thresholds and pathogen-transmission probabilities are not standardized. General greenhouse mechanisms should therefore guide diagnosis without being converted into universal cannabis action thresholds."
+  ],
+  "crossLinks":"THC-ENC-281 for identification workflow; THC-ENC-290 for shore-fly differential; THC-ENC-294 for soil-dwelling pests; THC-ENC-297–300 for sampling and trend records; THC-ENC-301–320 for root-disease differentials.",
+  "sourceNotes":[
+    "Colorado State University Extension, Fungus Gnats as Houseplant and Indoor Pests, reviewed August 2025. Adult and larval morphology, root-zone feeding, and moisture relationship. https://extension.colostate.edu/resource/fungus-gnats-as-houseplant-and-indoor-pests/",
+    "Colorado State University Agricultural Biology, Fungus gnats. Greenhouse monitoring and larval-detection guidance. https://agsci.colostate.edu/agbio/ipm-pests/fungus-gnats/",
+    "University of Connecticut Extension, Managing Fungus Gnats and Shore Flies in Commercial Greenhouse Vegetable Transplant Production. Direct fungus-gnat/shore-fly differential and young-root injury context. https://extension.uconn.edu/publication/managing-fungus-gnats-and-shore-flies-in-commercial-greenhouse-vegetable-transplant-production/",
+    "University of New Hampshire Extension, Fungus Gnats. Greenhouse life cycle, root feeding, and pathogen association context. https://extension.unh.edu/resource/fungus-gnats-fact-sheet"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.0 controlled title plus evidence-reconciled web derivative","evidenceControl":"current_university_greenhouse_extension_with_cross_species_limits","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"fungus_gnat_identification_larval_root_zone_risk_and_sampling","releaseTimeReview":"completed_2026-09-01_adult_activity_not_larval_density_and_pathogen_not_assumed","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"fungus-gnats",
+  "route":"/encyclopedia/fungus-gnats"
+}
