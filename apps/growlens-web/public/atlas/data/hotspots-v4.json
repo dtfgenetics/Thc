@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 4,
+  "model": "/atlas/models/cannabis-specimen-v1.glb",
+  "coordinateSpace": "normalized-model-bounds",
+  "notes": "Anchors use x/y/z values from 0 to 1 after the GLB is normalized upright. Tune these against the approved production specimen without changing educational routes.",
+  "hotspots": [
+    {
+      "id": "root-system",
+      "label": "Root system",
+      "detail": "Primary, lateral & fine absorbing roots",
+      "route": "/atlas/root-system/",
+      "copy": "Primary and lateral roots branch into fine absorbing roots that anchor the plant, acquire water and ions, respire, and interact with the rhizosphere.",
+      "anchors": [[0.5, 0.08, 0.5]],
+      "radius": 0.19,
+      "focus": 0.42
+    },
+    {
+      "id": "stem-vascular",
+      "label": "Stem & vascular system",
+      "detail": "Main stem, branches, xylem & phloem pathway",
+      "route": "/atlas/stem-vascular/",
+      "copy": "The main stem and branches form a continuous vascular skeleton. Xylem moves water and minerals; phloem redistributes sugars and other assimilates among sources and sinks.",
+      "anchors": [[0.5, 0.34, 0.5], [0.5, 0.52, 0.5]],
+      "radius": 0.105,
+      "focus": 0.48
+    },
+    {
+      "id": "nodes-branching",
+      "label": "Nodes, meristems & branching",
+      "detail": "Axillary sites and branch junctions",
+      "route": "/atlas/nodes-branching/",
+      "copy": "Nodes carry leaves, branches, and axillary meristems. Their spacing and bud activity reveal how growth regulators and environment shape plant architecture.",
+      "anchors": [[0.5, 0.45, 0.5], [0.5, 0.59, 0.5], [0.5, 0.69, 0.5]],
+      "radius": 0.12,
+      "focus": 0.42
+    },
+    {
+      "id": "leaf-module",
+      "label": "Fan leaves",
+      "detail": "Serrated leaflets, petioles, midribs & lateral veins",
+      "route": "/atlas/leaf-module/",
+      "copy": "Serrated leaflets connect through petioles to the vascular system. Midribs and lateral veins distribute water, minerals, sugars, and mechanical support through the blade.",
+      "anchors": [[0.27, 0.46, 0.5], [0.73, 0.48, 0.5], [0.3, 0.64, 0.5], [0.7, 0.66, 0.5]],
+      "radius": 0.17,
+      "focus": 0.46
+    },
+    {
+      "id": "flower-anatomy",
+      "label": "Flowers & inflorescences",
+      "detail": "Bracts, sugar leaves & floral clusters",
+      "route": "/atlas/flower-anatomy/",
+      "copy": "Layered bracts, sugar leaves, stigmas, and dense glandular surfaces form the visible inflorescence. Floral structure changes through pollination and maturation.",
+      "anchors": [[0.5, 0.88, 0.5], [0.34, 0.73, 0.5], [0.66, 0.74, 0.5]],
+      "radius": 0.14,
+      "focus": 0.35
+    },
+    {
+      "id": "trichomes-resin",
+      "label": "Glandular trichomes",
+      "detail": "Stalks and secretory gland heads",
+      "route": "/atlas/trichomes-resin/",
+      "copy": "Glandular trichomes include stalks, secretory disc cells, and gland heads. Their form and density vary by tissue, developmental stage, and genotype.",
+      "anchors": [[0.5, 0.91, 0.5]],
+      "radius": 0.075,
+      "focus": 0.24,
+      "priority": 20
+    },
+    {
+      "id": "reproductive-biology",
+      "label": "Reproductive structures",
+      "detail": "Stigmas, preflowers & pollen-reception surfaces",
+      "route": "/atlas/reproductive-biology/",
+      "copy": "Stigmas and preflowers connect visible floral anatomy to sex expression, pollen reception, fertilization, embryo development, and seed formation.",
+      "anchors": [[0.46, 0.72, 0.5], [0.54, 0.77, 0.5]],
+      "radius": 0.09,
+      "focus": 0.3,
+      "priority": 15
+    }
+  ]
+}
