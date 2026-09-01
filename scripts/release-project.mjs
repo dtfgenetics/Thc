@@ -16,6 +16,15 @@ function capture(command, commandArgs, options = {}) {
   }
 }
 
+function succeeds(command, commandArgs, options = {}) {
+  try {
+    execFileSync(command, commandArgs, { stdio: 'ignore', ...options });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 function run(command, commandArgs, options = {}) {
   execFileSync(command, commandArgs, { stdio: 'inherit', ...options });
 }
@@ -41,12 +50,9 @@ if (dirty) {
 console.log(`Preparing ${branch} for release...`);
 run('git', ['fetch', 'origin', 'main'], { cwd: repoRoot });
 
-if (args['no-sync'] !== 'true') {
-  const isCurrent = capture('git', ['merge-base', '--is-ancestor', 'origin/main', 'HEAD'], { cwd: repoRoot, allowFailure: true });
-  if (!isCurrent) {
-    console.log('Syncing the latest main into this project branch...');
-    run('git', ['merge', '--no-edit', 'origin/main'], { cwd: repoRoot });
-  }
+if (args['no-sync'] !== 'true' && !succeeds('git', ['merge-base', '--is-ancestor', 'origin/main', 'HEAD'], { cwd: repoRoot })) {
+  console.log('Syncing the latest main into this project branch...');
+  run('git', ['merge', '--no-edit', 'origin/main'], { cwd: repoRoot });
 }
 
 run(process.execPath, ['scripts/project-lane-check.mjs', `--branch=${branch}`], { cwd: repoRoot });
