@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-281",
+  "number":281,
+  "title":"Pest Identification by Life Stage and Injury Pattern",
+  "objective":"Build a repeatable arthropod-identification workflow that combines life stage, body form, feeding injury, location, magnified evidence, and population trend before assigning a pest identity or control response.",
+  "terms":[
+    {"term":"life stage","definition":"A recognizable developmental phase such as egg, larva, nymph, pupa, or adult whose appearance, location, feeding behavior, and mobility may differ from other stages."},
+    {"term":"injury pattern","definition":"The spatial and morphological pattern of plant damage produced by feeding, oviposition, contamination, or secondary effects; it is evidence but is rarely species-specific by itself."},
+    {"term":"specimen","definition":"A collected organism or representative plant sample preserved or observed so its diagnostic features can be evaluated."},
+    {"term":"differential diagnosis","definition":"A structured comparison of multiple plausible causes that explains which observations support, weaken, or fail to distinguish each candidate."},
+    {"term":"voucher evidence","definition":"A preserved specimen, diagnostic image, slide, sequence, or other traceable record that allows an identification to be reviewed later."}
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Cannabis and hemp can host mites, thrips, aphids, whiteflies, caterpillars, leafhoppers, fungus gnats, and other invertebrates. Many create overlapping symptoms such as stippling, bronzing, curling, distortion, chlorosis, scarring, frass, webbing, honeydew, or reduced growth, so visible injury alone is not sufficient for species identification.",
+    "Identification improves when the observer links organism morphology to developmental stage and feeding site. Eggs may be inserted into tissue or attached to surfaces; immature stages can be wingless or have a different number of legs than adults; pupal or quiescent stages may occur away from feeding sites. A scouting method that searches only for the adult form can therefore miss an active population.",
+    "Magnification requirements vary sharply among pests. Two-spotted spider mites can usually be resolved with a hand lens, while hemp russet mites are much smaller and are more reliably confirmed with higher magnification or laboratory methods. Published hemp-pest reviews explicitly recommend taxonomic confirmation when species-level identity is uncertain.",
+    "Plant symptoms should be interpreted together with direct organism evidence, distribution, progression, host tissue, crop history, and negative findings. For example, stippling plus webbing supports spider mites more strongly than stippling alone; distorted growing points without visible webbing can fit broad or russet mites but also overlap with chemical, nutritional, viral, or environmental injury.",
+    "A defensible diagnosis preserves uncertainty. When a specimen cannot be identified confidently, the correct outcome is a higher-level identification or an unresolved differential followed by better sampling, not a guessed species name."
+  ],
+  "cultivationRelevance":[
+    "Scout both affected and apparently healthy plants and examine multiple canopy levels, leaf surfaces, growing points, stems, flowers, media surfaces, and sticky cards where appropriate.",
+    "Record the organism itself whenever possible rather than photographing only plant damage. Use scale, magnification, date, plant location, and life stage in the record so later review is possible.",
+    "Separate identification from treatment choice. Pest identity, crop stage, local law, product registration, residue constraints, beneficial organisms, and facility policy are distinct decisions.",
+    "Escalate to an extension specialist, diagnostic laboratory, or qualified taxonomist when mites or thrips cannot be separated reliably, when a regulated organism is possible, or when management depends on species-level identity."
+  ],
+  "measureAndRecord":[
+    {"field":"Plant injury","requirement":"Record affected organ, leaf age, upper/lower surface, growing point or flower involvement, pattern, severity, progression, and matched unaffected tissue."},
+    {"field":"Organism evidence","requirement":"Record count or presence by life stage, body shape, color, leg or wing characters visible at the available magnification, webbing, cast skins, frass, honeydew, fecal spots, eggs, and feeding location."},
+    {"field":"Sampling method","requirement":"Record hand-lens or microscope magnification, leaf or shoot sampling method, tap test, sticky-card placement, sample number, date, and collector."},
+    {"field":"Spatial pattern","requirement":"Map affected plants, benches or zones, incoming plant material, propagation groups, airflow or doorway relationships, and whether abundance changes across the area."},
+    {"field":"Diagnostic confidence","requirement":"Record confirmed species, tentative taxon, unresolved differential, supporting evidence, contradictory evidence, and whether specialist or laboratory confirmation was obtained."
+    }
+  ],
+  "misconceptions":[
+    "A leaf symptom photo is enough to identify an arthropod species.",
+    "Every developmental stage of a pest looks and behaves like the adult.",
+    "No visible insects means an arthropod pest is absent.",
+    "One organism found on a damaged leaf proves it caused the damage.",
+    "Choosing a pesticide is part of species identification."
+  ],
+  "evidenceLimits":[
+    "Published cannabis and hemp pest surveys document important pest complexes, but prevalence differs by region, production system, season, plant material, and sampling method. Morphological identification can require specialist expertise, and injury patterns frequently overlap with abiotic disorders and infectious disease. Species identity should therefore be stated at the confidence level supported by the specimen and method used."
+  ],
+  "crossLinks":"THC-ENC-261–280 for diagnostic workflow and abiotic differentials; THC-ENC-282–300 for organism-specific pest biology, sampling, thresholds, biological-control compatibility, and records; THC-ENC-301–340 for disease/IPM differentials and response systems; THC-ENC-401–420 for sampling, evidence, and research literacy.",
+  "sourceNotes":[
+    "Panthi B. et al. (2024), Arthropod and mollusk pests of hemp, Cannabis sativa, and their indoor management plan in Florida, Journal of Integrated Pest Management 15(1):1. Documents hemp/cannabis pest diversity and emphasizes specialist taxonomic confirmation when species-level identity is uncertain. https://academic.oup.com/jipm/article/15/1/1/7499162",
+    "Cranshaw W. et al. (2019), Developing Insect Pest Management Systems for Hemp in the United States: A Work in Progress, Journal of Integrated Pest Management 10(1):26. Establishes major U.S. hemp arthropod pests and production-system context. https://academic.oup.com/jipm/article/10/1/26/5555744",
+    "NC State Extension, Insect & Mite Management — Hemp, reviewed September 25, 2025. Current extension portal for hemp insect/mite fact sheets and label-sensitive management references. https://hemp.ces.ncsu.edu/insect-mite-management/",
+    "Controlled Master Content Map v1.0 fixes THC-ENC-281 as the Part 15 diagnostic entry and requires a diagnostic decision-tree teaching visual; permanent IDs are not recycled."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.0 controlled title plus evidence-reconciled web derivative","evidenceControl":"peer_reviewed_hemp_pest_reviews_plus_current_extension_identification_guidance","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"arthropod_identification_sampling_and_differential_diagnosis","releaseTimeReview":"completed_2026-08-31_life_stage_injury_pattern_and_taxonomic_confidence_boundaries","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-31","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"pest-identification-by-life-stage-and-injury-pattern",
+  "route":"/encyclopedia/pest-identification-by-life-stage-and-injury-pattern"
+}

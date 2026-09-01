@@ -1,0 +1,57 @@
+{
+  "id":"THC-ENC-282",
+  "number":282,
+  "title":"Two-Spotted Spider Mites",
+  "objective":"Identify two-spotted spider mite life stages and feeding injury on cannabis or hemp, distinguish active infestation from old damage and other stippling causes, and document population change without relying on a universal action threshold.",
+  "terms":[
+    {"term":"Tetranychus urticae","definition":"The two-spotted spider mite, a highly polyphagous tetranychid mite that can infest greenhouse, indoor, and field-grown hemp or cannabis."},
+    {"term":"stippling","definition":"A pattern of small pale feeding spots produced when mite feeding damages individual leaf cells or small groups of cells."},
+    {"term":"webbing","definition":"Silk produced by spider mites that can occur on leaf surfaces, petioles, shoots, and heavily infested plant tissue."},
+    {"term":"hot spot","definition":"A localized area where pest abundance or injury is higher than surrounding crop areas and from which a population may spread."},
+    {"term":"diapause","definition":"A physiologically regulated dormant or slowed state that can alter color and behavior in some spider-mite populations under seasonal cues."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Two-spotted spider mite is a generalist mite that feeds on hundreds of plant species and is a recognized pest of indoor and greenhouse Cannabis sativa. Adults and nymphs typically occupy leaf undersides, pierce photosynthetic tissue, and remove cell contents, producing upper-surface stippling that can progress to chlorosis, bronzing, drying, and leaf loss when populations are high.",
+    "Life-stage recognition improves scouting. Eggs are small and spherical; the first active larval stage has six legs; later nymphal stages and adults have eight legs. Adults are commonly pale yellow-green to darker green or brown with paired dark internal spots, but color and spot visibility vary, so the two spots should not be treated as a stand-alone identification test.",
+    "Fine silk webbing is a useful diagnostic clue because it is characteristic of tetranychid spider mites and is absent from hemp russet and broad mites. Webbing can trap debris and remain after population decline, however, so current infestation must be confirmed by finding live mites or viable-looking eggs rather than by webbing or old leaf injury alone.",
+    "Warm, dry conditions often favor rapid spider-mite increase, but actual generation time and population growth depend on temperature, humidity, host quality, cultivar, predators, and production conditions. Hemp extension guidance reports generation completion in roughly one to two weeks under favorable conditions rather than one fixed crop-wide rate.",
+    "Research-based hemp thresholds remain limited and market-dependent. NC State explicitly notes that a threshold for concern has not been established for industrial hemp, so population trend, live life stages, crop value, injury progression, beneficial activity, and production stage should remain separate decision inputs."
+  ],
+  "cultivationRelevance":[
+    "Inspect leaf undersides with magnification and compare symptomatic leaves with nearby asymptomatic leaves. Record live mites, eggs, webbing, and feeding injury rather than calling all stippling spider-mite damage.",
+    "Map localized hot spots and resample the same zones over time so expanding, stable, and declining populations are distinguished from old injury.",
+    "Preserve natural-enemy observations in the scouting record because predatory mites and other enemies can change population trajectories; do not treat plant injury alone as proof that the active population is increasing.",
+    "Any chemical or biological-control decision must be separated from identification and checked against current lawful crop labels, production rules, residue requirements, compatibility with beneficials, and local guidance."
+  ],
+  "measureAndRecord":[
+    {"field":"Life stages","requirement":"Record eggs, six-legged larvae, nymphs, adults, and whether live stages occur together on the same leaf or plant."},
+    {"field":"Leaf injury","requirement":"Record stippling, chlorosis, bronzing, drying, leaf drop, upper-versus-lower surface pattern, and standardized images over time."},
+    {"field":"Webbing","requirement":"Record presence, extent, location, trapped debris, and whether live mites are present in or near the webbing."},
+    {"field":"Population sampling","requirement":"Record leaves examined, canopy position, magnification, live mites per defined sample or ordinal density score, egg abundance, date, and resampling interval."},
+    {"field":"Context","requirement":"Record temperature, humidity, water-stress context, neighboring hosts or weeds, movement of plant material, and observed natural enemies."
+    }
+  ],
+  "misconceptions":[
+    "Two dark body spots are always obvious and prove the species by themselves.",
+    "Any stippling on cannabis proves two-spotted spider mites.",
+    "Webbing proves a population is currently increasing.",
+    "A single spider mite on one leaf defines crop-wide infestation severity.",
+    "There is one validated cannabis spider-mite action threshold for every production system."
+  ],
+  "evidenceLimits":[
+    "Two-spotted spider mite biology is well studied across many crops, but hemp and cannabis economic thresholds, cultivar responses, predator performance, and management outcomes remain production-system dependent. Extension observations and non-cannabis host studies provide useful mechanisms and identification features but should not be converted into universal cannabis population thresholds or treatment schedules."
+  ],
+  "crossLinks":"THC-ENC-281 for identification workflow; THC-ENC-283–284 for non-webbing mite differentials; THC-ENC-297–300 for sampling, thresholds, biological-control compatibility, and records; THC-ENC-265 and 270 for leaf distortion/high-light injury differentials; THC-ENC-321–340 for IPM program controls.",
+  "sourceNotes":[
+    "NC State Extension, Twospotted Spider Mite in Industrial Hemp (2020; current page accessed 2026). Describes hemp life stages, stippling, webbing, indoor/outdoor occurrence, sampling with magnification, and the absence of a research-based hemp threshold. https://content.ces.ncsu.edu/twospotted-spider-mite-in-industrial-hemp",
+    "Cranshaw W. et al. (2019), Developing Insect Pest Management Systems for Hemp in the United States: A Work in Progress, Journal of Integrated Pest Management 10(1):26. Identifies Tetranychus urticae as a key pest where hemp has an indoor/greenhouse phase. https://academic.oup.com/jipm/article/10/1/26/5555744",
+    "Panthi B. et al. (2024), Arthropod and mollusk pests of hemp, Cannabis sativa, and their indoor management plan in Florida, Journal of Integrated Pest Management 15(1):1. Includes T. urticae among documented hemp/cannabis pests and illustrates magnified identification context. https://academic.oup.com/jipm/article/15/1/1/7499162",
+    "NC State Extension hemp insect/mite portal, updated September 25, 2025, provides the current label-sensitive management entry point. https://hemp.ces.ncsu.edu/insect-mite-management/"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.0 controlled title plus evidence-reconciled web derivative","evidenceControl":"direct_hemp_extension_plus_peer_reviewed_hemp_pest_reviews","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"two_spotted_spider_mite_identification_life_cycle_injury_and_sampling","releaseTimeReview":"completed_2026-08-31_no_universal_hemp_threshold_and_active_population_boundary","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-08-31","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"two-spotted-spider-mites",
+  "route":"/encyclopedia/two-spotted-spider-mites"
+}

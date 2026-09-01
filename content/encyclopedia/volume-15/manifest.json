@@ -1,0 +1,47 @@
+{
+  "schemaVersion":"1.0.0",
+  "volumeId":"THC-ENC-V15",
+  "number":15,
+  "title":"Arthropod and Invertebrate Pests",
+  "route":"/encyclopedia/volume-15-arthropod-and-invertebrate-pests",
+  "version":"source-controlled",
+  "status":"active-controlled-production",
+  "sourceControl":{
+    "sourceTitle":"THC Cannabis Encyclopedia — Master Content Map v1.0 — Part 15",
+    "controlledCatalogueVersion":"Master Content Map v1.0",
+    "sourceState":"controlled_catalogue_batch01_evidence_reconciled_for_web_publication",
+    "rule":"Preserve permanent THC-ENC IDs and controlled titles; identify pests from specimens, life stages, injury patterns, and sampling evidence; do not convert pest identity into pesticide authorization or universal action thresholds."
+  },
+  "audience":["home growers","professional cultivators","students","educators","diagnostic practitioners","plant-science readers"],
+  "educationalBoundary":"Plant identification and lawful integrated-pest-management education only. Pesticide, biopesticide, disinfectant, and other regulated product use remains governed by current labels, registrations, worker-safety requirements, residue rules, and jurisdictional law. The presence of a pest or vector does not by itself establish crop-loss severity, disease infection, or a treatment requirement.",
+  "controlledLessonRange":{"start":281,"end":300},
+  "controlledTitles":[
+    {"id":"THC-ENC-281","title":"Pest Identification by Life Stage and Injury Pattern"},
+    {"id":"THC-ENC-282","title":"Two-Spotted Spider Mites"},
+    {"id":"THC-ENC-283","title":"Hemp Russet Mites"},
+    {"id":"THC-ENC-284","title":"Broad Mites"},
+    {"id":"THC-ENC-285","title":"Western Flower Thrips and Related Thrips"},
+    {"id":"THC-ENC-286","title":"Cannabis Aphids"},
+    {"id":"THC-ENC-287","title":"Other Aphid Species on Hemp and Cannabis"},
+    {"id":"THC-ENC-288","title":"Whiteflies"},
+    {"id":"THC-ENC-289","title":"Fungus Gnats"},
+    {"id":"THC-ENC-290","title":"Shore Flies"},
+    {"id":"THC-ENC-291","title":"Leafminers"},
+    {"id":"THC-ENC-292","title":"Caterpillars and Bud-Feeding Larvae"},
+    {"id":"THC-ENC-293","title":"Beet Leafhoppers and Virus Vectoring"},
+    {"id":"THC-ENC-294","title":"Root Aphids and Soil-Dwelling Pests"},
+    {"id":"THC-ENC-295","title":"Slugs, Snails, and Outdoor Seedling Injury"},
+    {"id":"THC-ENC-296","title":"Ants, Wasps, and Secondary Pest Indicators"},
+    {"id":"THC-ENC-297","title":"Sticky Cards, Tap Tests, and Leaf Sampling"},
+    {"id":"THC-ENC-298","title":"Action Thresholds and Crop-Value Context"},
+    {"id":"THC-ENC-299","title":"Biological Control Compatibility"},
+    {"id":"THC-ENC-300","title":"Pest Records, Mapping, and Trend Analysis"}
+  ],
+  "lessonPaths":[
+    "lessons/thc-enc-281.json",
+    "lessons/thc-enc-282.json",
+    "lessons/thc-enc-283.json",
+    "lessons/thc-enc-284.json",
+    "lessons/thc-enc-285.json"
+  ]
+}
