@@ -1,0 +1,57 @@
+{
+  "id":"THC-ENC-292",
+  "number":292,
+  "title":"Caterpillars and Bud-Feeding Larvae",
+  "objective":"Identify important lepidopteran larval injury on hemp or cannabis by larval morphology, feeding site, frass, boring pattern, and adult-monitoring evidence while distinguishing defoliators, stem borers, and flower-feeding larvae.",
+  "terms":[
+    {"term":"Lepidoptera","definition":"The insect order containing moths and butterflies; the larval stage is the caterpillar and is the damaging stage for many hemp pests."},
+    {"term":"Helicoverpa zea","definition":"Corn earworm, a highly polyphagous caterpillar documented feeding on hemp flowers, buds, and seeds."},
+    {"term":"Grapholita delineana","definition":"Eurasian hemp borer, a moth whose larvae can first feed on leaves and later bore into hemp stems and developing flower tissue."},
+    {"term":"borer","definition":"A larva that tunnels inside stems, shoots, buds, or other protected plant tissue."},
+    {"term":"pheromone trap","definition":"A monitoring trap baited with a species-specific or species-group chemical attractant used primarily to detect adult moth activity rather than measure larval injury directly."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Hemp supports a diverse complex of caterpillars. Some primarily defoliate leaves, while others feed in flowers, seeds, or stems. Corn earworm, armyworms, European corn borer, and Eurasian hemp borer are among the documented taxa of concern in U.S. hemp systems.",
+    "Corn earworm larvae can enter developing flower buds and feed on reproductive tissue and seeds. Larval color is highly variable, so identification should combine head and body markings, setal/tubercle characters where possible, feeding site, and regional adult-trap information rather than color alone.",
+    "Eurasian hemp borer and European corn borer can move from external feeding into protected stem or bud tissue. Boring injury can produce frass at entry sites, stem swelling, wilting, dieback, breakage, or damaged flowers. Once larvae are concealed, visible external injury may lag behind internal feeding.",
+    "Pheromone-trap catches are an early-warning tool for adult flights, not a direct count of larvae within the crop. Plant scouting for eggs, young larvae, frass, entry holes, and flower damage is necessary to connect adult activity with crop infestation.",
+    "Published extension guidance repeatedly notes that hemp-specific treatment thresholds are incomplete for several caterpillar pests. Crop stage, market, larval abundance, injury progression, and regional pest pressure should therefore be recorded separately rather than collapsed into a universal action number."
+  ],
+  "cultivationRelevance":[
+    "Scout foliage, stems, and developing flowers because different caterpillar species and life stages occupy different tissues.",
+    "Record fresh frass and new entry holes as active-injury evidence and distinguish them from old scars or abandoned tunnels.",
+    "Pair adult pheromone-trap trends with direct plant inspection; a moth catch alone does not prove crop infestation.",
+    "Keep regulated product use outside the identification decision and follow current crop labels, jurisdiction, residue, worker-safety, and beneficial-organism requirements."
+  ],
+  "measureAndRecord":[
+    {"field":"Larval evidence","requirement":"Record larvae per defined plant/flower sample, approximate instar or size, morphology, feeding site, and identification confidence."},
+    {"field":"Injury","requirement":"Record defoliation, bud/seed feeding, frass, entry holes, tunneling, stem swelling, wilting, breakage, and progression."},
+    {"field":"Adult monitoring","requirement":"Record pheromone-trap type, lure, location, interval, adult catch, and the lag between adult activity and larval observations."},
+    {"field":"Spatial pattern","requirement":"Map field edge/interior, affected cultivars, flower stage, and hotspots."},
+    {"field":"Differentials","requirement":"Record leafminer, beetle, mechanical, disease, and stem-canker evidence where symptoms overlap."
+    }
+  ],
+  "misconceptions":[
+    "All caterpillars on hemp cause the same type of damage.",
+    "Larval color alone reliably identifies corn earworm.",
+    "A pheromone trap catching moths proves larvae are damaging the crop.",
+    "Every wilted or split hemp stem is caused by a borer.",
+    "One caterpillar threshold applies to every hemp or cannabis market and region."
+  ],
+  "evidenceLimits":[
+    "Multiple caterpillar pests are documented on hemp, but species composition and economic importance vary strongly by region, production goal, and crop stage. Regional extension guidance is useful for identification and scouting, while universal cannabis thresholds and treatment schedules are not established."
+  ],
+  "crossLinks":"THC-ENC-281 for identification workflow; THC-ENC-291 for leafminer differentials; THC-ENC-295 for other chewing seedling pests; THC-ENC-297–300 for monitoring and thresholds; THC-ENC-301–320 for disease/wilt differentials.",
+  "sourceNotes":[
+    "Utah State University Extension, Corn Earworm — Hemp. Documents Helicoverpa zea larvae feeding on hemp flower buds/seeds and states there is no trap threshold for treatment in hemp. https://extension.usu.edu/planthealth/ipm/notes_ag/hemp-corn-earworm",
+    "Utah State University Extension, Eurasian Hemp Borer — Hemp. Documents Grapholita delineana leaf, stem, bud, and seed injury and larval life stage. https://extension.usu.edu/planthealth/ipm/notes_ag/hemp-eurasian-hemp-borer",
+    "Utah State University Extension, European Corn Borer — Hemp. Documents Ostrinia nubilalis egg masses, young leaf feeding, stem boring, wilting and dieback. https://extension.usu.edu/planthealth/ipm/notes_ag/hemp-european-corn-borer",
+    "Missouri Extension, Insect Pests of Industrial Hemp in Missouri. Current field guide covering armyworms and other hemp caterpillars, larval injury, and beneficial look-alikes. https://extension.missouri.edu/publications/mx83"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.0 controlled title plus evidence-reconciled web derivative","evidenceControl":"current_university_hemp_extension_plus_peer_reviewed_hemp_pest_context","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"caterpillar_bud_feeding_and_borer_identification_monitoring","releaseTimeReview":"completed_2026-09-01_trap_catch_not_infestation_and_no_universal_threshold","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"caterpillars-and-bud-feeding-larvae",
+  "route":"/encyclopedia/caterpillars-and-bud-feeding-larvae"
+}
