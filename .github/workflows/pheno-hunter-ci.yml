@@ -56,6 +56,8 @@ jobs:
           requireText(app, 'SHORTLIST_LIMIT', 'shortlist contract');
           requireText(css, '.plant-avatar', 'original plant renderer');
           requireText(css, '@media(prefers-reduced-motion:reduce)', 'reduced motion');
+          requireText(css, '.scout-button,.shortlist-button,.shortlist-row button,.primary-button,.secondary-button{min-height:44px;', '44px primary touch targets');
+          requireText(css, '.code-row input{min-width:0;min-height:44px;', '44px hunt-code input');
           NODE
 
       - name: Install browser-test dependencies
