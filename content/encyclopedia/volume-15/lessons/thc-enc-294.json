@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-294",
+  "number":294,
+  "title":"Root Aphids and Soil-Dwelling Pests",
+  "objective":"Recognize root-associated aphids and other soil-dwelling invertebrates on hemp or cannabis by sampling the root/media zone, distinguish them from canopy aphids and non-pest soil organisms, and separate pest evidence from root-disease diagnosis.",
+  "terms":[
+    {"term":"Rhopalosiphum rufiabdominale","definition":"Rice root aphid, a cosmopolitan aphid documented using indoor-grown Cannabis sativa roots in North America."},
+    {"term":"rhizosphere","definition":"The root-influenced zone of growing media or soil where roots, microorganisms, water, nutrients, and soil-dwelling organisms interact."},
+    {"term":"alate","definition":"Winged aphid form capable of dispersal; rice root aphid alates can emerge from the root zone and may be noticed on leaves or traps."},
+    {"term":"anholocyclic","definition":"A life cycle maintained by repeated parthenogenetic reproduction without a sexual egg stage under the described conditions."},
+    {"term":"soil-dwelling pest","definition":"An invertebrate whose damaging or diagnostically important life stage occurs primarily in soil, substrate, roots, crowns, or the media interface."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Rice root aphid is directly documented as a common root-associated insect of indoor-grown Cannabis sativa in the United States and Canada. Published observations report colonies across soil, coir, rockwool, and aeroponic systems, making the plant rather than one substrate type the key host association.",
+    "Most rice root aphids on cannabis occur at roots and the stem base. Winged females can emerge from the media and may become trapped on sticky plant hairs or monitoring cards; those winged adults can be the first visible clue to a largely hidden root-zone colony.",
+    "Root-zone pest symptoms are inherently nonspecific. Reduced vigor, chlorosis, wilting, poor root growth, or nutrient-like symptoms can also result from low oxygen, irrigation problems, root pathogens, salinity, pH/EC problems, or physical root injury. Direct root/media inspection is therefore necessary.",
+    "Not every arthropod in growing media is a plant pest. Springtails, predatory mites, rove beetles, and decomposer organisms can be neutral or beneficial, while fungus-gnat larvae, root aphids, root-feeding grubs, or other taxa may require separate identification. Organism identity and feeding evidence matter more than mere presence in media.",
+    "Cannabis-specific economic injury thresholds for rice root aphid are not well established. Population trend, root condition, crop stage, distribution, and confirmed plant response should be recorded without inventing a universal action number."
+  ],
+  "cultivationRelevance":[
+    "Inspect roots, crowns, drainage zones, media interfaces, and container edges when unexplained decline occurs even if foliage scouting is clean.",
+    "When winged aphids appear above the canopy or on sticky surfaces, trace the population to roots before assuming a canopy aphid infestation.",
+    "Preserve specimens from roots and media because species-level identification can change the differential diagnosis and biological-control interpretation.",
+    "Keep root-pest identification separate from root-disease diagnosis and regulated treatment authorization."
+  ],
+  "measureAndRecord":[
+    {"field":"Root-zone organisms","requirement":"Record aphids or other invertebrates per defined root/media sample, life stage, location, magnification, and identification confidence."},
+    {"field":"Root condition","requirement":"Record root color, branching, lesions, sloughing, odor, crown condition, and matched unaffected roots."},
+    {"field":"Aboveground clues","requirement":"Record alates, sticky-card captures, trapped insects on leaves, wilting, chlorosis, stunting, and temporal relationship to root findings."},
+    {"field":"Media context","requirement":"Record substrate, irrigation, moisture, EC/pH if relevant, oxygenation concerns, and propagation/source relationships."},
+    {"field":"Disease differential","requirement":"Record root-pathogen testing or other diagnostic evidence independently of pest observations."
+    }
+  ],
+  "misconceptions":[
+    "Root aphids must form obvious colonies on leaves before they can affect cannabis.",
+    "A winged aphid on a leaf always indicates a canopy-feeding species.",
+    "Every small organism found in media is a root pest.",
+    "Root-zone pests can be diagnosed from yellow leaves without examining roots.",
+    "One root-aphid threshold applies to every cannabis substrate and growth stage."
+  ],
+  "evidenceLimits":[
+    "Rice root aphid is directly documented on indoor Cannabis, but quantitative crop-loss relationships and universal action thresholds remain limited. Evidence for other soil-dwelling pests varies widely by taxon and production system, so organisms should be identified individually rather than grouped into a single root-pest diagnosis."
+  ],
+  "crossLinks":"THC-ENC-287 for other aphids; THC-ENC-289 for fungus gnats; THC-ENC-297–300 for sampling/trends; THC-ENC-301–320 for root disease differentials; THC-ENC-321–340 for sanitation and IPM.",
+  "sourceNotes":[
+    "Cranshaw & Wainwright-Evans (2020), Cannabis sativa as a Host of Rice Root Aphid in North America, Journal of Integrated Pest Management 11(1):15. Direct Cannabis host, production-system, root-location, and alate-dispersal evidence. https://academic.oup.com/jipm/article/11/1/15/5873259",
+    "Ong et al. (2025), Rice root aphids and cannabis aphids are parasitised by Aphelinus varipes, The Canadian Entomologist 157:e39. Confirms rice root aphid in commercial cannabis biological-control context. https://www.cambridge.org/core/journals/canadian-entomologist/article/rice-root-aphids-rhopalosiphum-rufiabdominale-and-cannabis-aphids-phorodon-cannabis-hemiptera-aphididae-are-parasitised-by-aphelinus-varipes-hymenoptera-aphelinidae/021F39B65C66F7CAE01D2DC9D3824B44",
+    "Florida Department of Agriculture and Consumer Services, Arthropods on Hemp circular. Distinguishes documented pests, predators, decomposers, and incidental arthropods recovered from hemp systems. https://ccmedia.fdacs.gov/content/download/114776/file/FDACS-P-02203_2023-11%28Arthropods-on-Hemp-Circular%29.pdf"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.0 controlled title plus evidence-reconciled web derivative","evidenceControl":"direct_cannabis_rice_root_aphid_research_plus_current_arthropod_survey_context","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"root_aphid_and_soil_dwelling_pest_identification_sampling_and_root_differential","releaseTimeReview":"completed_2026-09-01_root_sampling_required_and_nonpest_media_organisms_not_conflated","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"root-aphids-and-soil-dwelling-pests",
+  "route":"/encyclopedia/root-aphids-and-soil-dwelling-pests"
+}
