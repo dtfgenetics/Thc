@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-329",
+  "number":329,
+  "title":"Pest Exclusion and Structural Sealing",
+  "objective":"Explain how screening, door and vent management, structural sealing, receiving controls, and exterior maintenance reduce pest entry while preserving ventilation, access, and operational safety.",
+  "terms":[
+    {"term":"pest exclusion","definition":"Physical and procedural measures used to reduce pest entry into a production area before infestation becomes established."},
+    {"term":"insect screening","definition":"Mesh installed over vents, sidewalls, cooling pads, or other openings to reduce entry of target arthropods while still allowing required airflow."},
+    {"term":"structural sealing","definition":"Closing or repairing gaps, tears, cracks, utility penetrations, door defects, and other unintended openings that can permit pest movement."},
+    {"term":"airlock or vestibule","definition":"A two-door entry arrangement that reduces the chance that both the outside environment and production space are open to one another at the same time."},
+    {"term":"entry point","definition":"A vent, door, cooling-pad opening, damaged screen, wall gap, utility penetration, drain, receiving route, or other pathway through which pests may enter."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Exclusion is a preventive IPM layer. Greenhouse extension guidance shows that aphids, whiteflies, thrips, and other flying pests can enter through vents, sidewalls, cooling-pad openings, roof vents, doors, and damaged screening.",
+    "Screen effectiveness depends on target pest size and screen characteristics. Finer screens may exclude smaller insects but also increase resistance to airflow, so exclusion design must account for cooling and ventilation performance rather than treating the smallest mesh as universally best.",
+    "Doorway management matters in mechanically ventilated houses because open, unprotected doors can become high-flow entry points. Double-door or vestibule arrangements can reduce this pathway when correctly integrated with the ventilation system.",
+    "Structural exclusion does not replace plant intake and quarantine. Pests can arrive on incoming plants, growing media, containers, clothing, equipment, or other materials even when vents and doors are well protected.",
+    "Finding a pest near a doorway or vent suggests a plausible entry pathway but does not by itself prove the exact route. Incident reconstruction should combine pest distribution, timing, structural defects, incoming materials, and movement records."
+  ],
+  "cultivationRelevance":[
+    "Inspect door seals, vent screens, cooling-pad openings, roof vents, wall joints, utility penetrations, drains, and other potential entry points on a defined schedule.",
+    "Select screening for the target pest while accounting for manufacturer airflow requirements, fan performance, cooling capacity, and pressure effects.",
+    "Keep exterior weeds, crop debris, discarded plant material, and staging areas managed so pest reservoirs are not concentrated immediately beside greenhouse openings.",
+    "Pair exclusion with receiving inspection, quarantine, sticky-card or visual monitoring, and rapid repair of damaged screens or door hardware."
+  ],
+  "measureAndRecord":[
+    {"field":"Entry-point map","requirement":"Record vents, doors, cooling pads, roof openings, drains, utility penetrations, receiving doors, and other pathways that connect production to outside or higher-risk zones."},
+    {"field":"Screen specification","requirement":"Record manufacturer/product identification, intended target pest, installation location, condition, and ventilation/airflow constraints."},
+    {"field":"Structural inspection","requirement":"Record tears, gaps, failed seals, doors that do not close fully, damaged flashing, loose screens, or other defects and repair dates."},
+    {"field":"Monitoring correlation","requirement":"Compare pest detections near openings and boundaries with whole-crop scouting data rather than assuming a single trap or doorway proves entry route."},
+    {"field":"Ventilation impact","requirement":"Record any change in airflow, temperature, humidity, fan load, or cooling performance after adding or changing screening."
+    }
+  ],
+  "misconceptions":[
+    "The finest possible screen is always the best greenhouse screen.",
+    "Screening vents eliminates the need for incoming-plant quarantine.",
+    "A sealed-looking greenhouse is pest-proof.",
+    "A pest found near a door proves that door was the source.",
+    "Screening has no effect on ventilation or cooling performance."
+  ],
+  "evidenceLimits":[
+    "Most exclusion data come from greenhouse vegetable and ornamental systems rather than Cannabis-specific trials. Target pest size, screen material, air resistance, greenhouse ventilation design, local climate, and operating pressure determine performance. Exclusion reduces entry probability but does not create a sterile or pest-proof production environment."
+  ],
+  "crossLinks":"THC-ENC-321 for prevention hierarchy; THC-ENC-322–324 for zoning, quarantine, and personnel movement; THC-ENC-331 for scouting around representative entry points; THC-ENC-339 for repair and corrective action.",
+  "sourceNotes":[
+    "University of Florida IFAS Extension. Exclusion Methods for Managing Greenhouse Vegetable Pests (ENY-846/IN730). Current version accessed 2026-09-01. Describes insect screening, airflow penalties, roof-vent entry, and double-door systems. https://ask.ifas.ufl.edu/publication/IN730",
+    "University of Florida IFAS Extension. Thrips Management Program for Horticultural Crops (ENY-987/IN1145). Current version accessed 2026-09-01. Describes pest-specific screen sizing and the need to compensate for restricted airflow. https://ask.ifas.ufl.edu/publication/IN1145",
+    "Penn State Extension. Assessing the Risk of Disease in Greenhouses. Current guidance on screening vents/cooling pads and structural risk review. https://extension.psu.edu/assessing-the-risk-of-disease-in-greenhouses"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.1 controlled title plus evidence-reconciled web derivative","evidenceControl":"greenhouse_exclusion_screening_and_structural_entry_guidance","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"greenhouse_exclusion_and_ventilation_design","releaseTimeReview":"completed_2026-09-01_exclusion_vs_ventilation_and_entry_route_causation_boundaries_explicit","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"pest-exclusion-and-structural-sealing",
+  "route":"/encyclopedia/pest-exclusion-and-structural-sealing"
+}
