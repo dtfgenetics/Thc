@@ -62,7 +62,7 @@ async function assertAccessibilityContracts(page) {
   assert.equal(await page.locator('#announce').getAttribute('aria-live'), 'assertive');
   assert.equal(await page.locator('.skip-link').getAttribute('href'), '#game');
 
-  await page.locator('body').click({ position: { x: 2, y: 2 } });
+  await page.evaluate(() => document.activeElement?.blur());
   await page.keyboard.press('Tab');
   assert.equal(await page.evaluate(() => document.activeElement?.classList.contains('skip-link')), true, 'First keyboard stop should be the skip link.');
 
