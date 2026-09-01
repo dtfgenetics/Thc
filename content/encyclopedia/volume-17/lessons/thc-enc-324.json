@@ -1,0 +1,57 @@
+{
+  "id":"THC-ENC-324",
+  "number":324,
+  "title":"Personnel Entry and Clothing Controls",
+  "objective":"Explain how hands, footwear, clothing, gloves, and work sequence can move pests, soil, sap, and plant pathogens, and how plant-health entry controls reduce transfer without implying that personnel movement alone proves an outbreak source.",
+  "terms":[
+    {"term":"personnel biosecurity","definition":"Plant-health practices that reduce the chance that workers or visitors carry pests, pathogens, contaminated soil, plant sap, or debris into or between production areas."},
+    {"term":"entry control","definition":"A defined step at a zone entrance such as access restriction, hand hygiene, footwear cleaning, clothing or glove change, or movement logging."},
+    {"term":"work sequence","definition":"The order in which personnel visit crop zones or perform tasks, used to reduce movement from higher-risk areas back into cleaner stock."},
+    {"term":"protective clothing","definition":"Dedicated or disposable garments, footwear covers, gloves, or other barriers used to reduce transfer of biological material when appropriate to the task and risk."},
+    {"term":"hitchhiker pest","definition":"An arthropod or other pest unintentionally carried on clothing, equipment, containers, or people between areas."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "People can move biologically relevant material between greenhouse zones on hands, gloves, footwear, clothing, tools, carts, and other carried items. Greenhouse sanitation guidance therefore treats hand hygiene, clean footwear, clothing management, access control, and clean-area-first work sequence as components of prevention.",
+    "Personnel controls should match the hazard. Sap-transmitted agents are most relevant during cutting, pruning, training, defoliation, and other plant-contact work; soilborne pathogens may move with contaminated footwear or debris; arthropods can hitchhike on clothing or carried materials.",
+    "Cannabis-specific HLVd experiments demonstrate mechanical transmission through infectious sap and wounded plant tissue, strengthening the biological rationale for clean hands, gloves, tools, and work sequence during high-contact tasks.",
+    "Protective clothing is a barrier, not a substitute for clean behavior. A disposable cover, glove, or shoe cover that crosses a contaminated boundary without being changed can itself become a transfer surface.",
+    "Personnel presence in two affected rooms is epidemiologic context, not proof of transmission. Incident reconstruction should combine timing, contact events, pathogen biology, test results, and alternative pathways."
+  ],
+  "cultivationRelevance":[
+    "Limit non-essential entry into propagation, pathogen-screened mother stock, quarantine, and active incident zones according to plant-health risk.",
+    "Define hand, glove, footwear, and clothing expectations at relevant zone boundaries and before high-contact plant work.",
+    "When practical, schedule routine work from lower-risk or screened zones toward suspect/positive zones and complete required reset steps before returning.",
+    "Train workers to report unusual symptoms or pest findings before continuing through multiple crop zones with shared clothing or equipment."
+  ],
+  "measureAndRecord":[
+    {"field":"Entry rule","requirement":"Document which zones require restricted access, hand hygiene, footwear cleaning, dedicated or changed clothing/gloves, or other plant-health controls."},
+    {"field":"Work sequence","requirement":"Record standard clean-to-higher-risk order for recurring high-contact tasks and the reset procedure when reverse movement is necessary."},
+    {"field":"Visitor/contractor access","requirement":"Define plant-health briefing, escort, clothing/footwear, equipment, and restricted-zone requirements proportional to risk."},
+    {"field":"Incident contacts","requirement":"During an investigation, record relevant plant-contact work, zones visited, tools/equipment used, and timing without treating presence alone as causal proof."},
+    {"field":"Training","requirement":"Record training date, topics, personnel covered, and observed corrective actions for biosecurity procedure failures."
+    }
+  ],
+  "misconceptions":[
+    "People are the cause of every greenhouse disease spread event.",
+    "Disposable gloves stay clean for an entire shift.",
+    "Protective clothing eliminates the need for hand and tool sanitation.",
+    "Footbaths work equally well when footwear is covered in soil or debris.",
+    "A worker visiting two positive rooms proves the exact transmission route."
+  ],
+  "evidenceLimits":[
+    "Personnel-control recommendations are supported mainly by greenhouse/nursery biosecurity guidance plus pathogen-specific transmission biology. Exact transfer probabilities vary by pest/pathogen, contact type, organic load, surface, workflow, and production system; controls should be risk-based rather than ritualized."
+  ],
+  "crossLinks":"THC-ENC-316 for mechanical transmission; THC-ENC-322 for zoning/work sequence; THC-ENC-325–327 for cleaning, disinfection, and contact-time principles; THC-ENC-339 for corrective action.",
+  "sourceNotes":[
+    "UMass Amherst Greenhouse & Floriculture. Cleaning and Disinfecting the Greenhouse. Current fact sheet accessed 2026-09-01. https://www.umass.edu/agriculture-food-environment/greenhouse-floriculture/fact-sheets/cleaning-disinfecting-greenhouse",
+    "University of Kentucky Grow Forward. Sanitation for Management of Plant Diseases. https://growforward.mgcafe.uky.edu/modules/sanitation-management-plant-diseases",
+    "Washington State University Extension. Greenhouse Construction and Management — good greenhouse sanitation practices. https://extension.wsu.edu/pnw-gardeners-handbook/chapter-26-greenhouse-construction-and-management/",
+    "Punja ZK, Scott C, Tso HH, Munz J, Buirs L. Transmission, Spread, Longevity and Management of Hop Latent Viroid. Plants. 2025;14(5):830. https://pmc.ncbi.nlm.nih.gov/articles/PMC11902214/"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.1 controlled title plus evidence-reconciled web derivative","evidenceControl":"greenhouse_personnel_biosecurity_guidance_plus_direct_cannabis_HLVd_mechanical_transmission","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"greenhouse_personnel_biosecurity","releaseTimeReview":"completed_2026-09-01_personnel_risk_vs_causal_proof_boundary_explicit","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"personnel-entry-and-clothing-controls",
+  "route":"/encyclopedia/personnel-entry-and-clothing-controls"
+}
