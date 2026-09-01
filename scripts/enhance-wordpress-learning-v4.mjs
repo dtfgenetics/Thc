@@ -144,10 +144,19 @@ function insertAfterHero(content, block) {
   return `${css}${content.slice(0, at)}\n${block}\n${content.slice(at)}`;
 }
 
-async function getPage(slug) {
+async function getPage(slug, ownerMarker) {
   const rows = await request(`/wp-json/wp/v2/pages?slug=${encodeURIComponent(slug)}&context=edit&per_page=10`);
-  if (!Array.isArray(rows) || rows.length !== 1) throw new Error(`Expected one page for ${slug}; found ${Array.isArray(rows) ? rows.length : 'invalid'}`);
-  return rows[0];
+  if (!Array.isArray(rows) || rows.length === 0) throw new Error(`Expected at least one page for ${slug}; found ${Array.isArray(rows) ? rows.length : 'invalid'}`);
+  if (rows.length === 1) return rows[0];
+
+  const owned = ownerMarker ? rows.filter(row => rendered(row.content).includes(ownerMarker)) : [];
+  if (owned.length === 1) {
+    console.warn(`${slug}: found ${rows.length} pages; selected page ${owned[0].id} by canonical owner marker ${ownerMarker}`);
+    return owned[0];
+  }
+
+  const candidates = rows.map(row => `${row.id}:${row.status || 'unknown'}`).join(', ');
+  throw new Error(`${slug}: found ${rows.length} pages and ${owned.length} matched canonical owner marker ${ownerMarker || 'none'}; candidates=${candidates}`);
 }
 
 async function writePage(page, next, tag) {
@@ -160,7 +169,7 @@ async function writePage(page, next, tag) {
 }
 
 const results = [];
-const learnPage = await getPage('learn');
+const learnPage = await getPage('learn', 'data-dtf-layout="learn-v3"');
 let learnContent = stripV4(rendered(learnPage.content));
 if (!learnContent.includes('data-dtf-layout="learn-v3"')) throw new Error('Learn is not currently owned by the V3 learning experience; refusing to layer V4 over an unknown page');
 await writePage(learnPage, insertAfterHero(learnContent, learnBlock()), 'learn');
@@ -170,9 +179,10 @@ for (const id of Object.keys(guide.topics)) {
   const topic = topicIndex.get(id);
   const slug = String(topic.route || '').split('/').filter(Boolean).at(-1);
   if (!slug) throw new Error(`${id}: canonical route is invalid`);
-  const page = await getPage(slug);
+  const ownerMarker = `data-dtf-topic="${id}"`;
+  const page = await getPage(slug, ownerMarker);
   let content = stripV4(rendered(page.content));
-  if (!content.includes(`data-dtf-topic="${id}"`)) throw new Error(`${id}: current WordPress subject page is not the expected V3 topic owner`);
+  if (!content.includes(ownerMarker)) throw new Error(`${id}: current WordPress subject page is not the expected V3 topic owner`);
   await writePage(page, insertAfterHero(content, topicBlock(id)), `topic-${id}`);
   results.push({ id, route: topic.route, pageId: page.id });
 }
