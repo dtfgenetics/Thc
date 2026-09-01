@@ -1,0 +1,149 @@
+{
+  "schemaVersion": 1,
+  "id": "plant-health-biological-control-v1",
+  "topicId": "plant-health-ipm",
+  "route": "/learn/ipm/",
+  "title": "Biological Control in Cannabis: Evidence, Organisms, and Limits",
+  "learningOutcome": "Evaluate biological-control claims using an evidence ladder, distinguish strain-specific laboratory activity from cannabis in-planta results and production performance, and understand how beneficial bacteria, fungi, and native endophytes can fit inside an integrated plant-health program without replacing diagnosis, sanitation, environment control, or legal label requirements.",
+  "evidenceBoundary": "Biological control is not a synonym for harmless, universally effective, or approved for every crop. Results depend on the exact organism and strain, application route, timing, pathogen, plant stage, environment, formulation, and regulatory status. Research strains are not automatically registered products. In the United States, microbial pesticides are regulated as biopesticides and users must follow the current product label and applicable state requirements.",
+  "sourceRefs": [
+    {
+      "id": "BC-S1",
+      "type": "peer-reviewed cannabis experiment",
+      "citation": "Balthazar C, Cantin G, Novinscak A, Joly DL, Filion M. Expression of Putative Defense Responses in Cannabis Primed by Pseudomonas and/or Bacillus Strains and Infected by Botrytis cinerea. Frontiers in Plant Science. 2020;11:572112.",
+      "doi": "10.3389/fpls.2020.572112",
+      "pmid": "33324431",
+      "pmcid": "PMC7723895",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7723895/",
+      "supports": "A useful negative result: root-applied Pseudomonas/Bacillus treatments did not significantly control gray mold in the tested cannabis system, illustrating why strain and application route matter."
+    },
+    {
+      "id": "BC-S2",
+      "type": "peer-reviewed cannabis experiment",
+      "citation": "Balthazar C, Novinscak A, Cantin G, Joly DL, Filion M. Biocontrol Activity of Bacillus spp. and Pseudomonas spp. Against Botrytis cinerea and Other Cannabis Fungal Pathogens. Phytopathology. 2022;112(3):549-560.",
+      "doi": "10.1094/PHYTO-03-21-0128-R",
+      "pmid": "34293909",
+      "url": "https://apsjournals.apsnet.org/doi/10.1094/PHYTO-03-21-0128-R",
+      "supports": "Strain-specific in-vitro antagonism against multiple cannabis fungal pathogens and in-planta gray-mold suppression by selected Bacillus and Pseudomonas strains."
+    },
+    {
+      "id": "BC-S3",
+      "type": "peer-reviewed cannabis disease review with experimental supplemental evidence",
+      "citation": "Punja ZK. Emerging diseases of Cannabis sativa and sustainable management. Pest Management Science. 2021;77(9):3857-3870.",
+      "doi": "10.1002/ps.6307",
+      "pmcid": "PMC8451794",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8451794/",
+      "supports": "Integrated cannabis disease management and experimental examples involving Trichoderma, Gliocladium, Bacillus, Fusarium damping-off, powdery mildew, and Botrytis, while noting limited comparative efficacy data."
+    },
+    {
+      "id": "BC-S4",
+      "type": "peer-reviewed hemp plant-microbe experiment",
+      "citation": "Kakabouki I, Tataridas A, Mavroeidis A, et al. Effect of Colonization of Trichoderma harzianum on Growth Development and CBD Content of Hemp (Cannabis sativa L.). Microorganisms. 2021;9(3):518.",
+      "doi": "10.3390/microorganisms9030518",
+      "pmid": "33802427",
+      "pmcid": "PMC7998984",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7998984/",
+      "supports": "Trichoderma harzianum colonization effects on hemp growth, root density, mycorrhizal colonization, and crop traits; useful for separating growth-promotion evidence from direct disease-control evidence."
+    },
+    {
+      "id": "BC-S5",
+      "type": "peer-reviewed cannabis endophyte study",
+      "citation": "Dumigan CR, Deyholos MK. Cannabis Seedlings Inherit Seed-Borne Bioactive and Anti-Fungal Endophytic Bacilli. Plants. 2022;11(16):2127.",
+      "doi": "10.3390/plants11162127",
+      "pmid": "36015430",
+      "pmcid": "PMC9415172",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9415172/",
+      "supports": "Seed-borne bacterial endophytes in cannabis, including inherited Bacilli and in-vitro antibiotic activity against several fungal genera; also documents seed carriage of fungi that include known pathogen or post-harvest-mold genera."
+    },
+    {
+      "id": "BC-S6",
+      "type": "peer-reviewed 2026 cannabis-associated bacterial study",
+      "citation": "Kaddoura MJ, Amaya-Quiroz L, Rani M, et al. Characterization of bacterial endophytes isolated from Cannabis sativa L. and Chelidonium majus L. for their application as biostimulants and biocontrol agents. Frontiers in Microbiomes. 2026;5:1780965.",
+      "doi": "10.3389/frmbi.2026.1780965",
+      "pmid": "42338575",
+      "pmcid": "PMC13284072",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13284072/",
+      "supports": "Strain-dependent traits of Cannabis-associated Bacillus and Pseudomonas isolates, including stress tolerance, biosurfactant production, genomic traits, and in-vitro inhibition of fungal pathogens, supporting further evaluation rather than universal efficacy claims."
+    },
+    {
+      "id": "BC-R1",
+      "type": "current U.S. regulatory reference",
+      "citation": "U.S. Environmental Protection Agency. What are Biopesticides? Updated October 8, 2025.",
+      "url": "https://www.epa.gov/ingredients-used-pesticide-products/what-are-biopesticides",
+      "supports": "Microbial pesticides are biopesticides; effective and safe use requires knowledge of pest management and following label directions."
+    }
+  ],
+  "records": [
+    {
+      "id": "biocontrol-evidence-ladder",
+      "title": "The Biological-Control Evidence Ladder",
+      "sourceIds": ["BC-S1", "BC-S2", "BC-S3"],
+      "concepts": ["in vitro", "in planta", "production efficacy", "application route"],
+      "summary": "A petri-dish inhibition zone is evidence of antagonism under that assay, not proof that the organism will protect a cannabis crop. Cannabis studies show why the distinction matters: one experiment found no significant gray-mold protection after root priming with selected Pseudomonas and Bacillus strains, while later work with selected strains and a different antagonistic strategy showed significant suppression on cannabis leaves. The result is not contradiction; it is evidence that route, strain, timing, target, and experimental system change the outcome.",
+      "measure": "For every biological-control claim, record the organism to strain level when available, formulation, dose on the actual label, application route, timing relative to infection, pathogen target, plant stage, environmental conditions, comparison treatment, replication, disease endpoint, and whether the result came from agar, detached tissue, whole plants, greenhouse production, or commercial production.",
+      "interpret": "Rank evidence by how closely it matches the intended use. In-vitro inhibition is a screening result. In-planta disease reduction is stronger but still context-specific. Replicated production trials under similar crop and environmental conditions provide more direct operational evidence. Negative studies are valuable because they expose routes or mechanisms that do not generalize.",
+      "apply": "Use biological control as one component in an IPM system: identify the target first, correct the environment and sanitation failures that drive disease, choose a legal product whose label matches the crop/use site, document the application, and compare disease incidence or severity against a baseline. Do not change several major variables at once if you want to know whether the intervention worked.",
+      "evidenceLimits": "No single study establishes universal efficacy across cultivars, facilities, pathogens, or formulations. A named species is not enough because different strains can behave differently, and research organisms may not correspond to a registered commercial product."
+    },
+    {
+      "id": "bacillus-pseudomonas-antagonists",
+      "title": "Bacillus and Pseudomonas Antagonists",
+      "sourceIds": ["BC-S1", "BC-S2", "BC-S6"],
+      "concepts": ["Bacillus velezensis", "Bacillus subtilis", "Pseudomonas", "Botrytis"],
+      "summary": "Selected Bacillus and Pseudomonas strains have shown direct antagonism against cannabis-associated fungal pathogens, but performance is strongly strain- and method-dependent. In the 2022 Phytopathology study, selected strains inhibited a panel of culturable cannabis pathogens in vitro, and most of the six strains advanced to cannabis leaf tests significantly reduced gray-mold development. Two Bacillus velezensis strains reduced severity by at least half in that experimental system. Earlier root-priming work with some beneficial strains did not significantly protect infected leaves, which is an important boundary on broad claims.",
+      "measure": "Track the exact active organism and strain, product viability and storage conditions, application location, crop stage, pathogen pressure, humidity/leaf-wetness context, lesion incidence and severity, and untreated or standard-program comparisons. If the product label lists a strain, do not treat evidence for another strain as interchangeable proof.",
+      "interpret": "Direct antagonism can involve competition, antimicrobial metabolites, colonization, or other interactions, but a mechanism identified in one strain should not be assigned automatically to all members of the genus. Genomic safety screening and biosynthetic-gene findings strengthen characterization, yet they do not substitute for efficacy data in the intended production context.",
+      "apply": "Use verified microbial products preventively or within a documented IPM program only where their label and local rules permit. Maintain the environmental controls needed to suppress Botrytis and other diseases because a biological product cannot compensate reliably for chronic condensation, infected debris, or uncontrolled inoculum movement.",
+      "evidenceLimits": "The strongest cited cannabis disease-control results are controlled experiments. They support biological-control potential and strain selection, not a guarantee of commercial-crop control or permission to use an unregistered research strain."
+    },
+    {
+      "id": "trichoderma-and-beneficial-fungi",
+      "title": "Trichoderma and Other Beneficial Fungi",
+      "sourceIds": ["BC-S3", "BC-S4"],
+      "concepts": ["Trichoderma harzianum", "Trichoderma asperellum", "Gliocladium", "root colonization"],
+      "summary": "Trichoderma and related beneficial fungi appear in cannabis disease-management research and hemp plant-growth studies, but those evidence types answer different questions. Cannabis experiments summarized by Punja reported reduced Fusarium development on rooted cuttings after selected biological-control fungi were applied before pathogen challenge, while a separate hemp greenhouse study found Trichoderma harzianum colonization affected growth, root density, and other crop traits. Growth promotion does not by itself prove disease control, and disease suppression in one pathosystem does not establish protection against every root or foliar pathogen.",
+      "measure": "Separate crop-performance measurements from disease measurements. For growth studies, record biomass, height, root traits, nutrition, and untreated controls. For disease studies, record inoculum pressure, incidence, severity, pathogen recovery or confirmation, timing, and treatment controls. Also document substrate, irrigation chemistry, temperature, and compatibility with other biological or chemical inputs.",
+      "interpret": "Beneficial fungi may colonize roots or internal tissues and can interact with nutrient capture, plant signaling, competitors, and pathogens. The presence of a beneficial organism is therefore not a binary 'protected/unprotected' state. Successful establishment, strain identity, environmental fit, and the target disease all affect the result.",
+      "apply": "If a labeled product is used, treat establishment and performance as measurable processes rather than assumptions. Preserve sanitation and root-zone oxygenation, avoid unvalidated tank mixes that may kill or suppress the biological agent, and evaluate crop response against a defined baseline. Keep disease-control claims separate from biostimulant claims in records and educational material.",
+      "evidenceLimits": "The cited hemp colonization study primarily evaluates plant development and CBD-related crop traits, not a pathogen challenge. The cannabis disease review contains useful experimental examples but also states that comparative efficacy data for biological-control products are limited."
+    },
+    {
+      "id": "native-endophytes-and-seed-microbiome",
+      "title": "Native Endophytes and the Seed Microbiome",
+      "sourceIds": ["BC-S5", "BC-S6"],
+      "concepts": ["endophytes", "seed transmission", "Bacilli", "microbiome"],
+      "summary": "Cannabis seeds and tissues can carry microorganisms that are neither simply 'good' nor 'bad' as a group. A 2022 study across 15 Cannabis accessions found seed-inherited Bacilli and Paenibacillus mobilis alongside fungal genera that include known cannabis pathogens or post-harvest molds; thirteen isolated bacterial endophytes showed antibiotic activity against selected fungi in vitro. A 2026 study further characterized Cannabis-associated Bacillus and Pseudomonas isolates and found strongly strain-dependent growth-promotion, stress-tolerance, genomic, and antifungal traits.",
+      "measure": "When microbiome claims matter, document sample source, cultivar or accession, tissue, surface-sterilization method, culture-dependent versus sequencing method, isolate identity, strain-level information, assay target, and whether a phenotype was demonstrated in vitro or in plants. The mere detection of a taxon does not reveal whether it is active, beneficial, pathogenic, or neutral in that crop.",
+      "interpret": "Seed transmission means propagation can move complex microbial communities as well as plant genetics. Antagonistic activity from an isolate is scientifically interesting, but it does not justify inoculating crops with unidentified cultures or assuming all Bacillus-like organisms are beneficial. Taxonomic identification, biosafety characterization, and reproducible efficacy are separate requirements.",
+      "apply": "Use this evidence to improve diagnostics and propagation hygiene: distinguish detection from disease, preserve traceability by seed lot and mother plant, avoid indiscriminate sterilization or inoculation claims, and escalate promising isolates through controlled testing rather than informal culture transfer. Commercial biological inputs should remain identifiable, quality-controlled, and legally appropriate for the intended use.",
+      "evidenceLimits": "Both cited studies support biological potential but much of the antagonism evidence is in vitro. Native microbiome findings do not establish that manipulating those communities will reliably improve yield or suppress disease in a production facility."
+    },
+    {
+      "id": "biopesticide-label-boundary",
+      "title": "Research Evidence Is Not a Product Label",
+      "sourceIds": ["BC-R1", "BC-S2", "BC-S3"],
+      "concepts": ["microbial pesticide", "label", "strain identity", "IPM"],
+      "summary": "A research paper can show that a microorganism has biological-control activity without creating a legal crop-use instruction. In the United States, microbial pesticides are a class of biopesticide regulated by EPA. Product registration, active organism or strain, formulation, use site, target pest, rate, timing, personal-protection requirements, and other restrictions belong to the current product label and applicable state rules—not to a generalized summary of the research literature.",
+      "measure": "Before use, verify the current product label and registration status, exact active organism and strain, crop or use site, target disease or pest, permitted application method, interval and rate restrictions, storage/viability requirements, compatibility statements, and any state-specific limitations. Archive the label version used with the crop record when compliance matters.",
+      "interpret": "Terms such as natural, microbial, biological, or organic do not remove the need for correct identification and legal use. A paper about Bacillus velezensis LBUM279, for example, is evidence about that research strain and experiment; it is not permission to substitute any Bacillus product or to improvise a rate.",
+      "apply": "Pair scientific literature with current regulatory information. Use research to understand mechanisms and evidence quality, then use the legal label to determine whether and how a commercial product may actually be used. If the two do not line up, do not convert the research protocol into an off-label production instruction.",
+      "evidenceLimits": "Regulatory requirements differ by jurisdiction and change over time. This educational record is not a substitute for the current label, regulator database, or local compliance guidance."
+    }
+  ],
+  "knowledgeChecks": [
+    "Why can strong inhibition on an agar plate fail to become disease control on a cannabis plant?",
+    "What did the contrasting Bacillus/Pseudomonas cannabis studies teach about application route and strain specificity?",
+    "Why should growth-promotion evidence for Trichoderma be kept separate from pathogen-control evidence?",
+    "What can seed-borne Bacilli data tell us, and what can it not tell us about production efficacy?",
+    "Why is a peer-reviewed result for a research strain not a substitute for a current pesticide or biopesticide label?",
+    "Which measurements would you collect to decide whether a biological-control program is actually reducing disease in your crop?"
+  ],
+  "visualTargets": [
+    "Biological-control evidence ladder from in-vitro antagonism to commercial-production validation",
+    "Bacillus and Pseudomonas cannabis study comparison showing route, strain, target, and outcome",
+    "Trichoderma evidence map separating root colonization, growth promotion, and disease suppression",
+    "Cannabis seed microbiome diagram showing vertically carried beneficial, neutral, and potentially harmful microbes",
+    "Biopesticide decision card: research paper versus registered product label",
+    "IPM integration diagram placing biological control beside environment, sanitation, scouting, diagnosis, and evaluation"
+  ]
+}
