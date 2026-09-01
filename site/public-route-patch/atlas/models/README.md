@@ -1,12 +1,14 @@
-# Plant Atlas V4 production model contract
+# Plant Atlas V4 model contract
 
-The photoreal Plant Atlas renderer expects the approved production specimen at:
+Plant Atlas V4 is complete without a downloaded model: it ships with a built-in high-detail PBR botanical specimen (`procedural-pbr`) so the interactive anatomy, camera focus, explanations, accessibility, and mobile behavior do not fail when an external asset is absent.
+
+An approved photoreal production specimen can replace the built-in visual source automatically through `model-manifest-v4.json`. The preferred target remains:
 
 `/atlas/models/cannabis-specimen-v1.glb`
 
-Do not replace the live V3 procedural renderer until this asset has passed visual, botanical, performance, licensing, and interaction QA.
+The external asset is therefore a **visual fidelity upgrade**, not a runtime dependency.
 
-## Required specimen
+## Required external specimen
 
 - glTF 2.0 binary (`.glb`), Y-up, upright, centered, and consistently scaled.
 - One complete mature female Cannabis sativa specimen from apical flower through the exposed root system.
@@ -23,29 +25,31 @@ Do not replace the live V3 procedural renderer until this asset has passed visua
 - Aim for an initial GLB transfer size below 25 MB. If the approved source is larger, optimize with Meshopt/Draco geometry compression and KTX2/Basis textures before public deployment.
 - Avoid dozens of tiny materials and textures; batch by botanical surface where practical.
 
+## Manifest activation
+
+`model-manifest-v4.json` controls the source:
+
+- `preferredModel.enabled: false` — use the built-in PBR specimen and do not request the GLB.
+- `preferredModel.enabled: true` — attempt the approved GLB first; if loading fails, V4 automatically returns to the built-in PBR specimen.
+
+Before enabling the external model, record creator/source, license, attribution requirements, and modification rights in this directory. Do not enable an asset whose redistribution rights are uncertain.
+
 ## Interaction contract
 
-`/atlas/data/hotspots-v4.json` stores normalized 0–1 anatomy anchors against the loaded model bounds. Calibrate every anchor after the final GLB is locked. The seven required interactive systems are:
+`/atlas/data/hotspots-v4.json` stores normalized 0–1 anatomy anchors against whichever specimen is active. V4 currently maps fourteen inspectable regions, including the seven primary systems and finer structures such as root tips, the shoot apex, petioles, leaf venation, bracts, sugar leaves, stigmas, and glandular trichomes.
 
-1. root-system
-2. stem-vascular
-3. nodes-branching
-4. leaf-module
-5. flower-anatomy
-6. trichomes-resin
-7. reproductive-biology
+Every primary system remains selectable by mouse, touch, keyboard-accessible focus buttons, and the existing anatomy controls. Selection must focus the camera, show a persistent anatomy label, populate explanatory copy, and preserve the deep link into the detailed Atlas module.
 
-Each system must remain selectable by mouse, touch, and the existing anatomy focus controls. Selection must focus the camera, show a persistent anatomy label, populate the explanatory inspector, and preserve the existing deep link into the detailed Atlas module.
+## External GLB release gate
 
-## Release gate
+Before setting `preferredModel.enabled` to `true`:
 
-Before wiring V4 into `/atlas/index.html`:
+1. Record model source, creator, license, attribution requirements, and modification rights.
+2. Validate the anatomy against the educational copy and reject obviously impossible geometry.
+3. Confirm the exposed root system is visible and not hidden inside opaque soil or a pot.
+4. Calibrate all normalized hotspot anchors against the exact final GLB.
+5. Test rotate, pinch/wheel zoom, click/tap selection, camera focus, reset, keyboard controls, reduced-motion behavior, and mobile layout.
+6. Verify acceptable loading and frame rate on a mid-range Android phone as well as desktop.
+7. Run `npm run validate:plant-atlas:v4` and the complete GrowLens verification suite.
 
-1. Record model source, creator, license, attribution requirements, and any modification rights in this directory.
-2. Validate plant anatomy against the educational copy and remove any obviously inaccurate or impossible geometry.
-3. Calibrate `hotspots-v4.json` against the exact final GLB.
-4. Test rotate, pinch/wheel zoom, tap/click selection, camera focus, reset, reduced-motion behavior, and mobile layout.
-5. Verify acceptable loading and frame rate on a mid-range Android phone as well as desktop.
-6. Run the V3 regression suite and V4 validation so the public-route mirror stays synchronized.
-
-The renderer intentionally falls back to the existing V3 atlas when the production GLB cannot be loaded.
+If any external-model gate fails, keep the manifest disabled. The built-in PBR specimen remains the production-safe model.
