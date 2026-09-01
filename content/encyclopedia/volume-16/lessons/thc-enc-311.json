@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-311",
+  "number":311,
+  "title":"Beet Curly Top Virus",
+  "objective":"Recognize Beet curly top virus as an important hemp virus transmitted by beet leafhoppers, distinguish vector presence from confirmed plant infection, and interpret symptom, strain, seed, genotype, and molecular-test evidence without assuming every curled or stunted plant has BCTV.",
+  "terms":[
+    {"term":"Beet curly top virus","definition":"BCTV, a geminivirus with multiple genetically distinct strains that infect numerous hosts including Cannabis sativa."},
+    {"term":"beet leafhopper","definition":"Neoaliturus tenellus, historically Circulifer tenellus, the recognized insect vector responsible for BCTV transmission among susceptible plant hosts."},
+    {"term":"vector","definition":"A living organism that acquires and transmits a pathogen between hosts; vector presence and pathogen infection are separate observations."},
+    {"term":"strain","definition":"A genetically distinguishable variant within a pathogen species or complex that may differ in geography, biology, or host interaction."},
+    {"term":"PCR detection","definition":"Amplification of a pathogen-specific nucleic-acid target to support identification; a positive result documents target presence in the tested sample, while interpretation still depends on sampling and assay context."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "BCTV is a documented viral pathogen of hemp and Cannabis sativa in the western United States. Infection can be associated with stunting, leaf curling or twisting, chlorosis, abnormal growth, and reduced performance, but these symptoms overlap with other viruses, viroids, herbicide or environmental injury, nutrition problems, and genetic phenotypes.",
+    "The beet leafhopper is the established BCTV vector. Detecting leafhoppers in or near a crop increases epidemiological relevance but does not prove that a particular insect carries BCTV or that a symptomatic plant is infected. Plant infection requires pathogen-specific testing when diagnostic certainty matters.",
+    "A 2026 multi-state hemp study found substantial BCTV genetic diversity and recombination, including several strains across surveyed western states. This diversity means a single historic strain assumption should not replace current molecular identification or regional surveillance.",
+    "The same 2026 study detected BCTV in surface-disinfected seeds and internal seed tissues and recovered infection in a small proportion of seedlings in grow-out experiments, supporting potential seed transmission in hemp. Detection frequency differed by genotype and must not be generalized to all seed lots or Cannabis types.",
+    "BCTV effects can be genotype dependent. The 2026 study found cannabinoid reductions in one tested hemp genotype but not another. Beet leafhoppers also failed to survive on hemp beyond seven days in that experiment, but short host residence does not eliminate vector risk because transmission does not require completion of the insect life cycle on hemp."
+  ],
+  "cultivationRelevance":[
+    "When BCTV is suspected, record plant symptoms and leafhopper activity separately and confirm infection with an appropriate laboratory assay rather than using sticky-card capture or leaf curl as the diagnosis.",
+    "Map symptomatic and confirmed-positive plants against field edges, weed hosts, leafhopper observations, cultivar/genotype, and time so spatial patterns can be interpreted without assuming a single source.",
+    "For seed-associated investigations, distinguish pathogen detection in seed from demonstrated seedling infection and from the actual frequency of transmission under the relevant genotype and production system.",
+    "Do not infer that controlling the vector with a particular regulated product is lawful or effective from epidemiological evidence alone; current labels and jurisdiction govern product use."
+  ],
+  "measureAndRecord":[
+    {"field":"Plant symptoms","requirement":"Record stunting, leaf curl/twist, chlorosis, abnormal branching or growth, onset date, cultivar, stage, and representative images."},
+    {"field":"Vector observations","requirement":"Record beet leafhopper identification method, counts/trap method, dates, locations, and nearby host or weed context separately from virus test results."},
+    {"field":"Virus testing","requirement":"Record tissue, collection date, assay/laboratory, BCTV result, strain/genotype information when available, and quality-control interpretation."},
+    {"field":"Seed evidence","requirement":"If seed is investigated, separate seed-surface, internal-seed, embryo/endosperm, and grow-out seedling evidence rather than labeling all detection as transmission."},
+    {"field":"Spatial-temporal pattern","requirement":"Map confirmed cases and new symptom onset over time to support or reject vector-associated spread hypotheses."
+    }
+  ],
+  "misconceptions":[
+    "Leaf curling or stunting proves BCTV.",
+    "Finding beet leafhoppers proves the crop is infected with BCTV.",
+    "Because leafhoppers cannot complete their life cycle on hemp, they cannot transmit BCTV to hemp.",
+    "Detecting BCTV in seed means every seedling will be infected.",
+    "BCTV reduces cannabinoids by the same amount in every genotype."
+  ],
+  "evidenceLimits":[
+    "BCTV strain prevalence, seed-associated transmission frequency, symptom severity, and cannabinoid effects vary by location and genotype. Vector biology establishes beet leafhopper as the transmission agent, but local insect abundance or capture does not identify infection status without pathogen testing."
+  ],
+  "crossLinks":"THC-ENC-293 for beet leafhopper biology; THC-ENC-301 for disease-cycle reasoning; THC-ENC-312 for other virus-like syndromes; THC-ENC-314–315 for sampling and false negatives; THC-ENC-319 for genotype susceptibility.",
+  "sourceNotes":[
+    "Han J, et al. Beet Curly Top Virus Genetic Diversity, Impact on Cannabinoids, Potential Seed Transmission, and Vector Biology in Hemp. Phytopathology. 2026;116(5):813-824. PMID:41563377. doi:10.1094/PHYTO-09-25-0297-R. https://pubmed.ncbi.nlm.nih.gov/41563377/",
+    "Interactions of beet leafhopper (Hemiptera: Cicadellidae), vector of beet curly top virus, and hemp in New Mexico. Environ Entomol. 2023. PMID:37478402. doi:10.1093/ee/nvad069. https://pubmed.ncbi.nlm.nih.gov/37478402/",
+    "Punja ZK, et al. Challenges to Cannabis sativa Production from Pathogens and Microbes—The Role of Molecular Diagnostics and Bioinformatics. 2024. PMID:38203190. https://pmc.ncbi.nlm.nih.gov/articles/PMC10779078/"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.0 controlled title plus evidence-reconciled web derivative","evidenceControl":"2026_multi_state_hemp_BCTV_strain_seed_genotype_vector_study_plus_cannabis_molecular_diagnostics","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"hemp_cannabis_BCTV_virology_and_vector_epidemiology","releaseTimeReview":"completed_2026-09-01_vector_presence_seed_detection_and_genotype_effect_boundaries_explicit","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"beet-curly-top-virus",
+  "route":"/encyclopedia/beet-curly-top-virus"
+}
