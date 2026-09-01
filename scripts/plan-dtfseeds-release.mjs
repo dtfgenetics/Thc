@@ -12,7 +12,36 @@ const configPath = args.config || 'site/deployment/release-lanes.json';
 const config = JSON.parse(readFileSync(configPath, 'utf8'));
 const mode = args.mode || process.env.RELEASE_MODE || 'auto';
 const head = args.head || process.env.GITHUB_SHA || 'HEAD';
-const base = args.base || process.env.RELEASE_BASE || '';
+const requestedBase = args.base || process.env.RELEASE_BASE || '';
+
+function gitText(commandArgs) {
+  try {
+    return execFileSync('git', commandArgs, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim();
+  } catch {
+    return '';
+  }
+}
+
+function gitOk(commandArgs) {
+  try {
+    execFileSync('git', commandArgs, { stdio: 'ignore' });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function resolveCheckpoint() {
+  if (mode !== 'auto' || !config.productionCheckpointTag) return null;
+  const ref = `refs/tags/${config.productionCheckpointTag}`;
+  const sha = gitText(['rev-parse', '--verify', ref]);
+  if (!sha) return null;
+  if (!gitOk(['merge-base', '--is-ancestor', sha, head])) return null;
+  return { tag: config.productionCheckpointTag, sha };
+}
+
+const checkpoint = resolveCheckpoint();
+const base = checkpoint?.sha || requestedBase;
 
 function changedFiles() {
   if (mode === 'full') return ['<manual-full-release>'];
@@ -62,7 +91,9 @@ const plan = {
   schemaVersion: config.schemaVersion,
   site: config.site,
   mode,
+  requestedBase: requestedBase || null,
   base: base || null,
+  checkpoint,
   head,
   forceFull,
   deploy,
