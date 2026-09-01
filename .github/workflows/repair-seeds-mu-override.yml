@@ -1,0 +1,98 @@
+name: Repair Seeds Stale MU Override
+
+on:
+  pull_request:
+    paths:
+      - scripts/repair-seeds-mu-override.mjs
+      - .github/workflows/repair-seeds-mu-override.yml
+      - .github/repair-seeds-mu-override-trigger.txt
+  push:
+    branches: [main]
+    paths:
+      - .github/repair-seeds-mu-override-trigger.txt
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dtfseeds-seeds-mu-override-repair
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate transactional repair boundaries
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/repair-seeds-mu-override.mjs
+          grep -Fq "a32f9a10a5f79580d665d8d2c4718993a9d4bc14070eb8a26a4a2386f8535a3c" scripts/repair-seeds-mu-override.mjs
+          grep -Fq "dtf-homepage-override.php" scripts/repair-seeds-mu-override.mjs
+          grep -Fq "dtf-homepage-override.php.dtf-disabled" scripts/repair-seeds-mu-override.mjs
+          grep -Fq "Open Mystery Line profile" scripts/repair-seeds-mu-override.mjs
+          grep -Fq "profileCount !== requiredSeedsMarkers.length" scripts/repair-seeds-mu-override.mjs
+          grep -Fq "/index.php?page_id=868" scripts/repair-seeds-mu-override.mjs
+          grep -Fq "/dtf-seeds-mu-repair/v1/restore" scripts/repair-seeds-mu-override.mjs
+          grep -Fq "rollbackFailed" scripts/repair-seeds-mu-override.mjs
+          grep -Fq "litespeed_purge_all" scripts/repair-seeds-mu-override.mjs
+          grep -Fq "/wp-json/code-snippets/v1/snippets/schema" scripts/repair-seeds-mu-override.mjs
+          ! grep -Fq "/wp-json/wp/v2/plugins?search=" scripts/repair-seeds-mu-override.mjs
+          ! grep -Eq 'wp_update_post|set_post_thumbnail|delete_post_meta' scripts/repair-seeds-mu-override.mjs
+
+  repair-production:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: production
+    env:
+      WP_SITE_URL: https://dtfseeds.com
+      NODE_OPTIONS: --dns-result-order=ipv4first
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Require proven WordPress credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${WP_API_USERNAME:-}"
+          test -n "${WP_API_PASSWORD:-}"
+      - name: Disable stale MU override and prove Seeds convergence
+        id: repair
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/repair-seeds-mu-override.mjs \
+            | tee "$RUNNER_TEMP/seeds-mu-override-repair.json"
+          grep -Eq '"ok"[[:space:]]*:[[:space:]]*true' "$RUNNER_TEMP/seeds-mu-override-repair.json"
+          grep -Eq '"profileCount"[[:space:]]*:[[:space:]]*11' "$RUNNER_TEMP/seeds-mu-override-repair.json"
+      - name: Upload repair evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: seeds-mu-override-repair-${{ github.run_id }}
+          path: ${{ runner.temp }}/seeds-mu-override-repair.json
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Summarize repair status
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo '## Seeds MU override repair'
+            echo
+            echo "- Repair: ${{ steps.repair.outcome }}"
+            echo '- Target: hash-gated wp-content/mu-plugins/dtf-homepage-override.php only.'
+            echo '- Success gate: page 868 REST plus /seeds/ and direct page_id=868 must expose all 11 canonical profiles and no stale catalog/Grow Notes markers.'
+            echo '- Collateral gate: Home and Learn must remain healthy and lose their known stale override markers.'
+            echo '- Automatic rollback: enabled if any post-disable production verification fails.'
+          } >> "$GITHUB_STEP_SUMMARY"
