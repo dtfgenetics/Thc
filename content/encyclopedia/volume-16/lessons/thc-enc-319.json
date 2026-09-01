@@ -1,0 +1,57 @@
+{
+  "id":"THC-ENC-319",
+  "number":319,
+  "title":"Disease Resistance and Susceptibility",
+  "objective":"Interpret disease resistance, tolerance, and susceptibility as genotype-by-pathogen-by-environment traits; use replicated Cannabis evidence without converting one resistant accession, locus, or trial into a universal cultivar claim.",
+  "terms":[
+    {"term":"resistance","definition":"A heritable or biologically based host property that reduces pathogen infection, colonization, reproduction, or disease severity relative to a susceptible comparison under defined conditions."},
+    {"term":"susceptibility","definition":"The degree to which a host genotype permits infection or disease development under a defined pathogen challenge and environment."},
+    {"term":"tolerance","definition":"The ability of a host to maintain performance despite infection or disease; tolerance is distinct from reducing pathogen abundance or infection."},
+    {"term":"quantitative resistance","definition":"Resistance expressed as a measurable reduction in disease severity or pathogen performance, often influenced by multiple genes and environment rather than complete immunity."},
+    {"term":"genotype-by-environment interaction","definition":"A difference in genotype performance that changes across environments, seasons, production systems, or disease pressures."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Cannabis genotypes vary substantially in disease susceptibility. Direct screening has documented large differences in powdery-mildew severity among Cannabis sativa germplasm, including entries with consistently low disease in replicated trials, and a 2026 Septoria study likewise found substantial susceptibility variation among accessions.",
+    "Resistance is pathogen specific. A genotype with low powdery-mildew severity should not be assumed resistant to Septoria, Botrytis, Fusarium, HLVd, BCTV, or another disease unless that interaction has been tested.",
+    "Genetic studies have identified Cannabis loci associated with powdery-mildew susceptibility or resistance, including evidence near CsMLO1. A candidate locus can strengthen biological understanding but does not make phenotype independent of genetic background, pathogen population, environment, or experimental design.",
+    "Resistance and tolerance are different. A plant can support pathogen infection yet show limited yield or quality loss, while another plant can suppress pathogen growth more effectively. Studies should therefore report both disease/pathogen measurements and host performance where possible.",
+    "Apparent field resistance can be confounded by escape: later development, canopy architecture, microclimate, vector exposure, inoculum distribution, or sampling time may reduce observed disease without a true physiological resistance mechanism. Replication across time, environments, and pathogen populations improves confidence."
+  ],
+  "cultivationRelevance":[
+    "Keep disease observations linked to exact genotype or accession identity rather than broad market labels such as indica, sativa, hemp, or hybrid.",
+    "Compare genotypes under similar disease pressure and measurement methods before ranking susceptibility; uncontrolled exposure differences can create false resistance impressions.",
+    "Record disease severity separately from growth, yield, flower quality, or other performance so resistance and tolerance are not conflated.",
+    "Treat resistance as one layer of integrated disease management, not a replacement for pathogen-free propagation, scouting, biosecurity, environmental management, and diagnosis."
+  ],
+  "measureAndRecord":[
+    {"field":"Genetic identity","requirement":"Record cultivar/accession, source, propagation lot, and any verified pedigree or marker information relevant to the study."},
+    {"field":"Pathogen challenge","requirement":"Record pathogen species/strain or population, inoculation/natural-exposure context, disease pressure, and confirmation method."},
+    {"field":"Disease phenotype","requirement":"Use a defined incidence/severity scale, pathogen quantification where available, dates, plant stage, and assessor method."},
+    {"field":"Host performance","requirement":"Record growth, survival, flowering, yield or quality metrics separately from pathogen measurements when evaluating tolerance."},
+    {"field":"Replication/context","requirement":"Record number of plants/replicates, seasons/environments, experimental blocks, and environmental conditions so stability of the response can be evaluated."
+    }
+  ],
+  "misconceptions":[
+    "A cultivar resistant to one disease is broadly disease-resistant.",
+    "No visible disease in one crop cycle proves genetic resistance.",
+    "A resistance-associated marker guarantees the same phenotype in every genetic background.",
+    "Tolerance and resistance mean the same thing.",
+    "Genotype ranking from one environment is automatically stable across all production systems."
+  ],
+  "evidenceLimits":[
+    "Cannabis resistance research is rapidly expanding but remains uneven across diseases. Powdery mildew and Septoria now have direct replicated germplasm evidence, while many other pathosystems have smaller datasets. Public claims should specify pathogen, genotype, trial conditions, endpoint, and whether resistance was replicated."
+  ],
+  "crossLinks":"THC-ENC-302 for powdery mildew; THC-ENC-308 for Septoria/leaf spots; THC-ENC-311 for genotype-specific BCTV effects; THC-ENC-313 for asymptomatic status; THC-ENC-381–400 for breeding and selection.",
+  "sourceNotes":[
+    "Screening Diverse Cannabis sativa Germplasm for Resistance to Golovinomyces ambrosiae. Plant Disease. 2026. PMID:41319034. doi:10.1094/PDIS-07-25-1591-RE. https://pubmed.ncbi.nlm.nih.gov/41319034/",
+    "Schwartz JA, et al. Screening of Cannabis sativa Germplasm for Susceptibility to Septoria Leaf Spot. Plant Disease. 2026;110(5):1750-1756. PMID:40920100. doi:10.1094/PDIS-07-25-1367-RE. https://pubmed.ncbi.nlm.nih.gov/40920100/",
+    "Genetic Mapping, Identification, and Characterization of a Candidate Susceptibility Gene for Powdery Mildew in Cannabis sativa. Plant Disease. 2024. PMID:37750850. https://pubmed.ncbi.nlm.nih.gov/37750850/",
+    "Buirs L, Punja ZK. Integrated Management of Pathogens and Microbes in Cannabis sativa L. under Greenhouse Conditions. Plants. 2024;13(6):786. PMID:38592798. https://pmc.ncbi.nlm.nih.gov/articles/PMC10974757/"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.0 controlled title plus evidence-reconciled web derivative","evidenceControl":"2024_2026_direct_cannabis_powdery_mildew_genetics_germplasm_and_Septoria_susceptibility_trials","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_disease_resistance_genetics_and_phenotyping","releaseTimeReview":"completed_2026-09-01_pathogen_specificity_escape_tolerance_and_GxE_boundaries_explicit","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"disease-resistance-and-susceptibility",
+  "route":"/encyclopedia/disease-resistance-and-susceptibility"
+}
