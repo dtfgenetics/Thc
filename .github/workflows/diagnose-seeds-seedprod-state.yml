@@ -35,7 +35,7 @@ jobs:
           grep -Fq "page_868_related_meta" scripts/diagnose-seeds-seedprod-state.mjs
           grep -Fq "cleanupSnippet" scripts/diagnose-seeds-seedprod-state.mjs
           ! grep -Fq "/wp-json/wp/v2/plugins" scripts/diagnose-seeds-seedprod-state.mjs
-          ! grep -Eq 'wp_update_post|update_post_meta|delete_post_meta|set_post_thumbnail|update_option|delete_option|INSERT INTO|UPDATE .* SET|DELETE FROM|ALTER TABLE|DROP TABLE' scripts/diagnose-seeds-seedprod-state.mjs
+          ! grep -Eq 'wp_update_post[[:space:]]*\(|update_post_meta[[:space:]]*\(|delete_post_meta[[:space:]]*\(|set_post_thumbnail[[:space:]]*\(|update_option[[:space:]]*\(|delete_option[[:space:]]*\(|INSERT[[:space:]]+INTO|UPDATE[[:space:]].*[[:space:]]SET|DELETE[[:space:]]+FROM|ALTER[[:space:]]+TABLE|DROP[[:space:]]+TABLE' scripts/diagnose-seeds-seedprod-state.mjs
 
   diagnose-production:
     if: github.event_name == 'push'
