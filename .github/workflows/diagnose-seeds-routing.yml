@@ -1,0 +1,96 @@
+name: Diagnose Current Seeds Routing
+
+on:
+  pull_request:
+    paths:
+      - scripts/diagnose-seeds-routing-via-wordpress.mjs
+      - .github/workflows/diagnose-seeds-routing.yml
+      - .github/diagnose-seeds-routing-trigger.txt
+  push:
+    branches: [main]
+    paths:
+      - .github/diagnose-seeds-routing-trigger.txt
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dtfseeds-seeds-routing-diagnostic
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate read-only diagnostic boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/diagnose-seeds-routing-via-wordpress.mjs
+          ! grep -Eq 'file_put_contents|\bunlink\s*\(|\brename\s*\(|\brmdir\s*\(|\bmkdir\s*\(|wp_mkdir_p|ZipArchive' scripts/diagnose-seeds-routing-via-wordpress.mjs
+          grep -Fq "\$request->get_param('dtf_repair_token')" scripts/diagnose-seeds-routing-via-wordpress.mjs
+          ! grep -Fq "current_user_can('manage_options')" scripts/diagnose-seeds-routing-via-wordpress.mjs
+          ! grep -Fq "X-DTF-Repair-Token" scripts/diagnose-seeds-routing-via-wordpress.mjs
+          grep -Fq "'seeds_index_html'" scripts/diagnose-seeds-routing-via-wordpress.mjs
+          grep -Fq "'/seeds/index.html'" scripts/diagnose-seeds-routing-via-wordpress.mjs
+          grep -Fq "'/seeds/index.php'" scripts/diagnose-seeds-routing-via-wordpress.mjs
+          grep -Fq "root_routing_directives" scripts/diagnose-seeds-routing-via-wordpress.mjs
+
+  diagnose-production:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: production
+    env:
+      WP_SITE_URL: https://dtfseeds.com
+      NODE_OPTIONS: --dns-result-order=ipv4first
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Require proven WordPress credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${WP_API_USERNAME:-}"
+          test -n "${WP_API_PASSWORD:-}"
+
+      - name: Run current read-only Seeds routing diagnostic
+        id: diagnostic
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/diagnose-seeds-routing-via-wordpress.mjs \
+            | tee "$RUNNER_TEMP/seeds-routing-diagnostic.json"
+          grep -Eq '"ok"[[:space:]]*:[[:space:]]*true' "$RUNNER_TEMP/seeds-routing-diagnostic.json"
+
+      - name: Upload routing evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: seeds-routing-diagnostic-${{ github.run_id }}
+          path: ${{ runner.temp }}/seeds-routing-diagnostic.json
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Summarize diagnostic status
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo '## Current Seeds routing diagnostic'
+            echo
+            echo "- Diagnostic: ${{ steps.diagnostic.outcome }}"
+            echo '- Scope: read-only filesystem metadata/routing directives plus fresh HTTP probes.'
+            echo '- Production file mutation: none.'
+          } >> "$GITHUB_STEP_SUMMARY"
