@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-291",
+  "number":291,
+  "title":"Leafminers",
+  "objective":"Recognize leaf-mining injury on hemp or cannabis, distinguish agromyzid fly mines from caterpillar or beetle mines and early skeletonization, and document the organism responsible before assigning pest significance.",
+  "terms":[
+    {"term":"leafminer","definition":"A functional term for an insect larva that feeds within leaf tissue between the epidermal surfaces; it is not one taxonomic group."},
+    {"term":"Agromyzidae","definition":"A family of small flies whose larvae commonly mine leaves; agromyzid leafminers have been documented developing in hemp leaves."},
+    {"term":"serpentine mine","definition":"A narrow winding feeding tunnel within a leaf that may widen as a larva grows."},
+    {"term":"blotch mine","definition":"A broader irregular mined area produced when internal feeding expands beyond a narrow corridor."},
+    {"term":"frass trail","definition":"Fecal material deposited within a mine; its pattern can support identification when combined with larval and mine morphology."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Leaf mining is an injury pattern rather than a species diagnosis. Larvae of flies, moths, and beetles can feed within leaves, producing winding or blotch-like translucent mines while leaving outer epidermal tissue largely intact.",
+    "Agromyzid leafminers have been documented developing in hemp leaves in North America, but published U.S. surveys historically found them at low abundance and causing little injury. The species complex on hemp remains incompletely characterized.",
+    "Cannabis-associated pest reviews emphasize that the causal insect must be distinguished because newly hatched hemp-borer caterpillars can initially mine leaves, and some beetle larvae can create tunnel-like injury. Early caterpillar skeletonization can also resemble mining.",
+    "Mine shape, frass pattern, larval body form, pupation site, adult emergence, and specimen identification provide stronger evidence than mine appearance alone. Old empty mines remain visible after larvae have exited and should not be treated as proof of a growing population.",
+    "Economic importance depends on leaf area affected, crop stage, plant density, pest identity, and population trend. Current evidence does not support one universal hemp or cannabis leafminer action threshold."
+  ],
+  "cultivationRelevance":[
+    "Mark newly active mines and revisit them so expanding mines can be separated from old injury.",
+    "Open a subset of active mines or preserve mined leaves to document larvae, frass, pupation, or adult emergence when identification matters.",
+    "Record affected leaf age and canopy position because scattered older mines and rapid new-growth infestation have different implications.",
+    "Keep identification and lawful management authorization separate; any regulated product decision remains label- and jurisdiction-dependent."
+  ],
+  "measureAndRecord":[
+    {"field":"Mine pattern","requirement":"Record serpentine versus blotch form, leaf surface, vein association, frass pattern, mine length/area, and whether the mine is actively expanding."},
+    {"field":"Organism evidence","requirement":"Record larva, pupa, adult emergence, body form, magnification, and taxonomic confidence."},
+    {"field":"Distribution","requirement":"Record mined leaves per plant or defined sample, canopy position, plant group, and hotspot map."},
+    {"field":"Trend","requirement":"Record newly active mines separately from old empty mines at repeated scouting dates."},
+    {"field":"Differential evidence","requirement":"Record caterpillar, beetle, skeletonization, abrasion, or disease evidence that could explain the injury."
+    }
+  ],
+  "misconceptions":[
+    "Every leaf mine on cannabis is caused by the same species.",
+    "A visible mine proves a larva is still present.",
+    "Agromyzid leafminers are always a major hemp pest.",
+    "Mine shape alone provides reliable species identification.",
+    "Any internal leaf tunnel requires immediate chemical treatment."
+  ],
+  "evidenceLimits":[
+    "North American hemp literature confirms agromyzid leafminers but reports limited injury and incomplete species characterization. Broader leafminer biology is useful for diagnosis, while crop-loss relationships and action thresholds remain insufficiently standardized for cannabis."
+  ],
+  "crossLinks":"THC-ENC-281 for identification workflow; THC-ENC-292 for caterpillar/miner differentials; THC-ENC-297–300 for sampling, thresholds, and trend analysis; THC-ENC-321–340 for IPM systems.",
+  "sourceNotes":[
+    "Cranshaw et al. (2019), Developing Insect Pest Management Systems for Hemp in the United States, Journal of Integrated Pest Management 10(1):26. Reports agromyzid leafminers developing in hemp leaves at generally low abundance/injury and notes incomplete North American species characterization. https://academic.oup.com/jipm/article/10/1/26/5555744",
+    "Panthi et al. (2024), Arthropod and mollusk pests of hemp, Cannabis sativa, and their indoor management plan in Florida. Explains the need to distinguish maggot, caterpillar, and beetle leafminers and early skeletonization. https://academic.oup.com/jipm/article/15/1/1/7499162",
+    "Florida Department of Agriculture and Consumer Services, Arthropods on Hemp circular (2023). Records Liriomyza trifolii adults on hemp and larval leaf-mining biology. https://ccmedia.fdacs.gov/content/download/114776/file/FDACS-P-02203_2023-11%28Arthropods-on-Hemp-Circular%29.pdf"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.0 controlled title plus evidence-reconciled web derivative","evidenceControl":"peer_reviewed_hemp_pest_reviews_plus_state_arthropod_survey","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"leafminer_identification_injury_and_differential_diagnosis","releaseTimeReview":"completed_2026-09-01_mine_pattern_not_species_and_no_universal_threshold","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"leafminers",
+  "route":"/encyclopedia/leafminers"
+}
