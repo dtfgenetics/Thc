@@ -1,0 +1,192 @@
+name: Publish Plant Health Emerging Pathogens V1
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'site/wordpress/education/plant-health-emerging-pathogens-v1.json'
+      - 'scripts/publish-wordpress-plant-health-emerging-pathogens-v1.mjs'
+      - '.github/workflows/wordpress-plant-health-emerging-pathogens-v1.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'site/wordpress/education/plant-health-emerging-pathogens-v1.json'
+      - 'scripts/publish-wordpress-plant-health-emerging-pathogens-v1.mjs'
+      - '.github/workflows/wordpress-plant-health-emerging-pathogens-v1.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dtfseeds-plant-health-emerging-v1
+  cancel-in-progress: true
+
+env:
+  WP_SITE_URL: https://dtfseeds.com
+  NODE_OPTIONS: --dns-result-order=ipv4first
+
+jobs:
+  validate:
+    name: Validate emerging pathogen evidence pack
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate publisher and evidence pack
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/publish-wordpress-plant-health-emerging-pathogens-v1.mjs
+          node scripts/publish-wordpress-plant-health-emerging-pathogens-v1.mjs --validate-only | tee "$RUNNER_TEMP/plant-health-emerging-v1-validation.json"
+          grep -Fq '"records": 4' "$RUNNER_TEMP/plant-health-emerging-v1-validation.json"
+          grep -Fq '"sources": 4' "$RUNNER_TEMP/plant-health-emerging-v1-validation.json"
+          grep -Fq '"visualTargets": 5' "$RUNNER_TEMP/plant-health-emerging-v1-validation.json"
+          node - <<'NODE'
+          const fs=require('fs');
+          const pack=JSON.parse(fs.readFileSync('site/wordpress/education/plant-health-emerging-pathogens-v1.json','utf8'));
+          const expected=['alternaria-leaf-spot','beet-curly-top-virus','lettuce-chlorosis-virus','tobacco-streak-virus'];
+          if(pack.route!=='/learn/ipm/' || pack.topicId!=='plant-health-ipm') throw new Error('Emerging-pathogen pack must remain owned by /learn/ipm/.');
+          const actual=pack.records.map(x=>x.id);
+          if(JSON.stringify(actual)!==JSON.stringify(expected)) throw new Error(`Unexpected record set: ${actual.join(', ')}`);
+          for(const source of pack.sourceRefs){
+            if(!source.url.startsWith('https://')) throw new Error(`${source.id}: evidence URL must use HTTPS.`);
+          }
+          console.log('Emerging pathogen route, record set, and evidence URL preflight passed.');
+          NODE
+
+  publish:
+    name: Publish and visitor-verify emerging pathogen evidence
+    needs: validate
+    if: ${{ github.event_name != 'pull_request' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    environment: production
+    env:
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      BACKUP_ROOT: /tmp/dtf-plant-health-emerging-v1
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Confirm production credentials and publishers
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
+          node --check scripts/enhance-wordpress-learning-v4.mjs
+          node --check scripts/publish-wordpress-plant-health-ipm-v6.mjs
+          node --check scripts/publish-wordpress-plant-health-emerging-pathogens-v1.mjs
+          node scripts/publish-wordpress-plant-health-ipm-v6.mjs --validate-only
+          node scripts/publish-wordpress-plant-health-emerging-pathogens-v1.mjs --validate-only
+
+      - name: Restore canonical V4 guided-learning layer
+        shell: bash
+        env:
+          APPLY_LEARNING_V4: 'true'
+          LEARNING_GUIDE_V4_PATH: site/wordpress/education/learning-guides-v4.json
+          TOPIC_LITERATURE_PATH: site/wordpress/education/topic-literature.json
+          ENCYCLOPEDIA_TOPIC_FILE: configuration/encyclopedia-topics.json
+          BACKUP_ROOT: /tmp/dtf-learning-v4-plant-health-emerging
+        run: |
+          set -euo pipefail
+          mkdir -p "$BACKUP_ROOT"
+          node scripts/enhance-wordpress-learning-v4.mjs | tee "$RUNNER_TEMP/plant-health-emerging-v4-restore.log"
+          test -s "$BACKUP_ROOT/learning-v4-report.json"
+
+      - name: Reconcile canonical Plant Health V6 core
+        shell: bash
+        env:
+          APPLY_PLANT_HEALTH_IPM_V6: 'true'
+          BACKUP_ROOT: /tmp/dtf-plant-health-v6-before-emerging
+        run: |
+          set -euo pipefail
+          mkdir -p "$BACKUP_ROOT"
+          node scripts/publish-wordpress-plant-health-ipm-v6.mjs | tee "$RUNNER_TEMP/plant-health-v6-reconcile.log"
+          report="$(find "$BACKUP_ROOT" -name report.json -type f -print -quit)"
+          test -n "$report"
+          test -s "$report"
+
+      - name: Publish emerging pathogen evidence pack
+        id: publish
+        shell: bash
+        env:
+          APPLY_PLANT_HEALTH_EMERGING_V1: 'true'
+          BACKUP_ROOT: /tmp/dtf-plant-health-emerging-v1
+        run: |
+          set -euo pipefail
+          mkdir -p "$BACKUP_ROOT"
+          node scripts/publish-wordpress-plant-health-emerging-pathogens-v1.mjs | tee "$RUNNER_TEMP/plant-health-emerging-v1-publish.log"
+          report="$(find "$BACKUP_ROOT" -name report.json -type f -print -quit)"
+          test -n "$report"
+          test -s "$report"
+          echo "report=$report" >> "$GITHUB_OUTPUT"
+          echo "records=$(node -p "require(process.argv[1]).records" "$report")" >> "$GITHUB_OUTPUT"
+          echo "sources=$(node -p "require(process.argv[1]).sources" "$report")" >> "$GITHUB_OUTPUT"
+
+      - name: Verify fresh visitor Plant Health page
+        id: verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          body="$RUNNER_TEMP/plant-health-emerging-v1-live.html"
+          ok=0
+          for attempt in 1 2 3 4 5 6 7 8; do
+            curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+              --header 'Cache-Control: no-cache, no-store, max-age=0' --header 'Pragma: no-cache' \
+              "$WP_SITE_URL/learn/ipm/?dtf_phe1_verify=${GITHUB_RUN_ID}-${attempt}" --output "$body"
+            if grep -Fq 'data-dtf-plant-health-emerging-v1="true"' "$body"; then ok=1; break; fi
+            sleep 6
+          done
+          [[ "$ok" -eq 1 ]]
+          grep -Fq 'data-dtf-topic="plant-health-ipm"' "$body"
+          grep -Fq 'data-dtf-learning-v4="topic-plant-health-ipm"' "$body"
+          grep -Fq 'data-dtf-plant-health-ipm-v6="true"' "$body"
+          [[ "$(grep -Fo 'data-phe1-record=' "$body" | wc -l | tr -d ' ')" = '4' ]]
+          grep -Fq 'data-phe1-record="alternaria-leaf-spot"' "$body"
+          grep -Fq 'data-phe1-record="beet-curly-top-virus"' "$body"
+          grep -Fq 'data-phe1-record="lettuce-chlorosis-virus"' "$body"
+          grep -Fq 'data-phe1-record="tobacco-streak-virus"' "$body"
+          grep -Fq 'Emerging Cannabis Pathogens' "$body"
+
+      - name: Upload publication and rollback evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: plant-health-emerging-v1-${{ github.run_id }}
+          path: |
+            /tmp/dtf-learning-v4-plant-health-emerging
+            /tmp/dtf-plant-health-v6-before-emerging
+            /tmp/dtf-plant-health-emerging-v1
+            ${{ runner.temp }}/plant-health-emerging-v4-restore.log
+            ${{ runner.temp }}/plant-health-v6-reconcile.log
+            ${{ runner.temp }}/plant-health-emerging-v1-publish.log
+            ${{ runner.temp }}/plant-health-emerging-v1-live.html
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Write job summary
+        if: always()
+        shell: bash
+        env:
+          RECORDS: ${{ steps.publish.outputs.records }}
+          SOURCES: ${{ steps.publish.outputs.sources }}
+          VERIFY_OUTCOME: ${{ steps.verify.outcome }}
+        run: |
+          {
+            echo '## Plant Health emerging pathogens V1'
+            echo
+            echo "Records published: ${RECORDS:-0}"
+            echo "Evidence sources: ${SOURCES:-0}"
+            echo "Visitor verification: ${VERIFY_OUTCOME:-not-run}"
+            echo 'Canonical route: https://dtfseeds.com/learn/ipm/'
+          } >> "$GITHUB_STEP_SUMMARY"
