@@ -37,6 +37,9 @@ jobs:
         with:
           node-version: '22'
 
+      - name: Test parallel project infrastructure
+        run: npm run project:test
+
       - name: Verify project lane
         env:
           PROJECT_BRANCH: ${{ github.head_ref || github.ref_name }}
@@ -55,5 +58,6 @@ jobs:
             echo '- `multi/<task>` = intentional cross-project work with no lane restriction.'
             echo '- `project/platform/<task>` = repository/platform integration with no lane restriction.'
             echo '- Merging to `main` keeps the existing route-aware production gateway; affected release lanes publish automatically.'
+            echo '- Rapid merges are accumulated from the last successful production checkpoint, so superseded queued runs cannot lose an earlier project release.'
             echo '- Production operations that touch the same live WordPress resource remain serialized automatically to prevent overwrite races.'
           } >> "$GITHUB_STEP_SUMMARY"
