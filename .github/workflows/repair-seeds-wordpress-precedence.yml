@@ -1,0 +1,134 @@
+name: Repair Seeds WordPress Route Precedence
+
+on:
+  pull_request:
+    paths:
+      - scripts/repair-wordpress-seeds-precedence.mjs
+      - .github/workflows/repair-seeds-wordpress-precedence.yml
+      - .github/repair-seeds-wordpress-precedence-trigger.txt
+      - docs/DTFSEEDS_PRODUCTION_OWNERSHIP.md
+      - site/wordpress/pages/seeds.html
+  push:
+    branches: [main]
+    paths:
+      - .github/repair-seeds-wordpress-precedence-trigger.txt
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dtfseeds-seeds-wordpress-precedence
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate Seeds-only transaction contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/repair-wordpress-seeds-precedence.mjs
+          test ! -e site/public-route-patch/seeds
+          grep -Fq '| `/seeds/` and `/seeds/*` | Dedicated genetics library publisher |' docs/DTFSEEDS_PRODUCTION_OWNERSHIP.md
+          grep -Fq '<h2 id="genetics-library-title">DTF Genetics library</h2>' site/wordpress/pages/seeds.html
+          grep -Fq "\$request->get_param('dtf_repair_token')" scripts/repair-wordpress-seeds-precedence.mjs
+          grep -Fq "RewriteRule ^seeds/?$ /index.php [L]" scripts/repair-wordpress-seeds-precedence.mjs
+          grep -Fq "RewriteRule ^(learn|about|contact|gallery|community|shop)/?$ /\$1/index.html [L]" scripts/repair-wordpress-seeds-precedence.mjs
+          ! grep -Fq "current_user_can('manage_options')" scripts/repair-wordpress-seeds-precedence.mjs
+          ! grep -Fq "X-DTF-Repair-Token" scripts/repair-wordpress-seeds-precedence.mjs
+
+  repair-production:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    environment: production
+    env:
+      NODE_OPTIONS: --dns-result-order=ipv4first
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Revalidate canonical Seeds ownership
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${WP_API_USERNAME:-}"
+          test -n "${WP_API_PASSWORD:-}"
+          node --check scripts/repair-wordpress-seeds-precedence.mjs
+          test ! -e site/public-route-patch/seeds
+          grep -Fq '| `/seeds/` and `/seeds/*` | Dedicated genetics library publisher |' docs/DTFSEEDS_PRODUCTION_OWNERSHIP.md
+          grep -Fq '<h2 id="genetics-library-title">DTF Genetics library</h2>' site/wordpress/pages/seeds.html
+
+      - name: Confirm authenticated WordPress transport is reachable
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3 4 5 6; do
+            if curl -4 --fail --silent --show-error --location \
+              --connect-timeout 15 --max-time 45 --retry 2 --retry-delay 2 \
+              -H 'Cache-Control: no-cache, no-store, max-age=0' \
+              "$WP_SITE_URL/wp-json/" -o "$RUNNER_TEMP/wp-index.json"; then
+              echo "WordPress HTTPS reachable on attempt $attempt"
+              exit 0
+            fi
+            sleep $((attempt * 5))
+          done
+          echo 'WordPress HTTPS remained unreachable.' >&2
+          exit 1
+
+      - name: Apply rollback-safe Seeds-only precedence transaction
+        id: repair
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/repair-wordpress-seeds-precedence.mjs
+
+      - name: Independent fresh-visitor Seeds verification
+        id: verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          success=0
+          for attempt in $(seq 1 12); do
+            body="$RUNNER_TEMP/seeds-${attempt}.html"
+            if curl -4 --fail --silent --show-error --location \
+              --retry 2 --retry-delay 2 --connect-timeout 15 --max-time 45 \
+              -H 'Cache-Control: no-cache, no-store, max-age=0' \
+              -H 'Pragma: no-cache' \
+              "$WP_SITE_URL/seeds/?dtf_seeds_final=${GITHUB_RUN_ID}-${attempt}" \
+              -o "$body"; then
+              if grep -Fqi 'DTF Genetics library' "$body" \
+                && grep -Fqi 'Open Blue Mango profile' "$body" \
+                && ! grep -Fqi 'DTF Genetics catalog pages built around strain identity and grow context.' "$body"; then
+                success=1
+                break
+              fi
+            fi
+            sleep $((3 + attempt))
+          done
+          [ "$success" -eq 1 ] || {
+            echo '::error::Dedicated Genetics publisher is still not visitor-visible at /seeds/.'
+            head -c 3000 "$body" >&2 || true
+            exit 1
+          }
+
+      - name: Record Seeds ownership cutover
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo '## Seeds WordPress route precedence repair'
+            echo
+            echo "- Transaction: ${{ steps.repair.outcome }}"
+            echo "- Independent visitor verification: ${{ steps.verify.outcome }}"
+            echo '- Scope: only `/seeds/` is delegated away from the legacy shared static-route rule; Home/Learn routing is preserved.'
+            echo '- Safety: full `.htaccess` backup, integrity verification, automatic rollback inside the transaction, temporary tool cleanup.'
+          } >> "$GITHUB_STEP_SUMMARY"
