@@ -4,6 +4,12 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '43 7 * * *'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - site/public-route-patch/games/phenoquest/**
+      - .github/workflows/build-dtfseeds-public-suite.yml
   push:
     branches:
       - main
@@ -118,7 +124,7 @@ jobs:
           node games/bud-or-bluff/test/online-lobby-v2.test.mjs
           test -s site/public-route-patch/games/bud-or-bluff/index.html
 
-      - name: Validate promoted Terpocalypse and PhenoQuest routes
+      - name: Validate promoted Terpocalypse route and PhenoQuest source pin
         run: |
           set -euo pipefail
           node --check site/public-route-patch/games/terpocalypse/main.js
@@ -126,12 +132,9 @@ jobs:
           test -s site/public-route-patch/games/terpocalypse/index.html
           test -s site/public-route-patch/games/terpocalypse/styles.css
           grep -Fq 'LEVEL 01 · THE VEG LAB' site/public-route-patch/games/terpocalypse/index.html
-          test -s site/public-route-patch/games/phenoquest/index.html
-          test -s site/public-route-patch/games/phenoquest/game.js
-          test -s site/public-route-patch/games/phenoquest/lineage-runtime.js
-          test -s site/public-route-patch/games/phenoquest/style.css
-          test -s site/public-route-patch/games/phenoquest/build-meta.json
-          grep -Fq '"selfContained": true' site/public-route-patch/games/phenoquest/build-meta.json
+          test -s site/public-route-patch/games/phenoquest/source-revision.txt
+          grep -Fq 'repository=dtfgenetics/Catching-phenos' site/public-route-patch/games/phenoquest/source-revision.txt
+          grep -Eq '^commit=[0-9a-f]{40}$' site/public-route-patch/games/phenoquest/source-revision.txt
           grep -Fq '25 playable browser games' site/public-route-patch/games/index.html
           grep -Fq '/games/terpocalypse/' site/public-route-patch/games/index.html
           grep -Fq '/games/phenoquest/' site/public-route-patch/games/index.html
@@ -221,6 +224,44 @@ jobs:
           NODE
           echo "WEEDOPOLIS_SHA=$revision" >> "$GITHUB_ENV"
 
+      - name: Build pinned PhenoQuest
+        shell: bash
+        run: |
+          set -euo pipefail
+          revision_file="$GITHUB_WORKSPACE/site/public-route-patch/games/phenoquest/source-revision.txt"
+          test -s "$revision_file"
+          repo_name="$(sed -n 's/^repository=//p' "$revision_file")"
+          revision="$(sed -n 's/^commit=//p' "$revision_file")"
+          test "$repo_name" = "dtfgenetics/Catching-phenos"
+          [[ "$revision" =~ ^[0-9a-f]{40}$ ]]
+
+          repo="$RUNNER_TEMP/phenoquest"
+          git init "$repo"
+          cd "$repo"
+          git remote add origin "https://github.com/${repo_name}.git"
+          git fetch --depth=1 origin "$revision"
+          git checkout --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "$revision"
+
+          npm run check
+
+          required=(
+            dist/games/phenoquest/index.html
+            dist/games/phenoquest/game.js
+            dist/games/phenoquest/lineage-runtime.js
+            dist/games/phenoquest/experience-v2.js
+            dist/games/phenoquest/experience-v2.css
+            dist/games/phenoquest/style.css
+            dist/games/phenoquest/build-meta.json
+            dist/games/phenoquest/_runtime/src/engine/game-state.js
+            dist/games/phenoquest/_runtime/data/phenos/mvp_units.json
+          )
+          for file in "${required[@]}"; do test -s "$file"; done
+          grep -Fq 'The Living Seed Vault' dist/games/phenoquest/index.html
+          grep -Fq '"selfContained": true' dist/games/phenoquest/build-meta.json
+          grep -Fq '"experience-v2.js"' dist/games/phenoquest/build-meta.json
+          echo "PHENOQUEST_SHA=$revision" >> "$GITHUB_ENV"
+
       - name: Build THC Crossword
         shell: bash
         run: |
@@ -287,6 +328,11 @@ jobs:
           mkdir -p release/games/weedopolis
           cp -a "$RUNNER_TEMP/weedopolis/dist/weedopolis/." release/games/weedopolis/
 
+          rm -rf release/games/phenoquest
+          mkdir -p release/games/phenoquest
+          cp -a "$RUNNER_TEMP/phenoquest/dist/games/phenoquest/." release/games/phenoquest/
+          cp site/public-route-patch/games/phenoquest/source-revision.txt release/games/phenoquest/source-revision.txt
+
           mkdir -p release/games/crossword release/puzzles
           cp -a "$RUNNER_TEMP/crossword/dist/." release/games/crossword/
           cp -a "$RUNNER_TEMP/crossword/dist/puzzles/." release/puzzles/
@@ -309,7 +355,7 @@ jobs:
               "strainShowdown": "$GITHUB_SHA",
               "budOrBluff": "$GITHUB_SHA",
               "terpocalypse": "$GITHUB_SHA",
-              "phenoQuest": "$GITHUB_SHA",
+              "phenoQuest": "$PHENOQUEST_SHA",
               "burnBuds": "$GITHUB_SHA",
               "highLand": "$GITHUB_SHA",
               "growLens": "$GITHUB_SHA",
@@ -361,8 +407,13 @@ jobs:
             release/games/phenoquest/index.html
             release/games/phenoquest/game.js
             release/games/phenoquest/lineage-runtime.js
+            release/games/phenoquest/experience-v2.js
+            release/games/phenoquest/experience-v2.css
             release/games/phenoquest/style.css
             release/games/phenoquest/build-meta.json
+            release/games/phenoquest/source-revision.txt
+            release/games/phenoquest/_runtime/src/engine/game-state.js
+            release/games/phenoquest/_runtime/data/phenos/mvp_units.json
             release/games/protect-the-plants/index.html
             release/games/protect-the-plants/app.js
             release/games/protect-the-plants/api.php
@@ -399,6 +450,8 @@ jobs:
           grep -Fq 'LEVEL 01 · THE VEG LAB' release/games/terpocalypse/index.html
           grep -Fq 'The Living Seed Vault' release/games/phenoquest/index.html
           grep -Fq '"selfContained": true' release/games/phenoquest/build-meta.json
+          grep -Fq "commit=$PHENOQUEST_SHA" release/games/phenoquest/source-revision.txt
+          grep -Fq "\"phenoQuest\": \"$PHENOQUEST_SHA\"" release/dtf-build.json
           grep -Fq '/games/protect-the-plants/' release/games/protect-the-plants/index.html
           grep -Fq '/games/high-land/' release/games/high-land/index.html
           grep -Fq '/games/weedopolis/' release/games/weedopolis/index.html
@@ -430,7 +483,7 @@ jobs:
             echo '- /games/strain-showdown/ (solo card-battle prototype)'
             echo '- /games/bud-or-bluff/ (multiplayer party game)'
             echo '- /games/terpocalypse/ (validated browser vertical slice)'
-            echo '- /games/phenoquest/ (self-contained canonical RPG vertical slice)'
+            echo "- /games/phenoquest/ (canonical pinned $PHENOQUEST_SHA)"
             echo '- /games/protect-the-plants/ (Burn Buds multiplayer strategy)'
             echo '- /games/high-land/'
             echo "- /games/weedopolis/ (pinned $WEEDOPOLIS_SHA)"
@@ -455,7 +508,7 @@ jobs:
           retention-days: 30
 
       - name: Report public-suite build to issue 63
-        if: always()
+        if: always() && github.event_name != 'pull_request'
         uses: actions/github-script@v7
         env:
           JOB_STATUS: ${{ job.status }}
