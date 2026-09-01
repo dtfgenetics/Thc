@@ -1,0 +1,57 @@
+{
+  "id":"THC-ENC-332",
+  "number":332,
+  "title":"Pest and Disease Identification Escalation",
+  "objective":"Use an evidence-based escalation path from field observation to magnification, reference comparison, representative sampling, and laboratory diagnostics so management actions are not built on symptom guessing or overconfident identification.",
+  "terms":[
+    {"term":"diagnostic escalation","definition":"A planned progression from routine observation to higher-resolution identification methods when uncertainty, crop value, disease risk, or management consequences justify more evidence."},
+    {"term":"symptom","definition":"A plant response to injury, disease, nutrition, environment, or other stress, such as chlorosis, necrosis, wilt, distortion, lesion, or stunting."},
+    {"term":"sign","definition":"Direct evidence of a causal organism or agent, such as fungal structures, bacterial ooze, insects, mites, eggs, frass, or other observable biological material."},
+    {"term":"differential diagnosis","definition":"A list of plausible biological and abiotic causes that can produce similar observations and should be separated with additional evidence."},
+    {"term":"representative diagnostic sample","definition":"Fresh, appropriately packaged material that captures relevant plant parts and a useful range or transition of symptoms, together with contextual history needed for interpretation."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Many plant problems share visual symptoms. Yellowing, wilting, root discoloration, leaf spots, distortion, necrosis, or reduced vigor can arise from pathogens, arthropods, nutrition, pH/EC problems, irrigation, temperature, chemical injury, root stress, or combinations of factors.",
+    "Identification confidence should match the evidence. Obvious arthropods may sometimes be identified by morphology and life stage with magnification and authoritative references, while ambiguous diseases may require microscopy, culturing, serology, PCR or other laboratory methods.",
+    "A good diagnostic sample is part of the test. 2026 plant-clinic guidance emphasizes fresh representative living material, early-to-moderate symptoms, relevant healthy-to-affected transition tissue, multiple plant parts when the cause is uncertain, photographs, and production/history information.",
+    "A laboratory result is also bounded evidence. Results apply to the specimen, tissue, target, method, timing, and quality submitted. A negative test for one target does not prove the plant is free of every pathogen, and detection of nucleic acid does not automatically establish viability, symptom causation, or epidemiologic source.",
+    "Management urgency and diagnostic certainty can be separated. A suspect plant may be isolated or handled under higher biosecurity while confirmation is pending without publicly declaring a definitive causal diagnosis before evidence supports it."
+  ],
+  "cultivationRelevance":[
+    "Record the initial observation and plausible differential causes before selecting a treatment so evidence gathered afterward can confirm or reject the working diagnosis.",
+    "Use magnification and target-specific scouting methods for arthropods and signs that can be resolved on site; escalate uncertain or high-consequence findings rather than repeatedly treating an unknown problem.",
+    "When submitting a sample, follow the receiving laboratory's current instructions for tissue, packaging, preservation, timing, and documentation instead of applying one universal sampling recipe.",
+    "Preserve location, cultivar/genotype, crop stage, recent irrigation/nutrition/pesticide history, symptom distribution, onset, photographs, and prior test results with the sample."
+  ],
+  "measureAndRecord":[
+    {"field":"Observation","requirement":"Record symptoms, signs, affected plant parts, distribution pattern, onset, severity, cultivar/genotype, crop stage, and representative photographs."},
+    {"field":"Identification confidence","requirement":"Record whether the working identification is suspected, probable, morphologically confirmed, laboratory detected, or otherwise qualified; do not collapse all confidence levels into confirmed."},
+    {"field":"Differential causes","requirement":"Record plausible biotic and abiotic alternatives and the observations or tests that would discriminate among them."},
+    {"field":"Sample chain","requirement":"Record plant/location identity, tissue or organism submitted, collection time, preservation/packaging, laboratory, requested test or identification, and sample/result identifier."},
+    {"field":"Interpretation","requirement":"Record what the result supports, what it does not establish, whether repeat/alternate testing is needed, and how the management decision changed."
+    }
+  ],
+  "misconceptions":[
+    "A symptom photograph always identifies the causal pathogen.",
+    "All yellow leaves indicate the same nutrient deficiency.",
+    "A negative result for one test proves the plant is disease-free.",
+    "PCR detection automatically proves a viable pathogen caused the observed symptoms.",
+    "Isolation while a diagnosis is pending requires pretending the diagnosis is already confirmed."
+  ],
+  "evidenceLimits":[
+    "Diagnostic accuracy depends on symptom timing, sample quality, tissue selection, target biology, assay performance, laboratory scope, and production history. Some organisms are identified only to genus or complex, some diseases require multiple lines of evidence, and even molecular assays can produce uninterpretable or context-limited results."
+  ],
+  "crossLinks":"THC-ENC-311–315 for plant-health diagnostic evidence and sampling limits; THC-ENC-331 for representative scouting; THC-ENC-333 for decisions under uncertainty; THC-ENC-338 for isolation/removal; THC-ENC-339 for corrective action.",
+  "sourceNotes":[
+    "University of Missouri Extension. Plant Diagnostic Clinic: Guidelines for Collecting and Submitting Samples. Reviewed March 2026. Representative living tissue, symptom stages, transition tissue, photos, and diagnostic methods. https://extension.missouri.edu/publications/f260",
+    "University of Missouri Extension Plant Diagnostic Clinic. Physical sample submission. Current page accessed 2026-09-01. Emphasizes similar-looking symptoms and escalation beyond photographs to microscopy/testing. https://extension.missouri.edu/programs/plant-diagnostic-clinic/sample-submission",
+    "NC State Extension Plant Disease and Insect Clinic. Submitting Samples From Plants in a Greenhouse. Updated 2026-02-27. Greenhouse-specific representative sampling guidance. https://pdic.ces.ncsu.edu/submitting-samples-from-plants-in-a-greenhouse/",
+    "Colorado State University Extension. Molecular Methods for Diagnosing Plant Diseases. Reviewed 2025-08. Sampling and molecular diagnostic method boundaries. https://extension.colostate.edu/resource/molecular-methods-for-diagnosing-plant-diseases/"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.1 controlled title plus evidence-reconciled web derivative","evidenceControl":"2026_diagnostic_clinic_sampling_guidance_plus_molecular_diagnostic_method_boundaries","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_and_greenhouse_plant_diagnostics","releaseTimeReview":"completed_2026-09-01_symptom_detection_viability_and_causation_boundaries_explicit","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"pest-and-disease-identification-escalation",
+  "route":"/encyclopedia/pest-and-disease-identification-escalation"
+}
