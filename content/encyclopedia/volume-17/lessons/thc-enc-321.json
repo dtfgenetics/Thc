@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-321",
+  "number":321,
+  "title":"IPM Principles and the Prevention Hierarchy",
+  "objective":"Explain integrated pest management as a recurring evidence-based decision process that prioritizes prevention, monitoring, correct identification, context-specific action thresholds, lower-risk interventions, and verification rather than routine calendar pesticide use.",
+  "terms":[
+    {"term":"integrated pest management","definition":"A decision framework that combines biological knowledge, monitoring, prevention, thresholds, and appropriate control methods to manage unacceptable pest damage while reducing unnecessary risk."},
+    {"term":"prevention hierarchy","definition":"The ordering of management effort toward exclusion, sanitation, crop and environmental practices, monitoring and targeted controls before broader or higher-risk interventions."},
+    {"term":"action threshold","definition":"A defined pest, injury, disease-risk, or crop-value condition that triggers a management decision; it is not automatically the same for every crop, cultivar, stage, or production system."},
+    {"term":"monitoring","definition":"Repeated, standardized observation or measurement used to detect pests, injury, disease risk, beneficial organisms, and change through time."},
+    {"term":"verification","definition":"Follow-up measurement used to determine whether a preventive or corrective action produced the intended result."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "IPM is a process rather than a single control method. EPA describes a four-part decision sequence built around action thresholds, monitoring and accurate identification, prevention, and control selected for effectiveness and risk.",
+    "Prevention is the first line of defense because keeping pests and pathogens out, removing reservoirs, using clean plant material, and reducing favorable conditions can prevent a population or epidemic from becoming established.",
+    "Monitoring and identification come before intervention because not every organism is harmful and because injury, symptoms, pest abundance, crop stage, beneficial organisms, and environmental context affect the appropriate response.",
+    "A threshold is a decision aid, not a universal Cannabis number. Hemp extension literature notes that economic thresholds remain poorly established for several hemp pests, so records, crop value, life stage, injury, vector risk, and local evidence must be considered instead of inventing a single trigger.",
+    "Control selection remains integrated with prevention and monitoring. Cultural, physical, mechanical, biological, and lawful pesticide options can be combined, but pesticide use does not define IPM and research efficacy does not create legal authorization."
+  ],
+  "cultivationRelevance":[
+    "Build crop protection around preventing introductions and establishment rather than waiting for visible damage.",
+    "Use repeatable scouting and diagnostic escalation so treatment decisions are linked to identified problems and recorded evidence.",
+    "Choose the narrowest effective and lawful response that fits pest identity, crop stage, beneficial-organism compatibility, and current label requirements.",
+    "Re-scout after intervention and record whether abundance, injury, symptoms, or disease-risk indicators actually changed."
+  ],
+  "measureAndRecord":[
+    {"field":"Pest or disease target","requirement":"Record the organism or syndrome, confidence in identification, life stage or symptom pattern, and diagnostic source."},
+    {"field":"Monitoring result","requirement":"Record date, location, sampling method, count or severity measure, crop stage, and relevant beneficial organisms or environmental observations."},
+    {"field":"Decision trigger","requirement":"Document the threshold or contextual reason for action, including uncertainty when no validated Cannabis-specific economic threshold exists."},
+    {"field":"Control selection","requirement":"Record preventive, cultural, physical, biological, or pesticide action and why it was selected; for regulated products preserve the current label and jurisdictional authorization."},
+    {"field":"Verification","requirement":"Record follow-up timing, comparable monitoring results, unintended effects, and whether escalation, continuation, or closure is justified."
+    }
+  ],
+  "misconceptions":[
+    "IPM means never using pesticides.",
+    "IPM means spraying several products in rotation.",
+    "Seeing one organism always means treatment is required.",
+    "A threshold from another crop is automatically valid for Cannabis.",
+    "A successful treatment ends the IPM process without follow-up monitoring."
+  ],
+  "evidenceLimits":[
+    "The IPM framework is well established across agriculture, but pest-specific economic thresholds, control efficacy, beneficial compatibility, and legal pesticide options can differ by Cannabis/hemp production system and jurisdiction. Current labels and state rules govern pesticide use."
+  ],
+  "crossLinks":"THC-ENC-281–300 for pest biology and monitoring; THC-ENC-301–320 for disease biology and diagnosis; THC-ENC-322–340 for biosecurity, sanitation, scouting, control categories, CAPA, and program audit.",
+  "sourceNotes":[
+    "US Environmental Protection Agency. Integrated Pest Management (IPM) Principles. Last updated 2026-07-22. https://www.epa.gov/safepestcontrol/integrated-pest-management-ipm-principles",
+    "Virginia Cooperative Extension. Integrated Pest Management of Hemp in Virginia. Current publication accessed 2026-09-01. https://www.pubs.ext.vt.edu/ENTO/ENTO-349/ENTO-349.html",
+    "University of Missouri Extension. Using Integrated Pest Management in Greenhouses and Herbaceous Nurseries. https://extension.missouri.edu/publications/ipm1026"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.1 controlled title plus evidence-reconciled web derivative","evidenceControl":"current_EPA_IPM_framework_plus_hemp_and_greenhouse_extension_context","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"IPM_and_cannabis_crop_protection","releaseTimeReview":"completed_2026-09-01_prevention_threshold_and_legal_label_boundaries_explicit","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"ipm-principles-and-the-prevention-hierarchy",
+  "route":"/encyclopedia/ipm-principles-and-the-prevention-hierarchy"
+}

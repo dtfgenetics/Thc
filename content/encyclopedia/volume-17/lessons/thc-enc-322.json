@@ -1,0 +1,57 @@
+{
+  "id":"THC-ENC-322",
+  "number":322,
+  "title":"Facility Zoning and Clean-to-Dirty Workflow",
+  "objective":"Design plant-health work flow so people, tools, carts, plant material, and waste move in ways that reduce transfer from suspect, infested, or contaminated areas into cleaner propagation and production zones.",
+  "terms":[
+    {"term":"zoning","definition":"Dividing production space into plant-health risk areas with defined movement and sanitation expectations."},
+    {"term":"clean-to-dirty workflow","definition":"A work sequence that services lower-risk or pathogen-screened areas before higher-risk, suspect, infested, or contaminated areas when practical."},
+    {"term":"traffic pathway","definition":"The repeated movement route of people, tools, equipment, plants, materials, and waste through a production system."},
+    {"term":"cross-contamination","definition":"Unintended transfer of pests, pathogens, soil, plant sap, debris, or other biological material between zones, crops, or surfaces."},
+    {"term":"risk boundary","definition":"A physical or procedural transition where movement controls, cleaning, clothing changes, tool changes, or other biosecurity steps are applied."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Greenhouse biosecurity is strongly affected by movement. Soil, plant debris, insects, spores, infected sap, contaminated containers, shoes, tools, carts, and plant material can all create transfer pathways between crops and production areas.",
+    "Extension greenhouse guidance recommends moving through cleaner areas before infested areas when possible and separating clean stock or incoming quarantine material from general production. This is a risk-reduction principle rather than proof that a particular worker or route caused an outbreak.",
+    "Zoning is most useful when it matches biological risk: propagation and pathogen-screened mother stock may require stronger separation from receiving, quarantine, waste, or known-positive areas than ordinary low-risk movement within one crop block.",
+    "A zone boundary is only as effective as the movement rules attached to it. Shared tools, carts, hoses, gloves, plant trays, and waste routes can bypass a floor plan if their movement is not controlled and recorded.",
+    "Clean-to-dirty is not an absolute geometry rule. Emergency plant care, fire/life safety, accessibility, irrigation design, and facility constraints may require alternative routes, so the objective is documented reduction of biological transfer risk rather than a cosmetic color-coded map."
+  ],
+  "cultivationRelevance":[
+    "Map receiving, quarantine, propagation, mother stock, production, suspect/positive holding, sanitation, and waste-removal areas according to actual plant-health risk.",
+    "Sequence routine scouting and crop work from lower-risk areas toward higher-risk areas when practical, and define reset steps before returning to clean stock.",
+    "Assign or sanitize tools and mobile equipment according to risk zone instead of assuming one shared set remains clean throughout the day.",
+    "Design waste and removed-plant movement so suspect material does not repeatedly pass through propagation or clean-stock work areas."
+  ],
+  "measureAndRecord":[
+    {"field":"Zone map","requirement":"Maintain current zone names, purpose, biological risk, entrances, material routes, sanitation points, and restricted transitions."},
+    {"field":"Workflow sequence","requirement":"Record the normal order for scouting, irrigation service, pruning, propagation, harvest, maintenance, and waste removal where plant-health transfer is relevant."},
+    {"field":"Shared equipment","requirement":"Identify tools, carts, hoses, ladders, containers, and other mobile equipment that cross zones and define cleaning or dedicated-use controls."},
+    {"field":"Boundary exceptions","requirement":"Document unavoidable reverse movement or emergency access and the reset controls used afterward."},
+    {"field":"Incident tracing","requirement":"When investigating an outbreak, record recent personnel, plant, tool, equipment, and material movements as possible pathways rather than assuming causation from proximity alone."
+    }
+  ],
+  "misconceptions":[
+    "A colored floor map by itself creates biosecurity.",
+    "Clean-to-dirty workflow proves the dirty zone caused any later detection.",
+    "People are the only important movement pathway.",
+    "Every room needs the same risk classification and controls.",
+    "A clean zone remains clean even when shared equipment moves through it without controls."
+  ],
+  "evidenceLimits":[
+    "Most facility-zoning evidence comes from greenhouse, nursery, horticultural sanitation, and general biosecurity practice rather than controlled Cannabis experiments. Cannabis-specific HLVd evidence strengthens concern about sap-contaminated handling, while exact transmission probability for a given movement route remains pathogen- and system-dependent."
+  ],
+  "crossLinks":"THC-ENC-170 and THC-ENC-316 for tool-mediated spread; THC-ENC-323 for quarantine; THC-ENC-324–325 for personnel and surface sanitation; THC-ENC-338 for isolation/removal/waste handling.",
+  "sourceNotes":[
+    "University of Minnesota greenhouse pest-control guidance. Clean stock, quarantine, inspection, and clean-area-first worker movement guidance. https://ncipmhort.cfans.umn.edu/sites/ncipmhort.cfans.umn.edu/files/2022-04/6d%2BGreenhouse%2BPest%2BControl%2BStudy%2BGuide.pdf",
+    "University of Kentucky Grow Forward. Sanitation for Management of Plant Diseases. https://growforward.mgcafe.uky.edu/modules/sanitation-management-plant-diseases",
+    "UMass Amherst Greenhouse & Floriculture. Cleaning and Disinfecting the Greenhouse. Current fact sheet accessed 2026-09-01. https://www.umass.edu/agriculture-food-environment/greenhouse-floriculture/fact-sheets/cleaning-disinfecting-greenhouse",
+    "Punja ZK, Scott C, Tso HH, Munz J, Buirs L. Transmission, Spread, Longevity and Management of Hop Latent Viroid. Plants. 2025;14(5):830. https://pmc.ncbi.nlm.nih.gov/articles/PMC11902214/"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.1 controlled title plus evidence-reconciled web derivative","evidenceControl":"greenhouse_biosecurity_movement_guidance_plus_direct_cannabis_HLVd_mechanical_transmission_context","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"greenhouse_biosecurity_and_cannabis_pathogen_transmission","releaseTimeReview":"completed_2026-09-01_zoning_as_risk_reduction_not_causal_proof_explicit","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"facility-zoning-and-clean-to-dirty-workflow",
+  "route":"/encyclopedia/facility-zoning-and-clean-to-dirty-workflow"
+}

@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-327",
+  "number":327,
+  "title":"Disinfectant Contact Time and Surface Preparation",
+  "objective":"Explain why disinfectant performance depends on prepared surfaces, effective wet/contact time, product concentration/formulation, surface compatibility, and target-organism evidence rather than product name alone.",
+  "terms":[
+    {"term":"contact time","definition":"The period a disinfectant must remain in effective contact with the surface or item under the conditions specified by the product label or validated procedure."},
+    {"term":"surface preparation","definition":"Removal of debris, organic matter, standing media, sap, soil, biofilm, or other barriers and any required pre-rinse or drying step before disinfection."},
+    {"term":"wet time","definition":"The time a surface remains adequately wetted with the working solution when wet contact is required for efficacy."},
+    {"term":"working solution","definition":"The prepared disinfectant formulation used at the concentration and conditions required by the current label or validated SOP."},
+    {"term":"surface compatibility","definition":"Whether the disinfectant/process can be used without unacceptable corrosion, degradation, phytotoxic residue, or equipment damage on the material being treated."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Disinfectant efficacy is conditional. Product chemistry, concentration, target organism, organic load, surface material, temperature, solution age, and contact time can all influence whether an inactivation claim applies.",
+    "Greenhouse guidance emphasizes removing soil and plant debris before disinfection because organic material can neutralize or shield against several commonly used disinfectants.",
+    "A surface that dries before the required wet/contact interval may not have received the process described by the label or SOP. Conversely, extending exposure or concentration beyond a label is not automatically safer, more effective, or legally permitted.",
+    "Porous or damaged surfaces may retain debris and microorganisms and may not support the same contact conditions as smooth nonporous surfaces. Surface selection and maintenance are therefore part of sanitation design.",
+    "Pathogen-specific evidence matters. A process validated against one organism or surrogate should not automatically be described as eliminating every Cannabis pathogen, viroid, bacterium, fungus, oomycete, or arthropod stage."
+  ],
+  "cultivationRelevance":[
+    "Write sanitation SOPs around the exact surface, contamination type, product/process, current label, preparation step, required contact condition, rinse/dry requirement, and equipment compatibility.",
+    "Use timers, logs, or process controls where contact time is critical instead of relying on memory or a quick spray-and-wipe habit.",
+    "Discard or repair damaged reusable containers, benches, and tools when cracks, corrosion, roughness, or inaccessible joints prevent adequate cleaning and contact.",
+    "For pathogen incidents, document the sanitation process actually performed rather than recording only a product brand or saying an area was sanitized."
+  ],
+  "measureAndRecord":[
+    {"field":"Surface preparation","requirement":"Record debris removal, cleaning, rinse/dry steps, and surface condition before disinfectant application."},
+    {"field":"Product/process identity","requirement":"Record current label/SOP reference, formulation or process, preparation date/time when relevant, and approved target surface."},
+    {"field":"Contact condition","requirement":"Record required wet/contact time or physical-process condition and how completion was verified."},
+    {"field":"Compatibility","requirement":"Record corrosion, residue, phytotoxicity, material damage, or other compatibility observations and corrective action."},
+    {"field":"Exception/failure","requirement":"Record premature drying, incorrect preparation, expired/aged solution, visible residual debris, missed surfaces, or other deviations requiring reprocessing."
+    }
+  ],
+  "misconceptions":[
+    "A brief mist is equivalent to the label-required contact time.",
+    "If a disinfectant is effective, doubling concentration is better.",
+    "Organic matter does not affect disinfectant performance.",
+    "Contact-time data for one surface and pathogen automatically apply to all others.",
+    "A brand name alone is enough information to document a sanitation event."
+  ],
+  "evidenceLimits":[
+    "Specific concentrations and contact times are product- and claim-specific and can change with formulation or registration. This lesson intentionally does not prescribe a universal Cannabis sanitation recipe; current labels, SDS information, validated SOPs, surface compatibility, and worker-safety requirements control specific use."
+  ],
+  "crossLinks":"THC-ENC-325–326 for sanitation and cleaning; THC-ENC-328 for irrigation-line hygiene; THC-ENC-337 for label compliance; THC-ENC-339 for deviations and corrective action.",
+  "sourceNotes":[
+    "UMass Amherst Greenhouse & Floriculture. Cleaning and Disinfecting the Greenhouse. Current fact sheet accessed 2026-09-01. https://www.umass.edu/agriculture-food-environment/greenhouse-floriculture/fact-sheets/cleaning-disinfecting-greenhouse",
+    "NC State Extension. Prevention and Management of Soilborne Diseases of Ornamental Plants and Vegetables in the Greenhouse. https://content.ces.ncsu.edu/prevention-and-management-of-soilborne-diseases-of-ornamental-plants-and-vegetables-in-the-greenhouse",
+    "Oregon State University Horticulture. Chemical Control — disinfectants for tools and equipment, cleaning and contact-time principles. https://horticulture.oregonstate.edu/nursery/nursery/chemical-control"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.1 controlled title plus evidence-reconciled web derivative","evidenceControl":"greenhouse_surface_preparation_contact_time_and_label_control_guidance","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"greenhouse_disinfection_process_validation","releaseTimeReview":"completed_2026-09-01_no_universal_concentration_or_contact_time_published","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"disinfectant-contact-time-and-surface-preparation",
+  "route":"/encyclopedia/disinfectant-contact-time-and-surface-preparation"
+}
