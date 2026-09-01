@@ -1,0 +1,57 @@
+{
+  "id":"THC-ENC-328",
+  "number":328,
+  "title":"Water-System and Irrigation-Line Hygiene",
+  "objective":"Explain how irrigation sources, reservoirs, recirculating systems, hose ends, lines, emitters, and biofilm can become plant-health transfer pathways, and how source control, maintenance, targeted testing, and validated treatment reduce risk without equating microbial detection with disease.",
+  "terms":[
+    {"term":"source water","definition":"The water entering a production system from a municipal supply, well, pond, stream, rain capture, reclaimed source, or other origin."},
+    {"term":"recirculating irrigation","definition":"An irrigation system that captures and reuses drainage or flood water, creating a potential shared pathway among multiple plants or zones."},
+    {"term":"biofilm","definition":"A surface-associated microbial community embedded in an extracellular matrix that can develop on wet internal surfaces such as reservoirs, pipes, fittings, or emitters."},
+    {"term":"waterborne pathogen","definition":"A plant pathogen capable of being transported or disseminated in irrigation water under relevant conditions."},
+    {"term":"reservoir hygiene","definition":"Maintenance practices that limit debris, sediment, standing organic material, algae, and other conditions that can degrade irrigation-system cleanliness or support pathogen movement."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Irrigation water can be a disease pathway. Greenhouse guidance identifies Pythium and Phytophthora as important plant pathogens that may enter production through contaminated surface water, runoff, reservoirs, hydroponic systems, or recirculating irrigation.",
+    "Hemp-specific extension guidance confirms that Pythium can spread in water and recommends sanitation and water-quality control in greenhouse production. This supports water-system hygiene as a Cannabis/hemp disease-prevention layer without implying that every detection or wet root symptom is Pythium disease.",
+    "Recirculating systems can amplify a shared exposure pathway if contaminated water reaches multiple plants. Reservoir covers, debris removal, drainage, hose-end hygiene, line maintenance, and cleaning/disinfection procedures can reduce avoidable transfer opportunities.",
+    "Microbial presence is not equivalent to plant disease. Irrigation systems contain diverse microorganisms, many of which are benign or beneficial. Diagnostic interpretation should distinguish total microbial load, target-pathogen detection, viability, concentration, sampling location, and actual crop symptoms.",
+    "Water-treatment performance depends on the target organism, water chemistry, turbidity or organic load, flow rate, equipment design, contact conditions, and treatment technology. This lesson therefore does not publish a universal chlorine, peroxide, ozone, UV, heat, or other treatment recipe."
+  ],
+  "cultivationRelevance":[
+    "Map the source water, storage tanks, reservoirs, return lines, filters, pumps, distribution lines, emitters, hose ends, and recirculation points that connect crop zones.",
+    "Keep reservoirs covered where practical, prevent crop debris and media from entering return systems, and avoid leaving hose ends on contaminated floors or media surfaces.",
+    "Clean and maintain reservoirs, lines, filters, emitters, and flood/drain surfaces according to system-specific SOPs and the validated requirements of any treatment process used.",
+    "When a waterborne pathogen is suspected, use targeted diagnostic sampling from the crop and relevant water-system points and compare results to symptom distribution rather than relying on a generic water-quality number alone."
+  ],
+  "measureAndRecord":[
+    {"field":"Water source and system map","requirement":"Record source type, storage/reservoirs, treatment points, recirculation loops, filters, crop zones served, and any shared return-water pathways."},
+    {"field":"Hygiene inspection","requirement":"Record visible sediment, algae, plant debris, biofilm-like buildup, standing water, clogged emitters, hose-end contact, leaks, or drainage failures."},
+    {"field":"Maintenance","requirement":"Record cleaning, flushing, filter service, reservoir service, line or emitter replacement, and any validated treatment step completed."},
+    {"field":"Diagnostic sampling","requirement":"Record sample location, date, target organism or assay, laboratory/method, result, and the limits of what that water sample can establish about crop disease."},
+    {"field":"Treatment verification","requirement":"Where treatment is used, record the process control or before/after evidence required by the SOP rather than assuming equipment operation proves pathogen control."
+    }
+  ],
+  "misconceptions":[
+    "Clear-looking irrigation water is pathogen-free.",
+    "Any microbe detected in a reservoir is harmful.",
+    "A positive water test proves the irrigation system caused every diseased plant.",
+    "Recirculating irrigation always causes disease.",
+    "One disinfectant concentration or treatment setting works for every pathogen and water system."
+  ],
+  "evidenceLimits":[
+    "Waterborne disease risk depends on source water, pathogen biology, system design, crop susceptibility, root-zone conditions, sampling method, and treatment performance. Detection in water may support a plausible exposure pathway but does not alone prove infection, viability, dose, or causation. Specific water-treatment parameters require current equipment guidance, validated SOPs, labels where applicable, and local legal/safety requirements."
+  ],
+  "crossLinks":"THC-ENC-303–307 for root and crown diseases; THC-ENC-325–327 for sanitation and contact-time logic; THC-ENC-330 for moisture and environmental disease pressure; THC-ENC-339 for corrective action when system verification fails.",
+  "sourceNotes":[
+    "Penn State Extension. Pythium. Updated 2023-11-21. Describes surface-water, reservoir, hydroponic, and ebb-and-flow risks plus reservoir cleaning and targeted water-treatment options. https://extension.psu.edu/pythium",
+    "Penn State Extension. Sources of Plant Disease in Greenhouses. Updated 2023-11-20. Identifies Pythium and Phytophthora as important pathogens that can enter through water. https://extension.psu.edu/sources-of-plant-disease-in-greenhouses",
+    "NC State Extension. Pythium Root and Crown Rot of Industrial Hemp. Hemp-specific water-spread and greenhouse water-quality guidance. https://content.ces.ncsu.edu/pythium-root-and-crown-rot-of-industrial-hemp",
+    "UMass Amherst Plant Diagnostics Laboratory. Irrigation Water Testing for Pythium, Phytophthora, and Rhizoctonia. Current service guidance accessed 2026-09-01. https://www.umass.edu/agriculture-food-environment/services/plant-diagnostics-laboratory/irrigation-water-testing"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.1 controlled title plus evidence-reconciled web derivative","evidenceControl":"greenhouse_waterborne_pathogen_guidance_plus_hemp_specific_Pythium_water_spread_and_targeted_water_testing","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"irrigation_water_pathology_and_hygiene","releaseTimeReview":"completed_2026-09-01_waterborne_risk_detection_and_causation_boundaries_explicit","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"water-system-and-irrigation-line-hygiene",
+  "route":"/encyclopedia/water-system-and-irrigation-line-hygiene"
+}

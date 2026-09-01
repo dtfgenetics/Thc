@@ -1,0 +1,57 @@
+{
+  "id":"THC-ENC-330",
+  "number":330,
+  "title":"Environmental Management for Disease Prevention",
+  "objective":"Explain how temperature, humidity, condensation, air movement, plant density, irrigation, and root-zone moisture change disease pressure, while avoiding unsupported universal Cannabis setpoints.",
+  "terms":[
+    {"term":"disease-conducive environment","definition":"Environmental conditions that increase the probability of pathogen reproduction, survival, dispersal, infection, or disease development in a susceptible crop."},
+    {"term":"leaf wetness","definition":"Free water present on plant surfaces from condensation, irrigation, splash, fog, or other moisture deposition."},
+    {"term":"dew point","definition":"The temperature at which air becomes saturated and water begins to condense under the current moisture conditions."},
+    {"term":"canopy microclimate","definition":"The temperature, humidity, air movement, and moisture conditions within and around plant foliage or inflorescences, which can differ from room-level sensor readings."},
+    {"term":"root-zone moisture","definition":"The water status and drainage condition around roots and growing media that influences root function, oxygen availability, and pressure from water-associated root pathogens."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Disease develops through interactions among a susceptible host, a capable pathogen, and a conducive environment. Environmental management therefore reduces risk by making infection, spread, or pathogen survival less favorable while still supporting crop growth.",
+    "Humidity, condensation, free moisture, temperature, and air movement affect several important Cannabis diseases, including Botrytis bud rot and powdery mildew. Cannabis-specific greenhouse research supports environmental management as part of integrated disease management but also notes that standardized optimum cultural parameters are not fully established across all Cannabis genotypes and production systems.",
+    "Room-average humidity can hide a wetter canopy microclimate. Dense foliage, large flowering biomass, poor air distribution, cool surfaces, irrigation timing, and night cooling can produce local condensation or prolonged high humidity even when a central sensor appears acceptable.",
+    "Root disease risk also depends on moisture and drainage. Hemp and greenhouse extension sources identify overly wet or poorly drained root zones as important risk factors for Pythium and related root rots, while dry conditions may favor different pathogens such as Rhizoctonia. Environmental management must therefore match the disease biology rather than simply making the crop as dry as possible.",
+    "Published Cannabis studies and reviews provide useful stage- and disease-specific ranges and airflow observations, but they do not justify one universal RH, VPD, temperature, or air-speed setpoint for every cultivar, canopy, facility, or disease situation."
+  ],
+  "cultivationRelevance":[
+    "Measure temperature and humidity where the crop actually experiences them, including representative canopy or inflorescence zones, rather than relying only on one wall-mounted room sensor.",
+    "Manage condensation risk with appropriate heating, ventilation, dehumidification, air mixing, irrigation timing, and canopy design while avoiding plant stress from excessive drying or temperature swings.",
+    "Use spacing, pruning, trellising, and plant-density decisions to improve light and air distribution where disease risk justifies the tradeoff, and verify the result with crop-level measurements.",
+    "Match irrigation frequency, drainage, substrate moisture, and recirculation practices to root-zone oxygen and disease risk instead of using a fixed watering schedule independent of plant demand and environmental conditions."
+  ],
+  "measureAndRecord":[
+    {"field":"Canopy environment","requirement":"Record representative temperature and relative humidity at crop height and, when relevant, within dense or flowering canopy zones rather than only at the room controller."},
+    {"field":"Condensation or leaf wetness","requirement":"Record visible condensation, dripping, wet foliage/inflorescences, dew-point events, overhead-irrigation wetting, or other free-moisture conditions and their duration when known."},
+    {"field":"Air movement and density","requirement":"Record fan operation, blocked airflow, canopy density, spacing changes, and areas with stagnant or uneven environmental conditions."},
+    {"field":"Root-zone condition","requirement":"Record irrigation timing, drainage, substrate moisture pattern, standing water, slow dry-down, root-zone temperature when relevant, and observed root health."},
+    {"field":"Disease-pressure response","requirement":"Compare environmental changes with subsequent scouting, symptom, or diagnostic data so climate adjustments are evaluated rather than assumed effective."
+    }
+  ],
+  "misconceptions":[
+    "One room humidity reading represents every point inside a dense Cannabis canopy.",
+    "Lower humidity is always better for the crop.",
+    "One VPD or temperature target prevents every Cannabis disease.",
+    "Strong fans automatically eliminate Botrytis or powdery mildew.",
+    "Wet roots always mean Pythium, and dry roots always prevent disease."
+  ],
+  "evidenceLimits":[
+    "Environmental effects are disease-, cultivar-, crop-stage-, canopy-, and facility-dependent. Cannabis-specific literature supports climate and airflow management as disease-prevention tools, but exact optimal setpoints remain incompletely standardized and can conflict with plant-growth, energy, and production objectives. Environmental observations should therefore be interpreted with pathogen biology, crop response, and diagnostic evidence."
+  ],
+  "crossLinks":"THC-ENC-301–320 for disease biology and diagnosis; THC-ENC-328 for irrigation-system hygiene; THC-ENC-331–333 for scouting and decision records; THC-ENC-339 for corrective action after environmental-control failures.",
+  "sourceNotes":[
+    "Buirs L, Punja ZK. Integrated Management of Pathogens and Microbes in Cannabis sativa L. (Cannabis) under Greenhouse Conditions. Plants. 2024;13(6):786. doi:10.3390/plants13060786. Cannabis-specific environmental, airflow, seasonal, and disease-management review. https://pmc.ncbi.nlm.nih.gov/articles/PMC10974757/",
+    "Punja ZK. Emerging diseases of Cannabis sativa and sustainable management. Pest Management Science. 2021;77(9):3857-3870. doi:10.1002/ps.6307. Discusses environmental management of Botrytis and other Cannabis diseases. https://pmc.ncbi.nlm.nih.gov/articles/PMC8451794/",
+    "UMass Amherst Greenhouse & Floriculture. Reducing Humidity in the Greenhouse. Current fact sheet accessed 2026-09-01. Describes condensation, leaf wetness, airflow, and greenhouse humidity management. https://www.umass.edu/agriculture-food-environment/greenhouse-floriculture/fact-sheets/reducing-humidity-in-greenhouse",
+    "NC State Extension. Pythium Root and Crown Rot of Industrial Hemp. Hemp-specific relationship among water spread, wet conditions, drainage, sanitation, and root-rot risk. https://content.ces.ncsu.edu/pythium-root-and-crown-rot-of-industrial-hemp"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.1 controlled title plus evidence-reconciled web derivative","evidenceControl":"direct_cannabis_greenhouse_environmental_disease_management_plus_hemp_root_rot_and_current_greenhouse_humidity_guidance","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_environmental_disease_management","releaseTimeReview":"completed_2026-09-01_no_universal_RH_VPD_temperature_or_airflow_setpoint_claim","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"environmental-management-for-disease-prevention",
+  "route":"/encyclopedia/environmental-management-for-disease-prevention"
+}
