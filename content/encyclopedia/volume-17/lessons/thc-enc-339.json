@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-339",
+  "number":339,
+  "title":"Corrective and Preventive Action",
+  "objective":"Use documented correction, contributing-factor analysis, corrective action, preventive action, responsibility, deadlines, and verification to prevent recurring plant-health failures without confusing temporal association with proven root cause.",
+  "terms":[
+    {"term":"correction","definition":"An immediate action that contains or fixes an observed plant-health problem, such as isolating a suspect plant, replacing a damaged screen, cleaning a contaminated tool, or correcting a failed irrigation component."},
+    {"term":"corrective action","definition":"A change intended to reduce recurrence of a detected failure by addressing supported causes or contributing factors rather than only treating the immediate symptom."},
+    {"term":"preventive action","definition":"A proactive change used to reduce the likelihood that a similar failure occurs elsewhere or under comparable future conditions."},
+    {"term":"contributing factor","definition":"A condition, behavior, equipment issue, process gap, biological pathway, or environmental event supported by evidence as helping create or worsen a failure, without necessarily proving a single root cause."},
+    {"term":"effectiveness verification","definition":"Follow-up evidence demonstrating whether a corrective or preventive action achieved the intended plant-health result and remained effective through a defined review period."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "IPM is iterative. EPA and greenhouse IPM guidance emphasize recording and evaluating results because interventions can be ineffective, slow, damaging to the crop or natural enemies, or incomplete when the original problem was misidentified.",
+    "Correction and corrective action are different. Removing an infested plant or repairing a leaking emitter may contain the immediate event; preventing recurrence may require changes to intake screening, scouting frequency, equipment maintenance, sanitation verification, training, or system design.",
+    "Plant-health investigations often involve multiple plausible pathways. A worker, tool, incoming clone, irrigation loop, environmental event, or sanitation failure that coincides with an outbreak is a lead, not automatic proof of causation. Diagnostic results, movement records, timing, spatial pattern, process failures, and alternative explanations should be evaluated together.",
+    "Preventive action uses lessons beyond the exact failure. If one screen tear permitted repeated pest entry, the broader response may include a scheduled inspection program for all comparable screens rather than repairing only the observed tear.",
+    "An action is not closed because a task was completed. Closure requires evidence that the intended condition changed, such as reduced recurrence, restored monitoring coverage, successful sanitation verification, repaired environmental control, declining pest trend, or completion of a documented recheck."
+  ],
+  "cultivationRelevance":[
+    "Contain urgent risk first, then preserve enough evidence to investigate what happened instead of destroying all context during cleanup.",
+    "Build a timeline using scouting, diagnostic, movement, sanitation, environmental, maintenance, pesticide/biological-control, intake, and training records relevant to the event.",
+    "Assign corrective actions to specific owners and due dates, and define the measurement that will demonstrate success before marking an action complete.",
+    "Extend preventive actions to comparable rooms, tools, suppliers, irrigation loops, workflows, or crop stages when evidence suggests the same failure mode could recur elsewhere."
+  ],
+  "measureAndRecord":[
+    {"field":"Problem statement","requirement":"Describe the observed failure, affected crop/zone, date range, severity, diagnostic confidence, and immediate risk without embedding an unproven cause into the problem statement."},
+    {"field":"Immediate correction","requirement":"Record containment, repair, removal, isolation, sanitation, or other immediate actions and what risk each action was intended to reduce."},
+    {"field":"Evidence review","requirement":"Record relevant monitoring, diagnostic, environmental, movement, equipment, intake, training, and treatment records plus plausible alternative explanations."},
+    {"field":"Corrective/preventive actions","requirement":"Record each action, supported cause/contributing factor addressed, owner, due date, scope, resources, and any regulatory or label constraint."},
+    {"field":"Verification and closure","requirement":"Define and record follow-up measurements, review period, outcome, recurrence status, unresolved uncertainty, and formal closure or escalation decision."
+    }
+  ],
+  "misconceptions":[
+    "The first plausible explanation is the root cause.",
+    "Fixing the immediate symptom completes corrective action.",
+    "A worker or tool present in two affected rooms proves the transmission route.",
+    "Preventive action means applying more pesticide before pests appear.",
+    "A CAPA item can be closed as soon as the assigned task is performed without verifying effectiveness."
+  ],
+  "evidenceLimits":[
+    "Plant-health CAPA uses general continuous-improvement and IPM principles; it is not presented here as a substitute for any formal GMP, FDA, ISO, state-cannabis, occupational-safety, pesticide-recordkeeping, or other regulated quality system that may separately apply. Root-cause confidence should reflect the quality of evidence available rather than the desire for one simple explanation."
+  ],
+  "crossLinks":"THC-ENC-331–333 for monitoring, diagnostics, and decisions; THC-ENC-337 for regulated pesticide records; THC-ENC-338 for containment/removal; THC-ENC-340 for program-level audit and trend review.",
+  "sourceNotes":[
+    "US Environmental Protection Agency. National Pesticide Applicator Certification Core Manual. IPM guidance emphasizes recording and objectively evaluating the results of pest-management efforts. https://www.epa.gov/system/files/documents/2022-09/national-pesticide-applicator-cert-core-manual-2014.pdf",
+    "Oklahoma State University Extension. Integrated Pest Management in Commercial Greenhouses: An Overview of Principles and Practices. Emphasizes prevention, close monitoring, prompt remedial action, documentation, and treatment efficacy. https://extension.okstate.edu/fact-sheets/ipm-in-the-greenhouse-series-integrated-pest-management-in-commercial-greenhouses-an-overview-of-principles-and-practices",
+    "US Environmental Protection Agency. Integrated Pest Management Principles. Current 2026 IPM framework for monitoring, prevention, control selection, and follow-up. https://www.epa.gov/safepestcontrol/integrated-pest-management-ipm-principles"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.1 controlled title plus evidence-reconciled web derivative","evidenceControl":"IPM_record_evaluation_and_continuous_improvement_framework","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"plant_health_CAPA_and_continuous_improvement","releaseTimeReview":"completed_2026-09-01_correction_cause_contributing_factor_and_effectiveness_boundaries_explicit","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"corrective-and-preventive-action",
+  "route":"/encyclopedia/corrective-and-preventive-action"
+}
