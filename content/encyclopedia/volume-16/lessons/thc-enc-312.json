@@ -1,0 +1,57 @@
+{
+  "id":"THC-ENC-312",
+  "number":312,
+  "title":"Other Viruses and Viroid-Like Symptoms",
+  "objective":"Interpret mosaic, mottling, chlorosis, curling, twisting, stunting, and other virus-like Cannabis symptoms as diagnostic hypotheses rather than virus diagnoses, and use targeted molecular tests or sequencing to distinguish confirmed viruses, viroids, mixed infections, and noninfectious look-alikes.",
+  "terms":[
+    {"term":"virus-like symptom","definition":"A plant phenotype such as mosaic, mottling, distortion, curling, chlorosis, or stunting that resembles viral disease but can have infectious or noninfectious causes."},
+    {"term":"virome","definition":"The collection of viruses and related viral genetic elements detected in a host or sample, commonly characterized with sequencing approaches."},
+    {"term":"mixed infection","definition":"Concurrent infection of one plant by more than one virus, viroid, or other pathogen, which can complicate symptom attribution."},
+    {"term":"metagenomic sequencing","definition":"Sequence-based analysis of genetic material in a sample that can reveal known and unexpected organisms without requiring one predetermined pathogen target."},
+    {"term":"cryptic virus","definition":"A virus that may persist in a host with no obvious symptoms or without a proven causal relationship to a visible disease syndrome."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Cannabis and hemp can display mosaic, mottling, streaking, chlorosis, twisting, curling, stunting, and abnormal growth, but these appearances are not specific to viral disease. Abiotic stress, genetic variation, herbicide or chemical injury, nutrient imbalance, insect feeding, HLVd, and other pathogens can produce overlapping phenotypes.",
+    "Molecular surveys of field-grown hemp have detected a diverse virus/viroid community including Beet curly top virus, Alfalfa mosaic virus, Tobacco streak virus, Cannabis cryptic virus, Cannabis sativa mitovirus 1, Citrus yellow-vein-associated virus, Tomato bushy stunt virus, and HLVd. Detection does not mean each agent caused the observed symptoms in every sample.",
+    "A detailed Cannabis diagnostics study tested plants showing mosaic, line, and mottling symptoms for several expected viruses and failed to confirm those targets. Sequencing often detected HLVd and a Cannabis mitovirus, but the study noted that neither had been demonstrated to cause the specific foliar patterns observed. This is a direct example of why appearance must not be converted into a familiar virus name.",
+    "Some confirmed Cannabis/hemp pathogens do have recognizable syndromes, including BCTV, lettuce chlorosis virus, and HLVd, but symptom expression varies by genotype, infection stage, environment, and coinfection. Mixed infections further weaken symptom-only attribution.",
+    "Targeted PCR/RT-PCR is efficient when a pathogen hypothesis is strong. Broader sequencing can be valuable when targeted tests are negative, mixed infection is suspected, or a novel agent is possible. Even sequencing results require biological interpretation because detected nucleic acid may represent asymptomatic infection or an agent with uncertain pathogenic significance."
+  ],
+  "cultivationRelevance":[
+    "Describe the phenotype before naming a pathogen: record mosaic, vein clearing, chlorosis, curling, distortion, stunting, growth pattern, and plant distribution as observations.",
+    "Use crop history, outdoor vector exposure, propagation source, seed source, and known positive plants to prioritize tests, but avoid excluding other causes solely because one epidemiological link seems plausible.",
+    "When targeted tests are negative despite persistent unexplained symptoms, broaden the differential to abiotic/genetic causes and, where justified, broader molecular diagnostics rather than repeatedly asserting an unconfirmed virus.",
+    "Keep pathogen detection separate from crop-disposition or treatment decisions; diagnostic significance, legal requirements, and facility policy should be evaluated explicitly."
+  ],
+  "measureAndRecord":[
+    {"field":"Phenotype","requirement":"Record exact visual pattern, tissue age, symmetry/asymmetry, canopy position, onset, progression, and photos before assigning a disease name."},
+    {"field":"Plant distribution","requirement":"Record genotype, propagation or seed lot, indoor/outdoor status, field/room location, incidence, and clustering."},
+    {"field":"Vector/exposure history","requirement":"Record relevant leafhopper, whitefly, thrips, aphid, seed, clone, or tool exposure as hypotheses rather than confirmed routes."},
+    {"field":"Diagnostic panel","requirement":"Record each targeted pathogen tested, tissue, assay, result, controls, and date; preserve negative results rather than summarizing only positives."},
+    {"field":"Sequencing interpretation","requirement":"For NGS/metagenomics, list detected agents and classify each as established causal pathogen, possible contributor, asymptomatic/cryptic association, or uncertain significance."
+    }
+  ],
+  "misconceptions":[
+    "Mosaic automatically means tobacco mosaic virus.",
+    "A virus detected by sequencing must be causing the visible symptoms.",
+    "One negative targeted PCR proves the phenotype is noninfectious.",
+    "Mixed infections always produce more obvious symptoms than single infections.",
+    "A cryptic or mitovirus detection explains a disease syndrome simply because it was the only virus found."
+  ],
+  "evidenceLimits":[
+    "The Cannabis/hemp virome is still being described, and causal relationships are much stronger for some agents than others. Sequencing expands detection but not automatic causal inference. Virus-like phenotypes should remain descriptive until diagnostic and biological evidence support attribution."
+  ],
+  "crossLinks":"THC-ENC-310 for HLVd; THC-ENC-311 for BCTV; THC-ENC-261–280 for abiotic differentials; THC-ENC-313–315 for latent infection, sampling, and false negatives; THC-ENC-319 for genotype effects.",
+  "sourceNotes":[
+    "Punja ZK, et al. Challenges to Cannabis sativa Production from Pathogens and Microbes—The Role of Molecular Diagnostics and Bioinformatics. Int J Mol Sci. 2024;25(1):14. PMID:38203190. PMCID:PMC10779078. https://pmc.ncbi.nlm.nih.gov/articles/PMC10779078/",
+    "Han J, et al. Beet Curly Top Virus Genetic Diversity, Impact on Cannabinoids, Potential Seed Transmission, and Vector Biology in Hemp. Phytopathology. 2026;116(5):813-824. PMID:41563377. https://pubmed.ncbi.nlm.nih.gov/41563377/",
+    "Wagstaff C, et al. First Report of ‘Candidatus Phytoplasma trifolii’ and Spiroplasma citri in Cannabis sativa in Washington State, U.S.A. Plant Disease. 2026;110(4). doi:10.1094/PDIS-08-25-1736-PDN. https://apsjournals.apsnet.org/doi/full/10.1094/PDIS-08-25-1736-PDN",
+    "Punja ZK. Emerging diseases of Cannabis sativa and sustainable management. Pest Manag Sci. 2021;77:3857-3870. PMID:33527549. https://pmc.ncbi.nlm.nih.gov/articles/PMC8451794/"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.0 controlled title plus evidence-reconciled web derivative","evidenceControl":"cannabis_hemp_virome_targeted_testing_NGS_and_2026_emerging_pathogen_evidence","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_hemp_virus_viroid_molecular_diagnostics","releaseTimeReview":"completed_2026-09-01_virus_like_phenotype_detection_and_causation_boundaries_explicit","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"other-viruses-and-viroid-like-symptoms",
+  "route":"/encyclopedia/other-viruses-and-viroid-like-symptoms"
+}
