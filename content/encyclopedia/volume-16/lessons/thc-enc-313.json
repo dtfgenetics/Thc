@@ -1,0 +1,57 @@
+{
+  "id":"THC-ENC-313",
+  "number":313,
+  "title":"Pathogen-Free Appearance Versus Latent Infection",
+  "objective":"Distinguish visual health from tested pathogen status, understand how latent, asymptomatic, early, localized, or low-titer infections can escape symptom-based scouting, and use risk-based testing without assuming every symptom-free Cannabis plant is infected.",
+  "terms":[
+    {"term":"asymptomatic infection","definition":"A confirmed infection in a plant that does not show obvious disease symptoms at the time of observation."},
+    {"term":"latent infection","definition":"Infection in which a pathogen is present but disease expression or detectable spread may be delayed, localized, or below the threshold of visual recognition."},
+    {"term":"incubation period","definition":"The time between infection and appearance of disease symptoms."},
+    {"term":"pathogen status","definition":"The best-supported conclusion about presence or absence of a defined pathogen based on a specified sample, assay, time, and quality-control context."},
+    {"term":"visual status","definition":"The observed presence or absence of symptoms or signs at a particular inspection; it is not equivalent to laboratory pathogen status."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "A symptom-free Cannabis plant is not automatically pathogen-free. Several important agents can be present before obvious disease develops, and some infections may remain visually subtle or asymptomatic depending on genotype, tissue, developmental stage, environment, and pathogen load.",
+    "HLVd provides direct Cannabis evidence for this principle. Studies have detected the viroid in asymptomatic stock plants and vegetative cuttings, and tissue-distribution research shows that viroid abundance can differ among roots, petioles, leaves, canopy positions, genotypes, and time points.",
+    "Visual scouting and laboratory testing answer different questions. Scouting can rapidly find spatial patterns, active lesions, pest signs, and symptomatic plants, while molecular or culture-based diagnostics can test specific pathogen hypotheses. Neither replaces the other.",
+    "The opposite error also matters: symptoms do not prove infection. Cannabis plants can display stunting, curling, chlorosis, root decline, spots, or malformed growth from abiotic, genetic, mechanical, nutritional, or chemical causes. A risk-based system must therefore avoid both false reassurance and automatic pathogen attribution.",
+    "Pathogen-free status is strongest when it is defined operationally: which pathogen, which assay, which tissues, how many plants, what sampling date, what controls, and what retesting or quarantine interval were used. The phrase 'clean plant' without these fields is scientifically ambiguous."
+  ],
+  "cultivationRelevance":[
+    "Separate routine visual scouting records from laboratory pathogen-status records so a healthy appearance is not silently converted into a negative test.",
+    "Prioritize testing for mother stock, propagation material, high-consequence symptoms, known exposure cohorts, and pathogens with established latent/asymptomatic phases using a documented risk framework.",
+    "When a related plant or cohort tests positive, update the exposure hypothesis and testing plan without labeling every connected plant positive before evidence exists.",
+    "Use negative results as time-, tissue-, and method-specific evidence. Retesting decisions should reflect pathogen biology, exposure timing, plant value, and the consequences of a missed infection."
+  ],
+  "measureAndRecord":[
+    {"field":"Visual status","requirement":"Record symptom-free, symptomatic, or uncertain; inspection date; plant stage; tissue examined; and relevant photos separately from test status."},
+    {"field":"Pathogen status","requirement":"Record named pathogen, test method, sample tissue, sample date, laboratory, result, controls/quality note, and any retest recommendation."},
+    {"field":"Exposure history","requirement":"Record mother/clone relationship, shared tools or water, neighboring positives, seed/pollen source, vector exposure, and dates."},
+    {"field":"Time since exposure","requirement":"Estimate or state unknown; distinguish tests taken immediately after possible exposure from tests taken after a biologically meaningful interval."},
+    {"field":"Decision confidence","requirement":"Classify status as confirmed positive, not detected on tested sample, presumptive/exposed, unresolved, or cleared under a defined testing protocol."
+    }
+  ],
+  "misconceptions":[
+    "Healthy-looking means pathogen-free.",
+    "A symptomless clone from an infected mother must be free of the pathogen.",
+    "A positive test means every symptom is caused by that pathogen.",
+    "One negative result makes future testing unnecessary after new exposure.",
+    "All latent infections eventually produce obvious symptoms."
+  ],
+  "evidenceLimits":[
+    "Latent and asymptomatic behavior is pathogen- and genotype-specific. HLVd offers strong Cannabis examples, but the timing and detectability of one pathogen should not be imposed on unrelated fungi, bacteria, viruses, or oomycetes. Testing frequency should be justified by biology and consequence rather than a universal schedule."
+  ],
+  "crossLinks":"THC-ENC-310 for HLVd; THC-ENC-312 for virus-like symptoms; THC-ENC-314 for sampling; THC-ENC-315 for false negatives/test timing; THC-ENC-316–317 for transmission and reservoirs.",
+  "sourceNotes":[
+    "Punja ZK, Scott C, Tso HH, Munz J, Buirs L. Transmission, Spread, Longevity and Management of Hop Latent Viroid. Plants. 2025;14(5):830. PMID:40094815. https://pmc.ncbi.nlm.nih.gov/articles/PMC11902214/",
+    "Punja ZK, et al. Challenges to Cannabis sativa Production from Pathogens and Microbes—The Role of Molecular Diagnostics and Bioinformatics. Int J Mol Sci. 2024;25(1):14. PMID:38203190. https://pmc.ncbi.nlm.nih.gov/articles/PMC10779078/",
+    "Cannabis genotypes display differences in the tissue distribution and levels of Hop latent viroid in leaves and roots following inoculation. Can J Plant Pathol. 2026. https://www.tandfonline.com/doi/full/10.1080/07060661.2026.2680120",
+    "New Insights into Hop Latent Viroid Detection, Infectivity, Host Range, and Transmission. Viruses. 2024;16(1):30. PMID:38257731. https://pmc.ncbi.nlm.nih.gov/articles/PMC10819085/"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.0 controlled title plus evidence-reconciled web derivative","evidenceControl":"direct_cannabis_HLVd_asymptomatic_tissue_time_distribution_plus_general_molecular_diagnostic_reasoning","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_latent_infection_and_pathogen_status_reasoning","releaseTimeReview":"completed_2026-09-01_visual_health_and_test_status_separation_explicit","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"pathogen-free-appearance-versus-latent-infection",
+  "route":"/encyclopedia/pathogen-free-appearance-versus-latent-infection"
+}
