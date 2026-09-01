@@ -207,6 +207,7 @@ jobs:
 
       - name: Report production result to issue 46
         if: always()
+        continue-on-error: true
         uses: actions/github-script@v7
         with:
           script: |
@@ -226,4 +227,8 @@ jobs:
               '- Review control: **website publication does not represent independent lesson approval**',
               `- Source: https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`
             ].join('\n');
-            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body});
+            try {
+              await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body});
+            } catch (error) {
+              core.warning(`Production report could not be posted to issue #46 and will not affect the release result: ${error.message}`);
+            }
