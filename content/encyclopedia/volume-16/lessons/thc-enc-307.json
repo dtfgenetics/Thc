@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-307",
+  "number":307,
+  "title":"Sclerotinia and Stem-Rot Risks",
+  "objective":"Recognize Sclerotinia sclerotiorum white mold and stem/inflorescence rot as a documented Cannabis disease, identify characteristic lesions, white mycelium and sclerotia, and separate this pathogen from other stem and flower rots using tissue and laboratory evidence.",
+  "terms":[
+    {"term":"Sclerotinia sclerotiorum","definition":"A broad-host-range necrotrophic fungal pathogen that causes white mold and has been directly documented infecting Cannabis sativa."},
+    {"term":"sclerotium","definition":"A hardened, melanized survival structure formed by Sclerotinia that can persist and later produce new inoculum under favorable conditions."},
+    {"term":"apothecium","definition":"A cup-like sexual fruiting structure that can develop from a sclerotium and release airborne ascospores."},
+    {"term":"ascospore","definition":"A sexual fungal spore produced in an ascus; airborne ascospores can initiate Sclerotinia infection in susceptible tissues."},
+    {"term":"necrotroph","definition":"A pathogen that kills host cells and derives nutrients from dead or dying tissue."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Sclerotinia sclerotiorum is the causal agent of white mold and is now supported by direct Cannabis infection research as well as North American disease reports. Cannabis infections have included tan-to-brown necrotic lesions and cankers on the crown and stem, floral infection, white mycelium, and sclerotia in or around affected tissues.",
+    "A 2026 Cannabis study followed infection in floral tissue and documented rapid degradation of epidermal and cortical parenchyma followed by infection of vascular phloem. Dual RNA sequencing showed major transcriptional responses in both Cannabis and S. sclerotiorum, providing direct cellular and molecular evidence for this pathosystem.",
+    "Sclerotia are epidemiologically important survival structures. In other well-studied hosts they can germinate directly as mycelium or form apothecia that release ascospores. These general life-cycle mechanisms help interpret Cannabis risk, but the relative importance of each inoculum route in a specific Cannabis production system must be established from local evidence.",
+    "White mycelium and dark sclerotia are useful diagnostic signs, but stem collapse or brown cankers alone are not specific to Sclerotinia. Botrytis, Fusarium, other stem pathogens, mechanical injury, and secondary decay can create overlapping symptoms.",
+    "Disease severity depends on host tissue, genotype, inoculum, moisture and humidity conditions, canopy or inflorescence architecture, and time. Broad-host crop loss estimates from other species should not be presented as Cannabis-specific yield-loss predictions."
+  ],
+  "cultivationRelevance":[
+    "Inspect both the exterior and pith/cavity of symptomatic stem or crown tissue for white mycelium and sclerotia and preserve representative material for diagnostic confirmation.",
+    "Map cases by plant, cultivar, bed/row/bench, and date so clustered disease and possible inoculum sources can be distinguished from isolated mechanical damage.",
+    "Compare Sclerotinia with Botrytis inflorescence rot, Fusarium stem/crown disease, wound-associated decay, and other white-mold look-alikes before making irreversible crop decisions.",
+    "Use current labels and jurisdictional requirements for any regulated treatment or disinfectant; general Sclerotinia management from another crop does not automatically transfer to Cannabis."
+  ],
+  "measureAndRecord":[
+    {"field":"Lesion anatomy","requirement":"Record crown/stem/inflorescence location, lesion color and texture, pith involvement, vascular involvement, white mycelium, and sclerotia."},
+    {"field":"Distribution","requirement":"Record affected plants, exact locations, cultivar/genotype, developmental stage, and dates of new cases."},
+    {"field":"Environmental context","requirement":"Record recent moisture, rainfall or irrigation events, humidity/condensation context, canopy density, and tissue-wounding or senescence history."},
+    {"field":"Diagnostic evidence","requirement":"Record fungal signs, isolation, microscopy, molecular identification, or diagnostic-lab result and confidence."},
+    {"field":"Inoculum hypothesis","requirement":"State whether local sclerotia, crop residue, airborne inoculum, imported plant material, or another source is supported, possible, or unconfirmed."
+    }
+  ],
+  "misconceptions":[
+    "Every white fungal growth on a Cannabis stem is Sclerotinia.",
+    "A brown stem canker proves white mold even when sclerotia or diagnostic evidence are absent.",
+    "Crop-loss percentages from soybean or canola can be quoted as expected Cannabis losses.",
+    "Sclerotia seen in one location prove the exact infection route for every diseased plant.",
+    "One management strategy from another host crop is automatically appropriate and lawful for Cannabis."
+  ],
+  "evidenceLimits":[
+    "Direct Cannabis infection and host-response evidence has improved substantially, but epidemiological details such as dominant inoculum route, genotype-specific susceptibility, and production-system-specific thresholds remain less developed than in major field crops. Cross-crop life-cycle mechanisms should be labeled as general Sclerotinia biology when applied to Cannabis."
+  ],
+  "crossLinks":"THC-ENC-301 for the disease cycle; THC-ENC-303 for Botrytis differential diagnosis; THC-ENC-304 for Fusarium crown/stem disease; THC-ENC-318 for postharvest microbial context; THC-ENC-321–340 for integrated management.",
+  "sourceNotes":[
+    "Cale NL, et al. Dual RNA sequencing reveals the transcriptomic and cellular response of Cannabis sativa to infection by the fungal pathogen Sclerotinia sclerotiorum. Scientific Reports. 2026;16:17739. Published 16 Apr 2026. https://www.nature.com/articles/s41598-026-47998-2",
+    "Punja ZK. Emerging diseases of Cannabis sativa and sustainable management. Pest Manag Sci. 2021;77:3857-3870. PMID:33527549. doi:10.1002/ps.6307. https://pmc.ncbi.nlm.nih.gov/articles/PMC8451794/",
+    "Buirs L, Punja ZK. Integrated Management of Pathogens and Microbes in Cannabis sativa L. under Greenhouse Conditions. Plants. 2024;13(6):786. PMID:38592798. https://pmc.ncbi.nlm.nih.gov/articles/PMC10974757/"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.0 controlled title plus evidence-reconciled web derivative","evidenceControl":"2026_direct_cannabis_sclerotinia_cellular_transcriptomic_evidence_plus_cannabis_disease_reports","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_sclerotinia_white_mold_and_stem_rot_pathology","releaseTimeReview":"completed_2026-09-01_cross_crop_loss_and_inoculum_route_boundaries_explicit","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"sclerotinia-and-stem-rot-risks",
+  "route":"/encyclopedia/sclerotinia-and-stem-rot-risks"
+}
