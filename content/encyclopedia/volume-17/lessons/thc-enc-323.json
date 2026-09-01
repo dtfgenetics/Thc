@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-323",
+  "number":323,
+  "title":"Plant Intake and Quarantine",
+  "objective":"Use receiving inspection, source records, physical separation, appropriate testing, and defined release criteria to reduce the chance that incoming Cannabis/hemp plants introduce pests or pathogens into established production.",
+  "terms":[
+    {"term":"plant intake","definition":"The controlled receiving process for incoming seeds, clones, stock plants, transplants, or other living propagation material."},
+    {"term":"quarantine","definition":"Temporary separation and controlled handling of incoming or suspect plant material while its pest and pathogen status is evaluated."},
+    {"term":"release criteria","definition":"Documented conditions that must be met before quarantined material joins established clean or production stock."},
+    {"term":"source traceability","definition":"Records linking incoming plant material to supplier, lot, cultivar or genotype, shipment date, source plant or propagation batch when known, and diagnostic history."},
+    {"term":"latent infection","definition":"Infection present without obvious visible symptoms at the time of inspection."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Incoming vegetative material can carry arthropod pests, pathogens, or latent infections despite appearing healthy. Virginia Tech specifically recommends briefly quarantining purchased hemp clones and seedlings before introduction because pests such as aphids and mites may arrive on transplants and establish rapidly in enclosed production.",
+    "Visual inspection is necessary but insufficient. HLVd and other pathogens can occur in asymptomatic Cannabis plants, while very small arthropods or early life stages can be missed during a single inspection.",
+    "Quarantine reduces exposure opportunity by separating incoming material while source records, repeated observations, and appropriate diagnostic tests are reviewed. It does not prove material is pathogen-free and should not be represented as a universal number of days that guarantees clearance.",
+    "Risk differs by material type and source. Vegetatively propagated plants carry direct biological continuity with stock plants, while seed, tissue culture, and rooted transplants have different pest/pathogen pathways and therefore may justify different intake checks.",
+    "Release decisions should combine inspection history, diagnostic evidence where relevant, pest biology, source reliability, crop value, and facility risk tolerance. A negative test only applies to the specimen, method, tissue, timing, and target assayed."
+  ],
+  "cultivationRelevance":[
+    "Receive new plants into a physically and procedurally separated area before placing them with established mother stock or production crops.",
+    "Inspect foliage, growing points, stems, roots/media where accessible, and undersides of leaves; use magnification or traps appropriate to the suspected pest rather than relying on a quick top-canopy look.",
+    "Preserve source/lot identity during quarantine so a later detection can be traced to related plants without assuming every plant from the supplier is infected.",
+    "Use laboratory testing when the target pathogen, crop value, source history, or program standard justifies it, and interpret results with the sampling limits covered in THC-ENC-313–315."
+  ],
+  "measureAndRecord":[
+    {"field":"Source identity","requirement":"Record supplier, source location when available, cultivar/genotype, lot or batch, plant count, propagation type, receipt date, and any supplied diagnostic documentation."},
+    {"field":"Receiving inspection","requirement":"Record inspected plant parts, pest signs, symptoms, sticky-card or magnification findings, root/media observations when relevant, and photo evidence for abnormalities."},
+    {"field":"Quarantine location","requirement":"Record the separated zone, dates held, movement restrictions, dedicated/shared equipment rules, and plants added or removed during the hold."},
+    {"field":"Testing","requirement":"Record target, laboratory/method, tissue or specimen, sampling date, result, and interpretation limits rather than reducing all testing to pass/fail."},
+    {"field":"Release decision","requirement":"Record the criteria met, unresolved findings, disposition, release date, and responsible reviewer."
+    }
+  ],
+  "misconceptions":[
+    "Healthy-looking incoming clones are pathogen-free.",
+    "One visual inspection replaces quarantine.",
+    "Quarantine has one universal duration that guarantees clearance.",
+    "A negative result for one pathogen proves the plant is free of all pests and pathogens.",
+    "A pest found on one incoming plant proves every plant from that source is infested."
+  ],
+  "evidenceLimits":[
+    "Quarantine duration and release criteria are pest-, pathogen-, assay-, facility-, and risk-dependent. Evidence supports separation, inspection, traceability, and targeted testing, but no single quarantine interval can guarantee that all Cannabis pests or latent pathogens will be detected."
+  ],
+  "crossLinks":"THC-ENC-310 and THC-ENC-313–315 for HLVd/asymptomatic infection and testing; THC-ENC-322 for receiving-zone workflow; THC-ENC-331–333 for representative scouting and decision records.",
+  "sourceNotes":[
+    "Virginia Cooperative Extension. Integrated Pest Management of Hemp in Virginia. Recommends quarantine/inspection of incoming hemp clones and seedling starts. https://www.pubs.ext.vt.edu/ENTO/ENTO-349/ENTO-349.html",
+    "Penn State Extension. Assessing the Risk of Disease in Greenhouses. Current risk-assessment guidance for purchased plugs, stock plants, virus indexing, sanitation, and propagation separation. https://extension.psu.edu/assessing-the-risk-of-disease-in-greenhouses",
+    "Punja ZK, Scott C, Tso HH, Munz J, Buirs L. Transmission, Spread, Longevity and Management of Hop Latent Viroid. Plants. 2025;14(5):830. https://pmc.ncbi.nlm.nih.gov/articles/PMC11902214/"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.1 controlled title plus evidence-reconciled web derivative","evidenceControl":"hemp_specific_incoming_clone_quarantine_guidance_plus_cannabis_latent_pathogen_and_greenhouse_stock_risk_evidence","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_plant_intake_quarantine_and_diagnostics","releaseTimeReview":"completed_2026-09-01_no_universal_quarantine_duration_or_visual_clearance_claim","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"plant-intake-and-quarantine",
+  "route":"/encyclopedia/plant-intake-and-quarantine"
+}
