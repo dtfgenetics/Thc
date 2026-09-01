@@ -1,0 +1,97 @@
+name: Diagnose Seeds Page Render State
+
+on:
+  pull_request:
+    paths:
+      - scripts/diagnose-seeds-page-render-state-via-wordpress.mjs
+      - .github/workflows/diagnose-seeds-page-render-state.yml
+      - .github/diagnose-seeds-page-render-state-trigger.txt
+  push:
+    branches: [main]
+    paths:
+      - .github/diagnose-seeds-page-render-state-trigger.txt
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dtfseeds-seeds-page-render-diagnostic
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate read-only page diagnostic boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/diagnose-seeds-page-render-state-via-wordpress.mjs
+          ! grep -Eq 'wp_update_post|update_post_meta|delete_post_meta|set_post_thumbnail|file_put_contents|\bunlink\s*\(|\brename\s*\(|\brmdir\s*\(|\bmkdir\s*\(|wp_mkdir_p|ZipArchive' scripts/diagnose-seeds-page-render-state-via-wordpress.mjs
+          grep -Fq "\$request->get_param('dtf_repair_token')" scripts/diagnose-seeds-page-render-state-via-wordpress.mjs
+          grep -Fq "get_page_template_slug(\$page_id)" scripts/diagnose-seeds-page-render-state-via-wordpress.mjs
+          grep -Fq "'_elementor_data'" scripts/diagnose-seeds-page-render-state-via-wordpress.mjs
+          grep -Fq "'_wp_page_template'" scripts/diagnose-seeds-page-render-state-via-wordpress.mjs
+          grep -Fq "'active_plugins'" scripts/diagnose-seeds-page-render-state-via-wordpress.mjs
+          grep -Fq "'known_meta'" scripts/diagnose-seeds-page-render-state-via-wordpress.mjs
+          grep -Fq "'stale_catalog'" scripts/diagnose-seeds-page-render-state-via-wordpress.mjs
+          ! grep -Fq "console.log(snippetCode" scripts/diagnose-seeds-page-render-state-via-wordpress.mjs
+
+  diagnose-production:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: production
+    env:
+      WP_SITE_URL: https://dtfseeds.com
+      NODE_OPTIONS: --dns-result-order=ipv4first
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Require proven WordPress credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${WP_API_USERNAME:-}"
+          test -n "${WP_API_PASSWORD:-}"
+
+      - name: Run read-only Seeds page render diagnostic
+        id: diagnostic
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/diagnose-seeds-page-render-state-via-wordpress.mjs \
+            | tee "$RUNNER_TEMP/seeds-page-render-diagnostic.json"
+          grep -Eq '"ok"[[:space:]]*:[[:space:]]*true' "$RUNNER_TEMP/seeds-page-render-diagnostic.json"
+
+      - name: Upload render-state evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: seeds-page-render-diagnostic-${{ github.run_id }}
+          path: ${{ runner.temp }}/seeds-page-render-diagnostic.json
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Summarize diagnostic status
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo '## Seeds page render-state diagnostic'
+            echo
+            echo "- Diagnostic: ${{ steps.diagnostic.outcome }}"
+            echo '- Scope: page template, builder metadata fingerprints, active builder plugins, authoritative REST state, and fresh public markers.'
+            echo '- Production page/content/file mutation: none.'
+          } >> "$GITHUB_STEP_SUMMARY"
