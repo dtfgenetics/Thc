@@ -179,7 +179,7 @@ add_action('rest_api_init', function () {
             foreach ((array) $table_names as $table) {
                 $table = (string) $table;
                 if (!preg_match('/^[A-Za-z0-9_]+$/', $table)) continue;
-                $columns = $wpdb->get_results("SHOW COLUMNS FROM `{$table}`", ARRAY_A);
+                $columns = $wpdb->get_results('SHOW COLUMNS FROM ' . $table, ARRAY_A);
                 $text_columns = [];
                 foreach ((array) $columns as $column) {
                     $type = strtolower((string) ($column['Type'] ?? ''));
@@ -188,7 +188,8 @@ add_action('rest_api_init', function () {
                 $matches = [];
                 foreach ($text_columns as $column) {
                     if (!preg_match('/^[A-Za-z0-9_]+$/', $column)) continue;
-                    $count = (int) $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM `{$table}` WHERE `{$column}` LIKE %s", '%' . $wpdb->esc_like($stale) . '%'));
+                    $sql = 'SELECT COUNT(*) FROM ' . $table . ' WHERE ' . $column . ' LIKE %s';
+                    $count = (int) $wpdb->get_var($wpdb->prepare($sql, '%' . $wpdb->esc_like($stale) . '%'));
                     if ($count > 0) $matches[] = ['column' => $column, 'stale_match_count' => $count];
                 }
                 $tables[] = [
