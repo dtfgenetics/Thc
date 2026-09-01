@@ -1,0 +1,57 @@
+{
+  "id":"THC-ENC-314",
+  "number":314,
+  "title":"Sampling Plants for Laboratory Diagnosis",
+  "objective":"Collect representative Cannabis disease samples that preserve diagnostic value, match the suspected pathogen and tissue, include appropriate comparison material and metadata, and support laboratory interpretation without contaminating or biasing the specimen.",
+  "terms":[
+    {"term":"representative sample","definition":"Plant material selected to capture the active problem and its range while reflecting the population or disease pattern being investigated."},
+    {"term":"active lesion margin","definition":"The transition between diseased and apparently healthy tissue where a causal organism is often more diagnostically recoverable than in fully decomposed tissue."},
+    {"term":"sample integrity","definition":"The condition of a specimen and its metadata after collection, packaging, transport, and storage, including avoidance of decay, desiccation, cross-contamination, or mislabeling."},
+    {"term":"chain of identity","definition":"A documented link between the sampled plant, its location/genotype/cohort, the collected specimen, and the laboratory result."},
+    {"term":"diagnostic question","definition":"The explicit problem the sample is intended to resolve, such as whether a named pathogen is present or which cause best explains a root-rot syndrome."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Laboratory accuracy begins before the sample reaches the laboratory. Tissue choice, disease stage, number of plants, specimen quality, packaging, timing, and metadata determine whether culture, microscopy, PCR, sequencing, or other methods can address the diagnostic question.",
+    "For localized lesions, recently affected tissue and active lesion margins are often more informative than completely dead, dry, or decomposed tissue, which may be dominated by secondary organisms. For root/crown problems, intact roots, crown tissue, and whole-plant context can be essential.",
+    "Cannabis pathogen distribution is not always uniform. HLVd studies demonstrate that roots, petioles, leaves, canopy positions, genotypes, and developmental stages can differ in detectable pathogen level. The appropriate tissue for one pathogen or assay is therefore not automatically appropriate for another.",
+    "Healthy-looking comparison material, photographs, plant history, genotype, propagation source, irrigation/media context, symptom progression, and spatial pattern can materially improve interpretation. A specimen without context may identify an organism but fail to establish whether it explains the crop problem.",
+    "Sampling should match the laboratory's validated method. Culture-based fungal/bacterial diagnosis, oomycete assays, nematode analysis, viroid/virus molecular testing, and broad sequencing can require different tissues, handling, quantities, or packaging. Laboratory instructions take precedence over a generic sampling rule."
+  ],
+  "cultivationRelevance":[
+    "Define the question before cutting tissue: organism confirmation, syndrome diagnosis, asymptomatic screening, outbreak mapping, or clearance testing each requires a different sampling design.",
+    "Collect multiple representative plants or tissues when disease is heterogeneous, label each source clearly, and avoid mixing samples unless a validated composite protocol specifically calls for pooling.",
+    "Photograph the plant in place before destructive sampling and record room/field position, genotype, stage, propagation lot, symptom onset, and recent relevant interventions.",
+    "Contact the receiving laboratory when the pathogen or sampling method is uncertain; a second specimen collected correctly is often more valuable than a larger amount of poorly selected tissue."
+  ],
+  "measureAndRecord":[
+    {"field":"Sample ID","requirement":"Use a unique identifier linked to plant ID, cultivar/genotype, propagation lot, exact location, collection date/time, and collector."},
+    {"field":"Diagnostic question","requirement":"State the suspected pathogen or syndrome and whether the sample is symptomatic diagnosis, exposure follow-up, or asymptomatic screening."},
+    {"field":"Tissue and disease stage","requirement":"Record tissue type, canopy/root position, lesion stage, symptom status, and whether active margins/comparison tissue are included."},
+    {"field":"Handling","requirement":"Record packaging, temperature/storage conditions where relevant, shipment time, and deviations from the laboratory's requested procedure."},
+    {"field":"Context","requirement":"Attach photographs and record symptom progression, incidence, spatial pattern, environmental/root-zone history, treatments, and relevant exposure links."
+    }
+  ],
+  "misconceptions":[
+    "The most severely dead tissue is always the best disease sample.",
+    "One convenient leaf is an adequate sample for every Cannabis pathogen.",
+    "More tissue automatically produces a more accurate diagnosis.",
+    "A laboratory can reconstruct missing plant history from the specimen alone.",
+    "Pooling several plants is always safer and more sensitive than individual testing."
+  ],
+  "evidenceLimits":[
+    "There is no universal specimen protocol for all Cannabis diseases. Sample type, quantity, preservation, pooling, and timing must be matched to the suspected organism and validated assay. General plant-clinic guidance supports specimen quality principles, while Cannabis-specific HLVd research demonstrates why tissue distribution can require organism-specific sampling."
+  ],
+  "crossLinks":"THC-ENC-301 for diagnostic reasoning; THC-ENC-304–312 for organism-specific disease patterns; THC-ENC-313 for asymptomatic infection; THC-ENC-315 for false negatives and test timing; THC-ENC-320 for incident records.",
+  "sourceNotes":[
+    "University of Missouri Extension. Plant Diagnostic Clinic: Guidelines for Collecting and Submitting Samples. Reviewed March 2026. https://extension.missouri.edu/publications/f260",
+    "Kansas State University Plant Disease Diagnostic Lab. Specimen Collection Guidelines. Current 2026 guidance. https://www.plantpath.k-state.edu/extension/plant-disease-diagnostic-lab/collection-guidelines/",
+    "Punja ZK, et al. Challenges to Cannabis sativa Production from Pathogens and Microbes—The Role of Molecular Diagnostics and Bioinformatics. Int J Mol Sci. 2024;25(1):14. PMID:38203190. https://pmc.ncbi.nlm.nih.gov/articles/PMC10779078/",
+    "Cannabis genotypes display differences in the tissue distribution and levels of Hop latent viroid in leaves and roots following inoculation. Can J Plant Pathol. 2026. https://www.tandfonline.com/doi/full/10.1080/07060661.2026.2680120"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.0 controlled title plus evidence-reconciled web derivative","evidenceControl":"2026_university_diagnostic_sampling_guidance_plus_cannabis_specific_pathogen_tissue_distribution","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"plant_disease_diagnostic_sampling_and_cannabis_specimen_selection","releaseTimeReview":"completed_2026-09-01_sample_integrity_tissue_selection_and_lab_method_boundaries_explicit","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"sampling-plants-for-laboratory-diagnosis",
+  "route":"/encyclopedia/sampling-plants-for-laboratory-diagnosis"
+}
