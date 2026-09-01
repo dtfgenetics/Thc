@@ -1,0 +1,93 @@
+name: Diagnose Seeds Runtime Render Stack
+
+on:
+  pull_request:
+    paths:
+      - scripts/diagnose-seeds-runtime-render-stack.mjs
+      - .github/workflows/diagnose-seeds-runtime-render-stack.yml
+      - .github/diagnose-seeds-runtime-render-stack-trigger.txt
+  push:
+    branches: [main]
+    paths:
+      - .github/diagnose-seeds-runtime-render-stack-trigger.txt
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dtfseeds-seeds-runtime-render-stack
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate diagnostic and temporary-snippet cleanup boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/diagnose-seeds-runtime-render-stack.mjs
+          grep -Fq "/wp-json/code-snippets/v1/snippets/schema" scripts/diagnose-seeds-runtime-render-stack.mjs
+          grep -Fq "cleanupSnippet" scripts/diagnose-seeds-runtime-render-stack.mjs
+          grep -Fq "the_content_filtered" scripts/diagnose-seeds-runtime-render-stack.mjs
+          grep -Fq "render_block_core/post-content" scripts/diagnose-seeds-runtime-render-stack.mjs
+          grep -Fq "advanced-cache.php" scripts/diagnose-seeds-runtime-render-stack.mjs
+          grep -Fq "object-cache.php" scripts/diagnose-seeds-runtime-render-stack.mjs
+          grep -Fq "/index.php?page_id=868" scripts/diagnose-seeds-runtime-render-stack.mjs
+          ! grep -Fq "/wp-json/wp/v2/plugins?search=" scripts/diagnose-seeds-runtime-render-stack.mjs
+          ! grep -Eq 'wp_update_post|update_post_meta|delete_post_meta|set_post_thumbnail|file_put_contents|wp_mkdir_p|ZipArchive' scripts/diagnose-seeds-runtime-render-stack.mjs
+
+  diagnose-production:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    environment: production
+    env:
+      WP_SITE_URL: https://dtfseeds.com
+      NODE_OPTIONS: --dns-result-order=ipv4first
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Require proven WordPress credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${WP_API_USERNAME:-}"
+          test -n "${WP_API_PASSWORD:-}"
+      - name: Inspect Seeds runtime render stack
+        id: diagnostic
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/diagnose-seeds-runtime-render-stack.mjs \
+            | tee "$RUNNER_TEMP/seeds-runtime-render-stack.json"
+          grep -Eq '"ok"[[:space:]]*:[[:space:]]*true' "$RUNNER_TEMP/seeds-runtime-render-stack.json"
+      - name: Upload runtime-render evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: seeds-runtime-render-stack-${{ github.run_id }}
+          path: ${{ runner.temp }}/seeds-runtime-render-stack.json
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Summarize diagnostic status
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo '## Seeds runtime render-stack diagnostic'
+            echo
+            echo "- Diagnostic: ${{ steps.diagnostic.outcome }}"
+            echo '- Scope: page 868 raw/filtered/block render, active plugins, MU plugins, cache drop-ins, relevant runtime hooks, REST edit/view, pretty permalink, and direct page-id render.'
+            echo '- Persistent page/theme/route/cache mutation: none.'
+            echo '- Temporary diagnostic snippet: removed in script cleanup.'
+          } >> "$GITHUB_STEP_SUMMARY"
