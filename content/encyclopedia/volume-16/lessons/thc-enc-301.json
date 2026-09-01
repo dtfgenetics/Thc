@@ -1,0 +1,55 @@
+{
+  "id":"THC-ENC-301",
+  "number":301,
+  "title":"The Disease Triangle and Disease Cycle",
+  "objective":"Use host susceptibility, pathogen presence, environmental favorability, time, and pathogen life-cycle stages to explain why infectious disease develops and to separate disease risk from symptom appearance alone.",
+  "terms":[
+    {"term":"disease triangle","definition":"A plant-pathology model in which a susceptible host, a virulent pathogen, and a favorable environment must overlap for disease to develop."},
+    {"term":"inoculum","definition":"A pathogen structure or propagule capable of initiating infection, such as a fungal spore, bacterial cell, oomycete propagule, virus particle, or infected propagative tissue."},
+    {"term":"infection court","definition":"A plant surface, opening, wound, tissue, or developmental site at which infection can begin."},
+    {"term":"latent period","definition":"The interval between infection and production of new infectious inoculum; it is distinct from the time until visible symptoms appear."},
+    {"term":"polycyclic disease","definition":"A disease capable of producing repeated secondary infection cycles within one crop cycle when host and environmental conditions remain favorable."}
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Infectious disease requires more than a pathogen name. Disease expression depends on the interaction of a susceptible Cannabis host, a pathogenic organism or infectious agent, and environmental conditions that permit infection and disease development. Time, plant stage, inoculum quantity, and repeated exposure modify the amount of disease that develops.",
+    "The disease cycle describes a chain of events that may include inoculum production, dispersal, contact with a susceptible infection court, penetration or entry, infection, colonization, symptom development, reproduction, secondary spread, and survival between crops. Different pathogens use different routes and do not complete every stage in the same way.",
+    "Symptoms are host responses and can lag behind infection. A plant can therefore look healthy during latent or low-level infection, while abiotic stress can mimic infectious disease without a pathogen being present. This is why symptom pattern, pathogen evidence, environmental history, and diagnostic testing should be interpreted together.",
+    "Cannabis greenhouse disease literature identifies powdery mildew, Botrytis bud rot, Fusarium and Pythium root diseases, and hop latent viroid among major disease concerns. These pathogens differ in survival, spread, infection site, and environmental response, so a single generic disease-control rule is not scientifically defensible.",
+    "Breaking a disease cycle can involve reducing inoculum, limiting spread, reducing host susceptibility, removing favorable environmental conditions, or preventing pathogen entry. Which point is practical depends on the specific pathogen, crop stage, production system, and lawful control options."
+  ],
+  "cultivationRelevance":[
+    "When disease is suspected, record the host genotype and stage, symptom distribution, environmental history, irrigation or propagation links, and evidence for a specific pathogen instead of diagnosing from one symptom.",
+    "Map likely movement pathways such as clonal propagation, tools, water, air, plant contact, workers, or contaminated media only when those pathways are biologically plausible for the suspected pathogen.",
+    "Distinguish primary inoculum that starts an outbreak from secondary cycles that amplify it; repeated new lesions or cases can indicate ongoing spread rather than one historic exposure.",
+    "Use laboratory confirmation when the consequence of a diagnosis is high or when visually similar abiotic and infectious disorders cannot be separated reliably."
+  ],
+  "measureAndRecord":[
+    {"field":"Host","requirement":"Record cultivar/genotype, plant age or stage, propagation lot, and any known susceptibility or prior disease history."},
+    {"field":"Symptoms and signs","requirement":"Record tissue affected, distribution, onset date, progression, visible pathogen signs if present, and representative photos."},
+    {"field":"Environment","requirement":"Record temperature, humidity or leaf/root-zone moisture context, airflow, irrigation events, and other conditions relevant to the suspected pathogen."},
+    {"field":"Pathogen evidence","requirement":"Record microscopy, isolation, molecular test, diagnostic-lab result, or other evidence and its identification confidence."},
+    {"field":"Cycle hypothesis","requirement":"State suspected inoculum source, spread route, infection site, and whether ongoing secondary spread is supported, uncertain, or unsupported."
+    }
+  ],
+  "misconceptions":[
+    "Finding a microorganism automatically proves it caused the symptoms.",
+    "A plant that looks healthy cannot carry an infectious agent.",
+    "Humidity or overwatering alone is a pathogen.",
+    "All plant pathogens spread by the same route.",
+    "One disease-management action interrupts every stage of every pathogen's life cycle."
+  ],
+  "evidenceLimits":[
+    "The disease triangle and disease-cycle framework is general plant pathology. Cannabis-specific pathogen behavior must still be supported by organism-specific evidence. Environmental associations identify conditions that may alter risk; they do not by themselves establish infection or causation."
+  ],
+  "crossLinks":"THC-ENC-261–280 for abiotic differential diagnosis; THC-ENC-302–320 for Cannabis disease agents, sampling, transmission, reservoirs, resistance, and incident review; THC-ENC-321–340 for IPM, biosecurity, sanitation, and response systems.",
+  "sourceNotes":[
+    "University of Missouri Extension, Preventing and Managing Plant Diseases. Defines the disease triangle and disease-cycle sequence including inoculum, spread, penetration, infection, and secondary cycles. https://extension.missouri.edu/publications/mg13",
+    "Buirs L, Punja ZK. Integrated Management of Pathogens and Microbes in Cannabis sativa L. under Greenhouse Conditions. Plants. 2024;13(6):786. doi:10.3390/plants13060786. PMID:38592798. https://pmc.ncbi.nlm.nih.gov/articles/PMC10974757/",
+    "Punja ZK, et al. Challenges to Cannabis sativa Production from Pathogens and Microbes—The Role of Molecular Diagnostics and Bioinformatics. Pathogens. 2024. PMID:38203190. https://pmc.ncbi.nlm.nih.gov/articles/PMC10779078/"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.0 controlled title plus evidence-reconciled web derivative","evidenceControl":"general_plant_pathology_framework_plus_current_cannabis_disease_review_and_diagnostics","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"plant_disease_epidemiology_and_diagnostic_reasoning","releaseTimeReview":"completed_2026-09-01_causation_latency_and_environment_boundaries_explicit","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"disease-triangle-and-disease-cycle",
+  "route":"/encyclopedia/disease-triangle-and-disease-cycle"
+}

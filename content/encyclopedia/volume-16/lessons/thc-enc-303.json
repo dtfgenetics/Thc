@@ -1,0 +1,57 @@
+{
+  "id":"THC-ENC-303",
+  "number":303,
+  "title":"Botrytis Gray Mold and Inflorescence Rot",
+  "objective":"Identify Botrytis cinerea as a major Cannabis inflorescence-rot pathogen, recognize its disease pattern and epidemiological context, and separate confirmed Botrytis disease from other bud rots and postharvest molds.",
+  "terms":[
+    {"term":"Botrytis cinerea","definition":"A necrotrophic fungal pathogen that causes gray mold and can rot Cannabis leaves, stems, and especially maturing inflorescences."},
+    {"term":"bud rot","definition":"Decay of floral or inflorescence tissue; a symptom category with multiple possible microbial causes rather than a species-level diagnosis by itself."},
+    {"term":"conidium","definition":"An asexual spore of Botrytis that can disperse and contribute to new infection cycles."},
+    {"term":"sclerotium","definition":"A hardened fungal survival structure capable of persisting between favorable infection periods."},
+    {"term":"necrotroph","definition":"A pathogen that kills host tissue and then obtains nutrients from the dead or dying cells."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Botrytis cinerea is a documented Cannabis pathogen that can cause destructive gray mold and inflorescence rot. Early disease may appear as localized browning or decay within developing floral tissue before extensive gray sporulation becomes visible.",
+    "Cannabis studies have recovered and molecularly identified B. cinerea from diseased inflorescences and reproduced disease experimentally. Advanced infections can destroy large portions of an inflorescence, and infection present before harvest can contribute to postharvest loss.",
+    "Dense, maturing inflorescences create a distinct microclimate from room-average air. Disease risk is influenced by genotype, tissue architecture, moisture and humidity conditions, season, inoculum pressure, and the duration of favorable conditions rather than by one room sensor value alone.",
+    "Botrytis is not the only cause of bud rot. Fusarium and Penicillium species have also been recovered from rotted Cannabis inflorescences. Gray-brown decay therefore should be treated as a syndrome until fungal signs, isolation, microscopy, molecular testing, or diagnostic-lab evidence supports a causal organism.",
+    "Plant injury, senescence, dead floral material, and wounds can increase opportunities for necrotrophic colonization. Disease incidence and visible sporulation are related but not identical measurements; one describes affected units while the other describes pathogen reproduction on tissue."
+  ],
+  "cultivationRelevance":[
+    "Inspect maturing inflorescences internally as well as externally when disease is suspected, because decay can begin inside dense floral tissue before surface symptoms become obvious.",
+    "Record genotype and developmental stage because disease susceptibility and inflorescence architecture differ among cultivars.",
+    "Do not classify every brown floral area as Botrytis; compare Botrytis with Fusarium bud rot, Penicillium-associated rot, mechanical injury, senescence, and other microbial decay.",
+    "Any management product or sanitation chemistry must follow current labels, crop authorization, worker-safety requirements, residue rules, and jurisdictional law."
+  ],
+  "measureAndRecord":[
+    {"field":"Affected tissue","requirement":"Record inflorescence position, internal versus external decay, leaf/bract involvement, lesion color, texture, and visible sporulation."},
+    {"field":"Incidence","requirement":"Record affected plants and affected inflorescences using a defined denominator and consistent scouting method."},
+    {"field":"Severity","requirement":"Use a defined ordinal or percent-tissue scale and record whether assessment occurred preharvest, at harvest, or postharvest."},
+    {"field":"Microclimate/context","requirement":"Record crop stage, genotype, canopy/inflorescence density, recent humidity or condensation context, airflow, and relevant seasonal conditions."},
+    {"field":"Diagnostic evidence","requirement":"Record visible Botrytis-like sporulation, microscopy/culture, molecular identification, or diagnostic-lab result and confidence."
+    }
+  ],
+  "misconceptions":[
+    "All bud rot in Cannabis is caused by Botrytis cinerea.",
+    "Room-average relative humidity fully describes the moisture environment inside dense inflorescences.",
+    "Visible gray spores must be present before Botrytis can be affecting internal tissue.",
+    "A brown sugar leaf alone proves the adjacent flower has Botrytis.",
+    "A published disease-control trial automatically authorizes the same product and use pattern for every cannabis crop."
+  ],
+  "evidenceLimits":[
+    "Cannabis Botrytis risk is strongly context dependent. Natural-infection greenhouse observations can show genotype and seasonal associations but do not establish a universal humidity threshold or guaranteed control response. Bud-rot diagnosis should remain organism-specific where decisions have significant consequences."
+  ],
+  "crossLinks":"THC-ENC-301 for disease-cycle reasoning; THC-ENC-304–309 for competing root, vascular, foliar, and bacterial diagnoses; THC-ENC-318 for postharvest microbial context; THC-ENC-319 for susceptibility; THC-ENC-321–340 for integrated disease management.",
+  "sourceNotes":[
+    "Punja ZK, et al. Pathogens and Molds Affecting Production and Quality of Cannabis sativa L. Front Plant Sci. 2019. PMID:31681341. https://pmc.ncbi.nlm.nih.gov/articles/PMC6811654/",
+    "Buirs L, Punja ZK. Integrated Management of Pathogens and Microbes in Cannabis sativa L. under Greenhouse Conditions. Plants. 2024;13(6):786. doi:10.3390/plants13060786. PMID:38592798. https://pmc.ncbi.nlm.nih.gov/articles/PMC10974757/",
+    "Punja ZK, et al. Challenges to Cannabis sativa Production from Pathogens and Microbes—The Role of Molecular Diagnostics and Bioinformatics. Pathogens. 2024. PMID:38203190. https://pubmed.ncbi.nlm.nih.gov/38203190/",
+    "Microbial hazards during harvesting and processing at an outdoor United States cannabis farm. PMID:29370578. Documents B. cinerea sequences in cannabis-farm environmental samples. https://pubmed.ncbi.nlm.nih.gov/29370578/"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.0 controlled title plus evidence-reconciled web derivative","evidenceControl":"cannabis_specific_botrytis_isolation_molecular_identification_greenhouse_epidemiology_and_differential_bud_rot_evidence","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_botrytis_and_inflorescence_pathology","releaseTimeReview":"completed_2026-09-01_bud_rot_differential_and_microclimate_boundaries_explicit","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"botrytis-gray-mold-and-inflorescence-rot",
+  "route":"/encyclopedia/botrytis-gray-mold-and-inflorescence-rot"
+}

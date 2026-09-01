@@ -1,0 +1,57 @@
+{
+  "id":"THC-ENC-304",
+  "number":304,
+  "title":"Fusarium Root, Crown, and Vascular Diseases",
+  "objective":"Recognize Fusarium as a diverse group of Cannabis pathogens that can affect roots, crowns, vascular tissues, stems, and inflorescences; distinguish Fusarium syndromes from look-alikes; and interpret propagation, water, and diagnostic evidence without treating genus detection as proof of disease.",
+  "terms":[
+    {"term":"Fusarium oxysporum species complex","definition":"A genetically diverse group containing pathogenic and nonpathogenic Fusarium lineages; some members cause Cannabis wilt and vascular disease."},
+    {"term":"vascular discoloration","definition":"Abnormal browning or discoloration of internal conductive tissues that can accompany vascular infection but is not by itself species-specific."},
+    {"term":"crown rot","definition":"Decay or necrosis at the transition between stem and root tissues near the substrate or soil line."},
+    {"term":"propagative transmission","definition":"Movement of a pathogen with infected cuttings, mother stock, or other vegetative plant material."},
+    {"term":"Koch's postulates","definition":"A classical experimental framework used to test whether an isolated organism can reproduce disease and be recovered again from the diseased host."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Multiple Fusarium species and lineages have been recovered from diseased Cannabis roots, crowns, stems, and inflorescences. Documented symptoms include root browning, crown and pith discoloration, yellowing, stunting, wilt, plant collapse, and in some cases floral infection.",
+    "The Fusarium oxysporum complex is not a single uniform pathogen population. A 2022 study of Cannabis-associated wilt isolates from Israel, Italy, and North America found a polyphyletic assemblage and experimentally confirmed pathogenicity of diverse lineages, showing that strain identity and aggressiveness matter.",
+    "Infected mother plants and cuttings can serve as propagation pathways. Fusarium has been recovered from asymptomatic infected mother plants and matching wilted cuttings, so visual health at the stock-plant stage does not guarantee pathogen-free propagation material.",
+    "Internal stem or vascular browning raises suspicion for Fusarium but can overlap with other vascular, root-zone, water-stress, and mechanical problems. Laboratory isolation and molecular identification improve confidence, particularly when crop removal or source tracing depends on the diagnosis.",
+    "Finding Fusarium DNA or a Fusarium isolate does not automatically prove disease because the genus also contains endophytes, saprophytes, and lineages with different pathogenic potential. Causation is strongest when organism identity, symptom pattern, tissue location, epidemiology, and pathogenicity evidence align."
+  ],
+  "cultivationRelevance":[
+    "When wilt, stunting, or internal stem browning occurs, compare affected and unaffected plants from the same propagation lot and inspect both roots and crown tissues rather than focusing only on leaves.",
+    "Trace symptomatic plants back to mother stock, cutting batch, irrigation zone, media lot, and plant movement history to distinguish localized introduction from a broader system problem.",
+    "Separate Fusarium root/crown/vascular disease from Pythium or other oomycete root rot, abiotic root-zone hypoxia, salinity, mechanical root injury, and HLVd-associated stunting.",
+    "Do not infer that a fungicide, disinfectant, or biological product is permitted on cannabis from a research result; current label and jurisdiction govern lawful use."
+  ],
+  "measureAndRecord":[
+    {"field":"Plant pattern","requirement":"Record plant IDs, propagation lot, mother source, cultivar, crop stage, incidence, and spatial clustering."},
+    {"field":"Root/crown observations","requirement":"Record root color and integrity, crown lesions, stem base condition, pith/xylem discoloration, and representative photos."},
+    {"field":"Diagnostic evidence","requirement":"Record culture or molecular identification to species/complex or strain level when available, tissue sampled, lab method, and confidence."},
+    {"field":"Water/propagation links","requirement":"Record recirculated-water exposure, irrigation zone, shared reservoir, cutting history, and whether related plants show similar symptoms."},
+    {"field":"Progression","requirement":"Record first detection, rate of decline, wilt timing, plant death, and whether symptoms continue to appear in new propagation cohorts."
+    }
+  ],
+  "misconceptions":[
+    "Every Fusarium isolate from Cannabis is pathogenic.",
+    "Internal stem browning is unique to Fusarium.",
+    "A symptom-free mother plant cannot carry Fusarium associated with later cutting disease.",
+    "All Fusarium oxysporum strains on Cannabis are genetically identical or equally aggressive.",
+    "Detecting the genus alone proves the cause of a root-zone decline."
+  ],
+  "evidenceLimits":[
+    "Fusarium taxonomy and pathogenicity are strain- and complex-specific. Disease severity varies with genotype, plant stage, inoculum, propagation pathway, root-zone conditions, and pathogen lineage. Genus-level detection must not be converted into a universal diagnosis or treatment recommendation."
+  ],
+  "crossLinks":"THC-ENC-301 for disease-cycle reasoning; THC-ENC-305 for Pythium/oomycete differential diagnosis; THC-ENC-310 for HLVd-associated stunting; THC-ENC-314–317 for testing, sampling, transmission, and reservoirs; THC-ENC-319 for susceptibility.",
+  "sourceNotes":[
+    "Punja ZK, et al. Pathogens and Molds Affecting Production and Quality of Cannabis sativa L. Front Plant Sci. 2019. PMID:31681341. https://pmc.ncbi.nlm.nih.gov/articles/PMC6811654/",
+    "Members of the Fusarium oxysporum Complex Causing Wilt Symptoms in Medical Cannabis in Israel, Italy, and North America Comprise a Polyphyletic Assemblage. Plant Disease. 2022. PMID:35412332. doi:10.1094/PDIS-01-22-0155-RE. https://pubmed.ncbi.nlm.nih.gov/35412332/",
+    "Punja ZK, et al. Challenges to Cannabis sativa Production from Pathogens and Microbes—The Role of Molecular Diagnostics and Bioinformatics. 2024. PMID:38203190. https://pmc.ncbi.nlm.nih.gov/articles/PMC10779078/",
+    "Buirs L, Punja ZK. Integrated Management of Pathogens and Microbes in Cannabis sativa L. under Greenhouse Conditions. Plants. 2024;13(6):786. PMID:38592798. https://pmc.ncbi.nlm.nih.gov/articles/PMC10974757/"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.0 controlled title plus evidence-reconciled web derivative","evidenceControl":"cannabis_specific_fusarium_pathogenicity_phylogeny_propagation_and_molecular_diagnostics","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_fusarium_root_crown_vascular_pathology","releaseTimeReview":"completed_2026-09-01_genus_detection_and_strain_pathogenicity_boundaries_explicit","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"fusarium-root-crown-and-vascular-diseases",
+  "route":"/encyclopedia/fusarium-root-crown-and-vascular-diseases"
+}

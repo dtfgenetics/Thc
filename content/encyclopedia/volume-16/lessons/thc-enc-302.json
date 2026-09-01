@@ -1,0 +1,57 @@
+{
+  "id":"THC-ENC-302",
+  "number":302,
+  "title":"Powdery Mildew Biology",
+  "objective":"Recognize Cannabis powdery mildew as a living, polycyclic host-pathogen system; distinguish characteristic fungal growth from look-alike residues; and interpret genotype, inoculum, and environment without turning symptom recognition into unsupported treatment advice.",
+  "terms":[
+    {"term":"powdery mildew","definition":"A disease caused by obligate biotrophic fungi that grow on living host tissues and produce conspicuous superficial mycelium and spores."},
+    {"term":"Golovinomyces ambrosiae","definition":"A principal powdery-mildew fungus documented on Cannabis sativa in North America and widely associated with indoor hemp and cannabis disease."},
+    {"term":"conidium","definition":"An asexual fungal spore that can disperse and initiate another infection cycle."},
+    {"term":"biotroph","definition":"A pathogen that obtains resources from living host cells rather than rapidly killing and consuming tissue."},
+    {"term":"polycyclic","definition":"Capable of repeating infection and spore-production cycles within a single crop, allowing disease to amplify rapidly."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Powdery mildew on Cannabis commonly appears as white superficial colonies on leaves and can extend to petioles, stems, and inflorescence-associated tissues. The visible powder is fungal mycelium and conidia, not a nutrient precipitate or mineral residue.",
+    "Current Cannabis and hemp literature identifies Golovinomyces ambrosiae as a primary causal organism. Taxonomic names in older reports may differ because the Golovinomyces species complex has been revised, so organism identity should follow current molecular or diagnostic evidence rather than relying only on an older species label.",
+    "G. ambrosiae is polycyclic. Asexual conidia produced on infected tissue can disperse to susceptible tissue and generate repeated disease cycles. This makes small, initially localized infections epidemiologically important when susceptible hosts remain continuously available.",
+    "Susceptibility is strongly genotype dependent. Genetic-mapping work has identified a major Cannabis powdery-mildew resistance locus near CsMLO1, and 2026 germplasm screening found large differences in disease severity among Cannabis accessions. Resistance observed in one genotype should not be generalized to another.",
+    "Powdery mildew can be diagnosed visually when characteristic colonies and spores are present, but ambiguous white material should be checked with magnification, microscopy, or laboratory methods. The absence of obvious colonies at one inspection does not prove a crop is free of early or low-level infection."
+  ],
+  "cultivationRelevance":[
+    "Scout young and mature leaves as well as interior canopy tissues and flowering-associated leaves; record the first location and date of confirmed fungal growth rather than only a whole-room severity impression.",
+    "Separate susceptibility observations by genotype and crop cycle so a repeatedly tolerant cultivar is not confused with a room-level management effect.",
+    "Treat white residues, dried spray deposits, dust, and trichome-rich tissue as differential diagnoses until fungal structures are observed or testing supports powdery mildew.",
+    "Use current crop-specific labels and jurisdictional requirements for any regulated control product; published efficacy trials do not create authorization for a product or use pattern."
+  ],
+  "measureAndRecord":[
+    {"field":"Colony location","requirement":"Record plant ID or location, leaf surface or tissue, canopy position, and whether colonies are isolated or coalescing."},
+    {"field":"Identification evidence","requirement":"Record visible mycelium/conidia, microscopy, molecular result, or diagnostic-lab identification and confidence."},
+    {"field":"Severity","requirement":"Use a defined scale or percent-area estimate consistently over time; do not switch scoring methods mid-trend without noting it."},
+    {"field":"Genotype","requirement":"Record cultivar/genotype and propagation source because susceptibility can differ substantially."},
+    {"field":"Environment and spread","requirement":"Record relevant temperature/humidity history, canopy density, airflow context, neighboring affected plants, and dates of new colony appearance."
+    }
+  ],
+  "misconceptions":[
+    "Every white patch on a Cannabis leaf is powdery mildew.",
+    "Powdery mildew requires free-standing water on the leaf in the same way as every foliar fungus.",
+    "All Cannabis genotypes are equally susceptible.",
+    "One clean visual inspection proves the crop is pathogen-free.",
+    "A research paper showing efficacy means that treatment is legally authorized everywhere."
+  ],
+  "evidenceLimits":[
+    "Cannabis powdery-mildew taxonomy has been refined over time, and local populations may differ. Genotype-resistance findings are population- and experiment-specific. Disease recognition should not be converted into a universal environmental setpoint, action threshold, or pesticide recommendation."
+  ],
+  "crossLinks":"THC-ENC-301 for disease-cycle reasoning; THC-ENC-313–315 for latent infection and testing limits; THC-ENC-319 for resistance and susceptibility; THC-ENC-321–340 for integrated management and lawful controls.",
+  "sourceNotes":[
+    "Buirs L, Punja ZK. Integrated Management of Pathogens and Microbes in Cannabis sativa L. under Greenhouse Conditions. Plants. 2024;13(6):786. doi:10.3390/plants13060786. PMID:38592798. https://pmc.ncbi.nlm.nih.gov/articles/PMC10974757/",
+    "Genetic Mapping, Identification, and Characterization of a Candidate Susceptibility Gene for Powdery Mildew in Cannabis sativa. Plant Disease. 2024. PMID:37750850. https://pubmed.ncbi.nlm.nih.gov/37750850/",
+    "Screening Diverse Cannabis sativa Germplasm for Resistance to Golovinomyces ambrosiae. Plant Disease. 2026. PMID:41319034. doi:10.1094/PDIS-07-25-1591-RE. https://pubmed.ncbi.nlm.nih.gov/41319034/",
+    "Brochu AS, et al. First Report of Powdery Mildew Caused by Golovinomyces ambrosiae on Cannabis sativa in Quebec, Canada. Plant Disease. 2022. PMID:35350887. https://pubmed.ncbi.nlm.nih.gov/35350887/"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.0 controlled title plus evidence-reconciled web derivative","evidenceControl":"current_cannabis_specific_powdery_mildew_taxonomy_genetics_germplasm_and_greenhouse_review","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_powdery_mildew_pathology","releaseTimeReview":"completed_2026-09-01_taxonomy_genotype_and_legal_use_boundaries_explicit","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"powdery-mildew-biology",
+  "route":"/encyclopedia/powdery-mildew-biology"
+}

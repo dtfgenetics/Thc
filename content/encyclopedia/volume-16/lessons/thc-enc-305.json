@@ -1,0 +1,58 @@
+{
+  "id":"THC-ENC-305",
+  "number":305,
+  "title":"Pythium and Oomycete Root Rot",
+  "objective":"Recognize Pythium-associated damping-off, root rot, and crown rot in Cannabis; distinguish oomycetes from true fungi and abiotic root decline; and use plant, water, and laboratory evidence to support diagnosis without overgeneralizing from one species or production system.",
+  "terms":[
+    {"term":"oomycete","definition":"A fungus-like stramenopile organism with biology distinct from true fungi; several Pythium species are important root pathogens."},
+    {"term":"Pythium","definition":"A genus historically used for many water-associated oomycetes, including species documented to cause Cannabis and hemp root, crown, and damping-off diseases."},
+    {"term":"damping-off","definition":"Rapid collapse or death of seedlings or cuttings associated with infection of roots, hypocotyl, crown, or stem-base tissues."},
+    {"term":"zoospore","definition":"A motile asexual propagule produced by some oomycetes that can move through water films and contribute to dispersal."},
+    {"term":"root rot","definition":"Loss of healthy root structure and function caused by tissue decay; it is a syndrome requiring a causal diagnosis rather than a pathogen name by appearance alone."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Pythium species are documented Cannabis and hemp pathogens. Cannabis studies have recovered P. myriotylum, P. dissotocum, P. aphanidermatum, P. ultimum, and other Pythium taxa from symptomatic roots and crowns, with disease patterns including browning, water-soaked or necrotic crown tissue, stunting, chlorosis, wilt, collapse, and plant death.",
+    "Pythium is an oomycete, not a true fungus. This biological distinction matters for taxonomy, diagnostic interpretation, survival structures, water-associated spread, and the fact that products effective against some true fungi are not automatically effective or appropriate against oomycetes.",
+    "Causation has been demonstrated directly in Cannabis for multiple Pythium species. P. ultimum was shown to cause crown rot in greenhouse Cannabis after inoculation and re-isolation, and P. myriotylum has been reported causing crown/root rot in hemp and, in 2026, damping-off and root rot in Cannabis sativa in Florida.",
+    "Water movement can be epidemiologically important because oomycete propagules can be associated with irrigation or recirculating systems, but wet roots alone do not prove Pythium. Excessive irrigation, low root-zone oxygen, salinity, heat, physical root damage, Fusarium, and other organisms can produce overlapping decline symptoms.",
+    "Species identity and production context matter. A Pythium species detected in water or media does not automatically establish that it caused plant symptoms. Strong diagnosis combines symptomatic tissue, organism identification, epidemiological fit, and, where available, pathogenicity evidence."
+  ],
+  "cultivationRelevance":[
+    "Inspect the root system and crown of declining plants and compare them with healthy plants from the same cultivar, propagation cohort, irrigation zone, and substrate lot.",
+    "When cases cluster along shared irrigation or recirculation pathways, document that pattern and test plant tissue and/or water as appropriate rather than assuming a waterborne outbreak from symptoms alone.",
+    "Differentiate Pythium-associated disease from Fusarium, Rhizoctonia, abiotic hypoxia, chronic overwatering, salinity injury, nutrient imbalance, and mechanical root damage.",
+    "Use organism-specific diagnosis and current lawful product labels for any control decision; oomycete biology should not be simplified into a generic 'fungal root rot' treatment category."
+  ],
+  "measureAndRecord":[
+    {"field":"Root/crown condition","requirement":"Record root color, firmness, sloughing, crown lesions, water-soaked tissue, stem-base condition, and representative photos."},
+    {"field":"Plant pattern","requirement":"Record cultivar, propagation lot, age/stage, incidence, spatial clustering, irrigation zone, substrate/media lot, and collapse timing."},
+    {"field":"Water context","requirement":"Record irrigation source, recirculation, reservoir connections, flooding or saturation events, root-zone moisture history, and relevant water-test results."},
+    {"field":"Diagnostic evidence","requirement":"Record tissue sampled, culture/microscopy/molecular result, identified oomycete species when available, and diagnostic confidence."},
+    {"field":"Differential evidence","requirement":"Record root-zone oxygen/moisture indicators, EC/salinity context, Fusarium testing where relevant, and other plausible abiotic or biological causes."
+    }
+  ],
+  "misconceptions":[
+    "Pythium is simply another true fungus.",
+    "Every brown root system is Pythium root rot.",
+    "A Pythium detection in irrigation water proves it caused all declining plants connected to that water.",
+    "All Pythium species behave identically on Cannabis.",
+    "One generic fungicide response can be assumed for every oomycete disease."
+  ],
+  "evidenceLimits":[
+    "Cannabis and hemp reports involve multiple Pythium species, cultivars, climates, substrates, and production systems. Disease-note pathogenicity studies establish causal capability under defined conditions but do not create universal incidence, environmental thresholds, or treatment rules."
+  ],
+  "crossLinks":"THC-ENC-301 for disease-cycle reasoning; THC-ENC-304 for Fusarium differential diagnosis; THC-ENC-306 for damping-off complexes; THC-ENC-314–317 for sampling, false negatives, transmission, water/media reservoirs; THC-ENC-321–340 for integrated management.",
+  "sourceNotes":[
+    "Punja ZK, et al. Pathogens and Molds Affecting Production and Quality of Cannabis sativa L. Front Plant Sci. 2019. PMID:31681341. https://pmc.ncbi.nlm.nih.gov/articles/PMC6811654/",
+    "Pitman TL, et al. First report of Pythium ultimum causing crown rot in greenhouse grown Cannabis sativa in California. Plant Disease. 2020. PMID:33337241. doi:10.1094/PDIS-10-20-2228-PDN. https://pubmed.ncbi.nlm.nih.gov/33337241/",
+    "Hu J. First Report of Crown and Root Rot Caused by Pythium myriotylum on Hemp (Cannabis sativa) in Arizona. Plant Disease. 2021. doi:10.1094/PDIS-12-20-2712-PDN. https://apsjournals.apsnet.org/doi/10.1094/PDIS-12-20-2712-PDN",
+    "Brown A, et al. First Report of Pythium myriotylum Causing Damping off and Root Rot in Cannabis sativa in Florida. Plant Disease. 2026;110(3). doi:10.1094/PDIS-07-25-1413-PDN. https://apsjournals.apsnet.org/doi/10.1094/PDIS-07-25-1413-PDN",
+    "Buirs L, Punja ZK. Integrated Management of Pathogens and Microbes in Cannabis sativa L. under Greenhouse Conditions. Plants. 2024;13(6):786. PMID:38592798. https://pmc.ncbi.nlm.nih.gov/articles/PMC10974757/"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.0 controlled title plus evidence-reconciled web derivative","evidenceControl":"cannabis_and_hemp_specific_pythium_pathogenicity_water_root_crown_and_molecular_diagnostic_evidence","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_pythium_oomycete_root_pathology","releaseTimeReview":"completed_2026-09-01_oomycete_taxonomy_causation_and_water_pathway_boundaries_explicit","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"pythium-and-oomycete-root-rot",
+  "route":"/encyclopedia/pythium-and-oomycete-root-rot"
+}
