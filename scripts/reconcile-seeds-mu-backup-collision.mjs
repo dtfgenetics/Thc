@@ -8,6 +8,7 @@ if (!username || !password) throw new Error('WordPress credentials are required.
 const expectedLiveSha = 'a32f9a10a5f79580d665d8d2c4718993a9d4bc14070eb8a26a4a2386f8535a3c';
 const auth = `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`;
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const token = crypto.randomBytes(32).toString('hex');
 
 async function wpRequest(path, { method = 'GET', json, headers = {}, allow = [] } = {}) {
   const response = await fetch(`${siteUrl}${path}`, {
@@ -40,7 +41,6 @@ async function wpGetRetry(path, options = {}) {
   throw lastError || new Error(`GET ${path} failed after retries.`);
 }
 
-const token = crypto.randomBytes(32).toString('hex');
 const code = String.raw`
 add_action('rest_api_init', function () {
     $token = ${JSON.stringify(token)};
@@ -87,7 +87,7 @@ add_action('rest_api_init', function () {
     register_rest_route('dtf-seeds-mu-collision/v1', '/archive-backup', [
         'methods' => 'POST',
         'permission_callback' => $permission,
-        'callback' => static function () use ($live, $backup, $file_state, $expected_live_sha) {
+        'callback' => static function () use ($live, $backup, $file_state, $expected_live_sha, $token) {
             if (!is_dir(WPMU_PLUGIN_DIR) || !is_writable(WPMU_PLUGIN_DIR)) {
                 return new WP_Error('dtf_mu_dir', 'MU plugin directory is not writable.', ['status' => 500]);
             }
@@ -104,7 +104,7 @@ add_action('rest_api_init', function () {
             }
             $backup_sha = (string) ($backup_state['sha256'] ?? 'unknown');
             $stamp = gmdate('YmdHis');
-            $archive_name = 'dtf-homepage-override.php.dtf-archive-' . substr($backup_sha, 0, 12) . '-' . $stamp . '.disabled';
+            $archive_name = 'dtf-homepage-override.php.dtf-archive-' . substr($backup_sha, 0, 12) . '-' . $stamp . '-' . substr($token, 0, 12) . '.disabled';
             $archive = wp_normalize_path(WPMU_PLUGIN_DIR . '/' . $archive_name);
             if (is_file($archive)) {
                 return new WP_Error('dtf_archive_collision', 'Generated archive path already exists.', ['status' => 409, 'archive' => $archive_name]);
