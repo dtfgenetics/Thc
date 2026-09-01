@@ -3,554 +3,183 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
-const MODEL_URL = '/atlas/models/cannabis-specimen-v1.glb';
 const HOTSPOT_URL = '/atlas/data/hotspots-v4.json';
+const MODEL_MANIFEST_URL = '/atlas/models/model-manifest-v4.json';
+const DEFAULT_MODEL_URL = '/atlas/models/cannabis-specimen-v1.glb';
+
+export const PLANT_ATLAS_V4_VERSION = '4.1.0';
 
 const DEFAULT_HOTSPOTS = [
-  {
-    id: 'root-system',
-    label: 'Root system',
-    detail: 'Primary, lateral & fine absorbing roots',
-    route: '/atlas/root-system/',
-    copy: 'Primary and lateral roots branch into fine absorbing roots that anchor the plant, acquire water and ions, respire, and interact with the rhizosphere.',
-    anchors: [[0.5, 0.08, 0.5]],
-    radius: 0.19,
-    focus: 0.42,
-  },
-  {
-    id: 'stem-vascular',
-    label: 'Stem & vascular system',
-    detail: 'Main stem, branches, xylem & phloem pathway',
-    route: '/atlas/stem-vascular/',
-    copy: 'The main stem and branches form a continuous vascular skeleton. Xylem moves water and minerals; phloem redistributes sugars and other assimilates among sources and sinks.',
-    anchors: [[0.5, 0.34, 0.5], [0.5, 0.52, 0.5]],
-    radius: 0.105,
-    focus: 0.48,
-  },
-  {
-    id: 'nodes-branching',
-    label: 'Nodes, meristems & branching',
-    detail: 'Axillary sites and branch junctions',
-    route: '/atlas/nodes-branching/',
-    copy: 'Nodes carry leaves, branches, and axillary meristems. Their spacing and bud activity reveal how growth regulators and environment shape plant architecture.',
-    anchors: [[0.5, 0.45, 0.5], [0.5, 0.59, 0.5], [0.5, 0.69, 0.5]],
-    radius: 0.12,
-    focus: 0.42,
-  },
-  {
-    id: 'leaf-module',
-    label: 'Fan leaves',
-    detail: 'Serrated leaflets, petioles, midribs & lateral veins',
-    route: '/atlas/leaf-module/',
-    copy: 'Serrated leaflets connect through petioles to the vascular system. Midribs and lateral veins distribute water, minerals, sugars, and mechanical support through the blade.',
-    anchors: [[0.27, 0.46, 0.5], [0.73, 0.48, 0.5], [0.3, 0.64, 0.5], [0.7, 0.66, 0.5]],
-    radius: 0.17,
-    focus: 0.46,
-  },
-  {
-    id: 'flower-anatomy',
-    label: 'Flowers & inflorescences',
-    detail: 'Bracts, sugar leaves & floral clusters',
-    route: '/atlas/flower-anatomy/',
-    copy: 'Layered bracts, sugar leaves, stigmas, and dense glandular surfaces form the visible inflorescence. Floral structure changes through pollination and maturation.',
-    anchors: [[0.5, 0.88, 0.5], [0.34, 0.73, 0.5], [0.66, 0.74, 0.5]],
-    radius: 0.14,
-    focus: 0.35,
-  },
-  {
-    id: 'trichomes-resin',
-    label: 'Glandular trichomes',
-    detail: 'Stalks and secretory gland heads',
-    route: '/atlas/trichomes-resin/',
-    copy: 'Glandular trichomes include stalks, secretory disc cells, and gland heads. Their form and density vary by tissue, developmental stage, and genotype.',
-    anchors: [[0.5, 0.91, 0.5]],
-    radius: 0.075,
-    focus: 0.24,
-    priority: 20,
-  },
-  {
-    id: 'reproductive-biology',
-    label: 'Reproductive structures',
-    detail: 'Stigmas, preflowers & pollen-reception surfaces',
-    route: '/atlas/reproductive-biology/',
-    copy: 'Stigmas and preflowers connect visible floral anatomy to sex expression, pollen reception, fertilization, embryo development, and seed formation.',
-    anchors: [[0.46, 0.72, 0.5], [0.54, 0.77, 0.5]],
-    radius: 0.09,
-    focus: 0.3,
-    priority: 15,
-  },
+  { id: 'root-system', label: 'Root system', detail: 'Primary, lateral & fine absorbing roots', route: '/atlas/root-system/', copy: 'Primary and lateral roots branch into fine absorbing roots that anchor the plant, acquire water and ions, respire, and interact with the rhizosphere.', anchors: [[0.5, 0.12, 0.5]], radius: 0.13, focus: 0.44 },
+  { id: 'root-tip', label: 'Root tips', detail: 'Apical growth and young absorption zones', route: '/atlas/root-system/', copy: 'Young root tips contain the root apical meristem and newly differentiating tissues. Just behind the tip, young root surfaces are especially important for water and mineral acquisition.', anchors: [[0.34, 0.025, 0.58], [0.69, 0.04, 0.43]], radius: 0.065, focus: 0.25, priority: 12 },
+  { id: 'stem-vascular', label: 'Stem & vascular system', detail: 'Main stem, branches, xylem & phloem pathway', route: '/atlas/stem-vascular/', copy: 'The main stem and branches form a continuous vascular skeleton. Xylem moves water and minerals; phloem redistributes sugars and other assimilates among sources and sinks.', anchors: [[0.5, 0.38, 0.5], [0.5, 0.57, 0.5]], radius: 0.075, focus: 0.42 },
+  { id: 'nodes-branching', label: 'Nodes & branching', detail: 'Axillary sites and branch junctions', route: '/atlas/nodes-branching/', copy: 'Nodes carry leaves, branches, and axillary meristems. Their spacing and bud activity reveal how developmental signaling and environment shape plant architecture.', anchors: [[0.5, 0.47, 0.5], [0.5, 0.61, 0.5], [0.5, 0.72, 0.5]], radius: 0.075, focus: 0.34 },
+  { id: 'apical-meristem', label: 'Shoot apex', detail: 'Apical meristem and newest growth', route: '/atlas/nodes-branching/', copy: 'The shoot apex contains actively dividing meristematic tissue that produces new stem, leaf, and later reproductive structures. Its activity strongly influences vertical growth and branching patterns.', anchors: [[0.5, 0.965, 0.5]], radius: 0.055, focus: 0.22, priority: 18 },
+  { id: 'leaf-module', label: 'Fan leaves', detail: 'Serrated leaflets, petioles, blades & veins', route: '/atlas/leaf-module/', copy: 'Fan leaves are major photosynthetic organs. Their blades capture light while stomata regulate gas exchange and transpiration, and petioles connect each leaf to the vascular system.', anchors: [[0.28, 0.52, 0.5], [0.72, 0.55, 0.5], [0.31, 0.69, 0.52], [0.69, 0.72, 0.48]], radius: 0.12, focus: 0.39 },
+  { id: 'petiole', label: 'Petiole', detail: 'Leaf stalk connecting blade to stem', route: '/atlas/leaf-module/', copy: 'The petiole positions the leaf blade and contains vascular bundles that connect leaf tissues with the stem. Its angle and mechanical state also change with water status and development.', anchors: [[0.38, 0.53, 0.5], [0.62, 0.7, 0.5]], radius: 0.045, focus: 0.23, priority: 15 },
+  { id: 'leaf-venation', label: 'Leaf venation', detail: 'Midrib and lateral vascular network', route: '/atlas/leaf-module/', copy: 'The midrib and lateral veins distribute water and minerals into the blade and export photosynthates through phloem. Venation also provides mechanical support across the thin leaf surface.', anchors: [[0.25, 0.57, 0.51], [0.74, 0.7, 0.49]], radius: 0.055, focus: 0.2, priority: 16 },
+  { id: 'flower-anatomy', label: 'Flowers & inflorescences', detail: 'Female floral clusters, bracts & sugar leaves', route: '/atlas/flower-anatomy/', copy: 'Female inflorescences contain densely packed floral structures, subtending bracts, sugar leaves, stigmas, and resinous surfaces that change substantially through maturation.', anchors: [[0.5, 0.89, 0.5], [0.35, 0.78, 0.51], [0.66, 0.79, 0.49]], radius: 0.09, focus: 0.29 },
+  { id: 'bract', label: 'Bracts', detail: 'Protective floral structures surrounding ovules', route: '/atlas/flower-anatomy/', copy: 'Bracts are small leaf-like floral structures associated with the female flower. They surround reproductive tissues and are among the most conspicuously resinous tissues of the inflorescence.', anchors: [[0.48, 0.905, 0.53], [0.54, 0.87, 0.48]], radius: 0.045, focus: 0.18, priority: 22 },
+  { id: 'sugar-leaf', label: 'Sugar leaves', detail: 'Small resinous leaves within flower clusters', route: '/atlas/flower-anatomy/', copy: 'Sugar leaves are small leaves embedded within and around the inflorescence. They contribute photosynthesis locally and frequently carry abundant glandular trichomes.', anchors: [[0.43, 0.86, 0.51], [0.58, 0.84, 0.49]], radius: 0.05, focus: 0.2, priority: 18 },
+  { id: 'reproductive-biology', label: 'Reproductive structures', detail: 'Female flowers, preflowers & pollen-reception surfaces', route: '/atlas/reproductive-biology/', copy: 'Female reproductive structures connect visible flower anatomy to sex expression, pollen reception, fertilization, embryo development, and seed formation.', anchors: [[0.46, 0.82, 0.51], [0.54, 0.85, 0.49]], radius: 0.06, focus: 0.23, priority: 14 },
+  { id: 'stigma', label: 'Stigmas', detail: 'Pollen-receptive floral structures', route: '/atlas/reproductive-biology/', copy: 'Paired stigmas emerge from each pistillate flower and participate in pollen capture. Their appearance changes with flower age, pollination status, and environmental exposure.', anchors: [[0.5, 0.925, 0.52]], radius: 0.045, focus: 0.17, priority: 25 },
+  { id: 'trichomes-resin', label: 'Glandular trichomes', detail: 'Stalks and secretory gland heads', route: '/atlas/trichomes-resin/', copy: 'Glandular trichomes include stalks, secretory disc cells, and gland heads. Their form and density vary by tissue, developmental stage, genotype, and environmental conditions.', anchors: [[0.52, 0.91, 0.48]], radius: 0.04, focus: 0.16, priority: 30 },
 ];
 
 function supportsWebGL() {
   try {
     const probe = document.createElement('canvas');
     return Boolean(window.WebGLRenderingContext && (probe.getContext('webgl2') || probe.getContext('webgl')));
-  } catch {
-    return false;
+  } catch { return false; }
+}
+
+async function loadJSON(url, fallback) {
+  try {
+    const response = await fetch(url, { cache: 'no-store' });
+    if (!response.ok) throw new Error(`${url} returned ${response.status}`);
+    return await response.json();
+  } catch (error) {
+    console.warn(`[Plant Atlas V4] Could not load ${url}; using embedded defaults.`, error);
+    return fallback;
   }
 }
 
 async function loadHotspots() {
-  try {
-    const response = await fetch(HOTSPOT_URL, { cache: 'no-store' });
-    if (!response.ok) throw new Error(`Hotspot data ${response.status}`);
-    const data = await response.json();
-    if (!Array.isArray(data?.hotspots) || data.hotspots.length < 7) throw new Error('Hotspot data incomplete');
-    return data.hotspots;
-  } catch (error) {
-    console.warn('[Plant Atlas V4] Using embedded hotspot map.', error);
-    return DEFAULT_HOTSPOTS;
-  }
+  const data = await loadJSON(HOTSPOT_URL, { hotspots: DEFAULT_HOTSPOTS });
+  return Array.isArray(data?.hotspots) && data.hotspots.length >= 7 ? data.hotspots : DEFAULT_HOTSPOTS;
 }
 
-function normalizeModel(model, targetHeight = 6) {
-  model.updateMatrixWorld(true);
-  const initialBox = new THREE.Box3().setFromObject(model);
-  const initialSize = initialBox.getSize(new THREE.Vector3());
-  if (!Number.isFinite(initialSize.y) || initialSize.y <= 0) throw new Error('Loaded GLB has invalid bounds.');
-
-  const scale = targetHeight / initialSize.y;
-  model.scale.multiplyScalar(scale);
-  model.updateMatrixWorld(true);
-
-  const box = new THREE.Box3().setFromObject(model);
-  const center = box.getCenter(new THREE.Vector3());
-  model.position.x -= center.x;
-  model.position.z -= center.z;
-  model.position.y -= box.min.y;
-  model.updateMatrixWorld(true);
-
-  return new THREE.Box3().setFromObject(model);
-}
-
-function normalizedPoint(bounds, value) {
-  const size = bounds.getSize(new THREE.Vector3());
-  return new THREE.Vector3(
-    bounds.min.x + size.x * THREE.MathUtils.clamp(value[0], 0, 1),
-    bounds.min.y + size.y * THREE.MathUtils.clamp(value[1], 0, 1),
-    bounds.min.z + size.z * THREE.MathUtils.clamp(value[2], 0, 1),
-  );
-}
-
-function prepareModelMaterials(model, renderer) {
-  const maxAnisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
-  model.traverse((object) => {
-    if (!object.isMesh) return;
-    object.castShadow = true;
-    object.receiveShadow = true;
-    const list = Array.isArray(object.material) ? object.material : [object.material];
-    list.filter(Boolean).forEach((material) => {
-      if (material.map) {
-        material.map.colorSpace = THREE.SRGBColorSpace;
-        material.map.anisotropy = maxAnisotropy;
-      }
-      if (material.emissiveMap) material.emissiveMap.colorSpace = THREE.SRGBColorSpace;
-      material.needsUpdate = true;
-    });
+async function loadModelManifest() {
+  return loadJSON(MODEL_MANIFEST_URL, {
+    schemaVersion: 1,
+    preferredModel: { enabled: false, url: DEFAULT_MODEL_URL, label: 'Production photoreal Cannabis specimen' },
+    fallback: { mode: 'procedural-pbr', label: 'Built-in high-detail PBR botanical specimen' },
   });
 }
 
-export async function bootPhotorealAtlas() {
-  const host = document.querySelector('[data-plant-3d]');
-  const canvas = document.querySelector('[data-plant-canvas]');
-  if (!host || !canvas || !supportsWebGL()) return false;
-
-  const loader = new GLTFLoader();
-  let gltf;
-  try {
-    gltf = await loader.loadAsync(MODEL_URL);
-  } catch (error) {
-    console.info('[Plant Atlas V4] Photoreal GLB unavailable; V3 fallback will load.', error);
-    return false;
-  }
-
-  const hotspots = await loadHotspots();
-  const fallback = document.querySelector('[data-plant-fallback]');
-  const tooltip = document.querySelector('[data-plant-tooltip]');
-  const inspector = document.querySelector('[data-plant-inspector]');
-  const inspectorKicker = document.querySelector('[data-inspector-kicker]');
-  const inspectorTitle = document.querySelector('[data-inspector-title]');
-  const inspectorCopy = document.querySelector('[data-inspector-copy]');
-  const inspectorLink = document.querySelector('[data-inspector-link]');
-  const resetButton = document.querySelector('[data-plant-reset]');
-  const focusButtons = [...document.querySelectorAll('[data-plant-focus]')];
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const isTouch = window.matchMedia('(pointer: coarse)').matches;
-
-  host.dataset.rendererGeneration = 'v4-photoreal';
-  host.dataset.modelMode = 'photoreal-glb';
-  host.dataset.modelSource = MODEL_URL;
-  host.dataset.plantInspection = 'whole';
-  host.dataset.rootCutaway = 'resting';
-  host.dataset.isolation = 'off';
-  host.dataset.venation = 'modeled';
-  if (fallback) fallback.hidden = true;
-  if (window.getComputedStyle(host).position === 'static') host.style.position = 'relative';
-
-  const anatomyLabel = document.createElement('div');
-  anatomyLabel.dataset.plantAnatomyLabel = '';
-  anatomyLabel.hidden = true;
-  anatomyLabel.setAttribute('aria-live', 'polite');
-  Object.assign(anatomyLabel.style, {
-    position: 'absolute', zIndex: '12', maxWidth: '250px', padding: '8px 11px',
-    border: '1px solid rgba(184,238,210,.32)', borderRadius: '12px',
-    background: 'rgba(4,20,22,.88)', boxShadow: '0 10px 28px rgba(0,0,0,.28)',
-    color: '#f0fff5', fontSize: '12px', fontWeight: '800', letterSpacing: '.02em',
-    lineHeight: '1.35', pointerEvents: 'none', transform: 'translate(-50%, calc(-100% - 18px))',
-    backdropFilter: 'blur(8px)',
-  });
-  host.appendChild(anatomyLabel);
-
-  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true, powerPreference: 'high-performance' });
-  renderer.outputColorSpace = THREE.SRGBColorSpace;
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.02;
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isTouch ? 1.25 : 1.65));
-  renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-
-  const scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2(0x07151b, 0.018);
-
-  const pmrem = new THREE.PMREMGenerator(renderer);
-  const environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
-  scene.environment = environment;
-
-  const model = gltf.scene;
-  prepareModelMaterials(model, renderer);
-  scene.add(model);
-  const bounds = normalizeModel(model, 6);
-  const size = bounds.getSize(new THREE.Vector3());
-  const center = bounds.getCenter(new THREE.Vector3());
-  const sphere = bounds.getBoundingSphere(new THREE.Sphere());
-
-  const ground = new THREE.Mesh(
-    new THREE.CircleGeometry(Math.max(2.7, size.x * 0.62), 72),
-    new THREE.MeshStandardMaterial({ color: 0x06191e, roughness: 0.96, transparent: true, opacity: 0.7 }),
-  );
-  ground.rotation.x = -Math.PI / 2;
-  ground.position.y = bounds.min.y - 0.025;
-  ground.receiveShadow = true;
-  scene.add(ground);
-
-  scene.add(new THREE.HemisphereLight(0xd9f7ff, 0x19311d, 1.7));
-  const key = new THREE.DirectionalLight(0xfff8e8, 4.2);
-  key.position.set(4.8, 8.5, 5.2);
-  key.castShadow = true;
-  key.shadow.mapSize.set(2048, 2048);
-  key.shadow.camera.near = 0.1;
-  key.shadow.camera.far = 30;
-  scene.add(key);
-  const fill = new THREE.DirectionalLight(0x83b7ff, 1.15);
-  fill.position.set(-5, 4, 4);
-  scene.add(fill);
-  const rim = new THREE.PointLight(0x68e3ff, 12, 20, 2);
-  rim.position.set(-5, 5.5, -4);
-  scene.add(rim);
-
-  const camera = new THREE.PerspectiveCamera(32, 1, 0.05, 80);
-  const homeTarget = center.clone();
-  homeTarget.y = bounds.min.y + size.y * 0.5;
-  const homeDistance = Math.max(7.4, sphere.radius * 2.35);
-  const homeCamera = homeTarget.clone().add(new THREE.Vector3(homeDistance * 0.52, homeDistance * 0.27, homeDistance * 0.82));
-  camera.position.copy(homeCamera);
-
-  const controls = new OrbitControls(camera, canvas);
-  controls.enableDamping = true;
-  controls.dampingFactor = 0.065;
-  controls.enablePan = false;
-  controls.minDistance = Math.max(0.5, sphere.radius * 0.22);
-  controls.maxDistance = Math.max(14, sphere.radius * 4.2);
-  controls.minPolarAngle = 0.18;
-  controls.maxPolarAngle = 2.2;
-  controls.target.copy(homeTarget);
-  controls.autoRotate = !reducedMotion;
-  controls.autoRotateSpeed = 0.26;
-
-  const highlightMaterial = new THREE.MeshBasicMaterial({
-    color: 0xa8f2ce,
-    transparent: true,
-    opacity: 0,
-    wireframe: true,
-    depthWrite: false,
-    depthTest: false,
-  });
-  const hitMaterial = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false, depthTest: false });
-  const semantic = new Map();
-  const hitVolumes = [];
-
-  hotspots.forEach((meta) => {
-    const group = new THREE.Group();
-    group.userData.meta = meta;
-    group.userData.anchors = [];
-    const anchors = Array.isArray(meta.anchors) && meta.anchors.length ? meta.anchors : [[0.5, 0.5, 0.5]];
-    anchors.forEach((anchorValue) => {
-      const point = normalizedPoint(bounds, anchorValue);
-      group.userData.anchors.push(point);
-      const radius = Math.max(0.075, size.y * Number(meta.radius || 0.1));
-      const hit = new THREE.Mesh(new THREE.SphereGeometry(radius, 14, 10), hitMaterial.clone());
-      hit.position.copy(point);
-      hit.userData.semanticGroup = group;
-      hit.userData.priority = Number(meta.priority || 0);
-      group.add(hit);
-      hitVolumes.push(hit);
-
-      const halo = new THREE.Mesh(new THREE.SphereGeometry(radius * 1.03, 12, 8), highlightMaterial.clone());
-      halo.position.copy(point);
-      halo.userData.highlightHalo = true;
-      group.add(halo);
-    });
-    semantic.set(meta.id, group);
-    scene.add(group);
-  });
-
-  let hovered = null;
-  let selected = null;
-  let pointerDown = null;
-  let cameraGoal = null;
-  let targetGoal = null;
-  const raycaster = new THREE.Raycaster();
-  const pointer = new THREE.Vector2(2, 2);
-
-  function setHaloState(group, state) {
-    group?.traverse((object) => {
-      if (!object.userData.highlightHalo || !object.material) return;
-      object.material.opacity = state === 'selected' ? 0.28 : state === 'hover' ? 0.16 : 0;
-    });
-  }
-
-  function refreshHighlights() {
-    semantic.forEach((group) => {
-      if (group === selected) setHaloState(group, 'selected');
-      else if (group === hovered) setHaloState(group, 'hover');
-      else setHaloState(group, 'off');
-    });
-  }
-
-  function updateInspectionState(group) {
-    const id = group?.userData?.meta?.id || 'whole';
-    host.dataset.plantInspection = id;
-    host.dataset.rootCutaway = id === 'root-system' ? 'active' : 'resting';
-    host.dataset.isolation = group ? 'active' : 'off';
-  }
-
-  function describe(group, mode = 'hover') {
-    const meta = group?.userData?.meta;
-    if (!meta) return;
-    if (tooltip) {
-      tooltip.innerHTML = `<strong>${meta.label}</strong><span>${mode === 'selected' ? 'Selected structure · inspect and zoom' : 'Click to inspect this structure'}</span>`;
-      tooltip.hidden = false;
-    }
-    if (inspector) {
-      inspectorKicker.textContent = mode === 'selected' ? 'Selected structure' : '3D plant structure';
-      inspectorTitle.textContent = meta.label;
-      inspectorCopy.textContent = meta.copy;
-      inspectorLink.href = meta.route;
-      inspectorLink.textContent = `Open ${meta.label} module →`;
-      inspector.classList.add('active');
-    }
-    if (mode === 'selected') {
-      anatomyLabel.innerHTML = `<strong>${meta.label}</strong><br><span style="font-weight:600;color:#b8d8c4">${meta.detail || 'Living plant anatomy'}</span>`;
-      anatomyLabel.hidden = false;
-    }
-  }
-
-  function labelAnchor(group) {
-    const anchors = group?.userData?.anchors || [];
-    if (!anchors.length) return center.clone();
-    return anchors.reduce((sum, point) => sum.add(point), new THREE.Vector3()).multiplyScalar(1 / anchors.length);
-  }
-
-  function updateAnatomyLabel() {
-    if (!selected) return;
-    const anchor = labelAnchor(selected).clone();
-    anchor.y += size.y * 0.045;
-    anchor.project(camera);
-    if (anchor.z < -1 || anchor.z > 1) {
-      anatomyLabel.hidden = true;
-      return;
-    }
-    anatomyLabel.hidden = false;
-    const rect = canvas.getBoundingClientRect();
-    const hostRect = host.getBoundingClientRect();
-    anatomyLabel.style.left = `${rect.left - hostRect.left + (anchor.x * 0.5 + 0.5) * rect.width}px`;
-    anatomyLabel.style.top = `${rect.top - hostRect.top + (-anchor.y * 0.5 + 0.5) * rect.height}px`;
-  }
-
-  function pointerToCanvas(event) {
-    const rect = canvas.getBoundingClientRect();
-    pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-    pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-  }
-
-  function hitTest(event) {
-    pointerToCanvas(event);
-    raycaster.setFromCamera(pointer, camera);
-    const hits = raycaster.intersectObjects(hitVolumes, false);
-    if (!hits.length) return null;
-    hits.sort((a, b) => {
-      const pa = Number(a.object.userData.priority || 0);
-      const pb = Number(b.object.userData.priority || 0);
-      return pb - pa || a.distance - b.distance;
-    });
-    return hits[0].object.userData.semanticGroup || null;
-  }
-
-  function focusSystem(id) {
-    if (id === 'whole') {
-      resetView();
-      return;
-    }
-    const group = semantic.get(id);
-    if (!group) return;
-    selected = group;
-    hovered = null;
-    controls.autoRotate = false;
-    refreshHighlights();
-    updateInspectionState(group);
-    describe(group, 'selected');
-
-    const target = labelAnchor(group);
-    const focusFactor = THREE.MathUtils.clamp(Number(group.userData.meta?.focus || 0.4), 0.18, 0.7);
-    const distance = Math.max(0.55, sphere.radius * focusFactor);
-    const direction = camera.position.clone().sub(controls.target).normalize();
-    cameraGoal = target.clone().add(direction.multiplyScalar(distance));
-    targetGoal = target.clone();
-    if (id === 'root-system') cameraGoal.y = Math.max(bounds.min.y + size.y * 0.14, target.y + size.y * 0.14);
-    if (reducedMotion) {
-      camera.position.copy(cameraGoal);
-      controls.target.copy(targetGoal);
-      cameraGoal = null;
-      targetGoal = null;
-    }
-  }
-
-  function resetView() {
-    selected = null;
-    hovered = null;
-    controls.autoRotate = !reducedMotion;
-    updateInspectionState(null);
-    refreshHighlights();
-    focusButtons.forEach((button) => button.classList.remove('active'));
-    if (tooltip) tooltip.hidden = true;
-    anatomyLabel.hidden = true;
-    inspector?.classList.remove('active');
-    if (reducedMotion) {
-      camera.position.copy(homeCamera);
-      controls.target.copy(homeTarget);
-      cameraGoal = null;
-      targetGoal = null;
-    } else {
-      cameraGoal = homeCamera.clone();
-      targetGoal = homeTarget.clone();
-    }
-  }
-
-  controls.addEventListener('start', () => {
-    controls.autoRotate = false;
-    cameraGoal = null;
-    targetGoal = null;
-  });
-
-  canvas.addEventListener('pointerdown', (event) => {
-    pointerDown = { x: event.clientX, y: event.clientY };
-    controls.autoRotate = false;
-    cameraGoal = null;
-    targetGoal = null;
-  });
-
-  canvas.addEventListener('pointermove', (event) => {
-    if (isTouch) return;
-    const next = hitTest(event);
-    if (next === hovered) return;
-    hovered = next;
-    refreshHighlights();
-    if (hovered) {
-      describe(hovered, selected === hovered ? 'selected' : 'hover');
-      canvas.style.cursor = 'pointer';
-    } else {
-      if (tooltip) tooltip.hidden = true;
-      canvas.style.cursor = 'grab';
-    }
-  });
-
-  canvas.addEventListener('pointerleave', () => {
-    hovered = null;
-    refreshHighlights();
-    if (tooltip) tooltip.hidden = true;
-    canvas.style.cursor = 'grab';
-  });
-
-  canvas.addEventListener('pointerup', (event) => {
-    if (!pointerDown) return;
-    const moved = Math.hypot(event.clientX - pointerDown.x, event.clientY - pointerDown.y);
-    pointerDown = null;
-    if (moved > 7) return;
-    const group = hitTest(event);
-    if (!group) return;
-    selected = group;
-    hovered = group;
-    refreshHighlights();
-    updateInspectionState(group);
-    describe(group, 'selected');
-    focusSystem(group.userData.meta.id);
-  });
-
-  focusButtons.forEach((button) => button.addEventListener('click', () => {
-    focusSystem(button.dataset.plantFocus);
-    focusButtons.forEach((item) => item.classList.toggle('active', item === button && button.dataset.plantFocus !== 'whole'));
-  }));
-  resetButton?.addEventListener('click', resetView);
-
-  function resize() {
-    const rect = host.getBoundingClientRect();
-    const width = Math.max(1, rect.width);
-    const height = Math.max(420, rect.height);
-    renderer.setSize(width, height, false);
-    camera.aspect = width / height;
-    camera.updateProjectionMatrix();
-  }
-
-  const observer = new ResizeObserver(resize);
-  observer.observe(host);
-  resize();
-
-  let active = true;
-  const visibility = new IntersectionObserver(([entry]) => {
-    active = Boolean(entry?.isIntersecting);
-  }, { rootMargin: '180px' });
-  visibility.observe(host);
-
-  renderer.setAnimationLoop(() => {
-    if (!active) return;
-    if (cameraGoal && targetGoal) {
-      camera.position.lerp(cameraGoal, 0.075);
-      controls.target.lerp(targetGoal, 0.09);
-      if (camera.position.distanceTo(cameraGoal) < 0.02 && controls.target.distanceTo(targetGoal) < 0.015) {
-        cameraGoal = null;
-        targetGoal = null;
-      }
-    }
-    controls.update();
-    updateAnatomyLabel();
-    renderer.render(scene, camera);
-  });
-
-  const dispose = () => {
-    renderer.setAnimationLoop(null);
-    observer.disconnect();
-    visibility.disconnect();
-    controls.dispose();
-    anatomyLabel.remove();
-    environment.dispose();
-    pmrem.dispose();
-    scene.traverse((object) => {
-      object.geometry?.dispose?.();
-      const list = Array.isArray(object.material) ? object.material : [object.material];
-      list.filter(Boolean).forEach((material) => material.dispose?.());
-    });
-    renderer.dispose();
-  };
-  window.addEventListener('pagehide', dispose, { once: true });
-  return true;
+function createSeededRandom(seed = 0x50c9a7) {
+  let state = seed >>> 0;
+  return () => { state = (1664525 * state + 1013904223) >>> 0; return state / 0x100000000; };
 }
+
+function createCanvasTexture(draw, width = 256, height = 256) {
+  const canvas = document.createElement('canvas'); canvas.width = width; canvas.height = height;
+  const context = canvas.getContext('2d'); draw(context, width, height);
+  const texture = new THREE.CanvasTexture(canvas); texture.colorSpace = THREE.SRGBColorSpace; texture.wrapS = THREE.RepeatWrapping; texture.wrapT = THREE.RepeatWrapping;
+  return texture;
+}
+
+function buildProceduralTextures() {
+  const random = createSeededRandom(0x51eed);
+  const leaf = createCanvasTexture((ctx, w, h) => {
+    const gradient = ctx.createLinearGradient(0, h, w, 0); gradient.addColorStop(0, '#173f22'); gradient.addColorStop(0.45, '#2f7739'); gradient.addColorStop(1, '#4d9c4c'); ctx.fillStyle = gradient; ctx.fillRect(0, 0, w, h);
+    ctx.globalAlpha = 0.15; for (let i = 0; i < 2200; i += 1) { const value = Math.floor(70 + random() * 80); ctx.fillStyle = `rgb(${Math.floor(value * 0.45)},${value},${Math.floor(value * 0.5)})`; const x = random() * w; const y = random() * h; const size = 0.5 + random() * 1.8; ctx.fillRect(x, y, size, size); }
+    ctx.globalAlpha = 0.22; ctx.strokeStyle = '#b8d8a6'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(w * 0.5, h); ctx.lineTo(w * 0.5, 0); ctx.stroke();
+  });
+  const stem = createCanvasTexture((ctx, w, h) => {
+    const gradient = ctx.createLinearGradient(0, 0, w, 0); gradient.addColorStop(0, '#385b31'); gradient.addColorStop(0.5, '#72905b'); gradient.addColorStop(1, '#304c2d'); ctx.fillStyle = gradient; ctx.fillRect(0, 0, w, h);
+    ctx.globalAlpha = 0.18; ctx.strokeStyle = '#d5c891'; for (let x = 10; x < w; x += 20 + random() * 16) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.bezierCurveTo(x + 9, h * 0.33, x - 7, h * 0.66, x + 4, h); ctx.stroke(); }
+  });
+  const root = createCanvasTexture((ctx, w, h) => { ctx.fillStyle = '#c9b89a'; ctx.fillRect(0, 0, w, h); ctx.globalAlpha = 0.2; for (let i = 0; i < 900; i += 1) { const tone = Math.floor(150 + random() * 65); ctx.fillStyle = `rgb(${tone},${Math.floor(tone * 0.92)},${Math.floor(tone * 0.75)})`; ctx.fillRect(random() * w, random() * h, 1 + random() * 3, 1 + random() * 3); } });
+  const flower = createCanvasTexture((ctx, w, h) => { const gradient = ctx.createRadialGradient(w * 0.5, h * 0.45, 10, w * 0.5, h * 0.5, w * 0.65); gradient.addColorStop(0, '#89ab69'); gradient.addColorStop(0.58, '#537a42'); gradient.addColorStop(1, '#2b4e2c'); ctx.fillStyle = gradient; ctx.fillRect(0, 0, w, h); ctx.globalAlpha = 0.35; ctx.fillStyle = '#e7e7c7'; for (let i = 0; i < 520; i += 1) ctx.fillRect(random() * w, random() * h, 1, 1); });
+  return { leaf, stem, root, flower };
+}
+
+function serratedLeafletGeometry(length = 1, width = 0.2, teeth = 10) {
+  const shape = new THREE.Shape(); shape.moveTo(0, 0); const side = []; const samples = teeth * 2;
+  for (let i = 1; i <= samples; i += 1) { const t = i / (samples + 1); const envelope = Math.pow(Math.sin(Math.PI * t), 0.78) * (1 - t * 0.25); const tooth = i % 2 === 0 ? 0.72 : 1; side.push([width * envelope * tooth, length * t]); }
+  side.forEach(([x, y]) => shape.lineTo(x, y)); shape.lineTo(0, length); for (let i = side.length - 1; i >= 0; i -= 1) shape.lineTo(-side[i][0], side[i][1]); shape.closePath();
+  const geometry = new THREE.ShapeGeometry(shape, 1); geometry.computeVertexNormals(); return geometry;
+}
+
+function tubeBetween(points, radius, material, tubularSegments = 14, radialSegments = 7) {
+  const curve = new THREE.CatmullRomCurve3(points.map((point) => point.isVector3 ? point : new THREE.Vector3(...point)));
+  const mesh = new THREE.Mesh(new THREE.TubeGeometry(curve, tubularSegments, radius, radialSegments, false), material); mesh.castShadow = true; mesh.receiveShadow = true; return mesh;
+}
+
+function cylinderBetween(a, b, radius, material, radialSegments = 10) {
+  const start = a.isVector3 ? a : new THREE.Vector3(...a); const end = b.isVector3 ? b : new THREE.Vector3(...b); const direction = new THREE.Vector3().subVectors(end, start);
+  const mesh = new THREE.Mesh(new THREE.CylinderGeometry(radius * 0.82, radius, direction.length(), radialSegments), material); mesh.position.copy(start).add(end).multiplyScalar(0.5); mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction.clone().normalize()); mesh.castShadow = true; mesh.receiveShadow = true; return mesh;
+}
+
+function buildProceduralSpecimen({ renderer, isTouch }) {
+  const textures = buildProceduralTextures(); const random = createSeededRandom(0xc4aab15);
+  const rootMaterial = new THREE.MeshStandardMaterial({ map: textures.root, color: 0xe0d1b9, roughness: 0.92, metalness: 0 });
+  const stemMaterial = new THREE.MeshStandardMaterial({ map: textures.stem, color: 0x708b55, roughness: 0.74, metalness: 0 });
+  const leafMaterial = new THREE.MeshPhysicalMaterial({ map: textures.leaf, color: 0x4f944b, roughness: 0.62, metalness: 0, clearcoat: 0.04, side: THREE.DoubleSide });
+  const flowerMaterial = new THREE.MeshPhysicalMaterial({ map: textures.flower, color: 0x73945b, roughness: 0.68, metalness: 0, clearcoat: 0.08 });
+  const sugarLeafMaterial = leafMaterial.clone(); sugarLeafMaterial.color.setHex(0x638e50); sugarLeafMaterial.roughness = 0.5;
+  const stigmaMaterial = new THREE.MeshStandardMaterial({ color: 0xf0c7a3, roughness: 0.5, emissive: 0x3b1505, emissiveIntensity: 0.06 });
+  const trichomeMaterial = new THREE.MeshPhysicalMaterial({ color: 0xf2fff4, roughness: 0.17, transmission: 0.12, transparent: true, opacity: 0.82, clearcoat: 0.35 });
+  const veinMaterial = new THREE.LineBasicMaterial({ color: 0xb2dca3, transparent: true, opacity: 0.48 });
+  Object.values(textures).forEach((texture) => { texture.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy()); });
+
+  const model = new THREE.Group(); model.name = 'CannabisSpecimenProceduralPBR'; model.userData.plantAtlasGenerated = true;
+  const roots = new THREE.Group(); roots.name = 'Roots';
+  roots.add(tubeBetween([new THREE.Vector3(0, 0.1, 0), new THREE.Vector3(-0.03, -0.55, 0.02), new THREE.Vector3(0.02, -1.12, -0.04), new THREE.Vector3(0.04, -1.62, 0.03)], 0.075, rootMaterial, 24, 9));
+  const majorRootCount = isTouch ? 12 : 18; const finePerMajor = isTouch ? 3 : 5;
+  for (let i = 0; i < majorRootCount; i += 1) {
+    const angle = (i / majorRootCount) * Math.PI * 2 + (random() - 0.5) * 0.32; const yStart = -0.22 - random() * 0.85; const start = new THREE.Vector3((random() - 0.5) * 0.12, yStart, (random() - 0.5) * 0.12); const length = 0.75 + random() * 0.9; const end = new THREE.Vector3(Math.cos(angle) * length, yStart - 0.42 - random() * 0.55, Math.sin(angle) * length); const mid = start.clone().lerp(end, 0.52).add(new THREE.Vector3((random() - 0.5) * 0.25, (random() - 0.5) * 0.18, (random() - 0.5) * 0.25)); roots.add(tubeBetween([start, mid, end], 0.017 + random() * 0.026, rootMaterial, 16, 6));
+    for (let j = 0; j < finePerMajor; j += 1) { const t = 0.25 + (j / finePerMajor) * 0.6; const branchStart = new THREE.Vector3().lerpVectors(start, end, t); const sideAngle = angle + (random() > 0.5 ? 1 : -1) * (0.5 + random() * 0.8); const branchLength = 0.25 + random() * 0.48; const branchEnd = branchStart.clone().add(new THREE.Vector3(Math.cos(sideAngle) * branchLength, -0.16 - random() * 0.28, Math.sin(sideAngle) * branchLength)); roots.add(tubeBetween([branchStart, branchStart.clone().lerp(branchEnd, 0.55).add(new THREE.Vector3(0, -0.05, 0)), branchEnd], 0.005 + random() * 0.006, rootMaterial, 10, 5)); }
+  }
+  model.add(roots);
+
+  const stem = new THREE.Group(); stem.name = 'StemAndBranches'; stem.add(tubeBetween([new THREE.Vector3(0, 0, 0), new THREE.Vector3(0.03, 1.5, -0.01), new THREE.Vector3(-0.02, 3.1, 0.02), new THREE.Vector3(0.02, 4.7, 0), new THREE.Vector3(0, 5.55, 0.01)], 0.075, stemMaterial, 38, 11));
+  const branchDefs = [[-1,1.55,1.55,0.15],[1,1.68,1.6,-0.12],[-1,2.3,1.48,-0.16],[1,2.43,1.5,0.16],[-1,3.05,1.28,0.14],[1,3.18,1.3,-0.13],[-1,3.72,1,-0.12],[1,3.84,1.02,0.11],[-1,4.3,0.72,0.08],[1,4.4,0.74,-0.08]]; const branchEnds = [];
+  branchDefs.forEach(([side,y,reach,z], index) => { const origin = new THREE.Vector3(0,y,0); const end = new THREE.Vector3(side*reach,y+0.62+index*0.015,z); const mid = origin.clone().lerp(end,0.55).add(new THREE.Vector3(side*0.05,0.14,(random()-0.5)*0.09)); stem.add(tubeBetween([origin,mid,end],Math.max(0.025,0.047-index*0.0019),stemMaterial,18,8)); const twig=end.clone().add(new THREE.Vector3(side*0.18,0.28,z*0.15)); stem.add(cylinderBetween(end.clone().multiplyScalar(0.97),twig,0.019,stemMaterial,7)); branchEnds.push({end,side,index}); }); model.add(stem);
+  const nodes = new THREE.Group(); nodes.name='Nodes'; branchDefs.forEach(([,y],index)=>{const node=new THREE.Mesh(new THREE.SphereGeometry(0.085+(index<4?0.012:0),14,9),stemMaterial);node.position.set(0,y,0);node.scale.set(1.18,0.72,1.08);node.castShadow=true;nodes.add(node);}); model.add(nodes);
+
+  const lineFrom=(points)=>new THREE.Line(new THREE.BufferGeometry().setFromPoints(points),veinMaterial);
+  function createFanLeaf(position, scale, yaw, pitch, roll=0){const fan=new THREE.Group();fan.name='FanLeaf';fan.add(cylinderBetween([0,-0.34,0],[0,0.03,0],0.012,stemMaterial,6));const angles=[-1.08,-0.73,-0.38,0,0.38,0.73,1.08];angles.forEach((angle,index)=>{const distance=Math.abs(index-3);const length=0.98-distance*0.09;const width=0.19-distance*0.012;const leaflet=new THREE.Group();const blade=new THREE.Mesh(serratedLeafletGeometry(length,width,11),leafMaterial);blade.castShadow=true;blade.receiveShadow=true;leaflet.add(blade);leaflet.add(lineFrom([new THREE.Vector3(0,0.02,0.004),new THREE.Vector3(0,length*0.93,0.004)]));[0.23,0.4,0.57,0.73].forEach((t)=>{const spread=width*Math.sin(Math.PI*t)*0.62;leaflet.add(lineFrom([new THREE.Vector3(0,length*t,0.004),new THREE.Vector3(spread,length*t+length*0.07,0.004)]));leaflet.add(lineFrom([new THREE.Vector3(0,length*t,0.004),new THREE.Vector3(-spread,length*t+length*0.07,0.004)]));});leaflet.rotation.z=angle;leaflet.rotation.x=(distance%2?0.04:-0.025)+(random()-0.5)*0.035;fan.add(leaflet);});fan.position.copy(position);fan.scale.setScalar(scale);fan.rotation.set(pitch,yaw,roll);return fan;}
+  const leaves=new THREE.Group();leaves.name='FanLeaves';branchEnds.forEach(({end,side,index})=>{const scale=Math.max(0.38,0.82-index*0.045);leaves.add(createFanLeaf(end.clone().add(new THREE.Vector3(side*0.03,0.01,0)),scale,side<0?-1.08:1.08,-0.58+(random()-0.5)*0.12,side*-0.06));if(index<6){const inner=end.clone().multiplyScalar(0.62);inner.y=branchDefs[index][1]+0.38;leaves.add(createFanLeaf(inner,scale*0.72,side<0?-0.86:0.86,-0.5,side*0.05));}});model.add(leaves);
+
+  function createFlowerCluster(position,scale=1,twist=0){const cluster=new THREE.Group();cluster.name='FemaleInflorescence';const bractGeometry=new THREE.IcosahedronGeometry(0.15,isTouch?1:2);const bractCount=isTouch?15:23;for(let i=0;i<bractCount;i+=1){const t=i/Math.max(1,bractCount-1);const angle=i*2.399963229728653;const envelope=0.17*(1-t*0.55);const bract=new THREE.Mesh(bractGeometry,flowerMaterial);bract.position.set(Math.cos(angle)*envelope*(0.65+random()*0.45),t*0.74,Math.sin(angle)*envelope*(0.65+random()*0.45));const s=(0.74+random()*0.35)*(1-t*0.23);bract.scale.set(s*0.8,s*1.22,s*0.87);bract.rotation.set((random()-0.5)*0.35,angle,(random()-0.5)*0.35);bract.castShadow=true;cluster.add(bract);}for(let i=0;i<7;i+=1){const sugar=new THREE.Mesh(serratedLeafletGeometry(0.39,0.074,6),sugarLeafMaterial);const angle=(i/7)*Math.PI*2+0.3;sugar.position.set(Math.cos(angle)*0.09,0.15+(i%3)*0.16,Math.sin(angle)*0.09);sugar.rotation.set(-0.72+(i%2)*0.12,angle,(i%2?1:-1)*0.12);sugar.scale.setScalar(0.82);sugar.castShadow=true;cluster.add(sugar);}const stigmaCount=isTouch?12:20;for(let i=0;i<stigmaCount;i+=1){const angle=(i/stigmaCount)*Math.PI*2+random()*0.4;const y=0.12+random()*0.56;const radial=0.08+random()*0.08;const start=new THREE.Vector3(Math.cos(angle)*radial,y,Math.sin(angle)*radial);const end=start.clone().add(new THREE.Vector3(Math.cos(angle)*(0.08+random()*0.08),0.12+random()*0.11,Math.sin(angle)*(0.08+random()*0.08)));cluster.add(tubeBetween([start,start.clone().lerp(end,0.5).add(new THREE.Vector3(0,0.025,0)),end],0.006,stigmaMaterial,6,4));}cluster.position.copy(position);cluster.scale.setScalar(scale);cluster.rotation.y=twist;return cluster;}
+  const flowers=new THREE.Group();flowers.name='Flowers';const flowerSpecs=[[new THREE.Vector3(0,5.24,0),1.16,0],[new THREE.Vector3(-0.93,4.34,0.08),0.78,-0.2],[new THREE.Vector3(0.96,4.42,-0.08),0.78,0.2],[new THREE.Vector3(-1.18,3.67,-0.1),0.66,-0.38],[new THREE.Vector3(1.2,3.78,0.1),0.66,0.34],[new THREE.Vector3(-1.4,2.93,-0.13),0.55,-0.48],[new THREE.Vector3(1.42,3.04,0.13),0.55,0.44]];flowerSpecs.forEach(([position,scale,twist])=>flowers.add(createFlowerCluster(position,scale,twist)));model.add(flowers);
+  const trichomes=new THREE.Group();trichomes.name='VisibleTrichomes';const headGeometry=new THREE.SphereGeometry(0.016,6,5);const stalkGeometry=new THREE.CylinderGeometry(0.003,0.004,0.045,5);const trichomeCount=isTouch?70:150;for(let i=0;i<trichomeCount;i+=1){const [position,scale]=flowerSpecs[i%flowerSpecs.length];const angle=random()*Math.PI*2;const y=(0.12+random()*0.62)*scale;const radial=(0.1+random()*0.12)*scale;const base=position.clone().add(new THREE.Vector3(Math.cos(angle)*radial,y,Math.sin(angle)*radial));const stalk=new THREE.Mesh(stalkGeometry,trichomeMaterial);stalk.position.copy(base).add(new THREE.Vector3(0,0.022,0));stalk.scale.setScalar(Math.max(0.65,scale));const head=new THREE.Mesh(headGeometry,trichomeMaterial);head.position.copy(base).add(new THREE.Vector3(0,0.052*Math.max(0.65,scale),0));head.scale.setScalar(Math.max(0.7,scale));trichomes.add(stalk,head);}model.add(trichomes);
+  model.traverse((object)=>{if(!object.isMesh)return;object.castShadow=true;object.receiveShadow=true;});return model;
+}
+
+function normalizeModel(model,targetHeight=6.4){model.updateMatrixWorld(true);const initialBox=new THREE.Box3().setFromObject(model);const initialSize=initialBox.getSize(new THREE.Vector3());if(!Number.isFinite(initialSize.y)||initialSize.y<=0)throw new Error('Plant model has invalid bounds.');const scale=targetHeight/initialSize.y;model.scale.multiplyScalar(scale);model.updateMatrixWorld(true);const box=new THREE.Box3().setFromObject(model);const center=box.getCenter(new THREE.Vector3());model.position.x-=center.x;model.position.z-=center.z;model.position.y-=box.min.y;model.updateMatrixWorld(true);return new THREE.Box3().setFromObject(model);}
+function normalizedPoint(bounds,value){const size=bounds.getSize(new THREE.Vector3());return new THREE.Vector3(bounds.min.x+size.x*THREE.MathUtils.clamp(Number(value?.[0])||0,0,1),bounds.min.y+size.y*THREE.MathUtils.clamp(Number(value?.[1])||0,0,1),bounds.min.z+size.z*THREE.MathUtils.clamp(Number(value?.[2])||0,0,1));}
+function prepareExternalMaterials(model,renderer){const maxAnisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());model.traverse((object)=>{if(!object.isMesh)return;object.castShadow=true;object.receiveShadow=true;const list=Array.isArray(object.material)?object.material:[object.material];list.filter(Boolean).forEach((material)=>{if(material.map){material.map.colorSpace=THREE.SRGBColorSpace;material.map.anisotropy=maxAnisotropy;}if(material.emissiveMap)material.emissiveMap.colorSpace=THREE.SRGBColorSpace;if('side' in material&&material.alphaTest>0)material.side=THREE.DoubleSide;material.needsUpdate=true;});});}
+async function resolveSpecimen({renderer,isTouch,manifest,status}){const preferred=manifest?.preferredModel||{};const enabled=preferred.enabled===true&&typeof preferred.url==='string'&&preferred.url.length>0;if(enabled){status(`Loading ${preferred.label||'photoreal specimen'}…`,'loading');try{const loader=new GLTFLoader();const gltf=await loader.loadAsync(preferred.url);if(!gltf?.scene)throw new Error('GLB did not contain a scene.');prepareExternalMaterials(gltf.scene,renderer);return{model:gltf.scene,mode:'external-glb',source:preferred.url,label:preferred.label||'Photoreal GLB specimen'};}catch(error){console.warn('[Plant Atlas V4] Preferred GLB failed; using built-in PBR specimen.',error);status('External specimen unavailable · using built-in PBR model','fallback');}}const label=manifest?.fallback?.label||'Built-in high-detail PBR botanical specimen';return{model:buildProceduralSpecimen({renderer,isTouch}),mode:'procedural-pbr',source:'built-in://plant-atlas-v4',label};}
+function escapeHTML(value){return String(value??'').replace(/[&<>'"]/g,(character)=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'})[character]);}
+
+export async function bootPhotorealAtlas(){
+  const host=document.querySelector('[data-plant-3d]');const canvas=document.querySelector('[data-plant-canvas]');if(!host||!canvas)return false;if(!supportsWebGL()){host.classList.add('no-webgl');const fallback=document.querySelector('[data-plant-fallback]');if(fallback)fallback.hidden=false;return false;}
+  const fallback=document.querySelector('[data-plant-fallback]');const tooltip=document.querySelector('[data-plant-tooltip]');const inspector=document.querySelector('[data-plant-inspector]');const inspectorKicker=document.querySelector('[data-inspector-kicker]');const inspectorTitle=document.querySelector('[data-inspector-title]');const inspectorCopy=document.querySelector('[data-inspector-copy]');const inspectorLink=document.querySelector('[data-inspector-link]');const resetButton=document.querySelector('[data-plant-reset]');const focusButtons=[...document.querySelectorAll('[data-plant-focus]')];const modelStatus=document.querySelector('[data-plant-model-status]');const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;const isTouch=window.matchMedia('(pointer: coarse)').matches;const lowMemory=Number(navigator.deviceMemory||8)<=4;const qualityTier=isTouch||lowMemory?'mobile':'desktop';
+  const setStatus=(message,state='ready')=>{if(!modelStatus)return;modelStatus.textContent=message;modelStatus.dataset.state=state;};
+  host.dataset.rendererGeneration='v4';host.dataset.renderState='loading';host.dataset.qualityTier=qualityTier;host.dataset.plantInspection='whole';host.dataset.rootCutaway='resting';host.dataset.isolation='off';host.dataset.venation='modeled';if(fallback)fallback.hidden=true;if(window.getComputedStyle(host).position==='static')host.style.position='relative';
+  const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true,powerPreference:'high-performance'});renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.02;renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,qualityTier==='mobile'?1.2:1.7));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+  const scene=new THREE.Scene();scene.fog=new THREE.FogExp2(0x07151b,0.017);const pmrem=new THREE.PMREMGenerator(renderer);const environment=pmrem.fromScene(new RoomEnvironment(),0.04).texture;scene.environment=environment;
+  const [hotspots,manifest]=await Promise.all([loadHotspots(),loadModelManifest()]);const specimen=await resolveSpecimen({renderer,isTouch:qualityTier==='mobile',manifest,status:setStatus});const model=specimen.model;scene.add(model);const bounds=normalizeModel(model,6.4);const size=bounds.getSize(new THREE.Vector3());const center=bounds.getCenter(new THREE.Vector3());const sphere=bounds.getBoundingSphere(new THREE.Sphere());host.dataset.modelMode=specimen.mode;host.dataset.modelSource=specimen.source;host.dataset.renderState='ready';setStatus(`${specimen.label} · ${qualityTier} quality`,'ready');
+  const ground=new THREE.Mesh(new THREE.CircleGeometry(Math.max(2.8,size.x*0.68),72),new THREE.MeshStandardMaterial({color:0x06191e,roughness:0.98,transparent:true,opacity:0.72}));ground.rotation.x=-Math.PI/2;ground.position.y=bounds.min.y-0.02;ground.receiveShadow=true;scene.add(ground);
+  scene.add(new THREE.HemisphereLight(0xd9f7ff,0x17301d,1.65));const key=new THREE.DirectionalLight(0xfff8e8,qualityTier==='mobile'?3.2:4.1);key.position.set(4.8,8.5,5.2);key.castShadow=qualityTier!=='mobile';key.shadow.mapSize.set(qualityTier==='mobile'?1024:2048,qualityTier==='mobile'?1024:2048);key.shadow.camera.near=0.1;key.shadow.camera.far=30;scene.add(key);const fill=new THREE.DirectionalLight(0x83b7ff,1.05);fill.position.set(-5,4,4);scene.add(fill);const rim=new THREE.PointLight(0x68e3ff,9,20,2);rim.position.set(-5,5.5,-4);scene.add(rim);const warm=new THREE.PointLight(0xffd49c,5.5,14,2);warm.position.set(4,2.8,3);scene.add(warm);
+  const camera=new THREE.PerspectiveCamera(32,1,0.04,80);const homeTarget=center.clone();homeTarget.y=bounds.min.y+size.y*0.5;const homeDistance=Math.max(7.6,sphere.radius*2.3);const homeCamera=homeTarget.clone().add(new THREE.Vector3(homeDistance*0.5,homeDistance*0.24,homeDistance*0.84));camera.position.copy(homeCamera);
+  const controls=new OrbitControls(camera,canvas);controls.enableDamping=true;controls.dampingFactor=0.065;controls.enablePan=false;controls.minDistance=Math.max(0.48,sphere.radius*0.19);controls.maxDistance=Math.max(15,sphere.radius*4.3);controls.minPolarAngle=0.12;controls.maxPolarAngle=2.25;controls.target.copy(homeTarget);controls.autoRotate=!reducedMotion;controls.autoRotateSpeed=0.24;
+  const anatomyLabel=document.createElement('div');anatomyLabel.dataset.plantAnatomyLabel='';anatomyLabel.hidden=true;anatomyLabel.setAttribute('aria-live','polite');anatomyLabel.className='plant-anatomy-label';host.appendChild(anatomyLabel);
+  const haloMaterial=new THREE.MeshBasicMaterial({color:0xa8f2ce,transparent:true,opacity:0,wireframe:true,depthWrite:false,depthTest:false});const hitMaterial=new THREE.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false,depthTest:false});const semantic=new Map();const hitVolumes=[];
+  hotspots.forEach((meta)=>{const group=new THREE.Group();group.userData.meta=meta;group.userData.anchors=[];const anchors=Array.isArray(meta.anchors)&&meta.anchors.length?meta.anchors:[[0.5,0.5,0.5]];anchors.forEach((anchorValue)=>{const point=normalizedPoint(bounds,anchorValue);group.userData.anchors.push(point);const radius=Math.max(0.055,size.y*Number(meta.radius||0.075));const hit=new THREE.Mesh(new THREE.SphereGeometry(radius,12,8),hitMaterial.clone());hit.position.copy(point);hit.userData.semanticGroup=group;hit.userData.priority=Number(meta.priority||0);group.add(hit);hitVolumes.push(hit);const halo=new THREE.Mesh(new THREE.SphereGeometry(radius*1.03,12,8),haloMaterial.clone());halo.position.copy(point);halo.userData.highlightHalo=true;group.add(halo);});semantic.set(meta.id,group);scene.add(group);});
+  const raycaster=new THREE.Raycaster();const pointer=new THREE.Vector2(2,2);let hovered=null;let selected=null;let pointerDown=null;let cameraGoal=null;let targetGoal=null;let active=true;let disposed=false;
+  function setHaloState(group,state){group?.traverse((object)=>{if(!object.userData.highlightHalo||!object.material)return;object.material.opacity=state==='selected'?0.32:state==='hover'?0.18:0;});}
+  function refreshHighlights(){semantic.forEach((group)=>{if(group===selected)setHaloState(group,'selected');else if(group===hovered)setHaloState(group,'hover');else setHaloState(group,'off');});}
+  function updateInspectionState(group){const id=group?.userData?.meta?.id||'whole';host.dataset.plantInspection=id;host.dataset.rootCutaway=id.startsWith('root')?'active':'resting';host.dataset.isolation=group?'active':'off';}
+  function describe(group,mode='hover'){const meta=group?.userData?.meta;if(!meta)return;if(tooltip){tooltip.innerHTML=`<strong>${escapeHTML(meta.label)}</strong><span>${mode==='selected'?'Selected · zoomed for inspection':'Click to inspect this structure'}</span>`;tooltip.hidden=false;}if(inspector&&inspectorKicker&&inspectorTitle&&inspectorCopy&&inspectorLink){inspectorKicker.textContent=mode==='selected'?'Selected structure':'3D plant structure';inspectorTitle.textContent=meta.label;inspectorCopy.textContent=meta.copy;inspectorLink.href=meta.route;inspectorLink.textContent=`Open ${meta.label} module →`;inspector.classList.add('active');}if(mode==='selected'){anatomyLabel.innerHTML=`<strong>${escapeHTML(meta.label)}</strong><span>${escapeHTML(meta.detail||'Living plant anatomy')}</span>`;anatomyLabel.hidden=false;}}
+  function labelAnchor(group){const anchors=group?.userData?.anchors||[];if(!anchors.length)return center.clone();return anchors.reduce((sum,point)=>sum.add(point),new THREE.Vector3()).multiplyScalar(1/anchors.length);}
+  function updateAnatomyLabel(){if(!selected||anatomyLabel.hidden)return;const anchor=labelAnchor(selected).clone();anchor.y+=size.y*0.04;anchor.project(camera);if(anchor.z<-1||anchor.z>1){anatomyLabel.hidden=true;return;}anatomyLabel.hidden=false;const rect=canvas.getBoundingClientRect();const hostRect=host.getBoundingClientRect();anatomyLabel.style.left=`${rect.left-hostRect.left+(anchor.x*0.5+0.5)*rect.width}px`;anatomyLabel.style.top=`${rect.top-hostRect.top+(-anchor.y*0.5+0.5)*rect.height}px`;}
+  function pointerToCanvas(event){const rect=canvas.getBoundingClientRect();pointer.x=((event.clientX-rect.left)/Math.max(1,rect.width))*2-1;pointer.y=-((event.clientY-rect.top)/Math.max(1,rect.height))*2+1;}
+  function hitTest(event){pointerToCanvas(event);raycaster.setFromCamera(pointer,camera);const hits=raycaster.intersectObjects(hitVolumes,false);if(!hits.length)return null;hits.sort((a,b)=>Number(b.object.userData.priority||0)-Number(a.object.userData.priority||0)||a.distance-b.distance);return hits[0].object.userData.semanticGroup||null;}
+  function focusSystem(id){if(id==='whole')return resetView();const group=semantic.get(id);if(!group)return;selected=group;hovered=null;controls.autoRotate=false;refreshHighlights();updateInspectionState(group);describe(group,'selected');focusButtons.forEach((button)=>button.classList.toggle('active',button.dataset.plantFocus===id));const target=labelAnchor(group);const focusFactor=THREE.MathUtils.clamp(Number(group.userData.meta?.focus||0.35),0.13,0.7);const distance=Math.max(0.52,sphere.radius*focusFactor);const direction=camera.position.clone().sub(controls.target).normalize();cameraGoal=target.clone().add(direction.multiplyScalar(distance));targetGoal=target.clone();if(id.startsWith('root'))cameraGoal.y=Math.max(bounds.min.y+size.y*0.09,target.y+size.y*0.12);if(reducedMotion){camera.position.copy(cameraGoal);controls.target.copy(targetGoal);cameraGoal=null;targetGoal=null;}}
+  function resetView(){selected=null;hovered=null;controls.autoRotate=!reducedMotion;updateInspectionState(null);refreshHighlights();focusButtons.forEach((button)=>button.classList.remove('active'));if(tooltip)tooltip.hidden=true;anatomyLabel.hidden=true;inspector?.classList.remove('active');if(reducedMotion){camera.position.copy(homeCamera);controls.target.copy(homeTarget);cameraGoal=null;targetGoal=null;}else{cameraGoal=homeCamera.clone();targetGoal=homeTarget.clone();}}
+  function resize(){const rect=host.getBoundingClientRect();const width=Math.max(1,rect.width);const height=Math.max(420,rect.height);renderer.setSize(width,height,false);camera.aspect=width/height;camera.updateProjectionMatrix();}
+  controls.addEventListener('start',()=>{controls.autoRotate=false;cameraGoal=null;targetGoal=null;});canvas.addEventListener('pointerdown',(event)=>{pointerDown={x:event.clientX,y:event.clientY};controls.autoRotate=false;cameraGoal=null;targetGoal=null;});canvas.addEventListener('pointermove',(event)=>{if(isTouch)return;const next=hitTest(event);if(next===hovered)return;hovered=next;refreshHighlights();if(hovered){describe(hovered,selected===hovered?'selected':'hover');canvas.style.cursor='pointer';}else{if(tooltip)tooltip.hidden=true;canvas.style.cursor='grab';}});canvas.addEventListener('pointerleave',()=>{hovered=null;refreshHighlights();if(tooltip)tooltip.hidden=true;canvas.style.cursor='grab';});canvas.addEventListener('pointerup',(event)=>{if(!pointerDown)return;const moved=Math.hypot(event.clientX-pointerDown.x,event.clientY-pointerDown.y);pointerDown=null;if(moved>7)return;const group=hitTest(event);if(group)focusSystem(group.userData.meta.id);});
+  canvas.tabIndex=0;canvas.addEventListener('keydown',(event)=>{const orbitStep=0.12;const zoomStep=0.9;if(event.key==='r'||event.key==='R'||event.key==='Home'){event.preventDefault();resetView();return;}const offset=camera.position.clone().sub(controls.target);if(event.key==='ArrowLeft'||event.key==='ArrowRight'){event.preventDefault();offset.applyAxisAngle(new THREE.Vector3(0,1,0),event.key==='ArrowLeft'?orbitStep:-orbitStep);camera.position.copy(controls.target).add(offset);controls.update();}else if(event.key==='+'||event.key==='='){event.preventDefault();camera.position.lerp(controls.target,1-zoomStep);}else if(event.key==='-'||event.key==='_'){event.preventDefault();camera.position.sub(controls.target).multiplyScalar(1/zoomStep).add(controls.target);}});
+  focusButtons.forEach((button)=>button.addEventListener('click',()=>focusSystem(button.dataset.plantFocus)));resetButton?.addEventListener('click',resetView);
+  const resizeObserver=new ResizeObserver(resize);resizeObserver.observe(host);resize();const visibilityObserver=new IntersectionObserver(([entry])=>{active=Boolean(entry?.isIntersecting);},{rootMargin:'180px'});visibilityObserver.observe(host);
+  canvas.addEventListener('webglcontextlost',(event)=>{event.preventDefault();host.dataset.renderState='context-lost';setStatus('3D graphics context interrupted · reload to restore','error');});canvas.addEventListener('webglcontextrestored',()=>{host.dataset.renderState='ready';setStatus(`${specimen.label} · restored`,'ready');});
+  renderer.setAnimationLoop(()=>{if(!active||disposed)return;if(cameraGoal&&targetGoal){camera.position.lerp(cameraGoal,0.075);controls.target.lerp(targetGoal,0.09);if(camera.position.distanceTo(cameraGoal)<0.018&&controls.target.distanceTo(targetGoal)<0.014){cameraGoal=null;targetGoal=null;}}controls.update();updateAnatomyLabel();renderer.render(scene,camera);});
+  function dispose(){if(disposed)return;disposed=true;renderer.setAnimationLoop(null);resizeObserver.disconnect();visibilityObserver.disconnect();controls.dispose();anatomyLabel.remove();environment.dispose();pmrem.dispose();const disposedGeometry=new Set();const disposedMaterial=new Set();scene.traverse((object)=>{if(object.geometry&&!disposedGeometry.has(object.geometry)){disposedGeometry.add(object.geometry);object.geometry.dispose?.();}const list=Array.isArray(object.material)?object.material:[object.material];list.filter(Boolean).forEach((material)=>{if(disposedMaterial.has(material))return;disposedMaterial.add(material);for(const value of Object.values(material)){if(value?.isTexture)value.dispose?.();}material.dispose?.();});});renderer.dispose();}
+  window.addEventListener('pagehide',dispose,{once:true});return true;
+}
+
+export const bootPlantAtlasV4 = bootPhotorealAtlas;
