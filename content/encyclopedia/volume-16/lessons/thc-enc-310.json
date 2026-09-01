@@ -1,0 +1,58 @@
+{
+  "id":"THC-ENC-310",
+  "number":310,
+  "title":"Hop Latent Viroid",
+  "objective":"Understand hop latent viroid as an infectious RNA pathogen of Cannabis, recognize that infection can be asymptomatic or associated with dudding/stunting and quality loss, and interpret tissue testing, propagation, root/water, seed/pollen, and possible insect associations without overstating transmission routes.",
+  "terms":[
+    {"term":"hop latent viroid","definition":"HLVd, a small circular noncoding infectious RNA in the family Pospiviroidae that replicates in susceptible plants and is a major Cannabis disease concern."},
+    {"term":"viroid","definition":"An infectious, circular single-stranded RNA molecule that does not encode proteins and depends on host cellular machinery for replication."},
+    {"term":"dudding","definition":"An industry term used for Cannabis plants showing HLVd-associated reductions in vigor, abnormal growth, weak rooting, and/or reduced floral and metabolite performance; these symptoms are not specific enough to diagnose HLVd visually."},
+    {"term":"RT-qPCR","definition":"Reverse-transcription quantitative polymerase chain reaction, a molecular method commonly used to detect and quantify RNA targets such as HLVd."},
+    {"term":"latent/asymptomatic infection","definition":"Infection in which the pathogen is present and detectable even though obvious disease symptoms are absent at that time."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "HLVd is a 256-nucleotide infectious RNA and is a well-documented cause of Cannabis stunt or dudding disease. Infected plants may be symptomless for a period or may develop stunting, malformed or yellowing foliage, reduced vigor, altered rooting, and reduced floral/metabolite performance. These symptoms overlap with many other disorders, so molecular testing is central to diagnosis.",
+    "A 2025 Cannabis transmission study detected HLVd in asymptomatic stock plants and rooted cuttings, in recirculated nutrient solution from propagation systems, and demonstrated plant-to-plant spread through root infection in hydroponic cultivation. After experimental stem inoculation, roots became detectably infected before foliage in the tested system, showing that tissue choice and timing affect test sensitivity.",
+    "HLVd RNA was detectable in multiple plant tissues, including roots, leaves, inflorescences, trichome glands, pollen/anthers, and seeds in controlled studies. Seed transmission has also been demonstrated in hemp experiments. These findings establish several biologically plausible pathways, but their relative importance under a specific production system should be measured rather than assumed.",
+    "Mechanical sap transmission and clone-mediated spread are strongly supported concerns because Cannabis is frequently propagated vegetatively. A negative test from one tissue or one time point does not guarantee the entire plant or propagation lot is free of HLVd, especially when viroid distribution and titer vary with tissue, genotype, and developmental stage.",
+    "A 2025 aphid study showed rice root aphids and cannabis aphids could acquire HLVd from infected Cannabis. However, it found no evidence that HLVd-positive cannabis aphids transmitted the viroid to viroid-free Cannabis plants. Acquisition must therefore not be presented as proof of insect-vector transmission."
+  ],
+  "cultivationRelevance":[
+    "Use validated molecular testing and a defined sampling plan for mother stock, propagation material, and suspect plants rather than diagnosing HLVd from 'dudding' appearance alone.",
+    "Track clones to their source plants so a positive result can be evaluated across related propagation material without assuming every plant in a cohort is infected or uninfected.",
+    "Where hydroponic or recirculating systems are used, treat shared root-zone and nutrient-solution pathways as epidemiological evidence to investigate, not as proof that every downstream plant is infected.",
+    "Keep sanitation and treatment decisions tied to validated procedures, current safety information, and facility/jurisdiction requirements; RNA detectability after a treatment is not identical to infectious viability, and a research condition is not automatically an operating instruction."
+  ],
+  "measureAndRecord":[
+    {"field":"Plant identity","requirement":"Record plant ID, genotype, mother/clone relationship, propagation lot, developmental stage, and symptom status."},
+    {"field":"Sample metadata","requirement":"Record tissue type, plant position, collection date, plant age/stage, laboratory, assay type, target/controls, and result."},
+    {"field":"Repeated testing","requirement":"Record retest dates and alternate tissues when warranted; preserve prior negatives as time-specific observations rather than permanent clearance."},
+    {"field":"Epidemiological links","requirement":"Record shared tools, propagation events, rooting tables, nutrient solution/reservoirs, root contact, seed/pollen source, and related positive plants."},
+    {"field":"Symptoms/performance","requirement":"Record vigor, rooting, morphology, flowering performance, and laboratory quality data separately from HLVd test status so association is not confused with diagnosis."
+    }
+  ],
+  "misconceptions":[
+    "A healthy-looking Cannabis plant cannot have HLVd.",
+    "Dudding symptoms alone are enough to diagnose HLVd.",
+    "One negative leaf test permanently proves a plant is HLVd-free.",
+    "Finding HLVd RNA in recirculated water proves every plant connected to that water is infected.",
+    "Because aphids can acquire HLVd, aphid transmission to Cannabis has been proven."
+  ],
+  "evidenceLimits":[
+    "HLVd epidemiology is rapidly developing. Controlled studies demonstrate several transmission and persistence pathways, but route frequency and importance can vary by genotype, production system, tissue, developmental stage, and assay. Molecular detection establishes target RNA presence; interpretation of infectivity and causal contribution still depends on sampling and experimental context."
+  ],
+  "crossLinks":"THC-ENC-301 for infectious-disease reasoning; THC-ENC-287 and 294 for aphid/root-zone pest context; THC-ENC-313–317 for latent infection, sampling, false negatives, clone/tool transmission, and reservoirs; THC-ENC-319 for susceptibility.",
+  "sourceNotes":[
+    "Punja ZK, Scott C, Tso HH, Munz J, Buirs L. Transmission, Spread, Longevity and Management of Hop Latent Viroid, a Widespread and Destructive Pathogen Affecting Cannabis (Cannabis sativa L.) Plants in North America. Plants. 2025;14(5):830. PMID:40094815. PMCID:PMC11902214. doi:10.3390/plants14050830. https://pmc.ncbi.nlm.nih.gov/articles/PMC11902214/",
+    "New Insights into Hop Latent Viroid Detection, Infectivity, Host Range, and Transmission. Viruses. 2024;16(1):30. PMID:38257731. PMCID:PMC10819085. doi:10.3390/v16010030. https://pmc.ncbi.nlm.nih.gov/articles/PMC10819085/",
+    "Ong M, et al. Acquisition of hop latent viroid from viroid-infected cannabis plants by rice root aphids and cannabis aphids. Arch Virol. 2025. PMID:41065859. doi:10.1007/s00705-025-06422-2. https://pubmed.ncbi.nlm.nih.gov/41065859/",
+    "A Novel, Precise and High-Throughput Technology for Viroid Detection in Cannabis (MFDetect). 2023. PMCID:PMC10385567. Compares tissue and developmental-stage HLVd detection with RT-qPCR. https://pmc.ncbi.nlm.nih.gov/articles/PMC10385567/",
+    "Punja ZK, et al. Challenges to Cannabis sativa Production from Pathogens and Microbes—The Role of Molecular Diagnostics and Bioinformatics. 2024. PMID:38203190. https://pmc.ncbi.nlm.nih.gov/articles/PMC10779078/"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.0 controlled title plus evidence-reconciled web derivative","evidenceControl":"2024_2025_cannabis_hlvd_detection_transmission_tissue_distribution_and_aphid_acquisition_evidence","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_hop_latent_viroid_epidemiology_and_diagnostics","releaseTimeReview":"completed_2026-09-01_asymptomatic_testing_and_aphid_acquisition_not_transmission_boundary_explicit","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"hop-latent-viroid",
+  "route":"/encyclopedia/hop-latent-viroid"
+}
