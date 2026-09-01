@@ -52,7 +52,15 @@ function validate() {
   if (!Array.isArray(pack.knowledgeChecks) || pack.knowledgeChecks.length < 6) fail('Biological-control knowledge checks are incomplete.');
   if (!Array.isArray(pack.visualTargets) || pack.visualTargets.length < 6) fail('Biological-control visual targets are incomplete.');
   const raw = JSON.stringify(pack).toLowerCase();
-  for (const pattern of [/guaranteed cure/, /works for every/, /all bacillus/, /all trichoderma/, /safe because natural/, /ignore the label/]) {
+  const forbiddenClaims = [
+    /guaranteed cure/,
+    /works for every/,
+    /all bacillus(?: strains| species)?\s+(?:are|is|work|works|control|controls|prevent|prevents|cure|cures|safe|beneficial|effective)/,
+    /all trichoderma(?: strains| species)?\s+(?:are|is|work|works|control|controls|prevent|prevents|cure|cures|safe|beneficial|effective)/,
+    /safe because natural/,
+    /ignore the label/
+  ];
+  for (const pattern of forbiddenClaims) {
     if (pattern.test(raw)) fail(`Forbidden biological-control claim matched ${pattern}.`);
   }
   return { valid: true, id: pack.id, route: pack.route, records: pack.records.length, sources: pack.sourceRefs.length, visualTargets: pack.visualTargets.length };
