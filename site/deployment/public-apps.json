@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "site": "https://dtfseeds.com",
   "sourceOfTruth": "dtfgenetics/Thc",
-  "updated": "2026-08-30",
+  "updated": "2026-09-01",
   "apps": [
     {
       "id": "high-land",
@@ -67,7 +67,7 @@
     },
     {
       "id": "high-iq",
-      "title": "High IQ \u2014 Test Higher Cognition",
+      "title": "High IQ — Test Higher Cognition",
       "repository": "dtfgenetics/Thc",
       "sourcePath": "site/public-route-patch/games/high-iq",
       "canonicalDataPath": "games/high-iq/data",
@@ -121,7 +121,7 @@
     },
     {
       "id": "seed-man-platformer",
-      "title": "Seed Man: Sprout Run \u2014 Greenhouse Gauntlet",
+      "title": "Seed Man: Sprout Run — Greenhouse Gauntlet",
       "repository": "dtfgenetics/Thc",
       "sourcePath": "site/public-route-patch/games/seed-man-platformer",
       "canonicalDataPath": "games/seed-man-platformer",
@@ -184,7 +184,7 @@
       "runtime": "node-full-stack-postgres",
       "status": "runtime-integration",
       "build": "pnpm check:rebrand && pnpm build:client && pnpm build:server",
-      "notes": "Next.js client, multiplayer server, PostgreSQL/session production contract, Nginx and systemd deployment assets already exist. Activate through the full-stack runtime rather than static-file deployment."
+      "notes": "3D Next.js client and server-authoritative Express/Socket.io multiplayer are merged and CI verified. PostgreSQL supports either PG* variables or DATABASE_URL. Preferred managed path is two Hostinger Web Apps (chess.dtfseeds.com + chess-api.dtfseeds.com) with managed/external PostgreSQL such as Hostinger-connected Supabase; Docker/VPS/Caddy remains a supported fallback. Do not replace legal-move authority with the legacy PHP shell. Cut over the public route only after two-browser and mobile/WebGL QA."
     },
     {
       "id": "thc-grow-hub",
@@ -218,7 +218,7 @@
         "networkAuthority": "php-server",
         "transport": "polling"
       },
-      "notes": "Self-hosted 2\u201310 player online party game with six-character rooms, simultaneous server-authoritative BUD/BLUFF voting, hidden answers until reveal, Double Hit scoring, lobby lock/settings, chat, reconnectable sessions, vote-split reveal stats, rematches, host transfer, and same-origin PHP persistence."
+      "notes": "Self-hosted 2–10 player online party game with six-character rooms, simultaneous server-authoritative BUD/BLUFF voting, hidden answers until reveal, Double Hit scoring, lobby lock/settings, chat, reconnectable sessions, vote-split reveal stats, rematches, host transfer, and same-origin PHP persistence."
     },
     {
       "id": "strain-showdown",
