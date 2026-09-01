@@ -5,15 +5,15 @@
   "title":"Diseases, Viroids, and Microbial Ecology",
   "route":"/encyclopedia/volume-16-diseases-viroids-and-microbial-ecology",
   "version":"source-controlled",
-  "status":"active-controlled-production",
+  "status":"complete-controlled-production",
   "sourceControl":{
     "sourceTitle":"THC Cannabis Encyclopedia — Master Content Map v1.0 — Part 16",
     "controlledCatalogueVersion":"Master Content Map v1.0",
-    "sourceState":"controlled_catalogue_batch03_evidence_reconciled_for_web_publication",
-    "rule":"Preserve permanent THC-ENC IDs and controlled titles; separate symptoms, signs, organism detection, pathogenicity, environmental favorability, laboratory confirmation, sampling uncertainty, and test timing; do not convert detection or a negative specimen into unsupported certainty."
+    "sourceState":"controlled_catalogue_batch04_evidence_reconciled_for_web_publication",
+    "rule":"Preserve permanent THC-ENC IDs and controlled titles; separate symptoms, signs, organism detection, pathogenicity, environmental favorability, laboratory confirmation, sampling uncertainty, transmission route, reservoir evidence, postharvest contamination, resistance phenotype, and incident closure; do not convert detection, association, or one negative specimen into unsupported certainty."
   },
   "audience":["home growers","professional cultivators","students","educators","diagnostic practitioners","plant-science readers"],
-  "educationalBoundary":"Plant pathology, disease recognition, diagnostic reasoning, and lawful integrated-disease-management education only. Pesticide, biopesticide, disinfectant, and other regulated product use remains governed by current labels, registrations, worker-safety requirements, residue rules, and jurisdictional law. Detection of an organism, environmental risk factor, symptom, or one negative sample does not by itself establish causation, clearance, or a treatment requirement.",
+  "educationalBoundary":"Plant pathology, disease recognition, diagnostic reasoning, and lawful integrated-disease-management education only. Pesticide, biopesticide, disinfectant, and other regulated product use remains governed by current labels, registrations, worker-safety requirements, residue rules, and jurisdictional law. Detection of an organism, environmental risk factor, symptom, reservoir, mycotoxin-capable taxon, or one negative sample does not by itself establish causation, contamination level, clearance, or a treatment requirement.",
   "controlledLessonRange":{"start":301,"end":320},
   "controlledTitles":[
     {"id":"THC-ENC-301","title":"The Disease Triangle and Disease Cycle"},
@@ -52,6 +52,11 @@
     "lessons/thc-enc-312.json",
     "lessons/thc-enc-313.json",
     "lessons/thc-enc-314.json",
-    "lessons/thc-enc-315.json"
+    "lessons/thc-enc-315.json",
+    "lessons/thc-enc-316.json",
+    "lessons/thc-enc-317.json",
+    "lessons/thc-enc-318.json",
+    "lessons/thc-enc-319.json",
+    "lessons/thc-enc-320.json"
   ]
 }
