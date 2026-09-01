@@ -31,6 +31,7 @@ jobs:
 
   live-current-releases:
     if: >-
+      github.event_name == 'pull_request' ||
       github.event_name == 'push' ||
       github.event_name == 'workflow_dispatch' ||
       (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
@@ -38,11 +39,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: main
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || 'main' }}
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Verify omitted current public game releases
+      - name: Verify current public game releases and required runtime assets
         env:
           DTF_SITE_URL: https://dtfseeds.com
           DTF_LIVE_VERIFY_ATTEMPTS: '8'
