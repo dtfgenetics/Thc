@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-331",
+  "number":331,
+  "title":"Scouting Routes and Representative Sampling",
+  "objective":"Build repeatable scouting routes and representative sampling plans that detect pest and disease trends early, cover crop and risk zones systematically, and preserve enough denominator and location information for meaningful decisions.",
+  "terms":[
+    {"term":"scouting route","definition":"A repeatable path through a crop or facility used to inspect representative plants, traps, boundaries, hot spots, and environmental risk areas."},
+    {"term":"sample unit","definition":"The defined plant, leaf, shoot, root system, trap, bench segment, or other unit counted or examined during monitoring."},
+    {"term":"representative sampling","definition":"Sampling designed to reflect the broader crop or defined risk area rather than selecting only the easiest, healthiest, or most visibly damaged plants."},
+    {"term":"sentinel or indicator plant","definition":"A marked plant intentionally followed over time because its susceptibility, location, or known pest status makes it useful for detecting change or treatment response."},
+    {"term":"sampling denominator","definition":"The number of plants, plant parts, traps, area, or other units examined, which gives meaning to the number of detections recorded."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Regular monitoring is the information backbone of IPM. Current greenhouse guidance recommends repeatable routes, maps, visual plant inspection, sticky cards where appropriate, magnification, root checks, and records that preserve pest identity, location, abundance, life stage, and treatment response.",
+    "Representative scouting is not the same as inspecting only visibly damaged plants. A useful route includes ordinary crop areas plus biologically important risk points such as receiving zones, doors and vents, propagation, wet areas, crop edges, prior hot spots, and suspect plants.",
+    "Sampling method must match the target. Sticky cards are useful for trends in certain flying adults but do not replace direct plant inspection for eggs, immature stages, nonflying pests, disease symptoms, roots, or organisms poorly represented on traps.",
+    "Counts need a denominator and location. Ten pests on ten inspected plants has a different meaning from ten pests found across one thousand plants, and trap counts cannot be interpreted consistently if card size, placement, exposure time, or replacement interval changes without documentation.",
+    "Scouting can itself move contaminants. When disease is suspected, workflow should move from lower-risk areas toward suspect areas when practical, and hands, gloves, tools, magnifiers, clipboards, and other contact surfaces should follow the applicable biosecurity controls."
+  ],
+  "cultivationRelevance":[
+    "Use a mapped route that covers every production zone on a defined schedule and includes risk-based stops at entrances, propagation, irrigation trouble spots, crop edges, prior hot spots, and symptomatic plants.",
+    "Define the sample unit before counting so repeated observations can be compared across dates, scouts, and treatments.",
+    "Combine direct plant inspection with target-appropriate traps or magnification instead of using one monitoring method as a universal proxy for all pests and diseases.",
+    "Flag and map unusual findings so follow-up samples, diagnostic escalation, or treatment verification can return to the same location."
+  ],
+  "measureAndRecord":[
+    {"field":"Route and zones","requirement":"Record the mapped route, zones covered, high-risk stops, and any areas skipped or inaccessible during the scouting event."},
+    {"field":"Sampling denominator","requirement":"Record how many plants, leaves, shoots, roots, traps, benches, or area units were examined and the sampling method used."},
+    {"field":"Detection data","requirement":"Record pest or symptom identity/confidence, count or severity, life stage when relevant, exact location, crop stage, and photographs for unusual findings."},
+    {"field":"Trap standardization","requirement":"For traps, record trap type/size, placement height/location, installation and reading dates, exposure interval, and replacement schedule so trends remain interpretable."},
+    {"field":"Follow-up","requirement":"Record flagged hot spots, samples submitted, interventions, and the comparable rescout result used to judge change."
+    }
+  ],
+  "misconceptions":[
+    "Looking at a few visibly damaged plants is representative scouting.",
+    "Sticky cards measure every life stage and every greenhouse pest equally well.",
+    "A pest count is meaningful even when the number of plants or traps examined is unknown.",
+    "Changing trap locations and exposure intervals does not affect trend interpretation.",
+    "Scouting cannot spread plant pathogens."
+  ],
+  "evidenceLimits":[
+    "Exact sampling intensity depends on crop value, pest biology, facility size, spatial pattern, disease risk, and the precision required for a decision. Greenhouse extension examples provide useful methods, but a single universal number of plants, traps, or square feet should not be imposed on every Cannabis production system without validation."
+  ],
+  "crossLinks":"THC-ENC-321 for IPM decision sequence; THC-ENC-322–324 for biosecure movement; THC-ENC-332 for identification escalation; THC-ENC-333 for thresholds and decision records; THC-ENC-339 for corrective action.",
+  "sourceNotes":[
+    "UMass Amherst Greenhouse & Floriculture. IPM Scouting and Decision Making. Current fact sheet accessed 2026-09-01. Describes mapped routes, sticky cards, plant inspection, indicator plants, records, and treatment evaluation. https://www.umass.edu/agriculture-food-environment/greenhouse-floriculture/fact-sheets/ipm-scouting-decision-making",
+    "UMass Amherst Greenhouse & Floriculture. Integrated Pest Management — Greenhouse Best Management Practices. Current guidance on systematic scouting routes, plant-part inspection, roots, sticky cards, sanitation during scouting, and record review. https://www.umass.edu/agriculture-food-environment/greenhouse-floriculture/greenhouse-best-management-practices-bmp-manual/integrated-pest-management",
+    "University of Missouri Extension. Using Integrated Pest Management in Greenhouses and Herbaceous Nurseries. Routine scouting, visual inspection, sticky cards, and abundance/life-stage records. https://extension.missouri.edu/publications/ipm1026"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.1 controlled title plus evidence-reconciled web derivative","evidenceControl":"current_greenhouse_scouting_sampling_and_monitoring_guidance","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"greenhouse_IPM_sampling_design","releaseTimeReview":"completed_2026-09-01_representativeness_denominator_and_method_specificity_explicit","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"scouting-routes-and-representative-sampling",
+  "route":"/encyclopedia/scouting-routes-and-representative-sampling"
+}
