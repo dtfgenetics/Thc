@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-295",
+  "number":295,
+  "title":"Slugs, Snails, and Outdoor Seedling Injury",
+  "objective":"Recognize slug and snail feeding as one cause of outdoor seedling injury by combining chewing pattern, slime trails, shelter/moisture conditions, and direct nocturnal evidence while separating mollusk injury from caterpillars, earwigs, beetles, damping-off, and mechanical damage.",
+  "terms":[
+    {"term":"gastropod","definition":"A mollusk group that includes terrestrial slugs and snails; snails have an external shell while slugs generally do not."},
+    {"term":"radula","definition":"A rasping feeding structure used by many gastropods to scrape plant tissue."},
+    {"term":"slime trail","definition":"Mucus left behind during movement that can dry into a shiny or silvery trail and support a slug/snail diagnosis."},
+    {"term":"shelter site","definition":"A cool, protected, moist location such as residue, boards, stones, dense vegetation, or soil cavities where slugs and snails can hide during dry or bright periods."},
+    {"term":"seedling vulnerability","definition":"The greater risk that small plants experience when a limited amount of chewing removes a large proportion of their total leaf or stem tissue."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Slugs and snails are moisture-associated terrestrial gastropods that feed on a broad range of plants. Young seedlings are particularly vulnerable because irregular chewing can remove a large fraction of their photosynthetic or stem tissue before the plant has substantial reserves.",
+    "Typical injury includes irregular holes or missing tissue with relatively smooth chewed edges. Shiny mucus trails near plants, containers, residue, or soil surfaces provide useful supporting evidence but should be paired with direct organism observations where possible.",
+    "Mollusk feeding is not unique in appearance. Caterpillars, earwigs, beetles, cutworms, vertebrates, hail, transplant damage, and some seedling diseases can also produce missing or collapsed tissue. Damping-off should be distinguished by crown/root lesions or collapse patterns rather than chewing alone.",
+    "Activity is strongly influenced by moisture, shelter, temperature, and time of day. Night or early-morning inspection often provides stronger diagnostic evidence than midday scouting after animals have returned to protected sites.",
+    "Cannabis-specific quantitative thresholds for slug/snail injury are not established. General seedling biology supports higher concern when plants are small, but management decisions should be based on direct organism evidence, injury progression, plant survival, weather, and local production context rather than one universal count."
+  ],
+  "cultivationRelevance":[
+    "Inspect outdoor seedlings and transplant zones after wet periods, especially near residue, mulch, boards, stones, weeds, and other shelter.",
+    "Use night or early-morning scouting to confirm active slugs/snails when daytime injury is unexplained.",
+    "Record slime trails and chewing separately because trails support presence while current plant injury requires spatial/temporal association.",
+    "Avoid assuming any bait or regulated product is appropriate for cannabis; use only lawful crop-compatible options under current label and local requirements."
+  ],
+  "measureAndRecord":[
+    {"field":"Injury pattern","requirement":"Record irregular holes, edge feeding, severed/collapsed seedlings, affected tissue, plant age, and progression."},
+    {"field":"Mollusk evidence","requirement":"Record live slugs/snails, slime trails, eggs if found, size, time of observation, and nearby shelter sites."},
+    {"field":"Environmental context","requirement":"Record rainfall/irrigation, surface moisture, mulch/residue, shade, temperature, and shelter distribution."},
+    {"field":"Spatial pattern","requirement":"Map field edge/interior, low/wet areas, transplant rows, and clusters of missing seedlings."},
+    {"field":"Differential evidence","requirement":"Record caterpillar, cutworm, beetle, earwig, vertebrate, damping-off, and mechanical-weather evidence."
+    }
+  ],
+  "misconceptions":[
+    "Any irregular hole in a seedling proves slug or snail feeding.",
+    "No daytime slugs means they are absent.",
+    "A slime trail alone proves a particular damaged seedling was eaten by a slug.",
+    "All collapsed seedlings were chewed rather than affected by damping-off or transplant injury.",
+    "A general garden slug threshold or bait instruction automatically applies to hemp or cannabis."
+  ],
+  "evidenceLimits":[
+    "General slug/snail feeding and seedling vulnerability are well established across horticultural crops, but cannabis-specific abundance thresholds and management trials are limited. This lesson therefore uses cross-crop diagnostic mechanisms explicitly and does not claim a Cannabis-specific treatment threshold."
+  ],
+  "crossLinks":"THC-ENC-281 for identification workflow; THC-ENC-292 for caterpillar chewing; THC-ENC-297–300 for sampling and records; THC-ENC-301–320 for damping-off/disease differentials; THC-ENC-341–380 for outdoor production context.",
+  "sourceNotes":[
+    "Utah State University Extension, Slugs and Snails. Documents moisture association, irregular smooth-edged chewing, slime trails, shelter, and high vulnerability of new seedlings. https://extension.usu.edu/vegetableguide/leafy-greens/slugs-snails",
+    "Panthi et al. (2024), Arthropod and mollusk pests of hemp, Cannabis sativa, and their indoor management plan in Florida. Establishes mollusks within the broader hemp pest diagnostic framework and emphasizes differential diagnosis among chewing injuries. https://academic.oup.com/jipm/article/15/1/1/7499162",
+    "Controlled Master Content Map v1.0 fixes THC-ENC-295 as Slugs, Snails, and Outdoor Seedling Injury; cross-crop evidence is explicitly bounded where Cannabis-specific data are sparse."
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.0 controlled title plus evidence-reconciled web derivative","evidenceControl":"peer_reviewed_hemp_pest_framework_plus_current_university_cross_crop_gastropod_diagnostics","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"slug_snail_identification_outdoor_seedling_injury_and_differentials","releaseTimeReview":"completed_2026-09-01_cross_crop_evidence_explicit_and_no_cannabis_specific_threshold_claim","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"slugs-snails-and-outdoor-seedling-injury",
+  "route":"/encyclopedia/slugs-snails-and-outdoor-seedling-injury"
+}
