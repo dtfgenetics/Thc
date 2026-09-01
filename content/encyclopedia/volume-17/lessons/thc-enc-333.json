@@ -1,0 +1,57 @@
+{
+  "id":"THC-ENC-333",
+  "number":333,
+  "title":"Thresholds, Tolerances, and Decision Records",
+  "objective":"Use thresholds and tolerances as explicit, evidence-bounded decision tools that combine monitoring data, crop stage, injury, vector/disease risk, crop value, beneficial organisms, and uncertainty rather than inventing universal Cannabis treatment numbers.",
+  "terms":[
+    {"term":"action threshold","definition":"A defined monitoring, injury, disease-risk, or crop-value condition that triggers a management decision or escalation."},
+    {"term":"economic injury level","definition":"The pest density or injury level at which expected economic loss equals the cost of preventing that loss under a defined crop and production context."},
+    {"term":"tolerance","definition":"The amount of pest presence, injury, symptom expression, contamination risk, or uncertainty a program is willing to accept before changing management."},
+    {"term":"decision record","definition":"A traceable record linking monitoring evidence and uncertainty to the action chosen, timing, rationale, and follow-up criteria."},
+    {"term":"decision trigger","definition":"The observation or predefined condition that causes scouting frequency, diagnostics, isolation, cultural action, biological control, or another management step to change."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "IPM thresholds prevent both reflexive treatment and delayed response by defining when monitoring information is important enough to change management. A threshold can trigger more scouting or diagnostics as well as a control action; it is not automatically a pesticide trigger.",
+    "Validated economic thresholds are crop- and pest-specific. Virginia Tech notes that economic thresholds and injury levels remain unestablished for important hemp insect and mite pests because the crop has not been studied long enough to support those values.",
+    "Tolerance can be much lower when an organism vectors a damaging pathogen, when propagation or mother stock has a high biosecurity value, or when a marketable plant part is directly injured. Conversely, low populations of some nonvector pests may be tolerated when injury is negligible and natural enemies are functioning.",
+    "Trap counts are decision inputs rather than universal thresholds. UMass greenhouse guidance explicitly shows that acceptable thrips counts can differ among growers depending on virus history and risk, illustrating why borrowed numbers must not be represented as validated Cannabis thresholds.",
+    "A defensible decision record preserves the evidence available at the time: pest or disease identity confidence, denominator, trend, crop stage, location, injury, vector risk, beneficial organisms, previous actions, legal options, uncertainty, and the follow-up measure that will determine whether the decision worked."
+  ],
+  "cultivationRelevance":[
+    "Define triggers separately for routine rescouting, diagnostic escalation, isolation, localized intervention, and broader control rather than using one number for every action.",
+    "Where no validated Cannabis/hemp threshold exists, label local trigger values as provisional program tolerances or action criteria instead of presenting them as scientific economic thresholds.",
+    "Lower tolerance appropriately for propagation, mother stock, vector-associated pests, confirmed systemic pathogens, or high-value material when the biological consequence justifies it.",
+    "Review threshold decisions against follow-up data and revise local program criteria when outcomes repeatedly show the trigger was too early, too late, or poorly matched to the target."
+  ],
+  "measureAndRecord":[
+    {"field":"Target and confidence","requirement":"Record pest/pathogen or syndrome, life stage where relevant, and identification confidence supporting the decision."},
+    {"field":"Monitoring evidence","requirement":"Record count/severity, denominator, sampling method, location, trend through time, crop stage, injury, symptoms, and relevant beneficial organisms."},
+    {"field":"Threshold source","requirement":"Identify whether the trigger is a validated economic threshold, extension guideline, label constraint, internal tolerance, biosecurity rule, or provisional local criterion."},
+    {"field":"Decision rationale","requirement":"Record crop value, vector/disease risk, prior history, uncertainty, control compatibility, legal constraints, and why action or no action was selected."},
+    {"field":"Review criterion","requirement":"Record when and how the crop will be rechecked and the result that would justify closure, continuation, or escalation."
+    }
+  ],
+  "misconceptions":[
+    "Every Cannabis pest has a validated economic threshold.",
+    "A sticky-card number copied from another crop is automatically a Cannabis treatment threshold.",
+    "Crossing an action threshold always means applying a pesticide.",
+    "Zero tolerance is biologically and economically appropriate for every pest.",
+    "A threshold decision does not need to record the denominator, crop stage, trend, or uncertainty."
+  ],
+  "evidenceLimits":[
+    "Threshold evidence in Cannabis/hemp remains incomplete for many pests and production systems. Greenhouse ornamental or vegetable thresholds and local grower experience can inform hypotheses and program tolerances but should not be relabeled as validated Cannabis economic injury levels without crop-specific data."
+  ],
+  "crossLinks":"THC-ENC-321 for IPM principles; THC-ENC-331 for monitoring denominators and trends; THC-ENC-332 for identification confidence; THC-ENC-334–337 for control selection; THC-ENC-339–340 for corrective action and program review.",
+  "sourceNotes":[
+    "Virginia Cooperative Extension. Integrated Pest Management of Hemp in Virginia. Current publication accessed 2026-09-01. States that economic thresholds and injury levels remain unestablished for important hemp pests. https://www.pubs.ext.vt.edu/ENTO/ENTO-349/ENTO-349.html",
+    "UMass Amherst Greenhouse & Floriculture. IPM Scouting and Decision Making. Current fact sheet accessed 2026-09-01. Shows monitoring-based decision making and context-dependent grower thresholds. https://www.umass.edu/agriculture-food-environment/greenhouse-floriculture/fact-sheets/ipm-scouting-decision-making",
+    "University of Missouri Extension. Insect Pests of Industrial Hemp in Missouri. Current page accessed 2026-09-01. Discusses monitoring, records, economic thresholds, biological and mechanical controls in hemp. https://extension.missouri.edu/publications/mx83",
+    "US Environmental Protection Agency. Integrated Pest Management Principles. Current page accessed 2026-09-01. Defines action thresholds as an IPM decision element. https://www.epa.gov/safepestcontrol/integrated-pest-management-ipm-principles"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.1 controlled title plus evidence-reconciled web derivative","evidenceControl":"hemp_specific_threshold_gap_plus_current_greenhouse_monitoring_and_EPA_IPM_decision_framework","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"hemp_IPM_thresholds_and_decision_science","releaseTimeReview":"completed_2026-09-01_no_invented_universal_cannabis_thresholds","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"thresholds-tolerances-and-decision-records",
+  "route":"/encyclopedia/thresholds-tolerances-and-decision-records"
+}
