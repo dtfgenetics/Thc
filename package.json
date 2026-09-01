@@ -41,6 +41,7 @@
     "test:live:growlens": "node scripts/growlens-live-acceptance.mjs",
     "recover:growlens:acceptance": "node scripts/growlens-live-acceptance-recover.mjs",
     "test:e2e:growlens": "playwright test --config apps/growlens-web/playwright.config.ts",
-    "verify:growlens": "npm run test:growlens && npm run test:growlens:live-client && npm run build:growlens && npm run test:e2e:growlens"
+    "validate:plant-atlas:v4": "node --check apps/growlens-web/public/atlas/atlas-3d-v4.js && node --check apps/growlens-web/public/atlas/atlas-3d-bootstrap.js && node scripts/validate-plant-atlas-v4.mjs",
+    "verify:growlens": "npm run test:growlens && npm run test:growlens:live-client && npm run build:growlens && npm run validate:plant-atlas:v4 && npm run test:e2e:growlens"
   }
 }
