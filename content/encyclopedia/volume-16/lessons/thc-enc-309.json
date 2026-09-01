@@ -1,0 +1,58 @@
+{
+  "id":"THC-ENC-309",
+  "number":309,
+  "title":"Bacterial Diseases and Opportunistic Infection",
+  "objective":"Recognize documented bacterial diseases of Cannabis and hemp while distinguishing pathogenic bacteria from commensal, endophytic, epiphytic, saprophytic, and secondary organisms; use lesion pattern, isolation, molecular evidence, and pathogenicity testing to support causation.",
+  "terms":[
+    {"term":"bacterial leaf spot","definition":"A foliar disease syndrome in which pathogenic bacteria cause localized necrotic lesions, often with water-soaking, vein limitation, chlorosis, or blighting depending on the pathosystem."},
+    {"term":"opportunistic pathogen","definition":"An organism that can cause disease when host tissues, environment, or entry conditions permit but may also be present without causing primary disease."},
+    {"term":"endophyte","definition":"A microorganism living within plant tissue without necessarily producing visible disease; an endophytic lifestyle does not automatically mean beneficial or pathogenic."},
+    {"term":"epiphyte","definition":"A microorganism living on a plant surface without necessarily invading tissue or causing disease."},
+    {"term":"bacterial streaming","definition":"Microscopic movement of bacterial cells from freshly cut infected tissue into water, a useful diagnostic sign that supports bacterial infection but does not identify the species by itself."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Confirmed bacterial diseases of Cannabis and hemp are fewer than fungal and oomycete diseases, and many bacteria detected in Cannabis tissues are endophytes, epiphytes, saprophytes, or secondary colonizers. Therefore, bacterial detection must not be equated automatically with pathogenicity.",
+    "Serratia marcescens has been demonstrated to cause hemp leaf spot. North Carolina greenhouse cases produced small dark, vein-limited lesions that expanded into substantial necrosis, and pathogenicity work supported a causal role. Pseudomonas syringae has also produced lesions in hemp inoculation studies, while Xanthomonas campestris pv. cannabis is recognized in diagnostic references as a hemp leaf-spot pathogen.",
+    "Bacterial foliar symptoms can overlap with Septoria, Alternaria, other fungal leaf spots, spray injury, nutrient or environmental disorders, and mechanical damage. Water-soaking, angular or vein-limited lesions, chlorotic halos, and bacterial streaming can increase suspicion but are not species-level proof.",
+    "Some organisms can persist on or within plants without disease and become associated with lesions only after tissue damage or environmental change. Causation is strongest when the same organism is consistently recovered from active lesions, identified with appropriate methods, and supported by pathogenicity evidence or a well-established pathosystem.",
+    "Moisture and wounds or natural openings can influence bacterial entry and disease development, but a wet canopy is not a bacterial diagnosis. Host genotype, pathogen strain, inoculum, tissue age, and environmental duration all affect the resulting disease pattern."
+  ],
+  "cultivationRelevance":[
+    "When bacterial disease is suspected, collect active lesion margins before tissue becomes dominated by secondary decay and submit representative samples for laboratory diagnosis.",
+    "Use lesion distribution, water-soaking, vein limitation, streaming, culture characteristics, and molecular results as separate evidence layers rather than relying on one visual clue.",
+    "Do not treat all bacteria recovered from healthy or diseased Cannabis as harmful; document whether the isolate was associated consistently with lesions and whether pathogenicity is established.",
+    "Any antibacterial pesticide, sanitizer, or biological product remains subject to its current label, crop/use-site authorization, safety requirements, and jurisdiction."
+  ],
+  "measureAndRecord":[
+    {"field":"Lesion pattern","requirement":"Record size, shape, vein limitation, water-soaking, halo, coalescence, tissue affected, and whether stems or floral parts are involved."},
+    {"field":"Microscopic/field signs","requirement":"Record bacterial streaming or exudate if observed and the method used; do not infer species from streaming alone."},
+    {"field":"Isolation and identification","requirement":"Record tissue sampled, culture result, molecular identification, sequencing target where available, and whether the organism was recovered consistently from multiple lesions."},
+    {"field":"Pathogenicity confidence","requirement":"Classify the organism as established pathogen, probable pathogen, possible opportunist, incidental detection, or unresolved based on available evidence."},
+    {"field":"Epidemiology","requirement":"Record cultivar, propagation lot, plant location, moisture/leaf-wetness history, wounds, handling, irrigation splash, and dates of new lesions."
+    }
+  ],
+  "misconceptions":[
+    "Any bacterium found inside a Cannabis plant is a bacterial disease.",
+    "A yellow halo identifies Xanthomonas.",
+    "Bacterial streaming identifies the bacterial species.",
+    "All Cannabis-associated Pseudomonas species are pathogenic.",
+    "A secondary bacterium isolated from old necrotic tissue must have initiated the lesion."
+  ],
+  "evidenceLimits":[
+    "The bacterial disease literature for Cannabis and hemp remains smaller than the literature for major fungal, oomycete, and viroid pathogens. Several bacterial associations are based on limited reports or emerging pathosystems, so public wording should distinguish well-supported pathogenicity from detection, speculation, or opportunistic colonization."
+  ],
+  "crossLinks":"THC-ENC-308 for foliar differential diagnosis; THC-ENC-313 for latent/asymptomatic infection concepts; THC-ENC-314–315 for sampling and test interpretation; THC-ENC-317 for environmental reservoirs; THC-ENC-321–340 for biosecurity and lawful management.",
+  "sourceNotes":[
+    "Schappe T, Ritchie DF, Thiessen LD. First Report of Serratia marcescens Causing a Leaf Spot Disease on Industrial Hemp (Cannabis sativa). Plant Disease. 2020;104(4):1248. doi:10.1094/PDIS-04-19-0782-PDN. https://apsjournals.apsnet.org/doi/10.1094/PDIS-04-19-0782-PDN",
+    "Surveying for Potential Diseases and Abiotic Disorders of Industrial Hemp (Cannabis sativa) Production. Plant Health Progress. Reports pathogenicity observations for Pseudomonas syringae and Serratia marcescens and emphasizes diagnostic uncertainty. https://apsjournals.apsnet.org/doi/10.1094/PHP-03-20-0017-RS",
+    "Buirs L, Punja ZK. Endophytes in Cannabis sativa: Identifying and Characterizing Microbes with Beneficial and Detrimental Effects on Plant Health. Plants. 2025;14(8):1247. PMID:40284136. doi:10.3390/plants14081247. https://pmc.ncbi.nlm.nih.gov/articles/PMC12030312/",
+    "Punja ZK. Emerging diseases of Cannabis sativa and sustainable management. Pest Manag Sci. 2021;77:3857-3870. PMID:33527549. doi:10.1002/ps.6307. https://pmc.ncbi.nlm.nih.gov/articles/PMC8451794/",
+    "UF/IFAS. Field Guide to Hemp (Cannabis sativa) Diseases. Xanthomonas leaf spot section; notes limited information for the hemp disease complex. https://ask.ifas.ufl.edu/publication/PP379"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.0 controlled title plus evidence-reconciled web derivative","evidenceControl":"direct_hemp_bacterial_pathogenicity_reports_plus_2025_cannabis_endophyte_review_and_current_diagnostic_guidance","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_hemp_bacterial_pathology_and_opportunistic_microbiology","releaseTimeReview":"completed_2026-09-01_detection_endophyte_opportunist_and_causation_boundaries_explicit","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"bacterial-diseases-and-opportunistic-infection",
+  "route":"/encyclopedia/bacterial-diseases-and-opportunistic-infection"
+}

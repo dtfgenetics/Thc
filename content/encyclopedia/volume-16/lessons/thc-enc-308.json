@@ -1,0 +1,57 @@
+{
+  "id":"THC-ENC-308",
+  "number":308,
+  "title":"Leaf Spots and Foliar Pathogen Differentiation",
+  "objective":"Differentiate common Cannabis and hemp leaf-spot syndromes by lesion pattern, pathogen signs, epidemiology, and laboratory evidence, with particular attention to Septoria cannabis and Alternaria species while recognizing bacterial and abiotic look-alikes.",
+  "terms":[
+    {"term":"leaf spot","definition":"A localized area of diseased or dead leaf tissue; the symptom describes lesion form and does not identify the causal organism."},
+    {"term":"Septoria cannabis","definition":"A fungal pathogen causing Septoria leaf spot, a common disease of field-grown hemp documented in Cannabis sativa germplasm studies."},
+    {"term":"Alternaria alternata","definition":"A fungal species documented to cause leaf spot and brown-blight symptoms on industrial hemp, although Alternaria detections can also represent nonpathogenic or secondary associations."},
+    {"term":"pycnidium","definition":"A small asexual fungal fruiting structure in which conidia are produced; pycnidia can be diagnostically useful for some Septoria diseases."},
+    {"term":"differential diagnosis","definition":"A structured comparison of multiple plausible causes using pattern, signs, history, and tests to progressively narrow the explanation."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Leaf spots are a symptom category, not a diagnosis. Cannabis and hemp foliar lesions can be caused by fungi such as Septoria cannabis and Alternaria species, bacterial pathogens such as Serratia or Xanthomonas, systemic disease, chemical injury, nutrient or environmental stress, spray injury, and mechanical damage.",
+    "Septoria leaf spot is well documented in field-grown hemp. A 2026 replicated Cannabis sativa germplasm study confirmed substantial variation in susceptibility among accessions, reinforcing that genotype affects observed disease severity and that one cultivar's field response should not be generalized to all Cannabis.",
+    "Alternaria alternata has been demonstrated as a causal hemp leaf-spot pathogen through morphology, multilocus sequencing, inoculation, symptom reproduction, and re-isolation. However, Alternaria can also be isolated from seeds, residues, or plant tissues without proving it caused a particular lesion, so pathogenicity evidence remains important.",
+    "Lesion geometry and color can guide sampling but rarely identify a pathogen alone. Septoria may produce small necrotic lesions and diagnostic fruiting structures; Alternaria lesions may become brown-to-black with halos or concentric patterning; bacterial spots may be water-soaked, angular, vein-limited, or haloed. These patterns overlap.",
+    "Foliar disease expression is influenced by inoculum, leaf wetness or moisture duration, temperature, canopy density, genotype, plant age, and repeated secondary cycles. Environmental favorability raises or lowers risk but does not prove which organism caused a lesion."
+  ],
+  "cultivationRelevance":[
+    "Sample the active edge of several representative lesions rather than only old necrotic centers, and include both symptomatic and apparently healthy comparison tissue when the diagnostic laboratory requests it.",
+    "Record whether lesions are upper- or lower-canopy dominant, vein-limited, circular, angular, coalescing, haloed, perforating, sporulating, or associated with pycnidia or other signs.",
+    "Compare fungal leaf spots with bacterial disease and abiotic injury before interpreting a visual pattern as a species-level diagnosis.",
+    "Keep regulated foliar-control decisions separate from diagnosis; only current crop-specific labels and jurisdictional requirements establish lawful product use."
+  ],
+  "measureAndRecord":[
+    {"field":"Lesion morphology","requirement":"Record lesion size, shape, margin, color, halo, vein limitation, concentric rings, perforation, visible fruiting bodies/spores, and leaf surface."},
+    {"field":"Plant distribution","requirement":"Record cultivar/genotype, plant age, canopy position, field/room/bench location, incidence, and whether lesions are clustered or widespread."},
+    {"field":"Progression","requirement":"Record first detection, lesion expansion, coalescence, defoliation, new lesion appearance, and recent weather or leaf-wetness context."},
+    {"field":"Diagnostic evidence","requirement":"Record microscopy, isolation, molecular identification, pathogenicity evidence when available, or diagnostic-lab result and confidence."},
+    {"field":"Differentials","requirement":"Record competing fungal, bacterial, chemical, nutritional, environmental, and mechanical explanations and why each is supported or rejected."
+    }
+  ],
+  "misconceptions":[
+    "A circular brown spot is enough to identify Septoria.",
+    "Every Alternaria isolate recovered from Cannabis caused the observed lesion.",
+    "Yellow halos prove a bacterial disease.",
+    "A leaf-spot pathogen affects every Cannabis genotype equally.",
+    "A disease photograph can replace specimen examination or laboratory confirmation when the diagnosis matters."
+  ],
+  "evidenceLimits":[
+    "Leaf-spot morphology overlaps strongly among pathogens and abiotic disorders. Direct Cannabis/hemp evidence is strong for Septoria cannabis and some Alternaria isolates, but local pathogen populations and cultivar responses vary. Visual keys should guide sampling, not substitute for causal confirmation."
+  ],
+  "crossLinks":"THC-ENC-261–280 for abiotic foliar differentials; THC-ENC-302 for powdery mildew; THC-ENC-309 for bacterial foliar disease; THC-ENC-314–315 for diagnostic sampling and test timing; THC-ENC-319 for resistance/susceptibility.",
+  "sourceNotes":[
+    "Schwartz JA, et al. Screening of Cannabis sativa Germplasm for Susceptibility to Septoria Leaf Spot. Plant Disease. 2026;110(5):1750-1756. PMID:40920100. doi:10.1094/PDIS-07-25-1367-RE. https://pubmed.ncbi.nlm.nih.gov/40920100/",
+    "Tang L, et al. First Report of Leaf Spot on Industrial Hemp (Cannabis sativa) Caused by Alternaria alternata in China. Plant Disease. 2021;105(10):3294. PMID:33904327. doi:10.1094/PDIS-01-21-0130-PDN. https://apsjournals.apsnet.org/doi/10.1094/PDIS-01-21-0130-PDN",
+    "Pacific Northwest Plant Disease Management Handbook. Hemp (Cannabis sativa)-Brown Blight (Alternaria Diseases). Revised March 2026. https://pnwhandbooks.org/plantdisease/host-disease/hemp-cannabis-sativa-brown-blight-alternaria-diseases",
+    "Wang S. Diagnosing Hemp and Cannabis Crop Diseases. UC Davis Western Institute for Food Safety and Security / diagnostic guide, 2026. https://hemp.ucdavis.edu/sites/g/files/dgvnsk12601/files/media/documents/Diagnosing%20Hemp%20and%20Cannabis%20Crop%20Diseases%20-%20Shouhua%20Wang.pdf"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.0 controlled title plus evidence-reconciled web derivative","evidenceControl":"2026_cannabis_septoria_germplasm_plus_direct_alternaria_pathogenicity_and_current_diagnostic_guidance","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"cannabis_hemp_foliar_pathogen_differentiation","releaseTimeReview":"completed_2026-09-01_visual_overlap_and_detection_vs_causation_boundaries_explicit","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"leaf-spots-and-foliar-pathogen-differentiation",
+  "route":"/encyclopedia/leaf-spots-and-foliar-pathogen-differentiation"
+}
