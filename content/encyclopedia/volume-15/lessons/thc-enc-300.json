@@ -1,0 +1,57 @@
+{
+  "id":"THC-ENC-300",
+  "number":300,
+  "title":"Pest Records, Mapping, and Trend Analysis",
+  "objective":"Turn scouting observations into comparable records, spatial maps, and time-series trends that distinguish hotspots, spread, treatment response, and sampling artifacts while preserving uncertainty and diagnostic traceability.",
+  "terms":[
+    {"term":"time series","definition":"A sequence of measurements collected using a defined method across multiple dates so direction and rate of change can be evaluated."},
+    {"term":"hotspot","definition":"A localized area with higher pest abundance, injury, or disease risk than surrounding crop areas."},
+    {"term":"spatial map","definition":"A representation linking observations to physical crop locations such as room, bench, row, zone, propagation lot, or field coordinates."},
+    {"term":"metadata","definition":"Context needed to interpret a measurement, including date, observer, sampling method, plant stage, location, environmental conditions, and identification confidence."},
+    {"term":"sampling artifact","definition":"An apparent change caused by altered sampling method, effort, placement, timing, or observer rather than a real biological change."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Pest records are useful only when observations can be compared. A count without date, location, sampling method, effort, and crop stage cannot reliably show whether a population increased or whether the observer simply sampled differently.",
+    "Spatial mapping helps distinguish introduction points, propagation-lot problems, doorway or vent associations, irrigation/moisture hotspots, field-edge pressure, and spread through handling or plant movement. It also supports targeted resampling of the same locations.",
+    "Trend analysis should separate pest abundance, injury, natural enemies, and management actions. Plant damage can persist after a pest declines, while beneficial populations can rise after pest numbers increase; combining these into one score can hide important causal timing.",
+    "A management response should be evaluated with pre-action and post-action data collected using the same method when possible. A lower count after changing sticky-card placement, sampling fewer plants, or switching observers is not sufficient evidence of control efficacy.",
+    "Historical records are the foundation for local action thresholds and seasonal forecasting. Over multiple crop cycles, records can identify recurring pests, introduction windows, environmental associations, and the local relationship between measured pressure and acceptable crop outcomes."
+  ],
+  "cultivationRelevance":[
+    "Use stable location names or IDs for rooms, benches, rows, zones, mother plants, propagation lots, and field sectors so observations can be mapped consistently.",
+    "Record negative observations as well as positive detections; repeated 'not found with this method' is useful evidence when method and effort are documented.",
+    "Annotate interventions, plant movement, sanitation events, environmental changes, and diagnostic results on the same timeline as pest counts.",
+    "Preserve identification confidence and source evidence so future reviewers can distinguish confirmed species from tentative field calls."
+  ],
+  "measureAndRecord":[
+    {"field":"Observation metadata","requirement":"Record date/time, observer, crop stage, cultivar/lot where relevant, exact location, sampling method, effort, and magnification."},
+    {"field":"Pest data","requirement":"Record taxon, life stage, count or defined ordinal score, injury, specimen/photo reference, and identification confidence."},
+    {"field":"Natural enemies","requirement":"Record predators, parasitoids, mummies, beneficial releases, and establishment observations separately from pest counts."},
+    {"field":"Interventions/context","requirement":"Record sanitation, plant movement, irrigation/environment changes, biological-control releases, regulated treatments if lawfully used, and date/time."},
+    {"field":"Trend interpretation","requirement":"State increasing/stable/decreasing/uncertain, identify any sampling-method changes, and document the evidence supporting the interpretation."
+    }
+  ],
+  "misconceptions":[
+    "A pest list without dates and locations is enough for trend analysis.",
+    "Old plant injury should be counted as a current pest population.",
+    "A lower count after changing sampling effort proves management worked.",
+    "Only positive pest detections are worth recording.",
+    "A hotspot map is useful even if location names change from one scouting round to the next."
+  ],
+  "evidenceLimits":[
+    "Recordkeeping and spatial/time-series principles are broadly transferable from greenhouse IPM, but specific sampling frequencies, thresholds, and mapping resolution should be adapted to pest biology, facility or field layout, crop stage, and production goals. Records improve inference but do not replace specimen identification or diagnostic testing."
+  ],
+  "crossLinks":"THC-ENC-281–296 for organism-specific evidence; THC-ENC-297 for sampling methods; THC-ENC-298 for thresholds; THC-ENC-299 for biological-control compatibility; THC-ENC-401–420 for measurement, statistics, and research literacy.",
+  "sourceNotes":[
+    "Missouri Extension, Using Integrated Pest Management in Greenhouses and Herbaceous Nurseries. Recommends routine scouting and recording pest abundance and life stages using sticky cards and visual inspection. https://extension.missouri.edu/publications/ipm1026",
+    "UConn IPM Greenhouse Publications. Provides greenhouse sticky-card count forms, scouting summary reports, monitoring forms, and scouting/decision resources. https://ipm.cahnr.uconn.edu/greenhouse-publications/",
+    "UC Statewide IPM, Establishing Action Thresholds. Explicitly connects systematic monitoring and good records with crop acceptability, management actions, market outcome, and development of locally appropriate thresholds. https://ipm.ucanr.edu/agriculture/floriculture-and-ornamental-nurseries/establishing-treatment-thresholds/",
+    "Missouri Extension, Insect Pests of Industrial Hemp in Missouri. Current hemp IPM guidance includes monitoring tools, recordkeeping of pest populations and crop stages, thresholds, and conservation of beneficials. https://extension.missouri.edu/publications/mx83"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.0 controlled title plus evidence-reconciled web derivative","evidenceControl":"current_university_ipm_recordkeeping_threshold_and_hemp_monitoring_guidance","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"pest_recordkeeping_spatial_mapping_and_time_series_trend_analysis","releaseTimeReview":"completed_2026-09-01_sampling_artifact_and_metadata_controls_explicit","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"pest-records-mapping-and-trend-analysis",
+  "route":"/encyclopedia/pest-records-mapping-and-trend-analysis"
+}
