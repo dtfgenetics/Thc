@@ -1,0 +1,56 @@
+{
+  "id":"THC-ENC-287",
+  "number":287,
+  "title":"Other Aphid Species on Hemp and Cannabis",
+  "objective":"Distinguish cannabis aphid from other aphids that may probe, colonize, or be recovered from hemp and cannabis, and document host suitability, colony persistence, and identification confidence before assigning pest significance.",
+  "terms":[
+    {"term":"Myzus persicae","definition":"Green peach aphid, a highly polyphagous aphid and major plant-virus vector whose ability to sustain colonies on hemp can vary by cultivar and study conditions."},
+    {"term":"Aphis gossypii","definition":"Cotton or melon aphid, a broadly polyphagous aphid that may probe hemp but has shown poor sustained performance on at least some tested hemp cultivars."},
+    {"term":"host suitability","definition":"The degree to which a plant supports feeding, survival, development, and reproduction of an insect population."},
+    {"term":"transient colonization","definition":"Temporary occurrence or probing on a plant without a self-sustaining reproducing population."},
+    {"term":"aphid mummy","definition":"A swollen, hardened aphid body containing or left by a developing parasitoid wasp."
+    }
+  ],
+  "termDefinitionsStatus":"controlled_glossary_reconciled_for_publication",
+  "coreScience":[
+    "Not every aphid found on Cannabis is Phorodon cannabis. Green peach aphid, cotton aphid, rice root aphid, and other aphids have been reported in Cannabis-associated systems, but their biology, preferred tissues, and ability to sustain colonies differ.",
+    "A recent industrial-hemp study compared P. cannabis, Myzus persicae, and Aphis gossypii and found strong host suitability for cannabis aphid while the tested hemp cultivar did not support sustained population growth of cotton aphid or green peach aphid. This is cultivar- and study-specific evidence, not proof that those species can never occur or transmit virus in other contexts.",
+    "Species identification should combine morphology, feeding location, colony persistence, and host-response evidence. Winged aphids can land on nonpreferred hosts and probe them, so one alate or a few transient individuals do not establish that the crop supports a reproducing infestation.",
+    "Root-associated aphids require a different sampling zone than canopy aphids. Rice root aphid has been reported from commercial cannabis systems and can be parasitized by Aphelinus varipes, demonstrating that belowground aphid observations should not be forced into a canopy-aphid diagnosis.",
+    "Virus-vector importance and crop-colonization ability are separate biological properties. An aphid that does not form dense colonies can still be epidemiologically relevant for some nonpersistent viruses if compatible transmission biology exists."
+  ],
+  "cultivationRelevance":[
+    "Collect representative specimens instead of assuming every aphid is cannabis aphid, especially when colony color, location, host response, or growth pattern differs from the expected profile.",
+    "Inspect both canopy and root-zone interfaces when symptoms or sticky-card captures are not explained by visible leaf colonies.",
+    "Record whether aphids are reproducing over repeated observations; transient winged arrivals and expanding nymph-rich colonies have different biological meaning.",
+    "Treat virus diagnosis, pest identification, and management authorization as separate decisions."
+  ],
+  "measureAndRecord":[
+    {"field":"Species evidence","requirement":"Record specimen morphology, magnification, identifier confidence, and whether molecular or specialist confirmation was used."},
+    {"field":"Colony persistence","requirement":"Record nymph production, repeated counts, winged/wingless forms, and whether abundance increases on the crop over time."},
+    {"field":"Feeding zone","requirement":"Record leaf, stem, flower, crown, root, media interface, or nearby weed/alternate-host location."},
+    {"field":"Host-response context","requirement":"Record honeydew, sooty mold, yellowing, wilting, root decline, and matched unaffected plants."},
+    {"field":"Virus context","requirement":"Record compatible disease symptoms and diagnostic test results separately from aphid presence."
+    }
+  ],
+  "misconceptions":[
+    "All aphids collected from cannabis are cannabis aphids.",
+    "An aphid landing on hemp proves that hemp is a good reproductive host.",
+    "Green peach aphid can never occur on hemp because one cultivar performed poorly in one study.",
+    "Root aphids can be ruled out by clean leaf surfaces.",
+    "Vector status and colony-forming ability are the same trait."
+  ],
+  "evidenceLimits":[
+    "The diversity of aphids encountered in cannabis systems is broader than the set of species with well-characterized Cannabis-specific life tables. Host suitability can vary by cultivar and environment, so results from one hemp genotype should not be universalized. Species-level identification may require expert morphology or molecular confirmation."
+  ],
+  "crossLinks":"THC-ENC-286 for cannabis aphid; THC-ENC-294 for root aphids and soil-dwelling pests; THC-ENC-297–300 for sampling and records; THC-ENC-301–320 for vector-borne disease differentials.",
+  "sourceNotes":[
+    "Life table analyses and feeding behaviors of cannabis aphid, cotton aphid, and green peach aphid on industrial hemp (2025), PubMed PMID 39826128. Direct comparative host-suitability evidence. https://pubmed.ncbi.nlm.nih.gov/39826128/",
+    "Ong et al. (2025), Rice root aphids and cannabis aphids are parasitised by Aphelinus varipes, The Canadian Entomologist 157:e39. Documents rice root aphid and cannabis aphid in commercial cannabis context. https://www.cambridge.org/core/journals/canadian-entomologist/article/rice-root-aphids-rhopalosiphum-rufiabdominale-and-cannabis-aphids-phorodon-cannabis-hemiptera-aphididae-are-parasitised-by-aphelinus-varipes-hymenoptera-aphelinidae/021F39B65C66F7CAE01D2DC9D3824B44",
+    "Cranshaw et al. (2019), Developing Insect Pest Management Systems for Hemp in the United States. https://academic.oup.com/jipm/article/10/1/26/5555744"
+  ],
+  "publicationAuthorized":true,
+  "reviewControl":{"controlledManuscript":"Master Content Map v1.0 controlled title plus evidence-reconciled web derivative","evidenceControl":"direct_comparative_hemp_aphid_life_table_plus_peer_reviewed_cannabis_aphid_context","secondaryEvidenceReview":"complete_qualified","externalReview":"pending_not_recorded","externalReviewType":"other_aphids_host_suitability_and_species_differentiation","releaseTimeReview":"completed_2026-09-01_host_suitability_not_universal_and_transient_presence_boundary","publicationAuthorized":true,"publicationAuthorization":"project_owner_continuation_2026-09-01","independentApproval":false,"websiteAction":"publish_with_review_notice"},
+  "slug":"other-aphid-species-on-hemp-and-cannabis",
+  "route":"/encyclopedia/other-aphid-species-on-hemp-and-cannabis"
+}
