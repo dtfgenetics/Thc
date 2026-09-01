@@ -1,0 +1,224 @@
+name: Retire Orphan Seeds Static Shadow
+
+on:
+  pull_request:
+    paths:
+      - .github/workflows/retire-seeds-static-shadow.yml
+      - .github/retire-seeds-static-shadow-trigger.txt
+      - scripts/deploy/retire-wordpress-static-shadow.sh
+      - scripts/deploy/test-retire-wordpress-static-shadow.sh
+      - docs/DTFSEEDS_PRODUCTION_OWNERSHIP.md
+  push:
+    branches: [main]
+    paths:
+      - .github/retire-seeds-static-shadow-trigger.txt
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dtfseeds-seeds-static-shadow-retirement
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate retirement script and route ownership
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash -n scripts/deploy/retire-wordpress-static-shadow.sh
+          bash -n scripts/deploy/test-retire-wordpress-static-shadow.sh
+          bash scripts/deploy/test-retire-wordpress-static-shadow.sh
+          test ! -e site/public-route-patch/seeds
+          grep -Fq '| `/seeds/` and `/seeds/*` | Dedicated genetics library publisher |' docs/DTFSEEDS_PRODUCTION_OWNERSHIP.md
+          ! grep -Eq '^[[:space:]]+seeds$' scripts/deploy/hostinger-overlay.sh
+
+  retire-production-shadow:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: production
+    env:
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Revalidate canonical ownership before production mutation
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash -n scripts/deploy/retire-wordpress-static-shadow.sh
+          bash scripts/deploy/test-retire-wordpress-static-shadow.sh
+          test ! -e site/public-route-patch/seeds
+          grep -Fq '| `/seeds/` and `/seeds/*` | Dedicated genetics library publisher |' docs/DTFSEEDS_PRODUCTION_OWNERSHIP.md
+          grep -Fq '<h2 id="genetics-library-title">DTF Genetics library</h2>' site/wordpress/pages/seeds.html
+
+      - name: Check Hostinger SSH and WordPress configuration
+        shell: bash
+        env:
+          SSH_HOST: ${{ secrets.HOSTINGER_SSH_HOST }}
+          SSH_USER: ${{ secrets.HOSTINGER_SSH_USER }}
+          SSH_KEY: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.HOSTINGER_SSH_KNOWN_HOSTS }}
+          PUBLIC_ROOT: ${{ secrets.HOSTINGER_PUBLIC_ROOT }}
+        run: |
+          set -euo pipefail
+          missing=0
+          [ -n "$SSH_HOST" ] || { echo '::error::Missing HOSTINGER_SSH_HOST'; missing=1; }
+          [ -n "$SSH_USER" ] || { echo '::error::Missing HOSTINGER_SSH_USER'; missing=1; }
+          [ -n "$SSH_KEY" ] || { echo '::error::Missing HOSTINGER_SSH_PRIVATE_KEY'; missing=1; }
+          [ -n "$SSH_KNOWN_HOSTS" ] || { echo '::error::Missing HOSTINGER_SSH_KNOWN_HOSTS'; missing=1; }
+          [ -n "$PUBLIC_ROOT" ] || { echo '::error::Missing HOSTINGER_PUBLIC_ROOT'; missing=1; }
+          [ -n "${WP_API_USERNAME:-}" ] || { echo '::error::Missing WP_API_USERNAME'; missing=1; }
+          [ -n "${WP_API_PASSWORD:-}" ] || { echo '::error::Missing WP_API_PASSWORD'; missing=1; }
+          [ "$missing" -eq 0 ] || exit 1
+          [[ "$PUBLIC_ROOT" == /*/public_html ]] || {
+            echo '::error::HOSTINGER_PUBLIC_ROOT must be an absolute path ending in /public_html.'
+            exit 1
+          }
+
+      - name: Prepare SSH transport
+        shell: bash
+        env:
+          SSH_KEY: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.HOSTINGER_SSH_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          install -d -m 700 "$HOME/.ssh"
+          printf '%s\n' "$SSH_KEY" > "$HOME/.ssh/dtf_hostinger"
+          chmod 600 "$HOME/.ssh/dtf_hostinger"
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+          chmod 600 "$HOME/.ssh/known_hosts"
+
+      - name: Inspect orphan Seeds file at the actual public root
+        id: inspect
+        shell: bash
+        env:
+          SSH_HOST: ${{ secrets.HOSTINGER_SSH_HOST }}
+          SSH_USER: ${{ secrets.HOSTINGER_SSH_USER }}
+          SSH_PORT: ${{ secrets.HOSTINGER_SSH_PORT }}
+          PUBLIC_ROOT: ${{ secrets.HOSTINGER_PUBLIC_ROOT }}
+        run: |
+          set -euo pipefail
+          port="${SSH_PORT:-65002}"
+          ssh_opts=(-i "$HOME/.ssh/dtf_hostinger" -p "$port" -o BatchMode=yes -o StrictHostKeyChecking=yes)
+          printf -v remote_cmd 'bash -s -- inspect %q' "$PUBLIC_ROOT"
+          output="$(ssh "${ssh_opts[@]}" "$SSH_USER@$SSH_HOST" "$remote_cmd" < scripts/deploy/retire-wordpress-static-shadow.sh)"
+          printf '%s\n' "$output"
+          state="$(sed -n 's/^state=//p' <<<"$output" | tail -n 1)"
+          case "$state" in
+            stale|absent) ;;
+            *) echo "::error::Refusing unknown Seeds production state: ${state:-missing}"; exit 1 ;;
+          esac
+          echo "state=$state" >> "$GITHUB_OUTPUT"
+
+      - name: Back up and retire only the known stale Seeds index
+        id: retire
+        shell: bash
+        env:
+          SSH_HOST: ${{ secrets.HOSTINGER_SSH_HOST }}
+          SSH_USER: ${{ secrets.HOSTINGER_SSH_USER }}
+          SSH_PORT: ${{ secrets.HOSTINGER_SSH_PORT }}
+          PUBLIC_ROOT: ${{ secrets.HOSTINGER_PUBLIC_ROOT }}
+        run: |
+          set -euo pipefail
+          port="${SSH_PORT:-65002}"
+          ssh_opts=(-i "$HOME/.ssh/dtf_hostinger" -p "$port" -o BatchMode=yes -o StrictHostKeyChecking=yes)
+          printf -v remote_cmd 'bash -s -- retire %q %q' "$PUBLIC_ROOT" "$GITHUB_RUN_ID"
+          output="$(ssh "${ssh_opts[@]}" "$SSH_USER@$SSH_HOST" "$remote_cmd" < scripts/deploy/retire-wordpress-static-shadow.sh)"
+          printf '%s\n' "$output"
+          state="$(sed -n 's/^state=//p' <<<"$output" | tail -n 1)"
+          backup_id="$(sed -n 's/^backup_id=//p' <<<"$output" | tail -n 1)"
+          case "$state" in
+            retired|already-absent) ;;
+            *) echo "::error::Unexpected retirement state: ${state:-missing}"; exit 1 ;;
+          esac
+          if [ "$state" = 'retired' ] && [ -z "$backup_id" ]; then
+            echo '::error::Retirement did not return a rollback backup id.'
+            exit 1
+          fi
+          echo "state=$state" >> "$GITHUB_OUTPUT"
+          echo "backup_id=$backup_id" >> "$GITHUB_OUTPUT"
+
+      - name: Purge Hostinger LiteSpeed cache
+        shell: bash
+        run: |
+          set -euo pipefail
+          success=0
+          for attempt in 1 2 3; do
+            if node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/flush-hostinger-litespeed-mcp.mjs; then
+              success=1
+              break
+            fi
+            sleep $((attempt * 3))
+          done
+          if [ "$success" -ne 1 ]; then
+            echo '::warning::Hostinger cache purge did not succeed after three attempts; visitor verification will decide whether the retirement remains active.'
+          fi
+
+      - name: Verify the dedicated Genetics publisher now owns /seeds/
+        id: verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          success=0
+          for attempt in $(seq 1 12); do
+            body="$(mktemp)"
+            status="$(curl -sS -L --retry 2 --retry-delay 2 \
+              -o "$body" \
+              -w '%{http_code}' \
+              -H 'Cache-Control: no-cache, no-store, max-age=0' \
+              -H 'Pragma: no-cache' \
+              "https://dtfseeds.com/seeds/?dtf_seeds_owner=${GITHUB_RUN_ID}-${attempt}")"
+            if [ "$status" = '200' ] \
+              && grep -Fqi 'DTF Genetics library' "$body" \
+              && grep -Fqi 'Open Blue Mango profile' "$body" \
+              && ! grep -Fqi 'DTF Genetics catalog pages built around strain identity and grow context.' "$body"; then
+              success=1
+              rm -f "$body"
+              break
+            fi
+            rm -f "$body"
+            sleep $((3 + attempt))
+          done
+          [ "$success" -eq 1 ] || {
+            echo '::error::Fresh public /seeds/ never exposed the dedicated Genetics library after retiring the stale static file.'
+            exit 1
+          }
+
+      - name: Restore stale file automatically if public verification fails
+        if: ${{ failure() && steps.retire.outcome == 'success' && steps.retire.outputs.backup_id != '' }}
+        shell: bash
+        env:
+          SSH_HOST: ${{ secrets.HOSTINGER_SSH_HOST }}
+          SSH_USER: ${{ secrets.HOSTINGER_SSH_USER }}
+          SSH_PORT: ${{ secrets.HOSTINGER_SSH_PORT }}
+          PUBLIC_ROOT: ${{ secrets.HOSTINGER_PUBLIC_ROOT }}
+          BACKUP_ID: ${{ steps.retire.outputs.backup_id }}
+        run: |
+          set -euo pipefail
+          port="${SSH_PORT:-65002}"
+          ssh_opts=(-i "$HOME/.ssh/dtf_hostinger" -p "$port" -o BatchMode=yes -o StrictHostKeyChecking=yes)
+          printf -v remote_cmd 'bash -s -- rollback %q %q' "$PUBLIC_ROOT" "$BACKUP_ID"
+          ssh "${ssh_opts[@]}" "$SSH_USER@$SSH_HOST" "$remote_cmd" < scripts/deploy/retire-wordpress-static-shadow.sh
+          node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/flush-hostinger-litespeed-mcp.mjs || true
+
+      - name: Record successful ownership cutover
+        if: success()
+        shell: bash
+        run: |
+          {
+            echo '## Seeds static-shadow retirement'
+            echo
+            echo "- Preflight state: ${{ steps.inspect.outputs.state }}"
+            echo "- Retirement state: ${{ steps.retire.outputs.state }}"
+            echo "- Rollback backup: ${{ steps.retire.outputs.backup_id || 'not required' }}"
+            echo '- Visitor verification: dedicated Genetics library marker present; stale static marker absent.'
+          } >> "$GITHUB_STEP_SUMMARY"
