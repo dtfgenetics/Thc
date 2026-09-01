@@ -4,7 +4,6 @@ on:
   pull_request:
     paths:
       - scripts/repair-seeds-mu-override.mjs
-      - scripts/reconcile-seeds-mu-backup-collision.mjs
       - .github/workflows/repair-seeds-mu-override.yml
       - .github/repair-seeds-mu-override-trigger.txt
   push:
@@ -30,14 +29,9 @@ jobs:
         run: |
           set -euo pipefail
           node --check scripts/repair-seeds-mu-override.mjs
-          node --check scripts/reconcile-seeds-mu-backup-collision.mjs
           grep -Fq "a32f9a10a5f79580d665d8d2c4718993a9d4bc14070eb8a26a4a2386f8535a3c" scripts/repair-seeds-mu-override.mjs
-          grep -Fq "a32f9a10a5f79580d665d8d2c4718993a9d4bc14070eb8a26a4a2386f8535a3c" scripts/reconcile-seeds-mu-backup-collision.mjs
           grep -Fq "dtf-homepage-override.php" scripts/repair-seeds-mu-override.mjs
           grep -Fq "dtf-homepage-override.php.dtf-disabled" scripts/repair-seeds-mu-override.mjs
-          grep -Fq "dtf-homepage-override.php.dtf-archive-" scripts/reconcile-seeds-mu-backup-collision.mjs
-          grep -Fq "archive_state" scripts/reconcile-seeds-mu-backup-collision.mjs
-          grep -Fq "Live MU override changed during collision reconciliation" scripts/reconcile-seeds-mu-backup-collision.mjs
           grep -Fq "Open Mystery Line profile" scripts/repair-seeds-mu-override.mjs
           grep -Fq "profileCount !== requiredSeedsMarkers.length" scripts/repair-seeds-mu-override.mjs
           grep -Fq "/index.php?page_id=868" scripts/repair-seeds-mu-override.mjs
@@ -45,16 +39,13 @@ jobs:
           grep -Fq "rollbackFailed" scripts/repair-seeds-mu-override.mjs
           grep -Fq "litespeed_purge_all" scripts/repair-seeds-mu-override.mjs
           grep -Fq "/wp-json/code-snippets/v1/snippets/schema" scripts/repair-seeds-mu-override.mjs
-          grep -Fq "/wp-json/code-snippets/v1/snippets/schema" scripts/reconcile-seeds-mu-backup-collision.mjs
           ! grep -Fq "/wp-json/wp/v2/plugins?search=" scripts/repair-seeds-mu-override.mjs
-          ! grep -Fq "/wp-json/wp/v2/plugins?search=" scripts/reconcile-seeds-mu-backup-collision.mjs
           ! grep -Eq 'wp_update_post|set_post_thumbnail|delete_post_meta' scripts/repair-seeds-mu-override.mjs
-          ! grep -Eq 'wp_update_post|set_post_thumbnail|delete_post_meta' scripts/reconcile-seeds-mu-backup-collision.mjs
 
   repair-production:
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
-    timeout-minutes: 18
+    timeout-minutes: 15
     environment: production
     env:
       WP_SITE_URL: https://dtfseeds.com
@@ -75,14 +66,6 @@ jobs:
           set -euo pipefail
           test -n "${WP_API_USERNAME:-}"
           test -n "${WP_API_PASSWORD:-}"
-      - name: Preserve existing disabled MU backup
-        id: reconcile
-        shell: bash
-        run: |
-          set -euo pipefail
-          node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/reconcile-seeds-mu-backup-collision.mjs \
-            | tee "$RUNNER_TEMP/seeds-mu-backup-reconcile.json"
-          grep -Eq '"ok"[[:space:]]*:[[:space:]]*true' "$RUNNER_TEMP/seeds-mu-backup-reconcile.json"
       - name: Disable stale MU override and prove Seeds convergence
         id: repair
         shell: bash
@@ -97,9 +80,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: seeds-mu-override-repair-${{ github.run_id }}
-          path: |
-            ${{ runner.temp }}/seeds-mu-backup-reconcile.json
-            ${{ runner.temp }}/seeds-mu-override-repair.json
+          path: ${{ runner.temp }}/seeds-mu-override-repair.json
           if-no-files-found: warn
           retention-days: 30
       - name: Summarize repair status
@@ -109,9 +90,7 @@ jobs:
           {
             echo '## Seeds MU override repair'
             echo
-            echo "- Backup collision reconciliation: ${{ steps.reconcile.outcome }}"
             echo "- Repair: ${{ steps.repair.outcome }}"
-            echo '- Existing disabled backup: preserved under a verified non-PHP archive name before the live repair.'
             echo '- Target: hash-gated wp-content/mu-plugins/dtf-homepage-override.php only.'
             echo '- Success gate: page 868 REST plus /seeds/ and direct page_id=868 must expose all 11 canonical profiles and no stale catalog/Grow Notes markers.'
             echo '- Collateral gate: Home and Learn must remain healthy and lose their known stale override markers.'
