@@ -13,6 +13,8 @@ on:
       - 'scripts/apply-wordpress-public-content-owned-routes.mjs'
       - 'scripts/apply-learning-visual-v1.mjs'
       - 'scripts/run-learning-v3-connected-production.sh'
+      - 'scripts/apply-wordpress-genetics-visual-v1.mjs'
+      - 'scripts/publish-wordpress-genetics-library-cdn.mjs'
       - 'scripts/rebuild-wordpress-visual-v4.mjs'
       - 'scripts/rebuild-wordpress-support-pages-v1.mjs'
       - '.github/workflows/wordpress-canonical-deploy.yml'
@@ -33,6 +35,8 @@ jobs:
         run: |
           node --check scripts/apply-wordpress-public-content-owned-routes.mjs
           node --check scripts/apply-learning-visual-v1.mjs
+          node --check scripts/apply-wordpress-genetics-visual-v1.mjs
+          node --check scripts/publish-wordpress-genetics-library-cdn.mjs
           node --check scripts/rebuild-wordpress-visual-v4.mjs
           node --check scripts/rebuild-wordpress-support-pages-v1.mjs
           bash -n scripts/run-learning-v3-connected-production.sh
@@ -44,18 +48,23 @@ jobs:
         run: |
           set -euo pipefail
           css='site/design-system/dtf-visual-v1.css'
-          bridge='site/design-system/dtf-learning-owner-v1.css'
+          learning='site/design-system/dtf-learning-owner-v1.css'
+          genetics='site/design-system/dtf-genetics-owner-v1.css'
           test -s "$css"
-          test -s "$bridge"
+          test -s "$learning"
+          test -s "$genetics"
           grep -Fq -- '--dtf-bg:#07170f' "$css"
           grep -Fq -- '--dtf-gold:#d5b15a' "$css"
           grep -Fq -- '.strain-card' "$css"
           grep -Fq -- '.game-card' "$css"
           grep -Fq -- '.footer-shell' "$css"
           grep -Fq -- '@media(max-width:640px)' "$css"
-          grep -Fq -- '.v3.dtf-v1' "$bridge"
-          grep -Fq -- 'data-dtf-layout="home-v3"' "$bridge"
-          grep -Fq -- 'data-dtf-layout="learn-v3"' "$bridge"
+          grep -Fq -- '.v3.dtf-v1' "$learning"
+          grep -Fq -- 'data-dtf-layout="home-v3"' "$learning"
+          grep -Fq -- 'data-dtf-layout="learn-v3"' "$learning"
+          grep -Fq -- '.dtf-v1.dtf-genetics-v1' "$genetics"
+          grep -Fq -- 'data-dtf-genetics-library' "$genetics"
+          grep -Fq -- 'data-dtf-genetics-line' "$genetics"
 
       - name: Validate ownership-safe editorial integration
         run: |
@@ -86,6 +95,24 @@ jobs:
           grep -Fq 'APPLY_LEARNING_VISUAL_V1=true' "$transaction"
           grep -Fq 'scripts/apply-learning-visual-v1.mjs' "$transaction"
           grep -Fq 'learning-visual-v1-backup-path.txt' "$transaction"
+
+      - name: Validate Genetics owner visual transaction
+        run: |
+          set -euo pipefail
+          visual='scripts/apply-wordpress-genetics-visual-v1.mjs'
+          publisher='scripts/publish-wordpress-genetics-library-cdn.mjs'
+          grep -Fq 'data-dtf-visual="v1"' "$visual"
+          grep -Fq 'dtf-genetics-owner-v1' "$visual"
+          grep -Fq 'data-dtf-genetics-library="2026"' "$visual"
+          grep -Fq 'data-dtf-genetics-line' "$visual"
+          grep -Fq 'site/design-system/dtf-genetics-owner-v1.css' "$visual"
+          grep -Fq "await import('./apply-wordpress-genetics-visual-v1.mjs');" "$publisher"
+          grep -Fq "await import('./flush-hostinger-litespeed-mcp.mjs');" "$publisher"
+          python - <<'PY'
+          from pathlib import Path
+          text=Path('scripts/publish-wordpress-genetics-library-cdn.mjs').read_text()
+          assert text.index('apply-wordpress-genetics-visual-v1.mjs') < text.index('flush-hostinger-litespeed-mcp.mjs')
+          PY
 
       - name: Validate canonical handoff knows the shared visual system
         run: |
