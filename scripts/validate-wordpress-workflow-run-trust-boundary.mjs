@@ -22,7 +22,7 @@ function workflowRunBlock(text) {
 
 for (const [key, text] of Object.entries(source)) {
   const block = workflowRunBlock(text);
-  requireMatch(`${key} workflow_run`, block, /\n    branches: \[main\]\n/);
+  requireMatch(`${key} workflow_run`, block, /\n    branches: \[main\](?:\n|$)/);
 }
 
 requireMatch(
