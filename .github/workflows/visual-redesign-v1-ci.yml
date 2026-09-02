@@ -16,6 +16,8 @@ on:
       - 'scripts/run-learning-v3-connected-production.sh'
       - 'scripts/apply-wordpress-genetics-visual-v1.mjs'
       - 'scripts/publish-wordpress-genetics-library-cdn.mjs'
+      - 'scripts/apply-wordpress-shop-visual-v1.mjs'
+      - 'scripts/rebuild-wordpress-commerce-visuals.mjs'
       - 'scripts/rebuild-wordpress-visual-v4.mjs'
       - 'scripts/rebuild-wordpress-support-pages-v1.mjs'
       - '.github/workflows/wordpress-canonical-deploy.yml'
@@ -38,6 +40,8 @@ jobs:
           node --check scripts/apply-learning-visual-v1.mjs
           node --check scripts/apply-wordpress-genetics-visual-v1.mjs
           node --check scripts/publish-wordpress-genetics-library-cdn.mjs
+          node --check scripts/apply-wordpress-shop-visual-v1.mjs
+          node --check scripts/rebuild-wordpress-commerce-visuals.mjs
           node --check scripts/rebuild-wordpress-visual-v4.mjs
           node --check scripts/rebuild-wordpress-support-pages-v1.mjs
           bash -n scripts/run-learning-v3-connected-production.sh
@@ -51,9 +55,11 @@ jobs:
           css='site/design-system/dtf-visual-v1.css'
           learning='site/design-system/dtf-learning-owner-v1.css'
           genetics='site/design-system/dtf-genetics-owner-v1.css'
+          shop='site/design-system/dtf-shop-owner-v1.css'
           test -s "$css"
           test -s "$learning"
           test -s "$genetics"
+          test -s "$shop"
           grep -Fq -- '--dtf-bg:#07170f' "$css"
           grep -Fq -- '--dtf-gold:#d5b15a' "$css"
           grep -Fq -- '.strain-card' "$css"
@@ -66,6 +72,9 @@ jobs:
           grep -Fq -- '.dtf-v1.dtf-genetics-v1' "$genetics"
           grep -Fq -- 'data-dtf-genetics-library' "$genetics"
           grep -Fq -- 'data-dtf-genetics-line' "$genetics"
+          grep -Fq -- '.dtf-v1.dtf-shop-v1' "$shop"
+          grep -Fq -- 'body.woocommerce-shop' "$shop"
+          grep -Fq -- 'body.single-product' "$shop"
 
       - name: Validate ownership-safe editorial integration
         run: |
@@ -115,6 +124,20 @@ jobs:
           assert text.index('apply-wordpress-genetics-visual-v1.mjs') < text.index('flush-hostinger-litespeed-mcp.mjs')
           PY
 
+      - name: Validate Shop owner visual transaction
+        run: |
+          set -euo pipefail
+          visual='scripts/apply-wordpress-shop-visual-v1.mjs'
+          publisher='scripts/rebuild-wordpress-commerce-visuals.mjs'
+          grep -Fq 'data-dtf-shop-visual-v1="true"' "$visual"
+          grep -Fq 'dtf-shop-owner-v1-global' "$visual"
+          grep -Fq 'transactionFieldsTouched:false' "$visual"
+          grep -Fq '/product/10-regular-f2-blue-mango-seeds/' "$visual"
+          grep -Fq '/product/10-feminized-f2-blue-mango-x/' "$visual"
+          grep -Fq '/product/10-reg-f1-blueberry-bubblegum/' "$visual"
+          grep -Fq "await import('./apply-wordpress-shop-visual-v1.mjs');" "$publisher"
+          grep -Fq 'WooCommerce controls the transaction' "$publisher"
+
       - name: Validate static game shell visual system
         run: |
           set -euo pipefail
@@ -125,6 +148,7 @@ jobs:
           grep -Fq -- '--surface:#102d1d' "$file"
           grep -Fq -- '"Arial Narrow","Roboto Condensed"' "$file"
           grep -Fq -- 'border-radius:8px' "$file"
+          grep -Fq -- '.card-action{display:inline-flex;min-height:44px' "$file"
           grep -Fq -- '@media(max-width:430px)' "$file"
           grep -Fq -- '@media(prefers-reduced-motion:reduce)' "$file"
 
