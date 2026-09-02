@@ -73,12 +73,44 @@
       "minimum 44px interactive targets"
     ]
   },
+  "ownerMigrations": {
+    "homeLearn": {
+      "owner": "Learning Experience V3",
+      "bridgeCss": "site/design-system/dtf-learning-owner-v1.css",
+      "visualPass": "scripts/apply-learning-visual-v1.mjs",
+      "transaction": "scripts/run-learning-v3-connected-production.sh"
+    },
+    "genetics": {
+      "owner": "dedicated genetics library publisher",
+      "bridgeCss": "site/design-system/dtf-genetics-owner-v1.css",
+      "visualPass": "scripts/apply-wordpress-genetics-visual-v1.mjs",
+      "transaction": "scripts/publish-wordpress-genetics-library-cdn.mjs"
+    },
+    "shop": {
+      "owner": "canonical WordPress commerce presentation",
+      "bridgeCss": "site/design-system/dtf-shop-owner-v1.css",
+      "visualPass": "scripts/apply-wordpress-shop-visual-v1.mjs",
+      "transaction": "scripts/rebuild-wordpress-commerce-visuals.mjs",
+      "transactionFieldsTouched": false
+    },
+    "games": {
+      "owner": "static public application suite",
+      "sharedShell": "site/public-route-patch/games/dtf-route.css",
+      "runtimeIsolation": true
+    },
+    "editorial": {
+      "owner": "canonical WordPress publisher",
+      "pages": ["community", "gallery", "about", "contact"]
+    }
+  },
   "implementationRules": [
     "reusable tokens and components before page-specific styling",
     "do not alter independent game runtime logic while styling wrappers",
     "one source of truth for navigation and public game counts",
     "remove visitor-facing engineering/process language",
     "all legacy top-level pages migrate to the same shell",
+    "preserve minimum 44px interactive targets",
+    "visual commerce layers must not alter WooCommerce price, stock, SKU, shipping, tax, checkout, or order fields",
     "verify desktop and mobile before promotion to main"
   ]
 }
