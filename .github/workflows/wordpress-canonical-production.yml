@@ -163,42 +163,43 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          verify_page() {
-            local path="$1"
-            local required="$2"
-            local minimum="$3"
-            local key body ok count curl_status
-            key="$(echo "$path" | tr '/?' '__')"
-            body="$RUNNER_TEMP/wp-production-${key}.html"
-            ok=0
-            count=0
-            for attempt in 1 2 3 4 5 6 7 8; do
-              if curl -4 --fail --silent --show-error --location --retry 2 --retry-all-errors --retry-delay 2 \
-                --connect-timeout 15 --max-time 60 \
-                --header 'Cache-Control: no-cache, no-store, max-age=0' \
-                --header 'Pragma: no-cache' \
-                "$WP_SITE_URL${path}?dtf_wp_production=${GITHUB_RUN_ID}-${attempt}" \
-                --output "$body"; then
-                if grep -Fqi -- "$required" "$body"; then ok=1; break; fi
-                echo "Canonical WordPress verification returned without required marker on $path attempt $attempt; retrying." >&2
-              else
-                curl_status=$?
-                echo "Canonical WordPress verification transport failure on $path attempt $attempt (curl $curl_status); retrying." >&2
-              fi
-              sleep 8
-            done
-            if [[ "$ok" -ne 1 ]]; then
-              echo "Required production text missing on $path: $required" >&2
-              head -c 3000 "$body" >&2 || true
-              exit 1
-            fi
-            if [[ "$minimum" -gt 0 ]]; then
-              count="$(grep -o '/wp-content/uploads/' "$body" | wc -l | tr -d ' ')"
-              if [[ "$count" -lt "$minimum" ]]; then
-                echo "$path has $count WordPress-hosted image references; expected at least $minimum" >&2
-                exit 1
-              fi
-            fi
+          auth="$(printf '%s:%s' "$WP_API_USERNAME" "$WP_API_PASSWORD" | base64 -w0)"
+
+          verify_wordpress_page() {
+            local slug="$1" required="$2" json
+            json="$RUNNER_TEMP/wp-backing-${slug}.json"
+            curl -4 --fail --silent --show-error --location --retry 4 --retry-all-errors --retry-delay 2 \
+              --connect-timeout 15 --max-time 60 \
+              -H "Authorization: Basic $auth" \
+              -H 'Accept: application/json' \
+              "$WP_SITE_URL/wp-json/wp/v2/pages?slug=${slug}&context=edit&per_page=10" \
+              -o "$json"
+            node - <<'NODE' "$json" "$slug" "$required"
+          const pages=require(process.argv[2]);
+          const slug=process.argv[3];
+          const required=process.argv[4];
+          if(!Array.isArray(pages)||pages.length!==1) throw new Error(`Expected exactly one WordPress backing page for ${slug}, found ${Array.isArray(pages)?pages.length:'invalid response'}`);
+          const page=pages[0];
+          if(page.status!=='publish'||page.slug!==slug) throw new Error(`WordPress backing page ${slug} is not published with the expected slug`);
+          const content=typeof page.content==='string'?page.content:`${page.content?.raw||''}\n${page.content?.rendered||''}`;
+          if(!content.includes(required)) throw new Error(`WordPress backing page ${slug} is missing required canonical content: ${required}`);
+          console.log(`Verified WordPress backing page ${slug} (ID ${page.id})`);
+          NODE
+          }
+
+          verify_static_shadow() {
+            local path="$1" title="$2" body
+            body="$RUNNER_TEMP/wp-shadow-$(echo "$path" | tr '/?' '__').html"
+            curl -4 --fail --silent --show-error --location --retry 4 --retry-all-errors --retry-delay 2 \
+              --connect-timeout 15 --max-time 60 \
+              --header 'Cache-Control: no-cache, no-store, max-age=0' \
+              --header 'Pragma: no-cache' \
+              "$WP_SITE_URL${path}?dtf_wp_shadow_verify=${GITHUB_RUN_ID}" \
+              --output "$body"
+            grep -Fqi "<title>${title} | DTF Genetics</title>" "$body"
+            grep -Fq 'assets/dtf-home/dtf-home.css' "$body"
+            grep -Fq 'Adult visitors only' "$body"
+            grep -Fqi 'DTF Genetics' "$body"
             for forbidden in \
               'Reserved strain card' \
               'staged for verified' \
@@ -210,23 +211,26 @@ jobs:
               'Grow education belongs in a clean, readable library.' \
               'MOPS, cultivation notes, THC basics'; do
               if grep -Fqi -- "$forbidden" "$body"; then
-                echo "Forbidden live phrase remains on $path: $forbidden" >&2
+                echo "Forbidden live phrase remains on static shadow $path: $forbidden" >&2
                 exit 1
               fi
             done
-            echo "$path verified with $count WordPress-hosted image references"
+            echo "$path verified as healthy static visitor shadow"
           }
 
-          # Public Home and Shop are served by Public Suite overlays. This lane
-          # verifies only its public editorial routes through public HTTP.
-          verify_page '/community/' 'Join the official DTF / Teaching Healthy Cultivation Discord' 0
-          verify_page '/contact/' 'Join the official DTF / Teaching Healthy Cultivation Discord' 0
+          # Community and Contact have canonical WordPress backing records, but
+          # physical static shells currently shadow their public routes. Verify
+          # both ownership layers explicitly instead of demanding WordPress-only
+          # copy from a route that WordPress does not serve to visitors.
+          verify_wordpress_page 'community' 'Join the official DTF / Teaching Healthy Cultivation Discord'
+          verify_wordpress_page 'contact' 'Join the official DTF / Teaching Healthy Cultivation Discord'
+          verify_static_shadow '/community/' 'Community'
+          verify_static_shadow '/contact/' 'Contact'
 
           # The WooCommerce archive styling is WordPress-owned state even when
           # the public /shop/ route is overlaid. Verify the actual template part
           # through authenticated REST instead of scraping the overlay for a
           # WordPress-only marker.
-          auth="$(printf '%s:%s' "$WP_API_USERNAME" "$WP_API_PASSWORD" | base64 -w0)"
           curl -4 --fail --silent --show-error --location --retry 4 --retry-all-errors --retry-delay 2 \
             --connect-timeout 15 --max-time 60 \
             -H "Authorization: Basic $auth" \
@@ -333,7 +337,7 @@ jobs:
               `Live owned-surface verification: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
               `WooCommerce reconciliation: **${process.env.COMMERCE_RECONCILE_OUTCOME || 'not-run'}**`,
               `WooCommerce rollback: **${process.env.COMMERCE_ROLLBACK_OUTCOME || 'not-needed'}**`, '',
-              'Production scope: canonical non-Learn WordPress editorial pages, WooCommerce presentation, current brand imagery, and fresh visitor verification. Public Home and Shop belong to Public Suite overlays; WordPress Home and Learn bodies are hash-preserved here and finalized by the downstream Learning Experience V3 owner, while WooCommerce template state is verified directly through WordPress REST.'
+              'Production scope: canonical non-Learn WordPress editorial backing records, WooCommerce presentation, current brand imagery, and fresh visitor verification. Public Home, Shop, Community, and Contact may be served by static overlays; their WordPress-owned state is verified through REST while public shadows are checked independently. WordPress Home and Learn bodies are hash-preserved here and finalized by the downstream Learning Experience V3 owner.'
             ].join('\n');
             await core.summary.addRaw(body).write();
             try {
