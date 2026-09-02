@@ -1,0 +1,36 @@
+name: Validate WordPress Workflow Run Trust Boundary V2
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/wordpress-canonical-deploy.yml'
+      - '.github/workflows/wordpress-canonical-production.yml'
+      - '.github/workflows/wordpress-genetics-library-production.yml'
+      - '.github/workflows/wordpress-workflow-run-trust-ci-v2.yml'
+      - 'scripts/validate-wordpress-workflow-run-trust-boundary-v2.mjs'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/wordpress-canonical-deploy.yml'
+      - '.github/workflows/wordpress-canonical-production.yml'
+      - '.github/workflows/wordpress-genetics-library-production.yml'
+      - '.github/workflows/wordpress-workflow-run-trust-ci-v2.yml'
+      - 'scripts/validate-wordpress-workflow-run-trust-boundary-v2.mjs'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - name: Syntax-check trust-boundary validator
+        run: node --check scripts/validate-wordpress-workflow-run-trust-boundary-v2.mjs
+      - name: Enforce privileged workflow_run boundary
+        run: node scripts/validate-wordpress-workflow-run-trust-boundary-v2.mjs
