@@ -73,13 +73,15 @@ verify_public() {
   local path="$1"
   shift
   local body="/tmp/dtf-learning-recovery-public-$(printf '%s' "$path" | tr '/?' '__').html"
+  local joiner='?'
   local ok=0
+  [[ "$path" == *\?* ]] && joiner='&'
   for attempt in 1 2 3 4 5 6 7 8; do
     if curl -4 --fail --silent --show-error --location --retry 2 --retry-all-errors --retry-delay 2 \
       --connect-timeout 15 --max-time 60 \
       -H 'Cache-Control: no-cache, no-store, max-age=0' \
       -H 'Pragma: no-cache' \
-      "${WP_SITE_URL}${path}${path*\?*:+&}${path*\?*:-?}dtf_learning_recovery=${GITHUB_RUN_ID:-manual}-${attempt}" \
+      "${WP_SITE_URL}${path}${joiner}dtf_learning_recovery=${GITHUB_RUN_ID:-manual}-${attempt}" \
       -o "$body"; then
       ok=1
       for marker in "$@"; do
