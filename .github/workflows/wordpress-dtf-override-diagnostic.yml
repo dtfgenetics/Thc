@@ -6,11 +6,12 @@ on:
     branches: [main]
     paths:
       - scripts/diagnose-dtf-wordpress-override.mjs
+      - scripts/run-dtf-wordpress-override-diagnostic-current.sh
+      - scripts/wordpress-ipv4-fetch-bootstrap.mjs
       - .github/workflows/wordpress-dtf-override-diagnostic.yml
 
 permissions:
   contents: read
-  issues: write
 
 concurrency:
   group: dtfseeds-wordpress-override-diagnostic
@@ -33,48 +34,66 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Inspect DTF override source ownership
-        id: inspect
+
+      - name: Validate authenticated diagnostic path
+        shell: bash
         run: |
           set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
           node --check scripts/diagnose-dtf-wordpress-override.mjs
-          node scripts/diagnose-dtf-wordpress-override.mjs | tee "$RUNNER_TEMP/override.json"
+          node --check scripts/wordpress-ipv4-fetch-bootstrap.mjs
+          bash -n scripts/run-dtf-wordpress-override-diagnostic-current.sh
+          grep -Fq "get_param('dtf_repair_token')" scripts/run-dtf-wordpress-override-diagnostic-current.sh
+          auth="$(printf '%s:%s' "$WP_API_USERNAME" "$WP_API_PASSWORD" | base64 -w0)"
+          curl -4 --fail --silent --show-error --location --retry 4 --retry-all-errors --retry-delay 2 \
+            --connect-timeout 15 --max-time 60 \
+            -H "Authorization: Basic $auth" \
+            -H 'Cache-Control: no-cache, no-store, max-age=0' \
+            "$WP_SITE_URL/wp-json/wp/v2/users/me?context=edit" -o "$RUNNER_TEMP/wp-user.json"
+          node - <<'NODE' "$RUNNER_TEMP/wp-user.json"
+          const user=require(process.argv[2]);
+          if (!Number(user.id || 0)) throw new Error('Authenticated WordPress user did not resolve');
+          NODE
+
+      - name: Inspect DTF override source ownership
+        id: inspect
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash scripts/run-dtf-wordpress-override-diagnostic-current.sh | tee "$RUNNER_TEMP/override.json"
+
       - name: Report safe override diagnostic
         if: always()
-        uses: actions/github-script@v7
+        shell: bash
         env:
           OUTCOME: ${{ steps.inspect.outcome }}
-        with:
-          script: |
-            const fs = require('fs');
-            let d = {};
-            const file = process.env.RUNNER_TEMP + '/override.json';
-            if (fs.existsSync(file)) {
-              const lines = fs.readFileSync(file, 'utf8').trim().split(/\r?\n/);
-              for (let i = lines.length - 1; i >= 0; i--) { try { d = JSON.parse(lines[i]); break; } catch {} }
-            }
-            const closures = (d.closures || []).map(x => `- ${x.hook}@${x.priority}: \`${x.file || '?'}:${x.line || '?'}\``);
-            const hints = (d.mu_override?.hints || []).map(x => `- line ${x.line}: \`${x.text}\``);
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: 46,
-              body: [
-                '## DTF WordPress override ownership diagnostic',
-                '',
-                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-                `Result: **${process.env.OUTCOME || 'unknown'}**`,
-                `MU override exists: **${d.mu_override?.exists ?? 'unknown'}**; bytes=${d.mu_override?.size ?? '?'}; sha256=${d.mu_override?.sha256 || '-'}`,
-                `Old Home marker in MU override: **${d.mu_override?.markers?.old_home ?? 'unknown'}**`,
-                `Old Learn marker in MU override: **${d.mu_override?.markers?.old_learn ?? 'unknown'}**`,
-                `Front-page logic present: **${d.mu_override?.behavior?.front_page ?? 'unknown'}**; Learn logic present: **${d.mu_override?.behavior?.learn ?? 'unknown'}**; direct output/file serving present: **${d.mu_override?.behavior?.direct_output ?? 'unknown'}**`,
-                '',
-                '### Anonymous render hooks and source files',
-                ...(closures.length ? closures : ['- none']),
-                '',
-                '### Sanitized MU override control-flow hints',
-                ...(hints.length ? hints : ['- none']),
-                '',
-                'Read-only diagnosis. No MU-plugin, page, template, cache, rewrite, or static file is changed.'
-              ].join('\n')
-            });
+        run: |
+          node - <<'NODE' "$RUNNER_TEMP/override.json" "$GITHUB_STEP_SUMMARY" "$OUTCOME"
+          const fs=require('fs');
+          const [file,summary,outcome]=process.argv.slice(2);
+          let d={};
+          if(fs.existsSync(file)){
+            const lines=fs.readFileSync(file,'utf8').trim().split(/\r?\n/);
+            for(let i=lines.length-1;i>=0;i--){try{d=JSON.parse(lines[i]);break}catch{}}
+          }
+          const rows=[];
+          rows.push('## DTF WordPress override ownership diagnostic','');
+          rows.push(`Result: **${outcome||'unknown'}**`);
+          rows.push(`MU override exists: **${d.mu_override?.exists ?? 'unknown'}**`);
+          rows.push(`Bytes: **${d.mu_override?.size ?? '?'}**`);
+          rows.push(`SHA-256: \`${d.mu_override?.sha256 || '-'}\``);
+          rows.push(`Old Home marker: **${d.mu_override?.markers?.old_home ?? 'unknown'}**`);
+          rows.push(`Old Learn marker: **${d.mu_override?.markers?.old_learn ?? 'unknown'}**`);
+          rows.push(`Front-page logic: **${d.mu_override?.behavior?.front_page ?? 'unknown'}**`);
+          rows.push(`Learn logic: **${d.mu_override?.behavior?.learn ?? 'unknown'}**`);
+          rows.push(`Direct output/file serving: **${d.mu_override?.behavior?.direct_output ?? 'unknown'}**`,'');
+          rows.push('### Anonymous render hooks and source files');
+          for(const x of d.closures||[]) rows.push(`- ${x.hook}@${x.priority}: \`${x.file||'?'}:${x.line||'?'}\``);
+          if(!(d.closures||[]).length) rows.push('- none');
+          rows.push('','### Sanitized MU override control-flow hints');
+          for(const x of d.mu_override?.hints||[]) rows.push(`- line ${x.line}: \`${String(x.text||'').replace(/`/g,"'")}\``);
+          if(!(d.mu_override?.hints||[]).length) rows.push('- none');
+          rows.push('','Read-only diagnosis. The temporary endpoint is protected by a fresh per-run token and removed after inspection. No MU-plugin, page, cache, rewrite, or route is changed.');
+          fs.appendFileSync(summary, rows.join('\n')+'\n');
+          NODE
