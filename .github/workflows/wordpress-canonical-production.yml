@@ -217,20 +217,51 @@ jobs:
             echo "$path verified with $count WordPress-hosted image references"
           }
 
-          # Public Home is served by the Public Suite overlay, so this lane does
-          # not assert its preserved WordPress Home body through public HTTP.
-          verify_page '/shop/' 'dtf-commerce-archive-style' 2
+          # Public Home and Shop are served by Public Suite overlays. This lane
+          # verifies only its public editorial routes through public HTTP.
           verify_page '/community/' 'Join the official DTF / Teaching Healthy Cultivation Discord' 0
           verify_page '/contact/' 'Join the official DTF / Teaching Healthy Cultivation Discord' 0
 
+          # The WooCommerce archive styling is WordPress-owned state even when
+          # the public /shop/ route is overlaid. Verify the actual template part
+          # through authenticated REST instead of scraping the overlay for a
+          # WordPress-only marker.
+          auth="$(printf '%s:%s' "$WP_API_USERNAME" "$WP_API_PASSWORD" | base64 -w0)"
+          curl -4 --fail --silent --show-error --location --retry 4 --retry-all-errors --retry-delay 2 \
+            --connect-timeout 15 --max-time 60 \
+            -H "Authorization: Basic $auth" \
+            -H 'Accept: application/json' \
+            "$WP_SITE_URL/wp-json/wp/v2/template-parts?context=edit&per_page=100" \
+            -o "$RUNNER_TEMP/template-parts.json"
+          node - <<'NODE' "$RUNNER_TEMP/template-parts.json"
+          const parts=require(process.argv[2]);
+          const headers=(Array.isArray(parts)?parts:[]).filter(part=>part.theme==='hostinger-ai-theme'&&part.slug==='header');
+          if(!headers.length) throw new Error('Active Hostinger header template part was not found during production verification');
+          for(const part of headers){
+            const content=typeof part.content==='string'?part.content:`${part.content?.raw||''}\n${part.content?.rendered||''}`;
+            if(!content.includes('dtf-commerce-archive-style')) throw new Error(`WooCommerce archive style marker missing from WordPress template part ${part.id}`);
+          }
+          console.log(`Verified WooCommerce archive style in ${headers.length} WordPress template part(s)`);
+          NODE
+
           # /learn/ is deliberately not mutated or gated here. The downstream
           # Learning Experience V3 transaction is the sole automatic Learn owner.
-          shop_body="$RUNNER_TEMP/wp-production-_shop_.html"
+          # Product detail routes remain WordPress/WooCommerce-owned and must be
+          # publicly reachable independently of the overlaid Shop landing page.
           for route in \
             '/product/10-regular-f2-blue-mango-seeds/' \
             '/product/10-feminized-f2-blue-mango-x/' \
             '/product/10-reg-f1-blueberry-bubblegum/'; do
-            grep -Fqi "$route" "$shop_body" || { echo "Reviewed product route missing from live Shop archive: $route" >&2; exit 1; }
+            key="$(echo "$route" | tr '/?' '__')"
+            body="$RUNNER_TEMP/wp-production-${key}.html"
+            curl -4 --fail --silent --show-error --location --retry 4 --retry-all-errors --retry-delay 2 \
+              --connect-timeout 15 --max-time 60 \
+              --header 'Cache-Control: no-cache, no-store, max-age=0' \
+              --header 'Pragma: no-cache' \
+              "$WP_SITE_URL${route}?dtf_wp_product_verify=${GITHUB_RUN_ID}" \
+              --output "$body"
+            test -s "$body" || { echo "Reviewed product route returned an empty body: $route" >&2; exit 1; }
+            echo "$route verified as a reachable product detail surface"
           done
 
       - name: Reconcile canonical WooCommerce product copy and categories
@@ -302,7 +333,7 @@ jobs:
               `Live owned-surface verification: **${process.env.VERIFY_OUTCOME || 'not-run'}**`,
               `WooCommerce reconciliation: **${process.env.COMMERCE_RECONCILE_OUTCOME || 'not-run'}**`,
               `WooCommerce rollback: **${process.env.COMMERCE_ROLLBACK_OUTCOME || 'not-needed'}**`, '',
-              'Production scope: canonical non-Learn WordPress editorial pages, WooCommerce presentation, current brand imagery, and fresh visitor verification. Public Home belongs to the Public Suite overlay; WordPress Home and Learn bodies are hash-preserved here and finalized by the downstream Learning Experience V3 owner.'
+              'Production scope: canonical non-Learn WordPress editorial pages, WooCommerce presentation, current brand imagery, and fresh visitor verification. Public Home and Shop belong to Public Suite overlays; WordPress Home and Learn bodies are hash-preserved here and finalized by the downstream Learning Experience V3 owner, while WooCommerce template state is verified directly through WordPress REST.'
             ].join('\n');
             await core.summary.addRaw(body).write();
             try {
