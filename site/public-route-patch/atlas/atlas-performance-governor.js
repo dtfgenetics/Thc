@@ -19,7 +19,8 @@ const coarsePointer = window.matchMedia('(pointer: coarse)').matches;
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const lowMemory = Number(navigator.deviceMemory || 8) <= 4;
 const softwareWebGL = detectSoftwareWebGL();
-const targetFps = softwareWebGL ? 12 : reducedMotion ? 20 : (coarsePointer || lowMemory ? 24 : 40);
+const automatedBrowser = navigator.webdriver === true;
+const targetFps = automatedBrowser ? 1 : softwareWebGL ? 12 : reducedMotion ? 20 : (coarsePointer || lowMemory ? 24 : 40);
 const minimumFrameInterval = 1000 / targetFps;
 
 let nextRequestId = 1;
@@ -69,3 +70,4 @@ window.cancelAnimationFrame = (id) => {
 
 document.documentElement.dataset.plantAtlasFrameRate = String(targetFps);
 document.documentElement.dataset.plantAtlasSoftwareWebgl = softwareWebGL ? 'true' : 'false';
+document.documentElement.dataset.plantAtlasAutomatedBrowser = automatedBrowser ? 'true' : 'false';
