@@ -9,6 +9,7 @@ on:
       - 'site/wordpress/pages/gallery.html'
       - 'site/wordpress/pages/about.html'
       - 'site/wordpress/pages/contact.html'
+      - 'site/public-route-patch/games/dtf-route.css'
       - 'data/dtf-visual-v1.json'
       - 'scripts/apply-wordpress-public-content-owned-routes.mjs'
       - 'scripts/apply-learning-visual-v1.mjs'
@@ -113,6 +114,19 @@ jobs:
           text=Path('scripts/publish-wordpress-genetics-library-cdn.mjs').read_text()
           assert text.index('apply-wordpress-genetics-visual-v1.mjs') < text.index('flush-hostinger-litespeed-mcp.mjs')
           PY
+
+      - name: Validate static game shell visual system
+        run: |
+          set -euo pipefail
+          file='site/public-route-patch/games/dtf-route.css'
+          test -s "$file"
+          grep -Fq -- '--bg:#07170f' "$file"
+          grep -Fq -- '--gold:#d5b15a' "$file"
+          grep -Fq -- '--surface:#102d1d' "$file"
+          grep -Fq -- '"Arial Narrow","Roboto Condensed"' "$file"
+          grep -Fq -- 'border-radius:8px' "$file"
+          grep -Fq -- '@media(max-width:430px)' "$file"
+          grep -Fq -- '@media(prefers-reduced-motion:reduce)' "$file"
 
       - name: Validate canonical handoff knows the shared visual system
         run: |
