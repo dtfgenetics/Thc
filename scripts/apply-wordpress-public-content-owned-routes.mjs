@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 import dns from 'node:dns';
-import { cp, mkdir, mkdtemp, writeFile } from 'node:fs/promises';
+import { cp, mkdir, mkdtemp, readFile, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import process from 'node:process';
@@ -11,6 +11,7 @@ const siteUrl = (process.env.WP_SITE_URL || 'https://dtfseeds.com').replace(/\/$
 const username = process.env.WP_API_USERNAME || '';
 const password = process.env.WP_API_PASSWORD || '';
 const sourceDir = process.env.CONTENT_DIR || '';
+const visualCssPath = process.env.DTF_VISUAL_CSS || join(process.cwd(), 'site/design-system/dtf-visual-v1.css');
 const preservationReport = process.env.OWNED_ROUTE_PRESERVATION_REPORT || join(
   process.env.BACKUP_ROOT || tmpdir(),
   'owned-route-preservation.json'
@@ -23,7 +24,7 @@ const auth = `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}
 const headers = {
   Authorization: auth,
   Accept: 'application/json',
-  'User-Agent': 'DTFSeeds-Ownership-Preserving-Reconcile/1.0'
+  'User-Agent': 'DTFSeeds-Ownership-Preserving-Reconcile/1.1'
 };
 
 const transientStatuses = new Set([408, 425, 429, 500, 502, 503, 504, 520, 522, 523, 524]);
@@ -158,6 +159,20 @@ for (const slug of ['home', 'learn']) {
   };
   await writeFile(join(ownedDir, `${slug}.html`), `${content}\n`, 'utf8');
   console.log(`Preserved Learning-owned /${slug}/ content from WordPress page ${page.id} (${preservation.routes[slug].contentSha256}).`);
+}
+
+// Canonical editorial roots consume the accepted DTF visual system from one
+// source-controlled stylesheet. Home/Learn/Seeds/Games remain delegated to
+// their dedicated owners and are intentionally not rewritten here.
+const visualCss = await readFile(visualCssPath, 'utf8');
+const visualStyleTag = `<style id="dtf-visual-v1">${visualCss}</style>`;
+for (const slug of ['community', 'gallery', 'about', 'contact']) {
+  const file = join(ownedDir, `${slug}.html`);
+  const content = await readFile(file, 'utf8');
+  if (!content.includes('class="dtf-v1"')) continue;
+  const cleaned = content.replace(/<style id="dtf-visual-v1">[\s\S]*?<\/style>\s*/i, '');
+  await writeFile(file, `${visualStyleTag}\n${cleaned.trim()}\n`, 'utf8');
+  console.log(`Applied shared DTF visual system to canonical /${slug}/ source.`);
 }
 
 await mkdir(dirname(preservationReport), { recursive: true });
