@@ -40,6 +40,8 @@ checks_new = '''  const checks = [
     ['/gallery/', 'data-dtf-layout="gallery-visual-v1"'],
     ['/about/', 'data-dtf-layout="about-visual-v1"'],
     ['/contact/', 'data-dtf-layout="contact-visual-v1"'],
+    ['/games/', '25 playable browser games'],
+    ['/tools/', 'Grow with records. Diagnose with evidence.'],
   ];'''
 if checks_old not in s:
     raise SystemExit('Expected route-repair verification array was not found after marker normalization')
@@ -68,6 +70,8 @@ grep -Fq 'data-dtf-layout="learn-v3"' "$script"
 grep -Fq 'data-dtf-genetics-library="2026"' "$script"
 grep -Fq 'data-dtf-layout="community-visual-v1"' "$script"
 grep -Fq 'data-dtf-layout="contact-visual-v1"' "$script"
+grep -Fq '25 playable browser games' "$script"
+grep -Fq 'Grow with records. Diagnose with evidence.' "$script"
 grep -Fq 'json: { dtf_repair_token: repairToken }' "$script"
 ! grep -Fq 'X-DTF-Repair-Token' "$script"
 node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs "$script"
