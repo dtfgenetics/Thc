@@ -40,7 +40,20 @@ jobs:
           : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
           : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
           node --check scripts/audit-wordpress-home-learn-storage.mjs
-          ! grep -Eq 'method:[[:space:]]*["'"'](?:POST|PUT|PATCH|DELETE)|file_put_contents|rename\(|unlink\(' scripts/audit-wordpress-home-learn-storage.mjs
+          python3 - <<'PY'
+          from pathlib import Path
+          source = Path('scripts/audit-wordpress-home-learn-storage.mjs').read_text()
+          forbidden = [
+              "method:'POST'", 'method:"POST"',
+              "method:'PUT'", 'method:"PUT"',
+              "method:'PATCH'", 'method:"PATCH"',
+              "method:'DELETE'", 'method:"DELETE"',
+              'file_put_contents', 'rename(', 'unlink('
+          ]
+          found = [token for token in forbidden if token in source]
+          if found:
+              raise SystemExit(f'Read-only audit contains forbidden mutation tokens: {found}')
+          PY
 
       - name: Read WordPress ownership and public render state
         id: audit
