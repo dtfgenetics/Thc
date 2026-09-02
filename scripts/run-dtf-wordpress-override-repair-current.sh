@@ -36,6 +36,9 @@ checks_new='''  const checks = [
     [`/index.php?pagename=learn&dtf_origin_check=${encodeURIComponent(token)}`, 'data-dtf-layout="learn-v3"', 'Grow education belongs in a clean, readable library.'],
     [`/?dtf_origin_check=${encodeURIComponent(token)}`, 'data-dtf-layout="home-v3"', 'THC Grow Doc, genetics, cultivation education, and games in one home.'],
     [`/learn/?dtf_origin_check=${encodeURIComponent(token)}`, 'data-dtf-layout="learn-v3"', 'Grow education belongs in a clean, readable library.'],
+    [`/learn/?dtf_origin_check=${encodeURIComponent(token)}`, 'Open the THC Living Plant Atlas', 'Grow education belongs in a clean, readable library.'],
+    [`/learn/atlas/?dtf_origin_check=${encodeURIComponent(token)}`, 'THC Living Plant Atlas', '__dtf_no_stale_atlas_marker__'],
+    [`/learn/atlas/atlas-3d/index.html?dtf_origin_check=${encodeURIComponent(token)}`, 'atlas-runtime.js', '__dtf_no_stale_atlas_runtime_marker__'],
     [`/games/?dtf_origin_check=${encodeURIComponent(token)}`, '25 playable browser games', '__dtf_no_stale_games_marker__'],
     [`/tools/?dtf_origin_check=${encodeURIComponent(token)}`, 'Grow with records. Diagnose with evidence.', '__dtf_no_stale_tools_marker__'],
   ];'''
@@ -50,6 +53,9 @@ grep -Fq "get_param('dtf_repair_token')" "$script"
 grep -Fq "return \$supplied !== '' && hash_equals(\$token, \$supplied);" "$script"
 grep -Fq 'data-dtf-layout="home-v3"' "$script"
 grep -Fq 'data-dtf-layout="learn-v3"' "$script"
+grep -Fq 'Open the THC Living Plant Atlas' "$script"
+grep -Fq '/learn/atlas/' "$script"
+grep -Fq 'atlas-runtime.js' "$script"
 grep -Fq '25 playable browser games' "$script"
 grep -Fq 'Grow with records. Diagnose with evidence.' "$script"
 grep -Fq 'json: { dtf_repair_token: token }' "$script"
