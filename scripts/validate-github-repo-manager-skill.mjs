@@ -1,10 +1,11 @@
 import { readFile } from 'node:fs/promises';
 
 const skillPath = '.agents/skills/github-repo-manager/SKILL.md';
+const hardeningPath = '.agents/skills/github-repo-manager/references/github-platform-hardening.md';
 const refs = [
   '.agents/skills/github-repo-manager/references/failure-research.md',
   '.agents/skills/github-repo-manager/references/git-operations-and-recovery.md',
-  '.agents/skills/github-repo-manager/references/github-platform-hardening.md'
+  hardeningPath
 ];
 
 const skill = await readFile(skillPath, 'utf8');
@@ -41,6 +42,24 @@ for (const ref of refs) {
   if (content.trim().length < 500) throw new Error(`${ref} is missing or unexpectedly small.`);
 }
 
+const hardening = await readFile(hardeningPath, 'utf8');
+const v3Markers = [
+  '## Production-branch governance target',
+  '## Required status checks',
+  '## PR review and fix-review loop',
+  '## Deployment environments and protection',
+  '## Workflow execution protections',
+  '## Security feature audit',
+  '## Reusable workflows',
+  '## Continuous repository-health loop',
+  '## Repository-manager state machine',
+  'inspect → isolate → reproduce → repair → narrow-test → review → synchronize → PR → exact-head CI'
+];
+const missingV3 = v3Markers.filter(marker => !hardening.includes(marker));
+if (missingV3.length) {
+  throw new Error(`GitHub repo manager V3 hardening profile is incomplete:\n${missingV3.map(x => `- ${x}`).join('\n')}`);
+}
+
 const agents = await readFile('AGENTS.md', 'utf8');
 if (!agents.includes('.agents/skills/github-repo-manager/SKILL.md')) {
   throw new Error('AGENTS.md no longer routes repository repair work through github-repo-manager.');
@@ -54,14 +73,16 @@ const forbidden = [
   /reset --hard main/i
 ];
 for (const pattern of forbidden) {
-  if (pattern.test(skill)) throw new Error(`Unsafe guidance matched ${pattern}.`);
+  if (pattern.test(skill) || pattern.test(hardening)) throw new Error(`Unsafe guidance matched ${pattern}.`);
 }
 
 console.log(JSON.stringify({
   ok: true,
   skill: skillPath,
-  version: '2.0.0',
+  coreSkillVersion: '2.0.0',
+  operatingProfile: '3.0.0',
   requiredMarkers: required.length,
+  v3HardeningMarkers: v3Markers.length,
   referencesChecked: refs.length,
   agentsRoutingVerified: true
 }, null, 2));
