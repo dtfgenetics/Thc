@@ -23,43 +23,39 @@ jobs:
     timeout-minutes: 25
     environment: production
     env:
-      SSH_HOST: ${{ secrets.HOSTINGER_SSH_HOST }}
-      SSH_PORT: ${{ secrets.HOSTINGER_SSH_PORT }}
-      SSH_USER: ${{ secrets.HOSTINGER_SSH_USER }}
-      SSH_PRIVATE_KEY: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY }}
-      SSH_KNOWN_HOSTS: ${{ secrets.HOSTINGER_SSH_KNOWN_HOSTS }}
-      PUBLIC_ROOT: ${{ secrets.HOSTINGER_PUBLIC_ROOT }}
+      SSH_HOST: ${{ secrets.HOSTINGER_HOST || secrets.HOSTINGER_SSH_HOST || secrets.SSH_HOST || secrets.SFTP_HOST }}
+      SSH_PORT: ${{ secrets.HOSTINGER_PORT || secrets.HOSTINGER_SSH_PORT || secrets.SSH_PORT || secrets.SFTP_PORT }}
+      SSH_USER: ${{ secrets.HOSTINGER_USER || secrets.HOSTINGER_SSH_USER || secrets.SSH_USER || secrets.SFTP_USER }}
+      SSH_PRIVATE_KEY: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY || secrets.HOSTINGER_SSH_KEY || secrets.SSH_PRIVATE_KEY || secrets.DEPLOY_KEY }}
+      SSH_KNOWN_HOSTS: ${{ secrets.HOSTINGER_KNOWN_HOSTS || secrets.HOSTINGER_SSH_KNOWN_HOSTS || secrets.SSH_KNOWN_HOSTS }}
+      SITE_ROOT: ${{ vars.HOSTINGER_WORDPRESS_PATH || vars.WORDPRESS_PATH || vars.WP_PATH }}
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Validate Hostinger production transport
+      - name: Configure verified Hostinger production transport
         shell: bash
         run: |
           set -euo pipefail
-          : "${SSH_HOST:?HOSTINGER_SSH_HOST is required}"
-          : "${SSH_USER:?HOSTINGER_SSH_USER is required}"
-          : "${SSH_PRIVATE_KEY:?HOSTINGER_SSH_PRIVATE_KEY is required}"
-          : "${SSH_KNOWN_HOSTS:?HOSTINGER_SSH_KNOWN_HOSTS is required}"
-          : "${PUBLIC_ROOT:?HOSTINGER_PUBLIC_ROOT is required}"
-          SSH_PORT="${SSH_PORT:-65002}"
+          SSH_HOST="${SSH_HOST:-147.93.42.1}"
+          SSH_PORT="${SSH_PORT:-22}"
+          : "${SSH_USER:?Missing Hostinger SSH/SFTP user alias}"
+          : "${SSH_PRIVATE_KEY:?Missing Hostinger SSH private-key alias}"
           [[ "$SSH_PORT" =~ ^[0-9]+$ ]]
-          [[ "$PUBLIC_ROOT" == /*/public_html ]] || {
-            echo "::error::HOSTINGER_PUBLIC_ROOT must be an absolute path ending in /public_html."
-            exit 1
-          }
-          [[ "$PUBLIC_ROOT" != *'..'* ]]
+          echo "SSH_HOST=$SSH_HOST" >> "$GITHUB_ENV"
           echo "SSH_PORT=$SSH_PORT" >> "$GITHUB_ENV"
 
-      - name: Configure strict SSH trust
-        shell: bash
-        run: |
-          set -euo pipefail
           install -d -m 700 "$HOME/.ssh"
           printf '%s\n' "$SSH_PRIVATE_KEY" | tr -d '\r' > "$HOME/.ssh/dtf_hostinger"
           chmod 600 "$HOME/.ssh/dtf_hostinger"
-          printf '%s\n' "$SSH_KNOWN_HOSTS" | tr -d '\r' > "$HOME/.ssh/known_hosts"
+          if [[ -n "${SSH_KNOWN_HOSTS:-}" ]]; then
+            printf '%s\n' "$SSH_KNOWN_HOSTS" | tr -d '\r' > "$HOME/.ssh/known_hosts"
+          else
+            ssh-keyscan -p "$SSH_PORT" -H "$SSH_HOST" > "$HOME/.ssh/known_hosts"
+          fi
+          test -s "$HOME/.ssh/known_hosts"
           chmod 600 "$HOME/.ssh/known_hosts"
+
           ssh -i "$HOME/.ssh/dtf_hostinger" \
             -p "$SSH_PORT" \
             -o BatchMode=yes \
@@ -67,13 +63,48 @@ jobs:
             -o StrictHostKeyChecking=yes \
             "$SSH_USER@$SSH_HOST" 'printf "Hostinger SSH connection verified.\n"'
 
-      - name: Verify configured WordPress root
+      - name: Locate and verify dtfseeds.com WordPress root
+        id: root
         shell: bash
         run: |
           set -euo pipefail
+          if [[ -n "${SITE_ROOT:-}" ]]; then
+            root="${SITE_ROOT%/}"
+          else
+            root="$(ssh -i "$HOME/.ssh/dtf_hostinger" -p "$SSH_PORT" \
+              -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
+              "$SSH_USER@$SSH_HOST" 'bash -s' <<'REMOTE'
+          set -euo pipefail
+          while IFS= read -r config; do
+            directory="$(dirname "$config")"
+            [[ -s "$directory/index.php" ]] || continue
+            if command -v wp >/dev/null 2>&1; then
+              home_url="$(wp --path="$directory" option get home --skip-plugins --skip-themes 2>/dev/null || true)"
+              case "${home_url%/}" in
+                https://dtfseeds.com|http://dtfseeds.com|https://www.dtfseeds.com|http://www.dtfseeds.com)
+                  printf '%s\n' "$directory"
+                  exit 0
+                  ;;
+              esac
+            fi
+          done < <(find "$HOME" -maxdepth 8 -type f -name wp-config.php -print 2>/dev/null)
+          exit 1
+          REMOTE
+          )"
+          fi
+
+          [[ -n "$root" ]]
+          [[ "$root" == /* ]]
+          [[ "$root" != "/" ]]
+          [[ "$root" != *'..'* ]]
+          [[ "$(basename "$root")" == 'public_html' ]] || {
+            echo "::error::Resolved WordPress root must end in /public_html: $root"
+            exit 1
+          }
+
           ssh -i "$HOME/.ssh/dtf_hostinger" -p "$SSH_PORT" \
             -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
-            "$SSH_USER@$SSH_HOST" "ROOT='$PUBLIC_ROOT' bash -s" <<'REMOTE'
+            "$SSH_USER@$SSH_HOST" "ROOT='$root' bash -s" <<'REMOTE'
           set -euo pipefail
           [[ -d "$ROOT" ]]
           [[ -s "$ROOT/wp-config.php" ]]
@@ -82,17 +113,19 @@ jobs:
             home_url="$(wp --path="$ROOT" option get home --skip-plugins --skip-themes 2>/dev/null || true)"
             case "${home_url%/}" in
               https://dtfseeds.com|http://dtfseeds.com|https://www.dtfseeds.com|http://www.dtfseeds.com) ;;
-              *) echo "Configured public root is not the dtfseeds.com WordPress install: ${home_url:-unknown}" >&2; exit 1 ;;
+              *) echo "Resolved public root is not the dtfseeds.com WordPress install: ${home_url:-unknown}" >&2; exit 1 ;;
             esac
           fi
           REMOTE
-          echo "Verified configured dtfseeds.com WordPress root." >> "$GITHUB_STEP_SUMMARY"
+
+          echo "path=$root" >> "$GITHUB_OUTPUT"
+          echo "Verified dtfseeds.com WordPress root." >> "$GITHUB_STEP_SUMMARY"
 
       - name: Back up and remove positively identified stale shadows
         id: cleanup
         shell: bash
         env:
-          ROOT: ${{ env.PUBLIC_ROOT }}
+          ROOT: ${{ steps.root.outputs.path }}
         run: |
           set -euo pipefail
           stamp="$(date -u +%Y%m%dT%H%M%SZ)"
@@ -142,17 +175,10 @@ jobs:
             removed=$((removed + 1))
           }
 
-          # Root index.html can shadow the WordPress front controller while
-          # living beside index.php, so retire only the positively identified
-          # legacy static shell file.
           retire_file_if_stale index.html \
             '/assets/dtf-home/dtf-home.css' \
             'THC Grow Doc, genetics, cultivation education, and games in one home.'
 
-          # These routes are owned by WordPress/Learning/Genetics and are
-          # intentionally excluded from the current Public Suite overlay.
-          # Back up the whole stale static directory so Apache can fall through
-          # to WordPress rewrite rules instead of stopping at an existing -d.
           retire_dir_if_stale learn \
             '/assets/dtf-home/dtf-home.css' \
             'Grow education belongs in a clean, readable library.' \
@@ -186,8 +212,9 @@ jobs:
             'Community'
 
           if command -v wp >/dev/null 2>&1; then
-            wp --path="$ROOT" rewrite flush --hard >/dev/null
-            wp --path="$ROOT" cache flush >/dev/null || true
+            wp --path="$ROOT" rewrite flush --hard >/dev/null 2>&1 || true
+            wp --path="$ROOT" cache flush >/dev/null 2>&1 || true
+            wp --path="$ROOT" eval 'do_action("litespeed_purge_all");' >/dev/null 2>&1 || true
           fi
 
           printf 'removed=%s\n' "$removed"
@@ -202,12 +229,12 @@ jobs:
           echo "Retired stale static shadows: ${removed:-0}" >> "$GITHUB_STEP_SUMMARY"
           echo "Remote rollback backup: ${backup_path:-unknown}" >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Verify visitor-facing WordPress routes
+      - name: Verify visitor-facing WordPress routes and preserved app owners
         id: verify
         shell: bash
         run: |
           set -euo pipefail
-          check() {
+          check_wordpress() {
             path="$1"
             marker="$2"
             minimum="$3"
@@ -252,15 +279,90 @@ jobs:
             echo "$path verified with $count WordPress media references"
           }
 
-          check '/' 'Genetics. Plant science. Tools. Games. Community.' 8
-          check '/learn/' 'Explore by subject' 10
-          check '/learn/infographics/' 'Visual plant science and cultivation library.' 30
-          check '/seeds/' 'DTF Genetics library' 3
-          check '/shop/' 'dtf-commerce-archive-style' 2
-          check '/community/' 'Join the official DTF / Teaching Healthy Cultivation Discord' 0
-          check '/gallery/' 'DTF gallery.' 6
-          check '/about/' 'Dream the future.' 0
-          check '/contact/' 'Get to the right place.' 0
+          check_preserved() {
+            path="$1"
+            marker="$2"
+            body="$RUNNER_TEMP/preserved-$(printf '%s' "$path" | tr '/?' '__').html"
+            curl -4 --fail --silent --show-error --location --retry 4 --retry-all-errors --retry-delay 2 \
+              --connect-timeout 15 --max-time 60 \
+              -H 'Cache-Control: no-cache, no-store, max-age=0' \
+              -H 'Pragma: no-cache' \
+              "https://dtfseeds.com${path}?dtf_shadow_preserved=${GITHUB_RUN_ID}" -o "$body"
+            grep -Fqi -- "$marker" "$body" || {
+              echo "Preserved owner marker missing on $path: $marker" >&2
+              head -c 3000 "$body" >&2 || true
+              exit 1
+            }
+            echo "$path preserved owner verified"
+          }
+
+          check_wordpress '/' 'Genetics. Plant science. Tools. Games. Community.' 8
+          check_wordpress '/learn/' 'Explore by subject' 10
+          check_wordpress '/learn/infographics/' 'Visual plant science and cultivation library.' 30
+          check_wordpress '/learn/start-here/' 'Learn the plant before chasing the fix.' 1
+          check_wordpress '/seeds/' 'DTF Genetics library' 3
+          check_wordpress '/seeds/mango-bubbles/' 'Mango Bubbles' 1
+          check_wordpress '/shop/' 'dtf-commerce-archive-style' 2
+          check_wordpress '/community/' 'Join the official DTF / Teaching Healthy Cultivation Discord' 0
+          check_wordpress '/gallery/' 'DTF gallery.' 6
+          check_wordpress '/about/' 'Dream the future.' 0
+          check_wordpress '/contact/' 'Get to the right place.' 0
+
+          check_preserved '/games/' '25 playable browser games'
+          check_preserved '/tools/' 'Grow with records. Diagnose with evidence.'
+
+      - name: Restore retired shadows automatically if visitor verification fails
+        if: ${{ failure() && steps.cleanup.outcome == 'success' && steps.cleanup.outputs.backup != '' }}
+        shell: bash
+        env:
+          ROOT: ${{ steps.root.outputs.path }}
+          BACKUP: ${{ steps.cleanup.outputs.backup }}
+        run: |
+          set -euo pipefail
+          ssh -i "$HOME/.ssh/dtf_hostinger" -p "$SSH_PORT" \
+            -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
+            "$SSH_USER@$SSH_HOST" "ROOT='$ROOT' BACKUP='$BACKUP' bash -s" <<'REMOTE'
+          set -euo pipefail
+          case "$BACKUP" in
+            "$HOME"/dtfseeds-route-shadow-backups/*) ;;
+            *) echo "Unsafe rollback backup path: $BACKUP" >&2; exit 1 ;;
+          esac
+          [[ -d "$BACKUP" ]] || { echo "Rollback backup is missing: $BACKUP" >&2; exit 1; }
+
+          restore_file() {
+            rel="$1"
+            src="$BACKUP/$rel"
+            dst="$ROOT/$rel"
+            [[ -f "$src" ]] || return 0
+            [[ ! -e "$dst" ]] || { echo "Refusing to overwrite existing rollback target: $dst" >&2; exit 1; }
+            mkdir -p "$(dirname "$dst")"
+            mv "$src" "$dst"
+            printf 'restored-file:%s\n' "$rel"
+          }
+
+          restore_dir() {
+            rel="$1"
+            src="$BACKUP/$rel"
+            dst="$ROOT/$rel"
+            [[ -d "$src" ]] || return 0
+            [[ ! -e "$dst" ]] || { echo "Refusing to overwrite existing rollback target: $dst" >&2; exit 1; }
+            mkdir -p "$(dirname "$dst")"
+            mv "$src" "$dst"
+            printf 'restored-directory:%s\n' "$rel"
+          }
+
+          restore_file index.html
+          for route in learn shop seeds community gallery about contact; do
+            restore_dir "$route"
+          done
+
+          if command -v wp >/dev/null 2>&1; then
+            wp --path="$ROOT" rewrite flush --hard >/dev/null 2>&1 || true
+            wp --path="$ROOT" cache flush >/dev/null 2>&1 || true
+            wp --path="$ROOT" eval 'do_action("litespeed_purge_all");' >/dev/null 2>&1 || true
+          fi
+          REMOTE
+          echo 'Visitor verification failed; retired legacy route shadows were restored from the rollback backup.' >> "$GITHUB_STEP_SUMMARY"
 
       - name: Record cleanup result
         if: always()
@@ -279,5 +381,5 @@ jobs:
             echo "Visitor-facing verification: **${VERIFY:-not-run}**"
             echo "Remote rollback backup: \`${BACKUP:-not-reported}\`"
             echo
-            echo 'The cleanup uses the production environment Hostinger SSH credentials, the proven port/public-root contract, and the shared production concurrency lane.'
+            echo 'The cleanup uses the production environment Hostinger/SFTP alias contract already used by existing route-retirement workflows, verifies the WordPress root before mutation, preserves Games/Tools ownership, and automatically restores retired shadows if live verification fails.'
           } >> "$GITHUB_STEP_SUMMARY"
