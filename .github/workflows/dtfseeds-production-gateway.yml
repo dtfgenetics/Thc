@@ -174,10 +174,21 @@ jobs:
         run: |
           set -euo pipefail
           check() {
-            local path="$1" marker="$2"
-            curl -4 -fsSL --retry 5 --retry-all-errors --retry-delay 4 \
+            local path="$1" marker="$2" body
+            body="$(mktemp)"
+            if ! curl -4 -fsSL --retry 5 --retry-all-errors --retry-delay 4 \
+              --output "$body" \
               -H 'Cache-Control: no-cache, no-store, max-age=0' \
-              "https://dtfseeds.com${path}?dtf_gateway=${GITHUB_RUN_ID}" | grep -Fqi "$marker"
+              "https://dtfseeds.com${path}?dtf_gateway=${GITHUB_RUN_ID}"; then
+              rm -f "$body"
+              return 1
+            fi
+            if ! grep -Fqi "$marker" "$body"; then
+              echo "Expected marker '$marker' was not found at $path" >&2
+              rm -f "$body"
+              return 1
+            fi
+            rm -f "$body"
           }
           check '/' 'Genetics first. Cultivation science behind it.'
           check '/learn/' 'Learn the plant as a connected system.'
@@ -204,10 +215,21 @@ jobs:
         run: |
           set -euo pipefail
           check() {
-            local path="$1" marker="$2"
-            curl -4 -fsSL --retry 5 --retry-all-errors --retry-delay 4 \
+            local path="$1" marker="$2" body
+            body="$(mktemp)"
+            if ! curl -4 -fsSL --retry 5 --retry-all-errors --retry-delay 4 \
+              --output "$body" \
               -H 'Cache-Control: no-cache, no-store, max-age=0' \
-              "https://dtfseeds.com${path}?dtf_gateway=${GITHUB_RUN_ID}" | grep -Fqi "$marker"
+              "https://dtfseeds.com${path}?dtf_gateway=${GITHUB_RUN_ID}"; then
+              rm -f "$body"
+              return 1
+            fi
+            if ! grep -Fqi "$marker" "$body"; then
+              echo "Expected marker '$marker' was not found at $path" >&2
+              rm -f "$body"
+              return 1
+            fi
+            rm -f "$body"
           }
           check '/games/' '25 playable browser games'
           check '/games/spin-the-strain/' 'All 18 entries appear once before this mode starts a new cycle.'
