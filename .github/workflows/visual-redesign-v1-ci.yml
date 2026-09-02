@@ -5,7 +5,12 @@ on:
     branches: [visual-redesign-v1]
     paths:
       - 'site/design-system/**'
+      - 'site/wordpress/pages/community.html'
+      - 'site/wordpress/pages/gallery.html'
+      - 'site/wordpress/pages/about.html'
+      - 'site/wordpress/pages/contact.html'
       - 'data/dtf-visual-v1.json'
+      - 'scripts/apply-wordpress-public-content-owned-routes.mjs'
       - 'scripts/rebuild-wordpress-visual-v4.mjs'
       - 'scripts/rebuild-wordpress-support-pages-v1.mjs'
       - '.github/workflows/visual-redesign-v1-ci.yml'
@@ -20,22 +25,45 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+
       - name: Validate JavaScript syntax
         run: |
+          node --check scripts/apply-wordpress-public-content-owned-routes.mjs
           node --check scripts/rebuild-wordpress-visual-v4.mjs
           node --check scripts/rebuild-wordpress-support-pages-v1.mjs
+
       - name: Validate design specification JSON
         run: node -e "JSON.parse(require('fs').readFileSync('data/dtf-visual-v1.json','utf8')); console.log('visual spec ok')"
+
       - name: Validate required design tokens
         run: |
           set -euo pipefail
           css='site/design-system/dtf-visual-v1.css'
+          test -s "$css"
           grep -Fq -- '--dtf-bg:#07170f' "$css"
           grep -Fq -- '--dtf-gold:#d5b15a' "$css"
           grep -Fq -- '.strain-card' "$css"
           grep -Fq -- '.game-card' "$css"
           grep -Fq -- '.footer-shell' "$css"
-      - name: Validate page markers and canonical destinations
+          grep -Fq -- '@media(max-width:640px)' "$css"
+
+      - name: Validate ownership-safe editorial integration
+        run: |
+          set -euo pipefail
+          owner='scripts/apply-wordpress-public-content-owned-routes.mjs'
+          grep -Fq "site/design-system/dtf-visual-v1.css" "$owner"
+          grep -Fq "for (const slug of ['community', 'gallery', 'about', 'contact'])" "$owner"
+          grep -Fq "for (const slug of ['home', 'learn'])" "$owner"
+          for page in community gallery about contact; do
+            file="site/wordpress/pages/$page.html"
+            test -s "$file"
+            grep -Fq 'class="dtf-v1"' "$file"
+            grep -Fq "data-dtf-layout=\"$page-visual-v1\"" "$file"
+          done
+          grep -Fq 'Join the official DTF / Teaching Healthy Cultivation Discord' site/wordpress/pages/community.html
+          grep -Fq 'Join the official DTF / Teaching Healthy Cultivation Discord' site/wordpress/pages/contact.html
+
+      - name: Validate reference page markers and canonical destinations
         run: |
           set -euo pipefail
           core='scripts/rebuild-wordpress-visual-v4.mjs'
