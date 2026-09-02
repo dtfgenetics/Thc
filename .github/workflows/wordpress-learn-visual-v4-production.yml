@@ -1,0 +1,64 @@
+name: WordPress Learn Visual V4 Production
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/rebuild-wordpress-learn-visual-v4.mjs'
+      - '.github/workflows/wordpress-learn-visual-v4-production.yml'
+
+concurrency:
+  group: wordpress-learn-visual-v4-production
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate required production secrets
+        env:
+          WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+          WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
+          test -s scripts/rebuild-wordpress-learn-visual-v4.mjs
+
+      - name: Publish Learn visual V4
+        env:
+          WP_SITE_URL: https://dtfseeds.com
+          WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+          WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+          APPLY_LEARN_V4: 'true'
+        run: node scripts/rebuild-wordpress-learn-visual-v4.mjs
+
+      - name: Verify live Learn page
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3 4 5 6; do
+            html="$(curl -fsSL --retry 2 --retry-delay 2 https://dtfseeds.com/learn/ || true)"
+            if printf '%s' "$html" | grep -q 'data-dtf-layout="learn-v4"' \
+              && printf '%s' "$html" | grep -q 'Learn the plant. Then learn the grow.' \
+              && printf '%s' "$html" | grep -q '/learn/start-here/' \
+              && printf '%s' "$html" | grep -q '/learn/infographics/' \
+              && printf '%s' "$html" | grep -q '/atlas/'; then
+              echo 'Learn V4 live verification passed.'
+              exit 0
+            fi
+            sleep 10
+          done
+          echo 'Learn V4 marker or required navigation was not found on the live page.' >&2
+          exit 1
