@@ -7,7 +7,7 @@ const password=process.env.WP_API_PASSWORD||'';
 if(!username||!password) throw new Error('WP_API_USERNAME and WP_API_PASSWORD are required');
 dns.setDefaultResultOrder('ipv4first');
 const auth=`Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`;
-const headers={Authorization:auth,Accept:'application/json','User-Agent':'DTFSeeds-Owner-Storage-Audit/1.0'};
+const headers={Authorization:auth,Accept:'application/json','User-Agent':'DTFSeeds-Owner-Storage-Audit/1.1'};
 
 async function requestJson(path){
   const r=await fetch(`${siteUrl}${path}`,{headers,redirect:'follow',signal:AbortSignal.timeout(45000)});
@@ -30,6 +30,9 @@ function markers(content){
     learningV4:s.includes('data-dtf-learning-map="v4"')||l.includes('start with the question you are trying to answer.'),
     canonicalHome:l.includes('genetics, cultivation education, practical tools, and original cannabis games.'),
     canonicalLearn:l.includes('understand the plant. build the environment. make better decisions.'),
+    atlasCta:l.includes('open the thc living plant atlas'),
+    atlasHub:l.includes('thc living plant atlas'),
+    atlasRuntime:l.includes('atlas-runtime.js')||l.includes('three@0.185.1'),
     oldHome:l.includes('thc grow doc, genetics, cultivation education, and games in one home.'),
     oldLearn:l.includes('grow education belongs in a clean, readable library.'),
     oldHomeCss:l.includes('/assets/dtf-home/dtf-home.css'),
@@ -42,14 +45,15 @@ function pageReport(page){
   return {
     id:Number(page.id||0),slug:page.slug||'',status:page.status||'',parent:Number(page.parent||0),
     link:page.link||'',title:page.title?.raw||page.title?.rendered||'',featuredMedia:Number(page.featured_media||0),
-    contentLength:Buffer.byteLength(content,'utf8'),contentSha256:digest(content),markers:markers(content)
+    contentLength:Buffer.byteLength(content,'utf8'),contentSha256:digest(content),markers:markers(content),
+    excerpt:String(content).replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim().slice(0,420)
   };
 }
 async function publicProbe(path){
   const u=new URL(path,siteUrl);u.searchParams.set('dtf_storage_audit',`${Date.now()}-${crypto.randomBytes(4).toString('hex')}`);
-  const r=await fetch(u,{redirect:'follow',headers:{'Cache-Control':'no-cache, no-store, max-age=0',Pragma:'no-cache','User-Agent':'DTFSeeds-Owner-Storage-Audit/1.0'},signal:AbortSignal.timeout(45000)});
+  const r=await fetch(u,{redirect:'follow',headers:{'Cache-Control':'no-cache, no-store, max-age=0',Pragma:'no-cache','User-Agent':'DTFSeeds-Owner-Storage-Audit/1.1'},signal:AbortSignal.timeout(45000)});
   const html=await r.text();
-  return {path,status:r.status,bytes:Buffer.byteLength(html,'utf8'),markers:markers(html),title:(html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1]||'').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim().slice(0,200)};
+  return {path,status:r.status,bytes:Buffer.byteLength(html,'utf8'),markers:markers(html),title:(html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1]||'').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim().slice(0,200),excerpt:html.replace(/<script[\s\S]*?<\/script>/gi,' ').replace(/<style[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim().slice(0,420)};
 }
 
 const settings=await requestJson('/wp-json/wp/v2/settings?context=edit');
@@ -59,7 +63,7 @@ const frontId=Number(settings.page_on_front||0);
 let frontPage=null;
 if(frontId) frontPage=await requestJson(`/wp-json/wp/v2/pages/${frontId}?context=edit`);
 const publicRoutes=[];
-for(const p of ['/index.php','/','/index.php?pagename=learn','/learn/']) publicRoutes.push(await publicProbe(p));
+for(const p of ['/index.php','/','/index.php?pagename=learn','/learn/','/learn/atlas/','/learn/atlas/atlas-3d/index.html']) publicRoutes.push(await publicProbe(p));
 console.log(JSON.stringify({
   generatedAt:new Date().toISOString(),siteUrl,
   settings:{showOnFront:settings.show_on_front||'',pageOnFront:frontId,pageForPosts:Number(settings.page_for_posts||0),title:settings.title||''},
