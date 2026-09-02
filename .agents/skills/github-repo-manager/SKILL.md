@@ -1,250 +1,503 @@
 ---
 name: github-repo-manager
-description: Manage, repair, test, synchronize, merge, and push GitHub repositories end to end. Use for broken pushes, merge conflicts, failed GitHub Actions, branch divergence, repository audits, code fixes, dependency or workflow failures, pull requests, releases, or requests to get repository work safely onto main. If an attempted fix fails, diagnose the exact failure, research current authoritative sources, apply a new evidence-based fix, retest, and continue until the task passes or a genuine external blocker is proven.
-compatibility: Designed for OpenAI Codex and other Agent Skills clients with git or GitHub access; web research is strongly recommended for unresolved or version-sensitive failures.
+description: Operate, repair, synchronize, code, test, review, merge, release, and recover GitHub repositories end to end. Use for pushes/pulls, branch divergence, merge conflicts, failed Actions, broken builds, dependency failures, PR integration, repository audits, releases, production handoff, or requests to finish repository work without the user needing to know each Git/GitHub step. If a repair fails, diagnose the exact evidence, research current authoritative sources, change the hypothesis, retest, and continue until the requested state passes or a genuine external blocker is proven.
+compatibility: Designed for OpenAI Codex and other Agent Skills clients with git/GitHub access. Current web research is required for unfamiliar, security-sensitive, or version-sensitive GitHub/platform behavior.
 metadata:
   author: dtfgenetics
-  version: "1.0.0"
+  version: "2.0.0"
 ---
 
 # GitHub Repository Manager
 
-Use this skill as the repository-control layer for engineering work. Its job is to move from an imperfect repository state to a tested, synchronized, reviewable, and verifiably successful state rather than merely describing what should be done.
+Use this skill as the repository-control layer for engineering work. The user should be able to say things such as **fix the repo**, **push this**, **pull the latest work**, **merge everything that is ready**, **fix conflicts**, **repair CI**, **finish the code**, or **get this live** without knowing the underlying Git/GitHub mechanics.
 
-## Core execution contract
+The goal is not to perform isolated Git commands. The goal is to move the repository from its real current state to a synchronized, tested, reviewable, recoverable, and verifiably successful state while preserving unrelated work.
 
-When the user asks to fix, repair, reconcile, push, merge, manage, audit, deploy, or finish work in a repository:
+## Non-negotiable execution contract
 
-1. Inspect the real repository state first.
-2. Identify the source of truth and applicable repository instructions.
-3. Make the smallest complete root-cause fix.
-4. Test the changed behavior.
-5. Commit and synchronize the change using the repository's branch policy.
-6. Follow the CI result associated with the new commit.
-7. If it fails, diagnose the exact failing job/step/log before changing more code.
-8. Research unresolved or version-sensitive failures using current authoritative sources.
-9. Apply a materially different evidence-based fix, retest, and follow CI again.
-10. Continue until the requested repository state is passing or a genuine external blocker is established.
+When the user authorizes repository work:
 
-Do not stop at a repairable error and convert the task into a generic plan. Do not repeat the same failed action without new evidence.
+1. Inspect the real repository, branch, PR, workflow, and instruction state first.
+2. Identify the source of truth and the intended destination branch/environment.
+3. Preserve unrelated and concurrent work.
+4. Make the smallest complete root-cause change.
+5. Validate locally or through the narrowest available automated check.
+6. Synchronize using the repository's branch/worktree policy.
+7. Open/update the PR or otherwise integrate through the repository's approved path.
+8. Follow CI for the **exact new commit**.
+9. If it fails, inspect the exact failing run/job/step/log before editing more code.
+10. Research current authoritative sources when the behavior is unfamiliar, security-sensitive, version-sensitive, or the first evidence-based repair did not work.
+11. Apply a materially different evidence-backed repair and retest.
+12. Continue until the requested state passes or a genuine external blocker is established.
+13. If deployment is requested, continue through the owning deployment skill/workflow and visitor/runtime verification. A merge to `main` is not proof that production changed.
+
+A repairable failure is not a stopping point. Do not turn a failing test, conflict, rejected push, or broken workflow into a generic plan when the available tools can continue the repair.
 
 ## Authority order
 
-Before editing, read instructions in this order when they exist:
+Before editing, read current instructions in this order when they exist:
 
-1. Repository-level `AGENTS.md` or equivalent agent instructions.
-2. Repository safety/source-of-truth instructions such as `CLAUDE.md`.
-3. The skill for the subsystem being changed.
-4. Route-, app-, package-, or deployment-specific documentation.
-5. Current source code, tests, workflows, configuration, and recent commit history.
+1. repository `AGENTS.md` or equivalent agent instructions;
+2. repository safety/source-of-truth file such as `CLAUDE.md`;
+3. project-isolation/worktree instructions;
+4. this skill;
+5. subsystem-specific skills and source-of-truth documentation;
+6. deployment/publishing instructions when live state is in scope;
+7. current source, tests, workflows, configuration, PRs, and recent commit history.
 
-More specific current instructions beat older general notes. If two authoritative files conflict and the correct behavior cannot be inferred safely from code/tests/history, report the conflict instead of silently choosing a destructive interpretation.
+More specific current instructions beat older general notes. If authoritative instructions truly conflict and safe behavior cannot be inferred from tests/history/source ownership, preserve the safer state and surface the conflict rather than silently choosing a destructive interpretation.
 
-## Repository discovery
+For `dtfgenetics/Thc`, also follow:
 
-For every new repository task, establish:
+- `.agents/skills/parallel-project-manager/SKILL.md`
+- `docs/PARALLEL_PROJECT_WORKFLOW.md`
+- `docs/CONTENT_PRESERVATION_STANDARD.md` when canonical content/data is touched
+- `.agents/skills/dtfseeds-production-publishing/SKILL.md` when dtfseeds.com live state is requested
 
-- repository owner/name;
-- default and production branch;
-- current head SHA;
-- authenticated permissions;
-- relevant open pull requests;
-- recent failed CI/workflow runs;
-- changed subsystem and source-of-truth files;
-- whether the task includes deployment or only repository state.
+## Repository preflight: build a health packet first
 
-For multi-repository work, make the dependency/order relationship explicit before writing. Never assume similarly named repositories are mirrors.
+For every non-trivial repository task, establish as many of these as the available tooling supports:
 
-## Preserve user and concurrent work
+- repository owner/name and remote URLs;
+- default branch and production branch;
+- current destination head SHA;
+- current working branch/worktree and uncommitted changes;
+- upstream tracking and ahead/behind/divergence state;
+- relevant open PRs and their mergeability;
+- current required checks and exact PR/head check state;
+- recent failed/cancelled workflow runs relevant to the task;
+- branch protection and repository rulesets;
+- merge queue state when configured;
+- relevant environments/deployment gates;
+- changed subsystem and canonical source files;
+- package manager/runtime/lockfiles for the changed code;
+- whether the task affects generated artifacts, canonical content, binaries, releases, or production;
+- whether another active branch/PR appears to modify the same ownership surface.
 
-- Treat unrelated existing work as owned by somebody else unless the task explicitly includes it.
-- Re-read the destination branch head immediately before the final merge/ref update when concurrent work is possible.
-- Never force-update a production branch merely to simplify conflict resolution.
-- Never use a blanket `ours` or `theirs` merge strategy across a conflict set.
-- Do not delete or replace files just because they are inconvenient to merge.
-- Prefer source changes over editing generated artifacts when a generator/source-of-truth exists.
+Do not assume a branch is protected merely because it is named `main`. Do not assume a repository has no rules because the legacy branch-protection API is empty; inspect rulesets too when accessible.
 
-## Branch and integration policy
+If `main`/production is unprotected, report that as a governance risk but **do not exploit it**. Continue to use PR, validation, and synchronization discipline unless the repository has an explicit different policy.
 
-Follow the repository's documented branch policy. If none exists:
+## Intent router
 
-1. Create a focused repair/feature branch from the latest destination head.
-2. Make atomic commits with messages that describe the root-cause change.
-3. Open a small pull request targeting the intended branch.
-4. Verify the PR head is still current before merge.
-5. Merge only after applicable tests/checks pass or an explicitly documented exception applies.
+Translate common user requests into complete operations.
 
-For `dtfgenetics/Thc`, `main` is the production branch and the repository prefers small pull requests. Do not treat an unmerged repair branch as completed production work.
+### "Pull the latest" / "sync this"
+
+Do not begin with a blind `git pull`. Read `references/git-operations-and-recovery.md` and inspect status/divergence first. Fetch, then choose fast-forward, rebase, merge, or branch preservation deliberately.
+
+### "Push this"
+
+Verify the active project branch, uncommitted diff, destination remote, tests, upstream state, and current target head. Push the intended branch. Open/update a PR when repository policy expects one. Do not push accidental unrelated changes.
+
+### "Merge this" / "merge what is ready"
+
+For each candidate PR:
+
+- verify scope and destination;
+- verify it is not superseded by a newer PR;
+- inspect conflicts and review comments;
+- verify required checks for the exact head;
+- ensure the target has not moved incompatibly;
+- use the configured merge queue when required;
+- merge using repository policy;
+- follow post-merge CI/deployment when relevant.
+
+Do not bulk-merge merely because several PRs show green independently if they overlap or share a production ownership surface.
+
+### "Fix conflicts"
+
+Use semantic conflict repair, not blanket side selection. Read `references/git-operations-and-recovery.md`.
+
+### "Fix the repo" / "audit everything"
+
+Enter repository audit mode below. Prioritize high-impact blockers and repair high-confidence issues instead of returning only a long checklist.
+
+### "Fix the code"
+
+Reproduce the failure, identify the owning subsystem/source, patch the root cause, add/update tests when practical, run the narrowest checks first, then repository-required gates.
+
+### "Fix GitHub Actions"
+
+Follow the exact-run CI repair loop below. Treat permissions, event context, path filters, concurrency, environment protection, runner/runtime drift, and verifier false-negatives as first-class failure categories.
+
+### "Release/tag this"
+
+Use the release safety section. Never move/delete historical tags casually.
+
+### "Make it live"
+
+Repository integration is only the first half. Hand off to the actual deployment owner and verify the real target environment.
+
+## Preserve user, canonical, and concurrent work
+
+- Treat unrelated existing changes as owned by somebody else unless explicitly included.
+- Use the repository's worktree/parallel-project model instead of switching a shared checkout between simultaneous projects.
+- Re-read the destination head immediately before the final integration step.
+- Never force-update `main`/production merely to simplify history.
+- Never use blanket `ours` or `theirs` across a conflict set.
+- Never delete files because they are inconvenient to merge.
+- Prefer canonical source changes over editing generated output.
+- When canonical content/data is append-only or preservation-controlled, additions must not silently replace existing records. Follow `docs/CONTENT_PRESERVATION_STANDARD.md` and its authorization rules.
+- Mutable pointers such as "current batch", generated catalogs, deployment manifests, or indexes are not authorization to truncate canonical source.
+
+## Branch, worktree, and integration policy
+
+Follow documented repository policy. If none exists, default to:
+
+1. fetch the latest destination state;
+2. create a focused branch from the current destination head;
+3. isolate it in its own worktree when parallel work is active;
+4. make atomic commits describing root-cause changes;
+5. open a small PR;
+6. verify the PR head and target are still compatible;
+7. require applicable checks;
+8. merge through the configured repository mechanism;
+9. delete/retire branches only when doing so is safe and authorized.
+
+For `dtfgenetics/Thc`:
+
+- `main` is production;
+- repository-wide integration/CI/deployment work should use `project/platform/<task>`;
+- ordinary project work should use the project-specific branch/worktree convention;
+- existing legacy in-flight branches remain valid and should not be rewritten just to normalize names;
+- prefer small PRs and preserve independent project work.
+
+### Rebase vs merge vs cherry-pick
+
+Do not choose by habit.
+
+- Rebase a private/owned feature branch when policy permits and a clean linear update is useful.
+- Merge the target into a shared feature branch when rewriting shared branch history would be risky.
+- Cherry-pick only when one specific commit semantically belongs on another line of development and its dependencies are understood.
+- Never rebase or reset shared production history merely for tidiness.
+- If a merge queue is configured, let it perform the final compatibility test rather than repeatedly rewriting branches to mimic it.
 
 ## Merge-conflict repair
 
-When a branch, PR, cherry-pick, rebase, or main update conflicts:
+Classify conflicts before resolving them:
 
-1. Identify every conflicted path.
-2. Read both sides plus surrounding code and relevant tests.
-3. Determine the intended behavior from source-of-truth docs, current main, recent commits, and callers.
-4. Preserve compatible changes from both sides where possible.
-5. Remove conflict markers and validate syntax/structure.
-6. Run tests covering each conflicted subsystem.
-7. Review the final diff for accidental deletions, duplicate code, reverted fixes, or stale generated output.
+- content/content;
+- modify/delete;
+- rename/rename;
+- add/add;
+- generated/lockfile;
+- binary;
+- product/behavior conflict.
 
-If a conflict represents competing product decisions rather than mechanical code divergence, do not disguise that as a technical merge. Preserve the safest current behavior and report the unresolved product decision if necessary.
+For each conflicted path:
 
-## Code and dependency repair
+1. inspect base plus both sides when available;
+2. read source-of-truth docs, callers, tests, and recent commits;
+3. identify independent behavior introduced by each side;
+4. construct the desired combined behavior where compatible;
+5. regenerate derived output from reconciled source when applicable;
+6. validate syntax/types/tests for the conflicted subsystem;
+7. search for conflict markers, duplicate blocks, stale generated files, and accidental deletions;
+8. compare the final result against both parents.
+
+A conflict between two legitimate product decisions is not a mechanical Git problem. Preserve the safest current behavior and surface the unresolved decision if it cannot be inferred safely.
+
+Be careful with Git's `ours`/`theirs` terminology: its meaning can be counterintuitive during rebase/cherry-pick. Inspect actual content and commit identities instead of trusting the label.
+
+## Pull/push and divergence rules
+
+Read `references/git-operations-and-recovery.md` for the detailed decision matrix.
+
+Core rules:
+
+- fetch before integrating remote changes;
+- prefer fast-forward-only when a local branch has no unique work;
+- preserve unique local commits before repairing a divergent production branch;
+- push an explicit intended branch/remote;
+- never plain-force push;
+- `--force-with-lease` is only acceptable for a non-production branch whose rewritten history is explicitly owned by the current work and repository policy permits it;
+- never discard unknown uncommitted changes with `reset --hard`, `clean -fd`, or blind stash workflows.
+
+## Code repair
 
 For code failures:
 
-- Reproduce the failure locally when the environment permits.
-- Fix the root cause, not just the visible assertion or error string.
-- Add or update tests for changed behavior when practical.
-- Avoid unrelated rewrites during a repair.
+- reproduce the failure when possible;
+- isolate the smallest failing behavior;
+- inspect recent changes around the failure;
+- fix the root cause rather than only editing the assertion/error text;
+- add/update regression coverage when practical;
+- run the narrowest test first, then package/app build, then repository-required checks;
+- avoid unrelated refactors in a production repair.
 
-For dependency failures:
+When a bug spans generated output and source, fix source first and regenerate.
 
-- Determine the exact installed and required versions.
-- Read the relevant lockfile and package manager configuration.
-- Prefer the smallest compatible upgrade/downgrade or configuration fix.
-- Update lockfiles together with manifests.
-- Do not mass-upgrade dependencies as a first response to one failure.
-- Check migration notes and breaking changes before accepting a major-version change.
+## Dependency repair
+
+- Identify the repository's actual package manager and lockfile.
+- Determine installed and required versions.
+- Read official migration/release notes for major changes.
+- Prefer the smallest compatible version/configuration fix.
+- Update manifest and lockfile together.
+- Do not mass-upgrade dependencies as the first response to one failure.
+- Audit whether a dependency change alters runtime, build, browser, server, or deployment compatibility.
+- Treat automated dependency PRs as untrusted until their tests and security implications are understood.
 
 ## GitHub Actions / CI repair loop
 
-For every failed workflow associated with the task:
+For every failed workflow in scope:
 
-1. Find the run for the exact commit being evaluated.
-2. Read job status, failed step, and logs.
-3. Classify the failure before acting:
+1. Find the workflow run for the exact evaluated commit or merge-group commit.
+2. Read job status, failed step, annotations, and logs.
+3. Compare with a recent known-good run when useful.
+4. Classify before acting:
    - source/test failure;
    - build/type/lint failure;
    - dependency/runtime mismatch;
    - workflow YAML/configuration failure;
-   - path/filter/trigger mistake;
-   - permissions failure;
-   - missing environment/secret configuration;
+   - event/path/branch filter mistake;
+   - matrix-only failure;
+   - cache/artifact corruption or path mismatch;
+   - token/permission failure;
+   - missing secret/environment configuration;
+   - protected-environment approval;
+   - concurrency/cancellation race;
    - deployment/integration failure;
    - verifier/health-check false negative;
-   - transient infrastructure/service failure.
-4. For source/config failures, patch before rerunning.
-5. For a credible transient failure, rerun only the affected failed job/run once before changing code.
-6. Follow the new run until it settles.
-7. If it fails again, return to diagnosis with the new evidence.
+   - transient GitHub/runner/provider failure.
+5. For source/config failures, patch before rerunning.
+6. For a credible transient infrastructure failure, rerun only the affected job/run once when available.
+7. Follow the resulting run to completion.
+8. If it fails again, read the **new** evidence and challenge the previous hypothesis.
 
-Never claim CI success based on an older green run that does not contain the new commit.
+Never claim CI success from an older green run that does not contain the new commit.
+
+When merge queues are enabled, required workflows may need to run for `merge_group`. Follow the queue-created compatibility result, not only the original PR event.
+
+## Workflow-file and GitHub security rules
+
+When editing `.github/workflows/*`, reusable workflows, or actions configuration, inspect:
+
+- YAML validity;
+- event triggers, including `pull_request`, `push`, `workflow_dispatch`, `workflow_run`, and `merge_group` when applicable;
+- path and branch filters;
+- runner/OS/runtime assumptions;
+- working directories;
+- action versions and supply-chain trust;
+- package caches and lockfile paths;
+- artifacts and retention;
+- job dependencies and conditions;
+- explicit `permissions`;
+- environment names/protection;
+- secret availability boundaries;
+- fork/Dependabot behavior;
+- reusable-workflow permission inheritance;
+- shell differences;
+- concurrency groups and `cancel-in-progress` semantics;
+- deployment rollback/restart behavior.
+
+Read `references/github-platform-hardening.md` for the full platform-security baseline.
+
+Security defaults:
+
+- grant `GITHUB_TOKEN` the least permissions required;
+- prefer built-in `GITHUB_TOKEN` for same-repository operations;
+- prefer GitHub Apps or short-lived identity over broad long-lived PATs when extra capability is required;
+- prefer OIDC for supported cloud-provider authentication rather than long-lived cloud secrets;
+- do not expose secrets to untrusted PR code;
+- for third-party actions, prefer audited actions pinned to a verified full-length commit SHA when practical;
+- never print or commit secret values.
+
+## Repository audit mode: find the things the user did not know to ask about
+
+When asked to manage, improve, or audit a repository broadly, inspect and prioritize:
+
+### Integrity and integration
+
+- default/production branch correctness;
+- branch protection and rulesets;
+- merge queue configuration for high-concurrency repos;
+- stale/diverged/open PRs affecting active work;
+- superseded duplicate PRs;
+- unresolved conflicts;
+- accidental direct-to-production workflow paths;
+- branch/worktree collisions between parallel projects.
+
+### CI/CD
+
+- currently failing checks;
+- cancelled/superseded runs incorrectly treated as failures;
+- duplicate workflows performing the same mutation;
+- incorrect path filters or event triggers;
+- missing `merge_group` support where a merge queue requires it;
+- dangerous deployment concurrency;
+- workflows with overly broad token permissions;
+- unpinned/high-risk third-party actions;
+- missing rollback or visitor/runtime verification for production writers;
+- workflows that advance a publication pointer even when the prior publish failed.
+
+### Source and build health
+
+- missing/ignored tests for critical behavior;
+- dependency/runtime drift;
+- lockfile mismatch;
+- generated artifacts diverging from canonical source;
+- dead scripts/workflows still referenced by docs;
+- obsolete docs contradicting executable behavior;
+- duplicate sources of truth;
+- TODO/FIXME only when they materially affect the requested goal.
+
+### Content/data preservation
+
+- replacement-style publishers that can truncate existing collections;
+- mutable "current" files being mistaken for canonical history;
+- missing append/reconcile semantics;
+- missing backup/rollback around production mutations;
+- IDs/slugs/routes that can collide or silently overwrite earlier records.
+
+### Security
+
+- suspicious committed credential files/patterns without redisplaying values;
+- effective secret scanning/push protection/code scanning/Dependabot state when accessible;
+- broad PAT usage where a GitHub App, `GITHUB_TOKEN`, or OIDC would be safer;
+- risky `pull_request_target` or equivalent execution of untrusted code with write/secrets;
+- missing CODEOWNERS/ownership controls for sensitive paths when appropriate.
+
+### Releases and recovery
+
+- tags/releases pointing at unexpected commits;
+- unreproducible release artifacts;
+- missing recovery/rollback documentation;
+- destructive scripts without dry-run/backups;
+- orphaned branches only after confirming they are not active work.
+
+Prioritize by production/data-loss/security impact and dependency order. Fix high-confidence blockers when authorized instead of stopping at an audit list.
+
+## Release and tag safety
+
+Before creating, editing, moving, or deleting a release/tag:
+
+1. identify consumers and deployment/package dependencies;
+2. verify the commit has the required tests/checks;
+3. verify artifact/source provenance when applicable;
+4. prefer a new corrective release over rewriting historical release identity;
+5. do not delete a failed release merely to hide evidence;
+6. understand whether the repository intentionally uses floating major/minor tags for reusable Actions before moving them.
+
+## Recovery and rollback
+
+Prefer the least destructive recovery:
+
+1. fix forward with a new commit;
+2. revert a bad shared commit/merge;
+3. abort an in-progress merge/rebase/cherry-pick when the resolution path is unclear;
+4. recover local commits using reflog and create a branch/ref pointing to them;
+5. rewrite only private explicitly owned history when necessary;
+6. repository-wide history rewriting is exceptional and requires explicit destructive authorization.
+
+For a bad merge already on shared `main`, prefer a tested revert over resetting production history backward.
+
+Never delete evidence merely to make history look cleaner.
 
 ## Failure research escalation
 
-If the first evidence-based repair does not solve the problem, or the error is unfamiliar/version-sensitive, read `references/failure-research.md` and perform the research loop.
+If the first evidence-based repair does not solve the problem, the error is unfamiliar, or behavior depends on current GitHub/package/runtime/provider rules, read `references/failure-research.md` and research before the next attempt.
 
-Research is part of the repair, not a substitute for it. Use the findings to produce and apply the next fix whenever repository access and safety allow.
+Research order should prefer:
 
-Do not repeatedly search generic summaries while ignoring the exact error, version, platform, workflow, or package involved.
+1. official product/tool documentation for the actual current version;
+2. official changelog/release/migration/deprecation notes;
+3. upstream maintainer issues/discussions for the exact error;
+4. current GitHub Actions/platform documentation;
+5. hosting/provider documentation;
+6. high-quality community reports only after primary sources.
 
-## Workflow-file repair rules
+Research must change the next hypothesis. Do not search as a substitute for making the next safe fix.
 
-When editing `.github/workflows/*` or reusable action configuration, verify:
+## Parallel work and race prevention
 
-- valid YAML;
-- event triggers and path filters;
-- branch filters;
-- working directories;
-- runner/OS assumptions;
-- action versions;
-- runtime versions;
-- cache keys and lockfile paths;
-- artifact paths;
-- job dependencies (`needs`);
-- permissions;
-- environment names;
-- secret variable names and availability boundaries;
-- shell differences;
-- deployment concurrency/cancellation behavior.
+Multiple projects may proceed concurrently. Serialize only shared mutation points.
 
-Never print or commit secret values. Secret names may be referenced when necessary to explain configuration.
+Before integrating:
 
-## Repository audit mode
-
-When asked to audit a repository, inspect at minimum:
-
-- default branch and protection/rules where accessible;
-- stale/diverged/open branches or PRs relevant to active work;
-- unresolved merge conflicts;
-- failing CI;
-- broken or duplicated deployment paths;
-- ignored or missing tests;
-- dependency/config drift;
-- orphaned generated artifacts;
-- obsolete documentation that contradicts executable behavior;
-- committed secrets or suspicious credential files by filename/pattern without exposing secret values;
-- TODO/FIXME items only when they materially affect the requested goal.
-
-Prioritize issues by production impact and dependency order. Repair high-confidence blockers instead of returning a long list with no action when the user has authorized fixes.
+- re-read `main`/destination head;
+- detect overlapping changed paths/ownership surfaces among open PRs;
+- do not overwrite a newer main state with an older branch snapshot;
+- use worktrees/project branches for isolation;
+- for production workflows sharing one target, use transaction-safe concurrency and backups rather than preventing all parallel development.
 
 ## Deployment handoff
 
 Repository success and live deployment are separate states.
 
-If the user asks to make a DTFSeeds change live, after repository integration activate and follow:
+For DTFSeeds live work, after repository integration follow:
 
 `../dtfseeds-production-publishing/SKILL.md`
 
-Continue through the applicable production workflow and visitor-facing verification. A commit to `main` is not proof that the website changed.
+Continue through the correct route owner, protected production workflow, rollback contract, and visitor-facing verification. A commit, PR merge, successful build, or successful WordPress/API write is not by itself proof of live success.
 
-For any other repository, read its deployment runbook and verify the actual target environment before saying deployed/live.
+For other repositories, read the actual deployment runbook and verify the real target environment/runtime before saying deployed.
 
 ## Safety and irreversible operations
 
 Never:
 
-- commit tokens, passwords, private keys, `.env` files, or secret values;
-- expose credentials in logs or reports;
-- force-push production/main unless the repository explicitly requires it and the user has clearly authorized that destructive operation;
-- delete branches, tags, releases, databases, production files, or large content sets merely to clear a failure;
-- bypass required tests or protections and then report the result as healthy;
-- rewrite history when a normal merge/revert/follow-up commit can safely solve the problem.
-
-Before any destructive repair, prefer backup, revertability, and a forward fix.
+- commit or expose tokens, passwords, private keys, secret values, `.env` files, authorization headers, or private user data;
+- force-push `main`/production;
+- silently bypass branch/ruleset/check requirements;
+- reset shared production history merely to simplify recovery;
+- delete branches/tags/releases/large content sets only to clear an error;
+- blanket-resolve conflicts with `ours`/`theirs`;
+- execute destructive cleanup when backup/revert/forward repair is available;
+- run untrusted PR code with privileged secrets without a repository-designed security boundary;
+- call a repository or deployment healthy because an unrelated older run passed.
 
 ## Hard blockers
 
-A hard blocker is something the available tools cannot safely repair in the current run, such as:
+A genuine hard blocker is something the available tools cannot safely repair in the current run, for example:
 
-- missing GitHub/write permission;
-- a required secret that does not exist and cannot be provisioned through available tooling;
-- a protected-environment approval that only an external authorized reviewer can grant;
-- an external service outage confirmed by evidence;
-- an unresolved destructive product decision where guessing would risk data or production integrity.
+- missing repository/write/admin permission required for the requested change;
+- a required credential/environment secret does not exist and cannot be provisioned with available tooling;
+- a protected-environment approval requires an external authorized reviewer;
+- an external provider outage is confirmed;
+- a destructive product/data decision cannot be inferred safely;
+- required local execution capability is unavailable and no equivalent CI/remote path can validate the change.
 
-A failing test, merge conflict, broken workflow, dependency error, rejected push, or bad deployment script is not automatically a hard blocker.
+A failing test, merge conflict, broken workflow, rejected push, dependency error, stale branch, or incorrect deployment script is not automatically a hard blocker.
 
-When blocked, report the exact failed stage, evidence, the narrow external action required, and the repository state already completed. Do not call the task fixed.
+When blocked, report the exact stage, evidence, narrow external action required, and the last completed repository state. Do not call the task fixed.
 
 ## Completion gate
 
 Do not report repository work complete until all applicable checks are true:
 
 - [ ] Correct repository and destination branch identified.
-- [ ] Repository instructions/source of truth read.
-- [ ] Current destination head inspected.
+- [ ] Repository instructions and project-isolation rules read.
+- [ ] Current destination head and relevant concurrent work inspected.
+- [ ] Branch protection/ruleset/merge-queue behavior understood when relevant.
 - [ ] Root cause identified or evidence-backed repair hypothesis established.
-- [ ] Change made in canonical source.
-- [ ] Relevant tests/build/lint/type checks pass.
-- [ ] Conflicts resolved without discarding unrelated work.
-- [ ] Changes committed and integrated according to branch policy.
-- [ ] CI for the exact integrated commit is passing, or a documented non-CI repository has equivalent validation.
-- [ ] Failed repair attempts triggered diagnosis/research rather than blind repetition.
-- [ ] Deployment/live verification completed when the user requested deployment.
+- [ ] Canonical source changed without silently overwriting unrelated/canonical work.
+- [ ] Relevant unit/integration/build/lint/type checks pass.
+- [ ] Conflicts resolved semantically without discarding required behavior.
+- [ ] Changes synchronized and integrated according to branch policy.
+- [ ] CI for the exact integrated commit/merge group is passing, or equivalent validation is documented.
+- [ ] Failed attempts triggered diagnosis/research rather than blind repetition.
+- [ ] Security/permissions implications of workflow changes were reviewed.
+- [ ] Deployment/live verification completed when requested.
 - [ ] Remaining hard blockers or unverified states are stated precisely.
 
 ## Final report format
 
-Keep the final report concise but evidence-based. Include:
+Keep the final report concise and evidence-based:
 
-- **Repository:** owner/name and destination branch.
+- **Repository:** owner/name, destination branch, final SHA.
 - **Fixed:** root causes and files/subsystems changed.
-- **Validation:** commands/checks and outcomes.
-- **Git state:** commit SHA and PR/merge result when applicable.
-- **CI:** exact new commit/run status.
-- **Research:** only when failure research was needed; summarize what source/version evidence changed the fix.
-- **Deployment:** separate repository state from live state.
-- **Remaining:** only genuine blockers or known unverified items.
+- **Validation:** relevant tests/checks and outcomes.
+- **Git state:** branch, PR, merge/revert/release result.
+- **CI:** exact new commit/merge-group run status.
+- **Governance/security:** only material findings such as unprotected production branch, missing ruleset, broad permissions, or risky workflow behavior.
+- **Research:** authoritative source/version facts only when research changed the repair.
+- **Deployment:** clearly separate repository state from live/runtime state.
+- **Remaining:** genuine blockers or known unverified items only.
+
+## References
+
+- `references/git-operations-and-recovery.md` — synchronization, push/pull, divergence, conflicts, rollback, reflog, bad merge recovery.
+- `references/github-platform-hardening.md` — rulesets, branch protection, merge queues, Actions permissions, OIDC, action pinning, security scanning, concurrency, release/tag safety.
+- `references/failure-research.md` — evidence packet, authoritative research order, retry/research discipline.
