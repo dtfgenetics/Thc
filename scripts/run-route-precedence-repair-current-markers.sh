@@ -23,6 +23,28 @@ for old, new in replacements.items():
         raise SystemExit(f'Expected route-repair fragment not found: {old[:120]}')
     s = s.replace(old, new, 1)
 
+checks_old = '''  const checks = [
+    ['/', 'data-dtf-layout="home-v3"'],
+    ['/learn/', 'data-dtf-layout="learn-v3"'],
+    ['/learn/infographics/', 'Visual plant science and cultivation library.'],
+  ];'''
+checks_new = '''  const checks = [
+    ['/', 'data-dtf-layout="home-v3"'],
+    ['/learn/', 'data-dtf-layout="learn-v3"'],
+    ['/learn/infographics/', 'Visual plant science and cultivation library.'],
+    ['/learn/start-here/', 'Learn the plant before chasing the fix.'],
+    ['/seeds/', 'data-dtf-genetics-library="2026"'],
+    ['/seeds/mango-bubbles/', 'data-dtf-genetics-line="mango-bubbles"'],
+    ['/shop/', 'dtf-commerce-archive-style'],
+    ['/community/', 'data-dtf-layout="community-visual-v1"'],
+    ['/gallery/', 'data-dtf-layout="gallery-visual-v1"'],
+    ['/about/', 'data-dtf-layout="about-visual-v1"'],
+    ['/contact/', 'data-dtf-layout="contact-visual-v1"'],
+  ];'''
+if checks_old not in s:
+    raise SystemExit('Expected route-repair verification array was not found after marker normalization')
+s = s.replace(checks_old, checks_new, 1)
+
 # The state recovery request above is converted separately. The three remaining
 # mutating repair calls are apply, finalize, and rollback. Hostinger does not
 # reliably forward the custom X-DTF-Repair-Token header, so carry the per-run
@@ -43,6 +65,9 @@ grep -Fq "return \$supplied !== '' && hash_equals(\$token, \$supplied);" "$scrip
 grep -Fq "'methods' => 'POST'" "$script"
 grep -Fq 'data-dtf-layout="home-v3"' "$script"
 grep -Fq 'data-dtf-layout="learn-v3"' "$script"
+grep -Fq 'data-dtf-genetics-library="2026"' "$script"
+grep -Fq 'data-dtf-layout="community-visual-v1"' "$script"
+grep -Fq 'data-dtf-layout="contact-visual-v1"' "$script"
 grep -Fq 'json: { dtf_repair_token: repairToken }' "$script"
 ! grep -Fq 'X-DTF-Repair-Token' "$script"
 node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs "$script"
