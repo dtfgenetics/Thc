@@ -10,27 +10,29 @@ on:
 permissions:
   contents: read
 
+# Share the same production mutation lane as the public-suite Hostinger deploy so
+# a static-shadow repair can never race an independent games/tools activation.
 concurrency:
-  group: dtfseeds-hostinger-shadow-cleanup
-  cancel-in-progress: true
+  group: dtfseeds-hostinger-production
+  cancel-in-progress: false
 
 jobs:
   cleanup:
     name: Back up and remove stale static routes that shadow WordPress
     runs-on: ubuntu-latest
     timeout-minutes: 25
-    environment: growlens-production
     env:
       SSH_HOST: ${{ secrets.HOSTINGER_SSH_HOST }}
       SSH_PORT: ${{ secrets.HOSTINGER_SSH_PORT }}
       SSH_USER: ${{ secrets.HOSTINGER_SSH_USER }}
       SSH_PRIVATE_KEY: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY }}
       SSH_KNOWN_HOSTS: ${{ secrets.HOSTINGER_SSH_KNOWN_HOSTS }}
+      PUBLIC_ROOT: ${{ secrets.HOSTINGER_PUBLIC_ROOT }}
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Validate Hostinger access
+      - name: Validate Hostinger production transport
         shell: bash
         run: |
           set -euo pipefail
@@ -38,8 +40,14 @@ jobs:
           : "${SSH_USER:?HOSTINGER_SSH_USER is required}"
           : "${SSH_PRIVATE_KEY:?HOSTINGER_SSH_PRIVATE_KEY is required}"
           : "${SSH_KNOWN_HOSTS:?HOSTINGER_SSH_KNOWN_HOSTS is required}"
-          SSH_PORT="${SSH_PORT:-22}"
+          : "${PUBLIC_ROOT:?HOSTINGER_PUBLIC_ROOT is required}"
+          SSH_PORT="${SSH_PORT:-65002}"
           [[ "$SSH_PORT" =~ ^[0-9]+$ ]]
+          [[ "$PUBLIC_ROOT" == /*/public_html ]] || {
+            echo "::error::HOSTINGER_PUBLIC_ROOT must be an absolute path ending in /public_html."
+            exit 1
+          }
+          [[ "$PUBLIC_ROOT" != *'..'* ]]
           echo "SSH_PORT=$SSH_PORT" >> "$GITHUB_ENV"
 
       - name: Configure strict SSH trust
@@ -47,58 +55,48 @@ jobs:
         run: |
           set -euo pipefail
           install -d -m 700 "$HOME/.ssh"
-          printf '%s\n' "$SSH_PRIVATE_KEY" | tr -d '\r' > "$HOME/.ssh/dtfseeds_deploy_key"
-          chmod 600 "$HOME/.ssh/dtfseeds_deploy_key"
+          printf '%s\n' "$SSH_PRIVATE_KEY" | tr -d '\r' > "$HOME/.ssh/dtf_hostinger"
+          chmod 600 "$HOME/.ssh/dtf_hostinger"
           printf '%s\n' "$SSH_KNOWN_HOSTS" | tr -d '\r' > "$HOME/.ssh/known_hosts"
           chmod 600 "$HOME/.ssh/known_hosts"
-          ssh -i "$HOME/.ssh/dtfseeds_deploy_key" \
+          ssh -i "$HOME/.ssh/dtf_hostinger" \
             -p "$SSH_PORT" \
             -o BatchMode=yes \
             -o IdentitiesOnly=yes \
             -o StrictHostKeyChecking=yes \
             "$SSH_USER@$SSH_HOST" 'printf "Hostinger SSH connection verified.\n"'
 
-      - name: Locate dtfseeds.com WordPress root
-        id: root
+      - name: Verify configured WordPress root
         shell: bash
         run: |
           set -euo pipefail
-          root="$(ssh -i "$HOME/.ssh/dtfseeds_deploy_key" -p "$SSH_PORT" \
+          ssh -i "$HOME/.ssh/dtf_hostinger" -p "$SSH_PORT" \
             -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
-            "$SSH_USER@$SSH_HOST" 'bash -s' <<'REMOTE'
+            "$SSH_USER@$SSH_HOST" "ROOT='$PUBLIC_ROOT' bash -s" <<'REMOTE'
           set -euo pipefail
-          while IFS= read -r config; do
-            directory="$(dirname "$config")"
-            if command -v wp >/dev/null 2>&1; then
-              home_url="$(wp --path="$directory" option get home --skip-plugins --skip-themes 2>/dev/null || true)"
-              case "${home_url%/}" in
-                https://dtfseeds.com|http://dtfseeds.com|https://www.dtfseeds.com|http://www.dtfseeds.com)
-                  printf '%s\n' "$directory"
-                  exit 0
-                  ;;
-              esac
-            fi
-          done < <(find "$HOME" -maxdepth 8 -type f -name wp-config.php -print 2>/dev/null)
-          exit 1
+          [[ -d "$ROOT" ]]
+          [[ -s "$ROOT/wp-config.php" ]]
+          [[ -s "$ROOT/index.php" ]]
+          if command -v wp >/dev/null 2>&1; then
+            home_url="$(wp --path="$ROOT" option get home --skip-plugins --skip-themes 2>/dev/null || true)"
+            case "${home_url%/}" in
+              https://dtfseeds.com|http://dtfseeds.com|https://www.dtfseeds.com|http://www.dtfseeds.com) ;;
+              *) echo "Configured public root is not the dtfseeds.com WordPress install: ${home_url:-unknown}" >&2; exit 1 ;;
+            esac
+          fi
           REMOTE
-          )"
-          [[ -n "$root" ]]
-          [[ "$root" =~ ^/[A-Za-z0-9._/-]+$ ]]
-          [[ "$root" != "/" ]]
-          [[ "$root" != *".."* ]]
-          echo "path=$root" >> "$GITHUB_OUTPUT"
-          echo "Located WordPress root." >> "$GITHUB_STEP_SUMMARY"
+          echo "Verified configured dtfseeds.com WordPress root." >> "$GITHUB_STEP_SUMMARY"
 
       - name: Back up and remove positively identified stale shadows
         id: cleanup
         shell: bash
         env:
-          ROOT: ${{ steps.root.outputs.path }}
+          ROOT: ${{ env.PUBLIC_ROOT }}
         run: |
           set -euo pipefail
           stamp="$(date -u +%Y%m%dT%H%M%SZ)"
           backup="$HOME/dtfseeds-route-shadow-backups/$stamp"
-          result="$(ssh -i "$HOME/.ssh/dtfseeds_deploy_key" -p "$SSH_PORT" \
+          result="$(ssh -i "$HOME/.ssh/dtf_hostinger" -p "$SSH_PORT" \
             -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
             "$SSH_USER@$SSH_HOST" "ROOT='$ROOT' BACKUP='$backup' bash -s" <<'REMOTE'
           set -euo pipefail
@@ -280,5 +278,5 @@ jobs:
             echo "Visitor-facing verification: **${VERIFY:-not-run}**"
             echo "Remote rollback backup: \`${BACKUP:-not-reported}\`"
             echo
-            echo 'The cleanup only retires positively identified legacy static shells on routes that the current Public Suite explicitly excludes. WordPress rewrites/cache are flushed after the backup-first move.'
+            echo 'The cleanup uses the same repository-level Hostinger SSH credentials, port convention, public root, and production concurrency lane as the proven public-suite deployment workflow.'
           } >> "$GITHUB_STEP_SUMMARY"
