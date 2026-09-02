@@ -11,6 +11,8 @@ on:
       - 'site/wordpress/pages/contact.html'
       - 'data/dtf-visual-v1.json'
       - 'scripts/apply-wordpress-public-content-owned-routes.mjs'
+      - 'scripts/apply-learning-visual-v1.mjs'
+      - 'scripts/run-learning-v3-connected-production.sh'
       - 'scripts/rebuild-wordpress-visual-v4.mjs'
       - 'scripts/rebuild-wordpress-support-pages-v1.mjs'
       - '.github/workflows/wordpress-canonical-deploy.yml'
@@ -27,11 +29,13 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Validate JavaScript syntax
+      - name: Validate JavaScript and shell syntax
         run: |
           node --check scripts/apply-wordpress-public-content-owned-routes.mjs
+          node --check scripts/apply-learning-visual-v1.mjs
           node --check scripts/rebuild-wordpress-visual-v4.mjs
           node --check scripts/rebuild-wordpress-support-pages-v1.mjs
+          bash -n scripts/run-learning-v3-connected-production.sh
 
       - name: Validate design specification JSON
         run: node -e "JSON.parse(require('fs').readFileSync('data/dtf-visual-v1.json','utf8')); console.log('visual spec ok')"
@@ -40,13 +44,18 @@ jobs:
         run: |
           set -euo pipefail
           css='site/design-system/dtf-visual-v1.css'
+          bridge='site/design-system/dtf-learning-owner-v1.css'
           test -s "$css"
+          test -s "$bridge"
           grep -Fq -- '--dtf-bg:#07170f' "$css"
           grep -Fq -- '--dtf-gold:#d5b15a' "$css"
           grep -Fq -- '.strain-card' "$css"
           grep -Fq -- '.game-card' "$css"
           grep -Fq -- '.footer-shell' "$css"
           grep -Fq -- '@media(max-width:640px)' "$css"
+          grep -Fq -- '.v3.dtf-v1' "$bridge"
+          grep -Fq -- 'data-dtf-layout="home-v3"' "$bridge"
+          grep -Fq -- 'data-dtf-layout="learn-v3"' "$bridge"
 
       - name: Validate ownership-safe editorial integration
         run: |
@@ -63,6 +72,20 @@ jobs:
           done
           grep -Fq 'Join the official DTF / Teaching Healthy Cultivation Discord' site/wordpress/pages/community.html
           grep -Fq 'Join the official DTF / Teaching Healthy Cultivation Discord' site/wordpress/pages/contact.html
+
+      - name: Validate Learning owner visual transaction
+        run: |
+          set -euo pipefail
+          visual='scripts/apply-learning-visual-v1.mjs'
+          transaction='scripts/run-learning-v3-connected-production.sh'
+          grep -Fq 'data-dtf-visual="v1"' "$visual"
+          grep -Fq 'dtf-visual-v1-shared' "$visual"
+          grep -Fq 'dtf-learning-owner-v1' "$visual"
+          grep -Fq 'Blue Mango F2 Regular DTF Genetics strain card' "$visual"
+          grep -Fq 'data-dtf-learning-map="v4"' "$visual"
+          grep -Fq 'APPLY_LEARNING_VISUAL_V1=true' "$transaction"
+          grep -Fq 'scripts/apply-learning-visual-v1.mjs' "$transaction"
+          grep -Fq 'learning-visual-v1-backup-path.txt' "$transaction"
 
       - name: Validate canonical handoff knows the shared visual system
         run: |
