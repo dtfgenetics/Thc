@@ -10,6 +10,9 @@ const roots = [
 const fail = (message) => { throw new Error(message); };
 const read = (root, rel) => fs.readFileSync(path.join(root, rel), 'utf8');
 
+// This validator protects the schema-v3 educational system and the legacy V3 renderer
+// retained as an emergency fallback. The active hub is V4-first and is validated by
+// validate-plant-atlas-v4.mjs.
 const mirrored = ['index.html', 'atlas-v3.css', 'atlas-v3.js', 'atlas-3d.js', 'module.js', 'data/systems.json', 'deploy-version.txt'];
 for (const rel of mirrored) {
   const [a, b] = roots.map((root) => read(root, rel));
@@ -62,24 +65,31 @@ const deepPages = [
 for (const rel of deepPages) for (const root of roots) if (!fs.existsSync(path.join(root, rel))) fail(`Missing deep Atlas page: ${root}/${rel}`);
 
 const hub = read(roots[0], 'index.html');
-for (const marker of ['Interactive botanical specimen', '3D anatomy explorer', 'Learn from the plant itself', 'Structure → function → interaction → evidence', 'Observation rule:', '/atlas/atlas-3d.js', '/atlas/leaf-module/', '/atlas/root-system/']) {
+for (const marker of ['Interactive botanical specimen', '3D anatomy explorer', 'Learn from the plant itself', 'Structure → function → interaction → evidence', 'Observation rule:', '/atlas/atlas-3d-bootstrap.js', '/atlas/leaf-module/', '/atlas/root-system/']) {
   if (!hub.includes(marker)) fail(`Atlas hub missing release marker: ${marker}`);
 }
 for (const id of ['root-system', 'stem-vascular', 'nodes-branching', 'leaf-module', 'flower-anatomy', 'trichomes-resin', 'reproductive-biology']) {
   if (!hub.includes(`data-plant-focus="${id}"`)) fail(`Atlas hub missing 3D focus control: ${id}`);
 }
 if (!hub.includes('three@0.180.0') || !hub.includes('three/addons/')) fail('Atlas hub is missing pinned Three.js import map.');
+if (hub.includes('type="module" src="/atlas/atlas-3d.js"')) fail('Legacy V3 renderer must not boot directly from the Atlas hub.');
 
-const scene = read(roots[0], 'atlas-3d.js');
+const fallbackScene = read(roots[0], 'atlas-3d.js');
 for (const marker of ['new THREE.WebGLRenderer', 'new THREE.Raycaster', 'new OrbitControls', 'pointermove', 'pointerup', 'window.location.assign', 'prefers-reduced-motion', 'IntersectionObserver']) {
-  if (!scene.includes(marker)) fail(`Atlas 3D scene missing interaction/performance contract: ${marker}`);
+  if (!fallbackScene.includes(marker)) fail(`Atlas V3 emergency renderer missing interaction/performance contract: ${marker}`);
 }
 for (const route of ['/atlas/root-system/', '/atlas/stem-vascular/', '/atlas/nodes-branching/', '/atlas/leaf-module/', '/atlas/flower-anatomy/', '/atlas/trichomes-resin/', '/atlas/reproductive-biology/']) {
-  if (!scene.includes(route)) fail(`Atlas 3D scene missing direct anatomy route: ${route}`);
+  if (!fallbackScene.includes(route)) fail(`Atlas V3 emergency renderer missing direct anatomy route: ${route}`);
 }
+
+const bootstrap = read(roots[0], 'atlas-3d-bootstrap.js');
+if (!bootstrap.includes("import('/atlas/atlas-3d-v4.js')") || !bootstrap.includes("import('/atlas/atlas-3d.js')")) fail('Atlas bootstrap must prefer V4 and retain V3 as emergency fallback.');
 if (/href=["']\/learn\/["']/.test(JSON.stringify(data.systems))) fail('Core Atlas system data must not fall back to generic /learn/ routes.');
 
 const packageScript = fs.readFileSync(path.join(repo, 'scripts/package-public-suite-wordpress.py'), 'utf8');
 if (!packageScript.includes('"atlas",') || !packageScript.includes('"assets/images/atlas",')) fail('Public-suite package does not allowlist Atlas.');
+for (const runtime of ['"atlas/atlas-3d-bootstrap.js",', '"atlas/atlas-3d-v4.js",', '"atlas/atlas-v4.css",', '"atlas/data/hotspots-v4.json",', '"atlas/models/model-manifest-v4.json",']) {
+  if (!packageScript.includes(runtime)) fail(`Public-suite package does not require V4 runtime asset: ${runtime}`);
+}
 
-console.log(JSON.stringify({ ok: true, schemaVersion: data.schemaVersion, systems: data.systems.length, routes: routes.size, mirroredFiles: mirrored.length, deepPages: deepPages.length, interactive3D: true, clickableStructures: 7 }));
+console.log(JSON.stringify({ ok: true, schemaVersion: data.schemaVersion, systems: data.systems.length, routes: routes.size, mirroredFiles: mirrored.length, deepPages: deepPages.length, activeRenderer: 'v4', emergencyFallback: 'v3' }));
