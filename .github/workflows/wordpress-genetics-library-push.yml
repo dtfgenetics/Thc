@@ -1,29 +1,19 @@
-name: Publish DTF Genetics Library Direct
+name: Publish DTF Genetics Library Direct Recovery
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/wordpress-genetics-library-push.yml'
-      - 'site/wordpress/products/seed-line-catalog.json'
-      - 'site/wordpress/products/genetics-cdn-identities.json'
-      - 'scripts/publish-wordpress-genetics-library-cdn.mjs'
-      - 'scripts/audit-genetics-cdn-sources.mjs'
-      - 'scripts/flush-hostinger-litespeed-mcp.mjs'
 
 permissions:
   contents: read
-  issues: write
 
 concurrency:
-  group: dtfseeds-genetics-library-direct
+  group: dtfseeds-genetics-library-direct-recovery
   cancel-in-progress: false
 
 jobs:
   publish:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 35
     environment: production
     env:
       NODE_OPTIONS: --dns-result-order=ipv4first
@@ -38,17 +28,19 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: main
+          persist-credentials: false
 
       - uses: actions/setup-node@v4
         with:
           node-version: 22
 
-      - name: Validate genetics library package
+      - name: Validate genetics recovery package
         shell: bash
         run: |
           set -euo pipefail
           test -n "${WP_API_USERNAME:-}"
           test -n "${WP_API_PASSWORD:-}"
+          node --check scripts/wordpress-ipv4-fetch-bootstrap.mjs
           node --check scripts/publish-wordpress-genetics-library-cdn.mjs
           node --check scripts/audit-genetics-cdn-sources.mjs
           node --check scripts/flush-hostinger-litespeed-mcp.mjs
@@ -81,14 +73,14 @@ jobs:
           set -euo pipefail
           GENETICS_CDN_REPORT="$RUNNER_TEMP/genetics-cdn-source-report.json" node scripts/audit-genetics-cdn-sources.mjs
 
-      - name: Publish genetics library
+      - name: Publish genetics library through IPv4 WordPress transport
         id: publish
         env:
           APPLY_GENETICS_LIBRARY: 'true'
         shell: bash
         run: |
           set -euo pipefail
-          node scripts/publish-wordpress-genetics-library-cdn.mjs
+          node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/publish-wordpress-genetics-library-cdn.mjs
           dir="$(cat "$BACKUP_ROOT/genetics-library-backup-path.txt")"
           echo "report=$dir/genetics-library-report.json" >> "$GITHUB_OUTPUT"
 
@@ -99,7 +91,7 @@ jobs:
           set -euo pipefail
           ok=0
           for attempt in 1 2 3; do
-            if node scripts/flush-hostinger-litespeed-mcp.mjs; then
+            if node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/flush-hostinger-litespeed-mcp.mjs; then
               ok=1
               break
             fi
@@ -130,7 +122,6 @@ jobs:
             check_url "$WP_SITE_URL${path}?dtf_genetics_origin=${GITHUB_RUN_ID}" "$text" "origin-$path"
             check_url "$WP_SITE_URL${path}" "$text" "public-$path"
           }
-
           check '/seeds/' 'DTF Genetics library'
           node --input-type=module <<'NODE' > "$RUNNER_TEMP/genetics-routes.tsv"
           import fs from 'node:fs';
@@ -145,34 +136,28 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: genetics-library-direct-${{ github.run_id }}
+          name: genetics-library-direct-recovery-${{ github.run_id }}
           path: |
             /tmp/wordpress-genetics-direct
             ${{ runner.temp }}/genetics-cdn-source-report.json
           if-no-files-found: warn
           retention-days: 30
 
-      - name: Report result
+      - name: Record recovery result
         if: always()
-        uses: actions/github-script@v7
         env:
           JOB_STATUS: ${{ job.status }}
           PUBLISH: ${{ steps.publish.outcome }}
           CACHE: ${{ steps.cache.outcome }}
           VERIFY: ${{ steps.verify.outcome }}
-        with:
-          script: |
-            await github.rest.issues.createComment({
-              owner:context.repo.owner,
-              repo:context.repo.repo,
-              issue_number:46,
-              body:[
-                '## DTF Genetics library direct publication','',
-                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-                `Result: **${process.env.JOB_STATUS}**`,
-                `Library publication: **${process.env.PUBLISH||'not-run'}**`,
-                `Hostinger/LiteSpeed purge: **${process.env.CACHE||'not-run'}**`,
-                `Origin + public-cache verification: **${process.env.VERIFY||'not-run'}**`,
-                '', 'Target: https://dtfseeds.com/seeds/'
-              ].join('\n')
-            });
+        shell: bash
+        run: |
+          {
+            echo '## DTF Genetics direct recovery'
+            echo
+            echo "- Result: **${JOB_STATUS}**"
+            echo "- Library publication: **${PUBLISH:-not-run}**"
+            echo "- Hostinger/LiteSpeed purge: **${CACHE:-not-run}**"
+            echo "- Origin + public-cache verification: **${VERIFY:-not-run}**"
+            echo '- This is a manual recovery lane. Automatic Genetics publication remains owned by `wordpress-genetics-library-production.yml`.'
+          } >> "$GITHUB_STEP_SUMMARY"
