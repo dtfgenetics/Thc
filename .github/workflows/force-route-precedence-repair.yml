@@ -46,27 +46,6 @@ jobs:
           bash -n scripts/run-route-precedence-repair-current-markers.sh
           bash -n scripts/run-static-shadow-repair-current-markers.sh
 
-      - name: Dispatch and wait for protected route-precedence repair
-        id: route
-        shell: bash
-        run: |
-          set -euo pipefail
-          before="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-          gh workflow run wordpress-route-precedence-repair.yml --ref main
-          route_id=''
-          for attempt in $(seq 1 20); do
-            route_id="$(gh run list --workflow wordpress-route-precedence-repair.yml --branch main --event workflow_dispatch --limit 10 --json databaseId,createdAt --jq '[.[] | select(.createdAt >= "'"$before"'")] | sort_by(.createdAt) | reverse | .[0].databaseId // empty')"
-            [[ -n "$route_id" ]] && break
-            sleep 3
-          done
-          if [[ -z "$route_id" ]]; then
-            echo 'Could not identify newly dispatched route-precedence run.' >&2
-            exit 1
-          fi
-          echo "run_id=$route_id" >> "$GITHUB_OUTPUT"
-          echo "Route repair run: $route_id"
-          gh run watch "$route_id" --exit-status
-
       - name: Dispatch and wait for static-shadow retirement
         id: shadows
         shell: bash
@@ -87,6 +66,27 @@ jobs:
           echo "run_id=$shadow_id" >> "$GITHUB_OUTPUT"
           echo "Static-shadow cleanup run: $shadow_id"
           gh run watch "$shadow_id" --exit-status
+
+      - name: Dispatch and wait for protected route-precedence repair
+        id: route
+        shell: bash
+        run: |
+          set -euo pipefail
+          before="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          gh workflow run wordpress-route-precedence-repair.yml --ref main
+          route_id=''
+          for attempt in $(seq 1 20); do
+            route_id="$(gh run list --workflow wordpress-route-precedence-repair.yml --branch main --event workflow_dispatch --limit 10 --json databaseId,createdAt --jq '[.[] | select(.createdAt >= "'"$before"'")] | sort_by(.createdAt) | reverse | .[0].databaseId // empty')"
+            [[ -n "$route_id" ]] && break
+            sleep 3
+          done
+          if [[ -z "$route_id" ]]; then
+            echo 'Could not identify newly dispatched route-precedence run.' >&2
+            exit 1
+          fi
+          echo "run_id=$route_id" >> "$GITHUB_OUTPUT"
+          echo "Route repair run: $route_id"
+          gh run watch "$route_id" --exit-status
 
       - name: Verify final public cutover
         id: final
@@ -150,12 +150,12 @@ jobs:
                 '',
                 `Orchestrator: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
                 `Overall: **${process.env.JOB_STATUS}**`,
-                `Route-precedence repair: **${process.env.ROUTE_OUTCOME || 'not-run'}** — ${runLink(process.env.ROUTE_RUN)}`,
                 `Static-shadow retirement: **${process.env.SHADOW_OUTCOME || 'not-run'}** — ${runLink(process.env.SHADOW_RUN)}`,
+                `Route-precedence repair: **${process.env.ROUTE_OUTCOME || 'not-run'}** — ${runLink(process.env.ROUTE_RUN)}`,
                 `Final visitor verification: **${process.env.FINAL_OUTCOME || 'not-run'}**`,
                 '',
-                'This reproduces the successful Codex production method: trusted-main dispatcher → protected production workflow → transactional backup/write/rollback → dependent cleanup → independent cache-busted verification. Run resolution is scoped to newly dispatched jobs, and verification uses the canonical Home/Learn headlines stored in GitHub. The final acceptance also proves the Living Plant Atlas hub and nested Three.js runtime survive the WordPress cutover.'
+                'This reproduces the protected production method in dependency order: retire positively identified legacy static shadows first, then repair WordPress route precedence, then run independent cache-busted verification. Run resolution is scoped to newly dispatched jobs, and final acceptance also proves the Living Plant Atlas hub and nested Three.js runtime survive the WordPress cutover.'
               ].join('\n')
             });
 
-# Trusted-main orchestration trigger: Atlas-aware static-shadow cutover 2026-09-02.
+# Trusted-main orchestration trigger: Atlas-aware static-shadow-first cutover 2026-09-02.
