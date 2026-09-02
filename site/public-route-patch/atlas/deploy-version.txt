@@ -1,11 +1,16 @@
-THC Living Plant Atlas visual system v3
+THC Living Plant Atlas interactive 3D system v4
 repo=dtfgenetics/Thc
 app=apps/growlens-web
 branch=main
 source_path=apps/growlens-web/public/atlas/
 production_route=/atlas/
-visual_release=connected-plant-systems-v3
+visual_release=interactive-pbr-anatomy-v4
+renderer=v4-first
+emergency_fallback=v3
+model_mode=procedural-pbr
+optional_model=/atlas/models/cannabis-specimen-v1.glb
 system_count=16
+inspectable_regions=14
 deep_labs=leaf-module,root-system
 content_model=structure-function-observation-interactions-cautions
-updated=2026-08-28
+updated=2026-09-01
