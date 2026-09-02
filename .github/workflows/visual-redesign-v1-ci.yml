@@ -1,0 +1,47 @@
+name: Visual Redesign V1 CI
+
+on:
+  push:
+    branches: [visual-redesign-v1]
+    paths:
+      - 'site/design-system/**'
+      - 'data/dtf-visual-v1.json'
+      - 'scripts/rebuild-wordpress-visual-v4.mjs'
+      - '.github/workflows/visual-redesign-v1-ci.yml'
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate JavaScript syntax
+        run: node --check scripts/rebuild-wordpress-visual-v4.mjs
+      - name: Validate design specification JSON
+        run: node -e "JSON.parse(require('fs').readFileSync('data/dtf-visual-v1.json','utf8')); console.log('visual spec ok')"
+      - name: Validate required design tokens
+        run: |
+          set -euo pipefail
+          css='site/design-system/dtf-visual-v1.css'
+          grep -Fq -- '--dtf-bg:#07170f' "$css"
+          grep -Fq -- '--dtf-gold:#d5b15a' "$css"
+          grep -Fq -- '.strain-card' "$css"
+          grep -Fq -- '.game-card' "$css"
+          grep -Fq -- '.footer-shell' "$css"
+      - name: Validate page markers and canonical destinations
+        run: |
+          set -euo pipefail
+          file='scripts/rebuild-wordpress-visual-v4.mjs'
+          grep -Fq 'data-dtf-layout=\"home-visual-v4\"' "$file"
+          grep -Fq 'data-dtf-layout=\"learn-visual-v4\"' "$file"
+          grep -Fq 'data-dtf-layout=\"genetics-visual-v4\"' "$file"
+          grep -Fq '/seeds/' "$file"
+          grep -Fq '/learn/' "$file"
+          grep -Fq '/tools/' "$file"
+          grep -Fq '/games/' "$file"
+          grep -Fq '/community/' "$file"
+          grep -Fq '/shop/' "$file"
