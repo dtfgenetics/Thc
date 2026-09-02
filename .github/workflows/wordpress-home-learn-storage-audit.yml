@@ -26,12 +26,12 @@ jobs:
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: main
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
-          node-version: 22
+          node-version: 24
 
       - name: Validate read-only owner audit
         shell: bash
@@ -40,7 +40,18 @@ jobs:
           : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
           : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
           node --check scripts/audit-wordpress-home-learn-storage.mjs
-          ! grep -Eq 'method:[[:space:]]*["'"'](?:POST|PUT|PATCH|DELETE)|file_put_contents|rename\(|unlink\(' scripts/audit-wordpress-home-learn-storage.mjs
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const source = fs.readFileSync('scripts/audit-wordpress-home-learn-storage.mjs', 'utf8');
+          const forbidden = [
+            /method:\s*['"](?:POST|PUT|PATCH|DELETE)/,
+            /file_put_contents/,
+            /rename\(/,
+            /unlink\(/,
+          ];
+          const hit = forbidden.find((pattern) => pattern.test(source));
+          if (hit) throw new Error(`Read-only audit contains forbidden mutation primitive: ${hit}`);
+          NODE
 
       - name: Read WordPress ownership and public render state
         id: audit
@@ -89,7 +100,7 @@ jobs:
 
       - name: Upload audit evidence
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: wordpress-home-learn-storage-${{ github.run_id }}
           path: ${{ runner.temp }}/home-learn-storage.json
