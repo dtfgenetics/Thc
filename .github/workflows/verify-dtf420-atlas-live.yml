@@ -1,0 +1,76 @@
+name: Verify Dtf420 Atlas Live
+
+on:
+  pull_request:
+    paths:
+      - scripts/verify-dtf420-atlas-live.mjs
+      - .github/workflows/verify-dtf420-atlas-live.yml
+  push:
+    branches: [main]
+    paths:
+      - scripts/verify-dtf420-atlas-live.mjs
+      - .github/workflows/verify-dtf420-atlas-live.yml
+  workflow_run:
+    workflows: ["Deploy DTFSeeds Public Suite via WordPress V2"]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-dtf420-atlas-live-${{ github.event.workflow_run.id || github.run_id }}
+  cancel-in-progress: false
+
+jobs:
+  syntax:
+    if: github.event_name == 'pull_request' || github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout verification source
+        uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate Atlas live verifier
+        run: node --check scripts/verify-dtf420-atlas-live.mjs
+
+  live:
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout current production owner
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Verify Dtf420 Atlas visitor routes and 3D runtime
+        env:
+          DTF_SITE_URL: https://dtfseeds.com
+        run: node scripts/verify-dtf420-atlas-live.mjs
+
+      - name: Summarize Atlas acceptance
+        if: always()
+        run: |
+          {
+            echo '## Dtf420 Atlas live acceptance'
+            echo
+            if [[ '${{ job.status }}' == 'success' ]]; then
+              echo '- Status: LIVE VERIFIED'
+            else
+              echo '- Status: NOT VERIFIED LIVE'
+            fi
+            echo '- Canonical surface: https://dtfseeds.com/learn/atlas/'
+            echo '- Coverage: Atlas hub, one route from each of 10 systems, nested Three.js HTML/runtime, and WordPress-owned /learn/ preservation.'
+            if [[ '${{ github.event_name }}' == 'workflow_run' ]]; then
+              echo '- Source deployment run: ${{ github.event.workflow_run.html_url }}'
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
