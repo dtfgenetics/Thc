@@ -1,6 +1,7 @@
 async function boot() {
   const host = document.querySelector('[data-plant-3d]');
   try {
+    await import('/atlas/atlas-performance-governor.js');
     const { bootPlantAtlasV4 } = await import('/atlas/atlas-3d-v4.js');
     const started = await bootPlantAtlasV4();
     if (started) return;
