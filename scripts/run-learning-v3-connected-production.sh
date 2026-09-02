@@ -137,5 +137,10 @@ await writeFile(join(backupDir, 'expanded-reference-report.json'), `${JSON.strin
 console.log(JSON.stringify(report, null, 2));
 NODE
 
+APPLY_LEARNING_VISUAL_V1=true \
+BACKUP_ROOT="$map_root" \
+node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/apply-learning-visual-v1.mjs | tee /tmp/dtf-learning-visual-v1-output.json
+
 test -s "$map_root/learning-v4-backup-path.txt"
-echo "Canonical Learning V3, connected Learning V4 map, and expanded THC references published as one owner transaction."
+test -s "$map_root/learning-visual-v1-backup-path.txt"
+echo "Canonical Learning V3, connected Learning V4 map, expanded THC references, and DTF Visual V1 published as one owner transaction."

@@ -121,3 +121,7 @@ const report={generatedAt:new Date().toISOString(),siteUrl,apply,backupDir,brand
 await writeFile(join(backupDir,'commerce-visual-report.json'),`${JSON.stringify(report,null,2)}\n`);
 await writeFile(join(backupRoot,'commerce-visual-backup-path.txt'),`${backupDir}\n`);
 console.log(JSON.stringify(report,null,2));
+
+// Final presentation pass stays inside the commerce owner. It only modifies
+// Shop/page CSS and theme CSS; transaction fields remain controlled elsewhere.
+await import('./apply-wordpress-shop-visual-v1.mjs');

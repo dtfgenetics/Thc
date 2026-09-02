@@ -1,66 +1,58 @@
-<!-- DTFSeeds.com public gallery page content. -->
-<style id="dtf-gallery-v2">
-.dtf-gallery{background:#f6f4ea;color:#173420}.dtf-gallery *{box-sizing:border-box}.dtf-gallery .wrap{width:min(1180px,calc(100% - 36px));margin:auto}.dtf-gallery .hero{padding:66px 0 48px;background:radial-gradient(circle at 82% 5%,rgba(214,183,92,.18),transparent 30%),linear-gradient(145deg,#081b11,#10341f);color:#fff}.dtf-gallery .hero-grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(330px,.95fr);gap:42px;align-items:center}.dtf-gallery .eyebrow{margin:0 0 10px;color:#d6b75c;font-size:.76rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase}.dtf-gallery h1{margin:0;font-size:clamp(2.8rem,6vw,5.2rem);line-height:.95;letter-spacing:-.055em}.dtf-gallery .lede{max-width:720px;margin:22px 0 0;color:#d2e0d6;font-size:1.08rem;line-height:1.75}.dtf-gallery .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}.dtf-gallery .btn{display:inline-flex;align-items:center;justify-content:center;min-height:45px;padding:10px 17px;border-radius:999px;border:1px solid rgba(255,255,255,.28);text-decoration:none;font-weight:900;color:#fff;background:rgba(255,255,255,.06)}.dtf-gallery .btn.primary{background:#d6b75c;border-color:#d6b75c;color:#081b11}.dtf-gallery .mosaic{display:grid;grid-template-columns:1.08fr .92fr;grid-template-rows:170px 170px;gap:10px}.dtf-gallery .mosaic a{display:block;overflow:hidden;border-radius:20px;border:1px solid rgba(255,255,255,.15);background:#143b25}.dtf-gallery .mosaic a:first-child{grid-row:1/3}.dtf-gallery .mosaic img{display:block;width:100%;height:100%;object-fit:cover}.dtf-gallery .section{padding:66px 0}.dtf-gallery .soft{background:#edf2e9}.dtf-gallery .dark{background:#0d2a19;color:#fff}.dtf-gallery .heading{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:26px}.dtf-gallery .heading>div{max-width:720px}.dtf-gallery .heading h2{margin:0;font-size:clamp(2rem,4vw,3.35rem);line-height:1.03;letter-spacing:-.04em}.dtf-gallery .heading>p{max-width:500px;margin:0;color:#526557;line-height:1.65}.dtf-gallery .dark .heading>p{color:#c3d4c8}.dtf-gallery .feature-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}.dtf-gallery figure{margin:0}.dtf-gallery .visual-card{overflow:hidden;border:1px solid #d7e2d9;border-radius:20px;background:#fff;box-shadow:0 12px 32px rgba(18,49,29,.08)}.dtf-gallery .visual-card a.image-link{display:block;aspect-ratio:4/5;overflow:hidden;background:#e5ece3}.dtf-gallery .visual-card img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .25s ease}.dtf-gallery .visual-card:hover img{transform:scale(1.025)}.dtf-gallery .visual-card figcaption{padding:15px 16px 17px;color:#526557;line-height:1.55}.dtf-gallery .visual-card figcaption strong{display:block;margin-bottom:4px;color:#173420}.dtf-gallery .collections{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.dtf-gallery .collection{position:relative;overflow:hidden;min-height:330px;border-radius:23px;background:#173420;border:1px solid #d3dfd5}.dtf-gallery .collection img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.72;transition:transform .25s ease,opacity .25s ease}.dtf-gallery .collection:hover img{transform:scale(1.035);opacity:.8}.dtf-gallery .collection:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,24,14,.08) 20%,rgba(7,24,14,.9) 100%)}.dtf-gallery .collection .copy{position:absolute;z-index:2;left:0;right:0;bottom:0;padding:24px;color:#fff}.dtf-gallery .collection .tag{display:inline-flex;padding:5px 9px;border-radius:999px;background:#d6b75c;color:#0b2214;font-size:.7rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase}.dtf-gallery .collection h3{margin:10px 0 6px;font-size:1.45rem}.dtf-gallery .collection p{margin:0;color:#d3e0d7;line-height:1.55}.dtf-gallery .collection a{display:inline-flex;margin-top:13px;color:#f2d77f;font-weight:900;text-decoration:none}.dtf-gallery .standards{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}.dtf-gallery .standard{padding:17px;border:1px solid #31543d;border-radius:17px;background:#12351f}.dtf-gallery .standard strong{display:block;color:#e2c668;margin-bottom:7px}.dtf-gallery .standard span{color:#c4d5c8;line-height:1.55}.dtf-gallery .link-row{display:flex;gap:9px;flex-wrap:wrap;margin-top:22px}.dtf-gallery .link-row a{padding:9px 13px;border-radius:999px;background:#fff;border:1px solid #d7e2d9;text-decoration:none;color:#173420;font-weight:850}@media(max-width:980px){.dtf-gallery .hero-grid{grid-template-columns:1fr}.dtf-gallery .feature-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.dtf-gallery .collections{grid-template-columns:repeat(2,minmax(0,1fr))}.dtf-gallery .standards{grid-template-columns:repeat(2,minmax(0,1fr))}.dtf-gallery .heading{align-items:flex-start;flex-direction:column}}@media(max-width:620px){.dtf-gallery .wrap{width:min(100% - 28px,1180px)}.dtf-gallery .hero{padding:50px 0 42px}.dtf-gallery .mosaic{grid-template-columns:1fr 1fr;grid-template-rows:210px 120px}.dtf-gallery .mosaic a:first-child{grid-column:1/3;grid-row:auto}.dtf-gallery .feature-grid,.dtf-gallery .collections,.dtf-gallery .standards{grid-template-columns:1fr}.dtf-gallery .actions .btn{width:100%}.dtf-gallery .collection{min-height:290px}}
-</style>
-<div class="dtf-gallery">
-  <section class="hero" aria-labelledby="gallery-title">
+<main class="dtf-v1" data-dtf-layout="gallery-visual-v1">
+  <style>
+    .dtf-v1 .gallery-grid{columns:3 280px;column-gap:16px}.dtf-v1 .gallery-item{break-inside:avoid;margin:0 0 16px;border:1px solid var(--dtf-border);border-radius:16px;overflow:hidden;background:var(--dtf-surface)}.dtf-v1 .gallery-item img{display:block;width:100%;height:auto}.dtf-v1 .gallery-item figcaption{padding:12px 14px;color:var(--dtf-muted);font-size:.8rem;text-transform:uppercase;letter-spacing:.05em}.dtf-v1 .gallery-collection{position:relative;min-height:300px;overflow:hidden;border:1px solid var(--dtf-border);border-radius:16px}.dtf-v1 .gallery-collection img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.dtf-v1 .gallery-collection:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 20%,rgba(4,17,10,.92))}.dtf-v1 .gallery-collection .copy{position:absolute;z-index:2;left:0;right:0;bottom:0;padding:22px}.dtf-v1 .gallery-collection .copy p{color:#c9d7cd;margin:.5rem 0 0}
+  </style>
+
+  <section class="site-hero" aria-labelledby="gallery-title">
     <div class="wrap hero-grid">
-      <div>
-        <p class="eyebrow">DTF Visual Library</p>
-        <h1 id="gallery-title">See the plant science, genetics, tools, games, and community work.</h1>
-        <p class="lede">Gallery is the visual front door to the DTF ecosystem. Browse finished educational graphics, genetics-related references, grow documentation, tool interfaces, game development, and approved community media—then continue into the section where that material belongs.</p>
+      <div class="hero-copy">
+        <h1 id="gallery-title">DTF gallery.</h1>
+        <p>Genetics, plants, education, games, community, and brand work presented visually first.</p>
         <div class="actions">
-          <a class="btn primary" href="#featured-education">Browse featured visuals</a>
-          <a class="btn" href="/learn/infographics/">Open all infographics</a>
-          <a class="btn" href="/community/">Community</a>
+          <a class="btn btn-primary" href="/seeds/">Genetics</a>
+          <a class="btn btn-secondary" href="/learn/infographics/">Education visuals</a>
+          <a class="btn btn-secondary" href="/games/">Game art</a>
         </div>
       </div>
-      <div class="mosaic" aria-label="Featured DTF education artwork">
-        <a href="/learn/infographics/"><img src="https://dtfseeds.com/wp-content/uploads/2026/08/Cannabis_Plant_Anatomy_Infographic.png" loading="eager" fetchpriority="high" decoding="async" alt="Cannabis plant anatomy educational infographic"></a>
-        <a href="/learn/infographics/"><img src="https://dtfseeds.com/wp-content/uploads/2026/08/THC-C009_Infographic_Trichomes_Secretory_Biology.png" loading="eager" decoding="async" alt="Cannabis trichome secretory biology infographic"></a>
-        <a href="/learn/infographics/"><img src="https://dtfseeds.com/wp-content/uploads/2026/08/Beneficial_Insects_and_Biological_Controls.png" loading="lazy" decoding="async" alt="Beneficial insects and biological controls infographic"></a>
+      <div class="hero-media"><img src="https://dtfseeds.com/wp-content/uploads/2026/08/Cannabis_Plant_Anatomy_Infographic.png" alt="Cannabis plant anatomy educational infographic" loading="eager" fetchpriority="high" decoding="async"></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section-heading"><h2>Featured visuals.</h2><p>Finished educational graphics should feel like major content assets, not small links buried in a text index.</p></div>
+      <div class="gallery-grid">
+        <figure class="gallery-item"><img src="https://dtfseeds.com/wp-content/uploads/2026/08/Cannabis_Plant_Anatomy_Infographic.png" alt="Cannabis plant anatomy educational infographic" loading="lazy" decoding="async"><figcaption>Plant anatomy</figcaption></figure>
+        <figure class="gallery-item"><img src="https://dtfseeds.com/wp-content/uploads/2026/08/THC-C009_Infographic_Trichomes_Secretory_Biology.png" alt="Cannabis trichome secretory biology infographic" loading="lazy" decoding="async"><figcaption>Trichome biology</figcaption></figure>
+        <figure class="gallery-item"><img src="https://dtfseeds.com/wp-content/uploads/2026/08/Nutrient_Uptake_and_Root_Zone_Chemistry.png" alt="Nutrient uptake and root-zone chemistry infographic" loading="lazy" decoding="async"><figcaption>Root-zone chemistry</figcaption></figure>
+        <figure class="gallery-item"><img src="https://dtfseeds.com/wp-content/uploads/2026/08/Beneficial_Insects_and_Biological_Controls.png" alt="Beneficial insects and biological controls infographic" loading="lazy" decoding="async"><figcaption>Biological controls</figcaption></figure>
+        <figure class="gallery-item"><img src="https://dtfseeds.com/wp-content/uploads/2026/08/Diagnosing_Deficiency_vs_Toxicity_Infographic.png" alt="Deficiency versus toxicity cannabis diagnostic infographic" loading="lazy" decoding="async"><figcaption>Diagnosis patterns</figcaption></figure>
+        <figure class="gallery-item"><img src="https://dtfseeds.com/wp-content/uploads/2026/08/Cannabis_Plant_Life_Cycle_Seed_to_Harvest_Infographic.png" alt="Cannabis plant life cycle infographic" loading="lazy" decoding="async"><figcaption>Plant life cycle</figcaption></figure>
+      </div>
+      <div class="actions"><a class="btn btn-primary" href="/learn/infographics/">Open complete visual library</a></div>
+    </div>
+  </section>
+
+  <section class="section section-mid">
+    <div class="wrap">
+      <div class="section-heading"><h2>Browse by collection.</h2><p>Each visual collection routes visitors into the section where the work actually lives.</p></div>
+      <div class="grid-3">
+        <article class="gallery-collection"><img src="https://dtfseeds.com/wp-content/uploads/2026/08/THC-C008_Infographic_Flower_Anatomy_Reproduction.png" alt="Cannabis flower anatomy and reproduction infographic" loading="lazy" decoding="async"><div class="copy"><h3>Genetics</h3><p>Breeding projects, lineage context, release imagery, and parent-line references.</p><a class="card-link" href="/seeds/">Explore genetics →</a></div></article>
+        <article class="gallery-collection"><img src="https://dtfseeds.com/wp-content/uploads/2026/08/Cannabis_Nutrition_Science_Behind_Healthy_Growth.png" alt="Cannabis nutrition science infographic" loading="lazy" decoding="async"><div class="copy"><h3>Education</h3><p>Infographics, diagrams, subject libraries, lessons, and practical references.</p><a class="card-link" href="/learn/">Start learning →</a></div></article>
+        <article class="gallery-collection"><img src="https://dtfseeds.com/wp-content/uploads/2026/08/THC-ENC-086_Air_VPD_Versus_Leaf_VPD.jpg" alt="Air VPD versus leaf VPD visual reference" loading="lazy" decoding="async"><div class="copy"><h3>Tools</h3><p>Measurement, diagnostics, grow records, observations, and decision support.</p><a class="card-link" href="/tools/">Open tools →</a></div></article>
       </div>
     </div>
   </section>
 
-  <section id="featured-education" class="section" aria-labelledby="featured-education-title">
+  <section class="section section-light">
     <div class="wrap">
-      <div class="heading"><div><p class="eyebrow">Teaching Healthy Cultivation</p><h2 id="featured-education-title">Featured visual references</h2></div><p>These are finished WordPress-hosted education assets. Each visual should support a subject page, lesson, or diagnostic workflow—not exist as an isolated image.</p></div>
-      <div class="feature-grid">
-        <figure class="visual-card"><a class="image-link" href="/learn/infographics/"><img src="https://dtfseeds.com/wp-content/uploads/2026/08/Cannabis_Plant_Anatomy_Infographic.png" loading="lazy" decoding="async" alt="Cannabis plant anatomy educational infographic"></a><figcaption><strong>Plant anatomy</strong>Whole-plant structure, organs, and plant-science orientation.</figcaption></figure>
-        <figure class="visual-card"><a class="image-link" href="/learn/infographics/"><img src="https://dtfseeds.com/wp-content/uploads/2026/08/Nutrient_Uptake_and_Root_Zone_Chemistry.png" loading="lazy" decoding="async" alt="Nutrient uptake and root-zone chemistry infographic"></a><figcaption><strong>Root-zone chemistry</strong>Water, pH, conductivity, oxygen, media, roots, and nutrient uptake as one system.</figcaption></figure>
-        <figure class="visual-card"><a class="image-link" href="/learn/infographics/"><img src="https://dtfseeds.com/wp-content/uploads/2026/08/Diagnosing_Deficiency_vs_Toxicity_Infographic.png" loading="lazy" decoding="async" alt="Deficiency versus toxicity cannabis diagnostic infographic"></a><figcaption><strong>Diagnosis patterns</strong>Visual comparison used alongside plant context, measurements, and recent changes.</figcaption></figure>
-        <figure class="visual-card"><a class="image-link" href="/learn/infographics/"><img src="https://dtfseeds.com/wp-content/uploads/2026/08/Beneficial_Insects_and_Biological_Controls.png" loading="lazy" decoding="async" alt="Beneficial insects and biological controls infographic"></a><figcaption><strong>IPM & biological control</strong>Prevention, scouting, identification, and compatible plant-health tools.</figcaption></figure>
-      </div>
-      <div class="link-row"><a href="/learn/infographics/">View the complete infographic library</a><a href="/learn/">Browse subjects</a><a href="/thc-grow-doc/">Open Grow Doc</a></div>
-    </div>
-  </section>
-
-  <section class="section soft" aria-labelledby="gallery-sections-title">
-    <div class="wrap">
-      <div class="heading"><div><p class="eyebrow">Browse by collection</p><h2 id="gallery-sections-title">Every visual belongs somewhere useful.</h2></div><p>The collection cards route visitors into the real working section instead of creating a second disconnected content library.</p></div>
-      <div class="collections">
-        <article class="collection"><img src="https://dtfseeds.com/wp-content/uploads/2026/08/THC-C008_Infographic_Flower_Anatomy_Reproduction.png" loading="lazy" decoding="async" alt="Cannabis flower anatomy and reproduction infographic"><div class="copy"><span class="tag">Genetics</span><h3>DTF Genetics</h3><p>Breeding projects, lineage context, release imagery, flower structure, and parent-line references.</p><a href="/seeds/">Explore genetics →</a></div></article>
-        <article class="collection"><img src="https://dtfseeds.com/wp-content/uploads/2026/08/THC-C005_Infographic_Root_Anatomy_and_Forensics.png" loading="lazy" decoding="async" alt="Cannabis root anatomy and forensics infographic"><div class="copy"><span class="tag">Documentation</span><h3>Grow documentation</h3><p>Roots, canopy, plant development, environmental observations, and evidence-backed grow records.</p><a href="/growlens/">Open GrowLens →</a></div></article>
-        <article class="collection"><img src="https://dtfseeds.com/wp-content/uploads/2026/08/Cannabis_Nutrition_Science_Behind_Healthy_Growth.png" loading="lazy" decoding="async" alt="Cannabis nutrition science infographic"><div class="copy"><span class="tag">Education</span><h3>Teaching Healthy Cultivation</h3><p>Infographics, diagrams, subject libraries, lessons, and practical plant-science references.</p><a href="/learn/">Learn →</a></div></article>
-        <article class="collection"><img src="https://dtfseeds.com/wp-content/uploads/2026/08/THC-ENC-086_Air_VPD_Versus_Leaf_VPD.jpg" loading="lazy" decoding="async" alt="Air VPD versus leaf VPD visual reference"><div class="copy"><span class="tag">Tools</span><h3>Cultivation tools</h3><p>Measurement, diagnostics, grow records, visual observations, and decision-support interfaces.</p><a href="/tools/">Use tools →</a></div></article>
-        <article class="collection"><img src="https://dtfseeds.com/wp-content/uploads/2026/08/Cannabis_Plant_Life_Cycle_Seed_to_Harvest_Infographic.png" loading="lazy" decoding="async" alt="Cannabis plant life cycle infographic"><div class="copy"><span class="tag">Play</span><h3>DTF Games</h3><p>Browser games, tabletop systems, cards, boards, characters, prototypes, and playable experiments.</p><a href="/games/">Open the Game Hub →</a></div></article>
-        <article class="collection"><img src="https://dtfseeds.com/wp-content/uploads/2026/08/Cloning_Guide_with_Environment_Targets.png" loading="lazy" decoding="async" alt="Cannabis cloning guide and environmental targets infographic"><div class="copy"><span class="tag">Community</span><h3>Growers & creators</h3><p>Approved grow-off media, educational questions, community projects, event highlights, and creative participation.</p><a href="/community/">Join the community →</a></div></article>
+      <div class="section-heading"><h2>Visual standard.</h2><p>Every image needs a clear identity, useful context, descriptive alternative text, and the correct destination.</p></div>
+      <div class="grid-4">
+        <article class="card"><div class="card-body"><h3>Source</h3><p>Use original, licensed, public-domain, or properly authorized imagery.</p></div></article>
+        <article class="card"><div class="card-body"><h3>Label</h3><p>Identify illustration or generated concepts when they could be mistaken for grow documentation.</p></div></article>
+        <article class="card"><div class="card-body"><h3>Context</h3><p>Do not present generic imagery as a specific DTF plant, cultivar, facility, or product.</p></div></article>
+        <article class="card"><div class="card-body"><h3>Credit</h3><p>Preserve creator credit, permission, and project identity.</p></div></article>
       </div>
     </div>
   </section>
-
-  <section class="section dark" aria-labelledby="gallery-standard-title">
-    <div class="wrap">
-      <div class="heading"><div><p class="eyebrow">Visual standard</p><h2 id="gallery-standard-title">Every image needs a clear identity and purpose.</h2></div><p>Visual quality matters, but accurate labeling matters just as much when imagery supports plant science, genetics, or grow documentation.</p></div>
-      <div class="standards">
-        <div class="standard"><strong>Source</strong><span>Use original, licensed, public-domain, or properly authorized imagery.</span></div>
-        <div class="standard"><strong>Label</strong><span>Identify illustration or AI-generated concepts when they could be mistaken for real grow documentation.</span></div>
-        <div class="standard"><strong>Context</strong><span>Do not present stock photography as a DTF plant, cultivar, facility, or product.</span></div>
-        <div class="standard"><strong>Credit</strong><span>Preserve creator credit, submission permission, and project identity.</span></div>
-        <div class="standard"><strong>Access</strong><span>Use descriptive alternative text and meaningful destinations for visual links.</span></div>
-      </div>
-      <div class="link-row"><a href="/seeds/">Genetics</a><a href="/shop/">Shop</a><a href="/learn/">Education</a><a href="/tools/">Tools</a><a href="/games/">Games</a><a href="/community/">Community</a></div>
-    </div>
-  </section>
-</div>
+</main>

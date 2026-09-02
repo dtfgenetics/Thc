@@ -1,0 +1,116 @@
+{
+  "schemaVersion": 1,
+  "name": "DTF Visual System V1",
+  "status": "accepted",
+  "reference": "2026-09-01 visual mockup board",
+  "brandPositioning": "premium botanical science x genetics laboratory x independent game studio",
+  "palette": {
+    "background": "#07170f",
+    "backgroundSecondary": "#0d2819",
+    "surface": "#102d1d",
+    "surfaceSecondary": "#173824",
+    "paper": "#f4efe2",
+    "paperSecondary": "#fffdf7",
+    "gold": "#d5b15a",
+    "goldHighlight": "#f0d887",
+    "green": "#3d7a49",
+    "greenBright": "#6f9847",
+    "lightText": "#f6f4ea",
+    "mutedLight": "#b8c7bc",
+    "darkText": "#102b1a",
+    "mutedDark": "#5d7063"
+  },
+  "typography": {
+    "display": "condensed uppercase display face with narrow fallback",
+    "body": "clean neutral sans-serif",
+    "rules": [
+      "large uppercase page titles",
+      "short supporting copy",
+      "small uppercase utility labels only when useful",
+      "no default browser typography"
+    ]
+  },
+  "geometry": {
+    "smallRadius": 10,
+    "mediumRadius": 16,
+    "largeRadius": 24,
+    "cardBorder": "thin restrained gold/green border",
+    "buttons": "compact rectangular controls; primary moss-green, secondary transparent dark"
+  },
+  "imagery": {
+    "genetics": "high-detail plant and strain photography/card art",
+    "education": "scientific diagrams, full-sheet infographics, botanical macro imagery",
+    "tools": "real interface screenshots, measurement examples, plant records",
+    "games": "dedicated cinematic key art per game with code-native UI",
+    "rules": [
+      "avoid generic dispensary stock imagery",
+      "avoid yellow tint",
+      "use strong single visual moments instead of decorative clutter",
+      "preserve correct aspect ratios and mobile crops"
+    ]
+  },
+  "globalNavigation": ["Genetics", "Learn", "Tools", "Games", "Community", "Shop"],
+  "pageTemplates": {
+    "home": ["hero", "four destination pillars", "latest genetics", "featured education", "featured tool", "games rail", "community proof"],
+    "geneticsIndex": ["hero", "filter row", "strain card grid", "breeding philosophy"],
+    "strainProfile": ["hero image", "name and badges", "quick stats", "visual lineage", "overview tabs", "phenotype gallery", "related genetics"],
+    "learn": ["hero", "primary learning destinations", "featured lesson", "guided paths", "infographic rail", "subject library", "tools bridge"],
+    "startHere": ["intro", "numbered module path", "how it works", "progress action"],
+    "tools": ["hero", "GrowLens feature", "Grow Doc feature", "utility tool grid", "workflow"],
+    "games": ["hero", "featured rail", "quick play rail", "strategy rail", "multiplayer rail", "new releases rail"],
+    "game": ["key art hero", "play button and badges", "game viewport", "how to play", "screenshots", "similar games"],
+    "shop": ["category hero", "category tiles", "featured products", "product grid"],
+    "community": ["Discord hero", "events", "grow-offs", "spotlights", "community activity"],
+    "about": ["brand story", "mission", "ecosystem", "history", "proof points"],
+    "footer": ["brand statement", "section link columns", "newsletter", "legal"]
+  },
+  "responsive": {
+    "mobileFirstPriorities": [
+      "single-column readable hierarchy",
+      "full-width primary actions",
+      "horizontal rails only where browse behavior benefits",
+      "no clipped game UI",
+      "minimum 44px interactive targets"
+    ]
+  },
+  "ownerMigrations": {
+    "homeLearn": {
+      "owner": "Learning Experience V3",
+      "bridgeCss": "site/design-system/dtf-learning-owner-v1.css",
+      "visualPass": "scripts/apply-learning-visual-v1.mjs",
+      "transaction": "scripts/run-learning-v3-connected-production.sh"
+    },
+    "genetics": {
+      "owner": "dedicated genetics library publisher",
+      "bridgeCss": "site/design-system/dtf-genetics-owner-v1.css",
+      "visualPass": "scripts/apply-wordpress-genetics-visual-v1.mjs",
+      "transaction": "scripts/publish-wordpress-genetics-library-cdn.mjs"
+    },
+    "shop": {
+      "owner": "canonical WordPress commerce presentation",
+      "bridgeCss": "site/design-system/dtf-shop-owner-v1.css",
+      "visualPass": "scripts/apply-wordpress-shop-visual-v1.mjs",
+      "transaction": "scripts/rebuild-wordpress-commerce-visuals.mjs",
+      "transactionFieldsTouched": false
+    },
+    "games": {
+      "owner": "static public application suite",
+      "sharedShell": "site/public-route-patch/games/dtf-route.css",
+      "runtimeIsolation": true
+    },
+    "editorial": {
+      "owner": "canonical WordPress publisher",
+      "pages": ["community", "gallery", "about", "contact"]
+    }
+  },
+  "implementationRules": [
+    "reusable tokens and components before page-specific styling",
+    "do not alter independent game runtime logic while styling wrappers",
+    "one source of truth for navigation and public game counts",
+    "remove visitor-facing engineering/process language",
+    "all legacy top-level pages migrate to the same shell",
+    "preserve minimum 44px interactive targets",
+    "visual commerce layers must not alter WooCommerce price, stock, SKU, shipping, tax, checkout, or order fields",
+    "verify desktop and mobile before promotion to main"
+  ]
+}
