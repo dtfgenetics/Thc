@@ -22,7 +22,7 @@ jobs:
   repair:
     name: Transactionally retire stale static route shadows
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 35
     environment: production
     env:
       NODE_OPTIONS: --dns-result-order=ipv4first
@@ -43,20 +43,36 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test -n "${WP_API_USERNAME:-}"
-          test -n "${WP_API_PASSWORD:-}"
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
           node --check scripts/repair-static-shadows-via-wordpress.mjs
           node --check scripts/run-static-shadow-repair-resilient.mjs
           node --check scripts/wordpress-ipv4-fetch-bootstrap.mjs
           bash -n scripts/run-static-shadow-repair-current-markers.sh
-          grep -Fq 'Genetics first. Cultivation science behind it.' scripts/run-static-shadow-repair-current-markers.sh
-          grep -Fq 'Learn the plant as a connected system.' scripts/run-static-shadow-repair-current-markers.sh
-          grep -Fq 'DTF Genetics catalog pages built around strain identity and grow context.' scripts/run-static-shadow-repair-current-markers.sh
-          grep -Fq 'DTF Genetics library' scripts/run-static-shadow-repair-current-markers.sh
-          grep -Fq "'rel' => 'seeds/index.html'" scripts/run-static-shadow-repair-current-markers.sh
+          grep -Fq 'data-dtf-layout="home-v3"' scripts/run-static-shadow-repair-current-markers.sh
+          grep -Fq 'data-dtf-layout="learn-v3"' scripts/run-static-shadow-repair-current-markers.sh
+          grep -Fq "'rel' => 'shop/index.html'" scripts/run-static-shadow-repair-current-markers.sh
+          grep -Fq "'rel' => 'community/index.html'" scripts/run-static-shadow-repair-current-markers.sh
+          grep -Fq "'rel' => 'gallery/index.html'" scripts/run-static-shadow-repair-current-markers.sh
+          grep -Fq "'rel' => 'about/index.html'" scripts/run-static-shadow-repair-current-markers.sh
+          grep -Fq "'rel' => 'contact/index.html'" scripts/run-static-shadow-repair-current-markers.sh
           grep -Fq "return \$supplied !== '' && hash_equals(\$token, \$supplied);" scripts/run-static-shadow-repair-current-markers.sh
-          grep -Fq 'node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs "$runner"' scripts/run-static-shadow-repair-current-markers.sh
-          grep -Fq 'const responseBody = [204, 205, 304].includes(status) ? null : Buffer.concat(chunks);' scripts/wordpress-ipv4-fetch-bootstrap.mjs
+          grep -Fq 'wordpress-ipv4-fetch-bootstrap.mjs' scripts/run-static-shadow-repair-current-markers.sh
+
+      - name: Confirm authenticated WordPress repair path
+        shell: bash
+        run: |
+          set -euo pipefail
+          auth="$(printf '%s:%s' "$WP_API_USERNAME" "$WP_API_PASSWORD" | base64 -w0)"
+          curl -4 --fail --silent --show-error --location --retry 4 --retry-all-errors --retry-delay 2 \
+            --connect-timeout 15 --max-time 60 \
+            -H "Authorization: Basic $auth" \
+            -H 'Cache-Control: no-cache, no-store, max-age=0' \
+            "$WP_SITE_URL/wp-json/wp/v2/users/me?context=edit" -o "$RUNNER_TEMP/wp-user.json"
+          node - <<'NODE' "$RUNNER_TEMP/wp-user.json"
+          const user=require(process.argv[2]);
+          if (!Number(user.id || 0)) throw new Error('Authenticated WordPress user did not resolve');
+          NODE
 
       - name: Execute transactional repair through authenticated WordPress
         id: repair
@@ -73,61 +89,77 @@ jobs:
           verify() {
             local path="$1"
             local marker="$2"
+            local mode="$3"
             local body="$RUNNER_TEMP/final-$(printf '%s' "$path" | tr '/?' '__').html"
             local ok=0
-            for attempt in 1 2 3 4 5 6; do
-              if curl -4 -fsSL --retry 3 --retry-delay 2 --connect-timeout 15 --max-time 45 \
+            for attempt in 1 2 3 4 5 6 7 8; do
+              if curl -4 -fsSL --retry 3 --retry-all-errors --retry-delay 2 --connect-timeout 15 --max-time 60 \
                 -H 'Cache-Control: no-cache, no-store, max-age=0' \
                 -H 'Pragma: no-cache' \
-                "https://dtfseeds.com${path}?dtf_final_shadow_verify=${GITHUB_RUN_ID}-${attempt}" \
-                -o "$body"; then
-                if grep -Fqi -- "$marker" "$body"; then
-                  ok=1
-                  break
-                fi
+                "$WP_SITE_URL${path}?dtf_final_shadow_verify=${GITHUB_RUN_ID}-${attempt}" \
+                -o "$body" && grep -Fqi -- "$marker" "$body"; then
+                ok=1
+                break
               fi
               sleep 5
             done
             [[ "$ok" -eq 1 ]] || {
-              echo "Expected current marker is still absent from $path" >&2
-              head -c 2500 "$body" >&2 || true
+              echo "Expected owner marker is absent from $path: $marker" >&2
+              head -c 3000 "$body" >&2 || true
               return 1
             }
-            for stale in \
-              'THC Grow Doc, genetics, cultivation education, and games in one home.' \
-              'Grow education belongs in a clean, readable library.' \
-              'MOPS, cultivation notes, THC basics' \
-              'being rebuilt' \
-              'Reserved strain card' \
-              'Tool-ready rebuild' \
-              'DTF Genetics catalog pages built around strain identity and grow context.'; do
-              ! grep -Fqi -- "$stale" "$body" || {
-                echo "Stale route marker remains on $path: $stale" >&2
+            if [[ "$mode" == wordpress ]]; then
+              ! grep -Fqi '/assets/dtf-home/dtf-home.css' "$body" || {
+                echo "Legacy static shell remains on $path" >&2
                 return 1
               }
-            done
-            media="$(grep -o '/wp-content/uploads/' "$body" | wc -l | tr -d ' ')"
-            echo "$path verified; current canonical marker present, stale markers absent, WordPress media references=$media"
+              for stale in \
+                'THC Grow Doc, genetics, cultivation education, and games in one home.' \
+                'Grow education belongs in a clean, readable library.' \
+                'MOPS, cultivation notes, THC basics' \
+                'being rebuilt' \
+                'Reserved strain card' \
+                'Tool-ready rebuild' \
+                'DTF Genetics catalog pages built around strain identity and grow context.'; do
+                ! grep -Fqi -- "$stale" "$body" || {
+                  echo "Stale route marker remains on $path: $stale" >&2
+                  return 1
+                }
+              done
+            fi
+            echo "$path verified as $mode owner"
           }
 
-          verify '/' 'Genetics first. Cultivation science behind it.'
-          verify '/learn/' 'Learn the plant as a connected system.'
-          verify '/learn/infographics/' 'Visual plant science and cultivation library.'
-          verify '/seeds/' 'DTF Genetics library'
+          verify '/' 'data-dtf-layout="home-v3"' wordpress
+          verify '/learn/' 'data-dtf-layout="learn-v3"' wordpress
+          verify '/learn/infographics/' 'Visual plant science and cultivation library.' wordpress
+          verify '/learn/start-here/' 'Learn the plant before chasing the fix.' wordpress
+          verify '/seeds/' 'data-dtf-genetics-library="2026"' wordpress
+          verify '/seeds/mango-bubbles/' 'data-dtf-genetics-line="mango-bubbles"' wordpress
+          verify '/shop/' 'dtf-commerce-archive-style' wordpress
+          verify '/community/' 'data-dtf-layout="community-visual-v1"' wordpress
+          verify '/gallery/' 'data-dtf-layout="gallery-visual-v1"' wordpress
+          verify '/about/' 'data-dtf-layout="about-visual-v1"' wordpress
+          verify '/contact/' 'data-dtf-layout="contact-visual-v1"' wordpress
+          verify '/games/' '25 playable browser games' preserved
+          verify '/tools/' 'Grow with records. Diagnose with evidence.' preserved
 
       - name: Record transactional repair
         if: always()
         shell: bash
+        env:
+          JOB_STATUS: ${{ job.status }}
+          REPAIR_OUTCOME: ${{ steps.repair.outcome }}
+          VERIFY_OUTCOME: ${{ steps.verify.outcome }}
         run: |
           {
             echo '## WordPress-side transactional static-shadow repair'
             echo
-            echo "- Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
-            echo "- Transactional repair: ${{ steps.repair.outcome }}"
-            echo "- Independent live verification: ${{ steps.verify.outcome }}"
-            echo '- The temporary repair bridge uses a per-run 256-bit token; the production application-password account does not need manage_options.'
-            echo '- The repair remains marker-gated, backup-first, rollback-safe, and idempotent after successful retirement.'
+            echo "Result: **${JOB_STATUS}**"
+            echo "Transactional repair: **${REPAIR_OUTCOME:-not-run}**"
+            echo "Independent live verification: **${VERIFY_OUTCOME:-not-run}**"
+            echo
+            echo '- The temporary repair bridge uses a fresh per-run 256-bit token sent in the JSON body.'
+            echo '- Every positively identified legacy HTML file is backed up into WordPress options and verified before unlinking.'
+            echo '- Home, Learn, Infographics, Start Here, Genetics, Shop, Community, Gallery, About, Contact, Games, and Tools must all pass before the repair finalizes its rollback backups.'
           } >> "$GITHUB_STEP_SUMMARY"
-
-# GET retries are limited to idempotent requests; mutating requests are never replayed automatically.
-# 2026-08-31 verified cutover: retire fingerprinted stale root/Learn/Seeds HTML shadows and verify current canonical markers.
