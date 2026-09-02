@@ -19,6 +19,7 @@ on:
       - 'scripts/publish-wordpress-genetics-library-cdn-core.mjs'
       - 'scripts/reconcile-wordpress-genetics-duplicate-pages.mjs'
       - 'scripts/force-original-image-accept.mjs'
+      - 'scripts/wordpress-ipv4-fetch-bootstrap.mjs'
       - 'scripts/flush-hostinger-litespeed-mcp.mjs'
       - 'scripts/purge-wordpress-litespeed-cache.mjs'
       - 'scripts/verify-wordpress-genetics-library-production.mjs'
@@ -79,6 +80,7 @@ jobs:
           set -euo pipefail
           test -n "${WP_API_USERNAME:-}"
           test -n "${WP_API_PASSWORD:-}"
+          node --check scripts/wordpress-ipv4-fetch-bootstrap.mjs
           node --check scripts/publish-wordpress-genetics-library-cdn.mjs
           node --check scripts/publish-woocommerce-strain-card-images-cdn.mjs
           node --check scripts/audit-genetics-cdn-sources.mjs
@@ -140,7 +142,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          node scripts/publish-wordpress-genetics-library-cdn.mjs
+          node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/publish-wordpress-genetics-library-cdn.mjs
           dir="$(cat "$BACKUP_ROOT/genetics-library-backup-path.txt")"
           report="$dir/genetics-library-report.json"
           echo "line_count=$(node -p "require(process.argv[1]).lineCount" "$report")" >> "$GITHUB_OUTPUT"
@@ -154,7 +156,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          node scripts/publish-woocommerce-strain-card-images-cdn.mjs
+          node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/publish-woocommerce-strain-card-images-cdn.mjs
 
       - name: Purge Genetics routes from LiteSpeed immediately before acceptance
         id: purge
@@ -169,7 +171,7 @@ jobs:
           console.log(JSON.stringify(['/seeds/', ...catalog.lines.map(line => `/seeds/${line.slug}/`)]));
           NODE
           )"
-          LITESPEED_PURGE_URLS_JSON="$purge_urls" node scripts/purge-wordpress-litespeed-cache.mjs
+          LITESPEED_PURGE_URLS_JSON="$purge_urls" node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/purge-wordpress-litespeed-cache.mjs
 
       - name: Verify authoritative Genetics REST state and public cache convergence
         id: verify
@@ -178,7 +180,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          node scripts/verify-wordpress-genetics-library-production.mjs
+          node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/verify-wordpress-genetics-library-production.mjs
 
       - name: Upload genetics rollback/evidence package
         if: always()
