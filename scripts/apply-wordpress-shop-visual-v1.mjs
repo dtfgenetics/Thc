@@ -78,10 +78,10 @@ if(apply){
 }
 
 const parts=await request('/wp-json/wp/v2/template-parts?context=edit&per_page=100');
-const headers=(parts||[]).filter(part=>part.theme==='hostinger-ai-theme'&&part.slug==='header');
-if(!headers.length) throw new Error('Active Hostinger header template part was not found');
+const headerParts=(parts||[]).filter(part=>part.theme==='hostinger-ai-theme'&&part.slug==='header');
+if(!headerParts.length) throw new Error('Active Hostinger header template part was not found');
 const partResults=[];
-for(const part of headers){
+for(const part of headerParts){
   const original=raw(part.content);
   await writeFile(join(backupDir,`template-part-${String(part.id).replaceAll('/','_')}-before.json`),`${JSON.stringify(part,null,2)}\n`);
   const cleaned=stripMarked(original,shellStart,shellEnd).replace(/<style id="dtf-shop-owner-v1-global">[\s\S]*?<\/style>/gi,'');
