@@ -50,6 +50,9 @@ jobs:
           grep -Fq 'a32f9a10a5f79580d665d8d2c4718993a9d4bc14070eb8a26a4a2386f8535a3c' scripts/run-dtf-wordpress-override-repair-current.sh
           grep -Fq 'data-dtf-layout="home-v3"' scripts/run-dtf-wordpress-override-repair-current.sh
           grep -Fq 'data-dtf-layout="learn-v3"' scripts/run-dtf-wordpress-override-repair-current.sh
+          grep -Fq 'Open the THC Living Plant Atlas' scripts/run-dtf-wordpress-override-repair-current.sh
+          grep -Fq '/learn/atlas/' scripts/run-dtf-wordpress-override-repair-current.sh
+          grep -Fq 'atlas-runtime.js' scripts/run-dtf-wordpress-override-repair-current.sh
           grep -Fq '25 playable browser games' scripts/run-dtf-wordpress-override-repair-current.sh
           grep -Fq 'Grow with records. Diagnose with evidence.' scripts/run-dtf-wordpress-override-repair-current.sh
           auth="$(printf '%s:%s' "$WP_API_USERNAME" "$WP_API_PASSWORD" | base64 -w0)"
@@ -103,6 +106,9 @@ jobs:
           }
           verify '/' 'data-dtf-layout="home-v3"' 'THC Grow Doc, genetics, cultivation education, and games in one home.'
           verify '/learn/' 'data-dtf-layout="learn-v3"' 'Grow education belongs in a clean, readable library.'
+          verify '/learn/' 'Open the THC Living Plant Atlas' 'Grow education belongs in a clean, readable library.'
+          verify '/learn/atlas/' 'THC Living Plant Atlas' '__dtf_no_stale_atlas_marker__'
+          verify '/learn/atlas/atlas-3d/index.html' 'atlas-runtime.js' '__dtf_no_stale_atlas_runtime_marker__'
           verify '/games/' '25 playable browser games' '__dtf_no_stale_games_marker__'
           verify '/tools/' 'Grow with records. Diagnose with evidence.' '__dtf_no_stale_tools_marker__'
 
@@ -129,6 +135,6 @@ jobs:
             `Override changed: **${d.changed ?? 'unknown'}**`,
             `Verified SHA-256: \`${d.sha256 || '-'}\``,
             `Origin verification: **${d.origin_verified === true ? 'success' : 'not-confirmed'}**`,'',
-            'The repair targets only `wp-content/mu-plugins/dtf-homepage-override.php`, requires the exact confirmed stale SHA and stale Home/Learn markers, renames it out of MU auto-loading, purges LiteSpeed, verifies Home/Learn plus preserved Games/Tools, and restores the original file automatically if the transaction verification fails.'
+            'The repair targets only `wp-content/mu-plugins/dtf-homepage-override.php`, requires the exact confirmed stale SHA and stale Home/Learn markers, renames it out of MU auto-loading, purges LiteSpeed, verifies current Home/Learn, Living Plant Atlas discovery and runtime, plus preserved Games/Tools, and restores the original file automatically if the transaction verification fails.'
           ].join('\n')+'\n');
           NODE
