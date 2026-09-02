@@ -13,6 +13,7 @@ on:
       - 'scripts/apply-wordpress-public-content-owned-routes.mjs'
       - 'scripts/rebuild-wordpress-visual-v4.mjs'
       - 'scripts/rebuild-wordpress-support-pages-v1.mjs'
+      - '.github/workflows/wordpress-canonical-deploy.yml'
       - '.github/workflows/visual-redesign-v1-ci.yml'
   workflow_dispatch:
 
@@ -62,6 +63,16 @@ jobs:
           done
           grep -Fq 'Join the official DTF / Teaching Healthy Cultivation Discord' site/wordpress/pages/community.html
           grep -Fq 'Join the official DTF / Teaching Healthy Cultivation Discord' site/wordpress/pages/contact.html
+
+      - name: Validate canonical handoff knows the shared visual system
+        run: |
+          set -euo pipefail
+          file='.github/workflows/wordpress-canonical-deploy.yml'
+          grep -Fq 'site/design-system/**' "$file"
+          grep -Fq 'scripts/apply-wordpress-public-content-owned-routes.mjs' "$file"
+          grep -Fq 'test -s site/design-system/dtf-visual-v1.css' "$file"
+          grep -Fq 'test -s data/dtf-visual-v1.json' "$file"
+          grep -Fq "grep -Fq -- '--dtf-bg:#07170f'" "$file"
 
       - name: Validate reference page markers and canonical destinations
         run: |
