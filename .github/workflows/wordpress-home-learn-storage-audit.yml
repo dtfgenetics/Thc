@@ -40,7 +40,20 @@ jobs:
           : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
           : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
           node --check scripts/audit-wordpress-home-learn-storage.mjs
-          ! grep -Eq 'method:[[:space:]]*["'"'](?:POST|PUT|PATCH|DELETE)|file_put_contents|rename\(|unlink\(' scripts/audit-wordpress-home-learn-storage.mjs
+          node - <<'NODE'
+          const fs = require('fs');
+          const source = fs.readFileSync('scripts/audit-wordpress-home-learn-storage.mjs', 'utf8');
+          const forbidden = [
+            [/method\s*:\s*['"`]\s*(?:POST|PUT|PATCH|DELETE)\s*['"`]/i, 'mutating HTTP method'],
+            [/file_put_contents/i, 'file_put_contents'],
+            [/rename\s*\(/i, 'rename'],
+            [/unlink\s*\(/i, 'unlink'],
+          ];
+          for (const [pattern, label] of forbidden) {
+            if (pattern.test(source)) throw new Error(`Read-only audit contains forbidden ${label}`);
+          }
+          console.log('Read-only audit static safety scan passed.');
+          NODE
 
       - name: Read WordPress ownership and public render state
         id: audit
@@ -79,10 +92,12 @@ jobs:
             `Learn V3 marker: **${learn.markers?.learnV3 ?? 'unknown'}**`,
             `Learn V4 map marker: **${learn.markers?.learningV4 ?? 'unknown'}**`,
             `Learn canonical marker: **${learn.markers?.canonicalLearn ?? 'unknown'}**`,
+            `Learn Atlas CTA marker: **${learn.markers?.atlasCta ?? 'unknown'}**`,
+            `Learn Atlas hub marker: **${learn.markers?.atlasHub ?? 'unknown'}**`,
             `Learn legacy marker: **${learn.markers?.oldLearn ?? 'unknown'}**`,'',
             '### Public probes'
           ];
-          for(const p of d.publicRoutes||[]) rows.push(`- ${p.path}: HTTP ${p.status}, ${p.bytes} bytes, homeV3=${p.markers?.homeV3}, learnV3=${p.markers?.learnV3}, oldHome=${p.markers?.oldHome}, oldLearn=${p.markers?.oldLearn}`);
+          for(const p of d.publicRoutes||[]) rows.push(`- ${p.path}: HTTP ${p.status}, ${p.bytes} bytes, homeV3=${p.markers?.homeV3}, learnV3=${p.markers?.learnV3}, atlasCta=${p.markers?.atlasCta}, atlasHub=${p.markers?.atlasHub}, atlasRuntime=${p.markers?.atlasRuntime}, oldHome=${p.markers?.oldHome}, oldLearn=${p.markers?.oldLearn}`);
           rows.push('','Read-only. No WordPress page, setting, plugin, file, cache, or route is changed by this audit.');
           fs.appendFileSync(summary,rows.join('\n')+'\n');
           NODE
