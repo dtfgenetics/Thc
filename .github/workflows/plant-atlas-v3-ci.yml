@@ -1,21 +1,27 @@
-name: Validate THC Living Plant Atlas V3
+name: Validate THC Living Plant Atlas V4
 
 on:
   pull_request:
     paths:
       - apps/growlens-web/public/atlas/**
+      - apps/growlens-web/e2e/plant-atlas-3d.spec.ts
       - site/public-route-patch/atlas/**
       - scripts/validate-plant-atlas-v3.mjs
+      - scripts/validate-plant-atlas-v4.mjs
       - .github/workflows/plant-atlas-v3-ci.yml
       - scripts/package-public-suite-wordpress.py
+      - package.json
   push:
     branches: [main]
     paths:
       - apps/growlens-web/public/atlas/**
+      - apps/growlens-web/e2e/plant-atlas-3d.spec.ts
       - site/public-route-patch/atlas/**
       - scripts/validate-plant-atlas-v3.mjs
+      - scripts/validate-plant-atlas-v4.mjs
       - .github/workflows/plant-atlas-v3-ci.yml
       - scripts/package-public-suite-wordpress.py
+      - package.json
 
 permissions:
   contents: read
@@ -33,18 +39,30 @@ jobs:
         run: |
           node --check apps/growlens-web/public/atlas/atlas-v3.js
           node --check apps/growlens-web/public/atlas/atlas-3d.js
+          node --check apps/growlens-web/public/atlas/atlas-3d-v4.js
+          node --check apps/growlens-web/public/atlas/atlas-3d-bootstrap.js
           node --check apps/growlens-web/public/atlas/module.js
           node --check site/public-route-patch/atlas/atlas-v3.js
           node --check site/public-route-patch/atlas/atlas-3d.js
+          node --check site/public-route-patch/atlas/atlas-3d-v4.js
+          node --check site/public-route-patch/atlas/atlas-3d-bootstrap.js
           node --check site/public-route-patch/atlas/module.js
           node --check scripts/validate-plant-atlas-v3.mjs
-      - name: Validate Atlas content, 3D interaction, routes, mirrors, and deployment ownership
+          node --check scripts/validate-plant-atlas-v4.mjs
+      - name: Validate Atlas educational core and V3 emergency fallback
         run: node scripts/validate-plant-atlas-v3.mjs
-      - name: Verify public-suite packaging requires the interactive Atlas runtime
+      - name: Validate Atlas V4 renderer, anatomy map, model manifest, and mirrors
+        run: node scripts/validate-plant-atlas-v4.mjs
+      - name: Verify public-suite packaging requires the complete V4 runtime
         run: |
           grep -Fq '"atlas",' scripts/package-public-suite-wordpress.py
           grep -Fq '"assets/images/atlas",' scripts/package-public-suite-wordpress.py
           grep -Fq '"atlas/index.html",' scripts/package-public-suite-wordpress.py
           grep -Fq '"atlas/atlas-3d.js",' scripts/package-public-suite-wordpress.py
           grep -Fq '"atlas/atlas-v3.js",' scripts/package-public-suite-wordpress.py
+          grep -Fq '"atlas/atlas-v4.css",' scripts/package-public-suite-wordpress.py
+          grep -Fq '"atlas/atlas-3d-bootstrap.js",' scripts/package-public-suite-wordpress.py
+          grep -Fq '"atlas/atlas-3d-v4.js",' scripts/package-public-suite-wordpress.py
           grep -Fq '"atlas/data/systems.json",' scripts/package-public-suite-wordpress.py
+          grep -Fq '"atlas/data/hotspots-v4.json",' scripts/package-public-suite-wordpress.py
+          grep -Fq '"atlas/models/model-manifest-v4.json",' scripts/package-public-suite-wordpress.py
