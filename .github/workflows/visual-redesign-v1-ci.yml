@@ -40,9 +40,9 @@ jobs:
           set -euo pipefail
           core='scripts/rebuild-wordpress-visual-v4.mjs'
           support='scripts/rebuild-wordpress-support-pages-v1.mjs'
-          grep -Fq 'data-dtf-layout=\"home-visual-v4\"' "$core"
-          grep -Fq 'data-dtf-layout=\"learn-visual-v4\"' "$core"
-          grep -Fq 'data-dtf-layout=\"genetics-visual-v4\"' "$core"
+          grep -Fq 'data-dtf-layout="home-visual-v4"' "$core"
+          grep -Fq 'data-dtf-layout="learn-visual-v4"' "$core"
+          grep -Fq 'data-dtf-layout="genetics-visual-v4"' "$core"
           grep -Fq 'community-visual-v1' "$support"
           grep -Fq 'shop-visual-v1' "$support"
           grep -Fq 'about-visual-v1' "$support"
