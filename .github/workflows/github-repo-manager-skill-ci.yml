@@ -1,0 +1,35 @@
+name: Validate GitHub Repo Manager Skill
+
+on:
+  pull_request:
+    paths:
+      - '.agents/skills/github-repo-manager/**'
+      - 'scripts/validate-github-repo-manager-skill.mjs'
+      - 'AGENTS.md'
+      - '.github/workflows/github-repo-manager-skill-ci.yml'
+  push:
+    branches: [main]
+    paths:
+      - '.agents/skills/github-repo-manager/**'
+      - 'scripts/validate-github-repo-manager-skill.mjs'
+      - 'AGENTS.md'
+      - '.github/workflows/github-repo-manager-skill-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate repository-management contract
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Syntax check validator
+        run: node --check scripts/validate-github-repo-manager-skill.mjs
+      - name: Validate GitHub repo manager skill
+        run: node scripts/validate-github-repo-manager-skill.mjs
