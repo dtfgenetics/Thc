@@ -7,6 +7,7 @@ on:
       - 'site/design-system/**'
       - 'data/dtf-visual-v1.json'
       - 'scripts/rebuild-wordpress-visual-v4.mjs'
+      - 'scripts/rebuild-wordpress-support-pages-v1.mjs'
       - '.github/workflows/visual-redesign-v1-ci.yml'
   workflow_dispatch:
 
@@ -20,7 +21,9 @@ jobs:
         with:
           node-version: '22'
       - name: Validate JavaScript syntax
-        run: node --check scripts/rebuild-wordpress-visual-v4.mjs
+        run: |
+          node --check scripts/rebuild-wordpress-visual-v4.mjs
+          node --check scripts/rebuild-wordpress-support-pages-v1.mjs
       - name: Validate design specification JSON
         run: node -e "JSON.parse(require('fs').readFileSync('data/dtf-visual-v1.json','utf8')); console.log('visual spec ok')"
       - name: Validate required design tokens
@@ -35,13 +38,16 @@ jobs:
       - name: Validate page markers and canonical destinations
         run: |
           set -euo pipefail
-          file='scripts/rebuild-wordpress-visual-v4.mjs'
-          grep -Fq 'data-dtf-layout=\"home-visual-v4\"' "$file"
-          grep -Fq 'data-dtf-layout=\"learn-visual-v4\"' "$file"
-          grep -Fq 'data-dtf-layout=\"genetics-visual-v4\"' "$file"
-          grep -Fq '/seeds/' "$file"
-          grep -Fq '/learn/' "$file"
-          grep -Fq '/tools/' "$file"
-          grep -Fq '/games/' "$file"
-          grep -Fq '/community/' "$file"
-          grep -Fq '/shop/' "$file"
+          core='scripts/rebuild-wordpress-visual-v4.mjs'
+          support='scripts/rebuild-wordpress-support-pages-v1.mjs'
+          grep -Fq 'data-dtf-layout=\"home-visual-v4\"' "$core"
+          grep -Fq 'data-dtf-layout=\"learn-visual-v4\"' "$core"
+          grep -Fq 'data-dtf-layout=\"genetics-visual-v4\"' "$core"
+          grep -Fq 'community-visual-v1' "$support"
+          grep -Fq 'shop-visual-v1' "$support"
+          grep -Fq 'about-visual-v1' "$support"
+          grep -Fq 'contact-visual-v1' "$support"
+          grep -Fq 'gallery-visual-v1' "$support"
+          for route in '/seeds/' '/learn/' '/tools/' '/games/' '/community/' '/shop/'; do
+            grep -Fq "$route" "$core"
+          done
