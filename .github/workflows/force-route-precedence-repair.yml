@@ -122,10 +122,14 @@ jobs:
           }
           verify '/' 'Genetics, cultivation education, practical tools, and original cannabis games.'
           verify '/learn/' 'Understand the plant. Build the environment. Make better decisions.'
+          verify '/learn/' 'Open the THC Living Plant Atlas'
           verify '/learn/infographics/' 'Visual plant science and cultivation library.'
+          verify '/learn/atlas/' 'THC Living Plant Atlas'
+          verify '/learn/atlas/atlas-3d/index.html' 'atlas-runtime.js'
 
       - name: Report Codex-style production cutover
         if: always()
+        continue-on-error: true
         uses: actions/github-script@v7
         env:
           JOB_STATUS: ${{ job.status }}
@@ -150,8 +154,8 @@ jobs:
                 `Static-shadow retirement: **${process.env.SHADOW_OUTCOME || 'not-run'}** — ${runLink(process.env.SHADOW_RUN)}`,
                 `Final visitor verification: **${process.env.FINAL_OUTCOME || 'not-run'}**`,
                 '',
-                'This reproduces the successful Codex production method: trusted-main dispatcher → protected production workflow → transactional backup/write/rollback → dependent cleanup → independent cache-busted verification. Run resolution is scoped to newly dispatched jobs, and verification uses the canonical Home/Learn headlines stored in GitHub.'
+                'This reproduces the successful Codex production method: trusted-main dispatcher → protected production workflow → transactional backup/write/rollback → dependent cleanup → independent cache-busted verification. Run resolution is scoped to newly dispatched jobs, and verification uses the canonical Home/Learn headlines stored in GitHub. The final acceptance also proves the Living Plant Atlas hub and nested Three.js runtime survive the WordPress cutover.'
               ].join('\n')
             });
 
-# Trusted-main orchestration trigger: definitive idempotent cutover.
+# Trusted-main orchestration trigger: Atlas-aware static-shadow cutover 2026-09-02.
