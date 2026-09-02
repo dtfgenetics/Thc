@@ -21,6 +21,7 @@ jobs:
     name: Back up and remove stale static routes that shadow WordPress
     runs-on: ubuntu-latest
     timeout-minutes: 25
+    environment: production
     env:
       SSH_HOST: ${{ secrets.HOSTINGER_SSH_HOST }}
       SSH_PORT: ${{ secrets.HOSTINGER_SSH_PORT }}
@@ -278,5 +279,5 @@ jobs:
             echo "Visitor-facing verification: **${VERIFY:-not-run}**"
             echo "Remote rollback backup: \`${BACKUP:-not-reported}\`"
             echo
-            echo 'The cleanup uses the same repository-level Hostinger SSH credentials, port convention, public root, and production concurrency lane as the proven public-suite deployment workflow.'
+            echo 'The cleanup uses the production environment Hostinger SSH credentials, the proven port/public-root contract, and the shared production concurrency lane.'
           } >> "$GITHUB_STEP_SUMMARY"
