@@ -30,7 +30,8 @@ jobs:
           test -s site/wordpress/pages/gallery.html
           grep -Fq 'data-dtf-layout="gallery-visual-v1"' site/wordpress/pages/gallery.html
           grep -Fq 'class="dtf-v1"' site/wordpress/pages/gallery.html
-          grep -Fq 'DTF Visual Library' site/wordpress/pages/gallery.html
+          grep -Fq 'DTF gallery.' site/wordpress/pages/gallery.html
+          ! grep -Fq 'DTF Visual Library' site/wordpress/pages/gallery.html
           ! grep -Fq 'dtf-gallery-v2' site/wordpress/pages/gallery.html
 
       - name: Verify current visitor-facing Gallery
@@ -42,7 +43,7 @@ jobs:
             -H 'Cache-Control: no-cache, no-store, max-age=0' \
             -H 'Pragma: no-cache' \
             "$WP_SITE_URL/gallery/?dtf_gallery_visual=${GITHUB_RUN_ID}" -o "$body"
-          grep -Fqi 'DTF Visual Library' "$body"
+          grep -Fqi 'DTF gallery.' "$body"
           grep -Fqi '/learn/infographics/' "$body"
           grep -Fqi '/seeds/' "$body"
           grep -Fqi '/tools/' "$body"
@@ -50,6 +51,7 @@ jobs:
           grep -Fqi '/community/' "$body"
           for forbidden in \
             'dtf-gallery-v2' \
+            'DTF Visual Library' \
             'email@email.com' \
             '+123456789' \
             '© 2025 DTF Genetics'; do

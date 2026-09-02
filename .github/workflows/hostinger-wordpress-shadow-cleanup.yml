@@ -9,7 +9,6 @@ on:
 
 permissions:
   contents: read
-  issues: write
 
 concurrency:
   group: dtfseeds-hostinger-shadow-cleanup
@@ -17,9 +16,9 @@ concurrency:
 
 jobs:
   cleanup:
-    name: Back up and remove stale static files that shadow WordPress
+    name: Back up and remove stale static routes that shadow WordPress
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     environment: growlens-production
     env:
       SSH_HOST: ${{ secrets.HOSTINGER_SSH_HOST }}
@@ -106,38 +105,86 @@ jobs:
           mkdir -p "$BACKUP"
           removed=0
 
-          retire_if_stale() {
+          is_stale() {
+            file="$1"
+            shift
+            [[ -f "$file" ]] || return 1
+            for marker in "$@"; do
+              if grep -Fqi -- "$marker" "$file"; then
+                return 0
+              fi
+            done
+            return 1
+          }
+
+          retire_file_if_stale() {
             rel="$1"
             shift
             file="$ROOT/$rel"
-            [[ -f "$file" ]] || return 0
-            stale=0
-            for marker in "$@"; do
-              if grep -Fqi -- "$marker" "$file"; then
-                stale=1
-                break
-              fi
-            done
-            [[ "$stale" -eq 1 ]] || return 0
+            is_stale "$file" "$@" || return 0
             mkdir -p "$BACKUP/$(dirname "$rel")"
             cp -a "$file" "$BACKUP/$rel"
             rm -f "$file"
-            printf 'retired:%s\n' "$rel"
+            printf 'retired-file:%s\n' "$rel"
             removed=$((removed + 1))
           }
 
-          retire_if_stale index.html \
-            'dtf-home.css' \
+          retire_dir_if_stale() {
+            rel="$1"
+            shift
+            dir="$ROOT/$rel"
+            index="$dir/index.html"
+            [[ -d "$dir" && -f "$index" ]] || return 0
+            is_stale "$index" "$@" || return 0
+            [[ ! -e "$BACKUP/$rel" ]] || { echo "Backup target already exists: $BACKUP/$rel" >&2; exit 1; }
+            mkdir -p "$(dirname "$BACKUP/$rel")"
+            mv "$dir" "$BACKUP/$rel"
+            printf 'retired-directory:%s\n' "$rel"
+            removed=$((removed + 1))
+          }
+
+          # Root index.html can shadow the WordPress front controller while
+          # living beside index.php, so retire only the positively identified
+          # legacy static shell file.
+          retire_file_if_stale index.html \
+            '/assets/dtf-home/dtf-home.css' \
             'THC Grow Doc, genetics, cultivation education, and games in one home.'
 
-          retire_if_stale learn/index.html \
+          # These routes are owned by WordPress/Learning/Genetics and are
+          # intentionally excluded from the current Public Suite overlay.
+          # Back up the whole stale static directory so Apache can fall through
+          # to WordPress rewrite rules instead of stopping at an existing -d.
+          retire_dir_if_stale learn \
+            '/assets/dtf-home/dtf-home.css' \
             'Grow education belongs in a clean, readable library.' \
             'MOPS, cultivation notes, THC basics'
 
-          retire_if_stale learn/infographics/index.html \
-            'being rebuilt' \
-            'Reserved strain card' \
-            'Tool-ready rebuild'
+          retire_dir_if_stale shop \
+            '/assets/dtf-home/dtf-home.css' \
+            'DTF Genetics products, seeds, apparel, and printables in one storefront path.'
+
+          retire_dir_if_stale seeds \
+            '/assets/dtf-home/dtf-home.css' \
+            'DTF Genetics catalog pages built around strain identity and grow context.'
+
+          retire_dir_if_stale community \
+            '/assets/dtf-home/dtf-home.css' \
+            'Game Nights' \
+            'Grower Prompts'
+
+          retire_dir_if_stale gallery \
+            '/assets/dtf-home/dtf-home.css' \
+            'Character Art' \
+            'Grow Media'
+
+          retire_dir_if_stale about \
+            '/assets/dtf-home/dtf-home.css' \
+            'Dream the Future with genetics, games, and education.'
+
+          retire_dir_if_stale contact \
+            '/assets/dtf-home/dtf-home.css' \
+            'Game Hub' \
+            'Community'
 
           if command -v wp >/dev/null 2>&1; then
             wp --path="$ROOT" rewrite flush --hard >/dev/null
@@ -150,10 +197,13 @@ jobs:
           )"
           printf '%s\n' "$result"
           removed="$(printf '%s\n' "$result" | awk -F= '/^removed=/{print $2}' | tail -1)"
+          backup_path="$(printf '%s\n' "$result" | awk -F= '/^backup=/{sub(/^backup=/,""); print}' | tail -1)"
           echo "removed=${removed:-0}" >> "$GITHUB_OUTPUT"
+          echo "backup=${backup_path:-unknown}" >> "$GITHUB_OUTPUT"
           echo "Retired stale static shadows: ${removed:-0}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Remote rollback backup: ${backup_path:-unknown}" >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Verify visitor-facing routes
+      - name: Verify visitor-facing WordPress routes
         id: verify
         shell: bash
         run: |
@@ -165,12 +215,12 @@ jobs:
             body="$RUNNER_TEMP/live-$(printf '%s' "$path" | tr '/?' '__').html"
             ok=0
             for attempt in 1 2 3 4 5 6 7 8; do
-              curl -4 --fail --silent --show-error --location --retry 2 --retry-delay 2 \
+              if curl -4 --fail --silent --show-error --location --retry 2 --retry-all-errors --retry-delay 2 \
+                --connect-timeout 15 --max-time 60 \
                 -H 'Cache-Control: no-cache, no-store, max-age=0' \
                 -H 'Pragma: no-cache' \
                 "https://dtfseeds.com${path}?dtf_shadow_cleanup=${GITHUB_RUN_ID}-${attempt}" \
-                -o "$body"
-              if grep -Fqi -- "$marker" "$body"; then
+                -o "$body" && grep -Fqi -- "$marker" "$body"; then
                 ok=1
                 break
               fi
@@ -187,6 +237,7 @@ jobs:
               exit 1
             }
             for stale in \
+              '/assets/dtf-home/dtf-home.css' \
               'Grow education belongs in a clean, readable library.' \
               'MOPS, cultivation notes, THC basics' \
               'being rebuilt' \
@@ -205,30 +256,29 @@ jobs:
           check '/' 'Genetics. Plant science. Tools. Games. Community.' 8
           check '/learn/' 'Explore by subject' 10
           check '/learn/infographics/' 'Visual plant science and cultivation library.' 30
+          check '/seeds/' 'DTF Genetics library' 3
+          check '/shop/' 'dtf-commerce-archive-style' 2
+          check '/community/' 'Join the official DTF / Teaching Healthy Cultivation Discord' 0
+          check '/gallery/' 'DTF gallery.' 6
+          check '/about/' 'Dream the future.' 0
+          check '/contact/' 'Get to the right place.' 0
 
-      - name: Report cleanup result
+      - name: Record cleanup result
         if: always()
-        uses: actions/github-script@v7
+        shell: bash
         env:
           JOB_STATUS: ${{ job.status }}
           REMOVED: ${{ steps.cleanup.outputs.removed }}
+          BACKUP: ${{ steps.cleanup.outputs.backup }}
           VERIFY: ${{ steps.verify.outcome }}
-        with:
-          script: |
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: 46,
-              body: [
-                '## Hostinger static-shadow cleanup',
-                '',
-                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-                `Result: **${process.env.JOB_STATUS}**`,
-                `Stale static route files retired: **${process.env.REMOVED || '0'}**`,
-                `Visitor-facing verification: **${process.env.VERIFY || 'not-run'}**`,
-                '',
-                'The job uses the existing Hostinger SSH credentials from the growlens-production environment, backs up each positively identified stale file before removal, flushes WordPress rewrites/cache, and verifies Home, Learn, and Infographics.'
-              ].join('\n')
-            });
-
-# Triggered to reuse the existing growlens-production Hostinger connection on 2026-08-21.
+        run: |
+          {
+            echo '## Hostinger static-shadow cleanup'
+            echo
+            echo "Result: **${JOB_STATUS}**"
+            echo "Stale static route entries retired: **${REMOVED:-0}**"
+            echo "Visitor-facing verification: **${VERIFY:-not-run}**"
+            echo "Remote rollback backup: \`${BACKUP:-not-reported}\`"
+            echo
+            echo 'The cleanup only retires positively identified legacy static shells on routes that the current Public Suite explicitly excludes. WordPress rewrites/cache are flushed after the backup-first move.'
+          } >> "$GITHUB_STEP_SUMMARY"
