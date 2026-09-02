@@ -8,22 +8,26 @@ const password = process.env.WP_API_PASSWORD || '';
 const backupRoot = process.env.BACKUP_ROOT || '/tmp/dtf-learning-center-expansion';
 const sourceRoot = join(process.cwd(), 'site/public-route-patch/learn');
 const sourceMarker = 'DTF-PUBLIC-LEARNING-EXPANSION-V1';
-const publicMarker = 'Source-controlled release';
+const storedReleaseMarker = 'Source-controlled release';
 
 if (!username || !password) throw new Error('WP_API_USERNAME and WP_API_PASSWORD are required');
 
 const auth = `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`;
-const headers = { Authorization: auth, Accept: 'application/json', 'User-Agent': 'DTFSeeds-Learning-Expansion-Publisher/1.2' };
+const headers = { Authorization: auth, Accept: 'application/json', 'User-Agent': 'DTFSeeds-Learning-Expansion-Publisher/1.3' };
 const stamp = new Date().toISOString().replace(/[-:.]/g, '').replace('Z', 'Z');
 const backupDir = join(backupRoot, `learning-expansion-${stamp}`);
 await mkdir(backupDir, { recursive: true });
 
+// These WordPress child pages remain the editable/backing records, while the
+// public child-route surface is owned by the reviewed Dtf420 static overlay.
+// Public verification therefore uses stable Dtf420 visitor-facing markers,
+// not WordPress-only source-control comments or release-note text.
 const routes = [
-  { slug: 'plant-health', title: 'Plant Health, Disease, Pests & IPM' },
-  { slug: 'cultivation-science', title: 'Cultivation Science Reference Library' },
-  { slug: 'symptoms', title: 'Symptom Differential Library' },
-  { slug: 'tools', title: 'THC Printable Field Tools & Worksheets' },
-  { slug: 'sources', title: 'THC Evidence & Research Sources' }
+  { slug: 'plant-health', title: 'Plant Health, Disease, Pests & IPM', publicMarker: 'Plant Health, IPM' },
+  { slug: 'cultivation-science', title: 'Cultivation Science Reference Library', publicMarker: 'Cultivation Science Reference Library' },
+  { slug: 'symptoms', title: 'Symptom Differential Library', publicMarker: 'Visual Symptom Differential Library' },
+  { slug: 'tools', title: 'THC Printable Field Tools & Worksheets', publicMarker: 'Printable Learning Tools' },
+  { slug: 'sources', title: 'THC Evidence & Research Sources', publicMarker: 'Current sources' }
 ];
 
 const forbiddenStrings = [
@@ -100,7 +104,7 @@ function assertStoredPage(page, route, learnId) {
   const stored = rawContent(page);
   if (!stored.includes(sourceMarker)) throw new Error(`WordPress page ${page.id} is missing source marker after write`);
   if (!stored.includes('Teaching Healthy Cultivation')) throw new Error(`WordPress page ${page.id} is missing THC identity after write`);
-  if (!stored.includes(publicMarker)) throw new Error(`WordPress page ${page.id} is missing visible release marker after write`);
+  if (!stored.includes(storedReleaseMarker)) throw new Error(`WordPress page ${page.id} is missing stored release marker after write`);
   for (const forbidden of forbiddenStrings) {
     if (stored.toLowerCase().includes(forbidden.toLowerCase())) throw new Error(`Forbidden/stale content stored on WordPress page ${page.id}: ${forbidden}`);
   }
@@ -114,7 +118,7 @@ const results = [];
 for (const route of routes) {
   const html = await readFile(join(sourceRoot, route.slug, 'index.html'), 'utf8');
   const content = sourceContent(html);
-  if (!content.includes(publicMarker)) throw new Error(`Generated ${route.slug} page is missing visible release marker`);
+  if (!content.includes(storedReleaseMarker)) throw new Error(`Generated ${route.slug} page is missing stored release marker`);
   const candidates = await request(`/wp-json/wp/v2/pages?slug=${encodeURIComponent(route.slug)}&context=edit&per_page=100`);
   const children = Array.isArray(candidates) ? candidates.filter((page) => Number(page.parent) === Number(learn.id)) : [];
   if (children.length > 1) throw new Error(`Multiple /learn/${route.slug}/ child pages exist; refusing ambiguous update.`);
@@ -127,7 +131,7 @@ for (const route of routes) {
       body: JSON.stringify({ title: route.title, slug: route.slug, parent: learn.id, content, status: 'publish' })
     });
     assertStoredPage(page, route, learn.id);
-    results.push({ slug: route.slug, id: page.id, action: 'updated', url: `${siteUrl}/learn/${route.slug}/` });
+    results.push({ slug: route.slug, id: page.id, action: 'updated', url: `${siteUrl}/learn/${route.slug}/`, publicMarker: route.publicMarker });
   } else {
     page = await request('/wp-json/wp/v2/pages?context=edit', {
       method: 'POST',
@@ -135,7 +139,7 @@ for (const route of routes) {
     });
     assertStoredPage(page, route, learn.id);
     await writeFile(join(backupDir, `page-${page.id}-${route.slug}-created.json`), `${JSON.stringify(page, null, 2)}\n`);
-    results.push({ slug: route.slug, id: page.id, action: 'created', url: `${siteUrl}/learn/${route.slug}/` });
+    results.push({ slug: route.slug, id: page.id, action: 'created', url: `${siteUrl}/learn/${route.slug}/`, publicMarker: route.publicMarker });
   }
 }
 
@@ -150,7 +154,7 @@ for (const result of results) {
         headers: {
           'Cache-Control': 'no-cache, no-store, max-age=0',
           Pragma: 'no-cache',
-          'User-Agent': 'DTFSeeds-Learning-Expansion-Publisher/1.2'
+          'User-Agent': 'DTFSeeds-Learning-Expansion-Publisher/1.3'
         },
         redirect: 'follow',
         signal: AbortSignal.timeout(60_000)
@@ -158,7 +162,12 @@ for (const result of results) {
       lastStatus = response.status;
       html = await response.text();
       lastError = '';
-      if (response.ok && html.includes('Teaching Healthy Cultivation') && html.includes(publicMarker)) {
+      if (
+        response.ok &&
+        /<h1(?:\s|>)/i.test(html) &&
+        html.includes('Teaching Healthy Cultivation') &&
+        html.includes(result.publicMarker)
+      ) {
         ok = true;
         break;
       }
@@ -174,17 +183,18 @@ for (const result of results) {
       status: lastStatus,
       lastError,
       hasThcIdentity: html.includes('Teaching Healthy Cultivation'),
-      hasPublicMarker: html.includes(publicMarker),
-      hasSourceCommentMarker: html.includes(sourceMarker),
+      hasExpectedPublicMarker: html.includes(result.publicMarker),
+      expectedPublicMarker: result.publicMarker,
+      hasH1: /<h1(?:\s|>)/i.test(html),
       bodyLength: html.length
     };
     await writeFile(join(backupDir, `visitor-verification-${result.slug}-failure.json`), `${JSON.stringify(observed, null, 2)}\n`);
-    throw new Error(`Visitor-facing verification failed for ${result.url}: ${JSON.stringify(observed)}`);
+    throw new Error(`Visitor-facing overlay verification failed for ${result.url}: ${JSON.stringify(observed)}`);
   }
   for (const forbidden of forbiddenStrings) {
     if (html.toLowerCase().includes(forbidden.toLowerCase())) throw new Error(`Forbidden/stale content found on ${result.url}: ${forbidden}`);
   }
 }
 
-await writeFile(join(backupDir, 'publish-result.json'), `${JSON.stringify({ generatedAt: new Date().toISOString(), learnParentId: learn.id, results }, null, 2)}\n`);
-console.log(JSON.stringify({ learnParentId: learn.id, backupDir, results, verified: results.length }, null, 2));
+await writeFile(join(backupDir, 'publish-result.json'), `${JSON.stringify({ generatedAt: new Date().toISOString(), learnParentId: learn.id, results, publicOwner: 'Dtf420 static child-route overlay' }, null, 2)}\n`);
+console.log(JSON.stringify({ learnParentId: learn.id, backupDir, results, verified: results.length, publicOwner: 'Dtf420 static child-route overlay' }, null, 2));

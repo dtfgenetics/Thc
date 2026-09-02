@@ -95,15 +95,26 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          # These child routes are publicly served by the reviewed Dtf420 static
+          # overlay. The preceding publisher verifies the backing WordPress pages
+          # through authenticated REST; this step verifies the actual visitor owner.
           routes=(plant-health cultivation-science symptoms tools sources)
           for route in "${routes[@]}"; do
+            case "$route" in
+              plant-health) public_marker='Plant Health, IPM' ;;
+              cultivation-science) public_marker='Cultivation Science Reference Library' ;;
+              symptoms) public_marker='Visual Symptom Differential Library' ;;
+              tools) public_marker='Printable Learning Tools' ;;
+              sources) public_marker='Current sources' ;;
+              *) echo "No public overlay marker defined for $route" >&2; exit 1 ;;
+            esac
             body="$RUNNER_TEMP/live-${route}.html"
             curl -4 --fail --silent --show-error --location --retry 4 --retry-delay 3 \
               -H 'Cache-Control: no-cache, no-store, max-age=0' -H 'Pragma: no-cache' \
               "https://dtfseeds.com/learn/$route/?dtf_expansion=${GITHUB_RUN_ID}" -o "$body"
             grep -Eqi '<h1([ >])' "$body"
             grep -Fqi 'Teaching Healthy Cultivation' "$body"
-            grep -Fqi 'Source-controlled release' "$body"
+            grep -Fqi "$public_marker" "$body"
             ! grep -Fqi 'Mystery_Line_F1_Regular_DTF_Strain_Card' "$body"
             ! grep -Fqi 'Rainbow_Bubblegum_F1_Regular_DTF_Strain_Card' "$body"
           done
@@ -146,10 +157,10 @@ jobs:
                 `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
                 `Result: **${process.env.JOB_STATUS}**`,
                 `Routes built: **${process.env.ROUTE_COUNT || 'not-run'}**`,
-                `WordPress publish: **${process.env.PUBLISH_OUTCOME || 'not-run'}**`,
+                `WordPress backing-page publish: **${process.env.PUBLISH_OUTCOME || 'not-run'}**`,
                 `Learn navigation: **${process.env.NAV_OUTCOME || 'not-run'}**`,
-                `Fresh visitor verification: **${process.env.LIVE_OUTCOME || 'not-run'}**`,
+                `Fresh Dtf420 child-route overlay verification: **${process.env.LIVE_OUTCOME || 'not-run'}**`,
                 '',
-                'Scope: expanded Plant Health/IPM, Cultivation Science, Symptom Differentials, printable field tools, and evidence/source library from pinned validated Dtf420 education content.'
+                'Scope: expanded Plant Health/IPM, Cultivation Science, Symptom Differentials, printable field tools, and evidence/source library. WordPress backing records are verified through REST; the reviewed Dtf420 static overlay is verified as the visitor-facing owner for these child routes.'
               ].join('\n')
             });
