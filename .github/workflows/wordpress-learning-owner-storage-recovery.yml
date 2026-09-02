@@ -1,0 +1,116 @@
+name: Recover DTFSeeds Learning Owner From Stored Canonical Content
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - scripts/prepare-learning-v3-atlas-publisher.mjs
+      - scripts/verify-learning-v3-storage-recovery.mjs
+      - scripts/run-learning-owner-storage-recovery.sh
+      - .github/workflows/wordpress-learning-owner-storage-recovery.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dtfseeds-learning-owner-storage-recovery
+  cancel-in-progress: false
+
+jobs:
+  recover:
+    name: Seed canonical storage, retire stale renderer, and verify Learning owner
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    environment: production
+    env:
+      NODE_OPTIONS: --dns-result-order=ipv4first
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      BACKUP_ROOT: /tmp/dtf-learning-storage-recovery
+      LEARNING_V4_BACKUP_ROOT: /tmp/dtf-learning-v4-recovery
+    steps:
+      - name: Checkout trusted main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate recovery package and destructive guard
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
+          test -s scripts/prepare-learning-v3-atlas-publisher.mjs
+          test -s scripts/verify-learning-v3-storage-recovery.mjs
+          test -s scripts/run-learning-owner-storage-recovery.sh
+          test -s scripts/run-learning-v3-production.mjs
+          test -s scripts/run-learning-v3-connected-production.sh
+          test -s scripts/reconcile-wordpress-learning-v3-ownership.mjs
+          test -s scripts/run-dtf-wordpress-override-repair-current.sh
+          test -s scripts/rebuild-wordpress-shared-shell-v3.mjs
+          test -s scripts/wordpress-ipv4-fetch-bootstrap.mjs
+          node --check scripts/prepare-learning-v3-atlas-publisher.mjs
+          node --check scripts/verify-learning-v3-storage-recovery.mjs
+          node --check scripts/run-learning-v3-production.mjs
+          node --check scripts/reconcile-wordpress-learning-v3-ownership.mjs
+          node --check scripts/rebuild-wordpress-shared-shell-v3.mjs
+          bash -n scripts/run-learning-owner-storage-recovery.sh
+          bash -n scripts/run-learning-v3-connected-production.sh
+          bash -n scripts/run-dtf-wordpress-override-repair-current.sh
+          grep -Fq 'a32f9a10a5f79580d665d8d2c4718993a9d4bc14070eb8a26a4a2386f8535a3c' scripts/run-dtf-wordpress-override-repair-current.sh
+          grep -Fq 'Open the THC Living Plant Atlas' scripts/prepare-learning-v3-atlas-publisher.mjs
+          grep -Fq '/learn/atlas/' scripts/prepare-learning-v3-atlas-publisher.mjs
+          grep -Fq 'Visitor verification failed:' scripts/run-learning-owner-storage-recovery.sh
+          grep -Fq 'verify-learning-v3-storage-recovery.mjs' scripts/run-learning-owner-storage-recovery.sh
+          grep -Fq 'run-dtf-wordpress-override-repair-current.sh' scripts/run-learning-owner-storage-recovery.sh
+          grep -Fq 'run-learning-v3-connected-production.sh' scripts/run-learning-owner-storage-recovery.sh
+          grep -Fq 'data-dtf-learning-map="v4"' scripts/run-learning-owner-storage-recovery.sh
+          grep -Fq 'atlas-runtime.js' scripts/run-learning-owner-storage-recovery.sh
+
+      - name: Execute serialized Learning owner recovery
+        id: recovery
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash scripts/run-learning-owner-storage-recovery.sh | tee /tmp/dtf-learning-owner-recovery.log
+
+      - name: Upload rollback and recovery evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dtf-learning-owner-recovery-${{ github.run_id }}
+          path: |
+            /tmp/dtf-learning-storage-recovery
+            /tmp/dtf-learning-v4-recovery
+            /tmp/dtf-shared-shell-v3-recovery
+            /tmp/dtf-learning-atlas-publisher.json
+            /tmp/dtf-learning-recovery-*.json
+            /tmp/dtf-learning-recovery-*.log
+            /tmp/dtf-learning-recovery-public-*.html
+            /tmp/dtf-topic-literature-v3-normalized.json
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Report recovery status
+        if: always()
+        shell: bash
+        env:
+          RECOVERY_OUTCOME: ${{ steps.recovery.outcome }}
+        run: |
+          {
+            echo '## DTFSeeds Learning owner storage recovery'
+            echo
+            echo "Recovery: **${RECOVERY_OUTCOME:-unknown}**"
+            echo '- Phase 1: reconcile canonical Learn/topic ownership and seed the authoritative V3 payload into WordPress storage.'
+            echo '- Gate: authenticated storage must contain Home V3, Learn V3, /learn/atlas/, and the Living Plant Atlas CTA before renderer repair can run.'
+            echo '- Phase 2: disable only the previously confirmed stale MU renderer guarded by its exact SHA-256, purge cache, and require public Home/Learn/Atlas acceptance.'
+            echo '- Phase 3: run the normal connected V3 → V4 → expanded-reference → visual transaction and final public verification.'
+            echo '- Atlas child routes, the nested Three.js runtime, Games, and Tools are final acceptance dependencies.'
+          } >> "$GITHUB_STEP_SUMMARY"
