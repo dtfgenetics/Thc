@@ -27,6 +27,7 @@ on:
     workflows:
       - Reconcile DTFSeeds WordPress Canonical Pages
     types: [completed]
+    branches: [main]
 
 permissions:
   contents: read
@@ -38,6 +39,7 @@ concurrency:
 
 jobs:
   observe:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     name: Confirm trusted visual production package
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -50,9 +52,6 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if [[ "${{ github.event_name }}" == "workflow_run" ]]; then
-            [[ "${{ github.event.workflow_run.conclusion }}" == "success" ]]
-          fi
           test -s scripts/apply-wordpress-public-content-rest.mjs
           test -s scripts/apply-wordpress-public-content-owned-routes.mjs
           test -s scripts/deploy-wordpress-infographic-library-rest.mjs
@@ -107,6 +106,6 @@ jobs:
               `Trigger: **${context.eventName}**`,
               `Trusted handoff result: **${process.env.OBSERVE_STATUS}**`,
               `Source: ${sourceRun}`, '',
-              'A successful handoff triggers protected WordPress production. The canonical job preserves single-writer ownership, applies the shared DTF visual system to canonical editorial roots, rebuilds commerce presentation, preserves the image-first Gallery, enforces the DTF site icon/logo, and verifies visitor-facing routes.'
+              'A successful handoff triggers protected WordPress production. Pull-request canonical preflights are excluded at the workflow_run branch boundary; only trusted main/manual handoffs can advance toward production. The canonical job preserves single-writer ownership, applies the shared DTF visual system to canonical editorial roots, rebuilds commerce presentation, preserves the image-first Gallery, enforces the DTF site icon/logo, and verifies visitor-facing routes.'
             ].join('\n');
             await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body});
