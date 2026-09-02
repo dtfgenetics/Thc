@@ -65,10 +65,11 @@ if (!agents.includes('.agents/skills/github-repo-manager/SKILL.md')) {
   throw new Error('AGENTS.md no longer routes repository repair work through github-repo-manager.');
 }
 
+// Match affirmative unsafe guidance, not safe negations such as "never print secret values".
 const forbidden = [
   /force-push production by default/i,
   /skip (?:all )?tests by default/i,
-  /print secret values/i,
+  /(?:always|should|must|may|can|okay to|safe to)\s+print secret values/i,
   /always use (?:ours|theirs)/i,
   /reset --hard main/i
 ];
