@@ -1,0 +1,97 @@
+name: Audit DTFSeeds WordPress Home Learn Storage
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - scripts/audit-wordpress-home-learn-storage.mjs
+      - .github/workflows/wordpress-home-learn-storage-audit.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dtfseeds-wordpress-home-learn-storage-audit
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    environment: production
+    env:
+      NODE_OPTIONS: --dns-result-order=ipv4first
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate read-only owner audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
+          node --check scripts/audit-wordpress-home-learn-storage.mjs
+          ! grep -Eq 'method:[[:space:]]*["'"'](?:POST|PUT|PATCH|DELETE)|file_put_contents|rename\(|unlink\(' scripts/audit-wordpress-home-learn-storage.mjs
+
+      - name: Read WordPress ownership and public render state
+        id: audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/audit-wordpress-home-learn-storage.mjs | tee "$RUNNER_TEMP/home-learn-storage.json"
+
+      - name: Summarize ownership evidence
+        if: always()
+        shell: bash
+        env:
+          OUTCOME: ${{ steps.audit.outcome }}
+        run: |
+          node - <<'NODE' "$RUNNER_TEMP/home-learn-storage.json" "$GITHUB_STEP_SUMMARY" "$OUTCOME"
+          const fs=require('fs');
+          const [file,summary,outcome]=process.argv.slice(2);
+          let d={};
+          if(fs.existsSync(file)){try{d=JSON.parse(fs.readFileSync(file,'utf8'))}catch{}}
+          const f=d.frontPage||{};
+          const learn=(d.learnPages||[])[0]||{};
+          const rows=[
+            '## WordPress Home/Learn storage audit','',
+            `Audit: **${outcome||'unknown'}**`,
+            `show_on_front: **${d.settings?.showOnFront||'?'}**`,
+            `page_on_front: **${d.settings?.pageOnFront ?? '?'}**`,
+            `Front page ID/slug: **${f.id||'?'} / ${f.slug||'?'}**`,
+            `Front content bytes: **${f.contentLength ?? '?'}**`,
+            `Front SHA-256: \`${f.contentSha256||'-'}\``,
+            `Front Home V3 marker: **${f.markers?.homeV3 ?? 'unknown'}**`,
+            `Front canonical Home marker: **${f.markers?.canonicalHome ?? 'unknown'}**`,
+            `Front legacy Home marker: **${f.markers?.oldHome ?? 'unknown'}**`,
+            `Learn ID: **${learn.id||'?'}**`,
+            `Learn content bytes: **${learn.contentLength ?? '?'}**`,
+            `Learn SHA-256: \`${learn.contentSha256||'-'}\``,
+            `Learn V3 marker: **${learn.markers?.learnV3 ?? 'unknown'}**`,
+            `Learn V4 map marker: **${learn.markers?.learningV4 ?? 'unknown'}**`,
+            `Learn canonical marker: **${learn.markers?.canonicalLearn ?? 'unknown'}**`,
+            `Learn legacy marker: **${learn.markers?.oldLearn ?? 'unknown'}**`,'',
+            '### Public probes'
+          ];
+          for(const p of d.publicRoutes||[]) rows.push(`- ${p.path}: HTTP ${p.status}, ${p.bytes} bytes, homeV3=${p.markers?.homeV3}, learnV3=${p.markers?.learnV3}, oldHome=${p.markers?.oldHome}, oldLearn=${p.markers?.oldLearn}`);
+          rows.push('','Read-only. No WordPress page, setting, plugin, file, cache, or route is changed by this audit.');
+          fs.appendFileSync(summary,rows.join('\n')+'\n');
+          NODE
+
+      - name: Upload audit evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: wordpress-home-learn-storage-${{ github.run_id }}
+          path: ${{ runner.temp }}/home-learn-storage.json
+          if-no-files-found: warn
+          retention-days: 14
