@@ -6,6 +6,8 @@ on:
     paths:
       - .github/workflows/wordpress-canonical-production.yml
       - .github/workflows/wordpress-genetics-library-production.yml
+      - .github/workflows/wordpress-genetics-library-push.yml
+      - .github/workflows/wordpress-gallery-v2-production.yml
       - .github/workflows/wordpress-infographic-production.yml
       - .github/workflows/wordpress-learning-experience-v3-production.yml
       - .github/workflows/wordpress-home-release-visuals.yml
@@ -25,6 +27,8 @@ on:
     paths:
       - .github/workflows/wordpress-canonical-production.yml
       - .github/workflows/wordpress-genetics-library-production.yml
+      - .github/workflows/wordpress-genetics-library-push.yml
+      - .github/workflows/wordpress-gallery-v2-production.yml
       - .github/workflows/wordpress-infographic-production.yml
       - .github/workflows/wordpress-learning-experience-v3-production.yml
       - .github/workflows/wordpress-home-release-visuals.yml
@@ -58,6 +62,8 @@ jobs:
 
           canonical='.github/workflows/wordpress-canonical-production.yml'
           genetics='.github/workflows/wordpress-genetics-library-production.yml'
+          genetics_recovery='.github/workflows/wordpress-genetics-library-push.yml'
+          gallery_verify='.github/workflows/wordpress-gallery-v2-production.yml'
           infographics='.github/workflows/wordpress-infographic-production.yml'
           learning='.github/workflows/wordpress-learning-experience-v3-production.yml'
           home='.github/workflows/wordpress-home-release-visuals.yml'
@@ -77,24 +83,40 @@ jobs:
           # completed canonical run, but its acceptance must separate the
           # authoritative WordPress record from public LiteSpeed convergence.
           grep -Fq -- '- Publish DTFSeeds WordPress Production' "$genetics"
+          grep -Fq -- "- 'scripts/wordpress-ipv4-fetch-bootstrap.mjs'" "$genetics"
           grep -Fq -- "- 'scripts/flush-hostinger-litespeed-mcp.mjs'" "$genetics"
           grep -Fq -- "- 'scripts/purge-wordpress-litespeed-cache.mjs'" "$genetics"
           grep -Fq -- "- 'scripts/verify-wordpress-genetics-library-production.mjs'" "$genetics"
           grep -Fq "LITESPEED_PURGE_ALL: 'false'" "$genetics"
-          grep -Fq 'LITESPEED_PURGE_URLS_JSON="$purge_urls" node scripts/purge-wordpress-litespeed-cache.mjs' "$genetics"
-          grep -Fq 'node scripts/verify-wordpress-genetics-library-production.mjs' "$genetics"
+          grep -Fq 'node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/publish-wordpress-genetics-library-cdn.mjs' "$genetics"
+          grep -Fq 'node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/publish-woocommerce-strain-card-images-cdn.mjs' "$genetics"
+          grep -Fq 'LITESPEED_PURGE_URLS_JSON="$purge_urls" node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/purge-wordpress-litespeed-cache.mjs' "$genetics"
+          grep -Fq 'node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/verify-wordpress-genetics-library-production.mjs' "$genetics"
           node --check "$cache_purge"
           node --check "$genetics_verify"
           grep -Fq "do_action('litespeed_purge_url', \$url)" "$cache_purge"
           grep -Fq 'Authoritative WordPress REST proof verified' "$genetics_verify"
           grep -Fq 'public cache convergence failed' "$genetics_verify"
 
-          purge_line="$(grep -n 'LITESPEED_PURGE_URLS_JSON=.*purge-wordpress-litespeed-cache.mjs' "$genetics" | head -1 | cut -d: -f1)"
-          verify_line="$(grep -n 'node scripts/verify-wordpress-genetics-library-production.mjs' "$genetics" | head -1 | cut -d: -f1)"
+          purge_line="$(grep -n 'LITESPEED_PURGE_URLS_JSON=.*wordpress-ipv4-fetch-bootstrap.mjs.*purge-wordpress-litespeed-cache.mjs' "$genetics" | head -1 | cut -d: -f1)"
+          verify_line="$(grep -n 'wordpress-ipv4-fetch-bootstrap.mjs scripts/verify-wordpress-genetics-library-production.mjs' "$genetics" | head -1 | cut -d: -f1)"
           [[ -n "$purge_line" && -n "$verify_line" && "$purge_line" -lt "$verify_line" ]] || {
             echo 'Genetics must purge its explicit routes immediately before REST/public acceptance.' >&2
             exit 1
           }
+
+          # Recovery and Gallery verification lanes must stay manual-only so
+          # they cannot compete with the authoritative automatic writers.
+          for manual_lane in "$genetics_recovery" "$gallery_verify"; do
+            grep -Fq 'workflow_dispatch:' "$manual_lane"
+            if grep -Fq 'workflow_run:' "$manual_lane" || grep -Fq 'push:' "$manual_lane"; then
+              echo "Manual recovery/verifier lane must not auto-trigger: $manual_lane" >&2
+              exit 1
+            fi
+          done
+          grep -Fq 'node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/publish-wordpress-genetics-library-cdn.mjs' "$genetics_recovery"
+          ! grep -Fq 'APPLY_GALLERY_V2' "$gallery_verify"
+          grep -Fq 'Gallery is verified read-only' "$gallery_verify"
 
           grep -Fq -- '- Publish DTFSeeds WordPress Production' "$infographics"
           if grep -Fq -- '- Stage DTFSeeds WordPress Canonical Deployment' "$infographics"; then
@@ -173,4 +195,4 @@ jobs:
           grep -Fq 'actions/upload-artifact@v4' "$verify_infographics"
           grep -Fq 'issue_number: 220' "$verify_infographics"
 
-          echo 'Verified production order: staging -> canonical -> infographics -> Learning V3 plus connected map -> reusable final Home owner; Genetics remains the dedicated /seeds/ owner with REST-first/cache-convergence acceptance; Topic Literature remains independently serialized, legacy writers are manual-only, and live infographic verification is non-mutating.'
+          echo 'Verified production order: staging -> canonical -> infographics -> Learning V3 plus connected map -> reusable final Home owner; Genetics remains the dedicated /seeds/ owner with IPv4 REST-first/cache-convergence acceptance; direct Genetics recovery and Gallery verification are manual-only; Topic Literature remains independently serialized, legacy writers are manual-only, and live infographic verification is non-mutating.'
