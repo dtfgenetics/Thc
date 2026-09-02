@@ -29,6 +29,7 @@ on:
     workflows:
       - Publish DTFSeeds WordPress Production
     types: [completed]
+    branches: [main]
 
 permissions:
   contents: read
@@ -42,9 +43,9 @@ jobs:
   publish:
     # The canonical WordPress workflow can fail a later visitor/cache check after
     # it has already rewritten /seeds/. The genetics publisher is the recovery
-    # authority for /seeds/ and its child line pages, so run after any completed
-    # canonical attempt except a cancelled one.
-    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion != 'cancelled' }}
+    # authority for /seeds/ and its child line pages, so run after real canonical
+    # attempts, including failures, but never after cancelled/skipped handoffs.
+    if: ${{ github.event_name != 'workflow_run' || (github.event.workflow_run.conclusion != 'cancelled' && github.event.workflow_run.conclusion != 'skipped') }}
     name: Publish authoritative genetics library and reviewed strain cards
     runs-on: ubuntu-latest
     timeout-minutes: 35
