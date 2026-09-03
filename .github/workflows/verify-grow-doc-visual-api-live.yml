@@ -44,6 +44,23 @@ jobs:
         with:
           node-version: 22
 
+      - name: Check server-key secret availability without disclosure
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          THC_GROW_DOC_GEMINI_API_KEY: ${{ secrets.THC_GROW_DOC_GEMINI_API_KEY }}
+        shell: bash
+        run: |
+          if [[ -n "$THC_GROW_DOC_GEMINI_API_KEY" ]]; then
+            echo 'THC_GROW_DOC_GEMINI_API_KEY_PRESENT=yes'
+          else
+            echo 'THC_GROW_DOC_GEMINI_API_KEY_PRESENT=no'
+          fi
+          if [[ -n "$GEMINI_API_KEY" ]]; then
+            echo 'GEMINI_API_KEY_PRESENT=yes'
+          else
+            echo 'GEMINI_API_KEY_PRESENT=no'
+          fi
+
       - name: Validate live visual API verifier
         run: node --check scripts/verify-grow-doc-visual-api-live.mjs
 
