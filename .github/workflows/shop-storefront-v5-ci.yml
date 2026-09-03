@@ -42,11 +42,21 @@ jobs:
           grep -Fq 'Blue_Mango_F2_Regular_DTF_Strain_Card' .github/workflows/wordpress-shop-storefront-v5.yml
           grep -Fq 'Blue_Mango_F2_Feminized_DTF_Strain_Card' .github/workflows/wordpress-shop-storefront-v5.yml
           grep -Fq 'Blue_Bubblegum_F1_Regular_DTF_Strain_Card' .github/workflows/wordpress-shop-storefront-v5.yml
-          ! grep -Fq 'deploy-wordpress-public-audit-fixes.mjs' .github/workflows/wordpress-shop-storefront-v5.yml
-          ! grep -Fq 'site/public-route-patch/games/protect-the-plants/index.html' .github/workflows/wordpress-shop-storefront-v5.yml
-          ! grep -Fq 'site/public-route-patch/projects/index.html' .github/workflows/wordpress-shop-storefront-v5.yml
           grep -Fq 'issue_number:220' .github/workflows/wordpress-shop-storefront-v5.yml
           grep -Fq 'continue-on-error: true' .github/workflows/wordpress-shop-storefront-v5.yml
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const workflow=fs.readFileSync('.github/workflows/wordpress-shop-storefront-v5.yml','utf8');
+          const forbidden=[
+            'node scripts/' + 'deploy-wordpress-public-audit-fixes.mjs',
+            'site/public-route-patch/games/' + 'protect-the-plants/index.html',
+            'site/public-route-patch/' + 'projects/index.html'
+          ];
+          for(const token of forbidden){
+            if(workflow.includes(token)) throw new Error(`Shop workflow reintroduced cross-project ownership: ${token}`);
+          }
+          console.log('Shop production workflow is isolated from retired public-route mutation ownership.');
+          NODE
 
       - name: Validate reviewed Shop art provenance
         shell: bash
