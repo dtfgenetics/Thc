@@ -1,0 +1,60 @@
+name: Verify THC Grow Doc Live Visual API
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - scripts/verify-grow-doc-visual-api-live.mjs
+      - .github/workflows/verify-grow-doc-visual-api-live.yml
+  push:
+    branches: [main]
+    paths:
+      - scripts/verify-grow-doc-visual-api-live.mjs
+      - .github/workflows/verify-grow-doc-visual-api-live.yml
+  workflow_run:
+    workflows: ["Verify THC Grow Doc Production Identity"]
+    types: [completed]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: grow-doc-live-visual-api
+  cancel-in-progress: false
+
+env:
+  SITE: https://dtfseeds.com
+  DTF_GROW_DOC_VISUAL_API_EVIDENCE: test-results/grow-doc-visual-api-live
+
+jobs:
+  verify:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout exact verification source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+          persist-credentials: false
+
+      - name: Use Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate live visual API verifier
+        run: node --check scripts/verify-grow-doc-visual-api-live.mjs
+
+      - name: Verify production visual-observation service
+        run: node scripts/verify-grow-doc-visual-api-live.mjs
+
+      - name: Upload sanitized visual API evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: grow-doc-live-visual-api-${{ github.run_id }}
+          path: ${{ env.DTF_GROW_DOC_VISUAL_API_EVIDENCE }}
+          if-no-files-found: ignore
+          retention-days: 14
