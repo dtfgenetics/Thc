@@ -1,4 +1,4 @@
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import process from 'node:process';
 
@@ -7,6 +7,7 @@ const username = process.env.WP_API_USERNAME || '';
 const password = process.env.WP_API_PASSWORD || '';
 const apply = String(process.env.APPLY_SHOP_STOREFRONT_V5 || '').toLowerCase() === 'true';
 const backupRoot = process.env.BACKUP_ROOT || '/tmp/dtf-shop-storefront-v5';
+const cardRegistryPath = process.env.DTF_STRAIN_CARD_REGISTRY || 'site/wordpress/products/strain-card-images.json';
 
 if (!username || !password) throw new Error('WP_API_USERNAME and WP_API_PASSWORD are required');
 
@@ -17,6 +18,12 @@ await mkdir(backupDir, { recursive: true });
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const raw = (value) => typeof value === 'string' ? value : (value?.raw || value?.rendered || '');
+const esc = (value) => String(value ?? '')
+  .replaceAll('&', '&amp;')
+  .replaceAll('<', '&lt;')
+  .replaceAll('>', '&gt;')
+  .replaceAll('"', '&quot;')
+  .replaceAll("'", '&#39;');
 
 async function request(path, options = {}) {
   let lastError;
@@ -29,7 +36,7 @@ async function request(path, options = {}) {
         headers: {
           Authorization: auth,
           Accept: 'application/json',
-          'User-Agent': 'DTFSeeds-Shop-Storefront-V5/1.0',
+          'User-Agent': 'DTFSeeds-Shop-Storefront-V5/1.1',
           ...(options.body ? { 'Content-Type': 'application/json' } : {}),
           ...(options.headers || {})
         }
@@ -54,23 +61,87 @@ async function request(path, options = {}) {
   throw lastError;
 }
 
+const registry = JSON.parse(await readFile(cardRegistryPath, 'utf8'));
+if (registry?.schemaVersion !== 1 || !Array.isArray(registry.cards)) {
+  throw new Error(`Invalid reviewed strain-card registry: ${cardRegistryPath}`);
+}
+
+const releaseSpecs = [
+  {
+    productSlug: '10-regular-f2-blue-mango-seeds',
+    productRoute: '/product/10-regular-f2-blue-mango-seeds/',
+    lineRoute: '/seeds/blue-mango/',
+    label: 'F2 · Regular',
+    name: 'Blue Mango',
+    lineage: 'Somango XXL × Blueberry Butcher',
+    note: 'Regular F2 release from the documented Blue Mango project.'
+  },
+  {
+    productSlug: '10-feminized-f2-blue-mango-x',
+    productRoute: '/product/10-feminized-f2-blue-mango-x/',
+    lineRoute: '/seeds/blue-mango/',
+    label: 'F2 · Feminized',
+    name: 'Blue Mango',
+    lineage: 'Somango XXL × Blueberry Butcher',
+    note: 'Feminized F2 release with the same reviewed project lineage.'
+  },
+  {
+    productSlug: '10-reg-f1-blueberry-bubblegum',
+    productRoute: '/product/10-reg-f1-blueberry-bubblegum/',
+    lineRoute: '/seeds/blue-bubblegum/',
+    label: 'F1 · Regular',
+    name: 'Blue Bubblegum',
+    lineage: 'Bubblegum Kush × Blueberry Butcher',
+    note: 'Regular F1 release connected to the Blue Bubblegum project page.'
+  }
+];
+
+const releaseCards = releaseSpecs.map((spec) => {
+  const card = registry.cards.find((item) => item?.productSlug === spec.productSlug);
+  if (!card?.sourceUrl || !card?.fileName || !card?.altText || !/^[a-f0-9]{64}$/.test(card?.sourceSha256 || '')) {
+    throw new Error(`Reviewed artwork registry is incomplete for ${spec.productSlug}`);
+  }
+  return { ...spec, card };
+});
+
+const releaseMarkup = releaseCards.map(({ productRoute, lineRoute, label, name, lineage, note, card }) => `
+<article class="dtf-shop-v5-release" data-review-file="${esc(card.fileName)}">
+  <a class="dtf-shop-v5-art" href="${esc(productRoute)}" aria-label="Open ${esc(name)} ${esc(label)} current release">
+    <img src="${esc(card.sourceUrl)}" alt="${esc(card.altText)}" loading="lazy" decoding="async" width="${Number(card.expectedWidth) || 1024}" height="${Number(card.expectedHeight) || 1536}">
+  </a>
+  <div class="dtf-shop-v5-release-copy">
+    <small>${esc(label)}</small>
+    <h3>${esc(name)}</h3>
+    <p class="dtf-shop-v5-lineage">${esc(lineage)}</p>
+    <p>${esc(note)}</p>
+    <div class="dtf-shop-v5-release-actions"><a href="${esc(productRoute)}">Shop release</a><a href="${esc(lineRoute)}">Breeding notes</a></div>
+  </div>
+</article>`).join('');
+
+const featured = releaseCards[0];
 const storefront = `<!-- wp:html -->
-<section class="dtf-shop-storefront-v5" data-dtf-shop-storefront-v5="true" aria-labelledby="dtf-shop-v5-title">
+<section class="dtf-shop-storefront-v5" data-dtf-shop-storefront-v5="true" data-dtf-shop-visual="premium-v6" aria-labelledby="dtf-shop-v5-title">
 <style id="dtf-shop-storefront-v5-style">
-.dtf-shop-storefront-v5{width:min(1180px,calc(100% - 36px));margin:30px auto 38px;padding:30px;border:1px solid #d8e2d9;border-radius:28px;background:radial-gradient(circle at 92% 4%,rgba(215,185,97,.2),transparent 29%),linear-gradient(145deg,#071a10,#10321f);color:#fff;box-shadow:0 22px 58px rgba(8,32,18,.16)}
-.dtf-shop-storefront-v5 *{box-sizing:border-box}.dtf-shop-v5-kicker{margin:0 0 10px;color:#e6ca78;font-size:.75rem;font-weight:950;letter-spacing:.13em;text-transform:uppercase}.dtf-shop-storefront-v5 h2{max-width:820px;margin:0;font-size:clamp(2rem,4.5vw,4rem);line-height:.98;letter-spacing:-.045em;color:#fff}.dtf-shop-v5-lede{max-width:800px;margin:17px 0 0;color:#d3e0d7;font-size:1.04rem;line-height:1.72}.dtf-shop-v5-trust{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}.dtf-shop-v5-trust span{display:inline-flex;padding:7px 10px;border:1px solid rgba(255,255,255,.18);border-radius:999px;background:rgba(255,255,255,.06);color:#edf4ef;font-size:.78rem;font-weight:850}.dtf-shop-v5-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:20px}.dtf-shop-v5-actions a{display:inline-flex;align-items:center;min-height:43px;padding:9px 15px;border-radius:999px;border:1px solid rgba(255,255,255,.25);color:#fff!important;text-decoration:none!important;font-weight:900}.dtf-shop-v5-actions a:first-child{background:#d7b961;border-color:#d7b961;color:#071a10!important}.dtf-shop-v5-guide{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:26px}.dtf-shop-v5-release{padding:17px;border:1px solid rgba(255,255,255,.16);border-radius:18px;background:rgba(255,255,255,.06)}.dtf-shop-v5-release small{display:block;margin-bottom:7px;color:#e6ca78;font-size:.68rem;font-weight:950;letter-spacing:.09em;text-transform:uppercase}.dtf-shop-v5-release h3{margin:0 0 7px;color:#fff;font-size:1.08rem;line-height:1.18}.dtf-shop-v5-release p{margin:0;color:#cbdad0;font-size:.9rem;line-height:1.5}.dtf-shop-v5-release a{display:inline-flex;margin-top:12px;color:#f0d788!important;text-decoration:none!important;font-weight:900}.dtf-shop-v5-note{margin:20px 0 0;color:#afc2b5;font-size:.84rem;line-height:1.55}
-@media(max-width:820px){.dtf-shop-v5-guide{grid-template-columns:1fr}.dtf-shop-storefront-v5{padding:24px}}
-@media(max-width:560px){.dtf-shop-storefront-v5{width:min(100% - 24px,1180px);margin-top:18px;padding:20px;border-radius:22px}.dtf-shop-v5-actions a{width:100%;justify-content:center}}
+.dtf-shop-storefront-v5{position:relative;width:100%;margin:0;padding:clamp(68px,8vw,116px) max(18px,calc((100vw - 1180px)/2)) clamp(64px,7vw,92px);overflow:hidden;border:0;border-bottom:1px solid rgba(213,177,90,.22);background:radial-gradient(circle at 88% 10%,rgba(213,177,90,.22),transparent 24%),radial-gradient(circle at 8% 92%,rgba(91,126,64,.24),transparent 31%),linear-gradient(145deg,#04110a 0%,#081c12 54%,#10311f 100%);color:#fff;box-shadow:0 26px 70px rgba(0,0,0,.16);isolation:isolate}
+.dtf-shop-storefront-v5:before{content:"";position:absolute;inset:0;z-index:-2;opacity:.19;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:42px 42px;mask-image:linear-gradient(to right,#000,transparent 78%)}
+.dtf-shop-storefront-v5:after{content:"SHOP";position:absolute;right:-.03em;top:.03em;z-index:-1;color:rgba(255,255,255,.025);font:950 clamp(8rem,23vw,22rem)/.8 "Arial Narrow","Roboto Condensed",Inter,sans-serif;letter-spacing:-.08em;pointer-events:none}
+.dtf-shop-storefront-v5 *{box-sizing:border-box}.dtf-shop-v5-hero{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(280px,.75fr);gap:clamp(34px,6vw,82px);align-items:center;max-width:1180px;margin:0 auto}.dtf-shop-v5-kicker{display:inline-flex;align-items:center;gap:10px;margin:0 0 16px;color:#efd47f;font-size:.7rem;font-weight:950;letter-spacing:.15em;text-transform:uppercase}.dtf-shop-v5-kicker:before{content:"";width:28px;height:1px;background:#d5b15a}.dtf-shop-storefront-v5 h2{max-width:790px;margin:0;font-family:"Arial Narrow","Roboto Condensed",Inter,sans-serif;font-size:clamp(3rem,6.4vw,6.2rem);line-height:.88;letter-spacing:-.045em;text-transform:uppercase;color:#fff;text-wrap:balance}.dtf-shop-v5-lede{max-width:720px;margin:20px 0 0;color:#c9d7ce;font-size:clamp(1rem,1.35vw,1.13rem);line-height:1.7}.dtf-shop-v5-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}.dtf-shop-v5-actions a,.dtf-shop-v5-release-actions a{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:10px 16px;border:1px solid rgba(213,177,90,.42);border-radius:9px;background:rgba(255,255,255,.035);color:#fff!important;text-decoration:none!important;text-transform:uppercase;font-size:.69rem;font-weight:950;letter-spacing:.065em;transition:transform .18s ease,border-color .18s ease,background .18s ease}.dtf-shop-v5-actions a:hover,.dtf-shop-v5-release-actions a:hover{transform:translateY(-2px);border-color:#dfc16e;background:rgba(213,177,90,.09)}.dtf-shop-v5-actions a:first-child,.dtf-shop-v5-release-actions a:first-child{border-color:#dfc16e;background:linear-gradient(180deg,#d9ba68,#b89238);color:#07170f!important}.dtf-shop-v5-featured{position:relative;width:min(390px,100%);justify-self:end;padding:13px;border:1px solid rgba(213,177,90,.35);border-radius:26px;background:linear-gradient(145deg,rgba(255,255,255,.07),rgba(255,255,255,.015));box-shadow:0 34px 78px rgba(0,0,0,.34);transform:rotate(1deg)}.dtf-shop-v5-featured:before{content:"CURRENT RELEASE";position:absolute;left:-18px;top:28px;z-index:2;padding:7px 10px;border:1px solid rgba(213,177,90,.52);border-radius:7px;background:#07170f;color:#efd47f;font-size:.58rem;font-weight:950;letter-spacing:.13em}.dtf-shop-v5-featured img{display:block;width:100%;aspect-ratio:2/3;object-fit:cover;border-radius:17px;background:#081a11}.dtf-shop-v5-trust{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));max-width:1180px;margin:clamp(40px,6vw,70px) auto 0;border-top:1px solid rgba(255,255,255,.12);border-bottom:1px solid rgba(255,255,255,.12)}.dtf-shop-v5-trust div{padding:17px 16px;border-right:1px solid rgba(255,255,255,.1)}.dtf-shop-v5-trust div:last-child{border-right:0}.dtf-shop-v5-trust small{display:block;color:#91a79a;font-size:.61rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase}.dtf-shop-v5-trust strong{display:block;margin-top:5px;color:#f4f0e5;font-size:.86rem;line-height:1.3}.dtf-shop-v5-section-head{max-width:1180px;margin:clamp(54px,7vw,84px) auto 24px}.dtf-shop-v5-section-head p{margin:0 0 8px;color:#dabb61;font-size:.66rem;font-weight:950;letter-spacing:.13em;text-transform:uppercase}.dtf-shop-v5-section-head h3{max-width:720px;margin:0;color:#fff;font:900 clamp(2rem,4vw,3.8rem)/.96 "Arial Narrow","Roboto Condensed",Inter,sans-serif;text-transform:uppercase;letter-spacing:-.025em}.dtf-shop-v5-guide{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;max-width:1180px;margin:0 auto}.dtf-shop-v5-release{overflow:hidden;border:1px solid rgba(151,183,158,.2);border-radius:20px;background:linear-gradient(180deg,rgba(18,50,31,.97),rgba(7,26,16,.98));box-shadow:0 18px 46px rgba(0,0,0,.18);transition:transform .2s ease,border-color .2s ease}.dtf-shop-v5-release:hover{transform:translateY(-5px);border-color:rgba(213,177,90,.54)}.dtf-shop-v5-art{display:block;overflow:hidden;border-bottom:1px solid rgba(255,255,255,.08);background:#07170f}.dtf-shop-v5-art img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;object-position:center top;transition:transform .32s ease}.dtf-shop-v5-release:hover .dtf-shop-v5-art img{transform:scale(1.018)}.dtf-shop-v5-release-copy{padding:19px}.dtf-shop-v5-release small{display:block;margin-bottom:8px;color:#efd47f;font-size:.64rem;font-weight:950;letter-spacing:.1em;text-transform:uppercase}.dtf-shop-v5-release h3{margin:0 0 8px;color:#fff;font:900 clamp(1.55rem,2.5vw,2rem)/1 "Arial Narrow","Roboto Condensed",Inter,sans-serif;text-transform:uppercase}.dtf-shop-v5-release p{margin:0 0 9px;color:#b9c9bf;font-size:.88rem;line-height:1.55}.dtf-shop-v5-release .dtf-shop-v5-lineage{color:#e1e8e3;font-weight:800}.dtf-shop-v5-release-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}.dtf-shop-v5-release-actions a{min-height:40px;padding:8px 11px;font-size:.62rem}.dtf-shop-v5-note{max-width:920px;margin:24px auto 0;color:#91a79a;font-size:.8rem;line-height:1.58}.dtf-shop-storefront-v5 a:focus-visible{outline:3px solid #efd47f;outline-offset:4px}
+@media(max-width:880px){.dtf-shop-v5-hero{grid-template-columns:1fr}.dtf-shop-v5-featured{justify-self:start;width:min(350px,82vw);transform:none}.dtf-shop-v5-trust{grid-template-columns:repeat(2,minmax(0,1fr))}.dtf-shop-v5-trust div:nth-child(2){border-right:0}.dtf-shop-v5-trust div:nth-child(-n+2){border-bottom:1px solid rgba(255,255,255,.1)}.dtf-shop-v5-guide{grid-template-columns:1fr}.dtf-shop-v5-art img{aspect-ratio:16/10;object-fit:contain;padding:10px}.dtf-shop-v5-release{display:grid;grid-template-columns:minmax(190px,.42fr) minmax(0,.58fr)}.dtf-shop-v5-art{border-bottom:0;border-right:1px solid rgba(255,255,255,.08)}}
+@media(max-width:600px){.dtf-shop-storefront-v5{padding:54px 16px 62px}.dtf-shop-storefront-v5 h2{font-size:clamp(2.8rem,15vw,4.5rem)}.dtf-shop-v5-actions a{width:100%}.dtf-shop-v5-featured{width:min(330px,88vw)}.dtf-shop-v5-featured:before{left:12px;top:12px}.dtf-shop-v5-trust{grid-template-columns:1fr}.dtf-shop-v5-trust div,.dtf-shop-v5-trust div:nth-child(2){border-right:0;border-bottom:1px solid rgba(255,255,255,.1)}.dtf-shop-v5-trust div:last-child{border-bottom:0}.dtf-shop-v5-release{display:block}.dtf-shop-v5-art{border-right:0;border-bottom:1px solid rgba(255,255,255,.08)}.dtf-shop-v5-art img{aspect-ratio:4/5;object-fit:cover;padding:0}.dtf-shop-v5-release-actions a{flex:1 1 100%}}
+@media(prefers-reduced-motion:reduce){.dtf-shop-storefront-v5 *{transition:none!important}.dtf-shop-v5-release:hover,.dtf-shop-v5-actions a:hover,.dtf-shop-v5-release-actions a:hover{transform:none!important}}
 </style>
-<p class="dtf-shop-v5-kicker">DTF Genetics · Current releases</p>
-<h2 id="dtf-shop-v5-title">Shop the release. Read the breeding story.</h2>
-<p class="dtf-shop-v5-lede">Current DTF Genetics seed listings connect directly to documented lineage and generation context. Use the storefront for current price and availability, then open the genetics library for the breeding project behind each pack.</p>
-<div class="dtf-shop-v5-trust" aria-label="Storefront standards"><span>3 reviewed seed releases</span><span>Reviewed strain-card artwork</span><span>Documented lineage & generation</span><span>Individual expression can vary</span></div>
-<nav class="dtf-shop-v5-actions" aria-label="Genetics storefront navigation"><a href="/seeds/">Explore the genetics library</a><a href="/seeds/blue-mango/">Blue Mango project</a><a href="/seeds/blue-bubblegum/">Blue Bubblegum project</a></nav>
-<div class="dtf-shop-v5-guide" aria-label="Current release guide">
-<article class="dtf-shop-v5-release"><small>F2 · Regular</small><h3>Blue Mango</h3><p>Somango XXL × Blueberry Butcher</p><a href="/product/10-regular-f2-blue-mango-seeds/">Open current release →</a></article>
-<article class="dtf-shop-v5-release"><small>F2 · Feminized</small><h3>Blue Mango</h3><p>Somango XXL × Blueberry Butcher</p><a href="/product/10-feminized-f2-blue-mango-x/">Open current release →</a></article>
-<article class="dtf-shop-v5-release"><small>F1 · Regular</small><h3>Blue Bubblegum</h3><p>Bubblegum Kush × Blueberry Butcher</p><a href="/product/10-reg-f1-blueberry-bubblegum/">Open current release →</a></article>
+<div class="dtf-shop-v5-hero">
+  <div>
+    <p class="dtf-shop-v5-kicker">DTF Genetics · Current releases</p>
+    <h2 id="dtf-shop-v5-title">Shop the release. Read the breeding story.</h2>
+    <p class="dtf-shop-v5-lede">Current DTF Genetics seed listings connect directly to documented lineage and generation context. Use the storefront for current price and availability, then open the genetics library for the breeding project behind each pack.</p>
+    <nav class="dtf-shop-v5-actions" aria-label="Genetics storefront navigation"><a href="/seeds/">Explore genetics</a><a href="/seeds/blue-mango/">Blue Mango project</a><a href="/seeds/blue-bubblegum/">Blue Bubblegum project</a></nav>
+  </div>
+  <a class="dtf-shop-v5-featured" href="${esc(featured.productRoute)}" data-review-file="${esc(featured.card.fileName)}" aria-label="Open featured Blue Mango F2 Regular release"><img src="${esc(featured.card.sourceUrl)}" alt="${esc(featured.card.altText)}" loading="eager" fetchpriority="high" decoding="async" width="${Number(featured.card.expectedWidth) || 1024}" height="${Number(featured.card.expectedHeight) || 1536}"></a>
+</div>
+<div class="dtf-shop-v5-trust" aria-label="Storefront standards"><div><small>Current catalog</small><strong>3 reviewed seed releases</strong></div><div><small>Visual provenance</small><strong>Reviewed strain-card artwork</strong></div><div><small>Breeding context</small><strong>Documented lineage & generation</strong></div><div><small>Plant reality</small><strong>Individual expression can vary</strong></div></div>
+<div class="dtf-shop-v5-section-head"><p>Current genetics</p><h3>Choose the release. Keep the project context.</h3></div>
+<div class="dtf-shop-v5-guide" aria-label="Current release guide">${releaseMarkup}
 </div>
 <p class="dtf-shop-v5-note">Product pages control current pricing, availability, quantity, and checkout terms. Breeding observations describe project direction and are not guarantees of phenotype, yield, potency, aroma, flavor, structure, or finish date.</p>
 </section>
@@ -116,6 +187,9 @@ await writeFile(join(backupDir, `template-${String(archive.id).replaceAll('/', '
 const next = insertStorefront(before);
 if ((next.match(/data-dtf-shop-storefront-v5=/g) || []).length !== 1) throw new Error('Shop V5 storefront marker must occur exactly once before write.');
 if (!next.includes('/product/10-regular-f2-blue-mango-seeds/') || !next.includes('/product/10-feminized-f2-blue-mango-x/') || !next.includes('/product/10-reg-f1-blueberry-bubblegum/')) throw new Error('Shop V5 storefront is missing a canonical current product route.');
+for (const { card } of releaseCards) {
+  if (!next.includes(card.fileName)) throw new Error(`Shop V5 storefront is missing reviewed artwork marker ${card.fileName}`);
+}
 
 let updated = archive;
 if (apply) {
@@ -131,8 +205,12 @@ const saved = raw(after?.content);
 if (apply) {
   if (!after?.id) throw new Error('Shop archive template disappeared after update.');
   if (!saved.includes('data-dtf-shop-storefront-v5="true"')) throw new Error('Shop V5 storefront marker did not persist.');
+  if (!saved.includes('data-dtf-shop-visual="premium-v6"')) throw new Error('Premium Shop visual marker did not persist.');
   if (!saved.includes('Shop the release. Read the breeding story.')) throw new Error('Shop V5 customer-facing storefront copy did not persist.');
   if ((saved.match(/data-dtf-shop-storefront-v5=/g) || []).length !== 1) throw new Error('Shop V5 storefront was duplicated after update.');
+  for (const { card } of releaseCards) {
+    if (!saved.includes(card.fileName)) throw new Error(`Reviewed Shop artwork marker did not persist: ${card.fileName}`);
+  }
 }
 
 const report = {
@@ -146,7 +224,9 @@ const report = {
   templateSource: archive.source || null,
   changed: before !== next,
   updatedWpId: updated?.wp_id || null,
-  marker: 'data-dtf-shop-storefront-v5="true"'
+  marker: 'data-dtf-shop-storefront-v5="true"',
+  visualMarker: 'data-dtf-shop-visual="premium-v6"',
+  reviewedArtwork: releaseCards.map(({ card }) => ({ fileName: card.fileName, sourceSha256: card.sourceSha256 }))
 };
 await writeFile(join(backupDir, 'shop-storefront-v5-report.json'), `${JSON.stringify(report, null, 2)}\n`);
 await writeFile(join(backupRoot, 'shop-storefront-v5-backup-path.txt'), `${backupDir}\n`);

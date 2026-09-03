@@ -8,10 +8,8 @@ on:
       - 'scripts/polish-wordpress-shop-storefront-v5.mjs'
       - 'scripts/polish-wordpress-commerce-archive-v4.mjs'
       - 'scripts/flush-hostinger-litespeed-mcp.mjs'
-      - 'scripts/deploy-wordpress-public-audit-fixes.mjs'
       - 'scripts/install-wordpress-shop-seo-meta.mjs'
-      - 'site/public-route-patch/games/protect-the-plants/index.html'
-      - 'site/public-route-patch/projects/index.html'
+      - 'site/wordpress/products/strain-card-images.json'
       - 'site/wordpress/mu-plugins/dtf-shop-seo-meta.php'
       - '.github/workflows/wordpress-shop-storefront-v5.yml'
   workflow_run:
@@ -55,7 +53,7 @@ jobs:
         with:
           node-version: 22
 
-      - name: Validate Shop V5 and current audit-fix package
+      - name: Validate isolated Shop V5 production package
         shell: bash
         run: |
           set -euo pipefail
@@ -64,7 +62,6 @@ jobs:
           node --check scripts/polish-wordpress-commerce-archive-v4.mjs
           node --check scripts/polish-wordpress-shop-storefront-v5.mjs
           node --check scripts/flush-hostinger-litespeed-mcp.mjs
-          node --check scripts/deploy-wordpress-public-audit-fixes.mjs
           node --check scripts/install-wordpress-shop-seo-meta.mjs
           node --check scripts/audit-dtfseeds-live.mjs
           node --check scripts/audit-dtfseeds-public-suite.mjs
@@ -74,9 +71,10 @@ jobs:
           grep -Fq '/product/10-regular-f2-blue-mango-seeds/' scripts/polish-wordpress-shop-storefront-v5.mjs
           grep -Fq '/product/10-feminized-f2-blue-mango-x/' scripts/polish-wordpress-shop-storefront-v5.mjs
           grep -Fq '/product/10-reg-f1-blueberry-bubblegum/' scripts/polish-wordpress-shop-storefront-v5.mjs
-          grep -Fq '<h1 id="protect-the-plants-title"' site/public-route-patch/games/protect-the-plants/index.html
-          grep -Fq '>High IQ<' site/public-route-patch/projects/index.html
-          grep -Fq '>High Life<' site/public-route-patch/projects/index.html
+          grep -Fq 'strain-card-images.json' scripts/polish-wordpress-shop-storefront-v5.mjs
+          ! grep -Fq 'deploy-wordpress-public-audit-fixes.mjs' .github/workflows/wordpress-shop-storefront-v5.yml
+          ! grep -Fq 'site/public-route-patch/games/protect-the-plants/index.html' .github/workflows/wordpress-shop-storefront-v5.yml
+          ! grep -Fq 'site/public-route-patch/projects/index.html' .github/workflows/wordpress-shop-storefront-v5.yml
 
       - name: Restore V4 portrait release-card styling
         id: v4
@@ -103,13 +101,6 @@ jobs:
           report="$dir/shop-storefront-v5-report.json"
           template_id="$(node -p 'require(process.argv[1]).templateId' "$report")"
           echo "template_id=$template_id" >> "$GITHUB_OUTPUT"
-
-      - name: Publish crawlable Protect the Plants and Projects routes
-        id: audit_routes
-        shell: bash
-        run: |
-          set -euo pipefail
-          node scripts/deploy-wordpress-public-audit-fixes.mjs | tee "$RUNNER_TEMP/public-audit-route-fixes.json"
 
       - name: Install source-controlled Shop SEO head metadata
         id: shop_seo
@@ -204,7 +195,6 @@ jobs:
             /tmp/dtf-shop-v5
             ${{ runner.temp }}/shop-v5-*.html
             ${{ runner.temp }}/product-*.html
-            ${{ runner.temp }}/public-audit-route-fixes.json
             ${{ runner.temp }}/shop-seo-meta.json
             live-site-audit.json
             live-site-audit.md
@@ -215,12 +205,12 @@ jobs:
 
       - name: Report Shop V5 production result
         if: always()
+        continue-on-error: true
         uses: actions/github-script@v7
         env:
           STATUS: ${{ job.status }}
           V4: ${{ steps.v4.outcome }}
           V5: ${{ steps.v5.outcome }}
-          AUDIT_ROUTES: ${{ steps.audit_routes.outcome }}
           SHOP_SEO: ${{ steps.shop_seo.outcome }}
           CACHE: ${{ steps.cache.outcome }}
           VERIFY: ${{ steps.verify.outcome }}
@@ -228,18 +218,21 @@ jobs:
           TEMPLATE_ID: ${{ steps.v5.outputs.template_id }}
         with:
           script: |
-            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body:[
-              '## DTF Shop Storefront V5','',
-              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-              `Result: **${process.env.STATUS}**`,
-              `Portrait release-card styling: **${process.env.V4 || 'not-run'}**`,
-              `Server-rendered storefront write: **${process.env.V5 || 'not-run'}**`,
-              `Protect the Plants + Projects publication: **${process.env.AUDIT_ROUTES || 'not-run'}**`,
-              `Shop SEO head metadata: **${process.env.SHOP_SEO || 'not-run'}**`,
-              `LiteSpeed cache purge: **${process.env.CACHE || 'not-run'}**`,
-              `Origin + public verification: **${process.env.VERIFY || 'not-run'}**`,
-              `Core + apps + commerce production audits: **${process.env.PRODUCTION_AUDIT || 'not-run'}**`,
-              `Archive template: **${process.env.TEMPLATE_ID || 'not-reported'}**`,
-              '',
-              'Shop remains the verified genetics storefront. This run also applies the reviewed crawlability/Projects fixes and source-controlled Shop head metadata through rollback-safe WordPress transactions, then requires the full live production audit to pass.'
-            ].join('\n')});
+            try {
+              await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:220,body:[
+                '## DTF Shop Storefront V5','',
+                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                `Result: **${process.env.STATUS}**`,
+                `Portrait release-card styling: **${process.env.V4 || 'not-run'}**`,
+                `Server-rendered storefront write: **${process.env.V5 || 'not-run'}**`,
+                `Shop SEO head metadata: **${process.env.SHOP_SEO || 'not-run'}**`,
+                `LiteSpeed cache purge: **${process.env.CACHE || 'not-run'}**`,
+                `Origin + public verification: **${process.env.VERIFY || 'not-run'}**`,
+                `Core + apps + commerce production audits: **${process.env.PRODUCTION_AUDIT || 'not-run'}**`,
+                `Archive template: **${process.env.TEMPLATE_ID || 'not-reported'}**`,
+                '',
+                'Shop owns only commerce presentation, Shop SEO, cache convergence, and commerce verification. Public app routes remain owned by the serialized DTFSeeds Production Gateway.'
+              ].join('\n')});
+            } catch (error) {
+              core.warning(`Could not post Shop V5 production result: ${error.message}`);
+            }
