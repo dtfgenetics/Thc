@@ -52,13 +52,62 @@ async function primeFullPageForVisualCapture(page) {
     const maxY = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
     for (let y = 0; y <= maxY; y += step) {
       window.scrollTo(0, y);
-      await new Promise((resolve) => setTimeout(resolve, 20));
+      await new Promise((resolve) => setTimeout(resolve, 25));
     }
     window.scrollTo(0, maxY);
-    await new Promise((resolve) => setTimeout(resolve, 60));
+    await new Promise((resolve) => setTimeout(resolve, 120));
     window.scrollTo(0, 0);
-    await new Promise((resolve) => setTimeout(resolve, 60));
+    await new Promise((resolve) => setTimeout(resolve, 120));
   });
+}
+
+async function assertReferenceMediaIntegrity(page, viewportName) {
+  const metrics = await page.evaluate((routePath) => {
+    const images = [...document.querySelectorAll('img[data-grow-doc-reference-image="true"]')];
+    return images.map((image) => ({
+      src: image.currentSrc || image.src,
+      complete: image.complete,
+      naturalWidth: image.naturalWidth,
+      naturalHeight: image.naturalHeight,
+      local: (image.currentSrc || image.src).includes(`${routePath}reference-media/`),
+    }));
+  }, route);
+
+  assert(metrics.length > 0, `${viewportName} Reference images rendered no reference image elements.`);
+  const broken = metrics.filter((image) => !image.complete || image.naturalWidth <= 0 || image.naturalHeight <= 0);
+  assert(broken.length === 0, `${viewportName} Reference images contains ${broken.length} broken image element(s):\n${broken.map((image) => image.src).join('\n')}`);
+
+  const local = metrics.filter((image) => image.local);
+  assert(local.length >= 20, `${viewportName} Reference images rendered only ${local.length} same-origin persisted images; expected at least 20.`);
+
+  return { renderedImages: metrics.length, localPersistedImages: local.length, brokenImages: broken.length };
+}
+
+async function assertMobileDiagnoseComposition(page) {
+  const metrics = await page.evaluate(() => {
+    const grid = document.querySelector('.evidence-grid');
+    const workflow = document.querySelector('.workflow-column');
+    const result = document.querySelector('.result-panel');
+    const slots = [...document.querySelectorAll('.evidence-slot')];
+    const gridRect = grid?.getBoundingClientRect();
+    const slotRects = slots.map((slot) => slot.getBoundingClientRect());
+    const workflowRect = workflow?.getBoundingClientRect();
+    const resultRect = result?.getBoundingClientRect();
+    return {
+      gridWidth: gridRect?.width ?? 0,
+      slotWidths: slotRects.map((rect) => rect.width),
+      slotLefts: slotRects.map((rect) => Math.round(rect.left)),
+      workflowTop: workflowRect?.top ?? 0,
+      workflowBottom: workflowRect?.bottom ?? 0,
+      resultTop: resultRect?.top ?? 0,
+    };
+  });
+
+  assert(metrics.gridWidth > 0 && metrics.slotWidths.length === 5, 'Mobile Diagnose evidence grid did not expose all five evidence cards.');
+  assert(new Set(metrics.slotLefts).size === 1, `Mobile Diagnose evidence cards are not stacked in one column: ${metrics.slotLefts.join(', ')}`);
+  assert(metrics.slotWidths.every((width) => Math.abs(width - metrics.gridWidth) <= 2), `Mobile Diagnose evidence cards do not fill the evidence grid: grid=${metrics.gridWidth}, slots=${metrics.slotWidths.join(', ')}`);
+  assert(metrics.resultTop >= metrics.workflowBottom - 1, `Mobile Diagnose result summary appears before the primary workflow: resultTop=${metrics.resultTop}, workflowBottom=${metrics.workflowBottom}.`);
+  return metrics;
 }
 
 async function chooseView(page, viewportName, item) {
@@ -120,13 +169,19 @@ async function runViewport(browser, viewportName, viewport) {
     await chooseView(page, viewportName, item);
     const overflow = await assertNoPageOverflow(page, `${viewportName} ${item.label}`);
     await primeFullPageForVisualCapture(page);
+
+    let referenceMedia = null;
+    let mobileDiagnose = null;
+    if (item.label === 'Reference images') referenceMedia = await assertReferenceMediaIntegrity(page, viewportName);
+    if (viewportName === 'mobile' && item.label === 'Diagnose') mobileDiagnose = await assertMobileDiagnoseComposition(page);
+
     const screenshot = `${viewportName}-${item.slug}.png`;
     await page.screenshot({ path: path.join(evidenceDir, screenshot), fullPage: true });
     const dimensions = await page.evaluate(() => ({
       width: document.documentElement.scrollWidth,
       height: document.documentElement.scrollHeight,
     }));
-    captured.push({ label: item.label, heading: item.heading, screenshot, ...overflow, ...dimensions, ok: true });
+    captured.push({ label: item.label, heading: item.heading, screenshot, ...overflow, ...dimensions, referenceMedia, mobileDiagnose, ok: true });
   }
 
   assert(pageErrors.length === 0, `${viewportName} uncaught page errors:\n${pageErrors.join('\n')}`);
@@ -155,7 +210,7 @@ try {
     await runViewport(browser, 'mobile', { width: 390, height: 844 }),
   ];
   const report = {
-    schemaVersion: 1,
+    schemaVersion: 2,
     site,
     route,
     generatedAt: new Date().toISOString(),
