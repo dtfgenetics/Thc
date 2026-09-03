@@ -36,6 +36,31 @@ async function assertNoPageOverflow(page, name) {
   return { ...metrics, overflow };
 }
 
+async function primeFullPageForVisualCapture(page) {
+  // The production Issue Library uses content-visibility:auto for performance.
+  // Full-page screenshots do not naturally traverse those rows, so force them
+  // visible only inside this QA browser before capture. This does not change
+  // production CSS or visitor behavior.
+  await page.addStyleTag({
+    content: '.issue-row { content-visibility: visible !important; contain-intrinsic-size: auto !important; }',
+  });
+
+  // Walk the page to trigger lazy image decode/loading and other viewport work
+  // before taking a full-page visual-evidence screenshot.
+  await page.evaluate(async () => {
+    const step = Math.max(500, Math.floor(window.innerHeight * 0.8));
+    const maxY = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+    for (let y = 0; y <= maxY; y += step) {
+      window.scrollTo(0, y);
+      await new Promise((resolve) => setTimeout(resolve, 20));
+    }
+    window.scrollTo(0, maxY);
+    await new Promise((resolve) => setTimeout(resolve, 60));
+    window.scrollTo(0, 0);
+    await new Promise((resolve) => setTimeout(resolve, 60));
+  });
+}
+
 async function chooseView(page, viewportName, item) {
   if (viewportName === 'mobile') {
     const menu = page.getByRole('button', { name: 'Open menu' });
@@ -94,6 +119,7 @@ async function runViewport(browser, viewportName, viewport) {
   for (const item of views) {
     await chooseView(page, viewportName, item);
     const overflow = await assertNoPageOverflow(page, `${viewportName} ${item.label}`);
+    await primeFullPageForVisualCapture(page);
     const screenshot = `${viewportName}-${item.slug}.png`;
     await page.screenshot({ path: path.join(evidenceDir, screenshot), fullPage: true });
     const dimensions = await page.evaluate(() => ({
