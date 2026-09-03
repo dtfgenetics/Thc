@@ -2,6 +2,11 @@ name: Verify THC Grow Doc Production Identity
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - scripts/verify-grow-doc-production.mjs
+      - .github/workflows/verify-grow-doc-production.yml
   workflow_run:
     workflows: ["Deploy DTFSeeds Public Suite via WordPress V2"]
     types: [completed]
@@ -15,7 +20,7 @@ concurrency:
 
 jobs:
   verify:
-    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
