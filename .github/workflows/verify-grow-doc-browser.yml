@@ -1,0 +1,61 @@
+name: Verify THC Grow Doc Live Browser
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - scripts/verify-grow-doc-browser.mjs
+      - .github/workflows/verify-grow-doc-browser.yml
+  workflow_run:
+    workflows: ["Verify THC Grow Doc Production Identity"]
+    types: [completed]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-thc-grow-doc-live-browser
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      SITE: https://dtfseeds.com
+      DTF_GROW_DOC_BROWSER_EVIDENCE: test-results/grow-doc-live
+    steps:
+      - name: Checkout current acceptance source
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+
+      - name: Use Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install workspace dependencies
+        run: npm ci
+
+      - name: Validate browser acceptance script
+        run: node --check scripts/verify-grow-doc-browser.mjs
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run desktop and mobile production acceptance
+        run: node scripts/verify-grow-doc-browser.mjs
+
+      - name: Upload rendered browser evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: grow-doc-live-browser-${{ github.run_id }}
+          path: test-results/grow-doc-live
+          if-no-files-found: ignore
+          retention-days: 14
