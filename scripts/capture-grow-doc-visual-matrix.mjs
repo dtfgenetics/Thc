@@ -37,16 +37,10 @@ async function assertNoPageOverflow(page, name) {
 }
 
 async function primeFullPageForVisualCapture(page) {
-  // The production Issue Library uses content-visibility:auto for performance.
-  // Full-page screenshots do not naturally traverse those rows, so force them
-  // visible only inside this QA browser before capture. This does not change
-  // production CSS or visitor behavior.
   await page.addStyleTag({
     content: '.issue-row { content-visibility: visible !important; contain-intrinsic-size: auto !important; }',
   });
 
-  // Walk the page to trigger lazy image decode/loading and other viewport work
-  // before taking a full-page visual-evidence screenshot.
   await page.evaluate(async () => {
     const step = Math.max(500, Math.floor(window.innerHeight * 0.8));
     const maxY = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
@@ -69,7 +63,7 @@ async function assertReferenceMediaIntegrity(page, viewportName) {
       complete: image.complete,
       naturalWidth: image.naturalWidth,
       naturalHeight: image.naturalHeight,
-      local: (image.currentSrc || image.src).includes(`${routePath}reference-media/`),
+      local: (image.currentSrc || image.src).includes(`${routePath}reference-media/crops/`),
     }));
   }, route);
 
@@ -78,9 +72,9 @@ async function assertReferenceMediaIntegrity(page, viewportName) {
   assert(broken.length === 0, `${viewportName} Reference images contains ${broken.length} broken image element(s):\n${broken.map((image) => image.src).join('\n')}`);
 
   const local = metrics.filter((image) => image.local);
-  assert(local.length >= 20, `${viewportName} Reference images rendered only ${local.length} same-origin persisted images; expected at least 20.`);
+  assert(local.length >= 15, `${viewportName} Reference images rendered only ${local.length} scientifically matched same-origin reviewed crops; expected at least 15.`);
 
-  return { renderedImages: metrics.length, localPersistedImages: local.length, brokenImages: broken.length };
+  return { renderedImages: metrics.length, localReviewedCrops: local.length, brokenImages: broken.length };
 }
 
 async function assertMobileDiagnoseComposition(page) {
@@ -210,7 +204,7 @@ try {
     await runViewport(browser, 'mobile', { width: 390, height: 844 }),
   ];
   const report = {
-    schemaVersion: 2,
+    schemaVersion: 3,
     site,
     route,
     generatedAt: new Date().toISOString(),
