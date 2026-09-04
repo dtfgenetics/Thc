@@ -131,16 +131,18 @@ replace_regex_once(
     'suite-only WordPress ownership manifest guard',
 )
 
-# Verify only the route this bridge is authorized to mutate.
+# Verify only the route this bridge is authorized to mutate. Replace the whole
+# suite verifier rather than deleting individual suite-only checks; this keeps
+# the transform deterministic if the suite verifier grows new unrelated checks.
 replace_regex_once(
     r"const liveChecks = \[.*?\n\];",
     "const liveChecks = [\n  [" + json.dumps(route) + ", " + json.dumps(marker) + "],\n];",
     'live route checks',
 )
 replace_regex_once(
-    r"  const puzzle = await fetch\(`\$\{siteUrl\}/puzzles/current\.json.*?await verifyRoute\('/learn/'.*?\n",
-    '',
-    'suite-only verification tail',
+    r"async function verifyLive\(\) \{.*?\n\}\n\nasync function recoverFailure",
+    "async function verifyLive() {\n  const tag = process.env.GITHUB_RUN_ID || Date.now().toString();\n  for (const [path, marker] of liveChecks) { await verifyRoute(path, marker, tag); console.log(`Verified ${path}`); }\n}\n\nasync function recoverFailure",
+    'resource-only verifyLive function',
 )
 replace_once('verifiedRoutes: liveChecks.length + 3', 'verifiedRoutes: liveChecks.length', 'verified-route count')
 
@@ -165,6 +167,8 @@ for forbidden in [
     ".dtf-suite-manifest.json",
     "'dtfseeds-public-apps-only'",
     "wordPressOwnedRoutesExcluded",
+    "/puzzles/current.json",
+    "verifyRoute('/learn/'",
 ]:
     if forbidden in text:
         raise SystemExit(f'generated resource bridge retained forbidden broad authority: {forbidden}')
