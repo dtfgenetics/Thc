@@ -1,0 +1,15 @@
+/* Production gameplay guardrails.
+   Keep test/demo controls out of the player-facing experience and prevent
+   accidental local-session resets from the in-game HUD. */
+
+/* Player count is chosen during setup. Changing it mid-game recreates state,
+   so the selector must not be exposed once the board is active. */
+.player-select {
+  display: none !important;
+}
+
+/* Preview HIT controls are developer/demo helpers, not player actions. */
+.controls-card .button-row > button:last-child,
+.board-button-row > button:nth-child(2) {
+  display: none !important;
+}
