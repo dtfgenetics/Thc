@@ -2,7 +2,7 @@
   "id": "high-iq",
   "title": "High IQ — Test Higher Cognition",
   "category": "knowledge-game",
-  "status": "v3.1-production-readiness",
+  "status": "v3.2-scalable-content-ui",
   "provider": "DTF Genetics / GitHub",
   "public_url": "https://dtfseeds.com/games/high-iq/",
   "website_route": "/games/high-iq/",
@@ -16,8 +16,12 @@
     "questions": 160,
     "sources": 50,
     "recordVersions": ["2.2", "2.3"],
+    "manifestDriven": true,
     "validation": "node games/high-iq/scripts/validate-data.mjs",
     "publicRuntimeValidation": "node games/high-iq/scripts/validate-public-runtime.mjs",
+    "authoringCli": "node games/high-iq/scripts/question-bank.mjs",
+    "authoringTests": "node games/high-iq/test/question-bank-tool.test.mjs",
+    "shellSync": "node games/high-iq/scripts/sync-runtime-shell.mjs",
     "gameCoreTests": "node games/high-iq/test/game-core.test.mjs",
     "browserPlaythrough": "node games/high-iq/test/browser-smoke.mjs",
     "liveVerification": "node games/high-iq/scripts/verify-live-v3.mjs",
@@ -52,7 +56,11 @@
       "keyboard-answer-selection",
       "reduced-motion-support",
       "forced-colors-support",
-      "retryable-data-health-state"
+      "retryable-data-health-state",
+      "manifest-driven-question-growth",
+      "maintainer-question-cli",
+      "manifest-driven-shell-metadata",
+      "manifest-driven-package-verification"
     ]
   },
   "integration": {
@@ -62,6 +70,8 @@
     "runtime_source_ready": true,
     "v3_gameplay_ready": true,
     "v3_ci_gates_ready": true,
+    "authoring_workflow_ready": true,
+    "manifest_driven_growth_ready": true,
     "browser_playthrough_gate_ready": true,
     "live_verification_script_ready": true,
     "production_route_verified": false
