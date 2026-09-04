@@ -33,8 +33,22 @@ jobs:
           cache: npm
       - name: Apply gameplay v2 integration
         run: node scripts/apply-seed-man-gameplay-v2.mjs
+      - name: Confirm gameplay integration is idempotent
+        shell: bash
+        run: |
+          set -euo pipefail
+          paths=(
+            site/public-route-patch/games/seed-man-platformer/index.html
+            site/public-route-patch/games/seed-man-platformer/canvas-compat-v1.js
+            scripts/publish-seed-man-route-via-wordpress.mjs
+          )
+          before="$(git diff -- "${paths[@]}" | git hash-object --stdin)"
+          node scripts/apply-seed-man-gameplay-v2.mjs
+          after="$(git diff -- "${paths[@]}" | git hash-object --stdin)"
+          test "$before" = "$after"
       - name: Validate upgraded runtime syntax
         run: |
+          node --check scripts/apply-seed-man-gameplay-v2.mjs
           node --check site/public-route-patch/games/seed-man-platformer/gameplay-v2.js
           node --check games/seed-man-platformer/test/gameplay-v2-smoke.mjs
           node --check scripts/publish-seed-man-route-via-wordpress.mjs
