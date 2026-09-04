@@ -22,7 +22,10 @@ assert.ok(sw.includes('./gameplay-v3.css'));
 assert.ok(sw.includes('./gameplay-v3.js'));
 assert.ok(sw.includes('./combat-a11y-v1.js'));
 assert.ok(sw.includes("url.pathname.endsWith('/presence.php')"));
-assert.ok(sw.includes('ptp-shell-v3-burn-buds-a11y-20260828'));
+assert.ok(sw.includes('ptp-shell-v5-burn-buds-battle-feedback-20260904'));
+assert.ok(sw.includes('./battle-feedback-v1.js'));
+assert.ok(sw.includes('./placement-v1.js'));
+assert.ok(sw.includes('./targeting-v1.js'));
 
 for (const marker of [
   "fetch(`./presence.php?${query}`",

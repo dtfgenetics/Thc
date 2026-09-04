@@ -1,0 +1,14 @@
+.board-card.burn-primary-board{border-color:rgba(255,183,87,.48);box-shadow:0 0 0 1px rgba(255,183,87,.08),0 18px 50px rgba(0,0,0,.34),0 0 30px rgba(255,132,43,.09)}
+.board-card.burn-secondary-board{opacity:.88}
+.board .cell.burn-hit-cell{background:radial-gradient(circle at 50% 45%,rgba(255,244,190,.36) 0 14%,rgba(255,116,46,.68) 15% 34%,rgba(103,26,9,.88) 35% 68%,rgba(45,16,10,.96) 69% 100%)!important;box-shadow:inset 0 0 0 1px rgba(255,224,161,.42),inset 0 0 16px rgba(255,88,29,.5)}
+.board .cell.burn-miss-cell{background:radial-gradient(circle at 50% 50%,rgba(209,240,255,.85) 0 11%,rgba(95,151,177,.42) 12% 26%,rgba(17,42,51,.72) 27% 46%,rgba(15,24,23,.96) 47% 100%)!important;box-shadow:inset 0 0 0 1px rgba(171,220,239,.24)}
+.board .cell.burn-hit-cell .plant-token{filter:grayscale(.32) sepia(.35) brightness(.72) saturate(1.4)}
+.board .cell.burn-latest-shot{z-index:5;outline:3px solid rgba(255,230,148,.98);outline-offset:-3px}
+.board .cell.burn-latest-hit{box-shadow:inset 0 0 0 2px rgba(255,235,174,.42),0 0 18px rgba(255,95,31,.66)!important}
+.board .cell.burn-latest-miss{box-shadow:inset 0 0 0 2px rgba(208,240,255,.32),0 0 16px rgba(102,190,230,.42)!important}
+.board .cell.burn-shot-pop{animation:burn-shot-pop .62s cubic-bezier(.18,.8,.2,1) both}
+.board .cell{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+@keyframes burn-shot-pop{0%{transform:scale(.82);filter:brightness(1.8)}45%{transform:scale(1.12);filter:brightness(1.25)}100%{transform:scale(1);filter:brightness(1)}}
+@media(max-width:720px){.board-card.burn-secondary-board{opacity:.72}.board-card.burn-primary-board{opacity:1}.coordinate-grid{grid-template-columns:18px minmax(0,1fr);grid-template-rows:17px minmax(0,1fr)}.col-labels,.row-labels{font-size:.48rem}.board .cell.burn-latest-shot{outline-width:2px;outline-offset:-2px}.board-card{scroll-margin-top:116px}}
+@media(max-width:420px){.board-card{padding:8px}.boards{gap:7px}.burn-turn-banner{margin-bottom:8px}.burn-telemetry{margin-bottom:8px}.board-title{margin-bottom:6px}.board-title h3{font-size:.76rem}}
+@media(prefers-reduced-motion:reduce){.board .cell.burn-shot-pop{animation:none!important}.board-card.burn-primary-board,.board-card.burn-secondary-board{transition:none!important}}

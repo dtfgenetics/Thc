@@ -19,6 +19,13 @@ for(const marker of [
   "state.turnPlayerId===state.me?.id",
   "event?.type==='scout'",
   'let firePending=false',
+  'let armedCoord=',
+  "matchMedia?.('(pointer: coarse)')",
+  "cell.classList.toggle('target-armed',armed)",
+  "cell.setAttribute('aria-pressed',String(armed))",
+  "if(armedCoord!==parsed.coord)",
+  'armedCoord=parsed.coord',
+  "'Tap once to aim. Tap the same cell again to fire.'",
   'function setFirePending(next)',
   "document.body.classList.toggle('burn-fire-pending',firePending)",
   "cell.setAttribute('aria-busy',String(firePending))",
@@ -32,7 +39,9 @@ for(const marker of [
 assert.ok(!js.includes('fetch('),'Targeting helper must not bypass the server-authoritative game API.');
 assert.ok(!js.includes("api('fire'"),'Targeting helper must not submit shots directly.');
 assert.ok(css.includes('.burn-target-readout'),'Target readout styling missing.');
+assert.ok(css.includes('.target-armed'),'Armed target styling missing.');
 assert.ok(css.includes(':focus-visible'),'Keyboard focus styling missing.');
+assert.ok(css.includes('@media(max-width:720px)'),'Mobile targeting styling missing.');
 assert.ok(index.includes('./targeting-v1.css'),'Burn Buds page must load targeting CSS.');
 assert.ok(index.includes('./targeting-v1.js'),'Burn Buds page must load targeting JavaScript.');
 assert.ok(index.indexOf('./targeting-v1.js')>index.indexOf('./app.js'),'Targeting helper must load after the core game runtime.');
