@@ -39,6 +39,8 @@ if (capture('git', ['status', '--porcelain'], { cwd: repoRoot })) {
   process.exit(1)
 }
 
+// Observe current main for accurate diff/resource classification, but never merge or rebase it into the session here.
+run('git', ['fetch', '--quiet', 'origin', 'main'], { cwd: repoRoot })
 run(process.execPath, ['scripts/project-lane-check.mjs', `--branch=${branch}`], { cwd: repoRoot })
 
 const main = capture('git', ['rev-parse', '--verify', 'origin/main'], { cwd: repoRoot })
@@ -85,6 +87,7 @@ console.log(JSON.stringify({
   ok: true,
   branch,
   head,
+  observedMain: main,
   session,
   resources,
   pushed: true,
