@@ -6,6 +6,7 @@ import { readFileSync } from 'node:fs'
 import {
   assessOverlap,
   candidateSupersession,
+  classifyBranchLifecycle,
   classifyPaths,
   makeWorkBranch,
   parseWorkBranch,
@@ -63,6 +64,30 @@ assert.equal(candidateSupersession(
   { files: ['a'], resources: ['x'] },
   { files: ['b'], resources: ['x'], mergeable: 'MERGEABLE' },
 ), false)
+
+const lifecyclePrs = [
+  { number: 10, state: 'OPEN', headRefName: 'work/high-land/ui/s1', mergedAt: null },
+  { number: 11, state: 'MERGED', headRefName: 'work/high-land/ui/s2', mergedAt: '2026-09-04T20:00:00Z' },
+  { number: 12, state: 'CLOSED', headRefName: 'work/high-land/ui/s3', mergedAt: null },
+]
+assert.equal(classifyBranchLifecycle({
+  branch: 'work/high-land/ui/s1', prs: lifecyclePrs,
+}).state, 'active-pr')
+assert.equal(classifyBranchLifecycle({
+  branch: 'work/high-land/ui/s2', prs: lifecyclePrs,
+}).safeToDelete, true)
+assert.equal(classifyBranchLifecycle({
+  branch: 'work/high-land/ui/s3', prs: lifecyclePrs,
+}).state, 'closed-unmerged')
+assert.equal(classifyBranchLifecycle({
+  branch: 'work/high-land/ui/s4', prs: lifecyclePrs,
+}).state, 'orphan-unique')
+assert.equal(classifyBranchLifecycle({
+  branch: 'project/platform/old-system', prs: [], isAncestorOfMain: true,
+}).safeToDelete, true)
+assert.equal(classifyBranchLifecycle({
+  branch: 'work/high-land/ui/s1', prs: lifecyclePrs, isAncestorOfMain: true,
+}).safeToDelete, false)
 
 function laneCheck(branchName, files) {
   return execFileSync(process.execPath, [

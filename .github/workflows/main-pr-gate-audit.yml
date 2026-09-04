@@ -1,0 +1,55 @@
+name: Main PR gate audit
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  main-pr-gate-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify main commit came through a merged PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          COMMIT_SHA: ${{ github.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          associated='[]'
+          for attempt in 1 2 3 4 5; do
+            associated="$(gh api \
+              -H 'Accept: application/vnd.github+json' \
+              "/repos/${REPOSITORY}/commits/${COMMIT_SHA}/pulls")"
+            if [ "$(jq 'length' <<<"${associated}")" -gt 0 ]; then
+              break
+            fi
+            sleep 2
+          done
+
+          valid_pr=''
+          while IFS= read -r pr_number; do
+            [ -n "${pr_number}" ] || continue
+            candidate="$(gh api "/repos/${REPOSITORY}/pulls/${pr_number}")"
+            base="$(jq -r '.base.ref // empty' <<<"${candidate}")"
+            merged_at="$(jq -r '.merged_at // empty' <<<"${candidate}")"
+            merge_commit_sha="$(jq -r '.merge_commit_sha // empty' <<<"${candidate}")"
+
+            if [ "${base}" = 'main' ] && [ -n "${merged_at}" ]; then
+              valid_pr="#${pr_number}"
+              echo "main commit ${COMMIT_SHA} is associated with merged PR ${valid_pr} (merge commit ${merge_commit_sha})."
+              break
+            fi
+          done < <(jq -r '.[].number' <<<"${associated}")
+
+          if [ -z "${valid_pr}" ]; then
+            echo '::error title=Direct-to-main bypass detected::This main commit is not associated with a merged pull request. Protect main with a ruleset requiring pull requests; repository workflow checks can detect this after the fact but cannot prevent it.'
+            exit 1
+          fi
