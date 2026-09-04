@@ -1,5 +1,6 @@
 import type { Player, PlayerToken } from '../types/gameTypes';
 
+export const localMinPlayers = 1;
 export const minPlayers = 2;
 export const maxPlayers = 10;
 
@@ -30,8 +31,8 @@ export const tokenColors = [
 ];
 
 export function createPlayers(count: number): Player[] {
-  if (!Number.isInteger(count) || count < minPlayers || count > maxPlayers) {
-    throw new Error(`Player count must be between ${minPlayers} and ${maxPlayers}.`);
+  if (!Number.isInteger(count) || count < localMinPlayers || count > maxPlayers) {
+    throw new Error(`Player count must be between ${localMinPlayers} and ${maxPlayers}.`);
   }
 
   return Array.from({ length: count }, (_, index) => ({
