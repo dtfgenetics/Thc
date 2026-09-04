@@ -52,8 +52,8 @@ if (!session) {
   process.exit(2)
 }
 
-run('git', ['fetch', 'origin', target], { cwd: repoRoot })
 const remoteRef = `refs/remotes/origin/${target}`
+run('git', ['fetch', 'origin', `refs/heads/${target}:${remoteRef}`], { cwd: repoRoot })
 if (!capture('git', ['show-ref', '--verify', remoteRef], { cwd: repoRoot })) {
   console.error(`Remote session branch does not exist: ${target}`)
   process.exit(1)
