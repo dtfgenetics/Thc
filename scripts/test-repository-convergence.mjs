@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import assert from 'node:assert/strict'
-import { readFileSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 
 const read = (path) => readFileSync(path, 'utf8')
 
@@ -11,6 +11,7 @@ const titleWorkflow = read('.github/workflows/wordpress-premium-title-normalizat
 const titleScript = read('scripts/normalize-wordpress-premium-page-titles.mjs')
 const lifecycleWorkflow = read('.github/workflows/branch-lifecycle-maintenance.yml')
 const lifecycleScript = read('scripts/studio/lifecycle.mjs')
+const highLandCI = read('.github/workflows/high-land-ci.yml')
 
 assert.match(watch, /push:\n\s+branches: \[main\]\n\s+paths:/)
 assert.match(watch, /pull_request:\n\s+branches: \[main\]\n\s+paths:/)
@@ -27,5 +28,12 @@ assert.ok(lifecycleWorkflow.includes('contents: write'), 'Lifecycle maintenance 
 assert.ok(lifecycleWorkflow.includes('lifecycle --cleanup-merged --summary'), 'Lifecycle maintenance must use conservative integrated-only cleanup.')
 assert.ok(lifecycleScript.includes("duplicateHead: 'report only"), 'Duplicate branch tips must remain report-only evidence.')
 assert.ok(lifecycleScript.includes('item.managed && item.safeToDelete'), 'Automatic cleanup must be limited to managed, proven-integrated branches.')
+
+assert.match(highLandCI, /pull_request:\n\s+branches:\n\s+- main\n\s+paths:/)
+assert.match(highLandCI, /push:\n\s+branches:\n\s+- main\n\s+paths:/)
+assert.ok(highLandCI.includes("'apps/high-land-web/**'"), 'High Land CI must be scoped to High Land-owned paths.')
+assert.equal(existsSync('.github/workflows/high-land-web.yml'), false, 'Duplicate High Land Web Game CI must stay retired.')
+assert.ok(highLandCI.includes('Run High Land browser smoke tests'), 'The surviving High Land CI must retain browser validation.')
+assert.ok(highLandCI.includes('Lint PHP room API files'), 'The surviving High Land CI must retain PHP API linting.')
 
 console.log('Repository convergence regression tests passed.')
