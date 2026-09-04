@@ -4,8 +4,10 @@ import { execFileSync } from 'node:child_process';
 import { readFileSync, appendFileSync } from 'node:fs';
 
 const args = Object.fromEntries(process.argv.slice(2).map((arg) => {
-  const [key, ...rest] = arg.replace(/^--/, '').split('=');
-  return [key, rest.join('=') || 'true'];
+  const normalized = arg.replace(/^--/, '');
+  const separator = normalized.indexOf('=');
+  if (separator === -1) return [normalized, 'true'];
+  return [normalized.slice(0, separator), normalized.slice(separator + 1)];
 }));
 
 const configPath = args.config || 'site/deployment/release-lanes.json';
@@ -13,6 +15,7 @@ const config = JSON.parse(readFileSync(configPath, 'utf8'));
 const mode = args.mode || process.env.RELEASE_MODE || 'auto';
 const head = args.head || process.env.GITHUB_SHA || 'HEAD';
 const requestedBase = args.base || process.env.RELEASE_BASE || '';
+const fallbackBase = args['fallback-base'] || process.env.RELEASE_FALLBACK_BASE || '';
 
 function gitText(commandArgs) {
   try {
@@ -32,7 +35,11 @@ function gitOk(commandArgs) {
 }
 
 function resolveCheckpoint() {
-  if (mode !== 'auto' || !config.productionCheckpointTag) return null;
+  // An explicitly supplied base is an exact caller contract used by CI,
+  // integration previews, and controlled release comparisons. Production
+  // automatic releases omit that exact base so the last successful production
+  // checkpoint can accumulate every not-yet-deployed parallel merge.
+  if (mode !== 'auto' || requestedBase || !config.productionCheckpointTag) return null;
   const ref = `refs/tags/${config.productionCheckpointTag}`;
   const sha = gitText(['rev-parse', '--verify', ref]);
   if (!sha) return null;
@@ -41,7 +48,7 @@ function resolveCheckpoint() {
 }
 
 const checkpoint = resolveCheckpoint();
-const base = checkpoint?.sha || requestedBase;
+const base = requestedBase || checkpoint?.sha || fallbackBase;
 
 function changedFiles() {
   if (mode === 'full') return ['<manual-full-release>'];
@@ -92,6 +99,7 @@ const plan = {
   site: config.site,
   mode,
   requestedBase: requestedBase || null,
+  fallbackBase: fallbackBase || null,
   base: base || null,
   checkpoint,
   head,

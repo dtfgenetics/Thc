@@ -1,0 +1,46 @@
+name: Studio Generated Integration CI
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'scripts/studio/integrate-generated-change.mjs'
+      - 'scripts/studio/test-generated-integration.mjs'
+      - 'scripts/studio/test-auto-gateway-handoff.mjs'
+      - 'scripts/plan-dtfseeds-release.mjs'
+      - 'site/deployment/release-lanes.json'
+      - '.github/workflows/dtfseeds-production-gateway.yml'
+      - '.github/workflows/studio-generated-integration-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: studio-generated-integration-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  integration-semantics:
+    name: Verify moving-main integration semantics
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Syntax-check integration control plane
+        run: |
+          node --check scripts/studio/integrate-generated-change.mjs
+          node --check scripts/studio/test-generated-integration.mjs
+          node --check scripts/studio/test-auto-gateway-handoff.mjs
+          node --check scripts/plan-dtfseeds-release.mjs
+
+      - name: Prove unrelated main movement remains parallel
+        run: node scripts/studio/test-generated-integration.mjs
+
+      - name: Prove safe integration wakes cumulative production
+        run: node scripts/studio/test-auto-gateway-handoff.mjs

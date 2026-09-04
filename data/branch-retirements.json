@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "retirements": [
+    {
+      "branch": "game/burn-buds-production-pass",
+      "headSha": "5afa975543fdfa8387506064b5cf5cdc8dd6dfa9",
+      "supersededBy": "d84cbc9926d02e3ed07136ee9ba3a880d4c07e07",
+      "status": "approved",
+      "reviewedAt": "2026-09-04",
+      "reason": "PR #555 was superseded by #556, and the tested Burn Buds targeting, placement, battle-feedback, cache, and contract work was replayed onto main in d84cbc9926d02e3ed07136ee9ba3a880d4c07e07."
+    },
+    {
+      "branch": "game/burn-buds-production-pass-v2",
+      "headSha": "3366bde922f40f2e204e733289dd46d4b7ea9ded",
+      "supersededBy": "d84cbc9926d02e3ed07136ee9ba3a880d4c07e07",
+      "status": "approved",
+      "reviewedAt": "2026-09-04",
+      "reason": "PR #556 was replayed onto main in d84cbc9926d02e3ed07136ee9ba3a880d4c07e07. Current main preserves the runtime, styles, cache wiring, and CI contract and contains a newer placement ARIA-label fix."
+    }
+  ]
+}

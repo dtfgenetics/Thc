@@ -42,92 +42,40 @@ for (const marker of [
   "api('fire'",
   "api('place'",
   "ev.type==='scout'"
-]) {
-  assert.ok(app.includes(marker), `Missing native Burn Buds runtime marker: ${marker}`);
-}
+]) assert.ok(app.includes(marker), `Missing native Burn Buds runtime marker: ${marker}`);
 
 assert.ok(app.includes("routeSummary.hidden=true"), 'Successful app startup must hide the static route summary to prevent a duplicate visible title.');
 
-for (const forbidden of [
-  '<strong>Protect the Plants</strong>',
-  'Defend your garden. Scout theirs.',
-  'Your Garden Preview',
-  'Plant Formations',
-  'Garden Locked',
-  'Place Your Plants',
-  'Garden Protected',
-  'Garden Lost',
-  'Scout Opponent',
-  '<span>Scouts</span>'
-]) {
+for (const forbidden of ['<strong>Protect the Plants</strong>','Defend your garden. Scout theirs.','Your Garden Preview','Plant Formations','Garden Locked','Place Your Plants','Garden Protected','Garden Lost','Scout Opponent','<span>Scouts</span>']) {
   assert.ok(!app.includes(forbidden), `Legacy player-facing copy remains in base runtime: ${forbidden}`);
 }
 
-for (const marker of [
-  "document.title = '● Your Turn · Burn Buds'",
-  '<small>BURN BUDS</small>',
-  'Confirm firing taps',
-  'tap again to fire.',
-  'BUDS BURNED',
-  'Join my Burn Buds game'
-]) {
+for (const marker of ["document.title = '● Your Turn · Burn Buds'",'<small>BURN BUDS</small>','Confirm firing taps','tap again to fire.','BUDS BURNED','Join my Burn Buds game']) {
   assert.ok(enhancements.includes(marker), `Missing Burn Buds enhancement marker: ${marker}`);
 }
 
-for (const forbidden of [
-  '<small>PROTECT THE PLANTS</small>',
-  'Confirm scouting taps',
-  'tap again to scout.',
-  'Join my Protect the Plants game',
-  'Garden state updated.',
-  'FORMATION FOUND'
-]) {
+for (const forbidden of ['<small>PROTECT THE PLANTS</small>','Confirm scouting taps','tap again to scout.','Join my Protect the Plants game','Garden state updated.','FORMATION FOUND']) {
   assert.ok(!enhancements.includes(forbidden), `Legacy enhancement copy remains: ${forbidden}`);
 }
 
-for (const marker of [
-  "const HISTORY_KEY='burnBudsMatchHistoryV3'",
-  "const LEGACY_HISTORY_KEY='ptpMatchHistoryV2'",
-  'Opponent Buds Burned',
-  'Your Buds Burned',
-  'in Burn Buds'
-]) {
+for (const marker of ["const HISTORY_KEY='burnBudsMatchHistoryV3'","const LEGACY_HISTORY_KEY='ptpMatchHistoryV2'",'Opponent Buds Burned','Your Buds Burned','in Burn Buds']) {
   assert.ok(extras.includes(marker), `Missing Burn Buds history/share marker: ${marker}`);
 }
-
-for (const forbidden of ['Garden Protected', 'Garden Lost', 'in Protect the Plants']) {
-  assert.ok(!extras.includes(forbidden), `Legacy history/share copy remains: ${forbidden}`);
-}
-
-for (const marker of [
-  '.cell.can-fire',
-  'burn-impact',
-  'burn-miss-ring',
-  'burn-bud-lost',
-  '.burn-buds-meta'
-]) {
-  assert.ok(css.includes(marker), `Missing Burn Buds battle feedback marker: ${marker}`);
-}
-
-for (const feature of [
-  'room-chat',
-  'active-game-recovery',
-  'burned-formation-animation',
-  'cannabis-leaf-fleet-markers',
-  'server-authoritative-turns',
-  'two-player-rematch-consent'
-]) {
-  assert.ok(game.features.includes(feature), `Burn Buds feature contract missing: ${feature}`);
-}
+for (const forbidden of ['Garden Protected', 'Garden Lost', 'in Protect the Plants']) assert.ok(!extras.includes(forbidden), `Legacy history/share copy remains: ${forbidden}`);
+for (const marker of ['.cell.can-fire','burn-impact','burn-miss-ring','burn-bud-lost','.burn-buds-meta']) assert.ok(css.includes(marker), `Missing Burn Buds battle feedback marker: ${marker}`);
+for (const feature of ['room-chat','active-game-recovery','burned-formation-animation','cannabis-leaf-fleet-markers','server-authoritative-turns','two-player-rematch-consent']) assert.ok(game.features.includes(feature), `Burn Buds feature contract missing: ${feature}`);
 
 assert.ok(index.includes('>Burn Buds</h1>'));
 assert.ok(index.includes('BUD BURNED!'));
 assert.ok(index.includes('./burn-buds-branding.js'));
 assert.ok(index.includes('./burn-buds.css'));
 assert.ok(index.includes('./combat-a11y-v1.js'));
+assert.ok(index.includes('./battle-feedback-v1.js'));
+assert.ok(index.includes('./placement-v1.js'));
+assert.ok(index.includes('./targeting-v1.js'));
 assert.ok(branding.includes("const PRODUCT='Burn Buds'"));
 assert.ok(combatA11y.includes("setAttribute('aria-live','polite')"));
-assert.ok(serviceWorker.includes('ptp-shell-v3-burn-buds-a11y-20260828'));
-assert.ok(serviceWorker.includes('./combat-a11y-v1.js'));
+assert.ok(serviceWorker.includes('ptp-shell-v5-burn-buds-battle-feedback-20260904'));
+for (const asset of ['./combat-a11y-v1.js','./battle-feedback-v1.js','./battle-feedback-v1.css','./placement-v1.js','./placement-v1.css','./targeting-v1.js','./targeting-v1.css']) assert.ok(serviceWorker.includes(asset), `Service worker must cache ${asset}`);
 
 console.log('Burn Buds native branding, migration, cache, accessibility, and multiplayer contract checks passed.');

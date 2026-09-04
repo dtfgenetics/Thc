@@ -1,0 +1,59 @@
+name: Repository Convergence CI
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'scripts/studio/**'
+      - 'scripts/studio.mjs'
+      - 'scripts/test-dtf-parallel-studio.mjs'
+      - 'scripts/test-repository-convergence.mjs'
+      - 'scripts/normalize-wordpress-premium-page-titles.mjs'
+      - '.github/workflows/branch-lifecycle-maintenance.yml'
+      - '.github/workflows/main-pr-gate-audit.yml'
+      - '.github/workflows/repository-convergence-ci.yml'
+      - '.github/workflows/high-land-ci.yml'
+      - '.github/workflows/high-land-web.yml'
+      - '.github/workflows/datadog-synthetics.yml'
+      - '.github/workflows/wordpress-canonical-watch.yml'
+      - '.github/workflows/wordpress-canonical-deploy.yml'
+      - '.github/workflows/wordpress-canonical-production.yml'
+      - '.github/workflows/wordpress-premium-title-normalization.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/studio/**'
+      - 'scripts/studio.mjs'
+      - 'scripts/test-dtf-parallel-studio.mjs'
+      - 'scripts/test-repository-convergence.mjs'
+      - 'scripts/normalize-wordpress-premium-page-titles.mjs'
+      - '.github/workflows/branch-lifecycle-maintenance.yml'
+      - '.github/workflows/main-pr-gate-audit.yml'
+      - '.github/workflows/repository-convergence-ci.yml'
+      - '.github/workflows/high-land-ci.yml'
+      - '.github/workflows/high-land-web.yml'
+      - '.github/workflows/datadog-synthetics.yml'
+      - '.github/workflows/wordpress-canonical-watch.yml'
+      - '.github/workflows/wordpress-canonical-deploy.yml'
+      - '.github/workflows/wordpress-canonical-production.yml'
+      - '.github/workflows/wordpress-premium-title-normalization.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate repository convergence controls
+        run: |
+          set -euo pipefail
+          node scripts/test-dtf-parallel-studio.mjs
+          node scripts/test-repository-convergence.mjs
+          node --check scripts/studio/lifecycle.mjs
+          node --check scripts/normalize-wordpress-premium-page-titles.mjs

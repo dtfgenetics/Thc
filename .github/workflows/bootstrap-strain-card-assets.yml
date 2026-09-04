@@ -9,8 +9,10 @@ on:
   workflow_dispatch:
 
 permissions:
+  actions: write
   contents: write
   issues: write
+  pull-requests: write
 
 concurrency:
   group: dtf-strain-card-asset-bootstrap
@@ -62,24 +64,40 @@ jobs:
           reconstruct blue-mango-f2-feminized-strain-card site/wordpress/assets/genetics/blue-mango-f2-feminized-strain-card.jpg 145734 98ae81732a01b44e96720fd0ad386144efa8710eebb1b32155b5dacacad7e421
           reconstruct blue-bubblegum-f1-regular-strain-card site/wordpress/assets/genetics/blue-bubblegum-f1-regular-strain-card.jpg 146868 7ea5edaae9830e4f93a540458dc8402e0f1909f360be9b2d10dc3c818f90426e
 
-      - name: Commit permanent binary assets and remove staging chunks
-        id: commit
+      - name: Safely integrate permanent binary assets and retire staging chunks
+        id: integrate
         if: steps.staged.outputs.present == 'true'
         shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git rm -r .tmp/strain-card-b64
-          git add site/wordpress/assets/genetics/*.jpg
-          if git diff --cached --quiet; then
+          rm -rf .tmp/strain-card-b64
+
+          changed=()
+          while IFS= read -r -d '' path; do
+            changed+=("$path")
+          done < <(
+            git diff --name-only -z -- \
+              site/wordpress/assets/genetics \
+              .tmp/strain-card-b64
+            git ls-files --others --exclude-standard -z -- \
+              site/wordpress/assets/genetics \
+              .tmp/strain-card-b64
+          )
+
+          if [[ "${#changed[@]}" -eq 0 ]]; then
             echo 'changed=false' >> "$GITHUB_OUTPUT"
+            echo 'Exact strain card assets are already canonical.'
             exit 0
           fi
-          git commit -m 'Materialize exact strain card web assets'
-          git push origin HEAD:main
+
+          printf 'Strain card bootstrap generated paths:\n'
+          printf ' - %s\n' "${changed[@]}"
+          node scripts/studio/integrate-generated-change.mjs \
+            --message='Materialize exact strain card web assets' \
+            "${changed[@]}"
           echo 'changed=true' >> "$GITHUB_OUTPUT"
-          echo "commit_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
       - name: Report asset bootstrap
         if: always()
@@ -88,8 +106,7 @@ jobs:
         env:
           STATUS: ${{ job.status }}
           STAGED: ${{ steps.staged.outputs.present }}
-          CHANGED: ${{ steps.commit.outputs.changed }}
-          COMMIT_SHA: ${{ steps.commit.outputs.commit_sha }}
+          CHANGED: ${{ steps.integrate.outputs.changed }}
         with:
           script: |
             await github.rest.issues.createComment({
@@ -102,9 +119,8 @@ jobs:
                 `Bootstrap run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
                 `Result: **${process.env.STATUS}**`,
                 `Staged chunks present: **${process.env.STAGED || 'false'}**`,
-                `Permanent binary asset commit created: **${process.env.CHANGED || 'false'}**`,
-                process.env.COMMIT_SHA ? `Asset commit: \`${process.env.COMMIT_SHA}\`` : '',
+                `Permanent binary asset integration created: **${process.env.CHANGED || 'false'}**`,
                 '',
                 'Assets: Blue Mango F2 Regular, Blue Mango F2 Feminized, and Blue Bubblegum F1 Regular. These are web-optimized derivatives of the exact previously-created strain cards; full-resolution controlled masters remain in Drive.'
-              ].filter(Boolean).join('\n')
+              ].join('\n')
             });

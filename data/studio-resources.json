@@ -59,14 +59,14 @@
     {
       "id": "content.education",
       "kind": "content-system",
-      "prefixes": ["content/", "configuration/", "assets/education/", "site/public-route-patch/learn/", "site/wordpress/education/"],
+      "prefixes": ["content/", "configuration/", "assets/education/", "site/public-route-patch/learn/", "site/wordpress/education/", "site/wordpress/assets/infographics/", "staging/harvest-asset-upload/", "ops/asset-bridge/lighting/"],
       "exactPaths": [],
       "productionTargets": ["route:/learn/"]
     },
     {
       "id": "content.genetics",
       "kind": "content-system",
-      "prefixes": ["data/genetics/", "site/wordpress/genetics/"],
+      "prefixes": ["data/genetics/", "site/wordpress/genetics/", "site/wordpress/assets/genetics/", ".tmp/strain-card-b64/"],
       "exactPaths": ["site/wordpress/pages/seeds.html", "site/design-system/dtf-genetics-owner-v1.css"],
       "productionTargets": ["route:/seeds/"]
     },

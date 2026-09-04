@@ -10,6 +10,7 @@ on:
         type: choice
         options:
           - full
+          - auto
           - publicSuite
           - wordpress
           - education
@@ -48,11 +49,12 @@ jobs:
         id: plan
         env:
           RELEASE_MODE: ${{ github.event_name == 'workflow_dispatch' && inputs.mode || 'auto' }}
-          RELEASE_BASE: ${{ github.event_name == 'push' && github.event.before || '' }}
+          RELEASE_BASE: ''
+          RELEASE_FALLBACK_BASE: ${{ github.event_name == 'push' && github.event.before || '' }}
         shell: bash
         run: |
           set -euo pipefail
-          node scripts/plan-dtfseeds-release.mjs --mode="$RELEASE_MODE" --base="$RELEASE_BASE" --head="$GITHUB_SHA"
+          node scripts/plan-dtfseeds-release.mjs --mode="$RELEASE_MODE" --base="$RELEASE_BASE" --fallback-base="$RELEASE_FALLBACK_BASE" --head="$GITHUB_SHA"
 
       - name: Record release plan
         env:
@@ -64,10 +66,11 @@ jobs:
             echo
             echo '- Source: `${{ github.sha }}`'
             echo '- Event: `${{ github.event_name }}`'
+            echo '- Requested mode: `${{ github.event_name == 'workflow_dispatch' && inputs.mode || 'auto' }}`'
             echo '- Public Suite: `${{ steps.plan.outputs.public_suite }}`'
             echo '- WordPress: `${{ steps.plan.outputs.wordpress }}`'
             echo '- Education: `${{ steps.plan.outputs.education }}`'
-            echo '- Automatic pushes include every production-owned change since the last successful `dtfseeds-production` checkpoint.'
+            echo '- Automatic releases include every production-owned change since the last successful `dtfseeds-production` checkpoint.'
             echo
             echo '```json'
             printf '%s\n' "$RELEASE_PLAN"
@@ -85,6 +88,7 @@ jobs:
       GH_TOKEN: ${{ github.token }}
       EXPECTED_SOURCE_SHA: ${{ github.sha }}
       NORMAL_PUSH: ${{ github.event_name == 'push' }}
+      AUTO_RELEASE: ${{ github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.mode == 'auto') }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -97,7 +101,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if [[ "${GITHUB_EVENT_NAME}" != "push" ]]; then
+          if [[ "$AUTO_RELEASE" != 'true' ]]; then
             echo 'current=true' >> "$GITHUB_OUTPUT"
             exit 0
           fi
@@ -107,7 +111,7 @@ jobs:
             echo 'current=true' >> "$GITHUB_OUTPUT"
           else
             echo 'current=false' >> "$GITHUB_OUTPUT"
-            echo "Skipping superseded release $GITHUB_SHA; latest main is $latest. The newer gateway run owns deployment and will plan from the last successful production checkpoint."
+            echo "Skipping superseded automatic release $GITHUB_SHA; latest main is $latest. A newer gateway run owns deployment and will plan cumulatively from the last successful production checkpoint."
           fi
 
       - name: Stage canonical WordPress lane
@@ -190,8 +194,8 @@ jobs:
             fi
             rm -f "$body"
           }
-          check '/' 'Genetics first. Cultivation science behind it.'
-          check '/learn/' 'Learn the plant as a connected system.'
+          check '/' 'data-dtf-layout="home-v3"'
+          check '/learn/' 'data-dtf-layout="learn-v3"'
           check '/community/' 'Join the official DTF / Teaching Healthy Cultivation Discord'
 
       - name: Verify education production surfaces independently
@@ -250,6 +254,7 @@ jobs:
             echo '## DTFSeeds production gateway'
             echo
             echo "- Gateway revision: $GITHUB_SHA"
+            echo "- Automatic cumulative release: $AUTO_RELEASE"
             echo "- Superseded: ${{ steps.freshness.outputs.current != 'true' }}"
             echo "- Planned WordPress lane: ${{ needs.plan.outputs.wordpress }}"
             echo "- WordPress stage/production/verify: ${{ steps.wp_stage.outcome }}/${{ steps.wp_production.outcome }}/${{ steps.wp_verify.outcome }}"
@@ -330,7 +335,7 @@ jobs:
         if: >-
           steps.freshness.outputs.current == 'true' &&
           steps.enforce.outcome == 'success' &&
-          (github.event_name == 'push' || inputs.mode == 'full')
+          (github.event_name == 'push' || inputs.mode == 'full' || inputs.mode == 'auto')
         uses: actions/github-script@v7
         env:
           CHECKPOINT_TAG: dtfseeds-production
