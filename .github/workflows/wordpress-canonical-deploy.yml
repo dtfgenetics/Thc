@@ -13,7 +13,14 @@ on:
       - data/dtf-visual-v1.json
       - data/genetics/**
       - site/public-route-patch/learn/infographics/**
+      - scripts/apply-wordpress-public-content-rest.mjs
       - scripts/apply-wordpress-public-content-owned-routes.mjs
+      - scripts/deploy-wordpress-infographic-library-rest.mjs
+      - scripts/audit-wordpress-commerce-rest.mjs
+      - scripts/validate-genetics-commerce.mjs
+      - scripts/reconcile-woocommerce-products.mjs
+      - scripts/rollback-woocommerce-products.mjs
+      - scripts/validate-woocommerce-reconciliation.mjs
       - scripts/rebuild-wordpress-visual-site.mjs
       - scripts/rebuild-wordpress-commerce-visuals.mjs
       - scripts/style-wordpress-woocommerce-archive.mjs
@@ -23,10 +30,6 @@ on:
       - .github/workflows/wordpress-canonical-production.yml
       - .github/workflows/wordpress-infographic-production.yml
       - .github/workflows/wordpress-canonical-deploy.yml
-  workflow_run:
-    workflows:
-      - Reconcile DTFSeeds WordPress Canonical Pages
-    types: [completed]
 
 permissions:
   contents: read
@@ -50,9 +53,6 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if [[ "${{ github.event_name }}" == "workflow_run" ]]; then
-            [[ "${{ github.event.workflow_run.conclusion }}" == "success" ]]
-          fi
           test -s scripts/apply-wordpress-public-content-rest.mjs
           test -s scripts/apply-wordpress-public-content-owned-routes.mjs
           test -s scripts/deploy-wordpress-infographic-library-rest.mjs
@@ -96,11 +96,9 @@ jobs:
           OBSERVE_STATUS: ${{ job.status }}
         with:
           script: |
-            const sourceRun = context.eventName === 'workflow_run'
-              ? context.payload.workflow_run?.html_url
-              : context.eventName === 'push'
-                ? `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/commit/${context.sha}`
-                : 'manual dispatch';
+            const sourceRun = context.eventName === 'push'
+              ? `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/commit/${context.sha}`
+              : 'manual dispatch';
             const body = [
               '## WordPress visual production handoff', '',
               `Handoff run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,

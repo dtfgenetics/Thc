@@ -128,7 +128,7 @@ Apply to:
 ```txt
 apps/high-land-web/playwright.config.ts
 apps/high-land-web/e2e/high-land.spec.ts
-.github/workflows/high-land-web.yml
+.github/workflows/high-land-ci.yml
 ```
 
 ## Dice polish reference, optional later

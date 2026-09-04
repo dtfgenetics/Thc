@@ -17,9 +17,10 @@ const sleep=(ms)=>new Promise(r=>setTimeout(r,ms));
 
 // V3 owns Home/Learn and V4 owns Genetics/Shop. Keep this small normalizer
 // deliberately limited to editorial pages that are not owned by those visual
-// layers so production polishers do not fight each other.
+// layers so production polishers do not fight each other. Markers must match
+// the current canonical page source, not an older production revision.
 const targets=[
-  {slug:'community',markers:['Grow together. Learn together. Build together.']},
+  {slug:'community',markers:['Stronger together.','Join the official DTF / Teaching Healthy Cultivation Discord']},
   {slug:'gallery',markers:['DTF Visual Library','See the plant science, genetics, tools, games, and community work.']}
 ];
 

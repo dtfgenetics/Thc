@@ -18,7 +18,7 @@ and check the relevant provider before changing a status.
 | Public DTF site | Reachable | `https://dtfseeds.com/` |
 | WordPress MCP server | Reachable, authentication required | `/wp-json/mcp/mcp-adapter-default-server` returns an authentication boundary |
 | Multiplayer backend | Connected and live | Hostinger PHP Website Room API under `/games/high-land/api/` |
-| GitHub CI definitions | Present | `.github/workflows/high-land-ci.yml` and `high-land-web.yml` |
+| GitHub CI definition | Present | `.github/workflows/high-land-ci.yml` is the single comprehensive High Land unit/build/browser/PHP-lint workflow and is path-scoped to High Land-owned inputs |
 
 ## Prepared but not yet authorized
 
