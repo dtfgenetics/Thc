@@ -3,17 +3,59 @@
   "project": "High IQ — Test Higher Cognition",
   "datasetVersion": "2.4",
   "recordVersions": ["2.2", "2.3", "2.4"],
-  "sourceWorkbook": {"name":"High_IQ_Master_Production_Workbook_v2_2.xlsx","driveId":"1fERIAH253LT__Jy8AWzjfZTOhhckWLOH","role":"approved human production workbook and migration provenance for HIQ-S1-001 through HIQ-S1-080"},
-  "expansion": {"version":"2.4","range":"HIQ-S1-081 through HIQ-S1-200","role":"source-backed production expansion using the existing verified source registry, with v2.4 balancing underrepresented categories","reviewedOn":"2026-09-04"},
+  "sourceWorkbook": {
+    "name": "High_IQ_Master_Production_Workbook_v2_2.xlsx",
+    "driveId": "1fERIAH253LT__Jy8AWzjfZTOhhckWLOH",
+    "role": "approved human production workbook and migration provenance for HIQ-S1-001 through HIQ-S1-080"
+  },
+  "expansion": {
+    "version": "2.4",
+    "range": "HIQ-S1-081 through HIQ-S1-200",
+    "role": "source-backed production expansion using the existing verified source registry, with v2.4 balancing underrepresented categories",
+    "reviewedOn": "2026-09-04"
+  },
   "questionCount": 200,
   "sourceCount": 50,
-  "questionChunks": ["questions-001-010.v2.2.json","questions-011-020.v2.2.json","questions-021-030.v2.2.json","questions-031-040.v2.2.json","questions-041-050.v2.2.json","questions-051-060.v2.2.json","questions-061-070.v2.2.json","questions-071-080.v2.2.json","questions-081-090.v2.3.json","questions-091-110.v2.3.json","questions-111-135.v2.3.json","questions-136-160.v2.3.json","questions-161-200.v2.4.json"],
-  "sourceChunks": ["sources-001-025.v2.2.json","sources-026-050.v2.2.json"],
+  "questionChunks": [
+    "questions-001-010.v2.2.json",
+    "questions-011-020.v2.2.json",
+    "questions-021-030.v2.2.json",
+    "questions-031-040.v2.2.json",
+    "questions-041-050.v2.2.json",
+    "questions-051-060.v2.2.json",
+    "questions-061-070.v2.2.json",
+    "questions-071-080.v2.2.json",
+    "questions-081-090.v2.3.json",
+    "questions-091-110.v2.3.json",
+    "questions-111-135.v2.3.json",
+    "questions-136-160.v2.3.json",
+    "questions-161-200.v2.4.json"
+  ],
+  "sourceChunks": [
+    "sources-001-025.v2.2.json",
+    "sources-026-050.v2.2.json"
+  ],
   "requiredStatus": "Approved",
   "requiredAudit": "PASS",
-  "allowedDifficulties": ["Easy","Medium","Hard","Expert"],
-  "difficultyCounts": {"Easy":26,"Medium":58,"Hard":74,"Expert":42},
-  "categoryCounts": {"Nutrition & pH":28,"Environment & Climate":24,"Root Zone & Irrigation":24,"Plant Biology":20,"Diagnostics":20,"Photobiology":20,"Plant Physiology":20,"Integrated Pest Management":16,"Genetics & Breeding":16,"Harvest & Postharvest":12},
+  "allowedDifficulties": ["Easy", "Medium", "Hard", "Expert"],
+  "difficultyCounts": {
+    "Easy": 26,
+    "Medium": 58,
+    "Hard": 74,
+    "Expert": 42
+  },
+  "categoryCounts": {
+    "Nutrition & pH": 28,
+    "Environment & Climate": 24,
+    "Root Zone & Irrigation": 24,
+    "Plant Biology": 20,
+    "Diagnostics": 20,
+    "Photobiology": 20,
+    "Plant Physiology": 20,
+    "Integrated Pest Management": 16,
+    "Genetics & Breeding": 16,
+    "Harvest & Postharvest": 12
+  },
   "migrationChecked": "2026-08-18",
   "expansionChecked": "2026-09-04",
   "notes": "Questions 001-080 retain workbook v2.2 provenance. Questions 081-160 are the source-backed v2.3 expansion. Questions 161-200 are the v2.4 quality-balancing expansion, adding four source-backed questions to every category while preserving machine-validated mappings, distributions, source references, status, and audit fields."
