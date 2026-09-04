@@ -10,8 +10,10 @@ on:
       - 'site/wordpress/assets/infographics/genetics-import-trigger.txt'
 
 permissions:
+  actions: write
   contents: write
   issues: write
+  pull-requests: write
 
 concurrency:
   group: dtf-genetics-breeding-infographic-bootstrap
@@ -93,23 +95,34 @@ jobs:
           echo "report=$report" >> "$GITHUB_OUTPUT"
           cat "$report"
 
-      - name: Commit durable reviewed genetics assets
-        id: commit
+      - name: Safely integrate durable reviewed genetics assets
+        id: integrate
         shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add site/wordpress/assets/infographics/genetics/*.png
-          if git diff --cached --quiet; then
+          target_dir='site/wordpress/assets/infographics/genetics'
+          changed=()
+          while IFS= read -r -d '' path; do
+            changed+=("$path")
+          done < <(
+            git diff --name-only -z -- "$target_dir"
+            git ls-files --others --exclude-standard -z -- "$target_dir"
+          )
+
+          if [[ "${#changed[@]}" -eq 0 ]]; then
+            echo 'No genetics infographic asset changes to integrate.'
             echo 'changed=false' >> "$GITHUB_OUTPUT"
-            echo "commit_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          git commit -m 'Materialize reviewed genetics breeding infographics'
-          git push origin HEAD:main
+
+          printf 'Genetics bootstrap generated paths:\n'
+          printf ' - %s\n' "${changed[@]}"
+          node scripts/studio/integrate-generated-change.mjs \
+            --message='Materialize reviewed genetics breeding infographics' \
+            "${changed[@]}"
           echo 'changed=true' >> "$GITHUB_OUTPUT"
-          echo "commit_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
       - name: Upload bootstrap evidence
         if: always()
@@ -120,14 +133,33 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
-      - name: Report genetics asset bootstrap
+      - name: Write authoritative bootstrap summary
         if: always()
+        shell: bash
+        env:
+          STATUS: ${{ job.status }}
+          COUNT: ${{ steps.assets.outputs.count }}
+          CHANGED: ${{ steps.integrate.outputs.changed }}
+        run: |
+          {
+            echo '## Genetics & Breeding infographic asset bootstrap'
+            echo
+            echo "Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+            echo "Result before advisory reporting: **${STATUS:-unknown}**"
+            echo "Validated reviewed assets: **${COUNT:-0} / 14**"
+            echo "Safe repository integration requested: **${CHANGED:-false}**"
+            echo
+            echo 'The Actions summary plus bootstrap artifact is authoritative. Issue comments are advisory only.'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Best-effort legacy issue report
+        if: always()
+        continue-on-error: true
         uses: actions/github-script@v7
         env:
           STATUS: ${{ job.status }}
           COUNT: ${{ steps.assets.outputs.count }}
-          CHANGED: ${{ steps.commit.outputs.changed }}
-          COMMIT_SHA: ${{ steps.commit.outputs.commit_sha }}
+          CHANGED: ${{ steps.integrate.outputs.changed }}
         with:
           script: |
             const body = [
@@ -135,10 +167,13 @@ jobs:
               `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
               `Result: **${process.env.STATUS}**`,
               `Validated reviewed assets: **${process.env.COUNT || '0'} / 14**`,
-              `Repository asset commit created: **${process.env.CHANGED || 'false'}**`,
-              process.env.COMMIT_SHA ? `Asset commit: \`${process.env.COMMIT_SHA}\`` : '', '',
+              `Safe repository integration requested: **${process.env.CHANGED || 'false'}**`, '',
               'Every source was required to resolve as a real image, exceed the minimum size/dimension gates, and was normalized to a true PNG before entering the canonical infographic publication boundary.'
-            ].filter(Boolean).join('\n');
+            ].join('\n');
             for (const issue_number of [46,136]) {
-              await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number,body});
+              try {
+                await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number,body});
+              } catch (error) {
+                core.warning(`Legacy genetics bootstrap report skipped for issue #${issue_number}: ${error.message}`);
+              }
             }
