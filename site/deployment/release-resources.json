@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "site": "https://dtfseeds.com",
-  "description": "Independent DTFSeeds release resources. Resource builds are isolated; production serialization is scoped to the resource and any explicitly shared publisher mechanism.",
+  "description": "Independent DTFSeeds release resources. Resource builds are isolated; production serialization is scoped to the resource and any explicitly shared publisher mechanism. The central production gateway coordinates affected resource publishers using per-resource checkpoints.",
   "globalBuildPaths": [
     "site/deployment/release-resources.json",
     "scripts/plan-dtfseeds-resource-release.mjs",
@@ -32,7 +32,8 @@
       "publisher": {
         "type": "hostinger-ssh",
         "workflow": "deploy-dtfseeds-public-resource.yml",
-        "status": "pilot-manual",
+        "status": "gateway-managed",
+        "coordinator": "dtfseeds-production-gateway.yml",
         "remotePathVariable": "HOSTINGER_HIGH_LAND_PATH"
       }
     },
@@ -58,7 +59,8 @@
       "publisher": {
         "type": "wordpress-transactional-resource",
         "workflow": "deploy-dtfseeds-wordpress-resource.yml",
-        "status": "pilot-manual",
+        "status": "gateway-managed",
+        "coordinator": "dtfseeds-production-gateway.yml",
         "sharedProductionTarget": "wordpress:temporary-code-snippets-bridge"
       }
     }
