@@ -124,8 +124,21 @@ function startTurn(state, actor) { const side = state[actor]; side.maxFocus = Ma
 export function endTurn(state, actor) {
   if (state.winner) return { ok: false, reason: "Game is over." }; if (state.turn !== actor) return { ok: false, reason: "Not this side's turn." };
   const side = state[actor]; const healed = recoverPurple(side); if (healed) pushLog(state, `${healed} recovers 2 Vigor under Purple's Night Recovery.`);
-  if (actor === "player") { state.turn = "cpu"; startTurn(state, "cpu"); } else { state.round += 1; state.turn = "player"; startTurn(state, "player"); }
-  resolveWinner(state); if (!state.winner && state.round > 18) resolveTiebreak(state); return { ok: true };
+  if (actor === "player") {
+    state.turn = "cpu";
+    startTurn(state, "cpu");
+  } else {
+    resolveWinner(state);
+    if (!state.winner && state.round >= 18) {
+      resolveTiebreak(state);
+      return { ok: true };
+    }
+    state.round += 1;
+    state.turn = "player";
+    startTurn(state, "player");
+  }
+  resolveWinner(state);
+  return { ok: true };
 }
 
 function boardScore(side) { return side.garden + side.lanes.reduce((sum, unit) => sum + (unit ? unit.currentVigor + unit.power : 0), 0); }
