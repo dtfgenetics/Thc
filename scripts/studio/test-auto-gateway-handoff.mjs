@@ -20,6 +20,9 @@ function forbidText(name, text, needle) {
 
 requireText('production gateway', gateway, '          - auto\n');
 requireText('production gateway', gateway, "AUTO_RELEASE: ${{ github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.mode == 'auto') }}");
+requireText('production gateway', gateway, "RELEASE_BASE: ''");
+requireText('production gateway', gateway, "RELEASE_FALLBACK_BASE: ${{ github.event_name == 'push' && github.event.before || '' }}");
+requireText('production gateway', gateway, '--fallback-base="$RELEASE_FALLBACK_BASE"');
 requireText('production gateway', gateway, 'if [[ "$AUTO_RELEASE" != \'true\' ]]; then');
 requireText('production gateway', gateway, "inputs.mode == 'auto'");
 requireText('production gateway', gateway, 'plan cumulatively from the last successful production checkpoint');
@@ -30,8 +33,9 @@ requireText('generated integrator', integrator, "'-f', 'mode=auto'");
 requireText('generated integrator', integrator, "args['dispatch-production'] !== 'false'");
 requireText('generated integrator', integrator, 'sourceIntegrated: true');
 
-requireText('release planner', planner, "if (mode !== 'auto' || !config.productionCheckpointTag) return null;");
-requireText('release planner', planner, "const base = checkpoint?.sha || requestedBase;");
+requireText('release planner', planner, "const fallbackBase = args['fallback-base'] || process.env.RELEASE_FALLBACK_BASE || '';");
+requireText('release planner', planner, "if (mode !== 'auto' || requestedBase || !config.productionCheckpointTag) return null;");
+requireText('release planner', planner, "const base = requestedBase || checkpoint?.sha || fallbackBase;");
 requireText('release planner', planner, "const deploy = Object.values(lanes).some(Boolean);");
 
 console.log('automatic cumulative production handoff contract: PASS');
