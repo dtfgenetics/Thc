@@ -28,4 +28,15 @@ assert.throws(()=>createGame({cards,playerFamily:"fruit",cpuFamily:"gas",startin
 const state=createGame({cards,playerFamily:"fruit",cpuFamily:"gas",seed:42});assert.equal(state.player.hand.length,6);assert.equal(state.player.deck.length,6);assert.equal(state.cpu.hand.length,6);const baseIndex=state.player.hand.findIndex((c)=>c.stage===1);assert.ok(baseIndex>=0);assert.equal(legalPlay(state,"player",baseIndex,0).ok,true);assert.equal(playCard(state,"player",baseIndex,0).ok,true);assert.ok(state.player.lanes[0]);assert.equal(attack(state,"player",0).ok,true);assert.equal(endTurn(state,"player").ok,true);assert.equal(state.turn,"cpu");let steps=0;while(state.turn==="cpu"&&!state.winner&&steps<20){const action=chooseCpuAction(state);if(action.type==="play")playCard(state,"cpu",action.cardIndex,action.lane);else if(action.type==="attack")attack(state,"cpu",action.lane);else{endTurn(state,"cpu");break}steps++}assert.ok(steps<20);
 const skunkState=createGame({cards,playerFamily:"skunk",cpuFamily:"fruit",seed:44});const skunkBase=skunkState.player.hand.findIndex((c)=>c.stage===1);assert.equal(playCard(skunkState,"player",skunkBase,0).ok,true);assert.equal(skunkState.cpu.nextFocusPenalty,1);assert.equal(endTurn(skunkState,"player").ok,true);assert.equal(skunkState.cpu.focus,2);assert.equal(skunkState.cpu.nextFocusPenalty,0);
 const hazeState=createGame({cards,playerFamily:"haze",cpuFamily:"fruit",seed:45});const hazeBase=hazeState.player.hand.findIndex((c)=>c.stage===1);assert.equal(playCard(hazeState,"player",hazeBase,0).ok,true);assert.equal(attack(hazeState,"player",0).ok,true);assert.equal(hazeState.player.focus,1);
+
+const roundLimitState=createGame({cards,playerFamily:"kush",cpuFamily:"haze",seed:99});
+roundLimitState.round=18;
+roundLimitState.turn="cpu";
+roundLimitState.player.garden=20;
+roundLimitState.cpu.garden=20;
+assert.equal(endTurn(roundLimitState,"cpu").ok,true);
+assert.equal(roundLimitState.round,18,"round-limit tiebreak must resolve before a phantom round 19 starts");
+assert.ok(["player","cpu","draw"].includes(roundLimitState.winner));
+assert.equal(roundLimitState.reason,"18-round showdown limit");
+
 console.log("Strain Showdown engine tests passed.");
