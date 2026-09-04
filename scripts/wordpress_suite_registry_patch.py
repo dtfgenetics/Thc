@@ -2,14 +2,14 @@
 """Synchronize and harden the WordPress Public Suite bridge.
 
 The canonical bridge remains hash-pinned. This module is applied only after that
-base hash passes. It performs three narrow post-hash operations:
+base hash passes. It performs narrow post-hash operations:
 
 1. harden the upload/commit lease so the same untouched transaction can recover
    when Hostinger/WordPress temporarily loses visibility of its option-backed
    deployment lock between requests;
-2. derive only local, static, ready-to-package game routes from the canonical
-   public-app registry and widen the bridge with those exact directories; and
-3. allow one isolated Dtf420 staging namespace (`dtf-content-overlay`) that can
+2. derive exact local static game routes from the canonical public-app registry;
+3. derive exact external static game routes from reviewed release contracts; and
+4. allow one isolated Dtf420 staging namespace (`dtf-content-overlay`) that can
    never directly claim `/learn`, `/community`, `/games`, or the site root.
 
 No wildcard games/ or learn/ ownership is permitted, and lock recovery is
@@ -182,6 +182,40 @@ def registered_local_static_games(repo_root: pathlib.Path) -> list[str]:
     return sorted(targets)
 
 
+def registered_external_static_games(repo_root: pathlib.Path) -> list[str]:
+    contracts_dir = repo_root / "site" / "deployment" / "external-games"
+    if not contracts_dir.is_dir():
+        return []
+    targets: list[str] = []
+    for path in sorted(contracts_dir.glob("*.json")):
+        contract = json.loads(path.read_text())
+        if contract.get("status") not in {"release-candidate", "ready-to-package"}:
+            continue
+        route = str(contract.get("route") or "")
+        repository = str(contract.get("repository") or "")
+        artifact = str(contract.get("artifact") or "")
+        if not repository.startswith("dtfgenetics/") or not artifact:
+            raise SystemExit(f"invalid external game contract: {path.name}")
+        if not route.startswith("/games/") or not route.endswith("/"):
+            raise SystemExit(f"unsafe external game route: {route!r}")
+        target = route.strip("/")
+        if not SAFE_TARGET.fullmatch(target):
+            raise SystemExit(f"unsafe external game target: {target!r}")
+        targets.append(target)
+    if len(targets) != len(set(targets)):
+        raise SystemExit("duplicate external static game targets")
+    return targets
+
+
+def registered_static_games(repo_root: pathlib.Path) -> tuple[list[str], list[str], list[str]]:
+    local = registered_local_static_games(repo_root)
+    external = registered_external_static_games(repo_root)
+    overlap = sorted(set(local) & set(external))
+    if overlap:
+        raise SystemExit("game target registered as both local and external: " + ", ".join(overlap))
+    return local, external, sorted(local + external)
+
+
 def _array_values(payload: bytes, variable: bytes) -> set[str]:
     pattern = rb"\$" + re.escape(variable) + rb"\s*=\s*\[(.*?)\n\s*\];"
     match = re.search(pattern, payload, re.S)
@@ -193,7 +227,7 @@ def _array_values(payload: bytes, variable: bytes) -> set[str]:
 def patch_payload(payload: bytes, repo_root: pathlib.Path) -> bytes:
     payload = _apply_upload_lock_recovery(payload)
     payload = _apply_overlay_staging_scope(payload)
-    registry_targets = registered_local_static_games(repo_root)
+    _, _, registry_targets = registered_static_games(repo_root)
 
     existing_targets = _array_values(payload, b"targets")
     missing_targets = [target for target in registry_targets if target not in existing_targets]
@@ -251,7 +285,7 @@ def patch_payload(payload: bytes, repo_root: pathlib.Path) -> bytes:
 
 
 def validate_payload(payload: bytes, repo_root: pathlib.Path) -> dict[str, object]:
-    registry_targets = registered_local_static_games(repo_root)
+    local_targets, external_targets, registry_targets = registered_static_games(repo_root)
     targets = _array_values(payload, b"targets")
     required = _array_values(payload, b"required")
     prefixes = _array_values(payload, b"prefixes")
@@ -289,7 +323,8 @@ def validate_payload(payload: bytes, repo_root: pathlib.Path) -> dict[str, objec
         "ok": True,
         "lockRecovery": True,
         "dtf420OverlayStaging": True,
-        "registeredLocalStaticGames": registry_targets,
+        "registeredLocalStaticGames": local_targets,
+        "registeredExternalStaticGames": external_targets,
         "targets": len(targets),
         "required": len(required),
         "prefixes": len(prefixes),
