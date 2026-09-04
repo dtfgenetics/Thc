@@ -29,10 +29,11 @@ permissions:
 
 # WordPress resource routes remain independently identified, but this temporary
 # publisher mechanism shares the Code Snippets plugin lifecycle. Serialize only
-# that real shared mechanism; Hostinger/SSH resources such as High Land remain
-# fully independent of this queue.
+# that real shared mechanism across resource environments because they may use
+# the same WordPress installation. Hostinger/SSH resources such as High Land
+# remain fully independent of this queue.
 concurrency:
-  group: dtf-wordpress-resource-bridge-${{ inputs.environment }}
+  group: dtf-wordpress-temporary-code-snippets-bridge
   cancel-in-progress: false
 
 jobs:
@@ -44,7 +45,7 @@ jobs:
       GH_TOKEN: ${{ github.token }}
       RESOURCE_ID: ${{ inputs.resource }}
       SOURCE_SHA: ${{ inputs.source_sha }}
-      WP_SITE_URL: https://dtfseeds.com
+      WP_SITE_URL: ${{ vars.DTF_WORDPRESS_SITE_URL }}
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
     steps:
@@ -64,7 +65,7 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Validate exact source, resource identity, and checkpoint monotonicity
+      - name: Validate exact source, environment target, resource identity, and checkpoint monotonicity
         id: resource
         shell: bash
         run: |
@@ -77,6 +78,20 @@ jobs:
             echo "Refusing source that is not an ancestor of current main: $SOURCE_SHA" >&2
             exit 1
           }
+          if [[ -z "$WP_SITE_URL" ]]; then
+            if [[ '${{ inputs.environment }}' == 'production' ]]; then
+              WP_SITE_URL='https://dtfseeds.com'
+              echo 'WP_SITE_URL=https://dtfseeds.com' >> "$GITHUB_ENV"
+            else
+              echo 'Protected staging environment must define DTF_WORDPRESS_SITE_URL; refusing to fall back to production.' >&2
+              exit 1
+            fi
+          fi
+          [[ "$WP_SITE_URL" =~ ^https://[^[:space:]]+$ ]] || { echo 'DTF_WORDPRESS_SITE_URL must be an https URL' >&2; exit 2; }
+          if [[ '${{ inputs.environment }}' == 'staging' && "$WP_SITE_URL" == 'https://dtfseeds.com' ]]; then
+            echo 'Staging may not target the production dtfseeds.com URL.' >&2
+            exit 1
+          fi
           : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in the protected environment}"
           : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in the protected environment}"
           python - <<'PY' >> "$GITHUB_OUTPUT"
@@ -120,6 +135,7 @@ jobs:
           grep -Fq 'Build your High IQ run' "$RUNNER_TEMP/deploy-high-iq-resource-v2.mjs"
           ! grep -Fq "dtf_suite_deploy_lock" "$RUNNER_TEMP/deploy-high-iq-resource-v2.mjs"
           ! grep -Fq ".dtf-suite-manifest.json" "$RUNNER_TEMP/deploy-high-iq-resource-v2.mjs"
+          ! grep -Fq "wordPressOwnedRoutesExcluded" "$RUNNER_TEMP/deploy-high-iq-resource-v2.mjs"
           ! grep -Fq "'games/high-land','games/high-iq'" "$RUNNER_TEMP/deploy-high-iq-resource-v2.mjs"
           python - <<'PY'
           import os, pathlib, re
@@ -188,7 +204,7 @@ jobs:
           status="$(curl -4 -fsS --retry 6 --retry-all-errors --retry-delay 4 \
             --output "$body" --dump-header "$headers" --write-out '%{http_code}' \
             -H 'Cache-Control: no-cache, no-store, max-age=0' \
-            "https://dtfseeds.com${ROUTE}?dtf_resource=${GITHUB_RUN_ID}")"
+            "${WP_SITE_URL}${ROUTE}?dtf_resource=${GITHUB_RUN_ID}")"
           [[ "$status" == '200' ]] || { echo "Expected HTTP 200, got $status" >&2; cat "$headers" >&2; exit 1; }
           ! grep -Eiq '^location:' "$headers" || { echo 'Refusing redirected resource route' >&2; cat "$headers" >&2; exit 1; }
           grep -Fqi "$MARKER" "$body" || { echo "Expected marker '$MARKER' not found" >&2; exit 1; }
@@ -225,6 +241,7 @@ jobs:
             echo "- Resource: $RESOURCE_ID"
             echo "- Source: $SOURCE_SHA"
             echo "- Environment: ${{ inputs.environment }}"
+            echo "- Site: $WP_SITE_URL"
             echo "- Route target: $TARGET"
             echo "- Shared publisher target: $SHARED_TARGET"
             echo "- Route: $ROUTE"
