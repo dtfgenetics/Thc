@@ -12,6 +12,10 @@ function capture(command, args, options = {}) {
   }
 }
 
+function run(command, args, options = {}) {
+  return execFileSync(command, args, { stdio: 'ignore', ...options })
+}
+
 const repoRoot = capture('git', ['rev-parse', '--show-toplevel'])
 if (!repoRoot) {
   console.error('Run this command from inside the Thc repository or a linked worktree.')
@@ -22,6 +26,8 @@ if (!capture('gh', ['--version'], { cwd: repoRoot })) {
   process.exit(2)
 }
 
+// Refresh observation only. Do not merge/rebase current main into the working session.
+run('git', ['fetch', '--quiet', 'origin', 'main'], { cwd: repoRoot })
 const branch = capture('git', ['branch', '--show-current'], { cwd: repoRoot })
 const main = capture('git', ['rev-parse', '--verify', 'origin/main'], { cwd: repoRoot })
 const head = capture('git', ['rev-parse', 'HEAD'], { cwd: repoRoot })
@@ -72,6 +78,7 @@ console.log(JSON.stringify({
   ok: true,
   branch,
   head,
+  observedMain: main,
   current,
   summary: { red, yellow, serialized, inspectedOpenPrs: prs.length },
   overlaps: results,
