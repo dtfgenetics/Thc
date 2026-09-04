@@ -1,5 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
+import { spawnSync } from 'node:child_process';
 
 const root = resolve(process.cwd());
 const canonicalDir = resolve(root, 'games/high-iq/data');
@@ -20,6 +21,14 @@ function stable(value) {
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);
+}
+
+function synchronizeRuntimeShell() {
+  const result = spawnSync(process.execPath, [resolve(root, 'games/high-iq/scripts/sync-runtime-shell.mjs')], {
+    cwd: root,
+    stdio: 'inherit'
+  });
+  assert(result.status === 0, 'High IQ runtime shell synchronization failed before public-runtime validation.');
 }
 
 async function assertNonEmpty(path) {
@@ -95,6 +104,8 @@ for (const question of questions) {
 assert(JSON.stringify(stable(categoryCounts)) === JSON.stringify(stable(canonicalManifest.categoryCounts)), 'Public category distribution does not match manifest.');
 assert(JSON.stringify(stable(difficultyCounts)) === JSON.stringify(stable(canonicalManifest.difficultyCounts)), 'Public difficulty distribution does not match manifest.');
 
+synchronizeRuntimeShell();
+
 const indexHtml = await assertNonEmpty(resolve(runtimeDir, 'index.html'));
 const appJs = await assertNonEmpty(resolve(runtimeDir, 'app-v3.js'));
 await assertNonEmpty(resolve(runtimeDir, 'game-core.mjs'));
@@ -105,7 +116,7 @@ await assertNonEmpty(resolve(runtimeDir, 'high-iq-v3-3.css'));
 assert(indexHtml.includes('Build your High IQ run'), 'Public High IQ HTML is missing the challenge console marker.');
 assert(indexHtml.includes('https://dtfseeds.com/games/high-iq/'), 'Public High IQ HTML is missing its canonical production URL.');
 assert(indexHtml.includes('high-iq-v3-3.css'), 'Public High IQ HTML is missing the v3.3 gameplay-first stylesheet.');
-assert(indexHtml.includes(`>${canonicalManifest.questionCount}<\/strong>`) || indexHtml.includes(`>${canonicalManifest.questionCount}</strong>`), 'Public High IQ HTML is missing the manifest-backed question count.');
+assert(indexHtml.includes(`>${canonicalManifest.questionCount}</strong>`), 'Public High IQ HTML is missing the manifest-backed question count.');
 assert(appJs.includes('/games/high-iq/data'), 'Public High IQ v3 loader is missing the canonical data route.');
 assert(appJs.includes('non-JSON content'), 'Public High IQ v3 loader is missing the non-JSON response guard.');
 
