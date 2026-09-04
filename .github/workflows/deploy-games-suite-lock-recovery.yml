@@ -4,18 +4,29 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
+      - site/deployment/release-resources.json
+      - scripts/public_suite_resource_ownership.py
+      - scripts/assemble-wordpress-suite-v2.py
+      - scripts/assemble-wordpress-suite-resource-aware.py
+      - scripts/package-public-suite-wordpress.py
+      - scripts/package-public-suite-wordpress-resource-aware.py
       - scripts/harden-wordpress-suite-lock.py
       - .github/workflows/deploy-games-suite-lock-recovery.yml
   push:
     branches: [main]
     paths:
+      - site/deployment/release-resources.json
+      - scripts/public_suite_resource_ownership.py
+      - scripts/assemble-wordpress-suite-v2.py
+      - scripts/assemble-wordpress-suite-resource-aware.py
+      - scripts/package-public-suite-wordpress.py
+      - scripts/package-public-suite-wordpress-resource-aware.py
       - scripts/harden-wordpress-suite-lock.py
       - .github/workflows/deploy-games-suite-lock-recovery.yml
 
 permissions:
   actions: write
   contents: read
-  issues: write
 
 concurrency:
   group: deploy-dtfseeds-public-suite-wordpress-v2
@@ -32,17 +43,29 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Assemble and validate hardened WordPress publisher
+      - name: Assemble and validate resource-aware hardened WordPress publisher
         shell: bash
         run: |
           set -euo pipefail
-          python -m py_compile scripts/assemble-wordpress-suite-v2.py scripts/harden-wordpress-suite-lock.py scripts/package-public-suite-wordpress.py
-          python scripts/assemble-wordpress-suite-v2.py "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          python -m py_compile \
+            scripts/public_suite_resource_ownership.py \
+            scripts/assemble-wordpress-suite-v2.py \
+            scripts/assemble-wordpress-suite-resource-aware.py \
+            scripts/package-public-suite-wordpress.py \
+            scripts/package-public-suite-wordpress-resource-aware.py \
+            scripts/harden-wordpress-suite-lock.py
+          python scripts/assemble-wordpress-suite-resource-aware.py "$RUNNER_TEMP/deploy-public-suite-v2.mjs" | tee "$RUNNER_TEMP/resource-ownership-bridge.json"
           python scripts/harden-wordpress-suite-lock.py "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
           node --check "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
           grep -Fq '$lock_recovered = false;' "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
           grep -Fq 'Could not safely reacquire deployment lock.' "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
           grep -Fq "update_option(\$lock_key, ['id' => \$id, 'ts' => time()], false);" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          grep -Fq "'atlas/leaf-module/index.html'" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          ! grep -Fq "'games/high-land'" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          ! grep -Fq "'games/high-iq'" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          ! grep -Fq "'/games/high-land/'" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          ! grep -Fq "'/games/high-iq/'" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          grep -Fq 'resourceOwnedTargetsExcluded' "$RUNNER_TEMP/resource-ownership-bridge.json"
           python - <<'PY'
           import os, pathlib, re
           text=(pathlib.Path(os.environ['RUNNER_TEMP'])/'deploy-public-suite-v2.mjs').read_text()
@@ -79,7 +102,7 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Assemble hardened publisher
+      - name: Assemble resource-aware hardened publisher
         shell: bash
         run: |
           set -euo pipefail
@@ -87,9 +110,12 @@ jobs:
           : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
           node --check scripts/cleanup-stale-wordpress-suite-snippets.mjs
           node --check scripts/promote-public-game-routes-via-wordpress.mjs
-          python scripts/assemble-wordpress-suite-v2.py "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          python scripts/assemble-wordpress-suite-resource-aware.py "$RUNNER_TEMP/deploy-public-suite-v2.mjs" | tee "$RUNNER_TEMP/resource-ownership-bridge.json"
           python scripts/harden-wordpress-suite-lock.py "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
           node --check "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          grep -Fq "'atlas/leaf-module/index.html'" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          ! grep -Fq "'games/high-land'" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          ! grep -Fq "'games/high-iq'" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
 
       - name: Build current validated public suite
         id: build
@@ -128,7 +154,7 @@ jobs:
           grep -Fq '7,800 px course' "$suite_root/games/seed-man-platformer/index.html"
           echo "root=$suite_root" >> "$GITHUB_OUTPUT"
 
-      - name: Package complete app-owned production suite
+      - name: Package resource-aware app-owned production suite
         id: package
         shell: bash
         env:
@@ -136,8 +162,18 @@ jobs:
         run: |
           set -euo pipefail
           archive="$RUNNER_TEMP/dtf-public-suite-wordpress-v2.zip"
-          python scripts/package-public-suite-wordpress.py "$SUITE_ROOT" "$archive" | tee "$RUNNER_TEMP/package-summary.json"
+          python scripts/package-public-suite-wordpress-resource-aware.py "$SUITE_ROOT" "$archive" | tee "$RUNNER_TEMP/package-summary.json"
           test -s "$archive"
+          python - <<'PY'
+          import json, os, zipfile
+          archive=os.path.join(os.environ['RUNNER_TEMP'],'dtf-public-suite-wordpress-v2.zip')
+          with zipfile.ZipFile(archive) as z:
+              names=z.namelist()
+              assert not [n for n in names if n == 'games/high-land' or n.startswith('games/high-land/')]
+              assert not [n for n in names if n == 'games/high-iq' or n.startswith('games/high-iq/')]
+              manifest=json.loads(z.read('.dtf-suite-manifest.json'))
+              assert {'/games/high-land/','/games/high-iq/'}.issubset(set(manifest['resourceOwnedRoutesExcluded']))
+          PY
           echo "archive=$archive" >> "$GITHUB_OUTPUT"
 
       - name: Recover stale transactions and temporary bridges
@@ -147,7 +183,7 @@ jobs:
           node scripts/cleanup-stale-wordpress-suite-snippets.mjs | tee "$RUNNER_TEMP/stale-suite-bridge-cleanup.json"
           grep -Eq '"ok"[[:space:]]*:[[:space:]]*true' "$RUNNER_TEMP/stale-suite-bridge-cleanup.json"
 
-      - name: Publish complete current suite
+      - name: Publish resource-aware current suite
         shell: bash
         env:
           DTF_SUITE_ARCHIVE: ${{ steps.package.outputs.archive }}
@@ -162,18 +198,28 @@ jobs:
           set -euo pipefail
           node scripts/promote-public-game-routes-via-wordpress.mjs
 
-      - name: Verify every public game route without redirects
+      - name: Verify suite-owned public game routes without redirects
         shell: bash
         run: |
           set -euo pipefail
           node --input-type=module <<'NODE' > "$RUNNER_TEMP/public-game-routes.txt"
           import fs from 'node:fs';
           const nav = JSON.parse(fs.readFileSync('data/public-navigation.json', 'utf8'));
-          const games = nav.games.filter(game => game.public === true);
-          if (games.length !== 25) throw new Error(`Expected 25 public game routes, found ${games.length}.`);
-          for (const game of games) console.log(game.route);
+          const resources = JSON.parse(fs.readFileSync('site/deployment/release-resources.json', 'utf8'));
+          const publicGames = nav.games.filter((game) => game.public === true);
+          if (publicGames.length !== 25) throw new Error(`Expected 25 public game routes, found ${publicGames.length}.`);
+          const resourceOwned = new Set(Object.values(resources.resources || {})
+            .filter((resource) => resource.publicSuiteOwnership === 'resource')
+            .map((resource) => resource.route));
+          const suiteOwned = publicGames.filter((game) => !resourceOwned.has(game.route));
+          if (suiteOwned.length !== publicGames.length - resourceOwned.size) {
+            throw new Error(`Resource ownership mismatch: public=${publicGames.length} resourceOwned=${resourceOwned.size} suiteOwned=${suiteOwned.length}`);
+          }
+          for (const game of suiteOwned) console.log(game.route);
           NODE
 
+          suite_count="$(wc -l < "$RUNNER_TEMP/public-game-routes.txt" | tr -d ' ')"
+          test "$suite_count" -eq 23
           while IFS= read -r route; do
             echo "Checking $route"
             body="$(mktemp)"
@@ -215,11 +261,12 @@ jobs:
         shell: bash
         run: |
           {
-            echo '## Full Games Suite Deployment'
+            echo '## Resource-aware Games Suite Deployment'
             echo
             echo "- Main revision: $(git rev-parse HEAD)"
             echo "- Validated build run: ${{ steps.build.outputs.run_id }}"
             echo '- Hardened transaction lease recovery: enabled'
-            echo '- Canonical public game routes verified: 25/25'
+            echo '- Suite-owned public game routes verified: 23/23'
+            echo '- Resource-owned routes excluded from this writer: High Land and High IQ'
             echo '- Sprout Run expanded build markers verified live'
           } >> "$GITHUB_STEP_SUMMARY"
