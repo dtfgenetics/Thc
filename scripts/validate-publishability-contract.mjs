@@ -20,6 +20,9 @@ const publishableRoots = [
   'site/public-route-patch/growlens',
   'site/public-route-patch/thc-grow-doc',
   'site/public-route-patch/atlas',
+  'site/design-system',
+  'data/public-navigation.json',
+  'site/deployment/public-apps.json',
   'apps/growlens-web',
   'apps/high-land-web',
 ]
@@ -46,7 +49,6 @@ const legacyDirectMainWriters = new Set([
   '.github/workflows/wordpress-remote-infographic-intake.yml',
 ])
 
-// This workflow contains the forbidden command as a negative test string only.
 const directMainMentionOnly = new Set([
   '.github/workflows/wordpress-production-topology-ci.yml',
 ])
@@ -79,7 +81,10 @@ function releaseLanesFor(path) {
   return unique(lanes)
 }
 
-const publishableFiles = unique(publishableRoots.flatMap(walk))
+const publishableFiles = unique([
+  ...publishableRoots.flatMap(walk),
+  ...(releaseConfig.fullReleasePaths || []).filter((path) => existsSync(path)),
+])
 const classified = classifyPaths(resourceConfig, publishableFiles)
 const resourceByPath = new Map()
 for (const resource of classified.resources) {
@@ -115,6 +120,10 @@ const expectedOwners = new Map([
   ['site/wordpress/pages/learn.html', 'route:/learn/'],
   ['site/wordpress/pages/seeds.html', 'route:/seeds/'],
   ['site/wordpress/pages/shop.html', 'route:/shop/'],
+  ['site/public-route-patch/games/index.html', 'route:/games/'],
+  ['site/deployment/public-apps.json', 'route:/games/'],
+  ['data/public-navigation.json', 'shared:site-shell'],
+  ['site/deployment/release-lanes.json', 'shared:release-control'],
 ])
 const ownershipErrors = []
 for (const [path, expectedTarget] of expectedOwners) {
@@ -162,6 +171,12 @@ if (!educationSource.includes('GITHUB_STEP_SUMMARY') || !educationSource.include
 }
 if (!(releaseConfig.lanes?.education?.prefixes || []).includes('site/wordpress/education/')) {
   contractErrors.push('canonical site/wordpress/education source is not routed through the Education release lane')
+}
+for (const lane of ['publicSuite', 'wordpress']) {
+  const prefixes = releaseConfig.lanes?.[lane]?.prefixes || []
+  if (!prefixes.includes('site/design-system/') || !prefixes.includes('data/public-navigation.json')) {
+    contractErrors.push(`shared shell is not routed through ${lane}`)
+  }
 }
 
 const errors = [
