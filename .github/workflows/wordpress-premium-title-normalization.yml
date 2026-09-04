@@ -77,7 +77,7 @@ jobs:
             done
             [[ "$ok" -eq 1 ]] || { echo "Editorial title normalization not visible on $path" >&2; exit 1; }
           }
-          verify '/community/' 'Grow together. Learn together. Build together.'
+          verify '/community/' 'Stronger together.' 'Join the official DTF / Teaching Healthy Cultivation Discord'
           verify '/gallery/' 'DTF Visual Library' 'See the plant science, genetics, tools, games, and community work.'
           echo 'outcome=success' >> "$GITHUB_OUTPUT"
       - name: Upload page snapshots
