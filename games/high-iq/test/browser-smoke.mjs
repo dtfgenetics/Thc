@@ -26,6 +26,30 @@ async function waitForServer() {
   throw lastError || new Error('High IQ static test server did not start.');
 }
 
+async function assertGameplayGeometry(page, label) {
+  const geometry = await page.evaluate(() => {
+    const options = [...document.querySelectorAll('#answer-options .answer-option')];
+    const lock = document.querySelector('#lock-answer');
+    const scoreboard = document.querySelector('.quiz-scoreboard');
+    const controls = document.querySelector('.quiz-controls');
+    return {
+      optionHeights: options.map((node) => node.getBoundingClientRect().height),
+      lockHeight: lock?.getBoundingClientRect().height || 0,
+      scoreboardPosition: scoreboard ? getComputedStyle(scoreboard).position : '',
+      controlsPosition: controls ? getComputedStyle(controls).position : '',
+      overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth
+    };
+  });
+
+  assert.equal(geometry.optionHeights.length, 4, `${label}: expected four answer targets`);
+  assert.ok(geometry.optionHeights.every((height) => height >= 44), `${label}: answer target below 44px: ${geometry.optionHeights.join(', ')}`);
+  assert.ok(geometry.lockHeight >= 44, `${label}: lock-answer target below 44px: ${geometry.lockHeight}`);
+  assert.equal(geometry.scoreboardPosition, 'sticky', `${label}: scoreboard must remain sticky during play`);
+  assert.equal(geometry.controlsPosition, 'sticky', `${label}: gameplay controls must remain sticky during play`);
+  assert.ok(geometry.overflow <= 1, `${label}: layout overflows horizontally by ${geometry.overflow}px`);
+  return geometry;
+}
+
 let browser;
 try {
   await waitForServer();
@@ -43,6 +67,9 @@ try {
   await page.locator('#quiz-setup').waitFor({ state: 'visible' });
   assert.match(await page.locator('#loading-status').innerText(), /Verified bank ready/);
 
+  const visualLayerLoaded = await page.evaluate(() => [...document.styleSheets].some((sheet) => String(sheet.href || '').includes('high-iq-v3-3.css')));
+  assert.equal(visualLayerLoaded, true, 'High IQ v3.3 gameplay-first stylesheet must load in Chromium');
+
   const manifest = await page.evaluate(async () => {
     const response = await fetch('./data/manifest.json', { cache: 'no-store' });
     if (!response.ok) throw new Error(`manifest returned ${response.status}`);
@@ -58,15 +85,18 @@ try {
   await page.locator('#question-count').selectOption('5');
   await page.locator('#start-quiz').click();
   await page.locator('#quiz-panel').waitFor({ state: 'visible' });
+  const desktopGeometry = await assertGameplayGeometry(page, 'desktop');
 
   for (let index = 0; index < 5; index += 1) {
     assert.equal(await page.locator('#answer-options .answer-option').count(), 4);
     await page.locator('#answer-options .answer-option').first().click();
+    assert.equal(await page.locator('#answer-options .answer-option').first().getAttribute('aria-pressed'), 'true');
     await page.locator('#lock-answer').click();
     await page.locator('#answer-feedback').waitFor({ state: 'visible' });
     assert.ok((await page.locator('#answer-explanation').innerText()).trim().length > 20);
     assert.ok((await page.locator('#answer-context').innerText()).trim().length > 10);
     assert.ok(await page.locator('#answer-sources li').count() >= 1);
+    assert.equal(await page.locator('#answer-options .answer-option.is-correct').count(), 1, 'exactly one answer should reveal as correct');
 
     if (index === 0) {
       const progressBefore = await page.locator('#progress-text').innerText();
@@ -96,7 +126,11 @@ try {
   assert.ok(await page.locator('#history-list .history-item').count() >= 1);
   assert.equal(consoleErrors.length, 0, `Browser console errors: ${consoleErrors.join(' | ')}`);
 
-  const mobile = await browser.newPage({ viewport: { width: 390, height: 844 } });
+  const mobileContext = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    reducedMotion: 'reduce'
+  });
+  const mobile = await mobileContext.newPage();
   const mobileErrors = [];
   mobile.on('console', (message) => {
     if (message.type() === 'error') mobileErrors.push(message.text());
@@ -105,9 +139,19 @@ try {
   await mobile.goto(GAME_URL, { waitUntil: 'networkidle' });
   await mobile.locator('#quiz-setup').waitFor({ state: 'visible' });
   assert.equal(await mobile.locator('#hero-question-count').innerText(), String(manifest.questionCount));
-  const overflow = await mobile.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
-  assert.ok(overflow <= 1, `Mobile layout overflows horizontally by ${overflow}px`);
+  assert.equal(await mobile.evaluate(() => matchMedia('(prefers-reduced-motion: reduce)').matches), true, 'mobile QA context must exercise reduced-motion CSS');
+  await mobile.locator('#question-count').selectOption('5');
+  await mobile.locator('#start-quiz').click();
+  await mobile.locator('#quiz-panel').waitFor({ state: 'visible' });
+  const mobileGeometry = await assertGameplayGeometry(mobile, 'mobile');
+  assert.equal(await mobile.locator('#answer-options .answer-option').count(), 4);
+  await mobile.locator('#answer-options .answer-option').nth(1).click();
+  assert.equal(await mobile.locator('#answer-options .answer-option').nth(1).getAttribute('aria-pressed'), 'true');
+  await mobile.locator('#lock-answer').click();
+  await mobile.locator('#answer-feedback').waitFor({ state: 'visible' });
+  assert.equal(await mobile.locator('#answer-options .answer-option.is-correct').count(), 1);
   assert.equal(mobileErrors.length, 0, `Mobile console errors: ${mobileErrors.join(' | ')}`);
+  await mobileContext.close();
 
   console.log(JSON.stringify({
     ok: true,
@@ -116,9 +160,13 @@ try {
     datasetVersion: manifest.datasetVersion,
     bankQuestions: manifest.questionCount,
     completedQuestions: 5,
+    visualLayer: 'high-iq-v3-3.css',
     sourceLinkKeyboardGuard: true,
+    reducedMotionChecked: true,
+    minDesktopAnswerHeight: Math.min(...desktopGeometry.optionHeights),
+    minMobileAnswerHeight: Math.min(...mobileGeometry.optionHeights),
     consoleErrors: 0,
-    mobileOverflowPx: overflow
+    mobileOverflowPx: mobileGeometry.overflow
   }, null, 2));
 } finally {
   if (browser) await browser.close();

@@ -10,6 +10,10 @@ const routes = new Set();
 
 if (entries.length === 0) errors.push('no external game contracts found');
 
+function satisfiesPromotionGate(value) {
+  return value === 'required' || value === 'passed';
+}
+
 for (const filename of entries) {
   const file = new URL(filename, root);
   let game;
@@ -34,7 +38,13 @@ for (const filename of entries) {
   if (!['release-candidate', 'ready-to-package', 'runtime-integration'].includes(game.status)) errors.push(`${where}: unsupported status ${String(game.status)}`);
   if (typeof game.artifact !== 'string' || game.artifact.trim() === '') errors.push(`${where}: artifact required`);
   if (typeof game.build !== 'string' || game.build.trim() === '') errors.push(`${where}: build command required`);
-  if (!game.promotionGate || game.promotionGate.standaloneCI !== 'required' || game.promotionGate.browserAcceptance !== 'required') errors.push(`${where}: standalone/browser promotion gates are required`);
+  if (
+    !game.promotionGate ||
+    !satisfiesPromotionGate(game.promotionGate.standaloneCI) ||
+    !satisfiesPromotionGate(game.promotionGate.browserAcceptance)
+  ) {
+    errors.push(`${where}: standalone/browser promotion gates must be required or passed`);
+  }
 }
 
 if (errors.length) {

@@ -47,6 +47,15 @@ html = html
   .replace(/\b\d+ validated questions\b/g, `${manifest.questionCount} validated questions`)
   .replace(/\b\d+ approved questions\b/g, `${manifest.questionCount} approved questions`);
 
+const v33Stylesheet = '  <link rel="stylesheet" href="./high-iq-v3-3.css" />';
+if (!html.includes('high-iq-v3-3.css')) {
+  replaceRequired(
+    /  <link rel="stylesheet" href="\.\/high-iq-v3\.css" \/>/,
+    `  <link rel="stylesheet" href="./high-iq-v3.css" />\n${v33Stylesheet}`,
+    'High IQ v3 stylesheet link'
+  );
+}
+
 if (checkOnly) {
   if (html !== original) {
     throw new Error('High IQ runtime shell is stale. Run: node games/high-iq/scripts/sync-runtime-shell.mjs');

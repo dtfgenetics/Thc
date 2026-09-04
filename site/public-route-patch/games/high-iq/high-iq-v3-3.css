@@ -1,0 +1,208 @@
+/* High IQ v3.3 — gameplay-first visual refinement.
+   This layer intentionally sits on top of high-iq.css + high-iq-v3.css. */
+.high-iq-shell{
+  --hiq33-panel:rgba(7,22,14,.88);
+  --hiq33-panel-strong:rgba(5,16,10,.96);
+  --hiq33-edge:rgba(143,221,165,.18);
+  --hiq33-edge-hot:rgba(230,197,111,.48);
+  --hiq33-glow:0 0 0 1px rgba(143,221,165,.04),0 24px 70px rgba(0,0,0,.32);
+}
+
+/* Make the challenge console read as the game, not another content section. */
+.quiz-console{
+  position:relative;
+  overflow:clip;
+}
+.quiz-console::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at 16% 12%,rgba(143,221,165,.07),transparent 28rem),
+    radial-gradient(circle at 88% 8%,rgba(168,139,232,.08),transparent 26rem),
+    linear-gradient(180deg,rgba(255,255,255,.012),transparent 28%);
+}
+.quiz-console>*{position:relative;z-index:1}
+.quiz-console-header h2{font-size:clamp(1.55rem,3vw,2.35rem);letter-spacing:-.035em}
+.quiz-console-header .eyebrow{color:#d8c77d}
+
+/* Setup should feel like choosing a game mode. */
+#quiz-setup .setup-intro h3{font-size:clamp(1.2rem,2vw,1.55rem);letter-spacing:-.02em}
+.preset-button{position:relative;overflow:hidden;text-align:left}
+.preset-button strong{display:block;font-size:1rem;letter-spacing:-.01em}
+.preset-button span{display:block;margin-top:3px;color:#aebbb2;font-size:.75rem;font-weight:760}
+.preset-button.is-active::after{
+  content:"SELECTED";
+  position:absolute;
+  right:10px;
+  top:9px;
+  padding:3px 6px;
+  border:1px solid rgba(230,197,111,.24);
+  border-radius:999px;
+  color:#f1dd9e;
+  font-size:.55rem;
+  font-weight:950;
+  letter-spacing:.1em;
+}
+#start-quiz{box-shadow:0 12px 34px rgba(143,221,165,.12)}
+
+/* Active playfield. */
+#quiz-panel{
+  background:linear-gradient(180deg,rgba(4,16,10,.46),rgba(4,13,9,.16));
+}
+.quiz-scoreboard{
+  box-shadow:0 12px 38px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.03);
+}
+.quiz-scoreboard>div{position:relative;overflow:hidden}
+.quiz-scoreboard>div::after{
+  content:"";
+  position:absolute;
+  inset:auto 9px 6px 9px;
+  height:2px;
+  border-radius:999px;
+  background:linear-gradient(90deg,rgba(143,221,165,.42),rgba(168,139,232,.28));
+  opacity:.55;
+}
+#live-streak:not(:empty){color:#f0d47f!important;text-shadow:0 0 22px rgba(230,197,111,.14)}
+
+.question-meta{align-items:center}
+.question-heading{
+  position:relative;
+  padding-left:18px;
+}
+.question-heading::before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:.16em;
+  bottom:.12em;
+  width:4px;
+  border-radius:999px;
+  background:linear-gradient(180deg,var(--hiq-green),var(--hiq-purple));
+  box-shadow:0 0 20px rgba(143,221,165,.15);
+}
+
+.answer-option{
+  overflow:hidden;
+  isolation:isolate;
+}
+.answer-option::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-1;
+  pointer-events:none;
+  background:linear-gradient(115deg,transparent 0 62%,rgba(255,255,255,.025) 62% 100%);
+  opacity:.7;
+}
+.answer-option:focus-visible{
+  outline:3px solid rgba(230,197,111,.72)!important;
+  outline-offset:3px!important;
+}
+.answer-option[aria-pressed="true"]{transform:translateY(-2px)}
+.answer-option.is-correct{
+  box-shadow:0 0 0 1px rgba(143,221,165,.15),0 18px 42px rgba(26,91,49,.16)!important;
+}
+.answer-option.is-incorrect{
+  box-shadow:0 0 0 1px rgba(228,147,130,.12),0 18px 42px rgba(96,38,31,.12)!important;
+}
+.answer-option.is-correct .answer-letter::after{content:"✓";margin-left:3px;font-size:.72em}
+.answer-option.is-incorrect[aria-pressed="true"] .answer-letter::after{content:"×";margin-left:3px;font-size:.78em}
+
+.quiz-controls{
+  position:sticky;
+  bottom:0;
+  z-index:9;
+  margin-left:-6px;
+  margin-right:-6px;
+  padding:14px 6px 6px;
+  background:linear-gradient(180deg,transparent,rgba(5,16,10,.9) 30%,rgba(5,16,10,.96));
+  backdrop-filter:blur(8px);
+}
+.quiz-action.primary{font-weight:900;letter-spacing:.01em}
+#lock-answer:not(:disabled),#next-question:not([hidden]){box-shadow:0 12px 34px rgba(143,221,165,.12)}
+
+/* Feedback reads like a reward/review state rather than a plain article card. */
+.answer-feedback{position:relative;overflow:hidden}
+.answer-feedback::before{
+  content:"REVIEW";
+  position:absolute;
+  right:16px;
+  bottom:10px;
+  color:rgba(143,221,165,.055);
+  font-size:clamp(2.4rem,9vw,6rem);
+  font-weight:1000;
+  letter-spacing:-.05em;
+  line-height:1;
+  pointer-events:none;
+}
+.feedback-heading-row,.explanation-copy,.context-box,.source-drawer{position:relative;z-index:1}
+.feedback-heading-row h3{font-size:clamp(1.2rem,2vw,1.55rem);letter-spacing:-.02em}
+.source-drawer summary{cursor:pointer;font-weight:860}
+
+/* Results should land like a completed run. */
+.results-panel>.eyebrow{color:#e6c56f}
+.result-hero{
+  position:relative;
+  overflow:hidden;
+  border:1px solid rgba(230,197,111,.18);
+  box-shadow:var(--hiq33-glow);
+}
+.result-hero::after{
+  content:"HIGH IQ";
+  position:absolute;
+  right:-.04em;
+  bottom:-.22em;
+  color:rgba(230,197,111,.04);
+  font-size:clamp(4rem,14vw,10rem);
+  font-weight:1000;
+  letter-spacing:-.08em;
+  pointer-events:none;
+}
+.result-hero>*{position:relative;z-index:1}
+.result-rank{
+  min-width:150px;
+  border:1px solid rgba(168,139,232,.22)!important;
+  background:linear-gradient(155deg,rgba(168,139,232,.12),rgba(7,22,14,.52))!important;
+}
+.result-rank strong{font-size:clamp(1.55rem,3vw,2.5rem)!important;letter-spacing:-.04em}
+.result-metric{transition:transform .16s ease,border-color .16s ease}
+.result-metric:hover{transform:translateY(-2px);border-color:rgba(143,221,165,.28)}
+
+/* De-emphasize study/coverage material compared with the play surface. */
+#topics-title,.coverage-panel h3,#quality-title{letter-spacing:-.02em}
+.topic-map,.coverage-layout,.quality-strip{opacity:.93}
+
+@media (min-width:981px){
+  #quiz-panel{padding:28px 30px 32px!important}
+  .answer-grid{gap:14px}
+  .answer-option{min-height:104px!important;padding:19px!important}
+}
+
+@media (max-width:680px){
+  .quiz-console{margin-inline:-8px;border-radius:18px!important}
+  #quiz-panel{padding:14px 12px 18px!important}
+  .quiz-scoreboard{position:sticky;top:2px;border-radius:14px}
+  .quiz-scoreboard>div{min-height:50px!important}
+  .question-meta{margin-top:4px}
+  .question-heading{padding-left:13px;margin-top:10px!important}
+  .question-heading::before{width:3px}
+  .answer-option{min-height:76px!important;border-radius:15px!important}
+  .answer-copy{font-size:.96rem}
+  .quiz-controls{margin-left:-2px;margin-right:-2px;padding:12px 2px 2px}
+  .quiz-controls .note{font-size:.72rem}
+  .answer-feedback{padding:16px!important}
+  .result-hero{padding:18px!important}
+  .result-rank{min-width:0;width:100%}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .result-metric,.answer-option,.preset-button{transition:none!important}
+  .answer-option[aria-pressed="true"],.result-metric:hover,.preset-button:hover{transform:none!important}
+}
+
+@media (forced-colors:active){
+  .question-heading::before,.quiz-scoreboard>div::after,.answer-option::after,.answer-feedback::before,.result-hero::after{display:none!important}
+  .quiz-controls{background:Canvas!important;backdrop-filter:none!important}
+}

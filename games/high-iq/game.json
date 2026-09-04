@@ -2,7 +2,7 @@
   "id": "high-iq",
   "title": "High IQ — Test Higher Cognition",
   "category": "knowledge-game",
-  "status": "v3.2-production-verified",
+  "status": "v3.3-ui-v2.4-content-candidate",
   "provider": "DTF Genetics / GitHub",
   "public_url": "https://dtfseeds.com/games/high-iq/",
   "website_route": "/games/high-iq/",
@@ -12,10 +12,10 @@
   "machineData": {
     "owner": "dtfgenetics/Thc",
     "path": "games/high-iq/data",
-    "version": "2.3",
-    "questions": 160,
+    "version": "2.4",
+    "questions": 200,
     "sources": 50,
-    "recordVersions": ["2.2", "2.3"],
+    "recordVersions": ["2.2", "2.3", "2.4"],
     "manifestDriven": true,
     "validation": "node games/high-iq/scripts/validate-data.mjs",
     "publicRuntimeValidation": "node games/high-iq/scripts/validate-public-runtime.mjs",
@@ -25,7 +25,7 @@
     "gameCoreTests": "node games/high-iq/test/game-core.test.mjs",
     "browserPlaythrough": "node games/high-iq/test/browser-smoke.mjs",
     "liveVerification": "node games/high-iq/scripts/verify-live-v3.mjs",
-    "provenance": "High_IQ_Master_Production_Workbook_v2_2.xlsx + source-backed v2.3 expansion"
+    "provenance": "High_IQ_Master_Production_Workbook_v2_2.xlsx + source-backed v2.3/v2.4 expansions"
   },
   "browserSource": {
     "html": "site/public-route-patch/games/high-iq/index.html",
@@ -33,6 +33,7 @@
     "core": "site/public-route-patch/games/high-iq/game-core.mjs",
     "baseStyles": "site/public-route-patch/games/high-iq/high-iq.css",
     "v3Styles": "site/public-route-patch/games/high-iq/high-iq-v3.css",
+    "gameplayFirstStyles": "site/public-route-patch/games/high-iq/high-iq-v3-3.css",
     "legacyScript": "site/public-route-patch/games/high-iq/app.js",
     "runtime": "static-es-modules",
     "features": [
@@ -60,7 +61,10 @@
       "manifest-driven-question-growth",
       "maintainer-question-cli",
       "manifest-driven-shell-metadata",
-      "manifest-driven-package-verification"
+      "manifest-driven-package-verification",
+      "gameplay-first-v3-3-ui",
+      "mobile-active-play-qa",
+      "minimum-44px-answer-targets"
     ]
   },
   "integration": {
@@ -74,9 +78,14 @@
     "manifest_driven_growth_ready": true,
     "browser_playthrough_gate_ready": true,
     "live_verification_script_ready": true,
-    "production_route_verified": true,
+    "last_production_verified_version": "2.3",
+    "last_production_verified_questions": 160,
     "production_verified_at": "2026-09-04",
     "production_verification_workflow": "Deploy DTFSeeds Public Suite via WordPress V2",
-    "production_verification_run": 33904813011
+    "production_verification_run": 33904813011,
+    "pending_content_release": "2.4",
+    "pending_visual_release": "v3.3",
+    "pending_release_questions": 200,
+    "production_route_verified": false
   }
 }
