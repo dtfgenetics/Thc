@@ -194,8 +194,8 @@ jobs:
             fi
             rm -f "$body"
           }
-          check '/' 'Genetics first. Cultivation science behind it.'
-          check '/learn/' 'Learn the plant as a connected system.'
+          check '/' 'data-dtf-layout="home-v3"'
+          check '/learn/' 'data-dtf-layout="learn-v3"'
           check '/community/' 'Join the official DTF / Teaching Healthy Cultivation Discord'
 
       - name: Verify education production surfaces independently
