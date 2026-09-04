@@ -11,8 +11,10 @@ on:
       - .github/workflows/wordpress-lighting-evidence-poster-production.yml
 
 permissions:
+  actions: write
   contents: write
   issues: write
+  pull-requests: write
 
 concurrency:
   group: dtfseeds-wordpress-infographics-production
@@ -105,25 +107,37 @@ jobs:
           PY
           echo "poster_count=$(node -p "require(process.argv[1]).posterCount" "$POSTER_RENDER_REPORT")" >> "$GITHUB_OUTPUT"
 
-      - name: Persist rendered posters in canonical infographic source
+      - name: Safely integrate rendered posters into canonical infographic source
         id: canonical
         shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          git config user.name 'DTF Scientific Poster Publisher'
-          git config user.email 'actions@users.noreply.github.com'
-          git add site/wordpress/assets/infographics/THC-LIGHT-*.png site/wordpress/assets/infographics/THC-EVID-*.png
-          if git diff --cached --quiet; then
+          changed=()
+          while IFS= read -r -d '' path; do
+            changed+=("$path")
+          done < <(
+            git diff --name-only -z -- \
+              'site/wordpress/assets/infographics/THC-LIGHT-*.png' \
+              'site/wordpress/assets/infographics/THC-EVID-*.png'
+            git ls-files --others --exclude-standard -z -- \
+              'site/wordpress/assets/infographics/THC-LIGHT-*.png' \
+              'site/wordpress/assets/infographics/THC-EVID-*.png'
+          )
+
+          if [[ "${#changed[@]}" -eq 0 ]]; then
+            echo 'No deterministic poster changes to integrate.'
             echo 'changed=false' >> "$GITHUB_OUTPUT"
-          else
-            git commit -m 'Publish deterministic Lighting and Evidence infographics'
-            if ! git push origin HEAD:main; then
-              git pull --rebase origin main
-              git push origin HEAD:main
-            fi
-            echo 'changed=true' >> "$GITHUB_OUTPUT"
-            echo "commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+            exit 0
           fi
+
+          printf 'Lighting/Evidence generated paths:\n'
+          printf ' - %s\n' "${changed[@]}"
+          node scripts/studio/integrate-generated-change.mjs \
+            --message='Publish deterministic Lighting and Evidence infographics' \
+            "${changed[@]}"
+          echo 'changed=true' >> "$GITHUB_OUTPUT"
 
       - name: Stage canonical finished infographic assets
         id: quality
