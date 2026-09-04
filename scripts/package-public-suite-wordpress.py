@@ -7,9 +7,9 @@ Dtf420 child routes are built from its current main branch, verified against a r
 cross-repository ownership contract, and staged below /dtf-content-overlay/ for a later
 atomic promotion step. The transactional publisher therefore never receives direct
 ownership of /learn/, /community/, /games/, or the site root.
-Registered local static game routes are derived from the canonical public-app registry
-so a tested game cannot be registered for deployment and then silently omitted from
-the WordPress archive by a stale hand-maintained allowlist.
+Registered local static game routes are derived from the canonical public-app registry.
+Reviewed external game contracts are rebuilt from pinned commits into the release tree
+so generated bundles remain out of source control while deployment stays reproducible.
 """
 from __future__ import annotations
 
@@ -17,9 +17,11 @@ import hashlib
 import json
 import os
 from pathlib import Path, PurePosixPath
+import shutil
 import stat
 import subprocess
 import sys
+import tempfile
 import zipfile
 
 if len(sys.argv) != 3:
@@ -49,6 +51,85 @@ if overlay_manifest.get("repository") != "dtfgenetics/Dtf420":
 if not str(overlay_manifest.get("commit") or "").isalnum() or len(str(overlay_manifest.get("commit") or "")) != 40:
     raise SystemExit("Dtf420 staged overlay does not record a 40-character source revision")
 
+
+def parse_revision_file(path: Path) -> dict[str, str]:
+    if not path.is_file():
+        raise SystemExit(f"external game source revision missing: {path}")
+    values: dict[str, str] = {}
+    for line in path.read_text().splitlines():
+        if not line.strip() or line.lstrip().startswith("#"):
+            continue
+        key, sep, value = line.partition("=")
+        if not sep:
+            raise SystemExit(f"malformed source revision line in {path}: {line!r}")
+        values[key.strip()] = value.strip()
+    return values
+
+
+def stage_external_game(contract_path: Path) -> dict[str, str]:
+    contract = json.loads(contract_path.read_text())
+    if contract.get("status") not in {"release-candidate", "ready-to-package"}:
+        raise SystemExit(f"external game contract is not promotable: {contract_path.name}")
+    route = str(contract.get("route") or "")
+    repository = str(contract.get("repository") or "")
+    if not route.startswith("/games/") or not route.endswith("/") or route.count("/") != 3:
+        raise SystemExit(f"unsafe external game route in {contract_path.name}: {route!r}")
+    if not repository.startswith("dtfgenetics/"):
+        raise SystemExit(f"unsafe external game repository in {contract_path.name}: {repository!r}")
+    target = route.strip("/")
+    revision_path = repo_root / "site" / "public-route-patch" / target / "source-revision.txt"
+    revision = parse_revision_file(revision_path)
+    if revision.get("repository") != repository:
+        raise SystemExit(f"external game repository/source pin mismatch for {target}")
+    commit = revision.get("commit", "")
+    if len(commit) != 40 or any(ch not in "0123456789abcdef" for ch in commit):
+        raise SystemExit(f"invalid pinned commit for {target}: {commit!r}")
+    if revision.get("route") != route:
+        raise SystemExit(f"external game route/source pin mismatch for {target}")
+
+    with tempfile.TemporaryDirectory(prefix=f"dtf-{contract['id']}-") as temp:
+        checkout = Path(temp) / "repo"
+        subprocess.run(["git", "init", str(checkout)], check=True)
+        subprocess.run(["git", "-C", str(checkout), "remote", "add", "origin", f"https://github.com/{repository}.git"], check=True)
+        subprocess.run(["git", "-C", str(checkout), "fetch", "--depth=1", "origin", commit], check=True)
+        subprocess.run(["git", "-C", str(checkout), "checkout", "--detach", "FETCH_HEAD"], check=True)
+        actual = subprocess.check_output(["git", "-C", str(checkout), "rev-parse", "HEAD"], text=True).strip()
+        if actual != commit:
+            raise SystemExit(f"external game checkout drift for {target}: expected {commit}, got {actual}")
+
+        subprocess.run(["npm", "install", "--ignore-scripts"], cwd=checkout, check=True)
+        subprocess.run(["npm", "test"], cwd=checkout, check=True)
+        subprocess.run(["npm", "run", "build"], cwd=checkout, check=True)
+        subprocess.run(["npm", "run", "validate:release"], cwd=checkout, check=True)
+
+        dist = checkout / "dist"
+        if not (dist / "index.html").is_file():
+            raise SystemExit(f"external game build did not produce index.html: {target}")
+        destination = root / target
+        if destination.exists():
+            shutil.rmtree(destination)
+        shutil.copytree(dist, destination)
+        shutil.copy2(revision_path, destination / "source-revision.txt")
+
+    return {
+        "id": str(contract["id"]),
+        "target": target,
+        "route": route,
+        "repository": repository,
+        "commit": commit,
+        "artifact": str(contract.get("artifact") or ""),
+    }
+
+
+external_contracts_dir = repo_root / "site" / "deployment" / "external-games"
+external_games: list[dict[str, str]] = []
+if external_contracts_dir.is_dir():
+    for contract_path in sorted(external_contracts_dir.glob("*.json")):
+        external_games.append(stage_external_game(contract_path))
+external_targets = [game["target"] for game in external_games]
+if len(external_targets) != len(set(external_targets)):
+    raise SystemExit("duplicate external game deployment targets")
+
 allowed = [
     "games/index.html",
     "games/dtf-route.css",
@@ -77,6 +158,9 @@ allowed = [
     "assets/images/atlas",
     "dtf-content-overlay",
 ]
+for target in external_targets:
+    if target not in allowed:
+        allowed.append(target)
 
 public_apps_path = repo_root / "site" / "deployment" / "public-apps.json"
 public_apps = json.loads(public_apps_path.read_text())
@@ -209,6 +293,10 @@ for target in registered_local_game_targets:
     index_path = f"{target}/index.html"
     if index_path not in required:
         required.append(index_path)
+for target in external_targets:
+    for rel in (f"{target}/index.html", f"{target}/source-revision.txt"):
+        if rel not in required:
+            required.append(rel)
 
 for rel in required:
     path = root / rel
@@ -221,6 +309,7 @@ for forbidden in ["index.html", "learn/index.html", "blog/index.html"]:
 
 files: dict[str, dict[str, int | str]] = {}
 
+
 def add_file(path: Path, rel: str) -> None:
     pure = PurePosixPath(rel)
     if pure.is_absolute() or ".." in pure.parts or rel.startswith("./"):
@@ -232,6 +321,7 @@ def add_file(path: Path, rel: str) -> None:
         raise SystemExit(f"non-regular archive entry rejected: {rel}")
     data = path.read_bytes()
     files[rel] = {"size": len(data), "sha256": hashlib.sha256(data).hexdigest()}
+
 
 for item in allowed:
     src = root / item
@@ -258,6 +348,7 @@ manifest = {
     "wordPressOwnedRoutesExcluded": ["/", "/learn/", "/blog/"],
     "targets": allowed,
     "registeredLocalGameTargets": sorted(registered_local_game_targets),
+    "externalGames": external_games,
     "dtf420Overlay": {
         "repository": overlay_manifest["repository"],
         "commit": overlay_manifest["commit"],
@@ -294,6 +385,7 @@ summary = {
     "uncompressedBytes": manifest["uncompressedBytes"],
     "targets": allowed,
     "registeredLocalGameTargets": sorted(registered_local_game_targets),
+    "externalGames": external_games,
     "dtf420Overlay": manifest["dtf420Overlay"],
 }
 print(json.dumps(summary, separators=(",", ":")))
