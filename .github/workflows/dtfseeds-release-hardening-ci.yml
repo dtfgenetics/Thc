@@ -33,26 +33,40 @@ jobs:
           node --check scripts/publish-wordpress-learning-center-expansion-v1.mjs
           node --check scripts/cleanup-stale-wordpress-suite-snippets.mjs
           bash -n scripts/run-workflow-and-wait.sh
-          python -m py_compile scripts/package-public-suite-wordpress.py scripts/assemble-wordpress-suite-v2.py
+          python -m py_compile \
+            scripts/package-public-suite-wordpress.py \
+            scripts/package-public-suite-wordpress-resource-aware.py \
+            scripts/public_suite_resource_ownership.py \
+            scripts/assemble-wordpress-suite-v2.py \
+            scripts/assemble-wordpress-suite-resource-aware.py
           grep -Fq 'Enforce authoritative lane outcomes' .github/workflows/dtfseeds-production-gateway.yml
           grep -Fq 'cancel-in-progress: false' .github/workflows/wordpress-canonical-production.yml
           grep -Fq 'cancel-in-progress: false' .github/workflows/deploy-public-suite-wordpress-v2.yml
+          grep -Fq 'scripts/assemble-wordpress-suite-resource-aware.py' .github/workflows/deploy-public-suite-wordpress-v2.yml
+          grep -Fq 'scripts/package-public-suite-wordpress-resource-aware.py' .github/workflows/deploy-public-suite-wordpress-v2.yml
+          grep -Fq 'resourceOwnedRoutesExcluded' .github/workflows/deploy-public-suite-wordpress-v2.yml
+          ! grep -Fq 'Atlas deployment target allowlist' .github/workflows/deploy-public-suite-wordpress-v2.yml
+          ! grep -Fq "check 'https://dtfseeds.com/games/high-iq/'" .github/workflows/deploy-public-suite-wordpress-v2.yml
           grep -Fq 'assertNoOtherActivePublisher' scripts/cleanup-stale-wordpress-suite-snippets.mjs
           grep -Fq 'Temporary read-only inspector' scripts/cleanup-stale-wordpress-suite-snippets.mjs
           grep -Fq 'age<120' scripts/cleanup-stale-wordpress-suite-snippets.mjs
           grep -Fq 'clearTransaction(bridge.token,staleId,state)' scripts/cleanup-stale-wordpress-suite-snippets.mjs
           grep -A2 -F 'Report production result to issue 46' .github/workflows/wordpress-canonical-production.yml | grep -Fq 'continue-on-error: true'
 
-      - name: Assemble and inspect transactional Public Suite bridge
+      - name: Assemble and inspect resource-aware transactional Public Suite bridge
         shell: bash
         run: |
           set -euo pipefail
-          python scripts/assemble-wordpress-suite-v2.py "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          python scripts/assemble-wordpress-suite-resource-aware.py "$RUNNER_TEMP/deploy-public-suite-v2.mjs" | tee "$RUNNER_TEMP/resource-ownership-bridge.json"
           node --check "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
           grep -Fq 'games/strain-match' "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
           grep -Fq 'games/lost-in-the-terps' "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          grep -Fq "'atlas/leaf-module/index.html'" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          ! grep -Fq "'games/high-land'" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          ! grep -Fq "'games/high-iq'" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
           grep -Fq 'games/strain-match' scripts/package-public-suite-wordpress.py
           grep -Fq 'games/lost-in-the-terps' scripts/package-public-suite-wordpress.py
+          grep -Fq 'resourceOwnedTargetsExcluded' "$RUNNER_TEMP/resource-ownership-bridge.json"
 
       - name: Verify all release lanes remain selected for gateway architecture changes
         if: github.event_name == 'pull_request'
