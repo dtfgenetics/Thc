@@ -8,6 +8,7 @@
   };
 
   const placementBoard=()=>document.querySelector('.board .cell[data-place]')?.closest('.board')||null;
+  const coordinateLabel=(row,col)=>`${String.fromCharCode(65+Number(row))}${Number(col)+1}`;
 
   function proposedCells(row,col){
     const spec=selectedSpec();
@@ -112,7 +113,9 @@
     for(const cell of board.querySelectorAll('.cell[data-place]')){
       const [row,col]=cell.dataset.place.split(',').map(Number);
       const status=proposalStatus(row,col);
-      cell.setAttribute('aria-label',`${cell.getAttribute('aria-label')||''}${spec?`, place ${spec.name} ${placement.horizontal?'horizontal':'vertical'}`:''}${status.valid?'':', invalid position'}`);
+      const base=coordinateLabel(row,col);
+      const placementText=spec?`, place ${spec.name} ${placement.horizontal?'horizontal':'vertical'}`:'';
+      cell.setAttribute('aria-label',`${base}${placementText}${status.valid?'':', invalid position'}`);
     }
   }
 
