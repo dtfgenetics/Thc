@@ -1,0 +1,26 @@
+{
+  "id": "ganjumanji",
+  "title": "Ganjumanji: The Lost Grower's Temple",
+  "repository": "dtfgenetics/GANJUMANJI-The-Lost-Grower-s-Temple",
+  "route": "/games/ganjumanji/",
+  "runtime": "static-phaser",
+  "status": "release-candidate",
+  "artifact": "ganjumanji-production-build",
+  "build": "npm test && npm run build && npm run validate:release && npm run test:e2e",
+  "machineData": {
+    "players": 1,
+    "regions": 3,
+    "relicSeeds": 6,
+    "saveVersion": 3,
+    "input": ["keyboard", "touch"],
+    "persistentBestRun": true,
+    "checkpointSave": true
+  },
+  "promotionGate": {
+    "standaloneCI": "required",
+    "browserAcceptance": "required",
+    "routeValidation": "required",
+    "liveVerification": "required-before-production-ready"
+  },
+  "notes": "Canonical code remains in the standalone Ganjumanji repository. Consume its validated production artifact for the DTFSeeds route; do not fork or hand-copy the source into the THC repository."
+}
