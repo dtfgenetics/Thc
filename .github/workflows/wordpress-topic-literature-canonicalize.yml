@@ -12,7 +12,10 @@ on:
       - .github/workflows/wordpress-topic-literature-canonicalize.yml
 
 permissions:
+  actions: write
   contents: write
+  issues: write
+  pull-requests: write
 
 concurrency:
   group: dtfseeds-topic-literature-canonicalize
@@ -57,6 +60,8 @@ jobs:
       - name: Promote expanded curriculum to canonical topic literature
         id: promote
         shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           target='site/wordpress/education/topic-literature.json'
@@ -66,19 +71,10 @@ jobs:
             exit 0
           fi
           cp "$RUNNER_TEMP/topic-literature-canonical.json" "$target"
-          git config user.name 'DTF Education Canonicalizer'
-          git config user.email 'actions@users.noreply.github.com'
-          git add "$target"
-          git commit -m 'Promote complete THC curriculum to canonical topic literature'
-          if ! git push origin HEAD:main; then
-            git pull --rebase origin main
-            node scripts/assemble-topic-literature-expansions.mjs --write "$target"
-            git add "$target"
-            git commit --amend --no-edit
-            git push origin HEAD:main
-          fi
+          node scripts/studio/integrate-generated-change.mjs \
+            --message='Promote complete THC curriculum to canonical topic literature' \
+            --paths="$target" | tee "$RUNNER_TEMP/topic-literature-integration.json"
           echo 'changed=true' >> "$GITHUB_OUTPUT"
-          echo "commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
       - name: Verify canonical source cannot downgrade subject depth
         shell: bash
