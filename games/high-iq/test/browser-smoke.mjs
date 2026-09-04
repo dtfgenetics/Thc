@@ -42,9 +42,18 @@ try {
   assert.match(await page.title(), /High IQ/i);
   await page.locator('#quiz-setup').waitFor({ state: 'visible' });
   assert.match(await page.locator('#loading-status').innerText(), /Verified bank ready/);
-  assert.equal(await page.locator('#hero-question-count').innerText(), '80');
-  assert.equal(await page.locator('#hero-source-count').innerText(), '50');
-  assert.equal(await page.locator('#topic-map article').count(), 10);
+
+  const manifest = await page.evaluate(async () => {
+    const response = await fetch('./data/manifest.json', { cache: 'no-store' });
+    if (!response.ok) throw new Error(`manifest returned ${response.status}`);
+    return response.json();
+  });
+  assert(Number.isInteger(manifest.questionCount) && manifest.questionCount > 0);
+  assert(Number.isInteger(manifest.sourceCount) && manifest.sourceCount > 0);
+  assert.equal(await page.locator('#hero-question-count').innerText(), String(manifest.questionCount));
+  assert.equal(await page.locator('#hero-source-count').innerText(), String(manifest.sourceCount));
+  assert.equal(await page.locator('#hero-version').innerText(), String(manifest.datasetVersion));
+  assert.equal(await page.locator('#topic-map article').count(), Object.keys(manifest.categoryCounts || {}).length);
 
   await page.locator('#question-count').selectOption('5');
   await page.locator('#start-quiz').click();
@@ -95,6 +104,7 @@ try {
   mobile.on('pageerror', (error) => mobileErrors.push(error.message));
   await mobile.goto(GAME_URL, { waitUntil: 'networkidle' });
   await mobile.locator('#quiz-setup').waitFor({ state: 'visible' });
+  assert.equal(await mobile.locator('#hero-question-count').innerText(), String(manifest.questionCount));
   const overflow = await mobile.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   assert.ok(overflow <= 1, `Mobile layout overflows horizontally by ${overflow}px`);
   assert.equal(mobileErrors.length, 0, `Mobile console errors: ${mobileErrors.join(' | ')}`);
@@ -103,6 +113,8 @@ try {
     ok: true,
     desktop: '1280x900',
     mobile: '390x844',
+    datasetVersion: manifest.datasetVersion,
+    bankQuestions: manifest.questionCount,
     completedQuestions: 5,
     sourceLinkKeyboardGuard: true,
     consoleErrors: 0,
