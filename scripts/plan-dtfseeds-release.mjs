@@ -4,8 +4,10 @@ import { execFileSync } from 'node:child_process';
 import { readFileSync, appendFileSync } from 'node:fs';
 
 const args = Object.fromEntries(process.argv.slice(2).map((arg) => {
-  const [key, ...rest] = arg.replace(/^--/, '').split('=');
-  return [key, rest.join('=') || 'true'];
+  const normalized = arg.replace(/^--/, '');
+  const separator = normalized.indexOf('=');
+  if (separator === -1) return [normalized, 'true'];
+  return [normalized.slice(0, separator), normalized.slice(separator + 1)];
 }));
 
 const configPath = args.config || 'site/deployment/release-lanes.json';

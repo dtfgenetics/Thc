@@ -128,6 +128,26 @@ if (!cumulativePlan.changedFiles.includes('games/high-iq/app.js') || !cumulative
   console.error(JSON.stringify(cumulativePlan, null, 2));
   process.exit(1);
 }
-
 console.log('PASS: checkpoint planner accumulates rapid parallel changes');
+
+// workflow_dispatch can supply an explicitly empty --base=. Empty values must
+// remain empty instead of being coerced to the boolean-style string "true".
+// Production should therefore still resolve the cumulative checkpoint.
+const emptyBasePlan = runPlanner(repo, [
+  '--mode=auto',
+  '--base=',
+  `--fallback-base=${highIqSha}`,
+  `--head=${headSha}`
+]);
+if (emptyBasePlan.requestedBase !== null || emptyBasePlan.checkpoint?.sha !== checkpointSha || emptyBasePlan.base !== checkpointSha) {
+  console.error('FAIL: empty planner base was not preserved as empty.');
+  console.error(JSON.stringify(emptyBasePlan, null, 2));
+  process.exit(1);
+}
+if (emptyBasePlan.changedFiles.includes('true')) {
+  console.error('FAIL: empty planner base was coerced to the string true.');
+  console.error(JSON.stringify(emptyBasePlan, null, 2));
+  process.exit(1);
+}
+console.log('PASS: empty release base remains empty and resolves cumulative checkpoint');
 console.log('Parallel project system self-test passed.');
