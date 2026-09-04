@@ -15,6 +15,7 @@ For new repository work, read `.agents/skills/dtf-parallel-studio/SKILL.md` firs
 - Resume an existing studio branch only with `node scripts/studio.mjs resume <branch-or-pr>`; never reuse a branch implicitly because the task name matches.
 - `node scripts/studio.mjs status` reports affected resources without requiring the branch to chase current `main`.
 - `node scripts/studio.mjs overlap` reports green/yellow/red source/resource overlap and same-production-target serialization needs; yellow is advisory and does not stop development.
+- `node scripts/studio.mjs doctor` audits all active PRs for hot files/resources, actual conflicts, shared production targets, supersession candidates, and unclassified paths without mutating anything.
 - `node scripts/studio.mjs push` pushes the isolated session and creates/reuses its PR without merging current `main` into the working branch.
 - `node scripts/studio.mjs integrate <pr>` evaluates the exact PR head against current `main` at the final integration boundary.
 - Studio intentionally stays out of root `package.json` so coordination changes do not wake unrelated application CI simply because npm script metadata changed.
