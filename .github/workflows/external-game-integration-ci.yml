@@ -1,0 +1,61 @@
+name: External Game Integration CI
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - site/deployment/external-games/**
+      - site/public-route-patch/games/*/source-revision.txt
+      - scripts/validate-external-game-contracts.mjs
+      - scripts/reconcile-external-game-registry.mjs
+      - scripts/package-public-suite-wordpress.py
+      - scripts/wordpress_suite_registry_patch.py
+      - scripts/assemble-wordpress-suite-v2.py
+      - .github/workflows/external-game-integration-ci.yml
+  pull_request:
+    branches: [main]
+    paths:
+      - site/deployment/external-games/**
+      - site/public-route-patch/games/*/source-revision.txt
+      - scripts/validate-external-game-contracts.mjs
+      - scripts/reconcile-external-game-registry.mjs
+      - scripts/package-public-suite-wordpress.py
+      - scripts/wordpress_suite_registry_patch.py
+      - scripts/assemble-wordpress-suite-v2.py
+      - .github/workflows/external-game-integration-ci.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: external-game-integration-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate external contracts
+        run: node scripts/validate-external-game-contracts.mjs
+      - name: Confirm registry parity
+        run: node scripts/reconcile-external-game-registry.mjs --check
+      - name: Compile packaging and bridge Python
+        run: python -m py_compile scripts/package-public-suite-wordpress.py scripts/assemble-wordpress-suite-v2.py scripts/wordpress_suite_registry_patch.py
+      - name: Assemble and validate transactional bridge
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/assemble-wordpress-suite-v2.py "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          python scripts/wordpress_suite_registry_patch.py "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          node --check "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          grep -Fq "games/ganjumanji" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          grep -Fq "/games/ganjumanji/" "$RUNNER_TEMP/deploy-public-suite-v2.mjs" || true
