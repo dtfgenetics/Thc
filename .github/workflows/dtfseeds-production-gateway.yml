@@ -95,7 +95,7 @@ jobs:
           fetch-depth: 2
           persist-credentials: false
 
-      - name: Refuse stale queued automatic release
+      - name: Refuse stale queued release
         id: freshness
         shell: bash
         run: |
