@@ -9,6 +9,7 @@ on:
     paths:
       - 'scripts/studio/**'
       - 'scripts/studio.mjs'
+      - 'data/branch-retirements.json'
       - 'docs/BRANCH_LIFECYCLE.md'
       - '.github/workflows/branch-lifecycle-maintenance.yml'
 
@@ -22,7 +23,7 @@ concurrency:
 
 jobs:
   reconcile:
-    name: Retire integrated managed branches
+    name: Retire integrated and explicitly reviewed branches
     runs-on: ubuntu-latest
     timeout-minutes: 25
     env:
@@ -36,17 +37,24 @@ jobs:
         with:
           node-version: 22
 
-      - name: Validate lifecycle command
+      - name: Validate lifecycle commands
         run: |
           set -euo pipefail
           node --check scripts/studio/lifecycle.mjs
+          node --check scripts/studio/retire-reviewed.mjs
           node scripts/test-dtf-parallel-studio.mjs
 
-      - name: Reconcile remote branch lifecycle
+      - name: Reconcile integrated remote branch lifecycle
         run: |
           set -euo pipefail
           node scripts/studio.mjs lifecycle --cleanup-merged --summary > "$RUNNER_TEMP/branch-lifecycle.json"
           cat "$RUNNER_TEMP/branch-lifecycle.json"
+
+      - name: Retire explicitly reviewed supersessions
+        run: |
+          set -euo pipefail
+          node scripts/studio/retire-reviewed.mjs --apply > "$RUNNER_TEMP/reviewed-retirements.json"
+          cat "$RUNNER_TEMP/reviewed-retirements.json"
 
       - name: Build recovery inventory after cleanup
         shell: bash
@@ -103,6 +111,7 @@ jobs:
           name: branch-recovery-inventory-${{ github.run_id }}
           path: |
             ${{ runner.temp }}/branch-lifecycle.json
+            ${{ runner.temp }}/reviewed-retirements.json
             ${{ runner.temp }}/branch-recovery.json
             ${{ runner.temp }}/branch-recovery.csv
             ${{ runner.temp }}/branch-recovery.md
@@ -115,6 +124,7 @@ jobs:
         run: |
           set -euo pipefail
           report="$RUNNER_TEMP/branch-lifecycle.json"
+          reviewed="$RUNNER_TEMP/reviewed-retirements.json"
           recovery="$RUNNER_TEMP/branch-recovery.json"
           if [[ ! -s "$report" ]]; then
             echo '## Branch lifecycle maintenance' >> "$GITHUB_STEP_SUMMARY"
@@ -122,18 +132,21 @@ jobs:
             echo 'Lifecycle report was not produced.' >> "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
-          node - "$report" "$recovery" "$GITHUB_STEP_SUMMARY" <<'NODE'
+          node - "$report" "$reviewed" "$recovery" "$GITHUB_STEP_SUMMARY" <<'NODE'
           const fs = require('fs');
           const report = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
-          const recovery = fs.existsSync(process.argv[3]) ? JSON.parse(fs.readFileSync(process.argv[3], 'utf8')) : null;
+          const reviewed = fs.existsSync(process.argv[3]) ? JSON.parse(fs.readFileSync(process.argv[3], 'utf8')) : null;
+          const recovery = fs.existsSync(process.argv[4]) ? JSON.parse(fs.readFileSync(process.argv[4], 'utf8')) : null;
           const summary = [
             '## Branch lifecycle maintenance',
             '',
             `Observed main: \`${report.observedMain}\``,
             `Remote branches classified before cleanup: **${report.branchCount}**`,
             `Integrated cleanup candidates before run: **${report.safeCleanupCount}**`,
-            `Managed branches deleted: **${report.deletedCount}**`,
-            `Delete failures: **${report.deleteFailures?.length || 0}**`,
+            `Integrated managed branches deleted: **${report.deletedCount}**`,
+            `Reviewed supersessions deleted: **${reviewed?.deletedCount ?? 'report unavailable'}**`,
+            `Reviewed supersessions blocked by safety checks: **${reviewed?.blockedCount ?? 'report unavailable'}**`,
+            `Delete failures: **${(report.deleteFailures?.length || 0) + (reviewed?.deleteFailures?.length || 0)}**`,
             `Preserved recovery candidates after cleanup: **${recovery?.recoveryCount ?? 'report unavailable'}**`,
             `Duplicate active task claims: **${report.duplicateClaimCount || 0}**`,
             `Duplicate branch-tip groups: **${report.duplicateHeadGroupCount || 0}**`,
@@ -143,6 +156,18 @@ jobs:
             JSON.stringify(report.counts || {}, null, 2),
             '```',
           ];
+          if (reviewed) {
+            summary.push(
+              '',
+              'Reviewed-retirement safety:',
+              `- approved records: **${reviewed.reviewedCount || 0}**`,
+              `- safe candidates: **${reviewed.candidateCount || 0}**`,
+              `- already retired: **${reviewed.alreadyRetiredCount || 0}**`,
+              '- Every deletion requires the exact recorded branch tip, no open PR, and a recorded superseding commit already on `main`.',
+            );
+            if (reviewed.deleted?.length) summary.push(...reviewed.deleted.map((branch) => `- retired \`${branch}\``));
+            if (reviewed.blocked?.length) summary.push(...reviewed.blocked.slice(0, 30).map((item) => `- blocked \`${item.branch}\`: headMatches=${item.headMatches}, noOpenPr=${item.noOpenPr}, supersedingCommitOnMain=${item.supersedingCommitOnMain}`));
+          }
           if (recovery) {
             summary.push(
               '',
@@ -162,5 +187,5 @@ jobs:
           if (report.duplicateHeadGroups?.length) {
             summary.push('', 'Largest duplicate branch-tip groups (report-only):', ...report.duplicateHeadGroups.slice(0, 20).map((item) => `- \`${item.headSha.slice(0, 12)}\`: ${item.branches.length} branches`));
           }
-          fs.appendFileSync(process.argv[4], `${summary.join('\n')}\n`);
+          fs.appendFileSync(process.argv[5], `${summary.join('\n')}\n`);
           NODE
