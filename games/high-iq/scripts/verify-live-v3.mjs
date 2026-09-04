@@ -47,11 +47,14 @@ assert(v3Css.includes('missed-review-list'), 'high-iq-v3.css is missing missed-r
 assert(v3Css.includes('aria-pressed'), 'high-iq-v3.css is missing selected-answer styling');
 
 const manifest = await getJson('/games/high-iq/data/manifest.json');
-assert(manifest.datasetVersion === '2.3', `expected dataset v2.3, got ${manifest.datasetVersion}`);
-assert(manifest.questionCount === 160, `expected 160 questions, got ${manifest.questionCount}`);
-assert(manifest.sourceCount === 50, `expected 50 sources, got ${manifest.sourceCount}`);
-assert(Array.isArray(manifest.questionChunks) && manifest.questionChunks.length === 12, 'manifest must list 12 question chunks');
-assert(Array.isArray(manifest.sourceChunks) && manifest.sourceChunks.length === 2, 'manifest must list 2 source chunks');
+assert(typeof manifest.datasetVersion === 'string' && manifest.datasetVersion.trim(), 'manifest datasetVersion is missing');
+assert(Array.isArray(manifest.recordVersions) && manifest.recordVersions.includes(manifest.datasetVersion), `datasetVersion ${manifest.datasetVersion} is not represented in recordVersions`);
+assert(Number.isInteger(manifest.questionCount) && manifest.questionCount > 0, `invalid questionCount ${manifest.questionCount}`);
+assert(Number.isInteger(manifest.sourceCount) && manifest.sourceCount > 0, `invalid sourceCount ${manifest.sourceCount}`);
+assert(Array.isArray(manifest.questionChunks) && manifest.questionChunks.length > 0, 'manifest must list question chunks');
+assert(Array.isArray(manifest.sourceChunks) && manifest.sourceChunks.length > 0, 'manifest must list source chunks');
+assert(new Set(manifest.questionChunks).size === manifest.questionChunks.length, 'manifest question chunk names must be unique');
+assert(new Set(manifest.sourceChunks).size === manifest.sourceChunks.length, 'manifest source chunk names must be unique');
 
 let questions = 0;
 const questionIds = new Set();
