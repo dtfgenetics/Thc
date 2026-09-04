@@ -1,0 +1,93 @@
+name: Branch Lifecycle Maintenance
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '23 8 * * *'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/studio/**'
+      - 'scripts/studio.mjs'
+      - 'docs/BRANCH_LIFECYCLE.md'
+      - '.github/workflows/branch-lifecycle-maintenance.yml'
+
+permissions:
+  contents: write
+  pull-requests: read
+
+concurrency:
+  group: branch-lifecycle-maintenance
+  cancel-in-progress: false
+
+jobs:
+  reconcile:
+    name: Retire integrated managed branches
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate lifecycle command
+        run: |
+          set -euo pipefail
+          node --check scripts/studio/lifecycle.mjs
+          node scripts/test-dtf-parallel-studio.mjs
+
+      - name: Reconcile remote branch lifecycle
+        run: |
+          set -euo pipefail
+          node scripts/studio.mjs lifecycle --cleanup-merged --summary > "$RUNNER_TEMP/branch-lifecycle.json"
+          cat "$RUNNER_TEMP/branch-lifecycle.json"
+
+      - name: Publish maintenance summary
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          report="$RUNNER_TEMP/branch-lifecycle.json"
+          if [[ ! -s "$report" ]]; then
+            echo '## Branch lifecycle maintenance' >> "$GITHUB_STEP_SUMMARY"
+            echo '' >> "$GITHUB_STEP_SUMMARY"
+            echo 'Lifecycle report was not produced.' >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          node - <<'NODE' "$report" "$GITHUB_STEP_SUMMARY"
+          const fs = require('fs');
+          const report = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
+          const summary = [
+            '## Branch lifecycle maintenance',
+            '',
+            `Observed main: \`${report.observedMain}\``,
+            `Remote branches classified: **${report.branchCount}**`,
+            `Integrated cleanup candidates before run: **${report.safeCleanupCount}**`,
+            `Managed branches deleted: **${report.deletedCount}**`,
+            `Delete failures: **${report.deleteFailures?.length || 0}**`,
+            `Duplicate active task claims: **${report.duplicateClaimCount || 0}**`,
+            `Duplicate branch-tip groups: **${report.duplicateHeadGroupCount || 0}**`,
+            '',
+            'Lifecycle counts:',
+            '```json',
+            JSON.stringify(report.counts || {}, null, 2),
+            '```',
+          ];
+          if (report.deleted?.length) {
+            summary.push('', 'Deleted integrated managed branches:', ...report.deleted.slice(0, 100).map((branch) => `- \`${branch}\``));
+            if (report.deleted.length > 100) summary.push(`- …and ${report.deleted.length - 100} more`);
+          }
+          if (report.duplicateClaims?.length) {
+            summary.push('', 'Duplicate active Studio task claims:', ...report.duplicateClaims.slice(0, 30).map((item) => `- **${item.task}**: ${item.branches.map((branch) => `\`${branch}\``).join(', ')}`));
+          }
+          if (report.duplicateHeadGroups?.length) {
+            summary.push('', 'Largest duplicate branch-tip groups (report-only):', ...report.duplicateHeadGroups.slice(0, 20).map((item) => `- \`${item.headSha.slice(0, 12)}\`: ${item.branches.length} branches`));
+          }
+          fs.appendFileSync(process.argv[3], `${summary.join('\n')}\n`);
+          NODE
