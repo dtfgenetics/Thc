@@ -61,7 +61,21 @@ jobs:
           ! grep -Fq "'games/high-iq'" "$RUNNER_TEMP/dtf-suite-resource-aware.mjs"
           ! grep -Fq "'/games/high-land/'" "$RUNNER_TEMP/dtf-suite-resource-aware.mjs"
           ! grep -Fq "'/games/high-iq/'" "$RUNNER_TEMP/dtf-suite-resource-aware.mjs"
+          for marker in \
+            "'atlas'" \
+            "'assets/images/atlas'" \
+            "'atlas/index.html'" \
+            "'atlas/leaf-module/index.html'" \
+            "'atlas/root-system/index.html'" \
+            "'atlas/root-system/rhizosphere/index.html'" \
+            "'atlas/downloads/index.html'" \
+            "'assets/images/atlas/root-system/rhizosphere-microbe-interaction.svg'" \
+            "'atlas/'" \
+            "'assets/images/atlas/'"; do
+            grep -Fq "$marker" "$RUNNER_TEMP/dtf-suite-resource-aware.mjs"
+          done
           grep -Fq 'resourceOwnedTargetsExcluded' "$RUNNER_TEMP/ownership-report.json"
+          grep -Fq 'atlasScope' "$RUNNER_TEMP/ownership-report.json"
 
       - name: PHP-lint filtered embedded bridge
         run: |
