@@ -4,8 +4,42 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
+    paths:
+      - 'site/wordpress/**'
+      - 'site/design-system/**'
+      - 'data/dtf-visual-v1.json'
+      - 'data/genetics/**'
+      - 'site/public-route-patch/learn/infographics/**'
+      - 'scripts/apply-wordpress-public-content-rest.mjs'
+      - 'scripts/apply-wordpress-public-content-owned-routes.mjs'
+      - 'scripts/deploy-wordpress-infographic-library-rest.mjs'
+      - 'scripts/audit-wordpress-commerce-rest.mjs'
+      - 'scripts/validate-genetics-commerce.mjs'
+      - 'scripts/reconcile-woocommerce-products.mjs'
+      - 'scripts/rollback-woocommerce-products.mjs'
+      - 'scripts/validate-woocommerce-reconciliation.mjs'
+      - '.github/workflows/wordpress-canonical-watch.yml'
+      - '.github/workflows/wordpress-canonical-deploy.yml'
+      - '.github/workflows/wordpress-canonical-production.yml'
   pull_request:
     branches: [main]
+    paths:
+      - 'site/wordpress/**'
+      - 'site/design-system/**'
+      - 'data/dtf-visual-v1.json'
+      - 'data/genetics/**'
+      - 'site/public-route-patch/learn/infographics/**'
+      - 'scripts/apply-wordpress-public-content-rest.mjs'
+      - 'scripts/apply-wordpress-public-content-owned-routes.mjs'
+      - 'scripts/deploy-wordpress-infographic-library-rest.mjs'
+      - 'scripts/audit-wordpress-commerce-rest.mjs'
+      - 'scripts/validate-genetics-commerce.mjs'
+      - 'scripts/reconcile-woocommerce-products.mjs'
+      - 'scripts/rollback-woocommerce-products.mjs'
+      - 'scripts/validate-woocommerce-reconciliation.mjs'
+      - '.github/workflows/wordpress-canonical-watch.yml'
+      - '.github/workflows/wordpress-canonical-deploy.yml'
+      - '.github/workflows/wordpress-canonical-production.yml'
   schedule:
     - cron: '17,47 * * * *'
 
