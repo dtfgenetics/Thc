@@ -1,0 +1,232 @@
+name: Deploy DTFSeeds WordPress Resource
+
+on:
+  workflow_dispatch:
+    inputs:
+      resource:
+        description: WordPress-hosted resource to publish
+        required: true
+        default: high-iq
+        type: choice
+        options:
+          - high-iq
+      source_sha:
+        description: Exact main commit whose validated resource artifact will be published
+        required: true
+        type: string
+      environment:
+        description: Protected GitHub environment
+        required: true
+        default: staging
+        type: choice
+        options:
+          - staging
+          - production
+
+permissions:
+  actions: read
+  contents: write
+
+# WordPress resource routes remain independently identified, but this temporary
+# publisher mechanism shares the Code Snippets plugin lifecycle. Serialize only
+# that real shared mechanism; Hostinger/SSH resources such as High Land remain
+# fully independent of this queue.
+concurrency:
+  group: dtf-wordpress-resource-bridge-${{ inputs.environment }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    environment: ${{ inputs.environment }}
+    env:
+      GH_TOKEN: ${{ github.token }}
+      RESOURCE_ID: ${{ inputs.resource }}
+      SOURCE_SHA: ${{ inputs.source_sha }}
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+    steps:
+      - name: Check out current release control plane
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          fetch-tags: true
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate exact source, resource identity, and checkpoint monotonicity
+        id: resource
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$RESOURCE_ID" == 'high-iq' ]] || { echo "Unsupported WordPress resource: $RESOURCE_ID" >&2; exit 2; }
+          [[ "$SOURCE_SHA" =~ ^[0-9a-f]{40}$ ]] || { echo 'source_sha must be a full lowercase commit SHA' >&2; exit 2; }
+          git fetch --quiet origin main --tags
+          git cat-file -e "${SOURCE_SHA}^{commit}"
+          git merge-base --is-ancestor "$SOURCE_SHA" origin/main || {
+            echo "Refusing source that is not an ancestor of current main: $SOURCE_SHA" >&2
+            exit 1
+          }
+          : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in the protected environment}"
+          : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in the protected environment}"
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import json
+          c=json.load(open('site/deployment/release-resources.json'))['resources']['high-iq']
+          assert c['publisher']['type']=='wordpress-transactional-resource'
+          assert c['publisher']['status']=='pilot-manual'
+          print('route='+c['route'])
+          print('marker='+c['verifyMarker'])
+          print('checkpoint='+c['checkpointTag'])
+          print('artifact_root='+c['artifactRoot'])
+          print('production_target='+c['productionTarget'])
+          print('shared_target='+c['publisher']['sharedProductionTarget'])
+          PY
+          checkpoint="$(python - <<'PY'
+          import json
+          print(json.load(open('site/deployment/release-resources.json'))['resources']['high-iq']['checkpointTag'])
+          PY
+          )"
+          if git rev-parse --verify "refs/tags/$checkpoint" >/dev/null 2>&1; then
+            previous="$(git rev-parse "refs/tags/$checkpoint")"
+            git merge-base --is-ancestor "$previous" "$SOURCE_SHA" || {
+              echo "Refusing resource rollback: checkpoint $checkpoint is $previous but requested source is $SOURCE_SHA" >&2
+              exit 1
+            }
+          fi
+
+      - name: Assemble and lint fail-closed resource bridge
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile \
+            scripts/assemble-wordpress-suite-v2.py \
+            scripts/assemble-wordpress-resource-v2.py \
+            scripts/verify-dtf-public-resource-artifact.py
+          python scripts/assemble-wordpress-resource-v2.py "$RUNNER_TEMP/deploy-high-iq-resource-v2.mjs" high-iq
+          node --check "$RUNNER_TEMP/deploy-high-iq-resource-v2.mjs"
+          grep -Fq "dtf_resource_high_iq_deploy_lock" "$RUNNER_TEMP/deploy-high-iq-resource-v2.mjs"
+          grep -Fq ".dtf-resource-manifest.json" "$RUNNER_TEMP/deploy-high-iq-resource-v2.mjs"
+          grep -Fq "'games/high-iq'" "$RUNNER_TEMP/deploy-high-iq-resource-v2.mjs"
+          grep -Fq 'Build your High IQ run' "$RUNNER_TEMP/deploy-high-iq-resource-v2.mjs"
+          ! grep -Fq "dtf_suite_deploy_lock" "$RUNNER_TEMP/deploy-high-iq-resource-v2.mjs"
+          ! grep -Fq ".dtf-suite-manifest.json" "$RUNNER_TEMP/deploy-high-iq-resource-v2.mjs"
+          ! grep -Fq "'games/high-land','games/high-iq'" "$RUNNER_TEMP/deploy-high-iq-resource-v2.mjs"
+          python - <<'PY'
+          import os, pathlib, re
+          path=pathlib.Path(os.environ['RUNNER_TEMP'])/'deploy-high-iq-resource-v2.mjs'
+          text=path.read_text()
+          m=re.search(r"const snippetCode = String\.raw`(.*?)`\.trim\(\);", text, re.S)
+          assert m, 'embedded PHP missing'
+          php=m.group(1).replace('${tokenLiteral}', "'0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'")
+          (pathlib.Path(os.environ['RUNNER_TEMP'])/'dtf-high-iq-resource-v2.php').write_text('<?php\n'+php+'\n')
+          PY
+          php -l "$RUNNER_TEMP/dtf-high-iq-resource-v2.php"
+
+      - name: Locate successful exact-source resource build
+        id: build
+        shell: bash
+        run: |
+          set -euo pipefail
+          run_id="$(gh api \
+            -H 'Accept: application/vnd.github+json' \
+            "/repos/${GITHUB_REPOSITORY}/actions/workflows/build-dtfseeds-public-resource.yml/runs?head_sha=${SOURCE_SHA}&status=success&per_page=20" \
+            --jq '.workflow_runs | map(select(.head_branch == "main" and .event == "push")) | .[0].id // empty')"
+          [[ "$run_id" =~ ^[0-9]+$ ]] || {
+            echo "No successful main-branch resource build exists for $SOURCE_SHA" >&2
+            exit 1
+          }
+          echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+          echo "Using resource build run $run_id for exact source $SOURCE_SHA"
+
+      - name: Download and verify exact High IQ artifact
+        id: artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf "$RUNNER_TEMP/resource-download" "$RUNNER_TEMP/resource-verified"
+          mkdir -p "$RUNNER_TEMP/resource-download" "$RUNNER_TEMP/resource-verified"
+          artifact="dtf-resource-${RESOURCE_ID}-${SOURCE_SHA}"
+          gh run download "${{ steps.build.outputs.run_id }}" --repo "$GITHUB_REPOSITORY" --name "$artifact" --dir "$RUNNER_TEMP/resource-download"
+          archive="$(find "$RUNNER_TEMP/resource-download" -maxdepth 2 -type f -name "dtf-${RESOURCE_ID}-${SOURCE_SHA}.zip" -print -quit)"
+          [[ -n "$archive" ]] || {
+            echo "Inner route archive missing from artifact $artifact" >&2
+            find "$RUNNER_TEMP/resource-download" -maxdepth 3 -type f -print >&2
+            exit 1
+          }
+          python scripts/verify-dtf-public-resource-artifact.py "$RESOURCE_ID" "$archive" "$RUNNER_TEMP/resource-verified" | tee "$RUNNER_TEMP/resource-verification.json"
+          echo "archive=$archive" >> "$GITHUB_OUTPUT"
+
+      - name: Publish only High IQ through the transactional bridge
+        id: publish
+        shell: bash
+        env:
+          DTF_SUITE_ARCHIVE: ${{ steps.artifact.outputs.archive }}
+        run: |
+          set -euo pipefail
+          node "$RUNNER_TEMP/deploy-high-iq-resource-v2.mjs" "$DTF_SUITE_ARCHIVE" | tee "$RUNNER_TEMP/deploy-high-iq-result.log"
+          grep -Eq '"ok"[[:space:]]*:[[:space:]]*true' "$RUNNER_TEMP/deploy-high-iq-result.log"
+
+      - name: Verify visitor-facing High IQ route independently
+        shell: bash
+        env:
+          ROUTE: ${{ steps.resource.outputs.route }}
+          MARKER: ${{ steps.resource.outputs.marker }}
+        run: |
+          set -euo pipefail
+          body="$(mktemp)"
+          headers="$(mktemp)"
+          status="$(curl -4 -fsS --retry 6 --retry-all-errors --retry-delay 4 \
+            --output "$body" --dump-header "$headers" --write-out '%{http_code}' \
+            -H 'Cache-Control: no-cache, no-store, max-age=0' \
+            "https://dtfseeds.com${ROUTE}?dtf_resource=${GITHUB_RUN_ID}")"
+          [[ "$status" == '200' ]] || { echo "Expected HTTP 200, got $status" >&2; cat "$headers" >&2; exit 1; }
+          ! grep -Eiq '^location:' "$headers" || { echo 'Refusing redirected resource route' >&2; cat "$headers" >&2; exit 1; }
+          grep -Fqi "$MARKER" "$body" || { echo "Expected marker '$MARKER' not found" >&2; exit 1; }
+
+      - name: Advance only the High IQ production checkpoint
+        if: inputs.environment == 'production'
+        uses: actions/github-script@v7
+        env:
+          CHECKPOINT_TAG: ${{ steps.resource.outputs.checkpoint }}
+          DEPLOYED_SHA: ${{ inputs.source_sha }}
+        with:
+          script: |
+            const ref = `tags/${process.env.CHECKPOINT_TAG}`;
+            const sha = process.env.DEPLOYED_SHA;
+            try {
+              await github.rest.git.getRef({ owner: context.repo.owner, repo: context.repo.repo, ref });
+              await github.rest.git.updateRef({ owner: context.repo.owner, repo: context.repo.repo, ref, sha, force: true });
+            } catch (error) {
+              if (error.status !== 404) throw error;
+              await github.rest.git.createRef({ owner: context.repo.owner, repo: context.repo.repo, ref: `refs/${ref}`, sha });
+            }
+            core.summary.addHeading('Resource checkpoint').addRaw(`Advanced ${process.env.CHECKPOINT_TAG} to ${sha}.`).write();
+
+      - name: Record resource release
+        if: always()
+        env:
+          ROUTE: ${{ steps.resource.outputs.route }}
+          TARGET: ${{ steps.resource.outputs.production_target }}
+          SHARED_TARGET: ${{ steps.resource.outputs.shared_target }}
+        run: |
+          {
+            echo '## DTFSeeds WordPress resource release'
+            echo
+            echo "- Resource: $RESOURCE_ID"
+            echo "- Source: $SOURCE_SHA"
+            echo "- Environment: ${{ inputs.environment }}"
+            echo "- Route target: $TARGET"
+            echo "- Shared publisher target: $SHARED_TARGET"
+            echo "- Route: $ROUTE"
+            echo '- Global dtfseeds-production checkpoint is intentionally untouched.'
+          } >> "$GITHUB_STEP_SUMMARY"
