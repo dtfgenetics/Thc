@@ -16,6 +16,30 @@
       "status": "approved",
       "reviewedAt": "2026-09-04",
       "reason": "PR #556 was replayed onto main in d84cbc9926d02e3ed07136ee9ba3a880d4c07e07. Current main preserves the runtime, styles, cache wiring, and CI contract and contains a newer placement ARIA-label fix."
+    },
+    {
+      "branch": "project/platform/grow-doc-library-visual-publication",
+      "headSha": "78304517a39dc3f6d35fde1f6d4fda620c909672",
+      "supersededBy": "7ecf555ff025616e237c1b8e152708345625088e",
+      "status": "approved",
+      "reviewedAt": "2026-09-04",
+      "reason": "PR #535 was explicitly superseded by merged PR #536. Its only change pinned Grow Doc dataset ee8a7732afd01b3a7cf75b949ebd9e031007aa55; the current production pin is a 49-commit descendant with no divergence."
+    },
+    {
+      "branch": "project/platform/grow-doc-reviewed-crops-publication",
+      "headSha": "9084cba21d5acd0431852cf77ae8a0ac47521cba",
+      "supersededBy": "fc97e6caa06b35a65e48fc00da757e223e9039c0",
+      "status": "approved",
+      "reviewedAt": "2026-09-04",
+      "reason": "PR #540 was explicitly superseded by merged PR #544. Both workflow blobs from #540 are byte-identical in #544, and the old Grow Doc dataset pin 100c786f9b75ecf8d673b0ca797b17371e4f35e0 is an 8-commit ancestor of the current production pin."
+    },
+    {
+      "branch": "project/platform/grow-doc-reviewed-media-publication-v2",
+      "headSha": "fcee485a3065c640f1f6fea025afff3db8a13d03",
+      "supersededBy": "9e8b2d7034c3bf307903df3738cabf9a21bd4c0b",
+      "status": "approved",
+      "reviewedAt": "2026-09-04",
+      "reason": "PR #546 was superseded by merged PR #548. Its only changed release-source marker is byte-for-byte identical to current main and points to the same Grow Doc dataset revision 3f020ce816617cd417f4805bb9d157da0ae8d845."
     }
   ]
 }
