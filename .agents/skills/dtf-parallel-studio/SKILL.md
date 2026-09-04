@@ -1,6 +1,6 @@
 ---
 name: dtf-parallel-studio
-description: High-throughput coordination layer for many simultaneous chats, agents, projects, games, apps, content systems, assets, commerce changes, and production releases across DTFSeeds. Use for all new concurrent work in dtfgenetics/Thc and for cross-repository DTFSeeds work that must remain independently buildable, testable, mergeable, and releasable. Optimize for speed: create unique sessions, avoid implicit branch reuse, detect overlap without blocking development, validate only affected resources first, integrate against current main late, and serialize only identical production resources.
+description: High-throughput coordination layer for many simultaneous chats, agents, projects, games, apps, content systems, assets, commerce changes, and releases across DTFSeeds. Use for new concurrent work in dtfgenetics/Thc and cross-repository DTFSeeds work that must remain independently buildable, testable, mergeable, and releasable. Optimize for speed: unique sessions, explicit resume, non-blocking overlap detection, affected-first validation, late integration against current main, and same-resource-only production serialization.
 compatibility: Designed for OpenAI Codex, ChatGPT GitHub connector workflows, local Git worktrees, GitHub CLI, and other Agent Skills clients. GitHub remains the code/release authority; Google Drive remains the canonical rich asset/research/human-document source where the project registry says so.
 metadata:
   author: dtfgenetics
@@ -9,124 +9,108 @@ metadata:
 
 # DTF Parallel Studio
 
-This skill is the high-throughput coordination layer for DTFSeeds. It exists because many chats and agents are building parts of the same larger product, `dtfseeds.com`, and must be able to move quickly without turning every project into one shared mutable branch or one monolithic release.
+DTFSeeds is one platform composed of many independently changeable resources. This skill lets many chats and agents work on those resources at the same time without turning the repository into one shared mutable workspace or one global release lock.
 
-The goal is **more simultaneous work with fewer collisions**, not more process.
+The goal is **more simultaneous work with fewer collisions and less unnecessary CI**.
 
 ## Speed contract
 
-Default behavior is optimistic and parallel.
+Default to optimistic parallel work.
 
-- Do not create a global repository lock.
-- Do not create a one-chat-at-a-time rule.
-- Do not block coding because another project is building, testing, merging, or deploying.
+- No global repository lock.
+- No one-chat-at-a-time rule.
+- Do not stop coding because another project is building, merging, or deploying.
 - Do not merge current `main` into every working branch merely because `main` moved.
-- Do not require full-repository testing for a local change unless the affected graph or a shared contract requires it.
+- Do not run the full repository for a local change unless an affected dependency requires it.
 - Do not serialize unrelated production routes.
-- Do not silently reuse another chat's mutable branch.
-- Do not treat a warning about overlap as a reason to stop development.
-- Do not make Drive, GitHub, WordPress, Hostinger, or any other system a second competing source of truth for the same field.
+- Never silently reuse another chat's mutable branch.
+- Yellow overlap is advisory, not a development stop.
+- Coordination should cost less than the conflicts it prevents.
 
-Coordination should cost less than the conflicts it prevents.
+## Authority
 
-## Authority and related skills
+Read current repository instructions and the subsystem-specific skill/source-of-truth documents.
 
-Read current repository instructions first.
+Related skills:
 
-For repository integration/failures, use:
+- Repository repair/integration: `../github-repo-manager/SKILL.md`
+- Existing legacy project/worktree flow: `../parallel-project-manager/SKILL.md`
+- Live publication: `../dtfseeds-production-publishing/SKILL.md`
+- Canonical content preservation: `../dtf-content-preservation/SKILL.md`
 
-- `../github-repo-manager/SKILL.md`
+Use `data/project-registry.json` for project/source ownership and `data/studio-resources.json` for coordination resources.
 
-For existing project/worktree compatibility rules, use:
+Authority is field/resource specific:
 
-- `../parallel-project-manager/SKILL.md`
+- GitHub: code, tests, machine-readable release data, automation, deployment configuration.
+- Drive: approved assets, research, print masters, human-readable source documents, and release packages when the project registry says so.
+- WordPress/Hostinger: deployment targets, not automatically editing authority.
+- A stale Drive note never overrides a newer locked repository architecture decision.
 
-For live DTFSeeds publication, use:
+## One lightweight CLI
 
-- `../dtfseeds-production-publishing/SKILL.md`
-
-For canonical content preservation, use:
-
-- `../dtf-content-preservation/SKILL.md`
-
-This skill does not replace subsystem skills. It decides **how concurrent work is isolated, observed, integrated, and handed to the correct release owner**.
-
-## Source-of-truth model
-
-Use `data/project-registry.json` as the cross-project ownership map.
-
-Use `data/studio-resources.json` as the coordination/resource map.
-
-Important distinction:
-
-- GitHub is canonical for code, tests, machine-readable release data, automation, and deployment configuration.
-- Drive may be canonical for approved assets, research, print masters, human-readable source documents, and release packages when the project registry says so.
-- Production WordPress/Hostinger state is a deployment target, not automatically the canonical editing source.
-- A stale Drive note does not override a newer locked repository architecture decision.
-
-When sources disagree, resolve authority at the field/resource level before propagating the value.
-
-## Session model
-
-### New work
-
-Every new concurrent task gets a unique session.
-
-Preferred local command:
+Studio intentionally does **not** add commands to root `package.json`, because that file is a shared CI hotspot. Use the dispatcher instead:
 
 ```bash
-npm run studio:new -- <project-id> <task>
+node scripts/studio.mjs <command> [...args]
 ```
 
-This creates:
+Commands:
+
+```text
+new
+resume
+status
+overlap
+push
+integrate
+test
+```
+
+This keeps Studio evolution from unnecessarily triggering unrelated application workflows.
+
+## New session
+
+Every new concurrent task gets a unique session:
+
+```bash
+node scripts/studio.mjs new <project-id> <task>
+```
+
+Local execution creates:
 
 ```text
 work/<project-id>/<task>/<session-id>
 ```
 
-in an isolated linked worktree.
+in a dedicated linked worktree.
 
-A new session MUST NOT attach to an existing branch simply because the project/task text matches.
+A new session MUST NOT reconnect to an existing branch because its project/task text matches.
 
-### Explicit continuation
+When only GitHub connector tools are available, reproduce the same model remotely: read current `main`, create a unique `work/.../<session>` branch from that exact SHA, edit only that branch, and create/update its PR. Do not claim a local worktree exists in connector-only execution.
 
-Resume only when continuation is intentional:
+## Explicit resume
 
-```bash
-npm run studio:resume -- <work-branch>
-```
-
-or:
+Continuation must be deliberate:
 
 ```bash
-npm run studio:resume -- <pr-number>
+node scripts/studio.mjs resume <work-branch>
+node scripts/studio.mjs resume <pr-number>
 ```
 
-Never turn `studio:new` into an implicit resume operation.
-
-### Connector-only execution
-
-When a local worktree is unavailable but GitHub branch tools are available:
-
-1. read current `main` SHA;
-2. create a unique `work/<project>/<task>/<session>` branch from that exact SHA;
-3. edit only that branch;
-4. create/update a PR for the session;
-5. preserve the same session/resource metadata in the PR body when practical.
-
-Do not claim a local worktree exists when operating only through a remote connector.
+Never turn `new` into implicit resume behavior.
 
 ## Resource model
 
-DTFSeeds is one platform composed of independently changeable resources.
+Resources are data-driven and may represent code, UI, content, data, assets, APIs, commerce, routes, or future systems.
 
 Examples:
 
 ```text
-page.game-hub
 platform.site-shell
+page.game-hub
 game.high-land
-game.high-iq
+game.weedopolis
 app.growlens
 app.grow-doc
 app.plant-atlas
@@ -135,81 +119,55 @@ content.education
 commerce.shop
 ```
 
-Resources are data-driven. New project types should be registered rather than requiring a rewrite of this skill.
-
-One file may legitimately affect multiple resources. For example, a shared design-system file can affect both a shared UI resource and Genetics. That is a dependency signal, not a reason to ban the change.
+One file may affect multiple resources. That is a dependency signal, not a reason to ban the edit.
 
 ## Fast work loop
 
-For normal development:
+1. Identify project and canonical source.
+2. Start a unique Studio session.
+3. Read the subsystem contract.
+4. Make the focused change.
+5. Run the narrowest trustworthy project/resource tests.
+6. Inspect status/resources.
+7. Push without synchronizing `main` into the session.
+8. Keep working while other sessions proceed.
+9. Check overlap before final integration.
+10. Integrate the exact head against current `main` only at the final boundary.
 
-1. identify project and canonical source;
-2. start a unique studio session;
-3. read the subsystem skill/source-of-truth docs;
-4. make the focused change;
-5. run narrow project/resource tests first;
-6. inspect session/resource state;
-7. push without merging `main` into the session;
-8. keep working while other sessions proceed;
-9. evaluate overlap before final integration;
-10. integrate the exact head against current `main` at the final boundary.
-
-Useful commands:
+Commands:
 
 ```bash
-npm run studio:status
-npm run studio:overlap
-npm run studio:push
-npm run studio:integrate -- <pr-number>
+node scripts/studio.mjs status
+node scripts/studio.mjs overlap
+node scripts/studio.mjs push
+node scripts/studio.mjs integrate <pr-number>
 ```
 
-## Status is informational during development
+## Status
 
-`studio:status` reports:
+`status` reports session identity, head, observed `main`, merge base, ahead/behind state, changed files, affected resources, and unmatched paths.
 
-- session identity;
-- current head;
-- observed `main`;
-- ahead/behind information;
-- changed files;
-- affected resources;
-- unmatched files.
-
-Being behind `main` is NOT by itself a development failure.
-
-Do not constantly rewrite a working branch to keep it visually current with `main`.
+Being behind `main` is informational during development. Do not constantly rewrite the working branch just to appear current.
 
 ## Overlap model
 
-Use three development states:
-
 ### Green
 
-No meaningful source/resource overlap.
-
-Action: continue normally.
+No meaningful source/resource overlap. Continue normally.
 
 ### Yellow
 
-Shared files, resources, contracts, or production target detected, but no proven integration conflict.
-
-Action: continue development. Expand affected validation before merge if the shared dependency requires it.
+Shared file, resource, contract, or production target detected without a proven integration conflict. Continue development; broaden affected validation when needed.
 
 ### Red
 
-The current integration state is actually conflicting for overlapping source/resources.
+Current integration state actually conflicts on overlapping source/resources. Development may continue, but final integration requires semantic conflict repair.
 
-Action: development may continue, but final integration requires semantic conflict repair against current `main`.
+Red is an integration condition, not a global repository freeze.
 
-Red is an integration condition, not a global stop signal.
+## Production overlap is different
 
-## Production overlap is separate from development overlap
-
-Two branches can be perfectly mergeable yet target the same live route.
-
-That is not a reason to stop coding.
-
-Only final production mutations for the same resource should serialize.
+Mergeable branches may still target the same live route. Only the final writes for the same production resource should serialize.
 
 Examples:
 
@@ -221,103 +179,90 @@ route:/shop/
 route:/thc-grow-doc/
 ```
 
-High Land and Grow Doc should be allowed to publish concurrently if their production workers are independent.
-
-Two High Land writers should queue at the High Land production resource.
+High Land and Grow Doc should be able to publish concurrently when their workers are independent. Two High Land writers should queue only at the High Land production resource.
 
 ## Supersession
 
-Multiple open PRs may represent the same repair forward-ported after `main` moved.
+`overlap` may flag possible supersession when two PRs share the same resource and one changed-file set contains the other. This is advisory.
 
-`studio:overlap` can flag a possible supersession when branches share the same resource and one changed-file set contains the other.
+Before retiring an older PR:
 
-Supersession detection is advisory until intent is confirmed by source/history/PR context.
+1. confirm the newer work actually replaces it;
+2. preserve any unique behavior/content;
+3. record the supersession relationship;
+4. only then close/retire the old PR.
 
-Do not automatically delete or close work solely because a heuristic matched.
+Never delete work because a heuristic matched.
 
-When a newer PR clearly supersedes an older stale PR:
-
-- record the relationship;
-- preserve any unique behavior from the older PR;
-- close/retire the older PR only after confirming nothing unique is lost.
-
-## Push behavior
+## Push without chasing main
 
 Use:
 
 ```bash
-npm run studio:push
+node scripts/studio.mjs push
 ```
 
 The push path must:
 
-1. require a clean committed worktree;
-2. enforce the project lane;
-3. classify affected resources;
-4. push the exact session branch;
-5. create/reuse its PR;
-6. NOT merge current `main` into the session merely to push.
+- require a committed clean worktree;
+- enforce the project lane;
+- classify affected resources;
+- push the exact session branch;
+- create/reuse the PR;
+- NOT merge current `main` into the session merely to push.
 
-The PR is the remote handoff record for the session.
+The PR is the remote session handoff record.
 
-## Late integration
+## Late exact-head integration
 
-Use:
+Preflight:
 
 ```bash
-npm run studio:integrate -- <pr-number>
+node scripts/studio.mjs integrate <pr-number>
 ```
 
-The integration preflight must:
+It must:
 
 1. read the current PR head SHA;
-2. fetch current `main`;
-3. verify the fetched PR branch still equals the expected head SHA;
-4. calculate a non-destructive merge against current `main` using `git merge-tree` or equivalent;
-5. require checks for the exact head;
+2. fetch current `main` and the PR branch;
+3. verify the fetched head still equals the expected PR head;
+4. calculate a non-destructive current-main merge using `git merge-tree` or equivalent;
+5. require current head checks;
 6. refuse stale-head integration;
 7. avoid rewriting the working session.
 
-To perform the final merge when ready:
+Final merge:
 
 ```bash
-npm run studio:integrate -- <pr-number> --merge
+node scripts/studio.mjs integrate <pr-number> --merge
 ```
 
-The merge must be pinned to the exact validated head when the available GitHub client supports it.
-
-If the target moved incompatibly, repair that integration conflict; do not restart unrelated sessions.
+Pin the merge to the exact validated head when the GitHub client supports it. If current `main` became incompatible, repair that integration conflict rather than restarting unrelated sessions.
 
 ## Testing philosophy
 
-Optimize for the smallest trustworthy validation set.
+Use the smallest trustworthy validation set:
 
-Order:
-
-1. changed-function/unit test;
+1. changed-function/unit tests;
 2. project/resource tests;
-3. build/type/lint for the affected resource;
+3. build/type/lint for affected resource;
 4. dependent-resource tests when a shared contract changed;
-5. integration/e2e tests where user-visible or cross-resource behavior changed;
-6. production visitor/runtime verification after publication.
+5. integration/e2e where user-visible or cross-resource behavior changed;
+6. visitor/runtime verification after production publication.
 
-Future affected-graph tooling such as Nx may automate steps 2-4. Do not require that migration before using this skill.
+A shared root file must not automatically mean every application needs its full browser suite. Prefer dependency-aware classification. Future affected-graph tooling such as Nx can automate this later; it is not a prerequisite for Studio v1.
 
 ## Cross-repository work
 
-Some DTF resources are canonical in dedicated repositories and only integrated into `Thc` through pinned source revisions or packaging contracts.
+When a resource is canonical in another repository:
 
-Examples include external games and Grow Doc source data.
-
-For a dedicated repo:
-
-1. develop/test/release in the canonical repo;
+1. develop/test in the canonical repo;
 2. produce an immutable source commit/artifact;
-3. update the DTFSeeds integration pin/contract in its own studio session;
+3. update the DTFSeeds integration pin/contract in its own Studio session;
 4. validate the handoff;
 5. publish only the affected DTFSeeds resource.
 
-Do not copy mutable development trees between repos as an informal synchronization mechanism.
+Do not copy mutable development trees between repositories as informal synchronization.
 
 ## Drive integration
 
@@ -332,34 +277,23 @@ When Drive input materially affects a release, capture stable provenance when pr
 - DTF project/resource ID;
 - approval/provenance state.
 
-Do not scan the entire Drive on every code change.
-
-Use Drive only when the affected resource consumes Drive-owned material.
+Do not scan all of Drive for every code change. Query it only when the affected resource consumes Drive-owned material.
 
 ## Shared files
 
-Files under repository control, shared design systems, lockfiles, deployment planners, registries, and workflow infrastructure are high-impact shared resources.
+Shared design systems, registries, lockfiles, deployment planners, workflows, and repository-control files are high-impact resources.
 
-Treat edits to them as potentially broader affected changes.
+Do not prohibit them. Instead classify them, expand affected checks, integrate late, and keep unrelated work moving.
 
-Do not solve this by prohibiting them from normal work. Instead:
+Avoid adding Studio convenience commands to unrelated shared manifests when a dedicated dispatcher can provide the same speed with less CI fan-out.
 
-- classify them;
-- run broader affected checks;
-- integrate late;
-- keep unrelated development moving.
+## Current production architecture migration
 
-## Current architecture limitation to remove incrementally
+The current gateway still has broad lanes such as `publicSuite` and one global production checkpoint. The target is independently buildable/releasable resources.
 
-The existing production gateway still contains broad lanes such as `publicSuite` and a global production checkpoint.
+Migrate safely in verified slices:
 
-This skill's target architecture is per-resource build/release/checkpoint state.
-
-Do not perform a destructive all-at-once deployment rewrite merely to conform to the target model.
-
-Migrate safely in slices:
-
-1. resource/session isolation;
+1. session/resource isolation;
 2. overlap/supersession analysis;
 3. late exact-head integration;
 4. affected-only testing/caching;
@@ -367,41 +301,41 @@ Migrate safely in slices:
 6. per-resource deployment concurrency;
 7. per-resource production checkpoints.
 
-Each slice must preserve current production behavior until its replacement is verified.
+Do not perform a destructive all-at-once production rewrite.
 
 ## Failure behavior
 
 A failure is local until evidence proves it is global.
 
-- One project's unit failure should not block another project from coding.
-- One stale PR should not freeze the repo.
-- One production route failure should not force unrelated routes to redeploy unless they share a dependency or release worker.
-- One conflict should be repaired semantically at integration.
-- One outdated Drive record should be flagged as drift, not propagated automatically.
+- One project's failure does not stop other projects from coding.
+- One stale PR does not freeze the repo.
+- One production route failure should not force unrelated routes to redeploy unless they truly share a release resource.
+- One conflict gets repaired at integration.
+- One stale Drive record gets flagged as drift instead of propagated.
 
-Use `github-repo-manager` for actual merge conflicts, broken CI, rejected pushes, workflow failures, and repository repair.
+Use `github-repo-manager` for actual conflicts, broken CI, rejected pushes, workflow failures, and repository repair.
 
 ## Completion states
 
-Always distinguish:
+Keep these distinct:
 
-- **Development complete:** project change implemented and project tests pass.
-- **Session pushed:** branch/PR exists remotely.
-- **Integration ready:** exact head integrates with current main and checks pass.
-- **Merged:** exact validated head entered main.
-- **Published:** production writer completed.
-- **Verified live:** visitor/runtime verification proved the intended result.
+- **Development complete** — implementation and project tests complete.
+- **Session pushed** — branch/PR exists remotely.
+- **Integration ready** — exact head integrates with current `main` and checks pass.
+- **Merged** — exact validated head entered `main`.
+- **Published** — production writer completed.
+- **Verified live** — visitor/runtime verification proved the intended production state.
 
-Never collapse those states into one "done" claim.
+Never collapse these into one generic "done" state.
 
-## Final reporting format
+## Final status format
 
-Keep reports compact:
+Report:
 
 - **Session:** project/task/session branch.
 - **Resources:** affected resource IDs.
-- **Validation:** narrow/affected checks run.
-- **Overlap:** green/yellow/red plus any same-production target.
-- **Git:** head/PR/integration state.
+- **Validation:** narrow/affected checks.
+- **Overlap:** green/yellow/red and any same-production resource.
+- **Git:** exact head/PR/integration state.
 - **Production:** not requested, queued, published-unverified, or verified live.
-- **Remaining:** only real blockers, dependency migrations, or unverified state.
+- **Remaining:** only real blockers or unverified migrations.
