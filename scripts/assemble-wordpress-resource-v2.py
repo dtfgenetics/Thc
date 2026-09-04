@@ -122,6 +122,15 @@ if not match:
     raise SystemExit('could not find decoded manifest validation line')
 text = text[:match.end()] + manifest_guard + "\n" + text[match.end():]
 
+# Resource manifests already prove route ownership through their fixed resource
+# identity. The suite-only manifest field below is intentionally absent from
+# resource artifacts, so remove only that inherited two-line ownership guard.
+replace_regex_once(
+    r"            \$excluded = is_array\(\$manifest\['wordPressOwnedRoutesExcluded'\].*?\n            foreach \(\['/','/learn/','/blog/'\] as \$route\).*?\n",
+    '',
+    'suite-only WordPress ownership manifest guard',
+)
+
 # Verify only the route this bridge is authorized to mutate.
 replace_regex_once(
     r"const liveChecks = \[.*?\n\];",
@@ -148,13 +157,14 @@ text = text.replace('DTFSeeds suite deployment', f'DTFSeeds {resource_id} resour
 
 # Final fail-closed assertions: the generated bridge may mention the generic
 # suite implementation in comments/logs, but must not retain broad route lists,
-# the global lock, or the suite manifest contract.
+# the global lock, or suite-only manifest contracts.
 for forbidden in [
     "'games/high-land','games/high-iq'",
     "'growlens','thc-grow-doc'",
     "dtf_suite_deploy_lock",
     ".dtf-suite-manifest.json",
     "'dtfseeds-public-apps-only'",
+    "wordPressOwnedRoutesExcluded",
 ]:
     if forbidden in text:
         raise SystemExit(f'generated resource bridge retained forbidden broad authority: {forbidden}')
