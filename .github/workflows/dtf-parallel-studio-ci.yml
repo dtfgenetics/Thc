@@ -1,0 +1,64 @@
+name: DTF Parallel Studio CI
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.agents/skills/dtf-parallel-studio/**'
+      - 'scripts/studio/**'
+      - 'scripts/test-dtf-parallel-studio.mjs'
+      - 'scripts/project-lane-check.mjs'
+      - 'data/studio-resources.json'
+      - 'data/project-work-lanes.json'
+      - 'package.json'
+      - '.github/workflows/dtf-parallel-studio-ci.yml'
+  push:
+    branches: [main]
+    paths:
+      - '.agents/skills/dtf-parallel-studio/**'
+      - 'scripts/studio/**'
+      - 'scripts/test-dtf-parallel-studio.mjs'
+      - 'scripts/project-lane-check.mjs'
+      - 'data/studio-resources.json'
+      - 'data/project-work-lanes.json'
+      - 'package.json'
+      - '.github/workflows/dtf-parallel-studio-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dtf-parallel-studio-ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate studio scripts
+        run: |
+          node --check scripts/studio/core.mjs
+          node --check scripts/studio/start.mjs
+          node --check scripts/studio/resume.mjs
+          node --check scripts/studio/status.mjs
+          node --check scripts/studio/overlap.mjs
+          node --check scripts/studio/push.mjs
+          node --check scripts/studio/integrate.mjs
+          node --check scripts/project-lane-check.mjs
+
+      - name: Run studio regression tests
+        run: npm run studio:test
+
+      - name: Preserve legacy parallel-project self-test
+        run: npm run project:test
