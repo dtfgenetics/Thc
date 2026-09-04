@@ -34,7 +34,14 @@ for (const [id, resource] of Object.entries(resources)) {
   for (const file of resource.requiredFiles) {
     assert.ok(file.startsWith(`${resource.artifactRoot}/`), `${id} required file escaped artifact root: ${file}`);
   }
+  assert.ok(resource.publisher?.status, `${id} must declare publisher readiness`);
 }
+
+assert.equal(resources['high-land'].publisher.type, 'hostinger-ssh');
+assert.equal(resources['high-land'].publisher.status, 'pilot-manual');
+assert.equal(resources['high-land'].publisher.workflow, 'deploy-dtfseeds-public-resource.yml');
+assert.equal(resources['high-iq'].publisher.type, 'wordpress-transactional-resource');
+assert.equal(resources['high-iq'].publisher.status, 'pending-bridge-adaptation');
 
 for (const path of config.globalBuildPaths) {
   assert.ok(typeof path === 'string' && path.length > 0);

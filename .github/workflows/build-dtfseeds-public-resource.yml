@@ -22,8 +22,10 @@ on:
       - 'site/deployment/release-resources.json'
       - 'scripts/plan-dtfseeds-resource-release.mjs'
       - 'scripts/package-dtf-public-resource.py'
+      - 'scripts/verify-dtf-public-resource-artifact.py'
       - 'scripts/test-dtf-resource-release-system.mjs'
       - '.github/workflows/build-dtfseeds-public-resource.yml'
+      - '.github/workflows/deploy-dtfseeds-public-resource.yml'
   push:
     branches: [main]
     paths:
@@ -34,8 +36,10 @@ on:
       - 'site/deployment/release-resources.json'
       - 'scripts/plan-dtfseeds-resource-release.mjs'
       - 'scripts/package-dtf-public-resource.py'
+      - 'scripts/verify-dtf-public-resource-artifact.py'
       - 'scripts/test-dtf-resource-release-system.mjs'
       - '.github/workflows/build-dtfseeds-public-resource.yml'
+      - '.github/workflows/deploy-dtfseeds-public-resource.yml'
 
 permissions:
   contents: read
@@ -67,7 +71,7 @@ jobs:
           set -euo pipefail
           node --check scripts/plan-dtfseeds-resource-release.mjs
           node scripts/test-dtf-resource-release-system.mjs
-          python -m py_compile scripts/package-dtf-public-resource.py
+          python -m py_compile scripts/package-dtf-public-resource.py scripts/verify-dtf-public-resource-artifact.py
 
       - name: Plan affected resources
         id: plan
@@ -160,18 +164,8 @@ jobs:
           archive="$RUNNER_TEMP/dtf-${RESOURCE_ID}-${GITHUB_SHA}.zip"
           python scripts/package-dtf-public-resource.py "$RESOURCE_ID" release-resource "$archive" | tee resource-build.json
           test -s "$archive"
-          python - "$archive" "$RESOURCE_ID" <<'PY'
-          import json, sys, zipfile
-          archive, resource_id = sys.argv[1:]
-          with zipfile.ZipFile(archive) as z:
-              names = z.namelist()
-              assert len(names) == len(set(names)), 'duplicate archive entries'
-              manifest = json.loads(z.read('.dtf-resource-manifest.json'))
-              assert manifest['resourceId'] == resource_id
-              root = manifest['artifactRoot'] + '/'
-              payload = [name for name in names if name != '.dtf-resource-manifest.json']
-              assert payload and all(name.startswith(root) for name in payload), 'resource archive escaped route root'
-          PY
+          rm -rf "$RUNNER_TEMP/verified-resource"
+          python scripts/verify-dtf-public-resource-artifact.py "$RESOURCE_ID" "$archive" "$RUNNER_TEMP/verified-resource" | tee resource-verification.json
           echo "archive=$archive" >> "$GITHUB_OUTPUT"
 
       - name: Upload resource artifact
@@ -181,5 +175,6 @@ jobs:
           path: |
             ${{ steps.package.outputs.archive }}
             resource-build.json
+            resource-verification.json
           if-no-files-found: error
           retention-days: 14
