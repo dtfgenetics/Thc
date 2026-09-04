@@ -27,13 +27,13 @@ scope_items() {
     ITEMS=(games dtf-build.json)
     REQUIRED=(games/index.html games/bud-or-bluff/index.html games/bud-or-bluff/api-v2.php dtf-build.json)
   else
-    # WordPress/Learning-owned roots such as /learn are intentionally excluded.
-    # The public-suite worker may ship independent apps and static surfaces, but
-    # it must never replace a route owned by a different production writer.
+    # WordPress-owned editorial roots (including /blog) and Learning-owned
+    # roots such as /learn are intentionally excluded. The public-suite worker
+    # may ship independent apps and static surfaces, but it must never replace
+    # a route owned by a different production writer.
     ITEMS=(
       assets
       atlas
-      blog
       explore-dtf-genetics-your-destination-for-cannabis-themed-apparel-and-art
       exploring-dtf-genetics-a-hub-for-cannabis-art-and-gardening-tools
       games
