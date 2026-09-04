@@ -1,0 +1,25 @@
+name: Validate Crossword Release Source
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'site/public-route-patch/games/crossword/source-revision.txt'
+      - 'scripts/validate-crossword-release-source.mjs'
+      - '.github/workflows/validate-crossword-release-source.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'site/public-route-patch/games/crossword/source-revision.txt'
+      - 'scripts/validate-crossword-release-source.mjs'
+      - '.github/workflows/validate-crossword-release-source.yml'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/validate-crossword-release-source.mjs
