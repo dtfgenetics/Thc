@@ -1,0 +1,60 @@
+name: Burn Buds Battle Feedback CI
+
+on:
+  pull_request:
+    paths:
+      - 'games/protect-the-plants/test/battle-feedback-v1.test.mjs'
+      - 'games/protect-the-plants/test/targeting-v1.test.mjs'
+      - 'site/public-route-patch/games/protect-the-plants/battle-feedback-v1.js'
+      - 'site/public-route-patch/games/protect-the-plants/battle-feedback-v1.css'
+      - 'site/public-route-patch/games/protect-the-plants/targeting-v1.js'
+      - 'site/public-route-patch/games/protect-the-plants/targeting-v1.css'
+      - 'site/public-route-patch/games/protect-the-plants/index.html'
+      - 'site/public-route-patch/games/protect-the-plants/sw.js'
+      - '.github/workflows/burn-buds-battle-feedback-ci.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'games/protect-the-plants/test/battle-feedback-v1.test.mjs'
+      - 'games/protect-the-plants/test/targeting-v1.test.mjs'
+      - 'site/public-route-patch/games/protect-the-plants/battle-feedback-v1.js'
+      - 'site/public-route-patch/games/protect-the-plants/battle-feedback-v1.css'
+      - 'site/public-route-patch/games/protect-the-plants/targeting-v1.js'
+      - 'site/public-route-patch/games/protect-the-plants/targeting-v1.css'
+      - 'site/public-route-patch/games/protect-the-plants/index.html'
+      - 'site/public-route-patch/games/protect-the-plants/sw.js'
+      - '.github/workflows/burn-buds-battle-feedback-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  battle-feedback-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check Burn Buds helper syntax
+        run: |
+          node --check site/public-route-patch/games/protect-the-plants/battle-feedback-v1.js
+          node --check site/public-route-patch/games/protect-the-plants/targeting-v1.js
+          node --check site/public-route-patch/games/protect-the-plants/placement-v1.js
+      - name: Verify targeting contract
+        run: node games/protect-the-plants/test/targeting-v1.test.mjs
+      - name: Verify battle feedback contract
+        run: node games/protect-the-plants/test/battle-feedback-v1.test.mjs
+      - name: Verify page and cache integration
+        run: |
+          set -euo pipefail
+          root=site/public-route-patch/games/protect-the-plants
+          for asset in battle-feedback-v1.js battle-feedback-v1.css targeting-v1.js targeting-v1.css placement-v1.js placement-v1.css; do
+            test -s "$root/$asset"
+          done
+          grep -Fq './battle-feedback-v1.css' "$root/index.html"
+          grep -Fq './battle-feedback-v1.js' "$root/index.html"
+          grep -Fq './battle-feedback-v1.css' "$root/sw.js"
+          grep -Fq './battle-feedback-v1.js' "$root/sw.js"
