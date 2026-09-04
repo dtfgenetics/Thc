@@ -29,6 +29,8 @@
         "apps/high-land-web/",
         "apps/growlens-web/",
         "games/",
+        "site/design-system/",
+        "data/public-navigation.json",
         "site/public-route-patch/games/",
         "site/public-route-patch/tools/",
         "site/public-route-patch/projects/",
@@ -45,6 +47,8 @@
       "description": "Canonical WordPress pages, genetics/store presentation and approved WordPress-hosted media.",
       "prefixes": [
         "site/wordpress/",
+        "site/design-system/",
+        "data/public-navigation.json",
         "data/genetics/",
         "scripts/apply-wordpress-public-content-rest.mjs",
         "scripts/deploy-wordpress-infographic-library-rest.mjs",
