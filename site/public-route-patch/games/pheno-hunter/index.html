@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#08120c">
+  <meta name="description" content="Pheno Hunter is a keeper-selection scouting game from DTF Games.">
+  <link rel="canonical" href="https://dtfseeds.com/games/pheno-hunter/">
+  <link rel="stylesheet" href="./pheno-hunter.css">
+  <title>Pheno Hunter | DTF Games</title>
+</head>
+<body>
+  <a class="skip-link" href="#game">Skip to game</a>
+  <header class="site-bar">
+    <a class="brand" href="/games/" aria-label="Back to DTF Games"><span class="brand-mark">DTF</span><span><strong>DTF Games</strong><small>Dream the Future</small></span></a>
+    <a class="hub-link" href="/games/">Game Hub</a>
+  </header>
+
+  <main id="game" class="game-shell">
+    <section class="hero" aria-labelledby="game-title">
+      <div><p class="eyebrow">Keeper-selection scouting</p><h1 id="game-title">Pheno Hunter</h1><p class="lede">Eight candidates. Ten scouting tokens. Three shortlist slots. Read the cohort, reveal only what matters, then commit to the keeper that best fits the brief.</p></div>
+      <p id="load-status" class="status-chip" role="status">Loading greenhouse…</p>
+    </section>
+
+    <section class="hud" aria-label="Hunt status">
+      <div><span>Scout tokens</span><strong id="token-stat">10</strong></div>
+      <div><span>Shortlist</span><strong id="shortlist-stat">0 / 3</strong></div>
+      <div><span>Observed</span><strong id="observed-stat">0 traits</strong></div>
+      <div><span>Hunt code</span><strong id="code-stat">------</strong></div>
+    </section>
+
+    <section class="brief-card" aria-labelledby="brief-title">
+      <div class="brief-copy"><p class="eyebrow">Selection brief</p><h2 id="brief-title">Opening brief…</h2><p id="brief-summary"></p></div>
+      <div><p class="panel-label">Trait priorities</p><div id="brief-weights" class="weight-grid"></div></div>
+    </section>
+
+    <section class="hunt-layout">
+      <div>
+        <div class="section-heading"><div><p class="eyebrow">Candidate bench</p><h2>Scout the cohort</h2></div><p class="section-note">Vigor, Structure, and Finish Speed are visible. Scout hidden traits only where the evidence is worth a token.</p></div>
+        <div id="candidate-grid" class="candidate-grid" aria-live="polite"></div>
+      </div>
+
+      <aside class="side-column">
+        <section class="side-card keeper-board" aria-labelledby="keeper-title"><p class="eyebrow">Keeper board</p><h2 id="keeper-title">Your shortlist</h2><p class="help-text">Add up to three finalists. The final keeper must be on this board.</p><div id="shortlist" class="shortlist"><p class="empty-state">No candidates shortlisted yet.</p></div></section>
+
+        <section class="side-card code-card" aria-labelledby="code-title"><p class="eyebrow">Hunt code</p><h2 id="code-title">Replay this cohort</h2><label for="hunt-code">Six-character code</label><div class="code-row"><input id="hunt-code" maxlength="6" autocomplete="off" autocapitalize="characters" spellcheck="false"><button id="new-code" type="button" class="secondary-button">New</button></div><p class="help-text">Press Enter to load the exact same brief, cohort, and ordering.</p><button id="share-hunt" type="button" class="primary-button">Copy challenge link</button></section>
+
+        <section id="result-panel" class="side-card result-card" hidden aria-labelledby="result-title"><p class="eyebrow">Final selection</p><h2 id="result-title">Hunt complete</h2><div id="result-score" class="result-score"></div><div id="result-breakdown" class="result-breakdown"></div><div id="result-ranking" class="result-ranking"></div><button id="next-hunt" type="button" class="primary-button">Start new hunt</button></section>
+      </aside>
+    </section>
+
+    <section class="rules-card" aria-labelledby="rules-title"><p class="eyebrow">Selection discipline</p><h2 id="rules-title">The flashiest plant is not automatically the keeper.</h2><div class="rules-grid"><p><strong>Read the brief:</strong> each hunt values the seven traits differently.</p><p><strong>Spend observations:</strong> hidden Resin, Aroma, Yield Potential, and Stability cost one scouting token each to reveal.</p><p><strong>Compare before committing:</strong> your score rewards objective fit, evidence on the chosen plant, and actual comparison across candidates.</p></div><p class="education-note">Content boundary: all candidate names, trait scores, families, and target briefs are fictional game data. They illustrate selection tradeoffs only and are not real cultivar claims, breeding probabilities, potency data, or guaranteed outcomes.</p></section>
+  </main>
+  <p id="announce" class="sr-only" aria-live="assertive"></p>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
