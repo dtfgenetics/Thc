@@ -1,8 +1,9 @@
 {
-  "schemaVersion": 1,
-  "description": "Flexible project-isolation rules for parallel development. Normal project branches stay in their own source lane; platform and multi-project branches intentionally allow cross-project work.",
+  "schemaVersion": 2,
+  "description": "Flexible project-isolation rules for parallel development. Normal project and studio work branches stay in their own source lane; platform and multi-project branches intentionally allow cross-project work.",
   "branching": {
     "projectPrefix": "project/",
+    "workPrefix": "work/",
     "multiPrefix": "multi/",
     "platformProjectId": "platform",
     "legacyBranches": "advisory"
@@ -13,8 +14,10 @@
     "docs/",
     "scripts/project-lane-check.mjs",
     "scripts/create-project-worktree.mjs",
+    "scripts/studio/",
     "data/project-work-lanes.json",
     "data/project-registry.json",
+    "data/studio-resources.json",
     "package.json",
     "package-lock.json",
     "pnpm-lock.yaml",
