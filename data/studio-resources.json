@@ -29,6 +29,55 @@
       "productionTargets": ["shared:site-shell"]
     },
     {
+      "id": "page.home",
+      "kind": "page",
+      "prefixes": [],
+      "exactPaths": ["site/wordpress/pages/home.html"],
+      "productionTargets": ["route:/"]
+    },
+    {
+      "id": "page.about",
+      "kind": "page",
+      "prefixes": [],
+      "exactPaths": ["site/wordpress/pages/about.html"],
+      "productionTargets": ["route:/about/"]
+    },
+    {
+      "id": "page.blog",
+      "kind": "page",
+      "prefixes": [],
+      "exactPaths": ["site/wordpress/pages/blog.html"],
+      "productionTargets": ["route:/blog/"]
+    },
+    {
+      "id": "page.community",
+      "kind": "page",
+      "prefixes": [],
+      "exactPaths": ["site/wordpress/pages/community.html"],
+      "productionTargets": ["route:/community/"]
+    },
+    {
+      "id": "page.contact",
+      "kind": "page",
+      "prefixes": [],
+      "exactPaths": ["site/wordpress/pages/contact.html"],
+      "productionTargets": ["route:/contact/"]
+    },
+    {
+      "id": "page.gallery",
+      "kind": "page",
+      "prefixes": [],
+      "exactPaths": ["site/wordpress/pages/gallery.html"],
+      "productionTargets": ["route:/gallery/"]
+    },
+    {
+      "id": "page.learn",
+      "kind": "page",
+      "prefixes": [],
+      "exactPaths": ["site/wordpress/pages/learn.html"],
+      "productionTargets": ["route:/learn/"]
+    },
+    {
       "id": "page.game-hub",
       "kind": "page",
       "prefixes": [],
@@ -66,7 +115,7 @@
     {
       "id": "content.genetics",
       "kind": "content-system",
-      "prefixes": ["data/genetics/", "site/wordpress/genetics/", "site/wordpress/assets/genetics/", ".tmp/strain-card-b64/"],
+      "prefixes": ["data/genetics/", "site/wordpress/genetics/", "site/wordpress/products/", "site/wordpress/assets/genetics/", ".tmp/strain-card-b64/"],
       "exactPaths": ["site/wordpress/pages/seeds.html", "site/design-system/dtf-genetics-owner-v1.css"],
       "productionTargets": ["route:/seeds/"]
     },
