@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "site": "https://dtfseeds.com",
+  "description": "Independent DTFSeeds release resources. Resource builds are isolated; production serialization is scoped to productionTarget only.",
+  "globalBuildPaths": [
+    "site/deployment/release-resources.json",
+    "scripts/plan-dtfseeds-resource-release.mjs",
+    "scripts/package-dtf-public-resource.py",
+    "scripts/test-dtf-resource-release-system.mjs",
+    ".github/workflows/build-dtfseeds-public-resource.yml"
+  ],
+  "resources": {
+    "high-land": {
+      "studioResource": "game.high-land",
+      "route": "/games/high-land/",
+      "artifactRoot": "games/high-land",
+      "productionTarget": "route:/games/high-land/",
+      "checkpointTag": "dtfseeds-production-game-high-land",
+      "sourcePrefixes": ["apps/high-land-web/"],
+      "exactPaths": ["site/deployment/public-apps.json"],
+      "requiredFiles": ["games/high-land/index.html"],
+      "verifyMarker": "High Land"
+    },
+    "high-iq": {
+      "studioResource": "game.high-iq",
+      "route": "/games/high-iq/",
+      "artifactRoot": "games/high-iq",
+      "productionTarget": "route:/games/high-iq/",
+      "checkpointTag": "dtfseeds-production-game-high-iq",
+      "sourcePrefixes": ["games/high-iq/", "site/public-route-patch/games/high-iq/"],
+      "exactPaths": ["site/deployment/public-apps.json"],
+      "requiredFiles": [
+        "games/high-iq/index.html",
+        "games/high-iq/app.js",
+        "games/high-iq/app-v3.js",
+        "games/high-iq/game-core.mjs",
+        "games/high-iq/high-iq.css",
+        "games/high-iq/high-iq-v3.css",
+        "games/high-iq/data/manifest.json"
+      ],
+      "verifyMarker": "Build your High IQ run"
+    }
+  }
+}

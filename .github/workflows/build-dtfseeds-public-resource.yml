@@ -1,0 +1,185 @@
+name: Build DTFSeeds Public Resource
+
+on:
+  workflow_dispatch:
+    inputs:
+      resource:
+        description: Resource to build
+        required: true
+        default: all
+        type: choice
+        options:
+          - all
+          - high-land
+          - high-iq
+  pull_request:
+    branches: [main]
+    paths:
+      - 'apps/high-land-web/**'
+      - 'games/high-iq/**'
+      - 'site/public-route-patch/games/high-iq/**'
+      - 'site/deployment/public-apps.json'
+      - 'site/deployment/release-resources.json'
+      - 'scripts/plan-dtfseeds-resource-release.mjs'
+      - 'scripts/package-dtf-public-resource.py'
+      - 'scripts/test-dtf-resource-release-system.mjs'
+      - '.github/workflows/build-dtfseeds-public-resource.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'apps/high-land-web/**'
+      - 'games/high-iq/**'
+      - 'site/public-route-patch/games/high-iq/**'
+      - 'site/deployment/public-apps.json'
+      - 'site/deployment/release-resources.json'
+      - 'scripts/plan-dtfseeds-resource-release.mjs'
+      - 'scripts/package-dtf-public-resource.py'
+      - 'scripts/test-dtf-resource-release-system.mjs'
+      - '.github/workflows/build-dtfseeds-public-resource.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      deploy: ${{ steps.plan.outputs.deploy }}
+      matrix: ${{ steps.plan.outputs.matrix }}
+      plan: ${{ steps.plan.outputs.plan }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate resource release control plane
+        run: |
+          set -euo pipefail
+          node --check scripts/plan-dtfseeds-resource-release.mjs
+          node scripts/test-dtf-resource-release-system.mjs
+          python -m py_compile scripts/package-dtf-public-resource.py
+
+      - name: Plan affected resources
+        id: plan
+        shell: bash
+        env:
+          REQUESTED_RESOURCE: ${{ github.event_name == 'workflow_dispatch' && inputs.resource || 'auto' }}
+          PR_BASE: ${{ github.event.pull_request.base.sha || '' }}
+          PUSH_BASE: ${{ github.event.before || '' }}
+        run: |
+          set -euo pipefail
+          base="$PR_BASE"
+          if [[ -z "$base" ]]; then base="$PUSH_BASE"; fi
+          node scripts/plan-dtfseeds-resource-release.mjs \
+            --base="$base" \
+            --head="$GITHUB_SHA" \
+            --resource="$REQUESTED_RESOURCE"
+
+      - name: Record resource plan
+        env:
+          RELEASE_PLAN: ${{ steps.plan.outputs.plan }}
+        run: |
+          {
+            echo '## DTFSeeds independent resource build plan'
+            echo
+            echo '```json'
+            printf '%s\n' "$RELEASE_PLAN"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  build:
+    needs: plan
+    if: needs.plan.outputs.deploy == 'true'
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    concurrency:
+      group: dtf-resource-build-${{ matrix.id }}-${{ github.event.pull_request.number || github.ref }}
+      cancel-in-progress: true
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install workspace
+        run: npm ci
+
+      - name: Build and validate selected resource
+        shell: bash
+        env:
+          RESOURCE_ID: ${{ matrix.id }}
+        run: |
+          set -euo pipefail
+          rm -rf release-resource
+          case "$RESOURCE_ID" in
+            high-land)
+              npm run test:high-land
+              npm run build:high-land
+              mkdir -p release-resource/games/high-land
+              cp -a apps/high-land-web/dist/. release-resource/games/high-land/
+              ;;
+            high-iq)
+              npm run hiq:validate
+              mkdir -p release-resource/games/high-iq
+              cp -a site/public-route-patch/games/high-iq/. release-resource/games/high-iq/
+              ;;
+            *)
+              echo "Unsupported resource: $RESOURCE_ID" >&2
+              exit 2
+              ;;
+          esac
+
+      - name: Package immutable route artifact
+        id: package
+        shell: bash
+        env:
+          RESOURCE_ID: ${{ matrix.id }}
+        run: |
+          set -euo pipefail
+          archive="$RUNNER_TEMP/dtf-${RESOURCE_ID}-${GITHUB_SHA}.zip"
+          python scripts/package-dtf-public-resource.py "$RESOURCE_ID" release-resource "$archive" | tee resource-build.json
+          test -s "$archive"
+          python - "$archive" "$RESOURCE_ID" <<'PY'
+          import json, sys, zipfile
+          archive, resource_id = sys.argv[1:]
+          with zipfile.ZipFile(archive) as z:
+              names = z.namelist()
+              assert len(names) == len(set(names)), 'duplicate archive entries'
+              manifest = json.loads(z.read('.dtf-resource-manifest.json'))
+              assert manifest['resourceId'] == resource_id
+              root = manifest['artifactRoot'] + '/'
+              payload = [name for name in names if name != '.dtf-resource-manifest.json']
+              assert payload and all(name.startswith(root) for name in payload), 'resource archive escaped route root'
+          PY
+          echo "archive=$archive" >> "$GITHUB_OUTPUT"
+
+      - name: Upload resource artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dtf-resource-${{ matrix.id }}-${{ github.sha }}
+          path: |
+            ${{ steps.package.outputs.archive }}
+            resource-build.json
+          if-no-files-found: error
+          retention-days: 14
