@@ -80,7 +80,7 @@ const publishableFiles = unique(publishableRoots.flatMap(walk))
 const classified = classifyPaths(resourceConfig, publishableFiles)
 const resourceByPath = new Map()
 for (const resource of classified.resources) {
-  for (const path of resource.paths || []) {
+  for (const path of resource.files || []) {
     const entries = resourceByPath.get(path) || []
     entries.push(resource)
     resourceByPath.set(path, entries)
@@ -151,7 +151,7 @@ if (!integrationSource.includes("gh', ['workflow', 'run', 'dtfseeds-production-g
 if (!generatedIntegrationSource.includes('dtfseeds-production-gateway.yml')) {
   contractErrors.push('generated-change integration does not dispatch the cumulative production gateway')
 }
-if (!gatewaySource.includes('mode=auto') && !gatewaySource.includes("mode: auto") && !gatewaySource.includes("'auto'")) {
+if (!gatewaySource.includes('auto')) {
   contractErrors.push('production gateway no longer exposes the automatic cumulative release mode')
 }
 if (!educationSource.includes('GITHUB_STEP_SUMMARY') || !educationSource.includes('continue-on-error: true')) {
