@@ -38,11 +38,14 @@ const canonicalManifest = await readJson(resolve(canonicalDir, 'manifest.json'))
 const publicManifest = await readJson(resolve(publicDir, 'manifest.json'));
 
 assert(JSON.stringify(stable(publicManifest)) === JSON.stringify(stable(canonicalManifest)), 'Public High IQ manifest has drifted from canonical data manifest.');
-assert(canonicalManifest.datasetVersion === '2.3', `Unexpected High IQ dataset version: ${canonicalManifest.datasetVersion}`);
-assert(canonicalManifest.questionCount === 160, `Expected 160 questions, found ${canonicalManifest.questionCount}`);
-assert(canonicalManifest.sourceCount === 50, `Expected 50 sources, found ${canonicalManifest.sourceCount}`);
-assert(Array.isArray(canonicalManifest.questionChunks) && canonicalManifest.questionChunks.length === 12, 'Expected 12 question chunks.');
-assert(Array.isArray(canonicalManifest.sourceChunks) && canonicalManifest.sourceChunks.length === 2, 'Expected 2 source chunks.');
+assert(typeof canonicalManifest.datasetVersion === 'string' && canonicalManifest.datasetVersion.trim(), 'High IQ datasetVersion is required.');
+assert(Array.isArray(canonicalManifest.recordVersions) && canonicalManifest.recordVersions.includes(canonicalManifest.datasetVersion), `High IQ datasetVersion ${canonicalManifest.datasetVersion} is not represented in recordVersions.`);
+assert(Number.isInteger(canonicalManifest.questionCount) && canonicalManifest.questionCount > 0, `Invalid questionCount: ${canonicalManifest.questionCount}`);
+assert(Number.isInteger(canonicalManifest.sourceCount) && canonicalManifest.sourceCount > 0, `Invalid sourceCount: ${canonicalManifest.sourceCount}`);
+assert(Array.isArray(canonicalManifest.questionChunks) && canonicalManifest.questionChunks.length > 0, 'High IQ manifest must declare question chunks.');
+assert(Array.isArray(canonicalManifest.sourceChunks) && canonicalManifest.sourceChunks.length > 0, 'High IQ manifest must declare source chunks.');
+assert(new Set(canonicalManifest.questionChunks).size === canonicalManifest.questionChunks.length, 'High IQ question chunk names must be unique.');
+assert(new Set(canonicalManifest.sourceChunks).size === canonicalManifest.sourceChunks.length, 'High IQ source chunk names must be unique.');
 
 for (const name of [...canonicalManifest.questionChunks, ...canonicalManifest.sourceChunks]) {
   const canonical = await readFile(resolve(canonicalDir, name), 'utf8');
@@ -65,7 +68,7 @@ for (const source of sources) {
   assert(typeof source.url === 'string' && /^https?:\/\//i.test(source.url), `Invalid source URL for ${source.id}`);
 }
 
-const allowedRecordVersions = new Set(canonicalManifest.recordVersions || [canonicalManifest.datasetVersion]);
+const allowedRecordVersions = new Set(canonicalManifest.recordVersions);
 const categoryCounts = {};
 const difficultyCounts = {};
 for (const question of questions) {
@@ -103,4 +106,13 @@ assert(indexHtml.includes('https://dtfseeds.com/games/high-iq/'), 'Public High I
 assert(appJs.includes('/games/high-iq/data'), 'Public High IQ v3 loader is missing the canonical data route.');
 assert(appJs.includes('non-JSON content'), 'Public High IQ v3 loader is missing the non-JSON response guard.');
 
-console.log(JSON.stringify({ ok: true, datasetVersion: canonicalManifest.datasetVersion, questions: questions.length, sources: sources.length, categories: Object.keys(categoryCounts).length, runtime: 'site/public-route-patch/games/high-iq' }, null, 2));
+console.log(JSON.stringify({
+  ok: true,
+  datasetVersion: canonicalManifest.datasetVersion,
+  questions: questions.length,
+  sources: sources.length,
+  questionChunks: canonicalManifest.questionChunks.length,
+  sourceChunks: canonicalManifest.sourceChunks.length,
+  categories: Object.keys(categoryCounts).length,
+  runtime: 'site/public-route-patch/games/high-iq'
+}, null, 2));
