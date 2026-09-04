@@ -311,11 +311,26 @@
     },
     {
       "id": "ganjumanji",
-      "title": "Ganjumanji",
+      "title": "Ganjumanji: The Lost Grower's Temple",
       "repository": "dtfgenetics/GANJUMANJI-The-Lost-Grower-s-Temple",
-      "runtime": "controlled-placeholder",
-      "status": "not-deployable",
-      "notes": "The canonical tracker explicitly keeps this repository empty until approved code exists; do not fabricate implementation from unapproved concept art."
+      "runtime": "static-phaser",
+      "status": "ready-to-package",
+      "notes": "Canonical code remains in the standalone Ganjumanji repository. The pinned revision passed unit/content tests, TypeScript/Vite build, route validation, desktop/mobile Playwright acceptance, screenshot capture, and production artifact generation. Rebuild the pinned source during packaging; do not fork or hand-copy generated source into the THC repository.",
+      "route": "/games/ganjumanji/",
+      "build": "npm test && npm run build && npm run validate:release && npm run test:e2e",
+      "machineData": {
+        "players": 1,
+        "regions": 3,
+        "relicSeeds": 6,
+        "saveVersion": 3,
+        "input": [
+          "keyboard",
+          "touch"
+        ],
+        "persistentBestRun": true,
+        "checkpointSave": true
+      },
+      "verifiedRevision": "ddcab5e727b952dde5b85eafffada55bfd286722"
     },
     {
       "id": "all-in-one-grow",
