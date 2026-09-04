@@ -22,14 +22,21 @@ concurrency:
 
 jobs:
   qualify:
-    name: Dispatch and verify branch public-suite build
+    name: Dispatch, package, and verify branch public-suite build
     runs-on: ubuntu-latest
-    timeout-minutes: 50
+    timeout-minutes: 55
     env:
       GH_TOKEN: ${{ github.token }}
       HEAD_REF: ${{ github.event.pull_request.head.ref }}
     steps:
+      - name: Checkout branch qualification source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+
       - name: Dispatch branch build and require success
+        id: build
         shell: bash
         run: |
           set -euo pipefail
@@ -42,5 +49,84 @@ jobs:
             echo "Could not parse public-suite build run from: $run_url" >&2
             exit 1
           }
+          echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
           echo "Dispatched branch public-suite build: $run_url"
           gh run watch "$run_id" --repo "$GITHUB_REPOSITORY" --exit-status
+
+      - name: Download qualified branch artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf "$RUNNER_TEMP/suite-download"
+          mkdir -p "$RUNNER_TEMP/suite-download"
+          gh run download "${{ steps.build.outputs.run_id }}" \
+            --repo "$GITHUB_REPOSITORY" \
+            --dir "$RUNNER_TEMP/suite-download"
+          build_json="$(find "$RUNNER_TEMP/suite-download" -type f -name dtf-build.json -print -quit)"
+          test -n "$build_json"
+          suite_root="$(dirname "$build_json")"
+          echo "SUITE_ROOT=$suite_root" >> "$GITHUB_ENV"
+
+      - name: Verify Grow Doc pinned source and reviewed-media payload
+        shell: bash
+        run: |
+          set -euo pipefail
+          revision_file="site/public-route-patch/assets/release-source-revisions/thc-grow-doc.txt"
+          revision="$(sed -n 's/^commit=//p' "$revision_file")"
+          [[ "$revision" =~ ^[0-9a-f]{40}$ ]]
+          grep -Fq "\"thcGrowDoc\": \"$revision\"" "$SUITE_ROOT/dtf-build.json"
+          grep -Fq "commit=$revision" "$SUITE_ROOT/thc-grow-doc/source-revision.txt"
+          test -d "$SUITE_ROOT/thc-grow-doc/reference-media/crops"
+          test ! -e "$SUITE_ROOT/thc-grow-doc/reference-media/original"
+          test "$(find "$SUITE_ROOT/thc-grow-doc/reference-media/crops" -type f | wc -l | tr -d ' ')" = "66"
+
+      - name: Package production archive and enforce protected size limit
+        shell: bash
+        run: |
+          set -euo pipefail
+          archive="$RUNNER_TEMP/dtf-public-suite-wordpress-v2.zip"
+          python scripts/package-public-suite-wordpress.py "$SUITE_ROOT" "$archive" | tee "$RUNNER_TEMP/package-summary.json"
+          test -s "$archive"
+          ARCHIVE="$archive" python - <<'PY'
+          import json
+          import os
+          import zipfile
+          from pathlib import Path
+
+          archive = Path(os.environ['ARCHIVE'])
+          size = archive.stat().st_size
+          limit = 64 * 1024 * 1024
+          with zipfile.ZipFile(archive) as zf:
+              names = zf.namelist()
+              crops = [name for name in names if name.startswith('thc-grow-doc/reference-media/crops/') and not name.endswith('/')]
+              originals = [name for name in names if name.startswith('thc-grow-doc/reference-media/original/')]
+              if len(crops) != 66:
+                  raise SystemExit(f'Expected 66 reviewed Grow Doc crops in production archive, found {len(crops)}')
+              if originals:
+                  raise SystemExit(f'Full-resolution Grow Doc originals leaked into production archive: {len(originals)}')
+          print(json.dumps({
+              'archiveBytes': size,
+              'protectedLimitBytes': limit,
+              'remainingBytes': limit - size,
+              'growDocReviewedCrops': len(crops),
+          }, separators=(',', ':')))
+          if size > limit:
+              raise SystemExit(f'Production archive {size} bytes exceeds protected 64 MiB limit {limit}')
+          PY
+
+      - name: Report production package qualification
+        if: success()
+        shell: bash
+        run: |
+          archive="$RUNNER_TEMP/dtf-public-suite-wordpress-v2.zip"
+          size="$(stat -c%s "$archive")"
+          {
+            echo '## Public Suite production-package qualification'
+            echo
+            echo "- Branch build run: ${{ steps.build.outputs.run_id }}"
+            echo "- Production archive: $size bytes"
+            echo '- Protected limit: 67108864 bytes (64 MiB)'
+            echo '- Grow Doc: exact pinned canonical revision verified'
+            echo '- Grow Doc reviewed crops: 66'
+            echo '- Grow Doc full-resolution originals in release: 0'
+          } >> "$GITHUB_STEP_SUMMARY"
