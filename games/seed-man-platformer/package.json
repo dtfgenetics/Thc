@@ -5,10 +5,14 @@
   "type": "module",
   "description": "Build boundary for the Seed Man: Sprout Run Three.js world renderer prototype.",
   "scripts": {
+    "build:three-public": "node scripts/build-three-public.mjs",
     "test:three-world": "node test/three-world-state.test.mjs",
     "verify:three-import": "node -e \"import('./src/render/three-world.mjs').then((m)=>{if(typeof m.createThreeWorldRenderer!=='function')process.exit(1)})\""
   },
   "dependencies": {
     "three": "0.185.1"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2"
   }
 }
