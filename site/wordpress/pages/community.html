@@ -1,33 +1,77 @@
-<main class="dtf-v1" data-dtf-layout="community-visual-v1">
+<main class="dtf-v1 community-v2" data-dtf-layout="community-visual-v2">
+  <style>
+    .community-v2 .community-hero-card{position:relative;overflow:hidden;min-height:430px;padding:34px;border:1px solid var(--dtf-border);border-radius:var(--dtf-radius-lg);background:radial-gradient(circle at 80% 10%,rgba(213,177,90,.2),transparent 34%),linear-gradient(155deg,#143924,#091d13 72%);box-shadow:var(--dtf-shadow)}
+    .community-v2 .community-hero-card:before{content:"";position:absolute;right:-68px;top:-90px;width:260px;height:260px;border:1px solid rgba(213,177,90,.2);border-radius:50%}
+    .community-v2 .community-hero-card:after{content:"";position:absolute;right:24px;bottom:22px;width:110px;height:110px;border:1px solid rgba(255,255,255,.08);border-radius:50%}
+    .community-v2 .community-hero-card>*{position:relative;z-index:1}
+    .community-v2 .community-hero-card h2{max-width:460px;font-size:clamp(2rem,4vw,3.15rem)}
+    .community-v2 .community-hero-card>p{max-width:500px;color:var(--dtf-muted)}
+    .community-v2 .activity-list{display:grid;gap:0;margin-top:28px;border-top:1px solid var(--dtf-border-soft)}
+    .community-v2 .activity-row{display:grid;grid-template-columns:42px 1fr;gap:14px;padding:15px 0;border-bottom:1px solid var(--dtf-border-soft)}
+    .community-v2 .activity-index{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border:1px solid var(--dtf-border);border-radius:50%;color:var(--dtf-gold-2);font-size:.72rem;font-weight:900}
+    .community-v2 .activity-row h3{font-size:1rem}.community-v2 .activity-row p{margin:.3rem 0 0;color:var(--dtf-muted);font-size:.9rem;line-height:1.5}
+
+    .community-v2 .participation-layout{display:grid;grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);gap:44px;align-items:start}
+    .community-v2 .participation-intro{position:sticky;top:28px}.community-v2 .participation-intro p{max-width:470px;color:var(--dtf-muted)}
+    .community-v2 .participation-list{border-top:1px solid var(--dtf-border)}
+    .community-v2 .participation-item{display:grid;grid-template-columns:minmax(130px,.38fr) 1fr;gap:24px;padding:24px 0;border-bottom:1px solid var(--dtf-border-soft)}
+    .community-v2 .participation-item h3{font-size:1.08rem;color:var(--dtf-gold-2)}
+    .community-v2 .participation-item p{margin:0;color:var(--dtf-muted)}
+    .community-v2 .participation-item .card-link{margin-top:9px}
+
+    .community-v2 .record-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;border:1px solid #d8c895;border-radius:var(--dtf-radius-lg);overflow:hidden;background:var(--dtf-paper-2);box-shadow:0 18px 40px rgba(19,45,26,.1)}
+    .community-v2 .record-step{padding:28px;min-height:220px}.community-v2 .record-step+ .record-step{border-left:1px solid #dfd2ad}
+    .community-v2 .step-no{display:block;margin-bottom:28px;color:#8a733c;font-size:.72rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+    .community-v2 .record-step h3{font-size:1.45rem}.community-v2 .record-step p{color:var(--dtf-muted-dark)}
+
+    .community-v2 .standard-layout{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(300px,.88fr);gap:32px;align-items:stretch}
+    .community-v2 .standard-copy{padding:34px;border-left:3px solid var(--dtf-gold)}
+    .community-v2 .standard-copy p{max-width:650px;color:var(--dtf-muted)}
+    .community-v2 .standard-points{display:grid;gap:12px}
+    .community-v2 .standard-point{padding:18px 0;border-bottom:1px solid var(--dtf-border-soft)}
+    .community-v2 .standard-point:first-child{padding-top:0}.community-v2 .standard-point:last-child{border-bottom:0;padding-bottom:0}
+    .community-v2 .standard-point h3{font-size:1rem}.community-v2 .standard-point p{margin:.35rem 0 0;color:var(--dtf-muted);font-size:.9rem}
+
+    .community-v2 .join-band{display:grid;grid-template-columns:1fr auto;gap:30px;align-items:center;padding:34px;border:1px solid var(--dtf-border);border-radius:var(--dtf-radius-lg);background:linear-gradient(120deg,rgba(213,177,90,.1),rgba(61,122,73,.12));box-shadow:var(--dtf-shadow-soft)}
+    .community-v2 .join-band h2{font-size:clamp(2rem,4vw,3.25rem)}.community-v2 .join-band p{max-width:680px;margin-bottom:0;color:var(--dtf-muted)}
+
+    @media(max-width:900px){.community-v2 .participation-layout,.community-v2 .standard-layout{grid-template-columns:1fr}.community-v2 .participation-intro{position:static}.community-v2 .record-strip{grid-template-columns:1fr}.community-v2 .record-step+ .record-step{border-left:0;border-top:1px solid #dfd2ad}.community-v2 .join-band{grid-template-columns:1fr}.community-v2 .join-band .actions{margin-top:0}}
+    @media(max-width:640px){.community-v2 .community-hero-card{min-height:0;padding:24px}.community-v2 .participation-item{grid-template-columns:1fr;gap:8px}.community-v2 .record-step{padding:22px;min-height:0}.community-v2 .standard-copy{padding:26px 0 26px 22px}.community-v2 .join-band{padding:24px}}
+  </style>
+
   <section class="site-hero" aria-labelledby="community-title">
     <div class="wrap hero-grid">
       <div class="hero-copy">
         <h1 id="community-title">Stronger together.</h1>
         <p>The DTF / Teaching Healthy Cultivation community connects growers, learners, breeders, and players through discussion, grow-offs, game nights, project feedback, and shared progress.</p>
         <div class="actions">
-          <a class="btn btn-primary" href="https://discord.gg/xJbUeHFPMt" target="_blank" rel="noopener noreferrer">Join the official DTF / Teaching Healthy Cultivation Discord</a>
-          <a class="btn btn-secondary" href="/games/">View game nights</a>
+          <a class="btn btn-primary" href="https://discord.gg/xJbUeHFPMt" target="_blank" rel="noopener noreferrer">Join the official Discord</a>
+          <a class="btn btn-secondary" href="/games/">Explore game nights</a>
         </div>
       </div>
-      <div class="panel" style="padding:24px">
-        <h2 style="font-size:2rem">Community activity</h2>
-        <div class="grid-2" style="margin-top:18px">
-          <article class="panel" style="padding:17px"><h3>Grow-offs</h3><p class="muted">Document progress, compare methods, and follow event rules.</p></article>
-          <article class="panel" style="padding:17px"><h3>Game nights</h3><p class="muted">Play DTF titles, test multiplayer, and share feedback.</p></article>
-          <article class="panel" style="padding:17px"><h3>Plant science</h3><p class="muted">Bring better evidence into cultivation questions and discussion.</p></article>
-          <article class="panel" style="padding:17px"><h3>Creative projects</h3><p class="muted">Contribute ideas, visual feedback, and community media.</p></article>
+      <aside class="community-hero-card" aria-label="Community activity">
+        <h2>One community. Several ways in.</h2>
+        <p>Start with the part of DTF that matches what you are doing today, then move between cultivation, education, games, and creative work.</p>
+        <div class="activity-list">
+          <div class="activity-row"><span class="activity-index">01</span><div><h3>Grow-offs</h3><p>Document progress, compare methods, and follow event rules.</p></div></div>
+          <div class="activity-row"><span class="activity-index">02</span><div><h3>Game nights</h3><p>Play DTF titles, test multiplayer, and share useful feedback.</p></div></div>
+          <div class="activity-row"><span class="activity-index">03</span><div><h3>Plant science</h3><p>Bring stronger evidence into cultivation questions and discussion.</p></div></div>
+          <div class="activity-row"><span class="activity-index">04</span><div><h3>Creative projects</h3><p>Contribute ideas, visual feedback, and community media.</p></div></div>
         </div>
-      </div>
+      </aside>
     </div>
   </section>
 
-  <section class="section">
-    <div class="wrap">
-      <div class="section-heading"><h2>Ways to participate.</h2><p>Give visitors a clear activity to join instead of a generic community description.</p></div>
-      <div class="grid-3">
-        <article class="panel" style="padding:22px"><h3>Grower conversations</h3><p class="muted">Share observations, ask better questions, compare records, and learn from other growers.</p><a class="card-link" href="https://discord.gg/xJbUeHFPMt" target="_blank" rel="noopener noreferrer">Join discussion →</a></article>
-        <article class="panel" style="padding:22px"><h3>Game nights & playtests</h3><p class="muted">Meet around DTF browser games, multiplayer tables, trivia, and new builds.</p><a class="card-link" href="/games/">Browse games →</a></article>
-        <article class="panel" style="padding:22px"><h3>Grow-offs & challenges</h3><p class="muted">Follow community grows, friendly challenges, progress updates, and finished runs.</p><a class="card-link" href="https://discord.gg/xJbUeHFPMt" target="_blank" rel="noopener noreferrer">See community →</a></article>
+  <section class="section section-mid">
+    <div class="wrap participation-layout">
+      <div class="participation-intro">
+        <h2>Choose how you participate.</h2>
+        <p>The community should give every visitor a clear next action instead of asking them to figure out where they belong.</p>
+      </div>
+      <div class="participation-list">
+        <article class="participation-item"><h3>Grower conversations</h3><div><p>Share observations, ask better questions, compare records, and learn from other growers.</p><a class="card-link" href="https://discord.gg/xJbUeHFPMt" target="_blank" rel="noopener noreferrer">Join discussion →</a></div></article>
+        <article class="participation-item"><h3>Game nights & playtests</h3><div><p>Meet around DTF browser games, multiplayer tables, trivia, and new builds while helping improve what ships next.</p><a class="card-link" href="/games/">Browse games →</a></div></article>
+        <article class="participation-item"><h3>Grow-offs & challenges</h3><div><p>Follow community grows, friendly challenges, progress updates, and completed runs with the context needed to learn from them.</p><a class="card-link" href="https://discord.gg/xJbUeHFPMt" target="_blank" rel="noopener noreferrer">See community →</a></div></article>
       </div>
     </div>
   </section>
@@ -35,21 +79,33 @@
   <section class="section section-light">
     <div class="wrap">
       <div class="section-heading"><h2>Bring the record with you.</h2><p>Plant-health discussion improves when photos, plant stage, environment, root-zone context, and recent changes come with the question.</p></div>
-      <div class="grid-3">
-        <article class="card"><div class="card-body"><h3>Track</h3><p>Record plants, tasks, readings, photos, irrigation, and harvest details.</p><a class="card-link" href="/growlens/">Open GrowLens →</a></div></article>
-        <article class="card"><div class="card-body"><h3>Diagnose</h3><p>Use structured evidence and compare plausible causes instead of guessing from color alone.</p><a class="card-link" href="/thc-grow-doc/">Open Grow Doc →</a></div></article>
-        <article class="card"><div class="card-body"><h3>Learn</h3><p>Connect observations to the plant-science subjects behind them.</p><a class="card-link" href="/learn/">Open learning center →</a></div></article>
+      <div class="record-strip">
+        <article class="record-step"><span class="step-no">Step 01</span><h3>Track</h3><p>Record plants, tasks, readings, photos, irrigation, and harvest details.</p><a class="card-link" href="/growlens/">Open GrowLens →</a></article>
+        <article class="record-step"><span class="step-no">Step 02</span><h3>Diagnose</h3><p>Compare plausible causes from structured evidence instead of guessing from color alone.</p><a class="card-link" href="/thc-grow-doc/">Open Grow Doc →</a></article>
+        <article class="record-step"><span class="step-no">Step 03</span><h3>Learn</h3><p>Connect observations to the plant-science subjects that explain what you are seeing.</p><a class="card-link" href="/learn/">Open learning center →</a></article>
       </div>
     </div>
   </section>
 
   <section class="section section-mid">
+    <div class="wrap standard-layout">
+      <div class="standard-copy">
+        <h2>Community standard.</h2>
+        <p>Useful participation depends on accurate context, respectful discussion, and verified DTF channels. The goal is not to win every argument; it is to leave the shared knowledge better than we found it.</p>
+      </div>
+      <div class="standard-points">
+        <article class="standard-point"><h3>Document honestly</h3><p>Separate observation from assumption and label uncertainty.</p></article>
+        <article class="standard-point"><h3>Protect members</h3><p>Do not pressure people into private transactions or unsafe activity.</p></article>
+        <article class="standard-point"><h3>Credit creators</h3><p>Preserve breeder, artist, photographer, and source attribution.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
     <div class="wrap">
-      <div class="section-heading"><h2>Community standard.</h2><p>Useful participation depends on accurate context, respectful discussion, and verified DTF channels.</p></div>
-      <div class="grid-3">
-        <article class="panel" style="padding:20px"><h3>Document honestly</h3><p class="muted">Separate observation from assumption and label uncertainty.</p></article>
-        <article class="panel" style="padding:20px"><h3>Protect members</h3><p class="muted">Do not pressure people into private transactions or unsafe activity.</p></article>
-        <article class="panel" style="padding:20px"><h3>Credit creators</h3><p class="muted">Preserve breeder, artist, photographer, and source attribution.</p></article>
+      <div class="join-band">
+        <div><h2>Start where the community is active.</h2><p>The official Discord is the main place for current grow discussion, events, game testing, project feedback, and community updates.</p></div>
+        <div class="actions"><a class="btn btn-primary" href="https://discord.gg/xJbUeHFPMt" target="_blank" rel="noopener noreferrer">Join Discord</a></div>
       </div>
     </div>
   </section>
