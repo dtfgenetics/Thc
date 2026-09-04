@@ -1,18 +1,17 @@
 name: Verify THC Grow Doc Visual Matrix
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'scripts/capture-grow-doc-visual-matrix.mjs'
-      - '.github/workflows/verify-grow-doc-visual-matrix.yml'
   workflow_dispatch:
+  workflow_run:
+    workflows: ["Verify THC Grow Doc Production Identity"]
+    types: [completed]
 
 permissions:
   contents: read
 
 jobs:
   capture:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     env:
