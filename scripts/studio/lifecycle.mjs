@@ -29,6 +29,7 @@ function succeeds(command, args, options = {}) {
 const flags = new Set(process.argv.slice(2).filter((arg) => arg.startsWith('--')))
 const cleanupMerged = flags.has('--cleanup-merged')
 const summaryOnly = flags.has('--summary')
+const recoveryOnly = flags.has('--recovery-only')
 
 const repoRoot = capture('git', ['rev-parse', '--show-toplevel'], { allowFailure: true })
 if (!repoRoot) {
@@ -118,6 +119,21 @@ const safeCleanupCandidates = lifecycle
   .map((item) => item.branch)
   .sort()
 
+const recoveryCandidates = lifecycle
+  .filter((item) => item.state === 'closed-unmerged' || item.state === 'orphan-unique')
+  .map((item) => ({
+    branch: item.branch,
+    state: item.state,
+    headSha: item.headSha,
+    updatedAt: item.updatedAt,
+    managed: item.managed,
+    studioSession: item.studioSession,
+    relatedPrNumbers: item.relatedPrNumbers,
+    closedPrNumbers: item.closedPrNumbers,
+    reason: item.reason,
+  }))
+  .sort((a, b) => String(b.updatedAt || '').localeCompare(String(a.updatedAt || '')) || a.branch.localeCompare(b.branch))
+
 const deleted = []
 const deleteFailures = []
 if (cleanupMerged) {
@@ -149,6 +165,8 @@ const result = {
   counts,
   safeCleanupCount: safeCleanupCandidates.length,
   safeCleanupCandidates,
+  recoveryCount: recoveryCandidates.length,
+  recoveryCandidates,
   duplicateClaimCount: duplicateClaims.length,
   duplicateClaims,
   duplicateHeadGroupCount: duplicateHeadGroups.length,
@@ -166,6 +184,19 @@ const result = {
   },
 }
 
-if (!summaryOnly) result.branches = lifecycle
-console.log(JSON.stringify(result, null, 2))
+if (!summaryOnly && !recoveryOnly) result.branches = lifecycle
+if (recoveryOnly) {
+  console.log(JSON.stringify({
+    ok: result.ok,
+    observedMain: result.observedMain,
+    recoveryCount: result.recoveryCount,
+    counts: {
+      'closed-unmerged': counts['closed-unmerged'] || 0,
+      'orphan-unique': counts['orphan-unique'] || 0,
+    },
+    recoveryCandidates,
+  }, null, 2))
+} else {
+  console.log(JSON.stringify(result, null, 2))
+}
 if (deleteFailures.length) process.exit(1)
