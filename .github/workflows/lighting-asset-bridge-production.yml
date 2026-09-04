@@ -5,10 +5,13 @@ on:
     branches: [main]
     paths:
       - ops/asset-bridge/lighting/READY
+  workflow_dispatch:
 
 permissions:
+  actions: write
   contents: write
   issues: write
+  pull-requests: write
 
 env:
   TARGET_PATH: site/wordpress/assets/infographics/DLI_PPFD_Light_Education_Infographic.png
@@ -33,8 +36,22 @@ jobs:
           ref: main
           fetch-depth: 0
 
+      - name: Detect bridge payload
+        id: staged
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -f "$BRIDGE_DIR/READY" ]]; then
+            echo 'present=true' >> "$GITHUB_OUTPUT"
+            echo 'Lighting bridge READY marker found.'
+          else
+            echo 'present=false' >> "$GITHUB_OUTPUT"
+            echo 'Lighting bridge is idle; no READY marker is present.'
+          fi
+
       - name: Reconstruct and verify exact reviewed PNG
         id: verify
+        if: steps.staged.outputs.present == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -64,28 +81,47 @@ jobs:
           echo "bytes=$(stat -c %s "$TARGET_PATH")" >> "$GITHUB_OUTPUT"
           echo "sha256=$(sha256sum "$TARGET_PATH" | awk '{print $1}')" >> "$GITHUB_OUTPUT"
 
-      - name: Commit canonical asset and remove temporary bridge
-        id: commit
+      - name: Safely integrate canonical asset and retire temporary bridge
+        id: integrate
+        if: steps.staged.outputs.present == 'true'
         shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add "$TARGET_PATH"
-          git rm -r "$BRIDGE_DIR"
-          git commit -m 'Source-control canonical DLI PPFD lighting infographic'
-          git pull --rebase origin main
-          git push origin HEAD:main
-          echo "commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          rm -rf "$BRIDGE_DIR"
+
+          changed=()
+          while IFS= read -r -d '' path; do
+            changed+=("$path")
+          done < <(
+            git diff --name-only -z -- "$TARGET_PATH" "$BRIDGE_DIR"
+            git ls-files --others --exclude-standard -z -- "$TARGET_PATH" "$BRIDGE_DIR"
+          )
+
+          if [[ "${#changed[@]}" -eq 0 ]]; then
+            echo 'changed=false' >> "$GITHUB_OUTPUT"
+            echo 'Reviewed Lighting asset is already canonical.'
+            exit 0
+          fi
+
+          printf 'Lighting bridge generated paths:\n'
+          printf ' - %s\n' "${changed[@]}"
+          node scripts/studio/integrate-generated-change.mjs \
+            --message='Source-control canonical DLI PPFD lighting infographic' \
+            "${changed[@]}"
+          echo 'changed=true' >> "$GITHUB_OUTPUT"
 
       - name: Report bridge result to issue 46
         if: always()
+        continue-on-error: true
         uses: actions/github-script@v7
         env:
           STATUS: ${{ job.status }}
+          STAGED: ${{ steps.staged.outputs.present }}
           BYTES: ${{ steps.verify.outputs.bytes }}
           SHA: ${{ steps.verify.outputs.sha256 }}
-          COMMIT: ${{ steps.commit.outputs.commit }}
+          CHANGED: ${{ steps.integrate.outputs.changed }}
         with:
           script: |
             await github.rest.issues.createComment({
@@ -97,10 +133,11 @@ jobs:
                 '',
                 `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
                 `Result: **${process.env.STATUS}**`,
-                `Verified bytes: **${process.env.BYTES || 'unknown'}**`,
-                `Verified SHA-256: \`${process.env.SHA || 'unknown'}\``,
-                `Canonical asset commit: \`${process.env.COMMIT || 'not committed'}\``,
+                `Bridge READY present: **${process.env.STAGED || 'false'}**`,
+                `Verified bytes: **${process.env.BYTES || 'not assembled'}**`,
+                `Verified SHA-256: \`${process.env.SHA || 'not assembled'}\``,
+                `Canonical asset integration created: **${process.env.CHANGED || 'false'}**`,
                 '',
-                'This one-time bridge only accepts the reviewed 2550×3300 PNG at exactly 303651 bytes and the locked SHA-256, then deletes its temporary chunk files. The normal Lighting recovery workflow owns WordPress publication after the canonical asset commit.'
+                'This recovery bridge only accepts the reviewed 2550×3300 PNG at exactly 303651 bytes and the locked SHA-256, then retires its temporary chunk files through moving-main safe integration. The normal Lighting recovery workflow owns WordPress publication after the canonical asset source is integrated.'
               ].join('\n')
             });
