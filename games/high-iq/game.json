@@ -2,7 +2,7 @@
   "id": "high-iq",
   "title": "High IQ — Test Higher Cognition",
   "category": "knowledge-game",
-  "status": "v3-production-readiness",
+  "status": "v3.1-production-readiness",
   "provider": "DTF Genetics / GitHub",
   "public_url": "https://dtfseeds.com/games/high-iq/",
   "website_route": "/games/high-iq/",
@@ -12,15 +12,16 @@
   "machineData": {
     "owner": "dtfgenetics/Thc",
     "path": "games/high-iq/data",
-    "version": "2.2",
-    "questions": 80,
+    "version": "2.3",
+    "questions": 160,
     "sources": 50,
+    "recordVersions": ["2.2", "2.3"],
     "validation": "node games/high-iq/scripts/validate-data.mjs",
-    "publicRuntimeValidation": "node games/high-iq/test/runtime-smoke.mjs",
+    "publicRuntimeValidation": "node games/high-iq/scripts/validate-public-runtime.mjs",
     "gameCoreTests": "node games/high-iq/test/game-core.test.mjs",
     "browserPlaythrough": "node games/high-iq/test/browser-smoke.mjs",
     "liveVerification": "node games/high-iq/scripts/verify-live-v3.mjs",
-    "provenance": "High_IQ_Master_Production_Workbook_v2_2.xlsx"
+    "provenance": "High_IQ_Master_Production_Workbook_v2_2.xlsx + source-backed v2.3 expansion"
   },
   "browserSource": {
     "html": "site/public-route-patch/games/high-iq/index.html",
