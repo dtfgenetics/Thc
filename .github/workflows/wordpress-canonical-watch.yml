@@ -37,9 +37,6 @@ on:
       - 'scripts/reconcile-woocommerce-products.mjs'
       - 'scripts/rollback-woocommerce-products.mjs'
       - 'scripts/validate-woocommerce-reconciliation.mjs'
-      - '.github/workflows/wordpress-canonical-watch.yml'
-      - '.github/workflows/wordpress-canonical-deploy.yml'
-      - '.github/workflows/wordpress-canonical-production.yml'
   schedule:
     - cron: '17,47 * * * *'
 
