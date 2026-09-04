@@ -6,8 +6,10 @@
     "site/deployment/release-resources.json",
     "scripts/plan-dtfseeds-resource-release.mjs",
     "scripts/package-dtf-public-resource.py",
+    "scripts/verify-dtf-public-resource-artifact.py",
     "scripts/test-dtf-resource-release-system.mjs",
-    ".github/workflows/build-dtfseeds-public-resource.yml"
+    ".github/workflows/build-dtfseeds-public-resource.yml",
+    ".github/workflows/deploy-dtfseeds-public-resource.yml"
   ],
   "resources": {
     "high-land": {
@@ -19,7 +21,13 @@
       "sourcePrefixes": ["apps/high-land-web/"],
       "exactPaths": ["site/deployment/public-apps.json"],
       "requiredFiles": ["games/high-land/index.html"],
-      "verifyMarker": "High Land"
+      "verifyMarker": "High Land",
+      "publisher": {
+        "type": "hostinger-ssh",
+        "workflow": "deploy-dtfseeds-public-resource.yml",
+        "status": "pilot-manual",
+        "remotePathVariable": "HOSTINGER_HIGH_LAND_PATH"
+      }
     },
     "high-iq": {
       "studioResource": "game.high-iq",
@@ -38,7 +46,11 @@
         "games/high-iq/high-iq-v3.css",
         "games/high-iq/data/manifest.json"
       ],
-      "verifyMarker": "Build your High IQ run"
+      "verifyMarker": "Build your High IQ run",
+      "publisher": {
+        "type": "wordpress-transactional-resource",
+        "status": "pending-bridge-adaptation"
+      }
     }
   }
 }
