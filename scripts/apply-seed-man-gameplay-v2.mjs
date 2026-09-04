@@ -31,10 +31,14 @@ if (!index.includes(gameplayTag)) {
   );
 }
 
-const oldLede = 'collect all 24 sprouts, use responsive short-hop/full-height jumps, double jumps and power-ups, activate three checkpoints, and reach the Dream the Future flag.';
-const canonicalLede = 'collect all 24 sprouts, ride moving greenhouse tables, stomp roaming pests, hit boost pads, use responsive short-hop/full-height jumps, double jumps and power-ups, activate three checkpoints, and reach the Dream the Future flag.';
-if (index.includes(oldLede)) index = index.replace(oldLede, canonicalLede);
-must(index.includes(canonicalLede), 'Seed Man gameplay-v2 lede is not canonical');
+const canonicalLede = 'Run a three-stage greenhouse gauntlet that is three times longer than the original course. Collect all 24 sprouts, ride moving greenhouse tables, stomp roaming pests, hit boost pads, use responsive short-hop/full-height jumps, double jumps and power-ups, activate three checkpoints, and reach the Dream the Future flag.';
+const ledePattern = /<p class="lede">([^<]*)<\/p>/;
+const ledeMatch = index.match(ledePattern);
+must(
+  ledeMatch && ledeMatch[1].includes('Collect all 24 sprouts') && ledeMatch[1].includes('Dream the Future flag'),
+  'Could not identify the canonical Seed Man hero lede structurally'
+);
+index = index.replace(ledePattern, `<p class="lede">${canonicalLede}</p>`);
 
 const gameplayCopy = '<strong>Gameplay:</strong> stomp pests from above, use BOOST pads for high routes, and time moving greenhouse platforms. ';
 const powerupCopy = '<strong>Power-ups:</strong> gold = speed, green = high jump, purple = sprout magnet, blue = hazard shield.';
