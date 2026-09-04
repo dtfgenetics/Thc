@@ -5,9 +5,19 @@ on:
   pull_request:
     branches:
       - main
+    paths:
+      - 'apps/high-land-web/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/high-land-ci.yml'
   push:
     branches:
       - main
+    paths:
+      - 'apps/high-land-web/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/high-land-ci.yml'
 
 jobs:
   build-and-test:
