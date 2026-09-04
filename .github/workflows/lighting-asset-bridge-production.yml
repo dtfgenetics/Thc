@@ -10,7 +10,6 @@ on:
 permissions:
   actions: write
   contents: write
-  issues: write
   pull-requests: write
 
 env:
@@ -112,9 +111,8 @@ jobs:
             "${changed[@]}"
           echo 'changed=true' >> "$GITHUB_OUTPUT"
 
-      - name: Report bridge result to issue 46
+      - name: Publish bridge summary
         if: always()
-        continue-on-error: true
         uses: actions/github-script@v7
         env:
           STATUS: ${{ job.status }}
@@ -124,20 +122,18 @@ jobs:
           CHANGED: ${{ steps.integrate.outputs.changed }}
         with:
           script: |
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: 46,
-              body: [
-                '## Lighting canonical asset bridge',
-                '',
-                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-                `Result: **${process.env.STATUS}**`,
-                `Bridge READY present: **${process.env.STAGED || 'false'}**`,
-                `Verified bytes: **${process.env.BYTES || 'not assembled'}**`,
-                `Verified SHA-256: \`${process.env.SHA || 'not assembled'}\``,
-                `Canonical asset integration created: **${process.env.CHANGED || 'false'}**`,
-                '',
-                'This recovery bridge only accepts the reviewed 2550×3300 PNG at exactly 303651 bytes and the locked SHA-256, then retires its temporary chunk files through moving-main safe integration. The normal Lighting recovery workflow owns WordPress publication after the canonical asset source is integrated.'
-              ].join('\n')
-            });
+            const body = [
+              '## Lighting canonical asset bridge',
+              '',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Result: **${process.env.STATUS}**`,
+              `Bridge READY present: **${process.env.STAGED || 'false'}**`,
+              `Verified bytes: **${process.env.BYTES || 'not assembled'}**`,
+              `Verified SHA-256: \`${process.env.SHA || 'not assembled'}\``,
+              `Canonical asset integration created: **${process.env.CHANGED || 'false'}**`,
+              '',
+              'This recovery bridge only accepts the reviewed 2550×3300 PNG at exactly 303651 bytes and the locked SHA-256, then retires its temporary chunk files through moving-main safe integration. The normal Lighting recovery workflow owns WordPress publication after the canonical asset source is integrated.',
+              '',
+              'Routine automation reporting stays in the Actions job summary instead of exhausted historical issue ledgers.'
+            ].join('\n');
+            await core.summary.addRaw(body).write();
