@@ -8,18 +8,13 @@ const runtimeDir = resolve(root, 'site/public-route-patch/games/high-iq');
 
 async function readJson(path) {
   const text = await readFile(path, 'utf8');
-  try {
-    return JSON.parse(text);
-  } catch (error) {
-    throw new Error(`Invalid JSON: ${path}: ${error.message}`);
-  }
+  try { return JSON.parse(text); }
+  catch (error) { throw new Error(`Invalid JSON: ${path}: ${error.message}`); }
 }
 
 function stable(value) {
   if (Array.isArray(value)) return value.map(stable);
-  if (value && typeof value === 'object') {
-    return Object.fromEntries(Object.keys(value).sort().map((key) => [key, stable(value[key])]));
-  }
+  if (value && typeof value === 'object') return Object.fromEntries(Object.keys(value).sort().map((key) => [key, stable(value[key])]));
   return value;
 }
 
@@ -35,24 +30,18 @@ async function assertNonEmpty(path) {
 
 async function loadChunks(dir, names) {
   const groups = await Promise.all(names.map((name) => readJson(resolve(dir, name))));
-  for (let index = 0; index < groups.length; index += 1) {
-    assert(Array.isArray(groups[index]), `Chunk must be an array: ${names[index]}`);
-  }
+  for (let index = 0; index < groups.length; index += 1) assert(Array.isArray(groups[index]), `Chunk must be an array: ${names[index]}`);
   return groups.flat();
 }
 
 const canonicalManifest = await readJson(resolve(canonicalDir, 'manifest.json'));
 const publicManifest = await readJson(resolve(publicDir, 'manifest.json'));
 
-assert(
-  JSON.stringify(stable(publicManifest)) === JSON.stringify(stable(canonicalManifest)),
-  'Public High IQ manifest has drifted from canonical data manifest.'
-);
-
-assert(canonicalManifest.datasetVersion === '2.2', `Unexpected High IQ dataset version: ${canonicalManifest.datasetVersion}`);
-assert(canonicalManifest.questionCount === 80, `Expected 80 questions, found ${canonicalManifest.questionCount}`);
+assert(JSON.stringify(stable(publicManifest)) === JSON.stringify(stable(canonicalManifest)), 'Public High IQ manifest has drifted from canonical data manifest.');
+assert(canonicalManifest.datasetVersion === '2.3', `Unexpected High IQ dataset version: ${canonicalManifest.datasetVersion}`);
+assert(canonicalManifest.questionCount === 160, `Expected 160 questions, found ${canonicalManifest.questionCount}`);
 assert(canonicalManifest.sourceCount === 50, `Expected 50 sources, found ${canonicalManifest.sourceCount}`);
-assert(Array.isArray(canonicalManifest.questionChunks) && canonicalManifest.questionChunks.length === 8, 'Expected 8 question chunks.');
+assert(Array.isArray(canonicalManifest.questionChunks) && canonicalManifest.questionChunks.length === 12, 'Expected 12 question chunks.');
 assert(Array.isArray(canonicalManifest.sourceChunks) && canonicalManifest.sourceChunks.length === 2, 'Expected 2 source chunks.');
 
 for (const name of [...canonicalManifest.questionChunks, ...canonicalManifest.sourceChunks]) {
@@ -76,6 +65,7 @@ for (const source of sources) {
   assert(typeof source.url === 'string' && /^https?:\/\//i.test(source.url), `Invalid source URL for ${source.id}`);
 }
 
+const allowedRecordVersions = new Set(canonicalManifest.recordVersions || [canonicalManifest.datasetVersion]);
 const categoryCounts = {};
 const difficultyCounts = {};
 for (const question of questions) {
@@ -85,6 +75,7 @@ for (const question of questions) {
   questionIds.add(question.id);
   assert(question.status === canonicalManifest.requiredStatus, `${question.id} status is ${question.status}; expected ${canonicalManifest.requiredStatus}`);
   assert(question.audit === canonicalManifest.requiredAudit, `${question.id} audit is ${question.audit}; expected ${canonicalManifest.requiredAudit}`);
+  assert(allowedRecordVersions.has(question.version), `${question.id} has unsupported record version ${question.version}`);
   assert(canonicalManifest.allowedDifficulties.includes(question.difficulty), `${question.id} has unsupported difficulty ${question.difficulty}`);
   assert(question.choices && typeof question.choices === 'object', `${question.id} missing choices`);
   assert(['A','B','C','D'].includes(question.correctLetter), `${question.id} has invalid correctLetter ${question.correctLetter}`);
@@ -102,19 +93,14 @@ assert(JSON.stringify(stable(categoryCounts)) === JSON.stringify(stable(canonica
 assert(JSON.stringify(stable(difficultyCounts)) === JSON.stringify(stable(canonicalManifest.difficultyCounts)), 'Public difficulty distribution does not match manifest.');
 
 const indexHtml = await assertNonEmpty(resolve(runtimeDir, 'index.html'));
-const appJs = await assertNonEmpty(resolve(runtimeDir, 'app.js'));
+const appJs = await assertNonEmpty(resolve(runtimeDir, 'app-v3.js'));
+await assertNonEmpty(resolve(runtimeDir, 'game-core.mjs'));
 await assertNonEmpty(resolve(runtimeDir, 'high-iq.css'));
+await assertNonEmpty(resolve(runtimeDir, 'high-iq-v3.css'));
 
-assert(indexHtml.includes('Build your High IQ run'), 'Public High IQ HTML is missing the upgraded challenge console marker.');
+assert(indexHtml.includes('Build your High IQ run'), 'Public High IQ HTML is missing the challenge console marker.');
 assert(indexHtml.includes('https://dtfseeds.com/games/high-iq/'), 'Public High IQ HTML is missing its canonical production URL.');
-assert(appJs.includes('/games/high-iq/data'), 'Public High IQ loader is missing the canonical data route.');
-assert(appJs.includes('non-JSON content'), 'Public High IQ loader is missing the non-JSON response guard.');
+assert(appJs.includes('/games/high-iq/data'), 'Public High IQ v3 loader is missing the canonical data route.');
+assert(appJs.includes('non-JSON content'), 'Public High IQ v3 loader is missing the non-JSON response guard.');
 
-console.log(JSON.stringify({
-  ok: true,
-  datasetVersion: canonicalManifest.datasetVersion,
-  questions: questions.length,
-  sources: sources.length,
-  categories: Object.keys(categoryCounts).length,
-  runtime: 'site/public-route-patch/games/high-iq'
-}, null, 2));
+console.log(JSON.stringify({ ok: true, datasetVersion: canonicalManifest.datasetVersion, questions: questions.length, sources: sources.length, categories: Object.keys(categoryCounts).length, runtime: 'site/public-route-patch/games/high-iq' }, null, 2));
