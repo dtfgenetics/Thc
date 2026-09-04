@@ -2,7 +2,7 @@
   "id": "high-iq",
   "title": "High IQ — Test Higher Cognition",
   "category": "knowledge-game",
-  "status": "v3.2-production-verified",
+  "status": "v3.2-production-verified-v2.4-content",
   "provider": "DTF Genetics / GitHub",
   "public_url": "https://dtfseeds.com/games/high-iq/",
   "website_route": "/games/high-iq/",
@@ -12,10 +12,10 @@
   "machineData": {
     "owner": "dtfgenetics/Thc",
     "path": "games/high-iq/data",
-    "version": "2.3",
-    "questions": 160,
+    "version": "2.4",
+    "questions": 200,
     "sources": 50,
-    "recordVersions": ["2.2", "2.3"],
+    "recordVersions": ["2.2", "2.3", "2.4"],
     "manifestDriven": true,
     "validation": "node games/high-iq/scripts/validate-data.mjs",
     "publicRuntimeValidation": "node games/high-iq/scripts/validate-public-runtime.mjs",
@@ -25,7 +25,7 @@
     "gameCoreTests": "node games/high-iq/test/game-core.test.mjs",
     "browserPlaythrough": "node games/high-iq/test/browser-smoke.mjs",
     "liveVerification": "node games/high-iq/scripts/verify-live-v3.mjs",
-    "provenance": "High_IQ_Master_Production_Workbook_v2_2.xlsx + source-backed v2.3 expansion"
+    "provenance": "High_IQ_Master_Production_Workbook_v2_2.xlsx + source-backed v2.3/v2.4 expansions"
   },
   "browserSource": {
     "html": "site/public-route-patch/games/high-iq/index.html",
@@ -35,33 +35,7 @@
     "v3Styles": "site/public-route-patch/games/high-iq/high-iq-v3.css",
     "legacyScript": "site/public-route-patch/games/high-iq/app.js",
     "runtime": "static-es-modules",
-    "features": [
-      "category-filter",
-      "difficulty-filter",
-      "balanced-question-mix",
-      "random-question-mix",
-      "deterministic-daily-10",
-      "variable-session-length",
-      "difficulty-weighted-scoring",
-      "live-accuracy-and-streak",
-      "answer-explanations",
-      "context-notes",
-      "source-links-and-metadata",
-      "missed-question-review",
-      "practice-missed-session",
-      "local-run-history",
-      "personal-best",
-      "score-sharing",
-      "knowledge-coverage-map",
-      "keyboard-answer-selection",
-      "reduced-motion-support",
-      "forced-colors-support",
-      "retryable-data-health-state",
-      "manifest-driven-question-growth",
-      "maintainer-question-cli",
-      "manifest-driven-shell-metadata",
-      "manifest-driven-package-verification"
-    ]
+    "features": ["category-filter","difficulty-filter","balanced-question-mix","random-question-mix","deterministic-daily-10","variable-session-length","difficulty-weighted-scoring","live-accuracy-and-streak","answer-explanations","context-notes","source-links-and-metadata","missed-question-review","practice-missed-session","local-run-history","personal-best","score-sharing","knowledge-coverage-map","keyboard-answer-selection","reduced-motion-support","forced-colors-support","retryable-data-health-state","manifest-driven-question-growth","maintainer-question-cli","manifest-driven-shell-metadata","manifest-driven-package-verification"]
   },
   "integration": {
     "mode": "self-hosted-static",
@@ -77,6 +51,7 @@
     "production_route_verified": true,
     "production_verified_at": "2026-09-04",
     "production_verification_workflow": "Deploy DTFSeeds Public Suite via WordPress V2",
-    "production_verification_run": 33904813011
+    "production_verification_run": 33904813011,
+    "pending_content_release": "2.4"
   }
 }
