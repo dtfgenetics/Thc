@@ -72,15 +72,27 @@ function allowedDynamicProjectTooling(projectId, path) {
 
 const files = getChangedFiles();
 const projectPrefix = config.branching.projectPrefix;
+const workPrefix = config.branching.workPrefix || 'work/';
 const multiPrefix = config.branching.multiPrefix;
 
 let mode = 'compatibility';
 let projectId = null;
 let unrestricted = false;
+let sessionId = null;
+let task = null;
 
 if (branch.startsWith(multiPrefix)) {
   mode = 'multi';
   unrestricted = true;
+} else if (branch.startsWith(workPrefix)) {
+  const parts = branch.slice(workPrefix.length).split('/').filter(Boolean);
+  if (parts.length !== 3) {
+    console.error('Studio work branch must be work/<project>/<task>/<session>.');
+    process.exit(2);
+  }
+  [projectId, task, sessionId] = parts;
+  mode = 'work';
+  unrestricted = projectId === config.branching.platformProjectId || Boolean(config.lanes[projectId]?.unrestricted);
 } else if (branch.startsWith(projectPrefix)) {
   const remainder = branch.slice(projectPrefix.length);
   projectId = remainder.split('/')[0] || null;
@@ -95,7 +107,7 @@ if (mode === 'compatibility') {
     branch,
     mode,
     changedFiles: files,
-    message: 'Legacy/compatibility branch: project lane isolation is advisory. Use project/<id>/<task> for isolated work or multi/<task> for intentional cross-project work.'
+    message: 'Legacy/compatibility branch: project lane isolation is advisory. New parallel work should use work/<id>/<task>/<session>; existing project/* and multi/* branches remain supported.'
   }, null, 2));
   process.exit(0);
 }
@@ -107,15 +119,17 @@ if (unrestricted) {
     branch,
     mode,
     projectId,
+    task,
+    sessionId,
     unrestricted: true,
     changedFiles: files,
-    message: 'Cross-project work is explicitly allowed on this branch.'
+    message: 'Cross-project work is explicitly allowed on this platform/multi session.'
   }, null, 2));
   process.exit(0);
 }
 
 if (!projectId) {
-  console.error('Project branch is missing a project id. Expected project/<id>/<task>.');
+  console.error('Project branch is missing a project id.');
   process.exit(2);
 }
 
@@ -142,12 +156,14 @@ const result = {
   branch,
   mode,
   projectId,
+  task,
+  sessionId,
   ownedFiles: owned,
   sharedFiles: shared,
   violations,
   escapeHatches: [
     `Use ${multiPrefix}<task> for an intentional multi-project change.`,
-    `Use ${projectPrefix}${config.branching.platformProjectId}/<task> for repository/platform integration work.`
+    `Use ${workPrefix}${config.branching.platformProjectId}/<task>/<session> or ${projectPrefix}${config.branching.platformProjectId}/<task> for repository/platform integration work.`
   ]
 };
 
