@@ -1,0 +1,102 @@
+name: Studio Ready Convergence
+
+on:
+  schedule:
+    - cron: '7,22,37,52 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: write
+  checks: read
+
+concurrency:
+  group: dtf-studio-ready-convergence
+  cancel-in-progress: false
+
+jobs:
+  converge:
+    name: Integrate ready Studio PRs without blocking unrelated work
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Checkout current main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate convergence command
+        run: |
+          set -euo pipefail
+          node --check scripts/studio/integrate.mjs
+          node --check scripts/studio/core.mjs
+
+      - name: Integrate non-draft Studio PRs that are actually ready
+        id: integrate
+        shell: bash
+        run: |
+          set -u
+          report="$RUNNER_TEMP/studio-ready-convergence.txt"
+          : > "$report"
+
+          mapfile -t prs < <(
+            gh pr list --state open --base main --limit 100 \
+              --json number,isDraft,body \
+              --jq '.[] | select(.isDraft == false and ((.body // "") | contains("<!-- dtf-studio-session"))) | .number'
+          )
+
+          echo "Ready Studio PR candidates: ${#prs[@]}" | tee -a "$report"
+          integrated=0
+          deferred=0
+
+          for pr in "${prs[@]:0:20}"; do
+            echo "--- PR #$pr ---" | tee -a "$report"
+            output="$RUNNER_TEMP/studio-integrate-$pr.log"
+            if node scripts/studio/integrate.mjs "$pr" --merge >"$output" 2>&1; then
+              cat "$output" | tee -a "$report"
+              integrated=$((integrated + 1))
+            else
+              status=$?
+              cat "$output" | tee -a "$report"
+              echo "Deferred PR #$pr (exit $status). It remains intact; unrelated PRs continue." | tee -a "$report"
+              deferred=$((deferred + 1))
+            fi
+          done
+
+          echo "integrated=$integrated" >> "$GITHUB_OUTPUT"
+          echo "deferred=$deferred" >> "$GITHUB_OUTPUT"
+          echo "report=$report" >> "$GITHUB_OUTPUT"
+
+      - name: Write convergence summary
+        if: always()
+        shell: bash
+        env:
+          INTEGRATED: ${{ steps.integrate.outputs.integrated }}
+          DEFERRED: ${{ steps.integrate.outputs.deferred }}
+        run: |
+          {
+            echo '## Studio ready convergence'
+            echo
+            echo "Integrated: **${INTEGRATED:-0}**"
+            echo "Deferred because of checks/conflicts/movement: **${DEFERRED:-0}**"
+            echo
+            echo 'A deferred PR does not block unrelated ready work. Each integration re-reads current `main`, exact-matches the PR head, and dispatches cumulative production when a classified production target is touched.'
+            if [[ -s "$RUNNER_TEMP/studio-ready-convergence.txt" ]]; then
+              echo
+              echo '<details><summary>Run detail</summary>'
+              echo
+              echo '```text'
+              cat "$RUNNER_TEMP/studio-ready-convergence.txt"
+              echo '```'
+              echo '</details>'
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
