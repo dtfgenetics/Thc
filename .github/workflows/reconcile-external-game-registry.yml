@@ -1,0 +1,50 @@
+name: Reconcile External Game Registry
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - site/deployment/external-games/**
+      - site/public-route-patch/games/*/source-revision.txt
+      - scripts/reconcile-external-game-registry.mjs
+      - scripts/validate-external-game-contracts.mjs
+      - .github/workflows/reconcile-external-game-registry.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: reconcile-external-game-registry
+  cancel-in-progress: true
+
+jobs:
+  reconcile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate external contracts
+        run: node scripts/validate-external-game-contracts.mjs
+      - name: Reconcile registry
+        run: node scripts/reconcile-external-game-registry.mjs
+      - name: Validate public app registry
+        run: node scripts/validate-public-app-registry.mjs
+      - name: Commit reconciled registry when needed
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- site/deployment/public-apps.json; then
+            echo 'Registry already synchronized.'
+            exit 0
+          fi
+          git config user.name 'dtf-game-release-bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add site/deployment/public-apps.json
+          git commit -m 'release(games): reconcile external game registry'
+          git push origin HEAD:main
