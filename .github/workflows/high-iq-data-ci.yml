@@ -57,7 +57,7 @@ jobs:
           node --check site/public-route-patch/games/high-iq/app-v3.js
           node --check site/public-route-patch/games/high-iq/game-core.mjs
           node --check games/high-iq/scripts/question-bank.mjs
-          node --check games/high-iq/scripts/sync-shell-from-manifest.mjs
+          node --check games/high-iq/scripts/sync-runtime-shell.mjs
           node --check games/high-iq/test/question-bank-tool.test.mjs
           node --check games/high-iq/test/browser-smoke.mjs
           node --check games/high-iq/scripts/verify-live-v3.mjs
@@ -80,7 +80,7 @@ jobs:
           grep -Fq 'Build your High IQ run' site/public-route-patch/games/high-iq/index.html
           grep -Fq "Today's Daily 10" site/public-route-patch/games/high-iq/index.html
           grep -Fq 'Missed-question review' site/public-route-patch/games/high-iq/index.html
-          node games/high-iq/scripts/sync-shell-from-manifest.mjs --check
+          node games/high-iq/scripts/sync-runtime-shell.mjs --check
 
       - name: Build and inspect WordPress game-route package
         shell: bash
