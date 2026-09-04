@@ -5,23 +5,23 @@ on:
     branches: [main]
     paths:
       - '.agents/skills/dtf-parallel-studio/**'
+      - 'scripts/studio.mjs'
       - 'scripts/studio/**'
       - 'scripts/test-dtf-parallel-studio.mjs'
       - 'scripts/project-lane-check.mjs'
       - 'data/studio-resources.json'
       - 'data/project-work-lanes.json'
-      - 'package.json'
       - '.github/workflows/dtf-parallel-studio-ci.yml'
   push:
     branches: [main]
     paths:
       - '.agents/skills/dtf-parallel-studio/**'
+      - 'scripts/studio.mjs'
       - 'scripts/studio/**'
       - 'scripts/test-dtf-parallel-studio.mjs'
       - 'scripts/project-lane-check.mjs'
       - 'data/studio-resources.json'
       - 'data/project-work-lanes.json'
-      - 'package.json'
       - '.github/workflows/dtf-parallel-studio-ci.yml'
   workflow_dispatch:
 
@@ -48,6 +48,7 @@ jobs:
 
       - name: Validate studio scripts
         run: |
+          node --check scripts/studio.mjs
           node --check scripts/studio/core.mjs
           node --check scripts/studio/start.mjs
           node --check scripts/studio/resume.mjs
@@ -58,7 +59,7 @@ jobs:
           node --check scripts/project-lane-check.mjs
 
       - name: Run studio regression tests
-        run: npm run studio:test
+        run: node scripts/studio.mjs test
 
       - name: Preserve legacy parallel-project self-test
         run: npm run project:test
