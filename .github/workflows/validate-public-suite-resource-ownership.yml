@@ -1,0 +1,77 @@
+name: Validate Public Suite Resource Ownership
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'site/deployment/release-resources.json'
+      - 'scripts/public_suite_resource_ownership.py'
+      - 'scripts/assemble-wordpress-suite-resource-aware.py'
+      - 'scripts/package-public-suite-wordpress-resource-aware.py'
+      - 'scripts/test-public-suite-resource-ownership.py'
+      - '.github/workflows/validate-public-suite-resource-ownership.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'site/deployment/release-resources.json'
+      - 'scripts/public_suite_resource_ownership.py'
+      - 'scripts/assemble-wordpress-suite-resource-aware.py'
+      - 'scripts/package-public-suite-wordpress-resource-aware.py'
+      - 'scripts/test-public-suite-resource-ownership.py'
+      - '.github/workflows/validate-public-suite-resource-ownership.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Compile and run synthetic ownership tests
+        run: |
+          set -euo pipefail
+          python -m py_compile \
+            scripts/public_suite_resource_ownership.py \
+            scripts/assemble-wordpress-suite-resource-aware.py \
+            scripts/package-public-suite-wordpress-resource-aware.py \
+            scripts/test-public-suite-resource-ownership.py
+          python scripts/test-public-suite-resource-ownership.py
+
+      - name: Assemble real resource-aware WordPress bridge
+        run: |
+          set -euo pipefail
+          python scripts/assemble-wordpress-suite-resource-aware.py "$RUNNER_TEMP/dtf-suite-resource-aware.mjs" | tee "$RUNNER_TEMP/ownership-report.json"
+          node --check "$RUNNER_TEMP/dtf-suite-resource-aware.mjs"
+          grep -Fq "games/high-life" "$RUNNER_TEMP/dtf-suite-resource-aware.mjs"
+          ! grep -Fq "'games/high-land'" "$RUNNER_TEMP/dtf-suite-resource-aware.mjs"
+          ! grep -Fq "'games/high-iq'" "$RUNNER_TEMP/dtf-suite-resource-aware.mjs"
+          ! grep -Fq "'/games/high-land/'" "$RUNNER_TEMP/dtf-suite-resource-aware.mjs"
+          ! grep -Fq "'/games/high-iq/'" "$RUNNER_TEMP/dtf-suite-resource-aware.mjs"
+          grep -Fq 'resourceOwnedTargetsExcluded' "$RUNNER_TEMP/ownership-report.json"
+
+      - name: PHP-lint filtered embedded bridge
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import os, pathlib, re
+          text=(pathlib.Path(os.environ['RUNNER_TEMP'])/'dtf-suite-resource-aware.mjs').read_text()
+          m=re.search(r"const snippetCode = String\.raw`(.*?)`\.trim\(\);", text, re.S)
+          assert m, 'embedded PHP missing'
+          php=m.group(1).replace('${tokenLiteral}', "'0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'")
+          (pathlib.Path(os.environ['RUNNER_TEMP'])/'dtf-suite-resource-aware.php').write_text('<?php\n'+php+'\n')
+          PY
+          php -l "$RUNNER_TEMP/dtf-suite-resource-aware.php"
