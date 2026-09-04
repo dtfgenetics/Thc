@@ -46,6 +46,7 @@ const sources = sourceGroups.flat();
 if (questions.length !== manifest.questionCount) fail(`expected ${manifest.questionCount} questions, got ${questions.length}`);
 if (sources.length !== manifest.sourceCount) fail(`expected ${manifest.sourceCount} sources, got ${sources.length}`);
 
+const allowedRecordVersions = new Set(manifest.recordVersions || [manifest.datasetVersion]);
 const questionIds = new Set();
 const sourceIds = new Set();
 
@@ -64,10 +65,9 @@ for (const question of questions) {
   if (!question?.id || typeof question.id !== 'string') fail('question missing string id');
   if (questionIds.has(question.id)) fail(`duplicate question id ${question.id}`);
   questionIds.add(question.id);
-
   if (question.status !== manifest.requiredStatus) fail(`${question.id} status must be ${manifest.requiredStatus}`);
   if (question.audit !== manifest.requiredAudit) fail(`${question.id} audit must be ${manifest.requiredAudit}`);
-  if (question.version !== manifest.datasetVersion) fail(`${question.id} version must be ${manifest.datasetVersion}`);
+  if (!allowedRecordVersions.has(question.version)) fail(`${question.id} has unsupported record version ${question.version}`);
   if (!manifest.allowedDifficulties.includes(question.difficulty)) fail(`${question.id} has invalid difficulty ${question.difficulty}`);
   if (!Number.isInteger(question.points) || question.points < 1 || question.points > 4) fail(`${question.id} has invalid points`);
   if (!question.question || !question.explanation || !question.context) fail(`${question.id} is missing question/explanation/context text`);
@@ -77,27 +77,28 @@ for (const question of questions) {
   if (!letters.includes(question.correctLetter)) fail(`${question.id} has invalid correctLetter`);
   if (question.correctAnswer !== question.choices[question.correctLetter]) fail(`${question.id} correctAnswer does not match ${question.correctLetter}`);
   if (!Array.isArray(question.sourceIds) || question.sourceIds.length === 0) fail(`${question.id} has no sources`);
-  for (const sourceId of question.sourceIds) {
-    if (!sourceIds.has(sourceId)) fail(`${question.id} references missing source ${sourceId}`);
-  }
+  for (const sourceId of question.sourceIds) if (!sourceIds.has(sourceId)) fail(`${question.id} references missing source ${sourceId}`);
 }
 
 assertSameCounts(countBy(questions, 'difficulty'), manifest.difficultyCounts, 'difficulty counts');
 assertSameCounts(countBy(questions, 'category'), manifest.categoryCounts, 'category counts');
 
-const sortedIds = [...questionIds].sort();
-if (sortedIds[0] !== 'HIQ-S1-001' || sortedIds.at(-1) !== 'HIQ-S1-080') {
-  fail(`unexpected question ID range ${sortedIds[0]}..${sortedIds.at(-1)}`);
+const sortedNumbers = [...questionIds]
+  .map((id) => Number(id.match(/(\d+)$/)?.[1]))
+  .filter(Number.isFinite)
+  .sort((a, b) => a - b);
+if (sortedNumbers.length !== manifest.questionCount || sortedNumbers[0] !== 1 || sortedNumbers.at(-1) !== manifest.questionCount) {
+  fail(`unexpected question ID coverage: expected 1..${manifest.questionCount}`);
+}
+for (let i = 0; i < sortedNumbers.length; i += 1) {
+  if (sortedNumbers[i] !== i + 1) fail(`question ID sequence gap near ${i + 1}`);
 }
 
 for (const filename of ['manifest.json', ...manifest.questionChunks, ...manifest.sourceChunks]) {
   const canonical = await readText(dataDir, filename);
   let publicCopy;
-  try {
-    publicCopy = await readText(publicDataDir, filename);
-  } catch {
-    fail(`public runtime copy is missing ${filename}`);
-  }
+  try { publicCopy = await readText(publicDataDir, filename); }
+  catch { fail(`public runtime copy is missing ${filename}`); }
   if (canonical !== publicCopy) fail(`public runtime copy drifted from canonical data: ${filename}`);
 }
 
