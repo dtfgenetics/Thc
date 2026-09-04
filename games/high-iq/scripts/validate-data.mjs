@@ -39,6 +39,14 @@ function assertSameCounts(actual, expected, label) {
   }
 }
 
+function runSync(scriptName, failureLabel) {
+  const result = spawnSync(process.execPath, [path.resolve(here, scriptName)], {
+    cwd: repoRoot,
+    stdio: 'inherit'
+  });
+  if (result.status !== 0) fail(failureLabel);
+}
+
 const manifest = await readJson('manifest.json');
 const questionGroups = await Promise.all(manifest.questionChunks.map(readJson));
 const sourceGroups = await Promise.all(manifest.sourceChunks.map(readJson));
@@ -104,10 +112,7 @@ for (const filename of ['manifest.json', ...manifest.questionChunks, ...manifest
   if (canonical !== publicCopy) fail(`public runtime copy drifted from canonical data: ${filename}`);
 }
 
-const shellSync = spawnSync(process.execPath, [path.resolve(here, 'sync-runtime-shell.mjs')], {
-  cwd: repoRoot,
-  stdio: 'inherit'
-});
-if (shellSync.status !== 0) fail('runtime shell synchronization failed');
+runSync('sync-runtime-shell.mjs', 'runtime shell synchronization failed');
+runSync('sync-deployment-registry.mjs', 'deployment registry synchronization failed');
 
 console.log(`High IQ dataset ${manifest.datasetVersion}: ${questions.length} Approved/PASS questions and ${sources.length} sources validated; public runtime copies match byte-for-byte.`);
