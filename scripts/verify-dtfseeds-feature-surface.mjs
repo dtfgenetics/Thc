@@ -3,6 +3,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
 import dns from 'node:dns';
+import http from 'node:http';
+import https from 'node:https';
 import { fileURLToPath } from 'node:url';
 
 dns.setDefaultResultOrder('ipv4first');
@@ -75,22 +77,52 @@ function normalizedPathname(url) {
   return normalizeRoute(pathname);
 }
 
-async function fetchWithTimeout(url, timeoutMs) {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(new Error(`request timed out after ${timeoutMs}ms`)), timeoutMs);
-  try {
-    return await fetch(url, {
-      redirect: 'follow',
-      signal: controller.signal,
+function requestIpv4(url, timeoutMs) {
+  return new Promise((resolve, reject) => {
+    const target = new URL(url);
+    const transport = target.protocol === 'https:' ? https : http;
+    const request = transport.request(target, {
+      method: 'GET',
+      family: 4,
       headers: {
         'Cache-Control': 'no-cache, no-store, max-age=0',
         Pragma: 'no-cache',
-        'User-Agent': 'DTFSeeds-Feature-Audit/3.0',
+        'User-Agent': 'DTFSeeds-Feature-Audit/4.0',
       },
+    }, response => {
+      const status = response.statusCode || 0;
+      const location = response.headers.location;
+      if ([301, 302, 303, 307, 308].includes(status) && location) {
+        response.resume();
+        resolve({ redirect: new URL(location, target).toString() });
+        return;
+      }
+
+      const chunks = [];
+      response.on('data', chunk => chunks.push(Buffer.from(chunk)));
+      response.on('end', () => resolve({
+        status,
+        body: Buffer.concat(chunks).toString('utf8'),
+        finalUrl: target.toString(),
+      }));
     });
-  } finally {
-    clearTimeout(timer);
+
+    request.setTimeout(timeoutMs, () => {
+      request.destroy(new Error(`request timed out after ${timeoutMs}ms`));
+    });
+    request.on('error', reject);
+    request.end();
+  });
+}
+
+async function fetchWithTimeout(url, timeoutMs) {
+  let current = String(url);
+  for (let redirect = 0; redirect <= 8; redirect++) {
+    const result = await requestIpv4(current, timeoutMs);
+    if (!result.redirect) return result;
+    current = result.redirect;
   }
+  throw new Error(`too many redirects for ${url}`);
 }
 
 async function verifyOne(site, item) {
@@ -102,11 +134,11 @@ async function verifyOne(site, item) {
     requestUrl.searchParams.set('dtf_feature_audit', token);
     try {
       const response = await fetchWithTimeout(requestUrl, 45000);
-      const body = await response.text();
+      const body = response.body;
       const status = response.status;
       const bytes = Buffer.byteLength(body);
       const markerSeen = body.toLocaleLowerCase().includes(item.marker.toLocaleLowerCase());
-      const finalPath = normalizedPathname(response.url);
+      const finalPath = normalizedPathname(response.finalUrl);
       const routeIdentity = finalPath === item.route;
       const ok = status >= 200 && status < 300 && bytes > 400 && markerSeen && routeIdentity;
       last = {
@@ -115,7 +147,7 @@ async function verifyOne(site, item) {
         bytes,
         markerSeen,
         routeIdentity,
-        finalUrl: response.url,
+        finalUrl: response.finalUrl,
         ok,
         attempt,
         error: null,
