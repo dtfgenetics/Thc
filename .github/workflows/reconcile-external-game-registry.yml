@@ -12,7 +12,10 @@ on:
       - .github/workflows/reconcile-external-game-registry.yml
 
 permissions:
+  actions: write
   contents: write
+  issues: write
+  pull-requests: write
 
 concurrency:
   group: reconcile-external-game-registry
@@ -35,16 +38,16 @@ jobs:
         run: node scripts/reconcile-external-game-registry.mjs
       - name: Validate public app registry
         run: node scripts/validate-public-app-registry.mjs
-      - name: Commit reconciled registry when needed
+      - name: Safely integrate reconciled registry when needed
         shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           if git diff --quiet -- site/deployment/public-apps.json; then
             echo 'Registry already synchronized.'
             exit 0
           fi
-          git config user.name 'dtf-game-release-bot'
-          git config user.email 'actions@users.noreply.github.com'
-          git add site/deployment/public-apps.json
-          git commit -m 'release(games): reconcile external game registry'
-          git push origin HEAD:main
+          node scripts/studio/integrate-generated-change.mjs \
+            --message='release(games): reconcile external game registry' \
+            --paths=site/deployment/public-apps.json
