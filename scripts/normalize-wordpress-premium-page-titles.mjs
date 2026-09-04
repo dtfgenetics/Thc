@@ -1,4 +1,4 @@
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import process from 'node:process';
 
@@ -17,12 +17,32 @@ const sleep=(ms)=>new Promise(r=>setTimeout(r,ms));
 
 // V3 owns Home/Learn and V4 owns Genetics/Shop. Keep this small normalizer
 // deliberately limited to editorial pages that are not owned by those visual
-// layers so production polishers do not fight each other. Markers must match
-// the current canonical page source, not an older production revision.
-const targets=[
-  {slug:'community',markers:['Stronger together.','Join the official DTF / Teaching Healthy Cultivation Discord']},
-  {slug:'gallery',markers:['DTF Visual Library','See the plant science, genetics, tools, games, and community work.']}
-];
+// layers so production polishers do not fight each other. The approved marker
+// is derived from each canonical page's H1 so ordinary copy changes cannot leave
+// a stale hard-coded production assertion behind.
+const targetSlugs=['community','gallery'];
+
+function textFromHtml(value){
+  return String(value||'')
+    .replace(/<[^>]+>/g,' ')
+    .replace(/&nbsp;/gi,' ')
+    .replace(/&amp;/gi,'&')
+    .replace(/&quot;/gi,'"')
+    .replace(/&#39;/g,"'")
+    .replace(/\s+/g,' ')
+    .trim();
+}
+
+async function canonicalTarget(slug){
+  const canonicalPath=`site/wordpress/pages/${slug}.html`;
+  const canonical=await readFile(canonicalPath,'utf8');
+  const match=canonical.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i);
+  const marker=textFromHtml(match?.[1]);
+  if(!marker) throw new Error(`${slug}: canonical page has no usable H1 marker at ${canonicalPath}.`);
+  return {slug,canonicalPath,marker};
+}
+
+const targets=await Promise.all(targetSlugs.map(canonicalTarget));
 
 const STYLE_ID='dtf-premium-theme-title-suppression';
 const STYLE=`<style id="${STYLE_ID}">
@@ -40,7 +60,7 @@ async function request(path,options={}){
   let last;
   for(let attempt=1;attempt<=6;attempt+=1){
     try{
-      const response=await fetch(`${siteUrl}${path}`,{...options,redirect:'follow',signal:AbortSignal.timeout(60000),headers:{Authorization:auth,Accept:'application/json','User-Agent':'DTFSeeds-Premium-Title-Normalizer/2.0',...(options.body?{'Content-Type':'application/json'}:{}),...(options.headers||{})}});
+      const response=await fetch(`${siteUrl}${path}`,{...options,redirect:'follow',signal:AbortSignal.timeout(60000),headers:{Authorization:auth,Accept:'application/json','User-Agent':'DTFSeeds-Premium-Title-Normalizer/3.0',...(options.body?{'Content-Type':'application/json'}:{}),...(options.headers||{})}});
       const text=await response.text();let body=null;try{body=text?JSON.parse(text):null;}catch{body=text;}
       if((response.status>=500||response.status===429)&&attempt<6){await sleep(attempt*1800);continue;}
       if(!response.ok) throw new Error(`${options.method||'GET'} ${path} failed (${response.status}): ${typeof body==='string'?body.slice(0,500):JSON.stringify(body).slice(0,500)}`);
@@ -50,7 +70,7 @@ async function request(path,options={}){
   throw last;
 }
 function rendered(value){return typeof value==='string'?value:(value?.raw||value?.rendered||'');}
-function knownMarker(content,target){return target.markers.find(marker=>String(content).includes(marker))||null;}
+function hasCanonicalMarker(content,target){return String(content).includes(target.marker);}
 function normalizeThemeTitle(content){
   const re=new RegExp(`<style\\s+id=["']${STYLE_ID}["'][^>]*>[\\s\\S]*?<\\/style>\\s*`,'i');
   return `${STYLE}\n${String(content).replace(re,'').trimStart()}`;
@@ -62,8 +82,7 @@ for(const target of targets){
   if(!Array.isArray(rows)||rows.length!==1) throw new Error(`${target.slug}: expected exactly one page, found ${Array.isArray(rows)?rows.length:'invalid'}.`);
   const page=rows[0];
   const before=rendered(page.content);
-  const marker=knownMarker(before,target);
-  if(!marker) throw new Error(`${target.slug}: no approved designed-hero marker is present; refusing title normalization.`);
+  if(!hasCanonicalMarker(before,target)) throw new Error(`${target.slug}: live page does not contain canonical H1 marker "${target.marker}" from ${target.canonicalPath}; refusing title normalization.`);
   if(!/<h1\b/i.test(before)) throw new Error(`${target.slug}: no custom H1 found; refusing to hide the theme title.`);
   const after=normalizeThemeTitle(before);
 
@@ -72,8 +91,8 @@ for(const target of targets){
   const check=await request(`/wp-json/wp/v2/pages/${page.id}?context=edit`);
   const current=rendered(check.content);
   if(apply&&!current.includes(`id="${STYLE_ID}"`)) throw new Error(`${target.slug}: scoped title suppression was not persisted.`);
-  if(!knownMarker(current,target)) throw new Error(`${target.slug}: approved hero marker changed unexpectedly.`);
-  results.push({slug:target.slug,pageId:page.id,changed:after!==before,applied:apply,marker});
+  if(!hasCanonicalMarker(current,target)) throw new Error(`${target.slug}: canonical H1 marker changed unexpectedly after normalization.`);
+  results.push({slug:target.slug,pageId:page.id,changed:after!==before,applied:apply,marker:target.marker,canonicalPath:target.canonicalPath});
 }
 
 const report={generatedAt:new Date().toISOString(),siteUrl,apply,backupDir,styleId:STYLE_ID,targets:results};

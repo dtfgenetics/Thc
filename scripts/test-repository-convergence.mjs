@@ -20,9 +20,15 @@ assert.ok(watch.includes("'site/wordpress/**'"), 'WordPress watcher must scope i
 assert.ok(!deploy.includes('\n  workflow_run:\n'), 'Production staging must not be launched by the scheduled/read-only watcher.')
 assert.ok(deploy.includes('push:\n    branches: [main]\n    paths:'), 'Production staging must be driven by relevant main path changes.')
 
-for (const source of [titleScript, titleWorkflow]) {
-  assert.ok(source.includes('Stronger together.'), 'Community title checks must follow the current canonical hero.')
-  assert.ok(!source.includes('Grow together. Learn together. Build together.'), 'Stale Community hero marker must not return.')
+assert.ok(titleScript.includes("const targetSlugs=['community','gallery']"), 'Editorial title normalizer must keep its scope explicit.')
+assert.ok(titleScript.includes('site/wordpress/pages/${slug}.html'), 'Editorial title markers must come from canonical page files.')
+assert.ok(titleScript.includes('canonical page has no usable H1 marker'), 'Missing canonical H1s must fail closed.')
+assert.ok(titleWorkflow.includes('canonical_h1(){'), 'Live title verification must derive the same canonical H1 markers.')
+assert.ok(titleWorkflow.includes('site/wordpress/pages/community.html'), 'Community canonical source must drive title verification.')
+assert.ok(titleWorkflow.includes('site/wordpress/pages/gallery.html'), 'Gallery canonical source must drive title verification.')
+for (const stale of ['Grow together. Learn together. Build together.','DTF Visual Library','See the plant science, genetics, tools, games, and community work.']) {
+  assert.ok(!titleScript.includes(stale), `Stale hard-coded title marker must not return: ${stale}`)
+  assert.ok(!titleWorkflow.includes(stale), `Stale workflow title marker must not return: ${stale}`)
 }
 
 assert.ok(lifecycleWorkflow.includes('contents: write'), 'Lifecycle maintenance needs branch-delete permission.')
