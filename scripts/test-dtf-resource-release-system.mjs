@@ -41,7 +41,17 @@ assert.equal(resources['high-land'].publisher.type, 'hostinger-ssh');
 assert.equal(resources['high-land'].publisher.status, 'pilot-manual');
 assert.equal(resources['high-land'].publisher.workflow, 'deploy-dtfseeds-public-resource.yml');
 assert.equal(resources['high-iq'].publisher.type, 'wordpress-transactional-resource');
-assert.equal(resources['high-iq'].publisher.status, 'pending-bridge-adaptation');
+assert.equal(resources['high-iq'].publisher.status, 'pilot-manual');
+assert.equal(resources['high-iq'].publisher.workflow, 'deploy-dtfseeds-wordpress-resource.yml');
+assert.equal(resources['high-iq'].publisher.sharedProductionTarget, 'wordpress:temporary-code-snippets-bridge');
+assert.notEqual(resources['high-iq'].publisher.sharedProductionTarget, resources['high-land'].productionTarget);
+
+for (const path of [
+  'scripts/assemble-wordpress-resource-v2.py',
+  '.github/workflows/deploy-dtfseeds-wordpress-resource.yml',
+]) {
+  assert.ok(config.globalBuildPaths.includes(path), `shared resource control path missing: ${path}`);
+}
 
 for (const path of config.globalBuildPaths) {
   assert.ok(typeof path === 'string' && path.length > 0);
