@@ -35,7 +35,11 @@ for (const edit of edits) {
       changedReplacements += 1;
       continue;
     }
-    if (newCount !== 1) throw new Error(`${edit.path}: expected exactly one repaired marker when stale marker is absent: ${newText}`);
+    // Idempotent reruns only need to prove the canonical replacement exists.
+    // Production workflows can legitimately assert the same canonical marker in
+    // more than one verifier, so counting every canonical occurrence as an error
+    // makes an already-correct file fail repair validation.
+    if (newCount < 1) throw new Error(`${edit.path}: repaired marker is absent when stale marker is absent: ${newText}`);
   }
   if (changed) {
     changedFiles += 1;
