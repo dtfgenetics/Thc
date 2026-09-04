@@ -42,17 +42,23 @@ jobs:
       - name: Validate public runtime mirrors canonical bank
         run: node games/high-iq/scripts/validate-public-runtime.mjs
 
+      - name: Test High IQ authoring workflow
+        run: node games/high-iq/test/question-bank-tool.test.mjs
+
       - name: Test High IQ v3 game core
         run: node games/high-iq/test/game-core.test.mjs
 
       - name: Smoke-test High IQ v3 runtime contract
         run: node games/high-iq/test/runtime-smoke.mjs
 
-      - name: Check browser, live-verifier, and packaging source syntax
+      - name: Check browser, authoring, live-verifier, and packaging source syntax
         run: |
           node --check site/public-route-patch/games/high-iq/app.js
           node --check site/public-route-patch/games/high-iq/app-v3.js
           node --check site/public-route-patch/games/high-iq/game-core.mjs
+          node --check games/high-iq/scripts/question-bank.mjs
+          node --check games/high-iq/scripts/sync-runtime-shell.mjs
+          node --check games/high-iq/test/question-bank-tool.test.mjs
           node --check games/high-iq/test/browser-smoke.mjs
           node --check games/high-iq/scripts/verify-live-v3.mjs
           python -m py_compile scripts/package-game-routes-wordpress.py scripts/package-public-suite-wordpress.py
@@ -74,6 +80,7 @@ jobs:
           grep -Fq 'Build your High IQ run' site/public-route-patch/games/high-iq/index.html
           grep -Fq "Today's Daily 10" site/public-route-patch/games/high-iq/index.html
           grep -Fq 'Missed-question review' site/public-route-patch/games/high-iq/index.html
+          node games/high-iq/scripts/sync-runtime-shell.mjs --check
 
       - name: Build and inspect WordPress game-route package
         shell: bash
@@ -86,20 +93,23 @@ jobs:
           python scripts/package-game-routes-wordpress.py "$release" "$archive"
           test -s "$archive"
           python - <<'PY'
-          import os, zipfile
+          import json, os, zipfile
           archive=os.path.join(os.environ['RUNNER_TEMP'],'high-iq-game-routes.zip')
-          required={
-              'games/high-iq/index.html',
-              'games/high-iq/app-v3.js',
-              'games/high-iq/game-core.mjs',
-              'games/high-iq/high-iq.css',
-              'games/high-iq/high-iq-v3.css',
-              'games/high-iq/data/manifest.json',
-          }
           with zipfile.ZipFile(archive) as z:
               names=set(z.namelist())
+              required={
+                  'games/high-iq/index.html',
+                  'games/high-iq/app-v3.js',
+                  'games/high-iq/game-core.mjs',
+                  'games/high-iq/high-iq.css',
+                  'games/high-iq/high-iq-v3.css',
+                  'games/high-iq/data/manifest.json',
+              }
+              manifest=json.loads(z.read('games/high-iq/data/manifest.json'))
+              for chunk in [*manifest['questionChunks'], *manifest['sourceChunks']]:
+                  required.add(f'games/high-iq/data/{chunk}')
               missing=required-names
-              assert not missing, f'High IQ v3 deploy package is missing: {sorted(missing)}'
+              assert not missing, f'High IQ deploy package is missing manifest-declared files: {sorted(missing)}'
               assert '.dtf-game-route-manifest.json' in names
           PY
 

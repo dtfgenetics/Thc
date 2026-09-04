@@ -1,10 +1,12 @@
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { spawnSync } from 'node:child_process';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const dataDir = path.resolve(here, '../data');
 const publicDataDir = path.resolve(here, '../../../site/public-route-patch/games/high-iq/data');
+const repoRoot = path.resolve(here, '../../..');
 
 async function readText(directory, filename) {
   return readFile(path.join(directory, filename), 'utf8');
@@ -101,5 +103,11 @@ for (const filename of ['manifest.json', ...manifest.questionChunks, ...manifest
   catch { fail(`public runtime copy is missing ${filename}`); }
   if (canonical !== publicCopy) fail(`public runtime copy drifted from canonical data: ${filename}`);
 }
+
+const shellSync = spawnSync(process.execPath, [path.resolve(here, 'sync-runtime-shell.mjs')], {
+  cwd: repoRoot,
+  stdio: 'inherit'
+});
+if (shellSync.status !== 0) fail('runtime shell synchronization failed');
 
 console.log(`High IQ dataset ${manifest.datasetVersion}: ${questions.length} Approved/PASS questions and ${sources.length} sources validated; public runtime copies match byte-for-byte.`);

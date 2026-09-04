@@ -11,13 +11,8 @@ function withBust(path) {
 
 async function getText(path, accept = 'text/html,*/*;q=0.8') {
   const response = await fetch(withBust(path), {
-    cache: 'no-store',
-    redirect: 'follow',
-    headers: {
-      Accept: accept,
-      'Cache-Control': 'no-cache, no-store, max-age=0',
-      Pragma: 'no-cache'
-    }
+    cache: 'no-store', redirect: 'follow',
+    headers: { Accept: accept, 'Cache-Control': 'no-cache, no-store, max-age=0', Pragma: 'no-cache' }
   });
   assert(response.ok, `${path} returned HTTP ${response.status}`);
   return response.text();
@@ -27,21 +22,12 @@ async function getJson(path) {
   const text = await getText(path, 'application/json');
   const trimmed = text.trim();
   assert(trimmed.startsWith('{') || trimmed.startsWith('['), `${path} returned non-JSON content`);
-  try {
-    return JSON.parse(text);
-  } catch (error) {
-    throw new Error(`High IQ live verification failed: ${path} returned invalid JSON: ${error.message}`);
-  }
+  try { return JSON.parse(text); }
+  catch (error) { throw new Error(`High IQ live verification failed: ${path} returned invalid JSON: ${error.message}`); }
 }
 
 const html = await getText('/games/high-iq/');
-for (const marker of [
-  'High IQ — Test Higher Cognition',
-  "Today's Daily 10",
-  'Missed-question review',
-  './app-v3.js',
-  './high-iq-v3.css'
-]) {
+for (const marker of ['High IQ — Test Higher Cognition', "Today's Daily 10", 'Missed-question review', './app-v3.js', './high-iq-v3.css']) {
   assert(html.includes(marker), `live HTML is missing marker: ${marker}`);
 }
 
@@ -58,13 +44,17 @@ assert(core.includes('export function seededShuffle'), 'game-core.mjs is missing
 const v3Css = await getText('/games/high-iq/high-iq-v3.css', 'text/css,*/*;q=0.8');
 assert(v3Css.includes('prefers-reduced-motion'), 'high-iq-v3.css is missing reduced-motion support');
 assert(v3Css.includes('missed-review-list'), 'high-iq-v3.css is missing missed-review styling');
+assert(v3Css.includes('aria-pressed'), 'high-iq-v3.css is missing selected-answer styling');
 
 const manifest = await getJson('/games/high-iq/data/manifest.json');
-assert(manifest.datasetVersion === '2.2', `expected dataset v2.2, got ${manifest.datasetVersion}`);
-assert(manifest.questionCount === 80, `expected 80 questions, got ${manifest.questionCount}`);
-assert(manifest.sourceCount === 50, `expected 50 sources, got ${manifest.sourceCount}`);
-assert(Array.isArray(manifest.questionChunks) && manifest.questionChunks.length === 8, 'manifest must list 8 question chunks');
-assert(Array.isArray(manifest.sourceChunks) && manifest.sourceChunks.length === 2, 'manifest must list 2 source chunks');
+assert(typeof manifest.datasetVersion === 'string' && manifest.datasetVersion.trim(), 'manifest datasetVersion is missing');
+assert(Array.isArray(manifest.recordVersions) && manifest.recordVersions.includes(manifest.datasetVersion), `datasetVersion ${manifest.datasetVersion} is not represented in recordVersions`);
+assert(Number.isInteger(manifest.questionCount) && manifest.questionCount > 0, `invalid questionCount ${manifest.questionCount}`);
+assert(Number.isInteger(manifest.sourceCount) && manifest.sourceCount > 0, `invalid sourceCount ${manifest.sourceCount}`);
+assert(Array.isArray(manifest.questionChunks) && manifest.questionChunks.length > 0, 'manifest must list question chunks');
+assert(Array.isArray(manifest.sourceChunks) && manifest.sourceChunks.length > 0, 'manifest must list source chunks');
+assert(new Set(manifest.questionChunks).size === manifest.questionChunks.length, 'manifest question chunk names must be unique');
+assert(new Set(manifest.sourceChunks).size === manifest.sourceChunks.length, 'manifest source chunk names must be unique');
 
 let questions = 0;
 const questionIds = new Set();
@@ -95,13 +85,4 @@ for (const chunk of manifest.sourceChunks) {
 assert(questions === manifest.questionCount, `loaded ${questions} questions; expected ${manifest.questionCount}`);
 assert(sources === manifest.sourceCount, `loaded ${sources} sources; expected ${manifest.sourceCount}`);
 
-console.log(JSON.stringify({
-  ok: true,
-  origin,
-  runtime: 'High IQ v3',
-  datasetVersion: manifest.datasetVersion,
-  questions,
-  sources,
-  questionChunks: manifest.questionChunks.length,
-  sourceChunks: manifest.sourceChunks.length
-}, null, 2));
+console.log(JSON.stringify({ ok: true, origin, runtime: 'High IQ v3', datasetVersion: manifest.datasetVersion, questions, sources, questionChunks: manifest.questionChunks.length, sourceChunks: manifest.sourceChunks.length }, null, 2));

@@ -38,11 +38,15 @@ for (const requiredId of [
   assert(html.includes(`id="${requiredId}"`), `Missing v3 surface: #${requiredId}`);
 }
 
-assert.equal(manifest.datasetVersion, '2.2');
-assert.equal(manifest.questionCount, 80);
-assert.equal(manifest.sourceCount, 50);
-assert.equal(manifest.questionChunks.length, 8);
-assert.equal(manifest.sourceChunks.length, 2);
+assert.equal(typeof manifest.datasetVersion, 'string');
+assert(manifest.datasetVersion.trim().length > 0, 'manifest datasetVersion must be non-empty');
+assert(Array.isArray(manifest.recordVersions) && manifest.recordVersions.includes(manifest.datasetVersion), 'manifest datasetVersion must be listed in recordVersions');
+assert(Number.isInteger(manifest.questionCount) && manifest.questionCount > 0, 'manifest questionCount must be positive');
+assert(Number.isInteger(manifest.sourceCount) && manifest.sourceCount > 0, 'manifest sourceCount must be positive');
+assert(Array.isArray(manifest.questionChunks) && manifest.questionChunks.length > 0, 'manifest must list question chunks');
+assert(Array.isArray(manifest.sourceChunks) && manifest.sourceChunks.length > 0, 'manifest must list source chunks');
+assert.equal(new Set(manifest.questionChunks).size, manifest.questionChunks.length, 'question chunk names must be unique');
+assert.equal(new Set(manifest.sourceChunks).size, manifest.sourceChunks.length, 'source chunk names must be unique');
 
 let questionCount = 0;
 for (const chunk of manifest.questionChunks) {
@@ -65,5 +69,7 @@ console.log(JSON.stringify({
   uiContractIds: idSelectors.length,
   questions: questionCount,
   sources: sourceCount,
+  questionChunks: manifest.questionChunks.length,
+  sourceChunks: manifest.sourceChunks.length,
   datasetVersion: manifest.datasetVersion
 }, null, 2));
