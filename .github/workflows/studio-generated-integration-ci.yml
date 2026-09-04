@@ -6,6 +6,10 @@ on:
     paths:
       - 'scripts/studio/integrate-generated-change.mjs'
       - 'scripts/studio/test-generated-integration.mjs'
+      - 'scripts/studio/test-auto-gateway-handoff.mjs'
+      - 'scripts/plan-dtfseeds-release.mjs'
+      - 'site/deployment/release-lanes.json'
+      - '.github/workflows/dtfseeds-production-gateway.yml'
       - '.github/workflows/studio-generated-integration-ci.yml'
   workflow_dispatch:
 
@@ -32,6 +36,11 @@ jobs:
         run: |
           node --check scripts/studio/integrate-generated-change.mjs
           node --check scripts/studio/test-generated-integration.mjs
+          node --check scripts/studio/test-auto-gateway-handoff.mjs
+          node --check scripts/plan-dtfseeds-release.mjs
 
       - name: Prove unrelated main movement remains parallel
         run: node scripts/studio/test-generated-integration.mjs
+
+      - name: Prove safe integration wakes cumulative production
+        run: node scripts/studio/test-auto-gateway-handoff.mjs

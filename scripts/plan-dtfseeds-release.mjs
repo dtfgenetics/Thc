@@ -13,6 +13,7 @@ const config = JSON.parse(readFileSync(configPath, 'utf8'));
 const mode = args.mode || process.env.RELEASE_MODE || 'auto';
 const head = args.head || process.env.GITHUB_SHA || 'HEAD';
 const requestedBase = args.base || process.env.RELEASE_BASE || '';
+const fallbackBase = args['fallback-base'] || process.env.RELEASE_FALLBACK_BASE || '';
 
 function gitText(commandArgs) {
   try {
@@ -32,7 +33,11 @@ function gitOk(commandArgs) {
 }
 
 function resolveCheckpoint() {
-  if (mode !== 'auto' || !config.productionCheckpointTag) return null;
+  // An explicitly supplied base is an exact caller contract used by CI,
+  // integration previews, and controlled release comparisons. Production
+  // automatic releases omit that exact base so the last successful production
+  // checkpoint can accumulate every not-yet-deployed parallel merge.
+  if (mode !== 'auto' || requestedBase || !config.productionCheckpointTag) return null;
   const ref = `refs/tags/${config.productionCheckpointTag}`;
   const sha = gitText(['rev-parse', '--verify', ref]);
   if (!sha) return null;
@@ -41,7 +46,7 @@ function resolveCheckpoint() {
 }
 
 const checkpoint = resolveCheckpoint();
-const base = checkpoint?.sha || requestedBase;
+const base = requestedBase || checkpoint?.sha || fallbackBase;
 
 function changedFiles() {
   if (mode === 'full') return ['<manual-full-release>'];
@@ -92,6 +97,7 @@ const plan = {
   site: config.site,
   mode,
   requestedBase: requestedBase || null,
+  fallbackBase: fallbackBase || null,
   base: base || null,
   checkpoint,
   head,
