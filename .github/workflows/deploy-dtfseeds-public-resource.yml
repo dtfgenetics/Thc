@@ -1,0 +1,220 @@
+name: Deploy DTFSeeds Public Resource
+
+on:
+  workflow_dispatch:
+    inputs:
+      resource:
+        description: Resource to publish
+        required: true
+        default: high-land
+        type: choice
+        options:
+          - high-land
+      source_sha:
+        description: Exact main commit whose validated resource artifact will be published
+        required: true
+        type: string
+      environment:
+        description: Protected GitHub environment
+        required: true
+        default: staging
+        type: choice
+        options:
+          - staging
+          - production
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: dtf-resource-publish-${{ inputs.resource }}-${{ inputs.environment }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: ${{ inputs.environment }}
+    env:
+      GH_TOKEN: ${{ github.token }}
+      RESOURCE_ID: ${{ inputs.resource }}
+      SOURCE_SHA: ${{ inputs.source_sha }}
+      SSH_HOST: ${{ secrets.HOSTINGER_HOST }}
+      SSH_USER: ${{ secrets.HOSTINGER_USER }}
+      SSH_PORT: ${{ secrets.HOSTINGER_PORT }}
+      SSH_PRIVATE_KEY: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY }}
+      SSH_KNOWN_HOSTS: ${{ secrets.HOSTINGER_KNOWN_HOSTS }}
+      REMOTE_PATH: ${{ vars.HOSTINGER_HIGH_LAND_PATH }}
+    steps:
+      - name: Check out release control plane
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          fetch-tags: true
+          persist-credentials: false
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate exact source and monotonic resource checkpoint
+        id: resource
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$SOURCE_SHA" =~ ^[0-9a-f]{40}$ ]] || { echo 'source_sha must be a full lowercase commit SHA' >&2; exit 2; }
+          git fetch --quiet origin main --tags
+          git cat-file -e "${SOURCE_SHA}^{commit}"
+          git merge-base --is-ancestor "$SOURCE_SHA" origin/main || {
+            echo "Refusing source that is not an ancestor of current main: $SOURCE_SHA" >&2
+            exit 1
+          }
+          python -m py_compile scripts/verify-dtf-public-resource-artifact.py
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import json
+          c=json.load(open('site/deployment/release-resources.json'))['resources']['high-land']
+          print('route='+c['route'])
+          print('marker='+c['verifyMarker'])
+          print('checkpoint='+c['checkpointTag'])
+          print('artifact_root='+c['artifactRoot'])
+          print('production_target='+c['productionTarget'])
+          PY
+          checkpoint="$(python - <<'PY'
+          import json
+          print(json.load(open('site/deployment/release-resources.json'))['resources']['high-land']['checkpointTag'])
+          PY
+          )"
+          if git rev-parse --verify "refs/tags/$checkpoint" >/dev/null 2>&1; then
+            previous="$(git rev-parse "refs/tags/$checkpoint")"
+            git merge-base --is-ancestor "$previous" "$SOURCE_SHA" || {
+              echo "Refusing resource rollback: checkpoint $checkpoint is $previous but requested source is $SOURCE_SHA" >&2
+              exit 1
+            }
+          fi
+
+      - name: Locate successful exact-source resource build
+        id: build
+        shell: bash
+        run: |
+          set -euo pipefail
+          run_id="$(gh api \
+            -H 'Accept: application/vnd.github+json' \
+            "/repos/${GITHUB_REPOSITORY}/actions/workflows/build-dtfseeds-public-resource.yml/runs?head_sha=${SOURCE_SHA}&status=success&per_page=20" \
+            --jq '.workflow_runs | map(select(.head_branch == "main" and .event == "push")) | .[0].id // empty')"
+          [[ "$run_id" =~ ^[0-9]+$ ]] || {
+            echo "No successful main-branch resource build exists for $SOURCE_SHA" >&2
+            exit 1
+          }
+          echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+          echo "Using resource build run $run_id for exact source $SOURCE_SHA"
+
+      - name: Download exact High Land resource artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf "$RUNNER_TEMP/resource-download" "$RUNNER_TEMP/resource-payload"
+          mkdir -p "$RUNNER_TEMP/resource-download" "$RUNNER_TEMP/resource-payload"
+          artifact="dtf-resource-${RESOURCE_ID}-${SOURCE_SHA}"
+          gh run download "${{ steps.build.outputs.run_id }}" --repo "$GITHUB_REPOSITORY" --name "$artifact" --dir "$RUNNER_TEMP/resource-download"
+          archive="$(find "$RUNNER_TEMP/resource-download" -maxdepth 2 -type f -name "dtf-${RESOURCE_ID}-${SOURCE_SHA}.zip" -print -quit)"
+          [[ -n "$archive" ]] || { echo "Inner route archive missing from artifact $artifact" >&2; find "$RUNNER_TEMP/resource-download" -maxdepth 3 -type f -print >&2; exit 1; }
+          python scripts/verify-dtf-public-resource-artifact.py "$RESOURCE_ID" "$archive" "$RUNNER_TEMP/resource-payload" | tee "$RUNNER_TEMP/resource-verification.json"
+
+      - name: Validate protected Hostinger settings
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${SSH_HOST:?Missing HOSTINGER_HOST}"
+          : "${SSH_USER:?Missing HOSTINGER_USER}"
+          : "${SSH_PRIVATE_KEY:?Missing HOSTINGER_SSH_PRIVATE_KEY}"
+          : "${SSH_KNOWN_HOSTS:?Missing HOSTINGER_KNOWN_HOSTS}"
+          : "${REMOTE_PATH:?Missing HOSTINGER_HIGH_LAND_PATH environment variable}"
+          SSH_PORT="${SSH_PORT:-22}"
+          [[ "$SSH_PORT" =~ ^[0-9]+$ ]]
+          [[ "$REMOTE_PATH" =~ ^[A-Za-z0-9_./-]+$ ]]
+          [[ "$REMOTE_PATH" != *".."* ]]
+          [[ "$REMOTE_PATH" != "/" ]]
+
+      - name: Configure SSH
+        shell: bash
+        run: |
+          set -euo pipefail
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+
+      - name: Back up current High Land route
+        shell: bash
+        run: |
+          set -euo pipefail
+          SSH_PORT="${SSH_PORT:-22}"
+          stamp="$(date -u +%Y%m%dT%H%M%SZ)"
+          ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" \
+            "test ! -d '$REMOTE_PATH' || cp -a '$REMOTE_PATH' '${REMOTE_PATH}.backup-resource-${stamp}'"
+
+      - name: Publish only the High Land resource tree
+        shell: bash
+        run: |
+          set -euo pipefail
+          SSH_PORT="${SSH_PORT:-22}"
+          payload="$RUNNER_TEMP/resource-payload/${{ steps.resource.outputs.artifact_root }}"
+          test -s "$payload/index.html"
+          ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" "mkdir -p '$REMOTE_PATH'"
+          # Do not use --delete: High Land room state is stored under api/_rooms on the host and must survive code releases.
+          rsync -az --checksum -e "ssh -p $SSH_PORT" "$payload/" "$SSH_USER@$SSH_HOST:$REMOTE_PATH/"
+
+      - name: Verify visitor-facing resource
+        shell: bash
+        env:
+          ROUTE: ${{ steps.resource.outputs.route }}
+          MARKER: ${{ steps.resource.outputs.marker }}
+        run: |
+          set -euo pipefail
+          body="$(mktemp)"
+          curl -4 -fsSL --retry 5 --retry-all-errors --retry-delay 4 \
+            -H 'Cache-Control: no-cache, no-store, max-age=0' \
+            "https://dtfseeds.com${ROUTE}?dtf_resource=${GITHUB_RUN_ID}" > "$body"
+          grep -Fqi "$MARKER" "$body" || {
+            echo "Expected marker '$MARKER' was not found on ${ROUTE}" >&2
+            exit 1
+          }
+
+      - name: Advance only the High Land production checkpoint
+        if: inputs.environment == 'production'
+        uses: actions/github-script@v7
+        env:
+          CHECKPOINT_TAG: ${{ steps.resource.outputs.checkpoint }}
+          DEPLOYED_SHA: ${{ inputs.source_sha }}
+        with:
+          script: |
+            const ref = `tags/${process.env.CHECKPOINT_TAG}`;
+            const sha = process.env.DEPLOYED_SHA;
+            try {
+              await github.rest.git.getRef({ owner: context.repo.owner, repo: context.repo.repo, ref });
+              await github.rest.git.updateRef({ owner: context.repo.owner, repo: context.repo.repo, ref, sha, force: true });
+            } catch (error) {
+              if (error.status !== 404) throw error;
+              await github.rest.git.createRef({ owner: context.repo.owner, repo: context.repo.repo, ref: `refs/${ref}`, sha });
+            }
+            core.summary.addHeading('Resource checkpoint').addRaw(`Advanced ${process.env.CHECKPOINT_TAG} to ${sha}.`).write();
+
+      - name: Record resource release
+        if: always()
+        env:
+          ROUTE: ${{ steps.resource.outputs.route }}
+          TARGET: ${{ steps.resource.outputs.production_target }}
+        run: |
+          {
+            echo '## DTFSeeds resource release'
+            echo
+            echo "- Resource: $RESOURCE_ID"
+            echo "- Source: $SOURCE_SHA"
+            echo "- Environment: ${{ inputs.environment }}"
+            echo "- Production target: $TARGET"
+            echo "- Route: $ROUTE"
+            echo '- Development and other production resources remain independent of this resource queue.'
+          } >> "$GITHUB_STEP_SUMMARY"
