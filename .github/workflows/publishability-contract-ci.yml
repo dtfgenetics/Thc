@@ -1,0 +1,75 @@
+name: Publishability Contract CI
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'data/studio-resources.json'
+      - 'site/deployment/release-lanes.json'
+      - 'site/wordpress/**'
+      - 'site/public-route-patch/**'
+      - 'apps/**'
+      - 'games/**'
+      - 'scripts/**'
+      - '.github/workflows/**'
+  push:
+    branches: [main]
+    paths:
+      - 'data/studio-resources.json'
+      - 'site/deployment/release-lanes.json'
+      - 'site/wordpress/**'
+      - 'site/public-route-patch/**'
+      - 'apps/**'
+      - 'games/**'
+      - 'scripts/**'
+      - '.github/workflows/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publishability-contract-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  contract:
+    name: Verify every publishable path has a safe repo-to-live route
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout exact evaluated source
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate control-plane syntax
+        run: |
+          set -euo pipefail
+          node --check scripts/studio/integrate.mjs
+          node --check scripts/studio/integrate-generated-change.mjs
+          node --check scripts/validate-publishability-contract.mjs
+
+      - name: Enforce repo-to-live contract
+        run: |
+          set -euo pipefail
+          node scripts/validate-publishability-contract.mjs | tee "$RUNNER_TEMP/publishability-contract.json"
+
+      - name: Publish contract evidence
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo '## Repo-to-live publishability contract'
+            echo
+            if [[ -s "$RUNNER_TEMP/publishability-contract.json" ]]; then
+              echo '```json'
+              cat "$RUNNER_TEMP/publishability-contract.json"
+              echo '```'
+            else
+              echo 'Validator did not produce a report.'
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
