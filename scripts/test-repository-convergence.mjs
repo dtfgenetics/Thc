@@ -7,6 +7,7 @@ const read = (path) => readFileSync(path, 'utf8')
 
 const watch = read('.github/workflows/wordpress-canonical-watch.yml')
 const deploy = read('.github/workflows/wordpress-canonical-deploy.yml')
+const lightingBridge = read('.github/workflows/lighting-asset-bridge-production.yml')
 const titleWorkflow = read('.github/workflows/wordpress-premium-title-normalization.yml')
 const titleScript = read('scripts/normalize-wordpress-premium-page-titles.mjs')
 const lifecycleWorkflow = read('.github/workflows/branch-lifecycle-maintenance.yml')
@@ -21,6 +22,18 @@ assert.match(watch, /pull_request:\n\s+branches: \[main\]\n\s+paths:/)
 assert.ok(watch.includes("'site/wordpress/**'"), 'WordPress watcher must scope itself to WordPress-owned paths.')
 assert.ok(!deploy.includes('\n  workflow_run:\n'), 'Production staging must not be launched by the scheduled/read-only watcher.')
 assert.ok(deploy.includes('push:\n    branches: [main]\n    paths:'), 'Production staging must be driven by relevant main path changes.')
+
+for (const [name, workflow, exhaustedIssue] of [
+  ['WordPress canonical preflight', watch, 220],
+  ['Lighting asset bridge', lightingBridge, 46],
+]) {
+  assert.ok(!workflow.includes('issues: write'), `${name} must not request issue-write permission for routine telemetry.`)
+  assert.ok(!workflow.includes(`issue_number: ${exhaustedIssue}`), `${name} must not post routine telemetry to exhausted issue #${exhaustedIssue}.`)
+  assert.ok(!workflow.includes('github.rest.issues.createComment'), `${name} must keep routine status reporting out of issue comments.`)
+  assert.ok(workflow.includes('core.summary.addRaw'), `${name} must preserve operator visibility in the Actions job summary.`)
+}
+assert.ok(watch.includes('Publish preflight summary'), 'WordPress canonical preflight must publish a job summary.')
+assert.ok(lightingBridge.includes('Publish bridge summary'), 'Lighting asset bridge must publish a job summary.')
 
 assert.ok(titleScript.includes("const targetSlugs=['community','gallery']"), 'Editorial title normalizer must keep its scope explicit.')
 assert.ok(titleScript.includes('site/wordpress/pages/${slug}.html'), 'Editorial title markers must come from canonical page files.')
