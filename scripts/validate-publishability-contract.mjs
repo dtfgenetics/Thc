@@ -33,7 +33,6 @@ const publishableRoots = [
 const legacyDirectMainWriters = new Set([
   'scripts/publish-wordpress-image-backlog.sh',
   'scripts/publish-wordpress-infographics-canonical.sh',
-  '.github/workflows/bootstrap-genetics-breeding-infographics.yml',
   '.github/workflows/core-gaps-v6-route-repair.yml',
   '.github/workflows/finish-harvest-wordpress-publish-v2.yml',
   '.github/workflows/import-harvest-replacements-v1.yml',
