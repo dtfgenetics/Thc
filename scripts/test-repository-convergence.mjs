@@ -12,6 +12,7 @@ const titleScript = read('scripts/normalize-wordpress-premium-page-titles.mjs')
 const lifecycleWorkflow = read('.github/workflows/branch-lifecycle-maintenance.yml')
 const lifecycleScript = read('scripts/studio/lifecycle.mjs')
 const highLandCI = read('.github/workflows/high-land-ci.yml')
+const datadogCI = read('.github/workflows/datadog-synthetics.yml')
 
 assert.match(watch, /push:\n\s+branches: \[main\]\n\s+paths:/)
 assert.match(watch, /pull_request:\n\s+branches: \[main\]\n\s+paths:/)
@@ -35,5 +36,11 @@ assert.ok(highLandCI.includes("'apps/high-land-web/**'"), 'High Land CI must be 
 assert.equal(existsSync('.github/workflows/high-land-web.yml'), false, 'Duplicate High Land Web Game CI must stay retired.')
 assert.ok(highLandCI.includes('Run High Land browser smoke tests'), 'The surviving High Land CI must retain browser validation.')
 assert.ok(highLandCI.includes('Lint PHP room API files'), 'The surviving High Land CI must retain PHP API linting.')
+
+assert.ok(datadogCI.includes('workflow_dispatch:'), 'Visitor synthetics must remain manually runnable.')
+assert.ok(datadogCI.includes('push:\n    branches: [main]\n    paths:'), 'Visitor synthetics must be limited to relevant main changes.')
+assert.ok(!datadogCI.includes('\n  pull_request:'), 'Live-site Datadog synthetics must not consume runners on isolated PRs.')
+assert.ok(datadogCI.includes("'site/**'"), 'Visitor synthetics must cover site changes.')
+assert.ok(datadogCI.includes("'apps/**'"), 'Visitor synthetics must cover app/game changes.')
 
 console.log('Repository convergence regression tests passed.')
