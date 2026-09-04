@@ -106,4 +106,32 @@ if (args.merge !== 'true') {
 }
 
 run('gh', ['pr', 'merge', prNumber, '--squash', '--match-head-commit', fetchedHead], { cwd: repoRoot })
-console.log(JSON.stringify({ ...result, merged: true, note: 'Production remains a separate resource-owned publication and verification step.' }, null, 2))
+
+let remoteBranchDeleted = false
+let branchCleanupNote = 'head branch is outside managed work/project/multi lanes'
+if (/^(work|project|multi)\//.test(pr.headRefName)) {
+  const otherOpenPrCount = Number(capture('gh', [
+    'pr', 'list', '--head', pr.headRefName, '--base', 'main', '--state', 'open',
+    '--json', 'number', '--jq', 'length'
+  ], { cwd: repoRoot, allowFailure: true }) || '0')
+
+  if (otherOpenPrCount > 0) {
+    branchCleanupNote = `preserved remote branch because ${otherOpenPrCount} open PR(s) still use it`
+  } else {
+    try {
+      run('git', ['push', 'origin', '--delete', pr.headRefName], { cwd: repoRoot })
+      remoteBranchDeleted = true
+      branchCleanupNote = 'deleted merged managed remote branch'
+    } catch {
+      branchCleanupNote = 'merge succeeded, but remote branch deletion failed; run studio:lifecycle --cleanup-merged'
+    }
+  }
+}
+
+console.log(JSON.stringify({
+  ...result,
+  merged: true,
+  remoteBranchDeleted,
+  branchCleanupNote,
+  note: 'Production remains a separate resource-owned publication and verification step.'
+}, null, 2))
