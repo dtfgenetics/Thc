@@ -4,7 +4,7 @@
   "repository": "dtfgenetics/GANJUMANJI-The-Lost-Grower-s-Temple",
   "route": "/games/ganjumanji/",
   "runtime": "static-phaser",
-  "status": "release-candidate",
+  "status": "ready-to-package",
   "artifact": "ganjumanji-production-build",
   "build": "npm test && npm run build && npm run validate:release && npm run test:e2e",
   "machineData": {
@@ -16,11 +16,12 @@
     "persistentBestRun": true,
     "checkpointSave": true
   },
+  "verifiedRevision": "ddcab5e727b952dde5b85eafffada55bfd286722",
   "promotionGate": {
-    "standaloneCI": "required",
-    "browserAcceptance": "required",
-    "routeValidation": "required",
+    "standaloneCI": "passed",
+    "browserAcceptance": "passed",
+    "routeValidation": "passed",
     "liveVerification": "required-before-production-ready"
   },
-  "notes": "Canonical code remains in the standalone Ganjumanji repository. Consume its validated production artifact for the DTFSeeds route; do not fork or hand-copy the source into the THC repository."
+  "notes": "Canonical code remains in the standalone Ganjumanji repository. The pinned revision passed unit/content tests, TypeScript/Vite build, route validation, desktop/mobile Playwright acceptance, screenshot capture, and production artifact generation. Rebuild the pinned source during packaging; do not fork or hand-copy generated source into the THC repository."
 }
