@@ -34,20 +34,24 @@ for (const [id, resource] of Object.entries(resources)) {
   for (const file of resource.requiredFiles) {
     assert.ok(file.startsWith(`${resource.artifactRoot}/`), `${id} required file escaped artifact root: ${file}`);
   }
-  assert.ok(resource.publisher?.status, `${id} must declare publisher readiness`);
+  assert.equal(resource.publicSuiteOwnership, 'resource', `${id} must stay outside the broad Public Suite writer`);
+  assert.equal(resource.publisher?.status, 'gateway-managed', `${id} publisher must be gateway-managed`);
+  assert.equal(resource.publisher?.coordinator, 'dtfseeds-production-gateway.yml', `${id} must use the central production coordinator`);
 }
 
 assert.equal(resources['high-land'].publisher.type, 'hostinger-ssh');
-assert.equal(resources['high-land'].publisher.status, 'pilot-manual');
 assert.equal(resources['high-land'].publisher.workflow, 'deploy-dtfseeds-public-resource.yml');
 assert.equal(resources['high-iq'].publisher.type, 'wordpress-transactional-resource');
-assert.equal(resources['high-iq'].publisher.status, 'pilot-manual');
 assert.equal(resources['high-iq'].publisher.workflow, 'deploy-dtfseeds-wordpress-resource.yml');
 assert.equal(resources['high-iq'].publisher.sharedProductionTarget, 'wordpress:temporary-code-snippets-bridge');
 assert.notEqual(resources['high-iq'].publisher.sharedProductionTarget, resources['high-land'].productionTarget);
 
 for (const path of [
   'scripts/assemble-wordpress-resource-v2.py',
+  'scripts/public_suite_resource_ownership.py',
+  'scripts/assemble-wordpress-suite-resource-aware.py',
+  'scripts/package-public-suite-wordpress-resource-aware.py',
+  '.github/workflows/deploy-dtfseeds-public-resource.yml',
   '.github/workflows/deploy-dtfseeds-wordpress-resource.yml',
 ]) {
   assert.ok(config.globalBuildPaths.includes(path), `shared resource control path missing: ${path}`);
