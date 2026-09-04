@@ -12,13 +12,14 @@ const commands = {
   resume: join(root, 'studio/resume.mjs'),
   status: join(root, 'studio/status.mjs'),
   overlap: join(root, 'studio/overlap.mjs'),
+  doctor: join(root, 'studio/doctor.mjs'),
   push: join(root, 'studio/push.mjs'),
   integrate: join(root, 'studio/integrate.mjs'),
   test: join(root, 'test-dtf-parallel-studio.mjs'),
 }
 
 if (!command || !commands[command]) {
-  console.error('Usage: node scripts/studio.mjs <new|resume|status|overlap|push|integrate|test> [...args]')
+  console.error('Usage: node scripts/studio.mjs <new|resume|status|overlap|doctor|push|integrate|test> [...args]')
   process.exit(2)
 }
 
