@@ -101,14 +101,14 @@ describe('game engine', () => {
     });
   });
 
-  it('creates 2 to 10 player games', () => {
-    expect(createInitialGame(2).players).toHaveLength(2);
+  it('creates 1 to 10 local player games', () => {
+    expect(createInitialGame(1).players).toHaveLength(1);
     expect(createInitialGame(10).players).toHaveLength(10);
   });
 
-  it('rejects invalid player counts', () => {
-    expect(() => createInitialGame(1)).toThrow('Player count must be between 2 and 10.');
-    expect(() => createInitialGame(11)).toThrow('Player count must be between 2 and 10.');
+  it('rejects invalid local player counts', () => {
+    expect(() => createInitialGame(0)).toThrow('Player count must be between 1 and 10.');
+    expect(() => createInitialGame(11)).toThrow('Player count must be between 1 and 10.');
   });
 
   it('rolls, moves, and advances turns', () => {
