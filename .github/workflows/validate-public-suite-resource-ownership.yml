@@ -6,18 +6,28 @@ on:
     paths:
       - 'site/deployment/release-resources.json'
       - 'scripts/public_suite_resource_ownership.py'
+      - 'scripts/assemble-wordpress-suite-v2.py'
       - 'scripts/assemble-wordpress-suite-resource-aware.py'
+      - 'scripts/package-public-suite-wordpress.py'
       - 'scripts/package-public-suite-wordpress-resource-aware.py'
+      - 'scripts/harden-wordpress-suite-lock.py'
       - 'scripts/test-public-suite-resource-ownership.py'
+      - '.github/workflows/deploy-public-suite-wordpress-v2.yml'
+      - '.github/workflows/deploy-games-suite-lock-recovery.yml'
       - '.github/workflows/validate-public-suite-resource-ownership.yml'
   push:
     branches: [main]
     paths:
       - 'site/deployment/release-resources.json'
       - 'scripts/public_suite_resource_ownership.py'
+      - 'scripts/assemble-wordpress-suite-v2.py'
       - 'scripts/assemble-wordpress-suite-resource-aware.py'
+      - 'scripts/package-public-suite-wordpress.py'
       - 'scripts/package-public-suite-wordpress-resource-aware.py'
+      - 'scripts/harden-wordpress-suite-lock.py'
       - 'scripts/test-public-suite-resource-ownership.py'
+      - '.github/workflows/deploy-public-suite-wordpress-v2.yml'
+      - '.github/workflows/deploy-games-suite-lock-recovery.yml'
       - '.github/workflows/validate-public-suite-resource-ownership.yml'
   workflow_dispatch:
 
@@ -48,6 +58,7 @@ jobs:
             scripts/public_suite_resource_ownership.py \
             scripts/assemble-wordpress-suite-resource-aware.py \
             scripts/package-public-suite-wordpress-resource-aware.py \
+            scripts/harden-wordpress-suite-lock.py \
             scripts/test-public-suite-resource-ownership.py
           python scripts/test-public-suite-resource-ownership.py
 
@@ -77,15 +88,36 @@ jobs:
           grep -Fq 'resourceOwnedTargetsExcluded' "$RUNNER_TEMP/ownership-report.json"
           grep -Fq 'atlasScope' "$RUNNER_TEMP/ownership-report.json"
 
-      - name: PHP-lint filtered embedded bridge
+      - name: Validate production writer ownership contracts
         run: |
           set -euo pipefail
-          python - <<'PY'
+          for workflow in \
+            .github/workflows/deploy-public-suite-wordpress-v2.yml \
+            .github/workflows/deploy-games-suite-lock-recovery.yml; do
+            grep -Fq 'scripts/assemble-wordpress-suite-resource-aware.py' "$workflow"
+            grep -Fq 'scripts/package-public-suite-wordpress-resource-aware.py' "$workflow"
+            grep -Fq 'resourceOwnedRoutesExcluded' "$workflow"
+            ! grep -Fq 'Atlas deployment target allowlist' "$workflow"
+            ! grep -Fq "check 'https://dtfseeds.com/games/high-iq/'" "$workflow"
+          done
+          grep -Fq 'Suite-owned public game routes verified: 23/23' .github/workflows/deploy-games-suite-lock-recovery.yml
+          grep -Fq 'Resource-owned High Land and High IQ are intentionally excluded' .github/workflows/deploy-public-suite-wordpress-v2.yml
+
+      - name: PHP-lint filtered and hardened embedded bridges
+        run: |
+          set -euo pipefail
+          cp "$RUNNER_TEMP/dtf-suite-resource-aware.mjs" "$RUNNER_TEMP/dtf-suite-resource-aware-hardened.mjs"
+          python scripts/harden-wordpress-suite-lock.py "$RUNNER_TEMP/dtf-suite-resource-aware-hardened.mjs"
+          for file in "$RUNNER_TEMP/dtf-suite-resource-aware.mjs" "$RUNNER_TEMP/dtf-suite-resource-aware-hardened.mjs"; do
+            SOURCE="$file" python - <<'PY'
           import os, pathlib, re
-          text=(pathlib.Path(os.environ['RUNNER_TEMP'])/'dtf-suite-resource-aware.mjs').read_text()
+          text=pathlib.Path(os.environ['SOURCE']).read_text()
           m=re.search(r"const snippetCode = String\.raw`(.*?)`\.trim\(\);", text, re.S)
           assert m, 'embedded PHP missing'
           php=m.group(1).replace('${tokenLiteral}', "'0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'")
-          (pathlib.Path(os.environ['RUNNER_TEMP'])/'dtf-suite-resource-aware.php').write_text('<?php\n'+php+'\n')
+          pathlib.Path(os.environ['SOURCE'] + '.php').write_text('<?php\n'+php+'\n')
           PY
-          php -l "$RUNNER_TEMP/dtf-suite-resource-aware.php"
+            php -l "$file.php"
+            ! grep -Fq "'games/high-land'" "$file"
+            ! grep -Fq "'games/high-iq'" "$file"
+          done
