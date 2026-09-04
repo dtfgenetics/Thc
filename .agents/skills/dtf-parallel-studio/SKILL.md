@@ -49,7 +49,7 @@ Authority is field/resource specific:
 
 ## One lightweight CLI
 
-Studio intentionally does **not** add commands to root `package.json`, because that file is a shared CI hotspot. Use the dispatcher instead:
+Studio intentionally does **not** add commands to root `package.json`, because that file is a shared CI hotspot. Use:
 
 ```bash
 node scripts/studio.mjs <command> [...args]
@@ -62,6 +62,7 @@ new
 resume
 status
 overlap
+doctor
 push
 integrate
 test
@@ -69,29 +70,19 @@ test
 
 This keeps Studio evolution from unnecessarily triggering unrelated application workflows.
 
-## New session
+## Session model
 
-Every new concurrent task gets a unique session:
+New concurrent work gets a unique session:
 
 ```bash
 node scripts/studio.mjs new <project-id> <task>
 ```
 
-Local execution creates:
-
-```text
-work/<project-id>/<task>/<session-id>
-```
-
-in a dedicated linked worktree.
-
-A new session MUST NOT reconnect to an existing branch because its project/task text matches.
+Local execution creates `work/<project-id>/<task>/<session-id>` in a dedicated linked worktree. A new session MUST NOT reconnect to an existing branch because its project/task text matches.
 
 When only GitHub connector tools are available, reproduce the same model remotely: read current `main`, create a unique `work/.../<session>` branch from that exact SHA, edit only that branch, and create/update its PR. Do not claim a local worktree exists in connector-only execution.
 
-## Explicit resume
-
-Continuation must be deliberate:
+Continuation is explicit:
 
 ```bash
 node scripts/studio.mjs resume <work-branch>
@@ -134,11 +125,12 @@ One file may affect multiple resources. That is a dependency signal, not a reaso
 9. Check overlap before final integration.
 10. Integrate the exact head against current `main` only at the final boundary.
 
-Commands:
+Useful commands:
 
 ```bash
 node scripts/studio.mjs status
 node scripts/studio.mjs overlap
+node scripts/studio.mjs doctor
 node scripts/studio.mjs push
 node scripts/studio.mjs integrate <pr-number>
 ```
@@ -152,18 +144,35 @@ Being behind `main` is informational during development. Do not constantly rewri
 ## Overlap model
 
 ### Green
-
 No meaningful source/resource overlap. Continue normally.
 
 ### Yellow
-
 Shared file, resource, contract, or production target detected without a proven integration conflict. Continue development; broaden affected validation when needed.
 
 ### Red
-
 Current integration state actually conflicts on overlapping source/resources. Development may continue, but final integration requires semantic conflict repair.
 
 Red is an integration condition, not a global repository freeze.
+
+## Repository Doctor
+
+Use:
+
+```bash
+node scripts/studio.mjs doctor
+```
+
+Doctor is read-only. It inspects active PRs and reports:
+
+- GitHub-conflicting PRs;
+- files touched by multiple PRs;
+- resources touched by multiple PRs;
+- exact production targets shared by multiple PRs;
+- pairwise green/yellow/red overlap;
+- possible supersession candidates;
+- unclassified paths that should be added to the resource graph.
+
+Doctor must not close PRs, move branches, merge code, or acquire locks. Its job is to make real conflicts visible quickly so agents can keep unrelated work moving.
 
 ## Production overlap is different
 
@@ -183,7 +192,7 @@ High Land and Grow Doc should be able to publish concurrently when their workers
 
 ## Supersession
 
-`overlap` may flag possible supersession when two PRs share the same resource and one changed-file set contains the other. This is advisory.
+`overlap` and `doctor` may flag possible supersession when two PRs share the same resource and one changed-file set contains the other. This is advisory.
 
 Before retiring an older PR:
 
@@ -202,14 +211,7 @@ Use:
 node scripts/studio.mjs push
 ```
 
-The push path must:
-
-- require a committed clean worktree;
-- enforce the project lane;
-- classify affected resources;
-- push the exact session branch;
-- create/reuse the PR;
-- NOT merge current `main` into the session merely to push.
+The push path must require a committed clean worktree, enforce the project lane, classify affected resources, push the exact session branch, create/reuse the PR, and NOT merge current `main` into the session merely to push.
 
 The PR is the remote session handoff record.
 
@@ -221,15 +223,7 @@ Preflight:
 node scripts/studio.mjs integrate <pr-number>
 ```
 
-It must:
-
-1. read the current PR head SHA;
-2. fetch current `main` and the PR branch;
-3. verify the fetched head still equals the expected PR head;
-4. calculate a non-destructive current-main merge using `git merge-tree` or equivalent;
-5. require current head checks;
-6. refuse stale-head integration;
-7. avoid rewriting the working session.
+It must read the current PR head SHA, fetch current `main` and the PR branch, verify the fetched head still equals the expected PR head, calculate a non-destructive current-main merge using `git merge-tree` or equivalent, require current head checks, refuse stale-head integration, and avoid rewriting the working session.
 
 Final merge:
 
@@ -254,36 +248,19 @@ A shared root file must not automatically mean every application needs its full 
 
 ## Cross-repository work
 
-When a resource is canonical in another repository:
-
-1. develop/test in the canonical repo;
-2. produce an immutable source commit/artifact;
-3. update the DTFSeeds integration pin/contract in its own Studio session;
-4. validate the handoff;
-5. publish only the affected DTFSeeds resource.
+When a resource is canonical in another repository, develop/test there, produce an immutable source commit/artifact, update the DTFSeeds integration pin/contract in its own Studio session, validate the handoff, and publish only the affected DTFSeeds resource.
 
 Do not copy mutable development trees between repositories as informal synchronization.
 
 ## Drive integration
 
-Drive is a rich source plane, not the Git merge coordinator.
-
-When Drive input materially affects a release, capture stable provenance when practical:
-
-- Drive file ID;
-- relevant revision ID when reliable;
-- modified timestamp;
-- exported content hash for release-critical input;
-- DTF project/resource ID;
-- approval/provenance state.
+Drive is a rich source plane, not the Git merge coordinator. When Drive input materially affects a release, capture stable provenance when practical: Drive file ID, reliable revision ID, modified timestamp, exported content hash for release-critical input, DTF project/resource ID, and approval/provenance state.
 
 Do not scan all of Drive for every code change. Query it only when the affected resource consumes Drive-owned material.
 
 ## Shared files
 
-Shared design systems, registries, lockfiles, deployment planners, workflows, and repository-control files are high-impact resources.
-
-Do not prohibit them. Instead classify them, expand affected checks, integrate late, and keep unrelated work moving.
+Shared design systems, registries, lockfiles, deployment planners, workflows, and repository-control files are high-impact resources. Do not prohibit them. Classify them, expand affected checks, integrate late, and keep unrelated work moving.
 
 Avoid adding Studio convenience commands to unrelated shared manifests when a dedicated dispatcher can provide the same speed with less CI fan-out.
 
@@ -305,13 +282,7 @@ Do not perform a destructive all-at-once production rewrite.
 
 ## Failure behavior
 
-A failure is local until evidence proves it is global.
-
-- One project's failure does not stop other projects from coding.
-- One stale PR does not freeze the repo.
-- One production route failure should not force unrelated routes to redeploy unless they truly share a release resource.
-- One conflict gets repaired at integration.
-- One stale Drive record gets flagged as drift instead of propagated.
+A failure is local until evidence proves it is global. One project's failure does not stop other projects from coding. One stale PR does not freeze the repo. One production route failure should not force unrelated routes to redeploy unless they truly share a release resource. One conflict gets repaired at integration. One stale Drive record gets flagged as drift instead of propagated.
 
 Use `github-repo-manager` for actual conflicts, broken CI, rejected pushes, workflow failures, and repository repair.
 
@@ -330,12 +301,4 @@ Never collapse these into one generic "done" state.
 
 ## Final status format
 
-Report:
-
-- **Session:** project/task/session branch.
-- **Resources:** affected resource IDs.
-- **Validation:** narrow/affected checks.
-- **Overlap:** green/yellow/red and any same-production resource.
-- **Git:** exact head/PR/integration state.
-- **Production:** not requested, queued, published-unverified, or verified live.
-- **Remaining:** only real blockers or unverified migrations.
+Report session, affected resources, validation, overlap state, exact Git head/PR/integration state, production state, and only real remaining blockers or migrations.
