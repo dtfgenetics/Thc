@@ -27,7 +27,7 @@
     "games:release-check": "node scripts/reconcile-local-game-release-registry.mjs --check && npm run games:preflight",
     "hiq:questions": "node games/high-iq/scripts/question-bank.mjs",
     "hiq:question-template": "node games/high-iq/scripts/question-bank.mjs template",
-    "hiq:validate": "node games/high-iq/scripts/validate-data.mjs && node games/high-iq/scripts/validate-public-runtime.mjs && node games/high-iq/test/game-core.test.mjs && node games/high-iq/test/runtime-smoke.mjs && node games/high-iq/test/question-bank-tool.test.mjs",
+    "hiq:validate": "node games/high-iq/scripts/validate-data.mjs && node games/high-iq/scripts/sync-runtime-shell.mjs --check && node games/high-iq/scripts/validate-public-runtime.mjs && node games/high-iq/test/question-bank-tool.test.mjs && node games/high-iq/test/game-core.test.mjs && node games/high-iq/test/runtime-smoke.mjs",
     "import:infographics:bulk": "node scripts/import-wordpress-infographic-remote-batch.mjs",
     "dev": "npm run dev:high-land",
     "build": "npm run build:high-land",
