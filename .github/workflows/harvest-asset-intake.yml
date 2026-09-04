@@ -81,9 +81,17 @@ jobs:
           set -euo pipefail
           rm -rf staging/harvest-asset-upload
 
-          mapfile -t changed < <(git status --porcelain --untracked-files=all -- \
-            site/wordpress/assets/infographics \
-            staging/harvest-asset-upload | sed -E 's/^.. //' | sed -E 's/^"(.*)"$/\1/' | sort -u)
+          changed=()
+          while IFS= read -r -d '' path; do
+            changed+=("$path")
+          done < <(
+            git diff --name-only -z -- \
+              site/wordpress/assets/infographics \
+              staging/harvest-asset-upload
+            git ls-files --others --exclude-standard -z -- \
+              site/wordpress/assets/infographics \
+              staging/harvest-asset-upload
+          )
 
           if [[ "${#changed[@]}" -eq 0 ]]; then
             echo 'No Harvest intake changes to integrate.'
@@ -92,7 +100,6 @@ jobs:
 
           printf 'Harvest intake generated paths:\n'
           printf ' - %s\n' "${changed[@]}"
-          paths="$(IFS=,; echo "${changed[*]}")"
           node scripts/studio/integrate-generated-change.mjs \
             --message='Add verified Harvest education image assets' \
-            --paths="$paths"
+            "${changed[@]}"
