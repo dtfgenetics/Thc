@@ -1,6 +1,3 @@
-const nativeRequestAnimationFrame = window.requestAnimationFrame.bind(window);
-const nativeCancelAnimationFrame = window.cancelAnimationFrame.bind(window);
-
 function detectSoftwareWebGL() {
   try {
     const canvas = document.createElement('canvas');
@@ -21,53 +18,21 @@ const lowMemory = Number(navigator.deviceMemory || 8) <= 4;
 const softwareWebGL = detectSoftwareWebGL();
 const automatedBrowser = navigator.webdriver === true;
 const targetFps = automatedBrowser ? 1 : softwareWebGL ? 12 : reducedMotion ? 20 : (coarsePointer || lowMemory ? 24 : 40);
-const minimumFrameInterval = 1000 / targetFps;
 
-let nextRequestId = 1;
-let nativeFrameId = null;
-let lastDeliveredAt = 0;
-const queuedCallbacks = new Map();
+export const plantAtlasPerformanceProfile = Object.freeze({
+  targetFps,
+  coarsePointer,
+  reducedMotion,
+  lowMemory,
+  softwareWebGL,
+  automatedBrowser,
+});
 
-function scheduleNativeFrame() {
-  if (nativeFrameId === null && queuedCallbacks.size) nativeFrameId = nativeRequestAnimationFrame(deliverFrame);
-}
-
-function deliverFrame(timestamp) {
-  nativeFrameId = null;
-  if (!queuedCallbacks.size) return;
-  if (lastDeliveredAt && timestamp - lastDeliveredAt < minimumFrameInterval) {
-    scheduleNativeFrame();
-    return;
-  }
-
-  lastDeliveredAt = timestamp;
-  const callbacks = [...queuedCallbacks.entries()];
-  queuedCallbacks.clear();
-  callbacks.forEach(([, callback]) => {
-    try {
-      callback(timestamp);
-    } catch (error) {
-      queueMicrotask(() => { throw error; });
-    }
-  });
-  scheduleNativeFrame();
-}
-
-window.requestAnimationFrame = (callback) => {
-  const id = nextRequestId++;
-  queuedCallbacks.set(id, callback);
-  scheduleNativeFrame();
-  return id;
-};
-
-window.cancelAnimationFrame = (id) => {
-  queuedCallbacks.delete(id);
-  if (!queuedCallbacks.size && nativeFrameId !== null) {
-    nativeCancelAnimationFrame(nativeFrameId);
-    nativeFrameId = null;
-  }
-};
-
+// Keep the performance profile observable without replacing browser-global
+// animation APIs. The previous implementation monkey-patched
+// window.requestAnimationFrame/window.cancelAnimationFrame, which meant an
+// Atlas-specific throttle could affect unrelated UI animation and timing.
 document.documentElement.dataset.plantAtlasFrameRate = String(targetFps);
 document.documentElement.dataset.plantAtlasSoftwareWebgl = softwareWebGL ? 'true' : 'false';
 document.documentElement.dataset.plantAtlasAutomatedBrowser = automatedBrowser ? 'true' : 'false';
+document.documentElement.dataset.plantAtlasFrameGovernor = 'scoped';
