@@ -10,7 +10,10 @@ on:
   workflow_dispatch:
 
 permissions:
+  actions: write
   contents: write
+  issues: write
+  pull-requests: write
 
 concurrency:
   group: apply-seed-man-gameplay-v2
@@ -30,8 +33,22 @@ jobs:
           cache: npm
       - name: Apply gameplay v2 integration
         run: node scripts/apply-seed-man-gameplay-v2.mjs
+      - name: Confirm gameplay integration is idempotent
+        shell: bash
+        run: |
+          set -euo pipefail
+          paths=(
+            site/public-route-patch/games/seed-man-platformer/index.html
+            site/public-route-patch/games/seed-man-platformer/canvas-compat-v1.js
+            scripts/publish-seed-man-route-via-wordpress.mjs
+          )
+          before="$(git diff -- "${paths[@]}" | git hash-object --stdin)"
+          node scripts/apply-seed-man-gameplay-v2.mjs
+          after="$(git diff -- "${paths[@]}" | git hash-object --stdin)"
+          test "$before" = "$after"
       - name: Validate upgraded runtime syntax
         run: |
+          node --check scripts/apply-seed-man-gameplay-v2.mjs
           node --check site/public-route-patch/games/seed-man-platformer/gameplay-v2.js
           node --check games/seed-man-platformer/test/gameplay-v2-smoke.mjs
           node --check scripts/publish-seed-man-route-via-wordpress.mjs
@@ -41,19 +58,19 @@ jobs:
           npx playwright install chromium
       - name: Exercise gameplay v2 locally
         run: node games/seed-man-platformer/test/gameplay-v2-smoke.mjs
-      - name: Commit integrated gameplay upgrade
+      - name: Safely integrate gameplay upgrade when needed
         shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          if git diff --quiet; then
+          if git diff --quiet -- \
+            site/public-route-patch/games/seed-man-platformer/index.html \
+            site/public-route-patch/games/seed-man-platformer/canvas-compat-v1.js \
+            scripts/publish-seed-man-route-via-wordpress.mjs; then
             echo 'No integration changes were needed.'
             exit 0
           fi
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add site/public-route-patch/games/seed-man-platformer/index.html \
-                  site/public-route-patch/games/seed-man-platformer/canvas-compat-v1.js \
-                  scripts/publish-seed-man-route-via-wordpress.mjs
-          git commit -m 'Integrate Sprout Run gameplay v2 into production route'
-          git pull --rebase origin main
-          git push origin HEAD:main
+          node scripts/studio/integrate-generated-change.mjs \
+            --message='Integrate Sprout Run gameplay v2 into production route' \
+            --paths=site/public-route-patch/games/seed-man-platformer/index.html,site/public-route-patch/games/seed-man-platformer/canvas-compat-v1.js,scripts/publish-seed-man-route-via-wordpress.mjs
