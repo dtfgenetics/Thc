@@ -49,11 +49,12 @@ jobs:
         id: plan
         env:
           RELEASE_MODE: ${{ github.event_name == 'workflow_dispatch' && inputs.mode || 'auto' }}
-          RELEASE_BASE: ${{ github.event_name == 'push' && github.event.before || '' }}
+          RELEASE_BASE: ''
+          RELEASE_FALLBACK_BASE: ${{ github.event_name == 'push' && github.event.before || '' }}
         shell: bash
         run: |
           set -euo pipefail
-          node scripts/plan-dtfseeds-release.mjs --mode="$RELEASE_MODE" --base="$RELEASE_BASE" --head="$GITHUB_SHA"
+          node scripts/plan-dtfseeds-release.mjs --mode="$RELEASE_MODE" --base="$RELEASE_BASE" --fallback-base="$RELEASE_FALLBACK_BASE" --head="$GITHUB_SHA"
 
       - name: Record release plan
         env:
