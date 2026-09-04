@@ -3,7 +3,7 @@
 import { execFileSync, spawnSync } from 'node:child_process';
 import { mkdtempSync, mkdirSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { dirname, join, resolve } from 'node:path';
+import { join, resolve } from 'node:path';
 
 const root = resolve('.');
 const laneCheck = join(root, 'scripts/project-lane-check.mjs');
@@ -48,6 +48,17 @@ function git(cwd, args) {
   return execFileSync('git', args, { cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
 }
 
+function runPlanner(repo, args) {
+  return JSON.parse(execFileSync(process.execPath, [
+    planner,
+    ...args,
+    `--config=${releaseConfig}`
+  ], {
+    cwd: repo,
+    encoding: 'utf8'
+  }));
+}
+
 const repo = mkdtempSync(join(tmpdir(), 'dtf-release-plan-'));
 git(repo, ['init', '-b', 'main']);
 git(repo, ['config', 'user.email', 'parallel-test@dtf.local']);
@@ -63,6 +74,7 @@ mkdirSync(join(repo, 'games/high-iq'), { recursive: true });
 writeFileSync(join(repo, 'games/high-iq/app.js'), 'console.log("high iq");\n');
 git(repo, ['add', '.']);
 git(repo, ['commit', '-m', 'high iq change']);
+const highIqSha = git(repo, ['rev-parse', 'HEAD']);
 
 mkdirSync(join(repo, 'content/encyclopedia'), { recursive: true });
 writeFileSync(join(repo, 'content/encyclopedia/example.json'), '{}\n');
@@ -70,31 +82,50 @@ git(repo, ['add', '.']);
 git(repo, ['commit', '-m', 'education change']);
 const headSha = git(repo, ['rev-parse', 'HEAD']);
 
-const planned = execFileSync(process.execPath, [
-  planner,
+// Controlled comparisons and CI can supply an exact base. That explicit base
+// must win so a one-resource test is not polluted by older undeployed history.
+const exactPlan = runPlanner(repo, [
   '--mode=auto',
-  `--base=${git(repo, ['rev-parse', 'HEAD^'])}`,
-  `--head=${headSha}`,
-  `--config=${releaseConfig}`
-], {
-  cwd: repo,
-  encoding: 'utf8'
-});
+  `--base=${highIqSha}`,
+  `--head=${headSha}`
+]);
+if (exactPlan.checkpoint !== null || exactPlan.base !== highIqSha) {
+  console.error('FAIL: explicit planner base was not preserved.');
+  console.error(JSON.stringify(exactPlan, null, 2));
+  process.exit(1);
+}
+if (exactPlan.lanes.publicSuite !== false || exactPlan.lanes.education !== true) {
+  console.error('FAIL: explicit planner base did not isolate the education-only delta.');
+  console.error(JSON.stringify(exactPlan, null, 2));
+  process.exit(1);
+}
+if (exactPlan.changedFiles.length !== 1 || exactPlan.changedFiles[0] !== 'content/encyclopedia/example.json') {
+  console.error('FAIL: explicit planner base included unrelated history.');
+  console.error(JSON.stringify(exactPlan, null, 2));
+  process.exit(1);
+}
+console.log('PASS: explicit release base isolates controlled comparisons');
 
-const plan = JSON.parse(planned);
-if (plan.checkpoint?.sha !== checkpointSha) {
-  console.error('FAIL: planner did not use the production checkpoint tag.');
-  console.error(planned);
+// Real automatic production omits an explicit base. It must use the last
+// successful production checkpoint so rapid independent merges accumulate and
+// no undeployed project disappears when main advances.
+const cumulativePlan = runPlanner(repo, [
+  '--mode=auto',
+  `--head=${headSha}`
+]);
+if (cumulativePlan.checkpoint?.sha !== checkpointSha || cumulativePlan.base !== checkpointSha) {
+  console.error('FAIL: cumulative planner did not use the production checkpoint tag.');
+  console.error(JSON.stringify(cumulativePlan, null, 2));
   process.exit(1);
 }
-if (plan.lanes.publicSuite !== true || plan.lanes.education !== true) {
-  console.error('FAIL: planner did not accumulate both project changes since the checkpoint.');
-  console.error(planned);
+if (cumulativePlan.lanes.publicSuite !== true || cumulativePlan.lanes.education !== true) {
+  console.error('FAIL: cumulative planner did not include both project changes since the checkpoint.');
+  console.error(JSON.stringify(cumulativePlan, null, 2));
   process.exit(1);
 }
-if (!plan.changedFiles.includes('games/high-iq/app.js') || !plan.changedFiles.includes('content/encyclopedia/example.json')) {
-  console.error('FAIL: planner lost a changed path between the checkpoint and current head.');
-  console.error(planned);
+if (!cumulativePlan.changedFiles.includes('games/high-iq/app.js') || !cumulativePlan.changedFiles.includes('content/encyclopedia/example.json')) {
+  console.error('FAIL: cumulative planner lost a changed path between the checkpoint and current head.');
+  console.error(JSON.stringify(cumulativePlan, null, 2));
   process.exit(1);
 }
 
