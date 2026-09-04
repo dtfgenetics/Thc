@@ -30,17 +30,20 @@ const publishableRoots = [
 const legacyDirectMainWriters = new Set([
   'scripts/publish-wordpress-image-backlog.sh',
   'scripts/publish-wordpress-infographics-canonical.sh',
+  '.github/workflows/bootstrap-genetics-breeding-infographics.yml',
   '.github/workflows/core-gaps-v6-route-repair.yml',
-  '.github/workflows/publish-harvest-images-now.yml',
-  '.github/workflows/repair-sprout-run-production.yml',
-  '.github/workflows/repair-canonical-infographics.yml',
-  '.github/workflows/import-harvest-uploaded-assets.yml',
-  '.github/workflows/import-harvest-replacements-v1.yml',
-  '.github/workflows/wordpress-remote-infographic-intake.yml',
   '.github/workflows/finish-harvest-wordpress-publish-v2.yml',
-  '.github/workflows/wordpress-core-gap-poster-production.yml',
+  '.github/workflows/import-harvest-replacements-v1.yml',
+  '.github/workflows/import-harvest-uploaded-assets.yml',
+  '.github/workflows/publish-harvest-images-now.yml',
   '.github/workflows/publish-harvest-outdoor-v6-final-repair.yml',
+  '.github/workflows/repair-canonical-infographics.yml',
+  '.github/workflows/repair-harvest-outdoor-v6-production-owner.yml',
+  '.github/workflows/repair-sprout-run-production.yml',
   '.github/workflows/restore-lighting-infographic-production.yml',
+  '.github/workflows/wordpress-core-gap-poster-production.yml',
+  '.github/workflows/wordpress-lighting-evidence-poster-production.yml',
+  '.github/workflows/wordpress-remote-infographic-intake.yml',
 ])
 
 // This workflow contains the forbidden command as a negative test string only.
