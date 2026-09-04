@@ -7,7 +7,7 @@ const index=fs.readFileSync('site/public-route-patch/games/protect-the-plants/in
 const sw=fs.readFileSync('site/public-route-patch/games/protect-the-plants/sw.js','utf8');
 
 for(const marker of [
-  "event.type!=='scout'",
+  "state.lastEvent.type!=='scout'",
   "cardByTitle(mine?'Fire on Opponent':'Your Stash')",
   "burn-latest-shot",
   "burn-latest-hit",
