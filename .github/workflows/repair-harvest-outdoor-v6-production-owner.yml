@@ -14,8 +14,10 @@ on:
   workflow_dispatch:
 
 permissions:
+  actions: write
   contents: write
   issues: write
+  pull-requests: write
 
 concurrency:
   group: dtfseeds-harvest-outdoor-v6-owner-repair
@@ -49,13 +51,14 @@ jobs:
           grep -Fq '"lessons": 32' "$RUNNER_TEMP/hov6-owner-repair-validation.json"
 
   publish:
-    name: Repair main, publish WordPress, verify visitors
+    name: Repair current main, publish WordPress, verify visitors
     needs: validate
     if: ${{ github.event_name != 'pull_request' }}
     runs-on: ubuntu-latest
     timeout-minutes: 40
     environment: production
     env:
+      GH_TOKEN: ${{ github.token }}
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
       APPLY_HARVEST_OUTDOOR_V6: 'true'
@@ -63,45 +66,41 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: main
           fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 22
 
-      - name: Persist canonical Outdoor markers on newest main
+      - name: Persist canonical Outdoor markers through safe integration
         id: repair
         shell: bash
         run: |
           set -euo pipefail
           : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
           : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          pushed=0
-          for attempt in 1 2 3 4 5; do
-            git fetch origin main
-            git reset --hard origin/main
-            node scripts/fix-harvest-outdoor-v6-owner-markers.mjs | tee "$RUNNER_TEMP/hov6-owner-repair-${attempt}.json"
-            node --check scripts/publish-wordpress-harvest-outdoor-v6-final.mjs
-            node scripts/publish-wordpress-harvest-outdoor-v6-final.mjs --validate-only > "$RUNNER_TEMP/hov6-validation-${attempt}.json"
-            grep -Fq 'data-dtf-topic="outdoor-cultivation"' scripts/publish-wordpress-harvest-outdoor-v6-final.mjs
-            grep -Fq 'data-dtf-learning-v4="topic-outdoor-cultivation"' scripts/publish-wordpress-harvest-outdoor-v6-final.mjs
-            if git diff --quiet -- scripts/publish-wordpress-harvest-outdoor-v6-final.mjs .github/workflows/wordpress-harvest-outdoor-v6-production.yml; then
-              pushed=1
-              echo 'already_fixed=true' >> "$GITHUB_OUTPUT"
-              break
-            fi
-            git add scripts/publish-wordpress-harvest-outdoor-v6-final.mjs .github/workflows/wordpress-harvest-outdoor-v6-production.yml
-            git commit -m 'Fix Outdoor V6 canonical ownership markers'
-            if git push origin HEAD:main; then
-              pushed=1
-              echo 'already_fixed=false' >> "$GITHUB_OUTPUT"
-              break
-            fi
-            sleep $((attempt * 3))
-          done
-          [[ "$pushed" -eq 1 ]]
-          echo "head=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+          node scripts/fix-harvest-outdoor-v6-owner-markers.mjs | tee "$RUNNER_TEMP/hov6-owner-repair.json"
+          node --check scripts/publish-wordpress-harvest-outdoor-v6-final.mjs
+          node scripts/publish-wordpress-harvest-outdoor-v6-final.mjs --validate-only > "$RUNNER_TEMP/hov6-validation.json"
+          grep -Fq 'data-dtf-topic="outdoor-cultivation"' scripts/publish-wordpress-harvest-outdoor-v6-final.mjs
+          grep -Fq 'data-dtf-learning-v4="topic-outdoor-cultivation"' scripts/publish-wordpress-harvest-outdoor-v6-final.mjs
+
+          paths=(
+            scripts/publish-wordpress-harvest-outdoor-v6-final.mjs
+            .github/workflows/wordpress-harvest-outdoor-v6-production.yml
+          )
+          if git diff --quiet -- "${paths[@]}"; then
+            echo 'Canonical Outdoor V6 owner markers already match current main.'
+            echo 'already_fixed=true' >> "$GITHUB_OUTPUT"
+          else
+            node scripts/studio/integrate-generated-change.mjs \
+              --message='Fix Outdoor V6 canonical ownership markers' \
+              "${paths[@]}"
+            echo 'already_fixed=false' >> "$GITHUB_OUTPUT"
+          fi
+          git fetch --quiet origin main
+          echo "head=$(git rev-parse origin/main)" >> "$GITHUB_OUTPUT"
 
       - name: Publish both complete V6 subjects
         id: publish
@@ -174,8 +173,44 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
-      - name: Report production result
+      - name: Write authoritative production summary
         if: always()
+        shell: bash
+        env:
+          STATUS: ${{ job.status }}
+          REPAIR: ${{ steps.repair.outcome }}
+          PUBLISH: ${{ steps.publish.outcome }}
+          HARVEST_VERIFY: ${{ steps.harvest.outcome }}
+          OUTDOOR_VERIFY: ${{ steps.outdoor.outcome }}
+          SUBJECTS: ${{ steps.publish.outputs.subjects }}
+          CHAPTERS: ${{ steps.publish.outputs.chapters }}
+          LESSONS: ${{ steps.publish.outputs.lessons }}
+          SOURCES: ${{ steps.publish.outputs.sources }}
+          VISUAL_TARGETS: ${{ steps.publish.outputs.visual_targets }}
+          DEPLOYED_HEAD: ${{ steps.repair.outputs.head }}
+        run: |
+          {
+            echo '## Harvest + Outdoor V6 canonical-owner repair'
+            echo
+            echo "Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+            echo "Result before advisory reporting: **${STATUS:-unknown}**"
+            echo "Durable repository repair: **${REPAIR:-not-run}**"
+            echo "WordPress publication: **${PUBLISH:-not-run}**"
+            echo "Harvest visitor verification: **${HARVEST_VERIFY:-not-run}**"
+            echo "Outdoor visitor verification: **${OUTDOOR_VERIFY:-not-run}**"
+            echo "Published subjects: **${SUBJECTS:-0}**"
+            echo "V6 chapters: **${CHAPTERS:-0}**"
+            echo "Focused lessons: **${LESSONS:-0}**"
+            echo "Evidence references: **${SOURCES:-0}**"
+            echo "Quality-gated visual targets: **${VISUAL_TARGETS:-0}**"
+            echo "Repository head used: \`${DEPLOYED_HEAD:-unknown}\`"
+            echo
+            echo 'Actions evidence and visitor verification are authoritative. Issue comments are advisory only.'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Best-effort legacy issue report
+        if: always()
+        continue-on-error: true
         uses: actions/github-script@v7
         env:
           STATUS: ${{ job.status }}
@@ -207,5 +242,9 @@ jobs:
               `Repository head used: \`${process.env.DEPLOYED_HEAD || 'unknown'}\``
             ].join('\n');
             for (const issue_number of [46,126]) {
-              await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number,body});
+              try {
+                await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number,body});
+              } catch (error) {
+                core.warning(`Legacy Harvest/Outdoor report skipped for issue #${issue_number}: ${error.message}`);
+              }
             }

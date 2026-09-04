@@ -13,8 +13,8 @@ const edits = [
   {
     path: '.github/workflows/wordpress-harvest-outdoor-v6-production.yml',
     replacements: [
-      ["grep -Fq 'data-dtf-topic=\"outdoor\"' \"$body\"", "grep -Fq 'data-dtf-topic=\"outdoor-cultivation\"' \"$body\""],
-      ["grep -Fq 'data-dtf-learning-v4=\"topic-outdoor\"' \"$body\"", "grep -Fq 'data-dtf-learning-v4=\"topic-outdoor-cultivation\"' \"$body\""]
+      ['data-dtf-topic="outdoor"', 'data-dtf-topic="outdoor-cultivation"'],
+      ['data-dtf-learning-v4="topic-outdoor"', 'data-dtf-learning-v4="topic-outdoor-cultivation"']
     ]
   }
 ];
@@ -35,7 +35,10 @@ for (const edit of edits) {
       changedReplacements += 1;
       continue;
     }
-    if (newCount !== 1) throw new Error(`${edit.path}: expected exactly one repaired marker when stale marker is absent: ${newText}`);
+    // Idempotent reruns only need to prove the canonical replacement exists.
+    // Match the ownership marker token itself rather than a whole grep command:
+    // verifier variable names and formatting may differ while ownership is valid.
+    if (newCount < 1) throw new Error(`${edit.path}: repaired marker is absent when stale marker is absent: ${newText}`);
   }
   if (changed) {
     changedFiles += 1;
