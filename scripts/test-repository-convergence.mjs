@@ -33,8 +33,14 @@ for (const stale of ['Grow together. Learn together. Build together.','DTF Visua
 
 assert.ok(lifecycleWorkflow.includes('contents: write'), 'Lifecycle maintenance needs branch-delete permission.')
 assert.ok(lifecycleWorkflow.includes('lifecycle --cleanup-merged --summary'), 'Lifecycle maintenance must use conservative integrated-only cleanup.')
+assert.ok(lifecycleWorkflow.includes('lifecycle --recovery-only'), 'Lifecycle maintenance must build a post-cleanup recovery inventory.')
+assert.ok(lifecycleWorkflow.includes('actions/upload-artifact@v4'), 'Lifecycle maintenance must persist the recovery inventory as an artifact.')
+assert.ok(lifecycleWorkflow.includes('retention-days: 90'), 'Recovery inventories need enough retention for deliberate salvage work.')
+assert.ok(lifecycleWorkflow.includes('branch-recovery.csv'), 'Recovery inventories must include a spreadsheet-friendly CSV.')
 assert.ok(lifecycleScript.includes("duplicateHead: 'report only"), 'Duplicate branch tips must remain report-only evidence.')
 assert.ok(lifecycleScript.includes('item.managed && item.safeToDelete'), 'Automatic cleanup must be limited to managed, proven-integrated branches.')
+assert.ok(lifecycleScript.includes("item.state === 'closed-unmerged' || item.state === 'orphan-unique'"), 'Recovery candidates must include only preserved unmerged lifecycle states.')
+assert.ok(lifecycleScript.includes("flags.has('--recovery-only')"), 'Lifecycle command must expose a recovery-only machine-readable mode.')
 
 assert.match(highLandCI, /pull_request:\n\s+branches:\n\s+- main\n\s+paths:/)
 assert.match(highLandCI, /push:\n\s+branches:\n\s+- main\n\s+paths:/)
