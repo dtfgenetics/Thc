@@ -37,10 +37,17 @@
         "site/public-route-patch/atlas/",
         "site/public-route-patch/assets/",
         "site/deployment/public-apps.json",
+        "site/deployment/release-resources.json",
         "scripts/package-public-suite-wordpress.py",
+        "scripts/package-public-suite-wordpress-resource-aware.py",
+        "scripts/public_suite_resource_ownership.py",
         "scripts/assemble-wordpress-suite-v2.py",
+        "scripts/assemble-wordpress-suite-resource-aware.py",
+        "scripts/harden-wordpress-suite-lock.py",
         "scripts/cleanup-stale-wordpress-suite-snippets.mjs",
-        "scripts/wordpress-suite-v2/"
+        "scripts/wordpress-suite-v2/",
+        ".github/workflows/deploy-games-suite-lock-recovery.yml",
+        ".github/workflows/validate-public-suite-resource-ownership.yml"
       ]
     },
     "wordpress": {
