@@ -1,7 +1,9 @@
 (()=>{
   const GRID_SIZE=15;
+  const coarsePointer=()=>window.matchMedia?.('(pointer: coarse)').matches===true;
   let syncQueued=false;
   let activeCoord='';
+  let armedCoord='';
   let firePending=false;
 
   function coordinate(row,col){
@@ -57,6 +59,12 @@
     return'LOCKED';
   }
 
+  function clearArmed(card,{preserveCoord=false}={}){
+    armedCoord='';
+    card?.querySelectorAll('.cell.target-armed').forEach(cell=>cell.classList.remove('target-armed'));
+    if(!preserveCoord)activeCoord='';
+  }
+
   function describeCell(card,cell){
     const parsed=parseCell(cell);
     if(!parsed)return;
@@ -68,7 +76,13 @@
     cell.classList.add('target-preview');
 
     if(status==='AVAILABLE'){
-      setReadout(card,'TARGET',parsed.coord,'Ready to fire · click/tap or press Enter/Space.');
+      if(coarsePointer()&&armedCoord===parsed.coord){
+        setReadout(card,'TARGET ARMED',parsed.coord,'Tap the same cell again to fire. Tap another cell to change target.');
+      }else if(coarsePointer()){
+        setReadout(card,'TARGET',parsed.coord,'Tap once to aim. Tap the same cell again to fire.');
+      }else{
+        setReadout(card,'TARGET',parsed.coord,'Ready to fire · click or press Enter/Space.');
+      }
     }else if(status==='HIT'){
       setReadout(card,'RESULT',parsed.coord,'Already fired here · HIT.');
     }else if(status==='MISS'){
@@ -90,7 +104,7 @@
       return;
     }
     if(state.status==='playing'&&isMyTurn()){
-      setReadout(card,'YOUR TURN','Choose target','Pointer: hover/tap · Keyboard: arrows, then Enter/Space.');
+      setReadout(card,'YOUR TURN','Choose target',coarsePointer()?'Tap once to aim · tap again to fire.':'Pointer: hover/click · Keyboard: arrows, then Enter/Space.');
       return;
     }
     if(state.status==='playing'){
@@ -122,14 +136,19 @@
     const cells=[...card.querySelectorAll('.cell[data-fire]')];
     const available=availableCells(card);
 
+    if(!isMyTurn()||firePending)clearArmed(card,{preserveCoord:true});
+
     for(const cell of cells){
       const parsed=parseCell(cell);
       if(!parsed)continue;
       const status=cellStatus(cell);
       const canFire=status==='AVAILABLE';
-      cell.setAttribute('aria-label',`${parsed.coord}, ${status.toLowerCase()}`);
+      const armed=canFire&&armedCoord===parsed.coord;
+      cell.classList.toggle('target-armed',armed);
+      cell.setAttribute('aria-label',`${parsed.coord}, ${armed?'armed, tap again to fire':status.toLowerCase()}`);
       cell.setAttribute('aria-disabled',String(!canFire));
       cell.setAttribute('aria-busy',String(firePending));
+      cell.setAttribute('aria-pressed',String(armed));
       cell.setAttribute('aria-keyshortcuts','ArrowUp ArrowDown ArrowLeft ArrowRight Enter Space');
       cell.tabIndex=-1;
     }
@@ -142,6 +161,9 @@
     const active=document.activeElement;
     if(active instanceof HTMLElement&&card.contains(active)&&active.matches('.cell[data-fire]')){
       describeCell(card,active);
+    }else if(armedCoord){
+      const armed=available.find(cell=>parseCell(cell)?.coord===armedCoord);
+      if(armed)describeCell(card,armed);else defaultReadout(card);
     }else{
       card.querySelectorAll('.cell.target-preview').forEach(cell=>cell.classList.remove('target-preview'));
       defaultReadout(card);
@@ -159,6 +181,7 @@
 
   function setFirePending(next){
     firePending=Boolean(next);
+    if(firePending)armedCoord='';
     document.body.classList.toggle('burn-fire-pending',firePending);
     queueSync();
   }
@@ -188,6 +211,7 @@
     const next=findDirectionalTarget(card,cell,event.key);
     if(!next)return;
     event.preventDefault();
+    clearArmed(card,{preserveCoord:true});
     availableCells(card).forEach(item=>item.tabIndex=-1);
     next.tabIndex=0;
     next.focus();
@@ -201,6 +225,7 @@
   });
 
   document.addEventListener('mouseover',event=>{
+    if(coarsePointer())return;
     const cell=event.target.closest?.('.cell[data-fire]');
     const card=enemyCard();
     if(cell&&card?.contains(cell))describeCell(card,cell);
@@ -211,12 +236,29 @@
     root.addEventListener('click',event=>{
       const cell=event.target.closest?.('.cell[data-fire]');
       if(!cell)return;
+      const card=enemyCard();
+      if(!card||!card.contains(cell))return;
       if(firePending){
         event.preventDefault();
         event.stopImmediatePropagation();
         return;
       }
-      if(cell.classList.contains('can-fire')&&isMyTurn())setFirePending(true);
+      if(!cell.classList.contains('can-fire')||!isMyTurn())return;
+      const parsed=parseCell(cell);
+      if(!parsed)return;
+
+      if(coarsePointer()){
+        if(armedCoord!==parsed.coord){
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          armedCoord=parsed.coord;
+          activeCoord=parsed.coord;
+          queueSync();
+          return;
+        }
+        armedCoord='';
+      }
+      setFirePending(true);
     },true);
     new MutationObserver(queueSync).observe(root,{childList:true,subtree:true});
   }
@@ -234,5 +276,6 @@
 
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)queueSync()});
   window.addEventListener('online',queueSync);
+  window.addEventListener('resize',queueSync,{passive:true});
   queueSync();
 })();
