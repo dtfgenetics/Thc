@@ -54,20 +54,6 @@ test.describe('High Land browser game', () => {
     expect(decodeFailures).toEqual([]);
   });
 
-  test('can preview the HIT card animation from the landing screen', async ({ page }) => {
-    await page.goto('/games/high-land/');
-
-    await page.getByRole('button', { name: 'Preview HIT Animation' }).click();
-
-    const hitDialog = page.getByRole('dialog', { name: 'HIT card drawn' });
-    await expect(hitDialog).toBeVisible();
-    await expect(hitDialog.getByText('HIT CARD')).toBeVisible();
-    await expect(hitDialog.locator('.hit-card-art')).toBeVisible();
-    await expect(hitDialog.getByText('Perfect Roll')).toBeVisible();
-    await hitDialog.getByRole('button', { name: 'Continue' }).click();
-    await expect(hitDialog).toHaveCount(0);
-  });
-
   test('loads the approved board, starts 10-player local play, and rolls from board controls', async ({ page }) => {
     test.slow();
     const pageErrors = collectPageErrors(page);
@@ -106,7 +92,7 @@ test.describe('High Land browser game', () => {
 
     const boardControls = page.locator('.board-controls-card');
     await expect(boardControls.getByRole('button', { name: 'Roll Dice' })).toBeVisible();
-    await expect(boardControls.getByRole('button', { name: 'Preview HIT Animation' })).toBeVisible();
+    await expect(boardControls.getByRole('button', { name: 'Preview HIT Animation' })).toHaveCount(0);
     await expect(page.locator('.game-stage .board-controls-card')).toBeVisible();
     await expect(page.getByRole('button', { name: 'Save' })).toHaveCount(0);
     await expect(page.getByRole('button', { name: 'Load' })).toHaveCount(0);
