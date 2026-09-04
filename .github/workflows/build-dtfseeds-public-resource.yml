@@ -86,6 +86,7 @@ jobs:
           grep -Fq 'Build your High IQ run' "$RUNNER_TEMP/dtf-high-iq-resource-bridge.mjs"
           ! grep -Fq "dtf_suite_deploy_lock" "$RUNNER_TEMP/dtf-high-iq-resource-bridge.mjs"
           ! grep -Fq ".dtf-suite-manifest.json" "$RUNNER_TEMP/dtf-high-iq-resource-bridge.mjs"
+          ! grep -Fq "wordPressOwnedRoutesExcluded" "$RUNNER_TEMP/dtf-high-iq-resource-bridge.mjs"
           python - <<'PY'
           import os, pathlib, re
           path=pathlib.Path(os.environ['RUNNER_TEMP'])/'dtf-high-iq-resource-bridge.mjs'
