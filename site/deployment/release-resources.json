@@ -1,15 +1,17 @@
 {
   "schemaVersion": 1,
   "site": "https://dtfseeds.com",
-  "description": "Independent DTFSeeds release resources. Resource builds are isolated; production serialization is scoped to productionTarget only.",
+  "description": "Independent DTFSeeds release resources. Resource builds are isolated; production serialization is scoped to the resource and any explicitly shared publisher mechanism.",
   "globalBuildPaths": [
     "site/deployment/release-resources.json",
     "scripts/plan-dtfseeds-resource-release.mjs",
     "scripts/package-dtf-public-resource.py",
     "scripts/verify-dtf-public-resource-artifact.py",
+    "scripts/assemble-wordpress-resource-v2.py",
     "scripts/test-dtf-resource-release-system.mjs",
     ".github/workflows/build-dtfseeds-public-resource.yml",
-    ".github/workflows/deploy-dtfseeds-public-resource.yml"
+    ".github/workflows/deploy-dtfseeds-public-resource.yml",
+    ".github/workflows/deploy-dtfseeds-wordpress-resource.yml"
   ],
   "resources": {
     "high-land": {
@@ -49,7 +51,9 @@
       "verifyMarker": "Build your High IQ run",
       "publisher": {
         "type": "wordpress-transactional-resource",
-        "status": "pending-bridge-adaptation"
+        "workflow": "deploy-dtfseeds-wordpress-resource.yml",
+        "status": "pilot-manual",
+        "sharedProductionTarget": "wordpress:temporary-code-snippets-bridge"
       }
     }
   }

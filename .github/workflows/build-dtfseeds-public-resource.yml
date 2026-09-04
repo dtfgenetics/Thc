@@ -23,9 +23,11 @@ on:
       - 'scripts/plan-dtfseeds-resource-release.mjs'
       - 'scripts/package-dtf-public-resource.py'
       - 'scripts/verify-dtf-public-resource-artifact.py'
+      - 'scripts/assemble-wordpress-resource-v2.py'
       - 'scripts/test-dtf-resource-release-system.mjs'
       - '.github/workflows/build-dtfseeds-public-resource.yml'
       - '.github/workflows/deploy-dtfseeds-public-resource.yml'
+      - '.github/workflows/deploy-dtfseeds-wordpress-resource.yml'
   push:
     branches: [main]
     paths:
@@ -37,9 +39,11 @@ on:
       - 'scripts/plan-dtfseeds-resource-release.mjs'
       - 'scripts/package-dtf-public-resource.py'
       - 'scripts/verify-dtf-public-resource-artifact.py'
+      - 'scripts/assemble-wordpress-resource-v2.py'
       - 'scripts/test-dtf-resource-release-system.mjs'
       - '.github/workflows/build-dtfseeds-public-resource.yml'
       - '.github/workflows/deploy-dtfseeds-public-resource.yml'
+      - '.github/workflows/deploy-dtfseeds-wordpress-resource.yml'
 
 permissions:
   contents: read
@@ -71,7 +75,28 @@ jobs:
           set -euo pipefail
           node --check scripts/plan-dtfseeds-resource-release.mjs
           node scripts/test-dtf-resource-release-system.mjs
-          python -m py_compile scripts/package-dtf-public-resource.py scripts/verify-dtf-public-resource-artifact.py
+          python -m py_compile \
+            scripts/package-dtf-public-resource.py \
+            scripts/verify-dtf-public-resource-artifact.py \
+            scripts/assemble-wordpress-resource-v2.py
+          python scripts/assemble-wordpress-resource-v2.py "$RUNNER_TEMP/dtf-high-iq-resource-bridge.mjs" high-iq
+          node --check "$RUNNER_TEMP/dtf-high-iq-resource-bridge.mjs"
+          grep -Fq "dtf_resource_high_iq_deploy_lock" "$RUNNER_TEMP/dtf-high-iq-resource-bridge.mjs"
+          grep -Fq ".dtf-resource-manifest.json" "$RUNNER_TEMP/dtf-high-iq-resource-bridge.mjs"
+          grep -Fq 'Build your High IQ run' "$RUNNER_TEMP/dtf-high-iq-resource-bridge.mjs"
+          ! grep -Fq "dtf_suite_deploy_lock" "$RUNNER_TEMP/dtf-high-iq-resource-bridge.mjs"
+          ! grep -Fq ".dtf-suite-manifest.json" "$RUNNER_TEMP/dtf-high-iq-resource-bridge.mjs"
+          ! grep -Fq "wordPressOwnedRoutesExcluded" "$RUNNER_TEMP/dtf-high-iq-resource-bridge.mjs"
+          python - <<'PY'
+          import os, pathlib, re
+          path=pathlib.Path(os.environ['RUNNER_TEMP'])/'dtf-high-iq-resource-bridge.mjs'
+          text=path.read_text()
+          m=re.search(r"const snippetCode = String\.raw`(.*?)`\.trim\(\);", text, re.S)
+          assert m, 'embedded PHP missing'
+          php=m.group(1).replace('${tokenLiteral}', "'0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'")
+          (pathlib.Path(os.environ['RUNNER_TEMP'])/'dtf-high-iq-resource-bridge.php').write_text('<?php\n'+php+'\n')
+          PY
+          php -l "$RUNNER_TEMP/dtf-high-iq-resource-bridge.php"
 
       - name: Plan affected resources
         id: plan
