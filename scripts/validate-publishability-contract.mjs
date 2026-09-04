@@ -40,7 +40,6 @@ const legacyDirectMainWriters = new Set([
   '.github/workflows/repair-sprout-run-production.yml',
   '.github/workflows/restore-lighting-infographic-production.yml',
   '.github/workflows/wordpress-core-gap-poster-production.yml',
-  '.github/workflows/wordpress-lighting-evidence-poster-production.yml',
   '.github/workflows/wordpress-remote-infographic-intake.yml',
 ])
 
