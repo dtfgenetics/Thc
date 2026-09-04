@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import type { FormEvent } from 'react';
 import { isValidRoomCode, normalizeRoomCode } from '../game/multiplayer/roomCodes';
 import { validatePlayerName } from '../game/players/playerIdentity';
-import { maxPlayers, minPlayers } from '../game/systems/playerSystem';
+import { localMinPlayers, maxPlayers } from '../game/systems/playerSystem';
 
 export type PlayerSetupMode = 'local' | 'create_room' | 'join_room';
 
@@ -23,7 +23,7 @@ type PlayerSetupFormProps = {
   onCancel?: () => void;
 };
 
-const playerCountOptions = Array.from({ length: maxPlayers - minPlayers + 1 }, (_, index) => minPlayers + index);
+const playerCountOptions = Array.from({ length: maxPlayers - localMinPlayers + 1 }, (_, index) => localMinPlayers + index);
 
 export function PlayerSetupForm({
   mode,
@@ -82,7 +82,7 @@ export function PlayerSetupForm({
           <span>Players</span>
           <select onChange={(event) => setPlayerCount(Number(event.target.value))} value={playerCount}>
             {playerCountOptions.map((count) => (
-              <option key={count} value={count}>{count} Players</option>
+              <option key={count} value={count}>{count === 1 ? '1 Player' : `${count} Players`}</option>
             ))}
           </select>
         </label>
@@ -126,7 +126,7 @@ function getSetupTitle(mode: PlayerSetupMode): string {
 function getSetupSubtitle(mode: PlayerSetupMode): string {
   if (mode === 'create_room') return `Name yourself, create an invite room, then share the link. Online rooms support up to ${maxPlayers} players.`;
   if (mode === 'join_room') return 'Name yourself and enter the invite code so this device joins the same room.';
-  return 'Name yourself before starting so tokens and turns track the real player.';
+  return `Name yourself and choose ${localMinPlayers}-${maxPlayers} local players. Single-player mode is supported for solo playtesting and casual runs.`;
 }
 
 function getSubmitLabel(mode: PlayerSetupMode): string {
