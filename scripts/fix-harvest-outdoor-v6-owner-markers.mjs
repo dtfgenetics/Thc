@@ -13,8 +13,8 @@ const edits = [
   {
     path: '.github/workflows/wordpress-harvest-outdoor-v6-production.yml',
     replacements: [
-      ["grep -Fq 'data-dtf-topic=\"outdoor\"' \"$body\"", "grep -Fq 'data-dtf-topic=\"outdoor-cultivation\"' \"$body\""],
-      ["grep -Fq 'data-dtf-learning-v4=\"topic-outdoor\"' \"$body\"", "grep -Fq 'data-dtf-learning-v4=\"topic-outdoor-cultivation\"' \"$body\""]
+      ['data-dtf-topic="outdoor"', 'data-dtf-topic="outdoor-cultivation"'],
+      ['data-dtf-learning-v4="topic-outdoor"', 'data-dtf-learning-v4="topic-outdoor-cultivation"']
     ]
   }
 ];
@@ -36,9 +36,8 @@ for (const edit of edits) {
       continue;
     }
     // Idempotent reruns only need to prove the canonical replacement exists.
-    // Production workflows can legitimately assert the same canonical marker in
-    // more than one verifier, so counting every canonical occurrence as an error
-    // makes an already-correct file fail repair validation.
+    // Match the ownership marker token itself rather than a whole grep command:
+    // verifier variable names and formatting may differ while ownership is valid.
     if (newCount < 1) throw new Error(`${edit.path}: repaired marker is absent when stale marker is absent: ${newText}`);
   }
   if (changed) {
