@@ -11,12 +11,13 @@ Read `AI_CONTEXT.md` for the current repository map, common commands, game owner
 For new repository work, read `.agents/skills/dtf-parallel-studio/SKILL.md` first, then the subsystem skill/source-of-truth documentation.
 
 - New concurrent work should use a unique `work/<project-id>/<task>/<session-id>` branch/session.
-- Use `npm run studio:new -- <project-id> <task>` for a new local worktree session.
-- Resume an existing studio branch only with `npm run studio:resume -- <branch-or-pr>`; never reuse a branch implicitly because the task name matches.
-- `npm run studio:status` reports affected resources without requiring the branch to chase current `main`.
-- `npm run studio:overlap` reports green/yellow/red source/resource overlap and same-production-target serialization needs; yellow is advisory and does not stop development.
-- `npm run studio:push` pushes the isolated session and creates/reuses its PR without merging current `main` into the working branch.
-- `npm run studio:integrate -- <pr>` evaluates the exact PR head against current `main` at the final integration boundary.
+- Use `node scripts/studio.mjs new <project-id> <task>` for a new local worktree session.
+- Resume an existing studio branch only with `node scripts/studio.mjs resume <branch-or-pr>`; never reuse a branch implicitly because the task name matches.
+- `node scripts/studio.mjs status` reports affected resources without requiring the branch to chase current `main`.
+- `node scripts/studio.mjs overlap` reports green/yellow/red source/resource overlap and same-production-target serialization needs; yellow is advisory and does not stop development.
+- `node scripts/studio.mjs push` pushes the isolated session and creates/reuses its PR without merging current `main` into the working branch.
+- `node scripts/studio.mjs integrate <pr>` evaluates the exact PR head against current `main` at the final integration boundary.
+- Studio intentionally stays out of root `package.json` so coordination changes do not wake unrelated application CI simply because npm script metadata changed.
 - Development stays parallel by default. Only identical live production resources should serialize.
 - Existing `project/*`, `multi/*`, and legacy branches remain supported; do not rewrite or abandon in-flight work solely to adopt Studio.
 
