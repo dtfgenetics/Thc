@@ -22,10 +22,34 @@
       "productionTargets": []
     },
     {
+      "id": "platform.release-control",
+      "kind": "release-control",
+      "prefixes": [],
+      "exactPaths": [
+        "site/deployment/release-lanes.json",
+        "scripts/plan-dtfseeds-release.mjs",
+        "scripts/run-workflow-and-wait.sh",
+        "scripts/validate-public-game-release-integrity.mjs",
+        "scripts/promote-public-game-routes-via-wordpress.mjs",
+        "scripts/repair-game-route-redirects-via-wordpress.mjs",
+        ".github/workflows/dtfseeds-production-gateway.yml",
+        ".github/workflows/game-release-integrity.yml",
+        ".github/workflows/game-route-directory-swap-ci.yml",
+        ".github/workflows/wordpress-game-route-directory-swap.yml",
+        ".github/workflows/wordpress-game-route-production-v2.yml",
+        ".github/workflows/wordpress-canonical-watch.yml",
+        ".github/workflows/wordpress-canonical-deploy.yml",
+        ".github/workflows/wordpress-canonical-production.yml",
+        ".github/workflows/deploy-public-suite-wordpress-v2.yml",
+        ".github/workflows/deploy-thc-learning-center-expansion-v1.yml"
+      ],
+      "productionTargets": ["shared:release-control"]
+    },
+    {
       "id": "platform.site-shell",
       "kind": "shared-ui",
       "prefixes": ["site/design-system/"],
-      "exactPaths": ["site/public-route-patch/games/dtf-route.css", "site/public-route-patch/games/dtf-shell.css"],
+      "exactPaths": ["data/public-navigation.json", "site/public-route-patch/games/dtf-route.css", "site/public-route-patch/games/dtf-shell.css"],
       "productionTargets": ["shared:site-shell"]
     },
     {
@@ -81,7 +105,7 @@
       "id": "page.game-hub",
       "kind": "page",
       "prefixes": [],
-      "exactPaths": ["site/public-route-patch/games/index.html"],
+      "exactPaths": ["site/public-route-patch/games/index.html", "site/deployment/public-apps.json"],
       "productionTargets": ["route:/games/"]
     },
     {
