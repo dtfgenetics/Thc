@@ -54,6 +54,7 @@ jobs:
           node --check scripts/studio/resume.mjs
           node --check scripts/studio/status.mjs
           node --check scripts/studio/overlap.mjs
+          node --check scripts/studio/doctor.mjs
           node --check scripts/studio/push.mjs
           node --check scripts/studio/integrate.mjs
           node --check scripts/project-lane-check.mjs
