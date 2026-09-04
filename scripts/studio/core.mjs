@@ -124,3 +124,37 @@ export function candidateSupersession(current, other) {
   const larger = currentFiles.size <= otherFiles.size ? otherFiles : currentFiles
   return [...smaller].every((path) => larger.has(path))
 }
+
+export function classifyBranchLifecycle({ branch, isAncestorOfMain = false, prs = [] }) {
+  const related = (prs || []).filter((pr) => pr.headRefName === branch)
+  const open = related.filter((pr) => String(pr.state || '').toUpperCase() === 'OPEN')
+  const merged = related.filter((pr) => Boolean(pr.mergedAt) || String(pr.state || '').toUpperCase() === 'MERGED')
+  const closed = related.filter((pr) => !pr.mergedAt && String(pr.state || '').toUpperCase() === 'CLOSED')
+
+  const metadata = {
+    branch,
+    relatedPrNumbers: related.map((pr) => pr.number).filter(Boolean),
+    openPrNumbers: open.map((pr) => pr.number).filter(Boolean),
+    mergedPrNumbers: merged.map((pr) => pr.number).filter(Boolean),
+    closedPrNumbers: closed.map((pr) => pr.number).filter(Boolean),
+  }
+
+  if (open.length) {
+    return { ...metadata, state: 'active-pr', safeToDelete: false, reason: 'branch has an open pull request' }
+  }
+
+  if (merged.length || isAncestorOfMain) {
+    return {
+      ...metadata,
+      state: 'integrated',
+      safeToDelete: true,
+      reason: merged.length ? 'branch has a merged pull request and no open pull request' : 'branch tip is already an ancestor of main',
+    }
+  }
+
+  if (closed.length) {
+    return { ...metadata, state: 'closed-unmerged', safeToDelete: false, reason: 'branch only has closed unmerged pull requests' }
+  }
+
+  return { ...metadata, state: 'orphan-unique', safeToDelete: false, reason: 'branch has unique history and no pull request handoff' }
+}
