@@ -1,5 +1,5 @@
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
-import { resolve, dirname, basename } from 'node:path';
+import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 
@@ -118,9 +118,15 @@ async function saveManifest(manifest, questions) {
   await writeJson(publicManifestPath, manifest);
 }
 
+function runNode(path, label) {
+  const result = spawnSync(process.execPath, [path], { stdio: 'inherit', cwd: repoRoot });
+  if (result.status !== 0) fail(`${label} failed`);
+}
+
 async function validateRepo() {
-  const result = spawnSync(process.execPath, [resolve(here, 'validate-data.mjs')], { stdio: 'inherit', cwd: repoRoot });
-  if (result.status !== 0) fail('repository validation failed');
+  runNode(resolve(here, 'sync-runtime-shell.mjs'), 'runtime shell sync');
+  runNode(resolve(here, 'validate-data.mjs'), 'dataset validation');
+  runNode(resolve(here, 'validate-public-runtime.mjs'), 'public runtime validation');
 }
 
 function template(manifest) {
@@ -238,7 +244,7 @@ async function commandSync(bank) {
 }
 
 function usage() {
-  console.log(`High IQ question-bank commands:\n\n  template [output.json]      Create an editable question template\n  get <HIQ-S1-###>            Find a question and its chunk\n  list [search text]          Search IDs, category, difficulty, or question text\n  promote <question.json>     Add one reviewed question; assigns the next ID if omitted\n  edit <ID> <patch.json>      Safely edit an existing question by ID\n  sync                        Re-copy canonical data into the public runtime and validate\n\nPromotion/edit automatically validates answers, points, source IDs, duplicates, counts, manifest distributions, and canonical/public synchronization.`);
+  console.log(`High IQ question-bank commands:\n\n  template [output.json]      Create an editable question template\n  get <HIQ-S1-###>            Find a question and its chunk\n  list [search text]          Search IDs, category, difficulty, or question text\n  promote <question.json>     Add one reviewed question; assigns the next ID if omitted\n  edit <ID> <patch.json>      Safely edit an existing question by ID\n  sync                        Re-copy canonical data into the public runtime and validate\n\nPromotion/edit automatically validates answers, points, source IDs, duplicates, counts, manifest distributions, canonical/public synchronization, and visible runtime metadata.`);
 }
 
 const [command, ...args] = process.argv.slice(2);
