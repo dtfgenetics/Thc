@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "description": "Resource-oriented coordination map for fast parallel work across DTFSeeds. This registry classifies code/content by independently testable or releasable resource without creating hard development locks.",
+  "principles": {
+    "development": "optimistic",
+    "locks": "none",
+    "overlap": "advisory-until-integration",
+    "productionSerialization": "same-resource-only",
+    "resume": "explicit-only"
+  },
+  "sourceRegistries": [
+    "data/project-registry.json",
+    "site/deployment/public-apps.json",
+    "site/deployment/release-lanes.json"
+  ],
+  "staticResources": [
+    {
+      "id": "platform.repo-control",
+      "kind": "platform",
+      "prefixes": [".github/", ".agents/", "docs/", "scripts/studio/"],
+      "exactPaths": ["AGENTS.md", "CLAUDE.md", "package.json", "package-lock.json", "data/project-work-lanes.json", "data/project-registry.json", "data/studio-resources.json"],
+      "productionTargets": []
+    },
+    {
+      "id": "platform.site-shell",
+      "kind": "shared-ui",
+      "prefixes": ["site/design-system/"],
+      "exactPaths": ["site/public-route-patch/games/dtf-route.css", "site/public-route-patch/games/dtf-shell.css"],
+      "productionTargets": ["shared:site-shell"]
+    },
+    {
+      "id": "page.game-hub",
+      "kind": "page",
+      "prefixes": [],
+      "exactPaths": ["site/public-route-patch/games/index.html"],
+      "productionTargets": ["route:/games/"]
+    },
+    {
+      "id": "app.growlens",
+      "kind": "application",
+      "prefixes": ["apps/growlens-web/", "site/public-route-patch/growlens/"],
+      "exactPaths": [],
+      "productionTargets": ["route:/growlens/"]
+    },
+    {
+      "id": "app.grow-doc",
+      "kind": "application",
+      "prefixes": ["site/public-route-patch/thc-grow-doc/"],
+      "exactPaths": ["site/public-route-patch/assets/release-source-revisions/thc-grow-doc.txt"],
+      "productionTargets": ["route:/thc-grow-doc/"]
+    },
+    {
+      "id": "app.plant-atlas",
+      "kind": "application",
+      "prefixes": ["site/public-route-patch/atlas/", "apps/growlens-web/public/atlas/", "site/public-route-patch/assets/images/atlas/"],
+      "exactPaths": [],
+      "productionTargets": ["route:/atlas/"]
+    },
+    {
+      "id": "content.education",
+      "kind": "content-system",
+      "prefixes": ["content/", "configuration/", "assets/education/", "site/public-route-patch/learn/", "site/wordpress/education/"],
+      "exactPaths": [],
+      "productionTargets": ["route:/learn/"]
+    },
+    {
+      "id": "content.genetics",
+      "kind": "content-system",
+      "prefixes": ["data/genetics/", "site/wordpress/genetics/"],
+      "exactPaths": ["site/wordpress/pages/seeds.html", "site/design-system/dtf-genetics-owner-v1.css"],
+      "productionTargets": ["route:/seeds/"]
+    },
+    {
+      "id": "commerce.shop",
+      "kind": "commerce",
+      "prefixes": ["site/wordpress/shop/"],
+      "exactPaths": ["site/wordpress/pages/shop.html"],
+      "productionTargets": ["route:/shop/"]
+    }
+  ],
+  "dynamicResources": [
+    {
+      "idTemplate": "game.{id}",
+      "kind": "game",
+      "patterns": [
+        "^games/([^/]+)/",
+        "^site/public-route-patch/games/([^/]+)/",
+        "^apps/([^/]+)-web/"
+      ],
+      "excludeIds": ["growlens"],
+      "productionTargetTemplate": "route:/games/{id}/"
+    }
+  ]
+}
