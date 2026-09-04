@@ -138,7 +138,10 @@ jobs:
             games/high-land/index.html
             games/high-iq/index.html
             games/high-iq/app.js
+            games/high-iq/app-v3.js
+            games/high-iq/game-core.mjs
             games/high-iq/high-iq.css
+            games/high-iq/high-iq-v3.css
             games/high-iq/data/manifest.json
             games/high-life/index.html
             games/grower-conversations/index.html
@@ -214,7 +217,10 @@ jobs:
                   'games/bud-or-bluff/index.html',
                   'games/high-iq/index.html',
                   'games/high-iq/app.js',
+                  'games/high-iq/app-v3.js',
+                  'games/high-iq/game-core.mjs',
                   'games/high-iq/high-iq.css',
+                  'games/high-iq/high-iq-v3.css',
                   'games/high-iq/data/manifest.json',
                   'games/strain-showdown/index.html',
                   'games/strain-showdown/app.js',
@@ -229,6 +235,9 @@ jobs:
                   'games/phenoquest/style.css',
                   'games/phenoquest/build-meta.json',
               }
+              high_iq=json.loads(z.read('games/high-iq/data/manifest.json'))
+              for chunk in [*high_iq['questionChunks'], *high_iq['sourceChunks']]:
+                  required.add(f'games/high-iq/data/{chunk}')
               missing=required-set(names)
               assert not missing, f'missing deploy archive assets: {sorted(missing)}'
               assert not [n for n in names if n=='index.html' or n.startswith('learn/') or n.startswith('blog/')]
@@ -336,14 +345,25 @@ jobs:
             return JSON.parse(text);
           }
           const manifest = await getJson('manifest.json');
-          if (manifest.datasetVersion !== '2.2' || manifest.questionCount !== 80 || manifest.sourceCount !== 50) {
-            throw new Error(`Unexpected High IQ manifest: ${JSON.stringify(manifest)}`);
+          if (
+            typeof manifest.datasetVersion !== 'string' || !manifest.datasetVersion.trim() ||
+            !Array.isArray(manifest.recordVersions) || !manifest.recordVersions.includes(manifest.datasetVersion) ||
+            !Number.isInteger(manifest.questionCount) || manifest.questionCount <= 0 ||
+            !Number.isInteger(manifest.sourceCount) || manifest.sourceCount <= 0 ||
+            !Array.isArray(manifest.questionChunks) || manifest.questionChunks.length === 0 ||
+            !Array.isArray(manifest.sourceChunks) || manifest.sourceChunks.length === 0 ||
+            new Set(manifest.questionChunks).size !== manifest.questionChunks.length ||
+            new Set(manifest.sourceChunks).size !== manifest.sourceChunks.length
+          ) {
+            throw new Error(`Invalid High IQ manifest: ${JSON.stringify(manifest)}`);
           }
           let questions = 0;
           for (const chunk of manifest.questionChunks) questions += (await getJson(chunk)).length;
           let sources = 0;
           for (const chunk of manifest.sourceChunks) sources += (await getJson(chunk)).length;
-          if (questions !== 80 || sources !== 50) throw new Error(`High IQ live bank incomplete: ${questions} questions, ${sources} sources`);
+          if (questions !== manifest.questionCount || sources !== manifest.sourceCount) {
+            throw new Error(`High IQ live bank incomplete: ${questions}/${manifest.questionCount} questions, ${sources}/${manifest.sourceCount} sources`);
+          }
           console.log(`High IQ live bank verified: v${manifest.datasetVersion}, ${questions} questions, ${sources} sources`);
           NODE
 
@@ -370,7 +390,7 @@ jobs:
             echo '- Who Took It verification requires the current case-board edition marker and its own canonical public route.'
             echo '- PhenoQuest must package as a verified self-contained canonical build.'
             echo '- Terpocalypse must package validated browser runtime JavaScript from the integration snapshot.'
-            echo '- High IQ verification requires the upgraded challenge console plus the complete v2.2 80-question / 50-source production bank.'
+            echo '- High IQ verification requires the upgraded challenge console plus the complete canonical manifest-backed production bank.'
             echo '- Strain Showdown verification requires the packaged browser runtime, synchronized 96-card roster, and live three-lane game route.'
             echo '- Public application checks require HTTP 200 without redirects and include the current Projects release-count fingerprint.'
             echo '- WordPress-owned /, /learn/, and /blog/ remain outside this app-only transaction.'
