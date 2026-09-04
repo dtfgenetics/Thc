@@ -6,18 +6,29 @@ These instructions apply to the entire `dtfgenetics/Thc` repository.
 
 Read `AI_CONTEXT.md` for the current repository map, common commands, game ownership workflow, and AI-friendly change sequence. `AI_CONTEXT.md` is an orientation index only; this file, `CLAUDE.md`, route-owner documentation, and project-specific source-of-truth files remain authoritative when instructions conflict.
 
-## Parallel project isolation
+## DTF Parallel Studio for new concurrent work
 
-For new repository work, read `.agents/skills/parallel-project-manager/SKILL.md` and `docs/PARALLEL_PROJECT_WORKFLOW.md` before creating or switching branches.
+For new repository work, read `.agents/skills/dtf-parallel-studio/SKILL.md` first, then the subsystem skill/source-of-truth documentation.
 
-- Ordinary project work uses `project/<project-id>/<task>` in a dedicated Git worktree.
+- New concurrent work should use a unique `work/<project-id>/<task>/<session-id>` branch/session.
+- Use `npm run studio:new -- <project-id> <task>` for a new local worktree session.
+- Resume an existing studio branch only with `npm run studio:resume -- <branch-or-pr>`; never reuse a branch implicitly because the task name matches.
+- `npm run studio:status` reports affected resources without requiring the branch to chase current `main`.
+- `npm run studio:overlap` reports green/yellow/red source/resource overlap and same-production-target serialization needs; yellow is advisory and does not stop development.
+- `npm run studio:push` pushes the isolated session and creates/reuses its PR without merging current `main` into the working branch.
+- `npm run studio:integrate -- <pr>` evaluates the exact PR head against current `main` at the final integration boundary.
+- Development stays parallel by default. Only identical live production resources should serialize.
+- Existing `project/*`, `multi/*`, and legacy branches remain supported; do not rewrite or abandon in-flight work solely to adopt Studio.
+
+## Legacy parallel-project compatibility
+
+The existing `.agents/skills/parallel-project-manager/SKILL.md` and `docs/PARALLEL_PROJECT_WORKFLOW.md` remain authoritative for in-flight `project/*` and `multi/*` work.
+
 - Do not switch a shared checkout between active projects when separate worktrees can be used.
-- Use `multi/<task>` when one change intentionally spans several projects.
-- Use `project/platform/<task>` for repository-wide integration, CI, deployment, and shared platform work.
-- Existing legacy branches remain supported; do not rewrite or abandon in-flight work merely to adopt the new naming model.
+- Use `multi/<task>` when one intentional change spans several existing projects.
+- Use `project/platform/<task>` for legacy repository-wide integration, CI, deployment, and shared platform work.
 - Parallel development is not limited. Only production writes that share the same live target may be serialized automatically to prevent overwrite races.
-- Before pushing an isolated project branch, run `npm run project:check`. The CI self-test also validates that the production checkpoint planner cannot lose rapid consecutive merges.
-- `npm run project:push` pushes/opens the PR. `npm run project:live` waits for PR checks, merges, and hands the resulting `main` revision to the existing automatic production gateway.
+- Before pushing a legacy isolated project branch, run `npm run project:check`.
 
 ## Read before GitHub or repository repair
 
@@ -25,8 +36,9 @@ For any task that asks to audit, fix, repair, reconcile, merge, synchronize, pus
 
 1. `CLAUDE.md` - repository-wide safety, production-branch, and secret-handling rules.
 2. `.agents/skills/github-repo-manager/SKILL.md` - canonical repository-management, repair, CI, research-escalation, and integration workflow.
-3. The subsystem-specific skill/documentation for the code being changed.
-4. `.agents/skills/dtfseeds-production-publishing/SKILL.md` when the user also requests a live dtfseeds.com deployment.
+3. `.agents/skills/dtf-parallel-studio/SKILL.md` for new concurrent work or current Studio sessions.
+4. The subsystem-specific skill/documentation for the code being changed.
+5. `.agents/skills/dtfseeds-production-publishing/SKILL.md` when the user also requests a live dtfseeds.com deployment.
 
 A repairable failure is not a stopping point. Diagnose the exact failure, research current authoritative sources when the first repair does not work or the problem is version-sensitive, apply the next evidence-based fix, retest, and continue until the requested state passes or a genuine external blocker is established.
 
