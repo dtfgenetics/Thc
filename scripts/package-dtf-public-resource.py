@@ -56,6 +56,8 @@ manifest = {
     'artifactRoot': resource['artifactRoot'],
     'productionTarget': resource['productionTarget'],
     'checkpointTag': resource['checkpointTag'],
+    'fileCount': len(files),
+    'wordPressOwnedRoutesExcluded': ['/', '/learn/', '/blog/'],
     'files': files,
 }
 
