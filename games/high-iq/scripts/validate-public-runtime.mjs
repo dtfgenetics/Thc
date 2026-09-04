@@ -100,9 +100,12 @@ const appJs = await assertNonEmpty(resolve(runtimeDir, 'app-v3.js'));
 await assertNonEmpty(resolve(runtimeDir, 'game-core.mjs'));
 await assertNonEmpty(resolve(runtimeDir, 'high-iq.css'));
 await assertNonEmpty(resolve(runtimeDir, 'high-iq-v3.css'));
+await assertNonEmpty(resolve(runtimeDir, 'high-iq-v3-3.css'));
 
 assert(indexHtml.includes('Build your High IQ run'), 'Public High IQ HTML is missing the challenge console marker.');
 assert(indexHtml.includes('https://dtfseeds.com/games/high-iq/'), 'Public High IQ HTML is missing its canonical production URL.');
+assert(indexHtml.includes('high-iq-v3-3.css'), 'Public High IQ HTML is missing the v3.3 gameplay-first stylesheet.');
+assert(indexHtml.includes(`>${canonicalManifest.questionCount}<\/strong>`) || indexHtml.includes(`>${canonicalManifest.questionCount}</strong>`), 'Public High IQ HTML is missing the manifest-backed question count.');
 assert(appJs.includes('/games/high-iq/data'), 'Public High IQ v3 loader is missing the canonical data route.');
 assert(appJs.includes('non-JSON content'), 'Public High IQ v3 loader is missing the non-JSON response guard.');
 
@@ -114,5 +117,6 @@ console.log(JSON.stringify({
   questionChunks: canonicalManifest.questionChunks.length,
   sourceChunks: canonicalManifest.sourceChunks.length,
   categories: Object.keys(categoryCounts).length,
-  runtime: 'site/public-route-patch/games/high-iq'
+  runtime: 'site/public-route-patch/games/high-iq',
+  visualLayer: 'high-iq-v3-3.css'
 }, null, 2));
