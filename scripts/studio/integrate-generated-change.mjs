@@ -48,6 +48,20 @@ function unique(values) {
   return [...new Set(values.filter(Boolean))];
 }
 
+function dispatchProductionGateway(repoRoot) {
+  run('gh', [
+    'workflow', 'run', 'dtfseeds-production-gateway.yml',
+    '--ref', 'main',
+    '-f', 'mode=auto',
+  ], { cwd: repoRoot });
+  return {
+    requested: true,
+    workflow: 'dtfseeds-production-gateway.yml',
+    ref: 'main',
+    mode: 'auto',
+  };
+}
+
 const { args, positional } = parseArgs(process.argv.slice(2));
 const repoRoot = capture('git', ['rev-parse', '--show-toplevel'], { allowFailure: true });
 if (!repoRoot) {
@@ -65,6 +79,7 @@ const explicitPaths = String(args.paths || process.env.DTF_INTEGRATION_PATHS || 
   .map((value) => value.trim())
   .filter(Boolean);
 const paths = unique([...explicitPaths, ...positional]);
+const shouldDispatchProduction = args['dispatch-production'] !== 'false';
 if (!message) {
   console.error('Provide --message="..." or DTF_INTEGRATION_MESSAGE.');
   process.exit(2);
@@ -164,6 +179,36 @@ for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
   try {
     run('gh', ['pr', 'merge', prNumber, '--squash', '--match-head-commit', integrationHead], { cwd: repoRoot });
     const mergedSha = capture('gh', ['pr', 'view', prNumber, '--json', 'mergeCommit', '--jq', '.mergeCommit.oid'], { cwd: repoRoot, allowFailure: true });
+    let productionDispatch = { requested: false };
+    if (shouldDispatchProduction) {
+      try {
+        productionDispatch = dispatchProductionGateway(repoRoot);
+      } catch (error) {
+        console.error(JSON.stringify({
+          ok: false,
+          changed: true,
+          sourceIntegrated: true,
+          generatedCommit,
+          integratedAgainst: currentMain,
+          integrationBranch: branch,
+          integrationHead,
+          pr: Number(prNumber),
+          prUrl,
+          mergedSha: mergedSha || null,
+          stagedFiles,
+          resourceIds,
+          productionTargets,
+          productionDispatch: {
+            requested: true,
+            success: false,
+            workflow: 'dtfseeds-production-gateway.yml',
+            mode: 'auto',
+          },
+          error: `Source integrated safely, but the cumulative production gateway could not be dispatched: ${error?.message || error}`,
+        }, null, 2));
+        process.exit(1);
+      }
+    }
     console.log(JSON.stringify({
       ok: true,
       changed: true,
@@ -179,6 +224,7 @@ for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
       stagedFiles,
       resourceIds,
       productionTargets,
+      productionDispatch,
       globalLockUsed: false,
       mainWasMergedIntoGeneratingBranch: false,
     }, null, 2));
