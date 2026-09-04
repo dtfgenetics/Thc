@@ -5,10 +5,14 @@ on:
     branches: [main]
     paths:
       - staging/harvest-asset-upload/READY.json
+      - .github/workflows/harvest-asset-intake.yml
   workflow_dispatch:
 
 permissions:
+  actions: write
   contents: write
+  issues: write
+  pull-requests: write
 
 concurrency:
   group: harvest-education-asset-intake
@@ -24,14 +28,24 @@ jobs:
           ref: main
           fetch-depth: 0
 
-      - name: Assemble verified JPEG assets
+      - name: Detect ready intake
+        id: ready
         shell: bash
         run: |
           set -euo pipefail
-          if [[ ! -f staging/harvest-asset-upload/READY.json ]]; then
+          if [[ -f staging/harvest-asset-upload/READY.json ]]; then
+            echo 'present=true' >> "$GITHUB_OUTPUT"
+            echo 'Harvest intake READY marker found.'
+          else
+            echo 'present=false' >> "$GITHUB_OUTPUT"
             echo 'READY marker absent; nothing to assemble.'
-            exit 0
           fi
+
+      - name: Assemble verified JPEG assets
+        if: steps.ready.outputs.present == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
           python3 - <<'PY'
           import base64, hashlib, json
           from pathlib import Path
@@ -58,17 +72,27 @@ jobs:
               print(f"assembled {item['id']} -> {out} ({len(data)} bytes)")
           PY
 
-      - name: Commit canonical and quarantined source assets
+      - name: Safely integrate canonical assets and retire consumed staging
+        if: steps.ready.outputs.present == 'true'
         shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add site/wordpress/assets/infographics
-          git rm -r staging/harvest-asset-upload
-          if git diff --cached --quiet; then
-            echo 'No changes to commit.'
+          rm -rf staging/harvest-asset-upload
+
+          mapfile -t changed < <(git status --porcelain --untracked-files=all -- \
+            site/wordpress/assets/infographics \
+            staging/harvest-asset-upload | sed -E 's/^.. //' | sed -E 's/^"(.*)"$/\1/' | sort -u)
+
+          if [[ "${#changed[@]}" -eq 0 ]]; then
+            echo 'No Harvest intake changes to integrate.'
             exit 0
           fi
-          git commit -m 'Add remaining Harvest education image assets'
-          git push origin HEAD:main
+
+          printf 'Harvest intake generated paths:\n'
+          printf ' - %s\n' "${changed[@]}"
+          paths="$(IFS=,; echo "${changed[*]}")"
+          node scripts/studio/integrate-generated-change.mjs \
+            --message='Add verified Harvest education image assets' \
+            --paths="$paths"
