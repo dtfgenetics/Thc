@@ -24,7 +24,7 @@ jobs:
   reconcile:
     name: Retire integrated managed branches
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
@@ -48,37 +48,110 @@ jobs:
           node scripts/studio.mjs lifecycle --cleanup-merged --summary > "$RUNNER_TEMP/branch-lifecycle.json"
           cat "$RUNNER_TEMP/branch-lifecycle.json"
 
+      - name: Build recovery inventory after cleanup
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/studio.mjs lifecycle --recovery-only > "$RUNNER_TEMP/branch-recovery.json"
+          node - "$RUNNER_TEMP/branch-recovery.json" "$RUNNER_TEMP/branch-recovery.csv" "$RUNNER_TEMP/branch-recovery.md" <<'NODE'
+          const fs = require('fs');
+          const [sourcePath, csvPath, markdownPath] = process.argv.slice(2);
+          const report = JSON.parse(fs.readFileSync(sourcePath, 'utf8'));
+          const candidates = report.recoveryCandidates || [];
+          const csvEscape = (value) => `"${String(value ?? '').replaceAll('"', '""')}"`;
+          const csv = [
+            ['branch','state','head_sha','updated_at','managed','project','task','session','related_prs','closed_prs','reason'],
+            ...candidates.map((item) => [
+              item.branch,
+              item.state,
+              item.headSha,
+              item.updatedAt,
+              item.managed,
+              item.studioSession?.projectId || '',
+              item.studioSession?.task || '',
+              item.studioSession?.sessionId || '',
+              (item.relatedPrNumbers || []).join(';'),
+              (item.closedPrNumbers || []).join(';'),
+              item.reason,
+            ]),
+          ].map((row) => row.map(csvEscape).join(',')).join('\n');
+          fs.writeFileSync(csvPath, `${csv}\n`);
+
+          const markdown = [
+            '# Branch recovery inventory',
+            '',
+            `Observed main: \`${report.observedMain}\``,
+            '',
+            `Recovery candidates: **${report.recoveryCount || 0}**`,
+            `Closed-unmerged: **${report.counts?.['closed-unmerged'] || 0}**`,
+            `Orphan-unique: **${report.counts?.['orphan-unique'] || 0}**`,
+            '',
+            'These branches are preserved because they may contain unique work. This inventory is for review/recovery, not bulk deletion.',
+            '',
+            '| State | Updated | Branch | PRs |',
+            '| --- | --- | --- | --- |',
+            ...candidates.map((item) => `| ${item.state} | ${item.updatedAt || ''} | \`${String(item.branch).replaceAll('|','\\|')}\` | ${(item.relatedPrNumbers || []).map((number) => `#${number}`).join(', ')} |`),
+            '',
+          ].join('\n');
+          fs.writeFileSync(markdownPath, markdown);
+          NODE
+          cat "$RUNNER_TEMP/branch-recovery.md"
+
+      - name: Upload branch recovery inventory
+        uses: actions/upload-artifact@v4
+        with:
+          name: branch-recovery-inventory-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/branch-lifecycle.json
+            ${{ runner.temp }}/branch-recovery.json
+            ${{ runner.temp }}/branch-recovery.csv
+            ${{ runner.temp }}/branch-recovery.md
+          if-no-files-found: error
+          retention-days: 90
+
       - name: Publish maintenance summary
         if: always()
         shell: bash
         run: |
           set -euo pipefail
           report="$RUNNER_TEMP/branch-lifecycle.json"
+          recovery="$RUNNER_TEMP/branch-recovery.json"
           if [[ ! -s "$report" ]]; then
             echo '## Branch lifecycle maintenance' >> "$GITHUB_STEP_SUMMARY"
             echo '' >> "$GITHUB_STEP_SUMMARY"
             echo 'Lifecycle report was not produced.' >> "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
-          node - <<'NODE' "$report" "$GITHUB_STEP_SUMMARY"
+          node - "$report" "$recovery" "$GITHUB_STEP_SUMMARY" <<'NODE'
           const fs = require('fs');
           const report = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
+          const recovery = fs.existsSync(process.argv[3]) ? JSON.parse(fs.readFileSync(process.argv[3], 'utf8')) : null;
           const summary = [
             '## Branch lifecycle maintenance',
             '',
             `Observed main: \`${report.observedMain}\``,
-            `Remote branches classified: **${report.branchCount}**`,
+            `Remote branches classified before cleanup: **${report.branchCount}**`,
             `Integrated cleanup candidates before run: **${report.safeCleanupCount}**`,
             `Managed branches deleted: **${report.deletedCount}**`,
             `Delete failures: **${report.deleteFailures?.length || 0}**`,
+            `Preserved recovery candidates after cleanup: **${recovery?.recoveryCount ?? 'report unavailable'}**`,
             `Duplicate active task claims: **${report.duplicateClaimCount || 0}**`,
             `Duplicate branch-tip groups: **${report.duplicateHeadGroupCount || 0}**`,
             '',
-            'Lifecycle counts:',
+            'Lifecycle counts before cleanup:',
             '```json',
             JSON.stringify(report.counts || {}, null, 2),
             '```',
           ];
+          if (recovery) {
+            summary.push(
+              '',
+              'Recovery inventory after cleanup:',
+              `- closed-unmerged: **${recovery.counts?.['closed-unmerged'] || 0}**`,
+              `- orphan-unique: **${recovery.counts?.['orphan-unique'] || 0}**`,
+              '- Full JSON/CSV/Markdown inventory is attached as the 90-day workflow artifact.',
+            );
+          }
           if (report.deleted?.length) {
             summary.push('', 'Deleted integrated managed branches:', ...report.deleted.slice(0, 100).map((branch) => `- \`${branch}\``));
             if (report.deleted.length > 100) summary.push(`- …and ${report.deleted.length - 100} more`);
@@ -89,5 +162,5 @@ jobs:
           if (report.duplicateHeadGroups?.length) {
             summary.push('', 'Largest duplicate branch-tip groups (report-only):', ...report.duplicateHeadGroups.slice(0, 20).map((item) => `- \`${item.headSha.slice(0, 12)}\`: ${item.branches.length} branches`));
           }
-          fs.appendFileSync(process.argv[3], `${summary.join('\n')}\n`);
+          fs.appendFileSync(process.argv[4], `${summary.join('\n')}\n`);
           NODE
