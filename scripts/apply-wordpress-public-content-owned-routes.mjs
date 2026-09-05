@@ -12,10 +12,12 @@ const username = process.env.WP_API_USERNAME || '';
 const password = process.env.WP_API_PASSWORD || '';
 const sourceDir = process.env.CONTENT_DIR || '';
 const visualCssPath = process.env.DTF_VISUAL_CSS || join(process.cwd(), 'site/design-system/dtf-visual-v1.css');
+const backupRoot = process.env.BACKUP_ROOT || tmpdir();
 const preservationReport = process.env.OWNED_ROUTE_PRESERVATION_REPORT || join(
-  process.env.BACKUP_ROOT || tmpdir(),
+  backupRoot,
   'owned-route-preservation.json'
 );
+const delegatedSlugs = ['home', 'learn'];
 
 if (!username || !password) throw new Error('WP_API_USERNAME and WP_API_PASSWORD are required');
 if (!sourceDir) throw new Error('CONTENT_DIR is required');
@@ -24,7 +26,7 @@ const auth = `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}
 const headers = {
   Authorization: auth,
   Accept: 'application/json',
-  'User-Agent': 'DTFSeeds-Ownership-Preserving-Reconcile/1.1'
+  'User-Agent': 'DTFSeeds-Ownership-Preserving-Reconcile/1.2'
 };
 
 const transientStatuses = new Set([408, 425, 429, 500, 502, 503, 504, 520, 522, 523, 524]);
@@ -137,16 +139,20 @@ const ownedDir = await mkdtemp(join(tmpdir(), 'dtf-wordpress-owned-routes-'));
 await cp(sourceDir, ownedDir, { recursive: true });
 
 const preservation = {
-  schemaVersion: 1,
+  schemaVersion: 2,
   generatedAt: new Date().toISOString(),
   siteUrl,
-  routes: {}
+  delegatedSlugs,
+  routes: {},
+  canonicalReconciliation: null
 };
 
 // Learning Experience V3 is the automatic owner of both Home and Learn.
-// Preserve the exact currently stored content while the broad WordPress lane
-// reconciles community, shop, gallery, about, contact, blog and front-page state.
-for (const slug of ['home', 'learn']) {
+// Snapshot owner identity/content for evidence, then configure the broad REST
+// reconciler to treat these slugs as structurally read-only. The snapshot is
+// not replayed into WordPress and may legitimately become stale if the owner
+// advances while the rest of the editorial lane is running.
+for (const slug of delegatedSlugs) {
   const page = await getPage(slug);
   const content = normalizedContent(rawContent(page));
   if (!content) throw new Error(`Refusing to preserve empty /${slug}/ content`);
@@ -154,11 +160,12 @@ for (const slug of ['home', 'learn']) {
     id: Number(page.id),
     slug,
     status: page.status || 'unknown',
-    contentLength: Buffer.byteLength(content, 'utf8'),
-    contentSha256: sha256(content)
+    snapshotContentLength: Buffer.byteLength(content, 'utf8'),
+    snapshotContentSha256: sha256(content),
+    canonicalLaneMutation: null
   };
   await writeFile(join(ownedDir, `${slug}.html`), `${content}\n`, 'utf8');
-  console.log(`Preserved Learning-owned /${slug}/ content from WordPress page ${page.id} (${preservation.routes[slug].contentSha256}).`);
+  console.log(`Snapshotted Learning-owned /${slug}/ content from WordPress page ${page.id} (${preservation.routes[slug].snapshotContentSha256}).`);
 }
 
 // Canonical editorial roots consume the accepted DTF visual system from one
@@ -177,7 +184,47 @@ for (const slug of ['community', 'gallery', 'about', 'contact']) {
 
 await mkdir(dirname(preservationReport), { recursive: true });
 await writeFile(preservationReport, `${JSON.stringify(preservation, null, 2)}\n`, 'utf8');
-console.log(`Ownership-preservation evidence: ${preservationReport}`);
+console.log(`Ownership-preservation snapshot: ${preservationReport}`);
 
 process.env.CONTENT_DIR = ownedDir;
+process.env.DTF_PRESERVE_PAGE_SLUGS = delegatedSlugs.join(',');
 await import('./apply-wordpress-public-content-rest.mjs');
+
+// The generic reconciler emits transaction evidence for every root page. Do
+// not infer safety from a later global hash: prove that this transaction itself
+// marked delegated routes as preserved and performed no create/update on them.
+const backupPointer = join(backupRoot, 'wordpress-rest-backup-path.txt');
+const transactionBackupDir = (await readFile(backupPointer, 'utf8')).trim();
+if (!transactionBackupDir) throw new Error('Canonical WordPress reconciliation did not expose its transaction backup directory');
+const results = JSON.parse(await readFile(join(transactionBackupDir, 'deployment-results.json'), 'utf8'));
+if (!Array.isArray(results)) throw new Error('Canonical WordPress deployment-results.json is invalid');
+
+const delegatedResults = {};
+for (const slug of delegatedSlugs) {
+  const expected = preservation.routes[slug];
+  const result = results.find((entry) => entry?.slug === slug);
+  if (!result) throw new Error(`Canonical WordPress transaction omitted delegated /${slug}/ evidence`);
+  if (Number(result.pageId) !== expected.id) {
+    throw new Error(`Canonical WordPress transaction observed /${slug}/ owner page ${result.pageId}; expected page ${expected.id}`);
+  }
+  if (result.preserved !== true || result.changed !== false || result.created !== false) {
+    throw new Error(`Canonical WordPress lane attempted to mutate delegated /${slug}/ owner`);
+  }
+  expected.canonicalLaneMutation = false;
+  delegatedResults[slug] = {
+    pageId: Number(result.pageId),
+    status: result.status,
+    modifiedGmt: result.modifiedGmt || null,
+    preserved: true,
+    changed: false,
+    created: false
+  };
+}
+
+preservation.canonicalReconciliation = {
+  verifiedAt: new Date().toISOString(),
+  backupDir: transactionBackupDir,
+  delegatedResults
+};
+await writeFile(preservationReport, `${JSON.stringify(preservation, null, 2)}\n`, 'utf8');
+console.log(`Verified canonical lane performed no Home/Learn page mutation; evidence updated at ${preservationReport}.`);
