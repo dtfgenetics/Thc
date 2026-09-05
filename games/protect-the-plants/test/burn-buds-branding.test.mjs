@@ -18,7 +18,7 @@ const game = JSON.parse(fs.readFileSync('games/protect-the-plants/game.json', 'u
 assert.equal(game.title, 'Burn Buds');
 assert.equal(game.board, '15x15');
 assert.equal(game.players, 2);
-assert.equal(game.status, 'playable-beta');
+assert.equal(game.status, 'production-ready');
 assert.equal(game.route, '/games/protect-the-plants/');
 assert.equal(manifest.name, 'Burn Buds');
 assert.equal(manifest.short_name, 'Burn Buds');
