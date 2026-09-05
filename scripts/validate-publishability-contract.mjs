@@ -145,6 +145,7 @@ const retiredButStillAllowlisted = [...legacyDirectMainWriters].filter((path) =>
 
 const integrationSource = readFileSync('scripts/studio/integrate.mjs', 'utf8')
 const generatedIntegrationSource = readFileSync('scripts/studio/integrate-generated-change.mjs', 'utf8')
+const releasePlannerSource = readFileSync('scripts/plan-dtfseeds-release.mjs', 'utf8')
 const gatewaySource = readFileSync('.github/workflows/dtfseeds-production-gateway.yml', 'utf8')
 const educationSource = readFileSync('.github/workflows/deploy-thc-learning-center-expansion-v1.yml', 'utf8')
 
@@ -163,6 +164,30 @@ if (!educationSource.includes('GITHUB_STEP_SUMMARY') || !educationSource.include
 }
 if (!(releaseConfig.lanes?.education?.prefixes || []).includes('site/wordpress/education/')) {
   contractErrors.push('canonical site/wordpress/education source is not routed through the Education release lane')
+}
+const harvestOutdoorPrefixes = releaseConfig.lanes?.harvestOutdoor?.prefixes || []
+for (const requiredPath of [
+  'site/wordpress/education/harvest-postharvest-v6.json',
+  'site/wordpress/education/outdoor-v6.json',
+  'site/wordpress/education/topic-literature.json',
+  'scripts/enhance-wordpress-outdoor-quantification-v1.mjs',
+  '.github/workflows/wordpress-harvest-outdoor-v6-production.yml',
+]) {
+  if (!harvestOutdoorPrefixes.includes(requiredPath)) {
+    contractErrors.push(`Harvest / Outdoor canonical source is not routed through its release lane: ${requiredPath}`)
+  }
+}
+if (!(releaseConfig.fullReleasePaths || []).includes('.github/workflows/wordpress-harvest-outdoor-v6-production.yml')) {
+  contractErrors.push('Harvest / Outdoor canonical publisher is not a full-release control-plane path')
+}
+if (!releasePlannerSource.includes('harvest_outdoor=${lanes.harvestOutdoor}')) {
+  contractErrors.push('release planner does not expose the Harvest / Outdoor lane to the gateway')
+}
+if (!gatewaySource.includes('needs.plan.outputs.harvest_outdoor') || !gatewaySource.includes('wordpress-harvest-outdoor-v6-production.yml')) {
+  contractErrors.push('production gateway does not publish and enforce the Harvest / Outdoor canonical lane')
+}
+if (!gatewaySource.includes('data-dtf-harvest-postharvest-v6="true"') || !gatewaySource.includes('data-dtf-outdoor-v6="true"')) {
+  contractErrors.push('production gateway does not independently verify Harvest / Outdoor visitor markers')
 }
 for (const lane of ['publicSuite', 'wordpress']) {
   const prefixes = releaseConfig.lanes?.[lane]?.prefixes || []
