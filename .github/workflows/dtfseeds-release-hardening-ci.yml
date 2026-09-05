@@ -32,6 +32,7 @@ jobs:
           node --check scripts/plan-dtfseeds-release.mjs
           node --check scripts/plan-dtfseeds-resource-release.mjs
           node --check scripts/publish-wordpress-learning-center-expansion-v1.mjs
+          node --check scripts/update-wordpress-learn-expansion-v1.mjs
           node --check scripts/cleanup-stale-wordpress-suite-snippets.mjs
           node scripts/test-dtf-resource-release-system.mjs
           bash -n scripts/run-workflow-and-wait.sh
@@ -51,6 +52,14 @@ jobs:
           ! grep -Fq 'github.rest.issues.createComment' .github/workflows/wordpress-canonical-deploy.yml
           ! grep -Fq 'issue_number:46' .github/workflows/wordpress-canonical-deploy.yml
           grep -Fq 'Summarize trusted production handoff' .github/workflows/wordpress-canonical-deploy.yml
+          ! grep -Fq 'issues: write' .github/workflows/deploy-thc-learning-center-expansion-v1.yml
+          ! grep -Fq 'github.rest.issues.createComment' .github/workflows/deploy-thc-learning-center-expansion-v1.yml
+          ! grep -Fq 'issue_number: 220' .github/workflows/deploy-thc-learning-center-expansion-v1.yml
+          ! grep -Fq 'issue_comment:' .github/workflows/deploy-thc-learning-center-expansion-v1.yml
+          grep -Fq 'Verify expansion routes on canonical Learn hub' .github/workflows/deploy-thc-learning-center-expansion-v1.yml
+          grep -Fq "'Learn the plant as a connected system.'" scripts/update-wordpress-learn-expansion-v1.mjs
+          grep -Fq "'Evidence & Sources'" scripts/update-wordpress-learn-expansion-v1.mjs
+          grep -Fq 'missingRoutes=' scripts/update-wordpress-learn-expansion-v1.mjs
           grep -Fq 'cancel-in-progress: false' .github/workflows/wordpress-canonical-production.yml
           grep -Fq 'dtf-wordpress-temporary-code-snippets-bridge' .github/workflows/deploy-public-suite-wordpress-v2.yml
           grep -Fq 'dtf-wordpress-temporary-code-snippets-bridge' .github/workflows/deploy-games-suite-lock-recovery.yml
