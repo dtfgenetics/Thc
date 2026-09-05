@@ -21,7 +21,12 @@ on:
       - scripts/purge-wordpress-litespeed-cache.mjs
       - scripts/verify-wordpress-genetics-library-production.mjs
       - scripts/run-learning-v3-connected-production.sh
+      - scripts/run-learning-v3-production.mjs
       - scripts/improve-wordpress-learning-v4.mjs
+      - scripts/prepare-learning-v3-owner-aware-publisher.mjs
+      - scripts/prepare-learning-owner-aware-followup-publishers.mjs
+      - scripts/publish-learning-expanded-references-owner-aware.mjs
+      - scripts/verify-learning-owner-storage.mjs
   push:
     branches: [main]
     paths:
@@ -42,7 +47,12 @@ on:
       - scripts/purge-wordpress-litespeed-cache.mjs
       - scripts/verify-wordpress-genetics-library-production.mjs
       - scripts/run-learning-v3-connected-production.sh
+      - scripts/run-learning-v3-production.mjs
       - scripts/improve-wordpress-learning-v4.mjs
+      - scripts/prepare-learning-v3-owner-aware-publisher.mjs
+      - scripts/prepare-learning-owner-aware-followup-publishers.mjs
+      - scripts/publish-learning-expanded-references-owner-aware.mjs
+      - scripts/verify-learning-owner-storage.mjs
 
 permissions:
   contents: read
@@ -76,6 +86,10 @@ jobs:
           cache_purge='scripts/purge-wordpress-litespeed-cache.mjs'
           learning_wrapper='scripts/run-learning-v3-connected-production.sh'
           learning_map='scripts/improve-wordpress-learning-v4.mjs'
+          learning_v3_prepare='scripts/prepare-learning-v3-owner-aware-publisher.mjs'
+          learning_followup_prepare='scripts/prepare-learning-owner-aware-followup-publishers.mjs'
+          learning_expanded='scripts/publish-learning-expanded-references-owner-aware.mjs'
+          learning_storage='scripts/verify-learning-owner-storage.mjs'
 
           grep -Fq -- '- Stage DTFSeeds WordPress Canonical Deployment' "$canonical"
 
@@ -156,10 +170,27 @@ jobs:
           grep -Fq 'node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/rebuild-wordpress-shared-shell-v3.mjs' "$learning"
           grep -Fq 'bash scripts/run-learning-v3-connected-production.sh' "$learning"
 
+          # Learning root ownership is proved through authenticated WordPress
+          # storage at every stage. Topic/child routes remain anonymous-public.
           bash -n "$learning_wrapper"
-          grep -Fq 'node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/run-learning-v3-production.mjs' "$learning_wrapper"
+          node --check "$learning_v3_prepare"
+          node --check "$learning_followup_prepare"
+          node --check "$learning_expanded"
+          node --check "$learning_storage"
+          grep -Fq 'prepare-learning-v3-owner-aware-publisher.mjs' "$learning_wrapper"
+          grep -Fq 'prepare-learning-owner-aware-followup-publishers.mjs' "$learning_wrapper"
+          grep -Fq 'LEARNING_V3_PUBLISHER_PATH="$owner_v3"' "$learning_wrapper"
           grep -Fq 'APPLY_LEARNING_V4=true' "$learning_wrapper"
-          grep -Fq 'node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/improve-wordpress-learning-v4.mjs' "$learning_wrapper"
+          grep -Fq '"$owner_v4"' "$learning_wrapper"
+          grep -Fq 'publish-learning-expanded-references-owner-aware.mjs' "$learning_wrapper"
+          grep -Fq '"$owner_visual"' "$learning_wrapper"
+          for stage in v3 v4 expanded visual; do
+            grep -Fq "LEARNING_OWNER_STAGE=$stage" "$learning_wrapper"
+          done
+          grep -Fq "rootVerification: 'wordpress-rest'" "$learning_v3_prepare"
+          grep -Fq "topicVerification: 'anonymous-public'" "$learning_v3_prepare"
+          grep -Fq "verification: 'wordpress-rest-storage'" "$learning_storage"
+          grep -Fq "storageVerification: 'success'" "$learning_expanded"
           node --check "$learning_map"
           grep -Fq 'data-dtf-layout="learn-v3"' "$learning_map"
           grep -Fq 'data-dtf-learning-map="v4"' "$learning_map"
@@ -195,4 +226,4 @@ jobs:
           grep -Fq 'actions/upload-artifact@v4' "$verify_infographics"
           grep -Fq 'issue_number: 220' "$verify_infographics"
 
-          echo 'Verified production order: staging -> canonical -> infographics -> Learning V3 plus connected map -> reusable final Home owner; Genetics remains the dedicated /seeds/ owner with IPv4 REST-first/cache-convergence acceptance; direct Genetics recovery and Gallery verification are manual-only; Topic Literature remains independently serialized, legacy writers are manual-only, and live infographic verification is non-mutating.'
+          echo 'Verified production order: staging -> canonical -> infographics -> Learning owner-aware V3/V4/expanded/visual storage transaction with anonymous topic checks -> reusable final Home owner; Genetics remains the dedicated /seeds/ owner with IPv4 REST-first/cache-convergence acceptance; direct Genetics recovery and Gallery verification are manual-only; Topic Literature remains independently serialized, legacy writers are manual-only, and live infographic verification is non-mutating.'
