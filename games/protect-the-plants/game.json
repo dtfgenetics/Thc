@@ -8,7 +8,7 @@
   "board": "15x15",
   "players": 2,
   "runtime": "static-php-wordpress-transients",
-  "status": "playable-beta",
+  "status": "production-ready",
   "formations": [
     {"id":"mother-row","size":5},
     {"id":"trellis-row","size":4},
@@ -30,7 +30,8 @@
     "placement-undo-clear",
     "keyboard-board-navigation",
     "coordinate-readout",
-    "optional-shot-confirmation",
+    "native-coarse-pointer-two-tap-targeting",
+    "desktop-one-click-targeting",
     "generated-web-audio",
     "optional-haptics",
     "web-share-fallback",
@@ -53,6 +54,7 @@
     "storage": "wordpress-transients",
     "externalNodeHostRequired": false,
     "paidRuntimeDependencies": false,
-    "legacyRouteRetained": true
+    "legacyRouteRetained": true,
+    "publicHubIdentity": "Burn Buds"
   }
 }

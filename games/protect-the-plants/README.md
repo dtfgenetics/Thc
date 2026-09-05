@@ -1,67 +1,51 @@
 # Burn Buds
 
-Burn Buds is DTF Genetics' 15×15 two-player hidden-fleet strategy game. It is the production evolution of the earlier **Protect the Plants** build and deliberately keeps the proven multiplayer API and legacy route so existing rooms, bookmarks, deployment automation, and recovery links are not broken during the rename.
+Burn Buds is DTF Genetics' production-ready 15×15 two-player hidden-fleet strategy game. The earlier Protect the Plants name is retained only as a legacy compatibility identifier for the existing route, active rooms, recovery links, persistence, and deployment wiring.
 
-## Production target
+## Production identity
 
-- Current canonical compatibility route: `https://dtfseeds.com/games/protect-the-plants/`
 - Public product name: **Burn Buds**
+- Compatibility route: `https://dtfseeds.com/games/protect-the-plants/`
 - Front end: static HTML/CSS/vanilla JavaScript
 - Multiplayer API: same-origin PHP (`api.php`)
-- Production persistence: WordPress transients loaded through the site's `wp-load.php`
-- Local/test persistence: temporary JSON fallback when WordPress is unavailable
-- External paid services required: none
+- Production persistence: WordPress transients
+- External paid runtime dependencies: none
+- Release status: **production-ready**
 
-A dedicated `/games/burn-buds/` route can be introduced after the compatibility redirect/deployment rules are updated and verified. The working game is not being duplicated into a second backend.
+Do not create a second multiplayer backend for a vanity route. Any future `/games/burn-buds/` URL should redirect or alias to the same canonical runtime so rooms and recovery remain compatible.
 
-## Gameplay
+## Core gameplay
 
-Players hide five cannabis-leaf formations, then alternate firing on opponent plots. The server validates placement, turns, duplicate shots, hit/miss results, formation losses, victory, rematch consent, and round resets. Opponent formation locations remain hidden until a full formation is burned or the round ends.
+Players hide five cannabis-leaf formations on a 15×15 stash grid, then alternate firing on the opponent grid. The server validates placement, turns, duplicate shots, hit/miss results, burned formations, victory, reconnect state, rematch consent, and round resets. Opponent locations stay hidden until each formation is fully burned or the round ends.
 
-## Burn Buds production improvements
+Formations: Mother Row (5), Trellis Row (4), Tall Pheno (3), Bushy Pheno (3), and Solo Pots (2).
 
-- cannabis-leaf fleet markers replace the old potted-plant pieces
-- user-facing game identity changed to Burn Buds without changing multiplayer IDs
-- animated burn treatment when a full formation is lost
-- Burn Buds invite/result sharing layer
-- cache version bumped so returning players receive the new game assets
-- existing room codes and active-game recovery remain compatible
+## Production UX
 
-## Multiplayer/UX retained
-
-- generated Web Audio effects for placement, hits, misses, lost formations, turns, wins, and losses
-- optional device haptics using the native Vibration API
-- placement footprint previews with valid/invalid feedback
-- Undo and Clear placement controls
-- keyboard placement shortcuts and arrow-key board navigation
-- live coordinate readout while aiming or placing
-- optional two-tap firing confirmation for mobile mis-tap protection
-- Web Share support with clipboard fallback
-- fullscreen play where the browser supports it
-- live/reconnecting/offline connection indicator
-- persisted server-side battle event history so the log survives refresh/reconnect
-- finished-match recovery from the lobby
-- two-player rematch consent and automatic round reset
-- alternating first player between rematch rounds
-- room codes and copyable invite links
-- View Active Game recovery
-- per-room text chat
-- strong turn indicator
-- mobile board tabs
+- Burn Buds branding throughout the public UI
+- cannabis-leaf fleet markers and formation-specific burn feedback
+- placement preview, invalid feedback, random placement, rotate, Undo, and Clear
+- desktop one-click targeting
+- coarse-pointer/mobile tap-once-to-aim and tap-again-to-fire targeting
+- keyboard board navigation and coordinate readouts
+- strong hit/miss/latest-shot presentation
+- turn-state banner and opponent presence
+- generated Web Audio feedback and optional haptics
+- room chat and quick-chat controls
+- invite sharing with fallback
+- network/reconnect status
+- active-game and finished-game recovery
+- persisted battle event history
+- two-player rematch consent with alternating round starter
 - post-game hit/shot statistics
-- reduced-motion support
+- mobile board tabs and reduced-motion support
 
-## Verification
+## Architecture
 
-Run:
+The PHP server is authoritative for multiplayer state. Gameplay helpers use the shared Burn Buds render-sync runtime instead of maintaining duplicate DOM observers. The retired `confirmShots` preference, armed-shot interceptor, and temporary targeting-policy shim have been removed. `targeting-v1.js` is the sole authoritative coarse-pointer two-tap firing path, and the current service-worker shell identifies the native-targeting release.
 
-```bash
-node --check site/public-route-patch/games/protect-the-plants/app.js
-node --check site/public-route-patch/games/protect-the-plants/enhancements.js
-node --check site/public-route-patch/games/protect-the-plants/v2-extras.js
-node --check site/public-route-patch/games/protect-the-plants/burn-buds-branding.js
-node --check site/public-route-patch/games/protect-the-plants/sw.js
-php -l site/public-route-patch/games/protect-the-plants/api.php
-```
+## Production verification
 
-The underlying V2 PHP API has already been smoke-tested through create → join → both placements → alternating turns → persisted match events → finished-game active recovery → two-party rematch → clean round-two reset. The Burn Buds work intentionally changes presentation, fleet visuals, and burn feedback without changing that server contract.
+The compatibility-named workflow `.github/workflows/verify-protect-the-plants-production.yml` is the **Verify Burn Buds Production** workflow. It runs after the DTFSeeds Public Suite WordPress deployment succeeds and verifies the deployed game rather than racing the deployment.
+
+It checks the live Burn Buds shell and manifest, current production assets, create/join/authenticated state, placement, room chat, full victory, finished-game recovery, two-party rematch, round-two reset, desktop one-click firing, mobile two-tap aim/fire, keyboard navigation, mobile overflow, and browser console/page errors.
