@@ -162,6 +162,20 @@ if (!gatewaySource.includes('auto')) {
 if (!educationSource.includes('GITHUB_STEP_SUMMARY') || !educationSource.includes('continue-on-error: true')) {
   contractErrors.push('Education release reporting can still veto a verified production result')
 }
+const educationOwnerRefresh = educationSource.indexOf('Refresh canonical Learning V3 owner transaction')
+const educationConvergence = educationSource.indexOf('Confirm expansion routes on canonical Learn hub')
+if (!educationSource.includes('group: dtfseeds-learning-experience-v3')) {
+  contractErrors.push('Education expansion is not serialized with the sole canonical /learn/ owner')
+}
+if (educationOwnerRefresh < 0 || !educationSource.includes('bash scripts/run-learning-v3-connected-production.sh')) {
+  contractErrors.push('Education expansion does not refresh the canonical Learning V3 owner before checking /learn/ convergence')
+}
+if (educationConvergence < 0 || educationOwnerRefresh > educationConvergence) {
+  contractErrors.push('Education expansion checks Learn convergence before the canonical owner transaction completes')
+}
+if (!educationSource.includes('data-dtf-learning-expanded-reference="v1"') || !educationSource.includes('data-dtf-learning-map="v4"')) {
+  contractErrors.push('Education visitor verification does not require the canonical Learn V4 + expanded-reference markers')
+}
 if (!(releaseConfig.lanes?.education?.prefixes || []).includes('site/wordpress/education/')) {
   contractErrors.push('canonical site/wordpress/education source is not routed through the Education release lane')
 }
