@@ -9,8 +9,8 @@
   <meta name="theme-color" content="#041018">
   <link rel="canonical" href="https://dtfseeds.com/atlas/">
   <link rel="stylesheet" href="/atlas/atlas-v3.css">
-  <link rel="stylesheet" href="/atlas/atlas-inspection-fixes.css">
   <link rel="stylesheet" href="/atlas/atlas-v4.css">
+  <link rel="stylesheet" href="/atlas/atlas-inspection-fixes.css">
   <script type="importmap">
   {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"}}
   </script>
@@ -26,25 +26,37 @@
   <div class="atlas-shell">
     <section class="hero">
       <div><p class="eyebrow">Explore · Rotate · Zoom · Inspect · Learn</p><h1>The Living Plant Atlas</h1><p class="hero-copy">Study cannabis as a connected living system. Rotate and zoom a high-detail 3D botanical specimen, inspect anatomical regions directly, and connect each visible structure to the deeper plant-science module behind it.</p></div>
-      <aside class="hero-card" aria-label="Atlas release summary"><strong>Interactive botanical specimen</strong><p>The V4 viewer connects physical anatomy to 16 searchable science systems and focused deep labs while preserving a no-WebGL educational fallback.</p><div class="stats"><div class="stat"><b>3D</b><span>rotatable specimen</span></div><div class="stat"><b>16</b><span>science systems</span></div><div class="stat"><b>14</b><span>inspectable regions</span></div></div></aside>
+      <aside class="hero-card" aria-label="Atlas summary"><strong>Interactive botanical specimen</strong><p>The specimen connects physical anatomy to 16 searchable science systems and focused deep labs, with the same lessons available when 3D rendering is unavailable.</p><div class="stats"><div class="stat"><b>3D</b><span>rotatable specimen</span></div><div class="stat"><b>16</b><span>science systems</span></div><div class="stat"><b>14</b><span>inspectable regions</span></div></div></aside>
     </section>
 
     <section class="plant-lab" id="interactive-plant">
       <div class="plant-lab-copy">
-        <p class="eyebrow">3D anatomy explorer · V4</p>
+        <p class="eyebrow">3D anatomy explorer</p>
         <h2>Learn from the plant itself</h2>
         <p>Drag to rotate. Scroll or pinch to zoom. Hover a structure to identify it, then click or tap to focus the camera and read what that structure does. Use the module link in the inspector when you want the full lesson.</p>
+        <div class="specimen-map-head"><span>Specimen map</span><strong>Focus anatomy</strong></div>
         <div class="anatomy-key" aria-label="Focus plant structure"><button type="button" data-plant-focus="root-system">Roots</button><button type="button" data-plant-focus="stem-vascular">Stem</button><button type="button" data-plant-focus="nodes-branching">Nodes</button><button type="button" data-plant-focus="leaf-module">Leaves</button><button type="button" data-plant-focus="flower-anatomy">Flowers</button><button type="button" data-plant-focus="trichomes-resin">Trichomes</button><button type="button" data-plant-focus="reproductive-biology">Reproductive sites</button></div>
         <div class="plant-inspector" data-plant-inspector aria-live="polite"><small data-inspector-kicker>Interactive anatomy</small><h3 data-inspector-title>Select a structure</h3><p data-inspector-copy>Inspect the 3D plant directly or use the focus controls above. The viewer keeps you in the specimen until you choose to open the detailed module.</p><a data-inspector-link href="#systems">Explore all plant systems →</a></div>
-        <p class="model-mode-note"><strong>Model strategy:</strong> V4 ships with a complete high-detail PBR specimen and can automatically use an approved photoreal GLB later without changing the anatomy or educational system.</p>
+        <p class="model-mode-note"><strong>Built for close study:</strong> roots, vascular tissues, nodes, leaves, flowers, stigmas, and trichomes stay connected to the scientific lessons that explain how each structure functions.</p>
       </div>
       <div class="plant-viewport" data-plant-3d data-render-state="loading" aria-label="Interactive three-dimensional cannabis plant anatomy model">
         <canvas data-plant-canvas aria-label="3D cannabis plant. Drag to rotate, zoom with wheel or pinch, click a structure to inspect it, use arrow keys to rotate, plus or minus to zoom, and R to reset."></canvas>
+        <div class="specimen-plaque" aria-hidden="true"><span>BOTANICAL SPECIMEN 01</span><strong><em>Cannabis sativa</em> L.</strong><small>Female flowering study · whole-plant anatomy</small></div>
+        <div class="viewer-axis" aria-hidden="true"><span>CANOPY</span><i></i><span>ROOT</span></div>
         <div class="plant-tooltip" data-plant-tooltip hidden></div>
         <div class="viewer-hud" aria-hidden="true"><span>DRAG · ROTATE</span><span>WHEEL/PINCH · ZOOM</span><span>CLICK · INSPECT</span></div>
         <div class="viewer-model-status" data-plant-model-status data-state="loading" aria-live="polite">Loading botanical specimen…</div>
         <button class="viewer-reset" type="button" data-plant-reset>Reset view</button>
         <div class="webgl-fallback" data-plant-fallback hidden><strong>3D view unavailable on this device.</strong><p>Use the anatomy buttons and system library to open the same scientific modules without WebGL.</p></div>
+      </div>
+    </section>
+
+    <section class="scale-rail" aria-labelledby="scale-title">
+      <div class="scale-intro"><p class="eyebrow">Explore by scale</p><h2 id="scale-title">Move from architecture to microscopic detail</h2><p>Start broad, then narrow the question. The Atlas keeps whole-plant structure, organ function, and surface anatomy connected instead of teaching each layer in isolation.</p></div>
+      <div class="scale-track">
+        <a href="/atlas/nodes-branching/"><span>01</span><small>WHOLE PLANT</small><strong>Architecture</strong><p>Follow the main stem, nodes, branches, canopy position, and developmental pattern.</p><b>Explore structure →</b></a>
+        <a href="/atlas/leaf-module/"><span>02</span><small>ORGAN + TISSUE</small><strong>Functional anatomy</strong><p>Move into blades, petioles, veins, vascular pathways, stomata, and source-sink function.</p><b>Explore tissues →</b></a>
+        <a href="/atlas/trichomes-resin/"><span>03</span><small>MICROSCOPIC</small><strong>Surface structures</strong><p>Inspect glandular trichomes, secretory heads, resinous surfaces, and flower-associated detail.</p><b>Explore microstructures →</b></a>
       </div>
     </section>
 
@@ -66,8 +78,8 @@
     </section>
 
     <section class="section" id="deep-labs">
-      <div class="section-head"><div><p class="eyebrow">Deep labs</p><h2>High-resolution Atlas branches</h2></div><p>Use the 3D plant for spatial orientation, then move into the dedicated anatomy, physiology, and diagnostic modules for detailed study.</p></div>
-      <div class="deep-grid"><a class="deep-card" href="/atlas/leaf-module/"><small>Deep lab</small><h3>Leaf System</h3><p>Leaf anatomy, stomata, photosynthesis, transpiration, environmental stress, chlorosis, necrosis, curl, nutrient-pattern language, and pest damage.</p><b>Open Leaf Lab →</b></a><a class="deep-card" href="/atlas/root-system/"><small>Deep lab</small><h3>Root System</h3><p>Root anatomy, rhizosphere, water uptake, nutrient uptake, root oxygen, dryback, root-zone diagnostics, and root-rot pattern recognition.</p><b>Open Root Lab →</b></a></div>
+      <div class="section-head"><div><p class="eyebrow">Deep labs</p><h2>High-resolution Atlas branches</h2></div><p>Use the 3D plant for spatial orientation, then move into dedicated anatomy, physiology, reproductive, and diagnostic modules for detailed study.</p></div>
+      <div class="deep-grid"><a class="deep-card" href="/atlas/leaf-module/"><small>Deep lab</small><h3>Leaf System</h3><p>Leaf anatomy, stomata, photosynthesis, transpiration, environmental stress, chlorosis, necrosis, curl, nutrient-pattern language, and pest damage.</p><b>Open Leaf Lab →</b></a><a class="deep-card" href="/atlas/root-system/"><small>Deep lab</small><h3>Root System</h3><p>Root anatomy, rhizosphere, water uptake, nutrient uptake, root oxygen, dryback, root-zone diagnostics, and root-rot pattern recognition.</p><b>Open Root Lab →</b></a><a class="deep-card" href="/atlas/flower-anatomy/"><small>Deep lab</small><h3>Flower Anatomy</h3><p>Inflorescences, bracts, sugar leaves, stigmas, reproductive surfaces, maturation, and the anatomy that supports resin-rich floral tissue.</p><b>Open Flower Lab →</b></a><a class="deep-card" href="/atlas/diagnostics/"><small>Deep lab</small><h3>Diagnostics</h3><p>Pattern language, tissue location, progression, environmental evidence, root-zone context, pests, pathogens, and differential diagnosis.</p><b>Open Diagnostic Lab →</b></a></div>
     </section>
 
     <section class="section" id="lifecycle">
@@ -76,8 +88,9 @@
     </section>
 
     <aside class="principle"><b>⌕</b><p><strong>Observation rule:</strong> a visible pattern is evidence, not proof of a single cause. Confirm location, progression, developmental stage, environment, root-zone conditions, pest/pathogen evidence, and recent changes before acting.</p></aside>
-    <footer class="footer"><span>THC Living Plant Atlas · Interactive 3D system V4 · DTF Genetics</span><span><a href="/atlas/downloads/">Field cards & downloads</a> · <a href="/learn/">Teaching Healthy Cultivation</a></span></footer>
+    <footer class="footer"><span>THC Living Plant Atlas · DTF Genetics</span><span><a href="/atlas/downloads/">Field cards & downloads</a> · <a href="/learn/">Teaching Healthy Cultivation</a></span></footer>
   </div>
+  <!-- Interactive 3D system V4 -->
   <script type="module" src="/atlas/atlas-3d-bootstrap.js"></script>
   <script src="/atlas/atlas-v3.js" defer></script>
 </body>
