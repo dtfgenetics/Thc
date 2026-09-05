@@ -10,6 +10,11 @@ on:
       - 'scripts/publish-wordpress-learning-center-expansion-v1.mjs'
       - 'scripts/update-wordpress-learn-expansion-v1.mjs'
       - 'scripts/wordpress-ipv4-fetch-bootstrap.mjs'
+      - 'scripts/run-learning-v3-connected-production.sh'
+      - 'scripts/prepare-learning-v3-atlas-publisher.mjs'
+      - 'scripts/prepare-learning-v3-owner-aware-publisher.mjs'
+      - 'scripts/prepare-learning-owner-aware-followup-publishers.mjs'
+      - 'scripts/verify-learning-owner-storage.mjs'
       - '.github/workflows/deploy-thc-learning-center-expansion-v1.yml'
 
 permissions:
@@ -58,7 +63,13 @@ jobs:
           node --check scripts/reconcile-wordpress-learning-v3-ownership.mjs
           node --check scripts/run-learning-v3-production.mjs
           node --check scripts/improve-wordpress-learning-v4.mjs
+          node --check scripts/prepare-learning-v3-atlas-publisher.mjs
+          node --check scripts/prepare-learning-v3-owner-aware-publisher.mjs
+          node --check scripts/prepare-learning-owner-aware-followup-publishers.mjs
+          node --check scripts/verify-learning-owner-storage.mjs
           bash -n scripts/run-learning-v3-connected-production.sh
+          grep -Fq 'prepare-learning-v3-atlas-publisher.mjs' scripts/run-learning-v3-connected-production.sh
+          grep -Fq 'LEARNING_V3_SOURCE_PUBLISHER="$atlas_v3"' scripts/run-learning-v3-connected-production.sh
           grep -Fq 'data-dtf-learning-expanded-reference="v1"' scripts/run-learning-v3-connected-production.sh
           grep -Fq 'data-dtf-learning-map="v4"' scripts/run-learning-v3-connected-production.sh
           test -s site/wordpress/education/topic-literature.json
