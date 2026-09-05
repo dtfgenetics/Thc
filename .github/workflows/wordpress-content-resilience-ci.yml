@@ -54,9 +54,18 @@ jobs:
           grep -Fq "dns.setDefaultResultOrder('ipv4first')" scripts/apply-wordpress-public-content-rest.mjs
 
           grep -Fq 'owned-route-preservation.json' scripts/apply-wordpress-public-content-owned-routes.mjs
-          grep -Fq 'contentSha256' scripts/apply-wordpress-public-content-owned-routes.mjs
+          grep -Fq 'snapshotContentSha256' scripts/apply-wordpress-public-content-owned-routes.mjs
+          grep -Fq "process.env.DTF_PRESERVE_PAGE_SLUGS = delegatedSlugs.join(',')" scripts/apply-wordpress-public-content-owned-routes.mjs
+          grep -Fq 'Canonical WordPress lane attempted to mutate delegated' scripts/apply-wordpress-public-content-owned-routes.mjs
+          grep -Fq "String(process.env.DTF_PRESERVE_PAGE_SLUGS || '')" scripts/apply-wordpress-public-content-rest.mjs
+          grep -Fq "action: preserved ? 'preserve'" scripts/apply-wordpress-public-content-rest.mjs
+          grep -Fq 'Preserved delegated /${item.slug}/ owner without mutation' scripts/apply-wordpress-public-content-rest.mjs
           grep -Fq "for (const slug of ['home', 'learn'])" scripts/verify-wordpress-owned-route-preservation.mjs
-          grep -Fq 'content changed during canonical reconciliation' scripts/verify-wordpress-owned-route-preservation.mjs
+          grep -Fq 'canonicalLaneMutation !== false' scripts/verify-wordpress-owned-route-preservation.mjs
+          grep -Fq 'ownerAdvanced' scripts/verify-wordpress-owned-route-preservation.mjs
+          grep -Fq 'data-dtf-layout="home-v3"' scripts/verify-wordpress-owned-route-preservation.mjs
+          grep -Fq 'data-dtf-learning-map="v4"' scripts/verify-wordpress-owned-route-preservation.mjs
+          ! grep -Fq 'content changed during canonical reconciliation' scripts/verify-wordpress-owned-route-preservation.mjs
           grep -Fq 'Verify Learning-owned WordPress route preservation through REST' .github/workflows/wordpress-canonical-production.yml
           grep -Fq 'verify-wordpress-owned-route-preservation.mjs' .github/workflows/wordpress-canonical-production.yml
           ! grep -Fq 'Genetics first. Cultivation science behind it.' .github/workflows/wordpress-canonical-production.yml
