@@ -36,6 +36,8 @@ jobs:
       WP_SITE_URL: https://dtfseeds.com
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      WP_REQUEST_TIMEOUT_MS: '20000'
+      WP_REQUEST_ATTEMPTS: '3'
       APPLY_LEARNING_V3: 'true'
       APPLY_LEARNING_V3_OWNERSHIP: 'true'
       BACKUP_ROOT: /tmp/dtf-learning-center-expansion
@@ -70,6 +72,8 @@ jobs:
           bash -n scripts/run-learning-v3-connected-production.sh
           grep -Fq 'prepare-learning-v3-atlas-publisher.mjs' scripts/run-learning-v3-connected-production.sh
           grep -Fq 'LEARNING_V3_SOURCE_PUBLISHER="$atlas_v3"' scripts/run-learning-v3-connected-production.sh
+          grep -Fq 'WP_REQUEST_TIMEOUT_MS' scripts/publish-wordpress-learning-center-expansion-v1.mjs
+          grep -Fq 'WP_REQUEST_ATTEMPTS' scripts/publish-wordpress-learning-center-expansion-v1.mjs
           grep -Fq 'data-dtf-learning-expanded-reference="v1"' scripts/run-learning-v3-connected-production.sh
           grep -Fq 'data-dtf-learning-map="v4"' scripts/run-learning-v3-connected-production.sh
           test -s site/wordpress/education/topic-literature.json
