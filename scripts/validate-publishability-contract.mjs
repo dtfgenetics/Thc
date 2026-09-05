@@ -159,6 +159,12 @@ if (!generatedIntegrationSource.includes('dtfseeds-production-gateway.yml')) {
 if (!gatewaySource.includes('auto')) {
   contractErrors.push('production gateway no longer exposes the automatic cumulative release mode')
 }
+if (!gatewaySource.includes('VERIFY_REQUEST_TIMEOUT_SECONDS') || !gatewaySource.includes('--connect-timeout 10') || !gatewaySource.includes('--max-time 30')) {
+  contractErrors.push('production gateway visitor verification is not bounded against hung network requests')
+}
+if (!gatewaySource.includes('Recheck automatic release freshness before visitor verification') || !gatewaySource.includes('steps.verify_freshness.outputs.current')) {
+  contractErrors.push('production gateway does not recheck current main before visitor verification and checkpoint enforcement')
+}
 if (!educationSource.includes('GITHUB_STEP_SUMMARY') || !educationSource.includes('continue-on-error: true')) {
   contractErrors.push('Education release reporting can still veto a verified production result')
 }
