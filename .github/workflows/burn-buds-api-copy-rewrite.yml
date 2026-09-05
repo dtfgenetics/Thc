@@ -1,0 +1,62 @@
+name: Burn Buds API Copy Rewrite
+
+on:
+  push:
+    branches:
+      - game/burn-buds-api-copy-cleanup
+    paths:
+      - .github/workflows/burn-buds-api-copy-rewrite.yml
+
+permissions:
+  contents: write
+
+jobs:
+  rewrite:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: game/burn-buds-api-copy-cleanup
+          fetch-depth: 0
+      - name: Rewrite player-facing API copy
+        shell: bash
+        run: |
+          set -euo pipefail
+          api=site/public-route-patch/games/protect-the-plants/api.php
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('site/public-route-patch/games/protect-the-plants/api.php')
+          text = path.read_text()
+          replacements = {
+              'All plant formations are required.': 'All bud formations are required.',
+              'Invalid plant formation.': 'Invalid bud formation.',
+              'Formation is outside the garden.': 'Formation is outside the stash grid.',
+              'Plant formations cannot overlap.': 'Bud formations cannot overlap.',
+              ' created the garden.': ' created the Burn Buds room.',
+              'This garden already has two players.': 'This room already has two players.',
+              ' joined the garden.': ' joined the Burn Buds room.',
+              ' locked their garden.': ' locked their stash.',
+              'Both gardens are locked.': 'Both stashes are locked.',
+              'Plot is outside the garden.': 'Target is outside the battle grid.',
+              'You already scouted that plot.': 'You already fired at that cell.',
+              ' found an entire plant formation.': ' burned a full bud formation.',
+              ' protected their garden and won round ': ' burned every opposing bud and won round ',
+          }
+          for old, new in replacements.items():
+              if old not in text:
+                  raise SystemExit(f'missing expected legacy string: {old}')
+              text = text.replace(old, new)
+          path.write_text(text)
+          PY
+          php -l "$api"
+          rm .github/workflows/burn-buds-api-copy-rewrite.yml
+      - name: Commit mechanical copy migration
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add site/public-route-patch/games/protect-the-plants/api.php .github/workflows/burn-buds-api-copy-rewrite.yml
+          git commit -m 'Move Burn Buds player-facing copy into API source'
+          git push origin HEAD:game/burn-buds-api-copy-cleanup
