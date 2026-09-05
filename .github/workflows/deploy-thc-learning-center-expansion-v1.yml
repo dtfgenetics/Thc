@@ -9,6 +9,7 @@ on:
       - 'scripts/build-public-learning-center-expansion-v1.mjs'
       - 'scripts/publish-wordpress-learning-center-expansion-v1.mjs'
       - 'scripts/update-wordpress-learn-expansion-v1.mjs'
+      - 'scripts/learning-public-semantics.mjs'
       - 'scripts/wordpress-ipv4-fetch-bootstrap.mjs'
       - 'scripts/run-learning-v3-connected-production.sh'
       - 'scripts/prepare-learning-v3-atlas-publisher.mjs'
@@ -61,6 +62,7 @@ jobs:
           node --check scripts/build-public-learning-center-expansion-v1.mjs
           node --check scripts/publish-wordpress-learning-center-expansion-v1.mjs
           node --check scripts/update-wordpress-learn-expansion-v1.mjs
+          node --check scripts/learning-public-semantics.mjs
           node --check scripts/wordpress-ipv4-fetch-bootstrap.mjs
           node --check scripts/reconcile-wordpress-learning-v3-ownership.mjs
           node --check scripts/run-learning-v3-production.mjs
@@ -185,20 +187,8 @@ jobs:
             --connect-timeout 15 --max-time 60 \
             -H 'Cache-Control: no-cache, no-store, max-age=0' -H 'Pragma: no-cache' \
             "https://dtfseeds.com/learn/?dtf_expansion=${GITHUB_RUN_ID}" -o "$learn"
-          grep -Fqi 'Teaching Healthy Cultivation' "$learn"
-          grep -Fqi 'Learn in a sequence that makes the plant easier to understand.' "$learn"
-          grep -Fqi 'Learn the plant as a connected system.' "$learn"
-          for label in \
-            'Plant Health & IPM' \
-            'Cultivation Science' \
-            'Symptom Differentials' \
-            'Printable Field Tools' \
-            'Evidence & Sources'; do
-            grep -Fqi "$label" "$learn"
-          done
-          for href in /learn/plant-health/ /learn/cultivation-science/ /learn/symptoms/ /learn/tools/ /learn/sources/; do
-            grep -Fq "$href" "$learn"
-          done
+          node scripts/learning-public-semantics.mjs "$learn" \
+            | tee "$RUNNER_TEMP/education-learn-public-semantics.json"
           echo "outcome=success" >> "$GITHUB_OUTPUT"
 
       - name: Upload rollback and release evidence
@@ -216,6 +206,7 @@ jobs:
             /tmp/dtf-topic-literature-v3-normalized.json
             ${{ runner.temp }}/education-expansion-*.json
             ${{ runner.temp }}/education-learn-owner-*.json
+            ${{ runner.temp }}/education-learn-public-semantics.json
             ${{ runner.temp }}/live-*.html
           if-no-files-found: warn
           retention-days: 30
