@@ -4,6 +4,7 @@ import { readFile } from 'node:fs/promises';
 const files = {
   canonicalPages: 'scripts/apply-wordpress-public-content-rest.mjs',
   ownershipWrapper: 'scripts/apply-wordpress-public-content-owned-routes.mjs',
+  ownershipVerifier: 'scripts/verify-wordpress-owned-route-preservation.mjs',
   commerceVisuals: 'scripts/rebuild-wordpress-commerce-visuals.mjs',
   canonicalWorkflow: '.github/workflows/wordpress-canonical-production.yml',
   learningWorkflow: '.github/workflows/wordpress-learning-experience-v3-production.yml',
@@ -58,9 +59,41 @@ failIf(
   /verify_page\s+['"]\/learn\//m.test(content.canonicalWorkflow),
   'Canonical WordPress workflow verifies /learn/ as if it owned the route.'
 );
+
+// Delegated Home/Learn protection is a write-path policy, not a global hash
+// freeze. The wrapper must declare both delegated slugs, hand that policy to
+// the generic reconciler, and fail unless transaction evidence proves no broad
+// create/update occurred. The verifier may accept a later legitimate owner
+// advance only while identity and canonical owner markers remain valid.
 failIf(
-  !/for \(const slug of \['home', 'learn'\]\)/m.test(content.ownershipWrapper),
-  'Ownership-preserving reconciliation wrapper does not preserve both Home and Learn.'
+  !/const delegatedSlugs = \['home', 'learn'\]/m.test(content.ownershipWrapper),
+  'Ownership-preserving reconciliation wrapper does not declare both Home and Learn as delegated routes.'
+);
+failIf(
+  !/process\.env\.DTF_PRESERVE_PAGE_SLUGS = delegatedSlugs\.join\(','\)/m.test(content.ownershipWrapper),
+  'Ownership-preserving wrapper does not hand delegated routes to the generic read-only policy.'
+);
+failIf(
+  !/DTF_PRESERVE_PAGE_SLUGS/m.test(content.canonicalPages) ||
+    !/action: preserved \? 'preserve'/m.test(content.canonicalPages) ||
+    !/Preserved delegated \/\$\{item\.slug\}\/ owner without mutation/m.test(content.canonicalPages),
+  'Generic WordPress reconciliation does not enforce delegated route preservation.'
+);
+failIf(
+  !/Canonical WordPress lane attempted to mutate delegated/m.test(content.ownershipWrapper) ||
+    !/canonicalLaneMutation = false/m.test(content.ownershipWrapper),
+  'Ownership wrapper does not fail closed on Home/Learn transaction mutation evidence.'
+);
+failIf(
+  !/canonicalLaneMutation !== false/m.test(content.ownershipVerifier) ||
+    !/ownerAdvanced/m.test(content.ownershipVerifier) ||
+    !/data-dtf-layout=\\?"home-v3\\?"/m.test(content.ownershipVerifier) ||
+    !/data-dtf-learning-map=\\?"v4\\?"/m.test(content.ownershipVerifier),
+  'Owned-route verifier does not distinguish canonical-lane mutation from a legitimate Learning owner advance.'
+);
+failIf(
+  /content changed during canonical reconciliation/m.test(content.ownershipVerifier),
+  'Owned-route verifier still requires global Home/Learn hash stability instead of transaction-level no-write proof.'
 );
 
 // Education child publishers may observe the Learn root but must not write it.
@@ -115,7 +148,7 @@ if (failures.length) {
 console.log('DTFSeeds route ownership validation passed.');
 console.log('- /seeds/ is excluded from generic WordPress page reconciliation.');
 console.log('- commerce visual publishing does not fetch or update /seeds/.');
-console.log('- canonical WordPress production preserves Home/Learn and does not claim /learn/.');
+console.log('- canonical WordPress production makes Home/Learn transactionally read-only and accepts only valid owner advances.');
 console.log('- education child publishing cannot mutate the Learn root.');
 console.log('- Learning Experience V3 retains connected-map and expanded-reference ownership.');
 console.log('- the dedicated genetics workflow retains publisher + verification ownership.');

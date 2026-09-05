@@ -120,7 +120,15 @@ jobs:
           grep -Fq 'EXPECTED_HOME_FEATURED_MEDIA' .github/workflows/wordpress-canonical-production.yml
           grep -Fq 'owned-route-preservation.json' scripts/apply-wordpress-public-content-owned-routes.mjs
           grep -Fq 'createHash' scripts/apply-wordpress-public-content-owned-routes.mjs
-          grep -Fq 'createHash' scripts/verify-wordpress-owned-route-preservation.mjs
+          grep -Fq "process.env.DTF_PRESERVE_PAGE_SLUGS = delegatedSlugs.join(',')" scripts/apply-wordpress-public-content-owned-routes.mjs
+          grep -Fq 'canonicalLaneMutation = false' scripts/apply-wordpress-public-content-owned-routes.mjs
+          grep -Fq "String(process.env.DTF_PRESERVE_PAGE_SLUGS || '')" scripts/apply-wordpress-public-content-rest.mjs
+          grep -Fq "action: preserved ? 'preserve'" scripts/apply-wordpress-public-content-rest.mjs
+          grep -Fq 'canonicalLaneMutation !== false' scripts/verify-wordpress-owned-route-preservation.mjs
+          grep -Fq 'ownerAdvanced' scripts/verify-wordpress-owned-route-preservation.mjs
+          grep -Fq 'data-dtf-layout="home-v3"' scripts/verify-wordpress-owned-route-preservation.mjs
+          grep -Fq 'data-dtf-learning-expanded-reference="v1"' scripts/verify-wordpress-owned-route-preservation.mjs
+          ! grep -Fq 'content changed during canonical reconciliation' scripts/verify-wordpress-owned-route-preservation.mjs
           ! grep -Fq 'Genetics first. Cultivation science behind it.' .github/workflows/wordpress-canonical-production.yml
 
       - name: Validate owner-only reconciliation command guard

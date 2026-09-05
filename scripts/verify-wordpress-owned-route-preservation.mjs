@@ -21,7 +21,16 @@ const auth = `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}
 const headers = {
   Authorization: auth,
   Accept: 'application/json',
-  'User-Agent': 'DTFSeeds-Owned-Route-Preservation-Verify/1.0'
+  'User-Agent': 'DTFSeeds-Owned-Route-Preservation-Verify/2.0'
+};
+
+const ownerMarkers = {
+  home: ['data-dtf-layout="home-v3"'],
+  learn: [
+    'data-dtf-layout="learn-v3"',
+    'data-dtf-learning-map="v4"',
+    'data-dtf-learning-expanded-reference="v1"'
+  ]
 };
 
 const transientStatuses = new Set([408, 425, 429, 500, 502, 503, 504, 520, 522, 523, 524]);
@@ -117,18 +126,36 @@ function sha256(content) {
 }
 
 const report = JSON.parse(await readFile(preservationReport, 'utf8'));
-if (report?.schemaVersion !== 1 || !report.routes || typeof report.routes !== 'object') {
+if (report?.schemaVersion !== 2 || !report.routes || typeof report.routes !== 'object') {
   throw new Error(`Invalid ownership-preservation report: ${preservationReport}`);
 }
 if (report.siteUrl !== siteUrl) {
   throw new Error(`Ownership-preservation report site mismatch: ${report.siteUrl} != ${siteUrl}`);
 }
+if (!report.canonicalReconciliation?.backupDir || !report.canonicalReconciliation?.delegatedResults) {
+  throw new Error('Ownership-preservation report is missing canonical transaction evidence');
+}
 
 const verified = [];
 for (const slug of ['home', 'learn']) {
   const expected = report.routes[slug];
-  if (!expected || !Number.isInteger(expected.id) || !/^[a-f0-9]{64}$/.test(expected.contentSha256 || '')) {
-    throw new Error(`Ownership-preservation report is missing a valid /${slug}/ record`);
+  const transaction = report.canonicalReconciliation.delegatedResults[slug];
+  if (
+    !expected ||
+    !Number.isInteger(expected.id) ||
+    !/^[a-f0-9]{64}$/.test(expected.snapshotContentSha256 || '') ||
+    expected.canonicalLaneMutation !== false
+  ) {
+    throw new Error(`Ownership-preservation report is missing valid read-only /${slug}/ evidence`);
+  }
+  if (
+    !transaction ||
+    transaction.preserved !== true ||
+    transaction.changed !== false ||
+    transaction.created !== false ||
+    Number(transaction.pageId) !== expected.id
+  ) {
+    throw new Error(`Canonical WordPress transaction did not prove delegated /${slug}/ was read-only`);
   }
 
   const pages = await requestJson(
@@ -143,6 +170,9 @@ for (const slug of ['home', 'learn']) {
   const content = normalizedContent(rawContent(page));
   const actualSha256 = sha256(content);
   const actualLength = Buffer.byteLength(content, 'utf8');
+  const ownerAdvanced =
+    actualSha256 !== expected.snapshotContentSha256 ||
+    actualLength !== expected.snapshotContentLength;
 
   if (Number(page.id) !== expected.id) {
     throw new Error(`WordPress /${slug}/ owner changed from page ${expected.id} to ${page.id}`);
@@ -153,19 +183,30 @@ for (const slug of ['home', 'learn']) {
   if (!content) {
     throw new Error(`WordPress /${slug}/ page ${page.id} became empty`);
   }
-  if (actualSha256 !== expected.contentSha256 || actualLength !== expected.contentLength) {
-    throw new Error(`WordPress /${slug}/ content changed during canonical reconciliation: expected ${expected.contentSha256}/${expected.contentLength}, got ${actualSha256}/${actualLength}`);
+  for (const marker of ownerMarkers[slug] || []) {
+    if (!content.includes(marker)) {
+      throw new Error(`WordPress /${slug}/ page ${page.id} is missing canonical owner marker: ${marker}`);
+    }
   }
   if (slug === 'home' && expectedHomeFeaturedMedia > 0 && Number(page.featured_media || 0) !== expectedHomeFeaturedMedia) {
     throw new Error(`WordPress Home featured_media ${page.featured_media || 0} does not match DTF brand media ${expectedHomeFeaturedMedia}`);
+  }
+
+  if (ownerAdvanced) {
+    console.log(`Learning owner advanced /${slug}/ after the canonical lane snapshot; accepting current owner state because transaction evidence proves the broad lane did not mutate it.`);
   }
 
   verified.push({
     slug,
     id: Number(page.id),
     status: page.status,
-    contentLength: actualLength,
-    contentSha256: actualSha256,
+    canonicalLaneMutation: false,
+    ownerAdvanced,
+    snapshotContentLength: expected.snapshotContentLength,
+    snapshotContentSha256: expected.snapshotContentSha256,
+    currentContentLength: actualLength,
+    currentContentSha256: actualSha256,
+    requiredOwnerMarkers: ownerMarkers[slug] || [],
     featuredMedia: Number(page.featured_media || 0)
   });
 }
@@ -174,5 +215,6 @@ console.log(JSON.stringify({
   verifiedAt: new Date().toISOString(),
   siteUrl,
   preservationReport,
+  canonicalReconciliationBackup: report.canonicalReconciliation.backupDir,
   routes: verified
 }, null, 2));
