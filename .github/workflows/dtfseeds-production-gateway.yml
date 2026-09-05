@@ -126,7 +126,7 @@ jobs:
             bash scripts/run-workflow-and-wait.sh wordpress-canonical-deploy.yml
           fi
 
-      - name: Publish trusted WordPress production handoff
+      - name: Join trusted WordPress production handoff
         id: wp_production
         if: always() && steps.freshness.outputs.current == 'true' && needs.plan.outputs.wordpress == 'true' && steps.wp_stage.outcome == 'success'
         continue-on-error: true
