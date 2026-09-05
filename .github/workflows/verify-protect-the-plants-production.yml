@@ -1,25 +1,23 @@
-name: Verify Protect the Plants Production
+name: Verify Burn Buds Production
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - .github/workflows/verify-protect-the-plants-production.yml
-      - site/public-route-patch/games/protect-the-plants/**
+  workflow_run:
+    workflows: ["Deploy DTFSeeds Public Suite via WordPress V2"]
+    types: [completed]
 
 permissions:
   contents: read
-  issues: write
 
 concurrency:
-  group: verify-protect-the-plants-production
+  group: verify-burn-buds-production
   cancel-in-progress: true
 
 jobs:
   smoke:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
-    timeout-minutes: 18
+    timeout-minutes: 20
     env:
       BASE: https://dtfseeds.com/games/protect-the-plants
     steps:
@@ -29,7 +27,7 @@ jobs:
           node-version: 22
           cache: npm
 
-      - name: Verify public page and V2 assets
+      - name: Verify live Burn Buds shell and assets
         shell: bash
         run: |
           set -euo pipefail
@@ -37,25 +35,40 @@ jobs:
           curl -4 -fsSL --retry 3 --retry-delay 2 --connect-timeout 15 --max-time 45 \
             -H 'Cache-Control: no-cache, no-store, max-age=0' \
             -H 'Pragma: no-cache' \
-            "$BASE/?ptp_smoke=$token" -o "$RUNNER_TEMP/index.html"
-          grep -Fqi 'Protect the Plants' "$RUNNER_TEMP/index.html"
-          for marker in './visual-fixes.css' './enhancements.css' './v2-extras.css' './manifest.webmanifest' './enhancements.js' './v2-extras.js'; do
+            "$BASE/?burn_buds_smoke=$token" -o "$RUNNER_TEMP/index.html"
+
+          grep -Fqi 'Burn Buds' "$RUNNER_TEMP/index.html"
+          grep -Fq 'id="burn-buds-title"' "$RUNNER_TEMP/index.html"
+          for marker in \
+            './visual-fixes.css' './enhancements.css' './v2-extras.css' './burn-buds.css' \
+            './gameplay-v3.css' './battle-feedback-v1.css' './placement-v1.css' './targeting-v1.css' \
+            './manifest.webmanifest' './runtime-sync-v1.js' './targeting-policy-v1.js' './enhancements.js' \
+            './v2-extras.js' './burn-buds-branding.js' './gameplay-v3.js' './combat-a11y-v1.js' \
+            './battle-feedback-v1.js' './placement-v1.js' './targeting-v1.js'; do
             grep -Fq "$marker" "$RUNNER_TEMP/index.html"
           done
-          for asset in app.js styles.css visual-fixes.css plant.svg enhancements.js enhancements.css v2-extras.js v2-extras.css manifest.webmanifest sw.js; do
+
+          for asset in \
+            app.js styles.css visual-fixes.css plant.svg enhancements.js enhancements.css v2-extras.js v2-extras.css \
+            burn-buds-branding.js burn-buds.css runtime-sync-v1.js targeting-policy-v1.js gameplay-v3.js gameplay-v3.css \
+            combat-a11y-v1.js battle-feedback-v1.js battle-feedback-v1.css placement-v1.js placement-v1.css \
+            targeting-v1.js targeting-v1.css manifest.webmanifest sw.js; do
             curl -4 -fsSL --retry 3 --retry-delay 2 --connect-timeout 15 --max-time 45 \
               -H 'Cache-Control: no-cache, no-store, max-age=0' \
-              "$BASE/$asset?ptp_smoke=$token" -o "$RUNNER_TEMP/$asset"
+              "$BASE/$asset?burn_buds_smoke=$token" -o "$RUNNER_TEMP/$asset"
             test -s "$RUNNER_TEMP/$asset"
           done
+
           grep -Fq 'coordinate-grid' "$RUNNER_TEMP/app.js"
-          grep -Fq '.plant-token.formation-trellis-row' "$RUNNER_TEMP/styles.css"
-          grep -Fq 'serviceWorker' "$RUNNER_TEMP/v2-extras.js"
+          grep -Fq 'Burn Buds' "$RUNNER_TEMP/burn-buds-branding.js"
+          grep -Fq 'native-coarse-two-tap' "$RUNNER_TEMP/targeting-policy-v1.js"
+          grep -Fq 'Tap once to aim. Tap the same cell again to fire.' "$RUNNER_TEMP/targeting-v1.js"
           grep -Fq 'ptp-quick-chat' "$RUNNER_TEMP/v2-extras.js"
           grep -Fq 'rematch' "$RUNNER_TEMP/enhancements.js"
-          jq -e '.name == "Protect the Plants" and .display == "standalone" and .start_url == "./" and .scope == "./"' "$RUNNER_TEMP/manifest.webmanifest" >/dev/null
+          jq -e '.name == "Burn Buds" and .short_name == "Burn Buds" and .display == "standalone" and .start_url == "./" and .scope == "./"' "$RUNNER_TEMP/manifest.webmanifest" >/dev/null
+          echo 'Live Burn Buds shell and current production assets passed.'
 
-      - name: Exercise two-player V2 production API
+      - name: Exercise two-player Burn Buds production API
         id: api
         shell: bash
         run: |
@@ -64,21 +77,21 @@ jobs:
           json_header=(-H 'Content-Type: application/json' -H 'Cache-Control: no-cache, no-store, max-age=0')
 
           create="$(curl -4 -fsSL --retry 2 --retry-delay 2 --connect-timeout 15 --max-time 45 \
-            "${json_header[@]}" -X POST "$api?action=create" --data '{"name":"PTP V2 Smoke A"}')"
+            "${json_header[@]}" -X POST "$api?action=create" --data '{"name":"Burn Buds Smoke A"}')"
           code="$(jq -er '.code' <<<"$create")"; p1="$(jq -er '.playerId' <<<"$create")"; t1="$(jq -er '.token' <<<"$create")"
           [[ "$code" =~ ^[A-Z0-9]{6}$ ]]
 
           state1="$(curl -4 -fsSL "$api?action=state&code=$code" -H "X-Player-Id: $p1" -H "X-Player-Token: $t1" -H 'Cache-Control: no-cache')"
-          jq -e '.status == "waiting" and .round == 1 and .me.name == "PTP V2 Smoke A" and (.events|length) >= 1' <<<"$state1" >/dev/null
+          jq -e '.status == "waiting" and .round == 1 and .me.name == "Burn Buds Smoke A" and (.events|length) >= 1' <<<"$state1" >/dev/null
 
           active="$(curl -4 -fsSL "$api?action=active" -H "X-Player-Id: $p1" -H "X-Player-Token: $t1" -H 'Cache-Control: no-cache')"
           jq -e --arg code "$code" '.game.code == $code and .game.round == 1' <<<"$active" >/dev/null
 
-          join="$(curl -4 -fsSL "${json_header[@]}" -X POST "$api?action=join" --data "$(jq -nc --arg code "$code" '{name:"PTP V2 Smoke B",code:$code}')")"
+          join="$(curl -4 -fsSL "${json_header[@]}" -X POST "$api?action=join" --data "$(jq -nc --arg code "$code" '{name:"Burn Buds Smoke B",code:$code}')")"
           p2="$(jq -er '.playerId' <<<"$join")"; t2="$(jq -er '.token' <<<"$join")"
 
-          chat="$(curl -4 -fsSL "${json_header[@]}" -H "X-Player-Id: $p1" -H "X-Player-Token: $t1" -X POST "$api?action=chat&code=$code" --data '{"text":"production v2 smoke chat"}')"
-          jq -e '.chat | any(.text == "production v2 smoke chat")' <<<"$chat" >/dev/null
+          chat="$(curl -4 -fsSL "${json_header[@]}" -H "X-Player-Id: $p1" -H "X-Player-Token: $t1" -X POST "$api?action=chat&code=$code" --data '{"text":"Burn Buds production smoke chat"}')"
+          jq -e '.chat | any(.text == "Burn Buds production smoke chat")' <<<"$chat" >/dev/null
 
           fleet='[{"id":"mother-row","cells":[{"row":0,"col":0},{"row":0,"col":1},{"row":0,"col":2},{"row":0,"col":3},{"row":0,"col":4}]},{"id":"trellis-row","cells":[{"row":2,"col":0},{"row":2,"col":1},{"row":2,"col":2},{"row":2,"col":3}]},{"id":"tall-pheno","cells":[{"row":4,"col":0},{"row":4,"col":1},{"row":4,"col":2}]},{"id":"bushy-pheno","cells":[{"row":6,"col":0},{"row":6,"col":1},{"row":6,"col":2}]},{"id":"solo-pots","cells":[{"row":8,"col":0},{"row":8,"col":1}]}]'
           place_body="$(jq -nc --argjson fleet "$fleet" '{fleet:$fleet}')"
@@ -86,7 +99,6 @@ jobs:
           placed2="$(curl -4 -fsSL "${json_header[@]}" -H "X-Player-Id: $p2" -H "X-Player-Token: $t2" -X POST "$api?action=place&code=$code" --data "$place_body")"
           jq -e --arg p1 "$p1" '.status == "playing" and .round == 1 and .turnPlayerId == $p1' <<<"$placed2" >/dev/null
 
-          # Player A finds every formation; player B deliberately scouts empty row 14 between turns.
           shots=('0 0' '0 1' '0 2' '0 3' '0 4' '2 0' '2 1' '2 2' '2 3' '4 0' '4 1' '4 2' '6 0' '6 1' '6 2' '8 0' '8 1')
           miss_col=14
           for shot in "${shots[@]}"; do
@@ -111,14 +123,14 @@ jobs:
           jq -e --arg p2 "$p2" '.status == "playing" and .round == 2 and .turnPlayerId == $p2' <<<"$round2" >/dev/null
 
           echo "room=$code" >> "$GITHUB_OUTPUT"
-          echo 'Protect the Plants V2 production multiplayer/rematch API smoke passed.'
+          echo 'Burn Buds production multiplayer, recovery, victory, and rematch API smoke passed.'
 
       - name: Install browser test runtime
         run: |
           npm ci
           npx playwright install chromium
 
-      - name: Exercise live V2 browser UI
+      - name: Exercise live Burn Buds desktop and mobile UI
         id: ui
         shell: bash
         run: |
@@ -133,12 +145,15 @@ jobs:
               page.on('pageerror', e => errors.push(`pageerror: ${e.message}`));
               page.on('console', m => { if (m.type() === 'error') errors.push(`console: ${m.text()}`); });
             };
-            const c1 = await browser.newContext({ viewport: { width: 1280, height: 900 } });
-            const p1 = await c1.newPage(); hook(p1);
-            await p1.goto(`${base}/?browser_v2=${Date.now()}`, { waitUntil: 'networkidle', timeout: 60000 });
-            await p1.locator('.hero-title').waitFor({ state: 'visible', timeout: 15000 });
+
+            const desktop = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+            const p1 = await desktop.newPage(); hook(p1);
+            let p1FireRequests = 0;
+            p1.on('request', req => { if (/api\.php\?action=fire/.test(req.url()) && req.method() === 'POST') p1FireRequests += 1; });
+            await p1.goto(`${base}/?burn_buds_ui=${Date.now()}`, { waitUntil: 'networkidle', timeout: 60000 });
+            await p1.getByRole('heading', { name: /Burn Buds/i }).first().waitFor({ state: 'visible', timeout: 15000 });
             await p1.locator('.formation-grid').waitFor({ state: 'visible', timeout: 15000 });
-            await p1.locator('#createName').fill('Browser V2 A');
+            await p1.locator('#createName').fill('Burn Buds Browser A');
             await p1.locator('[data-action="create"]').click();
             await p1.waitForURL(/room=[A-Z0-9]{6}/, { timeout: 30000 });
             const code = new URL(p1.url()).searchParams.get('room');
@@ -148,10 +163,12 @@ jobs:
             await p1.locator('[data-action="random"]').click();
             await p1.locator('[data-action="lock"]').click();
 
-            const c2 = await browser.newContext({ viewport: { width: 390, height: 844 } });
-            const p2 = await c2.newPage(); hook(p2);
-            await p2.goto(`${base}/?browser_v2_b=${Date.now()}`, { waitUntil: 'networkidle', timeout: 60000 });
-            await p2.locator('#joinName').fill('Browser V2 B');
+            const mobile = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+            const p2 = await mobile.newPage(); hook(p2);
+            let p2FireRequests = 0;
+            p2.on('request', req => { if (/api\.php\?action=fire/.test(req.url()) && req.method() === 'POST') p2FireRequests += 1; });
+            await p2.goto(`${base}/?burn_buds_mobile=${Date.now()}`, { waitUntil: 'networkidle', timeout: 60000 });
+            await p2.locator('#joinName').fill('Burn Buds Browser B');
             await p2.locator('#joinCode').fill(code);
             await p2.locator('[data-action="join"]').click();
             await p2.waitForURL(new RegExp(`room=${code}`), { timeout: 30000 });
@@ -163,41 +180,51 @@ jobs:
             await p1.locator('.ptp-quick-chat').waitFor({ state: 'visible', timeout: 10000 });
             await p1.locator('[data-ptp-quick]').first().click();
             await p2.getByText('Nice hit 🌿').waitFor({ timeout: 15000 });
-            await p1.locator('[data-ptp-action="settings"]').waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
+
+            const desktopTarget = p1.locator('.cell[data-fire]').first();
+            await desktopTarget.click();
+            await p1.waitForTimeout(500);
+            if (p1FireRequests !== 1) throw new Error(`Desktop targeting should fire once on one click; observed ${p1FireRequests} requests.`);
+
+            await p2.waitForTimeout(1800);
+            const mobileTarget = p2.locator('.cell[data-fire]').first();
+            await mobileTarget.click();
+            await p2.waitForTimeout(350);
+            if (p2FireRequests !== 0) throw new Error(`Mobile first tap must only aim; observed ${p2FireRequests} fire requests.`);
+            const armed = await mobileTarget.getAttribute('aria-pressed');
+            if (armed !== 'true') throw new Error(`Mobile first tap did not arm target; aria-pressed=${armed}`);
+            await mobileTarget.click();
+            await p2.waitForTimeout(700);
+            if (p2FireRequests !== 1) throw new Error(`Mobile second tap should fire exactly once; observed ${p2FireRequests} requests.`);
+
             await p1.locator('.coordinate-grid').first().locator('.cell').first().focus();
             await p1.keyboard.press('ArrowRight');
             const focused = await p1.locator(':focus').getAttribute('aria-label');
             if (!focused) throw new Error('Keyboard board navigation did not retain focus on a grid cell.');
 
+            const overflow = await p2.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 2);
+            if (overflow) throw new Error('Mobile page has horizontal document overflow.');
             if (errors.length) throw new Error(errors.join('\n'));
-            console.log(`Protect the Plants V2 live browser UI passed for room ${code}.`);
+
+            console.log(`Burn Buds live desktop/mobile UI passed for room ${code}.`);
             await browser.close();
           })().catch(err => { console.error(err); process.exit(1); });
           NODE
 
-      - name: Report production smoke result
+      - name: Summarize Burn Buds production smoke
         if: always()
-        uses: actions/github-script@v7
+        shell: bash
         env:
           API_OUTCOME: ${{ steps.api.outcome }}
           UI_OUTCOME: ${{ steps.ui.outcome }}
           ROOM: ${{ steps.api.outputs.room }}
-        with:
-          script: |
-            const pass = process.env.API_OUTCOME === 'success' && process.env.UI_OUTCOME === 'success';
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: 46,
-              body: [
-                '## Protect the Plants V2 production smoke test',
-                '',
-                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-                `Result: **${pass ? 'PASS' : 'FAIL'}**`,
-                `Production API/rematch: **${process.env.API_OUTCOME || 'not-run'}**`,
-                `Browser UI: **${process.env.UI_OUTCOME || 'not-run'}**`,
-                process.env.ROOM ? `Temporary V2 smoke-test room: \`${process.env.ROOM}\`` : 'No API room reached the completed smoke-test stage.',
-                '',
-                'Checks: final V2 assets and manifest, desktop/mobile create + join + placement + chat, quick-chat UI, keyboard grid focus, JavaScript console/page errors, authenticated state, finished-game recovery, persistent event history, full game completion, two-party rematch reset, round increment, and alternating round starter.'
-              ].join('\n')
-            });
+        run: |
+          {
+            echo '## Burn Buds production smoke test'
+            echo
+            echo "- Production API/rematch: **${API_OUTCOME:-not-run}**"
+            echo "- Desktop/mobile browser UI: **${UI_OUTCOME:-not-run}**"
+            if [ -n "${ROOM:-}" ]; then echo "- Temporary smoke-test room: \`${ROOM}\`"; fi
+            echo '- Public compatibility route: `/games/protect-the-plants/`'
+            echo '- Public product identity: **Burn Buds**'
+          } >> "$GITHUB_STEP_SUMMARY"
