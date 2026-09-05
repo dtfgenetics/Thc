@@ -17,7 +17,7 @@ assert.ok(index.includes('./runtime-sync-v1.js'),'Production page must load shar
 assert.ok(index.indexOf('./runtime-sync-v1.js')>index.indexOf('./app.js'),'Shared sync runtime must load after core app.');
 assert.ok(index.indexOf('./runtime-sync-v1.js')<index.indexOf('./gameplay-v3.js'),'Shared sync runtime must load before gameplay helpers.');
 assert.ok(sw.includes('./runtime-sync-v1.js'),'Service worker must cache shared sync runtime.');
-assert.ok(sw.includes('ptp-shell-v6-burn-buds-shared-sync-20260905'),'Service worker cache version must identify shared-sync release.');
+assert.ok(sw.includes('ptp-shell-v7-burn-buds-targeting-policy-20260905'),'Service worker cache version must identify targeting-policy release.');
 
 for(const file of helpers){
   const text=read(file);
