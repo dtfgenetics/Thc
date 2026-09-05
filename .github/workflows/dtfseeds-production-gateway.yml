@@ -92,6 +92,7 @@ jobs:
       EXPECTED_SOURCE_SHA: ${{ github.sha }}
       NORMAL_PUSH: ${{ github.event_name == 'push' }}
       AUTO_RELEASE: ${{ github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.mode == 'auto') }}
+      VERIFY_REQUEST_TIMEOUT_SECONDS: '45'
     steps:
       - uses: actions/checkout@v4
         with:
@@ -194,9 +195,28 @@ jobs:
             bash scripts/run-workflow-and-wait.sh deploy-public-suite-wordpress-v2.yml
           fi
 
+      - name: Recheck automatic release freshness before visitor verification
+        id: verify_freshness
+        if: always() && steps.freshness.outputs.current == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "$AUTO_RELEASE" != 'true' ]]; then
+            echo 'current=true' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git fetch --quiet origin main
+          latest="$(git rev-parse origin/main)"
+          if [[ "$latest" == "$GITHUB_SHA" ]]; then
+            echo 'current=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'current=false' >> "$GITHUB_OUTPUT"
+            echo "Release $GITHUB_SHA became superseded during publication; skipping visitor verification and checkpoint advancement. Latest main is $latest."
+          fi
+
       - name: Verify WordPress production surfaces independently
         id: wp_verify
-        if: always() && steps.freshness.outputs.current == 'true' && needs.plan.outputs.wordpress == 'true' && steps.wp_production.outcome == 'success'
+        if: always() && steps.verify_freshness.outputs.current == 'true' && needs.plan.outputs.wordpress == 'true' && steps.wp_production.outcome == 'success'
         continue-on-error: true
         shell: bash
         run: |
@@ -204,10 +224,13 @@ jobs:
           check() {
             local path="$1" marker="$2" body
             body="$(mktemp)"
-            if ! curl -4 -fsSL --retry 5 --retry-all-errors --retry-delay 4 \
+            if ! timeout "${VERIFY_REQUEST_TIMEOUT_SECONDS}s" curl -4 -fsSL \
+              --connect-timeout 10 --max-time 30 \
+              --retry 2 --retry-all-errors --retry-delay 2 \
               --output "$body" \
               -H 'Cache-Control: no-cache, no-store, max-age=0' \
               "https://dtfseeds.com${path}?dtf_gateway=${GITHUB_RUN_ID}"; then
+              echo "Timed out or failed visitor verification at $path" >&2
               rm -f "$body"
               return 1
             fi
@@ -224,26 +247,38 @@ jobs:
 
       - name: Verify education production surfaces independently
         id: education_verify
-        if: always() && steps.freshness.outputs.current == 'true' && needs.plan.outputs.education == 'true' && steps.education_publish.outcome == 'success'
+        if: always() && steps.verify_freshness.outputs.current == 'true' && needs.plan.outputs.education == 'true' && steps.education_publish.outcome == 'success'
         continue-on-error: true
         shell: bash
         run: |
           set -euo pipefail
           for route in plant-health cultivation-science symptoms tools sources; do
-            body="$(curl -4 -fsSL --retry 5 --retry-all-errors --retry-delay 4 -H 'Cache-Control: no-cache, no-store, max-age=0' "https://dtfseeds.com/learn/$route/?dtf_gateway=${GITHUB_RUN_ID}")"
+            body="$(timeout "${VERIFY_REQUEST_TIMEOUT_SECONDS}s" curl -4 -fsSL \
+              --connect-timeout 10 --max-time 30 \
+              --retry 2 --retry-all-errors --retry-delay 2 \
+              -H 'Cache-Control: no-cache, no-store, max-age=0' \
+              "https://dtfseeds.com/learn/$route/?dtf_gateway=${GITHUB_RUN_ID}")"
             grep -Fqi 'Teaching Healthy Cultivation' <<<"$body"
             ! grep -Fqi 'Reserved strain card' <<<"$body"
           done
 
       - name: Verify Harvest and Outdoor production surfaces independently
         id: harvest_outdoor_verify
-        if: always() && steps.freshness.outputs.current == 'true' && needs.plan.outputs.harvest_outdoor == 'true' && steps.harvest_outdoor_publish.outcome == 'success'
+        if: always() && steps.verify_freshness.outputs.current == 'true' && needs.plan.outputs.harvest_outdoor == 'true' && steps.harvest_outdoor_publish.outcome == 'success'
         continue-on-error: true
         shell: bash
         run: |
           set -euo pipefail
-          harvest="$(curl -4 -fsSL --retry 5 --retry-all-errors --retry-delay 4 -H 'Cache-Control: no-cache, no-store, max-age=0' "https://dtfseeds.com/learn/harvest-postharvest/?dtf_gateway=${GITHUB_RUN_ID}")"
-          outdoor="$(curl -4 -fsSL --retry 5 --retry-all-errors --retry-delay 4 -H 'Cache-Control: no-cache, no-store, max-age=0' "https://dtfseeds.com/learn/outdoor/?dtf_gateway=${GITHUB_RUN_ID}")"
+          harvest="$(timeout "${VERIFY_REQUEST_TIMEOUT_SECONDS}s" curl -4 -fsSL \
+            --connect-timeout 10 --max-time 30 \
+            --retry 2 --retry-all-errors --retry-delay 2 \
+            -H 'Cache-Control: no-cache, no-store, max-age=0' \
+            "https://dtfseeds.com/learn/harvest-postharvest/?dtf_gateway=${GITHUB_RUN_ID}")"
+          outdoor="$(timeout "${VERIFY_REQUEST_TIMEOUT_SECONDS}s" curl -4 -fsSL \
+            --connect-timeout 10 --max-time 30 \
+            --retry 2 --retry-all-errors --retry-delay 2 \
+            -H 'Cache-Control: no-cache, no-store, max-age=0' \
+            "https://dtfseeds.com/learn/outdoor/?dtf_gateway=${GITHUB_RUN_ID}")"
           grep -Fq 'data-dtf-topic="harvest-postharvest"' <<<"$harvest"
           grep -Fq 'data-dtf-learning-v4="topic-harvest-postharvest"' <<<"$harvest"
           grep -Fq 'data-dtf-harvest-postharvest-v6="true"' <<<"$harvest"
@@ -255,7 +290,7 @@ jobs:
 
       - name: Verify game and application production surfaces independently
         id: public_verify
-        if: always() && steps.freshness.outputs.current == 'true' && needs.plan.outputs.public_suite == 'true' && steps.public_publish.outcome == 'success'
+        if: always() && steps.verify_freshness.outputs.current == 'true' && needs.plan.outputs.public_suite == 'true' && steps.public_publish.outcome == 'success'
         continue-on-error: true
         shell: bash
         run: |
@@ -263,10 +298,13 @@ jobs:
           check() {
             local path="$1" marker="$2" body
             body="$(mktemp)"
-            if ! curl -4 -fsSL --retry 5 --retry-all-errors --retry-delay 4 \
+            if ! timeout "${VERIFY_REQUEST_TIMEOUT_SECONDS}s" curl -4 -fsSL \
+              --connect-timeout 10 --max-time 30 \
+              --retry 2 --retry-all-errors --retry-delay 2 \
               --output "$body" \
               -H 'Cache-Control: no-cache, no-store, max-age=0' \
               "https://dtfseeds.com${path}?dtf_gateway=${GITHUB_RUN_ID}"; then
+              echo "Timed out or failed visitor verification at $path" >&2
               rm -f "$body"
               return 1
             fi
@@ -297,7 +335,8 @@ jobs:
             echo
             echo "- Gateway revision: $GITHUB_SHA"
             echo "- Automatic cumulative release: $AUTO_RELEASE"
-            echo "- Superseded: ${{ steps.freshness.outputs.current != 'true' }}"
+            echo "- Superseded before publish: ${{ steps.freshness.outputs.current != 'true' }}"
+            echo "- Superseded before verification: ${{ steps.verify_freshness.outputs.current != 'true' }}"
             echo "- Planned WordPress lane: ${{ needs.plan.outputs.wordpress }}"
             echo "- WordPress stage/production/verify: ${{ steps.wp_stage.outcome }}/${{ steps.wp_production.outcome }}/${{ steps.wp_verify.outcome }}"
             echo "- Planned education lane: ${{ needs.plan.outputs.education }}"
@@ -306,6 +345,7 @@ jobs:
             echo "- Harvest / Outdoor publish/verify: ${{ steps.harvest_outdoor_publish.outcome }}/${{ steps.harvest_outdoor_verify.outcome }}"
             echo "- Planned Public Suite lane: ${{ needs.plan.outputs.public_suite }}"
             echo "- Public Suite publish/verify: ${{ steps.public_publish.outcome }}/${{ steps.public_verify.outcome }}"
+            echo "- Per-request visitor verification ceiling: ${VERIFY_REQUEST_TIMEOUT_SECONDS}s"
             echo '- Production success is determined by publishing steps plus fresh public verification; issue comments are advisory only.'
           } >> "$GITHUB_STEP_SUMMARY"
 
@@ -337,7 +377,7 @@ jobs:
 
       - name: Enforce authoritative lane outcomes
         id: enforce
-        if: always() && steps.freshness.outputs.current == 'true'
+        if: always() && steps.freshness.outputs.current == 'true' && steps.verify_freshness.outputs.current == 'true'
         shell: bash
         env:
           WANT_WORDPRESS: ${{ needs.plan.outputs.wordpress }}
@@ -385,6 +425,7 @@ jobs:
       - name: Advance successful production checkpoint
         if: >-
           steps.freshness.outputs.current == 'true' &&
+          steps.verify_freshness.outputs.current == 'true' &&
           steps.enforce.outcome == 'success' &&
           (github.event_name == 'push' || inputs.mode == 'full' || inputs.mode == 'auto')
         uses: actions/github-script@v7
