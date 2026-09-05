@@ -9,6 +9,7 @@ on:
       - 'scripts/build-public-learning-center-expansion-v1.mjs'
       - 'scripts/publish-wordpress-learning-center-expansion-v1.mjs'
       - 'scripts/update-wordpress-learn-expansion-v1.mjs'
+      - 'scripts/normalize-html-visible-text.mjs'
       - 'scripts/wordpress-ipv4-fetch-bootstrap.mjs'
       - 'scripts/run-learning-v3-connected-production.sh'
       - 'scripts/prepare-learning-v3-atlas-publisher.mjs'
@@ -61,6 +62,7 @@ jobs:
           node --check scripts/build-public-learning-center-expansion-v1.mjs
           node --check scripts/publish-wordpress-learning-center-expansion-v1.mjs
           node --check scripts/update-wordpress-learn-expansion-v1.mjs
+          node --check scripts/normalize-html-visible-text.mjs
           node --check scripts/wordpress-ipv4-fetch-bootstrap.mjs
           node --check scripts/reconcile-wordpress-learning-v3-ownership.mjs
           node --check scripts/run-learning-v3-production.mjs
@@ -156,8 +158,9 @@ jobs:
         run: |
           set -euo pipefail
           # Child routes are strict anonymous visitor checks. The Learn root uses
-          # stable visible semantics; private data-dtf-* ownership markers are
-          # verified separately through authenticated WordPress storage.
+          # normalized visible text so HTML entity encoding cannot create false
+          # negatives; private data-dtf-* ownership markers remain verified
+          # separately through authenticated WordPress storage.
           routes=(plant-health cultivation-science symptoms tools sources)
           for route in "${routes[@]}"; do
             case "$route" in
@@ -181,20 +184,22 @@ jobs:
           done
 
           learn="$RUNNER_TEMP/live-learn.html"
+          learn_visible="$RUNNER_TEMP/live-learn-visible.txt"
           curl -4 --fail --silent --show-error --location --retry 4 --retry-delay 3 \
             --connect-timeout 15 --max-time 60 \
             -H 'Cache-Control: no-cache, no-store, max-age=0' -H 'Pragma: no-cache' \
             "https://dtfseeds.com/learn/?dtf_expansion=${GITHUB_RUN_ID}" -o "$learn"
-          grep -Fqi 'Teaching Healthy Cultivation' "$learn"
-          grep -Fqi 'Learn in a sequence that makes the plant easier to understand.' "$learn"
-          grep -Fqi 'Learn the plant as a connected system.' "$learn"
+          node scripts/normalize-html-visible-text.mjs "$learn" > "$learn_visible"
+          grep -Fqi 'Teaching Healthy Cultivation' "$learn_visible"
+          grep -Fqi 'Learn in a sequence that makes the plant easier to understand.' "$learn_visible"
+          grep -Fqi 'Learn the plant as a connected system.' "$learn_visible"
           for label in \
             'Plant Health & IPM' \
             'Cultivation Science' \
             'Symptom Differentials' \
             'Printable Field Tools' \
             'Evidence & Sources'; do
-            grep -Fqi "$label" "$learn"
+            grep -Fqi "$label" "$learn_visible"
           done
           for href in /learn/plant-health/ /learn/cultivation-science/ /learn/symptoms/ /learn/tools/ /learn/sources/; do
             grep -Fq "$href" "$learn"
@@ -217,6 +222,7 @@ jobs:
             ${{ runner.temp }}/education-expansion-*.json
             ${{ runner.temp }}/education-learn-owner-*.json
             ${{ runner.temp }}/live-*.html
+            ${{ runner.temp }}/live-*.txt
           if-no-files-found: warn
           retention-days: 30
 
