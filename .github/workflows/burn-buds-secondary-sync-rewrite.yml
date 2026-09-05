@@ -1,0 +1,62 @@
+name: Burn Buds Secondary Sync Rewrite
+
+on:
+  push:
+    branches:
+      - game/burn-buds-secondary-sync-cleanup
+    paths:
+      - .github/workflows/burn-buds-secondary-sync-rewrite.yml
+
+permissions:
+  contents: write
+
+jobs:
+  rewrite:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: game/burn-buds-secondary-sync-cleanup
+          fetch-depth: 0
+      - name: Move secondary helpers onto shared sync
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          root=Path('site/public-route-patch/games/protect-the-plants')
+
+          def replace(path, old, new):
+              text=path.read_text()
+              if old not in text:
+                  raise SystemExit(f'missing expected block in {path}')
+              path.write_text(text.replace(old,new,1))
+
+          replace(root/'enhancements.js',
+          """  const observer = new MutationObserver(queueEnhance);
+          observer.observe(app, { childList: true, subtree: true });
+          queueEnhance();
+""",
+          """  if(window.BurnBudsSync)window.BurnBudsSync.subscribe(queueEnhance,{immediate:false});
+          queueEnhance();
+""")
+
+          replace(root/'v2-extras.js',
+          """  const root=document.querySelector('#app');if(root)new MutationObserver(()=>requestAnimationFrame(enhance)).observe(root,{childList:true,subtree:true});
+""",
+          """  if(window.BurnBudsSync)window.BurnBudsSync.subscribe(enhance,{immediate:false});
+""")
+          PY
+          node --check site/public-route-patch/games/protect-the-plants/enhancements.js
+          node --check site/public-route-patch/games/protect-the-plants/v2-extras.js
+          rm .github/workflows/burn-buds-secondary-sync-rewrite.yml
+      - name: Commit secondary observer cleanup
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add site/public-route-patch/games/protect-the-plants/enhancements.js site/public-route-patch/games/protect-the-plants/v2-extras.js .github/workflows/burn-buds-secondary-sync-rewrite.yml
+          git commit -m 'Move Burn Buds secondary helpers onto shared sync'
+          git push origin HEAD:game/burn-buds-secondary-sync-cleanup
