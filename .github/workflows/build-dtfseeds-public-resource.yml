@@ -32,6 +32,7 @@ on:
       - '.github/workflows/build-dtfseeds-public-resource.yml'
       - '.github/workflows/deploy-dtfseeds-public-resource.yml'
       - '.github/workflows/deploy-dtfseeds-wordpress-resource.yml'
+      - '.github/workflows/dtfseeds-resource-production-gateway.yml'
   push:
     branches: [main]
     paths:
@@ -52,6 +53,7 @@ on:
       - '.github/workflows/build-dtfseeds-public-resource.yml'
       - '.github/workflows/deploy-dtfseeds-public-resource.yml'
       - '.github/workflows/deploy-dtfseeds-wordpress-resource.yml'
+      - '.github/workflows/dtfseeds-resource-production-gateway.yml'
 
 permissions:
   contents: read
