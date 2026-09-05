@@ -5,6 +5,7 @@
   const search = document.querySelector('[data-atlas-search]');
   const filters = [...document.querySelectorAll('[data-category]')];
   const count = document.querySelector('[data-result-count]');
+  const featuredSystems = new Set(['root-system', 'leaf-module', 'flower-anatomy']);
 
   const norm = (value) => String(value || '').toLowerCase().trim();
   const searchable = (system) => norm([
@@ -27,7 +28,7 @@
     });
 
     grid.innerHTML = filtered.map((system) => `
-      <a class="system-card" href="${system.route}" data-system-id="${system.id}">
+      <a class="system-card${featuredSystems.has(system.id) ? ' system-card--featured' : ''}" href="${system.route}" data-system-id="${system.id}"${featuredSystems.has(system.id) ? ' data-featured="true"' : ''}>
         <div class="system-top">
           <span class="system-icon" aria-hidden="true">${system.icon}</span>
           <span class="system-category">${system.category}</span>
