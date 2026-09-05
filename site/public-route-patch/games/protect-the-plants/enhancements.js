@@ -637,7 +637,6 @@
     if (!document.hidden && typeof state !== 'undefined' && state) processState(state);
   });
 
-  const observer = new MutationObserver(queueEnhance);
-  observer.observe(app, { childList: true, subtree: true });
+  if (window.BurnBudsSync) window.BurnBudsSync.subscribe(queueEnhance, { immediate: false });
   queueEnhance();
 })();
