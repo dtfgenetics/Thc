@@ -12,7 +12,11 @@ const backupRoot = process.env.BACKUP_ROOT || '/tmp/dtf-outdoor-quantification-v
 const file = 'site/wordpress/education/outdoor-quantification-v1.json';
 const start = '<!-- dtf-outdoor-quantification-v1:start -->';
 const end = '<!-- dtf-outdoor-quantification-v1:end -->';
-const canonicalOwner = 'Teaching Healthy Cultivation · Companion literature';
+const canonicalOwnerMarkers = [
+  'data-dtf-topic="outdoor-cultivation"',
+  'data-dtf-learning-v4="topic-outdoor-cultivation"',
+  'data-dtf-outdoor-v6="true"'
+];
 
 const esc = (v = '') => String(v)
   .replaceAll('&', '&amp;')
@@ -173,7 +177,8 @@ if (!user || !pass) fail('WP_API_USERNAME and WP_API_PASSWORD are required for p
 
 const page = await outdoorPage();
 const before = rendered(page.content);
-if (!before.includes(canonicalOwner) || !before.includes('Literature first:')) fail('Canonical Outdoor companion literature is missing; refusing to create a competing page owner.');
+const missingOwnerMarkers = canonicalOwnerMarkers.filter((marker) => !before.includes(marker));
+if (missingOwnerMarkers.length) fail(`Canonical Outdoor V3/V4/V6 owner stack is incomplete; refusing to create a competing page owner. Missing: ${missingOwnerMarkers.join(', ')}`);
 const cleaned = stripExisting(before);
 const after = `${cleaned}\n${renderBlock(data)}`;
 if ((after.match(/data-dtf-outdoor-quantification-v1="true"/g) || []).length !== 1) fail('Expected exactly one quantification owner marker');
@@ -187,7 +192,7 @@ await writeFile(join(backupDir, 'data.json'), JSON.stringify(data, null, 2), 'ut
 
 const updated = await request(`/wp-json/wp/v2/pages/${page.id}`, { method: 'POST', body: JSON.stringify({ content: after }) });
 const saved = rendered(updated.content);
-if (!saved.includes(canonicalOwner)) fail('WordPress response lost canonical companion literature');
+for (const marker of canonicalOwnerMarkers) if (!saved.includes(marker)) fail(`WordPress response lost canonical Outdoor owner marker ${marker}`);
 if (!saved.includes('data-dtf-outdoor-quantification-v1="true"')) fail('WordPress response is missing quantification marker');
 for (const section of data.sections) {
   if (!saved.includes(`data-oqv1-chapter="${section.chapterId}"`)) fail(`WordPress response missing chapter ${section.chapterId}`);
@@ -201,6 +206,7 @@ const report = {
   validation,
   publishedAt: new Date().toISOString(),
   canonicalOwnerPreserved: true,
+  canonicalOwnerMarkers,
   marker: 'data-dtf-outdoor-quantification-v1="true"',
   completedChapters: data.coverage?.completedChapters || []
 };
