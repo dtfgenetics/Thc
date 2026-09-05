@@ -15,8 +15,12 @@ on:
       - scripts/publish-learning-expanded-references-owner-aware.mjs
       - scripts/verify-learning-owner-storage.mjs
       - scripts/update-wordpress-learn-expansion-v1.mjs
+      - scripts/enhance-wordpress-learning-v4.mjs
+      - scripts/verify-wordpress-outdoor-owner-prerequisites.mjs
+      - scripts/validate-outdoor-learning-owner-isolation.mjs
       - .github/workflows/wordpress-canonical-production.yml
       - .github/workflows/wordpress-learning-experience-v3-production.yml
+      - .github/workflows/wordpress-harvest-outdoor-v6-production.yml
       - .github/workflows/wordpress-genetics-library-production.yml
       - .github/workflows/dtfseeds-production-gateway.yml
       - scripts/validate-dtfseeds-route-ownership.mjs
@@ -35,8 +39,12 @@ on:
       - scripts/publish-learning-expanded-references-owner-aware.mjs
       - scripts/verify-learning-owner-storage.mjs
       - scripts/update-wordpress-learn-expansion-v1.mjs
+      - scripts/enhance-wordpress-learning-v4.mjs
+      - scripts/verify-wordpress-outdoor-owner-prerequisites.mjs
+      - scripts/validate-outdoor-learning-owner-isolation.mjs
       - .github/workflows/wordpress-canonical-production.yml
       - .github/workflows/wordpress-learning-experience-v3-production.yml
+      - .github/workflows/wordpress-harvest-outdoor-v6-production.yml
       - .github/workflows/wordpress-genetics-library-production.yml
       - .github/workflows/dtfseeds-production-gateway.yml
       - scripts/validate-dtfseeds-route-ownership.mjs
@@ -57,4 +65,8 @@ jobs:
         with:
           node-version: 22
       - name: Validate production ownership
-        run: node scripts/validate-dtfseeds-route-ownership.mjs
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/validate-dtfseeds-route-ownership.mjs
+          node scripts/validate-outdoor-learning-owner-isolation.mjs

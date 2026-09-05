@@ -6,11 +6,15 @@ const site = (process.env.WP_SITE_URL || 'https://dtfseeds.com').replace(/\/$/, 
 const user = process.env.WP_API_USERNAME || '';
 const pass = process.env.WP_API_PASSWORD || '';
 const apply = String(process.env.APPLY_LEARNING_V4 || '').toLowerCase() === 'true';
+const outdoorTopicsOnly = String(process.env.APPLY_HARVEST_OUTDOOR_V6 || '').toLowerCase() === 'true';
+const scope = String(process.env.LEARNING_V4_SCOPE || (outdoorTopicsOnly ? 'topics-only' : 'all')).toLowerCase();
+const validScopes = new Set(['all', 'topics-only']);
 const guidePath = process.env.LEARNING_GUIDE_V4_PATH || 'site/wordpress/education/learning-guides-v4.json';
 const literaturePath = process.env.TOPIC_LITERATURE_PATH || 'site/wordpress/education/topic-literature.json';
 const encyclopediaPath = process.env.ENCYCLOPEDIA_TOPIC_FILE || 'configuration/encyclopedia-topics.json';
 const backupRoot = process.env.BACKUP_ROOT || '/tmp/dtf-learning-v4';
 if (!user || !pass) throw new Error('WP_API_USERNAME and WP_API_PASSWORD are required');
+if (!validScopes.has(scope)) throw new Error(`Unsupported LEARNING_V4_SCOPE: ${scope}`);
 
 const auth = `Basic ${Buffer.from(`${user}:${pass}`).toString('base64')}`;
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
@@ -28,7 +32,7 @@ async function request(path, options = {}) {
         headers: {
           Authorization: auth,
           Accept: 'application/json',
-          'User-Agent': 'DTFSeeds-Learning-V4/1.0',
+          'User-Agent': 'DTFSeeds-Learning-V4/1.1',
           ...(options.body ? { 'Content-Type': 'application/json' } : {}),
           ...(options.headers || {})
         }
@@ -169,11 +173,15 @@ async function writePage(page, next, tag) {
 }
 
 const results = [];
-const learnPage = await getPage('learn', 'data-dtf-layout="learn-v3"');
-let learnContent = stripV4(rendered(learnPage.content));
-if (!learnContent.includes('data-dtf-layout="learn-v3"')) throw new Error('Learn is not currently owned by the V3 learning experience; refusing to layer V4 over an unknown page');
-await writePage(learnPage, insertAfterHero(learnContent, learnBlock()), 'learn');
-results.push({ id: 'learn', route: '/learn/', pageId: learnPage.id });
+if (scope === 'all') {
+  const learnPage = await getPage('learn', 'data-dtf-layout="learn-v3"');
+  const learnContent = stripV4(rendered(learnPage.content));
+  if (!learnContent.includes('data-dtf-layout="learn-v3"')) throw new Error('Learn is not currently owned by the V3 learning experience; refusing to layer V4 over an unknown page');
+  await writePage(learnPage, insertAfterHero(learnContent, learnBlock()), 'learn');
+  results.push({ id: 'learn', route: '/learn/', pageId: learnPage.id });
+} else {
+  results.push({ id: 'learn', route: '/learn/', action: 'preserved-canonical-root' });
+}
 
 for (const id of Object.keys(guide.topics)) {
   const topic = topicIndex.get(id);
@@ -181,13 +189,13 @@ for (const id of Object.keys(guide.topics)) {
   if (!slug) throw new Error(`${id}: canonical route is invalid`);
   const ownerMarker = `data-dtf-topic="${id}"`;
   const page = await getPage(slug, ownerMarker);
-  let content = stripV4(rendered(page.content));
+  const content = stripV4(rendered(page.content));
   if (!content.includes(ownerMarker)) throw new Error(`${id}: current WordPress subject page is not the expected V3 topic owner`);
   await writePage(page, insertAfterHero(content, topicBlock(id)), `topic-${id}`);
   results.push({ id, route: topic.route, pageId: page.id });
 }
 
-const report = { generatedAt: new Date().toISOString(), apply, guidePath, topicCount: Object.keys(guide.topics).length, trackCount: guide.tracks.length, results };
+const report = { generatedAt: new Date().toISOString(), apply, scope, rootMutation: scope === 'all' ? 'enabled' : 'preserved-canonical-root', guidePath, topicCount: Object.keys(guide.topics).length, trackCount: guide.tracks.length, results };
 await writeFile(join(backupRoot, 'learning-v4-report.json'), `${JSON.stringify(report, null, 2)}\n`);
 await writeFile(join(backupDir, 'learning-v4-report.json'), `${JSON.stringify(report, null, 2)}\n`);
 console.log(JSON.stringify(report, null, 2));
