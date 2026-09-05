@@ -236,14 +236,14 @@ jobs:
               return 1
             fi
             if ! grep -Fqi "$marker" "$body"; then
-              echo "Expected marker '$marker' was not found at $path" >&2
+              echo "Expected visitor text '$marker' was not found at $path" >&2
               rm -f "$body"
               return 1
             fi
             rm -f "$body"
           }
-          check '/' 'data-dtf-layout="home-v3"'
-          check '/learn/' 'data-dtf-layout="learn-v3"'
+          check '/' 'Genetics first. Learn the plant behind the pack.'
+          check '/learn/' 'Learn in a sequence that makes the plant easier to understand.'
           check '/community/' 'Join the official DTF / Teaching Healthy Cultivation Discord'
 
       - name: Verify education production surfaces independently
@@ -253,6 +253,17 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          learn="$(timeout "${VERIFY_REQUEST_TIMEOUT_SECONDS}s" curl -4 -fsSL \
+            --connect-timeout 10 --max-time 30 \
+            --retry 2 --retry-all-errors --retry-delay 2 \
+            -H 'Cache-Control: no-cache, no-store, max-age=0' \
+            "https://dtfseeds.com/learn/?dtf_gateway=${GITHUB_RUN_ID}")"
+          grep -Fqi 'Learn the plant as a connected system.' <<<"$learn"
+          grep -Fqi 'Plant Health & IPM' <<<"$learn"
+          grep -Fqi 'Cultivation Science' <<<"$learn"
+          grep -Fqi 'Symptom Differentials' <<<"$learn"
+          grep -Fqi 'Printable Field Tools' <<<"$learn"
+          grep -Fqi 'Evidence & Sources' <<<"$learn"
           for route in plant-health cultivation-science symptoms tools sources; do
             body="$(timeout "${VERIFY_REQUEST_TIMEOUT_SECONDS}s" curl -4 -fsSL \
               --connect-timeout 10 --max-time 30 \
