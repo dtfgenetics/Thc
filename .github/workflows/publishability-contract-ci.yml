@@ -52,6 +52,13 @@ jobs:
           node --check scripts/studio/integrate.mjs
           node --check scripts/studio/integrate-generated-change.mjs
           node --check scripts/validate-publishability-contract.mjs
+          node --check scripts/validate-learning-public-convergence-contract.mjs
+
+      - name: Enforce Learning public convergence boundary
+        run: |
+          set -euo pipefail
+          node scripts/validate-learning-public-convergence-contract.mjs \
+            | tee "$RUNNER_TEMP/learning-public-convergence-contract.txt"
 
       - name: Enforce repo-to-live contract
         run: |
@@ -65,6 +72,12 @@ jobs:
           {
             echo '## Repo-to-live publishability contract'
             echo
+            if [[ -s "$RUNNER_TEMP/learning-public-convergence-contract.txt" ]]; then
+              echo '### Learning public convergence'
+              echo '```text'
+              cat "$RUNNER_TEMP/learning-public-convergence-contract.txt"
+              echo '```'
+            fi
             if [[ -s "$RUNNER_TEMP/publishability-contract.json" ]]; then
               echo '```json'
               cat "$RUNNER_TEMP/publishability-contract.json"

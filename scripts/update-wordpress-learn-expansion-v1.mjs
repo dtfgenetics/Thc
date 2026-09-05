@@ -13,20 +13,49 @@ const routes = [
   '/learn/tools/',
   '/learn/sources/'
 ];
-const requiredMarkers = [
+const storedMarkers = [
   'data-dtf-layout="learn-v3"',
   'data-dtf-learning-map="v4"',
   'data-dtf-learning-expanded-reference="v1"',
-  'Learn the plant as a connected system.'
+  '/learn/atlas/',
+  'Open the THC Living Plant Atlas'
 ];
+const publicSemantics = [
+  'Teaching Healthy Cultivation',
+  'Learn in a sequence that makes the plant easier to understand.',
+  'Open the THC Living Plant Atlas',
+  'See how the systems connect before you go deep.',
+  'Learn the plant as a connected system.',
+  'Plant Health & IPM',
+  'Cultivation Science',
+  'Symptom Differentials',
+  'Printable Field Tools',
+  'Evidence & Sources'
+];
+const publicRoutes = ['/learn/atlas/', ...routes];
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+function positiveInteger(value, fallback) {
+  const parsed = Number.parseInt(String(value || ''), 10);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+}
+
+const convergenceAttempts = positiveInteger(process.env.LEARNING_ROOT_CONVERGENCE_ATTEMPTS, 12);
+const convergenceDelayMs = positiveInteger(process.env.LEARNING_ROOT_CONVERGENCE_DELAY_MS, 5000);
+
+function storedContent(page) {
+  if (typeof page?.content?.raw === 'string') return page.content.raw;
+  if (typeof page?.content?.rendered === 'string') return page.content.rendered;
+  return '';
+}
 
 // This compatibility step intentionally performs no WordPress mutation.
 // Learning Experience V3 is the sole automatic writer for /learn/. The
 // education-expansion workflow publishes child pages, then waits until the
-// canonical Learn owner exposes links to those already-published children.
+// canonical Learn owner has both the required stored owner state and the
+// stable visitor-facing semantics for those already-published children.
 const storedResponse = await fetch(`${siteUrl}/wp-json/wp/v2/pages?slug=learn&context=edit&per_page=10`, {
-  headers: { Authorization: auth, Accept: 'application/json', 'User-Agent': 'DTFSeeds-Learn-Expansion-Ownership-Check/2.0' },
+  headers: { Authorization: auth, Accept: 'application/json', 'User-Agent': 'DTFSeeds-Learn-Expansion-Ownership-Check/2.1' },
   redirect: 'follow',
   signal: AbortSignal.timeout(60_000)
 });
@@ -36,10 +65,18 @@ if (!Array.isArray(pages) || pages.length !== 1) {
   throw new Error(`Expected exactly one Learn page, found ${Array.isArray(pages) ? pages.length : 'invalid response'}`);
 }
 
+const stored = storedContent(pages[0]);
+const missingStored = storedMarkers.filter((marker) => !stored.includes(marker));
+if (missingStored.length) {
+  throw new Error(`Canonical Learn owner is missing stored markers: ${missingStored.join(', ')}`);
+}
+
 let verified = false;
 let lastStatus = 0;
 let lastBytes = 0;
-for (let attempt = 1; attempt <= 60; attempt += 1) {
+let missingSemantics = [...publicSemantics];
+let missingRoutes = [...publicRoutes];
+for (let attempt = 1; attempt <= convergenceAttempts; attempt += 1) {
   try {
     const response = await fetch(`${siteUrl}/learn/?dtf_expansion_owner=${Date.now()}-${attempt}`, {
       headers: { 'Cache-Control': 'no-cache, no-store, max-age=0', Pragma: 'no-cache' },
@@ -49,24 +86,33 @@ for (let attempt = 1; attempt <= 60; attempt += 1) {
     const html = await response.text();
     lastStatus = response.status;
     lastBytes = html.length;
-    if (response.ok && requiredMarkers.every((marker) => html.includes(marker)) && routes.every((href) => html.includes(href))) {
+    missingSemantics = publicSemantics.filter((marker) => !html.toLowerCase().includes(marker.toLowerCase()));
+    missingRoutes = publicRoutes.filter((href) => !html.includes(href));
+    if (response.ok && missingSemantics.length === 0 && missingRoutes.length === 0) {
       verified = true;
+      console.log(`Learn visitor semantics converged on attempt ${attempt}/${convergenceAttempts}.`);
       break;
     }
+    console.warn(`Learn visitor semantics not converged on attempt ${attempt}/${convergenceAttempts}; missingSemantics=${JSON.stringify(missingSemantics)}, missingRoutes=${JSON.stringify(missingRoutes)}`);
   } catch (error) {
-    console.warn(`Learn-owner convergence check ${attempt} failed transiently: ${error?.message || error}`);
+    console.warn(`Learn-owner convergence check ${attempt}/${convergenceAttempts} failed transiently: ${error?.message || error}`);
   }
-  await sleep(5000);
+  if (attempt < convergenceAttempts) await sleep(convergenceDelayMs);
 }
 
 if (!verified) {
-  throw new Error(`Canonical Learning Experience V3 did not expose the education expansion routes in time (lastStatus=${lastStatus}, lastBytes=${lastBytes}).`);
+  throw new Error(`Canonical Learning Experience V3 visitor semantics did not converge (lastStatus=${lastStatus}, lastBytes=${lastBytes}, missingSemantics=${JSON.stringify(missingSemantics)}, missingRoutes=${JSON.stringify(missingRoutes)}).`);
 }
 
 console.log(JSON.stringify({
   pageId: pages[0].id,
   canonicalOwner: 'Learning Experience V3',
   mutation: 'none',
+  storedVerification: 'success',
+  publicVerification: 'semantic-cache-convergence',
+  convergenceAttempts,
+  convergenceDelayMs,
   routes,
+  publicSemantics,
   liveVerification: 'success'
 }, null, 2));
