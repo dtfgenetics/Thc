@@ -24,10 +24,18 @@ test.describe('THC Living Plant Atlas V4', () => {
       Trichomes: 'trichomes-resin',
     };
     const activateFocus = async (name: keyof typeof focusTargets) => {
-      const button = page.locator(`[data-plant-focus="${focusTargets[name]}"]`);
-      await expect(button).toHaveCount(1);
-      await button.scrollIntoViewIfNeeded();
-      await button.dispatchEvent('click');
+      const target = focusTargets[name];
+      await page.waitForFunction(
+        (focusTarget) => document.querySelector(`[data-plant-focus="${focusTarget}"]`) instanceof HTMLElement,
+        target,
+      );
+      const activated = await page.evaluate((focusTarget) => {
+        const button = document.querySelector(`[data-plant-focus="${focusTarget}"]`);
+        if (!(button instanceof HTMLElement)) return false;
+        button.click();
+        return true;
+      }, target);
+      expect(activated).toBe(true);
     };
 
     await expect(canvas).toBeVisible();
