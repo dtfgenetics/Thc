@@ -260,7 +260,7 @@
       }
       setFirePending(true);
     },true);
-    new MutationObserver(queueSync).observe(root,{childList:true,subtree:true});
+    if(window.BurnBudsSync)window.BurnBudsSync.subscribe(queueSync,{immediate:false});
   }
 
   if(typeof api==='function'&&!api.__burnTargetLock){
@@ -274,8 +274,5 @@
     api=wrapped;
   }
 
-  document.addEventListener('visibilitychange',()=>{if(!document.hidden)queueSync()});
-  window.addEventListener('online',queueSync);
-  window.addEventListener('resize',queueSync,{passive:true});
   queueSync();
 })();
