@@ -9,6 +9,11 @@ const files = {
   canonicalWorkflow: '.github/workflows/wordpress-canonical-production.yml',
   learningWorkflow: '.github/workflows/wordpress-learning-experience-v3-production.yml',
   learningTransaction: 'scripts/run-learning-v3-connected-production.sh',
+  learningV3Prepare: 'scripts/prepare-learning-v3-owner-aware-publisher.mjs',
+  learningFollowupPrepare: 'scripts/prepare-learning-owner-aware-followup-publishers.mjs',
+  learningExpanded: 'scripts/publish-learning-expanded-references-owner-aware.mjs',
+  learningStorage: 'scripts/verify-learning-owner-storage.mjs',
+  productionGateway: '.github/workflows/dtfseeds-production-gateway.yml',
   educationNavigation: 'scripts/update-wordpress-learn-expansion-v1.mjs',
   geneticsWorkflow: '.github/workflows/wordpress-genetics-library-production.yml'
 };
@@ -107,19 +112,68 @@ failIf(
   'Education expansion navigation step is not explicitly read-only.'
 );
 
-// Learning V3 remains the automatic Learn owner and its serialized transaction
-// must carry both the connected map and expanded reference-system links.
+// Learning V3 remains the automatic Home/Learn owner. Root ownership is a
+// WordPress storage proof; topic and child-route acceptance stays anonymous.
 failIf(
   !/bash scripts\/run-learning-v3-connected-production\.sh/m.test(content.learningWorkflow),
   'Learning V3 workflow no longer invokes its connected owner transaction.'
 );
 failIf(
-  !/data-dtf-learning-expanded-reference=\\?"v1\\?"/m.test(content.learningTransaction),
-  'Learning V3 owner transaction no longer publishes expanded reference links.'
+  !/prepare-learning-v3-owner-aware-publisher\.mjs/m.test(content.learningTransaction) ||
+    !/prepare-learning-owner-aware-followup-publishers\.mjs/m.test(content.learningTransaction) ||
+    !/publish-learning-expanded-references-owner-aware\.mjs/m.test(content.learningTransaction),
+  'Learning owner transaction no longer uses the reviewed owner-aware publisher chain.'
+);
+for (const stage of ['v3', 'v4', 'expanded', 'visual']) {
+  failIf(
+    !new RegExp(`LEARNING_OWNER_STAGE=${stage}`).test(content.learningTransaction),
+    `Learning owner transaction no longer verifies ${stage} through authenticated storage.`
+  );
+}
+failIf(
+  !/rootVerification:\s*['"]wordpress-rest['"]/m.test(content.learningV3Prepare) ||
+    !/topicVerification:\s*['"]anonymous-public['"]/m.test(content.learningV3Prepare),
+  'Learning V3 preparation no longer separates root storage proof from topic visitor proof.'
 );
 failIf(
-  !/Learn the plant as a connected system\./m.test(content.learningTransaction),
-  'Learning V3 owner transaction no longer carries the public Learn ownership fingerprint.'
+  !/verification:\s*['"]wordpress-rest-storage['"]/m.test(content.learningStorage) ||
+    !/page_on_front/m.test(content.learningStorage) ||
+    !/data-dtf-layout=\\?"home-v3\\?"/m.test(content.learningStorage) ||
+    !/data-dtf-layout=\\?"learn-v3\\?"/m.test(content.learningStorage),
+  'Learning root storage verifier no longer proves canonical Home/Learn ownership.'
+);
+failIf(
+  !/Stored Learn V4 owner verification failed/m.test(content.learningFollowupPrepare) ||
+    !/Learning Visual V1 verification failed/m.test(content.learningFollowupPrepare),
+  'Learning V4/Visual owner-aware preparation no longer fails closed on stored root verification.'
+);
+failIf(
+  !/storageVerification:\s*['"]success['"]/m.test(content.learningExpanded) ||
+    !/data-dtf-learning-expanded-reference=\\?"v1\\?"/m.test(content.learningExpanded),
+  'Expanded Learning references are no longer verified through stored Learn ownership.'
+);
+failIf(
+  !/data-dtf-learning-expanded-reference=\\?"v1\\?"/m.test(content.learningTransaction) ||
+    !/Learn the plant as a connected system\./m.test(content.learningTransaction),
+  'Learning V3 owner transaction no longer carries expanded-reference ownership fingerprints.'
+);
+
+// The cumulative gateway must verify public roots by stable visitor semantics,
+// not private WordPress storage attributes. Education child routes remain public.
+failIf(
+  !/check '\/' 'Genetics first\. Learn the plant behind the pack\.'/m.test(content.productionGateway) ||
+    !/check '\/learn\/' 'Learn in a sequence that makes the plant easier to understand\.'/m.test(content.productionGateway),
+  'Production gateway no longer verifies Home/Learn through stable visitor semantics.'
+);
+failIf(
+  /check '\/' 'data-dtf-layout=/m.test(content.productionGateway) ||
+    /check '\/learn\/' 'data-dtf-layout=/m.test(content.productionGateway),
+  'Production gateway again treats private root storage attributes as anonymous visitor requirements.'
+);
+failIf(
+  !/Learn the plant as a connected system\./m.test(content.productionGateway) ||
+    !/for route in plant-health cultivation-science symptoms tools sources/m.test(content.productionGateway),
+  'Production gateway no longer independently verifies the public education surface and child routes.'
 );
 
 // The broad canonical workflow should not make an obsolete Seeds-layout check
@@ -150,5 +204,6 @@ console.log('- /seeds/ is excluded from generic WordPress page reconciliation.')
 console.log('- commerce visual publishing does not fetch or update /seeds/.');
 console.log('- canonical WordPress production makes Home/Learn transactionally read-only and accepts only valid owner advances.');
 console.log('- education child publishing cannot mutate the Learn root.');
-console.log('- Learning Experience V3 retains connected-map and expanded-reference ownership.');
+console.log('- Learning Experience V3 proves Home/Learn through WordPress storage while topic/child routes remain visitor-verified.');
+console.log('- the cumulative gateway verifies roots by public semantics rather than private storage attributes.');
 console.log('- the dedicated genetics workflow retains publisher + verification ownership.');
