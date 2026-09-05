@@ -1,2 +1,6 @@
 .webgl-fallback[hidden]{display:none!important;pointer-events:none!important}
 .viewer-reset{top:auto;bottom:14px}
+/* Playwright/SwiftShader is intentionally rendered at a smaller raster surface so
+   the full interaction contract stays testable without changing real-user sizing. */
+html[data-plant-atlas-automated-browser="true"] .plant-viewport{height:480px;min-height:480px;align-self:start}
+html[data-plant-atlas-automated-browser="true"] .plant-viewport canvas{height:480px!important;min-height:480px!important}
