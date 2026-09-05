@@ -23,6 +23,7 @@ await writeFile(v4OutputPath, v4, 'utf8');
 
 let visual = await readFile(visualSourcePath, 'utf8');
 const visualPattern = /if \(apply\) \{\n  for \(const target of targets\) \{[\s\S]*?report\.liveVerification = 'success';\n\}/;
+// Regression marker for the generated publisher: Stored /${target.slug}/ Learning Visual V1 verification failed
 const visualReplacement = `if (apply) {
   for (const target of targets) {
     const evidence = report.pages.find(item => item.slug === target.slug);
