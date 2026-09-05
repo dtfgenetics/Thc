@@ -2,12 +2,9 @@ name: Verify Burn Buds Production
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - .github/workflows/verify-protect-the-plants-production.yml
-      - site/public-route-patch/games/protect-the-plants/**
-      - games/protect-the-plants/**
+  workflow_run:
+    workflows: ["Deploy DTFSeeds Public Suite via WordPress V2"]
+    types: [completed]
 
 permissions:
   contents: read
@@ -18,6 +15,7 @@ concurrency:
 
 jobs:
   smoke:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
@@ -185,7 +183,7 @@ jobs:
 
             const desktopTarget = p1.locator('.cell[data-fire]').first();
             await desktopTarget.click();
-            await p1.waitForFunction(() => document.querySelectorAll('.cell.shot,.cell.hit,.cell.miss').length > 0, null, { timeout: 15000 }).catch(() => {});
+            await p1.waitForTimeout(500);
             if (p1FireRequests !== 1) throw new Error(`Desktop targeting should fire once on one click; observed ${p1FireRequests} requests.`);
 
             await p2.waitForTimeout(1800);
@@ -196,8 +194,7 @@ jobs:
             const armed = await mobileTarget.getAttribute('aria-pressed');
             if (armed !== 'true') throw new Error(`Mobile first tap did not arm target; aria-pressed=${armed}`);
             await mobileTarget.click();
-            await p2.waitForFunction(() => performance.getEntriesByType('resource').some(r => /api\.php\?action=fire/.test(r.name)), null, { timeout: 15000 }).catch(() => {});
-            await p2.waitForTimeout(500);
+            await p2.waitForTimeout(700);
             if (p2FireRequests !== 1) throw new Error(`Mobile second tap should fire exactly once; observed ${p2FireRequests} requests.`);
 
             await p1.locator('.coordinate-grid').first().locator('.cell').first().focus();
