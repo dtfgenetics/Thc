@@ -248,7 +248,7 @@ function cell_key(int $r, int $c): string
 function validate_fleet($fleet): array
 {
     if (!is_array($fleet) || count($fleet) !== count(PTP_FORMATIONS)) {
-        fail('All plant formations are required.');
+        fail('All bud formations are required.');
     }
     $specs = [];
     foreach (PTP_FORMATIONS as $s) {
@@ -260,7 +260,7 @@ function validate_fleet($fleet): array
     foreach ($fleet as $f) {
         $id = $f['id'] ?? '';
         if (!isset($specs[$id]) || isset($seen[$id])) {
-            fail('Invalid plant formation.');
+            fail('Invalid bud formation.');
         }
         $seen[$id] = true;
         $cells = $f['cells'] ?? [];
@@ -272,11 +272,11 @@ function validate_fleet($fleet): array
             $r = intval($c['row'] ?? -1);
             $col = intval($c['col'] ?? -1);
             if ($r < 0 || $col < 0 || $r >= PTP_GRID || $col >= PTP_GRID) {
-                fail('Formation is outside the garden.');
+                fail('Formation is outside the stash grid.');
             }
             $key = cell_key($r, $col);
             if (isset($used[$key])) {
-                fail('Plant formations cannot overlap.');
+                fail('Bud formations cannot overlap.');
             }
             $used[$key] = true;
             $norm[] = ['row' => $r, 'col' => $col];
@@ -396,7 +396,7 @@ if ($action === 'create' && $_SERVER['REQUEST_METHOD'] === 'POST') {
         'createdAt' => now_ms(),
         'updatedAt' => now_ms(),
     ];
-    system_msg($room, $name . ' created the garden.');
+    system_msg($room, $name . ' created the Burn Buds room.');
     room_save($room);
     out(['code' => $code, 'playerId' => $p['id'], 'token' => $p['token']]);
 }
@@ -407,7 +407,7 @@ if ($action === 'join' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = clean_name($b['name'] ?? '');
     $room = room_get($code);
     if (count($room['players']) >= 2) {
-        fail('This garden already has two players.');
+        fail('This room already has two players.');
     }
     if ($room['status'] !== 'waiting') {
         fail('This game has already started.');
@@ -423,7 +423,7 @@ if ($action === 'join' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     ];
     $room['players'][] = $p;
     $room['status'] = 'placement';
-    system_msg($room, $name . ' joined the garden.');
+    system_msg($room, $name . ' joined the Burn Buds room.');
     room_save($room);
     out(['code' => $code, 'playerId' => $p['id'], 'token' => $p['token']]);
 }
@@ -475,7 +475,7 @@ if ($action === 'place' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $b = body();
     $room['players'][$meIndex]['fleet'] = validate_fleet($b['fleet'] ?? null);
     $room['players'][$meIndex]['ready'] = true;
-    system_msg($room, $room['players'][$meIndex]['name'] . ' locked their garden.');
+    system_msg($room, $room['players'][$meIndex]['name'] . ' locked their stash.');
     $event = append_event($room, [
         'type' => 'placement',
         'playerId' => $room['players'][$meIndex]['id'],
@@ -486,7 +486,7 @@ if ($action === 'place' && $_SERVER['REQUEST_METHOD'] === 'POST') {
         $room['status'] = 'playing';
         $starterIndex = (($room['round'] - 1) % 2 === 0) ? 0 : 1;
         $room['turnPlayerId'] = $room['players'][$starterIndex]['id'];
-        system_msg($room, 'Both gardens are locked. Round ' . $room['round'] . ' begins.');
+        system_msg($room, 'Both stashes are locked. Round ' . $room['round'] . ' begins.');
     }
     $room['lastEvent'] = $event;
     room_save($room);
@@ -506,11 +506,11 @@ if ($action === 'fire' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $row = intval($b['row'] ?? -1);
     $col = intval($b['col'] ?? -1);
     if ($row < 0 || $col < 0 || $row >= PTP_GRID || $col >= PTP_GRID) {
-        fail('Plot is outside the garden.');
+        fail('Target is outside the battle grid.');
     }
     foreach ($me['shots'] as $s) {
         if ($s['row'] === $row && $s['col'] === $col) {
-            fail('You already scouted that plot.');
+            fail('You already fired at that cell.');
         }
     }
     $fid = formation_at($opp['fleet'], $row, $col);
@@ -529,7 +529,7 @@ if ($action === 'fire' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($hit && formation_lost($opp, $fid)) {
         $event['type'] = 'formation-lost';
         $event['formationId'] = $fid;
-        system_msg($room, $me['name'] . ' found an entire plant formation.');
+        system_msg($room, $me['name'] . ' burned a full bud formation.');
     }
     if (all_lost($opp)) {
         $room['status'] = 'finished';
@@ -540,7 +540,7 @@ if ($action === 'fire' && $_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($fid !== null) {
             $event['formationId'] = $fid;
         }
-        system_msg($room, $me['name'] . ' protected their garden and won round ' . $room['round'] . '.');
+        system_msg($room, $me['name'] . ' burned every opposing bud and won round ' . $room['round'] . '.');
     } else {
         $room['turnPlayerId'] = $opp['id'];
     }
