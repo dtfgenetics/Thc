@@ -158,7 +158,11 @@ if (!generatedIntegrationSource.includes('dtfseeds-production-gateway.yml')) {
 if (!gatewaySource.includes('auto')) {
   contractErrors.push('production gateway no longer exposes the automatic cumulative release mode')
 }
-if (!educationSource.includes('GITHUB_STEP_SUMMARY') || !educationSource.includes('continue-on-error: true')) {
+if (!educationSource.includes('GITHUB_STEP_SUMMARY')) {
+  contractErrors.push('Education release no longer records an authoritative Actions summary')
+}
+const educationHasLegacyReporter = educationSource.includes('github.rest.issues.createComment') || educationSource.includes('Best-effort legacy issue report')
+if (educationHasLegacyReporter && !educationSource.includes('continue-on-error: true')) {
   contractErrors.push('Education release reporting can still veto a verified production result')
 }
 if (!(releaseConfig.lanes?.education?.prefixes || []).includes('site/wordpress/education/')) {
