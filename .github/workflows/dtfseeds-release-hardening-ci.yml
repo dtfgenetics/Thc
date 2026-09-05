@@ -32,6 +32,7 @@ jobs:
           node --check scripts/plan-dtfseeds-release.mjs
           node --check scripts/plan-dtfseeds-resource-release.mjs
           node --check scripts/publish-wordpress-learning-center-expansion-v1.mjs
+          node --check scripts/update-wordpress-learn-expansion-v1.mjs
           node --check scripts/cleanup-stale-wordpress-suite-snippets.mjs
           node scripts/test-dtf-resource-release-system.mjs
           bash -n scripts/run-workflow-and-wait.sh
@@ -42,6 +43,27 @@ jobs:
             scripts/assemble-wordpress-suite-v2.py \
             scripts/assemble-wordpress-suite-resource-aware.py
           grep -Fq 'Enforce authoritative lane outcomes' .github/workflows/dtfseeds-production-gateway.yml
+          grep -Fq 'wordpress-canonical-production.yml --join-existing' .github/workflows/dtfseeds-production-gateway.yml
+          ! grep -Fq 'wordpress-canonical-production.yml --join-only' .github/workflows/dtfseeds-production-gateway.yml
+          grep -Fq 'wordpress-harvest-outdoor-v6-production.yml' .github/workflows/dtfseeds-production-gateway.yml
+          grep -Fq 'Recheck automatic release freshness before visitor verification' .github/workflows/dtfseeds-production-gateway.yml
+          ! grep -Fq 'issues: write' .github/workflows/dtfseeds-production-gateway.yml
+          ! grep -Fq 'github.rest.issues.createComment' .github/workflows/dtfseeds-production-gateway.yml
+          ! grep -Fq 'issue_number: 220' .github/workflows/dtfseeds-production-gateway.yml
+          ! grep -Fq 'issues: write' .github/workflows/wordpress-canonical-deploy.yml
+          ! grep -Fq 'github.rest.issues.createComment' .github/workflows/wordpress-canonical-deploy.yml
+          ! grep -Fq 'issue_number:46' .github/workflows/wordpress-canonical-deploy.yml
+          grep -Fq 'Summarize trusted production handoff' .github/workflows/wordpress-canonical-deploy.yml
+          ! grep -Fq 'issues: write' .github/workflows/deploy-thc-learning-center-expansion-v1.yml
+          ! grep -Fq 'github.rest.issues.createComment' .github/workflows/deploy-thc-learning-center-expansion-v1.yml
+          ! grep -Fq 'issue_number: 220' .github/workflows/deploy-thc-learning-center-expansion-v1.yml
+          ! grep -Fq 'issue_comment:' .github/workflows/deploy-thc-learning-center-expansion-v1.yml
+          grep -Fq 'group: dtfseeds-learning-experience-v3' .github/workflows/deploy-thc-learning-center-expansion-v1.yml
+          grep -Fq 'Refresh canonical Learning V3 owner transaction' .github/workflows/deploy-thc-learning-center-expansion-v1.yml
+          grep -Fq 'Confirm expansion routes on canonical Learn hub' .github/workflows/deploy-thc-learning-center-expansion-v1.yml
+          grep -Fq 'bash scripts/run-learning-v3-connected-production.sh' .github/workflows/deploy-thc-learning-center-expansion-v1.yml
+          grep -Fq 'data-dtf-learning-expanded-reference="v1"' .github/workflows/deploy-thc-learning-center-expansion-v1.yml
+          grep -Fq 'data-dtf-learning-map="v4"' .github/workflows/deploy-thc-learning-center-expansion-v1.yml
           grep -Fq 'cancel-in-progress: false' .github/workflows/wordpress-canonical-production.yml
           grep -Fq 'dtf-wordpress-temporary-code-snippets-bridge' .github/workflows/deploy-public-suite-wordpress-v2.yml
           grep -Fq 'dtf-wordpress-temporary-code-snippets-bridge' .github/workflows/deploy-games-suite-lock-recovery.yml
@@ -99,5 +121,5 @@ jobs:
             process.exit(0);
           }
           if(!plan.forceFull) throw new Error('gateway architecture changes did not force full reconciliation');
-          for(const lane of ['publicSuite','wordpress','education']) if(plan.lanes[lane] !== true) throw new Error(`missing lane ${lane}`);
+          for(const lane of ['publicSuite','wordpress','education','harvestOutdoor']) if(plan.lanes[lane] !== true) throw new Error(`missing lane ${lane}`);
           NODE

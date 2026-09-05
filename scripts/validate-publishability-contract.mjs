@@ -165,7 +165,11 @@ if (!gatewaySource.includes('VERIFY_REQUEST_TIMEOUT_SECONDS') || !gatewaySource.
 if (!gatewaySource.includes('Recheck automatic release freshness before visitor verification') || !gatewaySource.includes('steps.verify_freshness.outputs.current')) {
   contractErrors.push('production gateway does not recheck current main before visitor verification and checkpoint enforcement')
 }
-if (!educationSource.includes('GITHUB_STEP_SUMMARY') || !educationSource.includes('continue-on-error: true')) {
+if (!educationSource.includes('GITHUB_STEP_SUMMARY')) {
+  contractErrors.push('Education release no longer records an authoritative Actions summary')
+}
+const educationHasLegacyReporter = educationSource.includes('github.rest.issues.createComment') || educationSource.includes('Best-effort legacy issue report')
+if (educationHasLegacyReporter && !educationSource.includes('continue-on-error: true')) {
   contractErrors.push('Education release reporting can still veto a verified production result')
 }
 const educationOwnerRefresh = educationSource.indexOf('Refresh canonical Learning V3 owner transaction')
