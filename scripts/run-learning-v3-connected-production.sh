@@ -3,6 +3,7 @@ set -euo pipefail
 
 learning_root="${BACKUP_ROOT:-/tmp/dtf-learning-v3}"
 map_root="${LEARNING_V4_BACKUP_ROOT:-/tmp/dtf-learning-v4-final}"
+atlas_v3=/tmp/rebuild-wordpress-learning-experience-v3-atlas.mjs
 owner_v3=/tmp/rebuild-wordpress-learning-experience-v3-owner-aware.mjs
 owner_v4=/tmp/improve-wordpress-learning-v4-owner-aware.mjs
 owner_visual=/tmp/apply-learning-visual-v1-owner-aware.mjs
@@ -22,7 +23,15 @@ fi
 # Learn the plant as a connected system.
 export DTF_REQUIRE_CACHE_CONVERGENCE=true
 
-LEARNING_V3_SOURCE_PUBLISHER="${LEARNING_V3_PUBLISHER_PATH:-scripts/rebuild-wordpress-learning-experience-v3.mjs}" \
+# Compose the canonical V3 owner in two reviewed, fail-closed passes. The Atlas
+# affordance belongs to the base V3 Learn owner and therefore must be present
+# before the owner-aware storage/public verification split is applied.
+LEARNING_V3_BASE_PUBLISHER="${LEARNING_V3_PUBLISHER_PATH:-scripts/rebuild-wordpress-learning-experience-v3.mjs}" \
+LEARNING_V3_ATLAS_PUBLISHER="$atlas_v3" \
+node scripts/prepare-learning-v3-atlas-publisher.mjs \
+  | tee /tmp/dtf-learning-v3-atlas-prepare.json
+
+LEARNING_V3_SOURCE_PUBLISHER="$atlas_v3" \
 LEARNING_V3_OWNER_AWARE_PUBLISHER="$owner_v3" \
 node scripts/prepare-learning-v3-owner-aware-publisher.mjs \
   | tee /tmp/dtf-learning-v3-owner-aware-prepare.json
@@ -69,4 +78,4 @@ node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/verify-learni
 
 test -s "$map_root/learning-v4-backup-path.txt"
 test -s "$map_root/learning-visual-v1-backup-path.txt"
-echo "Canonical Learning V3, connected Learning V4 map, expanded THC references, and DTF Visual V1 stored as one owner transaction; child/topic visitor verification remains independent."
+echo "Canonical Learning V3 with Atlas affordance, connected Learning V4 map, expanded THC references, and DTF Visual V1 stored as one owner transaction; child/topic visitor verification remains independent."
