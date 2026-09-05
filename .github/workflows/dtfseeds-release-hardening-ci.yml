@@ -33,9 +33,14 @@ jobs:
           node --check scripts/plan-dtfseeds-resource-release.mjs
           node --check scripts/publish-wordpress-learning-center-expansion-v1.mjs
           node --check scripts/update-wordpress-learn-expansion-v1.mjs
+          node --check scripts/prepare-learning-v3-owner-aware-publisher.mjs
+          node --check scripts/prepare-learning-owner-aware-followup-publishers.mjs
+          node --check scripts/publish-learning-expanded-references-owner-aware.mjs
+          node --check scripts/verify-learning-owner-storage.mjs
           node --check scripts/cleanup-stale-wordpress-suite-snippets.mjs
           node scripts/test-dtf-resource-release-system.mjs
           bash -n scripts/run-workflow-and-wait.sh
+          bash -n scripts/run-learning-v3-connected-production.sh
           python -m py_compile \
             scripts/package-public-suite-wordpress.py \
             scripts/package-public-suite-wordpress-resource-aware.py \
@@ -47,6 +52,11 @@ jobs:
           ! grep -Fq 'wordpress-canonical-production.yml --join-only' .github/workflows/dtfseeds-production-gateway.yml
           grep -Fq 'wordpress-harvest-outdoor-v6-production.yml' .github/workflows/dtfseeds-production-gateway.yml
           grep -Fq 'Recheck automatic release freshness before visitor verification' .github/workflows/dtfseeds-production-gateway.yml
+          grep -Fq "check '/' 'Genetics first. Learn the plant behind the pack.'" .github/workflows/dtfseeds-production-gateway.yml
+          grep -Fq "check '/learn/' 'Learn in a sequence that makes the plant easier to understand.'" .github/workflows/dtfseeds-production-gateway.yml
+          ! grep -Fq "check '/' 'data-dtf-layout=\"home-v3\"'" .github/workflows/dtfseeds-production-gateway.yml
+          ! grep -Fq "check '/learn/' 'data-dtf-layout=\"learn-v3\"'" .github/workflows/dtfseeds-production-gateway.yml
+          grep -Fq "grep -Fqi 'Learn the plant as a connected system.'" .github/workflows/dtfseeds-production-gateway.yml
           ! grep -Fq 'issues: write' .github/workflows/dtfseeds-production-gateway.yml
           ! grep -Fq 'github.rest.issues.createComment' .github/workflows/dtfseeds-production-gateway.yml
           ! grep -Fq 'issue_number: 220' .github/workflows/dtfseeds-production-gateway.yml
@@ -64,6 +74,16 @@ jobs:
           grep -Fq 'bash scripts/run-learning-v3-connected-production.sh' .github/workflows/deploy-thc-learning-center-expansion-v1.yml
           grep -Fq 'data-dtf-learning-expanded-reference="v1"' .github/workflows/deploy-thc-learning-center-expansion-v1.yml
           grep -Fq 'data-dtf-learning-map="v4"' .github/workflows/deploy-thc-learning-center-expansion-v1.yml
+          grep -Fq 'prepare-learning-v3-owner-aware-publisher.mjs' scripts/run-learning-v3-connected-production.sh
+          grep -Fq 'prepare-learning-owner-aware-followup-publishers.mjs' scripts/run-learning-v3-connected-production.sh
+          grep -Fq 'publish-learning-expanded-references-owner-aware.mjs' scripts/run-learning-v3-connected-production.sh
+          for stage in v3 v4 expanded visual; do grep -Fq "LEARNING_OWNER_STAGE=$stage" scripts/run-learning-v3-connected-production.sh; done
+          grep -Fq "rootVerification: 'wordpress-rest'" scripts/prepare-learning-v3-owner-aware-publisher.mjs
+          grep -Fq "topicVerification: 'anonymous-public'" scripts/prepare-learning-v3-owner-aware-publisher.mjs
+          grep -Fq "verification: 'wordpress-rest-storage'" scripts/verify-learning-owner-storage.mjs
+          grep -Fq "storageVerification: 'success'" scripts/publish-learning-expanded-references-owner-aware.mjs
+          grep -Fq 'Stored Learn V4 owner verification failed' scripts/prepare-learning-owner-aware-followup-publishers.mjs
+          grep -Fq 'Stored /${target.slug}/ Learning Visual V1 verification failed' scripts/prepare-learning-owner-aware-followup-publishers.mjs
           grep -Fq 'cancel-in-progress: false' .github/workflows/wordpress-canonical-production.yml
           grep -Fq 'dtf-wordpress-temporary-code-snippets-bridge' .github/workflows/deploy-public-suite-wordpress-v2.yml
           grep -Fq 'dtf-wordpress-temporary-code-snippets-bridge' .github/workflows/deploy-games-suite-lock-recovery.yml
