@@ -27,9 +27,6 @@ const publishableRoots = [
   'apps/high-land-web',
 ]
 
-// These are pre-existing direct-to-main writers discovered during the 2026-09-04
-// convergence repair. CI allows them only so they can be migrated incrementally.
-// The list may shrink; new entries are not an acceptable way to make CI green.
 const legacyDirectMainWriters = new Set([
   'scripts/publish-wordpress-image-backlog.sh',
   'scripts/publish-wordpress-infographics-canonical.sh',
@@ -40,11 +37,8 @@ const legacyDirectMainWriters = new Set([
   '.github/workflows/publish-harvest-images-now.yml',
   '.github/workflows/publish-harvest-outdoor-v6-final-repair.yml',
   '.github/workflows/repair-canonical-infographics.yml',
-  '.github/workflows/repair-harvest-outdoor-v6-production-owner.yml',
   '.github/workflows/repair-sprout-run-production.yml',
-  '.github/workflows/restore-lighting-infographic-production.yml',
   '.github/workflows/wordpress-core-gap-poster-production.yml',
-  '.github/workflows/wordpress-remote-infographic-intake.yml',
 ])
 
 const directMainMentionOnly = new Set([

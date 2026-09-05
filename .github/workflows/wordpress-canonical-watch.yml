@@ -42,7 +42,6 @@ on:
 
 permissions:
   contents: read
-  issues: write
 
 jobs:
   preflight:
@@ -102,9 +101,8 @@ jobs:
           set -euo pipefail
           APPLY_WOOCOMMERCE_CHANGES=false node scripts/reconcile-woocommerce-products.mjs
 
-      - name: Report workflow registration to advisory issue 220
-        if: always() && github.event_name != 'schedule'
-        continue-on-error: true
+      - name: Publish preflight summary
+        if: always()
         uses: actions/github-script@v7
         env:
           PREFLIGHT_STATUS: ${{ job.status }}
@@ -136,15 +134,8 @@ jobs:
               '',
               commerceDetail,
               '',
-              'This workflow intentionally accesses no production credentials and performs no WooCommerce writes. It validates the trusted `main` WordPress package, the infographic media publisher, the authenticated presentation probe syntax, genetics-to-store route consistency, pinned product identities, and the backup/rollback WooCommerce reconciliation package. The protected production workflows own all writes.'
+              'This workflow intentionally accesses no production credentials and performs no WooCommerce writes. It validates the trusted `main` WordPress package, the infographic media publisher, the authenticated presentation probe syntax, genetics-to-store route consistency, pinned product identities, and the backup/rollback WooCommerce reconciliation package. The protected production workflows own all writes.',
+              '',
+              'Routine automation reporting is kept in the Actions job summary; exhausted historical issue ledgers are not used as telemetry sinks.'
             ].join('\n');
-            try {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: 220,
-                body
-              });
-            } catch (error) {
-              core.warning(`Canonical preflight advisory report could not be posted: ${error.message}`);
-            }
+            await core.summary.addRaw(body).write();

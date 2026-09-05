@@ -9,20 +9,24 @@ on:
       - .github/workflows/wordpress-remote-infographic-intake.yml
 
 permissions:
+  actions: write
   contents: write
+  pull-requests: write
 
-# This lane owns remote -> repository ingestion only. It never writes WordPress.
-# Any newly committed canonical image automatically triggers the one authoritative
-# WordPress publisher in wordpress-infographic-production.yml.
+# This lane owns reviewed remote -> canonical repository ingestion only.
+# Generated files are reapplied onto current main through the moving-main safe
+# integrator, which then explicitly wakes cumulative production.
 concurrency:
   group: dtfseeds-infographic-source-intake
   cancel-in-progress: false
 
 jobs:
   ingest:
-    name: Validate and commit reviewed source assets
+    name: Validate and safely integrate reviewed source assets
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -56,6 +60,7 @@ jobs:
           PY
 
       - name: Download reviewed source assets
+        id: download
         shell: bash
         run: |
           set -euo pipefail
@@ -82,6 +87,7 @@ jobs:
           pathlib.Path('/tmp/dtf-remote-intake-files.txt').write_text('\n'.join(downloaded) + ('\n' if downloaded else ''))
           print(f'Downloaded {len(downloaded)} reviewed source asset(s).')
           PY
+          echo "count=$(grep -c . /tmp/dtf-remote-intake-files.txt 2>/dev/null || true)" >> "$GITHUB_OUTPUT"
 
       - name: Validate downloaded image formats
         shell: bash
@@ -99,20 +105,43 @@ jobs:
             done < /tmp/dtf-remote-intake-files.txt
           fi
 
-      - name: Commit canonical source assets
+      - name: Safely integrate canonical source assets
+        id: integrate
         shell: bash
         run: |
           set -euo pipefail
-          git config user.name 'DTF Education Asset Intake'
-          git config user.email 'actions@users.noreply.github.com'
-          git add site/wordpress/assets/infographics
-          if git diff --cached --quiet; then
-            echo 'No new canonical source files to commit.'
-          else
-            git commit -m 'Ingest reviewed education infographic assets'
-            git pull --rebase origin main
-            git push origin HEAD:main
+          paths=()
+          if [[ -s /tmp/dtf-remote-intake-files.txt ]]; then
+            while read -r file; do
+              paths+=("site/wordpress/assets/infographics/$file")
+            done < /tmp/dtf-remote-intake-files.txt
           fi
+
+          if [[ "${#paths[@]}" -eq 0 ]]; then
+            echo 'No enabled reviewed remote assets to integrate.'
+            echo 'changed=false' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          changed=()
+          for path in "${paths[@]}"; do
+            if ! git diff --quiet -- "$path" || ! git ls-files --error-unmatch "$path" >/dev/null 2>&1; then
+              changed+=("$path")
+            fi
+          done
+
+          if [[ "${#changed[@]}" -eq 0 ]]; then
+            echo 'Reviewed remote assets already match canonical repository bytes.'
+            echo 'changed=false' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          printf 'Remote infographic intake generated paths:\n'
+          printf ' - %s\n' "${changed[@]}"
+          node scripts/studio/integrate-generated-change.mjs \
+            --message='Ingest reviewed education infographic assets' \
+            "${changed[@]}"
+          echo 'changed=true' >> "$GITHUB_OUTPUT"
 
       - name: Upload intake evidence
         if: always()
@@ -122,3 +151,21 @@ jobs:
           path: /tmp/dtf-remote-intake-files.txt
           if-no-files-found: warn
           retention-days: 30
+
+      - name: Write intake summary
+        if: always()
+        shell: bash
+        env:
+          STATUS: ${{ job.status }}
+          COUNT: ${{ steps.download.outputs.count }}
+          CHANGED: ${{ steps.integrate.outputs.changed }}
+        run: |
+          {
+            echo '## Reviewed remote infographic intake'
+            echo
+            echo "Result: **${STATUS:-unknown}**"
+            echo "Reviewed assets downloaded: **${COUNT:-0}**"
+            echo "Safe repository integration requested: **${CHANGED:-false}**"
+            echo
+            echo 'Only explicitly enabled HTTPS manifest entries are eligible. Successful integration explicitly wakes cumulative production; visitor publication remains owned by the canonical infographic publisher.'
+          } >> "$GITHUB_STEP_SUMMARY"

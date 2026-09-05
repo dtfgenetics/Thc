@@ -2,10 +2,18 @@ name: Verify DTFSeeds Feature Surface
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/verify-dtfseeds-feature-surface.mjs'
+      - 'data/public-navigation.json'
+      - '.github/workflows/verify-dtfseeds-feature-surface.yml'
+  workflow_run:
+    workflows: [DTFSeeds Production Gateway]
+    types: [completed]
 
 permissions:
   contents: read
-  issues: write
 
 concurrency:
   group: verify-dtfseeds-feature-surface
@@ -13,6 +21,7 @@ concurrency:
 
 jobs:
   verify:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
@@ -21,6 +30,7 @@ jobs:
       - name: Checkout verification source
         uses: actions/checkout@v4
         with:
+          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
           persist-credentials: false
 
       - name: Use Node.js 22
@@ -54,46 +64,48 @@ jobs:
           set -euo pipefail
           node scripts/verify-dtfseeds-feature-surface.mjs
 
-      - name: Report feature surface audit
+      - name: Upload route-level verification evidence
         if: always()
-        continue-on-error: true
-        uses: actions/github-script@v7
+        uses: actions/upload-artifact@v4
+        with:
+          name: dtf-feature-surface-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/dtf-feature-plan.json
+            ${{ runner.temp }}/dtf-feature-surface.json
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Write authoritative feature-surface summary
+        if: always()
+        shell: bash
         env:
           REPORT_PATH: ${{ runner.temp }}/dtf-feature-surface.json
           AUDIT_OUTCOME: ${{ steps.live.outcome }}
-        with:
-          script: |
-            const fs = require('fs');
-            let report = null;
-            try {
-              report = JSON.parse(fs.readFileSync(process.env.REPORT_PATH, 'utf8'));
-            } catch (error) {
-              core.warning(`Feature audit report was unavailable: ${error.message}`);
+          VERIFIED_REF: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
+        run: |
+          node - <<'NODE'
+          const fs = require('fs');
+          const path = process.env.REPORT_PATH;
+          let report = null;
+          try { report = JSON.parse(fs.readFileSync(path, 'utf8')); } catch {}
+          const rows = Array.isArray(report?.rows) ? report.rows : [];
+          const failed = rows.filter(row => !row.ok);
+          const lines = [
+            '## DTFSeeds registry-backed feature surface audit',
+            '',
+            `Run: ${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`,
+            `Verified source: \`${process.env.VERIFIED_REF || 'unknown'}\``,
+            `Audit execution: **${process.env.AUDIT_OUTCOME || 'unknown'}**`,
+            `Routes audited: **${report?.total ?? 0}**`,
+            `Current-content failures: **${report?.failures ?? 'unknown'}**`,
+            '',
+            'The Actions artifact is the authoritative route-level evidence. A route passes only with 2xx status, its own canonical path, sufficient response body, and its durable registry marker.'
+          ];
+          if (failed.length) {
+            lines.push('', '### Failing routes');
+            for (const row of failed.slice(0, 30)) {
+              lines.push(`- \`${row.route || '?'}\` — HTTP ${row.status || '000'}, marker=${row.markerSeen ? 'yes' : 'no'}, identity=${row.routeIdentity ? 'yes' : 'no'}, error=${row.error || '-'}`);
             }
-            const rows = Array.isArray(report?.rows) ? report.rows : [];
-            const table = rows.map(row =>
-              `| ${row.kind || '?'} | \`${row.route || '?'}\` | ${row.status || '000'} | ${row.markerSeen ? 'yes' : 'no'} | ${row.routeIdentity ? 'yes' : 'no'} | ${row.bytes || 0} | **${row.ok ? 'PASS' : 'MISSING/BROKEN'}** | ${row.finalUrl || '-'} |`
-            );
-            try {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: 220,
-                body: [
-                  '## DTFSeeds registry-backed feature surface audit',
-                  '',
-                  `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-                  `Audit execution: **${process.env.AUDIT_OUTCOME || 'unknown'}**`,
-                  `Routes audited: **${report?.total ?? 0}**`,
-                  `Current-content failures: **${report?.failures ?? 'unknown'}**`,
-                  '',
-                  '| Type | Route | HTTP | Marker | Route identity | Bytes | Result | Final URL |',
-                  '|---|---|---:|---|---|---:|---|---|',
-                  ...(table.length ? table : ['| - | - | ? | ? | ? | ? | **MISSING/BROKEN** | - |']),
-                  '',
-                  'Read-only fresh-runner audit generated from data/public-navigation.json. Public routes must return their own canonical path and durable route identity marker; a redirect to a hub cannot pass.'
-                ].join('\n')
-              });
-            } catch (error) {
-              core.warning(`Could not post feature-surface result: ${error.message}`);
-            }
+          }
+          fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, `${lines.join('\n')}\n`);
+          NODE
