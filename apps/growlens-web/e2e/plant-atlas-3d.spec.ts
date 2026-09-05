@@ -61,7 +61,7 @@ test.describe('THC Living Plant Atlas V4', () => {
     await expect(page.locator('[data-inspector-link]')).toHaveAttribute('href', '/atlas/trichomes-resin/');
     await expect(anatomyLabel).toContainText('secretory gland heads');
 
-    await canvas.evaluate((element) => element.dispatchEvent(new KeyboardEvent('keydown', { key: 'r', bubbles: true })));
+    await canvas.dispatchEvent('keydown', { key: 'r', code: 'KeyR', bubbles: true });
     await expect(viewport).toHaveAttribute('data-plant-inspection', 'whole');
     await expect(viewport).toHaveAttribute('data-root-cutaway', 'resting');
     await expect(viewport).toHaveAttribute('data-isolation', 'off');
