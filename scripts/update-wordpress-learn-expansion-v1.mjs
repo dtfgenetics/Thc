@@ -1,4 +1,6 @@
+import { writeFile } from 'node:fs/promises';
 import process from 'node:process';
+import { inspectLearningPublicHtml, publicSemantics, publicRoutes } from './learning-public-semantics.mjs';
 
 const siteUrl = (process.env.WP_SITE_URL || 'https://dtfseeds.com').replace(/\/$/, '');
 const username = process.env.WP_API_USERNAME || '';
@@ -20,19 +22,6 @@ const storedMarkers = [
   '/learn/atlas/',
   'Open the THC Living Plant Atlas'
 ];
-const publicSemantics = [
-  'Teaching Healthy Cultivation',
-  'Learn in a sequence that makes the plant easier to understand.',
-  'Open the THC Living Plant Atlas',
-  'See how the systems connect before you go deep.',
-  'Learn the plant as a connected system.',
-  'Plant Health & IPM',
-  'Cultivation Science',
-  'Symptom Differentials',
-  'Printable Field Tools',
-  'Evidence & Sources'
-];
-const publicRoutes = ['/learn/atlas/', ...routes];
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 function positiveInteger(value, fallback) {
@@ -42,6 +31,8 @@ function positiveInteger(value, fallback) {
 
 const convergenceAttempts = positiveInteger(process.env.LEARNING_ROOT_CONVERGENCE_ATTEMPTS, 12);
 const convergenceDelayMs = positiveInteger(process.env.LEARNING_ROOT_CONVERGENCE_DELAY_MS, 5000);
+const convergenceHtmlPath = process.env.LEARNING_CONVERGENCE_HTML_PATH
+  || `${process.env.RUNNER_TEMP || '/tmp'}/live-learn-convergence.html`;
 
 function storedContent(page) {
   if (typeof page?.content?.raw === 'string') return page.content.raw;
@@ -55,7 +46,7 @@ function storedContent(page) {
 // canonical Learn owner has both the required stored owner state and the
 // stable visitor-facing semantics for those already-published children.
 const storedResponse = await fetch(`${siteUrl}/wp-json/wp/v2/pages?slug=learn&context=edit&per_page=10`, {
-  headers: { Authorization: auth, Accept: 'application/json', 'User-Agent': 'DTFSeeds-Learn-Expansion-Ownership-Check/2.1' },
+  headers: { Authorization: auth, Accept: 'application/json', 'User-Agent': 'DTFSeeds-Learn-Expansion-Ownership-Check/2.2' },
   redirect: 'follow',
   signal: AbortSignal.timeout(60_000)
 });
@@ -84,11 +75,13 @@ for (let attempt = 1; attempt <= convergenceAttempts; attempt += 1) {
       signal: AbortSignal.timeout(60_000)
     });
     const html = await response.text();
+    await writeFile(convergenceHtmlPath, html, 'utf8');
     lastStatus = response.status;
     lastBytes = html.length;
-    missingSemantics = publicSemantics.filter((marker) => !html.toLowerCase().includes(marker.toLowerCase()));
-    missingRoutes = publicRoutes.filter((href) => !html.includes(href));
-    if (response.ok && missingSemantics.length === 0 && missingRoutes.length === 0) {
+    const observed = inspectLearningPublicHtml(html);
+    missingSemantics = observed.missingSemantics;
+    missingRoutes = observed.missingRoutes;
+    if (response.ok && observed.ok) {
       verified = true;
       console.log(`Learn visitor semantics converged on attempt ${attempt}/${convergenceAttempts}.`);
       break;
@@ -101,7 +94,7 @@ for (let attempt = 1; attempt <= convergenceAttempts; attempt += 1) {
 }
 
 if (!verified) {
-  throw new Error(`Canonical Learning Experience V3 visitor semantics did not converge (lastStatus=${lastStatus}, lastBytes=${lastBytes}, missingSemantics=${JSON.stringify(missingSemantics)}, missingRoutes=${JSON.stringify(missingRoutes)}).`);
+  throw new Error(`Canonical Learning Experience V3 visitor semantics did not converge (lastStatus=${lastStatus}, lastBytes=${lastBytes}, missingSemantics=${JSON.stringify(missingSemantics)}, missingRoutes=${JSON.stringify(missingRoutes)}, evidence=${convergenceHtmlPath}).`);
 }
 
 console.log(JSON.stringify({
@@ -110,9 +103,12 @@ console.log(JSON.stringify({
   mutation: 'none',
   storedVerification: 'success',
   publicVerification: 'semantic-cache-convergence',
+  semanticNormalization: 'html-entity-decoded',
   convergenceAttempts,
   convergenceDelayMs,
+  convergenceHtmlPath,
   routes,
   publicSemantics,
+  publicRoutes,
   liveVerification: 'success'
 }, null, 2));
