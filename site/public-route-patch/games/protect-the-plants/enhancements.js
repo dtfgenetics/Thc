@@ -1,7 +1,7 @@
 (() => {
   const PREF_KEY = 'burnBudsUxV3';
   const LEGACY_PREF_KEY = 'protectPlantsUxV2';
-  const defaultPrefs = { sound: true, haptics: true, confirmShots: false };
+  const defaultPrefs = { sound: true, haptics: true };
   let prefs = { ...defaultPrefs };
   try {
     const stored = localStorage.getItem(PREF_KEY) || localStorage.getItem(LEGACY_PREF_KEY) || '{}';
@@ -14,8 +14,6 @@
   let lastSyncAt = 0;
   let lastTurnPlayerId = null;
   let lastSoundEventId = '';
-  let armedShotKey = '';
-  let armedShotUntil = 0;
   let enhanceQueued = false;
 
   const savePrefs = () => localStorage.setItem(PREF_KEY, JSON.stringify(prefs));
@@ -190,7 +188,6 @@
         <div class="ptp-setting-list">
           <label><span><strong>Sound effects</strong><small>Generated in-browser; no audio files or downloads.</small></span><input type="checkbox" data-ptp-pref="sound"></label>
           <label><span><strong>Haptic feedback</strong><small>Uses your device vibration API when supported.</small></span><input type="checkbox" data-ptp-pref="haptics"></label>
-          <label><span><strong>Confirm firing taps</strong><small>Tap a target once to aim, then again to fire. Helps prevent mobile mis-taps.</small></span><input type="checkbox" data-ptp-pref="confirmShots"></label>
         </div>
         <div class="ptp-dialog-actions"><button class="btn primary" value="close">Done</button></div>
       </form>`;
@@ -568,28 +565,6 @@
       vibrate(18);
     }
   });
-
-  document.addEventListener('click', event => {
-    if (!prefs.confirmShots) return;
-    const cell = event.target.closest?.('.cell[data-fire]');
-    if (!cell || state?.status !== 'playing' || state?.turnPlayerId !== state?.me?.id) return;
-    const key = cell.dataset.fire;
-    const now = Date.now();
-    if (armedShotKey === key && now <= armedShotUntil) {
-      armedShotKey = '';
-      armedShotUntil = 0;
-      return;
-    }
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    document.querySelectorAll('.cell.ptp-shot-armed').forEach(el => el.classList.remove('ptp-shot-armed'));
-    armedShotKey = key;
-    armedShotUntil = now + 4000;
-    cell.classList.add('ptp-shot-armed');
-    const [row, col] = key.split(',').map(Number);
-    toast(`Target ${coord(row, col)} armed — tap again to fire.`);
-    vibrate(18);
-  }, true);
 
   document.addEventListener('keydown', event => {
     const target = event.target;

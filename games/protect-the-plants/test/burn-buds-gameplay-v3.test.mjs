@@ -11,7 +11,7 @@ const css = read('gameplay-v3.css');
 const presence = read('presence.php');
 const sw = read('sw.js');
 
-for (const asset of ['gameplay-v3.js', 'gameplay-v3.css', 'combat-a11y-v1.js', 'runtime-sync-v1.js', 'targeting-policy-v1.js', 'presence.php']) {
+for (const asset of ['gameplay-v3.js', 'gameplay-v3.css', 'combat-a11y-v1.js', 'runtime-sync-v1.js', 'presence.php']) {
   assert.ok(fs.existsSync(path.join(root, asset)), `Missing Burn Buds gameplay asset: ${asset}`);
 }
 
@@ -19,14 +19,12 @@ assert.ok(index.includes('./gameplay-v3.css'));
 assert.ok(index.includes('./gameplay-v3.js'));
 assert.ok(index.includes('./combat-a11y-v1.js'));
 assert.ok(index.includes('./runtime-sync-v1.js'));
-assert.ok(index.includes('./targeting-policy-v1.js'));
 assert.ok(sw.includes('./gameplay-v3.css'));
 assert.ok(sw.includes('./gameplay-v3.js'));
 assert.ok(sw.includes('./combat-a11y-v1.js'));
 assert.ok(sw.includes('./runtime-sync-v1.js'));
-assert.ok(sw.includes('./targeting-policy-v1.js'));
 assert.ok(sw.includes("url.pathname.endsWith('/presence.php')"));
-assert.ok(sw.includes('ptp-shell-v7-burn-buds-targeting-policy-20260905'));
+assert.ok(sw.includes('ptp-shell-v8-burn-buds-native-targeting-20260905'));
 assert.ok(sw.includes('./battle-feedback-v1.js'));
 assert.ok(sw.includes('./placement-v1.js'));
 assert.ok(sw.includes('./targeting-v1.js'));
