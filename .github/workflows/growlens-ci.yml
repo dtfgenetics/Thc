@@ -1,33 +1,35 @@
 name: GrowLens CI
 
 on:
-  workflow_dispatch:
   pull_request:
-    branches:
-      - main
     paths:
       - 'apps/growlens-web/**'
-      - 'scripts/growlens-live-acceptance*.mjs'
+      - 'site/public-route-patch/atlas/**'
+      - 'scripts/**growlens**'
       - 'package.json'
+      - 'package-lock.json'
       - '.github/workflows/growlens-ci.yml'
-      - '.github/workflows/growlens-deploy-hostinger.yml'
-      - '.github/workflows/growlens-live-acceptance.yml'
   push:
-    branches:
-      - main
+    branches: [main]
     paths:
       - 'apps/growlens-web/**'
-      - 'scripts/growlens-live-acceptance*.mjs'
+      - 'site/public-route-patch/atlas/**'
+      - 'scripts/**growlens**'
       - 'package.json'
+      - 'package-lock.json'
       - '.github/workflows/growlens-ci.yml'
-      - '.github/workflows/growlens-deploy-hostinger.yml'
-      - '.github/workflows/growlens-live-acceptance.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: growlens-ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
-
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -136,11 +138,11 @@ jobs:
           if-no-files-found: ignore
 
       - name: Upload GrowLens browser artifacts
-        if: failure()
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: growlens-playwright-artifacts
           path: |
-            apps/growlens-web/test-results
-            apps/growlens-web/playwright-report
+            test-results
+            playwright-report
           if-no-files-found: ignore
