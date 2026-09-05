@@ -9,7 +9,8 @@ test.describe('THC Living Plant Atlas V4', () => {
 
     await page.goto(atlasPath, { waitUntil: 'domcontentloaded' });
     await expect(page.getByRole('heading', { name: 'The Living Plant Atlas' })).toBeVisible();
-    await expect(page.getByText('3D anatomy explorer · V4')).toBeVisible();
+    await expect(page.getByText('3D anatomy explorer', { exact: true })).toBeVisible();
+    await expect(page.getByText('Interactive botanical specimen', { exact: true })).toBeVisible();
 
     const viewport = page.locator('[data-plant-3d]');
     const canvas = page.locator('[data-plant-canvas]');
