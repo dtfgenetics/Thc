@@ -1,7 +1,6 @@
 (()=>{
   let presenceTimer=null;
   let lastPresence=null;
-  let enhanceQueued=false;
   let lastBurnEventId='';
 
   const normalizeText=value=>String(value||'')
@@ -227,12 +226,7 @@
     api=wrapped;
   }
 
-  const root=document.querySelector('#app');
-  if(root)new MutationObserver(()=>{
-    if(enhanceQueued)return;
-    enhanceQueued=true;
-    requestAnimationFrame(()=>{enhanceQueued=false;enhance()});
-  }).observe(root,{childList:true,subtree:true});
+  if(window.BurnBudsSync)window.BurnBudsSync.subscribe(enhance,{immediate:false});
 
   document.addEventListener('visibilitychange',restartPresencePolling);
   window.addEventListener('online',restartPresencePolling);

@@ -142,7 +142,7 @@
     root.addEventListener('click',event=>{
       if(event.target.closest?.('[data-action="rotate"],[data-action="random"],[data-formation]'))requestAnimationFrame(queueSync);
     });
-    new MutationObserver(queueSync).observe(root,{childList:true,subtree:true});
+    if(window.BurnBudsSync)window.BurnBudsSync.subscribe(queueSync,{immediate:false});
   }
 
   queueSync();

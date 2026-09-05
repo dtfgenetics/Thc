@@ -90,10 +90,6 @@
     });
   }
 
-  const root=document.querySelector('#app');
-  if(root)new MutationObserver(queueSync).observe(root,{childList:true,subtree:true});
-  window.addEventListener('online',queueSync);
-  document.addEventListener('visibilitychange',()=>{if(!document.hidden)queueSync()});
   ensureAnnouncer();
-  queueSync();
+  if(window.BurnBudsSync)window.BurnBudsSync.subscribe(queueSync);else queueSync();
 })();

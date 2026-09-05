@@ -11,18 +11,20 @@ const css = read('gameplay-v3.css');
 const presence = read('presence.php');
 const sw = read('sw.js');
 
-for (const asset of ['gameplay-v3.js', 'gameplay-v3.css', 'combat-a11y-v1.js', 'presence.php']) {
+for (const asset of ['gameplay-v3.js', 'gameplay-v3.css', 'combat-a11y-v1.js', 'runtime-sync-v1.js', 'presence.php']) {
   assert.ok(fs.existsSync(path.join(root, asset)), `Missing Burn Buds gameplay asset: ${asset}`);
 }
 
 assert.ok(index.includes('./gameplay-v3.css'));
 assert.ok(index.includes('./gameplay-v3.js'));
 assert.ok(index.includes('./combat-a11y-v1.js'));
+assert.ok(index.includes('./runtime-sync-v1.js'));
 assert.ok(sw.includes('./gameplay-v3.css'));
 assert.ok(sw.includes('./gameplay-v3.js'));
 assert.ok(sw.includes('./combat-a11y-v1.js'));
+assert.ok(sw.includes('./runtime-sync-v1.js'));
 assert.ok(sw.includes("url.pathname.endsWith('/presence.php')"));
-assert.ok(sw.includes('ptp-shell-v5-burn-buds-battle-feedback-20260904'));
+assert.ok(sw.includes('ptp-shell-v6-burn-buds-shared-sync-20260905'));
 assert.ok(sw.includes('./battle-feedback-v1.js'));
 assert.ok(sw.includes('./placement-v1.js'));
 assert.ok(sw.includes('./targeting-v1.js'));
@@ -44,10 +46,12 @@ for (const marker of [
   'className=\'burn-telemetry\'',
   'Live battle statistics',
   '% accuracy',
-  "replace('You already scouted that plot.','You already fired at that cell.')"
+  "replace('You already scouted that plot.','You already fired at that cell.')",
+  'BurnBudsSync.subscribe(enhance'
 ]) {
   assert.ok(gameplay.includes(marker), `Missing Burn Buds gameplay marker: ${marker}`);
 }
+assert.ok(!gameplay.includes('new MutationObserver'),'Gameplay v3 must use shared Burn Buds render sync.');
 
 for (const marker of [
   "className='burn-live-announcer'",
@@ -59,10 +63,12 @@ for (const marker of [
   'Opponent turn. Your stash is under fire.',
   'Round won.',
   'Round lost.',
-  "if(typeof eventText==='function')return eventText(event)"
+  "if(typeof eventText==='function')return eventText(event)",
+  'BurnBudsSync.subscribe(queueSync)'
 ]) {
   assert.ok(combatA11y.includes(marker), `Missing Burn Buds combat accessibility marker: ${marker}`);
 }
+assert.ok(!combatA11y.includes('new MutationObserver'),'Combat accessibility must use shared Burn Buds render sync.');
 
 for (const forbidden of [
   'state.opponent.fleet',
