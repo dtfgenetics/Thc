@@ -9,6 +9,7 @@ const files = {
   canonicalWorkflow: '.github/workflows/wordpress-canonical-production.yml',
   learningWorkflow: '.github/workflows/wordpress-learning-experience-v3-production.yml',
   learningTransaction: 'scripts/run-learning-v3-connected-production.sh',
+  learningV3AtlasPrepare: 'scripts/prepare-learning-v3-atlas-publisher.mjs',
   learningV3Prepare: 'scripts/prepare-learning-v3-owner-aware-publisher.mjs',
   learningFollowupPrepare: 'scripts/prepare-learning-owner-aware-followup-publishers.mjs',
   learningExpanded: 'scripts/publish-learning-expanded-references-owner-aware.mjs',
@@ -130,10 +131,24 @@ failIf(
   'Learning V3 workflow no longer invokes its connected owner transaction.'
 );
 failIf(
-  !/prepare-learning-v3-owner-aware-publisher\.mjs/m.test(content.learningTransaction) ||
-    !/prepare-learning-owner-aware-followup-publishers\.mjs/m.test(content.learningTransaction) ||
+  !/prepare-learning-v3-atlas-publisher\.mjs/m.test(content.learningTransaction) ||
+    !/LEARNING_V3_ATLAS_PUBLISHER="\$atlas_v3"/m.test(content.learningTransaction) ||
+    !/LEARNING_V3_SOURCE_PUBLISHER="\$atlas_v3"/m.test(content.learningTransaction) ||
+    !/prepare-learning-v3-owner-aware-publisher\.mjs/m.test(content.learningTransaction) ||
+    content.learningTransaction.indexOf('prepare-learning-v3-atlas-publisher.mjs') > content.learningTransaction.indexOf('prepare-learning-v3-owner-aware-publisher.mjs'),
+  'Learning V3 transaction no longer composes Atlas ownership before applying the root storage/public verification split.'
+);
+failIf(
+  !/\/learn\/atlas\//m.test(content.learningV3AtlasPrepare) ||
+    !/Open the THC Living Plant Atlas/m.test(content.learningV3AtlasPrepare) ||
+    !/originalCount === 1/m.test(content.learningV3AtlasPrepare) ||
+    !/atlasCount !== 1/m.test(content.learningV3AtlasPrepare),
+  'Learning V3 Atlas preparation no longer adds the canonical Atlas affordance with fail-closed source-shape checks.'
+);
+failIf(
+  !/prepare-learning-owner-aware-followup-publishers\.mjs/m.test(content.learningTransaction) ||
     !/publish-learning-expanded-references-owner-aware\.mjs/m.test(content.learningTransaction),
-  'Learning owner transaction no longer uses the reviewed owner-aware publisher chain.'
+  'Learning owner transaction no longer uses the reviewed downstream owner-aware publisher chain.'
 );
 for (const stage of ['v3', 'v4', 'expanded', 'visual']) {
   failIf(
@@ -151,9 +166,11 @@ failIf(
     !/page_on_front/m.test(content.learningStorage) ||
     !/data-dtf-layout=\\?"home-v3\\?"/m.test(content.learningStorage) ||
     !/data-dtf-layout=\\?"learn-v3\\?"/m.test(content.learningStorage) ||
+    !/Learn Atlas route/m.test(content.learningStorage) ||
+    !/Open the THC Living Plant Atlas/m.test(content.learningStorage) ||
     !/data-dtf-learning-map=\\?"v4\\?"/m.test(content.learningStorage) ||
     !/data-dtf-learning-expanded-reference=\\?"v1\\?"/m.test(content.learningStorage),
-  'Learning root storage verifier no longer proves base plus downstream Home/Learn ownership stages.'
+  'Learning root storage verifier no longer proves Atlas-bearing V3 plus downstream Home/Learn ownership stages.'
 );
 failIf(
   !/Stored Learn V4 owner verification failed/m.test(content.learningFollowupPrepare) ||
@@ -216,6 +233,7 @@ console.log('DTFSeeds route ownership validation passed.');
 console.log('- /seeds/ is excluded from generic WordPress page reconciliation.');
 console.log('- commerce visual publishing does not fetch or update /seeds/.');
 console.log('- canonical WordPress production proves only base Home/Learn ownership plus transaction-level no-write evidence.');
+console.log('- Learning V3 composes its Atlas affordance before the owner-aware root storage/public verification split.');
 console.log('- downstream V4/expanded/visual ownership is verified only by the Learning production lane.');
 console.log('- education child publishing cannot mutate the Learn root.');
 console.log('- Learning Experience V3 proves Home/Learn through WordPress storage while topic/child routes remain visitor-verified.');
