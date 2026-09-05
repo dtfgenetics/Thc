@@ -98,7 +98,7 @@
     if(event.target.closest?.('[data-ptp-extra="share-result"]'))shareResult();
   });
 
-  const root=document.querySelector('#app');if(root)new MutationObserver(()=>requestAnimationFrame(enhance)).observe(root,{childList:true,subtree:true});
+  if(window.BurnBudsSync)window.BurnBudsSync.subscribe(enhance,{immediate:false});
   if('serviceWorker' in navigator&&location.protocol==='https:')window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
   enhance();
 })();

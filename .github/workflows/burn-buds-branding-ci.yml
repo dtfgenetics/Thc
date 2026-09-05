@@ -42,6 +42,7 @@ jobs:
           node --check "$root/battle-feedback-v1.js"
           node --check "$root/placement-v1.js"
           node --check "$root/targeting-v1.js"
+          node --check "$root/v2-extras.js"
           node --check "$root/sw.js"
           php -l "$root/api.php"
           php -l "$root/presence.php"
@@ -49,6 +50,7 @@ jobs:
           node games/protect-the-plants/test/burn-buds-gameplay-v3.test.mjs
           node games/protect-the-plants/test/api-copy-contract.test.mjs
           node games/protect-the-plants/test/runtime-sync-v1.test.mjs
+          node games/protect-the-plants/test/v2-extras-sync.test.mjs
 
       - name: Exercise authenticated opponent presence
         shell: bash
