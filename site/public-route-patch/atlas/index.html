@@ -26,17 +26,17 @@
   <div class="atlas-shell">
     <section class="hero">
       <div><p class="eyebrow">Explore · Rotate · Zoom · Inspect · Learn</p><h1>The Living Plant Atlas</h1><p class="hero-copy">Study cannabis as a connected living system. Rotate and zoom a high-detail 3D botanical specimen, inspect anatomical regions directly, and connect each visible structure to the deeper plant-science module behind it.</p></div>
-      <aside class="hero-card" aria-label="Atlas release summary"><strong>Interactive botanical specimen</strong><p>The V4 viewer connects physical anatomy to 16 searchable science systems and focused deep labs while preserving a no-WebGL educational fallback.</p><div class="stats"><div class="stat"><b>3D</b><span>rotatable specimen</span></div><div class="stat"><b>16</b><span>science systems</span></div><div class="stat"><b>14</b><span>inspectable regions</span></div></div></aside>
+      <aside class="hero-card" aria-label="Atlas summary"><strong>Interactive botanical specimen</strong><p>The specimen connects physical anatomy to 16 searchable science systems and focused deep labs, with the same lessons available when 3D rendering is unavailable.</p><div class="stats"><div class="stat"><b>3D</b><span>rotatable specimen</span></div><div class="stat"><b>16</b><span>science systems</span></div><div class="stat"><b>14</b><span>inspectable regions</span></div></div></aside>
     </section>
 
     <section class="plant-lab" id="interactive-plant">
       <div class="plant-lab-copy">
-        <p class="eyebrow">3D anatomy explorer · V4</p>
+        <p class="eyebrow">3D anatomy explorer</p>
         <h2>Learn from the plant itself</h2>
         <p>Drag to rotate. Scroll or pinch to zoom. Hover a structure to identify it, then click or tap to focus the camera and read what that structure does. Use the module link in the inspector when you want the full lesson.</p>
         <div class="anatomy-key" aria-label="Focus plant structure"><button type="button" data-plant-focus="root-system">Roots</button><button type="button" data-plant-focus="stem-vascular">Stem</button><button type="button" data-plant-focus="nodes-branching">Nodes</button><button type="button" data-plant-focus="leaf-module">Leaves</button><button type="button" data-plant-focus="flower-anatomy">Flowers</button><button type="button" data-plant-focus="trichomes-resin">Trichomes</button><button type="button" data-plant-focus="reproductive-biology">Reproductive sites</button></div>
         <div class="plant-inspector" data-plant-inspector aria-live="polite"><small data-inspector-kicker>Interactive anatomy</small><h3 data-inspector-title>Select a structure</h3><p data-inspector-copy>Inspect the 3D plant directly or use the focus controls above. The viewer keeps you in the specimen until you choose to open the detailed module.</p><a data-inspector-link href="#systems">Explore all plant systems →</a></div>
-        <p class="model-mode-note"><strong>Model strategy:</strong> V4 ships with a complete high-detail PBR specimen and can automatically use an approved photoreal GLB later without changing the anatomy or educational system.</p>
+        <p class="model-mode-note"><strong>Built for close study:</strong> roots, vascular tissues, nodes, leaves, flowers, stigmas, and trichomes stay connected to the scientific lessons that explain how each structure functions.</p>
       </div>
       <div class="plant-viewport" data-plant-3d data-render-state="loading" aria-label="Interactive three-dimensional cannabis plant anatomy model">
         <canvas data-plant-canvas aria-label="3D cannabis plant. Drag to rotate, zoom with wheel or pinch, click a structure to inspect it, use arrow keys to rotate, plus or minus to zoom, and R to reset."></canvas>
@@ -76,8 +76,9 @@
     </section>
 
     <aside class="principle"><b>⌕</b><p><strong>Observation rule:</strong> a visible pattern is evidence, not proof of a single cause. Confirm location, progression, developmental stage, environment, root-zone conditions, pest/pathogen evidence, and recent changes before acting.</p></aside>
-    <footer class="footer"><span>THC Living Plant Atlas · Interactive 3D system V4 · DTF Genetics</span><span><a href="/atlas/downloads/">Field cards & downloads</a> · <a href="/learn/">Teaching Healthy Cultivation</a></span></footer>
+    <footer class="footer"><span>THC Living Plant Atlas · DTF Genetics</span><span><a href="/atlas/downloads/">Field cards & downloads</a> · <a href="/learn/">Teaching Healthy Cultivation</a></span></footer>
   </div>
+  <!-- Interactive 3D system V4 -->
   <script type="module" src="/atlas/atlas-3d-bootstrap.js"></script>
   <script src="/atlas/atlas-v3.js" defer></script>
 </body>
