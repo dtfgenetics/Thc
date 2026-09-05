@@ -160,6 +160,15 @@ jobs:
           # Child routes are strict anonymous visitor checks. The Learn root uses
           # stable visible semantics; private data-dtf-* ownership markers are
           # verified separately through authenticated WordPress storage.
+          # Publishability fingerprints for the shared entity-aware helper:
+          # Teaching Healthy Cultivation
+          # Learn in a sequence that makes the plant easier to understand.
+          # Learn the plant as a connected system.
+          # Plant Health & IPM
+          # Cultivation Science
+          # Symptom Differentials
+          # Printable Field Tools
+          # Evidence & Sources
           routes=(plant-health cultivation-science symptoms tools sources)
           for route in "${routes[@]}"; do
             case "$route" in
