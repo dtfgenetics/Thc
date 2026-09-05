@@ -6,6 +6,7 @@ on:
       - game/burn-buds-remove-legacy-confirmshots
     paths:
       - '.github/workflows/burn-buds-native-targeting-contracts-once.yml'
+      - 'scripts/patch-burn-buds-native-targeting-contracts.mjs'
 
 permissions:
   contents: write
