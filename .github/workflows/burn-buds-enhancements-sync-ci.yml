@@ -1,0 +1,28 @@
+name: Burn Buds Enhancements Sync CI
+
+on:
+  pull_request:
+    paths:
+      - 'site/public-route-patch/games/protect-the-plants/enhancements.js'
+      - 'games/protect-the-plants/test/enhancements-sync.test.mjs'
+      - '.github/workflows/burn-buds-enhancements-sync-ci.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'site/public-route-patch/games/protect-the-plants/enhancements.js'
+      - 'games/protect-the-plants/test/enhancements-sync.test.mjs'
+      - '.github/workflows/burn-buds-enhancements-sync-ci.yml'
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check enhancements runtime
+        run: |
+          node --check site/public-route-patch/games/protect-the-plants/enhancements.js
+          node games/protect-the-plants/test/enhancements-sync.test.mjs
