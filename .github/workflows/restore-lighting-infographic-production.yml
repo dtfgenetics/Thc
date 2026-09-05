@@ -1,4 +1,4 @@
-name: Restore Canonical Lighting Infographic
+name: Publish Canonical Lighting Infographic
 
 on:
   workflow_dispatch:
@@ -6,19 +6,15 @@ on:
     branches: [main]
     paths:
       - .github/workflows/restore-lighting-infographic-production.yml
-      - site/wordpress/assets/infographics/import-remaining-core-031-047.json
       - site/wordpress/assets/infographics/DLI_PPFD_Light_Education_Infographic.png
 
 permissions:
-  actions: write
-  contents: write
-  pull-requests: write
+  contents: read
 
 env:
   NODE_OPTIONS: --dns-result-order=ipv4first
   WP_SITE_URL: https://dtfseeds.com
   TARGET_PATH: site/wordpress/assets/infographics/DLI_PPFD_Light_Education_Infographic.png
-  CANONICAL_DRIVE_FILE_ID: 1UKOVWoGxJnb8VJW5Vxncvpp9BhrBHh4u
   EXPECTED_SHA256: 2287cb16dc3b848635c33b2a4aea523c3abb33085ef3e26f1b818976625548f7
   EXPECTED_BYTES: '303651'
   INFOGRAPHIC_SOURCE_DIR: ${{ github.workspace }}/site/wordpress/assets/infographics
@@ -34,20 +30,20 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  restore:
-    name: Restore source asset publish and verify Lighting visual
+  publish:
+    name: Publish and verify exact reviewed Lighting visual when available
     runs-on: ubuntu-latest
     timeout-minutes: 40
     environment: production
     env:
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
-      GH_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v4
         with:
           ref: main
-          fetch-depth: 0
+          fetch-depth: 1
+          persist-credentials: false
 
       - uses: actions/setup-node@v4
         with:
@@ -59,24 +55,31 @@ jobs:
           set -euo pipefail
           : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
           : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
-          [[ "$CANONICAL_DRIVE_FILE_ID" =~ ^[A-Za-z0-9_-]+$ ]]
           [[ "$EXPECTED_SHA256" =~ ^[a-f0-9]{64}$ ]]
-          test -s site/wordpress/assets/infographics/import-remaining-core-031-047.json
           node --check scripts/stage-eligible-infographics.mjs
           node --check scripts/deploy-wordpress-infographic-library-rest.mjs
           node --check scripts/publish-wordpress-topic-literature.mjs
           node --check scripts/run-learning-v3-production.mjs
 
-      - name: Resolve exact DLI PPFD image
-        id: recover
+      - name: Detect and verify exact reviewed repository asset
+        id: asset
         shell: bash
         run: |
           set -euo pipefail
-          tmp="$RUNNER_TEMP/dli-ppfd-lighting.png"
-          rm -f "$tmp"
+          evidence="$RUNNER_TEMP/lighting-asset-state.txt"
+          if [[ ! -f "$TARGET_PATH" ]]; then
+            {
+              echo 'present=false'
+              echo 'state=awaiting-lighting-asset-bridge'
+              echo "expected_sha256=$EXPECTED_SHA256"
+              echo "expected_bytes=$EXPECTED_BYTES"
+            } | tee "$evidence"
+            echo 'present=false' >> "$GITHUB_OUTPUT"
+            echo 'state=awaiting-lighting-asset-bridge' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
 
-          validate_png() {
-            python3 - "$1" "$EXPECTED_SHA256" "$EXPECTED_BYTES" <<'PY'
+          python3 - "$TARGET_PATH" "$EXPECTED_SHA256" "$EXPECTED_BYTES" <<'PY'
           import hashlib,pathlib,struct,sys
           path=pathlib.Path(sys.argv[1])
           expected_sha=sys.argv[2]
@@ -89,94 +92,24 @@ jobs:
           assert (width,height)==(2550,3300), f'unexpected dimensions: {(width,height)}'
           actual=hashlib.sha256(data).hexdigest()
           assert actual==expected_sha, f'SHA-256 mismatch: {actual}'
+          print(f'verified bytes={len(data)} dimensions={width}x{height} sha256={actual}')
           PY
-          }
 
-          source='none'
-          recovered=0
-
-          if [[ -f "$TARGET_PATH" ]] && validate_png "$TARGET_PATH"; then
-            cp "$TARGET_PATH" "$tmp"
-            recovered=1
-            source='repository'
-          fi
-
-          if [[ "$recovered" -ne 1 ]]; then
-            registry_url="$(node - <<'NODE'
-          const fs=require('fs');
-          const j=JSON.parse(fs.readFileSync('site/wordpress/assets/infographics/import-remaining-core-031-047.json','utf8'));
-          const item=(j.assets||[]).find(x=>x.path==='site/wordpress/assets/infographics/DLI_PPFD_Light_Education_Infographic.png');
-          if(!item?.url) process.exit(2);
-          process.stdout.write(item.url);
-          NODE
-            )"
-            urls=(
-              "$registry_url"
-              "${registry_url/=s2048/=s0}"
-              "${registry_url/=s2048/=s3300}"
-              "${registry_url/=s2048/=w2550-h3300}"
-            )
-            i=0
-            for url in "${urls[@]}"; do
-              i=$((i+1))
-              candidate="$RUNNER_TEMP/dli-registry-${i}.png"
-              rm -f "$candidate"
-              if curl -4 --fail --silent --show-error --location --retry 3 --retry-delay 2 --connect-timeout 20 --max-time 120 "$url" --output "$candidate"; then
-                bytes="$(stat -c %s "$candidate" 2>/dev/null || echo 0)"
-                sha="$(sha256sum "$candidate" 2>/dev/null | awk '{print $1}' || true)"
-                echo "registry candidate ${i}: bytes=${bytes} sha256=${sha}"
-                if validate_png "$candidate"; then
-                  mv "$candidate" "$tmp"
-                  recovered=1
-                  source="registry-variant-${i}"
-                  break
-                fi
-              fi
-            done
-          fi
-
-          if [[ "$recovered" -ne 1 ]]; then
-            urls=(
-              "https://drive.usercontent.google.com/download?id=${CANONICAL_DRIVE_FILE_ID}&export=download&confirm=t"
-              "https://drive.google.com/uc?export=download&id=${CANONICAL_DRIVE_FILE_ID}&confirm=t"
-            )
-            for url in "${urls[@]}"; do
-              candidate="$RUNNER_TEMP/dli-candidate.png"
-              rm -f "$candidate"
-              if curl -4 --fail --silent --show-error --location --retry 3 --retry-delay 2 --connect-timeout 20 --max-time 120 "$url" --output "$candidate"; then
-                if validate_png "$candidate"; then
-                  mv "$candidate" "$tmp"
-                  recovered=1
-                  source='drive-public-download'
-                  break
-                fi
-              fi
-            done
-          fi
-
-          test "$recovered" -eq 1
-          mkdir -p "$(dirname "$TARGET_PATH")"
-          cp "$tmp" "$TARGET_PATH"
-          echo "bytes=$(stat -c %s "$TARGET_PATH")" >> "$GITHUB_OUTPUT"
-          echo "sha256=$(sha256sum "$TARGET_PATH" | awk '{print $1}')" >> "$GITHUB_OUTPUT"
-          echo "source=$source" >> "$GITHUB_OUTPUT"
-
-      - name: Safely integrate restored canonical asset
-        id: integrate
-        shell: bash
-        run: |
-          set -euo pipefail
-          if git diff --quiet -- "$TARGET_PATH" && git ls-files --error-unmatch "$TARGET_PATH" >/dev/null 2>&1; then
-            echo 'Canonical Lighting asset already matches reviewed bytes on current source.'
-            echo 'changed=false' >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-          node scripts/studio/integrate-generated-change.mjs \
-            --message='Restore canonical DLI PPFD lighting infographic' \
-            "$TARGET_PATH"
-          echo 'changed=true' >> "$GITHUB_OUTPUT"
+          bytes="$(stat -c %s "$TARGET_PATH")"
+          sha="$(sha256sum "$TARGET_PATH" | awk '{print $1}')"
+          {
+            echo 'present=true'
+            echo 'state=exact-reviewed-repository-asset'
+            echo "bytes=$bytes"
+            echo "sha256=$sha"
+          } | tee "$evidence"
+          echo 'present=true' >> "$GITHUB_OUTPUT"
+          echo 'state=exact-reviewed-repository-asset' >> "$GITHUB_OUTPUT"
+          echo "bytes=$bytes" >> "$GITHUB_OUTPUT"
+          echo "sha256=$sha" >> "$GITHUB_OUTPUT"
 
       - name: Stage finished infographic assets
+        if: steps.asset.outputs.present == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -185,6 +118,7 @@ jobs:
           test -s "$INFOGRAPHIC_DIR/DLI_PPFD_Light_Education_Infographic.png"
 
       - name: Publish canonical infographic media to WordPress
+        if: steps.asset.outputs.present == 'true'
         id: media
         shell: bash
         run: |
@@ -199,12 +133,14 @@ jobs:
           NODE
 
       - name: Refresh topic literature and infographic index
+        if: steps.asset.outputs.present == 'true'
         shell: bash
         run: |
           set -euo pipefail
           node scripts/publish-wordpress-topic-literature.mjs
 
-      - name: Rebuild Home Learn and subject hierarchy with restored media
+      - name: Rebuild Home Learn and subject hierarchy with reviewed media
+        if: steps.asset.outputs.present == 'true'
         id: v3
         shell: bash
         run: |
@@ -215,6 +151,7 @@ jobs:
           ! grep -Fq '"lighting": null' "$RUNNER_TEMP/learning-v3-lighting-report.json"
 
       - name: Verify live Lighting page uses correct visual
+        if: steps.asset.outputs.present == 'true'
         id: verify
         shell: bash
         run: |
@@ -240,6 +177,7 @@ jobs:
         with:
           name: dtf-lighting-infographic-recovery-${{ github.run_id }}
           path: |
+            ${{ runner.temp }}/lighting-asset-state.txt
             /tmp/dtf-lighting-recovery
             /tmp/dtf-learning-v3-lighting-recovery
             ${{ runner.temp }}/learning-v3-lighting-report.json
@@ -252,24 +190,28 @@ jobs:
         shell: bash
         env:
           STATUS: ${{ job.status }}
-          INTEGRATION_CHANGED: ${{ steps.integrate.outputs.changed }}
-          RESTORED_BYTES: ${{ steps.recover.outputs.bytes }}
-          RESTORED_SHA: ${{ steps.recover.outputs.sha256 }}
-          RESTORED_SOURCE: ${{ steps.recover.outputs.source }}
+          PRESENT: ${{ steps.asset.outputs.present }}
+          ASSET_STATE: ${{ steps.asset.outputs.state }}
+          RESTORED_BYTES: ${{ steps.asset.outputs.bytes }}
+          RESTORED_SHA: ${{ steps.asset.outputs.sha256 }}
           V3_OUTCOME: ${{ steps.v3.outcome }}
           VERIFY_OUTCOME: ${{ steps.verify.outcome }}
         run: |
           {
-            echo '## Canonical Lighting visual recovery'
+            echo '## Canonical Lighting visual publication'
             echo
             echo "Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
             echo "Overall: **${STATUS:-unknown}**"
-            echo "Resolved source: **${RESTORED_SOURCE:-unknown}**"
-            echo "Safe repository integration required: **${INTEGRATION_CHANGED:-false}**"
-            echo "Recovered PNG bytes: **${RESTORED_BYTES:-unknown}**"
-            echo "Recovered SHA-256: \`${RESTORED_SHA:-unknown}\`"
-            echo "Learning v3 rebuild: **${V3_OUTCOME:-not-reached}**"
-            echo "Live Lighting verification: **${VERIFY_OUTCOME:-not-reached}**"
+            echo "Exact reviewed asset present in repository: **${PRESENT:-false}**"
+            echo "Asset state: **${ASSET_STATE:-unknown}**"
+            echo "Reviewed PNG bytes: **${RESTORED_BYTES:-not-present}**"
+            echo "Reviewed SHA-256: \`${RESTORED_SHA:-not-present}\`"
+            echo "Learning v3 rebuild: **${V3_OUTCOME:-not-run}**"
+            echo "Live Lighting verification: **${VERIFY_OUTCOME:-not-run}**"
             echo
-            echo 'The Actions summary plus recovery artifact is authoritative. Recovery remains fail-closed behind exact byte length, dimensions, PNG integrity and SHA-256 checks.'
+            if [[ "${PRESENT:-false}" == 'true' ]]; then
+              echo 'Publication remains fail-closed behind the exact repository-controlled 2550×3300 PNG, byte length, integrity and SHA-256 checks.'
+            else
+              echo 'No mutable remote source is accepted. The Lighting Asset Bridge is the sole authority allowed to materialize the locked reviewed binary; this publisher cleanly waits until that exact asset exists in main.'
+            fi
           } >> "$GITHUB_STEP_SUMMARY"
