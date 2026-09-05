@@ -9,6 +9,7 @@ on:
       - 'scripts/build-public-learning-center-expansion-v1.mjs'
       - 'scripts/publish-wordpress-learning-center-expansion-v1.mjs'
       - 'scripts/update-wordpress-learn-expansion-v1.mjs'
+      - 'scripts/wordpress-ipv4-fetch-bootstrap.mjs'
       - '.github/workflows/deploy-thc-learning-center-expansion-v1.yml'
 
 permissions:
@@ -53,6 +54,7 @@ jobs:
           node --check scripts/build-public-learning-center-expansion-v1.mjs
           node --check scripts/publish-wordpress-learning-center-expansion-v1.mjs
           node --check scripts/update-wordpress-learn-expansion-v1.mjs
+          node --check scripts/wordpress-ipv4-fetch-bootstrap.mjs
           node --check scripts/reconcile-wordpress-learning-v3-ownership.mjs
           node --check scripts/run-learning-v3-production.mjs
           node --check scripts/improve-wordpress-learning-v4.mjs
@@ -88,7 +90,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          node scripts/publish-wordpress-learning-center-expansion-v1.mjs | tee "$RUNNER_TEMP/education-expansion-publish.json"
+          node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/publish-wordpress-learning-center-expansion-v1.mjs \
+            | tee "$RUNNER_TEMP/education-expansion-publish.json"
           echo "outcome=success" >> "$GITHUB_OUTPUT"
 
       - name: Refresh canonical Learning V3 owner transaction
@@ -128,7 +131,8 @@ jobs:
           set -euo pipefail
           # Read-only convergence proof. The preceding canonical owner transaction
           # is the only step allowed to mutate /learn/.
-          node scripts/update-wordpress-learn-expansion-v1.mjs | tee "$RUNNER_TEMP/education-expansion-nav.json"
+          node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/update-wordpress-learn-expansion-v1.mjs \
+            | tee "$RUNNER_TEMP/education-expansion-nav.json"
           echo "outcome=success" >> "$GITHUB_OUTPUT"
 
       - name: Fresh anonymous production verification
@@ -136,9 +140,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          # These child routes are publicly served by the reviewed Dtf420 static
-          # overlay. The preceding publisher verifies the backing WordPress pages
-          # through authenticated REST; this step verifies the actual visitor owner.
+          # Child routes are strict anonymous visitor checks. The Learn root uses
+          # stable visible semantics; private data-dtf-* ownership markers are
+          # verified separately through authenticated WordPress storage.
           routes=(plant-health cultivation-science symptoms tools sources)
           for route in "${routes[@]}"; do
             case "$route" in
@@ -151,6 +155,7 @@ jobs:
             esac
             body="$RUNNER_TEMP/live-${route}.html"
             curl -4 --fail --silent --show-error --location --retry 4 --retry-delay 3 \
+              --connect-timeout 15 --max-time 60 \
               -H 'Cache-Control: no-cache, no-store, max-age=0' -H 'Pragma: no-cache' \
               "https://dtfseeds.com/learn/$route/?dtf_expansion=${GITHUB_RUN_ID}" -o "$body"
             grep -Eqi '<h1([ >])' "$body"
@@ -159,15 +164,26 @@ jobs:
             ! grep -Fqi 'Mystery_Line_F1_Regular_DTF_Strain_Card' "$body"
             ! grep -Fqi 'Rainbow_Bubblegum_F1_Regular_DTF_Strain_Card' "$body"
           done
+
           learn="$RUNNER_TEMP/live-learn.html"
           curl -4 --fail --silent --show-error --location --retry 4 --retry-delay 3 \
+            --connect-timeout 15 --max-time 60 \
             -H 'Cache-Control: no-cache, no-store, max-age=0' -H 'Pragma: no-cache' \
             "https://dtfseeds.com/learn/?dtf_expansion=${GITHUB_RUN_ID}" -o "$learn"
-          grep -Fq 'data-dtf-layout="learn-v3"' "$learn"
-          grep -Fq 'data-dtf-learning-map="v4"' "$learn"
-          grep -Fq 'data-dtf-learning-expanded-reference="v1"' "$learn"
-          grep -Fq 'Learn the plant as a connected system.' "$learn"
-          for href in /learn/plant-health/ /learn/cultivation-science/ /learn/symptoms/ /learn/tools/ /learn/sources/; do grep -Fq "$href" "$learn"; done
+          grep -Fqi 'Teaching Healthy Cultivation' "$learn"
+          grep -Fqi 'Learn in a sequence that makes the plant easier to understand.' "$learn"
+          grep -Fqi 'Learn the plant as a connected system.' "$learn"
+          for label in \
+            'Plant Health & IPM' \
+            'Cultivation Science' \
+            'Symptom Differentials' \
+            'Printable Field Tools' \
+            'Evidence & Sources'; do
+            grep -Fqi "$label" "$learn"
+          done
+          for href in /learn/plant-health/ /learn/cultivation-science/ /learn/symptoms/ /learn/tools/ /learn/sources/; do
+            grep -Fq "$href" "$learn"
+          done
           echo "outcome=success" >> "$GITHUB_OUTPUT"
 
       - name: Upload rollback and release evidence

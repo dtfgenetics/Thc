@@ -148,6 +148,12 @@ const generatedIntegrationSource = readFileSync('scripts/studio/integrate-genera
 const releasePlannerSource = readFileSync('scripts/plan-dtfseeds-release.mjs', 'utf8')
 const gatewaySource = readFileSync('.github/workflows/dtfseeds-production-gateway.yml', 'utf8')
 const educationSource = readFileSync('.github/workflows/deploy-thc-learning-center-expansion-v1.yml', 'utf8')
+const learningTransactionSource = readFileSync('scripts/run-learning-v3-connected-production.sh', 'utf8')
+const educationLiveStart = educationSource.indexOf('      - name: Fresh anonymous production verification')
+const educationLiveEnd = educationSource.indexOf('      - name: Upload rollback and release evidence')
+const educationLiveSource = educationLiveStart >= 0 && educationLiveEnd > educationLiveStart
+  ? educationSource.slice(educationLiveStart, educationLiveEnd)
+  : ''
 
 const contractErrors = []
 if (!integrationSource.includes("gh', ['workflow', 'run', 'dtfseeds-production-gateway.yml'")) {
@@ -183,8 +189,38 @@ if (educationOwnerRefresh < 0 || !educationSource.includes('bash scripts/run-lea
 if (educationConvergence < 0 || educationOwnerRefresh > educationConvergence) {
   contractErrors.push('Education expansion checks Learn convergence before the canonical owner transaction completes')
 }
-if (!educationSource.includes('data-dtf-learning-expanded-reference="v1"') || !educationSource.includes('data-dtf-learning-map="v4"')) {
-  contractErrors.push('Education visitor verification does not require the canonical Learn V4 + expanded-reference markers')
+if (
+  !educationSource.includes('node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/publish-wordpress-learning-center-expansion-v1.mjs') ||
+  !educationSource.includes('node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/update-wordpress-learn-expansion-v1.mjs')
+) {
+  contractErrors.push('Education WordPress backing-page publication/read-only convergence is not forced through the established IPv4 transport')
+}
+if (!educationLiveSource) {
+  contractErrors.push('Education release is missing the anonymous production verification step')
+} else {
+  for (const semantic of [
+    'Teaching Healthy Cultivation',
+    'Learn in a sequence that makes the plant easier to understand.',
+    'Learn the plant as a connected system.',
+    'Plant Health & IPM',
+    'Cultivation Science',
+    'Symptom Differentials',
+    'Printable Field Tools',
+    'Evidence & Sources',
+  ]) {
+    if (!educationLiveSource.includes(semantic)) {
+      contractErrors.push(`Education anonymous Learn verification is missing visible semantic: ${semantic}`)
+    }
+  }
+  if (educationLiveSource.includes('data-dtf-layout=') || educationLiveSource.includes('data-dtf-learning-map=') || educationLiveSource.includes('data-dtf-learning-expanded-reference=')) {
+    contractErrors.push('Education anonymous Learn verification again requires private WordPress ownership attributes')
+  }
+  if (!educationLiveSource.includes('--connect-timeout 15') || !educationLiveSource.includes('--max-time 60')) {
+    contractErrors.push('Education anonymous visitor verification is not bounded against hung network requests')
+  }
+}
+if (!learningTransactionSource.includes('data-dtf-learning-expanded-reference="v1"') || !learningTransactionSource.includes('data-dtf-learning-map="v4"')) {
+  contractErrors.push('Authenticated Learning owner transaction no longer requires the canonical Learn V4 + expanded-reference markers')
 }
 if (!(releaseConfig.lanes?.education?.prefixes || []).includes('site/wordpress/education/')) {
   contractErrors.push('canonical site/wordpress/education source is not routed through the Education release lane')
