@@ -47,6 +47,10 @@ function resolveCheckpoint(resource) {
 const selected = [];
 for (const [id, resource] of Object.entries(config.resources)) {
   if (requestedResource !== 'auto' && requestedResource !== 'all' && requestedResource !== id) continue;
+  if (requestedResource === 'auto') {
+    if (resource.publicSuiteOwnership !== 'resource') continue;
+    if (resource.publisher?.orchestration !== 'gateway-managed') continue;
+  }
   const checkpoint = requestedResource === 'auto' ? resolveCheckpoint(resource) : null;
   const base = checkpoint || requestedBase;
   const files = changedFiles(base);
@@ -59,6 +63,9 @@ for (const [id, resource] of Object.entries(config.resources)) {
     artifactRoot: resource.artifactRoot,
     productionTarget: resource.productionTarget,
     checkpointTag: resource.checkpointTag,
+    publisherWorkflow: resource.publisher?.workflow || null,
+    publisherType: resource.publisher?.type || null,
+    sharedProductionTarget: resource.publisher?.sharedProductionTarget || null,
     base: base || null,
     checkpoint: checkpoint || null,
     changedFiles: files.filter((file) => globalChange || matchesResource(file, resource))
