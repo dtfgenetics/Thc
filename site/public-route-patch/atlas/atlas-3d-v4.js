@@ -7,7 +7,7 @@ const HOTSPOT_URL = '/atlas/data/hotspots-v4.json';
 const MODEL_MANIFEST_URL = '/atlas/models/model-manifest-v4.json';
 const DEFAULT_MODEL_URL = '/atlas/models/cannabis-specimen-v1.glb';
 
-export const PLANT_ATLAS_V4_VERSION = '4.2.0';
+export const PLANT_ATLAS_V4_VERSION = '4.2.1';
 
 const DEFAULT_HOTSPOTS = [
   { id: 'root-system', label: 'Root system', detail: 'Primary, lateral & fine absorbing roots', route: '/atlas/root-system/', copy: 'Primary and lateral roots branch into fine absorbing roots that anchor the plant, acquire water and ions, respire, and interact with the rhizosphere.', anchors: [[0.5, 0.12, 0.5]], radius: 0.13, focus: 0.44 },
@@ -508,6 +508,7 @@ export async function bootPhotorealAtlas() {
 
   host.dataset.rendererGeneration = 'v4';
   host.dataset.renderState = 'loading';
+  host.dataset.controlsReady = 'false';
   host.dataset.qualityTier = qualityTier;
   host.dataset.plantInspection = 'whole';
   host.dataset.rootCutaway = 'resting';
@@ -540,8 +541,6 @@ export async function bootPhotorealAtlas() {
   const sphere = bounds.getBoundingSphere(new THREE.Sphere());
   host.dataset.modelMode = specimen.mode;
   host.dataset.modelSource = specimen.source;
-  host.dataset.renderState = 'ready';
-  setStatus(`${specimen.label} · ${qualityTier} quality`, 'ready');
 
   const ground = new THREE.Mesh(
     new THREE.CircleGeometry(Math.max(3.1, size.x * 0.72), 72),
@@ -572,9 +571,22 @@ export async function bootPhotorealAtlas() {
 
   const camera = new THREE.PerspectiveCamera(31, 1, 0.04, 80);
   const homeTarget = center.clone();
-  homeTarget.y = bounds.min.y + size.y * 0.51;
-  const homeDistance = Math.max(7.05, sphere.radius * 2.02);
-  const homeCamera = homeTarget.clone().add(new THREE.Vector3(homeDistance * 0.48, homeDistance * 0.22, homeDistance * 0.84));
+  homeTarget.y = bounds.min.y + size.y * 0.49;
+  const homeDirection = new THREE.Vector3(0.38, 0.12, 0.92).normalize();
+  const fittedHomeCamera = (aspect) => {
+    const safeAspect = Math.max(0.55, Number(aspect) || 1);
+    const verticalFov = THREE.MathUtils.degToRad(camera.fov);
+    const horizontalFov = 2 * Math.atan(Math.tan(verticalFov * 0.5) * safeAspect);
+    const fitHeight = size.y / (2 * Math.tan(verticalFov * 0.5));
+    const fitWidth = size.x / (2 * Math.tan(horizontalFov * 0.5));
+    const distance = Math.max(fitHeight, fitWidth, sphere.radius * 1.75) * 1.16;
+    return homeTarget.clone().add(homeDirection.clone().multiplyScalar(distance));
+  };
+  const initialRect = host.getBoundingClientRect();
+  const initialAspect = initialRect.width / Math.max(1, initialRect.height);
+  camera.aspect = Math.max(0.55, initialAspect || 1);
+  camera.updateProjectionMatrix();
+  const homeCamera = fittedHomeCamera(camera.aspect);
   camera.position.copy(homeCamera);
 
   const controls = new OrbitControls(camera, canvas);
@@ -582,7 +594,7 @@ export async function bootPhotorealAtlas() {
   controls.dampingFactor = 0.065;
   controls.enablePan = false;
   controls.minDistance = Math.max(0.48, sphere.radius * 0.19);
-  controls.maxDistance = Math.max(15, sphere.radius * 4.3);
+  controls.maxDistance = Math.max(18, homeCamera.distanceTo(homeTarget) * 2.35);
   controls.minPolarAngle = 0.12;
   controls.maxPolarAngle = 2.25;
   controls.target.copy(homeTarget);
@@ -769,6 +781,12 @@ export async function bootPhotorealAtlas() {
     renderer.setSize(width, height, false);
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
+    homeCamera.copy(fittedHomeCamera(camera.aspect));
+    controls.maxDistance = Math.max(18, homeCamera.distanceTo(homeTarget) * 2.35);
+    if (host.dataset.plantInspection === 'whole' && !cameraGoal && !pointerDown) {
+      camera.position.copy(homeCamera);
+      controls.target.copy(homeTarget);
+    }
   }
 
   controls.addEventListener('start', () => {
@@ -844,12 +862,20 @@ export async function bootPhotorealAtlas() {
   const visibilityObserver = new IntersectionObserver(([entry]) => { active = Boolean(entry?.isIntersecting); }, { rootMargin: '180px' });
   visibilityObserver.observe(host);
 
+  controls.update();
+  renderer.render(scene, camera);
+  host.dataset.controlsReady = 'true';
+  host.dataset.renderState = 'ready';
+  setStatus(`${specimen.label} · ${qualityTier} quality`, 'ready');
+
   canvas.addEventListener('webglcontextlost', (event) => {
     event.preventDefault();
     host.dataset.renderState = 'context-lost';
+    host.dataset.controlsReady = 'false';
     setStatus('3D graphics context interrupted · reload to restore', 'error');
   });
   canvas.addEventListener('webglcontextrestored', () => {
+    host.dataset.controlsReady = 'true';
     host.dataset.renderState = 'ready';
     setStatus(`${specimen.label} · restored`, 'ready');
   });
