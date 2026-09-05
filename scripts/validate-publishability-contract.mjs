@@ -38,7 +38,6 @@ const legacyDirectMainWriters = new Set([
   '.github/workflows/publish-harvest-outdoor-v6-final-repair.yml',
   '.github/workflows/repair-canonical-infographics.yml',
   '.github/workflows/repair-sprout-run-production.yml',
-  '.github/workflows/restore-lighting-infographic-production.yml',
   '.github/workflows/wordpress-core-gap-poster-production.yml',
 ])
 

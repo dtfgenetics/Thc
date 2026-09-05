@@ -10,8 +10,9 @@ on:
       - site/wordpress/assets/infographics/DLI_PPFD_Light_Education_Infographic.png
 
 permissions:
+  actions: write
   contents: write
-  issues: write
+  pull-requests: write
 
 env:
   NODE_OPTIONS: --dns-result-order=ipv4first
@@ -41,6 +42,7 @@ jobs:
     env:
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      GH_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -93,15 +95,12 @@ jobs:
           source='none'
           recovered=0
 
-          # Permanent path: once source-controlled, use the reviewed repository copy directly.
           if [[ -f "$TARGET_PATH" ]] && validate_png "$TARGET_PATH"; then
             cp "$TARGET_PATH" "$tmp"
             recovered=1
             source='repository'
           fi
 
-          # The migration registry preserves the original Google-rendered source URL. Try it and
-          # deterministic full-resolution variants, but accept only the exact reviewed bytes.
           if [[ "$recovered" -ne 1 ]]; then
             registry_url="$(node - <<'NODE'
           const fs=require('fs');
@@ -136,8 +135,6 @@ jobs:
             done
           fi
 
-          # Recovery-only fallback for a future public/shared Drive copy. Private responses are
-          # intentionally rejected by the exact byte/hash gate.
           if [[ "$recovered" -ne 1 ]]; then
             urls=(
               "https://drive.usercontent.google.com/download?id=${CANONICAL_DRIVE_FILE_ID}&export=download&confirm=t"
@@ -164,23 +161,20 @@ jobs:
           echo "sha256=$(sha256sum "$TARGET_PATH" | awk '{print $1}')" >> "$GITHUB_OUTPUT"
           echo "source=$source" >> "$GITHUB_OUTPUT"
 
-      - name: Commit restored canonical asset to main
-        id: commit
+      - name: Safely integrate restored canonical asset
+        id: integrate
         shell: bash
         run: |
           set -euo pipefail
           if git diff --quiet -- "$TARGET_PATH" && git ls-files --error-unmatch "$TARGET_PATH" >/dev/null 2>&1; then
+            echo 'Canonical Lighting asset already matches reviewed bytes on current source.'
             echo 'changed=false' >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add "$TARGET_PATH"
-          git commit -m 'Restore canonical DLI PPFD lighting infographic'
-          git pull --rebase origin main
-          git push origin HEAD:main
+          node scripts/studio/integrate-generated-change.mjs \
+            --message='Restore canonical DLI PPFD lighting infographic' \
+            "$TARGET_PATH"
           echo 'changed=true' >> "$GITHUB_OUTPUT"
-          echo "commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
       - name: Stage finished infographic assets
         shell: bash
@@ -253,35 +247,29 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
-      - name: Report recovery to issue 46
+      - name: Write authoritative Lighting recovery summary
         if: always()
-        uses: actions/github-script@v7
+        shell: bash
         env:
           STATUS: ${{ job.status }}
-          COMMIT_CHANGED: ${{ steps.commit.outputs.changed }}
+          INTEGRATION_CHANGED: ${{ steps.integrate.outputs.changed }}
           RESTORED_BYTES: ${{ steps.recover.outputs.bytes }}
           RESTORED_SHA: ${{ steps.recover.outputs.sha256 }}
           RESTORED_SOURCE: ${{ steps.recover.outputs.source }}
           V3_OUTCOME: ${{ steps.v3.outcome }}
           VERIFY_OUTCOME: ${{ steps.verify.outcome }}
-        with:
-          script: |
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: 46,
-              body: [
-                '## Canonical Lighting visual recovery',
-                '',
-                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-                `Overall: **${process.env.STATUS}**`,
-                `Resolved source: **${process.env.RESTORED_SOURCE || 'unknown'}**`,
-                `Canonical source restored/changed: **${process.env.COMMIT_CHANGED || 'unknown'}**`,
-                `Recovered PNG bytes: **${process.env.RESTORED_BYTES || 'unknown'}**`,
-                `Recovered SHA-256: \`${process.env.RESTORED_SHA || 'unknown'}\``,
-                `Learning v3 rebuild: **${process.env.V3_OUTCOME || 'not reached'}**`,
-                `Live Lighting verification: **${process.env.VERIFY_OUTCOME || 'not reached'}**`,
-                '',
-                'The canonical repository asset is preferred permanently. Registry and Drive recovery candidates remain fail-closed behind exact byte length, dimensions, PNG integrity, and SHA-256 checks. The live gate rejects the prior seedling visual.'
-              ].join('\n')
-            });
+        run: |
+          {
+            echo '## Canonical Lighting visual recovery'
+            echo
+            echo "Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+            echo "Overall: **${STATUS:-unknown}**"
+            echo "Resolved source: **${RESTORED_SOURCE:-unknown}**"
+            echo "Safe repository integration required: **${INTEGRATION_CHANGED:-false}**"
+            echo "Recovered PNG bytes: **${RESTORED_BYTES:-unknown}**"
+            echo "Recovered SHA-256: \`${RESTORED_SHA:-unknown}\`"
+            echo "Learning v3 rebuild: **${V3_OUTCOME:-not-reached}**"
+            echo "Live Lighting verification: **${VERIFY_OUTCOME:-not-reached}**"
+            echo
+            echo 'The Actions summary plus recovery artifact is authoritative. Recovery remains fail-closed behind exact byte length, dimensions, PNG integrity and SHA-256 checks.'
+          } >> "$GITHUB_STEP_SUMMARY"
