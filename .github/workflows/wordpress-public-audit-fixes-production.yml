@@ -10,6 +10,8 @@ on:
       - 'data/public-navigation.json'
       - 'site/wordpress/mu-plugins/dtf-shop-seo-meta.php'
       - 'scripts/install-wordpress-shop-seo-meta.mjs'
+      - 'scripts/normalize-shop-seo-verification-html.mjs'
+      - 'scripts/wordpress-ipv4-fetch-bootstrap.mjs'
       - 'scripts/flush-hostinger-litespeed-mcp.mjs'
       - 'scripts/verify-dtfseeds-feature-surface.mjs'
       - 'scripts/audit-dtfseeds-live.mjs'
@@ -56,11 +58,14 @@ jobs:
           test -n "${WP_API_USERNAME:-}"
           test -n "${WP_API_PASSWORD:-}"
           node --check scripts/install-wordpress-shop-seo-meta.mjs
+          node --check scripts/normalize-shop-seo-verification-html.mjs
+          node --check scripts/wordpress-ipv4-fetch-bootstrap.mjs
           node --check scripts/flush-hostinger-litespeed-mcp.mjs
           node --check scripts/verify-dtfseeds-feature-surface.mjs
           node --check scripts/audit-dtfseeds-live.mjs
           node --check scripts/audit-dtfseeds-public-suite.mjs
           node --check scripts/audit-dtfseeds-commerce.mjs
+          grep -Fq "import './wordpress-ipv4-fetch-bootstrap.mjs';" scripts/install-wordpress-shop-seo-meta.mjs
           php -l site/wordpress/mu-plugins/dtf-shop-seo-meta.php
           node scripts/verify-dtfseeds-feature-surface.mjs --plan-only > "$RUNNER_TEMP/public-feature-plan.json"
 
