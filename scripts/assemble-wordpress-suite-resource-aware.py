@@ -61,8 +61,10 @@ with tempfile.TemporaryDirectory(prefix='dtf-suite-resource-aware-') as temp:
     for marker in [*ATLAS_TARGETS, *ATLAS_REQUIRED, *ATLAS_PREFIXES]:
         if repr(marker) not in transformed:
             raise SystemExit(f'Atlas scope marker disappeared from resource-aware bridge: {marker}')
-    if "'games/high-land'" in transformed or "'games/high-iq'" in transformed:
-        raise SystemExit('resource-owned game target remained after Atlas scope merge')
+    if "'games/high-iq'" in transformed:
+        raise SystemExit('resource-owned High IQ target remained after Atlas scope merge')
+    if "'games/high-land'" not in transformed:
+        raise SystemExit('suite-owned High Land target disappeared before its independent publisher is proven')
 
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(transformed)
