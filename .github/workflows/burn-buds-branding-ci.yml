@@ -86,7 +86,7 @@ jobs:
         run: |
           set -euo pipefail
           root=site/public-route-patch/games/protect-the-plants
-          grep -Fq '<h1 id="protect-the-plants-title"' "$root/index.html"
+          grep -Fq '<h1 id="burn-buds-title"' "$root/index.html"
           grep -Fq '>Burn Buds</h1>' "$root/index.html"
           grep -Fq './burn-buds.css' "$root/index.html"
           grep -Fq './burn-buds-branding.js' "$root/index.html"
