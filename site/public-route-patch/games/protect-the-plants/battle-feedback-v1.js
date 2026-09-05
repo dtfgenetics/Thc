@@ -68,9 +68,5 @@
     requestAnimationFrame(sync);
   }
 
-  const root=document.querySelector('#app');
-  if(root)new MutationObserver(queue).observe(root,{childList:true,subtree:true});
-  document.addEventListener('visibilitychange',()=>{if(!document.hidden)queue()});
-  window.addEventListener('resize',queue,{passive:true});
-  queue();
+  if(window.BurnBudsSync)window.BurnBudsSync.subscribe(queue);else queue();
 })();
