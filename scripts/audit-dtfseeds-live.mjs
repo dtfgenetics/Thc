@@ -46,7 +46,7 @@ const routes = [
   },
   {
     key: 'games', path: '/games/', minimumText: 900,
-    requiredText: ['Pick what is playable. See what is coming next.', 'High IQ', 'High Land', 'Protect the Plants'],
+    requiredText: ['Pick what is playable. See what is coming next.', 'High IQ', 'High Land', 'Burn Buds'],
     requiredLinks: ['/seeds/', '/shop/', '/games/high-iq/', '/games/high-land/', '/games/protect-the-plants/']
   },
   {
@@ -70,7 +70,7 @@ const routes = [
   },
   {
     key: 'protect-the-plants', path: '/games/protect-the-plants/', minimumText: 100,
-    titleMustInclude: 'Protect the Plants', requiredText: ['Protect the Plants']
+    titleMustInclude: 'Burn Buds', requiredText: ['Burn Buds']
   }
 ];
 
