@@ -45,9 +45,10 @@ for (const token of ["import('/atlas/atlas-3d-v4.js')", 'bootPlantAtlasV4', "imp
 const renderer = read(path.join(appRoot, 'atlas-3d-v4.js'));
 for (const token of [
   'GLTFLoader', 'RoomEnvironment', 'MODEL_MANIFEST_URL', 'buildProceduralSpecimen', 'procedural-pbr', 'external-glb',
-  'new THREE.Raycaster()', 'new OrbitControls(camera,canvas)', "canvas.addEventListener('pointerup'", "canvas.addEventListener('keydown'",
+  'new THREE.Raycaster()', "canvas.addEventListener('pointerup'", "canvas.addEventListener('keydown'",
   'webglcontextlost', 'IntersectionObserver', 'ResizeObserver', 'THREE.ACESFilmicToneMapping', 'export const bootPlantAtlasV4',
 ]) ok(renderer.includes(token), `V4 renderer contract missing: ${token}`);
+ok(/new\s+OrbitControls\s*\(\s*camera\s*,\s*canvas\s*\)/.test(renderer), 'V4 renderer contract missing: OrbitControls(camera, canvas)');
 
 let hotspotData = null;
 try { hotspotData = JSON.parse(read(path.join(appRoot, 'data/hotspots-v4.json'))); }
