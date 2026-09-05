@@ -87,4 +87,16 @@ test.describe('THC Living Plant Atlas V4', () => {
     await expect(page.locator('[data-plant-3d]')).toHaveAttribute('data-model-mode', 'procedural-pbr', { timeout: 15_000 });
     expect(glbRequests).toEqual([]);
   });
+
+  test('captures a rendered Atlas exhibit plate for visual QA', async ({ page }, testInfo) => {
+    await page.goto(atlasPath, { waitUntil: 'domcontentloaded' });
+    const viewport = page.locator('[data-plant-3d]');
+    await expect(viewport).toHaveAttribute('data-render-state', 'ready', { timeout: 15_000 });
+    await expect(page.locator('[data-system-grid] .system-card')).toHaveCount(16);
+    await page.screenshot({
+      path: testInfo.outputPath('plant-atlas-exhibit.png'),
+      fullPage: true,
+      animations: 'disabled',
+    });
+  });
 });
