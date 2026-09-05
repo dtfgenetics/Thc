@@ -120,7 +120,7 @@ jobs:
           grep -Fq 'presence.php' "$root/gameplay-v3.js"
           grep -Fq 'Cannabis leaf game piece' "$root/plant.svg"
           ! grep -Fqi 'potted cannabis plant' "$root/plant.svg"
-          jq -e '.title == "Burn Buds" and .legacyTitle == "Protect the Plants" and .route == "/games/protect-the-plants/" and .status == "playable-beta"' games/protect-the-plants/game.json >/dev/null
+          jq -e '.title == "Burn Buds" and .legacyTitle == "Protect the Plants" and .route == "/games/protect-the-plants/" and .status == "production-ready"' games/protect-the-plants/game.json >/dev/null
 
       - name: Preserve multiplayer contract
         shell: bash
