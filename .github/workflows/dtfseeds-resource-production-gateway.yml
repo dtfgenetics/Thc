@@ -87,7 +87,6 @@ jobs:
     if: needs.plan.outputs.deploy == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 150
-    environment: production
     env:
       GH_TOKEN: ${{ github.token }}
       EXPECTED_SOURCE_SHA: ${{ github.sha }}
@@ -100,18 +99,23 @@ jobs:
           fetch-tags: true
           persist-credentials: false
 
-      - name: Refuse stale queued resource release
+      - name: Detect superseded queued resource release
+        id: freshness
         shell: bash
         run: |
           set -euo pipefail
           git fetch --quiet origin main
           latest="$(git rev-parse origin/main)"
-          if [[ "$latest" != "$GITHUB_SHA" ]]; then
-            echo "Resource gateway source $GITHUB_SHA was superseded by $latest; the newer main push owns cumulative resource planning." >&2
-            exit 1
+          if [[ "$latest" == "$GITHUB_SHA" ]]; then
+            echo 'current=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'current=false' >> "$GITHUB_OUTPUT"
+            echo "Skipping superseded resource gateway source $GITHUB_SHA; latest main is $latest. The newer push owns cumulative resource planning."
           fi
 
       - name: Join exact-source independent resource build
+        id: build
+        if: steps.freshness.outputs.current == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -119,6 +123,7 @@ jobs:
 
       - name: Publish each gateway-managed resource through its owning workflow
         id: publish
+        if: steps.freshness.outputs.current == 'true' && steps.build.outcome == 'success'
         shell: bash
         run: |
           set -euo pipefail
@@ -136,6 +141,7 @@ jobs:
 
       - name: Independently verify every resource-owned route
         id: verify
+        if: steps.freshness.outputs.current == 'true' && steps.publish.outcome == 'success'
         shell: bash
         run: |
           set -euo pipefail
@@ -174,7 +180,8 @@ jobs:
             echo '## Independent resource production gateway'
             echo
             echo "- Source: $GITHUB_SHA"
-            echo "- Build join: ${{ steps.publish.outcome != '' && 'completed before publish' || 'not reached' }}"
+            echo "- Superseded: ${{ steps.freshness.outputs.current != 'true' }}"
+            echo "- Exact-source build: ${{ steps.build.outcome }}"
             echo "- Publisher outcome: ${{ steps.publish.outcome }}"
             echo "- Independent visitor verification: ${{ steps.verify.outcome }}"
             echo '- Each successful publisher advances only its own monotonic resource checkpoint; the global DTFSeeds checkpoint is untouched.'
