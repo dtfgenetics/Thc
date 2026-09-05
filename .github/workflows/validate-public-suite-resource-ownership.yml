@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'site/deployment/release-resources.json'
+      - 'scripts/plan-dtfseeds-resource-release.mjs'
       - 'scripts/public_suite_resource_ownership.py'
       - 'scripts/assemble-wordpress-suite-v2.py'
       - 'scripts/assemble-wordpress-suite-resource-aware.py'
@@ -12,13 +13,17 @@ on:
       - 'scripts/package-public-suite-wordpress-resource-aware.py'
       - 'scripts/harden-wordpress-suite-lock.py'
       - 'scripts/test-public-suite-resource-ownership.py'
+      - 'scripts/test-dtf-resource-release-system.mjs'
+      - '.github/workflows/build-dtfseeds-public-resource.yml'
       - '.github/workflows/deploy-public-suite-wordpress-v2.yml'
       - '.github/workflows/deploy-games-suite-lock-recovery.yml'
+      - '.github/workflows/dtfseeds-resource-production-gateway.yml'
       - '.github/workflows/validate-public-suite-resource-ownership.yml'
   push:
     branches: [main]
     paths:
       - 'site/deployment/release-resources.json'
+      - 'scripts/plan-dtfseeds-resource-release.mjs'
       - 'scripts/public_suite_resource_ownership.py'
       - 'scripts/assemble-wordpress-suite-v2.py'
       - 'scripts/assemble-wordpress-suite-resource-aware.py'
@@ -26,8 +31,11 @@ on:
       - 'scripts/package-public-suite-wordpress-resource-aware.py'
       - 'scripts/harden-wordpress-suite-lock.py'
       - 'scripts/test-public-suite-resource-ownership.py'
+      - 'scripts/test-dtf-resource-release-system.mjs'
+      - '.github/workflows/build-dtfseeds-public-resource.yml'
       - '.github/workflows/deploy-public-suite-wordpress-v2.yml'
       - '.github/workflows/deploy-games-suite-lock-recovery.yml'
+      - '.github/workflows/dtfseeds-resource-production-gateway.yml'
       - '.github/workflows/validate-public-suite-resource-ownership.yml'
   workflow_dispatch:
 
@@ -54,6 +62,8 @@ jobs:
       - name: Compile and run synthetic ownership tests
         run: |
           set -euo pipefail
+          node --check scripts/plan-dtfseeds-resource-release.mjs
+          node scripts/test-dtf-resource-release-system.mjs
           python -m py_compile \
             scripts/public_suite_resource_ownership.py \
             scripts/assemble-wordpress-suite-resource-aware.py \
@@ -68,9 +78,9 @@ jobs:
           python scripts/assemble-wordpress-suite-resource-aware.py "$RUNNER_TEMP/dtf-suite-resource-aware.mjs" | tee "$RUNNER_TEMP/ownership-report.json"
           node --check "$RUNNER_TEMP/dtf-suite-resource-aware.mjs"
           grep -Fq "games/high-life" "$RUNNER_TEMP/dtf-suite-resource-aware.mjs"
-          ! grep -Fq "'games/high-land'" "$RUNNER_TEMP/dtf-suite-resource-aware.mjs"
+          grep -Fq "'games/high-land'" "$RUNNER_TEMP/dtf-suite-resource-aware.mjs"
+          grep -Fq "'/games/high-land/'" "$RUNNER_TEMP/dtf-suite-resource-aware.mjs"
           ! grep -Fq "'games/high-iq'" "$RUNNER_TEMP/dtf-suite-resource-aware.mjs"
-          ! grep -Fq "'/games/high-land/'" "$RUNNER_TEMP/dtf-suite-resource-aware.mjs"
           ! grep -Fq "'/games/high-iq/'" "$RUNNER_TEMP/dtf-suite-resource-aware.mjs"
           for marker in \
             "'atlas'" \
@@ -86,9 +96,10 @@ jobs:
             grep -Fq "$marker" "$RUNNER_TEMP/dtf-suite-resource-aware.mjs"
           done
           grep -Fq 'resourceOwnedTargetsExcluded' "$RUNNER_TEMP/ownership-report.json"
+          grep -Fq 'games/high-iq' "$RUNNER_TEMP/ownership-report.json"
           grep -Fq 'atlasScope' "$RUNNER_TEMP/ownership-report.json"
 
-      - name: Validate production writer ownership contracts
+      - name: Validate production writer and coordinator contracts
         run: |
           set -euo pipefail
           for workflow in \
@@ -97,11 +108,30 @@ jobs:
             grep -Fq 'scripts/assemble-wordpress-suite-resource-aware.py' "$workflow"
             grep -Fq 'scripts/package-public-suite-wordpress-resource-aware.py' "$workflow"
             grep -Fq 'resourceOwnedRoutesExcluded' "$workflow"
+            grep -Fq 'dtf-wordpress-temporary-code-snippets-bridge' "$workflow"
             ! grep -Fq 'Atlas deployment target allowlist' "$workflow"
             ! grep -Fq "check 'https://dtfseeds.com/games/high-iq/'" "$workflow"
           done
-          grep -Fq 'Suite-owned public game routes verified: 23/23' .github/workflows/deploy-games-suite-lock-recovery.yml
-          grep -Fq 'Resource-owned High Land and High IQ are intentionally excluded' .github/workflows/deploy-public-suite-wordpress-v2.yml
+          grep -Fq 'Suite-owned public game routes verified: 24/24' .github/workflows/deploy-games-suite-lock-recovery.yml
+          grep -Fq 'High Land remains suite-owned' .github/workflows/deploy-public-suite-wordpress-v2.yml
+          grep -Fq 'High IQ is resource-owned' .github/workflows/deploy-public-suite-wordpress-v2.yml
+
+          coordinator=.github/workflows/dtfseeds-resource-production-gateway.yml
+          test -s "$coordinator"
+          grep -Fq 'build-dtfseeds-public-resource.yml --join-only' "$coordinator"
+          grep -Fq 'publisherWorkflow' "$coordinator"
+          grep -Fq "resource=$resource" "$coordinator"
+          grep -Fq 'source_sha=$GITHUB_SHA' "$coordinator"
+          grep -Fq 'environment=production' "$coordinator"
+          grep -Fq "resource.publisher?.orchestration !== 'gateway-managed'" "$coordinator"
+          grep -Fq 'Detect superseded queued resource release' "$coordinator"
+          ! grep -Fq 'issues: write' "$coordinator"
+          ! grep -Fq 'github.rest.issues.createComment' "$coordinator"
+
+          grep -Fq "publicSuiteOwnership === 'resource'" scripts/plan-dtfseeds-resource-release.mjs
+          grep -Fq "publisher?.orchestration !== 'gateway-managed'" scripts/plan-dtfseeds-resource-release.mjs
+          grep -Fq '.github/workflows/dtfseeds-resource-production-gateway.yml' site/deployment/release-resources.json
+          grep -Fq '.github/workflows/dtfseeds-resource-production-gateway.yml' .github/workflows/build-dtfseeds-public-resource.yml
 
       - name: PHP-lint filtered and hardened embedded bridges
         run: |
@@ -118,6 +148,6 @@ jobs:
           pathlib.Path(os.environ['SOURCE'] + '.php').write_text('<?php\n'+php+'\n')
           PY
             php -l "$file.php"
-            ! grep -Fq "'games/high-land'" "$file"
+            grep -Fq "'games/high-land'" "$file"
             ! grep -Fq "'games/high-iq'" "$file"
           done
