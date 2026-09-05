@@ -43,6 +43,7 @@ jobs:
           php -l "$root/presence.php"
           node games/protect-the-plants/test/burn-buds-branding.test.mjs
           node games/protect-the-plants/test/burn-buds-gameplay-v3.test.mjs
+          node games/protect-the-plants/test/api-copy-contract.test.mjs
 
       - name: Exercise authenticated opponent presence
         shell: bash
