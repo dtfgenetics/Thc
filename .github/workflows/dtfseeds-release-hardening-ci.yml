@@ -42,6 +42,15 @@ jobs:
             scripts/assemble-wordpress-suite-v2.py \
             scripts/assemble-wordpress-suite-resource-aware.py
           grep -Fq 'Enforce authoritative lane outcomes' .github/workflows/dtfseeds-production-gateway.yml
+          grep -Fq 'wordpress-canonical-production.yml --join-existing' .github/workflows/dtfseeds-production-gateway.yml
+          ! grep -Fq 'wordpress-canonical-production.yml --join-only' .github/workflows/dtfseeds-production-gateway.yml
+          ! grep -Fq 'issues: write' .github/workflows/dtfseeds-production-gateway.yml
+          ! grep -Fq 'github.rest.issues.createComment' .github/workflows/dtfseeds-production-gateway.yml
+          ! grep -Fq 'issue_number: 220' .github/workflows/dtfseeds-production-gateway.yml
+          ! grep -Fq 'issues: write' .github/workflows/wordpress-canonical-deploy.yml
+          ! grep -Fq 'github.rest.issues.createComment' .github/workflows/wordpress-canonical-deploy.yml
+          ! grep -Fq 'issue_number:46' .github/workflows/wordpress-canonical-deploy.yml
+          grep -Fq 'Summarize trusted production handoff' .github/workflows/wordpress-canonical-deploy.yml
           grep -Fq 'cancel-in-progress: false' .github/workflows/wordpress-canonical-production.yml
           grep -Fq 'dtf-wordpress-temporary-code-snippets-bridge' .github/workflows/deploy-public-suite-wordpress-v2.yml
           grep -Fq 'dtf-wordpress-temporary-code-snippets-bridge' .github/workflows/deploy-games-suite-lock-recovery.yml
