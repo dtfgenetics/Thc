@@ -49,6 +49,10 @@ for (const token of [
   'LEARNING_ROOT_CONVERGENCE_DELAY_MS',
   'missingSemantics',
   'missingRoutes',
+  'decodeHtmlEntity',
+  'normalizeVisitorText',
+  'normalizedHtml.includes(normalizeVisitorText(marker))',
+  "semanticNormalization: 'visible-text-html-entities'",
   "publicVerification: 'semantic-cache-convergence'",
   "mutation: 'none'"
 ]) {
@@ -67,6 +71,13 @@ if (publicLoopStart < 0 || publicLoopEnd <= publicLoopStart) {
   if (!publicLoop.includes('publicSemantics.filter') || !publicLoop.includes('publicRoutes.filter')) {
     failures.push('anonymous Learn convergence no longer evaluates both semantic and route completeness');
   }
+  if (!publicLoop.includes('normalizeVisitorText(html)') || !publicLoop.includes('normalizeVisitorText(marker)')) {
+    failures.push('anonymous Learn convergence no longer compares normalized visitor-visible text');
+  }
+}
+
+if (!source.includes("amp: '&'")) {
+  failures.push('visitor semantic normalization no longer decodes HTML ampersand entities');
 }
 
 if (source.includes("method: 'POST'") || source.includes('method: "POST"')) {
@@ -82,4 +93,5 @@ if (failures.length) {
 console.log('Learning public convergence contract passed.');
 console.log('- authenticated REST proves private Learn owner markers');
 console.log('- anonymous HTML proves stable visitor-facing semantics and routes');
+console.log('- visitor semantics are normalized from HTML entities before comparison');
 console.log('- public convergence is bounded and read-only');
