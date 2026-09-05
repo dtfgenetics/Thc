@@ -6,7 +6,8 @@ const site = (process.env.WP_SITE_URL || 'https://dtfseeds.com').replace(/\/$/, 
 const user = process.env.WP_API_USERNAME || '';
 const pass = process.env.WP_API_PASSWORD || '';
 const apply = String(process.env.APPLY_LEARNING_V4 || '').toLowerCase() === 'true';
-const scope = String(process.env.LEARNING_V4_SCOPE || 'all').toLowerCase();
+const outdoorTopicsOnly = String(process.env.APPLY_HARVEST_OUTDOOR_V6 || '').toLowerCase() === 'true';
+const scope = String(process.env.LEARNING_V4_SCOPE || (outdoorTopicsOnly ? 'topics-only' : 'all')).toLowerCase();
 const validScopes = new Set(['all', 'topics-only']);
 const guidePath = process.env.LEARNING_GUIDE_V4_PATH || 'site/wordpress/education/learning-guides-v4.json';
 const literaturePath = process.env.TOPIC_LITERATURE_PATH || 'site/wordpress/education/topic-literature.json';
@@ -194,7 +195,7 @@ for (const id of Object.keys(guide.topics)) {
   results.push({ id, route: topic.route, pageId: page.id });
 }
 
-const report = { generatedAt: new Date().toISOString(), apply, scope, guidePath, topicCount: Object.keys(guide.topics).length, trackCount: guide.tracks.length, results };
+const report = { generatedAt: new Date().toISOString(), apply, scope, rootMutation: scope === 'all' ? 'enabled' : 'preserved-canonical-root', guidePath, topicCount: Object.keys(guide.topics).length, trackCount: guide.tracks.length, results };
 await writeFile(join(backupRoot, 'learning-v4-report.json'), `${JSON.stringify(report, null, 2)}\n`);
 await writeFile(join(backupDir, 'learning-v4-report.json'), `${JSON.stringify(report, null, 2)}\n`);
 console.log(JSON.stringify(report, null, 2));
