@@ -10,6 +10,10 @@ on:
       - 'scripts/run-learning-v3-connected-production.sh'
       - 'scripts/improve-wordpress-learning-v4.mjs'
       - 'scripts/reconcile-wordpress-learning-v3-ownership.mjs'
+      - 'scripts/prepare-learning-v3-owner-aware-publisher.mjs'
+      - 'scripts/prepare-learning-owner-aware-followup-publishers.mjs'
+      - 'scripts/publish-learning-expanded-references-owner-aware.mjs'
+      - 'scripts/verify-learning-owner-storage.mjs'
       - '.github/workflows/wordpress-home-genetics-art.yml'
       - '.github/workflows/homepage-reviewed-genetics-art-production.yml'
       - '.github/workflows/wordpress-home-release-visuals.yml'
@@ -40,6 +44,10 @@ jobs:
           node --check scripts/run-learning-v3-production.mjs
           node --check scripts/improve-wordpress-learning-v4.mjs
           node --check scripts/reconcile-wordpress-learning-v3-ownership.mjs
+          node --check scripts/prepare-learning-v3-owner-aware-publisher.mjs
+          node --check scripts/prepare-learning-owner-aware-followup-publishers.mjs
+          node --check scripts/publish-learning-expanded-references-owner-aware.mjs
+          node --check scripts/verify-learning-owner-storage.mjs
           bash -n scripts/run-learning-v3-connected-production.sh
           grep -Fq 'data-dtf-home-genetics-v2' scripts/finalize-wordpress-home-genetics-art.mjs
           grep -Fq 'Current releases, shown with the real strain cards.' scripts/finalize-wordpress-home-genetics-art.mjs
@@ -65,6 +73,10 @@ jobs:
           learning_final='.github/workflows/wordpress-learning-final-owner.yml'
           learning_wrapper='scripts/run-learning-v3-connected-production.sh'
           learning_map='scripts/improve-wordpress-learning-v4.mjs'
+          v3_prepare='scripts/prepare-learning-v3-owner-aware-publisher.mjs'
+          followup_prepare='scripts/prepare-learning-owner-aware-followup-publishers.mjs'
+          expanded='scripts/publish-learning-expanded-references-owner-aware.mjs'
+          storage='scripts/verify-learning-owner-storage.mjs'
 
           grep -Fq 'workflow_dispatch:' "$legacy"
           ! grep -Fq 'workflow_run:' "$legacy"
@@ -94,9 +106,21 @@ jobs:
           grep -Fq 'scripts/reconcile-wordpress-learning-v3-ownership.mjs' "$learning"
           grep -Fq 'bash scripts/run-learning-v3-connected-production.sh' "$learning"
 
-          grep -Fq 'node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/run-learning-v3-production.mjs' "$learning_wrapper"
+          # Home remains part of the single Learning owner transaction, but its
+          # canonical state is proved from WordPress storage instead of hidden
+          # implementation attributes on the anonymous visitor renderer.
+          grep -Fq 'prepare-learning-v3-owner-aware-publisher.mjs' "$learning_wrapper"
+          grep -Fq 'prepare-learning-owner-aware-followup-publishers.mjs' "$learning_wrapper"
+          grep -Fq 'LEARNING_V3_PUBLISHER_PATH="$owner_v3"' "$learning_wrapper"
           grep -Fq 'APPLY_LEARNING_V4=true' "$learning_wrapper"
-          grep -Fq 'node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/improve-wordpress-learning-v4.mjs' "$learning_wrapper"
+          grep -Fq 'publish-learning-expanded-references-owner-aware.mjs' "$learning_wrapper"
+          for stage in v3 v4 expanded visual; do grep -Fq "LEARNING_OWNER_STAGE=$stage" "$learning_wrapper"; done
+          grep -Fq "rootVerification: 'wordpress-rest'" "$v3_prepare"
+          grep -Fq "topicVerification: 'anonymous-public'" "$v3_prepare"
+          grep -Fq 'Stored Learn V4 owner verification failed' "$followup_prepare"
+          grep -Fq 'Learning Visual V1 verification failed' "$followup_prepare"
+          grep -Fq "storageVerification: 'success'" "$expanded"
+          grep -Fq "verification: 'wordpress-rest-storage'" "$storage"
           grep -Fq 'data-dtf-layout="learn-v3"' "$learning_map"
           grep -Fq 'data-dtf-learning-map="v4"' "$learning_map"
 
@@ -112,7 +136,7 @@ jobs:
           grep -Fq 'Blue Mango F2 Feminized DTF Genetics strain card' "$legacy"
           grep -Fq 'Blue Bubblegum F1 Regular DTF Genetics strain card' "$legacy"
           grep -Fq 'Mango Bubbles F1 Regular DTF Genetics strain card' "$legacy"
-          echo 'Homepage genetics ownership validated: Learning V3 owns its connected Learn map and the reusable final Home handoff; Topic Literature remains independently serialized; automatic legacy Home mutation is retired.'
+          echo 'Homepage genetics ownership validated: Learning V3 owns Home/Learn through an owner-aware storage transaction and the reusable final Home handoff; Topic Literature remains independently serialized; automatic legacy Home mutation is retired.'
 
       - name: Prove V3 runtime patch still matches canonical publisher
         shell: bash
