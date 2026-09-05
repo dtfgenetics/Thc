@@ -127,7 +127,11 @@ jobs:
           grep -Fq 'canonicalLaneMutation !== false' scripts/verify-wordpress-owned-route-preservation.mjs
           grep -Fq 'ownerAdvanced' scripts/verify-wordpress-owned-route-preservation.mjs
           grep -Fq 'data-dtf-layout="home-v3"' scripts/verify-wordpress-owned-route-preservation.mjs
-          grep -Fq 'data-dtf-learning-expanded-reference="v1"' scripts/verify-wordpress-owned-route-preservation.mjs
+          grep -Fq 'data-dtf-layout="learn-v3"' scripts/verify-wordpress-owned-route-preservation.mjs
+          grep -Fq "ownerStage = 'base-learning-owner'" scripts/verify-wordpress-owned-route-preservation.mjs
+          grep -Fq "downstreamStageVerification = 'delegated-to-learning-production'" scripts/verify-wordpress-owned-route-preservation.mjs
+          ! grep -Fq 'data-dtf-learning-map="v4"' scripts/verify-wordpress-owned-route-preservation.mjs
+          ! grep -Fq 'data-dtf-learning-expanded-reference="v1"' scripts/verify-wordpress-owned-route-preservation.mjs
           ! grep -Fq 'content changed during canonical reconciliation' scripts/verify-wordpress-owned-route-preservation.mjs
           ! grep -Fq 'Genetics first. Cultivation science behind it.' .github/workflows/wordpress-canonical-production.yml
 

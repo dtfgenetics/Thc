@@ -21,17 +21,20 @@ const auth = `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}
 const headers = {
   Authorization: auth,
   Accept: 'application/json',
-  'User-Agent': 'DTFSeeds-Owned-Route-Preservation-Verify/2.0'
+  'User-Agent': 'DTFSeeds-Owned-Route-Preservation-Verify/2.1'
 };
 
+// This verifier runs inside canonical WordPress production before the Education
+// lane. It may prove only the base Home/Learn owner identity plus canonical
+// no-write evidence. Connected Learning V4, expanded references and visual
+// finalization are downstream Learning-stage obligations and are verified by
+// the dedicated Learning owner transaction.
 const ownerMarkers = {
   home: ['data-dtf-layout="home-v3"'],
-  learn: [
-    'data-dtf-layout="learn-v3"',
-    'data-dtf-learning-map="v4"',
-    'data-dtf-learning-expanded-reference="v1"'
-  ]
+  learn: ['data-dtf-layout="learn-v3"']
 };
+const ownerStage = 'base-learning-owner';
+const downstreamStageVerification = 'delegated-to-learning-production';
 
 const transientStatuses = new Set([408, 425, 429, 500, 502, 503, 504, 520, 522, 523, 524]);
 const transientCodes = new Set([
@@ -185,7 +188,7 @@ for (const slug of ['home', 'learn']) {
   }
   for (const marker of ownerMarkers[slug] || []) {
     if (!content.includes(marker)) {
-      throw new Error(`WordPress /${slug}/ page ${page.id} is missing canonical owner marker: ${marker}`);
+      throw new Error(`WordPress /${slug}/ page ${page.id} is missing canonical base owner marker: ${marker}`);
     }
   }
   if (slug === 'home' && expectedHomeFeaturedMedia > 0 && Number(page.featured_media || 0) !== expectedHomeFeaturedMedia) {
@@ -193,13 +196,15 @@ for (const slug of ['home', 'learn']) {
   }
 
   if (ownerAdvanced) {
-    console.log(`Learning owner advanced /${slug}/ after the canonical lane snapshot; accepting current owner state because transaction evidence proves the broad lane did not mutate it.`);
+    console.log(`Learning owner advanced /${slug}/ after the canonical lane snapshot; accepting current base owner state because transaction evidence proves the broad lane did not mutate it.`);
   }
 
   verified.push({
     slug,
     id: Number(page.id),
     status: page.status,
+    ownerStage,
+    downstreamStageVerification,
     canonicalLaneMutation: false,
     ownerAdvanced,
     snapshotContentLength: expected.snapshotContentLength,
@@ -215,6 +220,8 @@ console.log(JSON.stringify({
   verifiedAt: new Date().toISOString(),
   siteUrl,
   preservationReport,
+  ownerStage,
+  downstreamStageVerification,
   canonicalReconciliationBackup: report.canonicalReconciliation.backupDir,
   routes: verified
 }, null, 2));
