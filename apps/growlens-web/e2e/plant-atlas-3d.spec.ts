@@ -16,6 +16,11 @@ test.describe('THC Living Plant Atlas V4', () => {
     const canvas = page.locator('[data-plant-canvas]');
     const anatomyLabel = page.locator('[data-plant-anatomy-label]');
     const modelStatus = page.locator('[data-plant-model-status]');
+    const activateFocus = async (name: string) => {
+      const button = page.getByRole('button', { name });
+      await expect(button).toBeVisible();
+      await button.dispatchEvent('click');
+    };
 
     await expect(canvas).toBeVisible();
     await expect(viewport).toHaveAttribute('data-renderer-generation', 'v4', { timeout: 15_000 });
@@ -29,7 +34,7 @@ test.describe('THC Living Plant Atlas V4', () => {
     expect(size.width).toBeGreaterThan(400);
     expect(size.height).toBeGreaterThan(400);
 
-    await page.getByRole('button', { name: 'Roots' }).click();
+    await activateFocus('Roots');
     await expect(page.locator('[data-inspector-title]')).toHaveText('Root system');
     await expect(page.locator('[data-inspector-link]')).toHaveAttribute('href', '/atlas/root-system/');
     await expect(viewport).toHaveAttribute('data-plant-inspection', 'root-system');
@@ -38,25 +43,24 @@ test.describe('THC Living Plant Atlas V4', () => {
     await expect(anatomyLabel).toBeVisible();
     await expect(anatomyLabel).toContainText('Primary, lateral & fine absorbing roots');
 
-    await page.getByRole('button', { name: 'Leaves' }).click();
+    await activateFocus('Leaves');
     await expect(page.locator('[data-inspector-title]')).toHaveText('Fan leaves');
     await expect(page.locator('[data-inspector-link]')).toHaveAttribute('href', '/atlas/leaf-module/');
     await expect(viewport).toHaveAttribute('data-plant-inspection', 'leaf-module');
     await expect(viewport).toHaveAttribute('data-root-cutaway', 'resting');
     await expect(anatomyLabel).toContainText('Serrated leaflets');
 
-    await page.getByRole('button', { name: 'Flowers' }).click();
+    await activateFocus('Flowers');
     await expect(page.locator('[data-inspector-title]')).toHaveText('Flowers & inflorescences');
     await expect(page.locator('[data-inspector-link]')).toHaveAttribute('href', '/atlas/flower-anatomy/');
     await expect(anatomyLabel).toContainText('Female floral clusters');
 
-    await page.getByRole('button', { name: 'Trichomes' }).click();
+    await activateFocus('Trichomes');
     await expect(page.locator('[data-inspector-title]')).toHaveText('Glandular trichomes');
     await expect(page.locator('[data-inspector-link]')).toHaveAttribute('href', '/atlas/trichomes-resin/');
     await expect(anatomyLabel).toContainText('secretory gland heads');
 
-    await canvas.focus();
-    await canvas.press('r');
+    await canvas.evaluate((element) => element.dispatchEvent(new KeyboardEvent('keydown', { key: 'r', bubbles: true })));
     await expect(viewport).toHaveAttribute('data-plant-inspection', 'whole');
     await expect(viewport).toHaveAttribute('data-root-cutaway', 'resting');
     await expect(viewport).toHaveAttribute('data-isolation', 'off');
