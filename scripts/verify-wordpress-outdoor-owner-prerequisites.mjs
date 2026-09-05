@@ -14,7 +14,7 @@ async function request(path){
   for(let attempt=1;attempt<=6;attempt++){
     try{
       const response=await fetch(`${site}${path}`,{
-        headers:{Authorization:auth,Accept:'application/json','User-Agent':'THC-Outdoor-Owner-Prerequisites/1.0'},
+        headers:{Authorization:auth,Accept:'application/json','User-Agent':'THC-Outdoor-Owner-Prerequisites/1.1'},
         signal:AbortSignal.timeout(60000)
       });
       const text=await response.text();
@@ -35,7 +35,12 @@ async function page(slug){
 }
 
 const specs=[
-  {slug:'learn',required:['data-dtf-layout="learn-v3"']},
+  {slug:'learn',required:[
+    'data-dtf-layout="learn-v3"',
+    '/learn/atlas/',
+    'Open the THC Living Plant Atlas',
+    'data-dtf-learning-map="v4"'
+  ]},
   {slug:'harvest-postharvest',required:['data-dtf-topic="harvest-postharvest"']},
   {slug:'outdoor',required:['data-dtf-topic="outdoor-cultivation"']}
 ];
@@ -59,4 +64,4 @@ for(const spec of specs){
   results.push({slug:spec.slug,pageId:item.id,status:item.status,markers:spec.required});
 }
 
-console.log(JSON.stringify({valid:true,scope:'outdoor-owner-prerequisites',results},null,2));
+console.log(JSON.stringify({valid:true,scope:'outdoor-owner-prerequisites',rootOwner:'canonical-learning-connected-transaction',mutation:'none',results},null,2));
