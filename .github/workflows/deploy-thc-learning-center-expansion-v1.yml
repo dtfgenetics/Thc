@@ -1,6 +1,5 @@
 name: Deploy THC Education Expansion V1
 # Production evidence is authoritative in the Actions summary and artifact.
-# Issue #220 remains a legacy command surface only; comments are best-effort.
 
 on:
   workflow_dispatch:
@@ -11,12 +10,9 @@ on:
       - 'scripts/publish-wordpress-learning-center-expansion-v1.mjs'
       - 'scripts/update-wordpress-learn-expansion-v1.mjs'
       - '.github/workflows/deploy-thc-learning-center-expansion-v1.yml'
-  issue_comment:
-    types: [created]
 
 permissions:
   contents: read
-  issues: write
 
 concurrency:
   group: dtfseeds-thc-education-expansion-v1
@@ -24,7 +20,6 @@ concurrency:
 
 jobs:
   deploy:
-    if: ${{ github.event_name != 'issue_comment' || (github.event.issue.number == 220 && github.event.comment.body == '/deploy-thc-education-v1') }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     environment: production
@@ -83,7 +78,7 @@ jobs:
           node scripts/publish-wordpress-learning-center-expansion-v1.mjs | tee "$RUNNER_TEMP/education-expansion-publish.json"
           echo "outcome=success" >> "$GITHUB_OUTPUT"
 
-      - name: Add expansion routes to Learn hub
+      - name: Verify expansion routes on canonical Learn hub
         id: navigation
         shell: bash
         run: |
@@ -123,7 +118,7 @@ jobs:
           curl -4 --fail --silent --show-error --location --retry 4 --retry-delay 3 \
             -H 'Cache-Control: no-cache, no-store, max-age=0' -H 'Pragma: no-cache' \
             "https://dtfseeds.com/learn/?dtf_expansion=${GITHUB_RUN_ID}" -o "$learn"
-          for href in /learn/cultivation-science/ /learn/symptoms/ /learn/tools/ /learn/sources/; do grep -Fq "$href" "$learn"; done
+          for href in /learn/plant-health/ /learn/cultivation-science/ /learn/symptoms/ /learn/tools/ /learn/sources/; do grep -Fq "$href" "$learn"; done
           echo "outcome=success" >> "$GITHUB_OUTPUT"
 
       - name: Upload rollback and release evidence
@@ -151,46 +146,11 @@ jobs:
             echo '## THC education expansion V1 production'
             echo
             echo "Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
-            echo "Result before reporting: **${JOB_STATUS:-unknown}**"
+            echo "Result before summary: **${JOB_STATUS:-unknown}**"
             echo "Routes built: **${ROUTE_COUNT:-not-run}**"
             echo "WordPress backing-page publish: **${PUBLISH_OUTCOME:-not-run}**"
-            echo "Learn navigation: **${NAV_OUTCOME:-not-run}**"
+            echo "Canonical Learn navigation verification: **${NAV_OUTCOME:-not-run}**"
             echo "Fresh visitor verification: **${LIVE_OUTCOME:-not-run}**"
             echo
-            echo 'This Actions summary plus the uploaded rollback/release artifact is the authoritative release record. Issue comments are advisory only.'
+            echo 'This Actions summary plus the uploaded rollback/release artifact is the authoritative release record. Routine issue-ledger telemetry is intentionally disabled.'
           } >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Best-effort legacy issue report
-        if: always()
-        continue-on-error: true
-        uses: actions/github-script@v7
-        env:
-          JOB_STATUS: ${{ job.status }}
-          ROUTE_COUNT: ${{ steps.build.outputs.route_count }}
-          PUBLISH_OUTCOME: ${{ steps.publish.outputs.outcome }}
-          NAV_OUTCOME: ${{ steps.navigation.outputs.outcome }}
-          LIVE_OUTCOME: ${{ steps.live.outputs.outcome }}
-        with:
-          script: |
-            const body = [
-              '## THC education expansion V1 production',
-              '',
-              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-              `Result: **${process.env.JOB_STATUS}**`,
-              `Routes built: **${process.env.ROUTE_COUNT || 'not-run'}**`,
-              `WordPress backing-page publish: **${process.env.PUBLISH_OUTCOME || 'not-run'}**`,
-              `Learn navigation: **${process.env.NAV_OUTCOME || 'not-run'}**`,
-              `Fresh Dtf420 child-route overlay verification: **${process.env.LIVE_OUTCOME || 'not-run'}**`,
-              '',
-              'Advisory mirror only. The Actions summary and release artifact are authoritative.'
-            ].join('\n');
-            try {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: 220,
-                body
-              });
-            } catch (error) {
-              core.warning(`Legacy issue report skipped: ${error.message}`);
-            }
