@@ -2,12 +2,15 @@
 .viewer-reset{top:18px!important;bottom:auto!important}
 .plant-viewport:after{display:none!important}
 .plant-viewport{isolation:isolate}
-.plant-viewport[data-render-state="ready"] canvas{filter:saturate(1.08) contrast(1.035) brightness(1.015)}
+.plant-viewport[data-render-state="ready"] canvas{filter:saturate(1.08) contrast(1.035) brightness(1.015) sepia(.025) hue-rotate(-4deg)}
 
 .specimen-map-head{display:flex;align-items:end;justify-content:space-between;gap:16px;margin:25px 0 9px;padding-top:16px;border-top:1px solid rgba(146,187,154,.13)}
 .specimen-map-head span{color:#76917e;font-size:.56rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase}
 .specimen-map-head strong{color:#d8e5da;font-family:ui-serif,Georgia,Cambria,"Times New Roman",serif;font-size:1rem;font-weight:600;letter-spacing:.01em}
-.anatomy-key{margin-top:0!important}
+.anatomy-key{margin-top:0!important;counter-reset:atlasFocus}
+.anatomy-key button{counter-increment:atlasFocus;display:flex!important;align-items:center;gap:0}
+.anatomy-key button:after{content:"0" counter(atlasFocus);margin-left:auto;padding-left:10px;color:#597061;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.48rem;font-weight:700;letter-spacing:.08em;transition:color .18s ease}
+.anatomy-key button:hover:after,.anatomy-key button:focus-visible:after,.anatomy-key button.active:after{color:#b8df9d}
 
 .specimen-plaque{position:absolute;z-index:4;right:24px;bottom:24px;width:min(310px,42%);padding:15px 17px 14px 19px;border:1px solid rgba(181,211,185,.19);border-left-color:rgba(168,239,120,.58);border-radius:12px;background:linear-gradient(135deg,rgba(5,13,8,.88),rgba(10,24,16,.7));box-shadow:0 18px 50px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.025);backdrop-filter:blur(13px);pointer-events:none;transition:opacity .2s ease,transform .2s ease}
 .specimen-plaque:before{content:"";position:absolute;left:-1px;top:14px;bottom:14px;width:2px;background:linear-gradient(180deg,transparent,#a8ef78 30%,#d9bc73 76%,transparent)}
@@ -23,12 +26,57 @@
 .viewer-axis i{display:block;width:12px;height:100%;border-left:1px solid rgba(168,205,174,.28);background:repeating-linear-gradient(to bottom,transparent 0 21px,rgba(168,205,174,.3) 21px 22px,transparent 22px 27px);mask-image:linear-gradient(to bottom,transparent,#000 7%,#000 93%,transparent)}
 .viewer-axis i:after{content:"";display:block;width:6px;height:1px;margin-left:-1px;background:#a8ef78;box-shadow:0 0 12px rgba(168,239,120,.6)}
 
+/* Exhibit composition */
+.hero>div:first-child{position:relative}
+.hero>div:first-child:before{content:"BOTANICAL ATLAS / 01";display:block;margin-bottom:18px;color:#5f7867;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.54rem;font-weight:800;letter-spacing:.22em}
+.hero>div:first-child:after{content:"CANNABACEAE · FLOWERING STUDY · INTERACTIVE REFERENCE";display:block;margin-top:26px;padding-top:13px;border-top:1px solid rgba(145,181,151,.13);color:#617567;font-size:.53rem;font-weight:750;letter-spacing:.17em}
+.hero-card:after{content:"ANGIOSPERM  /  CANNABACEAE  /  CANNABIS";display:block;margin-top:18px;color:#52675a;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.49rem;font-weight:700;letter-spacing:.12em}
+
+.plant-viewport{background:radial-gradient(circle at 50% 43%,rgba(109,155,82,.18),transparent 21rem),radial-gradient(circle at 50% 82%,rgba(132,101,62,.11),transparent 17rem),linear-gradient(180deg,#07110b,#050d08 62%,#030805)!important}
+.plant-viewport:before{opacity:.8;background:linear-gradient(90deg,rgba(205,224,207,.025) 1px,transparent 1px),linear-gradient(rgba(205,224,207,.025) 1px,transparent 1px),radial-gradient(circle at 50% 45%,transparent 0 29%,rgba(143,190,145,.08) 29.2% 29.5%,transparent 29.8% 42%,rgba(143,190,145,.045) 42.2% 42.5%,transparent 42.8%),radial-gradient(circle at 50% 47%,transparent 0 37%,rgba(2,7,4,.08) 62%,rgba(2,6,4,.54) 100%)!important;background-size:68px 68px,68px 68px,100% 100%,100% 100%!important}
+.plant-viewport[data-isolation="active"]{box-shadow:0 34px 100px rgba(0,0,0,.58),0 0 0 1px rgba(159,232,112,.1),inset 0 0 90px rgba(77,125,72,.08)!important}
+.viewer-hud:before{content:"LIVE SPECIMEN VIEW";display:inline-flex;align-items:center;padding:6px 8px;border:1px solid rgba(169,202,174,.18);border-radius:7px;background:rgba(4,11,7,.52);color:#637b69;font-size:.48rem;font-weight:800;letter-spacing:.14em;backdrop-filter:blur(8px)}
+
+.section{position:relative;scroll-margin-top:105px}
+.section-head{position:relative}
+.section-head:before{content:"";position:absolute;left:0;bottom:-1px;width:112px;height:1px;background:linear-gradient(90deg,#a8ef78,rgba(217,188,115,.45),transparent)}
+.system-grid{counter-reset:atlasSystem;grid-auto-flow:dense}
+.system-card{counter-increment:atlasSystem;isolation:isolate}
+.system-card>*{position:relative;z-index:2}
+.system-card:after{content:counter(atlasSystem,decimal-leading-zero);position:absolute;z-index:1;right:13px;top:8px;color:rgba(181,211,185,.055);font-family:ui-serif,Georgia,Cambria,"Times New Roman",serif;font-size:5.7rem;font-weight:500;line-height:1;letter-spacing:-.06em;pointer-events:none;transition:color .2s ease,transform .2s ease}
+.system-card:nth-child(3n+1){background:radial-gradient(circle at 95% 5%,rgba(110,176,93,.08),transparent 13rem),linear-gradient(180deg,rgba(13,29,20,.88),rgba(7,17,11,.92))}
+.system-card:nth-child(3n+2){background:radial-gradient(circle at 90% 12%,rgba(217,188,115,.045),transparent 12rem),linear-gradient(180deg,rgba(13,29,20,.86),rgba(7,17,11,.9))}
+.system-card:nth-child(3n){background:radial-gradient(circle at 94% 7%,rgba(114,160,131,.055),transparent 12rem),linear-gradient(180deg,rgba(13,29,20,.86),rgba(7,17,11,.9))}
+.system-card:hover:after,.system-card:focus-visible:after{color:rgba(181,226,160,.12);transform:translate(-2px,2px)}
+.system-card h3{max-width:82%}
+
+.map-grid{position:relative}
+.map-grid:after{content:"";position:absolute;left:12%;right:12%;top:13px;height:1px;background:linear-gradient(90deg,transparent,rgba(159,232,112,.22),rgba(217,188,115,.15),transparent);pointer-events:none}
+.map-card{position:relative;overflow:hidden}
+.map-card:after{content:"";position:absolute;right:-50px;bottom:-70px;width:160px;height:160px;border:1px solid rgba(152,193,159,.06);border-radius:50%;box-shadow:0 0 0 24px rgba(152,193,159,.018),0 0 0 48px rgba(152,193,159,.012)}
+
+.deep-grid{counter-reset:deepLab}
+.deep-card{counter-increment:deepLab;position:relative;overflow:hidden;isolation:isolate}
+.deep-card>*{position:relative;z-index:2}
+.deep-card:after{content:"0" counter(deepLab);position:absolute;z-index:1;right:24px;bottom:-18px;color:rgba(193,220,197,.055);font-family:ui-serif,Georgia,Cambria,"Times New Roman",serif;font-size:9rem;font-weight:500;line-height:1;letter-spacing:-.08em;pointer-events:none}
+.deep-card:first-child{background:radial-gradient(circle at 88% 28%,rgba(83,149,82,.13),transparent 20rem),linear-gradient(145deg,rgba(15,34,23,.95),rgba(7,17,11,.96))}
+.deep-card:nth-child(2){background:radial-gradient(circle at 86% 28%,rgba(153,116,72,.1),transparent 20rem),linear-gradient(145deg,rgba(15,31,22,.95),rgba(7,17,11,.96))}
+
+.life-grid{position:relative}
+.life-grid:before{content:"";position:absolute;left:8%;right:8%;top:24px;height:1px;background:linear-gradient(90deg,rgba(159,232,112,.08),rgba(159,232,112,.32) 50%,rgba(217,188,115,.22));pointer-events:none}
+.life{position:relative;z-index:1}
+.life i{box-shadow:0 0 0 7px #06100c,0 0 0 8px rgba(144,185,151,.14)}
+.life:nth-child(6) i{border-color:rgba(217,188,115,.45);color:#e8d69f;box-shadow:0 0 0 7px #06100c,0 0 0 8px rgba(217,188,115,.18),0 0 28px rgba(217,188,115,.08)}
+.principle{position:relative;overflow:hidden}
+.principle:after{content:"OBSERVE  ·  COMPARE  ·  VERIFY";position:absolute;right:20px;bottom:11px;color:rgba(203,225,205,.12);font-size:.52rem;font-weight:800;letter-spacing:.17em;pointer-events:none}
+
 /* Playwright/SwiftShader is intentionally rendered at a smaller raster surface so
    the full interaction contract stays testable without changing real-user sizing. */
 html[data-plant-atlas-automated-browser="true"] .plant-viewport{height:480px;min-height:480px;align-self:start}
 html[data-plant-atlas-automated-browser="true"] .plant-viewport canvas{height:480px!important;min-height:480px!important}
 html[data-plant-atlas-automated-browser="true"] .viewer-axis,html[data-plant-atlas-automated-browser="true"] .specimen-plaque{display:none}
 
-@media(max-width:820px){.specimen-map-head{margin-top:20px}.specimen-plaque{right:14px;bottom:54px;width:min(300px,70%);padding:12px 14px}.viewer-axis{display:none}.plant-viewport[data-render-state="ready"] canvas{filter:saturate(1.04) contrast(1.02)}}
-@media(max-width:520px){.specimen-plaque{left:14px;right:14px;width:auto;bottom:56px}.specimen-plaque small{display:none}}
-@media(prefers-reduced-motion:reduce){.specimen-plaque{transition:none}}
+@media(max-width:1060px){.hero>div:first-child:after{font-size:.48rem}.system-card:after{font-size:4.7rem}}
+@media(max-width:820px){.specimen-map-head{margin-top:20px}.specimen-plaque{right:14px;bottom:54px;width:min(300px,70%);padding:12px 14px}.viewer-axis{display:none}.plant-viewport[data-render-state="ready"] canvas{filter:saturate(1.04) contrast(1.02) sepia(.02) hue-rotate(-3deg)}.anatomy-key{display:flex!important;grid-template-columns:none!important;gap:8px!important;overflow-x:auto;padding:1px 2px 10px;scroll-snap-type:x proximity;scrollbar-width:none}.anatomy-key::-webkit-scrollbar{display:none}.anatomy-key button{flex:0 0 auto;min-width:142px;scroll-snap-align:start}.system-card:after{font-size:4.2rem}.life-grid:before{display:none}.viewer-hud:before{display:none}}
+@media(max-width:520px){.hero>div:first-child:before{margin-bottom:13px;font-size:.48rem}.hero>div:first-child:after{margin-top:18px;line-height:1.7}.hero-card:after{line-height:1.7}.specimen-plaque{left:14px;right:14px;width:auto;bottom:56px}.specimen-plaque small{display:none}.system-card h3{max-width:86%}.principle:after{display:none}}
+@media(prefers-reduced-motion:reduce){.specimen-plaque,.system-card:after{transition:none}}
