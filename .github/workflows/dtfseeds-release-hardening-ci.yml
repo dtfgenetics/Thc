@@ -30,8 +30,10 @@ jobs:
         run: |
           set -euo pipefail
           node --check scripts/plan-dtfseeds-release.mjs
+          node --check scripts/plan-dtfseeds-resource-release.mjs
           node --check scripts/publish-wordpress-learning-center-expansion-v1.mjs
           node --check scripts/cleanup-stale-wordpress-suite-snippets.mjs
+          node scripts/test-dtf-resource-release-system.mjs
           bash -n scripts/run-workflow-and-wait.sh
           python -m py_compile \
             scripts/package-public-suite-wordpress.py \
@@ -41,12 +43,19 @@ jobs:
             scripts/assemble-wordpress-suite-resource-aware.py
           grep -Fq 'Enforce authoritative lane outcomes' .github/workflows/dtfseeds-production-gateway.yml
           grep -Fq 'cancel-in-progress: false' .github/workflows/wordpress-canonical-production.yml
-          grep -Fq 'cancel-in-progress: false' .github/workflows/deploy-public-suite-wordpress-v2.yml
+          grep -Fq 'dtf-wordpress-temporary-code-snippets-bridge' .github/workflows/deploy-public-suite-wordpress-v2.yml
+          grep -Fq 'dtf-wordpress-temporary-code-snippets-bridge' .github/workflows/deploy-games-suite-lock-recovery.yml
+          grep -Fq 'dtf-wordpress-temporary-code-snippets-bridge' .github/workflows/deploy-dtfseeds-wordpress-resource.yml
           grep -Fq 'scripts/assemble-wordpress-suite-resource-aware.py' .github/workflows/deploy-public-suite-wordpress-v2.yml
           grep -Fq 'scripts/package-public-suite-wordpress-resource-aware.py' .github/workflows/deploy-public-suite-wordpress-v2.yml
           grep -Fq 'resourceOwnedRoutesExcluded' .github/workflows/deploy-public-suite-wordpress-v2.yml
           ! grep -Fq 'Atlas deployment target allowlist' .github/workflows/deploy-public-suite-wordpress-v2.yml
           ! grep -Fq "check 'https://dtfseeds.com/games/high-iq/'" .github/workflows/deploy-public-suite-wordpress-v2.yml
+          grep -Fq "check 'https://dtfseeds.com/games/high-land/'" .github/workflows/deploy-public-suite-wordpress-v2.yml
+          grep -Fq 'build-dtfseeds-public-resource.yml --join-only' .github/workflows/dtfseeds-resource-production-gateway.yml
+          grep -Fq 'source_sha=$GITHUB_SHA' .github/workflows/dtfseeds-resource-production-gateway.yml
+          grep -Fq 'gateway-managed' .github/workflows/dtfseeds-resource-production-gateway.yml
+          ! grep -Fq 'issues: write' .github/workflows/dtfseeds-resource-production-gateway.yml
           grep -Fq 'assertNoOtherActivePublisher' scripts/cleanup-stale-wordpress-suite-snippets.mjs
           grep -Fq 'Temporary read-only inspector' scripts/cleanup-stale-wordpress-suite-snippets.mjs
           grep -Fq 'age<120' scripts/cleanup-stale-wordpress-suite-snippets.mjs
@@ -62,11 +71,14 @@ jobs:
           grep -Fq 'games/strain-match' "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
           grep -Fq 'games/lost-in-the-terps' "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
           grep -Fq "'atlas/leaf-module/index.html'" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
-          ! grep -Fq "'games/high-land'" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          grep -Fq "'games/high-land'" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          grep -Fq "'/games/high-land/'" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
           ! grep -Fq "'games/high-iq'" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          ! grep -Fq "'/games/high-iq/'" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
           grep -Fq 'games/strain-match' scripts/package-public-suite-wordpress.py
           grep -Fq 'games/lost-in-the-terps' scripts/package-public-suite-wordpress.py
           grep -Fq 'resourceOwnedTargetsExcluded' "$RUNNER_TEMP/resource-ownership-bridge.json"
+          grep -Fq 'games/high-iq' "$RUNNER_TEMP/resource-ownership-bridge.json"
 
       - name: Verify all release lanes remain selected for gateway architecture changes
         if: github.event_name == 'pull_request'
