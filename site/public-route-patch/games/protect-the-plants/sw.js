@@ -1,5 +1,5 @@
-const CACHE='ptp-shell-v5-burn-buds-battle-feedback-20260904';
-const SHELL=['./','./index.html','./styles.css','./visual-fixes.css','./enhancements.css','./v2-extras.css','./burn-buds.css','./gameplay-v3.css','./battle-feedback-v1.css','./placement-v1.css','./targeting-v1.css','./app.js','./enhancements.js','./v2-extras.js','./burn-buds-branding.js','./gameplay-v3.js','./combat-a11y-v1.js','./battle-feedback-v1.js','./placement-v1.js','./targeting-v1.js','./plant.svg','./manifest.webmanifest'];
+const CACHE='ptp-shell-v6-burn-buds-shared-sync-20260905';
+const SHELL=['./','./index.html','./styles.css','./visual-fixes.css','./enhancements.css','./v2-extras.css','./burn-buds.css','./gameplay-v3.css','./battle-feedback-v1.css','./placement-v1.css','./targeting-v1.css','./app.js','./runtime-sync-v1.js','./enhancements.js','./v2-extras.js','./burn-buds-branding.js','./gameplay-v3.js','./combat-a11y-v1.js','./battle-feedback-v1.js','./placement-v1.js','./targeting-v1.js','./plant.svg','./manifest.webmanifest'];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(SHELL)).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith('ptp-shell-')&&key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim()))});
 self.addEventListener('fetch',event=>{
