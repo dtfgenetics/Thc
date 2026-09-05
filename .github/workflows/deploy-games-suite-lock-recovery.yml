@@ -29,7 +29,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: deploy-dtfseeds-public-suite-wordpress-v2
+  group: dtf-wordpress-temporary-code-snippets-bridge
   cancel-in-progress: false
 
 jobs:
@@ -61,9 +61,9 @@ jobs:
           grep -Fq 'Could not safely reacquire deployment lock.' "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
           grep -Fq "update_option(\$lock_key, ['id' => \$id, 'ts' => time()], false);" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
           grep -Fq "'atlas/leaf-module/index.html'" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
-          ! grep -Fq "'games/high-land'" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          grep -Fq "'games/high-land'" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          grep -Fq "'/games/high-land/'" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
           ! grep -Fq "'games/high-iq'" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
-          ! grep -Fq "'/games/high-land/'" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
           ! grep -Fq "'/games/high-iq/'" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
           grep -Fq 'resourceOwnedTargetsExcluded' "$RUNNER_TEMP/resource-ownership-bridge.json"
           python - <<'PY'
@@ -114,7 +114,7 @@ jobs:
           python scripts/harden-wordpress-suite-lock.py "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
           node --check "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
           grep -Fq "'atlas/leaf-module/index.html'" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
-          ! grep -Fq "'games/high-land'" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          grep -Fq "'games/high-land'" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
           ! grep -Fq "'games/high-iq'" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
 
       - name: Build current validated public suite
@@ -141,6 +141,8 @@ jobs:
           [[ -n "$build_json" ]] || { echo 'Validated artifact does not contain dtf-build.json.' >&2; exit 1; }
           suite_root="$(dirname "$build_json")"
           test -s "$suite_root/games/index.html"
+          test -s "$suite_root/games/high-land/index.html"
+          test -s "$suite_root/games/high-iq/index.html"
           test -s "$suite_root/games/seed-man-platformer/index.html"
           test -s "$suite_root/games/high-life/index.html"
           test -s "$suite_root/games/strain-showdown/index.html"
@@ -169,10 +171,13 @@ jobs:
           archive=os.path.join(os.environ['RUNNER_TEMP'],'dtf-public-suite-wordpress-v2.zip')
           with zipfile.ZipFile(archive) as z:
               names=z.namelist()
-              assert not [n for n in names if n == 'games/high-land' or n.startswith('games/high-land/')]
+              assert 'games/high-land/index.html' in names
               assert not [n for n in names if n == 'games/high-iq' or n.startswith('games/high-iq/')]
               manifest=json.loads(z.read('.dtf-suite-manifest.json'))
-              assert {'/games/high-land/','/games/high-iq/'}.issubset(set(manifest['resourceOwnedRoutesExcluded']))
+              assert '/games/high-iq/' in set(manifest['resourceOwnedRoutesExcluded'])
+              assert '/games/high-land/' not in set(manifest['resourceOwnedRoutesExcluded'])
+              assert 'games/high-land' in manifest['targets']
+              assert 'games/high-iq' not in manifest['targets']
           PY
           echo "archive=$archive" >> "$GITHUB_OUTPUT"
 
@@ -219,7 +224,9 @@ jobs:
           NODE
 
           suite_count="$(wc -l < "$RUNNER_TEMP/public-game-routes.txt" | tr -d ' ')"
-          test "$suite_count" -eq 23
+          test "$suite_count" -eq 24
+          grep -Fxq '/games/high-land/' "$RUNNER_TEMP/public-game-routes.txt"
+          ! grep -Fxq '/games/high-iq/' "$RUNNER_TEMP/public-game-routes.txt"
           while IFS= read -r route; do
             echo "Checking $route"
             body="$(mktemp)"
@@ -266,7 +273,8 @@ jobs:
             echo "- Main revision: $(git rev-parse HEAD)"
             echo "- Validated build run: ${{ steps.build.outputs.run_id }}"
             echo '- Hardened transaction lease recovery: enabled'
-            echo '- Suite-owned public game routes verified: 23/23'
-            echo '- Resource-owned routes excluded from this writer: High Land and High IQ'
+            echo '- Suite-owned public game routes verified: 24/24'
+            echo '- Resource-owned route excluded from this writer: High IQ'
+            echo '- High Land remains suite-owned pending independent SSH publisher validation'
             echo '- Sprout Run expanded build markers verified live'
           } >> "$GITHUB_STEP_SUMMARY"
