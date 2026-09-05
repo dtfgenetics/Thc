@@ -16,18 +16,21 @@ on:
       - games/seed-man-platformer/**
       - site/public-route-patch/**
       - site/deployment/public-apps.json
+      - site/deployment/release-resources.json
       - scripts/package-public-suite-wordpress.py
+      - scripts/package-public-suite-wordpress-resource-aware.py
+      - scripts/public_suite_resource_ownership.py
       - scripts/assemble-wordpress-suite-v2.py
+      - scripts/assemble-wordpress-suite-resource-aware.py
       - scripts/promote-public-game-routes-via-wordpress.mjs
       - scripts/wordpress-suite-v2/**
 
 permissions:
   actions: write
   contents: read
-  issues: write
 
 concurrency:
-  group: deploy-dtfseeds-public-suite-wordpress-v2
+  group: dtf-wordpress-temporary-code-snippets-bridge
   cancel-in-progress: false
 
 jobs:
@@ -55,48 +58,29 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Validate WordPress access and deployment scripts
+      - name: Validate WordPress access and resource-aware deployment scripts
         shell: bash
         run: |
           set -euo pipefail
           : "${WP_API_USERNAME:?WP_API_USERNAME is not configured in production}"
           : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
-          python -m py_compile scripts/package-public-suite-wordpress.py scripts/assemble-wordpress-suite-v2.py
+          python -m py_compile \
+            scripts/package-public-suite-wordpress.py \
+            scripts/package-public-suite-wordpress-resource-aware.py \
+            scripts/public_suite_resource_ownership.py \
+            scripts/assemble-wordpress-suite-v2.py \
+            scripts/assemble-wordpress-suite-resource-aware.py
           node --check scripts/cleanup-stale-wordpress-suite-snippets.mjs
           node --check scripts/promote-public-game-routes-via-wordpress.mjs
-          python scripts/assemble-wordpress-suite-v2.py "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
-          python - <<'PY'
-          import os
-          from pathlib import Path
-
-          path = Path(os.environ['RUNNER_TEMP']) / 'deploy-public-suite-v2.mjs'
-          text = path.read_text()
-
-          def replace_once(old, new, label):
-              global text
-              count = text.count(old)
-              if count != 1:
-                  raise SystemExit(f'Expected exactly one {label} block, found {count}')
-              text = text.replace(old, new, 1)
-
-          replace_once(
-              "'growlens','thc-grow-doc','tools','projects','puzzles'\n    ];",
-              "'growlens','thc-grow-doc','tools','projects','puzzles','atlas','assets/images/atlas'\n    ];",
-              'Atlas deployment target allowlist',
-          )
-          replace_once(
-              "'thc-grow-doc/api/visual-observations.php','tools/index.html','projects/index.html','puzzles/current.json'\n    ];",
-              "'thc-grow-doc/api/visual-observations.php','tools/index.html','projects/index.html','puzzles/current.json',\n        'atlas/index.html','atlas/root-system/index.html','atlas/root-system/rhizosphere/index.html','atlas/downloads/index.html',\n        'assets/images/atlas/root-system/rhizosphere-microbe-interaction.svg'\n    ];",
-              'Atlas required-file allowlist',
-          )
-          replace_once(
-              "'games/protect-the-plants/','games/weedopolis/','games/crossword/','games/who-took-it/','growlens/','thc-grow-doc/','tools/','projects/','puzzles/'\n    ];",
-              "'games/protect-the-plants/','games/weedopolis/','games/crossword/','games/who-took-it/','growlens/','thc-grow-doc/','tools/','projects/','puzzles/',\n        'atlas/','assets/images/atlas/'\n    ];",
-              'Atlas prefix allowlist',
-          )
-          path.write_text(text)
-          PY
+          python scripts/assemble-wordpress-suite-resource-aware.py "$RUNNER_TEMP/deploy-public-suite-v2.mjs" | tee "$RUNNER_TEMP/resource-ownership-bridge.json"
           node --check "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          grep -Fq 'resourceOwnedTargetsExcluded' "$RUNNER_TEMP/resource-ownership-bridge.json"
+          grep -Fq "'atlas'" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          grep -Fq "'atlas/leaf-module/index.html'" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          grep -Fq "'games/high-land'" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          grep -Fq "'/games/high-land/'" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          ! grep -Fq "'games/high-iq'" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          ! grep -Fq "'/games/high-iq/'" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
           grep -Fq "get_param('_dtf_suite_token')" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
           grep -Fq '_dtf_suite_token: suiteToken' "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
           ! grep -Fq 'current_user_can(' "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
@@ -187,7 +171,7 @@ jobs:
           node games/strain-showdown/scripts/validate-browser-build.mjs
           echo "root=$suite_root" >> "$GITHUB_OUTPUT"
 
-      - name: Package current app-only WordPress archive
+      - name: Package resource-aware app-only WordPress archive
         id: package
         shell: bash
         env:
@@ -195,7 +179,7 @@ jobs:
         run: |
           set -euo pipefail
           archive="$RUNNER_TEMP/dtf-public-suite-wordpress-v2.zip"
-          python scripts/package-public-suite-wordpress.py "$SUITE_ROOT" "$archive" | tee "$RUNNER_TEMP/package-summary.json"
+          python scripts/package-public-suite-wordpress-resource-aware.py "$SUITE_ROOT" "$archive" | tee "$RUNNER_TEMP/package-summary.json"
           test -s "$archive"
           python - <<'PY'
           import json, os, zipfile
@@ -213,15 +197,9 @@ jobs:
                   'assets/images/atlas/root-system/rhizosphere-microbe-interaction.svg',
                   'growlens/index.html',
                   'thc-grow-doc/index.html',
+                  'games/high-land/index.html',
                   'games/protect-the-plants/index.html',
                   'games/bud-or-bluff/index.html',
-                  'games/high-iq/index.html',
-                  'games/high-iq/app.js',
-                  'games/high-iq/app-v3.js',
-                  'games/high-iq/game-core.mjs',
-                  'games/high-iq/high-iq.css',
-                  'games/high-iq/high-iq-v3.css',
-                  'games/high-iq/data/manifest.json',
                   'games/strain-showdown/index.html',
                   'games/strain-showdown/app.js',
                   'games/strain-showdown/engine.mjs',
@@ -235,15 +213,18 @@ jobs:
                   'games/phenoquest/style.css',
                   'games/phenoquest/build-meta.json',
               }
-              high_iq=json.loads(z.read('games/high-iq/data/manifest.json'))
-              for chunk in [*high_iq['questionChunks'], *high_iq['sourceChunks']]:
-                  required.add(f'games/high-iq/data/{chunk}')
               missing=required-set(names)
               assert not missing, f'missing deploy archive assets: {sorted(missing)}'
               assert not [n for n in names if n=='index.html' or n.startswith('learn/') or n.startswith('blog/')]
+              assert 'games/high-land/index.html' in names
+              assert not [n for n in names if n == 'games/high-iq' or n.startswith('games/high-iq/')]
               manifest=json.loads(z.read('.dtf-suite-manifest.json'))
               assert manifest['purpose']=='dtfseeds-public-apps-only'
               assert {'/','/learn/','/blog/'}.issubset(set(manifest['wordPressOwnedRoutesExcluded']))
+              assert '/games/high-iq/' in set(manifest['resourceOwnedRoutesExcluded'])
+              assert '/games/high-land/' not in set(manifest['resourceOwnedRoutesExcluded'])
+              assert 'games/high-land' in manifest['targets']
+              assert 'games/high-iq' not in manifest['targets']
           PY
           echo "archive=$archive" >> "$GITHUB_OUTPUT"
 
@@ -289,7 +270,7 @@ jobs:
             grep -Eiq 'THC Living Plant Atlas|Rhizosphere|Field Cards|Root System' <<<"$body"
           done
 
-      - name: Verify current public application surfaces
+      - name: Verify current suite-owned public application surfaces
         shell: bash
         run: |
           set -euo pipefail
@@ -325,7 +306,7 @@ jobs:
           }
           check 'https://dtfseeds.com/games/' '25 playable browser games'
           check 'https://dtfseeds.com/projects/' '15 public browser games'
-          check 'https://dtfseeds.com/games/high-iq/' 'Build your High IQ run'
+          check 'https://dtfseeds.com/games/high-land/' 'High Land'
           check 'https://dtfseeds.com/games/strain-showdown/' 'Eight play styles. One showdown.'
           check 'https://dtfseeds.com/games/protect-the-plants/' 'Protect the Plants'
           check 'https://dtfseeds.com/games/bud-or-bluff/' 'Bud or Bluff'
@@ -334,38 +315,6 @@ jobs:
           check 'https://dtfseeds.com/games/who-took-it/' 'The stash is short.'
           check 'https://dtfseeds.com/growlens/' 'GrowLens'
           check 'https://dtfseeds.com/thc-grow-doc/' 'Grow Doc'
-          node --input-type=module <<'NODE'
-          const base = 'https://dtfseeds.com/games/high-iq/data';
-          const bust = `dtf_suite_verify=${process.env.GITHUB_RUN_ID}`;
-          async function getJson(path) {
-            const response = await fetch(`${base}/${path}?${bust}`, { headers: { 'Cache-Control': 'no-cache, no-store, max-age=0', Accept: 'application/json' } });
-            if (!response.ok) throw new Error(`${path} returned ${response.status}`);
-            const text = await response.text();
-            if (!text.trim().match(/^[\[{]/)) throw new Error(`${path} returned non-JSON content`);
-            return JSON.parse(text);
-          }
-          const manifest = await getJson('manifest.json');
-          if (
-            typeof manifest.datasetVersion !== 'string' || !manifest.datasetVersion.trim() ||
-            !Array.isArray(manifest.recordVersions) || !manifest.recordVersions.includes(manifest.datasetVersion) ||
-            !Number.isInteger(manifest.questionCount) || manifest.questionCount <= 0 ||
-            !Number.isInteger(manifest.sourceCount) || manifest.sourceCount <= 0 ||
-            !Array.isArray(manifest.questionChunks) || manifest.questionChunks.length === 0 ||
-            !Array.isArray(manifest.sourceChunks) || manifest.sourceChunks.length === 0 ||
-            new Set(manifest.questionChunks).size !== manifest.questionChunks.length ||
-            new Set(manifest.sourceChunks).size !== manifest.sourceChunks.length
-          ) {
-            throw new Error(`Invalid High IQ manifest: ${JSON.stringify(manifest)}`);
-          }
-          let questions = 0;
-          for (const chunk of manifest.questionChunks) questions += (await getJson(chunk)).length;
-          let sources = 0;
-          for (const chunk of manifest.sourceChunks) sources += (await getJson(chunk)).length;
-          if (questions !== manifest.questionCount || sources !== manifest.sourceCount) {
-            throw new Error(`High IQ live bank incomplete: ${questions}/${manifest.questionCount} questions, ${sources}/${manifest.sourceCount} sources`);
-          }
-          console.log(`High IQ live bank verified: v${manifest.datasetVersion}, ${questions} questions, ${sources} sources`);
-          NODE
 
       - name: Dispatch independent feature-surface verification
         if: always()
@@ -386,11 +335,12 @@ jobs:
             echo "- Transactional publication: ${{ steps.publish.outcome }}"
             echo "- Game route promotion: ${{ steps.promote_routes.outcome }}"
             echo "- Atlas verification: ${{ steps.live_atlas.outcome }}"
-            echo '- Game Hub verification requires 25 playable browser games, including Terpocalypse and PhenoQuest.'
+            echo '- High IQ is resource-owned and intentionally excluded from this transaction and its suite-owned live verification.'
+            echo '- High Land remains suite-owned until its independent SSH publisher is proven in production.'
+            echo '- Game Hub verification requires the current 25-game navigation shell while this writer publishes all suite-owned routes.'
             echo '- Who Took It verification requires the current case-board edition marker and its own canonical public route.'
             echo '- PhenoQuest must package as a verified self-contained canonical build.'
             echo '- Terpocalypse must package validated browser runtime JavaScript from the integration snapshot.'
-            echo '- High IQ verification requires the upgraded challenge console plus the complete canonical manifest-backed production bank.'
             echo '- Strain Showdown verification requires the packaged browser runtime, synchronized 96-card roster, and live three-lane game route.'
             echo '- Public application checks require HTTP 200 without redirects and include the current Projects release-count fingerprint.'
             echo '- WordPress-owned /, /learn/, and /blog/ remain outside this app-only transaction.'

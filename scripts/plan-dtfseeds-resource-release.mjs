@@ -12,6 +12,7 @@ const config = JSON.parse(readFileSync(args.config || 'site/deployment/release-r
 const head = args.head || process.env.GITHUB_SHA || 'HEAD';
 const requestedBase = args.base || '';
 const requestedResource = args.resource || 'auto';
+const gatewayManagedOnly = args['gateway-managed-only'] === 'true';
 
 function gitText(commandArgs) {
   try {
@@ -47,7 +48,11 @@ function resolveCheckpoint(resource) {
 const selected = [];
 for (const [id, resource] of Object.entries(config.resources)) {
   if (requestedResource !== 'auto' && requestedResource !== 'all' && requestedResource !== id) continue;
-  const checkpoint = requestedResource === 'auto' ? resolveCheckpoint(resource) : null;
+  if (gatewayManagedOnly) {
+    if (resource.publicSuiteOwnership !== 'resource') continue;
+    if (resource.publisher?.orchestration !== 'gateway-managed') continue;
+  }
+  const checkpoint = gatewayManagedOnly ? resolveCheckpoint(resource) : null;
   const base = checkpoint || requestedBase;
   const files = changedFiles(base);
   const globalChange = files.some((file) => config.globalBuildPaths.includes(file));
@@ -59,6 +64,9 @@ for (const [id, resource] of Object.entries(config.resources)) {
     artifactRoot: resource.artifactRoot,
     productionTarget: resource.productionTarget,
     checkpointTag: resource.checkpointTag,
+    publisherWorkflow: resource.publisher?.workflow || null,
+    publisherType: resource.publisher?.type || null,
+    sharedProductionTarget: resource.publisher?.sharedProductionTarget || null,
     base: base || null,
     checkpoint: checkpoint || null,
     changedFiles: files.filter((file) => globalChange || matchesResource(file, resource))
@@ -71,6 +79,7 @@ const plan = {
   head,
   requestedBase: requestedBase || null,
   requestedResource,
+  gatewayManagedOnly,
   deploy: selected.length > 0,
   resources: selected,
   matrix

@@ -34,21 +34,33 @@ for (const [id, resource] of Object.entries(resources)) {
   for (const file of resource.requiredFiles) {
     assert.ok(file.startsWith(`${resource.artifactRoot}/`), `${id} required file escaped artifact root: ${file}`);
   }
+  assert.ok(['suite', 'resource'].includes(resource.publicSuiteOwnership), `${id} has invalid Public Suite ownership`);
   assert.ok(resource.publisher?.status, `${id} must declare publisher readiness`);
 }
 
+assert.equal(resources['high-land'].publicSuiteOwnership, 'suite');
 assert.equal(resources['high-land'].publisher.type, 'hostinger-ssh');
 assert.equal(resources['high-land'].publisher.status, 'pilot-manual');
 assert.equal(resources['high-land'].publisher.workflow, 'deploy-dtfseeds-public-resource.yml');
+assert.equal(resources['high-land'].publisher.orchestration, undefined);
+
+assert.equal(resources['high-iq'].publicSuiteOwnership, 'resource');
 assert.equal(resources['high-iq'].publisher.type, 'wordpress-transactional-resource');
 assert.equal(resources['high-iq'].publisher.status, 'pilot-manual');
+assert.equal(resources['high-iq'].publisher.orchestration, 'gateway-managed');
+assert.equal(resources['high-iq'].publisher.coordinator, 'dtfseeds-resource-production-gateway.yml');
 assert.equal(resources['high-iq'].publisher.workflow, 'deploy-dtfseeds-wordpress-resource.yml');
 assert.equal(resources['high-iq'].publisher.sharedProductionTarget, 'wordpress:temporary-code-snippets-bridge');
 assert.notEqual(resources['high-iq'].publisher.sharedProductionTarget, resources['high-land'].productionTarget);
 
 for (const path of [
   'scripts/assemble-wordpress-resource-v2.py',
+  'scripts/public_suite_resource_ownership.py',
+  'scripts/assemble-wordpress-suite-resource-aware.py',
+  'scripts/package-public-suite-wordpress-resource-aware.py',
+  '.github/workflows/deploy-dtfseeds-public-resource.yml',
   '.github/workflows/deploy-dtfseeds-wordpress-resource.yml',
+  '.github/workflows/dtfseeds-resource-production-gateway.yml',
 ]) {
   assert.ok(config.globalBuildPaths.includes(path), `shared resource control path missing: ${path}`);
 }

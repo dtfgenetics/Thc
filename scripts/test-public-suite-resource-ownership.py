@@ -11,8 +11,8 @@ from public_suite_resource_ownership import MANIFEST, filter_archive, resource_o
 
 repo = Path(__file__).resolve().parents[1]
 specs = resource_owned_specs(repo)
-assert {spec['id'] for spec in specs} == {'high-land', 'high-iq'}
-assert {spec['root'] for spec in specs} == {'games/high-land', 'games/high-iq'}
+assert {spec['id'] for spec in specs} == {'high-iq'}
+assert {spec['root'] for spec in specs} == {'games/high-iq'}
 
 bridge = """const snippetCode = String.raw`
     $targets = [
@@ -31,15 +31,15 @@ const liveChecks = [
 ];
 """
 filtered_bridge, bridge_report = transform_bridge(bridge, repo)
-assert "'games/high-land'" not in filtered_bridge
 assert "'games/high-iq'" not in filtered_bridge
-assert "'games/high-land/'" not in filtered_bridge
 assert "'games/high-iq/'" not in filtered_bridge
-assert '/games/high-land/' not in filtered_bridge
 assert '/games/high-iq/' not in filtered_bridge
+assert "'games/high-land'" in filtered_bridge
+assert "'games/high-land/'" in filtered_bridge
+assert '/games/high-land/' in filtered_bridge
 assert "'games/high-life'" in filtered_bridge
 assert '/games/high-life/' in filtered_bridge
-assert bridge_report['resourceOwnedTargetsExcluded'] == ['games/high-iq', 'games/high-land']
+assert bridge_report['resourceOwnedTargetsExcluded'] == ['games/high-iq']
 
 with tempfile.TemporaryDirectory(prefix='dtf-suite-ownership-test-') as temp:
     temp = Path(temp)
@@ -76,20 +76,24 @@ with tempfile.TemporaryDirectory(prefix='dtf-suite-ownership-test-') as temp:
         archive.writestr(MANIFEST, json.dumps(manifest, sort_keys=True, separators=(',', ':')) + '\n')
 
     report = filter_archive(source, output, repo)
-    assert report['resourceOwnedTargetsExcluded'] == ['games/high-iq', 'games/high-land']
+    assert report['resourceOwnedTargetsExcluded'] == ['games/high-iq']
     with zipfile.ZipFile(output) as archive:
         names = archive.namelist()
         filtered_manifest = json.loads(archive.read(MANIFEST))
-        assert 'games/high-land/index.html' not in names
         assert 'games/high-iq/index.html' not in names
         assert 'games/high-iq/app.js' not in names
+        assert 'games/high-land/index.html' in names
         assert 'games/high-life/index.html' in names
-        assert 'games/high-land' not in filtered_manifest['targets']
         assert 'games/high-iq' not in filtered_manifest['targets']
+        assert 'games/high-land' in filtered_manifest['targets']
         assert 'games/high-life' in filtered_manifest['targets']
         assert filtered_manifest['registeredLocalGameTargets'] == ['games/high-life']
-        assert set(filtered_manifest['resourceOwnedRoutesExcluded']) == {'/games/high-land/', '/games/high-iq/'}
-        assert filtered_manifest['fileCount'] == len(filtered_manifest['files']) == 2
-        assert set(filtered_manifest['files']) == {'games/index.html', 'games/high-life/index.html'}
+        assert set(filtered_manifest['resourceOwnedRoutesExcluded']) == {'/games/high-iq/'}
+        assert filtered_manifest['fileCount'] == len(filtered_manifest['files']) == 3
+        assert set(filtered_manifest['files']) == {
+            'games/index.html',
+            'games/high-land/index.html',
+            'games/high-life/index.html',
+        }
 
 print('Public Suite resource ownership cutover tests passed.')

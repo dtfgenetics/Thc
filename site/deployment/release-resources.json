@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "site": "https://dtfseeds.com",
-  "description": "Independent DTFSeeds release resources. Resource builds are isolated; production serialization is scoped to the resource and any explicitly shared publisher mechanism.",
+  "description": "Independent DTFSeeds release resources. Resource builds are isolated; production serialization is scoped to the resource and any explicitly shared publisher mechanism. Routes become authoritative independent publishers only after their production path is proven and gateway orchestration is enabled.",
   "globalBuildPaths": [
     "site/deployment/release-resources.json",
     "scripts/plan-dtfseeds-resource-release.mjs",
@@ -15,7 +15,8 @@
     "scripts/test-dtf-resource-release-system.mjs",
     ".github/workflows/build-dtfseeds-public-resource.yml",
     ".github/workflows/deploy-dtfseeds-public-resource.yml",
-    ".github/workflows/deploy-dtfseeds-wordpress-resource.yml"
+    ".github/workflows/deploy-dtfseeds-wordpress-resource.yml",
+    ".github/workflows/dtfseeds-resource-production-gateway.yml"
   ],
   "resources": {
     "high-land": {
@@ -24,7 +25,7 @@
       "artifactRoot": "games/high-land",
       "productionTarget": "route:/games/high-land/",
       "checkpointTag": "dtfseeds-production-game-high-land",
-      "publicSuiteOwnership": "resource",
+      "publicSuiteOwnership": "suite",
       "sourcePrefixes": ["apps/high-land-web/"],
       "exactPaths": ["site/deployment/public-apps.json"],
       "requiredFiles": ["games/high-land/index.html"],
@@ -59,6 +60,8 @@
         "type": "wordpress-transactional-resource",
         "workflow": "deploy-dtfseeds-wordpress-resource.yml",
         "status": "pilot-manual",
+        "orchestration": "gateway-managed",
+        "coordinator": "dtfseeds-resource-production-gateway.yml",
         "sharedProductionTarget": "wordpress:temporary-code-snippets-bridge"
       }
     }

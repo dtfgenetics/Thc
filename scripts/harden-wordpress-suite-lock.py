@@ -127,38 +127,50 @@ replace_once_or_present(
     "Invalid deployment identifier.",
 )
 
-# The canonical deploy workflow currently adds Atlas to the generated bridge
-# after assembly. The recovery publisher must preserve the exact same scope so
-# the app-only archive and bridge agree about every production target.
-atlas_replacements = [
-    (
-        "'growlens','thc-grow-doc','tools','projects','puzzles'\n    ];",
-        "'growlens','thc-grow-doc','tools','projects','puzzles','atlas','assets/images/atlas'\n    ];",
-        "Atlas deployment target allowlist",
-        "'atlas','assets/images/atlas'",
-    ),
-    (
-        "'thc-grow-doc/api/visual-observations.php','tools/index.html','projects/index.html','puzzles/current.json'\n    ];",
-        "'thc-grow-doc/api/visual-observations.php','tools/index.html','projects/index.html','puzzles/current.json',\n        'atlas/index.html','atlas/root-system/index.html','atlas/root-system/rhizosphere/index.html','atlas/downloads/index.html',\n        'assets/images/atlas/root-system/rhizosphere-microbe-interaction.svg'\n    ];",
-        "Atlas required-file allowlist",
-        "'atlas/root-system/rhizosphere/index.html'",
-    ),
-    (
-        "'games/protect-the-plants/','games/weedopolis/','games/crossword/','games/who-took-it/','growlens/','thc-grow-doc/','tools/','projects/','puzzles/'\n    ];",
-        "'games/protect-the-plants/','games/weedopolis/','games/crossword/','games/who-took-it/','growlens/','thc-grow-doc/','tools/','projects/','puzzles/',\n        'atlas/','assets/images/atlas/'\n    ];",
-        "Atlas prefix allowlist",
-        "'assets/images/atlas/'",
-    ),
+# The resource-aware suite assembler now owns canonical Atlas scope and writes
+# its PHP arrays structurally (one item per line). Keep legacy widening only for
+# callers that still begin with the raw suite assembler. Either representation
+# must converge on the same complete Atlas target/required/prefix contract.
+atlas_scope_markers = [
+    "'atlas'",
+    "'assets/images/atlas'",
+    "'atlas/index.html'",
+    "'atlas/leaf-module/index.html'",
+    "'atlas/root-system/index.html'",
+    "'atlas/root-system/rhizosphere/index.html'",
+    "'atlas/downloads/index.html'",
+    "'assets/images/atlas/root-system/rhizosphere-microbe-interaction.svg'",
+    "'atlas/'",
+    "'assets/images/atlas/'",
 ]
-for old, new, label, marker in atlas_replacements:
-    replace_once_or_present(old, new, label, marker)
+
+if not all(marker in text for marker in atlas_scope_markers):
+    atlas_replacements = [
+        (
+            "'growlens','thc-grow-doc','tools','projects','puzzles'\n    ];",
+            "'growlens','thc-grow-doc','tools','projects','puzzles','atlas','assets/images/atlas'\n    ];",
+            "Atlas deployment target allowlist",
+        ),
+        (
+            "'thc-grow-doc/api/visual-observations.php','tools/index.html','projects/index.html','puzzles/current.json'\n    ];",
+            "'thc-grow-doc/api/visual-observations.php','tools/index.html','projects/index.html','puzzles/current.json',\n        'atlas/index.html','atlas/leaf-module/index.html','atlas/root-system/index.html','atlas/root-system/rhizosphere/index.html','atlas/downloads/index.html',\n        'assets/images/atlas/root-system/rhizosphere-microbe-interaction.svg'\n    ];",
+            "Atlas required-file allowlist",
+        ),
+        (
+            "'games/protect-the-plants/','games/weedopolis/','games/crossword/','games/who-took-it/','growlens/','thc-grow-doc/','tools/','projects/','puzzles/'\n    ];",
+            "'games/protect-the-plants/','games/weedopolis/','games/crossword/','games/who-took-it/','growlens/','thc-grow-doc/','tools/','projects/','puzzles/',\n        'atlas/','assets/images/atlas/'\n    ];",
+            "Atlas prefix allowlist",
+        ),
+    ]
+    for old, new, label in atlas_replacements:
+        replace_once(old, new, label)
 
 required_markers = [
     "$lock_recovered = false;",
     "Could not safely reacquire deployment lock.",
     "update_option($lock_key, ['id' => $id, 'ts' => time()], false);",
     "'lock_recovered'=>$lock_recovered",
-    "'atlas','assets/images/atlas'",
+    *atlas_scope_markers,
 ]
 missing = [marker for marker in required_markers if marker not in text]
 if missing:
