@@ -11,7 +11,8 @@
   "sourceRegistries": [
     "data/project-registry.json",
     "site/deployment/public-apps.json",
-    "site/deployment/release-lanes.json"
+    "site/deployment/release-lanes.json",
+    "site/deployment/release-resources.json"
   ],
   "staticResources": [
     {
@@ -27,12 +28,22 @@
       "prefixes": [],
       "exactPaths": [
         "site/deployment/release-lanes.json",
+        "site/deployment/release-resources.json",
         "scripts/plan-dtfseeds-release.mjs",
+        "scripts/plan-dtfseeds-resource-release.mjs",
         "scripts/run-workflow-and-wait.sh",
         "scripts/validate-public-game-release-integrity.mjs",
         "scripts/promote-public-game-routes-via-wordpress.mjs",
         "scripts/repair-game-route-redirects-via-wordpress.mjs",
+        "scripts/public_suite_resource_ownership.py",
+        "scripts/assemble-wordpress-suite-resource-aware.py",
+        "scripts/package-public-suite-wordpress-resource-aware.py",
+        "scripts/assemble-wordpress-resource-v2.py",
         ".github/workflows/dtfseeds-production-gateway.yml",
+        ".github/workflows/dtfseeds-resource-production-gateway.yml",
+        ".github/workflows/build-dtfseeds-public-resource.yml",
+        ".github/workflows/deploy-dtfseeds-public-resource.yml",
+        ".github/workflows/deploy-dtfseeds-wordpress-resource.yml",
         ".github/workflows/game-release-integrity.yml",
         ".github/workflows/game-route-directory-swap-ci.yml",
         ".github/workflows/wordpress-game-route-directory-swap.yml",
@@ -41,6 +52,7 @@
         ".github/workflows/wordpress-canonical-deploy.yml",
         ".github/workflows/wordpress-canonical-production.yml",
         ".github/workflows/deploy-public-suite-wordpress-v2.yml",
+        ".github/workflows/deploy-games-suite-lock-recovery.yml",
         ".github/workflows/deploy-thc-learning-center-expansion-v1.yml"
       ],
       "productionTargets": ["shared:release-control"]
