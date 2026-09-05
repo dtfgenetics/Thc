@@ -1,4 +1,5 @@
 import process from 'node:process';
+import { normalizeHtmlVisibleText } from './normalize-html-visible-text.mjs';
 
 const siteUrl = (process.env.WP_SITE_URL || 'https://dtfseeds.com').replace(/\/$/, '');
 const username = process.env.WP_API_USERNAME || '';
@@ -40,41 +41,6 @@ function positiveInteger(value, fallback) {
   return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
 }
 
-function decodeHtmlEntity(entity) {
-  const normalized = String(entity || '').toLowerCase();
-  const named = {
-    amp: '&',
-    lt: '<',
-    gt: '>',
-    quot: '"',
-    apos: "'",
-    nbsp: ' '
-  };
-  if (Object.prototype.hasOwnProperty.call(named, normalized)) return named[normalized];
-
-  const radix = normalized.startsWith('#x') ? 16 : 10;
-  const numeric = normalized.startsWith('#x') ? normalized.slice(2) : normalized.startsWith('#') ? normalized.slice(1) : '';
-  if (numeric) {
-    const codePoint = Number.parseInt(numeric, radix);
-    if (Number.isInteger(codePoint) && codePoint >= 0 && codePoint <= 0x10ffff) {
-      return String.fromCodePoint(codePoint);
-    }
-  }
-
-  return `&${entity};`;
-}
-
-function normalizeVisitorText(value) {
-  return String(value || '')
-    .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, ' ')
-    .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, ' ')
-    .replace(/<[^>]+>/g, ' ')
-    .replace(/&(#x[0-9a-f]+|#\d+|amp|lt|gt|quot|apos|nbsp);/gi, (_match, entity) => decodeHtmlEntity(entity))
-    .replace(/\s+/g, ' ')
-    .trim()
-    .toLowerCase();
-}
-
 const convergenceAttempts = positiveInteger(process.env.LEARNING_ROOT_CONVERGENCE_ATTEMPTS, 12);
 const convergenceDelayMs = positiveInteger(process.env.LEARNING_ROOT_CONVERGENCE_DELAY_MS, 5000);
 
@@ -90,7 +56,7 @@ function storedContent(page) {
 // canonical Learn owner has both the required stored owner state and the
 // stable visitor-facing semantics for those already-published children.
 const storedResponse = await fetch(`${siteUrl}/wp-json/wp/v2/pages?slug=learn&context=edit&per_page=10`, {
-  headers: { Authorization: auth, Accept: 'application/json', 'User-Agent': 'DTFSeeds-Learn-Expansion-Ownership-Check/2.2' },
+  headers: { Authorization: auth, Accept: 'application/json', 'User-Agent': 'DTFSeeds-Learn-Expansion-Ownership-Check/2.3' },
   redirect: 'follow',
   signal: AbortSignal.timeout(60_000)
 });
@@ -119,10 +85,10 @@ for (let attempt = 1; attempt <= convergenceAttempts; attempt += 1) {
       signal: AbortSignal.timeout(60_000)
     });
     const html = await response.text();
-    const normalizedHtml = normalizeVisitorText(html);
+    const normalizedHtml = normalizeHtmlVisibleText(html);
     lastStatus = response.status;
     lastBytes = html.length;
-    missingSemantics = publicSemantics.filter((marker) => !normalizedHtml.includes(normalizeVisitorText(marker)));
+    missingSemantics = publicSemantics.filter((marker) => !normalizedHtml.includes(normalizeHtmlVisibleText(marker)));
     missingRoutes = publicRoutes.filter((href) => !html.includes(href));
     if (response.ok && missingSemantics.length === 0 && missingRoutes.length === 0) {
       verified = true;
@@ -146,7 +112,7 @@ console.log(JSON.stringify({
   mutation: 'none',
   storedVerification: 'success',
   publicVerification: 'semantic-cache-convergence',
-  semanticNormalization: 'visible-text-html-entities',
+  semanticNormalization: 'shared-visible-text-html-entities',
   convergenceAttempts,
   convergenceDelayMs,
   routes,

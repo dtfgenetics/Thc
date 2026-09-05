@@ -3,10 +3,14 @@
 import { readFileSync } from 'node:fs';
 
 const sourcePath = 'scripts/update-wordpress-learn-expansion-v1.mjs';
+const normalizerPath = 'scripts/normalize-html-visible-text.mjs';
+const workflowPath = '.github/workflows/deploy-thc-learning-center-expansion-v1.yml';
 const source = readFileSync(sourcePath, 'utf8');
+const normalizer = readFileSync(normalizerPath, 'utf8');
+const workflow = readFileSync(workflowPath, 'utf8');
 const failures = [];
-const requireText = (text, message) => {
-  if (!source.includes(text)) failures.push(message);
+const requireText = (haystack, text, message) => {
+  if (!haystack.includes(text)) failures.push(message);
 };
 
 for (const marker of [
@@ -16,7 +20,7 @@ for (const marker of [
   '/learn/atlas/',
   'Open the THC Living Plant Atlas'
 ]) {
-  requireText(marker, `stored Learn convergence contract is missing ${marker}`);
+  requireText(source, marker, `stored Learn convergence contract is missing ${marker}`);
 }
 
 for (const semantic of [
@@ -31,7 +35,7 @@ for (const semantic of [
   'Printable Field Tools',
   'Evidence & Sources'
 ]) {
-  requireText(semantic, `anonymous Learn convergence contract is missing visible semantic: ${semantic}`);
+  requireText(source, semantic, `anonymous Learn convergence contract is missing visible semantic: ${semantic}`);
 }
 
 for (const href of [
@@ -41,7 +45,7 @@ for (const href of [
   '/learn/tools/',
   '/learn/sources/'
 ]) {
-  requireText(href, `anonymous Learn convergence contract is missing route: ${href}`);
+  requireText(source, href, `anonymous Learn convergence contract is missing route: ${href}`);
 }
 
 for (const token of [
@@ -49,14 +53,14 @@ for (const token of [
   'LEARNING_ROOT_CONVERGENCE_DELAY_MS',
   'missingSemantics',
   'missingRoutes',
-  'decodeHtmlEntity',
-  'normalizeVisitorText',
-  'normalizedHtml.includes(normalizeVisitorText(marker))',
-  "semanticNormalization: 'visible-text-html-entities'",
+  "import { normalizeHtmlVisibleText } from './normalize-html-visible-text.mjs';",
+  'normalizeHtmlVisibleText(html)',
+  'normalizedHtml.includes(normalizeHtmlVisibleText(marker))',
+  "semanticNormalization: 'shared-visible-text-html-entities'",
   "publicVerification: 'semantic-cache-convergence'",
   "mutation: 'none'"
 ]) {
-  requireText(token, `Learning convergence contract is missing ${token}`);
+  requireText(source, token, `Learning convergence contract is missing ${token}`);
 }
 
 const publicLoopStart = source.indexOf('let verified = false;');
@@ -71,13 +75,32 @@ if (publicLoopStart < 0 || publicLoopEnd <= publicLoopStart) {
   if (!publicLoop.includes('publicSemantics.filter') || !publicLoop.includes('publicRoutes.filter')) {
     failures.push('anonymous Learn convergence no longer evaluates both semantic and route completeness');
   }
-  if (!publicLoop.includes('normalizeVisitorText(html)') || !publicLoop.includes('normalizeVisitorText(marker)')) {
+  if (!publicLoop.includes('normalizeHtmlVisibleText(html)') || !publicLoop.includes('normalizeHtmlVisibleText(marker)')) {
     failures.push('anonymous Learn convergence no longer compares normalized visitor-visible text');
   }
 }
 
-if (!source.includes("amp: '&'")) {
-  failures.push('visitor semantic normalization no longer decodes HTML ampersand entities');
+for (const token of [
+  "export function decodeHtmlEntity",
+  "export function normalizeHtmlVisibleText",
+  "amp: '&'",
+  'String.fromCodePoint',
+  "replace(/<script\\b",
+  "replace(/<style\\b",
+  "replace(/<[^>]+>/g, ' ')",
+  "Usage: node scripts/normalize-html-visible-text.mjs <html-file>"
+]) {
+  requireText(normalizer, token, `shared visible-text normalizer is missing ${token}`);
+}
+
+for (const token of [
+  "- 'scripts/normalize-html-visible-text.mjs'",
+  'node --check scripts/normalize-html-visible-text.mjs',
+  'node scripts/normalize-html-visible-text.mjs "$learn" > "$learn_visible"',
+  'grep -Fqi "$label" "$learn_visible"',
+  'grep -Fq "$href" "$learn"'
+]) {
+  requireText(workflow, token, `Education production workflow is missing normalized fresh verification contract: ${token}`);
 }
 
 if (source.includes("method: 'POST'") || source.includes('method: "POST"')) {
@@ -93,5 +116,5 @@ if (failures.length) {
 console.log('Learning public convergence contract passed.');
 console.log('- authenticated REST proves private Learn owner markers');
 console.log('- anonymous HTML proves stable visitor-facing semantics and routes');
-console.log('- visitor semantics are normalized from HTML entities before comparison');
+console.log('- one shared normalizer decodes visitor-visible HTML text for both convergence and fresh verification');
 console.log('- public convergence is bounded and read-only');
