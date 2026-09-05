@@ -1,0 +1,105 @@
+name: Burn Buds Sync Consolidation
+
+on:
+  push:
+    branches:
+      - game/burn-buds-frontend-consolidation
+    paths:
+      - .github/workflows/burn-buds-sync-consolidate.yml
+
+permissions:
+  contents: write
+
+jobs:
+  consolidate:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: game/burn-buds-frontend-consolidation
+          fetch-depth: 0
+      - name: Move gameplay helpers onto shared sync bus
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+
+          root=Path('site/public-route-patch/games/protect-the-plants')
+
+          def replace(path, old, new):
+              text=path.read_text()
+              if old not in text:
+                  raise SystemExit(f'missing expected block in {path}: {old!r}')
+              path.write_text(text.replace(old,new,1))
+
+          replace(root/'battle-feedback-v1.js',
+          """  const root=document.querySelector('#app');
+          if(root)new MutationObserver(queue).observe(root,{childList:true,subtree:true});
+          document.addEventListener('visibilitychange',()=>{if(!document.hidden)queue()});
+          window.addEventListener('resize',queue,{passive:true});
+          queue();
+""",
+          """  if(window.BurnBudsSync)window.BurnBudsSync.subscribe(queue);else queue();
+""")
+
+          replace(root/'combat-a11y-v1.js',
+          """  const root=document.querySelector('#app');
+          if(root)new MutationObserver(queueSync).observe(root,{childList:true,subtree:true});
+          window.addEventListener('online',queueSync);
+          document.addEventListener('visibilitychange',()=>{if(!document.hidden)queueSync()});
+          ensureAnnouncer();
+          queueSync();
+""",
+          """  ensureAnnouncer();
+          if(window.BurnBudsSync)window.BurnBudsSync.subscribe(queueSync);else queueSync();
+""")
+
+          replace(root/'placement-v1.js',
+          """    new MutationObserver(queueSync).observe(root,{childList:true,subtree:true});
+""",
+          """    if(window.BurnBudsSync)window.BurnBudsSync.subscribe(queueSync,{immediate:false});
+""")
+
+          replace(root/'targeting-v1.js',
+          """    new MutationObserver(queueSync).observe(root,{childList:true,subtree:true});
+""",
+          """    if(window.BurnBudsSync)window.BurnBudsSync.subscribe(queueSync,{immediate:false});
+""")
+          replace(root/'targeting-v1.js',
+          """  document.addEventListener('visibilitychange',()=>{if(!document.hidden)queueSync()});
+          window.addEventListener('online',queueSync);
+          window.addEventListener('resize',queueSync,{passive:true});
+          queueSync();
+""",
+          """  queueSync();
+""")
+
+          replace(root/'gameplay-v3.js',"  let enhanceQueued=false;\n","")
+          replace(root/'gameplay-v3.js',
+          """  const root=document.querySelector('#app');
+          if(root)new MutationObserver(()=>{
+            if(enhanceQueued)return;
+            enhanceQueued=true;
+            requestAnimationFrame(()=>{enhanceQueued=false;enhance()});
+          }).observe(root,{childList:true,subtree:true});
+
+""",
+          """  if(window.BurnBudsSync)window.BurnBudsSync.subscribe(enhance,{immediate:false});
+
+""")
+          PY
+          for file in runtime-sync-v1.js battle-feedback-v1.js combat-a11y-v1.js placement-v1.js targeting-v1.js gameplay-v3.js; do
+            node --check "site/public-route-patch/games/protect-the-plants/$file"
+          done
+          rm .github/workflows/burn-buds-sync-consolidate.yml
+      - name: Commit observer consolidation
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add site/public-route-patch/games/protect-the-plants .github/workflows/burn-buds-sync-consolidate.yml
+          git commit -m 'Consolidate Burn Buds gameplay render observers'
+          git push origin HEAD:game/burn-buds-frontend-consolidation
