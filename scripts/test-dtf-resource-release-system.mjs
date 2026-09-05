@@ -60,6 +60,7 @@ for (const path of [
   'scripts/package-public-suite-wordpress-resource-aware.py',
   '.github/workflows/deploy-dtfseeds-public-resource.yml',
   '.github/workflows/deploy-dtfseeds-wordpress-resource.yml',
+  '.github/workflows/dtfseeds-resource-production-gateway.yml',
 ]) {
   assert.ok(config.globalBuildPaths.includes(path), `shared resource control path missing: ${path}`);
 }
