@@ -117,5 +117,6 @@ if (process.env.GITHUB_OUTPUT) {
   appendFileSync(process.env.GITHUB_OUTPUT, `public_suite=${lanes.publicSuite}\n`);
   appendFileSync(process.env.GITHUB_OUTPUT, `wordpress=${lanes.wordpress}\n`);
   appendFileSync(process.env.GITHUB_OUTPUT, `education=${lanes.education}\n`);
+  appendFileSync(process.env.GITHUB_OUTPUT, `harvest_outdoor=${lanes.harvestOutdoor}\n`);
   appendFileSync(process.env.GITHUB_OUTPUT, `plan=${compact}\n`);
 }
