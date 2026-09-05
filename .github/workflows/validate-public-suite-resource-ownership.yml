@@ -120,16 +120,18 @@ jobs:
           test -s "$coordinator"
           grep -Fq 'build-dtfseeds-public-resource.yml --join-only' "$coordinator"
           grep -Fq 'publisherWorkflow' "$coordinator"
-          grep -Fq "resource=$resource" "$coordinator"
+          grep -Fq 'resource=$resource' "$coordinator"
           grep -Fq 'source_sha=$GITHUB_SHA' "$coordinator"
           grep -Fq 'environment=production' "$coordinator"
+          grep -Fq -- '--gateway-managed-only=true' "$coordinator"
           grep -Fq "resource.publisher?.orchestration !== 'gateway-managed'" "$coordinator"
           grep -Fq 'Detect superseded queued resource release' "$coordinator"
           ! grep -Fq 'issues: write' "$coordinator"
           ! grep -Fq 'github.rest.issues.createComment' "$coordinator"
 
-          grep -Fq "publicSuiteOwnership === 'resource'" scripts/plan-dtfseeds-resource-release.mjs
-          grep -Fq "publisher?.orchestration !== 'gateway-managed'" scripts/plan-dtfseeds-resource-release.mjs
+          grep -Fq "const gatewayManagedOnly = args['gateway-managed-only'] === 'true';" scripts/plan-dtfseeds-resource-release.mjs
+          grep -Fq "if (resource.publicSuiteOwnership !== 'resource') continue;" scripts/plan-dtfseeds-resource-release.mjs
+          grep -Fq "if (resource.publisher?.orchestration !== 'gateway-managed') continue;" scripts/plan-dtfseeds-resource-release.mjs
           grep -Fq '.github/workflows/dtfseeds-resource-production-gateway.yml' site/deployment/release-resources.json
           grep -Fq '.github/workflows/dtfseeds-resource-production-gateway.yml' .github/workflows/build-dtfseeds-public-resource.yml
 
