@@ -33,7 +33,6 @@ on:
 
 permissions:
   contents: read
-  issues: write
 
 concurrency:
   group: dtfseeds-wordpress-canonical-handoff
@@ -88,9 +87,8 @@ jobs:
           test "$count" -ge 20
           echo "Validated $count infographic images, shared DTF visual system, DTF brand media, V4 genetics visuals, commerce visual publishers, and WooCommerce archive styling for protected production handoff." >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Report deployment handoff to issue 46
+      - name: Summarize trusted production handoff
         if: always()
-        continue-on-error: true
         uses: actions/github-script@v7
         env:
           OBSERVE_STATUS: ${{ job.status }}
@@ -105,6 +103,6 @@ jobs:
               `Trigger: **${context.eventName}**`,
               `Trusted handoff result: **${process.env.OBSERVE_STATUS}**`,
               `Source: ${sourceRun}`, '',
-              'A successful handoff triggers protected WordPress production. The canonical job preserves single-writer ownership, applies the shared DTF visual system to canonical editorial roots, rebuilds commerce presentation, preserves the image-first Gallery, enforces the DTF site icon/logo, and verifies visitor-facing routes.'
+              'A successful handoff is eligible for protected WordPress production. Routine run telemetry stays in the Actions summary instead of the exhausted historical issue ledger.'
             ].join('\n');
-            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:46,body});
+            await core.summary.addRaw(body).write();
