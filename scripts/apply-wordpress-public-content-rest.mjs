@@ -12,6 +12,12 @@ const contentDir = process.env.CONTENT_DIR || '';
 const backupRoot = process.env.BACKUP_ROOT || process.cwd();
 const timestamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d{3}Z$/, 'Z');
 const backupDir = join(backupRoot, `wordpress-rest-content-${timestamp}`);
+const preservePageSlugs = new Set(
+  String(process.env.DTF_PRESERVE_PAGE_SLUGS || '')
+    .split(',')
+    .map((slug) => slug.trim())
+    .filter(Boolean)
+);
 
 if (!username || !password) throw new Error('WP_API_USERNAME and WP_API_PASSWORD are required');
 if (!contentDir) throw new Error('CONTENT_DIR is required');
@@ -228,7 +234,10 @@ await writeFile(
 );
 
 // First validate every canonical source file and inspect all current page identities.
-// No WordPress mutation occurs until the complete plan is known.
+// No WordPress mutation occurs until the complete plan is known. Delegated route
+// owners may be declared read-only through DTF_PRESERVE_PAGE_SLUGS. Those routes
+// must already exist and remain published, but this reconciler will never create,
+// retitle, replace, or republish their page bodies.
 const prepared = [];
 for (const [slug, title] of pageDefinitions) {
   const sourcePath = join(contentDir, `${slug}.html`);
@@ -241,27 +250,40 @@ for (const [slug, title] of pageDefinitions) {
   }
 
   const page = await getPublishedPageBySlug(slug);
-  const needsUpdate =
+  const preserved = preservePageSlugs.has(slug);
+  if (preserved && !page) {
+    throw new Error(`Delegated WordPress /${slug}/ owner is missing; refusing to create it from the broad canonical lane`);
+  }
+  if (preserved && page?.status !== 'publish') {
+    throw new Error(`Delegated WordPress /${slug}/ owner page ${page.id} is not published: ${page.status}`);
+  }
+  if (preserved && !editableContent(page)) {
+    throw new Error(`Delegated WordPress /${slug}/ owner page ${page.id} is empty`);
+  }
+
+  const needsUpdate = preserved ? false : (
     !page ||
     editableTitle(page) !== normalizeText(title) ||
     editableContent(page) !== normalizeText(content) ||
-    page?.status !== 'publish';
+    page?.status !== 'publish'
+  );
 
   if (page) {
     await writeFile(join(backupDir, 'pages', `${slug}.json`), `${JSON.stringify(page, null, 2)}\n`, 'utf8');
   }
-  prepared.push({ slug, title, content, page, needsUpdate });
+  prepared.push({ slug, title, content, page, needsUpdate, preserved });
 }
 
 await writeFile(
   join(backupDir, 'deployment-plan.json'),
-  `${JSON.stringify(prepared.map(({ slug, title, page, needsUpdate }) => ({
+  `${JSON.stringify(prepared.map(({ slug, title, page, needsUpdate, preserved }) => ({
     slug,
     title,
     pageId: page?.id || null,
     previousStatus: page?.status || null,
-    action: !page ? 'create' : needsUpdate ? 'update' : 'none',
-    needsUpdate
+    action: preserved ? 'preserve' : !page ? 'create' : needsUpdate ? 'update' : 'none',
+    needsUpdate,
+    preserved
   })), null, 2)}\n`,
   'utf8'
 );
@@ -269,8 +291,25 @@ await writeFile(
 const results = [];
 let changedPages = 0;
 let createdPages = 0;
+let preservedPages = 0;
 let auxiliaryMutations = 0;
 for (const item of prepared) {
+  if (item.preserved) {
+    preservedPages += 1;
+    results.push({
+      slug: item.slug,
+      pageId: item.page.id,
+      status: item.page.status,
+      modifiedGmt: item.page.modified_gmt,
+      link: item.page.link,
+      changed: false,
+      created: false,
+      preserved: true
+    });
+    console.log(`Preserved delegated /${item.slug}/ owner without mutation (page ID ${item.page.id}).`);
+    continue;
+  }
+
   if (!item.page) {
     const created = await createPage(item.slug, item.title, item.content);
     item.page = created;
@@ -285,7 +324,8 @@ for (const item of prepared) {
       modifiedGmt: created.modified_gmt,
       link: created.link,
       changed: true,
-      created: true
+      created: true,
+      preserved: false
     });
     console.log(`Created /${item.slug}/ (page ID ${created.id})`);
     continue;
@@ -299,7 +339,8 @@ for (const item of prepared) {
       modifiedGmt: item.page.modified_gmt,
       link: item.page.link,
       changed: false,
-      created: false
+      created: false,
+      preserved: false
     });
     console.log(`Already synchronized /${item.slug}/ (page ID ${item.page.id})`);
     continue;
@@ -315,7 +356,8 @@ for (const item of prepared) {
     modifiedGmt: updated.modified_gmt,
     link: updated.link,
     changed: true,
-    created: false
+    created: false,
+    preserved: false
   });
   console.log(`Updated /${item.slug}/ (page ID ${updated.id})`);
 }
@@ -404,6 +446,7 @@ const summary = {
   checkedPages: results.length,
   changedPages,
   createdPages,
+  preservedPages,
   auxiliaryMutations,
   mutationCount: changedPages + auxiliaryMutations,
   backupDir
@@ -413,5 +456,5 @@ await writeFile(join(backupDir, 'deployment-results.json'), `${JSON.stringify(re
 await writeFile(join(backupDir, 'deployment-summary.json'), `${JSON.stringify(summary, null, 2)}\n`, 'utf8');
 await writeFile(join(backupRoot, 'wordpress-rest-backup-path.txt'), `${backupDir}\n`, 'utf8');
 
-console.log(`REST content reconciliation checked ${results.length} pages; changed ${changedPages}; created ${createdPages}; auxiliary mutations ${auxiliaryMutations}.`);
+console.log(`REST content reconciliation checked ${results.length} pages; changed ${changedPages}; created ${createdPages}; preserved ${preservedPages}; auxiliary mutations ${auxiliaryMutations}.`);
 console.log(`Page-level rollback data: ${backupDir}`);
