@@ -43,7 +43,7 @@ jobs:
           set -euo pipefail
           protect='site/public-route-patch/games/protect-the-plants/index.html'
           projects='site/public-route-patch/projects/index.html'
-          grep -Fq '<h1 id="protect-the-plants-title"' "$protect"
+          grep -Fq '<h1 id="burn-buds-title"' "$protect"
           grep -Fq 'https://dtfseeds.com/games/protect-the-plants/' "$protect"
           grep -Fq '15×15' "$protect"
           grep -Fq '<title>DTF Projects | Live Systems & Roadmap</title>' "$projects"
@@ -54,7 +54,7 @@ jobs:
           import fs from 'node:fs';
           const strip = html => html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,' ').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
           const protect=fs.readFileSync('site/public-route-patch/games/protect-the-plants/index.html','utf8');
-          if(strip(protect).length < 150) throw new Error('Protect the Plants crawlable text is still too short.');
+          if(strip(protect).length < 150) throw new Error('Burn Buds crawlable text is still too short.');
           const projects=fs.readFileSync('site/public-route-patch/projects/index.html','utf8');
           if(!strip(projects).includes('High IQ') || !strip(projects).includes('High Life')) throw new Error('Projects is missing current live games.');
           NODE
