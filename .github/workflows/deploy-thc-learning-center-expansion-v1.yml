@@ -14,20 +14,26 @@ on:
 permissions:
   contents: read
 
+# /learn/ has one canonical WordPress owner. Education expansion releases and
+# Learning Experience V3 therefore share only this route-owner serialization
+# key; unrelated games, apps, content and production resources remain parallel.
 concurrency:
-  group: dtfseeds-thc-education-expansion-v1
+  group: dtfseeds-learning-experience-v3
   cancel-in-progress: false
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 40
     environment: production
     env:
       WP_SITE_URL: https://dtfseeds.com
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+      APPLY_LEARNING_V3: 'true'
+      APPLY_LEARNING_V3_OWNERSHIP: 'true'
       BACKUP_ROOT: /tmp/dtf-learning-center-expansion
+      LEARNING_V4_BACKUP_ROOT: /tmp/dtf-learning-v4-final
 
     steps:
       - name: Checkout canonical production repo
@@ -47,6 +53,13 @@ jobs:
           node --check scripts/build-public-learning-center-expansion-v1.mjs
           node --check scripts/publish-wordpress-learning-center-expansion-v1.mjs
           node --check scripts/update-wordpress-learn-expansion-v1.mjs
+          node --check scripts/reconcile-wordpress-learning-v3-ownership.mjs
+          node --check scripts/run-learning-v3-production.mjs
+          node --check scripts/improve-wordpress-learning-v4.mjs
+          bash -n scripts/run-learning-v3-connected-production.sh
+          grep -Fq 'data-dtf-learning-expanded-reference="v1"' scripts/run-learning-v3-connected-production.sh
+          grep -Fq 'data-dtf-learning-map="v4"' scripts/run-learning-v3-connected-production.sh
+          test -s site/wordpress/education/topic-literature.json
           test -n "${WP_API_USERNAME:-}"
           test -n "${WP_API_PASSWORD:-}"
 
@@ -78,11 +91,43 @@ jobs:
           node scripts/publish-wordpress-learning-center-expansion-v1.mjs | tee "$RUNNER_TEMP/education-expansion-publish.json"
           echo "outcome=success" >> "$GITHUB_OUTPUT"
 
-      - name: Verify expansion routes on canonical Learn hub
+      - name: Refresh canonical Learning V3 owner transaction
+        id: learn_owner
+        shell: bash
+        run: |
+          set -euo pipefail
+          # The expansion workflow must never become a competing /learn/ writer.
+          # Reuse the exact canonical Learning V3 owner transaction that owns the
+          # root page, connected V4 map and expanded-reference section.
+          owner_root=/tmp/dtf-learning-v3
+          mkdir -p "$owner_root" "$LEARNING_V4_BACKUP_ROOT"
+
+          LEARNING_V3_OWNERSHIP_MODE=reconcile \
+          TOPIC_LITERATURE_PATH=site/wordpress/education/topic-literature.json \
+          BACKUP_ROOT="$owner_root" \
+          node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/reconcile-wordpress-learning-v3-ownership.mjs \
+            | tee "$RUNNER_TEMP/education-learn-owner-reconcile.json"
+
+          BACKUP_ROOT="$owner_root" \
+          LEARNING_V4_BACKUP_ROOT="$LEARNING_V4_BACKUP_ROOT" \
+          bash scripts/run-learning-v3-connected-production.sh
+
+          test -s /tmp/dtf-topic-literature-v3-normalized.json
+          LEARNING_V3_OWNERSHIP_MODE=verify \
+          TOPIC_LITERATURE_PATH=/tmp/dtf-topic-literature-v3-normalized.json \
+          BACKUP_ROOT="$owner_root" \
+          node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/reconcile-wordpress-learning-v3-ownership.mjs \
+            | tee "$RUNNER_TEMP/education-learn-owner-verify.json"
+
+          echo "outcome=success" >> "$GITHUB_OUTPUT"
+
+      - name: Confirm expansion routes on canonical Learn hub
         id: navigation
         shell: bash
         run: |
           set -euo pipefail
+          # Read-only convergence proof. The preceding canonical owner transaction
+          # is the only step allowed to mutate /learn/.
           node scripts/update-wordpress-learn-expansion-v1.mjs | tee "$RUNNER_TEMP/education-expansion-nav.json"
           echo "outcome=success" >> "$GITHUB_OUTPUT"
 
@@ -118,6 +163,10 @@ jobs:
           curl -4 --fail --silent --show-error --location --retry 4 --retry-delay 3 \
             -H 'Cache-Control: no-cache, no-store, max-age=0' -H 'Pragma: no-cache' \
             "https://dtfseeds.com/learn/?dtf_expansion=${GITHUB_RUN_ID}" -o "$learn"
+          grep -Fq 'data-dtf-layout="learn-v3"' "$learn"
+          grep -Fq 'data-dtf-learning-map="v4"' "$learn"
+          grep -Fq 'data-dtf-learning-expanded-reference="v1"' "$learn"
+          grep -Fq 'Learn the plant as a connected system.' "$learn"
           for href in /learn/plant-health/ /learn/cultivation-science/ /learn/symptoms/ /learn/tools/ /learn/sources/; do grep -Fq "$href" "$learn"; done
           echo "outcome=success" >> "$GITHUB_OUTPUT"
 
@@ -128,7 +177,15 @@ jobs:
           name: dtf-education-expansion-v1-${{ github.run_id }}
           path: |
             /tmp/dtf-learning-center-expansion
+            /tmp/dtf-learning-v3
+            /tmp/dtf-learning-v4-final
+            /tmp/dtf-learning-v3-output.json
+            /tmp/dtf-learning-v4-final-output.json
+            /tmp/dtf-learning-expanded-reference-output.json
+            /tmp/dtf-topic-literature-v3-normalized.json
             ${{ runner.temp }}/education-expansion-*.json
+            ${{ runner.temp }}/education-learn-owner-*.json
+            ${{ runner.temp }}/live-*.html
           if-no-files-found: warn
           retention-days: 30
 
@@ -139,6 +196,7 @@ jobs:
           JOB_STATUS: ${{ job.status }}
           ROUTE_COUNT: ${{ steps.build.outputs.route_count }}
           PUBLISH_OUTCOME: ${{ steps.publish.outputs.outcome }}
+          OWNER_OUTCOME: ${{ steps.learn_owner.outputs.outcome }}
           NAV_OUTCOME: ${{ steps.navigation.outputs.outcome }}
           LIVE_OUTCOME: ${{ steps.live.outputs.outcome }}
         run: |
@@ -149,8 +207,9 @@ jobs:
             echo "Result before summary: **${JOB_STATUS:-unknown}**"
             echo "Routes built: **${ROUTE_COUNT:-not-run}**"
             echo "WordPress backing-page publish: **${PUBLISH_OUTCOME:-not-run}**"
-            echo "Canonical Learn navigation verification: **${NAV_OUTCOME:-not-run}**"
+            echo "Canonical Learn-owner refresh: **${OWNER_OUTCOME:-not-run}**"
+            echo "Learn navigation convergence: **${NAV_OUTCOME:-not-run}**"
             echo "Fresh visitor verification: **${LIVE_OUTCOME:-not-run}**"
             echo
-            echo 'This Actions summary plus the uploaded rollback/release artifact is the authoritative release record. Routine issue-ledger telemetry is intentionally disabled.'
+            echo 'This Actions summary plus the uploaded rollback/release artifact is the authoritative release record. Routine telemetry is not written to the exhausted historical issue ledger.'
           } >> "$GITHUB_STEP_SUMMARY"
