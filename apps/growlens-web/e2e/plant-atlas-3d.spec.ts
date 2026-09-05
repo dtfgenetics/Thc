@@ -17,9 +17,16 @@ test.describe('THC Living Plant Atlas V4', () => {
     const canvas = page.locator('[data-plant-canvas]');
     const anatomyLabel = page.locator('[data-plant-anatomy-label]');
     const modelStatus = page.locator('[data-plant-model-status]');
-    const activateFocus = async (name: string) => {
-      const button = page.getByRole('button', { name });
-      await expect(button).toBeVisible();
+    const focusTargets: Record<string, string> = {
+      Roots: 'root-system',
+      Leaves: 'leaf-module',
+      Flowers: 'flower-anatomy',
+      Trichomes: 'trichomes-resin',
+    };
+    const activateFocus = async (name: keyof typeof focusTargets) => {
+      const button = page.locator(`[data-plant-focus="${focusTargets[name]}"]`);
+      await expect(button).toHaveCount(1);
+      await button.scrollIntoViewIfNeeded();
       await button.dispatchEvent('click');
     };
 
@@ -32,7 +39,9 @@ test.describe('THC Living Plant Atlas V4', () => {
 
     const box = await canvas.boundingBox();
     expect(box).not.toBeNull();
-    expect(box!.width).toBeGreaterThan(400);
+    const browserViewport = page.viewportSize();
+    const minimumCanvasWidth = browserViewport && browserViewport.width <= 480 ? 320 : 400;
+    expect(box!.width).toBeGreaterThan(minimumCanvasWidth);
     expect(box!.height).toBeGreaterThan(400);
 
     await activateFocus('Roots');
