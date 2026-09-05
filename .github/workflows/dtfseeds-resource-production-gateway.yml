@@ -62,7 +62,8 @@ jobs:
           node scripts/plan-dtfseeds-resource-release.mjs \
             --base="$PUSH_BASE" \
             --head="$GITHUB_SHA" \
-            --resource=auto
+            --resource=auto \
+            --gateway-managed-only=true
 
       - name: Record independent resource plan
         env:
@@ -74,7 +75,8 @@ jobs:
             echo
             echo "- Source: $GITHUB_SHA"
             echo "- Deploy required: ${{ steps.plan.outputs.deploy }}"
-            echo '- Automatic planning includes only routes whose registry ownership is `resource` and whose publisher orchestration is `gateway-managed`.'
+            echo '- Automatic publication planning includes only routes whose registry ownership is `resource` and whose publisher orchestration is `gateway-managed`.'
+            echo '- Isolated resource builds may still validate pilot resources that remain suite-owned.'
             echo
             echo '```json'
             printf '%s\n' "$RELEASE_PLAN"
@@ -185,7 +187,7 @@ jobs:
             echo "- Publisher outcome: ${{ steps.publish.outcome }}"
             echo "- Independent visitor verification: ${{ steps.verify.outcome }}"
             echo '- Each successful publisher advances only its own monotonic resource checkpoint; the global DTFSeeds checkpoint is untouched.'
-            echo '- High IQ is currently the only automatic resource-owned route. High Land remains suite-owned until its SSH publisher is proven.'
+            echo '- High IQ is currently the only automatic resource-owned route. High Land remains suite-owned while its independent SSH publisher stays in pilot validation.'
           } >> "$GITHUB_STEP_SUMMARY"
 
   no_deploy:
