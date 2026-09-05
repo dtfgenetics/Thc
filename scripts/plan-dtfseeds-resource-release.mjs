@@ -12,6 +12,7 @@ const config = JSON.parse(readFileSync(args.config || 'site/deployment/release-r
 const head = args.head || process.env.GITHUB_SHA || 'HEAD';
 const requestedBase = args.base || '';
 const requestedResource = args.resource || 'auto';
+const gatewayManagedOnly = args['gateway-managed-only'] === 'true';
 
 function gitText(commandArgs) {
   try {
@@ -47,11 +48,11 @@ function resolveCheckpoint(resource) {
 const selected = [];
 for (const [id, resource] of Object.entries(config.resources)) {
   if (requestedResource !== 'auto' && requestedResource !== 'all' && requestedResource !== id) continue;
-  if (requestedResource === 'auto') {
+  if (gatewayManagedOnly) {
     if (resource.publicSuiteOwnership !== 'resource') continue;
     if (resource.publisher?.orchestration !== 'gateway-managed') continue;
   }
-  const checkpoint = requestedResource === 'auto' ? resolveCheckpoint(resource) : null;
+  const checkpoint = gatewayManagedOnly ? resolveCheckpoint(resource) : null;
   const base = checkpoint || requestedBase;
   const files = changedFiles(base);
   const globalChange = files.some((file) => config.globalBuildPaths.includes(file));
@@ -78,6 +79,7 @@ const plan = {
   head,
   requestedBase: requestedBase || null,
   requestedResource,
+  gatewayManagedOnly,
   deploy: selected.length > 0,
   resources: selected,
   matrix
