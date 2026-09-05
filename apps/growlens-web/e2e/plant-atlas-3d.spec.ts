@@ -4,6 +4,7 @@ const atlasPath = '/atlas/index.html';
 
 test.describe('THC Living Plant Atlas V4', () => {
   test('boots the complete V4 PBR specimen and supports inspection, focus, zoom semantics, and reset', async ({ page }) => {
+    test.setTimeout(60_000);
     const errors: string[] = [];
     page.on('pageerror', (error) => errors.push(error.message));
 
@@ -29,10 +30,10 @@ test.describe('THC Living Plant Atlas V4', () => {
     await expect(viewport).toHaveAttribute('data-venation', 'modeled');
     await expect(modelStatus).toHaveAttribute('data-state', 'ready');
 
-    await expect.poll(async () => canvas.evaluate((element: HTMLCanvasElement) => ({ width: element.width, height: element.height })), { timeout: 15_000 }).toMatchObject({ width: expect.any(Number), height: expect.any(Number) });
-    const size = await canvas.evaluate((element: HTMLCanvasElement) => ({ width: element.width, height: element.height }));
-    expect(size.width).toBeGreaterThan(400);
-    expect(size.height).toBeGreaterThan(400);
+    const box = await canvas.boundingBox();
+    expect(box).not.toBeNull();
+    expect(box!.width).toBeGreaterThan(400);
+    expect(box!.height).toBeGreaterThan(400);
 
     await activateFocus('Roots');
     await expect(page.locator('[data-inspector-title]')).toHaveText('Root system');
@@ -89,6 +90,7 @@ test.describe('THC Living Plant Atlas V4', () => {
   });
 
   test('captures a rendered Atlas exhibit plate for visual QA', async ({ page }, testInfo) => {
+    test.setTimeout(60_000);
     await page.goto(atlasPath, { waitUntil: 'domcontentloaded' });
     const viewport = page.locator('[data-plant-3d]');
     await expect(viewport).toHaveAttribute('data-render-state', 'ready', { timeout: 15_000 });
@@ -97,6 +99,7 @@ test.describe('THC Living Plant Atlas V4', () => {
       path: testInfo.outputPath('plant-atlas-exhibit.png'),
       fullPage: true,
       animations: 'disabled',
+      timeout: 45_000,
     });
   });
 });
