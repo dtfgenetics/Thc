@@ -9,11 +9,19 @@ const backupRoot = process.env.BACKUP_ROOT || '/tmp/dtf-learning-center-expansio
 const sourceRoot = join(process.cwd(), 'site/public-route-patch/learn');
 const sourceMarker = 'DTF-PUBLIC-LEARNING-EXPANSION-V1';
 const storedReleaseMarker = 'Source-controlled release';
+const requestTimeoutMs = Number.parseInt(process.env.WP_REQUEST_TIMEOUT_MS || '20000', 10);
+const requestAttempts = Number.parseInt(process.env.WP_REQUEST_ATTEMPTS || '3', 10);
 
 if (!username || !password) throw new Error('WP_API_USERNAME and WP_API_PASSWORD are required');
+if (!Number.isInteger(requestTimeoutMs) || requestTimeoutMs < 5_000 || requestTimeoutMs > 60_000) {
+  throw new Error(`WP_REQUEST_TIMEOUT_MS must be an integer between 5000 and 60000; got ${process.env.WP_REQUEST_TIMEOUT_MS || requestTimeoutMs}`);
+}
+if (!Number.isInteger(requestAttempts) || requestAttempts < 1 || requestAttempts > 6) {
+  throw new Error(`WP_REQUEST_ATTEMPTS must be an integer between 1 and 6; got ${process.env.WP_REQUEST_ATTEMPTS || requestAttempts}`);
+}
 
 const auth = `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`;
-const headers = { Authorization: auth, Accept: 'application/json', 'User-Agent': 'DTFSeeds-Learning-Expansion-Publisher/1.3' };
+const headers = { Authorization: auth, Accept: 'application/json', 'User-Agent': 'DTFSeeds-Learning-Expansion-Publisher/1.4' };
 const stamp = new Date().toISOString().replace(/[-:.]/g, '').replace('Z', 'Z');
 const backupDir = join(backupRoot, `learning-expansion-${stamp}`);
 await mkdir(backupDir, { recursive: true });
@@ -44,7 +52,7 @@ const retryableStatus = new Set([408, 425, 429, 500, 502, 503, 504]);
 
 async function request(path, options = {}) {
   let lastError = null;
-  for (let attempt = 1; attempt <= 6; attempt++) {
+  for (let attempt = 1; attempt <= requestAttempts; attempt++) {
     try {
       const response = await fetch(`${siteUrl}${path}`, {
         ...options,
@@ -54,21 +62,21 @@ async function request(path, options = {}) {
           ...(options.headers || {})
         },
         redirect: 'follow',
-        signal: AbortSignal.timeout(60_000)
+        signal: AbortSignal.timeout(requestTimeoutMs)
       });
       const text = await response.text();
       let body = null;
       try { body = text ? JSON.parse(text) : null; } catch { body = text; }
       if (response.ok) return body;
       const message = `${options.method || 'GET'} ${path} failed (${response.status}): ${typeof body === 'string' ? body.slice(0, 500) : JSON.stringify(body).slice(0, 500)}`;
-      if (!retryableStatus.has(response.status) || attempt === 6) throw new Error(message);
+      if (!retryableStatus.has(response.status) || attempt === requestAttempts) throw new Error(message);
       lastError = new Error(message);
     } catch (error) {
       lastError = error;
-      if (attempt === 6) break;
+      if (attempt === requestAttempts) break;
     }
-    const delay = Math.min(20_000, 1500 * (2 ** (attempt - 1)));
-    console.warn(`WordPress request retry ${attempt}/6 for ${path} after ${lastError?.message || 'transient error'}; waiting ${delay}ms`);
+    const delay = Math.min(6_000, 1500 * (2 ** (attempt - 1)));
+    console.warn(`WordPress request retry ${attempt}/${requestAttempts} for ${path} after ${lastError?.message || 'transient error'}; waiting ${delay}ms`);
     await sleep(delay);
   }
   throw lastError || new Error(`${options.method || 'GET'} ${path} failed after retries`);
@@ -154,7 +162,7 @@ for (const result of results) {
         headers: {
           'Cache-Control': 'no-cache, no-store, max-age=0',
           Pragma: 'no-cache',
-          'User-Agent': 'DTFSeeds-Learning-Expansion-Publisher/1.3'
+          'User-Agent': 'DTFSeeds-Learning-Expansion-Publisher/1.4'
         },
         redirect: 'follow',
         signal: AbortSignal.timeout(60_000)
@@ -197,4 +205,4 @@ for (const result of results) {
 }
 
 await writeFile(join(backupDir, 'publish-result.json'), `${JSON.stringify({ generatedAt: new Date().toISOString(), learnParentId: learn.id, results, publicOwner: 'Dtf420 static child-route overlay' }, null, 2)}\n`);
-console.log(JSON.stringify({ learnParentId: learn.id, backupDir, results, verified: results.length, publicOwner: 'Dtf420 static child-route overlay' }, null, 2));
+console.log(JSON.stringify({ learnParentId: learn.id, backupDir, results, verified: results.length, publicOwner: 'Dtf420 static child-route overlay', requestTimeoutMs, requestAttempts }, null, 2));

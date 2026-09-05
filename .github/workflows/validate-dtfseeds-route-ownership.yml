@@ -5,18 +5,40 @@ on:
     branches: [main]
     paths:
       - scripts/apply-wordpress-public-content-rest.mjs
+      - scripts/apply-wordpress-public-content-owned-routes.mjs
+      - scripts/verify-wordpress-owned-route-preservation.mjs
       - scripts/rebuild-wordpress-commerce-visuals.mjs
+      - scripts/run-learning-v3-connected-production.sh
+      - scripts/prepare-learning-v3-atlas-publisher.mjs
+      - scripts/prepare-learning-v3-owner-aware-publisher.mjs
+      - scripts/prepare-learning-owner-aware-followup-publishers.mjs
+      - scripts/publish-learning-expanded-references-owner-aware.mjs
+      - scripts/verify-learning-owner-storage.mjs
+      - scripts/update-wordpress-learn-expansion-v1.mjs
       - .github/workflows/wordpress-canonical-production.yml
+      - .github/workflows/wordpress-learning-experience-v3-production.yml
       - .github/workflows/wordpress-genetics-library-production.yml
+      - .github/workflows/dtfseeds-production-gateway.yml
       - scripts/validate-dtfseeds-route-ownership.mjs
       - .github/workflows/validate-dtfseeds-route-ownership.yml
   push:
     branches: [main]
     paths:
       - scripts/apply-wordpress-public-content-rest.mjs
+      - scripts/apply-wordpress-public-content-owned-routes.mjs
+      - scripts/verify-wordpress-owned-route-preservation.mjs
       - scripts/rebuild-wordpress-commerce-visuals.mjs
+      - scripts/run-learning-v3-connected-production.sh
+      - scripts/prepare-learning-v3-atlas-publisher.mjs
+      - scripts/prepare-learning-v3-owner-aware-publisher.mjs
+      - scripts/prepare-learning-owner-aware-followup-publishers.mjs
+      - scripts/publish-learning-expanded-references-owner-aware.mjs
+      - scripts/verify-learning-owner-storage.mjs
+      - scripts/update-wordpress-learn-expansion-v1.mjs
       - .github/workflows/wordpress-canonical-production.yml
+      - .github/workflows/wordpress-learning-experience-v3-production.yml
       - .github/workflows/wordpress-genetics-library-production.yml
+      - .github/workflows/dtfseeds-production-gateway.yml
       - scripts/validate-dtfseeds-route-ownership.mjs
       - .github/workflows/validate-dtfseeds-route-ownership.yml
   workflow_dispatch:
