@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "site": "https://dtfseeds.com",
   "reportIssue": 220,
   "productionCheckpointTag": "dtfseeds-production",
@@ -20,7 +20,8 @@
     ".github/workflows/wordpress-canonical-deploy.yml",
     ".github/workflows/wordpress-canonical-production.yml",
     ".github/workflows/deploy-public-suite-wordpress-v2.yml",
-    ".github/workflows/deploy-thc-learning-center-expansion-v1.yml"
+    ".github/workflows/deploy-thc-learning-center-expansion-v1.yml",
+    ".github/workflows/wordpress-harvest-outdoor-v6-production.yml"
   ],
   "lanes": {
     "publicSuite": {
@@ -77,6 +78,30 @@
         "scripts/build-public-learning-center-expansion-v1.mjs",
         "scripts/publish-wordpress-learning-center-expansion-v1.mjs",
         "scripts/update-wordpress-learn-expansion-v1.mjs"
+      ]
+    },
+    "harvestOutdoor": {
+      "description": "Canonical Harvest/Post-Harvest and Outdoor V3/V4/V6 owner stack, field labs, applied modules and their exact production publisher.",
+      "prefixes": [
+        "site/wordpress/education/harvest-postharvest-v6.json",
+        "site/wordpress/education/outdoor-v6.json",
+        "site/wordpress/education/outdoor-quantification-v1.json",
+        "site/wordpress/education/outdoor-quantification/",
+        "site/wordpress/education/outdoor-applied-v1.json",
+        "site/wordpress/education/topic-literature.json",
+        "site/wordpress/education/learning-guides-v4.json",
+        "site/wordpress/education/topic-expansions-v4.json",
+        "configuration/encyclopedia-topics.json",
+        "scripts/rebuild-wordpress-learning-experience-v3.mjs",
+        "scripts/run-learning-v3-production.mjs",
+        "scripts/verify-wordpress-outdoor-owner-prerequisites.mjs",
+        "scripts/enhance-wordpress-learning-v4.mjs",
+        "scripts/enhance-wordpress-topic-expansions-v4.mjs",
+        "scripts/publish-wordpress-harvest-outdoor-v6-final.mjs",
+        "scripts/assemble-outdoor-quantification-v1.mjs",
+        "scripts/enhance-wordpress-outdoor-quantification-v1.mjs",
+        "scripts/publish-wordpress-outdoor-applied-v1.mjs",
+        ".github/workflows/wordpress-harvest-outdoor-v6-production.yml"
       ]
     }
   }
