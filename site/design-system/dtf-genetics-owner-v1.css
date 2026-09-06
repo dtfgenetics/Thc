@@ -36,7 +36,7 @@
 .dtf-v1.dtf-genetics-v1[data-dtf-genetics-library] section[id="genetics-library"]>h2{max-width:850px;margin:0 0 12px!important;font-size:clamp(2.35rem,5vw,4.65rem)!important;line-height:.94!important}
 .dtf-v1.dtf-genetics-v1[data-dtf-genetics-library] section[id="genetics-library"]>p{max-width:690px;margin:0 0 31px!important;color:#a9b9ae!important;font-size:1rem}
 
-/* Authoritative 11-line card grid. */
+/* Authoritative 11-line catalog. */
 .dtf-v1.dtf-genetics-v1 article{position:relative;background:linear-gradient(180deg,rgba(18,50,31,.98),rgba(8,28,17,.98))!important;border:1px solid rgba(153,186,161,.17)!important;border-radius:20px!important;box-shadow:0 18px 46px rgba(0,0,0,.16)!important;color:var(--dtf-text)!important;overflow:hidden;transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease}
 .dtf-v1.dtf-genetics-v1 article:hover{transform:translateY(-6px);border-color:rgba(213,177,90,.52)!important;box-shadow:0 28px 60px rgba(0,0,0,.26)!important}
 .dtf-v1.dtf-genetics-v1 article p{color:var(--dtf-muted)!important}
@@ -44,7 +44,7 @@
 .dtf-v1.dtf-genetics-v1 article img{box-shadow:none!important;border:0!important;border-bottom:1px solid rgba(255,255,255,.08)!important;border-radius:0!important;background:#081a11!important;transition:transform .35s ease,filter .35s ease}
 .dtf-v1.dtf-genetics-v1 article:hover img{transform:scale(1.018);filter:saturate(1.05) contrast(1.02)}
 .dtf-v1.dtf-genetics-v1 span[style*="border-radius:999px"]{display:inline-flex!important;align-items:center;min-height:27px;padding:5px 9px!important;background:rgba(213,177,90,.09)!important;border:1px solid rgba(213,177,90,.32)!important;color:var(--dtf-gold-2)!important;border-radius:999px!important;font-size:.62rem!important;font-weight:950!important;letter-spacing:.085em!important}
-
+.dtf-v1.dtf-genetics-v1[data-dtf-genetics-library] section[id="genetics-library"]>div{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:18px!important;align-items:stretch}
 .dtf-v1.dtf-genetics-v1[data-dtf-genetics-library] section[id="genetics-library"] article{padding:0!important;min-height:100%}
 .dtf-v1.dtf-genetics-v1[data-dtf-genetics-library] section[id="genetics-library"] article>a{display:flex;min-height:100%;flex-direction:column;color:inherit!important;text-decoration:none!important;background:linear-gradient(180deg,rgba(255,255,255,.012),transparent)}
 .dtf-v1.dtf-genetics-v1[data-dtf-genetics-library] section[id="genetics-library"] article img{width:100%!important;aspect-ratio:4/5!important;object-fit:cover!important;object-position:center top!important}
@@ -54,6 +54,18 @@
 .dtf-v1.dtf-genetics-v1[data-dtf-genetics-library] section[id="genetics-library"] article p:nth-of-type(2){margin-top:0!important;margin-bottom:8px!important;color:#d5dfd8!important}
 .dtf-v1.dtf-genetics-v1[data-dtf-genetics-library] section[id="genetics-library"] article p:nth-of-type(3){margin-top:0!important;margin-bottom:14px!important;font-size:.92rem;line-height:1.58!important}
 .dtf-v1.dtf-genetics-v1[data-dtf-genetics-library] section[id="genetics-library"] article a>strong:last-child{display:inline-flex;align-items:center;margin:auto 20px 22px!important;padding-top:10px;color:var(--dtf-gold-2)!important;text-transform:uppercase;font-size:.7rem;letter-spacing:.07em}
+
+/* Editorial hierarchy: the lead reviewed line receives catalog-cover prominence instead of eleven identical tiles. */
+@media(min-width:901px){
+  .dtf-v1.dtf-genetics-v1[data-dtf-genetics-library] section[id="genetics-library"] article:first-child{grid-column:span 2;min-height:510px;background:radial-gradient(circle at 85% 12%,rgba(213,177,90,.12),transparent 28%),linear-gradient(145deg,#12341f,#07170f)!important}
+  .dtf-v1.dtf-genetics-v1[data-dtf-genetics-library] section[id="genetics-library"] article:first-child>a{display:grid!important;grid-template-columns:minmax(260px,.92fr) minmax(0,1.08fr);grid-template-rows:auto auto auto 1fr auto;align-items:start}
+  .dtf-v1.dtf-genetics-v1[data-dtf-genetics-library] section[id="genetics-library"] article:first-child img{grid-column:1;grid-row:1/6;height:100%!important;aspect-ratio:auto!important;object-fit:cover!important;border-right:1px solid rgba(255,255,255,.08)!important;border-bottom:0!important}
+  .dtf-v1.dtf-genetics-v1[data-dtf-genetics-library] section[id="genetics-library"] article:first-child p,.dtf-v1.dtf-genetics-v1[data-dtf-genetics-library] section[id="genetics-library"] article:first-child h2,.dtf-v1.dtf-genetics-v1[data-dtf-genetics-library] section[id="genetics-library"] article:first-child a>strong:last-child{grid-column:2;margin-left:28px!important;margin-right:28px!important}
+  .dtf-v1.dtf-genetics-v1[data-dtf-genetics-library] section[id="genetics-library"] article:first-child p:first-of-type{margin-top:30px!important}
+  .dtf-v1.dtf-genetics-v1[data-dtf-genetics-library] section[id="genetics-library"] article:first-child h2{font-size:clamp(2.05rem,3.6vw,3.25rem)!important;max-width:11ch}
+  .dtf-v1.dtf-genetics-v1[data-dtf-genetics-library] section[id="genetics-library"] article:first-child p:nth-of-type(3){font-size:1rem;max-width:42ch}
+  .dtf-v1.dtf-genetics-v1[data-dtf-genetics-library] section[id="genetics-library"] article:nth-child(5),.dtf-v1.dtf-genetics-v1[data-dtf-genetics-library] section[id="genetics-library"] article:nth-child(9){background:radial-gradient(circle at 90% 8%,rgba(111,152,71,.09),transparent 24%),linear-gradient(180deg,rgba(18,50,31,.98),rgba(8,28,17,.98))!important}
+}
 
 /* Catalog-standard band. */
 .dtf-v1.dtf-genetics-v1[data-dtf-genetics-library]>section:last-of-type>div{padding-top:clamp(56px,7vw,82px)!important;padding-bottom:clamp(56px,7vw,82px)!important}
@@ -80,6 +92,7 @@
   .dtf-v1.dtf-genetics-v1[data-dtf-genetics-library] section:first-of-type{grid-template-columns:1fr!important;gap:38px!important}
   .dtf-v1.dtf-genetics-v1[data-dtf-genetics-library] section:first-of-type>div:nth-child(2){width:min(390px,88vw);justify-self:start;transform:none}
   .dtf-v1.dtf-genetics-v1[data-dtf-genetics-library] section:first-of-type>div:nth-child(2):before{left:14px;top:14px}
+  .dtf-v1.dtf-genetics-v1[data-dtf-genetics-library] section[id="genetics-library"]>div{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 }
 @media(max-width:760px){
   .dtf-v1.dtf-genetics-v1>section:first-of-type{padding-top:54px!important;padding-bottom:50px!important}
