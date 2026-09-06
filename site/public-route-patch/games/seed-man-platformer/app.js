@@ -696,6 +696,7 @@ function render() {
 function finishGame() {
   running = false;
   paused = false;
+  powerNotice = null;
   syncPauseButton();
   const previousBest = readBest();
   const newBest = previousBest === null || elapsed < previousBest;
