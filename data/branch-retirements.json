@@ -104,6 +104,14 @@
       "status": "approved",
       "reviewedAt": "2026-09-06",
       "reason": "This v3 QA branch has the same exact integrated tip as the prior QA branches, is fully contained in current main, and has no open PR. It is safe to retire under the exact-head fail-closed lifecycle checks."
+    },
+    {
+      "branch": "feat/sprout-run-platformer-feel-v2-rebased",
+      "headSha": "64b163b3959170ab125953be531de6d9da0a10e4",
+      "supersededBy": "bdac4acaeedf5e565f53eec2b56411198af53617",
+      "status": "approved",
+      "reviewedAt": "2026-09-06",
+      "reason": "This rebased Sprout Run branch is a direct ancestor of current main with zero unique commits and no open PR. The sibling v2/pr/pr2 branches still diverge and are intentionally preserved for salvage review; only this fully integrated branch is approved for retirement."
     }
   ]
 }
