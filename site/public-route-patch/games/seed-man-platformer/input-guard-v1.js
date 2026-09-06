@@ -64,6 +64,25 @@
     }
   }
 
+  function syncSignatureSelection(levelId) {
+    const hud = document.querySelector('#seed-signature-hud');
+    if (!hud) return;
+    const signature = SIGNATURES[levelId] || null;
+    const name = document.querySelector('#seed-signature-name');
+    const state = document.querySelector('#seed-signature-state');
+    const detail = document.querySelector('#seed-signature-detail');
+    if (signature) {
+      if (name) name.textContent = signature.name;
+      if (state) state.textContent = `${signature.name} · cycling`;
+      if (detail) detail.textContent = signature.detail;
+    } else {
+      if (name) name.textContent = 'Stage Feature';
+      if (state) state.textContent = 'Greenhouse fundamentals';
+      if (detail) detail.textContent = 'Moving tables, pests, bounce pads and power-ups establish the core run.';
+    }
+    hud.dataset.active = 'false';
+  }
+
   function installSignatureRuntime() {
     try {
       if (typeof stepPlayer !== 'function') return;
@@ -205,6 +224,7 @@
       };
 
       ensureSignatureUi();
+      syncSignatureSelection(typeof level !== 'undefined' ? level.id : 'sprout-run');
       window.__SPROUT_SIGNATURE_FEATURES__ = Object.freeze({
         version: 'seed-man-signature-features-v1',
         levels: Object.freeze(Object.keys(SIGNATURES)),
@@ -226,7 +246,10 @@
   window.addEventListener('sprout:level-selected', (event) => {
     const levelId = event?.detail?.levelId;
     if (!levelId) return;
-    queueMicrotask(() => normalizeGeneratedTerminalLanding(levelId));
+    queueMicrotask(() => {
+      normalizeGeneratedTerminalLanding(levelId);
+      syncSignatureSelection(levelId);
+    });
   });
   window.addEventListener('load', installSignatureRuntime, { once: true });
 
