@@ -72,6 +72,38 @@
       "status": "approved",
       "reviewedAt": "2026-09-06",
       "reason": "Recovery review found its canonical combat.mjs blob is byte-for-byte identical to the #676/main version, while its alternate combat-runtime-v1.js is an earlier five-encounter browser implementation. Merged PR #676 preserves the canonical combat system and replaces that adapter with the tested six-encounter combat-browser-v1.js, flying-enemy behavior, chain phenotype effect, Chromium acceptance, and production packaging. No unique accepted behavior remains on this orphan branch."
+    },
+    {
+      "branch": "game-audit-grow-room-defense-qa",
+      "headSha": "e832ebbccbe28d9a517fbe6a53fab8cdc290004f",
+      "supersededBy": "11521df51215acbd51e521f94f4ffee4232de647",
+      "status": "approved",
+      "reviewedAt": "2026-09-06",
+      "reason": "The branch tip is an ancestor of current main with zero divergence, is 251 commits behind main at review time, and has no open PR. Its content is fully preserved by current main."
+    },
+    {
+      "branch": "grow-room-defense-browser-qa",
+      "headSha": "e832ebbccbe28d9a517fbe6a53fab8cdc290004f",
+      "supersededBy": "11521df51215acbd51e521f94f4ffee4232de647",
+      "status": "approved",
+      "reviewedAt": "2026-09-06",
+      "reason": "The branch shares the same fully integrated tip e832ebbccbe28d9a517fbe6a53fab8cdc290004f, is 251 commits behind current main with zero divergence, and has no open PR. No unique branch work remains."
+    },
+    {
+      "branch": "grow-room-defense-browser-qa-v2",
+      "headSha": "e832ebbccbe28d9a517fbe6a53fab8cdc290004f",
+      "supersededBy": "11521df51215acbd51e521f94f4ffee4232de647",
+      "status": "approved",
+      "reviewedAt": "2026-09-06",
+      "reason": "This v2 QA branch has the same exact integrated tip as the other Grow Room Defense QA branches, is fully contained in current main, and has no open PR. It is redundant branch history rather than unique work."
+    },
+    {
+      "branch": "grow-room-defense-browser-qa-v3",
+      "headSha": "e832ebbccbe28d9a517fbe6a53fab8cdc290004f",
+      "supersededBy": "11521df51215acbd51e521f94f4ffee4232de647",
+      "status": "approved",
+      "reviewedAt": "2026-09-06",
+      "reason": "This v3 QA branch has the same exact integrated tip as the prior QA branches, is fully contained in current main, and has no open PR. It is safe to retire under the exact-head fail-closed lifecycle checks."
     }
   ]
 }
