@@ -77,6 +77,16 @@
     }
   }
 
+  function loadCombatBrowserAdapter() {
+    if (window.__SPROUT_COMBAT_BROWSER__ || document.querySelector('script[data-seed-combat-browser]')) return;
+    const script = document.createElement('script');
+    script.src = `./combat-browser-v1.js?v=${RELEASE}`;
+    script.defer = true;
+    script.dataset.seedCombatBrowser = 'v1';
+    script.addEventListener('error', () => console.error('Seed Man combat browser adapter failed to load.'));
+    document.body.append(script);
+  }
+
   const canvas = document.querySelector('#game');
   if (canvas) {
     canvas.addEventListener('contextlost', () => {
@@ -107,10 +117,11 @@
     }, 0);
   }, { once: true });
 
-  // app.js is a deferred classic script loaded immediately after this file.
-  // Restore the native prototype after deferred scripts initialize so the
-  // compatibility request stays scoped to Sprout Run rather than the page.
+  // app.js and its gameplay wrappers are deferred classic scripts. Once
+  // those bindings exist, load the optional combat adapter and restore the
+  // native Canvas2D prototype so this compatibility behavior stays scoped.
   window.addEventListener('DOMContentLoaded', () => {
+    loadCombatBrowserAdapter();
     if (proto.getContext === patchedGetContext) proto.getContext = nativeGetContext;
   }, { once: true });
 
@@ -120,6 +131,7 @@
     softwarePreferred: true,
     campaignTitleBranding: true,
     levelOneSummaryCompatibility: true,
+    combatBrowserAutoLoad: true,
     get contextLostCount() { return lost; },
     get contextRestoredCount() { return restored; },
   });
