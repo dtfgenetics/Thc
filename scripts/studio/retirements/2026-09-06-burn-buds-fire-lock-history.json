@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "retirements": [
+    {
+      "branch": "fix/burn-buds-fire-request-lock",
+      "headSha": "9fe7117537f35d038908c8895683630a8424d374",
+      "supersededBy": "30b5b7571e053d79e51b0c3ef15e8b82b34e70c2",
+      "status": "approved",
+      "reason": "Semantic review confirms the branch's in-flight fire request locking is fully preserved and extended on current main. The old targeting-v1 test's firePending, aria-busy, body lock, stopImmediatePropagation, and API-wrapper assertions are all present on main, while main adds coarse-pointer two-tap arming and stronger mobile targeting coverage. No open PR owns this exact branch tip."
+    }
+  ]
+}
