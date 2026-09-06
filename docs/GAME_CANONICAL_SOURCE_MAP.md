@@ -43,7 +43,7 @@ Never begin a game repair from the deployed HTML, a copied integration bundle, o
 | Project | Canonical repository | Current gate |
 | --- | --- | --- |
 | Ganjumanji | `dtfgenetics/GANJUMANJI-The-Lost-Grower-s-Temple` | canonical release candidate `0.3.0`; standalone tests, build, route validation, desktop/mobile Playwright, screenshot evidence, and production artifact are green at `e82580d`; DTFSeeds packaging and exact live-route verification remain required |
-| THC RPG | `dtfgenetics/Thc-rpg` | playable browser vertical slice with environment/equipment systems, phenotype journal, Keeper selection and clonal cutting loop; central packaging and production-route verification are still open |
+| THC RPG | `dtfgenetics/Thc-rpg` | canonical release candidate `2.0.0` pinned at `15fe22d`; standalone tests, visitor-only build, release validation, desktop/mobile Chromium, and `thc-rpg-production-build` are green; central DTFSeeds packaging and exact live-route verification remain required before public promotion |
 
 ## Known ownership defects being corrected
 
@@ -65,11 +65,11 @@ The stable playable source currently packaged by DTFSeeds is `dtfgenetics/Terpoc
 
 ### Ganjumanji status
 
-`dtfgenetics/GANJUMANJI-The-Lost-Grower-s-Temple` is no longer a design-only placeholder. Canonical `main` now contains a complete three-region release-candidate campaign with deterministic model/storage/records, solvability validation, desktop/mobile browser acceptance, and a production build artifact. Central integration must pin the exact passing revision and must not promote the game to the public playable count until DTFSeeds packaging plus live-route verification pass.
+`dtfgenetics/GANJUMANJI-The-Lost-Grower-s-Temple` is no longer a design-only placeholder. Canonical `main` now contains a complete three-region release-candidate campaign with deterministic model/storage/records, solvability validation, desktop/mobile browser acceptance, and a production build artifact. Central integration pins the exact passing revision and must not promote the game to the public playable count until DTFSeeds packaging plus live-route verification pass.
 
 ### THC RPG status
 
-`dtfgenetics/Thc-rpg` is no longer a concept-only placeholder. It contains a tested executable browser vertical slice. The current progression reaches persistent phenotype journaling, Keeper selection, and deterministic replanting from preserved Keeper cutting stock. It remains outside the public playable catalog until central packaging and production-route verification are added.
+`dtfgenetics/Thc-rpg` is no longer a concept-only placeholder. It contains a tested executable browser release candidate with a route-safe visitor-only artifact. The current progression reaches persistent phenotype journaling, Keeper selection, and deterministic replanting from preserved Keeper cutting stock. Central integration pins the exact merged candidate revision and reserves `/games/thc-rpg/`, while public playable-count promotion remains blocked until DTFSeeds packaging plus exact live-route verification pass.
 
 ## Release path
 
