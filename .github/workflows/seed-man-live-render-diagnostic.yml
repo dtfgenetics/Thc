@@ -50,6 +50,7 @@ jobs:
               return status && /24/.test(status.textContent || '') && document.querySelector('#game');
             }, null, { timeout: 15000 });
             await page.waitForFunction(() => Boolean(window.__SPROUT_GAMEPLAY_V2__?.snapshot));
+            await page.waitForFunction(() => Boolean(window.__SPROUT_CAMPAIGN_EXPERIENCE__ && window.__SPROUT_ANIMATION_V2__));
             await page.waitForTimeout(500);
             const result = await page.evaluate(() => {
               const canvas = document.querySelector('#game');
@@ -57,35 +58,25 @@ jobs:
               const ctx = canvas?.getContext('2d');
               if (!canvas || !ctx) return { canvasPresent: !!canvas, context: !!ctx };
               const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-              let opaque = 0, nonSky = 0, dark = 0, green = 0, brown = 0;
+              let opaque = 0, nonSky = 0;
               const stride = 4 * 16;
               for (let i = 0; i < data.length; i += stride) {
                 const r = data[i], g = data[i+1], b = data[i+2], a = data[i+3];
                 if (a > 0) opaque++;
                 if (!(b > 180 && g > 160 && r > 120)) nonSky++;
-                if (r < 90 && g < 110 && b < 90) dark++;
-                if (g > r * 1.05 && g > b * 0.9) green++;
-                if (r > 100 && r > g * 1.15 && b < 120) brown++;
               }
-              const style = getComputedStyle(canvas);
-              const gameplay = window.__SPROUT_GAMEPLAY_V2__?.snapshot?.() || null;
               return {
                 innerWidth: window.innerWidth,
-                innerHeight: window.innerHeight,
                 canvasPresent: true,
-                width: canvas.width,
-                height: canvas.height,
-                rect: { width: rect.width, height: rect.height, top: rect.top, left: rect.left },
-                display: style.display,
-                visibility: style.visibility,
-                opacity: style.opacity,
+                rect: { width: rect.width, height: rect.height },
                 release: document.querySelector('meta[name="dtf-sprout-release"]')?.content || null,
-                status: document.querySelector('#load-status')?.textContent,
-                art: window.__SPROUT_ART__ || null,
                 gameplayVersion: window.__SPROUT_GAMEPLAY_V2__?.version || null,
-                gameplay,
+                gameplay: window.__SPROUT_GAMEPLAY_V2__?.snapshot?.() || null,
                 campaignVersion: window.__SPROUT_CAMPAIGN__?.version || null,
-                samples: { opaque, nonSky, dark, green, brown }
+                campaignExperienceVersion: window.__SPROUT_CAMPAIGN_EXPERIENCE__?.version || null,
+                animationVersion: window.__SPROUT_ANIMATION_V2__?.version || null,
+                campaignLevels: window.__SPROUT_CAMPAIGN_EXPERIENCE__?.levelCount || 0,
+                samples: { opaque, nonSky }
               };
             });
             await page.screenshot({ path: path.join(out, `${name}.png`), fullPage: true });
@@ -96,7 +87,10 @@ jobs:
             if ((result.gameplay?.movingPlatforms?.length || 0) < 6) throw new Error(`${name}: moving platforms missing`);
             if ((result.gameplay?.pests?.length || 0) < 8) throw new Error(`${name}: pests missing`);
             if ((result.gameplay?.bouncePads?.length || 0) < 4) throw new Error(`${name}: boost pads missing`);
-            if (result.campaignVersion !== 'sprout-campaign-v1') throw new Error(`${name}: campaign runtime missing`);
+            if (result.campaignVersion !== 'sprout-campaign-v3') throw new Error(`${name}: campaign v3 runtime missing`);
+            if (result.campaignExperienceVersion !== 'seed-man-campaign-experience-v3') throw new Error(`${name}: campaign experience missing`);
+            if (result.animationVersion !== 'seed-man-animation-v2') throw new Error(`${name}: animation-v2 missing`);
+            if (result.campaignLevels !== 11) throw new Error(`${name}: expected 11 campaign levels, got ${result.campaignLevels}`);
             if (!result.canvasPresent || !result.rect || result.rect.width < 100 || result.rect.height < 50) throw new Error(`${name}: canvas is not visibly sized`);
             if ((result.samples?.opaque || 0) < 1000 || (result.samples?.nonSky || 0) < 300) throw new Error(`${name}: canvas pixel output appears blank/unrendered`);
             if (name === 'android' && result.innerWidth > 430) throw new Error(`android: mobile layout viewport not active (${result.innerWidth}px)`);
