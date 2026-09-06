@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "retirements": [
+    {
+      "branch": "game/burn-buds-final-ui-hardening",
+      "headSha": "14fc47c30d8a100f37b2f008d960f151fb879ff7",
+      "supersededBy": "71187975723e8c2aff12b3c7ef66f255d0ce0575",
+      "status": "approved",
+      "reason": "Semantic review confirms this mislabeled Burn Buds branch contains Protect the Plants production documentation/verifier metadata already superseded on main. Current README preserves the production identity and architecture while documenting removal of retired targeting shims, and current production verification is stricter. No open PR owns this exact branch tip."
+    },
+    {
+      "branch": "game/burn-buds-final-ui-hardening-v2",
+      "headSha": "4c698ed7e523bf193b3abe8b49068d50437e3e1a",
+      "supersededBy": "71187975723e8c2aff12b3c7ef66f255d0ce0575",
+      "status": "approved",
+      "reason": "Semantic review confirms games/protect-the-plants/game.json is byte-identical to main, the current README is a newer successor, current Burn Buds branding CI preserves the release contract, and current production verification removes the retired targeting-policy shim while adding explicit gamefeel/native-targeting checks. No open PR owns this exact branch tip."
+    }
+  ]
+}
