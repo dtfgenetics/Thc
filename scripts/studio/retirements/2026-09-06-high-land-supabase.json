@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "retirements": [
+    {
+      "branch": "codex/high-land-ci-supabase",
+      "headSha": "bae41e8fe50d142406facf3b127bade943847575",
+      "supersededBy": "f8b30940b8fec486778cad53dfdb82221aafb514",
+      "status": "approved",
+      "reviewedAt": "2026-09-06",
+      "reason": "Semantic salvage reviewed both unique commits. The cross-platform Current board space E2E assertion is preserved verbatim in current main as scoped #1 and RED text checks. The guarded Supabase browser-client experiment is intentionally superseded: current main removes @supabase/supabase-js from High Land web, removes the Supabase client/transport files, and defines only local, website, and offline room transports, with dtfseeds.com using the website transport. No open PR owns this branch and no unique accepted production behavior remains."
+    }
+  ]
+}
