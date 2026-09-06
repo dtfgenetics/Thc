@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "retirements": [
+    {
+      "branch": "codex/high-land-browser-repair",
+      "headSha": "25950a635b03b8ca82285cc89e1ac9a8671b5530",
+      "supersededBy": "d2003f5c2c67a532a8fcc187dccd1c5baafba157",
+      "status": "approved",
+      "reason": "Semantic salvage completed. Current main supersedes the old 111-space/25-HIT board path with the calibrated 109-space/22 printed-HIT contract, replaces the old room client/server layer with secured website transport and credential/host/turn enforcement, expands the HIT deck to approved individual art plus 39 cards, preserves stronger audio/token/mobile behavior, and uses newer UI/CI/build systems. The one valuable missing behavior found in the branch—explicit player selection for choose_player_move HIT cards—was forward-ported and merged in d2003f5c2c67a532a8fcc187dccd1c5baafba157. No open PR owns the old branch."
+    }
+  ]
+}
