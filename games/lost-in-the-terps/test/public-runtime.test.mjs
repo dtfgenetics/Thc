@@ -33,15 +33,21 @@ assert.match(app, /event\.key === 'h' \|\| event\.key === 'H'/, 'H keyboard shor
 assert.match(app, /aria-pressed/, 'runtime must expose selected and found cell state');
 
 assert.match(css, /\.grid-viewport/);
-assert.match(css, /\.letter\.wrong/);
-assert.match(css, /\.letter\.hint/);
+assert.match(css, /\.letter\.start/, 'first-letter selection must have a strong dedicated visual state');
+assert.match(css, /\.letter\.found/, 'found paths must have a dedicated visual state');
+assert.match(css, /\.letter\.wrong/, 'wrong selections must remain clearly visible');
+assert.match(css, /\.letter\.hint/, 'hinted start cells must remain clearly visible');
+assert.match(css, /\.word\.found::before\{content:"✓"/, 'found word-list items must have a completion marker');
+assert.match(css, /\.play aside\{position:static\}/, 'mobile support panel must stop using desktop sticky behavior');
+assert.match(css, /aside\{position:sticky;top:84px/, 'desktop word list must stay available while scanning the grid');
 assert.match(css, /min-width:max\(100%,476px\)/, 'mobile grid must keep usable cell targets and scroll');
 assert.match(css, /\[data-armed=true\]/, 'guarded destructive controls need a visible armed state');
-assert.match(css, /@media\(prefers-reduced-motion:reduce\)/);
+assert.match(css, /@media\(hover:none\)/, 'touch devices must not inherit hover-only movement');
+assert.match(css, /@media\(prefers-reduced-motion:reduce\)/, 'word-search polish must respect reduced-motion preferences');
 
 for (const puzzle of canonical.puzzles) {
   assert.equal(puzzle.words.length, 8, `${puzzle.id} must retain eight hidden words`);
   assert.equal(new Set(puzzle.words.map((item) => item.word)).size, 8, `${puzzle.id} words must be unique`);
 }
 
-console.log('Lost in the Terps public runtime, hint, mission isolation and mobile grid checks passed.');
+console.log('Lost in the Terps public runtime, visual selection states, hint, mission isolation and mobile grid checks passed.');
