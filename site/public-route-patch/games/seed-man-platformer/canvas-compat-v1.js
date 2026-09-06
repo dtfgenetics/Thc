@@ -51,6 +51,32 @@
     });
   };
 
+  function setBrandedCampaignTitle(stageTitle) {
+    document.title = stageTitle
+      ? `Seed Man: Sprout Run — ${stageTitle} | DTF Genetics`
+      : 'Seed Man: Sprout Run | DTF Genetics';
+  }
+
+  function installLevelOneSummaryCompatibility() {
+    try {
+      if (typeof finishGame !== 'function') return;
+      const baseFinishGame = finishGame;
+      finishGame = function sproutRunCompatibleFinishSummary() {
+        baseFinishGame();
+        try {
+          if (typeof level === 'undefined' || level?.id !== 'sprout-run') return;
+          const summary = document.querySelector('#finish-summary');
+          if (!summary) return;
+          summary.textContent = String(summary.textContent || '').replace(/(\d+)\/(\d+) sprouts/i, '$1 of $2 sprouts');
+        } catch (error) {
+          console.warn('Sprout Run completion-summary compatibility update failed.', error);
+        }
+      };
+    } catch (error) {
+      console.warn('Sprout Run completion-summary compatibility could not install.', error);
+    }
+  }
+
   const canvas = document.querySelector('#game');
   if (canvas) {
     canvas.addEventListener('contextlost', () => {
@@ -69,6 +95,17 @@
   window.addEventListener('pageshow', redraw);
   window.addEventListener('orientationchange', redraw);
   window.addEventListener('resize', redraw, { passive: true });
+  window.addEventListener('sprout:level-selected', (event) => {
+    const title = event?.detail?.level?.title || event?.detail?.levelId || '';
+    queueMicrotask(() => setBrandedCampaignTitle(title));
+  });
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      const active = window.__SPROUT_CAMPAIGN__?.getLevel?.();
+      setBrandedCampaignTitle(active?.title || 'Greenhouse Gauntlet');
+      installLevelOneSummaryCompatibility();
+    }, 0);
+  }, { once: true });
 
   // app.js is a deferred classic script loaded immediately after this file.
   // Restore the native prototype after deferred scripts initialize so the
@@ -81,6 +118,8 @@
     version: VERSION,
     release: RELEASE,
     softwarePreferred: true,
+    campaignTitleBranding: true,
+    levelOneSummaryCompatibility: true,
     get contextLostCount() { return lost; },
     get contextRestoredCount() { return restored; },
   });

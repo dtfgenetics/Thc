@@ -77,8 +77,20 @@ jobs:
           grep -Fq 'movingPlatformDefs' "$root/gameplay-v2.js"
           grep -Fq 'pestDefs' "$root/gameplay-v2.js"
           grep -Fq 'bouncePads' "$root/gameplay-v2.js"
-          grep -Fq 'sprout-campaign-v1' "$root/campaign-v1.js"
+          grep -Fq 'sprout-campaign-v3' "$root/campaign-v1.js"
+          grep -Fq 'seed-man-campaign-experience-v3' "$root/campaign-v1.js"
+          grep -Fq 'seed-man-animation-v2' "$root/campaign-v1.js"
+          grep -Fq 'The Phantom Pump' "$root/campaign-v1.js"
+          grep -Fq 'Mite Queen' "$root/campaign-v1.js"
+          grep -Fq 'Mildew Wraith' "$root/campaign-v1.js"
+          grep -Fq 'Pollen Warden' "$root/campaign-v1.js"
+          grep -Fq 'seed-man-level-select' "$root/campaign-v1.js"
+          grep -Fq 'boss-stomp' "$root/campaign-v1.js"
+          grep -Fq 'landing-squash' "$root/campaign-v1.js"
+          grep -Fq 'finish-celebration' "$root/campaign-v1.js"
           grep -Fq '"id": "sprout-run-campaign"' "$root/data/campaign.json"
+          grep -Fq '"levelCount": 11' "$root/data/campaign.json"
+          grep -Fq '"newLevelCount": 10' "$root/data/campaign.json"
 
       - name: Atomically publish complete route and purge caches
         shell: bash
@@ -173,12 +185,20 @@ jobs:
           grep -Fq 'movingPlatformDefs' "$RUNNER_TEMP/gameplay-v2.js"
           grep -Fq 'pestDefs' "$RUNNER_TEMP/gameplay-v2.js"
           grep -Fq 'bouncePads' "$RUNNER_TEMP/gameplay-v2.js"
-          grep -Fq 'sprout-campaign-v1' "$RUNNER_TEMP/campaign-v1.js"
+          grep -Fq 'sprout-campaign-v3' "$RUNNER_TEMP/campaign-v1.js"
+          grep -Fq 'seed-man-campaign-experience-v3' "$RUNNER_TEMP/campaign-v1.js"
+          grep -Fq 'seed-man-animation-v2' "$RUNNER_TEMP/campaign-v1.js"
+          grep -Fq 'The Phantom Pump' "$RUNNER_TEMP/campaign-v1.js"
+          grep -Fq 'Mite Queen' "$RUNNER_TEMP/campaign-v1.js"
+          grep -Fq 'Mildew Wraith' "$RUNNER_TEMP/campaign-v1.js"
+          grep -Fq 'Pollen Warden' "$RUNNER_TEMP/campaign-v1.js"
           grep -Fq 'seed-man-production-v1' "$RUNNER_TEMP/seed-man-production-art.js"
           grep -Fq 'willReadFrequently' "$RUNNER_TEMP/canvas-compat-v1.js"
           grep -Fq '"worldWidth": 7800' "$RUNNER_TEMP/data_level-01.json"
           grep -Fq '"requiredPickups": 24' "$RUNNER_TEMP/data_level-01.json"
           grep -Fq '"id": "sprout-run-campaign"' "$RUNNER_TEMP/data_campaign.json"
+          grep -Fq '"levelCount": 11' "$RUNNER_TEMP/data_campaign.json"
+          grep -Fq '"newLevelCount": 10' "$RUNNER_TEMP/data_campaign.json"
 
       - name: Run live browser gameplay acceptance
         shell: bash
@@ -200,8 +220,8 @@ jobs:
             echo "- Source SHA: $GITHUB_SHA"
             echo "- Release: \`$SPROUT_RELEASE\`"
             echo '- Route: https://dtfseeds.com/games/seed-man-platformer/'
-            echo '- Bundle: gameplay v2 + campaign runtime + current level data'
+            echo '- Bundle: Greenhouse gameplay-v2 + self-contained 11-level campaign v3 + Seed Man animation-v2'
+            echo '- Campaign: 11 total levels, 10 new settings, 4 worlds, 4 boss encounters'
             echo '- Publication: atomic replacement with SHA-256 verification'
-            echo '- Cache: LiteSpeed route purge + purge-all + WordPress cache flush'
-            echo '- Live gate: current release and gameplay-v2 markers required; retired 8-sprout build rejected'
+            echo '- Live gate: campaign-v3, animation-v2 and boss markers required; retired one-level campaign marker rejected'
           } >> "$GITHUB_STEP_SUMMARY"

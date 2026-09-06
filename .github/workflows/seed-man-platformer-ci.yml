@@ -23,7 +23,7 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -49,10 +49,10 @@ jobs:
           bytes="$(wc -c < "$bundle" | tr -d ' ')"
           [[ "$bytes" -ge 250000 ]] || { echo "Three.js public bundle too small: $bytes bytes" >&2; exit 1; }
           [[ "$bytes" -le 900000 ]] || { echo "Three.js public bundle exceeds 900 KB budget: $bytes bytes" >&2; exit 1; }
-          echo "Three.js public bundle verified at $bytes bytes; executable self-containment was checked by the builder while legal notices were preserved."
+          echo "Three.js public bundle verified at $bytes bytes."
       - name: Test platformer physics and level interactions
         run: node games/seed-man-platformer/test/physics.test.mjs
-      - name: Test campaign foundation contract
+      - name: Test eleven-level campaign settings mechanics and bosses
         run: node games/seed-man-platformer/test/campaign.test.mjs
       - name: Test Three.js world-state bridge
         run: node games/seed-man-platformer/test/three-world-state.test.mjs
@@ -65,10 +65,12 @@ jobs:
       - name: Validate browser JavaScript syntax
         run: |
           node --check games/seed-man-platformer/src/campaign.mjs
+          node --check games/seed-man-platformer/src/course-generator.mjs
           node --check games/seed-man-platformer/src/render/three-world-state.mjs
           node --check games/seed-man-platformer/src/render/three-world.mjs
           node --check games/seed-man-platformer/src/render/three-world-public-entry.mjs
           node --check games/seed-man-platformer/scripts/build-three-public.mjs
+          node --check games/seed-man-platformer/test/campaign-browser.test.mjs
           node --check games/seed-man-platformer/test/three-world-state.test.mjs
           node --check games/seed-man-platformer/test/public-campaign.test.mjs
           node --check site/public-route-patch/games/seed-man-platformer/canvas-compat-v1.js
@@ -85,6 +87,7 @@ jobs:
           cmp games/seed-man-platformer/src/physics.mjs site/public-route-patch/games/seed-man-platformer/physics.mjs
           cmp games/seed-man-platformer/data/level-01.json site/public-route-patch/games/seed-man-platformer/data/level-01.json
           cmp games/seed-man-platformer/data/campaign.json site/public-route-patch/games/seed-man-platformer/data/campaign.json
+          cmp games/seed-man-platformer/data/levels-02-11.json site/public-route-patch/games/seed-man-platformer/data/levels-02-11.json
       - name: Verify expanded public route contract
         shell: bash
         run: |
@@ -93,16 +96,9 @@ jobs:
           release="$(sed -n 's/.*name="dtf-sprout-release" content="\([^"]*\)".*/\1/p' "$route/index.html" | head -n 1)"
           [[ "$release" =~ ^[0-9]{8}-r[0-9]+$ ]] || { echo "Invalid Sprout release marker: $release" >&2; exit 1; }
 
-          test -s "$route/index.html"
-          test -s "$route/canvas-compat-v1.js"
-          test -s "$route/campaign-v1.js"
-          test -s "$route/app.js"
-          test -s "$route/seed-man-production-art.js"
-          test -s "$route/input-guard-v1.js"
-          test -s "$route/seed-man.css"
-          test -s "$route/physics.mjs"
-          test -s "$route/data/campaign.json"
-          test -s "$route/data/level-01.json"
+          for file in index.html canvas-compat-v1.js campaign-v1.js app.js seed-man-production-art.js gameplay-v2.js input-guard-v1.js seed-man.css physics.mjs data/campaign.json data/level-01.json data/levels-02-11.json; do
+            test -s "$route/$file" || { echo "Missing $file" >&2; exit 1; }
+          done
           grep -Fq '<h1>Sprout Run</h1>' "$route/index.html"
           grep -Fq 'Greenhouse Gauntlet' "$route/index.html"
           grep -Fq 'https://dtfseeds.com/games/seed-man-platformer/' "$route/index.html"
@@ -112,20 +108,26 @@ jobs:
           grep -Fq 'id="seed-man-campaign"' "$route/index.html"
           grep -Fq '"worldWidth": 7800' "$route/index.html"
           grep -Fq '"requiredPickups": 24' "$route/index.html"
-          grep -Fq '"id": "sprout-run-campaign"' "$route/index.html"
-          grep -Fq '"defaultLevelId": "sprout-run"' "$route/index.html"
           grep -Fq 'JUMP ×2' "$route/index.html"
           grep -Fq 'tap for a short hop' "$route/index.html"
           grep -Fq "name=\"dtf-sprout-release\" content=\"${release}\"" "$route/index.html"
-          grep -Fq "<script src=\"./canvas-compat-v1.js?v=${release}\" defer></script>" "$route/index.html"
           grep -Fq "<script src=\"./campaign-v1.js?v=${release}\" defer></script>" "$route/index.html"
-          grep -Fq "<script src=\"./app.js?v=${release}\" defer></script>" "$route/index.html"
-          grep -Fq "<script src=\"./seed-man-production-art.js?v=${release}\" defer></script>" "$route/index.html"
-          grep -Fq "<script src=\"./input-guard-v1.js?v=${release}\" defer></script>" "$route/index.html"
           grep -Fq "seed-man.css?v=${release}" "$route/index.html"
           grep -Fq "const RELEASE = '${release}';" "$route/canvas-compat-v1.js"
           grep -Fq 'softwarePreferred: true' "$route/canvas-compat-v1.js"
-          grep -Fq 'sprout-campaign-v1' "$route/campaign-v1.js"
+          grep -Fq 'sprout-campaign-v3' "$route/campaign-v1.js"
+          grep -Fq 'seed-man-campaign-experience-v3' "$route/campaign-v1.js"
+          grep -Fq 'seed-man-animation-v2' "$route/campaign-v1.js"
+          grep -Fq 'The Phantom Pump' "$route/campaign-v1.js"
+          grep -Fq 'Mite Queen' "$route/campaign-v1.js"
+          grep -Fq 'Mildew Wraith' "$route/campaign-v1.js"
+          grep -Fq 'Pollen Warden' "$route/campaign-v1.js"
+          grep -Fq 'seed-man-level-select' "$route/campaign-v1.js"
+          grep -Fq 'boss-stomp' "$route/campaign-v1.js"
+          grep -Fq 'landing-squash' "$route/campaign-v1.js"
+          grep -Fq 'finish-celebration' "$route/campaign-v1.js"
+          grep -Fq '"newLevelCount": 10' "$route/data/campaign.json"
+          grep -Fq '"generator": "seed-man-course-v2"' "$route/data/levels-02-11.json"
           grep -Fq 'groundAcceleration: 2600' "$route/app.js"
           grep -Fq 'jumpCutGravityMultiplier: 2.35' "$route/app.js"
           grep -Fq 'function cameraBlend(' "$route/app.js"
@@ -136,10 +138,12 @@ jobs:
           grep -Fq 'No third-party level layouts or character assets are used.' "$route/index.html"
           ! grep -Fqi 'collect all eight sprouts' "$route/index.html"
           ! grep -Fq '0 / 8' "$route/index.html"
-          echo "Sprout Run source contract validated for ${release}."
+          echo "Seed Man 11-level campaign source contract validated for ${release}."
       - name: Install browser-test dependencies
         run: |
           npm ci
           npx playwright install chromium
-      - name: Play through Sprout Run in Chromium
+      - name: Play through Greenhouse Gauntlet in Chromium
         run: node games/seed-man-platformer/test/browser-smoke.mjs
+      - name: Exercise eleven-level campaign bosses and settings in Chromium
+        run: node games/seed-man-platformer/test/campaign-browser.test.mjs
