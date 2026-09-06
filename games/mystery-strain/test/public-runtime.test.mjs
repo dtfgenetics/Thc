@@ -4,6 +4,8 @@ import fs from 'node:fs';
 const canonical = JSON.parse(fs.readFileSync('games/mystery-strain/data/strains.json', 'utf8'));
 const html = fs.readFileSync('site/public-route-patch/games/mystery-strain/index.html', 'utf8');
 const app = fs.readFileSync('site/public-route-patch/games/mystery-strain/app.js', 'utf8');
+const uiCss = fs.readFileSync('site/public-route-patch/games/mystery-strain/mystery-strain.css', 'utf8');
+const analysisCss = fs.readFileSync('site/public-route-patch/games/mystery-strain/analysis.css', 'utf8');
 const confirm = fs.readFileSync('site/public-route-patch/games/mystery-strain/guess-confirm-v2.js', 'utf8');
 const confirmCss = fs.readFileSync('site/public-route-patch/games/mystery-strain/guess-confirm-v2.css', 'utf8');
 
@@ -30,6 +32,18 @@ assert.match(app, /function safeFocus\(/, 'focus-with-options must have a compat
 assert.match(app, /function prefersReducedMotion\(/, 'reduced-motion lookup must be guarded');
 assert.match(app, /navigator\.clipboard\?\.writeText/, 'share behavior must tolerate unavailable clipboard APIs');
 
+assert.match(analysisCss, /\.question-card\.best-split/, 'best-split question state must remain visible');
+assert.match(uiCss, /\.hero::before\{content:"CASE \/\/ MS"/, 'hero must carry the case-file identity');
+assert.match(uiCss, /\.game-grid>\.panel:last-child\{position:sticky/, 'desktop candidate roster must remain visible while reviewing questions');
+assert.match(uiCss, /\.candidate-card\.eliminated/, 'eliminated candidates must have a distinct visual state');
+assert.match(uiCss, /\.candidate-card\.wrong/, 'wrong guesses must have a distinct visual state');
+assert.match(uiCss, /\.clue-yes::before/, 'YES clues must have a timeline state');
+assert.match(uiCss, /\.clue-no::before/, 'NO clues must have a timeline state');
+assert.match(uiCss, /\.clue-unknown::before/, 'UNKNOWN clues must have a timeline state');
+assert.match(uiCss, /\.modifier-card/, 'Wild Card modifier must retain a dedicated visual treatment');
+assert.match(uiCss, /@media\(hover:none\)/, 'touch devices must not inherit hover-only movement');
+assert.match(uiCss, /@media\(prefers-reduced-motion:reduce\)/, 'visual polish must respect reduced-motion preferences');
+
 assert.match(confirm, /let selectedButton = null;/, 'guess layer must keep staged selection separate from game state');
 assert.match(confirm, /let allowNextGuess = false;/, 'only an explicit confirm may pass through to the core guess handler');
 assert.match(confirm, /event\.stopImmediatePropagation\(\)/, 'first candidate activation must be intercepted before it can spend a guess');
@@ -54,4 +68,4 @@ assert.equal(canonical.strains.length, 20, 'canonical fictional profile count ch
 assert.equal(new Set(canonical.questions.map((item) => item.id)).size, 12, 'question ids must be unique');
 assert.equal(new Set(canonical.strains.map((item) => item.id)).size, 20, 'profile ids must be unique');
 
-console.log('Mystery Strain public runtime and explicit guess confirmation regression checks passed.');
+console.log('Mystery Strain public runtime, case-file UI states and explicit guess confirmation regression checks passed.');
