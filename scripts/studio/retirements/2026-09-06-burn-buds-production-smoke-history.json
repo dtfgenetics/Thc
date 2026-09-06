@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "retirements": [
+    {
+      "branch": "fix/burn-buds-production-smoke-v2",
+      "headSha": "a46080e780ba364e4fc35b62e2296b08ac011c83",
+      "supersededBy": "4c96b7c94057992655f36c73488ac050b409cade",
+      "status": "approved",
+      "reason": "Semantic review confirms the branch's one-commit production smoke correction is fully preserved on current main. Current verify-protect-the-plants-production.yml includes the same gamefeel-v1.css asset/load/cache checks, burn-primary-board/burn-secondary-board/burn-armed-target assertions, corrected zero-events plus system-chat room-creation expectation, and native-targeting production proof. No open PR owns this exact branch tip."
+    }
+  ]
+}
