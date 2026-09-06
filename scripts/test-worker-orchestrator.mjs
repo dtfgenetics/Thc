@@ -4,6 +4,7 @@ import assert from 'node:assert/strict'
 import { buildClaim, isReady, planClaims, validateConfig } from './orchestrator/core.mjs'
 import { newJob, transitionJob, canTransition } from './orchestrator/state.mjs'
 import { createLease, heartbeatLease, isLeaseExpired, recoveryDisposition } from './orchestrator/leases.mjs'
+import { classifyReconciliation, reconciliationNeedsMutation } from './orchestrator/reconcile.mjs'
 
 const config = validateConfig({
   version: 2,
@@ -86,7 +87,7 @@ assert.equal(renewed.expiresAt, '2026-09-06T12:15:00.000Z')
 assert.throws(() => heartbeatLease(lease, { leaseId: 'wrong', workerId: 'worker-a', now: '2026-09-06T12:05:00.000Z' }), /Lease ID/)
 assert.throws(() => heartbeatLease(lease, { leaseId: 'lease-1', workerId: 'worker-b', now: '2026-09-06T12:05:00.000Z' }), /Worker ID/)
 
-const expiredJob = { ...leasedJob, lease }
+const expiredJob = { ...leasedJob, branch: 'work/games/example', lease }
 assert.deepEqual(
   recoveryDisposition({ job: expiredJob, hasBranch: false, uniqueCommits: false, openPr: false, now: '2026-09-06T12:11:00.000Z' }),
   { action: 'requeue', preserveBranch: false },
@@ -100,7 +101,15 @@ assert.deepEqual(
   { action: 'preserve-pr-reconcile', preserveBranch: true },
 )
 
+assert.equal(classifyReconciliation({ job: expiredJob, branchExists: false, uniqueCommits: 0, now: '2026-09-06T12:11:00.000Z' }).action, 'REQUEUE')
+assert.equal(classifyReconciliation({ job: expiredJob, branchExists: true, uniqueCommits: 2, now: '2026-09-06T12:11:00.000Z' }).action, 'RECOVER_BRANCH')
+assert.equal(classifyReconciliation({ job: expiredJob, branchExists: true, uniqueCommits: 2, openPr: { number: 77 }, now: '2026-09-06T12:11:00.000Z' }).action, 'PRESERVE_PR')
+assert.equal(classifyReconciliation({ job: expiredJob, branchExists: true, mergedPr: { number: 78, merge_commit_sha: 'abc123' }, now: '2026-09-06T12:11:00.000Z' }).action, 'MARK_MERGED')
+assert.equal(classifyReconciliation({ job: null, branchExists: true }).action, 'ORPHAN_BRANCH')
+assert.equal(reconciliationNeedsMutation({ action: 'ACTIVE' }), false)
+assert.equal(reconciliationNeedsMutation({ action: 'RECOVER_BRANCH' }), true)
+
 const productionMerged = newJob({ jobId: 'prod-1', title: 'Production', state: 'MERGED', productionImpact: true })
 assert.throws(() => transitionJob(productionMerged, 'DONE'), /Production-impacting/)
 
-console.log(JSON.stringify({ ok: true, tests: 22 }, null, 2))
+console.log(JSON.stringify({ ok: true, tests: 29 }, null, 2))
