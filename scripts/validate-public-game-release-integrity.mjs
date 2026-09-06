@@ -177,11 +177,10 @@ for (const game of publicGames) {
     }
   }
 
-  const mapping = sourceGames.find((candidate) => candidate.id === game.id);
-  const project = mapping
+  const mappedProject = mapping
     ? portfolioGames.find((candidate) => candidate.id === mapping.canonical?.projectId)
     : portfolioGames.find((candidate) => candidate.id === game.id);
-  const projectName = project?.name || game.title;
+  const projectName = mappedProject?.name || game.title;
   if (projectName) {
     const developmentBlock = projectsText.match(/Development roadmap([\s\S]*?)(?:Release rule|$)/i)?.[1] || '';
     const namePattern = new RegExp(`\\b${escapeRegExp(projectName)}\\b`, 'i');
@@ -237,7 +236,7 @@ async function fetchDirect(game, app) {
     return;
   }
   if (location) {
-    fail(`${game.id} unexpectedly returned a redirect Location header: ${location}`);
+    fail(`${game.id} unexpectedly returned a redirect Location header: ${location}.`);
     return;
   }
 
