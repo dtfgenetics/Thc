@@ -16,6 +16,7 @@ Rules:
 4. Agents must inspect existing PRs/Studio overlap before treating a same-project/same-task session as replacement work.
 5. Do not delete an older branch merely because a newer branch looks similar. Preserve unique behavior/content first.
 6. If `main` moves while a PR is active, reconcile the same branch with current `main` and rerun exact-head validation. Do not create `-v2`, `-temp`, `-current`, or replacement branches merely to escape divergence.
+7. A historical merged PR is not proof that the branch is still integrated. If commits were pushed after that PR head, preserve the current branch tip as post-merge drift until those commits are reconciled.
 
 ## Lifecycle states
 
@@ -27,10 +28,16 @@ The branch has an open PR. Keep it. The PR is the current coordination record.
 
 The branch has no open PR and either:
 
-- its PR merged; or
-- its branch tip is already an ancestor of `main`.
+- its **current branch tip exactly matches the recorded head SHA of a merged PR**; or
+- its current branch tip is already an ancestor of `main`.
 
-Managed `work/*`, `project/*`, and `multi/*` branches in this state are safe remote-cleanup candidates.
+A branch is not considered integrated merely because it had a merged PR at some earlier point. Managed `work/*`, `project/*`, and `multi/*` branches in this state are safe remote-cleanup candidates.
+
+### post-merge-drift
+
+The branch has a merged PR, but its current branch tip no longer matches any recorded merged PR head and is not already an ancestor of `main`.
+
+This means new commits were pushed after the merged work. Preserve the branch. Review those newer commits, recover them into the active workstream if needed, or explicitly retire them only after proving the changes are already preserved elsewhere. **Never auto-delete post-merge drift.**
 
 ### closed-unmerged
 
@@ -56,7 +63,7 @@ Show only branches that may contain unique unmerged work:
 node scripts/studio.mjs lifecycle --recovery-only
 ```
 
-This mode returns only `closed-unmerged` and `orphan-unique` branches with their head SHA, update timestamp, PR references, and Studio session metadata when available. It never mutates remote refs.
+This mode returns `post-merge-drift`, `closed-unmerged`, and `orphan-unique` branches with their current head SHA, update timestamp, PR references, and Studio session metadata when available. It never mutates remote refs.
 
 Delete only provably integrated managed remote branches:
 
@@ -64,13 +71,13 @@ Delete only provably integrated managed remote branches:
 node scripts/studio.mjs lifecycle --cleanup-merged
 ```
 
-This command does **not** delete closed-unmerged or orphan-unique branches.
+This command does **not** delete post-merge-drift, closed-unmerged, or orphan-unique branches.
 
 Normal Studio integration also retires the merged managed remote branch after the exact validated head is merged, provided no other open PR still uses that branch.
 
 ## Explicit reviewed retirement
 
-A closed-unmerged or orphan-unique branch can leave the recovery queue only after a human/agent review proves its unique behavior is already preserved on `main` or an explicit abandonment decision is recorded. Approved decisions live in `data/branch-retirements.json`.
+A post-merge-drift, closed-unmerged, or orphan-unique branch can leave the recovery queue only after a human/agent review proves its unique behavior is already preserved on `main` or an explicit abandonment decision is recorded. Approved decisions live in `data/branch-retirements.json`.
 
 Each approved retirement pins both:
 
@@ -97,7 +104,7 @@ If the branch head changed after review, deletion is blocked until the new head 
 
 `.github/workflows/branch-lifecycle-maintenance.yml` runs daily and whenever lifecycle controls or retirement records change. It performs three separate operations:
 
-1. delete only managed branches already proven integrated;
+1. delete only managed branches already proven integrated at their current tip;
 2. delete only explicitly reviewed supersessions that still pass every fail-closed retirement guard;
 3. rebuild a fresh, non-mutating recovery inventory after both cleanup phases.
 
@@ -109,13 +116,14 @@ Each run stores a 90-day artifact containing:
 - `branch-recovery.csv` — sortable/filterable recovery queue;
 - `branch-recovery.md` — human-readable queue.
 
-The recovery inventory is the source for historical salvage work. Same names, similar names, duplicate commit tips, and old timestamps are evidence for prioritization only; they are never sufficient evidence for deletion.
+The recovery inventory is the source for historical salvage work. Same names, similar names, duplicate commit tips, old timestamps, and the existence of an older merged PR are evidence for prioritization only; they are never sufficient evidence for deletion.
 
 ## Merge-or-retire rule
 
 A finished task must not leave a managed remote branch indefinitely:
 
 - successful task -> validate -> merge exact PR head -> delete merged remote branch;
+- post-merge drift -> preserve the newer branch tip -> reconcile the additional commits -> merge or explicitly retire them;
 - superseded task -> prove current `main` preserves the needed work -> record the exact reviewed head and superseding commit -> explicitly retire;
 - abandoned task -> document abandonment -> close PR -> record an explicit retirement decision -> retire only if the exact-head and no-open-PR guards still pass;
 - unresolved unique work -> keep branch and PR/recovery record until reconciled.
@@ -141,9 +149,9 @@ The `main-pr-gate-audit` workflow is a detection layer for bypasses. It cannot r
 For historical branch piles:
 
 1. run automatic lifecycle cleanup first;
-2. take the post-cleanup recovery artifact as the queue of potentially unique work;
-3. prioritize recent branches and groups with closed PR references;
-4. compare each candidate against current `main`, active PRs, and neighboring attempts for the same project/task;
+2. take the post-cleanup recovery artifact as the queue of potentially unique work, including post-merge drift;
+3. prioritize recent branches and groups with merged/closed PR references;
+4. compare each candidate's current tip against the exact historical PR head, current `main`, active PRs, and neighboring attempts for the same project/task;
 5. recover unique changes into a focused current branch/PR when work is missing;
 6. when work is already preserved, pin the exact old branch head plus the preserving `main` commit in `data/branch-retirements.json`;
 7. let the fail-closed retirement command remove only reviewed entries that still match their recorded state.

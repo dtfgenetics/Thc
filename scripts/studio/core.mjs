@@ -125,14 +125,16 @@ export function candidateSupersession(current, other) {
   return [...smaller].every((path) => larger.has(path))
 }
 
-export function classifyBranchLifecycle({ branch, isAncestorOfMain = false, prs = [] }) {
+export function classifyBranchLifecycle({ branch, headSha = null, isAncestorOfMain = false, prs = [] }) {
   const related = (prs || []).filter((pr) => pr.headRefName === branch)
   const open = related.filter((pr) => String(pr.state || '').toUpperCase() === 'OPEN')
   const merged = related.filter((pr) => Boolean(pr.mergedAt) || String(pr.state || '').toUpperCase() === 'MERGED')
   const closed = related.filter((pr) => !pr.mergedAt && String(pr.state || '').toUpperCase() === 'CLOSED')
+  const mergedAtCurrentHead = Boolean(headSha) && merged.some((pr) => pr.headRefOid === headSha)
 
   const metadata = {
     branch,
+    headSha,
     relatedPrNumbers: related.map((pr) => pr.number).filter(Boolean),
     openPrNumbers: open.map((pr) => pr.number).filter(Boolean),
     mergedPrNumbers: merged.map((pr) => pr.number).filter(Boolean),
@@ -143,12 +145,21 @@ export function classifyBranchLifecycle({ branch, isAncestorOfMain = false, prs 
     return { ...metadata, state: 'active-pr', safeToDelete: false, reason: 'branch has an open pull request' }
   }
 
-  if (merged.length || isAncestorOfMain) {
+  if (isAncestorOfMain || mergedAtCurrentHead) {
     return {
       ...metadata,
       state: 'integrated',
       safeToDelete: true,
-      reason: merged.length ? 'branch has a merged pull request and no open pull request' : 'branch tip is already an ancestor of main',
+      reason: isAncestorOfMain ? 'branch tip is already an ancestor of main' : 'branch tip exactly matches a merged pull request head',
+    }
+  }
+
+  if (merged.length) {
+    return {
+      ...metadata,
+      state: 'post-merge-drift',
+      safeToDelete: false,
+      reason: 'branch has commits after its merged pull request head; preserve and reconcile the current tip',
     }
   }
 

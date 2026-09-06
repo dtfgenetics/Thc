@@ -63,7 +63,7 @@ const branchInfo = branchText
 
 const prText = capture('gh', [
   'pr', 'list', '--state', 'all', '--limit', '2000',
-  '--json', 'number,state,isDraft,mergedAt,closedAt,headRefName,baseRefName,url,title,updatedAt',
+  '--json', 'number,state,isDraft,mergedAt,closedAt,headRefName,headRefOid,baseRefName,url,title,updatedAt',
 ], { cwd: repoRoot })
 const prs = prText ? JSON.parse(prText) : []
 
@@ -71,10 +71,9 @@ const lifecycle = branchInfo.map(({ branch, headSha, updatedAt }) => {
   const isAncestorOfMain = succeeds('git', [
     'merge-base', '--is-ancestor', `origin/${branch}`, main,
   ], { cwd: repoRoot })
-  const classification = classifyBranchLifecycle({ branch, isAncestorOfMain, prs })
+  const classification = classifyBranchLifecycle({ branch, headSha, isAncestorOfMain, prs })
   return {
     ...classification,
-    headSha,
     updatedAt,
     managed: /^(work|project|multi)\//.test(branch),
     studioSession: parseWorkBranch(branch),
@@ -119,8 +118,9 @@ const safeCleanupCandidates = lifecycle
   .map((item) => item.branch)
   .sort()
 
+const recoveryStates = new Set(['post-merge-drift', 'closed-unmerged', 'orphan-unique'])
 const recoveryCandidates = lifecycle
-  .filter((item) => item.state === 'closed-unmerged' || item.state === 'orphan-unique')
+  .filter((item) => recoveryStates.has(item.state))
   .map((item) => ({
     branch: item.branch,
     state: item.state,
@@ -129,6 +129,7 @@ const recoveryCandidates = lifecycle
     managed: item.managed,
     studioSession: item.studioSession,
     relatedPrNumbers: item.relatedPrNumbers,
+    mergedPrNumbers: item.mergedPrNumbers,
     closedPrNumbers: item.closedPrNumbers,
     reason: item.reason,
   }))
@@ -178,6 +179,7 @@ const result = {
   policy: {
     activePr: 'keep',
     integratedManagedBranch: cleanupMerged ? 'delete remote branch' : 'safe cleanup candidate',
+    postMergeDrift: 'preserve current branch tip and reconcile new commits after the merged PR',
     closedUnmerged: 'preserve until unique work is reviewed or explicitly abandoned',
     orphanUnique: 'preserve and recover into a PR or explicitly abandon',
     duplicateHead: 'report only; identical tips are not sufficient evidence for deletion',
@@ -191,6 +193,7 @@ if (recoveryOnly) {
     observedMain: result.observedMain,
     recoveryCount: result.recoveryCount,
     counts: {
+      'post-merge-drift': counts['post-merge-drift'] || 0,
       'closed-unmerged': counts['closed-unmerged'] || 0,
       'orphan-unique': counts['orphan-unique'] || 0,
     },
