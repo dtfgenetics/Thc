@@ -61,7 +61,7 @@ try {
   assert.ok(state.missingPickups > 0, 'uncollected sprouts should remain tracked for mastery');
   assert.equal(state.state, 'finish');
   assert.match(state.objective, /Run complete/);
-  assert.match(state.objective, /0\/24 sprouts/);
+  assert.match(state.objective, /0 of 24 optional sprouts/);
   assert.equal(errors.length, 0, `Seed Man flag completion browser errors: ${errors.join(' | ')}`);
 
   console.log(JSON.stringify({
