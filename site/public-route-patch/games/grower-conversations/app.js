@@ -14,7 +14,12 @@ const ui = {
   depthText: document.querySelector('#card-depth'),
   number: document.querySelector('#card-number'),
   prompt: document.querySelector('#card-prompt'),
-  status: document.querySelector('#deck-status')
+  status: document.querySelector('#deck-status'),
+  remaining: document.querySelector('#remaining-stat'),
+  used: document.querySelector('#used-stat'),
+  pool: document.querySelector('#pool-stat'),
+  progress: document.querySelector('#deck-progress-fill'),
+  progressRail: document.querySelector('#deck-progress')
 };
 
 let cards = [];
@@ -31,6 +36,23 @@ const categoryLabels = {
   community: 'Community',
   future: 'Future of Cultivation'
 };
+
+function readEmbeddedBank() {
+  const node = document.querySelector('#grower-conversations-data');
+  if (!node) throw new Error('Embedded Grower Conversations data is missing.');
+  const bank = JSON.parse(node.textContent || '{}');
+  if (bank?.schemaVersion !== 1 || bank?.cardCount !== 96 || !bank?.categories || typeof bank.categories !== 'object') {
+    throw new Error('Grower Conversations data contract mismatch.');
+  }
+  const categoryIds = Object.keys(bank.categories);
+  if (categoryIds.length !== 8) throw new Error('Grower Conversations requires eight topics.');
+  for (const category of categoryIds) {
+    if (!Array.isArray(bank.categories[category]) || bank.categories[category].length !== 12) {
+      throw new Error(`${category} must contain twelve prompts.`);
+    }
+  }
+  return bank;
+}
 
 function materialize(bank) {
   const result = [];
@@ -66,7 +88,7 @@ function remaining() {
 
 function saveSession() {
   try {
-    localStorage.setItem(SESSION_KEY, JSON.stringify({
+    globalThis.localStorage?.setItem(SESSION_KEY, JSON.stringify({
       version: 1,
       category: ui.category.value,
       depth: ui.depth.value,
@@ -80,7 +102,7 @@ function saveSession() {
 
 function readSession() {
   try {
-    const payload = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
+    const payload = JSON.parse(globalThis.localStorage?.getItem(SESSION_KEY) || 'null');
     return payload?.version === 1 ? payload : null;
   } catch {
     return null;
@@ -91,24 +113,49 @@ function updateStatus() {
   const filtered = pool();
   const available = filtered.filter((card) => !used.has(card.id));
   const usedMatching = filtered.length - available.length;
+  const completion = filtered.length ? Math.round((usedMatching / filtered.length) * 100) : 0;
   ui.status.textContent = `${available.length} unused of ${filtered.length} matching cards · ${usedMatching} used in this view · progress saved on this device.`;
+  ui.remaining.textContent = String(available.length);
+  ui.used.textContent = String(usedMatching);
+  ui.pool.textContent = String(filtered.length);
+  ui.progress.style.width = `${completion}%`;
+  ui.progressRail.setAttribute('aria-valuenow', String(usedMatching));
+  ui.progressRail.setAttribute('aria-valuemax', String(Math.max(1, filtered.length)));
   ui.next.disabled = filtered.length === 0;
   ui.next.textContent = available.length === 0 && filtered.length > 0 ? 'Reset and draw' : current ? 'Next prompt' : 'Draw a prompt';
 }
 
 function renderCurrent() {
   ui.copy.disabled = !current;
+  ui.stage.classList.toggle('has-card', Boolean(current));
   if (!current) {
+    document.documentElement.removeAttribute('data-depth');
+    document.documentElement.removeAttribute('data-category');
     ui.categoryText.textContent = 'Ready';
     ui.depthText.textContent = 'Mixed deck';
     ui.number.textContent = '96 cards';
     ui.prompt.textContent = 'Choose a topic or depth, then draw a conversation prompt.';
     return;
   }
+  document.documentElement.dataset.depth = current.depth;
+  document.documentElement.dataset.category = current.category;
   ui.categoryText.textContent = current.categoryLabel;
   ui.depthText.textContent = current.depth;
   ui.number.textContent = current.id.toUpperCase();
   ui.prompt.textContent = current.prompt;
+}
+
+function safeFocus(element) {
+  if (!element?.focus) return;
+  try { element.focus({ preventScroll: true }); }
+  catch { element.focus(); }
+}
+
+function animateDraw() {
+  const card = document.querySelector('#prompt-card');
+  if (!card) return;
+  card.classList.remove('draw-pop');
+  requestAnimationFrame(() => card.classList.add('draw-pop'));
 }
 
 function syncCurrentToFilters() {
@@ -131,7 +178,8 @@ function draw() {
   renderCurrent();
   updateStatus();
   saveSession();
-  ui.prompt.focus?.({ preventScroll: true });
+  animateDraw();
+  safeFocus(ui.prompt);
 }
 
 function resetUsed() {
@@ -152,6 +200,7 @@ async function copyPrompt() {
   if (!current) return;
   const text = `${current.prompt}\n\n— Grower Conversations · DTF Genetics`;
   try {
+    if (!navigator.clipboard?.writeText) throw new Error('Clipboard API unavailable.');
     await navigator.clipboard.writeText(text);
     ui.copy.textContent = 'Copied';
     setTimeout(() => { ui.copy.textContent = 'Copy prompt'; }, 1300);
@@ -183,15 +232,13 @@ function restoreSession() {
   saveSession();
 }
 
-async function load() {
+function load() {
   try {
-    const response = await fetch('./data/prompt-bank.json', { credentials: 'same-origin' });
-    if (!response.ok) throw new Error(`prompt bank HTTP ${response.status}`);
-    const bank = await response.json();
+    const bank = readEmbeddedBank();
     cards = materialize(bank);
     if (cards.length !== 96 || new Set(cards.map((card) => card.id)).size !== 96) throw new Error('96-card contract mismatch');
     populateCategories();
-    ui.load.textContent = `Deck ready · ${cards.length} prompts · ${Object.keys(categoryLabels).length} topics · session progress enabled`;
+    ui.load.textContent = `Deck ready · ${cards.length} prompts · ${Object.keys(categoryLabels).length} topics · session progress enabled · D to draw`;
     ui.controls.hidden = false;
     ui.stage.hidden = false;
     restoreSession();
@@ -207,4 +254,13 @@ ui.shuffle.addEventListener('click', shuffleDeck);
 ui.copy.addEventListener('click', copyPrompt);
 ui.category.addEventListener('change', syncCurrentToFilters);
 ui.depth.addEventListener('change', syncCurrentToFilters);
+document.addEventListener('keydown', (event) => {
+  const target = event.target;
+  if (target instanceof Element && target.closest('input,textarea,select,button,a,[contenteditable="true"]')) return;
+  if ((event.key === 'd' || event.key === 'D') && !event.altKey && !event.ctrlKey && !event.metaKey) {
+    event.preventDefault();
+    draw();
+  }
+});
+
 load();
