@@ -40,6 +40,22 @@
       "status": "approved",
       "reviewedAt": "2026-09-04",
       "reason": "PR #546 was superseded by merged PR #548. Its only changed release-source marker is byte-for-byte identical to current main and points to the same Grow Doc dataset revision 3f020ce816617cd417f4805bb9d157da0ae8d845."
+    },
+    {
+      "branch": "feat/seed-man-progression-systems",
+      "headSha": "04764ccb90268fdba91ecc675cfc684c60cf66ec",
+      "supersededBy": "a46d35ee264c1584e1f1b7512450cf581db72ad0",
+      "status": "approved",
+      "reviewedAt": "2026-09-06",
+      "reason": "Closed PR #672 duplicated Seed Man progression work already merged by #671 and supplied flag-completion browser acceptance work that was explicitly salvaged into merged PR #674. Its remaining input-guard monkey-patch was intentionally rejected because canonical physics/runtime now owns the completion rule directly. Current main through a46d35ee264c1584e1f1b7512450cf581db72ad0 preserves the accepted behavior and tests without the competing shim."
+    },
+    {
+      "branch": "work/seed-man/flag-completion/20260906-d7ec121",
+      "headSha": "d7ec121799dc0ee7e941cedf7d1a11801263e317",
+      "supersededBy": "a46d35ee264c1584e1f1b7512450cf581db72ad0",
+      "status": "approved",
+      "reviewedAt": "2026-09-06",
+      "reason": "This preservation branch was created during #671 convergence so the late flag-completion commit could not be lost. Progression work was merged through #671, and the accepted flag-completion runtime plus browser tests were rebuilt and merged through #674. The preserving main commit a46d35ee264c1584e1f1b7512450cf581db72ad0 contains the reconciled result."
     }
   ]
 }
