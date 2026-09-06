@@ -36,6 +36,7 @@ make_public_suite_archive() {
   rm -rf "$payload"
   mkdir -p \
     "$payload/assets" \
+    "$payload/blog" \
     "$payload/games/bud-or-bluff" \
     "$payload/projects" \
     "$payload/tools" \
@@ -54,8 +55,9 @@ make_public_suite_archive() {
   printf '%s\n' 'grow doc replacement' > "$payload/thc-grow-doc/index.html"
   printf '%s\n' '{}' > "$payload/puzzles/current.json"
 
-  # Deliberately include a staged Learn tree. The deployer must ignore it so a
-  # public-suite release can never replace the Learning Experience owner.
+  # Deliberately include staged Blog and Learn trees. The deployer must ignore
+  # both because canonical WordPress owns /blog and Learning owns /learn.
+  printf '%s\n' 'Redirect 301 /blog/ /learn/' > "$payload/blog/.htaccess"
   printf '%s\n' 'staged learn content must never be activated' > "$payload/learn/infographics/index.html"
 
   printf '{"master":"%s"}\n' "$sha" > "$payload/dtf-build.json"
@@ -107,10 +109,12 @@ if HOME="$TMP/home" bash "$DEPLOYER" activate "$UNSAFE_ROOT" "$UNSAFE_SHA" games
   fail "unsafe public root was accepted"
 fi
 
-# Regression: public-suite activation must preserve the Learning-owned route,
-# even when a stale artifact contains a learn/ tree.
-mkdir -p "$PUBLIC_ROOT/learn"
-printf '%s\n' 'canonical learning owner marker' > "$PUBLIC_ROOT/learn/owner-marker.txt"
+# Regression: public-suite activation must preserve WordPress-owned Blog and
+# Learning-owned Learn, even when a stale release archive contains both trees.
+mkdir -p "$PUBLIC_ROOT/blog" "$PUBLIC_ROOT/learn"
+printf '%s\n' 'canonical WordPress Blog owner marker' > "$PUBLIC_ROOT/blog/owner-marker.txt"
+printf '%s\n' 'canonical Learning owner marker' > "$PUBLIC_ROOT/learn/owner-marker.txt"
+BLOG_BEFORE="$(sha256sum "$PUBLIC_ROOT/blog/owner-marker.txt" | awk '{print $1}')"
 LEARN_BEFORE="$(sha256sum "$PUBLIC_ROOT/learn/owner-marker.txt" | awk '{print $1}')"
 
 SUITE_SHA="dddddddddddddddddddddddddddddddddddddddd"
@@ -119,14 +123,22 @@ make_public_suite_archive "$SUITE_ARCHIVE" "$SUITE_SHA"
 SUITE_OUTPUT="$(HOME="$TMP/home" bash "$DEPLOYER" activate "$PUBLIC_ROOT" "$SUITE_SHA" public-suite "$SUITE_ARCHIVE")"
 SUITE_BACKUP_ID="$(printf '%s\n' "$SUITE_OUTPUT" | sed -n 's/^backup_id=//p')"
 [[ -n "$SUITE_BACKUP_ID" ]] || fail "public-suite activation did not return a backup id"
+
+BLOG_AFTER="$(sha256sum "$PUBLIC_ROOT/blog/owner-marker.txt" | awk '{print $1}')"
 LEARN_AFTER="$(sha256sum "$PUBLIC_ROOT/learn/owner-marker.txt" | awk '{print $1}')"
+[[ "$BLOG_BEFORE" == "$BLOG_AFTER" ]] || fail "public-suite activation changed the WordPress-owned Blog route"
 [[ "$LEARN_BEFORE" == "$LEARN_AFTER" ]] || fail "public-suite activation changed the Learning-owned route"
+[[ ! -e "$PUBLIC_ROOT/blog/.htaccess" ]] || fail "staged Blog redirect was incorrectly activated"
 [[ ! -e "$PUBLIC_ROOT/learn/infographics/index.html" ]] || fail "staged Learn content was incorrectly activated"
+if grep -Eq '^blog\t' "$DOMAIN/.dtf-backups/$SUITE_BACKUP_ID/manifest.tsv"; then
+  fail "Blog entered the public-suite mutation manifest"
+fi
 if grep -Eq '^learn\t' "$DOMAIN/.dtf-backups/$SUITE_BACKUP_ID/manifest.tsv"; then
   fail "Learn entered the public-suite mutation manifest"
 fi
 
 HOME="$TMP/home" bash "$DEPLOYER" rollback "$PUBLIC_ROOT" "$SUITE_BACKUP_ID" public-suite >/dev/null
+[[ "$(sha256sum "$PUBLIC_ROOT/blog/owner-marker.txt" | awk '{print $1}')" == "$BLOG_BEFORE" ]] || fail "public-suite rollback changed the WordPress-owned Blog route"
 [[ "$(sha256sum "$PUBLIC_ROOT/learn/owner-marker.txt" | awk '{print $1}')" == "$LEARN_BEFORE" ]] || fail "public-suite rollback changed the Learning-owned route"
 
-echo "Hostinger overlay activation, rollback, and Learn ownership tests passed."
+echo "Hostinger overlay activation, rollback, Blog ownership, and Learn ownership tests passed."
