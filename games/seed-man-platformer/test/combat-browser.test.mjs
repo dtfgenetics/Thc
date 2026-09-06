@@ -30,13 +30,11 @@ async function fireAt(page, enemyId, hits) {
       const combat = window.__SPROUT_COMBAT_BROWSER__.snapshot();
       const enemy = combat.enemies.find((entry) => entry.id === id);
       if (!enemy) throw new Error(`Missing combat enemy ${id}`);
-      const liveEnemy = window.__SPROUT_COMBAT_BROWSER__.snapshot().enemies.find((entry) => entry.id === id);
       player.x = id === 'combat-static-mite' ? 2740 : 800;
       player.y = 410;
       player.vx = 30;
       player.vy = 0;
       player.grounded = true;
-      return liveEnemy;
     }, enemyId);
     await page.keyboard.press('j');
     await sleep(420);
@@ -59,9 +57,10 @@ try {
 
   await page.goto(GAME_URL, { waitUntil: 'networkidle' });
   await page.waitForFunction(() => typeof player !== 'undefined' && Boolean(player));
-  await page.addScriptTag({ url: './combat-browser-v1.js' });
+  await page.waitForFunction(() => window.__SPROUT_CANVAS_COMPAT__?.combatBrowserAutoLoad === true);
   await page.waitForFunction(() => window.__SPROUT_COMBAT_BROWSER__?.snapshot?.()?.installed === true);
 
+  assert.ok(await page.locator('script[data-seed-combat-browser="v1"]').count(), 'Public route should auto-load the combat browser adapter.');
   assert.equal((await page.locator('#combat-weapon-count').innerText()).trim(), 'Seed Slinger');
   assert.equal((await page.locator('#combat-phenotype-count').innerText()).trim(), 'None');
   await page.locator('[data-combat="attack"]').waitFor({ state: 'visible' });
@@ -89,7 +88,7 @@ try {
   assert.ok(combat.projectiles.some((projectile) => projectile.ability && projectile.effect === 'chain'), 'Acquired Static Haze should fire a chain-lightning phenotype projectile.');
 
   assert.equal(errors.length, 0, `Browser combat errors: ${errors.join(' | ')}`);
-  console.log('Seed Man browser combat, authored enemies, resources, and phenotype acquisition passed');
+  console.log('Seed Man public-route combat auto-load, authored enemies, resources, and phenotype acquisition passed');
 } finally {
   if (browser) await browser.close();
   if (server) server.kill('SIGTERM');
