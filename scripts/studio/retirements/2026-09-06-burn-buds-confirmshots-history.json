@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "retirements": [
+    {
+      "branch": "game/burn-buds-remove-legacy-confirmshots",
+      "headSha": "bf3f26e512b50f7a7af5374a46dc80c34d747bd6",
+      "supersededBy": "03b5349bac1dec40231ee9f98ae48d2731cab16e",
+      "status": "approved",
+      "reason": "Semantic review confirms this branch's accepted native-targeting cleanup is already preserved on current main. games/protect-the-plants/test/native-targeting-source.test.mjs is byte-identical to main and main already enforces removal of confirmShots, armed-shot compatibility state, targeting-policy-v1.js, and the retired policy loader/cache path. No open PR owns this exact branch tip."
+    }
+  ]
+}
