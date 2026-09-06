@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "defaultMaxConcurrent": 4,
+  "workers": {
+    "planner": {
+      "class": "agentic",
+      "maxConcurrent": 1,
+      "capabilities": ["inspect", "research", "decompose", "create-jobs"],
+      "productionAccess": false
+    },
+    "code": {
+      "class": "agentic",
+      "maxConcurrent": 3,
+      "capabilities": ["inspect", "edit-code", "edit-tests", "run-verification", "open-pr"],
+      "productionAccess": false
+    },
+    "test-repair": {
+      "class": "agentic",
+      "maxConcurrent": 2,
+      "capabilities": ["inspect-failures", "edit-code", "edit-tests", "run-verification", "open-pr"],
+      "productionAccess": false
+    },
+    "game": {
+      "class": "agentic",
+      "maxConcurrent": 3,
+      "capabilities": ["inspect", "edit-game", "edit-tests", "build", "run-game-verification", "open-pr"],
+      "productionAccess": false
+    },
+    "visual-qa": {
+      "class": "verification",
+      "maxConcurrent": 2,
+      "capabilities": ["build", "browser-smoke", "responsive-check", "console-check", "capture-evidence"],
+      "productionAccess": false
+    },
+    "content": {
+      "class": "agentic",
+      "maxConcurrent": 2,
+      "capabilities": ["inspect", "research", "edit-content", "edit-data", "run-verification", "open-pr"],
+      "productionAccess": false
+    },
+    "research": {
+      "class": "agentic",
+      "maxConcurrent": 2,
+      "capabilities": ["research", "evidence", "create-jobs", "update-documentation"],
+      "productionAccess": false
+    },
+    "data": {
+      "class": "hybrid",
+      "maxConcurrent": 2,
+      "capabilities": ["inspect", "edit-data", "schema-validation", "reconcile", "open-pr"],
+      "productionAccess": false
+    },
+    "security": {
+      "class": "hybrid",
+      "maxConcurrent": 1,
+      "capabilities": ["dependency-review", "security-analysis", "repair", "run-verification", "open-pr"],
+      "productionAccess": false
+    },
+    "repo-maintenance": {
+      "class": "hybrid",
+      "maxConcurrent": 1,
+      "capabilities": ["branch-repair", "pr-repair", "workflow-repair", "reconcile", "integration-preflight"],
+      "productionAccess": false
+    },
+    "release": {
+      "class": "deterministic",
+      "maxConcurrent": 1,
+      "capabilities": ["staging", "release-candidate", "deploy", "rollback"],
+      "productionAccess": true,
+      "requiresProtectedEnvironment": true
+    },
+    "live-qa": {
+      "class": "verification",
+      "maxConcurrent": 1,
+      "capabilities": ["live-route", "browser-smoke", "identity-check", "critical-flow", "capture-evidence"],
+      "productionAccess": false
+    }
+  }
+}
