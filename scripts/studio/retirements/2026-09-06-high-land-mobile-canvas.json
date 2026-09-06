@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "retirements": [
+    {
+      "branch": "codex/high-land-mobile-canvas-fix",
+      "headSha": "53f8c493063b2801840b3cd91e13b8148d90f135",
+      "supersededBy": "f55fa17478c3d80f84ce9132c46e2fa45930d7cb",
+      "status": "approved",
+      "reason": "The branch's sole change forced Phaser Canvas below 720px to avoid the mobile WebGL black-board issue. Current main preserves that exact behavior through shouldUseHighLandCanvasRenderer(), adds a dedicated renderer-selection regression test, and no open PR owns the old branch."
+    }
+  ]
+}
