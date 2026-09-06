@@ -31,10 +31,14 @@ jobs:
       - name: Validate browser JavaScript syntax
         run: |
           node --check site/public-route-patch/games/root-cause/app.js
+          node --check site/public-route-patch/games/root-cause/engine.js
           node --check site/public-route-patch/games/root-cause/engine.mjs
 
-      - name: Verify canonical and public engine match
+      - name: Verify canonical and public module engine match
         run: cmp games/root-cause/src/engine.mjs site/public-route-patch/games/root-cause/engine.mjs
+
+      - name: Run public runtime regression checks
+        run: node games/root-cause/test/public-runtime.test.mjs
 
       - name: Verify route and interaction contracts
         run: |
@@ -42,18 +46,25 @@ jobs:
           const fs = require('fs');
           const html = fs.readFileSync('site/public-route-patch/games/root-cause/index.html','utf8');
           const css = fs.readFileSync('site/public-route-patch/games/root-cause/root-cause.css','utf8');
+          const visual = fs.readFileSync('site/public-route-patch/games/root-cause/root-cause-v2.css','utf8');
           const app = fs.readFileSync('site/public-route-patch/games/root-cause/app.js','utf8');
+          const engine = fs.readFileSync('site/public-route-patch/games/root-cause/engine.js','utf8');
           const requireText = (source, text, label) => {
             if (!source.includes(text)) throw new Error(`missing ${label}: ${text}`);
           };
           requireText(html, '<link rel="canonical" href="https://dtfseeds.com/games/root-cause/">', 'canonical route');
-          requireText(html, '<script type="module" src="./app.js"></script>', 'module entrypoint');
+          requireText(html, '<script src="./engine.js" defer></script>', 'classic engine entrypoint');
+          requireText(html, '<script src="./app.js" defer></script>', 'classic controller entrypoint');
+          if (html.includes('type="module"')) throw new Error('public route must not require ES-module serving');
+          requireText(html, 'root-cause-v2.css', 'V2 case-file visual layer');
           requireText(html, 'Education boundary:', 'education boundary');
           requireText(app, 'data.cases?.length !== 12', 'case contract');
           requireText(app, 'data.diagnoses?.length !== 12', 'diagnosis contract');
           requireText(app, 'MAX_INSPECTIONS', 'inspection limit');
+          requireText(engine, 'globalThis.RootCauseEngine = Object.freeze', 'classic engine namespace');
           requireText(css, '.plant-visual', 'original plant renderer');
-          requireText(css, '@media(prefers-reduced-motion:reduce)', 'reduced motion');
+          requireText(css, '@media(prefers-reduced-motion:reduce)', 'base reduced motion');
+          requireText(visual, 'data-case-status="solved"', 'solved presentation state');
           NODE
 
       - name: Verify truthful release boundary
