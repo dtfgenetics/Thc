@@ -1,0 +1,45 @@
+{
+  "version": 1,
+  "baseBranch": "main",
+  "maxWorkers": 4,
+  "maxWorkersPerProject": 1,
+  "claimTtlMinutes": 240,
+  "labels": {
+    "ready": "worker:ready",
+    "claimed": "worker:claimed",
+    "blocked": "worker:blocked",
+    "done": "worker:done"
+  },
+  "priorities": [
+    "priority:p0",
+    "priority:p1",
+    "priority:p2",
+    "priority:p3"
+  ],
+  "workerKinds": {
+    "code": {
+      "label": "worker:code",
+      "branchPrefix": "work"
+    },
+    "audit": {
+      "label": "worker:audit",
+      "branchPrefix": "work"
+    },
+    "content": {
+      "label": "worker:content",
+      "branchPrefix": "work"
+    },
+    "release": {
+      "label": "worker:release",
+      "branchPrefix": "project"
+    }
+  },
+  "safety": {
+    "allowDirectMainPush": false,
+    "allowAutoMerge": false,
+    "requirePullRequest": true,
+    "requireExactHeadOnMerge": true,
+    "requirePassingChecks": true,
+    "deleteManagedBranchAfterMerge": true
+  }
+}

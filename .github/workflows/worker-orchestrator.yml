@@ -1,0 +1,89 @@
+name: GitHub Worker Orchestrator
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'plan only or claim ready work'
+        required: true
+        default: plan
+        type: choice
+        options:
+          - plan
+          - dispatch
+  schedule:
+    - cron: '*/15 * * * *'
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: read
+
+concurrency:
+  group: github-worker-orchestrator
+  cancel-in-progress: false
+
+jobs:
+  orchestrate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate orchestrator
+        run: |
+          set -euo pipefail
+          node --check scripts/orchestrator.mjs
+          node --check scripts/orchestrator/core.mjs
+          node scripts/test-worker-orchestrator.mjs
+
+      - name: Ensure orchestration labels
+        run: node scripts/orchestrator.mjs labels
+
+      - name: Plan worker allocation
+        run: |
+          set -euo pipefail
+          node scripts/orchestrator.mjs plan | tee "$RUNNER_TEMP/worker-plan.json"
+
+      - name: Claim ready work
+        if: github.event_name == 'schedule' || inputs.mode == 'dispatch'
+        run: |
+          set -euo pipefail
+          node scripts/orchestrator.mjs dispatch --apply=true | tee "$RUNNER_TEMP/worker-dispatch.json"
+
+      - name: Publish summary
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo '## GitHub Worker Orchestrator' >> "$GITHUB_STEP_SUMMARY"
+          echo '' >> "$GITHUB_STEP_SUMMARY"
+          if [[ -s "$RUNNER_TEMP/worker-plan.json" ]]; then
+            node - "$RUNNER_TEMP/worker-plan.json" "$GITHUB_STEP_SUMMARY" <<'NODE'
+          const fs = require('fs');
+          const report = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
+          const lines = [
+            `Active workers: **${report.activeWorkers}/${report.maxWorkers}**`,
+            `Ready issues: **${report.readyIssues}**`,
+            `Planned claims: **${report.plannedClaims.length}**`,
+            '',
+            ...report.plannedClaims.map((claim) => `- #${claim.issueNumber} [${claim.kind}] \`${claim.project}\` → \`${claim.branch}\``),
+          ];
+          fs.appendFileSync(process.argv[3], `${lines.join('\n')}\n`);
+          NODE
+          fi
+          if [[ -s "$RUNNER_TEMP/worker-dispatch.json" ]]; then
+            echo '' >> "$GITHUB_STEP_SUMMARY"
+            echo '### Dispatch result' >> "$GITHUB_STEP_SUMMARY"
+            echo '```json' >> "$GITHUB_STEP_SUMMARY"
+            cat "$RUNNER_TEMP/worker-dispatch.json" >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+          fi
