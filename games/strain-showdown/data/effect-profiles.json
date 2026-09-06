@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "version": "0.1.0-draft",
+  "status": "authoring-draft",
+  "activeInBrowserRules": false,
+  "assignment": "family-and-stage",
+  "abilityNameSource": "card-roleTag",
+  "notes": "These profiles deterministically assign a draft ability to every canonical card from family + stage while using each card roleTag as its ability name. They are authored and validated but intentionally not active in battle resolution until the balance-integration gate is completed.",
+  "mechanicVocabulary": [
+    "shield-on-play",
+    "attack-bonus",
+    "shield-break-bonus",
+    "open-lane-bonus",
+    "adaptive-refund-or-heal",
+    "garden-heal",
+    "draw-on-evolve",
+    "night-recovery-bonus",
+    "shield-on-evolve"
+  ],
+  "profiles": [
+    {"id":"kush-1","family":"kush","stage":1,"trigger":"on-play","mechanic":{"type":"shield-on-play","value":1},"rulesText":"When played, gain 1 Shield."},
+    {"id":"kush-2","family":"kush","stage":2,"trigger":"on-play","mechanic":{"type":"shield-on-play","value":1},"rulesText":"When played as an evolution, gain 1 Shield."},
+    {"id":"kush-3","family":"kush","stage":3,"trigger":"on-play","mechanic":{"type":"shield-on-play","value":2},"rulesText":"When played as an evolution, gain 2 Shield."},
+
+    {"id":"haze-1","family":"haze","stage":1,"trigger":"on-attack","mechanic":{"type":"attack-bonus","value":1},"rulesText":"This card gets +1 Power while attacking."},
+    {"id":"haze-2","family":"haze","stage":2,"trigger":"on-attack","mechanic":{"type":"attack-bonus","value":1},"rulesText":"This card gets +1 Power while attacking."},
+    {"id":"haze-3","family":"haze","stage":3,"trigger":"on-attack","mechanic":{"type":"attack-bonus","value":2},"rulesText":"This card gets +2 Power while attacking."},
+
+    {"id":"skunk-1","family":"skunk","stage":1,"trigger":"on-attack","mechanic":{"type":"shield-break-bonus","value":1},"rulesText":"Against a shielded rival, this attack gets +1 Power."},
+    {"id":"skunk-2","family":"skunk","stage":2,"trigger":"on-attack","mechanic":{"type":"shield-break-bonus","value":2},"rulesText":"Against a shielded rival, this attack gets +2 Power."},
+    {"id":"skunk-3","family":"skunk","stage":3,"trigger":"on-attack","mechanic":{"type":"shield-break-bonus","value":3},"rulesText":"Against a shielded rival, this attack gets +3 Power."},
+
+    {"id":"gas-1","family":"gas","stage":1,"trigger":"breakthrough","mechanic":{"type":"open-lane-bonus","value":1},"rulesText":"Open-lane attacks deal +1 Garden damage."},
+    {"id":"gas-2","family":"gas","stage":2,"trigger":"breakthrough","mechanic":{"type":"open-lane-bonus","value":1},"rulesText":"Open-lane attacks deal +1 Garden damage."},
+    {"id":"gas-3","family":"gas","stage":3,"trigger":"breakthrough","mechanic":{"type":"open-lane-bonus","value":2},"rulesText":"Open-lane attacks deal +2 Garden damage."},
+
+    {"id":"cookies-1","family":"cookies","stage":1,"trigger":"on-play","mechanic":{"type":"adaptive-refund-or-heal","value":1},"rulesText":"When played, if your Garden is lower, heal 1 Garden; otherwise refund 1 Focus, up to your maximum."},
+    {"id":"cookies-2","family":"cookies","stage":2,"trigger":"on-play","mechanic":{"type":"adaptive-refund-or-heal","value":1},"rulesText":"When evolved, if your Garden is lower, heal 1 Garden; otherwise refund 1 Focus, up to your maximum."},
+    {"id":"cookies-3","family":"cookies","stage":3,"trigger":"on-play","mechanic":{"type":"adaptive-refund-or-heal","value":2},"rulesText":"When evolved, if your Garden is lower, heal 2 Garden; otherwise refund 2 Focus, up to your maximum."},
+
+    {"id":"fruit-1","family":"fruit","stage":1,"trigger":"on-play","mechanic":{"type":"garden-heal","value":1},"rulesText":"When played, heal 1 Garden."},
+    {"id":"fruit-2","family":"fruit","stage":2,"trigger":"on-evolve","mechanic":{"type":"draw-on-evolve","value":1},"rulesText":"When evolved, draw 1 card."},
+    {"id":"fruit-3","family":"fruit","stage":3,"trigger":"on-evolve","mechanic":{"type":"garden-heal","value":2,"secondaryType":"draw-on-evolve","secondaryValue":1},"rulesText":"When evolved, heal 2 Garden and draw 1 card."},
+
+    {"id":"purple-1","family":"purple","stage":1,"trigger":"end-turn","mechanic":{"type":"night-recovery-bonus","value":1},"rulesText":"While active, your Night Recovery can restore 1 additional Vigor."},
+    {"id":"purple-2","family":"purple","stage":2,"trigger":"end-turn","mechanic":{"type":"night-recovery-bonus","value":1},"rulesText":"While active, your Night Recovery can restore 1 additional Vigor."},
+    {"id":"purple-3","family":"purple","stage":3,"trigger":"end-turn","mechanic":{"type":"night-recovery-bonus","value":2},"rulesText":"While active, your Night Recovery can restore 2 additional Vigor."},
+
+    {"id":"frost-1","family":"frost","stage":1,"trigger":"on-play","mechanic":{"type":"shield-on-play","value":1},"rulesText":"When played, gain 1 Shield."},
+    {"id":"frost-2","family":"frost","stage":2,"trigger":"on-evolve","mechanic":{"type":"shield-on-evolve","value":1},"rulesText":"When evolved, gain 1 Shield."},
+    {"id":"frost-3","family":"frost","stage":3,"trigger":"on-evolve","mechanic":{"type":"shield-on-evolve","value":1},"rulesText":"When evolved, gain 1 Shield in addition to Trichome Armor."}
+  ]
+}
