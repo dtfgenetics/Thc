@@ -48,6 +48,8 @@ for (const stale of ['Grow together. Learn together. Build together.','DTF Visua
 }
 
 assert.ok(lifecycleWorkflow.includes('contents: write'), 'Lifecycle maintenance needs branch-delete permission.')
+assert.match(lifecycleWorkflow, /pull_request:\n\s+branches: \[main\]\n\s+types: \[closed\]/)
+assert.ok(lifecycleWorkflow.includes("github.event.pull_request.merged == true"), 'Lifecycle maintenance must only run its PR-close path after an actual merge.')
 assert.ok(lifecycleWorkflow.includes('lifecycle --cleanup-merged --summary'), 'Lifecycle maintenance must use conservative integrated-only cleanup.')
 assert.ok(lifecycleWorkflow.includes('lifecycle --recovery-only'), 'Lifecycle maintenance must build a post-cleanup recovery inventory.')
 assert.ok(lifecycleWorkflow.includes('retire-reviewed.mjs --apply'), 'Lifecycle maintenance must execute only explicitly reviewed supersessions through the fail-closed retirement command.')
