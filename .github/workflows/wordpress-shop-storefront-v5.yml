@@ -72,9 +72,19 @@ jobs:
           grep -Fq '/product/10-feminized-f2-blue-mango-x/' scripts/polish-wordpress-shop-storefront-v5.mjs
           grep -Fq '/product/10-reg-f1-blueberry-bubblegum/' scripts/polish-wordpress-shop-storefront-v5.mjs
           grep -Fq 'strain-card-images.json' scripts/polish-wordpress-shop-storefront-v5.mjs
-          ! grep -Fq 'deploy-wordpress-public-audit-fixes.mjs' .github/workflows/wordpress-shop-storefront-v5.yml
-          ! grep -Fq 'site/public-route-patch/games/protect-the-plants/index.html' .github/workflows/wordpress-shop-storefront-v5.yml
-          ! grep -Fq 'site/public-route-patch/projects/index.html' .github/workflows/wordpress-shop-storefront-v5.yml
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const workflow=fs.readFileSync('.github/workflows/wordpress-shop-storefront-v5.yml','utf8');
+          const forbidden=[
+            'node scripts/' + 'deploy-wordpress-public-audit-fixes.mjs',
+            'site/public-route-patch/games/' + 'protect-the-plants/index.html',
+            'site/public-route-patch/' + 'projects/index.html'
+          ];
+          for(const token of forbidden){
+            if(workflow.includes(token)) throw new Error(`Shop workflow reintroduced cross-project ownership: ${token}`);
+          }
+          console.log('Shop workflow remains isolated from retired public-route mutation ownership.');
+          NODE
 
       - name: Restore V4 portrait release-card styling
         id: v4
@@ -136,6 +146,7 @@ jobs:
                 "$url" -o "$output"
               if \
                 grep -Fqi 'data-dtf-shop-storefront-v5="true"' "$output" && \
+                grep -Fqi 'data-dtf-shop-visual="premium-v6"' "$output" && \
                 grep -Fqi 'Shop the release. Read the breeding story.' "$output" && \
                 grep -Fqi 'dtf-commerce-archive-v4' "$output" && \
                 grep -Fqi 'name="description"' "$output" && \
@@ -153,7 +164,7 @@ jobs:
             done
             [[ "$ok" -eq 1 ]] || {
               echo "Shop V5 verification failed for $url" >&2
-              grep -oiE 'dtf-shop-storefront-v5|Shop the release[^<]{0,120}|Shop current DTF Genetics[^<]{0,180}|Blue_Mango[^" ]*|Blue_Bubblegum[^" ]*' "$output" | head -80 >&2 || true
+              grep -oiE 'dtf-shop-storefront-v5|premium-v6|Shop the release[^<]{0,120}|Shop current DTF Genetics[^<]{0,180}|Blue_Mango[^" ]*|Blue_Bubblegum[^" ]*' "$output" | head -80 >&2 || true
               exit 1
             }
           }
@@ -174,7 +185,7 @@ jobs:
             grep -Fqi "$image" "$body" || { echo "Reviewed product image missing on $route" >&2; exit 1; }
           done
 
-          echo 'Shop V5 storefront, Shop SEO metadata and all three reviewed WooCommerce release images verified on public routes.'
+          echo 'Shop V5 premium storefront, Shop SEO metadata and all three reviewed WooCommerce release images verified on public routes.'
 
       - name: Run full current production audits
         id: production_audit
