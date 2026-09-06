@@ -9,6 +9,9 @@ const css = fs.readFileSync('site/public-route-patch/games/grow-room-bingo/bingo
 assert.match(html, /<script\s+id="bingo-data"\s+type="application\/json">[\s\S]*?<\/script>/i, 'public page must embed bingo data');
 assert.match(html, /<script\s+src="\.\/app\.js"\s+defer><\/script>/i, 'public page must load app.js as a deferred classic script');
 assert.doesNotMatch(html, /type="module"/i, 'public page must not depend on ES-module serving');
+assert.match(html, /class="bingo-columns"/i, 'public board must expose the BINGO column marquee');
+assert.match(html, /id="progress-fill"/i, 'public HUD must expose visual card progress');
+assert.match(html, /class="board-stage"/i, 'public playfield must use the dedicated board stage');
 
 const embeddedMatch = html.match(/<script\s+id="bingo-data"\s+type="application\/json">([\s\S]*?)<\/script>/i);
 assert.ok(embeddedMatch, 'embedded bingo data block missing');
@@ -39,12 +42,21 @@ assert.match(app, /clearArmedUntil/, 'clearing saved marks must require confirma
 assert.match(app, /Saved progress restored for card/, 'returning to a card must announce restored progress');
 assert.match(app, /Progress saved on this device/, 'marking must disclose autosave state');
 assert.match(app, /aria-pressed/, 'mark state must remain exposed to assistive technology');
+assert.match(app, /document\.documentElement\.dataset\.mode = mode/, 'selected mode must drive the game visual theme');
+assert.match(app, /progressFill\.style\.width/, 'marking must update the visual completion meter');
+assert.match(app, /progressRail\.setAttribute\('aria-valuenow'/, 'visual progress must remain accessible');
+assert.match(app, /board\.dataset\.lines/, 'completed line count must be exposed to the board presentation layer');
 
 assert.match(css, /\.controls button\[data-armed=true\]/, 'clear confirmation must have visible armed styling');
 assert.match(css, /\.board\.has-bingo/, 'completed bingo state must have board-level feedback');
 assert.match(css, /\.cell\.mark-pop/, 'mark interactions must have immediate visual feedback');
 assert.match(css, /\.cell\[aria-pressed=true\]:not\(\.free\)::after/, 'marked mobile cells must include a strong check indicator');
+assert.match(css, /\.bingo-columns/, 'BINGO column labels must have dedicated styling');
+assert.match(css, /\.progress-rail/, 'card completion must have a dedicated progress treatment');
+assert.match(css, /html\[data-mode=bongwater\]/, 'Bongwater mode must have its own visual identity');
+assert.match(css, /html\[data-mode=mixed\]/, 'Mixed mode must have its own visual identity');
 assert.match(css, /@media\(max-width:430px\)/, 'small-screen bingo controls must be explicitly tuned');
+assert.match(css, /@media\(hover:none\)/, 'touch devices must not inherit hover-only movement');
 assert.match(css, /@media\(prefers-reduced-motion:reduce\)/, 'motion feedback must respect reduced-motion preferences');
 
 const modeIds = new Set(canonical.modes.map((item) => item.id));
@@ -55,4 +67,4 @@ for (const mode of canonical.modes.filter((item) => item.id !== 'mixed')) {
 }
 assert.ok(canonical.prompts.length >= 48, 'mixed mode must have a full prompt pool');
 
-console.log('Grow Room Bingo public runtime, saved-card persistence and mobile feedback checks passed.');
+console.log('Grow Room Bingo public runtime, premium board UI, progress HUD, saved-card persistence and mobile feedback checks passed.');
