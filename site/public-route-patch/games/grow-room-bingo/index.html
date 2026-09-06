@@ -5,32 +5,58 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Grow Room Bingo / Bongwater Bingo | DTF Genetics</title>
   <meta name="description" content="Generate and play shareable Grow Room Bingo and Bongwater Bingo cards for DTF Genetics community events.">
+  <meta name="theme-color" content="#07130c">
   <link rel="canonical" href="https://dtfseeds.com/games/grow-room-bingo/">
   <link rel="stylesheet" href="/games/dtf-route.css">
   <link rel="stylesheet" href="./bingo.css">
 </head>
 <body>
   <main class="bingo-shell">
-    <a href="/games/" class="back">← Game Hub</a>
-    <p class="eyebrow">DTF Genetics · Community game</p>
-    <h1 id="title">Grow Room Bingo / Bongwater Bingo</h1>
-    <p id="description" class="lede">Loading…</p>
-    <section class="controls">
-      <div id="modes" class="modes"></div>
-      <label>Card code <input id="code" maxlength="6" pattern="[A-HJ-NP-Z2-9]{6}" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-describedby="code-help"></label>
-      <span id="code-help" class="visually-hidden">Enter a six-character card code using letters except I and O, or digits 2 through 9.</span>
-      <button id="load" type="button">Load code</button>
-      <button id="new" type="button">New card</button>
-      <button id="copy" type="button">Copy code + link</button>
+    <header class="bingo-hero">
+      <div class="hero-copy">
+        <a href="/games/" class="back">← Game Hub</a>
+        <p class="eyebrow">DTF Genetics · Community game</p>
+        <h1 id="title">Grow Room Bingo / Bongwater Bingo</h1>
+        <p id="description" class="lede">Loading…</p>
+      </div>
+      <div class="hero-mark" aria-hidden="true">
+        <span>B</span><span>I</span><span>N</span><span>G</span><span>O</span>
+      </div>
+    </header>
+
+    <section class="controls" aria-label="Bingo controls">
+      <div class="control-group mode-group">
+        <span class="control-label">Game mode</span>
+        <div id="modes" class="modes"></div>
+      </div>
+      <div class="control-group share-group">
+        <label>Card code <input id="code" maxlength="6" pattern="[A-HJ-NP-Z2-9]{6}" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-describedby="code-help"></label>
+        <span id="code-help" class="visually-hidden">Enter a six-character card code using letters except I and O, or digits 2 through 9.</span>
+        <button id="load" type="button">Load code</button>
+        <button id="new" type="button">New card</button>
+        <button id="copy" type="button">Copy code + link</button>
+      </div>
     </section>
-    <section class="status">
-      <div><span>Card</span><strong id="code-readout">—</strong></div>
-      <div><span>Marked</span><strong id="marked">1 / 25</strong></div>
-      <div><span>Bingo lines</span><strong id="lines">0</strong></div>
-      <div><span>Best</span><strong id="best">0</strong></div>
+
+    <section class="status" aria-label="Card progress">
+      <div class="status-card code-card"><span>Card</span><strong id="code-readout">—</strong></div>
+      <div class="status-card"><span>Marked</span><strong id="marked">1 / 25</strong></div>
+      <div class="status-card win-card"><span>Bingo lines</span><strong id="lines">0</strong></div>
+      <div class="status-card"><span>Best</span><strong id="best">0</strong></div>
     </section>
+
+    <div class="progress-wrap" aria-label="Card completion progress">
+      <div class="progress-copy"><span>Card progress</span><span id="progress-label">4%</span></div>
+      <div class="progress-rail" role="progressbar" aria-valuemin="0" aria-valuemax="25" aria-valuenow="1" aria-labelledby="progress-label"><span id="progress-fill"></span></div>
+    </div>
+
     <p id="announce" class="announce" aria-live="polite">Mark a square when it happens.</p>
-    <section id="board" class="board" aria-label="Bingo card"></section>
+
+    <section class="board-stage" aria-label="Bingo playfield">
+      <div class="bingo-columns" aria-hidden="true"><span>B</span><span>I</span><span>N</span><span>G</span><span>O</span></div>
+      <section id="board" class="board" aria-label="Bingo card"></section>
+      <p class="board-tip">Tap a square when it happens. Your marks save automatically on this device.</p>
+    </section>
   </main>
   <script id="bingo-data" type="application/json">
 {
