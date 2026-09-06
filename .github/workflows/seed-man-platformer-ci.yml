@@ -34,6 +34,26 @@ jobs:
         run: npm install --prefix games/seed-man-platformer --ignore-scripts --no-audit --no-fund
       - name: Verify Three.js renderer module import
         run: npm run --prefix games/seed-man-platformer verify:three-import
+      - name: Build self-contained Three.js public bundle
+        run: npm run --prefix games/seed-man-platformer build:three-public
+      - name: Verify Three.js public bundle contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          bundle=games/seed-man-platformer/dist/three-world-v1.js
+          test -s "$bundle"
+          node --check "$bundle"
+          grep -Fq 'SeedManThreeWorld' "$bundle"
+          grep -Fq 'seed-man-three-public-v1' "$bundle"
+          grep -Fq 'seed-man-three-world-v1' "$bundle"
+          if grep -Eiq 'https?://' "$bundle"; then
+            echo 'Three.js browser bundle contains an external URL and is not self-contained.' >&2
+            exit 1
+          fi
+          bytes="$(wc -c < "$bundle" | tr -d ' ')"
+          [[ "$bytes" -ge 250000 ]] || { echo "Three.js public bundle too small: $bytes bytes" >&2; exit 1; }
+          [[ "$bytes" -le 900000 ]] || { echo "Three.js public bundle exceeds 900 KB budget: $bytes bytes" >&2; exit 1; }
+          echo "Three.js public bundle verified at $bytes bytes."
       - name: Test platformer physics and level interactions
         run: node games/seed-man-platformer/test/physics.test.mjs
       - name: Test campaign foundation contract
@@ -51,6 +71,8 @@ jobs:
           node --check games/seed-man-platformer/src/campaign.mjs
           node --check games/seed-man-platformer/src/render/three-world-state.mjs
           node --check games/seed-man-platformer/src/render/three-world.mjs
+          node --check games/seed-man-platformer/src/render/three-world-public-entry.mjs
+          node --check games/seed-man-platformer/scripts/build-three-public.mjs
           node --check games/seed-man-platformer/test/three-world-state.test.mjs
           node --check games/seed-man-platformer/test/public-campaign.test.mjs
           node --check site/public-route-patch/games/seed-man-platformer/canvas-compat-v1.js
