@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "retirements": [
+    {
+      "branch": "build/burn-buds-release-hardening",
+      "headSha": "7e319b64af067e0748f7065c74a91e1b949716cc",
+      "supersededBy": "e84fb008e3c86e9092944a5ab42123d9eb0ed57a",
+      "status": "approved",
+      "reason": "Exact compare shows this branch has zero commits outside current main and is 1276 commits behind. Its historical opponent-telemetry hardening is therefore already integrated into repository history. No open PR owns this exact branch tip."
+    }
+  ]
+}
