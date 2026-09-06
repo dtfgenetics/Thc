@@ -34,7 +34,7 @@ function repoFromEnvOrGh() {
 
 function listReadyIssues(repo, config) {
   return json([
-    'api', '--paginate', `repos/${repo}/issues`,
+    'api', '--method', 'GET', '--paginate', `repos/${repo}/issues`,
     '-f', 'state=open', '-f', `labels=${config.labels.ready}`, '-f', 'per_page=100',
     '--jq', '[.[] | select(.pull_request == null)]'
   ], [])
@@ -42,7 +42,7 @@ function listReadyIssues(repo, config) {
 
 function listActiveClaims(repo, config) {
   const issues = json([
-    'api', '--paginate', `repos/${repo}/issues`,
+    'api', '--method', 'GET', '--paginate', `repos/${repo}/issues`,
     '-f', 'state=open', '-f', `labels=${config.labels.claimed}`, '-f', 'per_page=100',
     '--jq', '[.[] | select(.pull_request == null)]'
   ], [])
