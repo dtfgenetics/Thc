@@ -161,38 +161,72 @@ async function testCurrentReversal(page) {
   assert.match(await page.locator('#seed-signature-state').innerText(), /Current Reversal|Pressure Wave/i);
 }
 
-async function stompBoss(page, expectedHits) {
+async function prepareBossSimulation(page) {
   await page.evaluate(() => {
+    reset();
+    togglePause(true);
+    player.collected = level.pickups.map((pickup) => pickup.id);
+    window.__SPROUT_BOSS_TEST_TIME__ = 0;
+  });
+}
+
+async function stompBoss(page, expectedHits) {
+  const result = await page.evaluate(({ expectedHits }) => {
+    const dt = 1 / 60;
+    const cooldownDt = 1 / 20;
+    const neutral = { left: false, right: false, jumpPressed: false, jumpHeld: false };
     const boss = level.boss;
     const left = boss.arenaStartX;
     const right = boss.arenaEndX - boss.width;
     const range = Math.max(1, right - left);
-    let distance = Math.max(0, boss.speed * elapsed);
-    let bossX = boss.x;
-    const initialToLeft = Math.max(0, bossX - left);
 
-    if (distance <= initialToLeft) {
-      bossX -= distance;
-    } else {
+    function bossXAt(seconds) {
+      let distance = Math.max(0, boss.speed * seconds);
+      const initialToLeft = Math.max(0, boss.x - left);
+      if (distance <= initialToLeft) return boss.x - distance;
       distance -= initialToLeft;
       const cycle = range * 2;
       const phase = distance % cycle;
-      bossX = phase <= range ? left + phase : right - (phase - range);
+      return phase <= range ? left + phase : right - (phase - range);
     }
 
-    player.x = bossX + Math.max(8, boss.width * 0.28);
-    player.y = boss.y - player.height - 4;
+    let simulatedTime = Number(window.__SPROUT_BOSS_TEST_TIME__ || 0);
+    const collisionTime = simulatedTime + dt;
+    const bossX = bossXAt(collisionTime);
+
+    player.x = bossX + Math.max(10, boss.width * 0.3);
+    player.y = boss.y - player.height - 2;
     player.vx = 0;
     player.vy = 340;
     player.grounded = false;
     player.power.invulnerableTimer = 0;
-  });
+    player = stepPlayer(player, neutral, level, dt, DEFAULTS);
+    simulatedTime = collisionTime;
 
-  await page.waitForFunction(
-    (hits) => window.__SPROUT_CAMPAIGN_EXPERIENCE__.snapshot().boss?.hits >= hits,
-    expectedHits,
-    { timeout: 5000 }
-  );
+    const afterHit = window.__SPROUT_CAMPAIGN_EXPERIENCE__.snapshot().boss;
+    if (!afterHit || afterHit.hits < expectedHits) {
+      return { ok: false, expectedHits, boss: afterHit, player: { x: player.x, y: player.y, vy: player.vy, state: player.state }, bossX };
+    }
+
+    if (!afterHit.defeated) {
+      for (let i = 0; i < 11; i += 1) {
+        player.x = level.spawn.x;
+        player.y = level.spawn.y;
+        player.vx = 0;
+        player.vy = 0;
+        player.grounded = false;
+        player.power.invulnerableTimer = 1;
+        player = stepPlayer(player, neutral, level, cooldownDt, DEFAULTS);
+        simulatedTime += cooldownDt;
+      }
+    }
+
+    window.__SPROUT_BOSS_TEST_TIME__ = simulatedTime;
+    return { ok: true, expectedHits, boss: window.__SPROUT_CAMPAIGN_EXPERIENCE__.snapshot().boss, simulatedTime };
+  }, { expectedHits });
+
+  assert.equal(result.ok, true, `boss stomp ${expectedHits} failed: ${JSON.stringify(result)}`);
+  assert.ok(result.boss?.hits >= expectedHits, `boss should record hit ${expectedHits}: ${JSON.stringify(result)}`);
 }
 
 async function testBossGate(page) {
@@ -213,15 +247,15 @@ async function testBossGate(page) {
   await page.waitForFunction(() => player.state === 'boss-gated' && player.finished === false);
   assert.equal(await page.locator('#finish-panel').isVisible(), false, 'boss gate must keep the finish panel hidden');
 
-  for (let hits = 1; hits <= 3; hits += 1) {
-    await stompBoss(page, hits);
-    if (hits < 3) await sleep(560);
-  }
+  await prepareBossSimulation(page);
+  for (let hits = 1; hits <= 3; hits += 1) await stompBoss(page, hits);
+
   boss = await page.evaluate(() => window.__SPROUT_CAMPAIGN_EXPERIENCE__.snapshot().boss);
   assert.equal(boss.hits, 3);
   assert.equal(boss.defeated, true);
 
   await page.evaluate(() => {
+    togglePause(false);
     player.collected = level.pickups.map((pickup) => pickup.id);
     player.x = level.finish.x - player.width;
     player.y = level.finish.y;
