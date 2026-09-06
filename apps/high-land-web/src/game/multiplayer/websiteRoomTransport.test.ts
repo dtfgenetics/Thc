@@ -21,16 +21,16 @@ function player(id = 'player-1', host = true): HighLandRoomPlayer {
   };
 }
 
-function roomResponse() {
+function roomResponse(players = [player('player-1', true), player('player-2', false)]) {
   const gameState = createInitialGame(2);
-  gameState.players[0] = { ...gameState.players[0], id: 'player-1', name: 'Host Player' };
-  gameState.players[1] = { ...gameState.players[1], id: 'player-2', name: 'Guest Player' };
+  gameState.players[0] = { ...gameState.players[0], id: players[0]?.id ?? 'player-1', name: players[0]?.name ?? 'Host Player' };
+  gameState.players[1] = { ...gameState.players[1], id: players[1]?.id ?? 'player-2', name: players[1]?.name ?? 'Guest Player' };
   return {
     ok: true,
     room: {
       code: 'ABC123',
       status: 'playing',
-      players: [player('player-1', true), player('player-2', false)],
+      players,
       state: gameState,
       createdAt: 'now',
       updatedAt: 'now'
@@ -38,9 +38,21 @@ function roomResponse() {
   };
 }
 
+function memoryStorage(initial: Record<string, string> = {}): Storage {
+  const values = new Map(Object.entries(initial));
+  return {
+    get length() { return values.size; },
+    clear() { values.clear(); },
+    getItem(key: string) { return values.get(key) ?? null; },
+    key(index: number) { return Array.from(values.keys())[index] ?? null; },
+    removeItem(key: string) { values.delete(key); },
+    setItem(key: string, value: string) { values.set(key, value); }
+  };
+}
+
 describe('website room transport credentials', () => {
-  it('sends a credential for create, join, state update, and event append requests', async () => {
-    const fetchMock = vi.fn(async () => new Response(JSON.stringify(roomResponse()), {
+  it('sends the scoped credential for create, join, state update, and event append requests', async () => {
+    const fetchMock = vi.fn(async (_input: RequestInfo | URL, init?: RequestInit) => new Response(JSON.stringify(roomResponse()), {
       status: 200,
       headers: { 'Content-Type': 'application/json' }
     }));
@@ -48,7 +60,9 @@ describe('website room transport credentials', () => {
 
     const transport = createWebsiteRoomTransport({
       apiBaseUrl: 'https://dtfseeds.com/games/high-land/api/',
-      credentialProvider: () => credential
+      credentialProvider: () => credential,
+      credentialStorage: memoryStorage(),
+      legacyCredentialStorage: memoryStorage()
     });
 
     const host = player('player-1', true);
@@ -69,21 +83,89 @@ describe('website room transport credentials', () => {
       payload: { playerCount: 2 }
     }, host.id);
 
-    expect(fetchMock).toHaveBeenCalledTimes(4);
-    const requests = fetchMock.mock.calls.map(([, init]) => JSON.parse(String(init?.body)) as Record<string, unknown>);
-    for (const request of requests) {
+    expect(fetchMock).toHaveBeenCalledTimes(5);
+    const postRequests = fetchMock.mock.calls
+      .filter(([, init]) => init?.method === 'POST')
+      .map(([, init]) => JSON.parse(String(init?.body)) as Record<string, unknown>);
+    expect(postRequests).toHaveLength(4);
+    for (const request of postRequests) {
       expect(request.credential).toBe(credential);
     }
-    expect(requests[0]).toMatchObject({ playerId: 'player-1', credential });
-    expect(requests[1]).toMatchObject({ playerId: 'player-2', credential });
-    expect(requests[2]).toMatchObject({ playerId: 'player-1', credential });
-    expect(requests[3]).toMatchObject({ playerId: 'player-1', credential });
+    expect(postRequests[0]).toMatchObject({ playerId: 'player-1', credential });
+    expect(postRequests[1]).toMatchObject({ playerId: 'player-2', credential });
+    expect(postRequests[2]).toMatchObject({ playerId: 'player-1', credential });
+    expect(postRequests[3]).toMatchObject({ playerId: 'player-1', credential });
+  });
+
+  it('creates distinct scoped credentials for different room players', async () => {
+    const generated = ['a'.repeat(64), 'b'.repeat(64)];
+    const fetchMock = vi.fn(async (_input: RequestInfo | URL, init?: RequestInit) => {
+      if (init?.method === 'GET') {
+        return new Response(JSON.stringify(roomResponse([player('player-1', true)])), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
+      return new Response(JSON.stringify(roomResponse()), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    });
+    vi.stubGlobal('fetch', fetchMock);
+
+    const transport = createWebsiteRoomTransport({
+      apiBaseUrl: 'https://dtfseeds.com/games/high-land/api/',
+      credentialProvider: () => generated.shift() ?? 'f'.repeat(64),
+      credentialStorage: memoryStorage(),
+      legacyCredentialStorage: memoryStorage()
+    });
+
+    await transport.createRoom(player('player-1', true));
+    await transport.joinRoom('ABC123', player('player-2', false));
+
+    const postRequests = fetchMock.mock.calls
+      .filter(([, init]) => init?.method === 'POST')
+      .map(([, init]) => JSON.parse(String(init?.body)) as Record<string, unknown>);
+    expect(postRequests[0]?.credential).toBe('a'.repeat(64));
+    expect(postRequests[1]?.credential).toBe('b'.repeat(64));
+  });
+
+  it('migrates an existing player from the legacy browser credential', async () => {
+    const legacyCredential = 'd'.repeat(64);
+    const fetchMock = vi.fn(async (_input: RequestInfo | URL, init?: RequestInit) => new Response(JSON.stringify(roomResponse()), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
+    }));
+    vi.stubGlobal('fetch', fetchMock);
+
+    const scopedStorage = memoryStorage();
+    const legacyStorage = memoryStorage({ 'high-land-room-credential-v1': legacyCredential });
+    const transport = createWebsiteRoomTransport({
+      apiBaseUrl: 'https://dtfseeds.com/games/high-land/api/',
+      credentialProvider: () => 'e'.repeat(64),
+      credentialStorage: scopedStorage,
+      legacyCredentialStorage: legacyStorage
+    });
+
+    await transport.joinRoom('abc123', player('player-2', false));
+    const joinRequest = fetchMock.mock.calls
+      .filter(([, init]) => init?.method === 'POST')
+      .map(([, init]) => JSON.parse(String(init?.body)) as Record<string, unknown>)[0];
+
+    expect(joinRequest).toMatchObject({
+      roomCode: 'ABC123',
+      playerId: 'player-2',
+      credential: legacyCredential
+    });
+    expect(scopedStorage.getItem('high-land-room-player-credential-v2:ABC123:player-2')).toBe(legacyCredential);
   });
 
   it('refuses an event append without an authenticated actor', async () => {
     const transport = createWebsiteRoomTransport({
       apiBaseUrl: 'https://dtfseeds.com/games/high-land/api/',
-      credentialProvider: () => credential
+      credentialProvider: () => credential,
+      credentialStorage: memoryStorage(),
+      legacyCredentialStorage: memoryStorage()
     });
 
     await expect(transport.appendEvent('ABC123', {
@@ -96,17 +178,8 @@ describe('website room transport credentials', () => {
     })).rejects.toThrow('Authenticated player id is required');
   });
 
-  it('reuses a persisted 256-bit browser credential', () => {
-    const values = new Map<string, string>();
-    const storage = {
-      get length() { return values.size; },
-      clear() { values.clear(); },
-      getItem(key: string) { return values.get(key) ?? null; },
-      key(index: number) { return Array.from(values.keys())[index] ?? null; },
-      removeItem(key: string) { values.delete(key); },
-      setItem(key: string, value: string) { values.set(key, value); }
-    } satisfies Storage;
-
+  it('reuses a persisted legacy 256-bit browser credential for compatibility', () => {
+    const storage = memoryStorage();
     const first = getOrCreateWebsiteRoomCredential(storage);
     const second = getOrCreateWebsiteRoomCredential(storage);
     expect(first).toMatch(/^[a-f0-9]{64}$/);
