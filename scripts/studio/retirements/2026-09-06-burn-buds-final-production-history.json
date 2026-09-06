@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "retirements": [
+    {
+      "branch": "game/burn-buds-final-production-v3",
+      "headSha": "dafb1916b8b658f0467686ff42a287f6e0a3d3d2",
+      "supersededBy": "f0fee545551a2e79258b0fc03cf1ee0218975ea4",
+      "status": "approved",
+      "reason": "Semantic review confirms the branch's final production metadata and verification are preserved or strengthened on current main. game.json is byte-identical, current Burn Buds branding CI is a strict successor with additional gamefeel coverage, and the live-site audit still requires Burn Buds at the canonical /games/protect-the-plants/ route. No open PR owns this exact branch tip."
+    }
+  ]
+}
