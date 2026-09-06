@@ -1,0 +1,22 @@
+# Seed Man Campaign V3 Release Checklist
+
+- [x] 10 new levels authored
+- [x] 11 total campaign levels
+- [x] 4 worlds
+- [x] 10 unique settings/themes
+- [x] 9 traversal mechanic families
+- [x] 4 boss encounters
+- [x] boss-gated finishes
+- [x] level selector and Next Level flow
+- [x] per-level completion/best tracking
+- [x] Seed Man animation-v2 runtime
+- [x] locked mascot invariants preserved
+- [x] canonical/public level data parity checks
+- [x] desktop/mobile campaign browser test authored
+- [x] live browser campaign verification wired
+- [ ] pull-request CI green
+- [ ] merged to main
+- [ ] production publish green
+- [ ] exact live campaign/browser verification green
+- [ ] human physical-device mobile playtest
+- [ ] human visual consistency review
