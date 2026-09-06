@@ -43,6 +43,8 @@ jobs:
           set -euo pipefail
           node --check scripts/orchestrator.mjs
           node --check scripts/orchestrator/core.mjs
+          node --check scripts/orchestrator/state.mjs
+          node --check scripts/orchestrator/leases.mjs
           node scripts/test-worker-orchestrator.mjs
 
       - name: Ensure orchestration labels
@@ -71,7 +73,9 @@ jobs:
           const fs = require('fs');
           const report = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
           const lines = [
+            `Config version: **${report.configVersion ?? 1}**`,
             `Active workers: **${report.activeWorkers}/${report.maxWorkers}**`,
+            `Expired claims: **${report.expiredClaims ?? 0}**`,
             `Ready issues: **${report.readyIssues}**`,
             `Planned claims: **${report.plannedClaims.length}**`,
             '',
