@@ -1,173 +1,28 @@
 {
   "schemaVersion": 1,
   "retirements": [
-    {
-      "branch": "game/burn-buds-production-pass",
-      "headSha": "5afa975543fdfa8387506064b5cf5cdc8dd6dfa9",
-      "supersededBy": "d84cbc9926d02e3ed07136ee9ba3a880d4c07e07",
-      "status": "approved",
-      "reviewedAt": "2026-09-04",
-      "reason": "PR #555 was superseded by #556, and the tested Burn Buds targeting, placement, battle-feedback, cache, and contract work was replayed onto main in d84cbc9926d02e3ed07136ee9ba3a880d4c07e07."
-    },
-    {
-      "branch": "game/burn-buds-production-pass-v2",
-      "headSha": "3366bde922f40f2e204e733289dd46d4b7ea9ded",
-      "supersededBy": "d84cbc9926d02e3ed07136ee9ba3a880d4c07e07",
-      "status": "approved",
-      "reviewedAt": "2026-09-04",
-      "reason": "PR #556 was replayed onto main in d84cbc9926d02e3ed07136ee9ba3a880d4c07e07. Current main preserves the runtime, styles, cache wiring, and CI contract and contains a newer placement ARIA-label fix."
-    },
-    {
-      "branch": "project/platform/grow-doc-library-visual-publication",
-      "headSha": "78304517a39dc3f6d35fde1f6d4fda620c909672",
-      "supersededBy": "7ecf555ff025616e237c1b8e152708345625088e",
-      "status": "approved",
-      "reviewedAt": "2026-09-04",
-      "reason": "PR #535 was explicitly superseded by merged PR #536. Its only change pinned Grow Doc dataset ee8a7732afd01b3a7cf75b949ebd9e031007aa55; the current production pin is a 49-commit descendant with no divergence."
-    },
-    {
-      "branch": "project/platform/grow-doc-reviewed-crops-publication",
-      "headSha": "9084cba21d5acd0431852cf77ae8a0ac47521cba",
-      "supersededBy": "fc97e6caa06b35a65e48fc00da757e223e9039c0",
-      "status": "approved",
-      "reviewedAt": "2026-09-04",
-      "reason": "PR #540 was explicitly superseded by merged PR #544. Both workflow blobs from #540 are byte-identical in #544, and the old Grow Doc dataset pin 100c786f9b75ecf8d673b0ca797b17371e4f35e0 is an 8-commit ancestor of the current production pin."
-    },
-    {
-      "branch": "project/platform/grow-doc-reviewed-media-publication-v2",
-      "headSha": "fcee485a3065c640f1f6fea025afff3db8a13d03",
-      "supersededBy": "9e8b2d7034c3bf307903df3738cabf9a21bd4c0b",
-      "status": "approved",
-      "reviewedAt": "2026-09-04",
-      "reason": "PR #546 was superseded by merged PR #548. Its only changed release-source marker is byte-for-byte identical to current main and points to the same Grow Doc dataset revision 3f020ce816617cd417f4805bb9d157da0ae8d845."
-    },
-    {
-      "branch": "feat/seed-man-progression-systems",
-      "headSha": "04764ccb90268fdba91ecc675cfc684c60cf66ec",
-      "supersededBy": "a46d35ee264c1584e1f1b7512450cf581db72ad0",
-      "status": "approved",
-      "reviewedAt": "2026-09-06",
-      "reason": "Closed PR #672 duplicated Seed Man progression work already merged by #671 and supplied flag-completion browser acceptance work that was explicitly salvaged into merged PR #674. Its remaining input-guard monkey-patch was intentionally rejected because canonical physics/runtime now owns the completion rule directly. Current main through a46d35ee264c1584e1f1b7512450cf581db72ad0 preserves the accepted behavior and tests without the competing shim."
-    },
-    {
-      "branch": "work/seed-man/flag-completion/20260906-d7ec121",
-      "headSha": "d7ec121799dc0ee7e941cedf7d1a11801263e317",
-      "supersededBy": "a46d35ee264c1584e1f1b7512450cf581db72ad0",
-      "status": "approved",
-      "reviewedAt": "2026-09-06",
-      "reason": "This preservation branch was created during #671 convergence so the late flag-completion commit could not be lost. Progression work was merged through #671, and the accepted flag-completion runtime plus browser tests were rebuilt and merged through #674. The preserving main commit a46d35ee264c1584e1f1b7512450cf581db72ad0 contains the reconciled result."
-    },
-    {
-      "branch": "feat/seed-man-combat-foundation",
-      "headSha": "90affa5938b0843c89e786bc2d8792308c9dfb34",
-      "supersededBy": "0c593b181226b8123da06b444a9fdc43ad1da1e8",
-      "status": "approved",
-      "reviewedAt": "2026-09-06",
-      "reason": "PR #676 passed the exact-head Seed Man combat/platformer, route, release, publishability, and public-suite qualification gates and was squash-merged as 0c593b181226b8123da06b444a9fdc43ad1da1e8. The feature branch is now a superseded integration branch and no longer owns unique accepted work."
-    },
-    {
-      "branch": "work/seed-man/combat-public-adapter/20260906-2c0b8ab",
-      "headSha": "2c0b8ab0a7cbb9d47f6d4daf8eb7b6398cdbc2e7",
-      "supersededBy": "0c593b181226b8123da06b444a9fdc43ad1da1e8",
-      "status": "approved",
-      "reviewedAt": "2026-09-06",
-      "reason": "Recovery review found its canonical combat.mjs blob is byte-for-byte identical to the #676/main version, while its alternate combat-runtime-v1.js is an earlier five-encounter browser implementation. Merged PR #676 preserves the canonical combat system and replaces that adapter with the tested six-encounter combat-browser-v1.js, flying-enemy behavior, chain phenotype effect, Chromium acceptance, and production packaging. No unique accepted behavior remains on this orphan branch."
-    },
-    {
-      "branch": "game-audit-grow-room-defense-qa",
-      "headSha": "e832ebbccbe28d9a517fbe6a53fab8cdc290004f",
-      "supersededBy": "11521df51215acbd51e521f94f4ffee4232de647",
-      "status": "approved",
-      "reviewedAt": "2026-09-06",
-      "reason": "The branch tip is an ancestor of current main with zero divergence, is 251 commits behind main at review time, and has no open PR. Its content is fully preserved by current main."
-    },
-    {
-      "branch": "grow-room-defense-browser-qa",
-      "headSha": "e832ebbccbe28d9a517fbe6a53fab8cdc290004f",
-      "supersededBy": "11521df51215acbd51e521f94f4ffee4232de647",
-      "status": "approved",
-      "reviewedAt": "2026-09-06",
-      "reason": "The branch shares the same fully integrated tip e832ebbccbe28d9a517fbe6a53fab8cdc290004f, is 251 commits behind current main with zero divergence, and has no open PR. No unique branch work remains."
-    },
-    {
-      "branch": "grow-room-defense-browser-qa-v2",
-      "headSha": "e832ebbccbe28d9a517fbe6a53fab8cdc290004f",
-      "supersededBy": "11521df51215acbd51e521f94f4ffee4232de647",
-      "status": "approved",
-      "reviewedAt": "2026-09-06",
-      "reason": "This v2 QA branch has the same exact integrated tip as the other Grow Room Defense QA branches, is fully contained in current main, and has no open PR. It is redundant branch history rather than unique work."
-    },
-    {
-      "branch": "grow-room-defense-browser-qa-v3",
-      "headSha": "e832ebbccbe28d9a517fbe6a53fab8cdc290004f",
-      "supersededBy": "11521df51215acbd51e521f94f4ffee4232de647",
-      "status": "approved",
-      "reviewedAt": "2026-09-06",
-      "reason": "This v3 QA branch has the same exact integrated tip as the prior QA branches, is fully contained in current main, and has no open PR. It is safe to retire under the exact-head fail-closed lifecycle checks."
-    },
-    {
-      "branch": "feat/sprout-run-platformer-feel-v2-rebased",
-      "headSha": "64b163b3959170ab125953be531de6d9da0a10e4",
-      "supersededBy": "bdac4acaeedf5e565f53eec2b56411198af53617",
-      "status": "approved",
-      "reviewedAt": "2026-09-06",
-      "reason": "This rebased Sprout Run branch is a direct ancestor of current main with zero unique commits and no open PR. The sibling v2/pr/pr2 branches still diverge and are intentionally preserved for salvage review; only this fully integrated branch is approved for retirement."
-    },
-    {
-      "branch": "feat/sprout-run-platformer-feel-v2",
-      "headSha": "a0888a10bd5d4073ef9e7bd821547dc9964bc622",
-      "supersededBy": "2a94006407977b9aa74548fab854b901204487a4",
-      "status": "approved",
-      "reviewedAt": "2026-09-06",
-      "reason": "Salvage review found the branch's meaningful feel-v2 behavior is already preserved on current main: progressive acceleration/deceleration and jump-cut physics are in canonical physics.mjs; camera smoothing/look-ahead and pointer-captured touch controls are in the shipped app.js; browser-smoke still verifies acceleration, short-hop versus held-jump apex, refresh-rate-independent camera interpolation, and pointer-drift capture. Later main also contains gameplay-v2, campaign-v3, combat-v1, zero-sprout flag completion, and stronger release gates. The remaining divergence is obsolete history/documentation rather than missing accepted gameplay."
-    },
-    {
-      "branch": "feat/sprout-run-platformer-feel-v2-pr",
-      "headSha": "a0888a10bd5d4073ef9e7bd821547dc9964bc622",
-      "supersededBy": "2a94006407977b9aa74548fab854b901204487a4",
-      "status": "approved",
-      "reviewedAt": "2026-09-06",
-      "reason": "This PR-named sibling points to the same reviewed tip a0888a10bd5d4073ef9e7bd821547dc9964bc622. Current main semantically preserves and tests the branch's movement feel, variable jump, camera interpolation, touch pointer capture, gameplay-v2 systems, and subsequent Seed Man campaign/combat evolution. It no longer owns unique accepted behavior."
-    },
-    {
-      "branch": "feat/sprout-run-platformer-feel-v2-pr2",
-      "headSha": "a0888a10bd5d4073ef9e7bd821547dc9964bc622",
-      "supersededBy": "2a94006407977b9aa74548fab854b901204487a4",
-      "status": "approved",
-      "reviewedAt": "2026-09-06",
-      "reason": "This second PR sibling shares the exact same reviewed tip as the other divergent Sprout Run feel branches. The salvage audit confirmed all meaningful gameplay and acceptance behavior is present in newer main implementations and tests, while current main adds later campaign, combat, route, production and lifecycle fixes. The branch is safe to retire subject to the lifecycle worker's exact-head and open-PR checks."
-    },
-    {
-      "branch": "genetics-v2",
-      "headSha": "c244170dbcaecce2c6d8b9818554e75fb25ea7b9",
-      "supersededBy": "63eba9c89cbac4214e45691c11256ba556f81c26",
-      "status": "approved",
-      "reviewedAt": "2026-09-06",
-      "reason": "Semantic salvage review found the original Genetics V2 catalog, /seeds/ publisher, fallback content, publishing workflow, and supplied-card expansion have all been superseded on main by the canonical 11-line/13-card seed-line catalog, provenance-controlled Shopify CDN identities, catalog-driven publisher, production verification, original-image negotiation, and premium Genetics owner visual layer. No open PR owns this branch and no unique accepted genetics behavior remains."
-    },
-    {
-      "branch": "genetics-v2-current",
-      "headSha": "99deaf81276d81399770d66f1989a796a6f9d2e2",
-      "supersededBy": "63eba9c89cbac4214e45691c11256ba556f81c26",
-      "status": "approved",
-      "reviewedAt": "2026-09-06",
-      "reason": "This branch's three unique commits rebuilt Genetics V2 on then-current main, repaired live verification, and added PR validation. Current main now has stronger catalog-driven genetics-library CI, live route verification, provenance and CDN identity checks, production-owner cleanup, and the premium full-catalog visual owner. The branch has no open PR and its accepted intent is fully represented by newer main code."
-    },
-    {
-      "branch": "genetics-v2-live-3",
-      "headSha": "585bdb749bcb7a395f0d8c318318caff28ed2c69",
-      "supersededBy": "63eba9c89cbac4214e45691c11256ba556f81c26",
-      "status": "approved",
-      "reviewedAt": "2026-09-06",
-      "reason": "Its unique work added three reviewed genetics cards, restored the documented Blueberry Butcher parent reference, and aligned WordPress CI with safe create-or-update behavior. Main preserves the expanded 11-line/13-card reviewed catalog and safe publisher behavior; Blueberry Butcher remains documented in genetics source records, Seeds/Home copy, V4 lineage visuals, commerce validation, and related catalog consumers. No unique accepted work remains."
-    },
-    {
-      "branch": "genetics-v2-unified",
-      "headSha": "c7a2ba313706b15601d2ae5ae166f2a19c19c876",
-      "supersededBy": "63eba9c89cbac4214e45691c11256ba556f81c26",
-      "status": "approved",
-      "reviewedAt": "2026-09-06",
-      "reason": "This branch probed anonymous Drive access and expanded the genetics catalog from supplied cards. The production system no longer depends on that probe: reviewed permanent Shopify CDN origins, SHA-256/byte-length/dimension identity checks, Drive provenance IDs, catalog-driven ingestion, and the expanded canonical catalog are established on main. The branch has no open PR and no remaining unique production behavior."
-    }
+    {"branch":"game/burn-buds-production-pass","headSha":"5afa975543fdfa8387506064b5cf5cdc8dd6dfa9","supersededBy":"d84cbc9926d02e3ed07136ee9ba3a880d4c07e07","status":"approved","reviewedAt":"2026-09-04","reason":"PR #555 was superseded by #556, and the tested Burn Buds targeting, placement, battle-feedback, cache, and contract work was replayed onto main in d84cbc9926d02e3ed07136ee9ba3a880d4c07e07."},
+    {"branch":"game/burn-buds-production-pass-v2","headSha":"3366bde922f40f2e204e733289dd46d4b7ea9ded","supersededBy":"d84cbc9926d02e3ed07136ee9ba3a880d4c07e07","status":"approved","reviewedAt":"2026-09-04","reason":"PR #556 was replayed onto main in d84cbc9926d02e3ed07136ee9ba3a880d4c07e07. Current main preserves the runtime, styles, cache wiring, and CI contract and contains a newer placement ARIA-label fix."},
+    {"branch":"project/platform/grow-doc-library-visual-publication","headSha":"78304517a39dc3f6d35fde1f6d4fda620c909672","supersededBy":"7ecf555ff025616e237c1b8e152708345625088e","status":"approved","reviewedAt":"2026-09-04","reason":"PR #535 was explicitly superseded by merged PR #536. Its only change pinned Grow Doc dataset ee8a7732afd01b3a7cf75b949ebd9e031007aa55; the current production pin is a 49-commit descendant with no divergence."},
+    {"branch":"project/platform/grow-doc-reviewed-crops-publication","headSha":"9084cba21d5acd0431852cf77ae8a0ac47521cba","supersededBy":"fc97e6caa06b35a65e48fc00da757e223e9039c0","status":"approved","reviewedAt":"2026-09-04","reason":"PR #540 was explicitly superseded by merged PR #544. Both workflow blobs from #540 are byte-identical in #544, and the old Grow Doc dataset pin 100c786f9b75ecf8d673b0ca797b17371e4f35e0 is an 8-commit ancestor of the current production pin."},
+    {"branch":"project/platform/grow-doc-reviewed-media-publication-v2","headSha":"fcee485a3065c640f1f6fea025afff3db8a13d03","supersededBy":"9e8b2d7034c3bf307903df3738cabf9a21bd4c0b","status":"approved","reviewedAt":"2026-09-04","reason":"PR #546 was superseded by merged PR #548. Its only changed release-source marker is byte-for-byte identical to current main and points to the same Grow Doc dataset revision 3f020ce816617cd417f4805bb9d157da0ae8d845."},
+    {"branch":"feat/seed-man-progression-systems","headSha":"04764ccb90268fdba91ecc675cfc684c60cf66ec","supersededBy":"a46d35ee264c1584e1f1b7512450cf581db72ad0","status":"approved","reviewedAt":"2026-09-06","reason":"Closed PR #672 duplicated Seed Man progression work already merged by #671 and supplied flag-completion browser acceptance work that was explicitly salvaged into merged PR #674. Its remaining input-guard monkey-patch was intentionally rejected because canonical physics/runtime now owns the completion rule directly. Current main through a46d35ee264c1584e1f1b7512450cf581db72ad0 preserves the accepted behavior and tests without the competing shim."},
+    {"branch":"work/seed-man/flag-completion/20260906-d7ec121","headSha":"d7ec121799dc0ee7e941cedf7d1a11801263e317","supersededBy":"a46d35ee264c1584e1f1b7512450cf581db72ad0","status":"approved","reviewedAt":"2026-09-06","reason":"This preservation branch was created during #671 convergence so the late flag-completion commit could not be lost. Progression work was merged through #671, and the accepted flag-completion runtime plus browser tests were rebuilt and merged through #674. The preserving main commit a46d35ee264c1584e1f1b7512450cf581db72ad0 contains the reconciled result."},
+    {"branch":"feat/seed-man-combat-foundation","headSha":"90affa5938b0843c89e786bc2d8792308c9dfb34","supersededBy":"0c593b181226b8123da06b444a9fdc43ad1da1e8","status":"approved","reviewedAt":"2026-09-06","reason":"PR #676 passed the exact-head Seed Man combat/platformer, route, release, publishability, and public-suite qualification gates and was squash-merged as 0c593b181226b8123da06b444a9fdc43ad1da1e8. The feature branch is now a superseded integration branch and no longer owns unique accepted work."},
+    {"branch":"work/seed-man/combat-public-adapter/20260906-2c0b8ab","headSha":"2c0b8ab0a7cbb9d47f6d4daf8eb7b6398cdbc2e7","supersededBy":"0c593b181226b8123da06b444a9fdc43ad1da1e8","status":"approved","reviewedAt":"2026-09-06","reason":"Recovery review found its canonical combat.mjs blob is byte-for-byte identical to the #676/main version, while its alternate combat-runtime-v1.js is an earlier five-encounter browser implementation. Merged PR #676 preserves the canonical combat system and replaces that adapter with the tested six-encounter combat-browser-v1.js, flying-enemy behavior, chain phenotype effect, Chromium acceptance, and production packaging. No unique accepted behavior remains on this orphan branch."},
+    {"branch":"game-audit-grow-room-defense-qa","headSha":"e832ebbccbe28d9a517fbe6a53fab8cdc290004f","supersededBy":"11521df51215acbd51e521f94f4ffee4232de647","status":"approved","reviewedAt":"2026-09-06","reason":"The branch tip is an ancestor of current main with zero divergence, is 251 commits behind main at review time, and has no open PR. Its content is fully preserved by current main."},
+    {"branch":"grow-room-defense-browser-qa","headSha":"e832ebbccbe28d9a517fbe6a53fab8cdc290004f","supersededBy":"11521df51215acbd51e521f94f4ffee4232de647","status":"approved","reviewedAt":"2026-09-06","reason":"The branch shares the same fully integrated tip e832ebbccbe28d9a517fbe6a53fab8cdc290004f, is 251 commits behind current main with zero divergence, and has no open PR. No unique branch work remains."},
+    {"branch":"grow-room-defense-browser-qa-v2","headSha":"e832ebbccbe28d9a517fbe6a53fab8cdc290004f","supersededBy":"11521df51215acbd51e521f94f4ffee4232de647","status":"approved","reviewedAt":"2026-09-06","reason":"This v2 QA branch has the same exact integrated tip as the other Grow Room Defense QA branches, is fully contained in current main, and has no open PR. It is redundant branch history rather than unique work."},
+    {"branch":"grow-room-defense-browser-qa-v3","headSha":"e832ebbccbe28d9a517fbe6a53fab8cdc290004f","supersededBy":"11521df51215acbd51e521f94f4ffee4232de647","status":"approved","reviewedAt":"2026-09-06","reason":"This v3 QA branch has the same exact integrated tip as the prior QA branches, is fully contained in current main, and has no open PR. It is safe to retire under the exact-head fail-closed lifecycle checks."},
+    {"branch":"feat/sprout-run-platformer-feel-v2-rebased","headSha":"64b163b3959170ab125953be531de6d9da0a10e4","supersededBy":"bdac4acaeedf5e565f53eec2b56411198af53617","status":"approved","reviewedAt":"2026-09-06","reason":"This rebased Sprout Run branch is a direct ancestor of current main with zero unique commits and no open PR. The sibling v2/pr/pr2 branches still diverge and are intentionally preserved for salvage review; only this fully integrated branch is approved for retirement."},
+    {"branch":"feat/sprout-run-platformer-feel-v2","headSha":"a0888a10bd5d4073ef9e7bd821547dc9964bc622","supersededBy":"2a94006407977b9aa74548fab854b901204487a4","status":"approved","reviewedAt":"2026-09-06","reason":"Salvage review found the branch's meaningful feel-v2 behavior is already preserved on current main: progressive acceleration/deceleration and jump-cut physics are in canonical physics.mjs; camera smoothing/look-ahead and pointer-captured touch controls are in the shipped app.js; browser-smoke still verifies acceleration, short-hop versus held-jump apex, refresh-rate-independent camera interpolation, and pointer-drift capture. Later main also contains gameplay-v2, campaign-v3, combat-v1, zero-sprout flag completion, and stronger release gates. The remaining divergence is obsolete history/documentation rather than missing accepted gameplay."},
+    {"branch":"feat/sprout-run-platformer-feel-v2-pr","headSha":"a0888a10bd5d4073ef9e7bd821547dc9964bc622","supersededBy":"2a94006407977b9aa74548fab854b901204487a4","status":"approved","reviewedAt":"2026-09-06","reason":"This PR-named sibling points to the same reviewed tip a0888a10bd5d4073ef9e7bd821547dc9964bc622. Current main semantically preserves and tests the branch's movement feel, variable jump, camera interpolation, touch pointer capture, gameplay-v2 systems, and subsequent Seed Man campaign/combat evolution. It no longer owns unique accepted behavior."},
+    {"branch":"feat/sprout-run-platformer-feel-v2-pr2","headSha":"a0888a10bd5d4073ef9e7bd821547dc9964bc622","supersededBy":"2a94006407977b9aa74548fab854b901204487a4","status":"approved","reviewedAt":"2026-09-06","reason":"This second PR sibling shares the exact same reviewed tip as the other divergent Sprout Run feel branches. The salvage audit confirmed all meaningful gameplay and acceptance behavior is present in newer main implementations and tests, while current main adds later campaign, combat, route, production and lifecycle fixes. The branch is safe to retire subject to the lifecycle worker's exact-head and open-PR checks."},
+    {"branch":"genetics-v2","headSha":"c244170dbcaecce2c6d8b9818554e75fb25ea7b9","supersededBy":"63eba9c89cbac4214e45691c11256ba556f81c26","status":"approved","reviewedAt":"2026-09-06","reason":"Semantic salvage review found the original Genetics V2 catalog, /seeds/ publisher, fallback content, publishing workflow, and supplied-card expansion have all been superseded on main by the canonical 11-line/13-card seed-line catalog, provenance-controlled Shopify CDN identities, catalog-driven publisher, production verification, original-image negotiation, and premium Genetics owner visual layer. No open PR owns this branch and no unique accepted genetics behavior remains."},
+    {"branch":"genetics-v2-current","headSha":"99deaf81276d81399770d66f1989a796a6f9d2e2","supersededBy":"63eba9c89cbac4214e45691c11256ba556f81c26","status":"approved","reviewedAt":"2026-09-06","reason":"This branch's three unique commits rebuilt Genetics V2 on then-current main, repaired live verification, and added PR validation. Current main now has stronger catalog-driven genetics-library CI, live route verification, provenance and CDN identity checks, production-owner cleanup, and the premium full-catalog visual owner. The branch has no open PR and its accepted intent is fully represented by newer main code."},
+    {"branch":"genetics-v2-live-3","headSha":"585bdb749bcb7a395f0d8c318318caff28ed2c69","supersededBy":"63eba9c89cbac4214e45691c11256ba556f81c26","status":"approved","reviewedAt":"2026-09-06","reason":"Its unique work added three reviewed genetics cards, restored the documented Blueberry Butcher parent reference, and aligned WordPress CI with safe create-or-update behavior. Main preserves the expanded 11-line/13-card reviewed catalog and safe publisher behavior; Blueberry Butcher remains documented in genetics source records, Seeds/Home copy, V4 lineage visuals, commerce validation, and related catalog consumers. No unique accepted work remains."},
+    {"branch":"genetics-v2-unified","headSha":"c7a2ba313706b15601d2ae5ae166f2a19c19c876","supersededBy":"63eba9c89cbac4214e45691c11256ba556f81c26","status":"approved","reviewedAt":"2026-09-06","reason":"This branch probed anonymous Drive access and expanded the genetics catalog from supplied cards. The production system no longer depends on that probe: reviewed permanent Shopify CDN origins, SHA-256/byte-length/dimension identity checks, Drive provenance IDs, catalog-driven ingestion, and the expanded canonical catalog are established on main. The branch has no open PR and no remaining unique production behavior."},
+    {"branch":"homepage-genetics-v2","headSha":"cdb651c9a7c5e49ee1414f440fdbacfa61937fbd","supersededBy":"7c8c827c688e12592eb4ca3765e253b174b8f346","status":"approved","reviewedAt":"2026-09-06","reason":"Its one divergent commit built the Homepage Genetics V2 visual finalizer and CI. Current main contains the newer V3-compatible implementation with product-route matching, supported-layout detection, reviewed Blue Mango/Blue Bubblegum/Mango Bubbles art, genetics hero and feature treatment, responsive styles, stronger production ordering, and live verification. No open PR owns the branch and no unique accepted homepage behavior remains."},
+    {"branch":"homepage-genetics-v2-runtime-fix","headSha":"ffba654265ef86b8db73d2e57c84d72a1a5756f8","supersededBy":"7c8c827c688e12592eb4ca3765e253b174b8f346","status":"approved","reviewedAt":"2026-09-06","reason":"This runtime-fix tip is a direct ancestor of current main with zero unique commits. Its production-order stabilization and reviewed genetics Home behavior are fully preserved and extended by current main, and no open PR owns the branch."}
   ]
 }
