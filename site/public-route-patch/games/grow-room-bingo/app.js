@@ -30,6 +30,9 @@ const bestEl = document.querySelector('#best');
 const announce = document.querySelector('#announce');
 const newButton = document.querySelector('#new');
 const copyButton = document.querySelector('#copy');
+const progressFill = document.querySelector('#progress-fill');
+const progressLabel = document.querySelector('#progress-label');
+const progressRail = document.querySelector('.progress-rail');
 
 const clearButton = document.createElement('button');
 clearButton.id = 'clear-marks';
@@ -187,8 +190,13 @@ function updateCellAccessibility(element, index) {
 
 function update() {
   const completed = wins();
+  const progressPercent = Math.round((marked.size / 25) * 100);
   markedEl.textContent = `${marked.size} / 25`;
   linesEl.textContent = String(completed.length);
+  progressFill.style.width = `${progressPercent}%`;
+  progressLabel.textContent = `${progressPercent}%`;
+  progressRail.setAttribute('aria-valuenow', String(marked.size));
+  board.dataset.lines = String(completed.length);
   const nextBest = Math.max(readBest(), completed.length);
   writeBest(nextBest);
   bestEl.textContent = String(nextBest);
@@ -297,6 +305,7 @@ function loadEnteredCode() {
 function selectMode(id) {
   const selected = data.modes.find((item) => item.id === id) || data.modes[0];
   mode = selected.id;
+  document.documentElement.dataset.mode = mode;
   titleEl.textContent = selected.title;
   descEl.textContent = selected.description;
   modesEl.querySelectorAll('button').forEach((button) => {
