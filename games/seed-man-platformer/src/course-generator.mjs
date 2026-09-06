@@ -1,0 +1,194 @@
+const POWER_TYPES = ['speed', 'shield', 'magnet', 'jump'];
+
+const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+
+function assertPositiveInteger(value, label) {
+  if (!Number.isInteger(value) || value <= 0) throw new Error(`${label} must be a positive integer`);
+}
+
+export function validateCourseTemplate(template) {
+  if (!template?.id || !template?.name || !template?.theme) throw new Error('course template identity is required');
+  assertPositiveInteger(template.levelNumber, `${template.id}.levelNumber`);
+  assertPositiveInteger(template.worldWidth, `${template.id}.worldWidth`);
+  assertPositiveInteger(template.requiredPickups, `${template.id}.requiredPickups`);
+  assertPositiveInteger(template.segmentLength, `${template.id}.segmentLength`);
+  assertPositiveInteger(template.spikeCount, `${template.id}.spikeCount`);
+  assertPositiveInteger(template.powerupCount, `${template.id}.powerupCount`);
+  if (!Array.isArray(template.gaps) || template.gaps.length < 2 || template.gaps.some((gap) => !Number.isFinite(gap) || gap < 70 || gap > 170)) {
+    throw new Error(`${template.id}.gaps must contain safe platformer gap widths`);
+  }
+  if (!Array.isArray(template.elevations) || template.elevations.length < 4 || template.elevations.some((y) => !Number.isFinite(y) || y < 220 || y > 410)) {
+    throw new Error(`${template.id}.elevations must contain reachable platform heights`);
+  }
+  if (!Array.isArray(template.checkpointFractions) || template.checkpointFractions.length < 2 || template.checkpointFractions.some((value) => !Number.isFinite(value) || value <= 0.15 || value >= 0.9)) {
+    throw new Error(`${template.id}.checkpointFractions must stay inside the course`);
+  }
+  return template;
+}
+
+function groundPlatformsFor(template) {
+  const platforms = [];
+  const hazards = [];
+  let x = 0;
+  let gapIndex = 0;
+  while (x < template.worldWidth) {
+    const remaining = template.worldWidth - x;
+    if (remaining <= template.segmentLength) {
+      platforms.push({ x, y: 480, width: remaining, height: 60 });
+      break;
+    }
+    platforms.push({ x, y: 480, width: template.segmentLength, height: 60 });
+    const gap = template.gaps[gapIndex % template.gaps.length];
+    hazards.push({ x: x + template.segmentLength, y: 500, width: gap, height: 40 });
+    x += template.segmentLength + gap;
+    gapIndex += 1;
+  }
+  return { platforms, hazards };
+}
+
+function upperPlatformsFor(template) {
+  const platforms = template.elevations.map((y, index) => {
+    const span = Math.max(1, template.elevations.length - 1);
+    const x = Math.round(240 + index * ((template.worldWidth - 600) / span));
+    return { x, y, width: 160 + (index % 3) * 20, height: 24 };
+  });
+
+  const extra = Math.max(0, Math.min(3, Number(template.extraHighPlatforms) || 0));
+  for (let index = 0; index < extra; index += 1) {
+    const fraction = extra === 1 ? 0.5 : 0.34 + index * (0.56 / (extra - 1));
+    platforms.push({
+      x: Math.round(template.worldWidth * fraction),
+      y: 220 - (index % 2) * 25,
+      width: 150 - (index === 2 ? 5 : 0),
+      height: 24
+    });
+  }
+  return platforms;
+}
+
+function safeGroundX(groundPlatforms, desired, margin = 60) {
+  const containing = groundPlatforms.find((platform) =>
+    platform.width >= margin * 2 &&
+    desired >= platform.x + margin &&
+    desired <= platform.x + platform.width - margin
+  );
+  if (containing) return Math.round(desired);
+
+  const candidates = groundPlatforms.filter((platform) => platform.width >= margin * 2);
+  if (!candidates.length) return Math.round(desired);
+  candidates.sort((a, b) =>
+    Math.abs((a.x + a.width / 2) - desired) - Math.abs((b.x + b.width / 2) - desired)
+  );
+  const platform = candidates[0];
+  return Math.round(clamp(desired, platform.x + margin, platform.x + platform.width - margin));
+}
+
+function addSurfaceHazards(template, hazards) {
+  const count = Math.max(1, template.spikeCount);
+  for (let index = 0; index < count; index += 1) {
+    const usable = Math.max(400, template.worldWidth - 1800);
+    const x = count === 1 ? template.worldWidth / 2 : 980 + index * (usable / (count - 1));
+    hazards.push({ x: Math.round(x), y: 452, width: 48 + (index % 2) * 10, height: 28 });
+  }
+}
+
+function pickupsFor(template, groundPlatforms, upperPlatforms) {
+  const pickups = [];
+  for (const platform of upperPlatforms) {
+    if (pickups.length >= template.requiredPickups) break;
+    pickups.push({
+      id: `sprout-${String(template.levelNumber).padStart(2, '0')}-${String(pickups.length + 1).padStart(2, '0')}`,
+      x: Math.round(platform.x + platform.width / 2 - 11),
+      y: platform.y - 45,
+      width: 22,
+      height: 22
+    });
+  }
+
+  const remaining = template.requiredPickups - pickups.length;
+  for (let index = 0; index < remaining; index += 1) {
+    const desired = remaining === 1
+      ? template.worldWidth / 2
+      : 180 + index * ((template.worldWidth - 420) / (remaining - 1));
+    pickups.push({
+      id: `sprout-${String(template.levelNumber).padStart(2, '0')}-${String(pickups.length + 1).padStart(2, '0')}`,
+      x: safeGroundX(groundPlatforms, desired, 50),
+      y: 425,
+      width: 22,
+      height: 22
+    });
+  }
+  return pickups;
+}
+
+function powerupsFor(template, groundPlatforms) {
+  const powerups = [];
+  const count = template.powerupCount;
+  for (let index = 0; index < count; index += 1) {
+    const fraction = count === 1 ? 0.5 : 0.18 + index * (0.64 / (count - 1));
+    const type = POWER_TYPES[(index + template.levelNumber) % POWER_TYPES.length];
+    const powerup = {
+      id: `power-${type}-${String(template.levelNumber).padStart(2, '0')}-${index + 1}`,
+      type,
+      x: safeGroundX(groundPlatforms, template.worldWidth * fraction, 55),
+      y: 425,
+      width: 28,
+      height: 28
+    };
+    if (type === 'speed') powerup.duration = 8;
+    else if (type === 'magnet') powerup.duration = 11;
+    else if (type === 'jump') powerup.duration = 10;
+    powerups.push(powerup);
+  }
+  return powerups;
+}
+
+function checkpointsFor(template, groundPlatforms) {
+  return template.checkpointFractions.map((fraction, index) => {
+    const x = safeGroundX(groundPlatforms, template.worldWidth * fraction, 80);
+    return {
+      id: `checkpoint-${String(template.levelNumber).padStart(2, '0')}-${index + 1}`,
+      x,
+      y: 420,
+      width: 50,
+      height: 60,
+      respawnX: Math.max(60, x - 20),
+      respawnY: 400
+    };
+  });
+}
+
+export function generateCourse(inputTemplate) {
+  const template = validateCourseTemplate(inputTemplate);
+  const ground = groundPlatformsFor(template);
+  const upperPlatforms = upperPlatformsFor(template);
+  const hazards = [...ground.hazards];
+  addSurfaceHazards(template, hazards);
+  const finishX = safeGroundX(ground.platforms, template.worldWidth - 90, 60);
+
+  return {
+    schemaVersion: 2,
+    id: template.id,
+    name: `Sprout Run: ${template.name}`,
+    levelNumber: template.levelNumber,
+    theme: template.theme,
+    difficulty: template.difficulty,
+    worldWidth: template.worldWidth,
+    worldHeight: 540,
+    requiredPickups: template.requiredPickups,
+    spawn: { x: 80, y: 390 },
+    platforms: [...ground.platforms, ...upperPlatforms],
+    hazards,
+    pickups: pickupsFor(template, ground.platforms, upperPlatforms),
+    powerups: powerupsFor(template, ground.platforms),
+    checkpoints: checkpointsFor(template, ground.platforms),
+    finish: { x: finishX, y: 390, width: 50, height: 90 }
+  };
+}
+
+export function generateCoursePack(pack) {
+  if (!pack || pack.schemaVersion !== 1 || pack.generator !== 'seed-man-course-v1' || !Array.isArray(pack.levels)) {
+    throw new Error('Seed Man course pack contract mismatch');
+  }
+  return pack.levels.map(generateCourse);
+}
