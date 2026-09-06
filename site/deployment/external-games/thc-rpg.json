@@ -1,0 +1,28 @@
+{
+  "id": "thc-rpg",
+  "title": "THC RPG — The First Seed",
+  "repository": "dtfgenetics/Thc-rpg",
+  "route": "/games/thc-rpg/",
+  "runtime": "static-es-modules",
+  "status": "release-candidate",
+  "artifact": "thc-rpg-production-build",
+  "build": "npm test && npm run build && npm run validate:release && npm run test:e2e",
+  "machineData": {
+    "players": 1,
+    "saveVersion": 6,
+    "input": ["keyboard", "mouse", "touch"],
+    "deterministicPhenotypes": true,
+    "growJournal": true,
+    "keeperSelection": true,
+    "keeperCuttings": true
+  },
+  "verifiedRevision": "15fe22d69afaee906714a1ad0933505e437202dd",
+  "promotionGate": {
+    "standaloneCI": "passed",
+    "browserAcceptance": "passed",
+    "routeValidation": "passed",
+    "centralPackaging": "required",
+    "liveVerification": "required-before-production-ready"
+  },
+  "notes": "Canonical code remains in dtfgenetics/Thc-rpg. Revision 15fe22d69afaee906714a1ad0933505e437202dd contains the route-safe release contract merged from PR #18. Its pull-request CI passed engine tests, syntax checks, visitor-only dist build, release validation, desktop/mobile Chromium acceptance, and uploaded artifact thc-rpg-production-build. This central registration may package that exact candidate, but production-ready status and public playable-count promotion remain blocked until DTFSeeds packaging and exact live-route verification pass."
+}

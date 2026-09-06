@@ -37,7 +37,7 @@ The current Game Hub exposes 25 playable browser games:
 ## Existing controlled development projects
 
 - **Ganjumanji: The Lost Grower’s Temple** — canonical release candidate `0.3.0` in its dedicated repository. The three-region campaign, deterministic rules/storage, campaign solvability validation, route-safe build, desktop/mobile Playwright acceptance, screenshot evidence, and production artifact are green at revision `e82580daa684fc7733ef6cfcb12a502939a609dd`. It stays outside the public playable count until DTFSeeds packaging and exact live-route verification pass.
-- **THC RPG** — playable browser vertical slice in its dedicated repository. Environment/equipment simulation, quests, deterministic phenotypes, persistent Pheno Grow Journal, Keeper selection, and Keeper cutting/replanting are implemented and tested. It stays outside the public playable count until central packaging and production-route verification are added.
+- **THC RPG** — canonical release candidate `2.0.0` in `dtfgenetics/Thc-rpg`, pinned at merged revision `15fe22d69afaee906714a1ad0933505e437202dd`. Environment/equipment simulation, quests, deterministic phenotypes, persistent Pheno Grow Journal, Keeper selection, Keeper cutting/replanting, visitor-only build validation, desktop/mobile Chromium acceptance, and artifact `thc-rpg-production-build` are green. It stays outside the public playable count until central DTFSeeds packaging and exact live-route verification pass.
 
 ## Formerly missing outlined slate — shipped
 
@@ -70,8 +70,8 @@ These are not automatically approved production titles. Promote them into contro
 
 Priority now favors unfinished controlled projects and quality/completeness work rather than rebuilding games that already shipped:
 
-1. Package the exact green **Ganjumanji** release candidate through the DTFSeeds integration path, then verify the live route before public promotion.
-2. Register and package the executable **THC RPG** vertical slice without replacing its dedicated canonical repository.
+1. Complete DTFSeeds packaging and exact live-route verification for the pinned **Ganjumanji** release candidate before public promotion.
+2. Complete DTFSeeds packaging and exact live-route verification for the pinned **THC RPG** release candidate before public promotion.
 3. Continue THC RPG’s lineage/breeding progression on top of the persisted Keeper/cutting state.
 4. Review **Root Cause** for public promotion only after its quality, ownership, and release gates are rechecked.
 5. Continue quality, mobile, accessibility, balance, art, and multiplayer upgrades for the 25 public titles.

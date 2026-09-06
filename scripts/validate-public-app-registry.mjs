@@ -25,6 +25,7 @@ const requiredRepositories = new Set([
 ]);
 
 const allowedStatuses = new Set([
+  'release-candidate',
   'ready-to-package',
   'public-landing',
   'runtime-integration',
@@ -39,6 +40,7 @@ const allowedStatuses = new Set([
   'do-not-develop',
 ]);
 
+const packageableStatuses = new Set(['release-candidate', 'ready-to-package']);
 const errors = [];
 
 if (registry.schemaVersion !== 1) errors.push('schemaVersion must equal 1');
@@ -84,9 +86,9 @@ for (const [index, app] of (registry.apps || []).entries()) {
     }
   }
 
-  if (app.status === 'ready-to-package') {
-    if (!app.route) errors.push(`${where} is ready-to-package but has no route`);
-    if (typeof app.build !== 'string' || app.build.trim() === '') errors.push(`${where} is ready-to-package but has no build command`);
+  if (packageableStatuses.has(app.status)) {
+    if (!app.route) errors.push(`${where} is ${app.status} but has no route`);
+    if (typeof app.build !== 'string' || app.build.trim() === '') errors.push(`${where} is ${app.status} but has no build command`);
   }
 
   if (app.status === 'runtime-integration' && typeof app.build !== 'string') {

@@ -287,11 +287,27 @@
     },
     {
       "id": "thc-rpg",
-      "title": "THC RPG",
+      "title": "THC RPG — The First Seed",
       "repository": "dtfgenetics/Thc-rpg",
-      "runtime": "concept-placeholder",
-      "status": "not-deployable",
-      "notes": "Drive contains the project folder structure but no canonical Rules or Game Data records were available to migrate during the 2026-08-18 source-control sweep."
+      "runtime": "static-es-modules",
+      "status": "release-candidate",
+      "notes": "Canonical code remains in dtfgenetics/Thc-rpg. Revision 15fe22d69afaee906714a1ad0933505e437202dd contains the route-safe release contract merged from PR #18. Its pull-request CI passed engine tests, syntax checks, visitor-only dist build, release validation, desktop/mobile Chromium acceptance, and uploaded artifact thc-rpg-production-build. This central registration may package that exact candidate, but production-ready status and public playable-count promotion remain blocked until DTFSeeds packaging and exact live-route verification pass.",
+      "route": "/games/thc-rpg/",
+      "build": "npm test && npm run build && npm run validate:release && npm run test:e2e",
+      "machineData": {
+        "players": 1,
+        "saveVersion": 6,
+        "input": [
+          "keyboard",
+          "mouse",
+          "touch"
+        ],
+        "deterministicPhenotypes": true,
+        "growJournal": true,
+        "keeperSelection": true,
+        "keeperCuttings": true
+      },
+      "verifiedRevision": "15fe22d69afaee906714a1ad0933505e437202dd"
     },
     {
       "id": "happy-seed-stories",
