@@ -1,0 +1,38 @@
+name: Atlas Route Ownership CI
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - data/public-navigation.json
+      - docs/ATLAS_ROUTE_OWNERSHIP.md
+      - scripts/validate-atlas-route-ownership.mjs
+      - scripts/verify-dtf420-atlas-live.mjs
+      - site/public-route-patch/atlas/**
+      - .github/workflows/deploy-public-suite-wordpress-v2.yml
+      - .github/workflows/atlas-route-ownership-ci.yml
+  push:
+    branches: [main]
+    paths:
+      - data/public-navigation.json
+      - docs/ATLAS_ROUTE_OWNERSHIP.md
+      - scripts/validate-atlas-route-ownership.mjs
+      - scripts/verify-dtf420-atlas-live.mjs
+      - site/public-route-patch/atlas/**
+      - .github/workflows/deploy-public-suite-wordpress-v2.yml
+      - .github/workflows/atlas-route-ownership-ci.yml
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate Atlas route ownership
+        run: node scripts/validate-atlas-route-ownership.mjs
