@@ -52,6 +52,8 @@ jobs:
           echo "Three.js public bundle verified at $bytes bytes."
       - name: Test platformer physics and level interactions
         run: node games/seed-man-platformer/test/physics.test.mjs
+      - name: Test phenotype weapon and resource progression
+        run: node games/seed-man-platformer/test/progression-systems.test.mjs
       - name: Test eleven-level campaign settings mechanics and bosses
         run: node games/seed-man-platformer/test/campaign.test.mjs
       - name: Test Three.js world-state bridge
@@ -66,11 +68,15 @@ jobs:
         run: |
           node --check games/seed-man-platformer/src/campaign.mjs
           node --check games/seed-man-platformer/src/course-generator.mjs
+          node --check games/seed-man-platformer/src/systems/player-progression.mjs
+          node --check games/seed-man-platformer/src/systems/phenotypes.mjs
+          node --check games/seed-man-platformer/src/systems/weapons.mjs
           node --check games/seed-man-platformer/src/render/three-world-state.mjs
           node --check games/seed-man-platformer/src/render/three-world.mjs
           node --check games/seed-man-platformer/src/render/three-world-public-entry.mjs
           node --check games/seed-man-platformer/scripts/build-three-public.mjs
           node --check games/seed-man-platformer/test/campaign-browser.test.mjs
+          node --check games/seed-man-platformer/test/progression-systems.test.mjs
           node --check games/seed-man-platformer/test/three-world-state.test.mjs
           node --check games/seed-man-platformer/test/public-campaign.test.mjs
           node --check site/public-route-patch/games/seed-man-platformer/canvas-compat-v1.js

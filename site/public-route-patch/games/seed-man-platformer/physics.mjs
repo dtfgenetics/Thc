@@ -218,13 +218,6 @@ export function stepPlayer(inputPlayer, input, level, dt, config = DEFAULTS) {
   }
 
   if (level.finish && player.x + player.width >= level.finish.x) {
-    if (player.missingPickups > 0) {
-      player.x = Math.min(player.x, level.finish.x - player.width);
-      player.vx = 0;
-      player.finishBlocked = true;
-      player.state = 'finish-blocked';
-      return player;
-    }
     player.finished = true;
     player.finishBlocked = false;
     player.vx = 0;

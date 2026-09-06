@@ -102,18 +102,17 @@ assert.equal(player.checkpoint.x,2460);
 
 player=createPlayer({x:7725,y:434});
 player=stepPlayer(player,idleInput,level,1/60);
-assert.equal(player.finished,false,'finish must stay locked while sprouts are missing');
-assert.equal(player.finishBlocked,true);
-assert.equal(player.missingPickups,24);
-assert.equal(player.state,'finish-blocked');
-assert.ok(player.x <= level.finish.x-player.width,'blocked player must remain before the finish gate');
+assert.equal(player.missingPickups,24,'uncollected sprouts remain available for score and completion tracking');
+assert.equal(player.finishBlocked,false,'sprouts must never block the finish flag');
+assert.equal(player.finished,true,'reaching the finish flag clears the level even with zero sprouts');
+assert.equal(player.state,'finish');
 
 player=createPlayer({x:7725,y:434});
 player.collected=level.pickups.map(pickup=>pickup.id);
 player=stepPlayer(player,idleInput,level,1/60);
 assert.equal(player.missingPickups,0);
 assert.equal(player.finishBlocked,false);
-assert.equal(player.finished,true,'finish must unlock after all required sprouts are collected');
+assert.equal(player.finished,true,'collecting every sprout is a mastery result, not a completion requirement');
 assert.equal(player.state,'finish');
 
 console.log('Seed Man expanded platformer physics tests passed');
