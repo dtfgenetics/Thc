@@ -112,6 +112,30 @@
       "status": "approved",
       "reviewedAt": "2026-09-06",
       "reason": "This rebased Sprout Run branch is a direct ancestor of current main with zero unique commits and no open PR. The sibling v2/pr/pr2 branches still diverge and are intentionally preserved for salvage review; only this fully integrated branch is approved for retirement."
+    },
+    {
+      "branch": "feat/sprout-run-platformer-feel-v2",
+      "headSha": "a0888a10bd5d4073ef9e7bd821547dc9964bc622",
+      "supersededBy": "2a94006407977b9aa74548fab854b901204487a4",
+      "status": "approved",
+      "reviewedAt": "2026-09-06",
+      "reason": "Salvage review found the branch's meaningful feel-v2 behavior is already preserved on current main: progressive acceleration/deceleration and jump-cut physics are in canonical physics.mjs; camera smoothing/look-ahead and pointer-captured touch controls are in the shipped app.js; browser-smoke still verifies acceleration, short-hop versus held-jump apex, refresh-rate-independent camera interpolation, and pointer-drift capture. Later main also contains gameplay-v2, campaign-v3, combat-v1, zero-sprout flag completion, and stronger release gates. The remaining divergence is obsolete history/documentation rather than missing accepted gameplay."
+    },
+    {
+      "branch": "feat/sprout-run-platformer-feel-v2-pr",
+      "headSha": "a0888a10bd5d4073ef9e7bd821547dc9964bc622",
+      "supersededBy": "2a94006407977b9aa74548fab854b901204487a4",
+      "status": "approved",
+      "reviewedAt": "2026-09-06",
+      "reason": "This PR-named sibling points to the same reviewed tip a0888a10bd5d4073ef9e7bd821547dc9964bc622. Current main semantically preserves and tests the branch's movement feel, variable jump, camera interpolation, touch pointer capture, gameplay-v2 systems, and subsequent Seed Man campaign/combat evolution. It no longer owns unique accepted behavior."
+    },
+    {
+      "branch": "feat/sprout-run-platformer-feel-v2-pr2",
+      "headSha": "a0888a10bd5d4073ef9e7bd821547dc9964bc622",
+      "supersededBy": "2a94006407977b9aa74548fab854b901204487a4",
+      "status": "approved",
+      "reviewedAt": "2026-09-06",
+      "reason": "This second PR sibling shares the exact same reviewed tip as the other divergent Sprout Run feel branches. The salvage audit confirmed all meaningful gameplay and acceptance behavior is present in newer main implementations and tests, while current main adds later campaign, combat, route, production and lifecycle fixes. The branch is safe to retire subject to the lifecycle worker's exact-head and open-PR checks."
     }
   ]
 }
