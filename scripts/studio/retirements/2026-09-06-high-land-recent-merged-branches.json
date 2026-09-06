@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "retirements": [
+    {
+      "branch": "game/high-land-explicit-player-choice",
+      "headSha": "13c33ef127c95819679da0f5e5395891234ca01e",
+      "supersededBy": "d2003f5c2c67a532a8fcc187dccd1c5baafba157",
+      "status": "approved",
+      "reason": "This branch was reviewed, passed High Land and public-suite gates, and was squash-merged through PR #695. Current main preserves the explicit choose-a-player phase, modal controls, local/online synchronization, roll lock, and regression tests. No open PR owns the branch."
+    },
+    {
+      "branch": "fix/high-land-room-credential-isolation",
+      "headSha": "16014d7ee26527807382ce0aa0e31893b207857a",
+      "supersededBy": "5b820fe5edb8e45068c5e5e96227f28e1db146a7",
+      "status": "approved",
+      "reason": "This branch was reviewed, passed High Land, room-security, public-build, workspace, publishability, release-hardening, and public-suite qualification gates, and was squash-merged through PR #698. Current main preserves per-room/per-player credential scoping, runtime/session isolation, legacy-room migration, and compatibility tests. No open PR owns the branch."
+    }
+  ]
+}
