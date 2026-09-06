@@ -1,23 +1,25 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "id": "sprout-run-campaign",
   "title": "Seed Man: Sprout Run",
   "defaultLevelId": "sprout-run",
+  "levelCount": 11,
+  "newLevelCount": 10,
   "worlds": [
-    {
-      "id": "world-01",
-      "title": "Greenhouse Gauntlet",
-      "order": 1,
-      "levels": [
-        {
-          "id": "sprout-run",
-          "title": "Sprout Run",
-          "order": 1,
-          "status": "playable",
-          "dataPath": "data/level-01.json",
-          "publicDataElementId": "seed-man-level"
-        }
-      ]
-    }
+    {"id":"world-01","title":"Greenhouse District","order":1,"levels":[
+      {"id":"sprout-run","title":"Greenhouse Gauntlet","order":1,"status":"playable","dataPath":"data/level-01.json","publicDataElementId":"seed-man-level"},
+      {"id":"nursery-night-shift","title":"Nursery Night Shift","order":2,"status":"playable","dataPath":"data/levels-02-11.json","dataKey":"nursery-night-shift","publicDataElementId":"seed-man-level"},
+      {"id":"reservoir-run","title":"Reservoir Run","order":3,"status":"playable","dataPath":"data/levels-02-11.json","dataKey":"reservoir-run","publicDataElementId":"seed-man-level"}]},
+    {"id":"world-02","title":"Rootworks","order":2,"levels":[
+      {"id":"root-zone-rumble","title":"Root Zone Rumble","order":4,"status":"playable","dataPath":"data/levels-02-11.json","dataKey":"root-zone-rumble","publicDataElementId":"seed-man-level"},
+      {"id":"mycelium-mile","title":"Mycelium Mile","order":5,"status":"playable","dataPath":"data/levels-02-11.json","dataKey":"mycelium-mile","publicDataElementId":"seed-man-level"},
+      {"id":"trichome-transit","title":"Trichome Transit","order":6,"status":"playable","dataPath":"data/levels-02-11.json","dataKey":"trichome-transit","publicDataElementId":"seed-man-level"}]},
+    {"id":"world-03","title":"Resin Works","order":3,"levels":[
+      {"id":"kief-cavern-climb","title":"Kief Cavern Climb","order":7,"status":"playable","dataPath":"data/levels-02-11.json","dataKey":"kief-cavern-climb","publicDataElementId":"seed-man-level"},
+      {"id":"rosin-refinery-rush","title":"Rosin Refinery Rush","order":8,"status":"playable","dataPath":"data/levels-02-11.json","dataKey":"rosin-refinery-rush","publicDataElementId":"seed-man-level"},
+      {"id":"terpene-tunnel","title":"Terpene Tunnel","order":9,"status":"playable","dataPath":"data/levels-02-11.json","dataKey":"terpene-tunnel","publicDataElementId":"seed-man-level"}]},
+    {"id":"world-04","title":"Sky Garden","order":4,"levels":[
+      {"id":"frostline-canopy","title":"Frostline Canopy","order":10,"status":"playable","dataPath":"data/levels-02-11.json","dataKey":"frostline-canopy","publicDataElementId":"seed-man-level"},
+      {"id":"cloud-nine-citadel","title":"Cloud Nine Citadel","order":11,"status":"playable","dataPath":"data/levels-02-11.json","dataKey":"cloud-nine-citadel","publicDataElementId":"seed-man-level"}]}
   ]
 }
