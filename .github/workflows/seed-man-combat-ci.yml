@@ -1,0 +1,59 @@
+name: Seed Man Combat CI
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'games/seed-man-platformer/src/systems/combat.mjs'
+      - 'games/seed-man-platformer/src/systems/enemy-archetypes.mjs'
+      - 'games/seed-man-platformer/src/systems/weapons.mjs'
+      - 'games/seed-man-platformer/src/systems/phenotypes.mjs'
+      - 'games/seed-man-platformer/src/systems/player-progression.mjs'
+      - 'games/seed-man-platformer/test/combat.test.mjs'
+      - 'games/seed-man-platformer/test/combat-browser.test.mjs'
+      - 'site/public-route-patch/games/seed-man-platformer/canvas-compat-v1.js'
+      - 'site/public-route-patch/games/seed-man-platformer/combat-browser-v1.js'
+      - '.github/workflows/seed-man-combat-ci.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'games/seed-man-platformer/src/systems/combat.mjs'
+      - 'games/seed-man-platformer/src/systems/enemy-archetypes.mjs'
+      - 'games/seed-man-platformer/src/systems/weapons.mjs'
+      - 'games/seed-man-platformer/src/systems/phenotypes.mjs'
+      - 'games/seed-man-platformer/src/systems/player-progression.mjs'
+      - 'games/seed-man-platformer/test/combat.test.mjs'
+      - 'games/seed-man-platformer/test/combat-browser.test.mjs'
+      - 'site/public-route-patch/games/seed-man-platformer/canvas-compat-v1.js'
+      - 'site/public-route-patch/games/seed-man-platformer/combat-browser-v1.js'
+      - '.github/workflows/seed-man-combat-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  combat:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate combat syntax
+        run: |
+          node --check games/seed-man-platformer/src/systems/combat.mjs
+          node --check games/seed-man-platformer/src/systems/enemy-archetypes.mjs
+          node --check games/seed-man-platformer/test/combat.test.mjs
+          node --check games/seed-man-platformer/test/combat-browser.test.mjs
+          node --check site/public-route-patch/games/seed-man-platformer/canvas-compat-v1.js
+          node --check site/public-route-patch/games/seed-man-platformer/combat-browser-v1.js
+      - name: Test combat simulation
+        run: node games/seed-man-platformer/test/combat.test.mjs
+      - name: Install browser acceptance dependencies
+        run: |
+          npm ci
+          npx playwright install chromium
+      - name: Test public-route combat integration
+        run: node games/seed-man-platformer/test/combat-browser.test.mjs
