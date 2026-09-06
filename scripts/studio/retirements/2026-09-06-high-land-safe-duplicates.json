@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "retirements": [
+    {
+      "branch": "high-land-room-auth-fix-v2",
+      "headSha": "c3fee1a480f516ca028fcd26054010c725ece076",
+      "supersededBy": "4396877a7f84f6242e2662d6c3a036bb2b205600",
+      "status": "approved",
+      "reason": "Exact compare against current main shows zero unique commits. The secured website-room authentication work is fully integrated and current main adds later credential, host, turn, and event-write hardening. No open PR owns this branch."
+    },
+    {
+      "branch": "fix/high-land-local-player-contract",
+      "headSha": "d2d034b109ac3f0f0c1958c8811480f2782b74ea",
+      "supersededBy": "4396877a7f84f6242e2662d6c3a036bb2b205600",
+      "status": "approved",
+      "reason": "Exact compare against current main shows zero unique commits. The local High Land player-count contract and tests are integrated. No open PR owns this branch."
+    },
+    {
+      "branch": "fix/high-land-local-player-contract-v2",
+      "headSha": "03eaab9576309a24e29858180757fda97451e8b4",
+      "supersededBy": "4396877a7f84f6242e2662d6c3a036bb2b205600",
+      "status": "approved",
+      "reason": "Exact compare against current main shows zero unique commits. Its tip, including the unrelated High IQ publication commit carried by this retry branch, is already contained in main. No open PR owns this branch."
+    },
+    {
+      "branch": "fix/high-land-roll-lock",
+      "headSha": "aa09a80bbebed8d39d940c9b23ce397146a46e42",
+      "supersededBy": "4396877a7f84f6242e2662d6c3a036bb2b205600",
+      "status": "approved",
+      "reason": "Semantic comparison confirms the roomActionExecutor implementation on current main is byte-identical to the branch, including the per-room/player in-flight roll lock, duplicate-roll rejection, and try/finally cleanup. No open PR owns this branch."
+    },
+    {
+      "branch": "fix/high-land-reverse-round-duration",
+      "headSha": "efeaeb52486c4e09c38a2f01b1a9666a9ee340e0",
+      "supersededBy": "4396877a7f84f6242e2662d6c3a036bb2b205600",
+      "status": "approved",
+      "reason": "Semantic review confirms current main preserves the full-round reverse-order contract: reverse-turn duration is calculated as rounds multiplied by player count and decremented through the turn engine, with current tests and UI using the same round semantics. No open PR owns this branch."
+    },
+    {
+      "branch": "fix/high-land-reverse-round-duration-v2",
+      "headSha": "7e490175a3c48b75c3127c568f8514f4740d3061",
+      "supersededBy": "4396877a7f84f6242e2662d6c3a036bb2b205600",
+      "status": "approved",
+      "reason": "This retry branch carries the same reverse-round semantic repair as its sibling. Current main already implements and tests full-round duration using rounds multiplied by player count. No open PR owns this branch."
+    }
+  ]
+}
