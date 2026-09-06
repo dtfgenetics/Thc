@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "retirements": [
+    {
+      "branch": "automation/high-land-critical-assets",
+      "headSha": "794bbbf72c3888203c9f60203243f18ece12367a",
+      "supersededBy": "d7d15b900ada88bad4871341483a37b35fe29ead",
+      "status": "approved",
+      "reason": "Semantic review found only High Land asset-manifest deployment-critical filtering and tests. Current main preserves the same required assets and deployment-critical semantics, while the later refresh implementation is already present. No open PR owns this exact branch tip."
+    },
+    {
+      "branch": "automation/high-land-critical-assets-refresh",
+      "headSha": "e4af34a64d4640b9e242d58232166fef68be2ad8",
+      "supersededBy": "d7d15b900ada88bad4871341483a37b35fe29ead",
+      "status": "approved",
+      "reason": "The High Land asset manifest and its tests on this branch are byte-identical to current main, including approved HIT-card art requirements and exclusion of fallback art from deployment-critical proof checks. No open PR owns this exact branch tip."
+    }
+  ]
+}
