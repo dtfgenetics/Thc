@@ -1,0 +1,310 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-09-05",
+  "site": "https://dtfseeds.com",
+  "rule": "Every public game route must map to exactly one canonical code owner before integration or deployment work begins.",
+  "games": [
+    {
+      "id": "high-iq",
+      "title": "High IQ — Test Higher Cognition",
+      "route": "/games/high-iq/",
+      "canonical": {
+        "projectId": "high-iq",
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": ["games/high-iq", "site/public-route-patch/games/high-iq"],
+        "sourceOfTruth": "docs/HIGH_IQ_SOURCE_OF_TRUTH.md"
+      },
+      "integration": {"repository": "dtfgenetics/Thc", "path": "site/public-route-patch/games/high-iq", "mode": "local-static"}
+    },
+    {
+      "id": "high-life",
+      "title": "High Life: From Bagseed to Legacy",
+      "route": "/games/high-life/",
+      "canonical": {
+        "projectId": "high-life",
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": ["games/high-life"],
+        "sourceOfTruth": "games/high-life/README.md"
+      },
+      "integration": {"repository": "dtfgenetics/Thc", "path": "site/public-route-patch/games/high-life", "mode": "local-static"}
+    },
+    {
+      "id": "seed-man-platformer",
+      "title": "Seed Man: Sprout Run",
+      "route": "/games/seed-man-platformer/",
+      "canonical": {
+        "projectId": "seed-man-platformer",
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": ["games/seed-man-platformer"],
+        "sourceOfTruth": "games/seed-man-platformer/README.md"
+      },
+      "integration": {"repository": "dtfgenetics/Thc", "path": "site/public-route-patch/games/seed-man-platformer", "mode": "local-static"}
+    },
+    {
+      "id": "grower-conversations",
+      "title": "Grower Conversations",
+      "route": "/games/grower-conversations/",
+      "canonical": {
+        "projectId": "grower-conversations",
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": ["games/grower-conversations"],
+        "sourceOfTruth": "games/grower-conversations/README.md"
+      },
+      "integration": {"repository": "dtfgenetics/Thc", "path": "site/public-route-patch/games/grower-conversations", "mode": "local-static"}
+    },
+    {
+      "id": "high-land",
+      "title": "High Land: The Sweet Escape",
+      "route": "/games/high-land/",
+      "canonical": {
+        "projectId": "high-land",
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": ["apps/high-land-web"],
+        "sourceOfTruth": "docs/HIGH_LAND_SOURCE_OF_TRUTH.md"
+      },
+      "integration": {"repository": "dtfgenetics/Thc", "path": "apps/high-land-web", "mode": "local-build"}
+    },
+    {
+      "id": "weedopolis",
+      "title": "Weedopolis: Strain City Edition",
+      "route": "/games/weedopolis/",
+      "canonical": {
+        "projectId": "weedopolis",
+        "repository": "dtfgenetics/Weedopolis-strain-Edition",
+        "sourcePaths": ["src", "digital", "data"],
+        "sourceOfTruth": "docs/SOURCE_OF_TRUTH.md"
+      },
+      "integration": {"repository": "dtfgenetics/Thc", "path": null, "mode": "external-build"}
+    },
+    {
+      "id": "strain-showdown",
+      "title": "Strain Showdown",
+      "route": "/games/strain-showdown/",
+      "canonical": {
+        "projectId": "strain-showdown",
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": ["games/strain-showdown"],
+        "sourceOfTruth": "games/strain-showdown/README.md"
+      },
+      "integration": {"repository": "dtfgenetics/Thc", "path": "site/public-route-patch/games/strain-showdown", "mode": "local-static"}
+    },
+    {
+      "id": "crossword",
+      "title": "THC Weekly Crossword",
+      "route": "/games/crossword/",
+      "canonical": {
+        "projectId": "thc-crossword",
+        "repository": "dtfgenetics/Thc-crossword-",
+        "sourcePaths": ["src", "content", "public/puzzles"],
+        "sourceOfTruth": "docs/SOURCE_OF_TRUTH.md"
+      },
+      "integration": {"repository": "dtfgenetics/Thc", "path": null, "mode": "external-build"}
+    },
+    {
+      "id": "who-took-it",
+      "title": "Who Took It?",
+      "route": "/games/who-took-it/",
+      "canonical": {
+        "projectId": "who-took-it",
+        "repository": "dtfgenetics/Thc-guess-who",
+        "sourcePaths": ["03_digital-game"],
+        "sourceOfTruth": "docs/SOURCE_OF_TRUTH.md"
+      },
+      "integration": {"repository": "dtfgenetics/Thc", "path": null, "mode": "external-build"}
+    },
+    {
+      "id": "protect-the-plants",
+      "title": "Burn Buds",
+      "route": "/games/protect-the-plants/",
+      "canonical": {
+        "projectId": "cannabis-fleet-battle",
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": ["games/protect-the-plants"],
+        "sourceOfTruth": "games/protect-the-plants/README.md",
+        "ownershipNote": "Public product and canonical implementation are Burn Buds under protect-the-plants. The older cannabis-fleet-battle registry ID is a legacy scaffold identity and must not be used as the production source path."
+      },
+      "integration": {"repository": "dtfgenetics/Thc", "path": "site/public-route-patch/games/protect-the-plants", "mode": "local-static-php"}
+    },
+    {
+      "id": "bud-or-bluff",
+      "title": "Bud or Bluff",
+      "route": "/games/bud-or-bluff/",
+      "canonical": {
+        "projectId": "bud-or-bluff",
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": ["games/bud-or-bluff"],
+        "sourceOfTruth": "docs/BUD_OR_BLUFF_SOURCE_OF_TRUTH.md"
+      },
+      "integration": {"repository": "dtfgenetics/Thc", "path": "site/public-route-patch/games/bud-or-bluff", "mode": "local-static-php"}
+    },
+    {
+      "id": "thc-u-know",
+      "title": "THC U Know",
+      "route": "/games/thc-u-know/",
+      "canonical": {
+        "projectId": "thc-u-know",
+        "repository": "dtfgenetics/thc-u-know-card-game-",
+        "sourcePaths": ["apps/web", "apps/server", "packages/shared"],
+        "sourceOfTruth": "docs/SOURCE_OF_TRUTH.md"
+      },
+      "integration": {"repository": "dtfgenetics/Thc", "path": null, "mode": "external-full-stack"}
+    },
+    {
+      "id": "kush-kings",
+      "title": "Kush Kings Chess",
+      "route": "/games/kush-kings-chess/",
+      "canonical": {
+        "projectId": "thc-chess",
+        "repository": "dtfgenetics/Thc-chess-git",
+        "sourcePaths": ["client", "server"],
+        "sourceOfTruth": "docs/SOURCE_OF_TRUTH.md"
+      },
+      "integration": {"repository": "dtfgenetics/Thc", "path": null, "mode": "external-full-stack"}
+    },
+    {
+      "id": "terpocalypse",
+      "title": "Terpocalypse: Grow Room From Hell",
+      "route": "/games/terpocalypse/",
+      "canonical": {
+        "projectId": "terpocalypse",
+        "repository": "dtfgenetics/Terpocalapse",
+        "sourcePaths": ["prototypes/web-fps"],
+        "sourceOfTruth": "docs/SOURCE_OF_TRUTH.md",
+        "ownershipNote": "prototypes/web-fps is the stable playable source currently packaged by DTFSeeds. prototypes/web-fps-v2 remains experimental until it reaches feature parity."
+      },
+      "integration": {"repository": "dtfgenetics/Thc", "path": "site/public-route-patch/games/terpocalypse", "mode": "verified-snapshot"}
+    },
+    {
+      "id": "phenoquest",
+      "title": "PhenoQuest: The Living Seed Vault",
+      "route": "/games/phenoquest/",
+      "canonical": {
+        "projectId": "phenoquest",
+        "repository": "dtfgenetics/Catching-phenos",
+        "sourcePaths": ["src", "data", "public/games/phenoquest"],
+        "sourceOfTruth": "docs/SOURCE_OF_TRUTH.md"
+      },
+      "integration": {"repository": "dtfgenetics/Thc", "path": null, "mode": "external-build"}
+    },
+    {
+      "id": "strain-match",
+      "title": "Strain Match",
+      "route": "/games/strain-match/",
+      "canonical": {
+        "projectId": "strain-match",
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": ["games/strain-match"],
+        "sourceOfTruth": "games/strain-match/README.md"
+      },
+      "integration": {"repository": "dtfgenetics/Thc", "path": "site/public-route-patch/games/strain-match", "mode": "local-static"}
+    },
+    {
+      "id": "grow-room-bingo",
+      "title": "Grow Room Bingo / Bongwater Bingo",
+      "route": "/games/grow-room-bingo/",
+      "canonical": {
+        "projectId": "grow-room-bingo",
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": ["games/grow-room-bingo"],
+        "sourceOfTruth": "games/grow-room-bingo/README.md"
+      },
+      "integration": {"repository": "dtfgenetics/Thc", "path": "site/public-route-patch/games/grow-room-bingo", "mode": "local-static"}
+    },
+    {
+      "id": "lost-in-the-terps",
+      "title": "Lost in the Terps",
+      "route": "/games/lost-in-the-terps/",
+      "canonical": {
+        "projectId": "lost-in-the-terps",
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": ["games/lost-in-the-terps"],
+        "sourceOfTruth": "games/lost-in-the-terps/README.md"
+      },
+      "integration": {"repository": "dtfgenetics/Thc", "path": "site/public-route-patch/games/lost-in-the-terps", "mode": "local-static"}
+    },
+    {
+      "id": "mystery-strain",
+      "title": "Mystery Strain",
+      "route": "/games/mystery-strain/",
+      "canonical": {
+        "projectId": "mystery-strain",
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": ["games/mystery-strain"],
+        "sourceOfTruth": "games/mystery-strain/README.md"
+      },
+      "integration": {"repository": "dtfgenetics/Thc", "path": "site/public-route-patch/games/mystery-strain", "mode": "local-static"}
+    },
+    {
+      "id": "spin-the-strain",
+      "title": "Spin the Strain",
+      "route": "/games/spin-the-strain/",
+      "canonical": {
+        "projectId": "spin-the-strain",
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": ["games/spin-the-strain"],
+        "sourceOfTruth": "games/spin-the-strain/README.md"
+      },
+      "integration": {"repository": "dtfgenetics/Thc", "path": "site/public-route-patch/games/spin-the-strain", "mode": "local-static"}
+    },
+    {
+      "id": "grow-room-defense",
+      "title": "Grow Room Defense",
+      "route": "/games/grow-room-defense/",
+      "canonical": {
+        "projectId": "grow-room-defense",
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": ["games/grow-room-defense"],
+        "sourceOfTruth": "games/grow-room-defense/README.md"
+      },
+      "integration": {"repository": "dtfgenetics/Thc", "path": "site/public-route-patch/games/grow-room-defense", "mode": "local-static"}
+    },
+    {
+      "id": "harvest-hustle",
+      "title": "Harvest Hustle",
+      "route": "/games/harvest-hustle/",
+      "canonical": {
+        "projectId": "harvest-hustle",
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": ["games/harvest-hustle"],
+        "sourceOfTruth": "games/harvest-hustle/README.md"
+      },
+      "integration": {"repository": "dtfgenetics/Thc", "path": "site/public-route-patch/games/harvest-hustle", "mode": "local-static"}
+    },
+    {
+      "id": "trichome-trials",
+      "title": "Trichome Trials",
+      "route": "/games/trichome-trials/",
+      "canonical": {
+        "projectId": "trichome-trials",
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": ["games/trichome-trials"],
+        "sourceOfTruth": "games/trichome-trials/README.md"
+      },
+      "integration": {"repository": "dtfgenetics/Thc", "path": "site/public-route-patch/games/trichome-trials", "mode": "local-static"}
+    },
+    {
+      "id": "pheno-draft",
+      "title": "Pheno Draft",
+      "route": "/games/pheno-draft/",
+      "canonical": {
+        "projectId": "pheno-draft",
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": ["games/pheno-draft"],
+        "sourceOfTruth": "games/pheno-draft/README.md"
+      },
+      "integration": {"repository": "dtfgenetics/Thc", "path": "site/public-route-patch/games/pheno-draft", "mode": "local-static"}
+    },
+    {
+      "id": "high-lines",
+      "title": "High Lines",
+      "route": "/games/high-lines/",
+      "canonical": {
+        "projectId": "high-lines",
+        "repository": "dtfgenetics/Thc",
+        "sourcePaths": ["games/high-lines"],
+        "sourceOfTruth": "games/high-lines/README.md"
+      },
+      "integration": {"repository": "dtfgenetics/Thc", "path": "site/public-route-patch/games/high-lines", "mode": "local-static"}
+    }
+  ]
+}

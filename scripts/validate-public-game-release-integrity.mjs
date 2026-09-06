@@ -4,6 +4,7 @@ import path from 'node:path';
 const ROOT = process.cwd();
 const LIVE = process.argv.includes('--live');
 const SITE = 'https://dtfseeds.com';
+const LOCAL_REPO = 'dtfgenetics/Thc';
 
 function readJson(rel) {
   return JSON.parse(fs.readFileSync(path.join(ROOT, rel), 'utf8'));
@@ -47,9 +48,14 @@ function fail(message) {
   failures.push(message);
 }
 
+function localPathExists(rel) {
+  return typeof rel === 'string' && rel.length > 0 && fs.existsSync(path.join(ROOT, rel));
+}
+
 const nav = readJson('data/public-navigation.json');
 const deployment = readJson('site/deployment/public-apps.json');
 const portfolio = readJson('data/project-registry.json');
+const sourceMap = readJson('data/game-source-map.json');
 const gameHubHtml = readText('site/public-route-patch/games/index.html');
 const projectsHtml = readText('site/public-route-patch/projects/index.html');
 const projectsText = stripMarkup(projectsHtml);
@@ -59,9 +65,22 @@ const warnings = [];
 const publicGames = (nav.games || []).filter((game) => game?.public && game?.route);
 const apps = Array.isArray(deployment.apps) ? deployment.apps : [];
 const portfolioGames = (portfolio.projects || []).filter((project) => project?.type === 'game');
+const sourceGames = Array.isArray(sourceMap.games) ? sourceMap.games : [];
 
 for (const id of duplicateValues(publicGames, (game) => game.id)) fail(`duplicate public game id: ${id}`);
 for (const route of duplicateValues(publicGames, (game) => game.route)) fail(`duplicate public game route: ${route}`);
+for (const id of duplicateValues(sourceGames, (game) => game.id)) fail(`duplicate game source-map id: ${id}`);
+for (const route of duplicateValues(sourceGames, (game) => game.route)) fail(`duplicate game source-map route: ${route}`);
+
+if (sourceGames.length !== publicGames.length) {
+  fail(`game-source-map contains ${sourceGames.length} games while public-navigation exposes ${publicGames.length}.`);
+}
+
+for (const mapped of sourceGames) {
+  if (!publicGames.some((game) => game.id === mapped.id)) {
+    fail(`game-source-map contains non-public or unknown game id: ${mapped.id || '<missing>'}.`);
+  }
+}
 
 const countMarker = gameHubHtml.match(/deployment-verification-marker:\s*(\d+)\s+playable browser games/i);
 if (!countMarker) {
@@ -96,6 +115,59 @@ for (const game of publicGames) {
     fail(`${game.id} is public while deployment status is ${app.status}.`);
   }
 
+  const mapping = sourceGames.find((candidate) => candidate.id === game.id);
+  if (!mapping) {
+    fail(`${game.id} is public but has no canonical entry in data/game-source-map.json.`);
+  } else {
+    if (mapping.route !== game.route) {
+      fail(`${game.id} source-map route mismatch: navigation=${game.route} source-map=${mapping.route || '<none>'}`);
+    }
+
+    const canonical = mapping.canonical || {};
+    if (!canonical.repository) {
+      fail(`${game.id} source-map entry is missing canonical.repository.`);
+    }
+    if (!canonical.projectId) {
+      fail(`${game.id} source-map entry is missing canonical.projectId.`);
+    }
+    if (!Array.isArray(canonical.sourcePaths) || canonical.sourcePaths.length === 0) {
+      fail(`${game.id} source-map entry must declare at least one canonical source path.`);
+    }
+    if (!canonical.sourceOfTruth) {
+      fail(`${game.id} source-map entry is missing canonical.sourceOfTruth.`);
+    }
+
+    const project = portfolioGames.find((candidate) => candidate.id === canonical.projectId);
+    if (!project) {
+      fail(`${game.id} maps to missing project-registry id ${canonical.projectId || '<none>'}.`);
+    } else if (canonical.repository && project.repo !== canonical.repository) {
+      fail(`${game.id} canonical repository mismatch: source-map=${canonical.repository} project-registry=${project.repo || '<none>'}.`);
+    }
+
+    if (canonical.repository && app.repository && canonical.repository !== app.repository) {
+      fail(`${game.id} canonical repository mismatch: source-map=${canonical.repository} deployment=${app.repository}.`);
+    }
+
+    if (canonical.repository === LOCAL_REPO) {
+      for (const sourcePath of canonical.sourcePaths || []) {
+        if (!localPathExists(sourcePath)) {
+          fail(`${game.id} canonical local source path is missing: ${sourcePath}.`);
+        }
+      }
+      if (!localPathExists(canonical.sourceOfTruth)) {
+        fail(`${game.id} canonical local source-of-truth file is missing: ${canonical.sourceOfTruth}.`);
+      }
+    }
+
+    const integration = mapping.integration || {};
+    if (integration.repository !== LOCAL_REPO) {
+      fail(`${game.id} must declare dtfgenetics/Thc as its DTFSeeds integration repository.`);
+    }
+    if (integration.path && !localPathExists(integration.path)) {
+      fail(`${game.id} integration path is missing: ${integration.path}.`);
+    }
+  }
+
   if (typeof app.sourcePath === 'string' && app.sourcePath.startsWith('site/public-route-patch/')) {
     const indexPath = path.join(ROOT, app.sourcePath, 'index.html');
     if (!fs.existsSync(indexPath)) {
@@ -105,8 +177,10 @@ for (const game of publicGames) {
     }
   }
 
-  const project = portfolioGames.find((candidate) => candidate.id === game.id);
-  const projectName = project?.name || game.title;
+  const mappedProject = mapping
+    ? portfolioGames.find((candidate) => candidate.id === mapping.canonical?.projectId)
+    : portfolioGames.find((candidate) => candidate.id === game.id);
+  const projectName = mappedProject?.name || game.title;
   if (projectName) {
     const developmentBlock = projectsText.match(/Development roadmap([\s\S]*?)(?:Release rule|$)/i)?.[1] || '';
     const namePattern = new RegExp(`\\b${escapeRegExp(projectName)}\\b`, 'i');
@@ -162,7 +236,7 @@ async function fetchDirect(game, app) {
     return;
   }
   if (location) {
-    fail(`${game.id} unexpectedly returned a redirect Location header: ${location}`);
+    fail(`${game.id} unexpectedly returned a redirect Location header: ${location}.`);
     return;
   }
 
@@ -207,4 +281,4 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log(`Public game release integrity passed: ${publicGames.length} public games${LIVE ? ' + direct production route identity checks' : ''}.`);
+console.log(`Public game release integrity passed: ${publicGames.length} public games with canonical ownership${LIVE ? ' + direct production route identity checks' : ''}.`);
