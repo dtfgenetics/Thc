@@ -56,9 +56,7 @@
       phenotype.innerHTML = 'Phenotype <strong id="combat-phenotype-count">None</strong>';
       const resourcesEl = document.createElement('span');
       resourcesEl.innerHTML = 'Resources <strong id="combat-resource-count">0</strong>';
-      hud.insertBefore(weapon, hud.querySelector('button'));
-      hud.insertBefore(phenotype, hud.querySelector('button'));
-      hud.insertBefore(resourcesEl, hud.querySelector('button'));
+      hud.append(weapon, phenotype, resourcesEl);
     }
 
     const touch = document.querySelector('.touch-controls');
