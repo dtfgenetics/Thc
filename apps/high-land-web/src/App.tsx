@@ -16,6 +16,7 @@ import { rollRoomRuntime, startRoomRuntime } from './app/highLandRoomRuntime';
 import { starterActionCards } from './game/data/actionCards';
 import { approvedBoardSpaceCount, boardPath } from './game/data/boardPath';
 import { rollCurrentTurn } from './game/systems/gameEngine';
+import { resolvePendingPlayerChoice } from './game/systems/effectResolver';
 import { describeSynchronizedTurn, getHitCardRevealKey } from './game/systems/hitCardReveal';
 import { createNamedLocalGame } from './game/multiplayer/roomGameFactory';
 import { parseInviteLink } from './game/multiplayer/inviteLinks';
@@ -75,7 +76,13 @@ export default function App() {
     : liveHitCardRevealKey
       ? `live-${liveHitCardRevealKey}`
       : 'no-hit-card';
-  const canRollNow = !room || canPlayerRoll(room, localPlayerId);
+  const choicePlayers = gameState.pendingChoice
+    ? gameState.players.filter((player) => player.id !== gameState.pendingChoice?.sourcePlayerId)
+    : [];
+  const isChoiceOwner = !room || gameState.pendingChoice?.sourcePlayerId === localPlayerId;
+  const choiceRequired = gameState.phase === 'choosing_player' && isChoiceOwner && previewHitCard === null;
+  const waitingForChoice = gameState.phase === 'choosing_player' && !isChoiceOwner && previewHitCard === null;
+  const canRollNow = gameState.phase !== 'choosing_player' && (!room || canPlayerRoll(room, localPlayerId));
   const canRestartNow = !room || room.hostPlayerId === localPlayerId;
 
   useEffect(() => {
@@ -236,7 +243,7 @@ export default function App() {
   }
 
   async function roll(): Promise<void> {
-    if (!gameStarted || !canRollNow || diceAnimating || gameState.phase === 'game_over' || gameState.phase === 'moving' || gameState.phase === 'resolving_card') return;
+    if (!gameStarted || !canRollNow || diceAnimating || gameState.phase === 'game_over' || gameState.phase === 'moving' || gameState.phase === 'resolving_card' || gameState.phase === 'choosing_player') return;
     setDismissedCardRevealKey(null);
     setPreviewCardIndex(null);
     setMoveAnnouncement('Rolling the dice...');
@@ -272,6 +279,28 @@ export default function App() {
     setGameState(next);
   }
 
+  async function choosePlayer(playerId: string): Promise<void> {
+    if (gameState.phase !== 'choosing_player' || !isChoiceOwner) return;
+    const next = resolvePendingPlayerChoice(gameState, playerId);
+    if (next === gameState) return;
+
+    try {
+      if (room) {
+        const updatedRoom = await roomTransport.updateGameState(room.code, next, localPlayerId);
+        setRoom(updatedRoom);
+        if (updatedRoom.gameState) setGameState(updatedRoom.gameState);
+      } else {
+        setGameState(next);
+      }
+      setMoveAnnouncement(next.message);
+      setDismissedCardRevealKey(getHitCardRevealKey(next));
+      if (next.winnerId) playWinSound();
+      setStatusMessage(next.message);
+    } catch (error) {
+      setStatusMessage(error instanceof Error ? error.message : 'The player choice could not be synchronized.');
+    }
+  }
+
   async function restart(): Promise<void> {
     resetTransientFeedback();
     if (room) {
@@ -305,6 +334,7 @@ export default function App() {
       setPreviewCardIndex(null);
       return;
     }
+    if (gameState.phase === 'choosing_player') return;
     setDismissedCardRevealKey(getHitCardRevealKey(gameState));
   }
 
@@ -434,7 +464,7 @@ export default function App() {
 
             <div className="button-row board-button-row">
               <button className="primary roll-button" disabled={!canRollNow || diceAnimating || gameState.phase === 'game_over'} onClick={roll} type="button">
-                Roll Dice
+                {gameState.phase === 'choosing_player' ? 'Choose a Player' : 'Roll Dice'}
               </button>
               <button onClick={previewHitAnimation} type="button">Preview HIT Animation</button>
               <button disabled={!canRestartNow} onClick={restart} type="button">Restart</button>
@@ -448,6 +478,10 @@ export default function App() {
         key={visibleHitCardKey}
         card={visibleHitCard}
         effectApplied={previewHitCard === null && liveHitCard !== null}
+        choicePlayers={choicePlayers}
+        choiceRequired={choiceRequired}
+        waitingForChoice={waitingForChoice}
+        onChoosePlayer={(playerId) => void choosePlayer(playerId)}
         onDismiss={dismissHitCard}
       />
 

@@ -1,9 +1,13 @@
 import { useEffect, useMemo, useState, type CSSProperties } from 'react';
-import type { ActionCard } from '../game/types/gameTypes';
+import type { ActionCard, Player } from '../game/types/gameTypes';
 
 type CardRevealModalProps = {
   card: ActionCard | null;
   effectApplied?: boolean;
+  choicePlayers?: Player[];
+  choiceRequired?: boolean;
+  waitingForChoice?: boolean;
+  onChoosePlayer?: (playerId: string) => void;
   onDismiss?: () => void;
 };
 
@@ -17,7 +21,15 @@ function startingArtMode(card: ActionCard | null): CardArtMode {
   return 'fallback';
 }
 
-export function CardRevealModal({ card, effectApplied = false, onDismiss }: CardRevealModalProps) {
+export function CardRevealModal({
+  card,
+  effectApplied = false,
+  choicePlayers = [],
+  choiceRequired = false,
+  waitingForChoice = false,
+  onChoosePlayer,
+  onDismiss
+}: CardRevealModalProps) {
   const [imageMode, setImageMode] = useState<CardArtMode>(() => startingArtMode(card));
 
   useEffect(() => {
@@ -99,10 +111,20 @@ export function CardRevealModal({ card, effectApplied = false, onDismiss }: Card
         <h2>{card.title}</h2>
         <p>{card.text}</p>
         <span className={`hit-effect-status ${effectApplied ? 'applied' : 'preview'}`}>
-          {effectApplied ? 'Effect applied to the game' : 'Preview only'}
+          {choiceRequired ? 'Choose a player to finish this HIT card' : waitingForChoice ? 'Waiting for the active player to choose' : effectApplied ? 'Effect applied to the game' : 'Preview only'}
         </span>
         <small>{describeEffect(card)}</small>
-        {onDismiss ? (
+        {choiceRequired ? (
+          <div className="hit-card-player-choices" aria-label="Choose a player">
+            {choicePlayers.map((player) => (
+              <button key={player.id} onClick={() => onChoosePlayer?.(player.id)} type="button">
+                <span className="token-dot" style={{ background: player.color }} />
+                {player.name}
+              </button>
+            ))}
+          </div>
+        ) : null}
+        {!choiceRequired && !waitingForChoice && onDismiss ? (
           <button className="hit-card-close" onClick={onDismiss} type="button">
             Continue
           </button>

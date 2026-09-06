@@ -23,16 +23,43 @@ export function resolveActionCard(state: GameState, card: ActionCard, random: ()
 
   const resolution = applyEffect(state, currentPlayer, card.effect, random);
   const winner = findWinner(resolution.state.players);
+  const isChoosingPlayer = Boolean(resolution.state.pendingChoice) && !winner;
 
   return {
     ...resolution.state,
     lastCard: card,
-    phase: winner ? 'game_over' : 'ready',
+    phase: winner ? 'game_over' : isChoosingPlayer ? 'choosing_player' : 'ready',
     winnerId: winner?.id ?? null,
-    currentPlayerIndex: winner || resolution.keepTurn || resolution.drawAgain
+    pendingChoice: winner ? null : resolution.state.pendingChoice,
+    currentPlayerIndex: winner || isChoosingPlayer || resolution.keepTurn || resolution.drawAgain
       ? state.currentPlayerIndex
       : nextPlayerIndex(resolution.state.players, state.currentPlayerIndex, resolution.state.turnDirection),
     message: `${currentPlayer.name}: ${card.title}. ${card.text}`
+  };
+}
+
+export function resolvePendingPlayerChoice(state: GameState, targetPlayerId: string): GameState {
+  const choice = state.pendingChoice;
+  if (!choice || state.phase !== 'choosing_player' || targetPlayerId === choice.sourcePlayerId) return state;
+
+  const sourcePlayer = state.players.find((player) => player.id === choice.sourcePlayerId);
+  const targetPlayer = state.players.find((player) => player.id === targetPlayerId);
+  if (!sourcePlayer || !targetPlayer) return state;
+
+  const movedState = movePlayer(state, targetPlayerId, choice.targetAmount);
+  const winner = findWinner(movedState.players);
+
+  return {
+    ...movedState,
+    phase: winner ? 'game_over' : 'ready',
+    winnerId: winner?.id ?? null,
+    pendingChoice: null,
+    currentPlayerIndex: winner
+      ? state.currentPlayerIndex
+      : nextPlayerIndex(movedState.players, state.currentPlayerIndex, movedState.turnDirection),
+    message: winner
+      ? `${winner.name} reached the finish.`
+      : `${sourcePlayer.name} chose ${targetPlayer.name} to move forward ${choice.targetAmount} space${choice.targetAmount === 1 ? '' : 's'}.`
   };
 }
 
@@ -111,12 +138,16 @@ function applyEffect(state: GameState, currentPlayer: Player, effect: ActionCard
         )
       };
       break;
-    case 'choose_player_move': {
+    case 'choose_player_move':
       nextState = movePlayer(nextState, currentPlayer.id, effect.currentAmount);
-      const target = findPlayerBehind(nextState.players, currentPlayer) ?? pickRandomOtherPlayer(nextState.players, currentPlayer.id, random);
-      if (target) nextState = movePlayer(nextState, target.id, effect.targetAmount);
+      nextState = {
+        ...nextState,
+        pendingChoice: {
+          sourcePlayerId: currentPlayer.id,
+          targetAmount: effect.targetAmount
+        }
+      };
       break;
-    }
   }
 
   return { state: nextState, keepTurn, drawAgain };
