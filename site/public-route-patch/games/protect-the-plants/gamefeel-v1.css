@@ -1,0 +1,16 @@
+:root{--bb-glass:rgba(7,16,11,.9);--bb-gold:#e9c86a;--bb-aim:#ffd36d;--bb-danger:#ff713d;--bb-grid:#6f633f}
+/* Game-first shell: keep the battle grid visually dominant and supporting UI quiet. */
+body{background:radial-gradient(circle at 50% 8%,rgba(86,126,53,.2),transparent 30%),linear-gradient(180deg,#040906 0,#07100a 44%,#020503 100%)}
+.battle-top{position:sticky;top:0;z-index:24;padding:8px 10px;margin:0 0 12px;background:linear-gradient(180deg,rgba(4,10,6,.97),rgba(4,10,6,.84));backdrop-filter:blur(14px);border:1px solid rgba(233,200,106,.16);border-radius:10px;box-shadow:0 12px 32px rgba(0,0,0,.28)}
+.game-layout{grid-template-columns:minmax(0,1fr) minmax(250px,290px);gap:12px;align-items:start}.boards{gap:12px}.board-card{background:linear-gradient(180deg,rgba(11,24,15,.98),rgba(4,10,7,.99));border-color:rgba(233,200,106,.24)}
+.board-card.burn-primary-board{border-color:rgba(167,242,109,.5);box-shadow:0 0 0 1px rgba(167,242,109,.08),0 18px 52px rgba(0,0,0,.4),0 0 30px rgba(167,242,109,.08)}
+.board-card.burn-secondary-board{opacity:.8;filter:saturate(.78)}
+.board-title h3{font-size:.9rem}.board{border-color:var(--bb-grid);background:#0e0d09;box-shadow:inset 0 0 30px rgba(0,0,0,.8),0 0 0 1px rgba(233,200,106,.06)}
+.cell{transition:background .12s ease,box-shadow .12s ease,transform .1s ease}.cell.can-fire:hover,.cell.can-fire:focus-visible{z-index:3;transform:scale(1.08);box-shadow:inset 0 0 0 2px var(--bb-aim),0 0 14px rgba(255,211,109,.34)}
+.cell.burn-armed-target{z-index:4;box-shadow:inset 0 0 0 2px var(--bb-aim),0 0 0 2px rgba(255,113,61,.22),0 0 18px rgba(255,113,61,.4)!important}
+.status-pill.yours{animation:bb-turn-pulse 1.8s ease-in-out infinite}.status-pill:not(.yours){opacity:.72}.room-hud strong{font-size:1.08rem}.side-panel{background:var(--bb-glass)}
+.burn-target-readout{border:1px solid rgba(233,200,106,.24);background:rgba(5,12,8,.94);backdrop-filter:blur(12px);box-shadow:0 10px 28px rgba(0,0,0,.3)}
+@keyframes bb-turn-pulse{0%,100%{box-shadow:0 0 0 rgba(167,242,109,0)}50%{box-shadow:0 0 22px rgba(167,242,109,.18)}}
+@media(max-width:900px){.battle-top{top:0}.game-layout{grid-template-columns:1fr}.boards{grid-template-columns:1fr}.board-card.burn-secondary-board{display:none}.board-card.burn-primary-board{opacity:1;filter:none}.mobile-tabs{display:flex;position:sticky;top:64px;z-index:22;padding:6px;background:rgba(4,10,6,.94);backdrop-filter:blur(12px);border-radius:9px}.board-card{padding:8px}.coordinate-grid{grid-template-columns:18px minmax(0,1fr);grid-template-rows:18px minmax(0,1fr)}}
+@media(max-width:640px){.main{padding:8px}.battle-top{gap:7px;padding:7px}.battle-brand strong{font-size:1.05rem}.battle-brand .brand-mark{width:36px;height:36px}.status-pill{padding:7px 9px;font-size:.66rem}.room-hud small,.opponent-hud small{font-size:.56rem}.room-hud strong{font-size:.92rem}.board-title{margin-bottom:5px}.board-title h3{font-size:.78rem}.board{touch-action:manipulation}.cell.can-fire:active{transform:scale(.94)}.burn-target-readout{position:sticky;top:108px;z-index:21;margin:6px 0}.side-panel{border-radius:9px}}
+@media(prefers-reduced-motion:reduce){.cell,.status-pill.yours{transition:none!important;animation:none!important}.cell.can-fire:hover,.cell.can-fire:focus-visible{transform:none}}
