@@ -41,6 +41,14 @@ for (const marker of requiredMarkers) {
   if (!output.includes(marker)) throw new Error(`Three.js public bundle missing marker: ${marker}`);
 }
 
+// Esbuild preserves dependency license comments at EOF. Those comments can
+// legitimately contain project/license URLs and are not runtime dependencies.
+// Strip comments only for the executable self-containment scan while retaining
+// the original bundle (including legal notices) unchanged on disk.
+const executableOutput = output
+  .replace(/\/\*[\s\S]*?\*\//g, '')
+  .replace(/(^|\n)\s*\/\/[^\n]*/g, '$1');
+
 const forbiddenPatterns = [
   /https?:\/\//i,
   /from["']three["']/,
@@ -48,7 +56,7 @@ const forbiddenPatterns = [
   /node_modules\/three/i
 ];
 for (const pattern of forbiddenPatterns) {
-  if (pattern.test(output)) throw new Error(`Three.js public bundle is not self-contained: ${pattern}`);
+  if (pattern.test(executableOutput)) throw new Error(`Three.js public bundle is not self-contained: ${pattern}`);
 }
 
 if (metadata.size < 250_000) {
@@ -63,5 +71,6 @@ console.log(JSON.stringify({
   outfile,
   bytes: metadata.size,
   selfContained: true,
+  legalCommentsPreserved: true,
   target: 'es2020'
 }, null, 2));
