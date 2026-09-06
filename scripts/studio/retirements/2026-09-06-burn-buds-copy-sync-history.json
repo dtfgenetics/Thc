@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "retirements": [
+    {
+      "branch": "game/burn-buds-api-copy-cleanup",
+      "headSha": "9fa344cf9f86b9aa5c5ce822a4bb8cca0e05e889",
+      "supersededBy": "9806a1733fb83f1b80517ae03292678569415863",
+      "status": "approved",
+      "reason": "Semantic review confirms the Burn Buds API copy contract is byte-identical on current main, including player-facing Burn Buds terminology and legacy saved-session migration shims. No open PR owns this exact branch tip."
+    },
+    {
+      "branch": "game/burn-buds-copy-cleanup",
+      "headSha": "b2d6296b65a0755c1196f7bc5d35d8cd039a5a78",
+      "supersededBy": "9806a1733fb83f1b80517ae03292678569415863",
+      "status": "approved",
+      "reason": "Semantic review confirms the canonical Burn Buds heading, title, description, and product identity copy are preserved on current main, which additionally loads the newer shared runtime-sync and gamefeel layers. No open PR owns this exact branch tip."
+    },
+    {
+      "branch": "game/burn-buds-enhancements-sync-cleanup",
+      "headSha": "dd60c085bff89d84e5b22991904f60d97b87a831",
+      "supersededBy": "9806a1733fb83f1b80517ae03292678569415863",
+      "status": "approved",
+      "reason": "The enhancements shared-sync regression contract is byte-identical on current main. Main preserves the shared BurnBudsSync subscription and enhancement behavior while intentionally removing the retired confirmShots preference after native targeting became authoritative. No open PR owns this exact branch tip."
+    },
+    {
+      "branch": "game/burn-buds-secondary-sync-cleanup",
+      "headSha": "a5809485a17e9a9a1e302e71ff5edf92af39e3d5",
+      "supersededBy": "9806a1733fb83f1b80517ae03292678569415863",
+      "status": "approved",
+      "reason": "The v2 extras shared-sync regression contract is byte-identical on current main, including adaptive polling, quick chat, result sharing, service worker registration, shared runtime ordering, and removal of dedicated MutationObserver ownership. No open PR owns this exact branch tip."
+    }
+  ]
+}
