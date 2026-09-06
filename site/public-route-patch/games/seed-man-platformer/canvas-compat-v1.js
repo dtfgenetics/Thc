@@ -51,6 +51,12 @@
     });
   };
 
+  function setBrandedCampaignTitle(stageTitle) {
+    document.title = stageTitle
+      ? `Seed Man: Sprout Run — ${stageTitle} | DTF Genetics`
+      : 'Seed Man: Sprout Run | DTF Genetics';
+  }
+
   const canvas = document.querySelector('#game');
   if (canvas) {
     canvas.addEventListener('contextlost', () => {
@@ -69,6 +75,16 @@
   window.addEventListener('pageshow', redraw);
   window.addEventListener('orientationchange', redraw);
   window.addEventListener('resize', redraw, { passive: true });
+  window.addEventListener('sprout:level-selected', (event) => {
+    const title = event?.detail?.level?.title || event?.detail?.levelId || '';
+    queueMicrotask(() => setBrandedCampaignTitle(title));
+  });
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      const active = window.__SPROUT_CAMPAIGN__?.getLevel?.();
+      setBrandedCampaignTitle(active?.title || 'Greenhouse Gauntlet');
+    }, 0);
+  }, { once: true });
 
   // app.js is a deferred classic script loaded immediately after this file.
   // Restore the native prototype after deferred scripts initialize so the
@@ -81,6 +97,7 @@
     version: VERSION,
     release: RELEASE,
     softwarePreferred: true,
+    campaignTitleBranding: true,
     get contextLostCount() { return lost; },
     get contextRestoredCount() { return restored; },
   });
