@@ -220,13 +220,6 @@ function stepPlayer(inputPlayer, input, level, dt, config = DEFAULTS) {
   }
 
   if (level.finish && player.x + player.width >= level.finish.x) {
-    if (player.missingPickups > 0) {
-      player.x = Math.min(player.x, level.finish.x - player.width);
-      player.vx = 0;
-      player.finishBlocked = true;
-      player.state = 'finish-blocked';
-      return player;
-    }
     player.finished = true;
     player.finishBlocked = false;
     player.vx = 0;
@@ -453,13 +446,11 @@ function updateHud() {
   if (powerNotice && elapsed < powerNotice.until) {
     setObjectiveStatus(`${powerNotice.text} · ${powerLabel()}`, 'power');
   } else if (player.finished) {
-    setObjectiveStatus(`Run complete · all ${required} sprouts collected · Dream the Future reached!`, 'complete');
-  } else if (player.finishBlocked) {
-    setObjectiveStatus(`Flag locked · collect ${remaining} more sprout${remaining === 1 ? '' : 's'} before finishing.`, 'blocked');
+    setObjectiveStatus(`Run complete · ${collected} of ${required} optional sprouts · Dream the Future reached!`, 'complete');
   } else if (remaining === 0) {
-    setObjectiveStatus(`All ${required} sprouts collected · reach the Dream the Future flag!`, 'ready');
+    setObjectiveStatus(`Perfect harvest · all ${required} sprouts collected · reach the flag!`, 'ready');
   } else {
-    setObjectiveStatus(`Collect ${remaining} more sprout${remaining === 1 ? '' : 's'} · tap jump for a short hop, hold for height · double jump available`, 'progress');
+    setObjectiveStatus(`Reach the flag to finish · ${collected} of ${required} optional sprouts found · tap jump for a short hop, hold for height · double jump available`, 'progress');
   }
 }
 
@@ -595,16 +586,14 @@ function drawCheckpoints() {
 function drawFinish() {
   const f = level.finish;
   const x = f.x - cameraX;
-  const remaining = Math.max(0, requiredSprouts() - player.collected.length);
-  const ready = remaining === 0;
-  ctx.strokeStyle = ready ? '#28482f' : '#5d432e';
+  ctx.strokeStyle = '#28482f';
   ctx.lineWidth = 6;
   ctx.beginPath(); ctx.moveTo(x + 10, f.y + f.height); ctx.lineTo(x + 10, f.y); ctx.stroke();
-  ctx.fillStyle = ready ? '#10291d' : '#6b4c2c';
+  ctx.fillStyle = '#10291d';
   ctx.fillRect(x + 13, f.y + 3, 55, 24);
-  ctx.fillStyle = ready ? '#c8f36a' : '#ffe1a0';
+  ctx.fillStyle = '#c8f36a';
   ctx.font = 'bold 8px system-ui';
-  ctx.fillText(ready ? 'DTF READY' : `${remaining} LEFT`, x + 17, f.y + 18);
+  ctx.fillText('FINISH', x + 17, f.y + 18);
 }
 
 function drawProgressRail() {
@@ -707,6 +696,7 @@ function render() {
 function finishGame() {
   running = false;
   paused = false;
+  powerNotice = null;
   syncPauseButton();
   const previousBest = readBest();
   const newBest = previousBest === null || elapsed < previousBest;
@@ -788,7 +778,7 @@ function load() {
   try {
     if (!canvas || !ctx) throw new Error('canvas 2D context unavailable');
     level = validateLevel(readEmbeddedLevel());
-    setObjectiveStatus(`Collect all ${level.requiredPickups} sprouts · tap/hold jump control · double jump enabled · ${level.powerups.length} power-ups · ${level.checkpoints.length} checkpoints`, 'progress');
+    setObjectiveStatus(`Reach the flag to clear the run · ${level.requiredPickups} optional sprouts · tap/hold jump control · double jump enabled · ${level.powerups.length} power-ups · ${level.checkpoints.length} checkpoints`, 'progress');
     reset();
   } catch (error) {
     console.error('Sprout Run failed to initialize.', error);
