@@ -76,4 +76,30 @@ describe('room action executor', () => {
 
     await expect(rollRoomWithTransport(startedRoom, transport, 'local-player-2', () => 0)).rejects.toThrow('not this player');
   });
+
+  it('rejects a duplicate roll while the first room update is still in flight', async () => {
+    const storage = new MemoryStorage();
+    const transport = createLocalRoomTransport(storage);
+    const room = await transport.createRoom(makeTransportPlayer(0, true));
+    const joinedRoom = await transport.joinRoom(room.code, makeTransportPlayer(1));
+    const startedRoom = await startRoomWithTransport(joinedRoom, transport, 'local-player-1');
+
+    let releaseUpdate!: () => void;
+    const updateGate = new Promise<void>((resolve) => {
+      releaseUpdate = resolve;
+    });
+    const delayedTransport = {
+      ...transport,
+      async updateGameState(...args: Parameters<typeof transport.updateGameState>) {
+        await updateGate;
+        return transport.updateGameState(...args);
+      }
+    };
+
+    const firstRoll = rollRoomWithTransport(startedRoom, delayedTransport, 'local-player-1', () => 0);
+    await expect(rollRoomWithTransport(startedRoom, delayedTransport, 'local-player-1', () => 0)).rejects.toThrow('already in progress');
+
+    releaseUpdate();
+    await expect(firstRoll).resolves.toMatchObject({ gameState: { lastRoll: 1 } });
+  });
 });
