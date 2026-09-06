@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "retirements": [
+    {
+      "branch": "game/burn-buds-frontend-consolidation",
+      "headSha": "1d30f6d63215299897dbe8550548874a639c3edd",
+      "supersededBy": "2df694fa6e8b1980e859af29493c8b97fde975a2",
+      "status": "approved",
+      "reviewedAt": "2026-09-06",
+      "reason": "Semantic salvage confirmed the branch's 14-commit shared render-sync consolidation is preserved on current main. runtime-sync-v1.js is byte-identical, current runtime-sync regression coverage preserves the single shared MutationObserver/lifecycle/load/cache/helper-subscription contract, and the only material test difference is the historical v6 shared-sync cache label versus the newer v8 native-targeting release. Current main further preserves coarse-pointer targeting and independent presence polling. No open PR owns the exact branch tip."
+    }
+  ]
+}
