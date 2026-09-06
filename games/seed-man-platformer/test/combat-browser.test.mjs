@@ -26,18 +26,25 @@ async function snapshot(page) {
 
 async function fireAt(page, enemyId, hits) {
   for (let index = 0; index < hits; index += 1) {
+    const before = await snapshot(page);
+    const target = before.enemies.find((enemy) => enemy.id === enemyId);
+    assert.ok(target, `Missing combat enemy ${enemyId}`);
+    if (target.defeated) return;
+
     await page.evaluate((id) => {
-      const combat = window.__SPROUT_COMBAT_BROWSER__.snapshot();
-      const enemy = combat.enemies.find((entry) => entry.id === id);
-      if (!enemy) throw new Error(`Missing combat enemy ${id}`);
-      player.x = id === 'combat-static-mite' ? 2740 : 800;
+      player.x = id === 'combat-static-mite' ? 2680 : 760;
       player.y = 434;
       player.vx = 30;
       player.vy = 0;
       player.grounded = true;
     }, enemyId);
+
     await page.keyboard.press('j');
-    await sleep(420);
+    await page.waitForFunction(({ enemyId, previousHealth }) => {
+      const enemy = window.__SPROUT_COMBAT_BROWSER__?.snapshot?.().enemies.find((entry) => entry.id === enemyId);
+      return Boolean(enemy && (enemy.defeated || enemy.health < previousHealth));
+    }, { enemyId, previousHealth: target.health }, { timeout: 1800 });
+    await sleep(220);
   }
 }
 
