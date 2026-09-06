@@ -36,8 +36,8 @@ The current Game Hub exposes 25 playable browser games:
 
 ## Existing controlled development projects
 
-- **Ganjumanji: The Lost Grower’s Temple** — dedicated repository; keep gated until its own approved playable implementation is ready.
-- **THC RPG** — dedicated project; do not replace it with a competing implementation inside this repository.
+- **Ganjumanji: The Lost Grower’s Temple** — canonical release candidate `0.3.0` in its dedicated repository. The three-region campaign, deterministic rules/storage, campaign solvability validation, route-safe build, desktop/mobile Playwright acceptance, screenshot evidence, and production artifact are green at revision `e82580daa684fc7733ef6cfcb12a502939a609dd`. It stays outside the public playable count until DTFSeeds packaging and exact live-route verification pass.
+- **THC RPG** — playable browser vertical slice in its dedicated repository. Environment/equipment simulation, quests, deterministic phenotypes, persistent Pheno Grow Journal, Keeper selection, and Keeper cutting/replanting are implemented and tested. It stays outside the public playable count until central packaging and production-route verification are added.
 
 ## Formerly missing outlined slate — shipped
 
@@ -70,11 +70,12 @@ These are not automatically approved production titles. Promote them into contro
 
 Priority now favors unfinished controlled projects and quality/completeness work rather than rebuilding games that already shipped:
 
-1. Audit and advance **Ganjumanji** in its dedicated canonical repository.
-2. Audit and advance **THC RPG** in its dedicated canonical repository.
-3. Review **Root Cause** for public promotion only after its quality, ownership, and release gates are rechecked.
-4. Continue quality, mobile, accessibility, balance, art, and multiplayer upgrades for the 25 public titles.
-5. Promote future concept-bank titles only after scope, mechanics, and canonical ownership are explicitly established.
+1. Package the exact green **Ganjumanji** release candidate through the DTFSeeds integration path, then verify the live route before public promotion.
+2. Register and package the executable **THC RPG** vertical slice without replacing its dedicated canonical repository.
+3. Continue THC RPG’s lineage/breeding progression on top of the persisted Keeper/cutting state.
+4. Review **Root Cause** for public promotion only after its quality, ownership, and release gates are rechecked.
+5. Continue quality, mobile, accessibility, balance, art, and multiplayer upgrades for the 25 public titles.
+6. Promote future concept-bank titles only after scope, mechanics, and canonical ownership are explicitly established.
 
 ## Release rule
 
