@@ -18,12 +18,13 @@ export function createInitialGame(playerCount: number): GameState {
     lastCard: null,
     message: 'Game ready. Roll to begin.',
     winnerId: null,
-    cardCursor: 0
+    cardCursor: 0,
+    pendingChoice: null
   };
 }
 
 export function rollCurrentTurn(state: GameState, random: () => number = Math.random): GameState {
-  if (state.phase === 'game_over') return state;
+  if (state.phase === 'game_over' || state.phase === 'choosing_player') return state;
   const currentPlayer = getCurrentPlayer(state.players, state.currentPlayerIndex);
 
   if (shouldSkipTurn(currentPlayer)) {
@@ -41,7 +42,8 @@ export function rollCurrentTurn(state: GameState, random: () => number = Math.ra
       message: `${currentPlayer.name} skipped this turn.`,
       lastRoll: null,
       lastMove: null,
-      lastCard: null
+      lastCard: null,
+      pendingChoice: null
     };
   }
 
@@ -63,6 +65,7 @@ export function rollCurrentTurn(state: GameState, random: () => number = Math.ra
       lastMove,
       lastCard: null,
       winnerId: currentPlayer.id,
+      pendingChoice: null,
       message: `${currentPlayer.name} rolled ${result} and reached the finish.`
     };
   }
@@ -77,6 +80,7 @@ export function rollCurrentTurn(state: GameState, random: () => number = Math.ra
       lastMove,
       lastCard: draw.card,
       cardCursor: draw.nextCursor,
+      pendingChoice: null,
       message: `${currentPlayer.name} rolled ${result}, landed on HIT, and drew ${draw.card.title}.`
     };
     return applyActionCard(stateAfterLanding, draw.card, 0, random);
@@ -92,6 +96,7 @@ export function rollCurrentTurn(state: GameState, random: () => number = Math.ra
     lastRoll: result,
     lastMove,
     lastCard: null,
+    pendingChoice: null,
     currentPlayerIndex: nextPlayerIndex(players, state.currentPlayerIndex, directionState.turnDirection),
     message: `${currentPlayer.name} rolled ${result} and moved to space ${updatedCurrentPlayer.positionIndex + 1}.`
   };
