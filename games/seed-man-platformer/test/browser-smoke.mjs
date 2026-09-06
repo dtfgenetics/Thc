@@ -255,6 +255,7 @@ async function runDesktopAcceptance(page) {
   assert.equal(finishState.sprouts, 0, 'Flag completion must be verified without collecting sprouts.');
   assert.equal(finishState.finished, true, 'Reaching the flag must finish the level with zero sprouts.');
   assert.match(await page.locator('#finish-summary').innerText(), /0 of 24 sprouts/i);
+  await page.waitForFunction(() => document.querySelector('#load-status')?.dataset.state === 'complete', null, { timeout: 5000 });
   assert.match(await page.locator('#load-status').innerText(), /Run complete/i);
 
   await page.locator('#play-again').click();
