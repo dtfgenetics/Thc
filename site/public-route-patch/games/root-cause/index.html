@@ -7,6 +7,7 @@
   <meta name="description" content="Root Cause is a cultivation diagnostics deduction game from DTF Games.">
   <link rel="canonical" href="https://dtfseeds.com/games/root-cause/">
   <link rel="stylesheet" href="./root-cause.css">
+  <link rel="stylesheet" href="./root-cause-v2.css">
   <title>Root Cause | DTF Games</title>
 </head>
 <body>
@@ -57,7 +58,7 @@
       <aside class="control-column">
         <section class="control-card" aria-labelledby="inspection-title"><p class="eyebrow">Inspection tray</p><h2 id="inspection-title">Choose what to verify</h2><p class="help-text">Each inspection costs 10 potential points for this case. Maximum two.</p><div id="inspections" class="action-grid"></div></section>
         <section class="control-card" aria-labelledby="diagnosis-title"><p class="eyebrow">Differential diagnosis</p><h2 id="diagnosis-title">Name the root cause</h2><p class="help-text">You get two guesses. A wrong first guess costs 25 potential points.</p><div id="diagnoses" class="diagnosis-grid"></div></section>
-        <section class="control-card code-card" aria-labelledby="code-title"><p class="eyebrow">Case code</p><h2 id="code-title">Replay this run</h2><label for="case-code">Six-character code</label><div class="code-row"><input id="case-code" maxlength="6" autocomplete="off" autocapitalize="characters" spellcheck="false"><button id="new-code" type="button" class="secondary-button">New</button></div><p class="help-text">Enter loads the exact same six cases and option order.</p><button id="share-run" type="button" class="primary-button">Copy challenge link</button></section>
+        <section class="control-card code-card" aria-labelledby="code-title"><p class="eyebrow">Case code</p><h2 id="code-title">Replay this run</h2><label for="case-code">Six-character code</label><div class="code-row"><input id="case-code" maxlength="6" pattern="[A-HJ-NP-Z2-9]{6}" autocomplete="off" autocapitalize="characters" spellcheck="false"><button id="new-code" type="button" class="secondary-button">New</button></div><p class="help-text">Enter loads the exact same six cases and option order.</p><button id="share-run" type="button" class="primary-button">Copy challenge link</button></section>
         <section class="control-card" aria-labelledby="history-title"><p class="eyebrow">Run log</p><h2 id="history-title">Resolved cases</h2><ol id="history" class="history-list"><li class="empty-state">Completed cases will appear here.</li></ol></section>
       </aside>
     </section>
@@ -65,6 +66,7 @@
     <section class="rules-card" aria-labelledby="rules-title"><p class="eyebrow">Diagnostic rule</p><h2 id="rules-title">Verify conditions before correcting symptoms.</h2><div class="rules-grid"><p><strong>Observe:</strong> location, timing, posture, color, and which leaves are affected can matter as much as the symptom itself.</p><p><strong>Inspect:</strong> use measurements and comparisons to separate look-alike causes.</p><p><strong>Diagnose:</strong> choose the explanation that fits the whole pattern, not just one clue.</p></div><p class="education-note">Education boundary: plant symptoms can overlap. This game teaches broad diagnostic reasoning and does not replace direct measurement, lab testing, or product-label directions.</p></section>
   </main>
   <p id="announce" class="sr-only" aria-live="assertive"></p>
-  <script type="module" src="./app.js"></script>
+  <script src="./engine.js" defer></script>
+  <script src="./app.js" defer></script>
 </body>
 </html>
