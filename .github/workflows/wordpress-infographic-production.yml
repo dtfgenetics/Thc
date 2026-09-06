@@ -12,6 +12,7 @@ on:
       - site/wordpress/education/topic-literature.json
       - site/wordpress/education/outdoor-quantification-v1.json
       - site/wordpress/education/outdoor-quantification/**
+      - scripts/decode-inline-infographic-b64.mjs
       - scripts/import-wordpress-infographic-remote-batch.mjs
       - scripts/stage-eligible-infographics.mjs
       - scripts/deploy-wordpress-infographic-library-rest.mjs
@@ -72,6 +73,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+
+      - name: Decode validated inline infographic transports
+        shell: bash
+        run: |
+          node --check scripts/decode-inline-infographic-b64.mjs
+          node scripts/decode-inline-infographic-b64.mjs
 
       - name: Report protected canonical intake semantics
         continue-on-error: true
