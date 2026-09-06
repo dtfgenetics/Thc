@@ -57,6 +57,26 @@
       : 'Seed Man: Sprout Run | DTF Genetics';
   }
 
+  function installLevelOneSummaryCompatibility() {
+    try {
+      if (typeof finishGame !== 'function') return;
+      const baseFinishGame = finishGame;
+      finishGame = function sproutRunCompatibleFinishSummary() {
+        baseFinishGame();
+        try {
+          if (typeof level === 'undefined' || level?.id !== 'sprout-run') return;
+          const summary = document.querySelector('#finish-summary');
+          if (!summary) return;
+          summary.textContent = String(summary.textContent || '').replace(/(\d+)\/(\d+) sprouts/i, '$1 of $2 sprouts');
+        } catch (error) {
+          console.warn('Sprout Run completion-summary compatibility update failed.', error);
+        }
+      };
+    } catch (error) {
+      console.warn('Sprout Run completion-summary compatibility could not install.', error);
+    }
+  }
+
   const canvas = document.querySelector('#game');
   if (canvas) {
     canvas.addEventListener('contextlost', () => {
@@ -83,6 +103,7 @@
     setTimeout(() => {
       const active = window.__SPROUT_CAMPAIGN__?.getLevel?.();
       setBrandedCampaignTitle(active?.title || 'Greenhouse Gauntlet');
+      installLevelOneSummaryCompatibility();
     }, 0);
   }, { once: true });
 
@@ -98,6 +119,7 @@
     release: RELEASE,
     softwarePreferred: true,
     campaignTitleBranding: true,
+    levelOneSummaryCompatibility: true,
     get contextLostCount() { return lost; },
     get contextRestoredCount() { return restored; },
   });
