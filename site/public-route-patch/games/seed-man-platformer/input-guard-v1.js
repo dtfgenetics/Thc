@@ -193,6 +193,22 @@
         signatureClock += Math.max(0, Math.min(Number(dt) || 0, 0.05));
         const previous = inputPlayer;
         const next = baseStep(inputPlayer, inputState, levelData, dt, config);
+
+        // Sprouts are mastery collectibles, not a normal-stage finish requirement.
+        // Preserve explicit boss gates and other specialized finish states.
+        if (
+          next?.finishBlocked &&
+          next.state === 'finish-blocked' &&
+          levelData?.finish &&
+          next.x + next.width >= levelData.finish.x
+        ) {
+          next.finished = true;
+          next.finishBlocked = false;
+          next.vx = 0;
+          next.vy = 0;
+          next.state = 'finish';
+        }
+
         const signature = SIGNATURES[levelData.id] || null;
         if (!signature || next.finished || next.deaths > previous.deaths) {
           if (next.deaths > previous.deaths) {
@@ -256,6 +272,18 @@
         syncSignatureUi(levelData, signature, pulse);
         return next;
       };
+
+      if (typeof updateHud === 'function') {
+        const baseUpdateHud = updateHud;
+        updateHud = function seedManOptionalSproutHud() {
+          baseUpdateHud();
+          if (player?.finished && typeof requiredSprouts === 'function' && typeof setObjectiveStatus === 'function') {
+            const required = requiredSprouts();
+            const collected = Array.isArray(player.collected) ? player.collected.length : 0;
+            setObjectiveStatus(`Run complete · ${collected}/${required} sprouts · Dream the Future reached!`, 'complete');
+          }
+        };
+      }
 
       ensureSignatureUi();
       syncSignatureSelection(typeof level !== 'undefined' ? level.id : 'sprout-run');
