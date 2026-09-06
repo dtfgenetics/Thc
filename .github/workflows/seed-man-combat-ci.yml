@@ -1,0 +1,44 @@
+name: Seed Man Combat CI
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'games/seed-man-platformer/src/systems/combat.mjs'
+      - 'games/seed-man-platformer/src/systems/enemy-archetypes.mjs'
+      - 'games/seed-man-platformer/src/systems/weapons.mjs'
+      - 'games/seed-man-platformer/src/systems/phenotypes.mjs'
+      - 'games/seed-man-platformer/src/systems/player-progression.mjs'
+      - 'games/seed-man-platformer/test/combat.test.mjs'
+      - '.github/workflows/seed-man-combat-ci.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'games/seed-man-platformer/src/systems/combat.mjs'
+      - 'games/seed-man-platformer/src/systems/enemy-archetypes.mjs'
+      - 'games/seed-man-platformer/src/systems/weapons.mjs'
+      - 'games/seed-man-platformer/src/systems/phenotypes.mjs'
+      - 'games/seed-man-platformer/src/systems/player-progression.mjs'
+      - 'games/seed-man-platformer/test/combat.test.mjs'
+      - '.github/workflows/seed-man-combat-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  combat:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate combat module syntax
+        run: |
+          node --check games/seed-man-platformer/src/systems/combat.mjs
+          node --check games/seed-man-platformer/src/systems/enemy-archetypes.mjs
+          node --check games/seed-man-platformer/test/combat.test.mjs
+      - name: Test combat simulation
+        run: node games/seed-man-platformer/test/combat.test.mjs
