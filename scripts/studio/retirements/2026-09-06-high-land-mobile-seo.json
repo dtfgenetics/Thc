@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "retirements": [
+    {
+      "branch": "automation/high-land-mobile-render-fix",
+      "headSha": "4e6851ea0b96166d9a7d154b3aa46e3222c983ce",
+      "supersededBy": "f536790faedb58a785b0acb48820388b0bb162b6",
+      "status": "approved",
+      "reason": "Semantic review confirms rendererSelection.ts, HighLandGame.ts, and HighLandGame.test.ts are byte-identical to current main. The mobile Canvas fallback for <=720px viewports and its regression tests are fully preserved. No open PR owns this exact branch tip."
+    },
+    {
+      "branch": "automation/high-land-seo-shell",
+      "headSha": "865fcbe5bd4ed361eea02864f9e095c4253e290d",
+      "supersededBy": "f536790faedb58a785b0acb48820388b0bb162b6",
+      "status": "approved",
+      "reason": "Semantic review confirms apps/high-land-web/index.html is byte-identical to current main. Crawlable title/description, canonical URL, robots metadata, Open Graph/Twitter metadata, VideoGame JSON-LD, fallback content, and noscript messaging are all preserved. No open PR owns this exact branch tip."
+    }
+  ]
+}
