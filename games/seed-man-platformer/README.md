@@ -28,11 +28,16 @@ The current foundation is intentionally not wired into the public route yet:
 
 - deterministic game-coordinate → Three.js world mapping: `src/render/three-world-state.mjs`
 - Three.js scene/camera/lighting/world adapter: `src/render/three-world.mjs`
+- immutable browser entrypoint: `src/render/three-world-public-entry.mjs`
+- self-contained browser-bundle builder: `scripts/build-three-public.mjs`
+- generated bundle target: `dist/three-world-v1.js`
 - deterministic bridge tests: `test/three-world-state.test.mjs`
+
+The bundle exposes `window.SeedManThreeWorld` and includes Three.js inside the browser artifact rather than depending on a CDN or runtime package import. CI verifies the bundle syntax, identity markers, retained package-dependency boundaries, and a 250–900 KB payload budget while preserving dependency license notices. URL strings inside Three.js source or legal metadata are not treated as network dependencies; surviving module/package references are.
 
 The Three.js renderer consumes serializable level/player/camera state. Physics, collision, collectible rules, checkpoint rules, finish gating, timers, and input remain outside Three.js. The locked flat Seed Man character can stay on the existing 2D character layer while the world behind him becomes 3D, preserving the established mascot contract and a Canvas fallback for devices where WebGL is unavailable.
 
-The next integration gate is a browser-tested progressive-enhancement layer on the public route. The existing Canvas2D production renderer remains authoritative until that browser integration passes desktop, mobile, WebGL-fallback, and live release checks.
+The next integration gate is a browser-tested progressive-enhancement layer on the public route. The existing Canvas2D production renderer remains authoritative until that browser integration passes desktop, mobile, WebGL-fallback, and live release checks. Building the bundle alone does not activate Three.js in production.
 
 ## Current playable scope
 
@@ -60,7 +65,7 @@ The feel-v2 movement work keeps the established fixed-timestep simulation, coyot
 
 ## Validation
 
-The dedicated workflow is `.github/workflows/seed-man-platformer-ci.yml` and runs:
+The dedicated workflow is `.github/workflows/seed-man-platformer-ci.yml` and runs the Three.js bundle build/contract checks plus:
 
 ```bash
 node games/seed-man-platformer/test/physics.test.mjs
@@ -82,7 +87,7 @@ Production verification is handled by `.github/workflows/seed-man-live-smoke.yml
 
 `browser-production-art`
 
-The expanded level, gameplay systems, feel-v2 control improvements, production character-art layer, automated desktop acceptance, automated mobile-browser acceptance, and tested Three.js world-state foundation are established in source. The production art is original DTF Canvas2D work and does not use third-party character assets or level layouts. The Three.js world layer is still a source-level prototype until its progressive-enhancement public integration is browser-tested and released.
+The expanded level, gameplay systems, feel-v2 control improvements, production character-art layer, automated desktop acceptance, automated mobile-browser acceptance, tested Three.js world-state foundation, and self-contained Three.js browser bundle are established in source. The production art is original DTF Canvas2D work and does not use third-party character assets or level layouts. The Three.js world layer remains inactive on the visitor-facing route until its progressive-enhancement integration is separately browser-tested and released.
 
 Two human QA gates intentionally remain open until there is direct evidence for them:
 
