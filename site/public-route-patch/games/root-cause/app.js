@@ -1,4 +1,7 @@
-import {
+const engine = globalThis.RootCauseEngine;
+if (!engine) throw new Error('Root Cause engine runtime is missing.');
+
+const {
   ROOT_ALPHABET,
   ROOT_CODE_LENGTH,
   MAX_INSPECTIONS,
@@ -11,7 +14,7 @@ import {
   normalizeRootCode,
   isValidRootCode,
   runGrade
-} from './engine.mjs';
+} = engine;
 
 const ui = Object.fromEntries([
   'load-status','round-stat','score-stat','solved-stat','inspection-stat','case-stage','case-title','case-summary','environment','plant-visual','symptoms','evidence','guess-status','feedback','next-case','inspections','diagnoses','case-code','new-code','share-run','history','announce'
@@ -23,7 +26,11 @@ const diagnosisById = new Map();
 
 function randomCode() {
   const bytes = new Uint32Array(ROOT_CODE_LENGTH);
-  crypto.getRandomValues(bytes);
+  if (globalThis.crypto?.getRandomValues) {
+    globalThis.crypto.getRandomValues(bytes);
+  } else {
+    for (let index = 0; index < bytes.length; index += 1) bytes[index] = Math.floor(Math.random() * 0xffffffff);
+  }
   return [...bytes].map((value) => ROOT_ALPHABET[value % ROOT_ALPHABET.length]).join('');
 }
 
@@ -33,9 +40,16 @@ function codeFromUrl() {
 }
 
 function syncUrl() {
-  const url = new URL(location.href);
-  url.searchParams.set('case', state.code);
-  history.replaceState(null, '', url);
+  try {
+    const url = new URL(location.href);
+    url.searchParams.set('case', state.code);
+    globalThis.history?.replaceState?.(null, '', url);
+  } catch {}
+}
+
+function prefersReducedMotion() {
+  try { return globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false; }
+  catch { return false; }
 }
 
 function diagnosisLabel(id) {
@@ -172,6 +186,7 @@ function renderHistory() {
 
 function renderComplete() {
   const grade = runGrade(state);
+  document.documentElement.dataset.caseStatus = 'complete';
   ui['round-stat'].textContent = `${state.caseOrder.length} / ${state.caseOrder.length}`;
   ui['score-stat'].textContent = state.score;
   ui['solved-stat'].textContent = `${state.solved} / ${state.caseOrder.length}`;
@@ -198,6 +213,8 @@ function render() {
   if (state.status === 'complete') return renderComplete();
 
   const gameCase = currentCase(state, data);
+  document.documentElement.dataset.caseStatus = state.current.status;
+  document.documentElement.dataset.caseVisual = gameCase.visual;
   ui['round-stat'].textContent = `${state.roundIndex + 1} / ${state.caseOrder.length}`;
   ui['inspection-stat'].textContent = `${state.current.inspectionIds.length} / ${MAX_INSPECTIONS}`;
   ui['case-stage'].textContent = gameCase.stage;
@@ -217,7 +234,7 @@ ui['next-case'].addEventListener('click', () => {
   state = advanceCase(state, data);
   render();
   ui.announce.textContent = state.status === 'complete' ? `Run complete. ${state.score} points.` : `Case ${state.roundIndex + 1} opened.`;
-  document.querySelector('.case-card')?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+  document.querySelector('.case-card')?.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'start' });
 });
 
 ui['case-code'].addEventListener('input', () => {
@@ -241,6 +258,7 @@ ui['share-run'].addEventListener('click', async () => {
   const url = new URL(location.href);
   url.searchParams.set('case', state.code);
   try {
+    if (!navigator.clipboard?.writeText) throw new Error('Clipboard API unavailable.');
     await navigator.clipboard.writeText(url.toString());
     ui['share-run'].textContent = 'Link copied';
   } catch {
