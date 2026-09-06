@@ -1,6 +1,6 @@
 # Orchestrator V2 Progress
 
-Branch: `project/github-worker-orchestrator/v2-ready`
+Branch: `project/platform/github-worker-orchestrator-v2`
 
 ## Implemented
 
@@ -18,6 +18,7 @@ Branch: `project/github-worker-orchestrator/v2-ready`
 - Dispatch refuses to continue past expired claims when `reconcileBeforeDispatch` is enabled.
 - Expanded deterministic lifecycle tests.
 - Workflow syntax/tests include V2 modules and report expired claims.
+- Repository-wide work migrated from the invalid isolated project lane to the required `project/platform/*` integration lane after Parallel Project Safety correctly rejected the prior branch.
 
 ## Next implementation tranche
 
