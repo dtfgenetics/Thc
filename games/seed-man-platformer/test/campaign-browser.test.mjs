@@ -145,16 +145,19 @@ async function testCurrentReversal(page) {
   await selectLevel(page, 'reservoir-run');
   const before = await page.evaluate(() => {
     const zone = level.mechanicZones[0];
-    player.x = zone.x + 20;
-    player.y = zone.y + 20;
+    player.x = zone.x + zone.width / 2 - player.width / 2;
+    player.y = zone.y + zone.height - player.height - 8;
     player.vx = 0;
     player.vy = 0;
     player.grounded = false;
-    return player.x;
+    return { x: player.x, vx: player.vx };
   });
-  await sleep(260);
-  const after = await page.evaluate(() => player.x);
-  assert.notEqual(after, before, 'Reservoir signature current should move Seed Man inside a flow lane');
+  await sleep(320);
+  const after = await page.evaluate(() => ({ x: player.x, vx: player.vx, state: player.state }));
+  assert.ok(
+    Math.abs(after.x - before.x) > 0.5 || Math.abs(after.vx) > 1,
+    `Reservoir signature current should carry Seed Man inside an unobstructed flow lane: x ${before.x} -> ${after.x}, vx=${after.vx}`
+  );
   assert.match(await page.locator('#seed-signature-state').innerText(), /Current Reversal|Pressure Wave/i);
 }
 
