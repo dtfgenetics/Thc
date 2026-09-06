@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "retirements": [
+    {
+      "branch": "codex/high-land-live-multiplayer",
+      "headSha": "874fca9439dbed5601b4585bef6d308cbed2faed",
+      "supersededBy": "2a95fe844d17964bc83fbe6c9c481d95b8eeca78",
+      "status": "approved",
+      "reason": "The branch's live invite-room work is preserved and strengthened on current main: create/join/update/subscribe flows remain, player identity is byte-for-byte preserved, canonical ?game= invite links retain legacy ?room= parsing, and the current website transport adds cryptographic room credentials plus server-side host, active-turn, reconnect, and authenticated event-write enforcement. No open PR owns the old branch."
+    }
+  ]
+}
