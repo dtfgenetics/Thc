@@ -241,17 +241,9 @@ async function runDesktopAcceptance(page) {
   assert.equal(afterHazard.checkpointId, 'checkpoint-1', 'Hazard respawn should preserve the activated checkpoint.');
 
   await page.evaluate(() => {
-    player.x = level.finish.x - player.width;
-    player.y = level.finish.y;
-    player.vx = 0;
-    player.vy = 0;
-    player.grounded = false;
-  });
-  await page.waitForFunction(() => document.querySelector('#load-status')?.dataset.state === 'blocked');
-  assert.match(await page.locator('#load-status').innerText(), /Flag locked/i);
-
-  await page.evaluate(() => {
-    player.collected = level.pickups.map((pickup) => pickup.id);
+    player.collected = [];
+    player.finished = false;
+    player.finishBlocked = false;
     player.x = level.finish.x - player.width;
     player.y = level.finish.y;
     player.vx = 0;
@@ -259,8 +251,11 @@ async function runDesktopAcceptance(page) {
     player.grounded = false;
   });
   await page.locator('#finish-panel').waitFor({ state: 'visible' });
-  assert.match(await page.locator('#finish-summary').innerText(), /24 of 24 sprouts/i);
-  assert.equal((await snapshot(page)).finished, true);
+  const finishState = await snapshot(page);
+  assert.equal(finishState.sprouts, 0, 'Flag completion must be verified without collecting sprouts.');
+  assert.equal(finishState.finished, true, 'Reaching the flag must finish the level with zero sprouts.');
+  assert.match(await page.locator('#finish-summary').innerText(), /0 of 24 sprouts/i);
+  assert.match(await page.locator('#load-status').innerText(), /Run complete/i);
 
   await page.locator('#play-again').click();
   await page.waitForFunction(() => document.querySelector('#sprout-count')?.textContent?.trim() === '0 / 24');
@@ -361,6 +356,7 @@ try {
     powerupCollection: true,
     checkpointRespawn: true,
     finishGate: true,
+    optionalSproutFinish: true,
     finishAndRestart: true,
     touchMovement: true,
     touchDoubleJump: true,
