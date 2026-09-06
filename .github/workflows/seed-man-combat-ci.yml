@@ -11,6 +11,7 @@ on:
       - 'games/seed-man-platformer/src/systems/player-progression.mjs'
       - 'games/seed-man-platformer/test/combat.test.mjs'
       - 'games/seed-man-platformer/test/combat-browser.test.mjs'
+      - 'site/public-route-patch/games/seed-man-platformer/canvas-compat-v1.js'
       - 'site/public-route-patch/games/seed-man-platformer/combat-browser-v1.js'
       - '.github/workflows/seed-man-combat-ci.yml'
   push:
@@ -23,6 +24,7 @@ on:
       - 'games/seed-man-platformer/src/systems/player-progression.mjs'
       - 'games/seed-man-platformer/test/combat.test.mjs'
       - 'games/seed-man-platformer/test/combat-browser.test.mjs'
+      - 'site/public-route-patch/games/seed-man-platformer/canvas-compat-v1.js'
       - 'site/public-route-patch/games/seed-man-platformer/combat-browser-v1.js'
       - '.github/workflows/seed-man-combat-ci.yml'
   workflow_dispatch:
@@ -45,6 +47,7 @@ jobs:
           node --check games/seed-man-platformer/src/systems/enemy-archetypes.mjs
           node --check games/seed-man-platformer/test/combat.test.mjs
           node --check games/seed-man-platformer/test/combat-browser.test.mjs
+          node --check site/public-route-patch/games/seed-man-platformer/canvas-compat-v1.js
           node --check site/public-route-patch/games/seed-man-platformer/combat-browser-v1.js
       - name: Test combat simulation
         run: node games/seed-man-platformer/test/combat.test.mjs
@@ -52,5 +55,5 @@ jobs:
         run: |
           npm ci
           npx playwright install chromium
-      - name: Test browser combat integration
+      - name: Test public-route combat integration
         run: node games/seed-man-platformer/test/combat-browser.test.mjs
