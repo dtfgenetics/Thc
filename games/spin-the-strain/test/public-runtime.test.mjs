@@ -47,9 +47,16 @@ assert.match(app, /function prefersReducedMotion\(/, 'reduced-motion lookup must
 assert.match(app, /navigator\.clipboard\?\.writeText/, 'share behavior must tolerate unavailable clipboard APIs');
 
 assert.match(css, /\.segment-label::after\{content:attr\(data-short\)/, 'mobile wheel must render compact category abbreviations');
+assert.match(css, /\.wheel-stage\[aria-busy="true"\] \.wheel/, 'wheel must expose a stronger visual spinning state');
+assert.match(css, /\.wheel-stage\[aria-busy="true"\] \.pointer/, 'pointer must react visibly while the wheel is spinning');
+assert.match(css, /@keyframes pointer-tick/, 'spinning pointer feedback must use a dedicated keyframe');
+assert.match(css, /\.result-card\.revealed/, 'result reveal must have a dedicated visual state');
+assert.match(css, /\.history-list li:first-child:not\(\.empty-state\)/, 'latest spin history entry must be visually prioritized');
+assert.match(css, /\.control-card\{position:sticky/, 'desktop challenge controls must stay available without covering the wheel');
 assert.match(css, /@media\(max-width:520px\)/, 'mobile wheel layout must be explicitly tuned');
-assert.match(css, /\.spin-button\{width:88px/, 'mobile spin target must remain comfortably tappable');
-assert.match(css, /@media\(prefers-reduced-motion:reduce\)/);
+assert.match(css, /\.spin-button\{width:92px;min-width:92px\}/, 'mobile spin target must remain comfortably tappable');
+assert.match(css, /@media\(hover:none\)/, 'touch devices must not inherit hover-only movement');
+assert.match(css, /@media\(prefers-reduced-motion:reduce\)/, 'spin polish must respect reduced-motion preferences');
 
 assert.equal(canonical.modes.length, 3, 'mode count changed unexpectedly');
 assert.equal(canonical.entries.length, 54, 'entry count changed unexpectedly');
@@ -58,4 +65,4 @@ for (const mode of canonical.modes) {
 }
 assert.equal(new Set(canonical.entries.map((entry) => entry.id)).size, canonical.entries.length, 'wheel entry ids must remain unique');
 
-console.log('Spin the Strain public runtime, no-repeat cycle, reveal isolation and mobile wheel regression checks passed.');
+console.log('Spin the Strain public runtime, no-repeat cycle, visual spin states, reveal isolation and mobile wheel regression checks passed.');
