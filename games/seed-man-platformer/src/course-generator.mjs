@@ -1,5 +1,6 @@
 const POWER_TYPES = ['speed', 'shield', 'magnet', 'jump'];
 const MECHANIC_TYPES = new Set(['bounce-pads','flow-zones','drag-zones','updraft-zones','boost-zones','heat-vents','gust-zones','slip-zones','wind-zones']);
+const MIN_FINAL_LANDING = 260;
 
 const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 
@@ -31,12 +32,19 @@ function groundPlatformsFor(template) {
   let gapIndex = 0;
   while (x < template.worldWidth) {
     const remaining = template.worldWidth - x;
-    if (remaining <= template.segmentLength) {
+    if (remaining <= template.segmentLength + MIN_FINAL_LANDING) {
       platforms.push({ x, y: 480, width: remaining, height: 60 });
       break;
     }
-    platforms.push({ x, y: 480, width: template.segmentLength, height: 60 });
+
     const gap = template.gaps[gapIndex % template.gaps.length];
+    const remainingAfterSegmentAndGap = remaining - template.segmentLength - gap;
+    if (remainingAfterSegmentAndGap < MIN_FINAL_LANDING) {
+      platforms.push({ x, y: 480, width: remaining, height: 60 });
+      break;
+    }
+
+    platforms.push({ x, y: 480, width: template.segmentLength, height: 60 });
     hazards.push({ x: x + template.segmentLength, y: 500, width: gap, height: 40 });
     x += template.segmentLength + gap;
     gapIndex += 1;
