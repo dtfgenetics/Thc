@@ -6,6 +6,16 @@ These instructions apply to the entire `dtfgenetics/Thc` repository.
 
 Read `AI_CONTEXT.md` for the current repository map, common commands, game ownership workflow, and AI-friendly change sequence. `AI_CONTEXT.md` is an orientation index only; this file, `CLAUDE.md`, route-owner documentation, and project-specific source-of-truth files remain authoritative when instructions conflict.
 
+## DTF system orchestration
+
+For broad DTF work that spans multiple projects, repositories, workers, checks, deployments, or recovery steps, read `.agents/skills/dtf-system-orchestrator/SKILL.md` first.
+
+Use the system-orchestrator skill when the request is outcome-oriented rather than limited to one file or one Git operation, including requests to create/update/check/fix/finish everything needed, move several DTF projects forward, reconcile work across canonical repositories, route work to specialized workers, or continue through verification, repair, integration, deployment, and live validation.
+
+The orchestrator resolves *what work exists, where it belongs, which worker owns it, and what evidence is required*. It does not replace subsystem skills. Repository mechanics still use `.agents/skills/github-repo-manager/SKILL.md`; new concurrent work still uses `.agents/skills/dtf-parallel-studio/SKILL.md`; dtfseeds.com publication still uses `.agents/skills/dtfseeds-production-publishing/SKILL.md`; and project-specific work still follows its canonical source-of-truth and skill.
+
+Never create a competing implementation in this integration repo when `data/project-registry.json` identifies another canonical repository.
+
 ## DTF Parallel Studio for new concurrent work
 
 For new repository work, read `.agents/skills/dtf-parallel-studio/SKILL.md` first, then the subsystem skill/source-of-truth documentation.
