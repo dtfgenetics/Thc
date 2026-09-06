@@ -63,7 +63,11 @@ function upperPlatformsFor(template) {
     const fraction = extra === 1 ? 0.5 : 0.34 + index * (0.56 / (extra - 1));
     platforms.push({ x: Math.round(template.worldWidth * fraction), y: 220 - (index % 2) * 25, width: 150 - (index === 2 ? 5 : 0), height: 24 });
   }
-  return platforms;
+  if (!template.boss) return platforms;
+
+  const arenaStart = Math.round(template.worldWidth * 0.74) - 32;
+  const arenaEnd = Math.round(template.worldWidth * 0.92) + 32;
+  return platforms.filter((platform) => platform.x + platform.width <= arenaStart || platform.x >= arenaEnd);
 }
 
 function safeGroundX(groundPlatforms, desired, margin = 60) {
