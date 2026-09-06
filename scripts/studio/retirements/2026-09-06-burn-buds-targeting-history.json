@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "retirements": [
+    {
+      "branch": "feature/burn-buds-targeting-ux",
+      "headSha": "da31789b3fc8c36e756864597301aa09e730808d",
+      "supersededBy": "418b5c3c187367ccc6790465d44f3e4f1604d9c1",
+      "status": "approved",
+      "reason": "Semantic review confirms this historical targeting UX branch is superseded by the current Protect the Plants targeting layer. Current main preserves the same targeting readout, keyboard navigation, ARIA semantics, and grid integration while adding coarse-pointer two-tap arming, fire-pending locking, sync subscription, and stronger target-state handling. No open PR owns this exact branch tip."
+    },
+    {
+      "branch": "game/burn-buds-mobile-targeting-dedup",
+      "headSha": "d2fed0762c17aba89131652b975caa5e6bb4a3d1",
+      "supersededBy": "418b5c3c187367ccc6790465d44f3e4f1604d9c1",
+      "status": "approved",
+      "reason": "Semantic review confirms this historical targeting-policy/dedup branch is superseded by the native targeting path on main. Its confirmShots compatibility shim is intentionally retired; current targeting-v1.js implements native coarse-pointer two-tap arming directly, and current production verification rejects the old targeting-policy shim. No open PR owns this exact branch tip."
+    }
+  ]
+}
