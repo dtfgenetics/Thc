@@ -1,0 +1,42 @@
+name: Game Scope Catalog CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/DTF_GAME_SCOPE_MASTER.md'
+      - 'data/public-navigation.json'
+      - 'data/project-registry.json'
+      - 'site/public-route-patch/games/index.html'
+      - 'scripts/validate-game-scope-master.mjs'
+      - 'package.json'
+      - '.github/workflows/game-scope-ci.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'docs/DTF_GAME_SCOPE_MASTER.md'
+      - 'data/public-navigation.json'
+      - 'data/project-registry.json'
+      - 'site/public-route-patch/games/index.html'
+      - 'scripts/validate-game-scope-master.mjs'
+      - 'package.json'
+      - '.github/workflows/game-scope-ci.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  verify-game-scope:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Verify public game scope, navigation, and Hub count
+        run: npm run verify:game-scope
