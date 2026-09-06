@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { execFileSync } from 'node:child_process'
-import { existsSync, readFileSync } from 'node:fs'
+import { existsSync, readFileSync, readdirSync } from 'node:fs'
 import path from 'node:path'
 
 function capture(command, args, options = {}) {
@@ -44,10 +44,34 @@ if (!existsSync(registryPath)) {
   process.exit(2)
 }
 
-const registry = JSON.parse(readFileSync(registryPath, 'utf8'))
-if (registry?.schemaVersion !== 1 || !Array.isArray(registry?.retirements)) {
-  console.error('branch-retirements.json must use schemaVersion 1 with a retirements array.')
-  process.exit(2)
+const shardRoot = path.join(repoRoot, 'scripts', 'studio', 'retirements')
+const registryPaths = [
+  registryPath,
+  ...(existsSync(shardRoot)
+    ? readdirSync(shardRoot)
+      .filter((name) => name.endsWith('.json'))
+      .sort()
+      .map((name) => path.join(shardRoot, name))
+    : []),
+]
+
+const retirements = []
+const seenBranches = new Map()
+for (const candidatePath of registryPaths) {
+  const registry = JSON.parse(readFileSync(candidatePath, 'utf8'))
+  if (registry?.schemaVersion !== 1 || !Array.isArray(registry?.retirements)) {
+    console.error(`${path.relative(repoRoot, candidatePath)} must use schemaVersion 1 with a retirements array.`)
+    process.exit(2)
+  }
+  for (const entry of registry.retirements) {
+    const branch = String(entry?.branch || '')
+    if (branch && seenBranches.has(branch)) {
+      console.error(`Duplicate reviewed-retirement branch ${branch} in ${path.relative(repoRoot, seenBranches.get(branch))} and ${path.relative(repoRoot, candidatePath)}.`)
+      process.exit(2)
+    }
+    if (branch) seenBranches.set(branch, candidatePath)
+    retirements.push(entry)
+  }
 }
 
 capture('git', [
@@ -63,7 +87,7 @@ const openPrs = openPrText ? JSON.parse(openPrText) : []
 const openBranches = new Map(openPrs.map((pr) => [pr.headRefName, pr]))
 
 const decisions = []
-for (const entry of registry.retirements) {
+for (const entry of retirements) {
   const branch = String(entry?.branch || '')
   const expectedHead = String(entry?.headSha || '')
   const supersededBy = String(entry?.supersededBy || '')
@@ -125,6 +149,7 @@ console.log(JSON.stringify({
   ok: deleteFailures.length === 0,
   observedMain: main,
   apply,
+  registryFiles: registryPaths.map((candidatePath) => path.relative(repoRoot, candidatePath)),
   reviewedCount: decisions.length,
   candidateCount: candidates.length,
   blockedCount: blocked.length,
@@ -141,6 +166,7 @@ console.log(JSON.stringify({
     supersedingCommit: 'must be an ancestor of current main',
     missingBranch: 'treat as already retired; never recreate it',
     changedBranchHead: 'block deletion until reviewed again',
+    duplicateRegistryBranch: 'fail before any retirement is attempted',
   },
 }, null, 2))
 
