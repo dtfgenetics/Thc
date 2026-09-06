@@ -31,7 +31,7 @@ async function fireAt(page, enemyId, hits) {
       const enemy = combat.enemies.find((entry) => entry.id === id);
       if (!enemy) throw new Error(`Missing combat enemy ${id}`);
       player.x = id === 'combat-static-mite' ? 2740 : 800;
-      player.y = 410;
+      player.y = 434;
       player.vx = 30;
       player.vy = 0;
       player.grounded = true;
