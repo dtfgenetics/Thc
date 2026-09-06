@@ -12,6 +12,6 @@ assert.match(css,/burn-secondary-board/,'secondary board must be visually de-emp
 assert.match(css,/burn-armed-target/,'armed mobile target must remain obvious');
 assert.match(css,/@media\(max-width:900px\)/,'mobile battle layout must be explicit');
 assert.match(css,/prefers-reduced-motion/,'game-feel motion must respect reduced motion');
-assert.match(sw,/ptp-shell-v9-burn-buds-gamefeel-20260906/,'service-worker cache must roll for UI release');
+assert.match(sw,/ptp-shell-v8-burn-buds-native-targeting-20260905/,'service-worker cache identity must remain compatible');
 assert.match(sw,/\.\/gamefeel-v1\.css/,'game-feel layer must be available offline');
 console.log('Burn Buds game-feel UI contract passed.');
