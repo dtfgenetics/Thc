@@ -21,8 +21,11 @@
     "2": "sacrifice-one-same-family-stage-1",
     "3": "sacrifice-one-same-family-stage-2"
   },
-  "effectStatus": "mechanic-role-only",
+  "effectStatus": "draft-family-stage-profiles-v1",
+  "effectProfilePath": "effect-profiles.json",
+  "effectAssignment": "family-and-stage-with-roleTag-ability-name",
+  "effectRuntimeStatus": "authored-not-active",
   "artStatus": "not-assigned",
   "releaseStatus": "roster-data-draft",
-  "notes": "Names, IDs, family, tier/stage, Vigor/Power, and role tags are machine-controlled. Full effect text, art, and final balance are later gates."
+  "notes": "Names, IDs, family, tier/stage, Vigor/Power, and role tags remain machine-controlled. Draft effect profiles now cover all 96 cards deterministically and use roleTag as the per-card ability name, but the effects remain inactive in battle resolution until balance integration and human playtesting are approved. Final card-specific wording, art, and tournament balance remain later gates."
 }
