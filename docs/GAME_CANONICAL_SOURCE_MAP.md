@@ -42,8 +42,8 @@ Never begin a game repair from the deployed HTML, a copied integration bundle, o
 
 | Project | Canonical repository | Current gate |
 | --- | --- | --- |
-| Ganjumanji | `dtfgenetics/GANJUMANJI-The-Lost-Grower-s-Temple` | controlled preproduction placeholder; do not invent a production build from integration copies |
-| THC RPG | `dtfgenetics/Thc-rpg` | controlled concept placeholder; canonical rules/data still need to be established before production coding is promoted |
+| Ganjumanji | `dtfgenetics/GANJUMANJI-The-Lost-Grower-s-Temple` | canonical release candidate `0.3.0`; standalone tests, build, route validation, desktop/mobile Playwright, screenshot evidence, and production artifact are green at `e82580d`; DTFSeeds packaging and exact live-route verification remain required |
+| THC RPG | `dtfgenetics/Thc-rpg` | playable browser vertical slice with environment/equipment systems, phenotype journal, Keeper selection and clonal cutting loop; central packaging and production-route verification are still open |
 
 ## Known ownership defects being corrected
 
@@ -62,6 +62,14 @@ The stable playable source currently packaged by DTFSeeds is `dtfgenetics/Terpoc
 ### PhenoQuest status
 
 `dtfgenetics/Catching-phenos` now contains a playable vertical slice and self-contained website build. Older source-of-truth wording that describes the repository as design-only preproduction is stale; it must be updated without implying the full RPG is finished.
+
+### Ganjumanji status
+
+`dtfgenetics/GANJUMANJI-The-Lost-Grower-s-Temple` is no longer a design-only placeholder. Canonical `main` now contains a complete three-region release-candidate campaign with deterministic model/storage/records, solvability validation, desktop/mobile browser acceptance, and a production build artifact. Central integration must pin the exact passing revision and must not promote the game to the public playable count until DTFSeeds packaging plus live-route verification pass.
+
+### THC RPG status
+
+`dtfgenetics/Thc-rpg` is no longer a concept-only placeholder. It contains a tested executable browser vertical slice. The current progression reaches persistent phenotype journaling, Keeper selection, and deterministic replanting from preserved Keeper cutting stock. It remains outside the public playable catalog until central packaging and production-route verification are added.
 
 ## Release path
 
