@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "retirements": [
+    {
+      "branch": "release/high-land-green-baseline",
+      "headSha": "1193f1ff2326fa9917210efcfe5d148f9fd491f5",
+      "supersededBy": "464f01b9e7089746e25312f6590328929352dd6b",
+      "status": "approved",
+      "reason": "Current main is strictly ahead of this branch with zero commits outside main. The baseline behavior is fully integrated and no open PR owns the exact branch tip."
+    },
+    {
+      "branch": "release/high-land-nonblocking-security-report",
+      "headSha": "05fb8261096f3621f101b25d45c2d3084ed7f41e",
+      "supersededBy": "464f01b9e7089746e25312f6590328929352dd6b",
+      "status": "approved",
+      "reason": "The branch's only changed file, .github/workflows/high-land-live-room-security.yml, is byte-identical to current main, including continue-on-error reporting behavior. No open PR owns the exact branch tip."
+    },
+    {
+      "branch": "automation/high-land-local-name-validation",
+      "headSha": "4fb9ecef6ead6482c78d871b827ed9aa98467583",
+      "supersededBy": "464f01b9e7089746e25312f6590328929352dd6b",
+      "status": "approved",
+      "reason": "Both changed files, highLandRoomModeService.ts and highLandRoomModeService.test.ts, are byte-identical to current main. Local room player-name validation, whitespace normalization, and regression coverage are fully preserved. No open PR owns the exact branch tip."
+    },
+    {
+      "branch": "design/high-land-game-ui-v2-20260830",
+      "headSha": "94957173d4a83b3419bf95805acd604a14331b68",
+      "supersededBy": "464f01b9e7089746e25312f6590328929352dd6b",
+      "status": "approved",
+      "reason": "The UI-v2 stylesheet and responsive Playwright contract are preserved on current main. The main entrypoint still imports highLandUiV2.css and adds a later productionControls.css layer, so current main extends rather than drops the reviewed UI-v2 behavior. No open PR owns the exact branch tip."
+    },
+    {
+      "branch": "high-land-live-browser-acceptance",
+      "headSha": "d99faebbb26e11e97af996fd63af736d701a454a",
+      "supersededBy": "464f01b9e7089746e25312f6590328929352dd6b",
+      "status": "approved",
+      "reason": "The live browser acceptance workflow, two-browser multiplayer Playwright spec, and live Playwright config are byte-identical to current main. Production multiplayer acceptance coverage is fully preserved. No open PR owns the exact branch tip."
+    }
+  ]
+}
