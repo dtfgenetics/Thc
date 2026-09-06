@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "retirements": [
+    {
+      "branch": "game/burn-buds-production-pass-v3",
+      "headSha": "d7c926e7f98b434e3fa3d15b76fca51daba0701b",
+      "supersededBy": "ec5f9f32d4b87f15e86f66ab2a3ea03949203ecd",
+      "status": "approved",
+      "reviewedAt": "2026-09-06",
+      "reason": "Semantic salvage confirmed this 14-commit production-pass history is preserved or superseded on current main. Its targeting regression test is byte-identical to main, including coarse-pointer two-tap firing, in-flight locking, keyboard navigation, ARIA busy/pressed semantics and server-authoritative submission. Placement and battle-feedback retain the historical behavior while replacing branch-local MutationObservers with the newer shared BurnBudsSync architecture. Current main also carries newer production-ready branding/runtime contracts. No open PR owns the exact branch tip."
+    }
+  ]
+}
