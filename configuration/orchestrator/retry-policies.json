@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "defaultPolicy": "implementation",
+  "policies": {
+    "implementation": {
+      "maxAttempts": 3,
+      "backoffMinutes": [5, 15, 60],
+      "repairWorker": "test-repair",
+      "quarantineAfterMaxAttempts": true
+    },
+    "transient-infrastructure": {
+      "maxAttempts": 4,
+      "backoffMinutes": [2, 5, 15, 30],
+      "automaticRetry": true,
+      "quarantineAfterMaxAttempts": true
+    },
+    "dependency-install": {
+      "maxAttempts": 3,
+      "backoffMinutes": [5, 15, 60],
+      "repairWorker": "test-repair",
+      "quarantineAfterMaxAttempts": true
+    },
+    "test-or-build": {
+      "maxAttempts": 3,
+      "backoffMinutes": [5, 20, 60],
+      "repairWorker": "test-repair",
+      "quarantineAfterMaxAttempts": true
+    },
+    "merge-conflict": {
+      "maxAttempts": 2,
+      "backoffMinutes": [5, 30],
+      "repairWorker": "repo-maintenance",
+      "preserveBranch": true,
+      "quarantineAfterMaxAttempts": true
+    },
+    "credential-or-policy": {
+      "maxAttempts": 0,
+      "automaticRetry": false,
+      "blockImmediately": true
+    },
+    "deployment": {
+      "maxAttempts": 2,
+      "backoffMinutes": [10, 30],
+      "automaticRetry": false,
+      "preserveReleaseCandidate": true,
+      "quarantineAfterMaxAttempts": true
+    },
+    "live-verification": {
+      "maxAttempts": 2,
+      "backoffMinutes": [5, 15],
+      "automaticRetry": false,
+      "rollbackOnPersistentFailure": true,
+      "quarantineAfterMaxAttempts": true
+    }
+  }
+}
