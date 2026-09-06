@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "retirements": [
+    {
+      "branch": "build/burn-buds-presence-polish",
+      "headSha": "9d9cae940c207fe7a6c1d5899963ca7851677abf",
+      "supersededBy": "ae0eb7eae721f838546bde38fddd95333e2d799e",
+      "status": "approved",
+      "reason": "Semantic review confirms the historical presence-polish contract is fully preserved and strengthened on current main. Every opponent presence, turn banner, burn feedback, reduced-motion, authenticated presence endpoint, and no-token-leak assertion remains, while main adds live telemetry, combat accessibility, shared render synchronization, native targeting, and hidden-opponent-state protections. No open PR owns this exact branch tip."
+    }
+  ]
+}
