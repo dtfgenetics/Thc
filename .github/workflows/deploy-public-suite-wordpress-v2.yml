@@ -305,7 +305,7 @@ jobs:
             rm -f "$body" "$headers"
           }
           check 'https://dtfseeds.com/games/' '25 playable browser games'
-          check 'https://dtfseeds.com/projects/' '15 public browser games'
+          check 'https://dtfseeds.com/projects/' '25 public browser games'
           check 'https://dtfseeds.com/games/high-land/' 'High Land'
           check 'https://dtfseeds.com/games/strain-showdown/' 'Eight play styles. One showdown.'
           check 'https://dtfseeds.com/games/protect-the-plants/' 'Protect the Plants'
