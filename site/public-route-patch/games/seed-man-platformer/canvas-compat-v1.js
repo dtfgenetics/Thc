@@ -15,6 +15,8 @@
   let gameContext = null;
   let restored = 0;
   let lost = 0;
+  let combatLoadAttempts = 0;
+  let combatLoaded = false;
 
   function patchedGetContext(type, attributes) {
     if (this.id !== 'game' || type !== '2d') {
@@ -77,13 +79,37 @@
     }
   }
 
+  function gameplayBindingsReady() {
+    try {
+      return typeof stepPlayer === 'function' && typeof render === 'function' && typeof reset === 'function';
+    } catch {
+      return false;
+    }
+  }
+
   function loadCombatBrowserAdapter() {
-    if (window.__SPROUT_COMBAT_BROWSER__ || document.querySelector('script[data-seed-combat-browser]')) return;
+    if (combatLoaded || window.__SPROUT_COMBAT_BROWSER__?.installed === true) return;
+    if (!gameplayBindingsReady()) {
+      combatLoadAttempts += 1;
+      if (combatLoadAttempts <= 80) {
+        window.setTimeout(loadCombatBrowserAdapter, 25);
+      } else {
+        console.error('Seed Man combat browser adapter could not find gameplay bindings.');
+      }
+      return;
+    }
+
+    const existing = document.querySelector('script[data-seed-combat-browser]');
+    if (existing) return;
     const script = document.createElement('script');
     script.src = `./combat-browser-v1.js?v=${RELEASE}`;
-    script.defer = true;
+    script.async = false;
     script.dataset.seedCombatBrowser = 'v1';
-    script.addEventListener('error', () => console.error('Seed Man combat browser adapter failed to load.'));
+    script.addEventListener('load', () => {
+      combatLoaded = window.__SPROUT_COMBAT_BROWSER__?.installed === true;
+      if (!combatLoaded) console.error('Seed Man combat browser adapter loaded without installing runtime hooks.');
+    }, { once: true });
+    script.addEventListener('error', () => console.error('Seed Man combat browser adapter failed to load.'), { once: true });
     document.body.append(script);
   }
 
@@ -117,9 +143,10 @@
     }, 0);
   }, { once: true });
 
-  // app.js and its gameplay wrappers are deferred classic scripts. Once
-  // those bindings exist, load the optional combat adapter and restore the
-  // native Canvas2D prototype so this compatibility behavior stays scoped.
+  // The compatibility script is the first deferred game script. Do not load
+  // combat until app.js and gameplay-v2.js have actually published the classic
+  // script bindings that the adapter wraps. This removes a race where combat
+  // could load successfully but freeze an `installed: false` state forever.
   window.addEventListener('DOMContentLoaded', () => {
     loadCombatBrowserAdapter();
     if (proto.getContext === patchedGetContext) proto.getContext = nativeGetContext;
@@ -132,6 +159,8 @@
     campaignTitleBranding: true,
     levelOneSummaryCompatibility: true,
     combatBrowserAutoLoad: true,
+    get combatLoadAttempts() { return combatLoadAttempts; },
+    get combatLoaded() { return combatLoaded; },
     get contextLostCount() { return lost; },
     get contextRestoredCount() { return restored; },
   });
