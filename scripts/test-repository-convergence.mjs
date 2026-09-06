@@ -12,6 +12,7 @@ const titleWorkflow = read('.github/workflows/wordpress-premium-title-normalizat
 const titleScript = read('scripts/normalize-wordpress-premium-page-titles.mjs')
 const lifecycleWorkflow = read('.github/workflows/branch-lifecycle-maintenance.yml')
 const lifecycleScript = read('scripts/studio/lifecycle.mjs')
+const lifecycleCore = read('scripts/studio/core.mjs')
 const reviewedRetirementScript = read('scripts/studio/retire-reviewed.mjs')
 const retirementRegistry = JSON.parse(read('data/branch-retirements.json'))
 const highLandCI = read('.github/workflows/high-land-ci.yml')
@@ -57,8 +58,12 @@ assert.ok(lifecycleWorkflow.includes('retention-days: 90'), 'Recovery inventorie
 assert.ok(lifecycleWorkflow.includes('branch-recovery.csv'), 'Recovery inventories must include a spreadsheet-friendly CSV.')
 assert.ok(lifecycleScript.includes("duplicateHead: 'report only"), 'Duplicate branch tips must remain report-only evidence.')
 assert.ok(lifecycleScript.includes('item.managed && item.safeToDelete'), 'Automatic cleanup must be limited to managed, proven-integrated branches.')
-assert.ok(lifecycleScript.includes("item.state === 'closed-unmerged' || item.state === 'orphan-unique'"), 'Recovery candidates must include only preserved unmerged lifecycle states.')
+assert.ok(lifecycleScript.includes("new Set(['post-merge-drift', 'closed-unmerged', 'orphan-unique'])"), 'Recovery candidates must include post-merge drift and other preserved unique-work states.')
+assert.ok(lifecycleScript.includes('headRefOid'), 'Lifecycle PR inventory must request the immutable PR-head commit evidence used for exact-head checks.')
 assert.ok(lifecycleScript.includes("flags.has('--recovery-only')"), 'Lifecycle command must expose a recovery-only machine-readable mode.')
+assert.ok(lifecycleCore.includes('mergedAtCurrentHead'), 'Lifecycle classification must distinguish an exact merged PR head from later branch drift.')
+assert.ok(lifecycleCore.includes('pr.headRefOid === headSha'), 'Merged-branch cleanup must require exact current-tip equality with the merged PR head.')
+assert.ok(lifecycleCore.includes("state: 'post-merge-drift'"), 'Post-merge branch commits must be preserved as an explicit lifecycle state.')
 
 for (const marker of [
   "currentHead === expectedHead",

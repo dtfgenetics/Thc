@@ -65,28 +65,36 @@ assert.equal(candidateSupersession(
   { files: ['b'], resources: ['x'], mergeable: 'MERGEABLE' },
 ), false)
 
+const mergedHead = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
+const driftHead = 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb'
 const lifecyclePrs = [
-  { number: 10, state: 'OPEN', headRefName: 'work/high-land/ui/s1', mergedAt: null },
-  { number: 11, state: 'MERGED', headRefName: 'work/high-land/ui/s2', mergedAt: '2026-09-04T20:00:00Z' },
-  { number: 12, state: 'CLOSED', headRefName: 'work/high-land/ui/s3', mergedAt: null },
+  { number: 10, state: 'OPEN', headRefName: 'work/high-land/ui/s1', headRefOid: 'cccccccccccccccccccccccccccccccccccccccc', mergedAt: null },
+  { number: 11, state: 'MERGED', headRefName: 'work/high-land/ui/s2', headRefOid: mergedHead, mergedAt: '2026-09-04T20:00:00Z' },
+  { number: 12, state: 'CLOSED', headRefName: 'work/high-land/ui/s3', headRefOid: 'dddddddddddddddddddddddddddddddddddddddd', mergedAt: null },
 ]
 assert.equal(classifyBranchLifecycle({
-  branch: 'work/high-land/ui/s1', prs: lifecyclePrs,
+  branch: 'work/high-land/ui/s1', headSha: 'cccccccccccccccccccccccccccccccccccccccc', prs: lifecyclePrs,
 }).state, 'active-pr')
 assert.equal(classifyBranchLifecycle({
-  branch: 'work/high-land/ui/s2', prs: lifecyclePrs,
+  branch: 'work/high-land/ui/s2', headSha: mergedHead, prs: lifecyclePrs,
 }).safeToDelete, true)
 assert.equal(classifyBranchLifecycle({
-  branch: 'work/high-land/ui/s3', prs: lifecyclePrs,
+  branch: 'work/high-land/ui/s2', headSha: driftHead, prs: lifecyclePrs,
+}).state, 'post-merge-drift')
+assert.equal(classifyBranchLifecycle({
+  branch: 'work/high-land/ui/s2', headSha: driftHead, prs: lifecyclePrs,
+}).safeToDelete, false)
+assert.equal(classifyBranchLifecycle({
+  branch: 'work/high-land/ui/s3', headSha: 'dddddddddddddddddddddddddddddddddddddddd', prs: lifecyclePrs,
 }).state, 'closed-unmerged')
 assert.equal(classifyBranchLifecycle({
-  branch: 'work/high-land/ui/s4', prs: lifecyclePrs,
+  branch: 'work/high-land/ui/s4', headSha: 'eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee', prs: lifecyclePrs,
 }).state, 'orphan-unique')
 assert.equal(classifyBranchLifecycle({
-  branch: 'project/platform/old-system', prs: [], isAncestorOfMain: true,
+  branch: 'project/platform/old-system', headSha: 'ffffffffffffffffffffffffffffffffffffffff', prs: [], isAncestorOfMain: true,
 }).safeToDelete, true)
 assert.equal(classifyBranchLifecycle({
-  branch: 'work/high-land/ui/s1', prs: lifecyclePrs, isAncestorOfMain: true,
+  branch: 'work/high-land/ui/s1', headSha: 'cccccccccccccccccccccccccccccccccccccccc', prs: lifecyclePrs, isAncestorOfMain: true,
 }).safeToDelete, false)
 
 function laneCheck(branchName, files) {
