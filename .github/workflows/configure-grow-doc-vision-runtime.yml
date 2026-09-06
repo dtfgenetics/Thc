@@ -1,0 +1,127 @@
+name: Configure Grow Doc Vision Runtime
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/configure-grow-doc-vision-runtime.yml'
+      - 'scripts/deploy/configure-grow-doc-vision-runtime.sh'
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type CONFIGURE to install the Grow Doc Gemini runtime secret on production.'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dtfseeds-grow-doc-vision-runtime
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate secret-safe runtime configurator
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash -n scripts/deploy/configure-grow-doc-vision-runtime.sh
+          grep -Fq "THC_GROW_DOC_GEMINI_API_KEY" scripts/deploy/configure-grow-doc-vision-runtime.sh
+          grep -Fq 'php -l "$wp_config"' scripts/deploy/configure-grow-doc-vision-runtime.sh
+          grep -Fq 'rm -f "$secret_file"' scripts/deploy/configure-grow-doc-vision-runtime.sh
+          ! grep -Eq 'echo .*secret|printf .*secret|set -x' scripts/deploy/configure-grow-doc-vision-runtime.sh
+          grep -Fq "if: github.event_name == 'workflow_dispatch'" .github/workflows/configure-grow-doc-vision-runtime.yml
+          grep -Fq 'environment: production' .github/workflows/configure-grow-doc-vision-runtime.yml
+
+  configure:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    environment: production
+    env:
+      SSH_HOST: ${{ secrets.HOSTINGER_SSH_HOST }}
+      SSH_USER: ${{ secrets.HOSTINGER_SSH_USER }}
+      SSH_PORT: ${{ secrets.HOSTINGER_SSH_PORT }}
+      SSH_KEY: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY }}
+      SSH_KNOWN_HOSTS: ${{ secrets.HOSTINGER_SSH_KNOWN_HOSTS }}
+      PUBLIC_ROOT: ${{ secrets.HOSTINGER_PUBLIC_ROOT }}
+      GROW_DOC_GEMINI_KEY: ${{ secrets.THC_GROW_DOC_GEMINI_API_KEY || secrets.GEMINI_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Require explicit production confirmation and configuration
+        shell: bash
+        env:
+          CONFIRM: ${{ inputs.confirm }}
+        run: |
+          set -euo pipefail
+          [[ "$CONFIRM" == 'CONFIGURE' ]] || { echo '::error::Confirmation must be exactly CONFIGURE.'; exit 1; }
+          missing=0
+          [[ -n "${SSH_HOST:-}" ]] || { echo '::error::Missing HOSTINGER_SSH_HOST'; missing=1; }
+          [[ -n "${SSH_USER:-}" ]] || { echo '::error::Missing HOSTINGER_SSH_USER'; missing=1; }
+          [[ -n "${SSH_KEY:-}" ]] || { echo '::error::Missing HOSTINGER_SSH_PRIVATE_KEY'; missing=1; }
+          [[ -n "${SSH_KNOWN_HOSTS:-}" ]] || { echo '::error::Missing HOSTINGER_SSH_KNOWN_HOSTS'; missing=1; }
+          [[ -n "${PUBLIC_ROOT:-}" ]] || { echo '::error::Missing HOSTINGER_PUBLIC_ROOT'; missing=1; }
+          [[ -n "${GROW_DOC_GEMINI_KEY:-}" ]] || { echo '::error::Missing THC_GROW_DOC_GEMINI_API_KEY (or GEMINI_API_KEY fallback)'; missing=1; }
+          [[ "$PUBLIC_ROOT" == /*/public_html ]] || { echo '::error::HOSTINGER_PUBLIC_ROOT must end in /public_html'; missing=1; }
+          [[ "$missing" -eq 0 ]]
+
+      - name: Prepare SSH transport
+        shell: bash
+        run: |
+          set -euo pipefail
+          install -d -m 700 "$HOME/.ssh"
+          printf '%s\n' "$SSH_KEY" > "$HOME/.ssh/dtf_hostinger"
+          chmod 600 "$HOME/.ssh/dtf_hostinger"
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+          chmod 600 "$HOME/.ssh/known_hosts"
+
+      - name: Stage secret on Hostinger without logging it
+        shell: bash
+        run: |
+          set -euo pipefail
+          port="${SSH_PORT:-65002}"
+          ssh_opts=(-i "$HOME/.ssh/dtf_hostinger" -p "$port" -o BatchMode=yes -o StrictHostKeyChecking=yes)
+          ssh "${ssh_opts[@]}" "$SSH_USER@$SSH_HOST" 'umask 077; mkdir -p "$HOME/.dtf-deploy/secrets"; cat > "$HOME/.dtf-deploy/secrets/grow-doc-gemini-key"' <<< "$GROW_DOC_GEMINI_KEY"
+
+      - name: Install wp-config runtime constant and preserve rollback backup
+        shell: bash
+        run: |
+          set -euo pipefail
+          port="${SSH_PORT:-65002}"
+          ssh_opts=(-i "$HOME/.ssh/dtf_hostinger" -p "$port" -o BatchMode=yes -o StrictHostKeyChecking=yes)
+          printf -v remote_cmd 'bash -s -- %q' "$PUBLIC_ROOT"
+          ssh "${ssh_opts[@]}" "$SSH_USER@$SSH_HOST" "$remote_cmd" < scripts/deploy/configure-grow-doc-vision-runtime.sh
+
+      - name: Verify configured production endpoint reaches the provider
+        shell: bash
+        run: |
+          set -euo pipefail
+          probe="$RUNNER_TEMP/grow-doc-probe.png"
+          printf '%s' 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Y9Z8N8AAAAASUVORK5CYII=' | base64 -d > "$probe"
+          body="$RUNNER_TEMP/grow-doc-vision-response.json"
+          status="$(curl -4 --silent --show-error --location --max-time 60 \
+            --output "$body" --write-out '%{http_code}' \
+            --request POST \
+            --header 'X-THC-Visual-Request: 1' \
+            --form 'allowedIndicators=["visible leaf discoloration"]' \
+            --form "files[]=@${probe};type=image/png" \
+            'https://dtfseeds.com/thc-grow-doc/api/visual-observations.php')"
+          [[ "$status" == '200' ]] || {
+            echo "::error::Grow Doc provider probe returned HTTP $status"
+            node -e "const fs=require('fs');const p=process.argv[1];if(fs.existsSync(p)){try{const d=JSON.parse(fs.readFileSync(p,'utf8')); console.error(JSON.stringify({error:d.error||null,code:d.code||null}));}catch{console.error('Non-JSON provider response');}}" "$body"
+            exit 1
+          }
+          node - <<'NODE' "$body"
+          const fs=require('fs');
+          const data=JSON.parse(fs.readFileSync(process.argv[2],'utf8'));
+          if(!Array.isArray(data.matchedIndicators)) throw new Error('matchedIndicators missing');
+          if(typeof data.unknownOrOutOfScope !== 'boolean') throw new Error('unknownOrOutOfScope missing');
+          console.log('Grow Doc production visual provider returned the expected structured response contract.');
+          NODE
