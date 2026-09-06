@@ -56,6 +56,22 @@
       "status": "approved",
       "reviewedAt": "2026-09-06",
       "reason": "This preservation branch was created during #671 convergence so the late flag-completion commit could not be lost. Progression work was merged through #671, and the accepted flag-completion runtime plus browser tests were rebuilt and merged through #674. The preserving main commit a46d35ee264c1584e1f1b7512450cf581db72ad0 contains the reconciled result."
+    },
+    {
+      "branch": "feat/seed-man-combat-foundation",
+      "headSha": "90affa5938b0843c89e786bc2d8792308c9dfb34",
+      "supersededBy": "0c593b181226b8123da06b444a9fdc43ad1da1e8",
+      "status": "approved",
+      "reviewedAt": "2026-09-06",
+      "reason": "PR #676 passed the exact-head Seed Man combat/platformer, route, release, publishability, and public-suite qualification gates and was squash-merged as 0c593b181226b8123da06b444a9fdc43ad1da1e8. The feature branch is now a superseded integration branch and no longer owns unique accepted work."
+    },
+    {
+      "branch": "work/seed-man/combat-public-adapter/20260906-2c0b8ab",
+      "headSha": "2c0b8ab0a7cbb9d47f6d4daf8eb7b6398cdbc2e7",
+      "supersededBy": "0c593b181226b8123da06b444a9fdc43ad1da1e8",
+      "status": "approved",
+      "reviewedAt": "2026-09-06",
+      "reason": "Recovery review found its canonical combat.mjs blob is byte-for-byte identical to the #676/main version, while its alternate combat-runtime-v1.js is an earlier five-encounter browser implementation. Merged PR #676 preserves the canonical combat system and replaces that adapter with the tested six-encounter combat-browser-v1.js, flying-enemy behavior, chain phenotype effect, Chromium acceptance, and production packaging. No unique accepted behavior remains on this orphan branch."
     }
   ]
 }
