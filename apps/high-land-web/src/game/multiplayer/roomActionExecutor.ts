@@ -3,6 +3,8 @@ import { canPlayerRoll, canStartRoom, type HighLandRoomState } from './roomState
 import type { RoomTransport } from './roomTransport';
 import type { HighLandGameEvent } from '../events/gameEvents';
 
+const inFlightRolls = new Set<string>();
+
 export async function startRoomWithTransport(
   room: HighLandRoomState,
   transport: RoomTransport,
@@ -33,15 +35,25 @@ export async function rollRoomWithTransport(
     throw new Error('It is not this player’s turn.');
   }
 
-  const result = rollRoomGameplay(room, random);
-  const updatedRoom = await transport.updateGameState(room.code, result.room.gameState!, requestingPlayerId);
-  await appendEventsBestEffort(room.code, result.events, transport, requestingPlayerId);
+  const rollKey = `${room.code}:${requestingPlayerId}`;
+  if (inFlightRolls.has(rollKey)) {
+    throw new Error('A roll is already in progress for this player.');
+  }
 
-  return {
-    ...updatedRoom,
-    status: result.room.status,
-    gameState: result.room.gameState
-  };
+  inFlightRolls.add(rollKey);
+  try {
+    const result = rollRoomGameplay(room, random);
+    const updatedRoom = await transport.updateGameState(room.code, result.room.gameState!, requestingPlayerId);
+    await appendEventsBestEffort(room.code, result.events, transport, requestingPlayerId);
+
+    return {
+      ...updatedRoom,
+      status: result.room.status,
+      gameState: result.room.gameState
+    };
+  } finally {
+    inFlightRolls.delete(rollKey);
+  }
 }
 
 async function appendEventsBestEffort(
