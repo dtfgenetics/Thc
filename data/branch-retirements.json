@@ -136,6 +136,38 @@
       "status": "approved",
       "reviewedAt": "2026-09-06",
       "reason": "This second PR sibling shares the exact same reviewed tip as the other divergent Sprout Run feel branches. The salvage audit confirmed all meaningful gameplay and acceptance behavior is present in newer main implementations and tests, while current main adds later campaign, combat, route, production and lifecycle fixes. The branch is safe to retire subject to the lifecycle worker's exact-head and open-PR checks."
+    },
+    {
+      "branch": "genetics-v2",
+      "headSha": "c244170dbcaecce2c6d8b9818554e75fb25ea7b9",
+      "supersededBy": "63eba9c89cbac4214e45691c11256ba556f81c26",
+      "status": "approved",
+      "reviewedAt": "2026-09-06",
+      "reason": "Semantic salvage review found the original Genetics V2 catalog, /seeds/ publisher, fallback content, publishing workflow, and supplied-card expansion have all been superseded on main by the canonical 11-line/13-card seed-line catalog, provenance-controlled Shopify CDN identities, catalog-driven publisher, production verification, original-image negotiation, and premium Genetics owner visual layer. No open PR owns this branch and no unique accepted genetics behavior remains."
+    },
+    {
+      "branch": "genetics-v2-current",
+      "headSha": "99deaf81276d81399770d66f1989a796a6f9d2e2",
+      "supersededBy": "63eba9c89cbac4214e45691c11256ba556f81c26",
+      "status": "approved",
+      "reviewedAt": "2026-09-06",
+      "reason": "This branch's three unique commits rebuilt Genetics V2 on then-current main, repaired live verification, and added PR validation. Current main now has stronger catalog-driven genetics-library CI, live route verification, provenance and CDN identity checks, production-owner cleanup, and the premium full-catalog visual owner. The branch has no open PR and its accepted intent is fully represented by newer main code."
+    },
+    {
+      "branch": "genetics-v2-live-3",
+      "headSha": "585bdb749bcb7a395f0d8c318318caff28ed2c69",
+      "supersededBy": "63eba9c89cbac4214e45691c11256ba556f81c26",
+      "status": "approved",
+      "reviewedAt": "2026-09-06",
+      "reason": "Its unique work added three reviewed genetics cards, restored the documented Blueberry Butcher parent reference, and aligned WordPress CI with safe create-or-update behavior. Main preserves the expanded 11-line/13-card reviewed catalog and safe publisher behavior; Blueberry Butcher remains documented in genetics source records, Seeds/Home copy, V4 lineage visuals, commerce validation, and related catalog consumers. No unique accepted work remains."
+    },
+    {
+      "branch": "genetics-v2-unified",
+      "headSha": "c7a2ba313706b15601d2ae5ae166f2a19c19c876",
+      "supersededBy": "63eba9c89cbac4214e45691c11256ba556f81c26",
+      "status": "approved",
+      "reviewedAt": "2026-09-06",
+      "reason": "This branch probed anonymous Drive access and expanded the genetics catalog from supplied cards. The production system no longer depends on that probe: reviewed permanent Shopify CDN origins, SHA-256/byte-length/dimension identity checks, Drive provenance IDs, catalog-driven ingestion, and the expanded canonical catalog are established on main. The branch has no open PR and no remaining unique production behavior."
     }
   ]
 }
