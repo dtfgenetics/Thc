@@ -18,7 +18,8 @@ permissions:
   contents: write
   issues: write
   pull-requests: read
-\concurrency:
+
+concurrency:
   group: github-worker-orchestrator
   cancel-in-progress: false
 
@@ -48,7 +49,6 @@ jobs:
         run: node scripts/orchestrator.mjs labels
 
       - name: Plan worker allocation
-        id: plan
         run: |
           set -euo pipefail
           node scripts/orchestrator.mjs plan | tee "$RUNNER_TEMP/worker-plan.json"
