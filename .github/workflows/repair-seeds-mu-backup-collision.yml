@@ -4,6 +4,9 @@ on:
   pull_request:
     paths:
       - scripts/reconcile-seeds-mu-backup-collision.mjs
+      - scripts/run-seeds-mu-repair-with-catalog-markers.mjs
+      - scripts/repair-seeds-mu-override.mjs
+      - site/wordpress/products/seed-line-catalog.json
       - .github/workflows/repair-seeds-mu-backup-collision.yml
       - .github/repair-seeds-mu-backup-collision-trigger.txt
   push:
@@ -30,6 +33,7 @@ jobs:
           set -euo pipefail
           node --check scripts/reconcile-seeds-mu-backup-collision.mjs
           node --check scripts/repair-seeds-mu-override.mjs
+          node --check scripts/run-seeds-mu-repair-with-catalog-markers.mjs
           grep -Fq 'a32f9a10a5f79580d665d8d2c4718993a9d4bc14070eb8a26a4a2386f8535a3c' scripts/reconcile-seeds-mu-backup-collision.mjs
           grep -Fq 'dtf-homepage-override.php.dtf-disabled' scripts/reconcile-seeds-mu-backup-collision.mjs
           grep -Fq '.dtf-archive-' scripts/reconcile-seeds-mu-backup-collision.mjs
@@ -39,7 +43,11 @@ jobs:
           grep -Fq '/wp-json/code-snippets/v1/snippets/schema' scripts/reconcile-seeds-mu-backup-collision.mjs
           ! grep -Fq '/wp-json/wp/v2/plugins?search=' scripts/reconcile-seeds-mu-backup-collision.mjs
           ! grep -Eq '\bunlink\s*\(|\bdelete\s*\(' scripts/reconcile-seeds-mu-backup-collision.mjs
-          grep -Fq 'Open Mystery Line profile' scripts/repair-seeds-mu-override.mjs
+          grep -Fq 'catalog.lines.length !== 11' scripts/run-seeds-mu-repair-with-catalog-markers.mjs
+          grep -Fq '/seeds/${line.slug}/' scripts/run-seeds-mu-repair-with-catalog-markers.mjs
+          grep -Fq 'requiredSeedsMarkers' scripts/run-seeds-mu-repair-with-catalog-markers.mjs
+          grep -Fq 'Open Berry Blue profile' scripts/run-seeds-mu-repair-with-catalog-markers.mjs
+          grep -Fq 'Open Mystery Line profile' scripts/run-seeds-mu-repair-with-catalog-markers.mjs
           grep -Fq '/dtf-seeds-mu-repair/v1/restore' scripts/repair-seeds-mu-override.mjs
 
   repair-production:
@@ -79,7 +87,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/repair-seeds-mu-override.mjs \
+          node --import ./scripts/wordpress-ipv4-fetch-bootstrap.mjs scripts/run-seeds-mu-repair-with-catalog-markers.mjs \
             | tee "$RUNNER_TEMP/seeds-mu-override-repair.json"
           grep -Eq '"ok"[[:space:]]*:[[:space:]]*true' "$RUNNER_TEMP/seeds-mu-override-repair.json"
           grep -Eq '"profileCount"[[:space:]]*:[[:space:]]*11' "$RUNNER_TEMP/seeds-mu-override-repair.json"
@@ -104,6 +112,7 @@ jobs:
             echo "- Live override disable + public convergence: ${{ steps.repair.outcome }}"
             echo '- Existing disabled backup is preserved under a hash-stamped non-PHP .disabled archive name; it is never deleted or overwritten.'
             echo '- Live override remains protected by the exact confirmed SHA gate.'
-            echo '- Final success still requires all 11 canonical Seeds profiles on both public route forms, no stale catalog/Grow Notes markers, and healthy Home/Learn collateral checks.'
+            echo '- Profile gate: all 11 canonical /seeds/<slug>/ routes derived from seed-line-catalog.json must be present on both public route forms.'
+            echo '- Final success also requires no stale catalog/Grow Notes markers and healthy Home/Learn collateral checks.'
             echo '- The live override is automatically restored if post-disable verification fails.'
           } >> "$GITHUB_STEP_SUMMARY"
