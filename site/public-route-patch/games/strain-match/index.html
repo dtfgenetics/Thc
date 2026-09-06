@@ -9,6 +9,7 @@
   <link rel="canonical" href="https://dtfseeds.com/games/strain-match/" />
   <link rel="stylesheet" href="/games/dtf-route.css" />
   <link rel="stylesheet" href="./strain-match.css" />
+  <link rel="stylesheet" href="./strain-match-v2.css" />
 </head>
 <body>
   <main class="match-shell">
@@ -28,12 +29,14 @@
       <div><span>Moves</span><strong id="moves">0</strong></div>
       <div><span>Time</span><strong id="time">0:00</strong></div>
       <div><span>Pairs</span><strong id="pairs">0 / 8</strong></div>
-      <div><span>Best</span><strong id="best">—</strong></div>
+      <div class="streak-stat" data-hot="false"><span>Streak</span><strong id="streak">0</strong></div>
+      <div class="best-stat"><span>Best</span><strong id="best">—</strong></div>
     </section>
 
     <section class="deck-copy" aria-live="polite">
       <h2 id="deck-title">Loading…</h2>
       <p id="deck-description"></p>
+      <span id="round-status" class="round-status-chip">Ready</span>
     </section>
 
     <section id="board" class="match-board" aria-label="Memory card board"></section>
