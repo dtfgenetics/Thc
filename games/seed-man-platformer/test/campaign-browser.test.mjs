@@ -34,8 +34,14 @@ function collectErrors(page) {
 
 async function waitForCampaign(page) {
   await page.locator('#game').waitFor({ state: 'visible' });
-  await page.waitForFunction(() => Boolean(window.__SPROUT_CAMPAIGN_EXPERIENCE__ && window.__SPROUT_ANIMATION_V2__));
+  await page.waitForFunction(() => Boolean(
+    window.__SPROUT_CAMPAIGN_EXPERIENCE__ &&
+    window.__SPROUT_ANIMATION_V2__ &&
+    window.__SPROUT_SIGNATURE_FEATURES__ &&
+    window.__SPROUT_GENERATED_LEVEL_GUARD__
+  ));
   await page.locator('#seed-man-campaign-panel').waitFor({ state: 'visible' });
+  await page.locator('#seed-signature-hud').waitFor({ state: 'visible' });
 }
 
 async function selectLevel(page, id) {
@@ -43,12 +49,15 @@ async function selectLevel(page, id) {
   await page.waitForFunction((levelId) => {
     try { return level?.id === levelId && player && player.checkpoint?.id === 'start'; } catch { return false; }
   }, id);
+  await page.waitForTimeout(30);
 }
 
 async function testAllLevels(page) {
   const contract = await page.evaluate(() => ({
     campaign: window.__SPROUT_CAMPAIGN_EXPERIENCE__,
     animation: window.__SPROUT_ANIMATION_V2__,
+    signatures: window.__SPROUT_SIGNATURE_FEATURES__,
+    guard: window.__SPROUT_GENERATED_LEVEL_GUARD__,
     levels: window.__SPROUT_CAMPAIGN__.listLevels().map((entry) => ({ id: entry.id, order: entry.order, world: entry.worldTitle, boss: entry.boss || null }))
   }));
   assert.equal(contract.campaign.version, 'seed-man-campaign-experience-v3');
@@ -59,23 +68,27 @@ async function testAllLevels(page) {
   assert.equal(contract.animation.characterContract, 'seed-man-locked-v1');
   assert.equal(contract.animation.renderer, 'canvas2d-vector-animation');
   assert.equal(contract.animation.poses.length, 8);
+  assert.equal(contract.signatures.version, 'seed-man-signature-features-v1');
+  assert.equal(contract.signatures.levels.length, 10);
+  assert.equal(Object.keys(contract.signatures.bossAbilities).length, 4);
+  assert.equal(contract.guard.version, 'seed-man-generated-level-guard-v1');
   assert.equal(contract.levels.length, 11);
 
   const expected = [
-    ['sprout-run', null, null],
-    ['nursery-night-shift', 'nursery', 'bounce-pads'],
-    ['reservoir-run', 'hydro', 'flow-zones'],
-    ['root-zone-rumble', 'root-zone', 'drag-zones'],
-    ['mycelium-mile', 'mycelium', 'updraft-zones'],
-    ['trichome-transit', 'trichome', 'boost-zones'],
-    ['kief-cavern-climb', 'cavern', 'bounce-pads'],
-    ['rosin-refinery-rush', 'refinery', 'heat-vents'],
-    ['terpene-tunnel', 'terpene', 'gust-zones'],
-    ['frostline-canopy', 'frost', 'slip-zones'],
-    ['cloud-nine-citadel', 'citadel', 'wind-zones']
+    ['sprout-run', null, null, null],
+    ['nursery-night-shift', 'nursery', 'bounce-pads', 'Mist Pulse'],
+    ['reservoir-run', 'hydro', 'flow-zones', 'Current Reversal'],
+    ['root-zone-rumble', 'root-zone', 'drag-zones', 'Root Snare'],
+    ['mycelium-mile', 'mycelium', 'updraft-zones', 'Spore Bloom'],
+    ['trichome-transit', 'trichome', 'boost-zones', 'Resin Combo'],
+    ['kief-cavern-climb', 'cavern', 'bounce-pads', 'Crystal Chain'],
+    ['rosin-refinery-rush', 'refinery', 'heat-vents', 'Press Cycle'],
+    ['terpene-tunnel', 'terpene', 'gust-zones', 'Polarity Shift'],
+    ['frostline-canopy', 'frost', 'slip-zones', 'Frost Momentum'],
+    ['cloud-nine-citadel', 'citadel', 'wind-zones', 'Sky Wind Cycle']
   ];
 
-  for (const [id, theme, mechanic] of expected) {
+  for (const [id, theme, mechanic, signatureName] of expected) {
     await selectLevel(page, id);
     const state = await page.evaluate(() => ({
       id: level.id,
@@ -86,19 +99,27 @@ async function testAllLevels(page) {
       boss: level.boss?.name || null,
       bodyTheme: document.body.dataset.seedTheme,
       selected: document.querySelector('#seed-man-level-select')?.value,
-      title: document.querySelector('#seed-campaign-title')?.textContent || ''
+      title: document.querySelector('#seed-campaign-title')?.textContent || '',
+      signatureName: document.querySelector('#seed-signature-name')?.textContent || '',
+      outOfBounds: [...level.platforms, ...level.hazards].filter((rect) => rect.x < 0 || rect.x + rect.width > level.worldWidth + 0.01).length
     }));
     assert.equal(state.id, id);
     assert.equal(state.selected, id);
     assert.match(state.title, /Level \d+ \/ 11/);
     assert.ok(state.requiredPickups >= 16);
+    assert.equal(state.outOfBounds, 0, `${id} must not expose out-of-bounds runtime geometry`);
     if (theme) {
       assert.equal(state.theme, theme);
       assert.equal(state.bodyTheme, theme);
       assert.ok(state.setting.length >= 30);
       assert.deepStrictEqual(state.mechanicTypes, [mechanic]);
+      assert.equal(windowValue(contract.signatures.features, id), signatureName);
     }
   }
+}
+
+function windowValue(record, key) {
+  return record?.[key];
 }
 
 async function testBounceMechanic(page) {
@@ -117,6 +138,24 @@ async function testBounceMechanic(page) {
   assert.equal(after.state, 'boost-bounce');
   assert.ok(after.vy < -500, `Nursery bounce pad should launch Seed Man, got vy=${after.vy}`);
   assert.ok(after.y < result.zoneY);
+  assert.match(await page.locator('#seed-signature-detail').innerText(), /Propagation mist/i);
+}
+
+async function testCurrentReversal(page) {
+  await selectLevel(page, 'reservoir-run');
+  const before = await page.evaluate(() => {
+    const zone = level.mechanicZones[0];
+    player.x = zone.x + 20;
+    player.y = zone.y + 20;
+    player.vx = 0;
+    player.vy = 0;
+    player.grounded = false;
+    return player.x;
+  });
+  await sleep(260);
+  const after = await page.evaluate(() => player.x);
+  assert.notEqual(after, before, 'Reservoir signature current should move Seed Man inside a flow lane');
+  assert.match(await page.locator('#seed-signature-state').innerText(), /Current Reversal|Pressure Wave/i);
 }
 
 async function stompBoss(page, expectedHits) {
@@ -180,12 +219,15 @@ async function runViewport(viewport, mobile = false) {
   await testAllLevels(page);
   if (!mobile) {
     await testBounceMechanic(page);
+    await testCurrentReversal(page);
     await testBossGate(page);
   } else {
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     assert.ok(overflow <= 1, `campaign selector caused ${overflow}px mobile overflow`);
     const selectHeight = await page.locator('#seed-man-level-select').evaluate((node) => node.getBoundingClientRect().height);
     assert.ok(selectHeight >= 44, `mobile level selector should be at least 44px tall, got ${selectHeight}`);
+    const signatureHeight = await page.locator('#seed-signature-hud').evaluate((node) => node.getBoundingClientRect().height);
+    assert.ok(signatureHeight >= 44, `mobile signature HUD should remain readable, got ${signatureHeight}`);
   }
   assert.equal(errors.length, 0, `Seed Man campaign browser errors: ${errors.join(' | ')}`);
   await page.close();
@@ -207,9 +249,13 @@ try {
     worlds: 4,
     bosses: 4,
     uniqueSettings: 10,
+    signatureFeatures: 10,
+    bossAbilities: 4,
     animationVersion: 'seed-man-animation-v2',
     bossGateVerified: true,
     bounceMechanicVerified: true,
+    currentReversalVerified: true,
+    terminalGeometryGuardVerified: true,
     desktop: '1280x900',
     mobile: '390x844'
   }, null, 2));
