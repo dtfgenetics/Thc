@@ -92,7 +92,10 @@ function updateScore() {
   movesEl.textContent = String(moves);
   timeEl.textContent = formatTime(elapsedSeconds());
   pairsEl.textContent = `${matches} / ${activeDeck.pairs.length}`;
-  if (streakEl) streakEl.textContent = String(streak);
+  if (streakEl) {
+    streakEl.textContent = String(streak);
+    streakEl.parentElement?.setAttribute('data-hot', String(streak >= 2));
+  }
   const best = readBest();
   bestEl.textContent = best ? `${best.moves} moves · ${formatTime(best.time)}` : '—';
 }
@@ -150,9 +153,10 @@ function renderBoard() {
     button.type = 'button';
     button.className = 'match-card';
     button.dataset.key = card.key;
+    button.dataset.kind = card.kind;
     button.setAttribute('aria-label', 'Hidden Strain Match card');
     button.setAttribute('aria-pressed', 'false');
-    button.innerHTML = `<span class="card-inner card-front" aria-hidden="true">✦</span><span class="card-inner card-back">${escapeHtml(card.text)}</span>`;
+    button.innerHTML = `<span class="card-inner card-front" aria-hidden="true"></span><span class="card-inner card-back">${escapeHtml(card.text)}</span>`;
     button.addEventListener('click', () => reveal(card, button));
     board.append(button);
   }
@@ -248,6 +252,7 @@ function finishRound() {
 
 function selectDeck(deckId) {
   activeDeck = data.decks.find((deck) => deck.id === deckId) || data.decks[0];
+  document.documentElement.dataset.deck = activeDeck.id;
   for (const button of deckPicker.querySelectorAll('button')) button.setAttribute('aria-pressed', String(button.dataset.deck === activeDeck.id));
   deckTitle.textContent = activeDeck.title;
   deckDescription.textContent = activeDeck.description;
