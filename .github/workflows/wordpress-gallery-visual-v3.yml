@@ -95,8 +95,7 @@ jobs:
                 grep -Fqi 'Blue Mango F2 Feminized DTF Genetics strain card' "$output" && \
                 grep -Fqi 'Blue Bubblegum F1 Regular DTF Genetics strain card' "$output" && \
                 grep -Fqi 'Mango Bubbles F1 Regular DTF Genetics strain card' "$output" && \
-                [[ "$images" -ge 12 ]]; then ok=1; break
-              fi
+                [[ "$images" -ge 12 ]]; then ok=1; break; fi
               sleep 6
             done
             [[ "$ok" -eq 1 ]] || { echo "Gallery V3 verification failed for $url (images=$images)" >&2; exit 1; }
