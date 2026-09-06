@@ -162,16 +162,37 @@ async function testCurrentReversal(page) {
 }
 
 async function stompBoss(page, expectedHits) {
-  await page.evaluate(() => {
-    const boss = level.boss;
-    player.x = boss.x + Math.max(8, boss.width * 0.3);
-    player.y = boss.y - player.height - 3;
-    player.vx = 0;
-    player.vy = 310;
-    player.grounded = false;
-    player.power.invulnerableTimer = 0;
-  });
-  await page.waitForFunction((hits) => window.__SPROUT_CAMPAIGN_EXPERIENCE__.snapshot().boss?.hits >= hits, expectedHits);
+  const bossGeometry = await page.evaluate(() => ({
+    arenaStartX: level.boss.arenaStartX,
+    arenaEndX: level.boss.arenaEndX,
+    bossY: level.boss.y,
+    bossWidth: level.boss.width
+  }));
+  const span = Math.max(1, bossGeometry.arenaEndX - bossGeometry.arenaStartX - bossGeometry.bossWidth);
+  const attempts = 16;
+
+  for (let attempt = 0; attempt < attempts; attempt += 1) {
+    const currentHits = await page.evaluate(() => window.__SPROUT_CAMPAIGN_EXPERIENCE__.snapshot().boss?.hits || 0);
+    if (currentHits >= expectedHits) return;
+
+    const fraction = attempts === 1 ? 0.5 : attempt / (attempts - 1);
+    const x = bossGeometry.arenaStartX + span * fraction;
+    await page.evaluate(({ x, bossY }) => {
+      player.x = x;
+      player.y = bossY - player.height - 5;
+      player.vx = 0;
+      player.vy = 330;
+      player.grounded = false;
+      player.power.invulnerableTimer = 0;
+    }, { x, bossY: bossGeometry.bossY });
+    await sleep(85);
+  }
+
+  await page.waitForFunction(
+    (hits) => window.__SPROUT_CAMPAIGN_EXPERIENCE__.snapshot().boss?.hits >= hits,
+    expectedHits,
+    { timeout: 5000 }
+  );
 }
 
 async function testBossGate(page) {
