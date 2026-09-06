@@ -38,6 +38,8 @@ jobs:
           node-version: 22
       - name: Validate canonical roster
         run: node games/strain-showdown/scripts/validate-roster.mjs
+      - name: Validate draft 96-card effect coverage
+        run: node games/strain-showdown/scripts/validate-effects.mjs
       - name: Test battle engine
         run: node games/strain-showdown/test/engine.test.mjs
       - name: Simulate deterministic family matchups
@@ -48,9 +50,11 @@ jobs:
         run: |
           set -euo pipefail
           node games/strain-showdown/scripts/validate-browser-build.mjs
+          node --check games/strain-showdown/scripts/validate-effects.mjs
           node --check site/public-route-patch/games/strain-showdown/app.js
           node --check site/public-route-patch/games/strain-showdown/engine.mjs
           node --check games/strain-showdown/scripts/build-browser-bundle.mjs
           cmp games/strain-showdown/src/engine.mjs site/public-route-patch/games/strain-showdown/engine.mjs
+          test -s games/strain-showdown/data/effect-profiles.json
           test -s site/public-route-patch/games/strain-showdown/data/browser-bundle.json
           test -s site/public-route-patch/games/strain-showdown/runtime-v2.css
