@@ -59,6 +59,40 @@
         const right = Number(hazard.x) + Number(hazard.width);
         if (right > worldWidth) hazard.width = Math.max(1, worldWidth - Number(hazard.x));
       }
+
+      const boss = level.boss;
+      if (boss && Array.isArray(level.pickups)) {
+        const arenaStart = Number(boss.arenaStartX) - 32;
+        const arenaEnd = Number(boss.arenaEndX) + 32;
+        const overhead = level.platforms.filter((platform) =>
+          Number(platform?.y) < Number(boss.y) &&
+          Number(platform?.x) < arenaEnd &&
+          Number(platform?.x) + Number(platform?.width) > arenaStart
+        );
+
+        if (overhead.length) {
+          const removed = new Set(overhead);
+          const affectedPickups = level.pickups.filter((pickup) => overhead.some((platform) =>
+            Number(pickup?.x) < Number(platform.x) + Number(platform.width) &&
+            Number(pickup?.x) + Number(pickup?.width) > Number(platform.x) &&
+            Number(pickup?.y) + Number(pickup?.height) <= Number(platform.y) + 8
+          ));
+          level.platforms = level.platforms.filter((platform) => !removed.has(platform));
+
+          const approachGround = level.platforms
+            .filter((platform) => Number(platform?.y) === 480 && Number(platform?.height) === 60 && Number(platform?.x) < arenaStart)
+            .sort((a, b) => (Number(b.x) + Number(b.width)) - (Number(a.x) + Number(a.width)))[0];
+
+          if (approachGround) {
+            affectedPickups.forEach((pickup, index) => {
+              const minX = Number(approachGround.x) + 36;
+              const maxX = Number(approachGround.x) + Number(approachGround.width) - Number(pickup.width) - 36;
+              pickup.x = Math.max(minX, Math.min(maxX, arenaStart - 72 - index * 34));
+              pickup.y = 425;
+            });
+          }
+        }
+      }
     } catch (error) {
       console.error('Seed Man generated-level safety normalization failed.', error);
     }
