@@ -7,11 +7,11 @@
     "rejectWebp": true,
     "publishOnlyEnabled": true,
     "destinationDirectory": "site/wordpress/assets/infographics",
-    "notes": "Use durable CDN sources for reviewed/approved assets. Keep rejected, draft, review-required, QA-required, superseded, dashboard, mood-board, historical-proof, and quarantine assets disabled."
+    "notes": "Use durable CDN sources for reviewed/approved assets. Keep draft, review-required, QA-required, superseded, dashboard, mood-board, historical-proof, and quarantine assets disabled."
   },
   "entries": [
-    {"filename":"THC-C008_Infographic_Flower_Anatomy_Reproduction_300dpi.png","url":"https://drive.google.com/uc?export=download&id=16ZxZlXWgxCw1ysg-CKIJp9D4rDQIvMlL","enabled":false,"source":"Current Drive master remains quarantined because prior C008 production asset was explicitly rejected"},
-    {"filename":"THC-C009_Infographic_Trichomes_Secretory_Biology.jpg","url":"https://lh7-rt.googleusercontent.com/slidesz/AGV_vUfWP2Eh7tAP_lmJwI5R6KGLjM_ZkIp88n7dD0ySVV9h7apRDsFx2AoQqdk4Fl1jQMLyZzMba8HmrZLNr0RA8l-TDkb1z0WV1e0tbs5RyjcfZaFdT0Pa3De3SIGRVKW6D9pQZyNHPTGeDjzaZ_i7gZiXIcZ3sviIuiK2bDoHmEfwtvBdQl0=s2048?key=lg45Hmb4blp2Xie114N2ZQ","enabled":false,"source":"Explicitly rejected in curated manifest/history"},
+    {"filename":"THC-C008_Infographic_Flower_Anatomy_Reproduction.png","url":"https://cdn.shopify.com/s/files/1/0664/2542/1885/files/THC-C008_Infographic_Flower_Anatomy_Reproduction.png?v=1788714323","enabled":true,"source":"Exact current verified 2550x3300 PNG master; 287636 bytes; SHA-256 563ad278f034f7aeea72037f9825e6adb7082942263b8cec88d043e041e178eb"},
+    {"filename":"THC-C009_Infographic_Trichomes_Secretory_Biology.png","url":"https://cdn.shopify.com/s/files/1/0664/2542/1885/files/THC-C009_Infographic_Trichomes_Secretory_Biology.png?v=1788714339","enabled":true,"source":"Exact current verified 2550x3300 PNG master; 291366 bytes; SHA-256 b41c43fb663ef9fb3b1fcff5a313e0063abcdda013fb0bb40c23561d1e10cf23"},
     {"filename":"THC-C010_Companion_Photosynthesis_Light_Response.jpg","url":"https://cdn.shopify.com/s/files/1/0664/2542/1885/files/THC-C010_Companion_Photosynthesis_Light_Response.jpg?v=1788714167","enabled":true,"source":"Reviewed 300-DPI Drive master converted to web derivative and mirrored to durable CDN"},
     {"filename":"THC-C011_Companion_Respiration_Root_Oxygen.jpg","url":"https://cdn.shopify.com/s/files/1/0664/2542/1885/files/THC-C011_Companion_Respiration_Root_Oxygen.jpg?v=1788714181","enabled":true,"source":"Reviewed 300-DPI Drive master converted to web derivative and mirrored to durable CDN"},
     {"filename":"THC-C012_Companion_Hydraulic_Pathway_VPD.jpg","url":"https://cdn.shopify.com/s/files/1/0664/2542/1885/files/THC-C012_Companion_Hydraulic_Pathway_VPD.jpg?v=1788714193","enabled":true,"source":"Reviewed 300-DPI Drive master converted to web derivative and mirrored to durable CDN"},
