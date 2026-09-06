@@ -6,23 +6,29 @@ const dir = process.env.INFOGRAPHIC_SOURCE_DIR || join(process.cwd(), 'site/word
 const names = (await readdir(dir)).sort();
 const singlePattern = /^(.*\.(?:png|jpe?g))\.b64$/i;
 const partPattern = /^(.*\.(?:png|jpe?g))\.b64\.part-(\d+)$/i;
+const readyPattern = /^(.*\.(?:png|jpe?g))\.b64\.ready$/i;
 const groups = new Map();
+
+const getGroup = (destinationName) => {
+  const group = groups.get(destinationName) || { single: null, parts: [], ready: null };
+  groups.set(destinationName, group);
+  return group;
+};
 
 for (const name of names) {
   let match = name.match(singlePattern);
   if (match) {
-    const destinationName = match[1];
-    const group = groups.get(destinationName) || { single: null, parts: [] };
-    group.single = name;
-    groups.set(destinationName, group);
+    getGroup(match[1]).single = name;
     continue;
   }
   match = name.match(partPattern);
   if (match) {
-    const destinationName = match[1];
-    const group = groups.get(destinationName) || { single: null, parts: [] };
-    group.parts.push({ name, index: Number(match[2]) });
-    groups.set(destinationName, group);
+    getGroup(match[1]).parts.push({ name, index: Number(match[2]) });
+    continue;
+  }
+  match = name.match(readyPattern);
+  if (match) {
+    getGroup(match[1]).ready = name;
   }
 }
 
@@ -32,11 +38,22 @@ const isPng = (bytes) => bytes.length >= 8 && bytes.subarray(0, 8).equals(Buffer
 let created = 0;
 let reused = 0;
 let processed = 0;
+let pending = 0;
 
 for (const [destinationName, group] of [...groups.entries()].sort(([a], [b]) => a.localeCompare(b))) {
   if (group.single && group.parts.length) {
     throw new Error(`Ambiguous inline intake has both single and chunked transports: ${destinationName}`);
   }
+
+  if (group.parts.length && !group.ready) {
+    pending += 1;
+    console.log(`Pending chunked intake (no ready marker yet): ${destinationName} parts=${group.parts.length}`);
+    continue;
+  }
+  if (group.ready && !group.parts.length) {
+    throw new Error(`Ready marker exists without chunk files: ${destinationName}`);
+  }
+
   const sourceNames = group.single
     ? [group.single]
     : group.parts.sort((a, b) => a.index - b.index).map((part) => part.name);
@@ -87,8 +104,9 @@ for (const [destinationName, group] of [...groups.entries()].sort(([a], [b]) => 
   for (const sourceName of sourceNames) {
     await unlink(join(dir, sourceName));
   }
+  if (group.ready) await unlink(join(dir, group.ready));
   processed += 1;
   console.log(`${existing ? 'Reused' : 'Decoded'} ${sourceNames.length} transport file(s) -> ${destinationName} (${bytes.length} bytes, sha256 ${hash(bytes)})`);
 }
 
-console.log(`INLINE_INFOGRAPHIC_B64_RESULT created=${created} reused=${reused} processed=${processed}`);
+console.log(`INLINE_INFOGRAPHIC_B64_RESULT created=${created} reused=${reused} processed=${processed} pending=${pending}`);
