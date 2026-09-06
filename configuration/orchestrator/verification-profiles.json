@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "profiles": {
+    "repo-control": {
+      "commands": [
+        "node --check scripts/orchestrator.mjs",
+        "node --check scripts/orchestrator/core.mjs",
+        "node scripts/test-worker-orchestrator.mjs",
+        "npm run verify:portfolio",
+        "npm run verify:navigation"
+      ],
+      "requiresExactHead": true
+    },
+    "games-general": {
+      "commands": [
+        "npm run games:preflight"
+      ],
+      "requiresExactHead": true,
+      "liveVerification": false
+    },
+    "high-land": {
+      "commands": [
+        "npm run test:high-land",
+        "npm run build:high-land",
+        "npm run test:e2e:high-land",
+        "npm run games:preflight"
+      ],
+      "requiresExactHead": true,
+      "liveVerification": true,
+      "liveRoute": "https://dtfseeds.com/games/high-land/"
+    },
+    "growlens": {
+      "commands": [
+        "npm run verify:growlens"
+      ],
+      "requiresExactHead": true,
+      "liveVerification": true
+    },
+    "high-iq": {
+      "commands": [
+        "npm run hiq:validate",
+        "npm run games:preflight"
+      ],
+      "requiresExactHead": true,
+      "liveVerification": true
+    },
+    "public-release": {
+      "commands": [
+        "npm run verify:navigation",
+        "npm run verify:release-integrity"
+      ],
+      "requiresExactHead": true,
+      "liveVerification": true,
+      "liveCommand": "npm run verify:release-integrity:live"
+    },
+    "content-data": {
+      "commands": [
+        "npm run verify:portfolio",
+        "npm run verify:navigation"
+      ],
+      "requiresExactHead": true
+    }
+  }
+}

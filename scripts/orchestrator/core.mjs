@@ -8,12 +8,31 @@ export function loadConfig(path = 'data/worker-orchestrator.json') {
 }
 
 export function validateConfig(config) {
-  if (!config || config.version !== 1) throw new Error('worker orchestrator config version must be 1')
+  if (!config || ![1, 2].includes(config.version)) throw new Error('worker orchestrator config version must be 1 or 2')
   if (!Number.isInteger(config.maxWorkers) || config.maxWorkers < 1) throw new Error('maxWorkers must be a positive integer')
   if (!Number.isInteger(config.maxWorkersPerProject) || config.maxWorkersPerProject < 1) throw new Error('maxWorkersPerProject must be a positive integer')
   if (!config.labels?.ready || !config.labels?.claimed || !config.labels?.blocked || !config.labels?.done) throw new Error('ready/claimed/blocked/done labels are required')
   if (!config.workerKinds || Object.keys(config.workerKinds).length === 0) throw new Error('at least one worker kind is required')
+
+  if (config.version >= 2) {
+    if (!config.lease || !Number.isFinite(config.lease.ttlMinutes) || config.lease.ttlMinutes <= 0) throw new Error('lease.ttlMinutes must be positive')
+    if (!Number.isFinite(config.lease.heartbeatGraceMinutes) || config.lease.heartbeatGraceMinutes < 0) throw new Error('lease.heartbeatGraceMinutes must be non-negative')
+    if (!Number.isInteger(config.lease.maxAttempts) || config.lease.maxAttempts < 0) throw new Error('lease.maxAttempts must be a non-negative integer')
+    for (const required of ['running', 'verifying', 'retry', 'stale', 'failed', 'quarantined', 'integrationReady']) {
+      if (!config.labels?.[required]) throw new Error(`labels.${required} is required for config version 2`)
+    }
+  }
   return config
+}
+
+export function leaseTtlMinutes(config) {
+  if (config.version >= 2) return config.lease.ttlMinutes
+  return config.claimTtlMinutes || 240
+}
+
+export function maxAttempts(config) {
+  if (config.version >= 2) return config.lease.maxAttempts
+  return 3
 }
 
 export function slug(value, max = 42) {
@@ -91,10 +110,15 @@ export function isReady(issue, config) {
   if (issue.pull_request) return false
   if (issue.state && issue.state !== 'open') return false
   const labels = new Set((issue.labels || []).map(labelName))
-  return labels.has(config.labels.ready)
-    && !labels.has(config.labels.claimed)
-    && !labels.has(config.labels.blocked)
-    && !labels.has(config.labels.done)
+  const disallowed = [
+    config.labels.claimed,
+    config.labels.running,
+    config.labels.verifying,
+    config.labels.blocked,
+    config.labels.quarantined,
+    config.labels.done,
+  ].filter(Boolean)
+  return labels.has(config.labels.ready) && !disallowed.some((label) => labels.has(label))
 }
 
 export function labelName(label) {

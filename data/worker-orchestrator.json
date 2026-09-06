@@ -1,13 +1,24 @@
 {
-  "version": 1,
+  "version": 2,
   "baseBranch": "main",
   "maxWorkers": 4,
   "maxWorkersPerProject": 1,
-  "claimTtlMinutes": 240,
+  "lease": {
+    "ttlMinutes": 240,
+    "heartbeatGraceMinutes": 15,
+    "maxAttempts": 3
+  },
   "labels": {
     "ready": "worker:ready",
     "claimed": "worker:claimed",
+    "running": "worker:running",
+    "verifying": "worker:verifying",
+    "retry": "worker:retry",
+    "stale": "worker:stale",
     "blocked": "worker:blocked",
+    "failed": "worker:failed",
+    "quarantined": "worker:quarantined",
+    "integrationReady": "worker:integration-ready",
     "done": "worker:done"
   },
   "priorities": [
@@ -17,8 +28,20 @@
     "priority:p3"
   ],
   "workerKinds": {
+    "planner": {
+      "label": "worker:planner",
+      "branchPrefix": "work"
+    },
     "code": {
       "label": "worker:code",
+      "branchPrefix": "work"
+    },
+    "test-repair": {
+      "label": "worker:test-repair",
+      "branchPrefix": "work"
+    },
+    "game": {
+      "label": "worker:game",
       "branchPrefix": "work"
     },
     "audit": {
@@ -29,10 +52,35 @@
       "label": "worker:content",
       "branchPrefix": "work"
     },
+    "research": {
+      "label": "worker:research",
+      "branchPrefix": "work"
+    },
+    "data": {
+      "label": "worker:data",
+      "branchPrefix": "work"
+    },
+    "security": {
+      "label": "worker:security",
+      "branchPrefix": "work"
+    },
+    "repo-maintenance": {
+      "label": "worker:repo-maintenance",
+      "branchPrefix": "work"
+    },
     "release": {
       "label": "worker:release",
       "branchPrefix": "project"
+    },
+    "live-qa": {
+      "label": "worker:live-qa",
+      "branchPrefix": "work"
     }
+  },
+  "policyFiles": {
+    "workers": "configuration/orchestrator/workers.json",
+    "retryPolicies": "configuration/orchestrator/retry-policies.json",
+    "verificationProfiles": "configuration/orchestrator/verification-profiles.json"
   },
   "safety": {
     "allowDirectMainPush": false,
@@ -40,6 +88,8 @@
     "requirePullRequest": true,
     "requireExactHeadOnMerge": true,
     "requirePassingChecks": true,
-    "deleteManagedBranchAfterMerge": true
+    "deleteManagedBranchAfterMerge": true,
+    "preserveUniqueWorkOnLeaseExpiry": true,
+    "reconcileBeforeDispatch": true
   }
 }
