@@ -76,6 +76,7 @@ jobs:
           node --check games/seed-man-platformer/src/render/three-world-public-entry.mjs
           node --check games/seed-man-platformer/scripts/build-three-public.mjs
           node --check games/seed-man-platformer/test/campaign-browser.test.mjs
+          node --check games/seed-man-platformer/test/flag-completion-browser.test.mjs
           node --check games/seed-man-platformer/test/progression-systems.test.mjs
           node --check games/seed-man-platformer/test/three-world-state.test.mjs
           node --check games/seed-man-platformer/test/public-campaign.test.mjs
@@ -151,5 +152,7 @@ jobs:
           npx playwright install chromium
       - name: Play through Greenhouse Gauntlet in Chromium
         run: node games/seed-man-platformer/test/browser-smoke.mjs
+      - name: Verify zero-sprout flag completion in Chromium
+        run: node games/seed-man-platformer/test/flag-completion-browser.test.mjs
       - name: Exercise eleven-level campaign bosses and settings in Chromium
         run: node games/seed-man-platformer/test/campaign-browser.test.mjs
