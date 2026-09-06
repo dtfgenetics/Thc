@@ -90,7 +90,7 @@ export type ActionCard = {
   effect: ActionCardEffect;
 };
 
-export type GamePhase = 'setup' | 'ready' | 'rolling' | 'moving' | 'resolving_card' | 'game_over';
+export type GamePhase = 'setup' | 'ready' | 'rolling' | 'moving' | 'resolving_card' | 'choosing_player' | 'game_over';
 
 export type TurnDirection = 1 | -1;
 
@@ -102,6 +102,11 @@ export type MoveResult = {
 
 export type PlayerMoveResult = MoveResult & {
   playerId: string;
+};
+
+export type PendingPlayerChoice = {
+  sourcePlayerId: string;
+  targetAmount: number;
 };
 
 export type GameState = {
@@ -116,4 +121,5 @@ export type GameState = {
   message: string;
   winnerId: string | null;
   cardCursor: number;
+  pendingChoice: PendingPlayerChoice | null;
 };
