@@ -1,0 +1,93 @@
+name: Verify External Game Live Revisions
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows:
+      - Deploy DTFSeeds Public Suite via WordPress V2
+    types: [completed]
+  pull_request:
+    branches: [main]
+    paths:
+      - scripts/verify-external-game-live.mjs
+      - site/deployment/external-games/**
+      - site/public-route-patch/games/*/source-revision.txt
+      - .github/workflows/verify-external-game-live.yml
+  push:
+    branches: [main]
+    paths:
+      - scripts/verify-external-game-live.mjs
+      - .github/workflows/verify-external-game-live.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: external-game-live-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  static:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout proposed verification source
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate verifier and external contracts
+        run: |
+          set -euo pipefail
+          node --check scripts/verify-external-game-live.mjs
+          node scripts/validate-external-game-contracts.mjs
+
+  live:
+    if: >-
+      github.event_name != 'pull_request' &&
+      (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout deployed contract source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
+          persist-credentials: false
+
+      - name: Use Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate external release contracts
+        run: node scripts/validate-external-game-contracts.mjs
+
+      - name: Verify exact live external game revisions and assets
+        run: |
+          set -euo pipefail
+          node scripts/verify-external-game-live.mjs | tee "$RUNNER_TEMP/external-game-live.log"
+
+      - name: Upload exact live verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: external-game-live-${{ github.run_id }}
+          path: ${{ runner.temp }}/external-game-live.log
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Summarize exact external game verification
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo '## External game exact live verification'
+            echo
+            echo "- Trigger: ${GITHUB_EVENT_NAME}"
+            echo "- Verified source: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}"
+            echo '- A release candidate passes only when its live route returns directly, deployed `game-release.json` matches the contract, deployed `source-revision.txt` matches the exact pinned commit/repository/route, and every local JS/CSS/JSON runtime reference in the live HTML returns HTTP 200.'
+            echo '- Full route-level evidence is retained in the workflow artifact.'
+          } >> "$GITHUB_STEP_SUMMARY"
