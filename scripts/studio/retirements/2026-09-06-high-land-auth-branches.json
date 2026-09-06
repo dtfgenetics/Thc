@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "retirements": [
+    {
+      "branch": "high-land-room-auth-fix",
+      "headSha": "d8c99dbf3fe5ff44093df5f932fa537d517d16f2",
+      "supersededBy": "5b820fe5edb8e45068c5e5e96227f28e1db146a7",
+      "status": "approved",
+      "reason": "Semantic salvage is complete. Current main preserves and strengthens the branch's room credential hashing, constant-time verification, public credential stripping, host-only room control, active-turn write enforcement, authenticated event writes, mutation locking, and security verification. PR #698 additionally preserves the remaining useful client-side hardening by scoping credentials per room and player with legacy-room migration. No open PR owns this exact branch tip."
+    },
+    {
+      "branch": "high-land-room-auth-hardening",
+      "headSha": "0a01f52a4b8198098069c7153b86346c0ac99b43",
+      "supersededBy": "5b820fe5edb8e45068c5e5e96227f28e1db146a7",
+      "status": "approved",
+      "reason": "Semantic salvage is complete. PR #698 forward-ported the branch's useful per-room/per-player credential-isolation concept onto the current transport architecture while preserving reconnect compatibility for existing rooms. The branch's stricter exact-64-hex server input format was intentionally not forward-ported because current migration-compatible credentials are already hashed and verified as secrets, and narrowing accepted syntax would add reconnect risk without increasing comparison strength. Current main also contains stronger endpoint security tests and release gates. No open PR owns this exact branch tip."
+    }
+  ]
+}
