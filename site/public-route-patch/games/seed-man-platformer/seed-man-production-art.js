@@ -187,3 +187,103 @@ if (typeof drawSeedMan === 'function') {
 } else {
   console.warn('Sprout Run production art layer could not find the base Seed Man renderer.');
 }
+
+function installSproutRunShellV2() {
+  const shell = document.querySelector('.game-shell');
+  const hud = shell?.querySelector('.hud');
+  const canvasNode = document.querySelector('#game');
+  if (!shell || !hud || !canvasNode || shell.dataset.uiV2 === 'ready') return;
+
+  shell.dataset.uiV2 = 'ready';
+
+  const primaryIds = new Set(['sprout-count', 'progress-count', 'jump-count', 'power-count']);
+  for (const span of [...hud.children].filter((node) => node.tagName === 'SPAN')) {
+    const value = span.querySelector('strong[id]');
+    if (!value) continue;
+    span.classList.add('hud-stat');
+    span.classList.add(primaryIds.has(value.id) ? 'hud-stat--primary' : 'hud-stat--secondary');
+    span.dataset.metric = value.id.replace(/-count$/, '');
+  }
+
+  const actions = document.createElement('div');
+  actions.className = 'hud-actions';
+  for (const button of [...hud.children].filter((node) => node.tagName === 'BUTTON')) actions.append(button);
+  hud.append(actions);
+
+  const course = document.createElement('section');
+  course.className = 'course-status';
+  course.setAttribute('aria-label', 'Greenhouse course progress');
+  course.innerHTML = `
+    <div class="course-status-copy">
+      <span class="course-kicker">GREENHOUSE GAUNTLET</span>
+      <strong id="course-stage">Stage 1 / 3 · Propagation Bay</strong>
+    </div>
+    <div class="course-track" aria-hidden="true">
+      <span id="course-progress-fill"></span>
+      <i class="course-checkpoint cp-one"></i>
+      <i class="course-checkpoint cp-two"></i>
+      <i class="course-checkpoint cp-three"></i>
+    </div>`;
+  hud.after(course);
+
+  const touch = shell.querySelector('.touch-controls');
+  if (touch) {
+    const quick = document.createElement('p');
+    quick.className = 'quick-controls';
+    quick.innerHTML = '<strong>MOVE</strong> A/D or ←/→ <span>·</span> <strong>JUMP</strong> Space/W/↑ <span>·</span> <strong>PAUSE</strong> P';
+    touch.after(quick);
+  }
+
+  const controls = shell.querySelector('.controls');
+  if (controls && !controls.closest('.control-help')) {
+    const details = document.createElement('details');
+    details.className = 'control-help';
+    const summary = document.createElement('summary');
+    summary.textContent = 'Full controls & power-up guide';
+    controls.before(details);
+    details.append(summary, controls);
+  }
+
+  const progress = document.querySelector('#progress-count');
+  const power = document.querySelector('#power-count');
+  const pause = document.querySelector('#pause');
+  const status = document.querySelector('#load-status');
+  const finish = document.querySelector('#finish-panel');
+  const stageNode = document.querySelector('#course-stage');
+  const fill = document.querySelector('#course-progress-fill');
+
+  const stages = [
+    { max: 32, label: 'Stage 1 / 3 · Propagation Bay', key: 'propagation' },
+    { max: 65, label: 'Stage 2 / 3 · Canopy Run', key: 'canopy' },
+    { max: 100, label: 'Stage 3 / 3 · Final Greenhouse', key: 'finish-house' }
+  ];
+
+  const syncShellState = () => {
+    const percent = Math.min(100, Math.max(0, Number.parseInt(progress?.textContent || '0', 10) || 0));
+    const stage = stages.find((item) => percent <= item.max) || stages[stages.length - 1];
+    if (stageNode) stageNode.textContent = stage.label;
+    if (fill) fill.style.width = `${percent}%`;
+    shell.dataset.stage = stage.key;
+    shell.dataset.objectiveState = status?.dataset.state || 'progress';
+    shell.dataset.paused = pause?.getAttribute('aria-pressed') === 'true' ? 'true' : 'false';
+    shell.dataset.power = power && power.textContent.trim() !== 'None' ? 'active' : 'none';
+    shell.dataset.complete = finish && !finish.hidden ? 'true' : 'false';
+  };
+
+  syncShellState();
+
+  if (typeof MutationObserver === 'function') {
+    const observer = new MutationObserver(syncShellState);
+    for (const node of [progress, power, pause, status, finish].filter(Boolean)) {
+      observer.observe(node, { subtree: true, childList: true, characterData: true, attributes: true });
+    }
+  }
+
+  window.__SPROUT_UI_V2__ = Object.freeze({
+    version: 'sprout-run-ui-v2',
+    stages: stages.map(({ label, key }) => ({ label, key })),
+    sync: syncShellState
+  });
+}
+
+installSproutRunShellV2();
