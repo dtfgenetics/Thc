@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "retirements": [
+    {
+      "branch": "codex/high-land-board-audio-fix",
+      "headSha": "6ad0d92ba0805341096b2cf103afec698392e626",
+      "supersededBy": "6429b0b48845cc752a5ad59b577d262b26d66d91",
+      "status": "approved",
+      "reason": "The branch's board rendering/audio repair is preserved and strengthened on current main: the same required High Land board PNG and five file-backed audio assets remain in the asset manifest, audio playback/mute handling is safer and directly regression-tested, token layout remains implemented for up to 10 players, and no open PR owns the old branch."
+    }
+  ]
+}
