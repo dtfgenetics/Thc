@@ -1,0 +1,12 @@
+{
+  "retirements": [
+    {
+      "branch": "build/burn-buds-native-runtime",
+      "headSha": "332a0dbe91b42289805b007c8d980b6398abbd69",
+      "supersededBy": "562bbe92ad9c346d40d02b1995fb2e4683c58b5d",
+      "status": "approved",
+      "reviewedAt": "2026-09-06",
+      "reason": "Semantic salvage confirmed the branch's eight divergent Burn Buds runtime commits are fully preserved or superseded on current main: native Burn Buds session/player-facing copy, multiplayer UX, history/share migration, lost-formation sound feedback, manifest identity, service-worker cache refresh, branding verification, and compatibility CI are all enforced by today's production-ready branding/runtime tests and newer runtime-sync, accessibility, battle-feedback, placement, and native-targeting layers. No open PR owns the exact branch tip."
+    }
+  ]
+}
