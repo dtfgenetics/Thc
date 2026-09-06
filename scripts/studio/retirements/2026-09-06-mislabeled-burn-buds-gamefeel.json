@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "retirements": [
+    {
+      "branch": "game/burn-buds-ui-gamefeel-v1",
+      "headSha": "1325b00ecf5441b18d5f4be5b9ee5a1510c50670",
+      "supersededBy": "e213a412d418b32d563db19289be0abe5f461260",
+      "status": "approved",
+      "reason": "Semantic review confirms this mislabeled Burn Buds branch contains Protect the Plants game-feel work already preserved on current main. The gamefeel-v1.css layer, its regression test, index/service-worker integration, and current branding CI coverage are preserved. No open PR owns this exact branch tip."
+    },
+    {
+      "branch": "game/burn-buds-ui-gamefeel-v2",
+      "headSha": "0a0aa211ece9be740138632b68135874ac07014e",
+      "supersededBy": "e213a412d418b32d563db19289be0abe5f461260",
+      "status": "approved",
+      "reason": "Semantic review confirms this mislabeled Burn Buds branch contains Protect the Plants game-feel work already preserved on current main. gamefeel-v1.css, gamefeel-v1.test.mjs, and burn-buds-branding-ci.yml are byte-identical to main, with the remaining index/service-worker wiring also preserved. No open PR owns this exact branch tip."
+    }
+  ]
+}
