@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "retirements": [
+    {
+      "branch": "codex/fix-high-land-main-ci",
+      "headSha": "5383033cbe7e0723e88a21690d3be81e2a6a120b",
+      "supersededBy": "8feb87d807a86a6105a48cea88c6312ce3b10eb3",
+      "status": "approved",
+      "reviewedAt": "2026-09-06",
+      "reason": "Its single unique commit repaired High Land tests after the approved HIT-card deck update, moved invite URLs to the canonical ?game= key while retaining room compatibility, and adjusted stale card movement expectations. Current main preserves those behaviors: inviteLinks.ts emits ?game= and accepts legacy ?room=, App.tsx writes/removes the same keys, gameEngine.test.ts uses the corrected 0.75/card-030/+3 expectation, and the current High Land test suite has continued beyond this repair. No open PR owns the branch."
+    },
+    {
+      "branch": "codex/fix-high-land-main-ci-v2",
+      "headSha": "8954176820e2e394af19c2641018f177e1fe86da",
+      "supersededBy": "8feb87d807a86a6105a48cea88c6312ce3b10eb3",
+      "status": "approved",
+      "reviewedAt": "2026-09-06",
+      "reason": "Its single unique commit repaired the same High Land invite/HIT-card tests and removed stale Supabase entries from the workspace lock. Current main preserves the corrected ?game= invite contract and HIT-card assertions, while apps/high-land-web/package.json no longer declares Supabase. Later High Land multiplayer, browser, security, UI, and production work supersedes this old repair branch, and no open PR owns it."
+    }
+  ]
+}
