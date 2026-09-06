@@ -43,7 +43,20 @@ jobs:
           cmp games/grower-conversations/data/prompt-bank.json "$route/data/prompt-bank.json"
           test -s "$route/index.html"
           test -s "$route/grower-conversations.css"
+          test -s "$route/grower-conversations-v2.css"
           grep -Fq '<h1>Grower Conversations</h1>' "$route/index.html"
           grep -Fq 'https://dtfseeds.com/games/grower-conversations/' "$route/index.html"
           grep -Fqi 'rel="canonical"' "$route/index.html"
           grep -Fqi 'name="description"' "$route/index.html"
+          grep -Fq 'id="grower-conversations-data"' "$route/index.html"
+          grep -Fq '<script src="./app.js" defer></script>' "$route/index.html"
+          if grep -Fq 'type="module"' "$route/index.html"; then
+            echo 'Grower Conversations must not depend on ES-module serving.' >&2
+            exit 1
+          fi
+          if grep -Fq "fetch('./data/prompt-bank.json'" "$route/app.js"; then
+            echo 'Grower Conversations must not fetch prompt data at runtime.' >&2
+            exit 1
+          fi
+      - name: Run public runtime regression checks
+        run: node games/grower-conversations/test/public-runtime.test.mjs
