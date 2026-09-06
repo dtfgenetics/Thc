@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "retirements": [
+    {
+      "branch": "build/burn-buds-canonical-pass",
+      "headSha": "38bf3088734bd5af24589a779b9bffe088671c40",
+      "supersededBy": "4c7b22fce5f97e3c4c6904d5fe7e9e44a7192040",
+      "status": "approved",
+      "reason": "Semantic review confirms this one-commit canonical branding pass is superseded by current main. The historical contract still marked Burn Buds playable-beta, while main enforces production-ready and preserves the canonical product identity, battle feedback, room/multiplayer features, native runtime migration, accessibility, service-worker cache, placement and targeting contracts. No open PR owns this exact branch tip."
+    }
+  ]
+}
