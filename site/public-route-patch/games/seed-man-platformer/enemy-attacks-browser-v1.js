@@ -73,7 +73,7 @@
   }
 
   function resetAttacks() {
-    activeLevelId = level?.id || 'sprout-run';
+    activeLevelId = typeof level !== 'undefined' ? (level?.id || 'sprout-run') : 'sprout-run';
     attackers = (LEVEL_ATTACKERS[activeLevelId] || LEVEL_ATTACKERS['sprout-run']).map(decode);
     attackStates = new Map(attackers.map((enemy, index) => [enemy.id, createEnemyAttackState(enemy, { initialDelay: 0.7 + index * 0.16 })]));
     hostileProjectiles = [];
@@ -109,8 +109,9 @@
     const sourceCenter = source.x + source.width / 2;
     const dir = playerCenter < sourceCenter ? -1 : 1;
     if ((Number(next.power.shieldCharges) || 0) > 0) {
+      const shieldInvulnerability = typeof DEFAULTS !== 'undefined' ? Number(DEFAULTS.shieldInvulnerability) || 1.05 : 1.05;
       next.power.shieldCharges -= 1;
-      next.power.invulnerableTimer = Math.max(Number(next.power.invulnerableTimer) || 0, Number(DEFAULTS?.shieldInvulnerability) || 1.05);
+      next.power.invulnerableTimer = Math.max(Number(next.power.invulnerableTimer) || 0, shieldInvulnerability);
       next.state = 'shield-bounce';
       next.vx = dir * 340;
       next.vy = -320;
@@ -128,7 +129,8 @@
 
   function stepAttackRuntime(next, dt) {
     const step = Math.max(0, Math.min(Number(dt) || 0, 0.05));
-    if ((level?.id || 'sprout-run') !== activeLevelId) resetAttacks();
+    const currentLevelId = typeof level !== 'undefined' ? (level?.id || 'sprout-run') : 'sprout-run';
+    if (currentLevelId !== activeLevelId) resetAttacks();
     simTime += step;
     syncDefeated();
 
@@ -145,9 +147,10 @@
       hostileHitboxes.push(...result.hitboxes.map((hitbox) => ({ ...hitbox, remaining: hitbox.duration })));
     }
 
+    const worldWidth = typeof level !== 'undefined' ? (level?.worldWidth || 8000) : 8000;
     hostileProjectiles = hostileProjectiles
       .map((projectile) => advanceEnemyProjectile(projectile, step))
-      .filter((projectile) => projectile.lifetime > 0 && projectile.x > -120 && projectile.x < (level?.worldWidth || 8000) + 120);
+      .filter((projectile) => projectile.lifetime > 0 && projectile.x > -120 && projectile.x < worldWidth + 120);
 
     for (const projectile of hostileProjectiles) {
       if (projectile.hit || !overlapsRect(projectile, next)) continue;
@@ -199,7 +202,8 @@
     const baseStep = stepPlayer;
     stepPlayer = function seedManEnemyAttackStep(inputPlayer, inputState, levelData, dt, config) {
       const next = baseStep(inputPlayer, inputState, levelData, dt, config);
-      if (!paused && !next.finished) stepAttackRuntime(next, dt);
+      const isPaused = typeof paused !== 'undefined' ? paused : false;
+      if (!isPaused && !next.finished) stepAttackRuntime(next, dt);
       return next;
     };
     const baseRender = render;
