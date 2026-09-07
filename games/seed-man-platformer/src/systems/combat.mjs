@@ -19,20 +19,43 @@ export const COMBAT_DEFAULTS = Object.freeze({
   pushVelocity: 150,
   liftVelocity: -170,
   chainRadius: 130,
-  phenotypeAbsorbDuration: 30
+  phenotypeAbsorbDuration: 30,
+  defaultBlinkCooldown: 2.4,
+  bossTelegraphCycle: 3.2
 });
 
 export function createEnemy(definition = {}) {
   const maxHealth = Math.max(1, Math.floor(Number(definition.health) || 1));
+  const x = Number(definition.x) || 0;
+  const y = Number(definition.y) || 0;
+  const blinkCooldown = Math.max(0.5, Number(definition.blinkCooldown) || COMBAT_DEFAULTS.defaultBlinkCooldown);
   return {
     id: definition.id || 'enemy',
     kind: definition.kind || 'pest',
-    x: Number(definition.x) || 0,
-    y: Number(definition.y) || 0,
+    rank: definition.rank || 'standard',
+    movement: definition.movement || 'ground',
+    x,
+    y,
+    baseY: Number.isFinite(Number(definition.baseY)) ? Number(definition.baseY) : y,
     width: Math.max(1, Number(definition.width) || 28),
     height: Math.max(1, Number(definition.height) || 24),
     vx: Number(definition.vx) || 0,
     vy: Number(definition.vy) || 0,
+    moveSpeed: Math.max(0, Number(definition.moveSpeed) || 0),
+    patrolMinX: Number.isFinite(Number(definition.patrolMinX)) ? Number(definition.patrolMinX) : null,
+    patrolMaxX: Number.isFinite(Number(definition.patrolMaxX)) ? Number(definition.patrolMaxX) : null,
+    direction: Number(definition.direction) < 0 ? -1 : 1,
+    hoverAmplitude: Math.max(0, Number(definition.hoverAmplitude) || 20),
+    hoverFrequency: Math.max(0.1, Number(definition.hoverFrequency) || 2.6),
+    blinkDistance: Math.max(0, Number(definition.blinkDistance) || 120),
+    blinkCooldown,
+    blinkTimer: Math.max(0, Number(definition.blinkTimer) || blinkCooldown),
+    telegraphSeconds: Math.max(0, Number(definition.telegraphSeconds) || 0),
+    telegraphTimer: 0,
+    aiClock: 0,
+    phaseCount: Math.max(1, Math.floor(Number(definition.phases) || 1)),
+    phase: 1,
+    contactDamage: Math.max(0, Number(definition.contactDamage) || 1),
     maxHealth,
     health: maxHealth,
     phenotypeReward: definition.phenotypeReward || null,
@@ -85,6 +108,16 @@ function projectileRect(projectile) {
   return { x: projectile.x - size / 2, y: projectile.y - size / 2, width: size, height: size };
 }
 
+function updateEnemyPhase(enemy, state) {
+  if (enemy.phaseCount <= 1) return;
+  const healthRatio = enemy.maxHealth > 0 ? enemy.health / enemy.maxHealth : 0;
+  const nextPhase = Math.min(enemy.phaseCount, Math.max(1, Math.floor((1 - healthRatio) * enemy.phaseCount) + 1));
+  if (nextPhase !== enemy.phase) {
+    enemy.phase = nextPhase;
+    state.events.push({ type: 'enemy-phase-changed', enemyId: enemy.id, phase: nextPhase, phases: enemy.phaseCount });
+  }
+}
+
 function applyDamage(enemy, amount, state, source) {
   if (enemy.defeated) return false;
   const damage = Math.max(0, Math.floor(Number(amount) || 0));
@@ -92,10 +125,11 @@ function applyDamage(enemy, amount, state, source) {
   enemy.health = Math.max(0, enemy.health - damage);
   enemy.hitFlash = COMBAT_DEFAULTS.enemyHitFlash;
   state.events.push({ type: 'enemy-hit', enemyId: enemy.id, damage, source });
+  updateEnemyPhase(enemy, state);
   if (enemy.health === 0) {
     enemy.defeated = true;
     enemy.defeatTimer = COMBAT_DEFAULTS.defeatDelay;
-    state.events.push({ type: 'enemy-defeated', enemyId: enemy.id, source });
+    state.events.push({ type: 'enemy-defeated', enemyId: enemy.id, source, rank: enemy.rank });
     if (enemy.phenotypeReward && getPhenotype(enemy.phenotypeReward)) {
       state.progression = absorbPhenotype(state.progression, enemy.phenotypeReward, COMBAT_DEFAULTS.phenotypeAbsorbDuration);
       state.events.push({
@@ -200,6 +234,62 @@ export function fireActivePhenotype(inputState, { x = 0, y = 0, facing = 1 } = {
   return state;
 }
 
+function patrolBounds(enemy) {
+  if (!Number.isFinite(enemy.patrolMinX) || !Number.isFinite(enemy.patrolMaxX)) return null;
+  return {
+    min: Math.min(enemy.patrolMinX, enemy.patrolMaxX),
+    max: Math.max(enemy.patrolMinX, enemy.patrolMaxX)
+  };
+}
+
+function tickEnemyMotion(enemy, dt, state) {
+  enemy.aiClock = Math.max(0, (enemy.aiClock || 0) + dt);
+  enemy.telegraphTimer = Math.max(0, (enemy.telegraphTimer || 0) - dt);
+  const bounds = patrolBounds(enemy);
+  const frozen = enemy.statuses.freeze > 0;
+  if (frozen) return;
+
+  if (enemy.rank === 'minor-boss' || enemy.rank === 'major-boss') {
+    const cycle = COMBAT_DEFAULTS.bossTelegraphCycle / Math.max(1, enemy.phase);
+    const previousCycle = Math.floor((enemy.aiClock - dt) / cycle);
+    const currentCycle = Math.floor(enemy.aiClock / cycle);
+    if (currentCycle > previousCycle && enemy.telegraphSeconds > 0) {
+      enemy.telegraphTimer = enemy.telegraphSeconds;
+      state.events.push({ type: 'enemy-telegraph', enemyId: enemy.id, phase: enemy.phase, duration: enemy.telegraphSeconds });
+    }
+  }
+
+  if (enemy.movement === 'blink') {
+    enemy.blinkTimer -= dt;
+    if (enemy.blinkTimer <= 0) {
+      const distance = Math.max(40, enemy.blinkDistance || 120) * enemy.direction;
+      const beforeX = enemy.x;
+      enemy.x += distance;
+      if (bounds) {
+        enemy.x = Math.max(bounds.min, Math.min(bounds.max - enemy.width, enemy.x));
+        if (enemy.x <= bounds.min + 0.01 || enemy.x + enemy.width >= bounds.max - 0.01) enemy.direction *= -1;
+      }
+      enemy.blinkTimer = Math.max(0.5, enemy.blinkCooldown || COMBAT_DEFAULTS.defaultBlinkCooldown);
+      enemy.telegraphTimer = Math.max(enemy.telegraphTimer, Math.min(0.34, enemy.telegraphSeconds || 0.34));
+      state.events.push({ type: 'enemy-blink', enemyId: enemy.id, fromX: beforeX, toX: enemy.x });
+    }
+  } else if (bounds && enemy.moveSpeed > 0) {
+    enemy.x += enemy.direction * enemy.moveSpeed * dt;
+    if (enemy.x <= bounds.min) {
+      enemy.x = bounds.min;
+      enemy.direction = 1;
+    }
+    if (enemy.x + enemy.width >= bounds.max) {
+      enemy.x = bounds.max - enemy.width;
+      enemy.direction = -1;
+    }
+  }
+
+  if (enemy.movement === 'flying') {
+    enemy.y = enemy.baseY + Math.sin(enemy.aiClock * enemy.hoverFrequency) * enemy.hoverAmplitude;
+  }
+}
+
 function tickEnemyStatuses(enemy, dt, state) {
   enemy.hitFlash = Math.max(0, (enemy.hitFlash || 0) - dt);
   if (enemy.defeated) {
@@ -222,6 +312,7 @@ function tickEnemyStatuses(enemy, dt, state) {
   enemy.y += enemy.vy * motionScale * dt;
   enemy.vx *= Math.pow(0.12, dt);
   enemy.vy *= Math.pow(0.12, dt);
+  tickEnemyMotion(enemy, dt * motionScale, state);
 }
 
 export function stepCombat(inputState, dt) {
@@ -261,6 +352,7 @@ export function stepCombat(inputState, dt) {
 export function combatSnapshot(state) {
   return {
     enemiesAlive: state.enemies.filter((enemy) => !enemy.defeated).length,
+    bossesAlive: state.enemies.filter((enemy) => !enemy.defeated && (enemy.rank === 'minor-boss' || enemy.rank === 'major-boss')).length,
     projectiles: state.projectiles.length,
     equippedWeapon: state.progression.equippedWeapon,
     activePhenotype: state.progression.activePhenotype,
