@@ -79,8 +79,6 @@ jobs:
             '0 / 24' \
             'JUMP ×2' \
             'tap for a short hop' \
-            '7 power-ups' \
-            '3 checkpoints' \
             "name=\"dtf-sprout-release\" content=\"${release}\"" \
             "<script src=\"./canvas-compat-v1.js?v=${release}\" defer></script>" \
             "<script src=\"./app.js?v=${release}\" defer></script>" \
@@ -186,4 +184,4 @@ jobs:
             if (!Array.isArray(level.hazards) || level.hazards.length !== 15) throw new Error(`hazards=${level.hazards?.length}`);
           ' "$level"
 
-          echo "Expanded Sprout Run ${release} live route, feel-v2 controls, cache-proof assets, production art, runtime and level data passed."
+          echo "Expanded Sprout Run ${release} live route, feel-v2 controls, cache-proof assets, production art, runtime and structured level data passed."
