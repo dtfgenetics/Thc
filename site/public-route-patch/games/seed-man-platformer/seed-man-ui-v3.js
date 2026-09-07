@@ -2,6 +2,7 @@
 
 (function installSeedManUiV3() {
   const VERSION = 'seed-man-ui-v3';
+  const VISUAL_VERSION = 'seed-man-visual-v4';
   const TOTAL_LEVELS = 15;
   let attempts = 0;
 
@@ -55,6 +56,17 @@
     document.head.append(style);
   }
 
+  function loadVisualV4() {
+    if (window.__SPROUT_VISUAL_V4__?.version === VISUAL_VERSION || document.querySelector('script[data-seed-visual-v4]')) return;
+    const release = document.querySelector('meta[name="dtf-sprout-release"]')?.content || '20260907-r9';
+    const script = document.createElement('script');
+    script.src = `./seed-man-visual-v4.js?v=${release}`;
+    script.async = false;
+    script.dataset.seedVisualV4 = 'v4';
+    script.addEventListener('error', () => console.error('Seed Man visual v4 failed to load.'), { once: true });
+    document.body.append(script);
+  }
+
   function sync() {
     const shell = document.querySelector('.game-shell');
     const progressNode = document.querySelector('#progress-count');
@@ -93,6 +105,7 @@
     shell.dataset.routePhase = phase.key;
     shell.dataset.boss = boss && !boss.defeated ? 'active' : 'none';
     document.documentElement.dataset.seedManUi = VERSION;
+    window.__SPROUT_VISUAL_V4__?.sync?.();
     return true;
   }
 
@@ -100,6 +113,7 @@
     if (sync()) {
       installStyles();
       sync();
+      loadVisualV4();
       const progress = document.querySelector('#progress-count');
       const finish = document.querySelector('#finish-panel');
       if (typeof MutationObserver === 'function') {
@@ -111,7 +125,7 @@
       window.addEventListener('sprout:level-selected', () => requestAnimationFrame(sync));
       const select = document.querySelector('#seed-man-level-select');
       if (select) select.addEventListener('change', () => requestAnimationFrame(sync));
-      window.__SPROUT_UI_V3__ = Object.freeze({ version: VERSION, sync, phaseFor });
+      window.__SPROUT_UI_V3__ = Object.freeze({ version: VERSION, visualVersion: VISUAL_VERSION, sync, phaseFor, loadVisualV4 });
       return;
     }
     attempts += 1;
