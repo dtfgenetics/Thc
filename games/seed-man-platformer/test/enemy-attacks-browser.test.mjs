@@ -3,7 +3,9 @@ import { spawn } from 'node:child_process';
 import { chromium } from '@playwright/test';
 
 const PORT = 4191;
-const GAME_URL = `http://127.0.0.1:${PORT}/games/seed-man-platformer/`;
+const LOCAL_URL = `http://127.0.0.1:${PORT}/games/seed-man-platformer/`;
+const GAME_URL = process.env.SPROUT_GAME_URL || LOCAL_URL;
+const USE_LOCAL_SERVER = !process.env.SPROUT_GAME_URL;
 let server;
 let browser;
 
@@ -17,7 +19,7 @@ async function waitForServer() {
     } catch {}
     await sleep(200);
   }
-  throw new Error('Seed Man enemy attack browser server did not start.');
+  throw new Error(`Seed Man enemy attack browser target did not become ready: ${GAME_URL}`);
 }
 
 async function attackSnapshot(page) {
@@ -25,7 +27,9 @@ async function attackSnapshot(page) {
 }
 
 try {
-  server = spawn('python3', ['-m', 'http.server', String(PORT), '--bind', '127.0.0.1', '--directory', 'site/public-route-patch'], { stdio: 'ignore' });
+  if (USE_LOCAL_SERVER) {
+    server = spawn('python3', ['-m', 'http.server', String(PORT), '--bind', '127.0.0.1', '--directory', 'site/public-route-patch'], { stdio: 'ignore' });
+  }
   await waitForServer();
 
   browser = await chromium.launch({ headless: true });
@@ -34,9 +38,9 @@ try {
   page.on('console', (message) => { if (message.type() === 'error') errors.push(message.text()); });
   page.on('pageerror', (error) => errors.push(error.message));
 
-  await page.goto(GAME_URL, { waitUntil: 'networkidle' });
-  await page.waitForFunction(() => window.__SPROUT_COMBAT_BROWSER__?.snapshot?.()?.installed === true);
-  await page.waitForFunction(() => window.__SPROUT_ENEMY_ATTACKS_BROWSER__?.snapshot?.()?.installed === true, null, { timeout: 5000 });
+  await page.goto(`${GAME_URL}${GAME_URL.includes('?') ? '&' : '?'}qa=${Date.now()}`, { waitUntil: USE_LOCAL_SERVER ? 'networkidle' : 'domcontentloaded' });
+  await page.waitForFunction(() => window.__SPROUT_COMBAT_BROWSER__?.snapshot?.()?.installed === true, null, { timeout: 8000 });
+  await page.waitForFunction(() => window.__SPROUT_ENEMY_ATTACKS_BROWSER__?.snapshot?.()?.installed === true, null, { timeout: 8000 });
 
   assert.ok(await page.locator('script[data-seed-enemy-attacks-browser="v1"]').count(), 'Seed Man should auto-load the enemy attack browser adapter.');
   assert.equal(await page.evaluate(() => window.__SPROUT_CANVAS_COMPAT__?.enemyAttackBrowserAutoLoad), true);
@@ -62,9 +66,9 @@ try {
   await page.waitForFunction(() => {
     const snap = window.__SPROUT_ENEMY_ATTACKS_BROWSER__?.snapshot?.();
     return Boolean(snap && (snap.telegraphCount > 0 || snap.projectileCount > 0 || snap.hitboxCount > 0));
-  }, null, { timeout: 5000 });
+  }, null, { timeout: 6000 });
 
-  await page.waitForFunction(() => player.power.shieldCharges === 0 || window.__SPROUT_ENEMY_ATTACKS_BROWSER__?.snapshot?.()?.hitsTaken > 0, null, { timeout: 6500 });
+  await page.waitForFunction(() => player.power.shieldCharges === 0 || window.__SPROUT_ENEMY_ATTACKS_BROWSER__?.snapshot?.()?.hitsTaken > 0, null, { timeout: 7500 });
   const playerAfter = await page.evaluate(() => ({ shieldCharges: player.power.shieldCharges, invulnerableTimer: player.power.invulnerableTimer, state: player.state }));
   assert.ok(playerAfter.invulnerableTimer > 0, 'Enemy attack hit should grant a post-hit invulnerability window.');
   assert.ok(['shield-bounce', 'hurt'].includes(playerAfter.state), 'Enemy attack hit should apply shield-bounce or hurt feedback.');
@@ -80,7 +84,7 @@ try {
   assert.ok(attacks.attackers.some((enemy) => enemy.name === 'Warp Weaver' && enemy.attackPattern === 'blink-strike' && enemy.rank === 'major-boss'), 'Cloud Nine Citadel should expose the major-boss blink strike.');
 
   assert.equal(errors.length, 0, `Enemy attack browser errors: ${errors.join(' | ')}`);
-  console.log('Seed Man enemy attack browser telegraphs, projectiles/hitboxes, shield/hurt feedback, and boss patterns passed');
+  console.log(`Seed Man enemy attack browser telegraphs, projectiles/hitboxes, shield/hurt feedback, and boss patterns passed at ${GAME_URL}`);
 } finally {
   if (browser) await browser.close();
   if (server) server.kill('SIGTERM');
