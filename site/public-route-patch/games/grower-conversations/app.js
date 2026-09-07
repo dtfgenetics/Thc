@@ -147,6 +147,7 @@ function renderCurrent() {
 
 function safeFocus(element) {
   if (!element?.focus) return;
+  if (!element.hasAttribute('tabindex')) element.setAttribute('tabindex', '-1');
   try { element.focus({ preventScroll: true }); }
   catch { element.focus(); }
 }
@@ -154,6 +155,8 @@ function safeFocus(element) {
 function animateDraw() {
   const card = document.querySelector('#prompt-card');
   if (!card) return;
+  const reducedMotion = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  if (reducedMotion) return;
   card.classList.remove('draw-pop');
   requestAnimationFrame(() => card.classList.add('draw-pop'));
 }
@@ -203,7 +206,11 @@ async function copyPrompt() {
     if (!navigator.clipboard?.writeText) throw new Error('Clipboard API unavailable.');
     await navigator.clipboard.writeText(text);
     ui.copy.textContent = 'Copied';
-    setTimeout(() => { ui.copy.textContent = 'Copy prompt'; }, 1300);
+    ui.status.textContent = 'Prompt copied to clipboard.';
+    setTimeout(() => {
+      ui.copy.textContent = 'Copy prompt';
+      updateStatus();
+    }, 1300);
   } catch {
     ui.status.textContent = 'Clipboard access was blocked by the browser. Select the prompt text to copy it manually.';
   }
@@ -232,13 +239,20 @@ function restoreSession() {
   saveSession();
 }
 
+function installKeyboardHints() {
+  ui.next.setAttribute('aria-keyshortcuts', 'D N');
+  ui.copy.setAttribute('aria-keyshortcuts', 'C');
+  ui.shuffle.setAttribute('aria-keyshortcuts', 'S');
+}
+
 function load() {
   try {
     const bank = readEmbeddedBank();
     cards = materialize(bank);
     if (cards.length !== 96 || new Set(cards.map((card) => card.id)).size !== 96) throw new Error('96-card contract mismatch');
     populateCategories();
-    ui.load.textContent = `Deck ready · ${cards.length} prompts · ${Object.keys(categoryLabels).length} topics · session progress enabled · D to draw`;
+    installKeyboardHints();
+    ui.load.textContent = `Deck ready · ${cards.length} prompts · ${Object.keys(categoryLabels).length} topics · progress saved · D/N draw · C copy · S shuffle`;
     ui.controls.hidden = false;
     ui.stage.hidden = false;
     restoreSession();
@@ -257,9 +271,17 @@ ui.depth.addEventListener('change', syncCurrentToFilters);
 document.addEventListener('keydown', (event) => {
   const target = event.target;
   if (target instanceof Element && target.closest('input,textarea,select,button,a,[contenteditable="true"]')) return;
-  if ((event.key === 'd' || event.key === 'D') && !event.altKey && !event.ctrlKey && !event.metaKey) {
+  if (event.altKey || event.ctrlKey || event.metaKey) return;
+  const key = event.key.toLowerCase();
+  if (key === 'd' || key === 'n') {
     event.preventDefault();
     draw();
+  } else if (key === 'c' && current) {
+    event.preventDefault();
+    copyPrompt();
+  } else if (key === 's') {
+    event.preventDefault();
+    shuffleDeck();
   }
 });
 
