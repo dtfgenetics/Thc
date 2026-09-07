@@ -49,17 +49,6 @@ function supportsWebGL() {
   }
 }
 
-function disposeObject(object) {
-  object.traverse((child) => {
-    if (child.geometry?.dispose) child.geometry.dispose();
-    if (Array.isArray(child.material)) {
-      for (const material of child.material) material?.dispose?.();
-    } else {
-      child.material?.dispose?.();
-    }
-  });
-}
-
 function standardMaterial(color, options = {}) {
   return new THREE.MeshStandardMaterial({
     color,
@@ -70,97 +59,169 @@ function standardMaterial(color, options = {}) {
   });
 }
 
-function makeBox(box, material) {
-  const geometry = new THREE.BoxGeometry(box.size.x, box.size.y, box.size.z);
+function createRenderResources() {
+  const geometries = {
+    unitBox: new THREE.BoxGeometry(1, 1, 1),
+    plantPot: new THREE.CylinderGeometry(0.18, 0.14, 0.32, 8),
+    plantRim: new THREE.CylinderGeometry(0.205, 0.205, 0.07, 8),
+    plantStem: new THREE.CylinderGeometry(0.025, 0.035, 0.52, 6),
+    plantLeaf: new THREE.SphereGeometry(0.18, 7, 5),
+    checkpointPole: new THREE.CylinderGeometry(0.035, 0.045, 1, 8),
+    checkpointLamp: new THREE.SphereGeometry(0.13, 10, 8),
+    finishPole: new THREE.CylinderGeometry(0.035, 0.045, 1, 8),
+    finishFlag: new THREE.PlaneGeometry(0.72, 0.38)
+  };
+
+  const materials = {
+    frame: standardMaterial(COLORS.greenhouseFrame, { roughness: 0.5, metalness: 0.2 }),
+    ground: standardMaterial(COLORS.ground, { roughness: 1 }),
+    soil: standardMaterial(COLORS.soil, { roughness: 1 }),
+    soilTop: standardMaterial(COLORS.soilTop, { roughness: 1 }),
+    platform: standardMaterial(COLORS.platform, { roughness: 0.86 }),
+    platformTop: standardMaterial(COLORS.platformTop, { roughness: 0.7 }),
+    platformEdge: standardMaterial(COLORS.platformEdge, { roughness: 0.88 }),
+    benchMetal: standardMaterial(COLORS.benchMetal, { roughness: 0.56, metalness: 0.18 }),
+    hazard: standardMaterial(COLORS.hazard, {
+      roughness: 0.66,
+      emissive: COLORS.hazardGlow,
+      emissiveIntensity: 0.7
+    }),
+    hazardWarning: standardMaterial(0xff8d4a, {
+      roughness: 0.55,
+      emissive: 0x7b2a13,
+      emissiveIntensity: 0.8
+    }),
+    pot: standardMaterial(COLORS.pot, { roughness: 0.9 }),
+    potRim: standardMaterial(COLORS.potRim, { roughness: 0.82 }),
+    stem: standardMaterial(COLORS.canopyMid, { roughness: 0.96 }),
+    leafDark: standardMaterial(COLORS.canopyDark, { roughness: 0.92 }),
+    leafLight: standardMaterial(COLORS.canopyLight, { roughness: 0.9 }),
+    checkpointPole: standardMaterial(0x815e2e, { roughness: 0.8 }),
+    checkpointGlow: standardMaterial(COLORS.checkpoint, {
+      roughness: 0.46,
+      emissive: COLORS.checkpointGlow,
+      emissiveIntensity: 0.65
+    }),
+    finishPole: standardMaterial(COLORS.finishDark, { roughness: 0.7 }),
+    finishFlag: new THREE.MeshStandardMaterial({
+      color: COLORS.finish,
+      side: THREE.DoubleSide,
+      emissive: 0x355d19,
+      emissiveIntensity: 0.35,
+      roughness: 0.7
+    })
+  };
+
+  return { geometries, materials };
+}
+
+function disposeRenderResources(resources) {
+  const geometries = new Set(Object.values(resources.geometries));
+  const materials = new Set(Object.values(resources.materials));
+  for (const geometry of geometries) geometry?.dispose?.();
+  for (const material of materials) material?.dispose?.();
+}
+
+function disposeRuntimeObjects(object) {
+  object.traverse((child) => {
+    if (child.isInstancedMesh) child.dispose?.();
+    if (child.userData?.ownedGeometry) child.geometry?.dispose?.();
+    if (child.userData?.ownedMaterial) {
+      if (Array.isArray(child.material)) {
+        for (const material of child.material) material?.dispose?.();
+      } else {
+        child.material?.dispose?.();
+      }
+    }
+  });
+}
+
+function makeOwnedMesh(geometry, material, x, y, z = 0) {
   const mesh = new THREE.Mesh(geometry, material);
-  mesh.position.set(box.position.x, box.position.y, box.position.z);
-  mesh.userData.sourceId = box.id;
+  mesh.position.set(x, y, z);
+  mesh.userData.ownedGeometry = true;
+  mesh.userData.ownedMaterial = true;
   return mesh;
 }
 
-function makeMesh(geometry, material, x, y, z = 0) {
+function makeSharedMesh(geometry, material, x, y, z = 0) {
   const mesh = new THREE.Mesh(geometry, material);
   mesh.position.set(x, y, z);
   return mesh;
 }
 
-function addPlatformCap(group, box) {
-  const capHeight = Math.min(0.12, Math.max(0.055, box.size.y * 0.28));
-  const geometry = new THREE.BoxGeometry(box.size.x + 0.03, capHeight, box.size.z + 0.04);
-  const material = standardMaterial(COLORS.platformTop, { roughness: 0.7 });
-  const cap = new THREE.Mesh(geometry, material);
-  cap.position.set(
-    box.position.x,
-    box.position.y + box.size.y / 2 - capHeight / 2 + 0.012,
-    box.position.z + 0.025
-  );
-  cap.userData.sourceId = `${box.id}:cap`;
-  group.add(cap);
+function createInstancedBatch(geometry, material, transforms, name) {
+  if (!transforms.length) return null;
+  const mesh = new THREE.InstancedMesh(geometry, material, transforms.length);
+  mesh.name = name;
+  mesh.frustumCulled = true;
+  const dummy = new THREE.Object3D();
+
+  transforms.forEach((transform, index) => {
+    const position = transform.position || [0, 0, 0];
+    const scale = transform.scale || [1, 1, 1];
+    const rotation = transform.rotation || [0, 0, 0];
+    dummy.position.set(position[0], position[1], position[2]);
+    dummy.scale.set(scale[0], scale[1], scale[2]);
+    dummy.rotation.set(rotation[0], rotation[1], rotation[2]);
+    dummy.updateMatrix();
+    mesh.setMatrixAt(index, dummy.matrix);
+  });
+  mesh.instanceMatrix.needsUpdate = true;
+  mesh.computeBoundingSphere();
+  return mesh;
 }
 
-function addPlatformEdge(group, box) {
-  const geometry = new THREE.BoxGeometry(box.size.x + 0.04, 0.045, box.size.z + 0.07);
-  const edge = new THREE.Mesh(geometry, standardMaterial(COLORS.platformEdge, { roughness: 0.88 }));
-  edge.position.set(
-    box.position.x,
-    box.position.y - box.size.y / 2 + 0.035,
-    box.position.z + 0.035
-  );
-  group.add(edge);
+function addBatch(group, geometry, material, transforms, name) {
+  const mesh = createInstancedBatch(geometry, material, transforms, name);
+  if (mesh) group.add(mesh);
+  return mesh;
 }
 
-function addBenchLegs(group, box) {
-  if (box.size.y > 0.62 || box.size.x < 1.35) return;
-  const legMaterial = standardMaterial(COLORS.benchMetal, { roughness: 0.56, metalness: 0.18 });
-  const legHeight = Math.max(0.32, box.position.y - box.size.y / 2 + 0.08);
-  if (legHeight <= 0.24) return;
-  const offsets = box.size.x > 2.6 ? [-0.38, 0, 0.38] : [-0.38, 0.38];
-  for (const ratio of offsets) {
-    const x = box.position.x + box.size.x * ratio;
-    const leg = makeMesh(new THREE.BoxGeometry(0.07, legHeight, 0.16), legMaterial.clone(), x, legHeight / 2, box.position.z - 0.12);
-    group.add(leg);
-  }
+function boxTransform(box, { x = 0, y = 0, z = 0, scaleX = 1, scaleY = 1, scaleZ = 1, rotationZ = 0 } = {}) {
+  return {
+    position: [box.position.x + x, box.position.y + y, box.position.z + z],
+    scale: [box.size.x * scaleX, box.size.y * scaleY, box.size.z * scaleZ],
+    rotation: [0, 0, rotationZ]
+  };
 }
 
-function addSoilInset(group, box) {
-  if (box.size.x < 1.8 || box.size.y > 0.95) return;
-  const soilWidth = Math.max(0.4, box.size.x - 0.24);
-  const soil = makeMesh(
-    new THREE.BoxGeometry(soilWidth, 0.08, Math.max(0.3, box.size.z - 0.04)),
-    standardMaterial(COLORS.soilTop, { roughness: 1 }),
-    box.position.x,
-    box.position.y + box.size.y / 2 + 0.075,
-    box.position.z + 0.01
-  );
-  group.add(soil);
-}
-
-function addPottedPlant(group, x, y, z, scale = 1) {
-  const potMaterial = standardMaterial(COLORS.pot, { roughness: 0.9 });
-  const rimMaterial = standardMaterial(COLORS.potRim, { roughness: 0.82 });
-  const stemMaterial = standardMaterial(COLORS.canopyMid, { roughness: 0.96 });
-  const leafDark = standardMaterial(COLORS.canopyDark, { roughness: 0.92 });
-  const leafLight = standardMaterial(COLORS.canopyLight, { roughness: 0.9 });
-
-  const pot = makeMesh(new THREE.CylinderGeometry(0.18 * scale, 0.14 * scale, 0.32 * scale, 8), potMaterial, x, y + 0.16 * scale, z);
-  const rim = makeMesh(new THREE.CylinderGeometry(0.205 * scale, 0.205 * scale, 0.07 * scale, 8), rimMaterial, x, y + 0.33 * scale, z);
-  const stem = makeMesh(new THREE.CylinderGeometry(0.025 * scale, 0.035 * scale, 0.52 * scale, 6), stemMaterial, x, y + 0.63 * scale, z);
-  group.add(pot, rim, stem);
-
-  const leafGeometry = new THREE.SphereGeometry(0.18 * scale, 7, 5);
+function buildPlantBatches(root, resources, plants) {
+  if (!plants.length) return;
+  const potTransforms = [];
+  const rimTransforms = [];
+  const stemTransforms = [];
+  const darkLeafTransforms = [];
+  const lightLeafTransforms = [];
   const leafPositions = [
     [-0.15, 0.77, 0.02], [0.14, 0.82, 0.01], [-0.03, 0.96, 0],
     [-0.21, 0.94, -0.02], [0.2, 1.02, 0.01], [0.02, 1.14, -0.01]
   ];
-  leafPositions.forEach(([dx, dy, dz], index) => {
-    const leaf = makeMesh(leafGeometry.clone(), (index % 2 ? leafLight : leafDark).clone(), x + dx * scale, y + dy * scale, z + dz);
-    leaf.scale.set(1.25, 0.6, 0.42);
-    leaf.rotation.z = (index % 2 ? 1 : -1) * 0.36;
-    group.add(leaf);
-  });
+
+  for (const plant of plants) {
+    const { x, y, z, scale } = plant;
+    potTransforms.push({ position: [x, y + 0.16 * scale, z], scale: [scale, scale, scale] });
+    rimTransforms.push({ position: [x, y + 0.33 * scale, z], scale: [scale, scale, scale] });
+    stemTransforms.push({ position: [x, y + 0.63 * scale, z], scale: [scale, scale, scale] });
+
+    leafPositions.forEach(([dx, dy, dz], index) => {
+      const transform = {
+        position: [x + dx * scale, y + dy * scale, z + dz],
+        scale: [1.25 * scale, 0.6 * scale, 0.42 * scale],
+        rotation: [0, 0, (index % 2 ? 1 : -1) * 0.36]
+      };
+      (index % 2 ? lightLeafTransforms : darkLeafTransforms).push(transform);
+    });
+  }
+
+  addBatch(root, resources.geometries.plantPot, resources.materials.pot, potTransforms, 'seed-man-plant-pots-v1');
+  addBatch(root, resources.geometries.plantRim, resources.materials.potRim, rimTransforms, 'seed-man-plant-rims-v1');
+  addBatch(root, resources.geometries.plantStem, resources.materials.stem, stemTransforms, 'seed-man-plant-stems-v1');
+  addBatch(root, resources.geometries.plantLeaf, resources.materials.leafDark, darkLeafTransforms, 'seed-man-plant-leaves-dark-v1');
+  addBatch(root, resources.geometries.plantLeaf, resources.materials.leafLight, lightLeafTransforms, 'seed-man-plant-leaves-light-v1');
 }
 
-function buildGreenhouseBackdrop(scene, world) {
+function buildGreenhouseBackdrop(scene, world, resources) {
   const root = new THREE.Group();
   root.name = 'seed-man-greenhouse-backdrop-v2';
 
@@ -179,108 +240,155 @@ function buildGreenhouseBackdrop(scene, world) {
     opacity: 0.12,
     depthWrite: false
   });
-  const frameMaterial = standardMaterial(COLORS.greenhouseFrame, { roughness: 0.5, metalness: 0.2 });
 
-  const backWall = makeMesh(new THREE.PlaneGeometry(world.width + 8, world.height + 5), glassMaterial, world.width / 2, world.height / 2 + 1.05, -3.6);
+  const backWall = makeOwnedMesh(new THREE.PlaneGeometry(world.width + 8, world.height + 5), glassMaterial, world.width / 2, world.height / 2 + 1.05, -3.6);
   root.add(backWall);
 
-  const hazeWall = makeMesh(new THREE.PlaneGeometry(world.width + 8, world.height + 5), distantGlassMaterial, world.width / 2, world.height / 2 + 0.65, -4.1);
+  const hazeWall = makeOwnedMesh(new THREE.PlaneGeometry(world.width + 8, world.height + 5), distantGlassMaterial, world.width / 2, world.height / 2 + 0.65, -4.1);
   root.add(hazeWall);
 
+  const ribTransforms = [];
+  const roofBraceTransforms = [];
   const ribSpacing = 3.1;
   for (let x = -1; x <= world.width + 1; x += ribSpacing) {
-    const rib = makeMesh(new THREE.BoxGeometry(0.055, world.height + 4.4, 0.08), frameMaterial.clone(), x, world.height / 2 + 1.0, -3.22);
-    root.add(rib);
-    const roofBrace = makeMesh(new THREE.BoxGeometry(2.5, 0.045, 0.07), frameMaterial.clone(), x + 0.55, world.height + 0.92, -3.15);
-    roofBrace.rotation.z = -0.24;
-    root.add(roofBrace);
+    ribTransforms.push({
+      position: [x, world.height / 2 + 1.0, -3.22],
+      scale: [0.055, world.height + 4.4, 0.08]
+    });
+    roofBraceTransforms.push({
+      position: [x + 0.55, world.height + 0.92, -3.15],
+      scale: [2.5, 0.045, 0.07],
+      rotation: [0, 0, -0.24]
+    });
   }
+  addBatch(root, resources.geometries.unitBox, resources.materials.frame, ribTransforms, 'seed-man-greenhouse-ribs-v1');
+  addBatch(root, resources.geometries.unitBox, resources.materials.frame, roofBraceTransforms, 'seed-man-greenhouse-braces-v1');
 
-  const roofRail = makeMesh(new THREE.BoxGeometry(world.width + 5, 0.08, 0.1), frameMaterial.clone(), world.width / 2, world.height + 0.62, -3.1);
+  const roofRail = makeSharedMesh(resources.geometries.unitBox, resources.materials.frame, world.width / 2, world.height + 0.62, -3.1);
+  roofRail.scale.set(world.width + 5, 0.08, 0.1);
   root.add(roofRail);
 
-  const horizon = makeMesh(
-    new THREE.BoxGeometry(world.width + 10, 0.55, 5),
-    standardMaterial(COLORS.ground, { roughness: 1 }),
-    world.width / 2,
-    -0.32,
-    -1.4
-  );
+  const horizon = makeSharedMesh(resources.geometries.unitBox, resources.materials.ground, world.width / 2, -0.32, -1.4);
+  horizon.scale.set(world.width + 10, 0.55, 5);
   root.add(horizon);
 
-  const aisle = makeMesh(
-    new THREE.BoxGeometry(world.width + 9, 0.08, 2.1),
-    standardMaterial(COLORS.soil, { roughness: 1 }),
-    world.width / 2,
-    0.02,
-    -2.25
-  );
+  const aisle = makeSharedMesh(resources.geometries.unitBox, resources.materials.soil, world.width / 2, 0.02, -2.25);
+  aisle.scale.set(world.width + 9, 0.08, 2.1);
   root.add(aisle);
 
+  const plants = [];
   for (let x = 1.1; x < world.width; x += 6.4) {
-    addPottedPlant(root, x, 0.02, -2.1, 0.84 + ((Math.floor(x * 10) % 3) * 0.08));
+    plants.push({
+      x,
+      y: 0.02,
+      z: -2.1,
+      scale: 0.84 + ((Math.floor(x * 10) % 3) * 0.08)
+    });
   }
+  buildPlantBatches(root, resources, plants);
 
   scene.add(root);
   return root;
 }
 
-function buildCheckpoint(group, box) {
-  const poleMaterial = standardMaterial(0x815e2e, { roughness: 0.8 });
-  const glowMaterial = standardMaterial(COLORS.checkpoint, {
-    roughness: 0.46,
-    emissive: COLORS.checkpointGlow,
-    emissiveIntensity: 0.65
-  });
+function buildCheckpoint(group, box, resources) {
   const baseY = box.position.y - box.size.y / 2;
-  const pole = makeMesh(new THREE.CylinderGeometry(0.035, 0.045, Math.max(0.6, box.size.y), 8), poleMaterial, box.position.x, baseY + Math.max(0.6, box.size.y) / 2, box.position.z);
-  const lamp = makeMesh(new THREE.SphereGeometry(0.13, 10, 8), glowMaterial, box.position.x, box.position.y + box.size.y / 2 + 0.08, box.position.z + 0.03);
+  const poleHeight = Math.max(0.6, box.size.y);
+  const pole = makeSharedMesh(resources.geometries.checkpointPole, resources.materials.checkpointPole, box.position.x, baseY + poleHeight / 2, box.position.z);
+  pole.scale.y = poleHeight;
+  const lamp = makeSharedMesh(resources.geometries.checkpointLamp, resources.materials.checkpointGlow, box.position.x, box.position.y + box.size.y / 2 + 0.08, box.position.z + 0.03);
   group.add(pole, lamp);
 }
 
-function buildFinish(group, box) {
+function buildFinish(group, box, resources) {
   const poleHeight = Math.max(1.25, box.size.y + 0.5);
-  const pole = makeMesh(new THREE.CylinderGeometry(0.035, 0.045, poleHeight, 8), standardMaterial(COLORS.finishDark, { roughness: 0.7 }), box.position.x - box.size.x * 0.18, box.position.y + 0.2, box.position.z);
-  const flag = makeMesh(new THREE.PlaneGeometry(0.72, 0.38), new THREE.MeshStandardMaterial({ color: COLORS.finish, side: THREE.DoubleSide, emissive: 0x355d19, emissiveIntensity: 0.35, roughness: 0.7 }), box.position.x + 0.3, box.position.y + poleHeight * 0.34, box.position.z + 0.04);
+  const pole = makeSharedMesh(resources.geometries.finishPole, resources.materials.finishPole, box.position.x - box.size.x * 0.18, box.position.y + 0.2, box.position.z);
+  pole.scale.y = poleHeight;
+  const flag = makeSharedMesh(resources.geometries.finishFlag, resources.materials.finishFlag, box.position.x + 0.3, box.position.y + poleHeight * 0.34, box.position.z + 0.04);
   group.add(pole, flag);
 }
 
-function buildLevelMeshes(scene, descriptor) {
+function buildLevelMeshes(scene, descriptor, resources) {
   const root = new THREE.Group();
   root.name = 'seed-man-level-world-v2';
 
-  const platformMaterial = standardMaterial(COLORS.platform, { roughness: 0.86 });
-  const hazardMaterial = standardMaterial(COLORS.hazard, {
-    roughness: 0.66,
-    emissive: COLORS.hazardGlow,
-    emissiveIntensity: 0.7
-  });
+  const platforms = [];
+  const caps = [];
+  const edges = [];
+  const legs = [];
+  const soilInsets = [];
+  const hazards = [];
+  const warnings = [];
 
   for (const platform of descriptor.platforms) {
-    root.add(makeBox(platform, platformMaterial.clone()));
-    addPlatformCap(root, platform);
-    addPlatformEdge(root, platform);
-    addBenchLegs(root, platform);
-    addSoilInset(root, platform);
+    platforms.push(boxTransform(platform));
+
+    const capHeight = Math.min(0.12, Math.max(0.055, platform.size.y * 0.28));
+    caps.push({
+      position: [
+        platform.position.x,
+        platform.position.y + platform.size.y / 2 - capHeight / 2 + 0.012,
+        platform.position.z + 0.025
+      ],
+      scale: [platform.size.x + 0.03, capHeight, platform.size.z + 0.04]
+    });
+
+    edges.push({
+      position: [
+        platform.position.x,
+        platform.position.y - platform.size.y / 2 + 0.035,
+        platform.position.z + 0.035
+      ],
+      scale: [platform.size.x + 0.04, 0.045, platform.size.z + 0.07]
+    });
+
+    if (platform.size.y <= 0.62 && platform.size.x >= 1.35) {
+      const legHeight = Math.max(0.32, platform.position.y - platform.size.y / 2 + 0.08);
+      if (legHeight > 0.24) {
+        const offsets = platform.size.x > 2.6 ? [-0.38, 0, 0.38] : [-0.38, 0.38];
+        for (const ratio of offsets) {
+          legs.push({
+            position: [platform.position.x + platform.size.x * ratio, legHeight / 2, platform.position.z - 0.12],
+            scale: [0.07, legHeight, 0.16]
+          });
+        }
+      }
+    }
+
+    if (platform.size.x >= 1.8 && platform.size.y <= 0.95) {
+      soilInsets.push({
+        position: [
+          platform.position.x,
+          platform.position.y + platform.size.y / 2 + 0.075,
+          platform.position.z + 0.01
+        ],
+        scale: [Math.max(0.4, platform.size.x - 0.24), 0.08, Math.max(0.3, platform.size.z - 0.04)]
+      });
+    }
   }
 
   for (const hazard of descriptor.hazards) {
-    const mesh = makeBox(hazard, hazardMaterial.clone());
-    mesh.rotation.z = 0.015;
-    root.add(mesh);
-    const warning = makeMesh(
-      new THREE.BoxGeometry(Math.max(0.1, hazard.size.x - 0.08), 0.045, hazard.size.z + 0.05),
-      standardMaterial(0xff8d4a, { roughness: 0.55, emissive: 0x7b2a13, emissiveIntensity: 0.8 }),
-      hazard.position.x,
-      hazard.position.y + hazard.size.y / 2 + 0.025,
-      hazard.position.z + 0.03
-    );
-    root.add(warning);
+    hazards.push(boxTransform(hazard, { rotationZ: 0.015 }));
+    warnings.push({
+      position: [hazard.position.x, hazard.position.y + hazard.size.y / 2 + 0.025, hazard.position.z + 0.03],
+      scale: [Math.max(0.1, hazard.size.x - 0.08), 0.045, hazard.size.z + 0.05]
+    });
   }
 
-  for (const checkpoint of descriptor.checkpoints) buildCheckpoint(root, checkpoint);
-  if (descriptor.finish) buildFinish(root, descriptor.finish);
+  const boxGeometry = resources.geometries.unitBox;
+  addBatch(root, boxGeometry, resources.materials.platform, platforms, 'seed-man-platforms-v1');
+  addBatch(root, boxGeometry, resources.materials.platformTop, caps, 'seed-man-platform-caps-v1');
+  addBatch(root, boxGeometry, resources.materials.platformEdge, edges, 'seed-man-platform-edges-v1');
+  addBatch(root, boxGeometry, resources.materials.benchMetal, legs, 'seed-man-platform-legs-v1');
+  addBatch(root, boxGeometry, resources.materials.soilTop, soilInsets, 'seed-man-platform-soil-v1');
+  addBatch(root, boxGeometry, resources.materials.hazard, hazards, 'seed-man-hazards-v1');
+  addBatch(root, boxGeometry, resources.materials.hazardWarning, warnings, 'seed-man-hazard-warnings-v1');
 
+  for (const checkpoint of descriptor.checkpoints) buildCheckpoint(root, checkpoint, resources);
+  if (descriptor.finish) buildFinish(root, descriptor.finish, resources);
+
+  root.userData.renderOptimization = 'seed-man-three-instancing-v1';
+  root.userData.staticBatchCount = root.children.filter((child) => child.isInstancedMesh).length;
   scene.add(root);
   return root;
 }
@@ -309,6 +417,7 @@ export function createThreeWorldRenderer({
   });
   configureRenderer(renderer, pixelRatio);
 
+  const resources = createRenderResources();
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(COLORS.sky);
   scene.fog = new THREE.Fog(COLORS.fog, 11, 31);
@@ -343,12 +452,12 @@ export function createThreeWorldRenderer({
   function clearLevel() {
     if (levelRoot) {
       scene.remove(levelRoot);
-      disposeObject(levelRoot);
+      disposeRuntimeObjects(levelRoot);
       levelRoot = null;
     }
     if (backdropRoot) {
       scene.remove(backdropRoot);
-      disposeObject(backdropRoot);
+      disposeRuntimeObjects(backdropRoot);
       backdropRoot = null;
     }
   }
@@ -358,8 +467,8 @@ export function createThreeWorldRenderer({
     descriptor = buildThreeWorldDescriptor(level, { pixelsPerUnit });
     levelWorldHeight = descriptor.world.heightPixels;
     clearLevel();
-    backdropRoot = buildGreenhouseBackdrop(scene, descriptor.world);
-    levelRoot = buildLevelMeshes(scene, descriptor);
+    backdropRoot = buildGreenhouseBackdrop(scene, descriptor.world, resources);
+    levelRoot = buildLevelMeshes(scene, descriptor, resources);
     return descriptor;
   }
 
@@ -402,10 +511,22 @@ export function createThreeWorldRenderer({
     renderer.render(scene, camera);
   }
 
+  function getRenderStats() {
+    return {
+      calls: renderer.info.render.calls,
+      triangles: renderer.info.render.triangles,
+      geometries: renderer.info.memory.geometries,
+      textures: renderer.info.memory.textures,
+      staticBatchCount: levelRoot?.userData?.staticBatchCount || 0,
+      optimization: levelRoot?.userData?.renderOptimization || null
+    };
+  }
+
   function dispose() {
     if (disposed) return;
     disposed = true;
     clearLevel();
+    disposeRenderResources(resources);
     renderer.dispose();
   }
 
@@ -413,6 +534,7 @@ export function createThreeWorldRenderer({
 
   return {
     version: 'seed-man-three-world-v2',
+    optimization: 'seed-man-three-instancing-v1',
     renderer,
     scene,
     camera,
@@ -420,6 +542,7 @@ export function createThreeWorldRenderer({
     resize,
     sync,
     render,
+    getRenderStats,
     dispose,
     get descriptor() {
       return descriptor;

@@ -41,9 +41,22 @@ async function waitForCampaign(page) {
     window.__SPROUT_GENERATED_LEVEL_GUARD__ &&
     window.__SPROUT_CAMPAIGN__?.levelCount === 15 &&
     document.documentElement.dataset.sproutCampaignUi === 'seed-man-campaign-ui-v15'
-  ));
+  ), null, { timeout: 15000 });
   await page.locator('#seed-man-campaign-panel').waitFor({ state: 'visible' });
   await page.locator('#seed-signature-hud').waitFor({ state: 'visible' });
+}
+
+async function openCampaign(page) {
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    await page.goto(GAME_URL, { waitUntil: isLive ? 'domcontentloaded' : 'networkidle' });
+    try {
+      await waitForCampaign(page);
+      return;
+    } catch (error) {
+      if (attempt === 1) throw error;
+      await page.reload({ waitUntil: isLive ? 'domcontentloaded' : 'networkidle' });
+    }
+  }
 }
 
 async function selectLevel(page, id) {
@@ -138,10 +151,15 @@ async function testBounceMechanic(page) {
     player.vx = 0;
     player.vy = 260;
     player.grounded = false;
+    window.__SEED_BOUNCE_ASSERTION__ = null;
     return { zoneY: zone.y };
   });
-  await page.waitForFunction(() => player.state === 'boost-bounce' && player.vy < 0);
-  const after = await page.evaluate(() => ({ y: player.y, vy: player.vy, state: player.state }));
+  await page.waitForFunction(() => {
+    if (player.state !== 'boost-bounce' || player.vy >= 0) return false;
+    window.__SEED_BOUNCE_ASSERTION__ = { y: player.y, vy: player.vy, state: player.state };
+    return true;
+  });
+  const after = await page.evaluate(() => window.__SEED_BOUNCE_ASSERTION__);
   assert.equal(after.state, 'boost-bounce');
   assert.ok(after.vy < -500, `Nursery bounce pad should launch Seed Man, got vy=${after.vy}`);
   assert.ok(after.y < result.zoneY);
@@ -289,8 +307,7 @@ async function testBossGate(page) {
 async function runViewport(viewport, mobile = false) {
   const page = await browser.newPage({ viewport, isMobile: mobile, hasTouch: mobile });
   const errors = collectErrors(page);
-  await page.goto(GAME_URL, { waitUntil: isLive ? 'domcontentloaded' : 'networkidle' });
-  await waitForCampaign(page);
+  await openCampaign(page);
   await testAllLevels(page);
   if (!mobile) {
     await testBounceMechanic(page);

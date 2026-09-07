@@ -35,7 +35,8 @@ const metadata = await stat(outfile);
 const requiredMarkers = [
   'SeedManThreeWorld',
   'seed-man-three-public-v2',
-  'seed-man-three-world-v2'
+  'seed-man-three-world-v2',
+  'seed-man-three-instancing-v1'
 ];
 for (const marker of requiredMarkers) {
   if (!output.includes(marker)) throw new Error(`Three.js public bundle missing marker: ${marker}`);
@@ -69,6 +70,7 @@ if (metadata.size > 900_000) {
 console.log(JSON.stringify({
   version: 'seed-man-three-public-v2',
   renderer: 'seed-man-three-world-v2',
+  optimization: 'seed-man-three-instancing-v1',
   outfile,
   bytes: metadata.size,
   selfContained: true,
