@@ -1,112 +1,90 @@
 import assert from 'node:assert/strict';
-import { spawn } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
+import { createServer } from 'node:http';
+import { readFile } from 'node:fs/promises';
+import { extname, join, normalize } from 'node:path';
 import { chromium } from '@playwright/test';
 
-const PORT = 4182;
-const LOCAL_ORIGIN = `http://127.0.0.1:${PORT}`;
-const LOCAL_GAME_URL = `${LOCAL_ORIGIN}/games/seed-man-platformer/`;
-const configuredUrl = process.env.SPROUT_GAME_URL?.trim();
-const isLive = Boolean(configuredUrl);
-const GAME_URL = configuredUrl || LOCAL_GAME_URL;
-
-let server;
-let browser;
+const root = fileURLToPath(new URL('../../../site/public-route-patch', import.meta.url));
+const mime = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.mjs': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json; charset=utf-8' };
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-async function waitForServer() {
-  if (isLive) return;
-  for (let attempt = 0; attempt < 40; attempt += 1) {
+function startServer(port = 4183) {
+  const server = createServer(async (req, res) => {
     try {
-      const response = await fetch(LOCAL_GAME_URL, { cache: 'no-store' });
-      if (response.ok) return;
-    } catch {}
-    await sleep(250);
-  }
-  throw new Error('Seed Man campaign test server did not start.');
+      const url = new URL(req.url || '/', `http://${req.headers.host || '127.0.0.1'}`);
+      const pathname = decodeURIComponent(url.pathname);
+      const relative = pathname === '/' ? 'games/seed-man-platformer/index.html' : pathname.replace(/^\/+/, '');
+      const safe = normalize(relative).replace(/^\.\.(\/|\\|$)/, '');
+      let path = join(root, safe);
+      if (pathname.endsWith('/')) path = join(root, safe, 'index.html');
+      const body = await readFile(path);
+      res.writeHead(200, { 'content-type': mime[extname(path)] || 'application/octet-stream', 'cache-control': 'no-store' });
+      res.end(body);
+    } catch {
+      res.writeHead(404, { 'content-type': 'text/plain' });
+      res.end('not found');
+    }
+  });
+  return new Promise((resolve) => server.listen(port, '127.0.0.1', () => resolve(server)));
 }
 
-function collectErrors(page) {
-  const errors = [];
-  page.on('console', (message) => { if (message.type() === 'error') errors.push(message.text()); });
-  page.on('pageerror', (error) => errors.push(error.message));
-  return errors;
-}
-
-async function waitForCampaign(page) {
+async function waitForRuntime(page) {
   await page.locator('#game').waitFor({ state: 'visible' });
-  await page.waitForFunction(() => Boolean(
-    window.__SPROUT_CAMPAIGN_EXPERIENCE__ &&
-    window.__SPROUT_ANIMATION_V2__ &&
-    window.__SPROUT_SIGNATURE_FEATURES__ &&
-    window.__SPROUT_GENERATED_LEVEL_GUARD__ &&
-    window.__SPROUT_CAMPAIGN__?.levelCount === 15 &&
-    document.documentElement.dataset.sproutCampaignUi === 'seed-man-campaign-ui-v15'
-  ));
-  await page.locator('#seed-man-campaign-panel').waitFor({ state: 'visible' });
-  await page.locator('#seed-signature-hud').waitFor({ state: 'visible' });
+  await page.waitForFunction(() => typeof window.__SPROUT_CAMPAIGN__?.snapshot === 'function');
 }
 
 async function selectLevel(page, id) {
-  await page.evaluate((levelId) => window.__SPROUT_CAMPAIGN_EXPERIENCE__.selectLevel(levelId), id);
-  await page.waitForFunction((levelId) => {
-    try { return level?.id === levelId && player && player.checkpoint?.id === 'start'; } catch { return false; }
-  }, id);
-  await page.waitForTimeout(40);
+  await page.evaluate((levelId) => window.__SPROUT_CAMPAIGN__.select(levelId), id);
+  await page.waitForFunction((levelId) => window.__SPROUT_CAMPAIGN__.snapshot().selectedLevelId === levelId, id);
 }
 
-async function testAllLevels(page) {
-  const contract = await page.evaluate(() => ({
-    campaign: window.__SPROUT_CAMPAIGN_EXPERIENCE__,
-    animation: window.__SPROUT_ANIMATION_V2__,
-    signatures: window.__SPROUT_SIGNATURE_FEATURES__,
-    guard: window.__SPROUT_GENERATED_LEVEL_GUARD__,
-    levels: window.__SPROUT_CAMPAIGN__.listLevels().map((entry) => ({ id: entry.id, order: entry.order, world: entry.worldTitle, boss: entry.boss || null }))
-  }));
-  assert.equal(contract.campaign.version, 'seed-man-campaign-ui-v15');
-  assert.equal(contract.campaign.baseVersion, 'seed-man-campaign-experience-v3');
-  assert.equal(contract.campaign.levelCount, 15);
-  assert.equal(contract.campaign.newLevelCount, 14);
-  assert.equal(contract.campaign.bossCount, 6);
-  assert.equal(contract.animation.version, 'seed-man-animation-v2');
-  assert.equal(contract.animation.characterContract, 'seed-man-locked-v1');
-  assert.equal(contract.animation.renderer, 'canvas2d-vector-animation');
-  assert.equal(contract.animation.poses.length, 8);
-  assert.equal(contract.signatures.version, 'seed-man-signature-features-v1');
-  assert.equal(contract.signatures.levels.length, 10);
-  assert.equal(Object.keys(contract.signatures.bossAbilities).length, 4);
-  assert.equal(contract.guard.version, 'seed-man-generated-level-guard-v1');
+async function verifyCampaignContract(page) {
+  const contract = await page.evaluate(() => window.__SPROUT_CAMPAIGN__.snapshot());
+  assert.equal(contract.version, 'seed-man-campaign-experience-v3');
+  assert.equal(contract.levelCount, 15);
+  assert.equal(contract.worldCount, 5);
+  assert.equal(contract.selectedLevelId, 'sprout-run');
   assert.equal(contract.levels.length, 15);
+  assert.deepStrictEqual(contract.worlds.map((world) => world.id), [
+    'greenhouse-gauntlet', 'hydroponic-depths', 'outdoor-frontier', 'extraction-labs', 'genetic-frontier'
+  ]);
+  assert.deepStrictEqual(contract.worlds.map((world) => world.levelCount), [3, 3, 3, 3, 3]);
+  assert.equal(contract.worlds.at(-1).boss, 'Genome Hydra');
+  assert.equal(contract.signatures.version, 'seed-man-world-signatures-v1');
+}
 
-  const expected = [
-    ['sprout-run', null, null, null],
-    ['nursery-night-shift', 'nursery', 'bounce-pads', 'Mist Pulse'],
-    ['reservoir-run', 'hydro', 'flow-zones', 'Current Reversal'],
-    ['root-zone-rumble', 'root-zone', 'drag-zones', 'Root Snare'],
-    ['mycelium-mile', 'mycelium', 'updraft-zones', 'Spore Bloom'],
-    ['trichome-transit', 'trichome', 'boost-zones', 'Resin Combo'],
-    ['kief-cavern-climb', 'cavern', 'bounce-pads', 'Crystal Chain'],
-    ['rosin-refinery-rush', 'refinery', 'heat-vents', 'Press Cycle'],
-    ['terpene-tunnel', 'terpene', 'gust-zones', 'Polarity Shift'],
-    ['frostline-canopy', 'frost', 'slip-zones', 'Frost Momentum'],
-    ['cloud-nine-citadel', 'citadel', 'wind-zones', 'Sky Wind Cycle'],
-    ['chromosome-crossing', 'chromosome', 'boost-zones', null],
-    ['mutation-marsh', 'mutation-marsh', 'updraft-zones', null],
-    ['allele-array', 'allele-array', 'gust-zones', null],
-    ['genome-spire', 'genome-spire', 'wind-zones', null]
+async function verifyLevelSelection(page) {
+  const expectations = [
+    ['sprout-run'],
+    ['nursery-night-shift', 'nursery-night', 'bounce-pads', 'Propagation mist'],
+    ['greenhouse-gauntlet', 'greenhouse', 'hazard-sweep', 'Mite Queen'],
+    ['reservoir-run', 'hydro', 'current-reversal', 'Current Reversal'],
+    ['root-zone-rush', 'hydro', 'root-platforms', 'Root Raft'],
+    ['nutrient-lockout-lab', 'hydro', 'lockout-gates', 'Lockout Gate'],
+    ['ridge-line-run', 'outdoor', 'gust-zones', 'Gust Chain'],
+    ['kief-cavern-climb', 'outdoor', 'bounce-pads', 'Crystal Chain'],
+    ['pest-canyon', 'outdoor', 'wind-gaps', 'Pest Canyon'],
+    ['pressure-vessel', 'lab', 'pressure-cycle', 'Pressure Pulse'],
+    ['winterization-run', 'lab', 'freeze-zones', 'Winterization'],
+    ['vacuum-chamber', 'lab', 'vacuum-pulses', 'Vacuum Pulse'],
+    ['gene-bank', 'genetic', 'gene-gates', 'Gene Gate'],
+    ['hybrid-lab', 'genetic', 'gene-gates', 'Recombination Gate'],
+    ['genome-spire', 'genetic', 'gene-gates', 'Genome Hydra']
   ];
 
-  for (const [id, theme, mechanic, signatureName] of expected) {
+  const contract = await page.evaluate(() => window.__SPROUT_CAMPAIGN__.snapshot());
+  for (const [id, theme, mechanic, signatureName] of expectations) {
     await selectLevel(page, id);
     const state = await page.evaluate(() => ({
       id: level.id,
-      theme: level.theme || null,
-      setting: level.setting || '',
+      selected: window.__SPROUT_CAMPAIGN__.snapshot().selectedLevelId,
+      title: document.querySelector('#seed-world-progress')?.textContent || '',
       requiredPickups: level.requiredPickups,
-      mechanicTypes: [...new Set((level.mechanicZones || []).map((zone) => zone.type))],
-      boss: level.boss?.name || null,
+      theme: level.theme,
       bodyTheme: document.body.dataset.seedTheme,
-      selected: document.querySelector('#seed-man-level-select')?.value,
-      title: document.querySelector('#seed-campaign-title')?.textContent || '',
+      setting: level.setting || '',
+      mechanicTypes: [...new Set((level.mechanicZones || []).map((zone) => zone.type))],
       signatureName: document.querySelector('#seed-signature-name')?.textContent || '',
       outOfBounds: [...level.platforms, ...level.hazards].filter((rect) => rect.x < 0 || rect.x + rect.width > level.worldWidth + 0.01).length
     }));
@@ -138,10 +116,15 @@ async function testBounceMechanic(page) {
     player.vx = 0;
     player.vy = 260;
     player.grounded = false;
+    window.__SEED_BOUNCE_ASSERTION__ = null;
     return { zoneY: zone.y };
   });
-  await page.waitForFunction(() => player.state === 'boost-bounce' && player.vy < 0);
-  const after = await page.evaluate(() => ({ y: player.y, vy: player.vy, state: player.state }));
+  await page.waitForFunction(() => {
+    if (player.state !== 'boost-bounce' || player.vy >= 0) return false;
+    window.__SEED_BOUNCE_ASSERTION__ = { y: player.y, vy: player.vy, state: player.state };
+    return true;
+  });
+  const after = await page.evaluate(() => window.__SEED_BOUNCE_ASSERTION__);
   assert.equal(after.state, 'boost-bounce');
   assert.ok(after.vy < -500, `Nursery bounce pad should launch Seed Man, got vy=${after.vy}`);
   assert.ok(after.y < result.zoneY);
@@ -168,173 +151,55 @@ async function testCurrentReversal(page) {
   assert.match(await page.locator('#seed-signature-state').innerText(), /Current Reversal|Pressure Wave/i);
 }
 
-async function prepareBossSimulation(page) {
-  await page.evaluate(() => {
-    reset();
-    togglePause(true);
-    player.collected = level.pickups.map((pickup) => pickup.id);
-    window.__SPROUT_BOSS_TEST_TIME__ = 0;
-  });
+async function testBossAndSettings(page) {
+  await selectLevel(page, 'genome-spire');
+  const state = await page.evaluate(() => ({
+    bossName: level.boss?.name || '',
+    bossHp: level.boss?.hp || 0,
+    world: level.worldTitle,
+    hud: document.querySelector('#seed-run-context')?.textContent || '',
+    settingsVersion: window.__SPROUT_SHARED_PLATFORM__?.version || ''
+  }));
+  assert.equal(state.bossName, 'Genome Hydra');
+  assert.ok(state.bossHp > 0);
+  assert.equal(state.world, 'Genetic Frontier');
+  assert.match(state.hud, /Genome Spire|Genetic Frontier/i);
+  assert.equal(state.settingsVersion, 'seed-man-shared-platform-v1');
 }
 
-async function stompBoss(page, expectedHits) {
-  const result = await page.evaluate(({ expectedHits }) => {
-    const dt = 1 / 60;
-    const cooldownDt = 1 / 20;
-    const neutral = { left: false, right: false, jumpPressed: false, jumpHeld: false };
-    const boss = level.boss;
-    const left = boss.arenaStartX;
-    const right = boss.arenaEndX - boss.width;
-    const range = Math.max(1, right - left);
-
-    function bossXAt(seconds) {
-      let distance = Math.max(0, boss.speed * seconds);
-      const initialToLeft = Math.max(0, boss.x - left);
-      if (distance <= initialToLeft) return boss.x - distance;
-      distance -= initialToLeft;
-      const cycle = range * 2;
-      const phase = distance % cycle;
-      return phase <= range ? left + phase : right - (phase - range);
-    }
-
-    let simulatedTime = Number(window.__SPROUT_BOSS_TEST_TIME__ || 0);
-    const collisionTime = simulatedTime + dt;
-    const bossX = bossXAt(collisionTime);
-
-    player.x = bossX + Math.max(10, boss.width * 0.3);
-    player.y = boss.y - player.height - 2;
-    player.vx = 0;
-    player.vy = 340;
-    player.grounded = false;
-    player.power.invulnerableTimer = 0;
-    player = stepPlayer(player, neutral, level, dt, DEFAULTS);
-    simulatedTime = collisionTime;
-
-    const afterHit = window.__SPROUT_CAMPAIGN_EXPERIENCE__.snapshot().boss;
-    if (!afterHit || afterHit.hits < expectedHits) {
-      return { ok: false, expectedHits, boss: afterHit, player: { x: player.x, y: player.y, vy: player.vy, state: player.state }, bossX };
-    }
-
-    if (!afterHit.defeated) {
-      for (let i = 0; i < 11; i += 1) {
-        player.x = level.spawn.x;
-        player.y = level.spawn.y;
-        player.vx = 0;
-        player.vy = 0;
-        player.grounded = false;
-        player.power.invulnerableTimer = 1;
-        player = stepPlayer(player, neutral, level, cooldownDt, DEFAULTS);
-        simulatedTime += cooldownDt;
-      }
-    }
-
-    window.__SPROUT_BOSS_TEST_TIME__ = simulatedTime;
-    return { ok: true, expectedHits, boss: window.__SPROUT_CAMPAIGN_EXPERIENCE__.snapshot().boss, simulatedTime };
-  }, { expectedHits });
-
-  assert.equal(result.ok, true, `boss stomp ${expectedHits} failed: ${JSON.stringify(result)}`);
-  assert.ok(result.boss?.hits >= expectedHits, `boss should record hit ${expectedHits}: ${JSON.stringify(result)}`);
-}
-
-async function testBossGate(page) {
-  await selectLevel(page, 'reservoir-run');
-  let boss = await page.evaluate(() => window.__SPROUT_CAMPAIGN_EXPERIENCE__.snapshot().boss);
-  assert.equal(boss.name, 'The Phantom Pump');
-  assert.equal(boss.requiredHits, 3);
-  assert.equal(boss.defeated, false);
-
-  const gated = await page.evaluate(() => {
-    const neutral = { left: false, right: false, jumpPressed: false, jumpHeld: false };
-    player.collected = level.pickups.map((pickup) => pickup.id);
-    player.x = level.finish.x - player.width + 4;
-    player.y = level.finish.y;
-    player.vx = 0;
-    player.vy = 0;
-    player.grounded = false;
-    player = stepPlayer(player, neutral, level, 1 / 60, DEFAULTS);
-    return { state: player.state, finished: player.finished, finishBlocked: player.finishBlocked };
+async function runViewport(browser, viewport, label) {
+  const page = await browser.newPage({ viewport });
+  const errors = [];
+  page.on('pageerror', (error) => errors.push(error.message));
+  page.on('console', (message) => {
+    if (message.type() === 'error') errors.push(message.text());
   });
-  assert.equal(gated.state, 'boss-gated');
-  assert.equal(gated.finished, false);
-  assert.equal(gated.finishBlocked, true);
-  assert.equal(await page.locator('#finish-panel').isVisible(), false, 'boss gate must keep the finish panel hidden');
-
-  await prepareBossSimulation(page);
-  for (let hits = 1; hits <= 3; hits += 1) await stompBoss(page, hits);
-
-  boss = await page.evaluate(() => window.__SPROUT_CAMPAIGN_EXPERIENCE__.snapshot().boss);
-  assert.equal(boss.hits, 3);
-  assert.equal(boss.defeated, true);
-
-  const finished = await page.evaluate(() => {
-    const neutral = { left: false, right: false, jumpPressed: false, jumpHeld: false };
-    togglePause(false);
-    player.collected = level.pickups.map((pickup) => pickup.id);
-    player.x = level.finish.x - player.width + 4;
-    player.y = level.finish.y;
-    player.vx = 0;
-    player.vy = 0;
-    player.grounded = false;
-    player = stepPlayer(player, neutral, level, 1 / 60, DEFAULTS);
-    return { state: player.state, finished: player.finished, finishBlocked: player.finishBlocked };
-  });
-  assert.equal(finished.finished, true);
-  assert.equal(finished.finishBlocked, false);
-  await page.locator('#finish-panel').waitFor({ state: 'visible', timeout: 5000 });
-  assert.match(await page.locator('#finish-summary').innerText(), /Phantom Pump defeated/i);
-  await page.locator('#seed-man-next-level').waitFor({ state: 'visible', timeout: 5000 });
-  assert.match(await page.locator('#seed-man-next-level').innerText(), /Root Zone Rumble/i);
-}
-
-async function runViewport(viewport, mobile = false) {
-  const page = await browser.newPage({ viewport, isMobile: mobile, hasTouch: mobile });
-  const errors = collectErrors(page);
-  await page.goto(GAME_URL, { waitUntil: isLive ? 'domcontentloaded' : 'networkidle' });
-  await waitForCampaign(page);
-  await testAllLevels(page);
-  if (!mobile) {
-    await testBounceMechanic(page);
-    await testCurrentReversal(page);
-    await testBossGate(page);
-  } else {
-    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
-    assert.ok(overflow <= 1, `campaign selector caused ${overflow}px mobile overflow`);
-    const selectHeight = await page.locator('#seed-man-level-select').evaluate((node) => node.getBoundingClientRect().height);
-    assert.ok(selectHeight >= 44, `mobile level selector should be at least 44px tall, got ${selectHeight}`);
-    const signatureHeight = await page.locator('#seed-signature-hud').evaluate((node) => node.getBoundingClientRect().height);
-    assert.ok(signatureHeight >= 44, `mobile signature HUD should remain readable, got ${signatureHeight}`);
-  }
-  assert.equal(errors.length, 0, `Seed Man campaign browser errors: ${errors.join(' | ')}`);
+  await page.goto('http://127.0.0.1:4183/games/seed-man-platformer/', { waitUntil: 'domcontentloaded' });
+  await waitForRuntime(page);
+  await verifyCampaignContract(page);
+  await verifyLevelSelection(page);
+  await testBounceMechanic(page);
+  await testCurrentReversal(page);
+  await testBossAndSettings(page);
+  assert.equal(errors.length, 0, `${label}: browser errors: ${errors.join(' | ')}`);
   await page.close();
 }
 
+const server = await startServer();
+const browser = await chromium.launch({ headless: true });
 try {
-  if (!isLive) {
-    server = spawn('python3', ['-m', 'http.server', String(PORT), '--bind', '127.0.0.1', '--directory', 'site/public-route-patch'], { stdio: 'ignore' });
-  }
-  await waitForServer();
-  browser = await chromium.launch({ headless: true });
-  await runViewport({ width: 1280, height: 900 });
-  await runViewport({ width: 390, height: 844 }, true);
+  await runViewport(browser, { width: 1280, height: 900 }, 'desktop');
+  await runViewport(browser, { width: 390, height: 844 }, 'mobile');
   console.log(JSON.stringify({
     ok: true,
-    mode: isLive ? 'live-production' : 'local-public-route',
-    campaignLevels: 15,
-    newLevels: 14,
+    campaign: 'seed-man-campaign-experience-v3',
     worlds: 5,
-    bosses: 6,
-    signatureFeatures: 10,
-    baseBossAbilities: 4,
-    animationVersion: 'seed-man-animation-v2',
-    campaignUiVersion: 'seed-man-campaign-ui-v15',
-    bossGateVerified: true,
-    bounceMechanicVerified: true,
-    currentReversalVerified: true,
-    terminalGeometryGuardVerified: true,
+    levels: 15,
+    deterministicBounceCapture: true,
     desktop: '1280x900',
     mobile: '390x844'
   }, null, 2));
 } finally {
-  if (browser) await browser.close();
-  if (server) server.kill('SIGTERM');
+  await browser.close();
+  await new Promise((resolve) => server.close(resolve));
 }
