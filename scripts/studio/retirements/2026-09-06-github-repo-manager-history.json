@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "retirements": [
+    {
+      "branch": "chore/github-repo-manager-skill",
+      "headSha": "e32381e17d29a64a2d0cf21c0cd1195c52ccf310",
+      "supersededBy": "881879d9f70bfedbf6a9b418afb463f41fcadf44",
+      "status": "approved",
+      "reviewedAt": "2026-09-06",
+      "reason": "Historical v1 repository-manager skill is superseded by the materially expanded v2 skill already on main; its failure-research reference is byte-identical on main and current AGENTS orchestration is newer."
+    },
+    {
+      "branch": "chore/restore-github-repo-manager-skill",
+      "headSha": "2629fe92bd2baf8e5b69a30b4ad4445c793e272f",
+      "supersededBy": "881879d9f70bfedbf6a9b418afb463f41fcadf44",
+      "status": "approved",
+      "reviewedAt": "2026-09-06",
+      "reason": "Aborted salvage branch from closed unmerged PR #729 would downgrade the current v2 repository-manager skill to historical v1. Main was never changed; retire this closed work branch to avoid new repo clutter."
+    }
+  ]
+}
