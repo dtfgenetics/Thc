@@ -1,8 +1,8 @@
 'use strict';
 
 (() => {
-  const VERSION = 'seed-man-three-adapter-v1';
-  // Release-contract marker: data.seedThreeWorld. Runtime state is stored on documentElement.dataset.seedThreeWorld.
+  const VERSION = 'seed-man-three-adapter-v2';
+  const EXPECTED_RENDERER_VERSION = 'seed-man-three-world-v2';
   const gameCanvas = document.querySelector('#game');
   const shell = document.querySelector('.game-shell');
   const api = window.SeedManThreeWorld;
@@ -18,6 +18,11 @@
   let mountedLevelId = null;
   let disposed = false;
   let frameId = 0;
+  let resizeObserver = null;
+  let lastWidth = 0;
+  let lastHeight = 0;
+  let resizeDirty = true;
+  let pageVisible = !document.hidden;
   const originalDrawBackground = window.drawBackground;
   const originalDrawPlatforms = window.drawPlatforms;
   const originalDrawCheckpoints = window.drawCheckpoints;
@@ -48,6 +53,7 @@
     wrapper.style.aspectRatio = '16 / 9';
     wrapper.style.overflow = 'hidden';
     wrapper.style.borderRadius = '18px';
+    wrapper.style.contain = 'layout paint size';
 
     gameCanvas.before(wrapper);
     wrapper.appendChild(gameCanvas);
@@ -99,10 +105,21 @@
     if (typeof originalDrawFinish === 'function') window.drawFinish = originalDrawFinish;
   }
 
-  function resize() {
-    if (!renderer || !stack) return;
+  function markResizeDirty() {
+    resizeDirty = true;
+  }
+
+  function resizeIfNeeded() {
+    if (!renderer || !stack || !resizeDirty) return false;
     const rect = stack.getBoundingClientRect();
-    renderer.resize(rect.width || gameCanvas.clientWidth || 960, rect.height || gameCanvas.clientHeight || 540);
+    const width = Math.max(1, Math.round(rect.width || gameCanvas.clientWidth || 960));
+    const height = Math.max(1, Math.round(rect.height || gameCanvas.clientHeight || 540));
+    resizeDirty = false;
+    if (width === lastWidth && height === lastHeight) return false;
+    lastWidth = width;
+    lastHeight = height;
+    renderer.resize(width, height);
+    return true;
   }
 
   function syncLevel(nextLevel) {
@@ -115,13 +132,19 @@
     return true;
   }
 
+  function scheduleLoop() {
+    if (disposed || !pageVisible || frameId) return;
+    frameId = window.requestAnimationFrame(loop);
+  }
+
   function loop() {
-    if (disposed) return;
+    frameId = 0;
+    if (disposed || !pageVisible) return;
     try {
       const nextLevel = currentLevel();
       const nextPlayer = currentPlayer();
       if (nextLevel && syncLevel(nextLevel)) {
-        resize();
+        resizeIfNeeded();
         renderer.sync({
           cameraX: currentCameraX(),
           player: nextPlayer,
@@ -134,13 +157,29 @@
       dispose('error');
       return;
     }
-    frameId = window.requestAnimationFrame(loop);
+    scheduleLoop();
+  }
+
+  function handleVisibilityChange() {
+    pageVisible = !document.hidden;
+    if (!pageVisible) {
+      if (frameId) window.cancelAnimationFrame(frameId);
+      frameId = 0;
+      return;
+    }
+    markResizeDirty();
+    scheduleLoop();
   }
 
   function dispose(reason = 'manual') {
     if (disposed) return;
     disposed = true;
-    window.cancelAnimationFrame(frameId);
+    if (frameId) window.cancelAnimationFrame(frameId);
+    frameId = 0;
+    resizeObserver?.disconnect?.();
+    resizeObserver = null;
+    window.removeEventListener('resize', markResizeDirty);
+    document.removeEventListener('visibilitychange', handleVisibilityChange);
     restoreForegroundHooks();
     renderer?.dispose?.();
     threeCanvas?.remove();
@@ -164,15 +203,25 @@
     threeCanvas = installThreeCanvas(stack);
     renderer = api.createRenderer({ canvas: threeCanvas });
     if (!renderer) throw new Error('WebGL renderer could not be created.');
+    if (renderer.version !== EXPECTED_RENDERER_VERSION) {
+      throw new Error(`Unexpected Seed Man renderer version: ${renderer.version || 'unknown'}`);
+    }
     installForegroundHooks();
     shell.dataset.threeWorld = VERSION;
     document.documentElement.dataset.seedThreeWorld = 'active';
-    resize();
-    window.addEventListener('resize', resize, { passive: true });
+    document.documentElement.dataset.seedThreeRenderer = renderer.version;
+
+    resizeIfNeeded();
+    if (typeof ResizeObserver === 'function') {
+      resizeObserver = new ResizeObserver(markResizeDirty);
+      resizeObserver.observe(stack);
+    }
+    window.addEventListener('resize', markResizeDirty, { passive: true });
+    document.addEventListener('visibilitychange', handleVisibilityChange, { passive: true });
     window.addEventListener('sprout:level-selected', () => {
       mountedLevelId = null;
     });
-    frameId = window.requestAnimationFrame(loop);
+    scheduleLoop();
 
     window.__SPROUT_THREE_ADAPTER__ = Object.freeze({
       version: VERSION,
@@ -181,7 +230,10 @@
         mountedLevelId,
         rendererVersion: renderer?.version || null,
         worldVersion: api.version || null,
-        webgl: true
+        webgl: true,
+        width: lastWidth,
+        height: lastHeight,
+        pageVisible
       }),
       dispose
     });
