@@ -106,8 +106,18 @@ try {
   combat = await snapshot(page);
   assert.ok(combat.phenotypeRemaining < 29.5, 'Phenotype timer should count down during active play.');
 
+  const resinBeforeReset = combat.resources.resin;
+  await page.evaluate(() => reset());
+  combat = await snapshot(page);
+  assert.equal(combat.activePhenotype, null, 'Reset should clear the temporary absorbed form.');
+  assert.equal(combat.phenotypeRemaining, 0, 'Reset should clear the temporary form timer.');
+  assert.ok(combat.discoveredPhenotypes.includes('static-haze'), 'Discovered phenotypes should persist across game resets.');
+  assert.equal(combat.resources.resin, resinBeforeReset, 'Collected progression resources should persist across game resets.');
+  assert.equal((await page.locator('#combat-phenotype-count').innerText()).trim(), 'None');
+  assert.equal(await page.locator('html').getAttribute('data-seed-pheno-active'), 'false');
+
   assert.equal(errors.length, 0, `Browser combat errors: ${errors.join(' | ')}`);
-  console.log('Seed Man public-route combat, timed phenotype absorption, HUD countdown, and ability use passed');
+  console.log('Seed Man public-route combat, timed phenotype absorption, persistent discovery, HUD countdown, and ability use passed');
 } finally {
   if (browser) await browser.close();
   if (server) server.kill('SIGTERM');
