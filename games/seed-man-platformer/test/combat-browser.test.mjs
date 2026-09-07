@@ -24,6 +24,12 @@ async function snapshot(page) {
   return page.evaluate(() => window.__SPROUT_COMBAT_BROWSER__?.snapshot?.() || null);
 }
 
+async function selectLevel(page, levelId) {
+  await page.evaluate((id) => window.__SPROUT_CAMPAIGN_EXPERIENCE__.selectLevel(id), levelId);
+  await page.waitForFunction((id) => window.__SPROUT_COMBAT_BROWSER__?.snapshot?.()?.levelId === id, levelId, { timeout: 3000 });
+  return snapshot(page);
+}
+
 async function fireAt(page, enemyId, hits) {
   for (let index = 0; index < hits; index += 1) {
     const before = await snapshot(page);
@@ -70,12 +76,16 @@ try {
   assert.ok(await page.locator('script[data-seed-combat-browser="v1"]').count(), 'Public route should auto-load the combat browser adapter.');
   assert.equal((await page.locator('#combat-weapon-count').innerText()).trim(), 'Seed Slinger');
   assert.equal((await page.locator('#combat-phenotype-count').innerText()).trim(), 'None');
+  await page.locator('#combat-threat-count').waitFor({ state: 'visible' });
   await page.locator('[data-combat="attack"]').waitFor({ state: 'visible' });
   await page.locator('[data-combat="ability"]').waitFor({ state: 'visible' });
 
   let combat = await snapshot(page);
   assert.equal(combat.phenotypeAbsorbVersion, 'seed-man-phenotype-absorb-v1');
+  assert.equal(combat.phenotypeExpansionVersion, 'seed-man-phenotype-expansion-v1');
+  assert.equal(combat.levelId, 'sprout-run');
   assert.equal(combat.enemies.length, 6);
+  assert.ok(combat.enemies.some((enemy) => enemy.flying), 'Greenhouse Gauntlet should contain a flying enemy.');
   assert.equal(combat.defeated, 0);
 
   await fireAt(page, 'combat-aphid-01', 2);
@@ -99,9 +109,7 @@ try {
   combat = await snapshot(page);
   assert.ok(combat.projectiles.some((projectile) => projectile.ability && projectile.effect === 'chain'), 'Absorbed Static Haze should fire a chain-lightning phenotype projectile.');
 
-  await page.evaluate(() => {
-    player.vx = 180;
-  });
+  await page.evaluate(() => { player.vx = 180; });
   await sleep(1100);
   combat = await snapshot(page);
   assert.ok(combat.phenotypeRemaining < 29.5, 'Phenotype timer should count down during active play.');
@@ -116,8 +124,21 @@ try {
   assert.equal((await page.locator('#combat-phenotype-count').innerText()).trim(), 'None');
   assert.equal(await page.locator('html').getAttribute('data-seed-pheno-active'), 'false');
 
+  combat = await selectLevel(page, 'reservoir-run');
+  assert.ok(combat.enemies.some((enemy) => enemy.flying && enemy.phenotype === 'terpene-tempest'), 'Reservoir Run should include the flying Tempest phenotype carrier.');
+  assert.ok(combat.enemies.some((enemy) => enemy.bossRank === 'minor' && enemy.flying), 'Reservoir Run should include a flying minor boss.');
+
+  combat = await selectLevel(page, 'mycelium-mile');
+  assert.ok(combat.enemies.some((enemy) => enemy.bossRank === 'major' && enemy.flying), 'Mycelium Mile should include a flying major boss.');
+  assert.match((await page.locator('#combat-threat-count').innerText()).trim(), /Spore Seraph/i);
+  assert.equal(await page.locator('#combat-threat-count').getAttribute('data-rank'), 'major');
+
+  combat = await selectLevel(page, 'cloud-nine-citadel');
+  assert.ok(combat.enemies.some((enemy) => enemy.blink && enemy.phenotype === 'gravity-haze'), 'Cloud Nine Citadel should include a warp phenotype carrier.');
+  assert.ok(combat.enemies.some((enemy) => enemy.bossRank === 'major' && enemy.blink), 'Cloud Nine Citadel should include a blinking major boss.');
+
   assert.equal(errors.length, 0, `Browser combat errors: ${errors.join(' | ')}`);
-  console.log('Seed Man public-route combat, timed phenotype absorption, persistent discovery, HUD countdown, and ability use passed');
+  console.log('Seed Man public-route combat, full encounter roster, flying/blink enemies, boss HUD, timed absorption, persistence, and level-aware combat passed');
 } finally {
   if (browser) await browser.close();
   if (server) server.kill('SIGTERM');

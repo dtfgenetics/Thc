@@ -8,9 +8,12 @@ import {
   stepCombat,
   combatSnapshot
 } from '../src/systems/combat.mjs';
+import { PHENOTYPES, PHENOTYPE_ABILITIES, getPhenotypeAbility } from '../src/systems/phenotypes.mjs';
 import {
   ENEMY_ARCHETYPES,
   LEVEL_01_COMBAT_ENCOUNTERS,
+  CAMPAIGN_PHENOTYPE_CARRIERS,
+  BOSS_ARCHETYPES,
   createEnemyFromArchetype,
   instantiateEncounterSet
 } from '../src/systems/enemy-archetypes.mjs';
@@ -21,13 +24,53 @@ function advance(state, seconds, dt = 1 / 60) {
   return next;
 }
 
-assert.ok(Object.keys(ENEMY_ARCHETYPES).length >= 7, 'Combat roster should contain multiple base and elite enemy archetypes.');
+assert.ok(Object.keys(ENEMY_ARCHETYPES).length >= 20, 'Combat roster should contain standard, elite, flying, and boss archetypes.');
 const authoredEncounters = instantiateEncounterSet();
 assert.equal(authoredEncounters.length, LEVEL_01_COMBAT_ENCOUNTERS.length);
 assert.ok(authoredEncounters.some((enemy) => enemy.phenotypeReward === 'static-haze'), 'Level 1 should contain an elite phenotype carrier.');
+assert.ok(authoredEncounters.some((enemy) => enemy.movement === 'flying'), 'Level 1 should introduce a flying enemy.');
 const frostElite = createEnemyFromArchetype('elite-frost-aphid', { id: 'test-frost', x: 20, y: 10 });
 assert.equal(frostElite.phenotypeReward, 'frost-resin');
 assert.equal(frostElite.drops.alleles, 1);
+
+assert.equal(Object.keys(PHENOTYPES).length, 10, 'Seed Man should retain ten canonical phenotype families.');
+assert.equal(Object.keys(PHENOTYPE_ABILITIES).length, 10, 'Every canonical phenotype needs an authored action contract.');
+assert.equal(CAMPAIGN_PHENOTYPE_CARRIERS.length, 10, 'Every phenotype should have an elite carrier archetype.');
+for (const archetypeId of CAMPAIGN_PHENOTYPE_CARRIERS) {
+  const archetype = ENEMY_ARCHETYPES[archetypeId];
+  assert.ok(archetype, `Missing phenotype carrier ${archetypeId}`);
+  assert.equal(archetype.rank, 'elite');
+  assert.ok(PHENOTYPES[archetype.phenotypeReward], `${archetypeId} must reward a canonical phenotype.`);
+}
+assert.equal(getPhenotypeAbility('terpene-tempest').action, 'flight-burst');
+assert.equal(getPhenotypeAbility('hydro-surge').action, 'bubble-form');
+assert.equal(getPhenotypeAbility('gravity-haze').action, 'forward-warp');
+assert.equal(getPhenotypeAbility('vine-lash').type, 'melee');
+assert.equal(getPhenotypeAbility('rootbreaker').type, 'ground');
+assert.equal(BOSS_ARCHETYPES.minor.length, 3);
+assert.equal(BOSS_ARCHETYPES.major.length, 3);
+for (const id of [...BOSS_ARCHETYPES.minor, ...BOSS_ARCHETYPES.major]) {
+  assert.ok(ENEMY_ARCHETYPES[id]?.telegraphSeconds >= 0.65, `${id} must telegraph major attacks.`);
+}
+assert.ok(BOSS_ARCHETYPES.major.some((id) => ENEMY_ARCHETYPES[id].movement === 'flying'), 'Major boss roster should include a flying boss.');
+assert.ok(BOSS_ARCHETYPES.major.some((id) => ENEMY_ARCHETYPES[id].movement === 'blink'), 'Major boss roster should include a warp/blink boss.');
+
+let aiState = createCombatState({
+  enemies: [
+    createEnemyFromArchetype('fungus-gnat', { id: 'flying-test', x: 100, y: 200, patrolMinX: 80, patrolMaxX: 260 }),
+    createEnemyFromArchetype('warp-midge', { id: 'blink-test', x: 300, y: 200, patrolMinX: 260, patrolMaxX: 560 }),
+    createEnemyFromArchetype('major-boss-warp-weaver', { id: 'boss-test', x: 600, y: 200, patrolMinX: 560, patrolMaxX: 980 })
+  ]
+});
+const flyingStartY = aiState.enemies[0].y;
+const blinkStartX = aiState.enemies[1].x;
+aiState = advance(aiState, 1.1);
+assert.notEqual(aiState.enemies[0].y, flyingStartY, 'Canonical combat should animate flying enemy altitude.');
+aiState = advance(aiState, 1.6);
+assert.notEqual(aiState.enemies[1].x, blinkStartX, 'Canonical combat should execute deterministic blink movement.');
+aiState = advance(aiState, 1.0);
+assert.ok(aiState.events.some((event) => event.type === 'enemy-telegraph') || aiState.enemies[2].telegraphTimer > 0, 'Major boss AI should emit readable telegraph state.');
+assert.equal(combatSnapshot(aiState).bossesAlive, 1);
 
 let progression = createProgressionState();
 progression = collectWeapon(progression, 'seed-slinger');
@@ -115,7 +158,8 @@ assert.equal(state.projectiles.length, 3, 'Pollen Blaster should emit its config
 const snapshot = combatSnapshot(state);
 assert.equal(snapshot.equippedWeapon, 'pollen-blaster');
 assert.equal(snapshot.enemiesAlive, 0);
+assert.equal(snapshot.bossesAlive, 0);
 assert.equal(snapshot.projectiles, 3);
 assert.equal(snapshot.absorbedPhenotype, null);
 
-console.log('Seed Man combat, enemy archetype, timed phenotype absorption, and expiry tests passed');
+console.log('Seed Man combat, canonical flying/blink/boss AI, full phenotype action roster, timed absorption, and expiry tests passed');
