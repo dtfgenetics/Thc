@@ -1,0 +1,31 @@
+name: Seed Man Live QA Release Trigger
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/seed-man-live-browser-acceptance.yml
+      - .github/workflows/seed-man-live-qa-release-trigger.yml
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: seed-man-live-qa-release-trigger
+  cancel-in-progress: true
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Dispatch authoritative Seed Man production publisher
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          run_url="$(gh workflow run publish-seed-man-production.yml --repo "$GITHUB_REPOSITORY" --ref main)"
+          run_id="${run_url##*/}"
+          [[ "$run_id" =~ ^[0-9]+$ ]] || { echo "Could not parse Seed Man publisher run: $run_url" >&2; exit 1; }
+          echo "Seed Man production publisher run: $run_id"
