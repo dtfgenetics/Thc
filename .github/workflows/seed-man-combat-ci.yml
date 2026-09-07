@@ -11,6 +11,7 @@ on:
       - 'games/seed-man-platformer/src/systems/player-progression.mjs'
       - 'games/seed-man-platformer/test/combat.test.mjs'
       - 'games/seed-man-platformer/test/combat-browser.test.mjs'
+      - 'games/seed-man-platformer/test/phenotype-mobility-browser.test.mjs'
       - 'site/public-route-patch/games/seed-man-platformer/canvas-compat-v1.js'
       - 'site/public-route-patch/games/seed-man-platformer/combat-browser-v1.js'
       - '.github/workflows/seed-man-combat-ci.yml'
@@ -24,6 +25,7 @@ on:
       - 'games/seed-man-platformer/src/systems/player-progression.mjs'
       - 'games/seed-man-platformer/test/combat.test.mjs'
       - 'games/seed-man-platformer/test/combat-browser.test.mjs'
+      - 'games/seed-man-platformer/test/phenotype-mobility-browser.test.mjs'
       - 'site/public-route-patch/games/seed-man-platformer/canvas-compat-v1.js'
       - 'site/public-route-patch/games/seed-man-platformer/combat-browser-v1.js'
       - '.github/workflows/seed-man-combat-ci.yml'
@@ -35,7 +37,7 @@ permissions:
 jobs:
   combat:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -47,6 +49,7 @@ jobs:
           node --check games/seed-man-platformer/src/systems/enemy-archetypes.mjs
           node --check games/seed-man-platformer/test/combat.test.mjs
           node --check games/seed-man-platformer/test/combat-browser.test.mjs
+          node --check games/seed-man-platformer/test/phenotype-mobility-browser.test.mjs
           node --check site/public-route-patch/games/seed-man-platformer/canvas-compat-v1.js
           node --check site/public-route-patch/games/seed-man-platformer/combat-browser-v1.js
       - name: Test combat simulation
@@ -57,3 +60,5 @@ jobs:
           npx playwright install chromium
       - name: Test public-route combat integration
         run: node games/seed-man-platformer/test/combat-browser.test.mjs
+      - name: Test phenotype mobility on authoritative player frame
+        run: node games/seed-man-platformer/test/phenotype-mobility-browser.test.mjs
