@@ -31,13 +31,7 @@ jobs:
         env:
           SPROUT_GAME_URL: https://dtfseeds.com/games/seed-man-platformer/
         run: |
-          # Live acceptance runs after the production publisher/smoke path. Do not
-          # trigger it directly from source pushes or it can race the deployment.
           sed -i "s/waitUntil: 'networkidle'/waitUntil: 'domcontentloaded'/g" games/seed-man-platformer/test/browser-smoke.mjs
-          # The local campaign browser suite intentionally validates the stable
-          # 11-level base runtime. Production additionally loads World 5, so the
-          # combined campaign registry must contain all 15 levels while those base
-          # behavior assertions remain unchanged.
           sed -i 's/assert.equal(contract.levels.length, 11);/assert.equal(contract.levels.length, 15);/' games/seed-man-platformer/test/campaign-browser.test.mjs
           node games/seed-man-platformer/test/browser-smoke.mjs
           node games/seed-man-platformer/test/gameplay-v2-smoke.mjs
@@ -73,20 +67,26 @@ jobs:
 
               const runtime = await page.evaluate(() => ({
                 documentState: document.documentElement.dataset.seedThreeWorld || null,
+                rendererState: document.documentElement.dataset.seedThreeRenderer || null,
                 shellState: document.querySelector('.game-shell')?.dataset.threeWorld || null,
                 canvasCount: document.querySelectorAll('[data-seed-three-canvas]').length,
                 adapter: window.__SPROUT_THREE_ADAPTER__?.snapshot?.() || null,
+                adapterVersion: window.__SPROUT_THREE_ADAPTER__?.version || null,
                 apiVersion: window.SeedManThreeWorld?.version || null
               }));
 
               assert.equal(runtime.documentState, 'active', `${viewport.name}: Three.js runtime must own the live world.`);
-              assert.equal(runtime.shellState, 'seed-man-three-adapter-v1', `${viewport.name}: game shell must report the Three.js adapter.`);
+              assert.equal(runtime.rendererState, 'seed-man-three-world-v2', `${viewport.name}: live document must report the v2 greenhouse renderer.`);
+              assert.equal(runtime.shellState, 'seed-man-three-adapter-v2', `${viewport.name}: game shell must report the optimized Three.js adapter.`);
+              assert.equal(runtime.adapterVersion, 'seed-man-three-adapter-v2', `${viewport.name}: unexpected Three.js adapter version.`);
               assert.equal(runtime.canvasCount, 1, `${viewport.name}: exactly one dedicated Three.js canvas must be mounted.`);
               assert.ok(runtime.adapter, `${viewport.name}: Three.js adapter snapshot must be available.`);
               assert.equal(runtime.adapter.webgl, true, `${viewport.name}: adapter must be running with WebGL.`);
+              assert.equal(runtime.adapter.rendererVersion, 'seed-man-three-world-v2', `${viewport.name}: v2 greenhouse renderer must be active.`);
               assert.equal(runtime.adapter.worldVersion, 'seed-man-three-public-v1', `${viewport.name}: unexpected Three.js world API version.`);
               assert.equal(runtime.apiVersion, 'seed-man-three-public-v1', `${viewport.name}: public Three.js API must be active.`);
               assert.ok(runtime.adapter.mountedLevelId, `${viewport.name}: renderer must mount the active gameplay level.`);
+              assert.ok(runtime.adapter.width > 0 && runtime.adapter.height > 0, `${viewport.name}: renderer must have a real display size.`);
               assert.equal(errors.length, 0, `${viewport.name}: browser errors while activating Three.js: ${errors.join(' | ')}`);
               await page.close();
             }
