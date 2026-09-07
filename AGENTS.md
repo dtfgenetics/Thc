@@ -16,6 +16,22 @@ The orchestrator resolves *what work exists, where it belongs, which worker owns
 
 Never create a competing implementation in this integration repo when `data/project-registry.json` identifies another canonical repository.
 
+## Read before portfolio-wide game audits or upgrade planning
+
+For requests to review, rank, improve, expand, or identify value-adding work across several or all DTFSeeds games, read `.agents/skills/dtf-game-portfolio-upgrade/SKILL.md` first.
+
+The portfolio-upgrade skill must:
+
+- resolve every game's canonical source before judging what exists;
+- classify public games, release candidates, vertical slices, prototypes, and concept-only titles correctly;
+- score games consistently across gameplay, controls, feel, visual quality, audio, content/replay, accessibility/mobile, performance, and production reliability;
+- separate P0/P1 blockers from P2/P3 quality and polish;
+- identify shared systems that should be built once instead of reimplemented title by title;
+- produce a prioritized implementation backlog with evidence;
+- hand individual game work to `.agents/skills/dtf-game-production/SKILL.md` and release work to `.agents/skills/dtf-game-canonical-release/SKILL.md`.
+
+Do not preserve an old portfolio score or feature list without reinspecting current canonical source. A preview/prototype label is not evidence that a game has no code.
+
 ## DTF Parallel Studio for new concurrent work
 
 For new repository work, read `.agents/skills/dtf-parallel-studio/SKILL.md` first, then the subsystem skill/source-of-truth documentation.
