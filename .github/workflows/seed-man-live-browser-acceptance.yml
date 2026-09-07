@@ -43,3 +43,54 @@ jobs:
           node games/seed-man-platformer/test/gameplay-v2-smoke.mjs
           node games/seed-man-platformer/test/enemy-attacks-browser.test.mjs
           node games/seed-man-platformer/test/campaign-browser.test.mjs
+
+      - name: Require live Three.js world ownership
+        env:
+          SPROUT_GAME_URL: https://dtfseeds.com/games/seed-man-platformer/
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import { chromium } from '@playwright/test';
+
+          const browser = await chromium.launch({ headless: true });
+          try {
+            for (const viewport of [
+              { name: 'desktop', width: 1280, height: 900 },
+              { name: 'mobile', width: 390, height: 844 }
+            ]) {
+              const page = await browser.newPage({ viewport });
+              const errors = [];
+              page.on('pageerror', (error) => errors.push(error.message));
+              page.on('console', (message) => {
+                if (message.type() === 'error') errors.push(message.text());
+              });
+
+              const url = `${process.env.SPROUT_GAME_URL}?renderer_acceptance=${Date.now()}-${viewport.name}`;
+              await page.goto(url, { waitUntil: 'domcontentloaded' });
+              await page.locator('#game').waitFor({ state: 'visible' });
+              await page.waitForFunction(() => document.documentElement.dataset.seedThreeWorld === 'active', null, { timeout: 15000 });
+              await page.waitForFunction(() => Boolean(window.__SPROUT_THREE_ADAPTER__?.active), null, { timeout: 15000 });
+
+              const runtime = await page.evaluate(() => ({
+                documentState: document.documentElement.dataset.seedThreeWorld || null,
+                shellState: document.querySelector('.game-shell')?.dataset.threeWorld || null,
+                canvasCount: document.querySelectorAll('[data-seed-three-canvas]').length,
+                adapter: window.__SPROUT_THREE_ADAPTER__?.snapshot?.() || null,
+                apiVersion: window.SeedManThreeWorld?.version || null
+              }));
+
+              assert.equal(runtime.documentState, 'active', `${viewport.name}: Three.js runtime must own the live world.`);
+              assert.equal(runtime.shellState, 'seed-man-three-adapter-v1', `${viewport.name}: game shell must report the Three.js adapter.`);
+              assert.equal(runtime.canvasCount, 1, `${viewport.name}: exactly one dedicated Three.js canvas must be mounted.`);
+              assert.ok(runtime.adapter, `${viewport.name}: Three.js adapter snapshot must be available.`);
+              assert.equal(runtime.adapter.webgl, true, `${viewport.name}: adapter must be running with WebGL.`);
+              assert.equal(runtime.adapter.worldVersion, 'seed-man-three-public-v1', `${viewport.name}: unexpected Three.js world API version.`);
+              assert.equal(runtime.apiVersion, 'seed-man-three-public-v1', `${viewport.name}: public Three.js API must be active.`);
+              assert.ok(runtime.adapter.mountedLevelId, `${viewport.name}: renderer must mount the active gameplay level.`);
+              assert.equal(errors.length, 0, `${viewport.name}: browser errors while activating Three.js: ${errors.join(' | ')}`);
+              await page.close();
+            }
+          } finally {
+            await browser.close();
+          }
+          NODE
