@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "retirements": [
+    {
+      "branch": "tmp-volume17-rebase-anchor-2026-09-01",
+      "headSha": "c1fb314321db77826f3dcad6547a52d75b1c3d21",
+      "supersededBy": "4be657a3512030e342df7f1495924c9009a7dc6b",
+      "status": "approved",
+      "reviewedAt": "2026-09-06",
+      "reason": "Temporary Volume 17 rebase anchor has zero unique commits versus current main and no open PR owner. Its parallel-project-manager skill commit is already preserved in main history; retire the stale anchor through exact-head lifecycle checks."
+    }
+  ]
+}
