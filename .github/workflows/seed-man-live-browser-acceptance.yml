@@ -34,6 +34,11 @@ jobs:
           # Live acceptance runs after the production publisher/smoke path. Do not
           # trigger it directly from source pushes or it can race the deployment.
           sed -i "s/waitUntil: 'networkidle'/waitUntil: 'domcontentloaded'/g" games/seed-man-platformer/test/browser-smoke.mjs
+          # The local campaign browser suite intentionally validates the stable
+          # 11-level base runtime. Production additionally loads World 5, so the
+          # combined campaign registry must contain all 15 levels while those base
+          # behavior assertions remain unchanged.
+          sed -i 's/assert.equal(contract.levels.length, 11);/assert.equal(contract.levels.length, 15);/' games/seed-man-platformer/test/campaign-browser.test.mjs
           node games/seed-man-platformer/test/browser-smoke.mjs
           node games/seed-man-platformer/test/gameplay-v2-smoke.mjs
           node games/seed-man-platformer/test/enemy-attacks-browser.test.mjs
