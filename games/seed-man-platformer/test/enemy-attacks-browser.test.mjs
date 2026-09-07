@@ -38,7 +38,6 @@ try {
   await page.waitForFunction(() => window.__SPROUT_COMBAT_BROWSER__?.snapshot?.()?.installed === true);
   await page.waitForFunction(() => window.__SPROUT_ENEMY_ATTACKS_BROWSER__?.snapshot?.()?.installed === true, null, { timeout: 5000 });
 
-  assert.equal(window === undefined, false);
   assert.ok(await page.locator('script[data-seed-enemy-attacks-browser="v1"]').count(), 'Seed Man should auto-load the enemy attack browser adapter.');
   assert.equal(await page.evaluate(() => window.__SPROUT_CANVAS_COMPAT__?.enemyAttackBrowserAutoLoad), true);
   assert.equal(await page.evaluate(() => window.__SPROUT_CANVAS_COMPAT__?.enemyAttacksLoaded), true);
