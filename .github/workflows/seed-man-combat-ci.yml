@@ -5,11 +5,13 @@ on:
     branches: [main]
     paths:
       - 'games/seed-man-platformer/src/systems/combat.mjs'
+      - 'games/seed-man-platformer/src/systems/enemy-attacks.mjs'
       - 'games/seed-man-platformer/src/systems/enemy-archetypes.mjs'
       - 'games/seed-man-platformer/src/systems/weapons.mjs'
       - 'games/seed-man-platformer/src/systems/phenotypes.mjs'
       - 'games/seed-man-platformer/src/systems/player-progression.mjs'
       - 'games/seed-man-platformer/test/combat.test.mjs'
+      - 'games/seed-man-platformer/test/enemy-attacks.test.mjs'
       - 'games/seed-man-platformer/test/combat-browser.test.mjs'
       - 'games/seed-man-platformer/test/phenotype-mobility-browser.test.mjs'
       - 'site/public-route-patch/games/seed-man-platformer/canvas-compat-v1.js'
@@ -19,11 +21,13 @@ on:
     branches: [main]
     paths:
       - 'games/seed-man-platformer/src/systems/combat.mjs'
+      - 'games/seed-man-platformer/src/systems/enemy-attacks.mjs'
       - 'games/seed-man-platformer/src/systems/enemy-archetypes.mjs'
       - 'games/seed-man-platformer/src/systems/weapons.mjs'
       - 'games/seed-man-platformer/src/systems/phenotypes.mjs'
       - 'games/seed-man-platformer/src/systems/player-progression.mjs'
       - 'games/seed-man-platformer/test/combat.test.mjs'
+      - 'games/seed-man-platformer/test/enemy-attacks.test.mjs'
       - 'games/seed-man-platformer/test/combat-browser.test.mjs'
       - 'games/seed-man-platformer/test/phenotype-mobility-browser.test.mjs'
       - 'site/public-route-patch/games/seed-man-platformer/canvas-compat-v1.js'
@@ -46,14 +50,18 @@ jobs:
       - name: Validate combat syntax
         run: |
           node --check games/seed-man-platformer/src/systems/combat.mjs
+          node --check games/seed-man-platformer/src/systems/enemy-attacks.mjs
           node --check games/seed-man-platformer/src/systems/enemy-archetypes.mjs
           node --check games/seed-man-platformer/test/combat.test.mjs
+          node --check games/seed-man-platformer/test/enemy-attacks.test.mjs
           node --check games/seed-man-platformer/test/combat-browser.test.mjs
           node --check games/seed-man-platformer/test/phenotype-mobility-browser.test.mjs
           node --check site/public-route-patch/games/seed-man-platformer/canvas-compat-v1.js
           node --check site/public-route-patch/games/seed-man-platformer/combat-browser-v1.js
       - name: Test combat simulation
         run: node games/seed-man-platformer/test/combat.test.mjs
+      - name: Test enemy attack patterns
+        run: node games/seed-man-platformer/test/enemy-attacks.test.mjs
       - name: Install browser acceptance dependencies
         run: |
           npm ci
