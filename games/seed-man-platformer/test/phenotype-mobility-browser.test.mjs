@@ -4,6 +4,10 @@ import { chromium } from '@playwright/test';
 
 const PORT = 4191;
 const GAME_URL = `http://127.0.0.1:${PORT}/games/seed-man-platformer/`;
+const TARGETS = Object.freeze({
+  'reservoir-tempest-gnat': { x: 3820, y: 300 },
+  'nursery-hydro-beetle': { x: 3360, y: 446 }
+});
 let server;
 let browser;
 
@@ -30,22 +34,22 @@ async function selectLevel(page, levelId) {
 }
 
 async function defeatEnemy(page, enemyId) {
+  const target = TARGETS[enemyId];
+  assert.ok(target, `Missing authored target coordinates for ${enemyId}`);
+
   for (let shot = 0; shot < 40; shot += 1) {
     const snapshot = await combatSnapshot(page);
     const enemy = snapshot.enemies.find((entry) => entry.id === enemyId);
     assert.ok(enemy, `Missing ${enemyId}`);
     if (enemy.defeated) return;
 
-    await page.evaluate((id) => {
-      const enemy = window.__SPROUT_COMBAT_BROWSER__.snapshot().enemies.find((entry) => entry.id === id);
-      const authored = typeof enemies !== 'undefined' ? enemies.find((entry) => entry.id === id) : null;
-      const target = authored || enemy;
-      player.x = Math.max(0, Number(target?.x || 300) - 170);
-      player.y = Number(target?.y || 300);
+    await page.evaluate(({ x, y }) => {
+      player.x = Math.max(0, x - 170);
+      player.y = y;
       player.vx = 18;
       player.vy = 0;
       player.grounded = false;
-    }, enemyId);
+    }, target);
 
     const beforeHealth = enemy.health;
     await page.keyboard.press('j');
@@ -75,7 +79,6 @@ try {
   await page.goto(GAME_URL, { waitUntil: 'networkidle' });
   await page.waitForFunction(() => window.__SPROUT_COMBAT_BROWSER__?.installed === true);
   await page.waitForFunction(() => window.__SPROUT_CANVAS_COMPAT__?.mobilityFrameRepairInstalled === true);
-  assert.equal(window === undefined, false);
 
   const compat = await page.evaluate(() => ({
     marker: window.__SPROUT_CANVAS_COMPAT__?.phenotypeMobilityFrameRepair,
