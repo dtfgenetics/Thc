@@ -13,6 +13,7 @@ const compatPath = 'site/public-route-patch/games/seed-man-platformer/canvas-com
 const enemyAttackBrowserPath = 'site/public-route-patch/games/seed-man-platformer/enemy-attacks-browser-v1.js';
 const enemyAttackModulePath = 'site/public-route-patch/games/seed-man-platformer/enemy-attacks.js';
 const worldFivePath = 'site/public-route-patch/games/seed-man-platformer/world-five-v1.js';
+const campaignUiPath = 'site/public-route-patch/games/seed-man-platformer/campaign-ui-v15.js';
 
 for (const file of [
   publisherPath,
@@ -26,7 +27,8 @@ for (const file of [
   compatPath,
   enemyAttackBrowserPath,
   enemyAttackModulePath,
-  worldFivePath
+  worldFivePath,
+  campaignUiPath
 ]) {
   if (!fs.existsSync(file)) throw new Error(`Missing Seed Man release input: ${file}`);
 }
@@ -37,6 +39,7 @@ const releaseEntries = [
   "  'enemy-attacks-browser-v1.js',",
   "  'enemy-attacks.js',",
   "  'world-five-v1.js',",
+  "  'campaign-ui-v15.js',",
   "  'data/levels-12-15.json',"
 ];
 const anchor = "  'gameplay-v2.js',\n  'input-guard-v1.js',";
@@ -61,6 +64,7 @@ const compat = fs.readFileSync(compatPath, 'utf8');
 const enemyAttackBrowser = fs.readFileSync(enemyAttackBrowserPath, 'utf8');
 const enemyAttackModule = fs.readFileSync(enemyAttackModulePath, 'utf8');
 const worldFive = fs.readFileSync(worldFivePath, 'utf8');
+const campaignUi = fs.readFileSync(campaignUiPath, 'utf8');
 
 if (enemyAttackModule !== canonicalEnemyAttackModule) {
   throw new Error('Browser-safe enemy-attacks.js must exactly mirror the canonical enemy-attacks.mjs source.');
@@ -111,7 +115,9 @@ for (const marker of [
   'seed-man-phenotype-mobility-frame-v1',
   'mobilityFrameRepairInstalled',
   'enemyAttackBrowserAutoLoad: true',
-  'enemy-attacks-browser-v1.js'
+  'enemy-attacks-browser-v1.js',
+  'campaignUiAutoLoad: true',
+  'campaign-ui-v15.js'
 ]) {
   if (!compat.includes(marker)) throw new Error(`Missing combat compatibility marker: ${marker}`);
 }
@@ -141,6 +147,15 @@ for (const marker of [
   if (!worldFive.includes(marker)) throw new Error(`Missing World 5 browser marker: ${marker}`);
 }
 for (const marker of [
+  'seed-man-campaign-ui-v15',
+  'TOTAL_LEVELS = 15',
+  'TOTAL_WORLDS = 5',
+  'TOTAL_BOSSES = 6',
+  'sproutCampaignUi'
+]) {
+  if (!campaignUi.includes(marker)) throw new Error(`Missing 15-level campaign UI marker: ${marker}`);
+}
+for (const marker of [
   'seed-man-world-five-combat-v1',
   "'chromosome-crossing'",
   "'mutation-marsh'",
@@ -163,9 +178,11 @@ console.log(JSON.stringify({
   enemyAttackModuleFile: 'enemy-attacks.js',
   canonicalEnemyAttackModuleFile: 'enemy-attacks.mjs',
   worldFiveFile: 'world-five-v1.js',
+  campaignUiFile: 'campaign-ui-v15.js',
   worldFivePack: 'data/levels-12-15.json',
   campaignLevels: 15,
   campaignWorlds: 5,
+  campaignBosses: 6,
   phenotypeAbsorption: 'seed-man-phenotype-absorb-v1',
   phenotypeExpansion: 'seed-man-phenotype-expansion-v1',
   phenotypeMobilityFrameRepair: 'seed-man-phenotype-mobility-frame-v1',
@@ -173,5 +190,6 @@ console.log(JSON.stringify({
   enemyAttackPatterns: ['aimed-shot', 'burst-shot', 'radial-burst', 'dive-charge', 'ground-wave', 'blink-strike'],
   worldFiveStages: ['chromosome-crossing', 'mutation-marsh', 'allele-array', 'genome-spire'],
   worldFiveCombat: 'seed-man-world-five-combat-v1',
+  campaignUi: 'seed-man-campaign-ui-v15',
   autoload: true
 }, null, 2));
