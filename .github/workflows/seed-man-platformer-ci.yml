@@ -6,6 +6,8 @@ on:
     paths:
       - 'games/seed-man-platformer/**'
       - 'site/public-route-patch/games/seed-man-platformer/**'
+      - 'games/shared-platform/**'
+      - 'site/public-route-patch/games/shared-platform/**'
       - '.github/workflows/seed-man-platformer-ci.yml'
       - '.github/workflows/seed-man-live-browser-acceptance.yml'
   pull_request:
@@ -13,6 +15,8 @@ on:
     paths:
       - 'games/seed-man-platformer/**'
       - 'site/public-route-patch/games/seed-man-platformer/**'
+      - 'games/shared-platform/**'
+      - 'site/public-route-patch/games/shared-platform/**'
       - '.github/workflows/seed-man-platformer-ci.yml'
       - '.github/workflows/seed-man-live-browser-acceptance.yml'
   workflow_dispatch:
@@ -80,6 +84,7 @@ jobs:
           node --check games/seed-man-platformer/test/progression-systems.test.mjs
           node --check games/seed-man-platformer/test/three-world-state.test.mjs
           node --check games/seed-man-platformer/test/public-campaign.test.mjs
+          node --check games/seed-man-platformer/test/shared-platform-browser.test.mjs
           node --check site/public-route-patch/games/seed-man-platformer/canvas-compat-v1.js
           node --check site/public-route-patch/games/seed-man-platformer/campaign-v1.js
           node --check site/public-route-patch/games/seed-man-platformer/app.js
@@ -142,6 +147,10 @@ jobs:
           ! grep -Fq "addEventListener('pointerleave'" "$route/app.js"
           grep -Fq 'seed-man-production-v1' "$route/seed-man-production-art.js"
           grep -Fq 'seed-man-locked-v1' "$route/seed-man-production-art.js"
+          grep -Fq 'createGameSettingsStore' "$route/input-guard-v1.js"
+          grep -Fq 'createGameAudioManager' "$route/input-guard-v1.js"
+          grep -Fq '__SPROUT_SHARED_PLATFORM__' "$route/input-guard-v1.js"
+          grep -Fq 'seed-man-shared-platform-v1' "$route/input-guard-v1.js"
           grep -Fq 'No third-party level layouts or character assets are used.' "$route/index.html"
           ! grep -Fqi 'collect all eight sprouts' "$route/index.html"
           ! grep -Fq '0 / 8' "$route/index.html"
@@ -152,6 +161,8 @@ jobs:
           npx playwright install chromium
       - name: Play through Greenhouse Gauntlet in Chromium
         run: node games/seed-man-platformer/test/browser-smoke.mjs
+      - name: Verify shared settings accessibility and audio in Chromium
+        run: node games/seed-man-platformer/test/shared-platform-browser.test.mjs
       - name: Verify zero-sprout flag completion in Chromium
         run: node games/seed-man-platformer/test/flag-completion-browser.test.mjs
       - name: Exercise eleven-level campaign bosses and settings in Chromium

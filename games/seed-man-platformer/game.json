@@ -37,7 +37,11 @@
     "checkpoint-recovery",
     "course-progress-rail",
     "guarded-restart",
-    "threejs-world-renderer-prototype"
+    "threejs-world-renderer-prototype",
+    "shared-persistent-game-settings",
+    "shared-accessibility-preferences",
+    "browser-audio-unlock",
+    "event-driven-sfx-cues"
   ],
   "implementation": {
     "physics": "games/seed-man-platformer/src/physics.mjs",
@@ -48,8 +52,11 @@
     "campaignTests": "games/seed-man-platformer/test/campaign.test.mjs",
     "browserAcceptance": "games/seed-man-platformer/test/browser-smoke.mjs",
     "campaignBrowserAcceptance": "games/seed-man-platformer/test/campaign-browser.test.mjs",
+    "sharedPlatformBrowserAcceptance": "games/seed-man-platformer/test/shared-platform-browser.test.mjs",
     "publicRoute": "site/public-route-patch/games/seed-man-platformer",
     "publicCampaignRuntime": "site/public-route-patch/games/seed-man-platformer/campaign-v1.js",
+    "sharedPlatformAdapter": "site/public-route-patch/games/seed-man-platformer/input-guard-v1.js",
+    "sharedPlatformRuntime": "games/shared-platform/src/index.mjs",
     "productionCharacterArt": "site/public-route-patch/games/seed-man-platformer/seed-man-production-art.js",
     "threeWorldStateBridge": "games/seed-man-platformer/src/render/three-world-state.mjs",
     "threeWorldRendererPrototype": "games/seed-man-platformer/src/render/three-world.mjs",
@@ -72,7 +79,8 @@
     "seed-man-character-contract",
     "world-specific-mechanics-without-physics-engine-replacement",
     "bosses-are-gameplay-state-not-dom-gimmicks",
-    "threejs-render-adapter-does-not-own-gameplay-state"
+    "threejs-render-adapter-does-not-own-gameplay-state",
+    "shared-platform-adapter-does-not-own-gameplay-state"
   ],
   "art": {
     "prototypeRenderer": "canvas2d-primitives",
@@ -114,10 +122,14 @@
     "boss-browser-playtest": "required-before-merge",
     "production-character-art-runtime-tested": true,
     "threejs-world-state-bridge-tested": true,
+    "shared-platform-persistent-settings": true,
+    "shared-platform-accessibility-settings": true,
+    "shared-platform-browser-audio": true,
+    "shared-platform-browser-acceptance": true,
     "threejs-live-renderer-integrated": false,
     "physical-device-mobile-playtest": false,
     "human-sprite-consistency-review": false,
-    "optional-audio-added": false,
+    "optional-audio-added": true,
     "release-candidate": false
   }
 }

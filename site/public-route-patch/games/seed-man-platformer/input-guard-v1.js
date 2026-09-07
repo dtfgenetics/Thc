@@ -292,3 +292,150 @@
     normalize: normalizeGeneratedTerminalLanding
   });
 })();
+
+(async function installSproutRunSharedPlatform() {
+  try {
+    const { createGameAudioManager, createGameSettingsStore } = await import('/games/shared-platform/index.mjs');
+    const settingsStore = createGameSettingsStore({ gameId: 'seed-man-platformer' });
+    const audio = createGameAudioManager({ settingsStore });
+    const shell = document.querySelector('.game-shell');
+    if (!shell) return;
+
+    let audioStatus = 'locked';
+    let toneEvents = 0;
+    const observers = [];
+    const style = document.createElement('style');
+    style.id = 'seed-shared-platform-styles';
+    style.textContent = `
+      .seed-game-settings{margin:0 0 10px;border:1px solid rgba(200,243,106,.22);border-radius:12px;background:rgba(7,22,15,.88);color:#eef5e9;font:700 calc(12px * var(--dtf-ui-scale,1)) system-ui;overflow:hidden}
+      .seed-game-settings summary{min-height:44px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 12px;cursor:pointer;color:#c8f36a;font-weight:900;letter-spacing:.05em;text-transform:uppercase}.seed-game-settings summary::after{content:'Preferences + sound';color:#a9b8a7;font-size:.9em;font-weight:700;letter-spacing:0;text-transform:none}
+      .seed-game-settings[open] summary{border-bottom:1px solid rgba(200,243,106,.16)}.seed-game-settings-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;padding:12px}.seed-game-settings label{display:grid;gap:5px;color:#c7d4c4;font-size:.92em}
+      .seed-game-settings select,.seed-game-settings input,.seed-game-settings button{min-height:44px;border:1px solid rgba(200,243,106,.3);border-radius:10px;background:#10291d;color:#f5f8f2;font:inherit;padding:7px 9px}.seed-game-settings button{cursor:pointer;font-weight:900}.seed-game-settings button:hover,.seed-game-settings button:focus-visible{border-color:#c8f36a;outline:2px solid transparent}
+      .seed-game-audio-state{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:10px;color:#a9b8a7;min-height:24px}html[data-dtf-high-contrast="true"] .seed-game-settings{background:#000;border-color:CanvasText;color:CanvasText}html[data-dtf-high-contrast="true"] .game-shell{outline:3px solid CanvasText;outline-offset:3px}
+      html[data-dtf-reduced-motion="true"] .game-shell *,html[data-dtf-reduced-motion="true"] .seed-game-settings *{scroll-behavior:auto!important;animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}@media(max-width:760px){.seed-game-settings-grid{grid-template-columns:1fr 1fr}}@media(max-width:480px){.seed-game-settings-grid{grid-template-columns:1fr}}
+    `;
+    document.head.append(style);
+
+    const panel = document.createElement('details');
+    panel.id = 'seed-game-settings';
+    panel.className = 'seed-game-settings';
+    panel.innerHTML = `
+      <summary>Game settings</summary>
+      <div class="seed-game-settings-grid">
+        <label>Reduced motion<select id="seed-motion-setting"><option value="system">Use device setting</option><option value="on">On</option><option value="off">Off</option></select></label>
+        <label>High contrast<select id="seed-contrast-setting"><option value="system">Use device setting</option><option value="on">On</option><option value="off">Off</option></select></label>
+        <label>UI size<input id="seed-ui-scale" type="range" min="0.9" max="1.35" step="0.05"></label>
+        <label>Sound<button id="seed-sound-toggle" type="button" aria-pressed="false">Sound on</button></label>
+        <div class="seed-game-audio-state"><span id="seed-audio-status" role="status" aria-live="polite"></span><button id="seed-test-sound" type="button">Test sound</button></div>
+      </div>`;
+    shell.prepend(panel);
+
+    const $ = (selector) => document.querySelector(selector);
+    const syncUi = () => {
+      const settings = settingsStore.get();
+      settingsStore.applyAccessibility(document.documentElement);
+      document.documentElement.dataset.dtfMuted = settings.muted ? 'true' : 'false';
+      $('#seed-motion-setting').value = settings.reducedMotion;
+      $('#seed-contrast-setting').value = settings.highContrast;
+      $('#seed-ui-scale').value = String(settings.uiScale);
+      $('#seed-sound-toggle').textContent = settings.muted ? 'Sound off' : 'Sound on';
+      $('#seed-sound-toggle').setAttribute('aria-pressed', settings.muted ? 'true' : 'false');
+      $('#seed-audio-status').textContent = `${settings.muted ? 'Muted' : audioStatus === 'ready' ? 'Sound ready' : 'Sound unlocks on first input'} · settings saved on this device`;
+    };
+
+    const unlockAudio = async () => {
+      const ready = audio.isUnlocked() || await audio.unlock();
+      audioStatus = ready ? 'ready' : 'unavailable';
+      syncUi();
+      return ready;
+    };
+
+    const playCue = (kind) => {
+      if (settingsStore.get().muted || !audio.isUnlocked()) return false;
+      const cue = {
+        sprout: [760, 70, 0.028, 'sine'], power: [520, 110, 0.032, 'triangle'], hurt: [145, 150, 0.026, 'sawtooth'],
+        pause: [280, 80, 0.022, 'triangle'], resume: [390, 80, 0.022, 'triangle'], ready: [620, 80, 0.025, 'sine'], finish: [880, 170, 0.032, 'triangle']
+      }[kind] || [620, 80, 0.025, 'sine'];
+      const played = audio.playTone({ frequency: cue[0], durationMs: cue[1], gain: cue[2], type: cue[3], category: 'sfx' });
+      if (played) toneEvents += 1;
+      return played;
+    };
+
+    const observeText = (selector, callback) => {
+      const target = $(selector);
+      if (!target) return;
+      let previous = target.textContent || '';
+      const observer = new MutationObserver(() => {
+        const next = target.textContent || '';
+        if (next === previous) return;
+        const before = previous;
+        previous = next;
+        callback(next, before);
+      });
+      observer.observe(target, { childList: true, characterData: true, subtree: true });
+      observers.push(observer);
+    };
+
+    $('#seed-motion-setting').addEventListener('change', (event) => settingsStore.update({ reducedMotion: event.target.value }));
+    $('#seed-contrast-setting').addEventListener('change', (event) => settingsStore.update({ highContrast: event.target.value }));
+    $('#seed-ui-scale').addEventListener('input', (event) => settingsStore.update({ uiScale: Number(event.target.value) }));
+    $('#seed-sound-toggle').addEventListener('click', async () => {
+      const muted = !settingsStore.get().muted;
+      settingsStore.update({ muted });
+      if (!muted && await unlockAudio()) playCue('ready');
+    });
+    $('#seed-test-sound').addEventListener('click', async () => { if (await unlockAudio()) playCue('ready'); });
+
+    observeText('#sprout-count', (next, previous) => {
+      if (Number.parseInt(next, 10) > Number.parseInt(previous, 10)) playCue('sprout');
+    });
+    observeText('#power-count', (next, previous) => { if (next.trim() !== 'None' && next !== previous) playCue('power'); });
+    observeText('#death-count', (next, previous) => {
+      if (Number.parseInt(next, 10) > Number.parseInt(previous, 10)) playCue('hurt');
+    });
+
+    $('#pause')?.addEventListener('click', () => queueMicrotask(() => playCue($('#pause').getAttribute('aria-pressed') === 'true' ? 'pause' : 'resume')));
+    const finishPanel = $('#finish-panel');
+    if (finishPanel) {
+      const observer = new MutationObserver(() => { if (!finishPanel.hidden) { playCue('finish'); setTimeout(() => playCue('ready'), 110); } });
+      observer.observe(finishPanel, { attributes: true, attributeFilter: ['hidden'] });
+      observers.push(observer);
+    }
+
+    const unlockOnInput = async (event) => {
+      if (event.type === 'keydown' && ['Shift', 'Control', 'Alt', 'Meta', 'CapsLock', 'Tab'].includes(event.key)) return;
+      if (!await unlockAudio()) return;
+      window.removeEventListener('pointerdown', unlockOnInput, true);
+      window.removeEventListener('keydown', unlockOnInput, true);
+    };
+    window.addEventListener('pointerdown', unlockOnInput, true);
+    window.addEventListener('keydown', unlockOnInput, true);
+
+    syncUi();
+    const unsubscribe = settingsStore.subscribe(syncUi);
+    window.addEventListener('pagehide', () => {
+      unsubscribe();
+      observers.forEach((observer) => observer.disconnect());
+      audio.close();
+    }, { once: true });
+
+    window.__SPROUT_SHARED_PLATFORM__ = Object.freeze({
+      version: 'seed-man-shared-platform-v1',
+      settingsStore,
+      audio,
+      updateSettings: (patch) => settingsStore.update(patch),
+      playCue,
+      snapshot: () => ({
+        version: 'seed-man-shared-platform-v1',
+        settings: { ...settingsStore.get() },
+        accessibility: settingsStore.resolveAccessibility(),
+        audioStatus,
+        audioUnlocked: audio.isUnlocked(),
+        audioContextState: audio.contextState(),
+        toneEvents
+      })
+    });
+  } catch (error) {
+    console.warn('Seed Man shared platform adapter could not initialize.', error);
+  }
+})();
