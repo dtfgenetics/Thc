@@ -1,0 +1,42 @@
+{
+  "schema_version": "1.0.0",
+  "rules": {
+    "canonical_project_registry": "data/project-registry.json",
+    "public_route_registry": "data/site-registry.json",
+    "integration_repository": "dtfgenetics/Thc",
+    "never_create_competing_copy": true,
+    "resume_existing_job_before_new_branch": true
+  },
+  "routes": [
+    {
+      "match": "GAME_RUNTIME",
+      "specialists": ["dtf-game-production", "dtf-game-portfolio-upgrade", "game-specific-skill"],
+      "verification": ["unit", "state", "property", "gameplay-e2e", "production-route"]
+    },
+    {
+      "match": "GAME_VISUAL",
+      "specialists": ["dtf-game-production", "dtf-web-quality-gate"],
+      "verification": ["visual-regression", "asset-validation", "performance"]
+    },
+    {
+      "match": "CONTENT_EDUCATION",
+      "specialists": ["dtf-education-production", "dtf-content-preservation"],
+      "verification": ["schema", "registry", "sources", "assessment-linkage", "render"]
+    },
+    {
+      "match": "WEBSITE",
+      "specialists": ["dtf-web-quality-gate", "dtfseeds-production-repair", "dtfseeds-production-publishing"],
+      "verification": ["browser", "links", "console", "accessibility", "performance", "live"]
+    },
+    {
+      "match": "REPOSITORY",
+      "specialists": ["github-repo-manager", "github-pr-branch-updater", "dtf-parallel-studio"],
+      "verification": ["branch", "pr", "ci", "merge", "target-head", "cleanup"]
+    },
+    {
+      "match": "SYSTEM",
+      "specialists": ["dtf-system-orchestrator"],
+      "verification": ["cross-repo", "deployment", "live"]
+    }
+  ]
+}
