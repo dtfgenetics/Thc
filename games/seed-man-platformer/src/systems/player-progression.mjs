@@ -14,17 +14,18 @@ export function createProgressionState() {
 }
 
 export function normalizeProgressionState(input = {}) {
+  const source = input && typeof input === 'object' ? input : {};
   const state = createProgressionState();
-  state.activePhenotype = input.activePhenotype || null;
-  state.absorbedPhenotype = input.absorbedPhenotype || null;
-  const remaining = Number(input.absorbedPhenotypeRemaining);
+  state.activePhenotype = source.activePhenotype || null;
+  state.absorbedPhenotype = source.absorbedPhenotype || null;
+  const remaining = Number(source.absorbedPhenotypeRemaining);
   state.absorbedPhenotypeRemaining = state.absorbedPhenotype && Number.isFinite(remaining) && remaining > 0 ? remaining : 0;
   if (state.absorbedPhenotypeRemaining <= 0) state.absorbedPhenotype = null;
-  state.discoveredPhenotypes = Array.isArray(input.discoveredPhenotypes) ? [...new Set(input.discoveredPhenotypes)] : [];
-  state.weapons = Array.isArray(input.weapons) ? [...new Set(input.weapons)] : [];
-  state.equippedWeapon = state.weapons.includes(input.equippedWeapon) ? input.equippedWeapon : (state.weapons[0] || null);
+  state.discoveredPhenotypes = Array.isArray(source.discoveredPhenotypes) ? [...new Set(source.discoveredPhenotypes)] : [];
+  state.weapons = Array.isArray(source.weapons) ? [...new Set(source.weapons)] : [];
+  state.equippedWeapon = state.weapons.includes(source.equippedWeapon) ? source.equippedWeapon : (state.weapons[0] || null);
   for (const type of RESOURCE_TYPES) {
-    const value = Number(input.resources?.[type]);
+    const value = Number(source.resources?.[type]);
     state.resources[type] = Number.isFinite(value) && value > 0 ? Math.floor(value) : 0;
   }
   return state;
