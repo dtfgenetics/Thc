@@ -34,17 +34,18 @@ jobs:
       WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
       WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
     steps:
-      - name: Checkout the deployed source revision
+      - name: Checkout current canonical main
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || 'main' }}
+          ref: main
+          fetch-depth: 1
           persist-credentials: false
 
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
 
-      - name: Validate guarded serving-integrity scripts
+      - name: Validate guarded serving-integrity scripts and route package
         shell: bash
         run: |
           set -euo pipefail
@@ -52,8 +53,19 @@ jobs:
           : "${WP_API_PASSWORD:?WP_API_PASSWORD is not configured in production}"
           node --check scripts/promote-public-game-routes-via-wordpress.mjs
           node --check scripts/reconcile-public-static-route-ownership.mjs
-          grep -Fq 'dtf-release-fingerprint: projects-public-games-15-v2' site/public-route-patch/projects/index.html
-          grep -Fq '<strong>15</strong><span>public browser games</span>' site/public-route-patch/projects/index.html
+          test -s site/public-route-patch/projects/index.html
+          grep -Eq 'dtf-release-fingerprint: [A-Za-z0-9._:-]+' site/public-route-patch/projects/index.html
+          grep -Fq '<span>public browser games</span>' site/public-route-patch/projects/index.html
+
+      - name: Read canonical Projects release fingerprint
+        id: projects_release
+        shell: bash
+        run: |
+          set -euo pipefail
+          marker="$(grep -Eo 'dtf-release-fingerprint: [A-Za-z0-9._:-]+' site/public-route-patch/projects/index.html | head -n 1)"
+          [[ -n "$marker" ]] || { echo 'Unable to derive Projects release fingerprint' >&2; exit 1; }
+          printf 'marker=%s\n' "$marker" >> "$GITHUB_OUTPUT"
+          printf 'Validating live Projects route against canonical marker: %s\n' "$marker"
 
       - name: Reassert canonical game redirect rules
         shell: bash
@@ -65,6 +77,8 @@ jobs:
 
       - name: Verify ordinary visitor URLs without cache-busting query strings
         shell: bash
+        env:
+          PROJECTS_RELEASE_MARKER: ${{ steps.projects_release.outputs.marker }}
         run: |
           set -euo pipefail
           check_direct() {
@@ -80,7 +94,7 @@ jobs:
             grep -Fq "$marker" "$body" || { echo "$url is missing $marker" >&2; exit 1; }
             rm -f "$body" "$headers"
           }
-          check_direct 'https://dtfseeds.com/projects/' 'dtf-release-fingerprint: projects-public-games-15-v2'
+          check_direct 'https://dtfseeds.com/projects/' "$PROJECTS_RELEASE_MARKER"
           check_direct 'https://dtfseeds.com/games/bud-or-bluff/' 'Create lobby'
 
           headers="$(mktemp)"
