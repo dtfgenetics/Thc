@@ -1,4 +1,5 @@
 import crypto from 'node:crypto';
+import fs from 'node:fs';
 
 const siteUrl = (process.env.WP_SITE_URL || 'https://dtfseeds.com').replace(/\/$/, '');
 const username = process.env.WP_API_USERNAME || '';
@@ -7,7 +8,9 @@ if (!username || !password) throw new Error('WordPress credentials are required.
 
 const auth = `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`;
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-const projectsFingerprint = 'dtf-release-fingerprint: projects-public-games-15-v2';
+const canonicalProjectsIndex = fs.readFileSync('site/public-route-patch/projects/index.html', 'utf8');
+const projectsFingerprint = canonicalProjectsIndex.match(/dtf-release-fingerprint: [A-Za-z0-9._:-]+/)?.[0] || '';
+if (!projectsFingerprint) throw new Error('Canonical Projects index does not expose a release fingerprint.');
 const staleProjectsFingerprint = 'Projects is the roadmap for DTF Genetics.';
 let mcpSession = '';
 let projectPageBackup = null;
