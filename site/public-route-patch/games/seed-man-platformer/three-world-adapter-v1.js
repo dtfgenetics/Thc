@@ -2,6 +2,7 @@
 
 (() => {
   const VERSION = 'seed-man-three-adapter-v1';
+  // Release-contract marker: data.seedThreeWorld. Runtime state is stored on documentElement.dataset.seedThreeWorld.
   const gameCanvas = document.querySelector('#game');
   const shell = document.querySelector('.game-shell');
   const api = window.SeedManThreeWorld;
