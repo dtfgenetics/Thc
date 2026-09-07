@@ -8,6 +8,7 @@ on:
       - 'site/public-route-patch/games/seed-man-platformer/**'
       - 'scripts/prepare-seed-man-combat-release.mjs'
       - 'scripts/prepare-seed-man-world-five-combat.mjs'
+      - 'scripts/prepare-seed-man-world-five-runtime.mjs'
       - '.github/workflows/seed-man-world-five-ci.yml'
   push:
     branches: [main]
@@ -16,6 +17,7 @@ on:
       - 'site/public-route-patch/games/seed-man-platformer/**'
       - 'scripts/prepare-seed-man-combat-release.mjs'
       - 'scripts/prepare-seed-man-world-five-combat.mjs'
+      - 'scripts/prepare-seed-man-world-five-runtime.mjs'
       - '.github/workflows/seed-man-world-five-ci.yml'
   workflow_dispatch:
 
@@ -34,9 +36,7 @@ jobs:
           cache: npm
 
       - name: Prepare production Seed Man artifact
-        run: |
-          node scripts/prepare-seed-man-combat-release.mjs
-          node scripts/prepare-seed-man-world-five-combat.mjs
+        run: node scripts/prepare-seed-man-combat-release.mjs
 
       - name: Validate canonical campaign and combat systems
         run: |
@@ -55,6 +55,7 @@ jobs:
           node --check "$route/combat-browser-v1.js"
           node --check scripts/prepare-seed-man-combat-release.mjs
           node --check scripts/prepare-seed-man-world-five-combat.mjs
+          node --check scripts/prepare-seed-man-world-five-runtime.mjs
           node --check games/seed-man-platformer/test/world-five-browser.test.mjs
 
       - name: Verify prepared World 5 production contract
@@ -75,6 +76,10 @@ jobs:
           grep -Fq 'Allele Array' "$route/world-five-v1.js"
           grep -Fq 'Genome Spire' "$route/world-five-v1.js"
           grep -Fq 'Genome Hydra' "$route/world-five-v1.js"
+          grep -Fq 'seed-man-world-five-state-sync-v1' "$route/world-five-v1.js"
+          grep -Fq 'window.__SPROUT_CAMPAIGN__?.selectLevel?.(id);' "$route/world-five-v1.js"
+          grep -Fq "attributeFilter: ['hidden']" "$route/world-five-v1.js"
+          ! grep -Fq "attributeFilter: ['hidden'], childList: true, subtree: true" "$route/world-five-v1.js"
           grep -Fq 'seed-man-world-five-combat-v1' "$route/combat-browser-v1.js"
           grep -Fq "'chromosome-crossing'" "$route/combat-browser-v1.js"
           grep -Fq "'mutation-marsh'" "$route/combat-browser-v1.js"
