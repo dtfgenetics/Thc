@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "defaults": {
+    "settleMs": 650,
+    "navigationTimeoutMs": 30000,
+    "maxHorizontalOverflowPx": 2,
+    "minimumBodyTextLength": 20,
+    "failOnConsoleError": true,
+    "failOnPageError": true,
+    "failOnSameOriginRequestFailure": true,
+    "viewports": {
+      "desktop": { "width": 1440, "height": 900 },
+      "mobile": { "width": 390, "height": 844, "isMobile": true, "hasTouch": true }
+    }
+  },
+  "games": {
+    "high-iq": {
+      "requiredSelectors": ["#main-content", "#challenge-title"]
+    },
+    "high-land": {
+      "requiredSelectors": ["#root"]
+    },
+    "weedopolis": {
+      "requiredText": ["Weedopolis"]
+    },
+    "seed-man-platformer": {
+      "requiredText": ["Seed Man"]
+    },
+    "strain-showdown": {
+      "requiredText": ["Strain Showdown"]
+    },
+    "protect-the-plants": {
+      "requiredText": ["Burn Buds"]
+    },
+    "crossword": {
+      "requiredText": ["Crossword"]
+    },
+    "who-took-it": {
+      "requiredText": ["Who Took It"]
+    },
+    "thc-u-know": {
+      "requiredText": ["THC U Know"]
+    },
+    "kush-kings-chess": {
+      "requiredText": ["Kush Kings"]
+    },
+    "terpocalypse": {
+      "requiredText": ["Terpocalypse"]
+    },
+    "phenoquest": {
+      "requiredText": ["PhenoQuest"]
+    },
+    "ganjumanji": {
+      "requiredText": ["Ganjumanji"]
+    },
+    "thc-rpg": {
+      "requiredText": ["THC RPG"]
+    }
+  }
+}
