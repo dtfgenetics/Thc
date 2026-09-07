@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import './prepare-seed-man-release-version.mjs';
 import './prepare-seed-man-world-five-runtime.mjs';
 
 const combatPath = 'site/public-route-patch/games/seed-man-platformer/combat-browser-v1.js';
