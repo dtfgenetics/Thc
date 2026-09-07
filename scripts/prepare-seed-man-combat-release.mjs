@@ -25,9 +25,9 @@ for (const marker of [
   'seed-man-phenotype-expansion-v1',
   'combat-static-mite',
   'PHENO ABSORBED',
-  'flight-burst',
-  'bubble-form',
-  'forward-warp',
+  'terpene-tempest',
+  'hydro-surge',
+  'gravity-haze',
   'data-combat'
 ]) {
   if (!combat.includes(marker)) throw new Error(`Missing combat adapter marker: ${marker}`);
@@ -43,6 +43,6 @@ console.log(JSON.stringify({
   combatFile: 'combat-browser-v1.js',
   phenotypeAbsorption: 'seed-man-phenotype-absorb-v1',
   phenotypeExpansion: 'seed-man-phenotype-expansion-v1',
-  mobilityForms: ['flight-burst', 'bubble-form', 'forward-warp'],
+  mobilityForms: ['terpene-tempest:flight', 'hydro-surge:bubble', 'gravity-haze:warp'],
   autoload: true
 }, null, 2));
