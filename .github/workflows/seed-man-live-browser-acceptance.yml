@@ -78,6 +78,7 @@ jobs:
                 adapter: window.__SPROUT_THREE_ADAPTER__?.snapshot?.() || null,
                 adapterVersion: window.__SPROUT_THREE_ADAPTER__?.version || null,
                 apiVersion: window.SeedManThreeWorld?.version || null,
+                legacyApiVersion: window.SeedManThreeWorld?.legacyVersion || null,
                 devicePixelRatio: window.devicePixelRatio
               }));
 
@@ -89,8 +90,9 @@ jobs:
               assert.ok(runtime.adapter, `${target.name}: Three.js adapter snapshot must be available.`);
               assert.equal(runtime.adapter.webgl, true, `${target.name}: adapter must be running with WebGL.`);
               assert.equal(runtime.adapter.rendererVersion, 'seed-man-three-world-v2', `${target.name}: v2 greenhouse renderer must be active.`);
-              assert.equal(runtime.adapter.worldVersion, 'seed-man-three-public-v1', `${target.name}: unexpected Three.js world API version.`);
-              assert.equal(runtime.apiVersion, 'seed-man-three-public-v1', `${target.name}: public Three.js API must be active.`);
+              assert.equal(runtime.adapter.worldVersion, 'seed-man-three-public-v2', `${target.name}: unexpected Three.js world API version.`);
+              assert.equal(runtime.apiVersion, 'seed-man-three-public-v2', `${target.name}: public Three.js API v2 must be active.`);
+              assert.equal(runtime.legacyApiVersion, 'seed-man-three-public-v1', `${target.name}: legacy compatibility marker must remain available during the v2 transition.`);
               assert.ok(runtime.adapter.mountedLevelId, `${target.name}: renderer must mount the active gameplay level.`);
               assert.ok(runtime.adapter.width > 0 && runtime.adapter.height > 0, `${target.name}: renderer must have a real display size.`);
               assert.ok(runtime.adapter.pixelRatio > 0 && runtime.adapter.pixelRatio <= target.maxPixelRatio, `${target.name}: Three.js DPR ${runtime.adapter.pixelRatio} exceeds ${target.maxPixelRatio}.`);
