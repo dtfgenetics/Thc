@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: 'plan, claim ready work, or reconcile one job'
+        description: 'plan, dispatch, reconcile, reconcile all, or exact-head check'
         required: true
         default: plan
         type: choice
@@ -12,12 +12,14 @@ on:
           - plan
           - dispatch
           - reconcile
+          - reconcile-all
+          - check
       issue:
-        description: 'Issue number for reconcile mode'
+        description: 'Issue number for reconcile/check modes'
         required: false
         type: string
       apply:
-        description: 'Apply reconciliation mutations (dry-run when false)'
+        description: 'Apply mutations (dry-run when false)'
         required: false
         default: false
         type: boolean
@@ -53,6 +55,7 @@ jobs:
           set -euo pipefail
           node --check scripts/orchestrator.mjs
           node --check scripts/orchestrator-reconcile.mjs
+          node --check scripts/orchestrator-check.mjs
           node --check scripts/orchestrator/core.mjs
           node --check scripts/orchestrator/state.mjs
           node --check scripts/orchestrator/leases.mjs
@@ -61,6 +64,12 @@ jobs:
 
       - name: Ensure orchestration labels
         run: node scripts/orchestrator.mjs labels
+
+      - name: Reconcile stale jobs before dispatch
+        if: github.event_name == 'schedule' || inputs.mode == 'dispatch'
+        run: |
+          set -euo pipefail
+          node scripts/orchestrator-reconcile.mjs --all=true --apply=true | tee "$RUNNER_TEMP/worker-reconcile-all.json"
 
       - name: Reconcile one job
         if: github.event_name == 'workflow_dispatch' && inputs.mode == 'reconcile'
@@ -75,6 +84,30 @@ jobs:
             args+=(--apply=true)
           fi
           node scripts/orchestrator-reconcile.mjs "${args[@]}" | tee "$RUNNER_TEMP/worker-reconcile.json"
+
+      - name: Reconcile all stale jobs manually
+        if: github.event_name == 'workflow_dispatch' && inputs.mode == 'reconcile-all'
+        run: |
+          set -euo pipefail
+          args=(--all=true)
+          if [[ "${{ inputs.apply }}" == "true" ]]; then
+            args+=(--apply=true)
+          fi
+          node scripts/orchestrator-reconcile.mjs "${args[@]}" | tee "$RUNNER_TEMP/worker-reconcile-all.json"
+
+      - name: Verify exact PR head
+        if: github.event_name == 'workflow_dispatch' && inputs.mode == 'check'
+        run: |
+          set -euo pipefail
+          if [[ -z "${{ inputs.issue }}" ]]; then
+            echo 'issue input is required for check mode' >&2
+            exit 2
+          fi
+          args=(--issue="${{ inputs.issue }}")
+          if [[ "${{ inputs.apply }}" == "true" ]]; then
+            args+=(--apply=true)
+          fi
+          node scripts/orchestrator-check.mjs "${args[@]}" | tee "$RUNNER_TEMP/worker-check.json"
 
       - name: Plan worker allocation
         if: github.event_name == 'schedule' || inputs.mode == 'plan' || inputs.mode == 'dispatch'
@@ -95,11 +128,31 @@ jobs:
           set -euo pipefail
           echo '## GitHub Worker Orchestrator' >> "$GITHUB_STEP_SUMMARY"
           echo '' >> "$GITHUB_STEP_SUMMARY"
+          if [[ -s "$RUNNER_TEMP/worker-reconcile-all.json" ]]; then
+            node - "$RUNNER_TEMP/worker-reconcile-all.json" "$GITHUB_STEP_SUMMARY" <<'NODE'
+          const fs = require('fs');
+          const report = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
+          const counts = new Map();
+          for (const item of report.results || []) {
+            const action = item.reconciliation?.action || 'UNKNOWN';
+            counts.set(action, (counts.get(action) || 0) + 1);
+          }
+          const lines = [
+            '### Stale-job reconciliation',
+            `Candidates: **${report.candidates ?? 0}**`,
+            `Failures: **${(report.failures || []).length}**`,
+            ...[...counts.entries()].map(([action, count]) => `- ${action}: **${count}**`),
+          ];
+          fs.appendFileSync(process.argv[3], `${lines.join('\n')}\n`);
+          NODE
+          fi
           if [[ -s "$RUNNER_TEMP/worker-plan.json" ]]; then
             node - "$RUNNER_TEMP/worker-plan.json" "$GITHUB_STEP_SUMMARY" <<'NODE'
           const fs = require('fs');
           const report = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
           const lines = [
+            '',
+            '### Worker allocation',
             `Config version: **${report.configVersion ?? 1}**`,
             `Active workers: **${report.activeWorkers}/${report.maxWorkers}**`,
             `Expired claims: **${report.expiredClaims ?? 0}**`,
@@ -123,5 +176,12 @@ jobs:
             echo '### Reconciliation result' >> "$GITHUB_STEP_SUMMARY"
             echo '```json' >> "$GITHUB_STEP_SUMMARY"
             cat "$RUNNER_TEMP/worker-reconcile.json" >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+          fi
+          if [[ -s "$RUNNER_TEMP/worker-check.json" ]]; then
+            echo '' >> "$GITHUB_STEP_SUMMARY"
+            echo '### Exact-head verification' >> "$GITHUB_STEP_SUMMARY"
+            echo '```json' >> "$GITHUB_STEP_SUMMARY"
+            cat "$RUNNER_TEMP/worker-check.json" >> "$GITHUB_STEP_SUMMARY"
             echo '```' >> "$GITHUB_STEP_SUMMARY"
           fi
