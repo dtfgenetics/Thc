@@ -74,10 +74,13 @@ function listActiveClaims(repo, config) {
     const payload = parseMarker(issue)
     if (!payload) return { issueNumber: issue.number, project: 'general', active: true, malformed: true }
     const expired = payload.lease ? isLeaseExpired(payload.lease) : false
+    const active = payload.schemaVersion === 2
+      ? Boolean(payload.lease && !expired)
+      : true
     return {
       issueNumber: issue.number,
       project: payload.project || 'general',
-      active: payload.lease ? !expired : true,
+      active,
       expired,
       ...payload,
     }
@@ -141,7 +144,11 @@ function claimIssue(repo, claim, config, workerId) {
   const payload = { ...job, runId: process.env.GITHUB_RUN_ID || null }
   editIssueBody(repo, issue, payload)
 
-  capture(['issue', 'edit', String(claim.issueNumber), '--repo', repo, '--add-label', config.labels.claimed])
+  capture([
+    'issue', 'edit', String(claim.issueNumber), '--repo', repo,
+    '--remove-label', config.labels.ready,
+    '--add-label', config.labels.claimed,
+  ])
   capture(['issue', 'comment', String(claim.issueNumber), '--repo', repo, '--body', [
     `Worker leased this task as **${claim.kind}** work.`,
     '',
