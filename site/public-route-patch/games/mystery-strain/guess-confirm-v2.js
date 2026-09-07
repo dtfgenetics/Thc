@@ -17,15 +17,18 @@
     <div class="guess-confirm-copy">
       <span>GUESS READY</span>
       <strong id="guess-confirm-name">Select a candidate</strong>
-      <small>A guess is only spent after confirmation.</small>
+      <small>A guess is only spent after confirmation. Press G to confirm or Escape to cancel.</small>
     </div>
     <div class="guess-confirm-actions">
-      <button id="confirm-guess" class="control primary" type="button">Confirm Guess</button>
-      <button id="cancel-guess" class="control ghost" type="button">Cancel</button>
+      <button id="confirm-guess" class="control primary" type="button" aria-keyshortcuts="G">Confirm Guess</button>
+      <button id="cancel-guess" class="control ghost" type="button" aria-keyshortcuts="Escape">Cancel</button>
     </div>`;
 
   const progress = document.createElement('div');
   progress.className = 'candidate-progress';
+  progress.setAttribute('role', 'progressbar');
+  progress.setAttribute('aria-valuemin', '0');
+  progress.setAttribute('aria-valuemax', '20');
   progress.innerHTML = `
     <div class="candidate-progress-copy"><span>ELIMINATION PROGRESS</span><strong id="candidate-progress-label">0 eliminated</strong></div>
     <div class="candidate-progress-track" aria-hidden="true"><i id="candidate-progress-fill"></i></div>`;
@@ -39,6 +42,12 @@
   const progressLabel = progress.querySelector('#candidate-progress-label');
   const progressFill = progress.querySelector('#candidate-progress-fill');
 
+  function safeFocus(element) {
+    if (!element?.focus) return;
+    try { element.focus({ preventScroll: true }); }
+    catch { element.focus(); }
+  }
+
   function liveCandidates() {
     return [...candidates.querySelectorAll('button[data-guess]:not(:disabled)')];
   }
@@ -50,7 +59,8 @@
     const percent = Math.round((eliminated / 20) * 100);
     progressLabel.textContent = `${eliminated} eliminated · ${safeRemaining} remain`;
     progressFill.style.width = `${percent}%`;
-    progress.setAttribute('aria-label', `${eliminated} of 20 candidates eliminated; ${safeRemaining} remain.`);
+    progress.setAttribute('aria-valuenow', String(eliminated));
+    progress.setAttribute('aria-valuetext', `${eliminated} of 20 candidates eliminated; ${safeRemaining} remain.`);
   }
 
   function clearSelection({ focusGrid = false } = {}) {
@@ -60,7 +70,7 @@
     }
     selectedButton = null;
     controls.hidden = true;
-    if (focusGrid) candidates.querySelector('button[data-guess]:not(:disabled)')?.focus();
+    if (focusGrid) safeFocus(candidates.querySelector('button[data-guess]:not(:disabled)'));
   }
 
   function selectCandidate(button) {
@@ -75,8 +85,8 @@
     name.textContent = candidateName;
     controls.hidden = false;
     confirm.disabled = false;
-    announce.textContent = `${candidateName} selected. Confirm Guess to spend one guess, or Cancel.`;
-    confirm.focus({ preventScroll: true });
+    announce.textContent = `${candidateName} selected. Confirm Guess to spend one guess, press G to confirm, or Escape to cancel.`;
+    safeFocus(confirm);
   }
 
   candidates.addEventListener('click', (event) => {
@@ -91,7 +101,7 @@
     selectCandidate(button);
   }, true);
 
-  confirm.addEventListener('click', () => {
+  function confirmGuess() {
     if (!selectedButton || !selectedButton.isConnected || selectedButton.disabled) {
       clearSelection();
       announce.textContent = 'That candidate is no longer available. Choose another candidate.';
@@ -106,7 +116,9 @@
       selectedButton = null;
       updateProgress();
     });
-  });
+  }
+
+  confirm.addEventListener('click', confirmGuess);
 
   cancel.addEventListener('click', () => {
     const label = selectedButton?.querySelector('strong')?.textContent?.trim() || 'Guess';
@@ -132,10 +144,18 @@
   observer.observe(candidates, { childList: true, subtree: true });
 
   document.addEventListener('keydown', (event) => {
+    const target = event.target;
+    const editing = target instanceof Element && target.closest('input,textarea,select,[contenteditable="true"]');
+    if (editing || event.altKey || event.ctrlKey || event.metaKey) return;
     if (event.key === 'Escape' && selectedButton) {
       event.preventDefault();
       clearSelection({ focusGrid: true });
       announce.textContent = 'Prepared guess cancelled. No guess was spent.';
+      return;
+    }
+    if ((event.key === 'g' || event.key === 'G') && selectedButton && !confirm.disabled) {
+      event.preventDefault();
+      confirmGuess();
     }
   });
 
