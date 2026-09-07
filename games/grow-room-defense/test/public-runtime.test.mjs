@@ -4,11 +4,16 @@ import fs from 'node:fs';
 const canonical = JSON.parse(fs.readFileSync('games/grow-room-defense/data/ipm.json', 'utf8'));
 const html = fs.readFileSync('site/public-route-patch/games/grow-room-defense/index.html', 'utf8');
 const app = fs.readFileSync('site/public-route-patch/games/grow-room-defense/app.js', 'utf8');
+const accessibility = fs.readFileSync('site/public-route-patch/games/grow-room-defense/accessibility-v1.js', 'utf8');
 const baseCss = fs.readFileSync('site/public-route-patch/games/grow-room-defense/grow-room-defense.css', 'utf8');
 const visualCss = fs.readFileSync('site/public-route-patch/games/grow-room-defense/grow-room-defense-v2.css', 'utf8');
+const accessibilityCss = fs.readFileSync('site/public-route-patch/games/grow-room-defense/accessibility-v1.css', 'utf8');
 
 assert.match(html, /<script\s+id="grow-room-defense-data"\s+type="application\/json">[\s\S]*?<\/script>/i, 'public page must embed IPM game data');
 assert.match(html, /<script\s+src="\.\/app\.js"\s+defer><\/script>/i, 'public page must load app.js as a deferred classic script');
+assert.match(html, /<script\s+src="\.\/accessibility-v1\.js"\s+defer><\/script>/i, 'public page must load the accessibility enhancement after the game runtime');
+assert.match(html, /accessibility-v1\.css/i, 'public page must load visible shortcut styling');
+assert.match(html, /Keyboard shortcuts 1 through 7 select tools in order/i, 'tool group must explain keyboard selection');
 assert.match(html, /grow-room-defense-v2\.css/i, 'public page must load the V2 tactical visual layer');
 assert.doesNotMatch(html, /type="module"/i, 'public page must not depend on ES-module serving');
 
@@ -29,6 +34,15 @@ assert.match(app, /button\.deploy-button\[data-lane\]/, 'bench click delegation 
 assert.match(app, /globalThis\.crypto\?\.getRandomValues/, 'random code generation must tolerate missing crypto APIs');
 assert.match(app, /function safeReplaceUrl\(/, 'history mutation must be guarded');
 assert.match(app, /navigator\.clipboard\?\.writeText/, 'share behavior must tolerate unavailable clipboard APIs');
+
+assert.match(accessibility, /grow-room-defense-accessibility-v1/, 'accessibility layer must expose a stable version marker');
+assert.match(accessibility, /role', 'progressbar'/, 'plant health tracks must become semantic progressbars');
+assert.match(accessibility, /aria-valuenow/, 'plant health meters must expose current health values');
+assert.match(accessibility, /aria-keyshortcuts/, 'IPM tool buttons must expose keyboard shortcuts');
+assert.match(accessibility, /\^\[1-7\]\$/, 'keyboard handler must be limited to the seven tool shortcuts');
+assert.match(accessibility, /closest\('input, textarea, select, \[contenteditable="true"\]'\)/, 'tool shortcuts must not steal input while typing');
+assert.match(accessibility, /MutationObserver/, 'accessibility semantics must be restored after deterministic rerenders');
+assert.match(accessibilityCss, /\.tool-shortcut/, 'visible shortcut badges must have styling');
 
 assert.match(baseCss, /\.lane-card\.lost/, 'lost bench state must remain represented by the base game layer');
 assert.match(baseCss, /\.feedback-card\.strong/, 'strong counter feedback must remain represented by the base game layer');
@@ -55,4 +69,4 @@ assert.equal(new Set(canonical.lanes.map((item) => item.id)).size, 3, 'lane IDs 
 assert.equal(new Set(canonical.threats.map((item) => item.id)).size, 8, 'threat IDs must remain unique');
 assert.equal(new Set(canonical.tools.map((item) => item.id)).size, 7, 'tool IDs must remain unique');
 
-console.log('Grow Room Defense public runtime and V2 tactical visual-state regression checks passed.');
+console.log('Grow Room Defense public runtime, accessibility layer, and V2 tactical visual-state regression checks passed.');
