@@ -27,7 +27,7 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 22
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -79,6 +79,7 @@ jobs:
           node --check games/seed-man-platformer/src/render/three-world-public-entry.mjs
           node --check games/seed-man-platformer/scripts/build-three-public.mjs
           node --check games/seed-man-platformer/test/campaign-browser.test.mjs
+          node --check games/seed-man-platformer/test/ui-v3-browser.test.mjs
           node --check games/seed-man-platformer/test/flag-completion-browser.test.mjs
           node --check games/seed-man-platformer/test/progression-systems.test.mjs
           node --check games/seed-man-platformer/test/three-world-state.test.mjs
@@ -88,6 +89,7 @@ jobs:
           node --check site/public-route-patch/games/seed-man-platformer/canvas-compat-v1.js
           node --check site/public-route-patch/games/seed-man-platformer/campaign-v1.js
           node --check site/public-route-patch/games/seed-man-platformer/world-five-v1.js
+          node --check site/public-route-patch/games/seed-man-platformer/seed-man-ui-v3.js
           node --check site/public-route-patch/games/seed-man-platformer/app.js
           node --check site/public-route-patch/games/seed-man-platformer/seed-man-production-art.js
           node --check site/public-route-patch/games/seed-man-platformer/input-guard-v1.js
@@ -109,7 +111,7 @@ jobs:
           route=site/public-route-patch/games/seed-man-platformer
           release="$(sed -n 's/.*name="dtf-sprout-release" content="\([^"]*\)".*/\1/p' "$route/index.html" | head -n 1)"
           [[ "$release" =~ ^[0-9]{8}-r[0-9]+$ ]] || { echo "Invalid Sprout release marker: $release" >&2; exit 1; }
-          for file in index.html canvas-compat-v1.js campaign-v1.js world-five-v1.js app.js seed-man-production-art.js gameplay-v2.js input-guard-v1.js seed-man.css physics.mjs data/campaign.json data/level-01.json data/levels-02-11.json data/levels-12-15.json; do
+          for file in index.html canvas-compat-v1.js campaign-v1.js world-five-v1.js seed-man-ui-v3.js app.js seed-man-production-art.js gameplay-v2.js input-guard-v1.js seed-man.css physics.mjs data/campaign.json data/level-01.json data/levels-02-11.json data/levels-12-15.json; do
             test -s "$route/$file" || { echo "Missing $file" >&2; exit 1; }
           done
           grep -Fq '<h1>Sprout Run</h1>' "$route/index.html"
@@ -125,6 +127,7 @@ jobs:
           grep -Fq 'tap for a short hop' "$route/index.html"
           grep -Fq "name=\"dtf-sprout-release\" content=\"${release}\"" "$route/index.html"
           grep -Fq "<script src=\"./campaign-v1.js?v=${release}\" defer></script>" "$route/index.html"
+          grep -Fq "<script src=\"./seed-man-ui-v3.js?v=${release}\" defer></script>" "$route/index.html"
           grep -Fq "seed-man.css?v=${release}" "$route/index.html"
           grep -Fq "const RELEASE = '${release}';" "$route/canvas-compat-v1.js"
           grep -Fq 'softwarePreferred: true' "$route/canvas-compat-v1.js"
@@ -147,6 +150,8 @@ jobs:
           grep -Fq 'Genome Spire' "$route/data/levels-12-15.json"
           grep -Fq 'seed-man-world-five-v1' "$route/world-five-v1.js"
           grep -Fq 'Genome Hydra' "$route/world-five-v1.js"
+          grep -Fq 'seed-man-ui-v3' "$route/seed-man-ui-v3.js"
+          grep -Fq 'seed-run-context' "$route/seed-man-ui-v3.js"
           grep -Fq 'groundAcceleration: 2600' "$route/app.js"
           grep -Fq 'jumpCutGravityMultiplier: 2.35' "$route/app.js"
           grep -Fq 'function cameraBlend(' "$route/app.js"
@@ -171,5 +176,7 @@ jobs:
         run: node games/seed-man-platformer/test/shared-platform-browser.test.mjs
       - name: Verify zero-sprout flag completion in Chromium
         run: node games/seed-man-platformer/test/flag-completion-browser.test.mjs
-      - name: Exercise stable 11-level base runtime bosses and settings in Chromium
+      - name: Exercise stable campaign bosses and settings in Chromium
         run: node games/seed-man-platformer/test/campaign-browser.test.mjs
+      - name: Verify campaign-aware UI v3 across worlds and mobile
+        run: node games/seed-man-platformer/test/ui-v3-browser.test.mjs
