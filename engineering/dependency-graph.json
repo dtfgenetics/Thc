@@ -1,0 +1,20 @@
+{
+  "schema_version": "1.0.0",
+  "edges": [
+    {"from": "dtf-platform", "to": "dtfseeds.com", "contract": "public-routes-and-build-output"},
+    {"from": "high-land", "to": "dtf-platform", "contract": "game-package-and-public-route"},
+    {"from": "seed-man-platformer", "to": "dtf-platform", "contract": "game-package-and-public-route"},
+    {"from": "high-life", "to": "dtf-platform", "contract": "game-package-and-public-route"},
+    {"from": "strain-showdown", "to": "dtf-platform", "contract": "game-package-and-public-route"},
+    {"from": "terpocalypse", "to": "dtf-platform", "contract": "verified-integration-snapshot"},
+    {"from": "phenoquest", "to": "dtf-platform", "contract": "verified-production-build"},
+    {"from": "thc-education", "to": "dtf-platform", "contract": "education-platform-integration"},
+    {"from": "plant-diagnostic", "to": "dtf-platform", "contract": "diagnostic-app-integration"},
+    {"from": "content-engine", "to": "dtf-platform", "contract": "media-and-publishing-packages"},
+    {"from": "repository-work", "to": "ci", "contract": "verification-profile"},
+    {"from": "ci", "to": "integration", "contract": "exact-head-required-checks"},
+    {"from": "integration", "to": "deployment", "contract": "immutable-candidate"},
+    {"from": "deployment", "to": "live", "contract": "route-and-version-verification"}
+  ],
+  "rule": "A producer or consumer change at risk Q4/Q5 requires contract verification across the affected edge."
+}
