@@ -7,7 +7,7 @@ const config = JSON.parse(readFileSync('site/deployment/release-resources.json',
 const resources = config.resources;
 
 assert.equal(config.schemaVersion, 1);
-assert.deepEqual(Object.keys(resources).sort(), ['high-iq', 'high-land']);
+assert.deepEqual(Object.keys(resources).sort(), ['high-iq', 'high-land', 'seed-man-platformer']);
 
 const targets = Object.values(resources).map((r) => r.productionTarget);
 const checkpoints = Object.values(resources).map((r) => r.checkpointTag);
@@ -23,8 +23,13 @@ assert.equal(affected('apps/high-land-web/src/main.js', resources['high-iq']), f
 assert.equal(affected('games/high-iq/data/questions.json', resources['high-iq']), true);
 assert.equal(affected('games/high-iq/data/questions.json', resources['high-land']), false);
 assert.equal(affected('site/public-route-patch/games/high-iq/index.html', resources['high-iq']), true);
+assert.equal(affected('games/seed-man-platformer/data/campaign.json', resources['seed-man-platformer']), true);
+assert.equal(affected('site/public-route-patch/games/seed-man-platformer/world-five-v1.js', resources['seed-man-platformer']), true);
+assert.equal(affected('scripts/prepare-seed-man-combat-release.mjs', resources['seed-man-platformer']), true);
+assert.equal(affected('games/high-iq/data/questions.json', resources['seed-man-platformer']), false);
 assert.equal(affected('site/deployment/public-apps.json', resources['high-land']), true);
 assert.equal(affected('site/deployment/public-apps.json', resources['high-iq']), true);
+assert.equal(affected('site/deployment/public-apps.json', resources['seed-man-platformer']), true);
 
 for (const [id, resource] of Object.entries(resources)) {
   assert.ok(resource.route.startsWith('/games/') && resource.route.endsWith('/'), `${id} route must be a game route`);
@@ -52,6 +57,14 @@ assert.equal(resources['high-iq'].publisher.coordinator, 'dtfseeds-resource-prod
 assert.equal(resources['high-iq'].publisher.workflow, 'deploy-dtfseeds-wordpress-resource.yml');
 assert.equal(resources['high-iq'].publisher.sharedProductionTarget, 'wordpress:temporary-code-snippets-bridge');
 assert.notEqual(resources['high-iq'].publisher.sharedProductionTarget, resources['high-land'].productionTarget);
+
+assert.equal(resources['seed-man-platformer'].publicSuiteOwnership, 'resource');
+assert.equal(resources['seed-man-platformer'].publisher.type, 'wordpress-dedicated-route');
+assert.equal(resources['seed-man-platformer'].publisher.status, 'production');
+assert.equal(resources['seed-man-platformer'].publisher.orchestration, 'dedicated');
+assert.equal(resources['seed-man-platformer'].publisher.workflow, 'publish-seed-man-production.yml');
+assert.equal(resources['seed-man-platformer'].publisher.sharedProductionTarget, 'wordpress:seed-man-route');
+assert.notEqual(resources['seed-man-platformer'].publisher.sharedProductionTarget, resources['high-iq'].publisher.sharedProductionTarget);
 
 for (const path of [
   'scripts/assemble-wordpress-resource-v2.py',
