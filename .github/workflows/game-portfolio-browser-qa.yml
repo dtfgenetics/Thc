@@ -1,0 +1,109 @@
+name: Game Portfolio Browser QA
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: QA target
+        required: true
+        default: local
+        type: choice
+        options:
+          - local
+          - live
+      game:
+        description: Optional game ID (leave blank for all)
+        required: false
+        type: string
+  pull_request:
+    paths:
+      - 'configuration/game-qa/**'
+      - 'data/game-source-map.json'
+      - 'site/deployment/public-apps.json'
+      - 'site/public-route-patch/games/**'
+      - 'games/strain-showdown/**'
+      - 'scripts/game-portfolio-browser-qa.mjs'
+      - 'scripts/prepare-game-browser-qa.mjs'
+      - 'scripts/lib/game-qa-catalog.mjs'
+      - 'scripts/test-game-qa-catalog.mjs'
+      - 'package.json'
+      - '.github/workflows/game-portfolio-browser-qa.yml'
+  schedule:
+    - cron: '17 11 * * *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: game-portfolio-browser-qa-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  catalog:
+    name: Canonical game catalog
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run games:qa:catalog-check
+      - run: npm run games:qa:catalog > game-qa-catalog.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: game-qa-catalog
+          path: game-qa-catalog.json
+          if-no-files-found: error
+
+  browser:
+    name: Browser QA
+    needs: catalog
+    runs-on: ubuntu-latest
+    env:
+      GAME_QA_OUTPUT_DIR: artifacts/game-qa
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Resolve mode and game filter
+        id: args
+        shell: bash
+        run: |
+          MODE="local"
+          GAME=""
+          if [[ "${{ github.event_name }}" == "schedule" ]]; then
+            MODE="live"
+          elif [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            MODE="${{ inputs.mode }}"
+            GAME="${{ inputs.game }}"
+          fi
+          echo "mode=$MODE" >> "$GITHUB_OUTPUT"
+          if [[ -n "$GAME" ]]; then
+            echo "game_arg=--game $GAME" >> "$GITHUB_OUTPUT"
+          else
+            echo "game_arg=" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Prepare generated local game assets
+        if: steps.args.outputs.mode == 'local'
+        shell: bash
+        run: |
+          node scripts/prepare-game-browser-qa.mjs ${{ steps.args.outputs.game_arg }}
+      - name: Run portfolio browser QA
+        shell: bash
+        run: |
+          node scripts/game-portfolio-browser-qa.mjs --${{ steps.args.outputs.mode }} --strict ${{ steps.args.outputs.game_arg }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: game-portfolio-browser-qa-${{ steps.args.outputs.mode }}
+          path: artifacts/game-qa
+          if-no-files-found: error
+          retention-days: 14
