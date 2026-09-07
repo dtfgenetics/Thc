@@ -5,6 +5,7 @@ import { buildClaim, isReady, planClaims, validateConfig } from './orchestrator/
 import { newJob, transitionJob, canTransition } from './orchestrator/state.mjs'
 import { createLease, heartbeatLease, isLeaseExpired, recoveryDisposition } from './orchestrator/leases.mjs'
 import { classifyReconciliation, reconciliationNeedsMutation } from './orchestrator/reconcile.mjs'
+import { exactHeadMatches, inspectCheckRollup, normalizeCheck } from './orchestrator/verification.mjs'
 
 const config = validateConfig({
   version: 2,
@@ -109,7 +110,18 @@ assert.equal(classifyReconciliation({ job: null, branchExists: true }).action, '
 assert.equal(reconciliationNeedsMutation({ action: 'ACTIVE' }), false)
 assert.equal(reconciliationNeedsMutation({ action: 'RECOVER_BRANCH' }), true)
 
+assert.deepEqual(normalizeCheck({ name: 'build', status: 'COMPLETED', conclusion: 'SUCCESS' }), {
+  name: 'build', status: 'COMPLETED', conclusion: 'SUCCESS', completed: true,
+})
+assert.equal(inspectCheckRollup([]).reason, 'no-checks-reported')
+assert.equal(inspectCheckRollup([{ name: 'build', status: 'IN_PROGRESS', conclusion: '' }]).reason, 'checks-pending')
+assert.equal(inspectCheckRollup([{ name: 'build', status: 'COMPLETED', conclusion: 'FAILURE' }]).reason, 'checks-failing')
+assert.equal(inspectCheckRollup([{ name: 'build', status: 'COMPLETED', conclusion: 'SUCCESS' }]).ok, true)
+assert.equal(exactHeadMatches('abc', 'abc', true), true)
+assert.equal(exactHeadMatches('abc', 'def', true), false)
+assert.equal(exactHeadMatches(null, 'def', true), true)
+
 const productionMerged = newJob({ jobId: 'prod-1', title: 'Production', state: 'MERGED', productionImpact: true })
 assert.throws(() => transitionJob(productionMerged, 'DONE'), /Production-impacting/)
 
-console.log(JSON.stringify({ ok: true, tests: 29 }, null, 2))
+console.log(JSON.stringify({ ok: true, tests: 37 }, null, 2))
