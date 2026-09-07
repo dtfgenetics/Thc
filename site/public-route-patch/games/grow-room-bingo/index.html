@@ -54,8 +54,8 @@
 
     <section class="board-stage" aria-label="Bingo playfield">
       <div class="bingo-columns" aria-hidden="true"><span>B</span><span>I</span><span>N</span><span>G</span><span>O</span></div>
-      <section id="board" class="board" aria-label="Bingo card"></section>
-      <p class="board-tip">Tap a square when it happens. Your marks save automatically on this device.</p>
+      <section id="board" class="board" aria-label="Bingo card. Use arrow keys to move between playable squares."></section>
+      <p class="board-tip">Tap a square when it happens. Keyboard: use arrow keys to move around the 5×5 card and Enter or Space to mark a square. The center FREE space is skipped automatically. Your marks save on this device.</p>
     </section>
   </main>
   <script id="bingo-data" type="application/json">
@@ -131,5 +131,6 @@
 }
   </script>
   <script src="./app.js" defer></script>
+  <script src="./keyboard-nav.js" defer></script>
 </body>
 </html>
