@@ -43,14 +43,23 @@ for (const marker of [
 
 const campaign = JSON.parse(read('data/campaign.json'));
 if (campaign.id !== 'sprout-run-campaign') throw new Error(`campaign-id:${campaign.id}`);
-for (const [key, expected] of [
-  ['levelCount',15],['newLevelCount',14],['baseRuntimeLevelCount',11],['baseRuntimeNewLevelCount',10]
-]) {
-  if (campaign[key] !== expected) throw new Error(`campaign-${key}:expected-${expected}:got-${campaign[key]}`);
+if (campaign.levelCount !== 15) throw new Error(`campaign-levelCount:expected-15:got-${campaign.levelCount}`);
+if (campaign.newLevelCount !== 14) throw new Error(`campaign-newLevelCount:expected-14:got-${campaign.newLevelCount}`);
+if (campaign.baseRuntimeCompatibility?.levelCount !== 11) {
+  throw new Error(`campaign-baseRuntimeCompatibility.levelCount:expected-11:got-${campaign.baseRuntimeCompatibility?.levelCount}`);
+}
+if (campaign.baseRuntimeCompatibility?.newLevelCount !== 10) {
+  throw new Error(`campaign-baseRuntimeCompatibility.newLevelCount:expected-10:got-${campaign.baseRuntimeCompatibility?.newLevelCount}`);
 }
 const worldFive = JSON.parse(read('data/levels-12-15.json'));
 const ids = worldFive.levels?.map((level) => level.id) || [];
 const expectedIds = ['chromosome-crossing','mutation-marsh','allele-array','genome-spire'];
 if (JSON.stringify(ids) !== JSON.stringify(expectedIds)) throw new Error(`world-five-ids:${JSON.stringify(ids)}`);
 
-console.log(JSON.stringify({ok:true, release, campaignLevels:campaign.levelCount, worldFiveIds:ids}, null, 2));
+console.log(JSON.stringify({
+  ok:true,
+  release,
+  campaignLevels:campaign.levelCount,
+  baseRuntimeCompatibility:campaign.baseRuntimeCompatibility,
+  worldFiveIds:ids
+}, null, 2));
