@@ -51,15 +51,15 @@
 
   function refreshActionShortcuts() {
     document.querySelectorAll('.action-card').forEach((button, index) => {
-      if (index < 9) {
-        button.dataset.shortcut = String(index + 1);
-        button.setAttribute('aria-keyshortcuts', String(index + 1));
-        if (!button.querySelector('.action-shortcut')) {
-          const key = document.createElement('kbd');
-          key.className = 'action-shortcut';
-          key.textContent = String(index + 1);
-          button.append(key);
-        }
+      if (index >= 9) return;
+      const shortcut = String(index + 1);
+      if (button.dataset.shortcut !== shortcut) button.dataset.shortcut = shortcut;
+      if (button.getAttribute('aria-keyshortcuts') !== shortcut) button.setAttribute('aria-keyshortcuts', shortcut);
+      if (!button.querySelector('.action-shortcut')) {
+        const key = document.createElement('kbd');
+        key.className = 'action-shortcut';
+        key.textContent = shortcut;
+        button.append(key);
       }
     });
   }
@@ -98,7 +98,10 @@
     }
   });
 
-  const observer = new MutationObserver(refresh);
+  const observer = new MutationObserver((mutations) => {
+    const externalChange = mutations.some((mutation) => !mutation.target.closest?.('#career-log-panel'));
+    if (externalChange) queueMicrotask(refresh);
+  });
   observer.observe(gamePanel, { subtree: true, childList: true, attributes: true, attributeFilter: ['hidden', 'disabled'] });
   document.addEventListener('click', () => queueMicrotask(refresh));
   refresh();
