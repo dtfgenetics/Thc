@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "retirements": [
+    {
+      "branch": "codex/finish-wordpress-chain-20260829",
+      "headSha": "39b4b6e999a76a2aec708fec3ba6d68ec5b4c65e",
+      "supersededBy": "35a7efe9011347d10766a0ab9562bc8eab044af1",
+      "status": "approved",
+      "reviewedAt": "2026-09-06",
+      "reason": "Three historical WordPress handoff commits are fully superseded by current main: reusable Home ownership is preserved, direct Home push mutation is removed, live infographic verification is non-recursive and owner-bound, Learning V3 adds owner-aware storage reconciliation and IPv4 verification, and production topology enforces stricter single-owner/manual-only publication lanes."
+    }
+  ]
+}
