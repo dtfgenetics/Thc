@@ -38,7 +38,9 @@ async function waitForCampaign(page) {
     window.__SPROUT_CAMPAIGN_EXPERIENCE__ &&
     window.__SPROUT_ANIMATION_V2__ &&
     window.__SPROUT_SIGNATURE_FEATURES__ &&
-    window.__SPROUT_GENERATED_LEVEL_GUARD__
+    window.__SPROUT_GENERATED_LEVEL_GUARD__ &&
+    window.__SPROUT_CAMPAIGN__?.levelCount === 15 &&
+    document.documentElement.dataset.sproutCampaignUi === 'seed-man-campaign-ui-v15'
   ));
   await page.locator('#seed-man-campaign-panel').waitFor({ state: 'visible' });
   await page.locator('#seed-signature-hud').waitFor({ state: 'visible' });
@@ -49,7 +51,7 @@ async function selectLevel(page, id) {
   await page.waitForFunction((levelId) => {
     try { return level?.id === levelId && player && player.checkpoint?.id === 'start'; } catch { return false; }
   }, id);
-  await page.waitForTimeout(30);
+  await page.waitForTimeout(40);
 }
 
 async function testAllLevels(page) {
@@ -60,10 +62,11 @@ async function testAllLevels(page) {
     guard: window.__SPROUT_GENERATED_LEVEL_GUARD__,
     levels: window.__SPROUT_CAMPAIGN__.listLevels().map((entry) => ({ id: entry.id, order: entry.order, world: entry.worldTitle, boss: entry.boss || null }))
   }));
-  assert.equal(contract.campaign.version, 'seed-man-campaign-experience-v3');
-  assert.equal(contract.campaign.levelCount, 11);
-  assert.equal(contract.campaign.newLevelCount, 10);
-  assert.equal(contract.campaign.bossCount, 4);
+  assert.equal(contract.campaign.version, 'seed-man-campaign-ui-v15');
+  assert.equal(contract.campaign.baseVersion, 'seed-man-campaign-experience-v3');
+  assert.equal(contract.campaign.levelCount, 15);
+  assert.equal(contract.campaign.newLevelCount, 14);
+  assert.equal(contract.campaign.bossCount, 6);
   assert.equal(contract.animation.version, 'seed-man-animation-v2');
   assert.equal(contract.animation.characterContract, 'seed-man-locked-v1');
   assert.equal(contract.animation.renderer, 'canvas2d-vector-animation');
@@ -72,7 +75,7 @@ async function testAllLevels(page) {
   assert.equal(contract.signatures.levels.length, 10);
   assert.equal(Object.keys(contract.signatures.bossAbilities).length, 4);
   assert.equal(contract.guard.version, 'seed-man-generated-level-guard-v1');
-  assert.equal(contract.levels.length, 11);
+  assert.equal(contract.levels.length, 15);
 
   const expected = [
     ['sprout-run', null, null, null],
@@ -85,7 +88,11 @@ async function testAllLevels(page) {
     ['rosin-refinery-rush', 'refinery', 'heat-vents', 'Press Cycle'],
     ['terpene-tunnel', 'terpene', 'gust-zones', 'Polarity Shift'],
     ['frostline-canopy', 'frost', 'slip-zones', 'Frost Momentum'],
-    ['cloud-nine-citadel', 'citadel', 'wind-zones', 'Sky Wind Cycle']
+    ['cloud-nine-citadel', 'citadel', 'wind-zones', 'Sky Wind Cycle'],
+    ['chromosome-crossing', 'chromosome', 'boost-zones', null],
+    ['mutation-marsh', 'mutation-marsh', 'updraft-zones', null],
+    ['allele-array', 'allele-array', 'gust-zones', null],
+    ['genome-spire', 'genome-spire', 'wind-zones', null]
   ];
 
   for (const [id, theme, mechanic, signatureName] of expected) {
@@ -105,7 +112,7 @@ async function testAllLevels(page) {
     }));
     assert.equal(state.id, id);
     assert.equal(state.selected, id);
-    assert.match(state.title, /Level \d+ \/ 11/);
+    assert.match(state.title, /Level \d+ \/ 15/);
     assert.ok(state.requiredPickups >= 16);
     assert.equal(state.outOfBounds, 0, `${id} must not expose out-of-bounds runtime geometry`);
     if (theme) {
@@ -113,7 +120,7 @@ async function testAllLevels(page) {
       assert.equal(state.bodyTheme, theme);
       assert.ok(state.setting.length >= 30);
       assert.deepStrictEqual(state.mechanicTypes, [mechanic]);
-      assert.equal(windowValue(contract.signatures.features, id), signatureName);
+      if (signatureName) assert.equal(windowValue(contract.signatures.features, id), signatureName);
     }
   }
 }
@@ -312,14 +319,14 @@ try {
   console.log(JSON.stringify({
     ok: true,
     mode: isLive ? 'live-production' : 'local-public-route',
-    campaignLevels: 11,
-    newLevels: 10,
-    worlds: 4,
-    bosses: 4,
-    uniqueSettings: 10,
+    campaignLevels: 15,
+    newLevels: 14,
+    worlds: 5,
+    bosses: 6,
     signatureFeatures: 10,
-    bossAbilities: 4,
+    baseBossAbilities: 4,
     animationVersion: 'seed-man-animation-v2',
+    campaignUiVersion: 'seed-man-campaign-ui-v15',
     bossGateVerified: true,
     bounceMechanicVerified: true,
     currentReversalVerified: true,
