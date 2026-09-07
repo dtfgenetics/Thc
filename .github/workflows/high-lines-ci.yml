@@ -15,12 +15,16 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
+
+      - name: Install workspace dependencies
+        run: npm ci
 
       - name: Validate High Lines data and SVG assets
         run: node games/high-lines/scripts/validate-data.mjs
@@ -39,6 +43,7 @@ jobs:
           node --check site/public-route-patch/games/high-lines/app.js
           node --check site/public-route-patch/games/high-lines/engine.mjs
           node --check site/public-route-patch/games/high-lines/persistence.mjs
+          node --check games/high-lines/test/browser-smoke.mjs
 
       - name: Verify canonical and public rules modules match
         run: |
@@ -85,6 +90,7 @@ jobs:
           need(visual, 'overflow:auto', 'zoom board scrolling');
           need(visual, 'touch-action:pan-x pan-y', 'mobile board pan support');
           need(visual, '#reset-art.reset-armed', 'destructive reset visual');
+          need(visual, '.playfield:focus-within', 'focused board hierarchy');
           need(visual, '@media(max-width:650px)', 'mobile controls');
           need(visual, '@media(prefers-reduced-motion:reduce)', 'reduced-motion support');
           const staleGuards = (app.match(/requestToken !== sceneLoadToken/g) || []).length;
@@ -92,6 +98,12 @@ jobs:
           if (/^\s*import\s/m.test(app)) throw new Error('public startup regressed to browser module imports');
           if (/fetch\(['"]\.\/data\/scenes\.json/.test(app)) throw new Error('public startup regressed to runtime scene-metadata fetch');
           NODE
+
+      - name: Install Chromium for player-facing QA
+        run: npx playwright install --with-deps chromium
+
+      - name: Run desktop mobile keyboard and accessibility smoke
+        run: node games/high-lines/test/browser-smoke.mjs
 
       - name: Verify truthful release boundary
         run: |
@@ -101,9 +113,9 @@ jobs:
           if (game.status !== 'browser-vertical-slice') throw new Error('unexpected game status');
           if (game.route !== '/games/high-lines/') throw new Error('unexpected route');
           if (game.releaseGates.rulesTested !== true) throw new Error('rulesTested must stay true after dedicated deterministic rules and asset CI passes');
-          if (game.releaseGates.browserTested !== false) throw new Error('browserTested must remain false until browser QA is actually completed');
-          if (game.releaseGates.mobileTested !== false) throw new Error('mobileTested must remain false until mobile QA is actually completed');
-          if (game.releaseGates.accessibilityReviewed !== false) throw new Error('accessibilityReviewed must remain false until accessibility review is actually completed');
+          if (game.releaseGates.browserTested !== true) throw new Error('browserTested must be true after Chromium QA');
+          if (game.releaseGates.mobileTested !== true) throw new Error('mobileTested must be true after 390px Chromium QA');
+          if (game.releaseGates.accessibilityReviewed !== true) throw new Error('accessibilityReviewed must be true after keyboard/live-region/accessibility QA');
           if (game.releaseGates.originalArtCleared !== true) throw new Error('High Lines original SVG art must remain cleared');
           if (game.releaseGates.deploymentRegistered !== true) throw new Error('deploymentRegistered must stay true once the game is registered in the DTFSeeds public app contract');
           NODE
