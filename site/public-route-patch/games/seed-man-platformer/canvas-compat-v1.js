@@ -10,6 +10,7 @@
   const RELEASE = '20260907-r9';
   const PHENOTYPE_MOBILITY_FRAME_REPAIR = 'seed-man-phenotype-mobility-frame-v1';
   const ENEMY_ATTACK_BROWSER = 'seed-man-enemy-attacks-browser-v1';
+  const CAMPAIGN_UI = 'seed-man-campaign-ui-v15';
   const proto = window.HTMLCanvasElement?.prototype;
   const nativeGetContext = proto?.getContext;
   if (!proto || typeof nativeGetContext !== 'function') return;
@@ -22,6 +23,8 @@
   let mobilityFrameRepairInstalled = false;
   let enemyAttackLoadAttempts = 0;
   let enemyAttacksLoaded = false;
+  let campaignUiLoadAttempts = 0;
+  let campaignUiLoaded = false;
 
   function patchedGetContext(type, attributes) {
     if (this.id !== 'game' || type !== '2d') {
@@ -126,6 +129,38 @@
     return true;
   }
 
+  function loadCampaignUiAdapter() {
+    if (campaignUiLoaded || document.documentElement.dataset.sproutCampaignUi === CAMPAIGN_UI) {
+      campaignUiLoaded = true;
+      return;
+    }
+    if (window.__SPROUT_CAMPAIGN__?.levelCount !== 15 || !window.__SPROUT_CAMPAIGN_EXPERIENCE__) {
+      campaignUiLoadAttempts += 1;
+      if (campaignUiLoadAttempts <= 80) window.setTimeout(loadCampaignUiAdapter, 25);
+      else console.error('Seed Man 15-level campaign UI adapter could not find campaign bindings.');
+      return;
+    }
+    const existing = document.querySelector('script[data-seed-campaign-ui]');
+    if (existing) return;
+    const script = document.createElement('script');
+    script.src = `./campaign-ui-v15.js?v=${RELEASE}`;
+    script.async = false;
+    script.dataset.seedCampaignUi = 'v15';
+    script.addEventListener('load', () => {
+      const settle = () => {
+        campaignUiLoaded = document.documentElement.dataset.sproutCampaignUi === CAMPAIGN_UI;
+        if (!campaignUiLoaded) {
+          campaignUiLoadAttempts += 1;
+          if (campaignUiLoadAttempts <= 80) window.setTimeout(settle, 25);
+          else console.error('Seed Man 15-level campaign UI adapter loaded without installing runtime hooks.');
+        }
+      };
+      settle();
+    }, { once: true });
+    script.addEventListener('error', () => console.error('Seed Man 15-level campaign UI adapter failed to load.'), { once: true });
+    document.body.append(script);
+  }
+
   function loadEnemyAttackBrowserAdapter() {
     if (enemyAttacksLoaded || window.__SPROUT_ENEMY_ATTACKS_BROWSER__?.installed === true) {
       enemyAttacksLoaded = true;
@@ -217,6 +252,7 @@
       const active = window.__SPROUT_CAMPAIGN__?.getLevel?.();
       setBrandedCampaignTitle(active?.title || 'Greenhouse Gauntlet');
       installLevelOneSummaryCompatibility();
+      loadCampaignUiAdapter();
     }, 0);
   }, { once: true });
 
@@ -233,16 +269,20 @@
     release: RELEASE,
     phenotypeMobilityFrameRepair: PHENOTYPE_MOBILITY_FRAME_REPAIR,
     enemyAttackBrowser: ENEMY_ATTACK_BROWSER,
+    campaignUi: CAMPAIGN_UI,
     softwarePreferred: true,
     campaignTitleBranding: true,
     levelOneSummaryCompatibility: true,
     combatBrowserAutoLoad: true,
     enemyAttackBrowserAutoLoad: true,
+    campaignUiAutoLoad: true,
     get combatLoadAttempts() { return combatLoadAttempts; },
     get combatLoaded() { return combatLoaded; },
     get mobilityFrameRepairInstalled() { return mobilityFrameRepairInstalled; },
     get enemyAttackLoadAttempts() { return enemyAttackLoadAttempts; },
     get enemyAttacksLoaded() { return enemyAttacksLoaded; },
+    get campaignUiLoadAttempts() { return campaignUiLoadAttempts; },
+    get campaignUiLoaded() { return campaignUiLoaded; },
     get contextLostCount() { return lost; },
     get contextRestoredCount() { return restored; },
   });
