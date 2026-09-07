@@ -1,0 +1,161 @@
+name: Qualify Ganjumanji DTFSeeds Package
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - site/public-route-patch/assets/release-source-revisions/ganjumanji.txt
+      - site/deployment/public-apps.json
+      - scripts/validate-ganjumanji-release-source.mjs
+      - .github/workflows/qualify-ganjumanji-dtfseeds-package.yml
+  push:
+    branches: [main]
+    paths:
+      - site/public-route-patch/assets/release-source-revisions/ganjumanji.txt
+      - site/deployment/public-apps.json
+      - scripts/validate-ganjumanji-release-source.mjs
+      - .github/workflows/qualify-ganjumanji-dtfseeds-package.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ganjumanji-dtfseeds-package-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  qualify:
+    name: Build pinned Ganjumanji route artifact
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Checkout DTFSeeds integration source
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate central source contract
+        run: node scripts/validate-ganjumanji-release-source.mjs
+
+      - name: Resolve pinned source
+        id: source
+        shell: bash
+        run: |
+          set -euo pipefail
+          revision_file="$GITHUB_WORKSPACE/site/public-route-patch/assets/release-source-revisions/ganjumanji.txt"
+          repo_name="$(sed -n 's/^repository=//p' "$revision_file")"
+          revision="$(sed -n 's/^commit=//p' "$revision_file")"
+          version="$(sed -n 's/^version=//p' "$revision_file")"
+          route="$(sed -n 's/^route=//p' "$revision_file")"
+          test "$repo_name" = "dtfgenetics/GANJUMANJI-The-Lost-Grower-s-Temple"
+          test "$revision" = "e82580daa684fc7733ef6cfcb12a502939a609dd"
+          test "$version" = "0.3.0"
+          test "$route" = "/games/ganjumanji/"
+          echo "repository=$repo_name" >> "$GITHUB_OUTPUT"
+          echo "revision=$revision" >> "$GITHUB_OUTPUT"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Fetch exact canonical revision
+        shell: bash
+        run: |
+          set -euo pipefail
+          repo="$RUNNER_TEMP/ganjumanji"
+          git init "$repo"
+          cd "$repo"
+          git remote add origin "https://github.com/${{ steps.source.outputs.repository }}.git"
+          git fetch --depth=1 origin "${{ steps.source.outputs.revision }}"
+          git checkout --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "${{ steps.source.outputs.revision }}"
+
+      - name: Install canonical dependencies
+        working-directory: ${{ runner.temp }}/ganjumanji
+        run: npm install --ignore-scripts
+
+      - name: Run canonical unit and content tests
+        working-directory: ${{ runner.temp }}/ganjumanji
+        run: npm test
+
+      - name: Build route-safe production bundle
+        working-directory: ${{ runner.temp }}/ganjumanji
+        run: |
+          set -euo pipefail
+          npm run build
+          npm run validate:release
+          test -s dist/index.html
+          test -s dist/game-release.json
+          test -d dist/assets
+          grep -Fq '/games/ganjumanji/assets/' dist/index.html
+          grep -Fq 'Ganjumanji' dist/index.html
+          ! grep -Fq '/src/main.ts' dist/index.html
+
+      - name: Install Chromium
+        working-directory: ${{ runner.temp }}/ganjumanji
+        run: npx playwright install --with-deps chromium
+
+      - name: Run canonical desktop and mobile browser acceptance
+        working-directory: ${{ runner.temp }}/ganjumanji
+        run: npm run test:e2e
+
+      - name: Assemble DTFSeeds route artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf package
+          mkdir -p package/games/ganjumanji
+          cp -a "$RUNNER_TEMP/ganjumanji/dist/." package/games/ganjumanji/
+          cp site/public-route-patch/assets/release-source-revisions/ganjumanji.txt package/games/ganjumanji/source-revision.txt
+          cat > package/games/ganjumanji/dtf-source.json <<JSON
+          {
+            "repository": "${{ steps.source.outputs.repository }}",
+            "commit": "${{ steps.source.outputs.revision }}",
+            "version": "${{ steps.source.outputs.version }}",
+            "route": "/games/ganjumanji/",
+            "integrationCommit": "$GITHUB_SHA"
+          }
+          JSON
+
+      - name: Verify packaged route contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s package/games/ganjumanji/index.html
+          test -s package/games/ganjumanji/game-release.json
+          test -s package/games/ganjumanji/source-revision.txt
+          test -s package/games/ganjumanji/dtf-source.json
+          test -d package/games/ganjumanji/assets
+          grep -Fq '/games/ganjumanji/assets/' package/games/ganjumanji/index.html
+          grep -Fq 'Ganjumanji' package/games/ganjumanji/index.html
+          grep -Fq 'route=/games/ganjumanji/' package/games/ganjumanji/source-revision.txt
+          grep -Fq 'commit=${{ steps.source.outputs.revision }}' package/games/ganjumanji/source-revision.txt
+          grep -Fq '"route": "/games/ganjumanji/"' package/games/ganjumanji/game-release.json
+          grep -Fq '"status": "release-candidate"' package/games/ganjumanji/game-release.json
+          ! grep -RFiq '/src/main.ts' package/games/ganjumanji
+
+      - name: Upload deployable Ganjumanji route
+        uses: actions/upload-artifact@v4
+        with:
+          name: ganjumanji-dtfseeds-route-${{ steps.source.outputs.revision }}
+          path: package/games/ganjumanji
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Qualification summary
+        shell: bash
+        run: |
+          {
+            echo '## Ganjumanji DTFSeeds package qualification'
+            echo
+            echo '- Route: `/games/ganjumanji/`'
+            echo '- Canonical repo: `${{ steps.source.outputs.repository }}`'
+            echo '- Canonical revision: `${{ steps.source.outputs.revision }}`'
+            echo '- Version: `${{ steps.source.outputs.version }}`'
+            echo '- Canonical tests: passed'
+            echo '- Route-safe build validation: passed'
+            echo '- Desktop/mobile browser acceptance: passed'
+            echo '- Deployable route artifact: uploaded'
+            echo '- Public promotion: still blocked until production publish + exact live-route verification'
+          } >> "$GITHUB_STEP_SUMMARY"
