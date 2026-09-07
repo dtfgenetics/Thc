@@ -2,12 +2,28 @@
 
 (() => {
   const VERSION = 'seed-man-three-adapter-v2';
+  const VISUAL_THEME_VERSION = 'seed-man-world-themes-v1';
   const EXPECTED_API_VERSION = 'seed-man-three-public-v2';
   const EXPECTED_RENDERER_VERSION = 'seed-man-three-world-v2';
   const EXPECTED_OPTIMIZATION = 'seed-man-three-instancing-v1';
   const gameCanvas = document.querySelector('#game');
   const shell = document.querySelector('.game-shell');
   const api = window.SeedManThreeWorld;
+
+  const WORLD_THEMES = Object.freeze({
+    greenhouse: { sky: 0x8bcfb6, fog: 0xb9dec8, platform: 0x426b45, top: 0x9ad369, edge: 0x203a29, frame: 0x335f50, leafDark: 0x173b2b, leafLight: 0x6f9e58 },
+    nursery: { sky: 0x173547, fog: 0x325369, platform: 0x385d55, top: 0x7cd6a4, edge: 0x162d2e, frame: 0x4b6975, leafDark: 0x16382d, leafLight: 0x5e9f72 },
+    hydro: { sky: 0x174c66, fog: 0x4c8496, platform: 0x24566b, top: 0x62d3e6, edge: 0x123441, frame: 0x5e8791, leafDark: 0x15484d, leafLight: 0x5fb9a7 },
+    roots: { sky: 0x8d704f, fog: 0xb89a73, platform: 0x66513b, top: 0x9eb765, edge: 0x3b2b20, frame: 0x5f4b38, leafDark: 0x334222, leafLight: 0x82965b },
+    mycelium: { sky: 0x4b3762, fog: 0x77618a, platform: 0x4e4056, top: 0xa884c6, edge: 0x292132, frame: 0x675477, leafDark: 0x2e3141, leafLight: 0x8c7da6 },
+    trichome: { sky: 0x527381, fog: 0x89a7af, platform: 0x50646c, top: 0xc9eef0, edge: 0x29383d, frame: 0x748a92, leafDark: 0x29494b, leafLight: 0x83b2a5 },
+    cavern: { sky: 0x312d45, fog: 0x5a526f, platform: 0x454151, top: 0xb8a3d2, edge: 0x201d2b, frame: 0x645c76, leafDark: 0x27382f, leafLight: 0x718b69 },
+    refinery: { sky: 0x5a342a, fog: 0x8e6252, platform: 0x54443d, top: 0xd9935b, edge: 0x2d2522, frame: 0x76635b, leafDark: 0x34402c, leafLight: 0x808c5a },
+    terpene: { sky: 0x315c54, fog: 0x648c79, platform: 0x375d51, top: 0xe0c867, edge: 0x1d372f, frame: 0x557d70, leafDark: 0x1f4836, leafLight: 0x72a667 },
+    frost: { sky: 0x9ac7d9, fog: 0xd1edf3, platform: 0x638691, top: 0xdaf8ff, edge: 0x35515c, frame: 0x789aa7, leafDark: 0x40696b, leafLight: 0x94c1b4 },
+    citadel: { sky: 0x62563b, fog: 0xa49468, platform: 0x514a3a, top: 0xf0d66d, edge: 0x2f2a20, frame: 0x85765a, leafDark: 0x38412a, leafLight: 0x899760 },
+    genetic: { sky: 0x3f315d, fog: 0x746590, platform: 0x493e61, top: 0xcf9cff, edge: 0x272036, frame: 0x6f5d89, leafDark: 0x25384b, leafLight: 0x78a2a4 }
+  });
 
   if (!gameCanvas || !shell || !api?.supportsWebGL?.() || typeof api.createRenderer !== 'function') {
     document.documentElement.dataset.seedThreeWorld = 'fallback';
@@ -18,6 +34,7 @@
   let threeCanvas = null;
   let stack = null;
   let mountedLevelId = null;
+  let mountedVisualTheme = 'greenhouse';
   let disposed = false;
   let frameId = 0;
   let resizeObserver = null;
@@ -53,6 +70,52 @@
     const coarsePointer = typeof window.matchMedia === 'function' && window.matchMedia('(pointer: coarse)').matches;
     const narrowViewport = Math.min(window.innerWidth || 960, window.innerHeight || 540) < 700;
     return Math.min(deviceRatio, coarsePointer || narrowViewport ? 1 : 1.25);
+  }
+
+  function visualThemeKey(theme = '') {
+    if (theme === 'nursery') return 'nursery';
+    if (theme === 'hydro') return 'hydro';
+    if (theme === 'root-zone') return 'roots';
+    if (theme === 'mycelium') return 'mycelium';
+    if (theme === 'trichome') return 'trichome';
+    if (theme === 'cavern') return 'cavern';
+    if (theme === 'refinery') return 'refinery';
+    if (theme === 'terpene') return 'terpene';
+    if (theme === 'frost') return 'frost';
+    if (theme === 'citadel') return 'citadel';
+    if (['chromosome', 'mutation-marsh', 'allele-array', 'genome-spire', 'genetic'].includes(theme)) return 'genetic';
+    return 'greenhouse';
+  }
+
+  function setMaterialColor(material, hex) {
+    if (!material?.color?.setHex || !Number.isFinite(hex)) return;
+    material.color.setHex(hex);
+  }
+
+  function applyWorldTheme(descriptor) {
+    if (!renderer?.scene || !descriptor) return;
+    const key = visualThemeKey(descriptor.level?.theme);
+    const theme = WORLD_THEMES[key] || WORLD_THEMES.greenhouse;
+    mountedVisualTheme = key;
+    renderer.scene.background?.setHex?.(theme.sky);
+    renderer.scene.fog?.color?.setHex?.(theme.fog);
+
+    renderer.scene.traverse((child) => {
+      if (!child?.material) return;
+      const material = Array.isArray(child.material) ? child.material[0] : child.material;
+      const name = child.name || '';
+      if (name.includes('platforms-v1')) setMaterialColor(material, theme.platform);
+      else if (name.includes('platform-caps-v1')) setMaterialColor(material, theme.top);
+      else if (name.includes('platform-edges-v1')) setMaterialColor(material, theme.edge);
+      else if (name.includes('greenhouse-ribs-v1') || name.includes('greenhouse-braces-v1')) setMaterialColor(material, theme.frame);
+      else if (name.includes('plant-leaves-dark-v1')) setMaterialColor(material, theme.leafDark);
+      else if (name.includes('plant-leaves-light-v1')) setMaterialColor(material, theme.leafLight);
+    });
+
+    shell.dataset.seedVisualTheme = key;
+    document.body.dataset.seedVisualWorld = key;
+    document.documentElement.dataset.seedThreeTheme = key;
+    document.documentElement.dataset.seedThreeThemeVersion = VISUAL_THEME_VERSION;
   }
 
   function installStack() {
@@ -137,10 +200,11 @@
     if (!nextLevel) return false;
     const id = nextLevel.id || 'unknown';
     if (id === mountedLevelId && renderer.descriptor) return true;
-    renderer.mountLevel(nextLevel);
+    const descriptor = renderer.mountLevel(nextLevel);
     mountedLevelId = id;
     shell.dataset.threeLevel = id;
     renderStats = null;
+    applyWorldTheme(descriptor);
     return true;
   }
 
@@ -247,12 +311,15 @@
 
     window.__SPROUT_THREE_ADAPTER__ = Object.freeze({
       version: VERSION,
+      visualThemeVersion: VISUAL_THEME_VERSION,
       active: true,
       snapshot: () => ({
         mountedLevelId,
+        mountedVisualTheme,
         rendererVersion: renderer?.version || null,
         rendererOptimization: renderer?.optimization || null,
         worldVersion: api.version || null,
+        visualThemeVersion: VISUAL_THEME_VERSION,
         webgl: true,
         width: lastWidth,
         height: lastHeight,

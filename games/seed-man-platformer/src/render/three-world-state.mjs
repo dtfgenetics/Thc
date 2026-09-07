@@ -108,6 +108,13 @@ export function buildThreeWorldDescriptor(level, options = {}) {
 
   return {
     version: 'seed-man-three-world-v1',
+    level: {
+      id: typeof level.id === 'string' && level.id ? level.id : 'sprout-run',
+      title: typeof level.title === 'string' ? level.title : '',
+      theme: typeof level.theme === 'string' && level.theme ? level.theme : 'greenhouse',
+      setting: typeof level.setting === 'string' ? level.setting : '',
+      worldTitle: typeof level.worldTitle === 'string' ? level.worldTitle : ''
+    },
     pixelsPerUnit,
     world: {
       widthPixels: worldWidth,
