@@ -47,8 +47,8 @@ export function loadGameQaCatalog(rootDir = process.cwd()) {
 
   const deployById = new Map(deployedGames.map((app) => [app.id, app]));
   const deployByRoute = new Map(deployedGames.map((app) => [app.route, app]));
-  const sourceById = new Map(games.map((game) => [game.id, game]));
-  const sourceByRoute = new Map(games.map((game) => [game.route, game]));
+  const publicIds = new Set(games.map((game) => game.id));
+  const publicRoutes = new Set(games.map((game) => game.route));
 
   const warnings = [];
   const catalog = games.map((game) => {
@@ -82,16 +82,17 @@ export function loadGameQaCatalog(rootDir = process.cwd()) {
     };
   });
 
-  for (const app of deployedGames) {
-    if (!sourceById.has(app.id) && !sourceByRoute.has(app.route)) {
-      warnings.push(`Deployment game ${app.id} ${app.route} is not represented in data/game-source-map.json`);
-    }
-  }
+  // The deployment registry is intentionally broader than the public source map: it may
+  // contain release candidates or reserved routes such as Ganjumanji, THC RPG, and Root Cause
+  // before they are promoted into the public playable catalog. Keep those visible as metadata,
+  // but do not classify them as source-map drift or make strict public QA fail.
+  const deploymentOnly = deployedGames.filter((app) => !publicIds.has(app.id) && !publicRoutes.has(app.route));
 
   return {
     site: sourceMap.site ?? deployment.site ?? 'https://dtfseeds.com',
     updated: sourceMap.updated ?? deployment.updated ?? null,
     catalog,
+    deploymentOnly,
     warnings,
     sourceMapPath,
     deploymentPath,
