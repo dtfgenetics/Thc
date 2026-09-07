@@ -1,0 +1,90 @@
+name: Reconcile Seed Man Canonical Source to Production
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - games/seed-man-platformer/**
+      - .github/workflows/seed-man-source-to-production.yml
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: seed-man-source-to-production
+  cancel-in-progress: true
+
+jobs:
+  validate-and-publish:
+    name: Validate canonical Seed Man source and dispatch production publisher
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout canonical main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate canonical source boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          root=games/seed-man-platformer
+          test -s "$root/package.json"
+          test -s "$root/game.json"
+          test -s "$root/data/campaign.json"
+          test -s "$root/data/levels-12-15.json"
+          test -s "$root/src/physics.mjs"
+          test -s "$root/src/render/three-world.mjs"
+          test -s "$root/src/render/three-world-state.mjs"
+          test -s "$root/src/render/three-world-public-entry.mjs"
+          test -s "$root/src/systems/enemy-attacks.mjs"
+          test -s "$root/scripts/build-three-public.mjs"
+
+          node --check "$root/src/physics.mjs"
+          node --check "$root/src/render/three-world.mjs"
+          node --check "$root/src/render/three-world-state.mjs"
+          node --check "$root/src/render/three-world-public-entry.mjs"
+          node --check "$root/src/systems/enemy-attacks.mjs"
+          node --check "$root/scripts/build-three-public.mjs"
+
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const campaign = JSON.parse(fs.readFileSync('games/seed-man-platformer/data/campaign.json', 'utf8'));
+          const world5 = JSON.parse(fs.readFileSync('games/seed-man-platformer/data/levels-12-15.json', 'utf8'));
+          if (campaign.levelCount !== 15) throw new Error(`Expected 15 campaign levels, found ${campaign.levelCount}`);
+          if (!Array.isArray(campaign.worlds) || campaign.worlds.length !== 5) throw new Error('Expected five campaign worlds.');
+          if (!Array.isArray(world5.levels) || world5.levels.length !== 4) throw new Error('Expected four World 5 levels.');
+          NODE
+
+      - name: Verify canonical-to-public release inputs are synchronized
+        shell: bash
+        run: |
+          set -euo pipefail
+          cmp games/seed-man-platformer/data/campaign.json \
+              site/public-route-patch/games/seed-man-platformer/data/campaign.json
+          cmp games/seed-man-platformer/data/levels-12-15.json \
+              site/public-route-patch/games/seed-man-platformer/data/levels-12-15.json
+          cmp games/seed-man-platformer/src/systems/enemy-attacks.mjs \
+              site/public-route-patch/games/seed-man-platformer/enemy-attacks.js
+
+      - name: Dispatch dedicated Seed Man production publisher
+        if: github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          run_url="$(gh workflow run publish-seed-man-production.yml --ref main)"
+          run_id="${run_url##*/}"
+          [[ "$run_id" =~ ^[0-9]+$ ]] || { echo "Could not parse Seed Man production run from: $run_url" >&2; exit 1; }
+          echo "Seed Man production run: $run_id"
+          gh run watch "$run_id" --exit-status
