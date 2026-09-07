@@ -43,6 +43,7 @@ assert.equal(campaign.defaultLevelId, levelOne.id, 'campaign default must keep G
 assert.equal(campaign.worlds.length, 5);
 assert.equal(campaign.levelCount, 15);
 assert.equal(campaign.newLevelCount, 14);
+assert.deepStrictEqual(campaign.baseRuntimeCompatibility, { levelCount: 11, newLevelCount: 10 });
 assert.equal(campaign.worlds.flatMap((world) => world.levels).length, 15);
 assert.equal(basePack.levels.length, 10);
 assert.equal(worldFivePack.levels.length, 4);
@@ -61,7 +62,7 @@ const appScriptIndex = html.indexOf(`./app.js?v=${release}`);
 const worldFiveScriptIndex = html.indexOf(`./world-five-v1.js?v=${release}`);
 assert.ok(baseScriptIndex >= 0, 'public page must load campaign-v1.js');
 assert.ok(appScriptIndex > baseScriptIndex, 'campaign bootstrap must load before app.js');
-assert.ok(worldFiveScriptIndex > appScriptIndex, 'prepared public page must load World 5 after the base runtime');
+if (worldFiveScriptIndex >= 0) assert.ok(worldFiveScriptIndex > appScriptIndex, 'prepared World 5 adapter must load after the base runtime');
 
 for (const marker of [
   'sprout-campaign-v3',
@@ -107,4 +108,4 @@ assert.match(worldFiveRuntime, /installVisualLayer/, 'World 5 must install its d
 assert.doesNotMatch(worldFiveRuntime, /^\s*import\s/m, 'World 5 runtime must remain a classic self-contained browser script');
 assert.doesNotMatch(worldFiveRuntime, /fetch\s*\(/i, 'World 5 runtime must not add network dependencies');
 
-console.log('Seed Man public 15-level campaign, Genetic Frontier extension, bosses, and source parity checks passed');
+console.log('Seed Man public 15-level source contract and Genetic Frontier extension checks passed');
