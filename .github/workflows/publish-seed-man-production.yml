@@ -52,7 +52,7 @@ jobs:
           required=(
             .htaccess index.html app.js canvas-compat-v1.js campaign-v1.js
             seed-man-production-art.js gameplay-v2.js combat-browser-v1.js enemy-attacks-browser-v1.js enemy-attacks.js
-            world-five-v1.js input-guard-v1.js seed-man.css physics.mjs
+            world-five-v1.js three-world-v1.js input-guard-v1.js seed-man.css physics.mjs
             data/campaign.json data/level-01.json data/levels-12-15.json
           )
           for file in "${required[@]}"; do
@@ -70,6 +70,7 @@ jobs:
           grep -Fq "./gameplay-v2.js?v=$release" "$root/index.html"
           grep -Fq "./campaign-v1.js?v=$release" "$root/index.html"
           grep -Fq 'world-five-v1.js' "$root/index.html"
+          grep -Fq "./three-world-v1.js?v=$release" "$root/index.html"
           grep -Fq "name=\"dtf-sprout-release\" content=\"$release\"" "$root/index.html"
           ! grep -Fq 'Original browser vertical slice' "$root/index.html"
           ! grep -Fq '0 / 8' "$root/index.html"
@@ -83,6 +84,7 @@ jobs:
           node --check "$root/enemy-attacks-browser-v1.js"
           node --check "$root/enemy-attacks.js"
           node --check "$root/world-five-v1.js"
+          node --check "$root/three-world-v1.js"
           node --check "$root/input-guard-v1.js"
           node --check scripts/publish-seed-man-route-via-wordpress.mjs
 
@@ -101,6 +103,11 @@ jobs:
           grep -Fq 'seed-man-world-five-state-sync-v1' "$root/world-five-v1.js"
           grep -Fq 'Genome Hydra' "$root/world-five-v1.js"
           grep -Fq 'Voltage Wasp Alpha' "$root/world-five-v1.js"
+          grep -Fq 'SeedManThreeWorld' "$root/three-world-v1.js"
+          grep -Fq 'seed-man-three-public-v1' "$root/three-world-v1.js"
+          grep -Fq 'seed-man-three-world-v1' "$root/three-world-v1.js"
+          three_bytes="$(wc -c < "$root/three-world-v1.js" | tr -d ' ')"
+          [[ "$three_bytes" -ge 250000 && "$three_bytes" -le 900000 ]] || { echo "Three.js bundle outside production size budget: $three_bytes" >&2; exit 1; }
           grep -Fq 'combatBrowserAutoLoad: true' "$root/canvas-compat-v1.js"
           grep -Fq 'sprout-campaign-v3' "$root/campaign-v1.js"
           grep -Fq 'seed-man-campaign-experience-v3' "$root/campaign-v1.js"
@@ -157,7 +164,7 @@ jobs:
           if (result.release !== process.argv[3]) throw new Error(`Published ${result.release}; expected ${process.argv[3]}`);
           for (const required of [
             'gameplay-v2.js', 'combat-browser-v1.js', 'enemy-attacks-browser-v1.js', 'enemy-attacks.js',
-            'campaign-v1.js', 'world-five-v1.js', 'data/campaign.json', 'data/levels-12-15.json'
+            'campaign-v1.js', 'world-five-v1.js', 'three-world-v1.js', 'data/campaign.json', 'data/levels-12-15.json'
           ]) {
             if (!result.files?.[required]) throw new Error(`${required} was not published.`);
           }
@@ -177,6 +184,7 @@ jobs:
             grep -Fq "./gameplay-v2.js?v=$SPROUT_RELEASE" "$body"
             grep -Fq "./campaign-v1.js?v=$SPROUT_RELEASE" "$body"
             grep -Fq 'world-five-v1.js' "$body"
+            grep -Fq "./three-world-v1.js?v=$SPROUT_RELEASE" "$body"
             grep -Fq "name=\"dtf-sprout-release\" content=\"$SPROUT_RELEASE\"" "$body"
             ! grep -Fq 'Original browser vertical slice' "$body"
             ! grep -Fq '0 / 8' "$body"
@@ -203,7 +211,7 @@ jobs:
 
           assets=(
             app.js canvas-compat-v1.js campaign-v1.js seed-man-production-art.js gameplay-v2.js
-            combat-browser-v1.js enemy-attacks-browser-v1.js enemy-attacks.js world-five-v1.js
+            combat-browser-v1.js enemy-attacks-browser-v1.js enemy-attacks.js world-five-v1.js three-world-v1.js
             input-guard-v1.js seed-man.css physics.mjs data/campaign.json data/level-01.json data/levels-12-15.json
           )
           for asset in "${assets[@]}"; do
@@ -229,6 +237,11 @@ jobs:
           grep -Fq 'seed-man-world-five-state-sync-v1' "$RUNNER_TEMP/world-five-v1.js"
           grep -Fq 'Genome Hydra' "$RUNNER_TEMP/world-five-v1.js"
           grep -Fq 'Voltage Wasp Alpha' "$RUNNER_TEMP/world-five-v1.js"
+          grep -Fq 'SeedManThreeWorld' "$RUNNER_TEMP/three-world-v1.js"
+          grep -Fq 'seed-man-three-public-v1' "$RUNNER_TEMP/three-world-v1.js"
+          grep -Fq 'seed-man-three-world-v1' "$RUNNER_TEMP/three-world-v1.js"
+          live_three_bytes="$(wc -c < "$RUNNER_TEMP/three-world-v1.js" | tr -d ' ')"
+          [[ "$live_three_bytes" -ge 250000 && "$live_three_bytes" -le 900000 ]] || { echo "Live Three.js bundle outside size budget: $live_three_bytes" >&2; exit 1; }
           grep -Fq 'combatBrowserAutoLoad: true' "$RUNNER_TEMP/canvas-compat-v1.js"
           grep -Fq 'sprout-campaign-v3' "$RUNNER_TEMP/campaign-v1.js"
           grep -Fq 'seed-man-campaign-experience-v3' "$RUNNER_TEMP/campaign-v1.js"
@@ -279,10 +292,10 @@ jobs:
             echo "- Source SHA: $GITHUB_SHA"
             echo "- Release: \`$SPROUT_RELEASE\`"
             echo '- Route: https://dtfseeds.com/games/seed-man-platformer/'
-            echo '- Bundle: Greenhouse gameplay-v2 + browser combat-v1 + hostile attack runtime + 30-second phenotype absorption + 15-level campaign + Genetic Frontier World 5 + Seed Man animation-v2'
+            echo '- Bundle: Greenhouse gameplay-v2 + browser combat-v1 + hostile attack runtime + 30-second phenotype absorption + 15-level campaign + Genetic Frontier World 5 + Seed Man animation-v2 + self-contained Three.js world renderer'
             echo '- Combat: flying/blink enemies, elemental carriers, minor/major bosses, Tempest flight, Hydro bubble, Gravity warp'
             echo '- Campaign: 15 total levels, 14 added stages after Greenhouse Gauntlet, 5 worlds, Genetic Frontier final world'
             echo '- World 5 bosses: Voltage Wasp Alpha and Genome Hydra'
             echo '- Publication: atomic replacement with SHA-256 verification'
-            echo '- Live gates: base browser acceptance + dedicated World 5 desktop/mobile Chromium acceptance'
+            echo '- Live gates: base browser acceptance + Three.js visitor asset verification + dedicated World 5 desktop/mobile Chromium acceptance'
           } >> "$GITHUB_STEP_SUMMARY"
