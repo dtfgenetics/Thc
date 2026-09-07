@@ -3,9 +3,9 @@
 import { execFileSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import { transitionJob, validateJob } from './orchestrator/state.mjs'
+import { exactHeadMatches, inspectCheckRollup } from './orchestrator/verification.mjs'
 
 const MARKER_RE = /<!-- worker-orchestrator:(\{.*?\}) -->/s
-const PASSING = new Set(['SUCCESS', 'NEUTRAL', 'SKIPPED'])
 
 function capture(args, { allowFailure = false } = {}) {
   try {
@@ -54,24 +54,6 @@ function loadVerificationProfile(job, path = 'configuration/orchestrator/verific
   return { name, profile }
 }
 
-function normalizeCheck(entry) {
-  const name = entry.name || entry.context || entry.workflowName || 'unnamed-check'
-  const status = String(entry.status || entry.state || '').toUpperCase()
-  const conclusion = String(entry.conclusion || entry.state || '').toUpperCase()
-  const completed = status === 'COMPLETED' || PASSING.has(conclusion) || ['FAILURE', 'CANCELLED', 'TIMED_OUT', 'ACTION_REQUIRED', 'STALE'].includes(conclusion)
-  return { name, status, conclusion, completed }
-}
-
-function inspectChecks(pr) {
-  const checks = (pr.statusCheckRollup || []).map(normalizeCheck)
-  if (checks.length === 0) return { ok: false, reason: 'no-checks-reported', checks }
-  const pending = checks.filter((check) => !check.completed || (!check.conclusion && !PASSING.has(check.status)))
-  if (pending.length) return { ok: false, reason: 'checks-pending', checks, pending }
-  const failing = checks.filter((check) => !PASSING.has(check.conclusion || check.status))
-  if (failing.length) return { ok: false, reason: 'checks-failing', checks, failing }
-  return { ok: true, reason: 'all-reported-checks-passing', checks }
-}
-
 function inspect(repo, issueNumber, profilePath) {
   const issue = json(['api', `repos/${repo}/issues/${issueNumber}`])
   const job = parseMarker(issue.body)
@@ -89,7 +71,7 @@ function inspect(repo, issueNumber, profilePath) {
   if (!pr.headRefOid) throw new Error(`PR #${pr.number} has no head SHA`)
 
   const expected = job.expectedHeadSha || null
-  if (profile.requiresExactHead !== false && expected && expected !== pr.headRefOid) {
+  if (!exactHeadMatches(expected, pr.headRefOid, profile.requiresExactHead !== false)) {
     return {
       ok: false,
       reason: 'head-sha-mismatch',
@@ -103,7 +85,7 @@ function inspect(repo, issueNumber, profilePath) {
     }
   }
 
-  const checkGate = inspectChecks(pr)
+  const checkGate = inspectCheckRollup(pr.statusCheckRollup || [])
   return {
     ok: checkGate.ok,
     reason: checkGate.ok ? 'exact-head-checks-passing' : checkGate.reason,
