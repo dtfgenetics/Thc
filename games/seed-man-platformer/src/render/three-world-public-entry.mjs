@@ -3,7 +3,7 @@ import {
   supportsSeedManWebGL
 } from './three-world.mjs';
 
-const API_VERSION = 'seed-man-three-public-v1';
+const API_VERSION = 'seed-man-three-public-v2';
 
 function createRenderer(options) {
   return createThreeWorldRenderer(options);
