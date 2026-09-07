@@ -1,6 +1,12 @@
 import { createWeaponShot, getWeapon } from './weapons.mjs';
 import { getPhenotype, phenotypeProjectile } from './phenotypes.mjs';
-import { acquirePhenotype, collectResource, normalizeProgressionState } from './player-progression.mjs';
+import {
+  absorbPhenotype,
+  collectResource,
+  getEffectivePhenotype,
+  normalizeProgressionState,
+  stepPhenotypeAbsorption
+} from './player-progression.mjs';
 
 export const COMBAT_DEFAULTS = Object.freeze({
   projectileLifetime: 2.4,
@@ -12,7 +18,8 @@ export const COMBAT_DEFAULTS = Object.freeze({
   burnTickInterval: 0.6,
   pushVelocity: 150,
   liftVelocity: -170,
-  chainRadius: 130
+  chainRadius: 130,
+  phenotypeAbsorbDuration: 30
 });
 
 export function createEnemy(definition = {}) {
@@ -75,12 +82,7 @@ function distanceBetweenEnemies(a, b) {
 
 function projectileRect(projectile) {
   const size = projectile.radius ? projectile.radius * 2 : 10;
-  return {
-    x: projectile.x - size / 2,
-    y: projectile.y - size / 2,
-    width: size,
-    height: size
-  };
+  return { x: projectile.x - size / 2, y: projectile.y - size / 2, width: size, height: size };
 }
 
 function applyDamage(enemy, amount, state, source) {
@@ -95,8 +97,13 @@ function applyDamage(enemy, amount, state, source) {
     enemy.defeatTimer = COMBAT_DEFAULTS.defeatDelay;
     state.events.push({ type: 'enemy-defeated', enemyId: enemy.id, source });
     if (enemy.phenotypeReward && getPhenotype(enemy.phenotypeReward)) {
-      state.progression = acquirePhenotype(state.progression, enemy.phenotypeReward);
-      state.events.push({ type: 'phenotype-acquired', enemyId: enemy.id, phenotypeId: enemy.phenotypeReward });
+      state.progression = absorbPhenotype(state.progression, enemy.phenotypeReward, COMBAT_DEFAULTS.phenotypeAbsorbDuration);
+      state.events.push({
+        type: 'phenotype-absorbed',
+        enemyId: enemy.id,
+        phenotypeId: enemy.phenotypeReward,
+        duration: COMBAT_DEFAULTS.phenotypeAbsorbDuration
+      });
     }
     for (const [resource, quantity] of Object.entries(enemy.drops || {})) {
       try {
@@ -171,7 +178,7 @@ export function fireEquippedWeapon(inputState, { x = 0, y = 0, facing = 1 } = {}
   const cooldown = Math.max(0, Number(state.cooldowns[weaponId]) || 0);
   if (cooldown > 0) return state;
 
-  const baseShot = createWeaponShot(weaponId, { x, y, facing, phenotype: state.progression.activePhenotype });
+  const baseShot = createWeaponShot(weaponId, { x, y, facing, phenotype: getEffectivePhenotype(state.progression) });
   const pelletCount = Math.max(1, baseShot.pellets || 1);
   for (let index = 0; index < pelletCount; index += 1) {
     const spread = pelletCount === 1 ? 0 : (index - (pelletCount - 1) / 2) * 75;
@@ -183,12 +190,12 @@ export function fireEquippedWeapon(inputState, { x = 0, y = 0, facing = 1 } = {}
 
 export function fireActivePhenotype(inputState, { x = 0, y = 0, facing = 1 } = {}) {
   const state = cloneCombatState(inputState);
-  const phenotypeId = state.progression.activePhenotype;
+  const phenotypeId = getEffectivePhenotype(state.progression);
   const shot = phenotypeProjectile(phenotypeId, facing);
   if (!shot) return state;
   const cooldownKey = `phenotype:${phenotypeId}`;
   if ((state.cooldowns[cooldownKey] || 0) > 0) return state;
-  spawnProjectile(state, shot, { x, y }, { source: 'phenotype' });
+  spawnProjectile(state, shot, { x, y }, { source: state.progression.absorbedPhenotype ? 'absorbed-phenotype' : 'phenotype' });
   state.cooldowns[cooldownKey] = 0.55;
   return state;
 }
@@ -220,6 +227,11 @@ function tickEnemyStatuses(enemy, dt, state) {
 export function stepCombat(inputState, dt) {
   const state = cloneCombatState(inputState);
   const step = Math.min(Math.max(Number(dt) || 0, 0), 0.05);
+  const beforeAbsorbed = state.progression.absorbedPhenotype;
+  state.progression = stepPhenotypeAbsorption(state.progression, step);
+  if (beforeAbsorbed && !state.progression.absorbedPhenotype) {
+    state.events.push({ type: 'phenotype-expired', phenotypeId: beforeAbsorbed });
+  }
   for (const key of Object.keys(state.cooldowns)) state.cooldowns[key] = Math.max(0, state.cooldowns[key] - step);
   for (const enemy of state.enemies) tickEnemyStatuses(enemy, step, state);
 
@@ -252,6 +264,9 @@ export function combatSnapshot(state) {
     projectiles: state.projectiles.length,
     equippedWeapon: state.progression.equippedWeapon,
     activePhenotype: state.progression.activePhenotype,
+    absorbedPhenotype: state.progression.absorbedPhenotype,
+    absorbedPhenotypeRemaining: state.progression.absorbedPhenotypeRemaining,
+    effectivePhenotype: getEffectivePhenotype(state.progression),
     resources: { ...state.progression.resources }
   };
 }
