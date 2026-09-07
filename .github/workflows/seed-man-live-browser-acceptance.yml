@@ -48,18 +48,22 @@ jobs:
 
           const browser = await chromium.launch({ headless: true });
           try {
-            for (const viewport of [
-              { name: 'desktop', width: 1280, height: 900 },
-              { name: 'mobile', width: 390, height: 844 }
+            for (const target of [
+              { name: 'desktop', viewport: { width: 1280, height: 900 }, deviceScaleFactor: 2, maxPixelRatio: 1.25 },
+              { name: 'mobile', viewport: { width: 390, height: 844 }, deviceScaleFactor: 3, maxPixelRatio: 1 }
             ]) {
-              const page = await browser.newPage({ viewport });
+              const page = await browser.newPage({
+                viewport: target.viewport,
+                deviceScaleFactor: target.deviceScaleFactor,
+                hasTouch: target.name === 'mobile'
+              });
               const errors = [];
               page.on('pageerror', (error) => errors.push(error.message));
               page.on('console', (message) => {
                 if (message.type() === 'error') errors.push(message.text());
               });
 
-              const url = `${process.env.SPROUT_GAME_URL}?renderer_acceptance=${Date.now()}-${viewport.name}`;
+              const url = `${process.env.SPROUT_GAME_URL}?renderer_acceptance=${Date.now()}-${target.name}`;
               await page.goto(url, { waitUntil: 'domcontentloaded' });
               await page.locator('#game').waitFor({ state: 'visible' });
               await page.waitForFunction(() => document.documentElement.dataset.seedThreeWorld === 'active', null, { timeout: 15000 });
@@ -68,26 +72,31 @@ jobs:
               const runtime = await page.evaluate(() => ({
                 documentState: document.documentElement.dataset.seedThreeWorld || null,
                 rendererState: document.documentElement.dataset.seedThreeRenderer || null,
+                pixelRatioState: Number(document.documentElement.dataset.seedThreePixelRatio || 0),
                 shellState: document.querySelector('.game-shell')?.dataset.threeWorld || null,
                 canvasCount: document.querySelectorAll('[data-seed-three-canvas]').length,
                 adapter: window.__SPROUT_THREE_ADAPTER__?.snapshot?.() || null,
                 adapterVersion: window.__SPROUT_THREE_ADAPTER__?.version || null,
-                apiVersion: window.SeedManThreeWorld?.version || null
+                apiVersion: window.SeedManThreeWorld?.version || null,
+                devicePixelRatio: window.devicePixelRatio
               }));
 
-              assert.equal(runtime.documentState, 'active', `${viewport.name}: Three.js runtime must own the live world.`);
-              assert.equal(runtime.rendererState, 'seed-man-three-world-v2', `${viewport.name}: live document must report the v2 greenhouse renderer.`);
-              assert.equal(runtime.shellState, 'seed-man-three-adapter-v2', `${viewport.name}: game shell must report the optimized Three.js adapter.`);
-              assert.equal(runtime.adapterVersion, 'seed-man-three-adapter-v2', `${viewport.name}: unexpected Three.js adapter version.`);
-              assert.equal(runtime.canvasCount, 1, `${viewport.name}: exactly one dedicated Three.js canvas must be mounted.`);
-              assert.ok(runtime.adapter, `${viewport.name}: Three.js adapter snapshot must be available.`);
-              assert.equal(runtime.adapter.webgl, true, `${viewport.name}: adapter must be running with WebGL.`);
-              assert.equal(runtime.adapter.rendererVersion, 'seed-man-three-world-v2', `${viewport.name}: v2 greenhouse renderer must be active.`);
-              assert.equal(runtime.adapter.worldVersion, 'seed-man-three-public-v1', `${viewport.name}: unexpected Three.js world API version.`);
-              assert.equal(runtime.apiVersion, 'seed-man-three-public-v1', `${viewport.name}: public Three.js API must be active.`);
-              assert.ok(runtime.adapter.mountedLevelId, `${viewport.name}: renderer must mount the active gameplay level.`);
-              assert.ok(runtime.adapter.width > 0 && runtime.adapter.height > 0, `${viewport.name}: renderer must have a real display size.`);
-              assert.equal(errors.length, 0, `${viewport.name}: browser errors while activating Three.js: ${errors.join(' | ')}`);
+              assert.equal(runtime.documentState, 'active', `${target.name}: Three.js runtime must own the live world.`);
+              assert.equal(runtime.rendererState, 'seed-man-three-world-v2', `${target.name}: live document must report the v2 greenhouse renderer.`);
+              assert.equal(runtime.shellState, 'seed-man-three-adapter-v2', `${target.name}: game shell must report the optimized Three.js adapter.`);
+              assert.equal(runtime.adapterVersion, 'seed-man-three-adapter-v2', `${target.name}: unexpected Three.js adapter version.`);
+              assert.equal(runtime.canvasCount, 1, `${target.name}: exactly one dedicated Three.js canvas must be mounted.`);
+              assert.ok(runtime.adapter, `${target.name}: Three.js adapter snapshot must be available.`);
+              assert.equal(runtime.adapter.webgl, true, `${target.name}: adapter must be running with WebGL.`);
+              assert.equal(runtime.adapter.rendererVersion, 'seed-man-three-world-v2', `${target.name}: v2 greenhouse renderer must be active.`);
+              assert.equal(runtime.adapter.worldVersion, 'seed-man-three-public-v1', `${target.name}: unexpected Three.js world API version.`);
+              assert.equal(runtime.apiVersion, 'seed-man-three-public-v1', `${target.name}: public Three.js API must be active.`);
+              assert.ok(runtime.adapter.mountedLevelId, `${target.name}: renderer must mount the active gameplay level.`);
+              assert.ok(runtime.adapter.width > 0 && runtime.adapter.height > 0, `${target.name}: renderer must have a real display size.`);
+              assert.ok(runtime.adapter.pixelRatio > 0 && runtime.adapter.pixelRatio <= target.maxPixelRatio, `${target.name}: Three.js DPR ${runtime.adapter.pixelRatio} exceeds ${target.maxPixelRatio}.`);
+              assert.equal(runtime.pixelRatioState, runtime.adapter.pixelRatio, `${target.name}: document DPR marker must match adapter runtime.`);
+              assert.ok(runtime.devicePixelRatio >= target.maxPixelRatio, `${target.name}: test must emulate a genuinely high-DPI device.`);
+              assert.equal(errors.length, 0, `${target.name}: browser errors while activating Three.js: ${errors.join(' | ')}`);
               await page.close();
             }
           } finally {
