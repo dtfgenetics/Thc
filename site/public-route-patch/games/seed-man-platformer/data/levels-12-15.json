@@ -4,7 +4,7 @@
   "campaignId": "sprout-run-campaign",
   "levels": [
     {
-      "id": "chromosome-crossing",
+      "id":"chromosome-crossing",
       "name": "Chromosome Crossing",
       "levelNumber": 12,
       "theme": "chromosome",
@@ -24,7 +24,7 @@
       "feature": {"type":"chromosome-switch","period":3.6,"label":"Chromosome Switch"}
     },
     {
-      "id": "mutation-marsh",
+      "id":"mutation-marsh",
       "name": "Mutation Marsh",
       "levelNumber": 13,
       "theme": "mutation-marsh",
@@ -45,7 +45,7 @@
       "boss": {"id":"voltage-wasp-alpha","name":"Voltage Wasp Alpha","style":"hornet","requiredHits":5,"width":112,"height":82,"bounce":720,"accent":"#8de7ff","ability":"storm-dive","abilityPeriod":2.15}
     },
     {
-      "id": "allele-array",
+      "id":"allele-array",
       "name": "Allele Array",
       "levelNumber": 14,
       "theme": "allele-array",
@@ -65,7 +65,7 @@
       "feature": {"type":"allele-polarity","period":3.4,"label":"Allele Polarity"}
     },
     {
-      "id": "genome-spire",
+      "id":"genome-spire",
       "name": "Genome Spire",
       "levelNumber": 15,
       "theme": "genome-spire",
