@@ -101,26 +101,48 @@ try {
 
   await page.evaluate(() => reset());
   await page.waitForTimeout(50);
-  await page.evaluate(() => {
+  const padState = await page.evaluate(() => {
+    paused = true;
     const pad = window.__SPROUT_GAMEPLAY_V2__.snapshot().bouncePads[0];
-    player.x = pad.x + pad.width / 2 - player.width / 2;
-    player.y = pad.y - player.height - 16;
-    player.vx = 0;
-    player.vy = 300;
-    player.grounded = false;
+    let probe = {
+      ...player,
+      x: pad.x + pad.width / 2 - player.width / 2,
+      y: pad.y - player.height - 16,
+      vx: 0,
+      vy: 300,
+      grounded: false,
+      power: { ...player.power },
+      collected: [...player.collected],
+      collectedPowerups: [...player.collectedPowerups]
+    };
+    const bouncesBefore = window.__SPROUT_GAMEPLAY_V2__.snapshot().stats.padBounces;
+    let bounceVy = null;
+    let frames = 0;
+    for (; frames < 20; frames += 1) {
+      probe = stepPlayer(probe, { left: false, right: false, jumpPressed: false, jumpHeld: false }, level, 1 / 60);
+      const stats = window.__SPROUT_GAMEPLAY_V2__.snapshot().stats;
+      if (stats.padBounces > bouncesBefore) {
+        bounceVy = probe.vy;
+        break;
+      }
+    }
+    player = probe;
+    paused = false;
+    const snapshot = window.__SPROUT_GAMEPLAY_V2__.snapshot();
+    return {
+      vy: bounceVy,
+      frames,
+      padBounces: snapshot.stats.padBounces,
+      particles: snapshot.particles
+    };
   });
-  await page.waitForFunction(() => window.__SPROUT_GAMEPLAY_V2__.snapshot().stats.padBounces >= 1);
-  const padState = await page.evaluate(() => ({
-    vy: player.vy,
-    padBounces: window.__SPROUT_GAMEPLAY_V2__.snapshot().stats.padBounces,
-    particles: window.__SPROUT_GAMEPLAY_V2__.snapshot().particles
-  }));
   assert.ok(padState.padBounces >= 1, 'Boost pad did not trigger.');
-  assert.ok(padState.vy < -300, `Boost pad should launch Seed Man upward, got vy=${padState.vy}`);
+  assert.ok(padState.frames < 20, `Boost pad did not resolve within the deterministic collision window (${padState.frames} frames).`);
+  assert.ok(padState.vy <= -780, `Boost pad should apply its upward launch impulse immediately, got vy=${padState.vy}`);
   assert.ok(padState.particles > 0, 'Boost pad should emit visual feedback particles.');
 
   assert.equal(errors.length, 0, `Gameplay-v2 browser errors: ${errors.join(' | ')}`);
-  console.log(JSON.stringify({ ok: true, mode: isLive ? 'live-production' : 'local-public-route', version: contract.version, movingPlatforms: contract.snapshot.movingPlatforms.length, pests: contract.snapshot.pests.length, bouncePads: contract.snapshot.bouncePads.length, stomp: true, stompBounceVy: stompState.vy, boostPad: true, particles: true }, null, 2));
+  console.log(JSON.stringify({ ok: true, mode: isLive ? 'live-production' : 'local-public-route', version: contract.version, movingPlatforms: contract.snapshot.movingPlatforms.length, pests: contract.snapshot.pests.length, bouncePads: contract.snapshot.bouncePads.length, stomp: true, stompBounceVy: stompState.vy, boostPad: true, boostPadVy: padState.vy, particles: true }, null, 2));
 } finally {
   if (browser) await browser.close();
   if (server) server.kill('SIGTERM');
