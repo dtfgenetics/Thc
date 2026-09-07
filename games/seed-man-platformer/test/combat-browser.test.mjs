@@ -43,6 +43,8 @@ async function fireAt(page, enemyId, hits) {
       player.vx = 30;
       player.vy = 0;
       player.grounded = true;
+      player.power = player.power || {};
+      player.power.invulnerableTimer = Math.max(Number(player.power.invulnerableTimer) || 0, 3);
     }, enemyId);
 
     await page.keyboard.press('j');
