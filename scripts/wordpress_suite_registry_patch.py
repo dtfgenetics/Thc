@@ -8,9 +8,11 @@ base hash passes. It performs narrow post-hash operations:
    when Hostinger/WordPress temporarily loses visibility of its option-backed
    deployment lock between requests;
 2. derive exact local static game routes from the canonical public-app registry;
-3. derive exact external static game routes from reviewed release contracts; and
+3. derive exact external static game routes from reviewed release contracts;
 4. allow one isolated Dtf420 staging namespace (`dtf-content-overlay`) that can
-   never directly claim `/learn`, `/community`, `/games`, or the site root.
+   never directly claim `/learn`, `/community`, `/games`, or the site root; and
+5. allow the reviewed Atlas runtime/artwork support trees shipped by the public
+   suite without granting broad `/learn` ownership.
 
 No wildcard games/ or learn/ ownership is permitted, and lock recovery is
 forbidden after live-target mutation has begun or when a different deployment
@@ -27,6 +29,8 @@ SAFE_TARGET = re.compile(r"^games/[a-z0-9][a-z0-9-]*$")
 OVERLAY_TARGET = "dtf-content-overlay"
 OVERLAY_REQUIRED = "dtf-content-overlay/overlay-manifest.json"
 OVERLAY_PREFIX = "dtf-content-overlay/"
+ATLAS_TARGETS = ("atlas", "assets/images/atlas")
+ATLAS_PREFIXES = ("atlas/", "assets/images/atlas/")
 
 
 def _replace_once(payload: bytes, old: bytes, new: bytes, label: str) -> bytes:
@@ -152,6 +156,33 @@ def _apply_overlay_staging_scope(payload: bytes) -> bytes:
     return payload
 
 
+def _apply_atlas_support_scope(payload: bytes) -> bytes:
+    """Permit only the Atlas runtime and Atlas artwork support trees."""
+    targets = _array_values(payload, b"targets")
+    missing_targets = [target for target in ATLAS_TARGETS if target not in targets]
+    if missing_targets:
+        insertion = "        " + ",".join(repr(target) for target in missing_targets) + ",\n"
+        payload = _replace_once(
+            payload,
+            b"        'growlens','thc-grow-doc','tools','projects','puzzles'\n",
+            insertion.encode() + b"        'growlens','thc-grow-doc','tools','projects','puzzles'\n",
+            "Atlas support target tail",
+        )
+
+    prefixes = _array_values(payload, b"prefixes")
+    missing_prefixes = [prefix for prefix in ATLAS_PREFIXES if prefix not in prefixes]
+    if missing_prefixes:
+        insertion = ",".join(repr(prefix) for prefix in missing_prefixes) + ","
+        payload = _replace_once(
+            payload,
+            b"'growlens/','thc-grow-doc/','tools/','projects/','puzzles/'",
+            insertion.encode() + b"'growlens/','thc-grow-doc/','tools/','projects/','puzzles/'",
+            "Atlas support prefix tail",
+        )
+
+    return payload
+
+
 def registered_local_static_games(repo_root: pathlib.Path) -> list[str]:
     registry_path = repo_root / "site" / "deployment" / "public-apps.json"
     registry = json.loads(registry_path.read_text())
@@ -262,6 +293,8 @@ def patch_payload(payload: bytes, repo_root: pathlib.Path) -> bytes:
             "registry prefix tail",
         )
 
+    payload = _apply_atlas_support_scope(payload)
+
     targets = _array_values(payload, b"targets")
     required = _array_values(payload, b"required")
     prefixes = _array_values(payload, b"prefixes")
@@ -275,6 +308,12 @@ def patch_payload(payload: bytes, repo_root: pathlib.Path) -> bytes:
 
     if OVERLAY_TARGET not in targets or OVERLAY_REQUIRED not in required or OVERLAY_PREFIX not in prefixes:
         raise SystemExit("isolated Dtf420 overlay staging scope is missing from bridge")
+    for target in ATLAS_TARGETS:
+        if target not in targets:
+            raise SystemExit(f"Atlas support target missing from bridge: {target}")
+    for prefix in ATLAS_PREFIXES:
+        if prefix not in prefixes:
+            raise SystemExit(f"Atlas support prefix missing from bridge: {prefix}")
     if "games/" in prefixes or "learn/" in prefixes:
         raise SystemExit("unsafe broad game/learn prefix is forbidden")
     for forbidden in ("index.html", "learn", "blog", "community", "games"):
@@ -304,6 +343,9 @@ def validate_payload(payload: bytes, repo_root: pathlib.Path) -> dict[str, objec
     ):
         if value not in collection:
             missing.append(value)
+    for value, collection in tuple((target, targets) for target in ATLAS_TARGETS) + tuple((prefix, prefixes) for prefix in ATLAS_PREFIXES):
+        if value not in collection:
+            missing.append(value)
     if missing:
         raise SystemExit("bridge/registry parity failure: " + ", ".join(missing))
     if "games/" in prefixes or "learn/" in prefixes:
@@ -323,6 +365,7 @@ def validate_payload(payload: bytes, repo_root: pathlib.Path) -> dict[str, objec
         "ok": True,
         "lockRecovery": True,
         "dtf420OverlayStaging": True,
+        "atlasSupportScope": True,
         "registeredLocalStaticGames": local_targets,
         "registeredExternalStaticGames": external_targets,
         "targets": len(targets),
