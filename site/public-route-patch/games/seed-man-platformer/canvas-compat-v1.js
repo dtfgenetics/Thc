@@ -8,6 +8,7 @@
 (() => {
   const VERSION = 'sprout-canvas-compat-v1';
   const RELEASE = '20260830-r8';
+  const PHENOTYPE_MOBILITY_FRAME_REPAIR = 'seed-man-phenotype-mobility-frame-v1';
   const proto = window.HTMLCanvasElement?.prototype;
   const nativeGetContext = proto?.getContext;
   if (!proto || typeof nativeGetContext !== 'function') return;
@@ -17,6 +18,7 @@
   let lost = 0;
   let combatLoadAttempts = 0;
   let combatLoaded = false;
+  let mobilityFrameRepairInstalled = false;
 
   function patchedGetContext(type, attributes) {
     if (this.id !== 'game' || type !== '2d') {
@@ -87,8 +89,45 @@
     }
   }
 
+  function installPhenotypeMobilityFrameRepair() {
+    if (mobilityFrameRepairInstalled) return true;
+    if (typeof stepPlayer !== 'function' || window.__SPROUT_COMBAT_BROWSER__?.installed !== true) return false;
+
+    const baseCombatStep = stepPlayer;
+    stepPlayer = function sproutPhenotypeMobilityFrameStep(inputPlayer, inputState, levelData, dt, config) {
+      const next = baseCombatStep(inputPlayer, inputState, levelData, dt, config);
+      if (!next || next.finished) return next;
+
+      const combat = window.__SPROUT_COMBAT_BROWSER__?.snapshot?.();
+      if (!combat || Number(combat.specialTimer) <= 0 || !combat.activePhenotype) return next;
+
+      const step = Math.max(0, Math.min(Number(dt) || 0, 0.05));
+      if (combat.activePhenotype === 'terpene-tempest') {
+        const wantsLift = Boolean(inputState?.jumpHeld || inputState?.jumpPressed);
+        if (wantsLift) next.vy = Math.max(-360, (Number(next.vy) || 0) - 930 * step);
+        else next.vy = Math.min(95, (Number(next.vy) || 0) * 0.7);
+        next.grounded = false;
+        next.state = wantsLift ? 'phenotype-flight' : 'phenotype-glide';
+      } else if (combat.activePhenotype === 'hydro-surge') {
+        next.vy = Math.min(120, (Number(next.vy) || 0) * 0.82);
+        next.power = next.power || {};
+        if (Number(combat.bubbleHits) > 0) {
+          next.power.invulnerableTimer = Math.max(Number(next.power.invulnerableTimer) || 0, 0.12);
+        }
+        if (!next.grounded) next.state = 'phenotype-bubble';
+      }
+      return next;
+    };
+
+    mobilityFrameRepairInstalled = true;
+    return true;
+  }
+
   function loadCombatBrowserAdapter() {
-    if (combatLoaded || window.__SPROUT_COMBAT_BROWSER__?.installed === true) return;
+    if (combatLoaded || window.__SPROUT_COMBAT_BROWSER__?.installed === true) {
+      installPhenotypeMobilityFrameRepair();
+      return;
+    }
     if (!gameplayBindingsReady()) {
       combatLoadAttempts += 1;
       if (combatLoadAttempts <= 80) {
@@ -108,6 +147,7 @@
     script.addEventListener('load', () => {
       combatLoaded = window.__SPROUT_COMBAT_BROWSER__?.installed === true;
       if (!combatLoaded) console.error('Seed Man combat browser adapter loaded without installing runtime hooks.');
+      else if (!installPhenotypeMobilityFrameRepair()) console.error('Seed Man phenotype mobility frame repair did not install.');
     }, { once: true });
     script.addEventListener('error', () => console.error('Seed Man combat browser adapter failed to load.'), { once: true });
     document.body.append(script);
@@ -155,12 +195,14 @@
   window.__SPROUT_CANVAS_COMPAT__ = Object.freeze({
     version: VERSION,
     release: RELEASE,
+    phenotypeMobilityFrameRepair: PHENOTYPE_MOBILITY_FRAME_REPAIR,
     softwarePreferred: true,
     campaignTitleBranding: true,
     levelOneSummaryCompatibility: true,
     combatBrowserAutoLoad: true,
     get combatLoadAttempts() { return combatLoadAttempts; },
     get combatLoaded() { return combatLoaded; },
+    get mobilityFrameRepairInstalled() { return mobilityFrameRepairInstalled; },
     get contextLostCount() { return lost; },
     get contextRestoredCount() { return restored; },
   });
