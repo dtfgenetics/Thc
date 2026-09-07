@@ -17,25 +17,38 @@ async function waitForServer() {
     } catch {}
     await sleep(200);
   }
-  throw new Error('Seed Man UI v3 test server did not start.');
+  throw new Error('Seed Man UI/visual test server did not start.');
 }
 
-async function assertLevel(page, id, worldTitle, order) {
+async function assertLevel(page, id, worldTitle, order, theme) {
   await page.evaluate((levelId) => window.__SPROUT_CAMPAIGN_EXPERIENCE__.selectLevel(levelId), id);
   await page.waitForFunction((levelId) => document.querySelector('.game-shell')?.dataset.levelId === levelId, id);
+  await page.waitForFunction((expectedTheme) => document.querySelector('.game-shell')?.dataset.worldTheme === expectedTheme, theme);
   const state = await page.evaluate(() => ({
     ui: window.__SPROUT_UI_V3__?.version,
+    visual: window.__SPROUT_VISUAL_V4__?.version,
     htmlUi: document.documentElement.dataset.seedManUi,
+    htmlVisual: document.documentElement.dataset.seedManVisual,
+    htmlWorld: document.documentElement.dataset.seedManWorld,
     world: document.querySelector('.game-shell')?.dataset.worldLabel,
+    theme: document.querySelector('.game-shell')?.dataset.worldTheme,
+    visualReady: document.querySelector('.game-shell')?.dataset.visualV4,
     order: document.querySelector('.game-shell')?.dataset.levelOrder,
     context: document.querySelector('.seed-run-context')?.innerText || '',
     stage: document.querySelector('#course-stage')?.innerText || '',
-    aria: document.querySelector('.course-status')?.getAttribute('aria-label') || ''
+    aria: document.querySelector('.course-status')?.getAttribute('aria-label') || '',
+    worldAccent: getComputedStyle(document.querySelector('.game-shell')).getPropertyValue('--world-accent').trim()
   }));
   assert.equal(state.ui, 'seed-man-ui-v3');
+  assert.equal(state.visual, 'seed-man-visual-v4');
   assert.equal(state.htmlUi, 'seed-man-ui-v3');
+  assert.equal(state.htmlVisual, 'seed-man-visual-v4');
+  assert.equal(state.htmlWorld, theme);
+  assert.equal(state.visualReady, 'ready');
   assert.equal(state.world, worldTitle);
+  assert.equal(state.theme, theme);
   assert.equal(state.order, String(order));
+  assert.ok(state.worldAccent, 'world accent should be populated');
   assert.match(state.context, new RegExp(worldTitle, 'i'));
   assert.match(state.context, new RegExp(`LEVEL ${order} / 15`, 'i'));
   assert.ok(/Opening Route|Mid Route|Final Run/.test(state.stage));
@@ -50,23 +63,28 @@ try {
   const desktop = await browser.newPage({ viewport: { width: 1280, height: 900 } });
   await desktop.goto(URL, { waitUntil: 'networkidle' });
   await desktop.waitForFunction(() => window.__SPROUT_UI_V3__?.version === 'seed-man-ui-v3');
-  await assertLevel(desktop, 'sprout-run', 'Greenhouse District', 1);
-  await assertLevel(desktop, 'root-zone-rumble', 'Rootworks', 4);
-  await assertLevel(desktop, 'frostline-canopy', 'Sky Garden', 10);
-  await assertLevel(desktop, 'genome-spire', 'Genetic Frontier', 15);
+  await desktop.waitForFunction(() => window.__SPROUT_VISUAL_V4__?.version === 'seed-man-visual-v4');
+  await assertLevel(desktop, 'sprout-run', 'Greenhouse District', 1, 'greenhouse');
+  await assertLevel(desktop, 'root-zone-rumble', 'Rootworks', 4, 'rootworks');
+  await assertLevel(desktop, 'frostline-canopy', 'Sky Garden', 10, 'sky');
+  await assertLevel(desktop, 'genome-spire', 'Genetic Frontier', 15, 'genetic');
   await desktop.close();
 
   const mobile = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
   await mobile.goto(URL, { waitUntil: 'networkidle' });
-  await mobile.waitForFunction(() => window.__SPROUT_UI_V3__?.version === 'seed-man-ui-v3');
-  await assertLevel(mobile, 'mutation-marsh', 'Genetic Frontier', 13);
-  const overflow = await mobile.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
-  assert.ok(overflow <= 1, `Seed Man UI v3 caused ${overflow}px horizontal mobile overflow`);
-  const contextHeight = await mobile.locator('.seed-run-context').evaluate((node) => node.getBoundingClientRect().height);
-  assert.ok(contextHeight >= 44, `campaign context should remain readable on touch screens, got ${contextHeight}px`);
+  await mobile.waitForFunction(() => window.__SPROUT_VISUAL_V4__?.version === 'seed-man-visual-v4');
+  await assertLevel(mobile, 'mutation-marsh', 'Genetic Frontier', 13, 'genetic');
+  const mobileMetrics = await mobile.evaluate(() => ({
+    overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    contextHeight: document.querySelector('.seed-run-context')?.getBoundingClientRect().height || 0,
+    touchMinHeight: Math.min(...[...document.querySelectorAll('.touch-controls button')].map((node) => node.getBoundingClientRect().height))
+  }));
+  assert.ok(mobileMetrics.overflow <= 1, `Seed Man visual v4 caused ${mobileMetrics.overflow}px horizontal mobile overflow`);
+  assert.ok(mobileMetrics.contextHeight >= 44, `campaign context should remain readable on touch screens, got ${mobileMetrics.contextHeight}px`);
+  assert.ok(mobileMetrics.touchMinHeight >= 72, `touch controls should remain game-sized, got ${mobileMetrics.touchMinHeight}px`);
   await mobile.close();
 
-  console.log(JSON.stringify({ ok: true, uiVersion: 'seed-man-ui-v3', campaignAware: true, mobileVerified: true }, null, 2));
+  console.log(JSON.stringify({ ok: true, uiVersion: 'seed-man-ui-v3', visualVersion: 'seed-man-visual-v4', campaignAware: true, themedWorlds: true, mobileVerified: true }, null, 2));
 } finally {
   if (browser) await browser.close();
   if (server) server.kill('SIGTERM');

@@ -15,23 +15,9 @@ const enemyAttackModulePath = 'site/public-route-patch/games/seed-man-platformer
 const worldFivePath = 'site/public-route-patch/games/seed-man-platformer/world-five-v1.js';
 const campaignUiPath = 'site/public-route-patch/games/seed-man-platformer/campaign-ui-v15.js';
 const uiV3Path = 'site/public-route-patch/games/seed-man-platformer/seed-man-ui-v3.js';
+const visualV4Path = 'site/public-route-patch/games/seed-man-platformer/seed-man-visual-v4.js';
 
-for (const file of [
-  publisherPath,
-  canonicalEnemyAttackModulePath,
-  canonicalCampaignPath,
-  canonicalWorldFivePackPath,
-  publicCampaignPath,
-  publicWorldFivePackPath,
-  indexPath,
-  combatPath,
-  compatPath,
-  enemyAttackBrowserPath,
-  enemyAttackModulePath,
-  worldFivePath,
-  campaignUiPath,
-  uiV3Path
-]) {
+for (const file of [publisherPath, canonicalEnemyAttackModulePath, canonicalCampaignPath, canonicalWorldFivePackPath, publicCampaignPath, publicWorldFivePackPath, indexPath, combatPath, compatPath, enemyAttackBrowserPath, enemyAttackModulePath, worldFivePath, campaignUiPath, uiV3Path, visualV4Path]) {
   if (!fs.existsSync(file)) throw new Error(`Missing Seed Man release input: ${file}`);
 }
 
@@ -43,12 +29,11 @@ const releaseEntries = [
   "  'world-five-v1.js',",
   "  'campaign-ui-v15.js',",
   "  'seed-man-ui-v3.js',",
+  "  'seed-man-visual-v4.js',",
   "  'data/levels-12-15.json',"
 ];
 const anchor = "  'gameplay-v2.js',\n  'input-guard-v1.js',";
-if (!publisher.includes(anchor) && releaseEntries.some((entry) => !publisher.includes(entry))) {
-  throw new Error('Could not locate Seed Man publisher release-file anchor.');
-}
+if (!publisher.includes(anchor) && releaseEntries.some((entry) => !publisher.includes(entry))) throw new Error('Could not locate Seed Man publisher release-file anchor.');
 if (publisher.includes(anchor)) {
   const missing = releaseEntries.filter((entry) => !publisher.includes(entry));
   if (missing.length) {
@@ -69,6 +54,7 @@ const enemyAttackModule = fs.readFileSync(enemyAttackModulePath, 'utf8');
 const worldFive = fs.readFileSync(worldFivePath, 'utf8');
 const campaignUi = fs.readFileSync(campaignUiPath, 'utf8');
 const uiV3 = fs.readFileSync(uiV3Path, 'utf8');
+const visualV4 = fs.readFileSync(visualV4Path, 'utf8');
 
 if (enemyAttackModule !== canonicalEnemyAttackModule) throw new Error('Browser-safe enemy-attacks.js must exactly mirror the canonical enemy-attacks.mjs source.');
 if (publicCampaign !== canonicalCampaign) throw new Error('Public campaign manifest must exactly mirror canonical Seed Man campaign data.');
@@ -85,58 +71,17 @@ if (!release) throw new Error('Could not resolve Seed Man release marker from in
 const worldFiveScript = `  <script src="./world-five-v1.js?v=${release}" defer></script>`;
 const uiV3Script = `  <script src="./seed-man-ui-v3.js?v=${release}" defer></script>`;
 
-for (const marker of ['seed-man-combat-browser-v1','seed-man-phenotype-absorb-v1','seed-man-phenotype-expansion-v1','combat-static-mite','PHENO ABSORBED','terpene-tempest','hydro-surge','gravity-haze','data-combat']) {
-  if (!combat.includes(marker)) throw new Error(`Missing combat adapter marker: ${marker}`);
-}
-for (const marker of ['combatBrowserAutoLoad: true','combat-browser-v1.js','seed-man-phenotype-mobility-frame-v1','mobilityFrameRepairInstalled','enemyAttackBrowserAutoLoad: true','enemy-attacks-browser-v1.js','campaignUiAutoLoad: true','campaign-ui-v15.js']) {
-  if (!compat.includes(marker)) throw new Error(`Missing combat compatibility marker: ${marker}`);
-}
-for (const marker of ['seed-man-enemy-attacks-browser-v1',"import('./enemy-attacks.js')",'radial-burst','blink-strike','ground-wave','hitsTaken']) {
-  if (!enemyAttackBrowser.includes(marker)) throw new Error(`Missing enemy attack browser marker: ${marker}`);
-}
-for (const marker of ['ATTACK_PATTERNS','stepEnemyAttack','advanceEnemyProjectile','resolveEnemyContact']) {
-  if (!enemyAttackModule.includes(marker)) throw new Error(`Missing enemy attack module marker: ${marker}`);
-}
-for (const marker of ['seed-man-world-five-v1','Genetic Frontier','Chromosome Crossing','Mutation Marsh','Allele Array','Genome Spire','Genome Hydra','levelCount: 15']) {
-  if (!worldFive.includes(marker)) throw new Error(`Missing World 5 browser marker: ${marker}`);
-}
-for (const marker of ['seed-man-campaign-ui-v15','TOTAL_LEVELS = 15','TOTAL_WORLDS = 5','TOTAL_BOSSES = 6','sproutCampaignUi']) {
-  if (!campaignUi.includes(marker)) throw new Error(`Missing 15-level campaign UI marker: ${marker}`);
-}
-for (const marker of ['seed-man-ui-v3','seed-run-context','Opening Route','Mid Route','Final Run','data-ui-v3','sprout:level-selected']) {
-  if (!uiV3.includes(marker)) throw new Error(`Missing Seed Man UI v3 marker: ${marker}`);
-}
-for (const marker of ['seed-man-world-five-combat-v1',"'chromosome-crossing'","'mutation-marsh'","'allele-array'","'genome-spire'",'return ENCOUNTERS[level?.id] || [];']) {
-  if (!combat.includes(marker)) throw new Error(`Missing prepared World 5 combat marker: ${marker}`);
-}
-for (const entry of releaseEntries) {
-  if (!publisher.includes(entry)) throw new Error(`Seed Man publisher allowlist is missing: ${entry}`);
-}
+for (const marker of ['seed-man-combat-browser-v1','seed-man-phenotype-absorb-v1','seed-man-phenotype-expansion-v1','combat-static-mite','PHENO ABSORBED','terpene-tempest','hydro-surge','gravity-haze','data-combat']) if (!combat.includes(marker)) throw new Error(`Missing combat adapter marker: ${marker}`);
+for (const marker of ['combatBrowserAutoLoad: true','combat-browser-v1.js','seed-man-phenotype-mobility-frame-v1','mobilityFrameRepairInstalled','enemyAttackBrowserAutoLoad: true','enemy-attacks-browser-v1.js','campaignUiAutoLoad: true','campaign-ui-v15.js']) if (!compat.includes(marker)) throw new Error(`Missing combat compatibility marker: ${marker}`);
+for (const marker of ['seed-man-enemy-attacks-browser-v1',"import('./enemy-attacks.js')",'radial-burst','blink-strike','ground-wave','hitsTaken']) if (!enemyAttackBrowser.includes(marker)) throw new Error(`Missing enemy attack browser marker: ${marker}`);
+for (const marker of ['ATTACK_PATTERNS','stepEnemyAttack','advanceEnemyProjectile','resolveEnemyContact']) if (!enemyAttackModule.includes(marker)) throw new Error(`Missing enemy attack module marker: ${marker}`);
+for (const marker of ['seed-man-world-five-v1','Genetic Frontier','Chromosome Crossing','Mutation Marsh','Allele Array','Genome Spire','Genome Hydra','levelCount: 15']) if (!worldFive.includes(marker)) throw new Error(`Missing World 5 browser marker: ${marker}`);
+for (const marker of ['seed-man-campaign-ui-v15','TOTAL_LEVELS = 15','TOTAL_WORLDS = 5','TOTAL_BOSSES = 6','sproutCampaignUi']) if (!campaignUi.includes(marker)) throw new Error(`Missing 15-level campaign UI marker: ${marker}`);
+for (const marker of ['seed-man-ui-v3','seed-run-context','Opening Route','Mid Route','Final Run','data-ui-v3','sprout:level-selected','seed-man-visual-v4']) if (!uiV3.includes(marker)) throw new Error(`Missing Seed Man UI v3 marker: ${marker}`);
+for (const marker of ['seed-man-visual-v4','WORLD_THEMES','world-05','data-visual-v4','BOSS ENCOUNTER','data-seed-pheno-active']) if (!visualV4.includes(marker)) throw new Error(`Missing Seed Man visual v4 marker: ${marker}`);
+for (const marker of ['seed-man-world-five-combat-v1',"'chromosome-crossing'","'mutation-marsh'","'allele-array'","'genome-spire'",'return ENCOUNTERS[level?.id] || [];']) if (!combat.includes(marker)) throw new Error(`Missing prepared World 5 combat marker: ${marker}`);
+for (const entry of releaseEntries) if (!publisher.includes(entry)) throw new Error(`Seed Man publisher allowlist is missing: ${entry}`);
 if (!index.includes(worldFiveScript)) throw new Error('Seed Man index is missing the World 5 browser adapter.');
 if (!index.includes(uiV3Script)) throw new Error('Seed Man index is missing the UI v3 adapter.');
 
-console.log(JSON.stringify({
-  ok: true,
-  publisherPatched: true,
-  combatFile: 'combat-browser-v1.js',
-  enemyAttackBrowserFile: 'enemy-attacks-browser-v1.js',
-  enemyAttackModuleFile: 'enemy-attacks.js',
-  canonicalEnemyAttackModuleFile: 'enemy-attacks.mjs',
-  worldFiveFile: 'world-five-v1.js',
-  campaignUiFile: 'campaign-ui-v15.js',
-  uiV3File: 'seed-man-ui-v3.js',
-  worldFivePack: 'data/levels-12-15.json',
-  campaignLevels: 15,
-  campaignWorlds: 5,
-  campaignBosses: 6,
-  phenotypeAbsorption: 'seed-man-phenotype-absorb-v1',
-  phenotypeExpansion: 'seed-man-phenotype-expansion-v1',
-  phenotypeMobilityFrameRepair: 'seed-man-phenotype-mobility-frame-v1',
-  mobilityForms: ['terpene-tempest:flight', 'hydro-surge:bubble', 'gravity-haze:warp'],
-  enemyAttackPatterns: ['aimed-shot', 'burst-shot', 'radial-burst', 'dive-charge', 'ground-wave', 'blink-strike'],
-  worldFiveStages: ['chromosome-crossing', 'mutation-marsh', 'allele-array', 'genome-spire'],
-  worldFiveCombat: 'seed-man-world-five-combat-v1',
-  campaignUi: 'seed-man-campaign-ui-v15',
-  uiV3: 'seed-man-ui-v3',
-  autoload: true
-}, null, 2));
+console.log(JSON.stringify({ ok: true, publisherPatched: true, campaignLevels: 15, campaignWorlds: 5, campaignBosses: 6, phenotypeAbsorption: 'seed-man-phenotype-absorb-v1', phenotypeExpansion: 'seed-man-phenotype-expansion-v1', phenotypeMobilityFrameRepair: 'seed-man-phenotype-mobility-frame-v1', worldFiveCombat: 'seed-man-world-five-combat-v1', campaignUi: 'seed-man-campaign-ui-v15', uiV3: 'seed-man-ui-v3', visualV4: 'seed-man-visual-v4', autoload: true }, null, 2));
