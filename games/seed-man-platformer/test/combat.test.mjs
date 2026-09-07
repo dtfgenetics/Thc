@@ -60,12 +60,21 @@ state = advance(state, 0.2);
 state = fireEquippedWeapon(state, { x: 0, y: 14, facing: 1 });
 state = advance(state, 0.3);
 assert.equal(state.enemies[0].defeated, true, 'Second Seed Slinger hit should defeat a two-health enemy.');
-assert.equal(state.progression.activePhenotype, 'static-haze', 'Defeating an elite should acquire its phenotype reward.');
+assert.equal(state.progression.activePhenotype, null, 'Absorbing an enemy power must not overwrite permanent phenotype selection.');
+assert.equal(state.progression.absorbedPhenotype, 'static-haze', 'Defeating an elite should absorb its phenotype power.');
+assert.ok(state.progression.absorbedPhenotypeRemaining > 29 && state.progression.absorbedPhenotypeRemaining <= 30);
 assert.ok(state.progression.discoveredPhenotypes.includes('static-haze'));
 assert.equal(state.progression.resources.trichomes, 3);
 assert.equal(state.progression.resources['genetic-fragments'], 1);
 
-progression = acquirePhenotype(progression, 'frost-resin');
+state = fireActivePhenotype(state, { x: 0, y: 14, facing: 1 });
+assert.equal(state.projectiles.at(-1)?.phenotypeId, 'static-haze', 'Absorbed phenotype should immediately become the combat ability.');
+
+state = advance(state, 30.5);
+assert.equal(state.progression.absorbedPhenotype, null, 'Absorbed phenotype should expire after 30 seconds.');
+assert.equal(state.progression.absorbedPhenotypeRemaining, 0);
+
+progression = acquirePhenotype(createProgressionState(), 'frost-resin');
 state = createCombatState({
   progression,
   enemies: [createEnemy({ id: 'aphid', x: 80, y: 0, health: 3 })]
@@ -75,7 +84,7 @@ state = advance(state, 0.3);
 assert.ok(state.enemies[0].statuses.freeze > 0, 'Frost Resin should freeze a hit enemy.');
 assert.equal(state.enemies[0].health, 2);
 
-progression = acquirePhenotype(progression, 'solar-flare');
+progression = acquirePhenotype(createProgressionState(), 'solar-flare');
 state = createCombatState({
   progression,
   enemies: [createEnemy({ id: 'burn-target', x: 80, y: 0, health: 5 })]
@@ -84,7 +93,7 @@ state = fireActivePhenotype(state, { x: 0, y: 14, facing: 1 });
 state = advance(state, 1.5);
 assert.ok(state.enemies[0].health <= 2, 'Solar Flare should apply direct plus burn damage over time.');
 
-progression = acquirePhenotype(progression, 'static-haze');
+progression = acquirePhenotype(createProgressionState(), 'static-haze');
 state = createCombatState({
   progression,
   enemies: [
@@ -107,5 +116,6 @@ const snapshot = combatSnapshot(state);
 assert.equal(snapshot.equippedWeapon, 'pollen-blaster');
 assert.equal(snapshot.enemiesAlive, 0);
 assert.equal(snapshot.projectiles, 3);
+assert.equal(snapshot.absorbedPhenotype, null);
 
-console.log('Seed Man combat, enemy archetype, reward, and phenotype acquisition tests passed');
+console.log('Seed Man combat, enemy archetype, timed phenotype absorption, and expiry tests passed');

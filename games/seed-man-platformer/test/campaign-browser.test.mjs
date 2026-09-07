@@ -236,15 +236,20 @@ async function testBossGate(page) {
   assert.equal(boss.requiredHits, 3);
   assert.equal(boss.defeated, false);
 
-  await page.evaluate(() => {
+  const gated = await page.evaluate(() => {
+    const neutral = { left: false, right: false, jumpPressed: false, jumpHeld: false };
     player.collected = level.pickups.map((pickup) => pickup.id);
-    player.x = level.finish.x - player.width;
+    player.x = level.finish.x - player.width + 4;
     player.y = level.finish.y;
     player.vx = 0;
     player.vy = 0;
     player.grounded = false;
+    player = stepPlayer(player, neutral, level, 1 / 60, DEFAULTS);
+    return { state: player.state, finished: player.finished, finishBlocked: player.finishBlocked };
   });
-  await page.waitForFunction(() => player.state === 'boss-gated' && player.finished === false);
+  assert.equal(gated.state, 'boss-gated');
+  assert.equal(gated.finished, false);
+  assert.equal(gated.finishBlocked, true);
   assert.equal(await page.locator('#finish-panel').isVisible(), false, 'boss gate must keep the finish panel hidden');
 
   await prepareBossSimulation(page);
@@ -254,18 +259,23 @@ async function testBossGate(page) {
   assert.equal(boss.hits, 3);
   assert.equal(boss.defeated, true);
 
-  await page.evaluate(() => {
+  const finished = await page.evaluate(() => {
+    const neutral = { left: false, right: false, jumpPressed: false, jumpHeld: false };
     togglePause(false);
     player.collected = level.pickups.map((pickup) => pickup.id);
-    player.x = level.finish.x - player.width;
+    player.x = level.finish.x - player.width + 4;
     player.y = level.finish.y;
     player.vx = 0;
     player.vy = 0;
     player.grounded = false;
+    player = stepPlayer(player, neutral, level, 1 / 60, DEFAULTS);
+    return { state: player.state, finished: player.finished, finishBlocked: player.finishBlocked };
   });
-  await page.locator('#finish-panel').waitFor({ state: 'visible' });
+  assert.equal(finished.finished, true);
+  assert.equal(finished.finishBlocked, false);
+  await page.locator('#finish-panel').waitFor({ state: 'visible', timeout: 5000 });
   assert.match(await page.locator('#finish-summary').innerText(), /Phantom Pump defeated/i);
-  await page.locator('#seed-man-next-level').waitFor({ state: 'visible' });
+  await page.locator('#seed-man-next-level').waitFor({ state: 'visible', timeout: 5000 });
   assert.match(await page.locator('#seed-man-next-level').innerText(), /Root Zone Rumble/i);
 }
 

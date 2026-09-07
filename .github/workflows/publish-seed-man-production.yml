@@ -83,7 +83,8 @@ jobs:
           grep -Fq 'pestDefs' "$root/gameplay-v2.js"
           grep -Fq 'bouncePads' "$root/gameplay-v2.js"
           grep -Fq 'seed-man-combat-browser-v1' "$root/combat-browser-v1.js"
-          grep -Fq 'PHENOTYPE ACQUIRED' "$root/combat-browser-v1.js"
+          grep -Fq 'seed-man-phenotype-absorb-v1' "$root/combat-browser-v1.js"
+          grep -Fq 'PHENO ABSORBED' "$root/combat-browser-v1.js"
           grep -Fq 'combatBrowserAutoLoad: true' "$root/canvas-compat-v1.js"
           grep -Fq 'sprout-campaign-v3' "$root/campaign-v1.js"
           grep -Fq 'seed-man-campaign-experience-v3' "$root/campaign-v1.js"
@@ -195,7 +196,8 @@ jobs:
           grep -Fq 'pestDefs' "$RUNNER_TEMP/gameplay-v2.js"
           grep -Fq 'bouncePads' "$RUNNER_TEMP/gameplay-v2.js"
           grep -Fq 'seed-man-combat-browser-v1' "$RUNNER_TEMP/combat-browser-v1.js"
-          grep -Fq 'PHENOTYPE ACQUIRED' "$RUNNER_TEMP/combat-browser-v1.js"
+          grep -Fq 'seed-man-phenotype-absorb-v1' "$RUNNER_TEMP/combat-browser-v1.js"
+          grep -Fq 'PHENO ABSORBED' "$RUNNER_TEMP/combat-browser-v1.js"
           grep -Fq 'combatBrowserAutoLoad: true' "$RUNNER_TEMP/canvas-compat-v1.js"
           grep -Fq 'sprout-campaign-v3' "$RUNNER_TEMP/campaign-v1.js"
           grep -Fq 'seed-man-campaign-experience-v3' "$RUNNER_TEMP/campaign-v1.js"
@@ -232,8 +234,8 @@ jobs:
             echo "- Source SHA: $GITHUB_SHA"
             echo "- Release: \`$SPROUT_RELEASE\`"
             echo '- Route: https://dtfseeds.com/games/seed-man-platformer/'
-            echo '- Bundle: Greenhouse gameplay-v2 + browser combat-v1 + acquired phenotypes + self-contained 11-level campaign v3 + Seed Man animation-v2'
+            echo '- Bundle: Greenhouse gameplay-v2 + browser combat-v1 + 30-second phenotype absorption + self-contained 11-level campaign v3 + Seed Man animation-v2'
             echo '- Campaign: 11 total levels, 10 new settings, 4 worlds, 4 boss encounters'
             echo '- Publication: atomic replacement with SHA-256 verification'
-            echo '- Live gate: combat-v1, phenotype acquisition, campaign-v3, animation-v2 and boss markers required'
+            echo '- Live gate: combat-v1, timed phenotype absorption, campaign-v3, animation-v2 and boss markers required'
           } >> "$GITHUB_STEP_SUMMARY"
