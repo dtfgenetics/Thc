@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "retirements": [
+    {
+      "branch": "codex/learning-v3-preserve-hierarchy-20260829",
+      "headSha": "dde0cce36a1094da3f331f97716e9a23512a4f68",
+      "supersededBy": "a72477a3b42725d921bfa395e065baf06d6214ff",
+      "status": "approved",
+      "reviewedAt": "2026-09-06",
+      "reason": "Its sole hierarchy-preservation commit is fully present on current main: Learning ownership is scoped by parent namespace/exact route, unsafe Encyclopedia drafts are narrowly recovered only from the known retirement window, the V3 runtime resolves same-slug pages by parent, and Homepage Genetics CI asserts these protections."
+    }
+  ]
+}
