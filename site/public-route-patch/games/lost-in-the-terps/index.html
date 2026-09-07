@@ -14,7 +14,7 @@
     <a href="/games/" class="back">← Game Hub</a>
     <p class="eyebrow">DTF Genetics · Word-search missions</p>
     <h1>Lost in the Terps</h1>
-    <p class="lede">Select the first letter and then the last letter of a hidden word. Words can run forward or backward in any straight direction.</p>
+    <p class="lede">Select the first letter and then the last letter of a hidden word. Words can run forward or backward in any straight direction. Keyboard: use arrow keys to move around the grid, Enter or Space to select a letter, H for a hint, and Escape to clear the current start.</p>
     <div id="missions" class="missions"></div>
     <section class="hud">
       <div><span>Mission</span><strong id="mission-title">—</strong></div>
@@ -23,7 +23,7 @@
     </section>
     <p id="description" class="description"></p>
     <section class="play">
-      <div id="grid" class="grid" aria-label="Word search grid"></div>
+      <div id="grid" class="grid" aria-label="Word search grid. Use arrow keys to move between letters."></div>
       <aside>
         <h2>Find</h2>
         <div id="words" class="words"></div>
@@ -86,5 +86,6 @@
 }
   </script>
   <script src="./app.js" defer></script>
+  <script src="./keyboard-nav-v1.js" defer></script>
 </body>
 </html>
