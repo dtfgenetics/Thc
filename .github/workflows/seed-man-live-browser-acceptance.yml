@@ -11,7 +11,9 @@ on:
       - '.github/workflows/seed-man-live-browser-acceptance.yml'
       - 'games/seed-man-platformer/test/browser-smoke.mjs'
       - 'games/seed-man-platformer/test/gameplay-v2-smoke.mjs'
+      - 'games/seed-man-platformer/test/enemy-attacks-browser.test.mjs'
       - 'games/seed-man-platformer/test/campaign-browser.test.mjs'
+      - 'site/public-route-patch/games/seed-man-platformer/**'
 
 permissions:
   contents: read
@@ -20,7 +22,7 @@ jobs:
   browser-gameplay:
     if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     steps:
       - name: Checkout verified Sprout Run source
         uses: actions/checkout@v4
@@ -43,4 +45,5 @@ jobs:
           sed -i "s/waitUntil: 'networkidle'/waitUntil: 'domcontentloaded'/g" games/seed-man-platformer/test/browser-smoke.mjs
           node games/seed-man-platformer/test/browser-smoke.mjs
           node games/seed-man-platformer/test/gameplay-v2-smoke.mjs
+          node games/seed-man-platformer/test/enemy-attacks-browser.test.mjs
           node games/seed-man-platformer/test/campaign-browser.test.mjs
