@@ -29,8 +29,14 @@ async function combatSnapshot(page) {
 }
 
 async function selectLevel(page, levelId) {
-  await page.evaluate((id) => window.__SPROUT_CAMPAIGN__?.selectLevel?.(id), levelId);
-  await page.waitForFunction((id) => window.__SPROUT_COMBAT_BROWSER__?.snapshot?.().levelId === id, levelId, { timeout: 3000 });
+  await page.evaluate((id) => window.__SPROUT_CAMPAIGN_EXPERIENCE__?.selectLevel?.(id), levelId);
+  await page.waitForFunction((id) => {
+    try {
+      return level?.id === id && window.__SPROUT_COMBAT_BROWSER__?.snapshot?.().levelId === id;
+    } catch {
+      return false;
+    }
+  }, levelId, { timeout: 5000 });
 }
 
 async function defeatEnemy(page, enemyId) {
