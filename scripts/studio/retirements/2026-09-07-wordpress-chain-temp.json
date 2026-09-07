@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "retirements": [
+    {
+      "branch": "codex/finish-wordpress-chain-20260829-tmp",
+      "headSha": "73320bcbd9da7a6493ff032cc9db43f6400df489",
+      "supersededBy": "6ce38d407ca438d5552a51efbc6749fa65fea39b",
+      "status": "approved",
+      "reviewedAt": "2026-09-06",
+      "reason": "Zero unique commits versus current main. Temporary WordPress-chain branch is fully integrated and unowned by any open PR; retire through fail-closed lifecycle checks."
+    }
+  ]
+}
