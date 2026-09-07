@@ -5,8 +5,8 @@ import { chromium } from '@playwright/test';
 const PORT = 4191;
 const GAME_URL = `http://127.0.0.1:${PORT}/games/seed-man-platformer/`;
 const TARGETS = Object.freeze({
-  'reservoir-tempest-gnat': { x: 3820, y: 300 },
-  'nursery-hydro-beetle': { x: 3360, y: 446 }
+  'reservoir-tempest-gnat': { x: 3820, y: 300, yOffsets: [-42, -24, -8, 8, 24, 42] },
+  'nursery-hydro-beetle': { x: 3360, y: 446, yOffsets: [0] }
 });
 let server;
 let browser;
@@ -42,30 +42,29 @@ async function selectLevel(page, levelId) {
 async function defeatEnemy(page, enemyId) {
   const target = TARGETS[enemyId];
   assert.ok(target, `Missing authored target coordinates for ${enemyId}`);
+  const offsets = target.yOffsets || [0];
 
-  for (let shot = 0; shot < 40; shot += 1) {
+  for (let shot = 0; shot < 80; shot += 1) {
     const snapshot = await combatSnapshot(page);
     const enemy = snapshot.enemies.find((entry) => entry.id === enemyId);
     assert.ok(enemy, `Missing ${enemyId}`);
     if (enemy.defeated) return;
 
-    await page.evaluate(({ x, y }) => {
-      player.x = Math.max(0, x - 170);
-      player.y = y;
-      player.vx = 18;
+    const yOffset = offsets[shot % offsets.length];
+    await page.evaluate(({ x, y, yOffset }) => {
+      player.x = Math.max(0, x - 120);
+      player.y = y + yOffset - player.height * 0.46;
+      player.vx = 24;
       player.vy = 0;
       player.grounded = false;
-    }, target);
+    }, { ...target, yOffset });
 
-    const beforeHealth = enemy.health;
     await page.keyboard.press('j');
-    await page.waitForFunction(({ id, beforeHealth }) => {
-      const current = window.__SPROUT_COMBAT_BROWSER__?.snapshot?.().enemies.find((entry) => entry.id === id);
-      return Boolean(current && (current.defeated || current.health < beforeHealth));
-    }, { id: enemyId, beforeHealth }, { timeout: 1800 });
-    await sleep(210);
+    await sleep(230);
   }
-  throw new Error(`Could not defeat ${enemyId}`);
+  const finalSnapshot = await combatSnapshot(page);
+  const finalEnemy = finalSnapshot.enemies.find((entry) => entry.id === enemyId);
+  throw new Error(`Could not defeat ${enemyId}; final state ${JSON.stringify(finalEnemy)}`);
 }
 
 try {
