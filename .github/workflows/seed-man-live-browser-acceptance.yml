@@ -5,15 +5,6 @@ on:
     workflows: ["Seed Man Sprout Run Live Smoke"]
     types: [completed]
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/seed-man-live-browser-acceptance.yml'
-      - 'games/seed-man-platformer/test/browser-smoke.mjs'
-      - 'games/seed-man-platformer/test/gameplay-v2-smoke.mjs'
-      - 'games/seed-man-platformer/test/enemy-attacks-browser.test.mjs'
-      - 'games/seed-man-platformer/test/campaign-browser.test.mjs'
-      - 'site/public-route-patch/games/seed-man-platformer/**'
 
 permissions:
   contents: read
@@ -40,8 +31,8 @@ jobs:
         env:
           SPROUT_GAME_URL: https://dtfseeds.com/games/seed-man-platformer/
         run: |
-          # Live acceptance judges DOM/game readiness rather than network-idle;
-          # game pages may legitimately keep network work open.
+          # Live acceptance runs after the production publisher/smoke path. Do not
+          # trigger it directly from source pushes or it can race the deployment.
           sed -i "s/waitUntil: 'networkidle'/waitUntil: 'domcontentloaded'/g" games/seed-man-platformer/test/browser-smoke.mjs
           node games/seed-man-platformer/test/browser-smoke.mjs
           node games/seed-man-platformer/test/gameplay-v2-smoke.mjs
