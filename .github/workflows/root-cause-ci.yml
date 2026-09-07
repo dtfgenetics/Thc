@@ -15,12 +15,16 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
+
+      - name: Install workspace dependencies
+        run: npm ci
 
       - name: Validate case bank and public copy
         run: node games/root-cause/scripts/validate-data.mjs
@@ -33,6 +37,7 @@ jobs:
           node --check site/public-route-patch/games/root-cause/app.js
           node --check site/public-route-patch/games/root-cause/engine.js
           node --check site/public-route-patch/games/root-cause/engine.mjs
+          node --check games/root-cause/test/browser-smoke.mjs
 
       - name: Verify canonical and public module engine match
         run: cmp games/root-cause/src/engine.mjs site/public-route-patch/games/root-cause/engine.mjs
@@ -65,7 +70,14 @@ jobs:
           requireText(css, '.plant-visual', 'original plant renderer');
           requireText(css, '@media(prefers-reduced-motion:reduce)', 'base reduced motion');
           requireText(visual, 'data-case-status="solved"', 'solved presentation state');
+          requireText(visual, '.control-card:focus-within', 'focused control hierarchy');
           NODE
+
+      - name: Install Chromium for player-facing QA
+        run: npx playwright install --with-deps chromium
+
+      - name: Run desktop mobile keyboard and accessibility smoke
+        run: node games/root-cause/test/browser-smoke.mjs
 
       - name: Verify truthful release boundary
         run: |
@@ -76,7 +88,7 @@ jobs:
           if (game.route !== '/games/root-cause/') throw new Error('unexpected route');
           if (game.releaseGates.rulesTested !== true) throw new Error('rules suite must be recorded as tested');
           if (game.releaseGates.deploymentRegistered !== true) throw new Error('deploymentRegistered must be true after canonical registry reconciliation');
-          if (game.releaseGates.browserTested !== false) throw new Error('browserTested must remain false until browser QA is completed');
-          if (game.releaseGates.mobileTested !== false) throw new Error('mobileTested must remain false until mobile QA is completed');
-          if (game.releaseGates.accessibilityReviewed !== false) throw new Error('accessibilityReviewed must remain false until review is completed');
+          if (game.releaseGates.browserTested !== true) throw new Error('browserTested must be true after Chromium QA');
+          if (game.releaseGates.mobileTested !== true) throw new Error('mobileTested must be true after 390px Chromium QA');
+          if (game.releaseGates.accessibilityReviewed !== true) throw new Error('accessibilityReviewed must be true after keyboard/live-region/accessibility QA');
           NODE
