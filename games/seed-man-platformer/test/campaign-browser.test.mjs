@@ -238,13 +238,13 @@ async function testBossGate(page) {
 
   await page.evaluate(() => {
     player.collected = level.pickups.map((pickup) => pickup.id);
-    player.x = level.finish.x - player.width;
-    player.y = level.finish.y;
+    player.x = level.finish.x - player.width + 4;
+    player.y = level.finish.y + 4;
     player.vx = 0;
     player.vy = 0;
     player.grounded = false;
   });
-  await page.waitForFunction(() => player.state === 'boss-gated' && player.finished === false);
+  await page.waitForFunction(() => player.state === 'boss-gated' && player.finished === false, undefined, { timeout: 5000 });
   assert.equal(await page.locator('#finish-panel').isVisible(), false, 'boss gate must keep the finish panel hidden');
 
   await prepareBossSimulation(page);
@@ -257,15 +257,16 @@ async function testBossGate(page) {
   await page.evaluate(() => {
     togglePause(false);
     player.collected = level.pickups.map((pickup) => pickup.id);
-    player.x = level.finish.x - player.width;
-    player.y = level.finish.y;
+    player.x = level.finish.x - player.width + 4;
+    player.y = level.finish.y + 4;
     player.vx = 0;
     player.vy = 0;
     player.grounded = false;
   });
-  await page.locator('#finish-panel').waitFor({ state: 'visible' });
+  await page.waitForFunction(() => player.finished === true, undefined, { timeout: 5000 });
+  await page.locator('#finish-panel').waitFor({ state: 'visible', timeout: 5000 });
   assert.match(await page.locator('#finish-summary').innerText(), /Phantom Pump defeated/i);
-  await page.locator('#seed-man-next-level').waitFor({ state: 'visible' });
+  await page.locator('#seed-man-next-level').waitFor({ state: 'visible', timeout: 5000 });
   assert.match(await page.locator('#seed-man-next-level').innerText(), /Root Zone Rumble/i);
 }
 
