@@ -74,6 +74,7 @@ try {
   await page.locator('[data-combat="ability"]').waitFor({ state: 'visible' });
 
   let combat = await snapshot(page);
+  assert.equal(combat.phenotypeAbsorbVersion, 'seed-man-phenotype-absorb-v1');
   assert.equal(combat.enemies.length, 6);
   assert.equal(combat.defeated, 0);
 
@@ -86,16 +87,27 @@ try {
   combat = await snapshot(page);
   assert.equal(combat.enemies.find((enemy) => enemy.id === 'combat-static-mite').defeated, true, 'Elite phenotype carrier should be defeatable with weapon fire.');
   assert.equal(combat.activePhenotype, 'static-haze');
+  assert.ok(combat.phenotypeRemaining > 29 && combat.phenotypeRemaining <= 30, 'Elite power should start a 30-second temporary form.');
   assert.ok(combat.discoveredPhenotypes.includes('static-haze'));
   assert.match((await page.locator('#combat-phenotype-count').innerText()).trim(), /Static Haze/i);
+  assert.match((await page.locator('#combat-phenotype-time').innerText()).trim(), /30s|29s/i);
+  assert.match((await page.locator('[data-combat="ability"]').innerText()).trim(), /PHENO\s+(30|29)/i);
+  assert.equal(await page.locator('html').getAttribute('data-seed-pheno-active'), 'true');
 
   await page.keyboard.press('k');
   await sleep(50);
   combat = await snapshot(page);
-  assert.ok(combat.projectiles.some((projectile) => projectile.ability && projectile.effect === 'chain'), 'Acquired Static Haze should fire a chain-lightning phenotype projectile.');
+  assert.ok(combat.projectiles.some((projectile) => projectile.ability && projectile.effect === 'chain'), 'Absorbed Static Haze should fire a chain-lightning phenotype projectile.');
+
+  await page.evaluate(() => {
+    player.vx = 180;
+  });
+  await sleep(1100);
+  combat = await snapshot(page);
+  assert.ok(combat.phenotypeRemaining < 29.5, 'Phenotype timer should count down during active play.');
 
   assert.equal(errors.length, 0, `Browser combat errors: ${errors.join(' | ')}`);
-  console.log('Seed Man public-route combat auto-load, authored enemies, resources, and phenotype acquisition passed');
+  console.log('Seed Man public-route combat, timed phenotype absorption, HUD countdown, and ability use passed');
 } finally {
   if (browser) await browser.close();
   if (server) server.kill('SIGTERM');
