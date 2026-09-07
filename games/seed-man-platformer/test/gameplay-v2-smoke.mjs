@@ -56,23 +56,48 @@ try {
   const movingAfter = await page.evaluate(() => window.__SPROUT_GAMEPLAY_V2__.snapshot().movingPlatforms[0].x);
   assert.ok(Math.abs(movingAfter - movingBefore) > 1, `Moving platform did not move enough: ${movingBefore} -> ${movingAfter}`);
 
-  await page.evaluate(() => {
+  // Pause the asynchronous live loop and drive the gameplay wrapper one frame at a
+  // time. The old assertion sampled player.vy after Playwright observed the stomp,
+  // which could be many gravity frames later and intermittently saw the descending
+  // phase even though the stomp correctly applied its upward impulse.
+  const stompState = await page.evaluate(() => {
+    paused = true;
     const pest = window.__SPROUT_GAMEPLAY_V2__.snapshot().pests.find((item) => !item.dead);
-    player.x = pest.x + pest.width / 2 - player.width / 2;
-    player.y = pest.y - player.height - 12;
-    player.vx = 0;
-    player.vy = 260;
-    player.grounded = false;
-    player.power.invulnerableTimer = 0;
+    let probe = {
+      ...player,
+      x: pest.x + pest.width / 2 - player.width / 2,
+      y: pest.y - player.height - 12,
+      vx: 0,
+      vy: 260,
+      grounded: false,
+      power: { ...player.power, invulnerableTimer: 0 },
+      collected: [...player.collected],
+      collectedPowerups: [...player.collectedPowerups]
+    };
+    const stompsBefore = window.__SPROUT_GAMEPLAY_V2__.snapshot().stats.stomps;
+    let bounceVy = null;
+    let frames = 0;
+    for (; frames < 20; frames += 1) {
+      probe = stepPlayer(probe, { left: false, right: false, jumpPressed: false, jumpHeld: false }, level, 1 / 60);
+      const stats = window.__SPROUT_GAMEPLAY_V2__.snapshot().stats;
+      if (stats.stomps > stompsBefore) {
+        bounceVy = probe.vy;
+        break;
+      }
+    }
+    player = probe;
+    paused = false;
+    const snapshot = window.__SPROUT_GAMEPLAY_V2__.snapshot();
+    return {
+      vy: bounceVy,
+      frames,
+      stomps: snapshot.stats.stomps,
+      deadPests: snapshot.pests.filter((item) => item.dead).length
+    };
   });
-  await page.waitForFunction(() => window.__SPROUT_GAMEPLAY_V2__.snapshot().stats.stomps >= 1);
-  const stompState = await page.evaluate(() => ({
-    vy: player.vy,
-    stomps: window.__SPROUT_GAMEPLAY_V2__.snapshot().stats.stomps,
-    deadPests: window.__SPROUT_GAMEPLAY_V2__.snapshot().pests.filter((pest) => pest.dead).length
-  }));
   assert.ok(stompState.stomps >= 1 && stompState.deadPests >= 1, 'Pest stomp did not register.');
-  assert.ok(stompState.vy < 0, `Stomp should bounce Seed Man upward, got vy=${stompState.vy}`);
+  assert.ok(stompState.frames < 20, `Pest stomp did not resolve within the deterministic collision window (${stompState.frames} frames).`);
+  assert.ok(stompState.vy <= -490, `Stomp should apply the upward bounce impulse immediately, got vy=${stompState.vy}`);
 
   await page.evaluate(() => reset());
   await page.waitForTimeout(50);
@@ -95,7 +120,7 @@ try {
   assert.ok(padState.particles > 0, 'Boost pad should emit visual feedback particles.');
 
   assert.equal(errors.length, 0, `Gameplay-v2 browser errors: ${errors.join(' | ')}`);
-  console.log(JSON.stringify({ ok: true, mode: isLive ? 'live-production' : 'local-public-route', version: contract.version, movingPlatforms: contract.snapshot.movingPlatforms.length, pests: contract.snapshot.pests.length, bouncePads: contract.snapshot.bouncePads.length, stomp: true, boostPad: true, particles: true }, null, 2));
+  console.log(JSON.stringify({ ok: true, mode: isLive ? 'live-production' : 'local-public-route', version: contract.version, movingPlatforms: contract.snapshot.movingPlatforms.length, pests: contract.snapshot.pests.length, bouncePads: contract.snapshot.bouncePads.length, stomp: true, stompBounceVy: stompState.vy, boostPad: true, particles: true }, null, 2));
 } finally {
   if (browser) await browser.close();
   if (server) server.kill('SIGTERM');
