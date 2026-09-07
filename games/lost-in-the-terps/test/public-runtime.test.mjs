@@ -4,10 +4,14 @@ import fs from 'node:fs';
 const canonical = JSON.parse(fs.readFileSync('games/lost-in-the-terps/data/puzzles.json', 'utf8'));
 const html = fs.readFileSync('site/public-route-patch/games/lost-in-the-terps/index.html', 'utf8');
 const app = fs.readFileSync('site/public-route-patch/games/lost-in-the-terps/app.js', 'utf8');
+const keyboard = fs.readFileSync('site/public-route-patch/games/lost-in-the-terps/keyboard-nav-v1.js', 'utf8');
 const css = fs.readFileSync('site/public-route-patch/games/lost-in-the-terps/terps.css', 'utf8');
 
 assert.match(html, /<script\s+id="terps-puzzle-data"\s+type="application\/json">[\s\S]*?<\/script>/i, 'public page must embed puzzle data');
 assert.match(html, /<script\s+src="\.\/app\.js"\s+defer><\/script>/i, 'public page must load app.js as a deferred classic script');
+assert.match(html, /<script\s+src="\.\/keyboard-nav-v1\.js"\s+defer><\/script>/i, 'public page must load grid keyboard navigation after app.js');
+assert.match(html, /Keyboard: use arrow keys to move around the grid/i, 'player instructions must expose grid keyboard controls');
+assert.match(html, /aria-label="Word search grid\. Use arrow keys to move between letters\."/i, 'grid accessible name must explain arrow navigation');
 assert.doesNotMatch(html, /type="module"/i, 'public page must not depend on ES-module serving');
 
 const embedded = html.match(/<script\s+id="terps-puzzle-data"\s+type="application\/json">([\s\S]*?)<\/script>/i);
@@ -32,6 +36,18 @@ assert.match(app, /event\.key === 'Escape'/, 'runtime must allow keyboard cancel
 assert.match(app, /event\.key === 'h' \|\| event\.key === 'H'/, 'H keyboard shortcut must activate a hint');
 assert.match(app, /aria-pressed/, 'runtime must expose selected and found cell state');
 
+assert.match(keyboard, /lost-in-the-terps-keyboard-nav-v1/, 'keyboard layer must expose a stable version');
+assert.match(keyboard, /ArrowLeft/, 'keyboard layer must support left grid navigation');
+assert.match(keyboard, /ArrowRight/, 'keyboard layer must support right grid navigation');
+assert.match(keyboard, /ArrowUp/, 'keyboard layer must support up grid navigation');
+assert.match(keyboard, /ArrowDown/, 'keyboard layer must support down grid navigation');
+assert.match(keyboard, /event\.key === 'Home'/, 'keyboard layer must support row-start navigation');
+assert.match(keyboard, /event\.key === 'End'/, 'keyboard layer must support row-end navigation');
+assert.match(keyboard, /cell\.tabIndex = cell === focusable \? 0 : -1/, 'grid must use roving tabindex instead of adding every letter to the page tab order');
+assert.match(keyboard, /scrollIntoView\?\./, 'keyboard navigation must keep focused cells visible in the mobile grid viewport');
+assert.match(keyboard, /complete\.focus\(\{ preventScroll: true \}\)/, 'mission completion must move focus to the completion summary');
+assert.match(keyboard, /MutationObserver/, 'keyboard semantics must be restored after mission grid rerenders');
+
 assert.match(css, /\.grid-viewport/);
 assert.match(css, /\.letter\.start/, 'first-letter selection must have a strong dedicated visual state');
 assert.match(css, /\.letter\.found/, 'found paths must have a dedicated visual state');
@@ -50,4 +66,4 @@ for (const puzzle of canonical.puzzles) {
   assert.equal(new Set(puzzle.words.map((item) => item.word)).size, 8, `${puzzle.id} words must be unique`);
 }
 
-console.log('Lost in the Terps public runtime, visual selection states, hint, mission isolation and mobile grid checks passed.');
+console.log('Lost in the Terps public runtime, keyboard grid navigation, visual selection states, hint, mission isolation and mobile grid checks passed.');
