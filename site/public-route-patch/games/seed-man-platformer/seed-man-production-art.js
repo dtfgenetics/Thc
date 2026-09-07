@@ -221,7 +221,6 @@ function drawSeedManProduction() {
   ctx.save();
   ctx.translate(screenX + player.width / 2 + hurtShake, screenY + player.height / 2 + idleBob + 1);
 
-  // Soft contact shadow gives the sprite visual weight against the 3D world.
   ctx.save();
   ctx.globalAlpha = player.grounded ? 0.26 : 0.13;
   ctx.fillStyle = '#07140d';
@@ -251,7 +250,6 @@ function drawSeedManProduction() {
     ctx.restore();
   }
 
-  // Rubber-hose limbs remain unmistakably Seed Man, but pose more like authored sprite frames.
   ctx.strokeStyle = '#151616';
   ctx.lineWidth = 4.25;
   sproutArtPath([[-5.5, 8.5], [-7 + leftLeg * 0.45, 15], [-8 + leftLeg, 20]]);
@@ -264,7 +262,6 @@ function drawSeedManProduction() {
   sproutArtGlove(-18 + leftArm, 8, pose === 'finish' ? -0.7 : -0.24, pose === 'attack' ? 1.05 : 1);
   sproutArtGlove(18 + rightArm, 8, pose === 'finish' ? 0.7 : pose === 'attack' ? -0.1 : 0.24, pose === 'attack' ? 1.18 : 1);
 
-  // Chubby oval body, flat colors, thick readable outline.
   const baseBody = pose === 'hurt' ? '#c27a4a' : phenotype?.body || '#aa6940';
   ctx.fillStyle = baseBody;
   ctx.strokeStyle = '#151616';
@@ -274,7 +271,6 @@ function drawSeedManProduction() {
   ctx.fill();
   ctx.stroke();
 
-  // Flat highlight and shell seam make the character read like a polished sprite without realistic shading.
   ctx.fillStyle = phenotype?.secondary || '#d39667';
   ctx.globalAlpha = phenotype ? 0.36 : 0.7;
   ctx.beginPath();
@@ -287,7 +283,6 @@ function drawSeedManProduction() {
   ctx.arc(1.5, -4, 8.2, 1.18, 2.2);
   ctx.stroke();
 
-  // Face changes by gameplay pose so animation reads clearly even at phone size.
   ctx.fillStyle = '#151616';
   const eyeSquint = pose === 'hurt' ? 0.7 : pose === 'finish' ? 1.15 : 1;
   ctx.beginPath();
@@ -307,7 +302,6 @@ function drawSeedManProduction() {
   }
   ctx.stroke();
 
-  // Three-leaf sprout stays permanently centered and visually dominant.
   ctx.strokeStyle = '#151816';
   ctx.lineWidth = 2.45;
   sproutArtPath([[0, -18.5], [0, -24.1]]);
@@ -332,7 +326,8 @@ function drawSeedManProduction() {
   ctx.restore();
 }
 
-if (typeof drawSeedMan === 'function') {
+function installSeedManProductionRenderer() {
+  if (typeof drawSeedMan !== 'function') return false;
   drawSeedMan = drawSeedManProduction;
   window.__SPROUT_ART__ = Object.freeze({
     version: SPROUT_ART_VERSION,
@@ -341,12 +336,24 @@ if (typeof drawSeedMan === 'function') {
     poseContract: SPROUT_POSE_CONTRACT,
     phenotypeForms: Object.freeze(['fire', 'electric', 'ice']),
     original: true,
-    characterContract: 'seed-man-locked-v1'
+    characterContract: 'seed-man-locked-v1',
+    authoritative: true
   });
   document.documentElement.dataset.seedManVisualPipeline = SPROUT_VISUAL_PIPELINE;
-} else {
+  document.documentElement.dataset.seedManRendererOwner = 'production-art';
+  return drawSeedMan === drawSeedManProduction;
+}
+
+if (!installSeedManProductionRenderer()) {
   console.warn('Sprout Run production art layer could not find the base Seed Man renderer.');
 }
+
+// campaign-v1 installs its animation renderer during DOMContentLoaded. This listener is
+// registered later in source order, so it reasserts the production art layer after the
+// campaign has finished installing and prevents the older renderer from taking ownership.
+window.addEventListener('DOMContentLoaded', () => {
+  installSeedManProductionRenderer();
+}, { once: true });
 
 function installSproutRunShellV2() {
   const shell = document.querySelector('.game-shell');
