@@ -27,7 +27,9 @@
       "requiredText": ["Seed Man"]
     },
     "strain-showdown": {
-      "requiredText": ["Strain Showdown"]
+      "requiredText": ["Strain Showdown"],
+      "prepare": "node games/strain-showdown/scripts/build-browser-bundle.mjs",
+      "generatedRuntime": ["site/public-route-patch/games/strain-showdown/data/browser-bundle.json"]
     },
     "protect-the-plants": {
       "requiredText": ["Burn Buds"]
