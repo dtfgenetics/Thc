@@ -174,28 +174,38 @@ function reconciled(job, result, inspection) {
   return { ...next, history: history(job, 'reconcile-unknown-action', { state: 'BLOCKED', action: result.action }) }
 }
 
-function editLabels(repo, issueNumber, add = [], remove = []) {
-  for (const label of remove.filter(Boolean)) {
-    capture(['issue', 'edit', String(issueNumber), '--repo', repo, '--remove-label', label], { allowFailure: true })
-  }
-  for (const label of add.filter(Boolean)) {
-    capture(['issue', 'edit', String(issueNumber), '--repo', repo, '--add-label', label], { allowFailure: true })
-  }
+function labelName(label) {
+  return typeof label === 'string' ? label : label?.name || ''
 }
 
-function syncLabels(repo, issueNumber, config, job) {
-  const transient = [
-    config.labels.claimed, config.labels.running, config.labels.verifying, config.labels.retry,
-    config.labels.stale, config.labels.blocked, config.labels.failed, config.labels.quarantined,
-    config.labels.integrationReady, config.labels.done,
-  ]
-  let add = []
-  if (job.state === 'READY') add = [config.labels.ready]
-  else if (job.state === 'REPAIRING' || job.state === 'LEASE_EXPIRED') add = [config.labels.stale]
-  else if (job.state === 'BLOCKED') add = [config.labels.blocked]
-  else if (job.state === 'INTEGRATION_READY') add = [config.labels.integrationReady]
-  else if (job.state === 'DONE') add = [config.labels.done]
-  editLabels(repo, issueNumber, add, transient.filter((label) => !add.includes(label)))
+function desiredLifecycleLabels(config, state) {
+  if (state === 'READY') return [config.labels.ready].filter(Boolean)
+  if (state === 'REPAIRING' || state === 'LEASE_EXPIRED') return [config.labels.stale].filter(Boolean)
+  if (state === 'BLOCKED') return [config.labels.blocked].filter(Boolean)
+  if (state === 'INTEGRATION_READY') return [config.labels.integrationReady].filter(Boolean)
+  if (state === 'DONE') return [config.labels.done].filter(Boolean)
+  return []
+}
+
+function syncLabels(repo, rawIssue, config, job) {
+  const lifecycle = new Set([
+    config.labels.ready, config.labels.claimed, config.labels.running, config.labels.verifying,
+    config.labels.retry, config.labels.stale, config.labels.blocked, config.labels.failed,
+    config.labels.quarantined, config.labels.integrationReady, config.labels.done,
+  ].filter(Boolean))
+  const current = new Set((rawIssue.labels || []).map(labelName).filter(Boolean))
+  const desired = new Set(desiredLifecycleLabels(config, job.state))
+
+  for (const label of lifecycle) {
+    if (current.has(label) && !desired.has(label)) {
+      capture(['issue', 'edit', String(rawIssue.number), '--repo', repo, '--remove-label', label])
+    }
+  }
+  for (const label of desired) {
+    if (!current.has(label)) {
+      capture(['issue', 'edit', String(rawIssue.number), '--repo', repo, '--add-label', label])
+    }
+  }
 }
 
 function apply(repo, inspection, config) {
@@ -206,7 +216,7 @@ function apply(repo, inspection, config) {
   const next = reconciled(inspection.job, result, inspection)
   const body = replaceMarker(inspection.issue.body, next)
   capture(['issue', 'edit', String(inspection.issue.number), '--repo', repo, '--body', body])
-  syncLabels(repo, inspection.issue.number, config, next)
+  syncLabels(repo, inspection.issue, config, next)
   return next
 }
 
