@@ -70,7 +70,7 @@ jobs:
           route=site/public-route-patch/games/seed-man-platformer
           required=(
             index.html app.js canvas-compat-v1.js campaign-v1.js gameplay-v2.js
-            combat-browser-v1.js enemy-attacks-browser-v1.js enemy-attacks.mjs
+            combat-browser-v1.js enemy-attacks-browser-v1.js enemy-attacks.js
             seed-man-production-art.js input-guard-v1.js seed-man.css
             physics.mjs data/campaign.json data/level-01.json data/levels-02-11.json
           )
@@ -83,13 +83,14 @@ jobs:
           node --check "$route/gameplay-v2.js"
           node --check "$route/combat-browser-v1.js"
           node --check "$route/enemy-attacks-browser-v1.js"
-          node --check "$route/enemy-attacks.mjs"
+          node --check "$route/enemy-attacks.js"
           node --check "$route/input-guard-v1.js"
           grep -Fq 'sprout-campaign-v3' "$route/campaign-v1.js"
           grep -Fq 'seed-man-campaign-experience-v3' "$route/campaign-v1.js"
           grep -Fq 'seed-man-animation-v2' "$route/campaign-v1.js"
           grep -Fq 'seed-man-combat-browser-v1' "$route/combat-browser-v1.js"
           grep -Fq 'seed-man-enemy-attacks-browser-v1' "$route/enemy-attacks-browser-v1.js"
+          grep -Fq "import('./enemy-attacks.js')" "$route/enemy-attacks-browser-v1.js"
           grep -Fq 'enemyAttackBrowserAutoLoad: true' "$route/canvas-compat-v1.js"
           grep -Fq 'seed-man-phenotype-absorb-v1' "$route/combat-browser-v1.js"
           grep -Fq 'seed-man-phenotype-expansion-v1' "$route/combat-browser-v1.js"
@@ -110,7 +111,7 @@ jobs:
       - name: Verify canonical and public parity
         run: |
           cmp games/seed-man-platformer/src/physics.mjs site/public-route-patch/games/seed-man-platformer/physics.mjs
-          cmp games/seed-man-platformer/src/systems/enemy-attacks.mjs site/public-route-patch/games/seed-man-platformer/enemy-attacks.mjs
+          cmp games/seed-man-platformer/src/systems/enemy-attacks.mjs site/public-route-patch/games/seed-man-platformer/enemy-attacks.js
           cmp games/seed-man-platformer/data/campaign.json site/public-route-patch/games/seed-man-platformer/data/campaign.json
           cmp games/seed-man-platformer/data/level-01.json site/public-route-patch/games/seed-man-platformer/data/level-01.json
           cmp games/seed-man-platformer/data/levels-02-11.json site/public-route-patch/games/seed-man-platformer/data/levels-02-11.json

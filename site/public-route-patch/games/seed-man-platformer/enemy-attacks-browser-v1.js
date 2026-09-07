@@ -3,7 +3,7 @@
 (async () => {
   const VERSION = 'seed-man-enemy-attacks-browser-v1';
   const HIT_INVULN = 0.85;
-  const attackApi = await import('./enemy-attacks.mjs');
+  const attackApi = await import('./enemy-attacks.js');
   const { createEnemyAttackState, stepEnemyAttack, advanceEnemyProjectile, overlapsRect } = attackApi;
 
   const LEVEL_ATTACKERS = Object.freeze({
