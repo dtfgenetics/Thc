@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import './prepare-seed-man-world-five-combat.mjs';
 
 const publisherPath = 'scripts/publish-seed-man-route-via-wordpress.mjs';
 const canonicalEnemyAttackModulePath = 'games/seed-man-platformer/src/systems/enemy-attacks.mjs';
@@ -139,6 +140,16 @@ for (const marker of [
 ]) {
   if (!worldFive.includes(marker)) throw new Error(`Missing World 5 browser marker: ${marker}`);
 }
+for (const marker of [
+  'seed-man-world-five-combat-v1',
+  "'chromosome-crossing'",
+  "'mutation-marsh'",
+  "'allele-array'",
+  "'genome-spire'",
+  'return ENCOUNTERS[level?.id] || [];'
+]) {
+  if (!combat.includes(marker)) throw new Error(`Missing prepared World 5 combat marker: ${marker}`);
+}
 for (const entry of releaseEntries) {
   if (!publisher.includes(entry)) throw new Error(`Seed Man publisher allowlist is missing: ${entry}`);
 }
@@ -161,5 +172,6 @@ console.log(JSON.stringify({
   mobilityForms: ['terpene-tempest:flight', 'hydro-surge:bubble', 'gravity-haze:warp'],
   enemyAttackPatterns: ['aimed-shot', 'burst-shot', 'radial-burst', 'dive-charge', 'ground-wave', 'blink-strike'],
   worldFiveStages: ['chromosome-crossing', 'mutation-marsh', 'allele-array', 'genome-spire'],
+  worldFiveCombat: 'seed-man-world-five-combat-v1',
   autoload: true
 }, null, 2));
