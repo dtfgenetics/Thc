@@ -3,16 +3,20 @@ import { spawn } from 'node:child_process';
 import { chromium } from '@playwright/test';
 
 const PORT = 4195;
-const ORIGIN = `http://127.0.0.1:${PORT}`;
-const GAME_URL = `${ORIGIN}/games/seed-man-platformer/`;
+const LOCAL_ORIGIN = `http://127.0.0.1:${PORT}`;
+const LOCAL_GAME_URL = `${LOCAL_ORIGIN}/games/seed-man-platformer/`;
+const configuredUrl = process.env.SPROUT_GAME_URL?.trim();
+const isLive = Boolean(configuredUrl);
+const GAME_URL = configuredUrl || LOCAL_GAME_URL;
 let server;
 let browser;
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 async function waitForServer() {
+  if (isLive) return;
   for (let attempt = 0; attempt < 50; attempt += 1) {
     try {
-      const response = await fetch(GAME_URL, { cache: 'no-store' });
+      const response = await fetch(LOCAL_GAME_URL, { cache: 'no-store' });
       if (response.ok) return;
     } catch {}
     await sleep(200);
@@ -190,13 +194,16 @@ async function runViewport(viewport) {
 }
 
 try {
-  server = spawn('python3', ['-m', 'http.server', String(PORT), '--bind', '127.0.0.1', '--directory', 'site/public-route-patch'], { stdio: 'ignore' });
+  if (!isLive) {
+    server = spawn('python3', ['-m', 'http.server', String(PORT), '--bind', '127.0.0.1', '--directory', 'site/public-route-patch'], { stdio: 'ignore' });
+  }
   await waitForServer();
   browser = await chromium.launch({ headless: true });
   await runViewport({ width: 1280, height: 900 });
   await runViewport({ width: 390, height: 844 });
   console.log(JSON.stringify({
     ok: true,
+    mode: isLive ? 'live-production' : 'local-prepared-route',
     campaignLevels: 15,
     worlds: 5,
     worldFiveLevels: EXPECTED.map((entry) => entry.id),
