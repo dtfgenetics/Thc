@@ -4,14 +4,18 @@ import fs from 'node:fs';
 const canonical = JSON.parse(fs.readFileSync('games/grow-room-bingo/data/prompts.json', 'utf8'));
 const html = fs.readFileSync('site/public-route-patch/games/grow-room-bingo/index.html', 'utf8');
 const app = fs.readFileSync('site/public-route-patch/games/grow-room-bingo/app.js', 'utf8');
+const nav = fs.readFileSync('site/public-route-patch/games/grow-room-bingo/keyboard-nav.js', 'utf8');
 const css = fs.readFileSync('site/public-route-patch/games/grow-room-bingo/bingo.css', 'utf8');
 
 assert.match(html, /<script\s+id="bingo-data"\s+type="application\/json">[\s\S]*?<\/script>/i, 'public page must embed bingo data');
 assert.match(html, /<script\s+src="\.\/app\.js"\s+defer><\/script>/i, 'public page must load app.js as a deferred classic script');
+assert.match(html, /<script\s+src="\.\/keyboard-nav\.js"\s+defer><\/script>/i, 'public page must load keyboard navigation as a deferred classic script');
 assert.doesNotMatch(html, /type="module"/i, 'public page must not depend on ES-module serving');
 assert.match(html, /class="bingo-columns"/i, 'public board must expose the BINGO column marquee');
 assert.match(html, /id="progress-fill"/i, 'public HUD must expose visual card progress');
 assert.match(html, /class="board-stage"/i, 'public playfield must use the dedicated board stage');
+assert.match(html, /Use arrow keys to move between playable squares/i, 'board accessibility copy must document directional navigation');
+assert.match(html, /center FREE space is skipped automatically/i, 'player instructions must explain FREE-space keyboard behavior');
 
 const embeddedMatch = html.match(/<script\s+id="bingo-data"\s+type="application\/json">([\s\S]*?)<\/script>/i);
 assert.ok(embeddedMatch, 'embedded bingo data block missing');
@@ -47,6 +51,20 @@ assert.match(app, /progressFill\.style\.width/, 'marking must update the visual 
 assert.match(app, /progressRail\.setAttribute\('aria-valuenow'/, 'visual progress must remain accessible');
 assert.match(app, /board\.dataset\.lines/, 'completed line count must be exposed to the board presentation layer');
 
+assert.doesNotMatch(nav, /^\s*import\s/m, 'keyboard navigation must remain hosting-safe without browser imports');
+assert.match(nav, /const SIZE = 5;/, 'keyboard navigation must preserve the 5x5 board geometry');
+assert.match(nav, /function makeRoving\(/, 'keyboard navigation must use a roving tabindex');
+assert.match(nav, /cell\.tabIndex = cell === focusable \? 0 : -1/, 'only one playable square should remain in the Tab order');
+assert.match(nav, /ArrowLeft: -1/, 'left-arrow navigation must be supported');
+assert.match(nav, /ArrowRight: 1/, 'right-arrow navigation must be supported');
+assert.match(nav, /ArrowUp: -SIZE/, 'up-arrow navigation must be supported');
+assert.match(nav, /ArrowDown: SIZE/, 'down-arrow navigation must be supported');
+assert.match(nav, /event\.key === 'Home'/, 'Home must move to the first playable cell in the row');
+assert.match(nav, /event\.key === 'End'/, 'End must move to the last playable cell in the row');
+assert.match(nav, /if \(!target \|\| target\.disabled\) return false;/, 'directional movement must skip the disabled FREE center');
+assert.match(nav, /MutationObserver/, 'roving tabindex must refresh after card rerenders');
+assert.match(nav, /scrollIntoView\?\./, 'keyboard focus must remain visible on constrained/mobile layouts');
+
 assert.match(css, /\.controls button\[data-armed=true\]/, 'clear confirmation must have visible armed styling');
 assert.match(css, /\.board\.has-bingo/, 'completed bingo state must have board-level feedback');
 assert.match(css, /\.cell\.mark-pop/, 'mark interactions must have immediate visual feedback');
@@ -67,4 +85,4 @@ for (const mode of canonical.modes.filter((item) => item.id !== 'mixed')) {
 }
 assert.ok(canonical.prompts.length >= 48, 'mixed mode must have a full prompt pool');
 
-console.log('Grow Room Bingo public runtime, premium board UI, progress HUD, saved-card persistence and mobile feedback checks passed.');
+console.log('Grow Room Bingo public runtime, saved-card persistence, keyboard navigation and mobile feedback checks passed.');
