@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import { execFileSync } from 'node:child_process'
+import { loadConfig } from './orchestrator/core.mjs'
 import { classifyReconciliation } from './orchestrator/reconcile.mjs'
 import { clearLease } from './orchestrator/leases.mjs'
 import { validateJob } from './orchestrator/state.mjs'
@@ -22,12 +23,11 @@ function json(args, fallback = null) {
 }
 
 function parseArgs(argv) {
-  const options = Object.fromEntries(argv.filter((arg) => arg.startsWith('--')).map((arg) => {
+  return Object.fromEntries(argv.filter((arg) => arg.startsWith('--')).map((arg) => {
     const raw = arg.slice(2)
     const at = raw.indexOf('=')
     return at === -1 ? [raw, 'true'] : [raw.slice(0, at), raw.slice(at + 1)]
   }))
-  return options
 }
 
 function repoFromEnvOrGh() {
@@ -48,6 +48,23 @@ function replaceMarker(body, payload) {
 
 function issue(repo, number) {
   return json(['api', `repos/${repo}/issues/${number}`])
+}
+
+function issuesWithLabel(repo, label) {
+  if (!label) return []
+  return json([
+    'api', '--method', 'GET', '--paginate', `repos/${repo}/issues`,
+    '-f', 'state=open', '-f', `labels=${label}`, '-f', 'per_page=100',
+    '--jq', '[.[] | select(.pull_request == null)]'
+  ], [])
+}
+
+function reconciliationIssues(repo, config) {
+  const byNumber = new Map()
+  for (const item of [...issuesWithLabel(repo, config.labels.claimed), ...issuesWithLabel(repo, config.labels.stale)]) {
+    byNumber.set(Number(item.number), item)
+  }
+  return [...byNumber.values()].sort((a, b) => Number(a.number) - Number(b.number))
 }
 
 function branchInfo(repo, branch) {
@@ -142,22 +159,46 @@ function reconciled(job, result, inspection) {
 
   if (result.action === 'MARK_MERGED') {
     const pr = inspection.mergedPr
-    const nextState = job.productionImpact ? 'MERGED' : 'MERGED'
-    const next = clearLease({ ...base, state: nextState, prNumber: pr.number, mergeSha: pr.merge_commit_sha || null })
-    return { ...next, history: history(job, 'reconcile-merged-pr', { state: nextState, prNumber: pr.number, mergeSha: pr.merge_commit_sha || null }) }
+    const next = clearLease({ ...base, state: 'MERGED', prNumber: pr.number, mergeSha: pr.merge_commit_sha || null })
+    return { ...next, history: history(job, 'reconcile-merged-pr', { state: 'MERGED', prNumber: pr.number, mergeSha: pr.merge_commit_sha || null }) }
   }
 
   if (result.action === 'BLOCK_RELEASE' || result.action === 'BLOCK') {
-    const next = { ...base, state: 'BLOCKED' }
+    const next = clearLease({ ...base, state: 'BLOCKED' })
     return { ...next, history: history(job, 'reconcile-blocked', { state: 'BLOCKED', reason: result.reason }) }
   }
 
   if (result.action === 'ORPHAN_BRANCH') return base
 
-  return { ...base, state: 'BLOCKED', history: history(job, 'reconcile-unknown-action', { state: 'BLOCKED', action: result.action }) }
+  const next = clearLease({ ...base, state: 'BLOCKED' })
+  return { ...next, history: history(job, 'reconcile-unknown-action', { state: 'BLOCKED', action: result.action }) }
 }
 
-function apply(repo, inspection) {
+function editLabels(repo, issueNumber, add = [], remove = []) {
+  for (const label of remove.filter(Boolean)) {
+    capture(['issue', 'edit', String(issueNumber), '--repo', repo, '--remove-label', label], { allowFailure: true })
+  }
+  for (const label of add.filter(Boolean)) {
+    capture(['issue', 'edit', String(issueNumber), '--repo', repo, '--add-label', label], { allowFailure: true })
+  }
+}
+
+function syncLabels(repo, issueNumber, config, job) {
+  const transient = [
+    config.labels.claimed, config.labels.running, config.labels.verifying, config.labels.retry,
+    config.labels.stale, config.labels.blocked, config.labels.failed, config.labels.quarantined,
+    config.labels.integrationReady, config.labels.done,
+  ]
+  let add = []
+  if (job.state === 'READY') add = [config.labels.ready]
+  else if (job.state === 'REPAIRING' || job.state === 'LEASE_EXPIRED') add = [config.labels.stale]
+  else if (job.state === 'BLOCKED') add = [config.labels.blocked]
+  else if (job.state === 'INTEGRATION_READY') add = [config.labels.integrationReady]
+  else if (job.state === 'DONE') add = [config.labels.done]
+  editLabels(repo, issueNumber, add, transient.filter((label) => !add.includes(label)))
+}
+
+function apply(repo, inspection, config) {
   const result = inspection.result
   if (result.action === 'ORPHAN_BRANCH') throw new Error('Orphan branch reconciliation requires an owning job and is report-only')
   if (['ACTIVE', 'NOOP'].includes(result.action)) return inspection.job
@@ -165,25 +206,15 @@ function apply(repo, inspection) {
   const next = reconciled(inspection.job, result, inspection)
   const body = replaceMarker(inspection.issue.body, next)
   capture(['issue', 'edit', String(inspection.issue.number), '--repo', repo, '--body', body])
+  syncLabels(repo, inspection.issue.number, config, next)
   return next
 }
 
-const options = parseArgs(process.argv.slice(2))
-const repo = repoFromEnvOrGh()
-const issueNumber = Number(options.issue)
-if (!Number.isInteger(issueNumber) || issueNumber <= 0) {
-  console.error('Usage: node scripts/orchestrator-reconcile.mjs --issue=N [--apply=true]')
-  process.exit(2)
-}
-
-try {
+function reconcileOne(repo, issueNumber, config, applyChanges) {
   const inspection = inspect(repo, issueNumber)
-  const applyChanges = options.apply === 'true'
-  const job = applyChanges ? apply(repo, inspection) : inspection.job
-  console.log(JSON.stringify({
+  const job = applyChanges ? apply(repo, inspection, config) : inspection.job
+  return {
     ok: true,
-    repo,
-    mode: applyChanges ? 'reconcile-apply' : 'reconcile-dry-run',
     issueNumber,
     branch: inspection.branch,
     uniqueCommits: inspection.uniqueCommits,
@@ -191,8 +222,55 @@ try {
     mergedPr: inspection.mergedPr,
     reconciliation: inspection.result,
     job,
+  }
+}
+
+function reconcileAll(repo, config, applyChanges) {
+  const candidates = reconciliationIssues(repo, config)
+  const results = []
+  const failures = []
+  for (const candidate of candidates) {
+    try {
+      results.push(reconcileOne(repo, Number(candidate.number), config, applyChanges))
+    } catch (error) {
+      failures.push({ issueNumber: Number(candidate.number), error: error.message })
+    }
+  }
+  return { candidates: candidates.length, results, failures }
+}
+
+const options = parseArgs(process.argv.slice(2))
+const repo = repoFromEnvOrGh()
+const config = loadConfig(options.config || 'data/worker-orchestrator.json')
+const applyChanges = options.apply === 'true'
+const all = options.all === 'true'
+const issueNumber = Number(options.issue)
+
+if (!all && (!Number.isInteger(issueNumber) || issueNumber <= 0)) {
+  console.error('Usage: node scripts/orchestrator-reconcile.mjs (--issue=N | --all=true) [--apply=true] [--config=path]')
+  process.exit(2)
+}
+
+try {
+  if (all) {
+    const sweep = reconcileAll(repo, config, applyChanges)
+    console.log(JSON.stringify({
+      ok: sweep.failures.length === 0,
+      repo,
+      mode: applyChanges ? 'reconcile-all-apply' : 'reconcile-all-dry-run',
+      ...sweep,
+    }, null, 2))
+    process.exit(sweep.failures.length ? 1 : 0)
+  }
+
+  const result = reconcileOne(repo, issueNumber, config, applyChanges)
+  console.log(JSON.stringify({
+    ok: true,
+    repo,
+    mode: applyChanges ? 'reconcile-apply' : 'reconcile-dry-run',
+    ...result,
   }, null, 2))
 } catch (error) {
-  console.error(JSON.stringify({ ok: false, repo, issueNumber, error: error.message }, null, 2))
+  console.error(JSON.stringify({ ok: false, repo, issueNumber: all ? null : issueNumber, error: error.message }, null, 2))
   process.exit(1)
 }
