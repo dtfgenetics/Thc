@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "retirements": [
+    {
+      "branch": "burn-buds-game",
+      "headSha": "e14b180bda8c06f6c1e97096e815d96b47827463",
+      "supersededBy": "210620f4db6fff9f34817216b568039742d2e6ba",
+      "status": "approved",
+      "reviewedAt": "2026-09-07",
+      "reason": "Deep semantic salvage confirmed the original 32-commit Protect the Plants/Burn Buds history is fully preserved and superseded on current main. The branch's intended contract—15x15 two-player hidden-fleet gameplay, same-origin PHP API, WordPress-transient persistence with local fallback, server-authoritative placement/turn/duplicate-shot/hit/miss/victory validation, hidden opponent state, room codes, active-game recovery, room chat, manual/random/rotated placement, mobile board tabs, plant-loss feedback, post-game stats, reduced motion, public Game Hub registration and route CI—is all explicitly retained on main. Current main advances that same architecture to production-ready Burn Buds with cannabis-leaf formations, finished-game recovery, two-party rematch, alternating starters, native coarse-pointer two-tap targeting, desktop one-click targeting, keyboard navigation, opponent presence, live telemetry, shared render sync, expanded accessibility/gamefeel, stronger branding/runtime contracts, and live production verification. No open PR owns the exact historical branch tip."
+    }
+  ]
+}
