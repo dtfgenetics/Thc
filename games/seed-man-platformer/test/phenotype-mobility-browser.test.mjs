@@ -52,9 +52,9 @@ async function defeatEnemy(page, enemyId) {
 
     const yOffset = offsets[shot % offsets.length];
     await page.evaluate(({ x, y, yOffset }) => {
-      player.x = Math.max(0, x - 120);
+      player.x = Math.max(0, x - 55);
       player.y = y + yOffset - player.height * 0.46;
-      player.vx = 24;
+      player.vx = 18;
       player.vy = 0;
       player.grounded = false;
     }, { ...target, yOffset });
