@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "retirements": [
+    {
+      "branch": "codex/close-wordpress-chain-20260829",
+      "headSha": "7af7240af766bd0faeccc50050b6ec8f2f865388",
+      "supersededBy": "9f7b540314ade1014021650238a29539031425ad",
+      "status": "approved",
+      "reviewedAt": "2026-09-06",
+      "reason": "Historical WordPress handoff closure is fully superseded by current single-owner publication topology, non-recursive live verification, and manual-only recovery writers."
+    },
+    {
+      "branch": "codex/harden-learning-hierarchy-ipv4-20260829",
+      "headSha": "af4787e1dc67ca642ca65fbd79dcc766635e66a0",
+      "supersededBy": "9f7b540314ade1014021650238a29539031425ad",
+      "status": "approved",
+      "reviewedAt": "2026-09-06",
+      "reason": "Learning hierarchy IPv4 preload behavior is preserved and strengthened by the current IPv4 WordPress transport, owner-aware Learning publication, cache convergence, and topology CI."
+    },
+    {
+      "branch": "codex/harden-learning-shell-20260829",
+      "headSha": "59d1ce5700445ff8b6392df0ab4d74dd776283fc",
+      "supersededBy": "9f7b540314ade1014021650238a29539031425ad",
+      "status": "approved",
+      "reviewedAt": "2026-09-06",
+      "reason": "Historical Learning shell hardening and its IPv4 bootstrap are fully superseded by the current expanded wordpress-ipv4-fetch-bootstrap implementation, cache convergence, and stronger production topology gates."
+    },
+    {
+      "branch": "codex/home-release-public-verifier-20260829",
+      "headSha": "7ab25245c8bf2afbc45a29ed0bcccba60ee92aea",
+      "supersededBy": "9f7b540314ade1014021650238a29539031425ad",
+      "status": "approved",
+      "reviewedAt": "2026-09-06",
+      "reason": "Its unique forced-IPv4 visitor verification and exact release-heading assertion were deliberately forward-ported and merged in PR #726 while preserving the newer final-owner Home release workflow."
+    },
+    {
+      "branch": "codex/infographic-trigger-dedup-20260829",
+      "headSha": "a7637a360ba892b3ba65d94f8e3c84fe3936812c",
+      "supersededBy": "9f7b540314ade1014021650238a29539031425ad",
+      "status": "approved",
+      "reviewedAt": "2026-09-06",
+      "reason": "Infographic trigger-dedup branch has zero unique commits versus current main and the live verifier is now non-recursive and bound to the final Learning owner."
+    }
+  ]
+}
