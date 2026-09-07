@@ -55,6 +55,23 @@ for (const id of [...BOSS_ARCHETYPES.minor, ...BOSS_ARCHETYPES.major]) {
 assert.ok(BOSS_ARCHETYPES.major.some((id) => ENEMY_ARCHETYPES[id].movement === 'flying'), 'Major boss roster should include a flying boss.');
 assert.ok(BOSS_ARCHETYPES.major.some((id) => ENEMY_ARCHETYPES[id].movement === 'blink'), 'Major boss roster should include a warp/blink boss.');
 
+let aiState = createCombatState({
+  enemies: [
+    createEnemyFromArchetype('fungus-gnat', { id: 'flying-test', x: 100, y: 200, patrolMinX: 80, patrolMaxX: 260 }),
+    createEnemyFromArchetype('warp-midge', { id: 'blink-test', x: 300, y: 200, patrolMinX: 260, patrolMaxX: 560 }),
+    createEnemyFromArchetype('major-boss-warp-weaver', { id: 'boss-test', x: 600, y: 200, patrolMinX: 560, patrolMaxX: 980 })
+  ]
+});
+const flyingStartY = aiState.enemies[0].y;
+const blinkStartX = aiState.enemies[1].x;
+aiState = advance(aiState, 1.1);
+assert.notEqual(aiState.enemies[0].y, flyingStartY, 'Canonical combat should animate flying enemy altitude.');
+aiState = advance(aiState, 1.6);
+assert.notEqual(aiState.enemies[1].x, blinkStartX, 'Canonical combat should execute deterministic blink movement.');
+aiState = advance(aiState, 1.0);
+assert.ok(aiState.events.some((event) => event.type === 'enemy-telegraph') || aiState.enemies[2].telegraphTimer > 0, 'Major boss AI should emit readable telegraph state.');
+assert.equal(combatSnapshot(aiState).bossesAlive, 1);
+
 let progression = createProgressionState();
 progression = collectWeapon(progression, 'seed-slinger');
 let state = createCombatState({
@@ -141,7 +158,8 @@ assert.equal(state.projectiles.length, 3, 'Pollen Blaster should emit its config
 const snapshot = combatSnapshot(state);
 assert.equal(snapshot.equippedWeapon, 'pollen-blaster');
 assert.equal(snapshot.enemiesAlive, 0);
+assert.equal(snapshot.bossesAlive, 0);
 assert.equal(snapshot.projectiles, 3);
 assert.equal(snapshot.absorbedPhenotype, null);
 
-console.log('Seed Man combat, full phenotype action roster, flying enemies, boss tiers, timed absorption, and expiry tests passed');
+console.log('Seed Man combat, canonical flying/blink/boss AI, full phenotype action roster, timed absorption, and expiry tests passed');
