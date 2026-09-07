@@ -148,18 +148,19 @@ function escapeHtml(value) {
 
 function renderBoard() {
   board.replaceChildren();
-  for (const card of cards) {
+  board.setAttribute('aria-busy', 'false');
+  cards.forEach((card, index) => {
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'match-card';
     button.dataset.key = card.key;
     button.dataset.kind = card.kind;
-    button.setAttribute('aria-label', 'Hidden Strain Match card');
+    button.setAttribute('aria-label', `Hidden Strain Match card ${index + 1} of ${cards.length}`);
     button.setAttribute('aria-pressed', 'false');
     button.innerHTML = `<span class="card-inner card-front" aria-hidden="true"></span><span class="card-inner card-back">${escapeHtml(card.text)}</span>`;
-    button.addEventListener('click', () => reveal(card, button));
+    button.addEventListener('click', () => reveal(card, button, index));
     board.append(button);
-  }
+  });
 }
 
 function clearRestartArm() {
@@ -189,13 +190,13 @@ function requestRestart() {
   resetRound();
 }
 
-function reveal(card, button) {
+function reveal(card, button, index) {
   if (locked || button.classList.contains('revealed') || button.classList.contains('matched')) return;
   startTimer();
   button.classList.add('revealed');
-  button.setAttribute('aria-label', card.text);
+  button.setAttribute('aria-label', `${card.text}. Card ${index + 1} of ${cards.length}`);
   button.setAttribute('aria-pressed', 'true');
-  openCards.push({ card, button });
+  openCards.push({ card, button, index });
   if (openCards.length < 2) return;
 
   moves += 1;
@@ -219,6 +220,7 @@ function reveal(card, button) {
 
   streak = 0;
   locked = true;
+  board.setAttribute('aria-busy', 'true');
   const token = roundToken;
   const mismatched = [...openCards];
   openCards = [];
@@ -228,10 +230,11 @@ function reveal(card, button) {
     if (token !== roundToken) return;
     for (const entry of mismatched) {
       entry.button.classList.remove('revealed', 'mismatch');
-      entry.button.setAttribute('aria-label', 'Hidden Strain Match card');
+      entry.button.setAttribute('aria-label', `Hidden Strain Match card ${entry.index + 1} of ${cards.length}`);
       entry.button.setAttribute('aria-pressed', 'false');
     }
     locked = false;
+    board.setAttribute('aria-busy', 'false');
     if (roundStatus) roundStatus.textContent = 'Round live';
     updateScore();
   }, 650);
@@ -245,9 +248,12 @@ function finishRound() {
   updateScore();
   completeCopy.textContent = `Solved ${matches} pairs in ${moves} moves and ${formatTime(result.time)}. Best streak: ${bestStreak}. Best result: ${best.moves} moves · ${formatTime(best.time)}.`;
   completePanel.hidden = false;
+  if (!completePanel.hasAttribute('tabindex')) completePanel.setAttribute('tabindex', '-1');
   board.classList.add('round-complete');
   const reducedMotion = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
   completePanel.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'nearest' });
+  try { completePanel.focus({ preventScroll: true }); }
+  catch { completePanel.focus(); }
 }
 
 function selectDeck(deckId) {
@@ -274,6 +280,7 @@ function resetRound() {
   clearRestartArm();
   completePanel.hidden = true;
   board.classList.remove('round-complete');
+  board.setAttribute('aria-busy', 'false');
   learnNote.textContent = 'Solve a pair to reveal a quick learning note.';
   if (roundStatus) roundStatus.textContent = 'Ready';
   cards = buildCards(activeDeck);
