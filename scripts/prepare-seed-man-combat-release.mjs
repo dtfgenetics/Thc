@@ -26,16 +26,13 @@ for (const file of [publisherPath, canonicalEnemyAttackModulePath, canonicalCamp
   if (!fs.existsSync(file)) throw new Error(`Missing Seed Man release input: ${file}`);
 }
 
-// Build the browser-safe Three.js renderer from canonical source during release preparation.
-// This closes the former gap where Three.js passed CI in games/seed-man-platformer/dist
-// but was never promoted into the visitor-facing WordPress route package.
 execFileSync('npm', ['install', '--prefix', 'games/seed-man-platformer', '--ignore-scripts', '--no-audit', '--no-fund', '--no-package-lock'], { stdio: 'inherit' });
 execFileSync('npm', ['run', '--prefix', 'games/seed-man-platformer', 'build:three-public'], { stdio: 'inherit' });
 if (!fs.existsSync(canonicalThreeBuildPath)) throw new Error('Seed Man Three.js build did not produce dist/three-world-v1.js.');
 const threeBuild = fs.readFileSync(canonicalThreeBuildPath);
 const threeBuildText = threeBuild.toString('utf8');
-for (const marker of ['SeedManThreeWorld', 'seed-man-three-public-v1', 'seed-man-three-world-v1']) {
-  if (!threeBuildText.includes(marker)) throw new Error(`Seed Man Three.js build missing marker: ${marker}`);
+for (const marker of ['SeedManThreeWorld', 'seed-man-three-public-v1', 'seed-man-three-world-v2', 'seed-man-greenhouse-backdrop-v2', 'seed-man-level-world-v2']) {
+  if (!threeBuildText.includes(marker)) throw new Error(`Seed Man Three.js build missing current visual renderer marker: ${marker}`);
 }
 if (threeBuild.length < 250_000 || threeBuild.length > 900_000) throw new Error(`Seed Man Three.js build outside release budget: ${threeBuild.length} bytes.`);
 fs.writeFileSync(publicThreeBuildPath, threeBuild);
@@ -113,7 +110,7 @@ for (const marker of ['seed-man-world-five-v1','Genetic Frontier','Chromosome Cr
 for (const marker of ['seed-man-campaign-ui-v15','TOTAL_LEVELS = 15','TOTAL_WORLDS = 5','TOTAL_BOSSES = 6','sproutCampaignUi']) if (!campaignUi.includes(marker)) throw new Error(`Missing 15-level campaign UI marker: ${marker}`);
 for (const marker of ['seed-man-ui-v3','seed-run-context','Opening Route','Mid Route','Final Run','data-ui-v3','sprout:level-selected','seed-man-visual-v4']) if (!uiV3.includes(marker)) throw new Error(`Missing Seed Man UI v3 marker: ${marker}`);
 for (const marker of ['seed-man-visual-v4','WORLD_THEMES','world-05','data-visual-v4','BOSS ENCOUNTER','data-seed-pheno-active']) if (!visualV4.includes(marker)) throw new Error(`Missing Seed Man visual v4 marker: ${marker}`);
-for (const marker of ['seed-man-three-adapter-v1','SeedManThreeWorld','drawThreeBackedBackground','data.seedThreeWorld','__SPROUT_THREE_ADAPTER__','renderer.mountLevel','renderer.sync','renderer.render']) if (!threeAdapter.includes(marker)) throw new Error(`Missing Three.js live runtime adapter marker: ${marker}`);
+for (const marker of ['seed-man-three-adapter-v2','seed-man-three-world-v2','SeedManThreeWorld','drawThreeBackedBackground','__SPROUT_THREE_ADAPTER__','ResizeObserver','visibilitychange','renderer.mountLevel','renderer.sync','renderer.render']) if (!threeAdapter.includes(marker)) throw new Error(`Missing current Three.js live runtime adapter marker: ${marker}`);
 for (const marker of ['seed-man-world-five-combat-v1',"'chromosome-crossing'","'mutation-marsh'","'allele-array'","'genome-spire'",'return ENCOUNTERS[level?.id] || [];']) if (!combat.includes(marker)) throw new Error(`Missing prepared World 5 combat marker: ${marker}`);
 for (const entry of releaseEntries) if (!publisher.includes(entry)) throw new Error(`Seed Man publisher allowlist is missing: ${entry}`);
 if (!index.includes(worldFiveScript)) throw new Error('Seed Man index is missing the World 5 browser adapter.');
@@ -121,4 +118,4 @@ if (!index.includes(threeWorldScript)) throw new Error('Seed Man index is missin
 if (!index.includes(threeAdapterScript)) throw new Error('Seed Man index is missing the Three.js live runtime adapter.');
 if (!index.includes(uiV3Script)) throw new Error('Seed Man index is missing the UI v3 adapter.');
 
-console.log(JSON.stringify({ ok: true, publisherPatched: true, campaignLevels: 15, campaignWorlds: 5, campaignBosses: 6, phenotypeAbsorption: 'seed-man-phenotype-absorb-v1', phenotypeExpansion: 'seed-man-phenotype-expansion-v1', phenotypeMobilityFrameRepair: 'seed-man-phenotype-mobility-frame-v1', worldFiveCombat: 'seed-man-world-five-combat-v1', campaignUi: 'seed-man-campaign-ui-v15', uiV3: 'seed-man-ui-v3', visualV4: 'seed-man-visual-v4', threeWorld: 'seed-man-three-public-v1', threeAdapter: 'seed-man-three-adapter-v1', threeWorldBytes: threeBuild.length, autoload: true, liveRendererOwnership: true }, null, 2));
+console.log(JSON.stringify({ ok: true, publisherPatched: true, campaignLevels: 15, campaignWorlds: 5, campaignBosses: 6, phenotypeAbsorption: 'seed-man-phenotype-absorb-v1', phenotypeExpansion: 'seed-man-phenotype-expansion-v1', phenotypeMobilityFrameRepair: 'seed-man-phenotype-mobility-frame-v1', worldFiveCombat: 'seed-man-world-five-combat-v1', campaignUi: 'seed-man-campaign-ui-v15', uiV3: 'seed-man-ui-v3', visualV4: 'seed-man-visual-v4', threeWorld: 'seed-man-three-world-v2', threePublicApi: 'seed-man-three-public-v1', threeAdapter: 'seed-man-three-adapter-v2', threeWorldBytes: threeBuild.length, autoload: true, liveRendererOwnership: true, resizeStrategy: 'event-driven', hiddenTabRendering: 'paused' }, null, 2));
