@@ -4,6 +4,7 @@ import { chromium } from '@playwright/test';
 
 const PORT = 41791;
 const BASE = `http://127.0.0.1:${PORT}`;
+const CASE_CODE = 'RWT42P';
 let server;
 let browser;
 
@@ -28,12 +29,12 @@ async function runViewport(name, viewport) {
   page.on('requestfailed', (request) => failed.push(`${request.method()} ${request.url()} :: ${request.failure()?.errorText || 'failed'}`));
 
   try {
-    const response = await page.goto(`${BASE}/games/root-cause/?case=ROOT42`, { waitUntil: 'domcontentloaded', timeout: 30_000 });
+    const response = await page.goto(`${BASE}/games/root-cause/?case=${CASE_CODE}`, { waitUntil: 'domcontentloaded', timeout: 30_000 });
     assert.ok(response, `${name}: navigation produced no response`);
     assert.equal(response.status(), 200, `${name}: route returned ${response.status()}`);
     await page.waitForFunction(() => document.querySelector('#load-status')?.textContent === 'Lab online', null, { timeout: 10_000 });
 
-    assert.equal(await page.locator('#case-code').inputValue(), 'ROOT42', `${name}: deterministic case code did not load`);
+    assert.equal(await page.locator('#case-code').inputValue(), CASE_CODE, `${name}: deterministic case code did not load`);
     assert.equal(await page.locator('#inspections button:not([disabled])').count() > 0, true, `${name}: no usable inspection actions`);
     assert.equal(await page.locator('#diagnoses button:not([disabled])').count() > 0, true, `${name}: no usable diagnosis actions`);
 
