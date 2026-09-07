@@ -272,8 +272,13 @@ document.addEventListener('keydown', (event) => {
   const target = event.target;
   if (target instanceof Element && target.closest('input,textarea,select,button,a,[contenteditable="true"]')) return;
   if (event.altKey || event.ctrlKey || event.metaKey) return;
+  if (event.key === 'd' || event.key === 'D') {
+    event.preventDefault();
+    draw();
+    return;
+  }
   const key = event.key.toLowerCase();
-  if (key === 'd' || key === 'n') {
+  if (key === 'n') {
     event.preventDefault();
     draw();
   } else if (key === 'c' && current) {
