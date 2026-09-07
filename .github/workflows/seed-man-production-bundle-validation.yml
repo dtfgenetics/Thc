@@ -1,0 +1,37 @@
+name: Seed Man Production Bundle Validation
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'games/seed-man-platformer/**'
+      - 'site/public-route-patch/games/seed-man-platformer/**'
+      - 'scripts/prepare-seed-man-combat-release.mjs'
+      - 'scripts/prepare-seed-man-world-five-combat.mjs'
+      - 'scripts/prepare-seed-man-world-five-runtime.mjs'
+      - 'scripts/validate-seed-man-production-bundle.mjs'
+      - '.github/workflows/publish-seed-man-production.yml'
+      - '.github/workflows/seed-man-production-bundle-validation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Prepare exact production artifact
+        run: node scripts/prepare-seed-man-combat-release.mjs
+      - name: Validate production bundle with named contracts
+        run: node scripts/validate-seed-man-production-bundle.mjs
+      - name: Validate public World 5 source parity
+        run: |
+          cmp games/seed-man-platformer/data/campaign.json site/public-route-patch/games/seed-man-platformer/data/campaign.json
+          cmp games/seed-man-platformer/data/levels-12-15.json site/public-route-patch/games/seed-man-platformer/data/levels-12-15.json
