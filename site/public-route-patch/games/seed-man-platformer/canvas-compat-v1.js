@@ -7,7 +7,7 @@
  */
 (() => {
   const VERSION = 'sprout-canvas-compat-v1';
-  const RELEASE = '20260830-r8';
+  const RELEASE = '20260907-r9';
   const PHENOTYPE_MOBILITY_FRAME_REPAIR = 'seed-man-phenotype-mobility-frame-v1';
   const ENEMY_ATTACK_BROWSER = 'seed-man-enemy-attacks-browser-v1';
   const proto = window.HTMLCanvasElement?.prototype;
