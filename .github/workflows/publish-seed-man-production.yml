@@ -84,6 +84,10 @@ jobs:
           grep -Fq 'bouncePads' "$root/gameplay-v2.js"
           grep -Fq 'seed-man-combat-browser-v1' "$root/combat-browser-v1.js"
           grep -Fq 'seed-man-phenotype-absorb-v1' "$root/combat-browser-v1.js"
+          grep -Fq 'seed-man-phenotype-expansion-v1' "$root/combat-browser-v1.js"
+          grep -Fq 'terpene-tempest' "$root/combat-browser-v1.js"
+          grep -Fq 'hydro-surge' "$root/combat-browser-v1.js"
+          grep -Fq 'gravity-haze' "$root/combat-browser-v1.js"
           grep -Fq 'PHENO ABSORBED' "$root/combat-browser-v1.js"
           grep -Fq 'combatBrowserAutoLoad: true' "$root/canvas-compat-v1.js"
           grep -Fq 'sprout-campaign-v3' "$root/campaign-v1.js"
@@ -197,6 +201,10 @@ jobs:
           grep -Fq 'bouncePads' "$RUNNER_TEMP/gameplay-v2.js"
           grep -Fq 'seed-man-combat-browser-v1' "$RUNNER_TEMP/combat-browser-v1.js"
           grep -Fq 'seed-man-phenotype-absorb-v1' "$RUNNER_TEMP/combat-browser-v1.js"
+          grep -Fq 'seed-man-phenotype-expansion-v1' "$RUNNER_TEMP/combat-browser-v1.js"
+          grep -Fq 'terpene-tempest' "$RUNNER_TEMP/combat-browser-v1.js"
+          grep -Fq 'hydro-surge' "$RUNNER_TEMP/combat-browser-v1.js"
+          grep -Fq 'gravity-haze' "$RUNNER_TEMP/combat-browser-v1.js"
           grep -Fq 'PHENO ABSORBED' "$RUNNER_TEMP/combat-browser-v1.js"
           grep -Fq 'combatBrowserAutoLoad: true' "$RUNNER_TEMP/canvas-compat-v1.js"
           grep -Fq 'sprout-campaign-v3' "$RUNNER_TEMP/campaign-v1.js"
@@ -234,8 +242,9 @@ jobs:
             echo "- Source SHA: $GITHUB_SHA"
             echo "- Release: \`$SPROUT_RELEASE\`"
             echo '- Route: https://dtfseeds.com/games/seed-man-platformer/'
-            echo '- Bundle: Greenhouse gameplay-v2 + browser combat-v1 + 30-second phenotype absorption + self-contained 11-level campaign v3 + Seed Man animation-v2'
+            echo '- Bundle: Greenhouse gameplay-v2 + browser combat-v1 + 30-second phenotype absorption + all-form enemy/boss expansion + self-contained 11-level campaign v3 + Seed Man animation-v2'
+            echo '- Combat: flying/blink enemies, minor/major bosses, Tempest flight, Hydro bubble, Gravity warp'
             echo '- Campaign: 11 total levels, 10 new settings, 4 worlds, 4 boss encounters'
             echo '- Publication: atomic replacement with SHA-256 verification'
-            echo '- Live gate: combat-v1, timed phenotype absorption, campaign-v3, animation-v2 and boss markers required'
+            echo '- Live gate: combat-v1, timed phenotype absorption, phenotype expansion, campaign-v3, animation-v2 and boss markers required'
           } >> "$GITHUB_STEP_SUMMARY"
