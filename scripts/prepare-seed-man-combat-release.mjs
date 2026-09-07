@@ -19,7 +19,17 @@ if (!publisher.includes(combatEntry)) {
 
 const combat = fs.readFileSync(combatPath, 'utf8');
 const compat = fs.readFileSync(compatPath, 'utf8');
-for (const marker of ['seed-man-combat-browser-v1', 'seed-man-phenotype-absorb-v1', 'combat-static-mite', 'PHENO ABSORBED', 'data-combat']) {
+for (const marker of [
+  'seed-man-combat-browser-v1',
+  'seed-man-phenotype-absorb-v1',
+  'seed-man-phenotype-expansion-v1',
+  'combat-static-mite',
+  'PHENO ABSORBED',
+  'flight-burst',
+  'bubble-form',
+  'forward-warp',
+  'data-combat'
+]) {
   if (!combat.includes(marker)) throw new Error(`Missing combat adapter marker: ${marker}`);
 }
 for (const marker of ['combatBrowserAutoLoad: true', 'combat-browser-v1.js']) {
@@ -32,5 +42,7 @@ console.log(JSON.stringify({
   publisherPatched: true,
   combatFile: 'combat-browser-v1.js',
   phenotypeAbsorption: 'seed-man-phenotype-absorb-v1',
+  phenotypeExpansion: 'seed-man-phenotype-expansion-v1',
+  mobilityForms: ['flight-burst', 'bubble-form', 'forward-warp'],
   autoload: true
 }, null, 2));
