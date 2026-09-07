@@ -4,13 +4,23 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: 'plan only or claim ready work'
+        description: 'plan, claim ready work, or reconcile one job'
         required: true
         default: plan
         type: choice
         options:
           - plan
           - dispatch
+          - reconcile
+      issue:
+        description: 'Issue number for reconcile mode'
+        required: false
+        type: string
+      apply:
+        description: 'Apply reconciliation mutations (dry-run when false)'
+        required: false
+        default: false
+        type: boolean
   schedule:
     - cron: '*/15 * * * *'
 
@@ -42,15 +52,32 @@ jobs:
         run: |
           set -euo pipefail
           node --check scripts/orchestrator.mjs
+          node --check scripts/orchestrator-reconcile.mjs
           node --check scripts/orchestrator/core.mjs
           node --check scripts/orchestrator/state.mjs
           node --check scripts/orchestrator/leases.mjs
+          node --check scripts/orchestrator/reconcile.mjs
           node scripts/test-worker-orchestrator.mjs
 
       - name: Ensure orchestration labels
         run: node scripts/orchestrator.mjs labels
 
+      - name: Reconcile one job
+        if: github.event_name == 'workflow_dispatch' && inputs.mode == 'reconcile'
+        run: |
+          set -euo pipefail
+          if [[ -z "${{ inputs.issue }}" ]]; then
+            echo 'issue input is required for reconcile mode' >&2
+            exit 2
+          fi
+          args=(--issue="${{ inputs.issue }}")
+          if [[ "${{ inputs.apply }}" == "true" ]]; then
+            args+=(--apply=true)
+          fi
+          node scripts/orchestrator-reconcile.mjs "${args[@]}" | tee "$RUNNER_TEMP/worker-reconcile.json"
+
       - name: Plan worker allocation
+        if: github.event_name == 'schedule' || inputs.mode == 'plan' || inputs.mode == 'dispatch'
         run: |
           set -euo pipefail
           node scripts/orchestrator.mjs plan | tee "$RUNNER_TEMP/worker-plan.json"
@@ -89,5 +116,12 @@ jobs:
             echo '### Dispatch result' >> "$GITHUB_STEP_SUMMARY"
             echo '```json' >> "$GITHUB_STEP_SUMMARY"
             cat "$RUNNER_TEMP/worker-dispatch.json" >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+          fi
+          if [[ -s "$RUNNER_TEMP/worker-reconcile.json" ]]; then
+            echo '' >> "$GITHUB_STEP_SUMMARY"
+            echo '### Reconciliation result' >> "$GITHUB_STEP_SUMMARY"
+            echo '```json' >> "$GITHUB_STEP_SUMMARY"
+            cat "$RUNNER_TEMP/worker-reconcile.json" >> "$GITHUB_STEP_SUMMARY"
             echo '```' >> "$GITHUB_STEP_SUMMARY"
           fi
