@@ -1,0 +1,82 @@
+name: Publish Shared Game Platform
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/publish-shared-game-platform.yml
+      - scripts/publish-shared-game-platform-via-wordpress.mjs
+      - scripts/verify-shared-game-platform-live.mjs
+      - scripts/sync-game-shared-platform.mjs
+      - games/shared-platform/**
+      - site/public-route-patch/games/shared-platform/**
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish-shared-game-platform
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    environment: production
+    env:
+      WP_SITE_URL: https://dtfseeds.com
+      DTF_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Validate canonical shared platform runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run games:platform:test
+          npm run games:platform:sync-check
+          node --check scripts/publish-shared-game-platform-via-wordpress.mjs
+          node --check scripts/verify-shared-game-platform-live.mjs
+          root=site/public-route-patch/games/shared-platform
+          for file in .htaccess manifest.json index.mjs settings.mjs replay.mjs telemetry.mjs input.mjs audio.mjs; do
+            test -s "$root/$file" || { echo "Missing shared platform file: $file" >&2; exit 1; }
+          done
+          grep -Fq 'AddType text/javascript .mjs' "$root/.htaccess"
+          grep -Fq '"platformVersion": "1.1.0"' "$root/manifest.json"
+          grep -Fq "DTF_GAME_PLATFORM_VERSION = '1.1.0'" "$root/index.mjs"
+
+      - name: Atomically publish shared platform route
+        run: node scripts/publish-shared-game-platform-via-wordpress.mjs
+
+      - name: Install live browser verifier
+        run: |
+          npm ci
+          npx playwright install chromium
+
+      - name: Verify live module MIME import and consumer compatibility
+        run: node scripts/verify-shared-game-platform-live.mjs
+
+      - name: Shared platform production summary
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo '## DTF shared game platform production route'
+            echo
+            echo '- Route: `https://dtfseeds.com/games/shared-platform/`'
+            echo '- Module: `https://dtfseeds.com/games/shared-platform/index.mjs`'
+            echo '- Version: `1.1.0`'
+            echo '- Publication: atomic replacement with SHA-256 verification'
+            echo '- Live gate: JavaScript MIME + browser dynamic import + settings-store exercise'
+          } >> "$GITHUB_STEP_SUMMARY"

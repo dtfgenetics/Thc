@@ -1,0 +1,59 @@
+name: Shared Game Platform CI
+
+on:
+  pull_request:
+    paths:
+      - .github/workflows/shared-game-platform-ci.yml
+      - .github/workflows/publish-shared-game-platform.yml
+      - scripts/publish-shared-game-platform-via-wordpress.mjs
+      - scripts/verify-shared-game-platform-live.mjs
+      - scripts/sync-game-shared-platform.mjs
+      - games/shared-platform/**
+      - site/public-route-patch/games/shared-platform/**
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/shared-game-platform-ci.yml
+      - .github/workflows/publish-shared-game-platform.yml
+      - scripts/publish-shared-game-platform-via-wordpress.mjs
+      - scripts/verify-shared-game-platform-live.mjs
+      - scripts/sync-game-shared-platform.mjs
+      - games/shared-platform/**
+      - site/public-route-patch/games/shared-platform/**
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test canonical shared runtime
+        run: npm run games:platform:test
+      - name: Verify public runtime parity
+        run: npm run games:platform:sync-check
+      - name: Check release-control source syntax
+        run: |
+          node --check scripts/publish-shared-game-platform-via-wordpress.mjs
+          node --check scripts/verify-shared-game-platform-live.mjs
+          node --check scripts/sync-game-shared-platform.mjs
+      - name: Verify browser module and MIME contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          root=site/public-route-patch/games/shared-platform
+          required=(.htaccess manifest.json index.mjs settings.mjs replay.mjs telemetry.mjs input.mjs audio.mjs)
+          for file in "${required[@]}"; do
+            test -s "$root/$file" || { echo "Missing shared platform release file: $file" >&2; exit 1; }
+          done
+          grep -Fq 'AddType text/javascript .mjs' "$root/.htaccess"
+          grep -Fq 'X-Content-Type-Options "nosniff"' "$root/.htaccess"
+          grep -Fq '"platformVersion": "1.1.0"' "$root/manifest.json"
+          grep -Fq "DTF_GAME_PLATFORM_VERSION = '1.1.0'" "$root/index.mjs"
+          grep -Fq "'/games/shared-platform/index.mjs'" site/public-route-patch/games/seed-man-platformer/input-guard-v1.js

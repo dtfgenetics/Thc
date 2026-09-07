@@ -1,0 +1,11 @@
+# Shared DTF browser-game modules must be served with JavaScript MIME types.
+# Keep this scoped to /games/shared-platform/ so unrelated WordPress routes are unaffected.
+<IfModule mod_mime.c>
+  AddType text/javascript .mjs
+  AddType application/json .json
+</IfModule>
+
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set Cache-Control "public, max-age=300, must-revalidate"
+</IfModule>
