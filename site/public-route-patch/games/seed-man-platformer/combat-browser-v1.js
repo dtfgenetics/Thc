@@ -34,8 +34,11 @@
 
   const overlap = (a, b) => a.x < b.x + b.width && a.x + a.width > b.x && a.y < b.y + b.height && a.y + a.height > b.y;
   const cloneEnemy = (def, index) => ({ ...def, maxHealth: def.health, dir: index % 2 ? -1 : 1, defeated: false, hitFlash: 0, freeze: 0, burn: 0, burnTick: 0 });
+  const emptyResources = () => ({ resin: 0, trichomes: 0, nutrients: 0, 'genetic-fragments': 0, alleles: 0 });
 
-  function resetCombat() {
+  function resetCombat({ preserveProgression = true } = {}) {
+    const savedDiscoveries = preserveProgression ? [...discoveredPhenotypes] : [];
+    const savedResources = preserveProgression ? { ...emptyResources(), ...resources } : emptyResources();
     enemies = ENEMIES.map(cloneEnemy);
     projectiles = [];
     facing = 1;
@@ -43,8 +46,8 @@
     abilityCooldown = 0;
     activePhenotype = null;
     phenotypeRemaining = 0;
-    discoveredPhenotypes = [];
-    resources = { resin: 0, trichomes: 0, nutrients: 0, 'genetic-fragments': 0, alleles: 0 };
+    discoveredPhenotypes = savedDiscoveries;
+    resources = savedResources;
     defeated = 0;
     notice = { text: 'Seed Slinger ready · J / ATTACK', until: 2.4 };
     simTime = 0;
@@ -381,7 +384,7 @@
   }, { passive: false });
 
   injectUi();
-  resetCombat();
+  resetCombat({ preserveProgression: false });
   const installed = installRuntimeHooks();
   window.__SPROUT_COMBAT_BROWSER__ = Object.freeze({
     version: VERSION,
