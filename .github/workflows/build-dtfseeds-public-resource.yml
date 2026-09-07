@@ -203,7 +203,7 @@ jobs:
               node --check site/public-route-patch/games/seed-man-platformer/world-five-v1.js
               node --check site/public-route-patch/games/seed-man-platformer/combat-browser-v1.js
               test -s site/public-route-patch/games/seed-man-platformer/data/levels-12-15.json
-              grep -Fq 'seed-man-world-five-runtime-v1' site/public-route-patch/games/seed-man-platformer/world-five-v1.js
+              grep -Fq 'seed-man-world-five-state-sync-v1' site/public-route-patch/games/seed-man-platformer/world-five-v1.js
               grep -Fq 'seed-man-world-five-combat-v1' site/public-route-patch/games/seed-man-platformer/combat-browser-v1.js
               mkdir -p release-resource/games/seed-man-platformer
               cp -a site/public-route-patch/games/seed-man-platformer/. release-resource/games/seed-man-platformer/
