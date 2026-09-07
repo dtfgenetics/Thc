@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "retirements": [
+    {
+      "branch": "build/burn-buds-production",
+      "headSha": "b5002172bc89a558c9d5100f2c1453c629de3494",
+      "supersededBy": "f6260fe0292d58a2782d656c18d7e8c0f7ec0644",
+      "status": "approved",
+      "reviewedAt": "2026-09-06",
+      "reason": "Semantic salvage confirmed this 15-commit historical branding/registry layer is fully superseded on current main. The branch still marks Burn Buds playable-beta, while main is production-ready and preserves the same static PHP WordPress-transient multiplayer architecture plus native targeting, presence, telemetry, formation-specific burn feedback, and public hub identity. Main's branding CI preserves all historical identity, compatibility-route, asset, SVG, API, rematch, fire/place, and storage checks while adding current runtime-sync, accessibility, presence, gamefeel, gameplay and native-targeting tests. The branding runtime also preserves historical copy/share/icon behavior while expanding normalization and metadata surfaces. No open PR owns the exact branch tip."
+    }
+  ]
+}
