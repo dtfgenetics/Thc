@@ -32,8 +32,13 @@ for (const marker of [
 ]) {
   if (!combat.includes(marker)) throw new Error(`Missing combat adapter marker: ${marker}`);
 }
-for (const marker of ['combatBrowserAutoLoad: true', 'combat-browser-v1.js']) {
-  if (!compat.includes(marker)) throw new Error(`Missing combat autoload marker: ${marker}`);
+for (const marker of [
+  'combatBrowserAutoLoad: true',
+  'combat-browser-v1.js',
+  'seed-man-phenotype-mobility-frame-v1',
+  'mobilityFrameRepairInstalled'
+]) {
+  if (!compat.includes(marker)) throw new Error(`Missing combat compatibility marker: ${marker}`);
 }
 if (!publisher.includes(combatEntry)) throw new Error('Combat adapter was not added to Seed Man publisher allowlist.');
 
@@ -43,6 +48,7 @@ console.log(JSON.stringify({
   combatFile: 'combat-browser-v1.js',
   phenotypeAbsorption: 'seed-man-phenotype-absorb-v1',
   phenotypeExpansion: 'seed-man-phenotype-expansion-v1',
+  phenotypeMobilityFrameRepair: 'seed-man-phenotype-mobility-frame-v1',
   mobilityForms: ['terpene-tempest:flight', 'hydro-surge:bubble', 'gravity-haze:warp'],
   autoload: true
 }, null, 2));
