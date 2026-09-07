@@ -52,12 +52,18 @@
       console.error('Seed Man 15-level campaign UI contract could not initialize.');
       return;
     }
+    if (baseExperience.version === VERSION) {
+      normalizeVisibleCampaignUi();
+      return;
+    }
 
     const baseLevelIds = new Set(window.__SPROUT_CAMPAIGN_BASE_LEVELS__ || []);
     const frontierIds = new Set(campaign.listLevels().filter((entry) => entry.worldId === 'world-05').map((entry) => entry.id));
 
     const wrappedExperience = Object.freeze({
       ...baseExperience,
+      version: VERSION,
+      baseVersion: baseExperience.version,
       levelCount: TOTAL_LEVELS,
       newLevelCount: TOTAL_LEVELS - 1,
       bossCount: TOTAL_BOSSES,
@@ -96,5 +102,6 @@
     normalizeVisibleCampaignUi();
   }
 
-  window.addEventListener('load', () => setTimeout(install, 0), { once: true });
+  if (document.readyState === 'complete') setTimeout(install, 0);
+  else window.addEventListener('load', () => setTimeout(install, 0), { once: true });
 })();
