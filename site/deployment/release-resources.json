@@ -64,6 +64,42 @@
         "coordinator": "dtfseeds-resource-production-gateway.yml",
         "sharedProductionTarget": "wordpress:temporary-code-snippets-bridge"
       }
+    },
+    "seed-man-platformer": {
+      "studioResource": "game.seed-man-platformer",
+      "route": "/games/seed-man-platformer/",
+      "artifactRoot": "games/seed-man-platformer",
+      "productionTarget": "route:/games/seed-man-platformer/",
+      "checkpointTag": "dtfseeds-production-game-seed-man-platformer",
+      "publicSuiteOwnership": "resource",
+      "sourcePrefixes": [
+        "games/seed-man-platformer/",
+        "site/public-route-patch/games/seed-man-platformer/",
+        "scripts/prepare-seed-man-combat-release.mjs",
+        "scripts/prepare-seed-man-world-five-combat.mjs",
+        "scripts/prepare-seed-man-world-five-runtime.mjs",
+        "scripts/publish-seed-man-route-via-wordpress.mjs",
+        ".github/workflows/publish-seed-man-production.yml",
+        ".github/workflows/seed-man-world-five-live.yml"
+      ],
+      "exactPaths": ["site/deployment/public-apps.json"],
+      "requiredFiles": [
+        "games/seed-man-platformer/index.html",
+        "games/seed-man-platformer/world-five-v1.js",
+        "games/seed-man-platformer/combat-browser-v1.js",
+        "games/seed-man-platformer/enemy-attacks-browser-v1.js",
+        "games/seed-man-platformer/enemy-attacks.js",
+        "games/seed-man-platformer/data/campaign.json",
+        "games/seed-man-platformer/data/levels-12-15.json"
+      ],
+      "verifyMarker": "Sprout Run",
+      "publisher": {
+        "type": "wordpress-dedicated-route",
+        "workflow": "publish-seed-man-production.yml",
+        "status": "production",
+        "orchestration": "dedicated",
+        "sharedProductionTarget": "wordpress:seed-man-route"
+      }
     }
   }
 }

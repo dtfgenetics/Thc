@@ -3,8 +3,9 @@
   "id": "sprout-run-campaign",
   "title": "Seed Man: Sprout Run",
   "defaultLevelId": "sprout-run",
-  "levelCount": 11,
-  "newLevelCount": 10,
+  "levelCount": 15,
+  "newLevelCount": 14,
+  "baseRuntimeCompatibility": {"levelCount": 11, "newLevelCount": 10},
   "worlds": [
     {
       "id": "world-01",
@@ -43,6 +44,17 @@
       "levels": [
         {"id":"frostline-canopy","title":"Frostline Canopy","order":10,"status":"playable","dataPath":"data/levels-02-11.json","dataKey":"frostline-canopy","publicDataElementId":"seed-man-level"},
         {"id":"cloud-nine-citadel","title":"Cloud Nine Citadel","order":11,"status":"playable","dataPath":"data/levels-02-11.json","dataKey":"cloud-nine-citadel","publicDataElementId":"seed-man-level"}
+      ]
+    },
+    {
+      "id": "world-05",
+      "title": "Genetic Frontier",
+      "order": 5,
+      "levels": [
+        {"id":"chromosome-crossing","title":"Chromosome Crossing","order":12,"status":"playable","dataPath":"data/levels-12-15.json","dataKey":"chromosome-crossing","publicDataElementId":"seed-man-level"},
+        {"id":"mutation-marsh","title":"Mutation Marsh","order":13,"status":"playable","dataPath":"data/levels-12-15.json","dataKey":"mutation-marsh","publicDataElementId":"seed-man-level"},
+        {"id":"allele-array","title":"Allele Array","order":14,"status":"playable","dataPath":"data/levels-12-15.json","dataKey":"allele-array","publicDataElementId":"seed-man-level"},
+        {"id":"genome-spire","title":"Genome Spire","order":15,"status":"playable","dataPath":"data/levels-12-15.json","dataKey":"genome-spire","publicDataElementId":"seed-man-level"}
       ]
     }
   ]

@@ -82,6 +82,8 @@ jobs:
           grep -Fq "'/games/high-land/'" "$RUNNER_TEMP/dtf-suite-resource-aware.mjs"
           ! grep -Fq "'games/high-iq'" "$RUNNER_TEMP/dtf-suite-resource-aware.mjs"
           ! grep -Fq "'/games/high-iq/'" "$RUNNER_TEMP/dtf-suite-resource-aware.mjs"
+          ! grep -Fq "'games/seed-man-platformer'" "$RUNNER_TEMP/dtf-suite-resource-aware.mjs"
+          ! grep -Fq "'/games/seed-man-platformer/'" "$RUNNER_TEMP/dtf-suite-resource-aware.mjs"
           for marker in \
             "'atlas'" \
             "'assets/images/atlas'" \
@@ -97,6 +99,7 @@ jobs:
           done
           grep -Fq 'resourceOwnedTargetsExcluded' "$RUNNER_TEMP/ownership-report.json"
           grep -Fq 'games/high-iq' "$RUNNER_TEMP/ownership-report.json"
+          grep -Fq 'games/seed-man-platformer' "$RUNNER_TEMP/ownership-report.json"
           grep -Fq 'atlasScope' "$RUNNER_TEMP/ownership-report.json"
 
       - name: Validate production writer and coordinator contracts
@@ -111,8 +114,10 @@ jobs:
             grep -Fq 'dtf-wordpress-temporary-code-snippets-bridge' "$workflow"
             ! grep -Fq 'Atlas deployment target allowlist' "$workflow"
             ! grep -Fq "check 'https://dtfseeds.com/games/high-iq/'" "$workflow"
+            ! grep -Fq "check 'https://dtfseeds.com/games/seed-man-platformer/'" "$workflow"
           done
-          grep -Fq 'Suite-owned public game routes verified: 24/24' .github/workflows/deploy-games-suite-lock-recovery.yml
+          grep -Fq 'Suite-owned public game routes verified: 23/23' .github/workflows/deploy-games-suite-lock-recovery.yml
+          grep -Fq 'Resource-owned routes excluded from this writer: High IQ and Seed Man' .github/workflows/deploy-games-suite-lock-recovery.yml
           grep -Fq 'High Land remains suite-owned' .github/workflows/deploy-public-suite-wordpress-v2.yml
           grep -Fq 'High IQ is resource-owned' .github/workflows/deploy-public-suite-wordpress-v2.yml
 
@@ -152,4 +157,5 @@ jobs:
             php -l "$file.php"
             grep -Fq "'games/high-land'" "$file"
             ! grep -Fq "'games/high-iq'" "$file"
+            ! grep -Fq "'games/seed-man-platformer'" "$file"
           done

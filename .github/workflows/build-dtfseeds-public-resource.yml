@@ -12,14 +12,20 @@ on:
           - all
           - high-land
           - high-iq
+          - seed-man-platformer
   pull_request:
     branches: [main]
     paths:
       - 'apps/high-land-web/**'
       - 'games/high-iq/**'
+      - 'games/seed-man-platformer/**'
       - 'site/public-route-patch/games/high-iq/**'
+      - 'site/public-route-patch/games/seed-man-platformer/**'
       - 'site/deployment/public-apps.json'
       - 'site/deployment/release-resources.json'
+      - 'scripts/prepare-seed-man-combat-release.mjs'
+      - 'scripts/prepare-seed-man-world-five-combat.mjs'
+      - 'scripts/prepare-seed-man-world-five-runtime.mjs'
       - 'scripts/plan-dtfseeds-resource-release.mjs'
       - 'scripts/package-dtf-public-resource.py'
       - 'scripts/verify-dtf-public-resource-artifact.py'
@@ -38,9 +44,14 @@ on:
     paths:
       - 'apps/high-land-web/**'
       - 'games/high-iq/**'
+      - 'games/seed-man-platformer/**'
       - 'site/public-route-patch/games/high-iq/**'
+      - 'site/public-route-patch/games/seed-man-platformer/**'
       - 'site/deployment/public-apps.json'
       - 'site/deployment/release-resources.json'
+      - 'scripts/prepare-seed-man-combat-release.mjs'
+      - 'scripts/prepare-seed-man-world-five-combat.mjs'
+      - 'scripts/prepare-seed-man-world-five-runtime.mjs'
       - 'scripts/plan-dtfseeds-resource-release.mjs'
       - 'scripts/package-dtf-public-resource.py'
       - 'scripts/verify-dtf-public-resource-artifact.py'
@@ -182,6 +193,20 @@ jobs:
               npm run hiq:validate
               mkdir -p release-resource/games/high-iq
               cp -a site/public-route-patch/games/high-iq/. release-resource/games/high-iq/
+              ;;
+            seed-man-platformer)
+              node scripts/prepare-seed-man-combat-release.mjs
+              node games/seed-man-platformer/test/physics.test.mjs
+              node games/seed-man-platformer/test/campaign.test.mjs
+              node games/seed-man-platformer/test/combat.test.mjs
+              node games/seed-man-platformer/test/public-campaign.test.mjs
+              node --check site/public-route-patch/games/seed-man-platformer/world-five-v1.js
+              node --check site/public-route-patch/games/seed-man-platformer/combat-browser-v1.js
+              test -s site/public-route-patch/games/seed-man-platformer/data/levels-12-15.json
+              grep -Fq 'seed-man-world-five-state-sync-v1' site/public-route-patch/games/seed-man-platformer/world-five-v1.js
+              grep -Fq 'seed-man-world-five-combat-v1' site/public-route-patch/games/seed-man-platformer/combat-browser-v1.js
+              mkdir -p release-resource/games/seed-man-platformer
+              cp -a site/public-route-patch/games/seed-man-platformer/. release-resource/games/seed-man-platformer/
               ;;
             *)
               echo "Unsupported resource: $RESOURCE_ID" >&2

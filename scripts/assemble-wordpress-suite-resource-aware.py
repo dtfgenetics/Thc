@@ -23,6 +23,7 @@ ATLAS_REQUIRED = [
     'assets/images/atlas/root-system/rhizosphere-microbe-interaction.svg',
 ]
 ATLAS_PREFIXES = ['atlas/', 'assets/images/atlas/']
+RESOURCE_OWNED_GAME_TARGETS = ['games/high-iq', 'games/seed-man-platformer']
 
 
 def extend_php_array(text: str, variable: str, additions: list[str]) -> str:
@@ -61,8 +62,9 @@ with tempfile.TemporaryDirectory(prefix='dtf-suite-resource-aware-') as temp:
     for marker in [*ATLAS_TARGETS, *ATLAS_REQUIRED, *ATLAS_PREFIXES]:
         if repr(marker) not in transformed:
             raise SystemExit(f'Atlas scope marker disappeared from resource-aware bridge: {marker}')
-    if "'games/high-iq'" in transformed:
-        raise SystemExit('resource-owned High IQ target remained after Atlas scope merge')
+    for target in RESOURCE_OWNED_GAME_TARGETS:
+        if repr(target) in transformed:
+            raise SystemExit(f'resource-owned game target remained after Atlas scope merge: {target}')
     if "'games/high-land'" not in transformed:
         raise SystemExit('suite-owned High Land target disappeared before its independent publisher is proven')
 

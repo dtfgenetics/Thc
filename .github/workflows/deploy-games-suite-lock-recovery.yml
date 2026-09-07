@@ -65,7 +65,11 @@ jobs:
           grep -Fq "'/games/high-land/'" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
           ! grep -Fq "'games/high-iq'" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
           ! grep -Fq "'/games/high-iq/'" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          ! grep -Fq "'games/seed-man-platformer'" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          ! grep -Fq "'/games/seed-man-platformer/'" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
           grep -Fq 'resourceOwnedTargetsExcluded' "$RUNNER_TEMP/resource-ownership-bridge.json"
+          grep -Fq 'games/high-iq' "$RUNNER_TEMP/resource-ownership-bridge.json"
+          grep -Fq 'games/seed-man-platformer' "$RUNNER_TEMP/resource-ownership-bridge.json"
           python - <<'PY'
           import os, pathlib, re
           text=(pathlib.Path(os.environ['RUNNER_TEMP'])/'deploy-public-suite-v2.mjs').read_text()
@@ -116,6 +120,7 @@ jobs:
           grep -Fq "'atlas/leaf-module/index.html'" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
           grep -Fq "'games/high-land'" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
           ! grep -Fq "'games/high-iq'" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
+          ! grep -Fq "'games/seed-man-platformer'" "$RUNNER_TEMP/deploy-public-suite-v2.mjs"
 
       - name: Build current validated public suite
         id: build
@@ -152,8 +157,6 @@ jobs:
           test -s "$suite_root/games/trichome-trials/index.html"
           test -s "$suite_root/games/pheno-draft/index.html"
           test -s "$suite_root/games/high-lines/index.html"
-          grep -Fq 'JUMP ×2' "$suite_root/games/seed-man-platformer/index.html"
-          grep -Fq '7,800 px course' "$suite_root/games/seed-man-platformer/index.html"
           echo "root=$suite_root" >> "$GITHUB_OUTPUT"
 
       - name: Package resource-aware app-owned production suite
@@ -173,11 +176,15 @@ jobs:
               names=z.namelist()
               assert 'games/high-land/index.html' in names
               assert not [n for n in names if n == 'games/high-iq' or n.startswith('games/high-iq/')]
+              assert not [n for n in names if n == 'games/seed-man-platformer' or n.startswith('games/seed-man-platformer/')]
               manifest=json.loads(z.read('.dtf-suite-manifest.json'))
-              assert '/games/high-iq/' in set(manifest['resourceOwnedRoutesExcluded'])
-              assert '/games/high-land/' not in set(manifest['resourceOwnedRoutesExcluded'])
+              excluded=set(manifest['resourceOwnedRoutesExcluded'])
+              assert '/games/high-iq/' in excluded
+              assert '/games/seed-man-platformer/' in excluded
+              assert '/games/high-land/' not in excluded
               assert 'games/high-land' in manifest['targets']
               assert 'games/high-iq' not in manifest['targets']
+              assert 'games/seed-man-platformer' not in manifest['targets']
           PY
           echo "archive=$archive" >> "$GITHUB_OUTPUT"
 
@@ -224,9 +231,10 @@ jobs:
           NODE
 
           suite_count="$(wc -l < "$RUNNER_TEMP/public-game-routes.txt" | tr -d ' ')"
-          test "$suite_count" -eq 24
+          test "$suite_count" -eq 23
           grep -Fxq '/games/high-land/' "$RUNNER_TEMP/public-game-routes.txt"
           ! grep -Fxq '/games/high-iq/' "$RUNNER_TEMP/public-game-routes.txt"
+          ! grep -Fxq '/games/seed-man-platformer/' "$RUNNER_TEMP/public-game-routes.txt"
           while IFS= read -r route; do
             echo "Checking $route"
             body="$(mktemp)"
@@ -259,11 +267,6 @@ jobs:
           hub="$(curl -fsSL --retry 5 --retry-delay 5 -H 'Cache-Control: no-cache, no-store, max-age=0' "https://dtfseeds.com/games/?dtf_games_deploy=${GITHUB_RUN_ID}")"
           grep -Fqi '25 playable browser games' <<<"$hub"
 
-          sprout="$(curl -fsSL --retry 5 --retry-delay 5 -H 'Cache-Control: no-cache, no-store, max-age=0' "https://dtfseeds.com/games/seed-man-platformer/?dtf_games_deploy=${GITHUB_RUN_ID}")"
-          grep -Fq 'JUMP ×2' <<<"$sprout"
-          grep -Fq '7,800 px course' <<<"$sprout"
-          grep -Fq '0 / 24' <<<"$sprout"
-
       - name: Record deployed revision
         shell: bash
         run: |
@@ -273,8 +276,8 @@ jobs:
             echo "- Main revision: $(git rev-parse HEAD)"
             echo "- Validated build run: ${{ steps.build.outputs.run_id }}"
             echo '- Hardened transaction lease recovery: enabled'
-            echo '- Suite-owned public game routes verified: 24/24'
-            echo '- Resource-owned route excluded from this writer: High IQ'
+            echo '- Suite-owned public game routes verified: 23/23'
+            echo '- Resource-owned routes excluded from this writer: High IQ and Seed Man'
             echo '- High Land remains suite-owned pending independent SSH publisher validation'
-            echo '- Sprout Run expanded build markers verified live'
+            echo '- Seed Man live verification is owned by Publish Seed Man Production + Seed Man World 5 Live Acceptance'
           } >> "$GITHUB_STEP_SUMMARY"

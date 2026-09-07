@@ -12,6 +12,7 @@ import { PHENOTYPES, PHENOTYPE_ABILITIES, getPhenotypeAbility } from '../src/sys
 import {
   ENEMY_ARCHETYPES,
   LEVEL_01_COMBAT_ENCOUNTERS,
+  WORLD_05_COMBAT_ENCOUNTERS,
   CAMPAIGN_PHENOTYPE_CARRIERS,
   BOSS_ARCHETYPES,
   createEnemyFromArchetype,
@@ -24,7 +25,7 @@ function advance(state, seconds, dt = 1 / 60) {
   return next;
 }
 
-assert.ok(Object.keys(ENEMY_ARCHETYPES).length >= 20, 'Combat roster should contain standard, elite, flying, and boss archetypes.');
+assert.ok(Object.keys(ENEMY_ARCHETYPES).length >= 27, 'Combat roster should contain expanded standard, elite, flying, elemental, and boss archetypes.');
 const authoredEncounters = instantiateEncounterSet();
 assert.equal(authoredEncounters.length, LEVEL_01_COMBAT_ENCOUNTERS.length);
 assert.ok(authoredEncounters.some((enemy) => enemy.phenotypeReward === 'static-haze'), 'Level 1 should contain an elite phenotype carrier.');
@@ -33,9 +34,18 @@ const frostElite = createEnemyFromArchetype('elite-frost-aphid', { id: 'test-fro
 assert.equal(frostElite.phenotypeReward, 'frost-resin');
 assert.equal(frostElite.drops.alleles, 1);
 
+for (const id of ['chromosome-crossing', 'mutation-marsh', 'allele-array', 'genome-spire']) {
+  assert.ok(Array.isArray(WORLD_05_COMBAT_ENCOUNTERS[id]) && WORLD_05_COMBAT_ENCOUNTERS[id].length >= 3, `${id} needs an authored combat set`);
+}
+const frontierEnemies = Object.values(WORLD_05_COMBAT_ENCOUNTERS).flat().map((definition) => createEnemyFromArchetype(definition.archetype, definition));
+assert.ok(frontierEnemies.some((enemy) => enemy.phenotypeReward === 'solar-flare'), 'Genetic Frontier must contain a fire phenotype carrier.');
+assert.ok(frontierEnemies.some((enemy) => enemy.phenotypeReward === 'static-haze'), 'Genetic Frontier must contain an electric phenotype carrier.');
+assert.ok(frontierEnemies.some((enemy) => enemy.phenotypeReward === 'frost-resin'), 'Genetic Frontier must contain an ice phenotype carrier.');
+assert.ok(frontierEnemies.some((enemy) => enemy.kind === 'genome-hydra' && enemy.rank === 'major-boss'), 'Genome Spire must contain the Genome Hydra major boss.');
+
 assert.equal(Object.keys(PHENOTYPES).length, 10, 'Seed Man should retain ten canonical phenotype families.');
 assert.equal(Object.keys(PHENOTYPE_ABILITIES).length, 10, 'Every canonical phenotype needs an authored action contract.');
-assert.equal(CAMPAIGN_PHENOTYPE_CARRIERS.length, 10, 'Every phenotype should have an elite carrier archetype.');
+assert.equal(CAMPAIGN_PHENOTYPE_CARRIERS.length, 13, 'Expanded campaign should include the original phenotype carriers plus three elemental frontier elites.');
 for (const archetypeId of CAMPAIGN_PHENOTYPE_CARRIERS) {
   const archetype = ENEMY_ARCHETYPES[archetypeId];
   assert.ok(archetype, `Missing phenotype carrier ${archetypeId}`);
@@ -47,13 +57,15 @@ assert.equal(getPhenotypeAbility('hydro-surge').action, 'bubble-form');
 assert.equal(getPhenotypeAbility('gravity-haze').action, 'forward-warp');
 assert.equal(getPhenotypeAbility('vine-lash').type, 'melee');
 assert.equal(getPhenotypeAbility('rootbreaker').type, 'ground');
-assert.equal(BOSS_ARCHETYPES.minor.length, 3);
-assert.equal(BOSS_ARCHETYPES.major.length, 3);
+assert.equal(BOSS_ARCHETYPES.minor.length, 4);
+assert.equal(BOSS_ARCHETYPES.major.length, 4);
 for (const id of [...BOSS_ARCHETYPES.minor, ...BOSS_ARCHETYPES.major]) {
   assert.ok(ENEMY_ARCHETYPES[id]?.telegraphSeconds >= 0.65, `${id} must telegraph major attacks.`);
 }
 assert.ok(BOSS_ARCHETYPES.major.some((id) => ENEMY_ARCHETYPES[id].movement === 'flying'), 'Major boss roster should include a flying boss.');
 assert.ok(BOSS_ARCHETYPES.major.some((id) => ENEMY_ARCHETYPES[id].movement === 'blink'), 'Major boss roster should include a warp/blink boss.');
+assert.equal(ENEMY_ARCHETYPES['major-boss-genome-hydra'].phases, 4, 'Genome Hydra should expose a four-phase boss contract.');
+assert.equal(ENEMY_ARCHETYPES['major-boss-genome-hydra'].attackPattern, 'radial-burst');
 
 let aiState = createCombatState({
   enemies: [
@@ -162,4 +174,4 @@ assert.equal(snapshot.bossesAlive, 0);
 assert.equal(snapshot.projectiles, 3);
 assert.equal(snapshot.absorbedPhenotype, null);
 
-console.log('Seed Man combat, canonical flying/blink/boss AI, full phenotype action roster, timed absorption, and expiry tests passed');
+console.log('Seed Man combat, frontier elemental carriers, canonical flying/blink/boss AI, phenotype actions, timed absorption, and expiry tests passed');

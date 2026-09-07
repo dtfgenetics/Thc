@@ -6,8 +6,11 @@ on:
     branches: [main]
     paths:
       - .github/workflows/publish-seed-man-production.yml
+      - .github/workflows/seed-man-world-five-live.yml
       - scripts/publish-seed-man-route-via-wordpress.mjs
       - scripts/prepare-seed-man-combat-release.mjs
+      - scripts/prepare-seed-man-world-five-combat.mjs
+      - scripts/prepare-seed-man-world-five-runtime.mjs
       - site/public-route-patch/games/seed-man-platformer/**
 
 permissions:
@@ -38,7 +41,7 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Prepare Seed Man combat release publisher
+      - name: Prepare Seed Man production release
         run: node scripts/prepare-seed-man-combat-release.mjs
 
       - name: Validate complete Seed Man release bundle
@@ -48,8 +51,9 @@ jobs:
           root=site/public-route-patch/games/seed-man-platformer
           required=(
             .htaccess index.html app.js canvas-compat-v1.js campaign-v1.js
-            seed-man-production-art.js gameplay-v2.js combat-browser-v1.js input-guard-v1.js seed-man.css
-            physics.mjs data/campaign.json data/level-01.json
+            seed-man-production-art.js gameplay-v2.js combat-browser-v1.js enemy-attacks-browser-v1.js enemy-attacks.js
+            world-five-v1.js input-guard-v1.js seed-man.css physics.mjs
+            data/campaign.json data/level-01.json data/levels-12-15.json
           )
           for file in "${required[@]}"; do
             test -s "$root/$file" || { echo "Missing $file" >&2; exit 1; }
@@ -65,6 +69,7 @@ jobs:
           grep -Fq 'stomp pests from above' "$root/index.html"
           grep -Fq "./gameplay-v2.js?v=$release" "$root/index.html"
           grep -Fq "./campaign-v1.js?v=$release" "$root/index.html"
+          grep -Fq 'world-five-v1.js' "$root/index.html"
           grep -Fq "name=\"dtf-sprout-release\" content=\"$release\"" "$root/index.html"
           ! grep -Fq 'Original browser vertical slice' "$root/index.html"
           ! grep -Fq '0 / 8' "$root/index.html"
@@ -75,6 +80,9 @@ jobs:
           node --check "$root/seed-man-production-art.js"
           node --check "$root/gameplay-v2.js"
           node --check "$root/combat-browser-v1.js"
+          node --check "$root/enemy-attacks-browser-v1.js"
+          node --check "$root/enemy-attacks.js"
+          node --check "$root/world-five-v1.js"
           node --check "$root/input-guard-v1.js"
           node --check scripts/publish-seed-man-route-via-wordpress.mjs
 
@@ -83,12 +91,16 @@ jobs:
           grep -Fq 'pestDefs' "$root/gameplay-v2.js"
           grep -Fq 'bouncePads' "$root/gameplay-v2.js"
           grep -Fq 'seed-man-combat-browser-v1' "$root/combat-browser-v1.js"
+          grep -Fq 'seed-man-world-five-combat-v1' "$root/combat-browser-v1.js"
           grep -Fq 'seed-man-phenotype-absorb-v1' "$root/combat-browser-v1.js"
           grep -Fq 'seed-man-phenotype-expansion-v1' "$root/combat-browser-v1.js"
           grep -Fq 'terpene-tempest' "$root/combat-browser-v1.js"
           grep -Fq 'hydro-surge' "$root/combat-browser-v1.js"
           grep -Fq 'gravity-haze' "$root/combat-browser-v1.js"
           grep -Fq 'PHENO ABSORBED' "$root/combat-browser-v1.js"
+          grep -Fq 'seed-man-world-five-state-sync-v1' "$root/world-five-v1.js"
+          grep -Fq 'Genome Hydra' "$root/world-five-v1.js"
+          grep -Fq 'Voltage Wasp Alpha' "$root/world-five-v1.js"
           grep -Fq 'combatBrowserAutoLoad: true' "$root/canvas-compat-v1.js"
           grep -Fq 'sprout-campaign-v3' "$root/campaign-v1.js"
           grep -Fq 'seed-man-campaign-experience-v3' "$root/campaign-v1.js"
@@ -102,8 +114,12 @@ jobs:
           grep -Fq 'landing-squash' "$root/campaign-v1.js"
           grep -Fq 'finish-celebration' "$root/campaign-v1.js"
           grep -Fq '"id": "sprout-run-campaign"' "$root/data/campaign.json"
-          grep -Fq '"levelCount": 11' "$root/data/campaign.json"
-          grep -Fq '"newLevelCount": 10' "$root/data/campaign.json"
+          grep -Fq '"levelCount": 15' "$root/data/campaign.json"
+          grep -Fq '"newLevelCount": 14' "$root/data/campaign.json"
+          grep -Fq '"baseRuntimeLevelCount": 11' "$root/data/campaign.json"
+          grep -Fq '"baseRuntimeNewLevelCount": 10' "$root/data/campaign.json"
+          grep -Fq '"id":"chromosome-crossing"' "$root/data/levels-12-15.json"
+          grep -Fq '"id":"genome-spire"' "$root/data/levels-12-15.json"
 
       - name: Atomically publish complete route and purge caches
         shell: bash
@@ -139,10 +155,12 @@ jobs:
           const result = JSON.parse(text.slice(start, end));
           if (result.server_verified !== true) throw new Error('Server-side SHA verification did not pass.');
           if (result.release !== process.argv[3]) throw new Error(`Published ${result.release}; expected ${process.argv[3]}`);
-          if (!result.files?.['gameplay-v2.js']) throw new Error('gameplay-v2.js was not published.');
-          if (!result.files?.['combat-browser-v1.js']) throw new Error('combat-browser-v1.js was not published.');
-          if (!result.files?.['campaign-v1.js']) throw new Error('campaign-v1.js was not published.');
-          if (!result.files?.['data/campaign.json']) throw new Error('data/campaign.json was not published.');
+          for (const required of [
+            'gameplay-v2.js', 'combat-browser-v1.js', 'enemy-attacks-browser-v1.js', 'enemy-attacks.js',
+            'campaign-v1.js', 'world-five-v1.js', 'data/campaign.json', 'data/levels-12-15.json'
+          ]) {
+            if (!result.files?.[required]) throw new Error(`${required} was not published.`);
+          }
           NODE
 
       - name: Verify current release on visitor route and assets
@@ -158,6 +176,7 @@ jobs:
             grep -Fq 'stomp pests from above' "$body"
             grep -Fq "./gameplay-v2.js?v=$SPROUT_RELEASE" "$body"
             grep -Fq "./campaign-v1.js?v=$SPROUT_RELEASE" "$body"
+            grep -Fq 'world-five-v1.js' "$body"
             grep -Fq "name=\"dtf-sprout-release\" content=\"$SPROUT_RELEASE\"" "$body"
             ! grep -Fq 'Original browser vertical slice' "$body"
             ! grep -Fq '0 / 8' "$body"
@@ -183,9 +202,9 @@ jobs:
           test "$ok" = 1 || { echo 'Public Seed Man route did not update.' >&2; cat "$RUNNER_TEMP/live.headers" >&2 || true; exit 1; }
 
           assets=(
-            app.js canvas-compat-v1.js campaign-v1.js seed-man-production-art.js
-            gameplay-v2.js combat-browser-v1.js input-guard-v1.js seed-man.css physics.mjs
-            data/campaign.json data/level-01.json
+            app.js canvas-compat-v1.js campaign-v1.js seed-man-production-art.js gameplay-v2.js
+            combat-browser-v1.js enemy-attacks-browser-v1.js enemy-attacks.js world-five-v1.js
+            input-guard-v1.js seed-man.css physics.mjs data/campaign.json data/level-01.json data/levels-12-15.json
           )
           for asset in "${assets[@]}"; do
             outfile="$RUNNER_TEMP/$(echo "$asset" | tr '/' '_')"
@@ -200,12 +219,16 @@ jobs:
           grep -Fq 'pestDefs' "$RUNNER_TEMP/gameplay-v2.js"
           grep -Fq 'bouncePads' "$RUNNER_TEMP/gameplay-v2.js"
           grep -Fq 'seed-man-combat-browser-v1' "$RUNNER_TEMP/combat-browser-v1.js"
+          grep -Fq 'seed-man-world-five-combat-v1' "$RUNNER_TEMP/combat-browser-v1.js"
           grep -Fq 'seed-man-phenotype-absorb-v1' "$RUNNER_TEMP/combat-browser-v1.js"
           grep -Fq 'seed-man-phenotype-expansion-v1' "$RUNNER_TEMP/combat-browser-v1.js"
           grep -Fq 'terpene-tempest' "$RUNNER_TEMP/combat-browser-v1.js"
           grep -Fq 'hydro-surge' "$RUNNER_TEMP/combat-browser-v1.js"
           grep -Fq 'gravity-haze' "$RUNNER_TEMP/combat-browser-v1.js"
           grep -Fq 'PHENO ABSORBED' "$RUNNER_TEMP/combat-browser-v1.js"
+          grep -Fq 'seed-man-world-five-state-sync-v1' "$RUNNER_TEMP/world-five-v1.js"
+          grep -Fq 'Genome Hydra' "$RUNNER_TEMP/world-five-v1.js"
+          grep -Fq 'Voltage Wasp Alpha' "$RUNNER_TEMP/world-five-v1.js"
           grep -Fq 'combatBrowserAutoLoad: true' "$RUNNER_TEMP/canvas-compat-v1.js"
           grep -Fq 'sprout-campaign-v3' "$RUNNER_TEMP/campaign-v1.js"
           grep -Fq 'seed-man-campaign-experience-v3' "$RUNNER_TEMP/campaign-v1.js"
@@ -219,8 +242,12 @@ jobs:
           grep -Fq '"worldWidth": 7800' "$RUNNER_TEMP/data_level-01.json"
           grep -Fq '"requiredPickups": 24' "$RUNNER_TEMP/data_level-01.json"
           grep -Fq '"id": "sprout-run-campaign"' "$RUNNER_TEMP/data_campaign.json"
-          grep -Fq '"levelCount": 11' "$RUNNER_TEMP/data_campaign.json"
-          grep -Fq '"newLevelCount": 10' "$RUNNER_TEMP/data_campaign.json"
+          grep -Fq '"levelCount": 15' "$RUNNER_TEMP/data_campaign.json"
+          grep -Fq '"newLevelCount": 14' "$RUNNER_TEMP/data_campaign.json"
+          grep -Fq '"baseRuntimeLevelCount": 11' "$RUNNER_TEMP/data_campaign.json"
+          grep -Fq '"baseRuntimeNewLevelCount": 10' "$RUNNER_TEMP/data_campaign.json"
+          grep -Fq '"id":"chromosome-crossing"' "$RUNNER_TEMP/data_levels-12-15.json"
+          grep -Fq '"id":"genome-spire"' "$RUNNER_TEMP/data_levels-12-15.json"
 
       - name: Run live browser gameplay acceptance
         shell: bash
@@ -230,6 +257,16 @@ jobs:
           run_id="${run_url##*/}"
           [[ "$run_id" =~ ^[0-9]+$ ]] || { echo "Could not parse browser acceptance run: $run_url" >&2; exit 1; }
           echo "Live browser acceptance run: $run_id"
+          gh run watch "$run_id" --exit-status
+
+      - name: Run World 5 live browser acceptance
+        shell: bash
+        run: |
+          set -euo pipefail
+          run_url="$(gh workflow run seed-man-world-five-live.yml --ref main)"
+          run_id="${run_url##*/}"
+          [[ "$run_id" =~ ^[0-9]+$ ]] || { echo "Could not parse World 5 acceptance run: $run_url" >&2; exit 1; }
+          echo "World 5 live acceptance run: $run_id"
           gh run watch "$run_id" --exit-status
 
       - name: Production summary
@@ -242,9 +279,10 @@ jobs:
             echo "- Source SHA: $GITHUB_SHA"
             echo "- Release: \`$SPROUT_RELEASE\`"
             echo '- Route: https://dtfseeds.com/games/seed-man-platformer/'
-            echo '- Bundle: Greenhouse gameplay-v2 + browser combat-v1 + 30-second phenotype absorption + all-form enemy/boss expansion + self-contained 11-level campaign v3 + Seed Man animation-v2'
-            echo '- Combat: flying/blink enemies, minor/major bosses, Tempest flight, Hydro bubble, Gravity warp'
-            echo '- Campaign: 11 total levels, 10 new settings, 4 worlds, 4 boss encounters'
+            echo '- Bundle: Greenhouse gameplay-v2 + browser combat-v1 + hostile attack runtime + 30-second phenotype absorption + 15-level campaign + Genetic Frontier World 5 + Seed Man animation-v2'
+            echo '- Combat: flying/blink enemies, elemental carriers, minor/major bosses, Tempest flight, Hydro bubble, Gravity warp'
+            echo '- Campaign: 15 total levels, 14 added stages after Greenhouse Gauntlet, 5 worlds, Genetic Frontier final world'
+            echo '- World 5 bosses: Voltage Wasp Alpha and Genome Hydra'
             echo '- Publication: atomic replacement with SHA-256 verification'
-            echo '- Live gate: combat-v1, timed phenotype absorption, phenotype expansion, campaign-v3, animation-v2 and boss markers required'
+            echo '- Live gates: base browser acceptance + dedicated World 5 desktop/mobile Chromium acceptance'
           } >> "$GITHUB_STEP_SUMMARY"
