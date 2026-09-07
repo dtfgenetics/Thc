@@ -76,7 +76,16 @@ jobs:
             done
 
             printf '%s\t%s\t%s\t%s\t%s\t%s\n' "$path" "$status" "$current_seen" "$stale_seen" "$ok" "$final_url" >> "$out"
-            if [[ "$ok" != 'yes' ]]; then failures=$((failures+1)); fi
+            if [[ "$ok" != 'yes' ]]; then
+              failures=$((failures+1))
+              echo "::group::Live route evidence: $path" >&2
+              printf 'status=%s expected=%q body_bytes=%s\n' "$status" "$current" "$(wc -c < "$body" 2>/dev/null || printf '0')" >&2
+              echo 'Document landmarks:' >&2
+              grep -Eio '<title[^>]*>[^<]{0,240}</title>|<h1[^>]*>[^<]{0,240}</h1>|data-[a-z0-9_-]+="[^"]{1,160}"' "$body" 2>/dev/null | head -n 40 >&2 || true
+              echo 'Visible-text signature:' >&2
+              sed -E 's/<script[^>]*>.*<\/script>//Ig; s/<style[^>]*>.*<\/style>//Ig; s/<[^>]+>/ /g; s/&nbsp;/ /g; s/&amp;/\&/g; s/[[:space:]]+/ /g' "$body" 2>/dev/null | fold -w 220 | head -n 8 >&2 || true
+              echo '::endgroup::' >&2
+            fi
           }
 
           check_route '/' 'Genetics first. Learn the plant behind the pack.'
@@ -115,5 +124,5 @@ jobs:
               echo '| no result | ? | ? | ? | **FAIL** | - |'
             fi
             echo
-            echo 'Read-only visitor-facing verification using cache-busting URLs. Results stay in the Actions summary so saturated issue threads cannot break verification.'
+            echo 'Read-only visitor-facing verification using cache-busting URLs. Failed routes emit bounded document landmarks and visible-text evidence in the Actions log so ownership checks can be repaired without guessing or weakening the gate.'
           } >> "$GITHUB_STEP_SUMMARY"
