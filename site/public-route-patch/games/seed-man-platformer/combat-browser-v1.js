@@ -2,6 +2,8 @@
 
 (() => {
   const VERSION = 'seed-man-combat-browser-v1';
+  const PHENOTYPE_ABSORB_VERSION = 'seed-man-phenotype-absorb-v1';
+  const PHENOTYPE_DURATION = 30;
   const PLAYER_PROJECTILE_SIZE = 10;
   const ENEMIES = Object.freeze([
     { id: 'combat-aphid-01', name: 'Aphid Scout', x: 920, y: 450, minX: 820, maxX: 1120, width: 30, height: 28, health: 2, speed: 42, drop: ['resin', 2] },
@@ -12,9 +14,9 @@
     { id: 'combat-solar-thrip', name: 'Solar Thrip', x: 6920, y: 425, minX: 6860, maxX: 7300, width: 38, height: 28, health: 6, speed: 74, elite: true, phenotype: 'solar-flare', drop: ['alleles', 1] }
   ]);
   const PHENOTYPES = Object.freeze({
-    'static-haze': { label: 'Static Haze', speed: 640, damage: 1, effect: 'chain', cooldown: 0.48 },
-    'frost-resin': { label: 'Frost Resin', speed: 500, damage: 1, effect: 'freeze', cooldown: 0.42 },
-    'solar-flare': { label: 'Solar Flare', speed: 540, damage: 2, effect: 'burn', cooldown: 0.52 }
+    'static-haze': { label: 'Static Haze', speed: 640, damage: 1, effect: 'chain', cooldown: 0.48, accent: '#d6c0ff' },
+    'frost-resin': { label: 'Frost Resin', speed: 500, damage: 1, effect: 'freeze', cooldown: 0.42, accent: '#8fe7ff' },
+    'solar-flare': { label: 'Solar Flare', speed: 540, damage: 2, effect: 'burn', cooldown: 0.52, accent: '#ff9a4b' }
   });
 
   let enemies = [];
@@ -23,6 +25,7 @@
   let weaponCooldown = 0;
   let abilityCooldown = 0;
   let activePhenotype = null;
+  let phenotypeRemaining = 0;
   let discoveredPhenotypes = [];
   let resources = {};
   let defeated = 0;
@@ -39,6 +42,7 @@
     weaponCooldown = 0;
     abilityCooldown = 0;
     activePhenotype = null;
+    phenotypeRemaining = 0;
     discoveredPhenotypes = [];
     resources = { resin: 0, trichomes: 0, nutrients: 0, 'genetic-fragments': 0, alleles: 0 };
     defeated = 0;
@@ -53,7 +57,8 @@
       const weapon = document.createElement('span');
       weapon.innerHTML = 'Weapon <strong id="combat-weapon-count">Seed Slinger</strong>';
       const phenotype = document.createElement('span');
-      phenotype.innerHTML = 'Phenotype <strong id="combat-phenotype-count">None</strong>';
+      phenotype.className = 'combat-pheno-chip';
+      phenotype.innerHTML = 'Pheno <strong id="combat-phenotype-count">None</strong> <em id="combat-phenotype-time" aria-live="polite"></em>';
       const resourcesEl = document.createElement('span');
       resourcesEl.innerHTML = 'Resources <strong id="combat-resource-count">0</strong>';
       hud.append(weapon, phenotype, resourcesEl);
@@ -69,7 +74,7 @@
       const ability = document.createElement('button');
       ability.type = 'button';
       ability.dataset.combat = 'ability';
-      ability.setAttribute('aria-label', 'Use acquired phenotype ability');
+      ability.setAttribute('aria-label', 'Use absorbed phenotype ability');
       ability.textContent = 'PHENO';
       touch.append(attack, ability);
       attack.addEventListener('pointerdown', (event) => { event.preventDefault(); fireWeapon(); });
@@ -80,10 +85,14 @@
       const style = document.createElement('style');
       style.id = 'seed-combat-style';
       style.textContent = `
+        .combat-pheno-chip strong{font-weight:900}.combat-pheno-chip em{font-style:normal;font-weight:900;opacity:.86}
+        html[data-seed-pheno-active="true"] .combat-pheno-chip{outline:1px solid color-mix(in srgb,var(--seed-pheno-accent,#c8f36a) 70%,transparent);box-shadow:inset 0 0 0 1px rgba(255,255,255,.05)}
         .touch-controls [data-combat]{min-width:76px;font-weight:900;letter-spacing:.04em}
         .touch-controls [data-combat="attack"]{border-color:rgba(243,200,103,.6)}
-        .touch-controls [data-combat="ability"]{border-color:rgba(164,132,255,.62)}
+        .touch-controls [data-combat="ability"]{border-color:var(--seed-pheno-accent,rgba(164,132,255,.62))}
+        html[data-seed-pheno-active="true"] .touch-controls [data-combat="ability"]{box-shadow:0 0 0 2px color-mix(in srgb,var(--seed-pheno-accent,#c8f36a) 35%,transparent)}
         @media(max-width:680px){.touch-controls{flex-wrap:wrap}.touch-controls [data-combat]{min-height:64px;flex:1 1 30%}}
+        @media(prefers-reduced-motion:reduce){html[data-seed-pheno-active="true"] .touch-controls [data-combat="ability"]{box-shadow:none}}
       `;
       document.head.append(style);
     }
@@ -91,9 +100,17 @@
 
   function syncHud() {
     const phenotype = document.querySelector('#combat-phenotype-count');
+    const timer = document.querySelector('#combat-phenotype-time');
     const resource = document.querySelector('#combat-resource-count');
-    if (phenotype) phenotype.textContent = activePhenotype ? PHENOTYPES[activePhenotype]?.label || activePhenotype : 'None';
+    const ability = document.querySelector('[data-combat="ability"]');
+    const def = activePhenotype ? PHENOTYPES[activePhenotype] : null;
+    if (phenotype) phenotype.textContent = def?.label || 'None';
+    if (timer) timer.textContent = activePhenotype ? `${Math.ceil(phenotypeRemaining)}s` : '';
     if (resource) resource.textContent = String(Object.values(resources).reduce((sum, value) => sum + value, 0));
+    if (ability) ability.textContent = activePhenotype ? `PHENO ${Math.ceil(phenotypeRemaining)}` : 'PHENO';
+    document.documentElement.dataset.seedPhenoActive = activePhenotype ? 'true' : 'false';
+    if (def?.accent) document.documentElement.style.setProperty('--seed-pheno-accent', def.accent);
+    else document.documentElement.style.removeProperty('--seed-pheno-accent');
   }
 
   function setNotice(text, seconds = 1.8) {
@@ -127,12 +144,13 @@
   function fireAbility() {
     if (!player || paused || player.finished || abilityCooldown > 0) return false;
     const phenotype = PHENOTYPES[activePhenotype];
-    if (!phenotype) {
-      setNotice('Defeat an elite phenotype carrier first.');
+    if (!phenotype || phenotypeRemaining <= 0) {
+      setNotice('Defeat an elite phenotype carrier to absorb its power for 30s.');
       return false;
     }
     abilityCooldown = phenotype.cooldown;
     spawnProjectile({ speed: phenotype.speed, damage: phenotype.damage, effect: phenotype.effect, ability: true });
+    setNotice(`${phenotype.label} · ${Math.ceil(phenotypeRemaining)}s`, 0.8);
     return true;
   }
 
@@ -142,8 +160,9 @@
     if (resource) resources[resource] = (resources[resource] || 0) + Math.max(0, Number(amount) || 0);
     if (enemy.phenotype) {
       activePhenotype = enemy.phenotype;
+      phenotypeRemaining = PHENOTYPE_DURATION;
       if (!discoveredPhenotypes.includes(enemy.phenotype)) discoveredPhenotypes.push(enemy.phenotype);
-      setNotice(`PHENOTYPE ACQUIRED · ${PHENOTYPES[enemy.phenotype]?.label || enemy.phenotype}`, 3.2);
+      setNotice(`PHENO ABSORBED · ${PHENOTYPES[enemy.phenotype]?.label || enemy.phenotype} · 30s`, 3.2);
     } else {
       setNotice(`${enemy.name} cleared · +${amount || 0} ${resource || 'resource'}`);
     }
@@ -173,11 +192,24 @@
     }
   }
 
+  function tickPhenotype(step) {
+    if (!activePhenotype) return;
+    phenotypeRemaining = Math.max(0, phenotypeRemaining - step);
+    if (phenotypeRemaining <= 0) {
+      const expired = PHENOTYPES[activePhenotype]?.label || activePhenotype;
+      activePhenotype = null;
+      abilityCooldown = 0;
+      setNotice(`${expired} faded · absorb another elite power`, 2.1);
+    }
+    syncHud();
+  }
+
   function tickCombat(dt) {
     const step = Math.max(0, Math.min(Number(dt) || 0, 0.05));
     simTime += step;
     weaponCooldown = Math.max(0, weaponCooldown - step);
     abilityCooldown = Math.max(0, abilityCooldown - step);
+    tickPhenotype(step);
     if (player?.vx > 8) facing = 1;
     else if (player?.vx < -8) facing = -1;
 
@@ -231,7 +263,7 @@
     ctx.fill();
     ctx.stroke();
     if (elite) {
-      ctx.strokeStyle = enemy.phenotype === 'solar-flare' ? '#ff9a4b' : enemy.phenotype === 'frost-resin' ? '#8fe7ff' : '#d6c0ff';
+      ctx.strokeStyle = PHENOTYPES[enemy.phenotype]?.accent || '#c8f36a';
       ctx.lineWidth = 2;
       ctx.beginPath();
       ctx.arc(0, 0, enemy.width * 0.48 + Math.sin(simTime * 5) * 2, 0, Math.PI * 2);
@@ -270,8 +302,37 @@
     ctx.restore();
   }
 
+  function drawPhenotypeFormFx() {
+    if (!activePhenotype || !player || phenotypeRemaining <= 0) return;
+    const def = PHENOTYPES[activePhenotype];
+    const px = player.x - cameraX + player.width / 2;
+    const py = player.y + player.height / 2;
+    const pulse = 1 + Math.sin(simTime * 10) * 0.08;
+    ctx.save();
+    ctx.globalAlpha = 0.55;
+    ctx.strokeStyle = def.accent;
+    ctx.lineWidth = 3;
+    ctx.shadowBlur = 14;
+    ctx.shadowColor = def.accent;
+    ctx.beginPath();
+    ctx.ellipse(px, py, player.width * 0.72 * pulse, player.height * 0.68 * pulse, 0, 0, Math.PI * 2);
+    ctx.stroke();
+    const speed = Math.abs(player.vx || 0);
+    if (speed > 80) {
+      ctx.globalAlpha = 0.22;
+      for (let i = 1; i <= 3; i += 1) {
+        const trailX = px - Math.sign(player.vx || facing) * i * (9 + speed * 0.012);
+        ctx.beginPath();
+        ctx.ellipse(trailX, py, player.width * (0.46 - i * 0.07), player.height * (0.44 - i * 0.06), 0, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+    }
+    ctx.restore();
+  }
+
   function drawCombat() {
     if (!ctx || !player) return;
+    drawPhenotypeFormFx();
     for (const enemy of enemies) drawEnemy(enemy);
     for (const projectile of projectiles) drawProjectile(projectile);
     if (notice && simTime < notice.until) {
@@ -281,7 +342,7 @@
       const width = Math.min(canvas.width - 40, Math.max(240, ctx.measureText(notice.text).width + 32));
       ctx.fillStyle = 'rgba(7,22,15,.9)';
       ctx.fillRect((canvas.width - width) / 2, 18, width, 34);
-      ctx.strokeStyle = '#c8f36a';
+      ctx.strokeStyle = activePhenotype ? PHENOTYPES[activePhenotype]?.accent || '#c8f36a' : '#c8f36a';
       ctx.strokeRect((canvas.width - width) / 2, 18, width, 34);
       ctx.fillStyle = '#f4f7ee';
       ctx.fillText(notice.text, canvas.width / 2, 40);
@@ -324,14 +385,17 @@
   const installed = installRuntimeHooks();
   window.__SPROUT_COMBAT_BROWSER__ = Object.freeze({
     version: VERSION,
+    phenotypeAbsorbVersion: PHENOTYPE_ABSORB_VERSION,
     installed,
     fireWeapon,
     fireAbility,
     snapshot: () => ({
       version: VERSION,
+      phenotypeAbsorbVersion: PHENOTYPE_ABSORB_VERSION,
       installed,
       equippedWeapon: 'seed-slinger',
       activePhenotype,
+      phenotypeRemaining,
       discoveredPhenotypes: [...discoveredPhenotypes],
       resources: { ...resources },
       defeated,
