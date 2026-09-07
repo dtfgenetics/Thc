@@ -9,6 +9,7 @@
   const VERSION = 'sprout-canvas-compat-v1';
   const RELEASE = '20260830-r8';
   const PHENOTYPE_MOBILITY_FRAME_REPAIR = 'seed-man-phenotype-mobility-frame-v1';
+  const ENEMY_ATTACK_BROWSER = 'seed-man-enemy-attacks-browser-v1';
   const proto = window.HTMLCanvasElement?.prototype;
   const nativeGetContext = proto?.getContext;
   if (!proto || typeof nativeGetContext !== 'function') return;
@@ -19,6 +20,8 @@
   let combatLoadAttempts = 0;
   let combatLoaded = false;
   let mobilityFrameRepairInstalled = false;
+  let enemyAttackLoadAttempts = 0;
+  let enemyAttacksLoaded = false;
 
   function patchedGetContext(type, attributes) {
     if (this.id !== 'game' || type !== '2d') {
@@ -123,9 +126,42 @@
     return true;
   }
 
+  function loadEnemyAttackBrowserAdapter() {
+    if (enemyAttacksLoaded || window.__SPROUT_ENEMY_ATTACKS_BROWSER__?.installed === true) {
+      enemyAttacksLoaded = true;
+      return;
+    }
+    if (window.__SPROUT_COMBAT_BROWSER__?.installed !== true || !mobilityFrameRepairInstalled) {
+      enemyAttackLoadAttempts += 1;
+      if (enemyAttackLoadAttempts <= 80) window.setTimeout(loadEnemyAttackBrowserAdapter, 25);
+      else console.error('Seed Man enemy attack adapter could not find combat runtime bindings.');
+      return;
+    }
+    const existing = document.querySelector('script[data-seed-enemy-attacks-browser]');
+    if (existing) return;
+    const script = document.createElement('script');
+    script.src = `./enemy-attacks-browser-v1.js?v=${RELEASE}`;
+    script.async = false;
+    script.dataset.seedEnemyAttacksBrowser = 'v1';
+    script.addEventListener('load', () => {
+      const settle = () => {
+        enemyAttacksLoaded = window.__SPROUT_ENEMY_ATTACKS_BROWSER__?.installed === true;
+        if (!enemyAttacksLoaded) {
+          enemyAttackLoadAttempts += 1;
+          if (enemyAttackLoadAttempts <= 80) window.setTimeout(settle, 25);
+          else console.error('Seed Man enemy attack adapter loaded without installing runtime hooks.');
+        }
+      };
+      settle();
+    }, { once: true });
+    script.addEventListener('error', () => console.error('Seed Man enemy attack browser adapter failed to load.'), { once: true });
+    document.body.append(script);
+  }
+
   function loadCombatBrowserAdapter() {
     if (combatLoaded || window.__SPROUT_COMBAT_BROWSER__?.installed === true) {
-      installPhenotypeMobilityFrameRepair();
+      combatLoaded = true;
+      if (installPhenotypeMobilityFrameRepair()) loadEnemyAttackBrowserAdapter();
       return;
     }
     if (!gameplayBindingsReady()) {
@@ -148,6 +184,7 @@
       combatLoaded = window.__SPROUT_COMBAT_BROWSER__?.installed === true;
       if (!combatLoaded) console.error('Seed Man combat browser adapter loaded without installing runtime hooks.');
       else if (!installPhenotypeMobilityFrameRepair()) console.error('Seed Man phenotype mobility frame repair did not install.');
+      else loadEnemyAttackBrowserAdapter();
     }, { once: true });
     script.addEventListener('error', () => console.error('Seed Man combat browser adapter failed to load.'), { once: true });
     document.body.append(script);
@@ -185,8 +222,7 @@
 
   // The compatibility script is the first deferred game script. Do not load
   // combat until app.js and gameplay-v2.js have actually published the classic
-  // script bindings that the adapter wraps. This removes a race where combat
-  // could load successfully but freeze an `installed: false` state forever.
+  // script bindings that the adapters wrap.
   window.addEventListener('DOMContentLoaded', () => {
     loadCombatBrowserAdapter();
     if (proto.getContext === patchedGetContext) proto.getContext = nativeGetContext;
@@ -196,13 +232,17 @@
     version: VERSION,
     release: RELEASE,
     phenotypeMobilityFrameRepair: PHENOTYPE_MOBILITY_FRAME_REPAIR,
+    enemyAttackBrowser: ENEMY_ATTACK_BROWSER,
     softwarePreferred: true,
     campaignTitleBranding: true,
     levelOneSummaryCompatibility: true,
     combatBrowserAutoLoad: true,
+    enemyAttackBrowserAutoLoad: true,
     get combatLoadAttempts() { return combatLoadAttempts; },
     get combatLoaded() { return combatLoaded; },
     get mobilityFrameRepairInstalled() { return mobilityFrameRepairInstalled; },
+    get enemyAttackLoadAttempts() { return enemyAttackLoadAttempts; },
+    get enemyAttacksLoaded() { return enemyAttacksLoaded; },
     get contextLostCount() { return lost; },
     get contextRestoredCount() { return restored; },
   });
