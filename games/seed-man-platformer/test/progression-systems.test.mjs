@@ -7,10 +7,14 @@ import {
   createProgressionState,
   equipWeapon,
   getEffectivePhenotype,
+  normalizeProgressionState,
   stepPhenotypeAbsorption
 } from '../src/systems/player-progression.mjs';
 import { getPhenotype, phenotypeProjectile } from '../src/systems/phenotypes.mjs';
 import { createWeaponShot, getWeapon } from '../src/systems/weapons.mjs';
+
+const nullSafe = normalizeProgressionState(null);
+assert.deepStrictEqual(nullSafe, createProgressionState(), 'Null progression input should safely normalize to a clean default state.');
 
 let state = createProgressionState();
 assert.equal(state.activePhenotype, null);
@@ -64,4 +68,4 @@ assert.equal(state.resources['genetic-fragments'], 2);
 assert.throws(() => collectResource(state, 'fake-resource', 1), /unknown resource type/);
 assert.throws(() => equipWeapon(state, 'not-owned'), /weapon not owned/);
 
-console.log('Seed Man phenotype discovery, timed absorption, weapon, and resource progression systems passed');
+console.log('Seed Man null-safe progression, phenotype discovery, timed absorption, weapon, and resource systems passed');
