@@ -93,6 +93,14 @@ function isQuizShortcutKey(key) {
 }
 
 if (typeof document !== 'undefined') {
+  // Keep production game logic independent from the optional QA/debug adapter.
+  // The adapter itself is a no-op outside localhost or an explicit ?debug=1 run.
+  setTimeout(() => {
+    import('./debug-replay.mjs').catch((error) => {
+      console.warn('High IQ debug replay adapter could not load.', error);
+    });
+  }, 0);
+
   // This listener is registered while app-v3 imports the core module, before
   // the quiz-wide shortcut listener is installed. It only stops later document
   // shortcut handlers; it does not prevent the focused control's native action.
