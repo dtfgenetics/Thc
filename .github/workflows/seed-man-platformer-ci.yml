@@ -53,18 +53,17 @@ jobs:
           bytes="$(wc -c < "$bundle" | tr -d ' ')"
           [[ "$bytes" -ge 250000 ]] || { echo "Three.js public bundle too small: $bytes bytes" >&2; exit 1; }
           [[ "$bytes" -le 900000 ]] || { echo "Three.js public bundle exceeds 900 KB budget: $bytes bytes" >&2; exit 1; }
-          echo "Three.js public bundle verified at $bytes bytes."
       - name: Test platformer physics and level interactions
         run: node games/seed-man-platformer/test/physics.test.mjs
       - name: Test phenotype weapon and resource progression
         run: node games/seed-man-platformer/test/progression-systems.test.mjs
-      - name: Test eleven-level campaign settings mechanics and bosses
+      - name: Test fifteen-level campaign source mechanics and bosses
         run: node games/seed-man-platformer/test/campaign.test.mjs
       - name: Test Three.js world-state bridge
         run: node games/seed-man-platformer/test/three-world-state.test.mjs
       - name: Test self-contained public runtime
         run: node games/seed-man-platformer/test/public-runtime.test.mjs
-      - name: Test self-contained public campaign runtime
+      - name: Test self-contained public campaign source contract
         run: node games/seed-man-platformer/test/public-campaign.test.mjs
       - name: Test keyboard focus ownership
         run: node games/seed-man-platformer/test/input-guard.test.mjs
@@ -84,9 +83,11 @@ jobs:
           node --check games/seed-man-platformer/test/progression-systems.test.mjs
           node --check games/seed-man-platformer/test/three-world-state.test.mjs
           node --check games/seed-man-platformer/test/public-campaign.test.mjs
+          node --check games/seed-man-platformer/test/world-five-browser.test.mjs
           node --check games/seed-man-platformer/test/shared-platform-browser.test.mjs
           node --check site/public-route-patch/games/seed-man-platformer/canvas-compat-v1.js
           node --check site/public-route-patch/games/seed-man-platformer/campaign-v1.js
+          node --check site/public-route-patch/games/seed-man-platformer/world-five-v1.js
           node --check site/public-route-patch/games/seed-man-platformer/app.js
           node --check site/public-route-patch/games/seed-man-platformer/seed-man-production-art.js
           node --check site/public-route-patch/games/seed-man-platformer/input-guard-v1.js
@@ -100,15 +101,15 @@ jobs:
           cmp games/seed-man-platformer/data/level-01.json site/public-route-patch/games/seed-man-platformer/data/level-01.json
           cmp games/seed-man-platformer/data/campaign.json site/public-route-patch/games/seed-man-platformer/data/campaign.json
           cmp games/seed-man-platformer/data/levels-02-11.json site/public-route-patch/games/seed-man-platformer/data/levels-02-11.json
-      - name: Verify expanded public route contract
+          cmp games/seed-man-platformer/data/levels-12-15.json site/public-route-patch/games/seed-man-platformer/data/levels-12-15.json
+      - name: Verify expanded public route source contract
         shell: bash
         run: |
           set -euo pipefail
           route=site/public-route-patch/games/seed-man-platformer
           release="$(sed -n 's/.*name="dtf-sprout-release" content="\([^"]*\)".*/\1/p' "$route/index.html" | head -n 1)"
           [[ "$release" =~ ^[0-9]{8}-r[0-9]+$ ]] || { echo "Invalid Sprout release marker: $release" >&2; exit 1; }
-
-          for file in index.html canvas-compat-v1.js campaign-v1.js app.js seed-man-production-art.js gameplay-v2.js input-guard-v1.js seed-man.css physics.mjs data/campaign.json data/level-01.json data/levels-02-11.json; do
+          for file in index.html canvas-compat-v1.js campaign-v1.js world-five-v1.js app.js seed-man-production-art.js gameplay-v2.js input-guard-v1.js seed-man.css physics.mjs data/campaign.json data/level-01.json data/levels-02-11.json data/levels-12-15.json; do
             test -s "$route/$file" || { echo "Missing $file" >&2; exit 1; }
           done
           grep -Fq '<h1>Sprout Run</h1>' "$route/index.html"
@@ -138,8 +139,14 @@ jobs:
           grep -Fq 'boss-stomp' "$route/campaign-v1.js"
           grep -Fq 'landing-squash' "$route/campaign-v1.js"
           grep -Fq 'finish-celebration' "$route/campaign-v1.js"
-          grep -Fq '"newLevelCount": 10' "$route/data/campaign.json"
+          grep -Fq '"levelCount": 15' "$route/data/campaign.json"
+          grep -Fq '"newLevelCount": 14' "$route/data/campaign.json"
+          grep -Fq '"baseRuntimeCompatibility": {"levelCount": 11, "newLevelCount": 10}' "$route/data/campaign.json"
+          grep -Fq '"title": "Genetic Frontier"' "$route/data/campaign.json"
           grep -Fq '"generator": "seed-man-course-v2"' "$route/data/levels-02-11.json"
+          grep -Fq 'Genome Spire' "$route/data/levels-12-15.json"
+          grep -Fq 'seed-man-world-five-v1' "$route/world-five-v1.js"
+          grep -Fq 'Genome Hydra' "$route/world-five-v1.js"
           grep -Fq 'groundAcceleration: 2600' "$route/app.js"
           grep -Fq 'jumpCutGravityMultiplier: 2.35' "$route/app.js"
           grep -Fq 'function cameraBlend(' "$route/app.js"
@@ -154,7 +161,6 @@ jobs:
           grep -Fq 'No third-party level layouts or character assets are used.' "$route/index.html"
           ! grep -Fqi 'collect all eight sprouts' "$route/index.html"
           ! grep -Fq '0 / 8' "$route/index.html"
-          echo "Seed Man 11-level campaign source contract validated for ${release}."
       - name: Install browser-test dependencies
         run: |
           npm ci
@@ -165,5 +171,5 @@ jobs:
         run: node games/seed-man-platformer/test/shared-platform-browser.test.mjs
       - name: Verify zero-sprout flag completion in Chromium
         run: node games/seed-man-platformer/test/flag-completion-browser.test.mjs
-      - name: Exercise eleven-level campaign bosses and settings in Chromium
+      - name: Exercise stable 11-level base runtime bosses and settings in Chromium
         run: node games/seed-man-platformer/test/campaign-browser.test.mjs
