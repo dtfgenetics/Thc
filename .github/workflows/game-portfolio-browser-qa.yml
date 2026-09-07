@@ -21,6 +21,7 @@ on:
       - 'data/game-source-map.json'
       - 'site/deployment/public-apps.json'
       - 'site/public-route-patch/games/**'
+      - 'games/strain-showdown/**'
       - 'scripts/game-portfolio-browser-qa.mjs'
       - 'scripts/lib/game-qa-catalog.mjs'
       - 'scripts/test-game-qa-catalog.mjs'
@@ -44,7 +45,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
       - run: npm ci
       - run: npm run games:qa:catalog-check
@@ -66,7 +67,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
       - run: npm ci
       - name: Install Chromium
@@ -89,6 +90,9 @@ jobs:
           else
             echo "game_arg=" >> "$GITHUB_OUTPUT"
           fi
+      - name: Prepare generated local game assets
+        if: steps.args.outputs.mode == 'local'
+        run: node games/strain-showdown/scripts/build-browser-bundle.mjs
       - name: Run portfolio browser QA
         shell: bash
         run: |
