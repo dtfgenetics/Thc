@@ -1,4 +1,4 @@
-name: Deploy Protect the Plants Final Release
+name: Deploy Burn Buds Final Release
 
 on:
   workflow_dispatch:
@@ -11,7 +11,6 @@ on:
 permissions:
   actions: write
   contents: read
-  issues: write
 
 concurrency:
   group: deploy-protect-plants-final-release
@@ -42,7 +41,7 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Validate current Protect the Plants V2 source and deploy bridge
+      - name: Validate current Burn Buds source and deploy bridge
         shell: bash
         run: |
           set -euo pipefail
@@ -60,7 +59,7 @@ jobs:
           node --check "$root/v2-extras.js"
           node --check "$root/sw.js"
           php -l "$root/api.php"
-          jq -e '.name == "Protect the Plants" and .display == "standalone" and .start_url == "./" and .scope == "./"' "$root/manifest.webmanifest" >/dev/null
+          jq -e '.name == "Burn Buds" and .short_name == "Burn Buds" and .display == "standalone" and .start_url == "./" and .scope == "./"' "$root/manifest.webmanifest" >/dev/null
           grep -Fq './enhancements.js' "$root/index.html"
           grep -Fq './v2-extras.js' "$root/index.html"
           grep -Fq './manifest.webmanifest' "$root/index.html"
@@ -131,6 +130,7 @@ jobs:
           grep -Fq 'rematch' "$suite_root/games/protect-the-plants/api.php"
           grep -Fq 'events' "$suite_root/games/protect-the-plants/api.php"
           grep -Fq 'serviceWorker' "$suite_root/games/protect-the-plants/v2-extras.js"
+          jq -e '.name == "Burn Buds" and .short_name == "Burn Buds"' "$suite_root/games/protect-the-plants/manifest.webmanifest" >/dev/null
           echo "root=$suite_root" >> "$GITHUB_OUTPUT"
 
       - name: Package current app-only WordPress archive
@@ -165,7 +165,7 @@ jobs:
                   'games/protect-the-plants/sw.js',
               }
               missing=required-set(names)
-              assert not missing, f'missing current Protect the Plants V2 assets: {sorted(missing)}'
+              assert not missing, f'missing current Burn Buds assets: {sorted(missing)}'
               assert not [n for n in names if n=='index.html' or n.startswith('learn/') or n.startswith('blog/')]
               manifest=json.loads(z.read('.dtf-suite-manifest.json'))
               assert manifest['purpose']=='dtfseeds-public-apps-only'
@@ -214,7 +214,7 @@ jobs:
           echo "Canonical verification: $run_url"
           gh run watch "$run_id" --exit-status
 
-      - name: Verify Protect the Plants live production gameplay and visuals
+      - name: Verify Burn Buds live production gameplay and visuals
         id: ptp_verify
         shell: bash
         run: |
@@ -222,12 +222,12 @@ jobs:
           run_url="$(gh workflow run verify-protect-the-plants-production.yml --ref main)"
           run_id="${run_url##*/}"
           [[ "$run_id" =~ ^[0-9]+$ ]]
-          echo "Protect the Plants verification: $run_url"
+          echo "Burn Buds verification: $run_url"
           gh run watch "$run_id" --exit-status
 
-      - name: Report current Protect the Plants V2 release
+      - name: Report Burn Buds release
         if: always()
-        uses: actions/github-script@v7
+        shell: bash
         env:
           STATUS: ${{ job.status }}
           BUILD_RUN: ${{ steps.current_build.outputs.run_id }}
@@ -236,28 +236,18 @@ jobs:
           FEATURE_OUTCOME: ${{ steps.feature_verify.outcome }}
           CANONICAL_OUTCOME: ${{ steps.canonical_verify.outcome }}
           PTP_OUTCOME: ${{ steps.ptp_verify.outcome }}
-        with:
-          script: |
-            const buildRun = process.env.BUILD_RUN
-              ? `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${process.env.BUILD_RUN}`
-              : 'not reached';
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: 46,
-              body: [
-                '## Protect the Plants V2 current-main release',
-                '',
-                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-                `Release source: \`main\` at \`${context.sha}\``,
-                `Fresh validated Public Suite build: ${buildRun}`,
-                `Overall: **${process.env.STATUS || 'see run'}**`,
-                `Stale bridge cleanup: **${process.env.CLEANUP_OUTCOME || 'not reached'}**`,
-                `Transactional publication: **${process.env.PUBLISH_OUTCOME || 'not reached'}**`,
-                `Feature surface verification: **${process.env.FEATURE_OUTCOME || 'not reached'}**`,
-                `Canonical route verification: **${process.env.CANONICAL_OUTCOME || 'not reached'}**`,
-                `Protect the Plants production verification: **${process.env.PTP_OUTCOME || 'not reached'}**`,
-                '',
-                'This release builds from current main, requires all Protect-the-Plants V2 assets before packaging, preserves WordPress ownership of /, /learn/, and /blog/, and publishes only through the rollback-capable WordPress bridge.'
-              ].join('\n')
-            });
+        run: |
+          {
+            echo '## Burn Buds current-main release'
+            echo
+            echo "- Release source: main at ${GITHUB_SHA}"
+            echo "- Fresh validated Public Suite build: ${BUILD_RUN:-not reached}"
+            echo "- Overall: **${STATUS:-see run}**"
+            echo "- Stale bridge cleanup: **${CLEANUP_OUTCOME:-not reached}**"
+            echo "- Transactional publication: **${PUBLISH_OUTCOME:-not reached}**"
+            echo "- Feature surface verification: **${FEATURE_OUTCOME:-not reached}**"
+            echo "- Canonical route verification: **${CANONICAL_OUTCOME:-not reached}**"
+            echo "- Burn Buds production verification: **${PTP_OUTCOME:-not reached}**"
+            echo
+            echo 'This release preserves WordPress ownership of /, /learn/, and /blog/, publishes through the rollback-capable WordPress bridge, and verifies the legacy /games/protect-the-plants/ compatibility route plus multiplayer API.'
+          } >> "$GITHUB_STEP_SUMMARY"
