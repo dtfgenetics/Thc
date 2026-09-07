@@ -1,12 +1,16 @@
 import fs from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import './prepare-seed-man-world-five-combat.mjs';
 
 const publisherPath = 'scripts/publish-seed-man-route-via-wordpress.mjs';
 const canonicalEnemyAttackModulePath = 'games/seed-man-platformer/src/systems/enemy-attacks.mjs';
 const canonicalCampaignPath = 'games/seed-man-platformer/data/campaign.json';
 const canonicalWorldFivePackPath = 'games/seed-man-platformer/data/levels-12-15.json';
+const canonicalThreePackagePath = 'games/seed-man-platformer/package.json';
+const canonicalThreeBuildPath = 'games/seed-man-platformer/dist/three-world-v1.js';
 const publicCampaignPath = 'site/public-route-patch/games/seed-man-platformer/data/campaign.json';
 const publicWorldFivePackPath = 'site/public-route-patch/games/seed-man-platformer/data/levels-12-15.json';
+const publicThreeBuildPath = 'site/public-route-patch/games/seed-man-platformer/three-world-v1.js';
 const indexPath = 'site/public-route-patch/games/seed-man-platformer/index.html';
 const combatPath = 'site/public-route-patch/games/seed-man-platformer/combat-browser-v1.js';
 const compatPath = 'site/public-route-patch/games/seed-man-platformer/canvas-compat-v1.js';
@@ -17,9 +21,23 @@ const campaignUiPath = 'site/public-route-patch/games/seed-man-platformer/campai
 const uiV3Path = 'site/public-route-patch/games/seed-man-platformer/seed-man-ui-v3.js';
 const visualV4Path = 'site/public-route-patch/games/seed-man-platformer/seed-man-visual-v4.js';
 
-for (const file of [publisherPath, canonicalEnemyAttackModulePath, canonicalCampaignPath, canonicalWorldFivePackPath, publicCampaignPath, publicWorldFivePackPath, indexPath, combatPath, compatPath, enemyAttackBrowserPath, enemyAttackModulePath, worldFivePath, campaignUiPath, uiV3Path, visualV4Path]) {
+for (const file of [publisherPath, canonicalEnemyAttackModulePath, canonicalCampaignPath, canonicalWorldFivePackPath, canonicalThreePackagePath, publicCampaignPath, publicWorldFivePackPath, indexPath, combatPath, compatPath, enemyAttackBrowserPath, enemyAttackModulePath, worldFivePath, campaignUiPath, uiV3Path, visualV4Path]) {
   if (!fs.existsSync(file)) throw new Error(`Missing Seed Man release input: ${file}`);
 }
+
+// Build the browser-safe Three.js renderer from canonical source during release preparation.
+// This closes the former gap where Three.js passed CI in games/seed-man-platformer/dist
+// but was never promoted into the visitor-facing WordPress route package.
+execFileSync('npm', ['install', '--prefix', 'games/seed-man-platformer', '--ignore-scripts', '--no-audit', '--no-fund', '--no-package-lock'], { stdio: 'inherit' });
+execFileSync('npm', ['run', '--prefix', 'games/seed-man-platformer', 'build:three-public'], { stdio: 'inherit' });
+if (!fs.existsSync(canonicalThreeBuildPath)) throw new Error('Seed Man Three.js build did not produce dist/three-world-v1.js.');
+const threeBuild = fs.readFileSync(canonicalThreeBuildPath);
+const threeBuildText = threeBuild.toString('utf8');
+for (const marker of ['SeedManThreeWorld', 'seed-man-three-public-v1', 'seed-man-three-world-v1']) {
+  if (!threeBuildText.includes(marker)) throw new Error(`Seed Man Three.js build missing marker: ${marker}`);
+}
+if (threeBuild.length < 250_000 || threeBuild.length > 900_000) throw new Error(`Seed Man Three.js build outside release budget: ${threeBuild.length} bytes.`);
+fs.writeFileSync(publicThreeBuildPath, threeBuild);
 
 let publisher = fs.readFileSync(publisherPath, 'utf8');
 const releaseEntries = [
@@ -30,6 +48,7 @@ const releaseEntries = [
   "  'campaign-ui-v15.js',",
   "  'seed-man-ui-v3.js',",
   "  'seed-man-visual-v4.js',",
+  "  'three-world-v1.js',",
   "  'data/levels-12-15.json',"
 ];
 const anchor = "  'gameplay-v2.js',\n  'input-guard-v1.js',";
@@ -59,17 +78,24 @@ const visualV4 = fs.readFileSync(visualV4Path, 'utf8');
 if (enemyAttackModule !== canonicalEnemyAttackModule) throw new Error('Browser-safe enemy-attacks.js must exactly mirror the canonical enemy-attacks.mjs source.');
 if (publicCampaign !== canonicalCampaign) throw new Error('Public campaign manifest must exactly mirror canonical Seed Man campaign data.');
 if (publicWorldFivePack !== canonicalWorldFivePack) throw new Error('Public World 5 level pack must exactly mirror canonical levels-12-15.json.');
+if (!fs.readFileSync(publicThreeBuildPath).equals(threeBuild)) throw new Error('Public Three.js bundle must exactly mirror the canonical release build.');
 
 const campaign = JSON.parse(canonicalCampaign);
 const worldFivePack = JSON.parse(canonicalWorldFivePack);
 if (campaign.levelCount !== 15 || campaign.newLevelCount !== 14 || campaign.worlds?.length !== 5) throw new Error('Seed Man campaign must expose the 15-level, five-world World 5 contract.');
 if (worldFivePack.levels?.length !== 4 || worldFivePack.levels.at(-1)?.id !== 'genome-spire') throw new Error('World 5 pack must contain four stages ending at Genome Spire.');
 
-const index = fs.readFileSync(indexPath, 'utf8');
+let index = fs.readFileSync(indexPath, 'utf8');
 const release = index.match(/name="dtf-sprout-release" content="([^"]+)"/)?.[1];
 if (!release) throw new Error('Could not resolve Seed Man release marker from index.html.');
 const worldFiveScript = `  <script src="./world-five-v1.js?v=${release}" defer></script>`;
+const threeWorldScript = `  <script src="./three-world-v1.js?v=${release}" defer></script>`;
 const uiV3Script = `  <script src="./seed-man-ui-v3.js?v=${release}" defer></script>`;
+if (!index.includes(threeWorldScript)) {
+  if (!index.includes(uiV3Script)) throw new Error('Could not locate Seed Man UI v3 script anchor for Three.js renderer.');
+  index = index.replace(uiV3Script, `${threeWorldScript}\n${uiV3Script}`);
+  fs.writeFileSync(indexPath, index);
+}
 
 for (const marker of ['seed-man-combat-browser-v1','seed-man-phenotype-absorb-v1','seed-man-phenotype-expansion-v1','combat-static-mite','PHENO ABSORBED','terpene-tempest','hydro-surge','gravity-haze','data-combat']) if (!combat.includes(marker)) throw new Error(`Missing combat adapter marker: ${marker}`);
 for (const marker of ['combatBrowserAutoLoad: true','combat-browser-v1.js','seed-man-phenotype-mobility-frame-v1','mobilityFrameRepairInstalled','enemyAttackBrowserAutoLoad: true','enemy-attacks-browser-v1.js','campaignUiAutoLoad: true','campaign-ui-v15.js']) if (!compat.includes(marker)) throw new Error(`Missing combat compatibility marker: ${marker}`);
@@ -82,6 +108,7 @@ for (const marker of ['seed-man-visual-v4','WORLD_THEMES','world-05','data-visua
 for (const marker of ['seed-man-world-five-combat-v1',"'chromosome-crossing'","'mutation-marsh'","'allele-array'","'genome-spire'",'return ENCOUNTERS[level?.id] || [];']) if (!combat.includes(marker)) throw new Error(`Missing prepared World 5 combat marker: ${marker}`);
 for (const entry of releaseEntries) if (!publisher.includes(entry)) throw new Error(`Seed Man publisher allowlist is missing: ${entry}`);
 if (!index.includes(worldFiveScript)) throw new Error('Seed Man index is missing the World 5 browser adapter.');
+if (!index.includes(threeWorldScript)) throw new Error('Seed Man index is missing the Three.js production bundle.');
 if (!index.includes(uiV3Script)) throw new Error('Seed Man index is missing the UI v3 adapter.');
 
-console.log(JSON.stringify({ ok: true, publisherPatched: true, campaignLevels: 15, campaignWorlds: 5, campaignBosses: 6, phenotypeAbsorption: 'seed-man-phenotype-absorb-v1', phenotypeExpansion: 'seed-man-phenotype-expansion-v1', phenotypeMobilityFrameRepair: 'seed-man-phenotype-mobility-frame-v1', worldFiveCombat: 'seed-man-world-five-combat-v1', campaignUi: 'seed-man-campaign-ui-v15', uiV3: 'seed-man-ui-v3', visualV4: 'seed-man-visual-v4', autoload: true }, null, 2));
+console.log(JSON.stringify({ ok: true, publisherPatched: true, campaignLevels: 15, campaignWorlds: 5, campaignBosses: 6, phenotypeAbsorption: 'seed-man-phenotype-absorb-v1', phenotypeExpansion: 'seed-man-phenotype-expansion-v1', phenotypeMobilityFrameRepair: 'seed-man-phenotype-mobility-frame-v1', worldFiveCombat: 'seed-man-world-five-combat-v1', campaignUi: 'seed-man-campaign-ui-v15', uiV3: 'seed-man-ui-v3', visualV4: 'seed-man-visual-v4', threeWorld: 'seed-man-three-public-v1', threeWorldBytes: threeBuild.length, autoload: true }, null, 2));
