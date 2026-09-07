@@ -23,6 +23,7 @@ on:
       - 'site/public-route-patch/games/**'
       - 'games/strain-showdown/**'
       - 'scripts/game-portfolio-browser-qa.mjs'
+      - 'scripts/prepare-game-browser-qa.mjs'
       - 'scripts/lib/game-qa-catalog.mjs'
       - 'scripts/test-game-qa-catalog.mjs'
       - 'package.json'
@@ -92,7 +93,9 @@ jobs:
           fi
       - name: Prepare generated local game assets
         if: steps.args.outputs.mode == 'local'
-        run: node games/strain-showdown/scripts/build-browser-bundle.mjs
+        shell: bash
+        run: |
+          node scripts/prepare-game-browser-qa.mjs ${{ steps.args.outputs.game_arg }}
       - name: Run portfolio browser QA
         shell: bash
         run: |
