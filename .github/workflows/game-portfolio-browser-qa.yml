@@ -19,11 +19,14 @@ on:
     paths:
       - 'configuration/game-qa/**'
       - 'data/game-source-map.json'
+      - 'games/shared-platform/**'
+      - 'games/strain-showdown/**'
       - 'site/deployment/public-apps.json'
       - 'site/public-route-patch/games/**'
-      - 'games/strain-showdown/**'
       - 'scripts/game-portfolio-browser-qa.mjs'
       - 'scripts/prepare-game-browser-qa.mjs'
+      - 'scripts/game-asset-performance-audit.mjs'
+      - 'scripts/sync-game-shared-platform.mjs'
       - 'scripts/lib/game-qa-catalog.mjs'
       - 'scripts/test-game-qa-catalog.mjs'
       - 'package.json'
@@ -40,7 +43,7 @@ concurrency:
 
 jobs:
   catalog:
-    name: Canonical game catalog
+    name: Canonical game catalog and platform contracts
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -50,13 +53,20 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run games:qa:catalog-check
+      - run: npm run games:platform:test
+      - run: npm run games:platform:sync-check
       - run: npm run games:qa:catalog > game-qa-catalog.json
+      - name: Audit checked-in game payloads
+        run: npm run games:qa:assets
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: game-qa-catalog
-          path: game-qa-catalog.json
+          name: game-qa-catalog-and-assets
+          path: |
+            game-qa-catalog.json
+            artifacts/game-qa/assets
           if-no-files-found: error
+          retention-days: 14
 
   browser:
     name: Browser QA
