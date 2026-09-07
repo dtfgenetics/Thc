@@ -1,0 +1,96 @@
+name: Seed Man World 5 CI
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'games/seed-man-platformer/**'
+      - 'site/public-route-patch/games/seed-man-platformer/**'
+      - 'scripts/prepare-seed-man-combat-release.mjs'
+      - 'scripts/prepare-seed-man-world-five-combat.mjs'
+      - '.github/workflows/seed-man-world-five-ci.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'games/seed-man-platformer/**'
+      - 'site/public-route-patch/games/seed-man-platformer/**'
+      - 'scripts/prepare-seed-man-combat-release.mjs'
+      - 'scripts/prepare-seed-man-world-five-combat.mjs'
+      - '.github/workflows/seed-man-world-five-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  genetic-frontier:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Prepare production Seed Man artifact
+        run: |
+          node scripts/prepare-seed-man-combat-release.mjs
+          node scripts/prepare-seed-man-world-five-combat.mjs
+
+      - name: Validate canonical campaign and combat systems
+        run: |
+          node games/seed-man-platformer/test/campaign.test.mjs
+          node games/seed-man-platformer/test/combat.test.mjs
+          node games/seed-man-platformer/test/public-campaign.test.mjs
+
+      - name: Verify Genetic Frontier source parity
+        shell: bash
+        run: |
+          set -euo pipefail
+          route=site/public-route-patch/games/seed-man-platformer
+          cmp games/seed-man-platformer/data/campaign.json "$route/data/campaign.json"
+          cmp games/seed-man-platformer/data/levels-12-15.json "$route/data/levels-12-15.json"
+          node --check "$route/world-five-v1.js"
+          node --check "$route/combat-browser-v1.js"
+          node --check scripts/prepare-seed-man-combat-release.mjs
+          node --check scripts/prepare-seed-man-world-five-combat.mjs
+          node --check games/seed-man-platformer/test/world-five-browser.test.mjs
+
+      - name: Verify prepared World 5 production contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          route=site/public-route-patch/games/seed-man-platformer
+          release="$(sed -n 's/.*name="dtf-sprout-release" content="\([^"]*\)".*/\1/p' "$route/index.html" | head -n 1)"
+          [[ "$release" =~ ^[0-9]{8}-r[0-9]+$ ]]
+          test -s "$route/world-five-v1.js"
+          test -s "$route/data/levels-12-15.json"
+          grep -Fq "<script src=\"./world-five-v1.js?v=${release}\" defer></script>" "$route/index.html"
+          grep -Fq '"levelCount": 15' "$route/data/campaign.json"
+          grep -Fq '"newLevelCount": 14' "$route/data/campaign.json"
+          grep -Fq '"title": "Genetic Frontier"' "$route/data/campaign.json"
+          grep -Fq 'Chromosome Crossing' "$route/world-five-v1.js"
+          grep -Fq 'Mutation Marsh' "$route/world-five-v1.js"
+          grep -Fq 'Allele Array' "$route/world-five-v1.js"
+          grep -Fq 'Genome Spire' "$route/world-five-v1.js"
+          grep -Fq 'Genome Hydra' "$route/world-five-v1.js"
+          grep -Fq 'seed-man-world-five-combat-v1' "$route/combat-browser-v1.js"
+          grep -Fq "'chromosome-crossing'" "$route/combat-browser-v1.js"
+          grep -Fq "'mutation-marsh'" "$route/combat-browser-v1.js"
+          grep -Fq "'allele-array'" "$route/combat-browser-v1.js"
+          grep -Fq "'genome-spire'" "$route/combat-browser-v1.js"
+          grep -Fq 'Solar Ember Beetle' "$route/combat-browser-v1.js"
+          grep -Fq 'Voltage Wasp Alpha' "$route/combat-browser-v1.js"
+          grep -Fq 'Cryo Moth Prime' "$route/combat-browser-v1.js"
+          grep -Fq "return ENCOUNTERS[level?.id] || [];" "$route/combat-browser-v1.js"
+          grep -Fq "'world-five-v1.js'," scripts/publish-seed-man-route-via-wordpress.mjs
+          grep -Fq "'data/levels-12-15.json'," scripts/publish-seed-man-route-via-wordpress.mjs
+
+      - name: Install browser dependencies
+        run: |
+          npm ci
+          npx playwright install chromium
+
+      - name: Playtest Genetic Frontier desktop and mobile
+        run: node games/seed-man-platformer/test/world-five-browser.test.mjs
