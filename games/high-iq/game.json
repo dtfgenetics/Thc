@@ -24,6 +24,7 @@
     "shellSync": "node games/high-iq/scripts/sync-runtime-shell.mjs",
     "gameCoreTests": "node games/high-iq/test/game-core.test.mjs",
     "browserPlaythrough": "node games/high-iq/test/browser-smoke.mjs",
+    "debugReplayAcceptance": "node games/high-iq/test/debug-replay-browser.test.mjs",
     "liveVerification": "node games/high-iq/scripts/verify-live-v3.mjs",
     "provenance": "High_IQ_Master_Production_Workbook_v2_2.xlsx + source-backed v2.3/v2.4 expansions"
   },
@@ -31,6 +32,8 @@
     "html": "site/public-route-patch/games/high-iq/index.html",
     "script": "site/public-route-patch/games/high-iq/app-v3.js",
     "core": "site/public-route-patch/games/high-iq/game-core.mjs",
+    "debugReplayAdapter": "site/public-route-patch/games/high-iq/debug-replay.mjs",
+    "sharedPlatform": "/games/shared-platform/index.mjs",
     "baseStyles": "site/public-route-patch/games/high-iq/high-iq.css",
     "v3Styles": "site/public-route-patch/games/high-iq/high-iq-v3.css",
     "gameplayFirstStyles": "site/public-route-patch/games/high-iq/high-iq-v3-3.css",
@@ -64,7 +67,9 @@
       "manifest-driven-package-verification",
       "gameplay-first-v3-3-ui",
       "mobile-active-play-qa",
-      "minimum-44px-answer-targets"
+      "minimum-44px-answer-targets",
+      "shared-platform-replay-debug-export",
+      "sanitized-question-action-trace"
     ]
   },
   "integration": {
@@ -77,6 +82,7 @@
     "authoring_workflow_ready": true,
     "manifest_driven_growth_ready": true,
     "browser_playthrough_gate_ready": true,
+    "shared_platform_replay_ready": true,
     "live_verification_script_ready": true,
     "last_production_verified_version": "2.3",
     "last_production_verified_questions": 160,

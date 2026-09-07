@@ -6,14 +6,17 @@ on:
     paths:
       - 'games/high-iq/**'
       - 'site/public-route-patch/games/high-iq/**'
+      - 'games/shared-platform/**'
+      - 'site/public-route-patch/games/shared-platform/**'
       - 'scripts/package-game-routes-wordpress.py'
       - 'scripts/package-public-suite-wordpress.py'
       - '.github/workflows/high-iq-data-ci.yml'
   pull_request:
-    branches: [main]
     paths:
       - 'games/high-iq/**'
       - 'site/public-route-patch/games/high-iq/**'
+      - 'games/shared-platform/**'
+      - 'site/public-route-patch/games/shared-platform/**'
       - 'scripts/package-game-routes-wordpress.py'
       - 'scripts/package-public-suite-wordpress.py'
       - '.github/workflows/high-iq-data-ci.yml'
@@ -51,15 +54,17 @@ jobs:
       - name: Smoke-test High IQ v3 runtime contract
         run: node games/high-iq/test/runtime-smoke.mjs
 
-      - name: Check browser, authoring, live-verifier, and packaging source syntax
+      - name: Check browser, authoring, live-verifier, debug, and packaging source syntax
         run: |
           node --check site/public-route-patch/games/high-iq/app.js
           node --check site/public-route-patch/games/high-iq/app-v3.js
           node --check site/public-route-patch/games/high-iq/game-core.mjs
+          node --check site/public-route-patch/games/high-iq/debug-replay.mjs
           node --check games/high-iq/scripts/question-bank.mjs
           node --check games/high-iq/scripts/sync-runtime-shell.mjs
           node --check games/high-iq/test/question-bank-tool.test.mjs
           node --check games/high-iq/test/browser-smoke.mjs
+          node --check games/high-iq/test/debug-replay-browser.test.mjs
           node --check games/high-iq/scripts/verify-live-v3.mjs
           python -m py_compile scripts/package-game-routes-wordpress.py scripts/package-public-suite-wordpress.py
 
@@ -72,6 +77,7 @@ jobs:
           test -s site/public-route-patch/games/high-iq/high-iq-v3.css
           test -s site/public-route-patch/games/high-iq/app-v3.js
           test -s site/public-route-patch/games/high-iq/game-core.mjs
+          test -s site/public-route-patch/games/high-iq/debug-replay.mjs
           grep -Eqi '<h1([ >])' site/public-route-patch/games/high-iq/index.html
           grep -Fqi 'rel="canonical"' site/public-route-patch/games/high-iq/index.html
           grep -Fqi 'name="description"' site/public-route-patch/games/high-iq/index.html
@@ -80,6 +86,7 @@ jobs:
           grep -Fq 'Build your High IQ run' site/public-route-patch/games/high-iq/index.html
           grep -Fq "Today's Daily 10" site/public-route-patch/games/high-iq/index.html
           grep -Fq 'Missed-question review' site/public-route-patch/games/high-iq/index.html
+          grep -Fq "import('./debug-replay.mjs')" site/public-route-patch/games/high-iq/game-core.mjs
           node games/high-iq/scripts/sync-runtime-shell.mjs --check
 
       - name: Build and inspect WordPress game-route package
@@ -101,6 +108,7 @@ jobs:
                   'games/high-iq/index.html',
                   'games/high-iq/app-v3.js',
                   'games/high-iq/game-core.mjs',
+                  'games/high-iq/debug-replay.mjs',
                   'games/high-iq/high-iq.css',
                   'games/high-iq/high-iq-v3.css',
                   'games/high-iq/data/manifest.json',
@@ -120,3 +128,6 @@ jobs:
 
       - name: Play through High IQ v3 in Chromium
         run: node games/high-iq/test/browser-smoke.mjs
+
+      - name: Validate High IQ shared replay debug export in Chromium
+        run: node games/high-iq/test/debug-replay-browser.test.mjs
