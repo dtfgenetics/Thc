@@ -2,7 +2,9 @@
 
 (() => {
   const VERSION = 'seed-man-three-adapter-v2';
+  const EXPECTED_API_VERSION = 'seed-man-three-public-v2';
   const EXPECTED_RENDERER_VERSION = 'seed-man-three-world-v2';
+  const EXPECTED_OPTIMIZATION = 'seed-man-three-instancing-v1';
   const gameCanvas = document.querySelector('#game');
   const shell = document.querySelector('.game-shell');
   const api = window.SeedManThreeWorld;
@@ -24,6 +26,7 @@
   let resizeDirty = true;
   let pageVisible = !document.hidden;
   let selectedPixelRatio = 1;
+  let renderStats = null;
   const originalDrawBackground = window.drawBackground;
   const originalDrawPlatforms = window.drawPlatforms;
   const originalDrawCheckpoints = window.drawCheckpoints;
@@ -137,6 +140,7 @@
     renderer.mountLevel(nextLevel);
     mountedLevelId = id;
     shell.dataset.threeLevel = id;
+    renderStats = null;
     return true;
   }
 
@@ -159,6 +163,7 @@
           elapsed: currentElapsed()
         });
         renderer.render();
+        renderStats = renderer.getRenderStats?.() || null;
       }
     } catch (error) {
       console.error('Seed Man Three.js runtime bridge failed.', error);
@@ -207,6 +212,9 @@
   }
 
   try {
+    if (api.version !== EXPECTED_API_VERSION) {
+      throw new Error(`Unexpected Seed Man public API version: ${api.version || 'unknown'}`);
+    }
     stack = installStack();
     threeCanvas = installThreeCanvas(stack);
     selectedPixelRatio = choosePixelRatio();
@@ -215,10 +223,14 @@
     if (renderer.version !== EXPECTED_RENDERER_VERSION) {
       throw new Error(`Unexpected Seed Man renderer version: ${renderer.version || 'unknown'}`);
     }
+    if (renderer.optimization !== EXPECTED_OPTIMIZATION) {
+      throw new Error(`Unexpected Seed Man renderer optimization: ${renderer.optimization || 'none'}`);
+    }
     installForegroundHooks();
     shell.dataset.threeWorld = VERSION;
     document.documentElement.dataset.seedThreeWorld = 'active';
     document.documentElement.dataset.seedThreeRenderer = renderer.version;
+    document.documentElement.dataset.seedThreeOptimization = renderer.optimization;
     document.documentElement.dataset.seedThreePixelRatio = String(selectedPixelRatio);
 
     resizeIfNeeded();
@@ -239,12 +251,14 @@
       snapshot: () => ({
         mountedLevelId,
         rendererVersion: renderer?.version || null,
+        rendererOptimization: renderer?.optimization || null,
         worldVersion: api.version || null,
         webgl: true,
         width: lastWidth,
         height: lastHeight,
         pixelRatio: selectedPixelRatio,
-        pageVisible
+        pageVisible,
+        renderStats
       }),
       dispose
     });
