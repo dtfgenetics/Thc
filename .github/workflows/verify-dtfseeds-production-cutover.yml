@@ -81,7 +81,7 @@ jobs:
 
           check_route '/' 'Genetics first. Learn the plant behind the pack.'
           check_route '/learn/' 'Learn in a sequence that makes the plant easier to understand.'
-          check_route '/learn/infographics/' 'Searchable Infographic Library'
+          check_route '/learn/infographics/' 'Study question:'
 
           echo "report=$out" >> "$GITHUB_OUTPUT"
           echo "failures=$failures" >> "$GITHUB_OUTPUT"
