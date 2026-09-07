@@ -23,6 +23,7 @@
   let lastHeight = 0;
   let resizeDirty = true;
   let pageVisible = !document.hidden;
+  let selectedPixelRatio = 1;
   const originalDrawBackground = window.drawBackground;
   const originalDrawPlatforms = window.drawPlatforms;
   const originalDrawCheckpoints = window.drawCheckpoints;
@@ -42,6 +43,13 @@
 
   function currentElapsed() {
     try { return typeof elapsed !== 'undefined' ? elapsed : 0; } catch { return 0; }
+  }
+
+  function choosePixelRatio() {
+    const deviceRatio = Math.max(1, Number(window.devicePixelRatio) || 1);
+    const coarsePointer = typeof window.matchMedia === 'function' && window.matchMedia('(pointer: coarse)').matches;
+    const narrowViewport = Math.min(window.innerWidth || 960, window.innerHeight || 540) < 700;
+    return Math.min(deviceRatio, coarsePointer || narrowViewport ? 1 : 1.25);
   }
 
   function installStack() {
@@ -201,7 +209,8 @@
   try {
     stack = installStack();
     threeCanvas = installThreeCanvas(stack);
-    renderer = api.createRenderer({ canvas: threeCanvas });
+    selectedPixelRatio = choosePixelRatio();
+    renderer = api.createRenderer({ canvas: threeCanvas, pixelRatio: selectedPixelRatio });
     if (!renderer) throw new Error('WebGL renderer could not be created.');
     if (renderer.version !== EXPECTED_RENDERER_VERSION) {
       throw new Error(`Unexpected Seed Man renderer version: ${renderer.version || 'unknown'}`);
@@ -210,6 +219,7 @@
     shell.dataset.threeWorld = VERSION;
     document.documentElement.dataset.seedThreeWorld = 'active';
     document.documentElement.dataset.seedThreeRenderer = renderer.version;
+    document.documentElement.dataset.seedThreePixelRatio = String(selectedPixelRatio);
 
     resizeIfNeeded();
     if (typeof ResizeObserver === 'function') {
@@ -233,6 +243,7 @@
         webgl: true,
         width: lastWidth,
         height: lastHeight,
+        pixelRatio: selectedPixelRatio,
         pageVisible
       }),
       dispose
