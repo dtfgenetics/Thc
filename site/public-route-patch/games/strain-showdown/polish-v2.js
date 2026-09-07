@@ -17,14 +17,14 @@ window.addEventListener('DOMContentLoaded', () => {
     [...hand.querySelectorAll('.card[data-hand-index]')].forEach((card, index) => {
       if (index >= 9) return;
       const shortcut = String(index + 1);
-      card.setAttribute('aria-keyshortcuts', shortcut);
+      if (card.getAttribute('aria-keyshortcuts') !== shortcut) card.setAttribute('aria-keyshortcuts', shortcut);
       let badge = card.querySelector('.hand-shortcut');
       if (!badge) {
         badge = document.createElement('kbd');
         badge.className = 'hand-shortcut';
         card.append(badge);
       }
-      badge.textContent = shortcut;
+      if (badge.textContent !== shortcut) badge.textContent = shortcut;
     });
   }
 
@@ -88,7 +88,10 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  const observer = new MutationObserver(refresh);
+  const observer = new MutationObserver((mutations) => {
+    const externalChange = mutations.some((mutation) => !mutation.target.closest?.('#tacticalStrip'));
+    if (externalChange) queueMicrotask(refresh);
+  });
   observer.observe(battleScreen, { subtree: true, childList: true, attributes: true, attributeFilter: ['hidden', 'disabled', 'class'] });
   refresh();
 });
