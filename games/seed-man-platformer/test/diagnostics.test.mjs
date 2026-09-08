@@ -1,0 +1,1 @@
+import assert from 'node:assert/strict';import { createDiagnostics } from '../src/systems/diagnostics.mjs';const d=createDiagnostics();d.inc('frames');d.inc('frames');d.setTiming('frameMs',16.7);const s=d.snapshot();assert.equal(s.counters.frames,2);assert.equal(s.timings.frameMs,16.7);console.log('Seed Man diagnostics OK');
