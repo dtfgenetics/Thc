@@ -85,8 +85,23 @@
     fallbackRenderer?.();
   }
 
+  function approvedRendererAvailable() {
+    return typeof window.drawSeedManProduction === 'function';
+  }
+
   function install({ force = false } = {}) {
     if (typeof window.drawSeedMan !== 'function') return false;
+
+    // The authored atlas remains packaged as a compatibility/fallback asset, but it must
+    // never replace the approved production character renderer when that renderer exists.
+    if (approvedRendererAvailable()) {
+      installed = false;
+      document.documentElement.dataset.seedManSpriteRuntime = VERSION;
+      document.documentElement.dataset.seedManSpriteAtlas = atlasReady ? ATLAS_VERSION : atlasFailed ? 'fallback' : 'loading';
+      document.documentElement.dataset.seedManRendererOwner = 'seed-man-production-v1';
+      return true;
+    }
+
     if (!fallbackRenderer && window.drawSeedMan !== spriteRenderer) fallbackRenderer = window.drawSeedMan;
     if (installed && !force && window.drawSeedMan === spriteRenderer) return true;
     window.drawSeedMan = spriteRenderer;
@@ -126,7 +141,8 @@
       atlasVersion: atlasReady ? ATLAS_VERSION : null,
       pose: pose(),
       phenotypeFrame: phenotypeFrame(),
-      rendererOwner: window.drawSeedMan === spriteRenderer ? VERSION : 'other'
+      approvedRendererAvailable: approvedRendererAvailable(),
+      rendererOwner: approvedRendererAvailable() ? 'seed-man-production-v1' : window.drawSeedMan === spriteRenderer ? VERSION : 'other'
     }),
     reinstall: () => install({ force: true })
   });
