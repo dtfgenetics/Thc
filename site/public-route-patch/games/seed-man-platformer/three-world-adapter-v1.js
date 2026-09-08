@@ -2,8 +2,8 @@
 
 (() => {
   const VERSION = 'seed-man-three-adapter-v2';
-  const VISUAL_THEME_VERSION = 'seed-man-world-themes-v1';
-  const EXPECTED_API_VERSION = 'seed-man-three-public-v2';
+  const VISUAL_THEME_VERSION = 'seed-man-visual-world-api-v1';
+  const EXPECTED_API_VERSION = 'seed-man-three-public-v3';
   const EXPECTED_RENDERER_VERSION = 'seed-man-three-world-v2';
   const EXPECTED_OPTIMIZATION = 'seed-man-three-instancing-v1';
   const gameCanvas = document.querySelector('#game');
@@ -94,27 +94,11 @@
 
   function applyWorldTheme(descriptor) {
     if (!renderer?.scene || !descriptor) return;
-    const key = visualThemeKey(descriptor.level?.theme);
-    const theme = WORLD_THEMES[key] || WORLD_THEMES.greenhouse;
-    mountedVisualTheme = key;
-    renderer.scene.background?.setHex?.(theme.sky);
-    renderer.scene.fog?.color?.setHex?.(theme.fog);
-
-    renderer.scene.traverse((child) => {
-      if (!child?.material) return;
-      const material = Array.isArray(child.material) ? child.material[0] : child.material;
-      const name = child.name || '';
-      if (name.includes('platforms-v1')) setMaterialColor(material, theme.platform);
-      else if (name.includes('platform-caps-v1')) setMaterialColor(material, theme.top);
-      else if (name.includes('platform-edges-v1')) setMaterialColor(material, theme.edge);
-      else if (name.includes('greenhouse-ribs-v1') || name.includes('greenhouse-braces-v1')) setMaterialColor(material, theme.frame);
-      else if (name.includes('plant-leaves-dark-v1')) setMaterialColor(material, theme.leafDark);
-      else if (name.includes('plant-leaves-light-v1')) setMaterialColor(material, theme.leafLight);
-    });
-
-    shell.dataset.seedVisualTheme = key;
-    document.body.dataset.seedVisualWorld = key;
-    document.documentElement.dataset.seedThreeTheme = key;
+    const visualWorldKey = descriptor.visualWorldKey || descriptor.level?.visualWorldKey || 'greenhouse-valley';
+    mountedVisualTheme = visualWorldKey;
+    shell.dataset.seedVisualTheme = visualWorldKey;
+    document.body.dataset.seedVisualWorld = visualWorldKey;
+    document.documentElement.dataset.seedThreeTheme = visualWorldKey;
     document.documentElement.dataset.seedThreeThemeVersion = VISUAL_THEME_VERSION;
   }
 
