@@ -39,11 +39,11 @@ async function assertCampaignIdentity(page) {
   assert.equal(identity.subtitle, 'GREENHOUSE GAUNTLET');
   assert.match(identity.eyebrow, /Greenhouse Gauntlet/i);
   assert.match(identity.eyebrow, /Grow\. Fight\. Restore\./i);
-  assert.match(identity.lede, /Greenhouse Valley/i);
-  assert.match(identity.lede, /Forest Ruins/i);
-  assert.match(identity.lede, /Desert Canyon/i);
-  assert.match(identity.lede, /Frozen Peak/i);
-  assert.match(identity.lede, /Eco City/i);
+  assert.match(identity.lede, /Greenhouse District/i);
+  assert.match(identity.lede, /Rootworks/i);
+  assert.match(identity.lede, /Resin Works/i);
+  assert.match(identity.lede, /Sky Garden/i);
+  assert.match(identity.lede, /Genetic Frontier/i);
   assert.match(identity.marker, /GROW · FIGHT · RESTORE/i);
   assert.match(identity.summary, /5\s+WORLDS/i);
   assert.match(identity.summary, /15\s+LEVELS/i);
@@ -56,7 +56,7 @@ async function assertCampaignIdentity(page) {
   assert.equal(identity.worldCards.length, 5);
   assert.deepEqual(identity.worldCards.map((card) => card.world), ['world-01', 'world-02', 'world-03', 'world-04', 'world-05']);
   assert.deepEqual(identity.worldCards.map((card) => card.level), ['sprout-run', 'root-zone-rumble', 'kief-cavern-climb', 'frostline-canopy', 'chromosome-crossing']);
-  assert.match(identity.worldCards.map((card) => card.text).join(' '), /Greenhouse Valley.*Forest Ruins.*Desert Canyon.*Frozen Peak.*Eco City/is);
+  assert.match(identity.worldCards.map((card) => card.text).join(' '), /Greenhouse District.*Rootworks.*Resin Works.*Sky Garden.*Genetic Frontier/is);
 }
 
 async function assertWorldRailNavigation(page) {
@@ -164,17 +164,17 @@ try {
   await assertCampaignIdentity(desktop);
   await assertWorldRailNavigation(desktop);
   await assertEncounterHud(desktop);
-  await assertLevel(desktop, 'sprout-run', 'Greenhouse Valley', 'Greenhouse District', 1, 'greenhouse');
-  await assertLevel(desktop, 'root-zone-rumble', 'Forest Ruins', 'Rootworks', 4, 'rootworks');
-  await assertLevel(desktop, 'frostline-canopy', 'Frozen Peak', 'Sky Garden', 10, 'sky');
-  await assertLevel(desktop, 'genome-spire', 'Eco City', 'Genetic Frontier', 15, 'genetic');
+  await assertLevel(desktop, 'sprout-run', 'Greenhouse District', 'Greenhouse District', 1, 'greenhouse');
+  await assertLevel(desktop, 'root-zone-rumble', 'Rootworks', 'Rootworks', 4, 'rootworks');
+  await assertLevel(desktop, 'frostline-canopy', 'Sky Garden', 'Sky Garden', 10, 'sky');
+  await assertLevel(desktop, 'genome-spire', 'Genetic Frontier', 'Genetic Frontier', 15, 'genetic');
   await desktop.close();
 
   const mobile = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
   await mobile.goto(URL, { waitUntil: 'networkidle' });
   await mobile.waitForFunction(() => window.__SPROUT_VISUAL_V4__?.version === 'seed-man-visual-v4');
   await assertCampaignIdentity(mobile);
-  await assertLevel(mobile, 'mutation-marsh', 'Eco City', 'Genetic Frontier', 13, 'genetic');
+  await assertLevel(mobile, 'mutation-marsh', 'Genetic Frontier', 'Genetic Frontier', 13, 'genetic');
   const mobileMetrics = await mobile.evaluate(() => ({
     overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
     contextHeight: document.querySelector('.seed-run-context')?.getBoundingClientRect().height || 0,
