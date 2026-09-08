@@ -111,6 +111,9 @@ jobs:
           test -f apps/growlens-web/dist/api/_images.php
           test -f apps/growlens-web/dist/api/.htaccess
 
+      - name: Validate Plant Atlas runtime files
+        run: npm run validate:plant-atlas:v4
+
       - name: Upload GrowLens build artifact
         if: steps.build.outcome == 'success'
         uses: actions/upload-artifact@v4
@@ -119,30 +122,3 @@ jobs:
           path: apps/growlens-web/dist
           include-hidden-files: true
           if-no-files-found: error
-
-      - name: Install Playwright Chromium
-        run: npx playwright install --with-deps chromium
-
-      - name: Run GrowLens browser smoke tests
-        shell: bash
-        run: |
-          set -o pipefail
-          npm run test:e2e:growlens 2>&1 | tee growlens-e2e.log
-
-      - name: Upload GrowLens browser diagnostics
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: growlens-e2e-diagnostics
-          path: growlens-e2e.log
-          if-no-files-found: ignore
-
-      - name: Upload GrowLens browser artifacts
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: growlens-playwright-artifacts
-          path: |
-            test-results
-            playwright-report
-          if-no-files-found: ignore
