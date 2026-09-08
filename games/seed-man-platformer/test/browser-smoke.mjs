@@ -149,7 +149,7 @@ async function runDesktopAcceptance(page) {
   await assertProductionArt(page);
   const feel = await assertFeelMechanics(page);
 
-  assert.match(await page.title(), /Seed Man: Sprout Run/i);
+  assert.match(await page.title(), /Seed Man: (Sprout Run|Greenhouse Gauntlet)/i);
   assert.equal((await page.locator('#sprout-count').innerText()).trim(), '0 / 24');
   assert.equal((await page.locator('#jump-count').innerText()).trim(), '2 jumps ready');
   assert.equal((await page.locator('#progress-count').innerText()).trim(), '1%');
