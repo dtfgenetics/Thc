@@ -1,0 +1,12 @@
+Seed Ascent production reconciliation
+
+Publish the current dtfgenetics/Dtf420 main through the reviewed Dtf420 static child-route overlay and protected DTFSeeds Public Suite WordPress V2 transactional publisher.
+
+Required public route: https://dtfseeds.com/games/seed-ascent/
+Required shared runtime: /seed-ascent.html and /seed-ascent/**
+
+Release must include the merged Seed Ascent world-art, powered-enemy sprites, phenotype combat, animation manifest/controller/runtime, authored-sprite loader, safe renderer adapter, world animation layer, and verified fallback behavior from Dtf420 main at or after merge commit 096e5e7ace3e54b4fac695ec71f31ffdb5eb91ae.
+
+Preserve WordPress ownership of /games/ and all other hub routes. Stage only through /dtf-content-overlay/ and promote the canonical Seed Ascent child route using the existing production reconciliation path. Run the protected production write, cache/route promotion, and visitor-facing verification before treating the release as live.
+
+Release trigger: seed-ascent-renderer-production-2026-09-08-r1
