@@ -1,0 +1,2 @@
+export const PLATFORM_SURFACES=Object.freeze({grass:{friction:0.82,bounce:0},dirt:{friction:0.84,bounce:0},rock:{friction:0.86,bounce:0},stone:{friction:0.88,bounce:0},ice:{friction:0.18,bounce:0},sand:{friction:0.65,bounce:0},metal:{friction:0.78,bounce:0},wood:{friction:0.76,bounce:0},spring:{friction:0.7,bounce:790}});
+export function getPlatformSurface(key){const surface=PLATFORM_SURFACES[key];if(!surface)throw new Error(`Unknown Seed Man platform surface ${key}`);return surface;}
