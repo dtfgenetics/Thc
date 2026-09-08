@@ -1,13 +1,16 @@
 {
   "name": "@dtfgenetics/seed-man-platformer",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
-  "description": "Build boundary for the Seed Man: Greenhouse Gauntlet Three.js world renderer and 15-level browser campaign.",
+  "description": "Production boundary for the 20-level Seed Man browser campaign, approved art registry, and Three.js world renderer.",
   "scripts": {
     "build:three-public": "node scripts/build-three-public.mjs",
     "test:three-world": "node test/three-world-state.test.mjs",
     "test:visual-runtime": "node test/visual-runtime.test.mjs",
+    "test:art-registry": "node test/art-registry.test.mjs",
+    "test:campaign-20": "node test/campaign-20.test.mjs",
+    "test:production-contracts": "npm run test:art-registry && npm run test:campaign-20 && npm run test:visual-runtime && npm run test:three-world",
     "verify:three-import": "node -e \"import('./src/render/three-world.mjs').then((m)=>{if(typeof m.createThreeWorldRenderer!=='function')process.exit(1)})\""
   },
   "dependencies": {
