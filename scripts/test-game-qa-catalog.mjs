@@ -24,6 +24,14 @@ for (const game of state.catalog) {
   routes.add(game.route);
 }
 
+const seedMan = state.catalog.find((game) => game.id === 'seed-man-platformer');
+assert.ok(seedMan, 'Seed Man catalog entry is required');
+assert.equal(seedMan.title, 'Seed Man: Greenhouse Gauntlet', 'Seed Man product title must not regress to Sprout Run');
+assert.equal(seedMan.route, '/games/seed-man-platformer/', 'Seed Man public route must remain stable');
+assert.equal(seedMan.canonicalRepository, 'dtfgenetics/Thc', 'Seed Man canonical repository must remain dtfgenetics/Thc');
+assert.ok(seedMan.canonicalSourcePaths.includes('games/seed-man-platformer'), 'Seed Man canonical gameplay source is required');
+assert.ok(seedMan.canonicalSourcePaths.includes('site/public-route-patch/games/seed-man-platformer'), 'Seed Man production route source is required');
+
 const deploymentBacked = state.catalog.filter((game) => game.deployment);
 assert.ok(deploymentBacked.length >= 25, `expected at least 25 deployment-backed games, found ${deploymentBacked.length}`);
 
