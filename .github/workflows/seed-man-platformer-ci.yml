@@ -114,8 +114,16 @@ jobs:
           for file in index.html canvas-compat-v1.js campaign-v1.js world-five-v1.js seed-man-ui-v3.js app.js seed-man-production-art.js gameplay-v2.js input-guard-v1.js seed-man.css physics.mjs data/campaign.json data/level-01.json data/levels-02-11.json data/levels-12-15.json; do
             test -s "$route/$file" || { echo "Missing $file" >&2; exit 1; }
           done
-          grep -Fq '<h1>Sprout Run</h1>' "$route/index.html"
-          grep -Fq 'Greenhouse Gauntlet' "$route/index.html"
+          grep -Fq '<title>Seed Man: Greenhouse Gauntlet | DTF Genetics</title>' "$route/index.html"
+          grep -Fq '<h1>Seed Man</h1>' "$route/index.html"
+          ! grep -Fq '<h1>Sprout Run</h1>' "$route/index.html"
+          grep -Fq 'Greenhouse Valley' "$route/index.html"
+          grep -Fq 'Forest Ruins' "$route/index.html"
+          grep -Fq 'Desert Canyon' "$route/index.html"
+          grep -Fq 'Frozen Peak' "$route/index.html"
+          grep -Fq 'Eco City' "$route/index.html"
+          grep -Fq '15 levels' "$route/index.html"
+          grep -Fq 'six bosses' "$route/index.html"
           grep -Fq 'https://dtfseeds.com/games/seed-man-platformer/' "$route/index.html"
           grep -Fqi 'rel="canonical"' "$route/index.html"
           grep -Fqi 'name="description"' "$route/index.html"

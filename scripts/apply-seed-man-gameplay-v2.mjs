@@ -31,20 +31,30 @@ if (!index.includes(gameplayTag)) {
   );
 }
 
-const canonicalLede = 'Run a three-stage greenhouse gauntlet that is three times longer than the original course. Collect all 24 sprouts, ride moving greenhouse tables, stomp roaming pests, hit boost pads, use responsive short-hop/full-height jumps, double jumps and power-ups, activate three checkpoints, and reach the Dream the Future flag.';
+const canonicalTitle = 'Seed Man: Greenhouse Gauntlet | DTF Genetics';
+const canonicalDescription = 'Play Seed Man: Greenhouse Gauntlet, the DTF Genetics platform adventure spanning five worlds and 15 levels with six bosses, phenotype combat, authored character animation, checkpoints, and responsive desktop and touch controls.';
+const canonicalLede = 'Run the full Seed Man campaign across Greenhouse Valley, Forest Ruins, Desert Canyon, Frozen Peak and Eco City. Collect sprouts, master responsive double-jump movement, defeat phenotype carriers to absorb temporary powers, survive six boss encounters, activate checkpoints, and restore every world.';
+
+index = index.replace(/<title>[^<]*<\/title>/, `<title>${canonicalTitle}</title>`);
+index = index.replace(/<meta name="description" content="[^"]*">/, `<meta name="description" content="${canonicalDescription}">`);
+index = index.replace(/<h1>Sprout Run<\/h1>/, '<h1>Seed Man</h1>');
+index = index.replace(/aria-label="Sprout Run features"/, 'aria-label="Seed Man campaign features"');
+index = index.replace(/"title": "Seed Man: Sprout Run"/, '"title": "Seed Man: Greenhouse Gauntlet"');
+
 const ledePattern = /<p class="lede">([^<]*)<\/p>/;
 const ledeMatch = index.match(ledePattern);
-must(
-  ledeMatch && ledeMatch[1].includes('Collect all 24 sprouts') && ledeMatch[1].includes('Dream the Future flag'),
-  'Could not identify the canonical Seed Man hero lede structurally'
-);
+must(ledeMatch, 'Could not identify the Seed Man hero lede structurally');
 index = index.replace(ledePattern, `<p class="lede">${canonicalLede}</p>`);
+
+must(index.includes(`<title>${canonicalTitle}</title>`), 'Seed Man static title is not canonical');
+must(index.includes(`<h1>Seed Man</h1>`), 'Seed Man static hero heading is not canonical');
+must(index.includes('Greenhouse Valley') && index.includes('Eco City'), 'Seed Man static campaign copy is not five-world aware');
+must(!index.includes('<h1>Sprout Run</h1>'), 'Retired Sprout Run product heading remains');
 
 const gameplayCopy = '<strong>Gameplay:</strong> stomp pests from above, use BOOST pads for high routes, and time moving greenhouse platforms. ';
 const powerupCopy = '<strong>Power-ups:</strong> gold = speed, green = high jump, purple = sprout magnet, blue = hazard shield.';
 const repeatedGameplay = new RegExp(`(?:${escapeRegex(gameplayCopy)})+${escapeRegex(powerupCopy)}`, 'g');
 index = index.replace(repeatedGameplay, `${gameplayCopy}${powerupCopy}`);
-must(index.includes(`${gameplayCopy}${powerupCopy}`), 'Seed Man gameplay-v2 control copy is not canonical');
 
 if (!publisher.includes("'gameplay-v2.js'")) {
   const publisherAnchor = "  'seed-man-production-art.js',\n  'input-guard-v1.js',";
@@ -62,7 +72,7 @@ if (!contentChanged) {
     currentRelease,
     nextRelease: currentRelease,
     changed: false,
-    reason: 'gameplay-v2 already canonical',
+    reason: 'gameplay-v2 and static campaign identity already canonical',
     gameplayFile: 'site/public-route-patch/games/seed-man-platformer/gameplay-v2.js'
   }, null, 2));
   process.exit(0);
