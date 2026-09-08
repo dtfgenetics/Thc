@@ -8,6 +8,7 @@ on:
       - 'site/public-route-patch/games/seed-man-platformer/**'
       - 'games/shared-platform/**'
       - 'site/public-route-patch/games/shared-platform/**'
+      - 'scripts/sync-seed-man-production-data.mjs'
       - '.github/workflows/seed-man-full-integration-ci.yml'
       - '.github/workflows/seed-man-platformer-ci.yml'
       - '.github/workflows/seed-man-combat-ci.yml'
@@ -18,6 +19,7 @@ on:
       - 'site/public-route-patch/games/seed-man-platformer/**'
       - 'games/shared-platform/**'
       - 'site/public-route-patch/games/shared-platform/**'
+      - 'scripts/sync-seed-man-production-data.mjs'
       - '.github/workflows/seed-man-full-integration-ci.yml'
       - '.github/workflows/seed-man-platformer-ci.yml'
       - '.github/workflows/seed-man-combat-ci.yml'
@@ -46,8 +48,13 @@ jobs:
           node --check games/seed-man-platformer/src/campaign.mjs
           node --check games/seed-man-platformer/src/systems/combat.mjs
           node --check games/seed-man-platformer/src/systems/enemy-attacks.mjs
+          node --check games/seed-man-platformer/src/render/art-registry.mjs
           node --check games/seed-man-platformer/src/render/approved-art-loader.mjs
           node --check games/seed-man-platformer/src/render/visual-runtime-v2.mjs
+          node --check scripts/sync-seed-man-production-data.mjs
+
+      - name: Synchronize canonical production data
+        run: node scripts/sync-seed-man-production-data.mjs
 
       - name: Prepare exact public artifact
         run: node scripts/prepare-seed-man-combat-release.mjs
