@@ -85,13 +85,15 @@ const spriteAtlas = fs.readFileSync('site/public-route-patch/games/seed-man-plat
 
 if (enemyAttackModule !== canonicalEnemyAttackModule) throw new Error('Browser-safe enemy-attacks.js must exactly mirror the canonical enemy-attacks.mjs source.');
 if (publicCampaign !== canonicalCampaign) throw new Error('Public campaign manifest must exactly mirror canonical Seed Man campaign data.');
-if (publicWorldFivePack !== canonicalWorldFivePack) throw new Error('Public World 5 level pack must exactly mirror canonical levels-12-15.json.');
+if (publicWorldFivePack !== canonicalWorldFivePack) throw new Error('Public legacy World 5 pack must exactly mirror canonical levels-12-15.json.');
 if (!fs.readFileSync(publicThreeBuildPath).equals(threeBuild)) throw new Error('Public Three.js bundle must exactly mirror the canonical release build.');
 
 const campaign = JSON.parse(canonicalCampaign);
 const worldFivePack = JSON.parse(canonicalWorldFivePack);
-if (campaign.levelCount !== 15 || campaign.newLevelCount !== 14 || campaign.worlds?.length !== 5) throw new Error('Seed Man campaign must expose the 15-level, five-world World 5 contract.');
-if (worldFivePack.levels?.length !== 4 || worldFivePack.levels.at(-1)?.id !== 'genome-spire') throw new Error('World 5 pack must contain four stages ending at Genome Spire.');
+if (campaign.levelCount !== 20 || campaign.newLevelCount !== 19 || campaign.worlds?.length !== 5 || campaign.finalBoss !== 'blight-king') {
+  throw new Error('Seed Man campaign must expose the current 20-level, five-world Blight King production contract.');
+}
+if (worldFivePack.levels?.length !== 4 || worldFivePack.levels.at(-1)?.id !== 'genome-spire') throw new Error('Legacy Genetic Frontier compatibility pack must retain four stages ending at Genome Spire.');
 
 let index = fs.readFileSync(indexPath, 'utf8');
 const release = index.match(/name="dtf-sprout-release" content="([^"]+)"/)?.[1];
@@ -115,19 +117,20 @@ for (const marker of ['seed-man-combat-browser-v1','seed-man-phenotype-absorb-v1
 for (const marker of ['combatBrowserAutoLoad: true','combat-browser-v1.js','seed-man-phenotype-mobility-frame-v1','mobilityFrameRepairInstalled','enemyAttackBrowserAutoLoad: true','enemy-attacks-browser-v1.js','campaignUiAutoLoad: true','campaign-ui-v15.js']) if (!compat.includes(marker)) throw new Error(`Missing combat compatibility marker: ${marker}`);
 for (const marker of ['seed-man-enemy-attacks-browser-v1',"import('./enemy-attacks.js')",'radial-burst','blink-strike','ground-wave','hitsTaken']) if (!enemyAttackBrowser.includes(marker)) throw new Error(`Missing enemy attack browser marker: ${marker}`);
 for (const marker of ['ATTACK_PATTERNS','stepEnemyAttack','advanceEnemyProjectile','resolveEnemyContact']) if (!enemyAttackModule.includes(marker)) throw new Error(`Missing enemy attack module marker: ${marker}`);
-for (const marker of ['seed-man-world-five-v1','Genetic Frontier','Chromosome Crossing','Mutation Marsh','Allele Array','Genome Spire','Genome Hydra','levelCount: 15']) if (!worldFive.includes(marker)) throw new Error(`Missing World 5 browser marker: ${marker}`);
-for (const marker of ['seed-man-campaign-ui-v15','TOTAL_LEVELS = 15','TOTAL_WORLDS = 5','TOTAL_BOSSES = 6','sproutCampaignUi']) if (!campaignUi.includes(marker)) throw new Error(`Missing 15-level campaign UI marker: ${marker}`);
+for (const marker of ['seed-man-world-five-v1','Genetic Frontier','Chromosome Crossing','Mutation Marsh','Allele Array','Genome Spire','Genome Hydra','levelCount: 15']) if (!worldFive.includes(marker)) throw new Error(`Missing legacy World 5 browser marker: ${marker}`);
+for (const marker of ['seed-man-campaign-ui-v15','TOTAL_LEVELS = 15','TOTAL_WORLDS = 5','TOTAL_BOSSES = 6','sproutCampaignUi']) if (!campaignUi.includes(marker)) throw new Error(`Missing legacy 15-level campaign UI compatibility marker: ${marker}`);
 for (const marker of ['seed-man-ui-v3','seed-run-context','Opening Route','Mid Route','Final Run','data-ui-v3','sprout:level-selected','seed-man-visual-v4']) if (!uiV3.includes(marker)) throw new Error(`Missing Seed Man UI v3 marker: ${marker}`);
 for (const marker of ['seed-man-visual-v4','WORLD_THEMES','world-05','data-visual-v4','BOSS ENCOUNTER','data-seed-pheno-active']) if (!visualV4.includes(marker)) throw new Error(`Missing Seed Man visual v4 marker: ${marker}`);
 for (const marker of ['seed-man-three-adapter-v2','seed-man-three-world-v2','SeedManThreeWorld','drawThreeBackedBackground','__SPROUT_THREE_ADAPTER__','ResizeObserver','visibilitychange','renderer.mountLevel','renderer.sync','renderer.render']) if (!threeAdapter.includes(marker)) throw new Error(`Missing current Three.js live runtime adapter marker: ${marker}`);
-for (const marker of ['seed-man-world-five-combat-v1',"'chromosome-crossing'","'mutation-marsh'","'allele-array'","'genome-spire'",'return ENCOUNTERS[level?.id] || [];']) if (!combat.includes(marker)) throw new Error(`Missing prepared World 5 combat marker: ${marker}`);
+for (const marker of ['seed-man-world-five-combat-v1',"'chromosome-crossing'","'mutation-marsh'","'allele-array'","'genome-spire'",'return ENCOUNTERS[level?.id] || [];']) if (!combat.includes(marker)) throw new Error(`Missing prepared legacy World 5 combat marker: ${marker}`);
 for (const marker of ['seed-man-sprite-runtime-v1','seed-man-authored-atlas-v1','drawAtlasFrame','rendererOwner']) if (!spriteRuntime.includes(marker)) throw new Error(`Missing authored sprite runtime marker: ${marker}`);
 for (const marker of ['<svg','width="1536"','height="512"','Fire form','Electric form','Ice form']) if (!spriteAtlas.includes(marker)) throw new Error(`Missing authored sprite atlas marker: ${marker}`);
 for (const entry of releaseEntries) if (!publisher.includes(entry)) throw new Error(`Seed Man publisher allowlist is missing: ${entry}`);
-if (!index.includes(worldFiveScript)) throw new Error('Seed Man index is missing the World 5 browser adapter.');
+if (!index.includes(worldFiveScript)) throw new Error('Seed Man index is missing the legacy World 5 browser adapter.');
 if (!index.includes(threeWorldScript)) throw new Error('Seed Man index is missing the Three.js production bundle.');
 if (!index.includes(threeAdapterScript)) throw new Error('Seed Man index is missing the Three.js live runtime adapter.');
 if (!index.includes(uiV3Script)) throw new Error('Seed Man index is missing the UI v3 adapter.');
 if (!index.includes(spriteScript)) throw new Error('Seed Man index is missing the authored sprite runtime.');
 
-console.log(JSON.stringify({ ok: true, publisherPatched: true, campaignLevels: 15, campaignWorlds: 5, campaignBosses: 6, phenotypeAbsorption: 'seed-man-phenotype-absorb-v1', phenotypeExpansion: 'seed-man-phenotype-expansion-v1', enemyVisuals: 'seed-man-enemy-visuals-v2', elementalVfx: 'seed-man-elemental-vfx-v2', impactFx: 'seed-man-impact-fx-v2', authoredSpriteRuntime: 'seed-man-sprite-runtime-v1', authoredSpriteAtlas: 'seed-man-authored-atlas-v1', phenotypeMobilityFrameRepair: 'seed-man-phenotype-mobility-frame-v1', worldFiveCombat: 'seed-man-world-five-combat-v1', campaignUi: 'seed-man-campaign-ui-v15', uiV3: 'seed-man-ui-v3', visualV4: 'seed-man-visual-v4', threeWorld: 'seed-man-three-world-v2', threePublicApi: 'seed-man-three-public-v1', threeAdapter: 'seed-man-three-adapter-v2', threeWorldBytes: threeBuild.length, autoload: true, liveRendererOwnership: true, resizeStrategy: 'event-driven', hiddenTabRendering: 'paused' }, null, 2));
+const bossCount = campaign.worlds.flatMap((world) => world.levels || []).filter((level) => level.boss).length;
+console.log(JSON.stringify({ ok: true, publisherPatched: true, campaignLevels: campaign.levelCount, campaignWorlds: campaign.worlds.length, campaignBosses: bossCount, finalBoss: campaign.finalBoss, phenotypeAbsorption: 'seed-man-phenotype-absorb-v1', phenotypeExpansion: 'seed-man-phenotype-expansion-v1', enemyVisuals: 'seed-man-enemy-visuals-v2', elementalVfx: 'seed-man-elemental-vfx-v2', impactFx: 'seed-man-impact-fx-v2', authoredSpriteRuntime: 'seed-man-sprite-runtime-v1', authoredSpriteAtlas: 'seed-man-authored-atlas-v1', phenotypeMobilityFrameRepair: 'seed-man-phenotype-mobility-frame-v1', legacyWorldFiveCombat: 'seed-man-world-five-combat-v1', legacyCampaignUi: 'seed-man-campaign-ui-v15', uiV3: 'seed-man-ui-v3', visualV4: 'seed-man-visual-v4', threeWorld: 'seed-man-three-world-v2', threePublicApi: 'seed-man-three-public-v1', threeAdapter: 'seed-man-three-adapter-v2', threeWorldBytes: threeBuild.length, autoload: true, liveRendererOwnership: true, resizeStrategy: 'event-driven', hiddenTabRendering: 'paused' }, null, 2));
