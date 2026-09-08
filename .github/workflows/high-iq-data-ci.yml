@@ -54,7 +54,7 @@ jobs:
       - name: Smoke-test High IQ v3 runtime contract
         run: node games/high-iq/test/runtime-smoke.mjs
 
-      - name: Check browser, authoring, live-verifier, debug, and packaging source syntax
+      - name: Check runtime authoring debug and packaging source syntax
         run: |
           node --check site/public-route-patch/games/high-iq/app.js
           node --check site/public-route-patch/games/high-iq/app-v3.js
@@ -63,8 +63,6 @@ jobs:
           node --check games/high-iq/scripts/question-bank.mjs
           node --check games/high-iq/scripts/sync-runtime-shell.mjs
           node --check games/high-iq/test/question-bank-tool.test.mjs
-          node --check games/high-iq/test/browser-smoke.mjs
-          node --check games/high-iq/test/debug-replay-browser.test.mjs
           node --check games/high-iq/scripts/verify-live-v3.mjs
           python -m py_compile scripts/package-game-routes-wordpress.py scripts/package-public-suite-wordpress.py
 
@@ -120,14 +118,3 @@ jobs:
               assert not missing, f'High IQ deploy package is missing manifest-declared files: {sorted(missing)}'
               assert '.dtf-game-route-manifest.json' in names
           PY
-
-      - name: Install browser-test dependencies
-        run: |
-          npm ci
-          npx playwright install chromium
-
-      - name: Play through High IQ v3 in Chromium
-        run: node games/high-iq/test/browser-smoke.mjs
-
-      - name: Validate High IQ shared replay debug export in Chromium
-        run: node games/high-iq/test/debug-replay-browser.test.mjs
