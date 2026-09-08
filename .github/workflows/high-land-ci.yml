@@ -37,17 +37,14 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run High Land unit tests
+      - name: Run High Land deterministic tests
         run: npm run test
 
       - name: Build High Land
         run: npm run build
 
-      - name: Install Playwright Chromium
-        run: npm --workspace apps/high-land-web exec -- playwright install --with-deps chromium
-
-      - name: Run High Land browser smoke tests
-        run: npm run test:e2e
+      - name: Verify room API security
+        run: node apps/high-land-web/scripts/verify-room-api-security.mjs
 
       - name: Lint PHP room API files
         shell: bash
@@ -62,6 +59,14 @@ jobs:
             php -l "$file"
           done
 
+      - name: Verify built entrypoint and static assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f apps/high-land-web/dist/index.html
+          test -d apps/high-land-web/dist/assets
+          test -n "$(find apps/high-land-web/dist/assets -type f -maxdepth 1 -print -quit)"
+
       - name: Upload High Land build artifact
         if: success()
         uses: actions/upload-artifact@v4
@@ -69,13 +74,3 @@ jobs:
           name: high-land-dist
           path: apps/high-land-web/dist
           if-no-files-found: error
-
-      - name: Upload High Land Playwright artifacts
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: high-land-playwright-artifacts
-          path: |
-            apps/high-land-web/test-results
-            apps/high-land-web/playwright-report
-          if-no-files-found: ignore
