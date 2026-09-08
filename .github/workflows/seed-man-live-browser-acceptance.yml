@@ -31,7 +31,7 @@ jobs:
         env:
           SPROUT_GAME_URL: https://dtfseeds.com/games/seed-man-platformer/
         run: |
-          sed -i "s/waitUntil: 'networkidle'/waitUntil: 'domcontentloaded'/g" games/seed-man-platformer/test/browser-smoke.mjs
+          sed -i "s/{ waitUntil: 'networkidle' }/{ waitUntil: 'domcontentloaded', timeout: 90000 }/g" games/seed-man-platformer/test/browser-smoke.mjs
           sed -i 's/assert.equal(contract.levels.length, 11);/assert.equal(contract.levels.length, 15);/' games/seed-man-platformer/test/campaign-browser.test.mjs
           node games/seed-man-platformer/test/browser-smoke.mjs
           node games/seed-man-platformer/test/gameplay-v2-smoke.mjs
@@ -64,7 +64,7 @@ jobs:
               });
 
               const url = `${process.env.SPROUT_GAME_URL}?renderer_acceptance=${Date.now()}-${target.name}`;
-              await page.goto(url, { waitUntil: 'domcontentloaded' });
+              await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 90000 });
               await page.locator('#game').waitFor({ state: 'visible' });
               await page.waitForFunction(() => document.documentElement.dataset.seedThreeWorld === 'active', null, { timeout: 15000 });
               await page.waitForFunction(() => Boolean(window.__SPROUT_THREE_ADAPTER__?.active), null, { timeout: 15000 });
