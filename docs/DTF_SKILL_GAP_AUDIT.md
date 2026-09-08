@@ -29,7 +29,7 @@ Canonical workflow: `.github/workflows/update-pr-branch.yml`.
 
 ### 2. `dtf-web-quality-gate` — implemented
 
-Purpose: common Playwright/Lighthouse/responsive/accessibility/visual/live-parity quality gate for all visitor-facing pages, games, tools, and educational routes.
+Purpose: common Lighthouse/direct-browser/responsive/accessibility/visual/live-parity quality gate for all visitor-facing pages, games, tools, and educational routes. Playwright is excluded from this workflow.
 
 ### 3. `dtf-education-production` — implemented
 
