@@ -30,6 +30,7 @@
   function state(){ try { return typeof player !== 'undefined' ? player : null; } catch { return null; } }
   function combat(){ try { return window.__SPROUT_COMBAT_BROWSER__?.snapshot?.() || null; } catch { return null; } }
   function activePhenotype(){ return phenotypeVisuals[combat()?.activePhenotype] || null; }
+  function approvedRendererAvailable(){ return typeof window.drawSeedManProduction === 'function'; }
   function detectTransient(now, s){
     if (lastGrounded === false && s?.grounded) landUntil = now + 130;
     lastGrounded = Boolean(s?.grounded);
@@ -120,6 +121,18 @@
   function renderer(){ if (!drawFrame(pose())) fallbackRenderer?.(); }
   function install({force=false}={}){
     if (typeof window.drawSeedMan !== 'function') return false;
+
+    // V2 is retained for authored-atlas compatibility and visual diagnostics, but the
+    // approved production character renderer is authoritative whenever it is present.
+    if (approvedRendererAvailable()) {
+      installed = false;
+      document.documentElement.dataset.seedManSpriteRuntime = VERSION;
+      document.documentElement.dataset.seedManSpriteVisual = VISUAL_ENHANCEMENT;
+      document.documentElement.dataset.seedManSpriteAtlas = atlasReady ? ATLAS_VERSION : atlasFailed ? 'fallback' : 'loading';
+      document.documentElement.dataset.seedManRendererOwner = 'seed-man-production-v1';
+      return true;
+    }
+
     if (!fallbackRenderer && window.drawSeedMan !== renderer) fallbackRenderer = window.drawSeedMan;
     if (installed && !force && window.drawSeedMan === renderer) return true;
     window.drawSeedMan = renderer;
@@ -139,7 +152,7 @@
   window.addEventListener('sprout:level-selected',()=>install({force:true}));
   window.__SPROUT_SPRITE_RUNTIME_V2__ = Object.freeze({
     version:VERSION, visualEnhancement:VISUAL_ENHANCEMENT, atlasVersion:ATLAS_VERSION, atlasUrl:ATLAS_URL, frames:frameMap, pose,
-    snapshot:()=>({installed,atlasReady,atlasFailed,pose:pose(),activePhenotype:Boolean(activePhenotype()),visualEnhancement:VISUAL_ENHANCEMENT,rendererOwner:window.drawSeedMan===renderer?VERSION:'other'}),
+    snapshot:()=>({installed,atlasReady,atlasFailed,pose:pose(),activePhenotype:Boolean(activePhenotype()),approvedRendererAvailable:approvedRendererAvailable(),visualEnhancement:VISUAL_ENHANCEMENT,rendererOwner:approvedRendererAvailable()?'seed-man-production-v1':window.drawSeedMan===renderer?VERSION:'other'}),
     reinstall:()=>install({force:true})
   });
 })();
