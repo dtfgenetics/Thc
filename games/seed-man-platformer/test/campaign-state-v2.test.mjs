@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import { createCampaignState,completeLevel,canPlayLevel,campaignComplete } from '../src/systems/campaign-state-v2.mjs';
+const campaign=JSON.parse(fs.readFileSync(new URL('../data/campaign-20-v1.json',import.meta.url),'utf8'));
+let state=createCampaignState(campaign);
+assert.equal(state.currentLevelId,'1-1-sprout-steps');
+assert.equal(canPlayLevel(state,'1-2-sunny-glade'),false);
+for(const level of campaign.worlds.flatMap(world=>world.levels).sort((a,b)=>a.order-b.order)) state=completeLevel(state,campaign,level.id);
+assert.equal(state.percent,100);
+assert.equal(state.bossesDefeated.has('blight-king'),true);
+assert.equal(campaignComplete(state,campaign),true);
+console.log('Seed Man 20-level progression state OK');
