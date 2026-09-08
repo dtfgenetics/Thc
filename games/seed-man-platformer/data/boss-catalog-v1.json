@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "seed-man-boss-catalog-v1",
+  "bosses": {
+    "overgrown-guardian": {"world":"greenhouse-valley","asset":"boss.atlas","hp":32,"phases":3,"arena":"1-4-greenhouse-hub","attacks":["root-slam","seed-burst","vine-wall"]},
+    "ancient-dryad": {"world":"forest-ruins","asset":"boss.atlas","hp":36,"phases":3,"arena":"2-4-temple-of-trees","attacks":["branch-sweep","spore-rain","root-cage"]},
+    "scorchroot-titan": {"world":"desert-canyon","asset":"boss.atlas","hp":40,"phases":3,"arena":"3-4-sun-spire","attacks":["magma-fist","ember-wave","rockfall"]},
+    "frostbite-colossus": {"world":"frozen-peaks","asset":"boss.atlas","hp":44,"phases":3,"arena":"4-4-glacier-gate","attacks":["ice-slam","shard-fan","freeze-floor"]},
+    "eco-sentinel": {"world":"eco-city","asset":"boss.atlas","hp":48,"phases":3,"arena":"5-3-reactor-core","attacks":["laser-sweep","drone-summon","energy-wall"]},
+    "blight-king": {
+      "world":"eco-city",
+      "asset":"boss.atlas",
+      "hp":96,
+      "phases":4,
+      "arena":"5-4-the-last-seed",
+      "finalBoss":true,
+      "attacks":["pollution-wave","blight-vines","smog-barrage","corruption-beam","arena-collapse"],
+      "phaseRules":[
+        {"phase":1,"hpAbove":72,"weakness":"plant"},
+        {"phase":2,"hpAbove":48,"weakness":"fire"},
+        {"phase":3,"hpAbove":24,"weakness":"electric"},
+        {"phase":4,"hpAbove":0,"weakness":"ice"}
+      ],
+      "ending":"restore-eco-city"
+    }
+  }
+}
