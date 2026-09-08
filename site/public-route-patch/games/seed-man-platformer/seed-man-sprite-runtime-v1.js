@@ -27,6 +27,11 @@
   let installed = false;
   let fallbackRenderer = null;
 
+  function playerState() {
+    try { return typeof player !== 'undefined' ? player : null; }
+    catch { return null; }
+  }
+
   function activePhenotype() {
     try { return window.__SPROUT_COMBAT_BROWSER__?.snapshot?.()?.activePhenotype || null; }
     catch { return null; }
@@ -41,54 +46,55 @@
   }
 
   function pose() {
-    if (!window.player) return 'idle';
-    if (player.finished || player.state === 'finish') return 'finish';
-    if (player.state === 'hurt' || player.state === 'shield-bounce') return 'hurt';
-    if (player.state === 'checkpoint') return 'checkpoint';
-    if (player.state === 'boost-bounce' || player.state === 'boss-stomp' || player.state === 'stomp-bounce') return 'boost';
-    if (player.state === 'attack' || player.state === 'ability') return 'attack';
-    if (!player.grounded) return player.vy < -35 ? 'jump' : 'fall';
-    if (Math.abs(player.vx || 0) > 14) return Math.floor(performance.now() / 95) % 2 ? 'runA' : 'runB';
+    const state = playerState();
+    if (!state) return 'idle';
+    if (state.finished || state.state === 'finish') return 'finish';
+    if (state.state === 'hurt' || state.state === 'shield-bounce') return 'hurt';
+    if (state.state === 'checkpoint') return 'checkpoint';
+    if (state.state === 'boost-bounce' || state.state === 'boss-stomp' || state.state === 'stomp-bounce') return 'boost';
+    if (state.state === 'attack' || state.state === 'ability') return 'attack';
+    if (!state.grounded) return state.vy < -35 ? 'jump' : 'fall';
+    if (Math.abs(state.vx || 0) > 14) return Math.floor(performance.now() / 95) % 2 ? 'runA' : 'runB';
     return 'idle';
   }
 
   function drawAtlasFrame(frameName) {
-    if (!atlasReady || !ctx || !player) return false;
+    const state = playerState();
+    if (!atlasReady || !state || typeof ctx === 'undefined' || !ctx) return false;
     const frame = frames[frameName] || frames.idle;
     const [column, row] = frame;
-    const size = Math.max(72, Math.min(92, player.height * 1.82));
-    const centerX = player.x - cameraX + player.width / 2;
-    const bottomY = player.y + player.height + 4;
-    const facing = player.vx < -1 ? -1 : 1;
-    const dx = -size / 2;
-    const dy = -size;
+    const size = Math.max(72, Math.min(92, state.height * 1.82));
+    const localCameraX = typeof cameraX === 'number' ? cameraX : 0;
+    const centerX = state.x - localCameraX + state.width / 2;
+    const bottomY = state.y + state.height + 4;
+    const facing = state.vx < -1 ? -1 : 1;
 
     ctx.save();
     ctx.translate(centerX, bottomY);
     ctx.scale(facing, 1);
-    if (player.state === 'hurt') {
+    if (state.state === 'hurt') {
       ctx.globalAlpha = 0.68 + Math.abs(Math.sin(performance.now() * 0.035)) * 0.3;
     }
-    ctx.drawImage(atlas, column * FRAME, row * FRAME, FRAME, FRAME, dx, dy, size, size);
+    ctx.drawImage(atlas, column * FRAME, row * FRAME, FRAME, FRAME, -size / 2, -size, size, size);
     ctx.restore();
     return true;
   }
 
   function spriteRenderer() {
-    const pheno = phenotypeFrame();
-    const currentPose = pose();
-    if (drawAtlasFrame(pheno || currentPose)) return;
+    if (drawAtlasFrame(phenotypeFrame() || pose())) return;
     fallbackRenderer?.();
   }
 
-  function install() {
-    if (installed || typeof window.drawSeedMan !== 'function') return false;
-    fallbackRenderer = window.drawSeedMan;
+  function install({ force = false } = {}) {
+    if (typeof window.drawSeedMan !== 'function') return false;
+    if (!fallbackRenderer && window.drawSeedMan !== spriteRenderer) fallbackRenderer = window.drawSeedMan;
+    if (installed && !force && window.drawSeedMan === spriteRenderer) return true;
     window.drawSeedMan = spriteRenderer;
     installed = true;
     document.documentElement.dataset.seedManSpriteRuntime = VERSION;
-    document.documentElement.dataset.seedManSpriteAtlas = atlasReady ? ATLAS_VERSION : 'loading';
-    return true;
+    document.documentElement.dataset.seedManSpriteAtlas = atlasReady ? ATLAS_VERSION : atlasFailed ? 'fallback' : 'loading';
+    document.documentElement.dataset.seedManRendererOwner = VERSION;
+    return window.drawSeedMan === spriteRenderer;
   }
 
   atlas.addEventListener('load', () => {
@@ -105,7 +111,7 @@
   atlas.src = ATLAS_URL;
 
   install();
-  window.addEventListener('DOMContentLoaded', () => install(), { once: true });
+  window.addEventListener('DOMContentLoaded', () => install({ force: true }), { once: true });
 
   window.__SPROUT_SPRITE_RUNTIME__ = Object.freeze({
     version: VERSION,
@@ -121,9 +127,6 @@
       phenotypeFrame: phenotypeFrame(),
       rendererOwner: window.drawSeedMan === spriteRenderer ? VERSION : 'other'
     }),
-    reinstall: () => {
-      installed = false;
-      return install();
-    }
+    reinstall: () => install({ force: true })
   });
 })();
