@@ -1,0 +1,67 @@
+name: Reconcile Seed Man Public Identity
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/reconcile-seed-man-public-identity.mjs'
+      - '.github/workflows/reconcile-seed-man-public-identity.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: write
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: reconcile-seed-man-public-identity
+  cancel-in-progress: false
+
+jobs:
+  reconcile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Reconcile Game Hub and canonical source map
+        run: node scripts/reconcile-seed-man-public-identity.mjs
+      - name: Confirm reconciliation is idempotent
+        shell: bash
+        run: |
+          set -euo pipefail
+          paths=(site/public-route-patch/games/index.html data/game-source-map.json)
+          before="$(git diff -- "${paths[@]}" | git hash-object --stdin)"
+          node scripts/reconcile-seed-man-public-identity.mjs
+          after="$(git diff -- "${paths[@]}" | git hash-object --stdin)"
+          test "$before" = "$after"
+      - name: Validate generated public identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check scripts/reconcile-seed-man-public-identity.mjs
+          node -e "JSON.parse(require('fs').readFileSync('data/game-source-map.json','utf8'))"
+          grep -Fq 'Seed Man: Greenhouse Gauntlet' site/public-route-patch/games/index.html
+          grep -Fq 'five distinct worlds and 15 levels' site/public-route-patch/games/index.html
+          grep -Fq 'Phenotype powers' site/public-route-patch/games/index.html
+          grep -Fq 'Boss battles' site/public-route-patch/games/index.html
+          ! grep -Fq 'Seed Man: Sprout Run' site/public-route-patch/games/index.html
+          ! grep -Fq 'Seed Man: Sprout Run' data/game-source-map.json
+      - name: Safely integrate reconciled public identity when needed
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- site/public-route-patch/games/index.html data/game-source-map.json; then
+            echo 'No public identity changes were needed.'
+            exit 0
+          fi
+          node scripts/studio/integrate-generated-change.mjs \
+            --message='Align Seed Man Game Hub and canonical public identity' \
+            --paths=site/public-route-patch/games/index.html,data/game-source-map.json
