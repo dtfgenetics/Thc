@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "id": "seed-man-campaign-20-v1",
+  "title": "Seed Man: Grow. Fight. Restore.",
+  "levelCount": 20,
+  "finalBoss": "blight-king",
+  "worlds": [
+    {"id":"greenhouse-valley","title":"Greenhouse Valley","levels":[
+      {"id":"1-1-sprout-steps","order":1,"type":"standard"},
+      {"id":"1-2-sunny-glade","order":2,"type":"standard"},
+      {"id":"1-3-waterfall-way","order":3,"type":"standard"},
+      {"id":"1-4-greenhouse-hub","order":4,"type":"boss","boss":"overgrown-guardian"}
+    ]},
+    {"id":"forest-ruins","title":"Forest Ruins","levels":[
+      {"id":"2-1-mossy-paths","order":5,"type":"standard"},
+      {"id":"2-2-broken-bridges","order":6,"type":"standard"},
+      {"id":"2-3-hollow-trunk","order":7,"type":"standard"},
+      {"id":"2-4-temple-of-trees","order":8,"type":"boss","boss":"ancient-dryad"}
+    ]},
+    {"id":"desert-canyon","title":"Desert Canyon","levels":[
+      {"id":"3-1-red-rock-run","order":9,"type":"standard"},
+      {"id":"3-2-canyon-cliffs","order":10,"type":"standard"},
+      {"id":"3-3-dusty-winds","order":11,"type":"standard"},
+      {"id":"3-4-sun-spire","order":12,"type":"boss","boss":"scorchroot-titan"}
+    ]},
+    {"id":"frozen-peaks","title":"Frozen Peaks","levels":[
+      {"id":"4-1-icy-pass","order":13,"type":"standard"},
+      {"id":"4-2-crystal-caverns","order":14,"type":"standard"},
+      {"id":"4-3-frozen-bridges","order":15,"type":"standard"},
+      {"id":"4-4-glacier-gate","order":16,"type":"boss","boss":"frostbite-colossus"}
+    ]},
+    {"id":"eco-city","title":"Eco City","levels":[
+      {"id":"5-1-toxic-outskirts","order":17,"type":"standard"},
+      {"id":"5-2-industrial-zone","order":18,"type":"standard"},
+      {"id":"5-3-reactor-core","order":19,"type":"boss","boss":"eco-sentinel"},
+      {"id":"5-4-the-last-seed","order":20,"type":"final-boss","boss":"blight-king","phases":4}
+    ]}
+  ]
+}
