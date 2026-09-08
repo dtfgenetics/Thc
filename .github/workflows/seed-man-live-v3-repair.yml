@@ -1,0 +1,47 @@
+name: Seed Man V3 Adapter Repair
+
+on:
+  push:
+    branches: [seed-man-live-v3-adapter-fix-20260908]
+    paths:
+      - .github/workflows/seed-man-live-v3-repair.yml
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: seed-man-live-v3-adapter-fix-20260908
+          fetch-depth: 0
+      - name: Patch live v3 contracts
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          adapter = Path('site/public-route-patch/games/seed-man-platformer/three-world-adapter-v1.js')
+          text = adapter.read_text()
+          text = text.replace("const VISUAL_THEME_VERSION = 'seed-man-world-themes-v1';", "const VISUAL_THEME_VERSION = 'seed-man-visual-world-api-v1';")
+          text = text.replace("const EXPECTED_API_VERSION = 'seed-man-three-public-v2';", "const EXPECTED_API_VERSION = 'seed-man-three-public-v3';")
+          start = text.index('  function applyWorldTheme(descriptor) {')
+          end = text.index('\n  function installStack()', start)
+          replacement = "  function applyWorldTheme(descriptor) {\n    if (!renderer?.scene || !descriptor) return;\n    const visualWorldKey = descriptor.visualWorldKey || descriptor.level?.visualWorldKey || 'greenhouse-valley';\n    mountedVisualTheme = visualWorldKey;\n    shell.dataset.seedVisualTheme = visualWorldKey;\n    document.body.dataset.seedVisualWorld = visualWorldKey;\n    document.documentElement.dataset.seedThreeTheme = visualWorldKey;\n    document.documentElement.dataset.seedThreeThemeVersion = VISUAL_THEME_VERSION;\n  }\n"
+          adapter.write_text(text[:start] + replacement + text[end:])
+          acceptance = Path('.github/workflows/seed-man-live-browser-acceptance.yml')
+          a = acceptance.read_text().replace("'seed-man-three-public-v2'", "'seed-man-three-public-v3'")
+          a = a.replace('v2 greenhouse renderer', 'v2 five-world renderer').replace('public Three.js API v2', 'public Three.js API v3').replace('during the v2 transition', 'during the v3 transition')
+          acceptance.write_text(a)
+          PY
+          node --check site/public-route-patch/games/seed-man-platformer/three-world-adapter-v1.js
+          grep -Fq "EXPECTED_API_VERSION = 'seed-man-three-public-v3'" site/public-route-patch/games/seed-man-platformer/three-world-adapter-v1.js
+          grep -Fq "descriptor.visualWorldKey" site/public-route-patch/games/seed-man-platformer/three-world-adapter-v1.js
+          grep -Fq "seed-man-three-public-v3" .github/workflows/seed-man-live-browser-acceptance.yml
+      - name: Commit repair
+        run: |
+          git config user.name 'DTF Seed Man Repair Bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add site/public-route-patch/games/seed-man-platformer/three-world-adapter-v1.js .github/workflows/seed-man-live-browser-acceptance.yml
+          git commit -m 'Fix Seed Man v3 adapter runtime [seed-live-v3]'
+          git push origin HEAD:seed-man-live-v3-adapter-fix-20260908
