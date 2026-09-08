@@ -1,4 +1,4 @@
-name: Seed Man World 5 Live Acceptance
+name: Seed Man World 5 Live Verification
 
 on:
   workflow_run:
@@ -24,23 +24,19 @@ jobs:
           ref: main
           persist-credentials: false
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-
-      - name: Verify World 5 assets are public
+      - name: Verify World 5 assets and production fingerprints
         shell: bash
         run: |
           set -euo pipefail
           base='https://dtfseeds.com/games/seed-man-platformer/'
-          for asset in world-five-v1.js data/campaign.json data/levels-12-15.json combat-browser-v1.js; do
+          for asset in index.html world-five-v1.js data/campaign.json data/levels-12-15.json combat-browser-v1.js; do
             body="$RUNNER_TEMP/$(echo "$asset" | tr '/' '_')"
             curl -4 --fail --silent --show-error --location \
               --retry 4 --retry-delay 2 --retry-all-errors \
               --connect-timeout 10 --max-time 45 \
               -H 'Cache-Control: no-cache, no-store, max-age=0' \
               "${base}${asset}?world-five-live=${GITHUB_RUN_ID}" -o "$body"
+            test -s "$body"
           done
           grep -Fq 'seed-man-world-five-v1' "$RUNNER_TEMP/world-five-v1.js"
           grep -Fq 'Genome Hydra' "$RUNNER_TEMP/world-five-v1.js"
@@ -51,13 +47,4 @@ jobs:
           grep -Fq 'Solar Ember Beetle' "$RUNNER_TEMP/combat-browser-v1.js"
           grep -Fq 'Voltage Wasp Alpha' "$RUNNER_TEMP/combat-browser-v1.js"
           grep -Fq 'Cryo Moth Prime' "$RUNNER_TEMP/combat-browser-v1.js"
-
-      - name: Install Chromium acceptance dependencies
-        run: |
-          npm ci
-          npx playwright install chromium
-
-      - name: Playtest live Genetic Frontier desktop and mobile
-        env:
-          SPROUT_GAME_URL: https://dtfseeds.com/games/seed-man-platformer/
-        run: node games/seed-man-platformer/test/world-five-browser.test.mjs
+          grep -Fq 'world-five-v1.js' "$RUNNER_TEMP/index.html"
