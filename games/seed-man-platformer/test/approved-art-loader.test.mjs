@@ -1,0 +1,20 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import { createVisualRuntimeV2, WORLD_KEYS, PHENOTYPE_KEYS } from '../src/render/visual-runtime-v2.mjs';
+import { validateApprovedArtManifest } from '../src/render/art-registry.mjs';
+
+const manifest=JSON.parse(fs.readFileSync(new URL('../data/seed-man-art-manifest-v1.json',import.meta.url),'utf8'));
+assert.equal(validateApprovedArtManifest(manifest),true);
+const runtime=createVisualRuntimeV2(manifest,{baseUrl:'https://dtfseeds.com/games/seed-man-platformer/'});
+assert.equal(runtime.version,'seed-man-visual-runtime-v2');
+assert.equal(runtime.rendererPolicy.approvedArtOnly,true);
+assert.equal(runtime.rendererPolicy.proceduralCharacterFallback,false);
+assert.equal(runtime.rendererPolicy.legacyAtlasFallback,false);
+assert.equal(runtime.player.states.length,9);
+assert.deepEqual(runtime.player.phenotypes,PHENOTYPE_KEYS);
+for(const world of WORLD_KEYS) assert.match(runtime.world(world).url,/assets\/approved\/world-/);
+assert.match(runtime.player.atlas.url,/seed-man-character-atlas-approved-v1\.webp$/);
+assert.match(runtime.enemyAtlas.url,/enemy-atlas-approved-v1\.webp$/);
+assert.match(runtime.bossAtlas.url,/boss-atlas-approved-v1\.webp$/);
+assert.match(runtime.platformAtlas.url,/platform-atlas-approved-v1\.webp$/);
+console.log('Seed Man approved-art-only visual runtime OK');
