@@ -1,0 +1,46 @@
+name: Seed Man Sprite Visual CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'site/public-route-patch/games/seed-man-platformer/seed-man-sprite-runtime-v2.js'
+      - 'site/public-route-patch/games/seed-man-platformer/assets/seed-man/seed-man-atlas-v2.svg'
+      - 'scripts/prepare-seed-man-sprite-release.mjs'
+      - '.github/workflows/seed-man-sprite-visual-ci.yml'
+  pull_request:
+    paths:
+      - 'site/public-route-patch/games/seed-man-platformer/seed-man-sprite-runtime-v2.js'
+      - 'site/public-route-patch/games/seed-man-platformer/assets/seed-man/seed-man-atlas-v2.svg'
+      - 'scripts/prepare-seed-man-sprite-release.mjs'
+      - '.github/workflows/seed-man-sprite-visual-ci.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  verify-sprite-visual-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate authored sprite release contract
+        run: node scripts/prepare-seed-man-sprite-release.mjs
+      - name: Validate browser runtime syntax
+        run: node --check site/public-route-patch/games/seed-man-platformer/seed-man-sprite-runtime-v2.js
+      - name: Guard phenotype motion and effects
+        shell: bash
+        run: |
+          runtime='site/public-route-patch/games/seed-man-platformer/seed-man-sprite-runtime-v2.js'
+          grep -Fq 'seed-man-sprite-motion-phenotype-v3' "$runtime"
+          grep -Fq 'drawPhenotypeLayer(activePhenotype(), g, now);' "$runtime"
+          grep -Fq 'drawElementalVfx' "$runtime"
+          grep -Fq "'solar-flare'" "$runtime"
+          grep -Fq "'static-haze'" "$runtime"
+          grep -Fq "'frost-resin'" "$runtime"
+          if grep -Eq 'if[[:space:]]*\(phenotype\)[[:space:]]*return[[:space:]]+phenotype' "$runtime"; then
+            echo 'Phenotype state is incorrectly replacing movement animation.' >&2
+            exit 1
+          fi
