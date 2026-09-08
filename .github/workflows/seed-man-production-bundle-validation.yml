@@ -7,6 +7,7 @@ on:
       - 'games/seed-man-platformer/**'
       - 'site/public-route-patch/games/seed-man-platformer/**'
       - 'scripts/prepare-seed-man-combat-release.mjs'
+      - 'scripts/sync-seed-man-production-data.mjs'
       - 'scripts/prepare-seed-man-world-five-combat.mjs'
       - 'scripts/prepare-seed-man-world-five-runtime.mjs'
       - 'scripts/validate-seed-man-production-bundle.mjs'
@@ -27,11 +28,18 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Synchronize canonical production data
+        run: node scripts/sync-seed-man-production-data.mjs
       - name: Prepare exact production artifact
         run: node scripts/prepare-seed-man-combat-release.mjs
       - name: Validate production bundle with named contracts
         run: node scripts/validate-seed-man-production-bundle.mjs
-      - name: Validate public World 5 source parity
+      - name: Validate canonical/public production data parity
         run: |
           cmp games/seed-man-platformer/data/campaign.json site/public-route-patch/games/seed-man-platformer/data/campaign.json
           cmp games/seed-man-platformer/data/levels-12-15.json site/public-route-patch/games/seed-man-platformer/data/levels-12-15.json
+          cmp games/seed-man-platformer/data/levels-20-v1.json site/public-route-patch/games/seed-man-platformer/data/levels-20-v1.json
+          cmp games/seed-man-platformer/data/campaign-20-v1.json site/public-route-patch/games/seed-man-platformer/data/campaign-20-v1.json
+          cmp games/seed-man-platformer/data/seed-man-art-manifest-v1.json site/public-route-patch/games/seed-man-platformer/data/seed-man-art-manifest-v1.json
+          cmp games/seed-man-platformer/data/enemy-catalog-v1.json site/public-route-patch/games/seed-man-platformer/data/enemy-catalog-v1.json
+          cmp games/seed-man-platformer/data/boss-catalog-v1.json site/public-route-patch/games/seed-man-platformer/data/boss-catalog-v1.json
