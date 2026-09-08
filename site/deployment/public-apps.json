@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "site": "https://dtfseeds.com",
   "sourceOfTruth": "dtfgenetics/Thc",
-  "updated": "2026-09-01",
+  "updated": "2026-09-08",
   "apps": [
     {
       "id": "high-land",
@@ -121,18 +121,18 @@
     },
     {
       "id": "seed-man-platformer",
-      "title": "Seed Man: Sprout Run — Greenhouse Gauntlet",
+      "title": "Seed Man: Greenhouse Gauntlet",
       "repository": "dtfgenetics/Thc",
       "sourcePath": "site/public-route-patch/games/seed-man-platformer",
       "canonicalDataPath": "games/seed-man-platformer",
       "route": "/games/seed-man-platformer/",
-      "runtime": "static-canvas2d",
-      "status": "ready-to-package",
-      "build": "node games/seed-man-platformer/test/physics.test.mjs && node games/seed-man-platformer/test/public-runtime.test.mjs && node games/seed-man-platformer/test/input-guard.test.mjs",
+      "runtime": "static-canvas2d-threejs",
+      "status": "production-verified",
+      "build": "node games/seed-man-platformer/test/physics.test.mjs && node games/seed-man-platformer/test/progression-systems.test.mjs && node games/seed-man-platformer/test/campaign.test.mjs && node games/seed-man-platformer/test/public-runtime.test.mjs && node games/seed-man-platformer/test/public-campaign.test.mjs && node games/seed-man-platformer/test/input-guard.test.mjs",
       "machineData": {
         "level": "sprout-run",
         "edition": "greenhouse-gauntlet",
-        "release": "20260830-r4",
+        "release": "20260907-r17",
         "worldWidth": 7800,
         "collectibles": 24,
         "powerups": 7,
@@ -140,9 +140,20 @@
         "hazardZones": 15,
         "doubleJump": true,
         "productionCharacterArt": "seed-man-production-v1",
-        "characterContract": "seed-man-locked-v1"
+        "characterContract": "seed-man-locked-v1",
+        "levelCount": 15,
+        "worldCount": 5,
+        "bossCount": 6,
+        "phenotypeDurationSeconds": 30,
+        "threeJsRenderer": "seed-man-three-world-v2",
+        "threeJsPublicApi": "seed-man-three-public-v3",
+        "threeJsOptimization": "seed-man-three-instancing-v1",
+        "campaignUi": "seed-man-campaign-ui-v15",
+        "ui": "seed-man-ui-v3",
+        "visualSystem": "seed-man-visual-v4",
+        "authoredSpriteRuntime": "seed-man-sprite-runtime-v1"
       },
-      "notes": "Canonical self-hosted Greenhouse Gauntlet production build. Publishes the 7,800 px 24-sprout course with double jump, seven power-ups, three checkpoints, fifteen hazard zones, keyboard/touch controls, gated finish, original Canvas2D Seed Man art, and cache-versioned 20260830-r4 runtime assets. The retired 2,600 px eight-sprout vertical slice must never be republished."
+      "notes": "Production-verified Greenhouse Gauntlet campaign on /games/seed-man-platformer/: 15 levels across five worlds with six bosses, 30-second phenotype absorption/combat, authored Seed Man sprite runtime, Canvas2D gameplay, and the optimized Three.js five-world renderer. Level 1 keeps the internal sprout-run compatibility ID intentionally; the retired Sprout Run product title and 2,600 px eight-sprout vertical slice must never be republished."
     },
     {
       "id": "protect-the-plants",
