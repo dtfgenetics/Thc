@@ -50,6 +50,8 @@ jobs:
           grep -Fq 'SeedManThreeWorld' "$bundle"
           grep -Fq 'seed-man-three-public-v1' "$bundle"
           grep -Fq 'seed-man-three-world-v1' "$bundle"
+          grep -Fq 'seed-man-three-world-v2' "$bundle"
+          grep -Fq 'seed-man-three-instancing-v1' "$bundle"
           bytes="$(wc -c < "$bundle" | tr -d ' ')"
           [[ "$bytes" -ge 250000 ]] || { echo "Three.js public bundle too small: $bytes bytes" >&2; exit 1; }
           [[ "$bytes" -le 900000 ]] || { echo "Three.js public bundle exceeds 900 KB budget: $bytes bytes" >&2; exit 1; }
@@ -93,6 +95,8 @@ jobs:
           node --check site/public-route-patch/games/seed-man-platformer/app.js
           node --check site/public-route-patch/games/seed-man-platformer/seed-man-production-art.js
           node --check site/public-route-patch/games/seed-man-platformer/input-guard-v1.js
+          node --check site/public-route-patch/games/seed-man-platformer/three-world-adapter-v1.js
+          node --check site/public-route-patch/games/seed-man-platformer/seed-man-sprite-runtime-v1.js
           node --check site/public-route-patch/games/seed-man-platformer/physics.mjs
           node --check games/seed-man-platformer/test/browser-smoke.mjs
       - name: Verify public simulation and campaign copies match canonical source
@@ -111,17 +115,17 @@ jobs:
           route=site/public-route-patch/games/seed-man-platformer
           release="$(sed -n 's/.*name="dtf-sprout-release" content="\([^"]*\)".*/\1/p' "$route/index.html" | head -n 1)"
           [[ "$release" =~ ^[0-9]{8}-r[0-9]+$ ]] || { echo "Invalid Sprout release marker: $release" >&2; exit 1; }
-          for file in index.html canvas-compat-v1.js campaign-v1.js world-five-v1.js seed-man-ui-v3.js app.js seed-man-production-art.js gameplay-v2.js input-guard-v1.js seed-man.css physics.mjs data/campaign.json data/level-01.json data/levels-02-11.json data/levels-12-15.json; do
+          for file in index.html canvas-compat-v1.js campaign-v1.js world-five-v1.js seed-man-ui-v3.js app.js seed-man-production-art.js gameplay-v2.js input-guard-v1.js three-world-adapter-v1.js seed-man-sprite-runtime-v1.js seed-man.css physics.mjs data/campaign.json data/level-01.json data/levels-02-11.json data/levels-12-15.json; do
             test -s "$route/$file" || { echo "Missing $file" >&2; exit 1; }
           done
           grep -Fq '<title>Seed Man: Greenhouse Gauntlet | DTF Genetics</title>' "$route/index.html"
           grep -Fq '<h1>Seed Man</h1>' "$route/index.html"
           ! grep -Fq '<h1>Sprout Run</h1>' "$route/index.html"
-          grep -Fq 'Greenhouse Valley' "$route/index.html"
-          grep -Fq 'Forest Ruins' "$route/index.html"
-          grep -Fq 'Desert Canyon' "$route/index.html"
-          grep -Fq 'Frozen Peak' "$route/index.html"
-          grep -Fq 'Eco City' "$route/index.html"
+          grep -Fq 'Greenhouse District' "$route/index.html"
+          grep -Fq 'Rootworks' "$route/index.html"
+          grep -Fq 'Resin Works' "$route/index.html"
+          grep -Fq 'Sky Garden' "$route/index.html"
+          grep -Fq 'Genetic Frontier' "$route/index.html"
           grep -Fq '15 levels' "$route/index.html"
           grep -Fq 'six bosses' "$route/index.html"
           grep -Fq 'https://dtfseeds.com/games/seed-man-platformer/' "$route/index.html"
@@ -150,6 +154,8 @@ jobs:
           grep -Fq 'boss-stomp' "$route/campaign-v1.js"
           grep -Fq 'landing-squash' "$route/campaign-v1.js"
           grep -Fq 'finish-celebration' "$route/campaign-v1.js"
+          grep -Fq 'seed-man-three-adapter-v2' "$route/three-world-adapter-v1.js"
+          grep -Fq 'seed-man-sprite-runtime-v1' "$route/seed-man-sprite-runtime-v1.js"
           grep -Fq '"levelCount": 15' "$route/data/campaign.json"
           grep -Fq '"newLevelCount": 14' "$route/data/campaign.json"
           grep -Fq '"baseRuntimeCompatibility": {"levelCount": 11, "newLevelCount": 10}' "$route/data/campaign.json"
