@@ -1,0 +1,35 @@
+name: Seed Man Visual Runtime
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'games/seed-man-platformer/data/visual-runtime-v1.json'
+      - 'games/seed-man-platformer/src/render/visual-runtime.mjs'
+      - 'games/seed-man-platformer/test/visual-runtime.test.mjs'
+      - '.github/workflows/seed-man-visual-runtime.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'games/seed-man-platformer/data/visual-runtime-v1.json'
+      - 'games/seed-man-platformer/src/render/visual-runtime.mjs'
+      - 'games/seed-man-platformer/test/visual-runtime.test.mjs'
+      - '.github/workflows/seed-man-visual-runtime.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate visual runtime contract
+        run: node games/seed-man-platformer/test/visual-runtime.test.mjs
+      - name: Syntax check visual runtime adapter
+        run: node --check games/seed-man-platformer/src/render/visual-runtime.mjs
