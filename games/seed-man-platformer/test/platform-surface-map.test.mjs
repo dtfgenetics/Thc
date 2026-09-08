@@ -1,0 +1,1 @@
+import assert from 'node:assert/strict';import { getPlatformSurface } from '../src/systems/platform-surface-map.mjs';assert.ok(getPlatformSurface('ice').friction<getPlatformSurface('grass').friction);assert.equal(getPlatformSurface('spring').bounce,790);console.log('Seed Man platform surfaces OK');
