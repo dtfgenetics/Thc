@@ -1,6 +1,6 @@
 # DTFSeeds Game Canonical Source Map
 
-Updated: 2026-09-05
+Updated: 2026-09-08
 
 This document is the human-readable companion to `data/game-source-map.json`.
 
@@ -14,7 +14,7 @@ Never begin a game repair from the deployed HTML, a copied integration bundle, o
 | --- | --- | --- | --- | --- |
 | High IQ | `/games/high-iq/` | `dtfgenetics/Thc` | `games/high-iq` + `site/public-route-patch/games/high-iq` | same repo/runtime |
 | High Life | `/games/high-life/` | `dtfgenetics/Thc` | `games/high-life` | `site/public-route-patch/games/high-life` |
-| Seed Man: Sprout Run | `/games/seed-man-platformer/` | `dtfgenetics/Thc` | `games/seed-man-platformer` | `site/public-route-patch/games/seed-man-platformer` |
+| Seed Man: Greenhouse Gauntlet | `/games/seed-man-platformer/` | `dtfgenetics/Thc` | `games/seed-man-platformer` | `site/public-route-patch/games/seed-man-platformer` |
 | Grower Conversations | `/games/grower-conversations/` | `dtfgenetics/Thc` | `games/grower-conversations` | `site/public-route-patch/games/grower-conversations` |
 | High Land | `/games/high-land/` | `dtfgenetics/Thc` | `apps/high-land-web` | built by the DTFSeeds public suite |
 | Weedopolis | `/games/weedopolis/` | `dtfgenetics/Weedopolis-strain-Edition` | `src`, `digital`, `data` | external canonical build packaged by `dtfgenetics/Thc` |
@@ -37,6 +37,10 @@ Never begin a game repair from the deployed HTML, a copied integration bundle, o
 | Trichome Trials | `/games/trichome-trials/` | `dtfgenetics/Thc` | `games/trichome-trials` | `site/public-route-patch/games/trichome-trials` |
 | Pheno Draft | `/games/pheno-draft/` | `dtfgenetics/Thc` | `games/pheno-draft` | `site/public-route-patch/games/pheno-draft` |
 | High Lines | `/games/high-lines/` | `dtfgenetics/Thc` | `games/high-lines` | `site/public-route-patch/games/high-lines` |
+
+## Seed Man production identity
+
+`Seed Man: Greenhouse Gauntlet` is the canonical public product identity. `sprout-run` remains the stable Level 1/runtime compatibility ID and must not be used as the product title in catalogs, Game Hub cards, project pages, browser metadata, or deployment records. The current production contract is five worlds, 15 levels, six bosses, phenotype absorption/combat, authored Seed Man animation, World 5, and responsive keyboard/touch play.
 
 ## Development projects shown on the Game Hub
 
