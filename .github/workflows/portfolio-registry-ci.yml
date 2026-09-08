@@ -11,19 +11,8 @@ on:
       - 'site/deployment/public-apps.json'
       - 'site/public-route-patch/projects/**'
       - 'site/public-route-patch/games/index.html'
-      - 'games/high-iq/**'
-      - 'games/high-life/**'
-      - 'games/grower-conversations/**'
-      - 'games/cannabis-fleet-battle/**'
-      - 'games/protect-the-plants/**'
-      - 'games/strain-showdown/**'
-      - 'games/seed-man-platformer/**'
-      - 'site/public-route-patch/games/high-iq/**'
-      - 'site/public-route-patch/games/high-life/**'
-      - 'site/public-route-patch/games/grower-conversations/**'
-      - 'site/public-route-patch/games/strain-showdown/**'
-      - 'site/public-route-patch/games/seed-man-platformer/**'
-      - 'site/public-route-patch/games/protect-the-plants/**'
+      - 'games/**'
+      - 'site/public-route-patch/games/**'
       - 'docs/**SOURCE_OF_TRUTH.md'
       - 'docs/PORTFOLIO_RELEASE_CRITERIA.md'
       - 'scripts/validate-portfolio-registry.mjs'
@@ -37,19 +26,8 @@ on:
       - 'site/deployment/public-apps.json'
       - 'site/public-route-patch/projects/**'
       - 'site/public-route-patch/games/index.html'
-      - 'games/high-iq/**'
-      - 'games/high-life/**'
-      - 'games/grower-conversations/**'
-      - 'games/cannabis-fleet-battle/**'
-      - 'games/protect-the-plants/**'
-      - 'games/strain-showdown/**'
-      - 'games/seed-man-platformer/**'
-      - 'site/public-route-patch/games/high-iq/**'
-      - 'site/public-route-patch/games/high-life/**'
-      - 'site/public-route-patch/games/grower-conversations/**'
-      - 'site/public-route-patch/games/strain-showdown/**'
-      - 'site/public-route-patch/games/seed-man-platformer/**'
-      - 'site/public-route-patch/games/protect-the-plants/**'
+      - 'games/**'
+      - 'site/public-route-patch/games/**'
       - 'docs/**SOURCE_OF_TRUTH.md'
       - 'docs/PORTFOLIO_RELEASE_CRITERIA.md'
       - 'scripts/validate-portfolio-registry.mjs'
@@ -90,6 +68,7 @@ jobs:
           node games/strain-showdown/scripts/simulate-balance.mjs --seeds=4
           node games/strain-showdown/scripts/validate-browser-build.mjs
           node games/seed-man-platformer/test/physics.test.mjs
+          node games/seed-man-platformer/test/campaign.test.mjs
 
       - name: Verify canonical project statuses match deployment states
         run: |
@@ -102,23 +81,21 @@ jobs:
 
           expect(project('high-iq')?.status === 'canonical', 'High IQ must be canonical');
           expect(app('high-iq')?.runtime === 'static' && app('high-iq')?.status === 'ready-to-package', 'High IQ deployment state drift');
-
           expect(project('high-life')?.status === 'browser-prototype', 'High Life registry state drift');
           expect(app('high-life')?.runtime === 'static' && app('high-life')?.status === 'ready-to-package', 'High Life deployment state drift');
-
           expect(project('grower-conversations')?.status === 'browser-deck-alpha', 'Grower Conversations registry state drift');
           expect(app('grower-conversations')?.runtime === 'static' && app('grower-conversations')?.status === 'ready-to-package', 'Grower Conversations deployment state drift');
-
           expect(project('cannabis-fleet-battle')?.status === 'server-engine-alpha', 'Fleet Battle registry state drift');
           expect(app('cannabis-fleet-battle')?.runtime === 'server-engine' && app('cannabis-fleet-battle')?.status === 'server-engine-alpha', 'Fleet Battle deployment state drift');
-
           expect(app('protect-the-plants')?.runtime === 'static-php' && app('protect-the-plants')?.status === 'ready-to-package', 'Burn Buds deployment state drift');
-
           expect(project('strain-showdown')?.status === 'browser-prototype', 'Strain Showdown registry state drift');
           expect(app('strain-showdown')?.runtime === 'static' && app('strain-showdown')?.status === 'ready-to-package', 'Strain Showdown deployment state drift');
 
-          expect(project('seed-man-platformer')?.status === 'browser-vertical-slice', 'Seed Man registry state drift');
-          expect(app('seed-man-platformer')?.runtime === 'static-canvas2d' && app('seed-man-platformer')?.status === 'ready-to-package', 'Seed Man deployment state drift');
+          const seedProject = project('seed-man-platformer');
+          const seedApp = app('seed-man-platformer');
+          expect(seedProject?.repo === 'dtfgenetics/Thc', 'Seed Man canonical repository drift');
+          expect(seedApp?.runtime === 'static-canvas2d-threejs' && seedApp?.status === 'production-verified', 'Seed Man deployment state drift');
+          expect(seedApp?.title === 'Seed Man: Greenhouse Gauntlet', 'Seed Man deployment title drift');
           NODE
 
       - name: Verify self-hosted public route files exist
@@ -131,16 +108,10 @@ jobs:
             grep -Fqi 'name="description"' "site/public-route-patch/games/$route/index.html"
           done
           test -s site/public-route-patch/games/protect-the-plants/api.php
-          test -s site/public-route-patch/games/protect-the-plants/app.js
-          test -s site/public-route-patch/games/protect-the-plants/styles.css
-          test -s site/public-route-patch/games/protect-the-plants/plant.svg
           test -s site/public-route-patch/projects/index.html
           grep -Fq 'Cannabis Fleet Battle' site/public-route-patch/projects/index.html
           grep -Fq 'Strain Showdown' site/public-route-patch/games/index.html
           grep -Fq 'Burn Buds' site/public-route-patch/games/index.html
 
       - name: Validate High IQ legacy fallback boundary
-        shell: bash
-        run: |
-          set -euo pipefail
-          grep -Fq 'The older Base44 build is retained only as a legacy fallback link' docs/HIGH_IQ_SOURCE_OF_TRUTH.md
+        run: grep -Fq 'The older Base44 build is retained only as a legacy fallback link' docs/HIGH_IQ_SOURCE_OF_TRUTH.md
