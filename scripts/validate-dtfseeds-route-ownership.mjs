@@ -189,7 +189,8 @@ failIf(
 );
 
 // The cumulative gateway must verify public roots by stable visitor semantics,
-// not private WordPress storage attributes. Education child routes remain public.
+// not private WordPress storage attributes. Education child routes remain public
+// and each one must be checked against a route-specific visible marker.
 failIf(
   !/check '\/' 'Genetics first\. Learn the plant behind the pack\.'/m.test(content.productionGateway) ||
     !/check '\/learn\/' 'Learn in a sequence that makes the plant easier to understand\.'/m.test(content.productionGateway),
@@ -200,10 +201,25 @@ failIf(
     /check '\/learn\/' 'data-dtf-layout=/m.test(content.productionGateway),
   'Production gateway again treats private root storage attributes as anonymous visitor requirements.'
 );
+const educationPublicChecks = [
+  ["/learn/", 'Learn the plant as a connected system.'],
+  ["/learn/plant-health/", 'Plant Health & IPM'],
+  ["/learn/cultivation-science/", 'Cultivation Science'],
+  ["/learn/symptoms/", 'Symptom Differentials'],
+  ["/learn/tools/", 'Printable Field Tools'],
+  ["/learn/sources/", 'Evidence & Sources']
+];
+for (const [path, marker] of educationPublicChecks) {
+  const escapedPath = path.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const escapedMarker = marker.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  failIf(
+    !new RegExp(`check_reference ['"]${escapedPath}['"] ['"]${escapedMarker}['"]`).test(content.productionGateway),
+    `Production gateway no longer independently verifies education route ${path} with its public marker.`
+  );
+}
 failIf(
-  !/Learn the plant as a connected system\./m.test(content.productionGateway) ||
-    !/for route in plant-health cultivation-science symptoms tools sources/m.test(content.productionGateway),
-  'Production gateway no longer independently verifies the public education surface and child routes.'
+  !/Reserved strain card/m.test(content.productionGateway),
+  'Production gateway no longer rejects retired placeholder content from education routes.'
 );
 
 // The broad canonical workflow should not make an obsolete Seeds-layout check
@@ -237,5 +253,5 @@ console.log('- Learning V3 composes its Atlas affordance before the owner-aware 
 console.log('- downstream V4/expanded/visual ownership is verified only by the Learning production lane.');
 console.log('- education child publishing cannot mutate the Learn root.');
 console.log('- Learning Experience V3 proves Home/Learn through WordPress storage while topic/child routes remain visitor-verified.');
-console.log('- the cumulative gateway verifies roots by public semantics rather than private storage attributes.');
+console.log('- the cumulative gateway verifies roots and education child routes by route-specific public semantics rather than private storage attributes.');
 console.log('- the dedicated genetics workflow retains publisher + verification ownership.');
