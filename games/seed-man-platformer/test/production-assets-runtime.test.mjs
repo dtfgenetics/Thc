@@ -1,0 +1,10 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import { createProductionAssets } from '../src/systems/production-assets.mjs';
+const read=(p)=>JSON.parse(fs.readFileSync(new URL(p,import.meta.url),'utf8'));
+const bundle=createProductionAssets({manifest:read('../data/seed-man-art-manifest-v1.json'),levels:read('../data/levels-20-v1.json'),enemies:read('../data/enemy-catalog-v1.json'),bosses:read('../data/boss-catalog-v1.json'),baseUrl:'https://dtfseeds.com/games/seed-man-platformer/'});
+assert.equal(bundle.ready,true);
+assert.equal(bundle.levels.count,20);
+assert.equal(bundle.visual.rendererPolicy.approvedArtOnly,true);
+assert.equal(bundle.levels.get('5-4-the-last-seed').boss.finalBoss,true);
+console.log('Seed Man composed production runtimes OK');
