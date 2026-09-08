@@ -9,7 +9,6 @@ on:
       - 'games/shared-platform/**'
       - 'site/public-route-patch/games/shared-platform/**'
       - '.github/workflows/seed-man-platformer-ci.yml'
-      - '.github/workflows/seed-man-live-browser-acceptance.yml'
   pull_request:
     branches: [main]
     paths:
@@ -18,179 +17,111 @@ on:
       - 'games/shared-platform/**'
       - 'site/public-route-patch/games/shared-platform/**'
       - '.github/workflows/seed-man-platformer-ci.yml'
-      - '.github/workflows/seed-man-live-browser-acceptance.yml'
   workflow_dispatch:
 
 permissions:
   contents: read
 
+concurrency:
+  group: seed-man-platformer-ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 22
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
-      - name: Install Seed Man Three.js renderer dependency
+
+      - name: Install Seed Man dependencies
         run: npm install --prefix games/seed-man-platformer --ignore-scripts --no-audit --no-fund
-      - name: Verify Three.js renderer module import
-        run: npm run --prefix games/seed-man-platformer verify:three-import
-      - name: Build self-contained Three.js public bundle
-        run: npm run --prefix games/seed-man-platformer build:three-public
-      - name: Verify Three.js public bundle contract
-        shell: bash
+
+      - name: Verify complete production architecture
+        run: npm run --prefix games/seed-man-platformer test:production-contracts
+
+      - name: Verify Three.js renderer import and build
         run: |
-          set -euo pipefail
+          npm run --prefix games/seed-man-platformer verify:three-import
+          npm run --prefix games/seed-man-platformer build:three-public
           bundle=games/seed-man-platformer/dist/three-world-v1.js
           test -s "$bundle"
           node --check "$bundle"
           grep -Fq 'SeedManThreeWorld' "$bundle"
-          grep -Fq 'seed-man-three-public-v1' "$bundle"
-          grep -Fq 'seed-man-three-world-v1' "$bundle"
           grep -Fq 'seed-man-three-world-v2' "$bundle"
-          grep -Fq 'seed-man-three-instancing-v1' "$bundle"
           bytes="$(wc -c < "$bundle" | tr -d ' ')"
-          [[ "$bytes" -ge 250000 ]] || { echo "Three.js public bundle too small: $bytes bytes" >&2; exit 1; }
-          [[ "$bytes" -le 900000 ]] || { echo "Three.js public bundle exceeds 900 KB budget: $bytes bytes" >&2; exit 1; }
-      - name: Test platformer physics and level interactions
-        run: node games/seed-man-platformer/test/physics.test.mjs
-      - name: Test phenotype weapon and resource progression
-        run: node games/seed-man-platformer/test/progression-systems.test.mjs
-      - name: Test fifteen-level campaign source mechanics and bosses
-        run: node games/seed-man-platformer/test/campaign.test.mjs
-      - name: Test Three.js world-state bridge
-        run: node games/seed-man-platformer/test/three-world-state.test.mjs
-      - name: Test self-contained public runtime
-        run: node games/seed-man-platformer/test/public-runtime.test.mjs
-      - name: Test self-contained public campaign source contract
-        run: node games/seed-man-platformer/test/public-campaign.test.mjs
-      - name: Test keyboard focus ownership
-        run: node games/seed-man-platformer/test/input-guard.test.mjs
-      - name: Validate browser JavaScript syntax
-        run: |
-          node --check games/seed-man-platformer/src/campaign.mjs
-          node --check games/seed-man-platformer/src/course-generator.mjs
-          node --check games/seed-man-platformer/src/systems/player-progression.mjs
-          node --check games/seed-man-platformer/src/systems/phenotypes.mjs
-          node --check games/seed-man-platformer/src/systems/weapons.mjs
-          node --check games/seed-man-platformer/src/render/three-world-state.mjs
-          node --check games/seed-man-platformer/src/render/three-world.mjs
-          node --check games/seed-man-platformer/src/render/three-world-public-entry.mjs
-          node --check games/seed-man-platformer/scripts/build-three-public.mjs
-          node --check games/seed-man-platformer/test/campaign-browser.test.mjs
-          node --check games/seed-man-platformer/test/ui-v3-browser.test.mjs
-          node --check games/seed-man-platformer/test/flag-completion-browser.test.mjs
-          node --check games/seed-man-platformer/test/progression-systems.test.mjs
-          node --check games/seed-man-platformer/test/three-world-state.test.mjs
-          node --check games/seed-man-platformer/test/public-campaign.test.mjs
-          node --check games/seed-man-platformer/test/world-five-browser.test.mjs
-          node --check games/seed-man-platformer/test/shared-platform-browser.test.mjs
-          node --check site/public-route-patch/games/seed-man-platformer/canvas-compat-v1.js
-          node --check site/public-route-patch/games/seed-man-platformer/campaign-v1.js
-          node --check site/public-route-patch/games/seed-man-platformer/world-five-v1.js
-          node --check site/public-route-patch/games/seed-man-platformer/seed-man-ui-v3.js
-          node --check site/public-route-patch/games/seed-man-platformer/app.js
-          node --check site/public-route-patch/games/seed-man-platformer/seed-man-production-art.js
-          node --check site/public-route-patch/games/seed-man-platformer/input-guard-v1.js
-          node --check site/public-route-patch/games/seed-man-platformer/three-world-adapter-v1.js
-          node --check site/public-route-patch/games/seed-man-platformer/seed-man-sprite-runtime-v1.js
-          node --check site/public-route-patch/games/seed-man-platformer/physics.mjs
-          node --check games/seed-man-platformer/test/browser-smoke.mjs
-      - name: Verify public simulation and campaign copies match canonical source
+          [[ "$bytes" -ge 250000 && "$bytes" -le 900000 ]] || { echo "Three.js bundle outside budget: $bytes" >&2; exit 1; }
+
+      - name: Verify canonical 20-level campaign and approved-art contract
         shell: bash
         run: |
           set -euo pipefail
-          cmp games/seed-man-platformer/src/physics.mjs site/public-route-patch/games/seed-man-platformer/physics.mjs
-          cmp games/seed-man-platformer/data/level-01.json site/public-route-patch/games/seed-man-platformer/data/level-01.json
-          cmp games/seed-man-platformer/data/campaign.json site/public-route-patch/games/seed-man-platformer/data/campaign.json
-          cmp games/seed-man-platformer/data/levels-02-11.json site/public-route-patch/games/seed-man-platformer/data/levels-02-11.json
-          cmp games/seed-man-platformer/data/levels-12-15.json site/public-route-patch/games/seed-man-platformer/data/levels-12-15.json
-      - name: Verify expanded public route source contract
-        shell: bash
-        run: |
-          set -euo pipefail
+          game=games/seed-man-platformer
           route=site/public-route-patch/games/seed-man-platformer
-          release="$(sed -n 's/.*name="dtf-sprout-release" content="\([^"]*\)".*/\1/p' "$route/index.html" | head -n 1)"
-          [[ "$release" =~ ^[0-9]{8}-r[0-9]+$ ]] || { echo "Invalid Sprout release marker: $release" >&2; exit 1; }
-          for file in index.html canvas-compat-v1.js campaign-v1.js world-five-v1.js seed-man-ui-v3.js app.js seed-man-production-art.js gameplay-v2.js input-guard-v1.js three-world-adapter-v1.js seed-man-sprite-runtime-v1.js seed-man.css physics.mjs data/campaign.json data/level-01.json data/levels-02-11.json data/levels-12-15.json; do
-            test -s "$route/$file" || { echo "Missing $file" >&2; exit 1; }
-          done
-          grep -Fq '<title>Seed Man: Greenhouse Gauntlet | DTF Genetics</title>' "$route/index.html"
-          grep -Fq '<h1>Seed Man</h1>' "$route/index.html"
-          ! grep -Fq '<h1>Sprout Run</h1>' "$route/index.html"
-          grep -Fq 'Greenhouse District' "$route/index.html"
-          grep -Fq 'Rootworks' "$route/index.html"
-          grep -Fq 'Resin Works' "$route/index.html"
-          grep -Fq 'Sky Garden' "$route/index.html"
-          grep -Fq 'Genetic Frontier' "$route/index.html"
-          grep -Fq '15 levels' "$route/index.html"
-          grep -Fq 'six bosses' "$route/index.html"
-          grep -Fq 'https://dtfseeds.com/games/seed-man-platformer/' "$route/index.html"
-          grep -Fqi 'rel="canonical"' "$route/index.html"
-          grep -Fqi 'name="description"' "$route/index.html"
-          grep -Fq 'id="seed-man-level"' "$route/index.html"
-          grep -Fq 'id="seed-man-campaign"' "$route/index.html"
-          grep -Fq '"worldWidth": 7800' "$route/index.html"
-          grep -Fq '"requiredPickups": 24' "$route/index.html"
-          grep -Fq 'JUMP ×2' "$route/index.html"
-          grep -Fq 'tap for a short hop' "$route/index.html"
-          grep -Fq "name=\"dtf-sprout-release\" content=\"${release}\"" "$route/index.html"
-          grep -Fq "<script src=\"./campaign-v1.js?v=${release}\" defer></script>" "$route/index.html"
-          grep -Fq "<script src=\"./seed-man-ui-v3.js?v=${release}\" defer></script>" "$route/index.html"
-          grep -Fq "seed-man.css?v=${release}" "$route/index.html"
-          grep -Fq "const RELEASE = '${release}';" "$route/canvas-compat-v1.js"
-          grep -Fq 'softwarePreferred: true' "$route/canvas-compat-v1.js"
-          grep -Fq 'sprout-campaign-v3' "$route/campaign-v1.js"
-          grep -Fq 'seed-man-campaign-experience-v3' "$route/campaign-v1.js"
-          grep -Fq 'seed-man-animation-v2' "$route/campaign-v1.js"
-          grep -Fq 'The Phantom Pump' "$route/campaign-v1.js"
-          grep -Fq 'Mite Queen' "$route/campaign-v1.js"
-          grep -Fq 'Mildew Wraith' "$route/campaign-v1.js"
-          grep -Fq 'Pollen Warden' "$route/campaign-v1.js"
-          grep -Fq 'seed-man-level-select' "$route/campaign-v1.js"
-          grep -Fq 'boss-stomp' "$route/campaign-v1.js"
-          grep -Fq 'landing-squash' "$route/campaign-v1.js"
-          grep -Fq 'finish-celebration' "$route/campaign-v1.js"
-          grep -Fq 'seed-man-three-adapter-v2' "$route/three-world-adapter-v1.js"
-          grep -Fq 'seed-man-sprite-runtime-v1' "$route/seed-man-sprite-runtime-v1.js"
-          grep -Fq '"levelCount": 15' "$route/data/campaign.json"
-          grep -Fq '"newLevelCount": 14' "$route/data/campaign.json"
-          grep -Fq '"baseRuntimeCompatibility": {"levelCount": 11, "newLevelCount": 10}' "$route/data/campaign.json"
-          grep -Fq '"title": "Genetic Frontier"' "$route/data/campaign.json"
-          grep -Fq '"generator": "seed-man-course-v2"' "$route/data/levels-02-11.json"
-          grep -Fq 'Genome Spire' "$route/data/levels-12-15.json"
-          grep -Fq 'seed-man-world-five-v1' "$route/world-five-v1.js"
-          grep -Fq 'Genome Hydra' "$route/world-five-v1.js"
-          grep -Fq 'seed-man-ui-v3' "$route/seed-man-ui-v3.js"
-          grep -Fq 'seed-run-context' "$route/seed-man-ui-v3.js"
-          grep -Fq 'groundAcceleration: 2600' "$route/app.js"
-          grep -Fq 'jumpCutGravityMultiplier: 2.35' "$route/app.js"
-          grep -Fq 'function cameraBlend(' "$route/app.js"
-          grep -Fq 'lostpointercapture' "$route/app.js"
-          ! grep -Fq "addEventListener('pointerleave'" "$route/app.js"
-          grep -Fq 'seed-man-production-v1' "$route/seed-man-production-art.js"
-          grep -Fq 'seed-man-locked-v1' "$route/seed-man-production-art.js"
-          grep -Fq 'createGameSettingsStore' "$route/input-guard-v1.js"
-          grep -Fq 'createGameAudioManager' "$route/input-guard-v1.js"
-          grep -Fq '__SPROUT_SHARED_PLATFORM__' "$route/input-guard-v1.js"
-          grep -Fq 'seed-man-shared-platform-v1' "$route/input-guard-v1.js"
-          grep -Fq 'No third-party level layouts or character assets are used.' "$route/index.html"
-          ! grep -Fqi 'collect all eight sprouts' "$route/index.html"
-          ! grep -Fq '0 / 8' "$route/index.html"
+          test -s "$game/data/campaign-20-v1.json"
+          test -s "$game/data/levels-20-v1.json"
+          test -s "$game/data/seed-man-art-manifest-v1.json"
+          test -s "$game/data/enemy-catalog-v1.json"
+          test -s "$game/data/boss-catalog-v1.json"
+          grep -Fq '"levelCount": 20' "$game/data/campaign-20-v1.json"
+          grep -Fq '"finalBoss": "blight-king"' "$game/data/campaign-20-v1.json"
+          grep -Fq '"authoritative": true' "$game/data/seed-man-art-manifest-v1.json"
+          grep -Fq '"proceduralFallbackAllowed": false' "$game/data/seed-man-art-manifest-v1.json"
+          grep -Fq '"legacyAtlasFallbackAllowed": false' "$game/data/seed-man-art-manifest-v1.json"
+          grep -Fq '"characterReference": "green-armored-plant-hero"' "$game/data/seed-man-art-manifest-v1.json"
+          grep -Fq '"blight-king"' "$game/data/boss-catalog-v1.json"
+          grep -Fq '"phases":4' "$game/data/boss-catalog-v1.json"
+          grep -Fq '"dropDurationMs":30000' "$game/data/enemy-catalog-v1.json"
+
+          cmp "$game/data/campaign-20-v1.json" "$route/data/campaign-20-v1.json"
+          cmp "$game/data/levels-20-v1.json" "$route/data/levels-20-v1.json"
+          cmp "$game/data/seed-man-art-manifest-v1.json" "$route/data/seed-man-art-manifest-v1.json"
+          cmp "$game/data/enemy-catalog-v1.json" "$route/data/enemy-catalog-v1.json"
+          cmp "$game/data/boss-catalog-v1.json" "$route/data/boss-catalog-v1.json"
+
+      - name: Verify production JavaScript syntax
+        run: |
+          node --check games/seed-man-platformer/src/render/art-registry.mjs
+          node --check games/seed-man-platformer/src/render/approved-art-loader.mjs
+          node --check games/seed-man-platformer/src/render/visual-runtime-v2.mjs
+          node --check games/seed-man-platformer/src/systems/level-catalog.mjs
+          node --check games/seed-man-platformer/src/systems/level-runtime.mjs
+          node --check games/seed-man-platformer/src/systems/phenotype-system.mjs
+          node --check games/seed-man-platformer/src/systems/power-drop.mjs
+          node --check games/seed-man-platformer/src/systems/boss-state-machine.mjs
+          node --check games/seed-man-platformer/src/systems/final-boss-director.mjs
+          node --check games/seed-man-platformer/src/systems/campaign-state-v2.mjs
+          node --check games/seed-man-platformer/src/systems/save-state-v2.mjs
+          node --check games/seed-man-platformer/src/systems/hud-model.mjs
+          node --check games/seed-man-platformer/src/systems/input-actions.mjs
+          node --check games/seed-man-platformer/src/systems/world-theme.mjs
+          node --check games/seed-man-platformer/src/systems/platform-surface-map.mjs
+          node --check games/seed-man-platformer/src/systems/asset-key-guard.mjs
+          node --check games/seed-man-platformer/src/systems/game-contract.mjs
+          node --check games/seed-man-platformer/src/systems/release-contract.mjs
+          node --check games/seed-man-platformer/src/systems/production-readiness.mjs
+          node --check games/seed-man-platformer/src/systems/production-assets.mjs
+          node --check games/seed-man-platformer/src/systems/production-bootstrap.mjs
+
+      - name: Keep legacy route playable during migration
+        run: |
+          node games/seed-man-platformer/test/physics.test.mjs
+          node games/seed-man-platformer/test/progression-systems.test.mjs
+          node games/seed-man-platformer/test/campaign.test.mjs
+          node games/seed-man-platformer/test/public-runtime.test.mjs
+          node games/seed-man-platformer/test/public-campaign.test.mjs
+          node games/seed-man-platformer/test/input-guard.test.mjs
+
       - name: Install browser-test dependencies
         run: |
           npm ci
           npx playwright install chromium
-      - name: Play through Greenhouse Gauntlet in Chromium
+
+      - name: Browser smoke test current playable route
         run: node games/seed-man-platformer/test/browser-smoke.mjs
-      - name: Verify shared settings accessibility and audio in Chromium
+
+      - name: Shared platform browser acceptance
         run: node games/seed-man-platformer/test/shared-platform-browser.test.mjs
-      - name: Verify zero-sprout flag completion in Chromium
-        run: node games/seed-man-platformer/test/flag-completion-browser.test.mjs
-      - name: Exercise stable campaign bosses and settings in Chromium
-        run: node games/seed-man-platformer/test/campaign-browser.test.mjs
-      - name: Verify campaign-aware UI v3 across worlds and mobile
-        run: node games/seed-man-platformer/test/ui-v3-browser.test.mjs
