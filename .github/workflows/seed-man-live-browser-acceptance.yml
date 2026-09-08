@@ -1,4 +1,4 @@
-name: Verify Sprout Run Live Browser Gameplay
+name: Verify Greenhouse Gauntlet Live Browser Gameplay
 
 on:
   workflow_run:
@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
-      - name: Checkout verified Sprout Run source
+      - name: Checkout verified Greenhouse Gauntlet source
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event.workflow_run.head_sha || github.sha }}
@@ -27,7 +27,7 @@ jobs:
         run: |
           npm ci
           npx playwright install chromium
-      - name: Exercise live Sprout Run in Chromium
+      - name: Exercise live Greenhouse Gauntlet in Chromium
         env:
           SPROUT_GAME_URL: https://dtfseeds.com/games/seed-man-platformer/
         run: |
