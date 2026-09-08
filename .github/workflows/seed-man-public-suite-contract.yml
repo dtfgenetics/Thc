@@ -1,0 +1,103 @@
+name: Seed Man Public Suite Contract
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'games/seed-man-platformer/**'
+      - 'site/public-route-patch/games/seed-man-platformer/**'
+      - 'site/public-route-patch/games/index.html'
+      - 'site/public-route-patch/projects/index.html'
+      - 'site/deployment/public-apps.json'
+      - 'data/game-source-map.json'
+      - '.github/workflows/build-dtfseeds-public-suite.yml'
+      - '.github/workflows/seed-man-public-suite-contract.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'games/seed-man-platformer/**'
+      - 'site/public-route-patch/games/seed-man-platformer/**'
+      - 'site/public-route-patch/games/index.html'
+      - 'site/public-route-patch/projects/index.html'
+      - 'site/deployment/public-apps.json'
+      - 'data/game-source-map.json'
+      - '.github/workflows/build-dtfseeds-public-suite.yml'
+      - '.github/workflows/seed-man-public-suite-contract.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate Greenhouse Gauntlet full campaign package
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install workspace
+        run: npm ci
+      - name: Validate full Seed Man campaign mechanics
+        run: |
+          set -euo pipefail
+          node games/seed-man-platformer/test/physics.test.mjs
+          node games/seed-man-platformer/test/progression-systems.test.mjs
+          node games/seed-man-platformer/test/campaign.test.mjs
+          node games/seed-man-platformer/test/three-world-state.test.mjs
+          node games/seed-man-platformer/test/public-runtime.test.mjs
+          node games/seed-man-platformer/test/public-campaign.test.mjs
+      - name: Validate production package identity and scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          route='site/public-route-patch/games/seed-man-platformer'
+          node --check "$route/app.js"
+          node --check "$route/campaign-v1.js"
+          node --check "$route/campaign-ui-v15.js"
+          node --check "$route/seed-man-ui-v3.js"
+          node --check "$route/seed-man-visual-v4.js"
+          node --check "$route/world-five-v1.js"
+          grep -Fq '<title>Seed Man: Greenhouse Gauntlet | DTF Genetics</title>' "$route/index.html"
+          grep -Fq "title: 'Seed Man: Greenhouse Gauntlet'" "$route/campaign-v1.js"
+          ! grep -Fq "title: 'Seed Man: Sprout Run'" "$route/campaign-v1.js"
+          grep -Fq 'Greenhouse District' "$route/campaign-ui-v15.js"
+          grep -Fq 'Rootworks' "$route/campaign-ui-v15.js"
+          grep -Fq 'Resin Works' "$route/campaign-ui-v15.js"
+          grep -Fq 'Sky Garden' "$route/campaign-ui-v15.js"
+          grep -Fq 'Genetic Frontier' "$route/campaign-ui-v15.js"
+          required=(
+            "$route/seed-man-sprite-runtime-v1.js"
+            "$route/assets/seed-man/seed-man-atlas-v1.svg"
+            "$route/three-world-adapter-v1.js"
+            "$route/seed-man-three-world-v2.js"
+            "$route/seed-man-three-public-v3.js"
+            "$route/combat-browser-v1.js"
+            "$route/enemy-attacks-browser-v1.js"
+            "$route/data/levels-12-15.json"
+          )
+          for file in "${required[@]}"; do test -s "$file"; done
+      - name: Validate canonical registry contract
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import assert from 'node:assert/strict';
+          const registry = JSON.parse(fs.readFileSync('site/deployment/public-apps.json', 'utf8'));
+          const app = registry.apps.find((entry) => entry.id === 'seed-man-platformer');
+          assert.ok(app, 'Seed Man deployment registry entry is required.');
+          assert.equal(app.title, 'Seed Man: Greenhouse Gauntlet');
+          assert.equal(app.status, 'production-verified');
+          assert.equal(app.machineData?.levelCount, 15);
+          assert.equal(app.machineData?.worldCount, 5);
+          assert.equal(app.machineData?.bossCount, 6);
+          assert.equal(app.machineData?.release, '20260907-r17');
+          assert.match(app.runtime, /threejs/i);
+          const sourceMap = JSON.parse(fs.readFileSync('data/game-source-map.json', 'utf8'));
+          const source = sourceMap.games?.find?.((entry) => entry.id === 'seed-man-platformer')
+            || sourceMap.find?.((entry) => entry.id === 'seed-man-platformer');
+          if (source) assert.equal(source.title, 'Seed Man: Greenhouse Gauntlet');
+          console.log(JSON.stringify({ ok: true, levels: 15, worlds: 5, bosses: 6, title: app.title }));
+          NODE
