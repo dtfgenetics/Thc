@@ -76,8 +76,14 @@ jobs:
       - name: Run GrowLens unit tests
         run: npm run test:growlens
 
+      - name: Test GrowLens acceptance client without network access
+        run: npm run test:growlens:live-client
+
       - name: Build GrowLens
         run: npm run build:growlens
+
+      - name: Validate Plant Atlas runtime contract
+        run: npm run validate:plant-atlas:v4
 
       - name: Verify required production files
         shell: bash
@@ -111,12 +117,6 @@ jobs:
               exit 1
             }
           done
-
-      - name: Install Playwright Chromium
-        run: npx playwright install --with-deps chromium
-
-      - name: Run GrowLens browser acceptance tests
-        run: npm run test:e2e:growlens
 
       - name: Add immutable deployment marker
         shell: bash
@@ -181,31 +181,13 @@ jobs:
           : "${DEPLOY_TARGET:?HOSTINGER_GROWLENS_PATH is required}"
           : "${BACKUP_ROOT:?HOSTINGER_GROWLENS_BACKUP_DIR is required}"
           SSH_PORT="${SSH_PORT:-22}"
-
-          if ! [[ "$SSH_HOST" =~ ^[A-Za-z0-9.-]+$ ]]; then
-            echo "HOSTINGER_SSH_HOST contains unsupported characters." >&2
-            exit 1
-          fi
-          if ! [[ "$SSH_USER" =~ ^[A-Za-z0-9._-]+$ ]]; then
-            echo "HOSTINGER_SSH_USER contains unsupported characters." >&2
-            exit 1
-          fi
-          if ! [[ "$SSH_PORT" =~ ^[0-9]+$ ]] || ((SSH_PORT < 1 || SSH_PORT > 65535)); then
-            echo "HOSTINGER_SSH_PORT must be a valid TCP port." >&2
-            exit 1
-          fi
-
+          if ! [[ "$SSH_HOST" =~ ^[A-Za-z0-9.-]+$ ]]; then echo "HOSTINGER_SSH_HOST contains unsupported characters." >&2; exit 1; fi
+          if ! [[ "$SSH_USER" =~ ^[A-Za-z0-9._-]+$ ]]; then echo "HOSTINGER_SSH_USER contains unsupported characters." >&2; exit 1; fi
+          if ! [[ "$SSH_PORT" =~ ^[0-9]+$ ]] || ((SSH_PORT < 1 || SSH_PORT > 65535)); then echo "HOSTINGER_SSH_PORT must be a valid TCP port." >&2; exit 1; fi
           target="${DEPLOY_TARGET%/}"
           backup="${BACKUP_ROOT%/}"
-          if ! [[ "$target" =~ ^/[A-Za-z0-9._/-]+$ ]] || [[ "$target" == *".."* || "$target" != */public_html/growlens ]]; then
-            echo "Deployment target must be an absolute safe path ending in /public_html/growlens." >&2
-            exit 1
-          fi
-          if ! [[ "$backup" =~ ^/[A-Za-z0-9._/-]+$ ]] || [[ "$backup" == *".."* || "$backup" == *"/public_html"* || "$backup" == "$target"* ]]; then
-            echo "Backup directory must be an absolute safe path outside public_html." >&2
-            exit 1
-          fi
-
+          if ! [[ "$target" =~ ^/[A-Za-z0-9._/-]+$ ]] || [[ "$target" == *".."* || "$target" != */public_html/growlens ]]; then echo "Deployment target must be an absolute safe path ending in /public_html/growlens." >&2; exit 1; fi
+          if ! [[ "$backup" =~ ^/[A-Za-z0-9._/-]+$ ]] || [[ "$backup" == *".."* || "$backup" == *"/public_html"* || "$backup" == "$target"* ]]; then echo "Backup directory must be an absolute safe path outside public_html." >&2; exit 1; fi
           echo "SSH_PORT=${SSH_PORT}" >> "$GITHUB_ENV"
           echo "DEPLOY_TARGET=${target}" >> "$GITHUB_ENV"
           echo "BACKUP_ROOT=${backup}" >> "$GITHUB_ENV"
@@ -228,48 +210,29 @@ jobs:
           chmod 600 "$HOME/.ssh/growlens_deploy_key"
           printf '%s\n' "$SSH_KNOWN_HOSTS" | tr -d '\r' > "$HOME/.ssh/known_hosts"
           chmod 600 "$HOME/.ssh/known_hosts"
-          ssh -i "$HOME/.ssh/growlens_deploy_key" \
-            -p "$SSH_PORT" \
-            -o BatchMode=yes \
-            -o IdentitiesOnly=yes \
-            -o StrictHostKeyChecking=yes \
-            "$SSH_USER@$SSH_HOST" 'printf "Hostinger SSH connection verified.\n"'
+          ssh -i "$HOME/.ssh/growlens_deploy_key" -p "$SSH_PORT" -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes "$SSH_USER@$SSH_HOST" 'printf "Hostinger SSH connection verified.\n"'
 
       - name: Verify remote release prerequisites
         shell: bash
         run: |
           set -euo pipefail
-          ssh -i "$HOME/.ssh/growlens_deploy_key" -p "$SSH_PORT" \
-            -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
-            "$SSH_USER@$SSH_HOST" \
-            "set -eu; command -v rsync >/dev/null; command -v mv >/dev/null; command -v find >/dev/null; mkdir -p '$BACKUP_ROOT'; test -w '$BACKUP_ROOT'; parent=\$(dirname '$DEPLOY_TARGET'); test -d \"\$parent\"; test -w \"\$parent\"; df -Pk \"\$parent\" '$BACKUP_ROOT'"
+          ssh -i "$HOME/.ssh/growlens_deploy_key" -p "$SSH_PORT" -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes "$SSH_USER@$SSH_HOST" "set -eu; command -v rsync >/dev/null; command -v mv >/dev/null; command -v find >/dev/null; mkdir -p '$BACKUP_ROOT'; test -w '$BACKUP_ROOT'; parent=\$(dirname '$DEPLOY_TARGET'); test -d \"\$parent\"; test -w \"\$parent\"; df -Pk \"\$parent\" '$BACKUP_ROOT'"
 
       - name: Upload release to isolated staging directory
         shell: bash
         run: |
           set -euo pipefail
           ssh_cmd="ssh -i $HOME/.ssh/growlens_deploy_key -p $SSH_PORT -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes"
-          ssh -i "$HOME/.ssh/growlens_deploy_key" -p "$SSH_PORT" \
-            -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
-            "$SSH_USER@$SSH_HOST" \
-            "set -eu; rm -rf '$STAGE_TARGET'; mkdir -p '$STAGE_TARGET'"
-          rsync -az --delete --checksum --human-readable \
-            -e "$ssh_cmd" \
-            release/ "$SSH_USER@$SSH_HOST:$STAGE_TARGET/"
-          ssh -i "$HOME/.ssh/growlens_deploy_key" -p "$SSH_PORT" \
-            -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
-            "$SSH_USER@$SSH_HOST" \
-            "set -eu; test -f '$STAGE_TARGET/index.html'; test -f '$STAGE_TARGET/deploy.json'; test -f '$STAGE_TARGET/api/health.php'; test -f '$STAGE_TARGET/api/_state-v2.php'; test -f '$STAGE_TARGET/api/.htaccess'"
+          ssh -i "$HOME/.ssh/growlens_deploy_key" -p "$SSH_PORT" -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes "$SSH_USER@$SSH_HOST" "set -eu; rm -rf '$STAGE_TARGET'; mkdir -p '$STAGE_TARGET'"
+          rsync -az --delete --checksum --human-readable -e "$ssh_cmd" release/ "$SSH_USER@$SSH_HOST:$STAGE_TARGET/"
+          ssh -i "$HOME/.ssh/growlens_deploy_key" -p "$SSH_PORT" -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes "$SSH_USER@$SSH_HOST" "set -eu; test -f '$STAGE_TARGET/index.html'; test -f '$STAGE_TARGET/deploy.json'; test -f '$STAGE_TARGET/api/health.php'; test -f '$STAGE_TARGET/api/_state-v2.php'; test -f '$STAGE_TARGET/api/.htaccess'"
 
       - name: Atomically activate staged release
         id: activate
         shell: bash
         run: |
           set -euo pipefail
-          ssh -i "$HOME/.ssh/growlens_deploy_key" -p "$SSH_PORT" \
-            -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
-            "$SSH_USER@$SSH_HOST" \
-            "set -eu; rm -rf '$PREVIOUS_TARGET'; if [ -e '$DEPLOY_TARGET' ]; then mv '$DEPLOY_TARGET' '$PREVIOUS_TARGET'; fi; mv '$STAGE_TARGET' '$DEPLOY_TARGET'"
+          ssh -i "$HOME/.ssh/growlens_deploy_key" -p "$SSH_PORT" -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes "$SSH_USER@$SSH_HOST" "set -eu; rm -rf '$PREVIOUS_TARGET'; if [ -e '$DEPLOY_TARGET' ]; then mv '$DEPLOY_TARGET' '$PREVIOUS_TARGET'; fi; mv '$STAGE_TARGET' '$DEPLOY_TARGET'"
 
       - name: Verify live commit and private-storage health
         id: verify
@@ -282,24 +245,14 @@ jobs:
           if (marker.app !== 'THC GrowLens') throw new Error('Unexpected deployment marker app.');
           if (marker.commit !== process.env.GITHUB_SHA) throw new Error(`Live commit ${marker.commit ?? 'missing'} does not match ${process.env.GITHUB_SHA}.`);
           NODE
-
           health="$(curl --fail --silent --show-error --location --retry 4 --retry-delay 3 --connect-timeout 15 --max-time 30 "$PRODUCTION_URL/api/health.php?commit=$GITHUB_SHA")"
           HEALTH="$health" node <<'NODE'
           const health = JSON.parse(process.env.HEALTH ?? '{}');
-          if (health.ok !== true || health.service !== 'growlens-api' || health.storageReady !== true) {
-            throw new Error(`GrowLens health check failed: ${JSON.stringify(health)}`);
-          }
+          if (health.ok !== true || health.service !== 'growlens-api' || health.storageReady !== true) throw new Error(`GrowLens health check failed: ${JSON.stringify(health)}`);
           NODE
-
           for helper in _shared.php _state-v2.php _images.php; do
             status="$(curl --silent --show-error --location --connect-timeout 15 --max-time 30 --output /dev/null --write-out '%{http_code}' "$PRODUCTION_URL/api/$helper?commit=$GITHUB_SHA")"
-            case "$status" in
-              403|404) ;;
-              *)
-                echo "Private API helper $helper returned HTTP $status instead of 403 or 404." >&2
-                exit 1
-                ;;
-            esac
+            case "$status" in 403|404) ;; *) echo "Private API helper $helper returned HTTP $status instead of 403 or 404." >&2; exit 1 ;; esac
           done
 
       - name: Roll back failed activation
@@ -307,10 +260,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          ssh -i "$HOME/.ssh/growlens_deploy_key" -p "$SSH_PORT" \
-            -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
-            "$SSH_USER@$SSH_HOST" \
-            "set -eu; rm -rf '$DEPLOY_TARGET'; if [ -e '$PREVIOUS_TARGET' ]; then mv '$PREVIOUS_TARGET' '$DEPLOY_TARGET'; fi; rm -rf '$STAGE_TARGET'"
+          ssh -i "$HOME/.ssh/growlens_deploy_key" -p "$SSH_PORT" -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes "$SSH_USER@$SSH_HOST" "set -eu; rm -rf '$DEPLOY_TARGET'; if [ -e '$PREVIOUS_TARGET' ]; then mv '$PREVIOUS_TARGET' '$DEPLOY_TARGET'; fi; rm -rf '$STAGE_TARGET'"
           echo "The failed release was rolled back." >&2
 
       - name: Archive previous release and prune old backups
@@ -318,10 +268,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          ssh -i "$HOME/.ssh/growlens_deploy_key" -p "$SSH_PORT" \
-            -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
-            "$SSH_USER@$SSH_HOST" \
-            "set -eu; if [ -e '$PREVIOUS_TARGET' ]; then mv '$PREVIOUS_TARGET' '$BACKUP_TARGET'; fi; ls -1dt '$BACKUP_ROOT'/* 2>/dev/null | tail -n +6 | xargs -r rm -rf --"
+          ssh -i "$HOME/.ssh/growlens_deploy_key" -p "$SSH_PORT" -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes "$SSH_USER@$SSH_HOST" "set -eu; if [ -e '$PREVIOUS_TARGET' ]; then mv '$PREVIOUS_TARGET' '$BACKUP_TARGET'; fi; ls -1dt '$BACKUP_ROOT'/* 2>/dev/null | tail -n +6 | xargs -r rm -rf --"
 
       - name: Publish deployment summary
         if: success()
