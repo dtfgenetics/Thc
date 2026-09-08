@@ -1,0 +1,66 @@
+name: Publish Seed Man Approved Art Addon
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'site/public-route-patch/games/seed-man-platformer/approved-art-core-v1.js'
+      - 'site/public-route-patch/games/seed-man-platformer/seed-man-production-art.js'
+      - 'scripts/publish-seed-man-approved-art-addon.mjs'
+      - '.github/workflows/publish-seed-man-approved-art-addon.yml'
+  workflow_run:
+    workflows: ['Publish Seed Man Production']
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish-seed-man-approved-art-addon
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    environment: production
+    env:
+      WP_SITE_URL: https://dtfseeds.com
+      WP_API_USERNAME: ${{ secrets.WP_API_USERNAME }}
+      WP_API_PASSWORD: ${{ secrets.WP_API_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate approved art runtime
+        run: |
+          node --check scripts/publish-seed-man-approved-art-addon.mjs
+          node --check site/public-route-patch/games/seed-man-platformer/approved-art-core-v1.js
+          node --check site/public-route-patch/games/seed-man-platformer/seed-man-production-art.js
+          grep -Fq "character.seedman.atlas" site/public-route-patch/games/seed-man-platformer/approved-art-core-v1.js
+          grep -Fq "approved-showcase-2026-09-08" site/public-route-patch/games/seed-man-platformer/seed-man-production-art.js
+          grep -Fq "fallbackAllowed:false" site/public-route-patch/games/seed-man-platformer/seed-man-production-art.js
+      - name: Publish approved art core
+        run: node scripts/publish-seed-man-approved-art-addon.mjs
+      - name: Verify live approved art asset
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://dtfseeds.com/games/seed-man-platformer/'
+          for attempt in {1..12}; do
+            core="$(curl -4 --fail --silent --show-error --location -H 'Cache-Control: no-cache' "${base}approved-art-core-v1.js?run=${GITHUB_RUN_ID}" || true)"
+            art="$(curl -4 --fail --silent --show-error --location -H 'Cache-Control: no-cache' "${base}seed-man-production-art.js?run=${GITHUB_RUN_ID}" || true)"
+            if grep -Fq "character.seedman.atlas" <<<"$core" && grep -Fq "seed-man-approved-atlas-renderer-v3" <<<"$art"; then
+              echo 'Approved Seed Man art runtime is live.'
+              exit 0
+            fi
+            sleep $((attempt * 2))
+          done
+          echo 'Approved Seed Man art runtime did not become visible on the live route.' >&2
+          exit 1
