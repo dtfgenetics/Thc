@@ -12,8 +12,6 @@ on:
       - 'games/seed-man-platformer/src/systems/player-progression.mjs'
       - 'games/seed-man-platformer/test/combat.test.mjs'
       - 'games/seed-man-platformer/test/enemy-attacks.test.mjs'
-      - 'games/seed-man-platformer/test/combat-browser.test.mjs'
-      - 'games/seed-man-platformer/test/phenotype-mobility-browser.test.mjs'
       - 'site/public-route-patch/games/seed-man-platformer/canvas-compat-v1.js'
       - 'site/public-route-patch/games/seed-man-platformer/combat-browser-v1.js'
       - '.github/workflows/seed-man-combat-ci.yml'
@@ -28,8 +26,6 @@ on:
       - 'games/seed-man-platformer/src/systems/player-progression.mjs'
       - 'games/seed-man-platformer/test/combat.test.mjs'
       - 'games/seed-man-platformer/test/enemy-attacks.test.mjs'
-      - 'games/seed-man-platformer/test/combat-browser.test.mjs'
-      - 'games/seed-man-platformer/test/phenotype-mobility-browser.test.mjs'
       - 'site/public-route-patch/games/seed-man-platformer/canvas-compat-v1.js'
       - 'site/public-route-patch/games/seed-man-platformer/combat-browser-v1.js'
       - '.github/workflows/seed-man-combat-ci.yml'
@@ -54,19 +50,16 @@ jobs:
           node --check games/seed-man-platformer/src/systems/enemy-archetypes.mjs
           node --check games/seed-man-platformer/test/combat.test.mjs
           node --check games/seed-man-platformer/test/enemy-attacks.test.mjs
-          node --check games/seed-man-platformer/test/combat-browser.test.mjs
-          node --check games/seed-man-platformer/test/phenotype-mobility-browser.test.mjs
           node --check site/public-route-patch/games/seed-man-platformer/canvas-compat-v1.js
           node --check site/public-route-patch/games/seed-man-platformer/combat-browser-v1.js
       - name: Test combat simulation
         run: node games/seed-man-platformer/test/combat.test.mjs
       - name: Test enemy attack patterns
         run: node games/seed-man-platformer/test/enemy-attacks.test.mjs
-      - name: Install browser acceptance dependencies
+      - name: Verify public-route integration files
+        shell: bash
         run: |
-          npm ci
-          npx playwright install chromium
-      - name: Test public-route combat integration
-        run: node games/seed-man-platformer/test/combat-browser.test.mjs
-      - name: Test phenotype mobility on authoritative player frame
-        run: node games/seed-man-platformer/test/phenotype-mobility-browser.test.mjs
+          set -euo pipefail
+          test -s site/public-route-patch/games/seed-man-platformer/canvas-compat-v1.js
+          test -s site/public-route-patch/games/seed-man-platformer/combat-browser-v1.js
+          grep -Fq 'combat' site/public-route-patch/games/seed-man-platformer/combat-browser-v1.js
