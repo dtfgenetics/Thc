@@ -21,6 +21,7 @@ The release contract is:
 6. Preserve unrelated and user-authored changes. If another valid commit makes your branch redundant, close/drop the redundant branch instead of forcing stale work over newer source.
 7. Do not weaken a validator merely to make CI green. First prove the validator is enforcing the wrong invariant. Keep real source, asset, route, and gameplay contracts intact.
 8. A successful source test, suite build, or deploy is not proof that the game works in a browser. Keep every evidence level separate.
+9. Do not use Playwright as part of this skill, any release action, or any automatic fallback. Use deterministic unit/integration tests, direct browser inspection, Lighthouse or equivalent auditing, HTTP/resource checks, and screenshot/image comparison instead.
 
 ## Evidence ladder
 
@@ -30,7 +31,7 @@ Report the highest level actually proven:
 2. **SUITE VALIDATED** — the DTFSeeds public-suite build packages the intended source and passes route/base-path checks.
 3. **DEPLOYED** — a production deployment run containing the intended source SHA/descendant completed successfully.
 4. **LIVE ROUTE VERIFIED** — a fresh cache-busted production check confirms the exact route, positive release markers, required assets, and absence of known stale fingerprints.
-5. **BROWSER PLAYTESTED** — a real browser/E2E run exercised the required game flow and interaction behavior.
+5. **BROWSER PLAYTESTED** — a real browser run exercised the required game flow and interaction behavior without Playwright.
 
 Never promote one level into the next. In particular, do not set or report `browserTested: true` from Node tests, static crawls, HTTP 200 responses, or deployment logs.
 
@@ -123,7 +124,7 @@ Prefer a game-specific verifier workflow when one exists. If it does not exist, 
 
 ### 8. Browser gameplay verification
 
-When real browser tooling/Playwright is available, exercise the critical user flow separately from static live verification. Check console/network errors, start/restart lifecycle, primary controls, a meaningful gameplay transition, and mobile viewport behavior when in scope.
+When direct browser tooling is available, exercise the critical user flow separately from static live verification. Check console/network errors, start/restart lifecycle, primary controls, a meaningful gameplay transition, and mobile viewport behavior when in scope. Use direct browser inspection and route-appropriate interaction checks; do not use Playwright.
 
 If browser tooling is unavailable, report `LIVE ROUTE VERIFIED` but **not** `BROWSER PLAYTESTED`.
 
