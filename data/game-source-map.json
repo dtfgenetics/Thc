@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updated": "2026-09-05",
+  "updated": "2026-09-08",
   "site": "https://dtfseeds.com",
   "rule": "Every public game route must map to exactly one canonical code owner before integration or deployment work begins.",
   "games": [
@@ -30,13 +30,14 @@
     },
     {
       "id": "seed-man-platformer",
-      "title": "Seed Man: Sprout Run",
+      "title": "Seed Man: Greenhouse Gauntlet",
       "route": "/games/seed-man-platformer/",
       "canonical": {
         "projectId": "seed-man-platformer",
         "repository": "dtfgenetics/Thc",
-        "sourcePaths": ["games/seed-man-platformer"],
-        "sourceOfTruth": "games/seed-man-platformer/README.md"
+        "sourcePaths": ["games/seed-man-platformer", "site/public-route-patch/games/seed-man-platformer"],
+        "sourceOfTruth": "games/seed-man-platformer/README.md",
+        "ownershipNote": "Greenhouse Gauntlet is the canonical product identity. sprout-run remains the stable Level 1/runtime compatibility ID only."
       },
       "integration": {"repository": "dtfgenetics/Thc", "path": "site/public-route-patch/games/seed-man-platformer", "mode": "local-static"}
     },
