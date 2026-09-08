@@ -40,6 +40,8 @@ jobs:
           paths=(
             site/public-route-patch/games/seed-man-platformer/index.html
             site/public-route-patch/games/seed-man-platformer/canvas-compat-v1.js
+            site/public-route-patch/games/seed-man-platformer/seed-man-ui-v3.js
+            games/seed-man-platformer/test/ui-v3-browser.test.mjs
             scripts/publish-seed-man-route-via-wordpress.mjs
           )
           before="$(git diff -- "${paths[@]}" | git hash-object --stdin)"
@@ -50,7 +52,9 @@ jobs:
         run: |
           node --check scripts/apply-seed-man-gameplay-v2.mjs
           node --check site/public-route-patch/games/seed-man-platformer/gameplay-v2.js
+          node --check site/public-route-patch/games/seed-man-platformer/seed-man-ui-v3.js
           node --check games/seed-man-platformer/test/gameplay-v2-smoke.mjs
+          node --check games/seed-man-platformer/test/ui-v3-browser.test.mjs
           node --check scripts/publish-seed-man-route-via-wordpress.mjs
       - name: Install browser dependencies
         run: |
@@ -58,6 +62,8 @@ jobs:
           npx playwright install chromium
       - name: Exercise gameplay v2 locally
         run: node games/seed-man-platformer/test/gameplay-v2-smoke.mjs
+      - name: Exercise campaign UI v3 locally
+        run: node games/seed-man-platformer/test/ui-v3-browser.test.mjs
       - name: Safely integrate gameplay upgrade when needed
         shell: bash
         env:
@@ -67,10 +73,12 @@ jobs:
           if git diff --quiet -- \
             site/public-route-patch/games/seed-man-platformer/index.html \
             site/public-route-patch/games/seed-man-platformer/canvas-compat-v1.js \
+            site/public-route-patch/games/seed-man-platformer/seed-man-ui-v3.js \
+            games/seed-man-platformer/test/ui-v3-browser.test.mjs \
             scripts/publish-seed-man-route-via-wordpress.mjs; then
             echo 'No integration changes were needed.'
             exit 0
           fi
           node scripts/studio/integrate-generated-change.mjs \
-            --message='Integrate Sprout Run gameplay v2 into production route' \
-            --paths=site/public-route-patch/games/seed-man-platformer/index.html,site/public-route-patch/games/seed-man-platformer/canvas-compat-v1.js,scripts/publish-seed-man-route-via-wordpress.mjs
+            --message='Integrate Seed Man canonical world identity into production route' \
+            --paths=site/public-route-patch/games/seed-man-platformer/index.html,site/public-route-patch/games/seed-man-platformer/canvas-compat-v1.js,site/public-route-patch/games/seed-man-platformer/seed-man-ui-v3.js,games/seed-man-platformer/test/ui-v3-browser.test.mjs,scripts/publish-seed-man-route-via-wordpress.mjs
