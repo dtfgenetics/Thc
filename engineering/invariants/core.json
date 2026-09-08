@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0.0",
+  "invariants": [
+    {"id":"repo.no-competing-canonical-copy","domain":"REPOSITORY","severity":"critical","rule":"Canonical ownership from data/project-registry.json must be resolved before creating a competing implementation."},
+    {"id":"repo.exact-head-green","domain":"REPOSITORY","severity":"critical","rule":"Integration checks must correspond to the exact candidate head commit."},
+    {"id":"release.source-traceable","domain":"INFRASTRUCTURE","severity":"critical","rule":"Production-impacting releases must be traceable to a known source commit/candidate."},
+    {"id":"release.live-verified","domain":"WEBSITE","severity":"critical","rule":"Merge or deployment success alone is not live visitor-facing verification."},
+    {"id":"game.state-finite","domain":"GAME_RUNTIME","severity":"high","rule":"Core numeric game state must remain finite and valid; NaN/Infinity are never valid gameplay state."},
+    {"id":"game.route-resolves","domain":"GAME_RUNTIME","severity":"high","rule":"A published browser game must have a resolving production route and load without critical runtime errors."},
+    {"id":"asset.references-resolve","domain":"ASSET_PIPELINE","severity":"high","rule":"Published code/content may not reference missing required assets."},
+    {"id":"content.identity-unique","domain":"CONTENT_EDUCATION","severity":"high","rule":"Published content identifiers and canonical slugs must be unique within their registry scope."},
+    {"id":"content.references-resolve","domain":"CONTENT_EDUCATION","severity":"high","rule":"Prerequisite, assessment, certification and media references must resolve to valid targets."},
+    {"id":"web.internal-links-resolve","domain":"WEBSITE","severity":"high","rule":"Production internal navigation must not target missing routes."},
+    {"id":"security.no-gate-bypass","domain":"SECURITY","severity":"critical","rule":"Security controls may not be weakened solely to make verification pass."},
+    {"id":"rirt.recurrence-guard","domain":"SYSTEM","severity":"high","rule":"An R2+ recurring issue requires a durable automated regression guard unless a documented technical reason prevents one."}
+  ]
+}

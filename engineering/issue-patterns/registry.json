@@ -1,0 +1,32 @@
+{
+  "schema_version": "1.0.0",
+  "patterns": [
+    {
+      "signature": "branch-proliferation-instead-of-repair",
+      "aliases": ["v2-v3-final-branch-sprawl", "replacement-branch-loop"],
+      "domains": ["REPOSITORY"],
+      "recurrence": "R5",
+      "systemic_gap": "Work is abandoned and replaced instead of reconciled on the owning branch/job.",
+      "canonical_response": "Search active branches/PRs, determine supersession, preserve unique work, resume or repair the owning branch, then integrate through exact-head verification.",
+      "required_guards": ["branch-supersession-audit", "exact-head-ci", "post-merge-cleanup"]
+    },
+    {
+      "signature": "merged-but-not-live",
+      "aliases": ["repo-fixed-site-stale", "deployment-drift"],
+      "domains": ["WEBSITE", "INFRASTRUCTURE"],
+      "recurrence": "R4",
+      "systemic_gap": "Repository/CI success is being treated as proof of production success.",
+      "canonical_response": "Trace source -> build -> artifact -> deployment -> cache/CDN -> route -> browser and verify production identity and behavior.",
+      "required_guards": ["deployment-source-identity", "production-route-smoke", "live-verification"]
+    },
+    {
+      "signature": "missing-or-stale-game-asset",
+      "aliases": ["broken-sprite-path", "vite-base-path-asset"],
+      "domains": ["GAME_VISUAL", "ASSET_PIPELINE", "WEBSITE"],
+      "recurrence": "R3",
+      "systemic_gap": "Asset existence/build/public-path/runtime-render boundaries are not verified together.",
+      "canonical_response": "Validate manifest/path construction, build output, deployed URL, runtime render, cache behavior and visual baseline.",
+      "required_guards": ["asset-reference-validator", "production-route-asset-smoke"]
+    }
+  ]
+}

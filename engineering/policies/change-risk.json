@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0.0",
+  "levels": {
+    "Q0": {"description":"isolated copy/text","required":["lint-or-content-validation"]},
+    "Q1": {"description":"isolated style/asset","required":["lint-or-content-validation","visual-verification"]},
+    "Q2": {"description":"local component behavior","required":["unit-or-component","browser-or-runtime-smoke"]},
+    "Q3": {"description":"game mechanic/content schema/data model","required":["unit","state-or-property","integration"]},
+    "Q4": {"description":"shared package/API/asset loader/cross-feature state","required":["blast-radius","dependent-consumer","contract","integration"]},
+    "Q5": {"description":"security/database/deployment/multiplayer protocol/cross-repository contract","required":["blast-radius","contract","security","staging","rollback","deployment","live-verification"]}
+  },
+  "critical_caps": {
+    "security_failure": "NOT_RELEASE_READY",
+    "core_functional_failure": "NOT_RELEASE_READY",
+    "production_identity_unknown": "NOT_RELEASE_READY",
+    "required_contract_failure": "NOT_RELEASE_READY"
+  }
+}
